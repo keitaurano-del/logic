@@ -1,14 +1,15 @@
 services:
   - type: web
-    name: logic
+    name: logic-staging
     runtime: node
+    branch: staging
     buildCommand: npm install --include=dev && npm run build
     startCommand: npm start
     envVars:
       - key: ANTHROPIC_API_KEY
         sync: false
       - key: NODE_ENV
-        value: production
+        value: staging
       - key: VITE_FIREBASE_API_KEY
         sync: false
       - key: VITE_FIREBASE_AUTH_DOMAIN
