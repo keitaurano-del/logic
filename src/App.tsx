@@ -1,0 +1,503 @@
+import { useState, useEffect, useRef, useCallback } from 'react'
+import RolePlaySystem from './RolePlaySystem'
+import Lesson from './Lesson'
+import MockExam from './MockExam'
+import JournalInput from './JournalInput'
+import Worksheet from './Worksheet'
+import Knowledge from './Knowledge'
+import Profile from './Profile'
+import Flashcards from './Flashcards'
+import Tasks from './Tasks'
+import { allLessons } from './lessonData'
+import Reward from './Reward'
+import { recordCompletion, addStudyTime, getCompletedCount, getStreak, getStudyHours, getXpForKey } from './stats'
+import { getCardStats } from './flashcardData'
+import { loadTheme, applyTheme } from './theme'
+import LessonIcon from './LessonIcon'
+import './App.css'
+
+const lessons = [
+  {
+    id: 3,
+    category: 'ロールプレイ',
+    title: '上司とのレビュー会議',
+    description: '四半期レビューで成果を報告する',
+    progress: 0,
+    action: 'roleplay' as const,
+  },
+  {
+    id: 6,
+    category: '簿記3級',
+    title: '簿記3級 入門',
+    description: '仕訳・勘定科目・試算表の基礎',
+    progress: 0,
+    action: 'lesson' as const,
+  },
+  {
+    id: 7,
+    category: '簿記3級',
+    title: '簿記3級 決算と財務諸表',
+    description: '精算表・損益計算書・貸借対照表の作成',
+    progress: 0,
+    action: 'lesson' as const,
+  },
+  {
+    id: 8,
+    category: '簿記2級 商業',
+    title: '簿記2級 商業簿記',
+    description: '連結会計・税効果会計・リース取引',
+    progress: 0,
+    action: 'lesson' as const,
+  },
+  {
+    id: 9,
+    category: '簿記2級 工業',
+    title: '簿記2級 工業簿記',
+    description: '原価計算・標準原価・CVP分析',
+    progress: 0,
+    action: 'lesson' as const,
+  },
+  {
+    id: 11,
+    category: '簿記3級',
+    title: '仕訳問題 50問ドリル',
+    description: '本試験頻出の仕訳を徹底演習',
+    progress: 0,
+    action: 'lesson' as const,
+  },
+  {
+    id: 12,
+    category: '簿記3級',
+    title: '勘定記入・補助簿ドリル',
+    description: '補助簿の選択・伝票・勘定記入を演習',
+    progress: 0,
+    action: 'lesson' as const,
+  },
+  {
+    id: 13,
+    category: '簿記3級',
+    title: '決算・精算表ドリル',
+    description: '決算整理仕訳・精算表・B/S・P/Lを演習',
+    progress: 0,
+    action: 'lesson' as const,
+  },
+  {
+    id: 14,
+    category: '簿記3級 実践',
+    title: '仕訳入力ドリル',
+    description: '勘定科目と金額を自分で入力する実践演習',
+    progress: 0,
+    action: 'journal-input' as const,
+  },
+  {
+    id: 15,
+    category: '簿記3級 実践',
+    title: '精算表穴埋めドリル',
+    description: '精算表の空欄に数字を入力して完成させる',
+    progress: 0,
+    action: 'worksheet' as const,
+  },
+  {
+    id: 99,
+    category: '模擬試験',
+    title: '簿記3級 模擬試験',
+    description: '60分・25問・合格ライン70%の本番形式',
+    progress: 0,
+    action: 'mock-exam' as const,
+  },
+  {
+    id: 20,
+    category: 'ロジカルシンキング',
+    title: 'MECE — 漏れなくダブりなく',
+    description: '情報を漏れなくダブりなく整理するフレームワーク',
+    progress: 0,
+    action: 'lesson' as const,
+  },
+  {
+    id: 21,
+    category: 'ロジカルシンキング',
+    title: 'ロジックツリー — 問題を分解する',
+    description: '問題を階層的に分解するWhyツリーとHowツリー',
+    progress: 0,
+    action: 'lesson' as const,
+  },
+  {
+    id: 22,
+    category: 'ロジカルシンキング',
+    title: 'So What / Why So — 論理の検証',
+    description: '「だから何？」「なぜそう言える？」で論理をチェック',
+    progress: 0,
+    action: 'lesson' as const,
+  },
+  {
+    id: 23,
+    category: 'ロジカルシンキング',
+    title: 'ピラミッド原則 — 伝わる話し方',
+    description: '結論→理由→根拠の順で伝えるPREP法とSCR',
+    progress: 0,
+    action: 'lesson' as const,
+  },
+  {
+    id: 24,
+    category: 'ロジカルシンキング',
+    title: 'ケーススタディ — 総合演習',
+    description: '実践的なビジネスケースで全フレームワークを総合演習',
+    progress: 0,
+    action: 'lesson' as const,
+  },
+  {
+    id: 30,
+    category: 'プロジェクトマネジメント',
+    title: 'PM基礎 — プロジェクトマネジメントとは',
+    description: 'プロジェクトの定義・PMの役割・制約条件',
+    progress: 0,
+    action: 'lesson' as const,
+  },
+  {
+    id: 31,
+    category: 'プロジェクトマネジメント',
+    title: 'プロセス群 — 立上げから終結まで',
+    description: '5つのプロセス群・WBS・プロジェクト憲章',
+    progress: 0,
+    action: 'lesson' as const,
+  },
+  {
+    id: 32,
+    category: 'プロジェクトマネジメント',
+    title: '知識エリア — 10の管理領域',
+    description: '統合・スコープ・スケジュール・コスト・品質・EVM',
+    progress: 0,
+    action: 'lesson' as const,
+  },
+  {
+    id: 33,
+    category: 'プロジェクトマネジメント',
+    title: 'ツールと技法 — 実践スキル',
+    description: 'CPM・PERT・リスク分析・品質管理ツール',
+    progress: 0,
+    action: 'lesson' as const,
+  },
+  {
+    id: 34,
+    category: 'プロジェクトマネジメント',
+    title: 'PMBOK総合演習 — 試験対策',
+    description: 'PMBOK試験レベルのシチュエーション問題・EVM計算',
+    progress: 0,
+    action: 'lesson' as const,
+  },
+]
+
+type Tab = 'home' | 'lessons' | 'roleplay' | 'tasks' | 'knowledge' | 'profile'
+type Screen =
+  | { type: 'home' }
+  | { type: 'lesson'; lessonId: number }
+  | { type: 'mock-exam' }
+  | { type: 'journal-input' }
+  | { type: 'worksheet' }
+  | { type: 'reward'; xpEarned: number; lessonTitle: string }
+  | { type: 'flashcards' }
+
+function App() {
+  const [screen, setScreen] = useState<Screen>({ type: 'home' })
+  const [tab, setTab] = useState<Tab>('home')
+  const [completedCount, setCompletedCount] = useState(getCompletedCount())
+  const [streak, setStreak] = useState(getStreak())
+  const [studyHours, setStudyHours] = useState(getStudyHours())
+  const screenEnteredAt = useRef<number>(Date.now())
+
+  // Apply saved theme on mount
+  useEffect(() => { applyTheme(loadTheme()) }, [])
+
+  const refreshStats = useCallback(() => {
+    setCompletedCount(getCompletedCount())
+    setStreak(getStreak())
+    setStudyHours(getStudyHours())
+  }, [])
+
+  // Track study time when leaving a sub-screen
+  const goHome = useCallback(() => {
+    const elapsed = Date.now() - screenEnteredAt.current
+    if (elapsed > 5000) { // only count if spent more than 5 seconds
+      addStudyTime(elapsed)
+    }
+    setScreen({ type: 'home' })
+    refreshStats()
+  }, [refreshStats])
+
+  // Reset timer when entering a sub-screen
+  useEffect(() => {
+    if (screen.type !== 'home') {
+      screenEnteredAt.current = Date.now()
+    }
+  }, [screen])
+
+  const handleComplete = useCallback((key: string, title: string) => {
+    const elapsed = Date.now() - screenEnteredAt.current
+    if (elapsed > 5000) addStudyTime(elapsed)
+    recordCompletion(key)
+    const xp = getXpForKey(key)
+    setScreen({ type: 'reward', xpEarned: xp, lessonTitle: title })
+  }, [])
+
+  if (screen.type === 'flashcards') {
+    return <Flashcards onBack={goHome} />
+  }
+
+  if (screen.type === 'reward') {
+    return (
+      <Reward
+        xpEarned={screen.xpEarned}
+        lessonTitle={screen.lessonTitle}
+        onContinue={() => { setScreen({ type: 'home' }); refreshStats() }}
+      />
+    )
+  }
+
+  if (screen.type === 'mock-exam') {
+    return <MockExam onBack={goHome} onComplete={() => handleComplete('mock-exam', '簿記3級 模擬試験')} />
+  }
+
+  if (screen.type === 'journal-input') {
+    return <JournalInput onBack={goHome} onComplete={() => handleComplete('journal-input', '仕訳入力ドリル')} />
+  }
+
+  if (screen.type === 'worksheet') {
+    return <Worksheet onBack={goHome} onComplete={() => handleComplete('worksheet', '精算表穴埋めドリル')} />
+  }
+
+  if (screen.type === 'lesson') {
+    const lessonData = allLessons[screen.lessonId]
+    if (lessonData) {
+      return <Lesson lesson={lessonData} onBack={goHome} onComplete={() => handleComplete(`lesson-${screen.lessonId}`, lessonData.title)} />
+    }
+  }
+
+  const getCatKey = (category: string) => {
+    if (/ロールプレイ/.test(category)) return 'roleplay'
+    if (/簿記3級 実践/.test(category)) return 'practice'
+    if (/簿記3級/.test(category)) return 'boki3'
+    if (/簿記2級/.test(category)) return 'boki2'
+    if (/模擬試験/.test(category)) return 'exam'
+    if (/ロジカル/.test(category)) return 'logic'
+    if (/プロジェクト/.test(category)) return 'pm'
+    return ''
+  }
+
+  const handleCardClick = (lesson: (typeof lessons)[number]) => {
+    if (lesson.action === 'mock-exam') {
+      setScreen({ type: 'mock-exam' })
+    } else if (lesson.action === 'journal-input') {
+      setScreen({ type: 'journal-input' })
+    } else if (lesson.action === 'worksheet') {
+      setScreen({ type: 'worksheet' })
+    } else if (lesson.action === 'roleplay') {
+      setTab('roleplay')
+    } else if (lesson.action === 'lesson' && lesson.id in allLessons) {
+      setScreen({ type: 'lesson', lessonId: lesson.id })
+    }
+  }
+
+  return (
+    <div className="app">
+      {/* Tab Content */}
+      {tab === 'home' && (
+        <>
+          {/* Streak Hero (Speak-style) */}
+          <section className="hero">
+            <div className="hero-content">
+              <div className="streak-hero">
+                <div className="streak-flame">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2C10.5 6 6 8 6 13a6 6 0 0 0 12 0c0-5-4.5-7-6-11Z" fill="url(#flame-grad)" />
+                    <path d="M12 10c-1 2-3 3-3 5.5a3 3 0 0 0 6 0c0-2.5-2-3.5-3-5.5Z" fill="#FFEB3B" />
+                    <defs>
+                      <linearGradient id="flame-grad" x1="12" y1="2" x2="12" y2="19" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#FF8C00" />
+                        <stop offset="1" stopColor="#FF3D00" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                </div>
+                <span className="streak-count">{streak}</span>
+                <span className="streak-label">{streak > 0 ? '日連続学習中' : '今日から始めよう'}</span>
+                {streak >= 7 && <span className="streak-badge">{streak >= 30 ? 'MASTER' : streak >= 14 ? 'ON FIRE' : 'GREAT'}</span>}
+              </div>
+              <div className="hero-stats">
+                <div className="stat">
+                  <span className="stat-value">{completedCount}</span>
+                  <span className="stat-label">完了レッスン</span>
+                </div>
+                <div className="stat-divider" />
+                <div className="stat">
+                  <span className="stat-value">{studyHours}</span>
+                  <span className="stat-label">総学習時間</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Flashcards Quick Access */}
+          {(() => {
+            const fc = getCardStats()
+            return (
+              <div className="flashcard-banner" onClick={() => setScreen({ type: 'flashcards' })}>
+                <div className="flashcard-banner-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="14" height="18" rx="2" /><path d="M8 4V2" /><path d="M22 8v12a2 2 0 0 1-2 2" /><path d="M18 2v2" /><rect x="8" y="2" width="14" height="18" rx="2" opacity="0.3" /></svg></div>
+                <div className="flashcard-banner-text">
+                  <strong>フラッシュカード</strong>
+                  <span>{fc.total === 0 ? 'レッスンを完了するとカードが作られます' : fc.due > 0 ? `${fc.due}枚の復習待ち` : '今日の復習完了！'}</span>
+                </div>
+                <span className="flashcard-banner-arrow">›</span>
+              </div>
+            )
+          })()}
+
+          {/* Lessons */}
+          <section className="section">
+            <div className="section-header">
+              <h3 className="section-title">レッスン</h3>
+            </div>
+
+            <div className="lesson-list">
+              {lessons.map((lesson) => (
+                <div
+                  key={lesson.id}
+                  className={`lesson-card ${lesson.action === 'roleplay' ? 'roleplay' : ''} ${lesson.action ? 'clickable' : ''}`}
+                  data-cat={getCatKey(lesson.category)}
+                  onClick={() => handleCardClick(lesson)}
+                >
+                  <div className="lesson-emoji"><LessonIcon id={lesson.id} action={lesson.action} /></div>
+                  <div className="lesson-info">
+                    <span className="lesson-category">{lesson.category}</span>
+                    <h4 className="lesson-title">{lesson.title}</h4>
+                    <p className="lesson-desc">{lesson.description}</p>
+                    {lesson.progress > 0 && (
+                      <div className="progress-bar">
+                        <div
+                          className="progress-fill"
+                          style={{ width: `${lesson.progress}%` }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                  <div className="lesson-arrow">›</div>
+                </div>
+              ))}
+            </div>
+          </section>
+        </>
+      )}
+
+      {tab === 'lessons' && (
+        <div className="lessons-tab">
+          {/* Flashcards in lessons tab */}
+          {(() => {
+            const fc = getCardStats()
+            return (
+              <div className="flashcard-banner lesson-tab-fc" onClick={() => setScreen({ type: 'flashcards' })}>
+                <div className="flashcard-banner-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="14" height="18" rx="2" /><path d="M8 4V2" /><path d="M22 8v12a2 2 0 0 1-2 2" /><path d="M18 2v2" /><rect x="8" y="2" width="14" height="18" rx="2" opacity="0.3" /></svg></div>
+                <div className="flashcard-banner-text">
+                  <strong>フラッシュカード</strong>
+                  <span>{fc.total === 0 ? 'レッスンを完了するとカードが作られます' : fc.due > 0 ? `${fc.due}枚の復習待ち` : `${fc.total}枚 (今日の復習完了)`}</span>
+                </div>
+                <span className="flashcard-banner-arrow">›</span>
+              </div>
+            )
+          })()}
+          {Object.entries(
+            lessons.reduce<Record<string, typeof lessons>>((acc, l) => {
+              const cat = l.category
+              if (!acc[cat]) acc[cat] = []
+              acc[cat].push(l)
+              return acc
+            }, {})
+          ).map(([cat, items]) => (
+            <section key={cat} className="section">
+              <div className="section-header">
+                <h3 className="section-title">{cat}</h3>
+                <span className="section-count">{items.length}</span>
+              </div>
+              <div className="lesson-list">
+                {items.map((lesson) => (
+                  <div
+                    key={lesson.id}
+                    className={`lesson-card ${lesson.action === 'roleplay' ? 'roleplay' : ''} clickable`}
+                    data-cat={getCatKey(lesson.category)}
+                    onClick={() => handleCardClick(lesson)}
+                  >
+                    <div className="lesson-emoji"><LessonIcon id={lesson.id} action={lesson.action} /></div>
+                    <div className="lesson-info">
+                      <span className="lesson-category">{lesson.category}</span>
+                      <h4 className="lesson-title">{lesson.title}</h4>
+                      <p className="lesson-desc">{lesson.description}</p>
+                    </div>
+                    <div className="lesson-arrow">›</div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      )}
+
+      {tab === 'roleplay' && (
+        <RolePlaySystem onBack={() => {
+          const elapsed = Date.now() - screenEnteredAt.current
+          if (elapsed > 5000) addStudyTime(elapsed)
+          setTab('home'); refreshStats()
+        }} />
+      )}
+
+      {tab === 'tasks' && <Tasks />}
+
+      {tab === 'knowledge' && <Knowledge />}
+
+      {tab === 'profile' && <Profile />}
+
+      {/* Bottom Navigation */}
+      <nav className="bottom-nav">
+        <button className={`nav-item ${tab === 'home' ? 'active' : ''}`} onClick={() => setTab('home')}>
+          <svg className="nav-icon" viewBox="0 0 24 24" fill={tab === 'home' ? 'currentColor' : 'none'} stroke={tab === 'home' ? 'none' : 'currentColor'} strokeWidth="2">
+            <path d="M3 13h1v7c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-7h1a1 1 0 0 0 .7-1.7l-9-9a1 1 0 0 0-1.4 0l-9 9A1 1 0 0 0 3 13z" />
+          </svg>
+          <span>ホーム</span>
+        </button>
+        <button className={`nav-item ${tab === 'lessons' ? 'active' : ''}`} onClick={() => setTab('lessons')}>
+          <svg className="nav-icon" viewBox="0 0 24 24" fill={tab === 'lessons' ? 'currentColor' : 'none'} stroke={tab === 'lessons' ? 'none' : 'currentColor'} strokeWidth="2">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+          </svg>
+          <span>レッスン</span>
+        </button>
+        <button className={`nav-item ${tab === 'roleplay' ? 'active' : ''}`} onClick={() => setTab('roleplay')}>
+          <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+          </svg>
+          <span>ロールプレイ</span>
+        </button>
+        <button className={`nav-item ${tab === 'tasks' ? 'active' : ''}`} onClick={() => setTab('tasks')}>
+          <svg className="nav-icon" viewBox="0 0 24 24" fill={tab === 'tasks' ? 'currentColor' : 'none'} stroke={tab === 'tasks' ? 'none' : 'currentColor'} strokeWidth="2">
+            <path d="M9 11l3 3L22 4" />
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+          </svg>
+          <span>タスク</span>
+        </button>
+        <button className={`nav-item ${tab === 'knowledge' ? 'active' : ''}`} onClick={() => setTab('knowledge')}>
+          <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M9 12h6M9 16h6M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7l-5-5z" />
+            <path d="M13 2v5h5" />
+          </svg>
+          <span>ナレッジ</span>
+        </button>
+        <button className={`nav-item ${tab === 'profile' ? 'active' : ''}`} onClick={() => { setTab('profile'); refreshStats() }}>
+          <svg className="nav-icon" viewBox="0 0 24 24" fill={tab === 'profile' ? 'currentColor' : 'none'} stroke={tab === 'profile' ? 'none' : 'currentColor'} strokeWidth="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+          <span>プロフィール</span>
+        </button>
+      </nav>
+    </div>
+  )
+}
+
+export default App

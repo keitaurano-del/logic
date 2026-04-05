@@ -1,0 +1,67 @@
+.ji-screen { min-height: 100svh; display: flex; flex-direction: column; background: var(--bg-primary); }
+.ji-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: rgba(10,10,15,0.88); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); color: var(--text-primary); font-size: 16px; font-weight: 800; }
+.ji-back { background: none; border: none; color: var(--text-primary); font-size: 20px; cursor: pointer; padding: 4px 8px; }
+.ji-progress { font-size: 13px; color: var(--text-muted); font-weight: 700; }
+.ji-progress-bar { height: 3px; background: var(--bg-elevated); }
+.ji-progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #8B5CF6); transition: width 0.3s; }
+
+.ji-content { flex: 1; padding: 20px 16px; display: flex; flex-direction: column; gap: 18px; }
+
+.ji-question { display: flex; align-items: flex-start; gap: 10px; }
+.ji-question p { font-size: 16px; font-weight: 700; color: var(--text-primary); line-height: 1.6; padding-top: 6px; }
+
+.ji-entry-table { display: flex; align-items: stretch; gap: 0; background: var(--bg-card); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-card); }
+
+.ji-side { flex: 1; padding: 16px 14px; display: flex; flex-direction: column; gap: 10px; }
+.ji-side-label { font-size: 11px; font-weight: 800; text-align: center; letter-spacing: 0.5px; }
+.ji-side-label.debit { color: var(--success); }
+.ji-side-label.credit { color: var(--accent); }
+
+.ji-slash { display: flex; align-items: center; font-size: 22px; color: var(--text-muted); font-weight: 300; padding: 0 2px; border-left: 1px solid var(--border); border-right: 1px solid var(--border); }
+
+.ji-select {
+  padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm);
+  font-size: 13px; font-family: var(--sans); outline: none;
+  background: var(--bg-elevated); color: var(--text-primary);
+  -webkit-appearance: none; appearance: none;
+}
+.ji-select.correct { border-color: var(--success); background: var(--success-soft); }
+.ji-select.wrong { border-color: var(--danger); background: rgba(248,113,113,0.08); }
+
+.ji-amount {
+  padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm);
+  font-size: 14px; font-family: var(--sans); outline: none;
+  background: var(--bg-elevated); color: var(--text-primary);
+  text-align: right; font-variant-numeric: tabular-nums;
+}
+.ji-amount::placeholder { color: var(--text-muted); }
+.ji-amount.correct { border-color: var(--success); background: var(--success-soft); }
+.ji-amount.wrong { border-color: var(--danger); background: rgba(248,113,113,0.08); }
+
+.ji-amount::-webkit-outer-spin-button,
+.ji-amount::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.ji-amount[type=number] { -moz-appearance: textfield; }
+
+.ji-feedback { background: var(--bg-card); border-radius: var(--radius-md); padding: 16px; box-shadow: var(--shadow-card); }
+.ji-correct-answer { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; margin-bottom: 8px; font-size: 13px; }
+.ji-correct-answer strong { color: var(--text-primary); }
+.ji-ca-debit { color: var(--success); font-weight: 700; }
+.ji-ca-sep { color: var(--text-muted); }
+.ji-ca-credit { color: var(--accent); font-weight: 700; }
+.ji-explanation { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+.ji-submit-btn, .ji-next-btn {
+  width: 100%; padding: 16px; background: var(--accent); color: #fff;
+  border: none; border-radius: var(--radius-md); font-size: 16px; font-weight: 800;
+  cursor: pointer; font-family: var(--sans);
+}
+.ji-submit-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.ji-submit-btn:active:not(:disabled), .ji-next-btn:active { transform: scale(0.97); }
+
+.ji-complete { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 28px; gap: 16px; text-align: center; }
+.ji-complete h2 { font-size: 26px; font-weight: 800; color: var(--text-primary); }
+.ji-score { font-size: 30px; font-weight: 800; color: var(--accent); }
+.ji-score-bar { width: 200px; height: 6px; background: var(--bg-elevated); border-radius: 3px; overflow: hidden; }
+.ji-score-fill { height: 100%; background: linear-gradient(90deg, var(--success), #06B6D4); border-radius: 3px; }
+.ji-msg { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+.ji-done-btn { padding: 16px 48px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-md); font-size: 16px; font-weight: 800; cursor: pointer; font-family: var(--sans); }

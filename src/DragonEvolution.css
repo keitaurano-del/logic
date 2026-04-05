@@ -1,0 +1,31 @@
+.dragon-evo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  position: relative;
+}
+
+/* Stage-specific glows */
+.dragon-evo.stage-1 { background: radial-gradient(circle, rgba(139, 157, 195, 0.15), transparent 70%); }
+.dragon-evo.stage-2 { background: radial-gradient(circle, rgba(139, 127, 232, 0.15), transparent 70%); }
+.dragon-evo.stage-3 { background: radial-gradient(circle, rgba(91, 111, 214, 0.2), transparent 70%); }
+.dragon-evo.stage-4 { background: radial-gradient(circle, rgba(59, 79, 191, 0.2), transparent 70%); }
+.dragon-evo.stage-5 {
+  background: radial-gradient(circle, rgba(42, 59, 168, 0.25), transparent 70%);
+  animation: dragon-pulse 3s ease infinite;
+}
+.dragon-evo.stage-6 {
+  background: radial-gradient(circle, rgba(75, 138, 255, 0.2), rgba(139, 92, 246, 0.1), transparent 70%);
+  animation: dragon-king-glow 3s ease infinite;
+}
+
+@keyframes dragon-pulse {
+  0%, 100% { filter: drop-shadow(0 0 4px rgba(75, 138, 255, 0.2)); }
+  50% { filter: drop-shadow(0 0 12px rgba(75, 138, 255, 0.4)); }
+}
+
+@keyframes dragon-king-glow {
+  0%, 100% { filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.2)) drop-shadow(0 0 16px rgba(75, 138, 255, 0.15)); }
+  50% { filter: drop-shadow(0 0 16px rgba(255, 215, 0, 0.4)) drop-shadow(0 0 24px rgba(75, 138, 255, 0.25)); }
+}
