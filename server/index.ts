@@ -244,7 +244,7 @@ ${goal ? `- ゴール: ${goal}` : ''}
 // Serve Vite build output in production
 const distPath = path.resolve(__dirname, '..', 'dist')
 app.use(express.static(distPath))
-app.get('*', (_req, res) => {
+app.get('/{*splat}', (_req, res) => {
   res.sendFile(path.join(distPath, 'index.html'))
 })
 
