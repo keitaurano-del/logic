@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
 import { getStreak, getLevelInfo, type LevelInfo } from './stats'
-import DragonEvolution from './DragonEvolution'
 import './Reward.css'
 
 type Props = {
@@ -77,7 +76,7 @@ export default function Reward({ xpEarned, lessonTitle, onContinue }: Props) {
       <div className="rw-content">
 
         <div className="rw-mascot">
-          <DragonEvolution level={levelInfo.level} size={96} />
+          <span style={{ fontSize: 64 }}>✨</span>
         </div>
 
         <p className="rw-label">{lessonTitle}</p>
@@ -108,9 +107,6 @@ export default function Reward({ xpEarned, lessonTitle, onContinue }: Props) {
           {leveledUp ? (
             <div className="rw-levelup">
               <span className="rw-levelup-badge">LEVEL UP!</span>
-              <div className="rw-levelup-dragon">
-                <DragonEvolution level={levelInfo.level} size={120} />
-              </div>
               <span className="rw-levelup-num">Lv.{levelInfo.level}</span>
               <span className="rw-levelup-title">{levelInfo.title}</span>
             </div>

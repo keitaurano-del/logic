@@ -122,11 +122,10 @@ export type LevelInfo = { level: number; title: string; xp: number; nextXp: numb
 
 const LEVELS = [
   { xp: 0, title: '初心者' },
-  { xp: 200, title: '学習者' },
-  { xp: 500, title: '実践者' },
-  { xp: 1000, title: '挑戦者' },
-  { xp: 2000, title: '達人' },
-  { xp: 5000, title: 'マスター' },
+  { xp: 100, title: '学習者' },
+  { xp: 300, title: '実践者' },
+  { xp: 600, title: '挑戦者' },
+  { xp: 1000, title: '達人' },
 ]
 
 export function getLevelInfo(rpSessions?: number): LevelInfo {

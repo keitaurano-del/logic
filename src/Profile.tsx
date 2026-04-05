@@ -1,6 +1,4 @@
 import { useMemo, useState, useEffect } from 'react'
-import DragonMascot from './DragonMascot'
-import DragonEvolution from './DragonEvolution'
 import { getCompletedLessons, getStreak, getStudyHours, getStudyDates, getTotalStudyDays, getLevelInfo } from './stats'
 import { loadHistory, type RolePlaySession } from './roleplayHistory'
 import { loginWithGoogle, logout, onAuthChange, type User } from './firebase'
@@ -136,7 +134,6 @@ export default function Profile() {
     ? Math.max(...rpHistory.map((s) => s.maxScore > 0 ? Math.round((s.totalScore / s.maxScore) * 100) : 0))
     : 0
 
-  const [showEvolution, setShowEvolution] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
   const [devMode, setDevMode] = useState(false)
   const [notifications, setNotifications] = useState(() => localStorage.getItem('logic-notifications') !== 'off')
@@ -274,39 +271,6 @@ export default function Profile() {
         </div>
       )}
 
-      {/* Evolution Modal */}
-      {showEvolution && (
-        <div className="pf-evo-overlay" onClick={() => setShowEvolution(false)}>
-          <div className="pf-evo-modal" onClick={(e) => e.stopPropagation()}>
-            <h3 className="pf-evo-title">成長の軌跡</h3>
-            <div className="pf-evo-list">
-              {[
-                { lv: 1, name: '初心者', desc: '卵', xp: 0 },
-                { lv: 2, name: '学習者', desc: '赤ちゃん竜', xp: 200 },
-                { lv: 3, name: '実践者', desc: '子竜', xp: 500 },
-                { lv: 4, name: '挑戦者', desc: '若竜', xp: 1000 },
-                { lv: 5, name: '達人', desc: '成竜', xp: 2000 },
-                { lv: 6, name: 'マスター', desc: '龍王', xp: 5000 },
-              ].map((stage) => (
-                <div key={stage.lv} className={`pf-evo-item ${stage.lv <= level ? 'unlocked' : 'locked'} ${stage.lv === level ? 'current' : ''}`}>
-                  <div className="pf-evo-dragon">
-                    <DragonEvolution level={stage.lv} size={56} />
-                  </div>
-                  <div className="pf-evo-info">
-                    <span className="pf-evo-lv">Lv.{stage.lv} {stage.name}</span>
-                    <span className="pf-evo-desc">{stage.desc}</span>
-                    <span className="pf-evo-xp">{stage.xp} XP</span>
-                  </div>
-                  {stage.lv === level && <span className="pf-evo-current-badge">NOW</span>}
-                  {stage.lv < level && <span className="pf-evo-check">✓</span>}
-                </div>
-              ))}
-            </div>
-            <button className="pf-evo-close" onClick={() => setShowEvolution(false)}>閉じる</button>
-          </div>
-        </div>
-      )}
-
       {/* Header */}
       <div className="pf-hero">
         <button className="pf-settings-btn" onClick={() => setShowSettings(true)}>
@@ -315,11 +279,10 @@ export default function Profile() {
             <circle cx="12" cy="12" r="3"/>
           </svg>
         </button>
-        <div className="pf-avatar-area" onClick={() => setShowEvolution(true)}>
+        <div className="pf-avatar-area">
           <div className="pf-avatar">
-            <DragonMascot size={72} />
+            <span style={{ fontSize: 48 }}>👤</span>
           </div>
-          <span className="pf-avatar-tap">タップで成長を見る</span>
         </div>
         <h2 className="pf-name">{user?.displayName || 'K'}</h2>
         <div className="pf-level-badge">
@@ -403,7 +366,7 @@ export default function Profile() {
       {/* Empty state */}
       {completedLessons.length === 0 && rpHistory.length === 0 && (
         <div className="pf-empty">
-          <DragonMascot size={80} />
+          <span style={{ fontSize: 56 }}>📚</span>
           <p>レッスンやロールプレイを始めると<br />ここに記録が表示されます</p>
         </div>
       )}
