@@ -63,6 +63,63 @@
   font-weight: 700;
 }
 
+/* ===== Progress Section ===== */
+.progress-section {
+  padding: 20px var(--px);
+}
+.progress-section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+.progress-bar-row {
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.progress-bar-row:active {
+  opacity: 0.7;
+}
+.progress-bar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.progress-bar-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.progress-bar-stat {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+.progress-bar-track {
+  height: 8px;
+  background: var(--bg-tertiary);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+  min-width: 2px;
+}
+.progress-bar-cta {
+  display: block;
+  font-size: 11px;
+  color: var(--accent);
+  margin-top: 6px;
+  text-align: right;
+}
+
 /* ===== Hero ===== */
 .hero {
   margin: 8px 16px 24px;

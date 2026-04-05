@@ -1,0 +1,116 @@
+import { loadCards } from './flashcardData'
+
+const STORAGE_KEY = 'logic-progress'
+
+export type Category = '簿記' | 'プロジェクトマネジメント' | 'ロジカルシンキング'
+
+export type CategoryProgress = {
+  totalCards: number
+  completedCards: number
+}
+
+const LESSON_TO_CATEGORY: Record<number, Category> = {
+  6: '簿記',
+  7: '簿記',
+  8: '簿記',
+  9: '簿記',
+  11: '簿記',
+  12: '簿記',
+  13: '簿記',
+  14: '簿記',
+  15: '簿記',
+  99: '簿記',
+  20: 'ロジカルシンキング',
+  21: 'ロジカルシンキング',
+  22: 'ロジカルシンキング',
+  23: 'ロジカルシンキング',
+  24: 'ロジカルシンキング',
+  30: 'プロジェクトマネジメント',
+  31: 'プロジェクトマネジメント',
+  32: 'プロジェクトマネジメント',
+  33: 'プロジェクトマネジメント',
+  34: 'プロジェクトマネジメント',
+}
+
+const DEFAULT_PROGRESS: Record<Category, CategoryProgress> = {
+  '簿記': { totalCards: 0, completedCards: 0 },
+  'プロジェクトマネジメント': { totalCards: 0, completedCards: 0 },
+  'ロジカルシンキング': { totalCards: 0, completedCards: 0 },
+}
+
+export function loadProgress(): Record<Category, CategoryProgress> {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    if (raw) return JSON.parse(raw)
+  } catch { /* ignore */ }
+  return structuredClone(DEFAULT_PROGRESS)
+}
+
+function saveProgress(progress: Record<Category, CategoryProgress>) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(progress))
+}
+
+export function incrementCompleted(category: Category): void {
+  const progress = loadProgress()
+  if (progress[category]) {
+    progress[category].completedCards++
+    saveProgress(progress)
+  }
+}
+
+export function setTotalCards(category: Category, total: number): void {
+  const progress = loadProgress()
+  if (progress[category]) {
+    progress[category].totalCards = total
+    saveProgress(progress)
+  }
+}
+
+export function getCompletionRate(category: Category): number {
+  const progress = loadProgress()
+  const p = progress[category]
+  if (!p || p.totalCards === 0) return 0
+  return Math.round((p.completedCards / p.totalCards) * 100)
+}
+
+/** Parse a source like "lesson-6" into its lesson ID number */
+function parseLessonId(source: string): number | null {
+  const match = source.match(/^lesson-(\d+)$/)
+  return match ? parseInt(match[1], 10) : null
+}
+
+/** Map a flashcard source to a category */
+export function sourceToCategory(source: string): Category | null {
+  const id = parseLessonId(source)
+  if (id !== null && id in LESSON_TO_CATEGORY) {
+    return LESSON_TO_CATEGORY[id]
+  }
+  return null
+}
+
+/** Read flashcardData to calculate initial totals and completed counts by category */
+export function initFromFlashcards(): void {
+  const cards = loadCards()
+  const counts: Record<Category, { total: number; completed: number }> = {
+    '簿記': { total: 0, completed: 0 },
+    'プロジェクトマネジメント': { total: 0, completed: 0 },
+    'ロジカルシンキング': { total: 0, completed: 0 },
+  }
+
+  for (const card of cards) {
+    const cat = sourceToCategory(card.source)
+    if (cat) {
+      counts[cat].total++
+      if (card.correctCount >= 3) {
+        counts[cat].completed++
+      }
+    }
+  }
+
+  const progress = loadProgress()
+  for (const cat of Object.keys(counts) as Category[]) {
+    progress[cat].totalCards = counts[cat].total
+    progress[cat].completedCards = counts[cat].completed
+  }
+  saveProgress(progress)
+}

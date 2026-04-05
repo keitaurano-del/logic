@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { getDueCards, reviewCard, getCardStats, loadCards, type Flashcard } from './flashcardData'
+import { incrementCompleted, sourceToCategory } from './progressStore'
 import './Flashcards.css'
 
 type Props = { onBack: () => void }
@@ -36,9 +37,17 @@ export default function Flashcards({ onBack }: Props) {
 
   const handleReview = (quality: 'again' | 'good' | 'easy') => {
     const card = dueCards[current]
+    const prevCorrect = card.correctCount
     reviewCard(card.id, quality)
     setSessionTotal((t) => t + 1)
-    if (quality !== 'again') setSessionCorrect((c) => c + 1)
+    if (quality !== 'again') {
+      setSessionCorrect((c) => c + 1)
+      // If the card just reached mastery (correctCount === 3), update progress
+      if (prevCorrect === 2) {
+        const cat = sourceToCategory(card.source)
+        if (cat) incrementCompleted(cat)
+      }
+    }
 
     if (current + 1 >= dueCards.length) {
       setView('done')

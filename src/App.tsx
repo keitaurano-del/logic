@@ -1,30 +1,19 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import RolePlaySystem from './RolePlaySystem'
 import Lesson from './Lesson'
 import MockExam from './MockExam'
 import JournalInput from './JournalInput'
 import Worksheet from './Worksheet'
-import Knowledge from './Knowledge'
 import Profile from './Profile'
 import Flashcards from './Flashcards'
-import Tasks from './Tasks'
 import { allLessons } from './lessonData'
-import Reward from './Reward'
-import { recordCompletion, addStudyTime, getCompletedCount, getStreak, getStudyHours, getXpForKey } from './stats'
+import { recordCompletion, addStudyTime, getCompletedCount, getStreak, getStudyHours } from './stats'
 import { getCardStats } from './flashcardData'
+import { loadProgress, initFromFlashcards } from './progressStore'
 import { loadTheme, applyTheme } from './theme'
 import LessonIcon from './LessonIcon'
 import './App.css'
 
 const lessons = [
-  {
-    id: 3,
-    category: 'ロールプレイ',
-    title: '上司とのレビュー会議',
-    description: '四半期レビューで成果を報告する',
-    progress: 0,
-    action: 'roleplay' as const,
-  },
   {
     id: 6,
     category: '簿記3級',
@@ -187,14 +176,13 @@ const lessons = [
   },
 ]
 
-type Tab = 'home' | 'lessons' | 'roleplay' | 'tasks' | 'knowledge' | 'profile'
+type Tab = 'home' | 'lessons' | 'profile'
 type Screen =
   | { type: 'home' }
   | { type: 'lesson'; lessonId: number }
   | { type: 'mock-exam' }
   | { type: 'journal-input' }
   | { type: 'worksheet' }
-  | { type: 'reward'; xpEarned: number; lessonTitle: string }
   | { type: 'flashcards' }
 
 function App() {
@@ -203,15 +191,20 @@ function App() {
   const [completedCount, setCompletedCount] = useState(getCompletedCount())
   const [streak, setStreak] = useState(getStreak())
   const [studyHours, setStudyHours] = useState(getStudyHours())
+  const [progress, setProgress] = useState(loadProgress())
   const screenEnteredAt = useRef<number>(Date.now())
 
   // Apply saved theme on mount
   useEffect(() => { applyTheme(loadTheme()) }, [])
 
+  // Init progress from flashcards on mount
+  useEffect(() => { initFromFlashcards(); setProgress(loadProgress()) }, [])
+
   const refreshStats = useCallback(() => {
     setCompletedCount(getCompletedCount())
     setStreak(getStreak())
     setStudyHours(getStudyHours())
+    setProgress(loadProgress())
   }, [])
 
   // Track study time when leaving a sub-screen
@@ -231,26 +224,16 @@ function App() {
     }
   }, [screen])
 
-  const handleComplete = useCallback((key: string, title: string) => {
+  const handleComplete = useCallback((key: string, _title: string) => {
     const elapsed = Date.now() - screenEnteredAt.current
     if (elapsed > 5000) addStudyTime(elapsed)
     recordCompletion(key)
-    const xp = getXpForKey(key)
-    setScreen({ type: 'reward', xpEarned: xp, lessonTitle: title })
-  }, [])
+    setScreen({ type: 'home' })
+    refreshStats()
+  }, [refreshStats])
 
   if (screen.type === 'flashcards') {
     return <Flashcards onBack={goHome} />
-  }
-
-  if (screen.type === 'reward') {
-    return (
-      <Reward
-        xpEarned={screen.xpEarned}
-        lessonTitle={screen.lessonTitle}
-        onContinue={() => { setScreen({ type: 'home' }); refreshStats() }}
-      />
-    )
   }
 
   if (screen.type === 'mock-exam') {
@@ -273,7 +256,6 @@ function App() {
   }
 
   const getCatKey = (category: string) => {
-    if (/ロールプレイ/.test(category)) return 'roleplay'
     if (/簿記3級 実践/.test(category)) return 'practice'
     if (/簿記3級/.test(category)) return 'boki3'
     if (/簿記2級/.test(category)) return 'boki2'
@@ -290,8 +272,6 @@ function App() {
       setScreen({ type: 'journal-input' })
     } else if (lesson.action === 'worksheet') {
       setScreen({ type: 'worksheet' })
-    } else if (lesson.action === 'roleplay') {
-      setTab('roleplay')
     } else if (lesson.action === 'lesson' && lesson.id in allLessons) {
       setScreen({ type: 'lesson', lessonId: lesson.id })
     }
@@ -302,7 +282,30 @@ function App() {
       {/* Tab Content */}
       {tab === 'home' && (
         <>
-          {/* Streak Hero (Speak-style) */}
+          {/* Progress Section */}
+          <section className="progress-section">
+            <h3 className="progress-section-title">📊 学習進捗</h3>
+            {(['簿記', 'プロジェクトマネジメント', 'ロジカルシンキング'] as const).map(cat => {
+              const p = progress[cat]
+              const rate = p.totalCards > 0 ? Math.round((p.completedCards / p.totalCards) * 100) : 0
+              return (
+                <div key={cat} className="progress-bar-row" onClick={() => {
+                  setScreen({ type: 'flashcards' })
+                }}>
+                  <div className="progress-bar-header">
+                    <span className="progress-bar-label">{cat}</span>
+                    <span className="progress-bar-stat">{p.completedCards}/{p.totalCards} ({rate}%)</span>
+                  </div>
+                  <div className="progress-bar-track">
+                    <div className="progress-bar-fill" style={{ width: `${rate}%` }} />
+                  </div>
+                  <span className="progress-bar-cta">続きを始める →</span>
+                </div>
+              )
+            })}
+          </section>
+
+          {/* Streak */}
           <section className="hero">
             <div className="hero-content">
               <div className="streak-hero">
@@ -336,54 +339,20 @@ function App() {
             </div>
           </section>
 
-          {/* Flashcards Quick Access */}
+          {/* Today's Recommendation */}
           {(() => {
             const fc = getCardStats()
             return (
               <div className="flashcard-banner" onClick={() => setScreen({ type: 'flashcards' })}>
                 <div className="flashcard-banner-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="14" height="18" rx="2" /><path d="M8 4V2" /><path d="M22 8v12a2 2 0 0 1-2 2" /><path d="M18 2v2" /><rect x="8" y="2" width="14" height="18" rx="2" opacity="0.3" /></svg></div>
                 <div className="flashcard-banner-text">
-                  <strong>フラッシュカード</strong>
+                  <strong>今日のおすすめ</strong>
                   <span>{fc.total === 0 ? 'レッスンを完了するとカードが作られます' : fc.due > 0 ? `${fc.due}枚の復習待ち` : '今日の復習完了！'}</span>
                 </div>
                 <span className="flashcard-banner-arrow">›</span>
               </div>
             )
           })()}
-
-          {/* Lessons */}
-          <section className="section">
-            <div className="section-header">
-              <h3 className="section-title">レッスン</h3>
-            </div>
-
-            <div className="lesson-list">
-              {lessons.map((lesson) => (
-                <div
-                  key={lesson.id}
-                  className={`lesson-card ${lesson.action === 'roleplay' ? 'roleplay' : ''} ${lesson.action ? 'clickable' : ''}`}
-                  data-cat={getCatKey(lesson.category)}
-                  onClick={() => handleCardClick(lesson)}
-                >
-                  <div className="lesson-emoji"><LessonIcon id={lesson.id} action={lesson.action} /></div>
-                  <div className="lesson-info">
-                    <span className="lesson-category">{lesson.category}</span>
-                    <h4 className="lesson-title">{lesson.title}</h4>
-                    <p className="lesson-desc">{lesson.description}</p>
-                    {lesson.progress > 0 && (
-                      <div className="progress-bar">
-                        <div
-                          className="progress-fill"
-                          style={{ width: `${lesson.progress}%` }}
-                        />
-                      </div>
-                    )}
-                  </div>
-                  <div className="lesson-arrow">›</div>
-                </div>
-              ))}
-            </div>
-          </section>
         </>
       )}
 
@@ -420,7 +389,7 @@ function App() {
                 {items.map((lesson) => (
                   <div
                     key={lesson.id}
-                    className={`lesson-card ${lesson.action === 'roleplay' ? 'roleplay' : ''} clickable`}
+                    className="lesson-card clickable"
                     data-cat={getCatKey(lesson.category)}
                     onClick={() => handleCardClick(lesson)}
                   >
@@ -439,18 +408,6 @@ function App() {
         </div>
       )}
 
-      {tab === 'roleplay' && (
-        <RolePlaySystem onBack={() => {
-          const elapsed = Date.now() - screenEnteredAt.current
-          if (elapsed > 5000) addStudyTime(elapsed)
-          setTab('home'); refreshStats()
-        }} />
-      )}
-
-      {tab === 'tasks' && <Tasks />}
-
-      {tab === 'knowledge' && <Knowledge />}
-
       {tab === 'profile' && <Profile />}
 
       {/* Bottom Navigation */}
@@ -467,26 +424,6 @@ function App() {
             <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
           </svg>
           <span>レッスン</span>
-        </button>
-        <button className={`nav-item ${tab === 'roleplay' ? 'active' : ''}`} onClick={() => setTab('roleplay')}>
-          <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-          </svg>
-          <span>ロールプレイ</span>
-        </button>
-        <button className={`nav-item ${tab === 'tasks' ? 'active' : ''}`} onClick={() => setTab('tasks')}>
-          <svg className="nav-icon" viewBox="0 0 24 24" fill={tab === 'tasks' ? 'currentColor' : 'none'} stroke={tab === 'tasks' ? 'none' : 'currentColor'} strokeWidth="2">
-            <path d="M9 11l3 3L22 4" />
-            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
-          </svg>
-          <span>タスク</span>
-        </button>
-        <button className={`nav-item ${tab === 'knowledge' ? 'active' : ''}`} onClick={() => setTab('knowledge')}>
-          <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M9 12h6M9 16h6M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7l-5-5z" />
-            <path d="M13 2v5h5" />
-          </svg>
-          <span>ナレッジ</span>
         </button>
         <button className={`nav-item ${tab === 'profile' ? 'active' : ''}`} onClick={() => { setTab('profile'); refreshStats() }}>
           <svg className="nav-icon" viewBox="0 0 24 24" fill={tab === 'profile' ? 'currentColor' : 'none'} stroke={tab === 'profile' ? 'none' : 'currentColor'} strokeWidth="2">

@@ -1,6 +1,5 @@
 import { useMemo, useState, useEffect } from 'react'
-import { getCompletedLessons, getStreak, getStudyHours, getStudyDates, getTotalStudyDays, getLevelInfo } from './stats'
-import { loadHistory, type RolePlaySession } from './roleplayHistory'
+import { getCompletedLessons, getStreak, getStudyHours, getStudyDates, getTotalStudyDays } from './stats'
 import { loginWithGoogle, logout, onAuthChange, type User } from './firebase'
 import './Profile.css'
 
@@ -54,85 +53,12 @@ function StudyCalendar({ dates }: { dates: string[] }) {
   )
 }
 
-function RolePlayHistoryCard({ session }: { session: RolePlaySession }) {
-  const [expanded, setExpanded] = useState(false)
-  const pct = session.maxScore > 0 ? Math.round((session.totalScore / session.maxScore) * 100) : 0
-  return (
-    <div className={`pf-rp-card ${expanded ? 'expanded' : ''}`}>
-      <div className="pf-rp-top" onClick={() => setExpanded(!expanded)} style={{ cursor: 'pointer' }}>
-        <span className="pf-rp-title">{session.scenarioTitle}</span>
-        <span className="pf-rp-date">{session.date}</span>
-      </div>
-      <div className="pf-rp-score-row">
-        <div className="pf-rp-bar">
-          <div className="pf-rp-bar-fill" style={{ width: `${pct}%` }} />
-        </div>
-        <span className="pf-rp-score">{session.totalScore}/{session.maxScore}</span>
-      </div>
-
-      {expanded && (
-        <div className="pf-rp-detail">
-          {/* サマリー */}
-          {session.sessionSummary && (
-            <div className="pf-rp-summary">
-              <p className="pf-rp-summary-text">{session.sessionSummary.summary}</p>
-              {session.sessionSummary.goodPoints.length > 0 && (
-                <div className="pf-rp-summary-group">
-                  <span className="pf-rp-summary-label good">Good</span>
-                  <ul>{session.sessionSummary.goodPoints.map((p, i) => <li key={i}>{p}</li>)}</ul>
-                </div>
-              )}
-              {session.sessionSummary.improvements.length > 0 && (
-                <div className="pf-rp-summary-group">
-                  <span className="pf-rp-summary-label improve">Next</span>
-                  <ul>{session.sessionSummary.improvements.map((p, i) => <li key={i}>{p}</li>)}</ul>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* 採点詳細 */}
-          <div className="pf-rp-scores">
-            {session.scores.map((s) => (
-              <div key={s.name} className="pf-rp-score-item">
-                <span className="pf-rp-score-name">{s.name}</span>
-                <span className="pf-rp-score-val">{s.score}/{s.maxScore}</span>
-              </div>
-            ))}
-          </div>
-          {session.overall && <p className="pf-rp-overall">{session.overall}</p>}
-
-          {/* 会話ログ */}
-          <details className="pf-rp-log">
-            <summary className="pf-rp-log-toggle">会話ログを見る</summary>
-            <div className="pf-rp-messages">
-              {session.messages.map((m, i) => (
-                <div key={i} className={`pf-rp-msg ${m.role}`}>
-                  <span className="pf-rp-msg-role">{m.role === 'user' ? 'あなた' : '相手'}</span>
-                  <p className="pf-rp-msg-text">{m.content}</p>
-                </div>
-              ))}
-            </div>
-          </details>
-        </div>
-      )}
-    </div>
-  )
-}
-
 export default function Profile() {
   const completedLessons = getCompletedLessons()
   const streak = getStreak()
   const studyHours = getStudyHours()
   const studyDates = getStudyDates()
   const totalDays = getTotalStudyDays()
-  const rpHistory = loadHistory()
-  const rpRecent = rpHistory.slice(-5).reverse()
-  const { level, title, nextXp, xp, progress } = getLevelInfo(rpHistory.length)
-
-  const bestRpScore = rpHistory.length > 0
-    ? Math.max(...rpHistory.map((s) => s.maxScore > 0 ? Math.round((s.totalScore / s.maxScore) * 100) : 0))
-    : 0
 
   const [showSettings, setShowSettings] = useState(false)
   const [devMode, setDevMode] = useState(false)
@@ -285,14 +211,6 @@ export default function Profile() {
           </div>
         </div>
         <h2 className="pf-name">{user?.displayName || 'K'}</h2>
-        <div className="pf-level-badge">
-          <span className="pf-level-num">Lv.{level}</span>
-          <span className="pf-level-title">{title}</span>
-        </div>
-        <div className="pf-xp-bar">
-          <div className="pf-xp-fill" style={{ width: `${progress}%` }} />
-        </div>
-        <p className="pf-xp-label">{xp} XP / 次のレベルまで {nextXp - xp} XP</p>
       </div>
 
       {/* Stats Grid */}
@@ -338,36 +256,11 @@ export default function Profile() {
         </div>
       )}
 
-      {/* Roleplay Stats */}
-      {rpHistory.length > 0 && (
-        <div className="pf-section">
-          <div className="pf-section-header">
-            <h3 className="pf-section-title">ロールプレイ</h3>
-            <span className="pf-section-count">{rpHistory.length}回</span>
-          </div>
-          <div className="pf-rp-stats">
-            <div className="pf-rp-stat">
-              <span className="pf-rp-stat-value">{rpHistory.length}</span>
-              <span className="pf-rp-stat-label">総セッション</span>
-            </div>
-            <div className="pf-rp-stat">
-              <span className="pf-rp-stat-value">{bestRpScore}%</span>
-              <span className="pf-rp-stat-label">最高スコア</span>
-            </div>
-          </div>
-          <div className="pf-rp-list">
-            {rpRecent.map((s) => (
-              <RolePlayHistoryCard key={s.id} session={s} />
-            ))}
-          </div>
-        </div>
-      )}
-
       {/* Empty state */}
-      {completedLessons.length === 0 && rpHistory.length === 0 && (
+      {completedLessons.length === 0 && (
         <div className="pf-empty">
           <span style={{ fontSize: 56 }}>📚</span>
-          <p>レッスンやロールプレイを始めると<br />ここに記録が表示されます</p>
+          <p>レッスンを始めると<br />ここに記録が表示されます</p>
         </div>
       )}
 
