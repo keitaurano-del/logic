@@ -1,17 +1,22 @@
+import { useState } from 'react'
 import { getRoadmap } from './roadmapData'
-import { loadRoadmapState, getProgress, isStepComplete, getCurrentStep } from './roadmapStore'
+import { loadRoadmapState, getProgress, isStepComplete, getCurrentStep, removeGoal } from './roadmapStore'
+import ConfirmDialog from './ConfirmDialog'
 import './Roadmap.css'
 
 type Props = {
+  goalId: string
   onBack: () => void
   onStartLesson: (lessonId: number) => void
 }
 
-export default function Roadmap({ onBack, onStartLesson }: Props) {
+export default function Roadmap({ goalId, onBack, onStartLesson }: Props) {
+  const [showConfirm, setShowConfirm] = useState(false)
   const state = loadRoadmapState()
-  const roadmap = state.goalId ? getRoadmap(state.goalId) : null
-  const progress = getProgress()
-  const currentStepId = getCurrentStep()
+  const goalEntry = state.goals.find(g => g.goalId === goalId)
+  const roadmap = getRoadmap(goalId)
+  const progress = getProgress(goalId)
+  const currentStepId = getCurrentStep(goalId)
 
   if (!roadmap) {
     return (
@@ -26,6 +31,18 @@ export default function Roadmap({ onBack, onStartLesson }: Props) {
 
   return (
     <div className="roadmap-screen">
+      {showConfirm && (
+        <ConfirmDialog
+          title="目標を削除"
+          message={`「${roadmap.title}」の目標を削除しますか？進捗データも失われます。`}
+          confirmLabel="削除する"
+          cancelLabel="キャンセル"
+          danger
+          onConfirm={() => { removeGoal(goalId); onBack() }}
+          onCancel={() => setShowConfirm(false)}
+        />
+      )}
+
       {/* Header */}
       <div className="roadmap-header">
         <button className="roadmap-back-btn" onClick={onBack}>← 戻る</button>
@@ -36,6 +53,7 @@ export default function Roadmap({ onBack, onStartLesson }: Props) {
           </h2>
           <p className="roadmap-subtitle">{roadmap.subtitle}</p>
         </div>
+        <button className="roadmap-back-btn" onClick={() => setShowConfirm(true)} style={{ color: '#EF4444', fontSize: 12 }}>この目標をやめる</button>
       </div>
 
       {/* Progress bar */}
@@ -55,9 +73,9 @@ export default function Roadmap({ onBack, onStartLesson }: Props) {
             }}
           />
         </div>
-        {state.targetDate && (
+        {goalEntry?.targetDate && (
           <span className="roadmap-target-date">
-            目標: {state.targetDate} / {state.dailyMinutes}分/日
+            目標: {goalEntry.targetDate} / {goalEntry.dailyMinutes}分/日
           </span>
         )}
       </div>
@@ -65,7 +83,7 @@ export default function Roadmap({ onBack, onStartLesson }: Props) {
       {/* Step list - vertical flow */}
       <div className="roadmap-steps">
         {roadmap.steps.map((step, idx) => {
-          const done = isStepComplete(step.lessonId)
+          const done = isStepComplete(goalId, step.lessonId)
           const isCurrent = step.lessonId === currentStepId
           const isLocked = !done && !isCurrent
 

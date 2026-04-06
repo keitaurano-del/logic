@@ -1,0 +1,10 @@
+.cd-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px;backdrop-filter:blur(4px)}
+.cd-card{background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--radius-xl);padding:24px;max-width:340px;width:100%;text-align:center}
+.cd-title{font-size:16px;font-weight:700;color:var(--text-primary);margin-bottom:8px}
+.cd-msg{font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:20px}
+.cd-actions{display:flex;gap:10px}
+.cd-btn{flex:1;padding:10px;border-radius:var(--radius-md);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;border:none;transition:opacity 0.2s}
+.cd-btn:active{opacity:0.7}
+.cd-cancel{background:var(--bg-card);color:var(--text-secondary);border:1px solid var(--border)}
+.cd-confirm{background:var(--accent);color:#fff}
+.cd-danger{background:#EF4444;color:#fff}

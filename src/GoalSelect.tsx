@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { roadmaps } from './roadmapData'
-import { selectGoal, setTargetDate, setDailyMinutes, completeSetup } from './roadmapStore'
+import { selectGoal, setTargetDate, setDailyMinutes, completeSetup, getActiveGoalIds } from './roadmapStore'
 
 type Props = {
   onComplete: () => void
@@ -21,38 +21,51 @@ export default function GoalSelect({ onComplete }: Props) {
   }
 
   const handleFinish = () => {
-    if (date) setTargetDate(date)
-    setDailyMinutes(minutes)
+    if (selectedGoalId) {
+      if (date) setTargetDate(selectedGoalId, date)
+      setDailyMinutes(selectedGoalId, minutes)
+    }
     completeSetup()
     onComplete()
   }
 
   // ---- Screen A: Goal cards ----
   if (screen === 'goals') {
+    const activeIds = getActiveGoalIds()
+    const available = roadmaps.filter(r => !activeIds.includes(r.id))
+
     return (
       <div className="goal-select">
         <div className="goal-select-header">
           <h2 className="goal-select-title">目標を選ぼう</h2>
           <p className="goal-select-subtitle">どのスキルを伸ばしたいですか？</p>
         </div>
-        <div className="goal-cards">
-          {roadmaps.map((r) => (
-            <button
-              key={r.id}
-              className="goal-card"
-              style={{ '--goal-color': r.color } as React.CSSProperties}
-              onClick={() => handleGoalPick(r.id)}
-            >
-              <span className="goal-card-emoji">{r.emoji}</span>
-              <div className="goal-card-text">
-                <strong>{r.title}</strong>
-                <span>{r.subtitle}</span>
-              </div>
-              <span className="goal-card-steps">{r.steps.length}ステップ</span>
-              <span className="goal-card-arrow">›</span>
-            </button>
-          ))}
-        </div>
+        {available.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-secondary)' }}>
+            <p style={{ fontSize: 48, marginBottom: 12 }}>🎯</p>
+            <p style={{ fontSize: 14 }}>すべての目標が追加済みです</p>
+            <button style={{ marginTop: 16, padding: '10px 20px', borderRadius: 'var(--radius-md)', background: 'var(--bg-card)', color: 'var(--text-primary)', border: '1px solid var(--border)', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }} onClick={onComplete}>戻る</button>
+          </div>
+        ) : (
+          <div className="goal-cards">
+            {available.map((r) => (
+              <button
+                key={r.id}
+                className="goal-card"
+                style={{ '--goal-color': r.color } as React.CSSProperties}
+                onClick={() => handleGoalPick(r.id)}
+              >
+                <span className="goal-card-emoji">{r.emoji}</span>
+                <div className="goal-card-text">
+                  <strong>{r.title}</strong>
+                  <span>{r.subtitle}</span>
+                </div>
+                <span className="goal-card-steps">{r.steps.length}ステップ</span>
+                <span className="goal-card-arrow">›</span>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     )
   }

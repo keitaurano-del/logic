@@ -1,31 +1,42 @@
-// ===== Roadmap Store =====
-// Persists user's selected goal, target date, pace, and step completion.
-
 import { getRoadmap } from './roadmapData'
 
 const STORAGE_KEY = 'logic-roadmap'
 
-export type RoadmapState = {
-  goalId: string | null
-  targetDate: string | null   // ISO date YYYY-MM-DD
+export type GoalEntry = {
+  goalId: string
+  targetDate: string | null
   dailyMinutes: number
-  completedSteps: number[]    // lessonIds that are done
+  completedSteps: number[]
+  createdAt: string
+}
+
+export type RoadmapState = {
+  goals: GoalEntry[]
   setupDone: boolean
 }
 
-const DEFAULT_STATE: RoadmapState = {
-  goalId: null,
-  targetDate: null,
-  dailyMinutes: 15,
-  completedSteps: [],
-  setupDone: false,
-}
+const DEFAULT_STATE: RoadmapState = { goals: [], setupDone: false }
 
 function load(): RoadmapState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (raw) {
       const parsed = JSON.parse(raw)
+      // Migrate old single-goal format
+      if (parsed.goalId && !parsed.goals) {
+        const migrated: RoadmapState = {
+          goals: [{
+            goalId: parsed.goalId,
+            targetDate: parsed.targetDate || null,
+            dailyMinutes: parsed.dailyMinutes || 15,
+            completedSteps: parsed.completedSteps || [],
+            createdAt: new Date().toISOString()
+          }],
+          setupDone: parsed.setupDone ?? true
+        }
+        save(migrated)
+        return migrated
+      }
       return { ...DEFAULT_STATE, ...parsed }
     }
   } catch { /* ignore */ }
@@ -36,39 +47,51 @@ function save(state: RoadmapState) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
 }
 
-// ---- Public API ----
-
-export function loadRoadmapState(): RoadmapState {
-  return load()
+function findGoal(state: RoadmapState, goalId: string): GoalEntry | undefined {
+  return state.goals.find(g => g.goalId === goalId)
 }
+
+export function loadRoadmapState(): RoadmapState { return load() }
 
 export function selectGoal(goalId: string): RoadmapState {
   const state = load()
-  state.goalId = goalId
-  state.completedSteps = []
-  state.setupDone = false
+  if (state.goals.some(g => g.goalId === goalId)) return state
+  state.goals.push({ goalId, targetDate: null, dailyMinutes: 15, completedSteps: [], createdAt: new Date().toISOString() })
+  state.setupDone = true
   save(state)
   return state
 }
 
-export function setTargetDate(date: string): RoadmapState {
+export function removeGoal(goalId: string): RoadmapState {
   const state = load()
-  state.targetDate = date
+  state.goals = state.goals.filter(g => g.goalId !== goalId)
   save(state)
   return state
 }
 
-export function setDailyMinutes(minutes: number): RoadmapState {
+export function setTargetDate(goalId: string, date: string): RoadmapState {
   const state = load()
-  state.dailyMinutes = minutes
-  save(state)
+  const goal = findGoal(state, goalId)
+  if (goal) { goal.targetDate = date; save(state) }
+  return state
+}
+
+export function setDailyMinutes(goalId: string, minutes: number): RoadmapState {
+  const state = load()
+  const goal = findGoal(state, goalId)
+  if (goal) { goal.dailyMinutes = minutes; save(state) }
   return state
 }
 
 export function completeStep(lessonId: number): RoadmapState {
   const state = load()
-  if (!state.completedSteps.includes(lessonId)) {
-    state.completedSteps.push(lessonId)
+  for (const goal of state.goals) {
+    const rm = getRoadmap(goal.goalId)
+    if (rm && rm.steps.some(s => s.lessonId === lessonId)) {
+      if (!goal.completedSteps.includes(lessonId)) {
+        goal.completedSteps.push(lessonId)
+      }
+    }
   }
   save(state)
   return state
@@ -81,38 +104,39 @@ export function completeSetup(): RoadmapState {
   return state
 }
 
-/** Returns the first incomplete step's lessonId, or null if all done */
-export function getCurrentStep(): number | null {
+export function getCurrentStep(goalId: string): number | null {
   const state = load()
-  if (!state.goalId) return null
-  const roadmap = getRoadmap(state.goalId)
-  if (!roadmap) return null
-  for (const step of roadmap.steps) {
-    if (!state.completedSteps.includes(step.lessonId)) {
-      return step.lessonId
-    }
+  const goal = findGoal(state, goalId)
+  if (!goal) return null
+  const rm = getRoadmap(goalId)
+  if (!rm) return null
+  for (const step of rm.steps) {
+    if (!goal.completedSteps.includes(step.lessonId)) return step.lessonId
   }
   return null
 }
 
-/** Returns { completed, total, percent } */
-export function getProgress(): { completed: number; total: number; percent: number } {
+export function getProgress(goalId: string): { completed: number; total: number; percent: number } {
   const state = load()
-  if (!state.goalId) return { completed: 0, total: 0, percent: 0 }
-  const roadmap = getRoadmap(state.goalId)
-  if (!roadmap) return { completed: 0, total: 0, percent: 0 }
-  const total = roadmap.steps.length
-  const completed = roadmap.steps.filter((s) => state.completedSteps.includes(s.lessonId)).length
-  const percent = total > 0 ? Math.round((completed / total) * 100) : 0
-  return { completed, total, percent }
+  const goal = findGoal(state, goalId)
+  if (!goal) return { completed: 0, total: 0, percent: 0 }
+  const rm = getRoadmap(goalId)
+  if (!rm) return { completed: 0, total: 0, percent: 0 }
+  const total = rm.steps.length
+  const completed = rm.steps.filter(s => goal.completedSteps.includes(s.lessonId)).length
+  return { completed, total, percent: total > 0 ? Math.round((completed / total) * 100) : 0 }
 }
 
-export function isStepComplete(lessonId: number): boolean {
+export function isStepComplete(goalId: string, lessonId: number): boolean {
   const state = load()
-  return state.completedSteps.includes(lessonId)
+  const goal = findGoal(state, goalId)
+  return goal ? goal.completedSteps.includes(lessonId) : false
 }
 
 export function needsOnboarding(): boolean {
-  const state = load()
-  return !state.setupDone || !state.goalId
+  return load().goals.length === 0
+}
+
+export function getActiveGoalIds(): string[] {
+  return load().goals.map(g => g.goalId)
 }

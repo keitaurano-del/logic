@@ -53,7 +53,7 @@ function StudyCalendar({ dates }: { dates: string[] }) {
   )
 }
 
-export default function Profile() {
+export default function Profile({ onFeedback }: { onFeedback?: () => void }) {
   const completedLessons = getCompletedLessons()
   const streak = getStreak()
   const studyHours = getStudyHours()
@@ -261,6 +261,32 @@ export default function Profile() {
         <div className="pf-empty">
           <span style={{ fontSize: 56 }}>📚</span>
           <p>レッスンを始めると<br />ここに記録が表示されます</p>
+        </div>
+      )}
+
+      {onFeedback && (
+        <div className="pf-section">
+          <button
+            onClick={onFeedback}
+            style={{
+              width: '100%',
+              padding: '14px',
+              borderRadius: 'var(--radius-md)',
+              background: 'var(--bg-card)',
+              color: 'var(--text-primary)',
+              border: '1px solid var(--border)',
+              fontSize: 14,
+              fontWeight: 600,
+              cursor: 'pointer',
+              fontFamily: 'inherit',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+            }}
+          >
+            💡 ご要望・フィードバック
+          </button>
         </div>
       )}
 
