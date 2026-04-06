@@ -1064,3 +1064,29 @@
 }
 .pf-deviation-card:active { opacity: 0.7; }
 .pf-setting-item { cursor: pointer; }
+
+/* ===== Wide Desktop (1280px+) — sidebar offset ===== */
+@media (min-width: 1280px) {
+  .profile {
+    padding-left: 220px;
+    max-width: none;
+    margin: 0;
+    min-height: 100vh;
+  }
+  .pf-hero {
+    padding: 32px 32px 24px;
+  }
+  .pf-stats-grid {
+    padding: 0 32px;
+    max-width: 800px;
+  }
+  .pf-section {
+    padding: 0 32px;
+    max-width: 800px;
+  }
+  .pf-plan-card,
+  .pf-deviation-card {
+    margin: 16px 32px;
+    max-width: 800px;
+  }
+}

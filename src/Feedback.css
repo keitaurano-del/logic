@@ -18,3 +18,13 @@
 .fb-success h3{font-size:18px;font-weight:700;color:var(--text-primary)}
 .fb-success p{font-size:13px;color:var(--text-secondary);line-height:1.6;max-width:280px}
 .fb-done-btn{margin-top:12px;padding:10px 24px;border-radius:var(--radius-md);background:var(--bg-card);color:var(--text-primary);border:1px solid var(--border);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+
+/* ===== Wide Desktop (1280px+) — sidebar offset ===== */
+@media (min-width: 1280px) {
+  .fb-screen {
+    padding-left: 220px;
+    max-width: none;
+    margin: 0;
+    min-height: 100vh;
+  }
+}

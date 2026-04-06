@@ -46,10 +46,18 @@
 
 /* ===== Wide Desktop (1280px+) ===== */
 @media (min-width: 1280px) {
+  .ws-screen {
+    padding-left: 220px;
+    max-width: none;
+    margin: 0;
+  }
+  .ws-header {
+    padding: 14px 32px;
+  }
   .ws-content {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 3rem 4rem;
-    gap: 2rem;
+    max-width: 1100px;
+    margin: 0;
+    padding: 24px 32px;
+    gap: 16px;
   }
 }

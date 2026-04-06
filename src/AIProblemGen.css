@@ -249,3 +249,13 @@
 .aip-delete-btn:hover {
   color: var(--danger);
 }
+
+/* ===== Wide Desktop (1280px+) — sidebar offset ===== */
+@media (min-width: 1280px) {
+  .aip-screen {
+    padding-left: 220px;
+    max-width: none;
+    margin: 0;
+    min-height: 100vh;
+  }
+}

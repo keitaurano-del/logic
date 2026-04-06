@@ -814,60 +814,135 @@
   vertical-align: middle;
 }
 
-/* ===== Wide Desktop (1280px+) — Home in wide grid ===== */
+/* ===== Wide Desktop (1280px+) ===== */
+/* Strategy:
+ * - Convert bottom-nav to a fixed left sidebar (200px wide)
+ * - Main content shifts right by 200px
+ * - Tighter vertical padding everywhere to fit viewport
+ * - Compact card grid on home (no scroll for above-the-fold content)
+ * - Quiz/lesson screens: 2-column with viewport-aware sizing
+ */
 @media (min-width: 1280px) {
-  /* Lesson cards: 3 columns */
+  /* === Sidebar nav === */
+  .bottom-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: auto;
+    bottom: 0;
+    width: 220px;
+    height: 100vh;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    padding: 28px 14px;
+    padding-bottom: 28px;
+    gap: 6px;
+    background: var(--bg-card);
+    border-top: none;
+    border-right: 1px solid var(--border);
+    box-shadow: 2px 0 16px rgba(180, 150, 100, 0.08);
+    transform: none;
+    max-width: none;
+    z-index: 200;
+  }
+
+  .nav-item {
+    flex: 0 0 auto;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 16px;
+    border-radius: var(--radius-md);
+    width: 100%;
+    font-size: 14px;
+    text-shadow: none;
+  }
+
+  .nav-item .nav-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  .nav-item.active {
+    background: var(--accent-soft);
+    color: var(--accent-dark);
+    text-shadow: none;
+  }
+
+  .nav-item.active::before {
+    display: none;
+  }
+
+  /* Add a brand title above nav items */
+  .bottom-nav::before {
+    content: 'Logic';
+    display: block;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent-dark);
+    padding: 0 16px 24px;
+    letter-spacing: -0.02em;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 14px;
+  }
+
+  /* === Main app shifts right, no max-width === */
+  .app {
+    padding-left: 220px;
+    padding-bottom: 0;
+    max-width: none;
+    width: 100%;
+  }
+
+  /* === Home: compact tight grid === */
+  .section {
+    padding: 0 32px;
+    max-width: 1100px;
+    margin: 0;
+  }
+
+  .section-header {
+    padding: 8px 0;
+    margin-bottom: 8px;
+  }
+
+  /* Lesson cards 3-col compact */
   .lesson-list {
     grid-template-columns: repeat(3, 1fr) !important;
-    gap: 1.5rem !important;
+    gap: 14px !important;
   }
 
-  /* Section container */
-  .section {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 4rem;
-  }
-  .section-header {
-    padding: 0;
-    margin-bottom: 1rem;
+  .lesson-card {
+    padding: 14px;
   }
 
-  /* Hero (streak) */
+  /* Hero compact */
   .hero {
-    max-width: 1400px;
-    margin: 0 auto 24px;
-    padding: 32px 4rem;
+    margin: 24px 32px 16px;
+    padding: 24px 32px;
+    max-width: 1100px;
   }
+
   .hero-content {
     max-width: none;
   }
 
-  /* Daily problem card */
-  .daily-card {
-    max-width: 1400px;
-    margin: 0 auto 16px;
-    padding: 24px 4rem;
-  }
-
-  /* AI generator card */
-  .ai-gen-card {
-    max-width: 1400px;
-    margin: 0 auto 16px;
-    padding: 24px 4rem;
-  }
-
-  /* Flashcard banner */
+  /* Daily / AI / flashcard cards compact, side by side */
+  .daily-card,
+  .ai-gen-card,
   .flashcard-banner {
-    max-width: 1400px;
-    margin: 0 auto 24px !important;
-    padding: 24px 4rem !important;
+    margin: 0 32px 14px !important;
+    padding: 18px 22px !important;
+    max-width: 1100px;
   }
 
-  /* Lessons tab content */
+  /* Lessons tab */
   .lessons-tab {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 4rem;
+    padding: 24px 32px;
+    max-width: 1100px;
   }
 }
