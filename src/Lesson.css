@@ -273,3 +273,97 @@
   border-color: var(--danger);
   color: var(--danger);
 }
+
+/* ===== Wide Desktop (1280px+) — 2-column layout ===== */
+@media (min-width: 1280px) {
+  .ls-content {
+    padding: 3rem 4rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  /* Quiz mode: left = question, right = options → feedback → next button */
+  .ls-quiz {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 3rem;
+    row-gap: 1.5rem;
+    align-items: start;
+  }
+  .ls-quiz-header {
+    grid-column: 1;
+    grid-row: 1 / span 4;
+    position: sticky;
+    top: 100px;
+    margin-bottom: 0;
+  }
+  .ls-quiz-header h3 {
+    font-size: 22px;
+    line-height: 1.6;
+  }
+  .ls-options {
+    grid-column: 2;
+    grid-row: 1;
+    margin-bottom: 0;
+  }
+  .ls-feedback {
+    grid-column: 2;
+    grid-row: 2;
+    margin-bottom: 0;
+  }
+  .ls-quiz .ls-next-btn {
+    grid-column: 2;
+    grid-row: 3;
+    margin-top: 0;
+  }
+  .ls-report-btn {
+    grid-column: 2;
+    grid-row: 4;
+    margin: 0;
+    align-self: start;
+  }
+
+  /* Explain mode: left = title (sticky), right = body */
+  .ls-explain {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    column-gap: 3rem;
+    row-gap: 1.5rem;
+    align-items: start;
+  }
+  .ls-explain-header {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    position: sticky;
+    top: 100px;
+    margin-bottom: 0;
+  }
+  .ls-explain-header h3 {
+    font-size: 22px;
+  }
+  .ls-explain-body {
+    grid-column: 2;
+    grid-row: 1;
+    margin-bottom: 0;
+  }
+  .ls-explain-body p {
+    font-size: 16px;
+  }
+  .ls-explain .ls-next-btn {
+    grid-column: 2;
+    grid-row: 2;
+    width: auto;
+    justify-self: stretch;
+  }
+
+  /* Complete screen — center vertically with more breathing room */
+  .ls-complete {
+    padding: 4rem 2rem;
+  }
+  .ls-complete h2 {
+    font-size: 32px;
+  }
+  .ls-score {
+    font-size: 48px;
+  }
+}

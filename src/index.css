@@ -149,3 +149,12 @@ input, textarea, select { -webkit-tap-highlight-color: transparent; }
     margin: 0 auto;
   }
 }
+
+/* ===== Wide Desktop (1280px+) — 2-column layouts for PC ===== */
+@media (min-width: 1280px) {
+  :root {
+    --content-width: 1400px;
+    --content-padding: 4rem;
+    --grid-gap: 3rem;
+  }
+}

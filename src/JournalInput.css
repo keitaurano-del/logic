@@ -65,3 +65,14 @@
 .ji-score-fill { height: 100%; background: linear-gradient(90deg, var(--success), #06B6D4); border-radius: 3px; }
 .ji-msg { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
 .ji-done-btn { padding: 16px 48px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-md); font-size: 16px; font-weight: 800; cursor: pointer; font-family: var(--sans); }
+
+/* ===== Wide Desktop (1280px+) ===== */
+@media (min-width: 1280px) {
+  .ji-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 3rem 4rem;
+    gap: 2rem;
+  }
+  .ji-q { font-size: 18px; line-height: 1.7; }
+}

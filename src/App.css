@@ -813,3 +813,61 @@
   letter-spacing: 0.1em;
   vertical-align: middle;
 }
+
+/* ===== Wide Desktop (1280px+) — Home in wide grid ===== */
+@media (min-width: 1280px) {
+  /* Lesson cards: 3 columns */
+  .lesson-list {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 1.5rem !important;
+  }
+
+  /* Section container */
+  .section {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 4rem;
+  }
+  .section-header {
+    padding: 0;
+    margin-bottom: 1rem;
+  }
+
+  /* Hero (streak) */
+  .hero {
+    max-width: 1400px;
+    margin: 0 auto 24px;
+    padding: 32px 4rem;
+  }
+  .hero-content {
+    max-width: none;
+  }
+
+  /* Daily problem card */
+  .daily-card {
+    max-width: 1400px;
+    margin: 0 auto 16px;
+    padding: 24px 4rem;
+  }
+
+  /* AI generator card */
+  .ai-gen-card {
+    max-width: 1400px;
+    margin: 0 auto 16px;
+    padding: 24px 4rem;
+  }
+
+  /* Flashcard banner */
+  .flashcard-banner {
+    max-width: 1400px;
+    margin: 0 auto 24px !important;
+    padding: 24px 4rem !important;
+  }
+
+  /* Lessons tab content */
+  .lessons-tab {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 4rem;
+  }
+}
