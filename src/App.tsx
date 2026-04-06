@@ -579,13 +579,16 @@ function App() {
           </div>
 
           {/* Document Tray */}
+          {(() => {
+            const visible = lessons.filter(l => devMode || (!l.category.includes('簿記') && !l.category.includes('プロジェクト') && !l.category.includes('模擬試験')))
+            return (
           <section className="section">
             <div className="section-header">
               <h3 className="section-title">📁 書類トレイ</h3>
-              <span className="section-count">{lessons.length}</span>
+              <span className="section-count">{visible.length}</span>
             </div>
             <div className="lesson-list">
-              {lessons.slice(0, 6).map((lesson) => (
+              {visible.slice(0, 6).map((lesson) => (
                 <div
                   key={lesson.id}
                   className="lesson-card clickable"
@@ -603,6 +606,8 @@ function App() {
               ))}
             </div>
           </section>
+            )
+          })()}
         </>
       )}
 

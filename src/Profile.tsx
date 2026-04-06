@@ -1,98 +1,10 @@
 import { useMemo, useState, useEffect } from 'react'
-import { getCompletedLessons, getStreak, getStudyHours, getStudyDates, getTotalStudyDays } from './stats'
+import { getCompletedLessons, getStreak, getStudyHours, getTotalStudyDays } from './stats'
 import { loginWithGoogle, logout, onAuthChange, type User } from './firebase'
 import { loadGuestUser, updateGuestId } from './guestUser'
 import { isDevMode, setDevMode as persistDevMode } from './devMode'
 import { getPlanLabel } from './subscription'
 import './Profile.css'
-
-// 直近12週の学習カレンダー
-function StudyCalendar({ dates }: { dates: string[] }) {
-  const dateSet = useMemo(() => new Set(dates), [dates])
-  const weeks = useMemo(() => {
-    const result: { date: string; active: boolean; isToday: boolean; isFuture: boolean; day: number; month: number; dayOfMonth: number }[][] = []
-    const today = new Date()
-    const todayKey = today.toISOString().slice(0, 10)
-    // Start from 11 weeks ago, aligned to Sunday
-    const start = new Date(today)
-    start.setDate(start.getDate() - 83 - start.getDay())
-
-    let week: { date: string; active: boolean; isToday: boolean; isFuture: boolean; day: number; month: number; dayOfMonth: number }[] = []
-    for (let i = 0; i <= 83 + today.getDay(); i++) {
-      const d = new Date(start)
-      d.setDate(d.getDate() + i)
-      const key = d.toISOString().slice(0, 10)
-      const isFuture = d > today
-      week.push({
-        date: key,
-        active: !isFuture && dateSet.has(key),
-        isToday: key === todayKey,
-        isFuture,
-        day: d.getDay(),
-        month: d.getMonth() + 1,
-        dayOfMonth: d.getDate(),
-      })
-      if (week.length === 7) {
-        result.push(week)
-        week = []
-      }
-    }
-    if (week.length > 0) result.push(week)
-    return result
-  }, [dateSet])
-
-  // Month labels above each column (show only when month changes)
-  const monthLabels = useMemo(() => {
-    const labels: (number | null)[] = []
-    let prev = 0
-    weeks.forEach(week => {
-      const firstDay = week[0]
-      if (firstDay && firstDay.month !== prev) {
-        labels.push(firstDay.month)
-        prev = firstDay.month
-      } else {
-        labels.push(null)
-      }
-    })
-    return labels
-  }, [weeks])
-
-  return (
-    <div className="pf-calendar">
-      <div className="pf-cal-months">
-        <span className="pf-cal-day-spacer" />
-        {monthLabels.map((m, i) => (
-          <span key={i} className="pf-cal-month">{m ? `${m}月` : ''}</span>
-        ))}
-      </div>
-      <div className="pf-cal-content">
-        <div className="pf-cal-day-labels">
-          {['日', '月', '火', '水', '木', '金', '土'].map((l, i) => (
-            <span key={i} className="pf-cal-day-label">{l}</span>
-          ))}
-        </div>
-        <div className="pf-cal-grid">
-          {weeks.map((week, wi) => (
-            <div key={wi} className="pf-cal-week">
-              {week.map((d) => (
-                <div
-                  key={d.date}
-                  className={`pf-cal-cell ${d.active ? 'active' : ''} ${d.isToday ? 'today' : ''} ${d.isFuture ? 'future' : ''}`}
-                  title={`${d.month}/${d.dayOfMonth}${d.active ? ' ✓ 学習しました' : d.isFuture ? '' : ' 未学習'}`}
-                />
-              ))}
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className="pf-cal-legend">
-        <span className="pf-cal-legend-item"><span className="pf-cal-legend-box none" /> 未学習</span>
-        <span className="pf-cal-legend-item"><span className="pf-cal-legend-box active" /> 学習済み</span>
-        <span className="pf-cal-legend-item"><span className="pf-cal-legend-box today" /> 今日</span>
-      </div>
-    </div>
-  )
-}
 
 type ProfileProps = {
   onFeedback?: () => void
@@ -104,7 +16,6 @@ export default function Profile({ onFeedback, onPricing, onDeviation }: ProfileP
   const completedLessons = getCompletedLessons()
   const streak = getStreak()
   const studyHours = getStudyHours()
-  const studyDates = getStudyDates()
   const totalDays = getTotalStudyDays()
 
   const [showSettings, setShowSettings] = useState(false)
@@ -317,13 +228,6 @@ export default function Profile({ onFeedback, onPricing, onDeviation }: ProfileP
         </div>
       </div>
 
-      {/* Study Calendar */}
-      <div className="pf-section">
-        <h3 className="pf-section-title">学習カレンダー</h3>
-        <div className="pf-section-card">
-          <StudyCalendar dates={studyDates} />
-        </div>
-      </div>
 
       {/* Completed Lessons */}
       {completedLessons.length > 0 && (
