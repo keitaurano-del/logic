@@ -13,6 +13,7 @@ import Pricing from './Pricing'
 import DeviationScore from './DeviationScore'
 import Roleplay from './Roleplay'
 import RoleplayChat from './RoleplayChat'
+import CoffeeBreak from './CoffeeBreak'
 import { getAIProblem, type AIProblemSet } from './aiProblemStore'
 import { verifyCheckout } from './subscription'
 import { getTodayProblem, generateTodayProblem, isDailyCompleted, markDailyCompleted } from './dailyProblem'
@@ -207,6 +208,7 @@ type Screen =
   | { type: 'daily-problem' }
   | { type: 'roleplay' }
   | { type: 'roleplay-chat'; situationId: string }
+  | { type: 'coffee-break' }
 
 function App() {
   const [screen, setScreen] = useState<Screen>({ type: 'home' })
@@ -310,6 +312,10 @@ function App() {
       situationId={screen.situationId}
       onBack={() => setScreen({ type: 'roleplay' })}
     />
+  }
+
+  if (screen.type === 'coffee-break') {
+    return <CoffeeBreak onBack={goHome} />
   }
 
   if (screen.type === 'daily-problem' && dailyProblem) {
@@ -512,6 +518,16 @@ function App() {
             <div className="ai-gen-text">
               <strong>AIロールプレイで練習</strong>
               <span>論理思考フレームワークを実務シーンで <span className="ai-gen-badge">NEW</span></span>
+            </div>
+            <span className="ai-gen-arrow">›</span>
+          </div>
+
+          {/* Coffee Break entry */}
+          <div className="ai-gen-card" onClick={() => setScreen({ type: 'coffee-break' })}>
+            <div className="ai-gen-icon">☕</div>
+            <div className="ai-gen-text">
+              <strong>コーヒーブレイク</strong>
+              <span>3分で読める日常シーンの小話 <span className="ai-gen-badge">NEW</span></span>
             </div>
             <span className="ai-gen-arrow">›</span>
           </div>
