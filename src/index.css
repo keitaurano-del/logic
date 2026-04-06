@@ -63,6 +63,78 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* ===== Mode: Dark ===== */
+.mode-dark {
+  --bg-primary:    #15171C;
+  --bg-secondary:  #1A1D24;
+  --bg-card:       #1F232B;
+  --bg-elevated:   #262B35;
+  --bg-hero:       #0F1117;
+  --bg-glass:      rgba(31, 35, 43, 0.6);
+  --bg-tertiary:   #2A2F38;
+
+  --text-primary:  #E8E8EC;
+  --text-secondary:#B0B3BA;
+  --text-muted:    #7A7E87;
+  --text-on-hero:  #FFFFFF;
+
+  --border:        #2E323B;
+  --border-light:  #353A44;
+
+  --shadow-card:    0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-elevated: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+.mode-dark body, .mode-dark #root { background: var(--bg-primary); }
+
+/* ===== Mode: Enterprise (premium) ===== */
+.mode-enterprise {
+  --bg-primary:    #0F1729;
+  --bg-secondary:  #14203A;
+  --bg-card:       #1A2540;
+  --bg-elevated:   #223052;
+  --bg-hero:       #0A1020;
+  --bg-glass:      rgba(26, 37, 64, 0.6);
+  --bg-tertiary:   #1F2B48;
+
+  --text-primary:  #E2E8F0;
+  --text-secondary:#94A3B8;
+  --text-muted:    #64748B;
+  --text-on-hero:  #FFFFFF;
+
+  --border:        #2A3654;
+  --border-light:  #344162;
+
+  --shadow-card:    0 2px 12px rgba(0, 0, 0, 0.5);
+  --shadow-elevated: 0 6px 20px rgba(0, 0, 0, 0.6);
+}
+.mode-enterprise body, .mode-enterprise #root { background: var(--bg-primary); }
+
+/* ===== Mode: Startup (premium - vibrant light) ===== */
+.mode-startup {
+  --bg-primary:    #FFFAF0;
+  --bg-secondary:  #FFF4E0;
+  --bg-card:       #FFFFFF;
+  --bg-elevated:   #FFFFFF;
+  --bg-hero:       #1A2E22;
+  --bg-glass:      rgba(255, 255, 255, 0.7);
+  --bg-tertiary:   #FFEDD0;
+
+  --text-primary:  #1A2E22;
+  --text-secondary:#4A5E52;
+  --text-muted:    #8B9690;
+  --text-on-hero:  #FFFFFF;
+
+  --border:        #FFE0B0;
+  --border-light:  #FFEDD0;
+
+  --shadow-card:    0 2px 10px rgba(255, 140, 0, 0.10);
+  --shadow-elevated: 0 4px 18px rgba(255, 140, 0, 0.15);
+}
+.mode-startup body, .mode-startup #root { background: var(--bg-primary); }
+
+/* ===== Mode: Custom — uses light defaults, accent overridden by JS ===== */
+/* (no overrides needed; light is the base) */
+
 /* Shimmer animation for progress bars */
 @keyframes shimmer {
   0% { background-position: -200% 0; }
@@ -128,7 +200,7 @@ input, textarea, select { -webkit-tap-highlight-color: transparent; }
   }
 
   body {
-    background: #EFEAE0;
+    background: var(--bg-secondary);
   }
 
   #root {

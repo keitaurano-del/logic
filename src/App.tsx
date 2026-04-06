@@ -14,6 +14,7 @@ import DeviationScore from './DeviationScore'
 import Roleplay from './Roleplay'
 import RoleplayChat from './RoleplayChat'
 import CoffeeBreak from './CoffeeBreak'
+import ThemeSettings from './ThemeSettings'
 import { getAIProblem, type AIProblemSet } from './aiProblemStore'
 import { verifyCheckout } from './subscription'
 import { getTodayProblem, generateTodayProblem, isDailyCompleted, markDailyCompleted } from './dailyProblem'
@@ -209,6 +210,7 @@ type Screen =
   | { type: 'roleplay' }
   | { type: 'roleplay-chat'; situationId: string }
   | { type: 'coffee-break' }
+  | { type: 'theme' }
 
 function App() {
   const [screen, setScreen] = useState<Screen>({ type: 'home' })
@@ -316,6 +318,13 @@ function App() {
 
   if (screen.type === 'coffee-break') {
     return <CoffeeBreak onBack={goHome} />
+  }
+
+  if (screen.type === 'theme') {
+    return <ThemeSettings
+      onBack={goHome}
+      onUpgrade={() => setScreen({ type: 'pricing' })}
+    />
   }
 
   if (screen.type === 'daily-problem' && dailyProblem) {
@@ -630,6 +639,7 @@ function App() {
         onFeedback={() => setScreen({ type: 'feedback' })}
         onPricing={() => setScreen({ type: 'pricing' })}
         onDeviation={() => setScreen({ type: 'deviation' })}
+        onTheme={() => setScreen({ type: 'theme' })}
       />}
 
       {/* Bottom Navigation */}
