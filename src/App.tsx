@@ -356,35 +356,6 @@ function App() {
       {/* Tab Content */}
       {tab === 'home' && (
         <>
-          {/* Today's Task Hero */}
-          {(() => {
-            const firstGoal = roadmapState.goals[0]
-            if (!firstGoal) return null
-            const rm = getRoadmap(firstGoal.goalId)
-            const nextStepId = getCurrentStep(firstGoal.goalId)
-            if (!rm || nextStepId == null) return null
-            const step = rm.steps.find(s => s.lessonId === nextStepId)
-            if (!step) return null
-            const lesson = lessons.find(l => l.id === nextStepId)
-            return (
-              <div className="today-hero">
-                <div className="today-hero-label">★ 今日のタスク</div>
-                <div className="today-hero-title">{step.title}</div>
-                <div className="today-hero-meta">{rm.title}</div>
-                <button
-                  className="today-hero-btn"
-                  onClick={() => {
-                    if (lesson) handleCardClick(lesson)
-                    else setScreen({ type: 'lesson', lessonId: nextStepId })
-                  }}
-                >
-                  <span>始める</span>
-                  <span>→</span>
-                </button>
-              </div>
-            )
-          })()}
-
           {/* Progress Section */}
           <section className="progress-section">
             <h3 className="progress-section-title">📋 今月の評価シート</h3>
