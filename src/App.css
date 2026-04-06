@@ -771,6 +771,8 @@
 .daily-card.welcome .daily-text strong { color: #1E40AF; }
 .daily-card.continue { background: linear-gradient(135deg, #DCFCE7 0%, #D1FAE5 100%); border-color: #10B981; }
 .daily-card.continue .daily-text strong { color: #065F46; }
+.daily-card.placement { background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); border-color: #F59E0B; }
+.daily-card.placement .daily-text strong { color: #92400E; }
 .daily-loading { cursor: wait; }
 .daily-icon { font-size: 32px; flex-shrink: 0; }
 .daily-text { flex: 1; min-width: 0; }

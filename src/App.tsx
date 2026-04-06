@@ -15,6 +15,8 @@ import Roleplay from './Roleplay'
 import RoleplayChat from './RoleplayChat'
 import CoffeeBreak from './CoffeeBreak'
 import ThemeSettings from './ThemeSettings'
+import PlacementTest from './PlacementTest'
+import { hasCompletedPlacement, loadPlacementResult } from './placementTest'
 import { getAIProblem, type AIProblemSet } from './aiProblemStore'
 import { verifyCheckout } from './subscription'
 import { getTodayProblem, generateTodayProblem, isDailyCompleted, markDailyCompleted } from './dailyProblem'
@@ -237,6 +239,8 @@ type Screen =
   | { type: 'theme' }
 
 function App() {
+  const [showPlacement, setShowPlacement] = useState(!hasCompletedPlacement())
+  const [placementResult, setPlacementResult] = useState(loadPlacementResult())
   const [screen, setScreen] = useState<Screen>({ type: 'home' })
   const [tab, setTab] = useState<Tab>('home')
   const [completedCount, setCompletedCount] = useState(getCompletedCount())
@@ -312,6 +316,19 @@ function App() {
     setScreen({ type: 'home' })
     refreshStats()
   }, [refreshStats])
+
+  if (showPlacement) {
+    return <PlacementTest
+      onComplete={() => {
+        setPlacementResult(loadPlacementResult())
+        setShowPlacement(false)
+      }}
+      onSkip={() => {
+        setPlacementResult(loadPlacementResult())
+        setShowPlacement(false)
+      }}
+    />
+  }
 
   if (screen.type === 'feedback') {
     return <Feedback onBack={goHome} />
@@ -492,6 +509,25 @@ function App() {
               <span className="daily-badge new">NEXT</span>
             </div>
           )}
+
+          {/* Placement recommendation card */}
+          {placementResult && placementResult.totalCount > 0 && (() => {
+            const firstRecId = placementResult.recommendedLessonIds.find(
+              id => !getCompletedLessons().includes(`lesson-${id}`)
+            )
+            const recLesson = firstRecId ? lessons.find(l => l.id === firstRecId) : null
+            if (!recLesson) return null
+            return (
+              <div className="daily-card placement" onClick={() => handleCardClick(recLesson)}>
+                <div className="daily-icon">🎯</div>
+                <div className="daily-text">
+                  <strong>偏差値 {placementResult.deviation} のおすすめ</strong>
+                  <span>{recLesson.title}</span>
+                </div>
+                <span className="daily-badge new">REC</span>
+              </div>
+            )
+          })()}
 
           {/* Today's Problem */}
           {dailyProblem && (
