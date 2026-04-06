@@ -1,5 +1,5 @@
 const STORAGE_KEY = 'logic-notebook'
-const API_BASE = (import.meta.env.VITE_API_BASE as string) || 'http://localhost:3001'
+const API_BASE = import.meta.env.DEV ? `http://${window.location.hostname}:3001` : ''
 
 export type NotebookEntry = {
   id: string

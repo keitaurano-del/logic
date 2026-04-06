@@ -1,7 +1,7 @@
 import type { LessonData } from './lessonData'
 
 const STORAGE_KEY = 'logic-ai-problems'
-const API_BASE = (import.meta.env.VITE_API_BASE as string) || 'http://localhost:3001'
+const API_BASE = import.meta.env.DEV ? `http://${window.location.hostname}:3001` : ''
 
 // AI-generated lessons use IDs in the 10000+ range to avoid conflicts
 const AI_ID_BASE = 10000

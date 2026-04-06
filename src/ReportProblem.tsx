@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './ReportProblem.css'
 
-const API_BASE = (import.meta.env.VITE_API_BASE as string) || 'http://localhost:3001'
+const API_BASE = import.meta.env.DEV ? `http://${window.location.hostname}:3001` : ''
 
 const ISSUE_TYPES = [
   { value: 'wrong-answer', label: '答えが間違っている' },
