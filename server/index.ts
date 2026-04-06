@@ -278,6 +278,77 @@ app.post('/api/journal/generate', async (req, res) => {
   }
 })
 
+// =============================================
+// AI問題ジェネレーター
+// =============================================
+app.post('/api/generate-problems', async (req, res) => {
+  try {
+    const { prompt = '' } = req.body || {}
+    if (!prompt || prompt.length < 5) {
+      return res.status(400).json({ error: 'prompt is required' })
+    }
+
+    const systemPrompt = `あなたは簿記・会計・ビジネス学習問題の作成プロフェッショナルです。
+ユーザーのリクエストに基づいて、4択クイズ問題を作成します。
+
+必ず以下のJSON形式のみで返してください。他のテキストは一切含めないでください:
+
+{
+  "title": "問題セットのタイトル（30文字以内）",
+  "category": "カテゴリー（例: 簿記2級）",
+  "steps": [
+    {
+      "type": "quiz",
+      "question": "問題文",
+      "options": [
+        { "label": "選択肢1", "correct": false },
+        { "label": "選択肢2", "correct": true },
+        { "label": "選択肢3", "correct": false },
+        { "label": "選択肢4", "correct": false }
+      ],
+      "explanation": "なぜこの答えが正しいかの解説（100文字程度）"
+    }
+  ]
+}
+
+ルール:
+- 各問題は必ず4つの選択肢を持つ
+- 正解は1つだけ
+- 解説は教育的で、なぜ他の選択肢が違うかも触れる
+- ユーザーが指定した数だけ問題を作る（指定がなければ3問）
+- 専門用語は正確に
+- 日本語で出力`
+
+    const response = await client.messages.create({
+      model: 'claude-sonnet-4-5',
+      max_tokens: 4096,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: prompt }],
+    })
+
+    const text = response.content
+      .filter((b: any) => b.type === 'text')
+      .map((b: any) => b.text)
+      .join('')
+      .trim()
+
+    const jsonMatch = text.match(/\{[\s\S]*\}/)
+    if (!jsonMatch) {
+      return res.status(500).json({ error: 'AI response parse failed' })
+    }
+    const data = JSON.parse(jsonMatch[0])
+
+    res.json({
+      title: data.title || 'AI生成問題',
+      category: data.category || 'AI生成',
+      steps: data.steps || [],
+    })
+  } catch (e: any) {
+    console.error('generate-problems error:', e)
+    res.status(500).json({ error: e.message || 'failed' })
+  }
+})
+
 // Serve Vite build output in production
 const distPath = path.resolve(__dirname, '..', 'dist')
 app.use(express.static(distPath))

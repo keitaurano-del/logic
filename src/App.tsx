@@ -9,6 +9,8 @@ import GoalSelect from './GoalSelect'
 import Roadmap from './Roadmap'
 import Feedback from './Feedback'
 import Notebook from './Notebook'
+import AIProblemGen from './AIProblemGen'
+import { getAIProblem } from './aiProblemStore'
 import { allLessons } from './lessonData'
 import { recordCompletion, addStudyTime, getCompletedCount, getStreak, getStudyHours } from './stats'
 import { getCardStats } from './flashcardData'
@@ -193,6 +195,8 @@ type Screen =
   | { type: 'goal-select' }
   | { type: 'roadmap'; goalId: string }
   | { type: 'feedback' }
+  | { type: 'ai-gen' }
+  | { type: 'ai-problem'; problemId: number }
 
 function App() {
   const [screen, setScreen] = useState<Screen>({ type: 'home' })
@@ -298,6 +302,24 @@ function App() {
 
   if (screen.type === 'worksheet') {
     return <Worksheet onBack={goHome} onComplete={() => handleComplete('worksheet', '精算表穴埋めドリル')} />
+  }
+
+  if (screen.type === 'ai-gen') {
+    return <AIProblemGen
+      onBack={goHome}
+      onPlayProblem={(p) => setScreen({ type: 'ai-problem', problemId: p.id })}
+    />
+  }
+
+  if (screen.type === 'ai-problem') {
+    const problem = getAIProblem(screen.problemId)
+    if (problem) {
+      return <Lesson
+        lesson={problem}
+        onBack={() => setScreen({ type: 'ai-gen' })}
+        onComplete={() => handleComplete(`ai-${problem.id}`, problem.title)}
+      />
+    }
   }
 
   if (screen.type === 'lesson') {
@@ -499,6 +521,16 @@ function App() {
               </div>
             )
           })()}
+
+          {/* AI Problem Generator entry */}
+          <div className="ai-gen-card" onClick={() => setScreen({ type: 'ai-gen' })}>
+            <div className="ai-gen-icon">✨</div>
+            <div className="ai-gen-text">
+              <strong>AIに問題を作ってもらう</strong>
+              <span>あなた専用の練習問題を生成 <span className="ai-gen-badge">PREMIUM</span></span>
+            </div>
+            <span className="ai-gen-arrow">›</span>
+          </div>
 
           {/* Document Tray */}
           <section className="section">
