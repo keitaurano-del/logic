@@ -11,6 +11,8 @@ import Feedback from './Feedback'
 import AIProblemGen from './AIProblemGen'
 import Pricing from './Pricing'
 import DeviationScore from './DeviationScore'
+import Roleplay from './Roleplay'
+import RoleplayChat from './RoleplayChat'
 import { getAIProblem, type AIProblemSet } from './aiProblemStore'
 import { verifyCheckout } from './subscription'
 import { getTodayProblem, generateTodayProblem, isDailyCompleted, markDailyCompleted } from './dailyProblem'
@@ -203,6 +205,8 @@ type Screen =
   | { type: 'pricing' }
   | { type: 'deviation' }
   | { type: 'daily-problem' }
+  | { type: 'roleplay' }
+  | { type: 'roleplay-chat'; situationId: string }
 
 function App() {
   const [screen, setScreen] = useState<Screen>({ type: 'home' })
@@ -291,6 +295,21 @@ function App() {
 
   if (screen.type === 'deviation') {
     return <DeviationScore onBack={goHome} />
+  }
+
+  if (screen.type === 'roleplay') {
+    return <Roleplay
+      onBack={goHome}
+      onStart={(situationId) => setScreen({ type: 'roleplay-chat', situationId })}
+      onUpgrade={() => setScreen({ type: 'pricing' })}
+    />
+  }
+
+  if (screen.type === 'roleplay-chat') {
+    return <RoleplayChat
+      situationId={screen.situationId}
+      onBack={() => setScreen({ type: 'roleplay' })}
+    />
   }
 
   if (screen.type === 'daily-problem' && dailyProblem) {
@@ -483,6 +502,16 @@ function App() {
             <div className="ai-gen-text">
               <strong>AIに問題を作ってもらう</strong>
               <span>あなた専用の練習問題を生成 <span className="ai-gen-badge">PREMIUM</span></span>
+            </div>
+            <span className="ai-gen-arrow">›</span>
+          </div>
+
+          {/* Roleplay entry */}
+          <div className="ai-gen-card" onClick={() => setScreen({ type: 'roleplay' })}>
+            <div className="ai-gen-icon">💬</div>
+            <div className="ai-gen-text">
+              <strong>AIロールプレイで練習</strong>
+              <span>論理思考フレームワークを実務シーンで <span className="ai-gen-badge">NEW</span></span>
             </div>
             <span className="ai-gen-arrow">›</span>
           </div>
