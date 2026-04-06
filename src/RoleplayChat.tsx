@@ -9,6 +9,7 @@ type ScoreResult = { scores: ScoreItem[]; overall: string }
 type SummaryResult = { summary: string; keyPoints: string[]; improvements: string[]; goodPoints: string[] }
 
 const API_BASE = import.meta.env.DEV ? `http://${window.location.hostname}:3001` : ''
+const MAX_TURNS = 5
 
 type Props = {
   situationId: string
@@ -18,13 +19,15 @@ type Props = {
 export default function RoleplayChat({ situationId, onBack }: Props) {
   const situation = getSituation(situationId)
   const [messages, setMessages] = useState<Msg[]>([])
-  const [input, setInput] = useState('')
+  const [choices, setChoices] = useState<string[]>([])
+  const [turnNumber, setTurnNumber] = useState(1)
   const [loading, setLoading] = useState(false)
   const [finished, setFinished] = useState(false)
   const [score, setScore] = useState<ScoreResult | null>(null)
   const [summary, setSummary] = useState<SummaryResult | null>(null)
   const [scoring, setScoring] = useState(false)
   const incrementedRef = useRef(false)
+  const startedRef = useRef(false)
   const scrollRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -34,9 +37,18 @@ export default function RoleplayChat({ situationId, onBack }: Props) {
     }
   }, [situation])
 
+  // Auto-start: fetch the first partner line + choices
+  useEffect(() => {
+    if (situation && !startedRef.current) {
+      startedRef.current = true
+      fetchTurn([], 1)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [situation])
+
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
-  }, [messages, loading])
+  }, [messages, loading, choices])
 
   if (!situation) {
     return (
@@ -52,36 +64,43 @@ export default function RoleplayChat({ situationId, onBack }: Props) {
 
   const setup = buildSetup(situation)
 
-  const send = async () => {
-    const text = input.trim()
-    if (!text || loading) return
-    const next: Msg[] = [...messages, { role: 'user', content: text }]
-    setMessages(next)
-    setInput('')
+  async function fetchTurn(history: Msg[], turn: number) {
     setLoading(true)
+    setChoices([])
     try {
-      const res = await fetch(`${API_BASE}/api/roleplay/chat`, {
+      const res = await fetch(`${API_BASE}/api/roleplay/turn`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: next, setup }),
+        body: JSON.stringify({ messages: history, setup, turnNumber: turn, maxTurns: MAX_TURNS }),
       })
       const data = await res.json()
-      if (data.content) {
-        setMessages([...next, { role: 'assistant', content: data.content }])
+      if (data.partner) {
+        setMessages([...history, { role: 'assistant', content: data.partner }])
+        setChoices(Array.isArray(data.choices) ? data.choices : [])
       }
     } catch (e) {
       console.error(e)
-      setMessages([...next, { role: 'assistant', content: '(通信エラーが発生しました)' }])
+      setMessages([...history, { role: 'assistant', content: '(通信エラーが発生しました)' }])
     } finally {
       setLoading(false)
     }
   }
 
-  const finish = async () => {
-    if (messages.length < 2) {
-      setFinished(true)
-      return
+  const pickChoice = (choice: string) => {
+    if (loading) return
+    const next: Msg[] = [...messages, { role: 'user', content: choice }]
+    setMessages(next)
+    setChoices([])
+    if (turnNumber >= MAX_TURNS) {
+      finish(next)
+    } else {
+      const nextTurn = turnNumber + 1
+      setTurnNumber(nextTurn)
+      fetchTurn(next, nextTurn)
     }
+  }
+
+  const finish = async (finalMessages: Msg[]) => {
     setScoring(true)
     setFinished(true)
     try {
@@ -89,12 +108,12 @@ export default function RoleplayChat({ situationId, onBack }: Props) {
         fetch(`${API_BASE}/api/roleplay/score`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ messages, setup }),
+          body: JSON.stringify({ messages: finalMessages, setup }),
         }).then((r) => r.json()),
         fetch(`${API_BASE}/api/roleplay/summary`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ messages, setup }),
+          body: JSON.stringify({ messages: finalMessages, setup }),
         }).then((r) => r.json()),
       ])
       if (scoreRes.scores) setScore(scoreRes)
@@ -104,6 +123,14 @@ export default function RoleplayChat({ situationId, onBack }: Props) {
     } finally {
       setScoring(false)
     }
+  }
+
+  const endEarly = () => {
+    if (messages.length < 2) {
+      onBack()
+      return
+    }
+    finish(messages)
   }
 
   if (finished) {
@@ -163,22 +190,17 @@ export default function RoleplayChat({ situationId, onBack }: Props) {
       <header className="rp-header">
         <button className="rp-back" onClick={onBack}>‹</button>
         <span>{situation.title}</span>
-        <button className="rp-finish" onClick={finish}>終了</button>
+        <button className="rp-finish" onClick={endEarly}>終了</button>
       </header>
 
       <div className="rp-chat-context">
         <strong>{situation.frameworkLabel}</strong>
         <span>相手: {situation.partnerName}（{situation.partnerRole}）</span>
         <span>🎯 {situation.goal}</span>
+        <span className="rp-turn-indicator">ターン {Math.min(turnNumber, MAX_TURNS)}/{MAX_TURNS}</span>
       </div>
 
       <div className="rp-chat" ref={scrollRef}>
-        {messages.length === 0 && (
-          <div className="rp-chat-empty">
-            <p>{situation.context}</p>
-            <p className="rp-chat-empty-hint">最初の発言からあなたが始めましょう。</p>
-          </div>
-        )}
         {messages.map((m, i) => (
           <div key={i} className={`rp-bubble ${m.role}`}>
             <div className="rp-bubble-name">{m.role === 'user' ? 'あなた' : situation.partnerName}</div>
@@ -188,27 +210,21 @@ export default function RoleplayChat({ situationId, onBack }: Props) {
         {loading && (
           <div className="rp-bubble assistant">
             <div className="rp-bubble-name">{situation.partnerName}</div>
-            <div className="rp-bubble-text rp-typing">入力中...</div>
+            <div className="rp-bubble-text rp-typing">考え中...</div>
           </div>
         )}
       </div>
 
-      <div className="rp-input-bar">
-        <textarea
-          className="rp-input"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="メッセージを入力..."
-          rows={2}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-              e.preventDefault()
-              send()
-            }
-          }}
-        />
-        <button className="rp-send-btn" onClick={send} disabled={loading || !input.trim()}>送信</button>
-      </div>
+      {choices.length > 0 && !loading && (
+        <div className="rp-choices">
+          <div className="rp-choices-label">あなたの返答を選んでください</div>
+          {choices.map((c, i) => (
+            <button key={i} className="rp-choice-btn" onClick={() => pickChoice(c)}>
+              {c}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

@@ -41,6 +41,14 @@
 .rp-bubble.assistant .rp-bubble-text { background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
 .rp-typing { font-style: italic; color: var(--text-muted); }
 
+.rp-turn-indicator { color: var(--accent); font-weight: 800; margin-top: 4px; }
+
+.rp-choices { display: flex; flex-direction: column; gap: 10px; padding: 14px 16px 20px; background: var(--bg-card); border-top: 1px solid var(--border); }
+.rp-choices-label { font-size: 11px; color: var(--text-muted); font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 2px; }
+.rp-choice-btn { padding: 14px 16px; background: var(--bg-elevated, var(--bg-primary)); color: var(--text-primary); border: 1.5px solid var(--border); border-radius: var(--radius-md, 12px); font-size: 14px; font-weight: 600; cursor: pointer; font-family: var(--sans); text-align: left; line-height: 1.5; transition: border-color 0.15s, transform 0.1s; }
+.rp-choice-btn:hover { border-color: var(--accent); }
+.rp-choice-btn:active { transform: scale(0.98); }
+
 .rp-input-bar { display: flex; gap: 8px; padding: 12px; background: var(--bg-card); border-top: 1px solid var(--border); }
 .rp-input { flex: 1; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-md, 12px); font-size: 14px; font-family: var(--sans); background: var(--bg-elevated); color: var(--text-primary); resize: none; outline: none; }
 .rp-input:focus { border-color: var(--accent); }

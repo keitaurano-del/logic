@@ -94,6 +94,69 @@ ${context ? `- 補足情報: ${context}` : ''}
 })
 
 // =============================================
+// ロールプレイ自動進行ターン (AI セリフ + ユーザー選択肢)
+// =============================================
+app.post('/api/roleplay/turn', async (req, res) => {
+  const { messages, setup, turnNumber, maxTurns } = req.body as {
+    messages: { role: string; content: string }[]
+    setup: { template: { title: string }; partner: { name: string; role: string; personality: string; interests: string; concerns: string }; goal: string; context: string }
+    turnNumber: number
+    maxTurns: number
+  }
+  const { template, partner, goal, context } = setup
+  const isFirst = !messages || messages.length === 0
+  const isLast = turnNumber >= maxTurns
+
+  const systemPrompt = `あなたはロールプレイのナレーター兼キャラクター演者です。場面で「${partner.name}」(${partner.role})を演じます。
+
+## キャラクター設定
+- 性格: ${partner.personality}
+- 関心事: ${partner.interests}
+- 懸念事項: ${partner.concerns}
+- 場面: ${template.title}
+${goal ? `- ユーザーのゴール: ${goal}` : ''}
+${context ? `- 状況: ${context}` : ''}
+
+## ターン情報
+- 現在 ${turnNumber}/${maxTurns} ターン目
+${isFirst ? '- これは最初のターン。ユーザーへの問いかけや状況提示から始めること。' : ''}
+${isLast ? '- これが最後のターン。会話を締めくくるセリフにすること。' : ''}
+
+## 出力ルール
+必ず以下の JSON 形式のみで出力 (前後に余計なテキストを入れない):
+{
+  "partner": "${partner.name}のセリフ (2〜4文、自然な日本語)",
+  "choices": [
+    "ユーザーの返答候補A (15〜40文字、論理的に良い返答)",
+    "ユーザーの返答候補B (15〜40文字、迷いやすい平凡な返答)",
+    "ユーザーの返答候補C (15〜40文字、避けたい悪い返答)"
+  ]
+}
+
+## 選択肢ルール
+- 必ず 3 つの選択肢を提示する
+- 選択肢は「論理的に強い」「中間」「弱い/感情的」のバランスでバリエーションを持たせる
+- ${isLast ? '最終ターンでも choices は 3 つ用意する (会話を締めくくる返答案として)' : ''}`
+
+  try {
+    const response = await client.messages.create({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 600,
+      system: systemPrompt,
+      messages: isFirst ? [{ role: 'user', content: '(開始)' }] : messages,
+    })
+    const text = response.content[0].type === 'text' ? response.content[0].text : ''
+    const jsonMatch = text.match(/\{[\s\S]*\}/)
+    if (!jsonMatch) throw new Error('Invalid JSON response')
+    const parsed = JSON.parse(jsonMatch[0])
+    res.json({ partner: parsed.partner, choices: parsed.choices, done: isLast })
+  } catch (error) {
+    console.error('Turn API error:', error)
+    res.status(500).json({ error: 'ターン生成に失敗しました' })
+  }
+})
+
+// =============================================
 // ロールプレイ採点
 // =============================================
 app.post('/api/roleplay/score', async (req, res) => {
