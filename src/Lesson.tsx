@@ -20,6 +20,9 @@ import {
   SoWhatDiagram,
   PyramidDiagram,
   PrepDiagram,
+  DeductionDiagram,
+  InductionDiagram,
+  ContrapositiveDiagram,
 } from './LessonDiagrams'
 import type { LessonData, LessonStep } from './lessonData'
 import { generateFromLesson, addCards } from './flashcardData'
@@ -69,6 +72,9 @@ const diagramMap: Record<string, ComponentType> = {
   SoWhatDiagram,
   PyramidDiagram,
   PrepDiagram,
+  DeductionDiagram,
+  InductionDiagram,
+  ContrapositiveDiagram,
 }
 
 type Props = {

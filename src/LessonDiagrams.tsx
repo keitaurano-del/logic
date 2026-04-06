@@ -792,6 +792,99 @@ export function PyramidDiagram() {
 }
 
 // ==============================
+// 演繹法 三段論法フロー図
+// ==============================
+export function DeductionDiagram() {
+  return (
+    <div className="diagram">
+      <p className="diagram-label">演繹法（三段論法）の構造</p>
+      <div className="ded-flow">
+        <div className="ded-step ded-major">
+          <div className="ded-tag">大前提</div>
+          <div className="ded-text">人間はみな死ぬ<br /><span className="ded-formula">(全ての A は B)</span></div>
+        </div>
+        <div className="ded-arrow">＋</div>
+        <div className="ded-step ded-minor">
+          <div className="ded-tag">小前提</div>
+          <div className="ded-text">ソクラテスは人間<br /><span className="ded-formula">(X は A)</span></div>
+        </div>
+        <div className="ded-arrow">↓</div>
+        <div className="ded-step ded-conclusion">
+          <div className="ded-tag">結論</div>
+          <div className="ded-text">ソクラテスは死ぬ<br /><span className="ded-formula">(X は B)</span></div>
+        </div>
+        <p className="ded-note">前提が正しければ結論は<strong>必ず</strong>正しい</p>
+      </div>
+    </div>
+  )
+}
+
+// ==============================
+// 帰納法 ボトムアップ図
+// ==============================
+export function InductionDiagram() {
+  return (
+    <div className="diagram">
+      <p className="diagram-label">帰納法（個別事例 → 一般法則）</p>
+      <div className="ind-container">
+        <div className="ind-observations">
+          <div className="ind-obs">観察 1<br /><span>白鳥A は白い</span></div>
+          <div className="ind-obs">観察 2<br /><span>白鳥B は白い</span></div>
+          <div className="ind-obs">観察 3<br /><span>白鳥C は白い</span></div>
+        </div>
+        <svg viewBox="0 0 240 40" className="ind-arrows-svg">
+          <line x1="40" y1="0" x2="120" y2="40" stroke="var(--accent)" strokeWidth="1.5" />
+          <line x1="120" y1="0" x2="120" y2="40" stroke="var(--accent)" strokeWidth="1.5" />
+          <line x1="200" y1="0" x2="120" y2="40" stroke="var(--accent)" strokeWidth="1.5" />
+          <polygon points="115,35 120,42 125,35" fill="var(--accent)" />
+        </svg>
+        <div className="ind-conclusion">
+          <strong>仮説</strong>
+          <span>「白鳥はみな白い」</span>
+        </div>
+        <p className="ind-warning">⚠ 反例 1 つで覆る (例: 黒い白鳥)</p>
+      </div>
+    </div>
+  )
+}
+
+// ==============================
+// 対偶 (Contrapositive) 図
+// ==============================
+export function ContrapositiveDiagram() {
+  return (
+    <div className="diagram">
+      <p className="diagram-label">逆・裏・対偶の関係</p>
+      <div className="cp-grid">
+        <div className="cp-card cp-original">
+          <div className="cp-tag">元の命題</div>
+          <div className="cp-formula">A → B</div>
+          <div className="cp-example">雨が降れば<br />地面が濡れる</div>
+        </div>
+        <div className="cp-card cp-converse">
+          <div className="cp-tag">逆</div>
+          <div className="cp-formula">B → A</div>
+          <div className="cp-example">地面が濡れていれば<br />雨が降った</div>
+          <div className="cp-mark cp-false">必ずしも真ではない</div>
+        </div>
+        <div className="cp-card cp-inverse">
+          <div className="cp-tag">裏</div>
+          <div className="cp-formula">¬A → ¬B</div>
+          <div className="cp-example">雨が降らなければ<br />地面は濡れない</div>
+          <div className="cp-mark cp-false">必ずしも真ではない</div>
+        </div>
+        <div className="cp-card cp-contra">
+          <div className="cp-tag">対偶</div>
+          <div className="cp-formula">¬B → ¬A</div>
+          <div className="cp-example">地面が濡れていなければ<br />雨は降らなかった</div>
+          <div className="cp-mark cp-true">元と必ず同じ真偽</div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ==============================
 // PREP法フロー図
 // ==============================
 export function PrepDiagram() {

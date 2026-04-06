@@ -87,6 +87,8 @@
   font-size: 14px;
   line-height: 1.8;
   color: var(--text-secondary);
+  white-space: pre-wrap;
+  font-variant-numeric: tabular-nums;
 }
 
 /* ===== Quiz ===== */
