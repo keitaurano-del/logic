@@ -1,6 +1,7 @@
 import { useMemo, useState, useEffect } from 'react'
 import { getCompletedLessons, getStreak, getStudyHours, getStudyDates, getTotalStudyDays } from './stats'
 import { loginWithGoogle, logout, onAuthChange, type User } from './firebase'
+import { loadGuestUser, updateGuestId, resetGuestUser } from './guestUser'
 import './Profile.css'
 
 // 直近12週の学習カレンダー
@@ -67,6 +68,10 @@ export default function Profile({ onFeedback }: { onFeedback?: () => void }) {
   const [user, setUser] = useState<User | null>(null)
   const [authLoading, setAuthLoading] = useState(false)
   const [authError, setAuthError] = useState('')
+  const [guest, setGuest] = useState(loadGuestUser())
+  const [editingId, setEditingId] = useState(false)
+  const [idDraft, setIdDraft] = useState(guest.id)
+  const [idError, setIdError] = useState('')
 
   useEffect(() => {
     const unsubscribe = onAuthChange((u) => setUser(u))
@@ -210,7 +215,56 @@ export default function Profile({ onFeedback }: { onFeedback?: () => void }) {
             <span style={{ fontSize: 48 }}>👤</span>
           </div>
         </div>
-        <h2 className="pf-name">{user?.displayName || 'K'}</h2>
+        <h2 className="pf-name">{user?.displayName || guest.id}</h2>
+        {!user && (
+          <div className="pf-guest-info">
+            {editingId ? (
+              <div className="pf-guest-edit">
+                <input
+                  className="pf-guest-input"
+                  value={idDraft}
+                  onChange={e => { setIdDraft(e.target.value); setIdError('') }}
+                  maxLength={32}
+                  autoFocus
+                  placeholder="新しいID"
+                />
+                <button
+                  className="pf-guest-save"
+                  onClick={() => {
+                    try {
+                      const updated = updateGuestId(idDraft)
+                      setGuest(updated)
+                      setEditingId(false)
+                    } catch (e: any) {
+                      setIdError(e.message)
+                    }
+                  }}
+                >保存</button>
+                <button
+                  className="pf-guest-cancel"
+                  onClick={() => { setEditingId(false); setIdDraft(guest.id); setIdError('') }}
+                >×</button>
+              </div>
+            ) : (
+              <div className="pf-guest-row">
+                <span className="pf-guest-badge">ゲスト</span>
+                <button className="pf-guest-edit-btn" onClick={() => { setIdDraft(guest.id); setEditingId(true) }}>
+                  IDを変更
+                </button>
+                <button
+                  className="pf-guest-edit-btn"
+                  onClick={() => {
+                    if (confirm('IDをランダムに再生成しますか？')) {
+                      const newU = resetGuestUser()
+                      setGuest(newU); setIdDraft(newU.id)
+                    }
+                  }}
+                >再生成</button>
+              </div>
+            )}
+            {idError && <div className="pf-guest-error">{idError}</div>}
+          </div>
+        )}
       </div>
 
       {/* Stats Grid */}

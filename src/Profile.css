@@ -879,3 +879,82 @@
 }
 .pf-setting-item:last-child { border-bottom: none; }
 .pf-setting-value { color: var(--text-muted); }
+
+/* Guest user badge + edit */
+.pf-guest-info {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.pf-guest-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pf-guest-badge {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent-dark);
+  background: var(--accent-soft);
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  letter-spacing: 0.05em;
+}
+.pf-guest-edit-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  padding: 3px 12px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: var(--sans);
+  transition: all 0.15s;
+}
+.pf-guest-edit-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent-dark);
+}
+.pf-guest-edit {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.pf-guest-input {
+  background: var(--bg-card);
+  border: 1.5px solid var(--accent);
+  border-radius: var(--radius-md);
+  padding: 6px 12px;
+  font-size: 13px;
+  font-family: var(--sans);
+  color: var(--text-primary);
+  width: 160px;
+}
+.pf-guest-input:focus { outline: none; }
+.pf-guest-save {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--sans);
+}
+.pf-guest-cancel {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 4px 10px;
+  font-size: 16px;
+  color: var(--text-muted);
+  cursor: pointer;
+  line-height: 1;
+}
+.pf-guest-error {
+  font-size: 11px;
+  color: var(--danger);
+}
