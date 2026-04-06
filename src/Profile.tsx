@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { getCompletedLessons, getStreak, getStudyHours, getTotalStudyDays } from './stats'
 import { loginWithGoogle, logout, onAuthChange, type User } from './firebase'
 import { loadGuestUser, updateGuestId } from './guestUser'
