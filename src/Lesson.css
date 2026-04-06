@@ -116,10 +116,10 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 16px;
+  padding: 18px;
   background: var(--bg-card);
   border: 1.5px solid var(--border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   font-size: 14px;
   font-family: var(--sans);
   color: var(--text-primary);
@@ -141,7 +141,7 @@
 .ls-option.correct {
   border-color: var(--success);
   background: var(--success-soft);
-  box-shadow: 0 0 0 1px var(--success), 0 0 12px var(--success-soft);
+  box-shadow: 0 0 0 1.5px var(--success), 0 0 20px rgba(16, 185, 129, 0.15);
 }
 
 .ls-option.wrong {

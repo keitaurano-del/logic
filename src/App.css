@@ -120,7 +120,7 @@
 .progress-bar-cta {
   display: block;
   font-size: 11px;
-  color: var(--accent);
+  color: #818CF8;
   margin-top: 6px;
   text-align: right;
 }
@@ -177,7 +177,7 @@
 }
 
 .streak-count {
-  font-size: 48px;
+  font-size: 52px;
   font-weight: 900;
   color: var(--text-primary);
   line-height: 1;
@@ -241,7 +241,7 @@
 }
 
 .stat-value {
-  font-size: 22px;
+  font-size: 26px;
   font-weight: 800;
   letter-spacing: -0.02em;
   color: var(--text-primary);
@@ -281,6 +281,19 @@
   letter-spacing: -0.02em;
 }
 
+.section-title::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-right: 8px;
+  vertical-align: middle;
+  position: relative;
+  top: -1px;
+}
+
 /* ===== Lesson Cards ===== */
 .lesson-list {
   display: flex;
@@ -292,11 +305,11 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 16px;
+  padding: 18px;
   background: var(--bg-card);
   border-radius: var(--radius-lg);
   cursor: default;
-  transition: transform 0.2s ease, border-color 0.2s ease;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
   box-shadow: var(--shadow-card);
   border: 1px solid var(--border);
 }
@@ -308,6 +321,7 @@
 .lesson-card.clickable:hover {
   border-color: var(--border);
   transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.08);
 }
 
 .lesson-card.clickable:active {
@@ -435,8 +449,8 @@
 }
 
 .nav-item.active {
-  color: var(--accent);
-  text-shadow: 0 0 12px var(--accent-glow);
+  color: var(--accent-light, var(--accent));
+  text-shadow: 0 0 14px var(--accent-glow);
 }
 
 .nav-item.active::before {
@@ -530,7 +544,7 @@
 
   .hero { margin: 12px 20px 28px; padding: 32px 28px; }
   .hero-title { font-size: 28px; }
-  .stat-value { font-size: 24px; }
+  .stat-value { font-size: 28px; }
 
   .section { padding: 0 20px; }
 
@@ -565,7 +579,7 @@
     background: var(--bg-elevated);
     border-color: var(--border);
     transform: translateY(-1px);
-    box-shadow: var(--shadow-elevated);
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.08);
   }
 
   .flashcard-banner:hover {
@@ -579,6 +593,7 @@
   .bottom-nav {
     padding: 10px 20px;
     border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    border-top: 1px solid var(--border);
   }
   .nav-item { padding: 10px 0; font-size: 11px; }
 }
