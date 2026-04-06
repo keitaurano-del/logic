@@ -17,10 +17,9 @@ import { getTodayProblem, generateTodayProblem, isDailyCompleted, markDailyCompl
 import { allLessons } from './lessonData'
 import { recordCompletion, addStudyTime, getCompletedCount, getStreak, getStudyHours } from './stats'
 import { getCardStats } from './flashcardData'
-import { loadProgress, initFromFlashcards } from './progressStore'
+import { initFromFlashcards } from './progressStore'
 import { loadTheme, applyTheme } from './theme'
-import { loadRoadmapState, needsOnboarding, getProgress as getRoadmapProgress, getCurrentStep, completeStep } from './roadmapStore'
-import { getRoadmap } from './roadmapData'
+import { loadRoadmapState, completeStep } from './roadmapStore'
 import { isDevMode } from './devMode'
 import LessonIcon from './LessonIcon'
 import './App.css'
@@ -211,8 +210,7 @@ function App() {
   const [completedCount, setCompletedCount] = useState(getCompletedCount())
   const [streak, setStreak] = useState(getStreak())
   const [studyHours, setStudyHours] = useState(getStudyHours())
-  const [progress, setProgress] = useState(loadProgress())
-  const [roadmapState, setRoadmapState] = useState(loadRoadmapState())
+  const [, setRoadmapState] = useState(loadRoadmapState())
   const [devMode, setDevModeState] = useState(isDevMode())
   const screenEnteredAt = useRef<number>(Date.now())
   const [dailyProblem, setDailyProblem] = useState<AIProblemSet | null>(getTodayProblem())
@@ -243,13 +241,12 @@ function App() {
   useEffect(() => { applyTheme(loadTheme()) }, [])
 
   // Init progress from flashcards on mount
-  useEffect(() => { initFromFlashcards(); setProgress(loadProgress()) }, [])
+  useEffect(() => { initFromFlashcards() }, [])
 
   const refreshStats = useCallback(() => {
     setCompletedCount(getCompletedCount())
     setStreak(getStreak())
     setStudyHours(getStudyHours())
-    setProgress(loadProgress())
     setRoadmapState(loadRoadmapState())
   }, [])
 
@@ -431,94 +428,6 @@ function App() {
             </div>
           )}
 
-          {/* Progress Section */}
-          <section className="progress-section">
-            <h3 className="progress-section-title">📋 今月の評価シート</h3>
-            {(['簿記', 'プロジェクトマネジメント', 'ロジカルシンキング'] as const).map(cat => {
-              const p = progress[cat]
-              const rate = p.totalCards > 0 ? Math.round((p.completedCards / p.totalCards) * 100) : 0
-              return (
-                <div key={cat} className="progress-bar-row" onClick={() => {
-                  setScreen({ type: 'flashcards' })
-                }}>
-                  <div className="progress-bar-header">
-                    <span className="progress-bar-label">{cat}</span>
-                    <span className="progress-bar-stat">{p.completedCards}/{p.totalCards} ({rate}%)</span>
-                  </div>
-                  <div className="progress-bar-track">
-                    <div className="progress-bar-fill" style={{ width: `${rate}%` }} />
-                  </div>
-                  <span className="progress-bar-cta">続きを始める →</span>
-                </div>
-              )
-            })}
-          </section>
-
-          {/* Roadmap Widget */}
-          {needsOnboarding() ? (
-            <div className="roadmap-widget" onClick={() => setScreen({ type: 'goal-select' })}>
-              <div className="roadmap-widget-icon">🎯</div>
-              <div className="roadmap-widget-text">
-                <strong>学習目標を設定しよう</strong>
-                <span>ロードマップで効率的に学習</span>
-              </div>
-              <span className="roadmap-widget-arrow">›</span>
-            </div>
-          ) : (
-            <>
-              {roadmapState.goals.map((g) => {
-                const rp = getRoadmapProgress(g.goalId)
-                const rm = getRoadmap(g.goalId)
-                const nextStep = getCurrentStep(g.goalId)
-                if (!rm) return null
-                return (
-                  <div key={g.goalId} className="roadmap-widget active" onClick={() => setScreen({ type: 'roadmap', goalId: g.goalId })}>
-                    <div className="roadmap-widget-icon">{rm.emoji}</div>
-                    <div className="roadmap-widget-text">
-                      <strong>{rm.title}</strong>
-                      <span>
-                        {rp.completed === rp.total
-                          ? '全ステップ完了!'
-                          : `${rp.completed}/${rp.total} 完了 (${rp.percent}%)`}
-                      </span>
-                      {nextStep != null && (
-                        <span className="roadmap-widget-next">
-                          次: {rm.steps.find((s) => s.lessonId === nextStep)?.title}
-                        </span>
-                      )}
-                    </div>
-                    <div className="roadmap-widget-ring">
-                      <svg width="40" height="40" viewBox="0 0 40 40">
-                        <circle cx="20" cy="20" r="16" fill="none" stroke="var(--bg-card)" strokeWidth="3" />
-                        <circle
-                          cx="20" cy="20" r="16" fill="none"
-                          stroke={rm.color}
-                          strokeWidth="3"
-                          strokeLinecap="round"
-                          strokeDasharray={`${rp.percent} ${100 - rp.percent}`}
-                          strokeDashoffset="25"
-                          transform="rotate(-90 20 20)"
-                        />
-                        <text x="20" y="20" textAnchor="middle" dominantBaseline="central"
-                          fill="var(--text-primary)" fontSize="11" fontWeight="800">
-                          {rp.percent}%
-                        </text>
-                      </svg>
-                    </div>
-                  </div>
-                )
-              })}
-              <div className="roadmap-widget" onClick={() => setScreen({ type: 'goal-select' })} style={{ opacity: 0.7 }}>
-                <div className="roadmap-widget-icon">＋</div>
-                <div className="roadmap-widget-text">
-                  <strong>目標を追加</strong>
-                  <span>新しい学習目標を設定</span>
-                </div>
-                <span className="roadmap-widget-arrow">›</span>
-              </div>
-            </>
-          )}
-
           {/* Streak */}
           <section className="hero">
             <div className="hero-content">
@@ -578,15 +487,11 @@ function App() {
             <span className="ai-gen-arrow">›</span>
           </div>
 
-          {/* Document Tray */}
+          {/* Lessons */}
           {(() => {
             const visible = lessons.filter(l => devMode || (!l.category.includes('簿記') && !l.category.includes('プロジェクト') && !l.category.includes('模擬試験')))
             return (
           <section className="section">
-            <div className="section-header">
-              <h3 className="section-title">📁 書類トレイ</h3>
-              <span className="section-count">{visible.length}</span>
-            </div>
             <div className="lesson-list">
               {visible.slice(0, 6).map((lesson) => (
                 <div

@@ -125,9 +125,9 @@ export default function Profile({ onFeedback, onPricing, onDeviation }: ProfileP
               </div>
 
               <div className="pf-settings-group">
-                <h3 className="pf-settings-group-title">開発</h3>
+                <h3 className="pf-settings-group-title">管理</h3>
                 <div className="pf-settings-item" onClick={toggleDevModeFn}>
-                  <span className="pf-settings-label">開発者モード</span>
+                  <span className="pf-settings-label">管理者モード</span>
                   <div className={`pf-settings-toggle ${devMode ? 'on' : ''}`}>
                     <div className="pf-settings-toggle-knob" />
                   </div>
