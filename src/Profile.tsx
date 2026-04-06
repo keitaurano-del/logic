@@ -1,7 +1,8 @@
 import { useMemo, useState, useEffect } from 'react'
 import { getCompletedLessons, getStreak, getStudyHours, getStudyDates, getTotalStudyDays } from './stats'
 import { loginWithGoogle, logout, onAuthChange, type User } from './firebase'
-import { loadGuestUser, updateGuestId, resetGuestUser } from './guestUser'
+import { loadGuestUser, updateGuestId } from './guestUser'
+import { isDevMode, setDevMode as persistDevMode } from './devMode'
 import { getPlanLabel } from './subscription'
 import './Profile.css'
 
@@ -9,19 +10,28 @@ import './Profile.css'
 function StudyCalendar({ dates }: { dates: string[] }) {
   const dateSet = useMemo(() => new Set(dates), [dates])
   const weeks = useMemo(() => {
-    const result: { date: string; active: boolean; day: number }[][] = []
+    const result: { date: string; active: boolean; isToday: boolean; isFuture: boolean; day: number; month: number; dayOfMonth: number }[][] = []
     const today = new Date()
+    const todayKey = today.toISOString().slice(0, 10)
     // Start from 11 weeks ago, aligned to Sunday
     const start = new Date(today)
     start.setDate(start.getDate() - 83 - start.getDay())
 
-    let week: { date: string; active: boolean; day: number }[] = []
+    let week: { date: string; active: boolean; isToday: boolean; isFuture: boolean; day: number; month: number; dayOfMonth: number }[] = []
     for (let i = 0; i <= 83 + today.getDay(); i++) {
       const d = new Date(start)
       d.setDate(d.getDate() + i)
       const key = d.toISOString().slice(0, 10)
       const isFuture = d > today
-      week.push({ date: key, active: !isFuture && dateSet.has(key), day: d.getDay() })
+      week.push({
+        date: key,
+        active: !isFuture && dateSet.has(key),
+        isToday: key === todayKey,
+        isFuture,
+        day: d.getDay(),
+        month: d.getMonth() + 1,
+        dayOfMonth: d.getDate(),
+      })
       if (week.length === 7) {
         result.push(week)
         week = []
@@ -31,25 +41,54 @@ function StudyCalendar({ dates }: { dates: string[] }) {
     return result
   }, [dateSet])
 
+  // Month labels above each column (show only when month changes)
+  const monthLabels = useMemo(() => {
+    const labels: (number | null)[] = []
+    let prev = 0
+    weeks.forEach(week => {
+      const firstDay = week[0]
+      if (firstDay && firstDay.month !== prev) {
+        labels.push(firstDay.month)
+        prev = firstDay.month
+      } else {
+        labels.push(null)
+      }
+    })
+    return labels
+  }, [weeks])
+
   return (
     <div className="pf-calendar">
-      <div className="pf-cal-labels">
-        {['', '月', '', '水', '', '金', ''].map((l, i) => (
-          <span key={i} className="pf-cal-label">{l}</span>
+      <div className="pf-cal-months">
+        <span className="pf-cal-day-spacer" />
+        {monthLabels.map((m, i) => (
+          <span key={i} className="pf-cal-month">{m ? `${m}月` : ''}</span>
         ))}
       </div>
-      <div className="pf-cal-grid">
-        {weeks.map((week, wi) => (
-          <div key={wi} className="pf-cal-week">
-            {week.map((d) => (
-              <div
-                key={d.date}
-                className={`pf-cal-cell ${d.active ? 'active' : ''}`}
-                title={d.date}
-              />
-            ))}
-          </div>
-        ))}
+      <div className="pf-cal-content">
+        <div className="pf-cal-day-labels">
+          {['日', '月', '火', '水', '木', '金', '土'].map((l, i) => (
+            <span key={i} className="pf-cal-day-label">{l}</span>
+          ))}
+        </div>
+        <div className="pf-cal-grid">
+          {weeks.map((week, wi) => (
+            <div key={wi} className="pf-cal-week">
+              {week.map((d) => (
+                <div
+                  key={d.date}
+                  className={`pf-cal-cell ${d.active ? 'active' : ''} ${d.isToday ? 'today' : ''} ${d.isFuture ? 'future' : ''}`}
+                  title={`${d.month}/${d.dayOfMonth}${d.active ? ' ✓ 学習しました' : d.isFuture ? '' : ' 未学習'}`}
+                />
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="pf-cal-legend">
+        <span className="pf-cal-legend-item"><span className="pf-cal-legend-box none" /> 未学習</span>
+        <span className="pf-cal-legend-item"><span className="pf-cal-legend-box active" /> 学習済み</span>
+        <span className="pf-cal-legend-item"><span className="pf-cal-legend-box today" /> 今日</span>
       </div>
     </div>
   )
@@ -69,9 +108,8 @@ export default function Profile({ onFeedback, onPricing, onDeviation }: ProfileP
   const totalDays = getTotalStudyDays()
 
   const [showSettings, setShowSettings] = useState(false)
-  const [devMode, setDevMode] = useState(false)
+  const [devMode, setDevMode] = useState(isDevMode())
   const [notifications, setNotifications] = useState(() => localStorage.getItem('logic-notifications') !== 'off')
-  const [soundEnabled, setSoundEnabled] = useState(() => localStorage.getItem('logic-sound') !== 'off')
   const [user, setUser] = useState<User | null>(null)
   const [authLoading, setAuthLoading] = useState(false)
   const [authError, setAuthError] = useState('')
@@ -102,10 +140,10 @@ export default function Profile({ onFeedback, onPricing, onDeviation }: ProfileP
     setNotifications(next)
     localStorage.setItem('logic-notifications', next ? 'on' : 'off')
   }
-  const toggleSound = () => {
-    const next = !soundEnabled
-    setSoundEnabled(next)
-    localStorage.setItem('logic-sound', next ? 'on' : 'off')
+  const toggleDevModeFn = () => {
+    const next = !devMode
+    setDevMode(next)
+    persistDevMode(next)
   }
   const handleResetProgress = () => {
     if (confirm('学習データをすべてリセットしますか？この操作は取り消せません。')) {
@@ -173,17 +211,11 @@ export default function Profile({ onFeedback, onPricing, onDeviation }: ProfileP
                     <div className="pf-settings-toggle-knob" />
                   </div>
                 </div>
-                <div className="pf-settings-item" onClick={toggleSound}>
-                  <span className="pf-settings-label">効果音</span>
-                  <div className={`pf-settings-toggle ${soundEnabled ? 'on' : ''}`}>
-                    <div className="pf-settings-toggle-knob" />
-                  </div>
-                </div>
               </div>
 
               <div className="pf-settings-group">
                 <h3 className="pf-settings-group-title">開発</h3>
-                <div className="pf-settings-item" onClick={() => setDevMode(!devMode)}>
+                <div className="pf-settings-item" onClick={toggleDevModeFn}>
                   <span className="pf-settings-label">開発者モード</span>
                   <div className={`pf-settings-toggle ${devMode ? 'on' : ''}`}>
                     <div className="pf-settings-toggle-knob" />
@@ -258,15 +290,6 @@ export default function Profile({ onFeedback, onPricing, onDeviation }: ProfileP
                 <button className="pf-guest-edit-btn" onClick={() => { setIdDraft(guest.id); setEditingId(true) }}>
                   IDを変更
                 </button>
-                <button
-                  className="pf-guest-edit-btn"
-                  onClick={() => {
-                    if (confirm('IDをランダムに再生成しますか？')) {
-                      const newU = resetGuestUser()
-                      setGuest(newU); setIdDraft(newU.id)
-                    }
-                  }}
-                >再生成</button>
               </div>
             )}
             {idError && <div className="pf-guest-error">{idError}</div>}
@@ -333,20 +356,16 @@ export default function Profile({ onFeedback, onPricing, onDeviation }: ProfileP
         </div>
       )}
 
-      {/* Settings section */}
-      <div className="pf-settings-inline">
-        <h3>⚙️ 設定</h3>
-        <div className="pf-setting-list">
-          <div className="pf-setting-item" onClick={onPricing}>
-            <span>プラン</span>
-            <span className="pf-setting-value">{getPlanLabel()} ›</span>
+      {/* Plan card */}
+      {onPricing && (
+        <div className="pf-plan-card" onClick={onPricing}>
+          <div className="pf-plan-card-info">
+            <span className="pf-plan-card-label">プラン</span>
+            <span className="pf-plan-card-value">{getPlanLabel()}</span>
           </div>
-          <div className="pf-setting-item">
-            <span>テーマ</span>
-            <span className="pf-setting-value">デスク</span>
-          </div>
+          <span className="pf-plan-card-arrow">›</span>
         </div>
-      </div>
+      )}
 
       {onFeedback && (
         <div className="pf-section">

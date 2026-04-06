@@ -158,19 +158,47 @@
 /* ===== Calendar ===== */
 .pf-calendar {
   display: flex;
-  gap: 4px;
+  flex-direction: column;
+  gap: 8px;
+  padding: 4px 0;
 }
 
-.pf-cal-labels {
+.pf-cal-months {
+  display: flex;
+  gap: 4px;
+  padding-left: 22px;
+}
+
+.pf-cal-day-spacer {
+  width: 0;
+}
+
+.pf-cal-month {
+  flex: 1;
+  font-size: 10px;
+  color: var(--text-secondary);
+  font-weight: 700;
+  text-align: center;
+  min-width: 18px;
+}
+
+.pf-cal-content {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+}
+
+.pf-cal-day-labels {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
   padding-top: 0;
+  width: 16px;
 }
 
-.pf-cal-label {
-  height: 12px;
-  font-size: 9px;
+.pf-cal-day-label {
+  height: 18px;
+  font-size: 10px;
   color: var(--text-muted);
   display: flex;
   align-items: center;
@@ -179,28 +207,81 @@
 
 .pf-cal-grid {
   display: flex;
-  gap: 2px;
+  gap: 4px;
   flex: 1;
-  overflow-x: auto;
 }
 
 .pf-cal-week {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
+  flex: 1;
 }
 
 .pf-cal-cell {
-  width: 12px;
-  height: 12px;
-  border-radius: 3px;
-  background: var(--bg-elevated);
-  transition: background 0.2s;
+  width: 100%;
+  aspect-ratio: 1;
+  max-width: 22px;
+  height: 18px;
+  border-radius: 4px;
+  background: #EFE8D8;
+  border: 1px solid var(--border);
+  transition: background 0.2s, transform 0.15s;
 }
 
 .pf-cal-cell.active {
-  background: var(--accent-light, var(--accent));
-  box-shadow: 0 0 8px var(--accent-glow);
+  background: var(--accent);
+  border-color: var(--accent-dark);
+  box-shadow: 0 1px 3px rgba(212, 145, 90, 0.3);
+}
+
+.pf-cal-cell.today {
+  border: 2px solid var(--accent-dark);
+}
+
+.pf-cal-cell.future {
+  background: transparent;
+  border-color: var(--border-light);
+  opacity: 0.4;
+}
+
+.pf-cal-legend {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  flex-wrap: wrap;
+}
+
+.pf-cal-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 600;
+}
+
+.pf-cal-legend-box {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  display: inline-block;
+}
+
+.pf-cal-legend-box.none {
+  background: #EFE8D8;
+}
+
+.pf-cal-legend-box.active {
+  background: var(--accent);
+  border-color: var(--accent-dark);
+}
+
+.pf-cal-legend-box.today {
+  background: transparent;
+  border: 2px solid var(--accent-dark);
 }
 
 /* ===== Completed Lessons ===== */
@@ -810,19 +891,19 @@
 }
 
 .pf-dev-code {
-  background: var(--bg-tertiary);
+  background: #1E1E2E;
   border-radius: 8px;
   padding: 14px;
   overflow-x: auto;
   margin: 0;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .pf-dev-code code {
   font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
-  font-size: 11px;
-  line-height: 1.6;
-  color: #c9d1d9;
+  font-size: 12px;
+  line-height: 1.65;
+  color: #E8E8F0;
   white-space: pre;
   tab-size: 2;
 }
@@ -843,7 +924,7 @@
   .pf-section { padding: 0 20px; }
   .pf-completed-list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
-  .pf-cal-cell { width: 14px; height: 14px; }
+  .pf-cal-cell { height: 22px; max-width: 26px; }
 }
 
 /* ===== Desktop ===== */
@@ -852,33 +933,40 @@
   .pf-section { padding: 0 24px; }
 }
 
-.pf-settings-inline {
-  margin: 24px 16px 0;
+.pf-plan-card {
+  margin: 16px 16px 0;
   padding: 16px;
   background: var(--bg-card);
-  border-radius: var(--radius-lg);
   border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.15s;
 }
-.pf-settings-inline h3 {
+.pf-plan-card:active { transform: scale(0.98); }
+.pf-plan-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.pf-plan-card-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+.pf-plan-card-value {
   font-size: 14px;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 12px;
 }
-.pf-setting-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+.pf-plan-card-arrow {
+  font-size: 22px;
+  color: var(--text-muted);
 }
-.pf-setting-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 8px 0;
-  border-bottom: 1px solid var(--border-light);
-  font-size: 13px;
-}
-.pf-setting-item:last-child { border-bottom: none; }
-.pf-setting-value { color: var(--text-muted); }
 
 /* Guest user badge + edit */
 .pf-guest-info {

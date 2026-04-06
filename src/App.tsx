@@ -8,7 +8,6 @@ import Flashcards from './Flashcards'
 import GoalSelect from './GoalSelect'
 import Roadmap from './Roadmap'
 import Feedback from './Feedback'
-import Notebook from './Notebook'
 import AIProblemGen from './AIProblemGen'
 import Pricing from './Pricing'
 import DeviationScore from './DeviationScore'
@@ -22,6 +21,7 @@ import { loadProgress, initFromFlashcards } from './progressStore'
 import { loadTheme, applyTheme } from './theme'
 import { loadRoadmapState, needsOnboarding, getProgress as getRoadmapProgress, getCurrentStep, completeStep } from './roadmapStore'
 import { getRoadmap } from './roadmapData'
+import { isDevMode } from './devMode'
 import LessonIcon from './LessonIcon'
 import './App.css'
 
@@ -188,7 +188,7 @@ const lessons = [
   },
 ]
 
-type Tab = 'home' | 'lessons' | 'notebook' | 'profile'
+type Tab = 'home' | 'lessons' | 'profile'
 type Screen =
   | { type: 'home' }
   | { type: 'lesson'; lessonId: number }
@@ -213,6 +213,7 @@ function App() {
   const [studyHours, setStudyHours] = useState(getStudyHours())
   const [progress, setProgress] = useState(loadProgress())
   const [roadmapState, setRoadmapState] = useState(loadRoadmapState())
+  const [devMode, setDevModeState] = useState(isDevMode())
   const screenEnteredAt = useRef<number>(Date.now())
   const [dailyProblem, setDailyProblem] = useState<AIProblemSet | null>(getTodayProblem())
   const [loadingDaily, setLoadingDaily] = useState(false)
@@ -605,8 +606,6 @@ function App() {
         </>
       )}
 
-      {tab === 'notebook' && <Notebook />}
-
       {tab === 'lessons' && (
         <div className="lessons-tab">
           {/* Flashcards in lessons tab */}
@@ -624,12 +623,14 @@ function App() {
             )
           })()}
           {Object.entries(
-            lessons.reduce<Record<string, typeof lessons>>((acc, l) => {
-              const cat = l.category
-              if (!acc[cat]) acc[cat] = []
-              acc[cat].push(l)
-              return acc
-            }, {})
+            lessons
+              .filter(l => devMode || (!l.category.includes('簿記') && !l.category.includes('プロジェクト') && !l.category.includes('模擬試験')))
+              .reduce<Record<string, typeof lessons>>((acc, l) => {
+                const cat = l.category
+                if (!acc[cat]) acc[cat] = []
+                acc[cat].push(l)
+                return acc
+              }, {})
           ).sort(([a], [b]) => {
             const order = (c: string) => {
               if (c.includes('ロジカル')) return 0
@@ -684,18 +685,14 @@ function App() {
           </svg>
           <span>ホーム</span>
         </button>
-        <button className={`nav-item ${tab === 'lessons' ? 'active' : ''}`} onClick={() => setTab('lessons')}>
+        <button className={`nav-item ${tab === 'lessons' ? 'active' : ''}`} onClick={() => { setTab('lessons'); setDevModeState(isDevMode()) }}>
           <svg className="nav-icon" viewBox="0 0 24 24" fill={tab === 'lessons' ? 'currentColor' : 'none'} stroke={tab === 'lessons' ? 'none' : 'currentColor'} strokeWidth="2">
             <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
             <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
           </svg>
           <span>レッスン</span>
         </button>
-        <button className={`nav-item ${tab === 'notebook' ? 'active' : ''}`} onClick={() => setTab('notebook')}>
-          <span className="nav-icon" style={{ fontSize: 22, lineHeight: 1 }}>📓</span>
-          <span>手帳</span>
-        </button>
-        <button className={`nav-item ${tab === 'profile' ? 'active' : ''}`} onClick={() => { setTab('profile'); refreshStats() }}>
+        <button className={`nav-item ${tab === 'profile' ? 'active' : ''}`} onClick={() => { setTab('profile'); refreshStats(); setDevModeState(isDevMode()) }}>
           <svg className="nav-icon" viewBox="0 0 24 24" fill={tab === 'profile' ? 'currentColor' : 'none'} stroke={tab === 'profile' ? 'none' : 'currentColor'} strokeWidth="2">
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
             <circle cx="12" cy="7" r="4" />
