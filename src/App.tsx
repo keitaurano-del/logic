@@ -5,11 +5,15 @@ import JournalInput from './JournalInput'
 import Worksheet from './Worksheet'
 import Profile from './Profile'
 import Flashcards from './Flashcards'
+import GoalSelect from './GoalSelect'
+import Roadmap from './Roadmap'
 import { allLessons } from './lessonData'
 import { recordCompletion, addStudyTime, getCompletedCount, getStreak, getStudyHours } from './stats'
 import { getCardStats } from './flashcardData'
 import { loadProgress, initFromFlashcards } from './progressStore'
 import { loadTheme, applyTheme } from './theme'
+import { loadRoadmapState, needsOnboarding, getProgress as getRoadmapProgress, getCurrentStep, completeStep } from './roadmapStore'
+import { getRoadmap } from './roadmapData'
 import LessonIcon from './LessonIcon'
 import './App.css'
 
@@ -184,6 +188,8 @@ type Screen =
   | { type: 'journal-input' }
   | { type: 'worksheet' }
   | { type: 'flashcards' }
+  | { type: 'goal-select' }
+  | { type: 'roadmap' }
 
 function App() {
   const [screen, setScreen] = useState<Screen>({ type: 'home' })
@@ -192,6 +198,7 @@ function App() {
   const [streak, setStreak] = useState(getStreak())
   const [studyHours, setStudyHours] = useState(getStudyHours())
   const [progress, setProgress] = useState(loadProgress())
+  const [roadmapState, setRoadmapState] = useState(loadRoadmapState())
   const screenEnteredAt = useRef<number>(Date.now())
 
   // Apply saved theme on mount
@@ -205,6 +212,7 @@ function App() {
     setStreak(getStreak())
     setStudyHours(getStudyHours())
     setProgress(loadProgress())
+    setRoadmapState(loadRoadmapState())
   }, [])
 
   // Track study time when leaving a sub-screen
@@ -228,9 +236,45 @@ function App() {
     const elapsed = Date.now() - screenEnteredAt.current
     if (elapsed > 5000) addStudyTime(elapsed)
     recordCompletion(key)
+    // Also mark the step complete in roadmap if applicable
+    const match = key.match(/^lesson-(\d+)$/)
+    if (match) completeStep(parseInt(match[1], 10))
+    if (key === 'mock-exam') completeStep(99)
+    if (key === 'journal-input') completeStep(14)
+    if (key === 'worksheet') completeStep(15)
     setScreen({ type: 'home' })
     refreshStats()
   }, [refreshStats])
+
+  if (screen.type === 'goal-select') {
+    return (
+      <GoalSelect
+        onComplete={() => {
+          setRoadmapState(loadRoadmapState())
+          setScreen({ type: 'home' })
+        }}
+      />
+    )
+  }
+
+  if (screen.type === 'roadmap') {
+    return (
+      <Roadmap
+        onBack={() => { refreshStats(); setScreen({ type: 'home' }) }}
+        onStartLesson={(lessonId) => {
+          const lesson = lessons.find((l) => l.id === lessonId)
+          if (lesson) {
+            if (lesson.action === 'mock-exam') setScreen({ type: 'mock-exam' })
+            else if (lesson.action === 'journal-input') setScreen({ type: 'journal-input' })
+            else if (lesson.action === 'worksheet') setScreen({ type: 'worksheet' })
+            else setScreen({ type: 'lesson', lessonId })
+          } else {
+            setScreen({ type: 'lesson', lessonId })
+          }
+        }}
+      />
+    )
+  }
 
   if (screen.type === 'flashcards') {
     return <Flashcards onBack={goHome} />
@@ -304,6 +348,62 @@ function App() {
               )
             })}
           </section>
+
+          {/* Roadmap Widget */}
+          {(() => {
+            if (needsOnboarding()) {
+              return (
+                <div className="roadmap-widget" onClick={() => setScreen({ type: 'goal-select' })}>
+                  <div className="roadmap-widget-icon">🎯</div>
+                  <div className="roadmap-widget-text">
+                    <strong>学習目標を設定しよう</strong>
+                    <span>ロードマップで効率的に学習</span>
+                  </div>
+                  <span className="roadmap-widget-arrow">›</span>
+                </div>
+              )
+            }
+            const rp = getRoadmapProgress()
+            const rm = roadmapState.goalId ? getRoadmap(roadmapState.goalId) : null
+            const nextStep = getCurrentStep()
+            if (!rm) return null
+            return (
+              <div className="roadmap-widget active" onClick={() => setScreen({ type: 'roadmap' })}>
+                <div className="roadmap-widget-icon">{rm.emoji}</div>
+                <div className="roadmap-widget-text">
+                  <strong>{rm.title}</strong>
+                  <span>
+                    {rp.completed === rp.total
+                      ? '全ステップ完了!'
+                      : `${rp.completed}/${rp.total} 完了 (${rp.percent}%)`}
+                  </span>
+                  {nextStep != null && (
+                    <span className="roadmap-widget-next">
+                      次: {rm.steps.find((s) => s.lessonId === nextStep)?.title}
+                    </span>
+                  )}
+                </div>
+                <div className="roadmap-widget-ring">
+                  <svg width="40" height="40" viewBox="0 0 40 40">
+                    <circle cx="20" cy="20" r="16" fill="none" stroke="var(--bg-card)" strokeWidth="3" />
+                    <circle
+                      cx="20" cy="20" r="16" fill="none"
+                      stroke={rm.color}
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      strokeDasharray={`${rp.percent} ${100 - rp.percent}`}
+                      strokeDashoffset="25"
+                      transform="rotate(-90 20 20)"
+                    />
+                    <text x="20" y="20" textAnchor="middle" dominantBaseline="central"
+                      fill="var(--text-primary)" fontSize="11" fontWeight="800">
+                      {rp.percent}%
+                    </text>
+                  </svg>
+                </div>
+              </div>
+            )
+          })()}
 
           {/* Streak */}
           <section className="hero">

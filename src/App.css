@@ -537,6 +537,76 @@
   border-radius: var(--radius-full);
 }
 
+/* ===== Roadmap Widget ===== */
+.roadmap-widget {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0 16px 16px;
+  padding: 16px 18px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all 0.2s;
+  animation: fade-in-up 0.3s ease both;
+}
+
+.roadmap-widget:active {
+  transform: scale(0.97);
+  opacity: 0.9;
+}
+
+.roadmap-widget:hover {
+  border-color: var(--accent);
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.08);
+}
+
+.roadmap-widget-icon {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.roadmap-widget-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.roadmap-widget-text strong {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.roadmap-widget-text span {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.roadmap-widget-next {
+  font-size: 11px !important;
+  color: var(--accent) !important;
+  margin-top: 2px;
+}
+
+.roadmap-widget-arrow {
+  font-size: 22px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.roadmap-widget-ring {
+  flex-shrink: 0;
+}
+
+.roadmap-widget-ring svg circle {
+  transition: stroke-dasharray 0.4s ease;
+}
+
 /* ===== Tablet (768px+) ===== */
 @media (min-width: 768px) {
   .header { padding: 16px 24px; }
@@ -559,6 +629,8 @@
 
   .flashcard-banner { margin: 0 20px 24px; padding: 18px 22px; }
   .flashcard-banner.lesson-tab-fc { margin: 0 20px 20px; }
+
+  .roadmap-widget { margin: 0 20px 16px; padding: 18px 22px; }
 
   .lessons-tab { padding-top: 20px; }
 
@@ -589,6 +661,13 @@
 
   .flashcard-banner { margin: 0 24px 28px; }
   .flashcard-banner.lesson-tab-fc { margin: 0 24px 24px; }
+
+  .roadmap-widget { margin: 0 24px 16px; }
+  .roadmap-widget:hover {
+    border-color: var(--accent);
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.12);
+    transform: translateY(-1px);
+  }
 
   .bottom-nav {
     padding: 10px 20px;

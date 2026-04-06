@@ -1,0 +1,506 @@
+/* ===== Roadmap Screen ===== */
+.roadmap-screen {
+  min-height: 100svh;
+  background: var(--bg-primary);
+  padding-bottom: 40px;
+}
+
+.roadmap-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 16px;
+  color: var(--text-muted);
+  font-size: 15px;
+}
+
+/* ---- Header ---- */
+.roadmap-header {
+  padding: 16px 20px 12px;
+}
+
+.roadmap-back-btn {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 0;
+  font-family: var(--sans);
+  margin-bottom: 8px;
+}
+
+.roadmap-header-info {
+  margin-top: 4px;
+}
+
+.roadmap-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.roadmap-emoji {
+  font-size: 24px;
+}
+
+.roadmap-subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* ---- Progress bar ---- */
+.roadmap-progress-section {
+  padding: 0 20px;
+  margin-bottom: 24px;
+}
+
+.roadmap-progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.roadmap-progress-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.roadmap-progress-stat {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.roadmap-progress-track {
+  height: 8px;
+  background: var(--bg-card);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.roadmap-progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.4s ease;
+  min-width: 2px;
+}
+
+.roadmap-target-date {
+  display: block;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  text-align: right;
+}
+
+/* ---- Step list (vertical) ---- */
+.roadmap-steps {
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.roadmap-step {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 0;
+}
+
+/* Connector line between steps */
+.roadmap-connector {
+  position: absolute;
+  left: 17px;
+  top: 52px;
+  width: 2px;
+  height: calc(100% - 36px);
+  background: var(--bg-card);
+  border-radius: 1px;
+}
+
+.roadmap-connector.done {
+  background: var(--success);
+  opacity: 0.5;
+}
+
+/* Step node (circle) */
+.roadmap-step-node {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 14px;
+  font-weight: 800;
+  border: 2px solid var(--bg-card);
+  background: var(--bg-secondary);
+  color: var(--text-muted);
+  transition: all 0.3s;
+}
+
+.roadmap-step.done .roadmap-step-node {
+  background: var(--success);
+  border-color: var(--success);
+  color: #fff;
+}
+
+.roadmap-step.current .roadmap-step-node {
+  background: var(--step-color, var(--accent));
+  border-color: var(--step-color, var(--accent));
+  color: #fff;
+  box-shadow: 0 0 16px rgba(99, 102, 241, 0.3);
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+.roadmap-step.locked .roadmap-step-node {
+  opacity: 0.4;
+}
+
+.roadmap-step-number {
+  font-size: 13px;
+}
+
+/* Step content */
+.roadmap-step-content {
+  flex: 1;
+  min-width: 0;
+  padding-top: 4px;
+}
+
+.roadmap-step-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.roadmap-step.locked .roadmap-step-title {
+  color: var(--text-muted);
+  opacity: 0.5;
+}
+
+.roadmap-step-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.roadmap-step.locked .roadmap-step-desc {
+  opacity: 0.4;
+}
+
+/* Start button for current step */
+.roadmap-step-start {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 8px 20px;
+  border: none;
+  border-radius: var(--radius-full);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--sans);
+  transition: transform 0.15s, opacity 0.15s;
+}
+
+.roadmap-step-start:active {
+  transform: scale(0.96);
+  opacity: 0.9;
+}
+
+/* Done badge */
+.roadmap-step-badge {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--success);
+  background: var(--success-soft);
+  padding: 2px 10px;
+  border-radius: var(--radius-full);
+}
+
+/* ---- Completion banner ---- */
+.roadmap-complete-banner {
+  margin: 32px 20px 0;
+  padding: 24px;
+  background: linear-gradient(135deg, var(--success-soft), rgba(16, 185, 129, 0.04));
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: var(--radius-lg);
+  text-align: center;
+}
+
+.roadmap-complete-emoji {
+  font-size: 36px;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.roadmap-complete-banner strong {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--success);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.roadmap-complete-banner p {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* ===== GoalSelect ===== */
+.goal-select {
+  min-height: 100svh;
+  background: var(--bg-primary);
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.goal-select-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.goal-select-title {
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--text-primary);
+  letter-spacing: -0.03em;
+  margin-bottom: 8px;
+}
+
+.goal-select-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+/* ---- Goal cards ---- */
+.goal-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.goal-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.2s, box-shadow 0.2s;
+  font-family: var(--sans);
+  text-align: left;
+  width: 100%;
+}
+
+.goal-card:hover {
+  border-color: var(--goal-color, var(--accent));
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.goal-card:active {
+  transform: scale(0.98);
+}
+
+.goal-card-emoji {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.goal-card-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.goal-card-text strong {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.goal-card-text span {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.goal-card-steps {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--goal-color, var(--accent));
+  background: rgba(255, 255, 255, 0.04);
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+.goal-card-arrow {
+  font-size: 18px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+/* ---- Schedule form (Screen B) ---- */
+.schedule-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.schedule-label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.schedule-label-text {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.schedule-input {
+  padding: 12px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: 15px;
+  font-family: var(--sans);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.schedule-input:focus {
+  border-color: var(--accent);
+}
+
+/* color-scheme for dark date picker */
+.schedule-input[type="date"] {
+  color-scheme: dark;
+}
+
+/* Pace buttons */
+.pace-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pace-btn {
+  padding: 8px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--sans);
+  transition: all 0.15s;
+}
+
+.pace-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.pace-btn:not(.active):hover {
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+
+/* Schedule summary */
+.schedule-summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.schedule-summary-icon {
+  font-size: 18px;
+}
+
+/* Actions */
+.schedule-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.schedule-back {
+  flex: 1;
+  padding: 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--sans);
+  transition: all 0.15s;
+}
+
+.schedule-back:hover {
+  border-color: var(--accent);
+}
+
+.schedule-start {
+  flex: 2;
+  padding: 14px;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius-lg);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: var(--sans);
+  transition: transform 0.15s, opacity 0.15s;
+}
+
+.schedule-start:active {
+  transform: scale(0.97);
+  opacity: 0.9;
+}
+
+/* ===== Responsive ===== */
+@media (min-width: 768px) {
+  .roadmap-header { padding: 20px 24px 16px; }
+  .roadmap-progress-section { padding: 0 24px; }
+  .roadmap-steps { padding: 0 24px; }
+  .roadmap-complete-banner { margin: 36px 24px 0; }
+
+  .goal-select { padding: 48px 24px; }
+  .goal-select-title { font-size: 30px; }
+}
