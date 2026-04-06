@@ -767,6 +767,10 @@
   transition: all 0.2s;
 }
 .daily-card:active { transform: scale(0.98); }
+.daily-card.welcome { background: linear-gradient(135deg, #E0F2FE 0%, #DBEAFE 100%); border-color: #3B82F6; }
+.daily-card.welcome .daily-text strong { color: #1E40AF; }
+.daily-card.continue { background: linear-gradient(135deg, #DCFCE7 0%, #D1FAE5 100%); border-color: #10B981; }
+.daily-card.continue .daily-text strong { color: #065F46; }
 .daily-loading { cursor: wait; }
 .daily-icon { font-size: 32px; flex-shrink: 0; }
 .daily-text { flex: 1; min-width: 0; }
@@ -949,5 +953,16 @@
     max-width: 1080px;
     margin: 0 auto;
     padding: 24px 32px;
+  }
+
+  /* Home: 3-column CTA grid for AI gen / Roleplay / Coffee Break */
+  .home-cta-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 0 16px 16px;
+  }
+  .home-cta-grid .ai-gen-card {
+    margin: 0;
   }
 }

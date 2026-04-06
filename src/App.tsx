@@ -19,7 +19,7 @@ import { getAIProblem, type AIProblemSet } from './aiProblemStore'
 import { verifyCheckout } from './subscription'
 import { getTodayProblem, generateTodayProblem, isDailyCompleted, markDailyCompleted } from './dailyProblem'
 import { allLessons } from './lessonData'
-import { recordCompletion, addStudyTime, getCompletedCount, getStreak, getStudyHours } from './stats'
+import { recordCompletion, addStudyTime, getCompletedCount, getStreak, getStudyHours, getCompletedLessons } from './stats'
 import { getCardStats } from './flashcardData'
 import { initFromFlashcards } from './progressStore'
 import { loadTheme, applyTheme } from './theme'
@@ -432,11 +432,43 @@ function App() {
     }
   }
 
+  const isFirstTime = completedCount === 0 && streak === 0
+  const nextLesson = (() => {
+    if (completedCount === 0) return null
+    const completed = new Set(getCompletedLessons())
+    const visible = lessons.filter(l => devMode || (!l.category.includes('簿記') && !l.category.includes('プロジェクト') && !l.category.includes('模擬試験')))
+    return visible.find(l => !completed.has(`lesson-${l.id}`)) || null
+  })()
+
   return (
     <div className="app">
       {/* Tab Content */}
       {tab === 'home' && (
         <>
+          {/* Welcome card for first-time visitors */}
+          {isFirstTime && (
+            <div className="daily-card welcome" onClick={() => dailyProblem && setScreen({ type: 'daily-problem' })}>
+              <div className="daily-icon">👋</div>
+              <div className="daily-text">
+                <strong>Logic へようこそ</strong>
+                <span>ロジカルシンキング・簿記・PM を 3 分から学べます。今日の 1 問から始めよう →</span>
+              </div>
+              <span className="daily-badge new">START</span>
+            </div>
+          )}
+
+          {/* Continue from card */}
+          {nextLesson && (
+            <div className="daily-card continue" onClick={() => handleCardClick(nextLesson)}>
+              <div className="daily-icon">▶️</div>
+              <div className="daily-text">
+                <strong>続きから</strong>
+                <span>{nextLesson.title}</span>
+              </div>
+              <span className="daily-badge new">NEXT</span>
+            </div>
+          )}
+
           {/* Today's Problem */}
           {dailyProblem && (
             <div className="daily-card" onClick={() => setScreen({ type: 'daily-problem' })}>
@@ -511,6 +543,7 @@ function App() {
             )
           })()}
 
+          <div className="home-cta-grid">
           {/* AI Problem Generator entry */}
           <div className="ai-gen-card" onClick={() => setScreen({ type: 'ai-gen' })}>
             <div className="ai-gen-icon">✨</div>
@@ -539,6 +572,7 @@ function App() {
               <span>3分で読める日常シーンの小話 <span className="ai-gen-badge">NEW</span></span>
             </div>
             <span className="ai-gen-arrow">›</span>
+          </div>
           </div>
 
           {/* Lessons */}
