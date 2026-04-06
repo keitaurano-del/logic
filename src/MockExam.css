@@ -15,7 +15,7 @@
 .mock-info-row span { color: var(--text-muted); }
 .mock-info-row strong { color: var(--text-primary); font-weight: 700; }
 .mock-intro-note { font-size: 13px; color: var(--text-muted); text-align: center; }
-.mock-start-btn { width: 100%; padding: 16px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-md); font-size: 16px; font-weight: 800; cursor: pointer; font-family: var(--sans); }
+.mock-start-btn { width: 100%; padding: 16px; background: var(--accent); color: var(--accent-fg); border: none; border-radius: var(--radius-md); font-size: 16px; font-weight: 800; cursor: pointer; font-family: var(--sans); }
 .mock-start-btn:active { transform: scale(0.97); }
 
 /* Exam */
@@ -41,7 +41,7 @@
 .mock-feedback.wrong strong { color: var(--danger); }
 .mock-feedback p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
 
-.mock-next-btn { width: 100%; padding: 16px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-md); font-size: 16px; font-weight: 800; cursor: pointer; font-family: var(--sans); }
+.mock-next-btn { width: 100%; padding: 16px; background: var(--accent); color: var(--accent-fg); border: none; border-radius: var(--radius-md); font-size: 16px; font-weight: 800; cursor: pointer; font-family: var(--sans); }
 .mock-next-btn:active { transform: scale(0.97); }
 
 /* Result */
@@ -71,7 +71,7 @@
 
 .mock-result-actions { display: flex; gap: 10px; width: 100%; margin-top: 12px; padding-bottom: 24px; }
 .mock-retry-btn { flex: 1; padding: 15px; border: 1px solid var(--accent); background: transparent; color: var(--accent); border-radius: var(--radius-md); font-size: 15px; font-weight: 800; cursor: pointer; font-family: var(--sans); }
-.mock-done-btn { flex: 1; padding: 15px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-md); font-size: 15px; font-weight: 800; cursor: pointer; font-family: var(--sans); }
+.mock-done-btn { flex: 1; padding: 15px; background: var(--accent); color: var(--accent-fg); border: none; border-radius: var(--radius-md); font-size: 15px; font-weight: 800; cursor: pointer; font-family: var(--sans); }
 
 /* ===== Wide Desktop (1280px+) ===== */
 @media (min-width: 1280px) {

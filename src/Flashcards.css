@@ -20,7 +20,7 @@
 .fc-hero-text strong { color: var(--accent-dark); }
 
 .fc-start-btn {
-  width: 100%; padding: 16px; background: var(--accent); color: #fff;
+  width: 100%; padding: 16px; background: var(--accent); color: var(--accent-fg);
   border: none; border-radius: var(--radius-md); font-size: 16px; font-weight: 800;
   cursor: pointer; font-family: var(--sans);
 }

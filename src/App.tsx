@@ -504,6 +504,7 @@ function App() {
       {/* Tab Content */}
       {tab === 'home' && (
         <>
+          <div className="home-highlights">
           {/* Welcome card for first-time visitors */}
           {isFirstTime && (
             <div className="daily-card welcome" onClick={() => dailyProblem && setScreen({ type: 'daily-problem' })}>
@@ -571,6 +572,7 @@ function App() {
               </div>
             </div>
           )}
+          </div>
 
           {/* Streak */}
           <section className="hero">

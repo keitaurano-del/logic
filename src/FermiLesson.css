@@ -19,7 +19,7 @@
 .fl-textarea { width: 100%; padding: 14px 16px; background: var(--bg-card); border: 1.5px solid var(--border); border-radius: var(--radius-md); font-size: 14px; font-family: var(--sans); color: var(--text-primary); line-height: 1.7; resize: vertical; outline: none; min-height: 200px; }
 .fl-textarea:focus { border-color: var(--accent); }
 
-.fl-primary-btn { padding: 16px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-md); font-size: 16px; font-weight: 800; cursor: pointer; font-family: var(--sans); margin-top: 4px; }
+.fl-primary-btn { padding: 16px; background: var(--accent); color: var(--accent-fg); border: none; border-radius: var(--radius-md); font-size: 16px; font-weight: 800; cursor: pointer; font-family: var(--sans); margin-top: 4px; }
 .fl-primary-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .fl-primary-btn:active:not(:disabled) { transform: scale(0.98); }
 

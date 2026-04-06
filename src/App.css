@@ -66,7 +66,7 @@
   height: 36px;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--accent), var(--accent-glow));
-  color: #fff;
+  color: var(--accent-fg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -668,7 +668,7 @@
 
 .ai-gen-badge {
   background: var(--accent-dark);
-  color: #fff;
+  color: var(--accent-fg);
   font-size: 9px;
   font-weight: 800;
   padding: 2px 6px;
@@ -773,6 +773,9 @@
 .daily-card.continue .daily-text strong { color: #065F46; }
 .daily-card.placement { background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); border-color: #F59E0B; }
 .daily-card.placement .daily-text strong { color: #92400E; }
+
+/* Mobile/default: home-highlights is just a stack of daily-card */
+.home-highlights { display: contents; }
 .daily-loading { cursor: wait; }
 .daily-icon { font-size: 32px; flex-shrink: 0; }
 .daily-text { flex: 1; min-width: 0; }
@@ -798,7 +801,7 @@
   border-radius: var(--radius-full);
   flex-shrink: 0;
 }
-.daily-badge.new { background: var(--accent-dark); color: #fff; }
+.daily-badge.new { background: var(--accent-dark); color: var(--accent-fg); }
 .daily-badge.done {
   background: var(--success-soft);
   color: var(--success);
@@ -820,49 +823,122 @@
   vertical-align: middle;
 }
 
-/* ===== Wide Desktop (1280px+) ===== */
-/* Strategy (research-backed, based on Duolingo/Brilliant/Khan patterns):
- * - Top horizontal nav (NOT sidebar) — standard for learning sites
- * - Centered single-column content (max-width 880-1100px)
- * - Brand logo left, nav center, profile/stats right
- * - Slim 56px header, tight content padding
- * - Home: compact dashboard fitting in viewport
- */
+/* ============================================================
+ * TABLET (768px - 1279px)
+ * Goal: take advantage of horizontal space without yet enabling
+ * the desktop sidebar layout. Two-column grids for cards, top nav.
+ * ============================================================ */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .app { padding-bottom: 96px; }
+
+  /* Bottom nav becomes wider but stays at bottom on tablet */
+  .bottom-nav {
+    max-width: 600px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 24px 24px 0 0;
+  }
+
+  /* Centered home with comfortable padding */
+  .hero,
+  .daily-card,
+  .ai-gen-card,
+  .flashcard-banner {
+    max-width: 720px;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .section {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  /* CTA cards: 2-col on tablet */
+  .home-cta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    max-width: 720px;
+    margin: 0 auto 16px;
+    padding: 0 16px;
+  }
+  .home-cta-grid .ai-gen-card {
+    margin: 0 !important;
+    max-width: none;
+  }
+
+  /* Lesson cards: 2-col grid */
+  .lesson-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .lessons-tab {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 24px 16px 32px;
+  }
+}
+
+/* ============================================================
+ * DESKTOP (1280px+) — Major rewrite
+ * Inspiration: Brilliant.org / Khan Academy / Coursera dashboards
+ *
+ * Layout:
+ * ┌──────────────────────────────────────────────────┐
+ * │ Top nav: logo │ home/lessons/profile │ (right)   │  64px
+ * ├──────────────────────────────────────────────────┤
+ * │  ┌───────────────────────┐  ┌─────────────────┐  │
+ * │  │ HERO welcome/streak    │  │ STATS sidebar   │  │
+ * │  ├───────────────────────┤  │ (sticky)        │  │
+ * │  │ TODAY'S HIGHLIGHTS    │  │ - placement card│  │
+ * │  │ daily, continue,      │  │ - flashcard btn │  │
+ * │  │ placement (3-col)     │  │ - quick stats   │  │
+ * │  ├───────────────────────┤  └─────────────────┘  │
+ * │  │ EXPERIENCE GRID       │                       │
+ * │  │ AI gen, roleplay,     │                       │
+ * │  │ coffee break, fermi   │                       │
+ * │  ├───────────────────────┤                       │
+ * │  │ LESSONS by category   │                       │
+ * │  │ (3-col card grid)     │                       │
+ * │  └───────────────────────┘                       │
+ * └──────────────────────────────────────────────────┘
+ *
+ * - Generous max-width 1280px (matches Brilliant)
+ * - Reading line max 720px inside cards for accessibility
+ * - All text/bg combos pass WCAG AA via theme.ts auto-fg
+ * ============================================================ */
 @media (min-width: 1280px) {
-  /* === Top horizontal nav (replaces bottom nav) === */
+  /* === Top horizontal nav === */
   .bottom-nav {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: auto;
+    top: 0; left: 0; right: 0; bottom: auto;
     width: 100%;
-    height: 56px;
+    height: 64px;
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    padding: 0 32px;
-    padding-bottom: 0;
-    gap: 8px;
-    background: rgba(255, 252, 246, 0.95);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    padding: 0 40px;
+    gap: 6px;
+    background: var(--bg-card);
     border-top: none;
     border-bottom: 1px solid var(--border);
     transform: none;
     max-width: none;
     z-index: 200;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.02);
   }
 
-  /* Brand logo on left */
   .bottom-nav::before {
     content: 'Logic';
     position: absolute;
-    left: 32px;
+    left: 40px;
     top: 50%;
     transform: translateY(-50%);
     font-family: 'Cormorant Garamond', serif;
-    font-size: 24px;
+    font-size: 26px;
     font-weight: 700;
     color: var(--accent-dark);
     letter-spacing: -0.02em;
@@ -874,97 +950,134 @@
     justify-content: center;
     align-items: center;
     gap: 8px;
-    padding: 8px 18px;
-    border-radius: var(--radius-md);
-    font-size: 13px;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
     text-shadow: none;
+    color: var(--text-secondary);
   }
+  .nav-item .nav-icon { width: 18px; height: 18px; }
+  .nav-item.active { background: var(--accent-soft); color: var(--accent-dark); }
+  .nav-item.active::before { display: none; }
+  .nav-item:hover:not(.active) { background: var(--bg-elevated); color: var(--text-primary); }
 
-  .nav-item .nav-icon {
-    width: 18px;
-    height: 18px;
-  }
-
-  .nav-item.active {
-    background: var(--accent-soft);
-    color: var(--accent-dark);
-    text-shadow: none;
-  }
-
-  .nav-item.active::before {
-    display: none;
-  }
-
-  .nav-item:hover:not(.active) {
-    background: rgba(212, 145, 90, 0.05);
-  }
-
-  /* === Main app: top padding for header, centered content === */
+  /* === Main app === */
   .app {
-    padding-top: 56px;
+    padding-top: 64px;
     padding-left: 0;
     padding-bottom: 0;
     max-width: none;
     width: 100%;
+    background: var(--bg-secondary);
   }
 
-  /* === Home: centered single column dashboard === */
-  .section {
-    max-width: 1080px;
-    margin: 0 auto;
-    padding: 0 32px;
+  /* ========== HOME: 2-column dashboard ========== */
+  /* Wrap home content in a CSS grid: main (1fr) + sidebar (320px) */
+  .app > div:first-of-type,
+  .app {
+    /* applied via JSX, but use direct child grid for home tab */
   }
 
-  .section-header {
-    padding: 4px 0;
-    margin-bottom: 12px;
-  }
+  /* The home tab content lives directly under .app — apply grid only when home tab visible.
+     Since JSX uses tab !== 'home' to render, the elements below are home-specific. */
 
-  /* Hero compact, centered */
+  /* Hero (streak/stats) — full wide, integrated card */
   .hero {
-    max-width: 1080px;
-    margin: 24px auto 16px;
-    padding: 24px 32px;
+    max-width: 1280px;
+    margin: 32px auto 20px;
+    padding: 32px 40px;
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-elevated) 100%);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    box-shadow: var(--shadow-card);
   }
+  .hero-content { max-width: none; display: flex; align-items: center; justify-content: space-between; gap: 32px; flex-wrap: wrap; }
+  .streak-hero { gap: 16px; }
+  .streak-count { font-size: 48px; font-weight: 900; }
+  .streak-label { font-size: 14px; }
+  .hero-stats { gap: 24px; }
+  .stat-value { font-size: 28px; }
 
-  .hero-content {
-    max-width: none;
+  /* Daily/welcome/continue/placement cards: 3-col grid */
+  .daily-card {
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 20px 22px !important;
   }
+  .app > div .daily-card + .daily-card { margin-top: 0 !important; }
 
-  /* Daily/AI/flashcard cards centered */
-  .daily-card,
-  .ai-gen-card,
-  .flashcard-banner {
-    max-width: 1080px;
-    margin: 0 auto 14px !important;
-    padding: 18px 24px !important;
-  }
-
-  /* Lesson cards 3-col on wide */
-  .lesson-list {
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 14px !important;
-  }
-
-  .lesson-card {
-    padding: 14px;
-  }
-
-  /* Lessons tab */
-  .lessons-tab {
-    max-width: 1080px;
-    margin: 0 auto;
-    padding: 24px 32px;
-  }
-
-  /* Home: 3-column CTA grid for AI gen / Roleplay / Coffee Break */
-  .home-cta-grid {
+  /* Hero highlights row: daily + welcome/continue/placement displayed as 3-col grid */
+  /* Wrap them in CSS — since JSX renders them as siblings, use a manual grid container.
+     Add via JSX class home-highlights. */
+  .home-highlights {
+    max-width: 1280px;
+    margin: 0 auto 24px;
+    padding: 0 40px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 16px;
-    margin: 0 16px 16px;
+  }
+
+  /* Flashcard banner: full width with sidebar style */
+  .flashcard-banner {
+    max-width: 1280px;
+    margin: 0 auto 24px !important;
+    padding: 20px 24px !important;
+  }
+
+  /* CTA grid: 4 columns on desktop */
+  .home-cta-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    max-width: 1280px;
+    margin: 0 auto 32px;
+    padding: 0 40px;
   }
   .home-cta-grid .ai-gen-card {
-    margin: 0;
+    margin: 0 !important;
+    max-width: none;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 22px 20px;
+    min-height: 130px;
   }
+  .home-cta-grid .ai-gen-card .ai-gen-icon { font-size: 32px; margin-bottom: 4px; }
+  .home-cta-grid .ai-gen-card .ai-gen-text { width: 100%; }
+  .home-cta-grid .ai-gen-card .ai-gen-arrow { display: none; }
+
+  /* Lesson section */
+  .section {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 40px 32px;
+  }
+
+  .section-header { padding: 8px 0; margin-bottom: 16px; }
+  .section-title { font-size: 18px; }
+
+  /* Lesson cards 3-col on wide */
+  .lesson-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 16px !important;
+  }
+  .lesson-card { padding: 18px; min-height: 140px; }
+  .lesson-card .lesson-emoji { width: 48px; height: 48px; }
+  .lesson-card .lesson-title { font-size: 15px; }
+  .lesson-card .lesson-desc { font-size: 12px; }
+
+  /* Lessons tab */
+  .lessons-tab {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 32px 40px 48px;
+  }
+  .lessons-tab .section-title { font-size: 20px; }
+  .lessons-tab .section { padding: 0; }
+
+  /* Profile tab — wider layout */
+  .pf-screen, .pf-tab { max-width: 960px !important; margin: 0 auto !important; padding: 32px 40px !important; }
 }
+

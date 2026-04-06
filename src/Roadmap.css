@@ -426,7 +426,7 @@
 .pace-btn.active {
   background: var(--accent);
   border-color: var(--accent);
-  color: #fff;
+  color: var(--accent-fg);
 }
 
 .pace-btn:not(.active):hover {
@@ -481,7 +481,7 @@
   background: var(--accent);
   border: none;
   border-radius: var(--radius-lg);
-  color: #fff;
+  color: var(--accent-fg);
   font-size: 15px;
   font-weight: 800;
   cursor: pointer;

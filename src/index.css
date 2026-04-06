@@ -21,6 +21,7 @@
   --accent-soft:   rgba(212, 145, 90, 0.10);
   --accent-glow:   rgba(212, 145, 90, 0.22);
   --accent-dark:   #B07442;
+  --accent-fg:     #FFFFFF;  /* foreground for accent buttons; auto-set by theme.ts based on contrast */
 
   --success:       #5A8A5A;
   --success-soft:  rgba(90, 138, 90, 0.12);

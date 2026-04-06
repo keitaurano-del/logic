@@ -13,7 +13,7 @@
 .rk-cta-emoji { font-size: 48px; }
 .rk-cta-card h3 { font-size: 16px; font-weight: 800; color: var(--text-primary); }
 .rk-cta-card p { font-size: 13px; color: var(--text-secondary); }
-.rk-cta-btn { padding: 14px 24px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-md); font-size: 14px; font-weight: 800; cursor: pointer; font-family: var(--sans); margin-top: 8px; }
+.rk-cta-btn { padding: 14px 24px; background: var(--accent); color: var(--accent-fg); border: none; border-radius: var(--radius-md); font-size: 14px; font-weight: 800; cursor: pointer; font-family: var(--sans); margin-top: 8px; }
 
 /* Summary */
 .rk-summary { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: var(--radius-lg); padding: 18px; box-shadow: var(--shadow-card); }
@@ -33,7 +33,7 @@
 .rk-rank { width: 36px; text-align: center; font-size: 16px; font-weight: 900; color: var(--text-muted); flex-shrink: 0; }
 .rk-rank.medal-1, .rk-rank.medal-2, .rk-rank.medal-3 { font-size: 22px; }
 .rk-name { flex: 1; font-size: 14px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px; min-width: 0; }
-.rk-you-badge { font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 999px; background: var(--accent); color: #fff; letter-spacing: 0.5px; }
+.rk-you-badge { font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 999px; background: var(--accent); color: var(--accent-fg); letter-spacing: 0.5px; }
 .rk-dev { font-size: 12px; color: var(--text-muted); flex-shrink: 0; }
 .rk-dev strong { font-size: 16px; color: var(--accent); margin-left: 4px; }
 

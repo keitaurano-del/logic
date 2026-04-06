@@ -2,7 +2,7 @@
 .rp-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: rgba(245,241,232,0.95); border-bottom: 1px solid var(--border); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); color: var(--text-primary); font-size: 16px; font-weight: 800; }
 .rp-back { background: none; border: none; color: var(--text-primary); font-size: 22px; cursor: pointer; padding: 4px 8px; }
 .rp-header-spacer { width: 32px; }
-.rp-finish { background: var(--accent); color: #fff; border: none; padding: 6px 14px; border-radius: var(--radius-full, 999px); font-size: 13px; font-weight: 800; cursor: pointer; font-family: var(--sans); }
+.rp-finish { background: var(--accent); color: var(--accent-fg); border: none; padding: 6px 14px; border-radius: var(--radius-full, 999px); font-size: 13px; font-weight: 800; cursor: pointer; font-family: var(--sans); }
 
 .rp-content { flex: 1; padding: 20px 16px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; }
 
@@ -21,7 +21,7 @@
 .rp-card-partner { font-size: 12px; color: var(--text-muted); }
 .rp-card-goal { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
 .rp-card-arrow { font-size: 24px; color: var(--text-muted); align-self: center; }
-.rp-badge.premium { font-size: 10px; font-weight: 900; padding: 4px 8px; border-radius: var(--radius-full, 999px); background: var(--accent); color: #fff; align-self: center; letter-spacing: 0.5px; }
+.rp-badge.premium { font-size: 10px; font-weight: 900; padding: 4px 8px; border-radius: var(--radius-full, 999px); background: var(--accent); color: var(--accent-fg); align-self: center; letter-spacing: 0.5px; }
 
 /* Chat */
 .rp-chat-context { padding: 12px 16px; background: var(--bg-card); border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 2px; font-size: 12px; color: var(--text-secondary); }
@@ -37,7 +37,7 @@
 .rp-bubble.assistant { align-self: flex-start; align-items: flex-start; }
 .rp-bubble-name { font-size: 11px; color: var(--text-muted); font-weight: 700; padding: 0 6px; }
 .rp-bubble-text { padding: 12px 14px; border-radius: 16px; font-size: 14px; line-height: 1.6; white-space: pre-wrap; word-break: break-word; }
-.rp-bubble.user .rp-bubble-text { background: var(--accent); color: #fff; border-bottom-right-radius: 4px; }
+.rp-bubble.user .rp-bubble-text { background: var(--accent); color: var(--accent-fg); border-bottom-right-radius: 4px; }
 .rp-bubble.assistant .rp-bubble-text { background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
 .rp-typing { font-style: italic; color: var(--text-muted); }
 
@@ -52,7 +52,7 @@
 .rp-input-bar { display: flex; gap: 8px; padding: 12px; background: var(--bg-card); border-top: 1px solid var(--border); }
 .rp-input { flex: 1; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-md, 12px); font-size: 14px; font-family: var(--sans); background: var(--bg-elevated); color: var(--text-primary); resize: none; outline: none; }
 .rp-input:focus { border-color: var(--accent); }
-.rp-send-btn { padding: 0 18px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-md, 12px); font-size: 14px; font-weight: 800; cursor: pointer; font-family: var(--sans); }
+.rp-send-btn { padding: 0 18px; background: var(--accent); color: var(--accent-fg); border: none; border-radius: var(--radius-md, 12px); font-size: 14px; font-weight: 800; cursor: pointer; font-family: var(--sans); }
 .rp-send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
 /* Result */
@@ -71,7 +71,7 @@
 .rp-summary-card ul { padding-left: 18px; }
 .rp-summary-card li { font-size: 13px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 4px; }
 
-.rp-done-btn { width: 100%; padding: 16px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-md, 12px); font-size: 16px; font-weight: 800; cursor: pointer; font-family: var(--sans); margin-top: 8px; }
+.rp-done-btn { width: 100%; padding: 16px; background: var(--accent); color: var(--accent-fg); border: none; border-radius: var(--radius-md, 12px); font-size: 16px; font-weight: 800; cursor: pointer; font-family: var(--sans); margin-top: 8px; }
 
 /* ===== Wide Desktop ===== */
 @media (min-width: 1280px) {

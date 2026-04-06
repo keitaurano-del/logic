@@ -87,6 +87,26 @@ function darkenHex(hex: string, amount: number): string {
   return `#${[r, g, b].map((n) => n.toString(16).padStart(2, '0')).join('')}`
 }
 
+// WCAG luminance for choosing readable button text
+function luminance(hex: string): number {
+  const h = hex.replace('#', '')
+  const full = h.length === 3 ? h.split('').map((c) => c + c).join('') : h
+  if (full.length !== 6) return 0.5
+  const channels = [0, 2, 4].map((i) => {
+    const c = parseInt(full.slice(i, i + 2), 16) / 255
+    return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)
+  })
+  return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2]
+}
+
+function pickFg(bg: string): string {
+  // White contrast ratio = (1.05) / (lum + 0.05); Black = (lum + 0.05) / 0.05
+  const lum = luminance(bg)
+  const whiteRatio = 1.05 / (lum + 0.05)
+  const blackRatio = (lum + 0.05) / 0.05
+  return whiteRatio >= blackRatio ? '#FFFFFF' : '#1A1A1A'
+}
+
 export function applyTheme(s: ThemeState) {
   const root = document.documentElement
   // Reset previous mode classes
@@ -94,16 +114,23 @@ export function applyTheme(s: ThemeState) {
   root.classList.add(`mode-${s.mode}`)
 
   // Accent variables
+  let accentColor = ''
   if (s.mode === 'custom' && /^#[0-9A-Fa-f]{6}$/.test(s.customHex)) {
+    accentColor = s.customHex
     root.style.setProperty('--accent', s.customHex)
     root.style.setProperty('--accent-soft', hexToRgba(s.customHex, 0.12))
     root.style.setProperty('--accent-glow', hexToRgba(s.customHex, 0.25))
     root.style.setProperty('--accent-dark', darkenHex(s.customHex, 30))
   } else {
     const a = ACCENTS.find((x) => x.id === s.accent) || ACCENTS[0]
+    accentColor = a.accent
     root.style.setProperty('--accent', a.accent)
     root.style.setProperty('--accent-soft', a.accentSoft)
     root.style.setProperty('--accent-glow', a.accentGlow)
     root.style.setProperty('--accent-dark', a.accentDark)
   }
+
+  // Auto-pick readable foreground for buttons (white or near-black)
+  // This avoids unreadable white-on-yellow / white-on-light-orange situations.
+  root.style.setProperty('--accent-fg', pickFg(accentColor))
 }

@@ -1023,7 +1023,7 @@
 .pf-guest-input:focus { outline: none; }
 .pf-guest-save {
   background: var(--accent);
-  color: #fff;
+  color: var(--accent-fg);
   border: none;
   border-radius: var(--radius-md);
   padding: 6px 14px;

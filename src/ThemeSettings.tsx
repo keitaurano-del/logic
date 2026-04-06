@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { ACCENTS, MODES, loadTheme, saveTheme, applyTheme, type ModeId, type AccentId, type ThemeState } from './theme'
 import { isPremium } from './subscription'
+import { contrastRatio, describeContrast } from './colorContrast'
 import './ThemeSettings.css'
 
 type Props = { onBack: () => void; onUpgrade: () => void }
@@ -77,31 +78,61 @@ export default function ThemeSettings({ onBack, onUpgrade }: Props) {
           </div>
         </section>
 
-        {state.mode === 'custom' && premium && (
-          <section className="ts-section">
-            <h3 className="ts-section-title">カスタムカラー</h3>
-            <div className="ts-custom-row">
-              <input
-                type="color"
-                value={state.customHex}
-                onChange={(e) => updateCustomHex(e.target.value)}
-                className="ts-color-input"
-              />
-              <input
-                type="text"
-                value={state.customHex}
-                onChange={(e) => {
-                  const v = e.target.value
-                  if (/^#[0-9A-Fa-f]{0,6}$/.test(v)) updateCustomHex(v)
-                }}
-                placeholder="#D4915A"
-                className="ts-hex-input"
-                maxLength={7}
-              />
+        {state.mode === 'custom' && premium && (() => {
+          // Compute contrast of selected accent on white card and on bg-primary (light defaults)
+          const ratioOnCard = contrastRatio('#FFFFFF', state.customHex)
+          const cardCheck = describeContrast(ratioOnCard)
+          return (
+            <section className="ts-section">
+              <h3 className="ts-section-title">カスタムカラー</h3>
+              <div className="ts-custom-row">
+                <input
+                  type="color"
+                  value={state.customHex}
+                  onChange={(e) => updateCustomHex(e.target.value)}
+                  className="ts-color-input"
+                />
+                <input
+                  type="text"
+                  value={state.customHex}
+                  onChange={(e) => {
+                    const v = e.target.value
+                    if (/^#[0-9A-Fa-f]{0,6}$/.test(v)) updateCustomHex(v)
+                  }}
+                  placeholder="#D4915A"
+                  className="ts-hex-input"
+                  maxLength={7}
+                />
+              </div>
+              <p className="ts-hint">入力した色がアクセントカラーとして即座に反映されます</p>
+              <div className={`ts-contrast ${cardCheck.ok ? 'ok' : 'warn'}`}>
+                <strong>ボタン文字の読みやすさ</strong>
+                <span>白文字 × この色 = コントラスト比 {ratioOnCard.toFixed(2)}:1 ({cardCheck.label})</span>
+                {!cardCheck.ok && (
+                  <p className="ts-contrast-note">
+                    ⚠ この色は背景に白文字を重ねると読みにくいため、ボタン上の文字色は自動的に黒に切り替わります(WCAG AA 基準維持)
+                  </p>
+                )}
+              </div>
+            </section>
+          )
+        })()}
+
+        {(() => {
+          const acc = ACCENTS.find(a => a.id === state.accent) || ACCENTS[0]
+          const ratio = contrastRatio('#FFFFFF', acc.accent)
+          const check = describeContrast(ratio)
+          if (check.ok) return null
+          return (
+            <div className="ts-contrast warn">
+              <strong>ℹ アクセントカラーの読みやすさ</strong>
+              <span>白文字 × {acc.name} = {ratio.toFixed(2)}:1 ({check.label})</span>
+              <p className="ts-contrast-note">
+                ボタン上の文字は自動的に読みやすい色に調整されます(WCAG AA 基準)
+              </p>
             </div>
-            <p className="ts-hint">入力した色がアクセントカラーとして即座に反映されます</p>
-          </section>
-        )}
+          )
+        })()}
 
         <section className="ts-section">
           <h3 className="ts-section-title">アクセントカラー</h3>

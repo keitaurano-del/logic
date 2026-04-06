@@ -163,7 +163,7 @@
 
 .rp-submit {
   background: var(--accent);
-  color: #fff;
+  color: var(--accent-fg);
 }
 
 .rp-submit:disabled {
