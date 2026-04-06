@@ -7,7 +7,26 @@ import {
   savePlacementResult,
   skipPlacement,
 } from './placementTest'
+import { getGuestId, getNickname, setNickname, defaultNickname } from './guestId'
 import './PlacementTest.css'
+
+const API_BASE = import.meta.env.DEV ? `http://${window.location.hostname}:3001` : ''
+
+async function submitPlacement(deviation: number, correctCount: number, totalCount: number, nickname: string) {
+  try {
+    await fetch(`${API_BASE}/api/placement/submit`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        guestId: getGuestId(),
+        nickname,
+        deviation,
+        correctCount,
+        totalCount,
+      }),
+    })
+  } catch { /* silent */ }
+}
 
 type Props = {
   onComplete: () => void
@@ -20,6 +39,7 @@ export default function PlacementTest({ onComplete, onSkip }: Props) {
   const [selected, setSelected] = useState<number | null>(null)
   const [answered, setAnswered] = useState(false)
   const [correctCount, setCorrectCount] = useState(0)
+  const [nicknameInput, setNicknameInput] = useState(getNickname() || defaultNickname(getGuestId()))
 
   const total = PLACEMENT_QUESTIONS.length
   const q = PLACEMENT_QUESTIONS[questionIdx]
@@ -42,7 +62,7 @@ export default function PlacementTest({ onComplete, onSkip }: Props) {
 
   const next = () => {
     if (questionIdx + 1 >= total) {
-      // Save result
+      // Save locally
       savePlacementResult({
         deviation: dev,
         correctCount,
@@ -50,6 +70,10 @@ export default function PlacementTest({ onComplete, onSkip }: Props) {
         completedAt: new Date().toISOString(),
         recommendedLessonIds: recommendedLessons(dev),
       })
+      // Submit to ranking server (fire-and-forget)
+      const nick = nicknameInput.trim() || defaultNickname(getGuestId())
+      setNickname(nick)
+      submitPlacement(dev, correctCount, total, nick)
       setStep('result')
     } else {
       setQuestionIdx((i) => i + 1)
@@ -77,6 +101,17 @@ export default function PlacementTest({ onComplete, onSkip }: Props) {
           <div className="pt-info">
             <div><strong>{total} 問</strong>・約 3 分</div>
             <div>MECE / 演繹 / 帰納 / 形式論理</div>
+          </div>
+          <div className="pt-nick-row">
+            <label>ランキング表示名</label>
+            <input
+              type="text"
+              value={nicknameInput}
+              onChange={(e) => setNicknameInput(e.target.value)}
+              placeholder="ニックネーム"
+              maxLength={20}
+              className="pt-nick-input"
+            />
           </div>
           <button className="pt-start-btn" onClick={start}>はじめる</button>
           <button className="pt-skip-btn" onClick={handleSkip}>あとでやる</button>

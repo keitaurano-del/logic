@@ -439,6 +439,82 @@ app.get('/{*splat}', (_req, res) => {
 })
 
 const REPORTS_FILE = path.join(process.cwd(), 'reports.json')
+const PLACEMENT_FILE = path.join(process.cwd(), 'placement.json')
+
+type PlacementEntry = {
+  guestId: string
+  nickname: string
+  deviation: number
+  correctCount: number
+  totalCount: number
+  completedAt: string
+}
+
+function loadPlacements(): PlacementEntry[] {
+  try {
+    if (fs.existsSync(PLACEMENT_FILE)) {
+      return JSON.parse(fs.readFileSync(PLACEMENT_FILE, 'utf-8'))
+    }
+  } catch { /* */ }
+  return []
+}
+
+function savePlacements(entries: PlacementEntry[]) {
+  fs.writeFileSync(PLACEMENT_FILE, JSON.stringify(entries, null, 2))
+}
+
+app.post('/api/placement/submit', (req, res) => {
+  try {
+    const { guestId, nickname, deviation, correctCount, totalCount } = req.body || {}
+    if (!guestId || typeof deviation !== 'number') {
+      return res.status(400).json({ error: 'guestId and deviation required' })
+    }
+    const entries = loadPlacements()
+    const idx = entries.findIndex((e) => e.guestId === guestId)
+    const entry: PlacementEntry = {
+      guestId,
+      nickname: (nickname || 'ゲスト').slice(0, 20),
+      deviation,
+      correctCount: correctCount || 0,
+      totalCount: totalCount || 0,
+      completedAt: new Date().toISOString(),
+    }
+    if (idx >= 0) entries[idx] = entry
+    else entries.push(entry)
+    savePlacements(entries)
+    res.json({ ok: true })
+  } catch (e: any) {
+    res.status(500).json({ error: e.message })
+  }
+})
+
+app.get('/api/placement/ranking', (req, res) => {
+  try {
+    const guestId = (req.query.guestId as string) || ''
+    const entries = loadPlacements()
+      .filter((e) => e.totalCount > 0) // skipped users excluded
+      .sort((a, b) => b.deviation - a.deviation)
+    const total = entries.length
+    const top = entries.slice(0, 50).map((e, i) => ({
+      rank: i + 1,
+      nickname: e.nickname,
+      deviation: e.deviation,
+      isYou: e.guestId === guestId,
+    }))
+    let yourRank = -1
+    let yourDeviation = -1
+    if (guestId) {
+      const idx = entries.findIndex((e) => e.guestId === guestId)
+      if (idx >= 0) {
+        yourRank = idx + 1
+        yourDeviation = entries[idx].deviation
+      }
+    }
+    res.json({ total, top, yourRank, yourDeviation })
+  } catch (e: any) {
+    res.status(500).json({ error: e.message })
+  }
+})
 
 app.post('/api/report-problem', async (req, res) => {
   try {

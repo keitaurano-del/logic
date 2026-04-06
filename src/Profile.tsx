@@ -11,9 +11,10 @@ type ProfileProps = {
   onPricing?: () => void
   onDeviation?: () => void
   onTheme?: () => void
+  onRanking?: () => void
 }
 
-export default function Profile({ onFeedback, onPricing, onDeviation, onTheme }: ProfileProps) {
+export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, onRanking }: ProfileProps) {
   const completedLessons = getCompletedLessons()
   const streak = getStreak()
   const studyHours = getStudyHours()
@@ -257,6 +258,14 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme }:
       {onDeviation && (
         <div className="pf-deviation-card" onClick={onDeviation}>
           <span>📊 偏差値を見る</span>
+          <span>›</span>
+        </div>
+      )}
+
+      {/* Ranking Card */}
+      {onRanking && (
+        <div className="pf-deviation-card" onClick={onRanking}>
+          <span>🏆 偏差値ランキング</span>
           <span>›</span>
         </div>
       )}

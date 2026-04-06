@@ -16,6 +16,7 @@ import RoleplayChat from './RoleplayChat'
 import CoffeeBreak from './CoffeeBreak'
 import ThemeSettings from './ThemeSettings'
 import PlacementTest from './PlacementTest'
+import Ranking from './Ranking'
 import { hasCompletedPlacement, loadPlacementResult } from './placementTest'
 import { getAIProblem, type AIProblemSet } from './aiProblemStore'
 import { verifyCheckout } from './subscription'
@@ -237,6 +238,7 @@ type Screen =
   | { type: 'roleplay-chat'; situationId: string }
   | { type: 'coffee-break' }
   | { type: 'theme' }
+  | { type: 'ranking' }
 
 function App() {
   const [showPlacement, setShowPlacement] = useState(!hasCompletedPlacement())
@@ -365,6 +367,13 @@ function App() {
     return <ThemeSettings
       onBack={goHome}
       onUpgrade={() => setScreen({ type: 'pricing' })}
+    />
+  }
+
+  if (screen.type === 'ranking') {
+    return <Ranking
+      onBack={goHome}
+      onTakeTest={() => { setScreen({ type: 'home' }); setShowPlacement(true) }}
     />
   }
 
@@ -734,6 +743,7 @@ function App() {
         onPricing={() => setScreen({ type: 'pricing' })}
         onDeviation={() => setScreen({ type: 'deviation' })}
         onTheme={() => setScreen({ type: 'theme' })}
+        onRanking={() => setScreen({ type: 'ranking' })}
       />}
 
       {/* Bottom Navigation */}
