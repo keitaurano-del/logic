@@ -69,18 +69,20 @@
 /* ===== Wide Desktop (1280px+) ===== */
 @media (min-width: 1280px) {
   .ji-screen {
-    padding-left: 220px;
+    padding-top: 56px;
+    padding-left: 0;
     max-width: none;
     margin: 0;
   }
   .ji-header {
-    padding: 14px 32px;
+    padding: 12px 32px;
+    background: rgba(255, 252, 246, 0.95);
   }
   .ji-content {
-    max-width: 1100px;
-    margin: 0;
-    padding: 24px 32px;
-    gap: 16px;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 32px 24px 48px;
+    gap: 18px;
   }
-  .ji-q { font-size: 16px; line-height: 1.7; }
+  .ji-q { font-size: 17px; line-height: 1.75; }
 }
