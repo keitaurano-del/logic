@@ -24,11 +24,11 @@
   width: 88px;
   height: 88px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent), #8B5CF6);
+  background: linear-gradient(135deg, var(--accent), var(--accent-glow));
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 24px rgba(75, 138, 255, 0.3);
+  box-shadow: 0 4px 24px var(--accent-glow);
 }
 
 .pf-name {
@@ -71,7 +71,7 @@
 
 .pf-xp-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--accent), #8B5CF6);
+  background: linear-gradient(90deg, var(--accent), var(--accent-glow));
   border-radius: 3px;
   transition: width 0.6s ease;
 }
@@ -100,11 +100,13 @@
   align-items: center;
   gap: 4px;
   box-shadow: var(--shadow-card);
+  border: 1px solid var(--border);
 }
 
 .pf-stat-value {
   font-size: 26px;
   font-weight: 800;
+  letter-spacing: -0.02em;
   color: var(--text-primary);
 }
 
@@ -130,7 +132,8 @@
 
 .pf-section-title {
   font-size: 16px;
-  font-weight: 800;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   color: var(--text-primary);
   margin-bottom: 12px;
 }
@@ -197,7 +200,7 @@
 
 .pf-cal-cell.active {
   background: var(--accent);
-  box-shadow: 0 0 6px rgba(75, 138, 255, 0.3);
+  box-shadow: 0 0 6px var(--accent-glow);
 }
 
 /* ===== Completed Lessons ===== */
@@ -235,215 +238,6 @@
   font-size: 14px;
   font-weight: 600;
   color: var(--text-primary);
-}
-
-/* ===== Roleplay Stats ===== */
-.pf-rp-stats {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 12px;
-}
-
-.pf-rp-stat {
-  flex: 1;
-  background: var(--bg-card);
-  border-radius: var(--radius-md);
-  padding: 14px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  box-shadow: var(--shadow-card);
-}
-
-.pf-rp-stat-value {
-  font-size: 22px;
-  font-weight: 800;
-  color: var(--cat-roleplay);
-}
-
-.pf-rp-stat-label {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--text-muted);
-}
-
-.pf-rp-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.pf-rp-card {
-  background: var(--bg-card);
-  border-radius: var(--radius-md);
-  padding: 14px;
-  box-shadow: var(--shadow-card);
-}
-
-.pf-rp-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.pf-rp-title {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text-primary);
-}
-
-.pf-rp-date {
-  font-size: 11px;
-  color: var(--text-muted);
-  font-weight: 600;
-}
-
-.pf-rp-score-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.pf-rp-bar {
-  flex: 1;
-  height: 5px;
-  background: var(--bg-elevated);
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.pf-rp-bar-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--cat-roleplay), var(--accent));
-  border-radius: 3px;
-}
-
-.pf-rp-score {
-  font-size: 13px;
-  font-weight: 800;
-  color: var(--cat-roleplay);
-  min-width: 50px;
-  text-align: right;
-}
-
-/* ===== RP Detail (expanded) ===== */
-.pf-rp-detail {
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid var(--border);
-}
-
-.pf-rp-summary { margin-bottom: 12px; }
-
-.pf-rp-summary-text {
-  font-size: 13px;
-  color: var(--text-secondary);
-  line-height: 1.6;
-  margin-bottom: 10px;
-}
-
-.pf-rp-summary-group {
-  margin-bottom: 8px;
-}
-
-.pf-rp-summary-label {
-  font-size: 10px;
-  font-weight: 800;
-  padding: 2px 8px;
-  border-radius: var(--radius-full);
-  letter-spacing: 0.5px;
-}
-
-.pf-rp-summary-label.good {
-  background: rgba(46, 204, 113, 0.15);
-  color: #2ECC71;
-}
-
-.pf-rp-summary-label.improve {
-  background: var(--accent-soft);
-  color: var(--accent);
-}
-
-.pf-rp-summary-group ul {
-  list-style: none;
-  padding: 0;
-  margin: 6px 0 0;
-}
-
-.pf-rp-summary-group li {
-  font-size: 12px;
-  color: var(--text-secondary);
-  line-height: 1.5;
-  padding: 4px 0;
-}
-
-.pf-rp-scores {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-bottom: 10px;
-}
-
-.pf-rp-score-item {
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  padding: 4px 0;
-}
-
-.pf-rp-score-name { color: var(--text-secondary); font-weight: 600; }
-.pf-rp-score-val { color: var(--cat-roleplay); font-weight: 800; }
-
-.pf-rp-overall {
-  font-size: 12px;
-  color: var(--text-muted);
-  line-height: 1.6;
-  margin-bottom: 10px;
-}
-
-.pf-rp-log { margin-top: 8px; }
-
-.pf-rp-log-toggle {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--accent);
-  cursor: pointer;
-  padding: 6px 0;
-}
-
-.pf-rp-messages {
-  margin-top: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-height: 300px;
-  overflow-y: auto;
-}
-
-.pf-rp-msg {
-  padding: 8px 10px;
-  border-radius: var(--radius-sm, 6px);
-  background: var(--bg-elevated);
-}
-
-.pf-rp-msg.user { border-left: 3px solid var(--accent); }
-.pf-rp-msg.assistant { border-left: 3px solid var(--cat-roleplay); }
-
-.pf-rp-msg-role {
-  font-size: 10px;
-  font-weight: 800;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.pf-rp-msg-text {
-  font-size: 13px;
-  color: var(--text-secondary);
-  line-height: 1.5;
-  margin-top: 2px;
 }
 
 /* ===== Empty ===== */
@@ -545,7 +339,7 @@
 
 .pf-evo-item.current {
   background: var(--accent-soft);
-  border: 1px solid rgba(75, 138, 255, 0.2);
+  border: 1px solid var(--accent-glow);
 }
 
 .pf-evo-dragon {
@@ -660,7 +454,8 @@
   background: var(--bg-primary);
   display: flex;
   flex-direction: column;
-  animation: pf-settings-slidein 0.3s ease;
+  animation: pf-settings-slidein 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes pf-settings-slidein {
@@ -1047,7 +842,6 @@
 
   .pf-section { padding: 0 20px; }
   .pf-completed-list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .pf-rp-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
   .pf-cal-cell { width: 14px; height: 14px; }
 }

@@ -14,11 +14,11 @@ export type Theme = {
 export const themes: Theme[] = [
   {
     id: 'blue',
-    name: 'ブルー',
-    accent: '#4B8AFF',
-    accentSoft: 'rgba(75, 138, 255, 0.12)',
-    accentGlow: 'rgba(75, 138, 255, 0.25)',
-    gradient: 'linear-gradient(135deg, #4B8AFF, #6366F1)',
+    name: 'インディゴ',
+    accent: '#6366F1',
+    accentSoft: 'rgba(99, 102, 241, 0.10)',
+    accentGlow: 'rgba(99, 102, 241, 0.22)',
+    gradient: 'linear-gradient(135deg, #6366F1, #818CF8)',
   },
   {
     id: 'purple',

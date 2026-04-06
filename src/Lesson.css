@@ -28,7 +28,8 @@
 
 .ls-title {
   font-size: 16px;
-  font-weight: 800;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   color: var(--text-primary);
 }
 
@@ -46,7 +47,7 @@
 
 .ls-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--accent), #8B5CF6);
+  background: linear-gradient(90deg, var(--accent), var(--accent-glow));
   border-radius: 0 2px 2px 0;
   transition: width 0.4s ease;
 }
@@ -68,7 +69,8 @@
 
 .ls-explain-header h3 {
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   color: var(--text-primary);
 }
 
@@ -96,7 +98,8 @@
 
 .ls-quiz-header h3 {
   font-size: 17px;
-  font-weight: 800;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   color: var(--text-primary);
   line-height: 1.5;
   padding-top: 8px;
@@ -121,7 +124,7 @@
   font-family: var(--sans);
   color: var(--text-primary);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
   text-align: left;
   box-shadow: var(--shadow-card);
 }
@@ -138,6 +141,7 @@
 .ls-option.correct {
   border-color: var(--success);
   background: var(--success-soft);
+  box-shadow: 0 0 0 1px var(--success), 0 0 12px var(--success-soft);
 }
 
 .ls-option.wrong {
@@ -211,7 +215,8 @@
 
 .ls-complete h2 {
   font-size: 26px;
-  font-weight: 800;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   color: var(--text-primary);
   margin-top: 20px;
   margin-bottom: 10px;

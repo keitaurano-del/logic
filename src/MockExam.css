@@ -5,7 +5,7 @@
 .mock-progress { font-size: 13px; color: var(--text-muted); font-weight: 700; }
 
 .mock-progress-bar { height: 3px; background: var(--bg-elevated); }
-.mock-progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #8B5CF6); transition: width 0.3s; }
+.mock-progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-glow)); transition: width 0.3s; }
 
 /* Intro */
 .mock-intro { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 28px 20px; gap: 20px; }
@@ -23,10 +23,10 @@
 .mock-section-label { padding: 10px 16px; background: var(--accent-soft); border-radius: var(--radius-sm); font-size: 13px; font-weight: 800; color: var(--accent); text-align: center; }
 .mock-q-text { font-size: 16px; font-weight: 700; color: var(--text-primary); line-height: 1.6; }
 .mock-options { display: flex; flex-direction: column; gap: 10px; }
-.mock-option { display: flex; align-items: center; gap: 12px; padding: 15px 16px; background: var(--bg-card); border: 1.5px solid var(--border); border-radius: var(--radius-md); font-size: 14px; font-family: var(--sans); color: var(--text-primary); cursor: pointer; transition: all 0.2s; text-align: left; box-shadow: var(--shadow-card); }
+.mock-option { display: flex; align-items: center; gap: 12px; padding: 15px 16px; background: var(--bg-card); border: 1.5px solid var(--border); border-radius: var(--radius-md); font-size: 14px; font-family: var(--sans); color: var(--text-primary); cursor: pointer; transition: all 0.2s ease; text-align: left; box-shadow: var(--shadow-card); }
 .mock-option:active:not(:disabled) { transform: scale(0.97); }
 .mock-option.selected { border-color: var(--accent); background: var(--accent-soft); }
-.mock-option.correct { border-color: var(--success); background: var(--success-soft); }
+.mock-option.correct { border-color: var(--success); background: var(--success-soft); box-shadow: 0 0 0 1px var(--success), 0 0 12px var(--success-soft); }
 .mock-option.wrong { border-color: var(--danger); background: rgba(248,113,113,0.08); }
 .mock-option:disabled { cursor: default; }
 .mock-opt-label { width: 28px; height: 28px; border-radius: 50%; background: var(--bg-elevated); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: var(--text-muted); flex-shrink: 0; }
@@ -45,13 +45,13 @@
 .mock-next-btn:active { transform: scale(0.97); }
 
 /* Result */
-.mock-result { flex: 1; padding: 24px 16px; display: flex; flex-direction: column; align-items: center; gap: 16px; overflow-y: auto; }
+.mock-result { flex: 1; padding: 24px 16px; display: flex; flex-direction: column; align-items: center; gap: 16px; overflow-y: auto; animation: scale-in 0.4s ease both; }
 .mock-verdict { font-size: 28px; font-weight: 800; padding: 8px 32px; border-radius: var(--radius-md); }
 .mock-verdict.pass { color: var(--success); background: var(--success-soft); }
 .mock-verdict.fail { color: var(--danger); background: rgba(248,113,113,0.08); }
 
 .mock-total-score { display: flex; align-items: baseline; gap: 4px; }
-.mock-score-num { font-size: 52px; font-weight: 800; color: var(--accent); }
+.mock-score-num { font-size: 52px; font-weight: 800; letter-spacing: -0.03em; color: var(--accent); }
 .mock-score-den { font-size: 18px; color: var(--text-muted); font-weight: 700; }
 
 .mock-score-bar-outer { width: 100%; height: 8px; background: var(--bg-elevated); border-radius: 4px; overflow: visible; position: relative; }

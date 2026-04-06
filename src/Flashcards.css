@@ -4,7 +4,7 @@
 .fc-header-title { font-size: 16px; font-weight: 800; }
 
 .fc-progress-bar { height: 3px; background: var(--bg-elevated); }
-.fc-progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #8B5CF6); transition: width 0.3s; }
+.fc-progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-glow)); transition: width 0.3s; }
 
 /* ===== Home ===== */
 .fc-home { flex: 1; padding: 20px 16px; display: flex; flex-direction: column; gap: 20px; }
@@ -83,7 +83,7 @@
 }
 
 .fc-card-front {
-  background: linear-gradient(145deg, #1a1a35, #12122a);
+  background: linear-gradient(180deg, var(--bg-elevated), var(--bg-card));
 }
 
 .fc-card-front p {
@@ -98,9 +98,9 @@
 }
 
 .fc-card-back {
-  background: linear-gradient(145deg, #0f1a2e, #0a1020);
+  background: linear-gradient(145deg, var(--bg-card), var(--bg-primary));
   transform: rotateY(180deg);
-  border: 1px solid rgba(75, 138, 255, 0.15);
+  border: 1px solid var(--accent-soft);
 }
 
 .fc-card-back p {
@@ -110,7 +110,7 @@
 /* ===== Buttons ===== */
 .fc-buttons {
   display: flex; gap: 10px; width: 100%;
-  animation: fc-fade-up 0.3s ease both;
+  animation: scale-in 0.3s ease both;
 }
 
 @keyframes fc-fade-up {
@@ -120,7 +120,7 @@
 
 .fc-btn {
   flex: 1; padding: 14px 8px; border: none; border-radius: var(--radius-md);
-  font-size: 13px; font-weight: 800; cursor: pointer; font-family: var(--sans);
+  font-size: 13px; font-weight: 600; cursor: pointer; font-family: var(--sans);
   display: flex; flex-direction: column; align-items: center; gap: 4px;
 }
 .fc-btn:active { transform: scale(0.95); }
@@ -131,7 +131,7 @@
   background: rgba(248, 113, 113, 0.1); color: var(--danger);
 }
 .fc-btn.good {
-  background: var(--accent-soft); color: var(--accent);
+  background: var(--accent-soft); color: var(--accent); font-weight: 800;
 }
 .fc-btn.easy {
   background: var(--success-soft); color: var(--success);
@@ -145,5 +145,5 @@
 .fc-done h2 { font-size: 26px; font-weight: 800; color: var(--text-primary); }
 .fc-done-score { font-size: 28px; font-weight: 800; color: var(--accent); }
 .fc-done-bar { width: 200px; height: 6px; background: var(--bg-elevated); border-radius: 3px; overflow: hidden; }
-.fc-done-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #8B5CF6); border-radius: 3px; }
+.fc-done-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-glow)); border-radius: 3px; }
 .fc-done-msg { font-size: 14px; color: var(--text-secondary); line-height: 1.6; max-width: 280px; }
