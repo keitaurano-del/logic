@@ -254,3 +254,22 @@
   cursor: pointer;
   font-family: var(--sans);
 }
+
+.ls-report-btn {
+  display: block;
+  margin: 16px auto 0;
+  padding: 8px 14px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-family: var(--sans);
+  transition: all 0.15s;
+}
+
+.ls-report-btn:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}

@@ -23,6 +23,7 @@ import {
 } from './LessonDiagrams'
 import type { LessonData, LessonStep } from './lessonData'
 import { generateFromLesson, addCards } from './flashcardData'
+import ReportProblem from './ReportProblem'
 import './Lesson.css'
 
 const API_BASE = import.meta.env.DEV ? `http://${window.location.hostname}:3001` : ''
@@ -82,6 +83,7 @@ export default function Lesson({ lesson, onBack, onComplete }: Props) {
   const [showResult, setShowResult] = useState(false)
   const [correctCount, setCorrectCount] = useState(0)
   const [finished, setFinished] = useState(false)
+  const [showReport, setShowReport] = useState(false)
   const wrongAnswersRef = useRef<{ question: string; correctAnswer: string; explanation: string }[]>([])
 
   const step: LessonStep | undefined = lesson.steps[currentStep]
@@ -235,9 +237,21 @@ export default function Lesson({ lesson, onBack, onComplete }: Props) {
                 {currentStep + 1 >= totalSteps ? '結果を見る' : '次へ'}
               </button>
             )}
+            <button className="ls-report-btn" onClick={() => setShowReport(true)}>
+              🚩 この問題を報告
+            </button>
           </div>
         )}
       </div>
+      {showReport && step.type === 'quiz' && (
+        <ReportProblem
+          lessonTitle={lesson.title}
+          lessonId={lesson.id}
+          question={step.question}
+          options={step.options}
+          onClose={() => setShowReport(false)}
+        />
+      )}
     </div>
   )
 }

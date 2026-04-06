@@ -1,6 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import path from 'path'
+import fs from 'fs'
 import { fileURLToPath } from 'url'
 import Anthropic from '@anthropic-ai/sdk'
 
@@ -354,6 +355,55 @@ const distPath = path.resolve(__dirname, '..', 'dist')
 app.use(express.static(distPath))
 app.get('/{*splat}', (_req, res) => {
   res.sendFile(path.join(distPath, 'index.html'))
+})
+
+const REPORTS_FILE = path.join(process.cwd(), 'reports.json')
+
+app.post('/api/report-problem', async (req, res) => {
+  try {
+    const { lessonTitle, lessonId, question, options, issueType, comment } = req.body || {}
+
+    if (!question || !issueType) {
+      return res.status(400).json({ error: 'question and issueType are required' })
+    }
+
+    const report = {
+      id: 'r_' + Date.now(),
+      timestamp: new Date().toISOString(),
+      lessonTitle: lessonTitle || '',
+      lessonId: lessonId || null,
+      question,
+      options: options || [],
+      issueType,
+      comment: comment || '',
+    }
+
+    let reports: any[] = []
+    try {
+      if (fs.existsSync(REPORTS_FILE)) {
+        reports = JSON.parse(fs.readFileSync(REPORTS_FILE, 'utf-8'))
+      }
+    } catch { /* ignore */ }
+
+    reports.push(report)
+    fs.writeFileSync(REPORTS_FILE, JSON.stringify(reports, null, 2))
+
+    console.log('[REPORT]', issueType, '-', lessonTitle, '-', question.slice(0, 50))
+    res.json({ ok: true, id: report.id })
+  } catch (e: any) {
+    console.error('report-problem error:', e)
+    res.status(500).json({ error: e.message || 'failed' })
+  }
+})
+
+app.get('/api/reports', (_req, res) => {
+  try {
+    if (!fs.existsSync(REPORTS_FILE)) return res.json([])
+    const reports = JSON.parse(fs.readFileSync(REPORTS_FILE, 'utf-8'))
+    res.json(reports)
+  } catch (e: any) {
+    res.status(500).json({ error: e.message })
+  }
 })
 
 const PORT = parseInt(process.env.PORT || '3001', 10)
