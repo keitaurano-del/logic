@@ -1,4 +1,6 @@
 import type { LessonData } from './lessonData'
+import { isPremium as subIsPremium } from './subscription'
+import { canGenerate, recordGeneration } from './usageTracker'
 
 const STORAGE_KEY = 'logic-ai-problems'
 const API_BASE = import.meta.env.DEV ? `http://${window.location.hostname}:3001` : ''
@@ -36,6 +38,13 @@ export function deleteAIProblem(id: number): void {
 }
 
 export async function generateAIProblems(prompt: string): Promise<AIProblemSet> {
+  if (!canGenerate()) {
+    if (subIsPremium()) {
+      throw new Error('今月の生成回数の上限(300問)に達しました')
+    } else {
+      throw new Error('今日の生成回数の上限(10問)に達しました。プレミアムプランで月300問まで生成できます。')
+    }
+  }
   const res = await fetch(`${API_BASE}/api/generate-problems`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -58,13 +67,8 @@ export async function generateAIProblems(prompt: string): Promise<AIProblemSet> 
   }
   sets.unshift(newSet)
   save(sets)
+  recordGeneration()
   return newSet
 }
 
-export function isPremium(): boolean {
-  return localStorage.getItem('logic-premium') === 'true'
-}
-
-export function setPremium(value: boolean): void {
-  localStorage.setItem('logic-premium', value ? 'true' : 'false')
-}
+export { isPremium } from './subscription'

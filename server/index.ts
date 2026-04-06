@@ -4,6 +4,24 @@ import path from 'path'
 import fs from 'fs'
 import { fileURLToPath } from 'url'
 import Anthropic from '@anthropic-ai/sdk'
+import Stripe from 'stripe'
+
+const stripeKey = process.env.STRIPE_SECRET_KEY
+const stripe = stripeKey ? new Stripe(stripeKey) : null
+
+type PlanKey = 'monthly' | 'yearly'
+const PLANS: Record<PlanKey, { priceId: string; amount: number; interval: 'month' | 'year' }> = {
+  monthly: {
+    priceId: process.env.STRIPE_PRICE_MONTHLY || '',
+    amount: 500,
+    interval: 'month',
+  },
+  yearly: {
+    priceId: process.env.STRIPE_PRICE_YEARLY || '',
+    amount: 3500,
+    interval: 'year',
+  },
+}
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -402,6 +420,121 @@ app.get('/api/reports', (_req, res) => {
     const reports = JSON.parse(fs.readFileSync(REPORTS_FILE, 'utf-8'))
     res.json(reports)
   } catch (e: any) {
+    res.status(500).json({ error: e.message })
+  }
+})
+
+// =============================================
+// Stripe Checkout
+// =============================================
+app.post('/api/checkout', async (req, res) => {
+  if (!stripe) return res.status(503).json({ error: 'Stripe not configured' })
+  try {
+    const { plan, guestId } = req.body as { plan: PlanKey; guestId?: string }
+    if (!PLANS[plan]) return res.status(400).json({ error: 'invalid plan' })
+    const planConfig = PLANS[plan]
+    if (!planConfig.priceId) return res.status(503).json({ error: 'price not configured' })
+
+    const origin = (req.headers.origin as string) || `http://${req.headers.host}`
+    const session = await stripe.checkout.sessions.create({
+      mode: 'subscription',
+      payment_method_types: ['card'],
+      line_items: [{ price: planConfig.priceId, quantity: 1 }],
+      success_url: `${origin}/?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/?checkout=cancel`,
+      metadata: { guestId: guestId || '', plan },
+      client_reference_id: guestId || undefined,
+    })
+    res.json({ url: session.url })
+  } catch (e: any) {
+    console.error('checkout error:', e)
+    res.status(500).json({ error: e.message })
+  }
+})
+
+app.get('/api/checkout-verify', async (req, res) => {
+  if (!stripe) return res.status(503).json({ error: 'Stripe not configured' })
+  try {
+    const sessionId = req.query.session_id as string
+    if (!sessionId) return res.status(400).json({ error: 'session_id required' })
+    const session = await stripe.checkout.sessions.retrieve(sessionId)
+    const plan = (session.metadata?.plan as PlanKey) || 'monthly'
+    const expiresAt = new Date()
+    if (plan === 'yearly') expiresAt.setFullYear(expiresAt.getFullYear() + 1)
+    else expiresAt.setMonth(expiresAt.getMonth() + 1)
+    res.json({
+      paid: session.payment_status === 'paid',
+      plan,
+      expiresAt: expiresAt.toISOString(),
+    })
+  } catch (e: any) {
+    console.error('checkout-verify error:', e)
+    res.status(500).json({ error: e.message })
+  }
+})
+
+// =============================================
+// 今日の1問
+// =============================================
+app.post('/api/daily-problem', async (_req, res) => {
+  try {
+    const themes = [
+      'MECEを使った問題分解',
+      'ロジックツリーで原因を特定する',
+      'So What / Why So の使い方',
+      'ピラミッド原則で結論を伝える',
+      '帰納法と演繹法の違い',
+      '仮説思考のステップ',
+      'クリティカルシンキングの実践',
+      'フレームワーク思考の活用',
+      '前提を疑う問いの立て方',
+      '構造化のテクニック',
+      'ロジカルシンキングのケーススタディ',
+      '問題の本質を見抜く方法',
+    ]
+    const theme = themes[Math.floor(Math.random() * themes.length)]
+
+    const prompt = `「${theme}」について、ビジネスパーソンの論理的思考力を鍛える4択問題を1問だけ作ってください。
+日常のビジネスシーンを想定した実践的な問題にしてください。`
+
+    const systemPrompt = `あなたは論理的思考力を鍛える問題作成AIです。
+必ず以下のJSON形式のみで返してください:
+{
+  "title": "問題タイトル(20文字以内)",
+  "category": "ロジカルシンキング",
+  "steps": [
+    {
+      "type": "quiz",
+      "question": "問題文",
+      "options": [
+        { "label": "選択肢1", "correct": false },
+        { "label": "選択肢2", "correct": true },
+        { "label": "選択肢3", "correct": false },
+        { "label": "選択肢4", "correct": false }
+      ],
+      "explanation": "解説(なぜ正解か、他の選択肢のどこが間違いか)"
+    }
+  ]
+}`
+
+    const response = await client.messages.create({
+      model: 'claude-sonnet-4-5',
+      max_tokens: 2048,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: prompt }],
+    })
+
+    const text = response.content
+      .filter((b: any) => b.type === 'text')
+      .map((b: any) => b.text)
+      .join('')
+      .trim()
+
+    const jsonMatch = text.match(/\{[\s\S]*\}/)
+    if (!jsonMatch) return res.status(500).json({ error: 'parse failed' })
+    res.json(JSON.parse(jsonMatch[0]))
+  } catch (e: any) {
+    console.error('daily-problem error:', e)
     res.status(500).json({ error: e.message })
   }
 })

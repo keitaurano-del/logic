@@ -10,7 +10,11 @@ import Roadmap from './Roadmap'
 import Feedback from './Feedback'
 import Notebook from './Notebook'
 import AIProblemGen from './AIProblemGen'
-import { getAIProblem } from './aiProblemStore'
+import Pricing from './Pricing'
+import DeviationScore from './DeviationScore'
+import { getAIProblem, type AIProblemSet } from './aiProblemStore'
+import { verifyCheckout } from './subscription'
+import { getTodayProblem, generateTodayProblem, isDailyCompleted, markDailyCompleted } from './dailyProblem'
 import { allLessons } from './lessonData'
 import { recordCompletion, addStudyTime, getCompletedCount, getStreak, getStudyHours } from './stats'
 import { getCardStats } from './flashcardData'
@@ -197,6 +201,9 @@ type Screen =
   | { type: 'feedback' }
   | { type: 'ai-gen' }
   | { type: 'ai-problem'; problemId: number }
+  | { type: 'pricing' }
+  | { type: 'deviation' }
+  | { type: 'daily-problem' }
 
 function App() {
   const [screen, setScreen] = useState<Screen>({ type: 'home' })
@@ -207,6 +214,29 @@ function App() {
   const [progress, setProgress] = useState(loadProgress())
   const [roadmapState, setRoadmapState] = useState(loadRoadmapState())
   const screenEnteredAt = useRef<number>(Date.now())
+  const [dailyProblem, setDailyProblem] = useState<AIProblemSet | null>(getTodayProblem())
+  const [loadingDaily, setLoadingDaily] = useState(false)
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const sessionId = params.get('session_id')
+    if (params.get('checkout') === 'success' && sessionId) {
+      verifyCheckout(sessionId).then(ok => {
+        if (ok) alert('プレミアムにアップグレードしました！')
+        window.history.replaceState({}, '', window.location.pathname)
+      })
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!getTodayProblem()) {
+      setLoadingDaily(true)
+      generateTodayProblem()
+        .then(p => setDailyProblem(p))
+        .catch(console.error)
+        .finally(() => setLoadingDaily(false))
+    }
+  }, [])
 
   // Apply saved theme on mount
   useEffect(() => { applyTheme(loadTheme()) }, [])
@@ -255,6 +285,25 @@ function App() {
 
   if (screen.type === 'feedback') {
     return <Feedback onBack={goHome} />
+  }
+
+  if (screen.type === 'pricing') {
+    return <Pricing onBack={goHome} />
+  }
+
+  if (screen.type === 'deviation') {
+    return <DeviationScore onBack={goHome} />
+  }
+
+  if (screen.type === 'daily-problem' && dailyProblem) {
+    return <Lesson
+      lesson={dailyProblem}
+      onBack={goHome}
+      onComplete={() => {
+        markDailyCompleted()
+        handleComplete(`daily-${dailyProblem.id}`, dailyProblem.title)
+      }}
+    />
   }
 
   if (screen.type === 'goal-select') {
@@ -356,6 +405,31 @@ function App() {
       {/* Tab Content */}
       {tab === 'home' && (
         <>
+          {/* Today's Problem */}
+          {dailyProblem && (
+            <div className="daily-card" onClick={() => setScreen({ type: 'daily-problem' })}>
+              <div className="daily-icon">✨</div>
+              <div className="daily-text">
+                <strong>今日の1問</strong>
+                <span>{dailyProblem.title}</span>
+              </div>
+              {isDailyCompleted() ? (
+                <span className="daily-badge done">✓ 完了</span>
+              ) : (
+                <span className="daily-badge new">NEW</span>
+              )}
+            </div>
+          )}
+          {loadingDaily && !dailyProblem && (
+            <div className="daily-card daily-loading">
+              <div className="daily-icon">⏳</div>
+              <div className="daily-text">
+                <strong>今日の1問</strong>
+                <span>準備中...</span>
+              </div>
+            </div>
+          )}
+
           {/* Progress Section */}
           <section className="progress-section">
             <h3 className="progress-section-title">📋 今月の評価シート</h3>
@@ -556,10 +630,21 @@ function App() {
               acc[cat].push(l)
               return acc
             }, {})
-          ).map(([cat, items]) => (
+          ).sort(([a], [b]) => {
+            const order = (c: string) => {
+              if (c.includes('ロジカル')) return 0
+              if (c.includes('プロジェクト')) return 2
+              if (c.includes('簿記')) return 3
+              return 1
+            }
+            return order(a) - order(b)
+          }).map(([cat, items]) => (
             <section key={cat} className="section">
               <div className="section-header">
-                <h3 className="section-title">{cat}</h3>
+                <h3 className="section-title">
+                  {cat}
+                  {(cat.includes('簿記') || cat.includes('プロジェクト')) && <span className="beta-badge">BETA</span>}
+                </h3>
                 <span className="section-count">{items.length}</span>
               </div>
               <div className="lesson-list">
@@ -585,7 +670,11 @@ function App() {
         </div>
       )}
 
-      {tab === 'profile' && <Profile onFeedback={() => setScreen({ type: 'feedback' })} />}
+      {tab === 'profile' && <Profile
+        onFeedback={() => setScreen({ type: 'feedback' })}
+        onPricing={() => setScreen({ type: 'pricing' })}
+        onDeviation={() => setScreen({ type: 'deviation' })}
+      />}
 
       {/* Bottom Navigation */}
       <nav className="bottom-nav">

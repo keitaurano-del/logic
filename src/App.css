@@ -751,3 +751,65 @@
   }
   .nav-item { padding: 10px 0; font-size: 11px; }
 }
+
+/* Daily Problem Card */
+.daily-card {
+  background: linear-gradient(135deg, #FFF4DC 0%, #FFE4D4 100%);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  margin: 0 16px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  box-shadow: var(--shadow-card);
+  transition: all 0.2s;
+}
+.daily-card:active { transform: scale(0.98); }
+.daily-loading { cursor: wait; }
+.daily-icon { font-size: 32px; flex-shrink: 0; }
+.daily-text { flex: 1; min-width: 0; }
+.daily-text strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--accent-dark);
+  margin-bottom: 4px;
+}
+.daily-text span {
+  font-size: 12px;
+  color: var(--text-secondary);
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.daily-badge {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+.daily-badge.new { background: var(--accent-dark); color: #fff; }
+.daily-badge.done {
+  background: var(--success-soft);
+  color: var(--success);
+  border: 1px solid var(--success);
+}
+
+/* BETA Badge */
+.beta-badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-full);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  vertical-align: middle;
+}

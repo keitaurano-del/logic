@@ -1,0 +1,149 @@
+.dev-screen {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-primary);
+}
+
+.dev-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: rgba(245, 241, 232, 0.95);
+  backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.dev-header h2 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.dev-back {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px 8px;
+  font-family: var(--sans);
+}
+
+.dev-body {
+  flex: 1;
+  padding: 20px 16px 100px;
+  overflow-y: auto;
+}
+
+.dev-hero {
+  background: linear-gradient(135deg, #FFF4DC 0%, #FFE4D4 100%);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-xl);
+  padding: 32px 20px;
+  text-align: center;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-elevated);
+}
+
+.dev-hero-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+
+.dev-hero-number {
+  font-size: 88px;
+  font-weight: 900;
+  color: var(--accent-dark);
+  letter-spacing: -0.05em;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.dev-hero-rank {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.dev-hero-percent {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.dev-items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.dev-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  box-shadow: var(--shadow-card);
+}
+
+.dev-item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 10px;
+}
+
+.dev-item-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.dev-item-value {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.dev-item-unit {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-left: 2px;
+  font-weight: 600;
+}
+
+.dev-item-bar {
+  height: 8px;
+  background: var(--bg-secondary);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.dev-item-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.6s ease;
+}
+
+.dev-item-dev {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.dev-note {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 2;
+  margin-top: 20px;
+}

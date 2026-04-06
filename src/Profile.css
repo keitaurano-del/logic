@@ -958,3 +958,21 @@
   font-size: 11px;
   color: var(--danger);
 }
+
+.pf-deviation-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  box-shadow: var(--shadow-card);
+}
+.pf-deviation-card:active { opacity: 0.7; }
+.pf-setting-item { cursor: pointer; }

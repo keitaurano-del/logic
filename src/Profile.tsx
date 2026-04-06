@@ -2,6 +2,7 @@ import { useMemo, useState, useEffect } from 'react'
 import { getCompletedLessons, getStreak, getStudyHours, getStudyDates, getTotalStudyDays } from './stats'
 import { loginWithGoogle, logout, onAuthChange, type User } from './firebase'
 import { loadGuestUser, updateGuestId, resetGuestUser } from './guestUser'
+import { getPlanLabel } from './subscription'
 import './Profile.css'
 
 // 直近12週の学習カレンダー
@@ -54,7 +55,13 @@ function StudyCalendar({ dates }: { dates: string[] }) {
   )
 }
 
-export default function Profile({ onFeedback }: { onFeedback?: () => void }) {
+type ProfileProps = {
+  onFeedback?: () => void
+  onPricing?: () => void
+  onDeviation?: () => void
+}
+
+export default function Profile({ onFeedback, onPricing, onDeviation }: ProfileProps) {
   const completedLessons = getCompletedLessons()
   const streak = getStreak()
   const studyHours = getStudyHours()
@@ -318,10 +325,22 @@ export default function Profile({ onFeedback }: { onFeedback?: () => void }) {
         </div>
       )}
 
+      {/* Deviation Card */}
+      {onDeviation && (
+        <div className="pf-deviation-card" onClick={onDeviation}>
+          <span>📊 偏差値を見る</span>
+          <span>›</span>
+        </div>
+      )}
+
       {/* Settings section */}
       <div className="pf-settings-inline">
         <h3>⚙️ 設定</h3>
         <div className="pf-setting-list">
+          <div className="pf-setting-item" onClick={onPricing}>
+            <span>プラン</span>
+            <span className="pf-setting-value">{getPlanLabel()} ›</span>
+          </div>
           <div className="pf-setting-item">
             <span>テーマ</span>
             <span className="pf-setting-value">デスク</span>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { loadAIProblems, generateAIProblems, deleteAIProblem, isPremium, setPremium, type AIProblemSet } from './aiProblemStore'
+import { loadAIProblems, generateAIProblems, deleteAIProblem, isPremium, type AIProblemSet } from './aiProblemStore'
 import './AIProblemGen.css'
 
 type Props = {
@@ -19,7 +19,7 @@ export default function AIProblemGen({ onBack, onPlayProblem }: Props) {
   const [generating, setGenerating] = useState(false)
   const [error, setError] = useState('')
   const [problems, setProblems] = useState<AIProblemSet[]>(loadAIProblems())
-  const [premium, setPremiumState] = useState(isPremium())
+  const [premium] = useState(isPremium())
 
   useEffect(() => {
     setProblems(loadAIProblems())
@@ -27,14 +27,6 @@ export default function AIProblemGen({ onBack, onPlayProblem }: Props) {
 
   const handleGenerate = async () => {
     if (!prompt.trim()) return
-    if (!premium) {
-      if (confirm('この機能はプレミアムプラン専用です。\nデモとして体験版を有効化しますか？')) {
-        setPremium(true)
-        setPremiumState(true)
-      } else {
-        return
-      }
-    }
     setGenerating(true)
     setError('')
     try {
