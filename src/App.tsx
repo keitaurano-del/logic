@@ -17,6 +17,7 @@ import CoffeeBreak from './CoffeeBreak'
 import ThemeSettings from './ThemeSettings'
 import PlacementTest from './PlacementTest'
 import Ranking from './Ranking'
+import FermiLesson from './FermiLesson'
 import { hasCompletedPlacement, loadPlacementResult } from './placementTest'
 import { getAIProblem, type AIProblemSet } from './aiProblemStore'
 import { verifyCheckout } from './subscription'
@@ -239,6 +240,7 @@ type Screen =
   | { type: 'coffee-break' }
   | { type: 'theme' }
   | { type: 'ranking' }
+  | { type: 'fermi' }
 
 function App() {
   const [showPlacement, setShowPlacement] = useState(!hasCompletedPlacement())
@@ -374,6 +376,13 @@ function App() {
     return <Ranking
       onBack={goHome}
       onTakeTest={() => { setScreen({ type: 'home' }); setShowPlacement(true) }}
+    />
+  }
+
+  if (screen.type === 'fermi') {
+    return <FermiLesson
+      onBack={goHome}
+      onUpgrade={() => setScreen({ type: 'pricing' })}
     />
   }
 
@@ -639,6 +648,16 @@ function App() {
             <div className="ai-gen-text">
               <strong>コーヒーブレイク</strong>
               <span>3分で読める日常シーンの小話 <span className="ai-gen-badge">NEW</span></span>
+            </div>
+            <span className="ai-gen-arrow">›</span>
+          </div>
+
+          {/* Fermi estimation entry */}
+          <div className="ai-gen-card" onClick={() => setScreen({ type: 'fermi' })}>
+            <div className="ai-gen-icon">🔢</div>
+            <div className="ai-gen-text">
+              <strong>フェルミ推定</strong>
+              <span>分解思考を実践する練習 <span className="ai-gen-badge">NEW</span></span>
             </div>
             <span className="ai-gen-arrow">›</span>
           </div>

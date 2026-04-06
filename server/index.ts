@@ -438,6 +438,75 @@ app.get('/{*splat}', (_req, res) => {
   res.sendFile(path.join(distPath, 'index.html'))
 })
 
+// =============================================
+// フェルミ推定 — フィードバック生成
+// =============================================
+app.post('/api/fermi/feedback', async (req, res) => {
+  try {
+    const { question, userInput } = req.body || {}
+    if (!question || !userInput) {
+      return res.status(400).json({ error: 'question and userInput required' })
+    }
+
+    const systemPrompt = `あなたはロジカルシンキングのコーチです。フェルミ推定を学ぶユーザーの分解プロセスにフィードバックを返します。
+
+絶対に守るルール:
+- スコアや正誤判定 (◯/✗、◯点 など) は一切出力しない
+- 答えの数字が合っているかには触れない
+- 評価の対象は「分解の構造」「視点の網羅性」のみ
+- 励まし (「いいですね」「素晴らしい」) で必ず始める
+- 日本語で、優しく具体的に、合計 350 字以内
+
+出力フォーマット (この見出しを必ず使う):
+
+## 良かった視点
+- (1〜2 個、具体的にどこが良いか)
+
+## 別の視点
+- (1 個、見落としやすい切り口を提案)
+
+## 模範的な分解例
+1. (式の第 1 ステップ)
+2. (第 2 ステップ)
+3. (第 3 ステップ)`
+
+    const userMessage = `問題: ${question}\n\nユーザーの分解:\n${userInput}\n\nこの分解にフィードバックをお願いします。`
+
+    const response = await client.messages.create({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 700,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: userMessage }],
+    })
+    const text = response.content[0].type === 'text' ? response.content[0].text : ''
+    res.json({ feedback: text })
+  } catch (e: any) {
+    console.error('fermi feedback error:', e)
+    res.status(500).json({ error: e.message || 'failed' })
+  }
+})
+
+// =============================================
+// フェルミ推定 — AI 問題生成 (premium)
+// =============================================
+app.post('/api/fermi/question', async (_req, res) => {
+  try {
+    const response = await client.messages.create({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 200,
+      messages: [{
+        role: 'user',
+        content: 'フェルミ推定の問題を 1 問だけ日本語で生成してください。日常的な日本の社会・経済に関する問いで、分解思考の練習に適したものを出してください。問題文のみを 1 行で返してください。前置きや説明は不要です。',
+      }],
+    })
+    const text = response.content[0].type === 'text' ? response.content[0].text.trim() : ''
+    res.json({ question: text })
+  } catch (e: any) {
+    console.error('fermi question error:', e)
+    res.status(500).json({ error: e.message || 'failed' })
+  }
+})
+
 const REPORTS_FILE = path.join(process.cwd(), 'reports.json')
 const PLACEMENT_FILE = path.join(process.cwd(), 'placement.json')
 
