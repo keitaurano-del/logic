@@ -264,6 +264,17 @@ export default function Profile({ onFeedback }: { onFeedback?: () => void }) {
         </div>
       )}
 
+      {/* Settings section */}
+      <div className="pf-settings-inline">
+        <h3>⚙️ 設定</h3>
+        <div className="pf-setting-list">
+          <div className="pf-setting-item">
+            <span>テーマ</span>
+            <span className="pf-setting-value">デスク</span>
+          </div>
+        </div>
+      </div>
+
       {onFeedback && (
         <div className="pf-section">
           <button

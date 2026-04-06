@@ -8,6 +8,7 @@ import Flashcards from './Flashcards'
 import GoalSelect from './GoalSelect'
 import Roadmap from './Roadmap'
 import Feedback from './Feedback'
+import Notebook from './Notebook'
 import { allLessons } from './lessonData'
 import { recordCompletion, addStudyTime, getCompletedCount, getStreak, getStudyHours } from './stats'
 import { getCardStats } from './flashcardData'
@@ -181,7 +182,7 @@ const lessons = [
   },
 ]
 
-type Tab = 'home' | 'lessons' | 'profile'
+type Tab = 'home' | 'lessons' | 'notebook' | 'profile'
 type Screen =
   | { type: 'home' }
   | { type: 'lesson'; lessonId: number }
@@ -333,9 +334,38 @@ function App() {
       {/* Tab Content */}
       {tab === 'home' && (
         <>
+          {/* Today's Task Hero */}
+          {(() => {
+            const firstGoal = roadmapState.goals[0]
+            if (!firstGoal) return null
+            const rm = getRoadmap(firstGoal.goalId)
+            const nextStepId = getCurrentStep(firstGoal.goalId)
+            if (!rm || nextStepId == null) return null
+            const step = rm.steps.find(s => s.lessonId === nextStepId)
+            if (!step) return null
+            const lesson = lessons.find(l => l.id === nextStepId)
+            return (
+              <div className="today-hero">
+                <div className="today-hero-label">★ 今日のタスク</div>
+                <div className="today-hero-title">{step.title}</div>
+                <div className="today-hero-meta">{rm.title}</div>
+                <button
+                  className="today-hero-btn"
+                  onClick={() => {
+                    if (lesson) handleCardClick(lesson)
+                    else setScreen({ type: 'lesson', lessonId: nextStepId })
+                  }}
+                >
+                  <span>始める</span>
+                  <span>→</span>
+                </button>
+              </div>
+            )
+          })()}
+
           {/* Progress Section */}
           <section className="progress-section">
-            <h3 className="progress-section-title">📊 学習進捗</h3>
+            <h3 className="progress-section-title">📋 今月の評価シート</h3>
             {(['簿記', 'プロジェクトマネジメント', 'ロジカルシンキング'] as const).map(cat => {
               const p = progress[cat]
               const rate = p.totalCards > 0 ? Math.round((p.completedCards / p.totalCards) * 100) : 0
@@ -469,8 +499,36 @@ function App() {
               </div>
             )
           })()}
+
+          {/* Document Tray */}
+          <section className="section">
+            <div className="section-header">
+              <h3 className="section-title">📁 書類トレイ</h3>
+              <span className="section-count">{lessons.length}</span>
+            </div>
+            <div className="lesson-list">
+              {lessons.slice(0, 6).map((lesson) => (
+                <div
+                  key={lesson.id}
+                  className="lesson-card clickable"
+                  data-cat={getCatKey(lesson.category)}
+                  onClick={() => handleCardClick(lesson)}
+                >
+                  <div className="lesson-emoji"><LessonIcon id={lesson.id} action={lesson.action} /></div>
+                  <div className="lesson-info">
+                    <span className="lesson-category">{lesson.category}</span>
+                    <h4 className="lesson-title">{lesson.title}</h4>
+                    <p className="lesson-desc">{lesson.description}</p>
+                  </div>
+                  <div className="lesson-arrow">›</div>
+                </div>
+              ))}
+            </div>
+          </section>
         </>
       )}
+
+      {tab === 'notebook' && <Notebook />}
 
       {tab === 'lessons' && (
         <div className="lessons-tab">
@@ -540,6 +598,10 @@ function App() {
             <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
           </svg>
           <span>レッスン</span>
+        </button>
+        <button className={`nav-item ${tab === 'notebook' ? 'active' : ''}`} onClick={() => setTab('notebook')}>
+          <span className="nav-icon" style={{ fontSize: 22, lineHeight: 1 }}>📓</span>
+          <span>手帳</span>
         </button>
         <button className={`nav-item ${tab === 'profile' ? 'active' : ''}`} onClick={() => { setTab('profile'); refreshStats() }}>
           <svg className="nav-icon" viewBox="0 0 24 24" fill={tab === 'profile' ? 'currentColor' : 'none'} stroke={tab === 'profile' ? 'none' : 'currentColor'} strokeWidth="2">

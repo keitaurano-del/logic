@@ -1,41 +1,45 @@
 :root {
-  --bg-primary: #0C1020;
-  --bg-secondary: #101528;
-  --bg-card: #151A30;
-  --bg-elevated: #1C2238;
-  --bg-glass: rgba(255, 255, 255, 0.03);
+  --bg-primary:    #F5F1E8;
+  --bg-secondary:  #FAF6EE;
+  --bg-card:       #FFFFFF;
+  --bg-elevated:   #FFFFFF;
+  --bg-hero:       #1F2A4D;
+  --bg-glass:      rgba(255, 255, 255, 0.6);
+  --bg-tertiary:   #EFE8D8;
 
-  --text-primary: #F0F0F4;
-  --text-secondary: #A8A8BA;
-  --text-muted: #787890;
+  --text-primary:  #2D2820;
+  --text-secondary:#6B6258;
+  --text-muted:    #9B8E7E;
   --text-tertiary: var(--text-muted);
+  --text-on-hero:  #FFFFFF;
 
-  --border: rgba(255, 255, 255, 0.08);
-  --border-light: rgba(255, 255, 255, 0.05);
+  --border:        #E8E0D0;
+  --border-light:  #F0E8D8;
 
-  --accent: #6366F1;
-  --accent-light: #818CF8;
-  --accent-soft: rgba(99, 102, 241, 0.10);
-  --accent-glow: rgba(99, 102, 241, 0.22);
+  --accent:        #D4915A;
+  --accent-light:  #E8C99A;
+  --accent-soft:   rgba(212, 145, 90, 0.10);
+  --accent-glow:   rgba(212, 145, 90, 0.22);
+  --accent-dark:   #B07442;
 
-  --success: #10B981;
-  --success-soft: rgba(16, 185, 129, 0.10);
-  --warning: #F59E0B;
-  --warning-soft: rgba(245, 158, 11, 0.10);
-  --danger: #F87171;
+  --success:       #5A8A5A;
+  --success-soft:  rgba(90, 138, 90, 0.12);
+  --warning:       #D4915A;
+  --warning-soft:  rgba(212, 145, 90, 0.12);
+  --danger:        #C44545;
 
-  --cat-boki3: #6366F1;
-  --cat-boki3-soft: rgba(99, 102, 241, 0.10);
-  --cat-boki2: #06B6D4;
-  --cat-boki2-soft: rgba(6, 182, 212, 0.10);
-  --cat-practice: #F59E0B;
-  --cat-practice-soft: rgba(245, 158, 11, 0.10);
-  --cat-exam: #EF4444;
-  --cat-exam-soft: rgba(239, 68, 68, 0.10);
-  --cat-logic: #F97316;
-  --cat-logic-soft: rgba(249, 115, 22, 0.10);
-  --cat-pm: #14B8A6;
-  --cat-pm-soft: rgba(20, 184, 166, 0.10);
+  --cat-boki3:     #D4915A;
+  --cat-boki3-soft: rgba(212, 145, 90, 0.12);
+  --cat-boki2:     #5B7FB8;
+  --cat-boki2-soft: rgba(91, 127, 184, 0.12);
+  --cat-practice:  #B07442;
+  --cat-practice-soft: rgba(176, 116, 66, 0.12);
+  --cat-exam:      #C44545;
+  --cat-exam-soft: rgba(196, 69, 69, 0.12);
+  --cat-logic:     #D4915A;
+  --cat-logic-soft: rgba(212, 145, 90, 0.12);
+  --cat-pm:        #5A8A5A;
+  --cat-pm-soft:   rgba(90, 138, 90, 0.12);
 
   --radius-sm: 8px;
   --radius-md: 12px;
@@ -43,8 +47,8 @@
   --radius-xl: 22px;
   --radius-full: 100px;
 
-  --shadow-card: 0 2px 16px rgba(0, 0, 0, 0.4);
-  --shadow-elevated: 0 8px 40px rgba(0, 0, 0, 0.5);
+  --shadow-card:    0 2px 8px rgba(180, 150, 100, 0.10);
+  --shadow-elevated: 0 4px 16px rgba(180, 150, 100, 0.15);
 
   --content-width: 480px;
   --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Meiryo', sans-serif;
@@ -124,13 +128,13 @@ input, textarea, select { -webkit-tap-highlight-color: transparent; }
   }
 
   body {
-    background: #080C1A;
+    background: #EFEAE0;
   }
 
   #root {
     border-left: 1px solid var(--border);
     border-right: 1px solid var(--border);
-    box-shadow: 0 0 80px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 80px rgba(180, 150, 100, 0.15);
   }
 }
 

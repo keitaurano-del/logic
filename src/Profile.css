@@ -851,3 +851,31 @@
   .pf-stats-grid { padding: 0 24px; }
   .pf-section { padding: 0 24px; }
 }
+
+.pf-settings-inline {
+  margin: 24px 16px 0;
+  padding: 16px;
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+}
+.pf-settings-inline h3 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+.pf-setting-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.pf-setting-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-light);
+  font-size: 13px;
+}
+.pf-setting-item:last-child { border-bottom: none; }
+.pf-setting-value { color: var(--text-muted); }

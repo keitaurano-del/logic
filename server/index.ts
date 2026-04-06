@@ -241,6 +241,43 @@ ${goal ? `- ゴール: ${goal}` : ''}
   }
 })
 
+// =============================================
+// 学習ジャーナル生成
+// =============================================
+app.post('/api/journal/generate', async (req, res) => {
+  try {
+    const { date, completedLessons = [], flashcardStats = { correct: 0, total: 0 }, studyMinutes = 0 } = req.body || {}
+
+    const lessonsList = completedLessons.length ? completedLessons.join(', ') : '（なし）'
+    const cardInfo = flashcardStats.total > 0
+      ? `フラッシュカード: ${flashcardStats.correct}枚習得 / 全${flashcardStats.total}枚`
+      : 'フラッシュカード: なし'
+
+    const prompt = `あなたは温かく寄り添う学習コーチです。以下の今日の学習内容を見て、ユーザーの学びを100文字程度で振り返り、明日への具体的なアドバイスを1文添えてください。励ましの口調で、絵文字は使わないでください。
+
+【日付】${date}
+【完了レッスン】${lessonsList}
+【${cardInfo}】
+【学習時間】${studyMinutes}分`
+
+    const response = await client.messages.create({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 400,
+      messages: [{ role: 'user', content: prompt }],
+    })
+
+    const text = response.content
+      .filter((b: any) => b.type === 'text')
+      .map((b: any) => (b as any).text)
+      .join('')
+
+    res.json({ summary: text.trim() })
+  } catch (e: any) {
+    console.error('journal generate error:', e)
+    res.status(500).json({ error: e.message || 'failed' })
+  }
+})
+
 // Serve Vite build output in production
 const distPath = path.resolve(__dirname, '..', 'dist')
 app.use(express.static(distPath))
