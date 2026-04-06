@@ -1,5 +1,5 @@
 .mock-screen { min-height: 100svh; display: flex; flex-direction: column; background: var(--bg-primary); }
-.mock-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: rgba(10,10,15,0.88); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); color: var(--text-primary); font-size: 16px; font-weight: 800; }
+.mock-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: rgba(245, 241, 232, 0.95); border-bottom: 1px solid var(--border); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); color: var(--text-primary); font-size: 16px; font-weight: 800; }
 .mock-back { background: none; border: none; color: var(--text-primary); font-size: 20px; cursor: pointer; padding: 4px 8px; }
 .mock-timer { font-variant-numeric: tabular-nums; color: var(--accent); font-size: 18px; font-weight: 800; }
 .mock-progress { font-size: 13px; color: var(--text-muted); font-weight: 700; }

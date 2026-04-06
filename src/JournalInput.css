@@ -1,9 +1,9 @@
 .ji-screen { min-height: 100svh; display: flex; flex-direction: column; background: var(--bg-primary); }
-.ji-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: rgba(10,10,15,0.88); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); color: var(--text-primary); font-size: 16px; font-weight: 800; }
+.ji-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: rgba(245, 241, 232, 0.95); border-bottom: 1px solid var(--border); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); color: var(--text-primary); font-size: 16px; font-weight: 800; }
 .ji-back { background: none; border: none; color: var(--text-primary); font-size: 20px; cursor: pointer; padding: 4px 8px; }
 .ji-progress { font-size: 13px; color: var(--text-muted); font-weight: 700; }
 .ji-progress-bar { height: 3px; background: var(--bg-elevated); }
-.ji-progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #8B5CF6); transition: width 0.3s; }
+.ji-progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-light)); transition: width 0.3s; }
 
 .ji-content { flex: 1; padding: 20px 16px; display: flex; flex-direction: column; gap: 18px; }
 
