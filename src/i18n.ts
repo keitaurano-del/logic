@@ -135,17 +135,6 @@ const STRINGS: Record<Locale, Strings> = {
     'profile.languageJa': '日本語',
     'profile.languageEn': 'English',
 
-    // Lesson
-    'lesson.startQuiz': 'クイズに答える',
-    'lesson.next': '次へ',
-    'lesson.previous': '前へ',
-    'lesson.checkAnswer': '回答する',
-    'lesson.correct': '正解!',
-    'lesson.wrong': '不正解',
-    'lesson.completedTitle': 'レッスン完了!',
-    'lesson.completedScore': '{correct}/{total} 問正解',
-    'lesson.continueButton': 'ホームに戻る',
-
     // Categories
     'category.logical': 'ロジカルシンキング',
     'category.boki3': '簿記3級',
@@ -372,17 +361,6 @@ const STRINGS: Record<Locale, Strings> = {
     'profile.languageTitle': 'Language',
     'profile.languageJa': '日本語',
     'profile.languageEn': 'English',
-
-    // Lesson
-    'lesson.startQuiz': 'Start quiz',
-    'lesson.next': 'Next',
-    'lesson.previous': 'Previous',
-    'lesson.checkAnswer': 'Submit',
-    'lesson.correct': 'Correct!',
-    'lesson.wrong': 'Incorrect',
-    'lesson.completedTitle': 'Lesson complete!',
-    'lesson.completedScore': '{correct} of {total} correct',
-    'lesson.continueButton': 'Back to home',
 
     // Categories
     'category.logical': 'Logical Thinking',
