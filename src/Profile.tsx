@@ -5,6 +5,7 @@ import { loadGuestUser, updateGuestId } from './guestUser'
 import { isDevMode, setDevMode as persistDevMode } from './devMode'
 import { getPlanLabel, BETA_MODE } from './subscription'
 import { resetAllData } from './dataReset'
+import { loadReminderPref, scheduleDailyReminder, cancelDailyReminder, requestNotificationPermission, isNative } from './notifications'
 import './Profile.css'
 
 type ProfileProps = {
@@ -24,6 +25,7 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
   const [showSettings, setShowSettings] = useState(false)
   const [devMode, setDevMode] = useState(isDevMode())
   const [notifications, setNotifications] = useState(() => localStorage.getItem('logic-notifications') !== 'off')
+  const [reminderPref, setReminderPref] = useState(loadReminderPref())
   const [user, setUser] = useState<User | null>(null)
   const [authLoading, setAuthLoading] = useState(false)
   const [authError, setAuthError] = useState('')
@@ -278,6 +280,50 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
           <span>›</span>
         </div>
       )}
+
+      {/* Daily reminder (today's problem) */}
+      <div className="pf-deviation-card" style={{ display: 'block' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: reminderPref.enabled ? 10 : 0 }}>
+          <span>🔔 今日の1問リマインダー</span>
+          <input
+            type="checkbox"
+            checked={reminderPref.enabled}
+            onChange={async (e) => {
+              if (e.target.checked) {
+                if (isNative()) {
+                  const ok = await requestNotificationPermission()
+                  if (!ok) {
+                    alert('通知の許可が必要です。設定アプリから Logic の通知を許可してください。')
+                    return
+                  }
+                }
+                await scheduleDailyReminder(reminderPref.hour, reminderPref.minute)
+                setReminderPref(loadReminderPref())
+              } else {
+                await cancelDailyReminder()
+                setReminderPref(loadReminderPref())
+              }
+            }}
+            style={{ width: 20, height: 20, cursor: 'pointer' }}
+          />
+        </div>
+        {reminderPref.enabled && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, paddingLeft: 4 }}>
+            <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>毎日の通知時刻</span>
+            <input
+              type="time"
+              value={`${String(reminderPref.hour).padStart(2, '0')}:${String(reminderPref.minute).padStart(2, '0')}`}
+              onChange={async (e) => {
+                const [h, m] = e.target.value.split(':').map(Number)
+                await scheduleDailyReminder(h, m)
+                setReminderPref(loadReminderPref())
+              }}
+              style={{ padding: '6px 10px', border: '1px solid var(--border)', borderRadius: 8, fontFamily: 'inherit', fontSize: 14, background: 'var(--bg-card)', color: 'var(--text-primary)' }}
+            />
+            {!isNative() && <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>(アプリ版でのみ通知が届きます)</span>}
+          </div>
+        )}
+      </div>
 
       {/* Legal links */}
       <div className="pf-deviation-card" onClick={() => window.open('/privacy.html', '_blank')}>

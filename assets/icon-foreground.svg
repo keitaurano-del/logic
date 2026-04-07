@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Foreground for Android adaptive icon. Add ~25% safe-area padding. -->
+  <g transform="translate(256, 256) scale(0.5)" fill="#FFFFFF" stroke="#FFFFFF" stroke-linecap="round">
+    <line x1="512" y1="370" x2="354" y2="640" stroke-width="48"/>
+    <line x1="512" y1="370" x2="670" y2="640" stroke-width="48"/>
+    <circle cx="512" cy="370" r="92"/>
+    <circle cx="354" cy="654" r="92"/>
+    <circle cx="670" cy="654" r="92"/>
+  </g>
+</svg>
