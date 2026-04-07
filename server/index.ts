@@ -733,14 +733,18 @@ app.post('/api/fermi/feedback', fermiLimiter, async (req, res) => {
     }
     const isEn = locale === 'en'
 
-    const systemPromptJa = `あなたはロジカルシンキングのコーチです。フェルミ推定を学ぶユーザーの分解プロセスにフィードバックを返します。
+    const systemPromptJa = `あなたはロジカルシンキングのコーチです。フェルミ推定を学ぶユーザーの分解プロセスにフィードバックを返し、最後に**実際の概算解と計算ロジックを提示**します。
 
-絶対に守るルール:
-- スコアや正誤判定 (◯/✗、◯点 など) は一切出力しない
-- 答えの数字が合っているかには触れない
-- 評価の対象は「分解の構造」「視点の網羅性」のみ
+ルール:
 - 励まし (「いいですね」「素晴らしい」) で必ず始める
-- 日本語で、優しく具体的に、合計 350 字以内
+- 評価の主軸は「分解の構造」と「視点の網羅性」
+- 数値の正誤を断罪しない (「ここを ◯◯ にするとより精度が上がる」のように建設的に)
+- **必ず最後に「概算解」セクションで実際の数字と計算式を提示する**
+  - 各ステップで使う前提値 (人口、世帯数、頻度など) を明示
+  - 掛け算/割り算を順番に展開
+  - 最終的な数字 (◯◯ 万、◯◯ 億 など) を太字で結論
+  - 既知の実際値 (政府統計・業界データなど) があれば併記し、概算と比較
+- 日本語で、合計 600〜800 字程度
 
 出力フォーマット (この見出しを必ず使う):
 
@@ -750,32 +754,56 @@ app.post('/api/fermi/feedback', fermiLimiter, async (req, res) => {
 ## 別の視点
 - (1 個、見落としやすい切り口を提案)
 
-## 模範的な分解例
-1. (式の第 1 ステップ)
-2. (第 2 ステップ)
-3. (第 3 ステップ)`
+## 概算解と計算ロジック
+**前提値**: (使う数字をリスト)
 
-    const systemPromptEn = `You are a logical-thinking coach. Provide feedback on a user's Fermi estimation decomposition.
+**計算**:
+1. (式の第 1 ステップ + 数字)
+2. (第 2 ステップ + 数字)
+3. (第 3 ステップ + 数字)
+4. (第 4 ステップ、必要なら)
 
-Absolute rules:
-- NEVER output scores, ✓/✗, or right/wrong judgments
-- Do NOT comment on whether the numerical answer is correct
-- Evaluate ONLY the decomposition structure and breadth of perspectives
+**概算結果**: 約 ◯◯◯ (単位)
+
+**実際の値 (参考)**: 約 ◯◯◯ (出典が分かれば併記、不明なら省略可)
+
+**ひとこと**: (前提を変えるとどうなるか、精度をどう上げられるか、1〜2 文)`
+
+    const systemPromptEn = `You are a logical-thinking coach. Provide feedback on a user's Fermi estimation, AND finish by **showing the actual estimated answer with the full calculation logic**.
+
+Rules:
 - Always begin with encouragement ("Nice work", "Great start")
-- Respond in English, kind and specific, under ~250 words
+- Evaluate decomposition structure and breadth of perspectives
+- Do not bluntly grade numerical accuracy — instead say "this assumption could be tightened to..."
+- **You MUST end with a "Worked answer" section that includes the actual number and the math**
+  - List the input assumptions (population, households, frequency, etc.)
+  - Show each multiplication/division step in order
+  - State the final number in bold (e.g. ~50,000)
+  - If a known real value exists (govt or industry data), compare it to your estimate
+- Respond in English, ~400-500 words total
 
 Output format (use these exact headings):
 
 ## Strong points
-- (1-2 specific things they did well)
+- (1-2 specific things the user did well)
 
 ## Another angle
 - (1 perspective that is easy to miss)
 
-## A model decomposition
-1. (Formula step 1)
-2. (Step 2)
-3. (Step 3)`
+## Worked answer
+**Assumptions**: (list the input numbers)
+
+**Calculation**:
+1. (Step 1 with the math)
+2. (Step 2 with the math)
+3. (Step 3 with the math)
+4. (Step 4 if needed)
+
+**Estimate**: ~ N (unit)
+
+**Real value (reference)**: ~ N (cite if known, otherwise omit)
+
+**One note**: (how would the answer shift if one assumption changed; 1-2 sentences)`
 
     const userMessage = isEn
       ? `Question: ${question}\n\nUser's decomposition:\n${userInput}\n\nPlease give feedback on this decomposition.`
@@ -783,7 +811,7 @@ Output format (use these exact headings):
 
     const response = await client.messages.create({
       model: 'claude-sonnet-4-20250514',
-      max_tokens: 700,
+      max_tokens: 1400,
       system: isEn ? systemPromptEn : systemPromptJa,
       messages: [{ role: 'user', content: userMessage }],
     })

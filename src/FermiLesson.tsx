@@ -100,13 +100,23 @@ export default function FermiLesson({ onBack, onUpgrade }: Props) {
   }
 
   // Render feedback as simple markdown-ish (handle ## headings and lists)
+  // Render markdown-ish: ## headings, - / ・ bullets, 1. ordered, **bold** inline.
+  const renderInline = (line: string) => {
+    const parts = line.split(/(\*\*[^*]+\*\*)/g)
+    return parts.map((p, j) => {
+      if (p.startsWith('**') && p.endsWith('**')) {
+        return <strong key={j} className="fl-fb-bold">{p.slice(2, -2)}</strong>
+      }
+      return <span key={j}>{p}</span>
+    })
+  }
   const renderFeedback = (text: string) => {
     return text.split('\n').map((line, i) => {
       if (line.startsWith('## ')) return <h4 key={i} className="fl-fb-heading">{line.slice(3)}</h4>
-      if (/^[-・]\s/.test(line)) return <li key={i} className="fl-fb-li">{line.replace(/^[-・]\s/, '')}</li>
-      if (/^\d+\.\s/.test(line)) return <li key={i} className="fl-fb-li ordered">{line.replace(/^\d+\.\s/, '')}</li>
+      if (/^[-・]\s/.test(line)) return <li key={i} className="fl-fb-li">{renderInline(line.replace(/^[-・]\s/, ''))}</li>
+      if (/^\d+\.\s/.test(line)) return <li key={i} className="fl-fb-li ordered">{renderInline(line.replace(/^\d+\.\s/, ''))}</li>
       if (!line.trim()) return <div key={i} className="fl-fb-spacer" />
-      return <p key={i} className="fl-fb-p">{line}</p>
+      return <p key={i} className="fl-fb-p">{renderInline(line)}</p>
     })
   }
 

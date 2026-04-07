@@ -39,6 +39,7 @@
 .fl-fb-p { font-size: 13px; color: var(--text-secondary); line-height: 1.7; margin: 4px 0; }
 .fl-fb-li { font-size: 13px; color: var(--text-secondary); line-height: 1.7; margin: 4px 0 4px 18px; list-style: disc; }
 .fl-fb-li.ordered { list-style: decimal; }
+.fl-fb-bold { font-weight: 800; color: var(--text-primary); }
 .fl-fb-spacer { height: 6px; }
 
 /* Upsell */
