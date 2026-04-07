@@ -370,6 +370,10 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
         <span>{t('profile.terms')}</span>
         <span>›</span>
       </div>
+      <div className="pf-deviation-card" onClick={() => window.open('/tokushoho.html', '_blank')}>
+        <span>{t('profile.tokushoho')}</span>
+        <span>›</span>
+      </div>
 
       {/* Data deletion (GDPR / Play Store 必須) */}
       <div className="pf-deviation-card" style={{ borderColor: 'var(--danger)' }} onClick={async () => {

@@ -1,10 +1,11 @@
-import express from 'express'
+import express, { type Request } from 'express'
 import cors from 'cors'
 import path from 'path'
 import fs from 'fs'
 import { fileURLToPath } from 'url'
 import Anthropic from '@anthropic-ai/sdk'
 import Stripe from 'stripe'
+import rateLimit from 'express-rate-limit'
 
 const stripeKey = process.env.STRIPE_SECRET_KEY
 const stripe = stripeKey ? new Stripe(stripeKey) : null
@@ -27,15 +28,98 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 const app = express()
+
+// Render / proxied environments: trust the first hop so X-Forwarded-For is honored
+// (without this all requests look like they come from the load balancer = no per-IP limiting).
+app.set('trust proxy', 1)
+
 app.use(cors())
 app.use(express.json({ limit: '1mb' }))
 
 const client = new Anthropic()
 
 // =============================================
+// レート制限ミドルウェア
+// =============================================
+// すべて IP ベース。`req.body.locale` を見て ja/en メッセージを切り替える。
+// クライアント側 src/usageTracker.ts の補完。ブラウザクリアでバイパスできない真のバックストップ。
+// メモリストアなので Render の単一インスタンス前提。
+function makeLimiter(opts: {
+  windowMs: number
+  max: number
+  msgJa: string
+  msgEn: string
+}) {
+  return rateLimit({
+    windowMs: opts.windowMs,
+    max: opts.max,
+    standardHeaders: true,
+    legacyHeaders: false,
+    handler: (req: Request, res) => {
+      const locale = (req.body && typeof req.body === 'object' && (req.body as { locale?: string }).locale) || 'ja'
+      res.status(429).json({
+        error: locale === 'en' ? opts.msgEn : opts.msgJa,
+        retryAfter: Math.ceil(opts.windowMs / 1000),
+      })
+    },
+  })
+}
+
+// グローバル: 全 /api/* に対し 1 分 100 req のスパム防御
+const globalApiLimiter = makeLimiter({
+  windowMs: 60 * 1000,
+  max: 100,
+  msgJa: 'リクエストが多すぎます。少し待ってからもう一度お試しください。',
+  msgEn: 'Too many requests. Please wait a moment and try again.',
+})
+
+// 重い AI エンドポイント用
+const roleplayTurnLimiter = makeLimiter({
+  windowMs: 60 * 1000,
+  max: 20,
+  msgJa: 'ロールプレイのリクエストが多すぎます。1 分待ってからお試しください。',
+  msgEn: 'Too many roleplay requests. Please wait a minute and try again.',
+})
+
+const fermiLimiter = makeLimiter({
+  windowMs: 60 * 1000,
+  max: 15,
+  msgJa: 'フェルミ推定のリクエストが多すぎます。1 分待ってからお試しください。',
+  msgEn: 'Too many Fermi requests. Please wait a minute and try again.',
+})
+
+const generateProblemsLimiter = makeLimiter({
+  windowMs: 60 * 60 * 1000,
+  max: 30,
+  msgJa: '問題生成のリクエストが多すぎます。しばらく待ってからお試しください。',
+  msgEn: 'Too many problem generation requests. Please try again later.',
+})
+
+const dailyProblemLimiter = makeLimiter({
+  windowMs: 24 * 60 * 60 * 1000,
+  max: 5,
+  msgJa: '今日のデイリー問題は既に取得済みです。明日また挑戦してください。',
+  msgEn: 'You have already fetched today\'s daily problem. Try again tomorrow.',
+})
+
+const flashcardsLimiter = makeLimiter({
+  windowMs: 60 * 60 * 1000,
+  max: 20,
+  msgJa: 'フラッシュカード生成のリクエストが多すぎます。しばらく待ってからお試しください。',
+  msgEn: 'Too many flashcard generation requests. Please try again later.',
+})
+
+// グローバル制限を /api/* に適用 (ヘルスチェックは除外)
+app.use((req, res, next) => {
+  if (req.path === '/api/health') return next()
+  if (req.path.startsWith('/api/')) return globalApiLimiter(req, res, next)
+  return next()
+})
+
+// =============================================
 // ロールプレイ会話
 // =============================================
-app.post('/api/roleplay/chat', async (req, res) => {
+app.post('/api/roleplay/chat', roleplayTurnLimiter, async (req, res) => {
   const { messages, setup, locale } = req.body
   const isEn = locale === 'en'
   const { template, format, partner, goal, context } = setup
@@ -137,7 +221,7 @@ Rules:
 // =============================================
 // ロールプレイ自動進行ターン (AI セリフ + ユーザー選択肢)
 // =============================================
-app.post('/api/roleplay/turn', async (req, res) => {
+app.post('/api/roleplay/turn', roleplayTurnLimiter, async (req, res) => {
   const { messages, setup, turnNumber, maxTurns, locale } = req.body as {
     messages: { role: string; content: string }[]
     setup: { template: { title: string }; partner: { name: string; role: string; personality: string; interests: string; concerns: string }; goal: string; context: string }
@@ -237,7 +321,7 @@ Respond ONLY with the following JSON (no extra text before or after):
 // =============================================
 // ロールプレイ採点
 // =============================================
-app.post('/api/roleplay/score', async (req, res) => {
+app.post('/api/roleplay/score', roleplayTurnLimiter, async (req, res) => {
   const { messages, setup, historySummary, locale } = req.body
   const isEn = locale === 'en'
   const { template, partner, goal } = setup
@@ -343,7 +427,7 @@ Respond ONLY with the following JSON (no extra text):
 // =============================================
 // フラッシュカードAI生成
 // =============================================
-app.post('/api/flashcards/generate', async (req, res) => {
+app.post('/api/flashcards/generate', flashcardsLimiter, async (req, res) => {
   const { wrongAnswers, category, lessonTitle, locale } = req.body
   const isEn = locale === 'en'
 
@@ -412,7 +496,7 @@ app.post('/api/flashcards/generate', async (req, res) => {
 // =============================================
 // 会話サマリー生成
 // =============================================
-app.post('/api/roleplay/summary', async (req, res) => {
+app.post('/api/roleplay/summary', roleplayTurnLimiter, async (req, res) => {
   const { messages, setup, locale } = req.body
   const isEn = locale === 'en'
   const { template, partner, goal } = setup
@@ -483,7 +567,7 @@ ${goal ? `- Goal: ${goal}` : ''}
 // =============================================
 // 学習ジャーナル生成
 // =============================================
-app.post('/api/journal/generate', async (req, res) => {
+app.post('/api/journal/generate', generateProblemsLimiter, async (req, res) => {
   try {
     const { date, completedLessons = [], flashcardStats = { correct: 0, total: 0 }, studyMinutes = 0, locale } = req.body || {}
     const isEn = locale === 'en'
@@ -530,7 +614,7 @@ app.post('/api/journal/generate', async (req, res) => {
 // =============================================
 // AI問題ジェネレーター
 // =============================================
-app.post('/api/generate-problems', async (req, res) => {
+app.post('/api/generate-problems', generateProblemsLimiter, async (req, res) => {
   try {
     const { prompt = '', locale } = req.body || {}
     if (!prompt || prompt.length < 5) {
@@ -641,7 +725,7 @@ app.get('/{*splat}', (_req, res) => {
 // =============================================
 // フェルミ推定 — フィードバック生成
 // =============================================
-app.post('/api/fermi/feedback', async (req, res) => {
+app.post('/api/fermi/feedback', fermiLimiter, async (req, res) => {
   try {
     const { question, userInput, locale } = req.body || {}
     if (!question || !userInput) {
@@ -714,7 +798,7 @@ Output format (use these exact headings):
 // =============================================
 // フェルミ推定 — AI 問題生成 (premium)
 // =============================================
-app.post('/api/fermi/question', async (req, res) => {
+app.post('/api/fermi/question', fermiLimiter, async (req, res) => {
   try {
     const isEn = req.body?.locale === 'en'
     const userPrompt = isEn
@@ -923,7 +1007,7 @@ app.get('/api/checkout-verify', async (req, res) => {
 // =============================================
 // 今日の1問
 // =============================================
-app.post('/api/daily-problem', async (req, res) => {
+app.post('/api/daily-problem', dailyProblemLimiter, async (req, res) => {
   try {
     const isEn = req.body?.locale === 'en'
 
