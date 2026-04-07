@@ -278,6 +278,16 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
         </div>
       )}
 
+      {/* Legal links */}
+      <div className="pf-deviation-card" onClick={() => window.open('/privacy.html', '_blank')}>
+        <span>📄 プライバシーポリシー</span>
+        <span>›</span>
+      </div>
+      <div className="pf-deviation-card" onClick={() => window.open('/terms.html', '_blank')}>
+        <span>📑 利用規約</span>
+        <span>›</span>
+      </div>
+
       {/* Plan card */}
       {onPricing && (
         <div className="pf-plan-card" onClick={onPricing}>
