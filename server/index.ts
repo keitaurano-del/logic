@@ -557,6 +557,18 @@ app.post('/api/placement/submit', (req, res) => {
   }
 })
 
+app.post('/api/placement/delete', (req, res) => {
+  try {
+    const { guestId } = req.body || {}
+    if (!guestId) return res.status(400).json({ error: 'guestId required' })
+    const entries = loadPlacements().filter((e) => e.guestId !== guestId)
+    savePlacements(entries)
+    res.json({ ok: true })
+  } catch (e: any) {
+    res.status(500).json({ error: e.message })
+  }
+})
+
 app.get('/api/placement/ranking', (req, res) => {
   try {
     const guestId = (req.query.guestId as string) || ''

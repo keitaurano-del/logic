@@ -4,6 +4,7 @@ import { loginWithGoogle, logout, onAuthChange, type User } from './firebase'
 import { loadGuestUser, updateGuestId } from './guestUser'
 import { isDevMode, setDevMode as persistDevMode } from './devMode'
 import { getPlanLabel, BETA_MODE } from './subscription'
+import { resetAllData } from './dataReset'
 import './Profile.css'
 
 type ProfileProps = {
@@ -285,6 +286,17 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
       </div>
       <div className="pf-deviation-card" onClick={() => window.open('/terms.html', '_blank')}>
         <span>📑 利用規約</span>
+        <span>›</span>
+      </div>
+
+      {/* Data deletion (GDPR / Play Store 必須) */}
+      <div className="pf-deviation-card" style={{ borderColor: 'var(--danger)' }} onClick={async () => {
+        if (!confirm('全ての学習データ・偏差値・ニックネーム・テーマ設定を削除します。\n\nこの操作は取り消せません。本当に削除しますか?')) return
+        await resetAllData()
+        alert('全データを削除しました。アプリを再読み込みします。')
+        window.location.reload()
+      }}>
+        <span style={{ color: 'var(--danger)' }}>🗑 全データを削除</span>
         <span>›</span>
       </div>
 
