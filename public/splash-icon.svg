@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Splash icon: same 3-node pyramid as app icon, but no background -->
+  <!-- Capacitor will composite this on top of a solid background color -->
+  <g fill="#D4915A" stroke="#D4915A" stroke-linecap="round">
+    <line x1="512" y1="370" x2="354" y2="640" stroke-width="48"/>
+    <line x1="512" y1="370" x2="670" y2="640" stroke-width="48"/>
+    <circle cx="512" cy="370" r="92"/>
+    <circle cx="354" cy="654" r="92"/>
+    <circle cx="670" cy="654" r="92"/>
+  </g>
+</svg>

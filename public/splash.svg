@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2732 2732" width="2732" height="2732">
+  <!-- Full splash 2732x2732 (covers iPad Pro 12.9" portrait/landscape) -->
+  <!-- Cream background matching Light theme -->
+  <rect x="0" y="0" width="2732" height="2732" fill="#F5F1E8"/>
+  <!-- Center icon scaled 1024 → ~600 -->
+  <g transform="translate(1066, 1066) scale(0.586)">
+    <g fill="#D4915A" stroke="#D4915A" stroke-linecap="round">
+      <line x1="512" y1="370" x2="354" y2="640" stroke-width="48"/>
+      <line x1="512" y1="370" x2="670" y2="640" stroke-width="48"/>
+      <circle cx="512" cy="370" r="92"/>
+      <circle cx="354" cy="654" r="92"/>
+      <circle cx="670" cy="654" r="92"/>
+    </g>
+  </g>
+</svg>
