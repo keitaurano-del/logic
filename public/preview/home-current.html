@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>現状ホーム — Logic Preview</title>
+<link rel="stylesheet" href="_shared.css">
+<style>
+  .home-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px;
+    background: #1F2A4D;
+    color: #FFFFFF;
+  }
+  .header-streak { background: rgba(255,255,255,0.10); padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 800; }
+  .header-stats { font-size: 12px; opacity: 0.8; }
+  .header-cog { font-size: 20px; }
+
+  .daily-card {
+    background: linear-gradient(135deg, #FFF4DC 0%, #FFE4D4 100%);
+    border: 1px solid var(--accent);
+    border-radius: 16px;
+    padding: 14px;
+    margin: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .daily-icon { font-size: 26px; }
+  .daily-text { flex: 1; }
+  .daily-text strong { display: block; font-size: 13px; font-weight: 800; color: var(--accent-dark); }
+  .daily-text span { font-size: 11px; color: var(--text-secondary); }
+  .daily-badge { font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 999px; background: #5A8A5A; color: #FFFFFF; letter-spacing: 0.5px; }
+
+  .daily-card.welcome { background: linear-gradient(135deg, #DBEAFE, #E0F2FE); border-color: #3B82F6; }
+  .daily-card.welcome strong { color: #1E40AF; }
+  .daily-card.continue { background: linear-gradient(135deg, #DCFCE7, #D1FAE5); border-color: #10B981; }
+  .daily-card.continue strong { color: #065F46; }
+  .daily-card.placement { background: linear-gradient(135deg, #FEF3C7, #FDE68A); border-color: #F59E0B; }
+  .daily-card.placement strong { color: #92400E; }
+
+  .hero { padding: 16px 20px; background: var(--bg-card); border-radius: 14px; margin: 12px 16px; border: 1px solid var(--border); }
+  .streak-row { display: flex; align-items: center; gap: 8px; }
+  .streak-count { font-size: 28px; font-weight: 900; color: var(--accent); }
+  .streak-label { font-size: 12px; color: var(--text-secondary); }
+  .hero-stats { display: flex; gap: 14px; padding-top: 8px; margin-top: 8px; border-top: 1px solid var(--border); font-size: 11px; color: var(--text-muted); }
+
+  .flashcard-banner {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin: 12px 16px;
+    display: flex; align-items: center; gap: 12px;
+    box-shadow: 0 2px 8px rgba(180,150,100,0.10);
+  }
+  .flashcard-banner-icon { font-size: 22px; }
+  .flashcard-banner-text strong { display: block; font-size: 13px; font-weight: 800; color: var(--text-primary); }
+  .flashcard-banner-text span { font-size: 11px; color: var(--text-muted); }
+  .flashcard-banner-arrow { margin-left: auto; font-size: 18px; color: var(--text-muted); }
+
+  .ai-gen-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin: 0 16px 12px;
+    display: flex; align-items: center; gap: 12px;
+    box-shadow: 0 2px 8px rgba(180,150,100,0.10);
+  }
+  .ai-gen-card .ai-gen-icon { font-size: 22px; }
+  .ai-gen-card .ai-gen-text strong { display: block; font-size: 13px; font-weight: 800; }
+  .ai-gen-card .ai-gen-text span { font-size: 11px; color: var(--text-muted); }
+  .ai-gen-badge { font-size: 9px; font-weight: 900; padding: 1px 5px; border-radius: 999px; background: var(--accent); color: #FFFFFF; }
+  .ai-gen-arrow { margin-left: auto; font-size: 18px; color: var(--text-muted); }
+
+  .lesson-section h3 { font-size: 12px; font-weight: 800; color: var(--text-secondary); padding: 8px 20px; }
+  .lesson-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin: 0 16px 8px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .lesson-emoji { width: 36px; height: 36px; background: #FFF4DC; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .lesson-info { flex: 1; }
+  .lesson-category { font-size: 10px; font-weight: 700; color: var(--accent); }
+  .lesson-title { font-size: 13px; font-weight: 800; }
+  .lesson-desc { font-size: 11px; color: var(--text-muted); }
+</style>
+</head>
+<body>
+<div class="preview-note">📋 現状の参考プレビュー (Before)</div>
+<div class="app">
+  <div class="home-header">
+    <span class="header-streak">🔥 12</span>
+    <span class="header-stats">8 完了 · 4.2h</span>
+    <span class="header-cog">⚙</span>
+  </div>
+
+  <div class="daily-card welcome">
+    <span class="daily-icon">👋</span>
+    <div class="daily-text">
+      <strong>Logic へようこそ</strong>
+      <span>ロジカル・簿記・PM を 3 分から</span>
+    </div>
+    <span class="daily-badge">START</span>
+  </div>
+
+  <div class="daily-card continue">
+    <span class="daily-icon">▶️</span>
+    <div class="daily-text">
+      <strong>続きから</strong>
+      <span>演繹法 — 一般から個別へ</span>
+    </div>
+    <span class="daily-badge">NEXT</span>
+  </div>
+
+  <div class="daily-card placement">
+    <span class="daily-icon">🎯</span>
+    <div class="daily-text">
+      <strong>偏差値 58 のおすすめ</strong>
+      <span>形式論理 — 「A ならば B」</span>
+    </div>
+    <span class="daily-badge">REC</span>
+  </div>
+
+  <div class="daily-card">
+    <span class="daily-icon">✨</span>
+    <div class="daily-text">
+      <strong>今日の1問</strong>
+      <span>MECE で売上を分解しよう</span>
+    </div>
+    <span class="daily-badge">NEW</span>
+  </div>
+
+  <div class="hero">
+    <div class="streak-row">
+      <span class="streak-count">12</span>
+      <span class="streak-label">日連続学習中</span>
+    </div>
+    <div class="hero-stats">
+      <span>完了 8</span>・<span>4.2h</span>
+    </div>
+  </div>
+
+  <div class="flashcard-banner">
+    <span class="flashcard-banner-icon">📚</span>
+    <div class="flashcard-banner-text">
+      <strong>今日のおすすめ</strong>
+      <span>5枚の復習待ち</span>
+    </div>
+    <span class="flashcard-banner-arrow">›</span>
+  </div>
+
+  <div class="ai-gen-card">
+    <span class="ai-gen-icon">✨</span>
+    <div class="ai-gen-text">
+      <strong>AIに問題を作ってもらう</strong>
+      <span>あなた専用の練習問題を生成</span>
+    </div>
+    <span class="ai-gen-arrow">›</span>
+  </div>
+
+  <div class="ai-gen-card">
+    <span class="ai-gen-icon">💬</span>
+    <div class="ai-gen-text">
+      <strong>AIロールプレイで練習</strong>
+      <span>論理思考フレームワークを <span class="ai-gen-badge">NEW</span></span>
+    </div>
+    <span class="ai-gen-arrow">›</span>
+  </div>
+
+  <div class="ai-gen-card">
+    <span class="ai-gen-icon">☕</span>
+    <div class="ai-gen-text">
+      <strong>コーヒーブレイク</strong>
+      <span>3分で読める日常シーンの小話 <span class="ai-gen-badge">NEW</span></span>
+    </div>
+    <span class="ai-gen-arrow">›</span>
+  </div>
+
+  <div class="ai-gen-card">
+    <span class="ai-gen-icon">🔢</span>
+    <div class="ai-gen-text">
+      <strong>フェルミ推定</strong>
+      <span>分解思考を実践する練習 <span class="ai-gen-badge">NEW</span></span>
+    </div>
+    <span class="ai-gen-arrow">›</span>
+  </div>
+
+  <div class="lesson-section">
+    <h3>レッスン</h3>
+    <div class="lesson-card">
+      <div class="lesson-emoji">📊</div>
+      <div class="lesson-info">
+        <div class="lesson-category">ロジカルシンキング</div>
+        <div class="lesson-title">MECE — 漏れなくダブりなく</div>
+        <div class="lesson-desc">情報を漏れなくダブりなく整理する</div>
+      </div>
+      <span style="color: var(--text-muted);">›</span>
+    </div>
+    <div class="lesson-card">
+      <div class="lesson-emoji">🌳</div>
+      <div class="lesson-info">
+        <div class="lesson-category">ロジカルシンキング</div>
+        <div class="lesson-title">ロジックツリー</div>
+        <div class="lesson-desc">問題を階層的に分解する</div>
+      </div>
+      <span style="color: var(--text-muted);">›</span>
+    </div>
+  </div>
+
+  <nav class="bottom-nav">
+    <button class="nav-item active"><span class="nav-icon">🏠</span><span>ホーム</span></button>
+    <button class="nav-item"><span class="nav-icon">📚</span><span>レッスン</span></button>
+    <button class="nav-item"><span class="nav-icon">👤</span><span>プロフィール</span></button>
+  </nav>
+</div>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>レッスン — Logic Preview</title>
+<link rel="stylesheet" href="_shared.css">
+<style>
+  .lesson-progress { height: 4px; background: var(--bg-tertiary); }
+  .lesson-progress-fill { height: 100%; width: 38%; background: linear-gradient(90deg, var(--accent), var(--accent-dark)); border-radius: 0 2px 2px 0; }
+
+  .lesson-content { padding: 32px 24px 100px; }
+  .question-num { font-size: 11px; font-weight: 800; color: var(--accent-text); letter-spacing: 1px; }
+  .question-text { font-size: 22px; font-weight: 800; color: var(--text-primary); line-height: 1.6; margin: 12px 0 32px; }
+
+  .options { display: flex; flex-direction: column; gap: 12px; }
+  .option {
+    background: var(--bg-card);
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 20px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    cursor: pointer;
+    text-align: left;
+    line-height: 1.5;
+    font-family: inherit;
+    display: flex; align-items: center; gap: 14px;
+    transition: all 0.15s ease-out;
+  }
+  .option-letter {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--bg-tertiary); color: var(--text-secondary);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 900;
+    flex-shrink: 0;
+  }
+  .option.selected {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    transform: scale(1.02);
+  }
+  .option.selected .option-letter {
+    background: var(--accent);
+    color: #FFFFFF;
+  }
+
+  .check-bar {
+    position: fixed;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 480px;
+    padding: 16px 20px env(safe-area-inset-bottom);
+    background: linear-gradient(0deg, var(--bg-primary) 70%, transparent);
+  }
+  .check-btn {
+    background: var(--accent);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 14px;
+    padding: 18px;
+    font-size: 16px;
+    font-weight: 900;
+    cursor: pointer;
+    font-family: inherit;
+    width: 100%;
+    box-shadow: 0 4px 16px rgba(212,145,90,0.30);
+  }
+</style>
+</head>
+<body>
+<div class="preview-note">📱 Sprint 1: select → check pattern</div>
+<div class="app">
+  <header class="header">
+    <button class="header-back">‹</button>
+    <span class="header-title">演繹法</span>
+    <span style="width: 32px;"></span>
+  </header>
+  <div class="lesson-progress"><div class="lesson-progress-fill"></div></div>
+
+  <div class="lesson-content">
+    <div class="question-num">Q 3 / 8</div>
+    <h2 class="question-text">次の三段論法のうち、形式も健全性も両方満たす「健全な推論」はどれか?</h2>
+
+    <div class="options">
+      <button class="option">
+        <span class="option-letter">A</span>
+        <span>大前提: 鳥は空を飛ぶ / 小前提: ペンギンは鳥である / 結論: ペンギンは空を飛ぶ</span>
+      </button>
+      <button class="option selected">
+        <span class="option-letter">B</span>
+        <span>大前提: すべての哺乳類は肺呼吸する / 小前提: クジラは哺乳類 / 結論: クジラは肺呼吸する</span>
+      </button>
+      <button class="option">
+        <span class="option-letter">C</span>
+        <span>大前提: 一部の魚は淡水に住む / 小前提: マグロは魚 / 結論: マグロは淡水に住む</span>
+      </button>
+      <button class="option">
+        <span class="option-letter">D</span>
+        <span>大前提: A 社は儲かっている / 小前提: B 社も会社である / 結論: B 社も儲かっている</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="check-bar">
+    <button class="check-btn">回答する  →</button>
+  </div>
+</div>
+</body>
+</html>

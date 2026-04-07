@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>レッスン完了 — Logic Preview</title>
+<link rel="stylesheet" href="_shared.css">
+<style>
+  body { background: linear-gradient(160deg, var(--bg-primary) 0%, #FFE4D4 100%); }
+
+  .complete { padding: 32px 24px 100px; text-align: center; position: relative; min-height: 100vh; }
+  .confetti {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 320px;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .confetti span {
+    position: absolute;
+    font-size: 22px;
+    animation: fall 3s ease-out infinite;
+  }
+  .confetti span:nth-child(1) { left: 8%; animation-delay: 0s; }
+  .confetti span:nth-child(2) { left: 22%; animation-delay: 0.3s; }
+  .confetti span:nth-child(3) { left: 38%; animation-delay: 0.6s; }
+  .confetti span:nth-child(4) { left: 52%; animation-delay: 0.1s; }
+  .confetti span:nth-child(5) { left: 68%; animation-delay: 0.5s; }
+  .confetti span:nth-child(6) { left: 82%; animation-delay: 0.2s; }
+  .confetti span:nth-child(7) { left: 14%; animation-delay: 1.2s; }
+  .confetti span:nth-child(8) { left: 46%; animation-delay: 0.9s; }
+  .confetti span:nth-child(9) { left: 76%; animation-delay: 1.5s; }
+  @keyframes fall {
+    0% { transform: translateY(-40px) rotate(0deg); opacity: 0; }
+    20% { opacity: 1; }
+    100% { transform: translateY(320px) rotate(360deg); opacity: 0; }
+  }
+
+  .trophy-icon { font-size: 80px; margin-top: 24px; position: relative; z-index: 1; }
+  .complete-h1 { font-size: 26px; font-weight: 900; color: var(--text-primary); margin-top: 12px; position: relative; z-index: 1; }
+  .complete-score { font-size: 16px; color: var(--text-secondary); margin-top: 6px; }
+  .score-bar {
+    margin: 16px auto 8px;
+    width: 70%; max-width: 240px;
+    height: 8px;
+    background: var(--bg-tertiary);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .score-bar-fill { height: 100%; width: 100%; background: linear-gradient(90deg, var(--accent), var(--success)); border-radius: 4px; }
+  .complete-msg { font-size: 14px; color: var(--text-primary); font-weight: 700; margin-top: 12px; }
+
+  /* Reward grid */
+  .rewards {
+    margin: 28px 16px 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+  }
+  .reward {
+    background: var(--bg-card);
+    border: 1.5px solid var(--accent-soft);
+    border-radius: 14px;
+    padding: 16px 8px;
+    text-align: center;
+    box-shadow: var(--shadow-card);
+  }
+  .reward-icon { font-size: 26px; }
+  .reward-value { font-size: 18px; font-weight: 900; color: var(--accent-text); margin-top: 4px; }
+  .reward-label { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+
+  /* Streak toast */
+  .streak-toast {
+    margin: 0 16px 24px;
+    background: linear-gradient(135deg, #FFF4DC, #FFE4D4);
+    border: 1px solid var(--accent);
+    border-radius: 14px;
+    padding: 14px 18px;
+    display: flex; align-items: center; gap: 12px;
+    text-align: left;
+    box-shadow: var(--shadow-card);
+  }
+  .streak-toast-icon { font-size: 30px; }
+  .streak-toast-body { flex: 1; }
+  .streak-toast-title { font-size: 13px; font-weight: 900; color: var(--accent-dark); }
+  .streak-toast-desc { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+
+  /* Buttons */
+  .complete-actions { padding: 0 16px; }
+  .next-btn {
+    background: var(--accent);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 16px;
+    padding: 18px;
+    font-size: 16px;
+    font-weight: 900;
+    cursor: pointer;
+    font-family: inherit;
+    width: 100%;
+    box-shadow: 0 6px 20px rgba(212,145,90,0.30);
+  }
+  .home-link {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    padding: 16px;
+    margin-top: 4px;
+  }
+</style>
+</head>
+<body>
+<div class="preview-note">📱 Sprint 2: 紙吹雪 + ストリーク+1 + XP獲得</div>
+<div class="app">
+  <div class="complete">
+    <div class="confetti">
+      <span>🎉</span><span>✨</span><span>🎊</span><span>🎉</span><span>✨</span>
+      <span>🎊</span><span>🎉</span><span>✨</span><span>🎊</span>
+    </div>
+
+    <div class="trophy-icon">🏆</div>
+    <h1 class="complete-h1">レッスン完了!</h1>
+    <p class="complete-score">8 / 8 問正解</p>
+    <div class="score-bar"><div class="score-bar-fill"></div></div>
+    <p class="complete-msg">💯 パーフェクト!素晴らしい理解力です</p>
+
+    <div class="rewards">
+      <div class="reward">
+        <div class="reward-icon">⭐</div>
+        <div class="reward-value">+80</div>
+        <div class="reward-label">XP</div>
+      </div>
+      <div class="reward">
+        <div class="reward-icon">🔥</div>
+        <div class="reward-value">+1日</div>
+        <div class="reward-label">ストリーク</div>
+      </div>
+      <div class="reward">
+        <div class="reward-icon">⏱</div>
+        <div class="reward-value">4分</div>
+        <div class="reward-label">学習時間</div>
+      </div>
+    </div>
+
+    <div class="streak-toast">
+      <span class="streak-toast-icon">🔥</span>
+      <div class="streak-toast-body">
+        <div class="streak-toast-title">連続 13 日達成!</div>
+        <div class="streak-toast-desc">あと 1 日で 2 週間連続記録</div>
+      </div>
+    </div>
+
+    <div class="complete-actions">
+      <button class="next-btn">次のレッスンへ  →</button>
+      <button class="home-link">ホームに戻る</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

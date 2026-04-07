@@ -1,0 +1,142 @@
+/* Shared styles for all Logic UI previews. Mirrors the real Logic theme tokens. */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg-primary: #F5F1E8;
+  --bg-secondary: #FAF6EE;
+  --bg-card: #FFFFFF;
+  --bg-elevated: #FFFFFF;
+  --bg-tertiary: #EFE8D8;
+  --text-primary: #2D2820;
+  --text-secondary: #6B6258;
+  --text-muted: #9B8E7E;
+  --border: #E8E0D0;
+  --border-light: #F0E8D8;
+  --accent: #D4915A;          /* fills */
+  --accent-text: #9A6234;     /* on light bg, AA pass */
+  --accent-soft: rgba(212,145,90,0.10);
+  --accent-glow: rgba(212,145,90,0.22);
+  --accent-dark: #B07442;
+  --success: #5A8A5A;
+  --success-soft: rgba(90,138,90,0.12);
+  --danger: #C44545;
+  --shadow-card: 0 1px 2px rgba(45,40,32,.04), 0 4px 12px rgba(45,40,32,.06);
+  --shadow-elevated: 0 2px 4px rgba(45,40,32,.06), 0 12px 24px rgba(45,40,32,.10);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 22px;
+  --radius-full: 100px;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Meiryo', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  position: relative;
+  background: var(--bg-primary);
+  padding-bottom: 80px;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: rgba(255,255,255,0.92);
+}
+.header-back { background: none; border: none; font-size: 24px; color: var(--text-primary); cursor: pointer; padding: 4px 8px; }
+.header-title { font-size: 16px; font-weight: 800; color: var(--text-primary); }
+.header-streak { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 800; color: var(--accent-text); }
+.header-streak .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--danger); display: inline-block; }
+
+/* Bottom nav */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  height: 64px;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.nav-item.active { color: var(--accent-text); }
+.nav-icon { font-size: 22px; }
+
+/* Common buttons */
+.btn-primary {
+  background: var(--accent);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 16px 24px;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
+  width: 100%;
+  display: block;
+  text-align: center;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  width: 100%;
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* Reusable note bar */
+.preview-note {
+  background: rgba(245,158,11,0.12);
+  border-bottom: 1px solid #F59E0B;
+  padding: 8px 20px;
+  font-size: 11px;
+  color: #92400E;
+  text-align: center;
+  font-weight: 700;
+}

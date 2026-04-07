@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>プロフィール — Logic Preview</title>
+<link rel="stylesheet" href="_shared.css">
+<style>
+  .pf-content { padding: 0 16px 32px; }
+
+  /* Hero */
+  .pf-hero { padding: 32px 16px 24px; text-align: center; }
+  .avatar {
+    width: 88px; height: 88px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #E8A674 0%, #C77B45 100%);
+    margin: 0 auto 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px; font-weight: 900; color: #FFFFFF;
+    box-shadow: 0 8px 24px rgba(199,123,69,0.30);
+  }
+  .pf-name { font-size: 20px; font-weight: 900; color: var(--text-primary); }
+  .pf-tagline { font-size: 12px; color: var(--text-muted); margin-top: 2px; margin-bottom: 16px; }
+
+  .level-card {
+    margin: 0 auto;
+    max-width: 320px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 18px;
+    box-shadow: var(--shadow-card);
+  }
+  .level-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .level-badge { font-size: 14px; font-weight: 900; color: var(--accent-text); }
+  .level-xp { font-size: 11px; color: var(--text-muted); }
+  .xp-bar { height: 6px; background: var(--bg-tertiary); border-radius: 3px; overflow: hidden; }
+  .xp-bar-fill { height: 100%; width: 64%; background: linear-gradient(90deg, var(--accent), var(--accent-dark)); border-radius: 3px; }
+
+  /* 2x2 stats */
+  .pf-stats {
+    margin: 24px 0 28px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .pf-stat {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 16px;
+    text-align: center;
+    box-shadow: var(--shadow-card);
+  }
+  .pf-stat-icon { font-size: 28px; }
+  .pf-stat-value { font-size: 26px; font-weight: 900; color: var(--text-primary); margin-top: 4px; line-height: 1; }
+  .pf-stat-label { font-size: 11px; color: var(--text-muted); font-weight: 700; margin-top: 6px; }
+
+  /* Section header */
+  .pf-section-h { font-size: 11px; font-weight: 800; color: var(--text-secondary); letter-spacing: 0.6px; text-transform: uppercase; margin: 24px 0 10px 4px; }
+
+  /* Menu rows */
+  .pf-menu { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: var(--shadow-card); }
+  .pf-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--border-light);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .pf-row:last-child { border-bottom: none; }
+  .pf-row .row-meta { display: flex; align-items: center; gap: 8px; }
+  .pf-row .row-meta small { font-size: 11px; color: var(--text-muted); font-weight: 600; }
+  .pf-row .row-arrow { color: var(--text-muted); font-size: 18px; }
+
+  .pf-row.danger { color: var(--danger); }
+</style>
+</head>
+<body>
+<div class="preview-note">📱 Sprint 4: avatar + Lv + 2x2 stat grid + sections</div>
+<div class="app">
+  <header class="header">
+    <button class="header-back">‹</button>
+    <span class="header-title">プロフィール</span>
+    <span style="width: 32px;"></span>
+  </header>
+
+  <div class="pf-content">
+    <div class="pf-hero">
+      <div class="avatar">K</div>
+      <div class="pf-name">Keita</div>
+      <div class="pf-tagline">勇敢な学習者</div>
+
+      <div class="level-card">
+        <div class="level-row">
+          <span class="level-badge">⭐ Lv 7 ・ 上級</span>
+          <span class="level-xp">320 / 500 XP</span>
+        </div>
+        <div class="xp-bar"><div class="xp-bar-fill"></div></div>
+      </div>
+    </div>
+
+    <div class="pf-stats">
+      <div class="pf-stat">
+        <div class="pf-stat-icon">🔥</div>
+        <div class="pf-stat-value">12</div>
+        <div class="pf-stat-label">連続日数</div>
+      </div>
+      <div class="pf-stat">
+        <div class="pf-stat-icon">✓</div>
+        <div class="pf-stat-value">8</div>
+        <div class="pf-stat-label">完了レッスン</div>
+      </div>
+      <div class="pf-stat">
+        <div class="pf-stat-icon">⏱</div>
+        <div class="pf-stat-value">4.2h</div>
+        <div class="pf-stat-label">学習時間</div>
+      </div>
+      <div class="pf-stat">
+        <div class="pf-stat-icon">📊</div>
+        <div class="pf-stat-value">58</div>
+        <div class="pf-stat-label">偏差値</div>
+      </div>
+    </div>
+
+    <div class="pf-section-h">アクセス</div>
+    <div class="pf-menu">
+      <div class="pf-row">
+        <span>📊 偏差値の詳細</span>
+        <span class="row-arrow">›</span>
+      </div>
+      <div class="pf-row">
+        <span>🏆 偏差値ランキング</span>
+        <span class="row-arrow">›</span>
+      </div>
+      <div class="pf-row">
+        <span>🎨 テーマ設定</span>
+        <span class="row-arrow">›</span>
+      </div>
+      <div class="pf-row">
+        <span>🔔 リマインダー</span>
+        <span class="row-meta"><small>毎日 20:00</small><span class="row-arrow">›</span></span>
+      </div>
+      <div class="pf-row">
+        <span>🌐 言語</span>
+        <span class="row-meta"><small>日本語</small><span class="row-arrow">›</span></span>
+      </div>
+    </div>
+
+    <div class="pf-section-h">サポート</div>
+    <div class="pf-menu">
+      <div class="pf-row">
+        <span>💡 ご要望・フィードバック</span>
+        <span class="row-arrow">›</span>
+      </div>
+      <div class="pf-row">
+        <span>📄 プライバシーポリシー</span>
+        <span class="row-arrow">›</span>
+      </div>
+      <div class="pf-row">
+        <span>📑 利用規約</span>
+        <span class="row-arrow">›</span>
+      </div>
+      <div class="pf-row">
+        <span>📜 特定商取引法に基づく表記</span>
+        <span class="row-arrow">›</span>
+      </div>
+    </div>
+
+    <div class="pf-section-h">危険操作</div>
+    <div class="pf-menu">
+      <div class="pf-row danger">
+        <span>🗑 全データを削除</span>
+        <span class="row-arrow">›</span>
+      </div>
+    </div>
+  </div>
+
+  <nav class="bottom-nav">
+    <button class="nav-item"><span class="nav-icon">🏠</span><span>ホーム</span></button>
+    <button class="nav-item"><span class="nav-icon">📚</span><span>レッスン</span></button>
+    <button class="nav-item active"><span class="nav-icon">👤</span><span>プロフィール</span></button>
+  </nav>
+</div>
+</body>
+</html>

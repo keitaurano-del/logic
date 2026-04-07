@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>ストリーク — Logic Preview</title>
+<link rel="stylesheet" href="_shared.css">
+<style>
+  .streak-content { padding: 0 16px 32px; }
+
+  .streak-hero {
+    text-align: center;
+    padding: 40px 16px 32px;
+  }
+  .flame-icon {
+    font-size: 80px;
+    filter: drop-shadow(0 8px 16px rgba(255,140,0,0.3));
+    animation: flicker 2s ease-in-out infinite;
+  }
+  @keyframes flicker {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+  .streak-num {
+    font-size: 80px;
+    font-weight: 900;
+    color: var(--accent-text);
+    line-height: 1;
+    margin-top: 8px;
+  }
+  .streak-unit { font-size: 18px; font-weight: 700; color: var(--text-primary); margin-top: 4px; }
+  .streak-status { font-size: 13px; color: var(--success); font-weight: 700; margin-top: 12px; }
+
+  .stats-row {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    padding: 20px 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    margin: 0 0 28px;
+    box-shadow: var(--shadow-card);
+  }
+  .stat-block { text-align: center; }
+  .stat-block-value { font-size: 22px; font-weight: 900; color: var(--text-primary); }
+  .stat-block-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+  .section-h { font-size: 12px; font-weight: 800; color: var(--text-secondary); letter-spacing: 0.5px; text-transform: uppercase; margin: 0 0 12px 4px; }
+
+  /* Calendar */
+  .calendar {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 18px;
+    box-shadow: var(--shadow-card);
+    margin-bottom: 28px;
+  }
+  .calendar-month { font-size: 14px; font-weight: 800; color: var(--text-primary); text-align: center; margin-bottom: 14px; }
+  .calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    font-size: 11px;
+    color: var(--text-muted);
+    text-align: center;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+  }
+  .day-cell {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 50%;
+    color: var(--text-muted);
+  }
+  .day-cell.empty { visibility: hidden; }
+  .day-cell.done { background: var(--success-soft); color: var(--success); border: 1px solid var(--success); }
+  .day-cell.today { background: var(--accent); color: #FFFFFF; border: 2px solid var(--accent-dark); box-shadow: 0 4px 8px rgba(212,145,90,0.30); }
+  .day-cell.future { color: var(--text-muted); opacity: 0.5; }
+
+  /* Freeze card */
+  .freeze-card {
+    background: linear-gradient(135deg, #DBEAFE, #E0F2FE);
+    border: 1px solid #3B82F6;
+    border-radius: 14px;
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .freeze-icon { font-size: 36px; }
+  .freeze-body { flex: 1; }
+  .freeze-title { font-size: 14px; font-weight: 900; color: #1E40AF; }
+  .freeze-desc { font-size: 11px; color: #1E3A8A; line-height: 1.6; margin-top: 4px; }
+
+  .start-btn {
+    background: var(--accent);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 14px;
+    padding: 18px;
+    font-size: 16px;
+    font-weight: 900;
+    cursor: pointer;
+    font-family: inherit;
+    width: 100%;
+    box-shadow: 0 6px 20px rgba(212,145,90,0.30);
+  }
+</style>
+</head>
+<body>
+<div class="preview-note">📱 Sprint 4: 専用ストリーク画面 (新規)</div>
+<div class="app">
+  <header class="header">
+    <button class="header-back">‹</button>
+    <span class="header-title">ストリーク</span>
+    <span style="width: 32px;"></span>
+  </header>
+
+  <div class="streak-content">
+    <div class="streak-hero">
+      <div class="flame-icon">🔥</div>
+      <div class="streak-num">12</div>
+      <div class="streak-unit">日連続</div>
+      <div class="streak-status">✓ 今日も学習しました</div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-block">
+        <div class="stat-block-value">18</div>
+        <div class="stat-block-label">最長記録</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-block-value">45</div>
+        <div class="stat-block-label">累計学習日</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-block-value">8</div>
+        <div class="stat-block-label">今月</div>
+      </div>
+    </div>
+
+    <div class="section-h">今月のカレンダー</div>
+    <div class="calendar">
+      <div class="calendar-month">2026 年 4 月</div>
+      <div class="calendar-weekdays">
+        <span>日</span><span>月</span><span>火</span><span>水</span><span>木</span><span>金</span><span>土</span>
+      </div>
+      <div class="calendar-grid">
+        <!-- Week 1 -->
+        <div class="day-cell empty"></div>
+        <div class="day-cell empty"></div>
+        <div class="day-cell"></div>
+        <div class="day-cell">1</div>
+        <div class="day-cell">2</div>
+        <div class="day-cell">3</div>
+        <div class="day-cell">4</div>
+        <!-- Week 2 -->
+        <div class="day-cell">5</div>
+        <div class="day-cell">6</div>
+        <div class="day-cell done">7</div>
+        <div class="day-cell done">8</div>
+        <div class="day-cell done">9</div>
+        <div class="day-cell done">10</div>
+        <div class="day-cell done">11</div>
+        <!-- Week 3 -->
+        <div class="day-cell done">12</div>
+        <div class="day-cell done">13</div>
+        <div class="day-cell done">14</div>
+        <div class="day-cell done">15</div>
+        <div class="day-cell done">16</div>
+        <div class="day-cell done">17</div>
+        <div class="day-cell done">18</div>
+        <!-- Week 4 -->
+        <div class="day-cell done">19</div>
+        <div class="day-cell done">20</div>
+        <div class="day-cell done">21</div>
+        <div class="day-cell done">22</div>
+        <div class="day-cell done">23</div>
+        <div class="day-cell done">24</div>
+        <div class="day-cell done">25</div>
+        <!-- Week 5 -->
+        <div class="day-cell done">26</div>
+        <div class="day-cell done">27</div>
+        <div class="day-cell today">28</div>
+        <div class="day-cell future">29</div>
+        <div class="day-cell future">30</div>
+        <div class="day-cell empty"></div>
+        <div class="day-cell empty"></div>
+      </div>
+    </div>
+
+    <div class="section-h">ストリークフリーズ</div>
+    <div class="freeze-card">
+      <div class="freeze-icon">❄️</div>
+      <div class="freeze-body">
+        <div class="freeze-title">1 個保有</div>
+        <div class="freeze-desc">学習を忘れた日があっても、ストリークを 1 日守れます</div>
+      </div>
+    </div>
+
+    <button class="start-btn">今日の学習を始める  →</button>
+  </div>
+</div>
+</body>
+</html>

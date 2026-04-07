@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>正解時 — Logic Preview</title>
+<link rel="stylesheet" href="_shared.css">
+<style>
+  .lesson-progress { height: 4px; background: var(--bg-tertiary); }
+  .lesson-progress-fill { height: 100%; width: 38%; background: linear-gradient(90deg, var(--accent), var(--accent-dark)); }
+
+  .lesson-content { padding: 32px 24px 100px; position: relative; }
+  .question-num { font-size: 11px; font-weight: 800; color: var(--accent-text); letter-spacing: 1px; }
+  .question-text { font-size: 18px; font-weight: 800; color: var(--text-primary); line-height: 1.6; margin: 12px 0 24px; }
+
+  .options { display: flex; flex-direction: column; gap: 12px; }
+  .option {
+    background: var(--bg-card);
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-align: left;
+    line-height: 1.5;
+    font-family: inherit;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .option.dim { opacity: 0.5; }
+  .option-letter {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--bg-tertiary); color: var(--text-secondary);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 900;
+    flex-shrink: 0;
+  }
+  .option.correct {
+    border-color: var(--success);
+    background: var(--success-soft);
+    box-shadow: 0 0 0 4px rgba(90,138,90,0.12);
+    animation: scale-pop 0.4s ease-out;
+  }
+  .option.correct .option-letter {
+    background: var(--success); color: #FFFFFF;
+  }
+  .option-mark {
+    margin-left: auto;
+    width: 24px; height: 24px;
+    background: var(--success); color: #FFFFFF;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 900;
+  }
+  @keyframes scale-pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.04); }
+    100% { transform: scale(1); }
+  }
+
+  /* Floating XP */
+  .xp-float {
+    position: absolute;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent);
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 900;
+    padding: 8px 18px;
+    border-radius: 999px;
+    box-shadow: 0 4px 16px rgba(212,145,90,0.30);
+    animation: xp-float 1.6s ease-out;
+  }
+  @keyframes xp-float {
+    0% { opacity: 0; transform: translate(-50%, 12px); }
+    20% { opacity: 1; transform: translate(-50%, 0); }
+    80% { opacity: 1; transform: translate(-50%, -8px); }
+    100% { opacity: 0; transform: translate(-50%, -20px); }
+  }
+
+  /* Slide-up explanation */
+  .explain-panel {
+    position: fixed;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 480px;
+    background: var(--bg-card);
+    border-top: 2px solid var(--success);
+    border-radius: 20px 20px 0 0;
+    padding: 24px 22px env(safe-area-inset-bottom);
+    box-shadow: 0 -8px 24px rgba(0,0,0,0.10);
+    animation: slide-up 0.4s ease-out;
+  }
+  @keyframes slide-up {
+    from { transform: translate(-50%, 100%); }
+    to { transform: translate(-50%, 0); }
+  }
+  .explain-result { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .explain-result-mark {
+    width: 28px; height: 28px;
+    background: var(--success); color: #FFFFFF;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 900;
+  }
+  .explain-result-text { font-size: 18px; font-weight: 900; color: var(--success); }
+  .explain-text { font-size: 13px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 18px; }
+  .explain-next {
+    background: var(--accent);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 14px;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 900;
+    cursor: pointer;
+    font-family: inherit;
+    width: 100%;
+  }
+</style>
+</head>
+<body>
+<div class="preview-note">📱 Sprint 2: 正解時の演出 (scale-pop + XP + 解説)</div>
+<div class="app">
+  <header class="header">
+    <button class="header-back">‹</button>
+    <span class="header-title">演繹法</span>
+    <span style="width: 32px;"></span>
+  </header>
+  <div class="lesson-progress"><div class="lesson-progress-fill"></div></div>
+
+  <div class="lesson-content">
+    <div class="question-num">Q 3 / 8</div>
+    <h2 class="question-text">次の三段論法のうち、形式も健全性も両方満たす「健全な推論」はどれか?</h2>
+
+    <div class="options">
+      <button class="option dim">
+        <span class="option-letter">A</span>
+        <span>鳥は空を飛ぶ / ペンギンは鳥 / ペンギンは飛ぶ</span>
+      </button>
+      <button class="option correct">
+        <span class="option-letter">B</span>
+        <span>哺乳類は肺呼吸 / クジラは哺乳類 / クジラは肺呼吸</span>
+        <span class="option-mark">✓</span>
+      </button>
+      <button class="option dim">
+        <span class="option-letter">C</span>
+        <span>一部の魚は淡水 / マグロは魚 / マグロは淡水</span>
+      </button>
+      <button class="option dim">
+        <span class="option-letter">D</span>
+        <span>A社は儲かる / B社も会社 / B社も儲かる</span>
+      </button>
+    </div>
+
+    <div class="xp-float">+10 XP 🎉</div>
+  </div>
+
+  <div class="explain-panel">
+    <div class="explain-result">
+      <div class="explain-result-mark">✓</div>
+      <div class="explain-result-text">正解!</div>
+    </div>
+    <p class="explain-text">
+      Barbara 型 (All A are B / X is A / X is B) で形式も妥当、大前提も実際に真なので「健全」な推論です。1 番目は形式は妥当ですが大前提が偽 (ペンギンは飛ばない)、3 番目は「一部の」という限定があるため形式自体が崩れています。
+    </p>
+    <button class="explain-next">次の問題へ  →</button>
+  </div>
+</div>
+</body>
+</html>
