@@ -629,7 +629,7 @@ function App() {
             <div className="ai-gen-icon">✨</div>
             <div className="ai-gen-text">
               <strong>AIに問題を作ってもらう</strong>
-              <span>あなた専用の練習問題を生成 <span className="ai-gen-badge">PREMIUM</span></span>
+              <span>あなた専用の練習問題を生成</span>
             </div>
             <span className="ai-gen-arrow">›</span>
           </div>

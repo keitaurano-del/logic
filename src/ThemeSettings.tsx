@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { ACCENTS, MODES, loadTheme, saveTheme, applyTheme, type ModeId, type AccentId, type ThemeState } from './theme'
-import { isPremium } from './subscription'
+import { isPremium, BETA_MODE } from './subscription'
 import { contrastRatio, describeContrast } from './colorContrast'
 import './ThemeSettings.css'
 
@@ -67,7 +67,7 @@ export default function ThemeSettings({ onBack, onUpgrade }: Props) {
                   <div className="ts-mode-info">
                     <div className="ts-mode-name">
                       {m.name}
-                      {m.tier === 'premium' && <span className="ts-badge">PREMIUM</span>}
+                      {m.tier === 'premium' && !BETA_MODE && <span className="ts-badge">PREMIUM</span>}
                     </div>
                     <div className="ts-mode-desc">{m.description}</div>
                   </div>

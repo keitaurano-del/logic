@@ -3,7 +3,7 @@ import { getCompletedLessons, getStreak, getStudyHours, getTotalStudyDays } from
 import { loginWithGoogle, logout, onAuthChange, type User } from './firebase'
 import { loadGuestUser, updateGuestId } from './guestUser'
 import { isDevMode, setDevMode as persistDevMode } from './devMode'
-import { getPlanLabel } from './subscription'
+import { getPlanLabel, BETA_MODE } from './subscription'
 import './Profile.css'
 
 type ProfileProps = {
@@ -288,14 +288,22 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
         <span>›</span>
       </div>
 
-      {/* Plan card */}
-      {onPricing && (
+      {/* Plan card — hidden during beta (BETA_MODE) */}
+      {onPricing && !BETA_MODE && (
         <div className="pf-plan-card" onClick={onPricing}>
           <div className="pf-plan-card-info">
             <span className="pf-plan-card-label">プラン</span>
             <span className="pf-plan-card-value">{getPlanLabel()}</span>
           </div>
           <span className="pf-plan-card-arrow">›</span>
+        </div>
+      )}
+      {BETA_MODE && (
+        <div className="pf-plan-card" style={{ cursor: 'default' }}>
+          <div className="pf-plan-card-info">
+            <span className="pf-plan-card-label">プラン</span>
+            <span className="pf-plan-card-value">ベータ版 — 全機能無料</span>
+          </div>
         </div>
       )}
 

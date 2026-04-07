@@ -60,7 +60,12 @@ export function daysLeftInTrial(): number {
   return Math.max(0, Math.ceil(remaining / 86400000))
 }
 
+// Beta mode: all users get premium features for free during the beta period.
+// Set to false when going GA and re-enabling Stripe.
+export const BETA_MODE = true
+
 export function isPremium(): boolean {
+  if (BETA_MODE) return true
   const s = getSubscriptionState()
   return s.plan === 'trial' || s.plan === 'monthly' || s.plan === 'yearly'
 }
