@@ -93,11 +93,11 @@
 }
 
 .rp-issue-btn:hover {
-  border-color: var(--accent);
+  border-color: var(--accent-dark);
 }
 
 .rp-issue-btn.active {
-  border-color: var(--accent);
+  border-color: var(--accent-dark);
   background: var(--accent-soft);
   color: var(--accent-dark);
   font-weight: 600;
@@ -119,7 +119,7 @@
 
 .rp-textarea:focus {
   outline: none;
-  border-color: var(--accent);
+  border-color: var(--accent-dark);
   background: #FFFCF6;
 }
 

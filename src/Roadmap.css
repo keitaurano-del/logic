@@ -24,7 +24,7 @@
 .roadmap-back-btn {
   background: none;
   border: none;
-  color: var(--accent);
+  color: var(--accent-dark);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -395,7 +395,7 @@
 }
 
 .schedule-input:focus {
-  border-color: var(--accent);
+  border-color: var(--accent-dark);
 }
 
 /* color-scheme for dark date picker */
@@ -425,12 +425,12 @@
 
 .pace-btn.active {
   background: var(--accent);
-  border-color: var(--accent);
+  border-color: var(--accent-dark);
   color: var(--accent-fg);
 }
 
 .pace-btn:not(.active):hover {
-  border-color: var(--accent);
+  border-color: var(--accent-dark);
   color: var(--text-primary);
 }
 
@@ -472,7 +472,7 @@
 }
 
 .schedule-back:hover {
-  border-color: var(--accent);
+  border-color: var(--accent-dark);
 }
 
 .schedule-start {

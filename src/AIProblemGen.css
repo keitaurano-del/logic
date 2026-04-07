@@ -93,7 +93,7 @@
 
 .aip-input:focus {
   outline: none;
-  border-color: var(--accent);
+  border-color: var(--accent-dark);
   background: #FFFCF6;
 }
 
@@ -131,7 +131,7 @@
 }
 
 .aip-sample-chip:hover:not(:disabled) {
-  border-color: var(--accent);
+  border-color: var(--accent-dark);
   color: var(--accent-dark);
   background: var(--accent-soft);
 }
@@ -202,7 +202,7 @@
 }
 
 .aip-history-card:hover {
-  border-color: var(--accent);
+  border-color: var(--accent-dark);
   transform: translateY(-1px);
 }
 

@@ -15,7 +15,7 @@
 .ji-side { flex: 1; padding: 16px 14px; display: flex; flex-direction: column; gap: 10px; }
 .ji-side-label { font-size: 11px; font-weight: 800; text-align: center; letter-spacing: 0.5px; }
 .ji-side-label.debit { color: var(--success); }
-.ji-side-label.credit { color: var(--accent); }
+.ji-side-label.credit { color: var(--accent-dark); }
 
 .ji-slash { display: flex; align-items: center; font-size: 22px; color: var(--text-muted); font-weight: 300; padding: 0 2px; border-left: 1px solid var(--border); border-right: 1px solid var(--border); }
 
@@ -47,7 +47,7 @@
 .ji-correct-answer strong { color: var(--text-primary); }
 .ji-ca-debit { color: var(--success); font-weight: 700; }
 .ji-ca-sep { color: var(--text-muted); }
-.ji-ca-credit { color: var(--accent); font-weight: 700; }
+.ji-ca-credit { color: var(--accent-dark); font-weight: 700; }
 .ji-explanation { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
 
 .ji-submit-btn, .ji-next-btn {
@@ -60,7 +60,7 @@
 
 .ji-complete { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 28px; gap: 16px; text-align: center; }
 .ji-complete h2 { font-size: 26px; font-weight: 800; color: var(--text-primary); }
-.ji-score { font-size: 30px; font-weight: 800; color: var(--accent); }
+.ji-score { font-size: 30px; font-weight: 800; color: var(--accent-dark); }
 .ji-score-bar { width: 200px; height: 6px; background: var(--bg-elevated); border-radius: 3px; overflow: hidden; }
 .ji-score-fill { height: 100%; background: linear-gradient(90deg, var(--success), #06B6D4); border-radius: 3px; }
 .ji-msg { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }

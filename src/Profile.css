@@ -5,137 +5,187 @@
   flex-direction: column;
 }
 
-/* ===== Hero ===== */
+/* ===== Hero — magazine cover ===== */
+.profile { animation: fade-in-up 0.32s ease-out both; }
+
 .pf-hero {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 28px 20px 24px;
-  background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+  padding: 40px 20px 28px;
+  background: var(--bg-primary);
   position: relative;
+  text-align: center;
+}
+
+.pf-hero::before {
+  content: 'PROFILE';
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  color: var(--text-muted);
 }
 
 .pf-avatar-area {
   position: relative;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
+  margin-top: 18px;
 }
 
 .pf-avatar {
-  width: 88px;
-  height: 88px;
+  width: 84px;
+  height: 84px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent), var(--accent-glow));
+  background: var(--accent);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 24px var(--accent-glow);
+  box-shadow: none;
+  border: 1px solid var(--border);
 }
 
 .pf-name {
-  font-size: 24px;
-  font-weight: 800;
+  font-family: var(--serif);
+  font-size: 30px;
+  font-weight: 500;
   color: var(--text-primary);
   margin-bottom: 8px;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
 }
 
 .pf-level-badge {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 14px;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.pf-level-badge::before,
+.pf-level-badge::after {
+  content: '';
+  width: 24px;
+  height: 1px;
+  background: var(--border);
 }
 
 .pf-level-num {
-  font-size: 12px;
-  font-weight: 800;
-  color: var(--accent);
-  background: var(--accent-soft);
-  padding: 3px 10px;
-  border-radius: var(--radius-full);
+  font-family: var(--serif);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--accent-dark);
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  letter-spacing: 0.04em;
 }
 
 .pf-level-title {
-  font-size: 14px;
+  font-size: 11px;
   font-weight: 700;
-  color: var(--text-secondary);
+  color: var(--text-muted);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
 }
 
 .pf-xp-bar {
-  width: 200px;
-  height: 5px;
-  background: var(--bg-elevated);
-  border-radius: 3px;
+  width: 220px;
+  height: 1px;
+  background: var(--border);
+  border-radius: 0;
   overflow: hidden;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .pf-xp-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--accent), var(--accent-glow));
-  border-radius: 3px;
+  background: var(--accent);
+  border-radius: 0;
   transition: width 0.6s ease;
 }
 
 .pf-xp-label {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-muted);
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  font-feature-settings: "tnum";
 }
 
-/* ===== Stats Grid ===== */
+/* ===== Stats Grid — editorial tiles ===== */
 .pf-stats-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
   padding: 0 16px;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 
 .pf-stat-card {
   background: var(--bg-card);
-  border-radius: var(--radius-lg);
-  padding: 20px 18px;
+  border-radius: var(--radius-md);
+  padding: 22px 20px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.04);
+  align-items: flex-start;
+  gap: 8px;
+  box-shadow: var(--shadow-card);
   border: 1px solid var(--border);
 }
 
 .pf-stat-value {
-  font-size: 26px;
-  font-weight: 800;
+  font-family: var(--serif);
+  font-size: 32px;
+  font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--text-primary);
+  font-feature-settings: "lnum", "tnum";
+  line-height: 1;
 }
 
 .pf-stat-label {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   color: var(--text-muted);
-  letter-spacing: 0.3px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
 }
 
 /* ===== Sections ===== */
 .pf-section {
   padding: 0 16px;
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 }
 
 .pf-section-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 .pf-section-title {
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
   color: var(--text-primary);
-  margin-bottom: 12px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pf-section-title::before {
+  content: '';
+  display: inline-block;
+  width: 24px;
+  height: 1px;
+  background: var(--accent);
 }
 
 .pf-section-header .pf-section-title {
@@ -143,15 +193,18 @@
 }
 
 .pf-section-count {
-  font-size: 13px;
+  font-size: 11px;
   color: var(--text-muted);
   font-weight: 700;
+  letter-spacing: 0.14em;
+  font-feature-settings: "tnum";
 }
 
 .pf-section-card {
   background: var(--bg-card);
-  border-radius: var(--radius-lg);
-  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
   box-shadow: var(--shadow-card);
 }
 
@@ -455,7 +508,7 @@
 .pf-evo-current-badge {
   font-size: 10px;
   font-weight: 800;
-  color: var(--accent);
+  color: var(--accent-dark);
   background: var(--accent-soft);
   padding: 3px 10px;
   border-radius: var(--radius-full);
@@ -722,7 +775,7 @@
 .pf-dev-header-icon {
   font-size: 16px;
   font-weight: 800;
-  color: var(--accent);
+  color: var(--accent-dark);
   font-family: 'SF Mono', 'Consolas', monospace;
 }
 
@@ -754,7 +807,7 @@
 .pf-dev-stack-cat {
   font-size: 11px;
   font-weight: 800;
-  color: var(--accent);
+  color: var(--accent-dark);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 6px;
@@ -790,7 +843,7 @@
 .pf-dev-files-title {
   font-size: 11px;
   font-weight: 800;
-  color: var(--accent);
+  color: var(--accent-dark);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 10px;
@@ -835,7 +888,7 @@
 .pf-dev-file-path {
   font-size: 13px;
   font-weight: 800;
-  color: var(--accent);
+  color: var(--accent-dark);
   font-family: 'SF Mono', 'Consolas', monospace;
 }
 
@@ -883,7 +936,7 @@
 .pf-dev-tech-tag {
   font-size: 10px;
   font-weight: 800;
-  color: var(--accent);
+  color: var(--accent-dark);
   background: var(--accent-soft);
   padding: 3px 8px;
   border-radius: var(--radius-full);
@@ -934,38 +987,43 @@
 }
 
 .pf-plan-card {
-  margin: 16px 16px 0;
-  padding: 16px;
+  margin: 14px 16px 0;
+  padding: 18px 20px;
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-md);
   box-shadow: var(--shadow-card);
   display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: border-color 0.2s, transform 0.15s;
 }
-.pf-plan-card:active { transform: scale(0.98); }
+.pf-plan-card:active { transform: scale(0.99); }
 .pf-plan-card-info {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 .pf-plan-card-label {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   color: var(--text-muted);
-  letter-spacing: 0.05em;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
 }
 .pf-plan-card-value {
-  font-size: 14px;
-  font-weight: 700;
+  font-family: var(--serif);
+  font-size: 16px;
+  font-weight: 500;
   color: var(--text-primary);
+  letter-spacing: -0.01em;
 }
 .pf-plan-card-arrow {
   font-size: 22px;
   color: var(--text-muted);
+  font-weight: 200;
 }
 
 /* Guest user badge + edit */
@@ -1002,7 +1060,7 @@
   transition: all 0.15s;
 }
 .pf-guest-edit-btn:hover {
-  border-color: var(--accent);
+  border-color: var(--accent-dark);
   color: var(--accent-dark);
 }
 .pf-guest-edit {
@@ -1051,18 +1109,20 @@
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  padding: 14px 16px;
-  margin: 12px 16px;
+  padding: 16px 20px;
+  margin: 10px 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--text-primary);
   box-shadow: var(--shadow-card);
+  transition: border-color 0.2s, transform 0.15s;
 }
-.pf-deviation-card:active { opacity: 0.7; }
+.pf-deviation-card:hover { border-color: var(--accent-dark); }
+.pf-deviation-card:active { transform: scale(0.99); }
 .pf-setting-item { cursor: pointer; }
 
 /* ===== Wide Desktop (1280px+) — sidebar offset ===== */

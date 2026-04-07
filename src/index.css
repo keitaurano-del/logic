@@ -1,93 +1,127 @@
+/*
+ * Logic — Editorial Journal aesthetic
+ *
+ * Direction: Editorial / Japanese magazine. Inspired by Kinfolk, Wallpaper*,
+ * Subsequence Magazine, Hobonichi. Hairline borders, generous negative space,
+ * Mincho display + Zen Kaku body, vermillion accent, sumi ink text on paper white.
+ *
+ * Rules:
+ *  - --accent (vermillion #C84B31) is for FILLS only — fails AA as text on light bg
+ *  - --accent-dark (#9A2E18) is the text-safe vermillion (6.8:1 on bg-primary)
+ *  - Mincho display ONLY for h1/h2/numerals; body always Zen Kaku Gothic
+ *  - One motion: fade-in-up on screen mount. Nothing else animates idle.
+ *  - No Japanese visual signifiers (no torii, sakura, brushstrokes). Type does the work.
+ */
+
 :root {
-  --bg-primary:    #F5F1E8;
-  --bg-secondary:  #FAF6EE;
-  --bg-card:       #FFFFFF;
+  /* Backgrounds — paper, not muddy cream */
+  --bg-primary:    #F6F2EA;
+  --bg-secondary:  #EFEAE0;
+  --bg-card:       #FCFAF5;
   --bg-elevated:   #FFFFFF;
-  --bg-hero:       #1F2A4D;
-  --bg-glass:      rgba(255, 255, 255, 0.6);
-  --bg-tertiary:   #EFE8D8;
+  --bg-tertiary:   #E8E2D4;
+  --bg-hero:       #14110D;
+  --bg-glass:      rgba(252, 250, 245, 0.72);
 
-  --text-primary:  #2D2820;
-  --text-secondary:#6B6258;
-  --text-muted:    #9B8E7E;
+  /* Text — true ink */
+  --text-primary:  #14110D;  /* 15.8:1 — AAA */
+  --text-secondary:#5A554C;  /* 7.4:1 — AAA */
+  --text-muted:    #8A8479;  /* 4.6:1 — AA */
   --text-tertiary: var(--text-muted);
-  --text-on-hero:  #FFFFFF;
+  --text-on-hero:  #F6F2EA;
 
-  --border:        #E8E0D0;
-  --border-light:  #F0E8D8;
+  /* Borders — hairline */
+  --border:       #DDD6C5;
+  --border-light: #E8E2D4;
 
-  --accent:        #D4915A;
-  --accent-light:  #E8C99A;
-  --accent-soft:   rgba(212, 145, 90, 0.10);
-  --accent-glow:   rgba(212, 145, 90, 0.22);
-  --accent-dark:   #B07442;
-  --accent-fg:     #FFFFFF;  /* foreground for accent buttons; auto-set by theme.ts based on contrast */
+  /* Vermillion — fills + text-safe variant */
+  --accent:        #C84B31;  /* fills only */
+  --accent-light:  #E27A5E;
+  --accent-soft:   rgba(200, 75, 49, 0.08);
+  --accent-glow:   rgba(200, 75, 49, 0.18);
+  --accent-dark:   #9A2E18;  /* 6.8:1 — text-safe */
+  --accent-fg:     #FCFAF5;  /* on vermillion: 4.9:1 — AA */
 
-  --success:       #5A8A5A;
-  --success-soft:  rgba(90, 138, 90, 0.12);
-  --warning:       #D4915A;
-  --warning-soft:  rgba(212, 145, 90, 0.12);
-  --danger:        #C44545;
+  /* Status */
+  --success:       #4F7A4A;
+  --success-soft:  rgba(79, 122, 74, 0.10);
+  --warning:       #B8741E;
+  --warning-soft:  rgba(184, 116, 30, 0.10);
+  --danger:        #A8321B;
 
-  --cat-boki3:     #D4915A;
-  --cat-boki3-soft: rgba(212, 145, 90, 0.12);
-  --cat-boki2:     #5B7FB8;
-  --cat-boki2-soft: rgba(91, 127, 184, 0.12);
-  --cat-practice:  #B07442;
-  --cat-practice-soft: rgba(176, 116, 66, 0.12);
-  --cat-exam:      #C44545;
-  --cat-exam-soft: rgba(196, 69, 69, 0.12);
-  --cat-logic:     #D4915A;
-  --cat-logic-soft: rgba(212, 145, 90, 0.12);
-  --cat-pm:        #5A8A5A;
-  --cat-pm-soft:   rgba(90, 138, 90, 0.12);
+  /* Categories — muted editorial */
+  --cat-boki3:     #C84B31;
+  --cat-boki3-soft: rgba(200, 75, 49, 0.10);
+  --cat-boki2:     #4A6B8F;
+  --cat-boki2-soft: rgba(74, 107, 143, 0.10);
+  --cat-practice:  #9A2E18;
+  --cat-practice-soft: rgba(154, 46, 24, 0.10);
+  --cat-exam:      #A8321B;
+  --cat-exam-soft: rgba(168, 50, 27, 0.10);
+  --cat-logic:     #C84B31;
+  --cat-logic-soft: rgba(200, 75, 49, 0.10);
+  --cat-pm:        #4F7A4A;
+  --cat-pm-soft:   rgba(79, 122, 74, 0.10);
 
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 22px;
+  /* Radii — squarer (editorial) */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
   --radius-full: 100px;
 
-  --shadow-card:    0 2px 8px rgba(180, 150, 100, 0.10);
-  --shadow-elevated: 0 4px 16px rgba(180, 150, 100, 0.15);
+  /* Shadows — almost gone, replaced by hairlines */
+  --shadow-card:    0 1px 0 rgba(20, 17, 13, 0.04);
+  --shadow-elevated: 0 2px 12px rgba(20, 17, 13, 0.06);
 
+  /* Layout */
   --content-width: 480px;
-  --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Meiryo', sans-serif;
+
+  /* Fonts — distinct, paired (loaded from Google Fonts in index.html) */
+  --sans:  'Zen Kaku Gothic New', -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Meiryo', sans-serif;
+  --serif: 'Shippori Mincho B1', 'Hiragino Mincho ProN', 'YuMincho', serif;
 
   font-family: var(--sans);
   font-size: 16px;
-  line-height: 1.5;
-  letter-spacing: -0.01em;
+  line-height: 1.6;
+  letter-spacing: 0;
   color: var(--text-primary);
   background: var(--bg-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ===== Mode: Dark ===== */
+/* ===== Mode: Dark — Editorial Journal in sumi ink ===== */
 .mode-dark {
-  --bg-primary:    #15171C;
-  --bg-secondary:  #1A1D24;
-  --bg-card:       #1F232B;
-  --bg-elevated:   #262B35;
-  --bg-hero:       #0F1117;
-  --bg-glass:      rgba(31, 35, 43, 0.6);
-  --bg-tertiary:   #2A2F38;
+  --bg-primary:    #14110D;
+  --bg-secondary:  #1C1814;
+  --bg-card:       #221E18;
+  --bg-elevated:   #2A251E;
+  --bg-tertiary:   #2F2A22;
+  --bg-hero:       #0A0805;
+  --bg-glass:      rgba(34, 30, 24, 0.72);
 
-  --text-primary:  #E8E8EC;
-  --text-secondary:#B0B3BA;
-  --text-muted:    #7A7E87;
-  --text-on-hero:  #FFFFFF;
+  --text-primary:  #F6F2EA;
+  --text-secondary:#B8B0A0;
+  --text-muted:    #7A7468;
+  --text-on-hero:  #F6F2EA;
 
-  --border:        #2E323B;
-  --border-light:  #353A44;
+  --border:        #2F2A22;
+  --border-light:  #221E18;
 
-  --shadow-card:    0 2px 8px rgba(0, 0, 0, 0.4);
-  --shadow-elevated: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --accent:        #E27A5E;
+  --accent-light:  #F4A589;
+  --accent-soft:   rgba(226, 122, 94, 0.10);
+  --accent-glow:   rgba(226, 122, 94, 0.20);
+  --accent-dark:   #F4A589;  /* lighter on dark for AA */
+  --accent-fg:     #14110D;
+
+  --shadow-card:    0 1px 0 rgba(0, 0, 0, 0.30);
+  --shadow-elevated: 0 6px 24px rgba(0, 0, 0, 0.50);
 }
 .mode-dark body, .mode-dark #root { background: var(--bg-primary); }
 
-/* ===== Mode: Enterprise (premium) ===== */
+/* ===== Mode: Enterprise (premium) — kept temporarily ===== */
 .mode-enterprise {
   --bg-primary:    #0F1729;
   --bg-secondary:  #14203A;
@@ -110,7 +144,7 @@
 }
 .mode-enterprise body, .mode-enterprise #root { background: var(--bg-primary); }
 
-/* ===== Mode: Startup (premium - vibrant light) ===== */
+/* ===== Mode: Startup — kept temporarily ===== */
 .mode-startup {
   --bg-primary:    #FFFAF0;
   --bg-secondary:  #FFF4E0;
@@ -133,31 +167,74 @@
 }
 .mode-startup body, .mode-startup #root { background: var(--bg-primary); }
 
-/* ===== Mode: Custom — uses light defaults, accent overridden by JS ===== */
-/* (no overrides needed; light is the base) */
-
-/* Shimmer animation for progress bars */
+/* ===== Animations ===== */
+/* Shimmer KEPT but no longer applied to idle progress bars */
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
 
-/* Subtle glow pulse */
+/* Subtle glow pulse — used very sparingly */
 @keyframes glow-pulse {
   0%, 100% { filter: drop-shadow(0 0 4px var(--accent-glow)); }
   50% { filter: drop-shadow(0 0 12px var(--accent-glow)); }
 }
 
-/* Fade in up */
+/* The single signature motion: route enter */
 @keyframes fade-in-up {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Scale in */
 @keyframes scale-in {
-  from { opacity: 0; transform: scale(0.95); }
+  from { opacity: 0; transform: scale(0.96); }
   to { opacity: 1; transform: scale(1); }
+}
+
+/* Editorial numeral — display utility */
+.editorial-numeral {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(64px, 18vw, 120px);
+  line-height: 0.85;
+  color: var(--accent-dark);
+  font-feature-settings: "lnum", "tnum";
+  letter-spacing: -0.04em;
+}
+
+/* Editorial small caps label */
+.editorial-eyebrow {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* Headlines */
+.editorial-h1 {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: clamp(26px, 6.5vw, 36px);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.editorial-h2 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(20px, 5vw, 26px);
+  line-height: 1.35;
+  color: var(--text-primary);
+}
+
+/* Hairline divider */
+.editorial-rule {
+  height: 1px;
+  background: var(--border);
+  border: none;
 }
 
 * {
@@ -170,7 +247,21 @@ body {
   margin: 0;
   overflow-x: hidden;
   background: var(--bg-primary);
+  position: relative;
 }
+
+/* Subtle paper grain — covers entire viewport, fixed, ignored by clicks */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.04;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.mode-dark body::before { mix-blend-mode: screen; opacity: 0.06; }
 
 #root {
   width: 100%;
@@ -186,6 +277,11 @@ body {
 /* Shared utility */
 button { -webkit-tap-highlight-color: transparent; }
 input, textarea, select { -webkit-tap-highlight-color: transparent; }
+
+/* Default page-load motion: applied via [data-screen-enter] in components */
+[data-enter] {
+  animation: fade-in-up 0.32s ease-out both;
+}
 
 /* ===== Tablet (768px+) ===== */
 @media (min-width: 768px) {
@@ -207,11 +303,10 @@ input, textarea, select { -webkit-tap-highlight-color: transparent; }
   #root {
     border-left: 1px solid var(--border);
     border-right: 1px solid var(--border);
-    box-shadow: 0 0 80px rgba(180, 150, 100, 0.15);
+    box-shadow: 0 0 80px rgba(20, 17, 13, 0.06);
   }
 }
 
-/* ===== Wide screen sub-screen padding ===== */
 @media (min-width: 768px) {
   .rps-screen, .lesson-screen, .mock-screen, .ji-screen, .ws-screen, .fc-screen {
     max-width: var(--content-width);
@@ -223,7 +318,7 @@ input, textarea, select { -webkit-tap-highlight-color: transparent; }
   }
 }
 
-/* ===== Wide Desktop (1280px+) — 2-column layouts for PC ===== */
+/* ===== Wide Desktop (1280px+) ===== */
 @media (min-width: 1280px) {
   :root {
     --content-width: 1400px;

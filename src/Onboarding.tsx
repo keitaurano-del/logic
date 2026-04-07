@@ -19,9 +19,9 @@ export function markOnboardingDone(): void {
 }
 
 const SLIDES = [
-  { emoji: '🧠', titleKey: 'onboarding.slide1.title', bodyKey: 'onboarding.slide1.body' },
-  { emoji: '🎯', titleKey: 'onboarding.slide2.title', bodyKey: 'onboarding.slide2.body' },
-  { emoji: '📊', titleKey: 'onboarding.slide3.title', bodyKey: 'onboarding.slide3.body' },
+  { emoji: '01', titleKey: 'onboarding.slide1.title', bodyKey: 'onboarding.slide1.body' },
+  { emoji: '02', titleKey: 'onboarding.slide2.title', bodyKey: 'onboarding.slide2.body' },
+  { emoji: '03', titleKey: 'onboarding.slide3.title', bodyKey: 'onboarding.slide3.body' },
 ]
 
 type Props = { onComplete: () => void }

@@ -20,7 +20,7 @@
 .rk-summary-row { display: flex; align-items: center; justify-content: space-around; gap: 12px; }
 .rk-summary-divider { width: 1px; height: 36px; background: var(--border); }
 .rk-summary-label { font-size: 10px; font-weight: 800; color: var(--text-muted); letter-spacing: 0.5px; text-transform: uppercase; }
-.rk-summary-value { font-size: 24px; font-weight: 900; color: var(--accent); }
+.rk-summary-value { font-size: 24px; font-weight: 900; color: var(--accent-dark); }
 .rk-summary-value span { font-size: 12px; font-weight: 700; color: var(--text-muted); margin-left: 2px; }
 .rk-summary-percent { text-align: center; font-size: 12px; color: var(--text-secondary); margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); }
 
@@ -29,13 +29,13 @@
 .rk-list { display: flex; flex-direction: column; gap: 8px; }
 .rk-row { display: flex; align-items: center; gap: 14px; padding: 12px 16px; background: var(--bg-card); border: 1.5px solid var(--border); border-radius: var(--radius-md); }
 .rk-row.top { border-color: var(--accent-light); }
-.rk-row.you { border-color: var(--accent); border-width: 2px; background: var(--accent-soft); }
+.rk-row.you { border-color: var(--accent-dark); border-width: 2px; background: var(--accent-soft); }
 .rk-rank { width: 36px; text-align: center; font-size: 16px; font-weight: 900; color: var(--text-muted); flex-shrink: 0; }
 .rk-rank.medal-1, .rk-rank.medal-2, .rk-rank.medal-3 { font-size: 22px; }
 .rk-name { flex: 1; font-size: 14px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px; min-width: 0; }
 .rk-you-badge { font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 999px; background: var(--accent); color: var(--accent-fg); letter-spacing: 0.5px; }
 .rk-dev { font-size: 12px; color: var(--text-muted); flex-shrink: 0; }
-.rk-dev strong { font-size: 16px; color: var(--accent); margin-left: 4px; }
+.rk-dev strong { font-size: 16px; color: var(--accent-dark); margin-left: 4px; }
 
 .rk-retake-btn { padding: 14px; background: transparent; border: 1.5px solid var(--border); color: var(--text-secondary); border-radius: var(--radius-md); font-size: 13px; font-weight: 700; cursor: pointer; font-family: var(--sans); margin-top: 12px; }
 

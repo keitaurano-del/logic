@@ -40,7 +40,7 @@
 
 .ws-complete { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 28px; gap: 16px; text-align: center; }
 .ws-complete h2 { font-size: 26px; font-weight: 800; color: var(--text-primary); }
-.ws-score { font-size: 26px; font-weight: 800; color: var(--accent); }
+.ws-score { font-size: 26px; font-weight: 800; color: var(--accent-dark); }
 .ws-msg { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
 .ws-done-btn { padding: 16px 48px; background: var(--accent); color: var(--accent-fg); border: none; border-radius: var(--radius-md); font-size: 16px; font-weight: 800; cursor: pointer; font-family: var(--sans); }
 

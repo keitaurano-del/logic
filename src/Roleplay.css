@@ -8,7 +8,7 @@
 
 .rp-intro h2 { font-size: 20px; font-weight: 800; color: var(--text-primary); margin-bottom: 6px; }
 .rp-intro p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
-.rp-quota { margin-top: 10px; display: inline-block; padding: 6px 12px; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius-full, 999px); font-size: 12px; font-weight: 800; }
+.rp-quota { margin-top: 10px; display: inline-block; padding: 6px 12px; background: var(--accent-soft); color: var(--accent-dark); border-radius: var(--radius-full, 999px); font-size: 12px; font-weight: 800; }
 
 .rp-list { display: flex; flex-direction: column; gap: 12px; }
 .rp-card { display: flex; align-items: stretch; gap: 12px; padding: 16px; background: var(--bg-card); border: 1.5px solid var(--border); border-radius: var(--radius-md, 12px); box-shadow: var(--shadow-card); cursor: pointer; text-align: left; font-family: var(--sans); }
@@ -16,7 +16,7 @@
 .rp-card.locked { opacity: 0.85; }
 .rp-card-emoji { font-size: 32px; flex-shrink: 0; }
 .rp-card-body { flex: 1; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-.rp-card-framework { font-size: 11px; font-weight: 800; color: var(--accent); letter-spacing: 0.3px; }
+.rp-card-framework { font-size: 11px; font-weight: 800; color: var(--accent-dark); letter-spacing: 0.3px; }
 .rp-card-title { font-size: 16px; font-weight: 800; color: var(--text-primary); }
 .rp-card-partner { font-size: 12px; color: var(--text-muted); }
 .rp-card-goal { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
@@ -25,12 +25,12 @@
 
 /* Chat */
 .rp-chat-context { padding: 12px 16px; background: var(--bg-card); border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 2px; font-size: 12px; color: var(--text-secondary); }
-.rp-chat-context strong { color: var(--accent); font-size: 11px; letter-spacing: 0.3px; }
+.rp-chat-context strong { color: var(--accent-dark); font-size: 11px; letter-spacing: 0.3px; }
 
 .rp-chat { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
 .rp-chat-empty { background: var(--bg-card); border-radius: var(--radius-md, 12px); padding: 16px; box-shadow: var(--shadow-card); }
 .rp-chat-empty p { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
-.rp-chat-empty-hint { margin-top: 10px; color: var(--accent); font-weight: 700; }
+.rp-chat-empty-hint { margin-top: 10px; color: var(--accent-dark); font-weight: 700; }
 
 .rp-bubble { max-width: 80%; display: flex; flex-direction: column; gap: 4px; }
 .rp-bubble.user { align-self: flex-end; align-items: flex-end; }
@@ -41,17 +41,17 @@
 .rp-bubble.assistant .rp-bubble-text { background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
 .rp-typing { font-style: italic; color: var(--text-muted); }
 
-.rp-turn-indicator { color: var(--accent); font-weight: 800; margin-top: 4px; }
+.rp-turn-indicator { color: var(--accent-dark); font-weight: 800; margin-top: 4px; }
 
 .rp-choices { display: flex; flex-direction: column; gap: 10px; padding: 14px 16px 20px; background: var(--bg-card); border-top: 1px solid var(--border); }
 .rp-choices-label { font-size: 11px; color: var(--text-muted); font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 2px; }
 .rp-choice-btn { padding: 14px 16px; background: var(--bg-elevated, var(--bg-primary)); color: var(--text-primary); border: 1.5px solid var(--border); border-radius: var(--radius-md, 12px); font-size: 14px; font-weight: 600; cursor: pointer; font-family: var(--sans); text-align: left; line-height: 1.5; transition: border-color 0.15s, transform 0.1s; }
-.rp-choice-btn:hover { border-color: var(--accent); }
+.rp-choice-btn:hover { border-color: var(--accent-dark); }
 .rp-choice-btn:active { transform: scale(0.98); }
 
 .rp-input-bar { display: flex; gap: 8px; padding: 12px; background: var(--bg-card); border-top: 1px solid var(--border); }
 .rp-input { flex: 1; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-md, 12px); font-size: 14px; font-family: var(--sans); background: var(--bg-elevated); color: var(--text-primary); resize: none; outline: none; }
-.rp-input:focus { border-color: var(--accent); }
+.rp-input:focus { border-color: var(--accent-dark); }
 .rp-send-btn { padding: 0 18px; background: var(--accent); color: var(--accent-fg); border: none; border-radius: var(--radius-md, 12px); font-size: 14px; font-weight: 800; cursor: pointer; font-family: var(--sans); }
 .rp-send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
@@ -60,11 +60,11 @@
 .rp-loading { text-align: center; color: var(--text-muted); font-size: 14px; padding: 24px; }
 .rp-score-card, .rp-summary-card { background: var(--bg-card); border-radius: var(--radius-md, 12px); padding: 18px; box-shadow: var(--shadow-card); display: flex; flex-direction: column; gap: 12px; }
 .rp-score-card h3, .rp-summary-card h3 { font-size: 16px; font-weight: 800; color: var(--text-primary); }
-.rp-score-card h4, .rp-summary-card h4 { font-size: 13px; font-weight: 800; color: var(--accent); margin-top: 6px; }
+.rp-score-card h4, .rp-summary-card h4 { font-size: 13px; font-weight: 800; color: var(--accent-dark); margin-top: 6px; }
 .rp-score-row { padding: 10px 0; border-bottom: 1px dashed var(--border); }
 .rp-score-row:last-of-type { border-bottom: none; }
 .rp-score-head { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
-.rp-score-head strong { color: var(--accent); }
+.rp-score-head strong { color: var(--accent-dark); }
 .rp-score-row p { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
 .rp-overall p { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
 .rp-summary-text { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }

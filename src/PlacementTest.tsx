@@ -93,7 +93,7 @@ export default function PlacementTest({ onComplete, onSkip }: Props) {
     return (
       <div className="pt-screen">
         <div className="pt-intro">
-          <div className="pt-emoji">📋</div>
+          <div className="pt-emoji"></div>
           <h1>{t('placement.title')}</h1>
           <p className="pt-lead" style={{ whiteSpace: 'pre-line' }}>{t('placement.lead')}</p>
           <div className="pt-info">
@@ -163,7 +163,7 @@ export default function PlacementTest({ onComplete, onSkip }: Props) {
   return (
     <div className="pt-screen">
       <div className="pt-result">
-        <div className="pt-result-emoji">📊</div>
+        <div className="pt-result-emoji" aria-hidden="true"></div>
         <h1>{t('placement.resultTitle')}</h1>
         <div className="pt-dev-circle" style={{ borderColor: rank.color }}>
           <span className="pt-dev-num" style={{ color: rank.color }}>{dev}</span>
