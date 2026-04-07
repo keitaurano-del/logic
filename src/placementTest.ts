@@ -1,3 +1,5 @@
+import { getLocale } from './i18n'
+
 export type PlacementQuestion = {
   id: number
   question: string
@@ -16,12 +18,9 @@ export type PlacementResult = {
 
 const STORAGE_KEY = 'logic-placement'
 
-export const PLACEMENT_QUESTIONS: PlacementQuestion[] = [
-  // ===== Easy: 概念の基本理解 =====
+const PLACEMENT_QUESTIONS_JA: PlacementQuestion[] = [
   {
-    id: 1,
-    topic: 'MECE',
-    difficulty: 'easy',
+    id: 1, topic: 'MECE', difficulty: 'easy',
     question: 'MECE(漏れなくダブりなく)の観点から、最も適切でない分類はどれか?',
     options: [
       { label: '社員: 男性 / 女性 / その他', correct: false },
@@ -31,9 +30,7 @@ export const PLACEMENT_QUESTIONS: PlacementQuestion[] = [
     ],
   },
   {
-    id: 2,
-    topic: '結論ファースト',
-    difficulty: 'easy',
+    id: 2, topic: '結論ファースト', difficulty: 'easy',
     question: '上司への報告で最も伝わりやすいのはどの順番か?',
     options: [
       { label: '結論 → 理由 → 詳細', correct: true },
@@ -42,11 +39,8 @@ export const PLACEMENT_QUESTIONS: PlacementQuestion[] = [
       { label: '結論なしで事実だけ', correct: false },
     ],
   },
-  // ===== Medium: フレームワーク使い分け =====
   {
-    id: 3,
-    topic: 'Why/Howツリー',
-    difficulty: 'medium',
+    id: 3, topic: 'Why/Howツリー', difficulty: 'medium',
     question: '「売上が下がった原因を分析したい」とき、最適なツールは?',
     options: [
       { label: 'How ツリー', correct: false },
@@ -56,9 +50,7 @@ export const PLACEMENT_QUESTIONS: PlacementQuestion[] = [
     ],
   },
   {
-    id: 4,
-    topic: 'So What',
-    difficulty: 'medium',
+    id: 4, topic: 'So What', difficulty: 'medium',
     question: '「当社のEC売上は前年比 120% で伸びている」という事実に対する最も良い So What? は?',
     options: [
       { label: 'EC 売上は 1.2 億円である', correct: false },
@@ -67,11 +59,8 @@ export const PLACEMENT_QUESTIONS: PlacementQuestion[] = [
       { label: '業界平均は 115% である', correct: false },
     ],
   },
-  // ===== Medium-Hard: 演繹/帰納 =====
   {
-    id: 5,
-    topic: '演繹法',
-    difficulty: 'medium',
+    id: 5, topic: '演繹法', difficulty: 'medium',
     question: '次のうち、演繹法による推論はどれか?',
     options: [
       { label: '過去 5 年間 12 月の売上が高かった。今年も 12 月は伸びるだろう', correct: false },
@@ -81,9 +70,7 @@ export const PLACEMENT_QUESTIONS: PlacementQuestion[] = [
     ],
   },
   {
-    id: 6,
-    topic: '帰納法の落とし穴',
-    difficulty: 'hard',
+    id: 6, topic: '帰納法の落とし穴', difficulty: 'hard',
     question: '20 代女性 5 人にアンケートして「20 代女性はブランド X が好き」と結論した。この帰納の最大の問題は?',
     options: [
       { label: 'ブランド X の定義が曖昧', correct: false },
@@ -92,11 +79,8 @@ export const PLACEMENT_QUESTIONS: PlacementQuestion[] = [
       { label: 'インタビューでなくアンケートだから', correct: false },
     ],
   },
-  // ===== Hard: 形式論理 =====
   {
-    id: 7,
-    topic: '対偶',
-    difficulty: 'hard',
+    id: 7, topic: '対偶', difficulty: 'hard',
     question: '「優秀な営業担当者は数字に強い」の対偶として正しいものは?',
     options: [
       { label: '数字に強い人は優秀な営業担当者である', correct: false },
@@ -106,9 +90,7 @@ export const PLACEMENT_QUESTIONS: PlacementQuestion[] = [
     ],
   },
   {
-    id: 8,
-    topic: 'モーダス・トレンス',
-    difficulty: 'hard',
+    id: 8, topic: 'モーダス・トレンス', difficulty: 'hard',
     question: '次のうち、論理的に正しい推論(モーダス・トレンス)はどれか?',
     options: [
       { label: '雨が降れば地面が濡れる。地面が濡れている。だから雨が降った', correct: false },
@@ -119,6 +101,98 @@ export const PLACEMENT_QUESTIONS: PlacementQuestion[] = [
   },
 ]
 
+const PLACEMENT_QUESTIONS_EN: PlacementQuestion[] = [
+  {
+    id: 1, topic: 'MECE', difficulty: 'easy',
+    question: 'Which of the following groupings violates MECE (Mutually Exclusive, Collectively Exhaustive)?',
+    options: [
+      { label: 'Employees: men / women / other', correct: false },
+      { label: 'Companies: public / private', correct: false },
+      { label: 'Drinks: hot / cold / coffee', correct: true },
+      { label: 'Purchase frequency: first-time / repeat', correct: false },
+    ],
+  },
+  {
+    id: 2, topic: 'Conclusion-first', difficulty: 'easy',
+    question: 'Which order is most effective for reporting to your manager?',
+    options: [
+      { label: 'Conclusion → reasons → details', correct: true },
+      { label: 'Background → history → details → conclusion', correct: false },
+      { label: 'Details → details → conclusion', correct: false },
+      { label: 'No conclusion, only facts', correct: false },
+    ],
+  },
+  {
+    id: 3, topic: 'Why/How tree', difficulty: 'medium',
+    question: 'Your goal is to analyze "why our sales dropped." Which tool fits best?',
+    options: [
+      { label: 'How tree', correct: false },
+      { label: 'Why tree', correct: true },
+      { label: 'PREP method', correct: false },
+      { label: 'SCR method', correct: false },
+    ],
+  },
+  {
+    id: 4, topic: 'So What', difficulty: 'medium',
+    question: '"Our e-commerce revenue is up 120% year over year." What is the strongest "So What?" response?',
+    options: [
+      { label: 'E-commerce revenue is now $12M', correct: false },
+      { label: 'Last year it was $10M', correct: false },
+      { label: 'Digital shift is accelerating; we should grow the e-commerce team and rethink our retail strategy', correct: true },
+      { label: 'Industry average growth is 115%', correct: false },
+    ],
+  },
+  {
+    id: 5, topic: 'Deduction', difficulty: 'medium',
+    question: 'Which of the following is deductive reasoning?',
+    options: [
+      { label: 'December has been our peak month for the last 5 years, so this December will likely peak too', correct: false },
+      { label: 'Our policy is to exit any business with margin under 5%. This unit has 2% margin, so it must be exited', correct: true },
+      { label: 'Three customers loved it, so the whole market will love it', correct: false },
+      { label: 'Our competitor is doing it, so we should too', correct: false },
+    ],
+  },
+  {
+    id: 6, topic: 'Inductive pitfalls', difficulty: 'hard',
+    question: 'A marketer surveyed 5 women in their 20s and concluded "women in their 20s love Brand X." What is the biggest problem with this induction?',
+    options: [
+      { label: 'The definition of "Brand X" is vague', correct: false },
+      { label: 'Sample size is far too small and selection bias was not checked', correct: true },
+      { label: 'No data on men in their 20s', correct: false },
+      { label: 'Survey instead of interview', correct: false },
+    ],
+  },
+  {
+    id: 7, topic: 'Contrapositive', difficulty: 'hard',
+    question: 'What is the contrapositive of "Excellent salespeople are strong with numbers"?',
+    options: [
+      { label: 'People who are strong with numbers are excellent salespeople', correct: false },
+      { label: 'Salespeople who are not excellent are weak with numbers', correct: false },
+      { label: 'People who are weak with numbers are not excellent salespeople', correct: true },
+      { label: 'If you are not strong with numbers you may not be an excellent salesperson', correct: false },
+    ],
+  },
+  {
+    id: 8, topic: 'Modus tollens', difficulty: 'hard',
+    question: 'Which of the following is logically valid (modus tollens)?',
+    options: [
+      { label: 'If it rains the ground gets wet. The ground is wet. Therefore it rained.', correct: false },
+      { label: 'If the server goes down the alert fires. The alert is not firing. Therefore the server is not down.', correct: true },
+      { label: 'Excellent people leave work early. He left early. Therefore he is excellent.', correct: false },
+      { label: 'If it rains, more people carry umbrellas. It is not raining. Therefore no one is carrying umbrellas.', correct: false },
+    ],
+  },
+]
+
+export const PLACEMENT_QUESTIONS = new Proxy([] as PlacementQuestion[], {
+  get(_target, prop) {
+    const arr = getLocale() === 'en' ? PLACEMENT_QUESTIONS_EN : PLACEMENT_QUESTIONS_JA
+    const value = arr[prop as unknown as number]
+    if (value !== undefined) return value
+    return (arr as unknown as Record<string | symbol, unknown>)[prop as string | symbol]
+  },
+})
+
 export function calcDeviation(correctCount: number, total: number): number {
   // 0/8 → 30, 4/8 → 50, 8/8 → 70 のリニアスケール
   if (total === 0) return 50
@@ -127,11 +201,22 @@ export function calcDeviation(correctCount: number, total: number): number {
 }
 
 export function rankLabel(dev: number): { label: string; color: string; comment: string } {
-  if (dev >= 65) return { label: 'トップクラス', color: '#D4915A', comment: '形式論理まで含めて理解しています。応用編に進みましょう。' }
-  if (dev >= 55) return { label: '上級', color: '#10B981', comment: '基礎は十分。演繹/帰納/形式論理の応用へ進みましょう。' }
-  if (dev >= 45) return { label: '中級', color: '#5B7FB8', comment: 'MECE や Why/So What は理解済み。フレームワークの応用力を磨きましょう。' }
-  if (dev >= 35) return { label: '初級', color: '#9B8E7E', comment: 'まずは MECE とロジックツリーから始めましょう。' }
-  return { label: '入門', color: '#9B8E7E', comment: 'ロジカルシンキングの基礎から順番に学びましょう。' }
+  const en = getLocale() === 'en'
+  if (dev >= 65) return en
+    ? { label: 'Top tier', color: '#D4915A', comment: 'You\'ve mastered formal logic. Time for advanced applications.' }
+    : { label: 'トップクラス', color: '#D4915A', comment: '形式論理まで含めて理解しています。応用編に進みましょう。' }
+  if (dev >= 55) return en
+    ? { label: 'Advanced', color: '#10B981', comment: 'Strong fundamentals. Move on to deduction, induction, and formal logic.' }
+    : { label: '上級', color: '#10B981', comment: '基礎は十分。演繹/帰納/形式論理の応用へ進みましょう。' }
+  if (dev >= 45) return en
+    ? { label: 'Intermediate', color: '#5B7FB8', comment: 'You understand MECE and Why/So What. Time to sharpen application skills.' }
+    : { label: '中級', color: '#5B7FB8', comment: 'MECE や Why/So What は理解済み。フレームワークの応用力を磨きましょう。' }
+  if (dev >= 35) return en
+    ? { label: 'Beginner', color: '#9B8E7E', comment: 'Start with MECE and logic trees.' }
+    : { label: '初級', color: '#9B8E7E', comment: 'まずは MECE とロジックツリーから始めましょう。' }
+  return en
+    ? { label: 'Starter', color: '#9B8E7E', comment: 'Begin with the fundamentals of logical thinking, step by step.' }
+    : { label: '入門', color: '#9B8E7E', comment: 'ロジカルシンキングの基礎から順番に学びましょう。' }
 }
 
 export function recommendedLessons(dev: number): number[] {

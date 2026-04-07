@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { t } from './i18n'
 import './Onboarding.css'
 
 const KEY = 'logic-onboarding-done'
@@ -18,21 +19,9 @@ export function markOnboardingDone(): void {
 }
 
 const SLIDES = [
-  {
-    emoji: '🧠',
-    title: 'ロジカルシンキングを毎日 3 分で',
-    body: 'MECE・ロジックツリー・演繹/帰納・形式論理。ビジネスで使える論理思考のフレームワークを、短いレッスンで体系的に学べます。',
-  },
-  {
-    emoji: '🎯',
-    title: 'AI が「あなた専用」で練習相手に',
-    body: 'ロールプレイ、フェルミ推定、AI 問題生成、コーヒーブレイクの日常シーン。座学だけでなく、実践しながら身につけられます。',
-  },
-  {
-    emoji: '📊',
-    title: 'まずは偏差値テストで現在地を知る',
-    body: '8 問のプレイスメントテストであなたの論理思考レベルを判定し、あなたに合った学習ルートをおすすめします。3 分で終わります。',
-  },
+  { emoji: '🧠', titleKey: 'onboarding.slide1.title', bodyKey: 'onboarding.slide1.body' },
+  { emoji: '🎯', titleKey: 'onboarding.slide2.title', bodyKey: 'onboarding.slide2.body' },
+  { emoji: '📊', titleKey: 'onboarding.slide3.title', bodyKey: 'onboarding.slide3.body' },
 ]
 
 type Props = { onComplete: () => void }
@@ -51,8 +40,8 @@ export default function Onboarding({ onComplete }: Props) {
     <div className="ob-screen">
       <div className="ob-content">
         <div className="ob-emoji">{slide.emoji}</div>
-        <h1 className="ob-title">{slide.title}</h1>
-        <p className="ob-body">{slide.body}</p>
+        <h1 className="ob-title">{t(slide.titleKey)}</h1>
+        <p className="ob-body">{t(slide.bodyKey)}</p>
 
         <div className="ob-dots">
           {SLIDES.map((_, i) => (
@@ -62,10 +51,10 @@ export default function Onboarding({ onComplete }: Props) {
 
         <div className="ob-actions">
           <button className="ob-primary" onClick={() => isLast ? finish() : setIdx(idx + 1)}>
-            {isLast ? 'プレイスメントテストへ' : '次へ'}
+            {isLast ? t('onboarding.toPlacement') : t('common.next')}
           </button>
           {!isLast && (
-            <button className="ob-skip" onClick={finish}>スキップ</button>
+            <button className="ob-skip" onClick={finish}>{t('common.skip')}</button>
           )}
         </div>
       </div>

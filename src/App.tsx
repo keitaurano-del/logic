@@ -20,6 +20,7 @@ import Onboarding, { hasSeenOnboarding } from './Onboarding'
 import Ranking from './Ranking'
 import FermiLesson from './FermiLesson'
 import { hasCompletedPlacement, loadPlacementResult } from './placementTest'
+import { t, getLocale } from './i18n'
 import { getAIProblem, type AIProblemSet } from './aiProblemStore'
 import { verifyCheckout } from './subscription'
 import { getTodayProblem, generateTodayProblem, isDailyCompleted, markDailyCompleted } from './dailyProblem'
@@ -219,6 +220,28 @@ const lessons = [
     action: 'lesson' as const,
   },
 ]
+
+// English overlay for logic lesson titles/descriptions (logic IDs only).
+// Bookkeeping/PMBOK lessons are filtered out of EN locale lists entirely,
+// so they don't need translations here.
+const LESSON_OVERLAY_EN: Record<number, { title: string; description: string; category: string }> = {
+  20: { title: 'MECE — Mutually Exclusive, Collectively Exhaustive', description: 'Organize information without gaps or overlaps', category: 'Logical Thinking' },
+  21: { title: 'Logic Tree — Decomposing Problems', description: 'Why trees and How trees for hierarchical problem solving', category: 'Logical Thinking' },
+  22: { title: 'So What / Why So — Validating Logic', description: 'Stress-test arguments with two simple questions', category: 'Logical Thinking' },
+  23: { title: 'Pyramid Principle — Communicating Clearly', description: 'Conclusion → reasons → evidence with PREP and SCR', category: 'Logical Thinking' },
+  24: { title: 'Case Studies — Applied Practice', description: 'Combine all frameworks on realistic business cases', category: 'Logical Thinking' },
+  25: { title: 'Deduction — From the General to the Specific', description: 'Syllogisms, validity vs. soundness, business applications', category: 'Logical Thinking' },
+  26: { title: 'Induction — From Cases to Patterns', description: 'Forming hypotheses from observations, sample bias, black swans', category: 'Logical Thinking' },
+  27: { title: 'Formal Logic — The World of "A Implies B"', description: 'Conditionals, contrapositive, modus ponens & tollens', category: 'Logical Thinking' },
+}
+
+function localizeLessons<T extends { id: number; title: string; description: string; category: string }>(arr: T[]): T[] {
+  if (getLocale() !== 'en') return arr
+  return arr.map(l => {
+    const overlay = LESSON_OVERLAY_EN[l.id]
+    return overlay ? { ...l, title: overlay.title, description: overlay.description, category: overlay.category } : l
+  })
+}
 
 type Tab = 'home' | 'lessons' | 'profile'
 type Screen =
@@ -501,7 +524,7 @@ function App() {
   const nextLesson = (() => {
     if (completedCount === 0) return null
     const completed = new Set(getCompletedLessons())
-    const visible = lessons.filter(l => devMode || (!l.category.includes('簿記') && !l.category.includes('プロジェクト') && !l.category.includes('模擬試験')))
+    const visible = localizeLessons(lessons.filter(l => (getLocale() === 'en' ? !l.category.includes('簿記') && !l.category.includes('プロジェクト') && !l.category.includes('模擬試験') : (devMode || (!l.category.includes('簿記') && !l.category.includes('プロジェクト') && !l.category.includes('模擬試験'))))))
     return visible.find(l => !completed.has(`lesson-${l.id}`)) || null
   })()
 
@@ -516,10 +539,10 @@ function App() {
             <div className="daily-card welcome" onClick={() => dailyProblem && setScreen({ type: 'daily-problem' })}>
               <div className="daily-icon">👋</div>
               <div className="daily-text">
-                <strong>Logic へようこそ</strong>
-                <span>ロジカルシンキング・簿記・PM を 3 分から学べます。今日の 1 問から始めよう →</span>
+                <strong>{t('home.welcomeTitle')}</strong>
+                <span>{t('home.welcomeDesc')}</span>
               </div>
-              <span className="daily-badge new">START</span>
+              <span className="daily-badge new">{t('home.welcomeBadge')}</span>
             </div>
           )}
 
@@ -528,7 +551,7 @@ function App() {
             <div className="daily-card continue" onClick={() => handleCardClick(nextLesson)}>
               <div className="daily-icon">▶️</div>
               <div className="daily-text">
-                <strong>続きから</strong>
+                <strong>{t('home.continueTitle')}</strong>
                 <span>{nextLesson.title}</span>
               </div>
               <span className="daily-badge new">NEXT</span>
@@ -546,10 +569,10 @@ function App() {
               <div className="daily-card placement" onClick={() => handleCardClick(recLesson)}>
                 <div className="daily-icon">🎯</div>
                 <div className="daily-text">
-                  <strong>偏差値 {placementResult.deviation} のおすすめ</strong>
+                  <strong>{t('home.placementTitle', { score: placementResult.deviation })}</strong>
                   <span>{recLesson.title}</span>
                 </div>
-                <span className="daily-badge new">REC</span>
+                <span className="daily-badge new">{t('home.badgeRec')}</span>
               </div>
             )
           })()}
@@ -559,13 +582,13 @@ function App() {
             <div className="daily-card" onClick={() => setScreen({ type: 'daily-problem' })}>
               <div className="daily-icon">✨</div>
               <div className="daily-text">
-                <strong>今日の1問</strong>
+                <strong>{t('home.todayProblem')}</strong>
                 <span>{dailyProblem.title}</span>
               </div>
               {isDailyCompleted() ? (
-                <span className="daily-badge done">✓ 完了</span>
+                <span className="daily-badge done">{t('home.todayProblemDone')}</span>
               ) : (
-                <span className="daily-badge new">NEW</span>
+                <span className="daily-badge new">{t('home.todayProblemNew')}</span>
               )}
             </div>
           )}
@@ -573,8 +596,8 @@ function App() {
             <div className="daily-card daily-loading">
               <div className="daily-icon">⏳</div>
               <div className="daily-text">
-                <strong>今日の1問</strong>
-                <span>準備中...</span>
+                <strong>{t('home.todayProblem')}</strong>
+                <span>{t('home.todayProblemLoading')}</span>
               </div>
             </div>
           )}
@@ -597,18 +620,18 @@ function App() {
                   </svg>
                 </div>
                 <span className="streak-count">{streak}</span>
-                <span className="streak-label">{streak > 0 ? '日連続学習中' : '今日から始めよう'}</span>
+                <span className="streak-label">{streak > 0 ? t('home.streakDays') : t('home.streakStart')}</span>
                 {streak >= 7 && <span className="streak-badge">{streak >= 30 ? 'MASTER' : streak >= 14 ? 'ON FIRE' : 'GREAT'}</span>}
               </div>
               <div className="hero-stats">
                 <div className="stat">
                   <span className="stat-value">{completedCount}</span>
-                  <span className="stat-label">完了レッスン</span>
+                  <span className="stat-label">{t('home.completedLessons')}</span>
                 </div>
                 <div className="stat-divider" />
                 <div className="stat">
                   <span className="stat-value">{studyHours}</span>
-                  <span className="stat-label">総学習時間</span>
+                  <span className="stat-label">{t('home.totalStudyTime')}</span>
                 </div>
               </div>
             </div>
@@ -621,8 +644,8 @@ function App() {
               <div className="flashcard-banner" onClick={() => setScreen({ type: 'flashcards' })}>
                 <div className="flashcard-banner-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="14" height="18" rx="2" /><path d="M8 4V2" /><path d="M22 8v12a2 2 0 0 1-2 2" /><path d="M18 2v2" /><rect x="8" y="2" width="14" height="18" rx="2" opacity="0.3" /></svg></div>
                 <div className="flashcard-banner-text">
-                  <strong>今日のおすすめ</strong>
-                  <span>{fc.total === 0 ? 'レッスンを完了するとカードが作られます' : fc.due > 0 ? `${fc.due}枚の復習待ち` : '今日の復習完了！'}</span>
+                  <strong>{t('home.flashcardTitle')}</strong>
+                  <span>{fc.total === 0 ? t('home.flashcardEmpty') : fc.due > 0 ? t('home.flashcardDue', { count: fc.due }) : t('home.flashcardDone')}</span>
                 </div>
                 <span className="flashcard-banner-arrow">›</span>
               </div>
@@ -634,8 +657,8 @@ function App() {
           <div className="ai-gen-card" onClick={() => setScreen({ type: 'ai-gen' })}>
             <div className="ai-gen-icon">✨</div>
             <div className="ai-gen-text">
-              <strong>AIに問題を作ってもらう</strong>
-              <span>あなた専用の練習問題を生成</span>
+              <strong>{t('home.aiGenTitle')}</strong>
+              <span>{t('home.aiGenDesc')}</span>
             </div>
             <span className="ai-gen-arrow">›</span>
           </div>
@@ -644,8 +667,8 @@ function App() {
           <div className="ai-gen-card" onClick={() => setScreen({ type: 'roleplay' })}>
             <div className="ai-gen-icon">💬</div>
             <div className="ai-gen-text">
-              <strong>AIロールプレイで練習</strong>
-              <span>論理思考フレームワークを実務シーンで <span className="ai-gen-badge">NEW</span></span>
+              <strong>{t('home.roleplayTitle')}</strong>
+              <span>{t('home.roleplayDesc')} <span className="ai-gen-badge">{t('home.badgeNew')}</span></span>
             </div>
             <span className="ai-gen-arrow">›</span>
           </div>
@@ -654,8 +677,8 @@ function App() {
           <div className="ai-gen-card" onClick={() => setScreen({ type: 'coffee-break' })}>
             <div className="ai-gen-icon">☕</div>
             <div className="ai-gen-text">
-              <strong>コーヒーブレイク</strong>
-              <span>3分で読める日常シーンの小話 <span className="ai-gen-badge">NEW</span></span>
+              <strong>{t('home.coffeebreakTitle')}</strong>
+              <span>{t('home.coffeebreakDesc')} <span className="ai-gen-badge">{t('home.badgeNew')}</span></span>
             </div>
             <span className="ai-gen-arrow">›</span>
           </div>
@@ -664,8 +687,8 @@ function App() {
           <div className="ai-gen-card" onClick={() => setScreen({ type: 'fermi' })}>
             <div className="ai-gen-icon">🔢</div>
             <div className="ai-gen-text">
-              <strong>フェルミ推定</strong>
-              <span>分解思考を実践する練習 <span className="ai-gen-badge">NEW</span></span>
+              <strong>{t('home.fermiTitle')}</strong>
+              <span>{t('home.fermiDesc')} <span className="ai-gen-badge">{t('home.badgeNew')}</span></span>
             </div>
             <span className="ai-gen-arrow">›</span>
           </div>
@@ -673,7 +696,7 @@ function App() {
 
           {/* Lessons */}
           {(() => {
-            const visible = lessons.filter(l => devMode || (!l.category.includes('簿記') && !l.category.includes('プロジェクト') && !l.category.includes('模擬試験')))
+            const visible = localizeLessons(lessons.filter(l => (getLocale() === 'en' ? !l.category.includes('簿記') && !l.category.includes('プロジェクト') && !l.category.includes('模擬試験') : (devMode || (!l.category.includes('簿記') && !l.category.includes('プロジェクト') && !l.category.includes('模擬試験'))))))
             return (
           <section className="section">
             <div className="lesson-list">
@@ -717,8 +740,8 @@ function App() {
             )
           })()}
           {Object.entries(
-            lessons
-              .filter(l => devMode || (!l.category.includes('簿記') && !l.category.includes('プロジェクト') && !l.category.includes('模擬試験')))
+            localizeLessons(lessons
+              .filter(l => (getLocale() === 'en' ? !l.category.includes('簿記') && !l.category.includes('プロジェクト') && !l.category.includes('模擬試験') : (devMode || (!l.category.includes('簿記') && !l.category.includes('プロジェクト') && !l.category.includes('模擬試験'))))))
               .reduce<Record<string, typeof lessons>>((acc, l) => {
                 const cat = l.category
                 if (!acc[cat]) acc[cat] = []
@@ -779,21 +802,21 @@ function App() {
           <svg className="nav-icon" viewBox="0 0 24 24" fill={tab === 'home' ? 'currentColor' : 'none'} stroke={tab === 'home' ? 'none' : 'currentColor'} strokeWidth="2">
             <path d="M3 13h1v7c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-7h1a1 1 0 0 0 .7-1.7l-9-9a1 1 0 0 0-1.4 0l-9 9A1 1 0 0 0 3 13z" />
           </svg>
-          <span>ホーム</span>
+          <span>{t('nav.home')}</span>
         </button>
         <button className={`nav-item ${tab === 'lessons' ? 'active' : ''}`} onClick={() => { setTab('lessons'); setDevModeState(isDevMode()) }}>
           <svg className="nav-icon" viewBox="0 0 24 24" fill={tab === 'lessons' ? 'currentColor' : 'none'} stroke={tab === 'lessons' ? 'none' : 'currentColor'} strokeWidth="2">
             <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
             <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
           </svg>
-          <span>レッスン</span>
+          <span>{t('nav.lessons')}</span>
         </button>
         <button className={`nav-item ${tab === 'profile' ? 'active' : ''}`} onClick={() => { setTab('profile'); refreshStats(); setDevModeState(isDevMode()) }}>
           <svg className="nav-icon" viewBox="0 0 24 24" fill={tab === 'profile' ? 'currentColor' : 'none'} stroke={tab === 'profile' ? 'none' : 'currentColor'} strokeWidth="2">
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
             <circle cx="12" cy="7" r="4" />
           </svg>
-          <span>プロフィール</span>
+          <span>{t('nav.profile')}</span>
         </button>
       </nav>
     </div>

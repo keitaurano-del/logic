@@ -6,6 +6,7 @@ import { isDevMode, setDevMode as persistDevMode } from './devMode'
 import { getPlanLabel, BETA_MODE } from './subscription'
 import { resetAllData } from './dataReset'
 import { loadReminderPref, scheduleDailyReminder, cancelDailyReminder, requestNotificationPermission, isNative } from './notifications'
+import { t, getLocale, setLocale } from './i18n'
 import './Profile.css'
 
 type ProfileProps = {
@@ -260,7 +261,7 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
       {/* Deviation Card */}
       {onDeviation && (
         <div className="pf-deviation-card" onClick={onDeviation}>
-          <span>📊 偏差値を見る</span>
+          <span>{t('profile.deviation')}</span>
           <span>›</span>
         </div>
       )}
@@ -268,7 +269,7 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
       {/* Ranking Card */}
       {onRanking && (
         <div className="pf-deviation-card" onClick={onRanking}>
-          <span>🏆 偏差値ランキング</span>
+          <span>{t('profile.ranking')}</span>
           <span>›</span>
         </div>
       )}
@@ -276,7 +277,7 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
       {/* Theme Card */}
       {onTheme && (
         <div className="pf-deviation-card" onClick={onTheme}>
-          <span>🎨 テーマ設定</span>
+          <span>{t('profile.theme')}</span>
           <span>›</span>
         </div>
       )}
@@ -284,7 +285,7 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
       {/* Daily reminder (today's problem) */}
       <div className="pf-deviation-card" style={{ display: 'block' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: reminderPref.enabled ? 10 : 0 }}>
-          <span>🔔 今日の1問リマインダー</span>
+          <span>{t('profile.reminder')}</span>
           <input
             type="checkbox"
             checked={reminderPref.enabled}
@@ -293,7 +294,7 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
                 if (isNative()) {
                   const ok = await requestNotificationPermission()
                   if (!ok) {
-                    alert('通知の許可が必要です。設定アプリから Logic の通知を許可してください。')
+                    alert(t('profile.reminderNoPermission'))
                     return
                   }
                 }
@@ -309,7 +310,7 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
         </div>
         {reminderPref.enabled && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, paddingLeft: 4 }}>
-            <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>毎日の通知時刻</span>
+            <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>{t('profile.reminderTime')}</span>
             <input
               type="time"
               value={`${String(reminderPref.hour).padStart(2, '0')}:${String(reminderPref.minute).padStart(2, '0')}`}
@@ -320,29 +321,64 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
               }}
               style={{ padding: '6px 10px', border: '1px solid var(--border)', borderRadius: 8, fontFamily: 'inherit', fontSize: 14, background: 'var(--bg-card)', color: 'var(--text-primary)' }}
             />
-            {!isNative() && <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>(アプリ版でのみ通知が届きます)</span>}
+            {!isNative() && <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{t('profile.reminderWebNote')}</span>}
           </div>
         )}
       </div>
 
+      {/* Language picker */}
+      <div className="pf-deviation-card" style={{ display: 'block' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
+          <span>🌐 {t('profile.languageTitle')}</span>
+          <div style={{ display: 'flex', gap: 6 }}>
+            <button
+              onClick={() => getLocale() !== 'ja' && setLocale('ja')}
+              style={{
+                padding: '6px 14px',
+                borderRadius: 8,
+                border: '1.5px solid ' + (getLocale() === 'ja' ? 'var(--accent)' : 'var(--border)'),
+                background: getLocale() === 'ja' ? 'var(--accent-soft)' : 'var(--bg-card)',
+                color: getLocale() === 'ja' ? 'var(--accent)' : 'var(--text-secondary)',
+                fontSize: 13, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit',
+              }}
+            >
+              {t('profile.languageJa')}
+            </button>
+            <button
+              onClick={() => getLocale() !== 'en' && setLocale('en')}
+              style={{
+                padding: '6px 14px',
+                borderRadius: 8,
+                border: '1.5px solid ' + (getLocale() === 'en' ? 'var(--accent)' : 'var(--border)'),
+                background: getLocale() === 'en' ? 'var(--accent-soft)' : 'var(--bg-card)',
+                color: getLocale() === 'en' ? 'var(--accent)' : 'var(--text-secondary)',
+                fontSize: 13, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit',
+              }}
+            >
+              {t('profile.languageEn')}
+            </button>
+          </div>
+        </div>
+      </div>
+
       {/* Legal links */}
       <div className="pf-deviation-card" onClick={() => window.open('/privacy.html', '_blank')}>
-        <span>📄 プライバシーポリシー</span>
+        <span>{t('profile.privacy')}</span>
         <span>›</span>
       </div>
       <div className="pf-deviation-card" onClick={() => window.open('/terms.html', '_blank')}>
-        <span>📑 利用規約</span>
+        <span>{t('profile.terms')}</span>
         <span>›</span>
       </div>
 
       {/* Data deletion (GDPR / Play Store 必須) */}
       <div className="pf-deviation-card" style={{ borderColor: 'var(--danger)' }} onClick={async () => {
-        if (!confirm('全ての学習データ・偏差値・ニックネーム・テーマ設定を削除します。\n\nこの操作は取り消せません。本当に削除しますか?')) return
+        if (!confirm(t('profile.deleteConfirm'))) return
         await resetAllData()
-        alert('全データを削除しました。アプリを再読み込みします。')
+        alert(t('profile.deleteSuccess'))
         window.location.reload()
       }}>
-        <span style={{ color: 'var(--danger)' }}>🗑 全データを削除</span>
+        <span style={{ color: 'var(--danger)' }}>{t('profile.deleteData')}</span>
         <span>›</span>
       </div>
 
@@ -350,7 +386,7 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
       {onPricing && !BETA_MODE && (
         <div className="pf-plan-card" onClick={onPricing}>
           <div className="pf-plan-card-info">
-            <span className="pf-plan-card-label">プラン</span>
+            <span className="pf-plan-card-label">{t('profile.planLabel')}</span>
             <span className="pf-plan-card-value">{getPlanLabel()}</span>
           </div>
           <span className="pf-plan-card-arrow">›</span>
@@ -359,8 +395,8 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
       {BETA_MODE && (
         <div className="pf-plan-card" style={{ cursor: 'default' }}>
           <div className="pf-plan-card-info">
-            <span className="pf-plan-card-label">プラン</span>
-            <span className="pf-plan-card-value">ベータ版 — 全機能無料</span>
+            <span className="pf-plan-card-label">{t('profile.planLabel')}</span>
+            <span className="pf-plan-card-value">{t('profile.planBeta')}</span>
           </div>
         </div>
       )}
@@ -386,7 +422,7 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
               gap: 8,
             }}
           >
-            💡 ご要望・フィードバック
+            {t('profile.feedback')}
           </button>
         </div>
       )}

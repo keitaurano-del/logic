@@ -8,6 +8,7 @@ import {
   skipPlacement,
 } from './placementTest'
 import { getGuestId, getNickname, setNickname, defaultNickname } from './guestId'
+import { t } from './i18n'
 import './PlacementTest.css'
 
 const API_BASE = import.meta.env.DEV ? `http://${window.location.hostname}:3001` : ''
@@ -93,28 +94,25 @@ export default function PlacementTest({ onComplete, onSkip }: Props) {
       <div className="pt-screen">
         <div className="pt-intro">
           <div className="pt-emoji">📋</div>
-          <h1>プレイスメントテスト</h1>
-          <p className="pt-lead">
-            あなたの論理思考力を 8 問でチェックします。所要時間は約 3 分。<br />
-            結果から偏差値を出し、レベルに合ったおすすめレッスンを表示します。
-          </p>
+          <h1>{t('placement.title')}</h1>
+          <p className="pt-lead" style={{ whiteSpace: 'pre-line' }}>{t('placement.lead')}</p>
           <div className="pt-info">
-            <div><strong>{total} 問</strong>・約 3 分</div>
-            <div>MECE / 演繹 / 帰納 / 形式論理</div>
+            <div><strong>{t('placement.questionCount', { count: total })}</strong></div>
+            <div>{t('placement.topicLine')}</div>
           </div>
           <div className="pt-nick-row">
-            <label>ランキング表示名</label>
+            <label>{t('placement.nicknameLabel')}</label>
             <input
               type="text"
               value={nicknameInput}
               onChange={(e) => setNicknameInput(e.target.value)}
-              placeholder="ニックネーム"
+              placeholder={t('placement.nicknamePlaceholder')}
               maxLength={20}
               className="pt-nick-input"
             />
           </div>
-          <button className="pt-start-btn" onClick={start}>はじめる</button>
-          <button className="pt-skip-btn" onClick={handleSkip}>あとでやる</button>
+          <button className="pt-start-btn" onClick={start}>{t('placement.startButton')}</button>
+          <button className="pt-skip-btn" onClick={handleSkip}>{t('placement.skipButton')}</button>
         </div>
       </div>
     )
@@ -128,7 +126,7 @@ export default function PlacementTest({ onComplete, onSkip }: Props) {
           <div className="pt-progress-fill" style={{ width: `${((questionIdx + (answered ? 1 : 0)) / total) * 100}%` }} />
         </div>
         <div className="pt-quiz">
-          <div className="pt-q-num">Q{questionIdx + 1} / {total}</div>
+          <div className="pt-q-num">{t('placement.questionPrefix', { n: questionIdx + 1, total })}</div>
           <h2 className="pt-q-text">{q.question}</h2>
           <div className="pt-options">
             {q.options.map((opt, i) => {
@@ -146,12 +144,12 @@ export default function PlacementTest({ onComplete, onSkip }: Props) {
           </div>
           {answered && (
             <div className={`pt-feedback ${isCorrect ? 'ok' : 'ng'}`}>
-              {isCorrect ? '✓ 正解' : '✗ 不正解'}
+              {isCorrect ? t('placement.correct') : t('placement.wrong')}
             </div>
           )}
           {answered && (
             <button className="pt-next-btn" onClick={next}>
-              {questionIdx + 1 >= total ? '結果を見る' : '次の問題へ'}
+              {questionIdx + 1 >= total ? t('placement.viewResult') : t('placement.nextQuestion')}
             </button>
           )}
         </div>
@@ -166,20 +164,21 @@ export default function PlacementTest({ onComplete, onSkip }: Props) {
     <div className="pt-screen">
       <div className="pt-result">
         <div className="pt-result-emoji">📊</div>
-        <h1>あなたの偏差値</h1>
+        <h1>{t('placement.resultTitle')}</h1>
         <div className="pt-dev-circle" style={{ borderColor: rank.color }}>
           <span className="pt-dev-num" style={{ color: rank.color }}>{dev}</span>
         </div>
         <div className="pt-rank-label" style={{ color: rank.color }}>{rank.label}</div>
-        <div className="pt-correct-count">{correctCount} / {total} 問正解</div>
+        <div className="pt-correct-count">{t('placement.correctCount', { correct: correctCount, total })}</div>
         <p className="pt-comment">{rank.comment}</p>
 
         <div className="pt-rec">
-          <h3>あなたへのおすすめレッスン</h3>
-          <p className="pt-rec-desc">レベルに合わせて、この順番で学ぶのがおすすめです。</p>
+          <h3>{t('placement.recommended')}</h3>
+          <p className="pt-rec-desc">{t('placement.recommendedDesc')}</p>
           <div className="pt-rec-list">
             {recIds.map((id, i) => {
-              const titles: Record<number, string> = {
+              const en = (typeof navigator !== 'undefined' && (localStorage.getItem('logic-locale') || navigator.language).startsWith('en'))
+              const titlesJa: Record<number, string> = {
                 20: 'MECE — 漏れなくダブりなく',
                 21: 'ロジックツリー — 問題を分解する',
                 22: 'So What / Why So — 論理の検証',
@@ -189,6 +188,17 @@ export default function PlacementTest({ onComplete, onSkip }: Props) {
                 26: '帰納法 — 個別事例から法則を見つける',
                 27: '形式論理 — 「A ならば B」の世界',
               }
+              const titlesEn: Record<number, string> = {
+                20: 'MECE — Mutually Exclusive, Collectively Exhaustive',
+                21: 'Logic Tree — Decomposing Problems',
+                22: 'So What / Why So — Validating Logic',
+                23: 'Pyramid Principle — Communicating Clearly',
+                24: 'Case Studies — Applied Practice',
+                25: 'Deduction — From the General to the Specific',
+                26: 'Induction — From Cases to Patterns',
+                27: 'Formal Logic — The World of "A Implies B"',
+              }
+              const titles = en ? titlesEn : titlesJa
               return (
                 <div key={id} className="pt-rec-item">
                   <span className="pt-rec-num">{i + 1}</span>
@@ -199,7 +209,7 @@ export default function PlacementTest({ onComplete, onSkip }: Props) {
           </div>
         </div>
 
-        <button className="pt-done-btn" onClick={onComplete}>始める</button>
+        <button className="pt-done-btn" onClick={onComplete}>{t('placement.beginButton')}</button>
       </div>
     </div>
   )
