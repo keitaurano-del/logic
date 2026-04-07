@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { COFFEE_BREAK_SCENARIOS, getCoffeeBreakScenario } from './coffeeBreakScenarios'
+import { getCoffeeBreakScenarios, getCoffeeBreakScenario } from './coffeeBreakScenarios'
 import { logSceneStarted, logScenarioCompleted } from './coffeeBreakAnalytics'
 import Lesson from './Lesson'
+import { t } from './i18n'
 import './CoffeeBreak.css'
 
 type Props = { onBack: () => void }
@@ -34,17 +35,17 @@ export default function CoffeeBreak({ onBack }: Props) {
     <div className="cb-screen">
       <header className="cb-header">
         <button className="cb-back" onClick={onBack}>‹</button>
-        <span>コーヒーブレイク</span>
+        <span>{t('coffeebreak.title')}</span>
         <span className="cb-header-spacer" />
       </header>
       <div className="cb-content">
         <div className="cb-intro">
           <div className="cb-intro-emoji">☕</div>
-          <h2>日常で使える論理思考</h2>
-          <p>パートナー・買い物・旅行・友達との会話。仕事じゃない場面で論理思考がどう効くか、3 分のクイズで体験。</p>
+          <h2>{t('coffeebreak.heading')}</h2>
+          <p>{t('coffeebreak.lead')}</p>
         </div>
         <div className="cb-list">
-          {COFFEE_BREAK_SCENARIOS.map((s) => (
+          {getCoffeeBreakScenarios().map((s) => (
             <button key={s.id} className="cb-card" onClick={() => start(s.id)}>
               <span className="cb-card-emoji">{s.emoji}</span>
               <div className="cb-card-body">

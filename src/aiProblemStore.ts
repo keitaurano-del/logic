@@ -1,6 +1,7 @@
 import type { LessonData } from './lessonData'
 import { isPremium as subIsPremium } from './subscription'
 import { canGenerate, recordGeneration } from './usageTracker'
+import { localeBody, getLocale } from './i18n'
 
 const STORAGE_KEY = 'logic-ai-problems'
 const API_BASE = import.meta.env.DEV ? `http://${window.location.hostname}:3001` : ''
@@ -38,17 +39,20 @@ export function deleteAIProblem(id: number): void {
 }
 
 export async function generateAIProblems(prompt: string): Promise<AIProblemSet> {
+  const isEn = getLocale() === 'en'
   if (!canGenerate()) {
     if (subIsPremium()) {
-      throw new Error('今月の生成回数の上限(300問)に達しました')
+      throw new Error(isEn ? 'You\'ve hit this month\'s limit (300 problems)' : '今月の生成回数の上限(300問)に達しました')
     } else {
-      throw new Error('今日の生成回数の上限(10問)に達しました。プレミアムプランで月300問まで生成できます。')
+      throw new Error(isEn
+        ? 'You\'ve hit today\'s free limit (10 problems). Premium gives you 300/month.'
+        : '今日の生成回数の上限(10問)に達しました。プレミアムプランで月300問まで生成できます。')
     }
   }
   const res = await fetch(`${API_BASE}/api/generate-problems`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ prompt }),
+    body: JSON.stringify(localeBody({ prompt })),
   })
   if (!res.ok) {
     const err = await res.json().catch(() => ({}))

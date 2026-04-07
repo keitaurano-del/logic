@@ -1,4 +1,5 @@
 import type { AIProblemSet } from './aiProblemStore'
+import { localeBody, getLocale } from './i18n'
 
 const STORAGE_KEY = 'logic-daily-problem'
 const API_BASE = import.meta.env.DEV ? `http://${window.location.hostname}:3001` : ''
@@ -45,13 +46,17 @@ export function markDailyCompleted() {
 export async function generateTodayProblem(): Promise<AIProblemSet> {
   const cached = getTodayProblem()
   if (cached) return cached
-  const res = await fetch(`${API_BASE}/api/daily-problem`, { method: 'POST' })
-  if (!res.ok) throw new Error('問題の生成に失敗しました')
+  const res = await fetch(`${API_BASE}/api/daily-problem`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(localeBody({})),
+  })
+  if (!res.ok) throw new Error(getLocale() === 'en' ? 'Failed to generate today\'s problem' : '問題の生成に失敗しました')
   const data = await res.json()
   const problem: AIProblemSet = {
     id: 90000 + (Date.now() % 10000),
     title: data.title,
-    category: data.category || 'ロジカルシンキング',
+    category: data.category || (getLocale() === 'en' ? 'Logical Thinking' : 'ロジカルシンキング'),
     steps: data.steps,
     prompt: 'daily auto-generated',
     createdAt: new Date().toISOString(),

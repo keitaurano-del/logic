@@ -1,3 +1,5 @@
+import { getLocale } from './i18n'
+
 export type Framework = 'why-so' | 'mece' | 'pyramid' | 'logic-tree'
 
 export type Situation = {
@@ -16,7 +18,7 @@ export type Situation = {
   premium: boolean
 }
 
-export const SITUATIONS: Situation[] = [
+const SITUATIONS_JA: Situation[] = [
   {
     id: 'why-so-report',
     framework: 'why-so',
@@ -83,8 +85,83 @@ export const SITUATIONS: Situation[] = [
   },
 ]
 
+const SITUATIONS_EN: Situation[] = [
+  {
+    id: 'why-so-report',
+    framework: 'why-so',
+    frameworkLabel: 'Why So / So What',
+    title: 'Reporting to your manager',
+    emoji: '📊',
+    partnerName: 'Director Anderson',
+    partnerRole: 'Business unit director',
+    partnerPersonality: 'Conclusion-first. Always pressed for time. Cuts off vague explanations with "So what is the point?"',
+    partnerInterests: 'Numbers, decision-relevant information, So What',
+    partnerConcerns: 'Wasting time, weakly-supported proposals',
+    goal: 'In under 3 minutes, get the director to make a decision',
+    context:
+      'You are reporting on the progress of your project. The director will dig in with Why So? (why is that true?) and So What? (so what should we do?). Lead with the conclusion and back it with evidence.',
+    premium: false,
+  },
+  {
+    id: 'mece-meeting',
+    framework: 'mece',
+    frameworkLabel: 'MECE',
+    title: 'Facilitating a cross-functional meeting',
+    emoji: '🗂️',
+    partnerName: 'Meeting participants',
+    partnerRole: 'Members from multiple departments',
+    partnerPersonality: 'Tend to drift off-topic. Miss gaps. Repeat overlapping points.',
+    partnerInterests: 'Their own department\'s convenience, individual examples',
+    partnerConcerns: 'Long meetings, decisions never being made',
+    goal: 'Organize the issues MECE-style and reach consensus',
+    context:
+      'You are facilitating a cross-functional meeting. You need to organize the participants\' input "with no gaps and no overlaps" and structure the discussion. Keep MECE in mind when proposing how to slice the problem.',
+    premium: true,
+  },
+  {
+    id: 'pyramid-client',
+    framework: 'pyramid',
+    frameworkLabel: 'Pyramid Principle',
+    title: 'Presenting to a client',
+    emoji: '💼',
+    partnerName: 'Mr. Wright',
+    partnerRole: 'Executive at a client company',
+    partnerPersonality: 'Strict about logical leaps. Demands evidence. Highly experienced and quick to spot weak arguments.',
+    partnerInterests: 'Soundness of conclusions, quality of evidence, ROI',
+    partnerConcerns: 'Weakly-supported claims, jumping topics',
+    goal: 'Use the Pyramid Principle (conclusion → reasons → evidence) to win the client\'s buy-in',
+    context:
+      'You are presenting an important proposal to a client. Lead with the conclusion at the top of the pyramid, supported by 3 reasons and their evidence. Logical leaps will be called out immediately.',
+    premium: true,
+  },
+  {
+    id: 'logic-tree-sub',
+    framework: 'logic-tree',
+    frameworkLabel: 'Logic Tree',
+    title: 'Giving direction to a junior team member',
+    emoji: '🌳',
+    partnerName: 'Junior teammate',
+    partnerRole: 'Second-year employee',
+    partnerPersonality: 'Waits for instructions. Sees problems only abstractly. Asks "Where do I even start?"',
+    partnerInterests: 'Concrete tasks, how to proceed, priority',
+    partnerConcerns: 'Not knowing where to begin',
+    goal: 'Use a logic tree to decompose the problem with them and turn it into concrete actions',
+    context:
+      'You are giving your junior teammate the problem "sales aren\'t growing." Use Why trees (why?) and How trees (how?) to decompose the problem together with them and guide them toward concrete actions.',
+    premium: true,
+  },
+]
+
+// Locale-aware list of situations.
+export function getSituations(): Situation[] {
+  return getLocale() === 'en' ? SITUATIONS_EN : SITUATIONS_JA
+}
+
+// Backwards-compat alias for callers that used the old constant.
+export const SITUATIONS: Situation[] = SITUATIONS_JA
+
 export function getSituation(id: string): Situation | undefined {
-  return SITUATIONS.find((s) => s.id === id)
+  return getSituations().find((s) => s.id === id)
 }
 
 // Build the `setup` object expected by /api/roleplay/chat

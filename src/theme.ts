@@ -1,3 +1,5 @@
+import { t } from './i18n'
+
 const STORAGE_KEY = 'logic-theme'
 
 // Accent (existing free tier - 6 colors)
@@ -13,12 +15,12 @@ export type Accent = {
 }
 
 export const ACCENTS: Accent[] = [
-  { id: 'orange', name: 'オレンジ', accent: '#D4915A', accentSoft: 'rgba(212,145,90,0.10)', accentGlow: 'rgba(212,145,90,0.22)', accentDark: '#B07442' },
-  { id: 'blue',   name: 'インディゴ', accent: '#6366F1', accentSoft: 'rgba(99,102,241,0.10)',  accentGlow: 'rgba(99,102,241,0.22)',  accentDark: '#4F46E5' },
-  { id: 'purple', name: 'パープル',  accent: '#8B5CF6', accentSoft: 'rgba(139,92,246,0.12)',  accentGlow: 'rgba(139,92,246,0.25)',  accentDark: '#7C3AED' },
-  { id: 'green',  name: 'グリーン',  accent: '#10B981', accentSoft: 'rgba(16,185,129,0.12)',  accentGlow: 'rgba(16,185,129,0.25)',  accentDark: '#059669' },
-  { id: 'pink',   name: 'ピンク',    accent: '#EC4899', accentSoft: 'rgba(236,72,153,0.12)',  accentGlow: 'rgba(236,72,153,0.25)',  accentDark: '#DB2777' },
-  { id: 'cyan',   name: 'シアン',    accent: '#06B6D4', accentSoft: 'rgba(6,182,212,0.12)',   accentGlow: 'rgba(6,182,212,0.25)',   accentDark: '#0891B2' },
+  { id: 'orange', get name() { return t('theme.accent.orange') }, accent: '#D4915A', accentSoft: 'rgba(212,145,90,0.10)', accentGlow: 'rgba(212,145,90,0.22)', accentDark: '#B07442' },
+  { id: 'blue',   get name() { return t('theme.accent.blue') },   accent: '#6366F1', accentSoft: 'rgba(99,102,241,0.10)',  accentGlow: 'rgba(99,102,241,0.22)',  accentDark: '#4F46E5' },
+  { id: 'purple', get name() { return t('theme.accent.purple') }, accent: '#8B5CF6', accentSoft: 'rgba(139,92,246,0.12)',  accentGlow: 'rgba(139,92,246,0.25)',  accentDark: '#7C3AED' },
+  { id: 'green',  get name() { return t('theme.accent.green') },  accent: '#10B981', accentSoft: 'rgba(16,185,129,0.12)',  accentGlow: 'rgba(16,185,129,0.25)',  accentDark: '#059669' },
+  { id: 'pink',   get name() { return t('theme.accent.pink') },   accent: '#EC4899', accentSoft: 'rgba(236,72,153,0.12)',  accentGlow: 'rgba(236,72,153,0.25)',  accentDark: '#DB2777' },
+  { id: 'cyan',   get name() { return t('theme.accent.cyan') },   accent: '#06B6D4', accentSoft: 'rgba(6,182,212,0.12)',   accentGlow: 'rgba(6,182,212,0.25)',   accentDark: '#0891B2' },
 ]
 
 // Mode (light/dark/premium)
@@ -33,12 +35,13 @@ export type Mode = {
   preview: { bg: string; card: string; text: string; accent: string }
 }
 
+// MODES use getters for name/description so they re-localize on language switch.
 export const MODES: Mode[] = [
-  { id: 'light',      name: 'ライト',         description: '明るく落ち着いたクリーム系',    tier: 'free',    preview: { bg: '#F5F1E8', card: '#FFFFFF', text: '#2D2820', accent: '#D4915A' } },
-  { id: 'dark',       name: 'ダーク',         description: '目に優しい暗色背景',           tier: 'free',    preview: { bg: '#15171C', card: '#1F232B', text: '#E8E8EC', accent: '#D4915A' } },
-  { id: 'enterprise', name: 'エンタープライズ', description: 'ネイビー×シルバーの信頼感',    tier: 'premium', preview: { bg: '#0F1729', card: '#1A2540', text: '#E2E8F0', accent: '#94A3B8' } },
-  { id: 'startup',    name: 'スタートアップ',  description: 'ビビッドなグリーン×オレンジ',  tier: 'premium', preview: { bg: '#FFFAF0', card: '#FFFFFF', text: '#1A2E22', accent: '#10B981' } },
-  { id: 'custom',     name: 'カスタムカラー',  description: '好きな色を HEX で指定',        tier: 'premium', preview: { bg: '#F5F1E8', card: '#FFFFFF', text: '#2D2820', accent: '#D4915A' } },
+  { id: 'light',      get name() { return t('theme.mode.light.name') },      get description() { return t('theme.mode.light.desc') },      tier: 'free',    preview: { bg: '#F5F1E8', card: '#FFFFFF', text: '#2D2820', accent: '#D4915A' } },
+  { id: 'dark',       get name() { return t('theme.mode.dark.name') },       get description() { return t('theme.mode.dark.desc') },       tier: 'free',    preview: { bg: '#15171C', card: '#1F232B', text: '#E8E8EC', accent: '#D4915A' } },
+  { id: 'enterprise', get name() { return t('theme.mode.enterprise.name') }, get description() { return t('theme.mode.enterprise.desc') }, tier: 'premium', preview: { bg: '#0F1729', card: '#1A2540', text: '#E2E8F0', accent: '#94A3B8' } },
+  { id: 'startup',    get name() { return t('theme.mode.startup.name') },    get description() { return t('theme.mode.startup.desc') },    tier: 'premium', preview: { bg: '#FFFAF0', card: '#FFFFFF', text: '#1A2E22', accent: '#10B981' } },
+  { id: 'custom',     get name() { return t('theme.mode.custom.name') },     get description() { return t('theme.mode.custom.desc') },     tier: 'premium', preview: { bg: '#F5F1E8', card: '#FFFFFF', text: '#2D2820', accent: '#D4915A' } },
 ]
 
 export type ThemeState = {

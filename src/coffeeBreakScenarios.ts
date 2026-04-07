@@ -1,4 +1,6 @@
 import type { LessonData } from './lessonData'
+import { getLocale } from './i18n'
+import { COFFEE_BREAK_SCENARIOS_EN } from './coffeeBreakScenariosEn'
 
 export type CoffeeBreakScenario = {
   id: string
@@ -308,6 +310,11 @@ export const COFFEE_BREAK_SCENARIOS: CoffeeBreakScenario[] = [
   },
 ]
 
+// Locale-aware getters.
+export function getCoffeeBreakScenarios(): CoffeeBreakScenario[] {
+  return getLocale() === 'en' ? COFFEE_BREAK_SCENARIOS_EN : COFFEE_BREAK_SCENARIOS
+}
+
 export function getCoffeeBreakScenario(id: string): CoffeeBreakScenario | undefined {
-  return COFFEE_BREAK_SCENARIOS.find((s) => s.id === id)
+  return getCoffeeBreakScenarios().find((s) => s.id === id)
 }

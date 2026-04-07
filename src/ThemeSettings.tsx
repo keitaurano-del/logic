@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { ACCENTS, MODES, loadTheme, saveTheme, applyTheme, type ModeId, type AccentId, type ThemeState } from './theme'
 import { isPremium, BETA_MODE } from './subscription'
 import { contrastRatio, describeContrast } from './colorContrast'
+import { t } from './i18n'
 import './ThemeSettings.css'
 
 type Props = { onBack: () => void; onUpgrade: () => void }
@@ -37,13 +38,13 @@ export default function ThemeSettings({ onBack, onUpgrade }: Props) {
     <div className="ts-screen">
       <header className="ts-header">
         <button className="ts-back" onClick={onBack}>‹</button>
-        <span>テーマ設定</span>
+        <span>{t('theme.title')}</span>
         <span className="ts-header-spacer" />
       </header>
 
       <div className="ts-content">
         <section className="ts-section">
-          <h3 className="ts-section-title">背景モード</h3>
+          <h3 className="ts-section-title">{t('theme.modeSection')}</h3>
           <div className="ts-mode-grid">
             {MODES.map((m) => {
               const locked = m.tier === 'premium' && !premium
@@ -84,7 +85,7 @@ export default function ThemeSettings({ onBack, onUpgrade }: Props) {
           const cardCheck = describeContrast(ratioOnCard)
           return (
             <section className="ts-section">
-              <h3 className="ts-section-title">カスタムカラー</h3>
+              <h3 className="ts-section-title">{t('theme.customSection')}</h3>
               <div className="ts-custom-row">
                 <input
                   type="color"
@@ -104,14 +105,12 @@ export default function ThemeSettings({ onBack, onUpgrade }: Props) {
                   maxLength={7}
                 />
               </div>
-              <p className="ts-hint">入力した色がアクセントカラーとして即座に反映されます</p>
+              <p className="ts-hint">{t('theme.customHint')}</p>
               <div className={`ts-contrast ${cardCheck.ok ? 'ok' : 'warn'}`}>
-                <strong>ボタン文字の読みやすさ</strong>
-                <span>白文字 × この色 = コントラスト比 {ratioOnCard.toFixed(2)}:1 ({cardCheck.label})</span>
+                <strong>{t('theme.contrastH')}</strong>
+                <span>{t('theme.contrastDetail', { ratio: ratioOnCard.toFixed(2), label: cardCheck.label })}</span>
                 {!cardCheck.ok && (
-                  <p className="ts-contrast-note">
-                    ⚠ この色は背景に白文字を重ねると読みにくいため、ボタン上の文字色は自動的に黒に切り替わります(WCAG AA 基準維持)
-                  </p>
+                  <p className="ts-contrast-note">{t('theme.contrastWarn')}</p>
                 )}
               </div>
             </section>
@@ -125,17 +124,15 @@ export default function ThemeSettings({ onBack, onUpgrade }: Props) {
           if (check.ok) return null
           return (
             <div className="ts-contrast warn">
-              <strong>ℹ アクセントカラーの読みやすさ</strong>
-              <span>白文字 × {acc.name} = {ratio.toFixed(2)}:1 ({check.label})</span>
-              <p className="ts-contrast-note">
-                ボタン上の文字は自動的に読みやすい色に調整されます(WCAG AA 基準)
-              </p>
+              <strong>{t('theme.accentContrastH')}</strong>
+              <span>{t('theme.accentContrastDetail', { name: acc.name, ratio: ratio.toFixed(2), label: check.label })}</span>
+              <p className="ts-contrast-note">{t('theme.accentContrastNote')}</p>
             </div>
           )
         })()}
 
         <section className="ts-section">
-          <h3 className="ts-section-title">アクセントカラー</h3>
+          <h3 className="ts-section-title">{t('theme.accentSection')}</h3>
           <div className="ts-accent-grid">
             {ACCENTS.map((a) => (
               <button
@@ -151,13 +148,15 @@ export default function ThemeSettings({ onBack, onUpgrade }: Props) {
             ))}
           </div>
           <p className="ts-hint">
-            {state.mode === 'custom' ? 'カスタムモード使用中はアクセントカラーは無効です' : '現在: ' + ACCENTS.find((a) => a.id === state.accent)?.name}
+            {state.mode === 'custom'
+              ? t('theme.customDisabled')
+              : t('theme.currentAccent', { name: ACCENTS.find((a) => a.id === state.accent)?.name || '' })}
           </p>
         </section>
 
         {!premium && (
           <button className="ts-upgrade-cta" onClick={onUpgrade}>
-            プレミアムにアップグレード →
+            {t('theme.upgrade')}
           </button>
         )}
       </div>

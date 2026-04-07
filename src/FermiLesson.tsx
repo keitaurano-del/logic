@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import { isPremium } from './subscription'
+import { t, getLocale, localeBody } from './i18n'
 import './FermiLesson.css'
 
 const API_BASE = import.meta.env.DEV ? `http://${window.location.hostname}:3001` : ''
 
-const FREE_QUESTIONS = [
+const FREE_QUESTIONS_JA = [
   '日本のコンビニは何店舗あるか?',
   '東京都内に信号機は何基あるか?',
   '日本で 1 日に消費されるペットボトルの本数は?',
@@ -12,6 +13,16 @@ const FREE_QUESTIONS = [
   '東京-大阪間を歩いて移動すると何歩になるか?',
   '日本に自動販売機は何台あるか?',
   '日本人が 1 年間に飲むコーヒーの杯数は?',
+]
+
+const FREE_QUESTIONS_EN = [
+  'How many Starbucks stores are there in the United States?',
+  'How many traffic lights are there in New York City?',
+  'How many plastic water bottles are consumed in the US per day?',
+  'How many hair salons and barber shops are in the US?',
+  'How many steps would it take to walk from New York to Los Angeles?',
+  'How many vending machines are there in the United States?',
+  'How many cups of coffee does an average American drink in a year?',
 ]
 
 type FermiStep = 'problem' | 'input' | 'feedback'
@@ -22,7 +33,8 @@ type Props = {
 }
 
 function pickRandom(): string {
-  return FREE_QUESTIONS[Math.floor(Math.random() * FREE_QUESTIONS.length)]
+  const arr = getLocale() === 'en' ? FREE_QUESTIONS_EN : FREE_QUESTIONS_JA
+  return arr[Math.floor(Math.random() * arr.length)]
 }
 
 export default function FermiLesson({ onBack, onUpgrade }: Props) {
@@ -55,14 +67,14 @@ export default function FermiLesson({ onBack, onUpgrade }: Props) {
       const res = await fetch(`${API_BASE}/api/fermi/feedback`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: currentQuestion, userInput }),
+        body: JSON.stringify(localeBody({ question: currentQuestion, userInput })),
       })
       if (!res.ok) throw new Error('failed')
       const data = await res.json()
       setFeedback(data.feedback || '')
       setStep('feedback')
     } catch {
-      setError('フィードバックの取得に失敗しました。もう一度試してください。')
+      setError(t('fermi.errorFeedback'))
     } finally {
       setIsLoading(false)
     }
@@ -72,12 +84,16 @@ export default function FermiLesson({ onBack, onUpgrade }: Props) {
     setIsLoading(true)
     setError(null)
     try {
-      const res = await fetch(`${API_BASE}/api/fermi/question`, { method: 'POST' })
+      const res = await fetch(`${API_BASE}/api/fermi/question`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(localeBody({})),
+      })
       if (!res.ok) throw new Error('failed')
       const data = await res.json()
       reset(data.question || pickRandom())
     } catch {
-      setError('AI 問題の生成に失敗しました')
+      setError(t('fermi.errorQuestion'))
     } finally {
       setIsLoading(false)
     }
@@ -98,7 +114,7 @@ export default function FermiLesson({ onBack, onUpgrade }: Props) {
     <div className="fl-screen">
       <header className="fl-header">
         <button className="fl-back" onClick={onBack}>‹</button>
-        <span>フェルミ推定</span>
+        <span>{t('fermi.title')}</span>
         <span className="fl-header-spacer" />
       </header>
 
@@ -106,16 +122,14 @@ export default function FermiLesson({ onBack, onUpgrade }: Props) {
         {step === 'problem' && (
           <>
             <div className="fl-context">
-              フェルミ推定は、MECE やロジックツリーで学んだ分解思考を実際に使う練習です。正確な答えより、<strong>どう考えたかのプロセス</strong>が大切です。
+              {t('fermi.context')}<strong>{t('fermi.contextStrong')}</strong>{t('fermi.contextEnd')}
             </div>
             <div className="fl-question-card">
-              <div className="fl-question-tag">QUESTION</div>
+              <div className="fl-question-tag">{t('fermi.questionTag')}</div>
               <h2 className="fl-question-text">{currentQuestion}</h2>
             </div>
-            <div className="fl-hint">
-              💡 答えの数字が合っていなくて大丈夫です。どう分解したかを書いてみましょう。
-            </div>
-            <button className="fl-primary-btn" onClick={() => setStep('input')}>考えてみる</button>
+            <div className="fl-hint">{t('fermi.hint')}</div>
+            <button className="fl-primary-btn" onClick={() => setStep('input')}>{t('fermi.thinkButton')}</button>
           </>
         )}
 
@@ -126,14 +140,14 @@ export default function FermiLesson({ onBack, onUpgrade }: Props) {
               className="fl-textarea"
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
-              placeholder={'例:\n人口 × 1 世帯あたり人数 × コンビニ利用世帯率 × 1 日の来客数...\n\n思ったように分解してみてください。式でも箇条書きでも OK。'}
+              placeholder={t('fermi.placeholder')}
               rows={10}
             />
             {error && <div className="fl-error">{error}</div>}
             <button className="fl-primary-btn" onClick={submit} disabled={isLoading || !userInput.trim()}>
-              {isLoading ? 'フィードバックを生成中...' : 'AI にフィードバックをもらう'}
+              {isLoading ? t('fermi.submitting') : t('fermi.submitButton')}
             </button>
-            <button className="fl-secondary-btn" onClick={() => setStep('problem')}>戻る</button>
+            <button className="fl-secondary-btn" onClick={() => setStep('problem')}>{t('fermi.backButton')}</button>
           </>
         )}
 
@@ -141,7 +155,7 @@ export default function FermiLesson({ onBack, onUpgrade }: Props) {
           <>
             <div className="fl-question-mini">{currentQuestion}</div>
             <div className="fl-user-input-recap">
-              <div className="fl-recap-label">あなたの分解</div>
+              <div className="fl-recap-label">{t('fermi.recapLabel')}</div>
               <div className="fl-recap-text">{userInput}</div>
             </div>
             <div className="fl-feedback-card">
@@ -152,25 +166,25 @@ export default function FermiLesson({ onBack, onUpgrade }: Props) {
               <div className="fl-upsell">
                 <div className="fl-upsell-emoji">⭐</div>
                 <div className="fl-upsell-body">
-                  <strong>もっと練習したい?</strong>
-                  <p>プレミアムなら毎日新しい AI 生成問題でこの体験を続けられます (¥500/月)。</p>
-                  <button className="fl-upsell-btn" onClick={onUpgrade}>プレミアムを試す (7 日間無料)</button>
+                  <strong>{t('fermi.upsellH')}</strong>
+                  <p>{t('fermi.upsellBody')}</p>
+                  <button className="fl-upsell-btn" onClick={onUpgrade}>{t('fermi.upsellBtn')}</button>
                 </div>
               </div>
             )}
 
             {premium && (
               <button className="fl-primary-btn" onClick={fetchAiQuestion} disabled={isLoading}>
-                {isLoading ? '生成中...' : '次の AI 生成問題へ'}
+                {isLoading ? t('fermi.generating') : t('fermi.nextAi')}
               </button>
             )}
 
-            <button className="fl-secondary-btn" onClick={() => reset()}>別の問題を試す</button>
+            <button className="fl-secondary-btn" onClick={() => reset()}>{t('fermi.tryAnother')}</button>
 
             <div className="fl-related">
-              <div className="fl-related-label">関連レッスン</div>
-              <p className="fl-related-link">分解をもっと磨きたい → ロジックツリー(レッスン一覧から)</p>
-              <p className="fl-related-link">網羅性を確認したい → MECE(レッスン一覧から)</p>
+              <div className="fl-related-label">{t('fermi.relatedLabel')}</div>
+              <p className="fl-related-link">{t('fermi.relatedDecompose')}</p>
+              <p className="fl-related-link">{t('fermi.relatedMece')}</p>
             </div>
           </>
         )}

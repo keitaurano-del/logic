@@ -27,6 +27,7 @@ import {
 import type { LessonData, LessonStep } from './lessonData'
 import { generateFromLesson, addCards } from './flashcardData'
 import ReportProblem from './ReportProblem'
+import { t, localeBody } from './i18n'
 import './Lesson.css'
 
 const API_BASE = import.meta.env.DEV ? `http://${window.location.hostname}:3001` : ''
@@ -36,7 +37,7 @@ async function generateAiCards(lessonTitle: string, category: string, wrongAnswe
     const res = await fetch(`${API_BASE}/api/flashcards/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ wrongAnswers, category, lessonTitle }),
+      body: JSON.stringify(localeBody({ wrongAnswers, category, lessonTitle })),
     })
     if (!res.ok) return
     const data = await res.json()
@@ -145,8 +146,8 @@ export default function Lesson({ lesson, onBack, onComplete }: Props) {
           <div />
         </header>
         <div className="ls-complete">
-          <h2>レッスン完了！</h2>
-          <p className="ls-score">{correctCount} / {quizCount} 問正解</p>
+          <h2>{t('lesson.completedH1')}</h2>
+          <p className="ls-score">{t('lesson.completedScoreLine', { correct: correctCount, total: quizCount })}</p>
           <div className="ls-score-bar">
             <div
               className="ls-score-fill"
@@ -155,13 +156,13 @@ export default function Lesson({ lesson, onBack, onComplete }: Props) {
           </div>
           <p className="ls-complete-msg">
             {correctCount === quizCount
-              ? 'パーフェクト！素晴らしい理解力です。'
+              ? t('lesson.completedPerfect')
               : correctCount >= quizCount * 0.7
-                ? 'よくできました！復習して完璧にしましょう。'
-                : 'もう一度復習してみましょう！'}
+                ? t('lesson.completedGood')
+                : t('lesson.completedRetry')}
           </p>
           <button className="ls-done-btn" onClick={onBack}>
-            ホームに戻る
+            {t('lesson.backHome')}
           </button>
         </div>
       </div>
@@ -199,7 +200,7 @@ export default function Lesson({ lesson, onBack, onComplete }: Props) {
               })()}
             </div>
             <button className="ls-next-btn" onClick={handleNext}>
-              次へ
+              {t('lesson.next')}
             </button>
           </div>
         ) : (
@@ -233,18 +234,18 @@ export default function Lesson({ lesson, onBack, onComplete }: Props) {
             {showResult && (
               <div className={`ls-feedback ${step.options[selectedOption!].correct ? 'correct' : 'wrong'}`}>
                 <p className="ls-feedback-title">
-                  {step.options[selectedOption!].correct ? '正解！' : '不正解...'}
+                  {step.options[selectedOption!].correct ? t('lesson.correctMark') : t('lesson.wrongMark')}
                 </p>
                 <p className="ls-feedback-text">{step.explanation}</p>
               </div>
             )}
             {showResult && (
               <button className="ls-next-btn" onClick={handleNext}>
-                {currentStep + 1 >= totalSteps ? '結果を見る' : '次へ'}
+                {currentStep + 1 >= totalSteps ? t('lesson.viewResult') : t('lesson.next')}
               </button>
             )}
             <button className="ls-report-btn" onClick={() => setShowReport(true)}>
-              🚩 この問題を報告
+              {t('lesson.report')}
             </button>
           </div>
         )}

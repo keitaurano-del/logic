@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { getSituation, buildSetup } from './situations'
 import { isPremium } from './subscription'
 import { incrementRoleplayUsage } from './roleplayUsage'
+import { t, localeBody } from './i18n'
 
 type Msg = { role: 'user' | 'assistant'; content: string }
 type ScoreItem = { name: string; score: number; maxScore: number; feedback: string }
@@ -55,7 +56,7 @@ export default function RoleplayChat({ situationId, onBack }: Props) {
       <div className="rp-screen">
         <header className="rp-header">
           <button className="rp-back" onClick={onBack}>‹</button>
-          <span>シチュエーション未検出</span>
+          <span>{t('roleplay.notFound')}</span>
           <span className="rp-header-spacer" />
         </header>
       </div>
@@ -71,7 +72,7 @@ export default function RoleplayChat({ situationId, onBack }: Props) {
       const res = await fetch(`${API_BASE}/api/roleplay/turn`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: history, setup, turnNumber: turn, maxTurns: MAX_TURNS }),
+        body: JSON.stringify(localeBody({ messages: history, setup, turnNumber: turn, maxTurns: MAX_TURNS })),
       })
       const data = await res.json()
       if (data.partner) {
@@ -80,7 +81,7 @@ export default function RoleplayChat({ situationId, onBack }: Props) {
       }
     } catch (e) {
       console.error(e)
-      setMessages([...history, { role: 'assistant', content: '(通信エラーが発生しました)' }])
+      setMessages([...history, { role: 'assistant', content: t('roleplay.commError') }])
     } finally {
       setLoading(false)
     }
@@ -108,12 +109,12 @@ export default function RoleplayChat({ situationId, onBack }: Props) {
         fetch(`${API_BASE}/api/roleplay/score`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ messages: finalMessages, setup }),
+          body: JSON.stringify(localeBody({ messages: finalMessages, setup })),
         }).then((r) => r.json()),
         fetch(`${API_BASE}/api/roleplay/summary`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ messages: finalMessages, setup }),
+          body: JSON.stringify(localeBody({ messages: finalMessages, setup })),
         }).then((r) => r.json()),
       ])
       if (scoreRes.scores) setScore(scoreRes)
@@ -138,14 +139,14 @@ export default function RoleplayChat({ situationId, onBack }: Props) {
       <div className="rp-screen">
         <header className="rp-header">
           <button className="rp-back" onClick={onBack}>‹</button>
-          <span>結果</span>
+          <span>{t('roleplay.resultTitle')}</span>
           <span className="rp-header-spacer" />
         </header>
         <div className="rp-content rp-result">
-          {scoring && <p className="rp-loading">採点中...</p>}
+          {scoring && <p className="rp-loading">{t('roleplay.scoring')}</p>}
           {score && (
             <div className="rp-score-card">
-              <h3>採点</h3>
+              <h3>{t('roleplay.scoreH3')}</h3>
               {score.scores.map((s) => (
                 <div key={s.name} className="rp-score-row">
                   <div className="rp-score-head">
@@ -156,30 +157,30 @@ export default function RoleplayChat({ situationId, onBack }: Props) {
                 </div>
               ))}
               <div className="rp-overall">
-                <h4>総評</h4>
+                <h4>{t('roleplay.overallH4')}</h4>
                 <p>{score.overall}</p>
               </div>
             </div>
           )}
           {summary && (
             <div className="rp-summary-card">
-              <h3>振り返り</h3>
+              <h3>{t('roleplay.summaryH3')}</h3>
               <p className="rp-summary-text">{summary.summary}</p>
               {summary.goodPoints?.length > 0 && (
                 <>
-                  <h4>👍 良かった点</h4>
+                  <h4>{t('roleplay.goodPointsH4')}</h4>
                   <ul>{summary.goodPoints.map((p, i) => <li key={i}>{p}</li>)}</ul>
                 </>
               )}
               {summary.improvements?.length > 0 && (
                 <>
-                  <h4>💡 改善ポイント</h4>
+                  <h4>{t('roleplay.improvementsH4')}</h4>
                   <ul>{summary.improvements.map((p, i) => <li key={i}>{p}</li>)}</ul>
                 </>
               )}
             </div>
           )}
-          <button className="rp-done-btn" onClick={onBack}>シチュエーション一覧へ</button>
+          <button className="rp-done-btn" onClick={onBack}>{t('roleplay.backToList')}</button>
         </div>
       </div>
     )
@@ -190,34 +191,34 @@ export default function RoleplayChat({ situationId, onBack }: Props) {
       <header className="rp-header">
         <button className="rp-back" onClick={onBack}>‹</button>
         <span>{situation.title}</span>
-        <button className="rp-finish" onClick={endEarly}>終了</button>
+        <button className="rp-finish" onClick={endEarly}>{t('roleplay.finish')}</button>
       </header>
 
       <div className="rp-chat-context">
         <strong>{situation.frameworkLabel}</strong>
-        <span>相手: {situation.partnerName}（{situation.partnerRole}）</span>
+        <span>{t('roleplay.partnerLabel')} {situation.partnerName}（{situation.partnerRole}）</span>
         <span>🎯 {situation.goal}</span>
-        <span className="rp-turn-indicator">ターン {Math.min(turnNumber, MAX_TURNS)}/{MAX_TURNS}</span>
+        <span className="rp-turn-indicator">{t('roleplay.turnIndicator', { n: Math.min(turnNumber, MAX_TURNS), total: MAX_TURNS })}</span>
       </div>
 
       <div className="rp-chat" ref={scrollRef}>
         {messages.map((m, i) => (
           <div key={i} className={`rp-bubble ${m.role}`}>
-            <div className="rp-bubble-name">{m.role === 'user' ? 'あなた' : situation.partnerName}</div>
+            <div className="rp-bubble-name">{m.role === 'user' ? t('roleplay.you') : situation.partnerName}</div>
             <div className="rp-bubble-text">{m.content}</div>
           </div>
         ))}
         {loading && (
           <div className="rp-bubble assistant">
             <div className="rp-bubble-name">{situation.partnerName}</div>
-            <div className="rp-bubble-text rp-typing">考え中...</div>
+            <div className="rp-bubble-text rp-typing">{t('roleplay.thinking')}</div>
           </div>
         )}
       </div>
 
       {choices.length > 0 && !loading && (
         <div className="rp-choices">
-          <div className="rp-choices-label">あなたの返答を選んでください</div>
+          <div className="rp-choices-label">{t('roleplay.choicesLabel')}</div>
           {choices.map((c, i) => (
             <button key={i} className="rp-choice-btn" onClick={() => pickChoice(c)}>
               {c}
