@@ -16,6 +16,7 @@ import RoleplayChat from './RoleplayChat'
 import CoffeeBreak from './CoffeeBreak'
 import ThemeSettings from './ThemeSettings'
 import PlacementTest from './PlacementTest'
+import Onboarding, { hasSeenOnboarding } from './Onboarding'
 import Ranking from './Ranking'
 import FermiLesson from './FermiLesson'
 import { hasCompletedPlacement, loadPlacementResult } from './placementTest'
@@ -243,6 +244,7 @@ type Screen =
   | { type: 'fermi' }
 
 function App() {
+  const [showOnboarding, setShowOnboarding] = useState(!hasSeenOnboarding())
   const [showPlacement, setShowPlacement] = useState(!hasCompletedPlacement())
   const [placementResult, setPlacementResult] = useState(loadPlacementResult())
   const [screen, setScreen] = useState<Screen>({ type: 'home' })
@@ -320,6 +322,10 @@ function App() {
     setScreen({ type: 'home' })
     refreshStats()
   }, [refreshStats])
+
+  if (showOnboarding) {
+    return <Onboarding onComplete={() => setShowOnboarding(false)} />
+  }
 
   if (showPlacement) {
     return <PlacementTest
