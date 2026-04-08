@@ -7,4 +7,9 @@ export default defineConfig({
   server: {
     host: true,
   },
+  build: {
+    rollupOptions: {
+      external: ['@sentry/react', '@capacitor/core', '@capacitor/local-notifications'],
+    },
+  },
 })
