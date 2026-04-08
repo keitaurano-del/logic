@@ -9,6 +9,7 @@ import {
 import { loadPlacementResult } from '../placementTest'
 import { SettingsIcon } from '../icons'
 import { IconButton } from '../components/IconButton'
+import { useIsDesktop } from '../hooks/useMediaQuery'
 import { buildActivityGrid, deviationToTopPercent, getPoints } from './homeHelpers'
 
 interface ProfileScreenProps {
@@ -23,7 +24,23 @@ const CAT_ROWS: { name: string; lessonIds: number[] }[] = [
   { name: 'PM', lessonIds: [30, 31, 32, 33, 34] },
 ]
 
-export function ProfileScreen({ userName, onOpenSettings }: ProfileScreenProps) {
+interface DerivedData {
+  streak: number
+  completed: number
+  studyHours: string
+  points: number
+  deviation: number | null
+  topPct: number | null
+  rankFill: number
+  completedSet: Set<string>
+  xp: number
+  level: number
+  levelXp: number
+  levelPct: number
+  activityGrid: number[]
+}
+
+function useProfileData(): DerivedData {
   const streak = getStreak()
   const completed = getCompletedCount()
   const studyHours = getStudyHours()
@@ -32,14 +49,90 @@ export function ProfileScreen({ userName, onOpenSettings }: ProfileScreenProps) 
   const deviation = placement?.deviation ?? null
   const topPct = deviation != null ? deviationToTopPercent(deviation) : null
   const rankFill = topPct != null ? Math.min(100, Math.max(10, 100 - topPct)) : 0
-
   const completedSet = useMemo(() => new Set(getCompletedLessons()), [])
   const xp = completed * 100
   const level = Math.floor(xp / 1000) + 1
   const levelXp = xp % 1000
   const levelPct = (levelXp / 1000) * 100
-
   const activityGrid = useMemo(() => buildActivityGrid(getStudyDates()), [])
+  return { streak, completed, studyHours, points, deviation, topPct, rankFill, completedSet, xp, level, levelXp, levelPct, activityGrid }
+}
+
+function ActivityCalendar({ grid }: { grid: number[] }) {
+  const cells: ReactElement[] = []
+  for (let r = 0; r < 7; r++) {
+    for (let c = 0; c < 12; c++) {
+      const idx = c * 7 + r
+      const lv = grid[idx] || 0
+      cells.push(<div key={`${r}-${c}`} className={`cal-day${lv ? ' l' + lv : ''}`} />)
+    }
+  }
+  return <div className="cal-grid">{cells}</div>
+}
+
+function CalendarLegend() {
+  return (
+    <div
+      className="row"
+      style={{
+        justifyContent: 'flex-end',
+        gap: 6,
+        marginTop: 14,
+        fontSize: 11,
+        color: 'var(--text-muted)',
+        textTransform: 'uppercase',
+        letterSpacing: '0.06em',
+        fontWeight: 700,
+      }}
+    >
+      Less
+      <div style={{ display: 'flex', gap: 3 }}>
+        <div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--bg-secondary)' }} />
+        <div style={{ width: 10, height: 10, borderRadius: 2, background: '#DDE4F7' }} />
+        <div style={{ width: 10, height: 10, borderRadius: 2, background: '#B6C3E8' }} />
+        <div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--brand-mid)' }} />
+        <div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--brand)' }} />
+      </div>
+      More
+    </div>
+  )
+}
+
+function CategoryProgress({ completedSet }: { completedSet: Set<string> }) {
+  return (
+    <>
+      {CAT_ROWS.map((c) => {
+        const done = c.lessonIds.filter((id) => completedSet.has(`lesson-${id}`)).length
+        const pct = c.lessonIds.length > 0 ? Math.round((done / c.lessonIds.length) * 100) : 0
+        return (
+          <div key={c.name} className="cat-row">
+            <div className="cat-row-name">{c.name}</div>
+            <div className="progress">
+              <div className="progress-fill" style={{ width: `${pct}%` }} />
+            </div>
+            <div className="cat-row-val">{pct}%</div>
+          </div>
+        )
+      })}
+    </>
+  )
+}
+
+export function ProfileScreen(props: ProfileScreenProps) {
+  const isDesktop = useIsDesktop()
+  const data = useProfileData()
+  return isDesktop ? <ProfileDesktop {...props} data={data} /> : <ProfileMobile {...props} data={data} />
+}
+
+// ============================================================
+// Mobile layout (matches mocks/logic-v3/mobile/profile.html)
+// ============================================================
+function ProfileMobile({
+  userName,
+  onOpenSettings,
+  data,
+}: ProfileScreenProps & { data: DerivedData }) {
+  const { streak, points, deviation, topPct, rankFill, completedSet, level, levelXp, levelPct, activityGrid, studyHours } = data
 
   return (
     <div className="stack-lg">
@@ -59,10 +152,21 @@ export function ProfileScreen({ userName, onOpenSettings }: ProfileScreenProps) 
           </div>
         </div>
         <div className="row-between" style={{ position: 'relative' }}>
-          <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.65)' }}>
+          <span
+            style={{
+              fontSize: 11,
+              fontWeight: 700,
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+              color: 'rgba(255,255,255,0.65)',
+            }}
+          >
             LEVEL PROGRESS
           </span>
-          <span className="mono" style={{ fontSize: 12, color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
+          <span
+            className="mono"
+            style={{ fontSize: 12, color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}
+          >
             {levelXp} / 1,000 XP
           </span>
         </div>
@@ -127,52 +231,154 @@ export function ProfileScreen({ userName, onOpenSettings }: ProfileScreenProps) 
       <section className="section">
         <h2 style={{ fontSize: 17, marginBottom: 'var(--s-3)' }}>Activity</h2>
         <div className="calendar-card">
-          <div className="cal-grid">
-            {(() => {
-              // Render 7 rows × 12 cols = 84 cells, column-major
-              const cells: ReactElement[] = []
-              for (let r = 0; r < 7; r++) {
-                for (let c = 0; c < 12; c++) {
-                  const idx = c * 7 + r
-                  const lv = activityGrid[idx] || 0
-                  cells.push(<div key={`${r}-${c}`} className={`cal-day${lv ? ' l' + lv : ''}`} />)
-                }
-              }
-              return cells
-            })()}
-          </div>
-          <div className="row" style={{ justifyContent: 'flex-end', gap: 6, marginTop: 12, fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 700 }}>
-            Less
-            <div style={{ display: 'flex', gap: 3 }}>
-              <div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--bg-secondary)' }} />
-              <div style={{ width: 10, height: 10, borderRadius: 2, background: '#DDE4F7' }} />
-              <div style={{ width: 10, height: 10, borderRadius: 2, background: '#B6C3E8' }} />
-              <div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--brand-mid)' }} />
-              <div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--brand)' }} />
-            </div>
-            More
-          </div>
+          <ActivityCalendar grid={activityGrid} />
+          <CalendarLegend />
         </div>
       </section>
 
       <section className="section">
         <h2 style={{ fontSize: 17, marginBottom: 'var(--s-3)' }}>Category progress</h2>
         <div className="card">
-          {CAT_ROWS.map((c) => {
-            const done = c.lessonIds.filter((id) => completedSet.has(`lesson-${id}`)).length
-            const pct = c.lessonIds.length > 0 ? Math.round((done / c.lessonIds.length) * 100) : 0
-            return (
-              <div key={c.name} className="cat-row">
-                <div className="cat-row-name">{c.name}</div>
-                <div className="progress">
-                  <div className="progress-fill" style={{ width: `${pct}%` }} />
-                </div>
-                <div className="cat-row-val">{pct}%</div>
-              </div>
-            )
-          })}
+          <CategoryProgress completedSet={completedSet} />
         </div>
       </section>
     </div>
+  )
+}
+
+// ============================================================
+// Desktop layout (matches mocks/logic-v3/desktop/profile.html)
+// ============================================================
+function ProfileDesktop({
+  userName,
+  onOpenSettings,
+  data,
+}: ProfileScreenProps & { data: DerivedData }) {
+  const { streak, completed, studyHours, points, deviation, topPct, rankFill, completedSet, level, levelXp, levelPct, activityGrid } = data
+
+  return (
+    <>
+      <div className="page-head">
+        <h1>Profile</h1>
+        <IconButton aria-label="Settings" onClick={onOpenSettings}>
+          <SettingsIcon />
+        </IconButton>
+      </div>
+
+      <div className="top-grid">
+        <section className="profile-hero">
+          <div className="profile-hero-inner">
+            <div className="profile-avatar">👤</div>
+            <div>
+              <div className="profile-hero-name">{userName}</div>
+              <div className="profile-hero-level">Lv.{level} · 見習い探偵</div>
+            </div>
+          </div>
+          <div className="row-between" style={{ position: 'relative', marginBottom: 10 }}>
+            <span
+              style={{
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+                color: 'rgba(255,255,255,0.6)',
+              }}
+            >
+              LEVEL PROGRESS
+            </span>
+            <span
+              className="mono"
+              style={{ fontSize: 14, color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}
+            >
+              {levelXp} / 1,000 XP
+            </span>
+          </div>
+          <div
+            style={{
+              background: 'rgba(255, 255, 255, 0.12)',
+              height: 10,
+              borderRadius: 'var(--radius-full)',
+              overflow: 'hidden',
+              position: 'relative',
+            }}
+          >
+            <div
+              style={{
+                background: 'var(--brand-light)',
+                height: '100%',
+                width: `${levelPct}%`,
+                borderRadius: 'var(--radius-full)',
+              }}
+            />
+          </div>
+        </section>
+
+        <div className="stats-stack">
+          {topPct != null && (
+            <div className="rank-card-big">
+              <div className="rk-eyebrow">NATIONAL RANKING</div>
+              <div className="rank-row-big">
+                <div className="rank-num-big">
+                  {topPct}
+                  <span>%</span>
+                </div>
+                <div>
+                  <div className="rank-detail-label">偏差値 · Deviation</div>
+                  <div className="rank-detail-val">{deviation!.toFixed(1)}</div>
+                  <div className="rank-detail-sub">全国ランキング</div>
+                </div>
+              </div>
+              <div className="rank-bar-wrap-big">
+                <div className="rank-bar-fill-big" style={{ width: `${rankFill}%` }} />
+              </div>
+            </div>
+          )}
+          <div className="stat-pill-large">
+            <div className="icon-box">⭐</div>
+            <div>
+              <div className="stat-value">{points.toLocaleString()}</div>
+              <div className="stat-label">Total points</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="top-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', marginBottom: 32 }}>
+        <div className="stat-pill-large">
+          <div className="icon-box">🔥</div>
+          <div>
+            <div className="stat-value">{streak}</div>
+            <div className="stat-label">Day streak</div>
+          </div>
+        </div>
+        <div className="stat-pill-large">
+          <div className="icon-box">✓</div>
+          <div>
+            <div className="stat-value">{completed}</div>
+            <div className="stat-label">Lessons done</div>
+          </div>
+        </div>
+        <div className="stat-pill-large">
+          <div className="icon-box">⏱</div>
+          <div>
+            <div className="stat-value">{studyHours}</div>
+            <div className="stat-label">Total study</div>
+          </div>
+        </div>
+      </div>
+
+      <div className="bottom-grid">
+        <section className="section-card">
+          <h2>Activity · 12 weeks</h2>
+          <ActivityCalendar grid={activityGrid} />
+          <CalendarLegend />
+        </section>
+
+        <section className="section-card">
+          <h2>Category progress</h2>
+          <CategoryProgress completedSet={completedSet} />
+        </section>
+      </div>
+    </>
   )
 }
