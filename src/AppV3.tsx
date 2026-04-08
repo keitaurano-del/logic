@@ -6,6 +6,9 @@ import { AppShell, type Tab } from './components/AppShell'
 import { HomeScreen } from './screens/HomeScreen'
 import { LessonScreen } from './screens/LessonScreen'
 import { ProfileScreen } from './screens/ProfileScreen'
+import { FlashcardsScreen } from './screens/FlashcardsScreen'
+import { FermiScreen } from './screens/FermiScreen'
+import { DeviationScreen } from './screens/DeviationScreen'
 import { loadTheme, applyTheme } from './theme'
 import { loadGuestUser } from './guestUser'
 import { getCompletedCount } from './stats'
@@ -15,6 +18,9 @@ type Screen =
   | { type: 'lessons' }
   | { type: 'profile' }
   | { type: 'lesson'; lessonId: number }
+  | { type: 'flashcards' }
+  | { type: 'fermi' }
+  | { type: 'deviation' }
 
 const LESSON_LIST = [
   { id: 20, category: 'ロジカルシンキング', title: 'MECE入門', emoji: '🧠' },
@@ -86,21 +92,70 @@ function AppV3() {
             <div className="eyebrow">LEARN</div>
             <h1 style={{ fontSize: 28, marginTop: 6 }}>すべてのレッスン</h1>
           </header>
-          <div className="cat-grid">
-            {LESSON_LIST.map((l) => (
+
+          <section>
+            <h2 style={{ fontSize: 15, marginBottom: 'var(--s-3)' }}>Quick access</h2>
+            <div className="cat-grid">
               <button
-                key={l.id}
                 className="cat-tile"
-                onClick={() => handleOpenLesson(l.id)}
+                onClick={() => setScreen({ type: 'fermi' })}
                 style={{ cursor: 'pointer', textAlign: 'left', border: '1px solid var(--border)' }}
               >
-                <div className="cat-tile-icon">{l.emoji}</div>
-                <div className="cat-tile-name">{l.title}</div>
-                <div className="cat-tile-meta">{l.category}</div>
+                <div className="cat-tile-icon">📊</div>
+                <div className="cat-tile-name">フェルミ推定</div>
+                <div className="cat-tile-meta">AI 問題生成</div>
               </button>
-            ))}
-          </div>
+              <button
+                className="cat-tile"
+                onClick={() => setScreen({ type: 'flashcards' })}
+                style={{ cursor: 'pointer', textAlign: 'left', border: '1px solid var(--border)' }}
+              >
+                <div className="cat-tile-icon">🃏</div>
+                <div className="cat-tile-name">フラッシュカード</div>
+                <div className="cat-tile-meta">SM-2 復習</div>
+              </button>
+              <button
+                className="cat-tile"
+                onClick={() => setScreen({ type: 'deviation' })}
+                style={{ cursor: 'pointer', textAlign: 'left', border: '1px solid var(--border)' }}
+              >
+                <div className="cat-tile-icon">📈</div>
+                <div className="cat-tile-name">偏差値</div>
+                <div className="cat-tile-meta">あなたの実力</div>
+              </button>
+            </div>
+          </section>
+
+          <section>
+            <h2 style={{ fontSize: 15, marginBottom: 'var(--s-3)' }}>レッスン一覧</h2>
+            <div className="cat-grid">
+              {LESSON_LIST.map((l) => (
+                <button
+                  key={l.id}
+                  className="cat-tile"
+                  onClick={() => handleOpenLesson(l.id)}
+                  style={{ cursor: 'pointer', textAlign: 'left', border: '1px solid var(--border)' }}
+                >
+                  <div className="cat-tile-icon">{l.emoji}</div>
+                  <div className="cat-tile-name">{l.title}</div>
+                  <div className="cat-tile-meta">{l.category}</div>
+                </button>
+              ))}
+            </div>
+          </section>
         </div>
+      )}
+
+      {screen.type === 'flashcards' && <FlashcardsScreen onBack={handleBack} />}
+
+      {screen.type === 'fermi' && <FermiScreen onBack={handleBack} />}
+
+      {screen.type === 'deviation' && (
+        <DeviationScreen
+          onBack={handleBack}
+          onRetakeTest={() => alert('プレースメントテストは Phase 6 で実装')}
+          onStartLesson={handleOpenLesson}
+        />
       )}
 
       {screen.type === 'profile' && (
