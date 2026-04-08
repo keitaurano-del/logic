@@ -1,123 +1,124 @@
 /*
- * Logic — Editorial Journal aesthetic
+ * Logic — Brand edition (v3)
  *
- * Direction: Editorial / Japanese magazine. Inspired by Kinfolk, Wallpaper*,
- * Subsequence Magazine, Hobonichi. Hairline borders, generous negative space,
- * Mincho display + Zen Kaku body, vermillion accent, sumi ink text on paper white.
+ * Direction: International learning app. Inspired by Brilliant, Speak, Linear.
+ * Brand-aligned indigo from logo (#3D5FC4 / #EEF2FE / #9EB3F0).
+ * Inter Tight display + Inter body + Noto Sans JP fallback. Generous whitespace.
  *
  * Rules:
- *  - --accent (vermillion #C84B31) is for FILLS only — fails AA as text on light bg
- *  - --accent-dark (#9A2E18) is the text-safe vermillion (6.8:1 on bg-primary)
- *  - Mincho display ONLY for h1/h2/numerals; body always Zen Kaku Gothic
- *  - One motion: fade-in-up on screen mount. Nothing else animates idle.
- *  - No Japanese visual signifiers (no torii, sakura, brushstrokes). Type does the work.
+ *  - --accent (brand indigo #3D5FC4) is the single accent color for fills + headings
+ *  - --accent-dark (#2E4BA8) is the text-safe darker variant for small text
+ *  - Inter Tight ONLY for h1/h2/large numerals; body always Inter + Noto Sans JP
+ *  - Token NAMES preserved from Editorial Journal for backwards compat (24 CSS files)
+ *  - Only warm color is --warning amber, reserved for streak fire icons
  */
 
 :root {
-  /* Backgrounds — paper, not muddy cream */
-  --bg-primary:    #F6F2EA;
-  --bg-secondary:  #EFEAE0;
-  --bg-card:       #FCFAF5;
+  /* Backgrounds — warm cool off-white */
+  --bg-primary:    #FAFAFB;
+  --bg-secondary:  #F4F5F9;
+  --bg-card:       #FFFFFF;
   --bg-elevated:   #FFFFFF;
-  --bg-tertiary:   #E8E2D4;
-  --bg-hero:       #14110D;
-  --bg-glass:      rgba(252, 250, 245, 0.72);
+  --bg-tertiary:   #E9EBF2;
+  --bg-hero:       #1E2D5C;   /* brand-dark navy */
+  --bg-glass:      rgba(255, 255, 255, 0.78);
 
-  /* Text — true ink */
-  --text-primary:  #14110D;  /* 15.8:1 — AAA */
-  --text-secondary:#5A554C;  /* 7.4:1 — AAA */
-  --text-muted:    #8A8479;  /* 4.6:1 — AA */
+  /* Text — near-black cool */
+  --text-primary:  #0F1424;  /* 17.4:1 — AAA on bg-primary */
+  --text-secondary:#5B6078;  /* 6.9:1 — AAA */
+  --text-muted:    #9499A8;  /* 3.8:1 — AA large */
   --text-tertiary: var(--text-muted);
-  --text-on-hero:  #F6F2EA;
+  --text-on-hero:  #FFFFFF;
 
-  /* Borders — hairline */
-  --border:       #DDD6C5;
-  --border-light: #E8E2D4;
+  /* Borders — hairline cool */
+  --border:       #E9EBF2;
+  --border-light: #F4F5F9;
 
-  /* Vermillion — fills + text-safe variant */
-  --accent:        #C84B31;  /* fills only */
-  --accent-light:  #E27A5E;
-  --accent-soft:   rgba(200, 75, 49, 0.08);
-  --accent-glow:   rgba(200, 75, 49, 0.18);
-  --accent-dark:   #9A2E18;  /* 6.8:1 — text-safe */
-  --accent-fg:     #FCFAF5;  /* on vermillion: 4.9:1 — AA */
+  /* Brand indigo — primary + text-safe variant */
+  --accent:        #3D5FC4;  /* brand primary, from logo square */
+  --accent-light:  #9EB3F0;  /* brand light, from logo dot */
+  --accent-soft:   rgba(61, 95, 196, 0.08);
+  --accent-glow:   rgba(61, 95, 196, 0.20);
+  --accent-dark:   #2E4BA8;  /* 7.2:1 — text-safe darker brand */
+  --accent-fg:     #FFFFFF;  /* on indigo: 7.8:1 — AAA */
 
   /* Status */
-  --success:       #4F7A4A;
-  --success-soft:  rgba(79, 122, 74, 0.10);
-  --warning:       #B8741E;
-  --warning-soft:  rgba(184, 116, 30, 0.10);
-  --danger:        #A8321B;
+  --success:       #10B981;
+  --success-soft:  rgba(16, 185, 129, 0.10);
+  --warning:       #F59E0B;  /* amber — streak fire only */
+  --warning-soft:  rgba(245, 158, 11, 0.10);
+  --danger:        #DC2626;
 
-  /* Categories — muted editorial */
-  --cat-boki3:     #C84B31;
-  --cat-boki3-soft: rgba(200, 75, 49, 0.10);
-  --cat-boki2:     #4A6B8F;
-  --cat-boki2-soft: rgba(74, 107, 143, 0.10);
-  --cat-practice:  #9A2E18;
-  --cat-practice-soft: rgba(154, 46, 24, 0.10);
-  --cat-exam:      #A8321B;
-  --cat-exam-soft: rgba(168, 50, 27, 0.10);
-  --cat-logic:     #C84B31;
-  --cat-logic-soft: rgba(200, 75, 49, 0.10);
-  --cat-pm:        #4F7A4A;
-  --cat-pm-soft:   rgba(79, 122, 74, 0.10);
+  /* Categories — brand family tints */
+  --cat-boki3:     #3D5FC4;
+  --cat-boki3-soft: rgba(61, 95, 196, 0.10);
+  --cat-boki2:     #6B85D6;
+  --cat-boki2-soft: rgba(107, 133, 214, 0.10);
+  --cat-practice:  #2E4BA8;
+  --cat-practice-soft: rgba(46, 75, 168, 0.10);
+  --cat-exam:      #1E2D5C;
+  --cat-exam-soft: rgba(30, 45, 92, 0.10);
+  --cat-logic:     #3D5FC4;
+  --cat-logic-soft: rgba(61, 95, 196, 0.10);
+  --cat-pm:        #10B981;
+  --cat-pm-soft:   rgba(16, 185, 129, 0.10);
 
-  /* Radii — squarer (editorial) */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
-  --radius-full: 100px;
+  /* Radii — rounder (brand edition) */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
 
-  /* Shadows — almost gone, replaced by hairlines */
-  --shadow-card:    0 1px 0 rgba(20, 17, 13, 0.04);
-  --shadow-elevated: 0 2px 12px rgba(20, 17, 13, 0.06);
+  /* Shadows — soft brand-tinted */
+  --shadow-card:    0 1px 2px rgba(15, 20, 36, 0.04);
+  --shadow-elevated: 0 4px 16px rgba(15, 20, 36, 0.06);
 
   /* Layout */
   --content-width: 480px;
 
-  /* Fonts — distinct, paired (loaded from Google Fonts in index.html) */
-  --sans:  'Zen Kaku Gothic New', -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Meiryo', sans-serif;
-  --serif: 'Shippori Mincho B1', 'Hiragino Mincho ProN', 'YuMincho', serif;
+  /* Fonts — Inter + Inter Tight + Noto Sans JP (loaded via Google Fonts in index.html) */
+  --sans:  'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Meiryo', sans-serif;
+  --serif: 'Inter Tight', 'Inter', 'Noto Sans JP', -apple-system, sans-serif;
 
   font-family: var(--sans);
-  font-size: 16px;
-  line-height: 1.6;
-  letter-spacing: 0;
+  font-size: 15px;
+  line-height: 1.55;
+  letter-spacing: -0.005em;
   color: var(--text-primary);
   background: var(--bg-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-/* ===== Mode: Dark — Editorial Journal in sumi ink ===== */
+/* ===== Mode: Dark — Brand edition in deep navy ===== */
 .mode-dark {
-  --bg-primary:    #14110D;
-  --bg-secondary:  #1C1814;
-  --bg-card:       #221E18;
-  --bg-elevated:   #2A251E;
-  --bg-tertiary:   #2F2A22;
-  --bg-hero:       #0A0805;
-  --bg-glass:      rgba(34, 30, 24, 0.72);
+  --bg-primary:    #0F1424;
+  --bg-secondary:  #161C33;
+  --bg-card:       #1A2138;
+  --bg-elevated:   #212845;
+  --bg-tertiary:   #2A3350;
+  --bg-hero:       #0A0F1E;
+  --bg-glass:      rgba(26, 33, 56, 0.78);
 
-  --text-primary:  #F6F2EA;
-  --text-secondary:#B8B0A0;
-  --text-muted:    #7A7468;
-  --text-on-hero:  #F6F2EA;
+  --text-primary:  #F1F2F6;
+  --text-secondary:#B1B5C6;
+  --text-muted:    #7A8099;
+  --text-on-hero:  #FFFFFF;
 
-  --border:        #2F2A22;
-  --border-light:  #221E18;
+  --border:        #2A3350;
+  --border-light:  #1A2138;
 
-  --accent:        #E27A5E;
-  --accent-light:  #F4A589;
-  --accent-soft:   rgba(226, 122, 94, 0.10);
-  --accent-glow:   rgba(226, 122, 94, 0.20);
-  --accent-dark:   #F4A589;  /* lighter on dark for AA */
-  --accent-fg:     #14110D;
+  --accent:        #9EB3F0;         /* brand-light — brighter on dark */
+  --accent-light:  #C1D0F7;
+  --accent-soft:   rgba(158, 179, 240, 0.12);
+  --accent-glow:   rgba(158, 179, 240, 0.25);
+  --accent-dark:   #C1D0F7;          /* lighter on dark for AA */
+  --accent-fg:     #0F1424;
 
-  --shadow-card:    0 1px 0 rgba(0, 0, 0, 0.30);
-  --shadow-elevated: 0 6px 24px rgba(0, 0, 0, 0.50);
+  --shadow-card:    0 1px 0 rgba(0, 0, 0, 0.35);
+  --shadow-elevated: 0 6px 24px rgba(0, 0, 0, 0.55);
 }
 .mode-dark body, .mode-dark #root { background: var(--bg-primary); }
 
