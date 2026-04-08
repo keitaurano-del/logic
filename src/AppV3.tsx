@@ -9,6 +9,9 @@ import { ProfileScreen } from './screens/ProfileScreen'
 import { FlashcardsScreen } from './screens/FlashcardsScreen'
 import { FermiScreen } from './screens/FermiScreen'
 import { DeviationScreen } from './screens/DeviationScreen'
+import { RankingScreen } from './screens/RankingScreen'
+import { RoleplaySelectScreen } from './screens/RoleplaySelectScreen'
+import { RoleplayChatScreen } from './screens/RoleplayChatScreen'
 import { loadTheme, applyTheme } from './theme'
 import { loadGuestUser } from './guestUser'
 import { getCompletedCount } from './stats'
@@ -21,6 +24,9 @@ type Screen =
   | { type: 'flashcards' }
   | { type: 'fermi' }
   | { type: 'deviation' }
+  | { type: 'ranking' }
+  | { type: 'roleplay' }
+  | { type: 'roleplay-chat'; situationId: string }
 
 const LESSON_LIST = [
   { id: 20, category: 'ロジカルシンキング', title: 'MECE入門', emoji: '🧠' },
@@ -107,6 +113,15 @@ function AppV3() {
               </button>
               <button
                 className="cat-tile"
+                onClick={() => setScreen({ type: 'roleplay' })}
+                style={{ cursor: 'pointer', textAlign: 'left', border: '1px solid var(--border)' }}
+              >
+                <div className="cat-tile-icon">💬</div>
+                <div className="cat-tile-name">ロールプレイ</div>
+                <div className="cat-tile-meta">AI 対話練習</div>
+              </button>
+              <button
+                className="cat-tile"
                 onClick={() => setScreen({ type: 'flashcards' })}
                 style={{ cursor: 'pointer', textAlign: 'left', border: '1px solid var(--border)' }}
               >
@@ -122,6 +137,15 @@ function AppV3() {
                 <div className="cat-tile-icon">📈</div>
                 <div className="cat-tile-name">偏差値</div>
                 <div className="cat-tile-meta">あなたの実力</div>
+              </button>
+              <button
+                className="cat-tile"
+                onClick={() => setScreen({ type: 'ranking' })}
+                style={{ cursor: 'pointer', textAlign: 'left', border: '1px solid var(--border)' }}
+              >
+                <div className="cat-tile-icon">🏆</div>
+                <div className="cat-tile-name">ランキング</div>
+                <div className="cat-tile-meta">全国順位</div>
               </button>
             </div>
           </section>
@@ -155,6 +179,28 @@ function AppV3() {
           onBack={handleBack}
           onRetakeTest={() => alert('プレースメントテストは Phase 6 で実装')}
           onStartLesson={handleOpenLesson}
+        />
+      )}
+
+      {screen.type === 'ranking' && (
+        <RankingScreen
+          onBack={handleBack}
+          onTakeTest={() => alert('プレースメントテストは Phase 6 で実装')}
+        />
+      )}
+
+      {screen.type === 'roleplay' && (
+        <RoleplaySelectScreen
+          onBack={handleBack}
+          onStart={(situationId) => setScreen({ type: 'roleplay-chat', situationId })}
+          onUpgrade={() => alert('Pricing 画面は Phase 6 で実装')}
+        />
+      )}
+
+      {screen.type === 'roleplay-chat' && (
+        <RoleplayChatScreen
+          situationId={screen.situationId}
+          onBack={() => setScreen({ type: 'roleplay' })}
         />
       )}
 
