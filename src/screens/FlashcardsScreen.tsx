@@ -9,7 +9,7 @@ interface FlashcardsScreenProps {
 }
 
 export function FlashcardsScreen({ onBack }: FlashcardsScreenProps) {
-  const [queue, setQueue] = useState<Flashcard[]>(() => getDueCards())
+  const [queue] = useState<Flashcard[]>(() => getDueCards())
   const [idx, setIdx] = useState(0)
   const [flipped, setFlipped] = useState(false)
   const total = useMemo(() => queue.length, [queue.length])
