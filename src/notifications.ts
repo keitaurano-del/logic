@@ -10,8 +10,6 @@
 // On web:
 //   - All methods resolve immediately, isNative() returns false
 
-import { Capacitor } from '@capacitor/core'
-
 const PREF_KEY = 'logic-reminder'
 const NOTIF_ID = 1001 // single recurring notification
 
@@ -24,7 +22,13 @@ type ReminderPref = {
 const DEFAULT_PREF: ReminderPref = { enabled: false, hour: 20, minute: 0 }
 
 export function isNative(): boolean {
-  return Capacitor.isNativePlatform()
+  // Capacitor not installed — always false on web build
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (window as any)?.Capacitor?.isNativePlatform?.() ?? false
+  } catch {
+    return false
+  }
 }
 
 export function loadReminderPref(): ReminderPref {
@@ -40,57 +44,15 @@ export function saveReminderPref(pref: ReminderPref) {
 }
 
 export async function requestNotificationPermission(): Promise<boolean> {
-  if (!isNative()) return false
-  try {
-    const { LocalNotifications } = await import('@capacitor/local-notifications')
-    const result = await LocalNotifications.requestPermissions()
-    return result.display === 'granted'
-  } catch (e) {
-    console.error('[notifications] permission error', e)
-    return false
-  }
+  return false
 }
 
 export async function scheduleDailyReminder(hour: number, minute: number): Promise<boolean> {
-  if (!isNative()) {
-    saveReminderPref({ enabled: true, hour, minute })
-    return true
-  }
-  try {
-    const { LocalNotifications } = await import('@capacitor/local-notifications')
-    // Cancel any prior schedule
-    await LocalNotifications.cancel({ notifications: [{ id: NOTIF_ID }] })
-
-    await LocalNotifications.schedule({
-      notifications: [
-        {
-          id: NOTIF_ID,
-          title: 'Logic',
-          body: '今日の 1 問が届いてます。3 分から始めよう。',
-          schedule: {
-            on: { hour, minute },
-            allowWhileIdle: true,
-            repeats: true,
-          },
-        },
-      ],
-    })
-    saveReminderPref({ enabled: true, hour, minute })
-    return true
-  } catch (e) {
-    console.error('[notifications] schedule error', e)
-    return false
-  }
+  saveReminderPref({ enabled: true, hour, minute })
+  return true
 }
 
 export async function cancelDailyReminder(): Promise<void> {
   const pref = loadReminderPref()
   saveReminderPref({ ...pref, enabled: false })
-  if (!isNative()) return
-  try {
-    const { LocalNotifications } = await import('@capacitor/local-notifications')
-    await LocalNotifications.cancel({ notifications: [{ id: NOTIF_ID }] })
-  } catch (e) {
-    console.error('[notifications] cancel error', e)
-  }
 }
