@@ -13,6 +13,11 @@
  *  - Only warm color is --warning amber, reserved for streak fire icons
  */
 
+/* v3 primitives, shell layout, and screen-specific extensions */
+@import './styles/primitives.css';
+@import './styles/layout.css';
+@import './styles/extensions.css';
+
 :root {
   /* Backgrounds — warm cool off-white */
   --bg-primary:    #FAFAFB;
