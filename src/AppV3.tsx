@@ -1,6 +1,4 @@
-// Logic v3 — new app shell + 3 mocked screens (Home / Lesson / Profile)
-// Phase 2 deliverable. Not yet wired into main.tsx — swap 1 line in main.tsx to activate.
-// Other 16 screens will be built in Phase 3-6.
+// Logic v3 — full app shell with all screens
 import { useEffect, useState } from 'react'
 import { AppShell, type Tab } from './components/AppShell'
 import { HomeScreen } from './screens/HomeScreen'
@@ -12,6 +10,17 @@ import { DeviationScreen } from './screens/DeviationScreen'
 import { RankingScreen } from './screens/RankingScreen'
 import { RoleplaySelectScreen } from './screens/RoleplaySelectScreen'
 import { RoleplayChatScreen } from './screens/RoleplayChatScreen'
+import { MockExamScreen } from './screens/MockExamScreen'
+import { JournalInputScreen } from './screens/JournalInputScreen'
+import { WorksheetScreen } from './screens/WorksheetScreen'
+import { DailyProblemScreen } from './screens/DailyProblemScreen'
+import { AIProblemGenScreen } from './screens/AIProblemGenScreen'
+import { AIProblemScreen } from './screens/AIProblemScreen'
+import { FeedbackScreen } from './screens/FeedbackScreen'
+import { PlacementTestScreen } from './screens/PlacementTestScreen'
+import { ThemeSettingsScreen } from './screens/ThemeSettingsScreen'
+import { PricingScreen } from './screens/PricingScreen'
+import type { AIProblemSet } from './aiProblemStore'
 import { loadTheme, applyTheme } from './theme'
 import { loadGuestUser } from './guestUser'
 import { getCompletedCount } from './stats'
@@ -27,6 +36,16 @@ type Screen =
   | { type: 'ranking' }
   | { type: 'roleplay' }
   | { type: 'roleplay-chat'; situationId: string }
+  | { type: 'mock-exam' }
+  | { type: 'journal-input' }
+  | { type: 'worksheet' }
+  | { type: 'daily-problem' }
+  | { type: 'ai-problem-gen' }
+  | { type: 'ai-problem'; problem: AIProblemSet }
+  | { type: 'feedback' }
+  | { type: 'placement-test' }
+  | { type: 'theme-settings' }
+  | { type: 'pricing' }
 
 const LESSON_LIST = [
   { id: 20, category: 'ロジカルシンキング', title: 'MECE入門', emoji: '🧠' },
@@ -73,7 +92,6 @@ function AppV3() {
   }
 
   const handleComplete = () => {
-    alert('レッスン完了!')
     setScreen({ type: tab })
   }
 
@@ -88,7 +106,10 @@ function AppV3() {
         <HomeScreen
           userName={userName}
           onOpenLesson={handleOpenLesson}
-          onOpenCategory={() => setTab('lessons')}
+          onOpenCategory={(cat) => {
+            if (cat === 'fermi') setScreen({ type: 'fermi' })
+            else setTab('lessons')
+          }}
         />
       )}
 
@@ -102,51 +123,31 @@ function AppV3() {
           <section>
             <h2 style={{ fontSize: 15, marginBottom: 'var(--s-3)' }}>Quick access</h2>
             <div className="cat-grid">
-              <button
-                className="cat-tile"
-                onClick={() => setScreen({ type: 'fermi' })}
-                style={{ cursor: 'pointer', textAlign: 'left', border: '1px solid var(--border)' }}
-              >
-                <div className="cat-tile-icon">📊</div>
-                <div className="cat-tile-name">フェルミ推定</div>
-                <div className="cat-tile-meta">AI 問題生成</div>
-              </button>
-              <button
-                className="cat-tile"
-                onClick={() => setScreen({ type: 'roleplay' })}
-                style={{ cursor: 'pointer', textAlign: 'left', border: '1px solid var(--border)' }}
-              >
-                <div className="cat-tile-icon">💬</div>
-                <div className="cat-tile-name">ロールプレイ</div>
-                <div className="cat-tile-meta">AI 対話練習</div>
-              </button>
-              <button
-                className="cat-tile"
-                onClick={() => setScreen({ type: 'flashcards' })}
-                style={{ cursor: 'pointer', textAlign: 'left', border: '1px solid var(--border)' }}
-              >
-                <div className="cat-tile-icon">🃏</div>
-                <div className="cat-tile-name">フラッシュカード</div>
-                <div className="cat-tile-meta">SM-2 復習</div>
-              </button>
-              <button
-                className="cat-tile"
-                onClick={() => setScreen({ type: 'deviation' })}
-                style={{ cursor: 'pointer', textAlign: 'left', border: '1px solid var(--border)' }}
-              >
-                <div className="cat-tile-icon">📈</div>
-                <div className="cat-tile-name">偏差値</div>
-                <div className="cat-tile-meta">あなたの実力</div>
-              </button>
-              <button
-                className="cat-tile"
-                onClick={() => setScreen({ type: 'ranking' })}
-                style={{ cursor: 'pointer', textAlign: 'left', border: '1px solid var(--border)' }}
-              >
-                <div className="cat-tile-icon">🏆</div>
-                <div className="cat-tile-name">ランキング</div>
-                <div className="cat-tile-meta">全国順位</div>
-              </button>
+              {(
+                [
+                  { nav: () => setScreen({ type: 'fermi' }), icon: '📊', name: 'フェルミ推定', meta: 'AI 問題生成' },
+                  { nav: () => setScreen({ type: 'roleplay' }), icon: '💬', name: 'ロールプレイ', meta: 'AI 対話練習' },
+                  { nav: () => setScreen({ type: 'flashcards' }), icon: '🃏', name: 'フラッシュカード', meta: 'SM-2 復習' },
+                  { nav: () => setScreen({ type: 'daily-problem' }), icon: '📅', name: '今日の問題', meta: '毎日更新' },
+                  { nav: () => setScreen({ type: 'mock-exam' }), icon: '📝', name: '模擬試験', meta: '60分・25問' },
+                  { nav: () => setScreen({ type: 'ai-problem-gen' }), icon: '✨', name: 'AI問題生成', meta: 'カスタム問題' },
+                  { nav: () => setScreen({ type: 'journal-input' }), icon: '📒', name: '仕訳ドリル', meta: '簿記3級' },
+                  { nav: () => setScreen({ type: 'worksheet' }), icon: '📋', name: '精算表ドリル', meta: '決算整理' },
+                  { nav: () => setScreen({ type: 'ranking' }), icon: '🏆', name: 'ランキング', meta: '全国順位' },
+                  { nav: () => setScreen({ type: 'deviation' }), icon: '📈', name: '偏差値', meta: 'あなたの実力' },
+                ] as { nav: () => void; icon: string; name: string; meta: string }[]
+              ).map((item) => (
+                <button
+                  key={item.name}
+                  className="cat-tile"
+                  onClick={item.nav}
+                  style={{ cursor: 'pointer', textAlign: 'left', border: '1px solid var(--border)' }}
+                >
+                  <div className="cat-tile-icon">{item.icon}</div>
+                  <div className="cat-tile-name">{item.name}</div>
+                  <div className="cat-tile-meta">{item.meta}</div>
+                </button>
+              ))}
             </div>
           </section>
 
@@ -171,13 +172,38 @@ function AppV3() {
       )}
 
       {screen.type === 'flashcards' && <FlashcardsScreen onBack={handleBack} />}
-
       {screen.type === 'fermi' && <FermiScreen onBack={handleBack} />}
+      {screen.type === 'mock-exam' && <MockExamScreen onBack={handleBack} />}
+      {screen.type === 'journal-input' && <JournalInputScreen onBack={handleBack} />}
+      {screen.type === 'worksheet' && <WorksheetScreen onBack={handleBack} />}
+      {screen.type === 'daily-problem' && <DailyProblemScreen onBack={handleBack} />}
+      {screen.type === 'feedback' && <FeedbackScreen onBack={handleBack} />}
+      {screen.type === 'pricing' && <PricingScreen onBack={handleBack} />}
+      {screen.type === 'theme-settings' && (
+        <ThemeSettingsScreen
+          onBack={handleBack}
+          onUpgrade={() => setScreen({ type: 'pricing' })}
+        />
+      )}
+
+      {screen.type === 'ai-problem-gen' && (
+        <AIProblemGenScreen
+          onBack={handleBack}
+          onPlay={(problem) => setScreen({ type: 'ai-problem', problem })}
+        />
+      )}
+
+      {screen.type === 'ai-problem' && (
+        <AIProblemScreen
+          problem={screen.problem}
+          onBack={() => setScreen({ type: 'ai-problem-gen' })}
+        />
+      )}
 
       {screen.type === 'deviation' && (
         <DeviationScreen
           onBack={handleBack}
-          onRetakeTest={() => alert('プレースメントテストは Phase 6 で実装')}
+          onRetakeTest={() => setScreen({ type: 'placement-test' })}
           onStartLesson={handleOpenLesson}
         />
       )}
@@ -185,7 +211,15 @@ function AppV3() {
       {screen.type === 'ranking' && (
         <RankingScreen
           onBack={handleBack}
-          onTakeTest={() => alert('プレースメントテストは Phase 6 で実装')}
+          onTakeTest={() => setScreen({ type: 'placement-test' })}
+        />
+      )}
+
+      {screen.type === 'placement-test' && (
+        <PlacementTestScreen
+          onBack={handleBack}
+          onComplete={() => setScreen({ type: 'deviation' })}
+          onSkip={handleBack}
         />
       )}
 
@@ -193,7 +227,7 @@ function AppV3() {
         <RoleplaySelectScreen
           onBack={handleBack}
           onStart={(situationId) => setScreen({ type: 'roleplay-chat', situationId })}
-          onUpgrade={() => alert('Pricing 画面は Phase 6 で実装')}
+          onUpgrade={() => setScreen({ type: 'pricing' })}
         />
       )}
 
@@ -207,7 +241,7 @@ function AppV3() {
       {screen.type === 'profile' && (
         <ProfileScreen
           userName={userName}
-          onOpenSettings={() => alert('設定画面は Phase 6 で実装')}
+          onOpenSettings={() => setScreen({ type: 'theme-settings' })}
         />
       )}
 
