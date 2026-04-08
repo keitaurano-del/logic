@@ -11,7 +11,6 @@
 //   - All methods resolve immediately, isNative() returns false
 
 const PREF_KEY = 'logic-reminder'
-const NOTIF_ID = 1001 // single recurring notification
 
 type ReminderPref = {
   enabled: boolean
