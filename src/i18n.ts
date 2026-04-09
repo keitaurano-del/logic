@@ -244,6 +244,34 @@ const STRINGS: Record<Locale, Strings> = {
     'theme.accent.pink': 'ピンク',
     'theme.accent.cyan': 'シアン',
 
+    // Streak screen
+    'streak.title': '連続学習記録',
+    'streak.currentLabel': '日間連続学習',
+    'streak.dayStreak': '日間連続学習',
+    'streak.weekStreak': '週間連続学習',
+    'streak.records': '私の記録',
+    'streak.longestStreak': '最長ストリーク',
+    'streak.totalStudyDays': '合計学習日数',
+    'streak.days': '日',
+    'streak.month': '{year}年{month}月',
+
+    // Settings screen
+    'settings.title': '設定',
+    'settings.section.membership': 'メンバーシップ',
+    'settings.membership.manage': 'メンバーシップ管理',
+    'settings.membership.planValue': '無料プラン',
+    'settings.membership.restorePurchases': '購読履歴を取得する',
+    'settings.membership.account': 'アカウント管理',
+    'settings.section.general': '一般',
+    'settings.general.notifications': '通知設定',
+    'settings.general.preferences': '環境設定',
+    'settings.general.clearCache': 'キャッシュの消去',
+    'settings.clearCacheConfirm': '全ての学習データ・設定を削除します。この操作は取り消せません。本当に削除しますか？',
+    'settings.section.support': 'サポート',
+    'settings.support.helpCenter': 'サポートセンター',
+    'settings.support.appLanguage': 'アプリの言語',
+    'settings.support.terms': '利用規約と個人情報について',
+
     // Ranking
     'ranking.title': '偏差値ランキング',
     'ranking.ctaTitle': 'まだプレイスメントテストを受けていません',
@@ -471,6 +499,34 @@ const STRINGS: Record<Locale, Strings> = {
     'theme.accent.green': 'Green',
     'theme.accent.pink': 'Pink',
     'theme.accent.cyan': 'Cyan',
+
+    // Streak screen
+    'streak.title': 'Streak',
+    'streak.currentLabel': 'day streak',
+    'streak.dayStreak': 'Day Streak',
+    'streak.weekStreak': 'Week Streak',
+    'streak.records': 'My Records',
+    'streak.longestStreak': 'Longest Streak',
+    'streak.totalStudyDays': 'Total Study Days',
+    'streak.days': 'days',
+    'streak.month': '{year}/{month}',
+
+    // Settings screen
+    'settings.title': 'Settings',
+    'settings.section.membership': 'Membership',
+    'settings.membership.manage': 'Manage Membership',
+    'settings.membership.planValue': 'Free Plan',
+    'settings.membership.restorePurchases': 'Restore Purchases',
+    'settings.membership.account': 'Account',
+    'settings.section.general': 'General',
+    'settings.general.notifications': 'Notifications',
+    'settings.general.preferences': 'Preferences',
+    'settings.general.clearCache': 'Clear Cache',
+    'settings.clearCacheConfirm': 'This will delete all study data and settings. This cannot be undone. Continue?',
+    'settings.section.support': 'Support',
+    'settings.support.helpCenter': 'Help Center',
+    'settings.support.appLanguage': 'App Language',
+    'settings.support.terms': 'Terms & Privacy',
 
     // Ranking
     'ranking.title': 'Score Ranking',

@@ -24,6 +24,8 @@ import { AIProblemScreen } from './screens/AIProblemScreen'
 import { FeedbackScreen } from './screens/FeedbackScreen'
 import { PlacementTestScreen } from './screens/PlacementTestScreen'
 import { PricingScreen } from './screens/PricingScreen'
+import { StreakScreen } from './screens/StreakScreen'
+import { SettingsScreen } from './screens/SettingsScreen'
 import type { AIProblemSet } from './aiProblemStore'
 import { loadTheme, applyTheme } from './theme'
 import { loadGuestUser } from './guestUser'
@@ -50,6 +52,8 @@ type Screen =
   | { type: 'feedback' }
   | { type: 'placement-test' }
   | { type: 'pricing' }
+  | { type: 'streak' }
+  | { type: 'settings' }
 
 const LESSON_LIST: { id: number; category: string; title: string; icon: ReactNode }[] = [
   { id: 20, category: 'ロジカルシンキング', title: 'MECE入門',        icon: <BrainIcon width={20} height={20} /> },
@@ -240,6 +244,15 @@ function AppV3() {
       {screen.type === 'profile' && (
         <ProfileScreen
           userName={userName}
+          onOpenStreak={() => setScreen({ type: 'streak' })}
+          onOpenSettings={() => setScreen({ type: 'settings' })}
+        />
+      )}
+      {screen.type === 'streak' && <StreakScreen onBack={handleBack} />}
+      {screen.type === 'settings' && (
+        <SettingsScreen
+          onBack={handleBack}
+          onOpenPricing={() => setScreen({ type: 'pricing' })}
         />
       )}
 

@@ -1,18 +1,20 @@
-import { useMemo, type ReactElement } from 'react'
+import { useMemo } from 'react'
 import {
   getCompletedCount,
   getCompletedLessons,
   getStreak,
-  getStudyDates,
   getStudyHours,
 } from '../stats'
 import { loadPlacementResult } from '../placementTest'
-import { UserIcon, FlameIcon, StarIcon, CheckIcon, ClockIcon } from '../icons'
+import { UserIcon, FlameIcon, StarIcon, CheckIcon, ClockIcon, ChevronRightIcon } from '../icons'
 import { useIsDesktop } from '../hooks/useMediaQuery'
-import { buildActivityGrid, deviationToTopPercent, getPoints } from './homeHelpers'
+import { deviationToTopPercent, getPoints } from './homeHelpers'
+import { t } from '../i18n'
 
 interface ProfileScreenProps {
   userName: string
+  onOpenStreak: () => void
+  onOpenSettings: () => void
 }
 
 const CAT_ROWS: { name: string; lessonIds: number[] }[] = [
@@ -35,7 +37,6 @@ interface DerivedData {
   level: number
   levelXp: number
   levelPct: number
-  activityGrid: number[]
 }
 
 function useProfileData(): DerivedData {
@@ -52,75 +53,7 @@ function useProfileData(): DerivedData {
   const level = Math.floor(xp / 1000) + 1
   const levelXp = xp % 1000
   const levelPct = (levelXp / 1000) * 100
-  const activityGrid = useMemo(() => buildActivityGrid(getStudyDates()), [])
-  return { streak, completed, studyHours, points, deviation, topPct, rankFill, completedSet, xp, level, levelXp, levelPct, activityGrid }
-}
-
-const DOW_LABELS = ['月', '火', '水', '木', '金', '土', '日']
-
-function ActivityCalendar({ grid }: { grid: number[] }) {
-  // Build month labels for column headers (12 weeks = 12 columns)
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  const todayIdx = 83 // today is the last cell
-
-  // Compute which month each column starts with (show label on first col of a new month)
-  const monthLabels: (string | null)[] = []
-  for (let c = 0; c < 12; c++) {
-    const daysAgo = (11 - c) * 7 + 6 // oldest day in this column
-    const d = new Date(today)
-    d.setDate(d.getDate() - daysAgo)
-    const prevD = new Date(d)
-    prevD.setDate(prevD.getDate() - 7)
-    monthLabels.push(d.getMonth() !== prevD.getMonth() || c === 0
-      ? (d.getMonth() + 1) + '月'
-      : null)
-  }
-
-  const dayRows: ReactElement[][] = Array.from({ length: 7 }, () => [])
-  for (let r = 0; r < 7; r++) {
-    for (let c = 0; c < 12; c++) {
-      const idx = c * 7 + r
-      const lv = grid[idx] || 0
-      const isToday = idx === todayIdx
-      dayRows[r].push(
-        <div
-          key={`${r}-${c}`}
-          className={`cal-day${lv ? ' l' + lv : ''}${isToday ? ' today' : ''}`}
-          title={lv ? `学習済み` : '未学習'}
-        />
-      )
-    }
-  }
-
-  return (
-    <div className="cal-wrap">
-      {/* Month labels row */}
-      <div className="cal-month-row">
-        <div className="cal-dow-spacer" />
-        {monthLabels.map((label, i) => (
-          <div key={i} className="cal-month-label">{label ?? ''}</div>
-        ))}
-      </div>
-      {/* Day rows with dow labels */}
-      {dayRows.map((row, r) => (
-        <div key={r} className="cal-row">
-          <div className="cal-dow-label">{DOW_LABELS[r]}</div>
-          {row}
-        </div>
-      ))}
-      {/* Legend */}
-      <div className="cal-legend">
-        <span className="cal-legend-text">学習なし</span>
-        <div className="cal-legend-swatch" style={{ background: 'var(--bg-secondary)' }} />
-        <div className="cal-legend-swatch" style={{ background: '#DDE4F7' }} />
-        <div className="cal-legend-swatch" style={{ background: '#B6C3E8' }} />
-        <div className="cal-legend-swatch" style={{ background: 'var(--brand-mid)' }} />
-        <div className="cal-legend-swatch" style={{ background: 'var(--brand)' }} />
-        <span className="cal-legend-text">多い</span>
-      </div>
-    </div>
-  )
+  return { streak, completed, studyHours, points, deviation, topPct, rankFill, completedSet, xp, level, levelXp, levelPct }
 }
 
 function CategoryProgress({ completedSet }: { completedSet: Set<string> }) {
@@ -143,6 +76,29 @@ function CategoryProgress({ completedSet }: { completedSet: Set<string> }) {
   )
 }
 
+function ProfileNavRow({ label, value, onClick }: { label: string; value?: string; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        width: '100%',
+        padding: 'var(--s-4)',
+        background: 'none',
+        border: 'none',
+        cursor: 'pointer',
+        textAlign: 'left',
+        gap: 'var(--s-3)',
+      }}
+    >
+      <span style={{ flex: 1, fontSize: 15, color: 'var(--text)' }}>{label}</span>
+      {value && <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>{value}</span>}
+      <ChevronRightIcon width={16} height={16} style={{ color: 'var(--text-faint)', flexShrink: 0 }} />
+    </button>
+  )
+}
+
 export function ProfileScreen(props: ProfileScreenProps) {
   const isDesktop = useIsDesktop()
   const data = useProfileData()
@@ -150,17 +106,32 @@ export function ProfileScreen(props: ProfileScreenProps) {
 }
 
 // ============================================================
-// Mobile layout (matches mocks/logic-v3/mobile/profile.html)
+// Mobile layout
 // ============================================================
 function ProfileMobile({
   userName,
   data,
+  onOpenStreak,
+  onOpenSettings,
 }: ProfileScreenProps & { data: DerivedData }) {
-  const { streak, points, deviation, topPct, rankFill, completedSet, level, levelXp, levelPct, activityGrid, studyHours } = data
+  const { streak, points, deviation, topPct, rankFill, completedSet, level, levelXp, levelPct, studyHours } = data
 
   return (
     <div className="stack-lg">
-      <h1 style={{ fontSize: 28 }}>Profile</h1>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <h1 style={{ fontSize: 28 }}>Profile</h1>
+        <button
+          onClick={onOpenSettings}
+          style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 'var(--s-2)', color: 'var(--text-muted)', display: 'flex', alignItems: 'center' }}
+          aria-label={t('settings.title')}
+        >
+          {/* gear icon inline */}
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" width={22} height={22}>
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+          </svg>
+        </button>
+      </div>
 
       <section className="profile-hero">
         <div className="profile-hero-inner">
@@ -171,42 +142,15 @@ function ProfileMobile({
           </div>
         </div>
         <div className="row-between" style={{ position: 'relative' }}>
-          <span
-            style={{
-              fontSize: 11,
-              fontWeight: 700,
-              letterSpacing: '0.12em',
-              textTransform: 'uppercase',
-              color: 'rgba(255,255,255,0.65)',
-            }}
-          >
+          <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.65)' }}>
             LEVEL PROGRESS
           </span>
-          <span
-            className="mono"
-            style={{ fontSize: 12, color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}
-          >
+          <span className="mono" style={{ fontSize: 12, color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
             {levelXp} / 1,000 XP
           </span>
         </div>
-        <div
-          style={{
-            background: 'rgba(255, 255, 255, 0.14)',
-            height: 8,
-            borderRadius: 'var(--radius-full)',
-            overflow: 'hidden',
-            marginTop: 8,
-            position: 'relative',
-          }}
-        >
-          <div
-            style={{
-              background: 'var(--brand-light)',
-              height: '100%',
-              width: `${levelPct}%`,
-              borderRadius: 'var(--radius-full)',
-            }}
-          />
+        <div style={{ background: 'rgba(255,255,255,0.14)', height: 8, borderRadius: 'var(--radius-full)', overflow: 'hidden', marginTop: 8 }}>
+          <div style={{ background: 'var(--brand-light)', height: '100%', width: `${levelPct}%`, borderRadius: 'var(--radius-full)' }} />
         </div>
       </section>
 
@@ -214,10 +158,7 @@ function ProfileMobile({
         <section className="rank-card">
           <div className="rank-eyebrow">NATIONAL RANKING · 偏差値 {deviation!.toFixed(1)}</div>
           <div className="rank-row">
-            <div className="rank-num">
-              {topPct}
-              <span className="rank-num-unit">%</span>
-            </div>
+            <div className="rank-num">{topPct}<span className="rank-num-unit">%</span></div>
             <div>
               <div className="rank-meta-top">上位 {topPct}%</div>
               <div className="rank-meta-sub">全国ランキング</div>
@@ -247,12 +188,19 @@ function ProfileMobile({
         </div>
       </div>
 
-      <section className="section">
-        <h2 style={{ fontSize: 17, marginBottom: 'var(--s-3)' }}>Activity</h2>
-        <div className="calendar-card">
-          <ActivityCalendar grid={activityGrid} />
-        </div>
-      </section>
+      {/* Navigation rows */}
+      <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+        <ProfileNavRow
+          label={t('streak.title')}
+          value={`${streak} ${t('streak.days')}`}
+          onClick={onOpenStreak}
+        />
+        <div style={{ height: 1, background: 'var(--border)', marginLeft: 'var(--s-4)' }} />
+        <ProfileNavRow
+          label={t('settings.title')}
+          onClick={onOpenSettings}
+        />
+      </div>
 
       <section className="section">
         <h2 style={{ fontSize: 17, marginBottom: 'var(--s-3)' }}>Category progress</h2>
@@ -265,18 +213,32 @@ function ProfileMobile({
 }
 
 // ============================================================
-// Desktop layout (matches mocks/logic-v3/desktop/profile.html)
+// Desktop layout
 // ============================================================
 function ProfileDesktop({
   userName,
   data,
+  onOpenStreak,
+  onOpenSettings,
 }: ProfileScreenProps & { data: DerivedData }) {
-  const { streak, completed, studyHours, points, deviation, topPct, rankFill, completedSet, level, levelXp, levelPct, activityGrid } = data
+  const { streak, completed, studyHours, points, deviation, topPct, rankFill, completedSet, level, levelXp, levelPct } = data
 
   return (
     <>
       <div className="page-head">
         <h1>Profile</h1>
+        <button
+          onClick={onOpenSettings}
+          style={{ background: 'none', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', cursor: 'pointer', padding: '6px 14px', fontSize: 13, color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: 6 }}
+          aria-label={t('settings.title')}
+        >
+          {/* gear icon */}
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" width={15} height={15}>
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+          </svg>
+          {t('settings.title')}
+        </button>
       </div>
 
       <div className="top-grid">
@@ -289,41 +251,15 @@ function ProfileDesktop({
             </div>
           </div>
           <div className="row-between" style={{ position: 'relative', marginBottom: 10 }}>
-            <span
-              style={{
-                fontSize: 11,
-                fontWeight: 700,
-                letterSpacing: '0.12em',
-                textTransform: 'uppercase',
-                color: 'rgba(255,255,255,0.6)',
-              }}
-            >
+            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)' }}>
               LEVEL PROGRESS
             </span>
-            <span
-              className="mono"
-              style={{ fontSize: 14, color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}
-            >
+            <span className="mono" style={{ fontSize: 14, color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
               {levelXp} / 1,000 XP
             </span>
           </div>
-          <div
-            style={{
-              background: 'rgba(255, 255, 255, 0.12)',
-              height: 10,
-              borderRadius: 'var(--radius-full)',
-              overflow: 'hidden',
-              position: 'relative',
-            }}
-          >
-            <div
-              style={{
-                background: 'var(--brand-light)',
-                height: '100%',
-                width: `${levelPct}%`,
-                borderRadius: 'var(--radius-full)',
-              }}
-            />
+          <div style={{ background: 'rgba(255,255,255,0.12)', height: 10, borderRadius: 'var(--radius-full)', overflow: 'hidden' }}>
+            <div style={{ background: 'var(--brand-light)', height: '100%', width: `${levelPct}%`, borderRadius: 'var(--radius-full)' }} />
           </div>
         </section>
 
@@ -332,10 +268,7 @@ function ProfileDesktop({
             <div className="rank-card-big">
               <div className="rk-eyebrow">NATIONAL RANKING</div>
               <div className="rank-row-big">
-                <div className="rank-num-big">
-                  {topPct}
-                  <span>%</span>
-                </div>
+                <div className="rank-num-big">{topPct}<span>%</span></div>
                 <div>
                   <div className="rank-detail-label">偏差値 · Deviation</div>
                   <div className="rank-detail-val">{deviation!.toFixed(1)}</div>
@@ -358,13 +291,18 @@ function ProfileDesktop({
       </div>
 
       <div className="top-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', marginBottom: 32 }}>
-        <div className="stat-pill-large">
+        <button
+          className="stat-pill-large"
+          onClick={onOpenStreak}
+          style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 'var(--s-3)', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', padding: 'var(--s-4) var(--s-5)', textAlign: 'left', width: '100%' }}
+        >
           <div className="icon-box"><FlameIcon width={18} height={18} /></div>
-          <div>
+          <div style={{ flex: 1 }}>
             <div className="stat-value">{streak}</div>
             <div className="stat-label">連続学習日数</div>
           </div>
-        </div>
+          <ChevronRightIcon width={14} height={14} style={{ color: 'var(--text-faint)' }} />
+        </button>
         <div className="stat-pill-large">
           <div className="icon-box"><CheckIcon width={18} height={18} /></div>
           <div>
@@ -383,13 +321,16 @@ function ProfileDesktop({
 
       <div className="bottom-grid">
         <section className="section-card">
-          <h2>Activity · 12 weeks</h2>
-          <ActivityCalendar grid={activityGrid} />
-        </section>
-
-        <section className="section-card">
           <h2>Category progress</h2>
           <CategoryProgress completedSet={completedSet} />
+        </section>
+        <section className="section-card">
+          <h2>{t('settings.title')}</h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+            <ProfileNavRow label={t('streak.title')} value={`${streak} ${t('streak.days')}`} onClick={onOpenStreak} />
+            <div style={{ height: 1, background: 'var(--border)', marginLeft: 'var(--s-4)' }} />
+            <ProfileNavRow label={t('settings.title')} onClick={onOpenSettings} />
+          </div>
         </section>
       </div>
     </>
