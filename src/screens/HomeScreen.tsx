@@ -372,7 +372,7 @@ function HomeDesktop({
       <section>
         <div className="section-head">
           <h2>Categories</h2>
-          <a href="#" onClick={(e) => e.preventDefault()}>View all →</a>
+          <button className="link-btn" onClick={() => onOpenCategory('logic')}>View all →</button>
         </div>
         <div className="cat-grid">
           {CATEGORIES.map((c) => {

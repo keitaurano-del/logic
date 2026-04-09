@@ -293,7 +293,13 @@
 @media (min-width: 900px) {
   .section-head h2 { font-size: 22px; }
 }
-.section-head a {
+.link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+.section-head a, .section-head .link-btn {
   font-size: 12px;
   font-weight: 600;
   color: var(--brand);
@@ -753,7 +759,7 @@
 
   .section-head { margin-bottom: 24px; }
   .section-head h2 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; }
-  .section-head a { font-size: 13px; font-weight: 600; color: var(--brand); }
+  .section-head a, .section-head .link-btn { font-size: 13px; font-weight: 600; color: var(--brand); }
 
   .cat-grid { grid-template-columns: repeat(4, 1fr); gap: 20px; }
   .cat-card {
