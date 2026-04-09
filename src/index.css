@@ -13,7 +13,8 @@
  *  - Only warm color is --warning amber, reserved for streak fire icons
  */
 
-/* v3 primitives, shell layout, and screen-specific extensions */
+/* v3 design tokens + primitives, shell layout, and screen-specific extensions */
+@import './styles/tokens.css';
 @import './styles/primitives.css';
 @import './styles/layout.css';
 @import './styles/extensions.css';
