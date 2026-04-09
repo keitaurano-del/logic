@@ -244,6 +244,9 @@ const STRINGS: Record<Locale, Strings> = {
     'theme.accent.pink': 'ピンク',
     'theme.accent.cyan': 'シアン',
 
+    // Language screen
+    'language.description': '言語を選択すると即座に切り替わります。',
+
     // Completed lessons screen
     'completed.title': '完了レッスン',
     'completed.lessonsDone': '完了したレッスン',
@@ -513,6 +516,9 @@ const STRINGS: Record<Locale, Strings> = {
     'theme.accent.green': 'Green',
     'theme.accent.pink': 'Pink',
     'theme.accent.cyan': 'Cyan',
+
+    // Language screen
+    'language.description': 'The app will switch immediately after you select a language.',
 
     // Completed lessons screen
     'completed.title': 'Completed Lessons',

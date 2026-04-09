@@ -28,6 +28,7 @@ import { StreakScreen } from './screens/StreakScreen'
 import { SettingsScreen } from './screens/SettingsScreen'
 import { CompletedLessonsScreen } from './screens/CompletedLessonsScreen'
 import { StudyTimeScreen } from './screens/StudyTimeScreen'
+import { LanguageScreen } from './screens/LanguageScreen'
 import type { AIProblemSet } from './aiProblemStore'
 import { loadTheme, applyTheme } from './theme'
 import { loadGuestUser } from './guestUser'
@@ -58,6 +59,7 @@ type Screen =
   | { type: 'settings' }
   | { type: 'completed-lessons' }
   | { type: 'study-time' }
+  | { type: 'language' }
 
 const LESSON_LIST: { id: number; category: string; title: string; icon: ReactNode }[] = [
   { id: 20, category: 'ロジカルシンキング', title: 'MECE入門',        icon: <BrainIcon width={20} height={20} /> },
@@ -261,8 +263,10 @@ function AppV3() {
         <SettingsScreen
           onBack={handleBack}
           onOpenPricing={() => setScreen({ type: 'pricing' })}
+          onOpenLanguage={() => setScreen({ type: 'language' })}
         />
       )}
+      {screen.type === 'language' && <LanguageScreen onBack={() => setScreen({ type: 'settings' })} />}
 
       {screen.type === 'lesson' && (
         <LessonScreen

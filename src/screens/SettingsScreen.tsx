@@ -1,12 +1,13 @@
 import { ArrowLeftIcon, ChevronRightIcon } from '../icons'
 import { IconButton } from '../components/IconButton'
-import { getLocale, setLocale } from '../i18n'
+import { getLocale } from '../i18n'
 import { t } from '../i18n'
 import { loadGuestUser } from '../guestUser'
 
 interface SettingsScreenProps {
   onBack: () => void
   onOpenPricing?: () => void
+  onOpenLanguage: () => void
 }
 
 interface SettingsRowProps {
@@ -67,7 +68,7 @@ function Divider() {
   return <div style={{ height: 1, background: 'var(--border)', marginLeft: 'var(--s-4)' }} />
 }
 
-export function SettingsScreen({ onBack, onOpenPricing }: SettingsScreenProps) {
+export function SettingsScreen({ onBack, onOpenPricing, onOpenLanguage }: SettingsScreenProps) {
   const locale = getLocale()
   const user = loadGuestUser()
 
@@ -76,10 +77,6 @@ export function SettingsScreen({ onBack, onOpenPricing }: SettingsScreenProps) {
       localStorage.clear()
       window.location.reload()
     }
-  }
-
-  function handleToggleLocale() {
-    setLocale(locale === 'ja' ? 'en' : 'ja')
   }
 
   return (
@@ -149,7 +146,7 @@ export function SettingsScreen({ onBack, onOpenPricing }: SettingsScreenProps) {
           <SettingsRow
             label={t('settings.support.appLanguage')}
             value={locale === 'ja' ? '日本語' : 'English'}
-            onPress={handleToggleLocale}
+            onPress={onOpenLanguage}
           />
           <Divider />
           <SettingsRow
