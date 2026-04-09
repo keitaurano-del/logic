@@ -11,5 +11,5 @@ export const isAdmin = (): boolean => localStorage.getItem(KEY) === '1'
 /** Lesson IDs that are admin-only (not shown in production) */
 export const ADMIN_LESSON_IDS = new Set([30, 31, 32, 33, 34]) // PM入門
 
-/** Screen types that are admin-only */
-export const ADMIN_SCREENS = new Set(['journal-input', 'worksheet']) // 簿記
+/** Screen types that are admin-only (for reference/documentation) */
+export const ADMIN_SCREENS: ReadonlyArray<string> = ['journal-input', 'worksheet'] // 簿記

@@ -28,7 +28,7 @@ import type { AIProblemSet } from './aiProblemStore'
 import { loadTheme, applyTheme } from './theme'
 import { loadGuestUser } from './guestUser'
 import { getCompletedCount } from './stats'
-import { isAdmin, ADMIN_LESSON_IDS, ADMIN_SCREENS } from './admin'
+import { isAdmin, ADMIN_LESSON_IDS } from './admin'
 
 type Screen =
   | { type: 'home' }
