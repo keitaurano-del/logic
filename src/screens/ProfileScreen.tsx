@@ -259,7 +259,6 @@ function ProfileMobile({
         <h2 style={{ fontSize: 17, marginBottom: 'var(--s-3)' }}>Activity</h2>
         <div className="calendar-card">
           <ActivityCalendar grid={activityGrid} />
-          <CalendarLegend />
         </div>
       </section>
 
@@ -398,7 +397,6 @@ function ProfileDesktop({
         <section className="section-card">
           <h2>Activity · 12 weeks</h2>
           <ActivityCalendar grid={activityGrid} />
-          <CalendarLegend />
         </section>
 
         <section className="section-card">
