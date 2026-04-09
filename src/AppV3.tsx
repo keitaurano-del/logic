@@ -23,7 +23,6 @@ import { AIProblemGenScreen } from './screens/AIProblemGenScreen'
 import { AIProblemScreen } from './screens/AIProblemScreen'
 import { FeedbackScreen } from './screens/FeedbackScreen'
 import { PlacementTestScreen } from './screens/PlacementTestScreen'
-import { ThemeSettingsScreen } from './screens/ThemeSettingsScreen'
 import { PricingScreen } from './screens/PricingScreen'
 import type { AIProblemSet } from './aiProblemStore'
 import { loadTheme, applyTheme } from './theme'
@@ -49,7 +48,6 @@ type Screen =
   | { type: 'ai-problem'; problem: AIProblemSet }
   | { type: 'feedback' }
   | { type: 'placement-test' }
-  | { type: 'theme-settings' }
   | { type: 'pricing' }
 
 const LESSON_LIST: { id: number; category: string; title: string; icon: ReactNode }[] = [
@@ -184,13 +182,6 @@ function AppV3() {
       {screen.type === 'daily-problem' && <DailyProblemScreen onBack={handleBack} />}
       {screen.type === 'feedback' && <FeedbackScreen onBack={handleBack} />}
       {screen.type === 'pricing' && <PricingScreen onBack={handleBack} />}
-      {screen.type === 'theme-settings' && (
-        <ThemeSettingsScreen
-          onBack={handleBack}
-          onUpgrade={() => setScreen({ type: 'pricing' })}
-        />
-      )}
-
       {screen.type === 'ai-problem-gen' && (
         <AIProblemGenScreen
           onBack={handleBack}
@@ -246,7 +237,6 @@ function AppV3() {
       {screen.type === 'profile' && (
         <ProfileScreen
           userName={userName}
-          onOpenSettings={() => setScreen({ type: 'theme-settings' })}
         />
       )}
 

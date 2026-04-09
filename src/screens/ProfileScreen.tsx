@@ -7,14 +7,12 @@ import {
   getStudyHours,
 } from '../stats'
 import { loadPlacementResult } from '../placementTest'
-import { SettingsIcon, UserIcon, FlameIcon, StarIcon, CheckIcon, ClockIcon } from '../icons'
-import { IconButton } from '../components/IconButton'
+import { UserIcon, FlameIcon, StarIcon, CheckIcon, ClockIcon } from '../icons'
 import { useIsDesktop } from '../hooks/useMediaQuery'
 import { buildActivityGrid, deviationToTopPercent, getPoints } from './homeHelpers'
 
 interface ProfileScreenProps {
   userName: string
-  onOpenSettings: () => void
 }
 
 const CAT_ROWS: { name: string; lessonIds: number[] }[] = [
@@ -156,19 +154,13 @@ export function ProfileScreen(props: ProfileScreenProps) {
 // ============================================================
 function ProfileMobile({
   userName,
-  onOpenSettings,
   data,
 }: ProfileScreenProps & { data: DerivedData }) {
   const { streak, points, deviation, topPct, rankFill, completedSet, level, levelXp, levelPct, activityGrid, studyHours } = data
 
   return (
     <div className="stack-lg">
-      <div className="row-between">
-        <h1 style={{ fontSize: 28 }}>Profile</h1>
-        <IconButton aria-label="Settings" onClick={onOpenSettings}>
-          <SettingsIcon />
-        </IconButton>
-      </div>
+      <h1 style={{ fontSize: 28 }}>Profile</h1>
 
       <section className="profile-hero">
         <div className="profile-hero-inner">
@@ -277,7 +269,6 @@ function ProfileMobile({
 // ============================================================
 function ProfileDesktop({
   userName,
-  onOpenSettings,
   data,
 }: ProfileScreenProps & { data: DerivedData }) {
   const { streak, completed, studyHours, points, deviation, topPct, rankFill, completedSet, level, levelXp, levelPct, activityGrid } = data
@@ -286,9 +277,6 @@ function ProfileDesktop({
     <>
       <div className="page-head">
         <h1>Profile</h1>
-        <IconButton aria-label="Settings" onClick={onOpenSettings}>
-          <SettingsIcon />
-        </IconButton>
       </div>
 
       <div className="top-grid">
