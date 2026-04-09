@@ -5,6 +5,7 @@ export function initSentry() {
   // no-op
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function captureException(_err: unknown, _ctx?: Record<string, unknown>) {
-  // no-op
+  // no-op stub — @sentry/react not installed
 }

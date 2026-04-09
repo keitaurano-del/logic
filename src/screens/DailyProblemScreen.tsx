@@ -14,7 +14,7 @@ interface DailyProblemScreenProps {
 type State = 'loading' | 'ready' | 'done' | 'error'
 
 export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
-  const [state, setState] = useState<State>('loading')
+  const [state, setState] = useState<State>(() => isDailyCompleted() ? 'done' : 'loading')
   const [problem, setProblem] = useState<AIProblemSet | null>(null)
   const [error, setError] = useState('')
   const [stepIdx, setStepIdx] = useState(0)
@@ -24,20 +24,11 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
   const [finished, setFinished] = useState(false)
 
   useEffect(() => {
-    if (isDailyCompleted()) {
-      setState('done')
-      return
-    }
+    if (state !== 'loading') return
     generateTodayProblem()
-      .then((p) => {
-        setProblem(p)
-        setState('ready')
-      })
-      .catch((e: unknown) => {
-        setError((e as Error).message)
-        setState('error')
-      })
-  }, [])
+      .then((p) => { setProblem(p); setState('ready') })
+      .catch((e: unknown) => { setError((e as Error).message); setState('error') })
+  }, [state])
 
   if (state === 'loading') {
     return (
