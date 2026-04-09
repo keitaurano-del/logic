@@ -7,7 +7,7 @@ import {
   getStudyHours,
 } from '../stats'
 import { loadPlacementResult } from '../placementTest'
-import { SettingsIcon } from '../icons'
+import { SettingsIcon, UserIcon, FlameIcon, StarIcon, CheckIcon, ClockIcon } from '../icons'
 import { IconButton } from '../components/IconButton'
 import { useIsDesktop } from '../hooks/useMediaQuery'
 import { buildActivityGrid, deviationToTopPercent, getPoints } from './homeHelpers'
@@ -58,42 +58,69 @@ function useProfileData(): DerivedData {
   return { streak, completed, studyHours, points, deviation, topPct, rankFill, completedSet, xp, level, levelXp, levelPct, activityGrid }
 }
 
+const DOW_LABELS = ['月', '火', '水', '木', '金', '土', '日']
+
 function ActivityCalendar({ grid }: { grid: number[] }) {
-  const cells: ReactElement[] = []
+  // Build month labels for column headers (12 weeks = 12 columns)
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const todayIdx = 83 // today is the last cell
+
+  // Compute which month each column starts with (show label on first col of a new month)
+  const monthLabels: (string | null)[] = []
+  for (let c = 0; c < 12; c++) {
+    const daysAgo = (11 - c) * 7 + 6 // oldest day in this column
+    const d = new Date(today)
+    d.setDate(d.getDate() - daysAgo)
+    const prevD = new Date(d)
+    prevD.setDate(prevD.getDate() - 7)
+    monthLabels.push(d.getMonth() !== prevD.getMonth() || c === 0
+      ? (d.getMonth() + 1) + '月'
+      : null)
+  }
+
+  const dayRows: ReactElement[][] = Array.from({ length: 7 }, () => [])
   for (let r = 0; r < 7; r++) {
     for (let c = 0; c < 12; c++) {
       const idx = c * 7 + r
       const lv = grid[idx] || 0
-      cells.push(<div key={`${r}-${c}`} className={`cal-day${lv ? ' l' + lv : ''}`} />)
+      const isToday = idx === todayIdx
+      dayRows[r].push(
+        <div
+          key={`${r}-${c}`}
+          className={`cal-day${lv ? ' l' + lv : ''}${isToday ? ' today' : ''}`}
+          title={lv ? `学習済み` : '未学習'}
+        />
+      )
     }
   }
-  return <div className="cal-grid">{cells}</div>
-}
 
-function CalendarLegend() {
   return (
-    <div
-      className="row"
-      style={{
-        justifyContent: 'flex-end',
-        gap: 6,
-        marginTop: 14,
-        fontSize: 11,
-        color: 'var(--text-muted)',
-        textTransform: 'uppercase',
-        letterSpacing: '0.06em',
-        fontWeight: 700,
-      }}
-    >
-      Less
-      <div style={{ display: 'flex', gap: 3 }}>
-        <div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--bg-secondary)' }} />
-        <div style={{ width: 10, height: 10, borderRadius: 2, background: '#DDE4F7' }} />
-        <div style={{ width: 10, height: 10, borderRadius: 2, background: '#B6C3E8' }} />
-        <div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--brand-mid)' }} />
-        <div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--brand)' }} />
+    <div className="cal-wrap">
+      {/* Month labels row */}
+      <div className="cal-month-row">
+        <div className="cal-dow-spacer" />
+        {monthLabels.map((label, i) => (
+          <div key={i} className="cal-month-label">{label ?? ''}</div>
+        ))}
       </div>
-      More
+      {/* Day rows with dow labels */}
+      {dayRows.map((row, r) => (
+        <div key={r} className="cal-row">
+          <div className="cal-dow-label">{DOW_LABELS[r]}</div>
+          {row}
+        </div>
+      ))}
+      {/* Legend */}
+      <div className="cal-legend">
+        <span className="cal-legend-text">学習なし</span>
+        <div className="cal-legend-swatch" style={{ background: 'var(--bg-secondary)' }} />
+        <div className="cal-legend-swatch" style={{ background: '#DDE4F7' }} />
+        <div className="cal-legend-swatch" style={{ background: '#B6C3E8' }} />
+        <div className="cal-legend-swatch" style={{ background: 'var(--brand-mid)' }} />
+        <div className="cal-legend-swatch" style={{ background: 'var(--brand)' }} />
+        <span className="cal-legend-text">多い</span>
+      </div>
     </div>
   )
 }
@@ -145,7 +172,7 @@ function ProfileMobile({
 
       <section className="profile-hero">
         <div className="profile-hero-inner">
-          <div className="profile-avatar">👤</div>
+          <div className="profile-avatar"><UserIcon width={22} height={22} /></div>
           <div>
             <div className="profile-hero-name">{userName}</div>
             <div className="profile-hero-level">Lv.{level} · 見習い探偵</div>
@@ -212,19 +239,19 @@ function ProfileMobile({
 
       <div className="stats-grid">
         <div className="stat">
-          <div className="stat-icon">🔥</div>
+          <div className="stat-icon"><FlameIcon width={20} height={20} /></div>
           <div className="stat-value">{streak}</div>
-          <div className="stat-label">Streak</div>
+          <div className="stat-label">連続日数</div>
         </div>
         <div className="stat">
-          <div className="stat-icon">⭐</div>
+          <div className="stat-icon"><StarIcon width={20} height={20} /></div>
           <div className="stat-value">{points.toLocaleString()}</div>
-          <div className="stat-label">Points</div>
+          <div className="stat-label">ポイント</div>
         </div>
         <div className="stat">
-          <div className="stat-icon">⏱</div>
+          <div className="stat-icon"><ClockIcon width={20} height={20} /></div>
           <div className="stat-value">{studyHours}</div>
-          <div className="stat-label">Study</div>
+          <div className="stat-label">学習時間</div>
         </div>
       </div>
 
@@ -268,7 +295,7 @@ function ProfileDesktop({
       <div className="top-grid">
         <section className="profile-hero">
           <div className="profile-hero-inner">
-            <div className="profile-avatar">👤</div>
+            <div className="profile-avatar"><UserIcon width={22} height={22} /></div>
             <div>
               <div className="profile-hero-name">{userName}</div>
               <div className="profile-hero-level">Lv.{level} · 見習い探偵</div>
@@ -334,10 +361,10 @@ function ProfileDesktop({
             </div>
           )}
           <div className="stat-pill-large">
-            <div className="icon-box">⭐</div>
+            <div className="icon-box"><StarIcon width={18} height={18} /></div>
             <div>
               <div className="stat-value">{points.toLocaleString()}</div>
-              <div className="stat-label">Total points</div>
+              <div className="stat-label">ポイント</div>
             </div>
           </div>
         </div>
@@ -345,24 +372,24 @@ function ProfileDesktop({
 
       <div className="top-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', marginBottom: 32 }}>
         <div className="stat-pill-large">
-          <div className="icon-box">🔥</div>
+          <div className="icon-box"><FlameIcon width={18} height={18} /></div>
           <div>
             <div className="stat-value">{streak}</div>
-            <div className="stat-label">Day streak</div>
+            <div className="stat-label">連続学習日数</div>
           </div>
         </div>
         <div className="stat-pill-large">
-          <div className="icon-box">✓</div>
+          <div className="icon-box"><CheckIcon width={18} height={18} /></div>
           <div>
             <div className="stat-value">{completed}</div>
-            <div className="stat-label">Lessons done</div>
+            <div className="stat-label">完了レッスン</div>
           </div>
         </div>
         <div className="stat-pill-large">
-          <div className="icon-box">⏱</div>
+          <div className="icon-box"><ClockIcon width={18} height={18} /></div>
           <div>
             <div className="stat-value">{studyHours}</div>
-            <div className="stat-label">Total study</div>
+            <div className="stat-label">総学習時間</div>
           </div>
         </div>
       </div>

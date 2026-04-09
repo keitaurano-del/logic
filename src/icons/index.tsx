@@ -256,6 +256,15 @@ export function BriefcaseIcon(p: IconProps) {
   )
 }
 
+export function ClockIcon(p: IconProps) {
+  return (
+    <svg {...base} {...p}>
+      <circle cx="12" cy="12" r="10" />
+      <polyline points="12 6 12 12 16 14" />
+    </svg>
+  )
+}
+
 export function BrandMark(p: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="54 54 92 92" xmlns="http://www.w3.org/2000/svg" {...p}>
