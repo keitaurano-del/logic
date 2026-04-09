@@ -13,9 +13,9 @@ const params = new URLSearchParams(window.location.search)
 if (params.get('v') === '3') {
   localStorage.setItem('logic-v3-preview', '1')
 } else if (params.get('v') === '1') {
-  localStorage.removeItem('logic-v3-preview')
+  localStorage.setItem('logic-v3-preview', '0')
 }
-const useV3 = localStorage.getItem('logic-v3-preview') === '1'
+const useV3 = localStorage.getItem('logic-v3-preview') !== '0'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
