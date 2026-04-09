@@ -69,6 +69,39 @@ export function buildActivityGrid(dates: string[]): number[] {
   return grid
 }
 
+// ============================================================
+// Level / Rank system
+// ============================================================
+
+export type RankTier = {
+  level: number
+  title: string
+  titleEn: string
+  minXp: number
+}
+
+export const RANK_TIERS: RankTier[] = [
+  { level: 1,  title: '見習い探偵',     titleEn: 'Rookie Detective',    minXp: 0    },
+  { level: 2,  title: '初級探偵',       titleEn: 'Junior Detective',    minXp: 1000 },
+  { level: 3,  title: '探偵',           titleEn: 'Detective',           minXp: 2000 },
+  { level: 4,  title: 'ベテラン探偵',   titleEn: 'Veteran Detective',   minXp: 3000 },
+  { level: 5,  title: 'シニア探偵',     titleEn: 'Senior Detective',    minXp: 4000 },
+  { level: 6,  title: 'エキスパート',   titleEn: 'Expert',              minXp: 5000 },
+  { level: 7,  title: 'マスター探偵',   titleEn: 'Master Detective',    minXp: 6000 },
+  { level: 8,  title: 'グランドマスター', titleEn: 'Grand Master',      minXp: 7000 },
+  { level: 9,  title: 'レジェンド',     titleEn: 'Legend',              minXp: 8000 },
+  { level: 10, title: 'ロジックの神',   titleEn: 'Logic God',           minXp: 9000 },
+]
+
+export function getLevelTitle(xp: number, locale: 'ja' | 'en' = 'ja'): string {
+  const tier = [...RANK_TIERS].reverse().find((t) => xp >= t.minXp) ?? RANK_TIERS[0]
+  return locale === 'en' ? tier.titleEn : tier.title
+}
+
+export function getCurrentTier(xp: number): RankTier {
+  return [...RANK_TIERS].reverse().find((t) => xp >= t.minXp) ?? RANK_TIERS[0]
+}
+
 /** Greeting by local time of day. */
 export function timeBasedGreeting(): { eyebrow: string; greeting: string } {
   const h = new Date().getHours()

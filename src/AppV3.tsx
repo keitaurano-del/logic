@@ -29,6 +29,7 @@ import { SettingsScreen } from './screens/SettingsScreen'
 import { CompletedLessonsScreen } from './screens/CompletedLessonsScreen'
 import { StudyTimeScreen } from './screens/StudyTimeScreen'
 import { LanguageScreen } from './screens/LanguageScreen'
+import { RankScreen } from './screens/RankScreen'
 import type { AIProblemSet } from './aiProblemStore'
 import { loadTheme, applyTheme } from './theme'
 import { loadGuestUser } from './guestUser'
@@ -60,6 +61,7 @@ type Screen =
   | { type: 'completed-lessons' }
   | { type: 'study-time' }
   | { type: 'language' }
+  | { type: 'rank' }
 
 const LESSON_LIST: { id: number; category: string; title: string; icon: ReactNode }[] = [
   { id: 20, category: 'ロジカルシンキング', title: 'MECE入門',        icon: <BrainIcon width={20} height={20} /> },
@@ -123,8 +125,11 @@ function AppV3() {
           onOpenLesson={handleOpenLesson}
           onOpenCategory={(cat) => {
             if (cat === 'fermi') setScreen({ type: 'fermi' })
-            else setTab('lessons')
+            else handleTabChange('lessons')
           }}
+          onOpenRank={() => setScreen({ type: 'rank' })}
+          onOpenDeviation={() => setScreen({ type: 'deviation' })}
+          onOpenRanking={() => setScreen({ type: 'ranking' })}
         />
       )}
 
@@ -254,8 +259,11 @@ function AppV3() {
           onOpenSettings={() => setScreen({ type: 'settings' })}
           onOpenCompleted={() => setScreen({ type: 'completed-lessons' })}
           onOpenStudyTime={() => setScreen({ type: 'study-time' })}
+          onOpenRank={() => setScreen({ type: 'rank' })}
+          onOpenRanking={() => setScreen({ type: 'ranking' })}
         />
       )}
+      {screen.type === 'rank' && <RankScreen onBack={handleBack} />}
       {screen.type === 'streak' && <StreakScreen onBack={handleBack} />}
       {screen.type === 'completed-lessons' && <CompletedLessonsScreen onBack={handleBack} />}
       {screen.type === 'study-time' && <StudyTimeScreen onBack={handleBack} />}

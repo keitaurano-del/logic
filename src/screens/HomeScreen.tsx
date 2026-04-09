@@ -12,12 +12,17 @@ import {
   getStreakState,
   hoursUntilMidnight,
   timeBasedGreeting,
+  getLevelTitle,
 } from './homeHelpers'
+import { getLocale } from '../i18n'
 
 interface HomeScreenProps {
   userName: string
   onOpenLesson: (lessonId: number) => void
   onOpenCategory: (category: 'fermi' | 'logic' | 'case' | 'pm') => void
+  onOpenRank: () => void
+  onOpenDeviation: () => void
+  onOpenRanking: () => void
 }
 
 type Category = {
@@ -83,7 +88,10 @@ function useHomeData(): DerivedData {
 export function HomeScreen(props: HomeScreenProps) {
   const isDesktop = useIsDesktop()
   const data = useHomeData()
-  return isDesktop ? <HomeDesktop {...props} data={data} /> : <HomeMobile {...props} data={data} />
+  const levelTitle = getLevelTitle(data.xp, getLocale())
+  return isDesktop
+    ? <HomeDesktop {...props} data={data} levelTitle={levelTitle} />
+    : <HomeMobile {...props} data={data} levelTitle={levelTitle} />
 }
 
 // ============================================================
@@ -93,8 +101,12 @@ function HomeMobile({
   userName,
   onOpenLesson,
   onOpenCategory,
+  onOpenRank,
+  onOpenDeviation,
+  onOpenRanking,
   data,
-}: HomeScreenProps & { data: DerivedData }) {
+  levelTitle,
+}: HomeScreenProps & { data: DerivedData; levelTitle: string }) {
   const {
     streak, streakState, completedSet, points, deviation, topPct, rankFill,
     eyebrow, greeting, recovery, level, levelXp, levelPct, xp, weekProgress, weekPct,
@@ -138,34 +150,34 @@ function HomeMobile({
       </section>
 
       <section className="points-row">
-        <div className="points-pill">
+        <button className="points-pill" onClick={onOpenRank} style={{ cursor: 'pointer', textAlign: 'left', border: 'none', background: 'none', padding: 0, width: '100%' }}>
           <div className="points-pill-icon"><StarIcon width={18} height={18} /></div>
           <div>
             <div className="points-pill-label">Points</div>
             <div className="points-pill-value">{points.toLocaleString()}</div>
           </div>
-        </div>
+        </button>
         {deviation != null ? (
-          <div className="points-pill">
+          <button className="points-pill" onClick={onOpenDeviation} style={{ cursor: 'pointer', textAlign: 'left', border: 'none', background: 'none', padding: 0, width: '100%' }}>
             <div className="points-pill-icon"><TrendingUpIcon width={18} height={18} /></div>
             <div>
               <div className="points-pill-label">偏差値</div>
               <div className="points-pill-value">{deviation.toFixed(1)}</div>
             </div>
-          </div>
+          </button>
         ) : (
-          <div className="points-pill">
+          <button className="points-pill" onClick={onOpenRank} style={{ cursor: 'pointer', textAlign: 'left', border: 'none', background: 'none', padding: 0, width: '100%' }}>
             <div className="points-pill-icon"><BarChartIcon width={18} height={18} /></div>
             <div>
               <div className="points-pill-label">XP</div>
               <div className="points-pill-value">{xp.toLocaleString()}</div>
             </div>
-          </div>
+          </button>
         )}
       </section>
 
       {topPct != null && (
-        <section className="rank-card">
+        <button className="rank-card" onClick={onOpenRanking} style={{ cursor: 'pointer', width: '100%', border: 'none', background: 'none', padding: 0, textAlign: 'left', display: 'block' }}>
           <div className="rank-eyebrow">NATIONAL RANKING</div>
           <div className="rank-row">
             <div className="rank-num">
@@ -180,12 +192,12 @@ function HomeMobile({
           <div className="rank-bar">
             <div className="rank-bar-fill" style={{ width: `${rankFill}%` }} />
           </div>
-        </section>
+        </button>
       )}
 
-      <section>
+      <button className="section" onClick={onOpenRank} style={{ cursor: 'pointer', background: 'none', border: 'none', padding: 0, textAlign: 'left', width: '100%', display: 'block' }}>
         <div className="row-between" style={{ marginBottom: 'var(--s-3)' }}>
-          <h3 style={{ fontSize: 17 }}>Lv.{level} · 見習い探偵</h3>
+          <h3 style={{ fontSize: 17 }}>Lv.{level} · {levelTitle}</h3>
           <span className="mono muted" style={{ fontSize: 12 }}>
             {levelXp} / 1,000 XP
           </span>
@@ -193,7 +205,7 @@ function HomeMobile({
         <div className="progress progress-lg">
           <div className="progress-fill" style={{ width: `${levelPct}%` }} />
         </div>
-      </section>
+      </button>
 
       <section className="section">
         <div className="section-head">
@@ -250,8 +262,12 @@ function HomeDesktop({
   userName,
   onOpenLesson,
   onOpenCategory,
+  onOpenRank,
+  onOpenDeviation,
+  onOpenRanking,
   data,
-}: HomeScreenProps & { data: DerivedData }) {
+  levelTitle,
+}: HomeScreenProps & { data: DerivedData; levelTitle: string }) {
   const {
     streak, streakState, completedSet, points, deviation, topPct, rankFill,
     eyebrow, greeting, recovery, level, levelXp, levelPct, xp, weekPct,
@@ -306,35 +322,35 @@ function HomeDesktop({
       </div>
 
       <div className="stats-row">
-        <div className="stat-pill">
+        <button className="stat-pill" onClick={onOpenRank} style={{ cursor: 'pointer', border: 'none', background: 'none', padding: 0, textAlign: 'left', display: 'flex', alignItems: 'center', gap: 'var(--s-3)' }}>
           <div className="icon-box"><StarIcon width={18} height={18} /></div>
           <div>
             <div className="lbl">Points</div>
             <div className="val">{points.toLocaleString()}</div>
             <div className="delta">+{Math.max(0, points % 200)} today</div>
           </div>
-        </div>
+        </button>
         {deviation != null ? (
-          <div className="stat-pill">
+          <button className="stat-pill" onClick={onOpenDeviation} style={{ cursor: 'pointer', border: 'none', background: 'none', padding: 0, textAlign: 'left', display: 'flex', alignItems: 'center', gap: 'var(--s-3)' }}>
             <div className="icon-box"><TrendingUpIcon width={18} height={18} /></div>
             <div>
               <div className="lbl">偏差値 · Deviation</div>
               <div className="val">{deviation.toFixed(1)}</div>
               <div className="delta">Placement</div>
             </div>
-          </div>
+          </button>
         ) : (
-          <div className="stat-pill">
+          <button className="stat-pill" onClick={onOpenRank} style={{ cursor: 'pointer', border: 'none', background: 'none', padding: 0, textAlign: 'left', display: 'flex', alignItems: 'center', gap: 'var(--s-3)' }}>
             <div className="icon-box"><BarChartIcon width={18} height={18} /></div>
             <div>
               <div className="lbl">XP</div>
               <div className="val">{xp.toLocaleString()}</div>
               <div className="delta">Total earned</div>
             </div>
-          </div>
+          </button>
         )}
         {topPct != null ? (
-          <div className="rank-card">
+          <button className="rank-card" onClick={onOpenRanking} style={{ cursor: 'pointer', border: 'none', background: 'none', padding: 0, textAlign: 'left', display: 'block', width: '100%' }}>
             <div className="rank-eyebrow">NATIONAL RANKING</div>
             <div className="rank-row">
               <div className="rank-num">
@@ -349,25 +365,25 @@ function HomeDesktop({
             <div className="rank-bar">
               <div className="rank-bar-fill" style={{ width: `${rankFill}%` }} />
             </div>
-          </div>
+          </button>
         ) : (
-          <div className="rank-card" style={{ opacity: 0.6 }}>
+          <button className="rank-card" onClick={onOpenRanking} style={{ cursor: 'pointer', opacity: 0.6, border: 'none', background: 'none', padding: 0, textAlign: 'left', display: 'block', width: '100%' }}>
             <div className="rank-eyebrow">NATIONAL RANKING</div>
             <div className="rank-meta-top">プレースメントテスト未完了</div>
-          </div>
+          </button>
         )}
       </div>
 
-      <div className="level-section">
-        <div>
+      <button className="level-section" onClick={onOpenRank} style={{ cursor: 'pointer', border: 'none', background: 'none', padding: 0, textAlign: 'left', display: 'flex', alignItems: 'center', width: '100%' }}>
+        <div style={{ flex: 1 }}>
           <div className="eyebrow">LEVEL PROGRESS</div>
-          <div className="level-name">Lv.{level} · 見習い探偵</div>
+          <div className="level-name">Lv.{level} · {levelTitle}</div>
           <div className="progress" style={{ marginTop: 10, maxWidth: 600 }}>
             <div className="progress-fill" style={{ width: `${levelPct}%` }} />
           </div>
         </div>
         <div className="level-xp">{levelXp} / 1,000 XP</div>
-      </div>
+      </button>
 
       <section>
         <div className="section-head">

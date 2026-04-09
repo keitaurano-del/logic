@@ -244,6 +244,15 @@ const STRINGS: Record<Locale, Strings> = {
     'theme.accent.pink': 'ピンク',
     'theme.accent.cyan': 'シアン',
 
+    // Rank screen
+    'rank.title': 'ランク',
+    'rank.totalPoints': '合計ポイント',
+    'rank.completedLessons': '完了レッスン',
+    'rank.howToEarn': 'ポイントのかせぎ方',
+    'rank.earn.lesson': 'レッスン完了',
+    'rank.earn.studyMin': '学習時間',
+    'rank.allRanks': '全ランク一覧',
+
     // Language screen
     'language.description': '言語を選択すると即座に切り替わります。',
 
@@ -516,6 +525,15 @@ const STRINGS: Record<Locale, Strings> = {
     'theme.accent.green': 'Green',
     'theme.accent.pink': 'Pink',
     'theme.accent.cyan': 'Cyan',
+
+    // Rank screen
+    'rank.title': 'Rank',
+    'rank.totalPoints': 'Total Points',
+    'rank.completedLessons': 'Lessons done',
+    'rank.howToEarn': 'How to earn points',
+    'rank.earn.lesson': 'Complete a lesson',
+    'rank.earn.studyMin': 'Study time',
+    'rank.allRanks': 'All ranks',
 
     // Language screen
     'language.description': 'The app will switch immediately after you select a language.',

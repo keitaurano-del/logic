@@ -8,7 +8,8 @@ import {
 import { loadPlacementResult } from '../placementTest'
 import { UserIcon, FlameIcon, StarIcon, CheckIcon, ClockIcon, ChevronRightIcon } from '../icons'
 import { useIsDesktop } from '../hooks/useMediaQuery'
-import { deviationToTopPercent, getPoints } from './homeHelpers'
+import { deviationToTopPercent, getPoints, getLevelTitle } from './homeHelpers'
+import { getLocale } from '../i18n'
 import { t } from '../i18n'
 
 interface ProfileScreenProps {
@@ -17,6 +18,8 @@ interface ProfileScreenProps {
   onOpenSettings: () => void
   onOpenCompleted: () => void
   onOpenStudyTime: () => void
+  onOpenRank: () => void
+  onOpenRanking: () => void
 }
 
 const CAT_ROWS: { name: string; lessonIds: number[] }[] = [
@@ -126,7 +129,10 @@ function StatTile({
 export function ProfileScreen(props: ProfileScreenProps) {
   const isDesktop = useIsDesktop()
   const data = useProfileData()
-  return isDesktop ? <ProfileDesktop {...props} data={data} /> : <ProfileMobile {...props} data={data} />
+  const levelTitle = getLevelTitle(data.xp, getLocale())
+  return isDesktop
+    ? <ProfileDesktop {...props} data={data} levelTitle={levelTitle} />
+    : <ProfileMobile {...props} data={data} levelTitle={levelTitle} />
 }
 
 // ============================================================
@@ -135,12 +141,15 @@ export function ProfileScreen(props: ProfileScreenProps) {
 function ProfileMobile({
   userName,
   data,
+  levelTitle,
   onOpenStreak,
   onOpenSettings,
   onOpenCompleted,
   onOpenStudyTime,
-}: ProfileScreenProps & { data: DerivedData }) {
-  const { streak, completed, deviation, topPct, rankFill, completedSet, level, levelXp, levelPct, studyHours } = data
+  onOpenRank,
+  onOpenRanking,
+}: ProfileScreenProps & { data: DerivedData; levelTitle: string }) {
+  const { streak, completed, points, deviation, topPct, rankFill, completedSet, level, levelXp, levelPct, studyHours } = data
 
   return (
     <div className="stack-lg">
@@ -159,12 +168,12 @@ function ProfileMobile({
         </button>
       </div>
 
-      <section className="profile-hero">
+      <button className="profile-hero" onClick={onOpenRank} style={{ cursor: 'pointer', border: 'none', background: 'none', padding: 0, textAlign: 'left', width: '100%', display: 'block' }}>
         <div className="profile-hero-inner">
           <div className="profile-avatar"><UserIcon width={22} height={22} /></div>
           <div>
             <div className="profile-hero-name">{userName}</div>
-            <div className="profile-hero-level">Lv.{level} · 見習い探偵</div>
+            <div className="profile-hero-level">Lv.{level} · {levelTitle}</div>
           </div>
         </div>
         <div className="row-between" style={{ position: 'relative' }}>
@@ -178,10 +187,10 @@ function ProfileMobile({
         <div style={{ background: 'rgba(255,255,255,0.14)', height: 8, borderRadius: 'var(--radius-full)', overflow: 'hidden', marginTop: 8 }}>
           <div style={{ background: 'var(--brand-light)', height: '100%', width: `${levelPct}%`, borderRadius: 'var(--radius-full)' }} />
         </div>
-      </section>
+      </button>
 
       {topPct != null && (
-        <section className="rank-card">
+        <button className="rank-card" onClick={onOpenRanking} style={{ cursor: 'pointer', border: 'none', background: 'none', padding: 0, textAlign: 'left', display: 'block', width: '100%' }}>
           <div className="rank-eyebrow">NATIONAL RANKING · 偏差値 {deviation!.toFixed(1)}</div>
           <div className="rank-row">
             <div className="rank-num">{topPct}<span className="rank-num-unit">%</span></div>
@@ -193,8 +202,18 @@ function ProfileMobile({
           <div className="rank-bar">
             <div className="rank-bar-fill" style={{ width: `${rankFill}%` }} />
           </div>
-        </section>
+        </button>
       )}
+
+      {/* Points tappable */}
+      <button className="card" onClick={onOpenRank} style={{ cursor: 'pointer', border: '1px solid var(--border)', background: 'var(--surface)', borderRadius: 'var(--radius-md)', padding: 'var(--s-3) var(--s-4)', display: 'flex', alignItems: 'center', gap: 'var(--s-3)', textAlign: 'left', width: '100%' }}>
+        <StarIcon width={18} height={18} style={{ color: 'var(--brand)', flexShrink: 0 }} />
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>Points</div>
+          <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--brand)', letterSpacing: '-0.02em' }}>{points.toLocaleString()}</div>
+        </div>
+        <ChevronRightIcon width={14} height={14} style={{ color: 'var(--text-faint)' }} />
+      </button>
 
       <div className="stats-grid">
         <StatTile icon={<FlameIcon width={20} height={20} />} value={streak} label="連続日数" onClick={onOpenStreak} />
@@ -232,11 +251,14 @@ function ProfileMobile({
 function ProfileDesktop({
   userName,
   data,
+  levelTitle,
   onOpenStreak,
   onOpenSettings,
   onOpenCompleted,
   onOpenStudyTime,
-}: ProfileScreenProps & { data: DerivedData }) {
+  onOpenRank,
+  onOpenRanking,
+}: ProfileScreenProps & { data: DerivedData; levelTitle: string }) {
   const { streak, completed, studyHours, points, deviation, topPct, rankFill, completedSet, level, levelXp, levelPct } = data
 
   return (
@@ -258,12 +280,12 @@ function ProfileDesktop({
       </div>
 
       <div className="top-grid">
-        <section className="profile-hero">
+        <button className="profile-hero" onClick={onOpenRank} style={{ cursor: 'pointer', border: 'none', background: 'none', padding: 0, textAlign: 'left', display: 'block', width: '100%' }}>
           <div className="profile-hero-inner">
             <div className="profile-avatar"><UserIcon width={22} height={22} /></div>
             <div>
               <div className="profile-hero-name">{userName}</div>
-              <div className="profile-hero-level">Lv.{level} · 見習い探偵</div>
+              <div className="profile-hero-level">Lv.{level} · {levelTitle}</div>
             </div>
           </div>
           <div className="row-between" style={{ position: 'relative', marginBottom: 10 }}>
@@ -277,11 +299,11 @@ function ProfileDesktop({
           <div style={{ background: 'rgba(255,255,255,0.12)', height: 10, borderRadius: 'var(--radius-full)', overflow: 'hidden' }}>
             <div style={{ background: 'var(--brand-light)', height: '100%', width: `${levelPct}%`, borderRadius: 'var(--radius-full)' }} />
           </div>
-        </section>
+        </button>
 
         <div className="stats-stack">
           {topPct != null && (
-            <div className="rank-card-big">
+            <button className="rank-card-big" onClick={onOpenRanking} style={{ cursor: 'pointer', border: 'none', background: 'none', padding: 0, textAlign: 'left', display: 'block', width: '100%' }}>
               <div className="rk-eyebrow">NATIONAL RANKING</div>
               <div className="rank-row-big">
                 <div className="rank-num-big">{topPct}<span>%</span></div>
@@ -294,15 +316,20 @@ function ProfileDesktop({
               <div className="rank-bar-wrap-big">
                 <div className="rank-bar-fill-big" style={{ width: `${rankFill}%` }} />
               </div>
-            </div>
+            </button>
           )}
-          <div className="stat-pill-large">
+          <button
+            className="stat-pill-large"
+            onClick={onOpenRank}
+            style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 'var(--s-3)', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', padding: 'var(--s-4) var(--s-5)', textAlign: 'left', width: '100%' }}
+          >
             <div className="icon-box"><StarIcon width={18} height={18} /></div>
-            <div>
+            <div style={{ flex: 1 }}>
               <div className="stat-value">{points.toLocaleString()}</div>
               <div className="stat-label">ポイント</div>
             </div>
-          </div>
+            <ChevronRightIcon width={14} height={14} style={{ color: 'var(--text-faint)' }} />
+          </button>
         </div>
       </div>
 
