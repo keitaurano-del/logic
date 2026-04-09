@@ -2,6 +2,7 @@ services:
   - type: web
     name: logic
     runtime: node
+    autoDeploy: true
     buildCommand: npm install --include=dev && npm run build
     startCommand: npm start
     envVars:
