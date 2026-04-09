@@ -28,6 +28,7 @@ import type { AIProblemSet } from './aiProblemStore'
 import { loadTheme, applyTheme } from './theme'
 import { loadGuestUser } from './guestUser'
 import { getCompletedCount } from './stats'
+import { isAdmin, ADMIN_LESSON_IDS, ADMIN_SCREENS } from './admin'
 
 type Screen =
   | { type: 'home' }
@@ -71,6 +72,7 @@ const LESSON_LIST: { id: number; category: string; title: string; icon: ReactNod
 function AppV3() {
   const [tab, setTab] = useState<Tab>('home')
   const [screen, setScreen] = useState<Screen>({ type: 'home' })
+  const admin = isAdmin()
 
   useEffect(() => {
     applyTheme(loadTheme())
@@ -127,18 +129,19 @@ function AppV3() {
             <h2 style={{ fontSize: 15, marginBottom: 'var(--s-3)' }}>Quick access</h2>
             <div className="cat-grid">
               {(
-                [
+                ([
                   { nav: () => setScreen({ type: 'fermi' }),        icon: <BarChartIcon width={20} height={20} />,      name: 'フェルミ推定',    meta: 'AI 問題生成' },
                   { nav: () => setScreen({ type: 'roleplay' }),      icon: <MessageCircleIcon width={20} height={20} />, name: 'ロールプレイ',    meta: 'AI 対話練習' },
                   { nav: () => setScreen({ type: 'flashcards' }),    icon: <LayersIcon width={20} height={20} />,        name: 'フラッシュカード', meta: 'SM-2 復習' },
                   { nav: () => setScreen({ type: 'daily-problem' }), icon: <CalendarIcon width={20} height={20} />,      name: '今日の問題',      meta: '毎日更新' },
                   { nav: () => setScreen({ type: 'mock-exam' }),     icon: <ClipboardListIcon width={20} height={20} />, name: '模擬試験',        meta: '60分・25問' },
                   { nav: () => setScreen({ type: 'ai-problem-gen' }),icon: <SparklesIcon width={20} height={20} />,      name: 'AI問題生成',      meta: 'カスタム問題' },
-                  { nav: () => setScreen({ type: 'journal-input' }), icon: <BookOpenIcon width={20} height={20} />,      name: '仕訳ドリル',      meta: '簿記3級' },
-                  { nav: () => setScreen({ type: 'worksheet' }),     icon: <TableIcon width={20} height={20} />,         name: '精算表ドリル',    meta: '決算整理' },
+                  { nav: () => setScreen({ type: 'journal-input' }), icon: <BookOpenIcon width={20} height={20} />,      name: '仕訳ドリル',      meta: '簿記3級',    adminOnly: true },
+                  { nav: () => setScreen({ type: 'worksheet' }),     icon: <TableIcon width={20} height={20} />,         name: '精算表ドリル',    meta: '決算整理',   adminOnly: true },
                   { nav: () => setScreen({ type: 'ranking' }),       icon: <TrophyIcon width={20} height={20} />,        name: 'ランキング',      meta: '全国順位' },
                   { nav: () => setScreen({ type: 'deviation' }),     icon: <TrendingUpIcon width={20} height={20} />,    name: '偏差値',          meta: 'あなたの実力' },
-                ] as { nav: () => void; icon: ReactNode; name: string; meta: string }[]
+                ] as { nav: () => void; icon: ReactNode; name: string; meta: string; adminOnly?: boolean }[])
+                .filter((item) => admin || !item.adminOnly)
               ).map((item) => (
                 <button
                   key={item.name}
@@ -157,7 +160,7 @@ function AppV3() {
           <section>
             <h2 style={{ fontSize: 15, marginBottom: 'var(--s-3)' }}>レッスン一覧</h2>
             <div className="cat-grid">
-              {LESSON_LIST.map((l) => (
+              {LESSON_LIST.filter((l) => admin || !ADMIN_LESSON_IDS.has(l.id)).map((l) => (
                 <button
                   key={l.id}
                   className="cat-tile"

@@ -5,6 +5,7 @@ import { loadPlacementResult } from '../placementTest'
 import { ArrowRightIcon, BarChartIcon, BrainIcon, BriefcaseIcon, BookOpenIcon, FlameIcon, StarIcon, TrendingUpIcon, ZapIcon } from '../icons'
 import { Button } from '../components/Button'
 import { useIsDesktop } from '../hooks/useMediaQuery'
+import { isAdmin } from '../admin'
 import {
   deviationToTopPercent,
   getPoints,
@@ -26,12 +27,14 @@ type Category = {
   lessonIds: number[]
 }
 
-const CATEGORIES: Category[] = [
+const ALL_CATEGORIES: (Category & { adminOnly?: boolean })[] = [
   { id: 'fermi', icon: <BarChartIcon width={20} height={20} />,   name: 'フェルミ推定', lessonIds: [22, 23, 24, 25] },
   { id: 'logic', icon: <BrainIcon width={20} height={20} />,      name: '論理パズル',   lessonIds: [20, 21, 26, 27] },
   { id: 'case',  icon: <BriefcaseIcon width={20} height={20} />,  name: 'ケース面接',   lessonIds: [28, 29] },
-  { id: 'pm',    icon: <BookOpenIcon width={20} height={20} />,   name: 'PM 入門',      lessonIds: [30, 31, 32, 33, 34] },
+  { id: 'pm',    icon: <BookOpenIcon width={20} height={20} />,   name: 'PM 入門',      lessonIds: [30, 31, 32, 33, 34], adminOnly: true },
 ]
+
+const CATEGORIES = ALL_CATEGORIES.filter((c) => isAdmin() || !c.adminOnly)
 
 interface DerivedData {
   streak: number
