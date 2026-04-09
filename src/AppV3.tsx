@@ -26,6 +26,8 @@ import { PlacementTestScreen } from './screens/PlacementTestScreen'
 import { PricingScreen } from './screens/PricingScreen'
 import { StreakScreen } from './screens/StreakScreen'
 import { SettingsScreen } from './screens/SettingsScreen'
+import { CompletedLessonsScreen } from './screens/CompletedLessonsScreen'
+import { StudyTimeScreen } from './screens/StudyTimeScreen'
 import type { AIProblemSet } from './aiProblemStore'
 import { loadTheme, applyTheme } from './theme'
 import { loadGuestUser } from './guestUser'
@@ -54,6 +56,8 @@ type Screen =
   | { type: 'pricing' }
   | { type: 'streak' }
   | { type: 'settings' }
+  | { type: 'completed-lessons' }
+  | { type: 'study-time' }
 
 const LESSON_LIST: { id: number; category: string; title: string; icon: ReactNode }[] = [
   { id: 20, category: 'ロジカルシンキング', title: 'MECE入門',        icon: <BrainIcon width={20} height={20} /> },
@@ -246,9 +250,13 @@ function AppV3() {
           userName={userName}
           onOpenStreak={() => setScreen({ type: 'streak' })}
           onOpenSettings={() => setScreen({ type: 'settings' })}
+          onOpenCompleted={() => setScreen({ type: 'completed-lessons' })}
+          onOpenStudyTime={() => setScreen({ type: 'study-time' })}
         />
       )}
       {screen.type === 'streak' && <StreakScreen onBack={handleBack} />}
+      {screen.type === 'completed-lessons' && <CompletedLessonsScreen onBack={handleBack} />}
+      {screen.type === 'study-time' && <StudyTimeScreen onBack={handleBack} />}
       {screen.type === 'settings' && (
         <SettingsScreen
           onBack={handleBack}

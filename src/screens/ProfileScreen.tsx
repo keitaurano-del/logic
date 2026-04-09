@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, type ReactNode } from 'react'
 import {
   getCompletedCount,
   getCompletedLessons,
@@ -15,6 +15,8 @@ interface ProfileScreenProps {
   userName: string
   onOpenStreak: () => void
   onOpenSettings: () => void
+  onOpenCompleted: () => void
+  onOpenStudyTime: () => void
 }
 
 const CAT_ROWS: { name: string; lessonIds: number[] }[] = [
@@ -99,6 +101,28 @@ function ProfileNavRow({ label, value, onClick }: { label: string; value?: strin
   )
 }
 
+function StatTile({
+  icon, value, label, onClick,
+}: { icon: ReactNode; value: string | number; label: string; onClick?: () => void }) {
+  return (
+    <div
+      className="stat"
+      onClick={onClick}
+      style={{ cursor: onClick ? 'pointer' : 'default', position: 'relative' }}
+    >
+      <div className="stat-icon">{icon}</div>
+      <div className="stat-value">{value}</div>
+      <div className="stat-label">{label}</div>
+      {onClick && (
+        <ChevronRightIcon
+          width={12} height={12}
+          style={{ position: 'absolute', bottom: 8, right: 8, color: 'var(--text-faint)' }}
+        />
+      )}
+    </div>
+  )
+}
+
 export function ProfileScreen(props: ProfileScreenProps) {
   const isDesktop = useIsDesktop()
   const data = useProfileData()
@@ -113,8 +137,10 @@ function ProfileMobile({
   data,
   onOpenStreak,
   onOpenSettings,
+  onOpenCompleted,
+  onOpenStudyTime,
 }: ProfileScreenProps & { data: DerivedData }) {
-  const { streak, points, deviation, topPct, rankFill, completedSet, level, levelXp, levelPct, studyHours } = data
+  const { streak, completed, deviation, topPct, rankFill, completedSet, level, levelXp, levelPct, studyHours } = data
 
   return (
     <div className="stack-lg">
@@ -171,21 +197,9 @@ function ProfileMobile({
       )}
 
       <div className="stats-grid">
-        <div className="stat">
-          <div className="stat-icon"><FlameIcon width={20} height={20} /></div>
-          <div className="stat-value">{streak}</div>
-          <div className="stat-label">連続日数</div>
-        </div>
-        <div className="stat">
-          <div className="stat-icon"><StarIcon width={20} height={20} /></div>
-          <div className="stat-value">{points.toLocaleString()}</div>
-          <div className="stat-label">ポイント</div>
-        </div>
-        <div className="stat">
-          <div className="stat-icon"><ClockIcon width={20} height={20} /></div>
-          <div className="stat-value">{studyHours}</div>
-          <div className="stat-label">学習時間</div>
-        </div>
+        <StatTile icon={<FlameIcon width={20} height={20} />} value={streak} label="連続日数" onClick={onOpenStreak} />
+        <StatTile icon={<CheckIcon width={20} height={20} />} value={completed} label="完了レッスン" onClick={onOpenCompleted} />
+        <StatTile icon={<ClockIcon width={20} height={20} />} value={studyHours} label="学習時間" onClick={onOpenStudyTime} />
       </div>
 
       {/* Navigation rows */}
@@ -220,6 +234,8 @@ function ProfileDesktop({
   data,
   onOpenStreak,
   onOpenSettings,
+  onOpenCompleted,
+  onOpenStudyTime,
 }: ProfileScreenProps & { data: DerivedData }) {
   const { streak, completed, studyHours, points, deviation, topPct, rankFill, completedSet, level, levelXp, levelPct } = data
 
@@ -303,20 +319,30 @@ function ProfileDesktop({
           </div>
           <ChevronRightIcon width={14} height={14} style={{ color: 'var(--text-faint)' }} />
         </button>
-        <div className="stat-pill-large">
+        <button
+          className="stat-pill-large"
+          onClick={onOpenCompleted}
+          style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 'var(--s-3)', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', padding: 'var(--s-4) var(--s-5)', textAlign: 'left', width: '100%' }}
+        >
           <div className="icon-box"><CheckIcon width={18} height={18} /></div>
-          <div>
+          <div style={{ flex: 1 }}>
             <div className="stat-value">{completed}</div>
             <div className="stat-label">完了レッスン</div>
           </div>
-        </div>
-        <div className="stat-pill-large">
+          <ChevronRightIcon width={14} height={14} style={{ color: 'var(--text-faint)' }} />
+        </button>
+        <button
+          className="stat-pill-large"
+          onClick={onOpenStudyTime}
+          style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 'var(--s-3)', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', padding: 'var(--s-4) var(--s-5)', textAlign: 'left', width: '100%' }}
+        >
           <div className="icon-box"><ClockIcon width={18} height={18} /></div>
-          <div>
+          <div style={{ flex: 1 }}>
             <div className="stat-value">{studyHours}</div>
             <div className="stat-label">総学習時間</div>
           </div>
-        </div>
+          <ChevronRightIcon width={14} height={14} style={{ color: 'var(--text-faint)' }} />
+        </button>
       </div>
 
       <div className="bottom-grid">

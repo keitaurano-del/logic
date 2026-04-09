@@ -244,6 +244,20 @@ const STRINGS: Record<Locale, Strings> = {
     'theme.accent.pink': 'ピンク',
     'theme.accent.cyan': 'シアン',
 
+    // Completed lessons screen
+    'completed.title': '完了レッスン',
+    'completed.lessonsDone': '完了したレッスン',
+    'completed.empty': 'まだレッスンを完了していません',
+
+    // Study time screen
+    'studytime.title': '総学習時間',
+    'studytime.totalLabel': '合計学習時間',
+    'studytime.studyDays': '学習日数',
+    'studytime.avgPerDay': '1日平均',
+    'studytime.last30Days': '過去30日',
+    'studytime.last30Chart': '過去30日の学習状況',
+    'studytime.recentDays': '最近7日間',
+
     // Streak screen
     'streak.title': '連続学習記録',
     'streak.currentLabel': '日間連続学習',
@@ -499,6 +513,20 @@ const STRINGS: Record<Locale, Strings> = {
     'theme.accent.green': 'Green',
     'theme.accent.pink': 'Pink',
     'theme.accent.cyan': 'Cyan',
+
+    // Completed lessons screen
+    'completed.title': 'Completed Lessons',
+    'completed.lessonsDone': 'lessons completed',
+    'completed.empty': 'No lessons completed yet',
+
+    // Study time screen
+    'studytime.title': 'Study Time',
+    'studytime.totalLabel': 'Total Study Time',
+    'studytime.studyDays': 'Study Days',
+    'studytime.avgPerDay': 'Avg / Day',
+    'studytime.last30Days': 'Last 30 Days',
+    'studytime.last30Chart': 'Activity — last 30 days',
+    'studytime.recentDays': 'Recent 7 days',
 
     // Streak screen
     'streak.title': 'Streak',
