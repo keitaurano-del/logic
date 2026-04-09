@@ -81,16 +81,16 @@ export type RankTier = {
 }
 
 export const RANK_TIERS: RankTier[] = [
-  { level: 1,  title: '見習い探偵',     titleEn: 'Rookie Detective',    minXp: 0    },
-  { level: 2,  title: '初級探偵',       titleEn: 'Junior Detective',    minXp: 1000 },
-  { level: 3,  title: '探偵',           titleEn: 'Detective',           minXp: 2000 },
-  { level: 4,  title: 'ベテラン探偵',   titleEn: 'Veteran Detective',   minXp: 3000 },
-  { level: 5,  title: 'シニア探偵',     titleEn: 'Senior Detective',    minXp: 4000 },
-  { level: 6,  title: 'エキスパート',   titleEn: 'Expert',              minXp: 5000 },
-  { level: 7,  title: 'マスター探偵',   titleEn: 'Master Detective',    minXp: 6000 },
-  { level: 8,  title: 'グランドマスター', titleEn: 'Grand Master',      minXp: 7000 },
-  { level: 9,  title: 'レジェンド',     titleEn: 'Legend',              minXp: 8000 },
-  { level: 10, title: 'ロジックの神',   titleEn: 'Logic God',           minXp: 9000 },
+  { level: 1,  title: '哲学の卵',       titleEn: 'Philosophical Egg',   minXp: 0    },
+  { level: 2,  title: 'ソフィスト',     titleEn: 'Sophist',             minXp: 1000 },
+  { level: 3,  title: 'ソクラテス',     titleEn: 'Socrates',            minXp: 2000 },
+  { level: 4,  title: 'プラトン',       titleEn: 'Plato',               minXp: 3000 },
+  { level: 5,  title: 'アリストテレス', titleEn: 'Aristotle',           minXp: 4000 },
+  { level: 6,  title: 'デカルト',       titleEn: 'Descartes',           minXp: 5000 },
+  { level: 7,  title: 'カント',         titleEn: 'Kant',                minXp: 6000 },
+  { level: 8,  title: 'ヘーゲル',       titleEn: 'Hegel',               minXp: 7000 },
+  { level: 9,  title: 'ニーチェ',       titleEn: 'Nietzsche',           minXp: 8000 },
+  { level: 10, title: 'ロゴスの神',     titleEn: 'God of Logos',        minXp: 9000 },
 ]
 
 export function getLevelTitle(xp: number, locale: 'ja' | 'en' = 'ja'): string {
@@ -102,12 +102,19 @@ export function getCurrentTier(xp: number): RankTier {
   return [...RANK_TIERS].reverse().find((t) => xp >= t.minXp) ?? RANK_TIERS[0]
 }
 
-/** Greeting by local time of day. */
-export function timeBasedGreeting(): { eyebrow: string; greeting: string } {
+/** Greeting by local time of day, locale-aware. */
+export function timeBasedGreeting(locale: 'ja' | 'en' = 'ja'): { eyebrow: string; greeting: string } {
   const h = new Date().getHours()
-  if (h < 5) return { eyebrow: 'GOOD NIGHT', greeting: 'まだ起きてる?' }
-  if (h < 11) return { eyebrow: 'GOOD MORNING', greeting: 'おはよう' }
+  if (locale === 'en') {
+    if (h < 5)  return { eyebrow: 'GOOD NIGHT',     greeting: 'Still up?' }
+    if (h < 11) return { eyebrow: 'GOOD MORNING',   greeting: 'Good morning' }
+    if (h < 17) return { eyebrow: 'GOOD AFTERNOON', greeting: 'Good afternoon' }
+    if (h < 22) return { eyebrow: 'GOOD EVENING',   greeting: 'Good evening' }
+    return       { eyebrow: 'GOOD NIGHT',            greeting: 'Good night' }
+  }
+  if (h < 5)  return { eyebrow: 'GOOD NIGHT',     greeting: 'まだ起きてる?' }
+  if (h < 11) return { eyebrow: 'GOOD MORNING',   greeting: 'おはよう' }
   if (h < 17) return { eyebrow: 'GOOD AFTERNOON', greeting: 'こんにちは' }
-  if (h < 22) return { eyebrow: 'GOOD EVENING', greeting: 'こんばんは' }
-  return { eyebrow: 'GOOD NIGHT', greeting: 'お疲れさま' }
+  if (h < 22) return { eyebrow: 'GOOD EVENING',   greeting: 'こんばんは' }
+  return       { eyebrow: 'GOOD NIGHT',            greeting: 'お疲れさま' }
 }

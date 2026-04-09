@@ -2,6 +2,7 @@ import { getCompletedCount } from '../stats'
 import { getPoints, RANK_TIERS, getCurrentTier } from './homeHelpers'
 import { ArrowLeftIcon, StarIcon, CheckIcon } from '../icons'
 import { IconButton } from '../components/IconButton'
+import { RankIllustration } from '../components/RankIllustration'
 import { t } from '../i18n'
 
 interface RankScreenProps {
@@ -33,15 +34,18 @@ export function RankScreen({ onBack }: RankScreenProps) {
 
       {/* Current rank hero */}
       <section className="profile-hero" style={{ textAlign: 'center' }}>
-        <div style={{ fontSize: 56, fontWeight: 800, lineHeight: 1, letterSpacing: '-0.03em', color: '#fff', marginBottom: 'var(--s-2)' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--s-3)' }}>
+          <RankIllustration level={level} size={160} />
+        </div>
+        <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.55)', marginBottom: 4 }}>
           Lv.{level}
         </div>
-        <div style={{ fontSize: 22, fontWeight: 700, color: 'rgba(255,255,255,0.9)', marginBottom: 'var(--s-4)' }}>
+        <div style={{ fontSize: 24, fontWeight: 800, color: '#fff', marginBottom: 'var(--s-4)', letterSpacing: '-0.02em' }}>
           {title}
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
           <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)' }}>
-            LEVEL PROGRESS
+            {t('home.levelProgress')}
           </span>
           <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
             {levelXp} / 1,000 XP
@@ -52,7 +56,7 @@ export function RankScreen({ onBack }: RankScreenProps) {
         </div>
         {nextTier && (
           <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginTop: 'var(--s-3)' }}>
-            {isJa ? `次のランク「${isJa ? nextTier.title : nextTier.titleEn}」まで ${xpToNext} XP` : `${xpToNext} XP to "${nextTier.titleEn}"`}
+            {isJa ? `次のランク「${nextTier.title}」まで ${xpToNext} XP` : `${xpToNext} XP to "${nextTier.titleEn}"`}
           </div>
         )}
       </section>
@@ -114,15 +118,15 @@ export function RankScreen({ onBack }: RankScreenProps) {
                   gap: 'var(--s-3)',
                   background: isCurrent ? 'var(--brand-soft)' : 'transparent',
                 }}>
-                  {/* Level badge */}
+                  {/* Illustration badge */}
                   <div style={{
-                    width: 36, height: 36, borderRadius: '50%', flexShrink: 0,
-                    background: isCurrent ? 'var(--brand)' : isUnlocked ? 'var(--bg-secondary)' : 'var(--border)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 12, fontWeight: 700,
-                    color: isCurrent ? '#fff' : isUnlocked ? 'var(--text)' : 'var(--text-faint)',
+                    width: 44, height: 44, borderRadius: '50%', flexShrink: 0,
+                    overflow: 'hidden',
+                    opacity: isUnlocked ? 1 : 0.35,
+                    outline: isCurrent ? '2px solid var(--brand)' : 'none',
+                    outlineOffset: 2,
                   }}>
-                    {r.level}
+                    <RankIllustration level={r.level} size={44} />
                   </div>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 14, fontWeight: isCurrent ? 700 : 400, color: isCurrent ? 'var(--brand)' : isUnlocked ? 'var(--text)' : 'var(--text-faint)' }}>
@@ -134,7 +138,7 @@ export function RankScreen({ onBack }: RankScreenProps) {
                   </div>
                   {isCurrent && (
                     <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--brand)', background: 'var(--brand-soft)', border: '1px solid var(--brand)', borderRadius: 'var(--radius-full)', padding: '2px 8px' }}>
-                      NOW
+                      {t('rank.currentBadge')}
                     </span>
                   )}
                   {isUnlocked && !isCurrent && (

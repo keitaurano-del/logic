@@ -154,7 +154,7 @@ function ProfileMobile({
   return (
     <div className="stack-lg">
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <h1 style={{ fontSize: 28 }}>Profile</h1>
+        <h1 style={{ fontSize: 28 }}>{t('profile.title')}</h1>
         <button
           onClick={onOpenSettings}
           style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 'var(--s-2)', color: 'var(--text-muted)', display: 'flex', alignItems: 'center' }}
@@ -178,7 +178,7 @@ function ProfileMobile({
         </div>
         <div className="row-between" style={{ position: 'relative' }}>
           <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.65)' }}>
-            LEVEL PROGRESS
+            {t('home.levelProgress')}
           </span>
           <span className="mono" style={{ fontSize: 12, color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
             {levelXp} / 1,000 XP
@@ -191,12 +191,12 @@ function ProfileMobile({
 
       {topPct != null && (
         <button className="rank-card" onClick={onOpenRanking} style={{ cursor: 'pointer', border: 'none', background: 'none', padding: 0, textAlign: 'left', display: 'block', width: '100%' }}>
-          <div className="rank-eyebrow">NATIONAL RANKING · 偏差値 {deviation!.toFixed(1)}</div>
+          <div className="rank-eyebrow">{t('home.nationalRanking')} · {t('ranking.deviationLabel')} {deviation!.toFixed(1)}</div>
           <div className="rank-row">
             <div className="rank-num">{topPct}<span className="rank-num-unit">%</span></div>
             <div>
-              <div className="rank-meta-top">上位 {topPct}%</div>
-              <div className="rank-meta-sub">全国ランキング</div>
+              <div className="rank-meta-top">{t('ranking.topPercent', { pct: topPct })}</div>
+              <div className="rank-meta-sub">{t('profile.nationalRankingCard')}</div>
             </div>
           </div>
           <div className="rank-bar">
@@ -209,16 +209,16 @@ function ProfileMobile({
       <button className="card" onClick={onOpenRank} style={{ cursor: 'pointer', border: '1px solid var(--border)', background: 'var(--surface)', borderRadius: 'var(--radius-md)', padding: 'var(--s-3) var(--s-4)', display: 'flex', alignItems: 'center', gap: 'var(--s-3)', textAlign: 'left', width: '100%' }}>
         <StarIcon width={18} height={18} style={{ color: 'var(--brand)', flexShrink: 0 }} />
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>Points</div>
+          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>{t('profile.points')}</div>
           <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--brand)', letterSpacing: '-0.02em' }}>{points.toLocaleString()}</div>
         </div>
         <ChevronRightIcon width={14} height={14} style={{ color: 'var(--text-faint)' }} />
       </button>
 
       <div className="stats-grid">
-        <StatTile icon={<FlameIcon width={20} height={20} />} value={streak} label="連続日数" onClick={onOpenStreak} />
-        <StatTile icon={<CheckIcon width={20} height={20} />} value={completed} label="完了レッスン" onClick={onOpenCompleted} />
-        <StatTile icon={<ClockIcon width={20} height={20} />} value={studyHours} label="学習時間" onClick={onOpenStudyTime} />
+        <StatTile icon={<FlameIcon width={20} height={20} />} value={streak} label={t('profile.statStreak')} onClick={onOpenStreak} />
+        <StatTile icon={<CheckIcon width={20} height={20} />} value={completed} label={t('profile.statCompleted')} onClick={onOpenCompleted} />
+        <StatTile icon={<ClockIcon width={20} height={20} />} value={studyHours} label={t('profile.statStudyTime')} onClick={onOpenStudyTime} />
       </div>
 
       {/* Navigation rows */}
@@ -236,7 +236,7 @@ function ProfileMobile({
       </div>
 
       <section className="section">
-        <h2 style={{ fontSize: 17, marginBottom: 'var(--s-3)' }}>Category progress</h2>
+        <h2 style={{ fontSize: 17, marginBottom: 'var(--s-3)' }}>{t('profile.categoryProgress')}</h2>
         <div className="card">
           <CategoryProgress completedSet={completedSet} />
         </div>
@@ -264,7 +264,7 @@ function ProfileDesktop({
   return (
     <>
       <div className="page-head">
-        <h1>Profile</h1>
+        <h1>{t('profile.title')}</h1>
         <button
           onClick={onOpenSettings}
           style={{ background: 'none', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', cursor: 'pointer', padding: '6px 14px', fontSize: 13, color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: 6 }}
@@ -290,7 +290,7 @@ function ProfileDesktop({
           </div>
           <div className="row-between" style={{ position: 'relative', marginBottom: 10 }}>
             <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)' }}>
-              LEVEL PROGRESS
+              {t('home.levelProgress')}
             </span>
             <span className="mono" style={{ fontSize: 14, color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
               {levelXp} / 1,000 XP
@@ -304,13 +304,13 @@ function ProfileDesktop({
         <div className="stats-stack">
           {topPct != null && (
             <button className="rank-card-big" onClick={onOpenRanking} style={{ cursor: 'pointer', border: 'none', background: 'none', padding: 0, textAlign: 'left', display: 'block', width: '100%' }}>
-              <div className="rk-eyebrow">NATIONAL RANKING</div>
+              <div className="rk-eyebrow">{t('home.nationalRanking')}</div>
               <div className="rank-row-big">
                 <div className="rank-num-big">{topPct}<span>%</span></div>
                 <div>
-                  <div className="rank-detail-label">偏差値 · Deviation</div>
+                  <div className="rank-detail-label">{t('ranking.deviationLabel')} · Deviation</div>
                   <div className="rank-detail-val">{deviation!.toFixed(1)}</div>
-                  <div className="rank-detail-sub">全国ランキング</div>
+                  <div className="rank-detail-sub">{t('profile.nationalRankingCard')}</div>
                 </div>
               </div>
               <div className="rank-bar-wrap-big">
@@ -326,7 +326,7 @@ function ProfileDesktop({
             <div className="icon-box"><StarIcon width={18} height={18} /></div>
             <div style={{ flex: 1 }}>
               <div className="stat-value">{points.toLocaleString()}</div>
-              <div className="stat-label">ポイント</div>
+              <div className="stat-label">{t('profile.points')}</div>
             </div>
             <ChevronRightIcon width={14} height={14} style={{ color: 'var(--text-faint)' }} />
           </button>
@@ -342,7 +342,7 @@ function ProfileDesktop({
           <div className="icon-box"><FlameIcon width={18} height={18} /></div>
           <div style={{ flex: 1 }}>
             <div className="stat-value">{streak}</div>
-            <div className="stat-label">連続学習日数</div>
+            <div className="stat-label">{t('profile.statStreakDays')}</div>
           </div>
           <ChevronRightIcon width={14} height={14} style={{ color: 'var(--text-faint)' }} />
         </button>
@@ -354,7 +354,7 @@ function ProfileDesktop({
           <div className="icon-box"><CheckIcon width={18} height={18} /></div>
           <div style={{ flex: 1 }}>
             <div className="stat-value">{completed}</div>
-            <div className="stat-label">完了レッスン</div>
+            <div className="stat-label">{t('profile.statCompleted')}</div>
           </div>
           <ChevronRightIcon width={14} height={14} style={{ color: 'var(--text-faint)' }} />
         </button>
@@ -366,7 +366,7 @@ function ProfileDesktop({
           <div className="icon-box"><ClockIcon width={18} height={18} /></div>
           <div style={{ flex: 1 }}>
             <div className="stat-value">{studyHours}</div>
-            <div className="stat-label">総学習時間</div>
+            <div className="stat-label">{t('profile.statTotalStudyTime')}</div>
           </div>
           <ChevronRightIcon width={14} height={14} style={{ color: 'var(--text-faint)' }} />
         </button>
@@ -374,7 +374,7 @@ function ProfileDesktop({
 
       <div className="bottom-grid">
         <section className="section-card">
-          <h2>Category progress</h2>
+          <h2>{t('profile.categoryProgress')}</h2>
           <CategoryProgress completedSet={completedSet} />
         </section>
         <section className="section-card">

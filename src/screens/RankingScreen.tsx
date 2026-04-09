@@ -5,6 +5,7 @@ import { ArrowLeftIcon } from '../icons'
 import { Button } from '../components/Button'
 import { IconButton } from '../components/IconButton'
 import { API_BASE } from './apiBase'
+import { t } from '../i18n'
 
 interface RankingScreenProps {
   onBack: () => void
@@ -55,7 +56,7 @@ export function RankingScreen({ onBack, onTakeTest }: RankingScreenProps) {
 
       <div className="eyebrow accent">NATIONAL LEADERBOARD</div>
       <h1 style={{ fontSize: 28, letterSpacing: '-0.025em' }}>
-        全国ランキング
+        {t('ranking.title')}
       </h1>
 
       {!completed && (

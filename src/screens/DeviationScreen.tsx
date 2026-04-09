@@ -3,6 +3,7 @@ import { ArrowLeftIcon } from '../icons'
 import { Button } from '../components/Button'
 import { IconButton } from '../components/IconButton'
 import { deviationToTopPercent } from './homeHelpers'
+import { t } from '../i18n'
 
 interface DeviationScreenProps {
   onBack: () => void
@@ -98,14 +99,14 @@ export function DeviationScreen({ onBack, onRetakeTest, onStartLesson }: Deviati
       </section>
 
       <section className="rank-card">
-        <div className="rank-eyebrow">NATIONAL RANKING</div>
+        <div className="rank-eyebrow">{t('home.nationalRanking')}</div>
         <div className="rank-row">
           <div className="rank-num">
             {topPct}
             <span className="rank-num-unit">%</span>
           </div>
           <div>
-            <div className="rank-meta-top">上位 {topPct}%</div>
+            <div className="rank-meta-top">{t('ranking.topPercent', { pct: topPct })}</div>
             <div className="rank-meta-sub">{rank.label}</div>
           </div>
         </div>

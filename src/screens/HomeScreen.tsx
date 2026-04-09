@@ -14,7 +14,7 @@ import {
   timeBasedGreeting,
   getLevelTitle,
 } from './homeHelpers'
-import { getLocale } from '../i18n'
+import { getLocale, t } from '../i18n'
 
 interface HomeScreenProps {
   userName: string
@@ -33,10 +33,10 @@ type Category = {
 }
 
 const ALL_CATEGORIES: (Category & { adminOnly?: boolean })[] = [
-  { id: 'fermi', icon: <BarChartIcon width={20} height={20} />,   name: 'フェルミ推定', lessonIds: [22, 23, 24, 25] },
-  { id: 'logic', icon: <BrainIcon width={20} height={20} />,      name: '論理パズル',   lessonIds: [20, 21, 26, 27] },
-  { id: 'case',  icon: <BriefcaseIcon width={20} height={20} />,  name: 'ケース面接',   lessonIds: [28, 29] },
-  { id: 'pm',    icon: <BookOpenIcon width={20} height={20} />,   name: 'PM 入門',      lessonIds: [30, 31, 32, 33, 34], adminOnly: true },
+  { id: 'fermi', icon: <BarChartIcon width={20} height={20} />,   name: t('home.category.fermi'), lessonIds: [22, 23, 24, 25] },
+  { id: 'logic', icon: <BrainIcon width={20} height={20} />,      name: t('home.category.logic'), lessonIds: [20, 21, 26, 27] },
+  { id: 'case',  icon: <BriefcaseIcon width={20} height={20} />,  name: t('home.category.case'),  lessonIds: [28, 29] },
+  { id: 'pm',    icon: <BookOpenIcon width={20} height={20} />,   name: t('home.category.pm'),    lessonIds: [30, 31, 32, 33, 34], adminOnly: true },
 ]
 
 const CATEGORIES = ALL_CATEGORIES.filter((c) => isAdmin() || !c.adminOnly)
@@ -71,7 +71,7 @@ function useHomeData(): DerivedData {
   const deviation = placement?.deviation ?? null
   const topPct = deviation != null ? deviationToTopPercent(deviation) : null
   const rankFill = topPct != null ? Math.min(100, Math.max(10, 100 - topPct)) : 0
-  const { eyebrow, greeting } = timeBasedGreeting()
+  const { eyebrow, greeting } = timeBasedGreeting(getLocale())
   const recovery = hoursUntilMidnight()
   const xp = completed * 100
   const level = Math.floor(xp / 1000) + 1
@@ -117,10 +117,10 @@ function HomeMobile({
       <header>
         <div className="eyebrow">{eyebrow}</div>
         <h1 style={{ fontSize: 34, marginTop: 6, letterSpacing: '-0.025em' }}>
-          {greeting}、{userName}
+          {greeting}{t('home.greetingSep')}{userName}
         </h1>
         <p className="muted" style={{ marginTop: 6, fontSize: 15 }}>
-          今日も一歩ずつ。
+          {t('home.subtitle')}
         </p>
       </header>
 
@@ -129,21 +129,21 @@ function HomeMobile({
           <div className="streak-hero-icon"><FlameIcon width={24} height={24} /></div>
           <div>
             <div className="streak-hero-num">{streak}</div>
-            <div className="streak-hero-label">DAY STREAK</div>
+            <div className="streak-hero-label">{t('home.dayStreakLabel')}</div>
           </div>
         </div>
         <div className="streak-hero-bar">
           <div className="streak-hero-bar-fill" style={{ width: `${weekPct}%` }} />
         </div>
         <div className="streak-hero-meta">
-          <span>This week</span>
-          <span>{weekProgress} / 7 days</span>
+          <span>{t('home.thisWeek')}</span>
+          <span>{t('home.weekProgress', { n: weekProgress })}</span>
         </div>
         {streakState === 'at-risk' && (
           <div className="recovery-banner">
             <div className="recovery-icon"><ZapIcon width={16} height={16} /></div>
             <div className="recovery-text">
-              <b>Streak protection active</b> · 今日中にレッスンを完了すれば連続日数を維持できます（残り {recovery.hours} 時間 {recovery.minutes} 分）
+              <b>{t('home.streakProtectionLabel')}</b> · {t('home.streakRecovery', { hours: recovery.hours, minutes: recovery.minutes })}
             </div>
           </div>
         )}
@@ -153,7 +153,7 @@ function HomeMobile({
         <button className="points-pill" onClick={onOpenRank} style={{ cursor: 'pointer', textAlign: 'left', border: 'none', background: 'none', padding: 0, width: '100%' }}>
           <div className="points-pill-icon"><StarIcon width={18} height={18} /></div>
           <div>
-            <div className="points-pill-label">Points</div>
+            <div className="points-pill-label">{t('profile.points')}</div>
             <div className="points-pill-value">{points.toLocaleString()}</div>
           </div>
         </button>
@@ -161,7 +161,7 @@ function HomeMobile({
           <button className="points-pill" onClick={onOpenDeviation} style={{ cursor: 'pointer', textAlign: 'left', border: 'none', background: 'none', padding: 0, width: '100%' }}>
             <div className="points-pill-icon"><TrendingUpIcon width={18} height={18} /></div>
             <div>
-              <div className="points-pill-label">偏差値</div>
+              <div className="points-pill-label">{t('ranking.deviationLabel')}</div>
               <div className="points-pill-value">{deviation.toFixed(1)}</div>
             </div>
           </button>
@@ -178,15 +178,15 @@ function HomeMobile({
 
       {topPct != null && (
         <button className="rank-card" onClick={onOpenRanking} style={{ cursor: 'pointer', width: '100%', border: 'none', background: 'none', padding: 0, textAlign: 'left', display: 'block' }}>
-          <div className="rank-eyebrow">NATIONAL RANKING</div>
+          <div className="rank-eyebrow">{t('home.nationalRanking')}</div>
           <div className="rank-row">
             <div className="rank-num">
               {topPct}
               <span className="rank-num-unit">%</span>
             </div>
             <div>
-              <div className="rank-meta-top">上位 {topPct}%</div>
-              <div className="rank-meta-sub">偏差値 {deviation!.toFixed(1)}</div>
+              <div className="rank-meta-top">{t('ranking.topPercent', { pct: topPct })}</div>
+              <div className="rank-meta-sub">{t('ranking.deviationLabel')} {deviation!.toFixed(1)}</div>
             </div>
           </div>
           <div className="rank-bar">
@@ -209,13 +209,13 @@ function HomeMobile({
 
       <section className="section">
         <div className="section-head">
-          <h2>今日のおすすめ</h2>
+          <h2>{t('home.todayRecommended')}</h2>
         </div>
         <div className="featured">
           <span className="featured-tag">FERMI · 5 MIN</span>
-          <div className="featured-q">日本にある電柱の本数はどれくらい?</div>
+          <div className="featured-q">{t('home.fermiQuestion')}</div>
           <Button variant="primary" size="lg" block onClick={() => onOpenCategory('fermi')}>
-            Start lesson
+            {t('home.startLesson')}
             <ArrowRightIcon width={16} height={16} />
           </Button>
         </div>
@@ -223,7 +223,7 @@ function HomeMobile({
 
       <section className="section">
         <div className="section-head">
-          <h2>Categories</h2>
+          <h2>{t('home.categories')}</h2>
         </div>
         <div className="cat-grid">
           {CATEGORIES.map((c) => {
@@ -277,8 +277,8 @@ function HomeDesktop({
     <>
       <header className="hero-greeting">
         <div className="eyebrow">{eyebrow}</div>
-        <h1>{greeting}、{userName}</h1>
-        <p className="hero-greeting-sub">今日も一歩ずつ。昨日より少しだけ賢くなろう。</p>
+        <h1>{greeting}{t('home.greetingSep')}{userName}</h1>
+        <p className="hero-greeting-sub">{t('home.subtitleLong')}</p>
       </header>
 
       <div className="hero-grid">
@@ -287,21 +287,21 @@ function HomeDesktop({
             <div className="streak-icon"><FlameIcon width={24} height={24} /></div>
             <div>
               <div className="streak-num">{streak}</div>
-              <div className="streak-label">DAY STREAK</div>
+              <div className="streak-label">{t('home.dayStreakLabel')}</div>
             </div>
           </div>
           <div className="streak-bar-wrap">
             <div className="streak-bar-fill" style={{ width: `${weekPct}%` }} />
           </div>
           <div className="streak-meta">
-            <span>This week</span>
-            <span>{Math.min(7, streak)} / 7 days</span>
+            <span>{t('home.thisWeek')}</span>
+            <span>{t('home.weekProgress', { n: Math.min(7, streak) })}</span>
           </div>
           {streakState === 'at-risk' && (
             <div className="recovery-banner">
               <div className="recovery-icon"><ZapIcon width={16} height={16} /></div>
               <div className="recovery-text">
-                <b>Streak protection active</b> · 今日中にレッスンを完了すれば連続日数を維持できます（残り {recovery.hours} 時間 {recovery.minutes} 分）
+                <b>{t('home.streakProtectionLabel')}</b> · {t('home.streakRecovery', { hours: recovery.hours, minutes: recovery.minutes })}
               </div>
             </div>
           )}
@@ -309,13 +309,13 @@ function HomeDesktop({
 
         <section className="featured-card">
           <div>
-            <span className="featured-tag">TODAY'S CHALLENGE · FERMI · 5 MIN</span>
+            <span className="featured-tag">{t('home.todaysChallenge')}</span>
           </div>
           <div className="featured-q">
-            日本にある電柱の本数は<br />どれくらい?
+            {t('home.fermiQuestion')}
           </div>
           <Button variant="primary" size="lg" block onClick={() => onOpenCategory('fermi')}>
-            Start lesson
+            {t('home.startLesson')}
             <ArrowRightIcon width={16} height={16} />
           </Button>
         </section>
@@ -325,18 +325,18 @@ function HomeDesktop({
         <button className="stat-pill" onClick={onOpenRank} style={{ cursor: 'pointer', border: 'none', background: 'none', padding: 0, textAlign: 'left', display: 'flex', alignItems: 'center', gap: 'var(--s-3)' }}>
           <div className="icon-box"><StarIcon width={18} height={18} /></div>
           <div>
-            <div className="lbl">Points</div>
+            <div className="lbl">{t('profile.points')}</div>
             <div className="val">{points.toLocaleString()}</div>
-            <div className="delta">+{Math.max(0, points % 200)} today</div>
+            <div className="delta">{t('home.pointsToday', { n: Math.max(0, points % 200) })}</div>
           </div>
         </button>
         {deviation != null ? (
           <button className="stat-pill" onClick={onOpenDeviation} style={{ cursor: 'pointer', border: 'none', background: 'none', padding: 0, textAlign: 'left', display: 'flex', alignItems: 'center', gap: 'var(--s-3)' }}>
             <div className="icon-box"><TrendingUpIcon width={18} height={18} /></div>
             <div>
-              <div className="lbl">偏差値 · Deviation</div>
+              <div className="lbl">{t('ranking.deviationLabel')}</div>
               <div className="val">{deviation.toFixed(1)}</div>
-              <div className="delta">Placement</div>
+              <div className="delta">{t('home.placementDone')}</div>
             </div>
           </button>
         ) : (
@@ -345,21 +345,21 @@ function HomeDesktop({
             <div>
               <div className="lbl">XP</div>
               <div className="val">{xp.toLocaleString()}</div>
-              <div className="delta">Total earned</div>
+              <div className="delta">{t('home.totalEarned')}</div>
             </div>
           </button>
         )}
         {topPct != null ? (
           <button className="rank-card" onClick={onOpenRanking} style={{ cursor: 'pointer', border: 'none', background: 'none', padding: 0, textAlign: 'left', display: 'block', width: '100%' }}>
-            <div className="rank-eyebrow">NATIONAL RANKING</div>
+            <div className="rank-eyebrow">{t('home.nationalRanking')}</div>
             <div className="rank-row">
               <div className="rank-num">
                 {topPct}
                 <span className="rank-num-unit">%</span>
               </div>
               <div>
-                <div className="rank-meta-top">上位 {topPct}%</div>
-                <div className="rank-meta-sub">偏差値 {deviation!.toFixed(1)}</div>
+                <div className="rank-meta-top">{t('ranking.topPercent', { pct: topPct })}</div>
+                <div className="rank-meta-sub">{t('ranking.deviationLabel')} {deviation!.toFixed(1)}</div>
               </div>
             </div>
             <div className="rank-bar">
@@ -368,15 +368,15 @@ function HomeDesktop({
           </button>
         ) : (
           <button className="rank-card" onClick={onOpenRanking} style={{ cursor: 'pointer', opacity: 0.6, border: 'none', background: 'none', padding: 0, textAlign: 'left', display: 'block', width: '100%' }}>
-            <div className="rank-eyebrow">NATIONAL RANKING</div>
-            <div className="rank-meta-top">プレースメントテスト未完了</div>
+            <div className="rank-eyebrow">{t('home.nationalRanking')}</div>
+            <div className="rank-meta-top">{t('home.placementIncomplete')}</div>
           </button>
         )}
       </div>
 
       <button className="level-section" onClick={onOpenRank} style={{ cursor: 'pointer', border: 'none', background: 'none', padding: 0, textAlign: 'left', display: 'flex', alignItems: 'center', width: '100%' }}>
         <div style={{ flex: 1 }}>
-          <div className="eyebrow">LEVEL PROGRESS</div>
+          <div className="eyebrow">{t('home.levelProgress')}</div>
           <div className="level-name">Lv.{level} · {levelTitle}</div>
           <div className="progress" style={{ marginTop: 10, maxWidth: 600 }}>
             <div className="progress-fill" style={{ width: `${levelPct}%` }} />
@@ -387,8 +387,8 @@ function HomeDesktop({
 
       <section>
         <div className="section-head">
-          <h2>Categories</h2>
-          <button className="link-btn" onClick={() => onOpenCategory('logic')}>View all →</button>
+          <h2>{t('home.categories')}</h2>
+          <button className="link-btn" onClick={() => onOpenCategory('logic')}>{t('home.viewAll')}</button>
         </div>
         <div className="cat-grid">
           {CATEGORIES.map((c) => {
