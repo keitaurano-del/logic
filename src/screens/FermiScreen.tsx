@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { recordCompletion } from '../stats'
-import { ArrowLeftIcon, ArrowRightIcon, CheckIcon } from '../icons'
+import { ArrowLeftIcon, ArrowRightIcon, CheckIcon, LightbulbIcon } from '../icons'
 import { Button } from '../components/Button'
 import { IconButton } from '../components/IconButton'
 import { useIsDesktop } from '../hooks/useMediaQuery'
@@ -129,7 +129,7 @@ function FermiMobile({ onBack, state }: { onBack: () => void; state: FermiState 
       <h1 className="lesson-question">{question.question}</h1>
 
       <div className="hint-card" style={{ marginTop: 'var(--s-4)' }}>
-        <div className="hint-icon">💡</div>
+        <div className="hint-icon"><LightbulbIcon width={20} height={20} /></div>
         <div>
           <div className="hint-title">HINT</div>
           <div className="hint-body">{question.hint}</div>
@@ -202,7 +202,7 @@ function FermiDesktop({ onBack, state }: { onBack: () => void; state: FermiState
 
         <aside className="hint-card">
           <div className="eyebrow accent" style={{ marginBottom: 14, display: 'block' }}>HINT</div>
-          <div className="hint-icon">💡</div>
+          <div className="hint-icon"><LightbulbIcon width={20} height={20} /></div>
           <div className="hint-body">{question.hint}</div>
         </aside>
       </div>

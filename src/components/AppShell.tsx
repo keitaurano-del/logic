@@ -52,7 +52,7 @@ export function AppShell({
           ))}
         </nav>
         <div className="sidebar-footer">
-          <div className="sidebar-avatar">👤</div>
+          <div className="sidebar-avatar"><UserIcon width={18} height={18} /></div>
           <div>
             <div className="sidebar-user-name">{userName}</div>
             <div className="sidebar-user-meta">{userLevel}</div>

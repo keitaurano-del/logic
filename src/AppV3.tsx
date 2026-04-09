@@ -1,6 +1,11 @@
 // Logic v3 — full app shell with all screens
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { AppShell, type Tab } from './components/AppShell'
+import {
+  BarChartIcon, TrendingUpIcon, MessageCircleIcon, LayersIcon, CalendarIcon,
+  ClipboardListIcon, SparklesIcon, BookOpenIcon, TableIcon, TrophyIcon,
+  BrainIcon, BriefcaseIcon, TargetIcon,
+} from './icons'
 import { HomeScreen } from './screens/HomeScreen'
 import { LessonScreen } from './screens/LessonScreen'
 import { ProfileScreen } from './screens/ProfileScreen'
@@ -47,22 +52,22 @@ type Screen =
   | { type: 'theme-settings' }
   | { type: 'pricing' }
 
-const LESSON_LIST = [
-  { id: 20, category: 'ロジカルシンキング', title: 'MECE入門', emoji: '🧠' },
-  { id: 21, category: 'ロジカルシンキング', title: 'ロジックツリー', emoji: '🌳' },
-  { id: 22, category: 'フェルミ推定', title: 'フェルミ推定入門', emoji: '📊' },
-  { id: 23, category: 'フェルミ推定', title: '市場規模の推定', emoji: '📈' },
-  { id: 24, category: 'フェルミ推定', title: '人数・頻度の推定', emoji: '👥' },
-  { id: 25, category: 'フェルミ推定', title: 'セグメント分解', emoji: '🔍' },
-  { id: 26, category: 'ロジカルシンキング', title: '構造化思考', emoji: '🧩' },
-  { id: 27, category: 'ロジカルシンキング', title: '仮説思考', emoji: '💡' },
-  { id: 28, category: 'ケース面接', title: 'ケース面接入門', emoji: '💼' },
-  { id: 29, category: 'ケース面接', title: '新規事業ケース', emoji: '🚀' },
-  { id: 30, category: 'PM入門', title: 'プロジェクトとは', emoji: '📚' },
-  { id: 31, category: 'PM入門', title: 'スコープ管理', emoji: '🎯' },
-  { id: 32, category: 'PM入門', title: 'スケジュール管理', emoji: '📅' },
-  { id: 33, category: 'PM入門', title: 'リスク管理', emoji: '⚠️' },
-  { id: 34, category: 'PM入門', title: 'ステークホルダー', emoji: '🤝' },
+const LESSON_LIST: { id: number; category: string; title: string; icon: ReactNode }[] = [
+  { id: 20, category: 'ロジカルシンキング', title: 'MECE入門',        icon: <BrainIcon width={20} height={20} /> },
+  { id: 21, category: 'ロジカルシンキング', title: 'ロジックツリー',   icon: <BrainIcon width={20} height={20} /> },
+  { id: 22, category: 'フェルミ推定',       title: 'フェルミ推定入門', icon: <BarChartIcon width={20} height={20} /> },
+  { id: 23, category: 'フェルミ推定',       title: '市場規模の推定',   icon: <BarChartIcon width={20} height={20} /> },
+  { id: 24, category: 'フェルミ推定',       title: '人数・頻度の推定', icon: <TrendingUpIcon width={20} height={20} /> },
+  { id: 25, category: 'フェルミ推定',       title: 'セグメント分解',   icon: <BarChartIcon width={20} height={20} /> },
+  { id: 26, category: 'ロジカルシンキング', title: '構造化思考',       icon: <BrainIcon width={20} height={20} /> },
+  { id: 27, category: 'ロジカルシンキング', title: '仮説思考',         icon: <BrainIcon width={20} height={20} /> },
+  { id: 28, category: 'ケース面接',         title: 'ケース面接入門',   icon: <BriefcaseIcon width={20} height={20} /> },
+  { id: 29, category: 'ケース面接',         title: '新規事業ケース',   icon: <BriefcaseIcon width={20} height={20} /> },
+  { id: 30, category: 'PM入門',            title: 'プロジェクトとは', icon: <TargetIcon width={20} height={20} /> },
+  { id: 31, category: 'PM入門',            title: 'スコープ管理',     icon: <TargetIcon width={20} height={20} /> },
+  { id: 32, category: 'PM入門',            title: 'スケジュール管理', icon: <CalendarIcon width={20} height={20} /> },
+  { id: 33, category: 'PM入門',            title: 'リスク管理',       icon: <ClipboardListIcon width={20} height={20} /> },
+  { id: 34, category: 'PM入門',            title: 'ステークホルダー', icon: <BriefcaseIcon width={20} height={20} /> },
 ]
 
 function AppV3() {
@@ -125,17 +130,17 @@ function AppV3() {
             <div className="cat-grid">
               {(
                 [
-                  { nav: () => setScreen({ type: 'fermi' }), icon: '📊', name: 'フェルミ推定', meta: 'AI 問題生成' },
-                  { nav: () => setScreen({ type: 'roleplay' }), icon: '💬', name: 'ロールプレイ', meta: 'AI 対話練習' },
-                  { nav: () => setScreen({ type: 'flashcards' }), icon: '🃏', name: 'フラッシュカード', meta: 'SM-2 復習' },
-                  { nav: () => setScreen({ type: 'daily-problem' }), icon: '📅', name: '今日の問題', meta: '毎日更新' },
-                  { nav: () => setScreen({ type: 'mock-exam' }), icon: '📝', name: '模擬試験', meta: '60分・25問' },
-                  { nav: () => setScreen({ type: 'ai-problem-gen' }), icon: '✨', name: 'AI問題生成', meta: 'カスタム問題' },
-                  { nav: () => setScreen({ type: 'journal-input' }), icon: '📒', name: '仕訳ドリル', meta: '簿記3級' },
-                  { nav: () => setScreen({ type: 'worksheet' }), icon: '📋', name: '精算表ドリル', meta: '決算整理' },
-                  { nav: () => setScreen({ type: 'ranking' }), icon: '🏆', name: 'ランキング', meta: '全国順位' },
-                  { nav: () => setScreen({ type: 'deviation' }), icon: '📈', name: '偏差値', meta: 'あなたの実力' },
-                ] as { nav: () => void; icon: string; name: string; meta: string }[]
+                  { nav: () => setScreen({ type: 'fermi' }),        icon: <BarChartIcon width={20} height={20} />,      name: 'フェルミ推定',    meta: 'AI 問題生成' },
+                  { nav: () => setScreen({ type: 'roleplay' }),      icon: <MessageCircleIcon width={20} height={20} />, name: 'ロールプレイ',    meta: 'AI 対話練習' },
+                  { nav: () => setScreen({ type: 'flashcards' }),    icon: <LayersIcon width={20} height={20} />,        name: 'フラッシュカード', meta: 'SM-2 復習' },
+                  { nav: () => setScreen({ type: 'daily-problem' }), icon: <CalendarIcon width={20} height={20} />,      name: '今日の問題',      meta: '毎日更新' },
+                  { nav: () => setScreen({ type: 'mock-exam' }),     icon: <ClipboardListIcon width={20} height={20} />, name: '模擬試験',        meta: '60分・25問' },
+                  { nav: () => setScreen({ type: 'ai-problem-gen' }),icon: <SparklesIcon width={20} height={20} />,      name: 'AI問題生成',      meta: 'カスタム問題' },
+                  { nav: () => setScreen({ type: 'journal-input' }), icon: <BookOpenIcon width={20} height={20} />,      name: '仕訳ドリル',      meta: '簿記3級' },
+                  { nav: () => setScreen({ type: 'worksheet' }),     icon: <TableIcon width={20} height={20} />,         name: '精算表ドリル',    meta: '決算整理' },
+                  { nav: () => setScreen({ type: 'ranking' }),       icon: <TrophyIcon width={20} height={20} />,        name: 'ランキング',      meta: '全国順位' },
+                  { nav: () => setScreen({ type: 'deviation' }),     icon: <TrendingUpIcon width={20} height={20} />,    name: '偏差値',          meta: 'あなたの実力' },
+                ] as { nav: () => void; icon: ReactNode; name: string; meta: string }[]
               ).map((item) => (
                 <button
                   key={item.name}
@@ -161,7 +166,7 @@ function AppV3() {
                   onClick={() => handleOpenLesson(l.id)}
                   style={{ cursor: 'pointer', textAlign: 'left', border: '1px solid var(--border)' }}
                 >
-                  <div className="cat-tile-icon">{l.emoji}</div>
+                  <div className="cat-tile-icon">{l.icon}</div>
                   <div className="cat-tile-name">{l.title}</div>
                   <div className="cat-tile-meta">{l.category}</div>
                 </button>

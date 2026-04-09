@@ -1,7 +1,8 @@
 import { useMemo } from 'react'
+import type { ReactNode } from 'react'
 import { getStreak, getCompletedCount, getCompletedLessons } from '../stats'
 import { loadPlacementResult } from '../placementTest'
-import { ArrowRightIcon } from '../icons'
+import { ArrowRightIcon, BarChartIcon, BrainIcon, BriefcaseIcon, BookOpenIcon, FlameIcon, StarIcon, TrendingUpIcon, ZapIcon } from '../icons'
 import { Button } from '../components/Button'
 import { useIsDesktop } from '../hooks/useMediaQuery'
 import {
@@ -20,16 +21,16 @@ interface HomeScreenProps {
 
 type Category = {
   id: 'fermi' | 'logic' | 'case' | 'pm'
-  icon: string
+  icon: ReactNode
   name: string
   lessonIds: number[]
 }
 
 const CATEGORIES: Category[] = [
-  { id: 'fermi', icon: '📊', name: 'フェルミ推定', lessonIds: [22, 23, 24, 25] },
-  { id: 'logic', icon: '🧠', name: '論理パズル', lessonIds: [20, 21, 26, 27] },
-  { id: 'case', icon: '💼', name: 'ケース面接', lessonIds: [28, 29] },
-  { id: 'pm', icon: '📚', name: 'PM 入門', lessonIds: [30, 31, 32, 33, 34] },
+  { id: 'fermi', icon: <BarChartIcon width={20} height={20} />,   name: 'フェルミ推定', lessonIds: [22, 23, 24, 25] },
+  { id: 'logic', icon: <BrainIcon width={20} height={20} />,      name: '論理パズル',   lessonIds: [20, 21, 26, 27] },
+  { id: 'case',  icon: <BriefcaseIcon width={20} height={20} />,  name: 'ケース面接',   lessonIds: [28, 29] },
+  { id: 'pm',    icon: <BookOpenIcon width={20} height={20} />,   name: 'PM 入門',      lessonIds: [30, 31, 32, 33, 34] },
 ]
 
 interface DerivedData {
@@ -110,7 +111,7 @@ function HomeMobile({
 
       <section className="streak-hero">
         <div className="streak-hero-top">
-          <div className="streak-hero-icon">🔥</div>
+          <div className="streak-hero-icon"><FlameIcon width={24} height={24} /></div>
           <div>
             <div className="streak-hero-num">{streak}</div>
             <div className="streak-hero-label">DAY STREAK</div>
@@ -125,7 +126,7 @@ function HomeMobile({
         </div>
         {streakState === 'at-risk' && (
           <div className="recovery-banner">
-            <div className="recovery-icon">⚡</div>
+            <div className="recovery-icon"><ZapIcon width={16} height={16} /></div>
             <div className="recovery-text">
               <b>Streak protection active</b> · 今日中にレッスンを完了すれば連続日数を維持できます（残り {recovery.hours} 時間 {recovery.minutes} 分）
             </div>
@@ -135,7 +136,7 @@ function HomeMobile({
 
       <section className="points-row">
         <div className="points-pill">
-          <div className="points-pill-icon">⭐</div>
+          <div className="points-pill-icon"><StarIcon width={18} height={18} /></div>
           <div>
             <div className="points-pill-label">Points</div>
             <div className="points-pill-value">{points.toLocaleString()}</div>
@@ -143,7 +144,7 @@ function HomeMobile({
         </div>
         {deviation != null ? (
           <div className="points-pill">
-            <div className="points-pill-icon">📈</div>
+            <div className="points-pill-icon"><TrendingUpIcon width={18} height={18} /></div>
             <div>
               <div className="points-pill-label">偏差値</div>
               <div className="points-pill-value">{deviation.toFixed(1)}</div>
@@ -151,7 +152,7 @@ function HomeMobile({
           </div>
         ) : (
           <div className="points-pill">
-            <div className="points-pill-icon">📊</div>
+            <div className="points-pill-icon"><BarChartIcon width={18} height={18} /></div>
             <div>
               <div className="points-pill-label">XP</div>
               <div className="points-pill-value">{xp.toLocaleString()}</div>
@@ -264,7 +265,7 @@ function HomeDesktop({
       <div className="hero-grid">
         <section className="streak-card">
           <div className="streak-top">
-            <div className="streak-icon">🔥</div>
+            <div className="streak-icon"><FlameIcon width={24} height={24} /></div>
             <div>
               <div className="streak-num">{streak}</div>
               <div className="streak-label">DAY STREAK</div>
@@ -279,7 +280,7 @@ function HomeDesktop({
           </div>
           {streakState === 'at-risk' && (
             <div className="recovery-banner">
-              <div className="recovery-icon">⚡</div>
+              <div className="recovery-icon"><ZapIcon width={16} height={16} /></div>
               <div className="recovery-text">
                 <b>Streak protection active</b> · 今日中にレッスンを完了すれば連続日数を維持できます（残り {recovery.hours} 時間 {recovery.minutes} 分）
               </div>
@@ -303,7 +304,7 @@ function HomeDesktop({
 
       <div className="stats-row">
         <div className="stat-pill">
-          <div className="icon-box">⭐</div>
+          <div className="icon-box"><StarIcon width={18} height={18} /></div>
           <div>
             <div className="lbl">Points</div>
             <div className="val">{points.toLocaleString()}</div>
@@ -312,7 +313,7 @@ function HomeDesktop({
         </div>
         {deviation != null ? (
           <div className="stat-pill">
-            <div className="icon-box">📈</div>
+            <div className="icon-box"><TrendingUpIcon width={18} height={18} /></div>
             <div>
               <div className="lbl">偏差値 · Deviation</div>
               <div className="val">{deviation.toFixed(1)}</div>
@@ -321,7 +322,7 @@ function HomeDesktop({
           </div>
         ) : (
           <div className="stat-pill">
-            <div className="icon-box">📊</div>
+            <div className="icon-box"><BarChartIcon width={18} height={18} /></div>
             <div>
               <div className="lbl">XP</div>
               <div className="val">{xp.toLocaleString()}</div>
