@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli'
 
 const config: CapacitorConfig = {
-  appId: 'com.keitaurano.logic',
+  appId: 'com.logic.app',
   appName: 'Logic',
   webDir: 'dist',
   bundledWebRuntime: false,
