@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli'
 
 const config: CapacitorConfig = {
-  appId: 'com.logic.app',
+  appId: 'io.logic.app',
   appName: 'Logic',
   webDir: 'dist',
   bundledWebRuntime: false,
