@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import type { ReactNode } from 'react'
 import { getStreak, getCompletedCount, getCompletedLessons } from '../stats'
-import { loadPlacementResult } from '../placementTest'
+import { loadPlacementResult } from '../placementData'
 import { ArrowRightIcon, BarChartIcon, BrainIcon, BriefcaseIcon, BookOpenIcon, FlameIcon, StarIcon, TrendingUpIcon, ZapIcon } from '../icons'
 import { Button } from '../components/Button'
 import { useIsDesktop } from '../hooks/useMediaQuery'

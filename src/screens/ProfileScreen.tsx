@@ -5,7 +5,7 @@ import {
   getStreak,
   getStudyHours,
 } from '../stats'
-import { loadPlacementResult } from '../placementTest'
+import { loadPlacementResult } from '../placementData'
 import { UserIcon, FlameIcon, StarIcon, CheckIcon, ClockIcon, ChevronRightIcon } from '../icons'
 import { useIsDesktop } from '../hooks/useMediaQuery'
 import { deviationToTopPercent, getPoints, getLevelTitle } from './homeHelpers'

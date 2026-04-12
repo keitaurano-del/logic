@@ -1,4 +1,4 @@
-import { loadPlacementResult, rankLabel, recommendedLessons } from '../placementTest'
+import { loadPlacementResult, rankLabel, recommendedLessons } from '../placementData'
 import { ArrowLeftIcon } from '../icons'
 import { Button } from '../components/Button'
 import { IconButton } from '../components/IconButton'

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getGuestId } from '../guestId'
-import { hasCompletedPlacement, loadPlacementResult } from '../placementTest'
+import { hasCompletedPlacement, loadPlacementResult } from '../placementData'
 import { ArrowLeftIcon } from '../icons'
 import { Button } from '../components/Button'
 import { IconButton } from '../components/IconButton'

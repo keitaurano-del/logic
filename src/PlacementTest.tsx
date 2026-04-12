@@ -6,7 +6,7 @@ import {
   recommendedLessons,
   savePlacementResult,
   skipPlacement,
-} from './placementTest'
+} from './placementData'
 import { getGuestId, getNickname, setNickname, defaultNickname } from './guestId'
 import { t } from './i18n'
 import './PlacementTest.css'

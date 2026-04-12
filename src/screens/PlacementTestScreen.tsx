@@ -6,7 +6,7 @@ import {
   skipPlacement,
   recommendedLessons,
   type PlacementResult,
-} from '../placementTest'
+} from '../placementData'
 import { getGuestId, getNickname, setNickname, defaultNickname } from '../guestId'
 import { ArrowLeftIcon, ArrowRightIcon, CheckIcon } from '../icons'
 import { Button } from '../components/Button'
