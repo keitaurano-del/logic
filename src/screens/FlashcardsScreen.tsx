@@ -3,6 +3,7 @@ import { getDueCards, reviewCard, type Flashcard } from '../flashcardData'
 import { ArrowLeftIcon, CheckIcon } from '../icons'
 import { Button } from '../components/Button'
 import { IconButton } from '../components/IconButton'
+import { t } from '../i18n'
 
 interface FlashcardsScreenProps {
   onBack: () => void
@@ -107,7 +108,7 @@ export function FlashcardsScreen({ onBack }: FlashcardsScreenProps) {
                 className="eyebrow"
                 style={{ marginBottom: 'var(--s-3)', color: 'var(--text-muted)' }}
               >
-                {flipped ? 'ANSWER' : 'QUESTION'}
+                {flipped ? t('label.answer') : t('label.question')}
               </div>
               <div
                 className="display"

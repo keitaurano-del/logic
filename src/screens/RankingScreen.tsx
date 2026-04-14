@@ -54,7 +54,7 @@ export function RankingScreen({ onBack, onTakeTest }: RankingScreenProps) {
         <div className="progress-text">RANKING</div>
       </div>
 
-      <div className="eyebrow accent">NATIONAL LEADERBOARD</div>
+      <div className="eyebrow accent">{t('ranking.leaderboard')}</div>
       <h1 style={{ fontSize: 28, letterSpacing: '-0.025em' }}>
         {t('ranking.title')}
       </h1>

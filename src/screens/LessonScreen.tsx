@@ -175,7 +175,7 @@ export function LessonScreen({ lessonId, onBack, onComplete }: LessonScreenProps
         </div>
       ) : (
         <div className="stack">
-          <div className="eyebrow accent">{lesson.category.toUpperCase()} · QUESTION</div>
+          <div className="eyebrow accent">{lesson.category.toUpperCase()} · {t('label.question')}</div>
           <h1 className="lesson-question">{step.question}</h1>
 
           <div className="stack-sm" style={{ marginTop: 'var(--s-3)' }}>

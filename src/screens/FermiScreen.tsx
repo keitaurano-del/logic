@@ -5,6 +5,7 @@ import { Button } from '../components/Button'
 import { IconButton } from '../components/IconButton'
 import { useIsDesktop } from '../hooks/useMediaQuery'
 import { API_BASE } from './apiBase'
+import { t } from '../i18n'
 
 interface FermiScreenProps {
   onBack: () => void
@@ -122,10 +123,10 @@ function FermiMobile({ onBack, state }: { onBack: () => void; state: FermiState 
         <IconButton aria-label="Back" onClick={onBack}>
           <ArrowLeftIcon />
         </IconButton>
-        <div className="progress-text">FERMI</div>
+        <div className="progress-text">{t('label.fermi')}</div>
       </div>
 
-      <div className="eyebrow accent">FERMI ESTIMATE</div>
+      <div className="eyebrow accent">{t('label.fermi')}</div>
       <h1 className="lesson-question">{question.question}</h1>
 
       <div className="hint-card" style={{ marginTop: 'var(--s-4)' }}>
@@ -177,7 +178,7 @@ function FermiDesktop({ onBack, state }: { onBack: () => void; state: FermiState
         <IconButton aria-label="Back" onClick={onBack}>
           <ArrowLeftIcon />
         </IconButton>
-        <div className="progress-text">FERMI ESTIMATE</div>
+        <div className="progress-text">{t('label.fermi')}</div>
       </div>
 
       <div className="progress" style={{ marginBottom: 56 }}>
@@ -185,7 +186,7 @@ function FermiDesktop({ onBack, state }: { onBack: () => void; state: FermiState
       </div>
 
       <div style={{ marginBottom: 40, maxWidth: 760 }}>
-        <div className="eyebrow accent" style={{ marginBottom: 16 }}>FERMI ESTIMATE</div>
+        <div className="eyebrow accent" style={{ marginBottom: 16 }}>{t('label.fermi')}</div>
         <h1 className="lesson-question">{question.question}</h1>
       </div>
 

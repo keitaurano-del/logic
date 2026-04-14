@@ -6,6 +6,7 @@ import { recordCompletion } from '../stats'
 import { ArrowLeftIcon, ArrowRightIcon, CheckIcon } from '../icons'
 import { Button } from '../components/Button'
 import { IconButton } from '../components/IconButton'
+import { t } from '../i18n'
 
 interface DailyProblemScreenProps {
   onBack: () => void
@@ -66,7 +67,7 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
           <IconButton aria-label="Back" onClick={onBack}><ArrowLeftIcon /></IconButton>
           <div className="progress-text">TODAY</div>
         </div>
-        <div className="eyebrow accent">TODAY'S CHALLENGE</div>
+        <div className="eyebrow accent">{t('label.todaysChallenge')}</div>
         <h1 style={{ fontSize: 26, letterSpacing: '-0.025em' }}>今日の問題</h1>
         <div className="feedback-card">
           <div className="feedback-head">
@@ -91,7 +92,7 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
           <IconButton aria-label="Back" onClick={onBack}><ArrowLeftIcon /></IconButton>
           <div className="progress-text">RESULT</div>
         </div>
-        <div className="eyebrow accent">TODAY'S RESULT</div>
+        <div className="eyebrow accent">{t('label.todaysResult')}</div>
         <h1 style={{ fontSize: 26, letterSpacing: '-0.025em' }}>結果</h1>
         <section className="profile-hero" style={{ textAlign: 'center' }}>
           <div className="eyebrow" style={{ color: 'rgba(255,255,255,0.65)', marginBottom: 'var(--s-3)' }}>SCORE</div>
@@ -143,7 +144,7 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
       </div>
 
       <div className="eyebrow accent" style={{ marginTop: 'var(--s-4)' }}>
-        TODAY'S CHALLENGE · {problem.category}
+        {t('label.todaysChallenge')} · {problem.category}
       </div>
       <h2 style={{ fontSize: 20, lineHeight: 1.5, whiteSpace: 'pre-wrap', fontFamily: 'var(--font-display)' }}>
         {quizStep ? quizStep.question : (step.type === 'explain' ? step.title : '')}

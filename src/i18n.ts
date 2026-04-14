@@ -316,6 +316,16 @@ const STRINGS: Record<Locale, Strings> = {
     'ranking.youBadge': 'YOU',
     'ranking.deviationLabel': '偏差値',
     'ranking.retake': 'もう一度テストを受ける',
+    'ranking.leaderboard': '全国ランキング',
+
+    // Lesson / Fermi / Daily / Flashcard labels
+    'label.question': '問題',
+    'label.answer': '解答',
+    'label.fermi': 'フェルミ推定',
+    'label.todaysChallenge': '今日の問題',
+    'label.todaysResult': '今日の結果',
+    'label.level': 'Lv.',
+    'label.xpUnit': 'XP',
 
     // Home v3 screen
     'home.subtitle': '今日も一歩ずつ。',
@@ -640,6 +650,16 @@ const STRINGS: Record<Locale, Strings> = {
     'ranking.youBadge': 'YOU',
     'ranking.deviationLabel': 'Score',
     'ranking.retake': 'Retake the test',
+    'ranking.leaderboard': 'NATIONAL LEADERBOARD',
+
+    // Lesson / Fermi / Daily / Flashcard labels
+    'label.question': 'QUESTION',
+    'label.answer': 'ANSWER',
+    'label.fermi': 'Fermi Estimation',
+    'label.todaysChallenge': "TODAY'S CHALLENGE",
+    'label.todaysResult': "TODAY'S RESULT",
+    'label.level': 'Lv.',
+    'label.xpUnit': 'XP',
 
     // Home v3 screen
     'home.subtitle': 'Keep going, one step at a time.',
