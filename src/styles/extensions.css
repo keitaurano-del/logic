@@ -381,7 +381,7 @@
 .profile-avatar {
   width: 68px;
   height: 68px;
-  background: linear-gradient(135deg, var(--brand-dark) 0%, var(--brand) 100%);
+  background: linear-gradient(135deg, #1E2D5C 0%, #3D5FC4 100%);
   border-radius: var(--radius-full);
   display: flex;
   align-items: center;

@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { BookIcon, BrandMark, HomeIcon, UserIcon } from '../icons'
+import { t } from '../i18n'
 
 export type Tab = 'home' | 'lessons' | 'profile'
 
@@ -10,9 +11,9 @@ export interface TabDef {
 }
 
 const TABS: TabDef[] = [
-  { id: 'home', label: 'Home', icon: <HomeIcon /> },
-  { id: 'lessons', label: 'Learn', icon: <BookIcon /> },
-  { id: 'profile', label: 'You', icon: <UserIcon /> },
+  { id: 'home',    label: t('nav.home'),    icon: <HomeIcon /> },
+  { id: 'lessons', label: t('nav.lessons'), icon: <BookIcon /> },
+  { id: 'profile', label: t('nav.profile'), icon: <UserIcon /> },
 ]
 
 interface AppShellProps {
