@@ -328,7 +328,7 @@ const STRINGS: Record<Locale, Strings> = {
     'label.xpUnit': 'XP',
     'label.hint': 'ヒント',
     'label.yourAnswer': 'あなたの回答',
-    'label.youBadge': 'あなた',
+    'label.youBadge': 'プロフィール',
     'label.ptUnit': 'pt',
     'label.ptPerMin': '+2 pt / 分',
     'label.daysAgo': '{n}日前',
