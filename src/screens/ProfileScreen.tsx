@@ -105,15 +105,19 @@ function ProfileNavRow({ label, value, onClick }: { label: string; value?: strin
 }
 
 function StatTile({
-  icon, value, label, onClick,
-}: { icon: ReactNode; value: string | number; label: string; onClick?: () => void }) {
+  icon, value, label, onClick, tileColor,
+}: { icon: ReactNode; value: string | number; label: string; onClick?: () => void; tileColor?: string }) {
   return (
     <div
       className="stat"
       onClick={onClick}
-      style={{ cursor: onClick ? 'pointer' : 'default', position: 'relative' }}
+      style={{
+        cursor: onClick ? 'pointer' : 'default',
+        position: 'relative',
+        background: tileColor ? `${tileColor}18` : undefined,
+      }}
     >
-      <div className="stat-icon">{icon}</div>
+      <div className="stat-icon" style={{ color: tileColor }}>{icon}</div>
       <div className="stat-value">{value}</div>
       <div className="stat-label">{label}</div>
       {onClick && (
@@ -206,33 +210,19 @@ function ProfileMobile({
       )}
 
       {/* Points tappable */}
-      <button className="card" onClick={onOpenRank} style={{ cursor: 'pointer', border: '1px solid var(--border)', background: 'var(--surface)', borderRadius: 'var(--radius-md)', padding: 'var(--s-3) var(--s-4)', display: 'flex', alignItems: 'center', gap: 'var(--s-3)', textAlign: 'left', width: '100%' }}>
-        <StarIcon width={18} height={18} style={{ color: 'var(--brand)', flexShrink: 0 }} />
+      <button className="card" onClick={onOpenRank} style={{ cursor: 'pointer', border: '1px solid rgba(234,179,8,0.3)', background: 'var(--xp-bg)', borderRadius: 'var(--radius-md)', padding: 'var(--s-3) var(--s-4)', display: 'flex', alignItems: 'center', gap: 'var(--s-3)', textAlign: 'left', width: '100%' }}>
+        <StarIcon width={18} height={18} style={{ color: 'var(--xp-icon)', flexShrink: 0 }} />
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>{t('profile.points')}</div>
-          <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--brand)', letterSpacing: '-0.02em' }}>{points.toLocaleString()}</div>
+          <div style={{ fontSize: 'var(--font-xs)', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--xp-text)' }}>{t('profile.points')}</div>
+          <div style={{ fontSize: 'var(--font-xl)', fontWeight: 800, color: 'var(--xp-text)', letterSpacing: '-0.02em' }}>{points.toLocaleString()}</div>
         </div>
-        <ChevronRightIcon width={14} height={14} style={{ color: 'var(--text-faint)' }} />
+        <ChevronRightIcon width={14} height={14} style={{ color: 'var(--xp-text)', opacity: 0.5 }} />
       </button>
 
       <div className="stats-grid">
-        <StatTile icon={<FlameIcon width={20} height={20} />} value={streak} label={t('profile.statStreak')} onClick={onOpenStreak} />
-        <StatTile icon={<CheckIcon width={20} height={20} />} value={completed} label={t('profile.statCompleted')} onClick={onOpenCompleted} />
-        <StatTile icon={<ClockIcon width={20} height={20} />} value={studyHours} label={t('profile.statStudyTime')} onClick={onOpenStudyTime} />
-      </div>
-
-      {/* Navigation rows */}
-      <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-        <ProfileNavRow
-          label={t('streak.title')}
-          value={`${streak} ${t('streak.days')}`}
-          onClick={onOpenStreak}
-        />
-        <div style={{ height: 1, background: 'var(--border)', marginLeft: 'var(--s-4)' }} />
-        <ProfileNavRow
-          label={t('settings.title')}
-          onClick={onOpenSettings}
-        />
+        <StatTile icon={<FlameIcon width={20} height={20} />} value={streak}     label={t('profile.statStreak')}   onClick={onOpenStreak}    tileColor="var(--streak-icon)" />
+        <StatTile icon={<CheckIcon width={20} height={20} />} value={completed}  label={t('profile.statCompleted')} onClick={onOpenCompleted} tileColor="var(--lesson-icon)" />
+        <StatTile icon={<ClockIcon width={20} height={20} />} value={studyHours} label={t('profile.statStudyTime')} onClick={onOpenStudyTime} tileColor="var(--time-icon)" />
       </div>
 
       <section className="section">

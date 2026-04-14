@@ -130,6 +130,7 @@ function AppV3() {
           onOpenRank={() => setScreen({ type: 'rank' })}
           onOpenDeviation={() => setScreen({ type: 'deviation' })}
           onOpenRanking={() => setScreen({ type: 'ranking' })}
+          onOpenStreak={() => setScreen({ type: 'streak' })}
         />
       )}
 

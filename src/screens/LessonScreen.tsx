@@ -1,9 +1,13 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { allLessons, type LessonStep } from '../lessonData'
-import { recordCompletion } from '../stats'
+import { recordCompletion, getCompletedCount } from '../stats'
 import { ArrowLeftIcon, ArrowRightIcon, CheckIcon } from '../icons'
 import { Button } from '../components/Button'
 import { IconButton } from '../components/IconButton'
+import { RankIllustration } from '../components/RankIllustration'
+import { Confetti } from '../components/Confetti'
+import { getCurrentTier } from './homeHelpers'
+import { t, getLocale } from '../i18n'
 
 interface LessonScreenProps {
   lessonId: number
@@ -16,12 +20,21 @@ export function LessonScreen({ lessonId, onBack, onComplete }: LessonScreenProps
   const [stepIdx, setStepIdx] = useState(0)
   const [selected, setSelected] = useState<number | null>(null)
   const [submitted, setSubmitted] = useState(false)
+  const [animClass, setAnimClass] = useState<'answer-bounce' | 'answer-shake' | ''>('')
+  const [showCelebration, setShowCelebration] = useState(false)
+
+  // Auto-clear animation class after 500ms
+  useEffect(() => {
+    if (!animClass) return
+    const t = setTimeout(() => setAnimClass(''), 500)
+    return () => clearTimeout(t)
+  }, [animClass])
 
   if (!lesson) {
     return (
       <div className="stack">
         <div className="screen-header">
-          <IconButton aria-label="Back" onClick={onBack}>
+          <IconButton aria-label={t('common.back')} onClick={onBack}>
             <ArrowLeftIcon />
           </IconButton>
         </div>
@@ -35,21 +48,106 @@ export function LessonScreen({ lessonId, onBack, onComplete }: LessonScreenProps
   const progressPct = ((stepIdx + 1) / total) * 100
   const isLast = stepIdx === total - 1
 
+  const handleSubmit = () => {
+    setSubmitted(true)
+    if (selected != null && step.type === 'quiz') {
+      const correct = step.options[selected].correct
+      setAnimClass(correct ? 'answer-bounce' : 'answer-shake')
+    }
+  }
+
   const handleNext = () => {
     if (isLast) {
       recordCompletion(`lesson-${lesson.id}`)
-      onComplete()
+      setShowCelebration(true)
       return
     }
     setStepIdx((i) => i + 1)
     setSelected(null)
     setSubmitted(false)
+    setAnimClass('')
   }
 
+  // ── Celebration overlay ──────────────────────────────────────────
+  if (showCelebration) {
+    const completedNow = getCompletedCount()
+    const xp = completedNow * 100
+    const tier = getCurrentTier(xp)
+    const level = tier.level
+    const levelTitle = getLocale() === 'ja' ? tier.title : tier.titleEn
+
+    return (
+      <>
+        <Confetti />
+        <div style={{
+          position: 'fixed', inset: 0,
+          background: 'var(--bg-hero)',
+          display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center',
+          zIndex: 100, padding: '32px 24px',
+          textAlign: 'center',
+        }}>
+          {/* Glow */}
+          <div style={{
+            position: 'absolute', top: -60, left: '50%',
+            transform: 'translateX(-50%)',
+            width: 360, height: 360,
+            background: 'radial-gradient(circle, rgba(158,179,240,0.22) 0%, transparent 70%)',
+            pointerEvents: 'none',
+          }} />
+
+          <div style={{ animation: 'celebrate-pop 0.5s cubic-bezier(0.34,1.56,0.64,1) both' }}>
+            <RankIllustration level={level} size={152} />
+          </div>
+
+          <h1 style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: 30, fontWeight: 900, color: '#fff',
+            letterSpacing: '-0.03em', marginTop: 24, marginBottom: 6,
+            animation: 'celebrate-pop 0.5s 0.08s cubic-bezier(0.34,1.56,0.64,1) both',
+          }}>
+            {t('lesson.completedH1')}
+          </h1>
+
+          <p style={{
+            fontSize: 14, color: 'rgba(255,255,255,0.6)',
+            marginBottom: 24,
+            animation: 'fade-in-up 0.4s 0.15s ease-out both',
+          }}>
+            Lv.{level} · {levelTitle}
+          </p>
+
+          {/* XP badge */}
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 6,
+            background: 'var(--xp-bg)', border: '1px solid rgba(234,179,8,0.35)',
+            color: '#FCD34D', borderRadius: 'var(--radius-full)',
+            padding: '10px 22px', fontSize: 20, fontWeight: 800,
+            letterSpacing: '-0.01em', marginBottom: 40,
+            animation: 'xp-badge-in 0.55s 0.25s cubic-bezier(0.34,1.56,0.64,1) both',
+          }}>
+            ＋100 XP
+          </div>
+
+          <Button
+            variant="primary"
+            size="lg"
+            onClick={onComplete}
+            style={{ width: '100%', maxWidth: 280 } as React.CSSProperties}
+          >
+            {t('common.next')}
+            <ArrowRightIcon width={16} height={16} />
+          </Button>
+        </div>
+      </>
+    )
+  }
+
+  // ── Main lesson UI ───────────────────────────────────────────────
   return (
     <div className="stack">
       <div className="screen-header">
-        <IconButton aria-label="Back" onClick={onBack}>
+        <IconButton aria-label={t('common.back')} onClick={onBack}>
           <ArrowLeftIcon />
         </IconButton>
         <div className="progress-text">
@@ -71,7 +169,7 @@ export function LessonScreen({ lessonId, onBack, onComplete }: LessonScreenProps
             </p>
           </div>
           <Button variant="primary" size="lg" block onClick={handleNext}>
-            {isLast ? '完了する' : '次へ'}
+            {isLast ? t('common.complete') : t('common.next')}
             <ArrowRightIcon width={16} height={16} />
           </Button>
         </div>
@@ -85,11 +183,21 @@ export function LessonScreen({ lessonId, onBack, onComplete }: LessonScreenProps
               const isSelected = selected === i
               const showResult = submitted
               const correct = opt.correct
+
               let cls = 'card card-compact'
               if (showResult) {
                 if (correct) cls += ' option-correct'
                 else if (isSelected) cls += ' option-wrong'
-              } else if (isSelected) cls += ' option-selected'
+              } else if (isSelected) {
+                cls += ' option-selected'
+              }
+
+              // Apply answer animation to relevant options
+              if (showResult && animClass) {
+                if (animClass === 'answer-bounce' && correct) cls += ' answer-bounce'
+                if (animClass === 'answer-shake' && isSelected && !correct) cls += ' answer-shake'
+              }
+
               return (
                 <button
                   key={i}
@@ -123,43 +231,39 @@ export function LessonScreen({ lessonId, onBack, onComplete }: LessonScreenProps
                 >
                   <span
                     style={{
-                      width: 26,
-                      height: 26,
+                      width: 26, height: 26,
                       borderRadius: '999px',
                       border: '1.5px solid currentColor',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: 11,
-                      fontWeight: 700,
-                      flexShrink: 0,
-                      color:
-                        submitted && correct
-                          ? 'var(--success)'
-                          : submitted && isSelected
-                          ? 'var(--danger)'
-                          : isSelected
-                          ? 'var(--brand)'
-                          : 'var(--text-muted)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: 11, fontWeight: 700, flexShrink: 0,
+                      color: submitted && correct
+                        ? 'var(--success)'
+                        : submitted && isSelected
+                        ? 'var(--danger)'
+                        : isSelected
+                        ? 'var(--brand)'
+                        : 'var(--text-muted)',
                     }}
                   >
                     {String.fromCharCode(65 + i)}
                   </span>
                   <span style={{ flex: 1 }}>{opt.label}</span>
-                  {submitted && correct && <CheckIcon width={18} height={18} color="var(--success)" />}
+                  {submitted && correct && (
+                    <CheckIcon width={18} height={18} color="var(--success)" />
+                  )}
                 </button>
               )
             })}
           </div>
 
           {submitted && (
-            <div className="feedback-card">
+            <div className="feedback-card" style={{ animation: 'scale-in 0.2s ease-out both' }}>
               <div className="feedback-head">
-                <div className="feedback-check">
-                  <CheckIcon />
-                </div>
+                <div className="feedback-check"><CheckIcon /></div>
                 <div className="feedback-title">
-                  {selected != null && step.options[selected].correct ? 'Correct!' : 'もう少し'}
+                  {selected != null && step.options[selected].correct
+                    ? t('lesson.correctMark')
+                    : t('lesson.wrongMark')}
                 </div>
               </div>
               <div className="feedback-text">{step.explanation}</div>
@@ -167,18 +271,12 @@ export function LessonScreen({ lessonId, onBack, onComplete }: LessonScreenProps
           )}
 
           {!submitted ? (
-            <Button
-              variant="primary"
-              size="lg"
-              block
-              disabled={selected == null}
-              onClick={() => setSubmitted(true)}
-            >
+            <Button variant="primary" size="lg" block disabled={selected == null} onClick={handleSubmit}>
               回答する
             </Button>
           ) : (
             <Button variant="primary" size="lg" block onClick={handleNext}>
-              {isLast ? '完了する' : '次へ'}
+              {isLast ? t('common.complete') : t('common.next')}
               <ArrowRightIcon width={16} height={16} />
             </Button>
           )}

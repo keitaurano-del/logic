@@ -31,7 +31,7 @@
   /* Text */
   --text-primary:   #0F1424;
   --text-secondary: #5B6078;
-  --text-muted:     #9499A8;
+  --text-muted:     #6B7280;  /* 4.7:1 — AA */
   --text-tertiary:  var(--text-muted);
   --text-on-hero:   #FFFFFF;
 
@@ -93,6 +93,30 @@
   --font-mono:    'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
   --sans:  var(--font-ui);
   --serif: var(--font-display);
+
+  /* Font scale */
+  --font-xs:   11px;
+  --font-sm:   13px;
+  --font-base: 15px;
+  --font-md:   17px;
+  --font-lg:   20px;
+  --font-xl:   24px;
+  --font-2xl:  28px;
+  --font-3xl:  34px;
+
+  /* Semantic stat colors (tinted bg + dark text — readable on light bg) */
+  --streak-bg:     rgba(249, 115,  22, 0.10);
+  --streak-text:   #C2410C;
+  --streak-icon:   #F97316;
+  --lesson-bg:     rgba( 16, 185, 129, 0.10);
+  --lesson-text:   #065F46;
+  --lesson-icon:   #10B981;
+  --time-bg:       rgba( 99, 102, 241, 0.10);
+  --time-text:     #3730A3;
+  --time-icon:     #6366F1;
+  --xp-bg:         rgba(234, 179,   8, 0.12);
+  --xp-text:       #92400E;
+  --xp-icon:       #D97706;
 
   /* Layout */
   --content-width: 480px;

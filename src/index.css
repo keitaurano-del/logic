@@ -32,7 +32,7 @@
   /* Text — near-black cool */
   --text-primary:  #0F1424;  /* 17.4:1 — AAA on bg-primary */
   --text-secondary:#5B6078;  /* 6.9:1 — AAA */
-  --text-muted:    #9499A8;  /* 3.8:1 — AA large */
+  --text-muted:    #6B7280;  /* 4.7:1 — AA */
   --text-tertiary: var(--text-muted);
   --text-on-hero:  #FFFFFF;
 
@@ -196,6 +196,42 @@
 @keyframes scale-in {
   from { opacity: 0; transform: scale(0.96); }
   to { opacity: 1; transform: scale(1); }
+}
+
+/* Lesson answer feedback */
+@keyframes answer-bounce {
+  0%,100% { transform: scale(1); }
+  30%     { transform: scale(1.04); }
+  65%     { transform: scale(0.97); }
+}
+@keyframes answer-shake {
+  0%,100%  { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+/* Lesson completion celebration */
+@keyframes celebrate-pop {
+  0%   { opacity: 0; transform: scale(0.88) translateY(16px); }
+  60%  { transform: scale(1.03) translateY(-4px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes xp-badge-in {
+  0%   { opacity: 0; transform: scale(0.5) rotate(-12deg); }
+  70%  { transform: scale(1.15) rotate(4deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+/* Confetti */
+@keyframes confetti-fall {
+  0%   { transform: translateY(-20px) rotate(0deg);   opacity: 1; }
+  100% { transform: translateY(110vh) rotate(540deg); opacity: 0; }
+}
+
+/* Bottom nav dot */
+@keyframes dot-in {
+  from { transform: translateX(-50%) scale(0); opacity: 0; }
+  to   { transform: translateX(-50%) scale(1); opacity: 1; }
 }
 
 /* Editorial numeral — display utility */

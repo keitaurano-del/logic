@@ -23,6 +23,7 @@ interface HomeScreenProps {
   onOpenRank: () => void
   onOpenDeviation: () => void
   onOpenRanking: () => void
+  onOpenStreak: () => void
 }
 
 type Category = {
@@ -104,126 +105,178 @@ function HomeMobile({
   onOpenRank,
   onOpenDeviation,
   onOpenRanking,
+  onOpenStreak,
   data,
   levelTitle,
 }: HomeScreenProps & { data: DerivedData; levelTitle: string }) {
   const {
-    streak, streakState, completedSet, points, deviation, topPct, rankFill,
-    eyebrow, greeting, recovery, level, levelXp, levelPct, xp, weekProgress, weekPct,
+    streak, streakState, completedSet, points, deviation, topPct,
+    eyebrow, greeting, recovery, level, levelXp, levelPct, xp,
   } = data
 
   return (
     <div className="stack-lg">
-      <header>
-        <div className="eyebrow">{eyebrow}</div>
-        <h1 style={{ fontSize: 34, marginTop: 6, letterSpacing: '-0.025em' }}>
-          {greeting}{t('home.greetingSep')}{userName}
-        </h1>
-        <p className="muted" style={{ marginTop: 6, fontSize: 15 }}>
-          {t('home.subtitle')}
-        </p>
+
+      {/* ── Zone A: Compact header ── */}
+      <header style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 'var(--s-3)' }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div className="eyebrow">{eyebrow}</div>
+          <h1 style={{ fontSize: 'var(--font-2xl)', fontWeight: 800, marginTop: 4, letterSpacing: '-0.025em', lineHeight: 1.2 }}>
+            {greeting}{t('home.greetingSep')}{userName}
+          </h1>
+          <p style={{ marginTop: 4, fontSize: 'var(--font-sm)', color: 'var(--text-muted)' }}>
+            {t('home.subtitle')}
+          </p>
+        </div>
+        {/* Streak pill */}
+        <button
+          onClick={onOpenStreak}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 4,
+            background: 'var(--streak-bg)', color: 'var(--streak-text)',
+            border: 'none', borderRadius: 'var(--radius-full)',
+            padding: '8px 14px', fontSize: 'var(--font-sm)', fontWeight: 700,
+            cursor: 'pointer', flexShrink: 0, marginTop: 10,
+            whiteSpace: 'nowrap',
+          }}
+        >
+          <FlameIcon width={15} height={15} style={{ color: 'var(--streak-icon)' }} />
+          <span>{streak}</span>
+          <span style={{ fontWeight: 500, color: 'var(--streak-text)', opacity: 0.75 }}>
+            {t('home.dayStreakLabel')}
+          </span>
+        </button>
       </header>
 
-      <section className="streak-hero">
-        <div className="streak-hero-top">
-          <div className="streak-hero-icon"><FlameIcon width={24} height={24} /></div>
-          <div>
-            <div className="streak-hero-num">{streak}</div>
-            <div className="streak-hero-label">{t('home.dayStreakLabel')}</div>
+      {/* Streak at-risk banner */}
+      {streakState === 'at-risk' && (
+        <div className="recovery-banner">
+          <div className="recovery-icon"><ZapIcon width={16} height={16} /></div>
+          <div className="recovery-text">
+            <b>{t('home.streakProtectionLabel')}</b> · {t('home.streakRecovery', { hours: recovery.hours, minutes: recovery.minutes })}
           </div>
         </div>
-        <div className="streak-hero-bar">
-          <div className="streak-hero-bar-fill" style={{ width: `${weekPct}%` }} />
+      )}
+
+      {/* ── Zone B: Today's featured (visual hero) ── */}
+      <section style={{
+        background: 'var(--bg-hero)',
+        borderRadius: 'var(--radius-2xl)',
+        padding: '28px 24px',
+        position: 'relative', overflow: 'hidden',
+      }}>
+        <div style={{
+          position: 'absolute', top: -60, right: -60,
+          width: 220, height: 220,
+          background: 'radial-gradient(circle, rgba(158,179,240,0.28) 0%, transparent 70%)',
+          pointerEvents: 'none',
+        }} />
+        <div style={{
+          fontSize: 'var(--font-xs)', fontWeight: 700,
+          letterSpacing: '0.1em', textTransform: 'uppercase',
+          color: 'var(--brand-light)', marginBottom: 10,
+        }}>
+          {t('home.todayRecommended')} · FERMI · 5 MIN
         </div>
-        <div className="streak-hero-meta">
-          <span>{t('home.thisWeek')}</span>
-          <span>{t('home.weekProgress', { n: weekProgress })}</span>
-        </div>
-        {streakState === 'at-risk' && (
-          <div className="recovery-banner">
-            <div className="recovery-icon"><ZapIcon width={16} height={16} /></div>
-            <div className="recovery-text">
-              <b>{t('home.streakProtectionLabel')}</b> · {t('home.streakRecovery', { hours: recovery.hours, minutes: recovery.minutes })}
-            </div>
-          </div>
-        )}
+        <h2 style={{
+          fontFamily: 'var(--font-display)',
+          fontSize: 'var(--font-xl)', fontWeight: 800,
+          color: '#fff', lineHeight: 1.3,
+          letterSpacing: '-0.02em', marginBottom: 24,
+        }}>
+          {t('home.fermiQuestion')}
+        </h2>
+        <Button variant="primary" size="lg" block onClick={() => onOpenCategory('fermi')}>
+          {t('home.startLesson')}
+          <ArrowRightIcon width={16} height={16} />
+        </Button>
       </section>
 
-      <section className="points-row">
-        <button className="points-pill" onClick={onOpenRank} style={{ cursor: 'pointer', textAlign: 'left', border: 'none', background: 'none', padding: 0, width: '100%' }}>
-          <div className="points-pill-icon"><StarIcon width={18} height={18} /></div>
-          <div>
-            <div className="points-pill-label">{t('profile.points')}</div>
-            <div className="points-pill-value">{points.toLocaleString()}</div>
-          </div>
+      {/* ── Zone C: Stats chips ── */}
+      <div style={{ display: 'flex', gap: 'var(--s-2)', flexWrap: 'wrap' }}>
+        <button onClick={onOpenRank} style={{
+          display: 'inline-flex', alignItems: 'center', gap: 4,
+          background: 'var(--bg-secondary)', border: '1px solid var(--border)',
+          borderRadius: 'var(--radius-full)', padding: '6px 12px',
+          fontSize: 'var(--font-sm)', fontWeight: 600,
+          color: 'var(--text-secondary)', cursor: 'pointer',
+        }}>
+          <StarIcon width={13} height={13} style={{ color: 'var(--xp-icon)' }} />
+          {points.toLocaleString()} pt
         </button>
         {deviation != null ? (
-          <button className="points-pill" onClick={onOpenDeviation} style={{ cursor: 'pointer', textAlign: 'left', border: 'none', background: 'none', padding: 0, width: '100%' }}>
-            <div className="points-pill-icon"><TrendingUpIcon width={18} height={18} /></div>
-            <div>
-              <div className="points-pill-label">{t('ranking.deviationLabel')}</div>
-              <div className="points-pill-value">{deviation.toFixed(1)}</div>
-            </div>
+          <button onClick={onOpenDeviation} style={{
+            display: 'inline-flex', alignItems: 'center', gap: 4,
+            background: 'var(--bg-secondary)', border: '1px solid var(--border)',
+            borderRadius: 'var(--radius-full)', padding: '6px 12px',
+            fontSize: 'var(--font-sm)', fontWeight: 600,
+            color: 'var(--text-secondary)', cursor: 'pointer',
+          }}>
+            <TrendingUpIcon width={13} height={13} style={{ color: 'var(--brand)' }} />
+            {t('ranking.deviationLabel')} {deviation.toFixed(1)}
           </button>
         ) : (
-          <button className="points-pill" onClick={onOpenRank} style={{ cursor: 'pointer', textAlign: 'left', border: 'none', background: 'none', padding: 0, width: '100%' }}>
-            <div className="points-pill-icon"><BarChartIcon width={18} height={18} /></div>
-            <div>
-              <div className="points-pill-label">XP</div>
-              <div className="points-pill-value">{xp.toLocaleString()}</div>
-            </div>
+          <button onClick={onOpenRank} style={{
+            display: 'inline-flex', alignItems: 'center', gap: 4,
+            background: 'var(--bg-secondary)', border: '1px solid var(--border)',
+            borderRadius: 'var(--radius-full)', padding: '6px 12px',
+            fontSize: 'var(--font-sm)', fontWeight: 600,
+            color: 'var(--text-secondary)', cursor: 'pointer',
+          }}>
+            <BarChartIcon width={13} height={13} style={{ color: 'var(--brand)' }} />
+            {xp.toLocaleString()} XP
           </button>
         )}
-      </section>
+        <button onClick={onOpenRank} style={{
+          display: 'inline-flex', alignItems: 'center', gap: 4,
+          background: 'var(--bg-secondary)', border: '1px solid var(--border)',
+          borderRadius: 'var(--radius-full)', padding: '6px 12px',
+          fontSize: 'var(--font-sm)', fontWeight: 600,
+          color: 'var(--text-secondary)', cursor: 'pointer',
+        }}>
+          Lv.{level} · {levelTitle}
+        </button>
+      </div>
 
+      {/* Rank banner (compact, only when ranking exists) */}
       {topPct != null && (
-        <button className="rank-card" onClick={onOpenRanking} style={{ cursor: 'pointer', width: '100%', border: 'none', background: 'none', padding: 0, textAlign: 'left', display: 'block' }}>
-          <div className="rank-eyebrow">{t('home.nationalRanking')}</div>
-          <div className="rank-row">
-            <div className="rank-num">
-              {topPct}
-              <span className="rank-num-unit">%</span>
+        <button onClick={onOpenRanking} style={{
+          background: 'linear-gradient(135deg, var(--brand) 0%, var(--brand-mid) 100%)',
+          borderRadius: 'var(--radius-xl)', padding: '14px 20px',
+          display: 'flex', alignItems: 'center', gap: 'var(--s-4)',
+          width: '100%', border: 'none', cursor: 'pointer', textAlign: 'left',
+        }}>
+          <div style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: 32, fontWeight: 900,
+            color: '#fff', lineHeight: 1, flexShrink: 0,
+          }}>
+            {topPct}<span style={{ fontSize: 15, fontWeight: 600 }}>%</span>
+          </div>
+          <div>
+            <div style={{
+              fontSize: 'var(--font-xs)', fontWeight: 700,
+              letterSpacing: '0.08em', textTransform: 'uppercase',
+              color: 'rgba(255,255,255,0.65)', marginBottom: 2,
+            }}>
+              {t('home.nationalRanking')}
             </div>
-            <div>
-              <div className="rank-meta-top">{t('ranking.topPercent', { pct: topPct })}</div>
-              <div className="rank-meta-sub">{t('ranking.deviationLabel')} {deviation!.toFixed(1)}</div>
+            <div style={{ fontSize: 'var(--font-base)', fontWeight: 700, color: '#fff' }}>
+              {t('ranking.topPercent', { pct: topPct })}
             </div>
           </div>
-          <div className="rank-bar">
-            <div className="rank-bar-fill" style={{ width: `${rankFill}%` }} />
+          <div style={{ marginLeft: 'auto', textAlign: 'right' }}>
+            <div style={{ fontSize: 'var(--font-sm)', color: 'rgba(255,255,255,0.65)' }}>
+              {t('ranking.deviationLabel')} {deviation!.toFixed(1)}
+            </div>
           </div>
         </button>
       )}
 
-      <button className="section" onClick={onOpenRank} style={{ cursor: 'pointer', background: 'none', border: 'none', padding: 0, textAlign: 'left', width: '100%', display: 'block' }}>
-        <div className="row-between" style={{ marginBottom: 'var(--s-3)' }}>
-          <h3 style={{ fontSize: 17 }}>Lv.{level} · {levelTitle}</h3>
-          <span className="mono muted" style={{ fontSize: 12 }}>
-            {levelXp} / 1,000 XP
-          </span>
-        </div>
-        <div className="progress progress-lg">
-          <div className="progress-fill" style={{ width: `${levelPct}%` }} />
-        </div>
-      </button>
-
+      {/* Categories */}
       <section className="section">
         <div className="section-head">
-          <h2>{t('home.todayRecommended')}</h2>
-        </div>
-        <div className="featured">
-          <span className="featured-tag">FERMI · 5 MIN</span>
-          <div className="featured-q">{t('home.fermiQuestion')}</div>
-          <Button variant="primary" size="lg" block onClick={() => onOpenCategory('fermi')}>
-            {t('home.startLesson')}
-            <ArrowRightIcon width={16} height={16} />
-          </Button>
-        </div>
-      </section>
-
-      <section className="section">
-        <div className="section-head">
-          <h2>{t('home.categories')}</h2>
+          <h2 style={{ fontSize: 'var(--font-md)', fontWeight: 700 }}>{t('home.categories')}</h2>
         </div>
         <div className="cat-grid">
           {CATEGORIES.map((c) => {
@@ -251,6 +304,29 @@ function HomeMobile({
           })}
         </div>
       </section>
+
+      {/* Level progress (bottom, secondary) */}
+      <button onClick={onOpenRank} style={{
+        background: 'var(--bg-card)', border: '1px solid var(--border)',
+        borderRadius: 'var(--radius-lg)', padding: 'var(--s-4)',
+        width: '100%', textAlign: 'left', cursor: 'pointer',
+      }}>
+        <div style={{
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+          marginBottom: 8,
+        }}>
+          <span style={{ fontSize: 'var(--font-sm)', fontWeight: 600, color: 'var(--text-secondary)' }}>
+            {t('home.levelProgress')} · Lv.{level} · {levelTitle}
+          </span>
+          <span style={{ fontSize: 'var(--font-xs)', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+            {levelXp} / 1,000 XP
+          </span>
+        </div>
+        <div className="progress">
+          <div className="progress-fill" style={{ width: `${levelPct}%` }} />
+        </div>
+      </button>
+
     </div>
   )
 }
@@ -265,6 +341,7 @@ function HomeDesktop({
   onOpenRank,
   onOpenDeviation,
   onOpenRanking,
+  onOpenStreak: _onOpenStreak,
   data,
   levelTitle,
 }: HomeScreenProps & { data: DerivedData; levelTitle: string }) {

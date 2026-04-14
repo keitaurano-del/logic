@@ -175,11 +175,35 @@
   font-weight: 600;
   font-family: var(--font-ui);
   cursor: pointer;
-  padding: 4px 0;
-  transition: color 120ms ease;
+  padding: 5px 8px;
+  border-radius: var(--radius-lg);
+  transition: color 150ms ease, background 150ms ease;
+  position: relative;
 }
-.tab.active { color: var(--brand); }
-.tab svg { width: 22px; height: 22px; }
+.tab.active {
+  color: var(--brand);
+  background: var(--brand-soft);
+}
+.tab svg {
+  width: 22px;
+  height: 22px;
+  transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.tab.active svg {
+  transform: scale(1.18);
+}
+/* Active dot indicator */
+.tab.active::before {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--brand);
+  animation: dot-in 200ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
 
 /* Simple screen header used by non-home screens */
 .screen-header {
