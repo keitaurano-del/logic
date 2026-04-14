@@ -86,8 +86,8 @@ export function RankScreen({ onBack }: RankScreenProps) {
           {t('rank.howToEarn')}
         </h2>
         {[
-          { label: t('rank.earn.lesson'), value: '+50 pt' },
-          { label: t('rank.earn.studyMin'), value: '+2 pt / min' },
+          { label: t('rank.earn.lesson'), value: `+50 ${t('label.ptUnit')}` },
+          { label: t('rank.earn.studyMin'), value: t('label.ptPerMin') },
         ].map(({ label, value }, i) => (
           <div key={i}>
             {i > 0 && <div style={{ height: 1, background: 'var(--border)', margin: 'var(--s-2) 0' }} />}

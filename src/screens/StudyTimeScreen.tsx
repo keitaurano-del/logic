@@ -118,8 +118,8 @@ export function StudyTimeScreen({ onBack }: StudyTimeScreenProps) {
           ))}
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 'var(--s-2)' }}>
-          <span style={{ fontSize: 11, color: 'var(--text-faint)' }}>30 {isJa ? '日前' : 'days ago'}</span>
-          <span style={{ fontSize: 11, color: 'var(--text-faint)' }}>{isJa ? '今日' : 'Today'}</span>
+          <span style={{ fontSize: 11, color: 'var(--text-faint)' }}>{t('label.daysAgo', { n: 30 })}</span>
+          <span style={{ fontSize: 11, color: 'var(--text-faint)' }}>{t('label.today')}</span>
         </div>
       </div>
 

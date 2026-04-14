@@ -326,6 +326,13 @@ const STRINGS: Record<Locale, Strings> = {
     'label.todaysResult': '今日の結果',
     'label.level': 'Lv.',
     'label.xpUnit': 'XP',
+    'label.hint': 'ヒント',
+    'label.yourAnswer': 'あなたの回答',
+    'label.youBadge': 'あなた',
+    'label.ptUnit': 'pt',
+    'label.ptPerMin': '+2 pt / 分',
+    'label.daysAgo': '{n}日前',
+    'label.today': '今日',
 
     // Home v3 screen
     'home.subtitle': '今日も一歩ずつ。',
@@ -660,6 +667,13 @@ const STRINGS: Record<Locale, Strings> = {
     'label.todaysResult': "TODAY'S RESULT",
     'label.level': 'Lv.',
     'label.xpUnit': 'XP',
+    'label.hint': 'HINT',
+    'label.yourAnswer': 'Your Answer',
+    'label.youBadge': 'YOU',
+    'label.ptUnit': 'pt',
+    'label.ptPerMin': '+2 pt / min',
+    'label.daysAgo': '{n} days ago',
+    'label.today': 'Today',
 
     // Home v3 screen
     'home.subtitle': 'Keep going, one step at a time.',

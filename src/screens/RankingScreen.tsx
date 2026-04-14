@@ -163,7 +163,7 @@ export function RankingScreen({ onBack, onTakeTest }: RankingScreenProps) {
                             className="badge badge-accent"
                             style={{ marginLeft: 'var(--s-2)' }}
                           >
-                            YOU
+                            {t('label.youBadge')}
                           </span>
                         )}
                       </div>

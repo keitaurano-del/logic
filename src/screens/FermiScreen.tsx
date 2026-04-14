@@ -132,7 +132,7 @@ function FermiMobile({ onBack, state }: { onBack: () => void; state: FermiState 
       <div className="hint-card" style={{ marginTop: 'var(--s-4)' }}>
         <div className="hint-icon"><LightbulbIcon width={20} height={20} /></div>
         <div>
-          <div className="hint-title">HINT</div>
+          <div className="hint-title">{t('label.hint')}</div>
           <div className="hint-body">{question.hint}</div>
         </div>
       </div>
@@ -192,7 +192,7 @@ function FermiDesktop({ onBack, state }: { onBack: () => void; state: FermiState
 
       <div className="lesson-grid">
         <div className="answer-card">
-          <span className="answer-label">YOUR ANSWER</span>
+          <span className="answer-label">{t('label.yourAnswer')}</span>
           <textarea
             placeholder="計算式や考え方を書いてみよう..."
             value={answer}
@@ -202,7 +202,7 @@ function FermiDesktop({ onBack, state }: { onBack: () => void; state: FermiState
         </div>
 
         <aside className="hint-card">
-          <div className="eyebrow accent" style={{ marginBottom: 14, display: 'block' }}>HINT</div>
+          <div className="eyebrow accent" style={{ marginBottom: 14, display: 'block' }}>{t('label.hint')}</div>
           <div className="hint-icon"><LightbulbIcon width={20} height={20} /></div>
           <div className="hint-body">{question.hint}</div>
         </aside>
