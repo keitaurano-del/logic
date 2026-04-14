@@ -36,24 +36,39 @@ const HAIR  = '#3D2B1F'
 ───────────────────────────────────────────── */
 const ILLUSTRATIONS: Record<number, ReactElement> = {
 
-  /* ── Lv 1: 哲学の卵 ── */
+  /* ── Lv 1: 哲学の卵（見習い哲学者）── */
   1: (
     <>
       <rect width="200" height="200" rx="24" fill="#FEF3C7"/>
-      {/* egg */}
-      <ellipse cx="100" cy="118" rx="64" ry="78" fill="#FFFDE7" stroke="#FCD34D" strokeWidth="3.5"/>
-      {/* crack */}
-      <path d="M92 45 L101 58 L93 70 L104 82" stroke="#F59E0B" strokeWidth="3" strokeLinecap="round" fill="none"/>
-      {/* eyes */}
-      <circle cx="82"  cy="108" r="9" fill={DARK}/>
-      <circle cx="118" cy="108" r="9" fill={DARK}/>
-      <circle cx="85"  cy="104" r="3.5" fill="white"/>
-      <circle cx="121" cy="104" r="3.5" fill="white"/>
-      {/* smile */}
-      <path d="M84 128 Q100 142 116 128" stroke={DARK} strokeWidth="3" strokeLinecap="round" fill="none"/>
+      {/* messy hair — young student */}
+      <ellipse cx="100" cy="62" rx="38" ry="36" fill={HAIR}/>
+      {/* hair tufts sticking up */}
+      <ellipse cx="84"  cy="32" rx="8"  ry="12" fill={HAIR}/>
+      <ellipse cx="100" cy="28" rx="7"  ry="11" fill={HAIR}/>
+      <ellipse cx="116" cy="32" rx="8"  ry="12" fill={HAIR}/>
+      {/* face */}
+      <ellipse cx="100" cy="74" rx="33" ry="36" fill={SKIN}/>
+      <ellipse cx="67"  cy="76" rx="7"  ry="10" fill={SKIN}/>
+      <ellipse cx="133" cy="76" rx="7"  ry="10" fill={SKIN}/>
+      {/* wide curious eyes */}
+      <circle cx="86"  cy="67" r="7"   fill={DARK}/>
+      <circle cx="114" cy="67" r="7"   fill={DARK}/>
+      <circle cx="88.5" cy="65" r="3"  fill="white"/>
+      <circle cx="116.5" cy="65" r="3" fill="white"/>
+      {/* raised eyebrows — curious */}
+      <path d="M78 57 Q86 52 94 56" stroke={HAIR} strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+      <path d="M106 56 Q114 52 122 57" stroke={HAIR} strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+      {/* cheerful smile */}
+      <path d="M86 86 Q100 98 114 86" stroke={DARK} strokeWidth="2.5" strokeLinecap="round" fill="none"/>
       {/* blush */}
-      <ellipse cx="68"  cy="118" rx="9" ry="6" fill="#FCA5A5" opacity="0.55"/>
-      <ellipse cx="132" cy="118" rx="9" ry="6" fill="#FCA5A5" opacity="0.55"/>
+      <ellipse cx="74"  cy="79" rx="8" ry="5" fill="#FCA5A5" opacity="0.5"/>
+      <ellipse cx="126" cy="79" rx="8" ry="5" fill="#FCA5A5" opacity="0.5"/>
+      {/* simple light toga */}
+      <path d="M58 116 Q72 108 100 112 Q128 108 142 116 L146 200 L54 200 Z" fill="#FFFDE7" stroke="#FCD34D" strokeWidth="1.5"/>
+      {/* small scroll in hand — eager beginner */}
+      <rect x="130" y="128" width="16" height="24" rx="4" fill="#FEF9C3" stroke="#F59E0B" strokeWidth="1.5"/>
+      <line x1="134" y1="136" x2="142" y2="136" stroke="#F59E0B" strokeWidth="1"/>
+      <line x1="134" y1="141" x2="142" y2="141" stroke="#F59E0B" strokeWidth="1"/>
     </>
   ),
 
