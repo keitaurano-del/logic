@@ -13,7 +13,8 @@
     "cap:assets": "npx @capacitor/assets generate",
     "cap:sync": "npm run build && npx cap sync",
     "cap:open:ios": "npx cap open ios",
-    "cap:open:android": "npx cap open android"
+    "cap:open:android": "npx cap open android",
+    "android:release": "git pull && npm run build && node scripts/bump-android-version.js && npx cap sync android && npm run cap:open:android"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.82.0",
