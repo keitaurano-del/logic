@@ -234,6 +234,10 @@
   to   { transform: translateX(-50%) scale(1); opacity: 1; }
 }
 
+/* Lesson answer animation classes */
+.answer-bounce { animation: answer-bounce 0.4s ease-out; }
+.answer-shake  { animation: answer-shake  0.4s ease-out; }
+
 /* Editorial numeral — display utility */
 .editorial-numeral {
   font-family: var(--serif);
