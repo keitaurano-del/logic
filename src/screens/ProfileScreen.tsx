@@ -181,7 +181,7 @@ function ProfileMobile({
           </div>
         </div>
         <div className="row-between" style={{ position: 'relative' }}>
-          <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.65)' }}>
+          <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.82)' }}>
             {t('home.levelProgress')}
           </span>
           <span className="mono" style={{ fontSize: 12, color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
@@ -279,7 +279,7 @@ function ProfileDesktop({
             </div>
           </div>
           <div className="row-between" style={{ position: 'relative', marginBottom: 10 }}>
-            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)' }}>
+            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.82)' }}>
               {t('home.levelProgress')}
             </span>
             <span className="mono" style={{ fontSize: 14, color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
