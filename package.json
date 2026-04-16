@@ -14,7 +14,9 @@
     "cap:sync": "npm run build && npx cap sync",
     "cap:open:ios": "npx cap open ios",
     "cap:open:android": "npx cap open android",
-    "android:release": "git pull && npm run build && node scripts/bump-android-version.js && npx cap sync android && npm run cap:open:android"
+    "android:release": "git pull && npm run build && node scripts/bump-android-version.js && npx cap sync android && npm run cap:open:android",
+    "deploy:web": "npm run build && vercel --prod",
+    "db:migrate": "node scripts/run-migration.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.82.0",
