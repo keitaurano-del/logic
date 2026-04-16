@@ -60,9 +60,10 @@ jobs:
       - name: Set Android versionCode from run number
         run: |
           GRADLE=android/app/build.gradle
-          VERSION_CODE=${{ github.run_number }}
+          # RUN_NUMBER + 1000 でオフセット → Play Console の既存versionCodeと衝突しない
+          VERSION_CODE=$(( ${{ github.run_number }} + 1000 ))
           # versionCode の行を置換
-          sed -i "s/versionCode [0-9]\+/versionCode ${VERSION_CODE}/" "$GRADLE"
+          sed -i "s/versionCode [0-9]*/versionCode ${VERSION_CODE}/" "$GRADLE"
           echo "✓ versionCode set to ${VERSION_CODE}"
           grep versionCode "$GRADLE"
 
