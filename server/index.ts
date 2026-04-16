@@ -41,6 +41,109 @@ const app = express()
 app.set('trust proxy', 1)
 
 app.use(cors())
+
+// Stripe Webhook は RAW ボディが必要なので、先にルート定義する
+app.post(
+  '/api/stripe/webhook',
+  express.raw({ type: 'application/json' }),
+  async (req, res) => {
+    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
+    let event: Stripe.Event
+
+    if (webhookSecret) {
+      const sig = req.headers['stripe-signature'] as string
+      try {
+        if (!stripe) return res.status(503).json({ error: 'Stripe not configured' })
+        event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret)
+      } catch (err: any) {
+        console.error('[webhook] Signature verification failed:', err.message)
+        return res.status(400).json({ error: `Webhook error: ${err.message}` })
+      }
+    } else {
+      // STRIPE_WEBHOOK_SECRET 未設定時は署名検証をスキップ（開発用）
+      try {
+        event = JSON.parse(req.body.toString()) as Stripe.Event
+      } catch {
+        return res.status(400).json({ error: 'Invalid JSON' })
+      }
+    }
+
+    try {
+      switch (event.type) {
+        case 'customer.subscription.created':
+        case 'customer.subscription.updated': {
+          const sub = event.data.object as Stripe.Subscription
+          const customerId = sub.customer as string
+          const plan = sub.items.data[0]?.price?.recurring?.interval === 'year' ? 'yearly' : 'monthly'
+          const periodEnd = new Date(sub.current_period_end * 1000).toISOString()
+
+          // customer_id → user_id を profiles テーブルから取得
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('id')
+            .eq('stripe_customer_id', customerId)
+            .single()
+
+          if (profile?.id) {
+            await supabase.from('subscriptions').upsert(
+              {
+                user_id: profile.id,
+                stripe_customer_id: customerId,
+                stripe_subscription_id: sub.id,
+                plan,
+                status: sub.status === 'active' ? 'active' : sub.status,
+                current_period_end: periodEnd,
+              },
+              { onConflict: 'user_id' }
+            )
+          }
+          break
+        }
+
+        case 'customer.subscription.deleted': {
+          const sub = event.data.object as Stripe.Subscription
+          const customerId = sub.customer as string
+
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('id')
+            .eq('stripe_customer_id', customerId)
+            .single()
+
+          if (profile?.id) {
+            await supabase
+              .from('subscriptions')
+              .update({ plan: 'free', status: 'inactive' })
+              .eq('user_id', profile.id)
+          }
+          break
+        }
+
+        case 'checkout.session.completed': {
+          const session = event.data.object as Stripe.Checkout.Session
+          const customerId = session.customer as string
+          const userId = session.metadata?.userId || session.client_reference_id
+
+          if (userId && customerId) {
+            await supabase
+              .from('profiles')
+              .upsert({ id: userId, stripe_customer_id: customerId }, { onConflict: 'id' })
+          }
+          break
+        }
+
+        default:
+          console.log(`[webhook] Unhandled event type: ${event.type}`)
+      }
+
+      res.json({ received: true })
+    } catch (e: any) {
+      console.error('[webhook] Handler error:', e)
+      res.status(500).json({ error: e.message })
+    }
+  }
+)
+
 app.use(express.json({ limit: '1mb' }))
 
 const client = new Anthropic()
@@ -1063,10 +1166,34 @@ app.get('/api/reports', async (_req, res) => {
 app.post('/api/checkout', async (req, res) => {
   if (!stripe) return res.status(503).json({ error: 'Stripe not configured' })
   try {
-    const { plan, guestId } = req.body as { plan: PlanKey; guestId?: string }
+    const { plan, guestId, userId } = req.body as { plan: PlanKey; guestId?: string; userId?: string }
     if (!PLANS[plan]) return res.status(400).json({ error: 'invalid plan' })
     const planConfig = PLANS[plan]
     if (!planConfig.priceId) return res.status(503).json({ error: 'price not configured' })
+
+    // 認証済みユーザーの場合、既存の stripe_customer_id を確認して再利用
+    let customerId: string | undefined
+    if (userId) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('stripe_customer_id')
+        .eq('id', userId)
+        .single()
+
+      if (profile?.stripe_customer_id) {
+        customerId = profile.stripe_customer_id
+      } else {
+        // 新規 Stripe Customer 作成
+        const customer = await stripe.customers.create({
+          metadata: { userId },
+        })
+        customerId = customer.id
+        // profiles に保存
+        await supabase
+          .from('profiles')
+          .upsert({ id: userId, stripe_customer_id: customerId }, { onConflict: 'id' })
+      }
+    }
 
     const origin = (req.headers.origin as string) || `http://${req.headers.host}`
     const session = await stripe.checkout.sessions.create({
@@ -1075,8 +1202,9 @@ app.post('/api/checkout', async (req, res) => {
       line_items: [{ price: planConfig.priceId, quantity: 1 }],
       success_url: `${origin}/?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/?checkout=cancel`,
-      metadata: { guestId: guestId || '', plan },
-      client_reference_id: guestId || undefined,
+      metadata: { guestId: guestId || '', plan, userId: userId || '' },
+      client_reference_id: userId || guestId || undefined,
+      ...(customerId ? { customer: customerId } : {}),
     })
     res.json({ url: session.url })
   } catch (e: any) {

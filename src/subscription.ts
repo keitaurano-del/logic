@@ -1,6 +1,8 @@
 const STORAGE_KEY = 'logic-subscription'
 const TRIAL_DAYS = 7
 
+import { createClient } from '@supabase/supabase-js'
+
 export type SubscriptionPlan = 'trial' | 'free' | 'monthly' | 'yearly'
 
 export type SubscriptionState = {
@@ -60,12 +62,35 @@ export function daysLeftInTrial(): number {
   return Math.max(0, Math.ceil(remaining / 86400000))
 }
 
-// Beta mode: all users get premium features for free during the beta period.
-// Set to false when going GA and re-enabling Stripe.
-export const BETA_MODE = true
+// Beta mode: set to false — Stripe payments are now live.
+export const BETA_MODE = false
+
+export async function getPremiumStatus(userId: string): Promise<boolean> {
+  try {
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || ''
+    const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || ''
+    if (!supabaseUrl || !supabaseAnonKey) return false
+
+    const supabase = createClient(supabaseUrl, supabaseAnonKey)
+    const { data } = await supabase
+      .from('subscriptions')
+      .select('status, plan, current_period_end')
+      .eq('user_id', userId)
+      .single()
+
+    if (!data) return false
+    if (data.plan === 'free') return false
+    if (data.current_period_end && new Date(data.current_period_end) < new Date()) return false
+    return data.status === 'active'
+  } catch {
+    return false
+  }
+}
 
 export function isPremium(): boolean {
   if (BETA_MODE) return true
+  // 認証済みユーザーの場合は非同期の getPremiumStatus() を使用してください。
+  // ここでは localStorage フォールバックを返します。
   const s = getSubscriptionState()
   return s.plan === 'trial' || s.plan === 'monthly' || s.plan === 'yearly'
 }
@@ -91,11 +116,11 @@ export function getPlanLabel(): string {
 
 const API_BASE = import.meta.env.DEV ? `http://${window.location.hostname}:3001` : ''
 
-export async function startCheckout(plan: 'monthly' | 'yearly', guestId: string): Promise<void> {
+export async function startCheckout(plan: 'monthly' | 'yearly', guestId: string, userId?: string): Promise<void> {
   const res = await fetch(`${API_BASE}/api/checkout`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ plan, guestId }),
+    body: JSON.stringify({ plan, guestId, userId }),
   })
   if (!res.ok) {
     const err = await res.json().catch(() => ({}))
