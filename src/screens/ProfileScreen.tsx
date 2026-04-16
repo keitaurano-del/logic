@@ -315,7 +315,7 @@ function ProfileDesktop({
       </div>
 
       <div className="top-grid">
-        <button className="profile-hero" onClick={onOpenRank} style={{ cursor: 'pointer', border: 'none', background: 'none', padding: 0, textAlign: 'left', display: 'block', width: '100%' }}>
+        <button className="profile-hero" onClick={onOpenRank} style={{ cursor: 'pointer', border: 'none', padding: 0, textAlign: 'left', display: 'block', width: '100%' }}>
           <div className="profile-hero-inner">
             <div className="profile-avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} width={22} height={22}><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
             <div>
