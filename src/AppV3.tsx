@@ -2,8 +2,8 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { AppShell, type Tab } from './components/AppShell'
 import {
-  BarChartIcon, TrendingUpIcon, MessageCircleIcon, LayersIcon, CalendarIcon,
-  ClipboardListIcon, SparklesIcon, BookOpenIcon, TableIcon, TrophyIcon,
+  BarChartIcon, TrendingUpIcon, CalendarIcon,
+  ClipboardListIcon,
   BrainIcon, BriefcaseIcon, TargetIcon,
 } from './icons'
 import { HomeScreen } from './screens/HomeScreen'
@@ -18,7 +18,7 @@ import { RoleplayChatScreen } from './screens/RoleplayChatScreen'
 import { MockExamScreen } from './screens/MockExamScreen'
 import { JournalInputScreen } from './screens/JournalInputScreen'
 import { WorksheetScreen } from './screens/WorksheetScreen'
-import { DailyProblemScreen } from './screens/DailyProblemScreen'
+
 import { AIProblemGenScreen } from './screens/AIProblemGenScreen'
 import { AIProblemScreen } from './screens/AIProblemScreen'
 import { FeedbackScreen } from './screens/FeedbackScreen'
@@ -137,6 +137,10 @@ function AppV3() {
           onOpenDeviation={() => setScreen({ type: 'deviation' })}
           onOpenRanking={() => setScreen({ type: 'ranking' })}
           onOpenStreak={() => setScreen({ type: 'streak' })}
+          onOpenRoleplay={() => setScreen({ type: 'roleplay' })}
+          onOpenFlashcards={() => setScreen({ type: 'flashcards' })}
+          onOpenMockExam={() => setScreen({ type: 'mock-exam' })}
+          onOpenPricing={() => setScreen({ type: 'pricing' })}
         />
       )}
 
@@ -146,38 +150,6 @@ function AppV3() {
             <div className="eyebrow">LEARN</div>
             <h1 style={{ fontSize: 28, marginTop: 6 }}>すべてのレッスン</h1>
           </header>
-
-          <section>
-            <h2 style={{ fontSize: 15, marginBottom: 'var(--s-3)' }}>Quick access</h2>
-            <div className="cat-grid">
-              {(
-                ([
-                  { nav: () => setScreen({ type: 'fermi' }),        icon: <BarChartIcon width={20} height={20} />,      name: 'フェルミ推定',    meta: 'AI 問題生成' },
-                  { nav: () => setScreen({ type: 'roleplay' }),      icon: <MessageCircleIcon width={20} height={20} />, name: 'ロールプレイ',    meta: 'AI 対話練習' },
-                  { nav: () => setScreen({ type: 'flashcards' }),    icon: <LayersIcon width={20} height={20} />,        name: 'フラッシュカード', meta: 'SM-2 復習' },
-                  { nav: () => setScreen({ type: 'daily-problem' }), icon: <CalendarIcon width={20} height={20} />,      name: '今日の問題',      meta: '毎日更新' },
-                  { nav: () => setScreen({ type: 'mock-exam' }),     icon: <ClipboardListIcon width={20} height={20} />, name: '模擬試験',        meta: '60分・25問' },
-                  { nav: () => setScreen({ type: 'ai-problem-gen' }),icon: <SparklesIcon width={20} height={20} />,      name: 'AI問題生成',      meta: 'カスタム問題' },
-                  { nav: () => setScreen({ type: 'journal-input' }), icon: <BookOpenIcon width={20} height={20} />,      name: '仕訳ドリル',      meta: '簿記3級',    adminOnly: true },
-                  { nav: () => setScreen({ type: 'worksheet' }),     icon: <TableIcon width={20} height={20} />,         name: '精算表ドリル',    meta: '決算整理',   adminOnly: true },
-                  { nav: () => setScreen({ type: 'ranking' }),       icon: <TrophyIcon width={20} height={20} />,        name: 'ランキング',      meta: '全国順位' },
-                  { nav: () => setScreen({ type: 'deviation' }),     icon: <TrendingUpIcon width={20} height={20} />,    name: '偏差値',          meta: 'あなたの実力' },
-                ] as { nav: () => void; icon: ReactNode; name: string; meta: string; adminOnly?: boolean }[])
-                .filter((item) => admin || !item.adminOnly)
-              ).map((item) => (
-                <button
-                  key={item.name}
-                  className="cat-tile"
-                  onClick={item.nav}
-                  style={{ cursor: 'pointer', textAlign: 'left', border: '1px solid var(--border)' }}
-                >
-                  <div className="cat-tile-icon">{item.icon}</div>
-                  <div className="cat-tile-name">{item.name}</div>
-                  <div className="cat-tile-meta">{item.meta}</div>
-                </button>
-              ))}
-            </div>
-          </section>
 
           <section>
             <h2 style={{ fontSize: 15, marginBottom: 'var(--s-3)' }}>レッスン一覧</h2>
@@ -204,7 +176,7 @@ function AppV3() {
       {screen.type === 'mock-exam' && <MockExamScreen onBack={handleBack} />}
       {screen.type === 'journal-input' && <JournalInputScreen onBack={handleBack} />}
       {screen.type === 'worksheet' && <WorksheetScreen onBack={handleBack} />}
-      {screen.type === 'daily-problem' && <DailyProblemScreen onBack={handleBack} />}
+
       {screen.type === 'feedback' && <FeedbackScreen onBack={handleBack} />}
       {screen.type === 'pricing' && <PricingScreen onBack={handleBack} />}
       {screen.type === 'ai-problem-gen' && (

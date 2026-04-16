@@ -10,10 +10,10 @@ interface AIProblemGenScreenProps {
 }
 
 const SAMPLE_PROMPTS = [
-  '簿記3級の仕訳問題を3問',
-  '減価償却費の問題を2問',
-  'MECE のロジカルシンキング問題を3問',
-  'プロジェクトマネジメントのリスク問題を2問',
+  'MECEを使ったロジカルシンキング問題を3問',
+  'フェルミ推定の練習問題を2問（日常レベル）',
+  'ケース面接のフレームワーク問題を2問',
+  '演繹法・帰納法の論理問題を3問',
 ]
 
 export function AIProblemGenScreen({ onBack, onPlay }: AIProblemGenScreenProps) {
@@ -66,7 +66,7 @@ export function AIProblemGenScreen({ onBack, onPlay }: AIProblemGenScreenProps) 
         <textarea
           className="textarea"
           rows={3}
-          placeholder="例: 簿記3級の仕訳問題を3問、初心者向けに"
+          placeholder="例: フェルミ推定の練習問題を2問、初心者向けに"
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
           disabled={generating}

@@ -6,8 +6,15 @@ import { Button } from '../components/Button'
 import { IconButton } from '../components/IconButton'
 import { RankIllustration } from '../components/RankIllustration'
 import { Confetti } from '../components/Confetti'
-import { getCurrentTier } from './homeHelpers'
+import { getCurrentTier, RANK_TIERS } from './homeHelpers'
 import { t, getLocale } from '../i18n'
+
+// カテゴリ→担当哲学者レベルマッピング
+const CATEGORY_PHILOSOPHER: Record<string, number> = {
+  fermi: 5,  // アリストテレス（分解の達人）
+  logic: 3,  // ソクラテス（問答法）
+  case:  6,  // デカルト（方法論的思考）
+}
 
 interface LessonScreenProps {
   lessonId: number
@@ -144,6 +151,10 @@ export function LessonScreen({ lessonId, onBack, onComplete }: LessonScreenProps
   }
 
   // ── Main lesson UI ───────────────────────────────────────────────
+  const philosopherLevel = CATEGORY_PHILOSOPHER[lesson.category] ?? 1
+  const philosopherTier = RANK_TIERS.find((t) => t.level === philosopherLevel) ?? RANK_TIERS[0]
+  const isJa = getLocale() === 'ja'
+
   return (
     <div className="stack">
       <div className="screen-header">
@@ -155,8 +166,31 @@ export function LessonScreen({ lessonId, onBack, onComplete }: LessonScreenProps
         </div>
       </div>
 
-      <div className="progress" style={{ marginBottom: 'var(--s-5)' }}>
+      <div className="progress" style={{ marginBottom: 'var(--s-3)' }}>
         <div className="progress-fill" style={{ width: `${progressPct}%` }} />
+      </div>
+
+      {/* 哲学者キャラクターバブル */}
+      <div style={{
+        display: 'flex', gap: 12, alignItems: 'flex-start',
+        background: 'var(--bg-secondary)', borderRadius: 16,
+        padding: '12px 14px', marginBottom: 'var(--s-3)',
+        animation: 'scale-in 0.25s ease-out both',
+      }}>
+        <div style={{ borderRadius: 12, overflow: 'hidden', flexShrink: 0, boxShadow: 'var(--shadow-sm)' }}>
+          <RankIllustration level={philosopherLevel} size={52} />
+        </div>
+        <div>
+          <div style={{
+            fontSize: 10, fontWeight: 700, color: 'var(--brand)',
+            textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4,
+          }}>
+            {isJa ? philosopherTier.title : philosopherTier.titleEn} より
+          </div>
+          <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6, fontStyle: 'italic' }}>
+            "{isJa ? philosopherTier.tipJa : philosopherTier.tipEn}"
+          </div>
+        </div>
       </div>
 
       {step.type === 'explain' ? (

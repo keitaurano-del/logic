@@ -1,9 +1,10 @@
+import { useState } from 'react'
 import { getCompletedCount } from '../stats'
-import { getPoints, RANK_TIERS, getCurrentTier } from './homeHelpers'
+import { getPoints, RANK_TIERS, getCurrentTier, type RankTier } from './homeHelpers'
 import { ArrowLeftIcon, StarIcon, CheckIcon } from '../icons'
 import { IconButton } from '../components/IconButton'
 import { RankIllustration } from '../components/RankIllustration'
-import { t } from '../i18n'
+import { t, getLocale } from '../i18n'
 
 interface RankScreenProps {
   onBack: () => void
@@ -17,8 +18,10 @@ export function RankScreen({ onBack }: RankScreenProps) {
   const levelXp = xp % 1000
   const levelPct = (levelXp / 1000) * 100
   const tier = getCurrentTier(xp)
-  const isJa = t('nav.home') === 'ホーム'
+  const isJa = getLocale() === 'ja'
   const title = isJa ? tier.title : tier.titleEn
+
+  const [selectedTier, setSelectedTier] = useState<RankTier | null>(null)
 
   const nextTier = RANK_TIERS.find((t) => t.level === tier.level + 1)
   const xpToNext = nextTier ? nextTier.minXp - xp : 0
@@ -111,20 +114,18 @@ export function RankScreen({ onBack }: RankScreenProps) {
             return (
               <div key={r.level}>
                 {i > 0 && <div style={{ height: 1, background: 'var(--border)', marginLeft: 'var(--s-4)' }} />}
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  padding: 'var(--s-3) var(--s-4)',
-                  gap: 'var(--s-3)',
-                  background: isCurrent ? 'var(--brand-soft)' : 'transparent',
-                }}>
-                  {/* Illustration badge */}
+                <button
+                  onClick={() => setSelectedTier(r)}
+                  style={{
+                    display: 'flex', alignItems: 'center', width: '100%',
+                    padding: 'var(--s-3) var(--s-4)', gap: 'var(--s-3)',
+                    background: isCurrent ? 'var(--brand-soft)' : 'transparent',
+                    border: 'none', cursor: 'pointer', textAlign: 'left',
+                  }}>
                   <div style={{
                     width: 44, height: 44, borderRadius: '50%', flexShrink: 0,
-                    overflow: 'hidden',
-                    opacity: isUnlocked ? 1 : 0.35,
-                    outline: isCurrent ? '2px solid var(--brand)' : 'none',
-                    outlineOffset: 2,
+                    overflow: 'hidden', opacity: isUnlocked ? 1 : 0.35,
+                    outline: isCurrent ? '2px solid var(--brand)' : 'none', outlineOffset: 2,
                   }}>
                     <RankIllustration level={r.level} size={44} />
                   </div>
@@ -136,22 +137,102 @@ export function RankScreen({ onBack }: RankScreenProps) {
                       {r.minXp.toLocaleString()} XP~
                     </div>
                   </div>
-                  {isCurrent && (
+                  {isCurrent ? (
                     <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--brand)', background: 'var(--brand-soft)', border: '1px solid var(--brand)', borderRadius: 'var(--radius-full)', padding: '2px 8px' }}>
                       {t('rank.currentBadge')}
                     </span>
+                  ) : isUnlocked ? (
+                    <CheckIcon width={16} height={16} style={{ color: 'var(--success)', flexShrink: 0 }} />
+                  ) : (
+                    <span style={{ fontSize: 11, color: 'var(--text-faint)' }}>🔒</span>
                   )}
-                  {isUnlocked && !isCurrent && (
-                    <span style={{ color: 'var(--success)', display: 'flex' }}>
-                      <CheckIcon width={16} height={16} />
-                    </span>
-                  )}
-                </div>
+                </button>
               </div>
             )
           })}
         </div>
       </div>
+
+      {/* 哲学者詳細ボトムシート */}
+      {selectedTier && (
+        <div
+          onClick={() => setSelectedTier(null)}
+          style={{
+            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.55)',
+            zIndex: 200, display: 'flex', alignItems: 'flex-end',
+            animation: 'fade-in-up 0.2s ease-out both',
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: 'var(--bg-card)',
+              borderRadius: '28px 28px 0 0',
+              padding: '28px 24px 40px',
+              width: '100%', maxHeight: '80vh', overflow: 'auto',
+              animation: 'fade-in-up 0.25s ease-out both',
+            }}
+          >
+            {/* 閉じるハンドル */}
+            <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 99, margin: '0 auto 20px' }} />
+
+            {/* イラスト + タイトル */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 20 }}>
+              <div style={{ borderRadius: 20, overflow: 'hidden', flexShrink: 0, boxShadow: 'var(--shadow-md)' }}>
+                <RankIllustration level={selectedTier.level} size={88} />
+              </div>
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--brand)', marginBottom: 4 }}>
+                  Lv.{selectedTier.level}
+                </div>
+                <div style={{ fontFamily: 'var(--font-display)', fontSize: 26, fontWeight: 900, color: 'var(--text)', letterSpacing: '-0.02em' }}>
+                  {isJa ? selectedTier.title : selectedTier.titleEn}
+                </div>
+                <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
+                  {selectedTier.minXp.toLocaleString()} XP~
+                </div>
+              </div>
+            </div>
+
+            {/* 名言 */}
+            <div style={{
+              background: 'linear-gradient(145deg, #0D1B3E, #1E2D5C)',
+              borderRadius: 18, padding: '16px 18px', marginBottom: 16,
+              position: 'relative', overflow: 'hidden',
+            }}>
+              <div style={{
+                position: 'absolute', top: -30, right: -30, width: 120, height: 120,
+                background: 'radial-gradient(circle, rgba(158,179,240,0.25) 0%, transparent 70%)',
+                pointerEvents: 'none',
+              }} />
+              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--brand-light)', marginBottom: 8 }}>
+                名言
+              </div>
+              <div style={{ fontSize: 16, fontStyle: 'italic', color: '#fff', lineHeight: 1.6 }}>
+                {isJa ? selectedTier.quoteJa : selectedTier.quoteEn}
+              </div>
+            </div>
+
+            {/* 説明 */}
+            <div style={{ fontSize: 15, color: 'var(--text-secondary)', lineHeight: 1.75 }}>
+              {isJa ? selectedTier.descJa : selectedTier.descEn}
+            </div>
+
+            {/* レッスンヒント */}
+            <div style={{
+              marginTop: 16,
+              background: 'var(--brand-soft)', borderRadius: 14, padding: '12px 14px',
+            }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--brand)', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                学習ヒント
+              </div>
+              <div style={{ fontSize: 13, color: 'var(--brand-hover)', lineHeight: 1.6 }}>
+                {isJa ? selectedTier.tipJa : selectedTier.tipEn}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -24,6 +24,10 @@ interface HomeScreenProps {
   onOpenDeviation: () => void
   onOpenRanking: () => void
   onOpenStreak: () => void
+  onOpenRoleplay: () => void
+  onOpenFlashcards: () => void
+  onOpenMockExam: () => void
+  onOpenPricing: () => void
 }
 
 type Category = {
@@ -116,13 +120,17 @@ function HomeMobile({
   onOpenCategory,
   onOpenRank,
   onOpenDeviation,
-  onOpenRanking,
+  onOpenRanking: _onOpenRanking,
   onOpenStreak,
+  onOpenRoleplay,
+  onOpenFlashcards,
+  onOpenMockExam,
+  onOpenPricing,
   data,
   levelTitle,
 }: HomeScreenProps & { data: DerivedData; levelTitle: string }) {
   const {
-    streak, streakState, completedSet, points, deviation, topPct,
+    streak, streakState, completedSet, points, deviation, topPct, rankFill,
     eyebrow, greeting, recovery, level, levelXp, levelPct, xp,
   } = data
 
@@ -255,28 +263,40 @@ function HomeMobile({
         </div>
       </div>
 
-      {/* ランクバナー */}
-      {topPct != null && (
-        <button onClick={onOpenRanking} style={{
-          background: 'linear-gradient(135deg, #2E4BA8 0%, #3D5FC4 60%, #6B85D6 100%)',
-          borderRadius: 20, padding: '14px 18px',
-          display: 'flex', alignItems: 'center', gap: 16,
+      {/* 偏差値カード（独立表示） */}
+      {deviation != null && (
+        <button onClick={onOpenDeviation} style={{
+          background: 'linear-gradient(145deg, #0D1B3E 0%, #1E2D5C 100%)',
+          borderRadius: 20, padding: '18px 20px',
           width: '100%', border: 'none', cursor: 'pointer', textAlign: 'left',
-          boxShadow: '0 4px 20px rgba(61,95,196,0.25)',
+          position: 'relative', overflow: 'hidden',
+          boxShadow: '0 4px 20px rgba(30,45,92,0.25)',
         }}>
-          <div style={{ fontFamily: 'var(--font-display)', fontSize: 36, fontWeight: 900, color: '#fff', lineHeight: 1, flexShrink: 0 }}>
-            {topPct}<span style={{ fontSize: 16, fontWeight: 600 }}>%</span>
-          </div>
-          <div>
-            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.65)', marginBottom: 3 }}>
-              {t('home.nationalRanking')}
+          <div style={{
+            position: 'absolute', top: -40, right: -40, width: 160, height: 160,
+            background: 'radial-gradient(circle, rgba(61,95,196,0.4) 0%, transparent 70%)',
+            pointerEvents: 'none',
+          }} />
+          <div style={{ position: 'relative' }}>
+            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--brand-light)', marginBottom: 8 }}>
+              {t('ranking.deviationLabel')} · {t('home.nationalRanking')}
             </div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: '#fff' }}>
-              {t('ranking.topPercent', { pct: topPct })}
+            <div style={{ display: 'flex', alignItems: 'flex-end', gap: 12, marginBottom: 12 }}>
+              <div style={{ fontFamily: 'var(--font-display)', fontSize: 52, fontWeight: 900, color: '#fff', lineHeight: 1, letterSpacing: '-0.03em' }}>
+                {deviation.toFixed(1)}
+              </div>
+              <div style={{ marginBottom: 6 }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: 'rgba(255,255,255,0.8)' }}>
+                  {topPct != null ? t('ranking.topPercent', { pct: topPct }) : ''}
+                </div>
+                <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', marginTop: 2 }}>
+                  {t('profile.nationalRankingCard')}
+                </div>
+              </div>
             </div>
-          </div>
-          <div style={{ marginLeft: 'auto', textAlign: 'right', opacity: 0.75 }}>
-            <div style={{ fontSize: 12, color: '#fff' }}>{t('ranking.deviationLabel')} {deviation!.toFixed(1)}</div>
+            <div style={{ height: 6, background: 'rgba(255,255,255,0.12)', borderRadius: 99, overflow: 'hidden' }}>
+              <div style={{ height: '100%', width: `${rankFill}%`, background: 'linear-gradient(90deg, var(--brand-light), #fff)', borderRadius: 99 }} />
+            </div>
           </div>
         </button>
       )}
@@ -322,6 +342,35 @@ function HomeMobile({
               </button>
             )
           })}
+        </div>
+      </section>
+
+      {/* ── トレーニングメニュー ── */}
+      <section>
+        <div style={{ marginBottom: 12 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: 2 }}>TRAINING</div>
+          <h2 style={{ fontSize: 18, fontWeight: 800, letterSpacing: '-0.02em' }}>練習メニュー</h2>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+          {[
+            { label: 'ロールプレイ', sub: 'AI対話練習', emoji: '💬', onClick: onOpenRoleplay, bg: '#EEF2FE', color: '#1E3A8A' },
+            { label: 'フラッシュカード', sub: 'SM-2復習', emoji: '🃏', onClick: onOpenFlashcards, bg: '#F0FDF4', color: '#065F46' },
+            { label: '模擬試験', sub: '60分・25問', emoji: '📝', onClick: onOpenMockExam, bg: '#FFF7ED', color: '#92400E' },
+            { label: 'AI問題生成', sub: 'プレミアム', emoji: '✨', onClick: onOpenPricing, bg: '#F5F3FF', color: '#5B21B6', locked: true },
+          ].map((item) => (
+            <button key={item.label} onClick={item.onClick} style={{
+              background: item.bg, border: 'none', borderRadius: 16,
+              padding: '14px 12px', cursor: 'pointer', textAlign: 'left',
+              position: 'relative',
+            }}>
+              {'locked' in item && item.locked && (
+                <div style={{ position: 'absolute', top: 10, right: 10, fontSize: 14 }}>🔒</div>
+              )}
+              <div style={{ fontSize: 22, marginBottom: 8 }}>{item.emoji}</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: item.color }}>{item.label}</div>
+              <div style={{ fontSize: 10, color: item.color, opacity: 0.65, marginTop: 2 }}>{item.sub}</div>
+            </button>
+          ))}
         </div>
       </section>
 
@@ -398,6 +447,10 @@ function HomeDesktop({
   onOpenDeviation,
   onOpenRanking,
   onOpenStreak: _onOpenStreak,
+  onOpenRoleplay: _onOpenRoleplay,
+  onOpenFlashcards: _onOpenFlashcards,
+  onOpenMockExam: _onOpenMockExam,
+  onOpenPricing: _onOpenPricing,
   data,
   levelTitle,
 }: HomeScreenProps & { data: DerivedData; levelTitle: string }) {
