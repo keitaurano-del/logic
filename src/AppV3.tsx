@@ -30,11 +30,13 @@ import { CompletedLessonsScreen } from './screens/CompletedLessonsScreen'
 import { StudyTimeScreen } from './screens/StudyTimeScreen'
 import { LanguageScreen } from './screens/LanguageScreen'
 import { RankScreen } from './screens/RankScreen'
+import { LoginScreen } from './screens/LoginScreen'
 import type { AIProblemSet } from './aiProblemStore'
 import { loadTheme, applyTheme } from './theme'
 import { loadGuestUser } from './guestUser'
 import { getCompletedCount } from './stats'
 import { isAdmin, ADMIN_LESSON_IDS } from './admin'
+import { onAuthChange, logout, type User } from './firebase'
 
 type Screen =
   | { type: 'home' }
@@ -62,6 +64,7 @@ type Screen =
   | { type: 'study-time' }
   | { type: 'language' }
   | { type: 'rank' }
+  | { type: 'login' }
 
 const LESSON_LIST: { id: number; category: string; title: string; icon: ReactNode }[] = [
   { id: 20, category: 'ロジカルシンキング', title: 'MECE入門',        icon: <BrainIcon width={20} height={20} /> },
@@ -84,10 +87,13 @@ const LESSON_LIST: { id: number; category: string; title: string; icon: ReactNod
 function AppV3() {
   const [tab, setTab] = useState<Tab>('home')
   const [screen, setScreen] = useState<Screen>({ type: 'home' })
+  const [currentUser, setCurrentUser] = useState<User | null>(null)
   const admin = isAdmin()
 
   useEffect(() => {
     applyTheme(loadTheme())
+    const unsub = onAuthChange((user) => setCurrentUser(user))
+    return unsub
   }, [])
 
   const userName = loadGuestUser().id
@@ -271,8 +277,16 @@ function AppV3() {
       {screen.type === 'settings' && (
         <SettingsScreen
           onBack={handleBack}
-          onOpenPricing={() => setScreen({ type: 'pricing' })}
           onOpenLanguage={() => setScreen({ type: 'language' })}
+          onOpenLogin={() => setScreen({ type: 'login' })}
+          currentUser={currentUser ? { email: currentUser.email ?? '' } : null}
+          onLogout={async () => { await logout(); setCurrentUser(null) }}
+        />
+      )}
+      {screen.type === 'login' && (
+        <LoginScreen
+          onBack={() => setScreen({ type: 'settings' })}
+          onLoginSuccess={(user) => { setCurrentUser(user); setScreen({ type: 'settings' }) }}
         />
       )}
       {screen.type === 'language' && <LanguageScreen onBack={() => setScreen({ type: 'settings' })} />}
