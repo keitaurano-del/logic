@@ -354,8 +354,8 @@
 
 /* Profile hero */
 .profile-hero {
-  background: var(--bg-hero);
-  color: var(--text-on-hero);
+  background: linear-gradient(145deg, #0D1B3E 0%, #1E2D5C 100%) !important;
+  color: #FFFFFF !important;
   border-radius: var(--radius-2xl);
   padding: 32px 26px 28px;
   position: relative;
@@ -391,10 +391,10 @@
   border: 3px solid #FFFFFF;
   flex-shrink: 0;
 }
-.profile-hero-name { font-family: var(--font-display); font-size: 24px; font-weight: 800; letter-spacing: -0.02em; color: #fff; }
+.profile-hero-name { font-family: var(--font-display); font-size: 24px; font-weight: 800; letter-spacing: -0.02em; color: #FFFFFF !important; }
 .profile-hero-level {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.88);
+  color: rgba(255, 255, 255, 0.75) !important;
   font-weight: 500;
   margin-top: 2px;
   letter-spacing: 0.04em;
