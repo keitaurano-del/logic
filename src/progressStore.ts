@@ -1,4 +1,5 @@
 import { loadCards } from './flashcardData'
+import { getProgress, saveAllProgress, saveProgressCategory } from './db/progressDb'
 
 const STORAGE_KEY = 'logic-progress'
 
@@ -37,6 +38,10 @@ const DEFAULT_PROGRESS: Record<Category, CategoryProgress> = {
   'プロジェクトマネジメント': { totalCards: 0, completedCards: 0 },
   'ロジカルシンキング': { totalCards: 0, completedCards: 0 },
 }
+
+// =============================================
+// localStorage ロジック（未ログイン・フォールバック用）
+// =============================================
 
 export function loadProgress(): Record<Category, CategoryProgress> {
   try {
@@ -113,4 +118,89 @@ export function initFromFlashcards(): void {
     progress[cat].completedCards = counts[cat].completed
   }
   saveProgress(progress)
+}
+
+// =============================================
+// Supabase ハイブリッド関数
+// =============================================
+
+/**
+ * 認証済みユーザーの進捗を DB から読み込み、localStorage に同期する
+ */
+export async function loadProgressFromDB(
+  userId: string
+): Promise<Record<Category, CategoryProgress>> {
+  try {
+    const dbProgress = await getProgress(userId)
+    if (dbProgress) {
+      // DB データを localStorage にキャッシュ
+      saveProgress(dbProgress)
+      return dbProgress
+    }
+  } catch (e) {
+    console.warn('[progressStore] loadProgressFromDB failed, using localStorage:', e)
+  }
+  return loadProgress()
+}
+
+/**
+ * 認証済みユーザーの進捗を DB と localStorage の両方に保存
+ */
+export async function incrementCompletedForUser(
+  userId: string,
+  category: Category
+): Promise<void> {
+  // localStorage 更新
+  const progress = loadProgress()
+  if (progress[category]) {
+    progress[category].completedCards++
+    saveProgress(progress)
+  }
+
+  // DB 更新（失敗しても localStorage は更新済み）
+  try {
+    await saveProgressCategory(userId, category, progress[category])
+  } catch (e) {
+    console.warn('[progressStore] DB sync failed:', e)
+  }
+}
+
+/**
+ * localStorage のデータを Supabase DB に移行する
+ * ログイン時に一度だけ呼び出す
+ */
+export async function migrateLocalStorageToSupabase(userId: string): Promise<void> {
+  try {
+    const local = loadProgress()
+    // デフォルト値のみの場合はスキップ
+    const hasData = (Object.values(local) as CategoryProgress[]).some(
+      (p) => p.totalCards > 0 || p.completedCards > 0
+    )
+    if (!hasData) return
+
+    // DB に既存データがあるか確認
+    const dbProgress = await getProgress(userId)
+    if (dbProgress) {
+      // DB のほうが新しい値が多ければ統合（大きい方を採用）
+      const merged: Record<Category, CategoryProgress> = structuredClone(dbProgress)
+      for (const cat of Object.keys(local) as Category[]) {
+        merged[cat] = {
+          totalCards: Math.max(dbProgress[cat]?.totalCards ?? 0, local[cat].totalCards),
+          completedCards: Math.max(
+            dbProgress[cat]?.completedCards ?? 0,
+            local[cat].completedCards
+          ),
+        }
+      }
+      await saveAllProgress(userId, merged)
+      saveProgress(merged)
+    } else {
+      // DB に何もなければ localStorage をそのまま移行
+      await saveAllProgress(userId, local)
+    }
+
+    console.log('[progressStore] migrated localStorage to Supabase')
+  } catch (e) {
+    console.warn('[progressStore] migration failed:', e)
+  }
 }

@@ -1,4 +1,10 @@
 import { getRoadmap } from './roadmapData'
+import {
+  getRoadmapProgress,
+  saveRoadmapNode,
+  saveAllRoadmapGoals,
+  deleteRoadmapGoal,
+} from './db/roadmapDb'
 
 const STORAGE_KEY = 'logic-roadmap'
 
@@ -16,6 +22,10 @@ export type RoadmapState = {
 }
 
 const DEFAULT_STATE: RoadmapState = { goals: [], setupDone: false }
+
+// =============================================
+// localStorage ロジック（未ログイン・フォールバック用）
+// =============================================
 
 function load(): RoadmapState {
   try {
@@ -139,4 +149,149 @@ export function needsOnboarding(): boolean {
 
 export function getActiveGoalIds(): string[] {
   return load().goals.map(g => g.goalId)
+}
+
+// =============================================
+// Supabase ハイブリッド関数
+// =============================================
+
+/**
+ * 認証済みユーザーのロードマップを DB から読み込み、localStorage に同期する
+ */
+export async function loadRoadmapFromDB(userId: string): Promise<RoadmapState> {
+  try {
+    const dbState = await getRoadmapProgress(userId)
+    if (dbState) {
+      // DB データを localStorage にキャッシュ
+      save(dbState)
+      return dbState
+    }
+  } catch (e) {
+    console.warn('[roadmapStore] loadRoadmapFromDB failed, using localStorage:', e)
+  }
+  return load()
+}
+
+/**
+ * ゴールを選択し、DB と localStorage の両方に保存
+ */
+export async function selectGoalForUser(
+  userId: string,
+  goalId: string
+): Promise<RoadmapState> {
+  const state = selectGoal(goalId)
+  const goal = findGoal(state, goalId)
+  if (goal) {
+    try {
+      await saveRoadmapNode(userId, goal, state.setupDone)
+    } catch (e) {
+      console.warn('[roadmapStore] DB sync failed:', e)
+    }
+  }
+  return state
+}
+
+/**
+ * ゴールを削除し、DB と localStorage の両方から削除
+ */
+export async function removeGoalForUser(
+  userId: string,
+  goalId: string
+): Promise<RoadmapState> {
+  const state = removeGoal(goalId)
+  try {
+    await deleteRoadmapGoal(userId, goalId)
+  } catch (e) {
+    console.warn('[roadmapStore] DB delete failed:', e)
+  }
+  return state
+}
+
+/**
+ * ステップ完了を DB と localStorage の両方に保存
+ */
+export async function completeStepForUser(
+  userId: string,
+  lessonId: number
+): Promise<RoadmapState> {
+  const state = completeStep(lessonId)
+  // 更新された全ゴールを DB に保存
+  try {
+    await saveAllRoadmapGoals(userId, state)
+  } catch (e) {
+    console.warn('[roadmapStore] DB sync failed:', e)
+  }
+  return state
+}
+
+/**
+ * 目標日・毎日の学習時間を DB と localStorage の両方に保存
+ */
+export async function setTargetDateForUser(
+  userId: string,
+  goalId: string,
+  date: string
+): Promise<RoadmapState> {
+  const state = setTargetDate(goalId, date)
+  const goal = findGoal(state, goalId)
+  if (goal) {
+    try {
+      await saveRoadmapNode(userId, goal, state.setupDone)
+    } catch (e) {
+      console.warn('[roadmapStore] DB sync failed:', e)
+    }
+  }
+  return state
+}
+
+export async function setDailyMinutesForUser(
+  userId: string,
+  goalId: string,
+  minutes: number
+): Promise<RoadmapState> {
+  const state = setDailyMinutes(goalId, minutes)
+  const goal = findGoal(state, goalId)
+  if (goal) {
+    try {
+      await saveRoadmapNode(userId, goal, state.setupDone)
+    } catch (e) {
+      console.warn('[roadmapStore] DB sync failed:', e)
+    }
+  }
+  return state
+}
+
+/**
+ * localStorage のデータを Supabase DB に移行する
+ * ログイン時に一度だけ呼び出す
+ */
+export async function migrateLocalStorageToSupabase(userId: string): Promise<void> {
+  try {
+    const local = load()
+    if (local.goals.length === 0) return
+
+    // DB に既存データがあるか確認
+    const dbState = await getRoadmapProgress(userId)
+    if (dbState && dbState.goals.length > 0) {
+      // DB のゴールと localStorage のゴールをマージ
+      const dbGoalIds = new Set(dbState.goals.map(g => g.goalId))
+      const toMigrate = local.goals.filter(g => !dbGoalIds.has(g.goalId))
+
+      if (toMigrate.length > 0) {
+        const mergedState: RoadmapState = {
+          goals: [...dbState.goals, ...toMigrate],
+          setupDone: dbState.setupDone || local.setupDone,
+        }
+        await saveAllRoadmapGoals(userId, mergedState)
+        save(mergedState)
+      }
+    } else {
+      // DB に何もなければ localStorage をそのまま移行
+      await saveAllRoadmapGoals(userId, local)
+    }
+
+    console.log('[roadmapStore] migrated localStorage to Supabase')
+  } catch (e) {
+    console.warn('[roadmapStore] migration failed:', e)
+  }
 }

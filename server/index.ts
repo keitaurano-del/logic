@@ -6,6 +6,13 @@ import { fileURLToPath } from 'url'
 import Anthropic from '@anthropic-ai/sdk'
 import Stripe from 'stripe'
 import rateLimit from 'express-rate-limit'
+import { createClient } from '@supabase/supabase-js'
+
+// Supabase サーバーサイドクライアント（service role key 使用）
+const supabase = createClient(
+  process.env.SUPABASE_URL || '',
+  process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+)
 
 const stripeKey = process.env.STRIPE_SECRET_KEY
 const stripe = stripeKey ? new Stripe(stripeKey) : null
@@ -878,95 +885,117 @@ app.post('/api/fermi/question', fermiLimiter, async (req, res) => {
   }
 })
 
-const REPORTS_FILE = path.join(process.cwd(), 'reports.json')
-const PLACEMENT_FILE = path.join(process.cwd(), 'placement.json')
+// =============================================
+// プレイスメントテスト — Supabase 版
+// =============================================
 
-type PlacementEntry = {
-  guestId: string
-  nickname: string
-  deviation: number
-  correctCount: number
-  totalCount: number
-  completedAt: string
-}
-
-function loadPlacements(): PlacementEntry[] {
-  try {
-    if (fs.existsSync(PLACEMENT_FILE)) {
-      return JSON.parse(fs.readFileSync(PLACEMENT_FILE, 'utf-8'))
-    }
-  } catch { /* */ }
-  return []
-}
-
-function savePlacements(entries: PlacementEntry[]) {
-  fs.writeFileSync(PLACEMENT_FILE, JSON.stringify(entries, null, 2))
-}
-
-app.post('/api/placement/submit', (req, res) => {
+app.post('/api/placement/submit', async (req, res) => {
   try {
     const { guestId, nickname, deviation, correctCount, totalCount } = req.body || {}
     if (!guestId || typeof deviation !== 'number') {
       return res.status(400).json({ error: 'guestId and deviation required' })
     }
-    const entries = loadPlacements()
-    const idx = entries.findIndex((e) => e.guestId === guestId)
-    const entry: PlacementEntry = {
-      guestId,
-      nickname: (nickname || 'ゲスト').slice(0, 20),
-      deviation,
-      correctCount: correctCount || 0,
-      totalCount: totalCount || 0,
-      completedAt: new Date().toISOString(),
+
+    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      // Supabase 未設定時はファイルベースにフォールバック
+      return res.status(503).json({ error: 'Supabase not configured' })
     }
-    if (idx >= 0) entries[idx] = entry
-    else entries.push(entry)
-    savePlacements(entries)
+
+    const { error } = await supabase.from('placement_results').upsert(
+      {
+        guest_id: guestId,
+        nickname: (nickname || 'ゲスト').slice(0, 20),
+        deviation,
+        correct_count: correctCount || 0,
+        total_count: totalCount || 0,
+        completed_at: new Date().toISOString(),
+      },
+      { onConflict: 'guest_id' }
+    )
+
+    if (error) {
+      console.error('[placement/submit] Supabase error:', error.message)
+      return res.status(500).json({ error: error.message })
+    }
+
     res.json({ ok: true })
   } catch (e: any) {
     res.status(500).json({ error: e.message })
   }
 })
 
-app.post('/api/placement/delete', (req, res) => {
+app.post('/api/placement/delete', async (req, res) => {
   try {
     const { guestId } = req.body || {}
     if (!guestId) return res.status(400).json({ error: 'guestId required' })
-    const entries = loadPlacements().filter((e) => e.guestId !== guestId)
-    savePlacements(entries)
+
+    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      return res.status(503).json({ error: 'Supabase not configured' })
+    }
+
+    const { error } = await supabase
+      .from('placement_results')
+      .delete()
+      .eq('guest_id', guestId)
+
+    if (error) {
+      console.error('[placement/delete] Supabase error:', error.message)
+      return res.status(500).json({ error: error.message })
+    }
+
     res.json({ ok: true })
   } catch (e: any) {
     res.status(500).json({ error: e.message })
   }
 })
 
-app.get('/api/placement/ranking', (req, res) => {
+app.get('/api/placement/ranking', async (req, res) => {
   try {
     const guestId = (req.query.guestId as string) || ''
-    const entries = loadPlacements()
-      .filter((e) => e.totalCount > 0) // skipped users excluded
-      .sort((a, b) => b.deviation - a.deviation)
+
+    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      return res.status(503).json({ error: 'Supabase not configured' })
+    }
+
+    const { data, error } = await supabase
+      .from('placement_results')
+      .select('guest_id, nickname, deviation, correct_count, total_count')
+      .gt('total_count', 0)  // スキップユーザー除外
+      .order('deviation', { ascending: false })
+
+    if (error) {
+      console.error('[placement/ranking] Supabase error:', error.message)
+      return res.status(500).json({ error: error.message })
+    }
+
+    const entries = data || []
     const total = entries.length
-    const top = entries.slice(0, 50).map((e, i) => ({
+    const top = entries.slice(0, 50).map((e: any, i: number) => ({
       rank: i + 1,
       nickname: e.nickname,
       deviation: e.deviation,
-      isYou: e.guestId === guestId,
+      isYou: e.guest_id === guestId,
     }))
+
     let yourRank = -1
     let yourDeviation = -1
     if (guestId) {
-      const idx = entries.findIndex((e) => e.guestId === guestId)
+      const idx = entries.findIndex((e: any) => e.guest_id === guestId)
       if (idx >= 0) {
         yourRank = idx + 1
-        yourDeviation = entries[idx].deviation
+        yourDeviation = (entries[idx] as any).deviation
       }
     }
+
     res.json({ total, top, yourRank, yourDeviation })
   } catch (e: any) {
     res.status(500).json({ error: e.message })
   }
 })
+
+// =============================================
+// 問題報告 — Supabase 版
+// =============================================
 
 app.post('/api/report-problem', async (req, res) => {
   try {
@@ -976,40 +1005,53 @@ app.post('/api/report-problem', async (req, res) => {
       return res.status(400).json({ error: 'question and issueType are required' })
     }
 
-    const report = {
-      id: 'r_' + Date.now(),
-      timestamp: new Date().toISOString(),
-      lessonTitle: lessonTitle || '',
-      lessonId: lessonId || null,
-      question,
-      options: options || [],
-      issueType,
-      comment: comment || '',
+    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      return res.status(503).json({ error: 'Supabase not configured' })
     }
 
-    let reports: any[] = []
-    try {
-      if (fs.existsSync(REPORTS_FILE)) {
-        reports = JSON.parse(fs.readFileSync(REPORTS_FILE, 'utf-8'))
-      }
-    } catch { /* ignore */ }
+    const { data, error } = await supabase
+      .from('reports')
+      .insert({
+        lesson_title: lessonTitle || '',
+        lesson_id: lessonId || null,
+        question,
+        options: options || [],
+        issue_type: issueType,
+        comment: comment || '',
+      })
+      .select('id')
+      .single()
 
-    reports.push(report)
-    fs.writeFileSync(REPORTS_FILE, JSON.stringify(reports, null, 2))
+    if (error) {
+      console.error('[report-problem] Supabase error:', error.message)
+      return res.status(500).json({ error: error.message })
+    }
 
     console.log('[REPORT]', issueType, '-', lessonTitle, '-', question.slice(0, 50))
-    res.json({ ok: true, id: report.id })
+    res.json({ ok: true, id: data?.id })
   } catch (e: any) {
     console.error('report-problem error:', e)
     res.status(500).json({ error: e.message || 'failed' })
   }
 })
 
-app.get('/api/reports', (_req, res) => {
+app.get('/api/reports', async (_req, res) => {
   try {
-    if (!fs.existsSync(REPORTS_FILE)) return res.json([])
-    const reports = JSON.parse(fs.readFileSync(REPORTS_FILE, 'utf-8'))
-    res.json(reports)
+    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      return res.json([])
+    }
+
+    const { data, error } = await supabase
+      .from('reports')
+      .select('*')
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      console.error('[reports] Supabase error:', error.message)
+      return res.status(500).json({ error: error.message })
+    }
+
+    res.json(data || [])
   } catch (e: any) {
     res.status(500).json({ error: e.message })
   }
