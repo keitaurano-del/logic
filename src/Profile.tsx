@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { getCompletedLessons, getStreak, getStudyHours, getTotalStudyDays } from './stats'
-import { loginWithGoogle, logout, onAuthChange, type User } from './firebase'
+import { loginWithGoogle, logout, onAuthChange, type User } from './supabase'
 import { loadGuestUser, updateGuestId } from './guestUser'
 import { isDevMode, setDevMode as persistDevMode } from './devMode'
 import { getPlanLabel, BETA_MODE } from './subscription'
@@ -91,9 +91,9 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
                 {user ? (
                   <div className="pf-settings-account">
                     <div className="pf-settings-user">
-                      {user.photoURL && <img className="pf-settings-avatar" src={user.photoURL} alt="" />}
+                      {user.user_metadata?.avatar_url && <img className="pf-settings-avatar" src={user.user_metadata.avatar_url} alt="" />}
                       <div className="pf-settings-user-info">
-                        <span className="pf-settings-user-name">{user.displayName}</span>
+                        <span className="pf-settings-user-name">{user.user_metadata?.full_name ?? user.user_metadata?.name ?? ''}</span>
                         <span className="pf-settings-user-email">{user.email}</span>
                       </div>
                     </div>
@@ -171,7 +171,7 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
             <span style={{ fontSize: 48 }}>👤</span>
           </div>
         </div>
-        <h2 className="pf-name">{user?.displayName || guest.id}</h2>
+        <h2 className="pf-name">{user?.user_metadata?.full_name ?? user?.user_metadata?.name ?? user?.email ?? guest.id}</h2>
         {!user && (
           <div className="pf-guest-info">
             {editingId ? (

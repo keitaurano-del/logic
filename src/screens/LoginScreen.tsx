@@ -3,7 +3,7 @@ import { ArrowLeftIcon } from '../icons'
 import { IconButton } from '../components/IconButton'
 import { Button } from '../components/Button'
 import { t } from '../i18n'
-import { loginWithGoogle, loginWithEmail, signupWithEmail, isFirebaseConfigured, type User } from '../firebase'
+import { loginWithGoogle, loginWithEmail, signupWithEmail, isSupabaseConfigured, type User } from '../supabase'
 
 interface LoginScreenProps {
   onBack: () => void
@@ -28,7 +28,7 @@ function authErrorMessage(code: string): string {
   if (code === 'auth/email-already-in-use') return t('auth.emailInUse')
   if (code === 'auth/weak-password') return t('auth.weakPassword')
   if (code === 'auth/invalid-email') return t('auth.invalidEmail')
-  if (code === 'Firebase が設定されていません') return t('auth.firebaseNotConfigured')
+  if (code === 'Supabase が設定されていません') return t('auth.firebaseNotConfigured')
   return t('auth.genericError')
 }
 
@@ -38,7 +38,7 @@ export function LoginScreen({ onBack, onLoginSuccess }: LoginScreenProps) {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const firebaseReady = isFirebaseConfigured()
+  const firebaseReady = isSupabaseConfigured()
 
   async function handleEmailSubmit() {
     setError('')

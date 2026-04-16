@@ -36,7 +36,7 @@ import { loadTheme, applyTheme } from './theme'
 import { loadGuestUser } from './guestUser'
 import { getCompletedCount } from './stats'
 import { isAdmin, ADMIN_LESSON_IDS } from './admin'
-import { onAuthChange, logout, type User } from './firebase'
+import { onAuthChange, logout, type User } from './supabase'
 
 type Screen =
   | { type: 'home' }
