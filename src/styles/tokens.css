@@ -61,12 +61,12 @@
   --cat-pm:        var(--success);
   --cat-pm-soft:   rgba(16, 185, 129, 0.10);
 
-  /* Radii */
+  /* Radii — Mercari-inspired rounder corners */
   --radius-sm: 6px;
   --radius-md: 10px;
-  --radius-lg: 14px;
-  --radius-xl: 20px;
-  --radius-2xl: 28px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-2xl: 32px;
   --radius-full: 9999px;
 
   /* Spacing (8px base) */

@@ -403,6 +403,7 @@ import { logicLessonMap } from './logicLessons'
 import { logicLessonMapEn } from './logicLessonsEn'
 import { getLocale } from './i18n'
 import { pmbokLessonMap } from './pmbokLessons'
+import { caseLessonMap } from './caseLessons'
 
 const journalDrill = questionsToLesson(11, '仕訳問題 50問ドリル', '簿記3級', journalQuestions)
 const accountDrill = questionsToLesson(12, '勘定記入・補助簿ドリル', '簿記3級', accountQuestions)
@@ -424,6 +425,7 @@ export const allLessons: Record<number, LessonData> = new Proxy({} as Record<num
       12: accountDrill,
       13: settlementDrill,
       ..._activeLogicLessons(),
+      ...caseLessonMap,
       ...pmbokLessonMap,
     }
     return base[prop as unknown as number]
@@ -432,7 +434,7 @@ export const allLessons: Record<number, LessonData> = new Proxy({} as Record<num
     const base: Record<number, LessonData> = {
       6: boki3Intro, 7: boki3Financial, 8: boki2Commercial, 9: boki2Industrial,
       11: journalDrill, 12: accountDrill, 13: settlementDrill,
-      ..._activeLogicLessons(), ...pmbokLessonMap,
+      ..._activeLogicLessons(), ...caseLessonMap, ...pmbokLessonMap,
     }
     return prop in base
   },

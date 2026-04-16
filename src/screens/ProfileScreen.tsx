@@ -23,10 +23,9 @@ interface ProfileScreenProps {
 }
 
 const CAT_ROWS: { name: string; lessonIds: number[] }[] = [
-  { name: 'Fermi', lessonIds: [22, 23, 24, 25] },
-  { name: 'Logic', lessonIds: [20, 21, 26, 27] },
-  { name: 'Case', lessonIds: [28, 29] },
-  { name: 'PM', lessonIds: [30, 31, 32, 33, 34] },
+  { name: t('home.category.fermi'), lessonIds: [22, 23, 24, 25] },
+  { name: t('home.category.logic'), lessonIds: [20, 21, 26, 27] },
+  { name: t('home.category.case'),  lessonIds: [28, 29, 35, 36] },
 ]
 
 interface DerivedData {

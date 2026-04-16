@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import type { ReactNode } from 'react'
 import { getStreak, getCompletedCount, getCompletedLessons } from '../stats'
 import { loadPlacementResult } from '../placementData'
-import { ArrowRightIcon, BarChartIcon, BrainIcon, BriefcaseIcon, BookOpenIcon, FlameIcon, StarIcon, TrendingUpIcon, ZapIcon } from '../icons'
+import { ArrowRightIcon, BarChartIcon, BrainIcon, BriefcaseIcon, FlameIcon, StarIcon, TrendingUpIcon, ZapIcon } from '../icons'
 import { Button } from '../components/Button'
 import { useIsDesktop } from '../hooks/useMediaQuery'
 import { isAdmin } from '../admin'
@@ -34,10 +34,9 @@ type Category = {
 }
 
 const ALL_CATEGORIES: (Category & { adminOnly?: boolean })[] = [
-  { id: 'fermi', icon: <BarChartIcon width={20} height={20} />,   name: t('home.category.fermi'), lessonIds: [22, 23, 24, 25] },
-  { id: 'logic', icon: <BrainIcon width={20} height={20} />,      name: t('home.category.logic'), lessonIds: [20, 21, 26, 27] },
-  { id: 'case',  icon: <BriefcaseIcon width={20} height={20} />,  name: t('home.category.case'),  lessonIds: [28, 29] },
-  { id: 'pm',    icon: <BookOpenIcon width={20} height={20} />,   name: t('home.category.pm'),    lessonIds: [30, 31, 32, 33, 34], adminOnly: true },
+  { id: 'fermi', icon: <BarChartIcon width={20} height={20} />,  name: t('home.category.fermi'), lessonIds: [22, 23, 24, 25] },
+  { id: 'logic', icon: <BrainIcon width={20} height={20} />,     name: t('home.category.logic'), lessonIds: [20, 21, 26, 27] },
+  { id: 'case',  icon: <BriefcaseIcon width={20} height={20} />, name: t('home.category.case'),  lessonIds: [28, 29, 35, 36] },
 ]
 
 const CATEGORIES = ALL_CATEGORIES.filter((c) => isAdmin() || !c.adminOnly)
@@ -272,6 +271,54 @@ function HomeMobile({
           </div>
         </button>
       )}
+
+      {/* Quick access: Case interview lessons */}
+      <section className="section">
+        <div className="section-head">
+          <h2 style={{ fontSize: 'var(--font-md)', fontWeight: 700 }}>{t('home.category.case')}</h2>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-2)' }}>
+          {[
+            { id: 28, title: 'ケース面接入門', sub: 'フレームワーク選択・仮説思考' },
+            { id: 29, title: 'プロフィタビリティケース', sub: '利益構造の分解と改善' },
+            { id: 35, title: '新市場参入ケース', sub: '市場魅力度・競合・参入モード' },
+            { id: 36, title: 'M&Aケース', sub: 'シナジー分析・バリュエーション' },
+          ].map((lesson) => {
+            const done = completedSet.has(`lesson-${lesson.id}`)
+            return (
+              <button
+                key={lesson.id}
+                onClick={() => onOpenLesson(lesson.id)}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 'var(--s-3)',
+                  background: done ? 'var(--lesson-bg)' : 'var(--bg-card)',
+                  border: `1px solid ${done ? 'rgba(16,185,129,0.25)' : 'var(--border)'}`,
+                  borderRadius: 'var(--radius-lg)', padding: 'var(--s-3) var(--s-4)',
+                  cursor: 'pointer', textAlign: 'left', width: '100%',
+                }}
+              >
+                <div style={{
+                  width: 36, height: 36, borderRadius: 'var(--radius-md)', flexShrink: 0,
+                  background: done ? 'var(--lesson-icon)' : 'var(--bg-secondary)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 16,
+                }}>
+                  {done ? '✓' : '💼'}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 'var(--font-base)', fontWeight: 600, color: done ? 'var(--lesson-text)' : 'var(--text)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {lesson.title}
+                  </div>
+                  <div style={{ fontSize: 'var(--font-sm)', color: 'var(--text-muted)', marginTop: 2 }}>
+                    {lesson.sub}
+                  </div>
+                </div>
+                <ArrowRightIcon width={14} height={14} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
+              </button>
+            )
+          })}
+        </div>
+      </section>
 
       {/* Categories */}
       <section className="section">
