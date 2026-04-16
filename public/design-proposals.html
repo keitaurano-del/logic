@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logic — デザイン案 3選</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700;900&family=Noto+Sans+JP:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=M+PLUS+Rounded+1c:wght@700;900&family=JetBrains+Mono:wght@400;700&family=Inter+Tight:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#1a1a2e;font-family:'Noto Sans JP',sans-serif;padding:24px;min-height:100vh}
+h1{color:#fff;text-align:center;font-size:14px;letter-spacing:.2em;text-transform:uppercase;opacity:.5;margin-bottom:32px;font-family:'JetBrains Mono',monospace}
+.row{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin-bottom:48px}
+.phone{width:320px;border-radius:40px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.6);flex-shrink:0}
+.label{color:#fff;text-align:center;font-size:12px;opacity:.4;margin-bottom:12px;letter-spacing:.1em;font-family:'JetBrains Mono',monospace}
+
+/* ========== DESIGN A: MANUSCRIPT ========== */
+.ms{background:#F5F0E8}
+.ms-header{padding:28px 22px 20px;border-bottom:1px solid #D4C8A8}
+.ms-eyebrow{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#3D5FC4;margin-bottom:6px;font-family:'Noto Sans JP',sans-serif}
+.ms-name{font-family:'Noto Serif JP',serif;font-size:28px;font-weight:900;color:#1A1208;letter-spacing:-.02em;line-height:1.1}
+.ms-sub{font-size:12px;color:#8C7B6A;margin-top:4px}
+.ms-streak{background:#3D5FC4;color:#fff;border-radius:12px;padding:8px 14px;text-align:center;flex-shrink:0}
+.ms-streak-num{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;line-height:1}
+.ms-streak-lbl{font-size:8px;letter-spacing:.1em;text-transform:uppercase;opacity:.8}
+.ms-body{padding:16px 22px;display:flex;flex-direction:column;gap:14px}
+.ms-card{background:#fff;border-radius:12px;border:1px solid #E8DFD0;overflow:hidden;position:relative}
+.ms-gold-bar{position:absolute;left:0;top:0;bottom:0;width:3px;background:#8B6914}
+.ms-card-inner{padding:16px 14px 16px 20px}
+.ms-tag{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#8B6914;margin-bottom:8px;display:flex;align-items:center;gap:4px}
+.ms-q{font-family:'Noto Serif JP',serif;font-size:16px;font-weight:700;color:#1A1208;line-height:1.5;margin-bottom:14px}
+.ms-btn{background:#3D5FC4;color:#fff;border:none;border-radius:8px;padding:10px 16px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;width:100%;font-family:'Noto Sans JP',sans-serif}
+.ms-section-title{font-family:'Noto Serif JP',serif;font-size:13px;font-weight:700;color:#1A1208;border-bottom:1px solid #D4C8A8;padding-bottom:6px;margin-bottom:10px}
+.ms-lessons{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ms-lesson-card{background:#fff;border:1px solid #E8DFD0;border-radius:10px;padding:12px;position:relative;overflow:hidden}
+.ms-lesson-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:#8B6914}
+.ms-lesson-title{font-family:'Noto Serif JP',serif;font-size:11px;font-weight:700;color:#1A1208;line-height:1.4}
+.ms-lesson-sub{font-size:9px;color:#8C7B6A;margin-top:3px}
+.ms-cats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.ms-cat{background:#fff;border:1px solid #E8DFD0;border-radius:8px;padding:10px 8px;text-align:center}
+.ms-cat-name{font-family:'Noto Serif JP',serif;font-size:10px;font-weight:700;color:#1A1208;margin-bottom:6px}
+.ms-cat-bar{height:3px;background:#E8DFD0;border-radius:99px;overflow:hidden}
+.ms-cat-fill-f{width:25%;background:#F59E0B;height:100%}
+.ms-cat-fill-l{width:40%;background:#3D5FC4;height:100%}
+.ms-cat-fill-c{width:0%;background:#10B981;height:100%}
+.ms-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.ms-stat{background:#fff;border:1px solid #E8DFD0;border-radius:8px;padding:10px;text-align:center}
+.ms-stat-num{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:#3D5FC4}
+.ms-stat-lbl{font-size:9px;color:#8C7B6A;margin-top:2px}
+.ms-navbar{display:flex;border-top:1px solid #D4C8A8;background:#F5F0E8;padding:10px 0 6px}
+.ms-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;letter-spacing:.05em;color:#8C7B6A}
+.ms-nav-item.active{color:#3D5FC4}
+.ms-nav-dot{width:4px;height:4px;border-radius:50%;background:#3D5FC4;margin-bottom:1px}
+
+/* ========== DESIGN B: DARK ACADEMIA ========== */
+.da{background:#080C18}
+.da-header{padding:28px 22px 20px;border-bottom:1px solid rgba(158,179,240,.1)}
+.da-eyebrow{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#5A7FE8;margin-bottom:6px;font-family:'JetBrains Mono',monospace}
+.da-name{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:700;font-style:italic;color:#E8EDF8;letter-spacing:-.01em;line-height:1.1}
+.da-sub{font-size:12px;color:#4A5478;margin-top:4px}
+.da-streak{background:rgba(61,95,196,.2);border:1px solid rgba(61,95,196,.4);border-radius:14px;padding:8px 14px;text-align:center;flex-shrink:0;box-shadow:0 0 12px rgba(61,95,196,.3)}
+.da-streak-num{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;line-height:1;color:#9EB3F0;text-shadow:0 0 8px rgba(158,179,240,.6)}
+.da-streak-lbl{font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#4A5478}
+.da-body{padding:16px 22px;display:flex;flex-direction:column;gap:14px}
+.da-card{background:#0F1629;border-radius:14px;border:1px solid rgba(90,127,232,.3);position:relative;overflow:hidden;box-shadow:0 0 0 1px rgba(90,127,232,.1),inset 0 1px 0 rgba(255,255,255,.04)}
+.da-glow{position:absolute;top:-40px;right:-40px;width:140px;height:140px;background:radial-gradient(circle,rgba(61,95,196,.4) 0%,transparent 70%);pointer-events:none}
+.da-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(158,179,240,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(158,179,240,.04) 1px,transparent 1px);background-size:20px 20px;pointer-events:none}
+.da-card-inner{padding:16px}
+.da-tag{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#5A7FE8;margin-bottom:8px;font-family:'JetBrains Mono',monospace}
+.da-q{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:700;color:#E8EDF8;line-height:1.45;margin-bottom:14px}
+.da-btn{background:linear-gradient(135deg,#2E4BA8,#3D5FC4);color:#fff;border:none;border-radius:8px;padding:10px 16px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;width:100%;box-shadow:0 4px 16px rgba(61,95,196,.4)}
+.da-section-title{font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#4A5478;margin-bottom:8px;font-family:'JetBrains Mono',monospace}
+.da-lessons{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.da-lesson-card{background:#0F1629;border:1px solid rgba(90,127,232,.2);border-radius:10px;padding:12px;border-left:2px solid #3D5FC4}
+.da-lesson-title{font-family:'Cormorant Garamond',serif;font-size:12px;font-weight:700;color:#E8EDF8;line-height:1.4}
+.da-lesson-sub{font-size:9px;color:#4A5478;margin-top:3px;font-family:'JetBrains Mono',monospace}
+.da-cats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.da-cat{background:#0F1629;border:1px solid rgba(90,127,232,.2);border-radius:8px;padding:10px 8px;text-align:center}
+.da-cat-name{font-size:10px;font-weight:700;color:#9EB3F0;margin-bottom:6px;font-family:'JetBrains Mono',monospace}
+.da-cat-bar{height:3px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden}
+.da-cat-fill-f{width:25%;background:#F59E0B;height:100%;box-shadow:0 0 4px rgba(245,158,11,.6)}
+.da-cat-fill-l{width:40%;background:#3D5FC4;height:100%;box-shadow:0 0 4px rgba(61,95,196,.6)}
+.da-cat-fill-c{width:0%;background:#10B981;height:100%}
+.da-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.da-stat{background:#0F1629;border:1px solid rgba(90,127,232,.2);border-radius:8px;padding:10px;text-align:center}
+.da-stat-num{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:#9EB3F0;text-shadow:0 0 8px rgba(158,179,240,.4)}
+.da-stat-lbl{font-size:9px;color:#4A5478;margin-top:2px}
+.da-navbar{display:flex;border-top:1px solid rgba(158,179,240,.1);background:#080C18;padding:10px 0 6px}
+.da-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;letter-spacing:.05em;color:#4A5478}
+.da-nav-item.active{color:#9EB3F0}
+
+/* ========== DESIGN C: POKEDEX ========== */
+.pk{background:#F7F9FF}
+.pk-header{padding:28px 22px 20px}
+.pk-top{display:flex;justify-content:space-between;align-items:flex-start}
+.pk-eyebrow{font-size:9px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:#3D5FC4;margin-bottom:4px;font-family:'M PLUS Rounded 1c',sans-serif}
+.pk-name{font-family:'M PLUS Rounded 1c',sans-serif;font-size:26px;font-weight:900;color:#1A1A2E;letter-spacing:-.02em;line-height:1.1}
+.pk-streak{background:linear-gradient(160deg,#FF6B35,#F59E0B);border-radius:14px;padding:8px 12px;text-align:center;box-shadow:0 4px 14px rgba(245,158,11,.35)}
+.pk-streak-num{font-family:'M PLUS Rounded 1c',sans-serif;font-size:22px;font-weight:900;color:#fff;line-height:1}
+.pk-streak-lbl{font-size:8px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.85)}
+.pk-statusbar{display:flex;background:#fff;border:1px solid #E8ECF8;border-radius:12px;overflow:hidden;margin:12px 0}
+.pk-sb-item{flex:1;padding:10px 6px;text-align:center;cursor:pointer}
+.pk-sb-item+.pk-sb-item{border-left:1px solid #E8ECF8}
+.pk-sb-num{font-family:'M PLUS Rounded 1c',sans-serif;font-size:16px;font-weight:900;color:#1A1A2E;line-height:1}
+.pk-sb-lbl{font-size:9px;color:#7B8DB0;margin-top:2px;font-weight:700}
+.pk-body{padding:0 22px 16px;display:flex;flex-direction:column;gap:14px}
+.pk-hero{background:linear-gradient(145deg,#1A237E,#283593);border-radius:18px;padding:18px;position:relative;overflow:hidden}
+.pk-hero-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(255,215,0,.2);border:1px solid rgba(255,215,0,.4);border-radius:99px;padding:3px 10px;margin-bottom:10px}
+.pk-hero-badge-txt{font-size:9px;font-weight:900;letter-spacing:.1em;color:#FFD600;font-family:'M PLUS Rounded 1c',sans-serif}
+.pk-hero-q{font-family:'M PLUS Rounded 1c',sans-serif;font-size:17px;font-weight:900;color:#fff;line-height:1.4;margin-bottom:14px}
+.pk-hero-btn{background:#FFD600;color:#1A1A2E;border:none;border-radius:10px;padding:10px;font-size:13px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;width:100%;font-family:'M PLUS Rounded 1c',sans-serif}
+.pk-section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.pk-section-title{font-family:'M PLUS Rounded 1c',sans-serif;font-size:15px;font-weight:900;color:#1A1A2E}
+.pk-section-more{font-size:11px;font-weight:700;color:#3D5FC4}
+.pk-quests{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pk-quest{background:#fff;border:2px solid #E8ECF8;border-radius:14px;padding:12px;cursor:pointer}
+.pk-quest-num{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#3D5FC4;margin-bottom:6px}
+.pk-quest-title{font-family:'M PLUS Rounded 1c',sans-serif;font-size:12px;font-weight:900;color:#1A1A2E;line-height:1.3;margin-bottom:3px}
+.pk-quest-sub{font-size:9px;color:#7B8DB0}
+.pk-cats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.pk-cat-f{background:#FFF7ED;border-radius:12px;padding:12px 8px}
+.pk-cat-l{background:#EEF2FE;border-radius:12px;padding:12px 8px}
+.pk-cat-c{background:#F0FDF4;border-radius:12px;padding:12px 8px}
+.pk-cat-name{font-family:'M PLUS Rounded 1c',sans-serif;font-size:11px;font-weight:900;line-height:1.3;margin-bottom:8px}
+.pk-cat-f .pk-cat-name{color:#92400E}
+.pk-cat-l .pk-cat-name{color:#1E3A8A}
+.pk-cat-c .pk-cat-name{color:#065F46}
+.pk-cat-bar{height:5px;border-radius:99px;overflow:hidden;background:rgba(0,0,0,.08)}
+.pk-cat-fill-f{width:25%;background:#F59E0B;height:100%;border-radius:99px}
+.pk-cat-fill-l{width:40%;background:#3D5FC4;height:100%;border-radius:99px}
+.pk-cat-fill-c{width:0%;background:#10B981;height:100%;border-radius:99px}
+.pk-cat-pct{font-family:'JetBrains Mono',monospace;font-size:9px;color:#7B8DB0;margin-top:4px;font-weight:700}
+.pk-navbar{display:flex;border-top:2px solid #E8ECF8;background:#F7F9FF;padding:10px 0 6px}
+.pk-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:900;color:#7B8DB0;font-family:'M PLUS Rounded 1c',sans-serif}
+.pk-nav-item.active{color:#3D5FC4}
+.pk-nav-pill{background:#EEF2FE;border-radius:8px;padding:4px 10px;color:#3D5FC4}
+
+/* shared */
+.hdr-row{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.flex-col{display:flex;flex-direction:column;gap:2px}
+.icon-sm{width:12px;height:12px;fill:currentColor}
+.section-sep{height:1px;background:rgba(128,128,128,.1);margin:4px 0}
+</style>
+</head>
+<body>
+<h1>LOGIC — デザイン刷新案 3選</h1>
+
+<div class="row">
+
+<!-- ===== DESIGN A: MANUSCRIPT ===== -->
+<div>
+  <div class="label">案① MANUSCRIPT — 古書 × デジタル</div>
+  <div class="phone ms">
+    <!-- Header -->
+    <div class="ms-header">
+      <div class="hdr-row">
+        <div>
+          <div class="ms-eyebrow">GOOD MORNING</div>
+          <div class="ms-name">おはよう、Keita</div>
+          <div class="ms-sub">今日も一歩ずつ。</div>
+        </div>
+        <div class="ms-streak">
+          <div>🔥</div>
+          <div class="ms-streak-num">3</div>
+          <div class="ms-streak-lbl">DAY</div>
+        </div>
+      </div>
+    </div>
+    <!-- Body -->
+    <div class="ms-body">
+      <!-- Stats -->
+      <div class="ms-stats">
+        <div class="ms-stat"><div class="ms-stat-num">0</div><div class="ms-stat-lbl">ポイント</div></div>
+        <div class="ms-stat"><div class="ms-stat-num">0</div><div class="ms-stat-lbl">XP</div></div>
+        <div class="ms-stat"><div class="ms-stat-num">1</div><div class="ms-stat-lbl">レベル</div></div>
+      </div>
+      <!-- Featured -->
+      <div class="ms-card">
+        <div class="ms-gold-bar"></div>
+        <div class="ms-card-inner">
+          <div class="ms-tag">📖 今日のおすすめ · 5 MIN</div>
+          <div class="ms-q">日本にある電柱の本数はどれくらい?</div>
+          <button class="ms-btn">スタート →</button>
+        </div>
+      </div>
+      <!-- Case -->
+      <div>
+        <div class="ms-section-title">第 I 章 — ケース面接</div>
+        <div class="ms-lessons">
+          <div class="ms-lesson-card">
+            <div class="ms-lesson-title">ケース面接入門</div>
+            <div class="ms-lesson-sub">フレームワーク</div>
+          </div>
+          <div class="ms-lesson-card">
+            <div class="ms-lesson-title">プロフィタビリティ</div>
+            <div class="ms-lesson-sub">利益構造の分解</div>
+          </div>
+          <div class="ms-lesson-card">
+            <div class="ms-lesson-title">新市場参入</div>
+            <div class="ms-lesson-sub">市場魅力度分析</div>
+          </div>
+          <div class="ms-lesson-card">
+            <div class="ms-lesson-title">M&Aケース</div>
+            <div class="ms-lesson-sub">シナジー分析</div>
+          </div>
+        </div>
+      </div>
+      <!-- Categories -->
+      <div>
+        <div class="ms-section-title">カテゴリ</div>
+        <div class="ms-cats">
+          <div class="ms-cat">
+            <div class="ms-cat-name" style="font-family:'Noto Serif JP',serif;font-size:10px;font-weight:700;color:#92400E;margin-bottom:6px">フェルミ</div>
+            <div class="ms-cat-bar"><div class="ms-cat-fill-f"></div></div>
+            <div style="font-size:9px;color:#8C7B6A;margin-top:3px;font-family:'JetBrains Mono',monospace">1/4</div>
+          </div>
+          <div class="ms-cat">
+            <div class="ms-cat-name" style="font-family:'Noto Serif JP',serif;font-size:10px;font-weight:700;color:#1E3A8A;margin-bottom:6px">論理</div>
+            <div class="ms-cat-bar"><div class="ms-cat-fill-l"></div></div>
+            <div style="font-size:9px;color:#8C7B6A;margin-top:3px;font-family:'JetBrains Mono',monospace">2/4</div>
+          </div>
+          <div class="ms-cat">
+            <div class="ms-cat-name" style="font-family:'Noto Serif JP',serif;font-size:10px;font-weight:700;color:#065F46;margin-bottom:6px">ケース</div>
+            <div class="ms-cat-bar"><div class="ms-cat-fill-c"></div></div>
+            <div style="font-size:9px;color:#8C7B6A;margin-top:3px;font-family:'JetBrains Mono',monospace">0/4</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Navbar -->
+    <div class="ms-navbar">
+      <div class="ms-nav-item active"><div class="ms-nav-dot"></div>ホーム</div>
+      <div class="ms-nav-item">レッスン</div>
+      <div class="ms-nav-item">プロフィール</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DESIGN B: DARK ACADEMIA ===== -->
+<div>
+  <div class="label">案② DARK ACADEMIA — 深夜の哲学者</div>
+  <div class="phone da">
+    <div class="da-header">
+      <div class="hdr-row">
+        <div>
+          <div class="da-eyebrow">GOOD MORNING</div>
+          <div class="da-name" style="color:#E8EDF8">おはよう、Keita</div>
+          <div class="da-sub">今日も一歩ずつ。</div>
+        </div>
+        <div class="da-streak">
+          <div style="color:#9EB3F0;font-size:14px">🔥</div>
+          <div class="da-streak-num">3</div>
+          <div class="da-streak-lbl">DAY</div>
+        </div>
+      </div>
+    </div>
+    <div class="da-body">
+      <!-- Stats -->
+      <div class="da-stats">
+        <div class="da-stat"><div class="da-stat-num">0</div><div class="da-stat-lbl">ポイント</div></div>
+        <div class="da-stat"><div class="da-stat-num">0</div><div class="da-stat-lbl">XP</div></div>
+        <div class="da-stat"><div class="da-stat-num">1</div><div class="da-stat-lbl">レベル</div></div>
+      </div>
+      <!-- Featured -->
+      <div class="da-card">
+        <div class="da-glow"></div>
+        <div class="da-grid"></div>
+        <div class="da-card-inner">
+          <div class="da-tag">◈ 今日のおすすめ · 5 MIN</div>
+          <div class="da-q">日本にある電柱の本数はどれくらい?</div>
+          <button class="da-btn">▶ スタート</button>
+        </div>
+      </div>
+      <!-- Case -->
+      <div>
+        <div class="da-section-title">// ケース面接</div>
+        <div class="da-lessons">
+          <div class="da-lesson-card">
+            <div class="da-lesson-title">ケース面接入門</div>
+            <div class="da-lesson-sub">framework</div>
+          </div>
+          <div class="da-lesson-card">
+            <div class="da-lesson-title">プロフィタビリティ</div>
+            <div class="da-lesson-sub">profitability</div>
+          </div>
+          <div class="da-lesson-card">
+            <div class="da-lesson-title">新市場参入</div>
+            <div class="da-lesson-sub">market entry</div>
+          </div>
+          <div class="da-lesson-card">
+            <div class="da-lesson-title">M&Aケース</div>
+            <div class="da-lesson-sub">M&A synergy</div>
+          </div>
+        </div>
+      </div>
+      <!-- Categories -->
+      <div>
+        <div class="da-section-title">// カテゴリ</div>
+        <div class="da-cats">
+          <div class="da-cat">
+            <div class="da-cat-name">フェルミ</div>
+            <div class="da-cat-bar"><div class="da-cat-fill-f"></div></div>
+          </div>
+          <div class="da-cat">
+            <div class="da-cat-name">論理</div>
+            <div class="da-cat-bar"><div class="da-cat-fill-l"></div></div>
+          </div>
+          <div class="da-cat">
+            <div class="da-cat-name">ケース</div>
+            <div class="da-cat-bar"><div class="da-cat-fill-c"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="da-navbar">
+      <div class="da-nav-item active">ホーム</div>
+      <div class="da-nav-item">レッスン</div>
+      <div class="da-nav-item">プロフィール</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DESIGN C: POKEDEX ===== -->
+<div>
+  <div class="label">案③ POKEDEX — ゲーム × 図鑑</div>
+  <div class="phone pk">
+    <div class="pk-header">
+      <div class="pk-top">
+        <div>
+          <div class="pk-eyebrow">GOOD MORNING</div>
+          <div class="pk-name">おはよう、Keita</div>
+        </div>
+        <div class="pk-streak">
+          <div style="font-size:14px">🔥</div>
+          <div class="pk-streak-num">3</div>
+          <div class="pk-streak-lbl">DAY</div>
+        </div>
+      </div>
+      <div class="pk-statusbar">
+        <div class="pk-sb-item"><div class="pk-sb-num" style="color:#D97706">0</div><div class="pk-sb-lbl">ポイント</div></div>
+        <div class="pk-sb-item"><div class="pk-sb-num" style="color:#3D5FC4">0</div><div class="pk-sb-lbl">XP</div></div>
+        <div class="pk-sb-item"><div class="pk-sb-num" style="color:#1A1A2E">Lv1</div><div class="pk-sb-lbl">レベル</div></div>
+      </div>
+    </div>
+    <div class="pk-body">
+      <!-- Hero -->
+      <div class="pk-hero">
+        <div class="pk-hero-badge"><div class="pk-hero-badge-txt">★ 今日のおすすめ · 5 MIN</div></div>
+        <div class="pk-hero-q">日本にある電柱の本数はどれくらい?</div>
+        <button class="pk-hero-btn">▶ スタート</button>
+      </div>
+      <!-- Case -->
+      <div>
+        <div class="pk-section-head">
+          <div class="pk-section-title">ケース面接</div>
+          <div class="pk-section-more">全て見る</div>
+        </div>
+        <div class="pk-quests">
+          <div class="pk-quest">
+            <div class="pk-quest-num">QUEST 01</div>
+            <div class="pk-quest-title">ケース面接入門</div>
+            <div class="pk-quest-sub">フレームワーク</div>
+          </div>
+          <div class="pk-quest">
+            <div class="pk-quest-num">QUEST 02</div>
+            <div class="pk-quest-title">プロフィタビリティ</div>
+            <div class="pk-quest-sub">利益構造の分解</div>
+          </div>
+          <div class="pk-quest">
+            <div class="pk-quest-num">QUEST 03</div>
+            <div class="pk-quest-title">新市場参入</div>
+            <div class="pk-quest-sub">市場魅力度分析</div>
+          </div>
+          <div class="pk-quest">
+            <div class="pk-quest-num">QUEST 04</div>
+            <div class="pk-quest-title">M&Aケース</div>
+            <div class="pk-quest-sub">シナジー分析</div>
+          </div>
+        </div>
+      </div>
+      <!-- Categories -->
+      <div>
+        <div class="pk-section-head"><div class="pk-section-title">カテゴリ</div></div>
+        <div class="pk-cats">
+          <div class="pk-cat-f">
+            <div class="pk-cat-name">フェルミ推定</div>
+            <div class="pk-cat-bar"><div class="pk-cat-fill-f"></div></div>
+            <div class="pk-cat-pct">1/4</div>
+          </div>
+          <div class="pk-cat-l">
+            <div class="pk-cat-name">論理パズル</div>
+            <div class="pk-cat-bar"><div class="pk-cat-fill-l"></div></div>
+            <div class="pk-cat-pct">2/4</div>
+          </div>
+          <div class="pk-cat-c">
+            <div class="pk-cat-name">ケース面接</div>
+            <div class="pk-cat-bar"><div class="pk-cat-fill-c"></div></div>
+            <div class="pk-cat-pct">0/4</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pk-navbar">
+      <div class="pk-nav-item active"><div class="pk-nav-pill">ホーム</div></div>
+      <div class="pk-nav-item">レッスン</div>
+      <div class="pk-nav-item">プロフィール</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div style="text-align:center;color:rgba(255,255,255,.3);font-size:11px;font-family:monospace;margin-top:8px">
+  どれが好みですか？選んだら実装します。
+</div>
+</body>
+</html>
