@@ -6,6 +6,7 @@ import {
   loadReminderPref, saveReminderPref, scheduleDailyReminder,
   cancelDailyReminder, requestNotificationPermission, isNative,
 } from '../notifications'
+import { getSubscriptionState, isPremium, daysLeftInTrial } from '../subscription'
 
 interface SettingsScreenProps {
   onBack: () => void
@@ -13,6 +14,7 @@ interface SettingsScreenProps {
   onOpenLogin: () => void
   currentUser: { email: string } | null
   onLogout: () => void
+  onOpenPricing?: () => void
 }
 
 function SettingsRow({
@@ -72,7 +74,7 @@ function Toggle({ value, onChange }: { value: boolean; onChange: (v: boolean) =>
   )
 }
 
-export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUser, onLogout }: SettingsScreenProps) {
+export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUser, onLogout, onOpenPricing }: SettingsScreenProps) {
   const locale = getLocale()
   const pref = loadReminderPref()
   const [reminderEnabled, setReminderEnabled] = useState(pref.enabled)
@@ -219,6 +221,46 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
               </div>
             </>
           )}
+        </div>
+      </div>
+
+      {/* ── プラン ── */}
+      <div>
+        <SectionHeader label="プラン" />
+        <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+          {(() => {
+            const state = getSubscriptionState()
+            const premium = isPremium()
+            const planLabel =
+              state.plan === 'trial' ? `7日間トライアル（残り${daysLeftInTrial()}日）` :
+              state.plan === 'monthly' ? '月額プレミアム' :
+              state.plan === 'yearly' ? '年額プレミアム' :
+              '無料プラン'
+            return (
+              <>
+                <div style={{ padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <span style={{ flex: 1, fontSize: 15, color: 'var(--text)' }}>現在のプラン</span>
+                  <span style={{
+                    fontSize: 13, fontWeight: 700, padding: '4px 10px',
+                    borderRadius: 20,
+                    background: premium ? 'var(--brand-soft)' : 'var(--bg-secondary)',
+                    color: premium ? 'var(--brand)' : 'var(--text-muted)',
+                  }}>
+                    {planLabel}
+                  </span>
+                </div>
+                {!premium && onOpenPricing && (
+                  <>
+                    <Divider />
+                    <SettingsRow
+                      label="✨ プレミアムにアップグレード"
+                      onPress={onOpenPricing}
+                    />
+                  </>
+                )}
+              </>
+            )
+          })()}
         </div>
       </div>
 

@@ -96,7 +96,10 @@ function AppV3() {
     return unsub
   }, [])
 
-  const userName = loadGuestUser().id
+  const userName = currentUser?.user_metadata?.full_name
+    ?? currentUser?.user_metadata?.name
+    ?? currentUser?.email
+    ?? loadGuestUser().id
   const completed = getCompletedCount()
   const xp = completed * 100
   const level = Math.floor(xp / 1000) + 1
@@ -141,6 +144,7 @@ function AppV3() {
           onOpenFlashcards={() => setScreen({ type: 'flashcards' })}
           onOpenMockExam={() => setScreen({ type: 'mock-exam' })}
           onOpenPricing={() => setScreen({ type: 'pricing' })}
+          onOpenAIGen={() => setScreen({ type: 'ai-problem-gen' })}
         />
       )}
 
@@ -251,6 +255,7 @@ function AppV3() {
           onBack={handleBack}
           onOpenLanguage={() => setScreen({ type: 'language' })}
           onOpenLogin={() => setScreen({ type: 'login' })}
+          onOpenPricing={() => setScreen({ type: 'pricing' })}
           currentUser={currentUser ? { email: currentUser.email ?? '' } : null}
           onLogout={async () => { await logout(); setCurrentUser(null) }}
         />
