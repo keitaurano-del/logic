@@ -715,7 +715,11 @@ Rules:
   }
 })
 
-// Web UI はアプリ専用のため、ブラウザアクセスは Play Store 誘導ページを返す
+// 静的ファイル（public/ → dist/）は配信する
+const distPath = path.resolve(__dirname, '..', 'dist')
+app.use(express.static(distPath))
+
+// Web UI はアプリ専用のため、それ以外のルートは Play Store 誘導ページを返す
 const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.keitaurano.logic'
 app.get('/{*splat}', (_req, res) => {
   res.send(`<!DOCTYPE html>
