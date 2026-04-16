@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import type { ReactNode } from 'react'
 import { getStreak, getCompletedCount, getCompletedLessons } from '../stats'
 import { loadPlacementResult } from '../placementData'
-import { ArrowRightIcon, BarChartIcon, BrainIcon, BriefcaseIcon, FlameIcon, StarIcon, TrendingUpIcon, ZapIcon } from '../icons'
+import { ArrowRightIcon, BarChartIcon, BrainIcon, BriefcaseIcon, CheckIcon, FlameIcon, StarIcon, TrendingUpIcon, ZapIcon } from '../icons'
 import { Button } from '../components/Button'
 import { useIsDesktop } from '../hooks/useMediaQuery'
 import { isAdmin } from '../admin'
@@ -34,9 +34,22 @@ type Category = {
 }
 
 const ALL_CATEGORIES: (Category & { adminOnly?: boolean })[] = [
-  { id: 'fermi', icon: <BarChartIcon width={20} height={20} />,  name: t('home.category.fermi'), lessonIds: [22, 23, 24, 25] },
-  { id: 'logic', icon: <BrainIcon width={20} height={20} />,     name: t('home.category.logic'), lessonIds: [20, 21, 26, 27] },
-  { id: 'case',  icon: <BriefcaseIcon width={20} height={20} />, name: t('home.category.case'),  lessonIds: [28, 29, 35, 36] },
+  { id: 'fermi', icon: <BarChartIcon width={22} height={22} />,  name: t('home.category.fermi'), lessonIds: [22, 23, 24, 25] },
+  { id: 'logic', icon: <BrainIcon width={22} height={22} />,     name: t('home.category.logic'), lessonIds: [20, 21, 26, 27] },
+  { id: 'case',  icon: <BriefcaseIcon width={22} height={22} />, name: t('home.category.case'),  lessonIds: [28, 29, 35, 36] },
+]
+
+const CAT_COLORS: Record<string, { bg: string; accent: string; text: string }> = {
+  fermi: { bg: '#FFF7ED', accent: '#F59E0B', text: '#92400E' },
+  logic: { bg: '#EEF2FE', accent: '#3D5FC4', text: '#1E3A8A' },
+  case:  { bg: '#F0FDF4', accent: '#10B981', text: '#065F46' },
+}
+
+const CASE_LESSONS = [
+  { id: 28, title: 'ケース面接入門',       sub: 'フレームワーク・仮説思考' },
+  { id: 29, title: 'プロフィタビリティ',    sub: '利益構造の分解と改善' },
+  { id: 35, title: '新市場参入ケース',      sub: '市場魅力度・競合分析' },
+  { id: 36, title: 'M&Aケース',            sub: 'シナジー・バリュエーション' },
 ]
 
 const CATEGORIES = ALL_CATEGORIES.filter((c) => isAdmin() || !c.adminOnly)
@@ -116,34 +129,30 @@ function HomeMobile({
   return (
     <div className="stack-lg">
 
-      {/* ── Zone A: Compact header ── */}
+      {/* ── ヘッダー ── */}
       <header style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 'var(--s-3)' }}>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div className="eyebrow">{eyebrow}</div>
-          <h1 style={{ fontSize: 'var(--font-2xl)', fontWeight: 800, marginTop: 4, letterSpacing: '-0.025em', lineHeight: 1.2 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--brand)', marginBottom: 4 }}>
+            {eyebrow}
+          </div>
+          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 30, fontWeight: 900, letterSpacing: '-0.03em', lineHeight: 1.1 }}>
             {greeting}{t('home.greetingSep')}{userName}
           </h1>
-          <p style={{ marginTop: 4, fontSize: 'var(--font-sm)', color: 'var(--text-muted)' }}>
+          <p style={{ marginTop: 4, fontSize: 13, color: 'var(--text-muted)' }}>
             {t('home.subtitle')}
           </p>
         </div>
-        {/* Streak pill */}
-        <button
-          onClick={onOpenStreak}
-          style={{
-            display: 'flex', alignItems: 'center', gap: 4,
-            background: 'var(--streak-bg)', color: 'var(--streak-text)',
-            border: 'none', borderRadius: 'var(--radius-full)',
-            padding: '8px 14px', fontSize: 'var(--font-sm)', fontWeight: 700,
-            cursor: 'pointer', flexShrink: 0, marginTop: 10,
-            whiteSpace: 'nowrap',
-          }}
-        >
-          <FlameIcon width={15} height={15} style={{ color: 'var(--streak-icon)' }} />
-          <span>{streak}</span>
-          <span style={{ fontWeight: 500, color: 'var(--streak-text)', opacity: 0.75 }}>
-            {t('home.dayStreakLabel')}
-          </span>
+        {/* Streak badge — flame gradient */}
+        <button onClick={onOpenStreak} style={{
+          display: 'flex', flexDirection: 'column', alignItems: 'center',
+          background: 'linear-gradient(160deg, #FF6B35 0%, #F59E0B 100%)',
+          borderRadius: 18, padding: '10px 14px', border: 'none',
+          cursor: 'pointer', flexShrink: 0, marginTop: 8,
+          boxShadow: '0 4px 16px rgba(245,158,11,0.35)',
+        }}>
+          <FlameIcon width={18} height={18} style={{ color: '#fff' }} />
+          <span style={{ fontSize: 22, fontWeight: 900, color: '#fff', lineHeight: 1.1, marginTop: 2, fontFamily: 'var(--font-display)' }}>{streak}</span>
+          <span style={{ fontSize: 9, fontWeight: 700, color: 'rgba(255,255,255,0.85)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>DAY</span>
         </button>
       </header>
 
@@ -157,220 +166,220 @@ function HomeMobile({
         </div>
       )}
 
-      {/* ── Zone B: Today's featured (visual hero) ── */}
+      {/* ── 今日のフィーチャー ── */}
       <section style={{
-        background: 'var(--bg-hero)',
-        borderRadius: 'var(--radius-2xl)',
-        padding: '28px 24px',
+        background: 'linear-gradient(145deg, #0D1B3E 0%, #1E2D5C 100%)',
+        borderRadius: 28, padding: '24px 22px',
         position: 'relative', overflow: 'hidden',
       }}>
+        {/* grid texture */}
         <div style={{
-          position: 'absolute', top: -60, right: -60,
-          width: 220, height: 220,
-          background: 'radial-gradient(circle, rgba(158,179,240,0.28) 0%, transparent 70%)',
+          position: 'absolute', inset: 0, pointerEvents: 'none',
+          backgroundImage: 'linear-gradient(rgba(158,179,240,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(158,179,240,0.07) 1px, transparent 1px)',
+          backgroundSize: '24px 24px',
+        }} />
+        {/* glow */}
+        <div style={{
+          position: 'absolute', top: -50, right: -50, width: 200, height: 200,
+          background: 'radial-gradient(circle, rgba(61,95,196,0.45) 0%, transparent 70%)',
           pointerEvents: 'none',
         }} />
-        <div style={{
-          fontSize: 'var(--font-xs)', fontWeight: 700,
-          letterSpacing: '0.1em', textTransform: 'uppercase',
-          color: 'var(--brand-light)', marginBottom: 10,
-        }}>
-          {t('home.todayRecommended')} · FERMI · 5 MIN
+        <div style={{ position: 'relative' }}>
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 5,
+            background: 'rgba(158,179,240,0.18)', borderRadius: 999,
+            padding: '4px 10px', marginBottom: 14,
+          }}>
+            <BarChartIcon width={10} height={10} style={{ color: 'var(--brand-light)' }} />
+            <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--brand-light)' }}>
+              {t('home.todayRecommended')} · 5 MIN
+            </span>
+          </div>
+          <h2 style={{
+            fontFamily: 'var(--font-display)', fontSize: 21, fontWeight: 800,
+            color: '#fff', lineHeight: 1.35, letterSpacing: '-0.02em', marginBottom: 22,
+          }}>
+            {t('home.fermiQuestion')}
+          </h2>
+          <Button variant="primary" size="lg" block onClick={() => onOpenCategory('fermi')}>
+            {t('home.startLesson')}
+            <ArrowRightIcon width={16} height={16} />
+          </Button>
         </div>
-        <h2 style={{
-          fontFamily: 'var(--font-display)',
-          fontSize: 'var(--font-xl)', fontWeight: 800,
-          color: '#fff', lineHeight: 1.3,
-          letterSpacing: '-0.02em', marginBottom: 24,
-        }}>
-          {t('home.fermiQuestion')}
-        </h2>
-        <Button variant="primary" size="lg" block onClick={() => onOpenCategory('fermi')}>
-          {t('home.startLesson')}
-          <ArrowRightIcon width={16} height={16} />
-        </Button>
       </section>
 
-      {/* ── Zone C: Stats chips ── */}
-      <div style={{ display: 'flex', gap: 'var(--s-2)', flexWrap: 'wrap' }}>
-        <button onClick={onOpenRank} style={{
-          display: 'inline-flex', alignItems: 'center', gap: 4,
-          background: 'var(--bg-secondary)', border: '1px solid var(--border)',
-          borderRadius: 'var(--radius-full)', padding: '6px 12px',
-          fontSize: 'var(--font-sm)', fontWeight: 600,
-          color: 'var(--text-secondary)', cursor: 'pointer',
-        }}>
-          <StarIcon width={13} height={13} style={{ color: 'var(--xp-icon)' }} />
-          {points.toLocaleString()} pt
-        </button>
-        {deviation != null ? (
-          <button onClick={onOpenDeviation} style={{
-            display: 'inline-flex', alignItems: 'center', gap: 4,
-            background: 'var(--bg-secondary)', border: '1px solid var(--border)',
-            borderRadius: 'var(--radius-full)', padding: '6px 12px',
-            fontSize: 'var(--font-sm)', fontWeight: 600,
-            color: 'var(--text-secondary)', cursor: 'pointer',
-          }}>
-            <TrendingUpIcon width={13} height={13} style={{ color: 'var(--brand)' }} />
-            {t('ranking.deviationLabel')} {deviation.toFixed(1)}
-          </button>
-        ) : (
-          <button onClick={onOpenRank} style={{
-            display: 'inline-flex', alignItems: 'center', gap: 4,
-            background: 'var(--bg-secondary)', border: '1px solid var(--border)',
-            borderRadius: 'var(--radius-full)', padding: '6px 12px',
-            fontSize: 'var(--font-sm)', fontWeight: 600,
-            color: 'var(--text-secondary)', cursor: 'pointer',
-          }}>
-            <BarChartIcon width={13} height={13} style={{ color: 'var(--brand)' }} />
-            {xp.toLocaleString()} XP
-          </button>
-        )}
-        <button onClick={onOpenRank} style={{
-          display: 'inline-flex', alignItems: 'center', gap: 4,
-          background: 'var(--bg-secondary)', border: '1px solid var(--border)',
-          borderRadius: 'var(--radius-full)', padding: '6px 12px',
-          fontSize: 'var(--font-sm)', fontWeight: 600,
-          color: 'var(--text-secondary)', cursor: 'pointer',
-        }}>
-          Lv.{level} · {levelTitle}
-        </button>
+      {/* ── 統計カード ── */}
+      <div style={{
+        background: 'var(--bg-card)', border: '1px solid var(--border)',
+        borderRadius: 24, overflow: 'hidden',
+      }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr' }}>
+          {[
+            {
+              onClick: onOpenRank,
+              icon: <StarIcon width={15} height={15} style={{ color: 'var(--xp-icon)' }} />,
+              value: points.toLocaleString(),
+              label: t('profile.points'),
+            },
+            deviation != null ? {
+              onClick: onOpenDeviation,
+              icon: <TrendingUpIcon width={15} height={15} style={{ color: 'var(--brand)' }} />,
+              value: deviation.toFixed(1),
+              label: t('ranking.deviationLabel'),
+            } : {
+              onClick: onOpenRank,
+              icon: <BarChartIcon width={15} height={15} style={{ color: 'var(--brand)' }} />,
+              value: xp.toLocaleString(),
+              label: 'XP',
+            },
+            {
+              onClick: onOpenRank,
+              icon: <div style={{ width: 15, height: 15, background: 'var(--brand)', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 900, color: '#fff' }}>{level}</div>,
+              value: levelTitle.length > 5 ? `Lv.${level}` : levelTitle,
+              label: 'レベル',
+            },
+          ].map((stat, i) => (
+            <button key={i} onClick={stat.onClick} style={{
+              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3,
+              padding: '16px 8px',
+              background: 'none', border: 'none', cursor: 'pointer',
+              borderLeft: i > 0 ? '1px solid var(--border)' : 'none',
+            }}>
+              {stat.icon}
+              <span style={{ fontSize: 18, fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.02em', lineHeight: 1, fontFamily: 'var(--font-display)' }}>
+                {stat.value}
+              </span>
+              <span style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 600 }}>{stat.label}</span>
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Rank banner (compact, only when ranking exists) */}
+      {/* ランクバナー */}
       {topPct != null && (
         <button onClick={onOpenRanking} style={{
-          background: 'linear-gradient(135deg, var(--brand) 0%, var(--brand-mid) 100%)',
-          borderRadius: 'var(--radius-xl)', padding: '14px 20px',
-          display: 'flex', alignItems: 'center', gap: 'var(--s-4)',
+          background: 'linear-gradient(135deg, #2E4BA8 0%, #3D5FC4 60%, #6B85D6 100%)',
+          borderRadius: 20, padding: '14px 18px',
+          display: 'flex', alignItems: 'center', gap: 16,
           width: '100%', border: 'none', cursor: 'pointer', textAlign: 'left',
+          boxShadow: '0 4px 20px rgba(61,95,196,0.25)',
         }}>
-          <div style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: 32, fontWeight: 900,
-            color: '#fff', lineHeight: 1, flexShrink: 0,
-          }}>
-            {topPct}<span style={{ fontSize: 15, fontWeight: 600 }}>%</span>
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: 36, fontWeight: 900, color: '#fff', lineHeight: 1, flexShrink: 0 }}>
+            {topPct}<span style={{ fontSize: 16, fontWeight: 600 }}>%</span>
           </div>
           <div>
-            <div style={{
-              fontSize: 'var(--font-xs)', fontWeight: 700,
-              letterSpacing: '0.08em', textTransform: 'uppercase',
-              color: 'rgba(255,255,255,0.65)', marginBottom: 2,
-            }}>
+            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.65)', marginBottom: 3 }}>
               {t('home.nationalRanking')}
             </div>
-            <div style={{ fontSize: 'var(--font-base)', fontWeight: 700, color: '#fff' }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: '#fff' }}>
               {t('ranking.topPercent', { pct: topPct })}
             </div>
           </div>
-          <div style={{ marginLeft: 'auto', textAlign: 'right' }}>
-            <div style={{ fontSize: 'var(--font-sm)', color: 'rgba(255,255,255,0.65)' }}>
-              {t('ranking.deviationLabel')} {deviation!.toFixed(1)}
-            </div>
+          <div style={{ marginLeft: 'auto', textAlign: 'right', opacity: 0.75 }}>
+            <div style={{ fontSize: 12, color: '#fff' }}>{t('ranking.deviationLabel')} {deviation!.toFixed(1)}</div>
           </div>
         </button>
       )}
 
-      {/* Quick access: Case interview lessons */}
-      <section className="section">
-        <div className="section-head">
-          <h2 style={{ fontSize: 'var(--font-md)', fontWeight: 700 }}>{t('home.category.case')}</h2>
+      {/* ── ケース面接 ── */}
+      <section>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+          <div>
+            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#10B981', marginBottom: 2 }}>CASE INTERVIEW</div>
+            <h2 style={{ fontSize: 18, fontWeight: 800, letterSpacing: '-0.02em' }}>{t('home.category.case')}</h2>
+          </div>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-2)' }}>
-          {[
-            { id: 28, title: 'ケース面接入門', sub: 'フレームワーク選択・仮説思考' },
-            { id: 29, title: 'プロフィタビリティケース', sub: '利益構造の分解と改善' },
-            { id: 35, title: '新市場参入ケース', sub: '市場魅力度・競合・参入モード' },
-            { id: 36, title: 'M&Aケース', sub: 'シナジー分析・バリュエーション' },
-          ].map((lesson) => {
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+          {CASE_LESSONS.map((lesson) => {
             const done = completedSet.has(`lesson-${lesson.id}`)
             return (
-              <button
-                key={lesson.id}
-                onClick={() => onOpenLesson(lesson.id)}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: 'var(--s-3)',
-                  background: done ? 'var(--lesson-bg)' : 'var(--bg-card)',
-                  border: `1px solid ${done ? 'rgba(16,185,129,0.25)' : 'var(--border)'}`,
-                  borderRadius: 'var(--radius-lg)', padding: 'var(--s-3) var(--s-4)',
-                  cursor: 'pointer', textAlign: 'left', width: '100%',
-                }}
-              >
+              <button key={lesson.id} onClick={() => onOpenLesson(lesson.id)} style={{
+                background: done ? '#F0FDF4' : 'var(--bg-card)',
+                border: `1.5px solid ${done ? 'rgba(16,185,129,0.4)' : 'var(--border)'}`,
+                borderRadius: 18, padding: '14px 12px',
+                cursor: 'pointer', textAlign: 'left', position: 'relative',
+              }}>
+                {done && (
+                  <div style={{
+                    position: 'absolute', top: 10, right: 10,
+                    width: 20, height: 20, borderRadius: '50%', background: '#10B981',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}>
+                    <CheckIcon width={11} height={11} style={{ color: '#fff' }} />
+                  </div>
+                )}
                 <div style={{
-                  width: 36, height: 36, borderRadius: 'var(--radius-md)', flexShrink: 0,
-                  background: done ? 'var(--lesson-icon)' : 'var(--bg-secondary)',
+                  width: 36, height: 36, borderRadius: 12, marginBottom: 10,
+                  background: done ? 'rgba(16,185,129,0.15)' : '#EEF2FE',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 16,
                 }}>
-                  {done ? '✓' : '💼'}
+                  <BriefcaseIcon width={18} height={18} style={{ color: done ? '#10B981' : 'var(--brand)' }} />
                 </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 'var(--font-base)', fontWeight: 600, color: done ? 'var(--lesson-text)' : 'var(--text)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {lesson.title}
-                  </div>
-                  <div style={{ fontSize: 'var(--font-sm)', color: 'var(--text-muted)', marginTop: 2 }}>
-                    {lesson.sub}
-                  </div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: done ? '#065F46' : 'var(--text)', lineHeight: 1.35, marginBottom: 4 }}>
+                  {lesson.title}
                 </div>
-                <ArrowRightIcon width={14} height={14} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
+                <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{lesson.sub}</div>
               </button>
             )
           })}
         </div>
       </section>
 
-      {/* Categories */}
-      <section className="section">
-        <div className="section-head">
-          <h2 style={{ fontSize: 'var(--font-md)', fontWeight: 700 }}>{t('home.categories')}</h2>
+      {/* ── カテゴリ ── */}
+      <section>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+          <h2 style={{ fontSize: 18, fontWeight: 800, letterSpacing: '-0.02em' }}>{t('home.categories')}</h2>
         </div>
-        <div className="cat-grid">
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
           {CATEGORIES.map((c) => {
             const done = c.lessonIds.filter((id) => completedSet.has(`lesson-${id}`)).length
             const total = c.lessonIds.length
-            const pct = total > 0 ? (done / total) * 100 : 0
+            const pct = total > 0 ? Math.round((done / total) * 100) : 0
+            const col = CAT_COLORS[c.id] ?? { bg: '#F5F5F5', accent: '#6B7280', text: '#374151' }
             return (
-              <button
-                key={c.id}
-                className="cat-tile"
-                onClick={() => {
-                  if (c.lessonIds.length > 0) onOpenLesson(c.lessonIds[0])
-                  else onOpenCategory(c.id)
-                }}
-                style={{ cursor: 'pointer', textAlign: 'left', border: '1px solid var(--border)' }}
-              >
-                <div className="cat-tile-icon">{c.icon}</div>
-                <div className="cat-tile-name">{c.name}</div>
-                <div className="cat-tile-meta">{done} / {total}</div>
-                <div className="progress" style={{ height: 4 }}>
-                  <div className="progress-fill" style={{ width: `${pct}%` }} />
+              <button key={c.id} onClick={() => {
+                if (c.lessonIds.length > 0) onOpenLesson(c.lessonIds[0])
+                else onOpenCategory(c.id)
+              }} style={{
+                background: col.bg, border: 'none',
+                borderRadius: 18, padding: '14px 12px',
+                cursor: 'pointer', textAlign: 'left',
+              }}>
+                <div style={{ marginBottom: 10, color: col.accent }}>{c.icon}</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: col.text, lineHeight: 1.3, marginBottom: 10 }}>{c.name}</div>
+                <div style={{ height: 4, background: 'rgba(0,0,0,0.08)', borderRadius: 99 }}>
+                  <div style={{ height: '100%', width: `${pct}%`, background: col.accent, borderRadius: 99, transition: 'width 0.5s ease' }} />
                 </div>
+                <div style={{ fontSize: 10, color: col.text, opacity: 0.7, marginTop: 5, fontWeight: 700 }}>{done}/{total}</div>
               </button>
             )
           })}
         </div>
       </section>
 
-      {/* Level progress (bottom, secondary) */}
+      {/* ── レベル進捗 ── */}
       <button onClick={onOpenRank} style={{
         background: 'var(--bg-card)', border: '1px solid var(--border)',
-        borderRadius: 'var(--radius-lg)', padding: 'var(--s-4)',
+        borderRadius: 20, padding: '16px 18px',
         width: '100%', textAlign: 'left', cursor: 'pointer',
       }}>
-        <div style={{
-          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-          marginBottom: 8,
-        }}>
-          <span style={{ fontSize: 'var(--font-sm)', fontWeight: 600, color: 'var(--text-secondary)' }}>
-            {t('home.levelProgress')} · Lv.{level} · {levelTitle}
-          </span>
-          <span style={{ fontSize: 'var(--font-xs)', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-            {levelXp} / 1,000 XP
-          </span>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+          <div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--brand)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 2 }}>
+              {t('home.levelProgress')}
+            </div>
+            <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.01em', fontFamily: 'var(--font-display)' }}>
+              Lv.{level} · {levelTitle}
+            </div>
+          </div>
+          <span style={{ fontSize: 12, color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', fontWeight: 500 }}>{levelXp} / 1,000</span>
         </div>
-        <div className="progress">
-          <div className="progress-fill" style={{ width: `${levelPct}%` }} />
+        <div style={{ height: 8, background: 'var(--bg-secondary)', borderRadius: 99, overflow: 'hidden' }}>
+          <div style={{
+            height: '100%', width: `${levelPct}%`,
+            background: 'linear-gradient(90deg, var(--brand) 0%, #6B85D6 100%)',
+            borderRadius: 99,
+          }} />
         </div>
       </button>
 
