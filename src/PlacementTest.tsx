@@ -11,7 +11,7 @@ import { getGuestId, getNickname, setNickname, defaultNickname } from './guestId
 import { t } from './i18n'
 import './PlacementTest.css'
 
-const API_BASE = import.meta.env.DEV ? `http://${window.location.hostname}:3001` : ''
+import { API_BASE } from './apiBase'
 
 async function submitPlacement(deviation: number, correctCount: number, totalCount: number, nickname: string) {
   try {

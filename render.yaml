@@ -6,19 +6,29 @@ services:
     buildCommand: npm install --include=dev && npm run build
     startCommand: npm start
     envVars:
-      - key: ANTHROPIC_API_KEY
-        sync: false
       - key: NODE_ENV
         value: production
-      - key: VITE_FIREBASE_API_KEY
+      # Supabase
+      - key: SUPABASE_URL
         sync: false
-      - key: VITE_FIREBASE_AUTH_DOMAIN
+      - key: SUPABASE_SERVICE_ROLE_KEY
         sync: false
-      - key: VITE_FIREBASE_PROJECT_ID
+      # Stripe
+      - key: STRIPE_SECRET_KEY
         sync: false
-      - key: VITE_FIREBASE_STORAGE_BUCKET
+      - key: STRIPE_WEBHOOK_SECRET
         sync: false
-      - key: VITE_FIREBASE_MESSAGING_SENDER_ID
+      - key: STRIPE_PRICE_MONTHLY
         sync: false
-      - key: VITE_FIREBASE_APP_ID
+      - key: STRIPE_PRICE_YEARLY
+        sync: false
+      # AI
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      # Frontend env (Vite build time)
+      - key: VITE_SUPABASE_URL
+        sync: false
+      - key: VITE_SUPABASE_ANON_KEY
+        sync: false
+      - key: VITE_API_BASE
         sync: false

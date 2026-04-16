@@ -114,7 +114,7 @@ export function getPlanLabel(): string {
   }
 }
 
-const API_BASE = import.meta.env.DEV ? `http://${window.location.hostname}:3001` : ''
+import { API_BASE } from './apiBase'
 
 export async function startCheckout(plan: 'monthly' | 'yearly', guestId: string, userId?: string): Promise<void> {
   const res = await fetch(`${API_BASE}/api/checkout`, {

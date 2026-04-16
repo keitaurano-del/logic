@@ -9,7 +9,7 @@ type ScoreItem = { name: string; score: number; maxScore: number; feedback: stri
 type ScoreResult = { scores: ScoreItem[]; overall: string }
 type SummaryResult = { summary: string; keyPoints: string[]; improvements: string[]; goodPoints: string[] }
 
-const API_BASE = import.meta.env.DEV ? `http://${window.location.hostname}:3001` : ''
+import { API_BASE } from './apiBase'
 const MAX_TURNS = 5
 
 type Props = {

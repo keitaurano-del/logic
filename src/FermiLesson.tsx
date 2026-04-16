@@ -3,7 +3,7 @@ import { isPremium } from './subscription'
 import { t, getLocale, localeBody } from './i18n'
 import './FermiLesson.css'
 
-const API_BASE = import.meta.env.DEV ? `http://${window.location.hostname}:3001` : ''
+import { API_BASE } from './apiBase'
 
 const FREE_QUESTIONS_JA = [
   '日本のコンビニは何店舗あるか?',

@@ -4,7 +4,7 @@ import { canGenerate, recordGeneration } from './usageTracker'
 import { localeBody, getLocale } from './i18n'
 
 const STORAGE_KEY = 'logic-ai-problems'
-const API_BASE = import.meta.env.DEV ? `http://${window.location.hostname}:3001` : ''
+import { API_BASE } from './apiBase'
 
 // AI-generated lessons use IDs in the 10000+ range to avoid conflicts
 const AI_ID_BASE = 10000

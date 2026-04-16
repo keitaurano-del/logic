@@ -30,7 +30,7 @@ import ReportProblem from './ReportProblem'
 import { t, localeBody } from './i18n'
 import './Lesson.css'
 
-const API_BASE = import.meta.env.DEV ? `http://${window.location.hostname}:3001` : ''
+import { API_BASE } from './apiBase'
 
 async function generateAiCards(lessonTitle: string, category: string, wrongAnswers: { question: string; correctAnswer: string }[]) {
   try {

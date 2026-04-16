@@ -4,7 +4,7 @@ import { hasCompletedPlacement, loadPlacementResult } from './placementData'
 import { t } from './i18n'
 import './Ranking.css'
 
-const API_BASE = import.meta.env.DEV ? `http://${window.location.hostname}:3001` : ''
+import { API_BASE } from './apiBase'
 
 type RankEntry = { rank: number; nickname: string; deviation: number; isYou: boolean }
 type RankingData = { total: number; top: RankEntry[]; yourRank: number; yourDeviation: number }

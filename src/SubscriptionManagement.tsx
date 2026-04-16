@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 import { daysLeftInTrial, getSubscriptionState } from './subscription'
 import './SubscriptionManagement.css'
 
-const API_BASE = import.meta.env.DEV ? `http://${window.location.hostname}:3001` : ''
+import { API_BASE } from './apiBase'
 
 type SubData = {
   plan: string

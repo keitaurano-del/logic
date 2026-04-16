@@ -2,7 +2,7 @@ import type { AIProblemSet } from './aiProblemStore'
 import { localeBody, getLocale } from './i18n'
 
 const STORAGE_KEY = 'logic-daily-problem'
-const API_BASE = import.meta.env.DEV ? `http://${window.location.hostname}:3001` : ''
+import { API_BASE } from './apiBase'
 
 type DailyState = {
   date: string

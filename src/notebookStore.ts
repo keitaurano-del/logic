@@ -6,7 +6,7 @@ import {
 } from './db/notebookDb'
 
 const STORAGE_KEY = 'logic-notebook'
-const API_BASE = import.meta.env.DEV ? `http://${window.location.hostname}:3001` : ''
+import { API_BASE } from './apiBase'
 
 export type NotebookEntry = {
   id: string

@@ -1,6 +1,6 @@
 import { getGuestId } from './guestId'
 
-const API_BASE = import.meta.env.DEV ? `http://${window.location.hostname}:3001` : ''
+import { API_BASE } from './apiBase'
 
 export async function resetAllData(): Promise<void> {
   const guestId = getGuestId()
