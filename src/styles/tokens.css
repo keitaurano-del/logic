@@ -1,5 +1,6 @@
 /* Logic v3 — Design tokens
  * Brand-aligned with the indigo logo (#3D5FC4 / #EEF2FE / #9EB3F0)
+ * Refreshed: richer gradients, vibrant accents, animation tokens
  */
 :root {
   /* Brand (from logo) */
@@ -11,57 +12,89 @@
   --brand-dark:   #1E2D5C;
   --brand-darker: #0F1A3D;
 
+  /* Vibrant accent gradient — Duolingo-inspired energy */
+  --brand-vivid:  #4F6FD8;  /* slightly brighter for gradient start */
+  --brand-pop:    #7C3AED;  /* violet pop for gradient end */
+  --brand-grad:   linear-gradient(135deg, #3D5FC4 0%, #7C3AED 100%);
+  --brand-grad-h: linear-gradient(135deg, #2E4BA8 0%, #6D28D9 100%);
+  --brand-grad-glow: 0 8px 32px rgba(124, 58, 237, 0.28), 0 2px 8px rgba(61, 95, 196, 0.20);
+
+  /* Hero gradient — bold indigo→navy (Duolingo streak card style) */
+  --hero-grad:    linear-gradient(135deg, #3D5FC4 0%, #1E2D5C 60%, #120D2E 100%);
+  --hero-grad-alt: linear-gradient(145deg, #2E4BA8 0%, #4F1A8A 100%);
+
   /* Aliases for Logic's existing --accent-* usage (preserves downstream CSS) */
   --accent:       var(--brand);
   --accent-light: var(--brand-light);
-  --accent-soft:  rgba(61, 95, 196, 0.08);
-  --accent-glow:  rgba(61, 95, 196, 0.20);
+  --accent-soft:  rgba(61, 95, 196, 0.09);
+  --accent-glow:  rgba(61, 95, 196, 0.22);
   --accent-dark:  var(--brand-hover);
   --accent-fg:    #FFFFFF;
 
-  /* Surfaces */
-  --bg-primary:   #FAFAFB;
-  --bg-secondary: #F4F5F9;
+  /* Surfaces — clean off-white with very subtle cool tint */
+  --bg-primary:   #F8F9FC;
+  --bg-secondary: #F0F2F8;
   --bg-card:      #FFFFFF;
   --bg-elevated:  #FFFFFF;
-  --bg-tertiary:  #E9EBF2;
+  --bg-tertiary:  #E5E8F2;
   --bg-hero:      var(--brand-dark);
-  --bg-glass:     rgba(255, 255, 255, 0.78);
+  --bg-glass:     rgba(255, 255, 255, 0.82);
+  --bg-glass-dark: rgba(248, 249, 252, 0.92);
+
+  /* Subtle app background gradient */
+  --bg-app-grad:  linear-gradient(160deg, #F8F9FC 0%, #EEF2FE 100%);
 
   /* Text */
-  --text-primary:   #0F1424;
-  --text-secondary: #5B6078;
-  --text-muted:     #6B7280;  /* 4.7:1 — AA */
+  --text-primary:   #0D1220;
+  --text-secondary: #4A5068;
+  --text-muted:     #6B7280;
   --text-tertiary:  var(--text-muted);
   --text-on-hero:   #FFFFFF;
 
   /* Borders */
-  --border:       #E9EBF2;
-  --border-light: #F4F5F9;
+  --border:       #E2E5F0;
+  --border-light: #EEF0F8;
+  --border-brand: rgba(61, 95, 196, 0.25);
 
   /* Status */
-  --success:      #10B981;
-  --success-soft: rgba(16, 185, 129, 0.10);
-  --warning:      #F59E0B;
-  --warning-soft: rgba(245, 158, 11, 0.10);
-  --danger:       #DC2626;
-  --streak:       #F59E0B;
+  --success:       #059669;
+  --success-mid:   #10B981;
+  --success-soft:  rgba(5, 150, 105, 0.10);
+  --success-grad:  linear-gradient(135deg, #059669 0%, #10B981 100%);
+  --warning:       #D97706;
+  --warning-mid:   #F59E0B;
+  --warning-soft:  rgba(217, 119, 6, 0.10);
+  --warning-grad:  linear-gradient(135deg, #D97706 0%, #F59E0B 100%);
+  --danger:        #DC2626;
+  --streak:        #F59E0B;
+  --streak-grad:   linear-gradient(135deg, #F97316 0%, #F59E0B 100%);
 
-  /* Categories — brand family */
-  --cat-boki3:     var(--brand);
+  /* Categories — distinct colors per category (more vibrant) */
+  --cat-boki3:      #3D5FC4;
   --cat-boki3-soft: rgba(61, 95, 196, 0.10);
-  --cat-boki2:     var(--brand-mid);
-  --cat-boki2-soft: rgba(107, 133, 214, 0.10);
-  --cat-practice:  var(--brand-hover);
-  --cat-practice-soft: rgba(46, 75, 168, 0.10);
-  --cat-exam:      var(--brand-dark);
-  --cat-exam-soft: rgba(30, 45, 92, 0.10);
-  --cat-logic:     var(--brand);
-  --cat-logic-soft: rgba(61, 95, 196, 0.10);
-  --cat-pm:        var(--success);
-  --cat-pm-soft:   rgba(16, 185, 129, 0.10);
+  --cat-boki3-grad: linear-gradient(135deg, #3D5FC4 0%, #6B85D6 100%);
 
-  /* Radii — Mercari-inspired rounder corners */
+  --cat-boki2:      #7C3AED;
+  --cat-boki2-soft: rgba(124, 58, 237, 0.10);
+  --cat-boki2-grad: linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%);
+
+  --cat-practice:   #0891B2;
+  --cat-practice-soft: rgba(8, 145, 178, 0.10);
+  --cat-practice-grad: linear-gradient(135deg, #0891B2 0%, #22D3EE 100%);
+
+  --cat-exam:       #1E2D5C;
+  --cat-exam-soft:  rgba(30, 45, 92, 0.10);
+  --cat-exam-grad:  linear-gradient(135deg, #1E2D5C 0%, #3D5FC4 100%);
+
+  --cat-logic:      #2563EB;
+  --cat-logic-soft: rgba(37, 99, 235, 0.10);
+  --cat-logic-grad: linear-gradient(135deg, #2563EB 0%, #60A5FA 100%);
+
+  --cat-pm:         #059669;
+  --cat-pm-soft:    rgba(5, 150, 105, 0.10);
+  --cat-pm-grad:    linear-gradient(135deg, #059669 0%, #34D399 100%);
+
+  /* Radii */
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
@@ -79,13 +112,26 @@
   --s-7: 48px;
   --s-8: 64px;
 
-  /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(15, 20, 36, 0.04);
-  --shadow-md: 0 4px 16px rgba(15, 20, 36, 0.06);
-  --shadow-lg: 0 16px 48px rgba(15, 20, 36, 0.10);
-  --shadow-cta: 0 6px 20px rgba(61, 95, 196, 0.32);
-  --shadow-card: var(--shadow-sm);
+  /* Shadows — brand-tinted, more layered */
+  --shadow-sm:       0 1px 3px rgba(13, 18, 32, 0.05), 0 1px 2px rgba(13, 18, 32, 0.04);
+  --shadow-md:       0 4px 16px rgba(13, 18, 32, 0.08), 0 2px 4px rgba(13, 18, 32, 0.04);
+  --shadow-lg:       0 16px 48px rgba(13, 18, 32, 0.12), 0 4px 8px rgba(13, 18, 32, 0.06);
+  --shadow-cta:      0 6px 24px rgba(61, 95, 196, 0.36), 0 2px 6px rgba(61, 95, 196, 0.18);
+  --shadow-cta-pop:  0 8px 32px rgba(124, 58, 237, 0.32), 0 2px 6px rgba(61, 95, 196, 0.20);
+  --shadow-card:     var(--shadow-sm);
   --shadow-elevated: var(--shadow-md);
+  --shadow-hero:     0 24px 64px rgba(13, 18, 32, 0.22), 0 8px 16px rgba(61, 95, 196, 0.14);
+  --shadow-float:    0 8px 24px rgba(13, 18, 32, 0.12), 0 2px 4px rgba(13, 18, 32, 0.06);
+
+  /* Animation tokens */
+  --ease-bounce:  cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out:     cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out:  cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring:  cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast:     120ms;
+  --dur-base:     200ms;
+  --dur-slow:     320ms;
+  --dur-xslow:    480ms;
 
   /* Typography */
   --font-ui:      'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Meiryo', sans-serif;
@@ -104,50 +150,66 @@
   --font-2xl:  28px;
   --font-3xl:  34px;
 
-  /* Semantic stat colors (tinted bg + dark text — readable on light bg) */
-  --streak-bg:     rgba(249, 115,  22, 0.10);
-  --streak-text:   #C2410C;
+  /* Semantic stat colors */
+  --streak-bg:     rgba(249, 115,  22, 0.12);
+  --streak-text:   #9A3412;
   --streak-icon:   #F97316;
-  --lesson-bg:     rgba( 16, 185, 129, 0.10);
+  --lesson-bg:     rgba( 5, 150, 105, 0.12);
   --lesson-text:   #065F46;
-  --lesson-icon:   #10B981;
-  --time-bg:       rgba( 99, 102, 241, 0.10);
-  --time-text:     #3730A3;
-  --time-icon:     #6366F1;
-  --xp-bg:         rgba(234, 179,   8, 0.12);
+  --lesson-icon:   #059669;
+  --time-bg:       rgba( 61, 95, 196, 0.12);
+  --time-text:     #1E2D5C;
+  --time-icon:     #3D5FC4;
+  --xp-bg:         rgba(217, 119,   6, 0.12);
   --xp-text:       #92400E;
   --xp-icon:       #D97706;
 
   /* Layout */
   --content-width: 480px;
   --sidebar-w: 240px;
+
+  /* Shimmer for featured borders */
+  --shimmer-size: 200% auto;
 }
 
-/* Dark mode */
+/* Dark mode — deeper navy, more vibrant, higher contrast */
 .mode-dark {
-  --bg-primary:   #0F1424;
-  --bg-secondary: #161C33;
-  --bg-card:      #1A2138;
-  --bg-elevated:  #212845;
-  --bg-tertiary:  #2A3350;
-  --bg-hero:      #0A0F1E;
-  --bg-glass:     rgba(26, 33, 56, 0.78);
+  --bg-primary:   #080D1A;
+  --bg-secondary: #0F1629;
+  --bg-card:      #141E38;
+  --bg-elevated:  #1B2645;
+  --bg-tertiary:  #223055;
+  --bg-hero:      #060A14;
+  --bg-glass:     rgba(14, 20, 42, 0.88);
+  --bg-glass-dark: rgba(14, 20, 42, 0.95);
+  --bg-app-grad:  linear-gradient(160deg, #080D1A 0%, #0F1629 100%);
 
-  --text-primary:   #F1F2F6;
-  --text-secondary: #B1B5C6;
-  --text-muted:     #7A8099;
+  --text-primary:   #EEF0F8;
+  --text-secondary: #A0A8C4;
+  --text-muted:     #68708C;
   --text-on-hero:   #FFFFFF;
 
-  --border:       #2A3350;
-  --border-light: #1A2138;
+  --border:       #1E2A48;
+  --border-light: #141E38;
+  --border-brand: rgba(107, 133, 214, 0.30);
 
-  --accent:       var(--brand-light);
-  --accent-light: #C1D0F7;
-  --accent-soft:  rgba(158, 179, 240, 0.12);
-  --accent-glow:  rgba(158, 179, 240, 0.25);
-  --accent-dark:  #C1D0F7;
-  --accent-fg:    #0F1424;
+  --accent:       #8BA8F0;
+  --accent-light: #BDD0FA;
+  --accent-soft:  rgba(107, 133, 214, 0.14);
+  --accent-glow:  rgba(107, 133, 214, 0.30);
+  --accent-dark:  #BDD0FA;
+  --accent-fg:    #0D1220;
 
-  --shadow-card:    0 1px 0 rgba(0, 0, 0, 0.35);
-  --shadow-elevated: 0 6px 24px rgba(0, 0, 0, 0.55);
+  /* Richer category colors in dark mode */
+  --cat-boki2:      #A78BFA;
+  --cat-boki2-soft: rgba(167, 139, 250, 0.14);
+  --cat-practice:   #22D3EE;
+  --cat-practice-soft: rgba(34, 211, 238, 0.12);
+
+  --shadow-card:    0 1px 0 rgba(0, 0, 0, 0.40), 0 2px 8px rgba(0, 0, 0, 0.25);
+  --shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.60), 0 2px 8px rgba(0, 0, 0, 0.30);
+  --shadow-cta:     0 6px 24px rgba(107, 133, 214, 0.30), 0 2px 6px rgba(107, 133, 214, 0.15);
+  --shadow-hero:    0 24px 64px rgba(0, 0, 0, 0.50), 0 8px 16px rgba(107, 133, 214, 0.14);
+
+  --hero-grad:    linear-gradient(135deg, #2E4BA8 0%, #0F1629 60%, #060A14 100%);
 }

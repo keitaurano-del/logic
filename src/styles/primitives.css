@@ -54,21 +54,25 @@ a:hover { color: var(--brand-hover); }
   border: 1.5px solid var(--border);
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease, border-color 120ms ease;
+  transition: transform var(--dur-base) var(--ease-out),
+              box-shadow var(--dur-base) ease,
+              background var(--dur-base) ease,
+              border-color var(--dur-base) ease;
   text-decoration: none;
   white-space: nowrap;
 }
+.btn:active { transform: scale(0.97) !important; }
 .btn:hover { border-color: var(--text-muted); }
 .btn:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--accent-glow); }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .btn-primary {
-  background: var(--brand);
+  background: var(--brand-grad);
   color: #FFFFFF;
-  border-color: var(--brand);
+  border-color: transparent;
   box-shadow: var(--shadow-cta);
 }
-.btn-primary:hover { background: var(--brand-hover); border-color: var(--brand-hover); transform: translateY(-1px); }
+.btn-primary:hover { background: var(--brand-grad-h); border-color: transparent; transform: translateY(-2px); box-shadow: var(--shadow-cta-pop); }
 
 .btn-ghost { background: transparent; border-color: transparent; color: var(--text-secondary); }
 .btn-ghost:hover { background: var(--bg-secondary); color: var(--text-primary); }
