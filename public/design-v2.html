@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logic — UI Design v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0E0F14;font-family:'Inter',sans-serif;padding:40px 32px;color:#fff;min-height:100vh}
+h1{text-align:center;font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:8px;font-family:'JetBrains Mono',monospace}
+.subtitle{text-align:center;font-size:13px;color:rgba(255,255,255,.5);margin-bottom:48px}
+.section{margin-bottom:72px}
+.section-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:20px;font-family:'JetBrains Mono',monospace;border-bottom:1px solid rgba(255,255,255,.07);padding-bottom:10px}
+.row{display:flex;gap:32px;align-items:flex-start;flex-wrap:wrap}
+
+/* ── PHONE FRAME ── */
+.phone{width:320px;background:#F8F9FC;border-radius:44px;overflow:hidden;box-shadow:0 0 0 8px #1a1b21,0 32px 80px rgba(0,0,0,.8);flex-shrink:0;font-size:13px;color:#0D1220}
+.phone-status{height:40px;background:#F8F9FC;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font-size:10px;color:#6B7280;font-weight:600}
+.phone-home-ind{width:120px;height:5px;background:#0D1220;border-radius:99px;margin:0 auto 8px}
+
+/* ── DESKTOP FRAME ── */
+.desktop{width:780px;min-height:520px;background:#F8F9FC;border-radius:16px;overflow:hidden;box-shadow:0 0 0 1px rgba(255,255,255,.06),0 32px 80px rgba(0,0,0,.6);flex-shrink:0;display:flex;font-size:13px;color:#0D1220}
+.sidebar{width:220px;background:#fff;border-right:1px solid #E2E5F0;flex-shrink:0;display:flex;flex-direction:column}
+.sb-brand{padding:20px 18px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #E2E5F0}
+.sb-logo{width:32px;height:32px;background:linear-gradient(135deg,#3D5FC4,#7C3AED);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:800;font-family:'Plus Jakarta Sans'}
+.sb-name{font-weight:800;font-size:15px;color:#0D1220;font-family:'Plus Jakarta Sans'}
+.sb-nav{padding:12px 10px;flex:1}
+.sb-item{display:flex;align-items:center;gap:10px;padding:10px 10px;border-radius:10px;color:#4A5068;font-weight:500;margin-bottom:2px;cursor:pointer;font-size:13px}
+.sb-item.active{background:#EEF2FE;color:#3D5FC4;font-weight:600}
+.sb-item-icon{width:20px;text-align:center;font-size:16px}
+.sb-footer{padding:14px 12px;border-top:1px solid #E2E5F0;display:flex;align-items:center;gap:10px}
+.sb-avatar{width:32px;height:32px;background:linear-gradient(135deg,#1E2D5C,#3D5FC4);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;flex-shrink:0}
+.sb-user{font-size:12px;font-weight:600;color:#0D1220}
+.sb-level{font-size:11px;color:#6B7280}
+.main-area{flex:1;overflow:hidden;background:#F8F9FC;padding:24px}
+
+/* ── TABBAR ── */
+.tabbar{display:flex;background:#fff;border-top:1px solid #E2E5F0;padding:6px 0 2px}
+.tab-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;font-size:9px;font-weight:600;color:#9CA3AF;letter-spacing:.02em}
+.tab-item.active{color:#3D5FC4}
+.tab-icon{font-size:18px;line-height:1}
+
+/* ── HOME SCREEN ── */
+.home-body{padding:16px 16px 0;background:#F8F9FC}
+.greeting{margin-bottom:14px}
+.greeting-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px}
+.greeting-name{font-family:'Plus Jakarta Sans',sans-serif;font-size:18px;font-weight:800;color:#0D1220}
+.streak-badge{background:#FFF7ED;border:1px solid #FED7AA;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:700;color:#C2410C;display:flex;align-items:center;gap:4px}
+.greeting-sub{font-size:12px;color:#6B7280}
+
+/* Hero challenge card */
+.hero-card{background:linear-gradient(135deg,#1E2D5C 0%,#3D5FC4 60%,#7C3AED 100%);border-radius:20px;padding:20px 18px;margin-bottom:14px;position:relative;overflow:hidden}
+.hero-card::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;background:radial-gradient(circle,rgba(255,255,255,.12) 0%,transparent 70%);border-radius:50%}
+.hero-eyebrow{font-size:9px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.65);margin-bottom:6px}
+.hero-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:16px;font-weight:800;color:#fff;line-height:1.35;margin-bottom:12px}
+.hero-btn{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);border-radius:10px;padding:8px 14px;color:#fff;font-size:12px;font-weight:700;display:inline-flex;align-items:center;gap:6px;backdrop-filter:blur(4px)}
+.hero-pts{position:absolute;top:18px;right:16px;background:rgba(255,255,255,.15);border-radius:20px;padding:4px 10px;font-size:10px;font-weight:700;color:#fff}
+
+/* Quick actions grid */
+.qa-label{font-size:11px;font-weight:700;color:#0D1220;margin-bottom:10px}
+.qa-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.qa-card{background:#fff;border-radius:16px;padding:14px 12px;box-shadow:0 2px 8px rgba(0,0,0,.06);display:flex;flex-direction:column;gap:6px;border:1px solid #E2E5F0}
+.qa-emoji{font-size:22px}
+.qa-name{font-size:11px;font-weight:700;color:#0D1220;line-height:1.3}
+.qa-sub{font-size:9px;color:#6B7280}
+
+/* Category progress */
+.cat-label{font-size:11px;font-weight:700;color:#0D1220;margin-bottom:10px}
+.cat-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.cat-icon{font-size:18px;width:20px;text-align:center}
+.cat-info{flex:1}
+.cat-name{font-size:11px;font-weight:600;color:#0D1220}
+.cat-prog{font-size:10px;color:#6B7280;margin-top:1px}
+.cat-bar{height:4px;background:#E2E5F0;border-radius:99px;margin-top:5px;overflow:hidden}
+.cat-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#3D5FC4,#7C3AED)}
+
+/* ── PROFILE SCREEN ── */
+.profile-hero-card{background:linear-gradient(145deg,#0D1B3E 0%,#1E2D5C 100%);padding:28px 18px 22px;position:relative;overflow:hidden}
+.profile-hero-card::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(158,179,240,.25) 0%,transparent 70%);border-radius:50%}
+.ph-inner{display:flex;align-items:center;gap:14px;position:relative;margin-bottom:16px}
+.ph-avatar{width:60px;height:60px;background:linear-gradient(135deg,#1E2D5C,#3D5FC4);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;border:3px solid rgba(255,255,255,.9);box-shadow:0 4px 16px rgba(0,0,0,.3);flex-shrink:0}
+.ph-name{font-family:'Plus Jakarta Sans',sans-serif;font-size:20px;font-weight:800;color:#FFFFFF;letter-spacing:-.02em}
+.ph-level{font-size:11px;color:rgba(255,255,255,.7);font-weight:500;margin-top:2px}
+.ph-xp-label{font-size:9px;color:rgba(255,255,255,.5);margin-bottom:4px;position:relative}
+.ph-xp-bar{height:5px;background:rgba(255,255,255,.15);border-radius:99px;overflow:hidden;position:relative}
+.ph-xp-fill{height:100%;width:35%;background:linear-gradient(90deg,rgba(255,255,255,.6),rgba(255,255,255,.9));border-radius:99px}
+
+.stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:14px 16px;background:#fff;border-bottom:1px solid #E2E5F0}
+.stat-box{text-align:center}
+.stat-num{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:#3D5FC4}
+.stat-lbl{font-size:9px;color:#6B7280;margin-top:2px}
+
+.profile-body{padding:14px 16px}
+.prog-section-label{font-size:11px;font-weight:700;color:#0D1220;margin-bottom:10px}
+.prog-row{margin-bottom:10px}
+.prog-header{display:flex;justify-content:space-between;margin-bottom:4px}
+.prog-name{font-size:11px;font-weight:600;color:#0D1220}
+.prog-pct{font-size:10px;color:#6B7280}
+.prog-bar{height:6px;background:#E2E5F0;border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;border-radius:99px}
+
+.settings-list{background:#fff;border-radius:12px;overflow:hidden;border:1px solid #E2E5F0;margin-top:12px}
+.settings-item{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid #F0F2F8;font-size:12px;color:#0D1220;font-weight:500}
+.settings-item:last-child{border-bottom:none}
+.settings-icon{font-size:16px;width:20px;text-align:center}
+.settings-chevron{margin-left:auto;color:#9CA3AF;font-size:14px}
+
+/* ── SETTINGS SCREEN ── */
+.settings-body{padding:16px;background:#F8F9FC}
+.settings-section{background:#fff;border-radius:14px;overflow:hidden;border:1px solid #E2E5F0;margin-bottom:14px}
+.settings-section-title{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#6B7280;padding:12px 14px 6px}
+.setting-row{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid #F0F2F8;font-size:12px;color:#0D1220;font-weight:500}
+.setting-row:last-child{border-bottom:none}
+.setting-icon{font-size:16px;width:22px;text-align:center}
+.setting-arrow{margin-left:auto;color:#9CA3AF;font-size:12px}
+.toggle{width:36px;height:20px;background:#3D5FC4;border-radius:99px;position:relative;margin-left:auto;flex-shrink:0}
+.toggle-dot{width:16px;height:16px;background:#fff;border-radius:50%;position:absolute;right:2px;top:2px}
+
+/* Subscription card */
+.sub-card{margin:10px 14px 14px;background:linear-gradient(135deg,#EEF2FE,#F5F3FF);border:1px solid #C7D2FE;border-radius:14px;padding:14px}
+.sub-badge{display:inline-flex;align-items:center;gap:4px;background:#FFF7ED;border:1px solid #FED7AA;border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;color:#C2410C;margin-bottom:8px}
+.sub-title{font-size:13px;font-weight:700;color:#0D1220;margin-bottom:4px}
+.sub-desc{font-size:11px;color:#6B7280;margin-bottom:10px}
+.sub-btn{background:linear-gradient(135deg,#3D5FC4,#7C3AED);color:#fff;border:none;border-radius:10px;padding:10px 0;width:100%;font-size:12px;font-weight:700;text-align:center;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif}
+
+/* ── PRICING SCREEN ── */
+.pricing-body{padding:16px;background:#F8F9FC}
+.trial-banner{background:linear-gradient(135deg,#FFF7ED,#FEF3C7);border:1px solid #FDE68A;border-radius:14px;padding:14px;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.trial-icon{font-size:24px}
+.trial-title{font-size:12px;font-weight:700;color:#92400E}
+.trial-desc{font-size:11px;color:#B45309;margin-top:2px}
+
+.price-card{background:#fff;border-radius:16px;border:2px solid #E2E5F0;padding:16px;margin-bottom:10px}
+.price-card.best{border-color:#3D5FC4;position:relative}
+.best-badge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#3D5FC4,#7C3AED);color:#fff;border-radius:20px;padding:3px 12px;font-size:10px;font-weight:700;white-space:nowrap}
+.price-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.price-plan{font-size:13px;font-weight:700;color:#0D1220}
+.price-amount{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:#3D5FC4}
+.price-period{font-size:11px;color:#6B7280;font-family:'Inter'}
+.price-save{font-size:10px;font-weight:700;color:#059669;background:#ECFDF5;border-radius:6px;padding:2px 8px;margin-top:4px;display:inline-block}
+.price-features{list-style:none;margin-bottom:14px}
+.price-features li{font-size:11px;color:#4A5068;padding:3px 0;display:flex;align-items:center;gap:6px}
+.price-features li::before{content:'✓';color:#3D5FC4;font-weight:700;font-size:12px}
+.price-btn{width:100%;padding:11px;border-radius:12px;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif}
+.price-btn.primary{background:linear-gradient(135deg,#3D5FC4,#7C3AED);color:#fff}
+.price-btn.outline{background:#fff;color:#3D5FC4;border:2px solid #3D5FC4}
+
+/* ── LESSONS SCREEN ── */
+.fc-banner{background:linear-gradient(135deg,#059669,#047857);border-radius:16px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.fc-icon{font-size:28px}
+.fc-title{font-size:13px;font-weight:700;color:#fff}
+.fc-desc{font-size:11px;color:rgba(255,255,255,.75);margin-top:2px}
+.fc-btn{margin-left:auto;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:6px 12px;color:#fff;font-size:11px;font-weight:700;white-space:nowrap}
+
+.lesson-section{margin-bottom:14px}
+.lesson-section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.lesson-section-name{font-size:12px;font-weight:700;color:#0D1220}
+.lesson-section-count{font-size:10px;color:#6B7280}
+.lesson-card{background:#fff;border-radius:12px;display:flex;align-items:center;gap:10px;padding:11px 12px;margin-bottom:6px;border:1px solid #E2E5F0}
+.lesson-icon-box{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.lesson-title{font-size:12px;font-weight:600;color:#0D1220}
+.lesson-cat{font-size:10px;color:#6B7280;margin-top:1px}
+.lesson-arrow{margin-left:auto;color:#9CA3AF;font-size:14px}
+</style>
+</head>
+<body>
+
+<h1>Logic — UI Design v2</h1>
+<p class="subtitle">スマホ (320px) + デスクトップ (780px) 全画面仕様書</p>
+
+<!-- ══════════════════════════════
+     1. HOME SCREEN
+══════════════════════════════ -->
+<div class="section">
+  <div class="section-label">01 — Home Screen / ホーム</div>
+  <div class="row">
+
+    <!-- MOBILE -->
+    <div class="phone">
+      <div class="phone-status">9:41<span>●●● 100%</span></div>
+      <div class="home-body">
+        <!-- Greeting -->
+        <div class="greeting">
+          <div class="greeting-top">
+            <div class="greeting-name">おはよう、Keita 👋</div>
+            <div class="streak-badge">🔥 3日</div>
+          </div>
+          <div class="greeting-sub">今日も論理的思考を鍛えよう</div>
+        </div>
+        <!-- Hero card -->
+        <div class="hero-card">
+          <div class="hero-eyebrow">Today's Challenge</div>
+          <div class="hero-title">フェルミ推定<br>「日本のコンビニ数は？」</div>
+          <div class="hero-btn">▶ 挑戦する</div>
+          <div class="hero-pts">+50 XP</div>
+        </div>
+        <!-- Quick actions -->
+        <div class="qa-label">トレーニング</div>
+        <div class="qa-grid">
+          <div class="qa-card"><div class="qa-emoji">✨</div><div class="qa-name">AI問題生成</div><div class="qa-sub">プレミアム</div></div>
+          <div class="qa-card"><div class="qa-emoji">💬</div><div class="qa-name">ロールプレイ</div><div class="qa-sub">AI対話練習</div></div>
+          <div class="qa-card"><div class="qa-emoji">🃏</div><div class="qa-name">フラッシュカード</div><div class="qa-sub">SM-2復習</div></div>
+          <div class="qa-card"><div class="qa-emoji">🔢</div><div class="qa-name">フェルミ推定</div><div class="qa-sub">数値感覚</div></div>
+        </div>
+        <!-- Category progress -->
+        <div class="cat-label">カテゴリ進捗</div>
+        <div class="cat-row"><span class="cat-icon">🧠</span><div class="cat-info"><div class="cat-name">ロジカルシンキング</div><div class="cat-prog">2 / 6 レッスン</div><div class="cat-bar"><div class="cat-fill" style="width:33%"></div></div></div></div>
+        <div class="cat-row"><span class="cat-icon">💼</span><div class="cat-info"><div class="cat-name">ケース面接</div><div class="cat-prog">0 / 4 レッスン</div><div class="cat-bar"><div class="cat-fill" style="width:0%"></div></div></div></div>
+        <div class="cat-row"><span class="cat-icon">📊</span><div class="cat-info"><div class="cat-name">フェルミ推定</div><div class="cat-prog">1 / 4 レッスン</div><div class="cat-bar"><div class="cat-fill" style="width:25%"></div></div></div></div>
+      </div>
+      <div style="height:8px;background:#F8F9FC"></div>
+      <div class="tabbar">
+        <div class="tab-item active"><div class="tab-icon">🏠</div>ホーム</div>
+        <div class="tab-item"><div class="tab-icon">📚</div>レッスン</div>
+        <div class="tab-item"><div class="tab-icon">👤</div>プロフィール</div>
+      </div>
+    </div>
+
+    <!-- DESKTOP -->
+    <div class="desktop">
+      <div class="sidebar">
+        <div class="sb-brand"><div class="sb-logo">L</div><div class="sb-name">Logic</div></div>
+        <div class="sb-nav">
+          <div class="sb-item active"><span class="sb-item-icon">🏠</span>ホーム</div>
+          <div class="sb-item"><span class="sb-item-icon">📚</span>レッスン</div>
+          <div class="sb-item"><span class="sb-item-icon">👤</span>プロフィール</div>
+        </div>
+        <div class="sb-footer"><div class="sb-avatar">K</div><div><div class="sb-user">Keita Urano</div><div class="sb-level">Lv.1 · 350 XP</div></div></div>
+      </div>
+      <div class="main-area">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <div><div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:20px;font-weight:800;color:#0D1220">おはよう、Keita 👋</div><div style="font-size:12px;color:#6B7280;margin-top:2px">今日も論理的思考を鍛えよう</div></div>
+          <div class="streak-badge">🔥 3日連続</div>
+        </div>
+        <div class="hero-card" style="margin-bottom:20px">
+          <div class="hero-eyebrow">Today's Challenge</div>
+          <div class="hero-title" style="font-size:18px">フェルミ推定「日本のコンビニ数は？」</div>
+          <div class="hero-btn">▶ 挑戦する</div>
+          <div class="hero-pts">+50 XP</div>
+        </div>
+        <div style="font-size:12px;font-weight:700;color:#0D1220;margin-bottom:12px">トレーニング</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px">
+          <div class="qa-card"><div class="qa-emoji">✨</div><div class="qa-name">AI問題生成</div><div class="qa-sub">プレミアム</div></div>
+          <div class="qa-card"><div class="qa-emoji">💬</div><div class="qa-name">ロールプレイ</div><div class="qa-sub">AI対話</div></div>
+          <div class="qa-card"><div class="qa-emoji">🃏</div><div class="qa-name">フラッシュカード</div><div class="qa-sub">SM-2復習</div></div>
+          <div class="qa-card"><div class="qa-emoji">🔢</div><div class="qa-name">フェルミ推定</div><div class="qa-sub">数値感覚</div></div>
+        </div>
+        <div style="font-size:12px;font-weight:700;color:#0D1220;margin-bottom:12px">カテゴリ進捗</div>
+        <div class="cat-row"><span class="cat-icon">🧠</span><div class="cat-info"><div class="cat-name">ロジカルシンキング</div><div class="cat-bar" style="margin-top:4px"><div class="cat-fill" style="width:33%"></div></div></div></div>
+        <div class="cat-row"><span class="cat-icon">💼</span><div class="cat-info"><div class="cat-name">ケース面接</div><div class="cat-bar" style="margin-top:4px"><div class="cat-fill" style="width:0%"></div></div></div></div>
+        <div class="cat-row"><span class="cat-icon">📊</span><div class="cat-info"><div class="cat-name">フェルミ推定</div><div class="cat-bar" style="margin-top:4px"><div class="cat-fill" style="width:25%"></div></div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     2. LESSONS SCREEN
+══════════════════════════════ -->
+<div class="section">
+  <div class="section-label">02 — Lessons Screen / レッスン</div>
+  <div class="row">
+
+    <!-- MOBILE -->
+    <div class="phone">
+      <div class="phone-status">9:41<span>●●● 100%</span></div>
+      <div style="padding:16px 16px 0;background:#F8F9FC">
+        <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:17px;font-weight:800;color:#0D1220;margin-bottom:14px">レッスン</div>
+        <div class="fc-banner">
+          <div class="fc-icon">🃏</div>
+          <div><div class="fc-title">フラッシュカード復習</div><div class="fc-desc">今日の復習: 12枚</div></div>
+          <div class="fc-btn">開始</div>
+        </div>
+        <div class="lesson-section">
+          <div class="lesson-section-header"><span class="lesson-section-name">🧠 ロジカルシンキング</span><span class="lesson-section-count">2/6</span></div>
+          <div class="lesson-card"><div class="lesson-icon-box" style="background:#EEF2FE">🧠</div><div><div class="lesson-title">MECE入門</div><div class="lesson-cat">ロジカルシンキング</div></div><div class="lesson-arrow">›</div></div>
+          <div class="lesson-card"><div class="lesson-icon-box" style="background:#EEF2FE">🌳</div><div><div class="lesson-title">ロジックツリー</div><div class="lesson-cat">ロジカルシンキング</div></div><div class="lesson-arrow">›</div></div>
+        </div>
+        <div class="lesson-section">
+          <div class="lesson-section-header"><span class="lesson-section-name">📊 フェルミ推定</span><span class="lesson-section-count">1/4</span></div>
+          <div class="lesson-card"><div class="lesson-icon-box" style="background:#ECFDF5">📊</div><div><div class="lesson-title">フェルミ推定入門</div><div class="lesson-cat">フェルミ推定</div></div><div class="lesson-arrow">›</div></div>
+          <div class="lesson-card"><div class="lesson-icon-box" style="background:#ECFDF5">🏙️</div><div><div class="lesson-title">市場規模の推定</div><div class="lesson-cat">フェルミ推定</div></div><div class="lesson-arrow">›</div></div>
+        </div>
+      </div>
+      <div class="tabbar">
+        <div class="tab-item"><div class="tab-icon">🏠</div>ホーム</div>
+        <div class="tab-item active"><div class="tab-icon">📚</div>レッスン</div>
+        <div class="tab-item"><div class="tab-icon">👤</div>プロフィール</div>
+      </div>
+    </div>
+
+    <!-- DESKTOP -->
+    <div class="desktop">
+      <div class="sidebar">
+        <div class="sb-brand"><div class="sb-logo">L</div><div class="sb-name">Logic</div></div>
+        <div class="sb-nav">
+          <div class="sb-item"><span class="sb-item-icon">🏠</span>ホーム</div>
+          <div class="sb-item active"><span class="sb-item-icon">📚</span>レッスン</div>
+          <div class="sb-item"><span class="sb-item-icon">👤</span>プロフィール</div>
+        </div>
+        <div class="sb-footer"><div class="sb-avatar">K</div><div><div class="sb-user">Keita Urano</div><div class="sb-level">Lv.1 · 350 XP</div></div></div>
+      </div>
+      <div class="main-area">
+        <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:20px;font-weight:800;color:#0D1220;margin-bottom:16px">レッスン</div>
+        <div class="fc-banner" style="margin-bottom:20px"><div class="fc-icon">🃏</div><div><div class="fc-title">フラッシュカード復習</div><div class="fc-desc">今日の復習: 12枚</div></div><div class="fc-btn">開始</div></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="lesson-card"><div class="lesson-icon-box" style="background:#EEF2FE">🧠</div><div><div class="lesson-title">MECE入門</div><div class="lesson-cat">ロジカルシンキング</div></div><div class="lesson-arrow">›</div></div>
+          <div class="lesson-card"><div class="lesson-icon-box" style="background:#EEF2FE">🌳</div><div><div class="lesson-title">ロジックツリー</div><div class="lesson-cat">ロジカルシンキング</div></div><div class="lesson-arrow">›</div></div>
+          <div class="lesson-card"><div class="lesson-icon-box" style="background:#ECFDF5">📊</div><div><div class="lesson-title">フェルミ推定入門</div><div class="lesson-cat">フェルミ推定</div></div><div class="lesson-arrow">›</div></div>
+          <div class="lesson-card"><div class="lesson-icon-box" style="background:#ECFDF5">🏙️</div><div><div class="lesson-title">市場規模の推定</div><div class="lesson-cat">フェルミ推定</div></div><div class="lesson-arrow">›</div></div>
+          <div class="lesson-card"><div class="lesson-icon-box" style="background:#FFF7ED">💼</div><div><div class="lesson-title">ケース面接入門</div><div class="lesson-cat">ケース面接</div></div><div class="lesson-arrow">›</div></div>
+          <div class="lesson-card"><div class="lesson-icon-box" style="background:#FFF7ED">🚀</div><div><div class="lesson-title">新規事業ケース</div><div class="lesson-cat">ケース面接</div></div><div class="lesson-arrow">›</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     3. PROFILE SCREEN
+══════════════════════════════ -->
+<div class="section">
+  <div class="section-label">03 — Profile Screen / プロフィール ⚠️ navy hero card</div>
+  <div class="row">
+
+    <!-- MOBILE -->
+    <div class="phone">
+      <div class="phone-status" style="background:#0D1B3E;color:rgba(255,255,255,.6)">9:41<span>●●● 100%</span></div>
+      <div class="profile-hero-card">
+        <div class="ph-inner">
+          <div class="ph-avatar">👤</div>
+          <div>
+            <div class="ph-name">Keita Urano</div>
+            <div class="ph-level">Lv.1 · ロジック見習い</div>
+          </div>
+        </div>
+        <div class="ph-xp-label">350 / 1000 XP</div>
+        <div class="ph-xp-bar"><div class="ph-xp-fill"></div></div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-num">3</div><div class="stat-lbl">🔥 連続日数</div></div>
+        <div class="stat-box"><div class="stat-num">2</div><div class="stat-lbl">✓ 完了レッスン</div></div>
+        <div class="stat-box"><div class="stat-num">45m</div><div class="stat-lbl">⏱ 学習時間</div></div>
+      </div>
+      <div class="profile-body">
+        <div class="prog-section-label">カテゴリ進捗</div>
+        <div class="prog-row"><div class="prog-header"><span class="prog-name">🧠 ロジカルシンキング</span><span class="prog-pct">33%</span></div><div class="prog-bar"><div class="prog-fill" style="width:33%;background:#3D5FC4"></div></div></div>
+        <div class="prog-row"><div class="prog-header"><span class="prog-name">📊 フェルミ推定</span><span class="prog-pct">25%</span></div><div class="prog-bar"><div class="prog-fill" style="width:25%;background:#059669"></div></div></div>
+        <div class="prog-row"><div class="prog-header"><span class="prog-name">💼 ケース面接</span><span class="prog-pct">0%</span></div><div class="prog-bar"><div class="prog-fill" style="width:0%;background:#F59E0B"></div></div></div>
+        <div class="settings-list" style="margin-top:14px">
+          <div class="settings-item"><span class="settings-icon">⚙️</span>設定<span class="settings-chevron">›</span></div>
+          <div class="settings-item"><span class="settings-icon">🏆</span>ランキング<span class="settings-chevron">›</span></div>
+          <div class="settings-item"><span class="settings-icon">📅</span>学習記録<span class="settings-chevron">›</span></div>
+        </div>
+      </div>
+      <div class="tabbar">
+        <div class="tab-item"><div class="tab-icon">🏠</div>ホーム</div>
+        <div class="tab-item"><div class="tab-icon">📚</div>レッスン</div>
+        <div class="tab-item active"><div class="tab-icon">👤</div>プロフィール</div>
+      </div>
+    </div>
+
+    <!-- DESKTOP -->
+    <div class="desktop">
+      <div class="sidebar">
+        <div class="sb-brand"><div class="sb-logo">L</div><div class="sb-name">Logic</div></div>
+        <div class="sb-nav">
+          <div class="sb-item"><span class="sb-item-icon">🏠</span>ホーム</div>
+          <div class="sb-item"><span class="sb-item-icon">📚</span>レッスン</div>
+          <div class="sb-item active"><span class="sb-item-icon">👤</span>プロフィール</div>
+        </div>
+        <div class="sb-footer"><div class="sb-avatar">K</div><div><div class="sb-user">Keita Urano</div><div class="sb-level">Lv.1 · 350 XP</div></div></div>
+      </div>
+      <div class="main-area" style="padding:0;overflow:hidden">
+        <div class="profile-hero-card" style="border-radius:0">
+          <div class="ph-inner">
+            <div class="ph-avatar" style="width:72px;height:72px;font-size:30px">👤</div>
+            <div>
+              <div class="ph-name" style="font-size:22px">Keita Urano</div>
+              <div class="ph-level">Lv.1 · ロジック見習い</div>
+              <div style="margin-top:10px"><div class="ph-xp-label" style="margin-bottom:4px">350 / 1000 XP</div><div class="ph-xp-bar" style="width:200px"><div class="ph-xp-fill"></div></div></div>
+            </div>
+          </div>
+        </div>
+        <div style="padding:20px">
+          <div class="stats-row" style="border-radius:14px;border:1px solid #E2E5F0;margin-bottom:16px">
+            <div class="stat-box"><div class="stat-num">3</div><div class="stat-lbl">🔥 連続日数</div></div>
+            <div class="stat-box"><div class="stat-num">2</div><div class="stat-lbl">✓ 完了レッスン</div></div>
+            <div class="stat-box"><div class="stat-num">45m</div><div class="stat-lbl">⏱ 学習時間</div></div>
+          </div>
+          <div class="prog-section-label">カテゴリ進捗</div>
+          <div class="prog-row"><div class="prog-header"><span class="prog-name">🧠 ロジカルシンキング</span><span class="prog-pct">33%</span></div><div class="prog-bar"><div class="prog-fill" style="width:33%;background:#3D5FC4"></div></div></div>
+          <div class="prog-row"><div class="prog-header"><span class="prog-name">📊 フェルミ推定</span><span class="prog-pct">25%</span></div><div class="prog-bar"><div class="prog-fill" style="width:25%;background:#059669"></div></div></div>
+          <div class="prog-row"><div class="prog-header"><span class="prog-name">💼 ケース面接</span><span class="prog-pct">0%</span></div><div class="prog-bar"><div class="prog-fill" style="width:0%;background:#F59E0B"></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     4. SETTINGS SCREEN
+══════════════════════════════ -->
+<div class="section">
+  <div class="section-label">04 — Settings Screen / 設定</div>
+  <div class="row">
+    <div class="phone">
+      <div class="phone-status">9:41<span>●●● 100%</span></div>
+      <div class="settings-body">
+        <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:17px;font-weight:800;color:#0D1220;margin-bottom:14px">設定</div>
+        <!-- Account -->
+        <div class="settings-section">
+          <div class="settings-section-title">アカウント</div>
+          <div class="setting-row"><span class="setting-icon">👤</span>Keita Urano<span style="margin-left:auto;font-size:10px;background:#ECFDF5;color:#059669;padding:3px 8px;border-radius:6px;font-weight:700">ログイン中</span></div>
+          <div class="setting-row" style="color:#DC2626"><span class="setting-icon">🚪</span>ログアウト</div>
+        </div>
+        <!-- Subscription -->
+        <div class="settings-section">
+          <div class="settings-section-title">サブスクリプション</div>
+          <div class="sub-card">
+            <div class="sub-badge">⏳ トライアル中</div>
+            <div class="sub-title">残り 7日間</div>
+            <div class="sub-desc">プレミアムの全機能をお試し中。期限後はフリープランに移行します。</div>
+            <div class="sub-btn">🚀 プレミアムにアップグレード</div>
+          </div>
+        </div>
+        <!-- Notifications -->
+        <div class="settings-section">
+          <div class="settings-section-title">通知</div>
+          <div class="setting-row"><span class="setting-icon">🔔</span>学習リマインダー<div class="toggle"><div class="toggle-dot"></div></div></div>
+          <div class="setting-row"><span class="setting-icon">🕐</span>通知時刻<span class="setting-arrow">08:00 ›</span></div>
+        </div>
+        <!-- App -->
+        <div class="settings-section">
+          <div class="settings-section-title">アプリ</div>
+          <div class="setting-row"><span class="setting-icon">🌐</span>言語<span class="setting-arrow">日本語 ›</span></div>
+        </div>
+        <!-- Data -->
+        <div class="settings-section">
+          <div class="settings-section-title">データ</div>
+          <div class="setting-row" style="color:#DC2626"><span class="setting-icon">🗑️</span>キャッシュをクリア</div>
+        </div>
+      </div>
+      <div class="tabbar">
+        <div class="tab-item"><div class="tab-icon">🏠</div>ホーム</div>
+        <div class="tab-item"><div class="tab-icon">📚</div>レッスン</div>
+        <div class="tab-item active"><div class="tab-icon">👤</div>プロフィール</div>
+      </div>
+    </div>
+
+    <!-- DESKTOP SETTINGS -->
+    <div class="desktop">
+      <div class="sidebar">
+        <div class="sb-brand"><div class="sb-logo">L</div><div class="sb-name">Logic</div></div>
+        <div class="sb-nav">
+          <div class="sb-item"><span class="sb-item-icon">🏠</span>ホーム</div>
+          <div class="sb-item"><span class="sb-item-icon">📚</span>レッスン</div>
+          <div class="sb-item active"><span class="sb-item-icon">👤</span>プロフィール</div>
+        </div>
+        <div class="sb-footer"><div class="sb-avatar">K</div><div><div class="sb-user">Keita Urano</div><div class="sb-level">Lv.1 · 350 XP</div></div></div>
+      </div>
+      <div class="main-area">
+        <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:20px;font-weight:800;color:#0D1220;margin-bottom:20px">設定</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div>
+            <div class="settings-section" style="margin-bottom:12px">
+              <div class="settings-section-title">アカウント</div>
+              <div class="setting-row"><span class="setting-icon">👤</span>Keita Urano<span style="margin-left:auto;font-size:10px;background:#ECFDF5;color:#059669;padding:3px 8px;border-radius:6px;font-weight:700">ログイン中</span></div>
+              <div class="setting-row" style="color:#DC2626"><span class="setting-icon">🚪</span>ログアウト</div>
+            </div>
+            <div class="settings-section">
+              <div class="settings-section-title">通知</div>
+              <div class="setting-row"><span class="setting-icon">🔔</span>学習リマインダー<div class="toggle"><div class="toggle-dot"></div></div></div>
+              <div class="setting-row"><span class="setting-icon">🕐</span>通知時刻<span class="setting-arrow">08:00 ›</span></div>
+            </div>
+          </div>
+          <div>
+            <div class="settings-section" style="margin-bottom:12px">
+              <div class="settings-section-title">サブスクリプション</div>
+              <div class="sub-card" style="margin:8px">
+                <div class="sub-badge">⏳ トライアル中</div>
+                <div class="sub-title">残り 7日間</div>
+                <div class="sub-desc">プレミアムの全機能をお試し中。</div>
+                <div class="sub-btn">🚀 アップグレード</div>
+              </div>
+            </div>
+            <div class="settings-section">
+              <div class="settings-section-title">アプリ</div>
+              <div class="setting-row"><span class="setting-icon">🌐</span>言語<span class="setting-arrow">日本語 ›</span></div>
+              <div class="setting-row" style="color:#DC2626"><span class="setting-icon">🗑️</span>キャッシュをクリア</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     5. PRICING SCREEN
+══════════════════════════════ -->
+<div class="section">
+  <div class="section-label">05 — Pricing Screen / 料金</div>
+  <div class="row">
+    <div class="phone">
+      <div class="phone-status">9:41<span>●●● 100%</span></div>
+      <div class="pricing-body">
+        <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:17px;font-weight:800;color:#0D1220;margin-bottom:14px">プレミアムプラン</div>
+        <div class="trial-banner">
+          <div class="trial-icon">⏳</div>
+          <div><div class="trial-title">トライアル残り 7日</div><div class="trial-desc">今すぐアップグレードして全機能を解放</div></div>
+        </div>
+        <div class="price-card best">
+          <div class="best-badge">🏆 BEST VALUE</div>
+          <div class="price-header">
+            <div><div class="price-plan">年額プラン</div><div class="price-save">33% OFF · ¥1,950 お得</div></div>
+            <div style="text-align:right"><div class="price-amount">¥7,800</div><div class="price-period">/年</div></div>
+          </div>
+          <ul class="price-features">
+            <li>AI問題生成（無制限）</li>
+            <li>ロールプレイ練習（全シナリオ）</li>
+            <li>フラッシュカード（全デッキ）</li>
+            <li>模擬試験（月1回）</li>
+            <li>詳細進捗分析</li>
+          </ul>
+          <button class="price-btn primary">年額プランを開始</button>
+        </div>
+        <div class="price-card" style="margin-top:10px">
+          <div class="price-header">
+            <div class="price-plan">月額プラン</div>
+            <div style="text-align:right"><div class="price-amount">¥980</div><div class="price-period">/月</div></div>
+          </div>
+          <ul class="price-features">
+            <li>AI問題生成（月30回）</li>
+            <li>ロールプレイ練習</li>
+            <li>フラッシュカード</li>
+          </ul>
+          <button class="price-btn outline">月額プランを開始</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DESKTOP PRICING -->
+    <div class="desktop" style="min-height:400px">
+      <div class="sidebar">
+        <div class="sb-brand"><div class="sb-logo">L</div><div class="sb-name">Logic</div></div>
+        <div class="sb-nav">
+          <div class="sb-item"><span class="sb-item-icon">🏠</span>ホーム</div>
+          <div class="sb-item"><span class="sb-item-icon">📚</span>レッスン</div>
+          <div class="sb-item active"><span class="sb-item-icon">👤</span>プロフィール</div>
+        </div>
+        <div class="sb-footer"><div class="sb-avatar">K</div><div><div class="sb-user">Keita Urano</div><div class="sb-level">Lv.1 · 350 XP</div></div></div>
+      </div>
+      <div class="main-area">
+        <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:20px;font-weight:800;color:#0D1220;margin-bottom:16px">プレミアムプラン</div>
+        <div class="trial-banner" style="margin-bottom:16px"><div class="trial-icon">⏳</div><div><div class="trial-title">トライアル残り 7日</div><div class="trial-desc">今すぐアップグレードして全機能を解放</div></div></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="price-card best" style="padding-top:24px">
+            <div class="best-badge">🏆 BEST VALUE</div>
+            <div class="price-header"><div><div class="price-plan">年額プラン</div><div class="price-save">33% OFF</div></div><div style="text-align:right"><div class="price-amount">¥7,800</div><div class="price-period">/年</div></div></div>
+            <ul class="price-features"><li>AI問題生成（無制限）</li><li>ロールプレイ（全シナリオ）</li><li>模擬試験（月1回）</li><li>詳細進捗分析</li></ul>
+            <button class="price-btn primary">年額プランを開始</button>
+          </div>
+          <div class="price-card">
+            <div class="price-header"><div class="price-plan">月額プラン</div><div style="text-align:right"><div class="price-amount">¥980</div><div class="price-period">/月</div></div></div>
+            <ul class="price-features"><li>AI問題生成（月30回）</li><li>ロールプレイ練習</li><li>フラッシュカード</li></ul>
+            <button class="price-btn outline">月額プランを開始</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Color System Reference -->
+<div class="section">
+  <div class="section-label">Design System — Colors</div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <div style="text-align:center"><div style="width:64px;height:64px;border-radius:12px;background:#3D5FC4;margin-bottom:6px"></div><div style="font-size:10px;color:rgba(255,255,255,.5)">Brand<br>#3D5FC4</div></div>
+    <div style="text-align:center"><div style="width:64px;height:64px;border-radius:12px;background:#1E2D5C;margin-bottom:6px"></div><div style="font-size:10px;color:rgba(255,255,255,.5)">Dark<br>#1E2D5C</div></div>
+    <div style="text-align:center"><div style="width:64px;height:64px;border-radius:12px;background:#0D1B3E;margin-bottom:6px"></div><div style="font-size:10px;color:rgba(255,255,255,.5)">Darker<br>#0D1B3E</div></div>
+    <div style="text-align:center"><div style="width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,#3D5FC4,#7C3AED);margin-bottom:6px"></div><div style="font-size:10px;color:rgba(255,255,255,.5)">Gradient</div></div>
+    <div style="text-align:center"><div style="width:64px;height:64px;border-radius:12px;background:#9EB3F0;margin-bottom:6px"></div><div style="font-size:10px;color:rgba(255,255,255,.5)">Light<br>#9EB3F0</div></div>
+    <div style="text-align:center"><div style="width:64px;height:64px;border-radius:12px;background:#EEF2FE;border:1px solid #C7D2FE;margin-bottom:6px"></div><div style="font-size:10px;color:rgba(255,255,255,.5)">Soft<br>#EEF2FE</div></div>
+    <div style="text-align:center"><div style="width:64px;height:64px;border-radius:12px;background:#F8F9FC;border:1px solid rgba(255,255,255,.1);margin-bottom:6px"></div><div style="font-size:10px;color:rgba(255,255,255,.5)">BG<br>#F8F9FC</div></div>
+    <div style="text-align:center"><div style="width:64px;height:64px;border-radius:12px;background:#059669;margin-bottom:6px"></div><div style="font-size:10px;color:rgba(255,255,255,.5)">Success<br>#059669</div></div>
+    <div style="text-align:center"><div style="width:64px;height:64px;border-radius:12px;background:#DC2626;margin-bottom:6px"></div><div style="font-size:10px;color:rgba(255,255,255,.5)">Danger<br>#DC2626</div></div>
+  </div>
+</div>
+
+</body>
+</html>
