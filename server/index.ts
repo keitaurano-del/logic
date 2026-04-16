@@ -1199,7 +1199,11 @@ app.post('/api/checkout', async (req, res) => {
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       payment_method_types: ['card'],
+      payment_method_collection: 'if_required',
       line_items: [{ price: planConfig.priceId, quantity: 1 }],
+      subscription_data: {
+        trial_period_days: 7,
+      },
       success_url: `${origin}/?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/?checkout=cancel`,
       metadata: { guestId: guestId || '', plan, userId: userId || '' },
@@ -1230,6 +1234,74 @@ app.get('/api/checkout-verify', async (req, res) => {
     })
   } catch (e: any) {
     console.error('checkout-verify error:', e)
+    res.status(500).json({ error: e.message })
+  }
+})
+
+// =============================================
+// Stripe Customer Portal
+// =============================================
+app.post('/api/subscription/portal', async (req, res) => {
+  if (!stripe) return res.status(503).json({ error: 'Stripe not configured' })
+  try {
+    const { userId } = req.body as { userId?: string }
+    if (!userId) return res.status(400).json({ error: 'userId required' })
+
+    // profiles から stripe_customer_id を取得
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('stripe_customer_id')
+      .eq('id', userId)
+      .single()
+
+    if (!profile?.stripe_customer_id) {
+      return res.status(404).json({ error: 'Stripe customer not found' })
+    }
+
+    const portalSession = await stripe.billingPortal.sessions.create({
+      customer: profile.stripe_customer_id,
+      return_url: 'https://logic-taupe.vercel.app',
+    })
+
+    res.json({ url: portalSession.url })
+  } catch (e: any) {
+    console.error('portal error:', e)
+    res.status(500).json({ error: e.message })
+  }
+})
+
+// =============================================
+// Stripe Subscription Cancel
+// =============================================
+app.post('/api/subscription/cancel', async (req, res) => {
+  if (!stripe) return res.status(503).json({ error: 'Stripe not configured' })
+  try {
+    const { userId } = req.body as { userId?: string }
+    if (!userId) return res.status(400).json({ error: 'userId required' })
+
+    // subscriptions テーブルから stripe_subscription_id を取得
+    const { data: sub } = await supabase
+      .from('subscriptions')
+      .select('stripe_subscription_id')
+      .eq('user_id', userId)
+      .single()
+
+    if (!sub?.stripe_subscription_id) {
+      return res.status(404).json({ error: 'Subscription not found' })
+    }
+
+    // Stripe でサブスクをキャンセル
+    await stripe.subscriptions.cancel(sub.stripe_subscription_id)
+
+    // Supabase を更新
+    await supabase
+      .from('subscriptions')
+      .update({ plan: 'free', status: 'inactive' })
+      .eq('user_id', userId)
+
+    res.json({ success: true })
+  } catch (e: any) {
+    console.error('cancel error:', e)
     res.status(500).json({ error: e.message })
   }
 })

@@ -43,23 +43,14 @@ export default function Pricing({ onBack }: Props) {
         </div>
 
         <div className="pr-plans">
-          <div className="pr-card">
-            <div className="pr-plan-name">無料</div>
-            <div className="pr-price">¥0<span>/月</span></div>
-            <ul className="pr-features">
-              <li>✓ 全レッスン閲覧</li>
-              <li>✓ AI問題生成 <strong>1日10問</strong>まで</li>
-              <li>✓ ロードマップ</li>
-              <li>✓ 学習日記</li>
-            </ul>
-            <button className="pr-btn pr-btn-secondary" disabled>現在のプラン</button>
-          </div>
-
-          <div className="pr-card pr-card-popular">
-            <div className="pr-popular-badge">⭐ 人気No.1</div>
+          {/* 年額プラン（推奨・先に表示） */}
+          <div className="pr-card pr-card-recommended">
+            <div className="pr-recommended-badge">🏆 おすすめ</div>
             <div className="pr-plan-name">年額プラン</div>
             <div className="pr-price">¥3,500<span>/年</span></div>
-            <div className="pr-price-detail">月あたり ¥292・<strong>42% OFF</strong></div>
+            <div className="pr-price-monthly">月々 <strong>¥292</strong></div>
+            <div className="pr-price-savings">年額で約2ヶ月分お得！ <span className="pr-off-badge">42% OFF</span></div>
+            <div className="pr-trial-note">🎁 7日間無料トライアル付き</div>
             <ul className="pr-features">
               <li>✓ AI問題生成 <strong>月300問</strong>まで</li>
               <li>✓ デイリー問題</li>
@@ -68,17 +59,19 @@ export default function Pricing({ onBack }: Props) {
               <li>✓ 全機能アクセス</li>
             </ul>
             <button
-              className="pr-btn pr-btn-primary"
+              className="pr-btn pr-btn-primary pr-btn-recommended"
               onClick={() => handleUpgrade('yearly')}
               disabled={loading !== null || state.plan === 'yearly'}
             >
-              {state.plan === 'yearly' ? '加入中' : loading === 'yearly' ? '読み込み中...' : '年額プランにする'}
+              {state.plan === 'yearly' ? '加入中' : loading === 'yearly' ? '読み込み中...' : '年額プランを始める'}
             </button>
           </div>
 
+          {/* 月額プラン */}
           <div className="pr-card">
             <div className="pr-plan-name">月額プラン</div>
             <div className="pr-price">¥500<span>/月</span></div>
+            <div className="pr-trial-note">🎁 7日間無料トライアル付き</div>
             <ul className="pr-features">
               <li>✓ AI問題生成 <strong>月300問</strong>まで</li>
               <li>✓ デイリー問題</li>
@@ -100,7 +93,7 @@ export default function Pricing({ onBack }: Props) {
 
         <div className="pr-note">
           💳 クレジットカード決済 / Stripe<br/>
-          🎁 7日間の無料トライアル付き<br/>
+          🎁 7日間の無料トライアル付き（カード登録必要）<br/>
           ✕ いつでも解約可能
         </div>
       </div>

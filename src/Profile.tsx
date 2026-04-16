@@ -3,7 +3,8 @@ import { getCompletedLessons, getStreak, getStudyHours, getTotalStudyDays } from
 import { loginWithGoogle, logout, onAuthChange, type User } from './supabase'
 import { loadGuestUser, updateGuestId } from './guestUser'
 import { isDevMode, setDevMode as persistDevMode } from './devMode'
-import { getPlanLabel, BETA_MODE } from './subscription'
+import { BETA_MODE } from './subscription'
+import SubscriptionManagement from './SubscriptionManagement'
 import { resetAllData } from './dataReset'
 import { loadReminderPref, scheduleDailyReminder, cancelDailyReminder, requestNotificationPermission, isNative } from './notifications'
 import { t, getLocale, setLocale } from './i18n'
@@ -386,14 +387,10 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
         <span>›</span>
       </div>
 
-      {/* Plan card — hidden during beta (BETA_MODE) */}
+      {/* Subscription management — hidden during beta (BETA_MODE) */}
       {onPricing && !BETA_MODE && (
-        <div className="pf-plan-card" onClick={onPricing}>
-          <div className="pf-plan-card-info">
-            <span className="pf-plan-card-label">{t('profile.planLabel')}</span>
-            <span className="pf-plan-card-value">{getPlanLabel()}</span>
-          </div>
-          <span className="pf-plan-card-arrow">›</span>
+        <div className="pf-section">
+          <SubscriptionManagement userId={user?.id ?? null} onChangePlan={onPricing} />
         </div>
       )}
       {BETA_MODE && (
