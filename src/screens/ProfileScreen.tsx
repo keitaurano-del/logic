@@ -172,7 +172,7 @@ function ProfileMobile({
         </button>
       </div>
 
-      <button className="profile-hero" onClick={onOpenRank} style={{ cursor: 'pointer', border: 'none', background: 'none', padding: 0, textAlign: 'left', width: '100%', display: 'block' }}>
+      <button className="profile-hero" onClick={onOpenRank} style={{ cursor: 'pointer', border: 'none', padding: 0, textAlign: 'left', width: '100%', display: 'block' }}>
         <div className="profile-hero-inner">
           <div className="profile-avatar"><UserIcon width={22} height={22} /></div>
           <div>
