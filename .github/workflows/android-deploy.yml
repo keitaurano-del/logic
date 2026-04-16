@@ -55,9 +55,16 @@ jobs:
       - name: Capacitor sync
         run: npx cap sync android
 
-      # ── 9. versionCode を自動インクリメント ───────────────
-      - name: Bump Android versionCode
-        run: node scripts/bump-android-version.js
+      # ── 9. versionCode を GITHUB_RUN_NUMBER で設定 ────────
+      #      毎回ユニークなversionCodeを保証するためRUN_NUMBERを使用
+      - name: Set Android versionCode from run number
+        run: |
+          GRADLE=android/app/build.gradle
+          VERSION_CODE=${{ github.run_number }}
+          # versionCode の行を置換
+          sed -i "s/versionCode [0-9]\+/versionCode ${VERSION_CODE}/" "$GRADLE"
+          echo "✓ versionCode set to ${VERSION_CODE}"
+          grep versionCode "$GRADLE"
 
       # ── 10. Gradle キャッシュ ─────────────────────────────
       - name: Cache Gradle
