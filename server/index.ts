@@ -585,8 +585,8 @@ app.post('/api/flashcards/generate', flashcardsLimiter, async (req, res) => {
 
   try {
     const response = await client.messages.create({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 1500,
+      model: 'claude-haiku-3-5',
+      max_tokens: 1000,
       system: isEn ? systemPromptEn : systemPromptJa,
       messages: [{ role: 'user', content: userMessage }],
     })
@@ -706,7 +706,7 @@ app.post('/api/journal/generate', generateProblemsLimiter, async (req, res) => {
 [Study time] ${studyMinutes} minutes`
 
     const response = await client.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-haiku-3-5',
       max_tokens: 400,
       messages: [{ role: 'user', content: isEn ? promptEn : promptJa }],
     })
@@ -798,8 +798,8 @@ Rules:
     const systemPrompt = isEn ? systemPromptEn : systemPromptJa
 
     const response = await client.messages.create({
-      model: 'claude-sonnet-4-5',
-      max_tokens: 4096,
+      model: 'claude-haiku-3-5',
+      max_tokens: 1500,
       system: systemPrompt,
       messages: [{ role: 'user', content: prompt }],
     })
@@ -978,7 +978,7 @@ app.post('/api/fermi/question', fermiLimiter, async (req, res) => {
       : 'フェルミ推定の問題を 1 問だけ日本語で生成してください。日常的な日本の社会・経済に関する問いで、分解思考の練習に適したものを出してください。問題文のみを 1 行で返してください。前置きや説明は不要です。'
 
     const response = await client.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-haiku-3-5',
       max_tokens: 200,
       messages: [{ role: 'user', content: userPrompt }],
     })
@@ -1395,8 +1395,8 @@ Respond in English.`
     const systemPrompt = isEn ? systemPromptEn : systemPromptJa
 
     const response = await client.messages.create({
-      model: 'claude-sonnet-4-5',
-      max_tokens: 2048,
+      model: 'claude-haiku-3-5',
+      max_tokens: 1000,
       system: systemPrompt,
       messages: [{ role: 'user', content: prompt }],
     })
