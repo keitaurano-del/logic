@@ -19,16 +19,36 @@ const supabase = supabaseUrl
 const stripeKey = process.env.STRIPE_SECRET_KEY
 const stripe = stripeKey ? new Stripe(stripeKey) : null
 
-type PlanKey = 'monthly' | 'yearly'
+type PlanKey = 'monthly' | 'yearly' | 'standard_monthly' | 'standard_yearly' | 'premium_monthly' | 'premium_yearly'
 const PLANS: Record<PlanKey, { priceId: string; amount: number; interval: 'month' | 'year' }> = {
   monthly: {
-    priceId: process.env.STRIPE_PRICE_MONTHLY || '',
+    priceId: process.env.STRIPE_PRICE_STANDARD_MONTHLY || process.env.STRIPE_PRICE_MONTHLY || '',
     amount: 500,
     interval: 'month',
   },
   yearly: {
-    priceId: process.env.STRIPE_PRICE_YEARLY || '',
+    priceId: process.env.STRIPE_PRICE_STANDARD_YEARLY || process.env.STRIPE_PRICE_YEARLY || '',
     amount: 3500,
+    interval: 'year',
+  },
+  standard_monthly: {
+    priceId: process.env.STRIPE_PRICE_STANDARD_MONTHLY || process.env.STRIPE_PRICE_MONTHLY || '',
+    amount: 500,
+    interval: 'month',
+  },
+  standard_yearly: {
+    priceId: process.env.STRIPE_PRICE_STANDARD_YEARLY || process.env.STRIPE_PRICE_YEARLY || '',
+    amount: 3500,
+    interval: 'year',
+  },
+  premium_monthly: {
+    priceId: process.env.STRIPE_PRICE_PREMIUM_MONTHLY || '',
+    amount: 980,
+    interval: 'month',
+  },
+  premium_yearly: {
+    priceId: process.env.STRIPE_PRICE_PREMIUM_YEARLY || '',
+    amount: 6980,
     interval: 'year',
   },
 }
@@ -1102,6 +1122,65 @@ app.get('/api/placement/ranking', async (req, res) => {
 // 問題報告 — Supabase 版
 // =============================================
 
+// Jira チケット作成ヘルパー
+async function jiraCreateIssue(opts: {
+  summary: string
+  description: string
+  issueType?: string
+}): Promise<{ key: string } | null> {
+  const jiraUrl = process.env.JIRA_URL
+  const jiraEmail = process.env.JIRA_EMAIL
+  const jiraToken = process.env.JIRA_API_TOKEN
+  const jiraProject = process.env.JIRA_PROJECT_KEY
+
+  if (!jiraUrl || !jiraEmail || !jiraToken || !jiraProject) {
+    console.log('[jira] JIRA env vars not set — skipping ticket creation')
+    return null
+  }
+
+  try {
+    const auth = Buffer.from(`${jiraEmail}:${jiraToken}`).toString('base64')
+    const response = await fetch(`${jiraUrl}/rest/api/3/issue`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Basic ${auth}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({
+        fields: {
+          project: { key: jiraProject },
+          summary: opts.summary,
+          description: {
+            type: 'doc',
+            version: 1,
+            content: [
+              {
+                type: 'paragraph',
+                content: [{ type: 'text', text: opts.description }],
+              },
+            ],
+          },
+          issuetype: { name: opts.issueType || 'Bug' },
+        },
+      }),
+    })
+
+    if (!response.ok) {
+      const errText = await response.text()
+      console.error('[jira] Failed to create issue:', response.status, errText)
+      return null
+    }
+
+    const data = (await response.json()) as { key: string }
+    console.log('[jira] Created issue:', data.key)
+    return data
+  } catch (e: any) {
+    console.error('[jira] Error creating issue:', e.message)
+    return null
+  }
+}
+
 app.post('/api/report-problem', async (req, res) => {
   try {
     const { lessonTitle, lessonId, question, options, issueType, comment } = req.body || {}
@@ -1133,6 +1212,59 @@ app.post('/api/report-problem', async (req, res) => {
     }
 
     console.log('[REPORT]', issueType, '-', lessonTitle, '-', question.slice(0, 50))
+
+    // メール送信を試みる (nodemailer が利用可能な場合)
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const nodemailer = require('nodemailer')
+      const smtpHost = process.env.SMTP_HOST
+      const smtpUser = process.env.SMTP_USER
+      const smtpPass = process.env.SMTP_PASS
+      const reportEmail = process.env.REPORT_EMAIL
+
+      if (smtpHost && smtpUser && smtpPass && reportEmail) {
+        const transporter = nodemailer.createTransport({
+          host: smtpHost,
+          port: parseInt(process.env.SMTP_PORT || '587', 10),
+          secure: false,
+          auth: { user: smtpUser, pass: smtpPass },
+        })
+        await transporter.sendMail({
+          from: smtpUser,
+          to: reportEmail,
+          subject: `[Logic] 問題報告: ${issueType} — ${lessonTitle || '不明'}`,
+          text: [
+            `問題報告が届きました。`,
+            ``,
+            `レッスン: ${lessonTitle || '不明'} (ID: ${lessonId || '-'})`,
+            `種別: ${issueType}`,
+            `問題文: ${question}`,
+            `コメント: ${comment || '(なし)'}`,
+            ``,
+            `Supabase report ID: ${data?.id || '-'}`,
+          ].join('\n'),
+        })
+        console.log('[REPORT] Email sent to', reportEmail)
+      } else {
+        console.log('[REPORT] TODO: configure SMTP_HOST, SMTP_USER, SMTP_PASS, REPORT_EMAIL to enable email notifications')
+      }
+    } catch (emailErr: any) {
+      console.warn('[REPORT] Email send failed (non-fatal):', emailErr.message)
+    }
+
+    // Jira チケット作成を試みる
+    await jiraCreateIssue({
+      summary: `[Logic] ${issueType}: ${(question || '').slice(0, 80)}`,
+      description: [
+        `レッスン: ${lessonTitle || '不明'} (ID: ${lessonId || '-'})`,
+        `種別: ${issueType}`,
+        `問題文: ${question}`,
+        `コメント: ${comment || '(なし)'}`,
+        `Supabase ID: ${data?.id || '-'}`,
+      ].join('\n'),
+      issueType: 'Bug',
+    })
+
     res.json({ ok: true, id: data?.id })
   } catch (e: any) {
     console.error('report-problem error:', e)
@@ -1168,7 +1300,7 @@ app.get('/api/reports', async (_req, res) => {
 app.post('/api/checkout', async (req, res) => {
   if (!stripe) return res.status(503).json({ error: 'Stripe not configured' })
   try {
-    const { plan, guestId, userId } = req.body as { plan: PlanKey; guestId?: string; userId?: string }
+    const { plan, guestId, userId, trial } = req.body as { plan: PlanKey; guestId?: string; userId?: string; trial?: boolean }
     if (!PLANS[plan]) return res.status(400).json({ error: 'invalid plan' })
     const planConfig = PLANS[plan]
     if (!planConfig.priceId) return res.status(503).json({ error: 'price not configured' })
@@ -1203,9 +1335,7 @@ app.post('/api/checkout', async (req, res) => {
       payment_method_types: ['card'],
       payment_method_collection: 'if_required',
       line_items: [{ price: planConfig.priceId, quantity: 1 }],
-      subscription_data: {
-        trial_period_days: 7,
-      },
+      ...(trial !== false ? { subscription_data: { trial_period_days: 7 } } : {}),
       success_url: `${origin}/?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/?checkout=cancel`,
       metadata: { guestId: guestId || '', plan, userId: userId || '' },
@@ -1412,6 +1542,107 @@ Respond in English.`
     res.json(JSON.parse(jsonMatch[0]))
   } catch (e: any) {
     console.error('daily-problem error:', e)
+    res.status(500).json({ error: e.message })
+  }
+})
+
+// =============================================
+// デイリーフェルミ — Supabase キャッシュ付き
+// =============================================
+app.get('/api/daily-fermi', async (req, res) => {
+  try {
+    const locale = (req.query.locale as string) || 'ja'
+    const isEn = locale === 'en'
+    const today = new Date().toISOString().slice(0, 10) // YYYY-MM-DD
+
+    // Supabase から今日の問題を確認
+    if (supabase) {
+      const { data: existing } = await supabase
+        .from('daily_fermi_problems')
+        .select('*')
+        .eq('date', today)
+        .eq('locale', locale)
+        .single()
+
+      if (existing) {
+        return res.json({ question: existing.question, hint: existing.hint, date: today })
+      }
+    }
+
+    // 存在しない場合は AI で生成
+    const userPrompt = isEn
+      ? 'Generate exactly one Fermi estimation problem in English for today. Pick something from everyday Western/global business or society that is good for decomposition practice. Return only the question on a single line — no preface, no explanation.'
+      : 'フェルミ推定の問題を 1 問だけ日本語で生成してください。日常的な日本の社会・経済に関する問いで、分解思考の練習に適したものを出してください。問題文のみを 1 行で返してください。前置きや説明は不要です。'
+
+    const hintPrompt = isEn
+      ? 'Now provide a single short hint (1-2 sentences) for decomposing this Fermi estimation problem. No preface.'
+      : '今生成したフェルミ推定問題の分解ヒントを1〜2文で教えてください。前置き不要。'
+
+    const [questionRes, hintRes] = await Promise.all([
+      client.messages.create({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 200,
+        messages: [{ role: 'user', content: userPrompt }],
+      }),
+      client.messages.create({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 200,
+        messages: [{ role: 'user', content: hintPrompt }],
+      }),
+    ])
+
+    const question = questionRes.content[0].type === 'text' ? questionRes.content[0].text.trim() : ''
+    const hint = hintRes.content[0].type === 'text' ? hintRes.content[0].text.trim() : ''
+
+    // Supabase に保存 (service role key 使用)
+    if (supabase && question) {
+      await supabase
+        .from('daily_fermi_problems')
+        .insert({ date: today, question, hint, locale })
+    }
+
+    res.json({ question, hint, date: today })
+  } catch (e: any) {
+    console.error('daily-fermi error:', e)
+    res.status(500).json({ error: e.message || 'failed' })
+  }
+})
+
+// =============================================
+// 管理者: Premium 付与
+// =============================================
+app.post('/api/admin/grant-premium', async (req, res) => {
+  const adminSecret = req.headers['x-admin-secret']
+  if (!adminSecret || adminSecret !== process.env.ADMIN_SECRET) {
+    return res.status(403).json({ error: 'Forbidden' })
+  }
+
+  try {
+    const { userId, plan, note } = req.body as { userId: string; plan?: string; note?: string }
+    if (!userId) return res.status(400).json({ error: 'userId required' })
+
+    if (!supabase) return res.status(503).json({ error: 'Supabase not configured' })
+
+    const { error } = await supabase
+      .from('admin_overrides')
+      .upsert(
+        {
+          user_id: userId,
+          plan: plan || 'premium',
+          note: note || '',
+          granted_by: 'admin-api',
+        },
+        { onConflict: 'user_id' }
+      )
+
+    if (error) {
+      console.error('[admin/grant-premium] Supabase error:', error.message)
+      return res.status(500).json({ error: error.message })
+    }
+
+    console.log('[ADMIN] Granted premium to', userId)
+    res.json({ ok: true })
+  } catch (e: any) {
     res.status(500).json({ error: e.message })
   }
 })

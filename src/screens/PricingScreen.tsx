@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { startCheckout, getSubscriptionState, daysLeftInTrial } from '../subscription'
+import { startCheckout, getSubscriptionState, daysLeftInTrial, isPremiumPlan, isStandardPlan } from '../subscription'
 import { loadGuestUser } from '../guestUser'
-import { ArrowLeftIcon, CheckIcon } from '../icons'
+import { ArrowLeftIcon, CheckIcon, ZapIcon, BrainIcon } from '../icons'
 import { Button } from '../components/Button'
 import { IconButton } from '../components/IconButton'
 
@@ -9,13 +9,18 @@ interface PricingScreenProps {
   onBack: () => void
 }
 
+type PlanId = 'standard_monthly' | 'standard_yearly' | 'premium_monthly' | 'premium_yearly'
+
 export function PricingScreen({ onBack }: PricingScreenProps) {
-  const [loading, setLoading] = useState<string | null>(null)
+  const [loading, setLoading] = useState<PlanId | null>(null)
   const [error, setError] = useState('')
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('yearly')
   const state = getSubscriptionState()
   const trialDays = daysLeftInTrial()
+  const isActivePremium = isPremiumPlan()
+  const isActiveStandard = isStandardPlan()
 
-  const handleUpgrade = async (plan: 'monthly' | 'yearly') => {
+  const handleUpgrade = async (plan: PlanId) => {
     setLoading(plan)
     setError('')
     try {
@@ -27,6 +32,9 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
     }
   }
 
+  const stdPlan: PlanId = billingCycle === 'yearly' ? 'standard_yearly' : 'standard_monthly'
+  const prmPlan: PlanId = billingCycle === 'yearly' ? 'premium_yearly' : 'premium_monthly'
+
   return (
     <div className="stack">
       <div className="screen-header">
@@ -34,82 +42,138 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
         <div className="progress-text">PRICING</div>
       </div>
 
-      <div className="eyebrow accent">PREMIUM</div>
+      <div className="eyebrow accent">PLANS</div>
       <h1 style={{ fontSize: 26, letterSpacing: '-0.025em', lineHeight: 1.2 }}>
         論理的思考力を、<br />もっと深く鍛える。
       </h1>
 
       {state.plan === 'trial' && (
-        <div className="card" style={{ background: 'var(--brand-soft)', borderColor: 'var(--brand)', marginTop: 'var(--s-3)' }}>
+        <div className="card" style={{ background: 'var(--brand-soft)', borderColor: 'var(--brand)', marginTop: 'var(--s-2)' }}>
           <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--brand)' }}>
-            トライアル中: あと {trialDays} 日
+            7日間トライアル中: あと {trialDays} 日
           </span>
         </div>
       )}
 
-      <div className="stack-sm" style={{ marginTop: 'var(--s-4)' }}>
-        {/* Free plan */}
+      {/* 月額/年額トグル */}
+      <div style={{ display: 'flex', background: 'var(--bg-muted)', borderRadius: 'var(--radius-full)', padding: 3, marginTop: 'var(--s-3)', gap: 3 }}>
+        {(['monthly', 'yearly'] as const).map((cycle) => (
+          <button
+            key={cycle}
+            onClick={() => setBillingCycle(cycle)}
+            style={{
+              flex: 1, padding: '8px 0', borderRadius: 'var(--radius-full)',
+              border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600,
+              background: billingCycle === cycle ? 'var(--bg-card)' : 'none',
+              color: billingCycle === cycle ? 'var(--text)' : 'var(--text-muted)',
+              boxShadow: billingCycle === cycle ? '0 1px 4px rgba(0,0,0,0.08)' : 'none',
+              transition: 'all 0.15s',
+            }}
+          >
+            {cycle === 'monthly' ? '月払い' : '年払い'}
+            {cycle === 'yearly' && (
+              <span style={{ marginLeft: 5, fontSize: 10, fontWeight: 700, color: 'var(--brand)', background: 'var(--brand-soft)', borderRadius: 99, padding: '1px 5px' }}>
+                2ヶ月分お得
+              </span>
+            )}
+          </button>
+        ))}
+      </div>
+
+      <div className="stack-sm" style={{ marginTop: 'var(--s-3)' }}>
+        {/* Standard plan */}
         <div className="card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--s-3)' }}>
             <div>
-              <div className="eyebrow" style={{ marginBottom: 4 }}>FREE</div>
-              <div style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-0.02em' }}>¥0<span style={{ fontSize: 14, fontWeight: 500 }}>/月</span></div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+                <BrainIcon width={14} height={14} style={{ color: 'var(--text-muted)' }} />
+                <span className="eyebrow">STANDARD</span>
+              </div>
+              <div style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-0.02em' }}>
+                {billingCycle === 'yearly'
+                  ? <><span>¥3,500</span><span style={{ fontSize: 14, fontWeight: 500 }}>/年</span></>
+                  : <><span>¥500</span><span style={{ fontSize: 14, fontWeight: 500 }}>/月</span></>
+                }
+              </div>
+              {billingCycle === 'yearly' && (
+                <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>月々約 ¥292</div>
+              )}
             </div>
           </div>
-          <ul style={{ fontSize: 13, lineHeight: 2, paddingLeft: 'var(--s-4)', color: 'var(--text-muted)' }}>
-            <li>全レッスン閲覧</li>
-            <li>AI問題生成 1日10問まで</li>
-            <li>ロードマップ</li>
+          <ul style={{ fontSize: 13, lineHeight: 2, paddingLeft: 'var(--s-4)', color: 'var(--text-muted)', marginBottom: 'var(--s-3)' }}>
+            <li>全レッスン・クイズ</li>
+            <li>AI問題生成 月30問</li>
+            <li>フェルミ推定練習</li>
+            <li>学習進捗・ノート</li>
           </ul>
-          <button style={{ width: '100%', padding: '10px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)', background: 'none', fontSize: 14, fontWeight: 600, color: 'var(--text-muted)', marginTop: 'var(--s-3)', cursor: 'not-allowed' }} disabled>
-            現在のプラン
-          </button>
+          {isActiveStandard && !isActivePremium ? (
+            <div style={{ textAlign: 'center', fontSize: 13, fontWeight: 600, color: 'var(--brand)', padding: 'var(--s-2)' }}>
+              現在のプラン
+            </div>
+          ) : (
+            <Button
+              variant="default" size="md" block
+              onClick={() => handleUpgrade(stdPlan)}
+              disabled={!!loading}
+            >
+              {loading === stdPlan ? '処理中…' : 'スタンダードで始める'}
+            </Button>
+          )}
         </div>
 
-        {/* Yearly plan */}
+        {/* Premium plan */}
         <div className="card" style={{ borderColor: 'var(--brand)', position: 'relative' }}>
-          <div className="badge" style={{ position: 'absolute', top: -10, left: 'var(--s-4)', background: 'var(--brand)', color: '#fff', border: 'none' }}>
-            人気 No.1
+          <div style={{
+            position: 'absolute', top: -11, left: 'var(--s-4)',
+            background: 'var(--brand)', color: '#fff', fontSize: 11, fontWeight: 700,
+            borderRadius: 99, padding: '3px 10px', letterSpacing: '0.05em',
+          }}>
+            おすすめ
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--s-3)', marginTop: 'var(--s-2)' }}>
             <div>
-              <div className="eyebrow accent" style={{ marginBottom: 4 }}>YEARLY</div>
-              <div style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-0.02em' }}>¥980<span style={{ fontSize: 14, fontWeight: 500 }}>/月</span></div>
-              <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>年額払いで 2 ヶ月分お得</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+                <ZapIcon width={14} height={14} style={{ color: 'var(--brand)' }} />
+                <span className="eyebrow accent">PREMIUM</span>
+              </div>
+              <div style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-0.02em' }}>
+                {billingCycle === 'yearly'
+                  ? <><span>¥6,980</span><span style={{ fontSize: 14, fontWeight: 500 }}>/年</span></>
+                  : <><span>¥980</span><span style={{ fontSize: 14, fontWeight: 500 }}>/月</span></>
+                }
+              </div>
+              {billingCycle === 'yearly' && (
+                <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>月々約 ¥582</div>
+              )}
             </div>
           </div>
-          <ul style={{ fontSize: 13, lineHeight: 2, paddingLeft: 'var(--s-4)' }}>
-            <li>全機能アンロック</li>
-            <li>AI問題生成 月300問</li>
+          <ul style={{ fontSize: 13, lineHeight: 2, paddingLeft: 'var(--s-4)', marginBottom: 'var(--s-3)' }}>
+            <li>スタンダードの全機能</li>
+            <li>AI問題生成 無制限</li>
             <li>全ロールプレイシナリオ</li>
-            <li>ダークモード</li>
+            <li>ケース面接 深掘りモード</li>
+            <li>優先サポート</li>
           </ul>
-          <Button
-            variant="primary" size="lg" block
-            onClick={() => handleUpgrade('yearly')}
-            disabled={loading === 'yearly'}
-            style={{ marginTop: 'var(--s-3)' }}
-          >
-            {loading === 'yearly' ? '処理中…' : '年額プランで始める'}
-          </Button>
-        </div>
-
-        {/* Monthly plan */}
-        <div className="card">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--s-3)' }}>
-            <div>
-              <div className="eyebrow" style={{ marginBottom: 4 }}>MONTHLY</div>
-              <div style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-0.02em' }}>¥1,480<span style={{ fontSize: 14, fontWeight: 500 }}>/月</span></div>
+          {isActivePremium ? (
+            <div style={{ textAlign: 'center', fontSize: 13, fontWeight: 600, color: 'var(--brand)', padding: 'var(--s-2)' }}>
+              現在のプラン
             </div>
-          </div>
-          <Button
-            variant="default" size="md" block
-            onClick={() => handleUpgrade('monthly')}
-            disabled={loading === 'monthly'}
-          >
-            {loading === 'monthly' ? '処理中…' : '月額プランで始める'}
-          </Button>
+          ) : (
+            <Button
+              variant="primary" size="lg" block
+              onClick={() => handleUpgrade(prmPlan)}
+              disabled={!!loading}
+            >
+              {loading === prmPlan ? '処理中…' : 'プレミアムで始める'}
+            </Button>
+          )}
         </div>
+      </div>
+
+      {/* トライアル注記 */}
+      <div style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', lineHeight: 1.6, marginTop: 'var(--s-2)' }}>
+        7日間無料トライアル後、自動的に課金が始まります（カード登録必須）。<br />
+        いつでもキャンセル可能です。
       </div>
 
       {error && (
@@ -118,11 +182,11 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
         </div>
       )}
 
-      {state.plan !== 'free' && (
+      {(isActivePremium || isActiveStandard) && (
         <div className="feedback-card">
           <div className="feedback-head">
             <div className="feedback-check"><CheckIcon /></div>
-            <div className="feedback-title">プレミアム有効</div>
+            <div className="feedback-title">プラン有効</div>
           </div>
           <div className="feedback-text">すべての機能をご利用いただけます。</div>
         </div>

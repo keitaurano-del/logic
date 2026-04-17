@@ -3,7 +3,15 @@ const TRIAL_DAYS = 7
 
 import { createClient } from '@supabase/supabase-js'
 
-export type SubscriptionPlan = 'trial' | 'free' | 'monthly' | 'yearly'
+export type SubscriptionPlan =
+  | 'trial'
+  | 'free'
+  | 'monthly'
+  | 'yearly'
+  | 'standard_monthly'
+  | 'standard_yearly'
+  | 'premium_monthly'
+  | 'premium_yearly'
 
 export type SubscriptionState = {
   trialStartedAt: string | null
@@ -45,7 +53,8 @@ export function getSubscriptionState(): SubscriptionState {
       save(s)
     }
   }
-  if ((s.plan === 'monthly' || s.plan === 'yearly') && s.expiresAt) {
+  const paidPlans: SubscriptionPlan[] = ['monthly', 'yearly', 'standard_monthly', 'standard_yearly', 'premium_monthly', 'premium_yearly']
+  if (paidPlans.includes(s.plan) && s.expiresAt) {
     if (Date.now() > new Date(s.expiresAt).getTime()) {
       s.plan = 'free'
       save(s)
@@ -65,6 +74,23 @@ export function daysLeftInTrial(): number {
 // Beta mode: set to false — Stripe payments are now live.
 export const BETA_MODE = false
 
+export function isPremiumPlan(): boolean {
+  if (BETA_MODE) return true
+  const s = getSubscriptionState()
+  return s.plan === 'premium_monthly' || s.plan === 'premium_yearly' || s.plan === 'trial'
+}
+
+export function isStandardPlan(): boolean {
+  const s = getSubscriptionState()
+  return s.plan === 'standard_monthly' || s.plan === 'standard_yearly' || s.plan === 'monthly' || s.plan === 'yearly'
+}
+
+export function getAIGenerationLimit(): number {
+  if (isPremiumPlan()) return -1 // unlimited
+  if (isStandardPlan()) return 30
+  return 10
+}
+
 export async function getPremiumStatus(userId: string): Promise<boolean> {
   try {
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || ''
@@ -72,6 +98,16 @@ export async function getPremiumStatus(userId: string): Promise<boolean> {
     if (!supabaseUrl || !supabaseAnonKey) return false
 
     const supabase = createClient(supabaseUrl, supabaseAnonKey)
+
+    // admin_overrides テーブルを確認
+    const { data: override } = await supabase
+      .from('admin_overrides')
+      .select('plan')
+      .eq('user_id', userId)
+      .single()
+
+    if (override?.plan) return true
+
     const { data } = await supabase
       .from('subscriptions')
       .select('status, plan, current_period_end')
@@ -92,10 +128,16 @@ export function isPremium(): boolean {
   // 認証済みユーザーの場合は非同期の getPremiumStatus() を使用してください。
   // ここでは localStorage フォールバックを返します。
   const s = getSubscriptionState()
-  return s.plan === 'trial' || s.plan === 'monthly' || s.plan === 'yearly'
+  return s.plan === 'trial'
+    || s.plan === 'monthly'
+    || s.plan === 'yearly'
+    || s.plan === 'standard_monthly'
+    || s.plan === 'standard_yearly'
+    || s.plan === 'premium_monthly'
+    || s.plan === 'premium_yearly'
 }
 
-export function setPaidPlan(plan: 'monthly' | 'yearly', sessionId: string, expiresAt: string) {
+export function setPaidPlan(plan: SubscriptionPlan, sessionId: string, expiresAt: string) {
   const s = load()
   s.plan = plan
   s.stripeSessionId = sessionId
@@ -107,8 +149,12 @@ export function getPlanLabel(): string {
   const s = getSubscriptionState()
   switch (s.plan) {
     case 'trial': return `7日間トライアル (残り${daysLeftInTrial()}日)`
-    case 'monthly': return '月額プラン (¥500/月)'
-    case 'yearly': return '年額プラン (¥3,500/年)'
+    case 'standard_monthly': return 'スタンダード (¥500/月)'
+    case 'standard_yearly': return 'スタンダード (¥3,500/年)'
+    case 'premium_monthly': return 'プレミアム (¥980/月)'
+    case 'premium_yearly': return 'プレミアム (¥6,980/年)'
+    case 'monthly': return 'スタンダード (¥500/月)'
+    case 'yearly': return 'スタンダード (¥3,500/年)'
     case 'free': return '無料プラン'
     default: return '無料プラン'
   }
@@ -116,11 +162,11 @@ export function getPlanLabel(): string {
 
 import { API_BASE } from './apiBase'
 
-export async function startCheckout(plan: 'monthly' | 'yearly', guestId: string, userId?: string): Promise<void> {
+export async function startCheckout(plan: SubscriptionPlan, guestId: string, userId?: string, trial?: boolean): Promise<void> {
   const res = await fetch(`${API_BASE}/api/checkout`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ plan, guestId, userId }),
+    body: JSON.stringify({ plan, guestId, userId, trial }),
   })
   if (!res.ok) {
     const err = await res.json().catch(() => ({}))
@@ -136,7 +182,7 @@ export async function verifyCheckout(sessionId: string): Promise<boolean> {
   if (!res.ok) return false
   const data = await res.json()
   if (data.paid && data.plan && data.expiresAt) {
-    setPaidPlan(data.plan, sessionId, data.expiresAt)
+    setPaidPlan(data.plan as SubscriptionPlan, sessionId, data.expiresAt)
     return true
   }
   return false

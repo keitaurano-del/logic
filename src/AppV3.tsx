@@ -11,12 +11,15 @@ import { LessonScreen } from './screens/LessonScreen'
 import { ProfileScreen } from './screens/ProfileScreen'
 import { FlashcardsScreen } from './screens/FlashcardsScreen'
 import { FermiScreen } from './screens/FermiScreen'
+import { DailyFermiScreen } from './screens/DailyFermiScreen'
 import { DeviationScreen } from './screens/DeviationScreen'
 import { RankingScreen } from './screens/RankingScreen'
 import { RoleplaySelectScreen } from './screens/RoleplaySelectScreen'
 import { RoleplayChatScreen } from './screens/RoleplayChatScreen'
 import { JournalInputScreen } from './screens/JournalInputScreen'
 import { WorksheetScreen } from './screens/WorksheetScreen'
+import { ReportProblemScreen } from './screens/ReportProblemScreen'
+import { OnboardingScreen } from './screens/OnboardingScreen'
 
 import { AIProblemGenScreen } from './screens/AIProblemGenScreen'
 import { AIProblemScreen } from './screens/AIProblemScreen'
@@ -37,6 +40,8 @@ import { getCompletedCount } from './stats'
 import { isAdmin, ADMIN_LESSON_IDS } from './admin'
 import { onAuthChange, logout, type User } from './supabase'
 
+const ONBOARDED_KEY = 'logic-onboarded'
+
 type Screen =
   | { type: 'home' }
   | { type: 'lessons' }
@@ -44,6 +49,7 @@ type Screen =
   | { type: 'lesson'; lessonId: number }
   | { type: 'flashcards' }
   | { type: 'fermi' }
+  | { type: 'daily-fermi' }
   | { type: 'deviation' }
   | { type: 'ranking' }
   | { type: 'roleplay' }
@@ -63,6 +69,8 @@ type Screen =
   | { type: 'language' }
   | { type: 'rank' }
   | { type: 'login' }
+  | { type: 'report-problem'; context: { lessonId?: number; lessonTitle?: string; question?: string } }
+  | { type: 'onboarding' }
 
 const LESSON_LIST: { id: number; category: string; title: string; icon: ReactNode }[] = [
   { id: 20, category: 'ロジカルシンキング', title: 'MECE入門',        icon: <BrainIcon width={20} height={20} /> },
@@ -82,9 +90,16 @@ const LESSON_LIST: { id: number; category: string; title: string; icon: ReactNod
   { id: 34, category: 'PM入門',            title: 'ステークホルダー', icon: <BriefcaseIcon width={20} height={20} /> },
 ]
 
+function getInitialScreen(): Screen {
+  if (localStorage.getItem(ONBOARDED_KEY) !== '1') {
+    return { type: 'onboarding' }
+  }
+  return { type: 'home' }
+}
+
 function AppV3() {
   const [tab, setTab] = useState<Tab>('home')
-  const [screen, setScreen] = useState<Screen>({ type: 'home' })
+  const [screen, setScreen] = useState<Screen>(getInitialScreen)
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const admin = isAdmin()
 
@@ -119,6 +134,18 @@ function AppV3() {
     setScreen({ type: tab })
   }
 
+  // Onboarding: show full-screen, no AppShell
+  if (screen.type === 'onboarding') {
+    return (
+      <OnboardingScreen
+        onComplete={() => {
+          localStorage.setItem(ONBOARDED_KEY, '1')
+          setScreen({ type: 'home' })
+        }}
+      />
+    )
+  }
+
   return (
     <AppShell
       activeTab={tab}
@@ -131,7 +158,7 @@ function AppV3() {
           userName={userName}
           onOpenLesson={handleOpenLesson}
           onOpenCategory={(cat) => {
-            if (cat === 'fermi') setScreen({ type: 'fermi' })
+            if (cat === 'fermi') setScreen({ type: 'daily-fermi' })
             else handleTabChange('lessons')
           }}
           onOpenRank={() => setScreen({ type: 'rank' })}
@@ -174,6 +201,7 @@ function AppV3() {
 
       {screen.type === 'flashcards' && <FlashcardsScreen onBack={handleBack} />}
       {screen.type === 'fermi' && <FermiScreen onBack={handleBack} />}
+      {screen.type === 'daily-fermi' && <DailyFermiScreen onBack={handleBack} />}
       {screen.type === 'journal-input' && <JournalInputScreen onBack={handleBack} />}
       {screen.type === 'worksheet' && <WorksheetScreen onBack={handleBack} />}
 
@@ -264,11 +292,19 @@ function AppV3() {
       )}
       {screen.type === 'language' && <LanguageScreen onBack={() => setScreen({ type: 'settings' })} />}
 
+      {screen.type === 'report-problem' && (
+        <ReportProblemScreen
+          context={screen.context}
+          onBack={handleBack}
+        />
+      )}
+
       {screen.type === 'lesson' && (
         <LessonScreen
           lessonId={screen.lessonId}
           onBack={handleBack}
           onComplete={handleComplete}
+          onReport={(ctx) => setScreen({ type: 'report-problem', context: ctx })}
         />
       )}
     </AppShell>

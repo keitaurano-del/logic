@@ -20,9 +20,10 @@ interface LessonScreenProps {
   lessonId: number
   onBack: () => void
   onComplete: () => void
+  onReport?: (context: { lessonId: number; lessonTitle: string; question: string }) => void
 }
 
-export function LessonScreen({ lessonId, onBack, onComplete }: LessonScreenProps) {
+export function LessonScreen({ lessonId, onBack, onComplete, onReport }: LessonScreenProps) {
   const lesson = useMemo(() => allLessons[lessonId], [lessonId])
   const [stepIdx, setStepIdx] = useState(0)
   const [selected, setSelected] = useState<number | null>(null)
@@ -301,6 +302,22 @@ export function LessonScreen({ lessonId, onBack, onComplete }: LessonScreenProps
                 </div>
               </div>
               <div className="feedback-text">{step.explanation}</div>
+            </div>
+          )}
+
+          {/* 誤り報告リンク (クイズ問題表示中) */}
+          {onReport && (
+            <div style={{ textAlign: 'center', marginTop: 'var(--s-1)' }}>
+              <button
+                onClick={() => onReport({ lessonId: lesson.id, lessonTitle: lesson.title, question: step.question })}
+                style={{
+                  background: 'none', border: 'none', cursor: 'pointer',
+                  fontSize: 12, color: 'var(--text-muted)',
+                  textDecoration: 'underline', padding: '4px 8px',
+                }}
+              >
+                {t('report.linkText')}
+              </button>
             </div>
           )}
 
