@@ -7,13 +7,14 @@ import { t, getLocale } from '../i18n'
 
 interface DailyFermiScreenProps {
   onBack: () => void
+  onReport?: (context: { lessonTitle: string; question: string }) => void
 }
 
 interface FermiFeedback {
   feedback: string
 }
 
-export function DailyFermiScreen({ onBack }: DailyFermiScreenProps) {
+export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
   const locale = getLocale()
 
   const [question, setQuestion] = useState('')
@@ -200,6 +201,14 @@ export function DailyFermiScreen({ onBack }: DailyFermiScreenProps) {
                 <div className="feedback-text" style={{ whiteSpace: 'pre-wrap', fontSize: 14, lineHeight: 1.75 }}>
                   {feedback.feedback}
                 </div>
+                {onReport && (
+                  <button
+                    onClick={() => onReport({ lessonTitle: t('report.dailyFermiTitle'), question })}
+                    style={{ marginTop: 'var(--s-3)', fontSize: 12, color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
+                  >
+                    {t('report.linkText')}
+                  </button>
+                )}
               </div>
 
               <Button variant="default" size="md" block onClick={onBack}>

@@ -5,13 +5,15 @@ import { recordCompletion } from '../stats'
 import { ArrowLeftIcon, ArrowRightIcon, CheckIcon } from '../icons'
 import { Button } from '../components/Button'
 import { IconButton } from '../components/IconButton'
+import { t } from '../i18n'
 
 interface AIProblemScreenProps {
   problem: AIProblemSet
   onBack: () => void
+  onReport?: (context: { lessonTitle: string; question: string }) => void
 }
 
-export function AIProblemScreen({ problem, onBack }: AIProblemScreenProps) {
+export function AIProblemScreen({ problem, onBack, onReport }: AIProblemScreenProps) {
   const [stepIdx, setStepIdx] = useState(0)
   const [selected, setSelected] = useState<number | null>(null)
   const [correctCount, setCorrectCount] = useState(0)
@@ -152,6 +154,14 @@ export function AIProblemScreen({ problem, onBack }: AIProblemScreenProps) {
             <div className="feedback-title">{isCorrect ? '正解！' : '不正解'}</div>
           </div>
           <div className="feedback-text" style={{ whiteSpace: 'pre-wrap' }}>{quizStep.explanation}</div>
+          {onReport && (
+            <button
+              onClick={() => onReport({ lessonTitle: problem.title, question: quizStep.question })}
+              style={{ marginTop: 'var(--s-3)', fontSize: 12, color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
+            >
+              {t('report.linkText')}
+            </button>
+          )}
         </div>
       )}
 

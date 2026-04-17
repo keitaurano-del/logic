@@ -9,6 +9,7 @@ import { t } from '../i18n'
 
 interface FermiScreenProps {
   onBack: () => void
+  onReport?: (context: { lessonTitle: string; question: string }) => void
 }
 
 interface FermiQuestion {
@@ -105,16 +106,16 @@ function useFermiState(): FermiState {
   return { question, answer, loading, loadingQ, feedback, error, setAnswer, handleSubmit, handleNext }
 }
 
-export function FermiScreen({ onBack }: FermiScreenProps) {
+export function FermiScreen({ onBack, onReport }: FermiScreenProps) {
   const isDesktop = useIsDesktop()
   const state = useFermiState()
-  return isDesktop ? <FermiDesktop onBack={onBack} state={state} /> : <FermiMobile onBack={onBack} state={state} />
+  return isDesktop ? <FermiDesktop onBack={onBack} state={state} onReport={onReport} /> : <FermiMobile onBack={onBack} state={state} onReport={onReport} />
 }
 
 // ============================================================
 // Mobile layout (matches mocks/logic-v3/mobile/lesson.html)
 // ============================================================
-function FermiMobile({ onBack, state }: { onBack: () => void; state: FermiState }) {
+function FermiMobile({ onBack, state, onReport }: { onBack: () => void; state: FermiState; onReport?: (context: { lessonTitle: string; question: string }) => void }) {
   const { question, answer, loading, loadingQ, feedback, error, setAnswer, handleSubmit, handleNext } = state
 
   return (
@@ -160,7 +161,7 @@ function FermiMobile({ onBack, state }: { onBack: () => void; state: FermiState 
           {loading ? '採点中…' : '送信する'}
         </Button>
       ) : (
-        <FermiFeedbackBlock feedback={feedback} onNext={handleNext} loadingQ={loadingQ} />
+        <FermiFeedbackBlock feedback={feedback} onNext={handleNext} loadingQ={loadingQ} onReport={onReport ? () => onReport({ lessonTitle: t('report.fermiTitle'), question: question.question }) : undefined} />
       )}
     </div>
   )
@@ -169,7 +170,7 @@ function FermiMobile({ onBack, state }: { onBack: () => void; state: FermiState 
 // ============================================================
 // Desktop layout (matches mocks/logic-v3/desktop/lesson.html)
 // ============================================================
-function FermiDesktop({ onBack, state }: { onBack: () => void; state: FermiState }) {
+function FermiDesktop({ onBack, state, onReport }: { onBack: () => void; state: FermiState; onReport?: (context: { lessonTitle: string; question: string }) => void }) {
   const { question, answer, loading, loadingQ, feedback, error, setAnswer, handleSubmit, handleNext } = state
 
   return (
@@ -222,7 +223,7 @@ function FermiDesktop({ onBack, state }: { onBack: () => void; state: FermiState
         </Button>
       </div>
 
-      {feedback && <FermiFeedbackBlock feedback={feedback} onNext={handleNext} loadingQ={loadingQ} />}
+      {feedback && <FermiFeedbackBlock feedback={feedback} onNext={handleNext} loadingQ={loadingQ} onReport={onReport ? () => onReport({ lessonTitle: t('report.fermiTitle'), question: question.question }) : undefined} />}
     </div>
   )
 }
@@ -231,10 +232,12 @@ function FermiFeedbackBlock({
   feedback,
   onNext,
   loadingQ,
+  onReport,
 }: {
   feedback: FermiFeedback
   onNext: () => void
   loadingQ: boolean
+  onReport?: () => void
 }) {
   return (
     <>
@@ -263,6 +266,14 @@ function FermiFeedbackBlock({
               {feedback.logic}
             </div>
           </div>
+        )}
+        {onReport && (
+          <button
+            onClick={onReport}
+            style={{ marginTop: 'var(--s-3)', fontSize: 12, color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
+          >
+            {t('report.linkText')}
+          </button>
         )}
       </div>
       <Button variant="primary" size="lg" block onClick={onNext} disabled={loadingQ} style={{ marginTop: 'var(--s-4)' }}>

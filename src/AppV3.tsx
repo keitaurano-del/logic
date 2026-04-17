@@ -200,8 +200,8 @@ function AppV3() {
       )}
 
       {screen.type === 'flashcards' && <FlashcardsScreen onBack={handleBack} />}
-      {screen.type === 'fermi' && <FermiScreen onBack={handleBack} />}
-      {screen.type === 'daily-fermi' && <DailyFermiScreen onBack={handleBack} />}
+      {screen.type === 'fermi' && <FermiScreen onBack={handleBack} onReport={(ctx) => setScreen({ type: 'report-problem', context: ctx })} />}
+      {screen.type === 'daily-fermi' && <DailyFermiScreen onBack={handleBack} onReport={(ctx) => setScreen({ type: 'report-problem', context: ctx })} />}
       {screen.type === 'journal-input' && <JournalInputScreen onBack={handleBack} />}
       {screen.type === 'worksheet' && <WorksheetScreen onBack={handleBack} />}
 
@@ -211,6 +211,7 @@ function AppV3() {
         <AIProblemGenScreen
           onBack={handleBack}
           onPlay={(problem) => setScreen({ type: 'ai-problem', problem })}
+          onUpgrade={() => setScreen({ type: 'pricing' })}
         />
       )}
 
@@ -218,6 +219,7 @@ function AppV3() {
         <AIProblemScreen
           problem={screen.problem}
           onBack={() => setScreen({ type: 'ai-problem-gen' })}
+          onReport={(ctx) => setScreen({ type: 'report-problem', context: ctx })}
         />
       )}
 

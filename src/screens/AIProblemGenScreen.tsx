@@ -3,10 +3,13 @@ import { loadAIProblems, generateAIProblems, deleteAIProblem, type AIProblemSet 
 import { ArrowLeftIcon, ArrowRightIcon } from '../icons'
 import { Button } from '../components/Button'
 import { IconButton } from '../components/IconButton'
+import { getAIGenerationLimit, isStandardPlan } from '../subscription'
+import { t } from '../i18n'
 
 interface AIProblemGenScreenProps {
   onBack: () => void
   onPlay: (problem: AIProblemSet) => void
+  onUpgrade?: () => void
 }
 
 const SAMPLE_PROMPTS = [
@@ -16,11 +19,22 @@ const SAMPLE_PROMPTS = [
   '演繹法・帰納法の論理問題を3問',
 ]
 
-export function AIProblemGenScreen({ onBack, onPlay }: AIProblemGenScreenProps) {
+export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenScreenProps) {
   const [prompt, setPrompt] = useState('')
   const [generating, setGenerating] = useState(false)
   const [error, setError] = useState('')
   const [problems, setProblems] = useState<AIProblemSet[]>([])
+
+  const limit = getAIGenerationLimit()
+  const isLimited = isStandardPlan()
+  // 今月の生成数 = localStorageに保存されたproblemの件数で近似
+  const usedThisMonth = problems.filter((p) => {
+    if (!p.createdAt) return true
+    const d = new Date(p.createdAt)
+    const now = new Date()
+    return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth()
+  }).length
+  const isAtLimit = isLimited && usedThisMonth >= limit
 
   useEffect(() => {
     setProblems(loadAIProblems())
@@ -28,6 +42,7 @@ export function AIProblemGenScreen({ onBack, onPlay }: AIProblemGenScreenProps) 
 
   const handleGenerate = async () => {
     if (!prompt.trim() || generating) return
+    if (isAtLimit) return
     setGenerating(true)
     setError('')
     try {
@@ -94,6 +109,22 @@ export function AIProblemGenScreen({ onBack, onPlay }: AIProblemGenScreenProps) 
           ))}
         </div>
 
+        {isAtLimit && (
+          <div className="card" style={{ background: 'rgba(234,179,8,0.08)', borderColor: 'rgba(234,179,8,0.4)', marginTop: 'var(--s-3)' }}>
+            <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 4 }}>{t('report.aiLimitTitle')}</div>
+            <div style={{ fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.6 }}>{t('report.aiLimitBody')}</div>
+            <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>{usedThisMonth} / {limit} 問生成済み（今月）</div>
+            {onUpgrade && (
+              <button
+                onClick={onUpgrade}
+                style={{ marginTop: 'var(--s-3)', fontSize: 12, color: 'var(--brand)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontWeight: 700, textDecoration: 'underline' }}
+              >
+                {t('report.aiLimitUpgrade')}
+              </button>
+            )}
+          </div>
+        )}
+
         {error && (
           <div className="card" style={{ background: 'rgba(220,38,38,0.06)', borderColor: 'var(--danger)', color: 'var(--danger)', fontSize: 13, marginTop: 'var(--s-3)' }}>
             {error}
@@ -103,7 +134,7 @@ export function AIProblemGenScreen({ onBack, onPlay }: AIProblemGenScreenProps) 
         <Button
           variant="primary" size="lg" block
           onClick={handleGenerate}
-          disabled={!prompt.trim() || generating}
+          disabled={!prompt.trim() || generating || isAtLimit}
           style={{ marginTop: 'var(--s-4)' }}
         >
           {generating ? '生成中…' : '問題を生成する'}

@@ -419,7 +419,14 @@ const STRINGS: Record<Locale, Strings> = {
     'report.commentPlaceholder': '詳しい内容を教えてください',
     'report.submitButton': '報告する',
     'report.successTitle': '報告を受け付けました',
-    'report.successBody': 'ご報告ありがとうございます。内容を確認し、改善に役立てます。',
+    'report.successBody': 'ご報告ありがとうございます。内容を確認次第、メールでご連絡いたします。',
+    'report.aiProblemTitle': 'AI問題',
+    'report.fermiTitle': 'フェルミ推定',
+    'report.dailyFermiTitle': 'デイリーフェルミ',
+    'report.aiLimitTitle': '月間上限に達しました',
+    'report.aiLimitBody': 'スタンダードプランでは月30問まで生成できます。プレミアムにアップグレードすると無制限になります。',
+    'report.aiLimitUpgrade': 'プレミアムにアップグレード',
+    'report.aiLimitCount': '今月の生成数',
     'report.linkText': '誤りを報告する',
 
     // Onboarding
@@ -830,7 +837,14 @@ const STRINGS: Record<Locale, Strings> = {
     'report.commentPlaceholder': 'Please describe the issue in detail',
     'report.submitButton': 'Submit report',
     'report.successTitle': 'Report received',
-    'report.successBody': 'Thank you for your feedback. We will review it and use it to improve the app.',
+    'report.successBody': 'Thank you for your feedback. We will review it and get back to you by email.',
+    'report.aiProblemTitle': 'AI Problem',
+    'report.fermiTitle': 'Fermi Estimation',
+    'report.dailyFermiTitle': 'Daily Fermi',
+    'report.aiLimitTitle': 'Monthly limit reached',
+    'report.aiLimitBody': 'The Standard plan allows up to 30 AI-generated problems per month. Upgrade to Premium for unlimited access.',
+    'report.aiLimitUpgrade': 'Upgrade to Premium',
+    'report.aiLimitCount': 'Problems generated this month',
     'report.linkText': 'Report an error',
 
     // Onboarding
