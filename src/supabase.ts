@@ -78,6 +78,16 @@ export async function logout() {
   if (supabase) await supabase.auth.signOut()
 }
 
+export async function getInitialUser(): Promise<User | null> {
+  if (!supabase) return null
+  try {
+    const { data: { session } } = await supabase.auth.getSession()
+    return session?.user ?? null
+  } catch {
+    return null
+  }
+}
+
 export function onAuthChange(callback: (user: User | null) => void): () => void {
   if (!supabase) { callback(null); return () => {} }
   const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {

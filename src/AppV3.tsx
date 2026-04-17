@@ -38,7 +38,7 @@ import { loadTheme, applyTheme } from './theme'
 import { loadGuestUser } from './guestUser'
 import { getCompletedCount } from './stats'
 import { isAdmin, ADMIN_LESSON_IDS } from './admin'
-import { onAuthChange, logout, type User } from './supabase'
+import { onAuthChange, logout, getInitialUser, type User } from './supabase'
 
 const ONBOARDED_KEY = 'logic-onboarded'
 
@@ -90,7 +90,9 @@ const LESSON_LIST: { id: number; category: string; title: string; icon: ReactNod
   { id: 34, category: 'PM入門',            title: 'ステークホルダー', icon: <BriefcaseIcon width={20} height={20} /> },
 ]
 
-function getInitialScreen(): Screen {
+function getInitialScreen(user: User | null): Screen {
+  // ログイン済みユーザーはオンボーディングをスキップ
+  if (user) return { type: 'home' }
   if (localStorage.getItem(ONBOARDED_KEY) !== '1') {
     return { type: 'onboarding' }
   }
@@ -99,13 +101,23 @@ function getInitialScreen(): Screen {
 
 function AppV3() {
   const [tab, setTab] = useState<Tab>('home')
-  const [screen, setScreen] = useState<Screen>(getInitialScreen)
+  const [screen, setScreen] = useState<Screen>(() => getInitialScreen(null))
   const [currentUser, setCurrentUser] = useState<User | null>(null)
+  const [authReady, setAuthReady] = useState(false)
   const admin = isAdmin()
 
   useEffect(() => {
     applyTheme(loadTheme())
-    const unsub = onAuthChange((user) => setCurrentUser(user))
+    // 初回起動時にセッションを取得し、ログイン済ならホームへ
+    getInitialUser().then((user) => {
+      setCurrentUser(user)
+      setScreen(getInitialScreen(user))
+      setAuthReady(true)
+    })
+    const unsub = onAuthChange((user) => {
+      setCurrentUser(user)
+      if (user) setScreen((s) => s.type === 'onboarding' ? { type: 'home' } : s)
+    })
     return unsub
   }, [])
 
@@ -132,6 +144,15 @@ function AppV3() {
 
   const handleComplete = () => {
     setScreen({ type: tab })
+  }
+
+  // 認証完了前はスプラッシュ表示
+  if (!authReady) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100dvh', background: 'var(--bg-base)' }}>
+        <div style={{ fontSize: 13, color: 'var(--text-muted)', letterSpacing: '0.05em' }}>LOGIC</div>
+      </div>
+    )
   }
 
   // Onboarding: show full-screen, no AppShell
