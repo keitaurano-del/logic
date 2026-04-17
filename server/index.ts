@@ -9,10 +9,12 @@ import rateLimit from 'express-rate-limit'
 import { createClient } from '@supabase/supabase-js'
 
 // Supabase サーバーサイドクライアント（service role key 使用）
-const supabase = createClient(
-  process.env.SUPABASE_URL || '',
-  process.env.SUPABASE_SERVICE_ROLE_KEY || ''
-)
+const supabaseUrl = process.env.SUPABASE_URL || ''
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+if (!supabaseUrl) console.warn('[WARN] SUPABASE_URL is not set — Supabase features will be disabled')
+const supabase = supabaseUrl
+  ? createClient(supabaseUrl, supabaseKey)
+  : null as unknown as ReturnType<typeof createClient>
 
 const stripeKey = process.env.STRIPE_SECRET_KEY
 const stripe = stripeKey ? new Stripe(stripeKey) : null
