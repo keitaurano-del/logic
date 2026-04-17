@@ -19,7 +19,12 @@ export function isSupabaseConfigured(): boolean { return !!supabase }
 export async function loginWithGoogle(): Promise<{ user: User | null; error?: string }> {
   if (!supabase) return { user: null, error: 'Supabase が設定されていません' }
   try {
-    const { error } = await supabase.auth.signInWithOAuth({ provider: 'google' })
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    })
     if (error) return { user: null, error: error.message }
     // OAuth redirect — user will be null until redirect completes
     return { user: null }
