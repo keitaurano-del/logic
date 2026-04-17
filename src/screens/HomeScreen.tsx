@@ -26,7 +26,6 @@ interface HomeScreenProps {
   onOpenStreak: () => void
   onOpenRoleplay: () => void
   onOpenFlashcards: () => void
-  onOpenMockExam: () => void
   onOpenPricing: () => void
   onOpenAIGen: () => void
 }
@@ -125,7 +124,6 @@ function HomeMobile({
   onOpenStreak,
   onOpenRoleplay,
   onOpenFlashcards,
-  onOpenMockExam,
   onOpenPricing,
   onOpenAIGen,
   data,
@@ -357,7 +355,6 @@ function HomeMobile({
           {[
             { label: 'ロールプレイ', sub: 'AI対話練習', emoji: '💬', onClick: onOpenRoleplay, bg: '#EEF2FE', color: '#1E3A8A' },
             { label: 'フラッシュカード', sub: 'SM-2復習', emoji: '🃏', onClick: onOpenFlashcards, bg: '#F0FDF4', color: '#065F46' },
-            { label: '模擬試験', sub: '60分・25問', emoji: '📝', onClick: onOpenMockExam, bg: '#FFF7ED', color: '#92400E' },
             { label: 'AI問題生成', sub: 'プレミアム', emoji: '✨', onClick: onOpenAIGen, bg: '#F5F3FF', color: '#5B21B6', locked: false, onLocked: onOpenPricing },
           ].map((item) => (
             <button key={item.label} onClick={item.onClick} style={{
@@ -451,7 +448,6 @@ function HomeDesktop({
   onOpenStreak: _onOpenStreak,
   onOpenRoleplay,
   onOpenFlashcards,
-  onOpenMockExam,
   onOpenPricing: _onOpenPricing,
   onOpenAIGen,
   data,
@@ -618,7 +614,6 @@ function HomeDesktop({
             { label: 'ロールプレイ', sub: 'AI対話練習', emoji: '💬', onClick: onOpenRoleplay, bg: '#EEF2FE', color: '#1E3A8A' },
             { label: 'フラッシュカード', sub: 'SM-2復習', emoji: '🃏', onClick: onOpenFlashcards, bg: '#F0FDF4', color: '#065F46' },
             { label: 'AI問題生成', sub: 'プレミアム', emoji: '✨', onClick: onOpenAIGen, bg: '#F5F3FF', color: '#5B21B6' },
-            { label: '模擬試験', sub: '60分・25問', emoji: '📝', onClick: onOpenMockExam, bg: '#FFF7ED', color: '#92400E' },
           ].map((item) => (
             <button key={item.label} onClick={item.onClick} style={{
               background: item.bg, border: 'none', borderRadius: 16,

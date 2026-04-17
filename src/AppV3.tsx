@@ -15,7 +15,6 @@ import { DeviationScreen } from './screens/DeviationScreen'
 import { RankingScreen } from './screens/RankingScreen'
 import { RoleplaySelectScreen } from './screens/RoleplaySelectScreen'
 import { RoleplayChatScreen } from './screens/RoleplayChatScreen'
-import { MockExamScreen } from './screens/MockExamScreen'
 import { JournalInputScreen } from './screens/JournalInputScreen'
 import { WorksheetScreen } from './screens/WorksheetScreen'
 
@@ -49,7 +48,6 @@ type Screen =
   | { type: 'ranking' }
   | { type: 'roleplay' }
   | { type: 'roleplay-chat'; situationId: string }
-  | { type: 'mock-exam' }
   | { type: 'journal-input' }
   | { type: 'worksheet' }
   | { type: 'daily-problem' }
@@ -142,9 +140,8 @@ function AppV3() {
           onOpenStreak={() => setScreen({ type: 'streak' })}
           onOpenRoleplay={() => setScreen({ type: 'roleplay' })}
           onOpenFlashcards={() => setScreen({ type: 'flashcards' })}
-          onOpenMockExam={() => setScreen({ type: 'mock-exam' })}
-          onOpenPricing={() => setScreen({ type: 'pricing' })}
           onOpenAIGen={() => setScreen({ type: 'ai-problem-gen' })}
+          onOpenPricing={() => setScreen({ type: 'pricing' })}
         />
       )}
 
@@ -177,7 +174,6 @@ function AppV3() {
 
       {screen.type === 'flashcards' && <FlashcardsScreen onBack={handleBack} />}
       {screen.type === 'fermi' && <FermiScreen onBack={handleBack} />}
-      {screen.type === 'mock-exam' && <MockExamScreen onBack={handleBack} />}
       {screen.type === 'journal-input' && <JournalInputScreen onBack={handleBack} />}
       {screen.type === 'worksheet' && <WorksheetScreen onBack={handleBack} />}
 

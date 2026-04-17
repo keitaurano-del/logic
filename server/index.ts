@@ -316,7 +316,7 @@ Rules:
 
   try {
     const response = await client.messages.create({
-      model: 'claude-haiku-3-5',
+      model: 'claude-3-5-haiku-20241022',
       max_tokens: 300,
       system: systemPrompt,
       messages,
@@ -414,7 +414,7 @@ Respond ONLY with the following JSON (no extra text before or after):
 
   try {
     const response = await client.messages.create({
-      model: 'claude-haiku-3-5',
+      model: 'claude-3-5-haiku-20241022',
       max_tokens: 400,
       system: systemPrompt,
       messages: isFirst ? [{ role: 'user', content: '(開始)' }] : messages,
@@ -515,7 +515,7 @@ Respond ONLY with the following JSON (no extra text):
 
   try {
     const response = await client.messages.create({
-      model: 'claude-haiku-3-5',
+      model: 'claude-3-5-haiku-20241022',
       max_tokens: 800,
       system: systemPrompt,
       messages: [{ role: 'user', content: userInstruction }],
@@ -585,7 +585,7 @@ app.post('/api/flashcards/generate', flashcardsLimiter, async (req, res) => {
 
   try {
     const response = await client.messages.create({
-      model: 'claude-haiku-3-5',
+      model: 'claude-3-5-haiku-20241022',
       max_tokens: 1000,
       system: isEn ? systemPromptEn : systemPromptJa,
       messages: [{ role: 'user', content: userMessage }],
@@ -657,7 +657,7 @@ ${goal ? `- Goal: ${goal}` : ''}
 
   try {
     const response = await client.messages.create({
-      model: 'claude-haiku-3-5',
+      model: 'claude-3-5-haiku-20241022',
       max_tokens: 600,
       system: isEn ? systemPromptEn : systemPromptJa,
       messages: [{ role: 'user', content: userInstruction }],
@@ -706,7 +706,7 @@ app.post('/api/journal/generate', generateProblemsLimiter, async (req, res) => {
 [Study time] ${studyMinutes} minutes`
 
     const response = await client.messages.create({
-      model: 'claude-haiku-3-5',
+      model: 'claude-3-5-haiku-20241022',
       max_tokens: 400,
       messages: [{ role: 'user', content: isEn ? promptEn : promptJa }],
     })
@@ -798,7 +798,7 @@ Rules:
     const systemPrompt = isEn ? systemPromptEn : systemPromptJa
 
     const response = await client.messages.create({
-      model: 'claude-haiku-3-5',
+      model: 'claude-3-5-haiku-20241022',
       max_tokens: 1500,
       system: systemPrompt,
       messages: [{ role: 'user', content: prompt }],
@@ -954,7 +954,7 @@ Output format (use these exact headings):
       : `問題: ${question}\n\nユーザーの分解:\n${userInput}\n\nこの分解にフィードバックをお願いします。`
 
     const response = await client.messages.create({
-      model: 'claude-haiku-3-5',
+      model: 'claude-3-5-haiku-20241022',
       max_tokens: 700,
       system: isEn ? systemPromptEn : systemPromptJa,
       messages: [{ role: 'user', content: userMessage }],
@@ -978,7 +978,7 @@ app.post('/api/fermi/question', fermiLimiter, async (req, res) => {
       : 'フェルミ推定の問題を 1 問だけ日本語で生成してください。日常的な日本の社会・経済に関する問いで、分解思考の練習に適したものを出してください。問題文のみを 1 行で返してください。前置きや説明は不要です。'
 
     const response = await client.messages.create({
-      model: 'claude-haiku-3-5',
+      model: 'claude-3-5-haiku-20241022',
       max_tokens: 200,
       messages: [{ role: 'user', content: userPrompt }],
     })
@@ -1395,7 +1395,7 @@ Respond in English.`
     const systemPrompt = isEn ? systemPromptEn : systemPromptJa
 
     const response = await client.messages.create({
-      model: 'claude-haiku-3-5',
+      model: 'claude-3-5-haiku-20241022',
       max_tokens: 1000,
       system: systemPrompt,
       messages: [{ role: 'user', content: prompt }],
