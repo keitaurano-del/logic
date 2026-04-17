@@ -22,6 +22,37 @@ services:
         sync: false
       - key: STRIPE_PRICE_YEARLY
         sync: false
+      - key: STRIPE_PRICE_STANDARD_MONTHLY
+        sync: false
+      - key: STRIPE_PRICE_STANDARD_YEARLY
+        sync: false
+      - key: STRIPE_PRICE_PREMIUM_MONTHLY
+        sync: false
+      - key: STRIPE_PRICE_PREMIUM_YEARLY
+        sync: false
+      # Report problem: email
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: REPORT_EMAIL_TO
+        value: keita.urano2@gmail.com
+      # Report problem: Jira
+      - key: JIRA_URL
+        value: https://logic.atlassian.net
+      - key: JIRA_EMAIL
+        value: keita.urano@gmail.com
+      - key: JIRA_API_TOKEN
+        sync: false
+      - key: JIRA_PROJECT_KEY
+        value: SCRUM
+      # Admin override
+      - key: ADMIN_SECRET
+        sync: false
       # AI
       - key: ANTHROPIC_API_KEY
         sync: false
