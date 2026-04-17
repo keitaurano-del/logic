@@ -133,7 +133,6 @@ export function ProfileScreen(props: ProfileScreenProps) {
 function ProfileMobile({
   userName,
   data,
-  levelTitle: _levelTitle,
   onOpenStreak,
   onOpenSettings,
   onOpenCompleted,

@@ -7,6 +7,7 @@ import Anthropic from '@anthropic-ai/sdk'
 import Stripe from 'stripe'
 import rateLimit from 'express-rate-limit'
 import { createClient } from '@supabase/supabase-js'
+import nodemailer from 'nodemailer'
 
 // Supabase サーバーサイドクライアント（service role key 使用）
 const supabaseUrl = process.env.SUPABASE_URL || ''
@@ -1213,10 +1214,8 @@ app.post('/api/report-problem', async (req, res) => {
 
     console.log('[REPORT]', issueType, '-', lessonTitle, '-', question.slice(0, 50))
 
-    // メール送信を試みる (nodemailer が利用可能な場合)
+    // メール送信を試みる
     try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const nodemailer = require('nodemailer')
       const smtpHost = process.env.SMTP_HOST
       const smtpUser = process.env.SMTP_USER
       const smtpPass = process.env.SMTP_PASS
