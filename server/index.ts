@@ -316,8 +316,8 @@ Rules:
 
   try {
     const response = await client.messages.create({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 400,
+      model: 'claude-haiku-3-5',
+      max_tokens: 300,
       system: systemPrompt,
       messages,
     })
@@ -414,8 +414,8 @@ Respond ONLY with the following JSON (no extra text before or after):
 
   try {
     const response = await client.messages.create({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 600,
+      model: 'claude-haiku-3-5',
+      max_tokens: 400,
       system: systemPrompt,
       messages: isFirst ? [{ role: 'user', content: '(開始)' }] : messages,
     })
@@ -515,8 +515,8 @@ Respond ONLY with the following JSON (no extra text):
 
   try {
     const response = await client.messages.create({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 1500,
+      model: 'claude-haiku-3-5',
+      max_tokens: 800,
       system: systemPrompt,
       messages: [{ role: 'user', content: userInstruction }],
     })
@@ -657,8 +657,8 @@ ${goal ? `- Goal: ${goal}` : ''}
 
   try {
     const response = await client.messages.create({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 1000,
+      model: 'claude-haiku-3-5',
+      max_tokens: 600,
       system: isEn ? systemPromptEn : systemPromptJa,
       messages: [{ role: 'user', content: userInstruction }],
     })
@@ -954,8 +954,8 @@ Output format (use these exact headings):
       : `問題: ${question}\n\nユーザーの分解:\n${userInput}\n\nこの分解にフィードバックをお願いします。`
 
     const response = await client.messages.create({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 1400,
+      model: 'claude-haiku-3-5',
+      max_tokens: 700,
       system: isEn ? systemPromptEn : systemPromptJa,
       messages: [{ role: 'user', content: userMessage }],
     })
