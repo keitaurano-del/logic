@@ -37,8 +37,8 @@ export function ProfileScreen({ userName, onOpenSettings, onOpenFeedback, onOpen
   const completed = getCompletedCount()
   const points = getPoints()
   const placement = loadPlacementResult()
-  const deviation = placement?.deviation ?? 50
-  const topPct = deviationToTopPercent(deviation)
+  const deviation = placement?.deviation ?? null
+  const topPct = deviation != null ? deviationToTopPercent(deviation) : null
 
   const handleLogout = async () => {
     await logout()
