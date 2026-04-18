@@ -122,7 +122,7 @@ function HomeMobile({
   onOpenDeviation,
   onOpenStreak,
   onOpenRoleplay,
-  onOpenFlashcards,
+  onOpenFlashcards: _onOpenFlashcards,
   onOpenPricing,
   onOpenAIGen,
   data,
@@ -353,7 +353,6 @@ function HomeMobile({
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
           {[
             { label: 'ロールプレイ', sub: 'AI対話練習', emoji: '💬', onClick: onOpenRoleplay, bg: '#EEF2FE', color: '#1E3A8A' },
-            { label: 'フラッシュカード', sub: 'SM-2復習', emoji: '🃏', onClick: onOpenFlashcards, bg: '#F0FDF4', color: '#065F46' },
             { label: 'AI問題生成', sub: 'プレミアム', emoji: '✨', onClick: onOpenAIGen, bg: '#F5F3FF', color: '#5B21B6', locked: false, onLocked: onOpenPricing },
           ].map((item) => (
             <button key={item.label} onClick={item.onClick} style={{
@@ -445,7 +444,7 @@ function HomeDesktop({
   onOpenDeviation,
   onOpenRanking,
   onOpenRoleplay,
-  onOpenFlashcards,
+  onOpenFlashcards: _onOpenFlashcards,
   onOpenAIGen,
   data,
   levelTitle,
@@ -609,7 +608,6 @@ function HomeDesktop({
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
           {[
             { label: 'ロールプレイ', sub: 'AI対話練習', emoji: '💬', onClick: onOpenRoleplay, bg: '#EEF2FE', color: '#1E3A8A' },
-            { label: 'フラッシュカード', sub: 'SM-2復習', emoji: '🃏', onClick: onOpenFlashcards, bg: '#F0FDF4', color: '#065F46' },
             { label: 'AI問題生成', sub: 'プレミアム', emoji: '✨', onClick: onOpenAIGen, bg: '#F5F3FF', color: '#5B21B6' },
           ].map((item) => (
             <button key={item.label} onClick={item.onClick} style={{

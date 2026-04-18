@@ -7,6 +7,37 @@ import { useIsDesktop } from '../hooks/useMediaQuery'
 import { API_BASE } from './apiBase'
 import { t } from '../i18n'
 
+const BASE_STATS = [
+  { label: '日本の人口', value: '1.25億人' },
+  { label: '東京都の人口', value: '1,400万人' },
+  { label: '一世帯の平均人数', value: '2.4人' },
+  { label: '1年の日数', value: '365日' },
+  { label: '1日の秒数', value: '8.64万秒' },
+  { label: '平均寿命', value: '84歳' },
+  { label: '通勤時間（平均）', value: '48分' },
+  { label: '日本の世帯数', value: '5,400万世帯' },
+  { label: '女性の平均身長', value: '158cm' },
+  { label: '男性の平均身長', value: '171cm' },
+  { label: '東京23区の面積', value: '627km²' },
+  { label: '日本の会社数', value: '368万社' },
+]
+
+function BaseDataPanel() {
+  return (
+    <div style={{ marginTop: 12, paddingTop: 10, borderTop: '1px solid var(--border)' }}>
+      <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 8, textTransform: 'uppercase' }}>BASE DATA</div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px 12px' }}>
+        {BASE_STATS.map((s) => (
+          <div key={s.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, padding: '2px 0' }}>
+            <span style={{ color: 'var(--text-muted)' }}>{s.label}</span>
+            <span style={{ fontWeight: 700, color: 'var(--text)' }}>{s.value}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 interface FermiScreenProps {
   onBack: () => void
   onReport?: (context: { lessonTitle: string; question: string }) => void
@@ -135,6 +166,7 @@ function FermiMobile({ onBack, state, onReport }: { onBack: () => void; state: F
         <div>
           <div className="hint-title">{t('label.hint')}</div>
           <div className="hint-body">{question.hint}</div>
+                  <BaseDataPanel />
         </div>
       </div>
 
@@ -206,6 +238,7 @@ function FermiDesktop({ onBack, state, onReport }: { onBack: () => void; state: 
           <div className="eyebrow accent" style={{ marginBottom: 14, display: 'block' }}>{t('label.hint')}</div>
           <div className="hint-icon"><LightbulbIcon width={20} height={20} /></div>
           <div className="hint-body">{question.hint}</div>
+                  <BaseDataPanel />
         </aside>
       </div>
 
