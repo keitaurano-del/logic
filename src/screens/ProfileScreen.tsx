@@ -1,6 +1,7 @@
 import { getCompletedCount, getStreak } from '../stats'
 import { loadPlacementResult } from '../placementData'
-import { getPoints, deviationToTopPercent } from './homeHelpers'
+import { getPoints, deviationToTopPercent, getCurrentTier, RANK_TIERS } from './homeHelpers'
+import { RankIllustration } from '../components/RankIllustration'
 import { logout } from '../supabase'
 import { getSubscriptionState, isPremiumPlan, isStandardPlan, daysLeftInTrial } from '../subscription'
 
@@ -32,10 +33,16 @@ interface ProfileScreenProps {
   onOpenPricing?: () => void
 }
 
-export function ProfileScreen({ userName, onOpenSettings, onOpenFeedback, onOpenPricing }: ProfileScreenProps) {
+export function ProfileScreen({ userName, onOpenSettings, onOpenFeedback, onOpenPricing, onOpenRank }: ProfileScreenProps) {
   const streak = getStreak()
   const completed = getCompletedCount()
   const points = getPoints()
+  const xp = completed * 100
+  const tier = getCurrentTier(xp)
+  const nextTier = RANK_TIERS.find(t => t.level === tier.level + 1)
+  const xpInLevel = xp - tier.minXp
+  const xpToNext = nextTier ? nextTier.minXp - tier.minXp : 1000
+  const xpPct = Math.min(100, Math.round((xpInLevel / xpToNext) * 100))
   const placement = loadPlacementResult()
   const deviation = placement?.deviation ?? null
   const topPct = deviation != null ? deviationToTopPercent(deviation) : null
@@ -82,25 +89,55 @@ export function ProfileScreen({ userName, onOpenSettings, onOpenFeedback, onOpen
 
       <div style={{ padding: '16px 16px 96px', display: 'flex', flexDirection: 'column', gap: 12, overflowY: 'auto' }}>
 
-        {/* プロフィールヒーロー */}
-        <div style={{ background: '#3B5BDB', borderRadius: 28, padding: '24px 20px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
-          <div style={{ position: 'absolute', right: -40, bottom: -40, width: 140, height: 140, borderRadius: '50%', background: 'rgba(255,255,255,.06)', pointerEvents: 'none' }} />
-          <div style={{ width: 68, height: 68, borderRadius: '50%', background: 'rgba(255,255,255,.2)', border: '2px solid rgba(255,255,255,.3)', marginBottom: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="rgba(255,255,255,.8)"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-5.33 0-8 2.67-8 4v2h16v-2c0-1.33-2.67-4-8-4z"/></svg>
+        {/* プロフィールヒーロー — 哲学者ランク */}
+        <div
+          onClick={() => onOpenRank?.()}
+          style={{ background: 'linear-gradient(145deg, #1E3A8A 0%, #3B5BDB 60%, #4C6EF5 100%)', borderRadius: 24, padding: '20px 20px 18px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', position: 'relative', overflow: 'hidden', cursor: 'pointer' }}
+        >
+          {/* 背景装飾 */}
+          <div style={{ position: 'absolute', right: -50, top: -50, width: 180, height: 180, borderRadius: '50%', background: 'rgba(255,255,255,.04)', pointerEvents: 'none' }} />
+          <div style={{ position: 'absolute', left: -30, bottom: -30, width: 120, height: 120, borderRadius: '50%', background: 'rgba(255,255,255,.04)', pointerEvents: 'none' }} />
+
+          {/* ユーザー名 */}
+          <div style={{ fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,.55)', letterSpacing: '.04em', marginBottom: 10 }}>{userName || 'ゲスト'}</div>
+
+          {/* 哲学者イラスト */}
+          <div style={{ marginBottom: 10 }}>
+            <RankIllustration level={tier.level} size={80} />
           </div>
-          <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 20, fontWeight: 900, color: '#fff', letterSpacing: '-.02em' }}>{userName || 'ゲスト'}</div>
-          <div style={{ fontSize: 11, color: 'rgba(255,255,255,.5)', marginTop: 3 }}>Member since Apr 2026</div>
-          <div style={{ display: 'flex', gap: 24, marginTop: 16 }}>
+
+          {/* ランク名 */}
+          <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)', marginBottom: 2 }}>LV.{tier.level}</div>
+          <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, color: '#fff', letterSpacing: '-.03em', marginBottom: 4 }}>{tier.title}</div>
+
+          {/* XPバー */}
+          <div style={{ width: '100%', maxWidth: 200, marginBottom: 4 }}>
+            <div style={{ height: 4, background: 'rgba(255,255,255,.15)', borderRadius: 99, overflow: 'hidden' }}>
+              <div style={{ height: '100%', width: `${xpPct}%`, background: 'rgba(255,255,255,.7)', borderRadius: 99, transition: 'width .4s ease' }} />
+            </div>
+          </div>
+          <div style={{ fontSize: 10, color: 'rgba(255,255,255,.45)' }}>
+            {xpInLevel} / {xpToNext} XP{nextTier ? ` — 次: ${nextTier.title}` : ' — MAX'}
+          </div>
+
+          {/* ステータス行 */}
+          <div style={{ display: 'flex', gap: 20, marginTop: 14, paddingTop: 14, borderTop: '1px solid rgba(255,255,255,.12)', width: '100%', justifyContent: 'center' }}>
             {[
               { value: String(completed), label: 'Lessons' },
               { value: String(streak), label: 'Streak' },
-              { value: topPct != null ? `Top ${Math.round(topPct)}%` : `${points}pts`, label: 'Rank' },
+              { value: topPct != null ? `Top ${Math.round(topPct)}%` : `${points}pts`, label: 'Points' },
             ].map(({ value, label }) => (
               <div key={label} style={{ textAlign: 'center' }}>
-                <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, color: '#fff', letterSpacing: '-.03em' }}>{value}</div>
-                <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)' }}>{label}</div>
+                <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 900, color: '#fff', letterSpacing: '-.02em' }}>{value}</div>
+                <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.45)' }}>{label}</div>
               </div>
             ))}
+          </div>
+
+          {/* タップ誘導 */}
+          <div style={{ position: 'absolute', top: 14, right: 16, fontSize: 10, color: 'rgba(255,255,255,.35)', display: 'flex', alignItems: 'center', gap: 3 }}>
+            全ランク
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.35)" strokeWidth="2.5" strokeLinecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </div>
         </div>
 
