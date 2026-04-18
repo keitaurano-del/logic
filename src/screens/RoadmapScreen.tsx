@@ -56,20 +56,6 @@ const PATHS: RoadmapPath[] = [
       { id: 29, title: '新規事業ケース',     sub: '市場魅力度・参入障壁の分析' },
     ],
   },
-  {
-    id: 'pm',
-    label: t('home.category.pm'),
-    color: '#8B5CF6',
-    accentColor: '#8B5CF6',
-    bgColor: '#F5F3FF',
-    lessons: [
-      { id: 30, title: 'プロジェクトとは',   sub: 'PMBOKの基礎、プロジェクト憲章' },
-      { id: 31, title: 'スコープ管理',       sub: 'WBS・スコープクリープを防ぐ' },
-      { id: 32, title: 'スケジュール管理',   sub: 'クリティカルパス・ガントチャート' },
-      { id: 33, title: 'リスク管理',         sub: 'リスク特定・評価・対応計画' },
-      { id: 34, title: 'ステークホルダー',   sub: '関係者の特定と期待値管理' },
-    ],
-  },
 ]
 
 interface RoadmapScreenProps {
