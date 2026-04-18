@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react'
 import { getGuestId } from '../guestId'
 import { hasCompletedPlacement, loadPlacementResult } from '../placementData'
-import { ArrowLeftIcon } from '../icons'
-import { Button } from '../components/Button'
-import { IconButton } from '../components/IconButton'
 import { API_BASE } from './apiBase'
-import { t } from '../i18n'
+import { getStreak } from '../stats'
+import { getPoints, deviationToTopPercent } from './homeHelpers'
+
 
 interface RankingScreenProps {
   onBack: () => void
@@ -15,188 +14,162 @@ interface RankingScreenProps {
 type RankEntry = { rank: number; nickname: string; deviation: number; isYou: boolean }
 type RankingData = { total: number; top: RankEntry[]; yourRank: number; yourDeviation: number }
 
-export function RankingScreen({ onBack, onTakeTest }: RankingScreenProps) {
-  const [data, setData] = useState<RankingData | null>(null)
+export function RankingScreen({ onTakeTest }: RankingScreenProps) {
+  const [rankData, setRankData] = useState<RankingData | null>(null)
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(false)
-  const completed =
-    hasCompletedPlacement() && (loadPlacementResult()?.totalCount ?? 0) > 0
+  const [rankTab, setRankTab] = useState<'week' | 'all'>('week')
+
+  const streak = getStreak()
+  const points = getPoints()
+  const placement = loadPlacementResult()
+  const deviation = placement?.deviation ?? 50
+  const topPct = deviationToTopPercent(deviation)
+  const score = Math.round(deviation * 0.6 + Math.log10(points + 1) * 15)
+  const completed = hasCompletedPlacement() && (placement?.totalCount ?? 0) > 0
+
+  // 今週の曜日計算
+  const todayDow = (new Date().getDay() + 6) % 7
+  const weekDays = ['月', '火', '水', '木', '金', '土']
 
   useEffect(() => {
     let cancelled = false
-    fetch(
-      `${API_BASE}/api/placement/ranking?guestId=${encodeURIComponent(getGuestId())}`,
-    )
+    fetch(`${API_BASE}/api/placement/ranking?guestId=${encodeURIComponent(getGuestId())}`)
       .then((r) => r.json())
-      .then((d) => {
-        if (!cancelled) {
-          setData(d)
-          setLoading(false)
-        }
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setError(true)
-          setLoading(false)
-        }
-      })
-    return () => {
-      cancelled = true
-    }
+      .then((d) => { if (!cancelled) { setRankData(d); setLoading(false) } })
+      .catch(() => { if (!cancelled) setLoading(false) })
+    return () => { cancelled = true }
   }, [])
 
+  // 最近の活動（仮データ）
+  const recentActivity = [
+    { name: '今日の一問 — フェルミ', date: 'Today', pts: '+30', icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="#3B5BDB"><rect x="4" y="2" width="16" height="20" rx="2"/><rect x="7" y="5" width="10" height="4" rx="1" fill="white"/><circle cx="8" cy="13" r="1.2" fill="white"/><circle cx="12" cy="13" r="1.2" fill="white"/><circle cx="16" cy="13" r="1.2" fill="white"/></svg> },
+    { name: 'MECE 入門', date: 'Yesterday', pts: '+20', icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="#3B5BDB"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg> },
+  ]
+
   return (
-    <div className="stack">
-      <div className="screen-header">
-        <IconButton aria-label="Back" onClick={onBack}>
-          <ArrowLeftIcon />
-        </IconButton>
-        <div className="progress-text">RANKING</div>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: '#F0F4FF' }}>
+
+      {/* ナビバー */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 20px 12px', background: 'rgba(240,244,255,.95)', borderBottom: '1px solid #E2E8FF' }}>
+        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, color: '#3B5BDB', letterSpacing: '-.04em' }}>統計</div>
       </div>
 
-      <div className="eyebrow accent">{t('ranking.leaderboard')}</div>
-      <h1 style={{ fontSize: 28, letterSpacing: '-0.025em' }}>
-        {t('ranking.title')}
-      </h1>
+      <div style={{ padding: '16px 16px 96px', display: 'flex', flexDirection: 'column', gap: 12, overflowY: 'auto' }}>
 
-      {!completed && (
-        <div className="card" style={{ marginTop: 'var(--s-3)' }}>
-          <div style={{ fontSize: 36, marginBottom: 'var(--s-2)' }}>📋</div>
-          <h3 style={{ fontSize: 17, marginBottom: 'var(--s-2)' }}>
-            プレースメントテストを受ける
-          </h3>
-          <p className="muted" style={{ fontSize: 13, marginBottom: 'var(--s-4)' }}>
-            8 問のテストで偏差値を算出して、全国のユーザーとランキング比較できます
-          </p>
-          <Button variant="primary" size="lg" onClick={onTakeTest}>
-            テストを受ける
-          </Button>
+        {/* スコアヒーロー */}
+        <div style={{ background: '#3B5BDB', borderRadius: 28, padding: '24px 20px', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', right: -40, top: -40, width: 160, height: 160, borderRadius: '50%', background: 'rgba(255,255,255,.06)', pointerEvents: 'none' }} />
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1px 1fr 1px 1fr' }}>
+            <div style={{ textAlign: 'center', padding: '0 4px' }}>
+              <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 28, fontWeight: 900, color: '#fff', letterSpacing: '-.04em', lineHeight: 1 }}>{streak}</div>
+              <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)', marginTop: 5 }}>Streak</div>
+            </div>
+            <div style={{ background: 'rgba(255,255,255,.15)', margin: '4px 0' }} />
+            <div style={{ textAlign: 'center', padding: '0 4px' }}>
+              <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 28, fontWeight: 900, color: '#fff', letterSpacing: '-.04em', lineHeight: 1 }}>{points}</div>
+              <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)', marginTop: 5 }}>Points</div>
+            </div>
+            <div style={{ background: 'rgba(255,255,255,.15)', margin: '4px 0' }} />
+            <div style={{ textAlign: 'center', padding: '0 4px' }}>
+              <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, color: '#fff', letterSpacing: '-.04em', lineHeight: 1 }}>Top<br />{topPct != null ? `${Math.round(topPct)}%` : `${score}`}</div>
+              <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)', marginTop: 5 }}>Rank</div>
+            </div>
+          </div>
         </div>
-      )}
 
-      {loading && <div className="card empty">読み込み中…</div>}
-
-      {error && (
-        <div className="card empty">
-          ランキングの取得に失敗しました
+        {/* スコア説明 */}
+        <div style={{ background: '#EEF2FF', border: '1px solid #DBE4FF', borderRadius: 14, padding: '12px 14px', fontSize: 11, color: '#3A4259', lineHeight: 1.7 }}>
+          <strong style={{ color: '#3B5BDB' }}>Logicスコア</strong>の計算式：<strong style={{ color: '#3B5BDB' }}>偏差値 × 0.6 + log(ポイント+1) × 15</strong><br />
+          毎日の回答と正答率が偏差値に反映されます。
         </div>
-      )}
 
-      {data && data.total === 0 && !loading && (
-        <div className="card empty">まだ参加者がいません</div>
-      )}
-
-      {data && data.total > 0 && (
-        <>
-          {data.yourRank > 0 && (
-            <section className="rank-card" style={{ marginTop: 'var(--s-3)' }}>
-              <div className="rank-eyebrow">YOUR RANK</div>
-              <div className="rank-row">
-                <div className="rank-num">{data.yourRank}</div>
-                <div>
-                  <div className="rank-meta-top">
-                    / {data.total} 人中
+        {/* 今週の記録 */}
+        <div style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: '14px 16px', boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
+          <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 14, fontWeight: 800, color: '#0F1523', letterSpacing: '-.02em', marginBottom: 12 }}>今週の記録</div>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            {weekDays.map((day, i) => {
+              const isDone = i < todayDow
+              return (
+                <div key={day} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}>
+                  <div style={{ width: 34, height: 34, borderRadius: '50%', background: isDone ? '#EEF2FF' : '#E8EEFF', border: isDone ? '1.5px solid #DBE4FF' : 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {isDone && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" strokeWidth="2.5" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>}
                   </div>
-                  <div className="rank-meta-sub">
-                    偏差値 {data.yourDeviation}
-                    {' · '}
-                    上位 {Math.round((data.yourRank / data.total) * 100)}%
-                  </div>
+                  <div style={{ fontSize: 10, fontWeight: 600, color: '#7A849E' }}>{day}</div>
                 </div>
+              )
+            })}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}>
+              <div style={{ width: 34, height: 34, borderRadius: '50%', background: '#3B5BDB', boxShadow: '0 2px 8px rgba(59,91,219,.4)' }} />
+              <div style={{ fontSize: 10, fontWeight: 600, color: '#3B5BDB' }}>今日</div>
+            </div>
+          </div>
+        </div>
+
+        {/* ランキング */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 14, fontWeight: 800, color: '#0F1523', marginBottom: 0 }}>ランキング</div>
+          {/* タブ */}
+          <div style={{ display: 'flex', background: '#E8EEFF', borderRadius: 10, padding: 3, gap: 3 }}>
+            {(['week', 'all'] as const).map((tab) => (
+              <div key={tab} onClick={() => setRankTab(tab)} style={{ flex: 1, textAlign: 'center', padding: 7, fontSize: 12, fontWeight: 700, cursor: 'pointer', borderRadius: 6, background: rankTab === tab ? '#fff' : 'transparent', color: rankTab === tab ? '#3B5BDB' : '#7A849E', boxShadow: rankTab === tab ? '0 1px 3px rgba(15,21,35,.08)' : 'none', transition: 'all .15s' }}>
+                {tab === 'week' ? '週間' : '全期間'}
               </div>
-              <div className="rank-bar">
-                <div
-                  className="rank-bar-fill"
-                  style={{
-                    width: `${Math.max(5, 100 - Math.round((data.yourRank / data.total) * 100))}%`,
-                  }}
-                />
-              </div>
-            </section>
+            ))}
+          </div>
+
+          {/* プレースメント未受検 */}
+          {!completed && (
+            <div style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: '18px 16px', textAlign: 'center' }}>
+              <div style={{ fontSize: 13, color: '#7A849E', marginBottom: 12 }}>プレースメントテストを受けて<br />全国ランキングに参加しよう</div>
+              <button onClick={onTakeTest} style={{ background: '#3B5BDB', color: '#fff', border: 'none', borderRadius: 10, padding: '10px 20px', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+                テストを受ける
+              </button>
+            </div>
           )}
 
-          <section style={{ marginTop: 'var(--s-4)' }}>
-            <h2 style={{ fontSize: 17, marginBottom: 'var(--s-3)' }}>Top players</h2>
-            <div className="stack-sm">
-              {data.top.map((e) => {
-                const isMedal = e.rank <= 3
-                const medal = e.rank === 1 ? '🥇' : e.rank === 2 ? '🥈' : e.rank === 3 ? '🥉' : null
+          {/* ランキングリスト */}
+          {loading && <div style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: 16, textAlign: 'center', color: '#7A849E', fontSize: 13 }}>読み込み中…</div>}
+          {!loading && rankData && rankData.total > 0 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {rankData.top.map((e) => {
+                const posColor = e.rank === 1 ? '#D97706' : e.rank === 2 ? '#9CA3AF' : e.rank === 3 ? '#B45309' : '#7A849E'
                 return (
-                  <div
-                    key={`${e.rank}-${e.nickname}`}
-                    className="card card-compact"
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 'var(--s-3)',
-                      border: e.isYou
-                        ? '2px solid var(--brand)'
-                        : '1px solid var(--border)',
-                      background: e.isYou ? 'var(--brand-soft)' : 'var(--bg-card)',
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: 40,
-                        fontFamily: 'var(--font-display)',
-                        fontSize: isMedal ? 24 : 18,
-                        fontWeight: 900,
-                        color: isMedal ? 'var(--brand)' : 'var(--text-muted)',
-                        textAlign: 'center',
-                      }}
-                    >
-                      {medal ?? e.rank}
+                  <div key={`${e.rank}-${e.nickname}`} style={{ background: e.isYou ? '#EEF2FF' : '#fff', border: `1px solid ${e.isYou ? '#DBE4FF' : '#E2E8FF'}`, borderRadius: 14, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 12, boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
+                    <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 16, fontWeight: 900, color: posColor, width: 24, textAlign: 'center', flexShrink: 0 }}>{e.rank}</div>
+                    <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg, #3B5BDB, #748FFC)', flexShrink: 0, boxShadow: e.isYou ? '0 0 0 2px #3B5BDB' : 'none' }} />
+                    <div style={{ flex: 1, fontSize: 14, fontWeight: 600, color: '#0F1523' }}>
+                      {e.nickname}
+                      {e.isYou && <span style={{ fontSize: 10, fontWeight: 700, color: '#3B5BDB', background: '#EEF2FF', borderRadius: 4, padding: '1px 5px', marginLeft: 6 }}>You</span>}
                     </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div
-                        style={{
-                          fontSize: 14,
-                          fontWeight: 600,
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        {e.nickname}
-                        {e.isYou && (
-                          <span
-                            className="badge badge-accent"
-                            style={{ marginLeft: 'var(--s-2)' }}
-                          >
-                            {t('label.youBadge')}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    <div
-                      className="mono"
-                      style={{
-                        fontSize: 13,
-                        fontWeight: 700,
-                        color: 'var(--brand)',
-                      }}
-                    >
-                      {e.deviation}
-                    </div>
+                    <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 16, fontWeight: 900, color: '#3B5BDB' }}>{e.deviation}</div>
                   </div>
                 )
               })}
             </div>
-          </section>
-
-          {completed && (
-            <Button
-              variant="default"
-              size="lg"
-              block
-              onClick={onTakeTest}
-              style={{ marginTop: 'var(--s-4)' }}
-            >
-              テストを受け直す
-            </Button>
           )}
-        </>
-      )}
+          {!loading && (!rankData || rankData.total === 0) && completed && (
+            <div style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: 16, textAlign: 'center', color: '#7A849E', fontSize: 13 }}>まだ参加者がいません</div>
+          )}
+        </div>
+
+        {/* 最近の活動 */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 14, fontWeight: 800, color: '#0F1523' }}>最近の活動</div>
+          {recentActivity.map((act, i) => (
+            <div key={i} style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: '13px 16px', display: 'flex', alignItems: 'center', gap: 12, boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
+              <div style={{ width: 38, height: 38, borderRadius: 11, flexShrink: 0, background: '#EEF2FF', border: '1px solid #DBE4FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {act.icon}
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: '#0F1523', marginBottom: 1 }}>{act.name}</div>
+                <div style={{ fontSize: 11, color: '#7A849E' }}>{act.date}</div>
+              </div>
+              <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 16, fontWeight: 900, color: '#3B5BDB' }}>{act.pts}</div>
+            </div>
+          ))}
+        </div>
+
+      </div>
     </div>
   )
 }

@@ -1,7 +1,7 @@
 import { useMemo, useState, useEffect } from 'react'
 import { allLessons, type LessonStep } from '../lessonData'
 import { recordCompletion, getCompletedCount } from '../stats'
-import { ArrowLeftIcon, ArrowRightIcon, CheckIcon } from '../icons'
+import { ArrowLeftIcon, ArrowRightIcon } from '../icons'
 import { Button } from '../components/Button'
 import { IconButton } from '../components/IconButton'
 import { RankIllustration } from '../components/RankIllustration'
@@ -153,186 +153,147 @@ export function LessonScreen({ lessonId, onBack, onComplete, onReport }: LessonS
 
   // ── Main lesson UI ───────────────────────────────────────────────
   const philosopherLevel = CATEGORY_PHILOSOPHER[lesson.category] ?? 1
-  const philosopherTier = RANK_TIERS.find((t) => t.level === philosopherLevel) ?? RANK_TIERS[0]
-  const isJa = getLocale() === 'ja'
+  const _philosopherTier = RANK_TIERS.find((t) => t.level === philosopherLevel) ?? RANK_TIERS[0]
+  void _philosopherTier
+  const _isJa = getLocale() === 'ja'
+  void _isJa
 
   return (
-    <div className="stack">
-      <div className="screen-header">
-        <IconButton aria-label={t('common.back')} onClick={onBack}>
-          <ArrowLeftIcon />
-        </IconButton>
-        <div className="progress-text">
-          <b>{stepIdx + 1}</b> / {total}
-        </div>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: '#F0F4FF' }}>
+
+      {/* スクリーンヘッダー */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 20px 12px', background: 'rgba(240,244,255,.95)', borderBottom: '1px solid #E2E8FF' }}>
+        <button
+          onClick={onBack}
+          style={{ width: 36, height: 36, borderRadius: 10, background: '#fff', border: '1px solid #E2E8FF', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 1px 2px rgba(15,21,35,.06)', flexShrink: 0 }}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F1523" strokeWidth="2.5" strokeLinecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        </button>
+        <div style={{ flex: 1, textAlign: 'center', fontSize: 13, fontWeight: 700, color: '#3A4259' }}>{lesson.title}</div>
+        <div style={{ fontSize: 12, fontWeight: 700, color: '#7A849E' }}>{stepIdx + 1} / {total}</div>
       </div>
 
-      <div className="progress" style={{ marginBottom: 'var(--s-3)' }}>
-        <div className="progress-fill" style={{ width: `${progressPct}%` }} />
+      {/* プログレスバー */}
+      <div style={{ height: 3, background: '#E8EEFF' }}>
+        <div style={{ height: '100%', width: `${progressPct}%`, background: '#3B5BDB', transition: 'width 0.3s ease' }} />
       </div>
 
-      {/* 哲学者キャラクターバブル */}
-      <div style={{
-        display: 'flex', gap: 12, alignItems: 'flex-start',
-        background: 'var(--bg-secondary)', borderRadius: 16,
-        padding: '12px 14px', marginBottom: 'var(--s-3)',
-        animation: 'scale-in 0.25s ease-out both',
-      }}>
-        <div style={{ borderRadius: 12, overflow: 'hidden', flexShrink: 0, boxShadow: 'var(--shadow-sm)' }}>
-          <RankIllustration level={philosopherLevel} size={52} />
-        </div>
-        <div>
-          <div style={{
-            fontSize: 10, fontWeight: 700, color: 'var(--brand)',
-            textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4,
-          }}>
-            {isJa ? philosopherTier.title : philosopherTier.titleEn} より
-          </div>
-          <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6, fontStyle: 'italic' }}>
-            "{isJa ? philosopherTier.tipJa : philosopherTier.tipEn}"
-          </div>
-        </div>
-      </div>
-
-      {step.type === 'explain' ? (
-        <div className="stack">
-          <div className="eyebrow accent">{lesson.category.toUpperCase()}</div>
-          <h1 className="lesson-question">{step.title}</h1>
-          <div className="card" style={{ marginTop: 'var(--s-4)' }}>
-            <p style={{ fontSize: 15, lineHeight: 1.75, whiteSpace: 'pre-wrap' }}>
+      {/* コンテンツ */}
+      <div style={{ padding: '20px 16px 32px', display: 'flex', flexDirection: 'column', gap: 10, flex: 1 }}>
+      
+        {step.type === 'explain' ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {/* 問題カード */}
+            <div style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 20, padding: 22, boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
+              <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: '#3B5BDB', marginBottom: 8 }}>{lesson.category.toUpperCase()}</div>
+              <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 800, color: '#0F1523', lineHeight: 1.45, letterSpacing: '-.025em' }}>{step.title}</div>
+            </div>
+            <div style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: '16px 18px', fontSize: 15, lineHeight: 1.75, color: '#3A4259', whiteSpace: 'pre-wrap' }}>
               {step.content}
-            </p>
-          </div>
-          <Button variant="primary" size="lg" block onClick={handleNext}>
-            {isLast ? t('common.complete') : t('common.next')}
-            <ArrowRightIcon width={16} height={16} />
-          </Button>
-        </div>
-      ) : (
-        <div className="stack">
-          <div className="eyebrow accent">{lesson.category.toUpperCase()} · {t('label.question')}</div>
-          <h1 className="lesson-question">{step.question}</h1>
-
-          <div className="stack-sm" style={{ marginTop: 'var(--s-3)' }}>
-            {step.options.map((opt, i) => {
-              const isSelected = selected === i
-              const showResult = submitted
-              const correct = opt.correct
-
-              let cls = 'card card-compact'
-              if (showResult) {
-                if (correct) cls += ' option-correct'
-                else if (isSelected) cls += ' option-wrong'
-              } else if (isSelected) {
-                cls += ' option-selected'
-              }
-
-              // Apply answer animation to relevant options
-              if (showResult && animClass) {
-                if (animClass === 'answer-bounce' && correct) cls += ' answer-bounce'
-                if (animClass === 'answer-shake' && isSelected && !correct) cls += ' answer-shake'
-              }
-
-              return (
-                <button
-                  key={i}
-                  disabled={submitted}
-                  onClick={() => setSelected(i)}
-                  className={cls}
-                  style={{
-                    cursor: submitted ? 'default' : 'pointer',
-                    textAlign: 'left',
-                    width: '100%',
-                    fontSize: 15,
-                    fontWeight: 500,
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 'var(--s-3)',
-                    borderColor: submitted && correct
-                      ? 'var(--success)'
-                      : submitted && isSelected
-                      ? 'var(--danger)'
-                      : isSelected
-                      ? 'var(--brand)'
-                      : undefined,
-                    background: submitted && correct
-                      ? 'var(--success-soft)'
-                      : submitted && isSelected
-                      ? 'rgba(220, 38, 38, 0.06)'
-                      : isSelected
-                      ? 'var(--brand-soft)'
-                      : undefined,
-                  }}
-                >
-                  <span
-                    style={{
-                      width: 26, height: 26,
-                      borderRadius: '999px',
-                      border: '1.5px solid currentColor',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: 11, fontWeight: 700, flexShrink: 0,
-                      color: submitted && correct
-                        ? 'var(--success)'
-                        : submitted && isSelected
-                        ? 'var(--danger)'
-                        : isSelected
-                        ? 'var(--brand)'
-                        : 'var(--text-muted)',
-                    }}
-                  >
-                    {String.fromCharCode(65 + i)}
-                  </span>
-                  <span style={{ flex: 1 }}>{opt.label}</span>
-                  {submitted && correct && (
-                    <CheckIcon width={18} height={18} color="var(--success)" />
-                  )}
-                </button>
-              )
-            })}
-          </div>
-
-          {submitted && (
-            <div className="feedback-card" style={{ animation: 'scale-in 0.2s ease-out both' }}>
-              <div className="feedback-head">
-                <div className="feedback-check"><CheckIcon /></div>
-                <div className="feedback-title">
-                  {selected != null && step.options[selected].correct
-                    ? t('lesson.correctMark')
-                    : t('lesson.wrongMark')}
-                </div>
-              </div>
-              <div className="feedback-text">{step.explanation}</div>
             </div>
-          )}
-
-          {/* 誤り報告リンク (クイズ問題表示中) */}
-          {onReport && (
-            <div style={{ textAlign: 'center', marginTop: 'var(--s-1)' }}>
-              <button
-                onClick={() => onReport({ lessonId: lesson.id, lessonTitle: lesson.title, question: step.question })}
-                style={{
-                  background: 'none', border: 'none', cursor: 'pointer',
-                  fontSize: 12, color: 'var(--text-muted)',
-                  textDecoration: 'underline', padding: '4px 8px',
-                }}
-              >
-                {t('report.linkText')}
-              </button>
-            </div>
-          )}
-
-          {!submitted ? (
-            <Button variant="primary" size="lg" block disabled={selected == null} onClick={handleSubmit}>
-              回答する
-            </Button>
-          ) : (
-            <Button variant="primary" size="lg" block onClick={handleNext}>
+            <button
+              onClick={handleNext}
+              style={{ width: '100%', background: '#3B5BDB', color: '#fff', border: 'none', borderRadius: 14, padding: 16, fontSize: 15, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
+            >
               {isLast ? t('common.complete') : t('common.next')}
-              <ArrowRightIcon width={16} height={16} />
-            </Button>
-          )}
-        </div>
-      )}
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {/* 問題カード */}
+            <div style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 20, padding: 22, boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
+              <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: '#3B5BDB', marginBottom: 8 }}>{lesson.category.toUpperCase()}</div>
+              <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 800, color: '#0F1523', lineHeight: 1.45, letterSpacing: '-.025em' }}>{step.question}</div>
+            </div>
+
+            {/* 選択肢 */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {step.options.map((opt, i) => {
+                const isSelected = selected === i
+                const showResult = submitted
+                const correct = opt.correct
+                const badgeLabel = String.fromCharCode(65 + i)
+
+                let bg = '#fff'
+                let border = '1.5px solid #E2E8FF'
+                let badgeBg = 'transparent'
+                let badgeBorder = '#E2E8FF'
+                let badgeColor = '#7A849E'
+
+                if (showResult && correct) {
+                  bg = '#ECFDF3'; border = '1.5px solid #12B76A'
+                  badgeBg = '#12B76A'; badgeBorder = '#12B76A'; badgeColor = '#fff'
+                } else if (showResult && isSelected && !correct) {
+                  bg = '#FEF3F2'; border = '1.5px solid #F04438'
+                  badgeBg = '#F04438'; badgeBorder = '#F04438'; badgeColor = '#fff'
+                } else if (isSelected) {
+                  bg = '#EEF2FF'; border = '1.5px solid #3B5BDB'
+                  badgeBorder = '#3B5BDB'; badgeColor = '#3B5BDB'
+                }
+
+                return (
+                  <button
+                    key={i}
+                    disabled={submitted}
+                    onClick={() => setSelected(i)}
+                    style={{ background: bg, border, borderRadius: 14, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12, cursor: submitted ? 'default' : 'pointer', textAlign: 'left', width: '100%', boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}
+                  >
+                    <div style={{ width: 28, height: 28, borderRadius: '50%', background: badgeBg, border: `1.5px solid ${badgeBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, color: badgeColor, flexShrink: 0 }}>
+                      {showResult && correct
+                        ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        : showResult && isSelected && !correct
+                        ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        : badgeLabel
+                      }
+                    </div>
+                    <span style={{ fontSize: 14, fontWeight: 500, color: '#0F1523', flex: 1, lineHeight: 1.4 }}>{opt.label}</span>
+                  </button>
+                )
+              })}
+            </div>
+
+            {/* フィードバック */}
+            {submitted && (
+              <div style={{ borderRadius: 20, padding: '18px 20px', background: selected != null && step.options[selected].correct ? '#ECFDF3' : '#FEF3F2', borderLeft: `4px solid ${selected != null && step.options[selected].correct ? '#12B76A' : '#F04438'}`, animation: 'scale-in 0.2s ease-out both' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                  <div style={{ width: 32, height: 32, borderRadius: '50%', background: selected != null && step.options[selected].correct ? '#12B76A' : '#F04438', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    {selected != null && step.options[selected].correct
+                      ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                      : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    }
+                  </div>
+                  <div style={{ fontSize: 15, fontWeight: 800, color: '#0F1523' }}>
+                    {selected != null && step.options[selected].correct ? t('lesson.correctMark') : t('lesson.wrongMark')}
+                  </div>
+                </div>
+                <div style={{ fontSize: 13, color: '#3A4259', lineHeight: 1.7 }}>{step.explanation}</div>
+              </div>
+            )}
+
+            {/* 誤り報告 */}
+            {onReport && (
+              <div style={{ textAlign: 'center' }}>
+                <button onClick={() => onReport({ lessonId: lesson.id, lessonTitle: lesson.title, question: step.question })} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, color: '#7A849E', textDecoration: 'underline', padding: '4px 8px' }}>
+                  {t('report.linkText')}
+                </button>
+              </div>
+            )}
+
+            {/* ボタン */}
+            {!submitted ? (
+              <button disabled={selected == null} onClick={handleSubmit} style={{ width: '100%', background: selected == null ? '#B8BFD0' : '#3B5BDB', color: '#fff', border: 'none', borderRadius: 14, padding: 16, fontSize: 15, fontWeight: 700, cursor: selected == null ? 'default' : 'pointer' }}>
+                回答する
+              </button>
+            ) : (
+              <button onClick={handleNext} style={{ width: '100%', background: '#3B5BDB', color: '#fff', border: 'none', borderRadius: 14, padding: 16, fontSize: 15, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                {isLast ? t('common.complete') : t('common.next')}
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </button>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   )
 }
