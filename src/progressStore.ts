@@ -3,7 +3,7 @@ import { getProgress, saveAllProgress, saveProgressCategory } from './db/progres
 
 const STORAGE_KEY = 'logic-progress'
 
-export type Category = '簿記' | 'プロジェクトマネジメント' | 'ロジカルシンキング'
+export type Category = 'ロジカルシンキング'
 
 export type CategoryProgress = {
   totalCards: number
@@ -11,31 +11,25 @@ export type CategoryProgress = {
 }
 
 const LESSON_TO_CATEGORY: Record<number, Category> = {
-  6: '簿記',
-  7: '簿記',
-  8: '簿記',
-  9: '簿記',
-  11: '簿記',
-  12: '簿記',
-  13: '簿記',
-  14: '簿記',
-  15: '簿記',
-  99: '簿記',
   20: 'ロジカルシンキング',
   21: 'ロジカルシンキング',
   22: 'ロジカルシンキング',
   23: 'ロジカルシンキング',
   24: 'ロジカルシンキング',
-  30: 'プロジェクトマネジメント',
-  31: 'プロジェクトマネジメント',
-  32: 'プロジェクトマネジメント',
-  33: 'プロジェクトマネジメント',
-  34: 'プロジェクトマネジメント',
+  25: 'ロジカルシンキング',
+  26: 'ロジカルシンキング',
+  27: 'ロジカルシンキング',
+  28: 'ロジカルシンキング',
+  29: 'ロジカルシンキング',
+  35: 'ロジカルシンキング',
+  36: 'ロジカルシンキング',
+  40: 'ロジカルシンキング',
+  41: 'ロジカルシンキング',
+  42: 'ロジカルシンキング',
+  43: 'ロジカルシンキング',
 }
 
 const DEFAULT_PROGRESS: Record<Category, CategoryProgress> = {
-  '簿記': { totalCards: 0, completedCards: 0 },
-  'プロジェクトマネジメント': { totalCards: 0, completedCards: 0 },
   'ロジカルシンキング': { totalCards: 0, completedCards: 0 },
 }
 
@@ -46,7 +40,15 @@ const DEFAULT_PROGRESS: Record<Category, CategoryProgress> = {
 export function loadProgress(): Record<Category, CategoryProgress> {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    if (raw) return JSON.parse(raw)
+    if (raw) {
+      const parsed = JSON.parse(raw)
+      // Only return keys that exist in DEFAULT_PROGRESS
+      const result: Record<Category, CategoryProgress> = structuredClone(DEFAULT_PROGRESS)
+      for (const cat of Object.keys(DEFAULT_PROGRESS) as Category[]) {
+        if (parsed[cat]) result[cat] = parsed[cat]
+      }
+      return result
+    }
   } catch { /* ignore */ }
   return structuredClone(DEFAULT_PROGRESS)
 }
@@ -97,8 +99,6 @@ export function sourceToCategory(source: string): Category | null {
 export function initFromFlashcards(): void {
   const cards = loadCards()
   const counts: Record<Category, { total: number; completed: number }> = {
-    '簿記': { total: 0, completed: 0 },
-    'プロジェクトマネジメント': { total: 0, completed: 0 },
     'ロジカルシンキング': { total: 0, completed: 0 },
   }
 

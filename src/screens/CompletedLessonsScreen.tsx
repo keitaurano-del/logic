@@ -11,43 +11,40 @@ interface CompletedLessonsScreenProps {
 interface LessonMeta { name: string; category: string }
 
 const LESSON_MAP: Record<string, LessonMeta> = {
-  'lesson-20': { name: 'MECE入門',         category: 'ロジカルシンキング' },
-  'lesson-21': { name: 'ロジックツリー',    category: 'ロジカルシンキング' },
-  'lesson-22': { name: 'フェルミ推定入門',  category: 'フェルミ推定' },
-  'lesson-23': { name: '市場規模の推定',    category: 'フェルミ推定' },
-  'lesson-24': { name: '人数・頻度の推定',  category: 'フェルミ推定' },
-  'lesson-25': { name: 'セグメント分解',    category: 'フェルミ推定' },
-  'lesson-26': { name: '構造化思考',        category: 'ロジカルシンキング' },
-  'lesson-27': { name: '仮説思考',          category: 'ロジカルシンキング' },
-  'lesson-28': { name: 'ケース面接入門',    category: 'ケース面接' },
-  'lesson-29': { name: '新規事業ケース',    category: 'ケース面接' },
-  'lesson-30': { name: 'プロジェクトとは',  category: 'PM入門' },
-  'lesson-31': { name: 'スコープ管理',      category: 'PM入門' },
-  'lesson-32': { name: 'スケジュール管理',  category: 'PM入門' },
-  'lesson-33': { name: 'リスク管理',        category: 'PM入門' },
-  'lesson-34': { name: 'ステークホルダー',  category: 'PM入門' },
-  'mock-exam':      { name: '模擬試験',          category: 'テスト' },
+  'lesson-20': { name: 'MECE — 漏れなくダブりなく', category: 'ロジカルシンキング' },
+  'lesson-21': { name: 'ロジックツリー',              category: 'ロジカルシンキング' },
+  'lesson-22': { name: 'So What / Why So',              category: 'ロジカルシンキング' },
+  'lesson-23': { name: 'ピラミッド原則',              category: 'ロジカルシンキング' },
+  'lesson-24': { name: 'ケーススタディ総合演習',      category: 'ロジカルシンキング' },
+  'lesson-25': { name: '演繹法',                    category: 'ロジカルシンキング' },
+  'lesson-26': { name: '帰納法',                    category: 'ロジカルシンキング' },
+  'lesson-27': { name: '形式論理',                  category: 'ロジカルシンキング' },
+  'lesson-28': { name: 'ケース面接入門',            category: 'ケース面接' },
+  'lesson-29': { name: 'プロフィタビリティケース',  category: 'ケース面接' },
+  'lesson-35': { name: '市場参入ケース',            category: 'ケース面接' },
+  'lesson-36': { name: 'M&Aケース',                category: 'ケース面接' },
+  'lesson-40': { name: 'クリティカルシンキング入門',  category: 'クリティカルシンキング' },
+  'lesson-41': { name: '論理的誤謬を見破る',        category: 'クリティカルシンキング' },
+  'lesson-42': { name: 'データを正しく読む',        category: 'クリティカルシンキング' },
+  'lesson-43': { name: '問いを立てる力',           category: 'クリティカルシンキング' },
   'fermi':          { name: 'フェルミ推定',      category: 'AI練習' },
   'daily-problem':  { name: '今日の問題',        category: 'デイリー' },
   'flashcards':     { name: 'フラッシュカード',  category: '復習' },
-  'journal-input':  { name: '仕訳ドリル',        category: '簿記' },
-  'worksheet':      { name: '精算表ドリル',      category: '簿記' },
   'placement-test': { name: 'プレイスメントテスト', category: 'テスト' },
 }
 
-const CAT_ORDER = ['ロジカルシンキング', 'フェルミ推定', 'ケース面接', 'PM入門', 'AI練習', 'デイリー', '復習', 'テスト', '簿記']
+const CAT_ORDER = ['ロジカルシンキング', 'ケース面接', 'クリティカルシンキング', 'AI練習', 'デイリー', '復習', 'テスト']
 
 function catColor(cat: string): string {
   const map: Record<string, string> = {
     'ロジカルシンキング': 'var(--brand)',
     'フェルミ推定':       '#7C3AED',
     'ケース面接':         '#0891B2',
-    'PM入門':             '#059669',
+    'クリティカルシンキング': '#059669',
     'AI練習':             '#D97706',
     'デイリー':           '#DC2626',
     '復習':               '#6366F1',
     'テスト':             '#374151',
-    '簿記':               '#78716C',
   }
   return map[cat] ?? 'var(--brand)'
 }

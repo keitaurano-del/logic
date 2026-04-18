@@ -38,8 +38,6 @@ export async function getProgress(
     if (!data || data.length === 0) return null
 
     const result: Record<Category, CategoryProgress> = {
-      '簿記': { totalCards: 0, completedCards: 0 },
-      'プロジェクトマネジメント': { totalCards: 0, completedCards: 0 },
       'ロジカルシンキング': { totalCards: 0, completedCards: 0 },
     }
 

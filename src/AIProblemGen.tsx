@@ -8,10 +8,10 @@ type Props = {
 }
 
 const SAMPLE_PROMPTS = [
-  '簿記2級の減価償却費の問題を3問作って',
-  '簿記3級の仕訳問題を5問、初心者向けに',
   'ロジカルシンキングのMECEに関する問題を3問',
-  'プロジェクトマネジメントのリスク管理問題を4問',
+  '仮説思考の練習問題を4問作って',
+  'クリティカルシンキングの論理的誤謬問題を3問',
+  'ケース面接の収益性分析問題を5問、初心者向けに',
 ]
 
 export default function AIProblemGen({ onBack, onPlayProblem }: Props) {
@@ -66,7 +66,7 @@ export default function AIProblemGen({ onBack, onPlayProblem }: Props) {
 
           <textarea
             className="aip-input"
-            placeholder="例: 簿記2級の減価償却費の問題を3問作って"
+            placeholder="例: MECEの問題を3問作って"
             value={prompt}
             onChange={e => setPrompt(e.target.value)}
             rows={3}

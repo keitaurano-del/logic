@@ -461,9 +461,7 @@ const SOURCE_FILES = [
     code: `// 各画面コンポーネントを読み込み
 import RolePlaySystem from './RolePlaySystem'
 import Lesson from './Lesson'
-import MockExam from './MockExam'
-import JournalInput from './JournalInput'
-import Worksheet from './Worksheet'
+import Lesson from './Lesson'
 import Knowledge from './Knowledge'
 import Profile from './Profile'
 import Flashcards from './Flashcards'
@@ -472,9 +470,8 @@ import Reward from './Reward'
 // レッスン一覧データ（id, タイトル, カテゴリなど）
 const lessons = [
   { id: 3,  category: 'ロールプレイ', title: '上司とのレビュー会議', action: 'roleplay' },
-  { id: 6,  category: '簿記3級',      title: '簿記3級 入門',        action: 'lesson' },
-  { id: 99, category: '模擬試験',      title: '簿記3級 模擬試験',    action: 'mock-exam' },
-  // ...全11レッスン
+  { id: 20, category: 'ロジカルシンキング', title: 'MECE — 漏れなくダブりなく', action: 'lesson' },
+  // ...全16レッスン
 ]
 
 type Tab = 'home' | 'lessons' | 'roleplay' | 'knowledge' | 'profile'
@@ -544,13 +541,13 @@ app.listen(3001)  // ポート3001で起動`,
   {
     path: 'src/stats.ts',
     role: 'データ永続化・XP・レベル計算',
-    desc: 'localStorageに学習データ（完了レッスン、学習日、学習時間）を保存・読み出し。XPシステムとレベル計算も担当。レッスン完了で100XP、模擬試験で200XP、学習時間1分ごとに2XPが加算される。連続学習日数（ストリーク）の計算ロジックもここ。',
+    desc: 'localStorageに学習データ（完了レッスン、学習日、学習時間）を保存・読み出し。XPシステムとレベル計算も担当。レッスン完了で100XP、学習時間1分ごとに2XPが加算される。連続学習日数（ストリーク）の計算ロジックもここ。',
     tech: ['localStorage', 'JSON', 'TypeScript型定義'],
     lines: '約140行',
     code: `const STORAGE_KEY = 'logic-stats'
 
 type Stats = {
-  completedLessons: string[]  // "lesson-6", "mock-exam" など
+  completedLessons: string[]  // "lesson-20", "lesson-21" など
   studyDates: string[]        // ["2026-04-01", "2026-04-02", ...]
   studyTimeMs: number         // 累計ミリ秒
 }
@@ -588,7 +585,7 @@ export function getStreak(): number {
 }
 
 // XPシステム: レッスン種別ごとにXP量が異なる
-const XP_MAP = { lesson: 100, 'mock-exam': 200, 'journal-input': 150, worksheet: 150 }
+const XP_MAP = { lesson: 100, roleplay: 150 }
 // + 学習時間1分 = 2XP
 
 // レベル計算
@@ -660,8 +657,8 @@ function ChatScreen({ setup, onFinish }) {
   id: string
   front: string              // 問題面
   back: string               // 解答面
-  category: string           // "簿記3級", "MECE" など
-  source: string             // 生成元 "lesson-6", "ai-weak"
+  category: string           // "ロジカルシンキング", "MECE" など
+  source: string             // 生成元 "lesson-20", "ai-weak"
   interval: number           // 次の復習までの日数
   ease: number               // 容易さ係数（初期値 2.5）
   nextReview: string          // 次回復習日 "YYYY-MM-DD"
@@ -707,7 +704,7 @@ export function reviewCard(id: string, quality: 'again' | 'good' | 'easy') {
     lines: '約500行',
     code: `export default function Profile() {
   // stats.ts の関数で学習データを取得
-  const completedLessons = getCompletedLessons()  // ["lesson-6", "mock-exam", ...]
+  const completedLessons = getCompletedLessons()  // ["lesson-20", "lesson-21", ...]
   const streak = getStreak()                       // 連続学習日数
   const studyHours = getStudyHours()               // "2.5h" or "30分"
   const studyDates = getStudyDates()               // カレンダー用の日付配列
@@ -821,16 +818,22 @@ function DevPanel() {
 
 function formatLessonKey(key: string): string {
   const map: Record<string, string> = {
-    'mock-exam': '簿記3級 模擬試験',
-    'journal-input': '仕訳入力ドリル',
-    'worksheet': '精算表穴埋めドリル',
-    'lesson-6': '簿記3級 入門',
-    'lesson-7': '簿記3級 決算と財務諸表',
-    'lesson-8': '簿記2級 商業簿記',
-    'lesson-9': '簿記2級 ���業簿記',
-    'lesson-11': '仕訳問題 50問ドリル',
-    'lesson-12': '勘���記入・補助��ドリル',
-    'lesson-13': '決算・精算表ドリル',
+    'lesson-20': 'MECE — 漏れなくダブりなく',
+    'lesson-21': 'ロジックツリー',
+    'lesson-22': 'So What / Why So',
+    'lesson-23': 'ピラミッド原則',
+    'lesson-24': 'ケーススタディ総合演習',
+    'lesson-25': '演繹法',
+    'lesson-26': '帰納法',
+    'lesson-27': '形式論理',
+    'lesson-28': 'ケース面接入門',
+    'lesson-29': 'プロフィタビリティケース',
+    'lesson-35': '市場参入ケース',
+    'lesson-36': 'M&Aケース',
+    'lesson-40': 'クリティカルシンキング入門',
+    'lesson-41': '論理的誤謬を見破る',
+    'lesson-42': 'データを正しく読む',
+    'lesson-43': '問いを立てる力',
   }
   return map[key] || key
 }

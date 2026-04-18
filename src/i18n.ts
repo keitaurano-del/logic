@@ -58,7 +58,7 @@ const STRINGS: Record<Locale, Strings> = {
 
     // Home
     'home.welcomeTitle': 'Logic へようこそ',
-    'home.welcomeDesc': 'ロジカルシンキング・簿記・PM を 3 分から学べます。今日の 1 問から始めよう →',
+    'home.welcomeDesc': 'ロジカルシンキング・ケース面接・クリティカルシンキングを 3 分から学べます。今日の 1 問から始めよう →',
     'home.welcomeBadge': 'START',
     'home.continueTitle': '続きから',
     'home.placementTitle': '偏差値 {score} のおすすめ',
@@ -138,12 +138,6 @@ const STRINGS: Record<Locale, Strings> = {
 
     // Categories
     'category.logical': 'ロジカルシンキング',
-    'category.boki3': '簿記3級',
-    'category.boki2c': '簿記2級 商業',
-    'category.boki2i': '簿記2級 工業',
-    'category.boki3practice': '簿記3級 実践',
-    'category.exam': '模擬試験',
-    'category.pm': 'プロジェクトマネジメント',
 
     // Lesson UI
     'lesson.completedH1': 'レッスン完了！',
@@ -396,7 +390,6 @@ const STRINGS: Record<Locale, Strings> = {
     'home.category.fermi': 'フェルミ推定',
     'home.category.logic': '論理パズル',
     'home.category.case': 'ケース面接',
-    'home.category.pm': 'PM 入門',
     'roadmap.title': '学習パス',
     'roadmap.subtitle': '順番に進めると体系的に身につきます',
     'rank.currentBadge': '現在',
@@ -565,12 +558,6 @@ const STRINGS: Record<Locale, Strings> = {
 
     // Categories
     'category.logical': 'Logical Thinking',
-    'category.boki3': 'Bookkeeping 3 (JP)',
-    'category.boki2c': 'Bookkeeping 2 Commercial (JP)',
-    'category.boki2i': 'Bookkeeping 2 Industrial (JP)',
-    'category.boki3practice': 'Bookkeeping 3 Practice (JP)',
-    'category.exam': 'Mock Exam (JP)',
-    'category.pm': 'Project Management',
 
     // Lesson UI
     'lesson.completedH1': 'Lesson complete!',
@@ -823,7 +810,6 @@ const STRINGS: Record<Locale, Strings> = {
     'home.category.fermi': 'Fermi Estimation',
     'home.category.logic': 'Logic Puzzles',
     'home.category.case': 'Case Interview',
-    'home.category.pm': 'PM Intro',
     'roadmap.title': 'Learning Path',
     'roadmap.subtitle': 'Follow the path to build skills step by step',
     'rank.currentBadge': 'NOW',

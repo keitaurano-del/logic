@@ -1,5 +1,5 @@
 // Developer mode flag - persisted in localStorage
-// When enabled, shows beta features (簿記/PM lessons, dev panels)
+// When enabled, shows beta features (dev panels)
 
 const STORAGE_KEY = 'logic-dev-mode'
 

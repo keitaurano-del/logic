@@ -20,7 +20,7 @@ import { getLocale, t } from '../i18n'
 interface HomeScreenProps {
   userName: string
   onOpenLesson: (lessonId: number) => void
-  onOpenCategory: (category: 'fermi' | 'logic' | 'case' | 'pm') => void
+  onOpenCategory: (category: 'fermi' | 'logic' | 'case') => void
   onOpenRank: () => void
   onOpenDeviation: () => void
   onOpenRanking: () => void
@@ -38,7 +38,7 @@ interface HomeScreenProps {
 }
 
 type Category = {
-  id: 'fermi' | 'logic' | 'case' | 'pm'
+  id: 'fermi' | 'logic' | 'case'
   icon: ReactNode
   name: string
   lessonIds: number[]

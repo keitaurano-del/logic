@@ -1,8 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import Lesson from './Lesson'
-import MockExam from './MockExam'
-import JournalInput from './JournalInput'
-import Worksheet from './Worksheet'
 import Profile from './Profile'
 import Flashcards from './Flashcards'
 import GoalSelect from './GoalSelect'
@@ -30,91 +27,10 @@ import { getCardStats } from './flashcardData'
 import { initFromFlashcards } from './progressStore'
 import { loadTheme, applyTheme } from './theme'
 import { loadRoadmapState, completeStep } from './roadmapStore'
-import { isDevMode } from './devMode'
 import LessonIcon from './LessonIcon'
 import './App.css'
 
 const lessons = [
-  {
-    id: 6,
-    category: '簿記3級',
-    title: '簿記3級 入門',
-    description: '仕訳・勘定科目・試算表の基礎',
-    progress: 0,
-    action: 'lesson' as const,
-  },
-  {
-    id: 7,
-    category: '簿記3級',
-    title: '簿記3級 決算と財務諸表',
-    description: '精算表・損益計算書・貸借対照表の作成',
-    progress: 0,
-    action: 'lesson' as const,
-  },
-  {
-    id: 8,
-    category: '簿記2級 商業',
-    title: '簿記2級 商業簿記',
-    description: '連結会計・税効果会計・リース取引',
-    progress: 0,
-    action: 'lesson' as const,
-  },
-  {
-    id: 9,
-    category: '簿記2級 工業',
-    title: '簿記2級 工業簿記',
-    description: '原価計算・標準原価・CVP分析',
-    progress: 0,
-    action: 'lesson' as const,
-  },
-  {
-    id: 11,
-    category: '簿記3級',
-    title: '仕訳問題 50問ドリル',
-    description: '本試験頻出の仕訳を徹底演習',
-    progress: 0,
-    action: 'lesson' as const,
-  },
-  {
-    id: 12,
-    category: '簿記3級',
-    title: '勘定記入・補助簿ドリル',
-    description: '補助簿の選択・伝票・勘定記入を演習',
-    progress: 0,
-    action: 'lesson' as const,
-  },
-  {
-    id: 13,
-    category: '簿記3級',
-    title: '決算・精算表ドリル',
-    description: '決算整理仕訳・精算表・B/S・P/Lを演習',
-    progress: 0,
-    action: 'lesson' as const,
-  },
-  {
-    id: 14,
-    category: '簿記3級 実践',
-    title: '仕訳入力ドリル',
-    description: '勘定科目と金額を自分で入力する実践演習',
-    progress: 0,
-    action: 'journal-input' as const,
-  },
-  {
-    id: 15,
-    category: '簿記3級 実践',
-    title: '精算表穴埋めドリル',
-    description: '精算表の空欄に数字を入力して完成させる',
-    progress: 0,
-    action: 'worksheet' as const,
-  },
-  {
-    id: 99,
-    category: '模擬試験',
-    title: '簿記3級 模擬試験',
-    description: '60分・25問・合格ライン70%の本番形式',
-    progress: 0,
-    action: 'mock-exam' as const,
-  },
   {
     id: 20,
     category: 'ロジカルシンキング',
@@ -221,9 +137,6 @@ type Tab = 'home' | 'lessons' | 'profile'
 type Screen =
   | { type: 'home' }
   | { type: 'lesson'; lessonId: number }
-  | { type: 'mock-exam' }
-  | { type: 'journal-input' }
-  | { type: 'worksheet' }
   | { type: 'flashcards' }
   | { type: 'goal-select' }
   | { type: 'roadmap'; goalId: string }
@@ -272,7 +185,6 @@ function App() {
   const [streak, setStreak] = useState(getStreak())
   const [studyHours, setStudyHours] = useState(getStudyHours())
   const [, setRoadmapState] = useState(loadRoadmapState())
-  const [devMode, setDevModeState] = useState(isDevMode())
   const screenEnteredAt = useRef<number>(Date.now())
   const [dailyProblem, setDailyProblem] = useState<AIProblemSet | null>(getTodayProblem())
   const [loadingDaily, setLoadingDaily] = useState(false)
@@ -336,9 +248,6 @@ function App() {
     // Also mark the step complete in roadmap if applicable
     const match = key.match(/^lesson-(\d+)$/)
     if (match) completeStep(parseInt(match[1], 10))
-    if (key === 'mock-exam') completeStep(99)
-    if (key === 'journal-input') completeStep(14)
-    if (key === 'worksheet') completeStep(15)
     setScreen({ type: 'home' })
     refreshStats()
   }, [refreshStats])
@@ -440,15 +349,7 @@ function App() {
         goalId={screen.goalId}
         onBack={() => { refreshStats(); goHome() }}
         onStartLesson={(lessonId) => {
-          const lesson = lessons.find((l) => l.id === lessonId)
-          if (lesson) {
-            if (lesson.action === 'mock-exam') navigateTo({ type: 'mock-exam' })
-            else if (lesson.action === 'journal-input') navigateTo({ type: 'journal-input' })
-            else if (lesson.action === 'worksheet') navigateTo({ type: 'worksheet' })
-            else navigateTo({ type: 'lesson', lessonId })
-          } else {
-            navigateTo({ type: 'lesson', lessonId })
-          }
+          navigateTo({ type: 'lesson', lessonId })
         }}
       />
     )
@@ -456,18 +357,6 @@ function App() {
 
   if (screen.type === 'flashcards') {
     return <Flashcards onBack={goHome} />
-  }
-
-  if (screen.type === 'mock-exam') {
-    return <MockExam onBack={goHome} onComplete={() => handleComplete('mock-exam', '簿記3級 模擬試験')} />
-  }
-
-  if (screen.type === 'journal-input') {
-    return <JournalInput onBack={goHome} onComplete={() => handleComplete('journal-input', '仕訳入力ドリル')} />
-  }
-
-  if (screen.type === 'worksheet') {
-    return <Worksheet onBack={goHome} onComplete={() => handleComplete('worksheet', '精算表穴埋めドリル')} />
   }
 
   if (screen.type === 'ai-gen') {
@@ -510,23 +399,14 @@ function App() {
   }
 
   const getCatKey = (category: string) => {
-    if (/簿記3級 実践/.test(category)) return 'practice'
-    if (/簿記3級/.test(category)) return 'boki3'
-    if (/簿記2級/.test(category)) return 'boki2'
-    if (/模擬試験/.test(category)) return 'exam'
     if (/ロジカル/.test(category)) return 'logic'
-    if (/プロジェクト/.test(category)) return 'pm'
+    if (/クリティカル/.test(category)) return 'critical'
+    if (/ケース/.test(category)) return 'case'
     return ''
   }
 
   const handleCardClick = (lesson: (typeof lessons)[number]) => {
-    if (lesson.action === 'mock-exam') {
-      navigateTo({ type: 'mock-exam' })
-    } else if (lesson.action === 'journal-input') {
-      navigateTo({ type: 'journal-input' })
-    } else if (lesson.action === 'worksheet') {
-      navigateTo({ type: 'worksheet' })
-    } else if (lesson.action === 'lesson' && lesson.id in allLessons) {
+    if (lesson.id in allLessons) {
       navigateTo({ type: 'lesson', lessonId: lesson.id })
     }
   }
@@ -535,7 +415,7 @@ function App() {
   const nextLesson = (() => {
     if (completedCount === 0) return null
     const completed = new Set(getCompletedLessons())
-    const visible = localizeLessons(lessons.filter(l => (getLocale() === 'en' ? !l.category.includes('簿記') && !l.category.includes('プロジェクト') && !l.category.includes('模擬試験') : (devMode || (!l.category.includes('簿記') && !l.category.includes('プロジェクト') && !l.category.includes('模擬試験'))))))
+    const visible = localizeLessons(lessons)
     return visible.find(l => !completed.has(`lesson-${l.id}`)) || null
   })()
 
@@ -707,7 +587,7 @@ function App() {
 
           {/* Lessons */}
           {(() => {
-            const visible = localizeLessons(lessons.filter(l => (getLocale() === 'en' ? !l.category.includes('簿記') && !l.category.includes('プロジェクト') && !l.category.includes('模擬試験') : (devMode || (!l.category.includes('簿記') && !l.category.includes('プロジェクト') && !l.category.includes('模擬試験'))))))
+            const visible = localizeLessons(lessons)
             return (
           <section className="section">
             <div className="lesson-list">
@@ -751,8 +631,7 @@ function App() {
             )
           })()}
           {Object.entries(
-            localizeLessons(lessons
-              .filter(l => (getLocale() === 'en' ? !l.category.includes('簿記') && !l.category.includes('プロジェクト') && !l.category.includes('模擬試験') : (devMode || (!l.category.includes('簿記') && !l.category.includes('プロジェクト') && !l.category.includes('模擬試験'))))))
+            localizeLessons(lessons)
               .reduce<Record<string, typeof lessons>>((acc, l) => {
                 const cat = l.category
                 if (!acc[cat]) acc[cat] = []
@@ -762,8 +641,6 @@ function App() {
           ).sort(([a], [b]) => {
             const order = (c: string) => {
               if (c.includes('ロジカル')) return 0
-              if (c.includes('プロジェクト')) return 2
-              if (c.includes('簿記')) return 3
               return 1
             }
             return order(a) - order(b)
@@ -772,7 +649,6 @@ function App() {
               <div className="section-header">
                 <h3 className="section-title">
                   {cat}
-                  {(cat.includes('簿記') || cat.includes('プロジェクト')) && <span className="beta-badge">BETA</span>}
                 </h3>
                 <span className="section-count">{items.length}</span>
               </div>
@@ -815,14 +691,14 @@ function App() {
           </svg>
           <span>{t('nav.home')}</span>
         </button>
-        <button className={`nav-item ${tab === 'lessons' ? 'active' : ''}`} onClick={() => { setTab('lessons'); setDevModeState(isDevMode()) }}>
+        <button className={`nav-item ${tab === 'lessons' ? 'active' : ''}`} onClick={() => { setTab('lessons') }}>
           <svg className="nav-icon" viewBox="0 0 24 24" fill={tab === 'lessons' ? 'currentColor' : 'none'} stroke={tab === 'lessons' ? 'none' : 'currentColor'} strokeWidth="2">
             <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
             <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
           </svg>
           <span>{t('nav.lessons')}</span>
         </button>
-        <button className={`nav-item ${tab === 'profile' ? 'active' : ''}`} onClick={() => { setTab('profile'); refreshStats(); setDevModeState(isDevMode()) }}>
+        <button className={`nav-item ${tab === 'profile' ? 'active' : ''}`} onClick={() => { setTab('profile'); refreshStats() }}>
           <svg className="nav-icon" viewBox="0 0 24 24" fill={tab === 'profile' ? 'currentColor' : 'none'} stroke={tab === 'profile' ? 'none' : 'currentColor'} strokeWidth="2">
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
             <circle cx="12" cy="7" r="4" />
