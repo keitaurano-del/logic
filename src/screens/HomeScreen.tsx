@@ -132,7 +132,7 @@ function HomeMobile({
 }: HomeScreenProps & { data: DerivedData; levelTitle: string }) {
   const {
     streak, streakState, completedSet, points, deviation, topPct, rankFill,
-    eyebrow, greeting, recovery, level, levelXp, levelPct, xp,
+    eyebrow, greeting, recovery, level, levelXp, levelPct,
   } = data
 
   return (
@@ -175,93 +175,89 @@ function HomeMobile({
         </div>
       )}
 
-      {/* ── 今日のフィーチャー ── */}
-      <section style={{
-        background: 'linear-gradient(145deg, #0D1B3E 0%, #1E2D5C 100%)',
-        borderRadius: 28, padding: '24px 22px',
-        position: 'relative', overflow: 'hidden',
-      }}>
-        {/* grid texture */}
+      {/* ── 今日の一問 Hero Card ── */}
+      <section
+        onClick={() => onOpenCategory('fermi')}
+        style={{
+          background: 'var(--brand)',
+          borderRadius: 28, padding: '22px 20px',
+          position: 'relative', overflow: 'hidden', cursor: 'pointer',
+        }}
+      >
+        {/* decorative circles */}
         <div style={{
-          position: 'absolute', inset: 0, pointerEvents: 'none',
-          backgroundImage: 'linear-gradient(rgba(158,179,240,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(158,179,240,0.07) 1px, transparent 1px)',
-          backgroundSize: '24px 24px',
+          position: 'absolute', top: -48, right: -48, width: 180, height: 180,
+          borderRadius: '50%', background: 'rgba(255,255,255,0.07)', pointerEvents: 'none',
         }} />
-        {/* glow */}
         <div style={{
-          position: 'absolute', top: -50, right: -50, width: 200, height: 200,
-          background: 'radial-gradient(circle, rgba(61,95,196,0.45) 0%, transparent 70%)',
-          pointerEvents: 'none',
+          position: 'absolute', bottom: -32, right: 20, width: 120, height: 120,
+          borderRadius: '50%', background: 'rgba(255,255,255,0.04)', pointerEvents: 'none',
         }} />
         <div style={{ position: 'relative' }}>
-          <div style={{
-            display: 'inline-flex', alignItems: 'center', gap: 5,
-            background: 'rgba(158,179,240,0.18)', borderRadius: 999,
-            padding: '4px 10px', marginBottom: 14,
-          }}>
-            <BarChartIcon width={10} height={10} style={{ color: 'var(--brand-light)' }} />
-            <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--brand-light)' }}>
-              {t('home.todayRecommended')} · 5 MIN
+          {/* eyebrow */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 10 }}>
+            <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#93C5FD' }} />
+            <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)' }}>
+              今日の一問
             </span>
           </div>
+          {/* question */}
           <h2 style={{
-            fontFamily: 'var(--font-display)', fontSize: 21, fontWeight: 800,
-            color: '#fff', lineHeight: 1.35, letterSpacing: '-0.02em', marginBottom: 22,
+            fontFamily: 'var(--font-display)', fontSize: 19, fontWeight: 900,
+            color: '#fff', lineHeight: 1.4, letterSpacing: '-0.025em', marginBottom: 6,
           }}>
             {t('home.fermiQuestion')}
           </h2>
-          <Button variant="primary" size="lg" block onClick={() => onOpenCategory('fermi')}>
-            {t('home.startLesson')}
-            <ArrowRightIcon width={16} height={16} />
-          </Button>
+          {/* meta */}
+          <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginBottom: 18, display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span>Fermi Estimation</span>
+            <div style={{ width: 3, height: 3, borderRadius: '50%', background: 'rgba(255,255,255,0.3)' }} />
+            <span>Level 2</span>
+          </div>
+          {/* timer bar */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+            <div style={{ flex: 1, height: 2, background: 'rgba(255,255,255,0.2)', borderRadius: 99, overflow: 'hidden' }}>
+              <div style={{ height: '100%', width: '62%', background: 'rgba(255,255,255,0.6)', borderRadius: 99 }} />
+            </div>
+            <span style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.45)', whiteSpace: 'nowrap' }}>
+              残り {hoursUntilMidnight().hours}h {hoursUntilMidnight().minutes}m
+            </span>
+          </div>
+          {/* CTA button */}
+          <div style={{
+            width: '100%', background: '#fff', borderRadius: 14, padding: '14px',
+            fontSize: 15, fontWeight: 700, color: 'var(--brand)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+          }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" strokeWidth="2.5" strokeLinecap="round"><polygon points="5 3 19 12 5 21 5 3" fill="var(--brand)" stroke="none"/></svg>
+            チャレンジする
+          </div>
         </div>
       </section>
 
       {/* ── 統計カード ── */}
       <div style={{
-        background: 'var(--bg-card)', border: '1px solid var(--border)',
-        borderRadius: 24, overflow: 'hidden',
+        display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8,
       }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr' }}>
-          {[
-            {
-              onClick: onOpenRank,
-              icon: <StarIcon width={15} height={15} style={{ color: 'var(--xp-icon)' }} />,
-              value: points.toLocaleString(),
-              label: t('profile.points'),
-            },
-            deviation != null ? {
-              onClick: onOpenDeviation,
-              icon: <TrendingUpIcon width={15} height={15} style={{ color: 'var(--brand)' }} />,
-              value: deviation.toFixed(1),
-              label: t('ranking.deviationLabel'),
-            } : {
-              onClick: onOpenRank,
-              icon: <BarChartIcon width={15} height={15} style={{ color: 'var(--brand)' }} />,
-              value: xp.toLocaleString(),
-              label: 'XP',
-            },
-            {
-              onClick: onOpenRank,
-              icon: <div style={{ width: 15, height: 15, background: 'var(--brand)', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 900, color: '#fff' }}>{level}</div>,
-              value: levelTitle.length > 5 ? `Lv.${level}` : levelTitle,
-              label: 'レベル',
-            },
-          ].map((stat, i) => (
-            <button key={i} onClick={stat.onClick} style={{
-              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3,
-              padding: '16px 8px',
-              background: 'none', border: 'none', cursor: 'pointer',
-              borderLeft: i > 0 ? '1px solid var(--border)' : 'none',
-            }}>
-              {stat.icon}
-              <span style={{ fontSize: 18, fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.02em', lineHeight: 1, fontFamily: 'var(--font-display)' }}>
-                {stat.value}
-              </span>
-              <span style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 600 }}>{stat.label}</span>
-            </button>
-          ))}
-        </div>
+        {[
+          { onClick: onOpenStreak,    value: String(streak),  label: 'Streak' },
+          { onClick: onOpenRank,      value: String(points),  label: 'Points' },
+          { onClick: onOpenDeviation, value: deviation != null ? `Top ${topPct}%` : `Lv.${data.level}`, label: deviation != null ? 'Rank' : 'Level' },
+        ].map((stat, i) => (
+          <button key={i} onClick={stat.onClick} style={{
+            background: 'var(--bg-card)', border: '1px solid var(--border)',
+            borderRadius: 14, padding: '12px 10px', textAlign: 'center',
+            cursor: 'pointer', boxShadow: '0 1px 3px rgba(15,21,35,.06)',
+            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
+          }}>
+            <span style={{
+              fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 900,
+              letterSpacing: '-0.04em', lineHeight: 1,
+              color: i === 0 ? 'var(--warning)' : 'var(--brand)',
+            }}>{stat.value}</span>
+            <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>{stat.label}</span>
+          </button>
+        ))}
       </div>
 
       {/* 偏差値カード（独立表示） */}

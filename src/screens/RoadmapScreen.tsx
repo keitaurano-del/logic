@@ -56,6 +56,19 @@ const PATHS: RoadmapPath[] = [
       { id: 29, title: '新規事業ケース',     sub: '市場魅力度・参入障壁の分析' },
     ],
   },
+  {
+    id: 'critical',
+    label: 'クリティカルシンキング',
+    color: '#7C3AED',
+    accentColor: '#7C3AED',
+    bgColor: '#F5F3FF',
+    lessons: [
+      { id: 40, title: 'クリティカルシンキング入門', sub: '根拠をもとに自分の頭で判断する思考法' },
+      { id: 41, title: '論理的誤謬を見破る',         sub: '一見正しそうな「嘘の論理」に気づく' },
+      { id: 42, title: 'データを正しく読む',         sub: 'グラフ・統計の罠と正しい解釈' },
+      { id: 43, title: '問いを立てる力',             sub: '良い問いが良い答えを生む' },
+    ],
+  },
 ]
 
 interface RoadmapScreenProps {
