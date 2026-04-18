@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logic — UI v4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Inter+Tight:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ── DESIGN TOKENS ── */
+:root {
+  --blue:       #3B5BDB;
+  --blue-600:   #2F4AC0;
+  --blue-100:   #DBE4FF;
+  --blue-50:    #EEF2FF;
+  --blue-mid:   #748FFC;
+  --ink:        #0F1523;
+  --ink-2:      #3A4259;
+  --ink-3:      #7A849E;
+  --ink-4:      #B8BFD0;
+  --surface:    #FFFFFF;
+  --surface-2:  #F0F4FF;
+  --surface-3:  #E8EEFF;
+  --border:     #E2E8FF;
+  --green:      #12B76A;
+  --green-bg:   #ECFDF3;
+  --red:        #F04438;
+  --red-bg:     #FEF3F2;
+  --orange:     #F79009;
+  --r-xs: 6px; --r-sm: 10px; --r: 14px; --r-lg: 20px; --r-xl: 28px;
+  --sh:    0 1px 2px rgba(15,21,35,.06), 0 2px 8px rgba(15,21,35,.04);
+  --sh-md: 0 4px 16px rgba(15,21,35,.08);
+  --sh-lg: 0 8px 32px rgba(15,21,35,.12);
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: 'Inter', 'Hiragino Sans', sans-serif;
+  background: #CDD5EE;
+  display: flex; flex-wrap: wrap;
+  gap: 24px; padding: 32px 24px;
+  justify-content: center; align-items: flex-start;
+  min-height: 100vh;
+}
+
+/* ── Phone shell ── */
+.frame { display:flex; flex-direction:column; align-items:center; gap:10px; }
+.frame-label {
+  font-family:'Inter Tight',sans-serif; font-size:10px; font-weight:700;
+  letter-spacing:.12em; text-transform:uppercase; color:#7A849E;
+}
+.phone {
+  width:375px; min-height:812px;
+  background:var(--surface-2); border-radius:48px; overflow:hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,.22), 0 0 0 1px rgba(0,0,0,.06);
+  position:relative;
+}
+
+/* ── Status bar ── */
+.sb {
+  height:44px; background:var(--surface-2);
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 28px; font-size:12px; font-weight:600; color:var(--ink);
+}
+
+/* ── Nav bar ── */
+.nav {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:8px 20px 12px;
+  background:rgba(240,244,255,.95); backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo {
+  font-family:'Inter Tight',sans-serif; font-size:22px; font-weight:900;
+  color:var(--blue); letter-spacing:-.04em;
+}
+.nav-right { display:flex; align-items:center; gap:8px; }
+.streak-chip {
+  display:flex; align-items:center; gap:5px;
+  background:var(--blue-50); border:1px solid var(--blue-100);
+  border-radius:99px; padding:5px 12px;
+}
+.streak-num { font-size:13px; font-weight:800; color:var(--blue); }
+.streak-label { font-size:11px; font-weight:600; color:var(--blue-mid); }
+.avatar {
+  width:32px; height:32px; border-radius:99px;
+  background:linear-gradient(135deg, var(--blue), var(--blue-mid));
+}
+
+/* ── Scroll area ── */
+.scr { padding:16px 16px 96px; display:flex; flex-direction:column; gap:12px; overflow:hidden; }
+
+/* ── Today card ── */
+.today-card {
+  background:var(--blue);
+  border-radius:var(--r-xl); padding:22px 20px;
+  position:relative; overflow:hidden;
+}
+.today-card::after {
+  content:''; position:absolute;
+  right:-48px; top:-48px;
+  width:180px; height:180px; border-radius:50%;
+  background:rgba(255,255,255,.07); pointer-events:none;
+}
+.today-card::before {
+  content:''; position:absolute;
+  right:20px; bottom:-30px;
+  width:120px; height:120px; border-radius:50%;
+  background:rgba(255,255,255,.04); pointer-events:none;
+}
+.today-eyebrow {
+  display:flex; align-items:center; gap:7px; margin-bottom:10px;
+}
+.today-dot {
+  width:6px; height:6px; border-radius:50%; background:#93C5FD;
+}
+.today-eyebrow-text {
+  font-size:10px; font-weight:700; letter-spacing:.14em;
+  text-transform:uppercase; color:rgba(255,255,255,.6);
+}
+.today-q {
+  font-family:'Inter Tight',sans-serif;
+  font-size:19px; font-weight:900; color:#fff;
+  line-height:1.4; letter-spacing:-.025em; margin-bottom:6px;
+}
+.today-meta {
+  font-size:12px; color:rgba(255,255,255,.5); margin-bottom:18px;
+  display:flex; align-items:center; gap:8px;
+}
+.today-meta-sep { width:3px; height:3px; border-radius:50%; background:rgba(255,255,255,.3); }
+.today-timer {
+  display:flex; align-items:center; gap:8px; margin-bottom:16px;
+}
+.today-bar {
+  flex:1; height:2px; background:rgba(255,255,255,.2); border-radius:99px; overflow:hidden;
+}
+.today-bar-fill {
+  height:100%; width:62%; background:rgba(255,255,255,.6); border-radius:99px;
+}
+.today-time { font-size:11px; font-weight:600; color:rgba(255,255,255,.45); white-space:nowrap; }
+.today-btn {
+  width:100%; background:#fff; border:none;
+  border-radius:var(--r); padding:14px;
+  font-family:'Inter',sans-serif; font-size:15px; font-weight:700;
+  color:var(--blue); cursor:pointer;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+}
+
+/* Done state */
+.today-card.done { background:linear-gradient(135deg, #1B6B3A, #166534); }
+.done-check {
+  width:40px; height:40px; border-radius:50%;
+  background:rgba(255,255,255,.15);
+  display:flex; align-items:center; justify-content:center;
+  margin-bottom:10px;
+}
+.done-score { font-size:13px; color:rgba(255,255,255,.65); line-height:1.8; }
+.done-score strong { color:#fff; }
+.done-next { font-size:11px; color:rgba(255,255,255,.4); margin-top:10px; }
+
+/* ── Stats strip ── */
+.stats { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+.stat {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--r); padding:12px 10px; text-align:center;
+  box-shadow:var(--sh);
+}
+.stat-v {
+  font-family:'Inter Tight',sans-serif; font-size:26px; font-weight:900;
+  letter-spacing:-.04em; line-height:1; color:var(--ink);
+}
+.stat-v.blue { color:var(--blue); }
+.stat-l {
+  font-size:10px; font-weight:600; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--ink-3); margin-top:4px;
+}
+
+/* ── Week strip ── */
+.week-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--r); padding:14px 16px; box-shadow:var(--sh);
+}
+.card-head {
+  display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;
+}
+.card-title {
+  font-family:'Inter Tight',sans-serif; font-size:14px; font-weight:800;
+  color:var(--ink); letter-spacing:-.02em;
+}
+.card-link { font-size:12px; font-weight:600; color:var(--blue); }
+.days { display:flex; justify-content:space-between; }
+.day { display:flex; flex-direction:column; align-items:center; gap:5px; }
+.day-ring {
+  width:34px; height:34px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+}
+.day-ring.empty { background:var(--surface-3); }
+.day-ring.done  { background:var(--blue-50); border:1.5px solid var(--blue-100); }
+.day-ring.today { background:var(--blue); box-shadow:0 2px 8px rgba(59,91,219,.4); }
+.day-lbl { font-size:10px; font-weight:600; color:var(--ink-3); }
+.day-lbl.t { color:var(--blue); }
+
+/* ── Path list ── */
+.path-item {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--r); padding:14px 16px;
+  display:flex; align-items:center; gap:14px; box-shadow:var(--sh);
+}
+.path-ico {
+  width:44px; height:44px; border-radius:13px;
+  background:var(--blue-50); border:1px solid var(--blue-100);
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.path-ico.c { background:#FFF7ED; border-color:#FED7AA; }
+.path-body { flex:1; min-width:0; }
+.path-name { font-size:14px; font-weight:700; color:var(--ink); letter-spacing:-.01em; margin-bottom:2px; }
+.path-sub  { font-size:11px; color:var(--ink-3); }
+.prog      { margin-top:7px; }
+.prog-bar  { height:4px; background:var(--surface-3); border-radius:99px; overflow:hidden; }
+.prog-fill { height:100%; border-radius:99px; background:var(--blue); }
+.prog-row  { display:flex; justify-content:space-between; margin-top:3px; }
+.prog-pct  { font-size:10px; font-weight:700; color:var(--blue); }
+.prog-frac { font-size:10px; color:var(--ink-3); }
+.path-chev { flex-shrink:0; }
+
+/* ── Practice grid ── */
+.prac { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.prac-item {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--r); padding:16px; box-shadow:var(--sh);
+}
+.prac-ico {
+  width:40px; height:40px; border-radius:12px;
+  background:var(--blue-50); border:1px solid var(--blue-100);
+  display:flex; align-items:center; justify-content:center; margin-bottom:10px;
+}
+.prac-ico.purple { background:#F5F3FF; border-color:#DDD6FE; }
+.prac-name { font-size:13px; font-weight:700; color:var(--ink); letter-spacing:-.01em; }
+.prac-sub  { font-size:11px; color:var(--ink-3); margin-top:2px; }
+.prem-badge {
+  display:inline-block; margin-top:7px;
+  font-size:9px; font-weight:700; letter-spacing:.07em; text-transform:uppercase;
+  background:var(--blue-50); color:var(--blue);
+  border:1px solid var(--blue-100); border-radius:4px; padding:2px 6px;
+}
+
+/* ── Tab bar ── */
+.tabs {
+  position:absolute; bottom:0; left:0; right:0;
+  height:82px; background:rgba(240,244,255,.97);
+  backdrop-filter:blur(20px); border-top:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-around;
+  padding:0 8px 16px;
+}
+.tab { display:flex; flex-direction:column; align-items:center; gap:4px; padding:8px 14px; }
+.tab-lbl { font-size:10px; font-weight:600; color:var(--ink-3); letter-spacing:.02em; }
+.tab.on .tab-lbl { color:var(--blue); }
+.tab-dot { width:4px; height:4px; border-radius:50%; background:var(--blue); margin-top:-2px; }
+
+/* ── Screen header ── */
+.scr-hd {
+  display:flex; align-items:center; gap:12px;
+  padding:10px 20px 12px;
+  background:rgba(240,244,255,.95); backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+}
+.back {
+  width:36px; height:36px; border-radius:var(--r-sm);
+  background:var(--surface); border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:var(--sh); flex-shrink:0;
+}
+.scr-title { flex:1; text-align:center; font-size:13px; font-weight:700; color:var(--ink-2); }
+.scr-right { font-size:12px; font-weight:700; color:var(--ink-3); }
+
+/* ── Lesson progress bar ── */
+.lesson-prog { height:3px; background:var(--surface-3); }
+.lesson-prog-fill { height:100%; background:var(--blue); }
+
+/* ── Question card ── */
+.q-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--r-lg); padding:22px; box-shadow:var(--sh);
+}
+.q-tag {
+  font-size:10px; font-weight:700; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--blue); margin-bottom:8px;
+}
+.q-text {
+  font-family:'Inter Tight',sans-serif; font-size:18px; font-weight:800;
+  color:var(--ink); line-height:1.45; letter-spacing:-.025em;
+}
+
+/* ── Options ── */
+.opt {
+  background:var(--surface); border:1.5px solid var(--border);
+  border-radius:var(--r); padding:14px 16px;
+  display:flex; align-items:center; gap:12px;
+  box-shadow:var(--sh); cursor:pointer;
+}
+.opt.sel   { border-color:var(--blue); background:var(--blue-50); }
+.opt.ok    { border-color:var(--green); background:var(--green-bg); }
+.opt.ng    { border-color:var(--red);   background:var(--red-bg); }
+.opt-badge {
+  width:28px; height:28px; border-radius:50%; flex-shrink:0;
+  border:1.5px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px; font-weight:700; color:var(--ink-3);
+}
+.opt.sel .opt-badge { border-color:var(--blue); color:var(--blue); }
+.opt.ok  .opt-badge { background:var(--green); border-color:var(--green); color:#fff; }
+.opt.ng  .opt-badge { background:var(--red);   border-color:var(--red);   color:#fff; }
+.opt-text { font-size:14px; font-weight:500; color:var(--ink); flex:1; line-height:1.4; }
+
+/* ── Feedback ── */
+.fb-card {
+  border-radius:var(--r-lg); padding:18px 20px;
+  background:var(--green-bg); border-left:4px solid var(--green);
+}
+.fb-head { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+.fb-ico {
+  width:32px; height:32px; border-radius:50%; background:var(--green);
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.fb-title { font-size:15px; font-weight:800; color:var(--ink); }
+.fb-body  { font-size:13px; color:var(--ink-2); line-height:1.7; }
+
+/* ── Buttons ── */
+.btn {
+  width:100%; border:none; border-radius:var(--r); padding:16px;
+  font-family:'Inter',sans-serif; font-size:15px; font-weight:700;
+  cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.btn.primary { background:var(--blue); color:#fff; }
+.btn.ghost   { background:transparent; border:1.5px solid var(--border); color:var(--ink-2); font-size:14px; }
+
+/* ── Stats screen ── */
+.rank-hero {
+  background:var(--blue); border-radius:var(--r-xl); padding:24px 20px;
+  position:relative; overflow:hidden;
+}
+.rank-hero::after {
+  content:''; position:absolute; right:-40px; top:-40px;
+  width:160px; height:160px; border-radius:50%;
+  background:rgba(255,255,255,.06); pointer-events:none;
+}
+.rank-grid { display:grid; grid-template-columns:1fr 1px 1fr 1px 1fr; gap:0; }
+.rank-item { text-align:center; padding:0 4px; }
+.rank-v {
+  font-family:'Inter Tight',sans-serif; font-size:28px; font-weight:900;
+  color:#fff; letter-spacing:-.04em; line-height:1;
+}
+.rank-v.sm { font-size:22px; }
+.rank-l { font-size:9px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.5); margin-top:5px; }
+.rank-sep { background:rgba(255,255,255,.15); align-self:stretch; margin:4px 0; }
+
+/* ── Ranking tab ── */
+.rank-tabs {
+  display:flex; background:var(--surface-3);
+  border-radius:var(--r-sm); padding:3px; gap:3px; margin-bottom:4px;
+}
+.rank-tab {
+  flex:1; text-align:center; padding:7px;
+  font-size:12px; font-weight:700; color:var(--ink-3);
+  border-radius:var(--r-xs); cursor:pointer;
+}
+.rank-tab.on {
+  background:var(--surface); color:var(--blue);
+  box-shadow:0 1px 3px rgba(15,21,35,.08);
+}
+.rank-list { display:flex; flex-direction:column; gap:8px; }
+.rank-row {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--r); padding:12px 16px;
+  display:flex; align-items:center; gap:12px; box-shadow:var(--sh);
+}
+.rank-pos {
+  font-family:'Inter Tight',sans-serif; font-size:16px; font-weight:900;
+  color:var(--ink-3); width:24px; text-align:center; flex-shrink:0;
+}
+.rank-pos.gold   { color:#D97706; }
+.rank-pos.silver { color:#9CA3AF; }
+.rank-pos.bronze { color:#B45309; }
+.rank-avatar {
+  width:36px; height:36px; border-radius:50%;
+  background:linear-gradient(135deg, var(--blue), var(--blue-mid));
+  flex-shrink:0;
+}
+.rank-avatar.me { box-shadow:0 0 0 2px var(--blue); }
+.rank-name { flex:1; font-size:14px; font-weight:600; color:var(--ink); }
+.rank-name .me-tag {
+  font-size:10px; font-weight:700; color:var(--blue);
+  background:var(--blue-50); border-radius:4px; padding:1px 5px;
+  margin-left:6px;
+}
+.rank-score {
+  font-family:'Inter Tight',sans-serif; font-size:16px; font-weight:900; color:var(--blue);
+}
+.score-explainer {
+  background:var(--blue-50); border:1px solid var(--blue-100);
+  border-radius:var(--r); padding:12px 14px;
+  font-size:11px; color:var(--ink-2); line-height:1.7;
+}
+.score-explainer strong { color:var(--blue); font-weight:700; }
+
+/* ── Activity ── */
+.act-row {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--r); padding:13px 16px;
+  display:flex; align-items:center; gap:12px; box-shadow:var(--sh);
+}
+.act-ico {
+  width:38px; height:38px; border-radius:11px; flex-shrink:0;
+  background:var(--blue-50); border:1px solid var(--blue-100);
+  display:flex; align-items:center; justify-content:center;
+}
+.act-body { flex:1; }
+.act-name { font-size:13px; font-weight:700; color:var(--ink); margin-bottom:1px; }
+.act-date { font-size:11px; color:var(--ink-3); }
+.act-pts  { font-family:'Inter Tight',sans-serif; font-size:16px; font-weight:900; color:var(--blue); }
+
+/* ── Profile ── */
+.prof-hero {
+  background:var(--blue); border-radius:var(--r-xl); padding:24px 20px;
+  display:flex; flex-direction:column; align-items:center; text-align:center;
+  position:relative; overflow:hidden;
+}
+.prof-hero::after {
+  content:''; position:absolute; right:-40px; bottom:-40px;
+  width:140px; height:140px; border-radius:50%;
+  background:rgba(255,255,255,.06); pointer-events:none;
+}
+.prof-av {
+  width:68px; height:68px; border-radius:50%;
+  background:rgba(255,255,255,.2); border:2px solid rgba(255,255,255,.3);
+  margin-bottom:12px;
+  display:flex; align-items:center; justify-content:center;
+}
+.prof-name { font-family:'Inter Tight',sans-serif; font-size:20px; font-weight:900; color:#fff; letter-spacing:-.02em; }
+.prof-tag  { font-size:11px; color:rgba(255,255,255,.5); margin-top:3px; }
+.prof-stats { display:flex; gap:24px; margin-top:16px; }
+.ps { text-align:center; }
+.ps-v { font-family:'Inter Tight',sans-serif; font-size:22px; font-weight:900; color:#fff; letter-spacing:-.03em; }
+.ps-l { font-size:9px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.5); }
+.setting {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--r); padding:14px 16px;
+  display:flex; align-items:center; gap:14px; box-shadow:var(--sh); cursor:pointer;
+}
+.setting-ico {
+  width:38px; height:38px; border-radius:11px;
+  background:var(--surface-2);
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.setting-ico.red { background:var(--red-bg); }
+.setting-body { flex:1; }
+.setting-name { font-size:14px; font-weight:600; color:var(--ink); }
+.setting-sub  { font-size:11px; color:var(--ink-3); margin-top:1px; }
+.setting-name.red { color:var(--red); }
+
+/* SVG icon sizes */
+svg { display:block; }
+</style>
+</head>
+<body>
+
+<!-- ============================
+     SCREEN 1: HOME (未回答)
+============================= -->
+<div class="frame">
+<div class="frame-label">Home — 未回答</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●● WiFi 🔋</span></div>
+  <div class="nav">
+    <div class="nav-logo">Logic</div>
+    <div class="nav-right">
+      <div class="streak-chip">
+        <!-- flame icon filled -->
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="#3B5BDB"><path d="M12 2c0 0-5 4-5 10a5 5 0 0 0 10 0c0-6-5-10-5-10zm0 14a2 2 0 0 1-2-2c0-2 2-4 2-4s2 2 2 4a2 2 0 0 1-2 2z"/></svg>
+        <span class="streak-num">7</span>
+        <span class="streak-label">streak</span>
+      </div>
+      <div class="avatar"></div>
+    </div>
+  </div>
+
+  <div class="scr">
+    <!-- Today card -->
+    <div class="today-card">
+      <div class="today-eyebrow"><div class="today-dot"></div><span class="today-eyebrow-text">今日の一問</span></div>
+      <div class="today-q">日本のコンビニは<br>何店舗あるか？</div>
+      <div class="today-meta">
+        <span>Fermi Estimation</span>
+        <div class="today-meta-sep"></div>
+        <span>Level 2</span>
+      </div>
+      <div class="today-timer">
+        <div class="today-bar"><div class="today-bar-fill"></div></div>
+        <div class="today-time">残り 14h 22m</div>
+      </div>
+      <button class="today-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" stroke-width="2.5" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        チャレンジする
+      </button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat"><div class="stat-v blue">7</div><div class="stat-l">Streak</div></div>
+      <div class="stat"><div class="stat-v blue">420</div><div class="stat-l">Points</div></div>
+      <div class="stat"><div class="stat-v">68</div><div class="stat-l">Score</div></div>
+    </div>
+
+    <!-- Week -->
+    <div class="week-card">
+      <div class="card-head"><div class="card-title">今週の記録</div><div class="card-link">詳細</div></div>
+      <div class="days">
+        <div class="day"><div class="day-ring done"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="day-lbl">月</div></div>
+        <div class="day"><div class="day-ring done"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="day-lbl">火</div></div>
+        <div class="day"><div class="day-ring done"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="day-lbl">水</div></div>
+        <div class="day"><div class="day-ring done"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="day-lbl">木</div></div>
+        <div class="day"><div class="day-ring done"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="day-lbl">金</div></div>
+        <div class="day"><div class="day-ring done"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="day-lbl">土</div></div>
+        <div class="day"><div class="day-ring today"></div><div class="day-lbl t">今日</div></div>
+      </div>
+    </div>
+
+    <!-- Paths -->
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div class="card-head" style="margin-bottom:2px"><div class="card-title">学習パス</div><div class="card-link">すべて</div></div>
+      <div class="path-item">
+        <div class="path-ico">
+          <!-- calculator filled -->
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#3B5BDB"><rect x="4" y="2" width="16" height="20" rx="2"/><rect x="7" y="5" width="10" height="4" rx="1" fill="white"/><circle cx="8" cy="13" r="1.2" fill="white"/><circle cx="12" cy="13" r="1.2" fill="white"/><circle cx="16" cy="13" r="1.2" fill="white"/><circle cx="8" cy="17" r="1.2" fill="white"/><circle cx="12" cy="17" r="1.2" fill="white"/><rect x="14.8" y="15.8" width="2.4" height="2.4" rx=".4" fill="white"/></svg>
+        </div>
+        <div class="path-body">
+          <div class="path-name">フェルミ推定</div>
+          <div class="path-sub">4 レッスン</div>
+          <div class="prog"><div class="prog-bar"><div class="prog-fill" style="width:75%"></div></div><div class="prog-row"><div class="prog-pct">75%</div><div class="prog-frac">3 / 4</div></div></div>
+        </div>
+        <div class="path-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B8BFD0" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg></div>
+      </div>
+      <div class="path-item">
+        <div class="path-ico">
+          <!-- grid/logic filled -->
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#3B5BDB"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
+        </div>
+        <div class="path-body">
+          <div class="path-name">ロジカルシンキング</div>
+          <div class="path-sub">8 レッスン</div>
+          <div class="prog"><div class="prog-bar"><div class="prog-fill" style="width:37%"></div></div><div class="prog-row"><div class="prog-pct">37%</div><div class="prog-frac">3 / 8</div></div></div>
+        </div>
+        <div class="path-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B8BFD0" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg></div>
+      </div>
+      <div class="path-item">
+        <div class="path-ico c">
+          <!-- briefcase filled -->
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#F79009"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" fill="none" stroke="#F79009" stroke-width="2"/><line x1="12" y1="12" x2="12" y2="16" stroke="white" stroke-width="2"/><line x1="10" y1="14" x2="14" y2="14" stroke="white" stroke-width="2"/></svg>
+        </div>
+        <div class="path-body">
+          <div class="path-name">ケース面接</div>
+          <div class="path-sub">2 レッスン</div>
+          <div class="prog"><div class="prog-bar"><div class="prog-fill" style="width:0%"></div></div><div class="prog-row"><div class="prog-pct" style="color:var(--ink-3);font-weight:500">未開始</div><div class="prog-frac">0 / 2</div></div></div>
+        </div>
+        <div class="path-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B8BFD0" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg></div>
+      </div>
+    </div>
+
+    <!-- Practice -->
+    <div class="prac">
+      <div class="prac-item">
+        <div class="prac-ico">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#3B5BDB"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <div class="prac-name">ロールプレイ</div>
+        <div class="prac-sub">AI対話練習</div>
+      </div>
+      <div class="prac-item">
+        <div class="prac-ico purple">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#7C3AED"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+        </div>
+        <div class="prac-name">AI 問題生成</div>
+        <div class="prac-sub">テーマを指定</div>
+        <div class="prem-badge">Premium</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab on">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="#3B5BDB"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      <div class="tab-lbl">ホーム</div><div class="tab-dot"></div>
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="#B8BFD0"><path d="M6.5 2A2.5 2.5 0 0 0 4 4.5v15A2.5 2.5 0 0 0 6.5 22H20V2H6.5zm0 18A.5.5 0 0 1 6 19.5V17h14v3H6.5zM6 15V4h12v11H6z"/></svg>
+      <div class="tab-lbl">レッスン</div>
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="#B8BFD0"><path d="M4 20h2V10H4v10zm5 0h2V4H9v16zm5 0h2V8h-2v12zm5 0h2v-6h-2v6z"/></svg>
+      <div class="tab-lbl">統計</div>
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="#B8BFD0"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-5.33 0-8 2.67-8 4v2h16v-2c0-1.33-2.67-4-8-4z"/></svg>
+      <div class="tab-lbl">プロフィール</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============================
+     SCREEN 2: LESSON QUIZ
+============================= -->
+<div class="frame">
+<div class="frame-label">Lesson — Quiz</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●● WiFi 🔋</span></div>
+  <div class="scr-hd">
+    <div class="back"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F1523" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div>
+    <div class="scr-title">ロジカルシンキング</div>
+    <div class="scr-right">2 / 6</div>
+  </div>
+  <div class="lesson-prog"><div class="lesson-prog-fill" style="width:33%"></div></div>
+
+  <div class="scr" style="padding-top:20px; gap:10px;">
+    <div class="q-card">
+      <div class="q-tag">MECE</div>
+      <div class="q-text">スーパーの商品を「食品・日用品・その他」に分けた。この分け方はMECEか？</div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div class="opt"><div class="opt-badge">A</div><div class="opt-text">いえる。3つに分かれているから</div></div>
+      <div class="opt ok"><div class="opt-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="opt-text">いえない。「その他」があるため漏れが生じる</div></div>
+      <div class="opt ng sel"><div class="opt-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div><div class="opt-text">条件次第でどちらにもなる</div></div>
+      <div class="opt"><div class="opt-badge">D</div><div class="opt-text">分け方の数には依存しない</div></div>
+    </div>
+
+    <div class="fb-card">
+      <div class="fb-head">
+        <div class="fb-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="fb-title">正解は B</div>
+      </div>
+      <div class="fb-body">「その他」は何でも入る箱。MECEは<strong>相互排他的</strong>かつ<strong>全体網羅的</strong>が条件。「その他」があると全体網羅できても相互排他が崩れます。</div>
+    </div>
+
+    <button class="btn primary">次へ <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+  </div>
+</div>
+</div>
+
+<!-- ============================
+     SCREEN 3: STATS + RANKING
+============================= -->
+<div class="frame">
+<div class="frame-label">Stats — Ranking</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●● WiFi 🔋</span></div>
+  <div class="nav"><div class="nav-logo">統計</div></div>
+
+  <div class="scr">
+    <!-- Score hero -->
+    <div class="rank-hero">
+      <div class="rank-grid">
+        <div class="rank-item"><div class="rank-v">8</div><div class="rank-l">Streak</div></div>
+        <div class="rank-sep"></div>
+        <div class="rank-item"><div class="rank-v">420</div><div class="rank-l">Points</div></div>
+        <div class="rank-sep"></div>
+        <div class="rank-item"><div class="rank-v sm">Top<br>18%</div><div class="rank-l">Rank</div></div>
+      </div>
+    </div>
+
+    <!-- Score 説明 -->
+    <div class="score-explainer">
+      <strong>Logicスコア</strong>の計算式：<strong>偏差値 × 0.6 + log(ポイント+1) × 15</strong><br>
+      毎日の回答と正答率が偏差値に反映されます。
+    </div>
+
+    <!-- Week -->
+    <div class="week-card">
+      <div class="card-head" style="margin-bottom:12px"><div class="card-title">今週の記録</div></div>
+      <div class="days">
+        <div class="day"><div class="day-ring done"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="day-lbl">月</div></div>
+        <div class="day"><div class="day-ring done"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="day-lbl">火</div></div>
+        <div class="day"><div class="day-ring done"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="day-lbl">水</div></div>
+        <div class="day"><div class="day-ring done"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="day-lbl">木</div></div>
+        <div class="day"><div class="day-ring done"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="day-lbl">金</div></div>
+        <div class="day"><div class="day-ring done"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="day-lbl">土</div></div>
+        <div class="day"><div class="day-ring today"></div><div class="day-lbl t">今日</div></div>
+      </div>
+    </div>
+
+    <!-- Ranking -->
+    <div>
+      <div class="card-head" style="margin-bottom:8px"><div class="card-title">ランキング</div></div>
+      <div class="rank-tabs">
+        <div class="rank-tab on">週間</div>
+        <div class="rank-tab">全期間</div>
+      </div>
+      <div class="rank-list" style="margin-top:8px;">
+        <div class="rank-row">
+          <div class="rank-pos gold">1</div>
+          <div class="rank-avatar"></div>
+          <div class="rank-name">Tanaka_K</div>
+          <div class="rank-score">87</div>
+        </div>
+        <div class="rank-row">
+          <div class="rank-pos silver">2</div>
+          <div class="rank-avatar"></div>
+          <div class="rank-name">logic_pro</div>
+          <div class="rank-score">82</div>
+        </div>
+        <div class="rank-row" style="border-color:var(--blue-100);background:var(--blue-50);">
+          <div class="rank-pos bronze">3</div>
+          <div class="rank-avatar me"></div>
+          <div class="rank-name">Keita<span class="me-tag">You</span></div>
+          <div class="rank-score">76</div>
+        </div>
+        <div class="rank-row">
+          <div class="rank-pos" style="color:var(--ink-3);">4</div>
+          <div class="rank-avatar"></div>
+          <div class="rank-name">fermi_fan</div>
+          <div class="rank-score">71</div>
+        </div>
+        <div class="rank-row">
+          <div class="rank-pos" style="color:var(--ink-3);">5</div>
+          <div class="rank-avatar"></div>
+          <div class="rank-name">case_master</div>
+          <div class="rank-score">68</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent -->
+    <div>
+      <div class="card-title" style="margin-bottom:8px">最近の活動</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="act-row">
+          <div class="act-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="#3B5BDB"><rect x="4" y="2" width="16" height="20" rx="2"/><rect x="7" y="5" width="10" height="4" rx="1" fill="white"/><circle cx="8" cy="13" r="1.2" fill="white"/><circle cx="12" cy="13" r="1.2" fill="white"/><circle cx="16" cy="13" r="1.2" fill="white"/></svg></div>
+          <div class="act-body"><div class="act-name">今日の一問 — フェルミ</div><div class="act-date">Today 9:32</div></div>
+          <div class="act-pts">+30</div>
+        </div>
+        <div class="act-row">
+          <div class="act-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="#3B5BDB"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg></div>
+          <div class="act-body"><div class="act-name">MECE 入門</div><div class="act-date">Yesterday 8:15 PM</div></div>
+          <div class="act-pts">+20</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab"><svg width="22" height="22" viewBox="0 0 24 24" fill="#B8BFD0"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><div class="tab-lbl">ホーム</div></div>
+    <div class="tab"><svg width="22" height="22" viewBox="0 0 24 24" fill="#B8BFD0"><path d="M6.5 2A2.5 2.5 0 0 0 4 4.5v15A2.5 2.5 0 0 0 6.5 22H20V2H6.5zm0 18A.5.5 0 0 1 6 19.5V17h14v3H6.5zM6 15V4h12v11H6z"/></svg><div class="tab-lbl">レッスン</div></div>
+    <div class="tab on"><svg width="22" height="22" viewBox="0 0 24 24" fill="#3B5BDB"><path d="M4 20h2V10H4v10zm5 0h2V4H9v16zm5 0h2V8h-2v12zm5 0h2v-6h-2v6z"/></svg><div class="tab-lbl">統計</div><div class="tab-dot"></div></div>
+    <div class="tab"><svg width="22" height="22" viewBox="0 0 24 24" fill="#B8BFD0"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-5.33 0-8 2.67-8 4v2h16v-2c0-1.33-2.67-4-8-4z"/></svg><div class="tab-lbl">プロフィール</div></div>
+  </div>
+</div>
+</div>
+
+<!-- ============================
+     SCREEN 4: PROFILE
+============================= -->
+<div class="frame">
+<div class="frame-label">Profile</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●● WiFi 🔋</span></div>
+  <div class="nav"><div class="nav-logo">プロフィール</div></div>
+
+  <div class="scr">
+    <div class="prof-hero">
+      <div class="prof-av">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="rgba(255,255,255,.8)"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-5.33 0-8 2.67-8 4v2h16v-2c0-1.33-2.67-4-8-4z"/></svg>
+      </div>
+      <div class="prof-name">Keita Urano</div>
+      <div class="prof-tag">Member since Apr 2026</div>
+      <div class="prof-stats">
+        <div class="ps"><div class="ps-v">24</div><div class="ps-l">Lessons</div></div>
+        <div class="ps"><div class="ps-v">8</div><div class="ps-l">Streak</div></div>
+        <div class="ps"><div class="ps-v">Top 18%</div><div class="ps-l">Rank</div></div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div class="setting">
+        <div class="setting-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="#3B5BDB"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-5.33 0-8 2.67-8 4v2h16v-2c0-1.33-2.67-4-8-4z"/></svg></div>
+        <div class="setting-body"><div class="setting-name">アカウント</div><div class="setting-sub">keita.urano2@gmail.com</div></div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B8BFD0" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+      <div class="setting">
+        <div class="setting-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="#3B5BDB"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+        <div class="setting-body"><div class="setting-name">通知設定</div><div class="setting-sub">毎日 08:00</div></div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B8BFD0" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+      <div class="setting">
+        <div class="setting-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="#3B5BDB"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10" stroke="white" stroke-width="2"/></svg></div>
+        <div class="setting-body"><div class="setting-name">プラン</div><div class="setting-sub">Standard — ¥500/月</div></div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B8BFD0" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+      <div class="setting">
+        <div class="setting-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="#3B5BDB"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <div class="setting-body"><div class="setting-name">フィードバック</div><div class="setting-sub">ご意見をお聞かせください</div></div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B8BFD0" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+      <div class="setting" style="border-color:rgba(240,68,56,.15);">
+        <div class="setting-ico red"><svg width="18" height="18" viewBox="0 0 24 24" fill="#F04438"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg></div>
+        <div class="setting-body"><div class="setting-name red">ログアウト</div></div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F04438" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab"><svg width="22" height="22" viewBox="0 0 24 24" fill="#B8BFD0"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><div class="tab-lbl">ホーム</div></div>
+    <div class="tab"><svg width="22" height="22" viewBox="0 0 24 24" fill="#B8BFD0"><path d="M6.5 2A2.5 2.5 0 0 0 4 4.5v15A2.5 2.5 0 0 0 6.5 22H20V2H6.5zm0 18A.5.5 0 0 1 6 19.5V17h14v3H6.5zM6 15V4h12v11H6z"/></svg><div class="tab-lbl">レッスン</div></div>
+    <div class="tab"><svg width="22" height="22" viewBox="0 0 24 24" fill="#B8BFD0"><path d="M4 20h2V10H4v10zm5 0h2V4H9v16zm5 0h2V8h-2v12zm5 0h2v-6h-2v6z"/></svg><div class="tab-lbl">統計</div></div>
+    <div class="tab on"><svg width="22" height="22" viewBox="0 0 24 24" fill="#3B5BDB"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-5.33 0-8 2.67-8 4v2h16v-2c0-1.33-2.67-4-8-4z"/></svg><div class="tab-lbl">プロフィール</div><div class="tab-dot"></div></div>
+  </div>
+</div>
+</div>
+
+</body>
+</html>

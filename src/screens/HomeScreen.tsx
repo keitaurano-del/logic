@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import type { ReactNode } from 'react'
 import { getStreak, getCompletedCount, getCompletedLessons } from '../stats'
 import { loadPlacementResult } from '../placementData'
-import { ArrowRightIcon, BarChartIcon, BrainIcon, BriefcaseIcon, CheckIcon, FlameIcon, StarIcon, TrendingUpIcon, ZapIcon } from '../icons'
+import { ArrowRightIcon, BarChartIcon, BrainIcon, BriefcaseIcon, FlameIcon, StarIcon, TrendingUpIcon, ZapIcon } from '../icons'
 import { Button } from '../components/Button'
 import { useIsDesktop } from '../hooks/useMediaQuery'
 import { isAdmin } from '../admin'
@@ -29,6 +29,11 @@ interface HomeScreenProps {
   onOpenPricing: () => void
   onOpenAIGen: () => void
   onOpenFeedback: () => void
+  onNavigateToDailyFermi?: () => void
+  onOpenRoadmap?: () => void
+  onOpenStats?: () => void
+  onOpenProfile?: () => void
+  onOpenAIProblemGen?: () => void
 }
 
 type Category = {
@@ -44,18 +49,7 @@ const ALL_CATEGORIES: (Category & { adminOnly?: boolean })[] = [
   { id: 'case',  icon: <BriefcaseIcon width={22} height={22} />, name: t('home.category.case'),  lessonIds: [28, 29, 35, 36] },
 ]
 
-const CAT_COLORS: Record<string, { bg: string; accent: string; text: string }> = {
-  fermi: { bg: '#FFF7ED', accent: '#F59E0B', text: '#92400E' },
-  logic: { bg: '#EEF2FE', accent: '#3D5FC4', text: '#1E3A8A' },
-  case:  { bg: '#F0FDF4', accent: '#10B981', text: '#065F46' },
-}
 
-const CASE_LESSONS = [
-  { id: 28, title: 'ケース面接入門',       sub: 'フレームワーク・仮説思考' },
-  { id: 29, title: 'プロフィタビリティ',    sub: '利益構造の分解と改善' },
-  { id: 35, title: '新市場参入ケース',      sub: '市場魅力度・競合分析' },
-  { id: 36, title: 'M&Aケース',            sub: 'シナジー・バリュエーション' },
-]
 
 const CATEGORIES = ALL_CATEGORIES.filter((c) => isAdmin() || !c.adminOnly)
 
@@ -116,342 +110,238 @@ export function HomeScreen(props: HomeScreenProps) {
 // Mobile layout (matches mocks/logic-v3/mobile/home.html)
 // ============================================================
 function HomeMobile({
-  userName,
   onOpenLesson,
   onOpenCategory,
-  onOpenRank,
-  onOpenDeviation,
-  onOpenStreak,
   onOpenRoleplay,
-  onOpenFlashcards: _onOpenFlashcards,
-  onOpenPricing,
   onOpenAIGen,
-  onOpenFeedback,
+  onNavigateToDailyFermi,
+  onOpenRoadmap,
+  onOpenStats,
+  onOpenProfile,
+  onOpenAIProblemGen,
   data,
-  levelTitle,
 }: HomeScreenProps & { data: DerivedData; levelTitle: string }) {
   const {
-    streak, streakState, completedSet, points, deviation, topPct, rankFill,
-    eyebrow, greeting, recovery, level, levelXp, levelPct,
+    streak, completedSet, points, deviation, recovery,
   } = data
 
+  const todayDow = (new Date().getDay() + 6) % 7 // 0=月, 1=火, ..., 5=土, 6=日
+  const weekDays = ['月', '火', '水', '木', '金', '土']
+
+  const PATHS = [
+    {
+      id: 'fermi' as const,
+      name: 'フェルミ推定',
+      lessonIds: [22, 23, 24, 25],
+      firstId: 22,
+      iconBg: '#EEF2FF',
+      iconBorder: '#DBE4FF',
+      icon: (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="#3B5BDB"><rect x="4" y="2" width="16" height="20" rx="2"/><rect x="7" y="5" width="10" height="4" rx="1" fill="white"/><circle cx="8" cy="13" r="1.2" fill="white"/><circle cx="12" cy="13" r="1.2" fill="white"/><circle cx="16" cy="13" r="1.2" fill="white"/><circle cx="8" cy="17" r="1.2" fill="white"/><circle cx="12" cy="17" r="1.2" fill="white"/><rect x="14.8" y="15.8" width="2.4" height="2.4" rx=".4" fill="white"/></svg>
+      ),
+    },
+    {
+      id: 'logic' as const,
+      name: 'ロジカルシンキング',
+      lessonIds: [20, 21, 26, 27],
+      firstId: 20,
+      iconBg: '#EEF2FF',
+      iconBorder: '#DBE4FF',
+      icon: (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="#3B5BDB"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
+      ),
+    },
+    {
+      id: 'case' as const,
+      name: 'ケース面接',
+      lessonIds: [28, 29, 35, 36],
+      firstId: 28,
+      iconBg: '#FFF7ED',
+      iconBorder: '#FED7AA',
+      icon: (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="#F79009"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" fill="none" stroke="#F79009" strokeWidth="2"/><line x1="12" y1="12" x2="12" y2="16" stroke="white" strokeWidth="2"/><line x1="10" y1="14" x2="14" y2="14" stroke="white" strokeWidth="2"/></svg>
+      ),
+    },
+  ]
+
+  const score = Math.round((deviation ?? 50) * 0.6 + Math.log10(points + 1) * 15)
+
   return (
-    <div className="stack-lg">
+    <div style={{ position: 'relative', minHeight: '100vh', background: '#F0F4FF', display: 'flex', flexDirection: 'column' }}>
 
-      {/* ── ヘッダー ── */}
-      <header style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 'var(--s-3)' }}>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--brand)', marginBottom: 4 }}>
-            {eyebrow}
+      {/* ── ナビバー ── */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 20px 12px', background: 'rgba(240,244,255,.95)', borderBottom: '1px solid #E2E8FF' }}>
+        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, color: '#3B5BDB', letterSpacing: '-.04em' }}>Logic</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 5, background: '#EEF2FF', border: '1px solid #DBE4FF', borderRadius: 99, padding: '5px 12px' }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#3B5BDB"><path d="M12 2c0 0-5 4-5 10a5 5 0 0 0 10 0c0-6-5-10-5-10zm0 14a2 2 0 0 1-2-2c0-2 2-4 2-4s2 2 2 4a2 2 0 0 1-2 2z"/></svg>
+            <span style={{ fontSize: 13, fontWeight: 800, color: '#3B5BDB' }}>{streak}</span>
+            <span style={{ fontSize: 11, fontWeight: 600, color: '#748FFC' }}>streak</span>
           </div>
-          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 30, fontWeight: 900, letterSpacing: '-0.03em', lineHeight: 1.1 }}>
-            {greeting}{t('home.greetingSep')}{userName}
-          </h1>
-          <p style={{ marginTop: 4, fontSize: 13, color: 'var(--text-muted)' }}>
-            {t('home.subtitle')}
-          </p>
+          <div style={{ width: 32, height: 32, borderRadius: 99, background: 'linear-gradient(135deg, #3B5BDB, #748FFC)' }} />
         </div>
-        {/* Streak badge — flame gradient */}
-        <button onClick={onOpenStreak} style={{
-          display: 'flex', flexDirection: 'column', alignItems: 'center',
-          background: 'linear-gradient(160deg, #FF6B35 0%, #F59E0B 100%)',
-          borderRadius: 18, padding: '10px 14px', border: 'none',
-          cursor: 'pointer', flexShrink: 0, marginTop: 8,
-          boxShadow: '0 4px 16px rgba(245,158,11,0.35)',
-        }}>
-          <FlameIcon width={18} height={18} style={{ color: '#fff' }} />
-          <span style={{ fontSize: 22, fontWeight: 900, color: '#fff', lineHeight: 1.1, marginTop: 2, fontFamily: 'var(--font-display)' }}>{streak}</span>
-          <span style={{ fontSize: 9, fontWeight: 700, color: 'rgba(255,255,255,0.85)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>DAY</span>
-        </button>
-      </header>
+      </div>
 
-      {/* Streak at-risk banner */}
-      {streakState === 'at-risk' && (
-        <div className="recovery-banner">
-          <div className="recovery-icon"><ZapIcon width={16} height={16} /></div>
-          <div className="recovery-text">
-            <b>{t('home.streakProtectionLabel')}</b> · {t('home.streakRecovery', { hours: recovery.hours, minutes: recovery.minutes })}
-          </div>
-        </div>
-      )}
+      {/* ── スクロールエリア ── */}
+      <div style={{ padding: '16px 16px 96px', display: 'flex', flexDirection: 'column', gap: 12, overflowY: 'auto', flex: 1 }}>
 
-      {/* ── 今日の一問 Hero Card ── */}
-      <section
-        onClick={() => onOpenCategory('fermi')}
-        style={{
-          background: 'var(--brand)',
-          borderRadius: 28, padding: '22px 20px',
-          position: 'relative', overflow: 'hidden', cursor: 'pointer',
-        }}
-      >
-        {/* decorative circles */}
-        <div style={{
-          position: 'absolute', top: -48, right: -48, width: 180, height: 180,
-          borderRadius: '50%', background: 'rgba(255,255,255,0.07)', pointerEvents: 'none',
-        }} />
-        <div style={{
-          position: 'absolute', bottom: -32, right: 20, width: 120, height: 120,
-          borderRadius: '50%', background: 'rgba(255,255,255,0.04)', pointerEvents: 'none',
-        }} />
-        <div style={{ position: 'relative' }}>
-          {/* eyebrow */}
+        {/* 今日の一問カード */}
+        <div
+          onClick={() => onNavigateToDailyFermi ? onNavigateToDailyFermi() : onOpenCategory('fermi')}
+          style={{ background: '#3B5BDB', borderRadius: 28, padding: '22px 20px', position: 'relative', overflow: 'hidden', cursor: 'pointer' }}
+        >
+          <div style={{ position: 'absolute', right: -48, top: -48, width: 180, height: 180, borderRadius: '50%', background: 'rgba(255,255,255,.07)', pointerEvents: 'none' }} />
+          <div style={{ position: 'absolute', right: 20, bottom: -30, width: 120, height: 120, borderRadius: '50%', background: 'rgba(255,255,255,.04)', pointerEvents: 'none' }} />
           <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 10 }}>
             <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#93C5FD' }} />
-            <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)' }}>
-              今日の一問
-            </span>
+            <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,.6)' }}>今日の一問</span>
           </div>
-          {/* question */}
-          <h2 style={{
-            fontFamily: 'var(--font-display)', fontSize: 19, fontWeight: 900,
-            color: '#fff', lineHeight: 1.4, letterSpacing: '-0.025em', marginBottom: 6,
-          }}>
+          <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 19, fontWeight: 900, color: '#fff', lineHeight: 1.4, letterSpacing: '-.025em', marginBottom: 6 }}>
             {t('home.fermiQuestion')}
-          </h2>
-          {/* meta */}
-          <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginBottom: 18, display: 'flex', alignItems: 'center', gap: 8 }}>
+          </div>
+          <div style={{ fontSize: 12, color: 'rgba(255,255,255,.5)', marginBottom: 18, display: 'flex', alignItems: 'center', gap: 8 }}>
             <span>Fermi Estimation</span>
-            <div style={{ width: 3, height: 3, borderRadius: '50%', background: 'rgba(255,255,255,0.3)' }} />
+            <div style={{ width: 3, height: 3, borderRadius: '50%', background: 'rgba(255,255,255,.3)' }} />
             <span>Level 2</span>
           </div>
-          {/* timer bar */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-            <div style={{ flex: 1, height: 2, background: 'rgba(255,255,255,0.2)', borderRadius: 99, overflow: 'hidden' }}>
-              <div style={{ height: '100%', width: '62%', background: 'rgba(255,255,255,0.6)', borderRadius: 99 }} />
+            <div style={{ flex: 1, height: 2, background: 'rgba(255,255,255,.2)', borderRadius: 99, overflow: 'hidden' }}>
+              <div style={{ height: '100%', width: `${Math.round((1 - (recovery.hours * 60 + recovery.minutes) / (24 * 60)) * 100)}%`, background: 'rgba(255,255,255,.6)', borderRadius: 99 }} />
             </div>
-            <span style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.45)', whiteSpace: 'nowrap' }}>
-              残り {hoursUntilMidnight().hours}h {hoursUntilMidnight().minutes}m
-            </span>
+            <div style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,.45)', whiteSpace: 'nowrap' }}>
+              残り {recovery.hours}h {recovery.minutes}m
+            </div>
           </div>
-          {/* CTA button */}
-          <div style={{
-            width: '100%', background: '#fff', borderRadius: 14, padding: '14px',
-            fontSize: 15, fontWeight: 700, color: 'var(--brand)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-          }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" strokeWidth="2.5" strokeLinecap="round"><polygon points="5 3 19 12 5 21 5 3" fill="var(--brand)" stroke="none"/></svg>
+          <div style={{ width: '100%', background: '#fff', borderRadius: 14, padding: 14, fontSize: 15, fontWeight: 700, color: '#3B5BDB', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" strokeWidth="2.5" strokeLinecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             チャレンジする
           </div>
         </div>
-      </section>
 
-      {/* ── 統計カード ── */}
-      <div style={{
-        display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8,
-      }}>
-        {[
-          { onClick: onOpenStreak,    value: String(streak),  label: 'Streak' },
-          { onClick: onOpenRank,      value: String(points),  label: 'Points' },
-          { onClick: onOpenDeviation, value: deviation != null ? `Top ${topPct}%` : `Lv.${data.level}`, label: deviation != null ? 'Rank' : 'Level' },
-        ].map((stat, i) => (
-          <button key={i} onClick={stat.onClick} style={{
-            background: 'var(--bg-card)', border: '1px solid var(--border)',
-            borderRadius: 14, padding: '12px 10px', textAlign: 'center',
-            cursor: 'pointer', boxShadow: '0 1px 3px rgba(15,21,35,.06)',
-            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
-          }}>
-            <span style={{
-              fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 900,
-              letterSpacing: '-0.04em', lineHeight: 1,
-              color: i === 0 ? 'var(--warning)' : 'var(--brand)',
-            }}>{stat.value}</span>
-            <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>{stat.label}</span>
-          </button>
-        ))}
-      </div>
-
-      {/* 偏差値カード（独立表示） */}
-      {deviation != null && (
-        <button onClick={onOpenDeviation} style={{
-          background: 'linear-gradient(145deg, #0D1B3E 0%, #1E2D5C 100%)',
-          borderRadius: 20, padding: '18px 20px',
-          width: '100%', border: 'none', cursor: 'pointer', textAlign: 'left',
-          position: 'relative', overflow: 'hidden',
-          boxShadow: '0 4px 20px rgba(30,45,92,0.25)',
-        }}>
-          <div style={{
-            position: 'absolute', top: -40, right: -40, width: 160, height: 160,
-            background: 'radial-gradient(circle, rgba(61,95,196,0.4) 0%, transparent 70%)',
-            pointerEvents: 'none',
-          }} />
-          <div style={{ position: 'relative' }}>
-            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--brand-light)', marginBottom: 8 }}>
-              {t('ranking.deviationLabel')} · {t('home.nationalRanking')}
+        {/* Stats 3グリッド */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8 }}>
+          {([
+            { value: String(streak), label: 'Streak', blue: true },
+            { value: String(points), label: 'Points', blue: true },
+            { value: String(score), label: 'Score', blue: false },
+          ] as { value: string; label: string; blue: boolean }[]).map(({ value, label, blue }) => (
+            <div key={label} style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: '12px 10px', textAlign: 'center', boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
+              <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 26, fontWeight: 900, letterSpacing: '-.04em', lineHeight: 1, color: blue ? '#3B5BDB' : '#0F1523' }}>{value}</div>
+              <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: '.08em', textTransform: 'uppercase', color: '#7A849E', marginTop: 4 }}>{label}</div>
             </div>
-            <div style={{ display: 'flex', alignItems: 'flex-end', gap: 12, marginBottom: 12 }}>
-              <div style={{ fontFamily: 'var(--font-display)', fontSize: 52, fontWeight: 900, color: '#fff', lineHeight: 1, letterSpacing: '-0.03em' }}>
-                {deviation.toFixed(1)}
-              </div>
-              <div style={{ marginBottom: 6 }}>
-                <div style={{ fontSize: 14, fontWeight: 700, color: 'rgba(255,255,255,0.8)' }}>
-                  {topPct != null ? t('ranking.topPercent', { pct: topPct }) : ''}
-                </div>
-                <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', marginTop: 2 }}>
-                  {t('profile.nationalRankingCard')}
-                </div>
-              </div>
-            </div>
-            <div style={{ height: 6, background: 'rgba(255,255,255,0.12)', borderRadius: 99, overflow: 'hidden' }}>
-              <div style={{ height: '100%', width: `${rankFill}%`, background: 'linear-gradient(90deg, var(--brand-light), #fff)', borderRadius: 99 }} />
-            </div>
-          </div>
-        </button>
-      )}
-
-      {/* ── ケース面接 ── */}
-      <section>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-          <div>
-            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#10B981', marginBottom: 2 }}>CASE INTERVIEW</div>
-            <h2 style={{ fontSize: 18, fontWeight: 800, letterSpacing: '-0.02em' }}>{t('home.category.case')}</h2>
-          </div>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-          {CASE_LESSONS.map((lesson) => {
-            const done = completedSet.has(`lesson-${lesson.id}`)
-            return (
-              <button key={lesson.id} onClick={() => onOpenLesson(lesson.id)} style={{
-                background: done ? '#F0FDF4' : 'var(--bg-card)',
-                border: `1.5px solid ${done ? 'rgba(16,185,129,0.4)' : 'var(--border)'}`,
-                borderRadius: 18, padding: '14px 12px',
-                cursor: 'pointer', textAlign: 'left', position: 'relative',
-              }}>
-                {done && (
-                  <div style={{
-                    position: 'absolute', top: 10, right: 10,
-                    width: 20, height: 20, borderRadius: '50%', background: '#10B981',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  }}>
-                    <CheckIcon width={11} height={11} style={{ color: '#fff' }} />
-                  </div>
-                )}
-                <div style={{
-                  width: 36, height: 36, borderRadius: 12, marginBottom: 10,
-                  background: done ? 'rgba(16,185,129,0.15)' : '#EEF2FE',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                }}>
-                  <BriefcaseIcon width={18} height={18} style={{ color: done ? '#10B981' : 'var(--brand)' }} />
-                </div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: done ? '#065F46' : 'var(--text)', lineHeight: 1.35, marginBottom: 4 }}>
-                  {lesson.title}
-                </div>
-                <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{lesson.sub}</div>
-              </button>
-            )
-          })}
-        </div>
-      </section>
-
-      {/* ── トレーニングメニュー ── */}
-      <section>
-        <div style={{ marginBottom: 12 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: 2 }}>TRAINING</div>
-          <h2 style={{ fontSize: 18, fontWeight: 800, letterSpacing: '-0.02em' }}>練習メニュー</h2>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-          {[
-            { label: 'ロールプレイ', sub: 'AI対話練習', emoji: '💬', onClick: onOpenRoleplay, bg: '#EEF2FE', color: '#1E3A8A' },
-            { label: 'AI問題生成', sub: 'プレミアム', emoji: '✨', onClick: onOpenAIGen, bg: '#F5F3FF', color: '#5B21B6', locked: false, onLocked: onOpenPricing },
-          ].map((item) => (
-            <button key={item.label} onClick={item.onClick} style={{
-              background: item.bg, border: 'none', borderRadius: 16,
-              padding: '14px 12px', cursor: 'pointer', textAlign: 'left',
-              position: 'relative',
-            }}>
-              {'locked' in item && item.locked && (
-                <div style={{ position: 'absolute', top: 10, right: 10, fontSize: 14 }}>🔒</div>
-              )}
-              <div style={{ fontSize: 22, marginBottom: 8 }}>{item.emoji}</div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: item.color }}>{item.label}</div>
-              <div style={{ fontSize: 10, color: item.color, opacity: 0.65, marginTop: 2 }}>{item.sub}</div>
-            </button>
           ))}
         </div>
-      </section>
-          {/* SCRUM-86: ベータフィードバックバナー */}
-          <div
-            onClick={onOpenFeedback}
-            style={{
-              marginTop: 4,
-              padding: '14px 16px',
-              background: 'var(--brand-soft)',
-              border: '1px solid var(--brand)',
-              borderRadius: 16,
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}
-          >
-            <div>
-              <div style={{ fontSize: 12, fontWeight: 800, color: 'var(--brand)', marginBottom: 2 }}>BETA</div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)' }}>ご意見・ご要望を教えてください</div>
-              <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>アプリ改善のフィードバックをお待ちしています</div>
-            </div>
-            <div style={{ fontSize: 20, marginLeft: 12 }}>→</div>
-          </div>
 
-      {/* ── カテゴリ ── */}
-      <section>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-          <h2 style={{ fontSize: 18, fontWeight: 800, letterSpacing: '-0.02em' }}>{t('home.categories')}</h2>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
-          {CATEGORIES.map((c) => {
-            const done = c.lessonIds.filter((id) => completedSet.has(`lesson-${id}`)).length
-            const total = c.lessonIds.length
-            const pct = total > 0 ? Math.round((done / total) * 100) : 0
-            const col = CAT_COLORS[c.id] ?? { bg: '#F5F5F5', accent: '#6B7280', text: '#374151' }
-            return (
-              <button key={c.id} onClick={() => {
-                if (c.lessonIds.length > 0) onOpenLesson(c.lessonIds[0])
-                else onOpenCategory(c.id)
-              }} style={{
-                background: col.bg, border: 'none',
-                borderRadius: 18, padding: '14px 12px',
-                cursor: 'pointer', textAlign: 'left',
-              }}>
-                <div style={{ marginBottom: 10, color: col.accent }}>{c.icon}</div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: col.text, lineHeight: 1.3, marginBottom: 10 }}>{c.name}</div>
-                <div style={{ height: 4, background: 'rgba(0,0,0,0.08)', borderRadius: 99 }}>
-                  <div style={{ height: '100%', width: `${pct}%`, background: col.accent, borderRadius: 99, transition: 'width 0.5s ease' }} />
+        {/* 今週の記録 */}
+        <div style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: '14px 16px', boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+            <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 14, fontWeight: 800, color: '#0F1523', letterSpacing: '-.02em' }}>今週の記録</div>
+            <div style={{ fontSize: 12, fontWeight: 600, color: '#3B5BDB', cursor: 'pointer' }}>詳細</div>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            {weekDays.map((day, i) => {
+              const isDone = i < todayDow
+              return (
+                <div key={day} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}>
+                  <div style={{ width: 34, height: 34, borderRadius: '50%', background: isDone ? '#EEF2FF' : '#E8EEFF', border: isDone ? '1.5px solid #DBE4FF' : 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {isDone && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" strokeWidth="2.5" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>}
+                  </div>
+                  <div style={{ fontSize: 10, fontWeight: 600, color: '#7A849E' }}>{day}</div>
                 </div>
-                <div style={{ fontSize: 10, color: col.text, opacity: 0.7, marginTop: 5, fontWeight: 700 }}>{done}/{total}</div>
-              </button>
+              )
+            })}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}>
+              <div style={{ width: 34, height: 34, borderRadius: '50%', background: '#3B5BDB', boxShadow: '0 2px 8px rgba(59,91,219,.4)' }} />
+              <div style={{ fontSize: 10, fontWeight: 600, color: '#3B5BDB' }}>今日</div>
+            </div>
+          </div>
+        </div>
+
+        {/* 学習パス */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
+            <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 14, fontWeight: 800, color: '#0F1523' }}>学習パス</div>
+            <div style={{ fontSize: 12, fontWeight: 600, color: '#3B5BDB', cursor: 'pointer' }} onClick={() => onOpenRoadmap && onOpenRoadmap()}>すべて</div>
+          </div>
+          {PATHS.map((path) => {
+            const total = path.lessonIds.length
+            const done = path.lessonIds.filter(id => completedSet.has(`lesson-${id}`)).length
+            const pct = total > 0 ? Math.round((done / total) * 100) : 0
+            return (
+              <div
+                key={path.id}
+                onClick={() => onOpenLesson(path.firstId)}
+                style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 14, cursor: 'pointer', boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}
+              >
+                <div style={{ width: 44, height: 44, borderRadius: 13, background: path.iconBg, border: `1px solid ${path.iconBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  {path.icon}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: '#0F1523', letterSpacing: '-.01em', marginBottom: 2 }}>{path.name}</div>
+                  <div style={{ fontSize: 11, color: '#7A849E' }}>{total} レッスン</div>
+                  <div style={{ marginTop: 7 }}>
+                    <div style={{ height: 4, background: '#E8EEFF', borderRadius: 99, overflow: 'hidden' }}>
+                      <div style={{ height: '100%', width: `${pct}%`, background: '#3B5BDB', borderRadius: 99 }} />
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 3 }}>
+                      <div style={{ fontSize: 10, fontWeight: 700, color: pct > 0 ? '#3B5BDB' : '#7A849E' }}>{pct > 0 ? `${pct}%` : '未開始'}</div>
+                      <div style={{ fontSize: 10, color: '#7A849E' }}>{done} / {total}</div>
+                    </div>
+                  </div>
+                </div>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B8BFD0" strokeWidth="2" strokeLinecap="round"><path d="M9 18l6-6-6-6"/></svg>
+              </div>
             )
           })}
         </div>
-      </section>
 
-      {/* ── レベル進捗 ── */}
-      <button onClick={onOpenRank} style={{
-        background: 'var(--bg-card)', border: '1px solid var(--border)',
-        borderRadius: 20, padding: '16px 18px',
-        width: '100%', textAlign: 'left', cursor: 'pointer',
-      }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-          <div>
-            <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--brand)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 2 }}>
-              {t('home.levelProgress')}
+        {/* 練習グリッド */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+          <div onClick={() => onOpenRoleplay()} style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: 16, cursor: 'pointer', boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
+            <div style={{ width: 40, height: 40, borderRadius: 12, background: '#EEF2FF', border: '1px solid #DBE4FF', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 10 }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#3B5BDB"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             </div>
-            <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.01em', fontFamily: 'var(--font-display)' }}>
-              Lv.{level} · {levelTitle}
-            </div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: '#0F1523', letterSpacing: '-.01em' }}>ロールプレイ</div>
+            <div style={{ fontSize: 11, color: '#7A849E', marginTop: 2 }}>AI対話練習</div>
           </div>
-          <span style={{ fontSize: 12, color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', fontWeight: 500 }}>{levelXp} / 1,000</span>
+          <div onClick={() => onOpenAIProblemGen ? onOpenAIProblemGen() : onOpenAIGen()} style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: 16, cursor: 'pointer', boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
+            <div style={{ width: 40, height: 40, borderRadius: 12, background: '#F5F3FF', border: '1px solid #DDD6FE', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 10 }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#7C3AED"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+            </div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: '#0F1523', letterSpacing: '-.01em' }}>AI 問題生成</div>
+            <div style={{ fontSize: 11, color: '#7A849E', marginTop: 2 }}>テーマを指定</div>
+            <div style={{ display: 'inline-block', marginTop: 7, fontSize: 9, fontWeight: 700, letterSpacing: '.07em', textTransform: 'uppercase', background: '#EEF2FF', color: '#3B5BDB', border: '1px solid #DBE4FF', borderRadius: 4, padding: '2px 6px' }}>Premium</div>
+          </div>
         </div>
-        <div style={{ height: 8, background: 'var(--bg-secondary)', borderRadius: 99, overflow: 'hidden' }}>
-          <div style={{
-            height: '100%', width: `${levelPct}%`,
-            background: 'linear-gradient(90deg, var(--brand) 0%, #6B85D6 100%)',
-            borderRadius: 99,
-          }} />
+
+      </div>
+
+      {/* ── タブバー ── */}
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 82, background: 'rgba(240,244,255,.97)', backdropFilter: 'blur(20px)', borderTop: '1px solid #E2E8FF', display: 'flex', alignItems: 'center', justifyContent: 'space-around', padding: '0 8px 16px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '8px 14px' }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#3B5BDB"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+          <div style={{ fontSize: 10, fontWeight: 600, color: '#3B5BDB' }}>ホーム</div>
+          <div style={{ width: 4, height: 4, borderRadius: '50%', background: '#3B5BDB', marginTop: -2 }} />
         </div>
-      </button>
+        <div onClick={() => onOpenRoadmap && onOpenRoadmap()} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '8px 14px', cursor: 'pointer' }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#B8BFD0"><path d="M6.5 2A2.5 2.5 0 0 0 4 4.5v15A2.5 2.5 0 0 0 6.5 22H20V2H6.5zm0 18A.5.5 0 0 1 6 19.5V17h14v3H6.5zM6 15V4h12v11H6z"/></svg>
+          <div style={{ fontSize: 10, fontWeight: 600, color: '#7A849E' }}>レッスン</div>
+        </div>
+        <div onClick={() => onOpenStats && onOpenStats()} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '8px 14px', cursor: 'pointer' }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#B8BFD0"><path d="M4 20h2V10H4v10zm5 0h2V4H9v16zm5 0h2V8h-2v12zm5 0h2v-6h-2v6z"/></svg>
+          <div style={{ fontSize: 10, fontWeight: 600, color: '#7A849E' }}>統計</div>
+        </div>
+        <div onClick={() => onOpenProfile && onOpenProfile()} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '8px 14px', cursor: 'pointer' }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#B8BFD0"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-5.33 0-8 2.67-8 4v2h16v-2c0-1.33-2.67-4-8-4z"/></svg>
+          <div style={{ fontSize: 10, fontWeight: 600, color: '#7A849E' }}>プロフィール</div>
+        </div>
+      </div>
 
     </div>
   )
 }
+
+
 
 // ============================================================
 // Desktop layout (matches mocks/logic-v3/desktop/home.html)
