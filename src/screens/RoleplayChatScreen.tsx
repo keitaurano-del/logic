@@ -4,7 +4,6 @@ import { isPremium } from '../subscription'
 import { incrementRoleplayUsage } from '../roleplayUsage'
 import { localeBody } from '../i18n'
 import { ArrowLeftIcon, CheckIcon } from '../icons'
-import { Button } from '../components/Button'
 import { IconButton } from '../components/IconButton'
 import { API_BASE } from './apiBase'
 
@@ -160,99 +159,92 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
   }
 
   return (
-    <div className="stack">
-      <div className="screen-header">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 14, padding: '0 0 32px' }}>
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 0 0' }}>
         <IconButton aria-label="Back" onClick={onBack}>
           <ArrowLeftIcon />
         </IconButton>
-        <div>
-          <div
-            className="eyebrow accent"
-            style={{ fontSize: 10, marginBottom: 2 }}
-          >
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: '#3B5BDB', marginBottom: 2 }}>
             {situation.frameworkLabel}
           </div>
-          <div style={{ fontSize: 14, fontWeight: 700 }}>
+          <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 16, fontWeight: 800, color: '#0F1523', letterSpacing: '-.02em' }}>
             {situation.partnerName}
           </div>
         </div>
-        <div className="progress-text">
-          Turn <b>{Math.min(turnNumber, MAX_TURNS)}</b> / {MAX_TURNS}
+        <div style={{ fontSize: 12, fontWeight: 700, color: '#7A849E' }}>
+          Turn <span style={{ color: '#3B5BDB' }}>{Math.min(turnNumber, MAX_TURNS)}</span> / {MAX_TURNS}
         </div>
       </div>
 
       {!finished && (
         <>
-          <div className="progress" style={{ marginBottom: 'var(--s-3)' }}>
-            <div
-              className="progress-fill"
-              style={{
-                width: `${(Math.min(turnNumber, MAX_TURNS) / MAX_TURNS) * 100}%`,
-              }}
-            />
+          {/* Progress bar */}
+          <div style={{ height: 4, background: '#EEF2FF', borderRadius: 99, overflow: 'hidden', marginBottom: 4 }}>
+            <div style={{ height: '100%', width: `${(Math.min(turnNumber, MAX_TURNS) / MAX_TURNS) * 100}%`, background: '#3B5BDB', borderRadius: 99, transition: 'width 300ms ease' }} />
           </div>
 
-          <div
-            className="card card-compact"
-            style={{ background: 'var(--bg-secondary)' }}
-          >
-            <div className="eyebrow" style={{ marginBottom: 6 }}>
+          {/* Scenario card */}
+          <div style={{ background: '#F8F9FF', border: '1px solid #E2E8FF', borderRadius: 12, padding: '12px 14px' }}>
+            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: '#7A849E', marginBottom: 6 }}>
               SCENARIO
             </div>
-            <div style={{ fontSize: 13, lineHeight: 1.6 }}>
+            <div style={{ fontSize: 13, color: '#0F1523', lineHeight: 1.6 }}>
               {situation.context}
             </div>
-            <div
-              style={{
-                fontSize: 13,
-                color: 'var(--brand)',
-                marginTop: 8,
-                fontWeight: 600,
-              }}
-            >
+            <div style={{ fontSize: 13, color: '#3B5BDB', marginTop: 8, fontWeight: 600 }}>
               🎯 {situation.goal}
             </div>
           </div>
 
-          <div
-            ref={scrollRef}
-            className="chat-list"
-            style={{ maxHeight: 380, overflowY: 'auto' }}
-          >
+          {/* Chat messages */}
+          <div ref={scrollRef} style={{ display: 'flex', flexDirection: 'column', gap: 10, maxHeight: 320, overflowY: 'auto' }}>
             {messages.map((m, i) => (
-              <div
-                key={i}
-                className={`chat-bubble ${m.role === 'user' ? 'user' : 'assistant'}`}
-              >
+              <div key={i} style={{
+                maxWidth: '80%',
+                padding: '10px 14px',
+                borderRadius: m.role === 'user' ? '14px 14px 4px 14px' : '14px 14px 14px 4px',
+                background: m.role === 'user' ? '#3B5BDB' : '#fff',
+                color: m.role === 'user' ? '#fff' : '#0F1523',
+                fontSize: 14,
+                lineHeight: 1.6,
+                border: m.role === 'user' ? 'none' : '1px solid #E2E8FF',
+                alignSelf: m.role === 'user' ? 'flex-end' : 'flex-start',
+                boxShadow: '0 1px 2px rgba(15,21,35,.06)',
+              }}>
                 {m.content}
               </div>
             ))}
             {loading && (
-              <div className="chat-bubble assistant">
-                <span className="muted">考え中…</span>
+              <div style={{ maxWidth: '80%', padding: '10px 14px', borderRadius: '14px 14px 14px 4px', background: '#fff', border: '1px solid #E2E8FF', fontSize: 14, color: '#7A849E', alignSelf: 'flex-start' }}>
+                考え中…
               </div>
             )}
           </div>
 
+          {/* Choices */}
           {choices.length > 0 && !loading && (
-            <div
-              className="stack-sm"
-              style={{ marginTop: 'var(--s-3)' }}
-            >
-              <div className="eyebrow" style={{ marginBottom: 4 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: '#7A849E', marginBottom: 2 }}>
                 あなたの返答
               </div>
               {choices.map((c, i) => (
                 <button
                   key={i}
                   onClick={() => pickChoice(c)}
-                  className="card card-compact"
                   style={{
+                    background: '#fff',
+                    border: '1.5px solid #DBE4FF',
+                    borderRadius: 12,
+                    padding: '12px 14px',
                     cursor: 'pointer',
                     textAlign: 'left',
-                    border: '1.5px solid var(--border)',
                     fontSize: 14,
+                    color: '#0F1523',
                     lineHeight: 1.6,
+                    width: '100%',
+                    transition: 'border-color 120ms ease',
                   }}
                 >
                   {c}
@@ -262,137 +254,77 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
           )}
 
           {messages.length >= 2 && (
-            <Button
-              variant="ghost"
-              size="sm"
+            <button
               onClick={endEarly}
-              style={{ marginTop: 'var(--s-3)' }}
+              style={{ background: 'none', border: 'none', color: '#7A849E', fontSize: 13, fontWeight: 600, cursor: 'pointer', padding: '4px 0', textAlign: 'center' }}
             >
               終了して採点する
-            </Button>
+            </button>
           )}
         </>
       )}
 
       {finished && (
-        <div className="stack">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           {scoring && (
-            <div className="card empty">
-              <div className="display" style={{ fontSize: 16, marginBottom: 'var(--s-2)' }}>
-                採点中…
-              </div>
-              <p className="muted" style={{ fontSize: 12 }}>
-                AI があなたの対話を 5 項目で評価しています
-              </p>
+            <div style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: '24px 16px', textAlign: 'center', boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
+              <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 16, fontWeight: 800, color: '#0F1523', marginBottom: 8 }}>採点中…</div>
+              <p style={{ fontSize: 12, color: '#7A849E', margin: 0 }}>AI があなたの対話を 5 項目で評価しています</p>
             </div>
           )}
 
           {score && (
-            <section className="feedback-card">
-              <div className="feedback-head">
-                <div className="feedback-check">
+            <div style={{ background: '#F0FDF4', border: '1px solid #BBF7D0', borderRadius: 14, padding: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+                <div style={{ width: 28, height: 28, background: '#22C55E', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                   <CheckIcon />
                 </div>
-                <div className="feedback-title">Scoring complete</div>
+                <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 15, fontWeight: 800, color: '#15803D' }}>採点完了</div>
               </div>
-              <div className="feedback-text" style={{ marginBottom: 'var(--s-3)' }}>
-                {score.overall}
-              </div>
-              <div className="stack-sm">
+              <p style={{ fontSize: 14, color: '#166534', lineHeight: 1.6, marginBottom: 12 }}>{score.overall}</p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {score.scores.map((s) => (
-                  <div
-                    key={s.name}
-                    style={{
-                      padding: 'var(--s-3)',
-                      background: 'white',
-                      borderRadius: 'var(--radius-md)',
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'baseline',
-                        marginBottom: 4,
-                      }}
-                    >
-                      <span
-                        style={{ fontSize: 13, fontWeight: 600, color: '#065F46' }}
-                      >
-                        {s.name}
-                      </span>
-                      <span
-                        className="mono"
-                        style={{
-                          fontSize: 14,
-                          fontWeight: 700,
-                          color: 'var(--success)',
-                        }}
-                      >
-                        {s.score} / {s.maxScore}
-                      </span>
+                  <div key={s.name} style={{ background: '#fff', borderRadius: 10, padding: '10px 12px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4 }}>
+                      <span style={{ fontSize: 13, fontWeight: 600, color: '#065F46' }}>{s.name}</span>
+                      <span style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 14, fontWeight: 700, color: '#16A34A' }}>{s.score} / {s.maxScore}</span>
                     </div>
-                    <div
-                      style={{
-                        fontSize: 12,
-                        color: '#047857',
-                        lineHeight: 1.6,
-                      }}
-                    >
-                      {s.feedback}
-                    </div>
+                    <div style={{ fontSize: 12, color: '#047857', lineHeight: 1.6 }}>{s.feedback}</div>
                   </div>
                 ))}
               </div>
-            </section>
+            </div>
           )}
 
           {summary && (
-            <section className="card" style={{ marginTop: 'var(--s-3)' }}>
-              <div className="eyebrow accent" style={{ marginBottom: 'var(--s-2)' }}>
-                SUMMARY
-              </div>
-              <p style={{ fontSize: 14, lineHeight: 1.7, marginBottom: 'var(--s-4)' }}>
-                {summary.summary}
-              </p>
-
+            <div style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: '16px', boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
+              <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: '#3B5BDB', marginBottom: 10 }}>SUMMARY</div>
+              <p style={{ fontSize: 14, color: '#0F1523', lineHeight: 1.7, marginBottom: 14 }}>{summary.summary}</p>
               {summary.goodPoints.length > 0 && (
-                <div style={{ marginBottom: 'var(--s-3)' }}>
-                  <div className="eyebrow" style={{ marginBottom: 6, color: 'var(--success)' }}>
-                    ✓ 良かった点
-                  </div>
-                  <ul style={{ fontSize: 13, lineHeight: 1.7, paddingLeft: 'var(--s-4)' }}>
-                    {summary.goodPoints.map((p, i) => (
-                      <li key={i}>{p}</li>
-                    ))}
+                <div style={{ marginBottom: 12 }}>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: '#16A34A', marginBottom: 6 }}>✓ 良かった点</div>
+                  <ul style={{ fontSize: 13, color: '#0F1523', lineHeight: 1.7, paddingLeft: 18, margin: 0 }}>
+                    {summary.goodPoints.map((p, i) => <li key={i}>{p}</li>)}
                   </ul>
                 </div>
               )}
-
               {summary.improvements.length > 0 && (
                 <div>
-                  <div className="eyebrow" style={{ marginBottom: 6, color: 'var(--warning)' }}>
-                    △ 改善点
-                  </div>
-                  <ul style={{ fontSize: 13, lineHeight: 1.7, paddingLeft: 'var(--s-4)' }}>
-                    {summary.improvements.map((p, i) => (
-                      <li key={i}>{p}</li>
-                    ))}
+                  <div style={{ fontSize: 12, fontWeight: 700, color: '#D97706', marginBottom: 6 }}>△ 改善点</div>
+                  <ul style={{ fontSize: 13, color: '#0F1523', lineHeight: 1.7, paddingLeft: 18, margin: 0 }}>
+                    {summary.improvements.map((p, i) => <li key={i}>{p}</li>)}
                   </ul>
                 </div>
               )}
-            </section>
+            </div>
           )}
 
-          <Button
-            variant="primary"
-            size="lg"
-            block
+          <button
             onClick={onBack}
-            style={{ marginTop: 'var(--s-4)' }}
+            style={{ background: '#3B5BDB', border: 'none', borderRadius: 14, padding: '16px', color: '#fff', fontSize: 16, fontWeight: 800, fontFamily: "'Inter Tight', sans-serif", cursor: 'pointer', width: '100%', boxShadow: '0 4px 12px rgba(59,91,219,.25)', marginTop: 4 }}
           >
             別のシナリオに戻る
-          </Button>
+          </button>
         </div>
       )}
     </div>

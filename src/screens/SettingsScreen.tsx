@@ -295,7 +295,7 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
         <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
           <SettingsRow
             label={t('settings.support.terms')}
-            onPress={() => {/* link to terms */}}
+            onPress={() => window.open('https://logic-u5wn.onrender.com/terms', '_blank')}
           />
         </div>
       </div>

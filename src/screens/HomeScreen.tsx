@@ -119,6 +119,7 @@ function HomeMobile({
   onOpenRoadmap,
   onOpenAIProblemGen,
   onOpenRank,
+  onOpenStats,
   data,
 }: HomeScreenProps & { data: DerivedData; levelTitle: string }) {
   const {
@@ -267,7 +268,7 @@ function HomeMobile({
                 </div>
               </div>
             </div>
-            <div style={{ background: 'rgba(255,255,255,.18)', border: '1px solid rgba(255,255,255,.25)', borderRadius: 99, padding: '5px 12px', fontSize: 11, fontWeight: 700, color: '#fff', display: 'flex', alignItems: 'center', gap: 4 }}>
+            <div onClick={onOpenRank} style={{ background: 'rgba(255,255,255,.18)', border: '1px solid rgba(255,255,255,.25)', borderRadius: 99, padding: '5px 12px', fontSize: 11, fontWeight: 700, color: '#fff', display: 'flex', alignItems: 'center', gap: 4, cursor: 'pointer' }}>
               詳細 →
             </div>
           </div>
@@ -308,7 +309,7 @@ function HomeMobile({
         <div style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: '14px 16px', boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
             <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 14, fontWeight: 800, color: '#0F1523', letterSpacing: '-.02em' }}>今週の記録</div>
-            <div style={{ fontSize: 12, fontWeight: 600, color: '#3B5BDB', cursor: 'pointer' }}>詳細</div>
+            <div onClick={onOpenStats} style={{ fontSize: 12, fontWeight: 600, color: '#3B5BDB', cursor: 'pointer' }}>詳細</div>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             {weekDays.map((day, i) => {
