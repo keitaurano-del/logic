@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { Button } from '../components/Button'
 import { t } from '../i18n'
 import { loginWithGoogle, isSupabaseConfigured, type User } from '../supabase'
 
