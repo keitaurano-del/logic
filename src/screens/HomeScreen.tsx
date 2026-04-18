@@ -13,6 +13,7 @@ import {
   hoursUntilMidnight,
   timeBasedGreeting,
   getLevelTitle,
+  getCurrentTier,
 } from './homeHelpers'
 import { getLocale, t } from '../i18n'
 
@@ -117,11 +118,16 @@ function HomeMobile({
   onNavigateToDailyFermi,
   onOpenRoadmap,
   onOpenAIProblemGen,
+  onOpenRank,
   data,
 }: HomeScreenProps & { data: DerivedData; levelTitle: string }) {
   const {
-    streak, completedSet, points, deviation, recovery,
+    streak, completedSet, points, deviation, recovery, xp, level, levelXp, levelPct,
   } = data
+
+  const tier = getCurrentTier(xp)
+  const nextXpThreshold = xp < 1000 ? 1000 : xp < 2000 ? 2000 : xp < 3000 ? 3000 : xp < 4000 ? 4000 : xp < 5000 ? 5000 : xp < 6000 ? 6000 : xp < 7000 ? 7000 : 8000
+  const xpToNext = Math.max(0, nextXpThreshold - xp)
 
   const todayDow = (new Date().getDay() + 6) % 7 // 0=月, 1=火, ..., 5=土, 6=日
   const weekDays = ['月', '火', '水', '木', '金', '土']
@@ -305,6 +311,59 @@ function HomeMobile({
             )
           })}
         </div>
+
+        {/* 哲学者ランクカード */}
+        <button
+          onClick={onOpenRank}
+          style={{
+            background: 'linear-gradient(135deg, #1E2D6B 0%, #3B5BDB 60%, #748FFC 100%)',
+            borderRadius: 20,
+            padding: '18px 20px',
+            border: 'none',
+            cursor: 'pointer',
+            textAlign: 'left',
+            width: '100%',
+            position: 'relative',
+            overflow: 'hidden',
+            boxShadow: '0 4px 20px rgba(59,91,219,.35)',
+          }}
+        >
+          {/* 背景装飾 */}
+          <div style={{ position: 'absolute', right: -30, top: -30, width: 140, height: 140, borderRadius: '50%', background: 'rgba(255,255,255,.07)', pointerEvents: 'none' }} />
+          <div style={{ position: 'absolute', right: 30, bottom: -50, width: 100, height: 100, borderRadius: '50%', background: 'rgba(255,255,255,.04)', pointerEvents: 'none' }} />
+
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div style={{ fontSize: 22 }}>🏛️</div>
+              <div>
+                <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,.55)', marginBottom: 1 }}>哲学者ランク</div>
+                <div style={{ fontSize: 18, fontWeight: 900, color: '#fff', letterSpacing: '-.025em', fontFamily: "'Inter Tight', sans-serif" }}>
+                  Lv.{level} · {getLocale() === 'ja' ? tier.title : tier.titleEn}
+                </div>
+              </div>
+            </div>
+            <div style={{ background: 'rgba(255,255,255,.18)', border: '1px solid rgba(255,255,255,.25)', borderRadius: 99, padding: '5px 12px', fontSize: 11, fontWeight: 700, color: '#fff', display: 'flex', alignItems: 'center', gap: 4 }}>
+              詳細 →
+            </div>
+          </div>
+
+          {/* XPバー */}
+          <div style={{ marginBottom: 6 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
+              <span style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,.55)' }}>経験値</span>
+              <span style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,.85)' }}>{levelXp} / 1,000 XP</span>
+            </div>
+            <div style={{ height: 6, background: 'rgba(255,255,255,.18)', borderRadius: 99, overflow: 'hidden' }}>
+              <div style={{ height: '100%', width: `${levelPct}%`, background: '#fff', borderRadius: 99, boxShadow: '0 0 8px rgba(255,255,255,.5)' }} />
+            </div>
+          </div>
+
+          {xpToNext > 0 && (
+            <div style={{ fontSize: 11, color: 'rgba(255,255,255,.5)', marginTop: 4 }}>
+              次のランクまで {xpToNext} XP
+            </div>
+          )}
+        </button>
 
         {/* 練習グリッド */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
