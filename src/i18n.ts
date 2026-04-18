@@ -396,6 +396,8 @@ const STRINGS: Record<Locale, Strings> = {
     'home.category.logic': '論理パズル',
     'home.category.case': 'ケース面接',
     'home.category.pm': 'PM 入門',
+    'roadmap.title': '学習パス',
+    'roadmap.subtitle': '順番に進めると体系的に身につきます',
     'rank.currentBadge': '現在',
 
     // Profile v3 screen
@@ -820,6 +822,8 @@ const STRINGS: Record<Locale, Strings> = {
     'home.category.logic': 'Logic Puzzles',
     'home.category.case': 'Case Interview',
     'home.category.pm': 'PM Intro',
+    'roadmap.title': 'Learning Path',
+    'roadmap.subtitle': 'Follow the path to build skills step by step',
     'rank.currentBadge': 'NOW',
 
     // Profile v3 screen

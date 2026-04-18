@@ -1,11 +1,6 @@
 // Logic v3 — full app shell with all screens
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useState } from 'react'
 import { AppShell, type Tab } from './components/AppShell'
-import {
-  BarChartIcon, TrendingUpIcon, CalendarIcon,
-  ClipboardListIcon,
-  BrainIcon, BriefcaseIcon, TargetIcon,
-} from './icons'
 import { HomeScreen } from './screens/HomeScreen'
 import { LessonScreen } from './screens/LessonScreen'
 import { ProfileScreen } from './screens/ProfileScreen'
@@ -33,11 +28,12 @@ import { StudyTimeScreen } from './screens/StudyTimeScreen'
 import { LanguageScreen } from './screens/LanguageScreen'
 import { RankScreen } from './screens/RankScreen'
 import { LoginScreen } from './screens/LoginScreen'
+import { RoadmapScreen } from './screens/RoadmapScreen'
 import type { AIProblemSet } from './aiProblemStore'
 import { loadTheme, applyTheme } from './theme'
 import { loadGuestUser } from './guestUser'
 import { getCompletedCount } from './stats'
-import { isAdmin, ADMIN_LESSON_IDS } from './admin'
+import { isAdmin } from './admin'
 import { onAuthChange, logout, getInitialUser, type User } from './supabase'
 
 const ONBOARDED_KEY = 'logic-onboarded'
@@ -45,6 +41,7 @@ const ONBOARDED_KEY = 'logic-onboarded'
 type Screen =
   | { type: 'home' }
   | { type: 'lessons' }
+  | { type: 'roadmap' }
   | { type: 'profile' }
   | { type: 'lesson'; lessonId: number }
   | { type: 'flashcards' }
@@ -72,23 +69,7 @@ type Screen =
   | { type: 'report-problem'; context: { lessonId?: number; lessonTitle?: string; question?: string } }
   | { type: 'onboarding' }
 
-const LESSON_LIST: { id: number; category: string; title: string; icon: ReactNode }[] = [
-  { id: 20, category: 'ロジカルシンキング', title: 'MECE入門',        icon: <BrainIcon width={20} height={20} /> },
-  { id: 21, category: 'ロジカルシンキング', title: 'ロジックツリー',   icon: <BrainIcon width={20} height={20} /> },
-  { id: 22, category: 'フェルミ推定',       title: 'フェルミ推定入門', icon: <BarChartIcon width={20} height={20} /> },
-  { id: 23, category: 'フェルミ推定',       title: '市場規模の推定',   icon: <BarChartIcon width={20} height={20} /> },
-  { id: 24, category: 'フェルミ推定',       title: '人数・頻度の推定', icon: <TrendingUpIcon width={20} height={20} /> },
-  { id: 25, category: 'フェルミ推定',       title: 'セグメント分解',   icon: <BarChartIcon width={20} height={20} /> },
-  { id: 26, category: 'ロジカルシンキング', title: '構造化思考',       icon: <BrainIcon width={20} height={20} /> },
-  { id: 27, category: 'ロジカルシンキング', title: '仮説思考',         icon: <BrainIcon width={20} height={20} /> },
-  { id: 28, category: 'ケース面接',         title: 'ケース面接入門',   icon: <BriefcaseIcon width={20} height={20} /> },
-  { id: 29, category: 'ケース面接',         title: '新規事業ケース',   icon: <BriefcaseIcon width={20} height={20} /> },
-  { id: 30, category: 'PM入門',            title: 'プロジェクトとは', icon: <TargetIcon width={20} height={20} /> },
-  { id: 31, category: 'PM入門',            title: 'スコープ管理',     icon: <TargetIcon width={20} height={20} /> },
-  { id: 32, category: 'PM入門',            title: 'スケジュール管理', icon: <CalendarIcon width={20} height={20} /> },
-  { id: 33, category: 'PM入門',            title: 'リスク管理',       icon: <ClipboardListIcon width={20} height={20} /> },
-  { id: 34, category: 'PM入門',            title: 'ステークホルダー', icon: <BriefcaseIcon width={20} height={20} /> },
-]
+// LESSON_LIST is now managed within RoadmapScreen
 
 function getInitialScreen(user: User | null): Screen {
   // ログイン済みユーザーはオンボーディングをスキップ
@@ -104,7 +85,7 @@ function AppV3() {
   const [screen, setScreen] = useState<Screen>(() => getInitialScreen(null))
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [authReady, setAuthReady] = useState(false)
-  const admin = isAdmin()
+  void isAdmin() // reserved for future admin checks
 
   useEffect(() => {
     applyTheme(loadTheme())
@@ -180,7 +161,7 @@ function AppV3() {
           onOpenLesson={handleOpenLesson}
           onOpenCategory={(cat) => {
             if (cat === 'fermi') setScreen({ type: 'daily-fermi' })
-            else handleTabChange('lessons')
+            else setScreen({ type: 'roadmap' })
           }}
           onOpenRank={() => setScreen({ type: 'rank' })}
           onOpenDeviation={() => setScreen({ type: 'deviation' })}
@@ -194,30 +175,11 @@ function AppV3() {
       )}
 
       {screen.type === 'lessons' && (
-        <div className="stack-lg">
-          <header>
-            <div className="eyebrow">LEARN</div>
-            <h1 style={{ fontSize: 28, marginTop: 6 }}>すべてのレッスン</h1>
-          </header>
+        <RoadmapScreen onOpenLesson={handleOpenLesson} />
+      )}
 
-          <section>
-            <h2 style={{ fontSize: 15, marginBottom: 'var(--s-3)' }}>レッスン一覧</h2>
-            <div className="cat-grid">
-              {LESSON_LIST.filter((l) => admin || !ADMIN_LESSON_IDS.has(l.id)).map((l) => (
-                <button
-                  key={l.id}
-                  className="cat-tile"
-                  onClick={() => handleOpenLesson(l.id)}
-                  style={{ cursor: 'pointer', textAlign: 'left', border: '1px solid var(--border)' }}
-                >
-                  <div className="cat-tile-icon">{l.icon}</div>
-                  <div className="cat-tile-name">{l.title}</div>
-                  <div className="cat-tile-meta">{l.category}</div>
-                </button>
-              ))}
-            </div>
-          </section>
-        </div>
+      {screen.type === 'roadmap' && (
+        <RoadmapScreen onOpenLesson={handleOpenLesson} />
       )}
 
       {screen.type === 'flashcards' && <FlashcardsScreen onBack={handleBack} />}
