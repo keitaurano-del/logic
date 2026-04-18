@@ -142,9 +142,7 @@ export function RoadmapScreen({ onOpenLesson }: RoadmapScreenProps) {
               <div>
                 {path.lessons.map((lesson, idx) => {
                   const done = completedSet.has(String(lesson.id))
-                  const isFirst = idx === 0
-                  const prevDone = idx === 0 || completedSet.has(String(path.lessons[idx - 1].id))
-                  const locked = !isFirst && !prevDone && completedCount === 0
+                  const locked = false // すべて開放
 
                   return (
                     <button
