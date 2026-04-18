@@ -171,6 +171,7 @@ function AppV3() {
           onOpenFlashcards={() => setScreen({ type: 'flashcards' })}
           onOpenAIGen={() => setScreen({ type: 'ai-problem-gen' })}
           onOpenPricing={() => setScreen({ type: 'pricing' })}
+          onOpenFeedback={() => setScreen({ type: 'feedback' })}
         />
       )}
 

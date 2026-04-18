@@ -28,6 +28,7 @@ interface HomeScreenProps {
   onOpenFlashcards: () => void
   onOpenPricing: () => void
   onOpenAIGen: () => void
+  onOpenFeedback: () => void
 }
 
 type Category = {
@@ -125,6 +126,7 @@ function HomeMobile({
   onOpenFlashcards: _onOpenFlashcards,
   onOpenPricing,
   onOpenAIGen,
+  onOpenFeedback,
   data,
   levelTitle,
 }: HomeScreenProps & { data: DerivedData; levelTitle: string }) {
@@ -370,6 +372,28 @@ function HomeMobile({
           ))}
         </div>
       </section>
+          {/* SCRUM-86: ベータフィードバックバナー */}
+          <div
+            onClick={onOpenFeedback}
+            style={{
+              marginTop: 4,
+              padding: '14px 16px',
+              background: 'var(--brand-soft)',
+              border: '1px solid var(--brand)',
+              borderRadius: 16,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            <div>
+              <div style={{ fontSize: 12, fontWeight: 800, color: 'var(--brand)', marginBottom: 2 }}>BETA</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)' }}>ご意見・ご要望を教えてください</div>
+              <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>アプリ改善のフィードバックをお待ちしています</div>
+            </div>
+            <div style={{ fontSize: 20, marginLeft: 12 }}>→</div>
+          </div>
 
       {/* ── カテゴリ ── */}
       <section>
@@ -446,6 +470,7 @@ function HomeDesktop({
   onOpenRoleplay,
   onOpenFlashcards: _onOpenFlashcards,
   onOpenAIGen,
+  onOpenFeedback,
   data,
   levelTitle,
 }: HomeScreenProps & { data: DerivedData; levelTitle: string }) {
@@ -625,6 +650,28 @@ function HomeDesktop({
           ))}
         </div>
       </section>
+        {/* SCRUM-86: ベータフィードバックバナー */}
+        <div
+          onClick={onOpenFeedback}
+          style={{
+            marginTop: 4,
+            padding: '16px 20px',
+            background: 'var(--brand-soft)',
+            border: '1px solid var(--brand)',
+            borderRadius: 16,
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          <div>
+            <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--brand)', marginBottom: 2, letterSpacing: '0.08em' }}>BETA</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)' }}>ご意見・ご要望を教えてください</div>
+            <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 2 }}>アプリ改善のフィードバックをお待ちしています</div>
+          </div>
+          <div style={{ fontSize: 18, color: 'var(--brand)', fontWeight: 700, marginLeft: 16 }}>→</div>
+        </div>
     </>
   )
 }
