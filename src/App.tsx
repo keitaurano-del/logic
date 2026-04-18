@@ -272,6 +272,28 @@ function App() {
   const [placementResult, setPlacementResult] = useState(loadPlacementResult())
   const [screen, setScreen] = useState<Screen>({ type: 'home' })
   const [tab, setTab] = useState<Tab>('home')
+
+  // History stack for swipe-back support
+  const screenHistoryRef = useRef<Screen[]>([])
+
+  const navigateTo = useCallback((next: Screen) => {
+    screenHistoryRef.current.push(screen)
+    window.history.pushState({ screenIndex: screenHistoryRef.current.length }, '')
+    setScreen(next)
+  }, [screen])
+
+  const navigateBack = useCallback((target: Screen = { type: 'home' }) => {
+    setScreen(target)
+  }, [])
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const prev = screenHistoryRef.current.pop()
+      setScreen(prev ?? { type: 'home' })
+    }
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [])
   const [completedCount, setCompletedCount] = useState(getCompletedCount())
   const [streak, setStreak] = useState(getStreak())
   const [studyHours, setStudyHours] = useState(getStudyHours())
@@ -321,6 +343,7 @@ function App() {
     if (elapsed > 5000) { // only count if spent more than 5 seconds
       addStudyTime(elapsed)
     }
+    screenHistoryRef.current = []
     setScreen({ type: 'home' })
     refreshStats()
   }, [refreshStats])
@@ -378,15 +401,15 @@ function App() {
   if (screen.type === 'roleplay') {
     return <Roleplay
       onBack={goHome}
-      onStart={(situationId) => setScreen({ type: 'roleplay-chat', situationId })}
-      onUpgrade={() => setScreen({ type: 'pricing' })}
+      onStart={(situationId) => navigateTo({ type: 'roleplay-chat', situationId })}
+      onUpgrade={() => navigateTo({ type: 'pricing' })}
     />
   }
 
   if (screen.type === 'roleplay-chat') {
     return <RoleplayChat
       situationId={screen.situationId}
-      onBack={() => setScreen({ type: 'roleplay' })}
+      onBack={() => navigateBack({ type: 'roleplay' })}
     />
   }
 
@@ -397,7 +420,7 @@ function App() {
   if (screen.type === 'theme') {
     return <ThemeSettings
       onBack={goHome}
-      onUpgrade={() => setScreen({ type: 'pricing' })}
+      onUpgrade={() => navigateTo({ type: 'pricing' })}
     />
   }
 
@@ -411,7 +434,7 @@ function App() {
   if (screen.type === 'fermi') {
     return <FermiLesson
       onBack={goHome}
-      onUpgrade={() => setScreen({ type: 'pricing' })}
+      onUpgrade={() => navigateTo({ type: 'pricing' })}
     />
   }
 
@@ -441,16 +464,16 @@ function App() {
     return (
       <Roadmap
         goalId={screen.goalId}
-        onBack={() => { refreshStats(); setScreen({ type: 'home' }) }}
+        onBack={() => { refreshStats(); goHome() }}
         onStartLesson={(lessonId) => {
           const lesson = lessons.find((l) => l.id === lessonId)
           if (lesson) {
-            if (lesson.action === 'mock-exam') setScreen({ type: 'mock-exam' })
-            else if (lesson.action === 'journal-input') setScreen({ type: 'journal-input' })
-            else if (lesson.action === 'worksheet') setScreen({ type: 'worksheet' })
-            else setScreen({ type: 'lesson', lessonId })
+            if (lesson.action === 'mock-exam') navigateTo({ type: 'mock-exam' })
+            else if (lesson.action === 'journal-input') navigateTo({ type: 'journal-input' })
+            else if (lesson.action === 'worksheet') navigateTo({ type: 'worksheet' })
+            else navigateTo({ type: 'lesson', lessonId })
           } else {
-            setScreen({ type: 'lesson', lessonId })
+            navigateTo({ type: 'lesson', lessonId })
           }
         }}
       />
@@ -476,7 +499,7 @@ function App() {
   if (screen.type === 'ai-gen') {
     return <AIProblemGen
       onBack={goHome}
-      onPlayProblem={(p) => setScreen({ type: 'ai-problem', problemId: p.id })}
+      onPlayProblem={(p) => navigateTo({ type: 'ai-problem', problemId: p.id })}
     />
   }
 
@@ -485,7 +508,7 @@ function App() {
     if (problem) {
       return <Lesson
         lesson={problem}
-        onBack={() => setScreen({ type: 'ai-gen' })}
+        onBack={() => navigateBack({ type: 'ai-gen' })}
         onComplete={() => handleComplete(`ai-${problem.id}`, problem.title)}
       />
     }
@@ -510,13 +533,13 @@ function App() {
 
   const handleCardClick = (lesson: (typeof lessons)[number]) => {
     if (lesson.action === 'mock-exam') {
-      setScreen({ type: 'mock-exam' })
+      navigateTo({ type: 'mock-exam' })
     } else if (lesson.action === 'journal-input') {
-      setScreen({ type: 'journal-input' })
+      navigateTo({ type: 'journal-input' })
     } else if (lesson.action === 'worksheet') {
-      setScreen({ type: 'worksheet' })
+      navigateTo({ type: 'worksheet' })
     } else if (lesson.action === 'lesson' && lesson.id in allLessons) {
-      setScreen({ type: 'lesson', lessonId: lesson.id })
+      navigateTo({ type: 'lesson', lessonId: lesson.id })
     }
   }
 
@@ -536,7 +559,7 @@ function App() {
           <div className="home-highlights">
           {/* Welcome card for first-time visitors */}
           {isFirstTime && (
-            <div className="daily-card welcome" onClick={() => dailyProblem && setScreen({ type: 'daily-problem' })}>
+            <div className="daily-card welcome" onClick={() => dailyProblem && navigateTo({ type: 'daily-problem' })}>
               <div className="daily-icon">👋</div>
               <div className="daily-text">
                 <strong>{t('home.welcomeTitle')}</strong>
@@ -579,7 +602,7 @@ function App() {
 
           {/* Today's Problem */}
           {dailyProblem && (
-            <div className="daily-card" onClick={() => setScreen({ type: 'daily-problem' })}>
+            <div className="daily-card" onClick={() => navigateTo({ type: 'daily-problem' })}>
               <div className="daily-icon">✨</div>
               <div className="daily-text">
                 <strong>{t('home.todayProblem')}</strong>
@@ -641,7 +664,7 @@ function App() {
           {(() => {
             const fc = getCardStats()
             return (
-              <div className="flashcard-banner" onClick={() => setScreen({ type: 'flashcards' })}>
+              <div className="flashcard-banner" onClick={() => navigateTo({ type: 'flashcards' })}>
                 <div className="flashcard-banner-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="14" height="18" rx="2" /><path d="M8 4V2" /><path d="M22 8v12a2 2 0 0 1-2 2" /><path d="M18 2v2" /><rect x="8" y="2" width="14" height="18" rx="2" opacity="0.3" /></svg></div>
                 <div className="flashcard-banner-text">
                   <strong>{t('home.flashcardTitle')}</strong>
@@ -654,7 +677,7 @@ function App() {
 
           <div className="home-cta-grid">
           {/* AI Problem Generator entry */}
-          <div className="ai-gen-card" onClick={() => setScreen({ type: 'ai-gen' })}>
+          <div className="ai-gen-card" onClick={() => navigateTo({ type: 'ai-gen' })}>
             <div className="ai-gen-icon">✨</div>
             <div className="ai-gen-text">
               <strong>{t('home.aiGenTitle')}</strong>
@@ -664,7 +687,7 @@ function App() {
           </div>
 
           {/* Roleplay entry */}
-          <div className="ai-gen-card" onClick={() => setScreen({ type: 'roleplay' })}>
+          <div className="ai-gen-card" onClick={() => navigateTo({ type: 'roleplay' })}>
             <div className="ai-gen-icon">💬</div>
             <div className="ai-gen-text">
               <strong>{t('home.roleplayTitle')}</strong>
@@ -674,7 +697,7 @@ function App() {
           </div>
 
           {/* Coffee Break entry */}
-          <div className="ai-gen-card" onClick={() => setScreen({ type: 'coffee-break' })}>
+          <div className="ai-gen-card" onClick={() => navigateTo({ type: 'coffee-break' })}>
             <div className="ai-gen-icon">☕</div>
             <div className="ai-gen-text">
               <strong>{t('home.coffeebreakTitle')}</strong>
@@ -684,7 +707,7 @@ function App() {
           </div>
 
           {/* Fermi estimation entry */}
-          <div className="ai-gen-card" onClick={() => setScreen({ type: 'fermi' })}>
+          <div className="ai-gen-card" onClick={() => navigateTo({ type: 'fermi' })}>
             <div className="ai-gen-icon">🔢</div>
             <div className="ai-gen-text">
               <strong>{t('home.fermiTitle')}</strong>
@@ -729,7 +752,7 @@ function App() {
           {(() => {
             const fc = getCardStats()
             return (
-              <div className="flashcard-banner lesson-tab-fc" onClick={() => setScreen({ type: 'flashcards' })}>
+              <div className="flashcard-banner lesson-tab-fc" onClick={() => navigateTo({ type: 'flashcards' })}>
                 <div className="flashcard-banner-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="14" height="18" rx="2" /><path d="M8 4V2" /><path d="M22 8v12a2 2 0 0 1-2 2" /><path d="M18 2v2" /><rect x="8" y="2" width="14" height="18" rx="2" opacity="0.3" /></svg></div>
                 <div className="flashcard-banner-text">
                   <strong>フラッシュカード</strong>
@@ -789,11 +812,11 @@ function App() {
       )}
 
       {tab === 'profile' && <Profile
-        onFeedback={() => setScreen({ type: 'feedback' })}
-        onPricing={() => setScreen({ type: 'pricing' })}
-        onDeviation={() => setScreen({ type: 'deviation' })}
-        onTheme={() => setScreen({ type: 'theme' })}
-        onRanking={() => setScreen({ type: 'ranking' })}
+        onFeedback={() => navigateTo({ type: 'feedback' })}
+        onPricing={() => navigateTo({ type: 'pricing' })}
+        onDeviation={() => navigateTo({ type: 'deviation' })}
+        onTheme={() => navigateTo({ type: 'theme' })}
+        onRanking={() => navigateTo({ type: 'ranking' })}
       />}
 
       {/* Bottom Navigation */}
