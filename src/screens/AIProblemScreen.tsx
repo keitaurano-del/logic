@@ -18,6 +18,7 @@ export function AIProblemScreen({ problem, onBack, onReport }: AIProblemScreenPr
   const [selected, setSelected] = useState<number | null>(null)
   const [correctCount, setCorrectCount] = useState(0)
   const [finished, setFinished] = useState(false)
+  const [thinkingNote, setThinkingNote] = useState('')
 
   const steps = problem.steps || []
   const step = steps[stepIdx]
@@ -140,8 +141,30 @@ export function AIProblemScreen({ problem, onBack, onReport }: AIProblemScreenPr
           })}
         </div>
       ) : (
-        <div className="card" style={{ marginTop: 'var(--s-3)', fontSize: 14, lineHeight: 1.7, whiteSpace: 'pre-wrap', color: 'var(--text-muted)' }}>
-          {step.type === 'explain' ? step.content : '回答を入力してください。'}
+        <div style={{ marginTop: 'var(--s-3)' }}>
+          <div className="card" style={{ fontSize: 14, lineHeight: 1.7, whiteSpace: 'pre-wrap', color: 'var(--text-muted)', marginBottom: 12 }}>
+            {step.type === 'explain' ? step.content : '解説を読んでください。'}
+          </div>
+          {/* SCRUM-82: 思考プロセス入力ボックス */}
+          <div style={{ marginTop: 12 }}>
+            <label style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: 6 }}>
+              自分の言葉でまとめてみよう（任意）
+            </label>
+            <textarea
+              value={thinkingNote}
+              onChange={(e) => setThinkingNote(e.target.value)}
+              placeholder="理解したことや気づいたことをメモ..."
+              rows={3}
+              style={{
+                width: '100%', padding: '12px 14px',
+                fontSize: 14, fontFamily: 'inherit',
+                border: '1.5px solid var(--border)',
+                borderRadius: 12, background: 'var(--bg-card)',
+                color: 'var(--text)', outline: 'none', resize: 'vertical',
+                boxSizing: 'border-box',
+              }}
+            />
+          </div>
         </div>
       )}
 
