@@ -24,7 +24,7 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
   const placement = loadPlacementResult()
   const deviation = placement?.deviation ?? null
   const topPct = deviation != null ? deviationToTopPercent(deviation) : null
-  const score = Math.round(deviation * 0.6 + Math.log10(points + 1) * 15)
+  const score = Math.round((deviation ?? 50) * 0.6 + Math.log10(points + 1) * 15)
   const completed = hasCompletedPlacement() && (placement?.totalCount ?? 0) > 0
 
   // 今週の曜日計算

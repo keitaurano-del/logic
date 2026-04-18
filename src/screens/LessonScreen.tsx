@@ -236,9 +236,8 @@ function ExplainStep({ step, catLabel, accent, isLast, onNext }: {
                 lineHeight: 1.75,
                 color: isBullet ? (isArrow ? '#3B5BDB' : '#3A4259') : '#3A4259',
                 fontWeight: isBullet ? 500 : 400,
-                paddingLeft: isBullet ? 4 : 0,
-                borderLeft: isArrow ? `3px solid ${accent}` : 'none',
                 paddingLeft: isArrow ? 10 : isBullet ? 4 : 0,
+                borderLeft: isArrow ? `3px solid ${accent}` : 'none',
               } as React.CSSProperties}
             >
               {para}
