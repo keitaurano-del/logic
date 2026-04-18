@@ -1631,8 +1631,8 @@ app.post('/api/admin/grant-premium', async (req, res) => {
 app.post('/api/feedback', makeLimiter({ windowMs: 60*1000, max: 5 }), async (req, res) => {
   try {
     const { category = 'その他', message = '', locale } = req.body || {}
-    if (!message || message.trim().length < 5) {
-      return res.status(400).json({ error: 'message is required' })
+    if (!message || message.trim().length === 0) {
+      return res.status(400).json({ error: '内容を入力してください' })
     }
     const isEn = locale === 'en'
 
