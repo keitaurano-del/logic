@@ -858,7 +858,15 @@ Rules:
 const distPath = path.resolve(__dirname, '..', 'dist')
 app.use(express.static(distPath))
 
-// Web UI はアプリ専用のため、それ以外のルートは Play Store 誘導ページを返す
+// Web UI — / と /auth/callback は SPA の index.html を返す
+app.get('/', (_req, res) => {
+  res.sendFile(path.join(distPath, 'index.html'))
+})
+app.get('/auth/callback', (_req, res) => {
+  res.sendFile(path.join(distPath, 'index.html'))
+})
+
+// それ以外のルートは Play Store 誘導ページを返す
 const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.keitaurano.logic'
 app.get('/{*splat}', (_req, res) => {
   res.send(`<!DOCTYPE html>
