@@ -309,7 +309,6 @@ function AppV3() {
       )}
       {screen.type === 'login' && (
         <LoginScreen
-          onBack={() => setScreen({ type: 'settings' })}
           onLoginSuccess={(user) => { setCurrentUser(user); setScreen({ type: 'settings' }) }}
         />
       )}

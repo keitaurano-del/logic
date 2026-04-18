@@ -323,6 +323,12 @@ const STRINGS: Record<Locale, Strings> = {
     'auth.invalidEmail': 'メールアドレスの形式が正しくありません',
     'auth.genericError': 'ログインに失敗しました',
     'auth.orDivider': 'または',
+    'auth.tagline': '論理的思考を、毎日の習慣に',
+    'auth.welcomeTitle': 'ようこそ',
+    'auth.welcomeDesc': 'Googleアカウントでかんたんにログインできます',
+    'auth.googleBtn': 'Googleでログイン',
+    'auth.loggingIn': 'ログイン中...',
+    'auth.termsNote': 'ログインすることで、利用規約とプライバシーポリシーに同意したものとみなされます',
 
     // Ranking
     'ranking.title': '偏差値ランキング',
@@ -741,6 +747,12 @@ const STRINGS: Record<Locale, Strings> = {
     'auth.invalidEmail': 'Invalid email address',
     'auth.genericError': 'Login failed',
     'auth.orDivider': 'or',
+    'auth.tagline': 'Train logical thinking, every day',
+    'auth.welcomeTitle': 'Welcome',
+    'auth.welcomeDesc': 'Sign in easily with your Google account',
+    'auth.googleBtn': 'Continue with Google',
+    'auth.loggingIn': 'Signing in...',
+    'auth.termsNote': 'By signing in, you agree to our Terms of Service and Privacy Policy',
 
     // Ranking
     'ranking.title': 'Score Ranking',
