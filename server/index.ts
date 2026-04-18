@@ -755,35 +755,41 @@ app.post('/api/generate-problems', generateProblemsLimiter, async (req, res) => 
     }
     const isEn = locale === 'en'
 
-    const systemPromptJa = `あなたは簿記・会計・ビジネス学習問題の作成プロフェッショナルです。
-ユーザーのリクエストに基づいて、4択クイズ問題を作成します。
+    const systemPromptJa = `あなたはビジネス思考・ロジカルシンキング・フェルミ推定の学習問題作成のプロフェッショナルです。
+ユーザーのリクエストに基づいて、実践的な4択クイズ問題を作成します。
 
 必ず以下のJSON形式のみで返してください。他のテキストは一切含めないでください:
 
 {
   "title": "問題セットのタイトル（30文字以内）",
-  "category": "カテゴリー（例: 簿記2級）",
+  "category": "カテゴリー（例: ロジカルシンキング）",
   "steps": [
     {
+      "type": "explain",
+      "title": "概念の確認",
+      "content": "この問題セットで扱う概念や考え方の要点（150文字程度）"
+    },
+    {
       "type": "quiz",
-      "question": "問題文",
+      "question": "問題文（具体的な場面・状況を設定した問題）",
       "options": [
         { "label": "選択肢1", "correct": false },
         { "label": "選択肢2", "correct": true },
         { "label": "選択肢3", "correct": false },
         { "label": "選択肢4", "correct": false }
       ],
-      "explanation": "なぜこの答えが正しいかの解説（100文字程度）"
+      "explanation": "なぜこの答えが正しいかの解説（100文字程度）。他の選択肢が違う理由も含める。"
     }
   ]
 }
 
 ルール:
-- 各問題は必ず4つの選択肢を持つ
+- 最初のステップは必ずexplainで概念を整理する
+- 各クイズは必ず4つの選択肢を持つ
 - 正解は1つだけ
-- 解説は教育的で、なぜ他の選択肢が違うかも触れる
+- 問題は日常・ビジネスの具体的な場面で考えさせる（抽象的な定義問題は避ける）
+- 解説は「なぜ他が違うか」まで丁寧に説明する
 - ユーザーが指定した数だけ問題を作る（指定がなければ3問）
-- 専門用語は正確に
 - 日本語で出力`
 
     const systemPromptEn = `You are a professional question writer for business and logical-thinking practice.

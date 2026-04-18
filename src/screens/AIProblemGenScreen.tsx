@@ -13,10 +13,11 @@ interface AIProblemGenScreenProps {
 }
 
 const SAMPLE_PROMPTS = [
-  'MECEを使ったロジカルシンキング問題を3問',
-  'フェルミ推定の練習問題を2問（日常レベル）',
-  'ケース面接のフレームワーク問題を2問',
-  '演繹法・帰納法の論理問題を3問',
+  '日常生活でMECEを使う練習問題を3問（買い物・時間管理など）',
+  '「日本のコンビニは何店舗あるか」レベルのフェルミ推定問題を2問',
+  'So What? / Why So? を使う論理検証問題を3問',
+  'ロジックツリーでWhyとHowを使い分ける問題を2問',
+  '仮説思考を鍛える問題を3問（ビジネス場面で）',
 ]
 
 export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenScreenProps) {
