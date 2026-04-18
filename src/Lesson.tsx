@@ -141,6 +141,11 @@ export default function Lesson({ lesson, onBack, onComplete, onNextLesson }: Pro
   if (finished) {
     const isPerfect = correctCount === quizCount
     const isGood = correctCount >= quizCount * 0.7
+    const scorePct = quizCount > 0 ? (correctCount / quizCount) * 100 : 0
+    // SVG ring params
+    const R = 54
+    const C = 2 * Math.PI * R
+    const dash = (scorePct / 100) * C
     return (
       <div className="lesson-screen">
         <header className="ls-header">
@@ -149,17 +154,28 @@ export default function Lesson({ lesson, onBack, onComplete, onNextLesson }: Pro
           <div />
         </header>
         <div className="ls-complete">
-          <div className="ls-complete-emoji">
-            {isPerfect ? '🏆' : isGood ? '⭐' : '💪'}
+          {/* Score ring */}
+          <div className="ls-score-ring-wrap">
+            <svg className="ls-score-ring" width="128" height="128" viewBox="0 0 128 128">
+              <circle cx="64" cy="64" r={R} fill="none" stroke="var(--border)" strokeWidth="8" />
+              <circle
+                cx="64" cy="64" r={R}
+                fill="none"
+                stroke={isPerfect ? 'var(--success)' : isGood ? 'var(--accent)' : 'var(--text-muted)'}
+                strokeWidth="8"
+                strokeLinecap="round"
+                strokeDasharray={`${dash} ${C}`}
+                strokeDashoffset={C * 0.25}
+                className="ls-score-ring-fill"
+              />
+            </svg>
+            <div className="ls-score-ring-inner">
+              <span className="ls-score-ring-num">{correctCount}<span className="ls-score-ring-total">/{quizCount}</span></span>
+              <span className="ls-score-ring-label">SCORE</span>
+            </div>
           </div>
+
           <h2>{t('lesson.completedH1')}</h2>
-          <p className="ls-score">{t('lesson.completedScoreLine', { correct: correctCount, total: quizCount })}</p>
-          <div className="ls-score-bar">
-            <div
-              className="ls-score-fill"
-              style={{ width: `${(correctCount / quizCount) * 100}%` }}
-            />
-          </div>
           <p className="ls-complete-msg">
             {isPerfect
               ? t('lesson.completedPerfect')
@@ -170,7 +186,8 @@ export default function Lesson({ lesson, onBack, onComplete, onNextLesson }: Pro
           <div className="ls-complete-actions">
             {onNextLesson && (
               <button className="ls-next-lesson-btn" onClick={onNextLesson}>
-                {t('lesson.nextLesson')} →
+                {t('lesson.nextLesson')}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               </button>
             )}
             <button className="ls-done-btn" onClick={onBack}>
@@ -248,7 +265,10 @@ export default function Lesson({ lesson, onBack, onComplete, onNextLesson }: Pro
               <div className={`ls-feedback ${step.options[selectedOption!].correct ? 'correct' : 'wrong'}`}>
                 <div className="ls-feedback-header">
                   <span className="ls-feedback-icon">
-                    {step.options[selectedOption!].correct ? '✓' : '✕'}
+                    {step.options[selectedOption!].correct
+                      ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                      : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    }
                   </span>
                   <p className="ls-feedback-title">
                     {step.options[selectedOption!].correct ? t('lesson.correctMark') : t('lesson.wrongMark')}
