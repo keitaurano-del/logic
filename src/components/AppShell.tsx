@@ -1,19 +1,51 @@
 import type { ReactNode } from 'react'
-import { BookIcon, BrandMark, HomeIcon, UserIcon } from '../icons'
 import { t } from '../i18n'
 
-export type Tab = 'home' | 'lessons' | 'profile'
+export type Tab = 'home' | 'lessons' | 'stats' | 'profile'
 
 export interface TabDef {
   id: Tab
   label: string
-  icon: ReactNode
+  icon: (active: boolean) => ReactNode
 }
 
 const TABS: TabDef[] = [
-  { id: 'home',    label: t('nav.home'),    icon: <HomeIcon /> },
-  { id: 'lessons', label: t('nav.lessons'), icon: <BookIcon /> },
-  { id: 'profile', label: t('nav.profile'), icon: <UserIcon /> },
+  {
+    id: 'home',
+    label: 'ホーム',
+    icon: (active) => (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? '#3B5BDB' : '#B8BFD0'}>
+        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+      </svg>
+    ),
+  },
+  {
+    id: 'lessons',
+    label: 'レッスン',
+    icon: (active) => (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? '#3B5BDB' : '#B8BFD0'}>
+        <path d="M6.5 2A2.5 2.5 0 0 0 4 4.5v15A2.5 2.5 0 0 0 6.5 22H20V2H6.5zm0 18A.5.5 0 0 1 6 19.5V17h14v3H6.5zM6 15V4h12v11H6z"/>
+      </svg>
+    ),
+  },
+  {
+    id: 'stats',
+    label: '統計',
+    icon: (active) => (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? '#3B5BDB' : '#B8BFD0'}>
+        <path d="M4 20h2V10H4v10zm5 0h2V4H9v16zm5 0h2V8h-2v12zm5 0h2v-6h-2v6z"/>
+      </svg>
+    ),
+  },
+  {
+    id: 'profile',
+    label: 'プロフィール',
+    icon: (active) => (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? '#3B5BDB' : '#B8BFD0'}>
+        <path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-5.33 0-8 2.67-8 4v2h16v-2c0-1.33-2.67-4-8-4z"/>
+      </svg>
+    ),
+  },
 ]
 
 interface AppShellProps {
@@ -22,61 +54,53 @@ interface AppShellProps {
   userName?: string
   userLevel?: string
   children: ReactNode
+  hideTabBar?: boolean
 }
 
 export function AppShell({
   activeTab,
   onTabChange,
-  userName = 'Guest',
-  userLevel = 'Lv.1',
   children,
+  hideTabBar = false,
 }: AppShellProps) {
+  void t // keep import
   return (
-    <div className="app-shell">
-      <aside className="sidebar">
-        <div className="sidebar-brand">
-          <div className="sidebar-brand-mark">
-            <BrandMark />
-          </div>
-          Logic
-        </div>
-        <nav className="sidebar-nav">
-          {TABS.map((t) => (
-            <button
-              key={t.id}
-              className={`sidebar-nav-item${activeTab === t.id ? ' active' : ''}`}
-              onClick={() => onTabChange(t.id)}
-            >
-              {t.icon}
-              <span>{t.label}</span>
-            </button>
-          ))}
-        </nav>
-        <div className="sidebar-footer">
-          <div className="sidebar-avatar"><UserIcon width={18} height={18} /></div>
-          <div>
-            <div className="sidebar-user-name">{userName}</div>
-            <div className="sidebar-user-meta">{userLevel}</div>
-          </div>
-        </div>
-      </aside>
+    <div style={{ position: 'relative', minHeight: '100dvh', background: '#F0F4FF', display: 'flex', flexDirection: 'column' }}>
+      {/* コンテンツエリア */}
+      <div style={{ flex: 1, paddingBottom: hideTabBar ? 0 : 82, overflowY: 'auto' }}>
+        {children}
+      </div>
 
-      <main className="main">
-        <div className="main-inner">{children}</div>
-      </main>
-
-      <nav className="tabbar">
-        {TABS.map((t) => (
-          <button
-            key={t.id}
-            className={`tab${activeTab === t.id ? ' active' : ''}`}
-            onClick={() => onTabChange(t.id)}
-          >
-            {t.icon}
-            {t.label}
-          </button>
-        ))}
-      </nav>
+      {/* タブバー */}
+      {!hideTabBar && (
+        <div style={{
+          position: 'fixed', bottom: 0, left: 0, right: 0,
+          height: 82,
+          background: 'rgba(240,244,255,.97)',
+          backdropFilter: 'blur(20px)',
+          borderTop: '1px solid #E2E8FF',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-around',
+          padding: '0 8px 16px',
+          zIndex: 100,
+        }}>
+          {TABS.map((tab) => {
+            const active = activeTab === tab.id
+            return (
+              <button
+                key={tab.id}
+                onClick={() => onTabChange(tab.id)}
+                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '8px 14px', background: 'none', border: 'none', cursor: 'pointer', minWidth: 60 }}
+              >
+                {tab.icon(active)}
+                <div style={{ fontSize: 10, fontWeight: 600, color: active ? '#3B5BDB' : '#7A849E' }}>{tab.label}</div>
+                {active && <div style={{ width: 4, height: 4, borderRadius: '50%', background: '#3B5BDB', marginTop: -2 }} />}
+              </button>
+            )
+          })}
+        </div>
+      )}
     </div>
   )
 }

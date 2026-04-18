@@ -41,6 +41,7 @@ const ONBOARDED_KEY = 'logic-onboarded'
 type Screen =
   | { type: 'home' }
   | { type: 'lessons' }
+  | { type: 'stats' }
   | { type: 'roadmap' }
   | { type: 'profile' }
   | { type: 'lesson'; lessonId: number }
@@ -112,7 +113,8 @@ function AppV3() {
 
   const handleTabChange = (next: Tab) => {
     setTab(next)
-    setScreen({ type: next })
+    if (next === 'stats') setScreen({ type: 'stats' })
+    else setScreen({ type: next })
   }
 
   const handleOpenLesson = (lessonId: number) => {
@@ -172,6 +174,11 @@ function AppV3() {
           onOpenAIGen={() => setScreen({ type: 'ai-problem-gen' })}
           onOpenPricing={() => setScreen({ type: 'pricing' })}
           onOpenFeedback={() => setScreen({ type: 'feedback' })}
+          onOpenStats={() => { setTab('stats'); setScreen({ type: 'stats' }) }}
+          onOpenProfile={() => { setTab('profile'); setScreen({ type: 'profile' }) }}
+          onOpenRoadmap={() => { setTab('lessons'); setScreen({ type: 'lessons' }) }}
+          onOpenAIProblemGen={() => setScreen({ type: 'ai-problem-gen' })}
+          onNavigateToDailyFermi={() => setScreen({ type: 'daily-fermi' })}
         />
       )}
 
@@ -215,6 +222,13 @@ function AppV3() {
         />
       )}
 
+      {screen.type === 'stats' && (
+        <RankingScreen
+          onBack={handleBack}
+          onTakeTest={() => setScreen({ type: 'placement-test' })}
+        />
+      )}
+
       {screen.type === 'ranking' && (
         <RankingScreen
           onBack={handleBack}
@@ -254,6 +268,8 @@ function AppV3() {
           onOpenStudyTime={() => setScreen({ type: 'study-time' })}
           onOpenRank={() => setScreen({ type: 'rank' })}
           onOpenRanking={() => setScreen({ type: 'ranking' })}
+          onOpenFeedback={() => setScreen({ type: 'feedback' })}
+          onOpenPricing={() => setScreen({ type: 'pricing' })}
         />
       )}
       {screen.type === 'rank' && <RankScreen onBack={handleBack} />}

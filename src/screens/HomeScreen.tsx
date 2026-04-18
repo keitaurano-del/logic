@@ -116,8 +116,6 @@ function HomeMobile({
   onOpenAIGen,
   onNavigateToDailyFermi,
   onOpenRoadmap,
-  onOpenStats,
-  onOpenProfile,
   onOpenAIProblemGen,
   data,
 }: HomeScreenProps & { data: DerivedData; levelTitle: string }) {
@@ -167,7 +165,7 @@ function HomeMobile({
   const score = Math.round((deviation ?? 50) * 0.6 + Math.log10(points + 1) * 15)
 
   return (
-    <div style={{ position: 'relative', minHeight: '100vh', background: '#F0F4FF', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ background: '#F0F4FF' }}>
 
       {/* ── ナビバー ── */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 20px 12px', background: 'rgba(240,244,255,.95)', borderBottom: '1px solid #E2E8FF' }}>
@@ -314,27 +312,6 @@ function HomeMobile({
           </div>
         </div>
 
-      </div>
-
-      {/* ── タブバー ── */}
-      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 82, background: 'rgba(240,244,255,.97)', backdropFilter: 'blur(20px)', borderTop: '1px solid #E2E8FF', display: 'flex', alignItems: 'center', justifyContent: 'space-around', padding: '0 8px 16px' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '8px 14px' }}>
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="#3B5BDB"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-          <div style={{ fontSize: 10, fontWeight: 600, color: '#3B5BDB' }}>ホーム</div>
-          <div style={{ width: 4, height: 4, borderRadius: '50%', background: '#3B5BDB', marginTop: -2 }} />
-        </div>
-        <div onClick={() => onOpenRoadmap && onOpenRoadmap()} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '8px 14px', cursor: 'pointer' }}>
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="#B8BFD0"><path d="M6.5 2A2.5 2.5 0 0 0 4 4.5v15A2.5 2.5 0 0 0 6.5 22H20V2H6.5zm0 18A.5.5 0 0 1 6 19.5V17h14v3H6.5zM6 15V4h12v11H6z"/></svg>
-          <div style={{ fontSize: 10, fontWeight: 600, color: '#7A849E' }}>レッスン</div>
-        </div>
-        <div onClick={() => onOpenStats && onOpenStats()} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '8px 14px', cursor: 'pointer' }}>
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="#B8BFD0"><path d="M4 20h2V10H4v10zm5 0h2V4H9v16zm5 0h2V8h-2v12zm5 0h2v-6h-2v6z"/></svg>
-          <div style={{ fontSize: 10, fontWeight: 600, color: '#7A849E' }}>統計</div>
-        </div>
-        <div onClick={() => onOpenProfile && onOpenProfile()} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '8px 14px', cursor: 'pointer' }}>
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="#B8BFD0"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-5.33 0-8 2.67-8 4v2h16v-2c0-1.33-2.67-4-8-4z"/></svg>
-          <div style={{ fontSize: 10, fontWeight: 600, color: '#7A849E' }}>プロフィール</div>
-        </div>
       </div>
 
     </div>
