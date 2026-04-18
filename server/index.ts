@@ -1552,24 +1552,24 @@ app.get('/api/daily-fermi', async (req, res) => {
       ? 'Generate exactly one Fermi estimation problem in English for today. Pick something from everyday Western/global business or society that is good for decomposition practice. Return only the question on a single line — no preface, no explanation.'
       : 'フェルミ推定の問題を 1 問だけ日本語で生成してください。日常的な日本の社会・経済に関する問いで、分解思考の練習に適したものを出してください。問題文のみを 1 行で返してください。前置きや説明は不要です。'
 
-    const hintPrompt = isEn
-      ? 'Now provide a single short hint (1-2 sentences) for decomposing this Fermi estimation problem. No preface.'
-      : '今生成したフェルミ推定問題の分解ヒントを1〜2文で教えてください。前置き不要。'
-
-    const [questionRes, hintRes] = await Promise.all([
-      client.messages.create({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 200,
-        messages: [{ role: 'user', content: userPrompt }],
-      }),
-      client.messages.create({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 200,
-        messages: [{ role: 'user', content: hintPrompt }],
-      }),
-    ])
-
+    // まず問題を生成し、それを使ってヒントを生成（問題文をコンテキストとして渡す）
+    const questionRes = await client.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 200,
+      messages: [{ role: 'user', content: userPrompt }],
+    })
     const question = questionRes.content[0].type === 'text' ? questionRes.content[0].text.trim() : ''
+
+    const hintPrompt = isEn
+      ? `The following is a Fermi estimation problem: "${question}"\n\nProvide a single short hint (1-2 sentences) explaining how to decompose this specific problem. Be concrete and specific to the question. No preface.`
+      : `次のフェルミ推定問題に対する分解ヒントを1〜2文で端的に教えてください。問題に固有の具体的な内容を含め、前置き不要です。\n\n問題：「${question}」`
+
+    const hintRes = await client.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 200,
+      messages: [{ role: 'user', content: hintPrompt }],
+    })
+
     const hint = hintRes.content[0].type === 'text' ? hintRes.content[0].text.trim() : ''
 
     // Supabase に保存 (service role key 使用)

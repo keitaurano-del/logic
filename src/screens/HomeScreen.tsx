@@ -44,8 +44,8 @@ type Category = {
 }
 
 const ALL_CATEGORIES: (Category & { adminOnly?: boolean })[] = [
-  { id: 'fermi', icon: <BarChartIcon width={22} height={22} />,  name: t('home.category.fermi'), lessonIds: [22, 23, 24, 25] },
-  { id: 'logic', icon: <BrainIcon width={22} height={22} />,     name: t('home.category.logic'), lessonIds: [20, 21, 26, 27] },
+  { id: 'fermi', icon: <BarChartIcon width={22} height={22} />,  name: t('home.category.fermi'), lessonIds: [25, 26, 27, 24] }, // 演繹法/帰納法/形式論理/ケーススタディ
+  { id: 'logic', icon: <BrainIcon width={22} height={22} />,     name: t('home.category.logic'), lessonIds: [20, 21, 22, 23] }, // MECE/ロジックツリー/SoWhat/ピラミッド
   { id: 'case',  icon: <BriefcaseIcon width={22} height={22} />, name: t('home.category.case'),  lessonIds: [28, 29, 35, 36] },
 ]
 
@@ -143,7 +143,7 @@ function HomeMobile({
     {
       id: 'fermi' as const,
       name: 'フェルミ推定',
-      lessonIds: [22, 23, 24, 25],
+      lessonIds: [25, 26, 27, 24],
       firstId: 22,
       iconBg: '#EEF2FF',
       iconBorder: '#DBE4FF',
@@ -154,7 +154,7 @@ function HomeMobile({
     {
       id: 'logic' as const,
       name: 'ロジカルシンキング',
-      lessonIds: [20, 21, 26, 27],
+      lessonIds: [20, 21, 22, 23],
       firstId: 20,
       iconBg: '#EEF2FF',
       iconBorder: '#DBE4FF',
