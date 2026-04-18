@@ -79,8 +79,7 @@ export function RoadmapScreen({ onOpenLesson }: RoadmapScreenProps) {
     <div style={{ padding: '0 0 80px' }}>
       {/* ページヘッダー */}
       <div style={{ padding: '20px 16px 4px' }}>
-        <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: ACCENT, marginBottom: 4 }}>LEARN</div>
-        <h1 style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 24, fontWeight: 900, color: '#0F1523', letterSpacing: '-.03em', margin: 0 }}>学習パス</h1>
+        <h1 style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 24, fontWeight: 900, color: ACCENT, letterSpacing: '-.03em', margin: 0 }}>学習パス</h1>
         <p style={{ fontSize: 13, color: '#7A849E', marginTop: 4 }}>順番に進めると体系的に身につきます</p>
       </div>
 
