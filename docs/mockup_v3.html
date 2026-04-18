@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logic — UI Mockup v3 (Speak-inspired)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Inter+Tight:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:       #0A0E1A;
+  --ink-sub:   #3D4560;
+  --ink-muted: #8892AA;
+  --ink-faint: #C4CBDC;
+  --surface-0: #FFFFFF;
+  --surface-1: #F5F6FA;
+  --surface-2: #ECEEF5;
+  --brand:     #4059C8;
+  --brand-dim: #EEF1FB;
+  --brand-mid: #7A90E0;
+  --success:   #0EA66A;
+  --success-dim:#E6F8F1;
+  --warn:      #E07B20;
+  --warn-dim:  #FEF3E6;
+  --danger:    #D63A3A;
+  --r-sm: 8px; --r: 14px; --r-lg: 20px; --r-xl: 28px;
+  --sh: 0 1px 3px rgba(10,14,26,0.07), 0 4px 12px rgba(10,14,26,0.05);
+  --sh-md: 0 4px 20px rgba(10,14,26,0.10);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family:'Inter','Hiragino Sans','Meiryo',sans-serif;
+  background:#DDE1EC;
+  display:flex; flex-wrap:wrap; gap:28px;
+  padding:36px 28px; justify-content:center; align-items:flex-start;
+  min-height:100vh;
+}
+.col{display:flex;flex-direction:column;align-items:center;gap:12px;}
+.col-label{
+  font-family:'Inter Tight',sans-serif; font-size:11px; font-weight:700;
+  letter-spacing:.12em; text-transform:uppercase; color:#7A85A0;
+}
+
+/* ── Phone ── */
+.phone{
+  width:375px; background:var(--surface-1);
+  border-radius:44px; overflow:hidden;
+  box-shadow:0 28px 80px rgba(0,0,0,.20), 0 0 0 1px rgba(0,0,0,.06);
+  position:relative;
+}
+
+/* ── Status bar ── */
+.sb{
+  height:44px; background:var(--surface-1);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 28px; font-size:13px;font-weight:600;color:var(--ink);
+}
+.sb-r{display:flex;align-items:center;gap:5px;}
+.sb-r svg{width:16px;height:16px;fill:none;stroke:var(--ink);stroke-width:1.8;}
+
+/* ── Top Nav ── */
+.nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 20px 14px;
+  background:rgba(245,246,250,.92);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--surface-2);
+}
+.logo{
+  font-family:'Inter Tight',sans-serif; font-size:22px; font-weight:900;
+  color:var(--brand); letter-spacing:-.04em;
+}
+.nav-right{display:flex;align-items:center;gap:10px;}
+.streak-pill{
+  display:flex;align-items:center;gap:5px;
+  background:var(--warn-dim); border-radius:99px; padding:5px 12px;
+}
+.streak-pill svg{width:14px;height:14px;}
+.streak-pill span{font-size:13px;font-weight:700;color:var(--warn);}
+.avatar{
+  width:32px;height:32px;border-radius:99px;
+  background:linear-gradient(135deg,#4059C8,#7C3AED);
+}
+
+/* ── Scroll ── */
+.scr{padding:18px 16px 96px;display:flex;flex-direction:column;gap:14px;overflow:hidden;}
+
+/* ── Hero card ── */
+.hero{
+  border-radius:var(--r-xl);
+  padding:22px 20px;
+  position:relative; overflow:hidden;
+}
+.hero.pending{background:linear-gradient(148deg,#1A2456 0%,#2C1560 100%);}
+.hero.done{background:linear-gradient(148deg,#053D2A 0%,#065F46 100%);}
+.hero::after{
+  content:'';position:absolute;top:-60px;right:-60px;
+  width:220px;height:220px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.07) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hero-label{
+  font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(255,255,255,.45); margin-bottom:10px;
+  display:flex;align-items:center;gap:7px;
+}
+.hero-dot{width:5px;height:5px;border-radius:50%;background:#F59E0B;}
+.hero-q{
+  font-family:'Inter Tight',sans-serif;
+  font-size:18px;font-weight:800;color:#fff;line-height:1.4;
+  margin-bottom:4px; letter-spacing:-.02em;
+}
+.hero-meta{font-size:12px;color:rgba(255,255,255,.45);margin-bottom:18px;}
+.hero-timer{display:flex;align-items:center;gap:8px;margin-bottom:16px;}
+.hero-bar{flex:1;height:2px;background:rgba(255,255,255,.15);border-radius:99px;overflow:hidden;}
+.hero-fill{height:100%;width:58%;background:rgba(255,255,255,.5);border-radius:99px;}
+.hero-time{font-size:11px;font-weight:600;color:rgba(255,255,255,.4);white-space:nowrap;}
+.hero-cta{
+  width:100%;background:rgba(255,255,255,.12);
+  border:1.5px solid rgba(255,255,255,.2);
+  border-radius:var(--r); padding:14px;
+  font-size:15px;font-weight:700;color:#fff;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  font-family:'Inter',sans-serif;
+}
+.hero-done-check{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,.12);border-radius:99px;
+  padding:5px 12px; font-size:12px;font-weight:700;color:#fff;
+  margin-bottom:10px;
+}
+.hero-done-score{font-size:13px;color:rgba(255,255,255,.6);line-height:1.7;}
+.hero-done-score strong{color:#fff;}
+.hero-tomorrow{font-size:11px;color:rgba(255,255,255,.35);margin-top:12px;}
+
+/* ── Stats row ── */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.stat{
+  background:var(--surface-0);border:1px solid var(--surface-2);
+  border-radius:var(--r);padding:13px 10px;text-align:center;
+  box-shadow:var(--sh);
+}
+.stat-v{
+  font-family:'Inter Tight',sans-serif;font-size:26px;font-weight:900;
+  letter-spacing:-.04em;line-height:1;
+}
+.stat-v.fire{color:var(--warn);}
+.stat-v.pts{color:var(--brand);}
+.stat-v.dev{color:var(--ink);}
+.stat-l{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);margin-top:4px;}
+
+/* ── Week strip ── */
+.week{background:var(--surface-0);border:1px solid var(--surface-2);border-radius:var(--r);padding:14px 16px;box-shadow:var(--sh);}
+.week-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.sec-title{font-family:'Inter Tight',sans-serif;font-size:14px;font-weight:800;letter-spacing:-.02em;color:var(--ink);}
+.sec-link{font-size:12px;font-weight:600;color:var(--brand);}
+.days{display:flex;justify-content:space-between;}
+.day{display:flex;flex-direction:column;align-items:center;gap:5px;}
+.day-ring{
+  width:34px;height:34px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+}
+.day-ring.empty{background:var(--surface-2);}
+.day-ring.done{background:var(--warn-dim);}
+.day-ring.today{background:var(--warn);box-shadow:0 2px 8px rgba(224,123,32,.4);}
+.day-ring svg{width:16px;height:16px;}
+.day-lbl{font-size:10px;font-weight:600;color:var(--ink-muted);}
+.day-lbl.today-lbl{color:var(--warn);}
+
+/* ── Paths ── */
+.path-card{
+  background:var(--surface-0);border:1px solid var(--surface-2);
+  border-radius:var(--r);padding:14px 16px;
+  display:flex;align-items:center;gap:14px;box-shadow:var(--sh);
+}
+.path-icon{
+  width:42px;height:42px;border-radius:12px;
+  background:var(--brand-dim);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.path-icon svg{width:20px;height:20px;}
+.path-icon.case-ico{background:#FEF3E6;}
+.path-body{flex:1;min-width:0;}
+.path-name{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:2px;letter-spacing:-.01em;}
+.path-sub{font-size:11px;color:var(--ink-muted);}
+.prog-wrap{margin-top:6px;}
+.prog-bar{height:3px;background:var(--surface-2);border-radius:99px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#4059C8,#7C3AED);}
+.prog-pct{font-size:10px;font-weight:700;color:var(--brand);text-align:right;margin-top:3px;}
+.path-chev{color:var(--ink-faint);}
+.path-chev svg{width:16px;height:16px;stroke:var(--ink-faint);stroke-width:2;}
+
+/* ── Practice ── */
+.prac-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.prac-card{
+  background:var(--surface-0);border:1px solid var(--surface-2);
+  border-radius:var(--r);padding:16px;box-shadow:var(--sh);
+}
+.prac-icon{
+  width:38px;height:38px;border-radius:11px;
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:10px;
+}
+.prac-icon.rp{background:var(--brand-dim);}
+.prac-icon.ai{background:#F3EEFF;}
+.prac-icon svg{width:18px;height:18px;}
+.prac-name{font-size:13px;font-weight:700;color:var(--ink);letter-spacing:-.01em;}
+.prac-sub{font-size:11px;color:var(--ink-muted);margin-top:2px;}
+.prem-tag{
+  display:inline-block;margin-top:6px;
+  font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  background:var(--brand-dim);color:var(--brand);
+  border-radius:4px;padding:2px 6px;
+}
+
+/* ── Tab bar ── */
+.tabs{
+  position:absolute;bottom:0;left:0;right:0;
+  height:82px;background:rgba(245,246,250,.96);
+  backdrop-filter:blur(20px);border-top:1px solid var(--surface-2);
+  display:flex;align-items:center;justify-content:space-around;
+  padding:0 8px 16px;
+}
+.tab{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 14px;cursor:pointer;}
+.tab svg{width:22px;height:22px;stroke-width:1.8;stroke:var(--ink-faint);fill:none;}
+.tab.on svg{stroke:var(--brand);}
+.tab-lbl{font-size:10px;font-weight:600;color:var(--ink-muted);letter-spacing:.03em;}
+.tab.on .tab-lbl{color:var(--brand);}
+.tab-dot{width:4px;height:4px;border-radius:50%;background:var(--brand);margin-top:-2px;}
+
+/* ── Lesson screen ── */
+.lesson-progress{height:3px;background:var(--surface-2);}
+.lesson-prog-fill{height:100%;background:var(--brand);transition:width .3s;}
+.question-card{
+  background:var(--surface-0);border:1px solid var(--surface-2);
+  border-radius:var(--r-lg);padding:22px;box-shadow:var(--sh);
+}
+.q-eyebrow{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--brand);margin-bottom:8px;}
+.q-text{font-family:'Inter Tight',sans-serif;font-size:18px;font-weight:800;line-height:1.45;color:var(--ink);letter-spacing:-.025em;}
+.option{
+  background:var(--surface-0);border:1.5px solid var(--surface-2);
+  border-radius:var(--r);padding:14px 16px;
+  display:flex;align-items:center;gap:12px;cursor:pointer;
+  box-shadow:var(--sh);
+}
+.option.selected{border-color:var(--brand);background:var(--brand-dim);}
+.option.correct{border-color:var(--success);background:var(--success-dim);}
+.option.wrong{border-color:var(--danger);background:#FEF2F2;}
+.opt-badge{
+  width:26px;height:26px;border-radius:50%;border:1.5px solid currentColor;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;flex-shrink:0;
+  color:var(--ink-muted);
+}
+.option.selected .opt-badge{color:var(--brand);}
+.option.correct .opt-badge{color:var(--success);background:var(--success);color:#fff;border-color:var(--success);}
+.option.wrong .opt-badge{color:var(--danger);background:var(--danger);color:#fff;border-color:var(--danger);}
+.opt-text{font-size:14px;font-weight:500;color:var(--ink);flex:1;}
+.feedback-card{
+  border-radius:var(--r-lg);padding:18px 20px;border-left:4px solid var(--success);
+  background:var(--success-dim);
+}
+.fb-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.fb-icon{
+  width:32px;height:32px;border-radius:50%;background:var(--success);
+  display:flex;align-items:center;justify-content:center;
+}
+.fb-icon svg{width:16px;height:16px;stroke:#fff;stroke-width:2.5;fill:none;}
+.fb-title{font-size:15px;font-weight:800;color:var(--ink);letter-spacing:-.01em;}
+.fb-body{font-size:13px;color:var(--ink-sub);line-height:1.65;}
+.btn-primary{
+  width:100%;background:var(--brand);border:none;border-radius:var(--r);
+  padding:16px;font-size:15px;font-weight:700;color:#fff;
+  font-family:'Inter',sans-serif;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-ghost{
+  width:100%;background:transparent;border:1.5px solid var(--surface-2);
+  border-radius:var(--r);padding:14px;font-size:14px;font-weight:600;
+  color:var(--ink-sub);font-family:'Inter',sans-serif;cursor:pointer;
+}
+
+/* ── Screen header ── */
+.scr-header{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 20px 14px;
+  background:rgba(245,246,250,.92);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--surface-2);
+}
+.back-btn{
+  width:36px;height:36px;border:1.5px solid var(--surface-2);
+  border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;
+  background:var(--surface-0);box-shadow:var(--sh);cursor:pointer;flex-shrink:0;
+}
+.back-btn svg{width:18px;height:18px;stroke:var(--ink);stroke-width:2;fill:none;}
+.scr-title{flex:1;text-align:center;font-size:13px;font-weight:700;color:var(--ink-sub);letter-spacing:.02em;}
+.scr-step{font-size:12px;font-weight:700;color:var(--ink-muted);}
+
+/* ── Stats screen ── */
+.score-hero{
+  background:linear-gradient(148deg,#1A2456 0%,#2C1560 100%);
+  border-radius:var(--r-xl);padding:24px 20px;
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;
+}
+.score-item{text-align:center;}
+.score-val{
+  font-family:'Inter Tight',sans-serif;font-size:32px;font-weight:900;
+  color:#fff;letter-spacing:-.04em;line-height:1;
+}
+.score-lbl{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-top:5px;}
+.score-divider{width:1px;background:rgba(255,255,255,.12);align-self:stretch;margin:4px 0;}
+.history-row{
+  background:var(--surface-0);border:1px solid var(--surface-2);
+  border-radius:var(--r);padding:14px 16px;
+  display:flex;align-items:center;gap:14px;box-shadow:var(--sh);
+}
+.hist-icon{
+  width:40px;height:40px;border-radius:11px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.hist-icon.f{background:var(--brand-dim);}
+.hist-icon.l{background:var(--surface-2);}
+.hist-icon svg{width:18px;height:18px;}
+.hist-body{flex:1;}
+.hist-name{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:2px;}
+.hist-date{font-size:11px;color:var(--ink-muted);}
+.hist-score{font-size:15px;font-weight:800;color:var(--success);font-family:'Inter Tight',sans-serif;}
+
+/* ── Profile screen ── */
+.prof-hero{
+  background:linear-gradient(148deg,#1A2456 0%,#2C1560 100%);
+  border-radius:var(--r-xl);padding:24px 20px;
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+}
+.prof-avatar{
+  width:64px;height:64px;border-radius:50%;
+  background:linear-gradient(135deg,#7A90E0,#7C3AED);
+  margin-bottom:12px;border:3px solid rgba(255,255,255,.2);
+}
+.prof-name{font-family:'Inter Tight',sans-serif;font-size:20px;font-weight:900;color:#fff;letter-spacing:-.02em;}
+.prof-tag{font-size:12px;color:rgba(255,255,255,.45);margin-top:4px;}
+.prof-stats{display:flex;gap:28px;margin-top:16px;}
+.ps-item{text-align:center;}
+.ps-val{font-family:'Inter Tight',sans-serif;font-size:22px;font-weight:900;color:#fff;letter-spacing:-.03em;}
+.ps-lbl{font-size:10px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.45);}
+.setting-row{
+  background:var(--surface-0);border:1px solid var(--surface-2);
+  border-radius:var(--r);padding:14px 16px;
+  display:flex;align-items:center;gap:14px;box-shadow:var(--sh);cursor:pointer;
+}
+.setting-icon{
+  width:38px;height:38px;border-radius:10px;
+  background:var(--surface-1);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.setting-icon svg{width:18px;height:18px;stroke:var(--ink-sub);stroke-width:1.8;fill:none;}
+.setting-body{flex:1;}
+.setting-name{font-size:14px;font-weight:600;color:var(--ink);}
+.setting-sub{font-size:11px;color:var(--ink-muted);margin-top:1px;}
+.setting-chev svg{width:16px;height:16px;stroke:var(--ink-faint);stroke-width:2;fill:none;}
+
+/* ── Answer feedback screen ── */
+.ans-result{
+  border-radius:var(--r-xl);padding:22px;
+  background:var(--success-dim);border:1px solid rgba(14,166,106,.15);
+}
+.ans-top{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.ans-check{
+  width:44px;height:44px;border-radius:50%;background:var(--success);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.ans-check svg{width:22px;height:22px;stroke:#fff;stroke-width:2.5;fill:none;}
+.ans-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--success);margin-bottom:2px;}
+.ans-heading{font-family:'Inter Tight',sans-serif;font-size:20px;font-weight:900;color:var(--ink);letter-spacing:-.025em;}
+.ans-body{font-size:13px;color:var(--ink-sub);line-height:1.7;}
+.global-stat{
+  background:var(--surface-0);border:1px solid var(--surface-2);
+  border-radius:var(--r);padding:16px;box-shadow:var(--sh);
+}
+.global-row{display:flex;align-items:center;justify-content:space-between;}
+.global-label{font-size:13px;font-weight:600;color:var(--ink-sub);}
+.global-val{font-family:'Inter Tight',sans-serif;font-size:20px;font-weight:900;color:var(--brand);}
+.global-bar{height:6px;background:var(--surface-2);border-radius:99px;overflow:hidden;margin-top:8px;}
+.global-bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#4059C8,#7C3AED);}
+.tomorrow-card{
+  background:var(--surface-0);border:1px solid var(--surface-2);
+  border-radius:var(--r);padding:14px 16px;
+  display:flex;align-items:center;gap:14px;box-shadow:var(--sh);
+}
+.tomorrow-icon{
+  width:40px;height:40px;border-radius:11px;background:var(--brand-dim);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.tomorrow-icon svg{width:18px;height:18px;stroke:var(--brand);stroke-width:1.8;fill:none;}
+.tomorrow-body{flex:1;}
+.tomorrow-pre{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--brand);margin-bottom:2px;}
+.tomorrow-text{font-size:13px;font-weight:700;color:var(--ink);}
+.tomorrow-time{font-size:11px;color:var(--ink-muted);margin-top:1px;}
+
+/* SVG icon helpers */
+svg.icon{fill:none;stroke-linecap:round;stroke-linejoin:round;}
+</style>
+</head>
+<body>
+
+<!-- ===== 1. HOME — 未回答 ===== -->
+<div class="col">
+<div class="col-label">Home — 未回答</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><div class="sb-r">
+    <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M1.5 8.5C5.5 4.5 18.5 4.5 22.5 8.5M5 12c2-2 12-2 14 0M9 15.5c1-1 5-1 6 0M12 19h.01"/></svg>
+    <svg viewBox="0 0 24 24"><rect x="2" y="7" width="15" height="11" rx="2"/><path d="M19 10.5v3c1.5-.5 2.5-1.3 2.5-1.5s-1-1-2.5-1.5z"/></svg>
+  </div></div>
+
+  <div class="nav">
+    <div class="logo">Logic</div>
+    <div class="nav-right">
+      <div class="streak-pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#E07B20" stroke-width="2"><path d="M12 2c0 6-6 8-6 14a6 6 0 0 0 12 0c0-6-6-8-6-14z"/></svg>
+        <span>7</span>
+      </div>
+      <div class="avatar"></div>
+    </div>
+  </div>
+
+  <div class="scr">
+    <!-- Hero -->
+    <div class="hero pending">
+      <div class="hero-label"><div class="hero-dot"></div>今日の一問</div>
+      <div class="hero-q">日本のコンビニは<br>何店舗あるか？</div>
+      <div class="hero-meta">Fermi Estimation · Level 2</div>
+      <div class="hero-timer">
+        <div class="hero-bar"><div class="hero-fill"></div></div>
+        <div class="hero-time">14h 22m left</div>
+      </div>
+      <button class="hero-cta">
+        Start Challenge
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat"><div class="stat-v fire">7</div><div class="stat-l">Streak</div></div>
+      <div class="stat"><div class="stat-v pts">420</div><div class="stat-l">Points</div></div>
+      <div class="stat"><div class="stat-v dev">68</div><div class="stat-l">Score</div></div>
+    </div>
+
+    <!-- Week -->
+    <div class="week">
+      <div class="week-head"><div class="sec-title">This week</div><div class="sec-link">Details</div></div>
+      <div class="days">
+        <div class="day"><div class="day-ring done"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E07B20" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div class="day-lbl">Mon</div></div>
+        <div class="day"><div class="day-ring done"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E07B20" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div class="day-lbl">Tue</div></div>
+        <div class="day"><div class="day-ring done"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E07B20" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div class="day-lbl">Wed</div></div>
+        <div class="day"><div class="day-ring done"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E07B20" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div class="day-lbl">Thu</div></div>
+        <div class="day"><div class="day-ring done"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E07B20" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div class="day-lbl">Fri</div></div>
+        <div class="day"><div class="day-ring done"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E07B20" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div class="day-lbl">Sat</div></div>
+        <div class="day"><div class="day-ring today"></div><div class="day-lbl today-lbl">Today</div></div>
+      </div>
+    </div>
+
+    <!-- Paths -->
+    <div>
+      <div class="week-head" style="margin-bottom:10px"><div class="sec-title">Learning paths</div><div class="sec-link">See all</div></div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="path-card">
+          <div class="path-icon">
+            <svg class="icon" width="20" height="20" viewBox="0 0 24 24" stroke="#4059C8" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
+          </div>
+          <div class="path-body">
+            <div class="path-name">Fermi Estimation</div>
+            <div class="path-sub">4 lessons</div>
+            <div class="prog-wrap"><div class="prog-bar"><div class="prog-fill" style="width:75%"></div></div><div class="prog-pct">3 / 4 complete</div></div>
+          </div>
+          <div class="path-chev"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></div>
+        </div>
+        <div class="path-card">
+          <div class="path-icon">
+            <svg class="icon" width="20" height="20" viewBox="0 0 24 24" stroke="#4059C8" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          </div>
+          <div class="path-body">
+            <div class="path-name">Logical Thinking</div>
+            <div class="path-sub">8 lessons</div>
+            <div class="prog-wrap"><div class="prog-bar"><div class="prog-fill" style="width:37%"></div></div><div class="prog-pct">3 / 8 complete</div></div>
+          </div>
+          <div class="path-chev"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></div>
+        </div>
+        <div class="path-card">
+          <div class="path-icon case-ico">
+            <svg class="icon" width="20" height="20" viewBox="0 0 24 24" stroke="#E07B20" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+          </div>
+          <div class="path-body">
+            <div class="path-name">Case Interview</div>
+            <div class="path-sub">2 lessons</div>
+            <div class="prog-wrap"><div class="prog-bar"><div class="prog-fill" style="width:0%"></div></div><div class="prog-pct" style="color:var(--ink-muted);font-weight:500;">Not started</div></div>
+          </div>
+          <div class="path-chev"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Practice -->
+    <div>
+      <div class="sec-title" style="margin-bottom:10px">Practice</div>
+      <div class="prac-grid">
+        <div class="prac-card">
+          <div class="prac-icon rp"><svg class="icon" width="18" height="18" viewBox="0 0 24 24" stroke="#4059C8" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+          <div class="prac-name">Roleplay</div>
+          <div class="prac-sub">AI conversation</div>
+        </div>
+        <div class="prac-card">
+          <div class="prac-icon ai"><svg class="icon" width="18" height="18" viewBox="0 0 24 24" stroke="#7C3AED" stroke-width="1.8"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg></div>
+          <div class="prac-name">AI Generate</div>
+          <div class="prac-sub">Custom topics</div>
+          <div class="prem-tag">Premium</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab on"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><div class="tab-lbl">Home</div><div class="tab-dot"></div></div>
+    <div class="tab"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><div class="tab-lbl">Lessons</div></div>
+    <div class="tab"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg><div class="tab-lbl">Stats</div></div>
+    <div class="tab"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><div class="tab-lbl">Profile</div></div>
+  </div>
+</div>
+</div>
+
+<!-- ===== 2. LESSON ===== -->
+<div class="col">
+<div class="col-label">Lesson — Quiz</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><div class="sb-r"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="15" height="11" rx="2"/><path d="M19 10.5v3c1.5-.5 2.5-1.3 2.5-1.5s-1-1-2.5-1.5z"/></svg></div></div>
+  <div class="scr-header">
+    <div class="back-btn"><svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div>
+    <div class="scr-title">Logical Thinking</div>
+    <div class="scr-step">2 / 6</div>
+  </div>
+  <div class="lesson-progress"><div class="lesson-prog-fill" style="width:33%"></div></div>
+
+  <div class="scr" style="padding-top:20px;">
+    <div class="question-card">
+      <div class="q-eyebrow">MECE</div>
+      <div class="q-text">スーパーの商品カテゴリを「食品・日用品・その他」に分けた。この分け方はMECEといえるか？</div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div class="option">
+        <div class="opt-badge">A</div>
+        <div class="opt-text">いえる。3つに分かれているから</div>
+      </div>
+      <div class="option correct">
+        <div class="opt-badge">B</div>
+        <div class="opt-text">いえない。「その他」が残るためダブりや漏れが生じやすい</div>
+      </div>
+      <div class="option wrong selected">
+        <div class="opt-badge">C</div>
+        <div class="opt-text">条件次第でどちらにもなりえる</div>
+      </div>
+      <div class="option">
+        <div class="opt-badge">D</div>
+        <div class="opt-text">MECEの概念は分け方の数に依存しない</div>
+      </div>
+    </div>
+
+    <div class="feedback-card">
+      <div class="fb-head">
+        <div class="fb-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="fb-title">正解は B</div>
+      </div>
+      <div class="fb-body">「その他」は「何でも入る箱」。MECEは各カテゴリが<em>相互排他的</em>かつ<em>全体網羅的</em>であることが条件です。「その他」があると全体網羅はできても相互排他が崩れます。</div>
+    </div>
+
+    <button class="btn-primary">Next <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+  </div>
+</div>
+</div>
+
+<!-- ===== 3. 今日の一問 解答後フィードバック ===== -->
+<div class="col">
+<div class="col-label">今日の一問 — 結果</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><div class="sb-r"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="15" height="11" rx="2"/><path d="M19 10.5v3c1.5-.5 2.5-1.3 2.5-1.5s-1-1-2.5-1.5z"/></svg></div></div>
+  <div class="scr-header">
+    <div class="back-btn"><svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div>
+    <div class="scr-title">今日の一問</div>
+    <div style="width:52px"></div>
+  </div>
+
+  <div class="scr" style="padding-top:20px;">
+    <div class="ans-result">
+      <div class="ans-top">
+        <div class="ans-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div>
+          <div class="ans-label">Great answer</div>
+          <div class="ans-heading">近い推定でした</div>
+        </div>
+      </div>
+      <div class="ans-body">あなたの推定 <strong>5.6万店</strong> に対して実際は約 <strong>5.5万店</strong>。分解の方向性は正確です。コンビニ1店舗あたりの商圏人口（約2,200人）を使うと精度が上がります。</div>
+    </div>
+
+    <div class="global-stat">
+      <div class="global-row">
+        <div class="global-label">今日の正答率（全ユーザー）</div>
+        <div class="global-val">34%</div>
+      </div>
+      <div style="font-size:11px;color:var(--ink-muted);margin-top:2px;">難問 — 上位 34% に入っています</div>
+      <div class="global-bar" style="margin-top:10px;"><div class="global-bar-fill" style="width:34%"></div></div>
+    </div>
+
+    <div class="tomorrow-card">
+      <div class="tomorrow-icon"><svg class="icon" viewBox="0 0 24 24" stroke="#4059C8" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+      <div class="tomorrow-body">
+        <div class="tomorrow-pre">Tomorrow</div>
+        <div class="tomorrow-text">Logical Thinking</div>
+        <div class="tomorrow-time">18:00 に公開</div>
+      </div>
+    </div>
+
+    <!-- Streak badge -->
+    <div style="background:linear-gradient(135deg,#F97316,#F59E0B);border-radius:var(--r);padding:16px 20px;display:flex;align-items:center;gap:14px;">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 2c0 6-6 8-6 14a6 6 0 0 0 12 0c0-6-6-8-6-14z"/></svg>
+      <div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.7);">Streak</div>
+        <div style="font-family:'Inter Tight',sans-serif;font-size:22px;font-weight:900;color:#fff;letter-spacing:-.03em;">8 days <span style="font-size:14px;font-weight:600;opacity:.8;">継続中</span></div>
+      </div>
+    </div>
+
+    <button class="btn-primary">ホームに戻る</button>
+    <button class="btn-ghost">関連レッスンを見る</button>
+  </div>
+</div>
+</div>
+
+<!-- ===== 4. STATS ===== -->
+<div class="col">
+<div class="col-label">Stats</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><div class="sb-r"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="15" height="11" rx="2"/><path d="M19 10.5v3c1.5-.5 2.5-1.3 2.5-1.5s-1-1-2.5-1.5z"/></svg></div></div>
+  <div class="nav"><div class="logo">Stats</div></div>
+
+  <div class="scr">
+    <div class="score-hero">
+      <div class="score-item"><div class="score-val">8</div><div class="score-lbl">Streak</div></div>
+      <div class="score-divider"></div>
+      <div class="score-item"><div class="score-val">420</div><div class="score-lbl">Points</div></div>
+      <div class="score-divider"></div>
+      <div class="score-item"><div class="score-val">68</div><div class="score-lbl">Score</div></div>
+    </div>
+
+    <div>
+      <div class="sec-title" style="margin-bottom:10px">This week</div>
+      <div class="week">
+        <div class="days">
+          <div class="day"><div class="day-ring done"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E07B20" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div class="day-lbl">Mon</div></div>
+          <div class="day"><div class="day-ring done"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E07B20" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div class="day-lbl">Tue</div></div>
+          <div class="day"><div class="day-ring done"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E07B20" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div class="day-lbl">Wed</div></div>
+          <div class="day"><div class="day-ring done"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E07B20" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div class="day-lbl">Thu</div></div>
+          <div class="day"><div class="day-ring done"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E07B20" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div class="day-lbl">Fri</div></div>
+          <div class="day"><div class="day-ring done"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E07B20" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div class="day-lbl">Sat</div></div>
+          <div class="day"><div class="day-ring today"></div><div class="day-lbl today-lbl">Today</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="sec-title" style="margin-bottom:10px">Recent activity</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="history-row">
+          <div class="hist-icon f"><svg class="icon" width="18" height="18" viewBox="0 0 24 24" stroke="#4059C8" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3"/></svg></div>
+          <div class="hist-body"><div class="hist-name">今日の一問 — フェルミ推定</div><div class="hist-date">Today, 9:32 AM</div></div>
+          <div class="hist-score">+30</div>
+        </div>
+        <div class="history-row">
+          <div class="hist-icon l"><svg class="icon" width="18" height="18" viewBox="0 0 24 24" stroke="#3D4560" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+          <div class="hist-body"><div class="hist-name">MECE入門</div><div class="hist-date">Yesterday, 8:15 PM</div></div>
+          <div class="hist-score">+20</div>
+        </div>
+        <div class="history-row">
+          <div class="hist-icon f"><svg class="icon" width="18" height="18" viewBox="0 0 24 24" stroke="#4059C8" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3"/></svg></div>
+          <div class="hist-body"><div class="hist-name">今日の一問 — ロジック</div><div class="hist-date">Apr 17, 9:10 AM</div></div>
+          <div class="hist-score">+30</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><div class="tab-lbl">Home</div></div>
+    <div class="tab"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><div class="tab-lbl">Lessons</div></div>
+    <div class="tab on"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg><div class="tab-lbl">Stats</div><div class="tab-dot"></div></div>
+    <div class="tab"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><div class="tab-lbl">Profile</div></div>
+  </div>
+</div>
+</div>
+
+<!-- ===== 5. PROFILE ===== -->
+<div class="col">
+<div class="col-label">Profile</div>
+<div class="phone">
+  <div class="sb"><span>9:41</span><div class="sb-r"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="15" height="11" rx="2"/><path d="M19 10.5v3c1.5-.5 2.5-1.3 2.5-1.5s-1-1-2.5-1.5z"/></svg></div></div>
+  <div class="nav"><div class="logo">Profile</div></div>
+
+  <div class="scr">
+    <div class="prof-hero">
+      <div class="prof-avatar"></div>
+      <div class="prof-name">Keita Urano</div>
+      <div class="prof-tag">Member since Apr 2026</div>
+      <div class="prof-stats">
+        <div class="ps-item"><div class="ps-val">24</div><div class="ps-lbl">Lessons</div></div>
+        <div class="ps-item"><div class="ps-val">8</div><div class="ps-lbl">Streak</div></div>
+        <div class="ps-item"><div class="ps-val">420</div><div class="ps-lbl">Points</div></div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div class="setting-row">
+        <div class="setting-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <div class="setting-body"><div class="setting-name">アカウント</div><div class="setting-sub">keita.urano2@gmail.com</div></div>
+        <div class="setting-chev"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-icon"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+        <div class="setting-body"><div class="setting-name">通知設定</div><div class="setting-sub">毎日 08:00</div></div>
+        <div class="setting-chev"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+        <div class="setting-body"><div class="setting-name">プラン</div><div class="setting-sub">Standard — ¥500/月</div></div>
+        <div class="setting-chev"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <div class="setting-body"><div class="setting-name">フィードバック</div><div class="setting-sub">ご意見をお聞かせください</div></div>
+        <div class="setting-chev"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></div>
+      </div>
+      <div class="setting-row" style="border-color:rgba(214,58,58,.15);">
+        <div class="setting-icon" style="background:#FEF2F2;"><svg viewBox="0 0 24 24" stroke="#D63A3A"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>
+        <div class="setting-body"><div class="setting-name" style="color:var(--danger);">ログアウト</div></div>
+        <div class="setting-chev"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><div class="tab-lbl">Home</div></div>
+    <div class="tab"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><div class="tab-lbl">Lessons</div></div>
+    <div class="tab"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg><div class="tab-lbl">Stats</div></div>
+    <div class="tab on"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><div class="tab-lbl">Profile</div><div class="tab-dot"></div></div>
+  </div>
+</div>
+</div>
+
+</body>
+</html>
