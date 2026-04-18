@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { getGuestId } from '../guestId'
 import { hasCompletedPlacement, loadPlacementResult } from '../placementData'
 import { API_BASE } from './apiBase'
-import { getStreak } from '../stats'
+import { getStreak, getStudyDates } from '../stats'
 import { getPoints, deviationToTopPercent } from './homeHelpers'
 
 
@@ -28,8 +28,21 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
   const completed = hasCompletedPlacement() && (placement?.totalCount ?? 0) > 0
 
   // 今週の曜日計算
-  const todayDow = (new Date().getDay() + 6) % 7
+  const todayDow = (new Date().getDay() + 6) % 7 // 0=月, 1=火, ..., 5=土, 6=日
   const weekDays = ['月', '火', '水', '木', '金', '土']
+
+  // 今週（月曜始まり）の各日付を生成して、studyDatesと照合
+  const studyDateSet = useMemo(() => new Set(getStudyDates()), [])
+  const thisWeekDates = useMemo(() => {
+    const today = new Date()
+    const monday = new Date(today)
+    monday.setDate(today.getDate() - todayDow)
+    return weekDays.map((_, i) => {
+      const d = new Date(monday)
+      d.setDate(monday.getDate() + i)
+      return d.toISOString().slice(0, 10) // YYYY-MM-DD
+    })
+  }, [todayDow])
 
   useEffect(() => {
     let cancelled = false
@@ -88,7 +101,7 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
           <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 14, fontWeight: 800, color: '#0F1523', letterSpacing: '-.02em', marginBottom: 12 }}>今週の記録</div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             {weekDays.map((day, i) => {
-              const isDone = i < todayDow
+              const isDone = studyDateSet.has(thisWeekDates[i])
               return (
                 <div key={day} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}>
                   <div style={{ width: 34, height: 34, borderRadius: '50%', background: isDone ? '#EEF2FF' : '#E8EEFF', border: isDone ? '1.5px solid #DBE4FF' : 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

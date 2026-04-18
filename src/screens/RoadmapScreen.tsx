@@ -20,29 +20,31 @@ interface RoadmapPath {
 
 const PATHS: RoadmapPath[] = [
   {
+    // ロジカルシンキング基礎 (id: 20-23)
     id: 'fermi',
     label: t('home.category.fermi'),
     color: 'var(--warning)',
     accentColor: '#F59E0B',
     bgColor: '#FFF7ED',
     lessons: [
-      { id: 22, title: 'フェルミ推定入門',   sub: 'フェルミ推定とは何か？概念と基本思考法' },
-      { id: 23, title: '市場規模の推定',      sub: 'TAM/SAM/SOMと規模感のつかみ方' },
-      { id: 24, title: '人数・頻度の推定',    sub: 'ストック×フロー、頻度で考える' },
-      { id: 25, title: 'セグメント分解',      sub: '対象をMECEに切り分けて精度を上げる' },
+      { id: 25, title: '演繹法',         sub: '一般原則から個別の結論を導く思考法' },
+      { id: 26, title: '帰納法',         sub: '個別事例から法則・パターンを見つける' },
+      { id: 27, title: '形式論理',       sub: '「AならばB」の論理構造を理解する' },
+      { id: 24, title: 'ケーススタディ総合演習', sub: 'フレームワークを使った実践的問題解決' },
     ],
   },
   {
+    // ロジカルシンキング (id: 20-23)
     id: 'logic',
     label: t('home.category.logic'),
     color: 'var(--primary)',
     accentColor: '#3D5FC4',
     bgColor: '#EEF2FE',
     lessons: [
-      { id: 20, title: 'MECE入門',          sub: '漏れなく・ダブりなく整理する思考法' },
-      { id: 21, title: 'ロジックツリー',     sub: '問題をツリー状に分解して原因・対策を探る' },
-      { id: 26, title: '構造化思考',         sub: '情報を整理して伝わる骨格を作る' },
-      { id: 27, title: '仮説思考',           sub: '先に仮説を立ててから検証する思考サイクル' },
+      { id: 20, title: 'MECE — 漏れなくダブりなく',    sub: '情報を正確に整理する基本フレームワーク' },
+      { id: 21, title: 'ロジックツリー',                sub: '問題をツリー状に分解して原因・対策を探る' },
+      { id: 22, title: 'So What / Why So',             sub: '「だから何？」「なぜ？」で論理を検証する' },
+      { id: 23, title: 'ピラミッド原則',               sub: '結論から先に伝える論理的な話し方' },
     ],
   },
   {
@@ -53,7 +55,7 @@ const PATHS: RoadmapPath[] = [
     bgColor: '#F0FDF4',
     lessons: [
       { id: 28, title: 'ケース面接入門',     sub: 'フレームワーク・仮説思考の実践' },
-      { id: 29, title: '新規事業ケース',     sub: '市場魅力度・参入障壁の分析' },
+      { id: 29, title: 'プロフィタビリティケース', sub: '収益性問題の構造化と分析' },
     ],
   },
   {
@@ -76,7 +78,15 @@ interface RoadmapScreenProps {
 }
 
 export function RoadmapScreen({ onOpenLesson }: RoadmapScreenProps) {
-  const completedSet = useMemo(() => new Set(getCompletedLessons()), [])
+  const completedSet = useMemo(() => {
+    const raw = getCompletedLessons() // ["lesson-22", "lesson-20", ...]
+    const set = new Set<string>()
+    raw.forEach(key => {
+      set.add(key)            // "lesson-22"
+      set.add(key.replace(/^lesson-/, '')) // "22"
+    })
+    return set
+  }, [])
 
   return (
     <div className="stack">

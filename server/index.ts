@@ -866,41 +866,6 @@ app.get('/auth/callback', (_req, res) => {
   res.sendFile(path.join(distPath, 'index.html'))
 })
 
-// それ以外のルートは Play Store 誘導ページを返す
-const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.keitaurano.logic'
-app.get('/{*splat}', (_req, res) => {
-  res.send(`<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Logic — ロジカルシンキングを毎日 3 分で</title>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      display: flex; flex-direction: column; align-items: center;
-      justify-content: center; min-height: 100vh;
-      background: #F5F1E8; color: #1C1917; text-align: center; padding: 32px 24px;
-    }
-    .logo { font-size: 3rem; font-weight: 900; letter-spacing: -0.04em; margin-bottom: 12px; }
-    .tagline { color: #78716C; font-size: 1.05rem; margin-bottom: 40px; line-height: 1.6; }
-    .btn {
-      display: inline-block; background: #D4915A; color: #fff; text-decoration: none;
-      padding: 16px 36px; border-radius: 14px; font-weight: 700; font-size: 1rem;
-    }
-    .sub { margin-top: 16px; font-size: 0.8rem; color: #A8A29E; }
-  </style>
-</head>
-<body>
-  <div class="logo">Logic</div>
-  <p class="tagline">ロジカルシンキングを毎日 3 分で。<br>哲学者たちに学ぶ、論理思考トレーニング。</p>
-  <a class="btn" href="${PLAY_STORE_URL}">Google Play でダウンロード</a>
-  <p class="sub">Android 向けアプリです</p>
-</body>
-</html>`)
-})
-
 // =============================================
 // フェルミ推定 — フィードバック生成
 // =============================================
@@ -1694,6 +1659,46 @@ app.post('/api/feedback', makeLimiter({ windowMs: 60*1000, max: 5 }), async (req
   }
 })
 
+
+// それ以外のルート（/api/* 以外）は Play Store 誘導ページを返す
+// ※ APIルートが全て定義された後に配置すること（catch-all が先に来るとAPIが塞がれる）
+const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.keitaurano.logic'
+app.get('/{*splat}', (req, res) => {
+  // /api/* へのリクエストがここに来た場合は 404 を返す（APIルート未定義の保護）
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({ error: 'API endpoint not found' })
+  }
+  res.send(`<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Logic — ロジカルシンキングを毎日 3 分で</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; min-height: 100vh;
+      background: #F5F1E8; color: #1C1917; text-align: center; padding: 32px 24px;
+    }
+    .logo { font-size: 3rem; font-weight: 900; letter-spacing: -0.04em; margin-bottom: 12px; }
+    .tagline { color: #78716C; font-size: 1.05rem; margin-bottom: 40px; line-height: 1.6; }
+    .btn {
+      display: inline-block; background: #D4915A; color: #fff; text-decoration: none;
+      padding: 16px 36px; border-radius: 14px; font-weight: 700; font-size: 1rem;
+    }
+    .sub { margin-top: 16px; font-size: 0.8rem; color: #A8A29E; }
+  </style>
+</head>
+<body>
+  <div class="logo">Logic</div>
+  <p class="tagline">ロジカルシンキングを毎日 3 分で。<br>哲学者たちに学ぶ、論理思考トレーニング。</p>
+  <a class="btn" href="${PLAY_STORE_URL}">Google Play でダウンロード</a>
+  <p class="sub">Android 向けアプリです</p>
+</body>
+</html>`)
+})
 
 const PORT = parseInt(process.env.PORT || '3001', 10)
 app.listen(PORT, '0.0.0.0', () => {
