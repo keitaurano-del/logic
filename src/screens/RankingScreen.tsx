@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from 'react'
 import { getGuestId } from '../guestId'
 import { hasCompletedPlacement, loadPlacementResult } from '../placementData'
 import { API_BASE } from './apiBase'
-import { getStreak, getStudyDates } from '../stats'
+import { getStreak, getStudyDates, getCompletedLessons } from '../stats'
 import { getPoints, deviationToTopPercent } from './homeHelpers'
 
 
@@ -53,11 +53,45 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
     return () => { cancelled = true }
   }, [])
 
-  // 最近の活動（仮データ）
-  const recentActivity = [
-    { name: '今日の一問 — フェルミ', date: 'Today', pts: '+30', icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="#3B5BDB"><rect x="4" y="2" width="16" height="20" rx="2"/><rect x="7" y="5" width="10" height="4" rx="1" fill="white"/><circle cx="8" cy="13" r="1.2" fill="white"/><circle cx="12" cy="13" r="1.2" fill="white"/><circle cx="16" cy="13" r="1.2" fill="white"/></svg> },
-    { name: 'MECE 入門', date: 'Yesterday', pts: '+20', icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="#3B5BDB"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg> },
-  ]
+  // 最近の活動 — 実データから生成
+  const recentActivity = useMemo(() => {
+    const completed = getCompletedLessons()
+    const today = new Date().toISOString().slice(0, 10)
+    const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10)
+    const studyDatesArr = getStudyDates()
+
+    const titleMap: Record<string, string> = {
+      'lesson-20': 'MECE — 漏れなくダブりなく',
+      'lesson-21': 'ロジックツリー',
+      'lesson-22': 'So What / Why So',
+      'lesson-23': 'ピラミッド原則',
+      'lesson-24': 'ケーススタディ総合演習',
+      'lesson-25': '演繹法',
+      'lesson-26': '帰納法',
+      'lesson-27': '形式論理',
+      'lesson-28': 'ケース面接入門',
+      'lesson-29': 'プロフィタビリティケース',
+      'lesson-40': 'クリティカルシンキング入門',
+      'lesson-41': '論理的誤謬を見破る',
+      'lesson-42': 'データを正しく読む',
+      'lesson-43': '問いを立てる力',
+      'mock-exam': '模擬試験',
+      'journal-input': 'ジャーナル',
+      'worksheet': 'ワークシート',
+    }
+
+    const lessonIcon = <svg width="18" height="18" viewBox="0 0 24 24" fill="#3B5BDB"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
+
+    if (completed.length === 0) return []
+
+    return completed.slice(-4).reverse().map((key) => {
+      const name = titleMap[key] || key.replace('lesson-', 'Lesson ')
+      const isToday = studyDatesArr.includes(today)
+      const isYesterday = !isToday && studyDatesArr.includes(yesterday)
+      const dateLabel = isToday ? '今日' : isYesterday ? '昨日' : ''
+      return { name, date: dateLabel, pts: '+20', icon: lessonIcon }
+    })
+  }, [])
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: '#F0F4FF' }}>

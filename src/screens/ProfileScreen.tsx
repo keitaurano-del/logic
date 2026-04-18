@@ -2,6 +2,23 @@ import { getCompletedCount, getStreak } from '../stats'
 import { loadPlacementResult } from '../placementData'
 import { getPoints, deviationToTopPercent } from './homeHelpers'
 import { logout } from '../supabase'
+import { getSubscriptionState, isPremiumPlan, isStandardPlan, daysLeftInTrial } from '../subscription'
+
+// 実際のサブスクリプション状態から表示ラベルを生成
+function getPlanLabel(): string {
+  const state = getSubscriptionState()
+  if (isPremiumPlan()) {
+    if (state.plan === 'trial') {
+      const days = daysLeftInTrial()
+      return days > 0 ? `トライアル（残り${days}日）` : 'トライアル（期限切れ）'
+    }
+    return 'Premium — プレミアムプラン'
+  }
+  if (isStandardPlan()) {
+    return state.plan.includes('yearly') ? 'Standard — 年額プラン' : 'Standard — ¥500/月'
+  }
+  return '無料プラン'
+}
 
 interface ProfileScreenProps {
   userName: string
@@ -44,7 +61,7 @@ export function ProfileScreen({ userName, onOpenSettings, onOpenFeedback, onOpen
     {
       icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="#3B5BDB"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10" stroke="white" strokeWidth="2"/></svg>,
       name: 'プラン',
-      sub: 'Standard — ¥500/月',
+      sub: getPlanLabel(),
       onClick: onOpenPricing,
     },
     {
