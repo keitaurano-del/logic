@@ -1,8 +1,6 @@
-import { useMemo, useState, useEffect } from 'react'
+import { useMemo, useState, useEffect, useRef } from 'react'
 import { allLessons, type LessonStep } from '../lessonData'
-import { recordCompletion, getCompletedCount } from '../stats'
-import { ArrowRightIcon } from '../icons'
-import { Button } from '../components/Button'
+import { recordCompletion, getCompletedCount, getStreak, getStudyDates } from '../stats'
 import { RankIllustration } from '../components/RankIllustration'
 import { Confetti } from '../components/Confetti'
 import { getCurrentTier } from './homeHelpers'
@@ -40,6 +38,8 @@ export function LessonScreen({ lessonId, onBack, onComplete, onReport }: LessonS
   const [submitted, setSubmitted] = useState(false)
   const [animClass, setAnimClass] = useState<'answer-bounce' | 'answer-shake' | ''>('')
   const [showCelebration, setShowCelebration] = useState(false)
+  // streak演出用: 完了前後のストリーク差分
+  const streakBefore = useRef(0)
 
   useEffect(() => {
     if (!animClass) return
@@ -73,6 +73,7 @@ export function LessonScreen({ lessonId, onBack, onComplete, onReport }: LessonS
 
   const handleNext = () => {
     if (isLast) {
+      streakBefore.current = getStreak()
       recordCompletion(`lesson-${lesson.id}`)
       setShowCelebration(true)
       return
@@ -85,41 +86,12 @@ export function LessonScreen({ lessonId, onBack, onComplete, onReport }: LessonS
 
   // ── Celebration overlay ──────────────────────────────────────────
   if (showCelebration) {
-    const completedNow = getCompletedCount()
-    const xp = completedNow * 100
-    const tier = getCurrentTier(xp)
-    const level = tier.level
-    const levelTitle = getLocale() === 'ja' ? tier.title : tier.titleEn
-
     return (
-      <>
-        <Confetti />
-        <div style={{
-          position: 'fixed', inset: 0,
-          background: 'var(--bg-hero)',
-          display: 'flex', flexDirection: 'column',
-          alignItems: 'center', justifyContent: 'center',
-          zIndex: 100, padding: '32px 24px',
-          textAlign: 'center',
-        }}>
-          <div style={{ position: 'absolute', top: -60, left: '50%', transform: 'translateX(-50%)', width: 360, height: 360, background: 'radial-gradient(circle, rgba(158,179,240,0.22) 0%, transparent 70%)', pointerEvents: 'none' }} />
-          <div style={{ animation: 'celebrate-pop 0.5s cubic-bezier(0.34,1.56,0.64,1) both' }}>
-            <RankIllustration level={level} size={152} />
-          </div>
-          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 30, fontWeight: 900, color: '#fff', letterSpacing: '-0.03em', marginTop: 24, marginBottom: 6, animation: 'celebrate-pop 0.5s 0.08s cubic-bezier(0.34,1.56,0.64,1) both' }}>
-            {t('lesson.completedH1')}
-          </h1>
-          <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)', marginBottom: 24, animation: 'fade-in-up 0.4s 0.15s ease-out both' }}>
-            Lv.{level} · {levelTitle}
-          </p>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'var(--xp-bg)', border: '1px solid rgba(234,179,8,0.35)', color: '#FCD34D', borderRadius: 'var(--radius-full)', padding: '10px 22px', fontSize: 20, fontWeight: 800, letterSpacing: '-0.01em', marginBottom: 40, animation: 'xp-badge-in 0.55s 0.25s cubic-bezier(0.34,1.56,0.64,1) both' }}>
-            ＋100 XP
-          </div>
-          <Button variant="primary" size="lg" onClick={onComplete} style={{ width: '100%', maxWidth: 280 } as React.CSSProperties}>
-            {t('common.next')} <ArrowRightIcon width={16} height={16} />
-          </Button>
-        </div>
-      </>
+      <CelebrationScreen
+        lessonTitle={lesson.title}
+        streakBefore={streakBefore.current}
+        onComplete={onComplete}
+      />
     )
   }
 
@@ -431,6 +403,221 @@ function QuizStep({ step, catLabel, accent, selected, submitted, isLast, onSelec
           </button>
         )}
       </div>
+    </div>
+  )
+}
+
+// ── CelebrationScreen ─────────────────────────────────────────────
+// Speak-inspired 2-phase completion screen:
+// Phase 1 (0-1.5s): XP / rank reveal
+// Phase 2 (1.6s+):  Streak celebration (only when streak increased)
+function CelebrationScreen({ lessonTitle, streakBefore, onComplete }: {
+  lessonTitle: string
+  streakBefore: number
+  onComplete: () => void
+}) {
+  const completedNow = getCompletedCount()
+  const xp = completedNow * 100
+  const tier = getCurrentTier(xp)
+  const level = tier.level
+  const levelTitle = getLocale() === 'ja' ? tier.title : tier.titleEn
+  const newStreak = getStreak()
+  const streakIncreased = newStreak > streakBefore
+
+  const [phase, setPhase] = useState<1 | 2>(1)
+
+  useEffect(() => {
+    if (!streakIncreased) return
+    const t = setTimeout(() => setPhase(2), 1800)
+    return () => clearTimeout(t)
+  }, [streakIncreased])
+
+  // Phase 2: streak celebration
+  if (phase === 2) {
+    return (
+      <div style={{
+        position: 'fixed', inset: 0,
+        background: 'linear-gradient(160deg, #1A2E6B 0%, #0F1A44 100%)',
+        display: 'flex', flexDirection: 'column',
+        alignItems: 'center', justifyContent: 'center',
+        zIndex: 100, padding: '32px 24px', textAlign: 'center',
+      }}>
+        {/* 炎リングエフェクト */}
+        <div style={{ position: 'relative', marginBottom: 8 }}>
+          <div style={{
+            position: 'absolute', inset: -20,
+            borderRadius: '50%', border: '3px solid rgba(251,146,60,.4)',
+            animation: 'streak-ring 1.2s ease-out 0.1s both',
+          }} />
+          <div style={{
+            position: 'absolute', inset: -36,
+            borderRadius: '50%', border: '2px solid rgba(251,146,60,.2)',
+            animation: 'streak-ring 1.2s ease-out 0.3s both',
+          }} />
+          {/* 炎アイコン */}
+          <div style={{
+            width: 80, height: 80, borderRadius: '50%',
+            background: 'linear-gradient(145deg, #F97316, #EF4444)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            boxShadow: '0 0 32px rgba(249,115,22,.5)',
+            animation: 'celebrate-pop 0.5s cubic-bezier(0.34,1.56,0.64,1) both',
+          }}>
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="white" style={{ animation: 'streak-flame 1.5s ease-in-out infinite 0.3s' }}>
+              <path d="M12 2c0 0-5 4-5 9a5 5 0 0 0 10 0c0-1.5-.5-2.9-1.3-4C14.7 9 13 10 12 10c0-2 1-4 1-4C11 8 9 10 9 11c0 1.7 1.3 3 3 3s3-1.3 3-3c0-.7-.2-1.3-.6-1.8-.4.5-1 .8-1.7.8-1.1 0-2-.9-2-2 0-.7.4-1.3 1-1.7-.3.8-.3 1.7 0 2.5.3-.2.7-.3 1-.3.8 0 1.5.7 1.5 1.5S13.8 11.5 13 11.5c-.5 0-.9-.2-1.2-.6.1.4.2.7.2 1.1 0 1.1-.9 2-2 2s-2-.9-2-2c0-1.7 1-3.3 2.5-4.2C9.2 8.5 9 9.2 9 10c0 1.7 1.3 3 3 3"/>
+            </svg>
+          </div>
+        </div>
+
+        {/* ストリーク数字 */}
+        <div style={{
+          fontFamily: "'Inter Tight', sans-serif",
+          fontSize: 88, fontWeight: 900, color: '#F97316',
+          letterSpacing: '-0.04em', lineHeight: 1,
+          marginTop: 16,
+          animation: 'streak-num-pop 0.6s 0.1s cubic-bezier(0.34,1.56,0.64,1) both',
+          textShadow: '0 0 40px rgba(249,115,22,.4)',
+        }}>
+          {newStreak}
+        </div>
+
+        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,.45)', marginTop: 4, animation: 'slide-up-fade 0.4s 0.4s ease-out both' }}>DAY STREAK</div>
+
+        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 26, fontWeight: 900, color: '#fff', letterSpacing: '-0.03em', marginTop: 12, animation: 'slide-up-fade 0.4s 0.5s ease-out both' }}>
+          {newStreak}日連続！
+        </div>
+        <div style={{ fontSize: 14, color: 'rgba(255,255,255,.5)', marginTop: 6, marginBottom: 40, animation: 'slide-up-fade 0.4s 0.6s ease-out both' }}>
+          学習の習慣が身についています。
+        </div>
+
+        {/* 曜日バー（今週の学習記録） */}
+        <WeekBar style={{ marginBottom: 40, animation: 'slide-up-fade 0.4s 0.7s ease-out both' }} />
+
+        <button
+          onClick={onComplete}
+          style={{
+            width: '100%', maxWidth: 300,
+            background: 'linear-gradient(135deg, #F97316, #EF4444)',
+            color: '#fff', border: 'none', borderRadius: 16,
+            padding: '18px 24px', fontSize: 16, fontWeight: 800,
+            cursor: 'pointer', letterSpacing: '-.01em',
+            boxShadow: '0 6px 20px rgba(249,115,22,.35)',
+            animation: 'slide-up-fade 0.4s 0.8s ease-out both',
+          }}
+        >
+          続ける
+        </button>
+      </div>
+    )
+  }
+
+  // Phase 1: XP / rank reveal
+  return (
+    <>
+      <Confetti />
+      <div style={{
+        position: 'fixed', inset: 0,
+        background: 'linear-gradient(160deg, #1E3A8A 0%, #3B5BDB 60%, #4C6EF5 100%)',
+        display: 'flex', flexDirection: 'column',
+        alignItems: 'center', justifyContent: 'center',
+        zIndex: 100, padding: '32px 24px', textAlign: 'center',
+      }}>
+        {/* グロー */}
+        <div style={{ position: 'absolute', top: '20%', left: '50%', transform: 'translateX(-50%)', width: 320, height: 320, background: 'radial-gradient(circle, rgba(255,255,255,.1) 0%, transparent 70%)', pointerEvents: 'none' }} />
+
+        {/* レッスン名バッジ */}
+        <div style={{
+          fontSize: 11, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase',
+          color: 'rgba(255,255,255,.55)', marginBottom: 20,
+          animation: 'fade-in-up 0.3s ease-out both',
+        }}>
+          {lessonTitle} 完了
+        </div>
+
+        {/* 哲学者イラスト */}
+        <div style={{ animation: 'celebrate-pop 0.55s cubic-bezier(0.34,1.56,0.64,1) both' }}>
+          <RankIllustration level={level} size={140} />
+        </div>
+
+        {/* ランク名 */}
+        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.45)', marginTop: 16, animation: 'fade-in-up 0.35s 0.1s ease-out both' }}>LV.{level}</div>
+        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 28, fontWeight: 900, color: '#fff', letterSpacing: '-0.03em', marginTop: 2, animation: 'celebrate-pop 0.5s 0.12s cubic-bezier(0.34,1.56,0.64,1) both' }}>
+          {levelTitle}
+        </div>
+
+        {/* XPバッジ */}
+        <div style={{
+          display: 'inline-flex', alignItems: 'center', gap: 6,
+          background: 'rgba(234,179,8,.15)', border: '1px solid rgba(234,179,8,.35)',
+          color: '#FCD34D', borderRadius: 99,
+          padding: '10px 24px', fontSize: 22, fontWeight: 800, letterSpacing: '-0.01em',
+          marginTop: 16, marginBottom: 36,
+          animation: 'xp-badge-in 0.55s 0.25s cubic-bezier(0.34,1.56,0.64,1) both',
+        }}>
+          ＋100 XP
+        </div>
+
+        {/* ボタン or 自動遷移メッセージ */}
+        {streakIncreased ? (
+          <div style={{ fontSize: 13, color: 'rgba(255,255,255,.4)', animation: 'fade-in-up 0.3s 0.5s ease-out both' }}>
+            🔥 連続学習を確認中...
+          </div>
+        ) : (
+          <button
+            onClick={onComplete}
+            style={{
+              width: '100%', maxWidth: 280,
+              background: 'rgba(255,255,255,.15)', backdropFilter: 'blur(8px)',
+              color: '#fff', border: '1.5px solid rgba(255,255,255,.25)', borderRadius: 16,
+              padding: '16px 24px', fontSize: 15, fontWeight: 700,
+              cursor: 'pointer',
+              animation: 'fade-in-up 0.3s 0.5s ease-out both',
+            }}
+          >
+            ホームに戻る
+          </button>
+        )}
+      </div>
+    </>
+  )
+}
+
+// 今週の学習記録バー（完了画面用）
+function WeekBar({ style }: { style?: React.CSSProperties }) {
+  const rawDates = getStudyDates()
+  const studyDates = new Set<string>(rawDates)
+  const todayDow = (new Date().getDay() + 6) % 7
+  const days = ['月','火','水','木','金','土','日']
+  const today = new Date()
+  const monday = new Date(today)
+  monday.setDate(today.getDate() - todayDow)
+
+  const weekDates = days.map((_, i) => {
+    const d = new Date(monday)
+    d.setDate(monday.getDate() + i)
+    return d.toISOString().slice(0, 10)
+  })
+
+  return (
+    <div style={{ display: 'flex', gap: 8, ...style }}>
+      {days.map((day, i) => {
+        const isToday = i === todayDow
+        const done = studyDates.has(weekDates[i])
+        return (
+          <div key={day} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+            <div style={{
+              width: 36, height: 36, borderRadius: '50%',
+              background: done ? 'linear-gradient(135deg,#F97316,#EF4444)' : 'rgba(255,255,255,.1)',
+              border: isToday ? '2px solid #F97316' : '2px solid transparent',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              boxShadow: done ? '0 2px 8px rgba(249,115,22,.4)' : 'none',
+              transition: 'all .2s',
+            }}>
+              {done && <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>}
+            </div>
+            <div style={{ fontSize: 10, fontWeight: 600, color: isToday ? '#F97316' : 'rgba(255,255,255,.4)' }}>{day}</div>
+          </div>
+        )
+      })}
     </div>
   )
 }

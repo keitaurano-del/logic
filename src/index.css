@@ -221,6 +221,25 @@
   70%  { transform: scale(1.15) rotate(4deg); }
   100% { opacity: 1; transform: scale(1) rotate(0deg); }
 }
+@keyframes streak-num-pop {
+  0%   { opacity: 0; transform: scale(0.4) translateY(20px); }
+  60%  { transform: scale(1.18) translateY(-6px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes streak-flame {
+  0%,100% { transform: scale(1) rotate(-3deg); }
+  25%     { transform: scale(1.1) rotate(3deg); }
+  75%     { transform: scale(0.95) rotate(-5deg); }
+}
+@keyframes streak-ring {
+  0%   { opacity: 0; transform: scale(0.3); }
+  60%  { opacity: 0.25; transform: scale(1.15); }
+  100% { opacity: 0; transform: scale(1.4); }
+}
+@keyframes slide-up-fade {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
 /* Confetti */
 @keyframes confetti-fall {
