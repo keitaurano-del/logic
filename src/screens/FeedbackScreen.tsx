@@ -2,24 +2,41 @@ import { useState } from 'react'
 import { ArrowLeftIcon, CheckIcon } from '../icons'
 import { Button } from '../components/Button'
 import { IconButton } from '../components/IconButton'
+import { API_BASE } from './apiBase'
+import { getLocale } from '../i18n'
 
 interface FeedbackScreenProps {
   onBack: () => void
 }
 
-const CATEGORIES = ['機能追加', 'バグ報告', 'UI改善', 'その他'] as const
+const CATEGORIES = ['機能追加', 'バグ報告', 'UI改善', 'コンテンツ', 'その他'] as const
 
 export function FeedbackScreen({ onBack }: FeedbackScreenProps) {
+  const locale = getLocale()
   const [category, setCategory] = useState<string>(CATEGORIES[0])
   const [message, setMessage] = useState('')
+  const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
+  const [error, setError] = useState('')
 
-  const handleSubmit = () => {
-    if (!message.trim()) return
-    const subject = encodeURIComponent(`[Logic フィードバック] ${category}`)
-    const body = encodeURIComponent(`カテゴリ: ${category}\n\n${message.trim()}\n\n---\nSent from Logic App`)
-    window.location.href = `mailto:keita.urano@gmail.com?subject=${subject}&body=${body}`
-    setSent(true)
+  const handleSubmit = async () => {
+    if (!message.trim() || sending) return
+    setSending(true)
+    setError('')
+    try {
+      const res = await fetch(`${API_BASE}/api/feedback`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ category, message: message.trim(), locale }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'エラーが発生しました')
+      setSent(true)
+    } catch (e: unknown) {
+      setError((e as Error).message || 'エラーが発生しました')
+    } finally {
+      setSending(false)
+    }
   }
 
   if (sent) {
@@ -29,14 +46,23 @@ export function FeedbackScreen({ onBack }: FeedbackScreenProps) {
           <IconButton aria-label="Back" onClick={onBack}><ArrowLeftIcon /></IconButton>
           <div className="progress-text">FEEDBACK</div>
         </div>
-        <div className="feedback-card" style={{ marginTop: 'var(--s-6)' }}>
-          <div className="feedback-head">
-            <div className="feedback-check"><CheckIcon /></div>
-            <div className="feedback-title">ありがとうございます！</div>
+        <div style={{ marginTop: 40, textAlign: 'center' }}>
+          <div style={{
+            width: 64, height: 64, borderRadius: '50%',
+            background: 'var(--success)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            margin: '0 auto 20px',
+          }}>
+            <CheckIcon width={32} height={32} color="white" />
           </div>
-          <div className="feedback-text">メールアプリが開きます。送信ボタンを押してフィードバックを送ってください。</div>
+          <h2 style={{ fontSize: 22, fontWeight: 800, marginBottom: 8 }}>ありがとうございます！</h2>
+          <p style={{ fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.6 }}>
+            フィードバックを受け取りました。<br />アプリ改善に活かします。
+          </p>
         </div>
-        <Button variant="primary" size="lg" block onClick={onBack}>ホームに戻る</Button>
+        <Button variant="primary" size="lg" block onClick={onBack} style={{ marginTop: 32 }}>
+          ホームに戻る
+        </Button>
       </div>
     )
   }
@@ -48,50 +74,78 @@ export function FeedbackScreen({ onBack }: FeedbackScreenProps) {
         <div className="progress-text">FEEDBACK</div>
       </div>
 
-      <div className="eyebrow accent">FEEDBACK</div>
-      <h1 style={{ fontSize: 26, letterSpacing: '-0.025em' }}>ご要望・フィードバック</h1>
+      <div>
+        <div className="eyebrow accent">BETA</div>
+        <h1 style={{ fontSize: 22, fontWeight: 800, marginTop: 4 }}>ご意見・ご要望</h1>
+        <p style={{ fontSize: 14, color: 'var(--text-muted)', marginTop: 6 }}>
+          アプリをより良くするためのフィードバックをお聞かせください
+        </p>
+      </div>
 
-      <div className="card" style={{ marginTop: 'var(--s-4)' }}>
-        <label className="label">カテゴリ</label>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--s-2)', marginBottom: 'var(--s-4)' }}>
+      {/* カテゴリ */}
+      <div>
+        <label style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: 8 }}>
+          カテゴリ
+        </label>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
           {CATEGORIES.map((c) => (
             <button
               key={c}
               onClick={() => setCategory(c)}
               style={{
-                padding: '6px 14px',
-                borderRadius: 'var(--radius-full)',
-                border: `1.5px solid ${category === c ? 'var(--brand)' : 'var(--border)'}`,
-                background: category === c ? 'var(--brand-soft)' : 'none',
-                color: category === c ? 'var(--brand)' : 'var(--text-muted)',
-                fontSize: 13,
-                fontWeight: 600,
-                cursor: 'pointer',
+                padding: '7px 14px',
+                borderRadius: 99,
+                border: `1.5px solid ${category === c ? 'var(--primary)' : 'var(--border)'}`,
+                background: category === c ? 'var(--brand-soft)' : 'var(--bg-card)',
+                color: category === c ? 'var(--primary)' : 'var(--text-secondary)',
+                fontSize: 13, fontWeight: 700, cursor: 'pointer',
               }}
             >
               {c}
             </button>
           ))}
         </div>
+      </div>
 
-        <label className="label">内容</label>
+      {/* メッセージ */}
+      <div>
+        <label style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: 8 }}>
+          内容
+        </label>
         <textarea
-          className="textarea"
-          rows={6}
-          placeholder="アプリの改善点やほしい機能を教えてください..."
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          placeholder="気になった点、改善してほしい点、欲しい機能など..."
+          rows={5}
+          style={{
+            width: '100%', padding: '14px 16px',
+            fontSize: 14, fontFamily: 'inherit',
+            border: '1.5px solid var(--border)',
+            borderRadius: 14, background: 'var(--bg-card)',
+            color: 'var(--text)', outline: 'none', resize: 'vertical',
+            boxSizing: 'border-box', lineHeight: 1.6,
+          }}
         />
-
-        <Button
-          variant="primary" size="lg" block
-          onClick={handleSubmit}
-          disabled={!message.trim()}
-          style={{ marginTop: 'var(--s-4)' }}
-        >
-          フィードバックを送信
-        </Button>
+        <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>
+          {message.length} 文字
+        </div>
       </div>
+
+      {error && (
+        <div style={{ fontSize: 13, color: 'var(--danger)', padding: '10px 14px', background: 'rgba(220,38,38,0.06)', borderRadius: 10 }}>
+          {error}
+        </div>
+      )}
+
+      <Button
+        variant="primary"
+        size="lg"
+        block
+        onClick={handleSubmit}
+        disabled={!message.trim() || sending}
+      >
+        {sending ? '送信中...' : '送信する'}
+      </Button>
     </div>
   )
 }

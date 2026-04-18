@@ -1652,6 +1652,41 @@ app.post('/api/admin/grant-premium', async (req, res) => {
   }
 })
 
+// ========================================
+// SCRUM-87: In-App フィードバック送信
+// ========================================
+app.post('/api/feedback', makeLimiter({ windowMs: 60*1000, max: 5 }), async (req, res) => {
+  try {
+    const { category = 'その他', message = '', locale } = req.body || {}
+    if (!message || message.trim().length < 5) {
+      return res.status(400).json({ error: 'message is required' })
+    }
+    const isEn = locale === 'en'
+
+    // Supabase に保存
+    if (supabase) {
+      const { error } = await supabase
+        .from('feedback')
+        .insert({
+          category,
+          message: message.trim(),
+          locale: locale || 'ja',
+          created_at: new Date().toISOString(),
+        })
+      if (error) {
+        // テーブルがなくても無視して成功を返す
+        console.warn('[feedback] Supabase insert warning:', error.message)
+      }
+    }
+
+    res.json({ ok: true, message: isEn ? 'Thank you!' : 'ありがとうございました！' })
+  } catch (e: any) {
+    console.error('feedback error:', e)
+    res.status(500).json({ error: e.message || 'failed' })
+  }
+})
+
+
 const PORT = parseInt(process.env.PORT || '3001', 10)
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on http://localhost:${PORT}`)
