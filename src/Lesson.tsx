@@ -82,9 +82,10 @@ type Props = {
   lesson: LessonData
   onBack: () => void
   onComplete?: () => void
+  onNextLesson?: () => void
 }
 
-export default function Lesson({ lesson, onBack, onComplete }: Props) {
+export default function Lesson({ lesson, onBack, onComplete, onNextLesson }: Props) {
   const [currentStep, setCurrentStep] = useState(0)
   const [selectedOption, setSelectedOption] = useState<number | null>(null)
   const [showResult, setShowResult] = useState(false)
@@ -138,6 +139,8 @@ export default function Lesson({ lesson, onBack, onComplete }: Props) {
   const quizCount = lesson.steps.filter((s) => s.type === 'quiz').length
 
   if (finished) {
+    const isPerfect = correctCount === quizCount
+    const isGood = correctCount >= quizCount * 0.7
     return (
       <div className="lesson-screen">
         <header className="ls-header">
@@ -146,6 +149,9 @@ export default function Lesson({ lesson, onBack, onComplete }: Props) {
           <div />
         </header>
         <div className="ls-complete">
+          <div className="ls-complete-emoji">
+            {isPerfect ? '🏆' : isGood ? '⭐' : '💪'}
+          </div>
           <h2>{t('lesson.completedH1')}</h2>
           <p className="ls-score">{t('lesson.completedScoreLine', { correct: correctCount, total: quizCount })}</p>
           <div className="ls-score-bar">
@@ -155,15 +161,22 @@ export default function Lesson({ lesson, onBack, onComplete }: Props) {
             />
           </div>
           <p className="ls-complete-msg">
-            {correctCount === quizCount
+            {isPerfect
               ? t('lesson.completedPerfect')
-              : correctCount >= quizCount * 0.7
+              : isGood
                 ? t('lesson.completedGood')
                 : t('lesson.completedRetry')}
           </p>
-          <button className="ls-done-btn" onClick={onBack}>
-            {t('lesson.backHome')}
-          </button>
+          <div className="ls-complete-actions">
+            {onNextLesson && (
+              <button className="ls-next-lesson-btn" onClick={onNextLesson}>
+                {t('lesson.nextLesson')} →
+              </button>
+            )}
+            <button className="ls-done-btn" onClick={onBack}>
+              {t('lesson.backHome')}
+            </button>
+          </div>
         </div>
       </div>
     )
@@ -233,9 +246,14 @@ export default function Lesson({ lesson, onBack, onComplete }: Props) {
             </div>
             {showResult && (
               <div className={`ls-feedback ${step.options[selectedOption!].correct ? 'correct' : 'wrong'}`}>
-                <p className="ls-feedback-title">
-                  {step.options[selectedOption!].correct ? t('lesson.correctMark') : t('lesson.wrongMark')}
-                </p>
+                <div className="ls-feedback-header">
+                  <span className="ls-feedback-icon">
+                    {step.options[selectedOption!].correct ? '✓' : '✕'}
+                  </span>
+                  <p className="ls-feedback-title">
+                    {step.options[selectedOption!].correct ? t('lesson.correctMark') : t('lesson.wrongMark')}
+                  </p>
+                </div>
                 <p className="ls-feedback-text">{step.explanation}</p>
               </div>
             )}

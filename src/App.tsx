@@ -179,46 +179,20 @@ const lessons = [
     progress: 0,
     action: 'lesson' as const,
   },
-  {
-    id: 30,
-    category: 'プロジェクトマネジメント',
-    title: 'PM基礎 — プロジェクトマネジメントとは',
-    description: 'プロジェクトの定義・PMの役割・制約条件',
-    progress: 0,
-    action: 'lesson' as const,
-  },
-  {
-    id: 31,
-    category: 'プロジェクトマネジメント',
-    title: 'プロセス群 — 立上げから終結まで',
-    description: '5つのプロセス群・WBS・プロジェクト憲章',
-    progress: 0,
-    action: 'lesson' as const,
-  },
-  {
-    id: 32,
-    category: 'プロジェクトマネジメント',
-    title: '知識エリア — 10の管理領域',
-    description: '統合・スコープ・スケジュール・コスト・品質・EVM',
-    progress: 0,
-    action: 'lesson' as const,
-  },
-  {
-    id: 33,
-    category: 'プロジェクトマネジメント',
-    title: 'ツールと技法 — 実践スキル',
-    description: 'CPM・PERT・リスク分析・品質管理ツール',
-    progress: 0,
-    action: 'lesson' as const,
-  },
-  {
-    id: 34,
-    category: 'プロジェクトマネジメント',
-    title: 'PMBOK総合演習 — 試験対策',
-    description: 'PMBOK試験レベルのシチュエーション問題・EVM計算',
-    progress: 0,
-    action: 'lesson' as const,
-  },
+  // クリティカルシンキング（新）
+  { id: 40, category: 'クリティカルシンキング', title: 'クリティカルシンキング入門', description: '前提を疑い、根拠を評価する思考法の基本', progress: 0, action: 'lesson' as const },
+  { id: 41, category: 'クリティカルシンキング', title: '論証の評価 — 根拠と結論', description: '前提・推論・結論の構造を見抜く', progress: 0, action: 'lesson' as const },
+  { id: 42, category: 'クリティカルシンキング', title: '前提を疑う', description: '隠れた前提を見つけて議論の土台を検証する', progress: 0, action: 'lesson' as const },
+  { id: 43, category: 'クリティカルシンキング', title: '情報を評価する', description: '出典・相関・因果を正しく読み解く', progress: 0, action: 'lesson' as const },
+  { id: 44, category: 'クリティカルシンキング', title: '反論の技術', description: '建設的な反論でアイデアを鍛える', progress: 0, action: 'lesson' as const },
+  { id: 45, category: 'クリティカルシンキング', title: '意思決定の罠', description: 'バイアスを知り、より良い判断をする', progress: 0, action: 'lesson' as const },
+  { id: 46, category: 'クリティカルシンキング', title: 'クリティカルシンキング総合演習', description: '全技術を使ってリアルなケースを分析する', progress: 0, action: 'lesson' as const },
+  // 思考の技術（新）
+  { id: 50, category: '思考の技術', title: '第一原理思考', description: '当たり前を疑い、ゼロから再設計する', progress: 0, action: 'lesson' as const },
+  { id: 51, category: '思考の技術', title: 'システム思考', description: 'つながりとループで複雑な問題を解く', progress: 0, action: 'lesson' as const },
+  { id: 52, category: '思考の技術', title: '仮説思考', description: '結論から逆算して最短で検証する', progress: 0, action: 'lesson' as const },
+  { id: 53, category: '思考の技術', title: 'アナロジー思考', description: '異分野の構造を応用してアイデアを生む', progress: 0, action: 'lesson' as const },
+  { id: 54, category: '思考の技術', title: 'メタ認知', description: '自分の思考を観察して盲点をなくす', progress: 0, action: 'lesson' as const },
 ]
 
 // English overlay for logic lesson titles/descriptions (logic IDs only).
@@ -517,7 +491,21 @@ function App() {
   if (screen.type === 'lesson') {
     const lessonData = allLessons[screen.lessonId]
     if (lessonData) {
-      return <Lesson lesson={lessonData} onBack={goHome} onComplete={() => handleComplete(`lesson-${screen.lessonId}`, lessonData.title)} />
+      // 同カテゴリの次の未完了レッスンを探す
+      const nextLesson = (() => {
+        const completed = new Set(getCompletedLessons())
+        const sameCat = lessons.filter(l => l.category === lessonData.category && l.id !== screen.lessonId)
+        return sameCat.find(l => !completed.has(`lesson-${l.id}`) && l.id in allLessons) ?? null
+      })()
+      return <Lesson
+        lesson={lessonData}
+        onBack={goHome}
+        onComplete={() => handleComplete(`lesson-${screen.lessonId}`, lessonData.title)}
+        onNextLesson={nextLesson ? () => {
+          handleComplete(`lesson-${screen.lessonId}`, lessonData.title)
+          navigateTo({ type: 'lesson', lessonId: nextLesson.id })
+        } : undefined}
+      />
     }
   }
 
