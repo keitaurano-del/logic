@@ -107,12 +107,12 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1px 1fr 1px 1fr' }}>
             <div style={{ textAlign: 'center', padding: '0 4px' }}>
               <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 28, fontWeight: 900, color: '#fff', letterSpacing: '-.04em', lineHeight: 1 }}>{streak}</div>
-              <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)', marginTop: 5 }}>Streak</div>
+              <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)', marginTop: 5 }}>連続学習</div>
             </div>
             <div style={{ background: 'rgba(255,255,255,.15)', margin: '4px 0' }} />
             <div style={{ textAlign: 'center', padding: '0 4px' }}>
               <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 28, fontWeight: 900, color: '#fff', letterSpacing: '-.04em', lineHeight: 1 }}>{points}</div>
-              <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)', marginTop: 5 }}>Points</div>
+              <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)', marginTop: 5 }}>ポイント</div>
             </div>
             <div style={{ background: 'rgba(255,255,255,.15)', margin: '4px 0' }} />
             <div style={{ textAlign: 'center', padding: '0 4px' }}>
@@ -179,7 +179,7 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
                     <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg, #3B5BDB, #748FFC)', flexShrink: 0, boxShadow: e.isYou ? '0 0 0 2px #3B5BDB' : 'none' }} />
                     <div style={{ flex: 1, fontSize: 14, fontWeight: 600, color: '#0F1523' }}>
                       {e.nickname}
-                      {e.isYou && <span style={{ fontSize: 10, fontWeight: 700, color: '#3B5BDB', background: '#EEF2FF', borderRadius: 4, padding: '1px 5px', marginLeft: 6 }}>You</span>}
+                      {e.isYou && <span style={{ fontSize: 10, fontWeight: 700, color: '#3B5BDB', background: '#EEF2FF', borderRadius: 4, padding: '1px 5px', marginLeft: 6 }}>あなた</span>}
                     </div>
                     <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 16, fontWeight: 900, color: '#3B5BDB' }}>{e.deviation}</div>
                   </div>
@@ -195,18 +195,26 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
         {/* 最近の活動 */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 14, fontWeight: 800, color: '#0F1523' }}>最近の活動</div>
-          {recentActivity.map((act, i) => (
-            <div key={i} style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: '13px 16px', display: 'flex', alignItems: 'center', gap: 12, boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
-              <div style={{ width: 38, height: 38, borderRadius: 11, flexShrink: 0, background: '#EEF2FF', border: '1px solid #DBE4FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                {act.icon}
-              </div>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: '#0F1523', marginBottom: 1 }}>{act.name}</div>
-                <div style={{ fontSize: 11, color: '#7A849E' }}>{act.date}</div>
-              </div>
-              <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 16, fontWeight: 900, color: '#3B5BDB' }}>{act.pts}</div>
+          {recentActivity.length === 0 ? (
+            <div style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: '28px 16px', textAlign: 'center' }}>
+              <div style={{ fontSize: 32, marginBottom: 8 }}>💪</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: '#0F1523', marginBottom: 4 }}>最初のレッスンを始めよう！</div>
+              <div style={{ fontSize: 12, color: '#7A849E' }}>レッスンを完了すると、ここに学習記録が表示されます</div>
             </div>
-          ))}
+          ) : (
+            recentActivity.map((act, i) => (
+              <div key={i} style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: '13px 16px', display: 'flex', alignItems: 'center', gap: 12, boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
+                <div style={{ width: 38, height: 38, borderRadius: 11, flexShrink: 0, background: '#EEF2FF', border: '1px solid #DBE4FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  {act.icon}
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: '#0F1523', marginBottom: 1 }}>{act.name}</div>
+                  <div style={{ fontSize: 11, color: '#7A849E' }}>{act.date}</div>
+                </div>
+                <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 16, fontWeight: 900, color: '#3B5BDB' }}>{act.pts}</div>
+              </div>
+            ))
+          )}
         </div>
 
       </div>

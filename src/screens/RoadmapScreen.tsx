@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { CheckIcon, ArrowRightIcon } from '../icons'
 import { getCompletedLessons } from '../stats'
 import { t } from '../i18n'
@@ -131,6 +131,36 @@ export function RoadmapScreen({ onOpenLesson }: RoadmapScreenProps) {
     return set
   }, [])
 
+  // 「次にやるべきレッスン」があるパスをデフォルトで開く
+  const defaultOpen = useMemo(() => {
+    for (const path of PATHS) {
+      const hasIncomplete = path.lessons.some(l => !completedSet.has(String(l.id)))
+      if (hasIncomplete) return path.id
+    }
+    return PATHS[0]?.id ?? ''
+  }, [completedSet])
+
+  const [openSections, setOpenSections] = useState<Set<string>>(new Set([defaultOpen]))
+
+  const toggleSection = (id: string) => {
+    setOpenSections(prev => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
+
+  // 全パスで「次にやるべき」レッスンIDを特定
+  const nextLessonIds = useMemo(() => {
+    const ids = new Set<number>()
+    for (const path of PATHS) {
+      const first = path.lessons.find(l => !completedSet.has(String(l.id)))
+      if (first) ids.add(first.id)
+    }
+    return ids
+  }, [completedSet])
+
   return (
     <div style={{ padding: '0 0 80px' }}>
       {/* ページヘッダー */}
@@ -144,6 +174,7 @@ export function RoadmapScreen({ onOpenLesson }: RoadmapScreenProps) {
           const completedCount = path.lessons.filter(l => completedSet.has(String(l.id))).length
           const pct = Math.round((completedCount / path.lessons.length) * 100)
           const allDone = completedCount === path.lessons.length
+          const isOpen = openSections.has(path.id)
 
           return (
             <div
@@ -156,81 +187,110 @@ export function RoadmapScreen({ onOpenLesson }: RoadmapScreenProps) {
                 boxShadow: '0 1px 3px rgba(15,21,35,.06)',
               }}
             >
-              {/* セクションヘッダー */}
-              <div style={{ padding: '14px 18px 12px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-                  <span style={{ fontSize: 14, fontWeight: 800, color: '#0F1523', letterSpacing: '-.01em' }}>
-                    {path.label}
-                  </span>
-                  <span style={{
-                    fontSize: 11, fontWeight: 700, color: allDone ? '#fff' : ACCENT,
-                    background: allDone ? ACCENT : ACCENT_BG,
-                    borderRadius: 99, padding: '2px 9px',
-                  }}>
-                    {completedCount} / {path.lessons.length}
-                  </span>
+              {/* アコーディオンヘッダー */}
+              <button
+                onClick={() => toggleSection(path.id)}
+                style={{
+                  display: 'flex', alignItems: 'center', width: '100%',
+                  padding: '14px 18px 12px', background: 'transparent',
+                  border: 'none', cursor: 'pointer', textAlign: 'left',
+                }}
+              >
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+                    <span style={{ fontSize: 14, fontWeight: 800, color: '#0F1523', letterSpacing: '-.01em' }}>
+                      {allDone ? '✅ ' : ''}{path.label}
+                    </span>
+                    <span style={{
+                      fontSize: 11, fontWeight: 700, color: allDone ? '#fff' : ACCENT,
+                      background: allDone ? ACCENT : ACCENT_BG,
+                      borderRadius: 99, padding: '2px 9px',
+                    }}>
+                      {completedCount} / {path.lessons.length}
+                    </span>
+                  </div>
+                  {/* プログレスバー */}
+                  <div style={{ height: 4, borderRadius: 99, background: '#E8EEFF', overflow: 'hidden' }}>
+                    <div style={{
+                      height: '100%', width: `${pct}%`,
+                      background: ACCENT, borderRadius: 99,
+                      transition: 'width 400ms ease',
+                    }} />
+                  </div>
                 </div>
-                {/* プログレスバー */}
-                <div style={{ height: 4, borderRadius: 99, background: '#E8EEFF', overflow: 'hidden' }}>
-                  <div style={{
-                    height: '100%', width: `${pct}%`,
-                    background: ACCENT, borderRadius: 99,
-                    transition: 'width 400ms ease',
-                  }} />
-                </div>
-              </div>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7A849E" strokeWidth="2.5" strokeLinecap="round"
+                  style={{ marginLeft: 12, transition: 'transform 200ms', transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </button>
 
-              {/* レッスン一覧 */}
-              <div style={{ borderTop: '1px solid #F0F4FF' }}>
-                {path.lessons.map((lesson, idx) => {
-                  const done = completedSet.has(String(lesson.id))
+              {/* レッスン一覧（アコーディオン） */}
+              {isOpen && (
+                <div style={{ borderTop: '1px solid #F0F4FF' }}>
+                  {path.lessons.map((lesson, idx) => {
+                    const done = completedSet.has(String(lesson.id))
+                    const isNext = nextLessonIds.has(lesson.id)
 
-                  return (
-                    <button
-                      key={lesson.id}
-                      onClick={() => onOpenLesson(lesson.id)}
-                      style={{
-                        display: 'flex', alignItems: 'center', gap: 14,
-                        width: '100%', padding: '13px 18px',
-                        background: 'transparent', border: 'none',
-                        borderTop: idx === 0 ? 'none' : '1px solid #F0F4FF',
-                        cursor: 'pointer', textAlign: 'left',
-                        transition: 'background 120ms',
-                      }}
-                    >
-                      {/* ステップインジケーター */}
-                      <div style={{
-                        width: 30, height: 30, borderRadius: '50%', flexShrink: 0,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        background: done ? ACCENT : ACCENT_BG,
-                        border: `2px solid ${done ? ACCENT : ACCENT_LIGHT}`,
-                      }}>
-                        {done
-                          ? <CheckIcon width={14} height={14} color="#fff" />
-                          : <span style={{ fontSize: 12, fontWeight: 800, color: ACCENT }}>{idx + 1}</span>
-                        }
-                      </div>
-
-                      {/* テキスト */}
-                      <div style={{ flex: 1, minWidth: 0 }}>
+                    return (
+                      <button
+                        key={lesson.id}
+                        onClick={() => onOpenLesson(lesson.id)}
+                        style={{
+                          display: 'flex', alignItems: 'center', gap: 14,
+                          width: '100%', padding: '13px 18px',
+                          background: isNext ? '#F0F4FF' : 'transparent',
+                          border: 'none',
+                          borderTop: idx === 0 ? 'none' : '1px solid #F0F4FF',
+                          cursor: 'pointer', textAlign: 'left',
+                          transition: 'background 120ms',
+                        }}
+                      >
+                        {/* ステップインジケーター */}
                         <div style={{
-                          fontSize: 14, fontWeight: done ? 500 : 700,
-                          color: done ? '#7A849E' : '#0F1523',
-                          textDecoration: done ? 'line-through' : 'none',
-                          letterSpacing: '-.01em',
+                          width: 30, height: 30, borderRadius: '50%', flexShrink: 0,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          background: done ? ACCENT : isNext ? '#fff' : ACCENT_BG,
+                          border: `2px solid ${done ? ACCENT : isNext ? ACCENT : ACCENT_LIGHT}`,
+                          boxShadow: isNext ? '0 0 0 3px rgba(59,91,219,.15)' : 'none',
                         }}>
-                          {lesson.title}
+                          {done
+                            ? <CheckIcon width={14} height={14} color="#fff" />
+                            : <span style={{ fontSize: 12, fontWeight: 800, color: ACCENT }}>{idx + 1}</span>
+                          }
                         </div>
-                        <div style={{ fontSize: 12, color: '#7A849E', marginTop: 2, lineHeight: 1.4 }}>
-                          {lesson.sub}
-                        </div>
-                      </div>
 
-                      <ArrowRightIcon width={15} height={15} color="#B0B8CC" />
-                    </button>
-                  )
-                })}
-              </div>
+                        {/* テキスト */}
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                            <span style={{
+                              fontSize: 14, fontWeight: done ? 500 : 700,
+                              color: done ? '#7A849E' : '#0F1523',
+                              textDecoration: done ? 'line-through' : 'none',
+                              letterSpacing: '-.01em',
+                            }}>
+                              {lesson.title}
+                            </span>
+                            {isNext && (
+                              <span style={{
+                                fontSize: 9, fontWeight: 800, color: '#fff',
+                                background: ACCENT, borderRadius: 4,
+                                padding: '1px 6px', letterSpacing: '.05em',
+                              }}>
+                                次
+                              </span>
+                            )}
+                          </div>
+                          <div style={{ fontSize: 12, color: '#7A849E', marginTop: 2, lineHeight: 1.4 }}>
+                            {lesson.sub}
+                          </div>
+                        </div>
+
+                        <ArrowRightIcon width={15} height={15} color={isNext ? ACCENT : '#B0B8CC'} />
+                      </button>
+                    )
+                  })}
+                </div>
+              )}
             </div>
           )
         })}

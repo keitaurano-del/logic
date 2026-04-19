@@ -31,7 +31,7 @@ import { LoginScreen } from './screens/LoginScreen'
 import { RoadmapScreen } from './screens/RoadmapScreen'
 import type { AIProblemSet } from './aiProblemStore'
 import { loadTheme, applyTheme } from './theme'
-import { loadGuestUser } from './guestUser'
+// import { loadGuestUser } from './guestUser'
 import { getCompletedCount } from './stats'
 import { isAdmin } from './admin'
 import { onAuthChange, logout, getInitialUser, type User } from './supabase'
@@ -150,7 +150,7 @@ function AppV3() {
   const userName = currentUser?.user_metadata?.full_name
     ?? currentUser?.user_metadata?.name
     ?? currentUser?.email
-    ?? loadGuestUser().id
+    ?? '思考トレーニー'
   const completed = getCompletedCount()
   const xp = completed * 100
   const level = Math.floor(xp / 1000) + 1

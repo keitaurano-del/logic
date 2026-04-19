@@ -194,7 +194,7 @@ function HomeMobile({
           <div style={{ display: 'flex', alignItems: 'center', gap: 5, background: '#EEF2FF', border: '1px solid #DBE4FF', borderRadius: 99, padding: '5px 12px' }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="#3B5BDB"><path d="M12 2c0 0-5 4-5 10a5 5 0 0 0 10 0c0-6-5-10-5-10zm0 14a2 2 0 0 1-2-2c0-2 2-4 2-4s2 2 2 4a2 2 0 0 1-2 2z"/></svg>
             <span style={{ fontSize: 13, fontWeight: 800, color: '#3B5BDB' }}>{streak}</span>
-            <span style={{ fontSize: 11, fontWeight: 600, color: '#748FFC' }}>streak</span>
+            <span style={{ fontSize: 11, fontWeight: 600, color: '#748FFC' }}>日連続</span>
           </div>
           <div style={{ width: 32, height: 32, borderRadius: 99, background: 'linear-gradient(135deg, #3B5BDB, #748FFC)' }} />
         </div>
@@ -202,6 +202,31 @@ function HomeMobile({
 
       {/* ── スクロールエリア ── */}
       <div style={{ padding: '16px 16px 96px', display: 'flex', flexDirection: 'column', gap: 12, overflowY: 'auto', flex: 1 }}>
+
+        {/* 初回ユーザー導線 */}
+        {completedSet.size === 0 && (
+          <button
+            onClick={() => onOpenLesson(20)}
+            style={{
+              background: 'linear-gradient(135deg, #F59E0B 0%, #F97316 100%)',
+              borderRadius: 20, padding: '20px', border: 'none',
+              cursor: 'pointer', textAlign: 'left', width: '100%',
+              position: 'relative', overflow: 'hidden',
+            }}
+          >
+            <div style={{ position: 'absolute', right: -20, top: -20, width: 120, height: 120, borderRadius: '50%', background: 'rgba(255,255,255,.1)', pointerEvents: 'none' }} />
+            <div style={{ fontSize: 28, marginBottom: 8 }}>👋</div>
+            <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 900, color: '#fff', letterSpacing: '-.02em', marginBottom: 4 }}>
+              まずはこの1問を解いてみよう！
+            </div>
+            <div style={{ fontSize: 13, color: 'rgba(255,255,255,.8)', marginBottom: 14 }}>
+              MECE—論理的思考の基本を、3分で学べます
+            </div>
+            <div style={{ background: '#fff', borderRadius: 12, padding: '10px 16px', fontSize: 14, fontWeight: 700, color: '#F97316', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+              レッスンを始める →
+            </div>
+          </button>
+        )}
 
         {/* 今日の一問カード */}
         <div
@@ -218,9 +243,9 @@ function HomeMobile({
             {t('home.fermiQuestion')}
           </div>
           <div style={{ fontSize: 12, color: 'rgba(255,255,255,.5)', marginBottom: 18, display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span>Fermi Estimation</span>
+            <span>フェルミ推定</span>
             <div style={{ width: 3, height: 3, borderRadius: '50%', background: 'rgba(255,255,255,.3)' }} />
-            <span>Level 2</span>
+            <span>レベル 2</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
             <div style={{ flex: 1, height: 2, background: 'rgba(255,255,255,.2)', borderRadius: 99, overflow: 'hidden' }}>
