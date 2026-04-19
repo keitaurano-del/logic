@@ -14,9 +14,17 @@
 - SCRUM-75: Supabase Google OAuth → 設定済み確認（Client ID/Secret 設定済み）
 - SCRUM-76: LoginScreen刷新 → Google認証のみに変更、メール認証廃止、SITデプロイ済み
 
+### 2026-04-19 完了
+- PM・簿記レッスン全削除（pmbokLessons.ts, boki3Exercises.ts, MockExam関連 — 5ファイル削除, 13ファイル修正, 2682行削除）
+- 新レッスン18本追加（6テーマ×3レッスン）: 仮説思考(50-52), 課題設定(53-55), デザインシンキング(56-58), ラテラルシンキング(59-61), アナロジー思考(62-64), システムシンキング(65-67)
+- HomeScreenカテゴリ再構成: ロジカル/ケース面接/思考法の3パス
+- Roadmapに8パス追加（合計9パス）
+- SITデプロイ済み（develop push）
+
 ### 次のアクション
 - SCRUM-77: Capacitorネイティブ用Google認証プラグイン（Android実機対応）
 - SCRUM-78: レッスンコンテンツの噛み砕き
+- docs/SCREEN_DESIGN.md 作成
 
 ---
 
