@@ -1,0 +1,364 @@
+key	ja	en
+common.back	戻る	Back
+common.next	次へ	Next
+common.skip	スキップ	Skip
+common.start	はじめる	Start
+common.complete	完了	Done
+common.cancel	キャンセル	Cancel
+common.confirm	確認	Confirm
+common.delete	削除	Delete
+common.save	保存	Save
+common.loading	読み込み中...	Loading...
+common.error	エラーが発生しました	Something went wrong
+common.retry	もう一度試す	Try again
+nav.home	ホーム	Home
+nav.lessons	レッスン	Lessons
+nav.profile	プロフィール	Profile
+home.welcomeTitle	Logic へようこそ	Welcome to Logic
+home.welcomeDesc	ロジカルシンキング・ケース面接・クリティカルシンキングを 3 分から学べます。今日の 1 問から始めよう →	Master logical thinking in 3-minute lessons. Start with today\'s problem →
+home.welcomeBadge	START	START
+home.continueTitle	続きから	Continue learning
+home.placementTitle	偏差値 {score} のおすすめ	For your level ({score})
+home.todayProblem	今日の1問	Today\'s problem
+home.todayProblemDone	✓ 完了	✓ Done
+home.todayProblemNew	NEW	NEW
+home.todayProblemLoading	準備中...	Loading...
+home.streakDays	日連続学習中	day streak
+home.streakStart	今日から始めよう	Start today
+home.completedLessons	完了レッスン	Completed
+home.totalStudyTime	総学習時間	Study time
+home.flashcardTitle	今日のおすすめ	Recommended for today
+home.flashcardEmpty	レッスンを完了するとカードが作られます	Complete a lesson to create flashcards
+home.flashcardDue	{count}枚の復習待ち	{count} cards to review
+home.flashcardDone	今日の復習完了!	All caught up for today!
+home.aiGenTitle	AIに問題を作ってもらう	AI-generated problems
+home.aiGenDesc	あなた専用の練習問題を生成	Practice problems tailored to you
+home.roleplayTitle	AIロールプレイで練習	AI roleplay practice
+home.roleplayDesc	論理思考フレームワークを実務シーンで	Use logic frameworks in real workplace scenarios
+home.coffeebreakTitle	コーヒーブレイク	Coffee Break
+home.coffeebreakDesc	3分で読める日常シーンの小話	3-minute everyday-life logic stories
+home.fermiTitle	フェルミ推定	Fermi estimation
+home.fermiDesc	分解思考を実践する練習	Practice decomposition thinking
+home.badgeNew	NEW	NEW
+home.badgeRec	REC	REC
+onboarding.slide1.title	ロジカルシンキングを毎日 3 分で	Logical thinking, 3 minutes a day
+onboarding.slide1.body	MECE・ロジックツリー・演繹/帰納・形式論理。ビジネスで使える論理思考のフレームワークを、短いレッスンで体系的に学べます。	MECE, logic trees, deduction & induction, formal logic — the frameworks consultants and analysts use, learned in short, focused lessons.
+onboarding.slide2.title	AI が「あなた専用」で練習相手に	AI as your personal sparring partner
+onboarding.slide2.body	ロールプレイ、フェルミ推定、AI 問題生成、コーヒーブレイクの日常シーン。座学だけでなく、実践しながら身につけられます。	Roleplay scenarios, Fermi estimation, AI problem generation, coffee-break stories. Learn by doing, not just reading.
+onboarding.slide3.title	まずは偏差値テストで現在地を知る	Start with a placement test
+onboarding.slide3.body	8 問のプレイスメントテストであなたの論理思考レベルを判定し、あなたに合った学習ルートをおすすめします。3 分で終わります。	8 questions in about 3 minutes. We\'ll find your current level and recommend the right learning path for you.
+onboarding.toPlacement	プレイスメントテストへ	Take placement test
+placement.title	プレイスメントテスト	Placement Test
+placement.lead	あなたの論理思考力を 8 問でチェックします。所要時間は約 3 分。\n結果から偏差値を出し、レベルに合ったおすすめレッスンを表示します。	Test your logical thinking with 8 questions in about 3 minutes.\nWe\'ll calculate your score and recommend lessons that match your level.
+placement.questionCount	{count} 問・約 3 分	{count} questions · ~3 min
+placement.topicLine	MECE / 演繹 / 帰納 / 形式論理	MECE / Deduction / Induction / Formal logic
+placement.nicknameLabel	ランキング表示名	Ranking display name
+placement.nicknamePlaceholder	ニックネーム	Nickname
+placement.startButton	はじめる	Start
+placement.skipButton	あとでやる	Skip for now
+placement.questionPrefix	Q{n} / {total}	Q{n} of {total}
+placement.correct	✓ 正解	✓ Correct
+placement.wrong	✗ 不正解	✗ Incorrect
+placement.nextQuestion	次の問題へ	Next question
+placement.viewResult	結果を見る	See results
+placement.resultTitle	あなたの偏差値	Your score
+placement.correctCount	{correct} / {total} 問正解	{correct} of {total} correct
+placement.recommended	あなたへのおすすめレッスン	Recommended lessons for you
+placement.recommendedDesc	レベルに合わせて、この順番で学ぶのがおすすめです。	Learn in this order, matched to your level.
+placement.beginButton	始める	Begin
+profile.title	プロフィール	Profile
+profile.deviation	📊 偏差値を見る	📊 Your stats
+profile.theme	🎨 テーマ設定	🎨 Theme
+profile.ranking	🏆 偏差値ランキング	🏆 Ranking
+profile.privacy	📄 プライバシーポリシー	📄 Privacy Policy
+profile.terms	📑 利用規約	📑 Terms of Service
+profile.tokushoho	📜 特定商取引法に基づく表記	📜 Specified Commercial Transaction Act (JP)
+profile.deleteData	🗑 全データを削除	🗑 Delete all data
+profile.deleteConfirm	全ての学習データ・偏差値・ニックネーム・テーマ設定を削除します。\n\nこの操作は取り消せません。本当に削除しますか?	This will delete all your learning data, score, nickname, and theme settings.\n\nThis cannot be undone. Are you sure?
+profile.deleteSuccess	全データを削除しました。アプリを再読み込みします。	All data deleted. Reloading the app.
+profile.feedback	💡 ご要望・フィードバック	💡 Send feedback
+profile.planLabel	プラン	Plan
+profile.planBeta	ベータ版 — 全機能無料	Beta — all features free
+profile.reminder	🔔 今日の1問リマインダー	🔔 Daily problem reminder
+profile.reminderTime	毎日の通知時刻	Notification time
+profile.reminderWebNote	(アプリ版でのみ通知が届きます)	(notifications work in the app version only)
+profile.reminderNoPermission	通知の許可が必要です。設定アプリから Logic の通知を許可してください。	Notification permission is required. Please enable notifications for Logic in your settings.
+profile.languageTitle	言語	Language
+profile.languageJa	日本語	日本語
+profile.languageEn	English	English
+category.logical	ロジカルシンキング	Logical Thinking
+lesson.completedH1	レッスン完了！	Lesson complete!
+lesson.completedScoreLine	{correct} / {total} 問正解	{correct} of {total} correct
+lesson.completedPerfect	パーフェクト！素晴らしい理解力です。	Perfect! Excellent understanding.
+lesson.completedGood	よくできました！復習して完璧にしましょう。	Well done! Review to lock it in.
+lesson.completedRetry	もう一度復習してみましょう！	Try this lesson again!
+lesson.backHome	ホームに戻る	Back to home
+lesson.nextLesson	次のレッスンへ	Next lesson
+lesson.next	次へ	Next
+lesson.viewResult	結果を見る	See results
+lesson.correctMark	正解！	Correct!
+lesson.wrongMark	不正解...	Incorrect...
+lesson.report	🚩 この問題を報告	🚩 Report this question
+roleplay.title	AIロールプレイ	AI Roleplay
+roleplay.heading	論理思考を実務で使う練習	Practice logical thinking in real scenarios
+roleplay.lead	ビジネスシーンでMECE・Why So/So What・ピラミッド原則・ロジックツリーを使い、AI相手に練習しよう。	Use MECE, So What/Why So, Pyramid Principle, and Logic Trees in business situations against an AI counterpart.
+roleplay.quotaPrefix	無料: 今月の残り	Free this month:
+roleplay.partnerLabel	相手:	Counterpart:
+roleplay.notFound	シチュエーション未検出	Scenario not found
+roleplay.finish	終了	End
+roleplay.turnIndicator	ターン {n}/{total}	Turn {n} of {total}
+roleplay.thinking	考え中...	Thinking...
+roleplay.you	あなた	You
+roleplay.choicesLabel	あなたの返答を選んでください	Choose your response
+roleplay.commError	(通信エラーが発生しました)	(A network error occurred)
+roleplay.resultTitle	結果	Results
+roleplay.scoring	採点中...	Scoring...
+roleplay.scoreH3	採点	Score
+roleplay.overallH4	総評	Overall feedback
+roleplay.summaryH3	振り返り	Summary
+roleplay.goodPointsH4	👍 良かった点	👍 Strong points
+roleplay.improvementsH4	💡 改善ポイント	💡 Areas to improve
+roleplay.backToList	シチュエーション一覧へ	Back to scenarios
+coffeebreak.title	コーヒーブレイク	Coffee Break
+coffeebreak.heading	日常で使える論理思考	Logical thinking for everyday life
+coffeebreak.lead	パートナー・買い物・旅行・友達との会話。仕事じゃない場面で論理思考がどう効くか、3 分のクイズで体験。	Partners, shopping, travel, conversations with friends — try a 3-minute quiz to see how logic helps outside of work.
+fermi.title	フェルミ推定	Fermi Estimation
+fermi.context	フェルミ推定は、MECE やロジックツリーで学んだ分解思考を実際に使う練習です。正確な答えより、	Fermi estimation puts the decomposition skills from MECE and logic trees to real use. 
+fermi.contextStrong	どう考えたかのプロセス	How you broke it down
+fermi.contextEnd	が大切です。	 matters more than the exact answer.
+fermi.questionTag	QUESTION	QUESTION
+fermi.hint	💡 まずは自分なりに分解してみましょう。提出後に概算解と計算ロジックも提示します。	💡 Decompose the problem in your own way. After you submit, you\'ll see the worked answer and logic.
+fermi.thinkButton	考えてみる	Start thinking
+fermi.placeholder	例:\n人口 × 1 世帯あたり人数 × コンビニ利用世帯率 × 1 日の来客数...\n\n思ったように分解してみてください。式でも箇条書きでも OK。	Example:\nUS population × households per capita × Starbucks visit rate × daily customers...\n\nDecompose however you like — formulas or bullet points are both fine.
+fermi.submitButton	AI にフィードバックをもらう	Get AI feedback
+fermi.submitting	フィードバックを生成中...	Generating feedback...
+fermi.backButton	戻る	Back
+fermi.recapLabel	あなたの分解	Your decomposition
+fermi.upsellH	もっと練習したい?	Want more practice?
+fermi.upsellBody	プレミアムなら毎日新しい AI 生成問題でこの体験を続けられます (¥500/月)。	Premium gives you fresh AI-generated problems every day ($5/month).
+fermi.upsellBtn	プレミアムを試す (7 日間無料)	Try Premium (7 days free)
+fermi.nextAi	次の AI 生成問題へ	Next AI-generated problem
+fermi.generating	生成中...	Generating...
+fermi.tryAnother	別の問題を試す	Try another problem
+fermi.relatedLabel	関連レッスン	Related lessons
+fermi.relatedDecompose	分解をもっと磨きたい → ロジックツリー(レッスン一覧から)	Sharpen decomposition → Logic Tree (in Lessons)
+fermi.relatedMece	網羅性を確認したい → MECE(レッスン一覧から)	Check exhaustiveness → MECE (in Lessons)
+fermi.errorFeedback	フィードバックの取得に失敗しました。もう一度試してください。	Failed to fetch feedback. Please try again.
+fermi.errorQuestion	AI 問題の生成に失敗しました	Failed to generate an AI problem
+theme.title	テーマ設定	Theme
+theme.modeSection	背景モード	Background mode
+theme.customSection	カスタムカラー	Custom color
+theme.accentSection	アクセントカラー	Accent color
+theme.customHint	入力した色がアクセントカラーとして即座に反映されます	The color is applied immediately as your accent
+theme.contrastH	ボタン文字の読みやすさ	Button text readability
+theme.contrastDetail	白文字 × この色 = コントラスト比 {ratio}:1 ({label})	White text × this color = contrast {ratio}:1 ({label})
+theme.contrastWarn	⚠ この色は背景に白文字を重ねると読みにくいため、ボタン上の文字色は自動的に黒に切り替わります(WCAG AA 基準維持)	⚠ White text on this color is hard to read, so button labels are automatically switched to black to keep WCAG AA compliance.
+theme.accentContrastH	ℹ アクセントカラーの読みやすさ	ℹ Accent color readability
+theme.accentContrastDetail	白文字 × {name} = {ratio}:1 ({label})	White text × {name} = {ratio}:1 ({label})
+theme.accentContrastNote	ボタン上の文字は自動的に読みやすい色に調整されます(WCAG AA 基準)	Button text is automatically adjusted for readability (WCAG AA).
+theme.customDisabled	カスタムモード使用中はアクセントカラーは無効です	Accent color is disabled while in custom mode
+theme.currentAccent	現在: {name}	Current: {name}
+theme.upgrade	プレミアムにアップグレード →	Upgrade to Premium →
+theme.mode.light.name	ライト	Light
+theme.mode.light.desc	明るく落ち着いたクリーム系	Bright, calm cream tones
+theme.mode.dark.name	ダーク	Dark
+theme.mode.dark.desc	目に優しい暗色背景	Easy on the eyes
+theme.mode.enterprise.name	エンタープライズ	Enterprise
+theme.mode.enterprise.desc	ネイビー×シルバーの信頼感	Navy and silver — confident
+theme.mode.startup.name	スタートアップ	Startup
+theme.mode.startup.desc	ビビッドなグリーン×オレンジ	Vivid green and orange
+theme.mode.custom.name	カスタムカラー	Custom color
+theme.mode.custom.desc	好きな色を HEX で指定	Pick any color via HEX
+theme.accent.orange	オレンジ	Orange
+theme.accent.blue	インディゴ	Indigo
+theme.accent.purple	パープル	Purple
+theme.accent.green	グリーン	Green
+theme.accent.pink	ピンク	Pink
+theme.accent.cyan	シアン	Cyan
+rank.title	ランク	Rank
+rank.totalPoints	合計ポイント	Total Points
+rank.completedLessons	完了レッスン	Lessons done
+rank.howToEarn	ポイントのかせぎ方	How to earn points
+rank.earn.lesson	レッスン完了	Complete a lesson
+rank.earn.studyMin	学習時間	Study time
+rank.allRanks	全ランク一覧	All ranks
+language.description	言語を選択すると即座に切り替わります。	The app will switch immediately after you select a language.
+completed.title	完了レッスン	Completed Lessons
+completed.lessonsDone	完了したレッスン	lessons completed
+completed.empty	まだレッスンを完了していません	No lessons completed yet
+studytime.title	総学習時間	Study Time
+studytime.totalLabel	合計学習時間	Total Study Time
+studytime.studyDays	学習日数	Study Days
+studytime.avgPerDay	1日平均	Avg / Day
+studytime.last30Days	過去30日	Last 30 Days
+studytime.last30Chart	過去30日の学習状況	Activity — last 30 days
+studytime.recentDays	最近7日間	Recent 7 days
+streak.title	連続学習記録	Streak
+streak.currentLabel	日間連続学習	day streak
+streak.dayStreak	日間連続学習	Day Streak
+streak.weekStreak	週間連続学習	Week Streak
+streak.records	私の記録	My Records
+streak.longestStreak	最長ストリーク	Longest Streak
+streak.totalStudyDays	合計学習日数	Total Study Days
+streak.days	日	days
+streak.month	{year}年{month}月	{year}/{month}
+settings.title	設定	Settings
+settings.section.membership	メンバーシップ	Membership
+settings.membership.manage	メンバーシップ管理	Manage Membership
+settings.membership.planValue	無料プラン	Free Plan
+settings.membership.restorePurchases	購読履歴を取得する	Restore Purchases
+settings.membership.account	アカウント管理	Account
+settings.section.general	一般	General
+settings.general.notifications	通知設定	Notifications
+settings.general.preferences	環境設定	Preferences
+settings.general.clearCache	キャッシュの消去	Clear Cache
+settings.clearCacheConfirm	全ての学習データ・設定を削除します。この操作は取り消せません。本当に削除しますか？	This will delete all study data and settings. This cannot be undone. Continue?
+settings.section.support	サポート	Support
+settings.support.helpCenter	サポートセンター	Help Center
+settings.support.appLanguage	アプリの言語	App Language
+settings.support.terms	利用規約と個人情報について	Terms & Privacy
+settings.section.account	アカウント	Account
+settings.loginGoogle	Googleでログイン	Sign in with Google
+settings.loginEmail	メールアドレスでログイン	Sign in with email
+settings.logout	ログアウト	Log out
+settings.section.notifications	通知	Notifications
+settings.reminder	今日の1問リマインダー	Daily problem reminder
+settings.reminderTime	毎日 {h}:{m}	Daily at {h}:{m}
+settings.section.app	アプリ	App
+settings.section.data	データ	Data
+settings.notificationsWebOnly	アプリ版のみ有効です	Available in the app version only
+auth.emailLabel	メールアドレス	Email
+auth.passwordLabel	パスワード	Password
+auth.loginTab	ログイン	Log in
+auth.signupTab	新規登録	Sign up
+auth.loginBtn	ログインする	Log in
+auth.signupBtn	登録する	Sign up
+auth.firebaseNotConfigured	Firebase未設定（開発中）	Firebase not configured (dev)
+auth.wrongPassword	パスワードが間違っています	Incorrect password
+auth.userNotFound	メールアドレスが見つかりません	Email not found
+auth.emailInUse	このメールアドレスは既に使われています	Email already in use
+auth.weakPassword	パスワードは6文字以上にしてください	Password must be at least 6 characters
+auth.invalidEmail	メールアドレスの形式が正しくありません	Invalid email address
+auth.genericError	ログインに失敗しました	Login failed
+auth.orDivider	または	or
+auth.tagline	論理的思考を、毎日の習慣に	Train logical thinking, every day
+auth.welcomeTitle	ようこそ	Welcome
+auth.welcomeDesc	Googleアカウントでかんたんにログインできます	Sign in easily with your Google account
+auth.googleBtn	Googleでログイン	Continue with Google
+auth.loggingIn	ログイン中...	Signing in...
+auth.termsNote	ログインすることで、利用規約とプライバシーポリシーに同意したものとみなされます	By signing in, you agree to our Terms of Service and Privacy Policy
+ranking.title	偏差値ランキング	Score Ranking
+ranking.ctaTitle	まだプレイスメントテストを受けていません	You haven\'t taken the placement test yet
+ranking.ctaDesc	テストを受けると、偏差値ランキングに参加できます。	Take the test to join the score ranking.
+ranking.ctaButton	テストを受ける	Take the test
+ranking.loading	読み込み中...	Loading...
+ranking.error	ランキングの取得に失敗しました	Failed to load the ranking
+ranking.empty	まだ参加者がいません。	No participants yet.
+ranking.participants	参加者	Participants
+ranking.yourRank	あなたの順位	Your rank
+ranking.deviation	偏差値	Score
+ranking.unitPeople	人	
+ranking.unitRank	位	
+ranking.topPercent	上位 {pct}%	Top {pct}%
+ranking.topListH	偏差値ランキング	Deviation ranking
+ranking.youBadge	YOU	YOU
+ranking.deviationLabel	偏差値	Score
+ranking.retake	もう一度テストを受ける	Retake the test
+ranking.leaderboard	全国ランキング	NATIONAL LEADERBOARD
+label.question	問題	QUESTION
+label.answer	解答	ANSWER
+label.fermi	フェルミ推定	Fermi Estimation
+label.todaysChallenge	今日の問題	
+label.todaysResult	今日の結果	
+label.level	Lv.	Lv.
+label.xpUnit	XP	XP
+label.hint	ヒント	HINT
+label.yourAnswer	あなたの回答	Your Answer
+label.youBadge	プロフィール	YOU
+label.ptUnit	pt	pt
+label.ptPerMin	+2 pt / 分	+2 pt / min
+label.daysAgo	{n}日前	{n} days ago
+label.today	今日	Today
+home.subtitle	今日も一歩ずつ。	Keep going, one step at a time.
+home.subtitleLong	今日も一歩ずつ。昨日より少しだけ賢くなろう。	One step at a time. A little wiser than yesterday.
+home.greetingSep	、	, 
+home.todayRecommended	今日のおすすめ	
+home.categories	カテゴリ	Categories
+home.viewAll	全て見る →	View all →
+home.startLesson	スタート	Start
+home.fermiQuestion	日本にある電柱の本数はどれくらい?	How many utility poles are there in Japan?
+home.placementIncomplete	プレースメントテスト未完了	Placement test not done
+home.streakRecovery	今日中にレッスンを完了すれば連続日数を維持できます（残り {hours} 時間 {minutes} 分）	Complete a lesson today to keep your streak ({hours}h {minutes}m left)
+home.dayStreakLabel	日間連続	DAY STREAK
+home.thisWeek	今週	This week
+home.weekProgress	{n} / 7 日	{n} / 7 days
+home.streakProtectionLabel	ストリーク保護中	Streak protection active
+home.nationalRanking	全国ランキング	NATIONAL RANKING
+home.levelProgress	レベル進捗	LEVEL PROGRESS
+home.pointsToday	+{n} 今日	+{n} today
+home.placementDone	判定済み	Placement
+home.totalEarned	合計獲得	Total earned
+home.greeting.night1	まだ起きてる?	Still up?
+home.greeting.morning	おはよう	Good morning
+home.greeting.afternoon	こんにちは	Good afternoon
+home.greeting.evening	こんばんは	Good evening
+home.greeting.night2	お疲れさま	Good night
+home.category.fermi	フェルミ推定	Fermi Estimation
+home.category.logic	論理パズル	Logic Puzzles
+home.category.case	ケース面接	Case Interview
+roadmap.title	学習パス	Learning Path
+roadmap.subtitle	順番に進めると体系的に身につきます	Follow the path to build skills step by step
+rank.currentBadge	現在	NOW
+profile.statStreak	連続日数	Streak
+profile.statCompleted	完了レッスン	Lessons
+profile.statStudyTime	学習時間	Study
+profile.points	ポイント	Points
+profile.nationalRankingCard	全国ランキング	National Ranking
+profile.categoryProgress	カテゴリ進捗	Category Progress
+profile.statStreakDays	連続学習日数	Day Streak
+profile.statTotalStudyTime	総学習時間	Study Time
+dailyFermi.title	デイリーフェルミ	Daily Fermi
+dailyFermi.heading	今日のフェルミ問題	
+dailyFermi.showHint	ヒントを見る	Show hint
+dailyFermi.answerLabel	あなたの推定アプローチ	Your estimation approach
+dailyFermi.feedbackTitle	AI フィードバック	AI Feedback
+report.title	問題を報告	Report a Problem
+report.eyebrow	FEEDBACK	FEEDBACK
+report.heading	誤りや問題点を報告	Report an error
+report.issueTypeLabel	報告の種別	Issue type
+report.issueTypePlaceholder	種別を選択してください	Select an issue type
+report.commentLabel	コメント（任意）	Comment (optional)
+report.commentPlaceholder	詳しい内容を教えてください	Please describe the issue in detail
+report.submitButton	報告する	Submit report
+report.successTitle	報告を受け付けました	Report received
+report.successBody	ご報告ありがとうございます。内容を確認次第、メールでご連絡いたします。	Thank you for your feedback. We will review it and get back to you by email.
+report.aiProblemTitle	AI問題	AI Problem
+report.fermiTitle	フェルミ推定	Fermi Estimation
+report.dailyFermiTitle	デイリーフェルミ	Daily Fermi
+report.aiLimitTitle	月間上限に達しました	Monthly limit reached
+report.aiLimitBody	スタンダードプランでは月30問まで生成できます。プレミアムにアップグレードすると無制限になります。	The Standard plan allows up to 30 AI-generated problems per month. Upgrade to Premium for unlimited access.
+report.aiLimitUpgrade	プレミアムにアップグレード	Upgrade to Premium
+report.aiLimitCount	今月の生成数	Problems generated this month
+report.linkText	誤りを報告する	Report an error
+onboarding.step1.title	論理的思考力を、毎日5分で鍛えよう	Build logical thinking, 5 minutes a day
+onboarding.step1.body	フェルミ推定・ケース面接・ロジカルシンキングを、AIと一緒に実践トレーニング。	Fermi estimation, case interviews, and logical thinking — practiced with AI.
+onboarding.step2.title	目標を教えてください	What is your goal?
+onboarding.step2.body	あなたに合ったコンテンツをおすすめします。	We will recommend content tailored for you.
+onboarding.goal.consulting	コンサル / MBB 志望	Consulting / MBB
+onboarding.goal.consultingDesc	ケース面接・フェルミ推定を徹底強化	Case interviews and Fermi estimation deep dives
+onboarding.goal.business	ビジネスパーソン	Business professional
+onboarding.goal.businessDesc	日常業務のロジカル思考を鍛える	Sharpen logical thinking for daily work
+onboarding.goal.other	その他	Other
+onboarding.goal.otherDesc	幅広い論理的思考トレーニング	Broad logical thinking training
+onboarding.step3.title	7日間、無料で試せます	Try free for 7 days
+onboarding.trialBadge	7日間無料トライアル	7-Day Free Trial
+onboarding.trialDesc	トライアル期間中はすべての機能が使い放題。いつでもキャンセルできます。	All features unlocked during trial. Cancel anytime.
+onboarding.standard.f1	全レッスン・クイズ	All lessons & quizzes
+onboarding.standard.f2	AI問題生成 月30問	AI problem generation (30/mo)
+onboarding.standard.f3	フェルミ推定・ロードマップ	Fermi estimation & roadmap
+onboarding.premium.f1	スタンダードの全機能	Everything in Standard
+onboarding.premium.f2	AI問題生成 無制限	Unlimited AI problem generation
+onboarding.premium.f3	全ロールプレイシナリオ	All roleplay scenarios
+onboarding.premium.f4	ケース面接 深掘りモード	Case interview deep dive mode
+onboarding.ctaButton	今すぐ始める（カード登録へ）	Start now (card registration)
+onboarding.ctaNote	トライアル終了後は月額¥500（スタンダード）が自動的に請求されます	After the trial, Standard plan (¥500/mo) will be charged automatically
