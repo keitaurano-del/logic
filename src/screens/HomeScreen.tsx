@@ -20,7 +20,7 @@ import { getLocale, t } from '../i18n'
 interface HomeScreenProps {
   userName: string
   onOpenLesson: (lessonId: number) => void
-  onOpenCategory: (category: 'fermi' | 'logic' | 'case') => void
+  onOpenCategory: (category: 'fermi' | 'logic' | 'case' | 'thinking') => void
   onOpenRank: () => void
   onOpenDeviation: () => void
   onOpenRanking: () => void
@@ -38,16 +38,17 @@ interface HomeScreenProps {
 }
 
 type Category = {
-  id: 'fermi' | 'logic' | 'case'
+  id: 'fermi' | 'logic' | 'case' | 'thinking'
   icon: ReactNode
   name: string
   lessonIds: number[]
 }
 
 const ALL_CATEGORIES: (Category & { adminOnly?: boolean })[] = [
-  { id: 'fermi', icon: <BarChartIcon width={22} height={22} />,  name: t('home.category.fermi'), lessonIds: [25, 26, 27, 24] }, // 演繹法/帰納法/形式論理/ケーススタディ
-  { id: 'logic', icon: <BrainIcon width={22} height={22} />,     name: t('home.category.logic'), lessonIds: [20, 21, 22, 23] }, // MECE/ロジックツリー/SoWhat/ピラミッド
+  { id: 'logic', icon: <BrainIcon width={22} height={22} />,     name: t('home.category.logic'), lessonIds: [20, 21, 22, 23] },
+  { id: 'fermi', icon: <BarChartIcon width={22} height={22} />,  name: t('home.category.fermi'), lessonIds: [25, 26, 27, 24] },
   { id: 'case',  icon: <BriefcaseIcon width={22} height={22} />, name: t('home.category.case'),  lessonIds: [28, 29, 35, 36] },
+  { id: 'thinking', icon: <ZapIcon width={22} height={22} />,    name: '思考法', lessonIds: [40, 41, 42, 43, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67] },
 ]
 
 
@@ -148,20 +149,9 @@ function HomeMobile({
 
   const PATHS = [
     {
-      id: 'fermi' as const,
-      name: 'フェルミ推定',
-      lessonIds: [25, 26, 27, 24],
-      firstId: 22,
-      iconBg: '#EEF2FF',
-      iconBorder: '#DBE4FF',
-      icon: (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="#3B5BDB"><rect x="4" y="2" width="16" height="20" rx="2"/><rect x="7" y="5" width="10" height="4" rx="1" fill="white"/><circle cx="8" cy="13" r="1.2" fill="white"/><circle cx="12" cy="13" r="1.2" fill="white"/><circle cx="16" cy="13" r="1.2" fill="white"/><circle cx="8" cy="17" r="1.2" fill="white"/><circle cx="12" cy="17" r="1.2" fill="white"/><rect x="14.8" y="15.8" width="2.4" height="2.4" rx=".4" fill="white"/></svg>
-      ),
-    },
-    {
       id: 'logic' as const,
       name: 'ロジカルシンキング',
-      lessonIds: [20, 21, 22, 23],
+      lessonIds: [20, 21, 22, 23, 25, 26, 27, 24],
       firstId: 20,
       iconBg: '#EEF2FF',
       iconBorder: '#DBE4FF',
@@ -178,6 +168,17 @@ function HomeMobile({
       iconBorder: '#FED7AA',
       icon: (
         <svg width="22" height="22" viewBox="0 0 24 24" fill="#F79009"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" fill="none" stroke="#F79009" strokeWidth="2"/><line x1="12" y1="12" x2="12" y2="16" stroke="white" strokeWidth="2"/><line x1="10" y1="14" x2="14" y2="14" stroke="white" strokeWidth="2"/></svg>
+      ),
+    },
+    {
+      id: 'thinking' as const,
+      name: '思考法',
+      lessonIds: [40, 41, 42, 43, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67],
+      firstId: 50,
+      iconBg: '#F0FDF4',
+      iconBorder: '#BBF7D0',
+      icon: (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="#16A34A"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
       ),
     },
   ]

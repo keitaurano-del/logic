@@ -31,6 +31,12 @@ import { logicLessonMapEn } from './logicLessonsEn'
 import { getLocale } from './i18n'
 import { caseLessonMap } from './caseLessons'
 import { criticalLessonMap } from './criticalLessons'
+import { hypothesisLessonMap } from './hypothesisLessons'
+import { problemSettingLessonMap } from './problemSettingLessons'
+import { designThinkingLessonMap } from './designThinkingLessons'
+import { lateralThinkingLessonMap } from './lateralThinkingLessons'
+import { analogyThinkingLessonMap } from './analogyThinkingLessons'
+import { systemsThinkingLessonMap } from './systemsThinkingLessons'
 
 // Logic lessons swap by locale
 const _activeLogicLessons = (): Record<number, LessonData> =>
@@ -42,12 +48,20 @@ export const allLessons: Record<number, LessonData> = new Proxy({} as Record<num
       ..._activeLogicLessons(),
       ...caseLessonMap,
       ...criticalLessonMap,
+      ...hypothesisLessonMap,
+      ...problemSettingLessonMap,
+      ...designThinkingLessonMap,
+      ...lateralThinkingLessonMap,
+      ...analogyThinkingLessonMap,
+      ...systemsThinkingLessonMap,
     }
     return base[prop as unknown as number]
   },
   has(_t, prop) {
     const base: Record<number, LessonData> = {
       ..._activeLogicLessons(), ...caseLessonMap, ...criticalLessonMap,
+      ...hypothesisLessonMap, ...problemSettingLessonMap, ...designThinkingLessonMap,
+      ...lateralThinkingLessonMap, ...analogyThinkingLessonMap, ...systemsThinkingLessonMap,
     }
     return prop in base
   },

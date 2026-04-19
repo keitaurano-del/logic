@@ -27,13 +27,31 @@ const LESSON_MAP: Record<string, LessonMeta> = {
   'lesson-41': { name: '論理的誤謬を見破る',        category: 'クリティカルシンキング' },
   'lesson-42': { name: 'データを正しく読む',        category: 'クリティカルシンキング' },
   'lesson-43': { name: '問いを立てる力',           category: 'クリティカルシンキング' },
+  'lesson-50': { name: '仮説思考入門',             category: '仮説思考' },
+  'lesson-51': { name: '仮説の立て方と検証',       category: '仮説思考' },
+  'lesson-52': { name: '仮説ドリブンの課題解決',   category: '仮説思考' },
+  'lesson-53': { name: '課題設定入門',             category: '課題設定' },
+  'lesson-54': { name: 'イシュー分析',             category: '課題設定' },
+  'lesson-55': { name: '課題設定実践',             category: '課題設定' },
+  'lesson-56': { name: 'デザインシンキング入門',   category: 'デザインシンキング' },
+  'lesson-57': { name: '共感マップとペルソナ',     category: 'デザインシンキング' },
+  'lesson-58': { name: 'デザインシンキング実践',   category: 'デザインシンキング' },
+  'lesson-59': { name: 'ラテラルシンキング入門',   category: 'ラテラルシンキング' },
+  'lesson-60': { name: 'ラテラルの技法',           category: 'ラテラルシンキング' },
+  'lesson-61': { name: 'ラテラル実践',             category: 'ラテラルシンキング' },
+  'lesson-62': { name: 'アナロジー思考入門',       category: 'アナロジー思考' },
+  'lesson-63': { name: 'アナロジーの技法',         category: 'アナロジー思考' },
+  'lesson-64': { name: 'アナロジー実践',           category: 'アナロジー思考' },
+  'lesson-65': { name: 'システムシンキング入門',   category: 'システムシンキング' },
+  'lesson-66': { name: 'システム原型',             category: 'システムシンキング' },
+  'lesson-67': { name: 'システムシンキング実践',   category: 'システムシンキング' },
   'fermi':          { name: 'フェルミ推定',      category: 'AI練習' },
   'daily-problem':  { name: '今日の問題',        category: 'デイリー' },
   'flashcards':     { name: 'フラッシュカード',  category: '復習' },
   'placement-test': { name: 'プレイスメントテスト', category: 'テスト' },
 }
 
-const CAT_ORDER = ['ロジカルシンキング', 'ケース面接', 'クリティカルシンキング', 'AI練習', 'デイリー', '復習', 'テスト']
+const CAT_ORDER = ['ロジカルシンキング', 'ケース面接', 'クリティカルシンキング', '仮説思考', '課題設定', 'デザインシンキング', 'ラテラルシンキング', 'アナロジー思考', 'システムシンキング', 'AI練習', 'デイリー', '復習', 'テスト']
 
 function catColor(cat: string): string {
   const map: Record<string, string> = {
@@ -41,6 +59,12 @@ function catColor(cat: string): string {
     'フェルミ推定':       '#7C3AED',
     'ケース面接':         '#0891B2',
     'クリティカルシンキング': '#059669',
+    '仮説思考':             '#DC2626',
+    '課題設定':             '#7C3AED',
+    'デザインシンキング':   '#0891B2',
+    'ラテラルシンキング':   '#DB2777',
+    'アナロジー思考':       '#D97706',
+    'システムシンキング':   '#2563EB',
     'AI練習':             '#D97706',
     'デイリー':           '#DC2626',
     '復習':               '#6366F1',
