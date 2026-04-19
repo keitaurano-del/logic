@@ -5,6 +5,17 @@ import { Button } from '../components/Button'
 import { API_BASE } from './apiBase'
 import { t, getLocale } from '../i18n'
 
+// デイリーフェルミ完了状態管理
+const DAILY_FERMI_KEY = 'logic-daily-fermi-done'
+export function isDailyFermiDone(): boolean {
+  const saved = localStorage.getItem(DAILY_FERMI_KEY)
+  if (!saved) return false
+  return saved === new Date().toISOString().slice(0, 10)
+}
+function markDailyFermiDone() {
+  localStorage.setItem(DAILY_FERMI_KEY, new Date().toISOString().slice(0, 10))
+}
+
 // 基礎統計データ（フェルミ推定時の参考値）
 const BASE_STATS = [
   { label: '日本の人口', value: '1.25億人' },
@@ -72,6 +83,7 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
       const data = await res.json()
       if (!res.ok || data.error) throw new Error(data.error || t('common.error'))
       setFeedback(data)
+      markDailyFermiDone()
     } catch (e: unknown) {
       setSubmitError((e as Error).message || t('common.error'))
     } finally {

@@ -16,6 +16,7 @@ import {
   getCurrentTier,
 } from './homeHelpers'
 import { getLocale, t } from '../i18n'
+import { isDailyFermiDone } from './DailyFermiScreen'
 
 interface HomeScreenProps {
   userName: string
@@ -229,37 +230,59 @@ function HomeMobile({
         )}
 
         {/* 今日の一問カード */}
-        <div
-          onClick={() => onNavigateToDailyFermi ? onNavigateToDailyFermi() : onOpenCategory('fermi')}
-          style={{ background: '#3B5BDB', borderRadius: 28, padding: '22px 20px', position: 'relative', overflow: 'hidden', cursor: 'pointer' }}
-        >
-          <div style={{ position: 'absolute', right: -48, top: -48, width: 180, height: 180, borderRadius: '50%', background: 'rgba(255,255,255,.07)', pointerEvents: 'none' }} />
-          <div style={{ position: 'absolute', right: 20, bottom: -30, width: 120, height: 120, borderRadius: '50%', background: 'rgba(255,255,255,.04)', pointerEvents: 'none' }} />
-          <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 10 }}>
-            <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#93C5FD' }} />
-            <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,.6)' }}>今日の一問</span>
-          </div>
-          <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 19, fontWeight: 900, color: '#fff', lineHeight: 1.4, letterSpacing: '-.025em', marginBottom: 6 }}>
-            {t('home.fermiQuestion')}
-          </div>
-          <div style={{ fontSize: 12, color: 'rgba(255,255,255,.5)', marginBottom: 18, display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span>フェルミ推定</span>
-            <div style={{ width: 3, height: 3, borderRadius: '50%', background: 'rgba(255,255,255,.3)' }} />
-            <span>レベル 2</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-            <div style={{ flex: 1, height: 2, background: 'rgba(255,255,255,.2)', borderRadius: 99, overflow: 'hidden' }}>
-              <div style={{ height: '100%', width: `${Math.round((1 - (recovery.hours * 60 + recovery.minutes) / (24 * 60)) * 100)}%`, background: 'rgba(255,255,255,.6)', borderRadius: 99 }} />
+        {isDailyFermiDone() ? (
+          <div
+            onClick={() => onNavigateToDailyFermi ? onNavigateToDailyFermi() : onOpenCategory('fermi')}
+            style={{ background: 'linear-gradient(135deg, #059669 0%, #10B981 100%)', borderRadius: 28, padding: '22px 20px', position: 'relative', overflow: 'hidden', cursor: 'pointer' }}
+          >
+            <div style={{ position: 'absolute', right: -48, top: -48, width: 180, height: 180, borderRadius: '50%', background: 'rgba(255,255,255,.07)', pointerEvents: 'none' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+              <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'rgba(255,255,255,.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div>
+                <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,.6)' }}>今日の一問</div>
+                <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 900, color: '#fff', letterSpacing: '-.025em' }}>クリア済み ✓</div>
+              </div>
             </div>
-            <div style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,.45)', whiteSpace: 'nowrap' }}>
-              残り {recovery.hours}h {recovery.minutes}m
+            <div style={{ fontSize: 13, color: 'rgba(255,255,255,.7)', marginBottom: 12 }}>お見事！明日もチャレンジしよう 💪</div>
+            <div style={{ width: '100%', background: 'rgba(255,255,255,.2)', borderRadius: 14, padding: 12, fontSize: 14, fontWeight: 700, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+              フィードバックを見る
             </div>
           </div>
-          <div style={{ width: '100%', background: '#fff', borderRadius: 14, padding: 14, fontSize: 15, fontWeight: 700, color: '#3B5BDB', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" strokeWidth="2.5" strokeLinecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            チャレンジする
+        ) : (
+          <div
+            onClick={() => onNavigateToDailyFermi ? onNavigateToDailyFermi() : onOpenCategory('fermi')}
+            style={{ background: '#3B5BDB', borderRadius: 28, padding: '22px 20px', position: 'relative', overflow: 'hidden', cursor: 'pointer' }}
+          >
+            <div style={{ position: 'absolute', right: -48, top: -48, width: 180, height: 180, borderRadius: '50%', background: 'rgba(255,255,255,.07)', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', right: 20, bottom: -30, width: 120, height: 120, borderRadius: '50%', background: 'rgba(255,255,255,.04)', pointerEvents: 'none' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 10 }}>
+              <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#93C5FD' }} />
+              <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,.6)' }}>今日の一問</span>
+            </div>
+            <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 19, fontWeight: 900, color: '#fff', lineHeight: 1.4, letterSpacing: '-.025em', marginBottom: 6 }}>
+              {t('home.fermiQuestion')}
+            </div>
+            <div style={{ fontSize: 12, color: 'rgba(255,255,255,.5)', marginBottom: 18, display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span>フェルミ推定</span>
+              <div style={{ width: 3, height: 3, borderRadius: '50%', background: 'rgba(255,255,255,.3)' }} />
+              <span>レベル 2</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+              <div style={{ flex: 1, height: 2, background: 'rgba(255,255,255,.2)', borderRadius: 99, overflow: 'hidden' }}>
+                <div style={{ height: '100%', width: `${Math.round((1 - (recovery.hours * 60 + recovery.minutes) / (24 * 60)) * 100)}%`, background: 'rgba(255,255,255,.6)', borderRadius: 99 }} />
+              </div>
+              <div style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,.45)', whiteSpace: 'nowrap' }}>
+                残り {recovery.hours}h {recovery.minutes}m
+              </div>
+            </div>
+            <div style={{ width: '100%', background: '#fff', borderRadius: 14, padding: 14, fontSize: 15, fontWeight: 700, color: '#3B5BDB', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" strokeWidth="2.5" strokeLinecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              チャレンジする
+            </div>
           </div>
-        </div>
+        )}
 
         {/* 哲学者ランクカード */}
         <button
