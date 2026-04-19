@@ -42,6 +42,8 @@ const PATHS: RoadmapPath[] = [
     lessons: [
       { id: 28, title: 'ケース面接入門',          sub: 'フレームワーク・仮説思考の実践' },
       { id: 29, title: 'プロフィタビリティケース', sub: '収益性問題の構造化と分析' },
+      { id: 35, title: '新市場参入ケース',      sub: '市場規模・競合・参入障壁の分析' },
+      { id: 36, title: 'M&Aケース',              sub: '企業価値評価とシナジー分析' },
     ],
   },
   {
@@ -52,6 +54,60 @@ const PATHS: RoadmapPath[] = [
       { id: 41, title: '論理的誤謬を見破る',        sub: '一見正しそうな「嘘の論理」に気づく' },
       { id: 42, title: 'データを正しく読む',        sub: 'グラフ・統計の罠と正しい解釈' },
       { id: 43, title: '問いを立てる力',           sub: '良い問いが良い答えを生む' },
+    ],
+  },
+  {
+    id: 'hypothesis',
+    label: '仮説思考',
+    lessons: [
+      { id: 50, title: '仮説思考入門',     sub: 'まず仮の答えを立ててから検証する' },
+      { id: 51, title: '仮説の立て方と検証', sub: '良い仮説の3条件と検証設計' },
+      { id: 52, title: '仮説ドリブンの課題解決', sub: 'Day 1 AnswerとQuick & Dirty検証' },
+    ],
+  },
+  {
+    id: 'problem-setting',
+    label: '課題設定',
+    lessons: [
+      { id: 53, title: '課題設定入門',     sub: 'Where → Why → Howで正しい問いを立てる' },
+      { id: 54, title: 'イシュー分析',     sub: '解くべき問いを見極める' },
+      { id: 55, title: '課題設定実践',     sub: '空・雨・傘で事実→解釈→行動' },
+    ],
+  },
+  {
+    id: 'design-thinking',
+    label: 'デザインシンキング',
+    lessons: [
+      { id: 56, title: 'デザインシンキング入門', sub: '共感から始める問題解決の5ステップ' },
+      { id: 57, title: '共感マップとペルソナ', sub: 'ユーザーの頭の中を可視化する' },
+      { id: 58, title: 'デザインシンキング実践', sub: 'How Might Weとブレスト' },
+    ],
+  },
+  {
+    id: 'lateral',
+    label: 'ラテラルシンキング',
+    lessons: [
+      { id: 59, title: 'ラテラルシンキング入門', sub: 'リフレーミングと逆転の発想' },
+      { id: 60, title: 'ラテラルの技法',     sub: 'SCAMPER法・ランダム刺激・6つの帽子' },
+      { id: 61, title: 'ラテラル実践',       sub: '前提を書き換えてイノベーションを生む' },
+    ],
+  },
+  {
+    id: 'analogy',
+    label: 'アナロジー思考',
+    lessons: [
+      { id: 62, title: 'アナロジー思考入門', sub: '構造的類似性を見抜く' },
+      { id: 63, title: 'アナロジーの技法',   sub: '抽象化と具体化で異分野をつなぐ' },
+      { id: 64, title: 'アナロジー実践',     sub: '異業種アナロジーチャレンジ' },
+    ],
+  },
+  {
+    id: 'systems',
+    label: 'システムシンキング',
+    lessons: [
+      { id: 65, title: 'システムシンキング入門', sub: 'フィードバックループと氷山モデル' },
+      { id: 66, title: 'システム原型',       sub: 'よくあるパターンで問題を診断' },
+      { id: 67, title: 'システムシンキング実践', sub: '因果ループ図とレバレッジポイント' },
     ],
   },
 ]
