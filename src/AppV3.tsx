@@ -1,5 +1,5 @@
 // Logic v3 — full app shell with all screens
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import { AppShell, type Tab } from './components/AppShell'
 import { HomeScreen } from './screens/HomeScreen'
 import { LessonScreen } from './screens/LessonScreen'
@@ -81,19 +81,63 @@ function getInitialScreen(user: User | null): Screen {
   return { type: 'home' }
 }
 
+// ── ルート画面かどうか判定 ──
+const ROOT_SCREENS = new Set<string>(['home', 'lessons', 'stats', 'profile'])
+
 function AppV3() {
   const [tab, setTab] = useState<Tab>('home')
   const [screen, setScreen] = useState<Screen>(() => getInitialScreen(null))
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [authReady, setAuthReady] = useState(false)
+  // popstate ハンドラ内でscreen stateを参照するための ref
+  const screenRef = useRef<Screen>(screen)
+  screenRef.current = screen
+  // popstate による遷移かどうかのフラグ（push 抑制用）
+  const isPopNavRef = useRef(false)
   void isAdmin() // reserved for future admin checks
+
+  // ── History 連動の setScreen ラッパー ──
+  const navigate = useCallback((next: Screen, replace = false) => {
+    setScreen(next)
+    if (isPopNavRef.current) return // popstate 経由なら push しない
+    if (replace || ROOT_SCREENS.has(next.type)) {
+      window.history.replaceState({ screen: next }, '')
+    } else {
+      window.history.pushState({ screen: next }, '')
+    }
+  }, [])
+
+  // ── popstate (バックスワイプ/戻るボタン) ──
+  useEffect(() => {
+    const onPop = (e: PopStateEvent) => {
+      if (e.state?.screen) {
+        isPopNavRef.current = true
+        const s = e.state.screen as Screen
+        setScreen(s)
+        if (ROOT_SCREENS.has(s.type)) setTab(s.type as Tab)
+        isPopNavRef.current = false
+      } else {
+        // state がない場合はホームへ
+        isPopNavRef.current = true
+        setTab('home')
+        setScreen({ type: 'home' })
+        isPopNavRef.current = false
+      }
+    }
+    window.addEventListener('popstate', onPop)
+    // 初期 state をセット
+    window.history.replaceState({ screen: screenRef.current }, '')
+    return () => window.removeEventListener('popstate', onPop)
+  }, [])
 
   useEffect(() => {
     applyTheme(loadTheme())
     // 初回起動時にセッションを取得し、ログイン済ならホームへ
     getInitialUser().then((user) => {
       setCurrentUser(user)
-      setScreen(getInitialScreen(user))
+      const initial = getInitialScreen(user)
+      setScreen(initial)
+      window.history.replaceState({ screen: initial }, '')
       setAuthReady(true)
     })
     const unsub = onAuthChange((user) => {
@@ -113,20 +157,25 @@ function AppV3() {
 
   const handleTabChange = (next: Tab) => {
     setTab(next)
-    if (next === 'stats') setScreen({ type: 'stats' })
-    else setScreen({ type: next })
+    if (next === 'stats') navigate({ type: 'stats' }, true)
+    else navigate({ type: next }, true)
   }
 
   const handleOpenLesson = (lessonId: number) => {
-    setScreen({ type: 'lesson', lessonId })
+    navigate({ type: 'lesson', lessonId })
   }
 
   const handleBack = () => {
-    setScreen({ type: tab })
+    // History にエントリがあれば戻る、なければタブルートへ
+    if (window.history.state?.screen && !ROOT_SCREENS.has(screenRef.current.type)) {
+      window.history.back()
+    } else {
+      navigate({ type: tab }, true)
+    }
   }
 
   const handleComplete = () => {
-    setScreen({ type: tab })
+    navigate({ type: tab }, true)
   }
 
   // 認証完了前はスプラッシュ表示
@@ -144,7 +193,7 @@ function AppV3() {
       <OnboardingScreen
         onComplete={() => {
           localStorage.setItem(ONBOARDED_KEY, '1')
-          setScreen({ type: 'home' })
+          navigate({ type: 'home' })
         }}
       />
     )
@@ -162,23 +211,23 @@ function AppV3() {
           userName={userName}
           onOpenLesson={handleOpenLesson}
           onOpenCategory={(cat) => {
-            if (cat === 'fermi') setScreen({ type: 'daily-fermi' })
-            else setScreen({ type: 'roadmap' })
+            if (cat === 'fermi') navigate({ type: 'daily-fermi' })
+            else navigate({ type: 'roadmap' })
           }}
-          onOpenRank={() => setScreen({ type: 'rank' })}
-          onOpenDeviation={() => setScreen({ type: 'deviation' })}
-          onOpenRanking={() => setScreen({ type: 'ranking' })}
-          onOpenStreak={() => setScreen({ type: 'streak' })}
-          onOpenRoleplay={() => setScreen({ type: 'roleplay' })}
-          onOpenFlashcards={() => setScreen({ type: 'flashcards' })}
-          onOpenAIGen={() => setScreen({ type: 'ai-problem-gen' })}
-          onOpenPricing={() => setScreen({ type: 'pricing' })}
-          onOpenFeedback={() => setScreen({ type: 'feedback' })}
-          onOpenStats={() => { setTab('stats'); setScreen({ type: 'stats' }) }}
-          onOpenProfile={() => { setTab('profile'); setScreen({ type: 'profile' }) }}
-          onOpenRoadmap={() => { setTab('lessons'); setScreen({ type: 'lessons' }) }}
-          onOpenAIProblemGen={() => setScreen({ type: 'ai-problem-gen' })}
-          onNavigateToDailyFermi={() => setScreen({ type: 'daily-fermi' })}
+          onOpenRank={() => navigate({ type: 'rank' })}
+          onOpenDeviation={() => navigate({ type: 'deviation' })}
+          onOpenRanking={() => navigate({ type: 'ranking' })}
+          onOpenStreak={() => navigate({ type: 'streak' })}
+          onOpenRoleplay={() => navigate({ type: 'roleplay' })}
+          onOpenFlashcards={() => navigate({ type: 'flashcards' })}
+          onOpenAIGen={() => navigate({ type: 'ai-problem-gen' })}
+          onOpenPricing={() => navigate({ type: 'pricing' })}
+          onOpenFeedback={() => navigate({ type: 'feedback' })}
+          onOpenStats={() => { setTab('stats'); navigate({ type: 'stats' }, true) }}
+          onOpenProfile={() => { setTab('profile'); navigate({ type: 'profile' }, true) }}
+          onOpenRoadmap={() => { setTab('lessons'); navigate({ type: 'lessons' }, true) }}
+          onOpenAIProblemGen={() => navigate({ type: 'ai-problem-gen' })}
+          onNavigateToDailyFermi={() => navigate({ type: 'daily-fermi' })}
         />
       )}
 
@@ -191,8 +240,8 @@ function AppV3() {
       )}
 
       {screen.type === 'flashcards' && <FlashcardsScreen onBack={handleBack} />}
-      {screen.type === 'fermi' && <FermiScreen onBack={handleBack} onReport={(ctx) => setScreen({ type: 'report-problem', context: ctx })} />}
-      {screen.type === 'daily-fermi' && <DailyFermiScreen onBack={handleBack} onReport={(ctx) => setScreen({ type: 'report-problem', context: ctx })} />}
+      {screen.type === 'fermi' && <FermiScreen onBack={handleBack} onReport={(ctx) => navigate({ type: 'report-problem', context: ctx })} />}
+      {screen.type === 'daily-fermi' && <DailyFermiScreen onBack={handleBack} onReport={(ctx) => navigate({ type: 'report-problem', context: ctx })} />}
       {screen.type === 'journal-input' && <JournalInputScreen onBack={handleBack} />}
       {screen.type === 'worksheet' && <WorksheetScreen onBack={handleBack} />}
 
@@ -201,23 +250,23 @@ function AppV3() {
       {screen.type === 'ai-problem-gen' && (
         <AIProblemGenScreen
           onBack={handleBack}
-          onPlay={(problem) => setScreen({ type: 'ai-problem', problem })}
-          onUpgrade={() => setScreen({ type: 'pricing' })}
+          onPlay={(problem) => navigate({ type: 'ai-problem', problem })}
+          onUpgrade={() => navigate({ type: 'pricing' })}
         />
       )}
 
       {screen.type === 'ai-problem' && (
         <AIProblemScreen
           problem={screen.problem}
-          onBack={() => setScreen({ type: 'ai-problem-gen' })}
-          onReport={(ctx) => setScreen({ type: 'report-problem', context: ctx })}
+          onBack={() => navigate({ type: 'ai-problem-gen' })}
+          onReport={(ctx) => navigate({ type: 'report-problem', context: ctx })}
         />
       )}
 
       {screen.type === 'deviation' && (
         <DeviationScreen
           onBack={handleBack}
-          onRetakeTest={() => setScreen({ type: 'placement-test' })}
+          onRetakeTest={() => navigate({ type: 'placement-test' })}
           onStartLesson={handleOpenLesson}
         />
       )}
@@ -225,21 +274,21 @@ function AppV3() {
       {screen.type === 'stats' && (
         <RankingScreen
           onBack={handleBack}
-          onTakeTest={() => setScreen({ type: 'placement-test' })}
+          onTakeTest={() => navigate({ type: 'placement-test' })}
         />
       )}
 
       {screen.type === 'ranking' && (
         <RankingScreen
           onBack={handleBack}
-          onTakeTest={() => setScreen({ type: 'placement-test' })}
+          onTakeTest={() => navigate({ type: 'placement-test' })}
         />
       )}
 
       {screen.type === 'placement-test' && (
         <PlacementTestScreen
           onBack={handleBack}
-          onComplete={() => setScreen({ type: 'deviation' })}
+          onComplete={() => navigate({ type: 'deviation' })}
           onSkip={handleBack}
         />
       )}
@@ -247,29 +296,29 @@ function AppV3() {
       {screen.type === 'roleplay' && (
         <RoleplaySelectScreen
           onBack={handleBack}
-          onStart={(situationId) => setScreen({ type: 'roleplay-chat', situationId })}
-          onUpgrade={() => setScreen({ type: 'pricing' })}
+          onStart={(situationId) => navigate({ type: 'roleplay-chat', situationId })}
+          onUpgrade={() => navigate({ type: 'pricing' })}
         />
       )}
 
       {screen.type === 'roleplay-chat' && (
         <RoleplayChatScreen
           situationId={screen.situationId}
-          onBack={() => setScreen({ type: 'roleplay' })}
+          onBack={() => navigate({ type: 'roleplay' })}
         />
       )}
 
       {screen.type === 'profile' && (
         <ProfileScreen
           userName={userName}
-          onOpenStreak={() => setScreen({ type: 'streak' })}
-          onOpenSettings={() => setScreen({ type: 'settings' })}
-          onOpenCompleted={() => setScreen({ type: 'completed-lessons' })}
-          onOpenStudyTime={() => setScreen({ type: 'study-time' })}
-          onOpenRank={() => setScreen({ type: 'rank' })}
-          onOpenRanking={() => setScreen({ type: 'ranking' })}
-          onOpenFeedback={() => setScreen({ type: 'feedback' })}
-          onOpenPricing={() => setScreen({ type: 'pricing' })}
+          onOpenStreak={() => navigate({ type: 'streak' })}
+          onOpenSettings={() => navigate({ type: 'settings' })}
+          onOpenCompleted={() => navigate({ type: 'completed-lessons' })}
+          onOpenStudyTime={() => navigate({ type: 'study-time' })}
+          onOpenRank={() => navigate({ type: 'rank' })}
+          onOpenRanking={() => navigate({ type: 'ranking' })}
+          onOpenFeedback={() => navigate({ type: 'feedback' })}
+          onOpenPricing={() => navigate({ type: 'pricing' })}
         />
       )}
       {screen.type === 'rank' && <RankScreen onBack={handleBack} />}
@@ -279,19 +328,19 @@ function AppV3() {
       {screen.type === 'settings' && (
         <SettingsScreen
           onBack={handleBack}
-          onOpenLanguage={() => setScreen({ type: 'language' })}
-          onOpenLogin={() => setScreen({ type: 'login' })}
-          onOpenPricing={() => setScreen({ type: 'pricing' })}
+          onOpenLanguage={() => navigate({ type: 'language' })}
+          onOpenLogin={() => navigate({ type: 'login' })}
+          onOpenPricing={() => navigate({ type: 'pricing' })}
           currentUser={currentUser ? { email: currentUser.email ?? '' } : null}
           onLogout={async () => { await logout(); setCurrentUser(null) }}
         />
       )}
       {screen.type === 'login' && (
         <LoginScreen
-          onLoginSuccess={(user) => { setCurrentUser(user); setScreen({ type: 'settings' }) }}
+          onLoginSuccess={(user) => { setCurrentUser(user); navigate({ type: 'settings' }) }}
         />
       )}
-      {screen.type === 'language' && <LanguageScreen onBack={() => setScreen({ type: 'settings' })} />}
+      {screen.type === 'language' && <LanguageScreen onBack={() => navigate({ type: 'settings' })} />}
 
       {screen.type === 'report-problem' && (
         <ReportProblemScreen
@@ -305,7 +354,7 @@ function AppV3() {
           lessonId={screen.lessonId}
           onBack={handleBack}
           onComplete={handleComplete}
-          onReport={(ctx) => setScreen({ type: 'report-problem', context: ctx })}
+          onReport={(ctx) => navigate({ type: 'report-problem', context: ctx })}
         />
       )}
     </AppShell>
