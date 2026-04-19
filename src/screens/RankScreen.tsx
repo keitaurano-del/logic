@@ -105,7 +105,7 @@ export function RankScreen({ onBack }: RankScreenProps) {
             {t('home.levelProgress')}
           </span>
           <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.75)', fontWeight: 600 }}>
-            {levelXp.toLocaleString()} / 1,000 XP
+            {levelXp.toLocaleString()} / 1,000
           </span>
         </div>
         <div style={{
@@ -121,7 +121,7 @@ export function RankScreen({ onBack }: RankScreenProps) {
           <div style={{
             fontSize: 12, color: 'rgba(255,255,255,0.4)', marginTop: 10, textAlign: 'center',
           }}>
-            {isJa ? `次のランク「${nextTier.title}」まで ${xpToNext.toLocaleString()} XP` : `${xpToNext.toLocaleString()} XP to "${nextTier.titleEn}"`}
+            {isJa ? `次のランク「${nextTier.title}」まで ${xpToNext.toLocaleString()}` : `${xpToNext.toLocaleString()} to "${nextTier.titleEn}"`}
           </div>
         )}
       </div>
@@ -148,7 +148,7 @@ export function RankScreen({ onBack }: RankScreenProps) {
             fontSize: 28, fontWeight: 800, color: 'var(--brand)', letterSpacing: '-0.02em',
           }}>
             {points.toLocaleString()}
-            <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-muted)', marginLeft: 4 }}>pt</span>
+            
           </div>
         </div>
         <div style={{
@@ -248,7 +248,7 @@ export function RankScreen({ onBack }: RankScreenProps) {
                       {isJa ? r.title : r.titleEn}
                     </div>
                     <div style={{ fontSize: 11, color: 'var(--text-faint)', marginTop: 2 }}>
-                      {r.minXp.toLocaleString()} XP~
+                      {r.minXp.toLocaleString()}~
                     </div>
                   </div>
                   {isCurrent ? (
@@ -320,7 +320,7 @@ export function RankScreen({ onBack }: RankScreenProps) {
                   {isJa ? selectedTier.title : selectedTier.titleEn}
                 </div>
                 <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
-                  {selectedTier.minXp.toLocaleString()} XP~
+                  {selectedTier.minXp.toLocaleString()}~
                 </div>
               </div>
             </div>

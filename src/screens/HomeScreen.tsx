@@ -277,7 +277,7 @@ function HomeMobile({
           <div style={{ marginBottom: 6 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
               <span style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,.55)' }}>経験値</span>
-              <span style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,.85)' }}>{levelXp} / 1,000 XP</span>
+              <span style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,.85)' }}>{levelXp} / 1,000</span>
             </div>
             <div style={{ height: 6, background: 'rgba(255,255,255,.18)', borderRadius: 99, overflow: 'hidden' }}>
               <div style={{ height: '100%', width: `${levelPct}%`, background: '#fff', borderRadius: 99, boxShadow: '0 0 8px rgba(255,255,255,.5)' }} />
@@ -286,7 +286,7 @@ function HomeMobile({
 
           {xpToNext > 0 && (
             <div style={{ fontSize: 11, color: 'rgba(255,255,255,.5)', marginTop: 4 }}>
-              次のランクまで {xpToNext} XP
+              次のランクまで {xpToNext}
             </div>
           )}
         </button>
@@ -294,8 +294,8 @@ function HomeMobile({
         {/* Stats 3グリッド */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8 }}>
           {([
-            { value: String(streak), label: 'Streak', blue: true },
-            { value: String(points), label: 'Points', blue: true },
+            { value: `${streak}日`, label: '連続学習', blue: true },
+            { value: String(points), label: '偏差値', blue: true },
             { value: deviation != null ? String(Math.round(deviation)) : '—', label: '偏差値', blue: false },
           ] as { value: string; label: string; blue: boolean }[]).map(({ value, label, blue }) => (
             <div key={label} style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: '12px 10px', textAlign: 'center', boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
@@ -487,7 +487,7 @@ function HomeDesktop({
           <button className="stat-pill" onClick={onOpenRank} style={{ cursor: 'pointer', border: 'none', background: 'none', padding: 0, textAlign: 'left', display: 'flex', alignItems: 'center', gap: 'var(--s-3)' }}>
             <div className="icon-box"><BarChartIcon width={18} height={18} /></div>
             <div>
-              <div className="lbl">XP</div>
+              <div className="lbl">ポイント</div>
               <div className="val">{xp.toLocaleString()}</div>
               <div className="delta">{t('home.totalEarned')}</div>
             </div>
@@ -526,7 +526,7 @@ function HomeDesktop({
             <div className="progress-fill" style={{ width: `${levelPct}%` }} />
           </div>
         </div>
-        <div className="level-xp">{levelXp} / 1,000 XP</div>
+        <div className="level-xp">{levelXp} / 1,000</div>
       </button>
 
       <section>

@@ -117,15 +117,15 @@ export function ProfileScreen({ userName, onOpenSettings, onOpenFeedback, onOpen
             </div>
           </div>
           <div style={{ fontSize: 10, color: 'rgba(255,255,255,.45)' }}>
-            {xpInLevel} / {xpToNext} XP{nextTier ? ` — 次: ${nextTier.title}` : ' — MAX'}
+            {xpInLevel} / {xpToNext}{nextTier ? ` — 次: ${nextTier.title}` : ' — MAX'}
           </div>
 
           {/* ステータス行 */}
           <div style={{ display: 'flex', gap: 20, marginTop: 14, paddingTop: 14, borderTop: '1px solid rgba(255,255,255,.12)', width: '100%', justifyContent: 'center' }}>
             {[
-              { value: String(completed), label: 'Lessons' },
-              { value: String(streak), label: 'Streak' },
-              { value: topPct != null ? `Top ${Math.round(topPct)}%` : `${points}pts`, label: 'Points' },
+              { value: String(completed), label: 'レッスン' },
+              { value: `${streak}日`, label: '連続学習' },
+              { value: topPct != null ? `Top ${Math.round(topPct)}%` : String(points), label: '偏差値' },
             ].map(({ value, label }) => (
               <div key={label} style={{ textAlign: 'center' }}>
                 <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 900, color: '#fff', letterSpacing: '-.02em' }}>{value}</div>

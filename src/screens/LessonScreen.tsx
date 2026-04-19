@@ -553,7 +553,7 @@ function CelebrationScreen({ lessonTitle, streakBefore, onComplete }: {
           marginTop: 16, marginBottom: 36,
           animation: 'xp-badge-in 0.55s 0.25s cubic-bezier(0.34,1.56,0.64,1) both',
         }}>
-          ＋100 XP
+          ＋100
         </div>
 
         {/* ボタン or 自動遷移メッセージ */}
