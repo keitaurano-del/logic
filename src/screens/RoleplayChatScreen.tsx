@@ -298,7 +298,7 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
 
           {summary && (
             <div style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: '16px', boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
-              <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: '#3B5BDB', marginBottom: 10 }}>SUMMARY</div>
+              <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: '#3B5BDB', marginBottom: 10 }}>総評</div>
               <p style={{ fontSize: 14, color: '#0F1523', lineHeight: 1.7, marginBottom: 14 }}>{summary.summary}</p>
               {summary.goodPoints.length > 0 && (
                 <div style={{ marginBottom: 12 }}>

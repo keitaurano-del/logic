@@ -44,7 +44,7 @@ export function FeedbackScreen({ onBack }: FeedbackScreenProps) {
       <div className="stack">
         <div className="screen-header">
           <IconButton aria-label="Back" onClick={onBack}><ArrowLeftIcon /></IconButton>
-          <div className="progress-text">FEEDBACK</div>
+          <div className="progress-text">フィードバック</div>
         </div>
         <div style={{ marginTop: 40, textAlign: 'center' }}>
           <div style={{
@@ -71,11 +71,11 @@ export function FeedbackScreen({ onBack }: FeedbackScreenProps) {
     <div className="stack">
       <div className="screen-header">
         <IconButton aria-label="Back" onClick={onBack}><ArrowLeftIcon /></IconButton>
-        <div className="progress-text">FEEDBACK</div>
+        <div className="progress-text">フィードバック</div>
       </div>
 
       <div>
-        <div className="eyebrow accent">BETA</div>
+        <div className="eyebrow accent">ベータ版</div>
         <h1 style={{ fontSize: 22, fontWeight: 800, marginTop: 4 }}>ご意見・ご要望</h1>
         <p style={{ fontSize: 14, color: 'var(--text-muted)', marginTop: 6 }}>
           アプリをより良くするためのフィードバックをお聞かせください

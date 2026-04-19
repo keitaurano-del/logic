@@ -36,7 +36,7 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
       <div className="stack">
         <div className="screen-header">
           <IconButton aria-label="Back" onClick={onBack}><ArrowLeftIcon /></IconButton>
-          <div className="progress-text">TODAY</div>
+          <div className="progress-text">今日の問題</div>
         </div>
         <div style={{ textAlign: 'center', padding: 'var(--s-8) 0', color: 'var(--text-muted)' }}>
           <div style={{ fontSize: 14 }}>今日の問題を生成中…</div>
@@ -50,7 +50,7 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
       <div className="stack">
         <div className="screen-header">
           <IconButton aria-label="Back" onClick={onBack}><ArrowLeftIcon /></IconButton>
-          <div className="progress-text">TODAY</div>
+          <div className="progress-text">今日の問題</div>
         </div>
         <div className="card" style={{ background: 'rgba(220,38,38,0.06)', borderColor: 'var(--danger)', color: 'var(--danger)' }}>
           {error}
@@ -65,7 +65,7 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
       <div className="stack">
         <div className="screen-header">
           <IconButton aria-label="Back" onClick={onBack}><ArrowLeftIcon /></IconButton>
-          <div className="progress-text">TODAY</div>
+          <div className="progress-text">今日の問題</div>
         </div>
         <div className="eyebrow accent">{t('label.todaysChallenge')}</div>
         <h1 style={{ fontSize: 26, letterSpacing: '-0.025em' }}>今日の問題</h1>
@@ -90,12 +90,12 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
       <div className="stack">
         <div className="screen-header">
           <IconButton aria-label="Back" onClick={onBack}><ArrowLeftIcon /></IconButton>
-          <div className="progress-text">RESULT</div>
+          <div className="progress-text">結果</div>
         </div>
         <div className="eyebrow accent">{t('label.todaysResult')}</div>
         <h1 style={{ fontSize: 26, letterSpacing: '-0.025em' }}>結果</h1>
         <section className="profile-hero" style={{ textAlign: 'center' }}>
-          <div className="eyebrow" style={{ color: 'rgba(255,255,255,0.65)', marginBottom: 'var(--s-3)' }}>SCORE</div>
+          <div className="eyebrow" style={{ color: 'rgba(255,255,255,0.65)', marginBottom: 'var(--s-3)' }}>スコア</div>
           <div className="display" style={{ fontSize: 80, lineHeight: 0.9, letterSpacing: '-0.04em', color: '#fff' }}>{pct}%</div>
           <div style={{ marginTop: 'var(--s-3)', fontSize: 14, color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
             {correctCount} / {steps.length} 問正解

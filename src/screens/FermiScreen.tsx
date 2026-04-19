@@ -25,7 +25,7 @@ const BASE_STATS = [
 function BaseDataPanel() {
   return (
     <div style={{ marginTop: 12, paddingTop: 10, borderTop: '1px solid var(--border)' }}>
-      <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 8, textTransform: 'uppercase' }}>BASE DATA</div>
+      <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 8, textTransform: 'uppercase' }}>参考データ</div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px 12px' }}>
         {BASE_STATS.map((s) => (
           <div key={s.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, padding: '2px 0' }}>

@@ -68,7 +68,7 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
     <div className="stack">
       <div className="screen-header">
         <IconButton aria-label="Back" onClick={onBack}><ArrowLeftIcon /></IconButton>
-        <div className="progress-text">AI PROBLEMS</div>
+        <div className="progress-text">AI 問題</div>
       </div>
 
       <div className="eyebrow accent">AI 問題ジェネレーター</div>
@@ -77,7 +77,7 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
       </h1>
 
       <div className="card" style={{ marginTop: 'var(--s-4)' }}>
-        <div className="eyebrow" style={{ marginBottom: 'var(--s-2)' }}>GENERATE</div>
+        <div className="eyebrow" style={{ marginBottom: 'var(--s-2)' }}>生成</div>
         <label className="label">学習したいトピックを入力</label>
         <textarea
           className="textarea"

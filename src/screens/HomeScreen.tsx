@@ -604,7 +604,7 @@ function HomeDesktop({
           }}
         >
           <div>
-            <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--brand)', marginBottom: 2, letterSpacing: '0.08em' }}>BETA</div>
+            <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--brand)', marginBottom: 2, letterSpacing: '0.08em' }}>ベータ版</div>
             <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)' }}>ご意見・ご要望を教えてください</div>
             <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 2 }}>アプリ改善のフィードバックをお待ちしています</div>
           </div>

@@ -39,7 +39,7 @@ export function ThemeSettingsScreen({ onBack, onUpgrade }: ThemeSettingsScreenPr
         <div className="progress-text">テーマ設定</div>
       </div>
 
-      <div className="eyebrow accent">SETTINGS</div>
+      <div className="eyebrow accent">設定</div>
       <h1 style={{ fontSize: 26, letterSpacing: '-0.025em' }}>テーマ設定</h1>
 
       <section style={{ marginTop: 'var(--s-4)' }}>

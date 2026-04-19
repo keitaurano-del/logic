@@ -74,7 +74,7 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
         padding: 'var(--s-7) var(--s-4) var(--s-6)',
         background: 'var(--bg)', maxWidth: 480, margin: '0 auto', width: '100%',
       }}>
-        <div className="eyebrow" style={{ marginBottom: 'var(--s-2)' }}>STEP 1 / 2</div>
+        <div className="eyebrow" style={{ marginBottom: 'var(--s-2)' }}>ステップ 1 / 2</div>
         <h2 style={{ fontSize: 24, fontWeight: 800, letterSpacing: '-0.025em', lineHeight: 1.25, marginBottom: 'var(--s-2)' }}>
           目標を教えてください
         </h2>
@@ -134,7 +134,7 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
       padding: 'var(--s-7) var(--s-4) var(--s-6)',
       background: 'var(--bg)', maxWidth: 480, margin: '0 auto', width: '100%',
     }}>
-      <div className="eyebrow" style={{ marginBottom: 'var(--s-2)' }}>STEP 2 / 2</div>
+      <div className="eyebrow" style={{ marginBottom: 'var(--s-2)' }}>ステップ 2 / 2</div>
       <h2 style={{ fontSize: 24, fontWeight: 800, letterSpacing: '-0.025em', lineHeight: 1.25, marginBottom: 'var(--s-2)' }}>
         7日間、無料で試せます
       </h2>

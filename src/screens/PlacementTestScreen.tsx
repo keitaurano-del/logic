@@ -136,9 +136,9 @@ export function PlacementTestScreen({ onComplete, onBack, onSkip }: PlacementTes
       <div className="stack">
         <div className="screen-header">
           {onBack && <IconButton aria-label="Back" onClick={onBack}><ArrowLeftIcon /></IconButton>}
-          <div className="progress-text">RESULT</div>
+          <div className="progress-text">結果</div>
         </div>
-        <div className="eyebrow accent">TEST RESULT</div>
+        <div className="eyebrow accent">テスト結果</div>
         <h1 style={{ fontSize: 28, letterSpacing: '-0.025em' }}>診断結果</h1>
         <section className="profile-hero" style={{ textAlign: 'center' }}>
           <div className="eyebrow" style={{ color: 'rgba(255,255,255,0.65)', marginBottom: 'var(--s-3)' }}>偏差値</div>

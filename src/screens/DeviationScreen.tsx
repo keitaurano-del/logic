@@ -21,7 +21,7 @@ export function DeviationScreen({ onBack, onRetakeTest, onStartLesson }: Deviati
           <IconButton aria-label="Back" onClick={onBack}>
             <ArrowLeftIcon />
           </IconButton>
-          <div className="progress-text">DEVIATION</div>
+          <div className="progress-text">偏差値</div>
         </div>
         <div className="card empty">
           <h3 style={{ fontSize: 17, marginBottom: 'var(--s-2)' }}>
@@ -54,10 +54,10 @@ export function DeviationScreen({ onBack, onRetakeTest, onStartLesson }: Deviati
         <IconButton aria-label="Back" onClick={onBack}>
           <ArrowLeftIcon />
         </IconButton>
-        <div className="progress-text">DEVIATION</div>
+        <div className="progress-text">偏差値</div>
       </div>
 
-      <div className="eyebrow accent">YOUR RESULT</div>
+      <div className="eyebrow accent">あなたの結果</div>
 
       <section
         className="profile-hero"
@@ -71,7 +71,7 @@ export function DeviationScreen({ onBack, onRetakeTest, onStartLesson }: Deviati
             position: 'relative',
           }}
         >
-          DEVIATION SCORE
+          偏差値スコア
         </div>
         <div
           className="display"

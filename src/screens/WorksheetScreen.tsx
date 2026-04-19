@@ -126,12 +126,12 @@ export function WorksheetScreen({ onBack }: WorksheetScreenProps) {
       <div className="stack">
         <div className="screen-header">
           <IconButton aria-label="Back" onClick={onBack}><ArrowLeftIcon /></IconButton>
-          <div className="progress-text">RESULT</div>
+          <div className="progress-text">結果</div>
         </div>
-        <div className="eyebrow accent">DRILL RESULT</div>
+        <div className="eyebrow accent">ドリル結果</div>
         <h1 style={{ fontSize: 28, letterSpacing: '-0.025em' }}>精算表ドリル結果</h1>
         <section className="profile-hero" style={{ textAlign: 'center' }}>
-          <div className="eyebrow" style={{ color: 'rgba(255,255,255,0.65)', marginBottom: 'var(--s-3)' }}>SCORE</div>
+          <div className="eyebrow" style={{ color: 'rgba(255,255,255,0.65)', marginBottom: 'var(--s-3)' }}>スコア</div>
           <div className="display" style={{ fontSize: 80, lineHeight: 0.9, letterSpacing: '-0.04em', color: '#fff' }}>{pct}%</div>
           <div style={{ marginTop: 'var(--s-3)', fontSize: 14, color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
             {correctCells} / {totalCells} セル正解

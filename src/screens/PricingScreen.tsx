@@ -39,10 +39,10 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
     <div className="stack">
       <div className="screen-header">
         <IconButton aria-label="Back" onClick={onBack}><ArrowLeftIcon /></IconButton>
-        <div className="progress-text">PRICING</div>
+        <div className="progress-text">料金プラン</div>
       </div>
 
-      <div className="eyebrow accent">PLANS</div>
+      <div className="eyebrow accent">プラン</div>
       <h1 style={{ fontSize: 26, letterSpacing: '-0.025em', lineHeight: 1.2 }}>
         論理的思考力を、<br />もっと深く鍛える。
       </h1>
@@ -87,7 +87,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
                 <BrainIcon width={14} height={14} style={{ color: 'var(--text-muted)' }} />
-                <span className="eyebrow">STANDARD</span>
+                <span className="eyebrow">スタンダード</span>
               </div>
               <div style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-0.02em' }}>
                 {billingCycle === 'yearly'
@@ -134,7 +134,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
                 <ZapIcon width={14} height={14} style={{ color: 'var(--brand)' }} />
-                <span className="eyebrow accent">PREMIUM</span>
+                <span className="eyebrow accent">プレミアム</span>
               </div>
               <div style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-0.02em' }}>
                 {billingCycle === 'yearly'

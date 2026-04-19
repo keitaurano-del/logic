@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Logic — 論理思考トレーニングアプリ</title>
+  <meta name="description" content="フェルミ推定・ケース面接・ロジカルシンキングをAIと一緒に毎日3分で。コンサル志望者・ビジネスパーソン向け思考力トレーニングアプリ。">
+  <meta property="og:title" content="Logic — 論理思考トレーニング">
+  <meta property="og:description" content="AIと鍛える論理思考。フェルミ推定・ケース面接を毎日3分から。">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&family=Shippori+Mincho:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --brand: #3B5BDB;
+      --brand-dark: #2B4BC8;
+      --bg: #ffffff;
+      --bg-soft: #F8F9FA;
+      --text: #111111;
+      --text-sub: #6B7280;
+      --accent: #D4915A;
+      --radius: 16px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Zen Kaku Gothic New', -apple-system, 'Hiragino Kaku Gothic ProN', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+    }
+
+    /* ===== NAV ===== */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .nav-logo-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--brand);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 900;
+      font-size: 16px;
+    }
+    .nav-logo-text {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .nav-cta {
+      background: var(--text);
+      color: white;
+      padding: 8px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      transition: opacity 0.2s;
+    }
+    .nav-cta:hover { opacity: 0.8; }
+
+    /* ===== HERO ===== */
+    .hero {
+      padding: 140px 24px 80px;
+      text-align: center;
+      background: var(--bg);
+      position: relative;
+    }
+    .hero-inner {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-soft);
+      border: 1px solid rgba(0,0,0,0.08);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-sub);
+      margin-bottom: 28px;
+    }
+    .hero-badge-dot {
+      width: 6px;
+      height: 6px;
+      background: #22C55E;
+      border-radius: 50%;
+    }
+    .hero h1 {
+      font-family: 'Shippori Mincho', 'YuMincho', serif;
+      font-size: clamp(32px, 7vw, 56px);
+      font-weight: 800;
+      line-height: 1.3;
+      letter-spacing: 0.02em;
+      margin-bottom: 20px;
+    }
+    .hero h1 .highlight {
+      background: linear-gradient(135deg, var(--brand), #7B9BFF);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-desc {
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: 16px;
+      color: var(--text-sub);
+      line-height: 1.9;
+      margin-bottom: 36px;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+    }
+    .hero-cta-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--brand);
+      color: white;
+      padding: 14px 32px;
+      border-radius: 12px;
+      font-family: 'Inter Tight', 'Zen Kaku Gothic New', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(59,91,219,0.3);
+    }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--text);
+      padding: 14px 32px;
+      border-radius: 12px;
+      font-family: 'Inter Tight', 'Zen Kaku Gothic New', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      text-decoration: none;
+      border: 1.5px solid rgba(0,0,0,0.12);
+      transition: border-color 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--brand); color: var(--brand); }
+    .hero-sub {
+      font-size: 13px;
+      color: var(--text-sub);
+      margin-top: 8px;
+    }
+
+    /* Phone mockup in hero */
+    .hero-phone {
+      margin-top: 56px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+    .phone-wrap {
+      width: 240px;
+      flex-shrink: 0;
+    }
+    .phone-frame {
+      background: #111;
+      border-radius: 32px;
+      padding: 8px;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.12), 0 8px 24px rgba(0,0,0,0.06);
+    }
+    .phone-screen {
+      border-radius: 24px;
+      overflow: hidden;
+      aspect-ratio: 9/19.5;
+    }
+    .phone-screen img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
+      display: block;
+    }
+
+    /* ===== SOCIAL PROOF ===== */
+    .social-proof {
+      background: var(--bg-soft);
+      padding: 48px 24px;
+      text-align: center;
+    }
+    .social-proof-inner {
+      max-width: 600px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+    .proof-item {
+      text-align: center;
+    }
+    .proof-number {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -1px;
+    }
+    .proof-label {
+      font-size: 13px;
+      color: var(--text-sub);
+      margin-top: 2px;
+    }
+    .proof-stars {
+      color: #FBBF24;
+      font-size: 22px;
+      letter-spacing: 2px;
+    }
+
+    /* ===== SECTIONS ===== */
+    section {
+      padding: 96px 24px;
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+    .section-label {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--brand);
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: 'Shippori Mincho', 'YuMincho', serif;
+      font-size: clamp(24px, 4.5vw, 36px);
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 12px;
+      letter-spacing: 0.02em;
+      line-height: 1.4;
+    }
+    .section-desc {
+      text-align: center;
+      color: var(--text-sub);
+      margin-bottom: 56px;
+      font-size: 16px;
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.7;
+    }
+
+    /* ===== FEATURE BLOCKS (alternating) ===== */
+    .feature-block {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+      margin-bottom: 80px;
+    }
+    .feature-block.reverse { direction: rtl; }
+    .feature-block.reverse > * { direction: ltr; }
+    .feature-text { }
+    .feature-tag {
+      display: inline-block;
+      background: rgba(59,91,219,0.08);
+      color: var(--brand);
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+    .feature-text h3 {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 26px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      letter-spacing: 0.02em;
+      line-height: 1.4;
+    }
+    .feature-text p {
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: 15px;
+      color: var(--text-sub);
+      line-height: 1.9;
+      letter-spacing: 0.03em;
+    }
+    .feature-visual {
+      display: flex;
+      justify-content: center;
+    }
+    .feature-phone {
+      width: 220px;
+    }
+
+    @media (max-width: 768px) {
+      .feature-block {
+        grid-template-columns: 1fr;
+        gap: 32px;
+        text-align: center;
+      }
+      .feature-block.reverse { direction: ltr; }
+      .feature-visual { order: -1; }
+      .feature-phone { width: 180px; }
+    }
+
+    /* ===== CATEGORIES GRID ===== */
+    .cat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+    }
+    .cat-card {
+      background: var(--bg-soft);
+      border-radius: 12px;
+      padding: 20px 16px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .cat-card:hover { background: rgba(59,91,219,0.06); }
+    .cat-num {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--brand);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    /* ===== QUOTE ===== */
+    .quote-section {
+      background: var(--bg-soft);
+      padding: 80px 24px;
+    }
+    .quote-inner {
+      max-width: 640px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .quote-text {
+      font-family: 'Shippori Mincho', serif;
+      font-size: clamp(18px, 3vw, 22px);
+      font-weight: 600;
+      line-height: 2;
+      color: var(--text);
+      margin-bottom: 20px;
+      letter-spacing: 0.04em;
+    }
+    .quote-author {
+      font-size: 14px;
+      color: var(--text-sub);
+    }
+
+    /* ===== PRICING ===== */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .price-card {
+      background: var(--bg-soft);
+      border-radius: var(--radius);
+      padding: 32px 28px;
+      position: relative;
+    }
+    .price-card.featured {
+      background: var(--text);
+      color: white;
+    }
+    .price-card.featured .price-sub { color: rgba(255,255,255,0.6); }
+    .price-card.featured .price-features li { color: rgba(255,255,255,0.8); }
+    .price-card.featured .price-features li::before { color: #7B9BFF; }
+    .price-card.featured .price-amount { color: white; }
+    .price-badge {
+      position: absolute;
+      top: -10px;
+      right: 20px;
+      background: var(--accent);
+      color: white;
+      padding: 4px 14px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .price-name {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .price-sub {
+      font-size: 13px;
+      color: var(--text-sub);
+      margin-bottom: 16px;
+    }
+    .price-amount {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -1px;
+    }
+    .price-amount span {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-sub);
+    }
+    .price-features {
+      list-style: none;
+      margin-top: 20px;
+    }
+    .price-features li {
+      padding: 5px 0;
+      font-size: 14px;
+      color: var(--text-sub);
+    }
+    .price-features li::before {
+      content: '✓  ';
+      color: var(--brand);
+      font-weight: 700;
+    }
+
+    /* ===== FAQ ===== */
+    .faq-list {
+      max-width: 640px;
+      margin: 0 auto;
+    }
+    .faq-item {
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .faq-q {
+      width: 100%;
+      background: none;
+      border: none;
+      padding: 20px 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: inherit;
+    }
+    .faq-q::after {
+      content: '+';
+      font-size: 22px;
+      color: var(--text-sub);
+      flex-shrink: 0;
+      transition: transform 0.2s;
+    }
+    .faq-item.open .faq-q::after {
+      transform: rotate(45deg);
+    }
+    .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    .faq-item.open .faq-a {
+      max-height: 200px;
+    }
+    .faq-a p {
+      padding-bottom: 20px;
+      font-size: 15px;
+      color: var(--text-sub);
+      line-height: 1.7;
+    }
+
+    /* ===== FINAL CTA ===== */
+    .final-cta {
+      text-align: center;
+      padding: 96px 24px;
+    }
+    .final-cta h2 {
+      font-family: 'Shippori Mincho', serif;
+      font-size: clamp(26px, 5vw, 40px);
+      font-weight: 800;
+      margin-bottom: 16px;
+      letter-spacing: 0.02em;
+    }
+    .final-cta p {
+      color: var(--text-sub);
+      margin-bottom: 32px;
+      font-size: 16px;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      border-top: 1px solid rgba(0,0,0,0.06);
+      padding: 32px 24px;
+      text-align: center;
+      color: var(--text-sub);
+      font-size: 13px;
+    }
+    footer a {
+      color: var(--text-sub);
+      text-decoration: none;
+      margin: 0 12px;
+    }
+    footer a:hover { color: var(--text); }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 640px) {
+      .hero { padding: 120px 20px 60px; }
+      .hero-phone { gap: 12px; }
+      .phone-wrap { width: 160px; }
+      .social-proof-inner { gap: 32px; }
+      .cat-grid { grid-template-columns: repeat(2, 1fr); }
+      .hero-cta-row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a class="nav-logo" href="#">
+        <img src="logo.svg" alt="Logic" style="width:44px;height:44px;">
+        <span class="nav-logo-text">Logic</span>
+      </a>
+      <a class="nav-cta" href="https://play.google.com/store/apps/details?id=io.logic.app">ダウンロード</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-inner">
+      <img src="logo.svg" alt="Logic" style="width:200px;height:200px;margin-bottom:32px;filter:drop-shadow(0 4px 12px rgba(61,95,196,0.3));">
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        AI搭載の論理思考アプリ
+      </div>
+      <h1>考える力を、<br><span class="highlight">毎日3分</span>で鍛える。</h1>
+      <p class="hero-desc">
+        フェルミ推定、ケース面接、ロジカルシンキング。<br>
+        AIがあなた専用のコーチになって、<br>
+        思考力を根本から鍛えます。
+      </p>
+      <div class="hero-cta-row">
+        <a class="btn-primary" href="https://play.google.com/store/apps/details?id=io.logic.app">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.199l2.26 1.31c.63.36.63 1.005 0 1.365l-2.26 1.31-2.532-2.532L17.698 9.508zM5.864 2.658L16.8 8.99l-2.302 2.302-8.635-8.635z"/></svg>
+          Google Play
+        </a>
+        <a class="btn-secondary" href="#features">詳しく見る</a>
+      </div>
+      <p class="hero-sub">無料トライアル7日間 ・ Android対応</p>
+    </div>
+
+    <div class="hero-phone">
+      <div class="phone-wrap">
+        <div class="phone-frame">
+          <div class="phone-screen">
+            <img src="ss-home.png" alt="Logic App Home">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOCIAL PROOF -->
+  <div class="social-proof">
+    <div class="social-proof-inner">
+      <div class="proof-item">
+        <div class="proof-number">34</div>
+        <div class="proof-label">レッスン</div>
+      </div>
+      <div class="proof-item">
+        <div class="proof-number">10</div>
+        <div class="proof-label">カテゴリ</div>
+      </div>
+      <div class="proof-item">
+        <div class="proof-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <div class="proof-label">ユーザー評価</div>
+      </div>
+      <div class="proof-item">
+        <div class="proof-number">AI</div>
+        <div class="proof-label">対話型学習</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <section id="features">
+    <div class="section-label">Features</div>
+    <h2 class="section-title">なぜ Logic で学ぶのか</h2>
+    <p class="section-desc">暗記では身につかない「考える力」を、AIとの対話で鍛える。</p>
+
+    <div class="feature-block">
+      <div class="feature-text">
+        <span class="feature-tag">AI COACHING</span>
+        <h3>AIがリアルタイムで<br>フィードバック</h3>
+        <p>あなたの回答を分析し、論理の穴や別の視点を即座に指摘。ひとりでは気づけない思考のクセを可視化します。</p>
+      </div>
+      <div class="feature-visual">
+        <div class="feature-phone">
+          <div class="phone-frame">
+            <div class="phone-screen">
+              <img src="ss-fermi.png" alt="AI Feedback">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="feature-block reverse">
+      <div class="feature-text">
+        <span class="feature-tag">ROLEPLAY</span>
+        <h3>実践ロールプレイで<br>論理を武器にする</h3>
+        <p>上司への提案、クライアントとの交渉、プレゼン…。AIが相手役となり、実務で使える論理スキルを体得します。</p>
+      </div>
+      <div class="feature-visual">
+        <div class="feature-phone">
+          <div class="phone-frame">
+            <div class="phone-screen">
+              <img src="ss-lessons.png" alt="Lessons">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="feature-block">
+      <div class="feature-text">
+        <span class="feature-tag">DAILY HABIT</span>
+        <h3>1日3分、<br>ストリークで習慣化</h3>
+        <p>通勤中、休憩中、寝る前。短時間で完結するレッスン設計。ストリーク機能とランクシステムで、毎日の継続をゲーム感覚で。</p>
+      </div>
+      <div class="feature-visual">
+        <div class="feature-phone">
+          <div class="phone-frame">
+            <div class="phone-screen">
+              <img src="ss-profile.png" alt="Profile & Rank">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATEGORIES -->
+  <section>
+    <div class="section-label">Curriculum</div>
+    <h2 class="section-title">10カテゴリ、34レッスン</h2>
+    <p class="section-desc">体系的に設計されたカリキュラムで、思考の基礎から応用まで。</p>
+    <div class="cat-grid">
+      <div class="cat-card"><span class="cat-num">4</span>フェルミ推定</div>
+      <div class="cat-card"><span class="cat-num">4</span>論理パズル</div>
+      <div class="cat-card"><span class="cat-num">4</span>ケース面接</div>
+      <div class="cat-card"><span class="cat-num">4</span>クリティカル<br>シンキング</div>
+      <div class="cat-card"><span class="cat-num">3</span>仮説思考</div>
+      <div class="cat-card"><span class="cat-num">3</span>課題設定</div>
+      <div class="cat-card"><span class="cat-num">3</span>デザイン<br>シンキング</div>
+      <div class="cat-card"><span class="cat-num">3</span>ラテラル<br>シンキング</div>
+      <div class="cat-card"><span class="cat-num">3</span>アナロジー思考</div>
+      <div class="cat-card"><span class="cat-num">3</span>システム<br>シンキング</div>
+    </div>
+  </section>
+
+  <!-- QUOTE -->
+  <div class="quote-section">
+    <div class="quote-inner">
+      <div class="section-label">Voice</div>
+      <p class="quote-text">
+        「通勤の10分でフェルミ推定の練習ができるのが最高。AIのフィードバックが的確で、自分の思考のクセに気づけた。」
+      </p>
+      <p class="quote-author">— コンサル志望 / 大学3年生</p>
+    </div>
+  </div>
+
+  <!-- PRICING -->
+  <section>
+    <div class="section-label">Pricing</div>
+    <h2 class="section-title">料金プラン</h2>
+    <p class="section-desc">7日間の無料トライアルですべての機能を体験。</p>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-name">Standard</div>
+        <div class="price-sub">基本レッスン</div>
+        <div class="price-amount">&yen;3,500<span> /年</span></div>
+        <ul class="price-features">
+          <li>全34レッスン</li>
+          <li>デイリーチャレンジ</li>
+          <li>フラッシュカード</li>
+          <li>偏差値ランキング</li>
+        </ul>
+      </div>
+      <div class="price-card featured">
+        <div class="price-badge">POPULAR</div>
+        <div class="price-name">Premium</div>
+        <div class="price-sub">すべての機能</div>
+        <div class="price-amount">&yen;6,980<span> /年</span></div>
+        <ul class="price-features">
+          <li>Standard の全機能</li>
+          <li>AIロールプレイ無制限</li>
+          <li>AI問題ジェネレーター</li>
+          <li>学習ジャーナル</li>
+          <li>優先サポート</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section>
+    <div class="section-label">FAQ</div>
+    <h2 class="section-title">よくある質問</h2>
+    <p class="section-desc"></p>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q">Logicはどんな人向けですか？</button>
+        <div class="faq-a"><p>コンサルティング業界を目指す学生、ケース面接対策をしたいビジネスパーソン、論理思考力を鍛えたいすべての方におすすめです。</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">無料で使えますか？</button>
+        <div class="faq-a"><p>7日間の無料トライアルですべての機能をお試しいただけます。トライアル終了後も基本機能は引き続きご利用いただけます。</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">AIはどのように使われていますか？</button>
+        <div class="faq-a"><p>最新のAI（Claude）を搭載し、フェルミ推定のフィードバック、ロールプレイの相手役、問題生成、学習ジャーナルなどで活用しています。</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">1回の学習にどれくらい時間がかかりますか？</button>
+        <div class="faq-a"><p>1レッスン3〜5分で完了する設計です。スキマ時間に無理なく続けられます。</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">iOS版はありますか？</button>
+        <div class="faq-a"><p>現在はAndroid版のみ提供しています。iOS版は2026年中のリリースを予定しています。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <div class="final-cta">
+    <h2>今日から、<br>論理思考を鍛えよう。</h2>
+    <p>7日間すべての機能を無料で体験。</p>
+    <a class="btn-primary" href="https://play.google.com/store/apps/details?id=io.logic.app" style="font-size: 16px; padding: 16px 40px;">
+      無料で始める
+    </a>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p style="margin-bottom: 8px;">&copy; 2026 Apollo100. All rights reserved.</p>
+    <div>
+      <a href="https://logic-u5wn.onrender.com/terms.html">利用規約</a>
+      <a href="https://logic-u5wn.onrender.com/privacy.html">プライバシーポリシー</a>
+    </div>
+  </footer>
+
+  <!-- FAQ Toggle Script -->
+  <script>
+    document.querySelectorAll('.faq-q').forEach(btn => {
+      btn.addEventListener('click', () => {
+        btn.parentElement.classList.toggle('open');
+      });
+    });
+  </script>
+
+</body>
+</html>

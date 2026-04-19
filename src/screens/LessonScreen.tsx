@@ -480,7 +480,7 @@ function CelebrationScreen({ lessonTitle, streakBefore, onComplete }: {
           {newStreak}
         </div>
 
-        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,.45)', marginTop: 4, animation: 'slide-up-fade 0.4s 0.4s ease-out both' }}>DAY STREAK</div>
+        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,.45)', marginTop: 4, animation: 'slide-up-fade 0.4s 0.4s ease-out both' }}>連続学習</div>
 
         <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 26, fontWeight: 900, color: '#fff', letterSpacing: '-0.03em', marginTop: 12, animation: 'slide-up-fade 0.4s 0.5s ease-out both' }}>
           {newStreak}日連続！
