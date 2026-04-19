@@ -95,20 +95,35 @@ const lessons = [
     progress: 0,
     action: 'lesson' as const,
   },
-  // クリティカルシンキング（新）
-  { id: 40, category: 'クリティカルシンキング', title: 'クリティカルシンキング入門', description: '前提を疑い、根拠を評価する思考法の基本', progress: 0, action: 'lesson' as const },
-  { id: 41, category: 'クリティカルシンキング', title: '論証の評価 — 根拠と結論', description: '前提・推論・結論の構造を見抜く', progress: 0, action: 'lesson' as const },
-  { id: 42, category: 'クリティカルシンキング', title: '前提を疑う', description: '隠れた前提を見つけて議論の土台を検証する', progress: 0, action: 'lesson' as const },
-  { id: 43, category: 'クリティカルシンキング', title: '情報を評価する', description: '出典・相関・因果を正しく読み解く', progress: 0, action: 'lesson' as const },
-  { id: 44, category: 'クリティカルシンキング', title: '反論の技術', description: '建設的な反論でアイデアを鍛える', progress: 0, action: 'lesson' as const },
-  { id: 45, category: 'クリティカルシンキング', title: '意思決定の罠', description: 'バイアスを知り、より良い判断をする', progress: 0, action: 'lesson' as const },
-  { id: 46, category: 'クリティカルシンキング', title: 'クリティカルシンキング総合演習', description: '全技術を使ってリアルなケースを分析する', progress: 0, action: 'lesson' as const },
-  // 思考の技術（新）
-  { id: 50, category: '思考の技術', title: '第一原理思考', description: '当たり前を疑い、ゼロから再設計する', progress: 0, action: 'lesson' as const },
-  { id: 51, category: '思考の技術', title: 'システム思考', description: 'つながりとループで複雑な問題を解く', progress: 0, action: 'lesson' as const },
-  { id: 52, category: '思考の技術', title: '仮説思考', description: '結論から逆算して最短で検証する', progress: 0, action: 'lesson' as const },
-  { id: 53, category: '思考の技術', title: 'アナロジー思考', description: '異分野の構造を応用してアイデアを生む', progress: 0, action: 'lesson' as const },
-  { id: 54, category: '思考の技術', title: 'メタ認知', description: '自分の思考を観察して盲点をなくす', progress: 0, action: 'lesson' as const },
+  // クリティカルシンキング
+  { id: 40, category: 'クリティカルシンキング', title: 'クリティカルシンキング入門', description: '根拠をもとに自分の頭で判断する', progress: 0, action: 'lesson' as const },
+  { id: 41, category: 'クリティカルシンキング', title: '論理的誤謬を見破る', description: '「正しそうな嘘」に騙されない', progress: 0, action: 'lesson' as const },
+  { id: 42, category: 'クリティカルシンキング', title: 'データを正しく読む', description: 'グラフや統計のトリックを見抑く', progress: 0, action: 'lesson' as const },
+  { id: 43, category: 'クリティカルシンキング', title: '問いを立てる力', description: '良い問いが良い答えを生む', progress: 0, action: 'lesson' as const },
+  // 仮説思考
+  { id: 50, category: '仮説思考', title: '仮説思考入門', description: 'まず仮の答えを立ててから検証する', progress: 0, action: 'lesson' as const },
+  { id: 51, category: '仮説思考', title: '仮説の立て方と検証', description: '良い仮説の3条件と検証設計', progress: 0, action: 'lesson' as const },
+  { id: 52, category: '仮説思考', title: '仮説ドリブンの課題解決', description: 'Day 1 AnswerとQuick & Dirty検証', progress: 0, action: 'lesson' as const },
+  // 課題設定
+  { id: 53, category: '課題設定', title: '課題設定入門', description: 'Where → Why → Howで正しい問いを立てる', progress: 0, action: 'lesson' as const },
+  { id: 54, category: '課題設定', title: 'イシュー分析', description: '解くべき問いを見極める', progress: 0, action: 'lesson' as const },
+  { id: 55, category: '課題設定', title: '課題設定実践', description: '空・雨・傘で事実→解釈→行動', progress: 0, action: 'lesson' as const },
+  // デザインシンキング
+  { id: 56, category: 'デザインシンキング', title: 'デザインシンキング入門', description: '共感から始める問題解決の5ステップ', progress: 0, action: 'lesson' as const },
+  { id: 57, category: 'デザインシンキング', title: '共感マップとペルソナ', description: 'ユーザーの頭の中を可視化する', progress: 0, action: 'lesson' as const },
+  { id: 58, category: 'デザインシンキング', title: 'デザインシンキング実践', description: 'How Might Weとブレスト', progress: 0, action: 'lesson' as const },
+  // ラテラルシンキング
+  { id: 59, category: 'ラテラルシンキング', title: 'ラテラルシンキング入門', description: 'リフレーミングと逆転の発想', progress: 0, action: 'lesson' as const },
+  { id: 60, category: 'ラテラルシンキング', title: 'ラテラルの技法', description: 'SCAMPER法・ランダム刺激・6つの帽子', progress: 0, action: 'lesson' as const },
+  { id: 61, category: 'ラテラルシンキング', title: 'ラテラル実践', description: '前提を書き換えてイノベーションを生む', progress: 0, action: 'lesson' as const },
+  // アナロジー思考
+  { id: 62, category: 'アナロジー思考', title: 'アナロジー思考入門', description: '構造的類似性を見抜く', progress: 0, action: 'lesson' as const },
+  { id: 63, category: 'アナロジー思考', title: 'アナロジーの技法', description: '抽象化と具体化で異分野をつなぐ', progress: 0, action: 'lesson' as const },
+  { id: 64, category: 'アナロジー思考', title: 'アナロジー実践', description: '異業種アナロジーチャレンジ', progress: 0, action: 'lesson' as const },
+  // システムシンキング
+  { id: 65, category: 'システムシンキング', title: 'システムシンキング入門', description: 'フィードバックループと氷山モデル', progress: 0, action: 'lesson' as const },
+  { id: 66, category: 'システムシンキング', title: 'システム原型', description: 'よくあるパターンで問題を診断', progress: 0, action: 'lesson' as const },
+  { id: 67, category: 'システムシンキング', title: 'システムシンキング実践', description: '因果ループ図とレバレッジポイント', progress: 0, action: 'lesson' as const },
 ]
 
 // English overlay for logic lesson titles/descriptions (logic IDs only).
