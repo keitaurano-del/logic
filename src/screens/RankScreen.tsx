@@ -233,7 +233,7 @@ export function RankScreen({ onBack }: RankScreenProps) {
                 >
                   <div style={{
                     width: 48, height: 48, borderRadius: 14, flexShrink: 0,
-                    overflow: 'hidden', opacity: isUnlocked ? 1 : 0.3,
+                    overflow: 'hidden', opacity: isUnlocked ? 1 : 0.45,
                     outline: isCurrent ? '2.5px solid var(--brand)' : 'none',
                     outlineOffset: 2,
                     boxShadow: isCurrent ? '0 2px 12px rgba(99,102,241,0.2)' : 'none',
