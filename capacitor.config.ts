@@ -15,8 +15,7 @@ const config: CapacitorConfig = {
   plugins: {
     GoogleAuth: {
       scopes: ['profile', 'email'],
-      // TODO: KeitaがGoogle Cloud ConsoleでAndroid OAuth Client ID作成後に設定
-      // serverClientId: 'xxxx.apps.googleusercontent.com',
+      serverClientId: '688213389560-8he0jiu55jvlkkptcnf6p1bglujd9gas.apps.googleusercontent.com',
       forceCodeForRefreshToken: true,
     },
     SplashScreen: {
