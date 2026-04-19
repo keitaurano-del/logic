@@ -102,7 +102,7 @@ export function LessonScreen({ lessonId, onBack, onComplete, onReport }: LessonS
       {/* ヘッダー */}
       <div style={{
         display: 'flex', alignItems: 'center', gap: 12,
-        padding: '12px 16px',
+        padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 16px 12px',
         background: '#fff',
         borderBottom: '1px solid #E2E8FF',
         boxShadow: '0 1px 3px rgba(15,21,35,.06)',
