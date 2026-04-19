@@ -183,7 +183,6 @@ function HomeMobile({
     },
   ]
 
-  const score = Math.round((deviation ?? 50) * 0.6 + Math.log10(points + 1) * 15)
 
   return (
     <div style={{ background: '#F0F4FF' }}>
@@ -297,7 +296,7 @@ function HomeMobile({
           {([
             { value: String(streak), label: 'Streak', blue: true },
             { value: String(points), label: 'Points', blue: true },
-            { value: String(score), label: 'Score', blue: false },
+            { value: deviation != null ? String(Math.round(deviation)) : '—', label: '偏差値', blue: false },
           ] as { value: string; label: string; blue: boolean }[]).map(({ value, label, blue }) => (
             <div key={label} style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: '12px 10px', textAlign: 'center', boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
               <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 26, fontWeight: 900, letterSpacing: '-.04em', lineHeight: 1, color: blue ? '#3B5BDB' : '#0F1523' }}>{value}</div>

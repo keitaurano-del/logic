@@ -3,7 +3,7 @@ import { getGuestId } from '../guestId'
 import { hasCompletedPlacement, loadPlacementResult } from '../placementData'
 import { API_BASE } from './apiBase'
 import { getStreak, getStudyDates, getCompletedLessons } from '../stats'
-import { getPoints, deviationToTopPercent } from './homeHelpers'
+import { getPoints } from './homeHelpers'
 
 
 interface RankingScreenProps {
@@ -23,8 +23,6 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
   const points = getPoints()
   const placement = loadPlacementResult()
   const deviation = placement?.deviation ?? null
-  const topPct = deviation != null ? deviationToTopPercent(deviation) : null
-  const score = Math.round((deviation ?? 50) * 0.6 + Math.log10(points + 1) * 15)
   const completed = hasCompletedPlacement() && (placement?.totalCount ?? 0) > 0
 
   // 今週の曜日計算
@@ -118,17 +116,12 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
             </div>
             <div style={{ background: 'rgba(255,255,255,.15)', margin: '4px 0' }} />
             <div style={{ textAlign: 'center', padding: '0 4px' }}>
-              <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, color: '#fff', letterSpacing: '-.04em', lineHeight: 1 }}>Top<br />{topPct != null ? `${Math.round(topPct)}%` : `${score}`}</div>
-              <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)', marginTop: 5 }}>Rank</div>
+              <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, color: '#fff', letterSpacing: '-.04em', lineHeight: 1 }}>{deviation != null ? Math.round(deviation) : '—'}</div>
+              <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)', marginTop: 5 }}>偏差値</div>
             </div>
           </div>
         </div>
 
-        {/* スコア説明 */}
-        <div style={{ background: '#EEF2FF', border: '1px solid #DBE4FF', borderRadius: 14, padding: '12px 14px', fontSize: 11, color: '#3A4259', lineHeight: 1.7 }}>
-          <strong style={{ color: '#3B5BDB' }}>Logicスコア</strong>の計算式：<strong style={{ color: '#3B5BDB' }}>偏差値 × 0.6 + log(ポイント+1) × 15</strong><br />
-          毎日の回答と正答率が偏差値に反映されます。
-        </div>
 
         {/* 今週の記録 */}
         <div style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: '14px 16px', boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
