@@ -27,124 +27,242 @@ export function RankScreen({ onBack }: RankScreenProps) {
   const xpToNext = nextTier ? nextTier.minXp - xp : 0
 
   return (
-    <div className="stack">
-      <div className="screen-header">
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', paddingBottom: 40 }}>
+      {/* Header */}
+      <div style={{
+        display: 'flex', alignItems: 'center', padding: '12px 16px',
+        position: 'sticky', top: 0, zIndex: 10,
+        background: 'transparent',
+      }}>
         <IconButton aria-label={t('common.back')} onClick={onBack}>
           <ArrowLeftIcon />
         </IconButton>
-        <div className="progress-text">{t('rank.title')}</div>
+        <div style={{ flex: 1 }} />
+        <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-muted)' }}>{t('rank.title')}</span>
       </div>
 
-      {/* Current rank hero */}
-      <section className="profile-hero" style={{ textAlign: 'center' }}>
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--s-3)' }}>
-          <RankIllustration level={level} size={160} />
+      {/* Hero Card */}
+      <div style={{
+        margin: '0 16px 20px',
+        borderRadius: 24,
+        background: 'linear-gradient(145deg, #0F1629 0%, #1A2744 50%, #0D1B3E 100%)',
+        padding: '32px 24px 28px',
+        position: 'relative',
+        overflow: 'hidden',
+      }}>
+        {/* Decorative gradient orbs */}
+        <div style={{
+          position: 'absolute', top: -40, right: -40, width: 160, height: 160,
+          background: 'radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%)',
+          pointerEvents: 'none',
+        }} />
+        <div style={{
+          position: 'absolute', bottom: -30, left: -30, width: 120, height: 120,
+          background: 'radial-gradient(circle, rgba(245,158,11,0.1) 0%, transparent 70%)',
+          pointerEvents: 'none',
+        }} />
+
+        {/* Avatar */}
+        <div style={{
+          display: 'flex', justifyContent: 'center', marginBottom: 20,
+        }}>
+          <div style={{
+            borderRadius: 28, overflow: 'hidden',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+          }}>
+            <RankIllustration level={level} size={140} />
+          </div>
         </div>
-        <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.55)', marginBottom: 4 }}>
-          Lv.{level}
+
+        {/* Level badge */}
+        <div style={{ textAlign: 'center', marginBottom: 6 }}>
+          <span style={{
+            display: 'inline-block', fontSize: 11, fontWeight: 800,
+            letterSpacing: '0.15em', textTransform: 'uppercase',
+            color: 'rgba(255,255,255,0.45)', background: 'rgba(255,255,255,0.08)',
+            borderRadius: 20, padding: '3px 14px',
+          }}>
+            Lv.{level}
+          </span>
         </div>
-        <div style={{ fontSize: 24, fontWeight: 800, color: '#fff', marginBottom: 'var(--s-4)', letterSpacing: '-0.02em' }}>
+
+        {/* Title */}
+        <div style={{
+          textAlign: 'center', fontSize: 26, fontWeight: 900,
+          color: '#fff', letterSpacing: '-0.02em',
+          fontFamily: "'Inter Tight', 'Inter', sans-serif",
+          marginBottom: 24,
+        }}>
           {title}
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-          <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)' }}>
+
+        {/* XP Progress */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, padding: '0 2px' }}>
+          <span style={{
+            fontSize: 10, fontWeight: 700, letterSpacing: '0.12em',
+            textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)',
+          }}>
             {t('home.levelProgress')}
           </span>
-          <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
-            {levelXp} / 1,000 XP
+          <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.75)', fontWeight: 600 }}>
+            {levelXp.toLocaleString()} / 1,000 XP
           </span>
         </div>
-        <div style={{ background: 'rgba(255,255,255,0.14)', height: 10, borderRadius: 'var(--radius-full)', overflow: 'hidden' }}>
-          <div style={{ background: 'var(--brand-light)', height: '100%', width: `${levelPct}%`, borderRadius: 'var(--radius-full)' }} />
+        <div style={{
+          background: 'rgba(255,255,255,0.1)', height: 8, borderRadius: 99, overflow: 'hidden',
+        }}>
+          <div style={{
+            background: 'linear-gradient(90deg, #818CF8, #6366F1)',
+            height: '100%', width: `${Math.max(levelPct, 2)}%`, borderRadius: 99,
+            transition: 'width 0.6s ease',
+          }} />
         </div>
         {nextTier && (
-          <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginTop: 'var(--s-3)' }}>
-            {isJa ? `次のランク「${nextTier.title}」まで ${xpToNext} XP` : `${xpToNext} XP to "${nextTier.titleEn}"`}
+          <div style={{
+            fontSize: 12, color: 'rgba(255,255,255,0.4)', marginTop: 10, textAlign: 'center',
+          }}>
+            {isJa ? `次のランク「${nextTier.title}」まで ${xpToNext.toLocaleString()} XP` : `${xpToNext.toLocaleString()} XP to "${nextTier.titleEn}"`}
           </div>
         )}
-      </section>
+      </div>
 
-      {/* Points summary */}
-      <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 'var(--s-4)', padding: 'var(--s-4)' }}>
-        <span style={{ color: 'var(--brand)', display: 'flex', alignItems: 'center' }}>
-          <StarIcon width={24} height={24} />
-        </span>
-        <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: 2 }}>
-            {t('rank.totalPoints')}
+      {/* Stats Row */}
+      <div style={{
+        display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12,
+        margin: '0 16px 20px',
+      }}>
+        <div style={{
+          background: 'var(--bg-card)', borderRadius: 16, padding: '16px 18px',
+          border: '1px solid var(--border)',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+            <StarIcon width={18} height={18} style={{ color: 'var(--brand)' }} />
+            <span style={{
+              fontSize: 10, fontWeight: 700, letterSpacing: '0.1em',
+              textTransform: 'uppercase', color: 'var(--text-muted)',
+            }}>
+              {t('rank.totalPoints')}
+            </span>
           </div>
-          <div style={{ fontSize: 28, fontWeight: 800, color: 'var(--brand)', letterSpacing: '-0.02em' }}>
-            {points.toLocaleString()} <span style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-muted)' }}>pt</span>
+          <div style={{
+            fontSize: 28, fontWeight: 800, color: 'var(--brand)', letterSpacing: '-0.02em',
+          }}>
+            {points.toLocaleString()}
+            <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-muted)', marginLeft: 4 }}>pt</span>
           </div>
         </div>
-        <div style={{ textAlign: 'right' }}>
-          <div style={{ fontSize: 11, color: 'var(--text-faint)', marginBottom: 2 }}>{t('rank.completedLessons')}</div>
-          <div style={{ fontSize: 20, fontWeight: 700 }}>{completed}</div>
+        <div style={{
+          background: 'var(--bg-card)', borderRadius: 16, padding: '16px 18px',
+          border: '1px solid var(--border)',
+        }}>
+          <div style={{
+            fontSize: 10, fontWeight: 700, letterSpacing: '0.1em',
+            textTransform: 'uppercase', color: 'var(--text-muted)',
+            marginBottom: 6,
+          }}>
+            {t('rank.completedLessons')}
+          </div>
+          <div style={{
+            fontSize: 28, fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.02em',
+          }}>
+            {completed}
+            <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-muted)', marginLeft: 4 }}>lessons</span>
+          </div>
         </div>
       </div>
 
-      {/* How to earn points */}
-      <div className="card" style={{ padding: 'var(--s-4)' }}>
-        <h2 style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: 'var(--s-3)' }}>
-          {t('rank.howToEarn')}
-        </h2>
-        {[
-          { label: t('rank.earn.lesson'), value: `+50 ${t('label.ptUnit')}` },
-          { label: t('rank.earn.studyMin'), value: t('label.ptPerMin') },
-        ].map(({ label, value }, i) => (
-          <div key={i}>
-            {i > 0 && <div style={{ height: 1, background: 'var(--border)', margin: 'var(--s-2) 0' }} />}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 'var(--s-1) 0' }}>
+      {/* How to Earn */}
+      <div style={{ margin: '0 16px 20px' }}>
+        <div style={{
+          background: 'var(--bg-card)', borderRadius: 16,
+          border: '1px solid var(--border)', overflow: 'hidden',
+        }}>
+          <div style={{
+            padding: '14px 18px 10px', fontSize: 11, fontWeight: 700,
+            letterSpacing: '0.08em', textTransform: 'uppercase',
+            color: 'var(--text-muted)',
+          }}>
+            {t('rank.howToEarn')}
+          </div>
+          {[
+            { label: t('rank.earn.lesson'), value: `+50 ${t('label.ptUnit')}` },
+            { label: t('rank.earn.studyMin'), value: t('label.ptPerMin') },
+          ].map(({ label, value }, i) => (
+            <div key={i} style={{
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+              padding: '12px 18px',
+              borderTop: '1px solid var(--border)',
+            }}>
               <span style={{ fontSize: 14, color: 'var(--text)' }}>{label}</span>
-              <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--brand)' }}>{value}</span>
+              <span style={{
+                fontSize: 14, fontWeight: 700, color: 'var(--brand)',
+                background: 'var(--brand-soft)', borderRadius: 8, padding: '2px 10px',
+              }}>{value}</span>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
-      {/* All rank tiers */}
-      <div>
-        <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: 'var(--s-3)' }}>
+      {/* All Ranks */}
+      <div style={{ margin: '0 16px' }}>
+        <div style={{
+          fontSize: 11, fontWeight: 700, letterSpacing: '0.08em',
+          textTransform: 'uppercase', color: 'var(--text-muted)',
+          marginBottom: 12, paddingLeft: 4,
+        }}>
           {t('rank.allRanks')}
         </div>
-        <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+        <div style={{
+          background: 'var(--bg-card)', borderRadius: 16,
+          border: '1px solid var(--border)', overflow: 'hidden',
+        }}>
           {RANK_TIERS.map((r, i) => {
             const isCurrent = r.level === tier.level
             const isUnlocked = xp >= r.minXp
             return (
               <div key={r.level}>
-                {i > 0 && <div style={{ height: 1, background: 'var(--border)', marginLeft: 'var(--s-4)' }} />}
+                {i > 0 && <div style={{ height: 1, background: 'var(--border)', marginLeft: 72 }} />}
                 <button
                   onClick={() => setSelectedTier(r)}
                   style={{
                     display: 'flex', alignItems: 'center', width: '100%',
-                    padding: 'var(--s-3) var(--s-4)', gap: 'var(--s-3)',
+                    padding: '10px 16px', gap: 14,
                     background: isCurrent ? 'var(--brand-soft)' : 'transparent',
                     border: 'none', cursor: 'pointer', textAlign: 'left',
-                  }}>
+                  }}
+                >
                   <div style={{
-                    width: 44, height: 44, borderRadius: '50%', flexShrink: 0,
-                    overflow: 'hidden', opacity: isUnlocked ? 1 : 0.35,
-                    outline: isCurrent ? '2px solid var(--brand)' : 'none', outlineOffset: 2,
+                    width: 48, height: 48, borderRadius: 14, flexShrink: 0,
+                    overflow: 'hidden', opacity: isUnlocked ? 1 : 0.3,
+                    outline: isCurrent ? '2.5px solid var(--brand)' : 'none',
+                    outlineOffset: 2,
+                    boxShadow: isCurrent ? '0 2px 12px rgba(99,102,241,0.2)' : 'none',
                   }}>
-                    <RankIllustration level={r.level} size={44} />
+                    <RankIllustration level={r.level} size={48} />
                   </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 14, fontWeight: isCurrent ? 700 : 400, color: isCurrent ? 'var(--brand)' : isUnlocked ? 'var(--text)' : 'var(--text-faint)' }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{
+                      fontSize: 14, fontWeight: isCurrent ? 700 : 500,
+                      color: isCurrent ? 'var(--brand)' : isUnlocked ? 'var(--text)' : 'var(--text-faint)',
+                    }}>
                       {isJa ? r.title : r.titleEn}
                     </div>
-                    <div style={{ fontSize: 11, color: 'var(--text-faint)', marginTop: 1 }}>
+                    <div style={{ fontSize: 11, color: 'var(--text-faint)', marginTop: 2 }}>
                       {r.minXp.toLocaleString()} XP~
                     </div>
                   </div>
                   {isCurrent ? (
-                    <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--brand)', background: 'var(--brand-soft)', border: '1px solid var(--brand)', borderRadius: 'var(--radius-full)', padding: '2px 8px' }}>
+                    <span style={{
+                      fontSize: 10, fontWeight: 700, color: 'var(--brand)',
+                      background: 'var(--brand-soft)', border: '1.5px solid var(--brand)',
+                      borderRadius: 20, padding: '3px 10px', flexShrink: 0,
+                    }}>
                       {t('rank.currentBadge')}
                     </span>
                   ) : isUnlocked ? (
                     <CheckIcon width={16} height={16} style={{ color: 'var(--success)', flexShrink: 0 }} />
                   ) : (
-                    <span style={{ fontSize: 11, color: 'var(--text-faint)' }}>🔒</span>
+                    <span style={{ fontSize: 11, color: 'var(--text-faint)', flexShrink: 0 }}>🔒</span>
                   )}
                 </button>
               </div>
@@ -153,7 +271,7 @@ export function RankScreen({ onBack }: RankScreenProps) {
         </div>
       </div>
 
-      {/* 哲学者詳細ボトムシート */}
+      {/* Tier Detail Bottom Sheet */}
       {selectedTier && (
         <div
           onClick={() => setSelectedTier(null)}
@@ -167,25 +285,38 @@ export function RankScreen({ onBack }: RankScreenProps) {
             onClick={(e) => e.stopPropagation()}
             style={{
               background: 'var(--bg-card)',
-              borderRadius: '28px 28px 0 0',
-              padding: '28px 24px 40px',
+              borderRadius: '24px 24px 0 0',
+              padding: '24px 20px 36px',
               width: '100%', maxHeight: '80vh', overflow: 'auto',
               animation: 'fade-in-up 0.25s ease-out both',
             }}
           >
-            {/* 閉じるハンドル */}
-            <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 99, margin: '0 auto 20px' }} />
+            {/* Drag handle */}
+            <div style={{
+              width: 36, height: 4, background: 'var(--border)',
+              borderRadius: 99, margin: '0 auto 20px',
+            }} />
 
-            {/* イラスト + タイトル */}
+            {/* Avatar + Title */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 20 }}>
-              <div style={{ borderRadius: 20, overflow: 'hidden', flexShrink: 0, boxShadow: 'var(--shadow-md)' }}>
-                <RankIllustration level={selectedTier.level} size={88} />
+              <div style={{
+                borderRadius: 20, overflow: 'hidden', flexShrink: 0,
+                boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
+              }}>
+                <RankIllustration level={selectedTier.level} size={80} />
               </div>
               <div>
-                <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--brand)', marginBottom: 4 }}>
+                <div style={{
+                  fontSize: 10, fontWeight: 800, letterSpacing: '0.12em',
+                  textTransform: 'uppercase', color: 'var(--brand)', marginBottom: 4,
+                }}>
                   Lv.{selectedTier.level}
                 </div>
-                <div style={{ fontFamily: 'var(--font-display)', fontSize: 26, fontWeight: 900, color: 'var(--text)', letterSpacing: '-0.02em' }}>
+                <div style={{
+                  fontFamily: "'Inter Tight', 'Inter', sans-serif",
+                  fontSize: 24, fontWeight: 900, color: 'var(--text)',
+                  letterSpacing: '-0.02em',
+                }}>
                   {isJa ? selectedTier.title : selectedTier.titleEn}
                 </div>
                 <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
@@ -194,39 +325,49 @@ export function RankScreen({ onBack }: RankScreenProps) {
               </div>
             </div>
 
-            {/* 名言 */}
+            {/* Quote */}
             <div style={{
-              background: 'linear-gradient(145deg, #0D1B3E, #1E2D5C)',
-              borderRadius: 18, padding: '16px 18px', marginBottom: 16,
+              background: 'linear-gradient(145deg, #0F1629, #1A2744)',
+              borderRadius: 16, padding: '16px 18px', marginBottom: 16,
               position: 'relative', overflow: 'hidden',
             }}>
               <div style={{
-                position: 'absolute', top: -30, right: -30, width: 120, height: 120,
-                background: 'radial-gradient(circle, rgba(158,179,240,0.25) 0%, transparent 70%)',
+                position: 'absolute', top: -20, right: -20, width: 100, height: 100,
+                background: 'radial-gradient(circle, rgba(129,140,248,0.2) 0%, transparent 70%)',
                 pointerEvents: 'none',
               }} />
-              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--brand-light)', marginBottom: 8 }}>
+              <div style={{
+                fontSize: 10, fontWeight: 700, letterSpacing: '0.12em',
+                textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', marginBottom: 8,
+              }}>
                 名言
               </div>
-              <div style={{ fontSize: 16, fontStyle: 'italic', color: '#fff', lineHeight: 1.6 }}>
+              <div style={{
+                fontSize: 15, fontStyle: 'italic', color: '#fff', lineHeight: 1.7,
+              }}>
                 {isJa ? selectedTier.quoteJa : selectedTier.quoteEn}
               </div>
             </div>
 
-            {/* 説明 */}
-            <div style={{ fontSize: 15, color: 'var(--text-secondary)', lineHeight: 1.75 }}>
+            {/* Description */}
+            <div style={{
+              fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.8,
+              marginBottom: 16,
+            }}>
               {isJa ? selectedTier.descJa : selectedTier.descEn}
             </div>
 
-            {/* レッスンヒント */}
+            {/* Tip */}
             <div style={{
-              marginTop: 16,
-              background: 'var(--brand-soft)', borderRadius: 14, padding: '12px 14px',
+              background: 'var(--brand-soft)', borderRadius: 14, padding: '14px 16px',
             }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--brand)', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                学習ヒント
+              <div style={{
+                fontSize: 10, fontWeight: 700, color: 'var(--brand)',
+                marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.08em',
+              }}>
+                💡 学習ヒント
               </div>
-              <div style={{ fontSize: 13, color: 'var(--brand-hover)', lineHeight: 1.6 }}>
+              <div style={{ fontSize: 13, color: 'var(--brand-hover)', lineHeight: 1.7 }}>
                 {isJa ? selectedTier.tipJa : selectedTier.tipEn}
               </div>
             </div>
