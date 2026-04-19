@@ -1,4 +1,5 @@
 import { getLocale } from './i18n'
+import { pushPlacement, getSyncUser } from './syncService'
 
 export type PlacementQuestion = {
   id: number
@@ -237,6 +238,15 @@ export function loadPlacementResult(): PlacementResult | null {
 
 export function savePlacementResult(r: PlacementResult): void {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(r))
+  if (getSyncUser()) {
+    pushPlacement({
+      deviation: r.deviation,
+      correctCount: r.correctCount,
+      totalCount: r.totalCount,
+      completedAt: r.completedAt,
+      recommendedLessonIds: r.recommendedLessonIds,
+    })
+  }
 }
 
 export function hasCompletedPlacement(): boolean {

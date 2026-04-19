@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import type { User } from '@supabase/supabase-js'
+import { Capacitor } from '@capacitor/core'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || ''
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || ''
@@ -19,15 +20,29 @@ export function isSupabaseConfigured(): boolean { return !!supabase }
 export async function loginWithGoogle(): Promise<{ user: User | null; error?: string }> {
   if (!supabase) return { user: null, error: 'Supabase が設定されていません' }
   try {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    })
-    if (error) return { user: null, error: error.message }
-    // OAuth redirect — user will be null until redirect completes
-    return { user: null }
+    if (Capacitor.isNativePlatform()) {
+      // ネイティブ: Capacitor Google Auth → Supabase signInWithIdToken
+      const { GoogleAuth } = await import('@codetrix-studio/capacitor-google-auth')
+      const result = await GoogleAuth.signIn()
+      const idToken = result.authentication?.idToken
+      if (!idToken) return { user: null, error: 'Google認証トークンが取得できませんでした' }
+      const { data, error } = await supabase.auth.signInWithIdToken({
+        provider: 'google',
+        token: idToken,
+      })
+      if (error) return { user: null, error: error.message }
+      return { user: data?.user ?? null }
+    } else {
+      // Web: 既存のOAuthフロー
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      })
+      if (error) return { user: null, error: error.message }
+      return { user: null }
+    }
   } catch (error) {
     return { user: null, error: 'ログインに失敗しました' }
   }

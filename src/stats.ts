@@ -1,3 +1,5 @@
+import { pushProgress, getSyncUser } from './syncService'
+
 const STORAGE_KEY = 'logic-stats'
 
 type Stats = {
@@ -32,6 +34,7 @@ export function recordCompletion(lessonKey: string) {
     stats.studyDates.push(d)
   }
   save(stats)
+  if (getSyncUser()) pushProgress(stats)
 }
 
 export function addStudyTime(ms: number) {
@@ -42,6 +45,7 @@ export function addStudyTime(ms: number) {
     stats.studyDates.push(d)
   }
   save(stats)
+  if (getSyncUser()) pushProgress(stats)
 }
 
 export function getCompletedCount(): number {

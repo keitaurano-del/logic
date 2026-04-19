@@ -35,6 +35,7 @@ import { loadTheme, applyTheme } from './theme'
 import { getCompletedCount } from './stats'
 import { isAdmin } from './admin'
 import { onAuthChange, logout, getInitialUser, type User } from './supabase'
+import { syncOnLogin, syncOnLogout } from './syncService'
 
 const ONBOARDED_KEY = 'logic-onboarded'
 
@@ -133,16 +134,22 @@ function AppV3() {
   useEffect(() => {
     applyTheme(loadTheme())
     // 初回起動時にセッションを取得し、ログイン済ならホームへ
-    getInitialUser().then((user) => {
+    getInitialUser().then(async (user) => {
       setCurrentUser(user)
+      if (user) await syncOnLogin(user.id)
       const initial = getInitialScreen(user)
       setScreen(initial)
       window.history.replaceState({ screen: initial }, '')
       setAuthReady(true)
     })
-    const unsub = onAuthChange((user) => {
+    const unsub = onAuthChange(async (user) => {
       setCurrentUser(user)
-      if (user) setScreen((s) => s.type === 'onboarding' ? { type: 'home' } : s)
+      if (user) {
+        await syncOnLogin(user.id)
+        setScreen((s) => s.type === 'onboarding' ? { type: 'home' } : s)
+      } else {
+        syncOnLogout()
+      }
     })
     return unsub
   }, [])

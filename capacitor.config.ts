@@ -13,6 +13,12 @@ const config: CapacitorConfig = {
     backgroundColor: '#F5F1E8',
   },
   plugins: {
+    GoogleAuth: {
+      scopes: ['profile', 'email'],
+      // TODO: KeitaがGoogle Cloud ConsoleでAndroid OAuth Client ID作成後に設定
+      // serverClientId: 'xxxx.apps.googleusercontent.com',
+      forceCodeForRefreshToken: true,
+    },
     SplashScreen: {
       launchShowDuration: 1500,
       launchAutoHide: true,
