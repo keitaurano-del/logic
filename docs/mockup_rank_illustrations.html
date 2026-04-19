@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rank Illustrations — Mockup v2 (3D Style)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@700;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: #0F1523;
+  color: #fff;
+  padding: 20px;
+  min-height: 100vh;
+}
+h1 {
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 24px;
+  font-weight: 900;
+  text-align: center;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, #818CF8, #6366F1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.subtitle {
+  text-align: center;
+  font-size: 13px;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 32px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+.card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 16px 12px 12px;
+  text-align: center;
+  backdrop-filter: blur(8px);
+}
+.card svg {
+  display: block;
+  margin: 0 auto 8px;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+}
+.card .level {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 2px;
+}
+.card .name {
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  color: #fff;
+}
+.comparison {
+  max-width: 480px;
+  margin: 40px auto 0;
+  text-align: center;
+}
+.comparison h2 {
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 18px;
+  margin-bottom: 16px;
+  color: rgba(255,255,255,0.7);
+}
+.row {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  align-items: flex-end;
+}
+.row .col { text-align: center; }
+.row .col .label {
+  font-size: 11px;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 6px;
+}
+.detail-section {
+  max-width: 480px;
+  margin: 40px auto;
+}
+.detail-section h2 {
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 18px;
+  margin-bottom: 16px;
+  color: rgba(255,255,255,0.7);
+  text-align: center;
+}
+.detail-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 12px 16px;
+  margin-bottom: 10px;
+}
+.detail-card svg {
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+}
+.detail-card .info .lv {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: rgba(255,255,255,0.4);
+}
+.detail-card .info .title {
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 16px;
+  font-weight: 900;
+  color: #fff;
+}
+.detail-card .info .xp {
+  font-size: 11px;
+  color: rgba(255,255,255,0.35);
+}
+</style>
+</head>
+<body>
+
+<h1>🎨 ランクイラスト — 3Dリデザイン</h1>
+<p class="subtitle">立体的・高品質なキャラクターアバター（全10レベル）</p>
+
+<div class="grid" id="grid"></div>
+
+<div class="detail-section">
+  <h2>リスト表示プレビュー</h2>
+  <div id="list"></div>
+</div>
+
+<script>
+// Level configs: [name, nameEn, primaryColor, secondaryColor, bgGrad1, bgGrad2, accentGlow, symbol, symbolColor]
+const levels = [
+  { lv: 1,  name: '哲学の卵',      pri: '#F59E0B', sec: '#D97706', bg1: '#FEF3C7', bg2: '#F59E0B', glow: '#F59E0B', sym: '?',  symCol: '#D97706' },
+  { lv: 2,  name: 'ソフィスト',     pri: '#3B82F6', sec: '#2563EB', bg1: '#DBEAFE', bg2: '#3B82F6', glow: '#3B82F6', sym: '💬', symCol: '#2563EB' },
+  { lv: 3,  name: 'ソクラテス',     pri: '#EC4899', sec: '#DB2777', bg1: '#FCE7F3', bg2: '#EC4899', glow: '#EC4899', sym: '❓', symCol: '#DB2777' },
+  { lv: 4,  name: 'プラトン',       pri: '#8B5CF6', sec: '#7C3AED', bg1: '#EDE9FE', bg2: '#8B5CF6', glow: '#8B5CF6', sym: '△', symCol: '#7C3AED' },
+  { lv: 5,  name: 'アリストテレス', pri: '#10B981', sec: '#059669', bg1: '#D1FAE5', bg2: '#10B981', glow: '#10B981', sym: '📖', symCol: '#059669' },
+  { lv: 6,  name: 'デカルト',       pri: '#6366F1', sec: '#4F46E5', bg1: '#E0E7FF', bg2: '#6366F1', glow: '#6366F1', sym: '⊕',  symCol: '#4F46E5' },
+  { lv: 7,  name: 'カント',         pri: '#64748B', sec: '#475569', bg1: '#F1F5F9', bg2: '#64748B', glow: '#94A3B8', sym: '★',  symCol: '#475569' },
+  { lv: 8,  name: 'ヘーゲル',       pri: '#14B8A6', sec: '#0D9488', bg1: '#CCFBF1', bg2: '#14B8A6', glow: '#14B8A6', sym: '⇌',  symCol: '#0D9488' },
+  { lv: 9,  name: 'ニーチェ',       pri: '#EF4444', sec: '#DC2626', bg1: '#1C1917', bg2: '#EF4444', glow: '#EF4444', sym: '⚡', symCol: '#DC2626' },
+  { lv: 10, name: 'ロゴスの神',     pri: '#F59E0B', sec: '#818CF8', bg1: '#1E1B4B', bg2: '#312E81', glow: '#F59E0B', sym: 'Λ',  symCol: '#F59E0B' },
+];
+
+function generateSVG(cfg, size = 160) {
+  const lv = cfg.lv;
+  const id = `r${lv}`;
+
+  // Unique face features per level
+  const skinTones = ['#F5D0A9','#F0C89A','#E8C4A0','#F5D0A9','#F5D0A9','#F5D0A9','#F0E0D0','#DEB887','#E8B88A','#FFFDE7'];
+  const skin = skinTones[lv - 1];
+
+  // Hair styles differ per level
+  const hairColors = ['#92400E','#1E3A5F','#6B4423','#4A3728','#3D2B1F','#2C1810','#C0C8D4','#2C1810','#1C1917','#F59E0B'];
+  const hair = hairColors[lv - 1];
+
+  // Eye colors
+  const eyeColors = ['#1E1B3A','#1E3A5F','#1E1B3A','#4A1B8A','#1E3A2F','#1E1B4B','#334155','#1C1917','#1C1917','#4338CA'];
+  const eyeCol = eyeColors[lv - 1];
+
+  // Outfit gradient
+  const outfitA = cfg.pri;
+  const outfitB = cfg.sec;
+
+  // Whether level has beard
+  const hasBeard = [false, false, true, true, true, true, false, true, true, false][lv - 1];
+  const beardColor = hair;
+
+  // Whether level has glasses
+  const hasGlasses = lv === 8;
+
+  // Hair style type
+  // 1: short messy, 2: neat, 3: bald+side, 4: long wavy, 5: full, 6: 17c long, 7: powdered wig, 8: sideburns, 9: dark intense, 10: golden
+  const hairType = lv;
+
+  let svg = `<svg viewBox="0 0 200 200" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg" style="display:block;flex-shrink:0">`;
+  svg += `<defs>`;
+  // Background gradient
+  svg += `<linearGradient id="${id}-bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="${cfg.bg1}"/>
+    <stop offset="100%" stop-color="${cfg.bg2}" stop-opacity="0.7"/>
+  </linearGradient>`;
+  // 3D sphere gradient for head
+  svg += `<radialGradient id="${id}-skin" cx="40%" cy="35%" r="55%">
+    <stop offset="0%" stop-color="${lighten(skin, 30)}"/>
+    <stop offset="50%" stop-color="${skin}"/>
+    <stop offset="100%" stop-color="${darken(skin, 25)}"/>
+  </radialGradient>`;
+  // Glow
+  svg += `<radialGradient id="${id}-glow" cx="50%" cy="40%" r="50%">
+    <stop offset="0%" stop-color="${cfg.glow}" stop-opacity="0.35"/>
+    <stop offset="100%" stop-color="${cfg.glow}" stop-opacity="0"/>
+  </radialGradient>`;
+  // Outfit gradient (3D)
+  svg += `<linearGradient id="${id}-outfit" x1="0.3" y1="0" x2="0.7" y2="1">
+    <stop offset="0%" stop-color="${lighten(outfitA, 15)}"/>
+    <stop offset="50%" stop-color="${outfitA}"/>
+    <stop offset="100%" stop-color="${darken(outfitB, 15)}"/>
+  </linearGradient>`;
+  // Drop shadow filter
+  svg += `<filter id="${id}-shadow" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000" flood-opacity="0.25"/>
+  </filter>`;
+  // Inner glow for face
+  svg += `<filter id="${id}-iglow" x="-10%" y="-10%" width="120%" height="120%">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"/>
+    <feFlood flood-color="${cfg.glow}" flood-opacity="0.2"/>
+    <feComposite in2="blur" operator="in"/>
+    <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>`;
+  // Hair gradient (3D)
+  svg += `<radialGradient id="${id}-hair" cx="40%" cy="30%" r="60%">
+    <stop offset="0%" stop-color="${lighten(hair, 20)}"/>
+    <stop offset="100%" stop-color="${darken(hair, 20)}"/>
+  </radialGradient>`;
+  svg += `</defs>`;
+
+  // Background
+  svg += `<rect width="200" height="200" rx="32" fill="url(#${id}-bg)"/>`;
+  // Ambient glow
+  svg += `<circle cx="100" cy="78" r="65" fill="url(#${id}-glow)"/>`;
+
+  // Level 10 special: stars background
+  if (lv === 10) {
+    const stars = [[30,24],[170,20],[18,80],[182,72],[24,150],[176,155],[50,10],[155,188],[92,15],[140,170],[60,40],[145,30],[35,120],[165,130]];
+    stars.forEach(([cx,cy], i) => {
+      const r = i % 3 === 0 ? 2.5 : 1.5;
+      const op = 0.2 + 0.3 * (i % 4) / 3;
+      svg += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="white" opacity="${op}"/>`;
+    });
+    // Sacred geometry
+    svg += `<circle cx="100" cy="78" r="52" fill="none" stroke="#818CF8" stroke-width="1" opacity="0.2"/>`;
+    svg += `<polygon points="100,30 146,100 54,100" fill="none" stroke="#818CF8" stroke-width="0.8" opacity="0.15"/>`;
+    svg += `<polygon points="100,126 54,56 146,56" fill="none" stroke="#818CF8" stroke-width="0.8" opacity="0.15"/>`;
+  }
+
+  // Level 9 special: red aura
+  if (lv === 9) {
+    svg += `<circle cx="100" cy="78" r="48" fill="none" stroke="#EF4444" stroke-width="1.5" opacity="0.12"/>`;
+    svg += `<circle cx="100" cy="78" r="55" fill="none" stroke="#EF4444" stroke-width="0.8" opacity="0.08"/>`;
+  }
+
+  // === BODY (3D rounded) ===
+  svg += `<g filter="url(#${id}-shadow)">`;
+  // Shoulders — more rounded, 3D
+  svg += `<path d="M62 128 Q62 108 82 108 L118 108 Q138 108 138 128 L140 175 Q140 185 130 185 L70 185 Q60 185 60 175 Z" fill="url(#${id}-outfit)" />`;
+  // Outfit shine line
+  svg += `<path d="M82 112 Q100 106 118 112" stroke="${lighten(outfitA, 30)}" stroke-width="1.5" fill="none" opacity="0.4"/>`;
+  // Collar / lapel detail
+  if (lv <= 6 || lv >= 9) {
+    svg += `<path d="M90 108 L100 118 L110 108" stroke="${lighten(outfitA, 20)}" stroke-width="2" fill="none" opacity="0.5"/>`;
+  }
+  if (lv === 7) {
+    // White cravat
+    svg += `<ellipse cx="100" cy="116" rx="14" ry="8" fill="white" opacity="0.85"/>`;
+    svg += `<ellipse cx="100" cy="116" rx="10" ry="5" fill="white" opacity="0.4"/>`;
+  }
+  svg += `</g>`;
+
+  // === NECK ===
+  svg += `<rect x="92" y="98" width="16" height="16" rx="5" fill="url(#${id}-skin)"/>`;
+
+  // === HEAD (3D sphere) ===
+  svg += `<g filter="url(#${id}-iglow)">`;
+  svg += `<circle cx="100" cy="72" r="38" fill="url(#${id}-skin)"/>`;
+  // Cheek blush (subtle)
+  svg += `<circle cx="80" cy="80" r="8" fill="#FF9B9B" opacity="0.12"/>`;
+  svg += `<circle cx="120" cy="80" r="8" fill="#FF9B9B" opacity="0.12"/>`;
+  svg += `</g>`;
+
+  // === HAIR (per level, 3D) ===
+  if (lv === 1) {
+    // Short messy
+    svg += `<ellipse cx="100" cy="50" rx="36" ry="26" fill="url(#${id}-hair)"/>`;
+    svg += `<circle cx="80" cy="38" r="9" fill="url(#${id}-hair)"/>`;
+    svg += `<circle cx="100" cy="34" r="8" fill="url(#${id}-hair)"/>`;
+    svg += `<circle cx="120" cy="38" r="9" fill="url(#${id}-hair)"/>`;
+    // Hair shine
+    svg += `<ellipse cx="92" cy="40" rx="10" ry="4" fill="${lighten(hair, 30)}" opacity="0.3" transform="rotate(-10 92 40)"/>`;
+  } else if (lv === 2) {
+    svg += `<ellipse cx="100" cy="48" rx="38" ry="28" fill="url(#${id}-hair)"/>`;
+    svg += `<ellipse cx="94" cy="38" rx="12" ry="5" fill="${lighten(hair, 25)}" opacity="0.25" transform="rotate(-8 94 38)"/>`;
+  } else if (lv === 3) {
+    // Bald top + side hair
+    svg += `<ellipse cx="100" cy="50" rx="32" ry="20" fill="url(#${id}-skin)"/>`;
+    svg += `<path d="M62 68 Q56 50 66 38" stroke="url(#${id}-hair)" stroke-width="8" stroke-linecap="round" fill="none"/>`;
+    svg += `<path d="M138 68 Q144 50 134 38" stroke="url(#${id}-hair)" stroke-width="8" stroke-linecap="round" fill="none"/>`;
+  } else if (lv === 4) {
+    // Long wavy
+    svg += `<ellipse cx="100" cy="46" rx="40" ry="30" fill="url(#${id}-hair)"/>`;
+    svg += `<path d="M60 62 Q52 85 58 108" stroke="url(#${id}-hair)" stroke-width="14" stroke-linecap="round" fill="none"/>`;
+    svg += `<path d="M140 62 Q148 85 142 108" stroke="url(#${id}-hair)" stroke-width="14" stroke-linecap="round" fill="none"/>`;
+    svg += `<ellipse cx="90" cy="38" rx="14" ry="5" fill="${lighten(hair, 20)}" opacity="0.2" transform="rotate(-8 90 38)"/>`;
+  } else if (lv === 5) {
+    svg += `<ellipse cx="100" cy="46" rx="38" ry="28" fill="url(#${id}-hair)"/>`;
+    svg += `<ellipse cx="92" cy="38" rx="12" ry="5" fill="${lighten(hair, 25)}" opacity="0.2" transform="rotate(-6 92 38)"/>`;
+  } else if (lv === 6) {
+    // 17c long hair
+    svg += `<ellipse cx="100" cy="46" rx="40" ry="30" fill="url(#${id}-hair)"/>`;
+    svg += `<path d="M60 60 Q50 85 56 115" stroke="url(#${id}-hair)" stroke-width="16" stroke-linecap="round" fill="none"/>`;
+    svg += `<path d="M140 60 Q150 85 144 115" stroke="url(#${id}-hair)" stroke-width="16" stroke-linecap="round" fill="none"/>`;
+  } else if (lv === 7) {
+    // Powdered wig
+    svg += `<ellipse cx="100" cy="44" rx="40" ry="30" fill="url(#${id}-hair)"/>`;
+    svg += `<path d="M60 56 Q52 75 58 98" stroke="url(#${id}-hair)" stroke-width="14" stroke-linecap="round" fill="none"/>`;
+    svg += `<path d="M140 56 Q148 75 142 98" stroke="url(#${id}-hair)" stroke-width="14" stroke-linecap="round" fill="none"/>`;
+    svg += `<ellipse cx="95" cy="36" rx="14" ry="5" fill="${lighten(hair, 15)}" opacity="0.3" transform="rotate(-5 95 36)"/>`;
+  } else if (lv === 8) {
+    svg += `<ellipse cx="100" cy="46" rx="36" ry="26" fill="url(#${id}-hair)"/>`;
+    // Big sideburns
+    svg += `<ellipse cx="64" cy="78" rx="13" ry="20" fill="url(#${id}-hair)"/>`;
+    svg += `<ellipse cx="136" cy="78" rx="13" ry="20" fill="url(#${id}-hair)"/>`;
+  } else if (lv === 9) {
+    svg += `<ellipse cx="100" cy="44" rx="38" ry="28" fill="url(#${id}-hair)"/>`;
+    svg += `<ellipse cx="92" cy="34" rx="12" ry="5" fill="${lighten(hair, 20)}" opacity="0.15"/>`;
+  } else if (lv === 10) {
+    // Golden crown + hair
+    svg += `<ellipse cx="100" cy="36" rx="34" ry="8" fill="none" stroke="#F59E0B" stroke-width="2.5" opacity="0.8"/>`;
+    svg += `<ellipse cx="100" cy="36" rx="40" ry="10" fill="none" stroke="#F59E0B" stroke-width="1" opacity="0.4"/>`;
+    // Crown gems
+    svg += `<circle cx="100" cy="30" r="4" fill="#F59E0B" opacity="0.7"/>`;
+    svg += `<circle cx="86" cy="33" r="3" fill="#818CF8" opacity="0.5"/>`;
+    svg += `<circle cx="114" cy="33" r="3" fill="#818CF8" opacity="0.5"/>`;
+    svg += `<ellipse cx="100" cy="46" rx="36" ry="26" fill="url(#${id}-hair)"/>`;
+    svg += `<ellipse cx="92" cy="38" rx="12" ry="5" fill="${lighten(hair, 20)}" opacity="0.4" transform="rotate(-5 92 38)"/>`;
+    // Redraw face
+    svg += `<circle cx="100" cy="72" r="38" fill="url(#${id}-skin)"/>`;
+    svg += `<circle cx="80" cy="80" r="8" fill="#FF9B9B" opacity="0.08"/>`;
+    svg += `<circle cx="120" cy="80" r="8" fill="#FF9B9B" opacity="0.08"/>`;
+  }
+
+  // === EYEBROWS (3D, per level) ===
+  const browW = lv === 9 ? 4 : lv >= 7 ? 2.8 : 2.5;
+  const browLift = lv === 1 ? -4 : lv === 9 ? -5 : -2;
+  svg += `<path d="M80 ${63+browLift} Q88 ${58+browLift} 96 ${61+browLift}" stroke="${darken(hair, 10)}" stroke-width="${browW}" stroke-linecap="round" fill="none"/>`;
+  svg += `<path d="M104 ${61+browLift} Q112 ${58+browLift} 120 ${63+browLift}" stroke="${darken(hair, 10)}" stroke-width="${browW}" stroke-linecap="round" fill="none"/>`;
+
+  // === EYES (3D with shine) ===
+  // Eye whites
+  svg += `<ellipse cx="88" cy="72" rx="7" ry="6.5" fill="white" opacity="0.95"/>`;
+  svg += `<ellipse cx="112" cy="72" rx="7" ry="6.5" fill="white" opacity="0.95"/>`;
+  // Iris
+  svg += `<circle cx="89" cy="72" r="5" fill="${eyeCol}"/>`;
+  svg += `<circle cx="113" cy="72" r="5" fill="${eyeCol}"/>`;
+  // Pupil
+  svg += `<circle cx="89" cy="72" r="2.5" fill="#0A0A0A"/>`;
+  svg += `<circle cx="113" cy="72" r="2.5" fill="#0A0A0A"/>`;
+  // Eye shine (3D highlight)
+  svg += `<circle cx="91" cy="70" r="2" fill="white" opacity="0.85"/>`;
+  svg += `<circle cx="115" cy="70" r="2" fill="white" opacity="0.85"/>`;
+  svg += `<circle cx="87" cy="74" r="1" fill="white" opacity="0.4"/>`;
+  svg += `<circle cx="111" cy="74" r="1" fill="white" opacity="0.4"/>`;
+
+  // === GLASSES (Lv 8 only) ===
+  if (hasGlasses) {
+    svg += `<circle cx="88" cy="72" r="12" fill="none" stroke="${darken(hair, 10)}" stroke-width="2.5"/>`;
+    svg += `<circle cx="112" cy="72" r="12" fill="none" stroke="${darken(hair, 10)}" stroke-width="2.5"/>`;
+    svg += `<path d="M100 72 L100 72" stroke="${darken(hair, 10)}" stroke-width="2.5"/>`;
+    // Lens reflection
+    svg += `<ellipse cx="82" cy="68" rx="5" ry="3" fill="white" opacity="0.12" transform="rotate(-15 82 68)"/>`;
+    svg += `<ellipse cx="106" cy="68" rx="5" ry="3" fill="white" opacity="0.12" transform="rotate(-15 106 68)"/>`;
+  }
+
+  // === BEARD (per level) ===
+  if (hasBeard) {
+    if (lv === 3) {
+      svg += `<ellipse cx="100" cy="98" rx="24" ry="18" fill="url(#${id}-hair)" opacity="0.85"/>`;
+      svg += `<ellipse cx="96" cy="92" rx="8" ry="4" fill="${lighten(hair, 15)}" opacity="0.2"/>`;
+    } else if (lv === 4) {
+      svg += `<path d="M76 92 Q78 112 100 118 Q122 112 124 92" fill="url(#${id}-hair)" opacity="0.85"/>`;
+    } else if (lv === 5) {
+      svg += `<ellipse cx="100" cy="96" rx="20" ry="14" fill="url(#${id}-hair)" opacity="0.85"/>`;
+    } else if (lv === 6) {
+      // Mustache + goatee
+      svg += `<path d="M86 83 Q93 78 100 80 Q107 78 114 83" stroke="url(#${id}-hair)" stroke-width="3" stroke-linecap="round" fill="none"/>`;
+      svg += `<ellipse cx="100" cy="93" rx="7" ry="6" fill="url(#${id}-hair)"/>`;
+    } else if (lv === 8) {
+      // Side-connected beard
+      svg += `<ellipse cx="100" cy="96" rx="20" ry="14" fill="url(#${id}-hair)" opacity="0.85"/>`;
+    } else if (lv === 9) {
+      // The magnificent mustache
+      svg += `<path d="M74 84 Q88 76 100 80 Q112 76 126 84 Q132 94 126 100 Q112 104 100 100 Q88 104 74 100 Q68 94 74 84 Z" fill="url(#${id}-hair)"/>`;
+    }
+  }
+
+  // === MOUTH ===
+  if (lv !== 9) { // Nietzsche's mouth hidden by mustache
+    const smileY = hasBeard && lv !== 6 ? 86 : 84;
+    if (lv === 1) {
+      svg += `<path d="M90 ${smileY} Q100 ${smileY+8} 110 ${smileY}" stroke="#C06060" stroke-width="2.2" stroke-linecap="round" fill="none"/>`;
+    } else if (lv === 6) {
+      svg += `<path d="M94 ${smileY} Q100 ${smileY+2} 106 ${smileY}" stroke="#C06060" stroke-width="1.8" stroke-linecap="round" fill="none"/>`;
+    } else if (lv === 10) {
+      svg += `<path d="M90 ${smileY} Q100 ${smileY+7} 110 ${smileY}" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round" fill="none"/>`;
+    } else {
+      svg += `<path d="M92 ${smileY} Q100 ${smileY+5} 108 ${smileY}" stroke="#C06060" stroke-width="2" stroke-linecap="round" fill="none"/>`;
+    }
+  }
+
+  // === NOSE (subtle 3D) ===
+  svg += `<path d="M98 76 Q100 80 102 76" stroke="${darken(skin, 15)}" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.5"/>`;
+
+  // === ACCESSORIES (per level) ===
+  if (lv === 1) {
+    // Floating ? with glow
+    svg += `<circle cx="152" cy="42" r="14" fill="${cfg.glow}" opacity="0.1"/>`;
+    svg += `<text x="152" y="48" text-anchor="middle" font-size="22" font-weight="800" fill="${cfg.sym === '?' ? cfg.symCol : '#fff'}" opacity="0.65" font-family="Inter Tight, sans-serif">?</text>`;
+    // Small book
+    svg += `<g transform="translate(128,134) rotate(-8)">
+      <rect width="16" height="20" rx="3" fill="#FEF9C3" stroke="#D97706" stroke-width="1.5"/>
+      <line x1="3" y1="6" x2="13" y2="6" stroke="#D97706" stroke-width="1" opacity="0.5"/>
+      <line x1="3" y1="10" x2="11" y2="10" stroke="#D97706" stroke-width="1" opacity="0.3"/>
+    </g>`;
+  } else if (lv === 2) {
+    // Speech bubble (3D)
+    svg += `<rect x="136" y="34" width="38" height="26" rx="13" fill="white" opacity="0.9"/>`;
+    svg += `<polygon points="140,60 145,55 150,60" fill="white" opacity="0.9"/>`;
+    svg += `<line x1="144" y1="43" x2="166" y2="43" stroke="#3B82F6" stroke-width="2.5" stroke-linecap="round"/>`;
+    svg += `<line x1="144" y1="50" x2="158" y2="50" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" opacity="0.4"/>`;
+  } else if (lv === 3) {
+    svg += `<text x="148" y="40" font-size="18" font-weight="700" fill="#EC4899" opacity="0.45" font-family="Inter Tight, sans-serif">?</text>`;
+    svg += `<text x="160" y="55" font-size="13" font-weight="700" fill="#EC4899" opacity="0.3" font-family="Inter Tight, sans-serif">?</text>`;
+  } else if (lv === 4) {
+    // Floating triangle (Platonic form) with glow
+    svg += `<circle cx="158" cy="44" r="16" fill="#8B5CF6" opacity="0.08"/>`;
+    svg += `<polygon points="158,28 174,58 142,58" fill="none" stroke="#8B5CF6" stroke-width="2.5" opacity="0.5"/>`;
+    svg += `<circle cx="158" cy="44" r="5" fill="#8B5CF6" opacity="0.25"/>`;
+  } else if (lv === 5) {
+    // Open book (3D)
+    svg += `<g transform="translate(32,144)">
+      <path d="M0 0 L28 -6 L28 28 L0 34 Z" fill="#FEF9C3" stroke="#D97706" stroke-width="1.5"/>
+      <path d="M28 -6 L56 0 L56 34 L28 28 Z" fill="#FFFBEB" stroke="#D97706" stroke-width="1.5"/>
+      <line x1="5" y1="8" x2="23" y2="4" stroke="#D97706" stroke-width="1" opacity="0.5"/>
+      <line x1="5" y1="16" x2="23" y2="12" stroke="#D97706" stroke-width="1" opacity="0.4"/>
+      <line x1="33" y1="4" x2="51" y2="8" stroke="#D97706" stroke-width="1" opacity="0.5"/>
+    </g>`;
+  } else if (lv === 6) {
+    // Coordinate axes with dots
+    svg += `<circle cx="158" cy="48" r="22" fill="#6366F1" opacity="0.08"/>`;
+    svg += `<line x1="158" y1="30" x2="158" y2="66" stroke="#6366F1" stroke-width="2" opacity="0.5"/>`;
+    svg += `<line x1="140" y1="48" x2="176" y2="48" stroke="#6366F1" stroke-width="2" opacity="0.5"/>`;
+    svg += `<circle cx="164" cy="40" r="3.5" fill="#6366F1" opacity="0.45"/>`;
+    svg += `<circle cx="150" cy="56" r="2.5" fill="#6366F1" opacity="0.35"/>`;
+    svg += `<circle cx="168" cy="54" r="2" fill="#6366F1" opacity="0.25"/>`;
+  } else if (lv === 7) {
+    // Stars (starry sky above)
+    const stPos = [[34,28],[166,22],[48,14],[152,38],[28,48],[172,46]];
+    stPos.forEach(([x,y], i) => {
+      const r = i % 2 === 0 ? 3 : 2;
+      svg += `<circle cx="${x}" cy="${y}" r="${r}" fill="#94A3B8" opacity="${0.35 + i*0.05}"/>`;
+      // 4-point star
+      if (i < 3) {
+        svg += `<path d="M${x} ${y-r-1} L${x+1} ${y} L${x} ${y+r+1} L${x-1} ${y} Z" fill="#94A3B8" opacity="0.2"/>`;
+      }
+    });
+  } else if (lv === 8) {
+    // Thesis → Antithesis → Synthesis
+    svg += `<circle cx="148" cy="34" r="10" fill="#14B8A6" opacity="0.2"/>`;
+    svg += `<circle cx="170" cy="34" r="10" fill="#14B8A6" opacity="0.2"/>`;
+    svg += `<circle cx="159" cy="18" r="10" fill="#14B8A6" opacity="0.35"/>`;
+    svg += `<path d="M148 26 L156 20" stroke="#0D9488" stroke-width="2" stroke-linecap="round" opacity="0.5"/>`;
+    svg += `<path d="M170 26 L162 20" stroke="#0D9488" stroke-width="2" stroke-linecap="round" opacity="0.5"/>`;
+    svg += `<text x="159" y="22" text-anchor="middle" font-size="10" font-weight="700" fill="#0D9488" opacity="0.6" font-family="Inter Tight, sans-serif">∴</text>`;
+  } else if (lv === 9) {
+    // Lightning bolt (3D)
+    svg += `<circle cx="150" cy="42" r="16" fill="#EF4444" opacity="0.08"/>`;
+    svg += `<path d="M154 22 L146 42 L156 40 L148 62" stroke="#EF4444" stroke-width="3.5" stroke-linecap="round" fill="none" opacity="0.65"/>`;
+    svg += `<path d="M156 24 L148 44" stroke="#FCA5A5" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.3"/>`;
+  } else if (lv === 10) {
+    // Lambda symbol with glow
+    svg += `<circle cx="100" cy="164" r="14" fill="#F59E0B" opacity="0.1"/>`;
+    svg += `<text x="100" y="170" text-anchor="middle" font-size="24" font-weight="bold" fill="#F59E0B" opacity="0.85" font-family="Georgia, serif">Λ</text>`;
+  }
+
+  // === HIGHLIGHT (top-left ambient light reflection) ===
+  svg += `<circle cx="70" cy="40" r="30" fill="white" opacity="0.04"/>`;
+
+  svg += `</svg>`;
+  return svg;
+}
+
+// Color helpers
+function hexToRgb(hex) {
+  hex = hex.replace('#','');
+  if (hex.length === 3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+  return { r: parseInt(hex.slice(0,2),16), g: parseInt(hex.slice(2,4),16), b: parseInt(hex.slice(4,6),16) };
+}
+function rgbToHex(r,g,b) {
+  return '#' + [r,g,b].map(x => Math.max(0,Math.min(255,Math.round(x))).toString(16).padStart(2,'0')).join('');
+}
+function lighten(hex, pct) {
+  const {r,g,b} = hexToRgb(hex);
+  const f = pct / 100;
+  return rgbToHex(r + (255-r)*f, g + (255-g)*f, b + (255-b)*f);
+}
+function darken(hex, pct) {
+  const {r,g,b} = hexToRgb(hex);
+  const f = 1 - pct / 100;
+  return rgbToHex(r*f, g*f, b*f);
+}
+
+// Render grid
+const grid = document.getElementById('grid');
+const list = document.getElementById('list');
+
+levels.forEach(cfg => {
+  // Grid card
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    ${generateSVG(cfg, 140)}
+    <div class="level">Lv.${cfg.lv}</div>
+    <div class="name">${cfg.name}</div>
+  `;
+  grid.appendChild(card);
+
+  // List card
+  const lc = document.createElement('div');
+  lc.className = 'detail-card';
+  lc.innerHTML = `
+    ${generateSVG(cfg, 52)}
+    <div class="info">
+      <div class="lv">Lv.${cfg.lv}</div>
+      <div class="title">${cfg.name}</div>
+      <div class="xp">${cfg.lv * 1000 - 1000} XP~</div>
+    </div>
+  `;
+  list.appendChild(lc);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rank Illustrations v3 — Premium 3D Style</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@700;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: #0B0F1A;
+  color: #fff;
+  padding: 20px 16px;
+  min-height: 100vh;
+}
+h1 {
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 22px;
+  font-weight: 900;
+  text-align: center;
+  margin-bottom: 6px;
+  background: linear-gradient(135deg, #A78BFA, #6366F1, #818CF8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.subtitle { text-align: center; font-size: 12px; color: rgba(255,255,255,0.4); margin-bottom: 28px; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  max-width: 440px;
+  margin: 0 auto;
+}
+.card {
+  background: linear-gradient(160deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 22px;
+  padding: 16px 10px 12px;
+  text-align: center;
+}
+.card canvas {
+  display: block;
+  margin: 0 auto 8px;
+  border-radius: 24px;
+  filter: drop-shadow(0 6px 20px rgba(0,0,0,0.4));
+}
+.card .level {
+  font-size: 9px; font-weight: 800; letter-spacing: 0.15em;
+  text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 2px;
+}
+.card .name {
+  font-family: 'Inter Tight', sans-serif; font-size: 14px; font-weight: 900; color: #fff;
+}
+.section-title {
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 16px; font-weight: 800;
+  text-align: center; color: rgba(255,255,255,0.6);
+  margin: 36px 0 16px;
+}
+.hero-demo {
+  max-width: 440px; margin: 0 auto 10px;
+  background: linear-gradient(145deg, #0F1629 0%, #1A2744 50%, #0D1B3E 100%);
+  border-radius: 24px; padding: 28px 20px; text-align: center;
+  position: relative; overflow: hidden;
+}
+.hero-demo .orb1 {
+  position: absolute; top: -30px; right: -30px; width: 120px; height: 120px;
+  background: radial-gradient(circle, rgba(99,102,241,0.15), transparent 70%);
+}
+.hero-demo .orb2 {
+  position: absolute; bottom: -20px; left: -20px; width: 100px; height: 100px;
+  background: radial-gradient(circle, rgba(245,158,11,0.1), transparent 70%);
+}
+.hero-demo canvas {
+  border-radius: 28px;
+  filter: drop-shadow(0 8px 28px rgba(0,0,0,0.35));
+  margin-bottom: 12px;
+}
+.hero-demo .lv-badge {
+  display: inline-block; font-size: 10px; font-weight: 800; letter-spacing: 0.15em;
+  color: rgba(255,255,255,0.45); background: rgba(255,255,255,0.08);
+  border-radius: 20px; padding: 3px 14px; margin-bottom: 4px;
+}
+.hero-demo .title-text {
+  font-family: 'Inter Tight', sans-serif; font-size: 24px; font-weight: 900;
+  color: #fff; letter-spacing: -0.02em;
+}
+.list-section {
+  max-width: 440px; margin: 0 auto;
+}
+.list-item {
+  display: flex; align-items: center; gap: 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px; padding: 10px 14px; margin-bottom: 8px;
+}
+.list-item canvas { flex-shrink: 0; border-radius: 14px; }
+.list-item .info .lv { font-size: 9px; font-weight: 800; letter-spacing: 0.12em; color: rgba(255,255,255,0.35); }
+.list-item .info .t { font-family: 'Inter Tight', sans-serif; font-size: 15px; font-weight: 900; color: #fff; }
+.list-item .info .xp { font-size: 11px; color: rgba(255,255,255,0.3); }
+</style>
+</head>
+<body>
+
+<h1>ランクイラスト v3</h1>
+<p class="subtitle">Duolingoスタイルの3Dキャラクターアバター</p>
+
+<div class="grid" id="grid"></div>
+
+<div class="section-title">ヒーローカード表示</div>
+<div class="hero-demo" id="hero">
+  <div class="orb1"></div>
+  <div class="orb2"></div>
+</div>
+
+<div class="section-title">リスト表示</div>
+<div class="list-section" id="list"></div>
+
+<script>
+const levels = [
+  { lv:1,  name:'哲学の卵',      bg1:'#FEF3C7', bg2:'#F59E0B', skin:'#FDBF6F', hair:'#8B5E3C', outfit:'#F59E0B', outfitDk:'#D97706', accent:'#D97706', eyeCol:'#3D2B1F' },
+  { lv:2,  name:'ソフィスト',     bg1:'#DBEAFE', bg2:'#3B82F6', skin:'#F5CBA7', hair:'#1B2838', outfit:'#3B82F6', outfitDk:'#1D4ED8', accent:'#2563EB', eyeCol:'#1E3A5F' },
+  { lv:3,  name:'ソクラテス',     bg1:'#FCE7F3', bg2:'#EC4899', skin:'#E8C4A0', hair:'#A0826D', outfit:'#EC4899', outfitDk:'#BE185D', accent:'#DB2777', eyeCol:'#3D2B1F' },
+  { lv:4,  name:'プラトン',       bg1:'#EDE9FE', bg2:'#8B5CF6', skin:'#F5CBA7', hair:'#4A3728', outfit:'#8B5CF6', outfitDk:'#6D28D9', accent:'#7C3AED', eyeCol:'#2D1B69' },
+  { lv:5,  name:'アリストテレス', bg1:'#D1FAE5', bg2:'#10B981', skin:'#F5CBA7', hair:'#3D2B1F', outfit:'#10B981', outfitDk:'#047857', accent:'#059669', eyeCol:'#1B3A2B' },
+  { lv:6,  name:'デカルト',       bg1:'#E0E7FF', bg2:'#6366F1', skin:'#F5CBA7', hair:'#2C1810', outfit:'#6366F1', outfitDk:'#4338CA', accent:'#4F46E5', eyeCol:'#1E1B4B' },
+  { lv:7,  name:'カント',         bg1:'#F1F5F9', bg2:'#94A3B8', skin:'#F0E0D0', hair:'#C0C8D4', outfit:'#64748B', outfitDk:'#334155', accent:'#475569', eyeCol:'#334155' },
+  { lv:8,  name:'ヘーゲル',       bg1:'#CCFBF1', bg2:'#14B8A6', skin:'#DEB887', hair:'#2C1810', outfit:'#14B8A6', outfitDk:'#0F766E', accent:'#0D9488', eyeCol:'#1C1917' },
+  { lv:9,  name:'ニーチェ',       bg1:'#2C1917', bg2:'#7F1D1D', skin:'#E0B89A', hair:'#1C1917', outfit:'#1C1917', outfitDk:'#0C0A09', accent:'#DC2626', eyeCol:'#1C1917' },
+  { lv:10, name:'ロゴスの神',     bg1:'#1E1B4B', bg2:'#0F0A1E', skin:'#FFF8E1', hair:'#F59E0B', outfit:'#312E81', outfitDk:'#1E1B4B', accent:'#818CF8', eyeCol:'#4338CA' },
+];
+
+function draw(canvas, cfg, sz) {
+  canvas.width = sz * 2;
+  canvas.height = sz * 2;
+  canvas.style.width = sz + 'px';
+  canvas.style.height = sz + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(2, 2); // retina
+  const s = sz / 200; // scale factor
+  ctx.save();
+  ctx.scale(s, s);
+
+  // --- Background with rounded rect ---
+  roundRect(ctx, 0, 0, 200, 200, 32);
+  const bgGrad = ctx.createLinearGradient(0, 0, 200, 200);
+  bgGrad.addColorStop(0, cfg.bg1);
+  bgGrad.addColorStop(1, cfg.bg2);
+  ctx.fillStyle = bgGrad;
+  ctx.fill();
+
+  // Ambient glow
+  const glowGrad = ctx.createRadialGradient(100, 80, 0, 100, 80, 70);
+  glowGrad.addColorStop(0, hexAlpha(cfg.accent, 0.25));
+  glowGrad.addColorStop(1, hexAlpha(cfg.accent, 0));
+  ctx.fillStyle = glowGrad;
+  ctx.beginPath(); ctx.arc(100, 80, 70, 0, Math.PI * 2); ctx.fill();
+
+  // Lv10 stars
+  if (cfg.lv === 10) {
+    [[30,24],[170,20],[18,80],[182,72],[24,150],[176,155],[50,10],[155,188],[92,15],[140,170],[60,40],[145,30]].forEach(([x,y], i) => {
+      ctx.fillStyle = hexAlpha('#fff', 0.15 + 0.12 * (i % 4));
+      ctx.beginPath(); ctx.arc(x, y, i % 3 === 0 ? 2.5 : 1.5, 0, Math.PI * 2); ctx.fill();
+    });
+    // Sacred geometry faint
+    ctx.strokeStyle = hexAlpha('#818CF8', 0.12);
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.arc(100, 78, 54, 0, Math.PI*2); ctx.stroke();
+  }
+
+  // Lv9 red aura
+  if (cfg.lv === 9) {
+    ctx.strokeStyle = hexAlpha('#EF4444', 0.1); ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(100, 78, 50, 0, Math.PI*2); ctx.stroke();
+    ctx.strokeStyle = hexAlpha('#EF4444', 0.06); ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.arc(100, 78, 60, 0, Math.PI*2); ctx.stroke();
+  }
+
+  // ==== BODY ====
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.3)';
+  ctx.shadowBlur = 12;
+  ctx.shadowOffsetY = 4;
+
+  // Torso — 3D shape
+  const bodyGrad = ctx.createLinearGradient(70, 110, 130, 185);
+  bodyGrad.addColorStop(0, lighten(cfg.outfit, 18));
+  bodyGrad.addColorStop(0.4, cfg.outfit);
+  bodyGrad.addColorStop(1, cfg.outfitDk);
+  ctx.fillStyle = bodyGrad;
+  ctx.beginPath();
+  ctx.moveTo(66, 130);
+  ctx.quadraticCurveTo(66, 110, 84, 108);
+  ctx.lineTo(116, 108);
+  ctx.quadraticCurveTo(134, 110, 134, 130);
+  ctx.lineTo(138, 176);
+  ctx.quadraticCurveTo(138, 186, 128, 186);
+  ctx.lineTo(72, 186);
+  ctx.quadraticCurveTo(62, 186, 62, 176);
+  ctx.closePath();
+  ctx.fill();
+
+  // Outfit 3D rim highlight (left side)
+  ctx.strokeStyle = hexAlpha(lighten(cfg.outfit, 35), 0.3);
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(68, 132);
+  ctx.quadraticCurveTo(68, 116, 84, 112);
+  ctx.stroke();
+
+  // Collar V or detail
+  if (cfg.lv === 7) {
+    // White cravat
+    ctx.fillStyle = '#fff';
+    ctx.beginPath();
+    ellipse(ctx, 100, 118, 16, 9);
+    ctx.fill();
+    ctx.fillStyle = hexAlpha('#fff', 0.5);
+    ctx.beginPath();
+    ellipse(ctx, 100, 116, 10, 5);
+    ctx.fill();
+  } else {
+    ctx.strokeStyle = hexAlpha(lighten(cfg.outfit, 30), 0.35);
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(88, 108);
+    ctx.lineTo(100, 120);
+    ctx.lineTo(112, 108);
+    ctx.stroke();
+  }
+  ctx.restore();
+
+  // ==== NECK ====
+  const neckGrad = ctx.createLinearGradient(92, 98, 108, 112);
+  neckGrad.addColorStop(0, lighten(cfg.skin, 5));
+  neckGrad.addColorStop(1, darken(cfg.skin, 12));
+  ctx.fillStyle = neckGrad;
+  roundRect(ctx, 90, 96, 20, 18, 6); ctx.fill();
+
+  // ==== HEAD — 3D sphere ====
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.2)';
+  ctx.shadowBlur = 10;
+  ctx.shadowOffsetY = 3;
+  const headGrad = ctx.createRadialGradient(88, 60, 5, 100, 72, 42);
+  headGrad.addColorStop(0, lighten(cfg.skin, 18));
+  headGrad.addColorStop(0.5, cfg.skin);
+  headGrad.addColorStop(1, darken(cfg.skin, 18));
+  ctx.fillStyle = headGrad;
+  ctx.beginPath(); ctx.arc(100, 72, 40, 0, Math.PI*2); ctx.fill();
+
+  // Face highlight (subtle 3D)
+  const faceHL = ctx.createRadialGradient(85, 58, 2, 90, 65, 30);
+  faceHL.addColorStop(0, hexAlpha('#fff', 0.18));
+  faceHL.addColorStop(1, hexAlpha('#fff', 0));
+  ctx.fillStyle = faceHL;
+  ctx.beginPath(); ctx.arc(100, 72, 40, 0, Math.PI*2); ctx.fill();
+  ctx.restore();
+
+  // Cheek blush
+  ctx.fillStyle = hexAlpha('#FF8A80', 0.15);
+  ctx.beginPath(); ctx.arc(78, 82, 9, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(122, 82, 9, 0, Math.PI*2); ctx.fill();
+
+  // ==== HAIR ====
+  drawHair(ctx, cfg);
+
+  // For lv10, redraw face on top of golden hair
+  if (cfg.lv === 10) {
+    const headGrad2 = ctx.createRadialGradient(88, 60, 5, 100, 72, 42);
+    headGrad2.addColorStop(0, lighten(cfg.skin, 15));
+    headGrad2.addColorStop(0.5, cfg.skin);
+    headGrad2.addColorStop(1, darken(cfg.skin, 15));
+    ctx.fillStyle = headGrad2;
+    ctx.beginPath(); ctx.arc(100, 72, 40, 0, Math.PI*2); ctx.fill();
+    // Faint glow
+    const fg = ctx.createRadialGradient(85, 58, 2, 90, 65, 30);
+    fg.addColorStop(0, hexAlpha('#fff', 0.15));
+    fg.addColorStop(1, hexAlpha('#fff', 0));
+    ctx.fillStyle = fg;
+    ctx.beginPath(); ctx.arc(100, 72, 40, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = hexAlpha('#FF8A80', 0.1);
+    ctx.beginPath(); ctx.arc(78, 82, 9, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(122, 82, 9, 0, Math.PI*2); ctx.fill();
+  }
+
+  // ==== EYEBROWS ====
+  const browThick = cfg.lv === 9 ? 4 : cfg.lv >= 7 ? 3 : 2.8;
+  const browY = cfg.lv === 1 ? -3 : cfg.lv === 9 ? -4 : -1;
+  ctx.strokeStyle = darken(cfg.hair, 8);
+  ctx.lineWidth = browThick;
+  ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(78, 63+browY); ctx.quadraticCurveTo(87, 57+browY, 96, 61+browY); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(104, 61+browY); ctx.quadraticCurveTo(113, 57+browY, 122, 63+browY); ctx.stroke();
+
+  // ==== EYES — full 3D ====
+  // White
+  ctx.fillStyle = '#FAFAFA';
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.08)'; ctx.shadowBlur = 4; ctx.shadowOffsetY = 1;
+  ctx.beginPath(); ellipse(ctx, 88, 73, 9, 8); ctx.fill();
+  ctx.beginPath(); ellipse(ctx, 112, 73, 9, 8); ctx.fill();
+  ctx.restore();
+
+  // Iris gradient
+  [88, 112].forEach(cx => {
+    const irisGrad = ctx.createRadialGradient(cx+1, 72, 1, cx, 73, 6.5);
+    irisGrad.addColorStop(0, lighten(cfg.eyeCol, 25));
+    irisGrad.addColorStop(0.6, cfg.eyeCol);
+    irisGrad.addColorStop(1, darken(cfg.eyeCol, 20));
+    ctx.fillStyle = irisGrad;
+    ctx.beginPath(); ctx.arc(cx, 73, 6, 0, Math.PI*2); ctx.fill();
+    // Pupil
+    ctx.fillStyle = '#0A0A0A';
+    ctx.beginPath(); ctx.arc(cx, 73, 3, 0, Math.PI*2); ctx.fill();
+    // Big highlight
+    ctx.fillStyle = hexAlpha('#fff', 0.9);
+    ctx.beginPath(); ctx.arc(cx+2.5, 70.5, 2.5, 0, Math.PI*2); ctx.fill();
+    // Small highlight
+    ctx.fillStyle = hexAlpha('#fff', 0.5);
+    ctx.beginPath(); ctx.arc(cx-1.5, 75, 1.2, 0, Math.PI*2); ctx.fill();
+  });
+
+  // ==== GLASSES (Lv8) ====
+  if (cfg.lv === 8) {
+    ctx.strokeStyle = darken(cfg.hair, 5); ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.arc(88, 73, 14, 0, Math.PI*2); ctx.stroke();
+    ctx.beginPath(); ctx.arc(112, 73, 14, 0, Math.PI*2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(100, 73); ctx.lineTo(100, 73); ctx.stroke();
+    // Lens reflection
+    ctx.fillStyle = hexAlpha('#fff', 0.1);
+    ctx.save(); ctx.translate(82, 67); ctx.rotate(-0.3);
+    ctx.beginPath(); ellipse(ctx, 0, 0, 6, 3); ctx.fill();
+    ctx.restore();
+  }
+
+  // ==== NOSE (subtle) ====
+  ctx.strokeStyle = hexAlpha(darken(cfg.skin, 20), 0.45);
+  ctx.lineWidth = 1.8; ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(97, 77); ctx.quadraticCurveTo(100, 82, 103, 77);
+  ctx.stroke();
+
+  // ==== BEARD ====
+  drawBeard(ctx, cfg);
+
+  // ==== MOUTH ====
+  if (cfg.lv !== 9) { // Hidden by mustache
+    const my = [3,4,5,6].includes(cfg.lv) ? 88 : 86;
+    ctx.strokeStyle = cfg.lv === 10 ? '#8B5CF6' : '#C06060';
+    ctx.lineWidth = 2.2; ctx.lineCap = 'round';
+    ctx.beginPath();
+    if (cfg.lv === 1) {
+      ctx.moveTo(88, my); ctx.quadraticCurveTo(100, my+9, 112, my); // Big smile
+    } else if (cfg.lv === 6) {
+      ctx.moveTo(94, my); ctx.quadraticCurveTo(100, my+2, 106, my); // Subtle
+    } else {
+      ctx.moveTo(90, my); ctx.quadraticCurveTo(100, my+6, 110, my);
+    }
+    ctx.stroke();
+  }
+
+  // ==== ACCESSORIES ====
+  drawAccessory(ctx, cfg);
+
+  ctx.restore();
+}
+
+function drawHair(ctx, cfg) {
+  const hairGrad = (cx, cy, r) => {
+    const g = ctx.createRadialGradient(cx-r*0.2, cy-r*0.3, r*0.1, cx, cy, r);
+    g.addColorStop(0, lighten(cfg.hair, 22));
+    g.addColorStop(0.5, cfg.hair);
+    g.addColorStop(1, darken(cfg.hair, 22));
+    return g;
+  };
+
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.15)'; ctx.shadowBlur = 6; ctx.shadowOffsetY = 2;
+
+  if (cfg.lv === 1) {
+    ctx.fillStyle = hairGrad(100, 48, 38);
+    ctx.beginPath(); ellipse(ctx, 100, 48, 38, 28); ctx.fill();
+    ctx.beginPath(); ctx.arc(78, 36, 10, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(100, 32, 9, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(122, 36, 10, 0, Math.PI*2); ctx.fill();
+    // Shine
+    ctx.fillStyle = hexAlpha(lighten(cfg.hair, 35), 0.35);
+    ctx.save(); ctx.translate(90, 38); ctx.rotate(-0.15);
+    ctx.beginPath(); ellipse(ctx, 0, 0, 14, 5); ctx.fill(); ctx.restore();
+  } else if (cfg.lv === 2) {
+    ctx.fillStyle = hairGrad(100, 46, 40);
+    ctx.beginPath(); ellipse(ctx, 100, 46, 40, 30); ctx.fill();
+    // Shine
+    ctx.fillStyle = hexAlpha(lighten(cfg.hair, 30), 0.25);
+    ctx.save(); ctx.translate(92, 36); ctx.rotate(-0.1);
+    ctx.beginPath(); ellipse(ctx, 0, 0, 14, 5); ctx.fill(); ctx.restore();
+    // Side part line
+    ctx.strokeStyle = hexAlpha(darken(cfg.hair, 15), 0.3); ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(88, 30); ctx.quadraticCurveTo(75, 42, 68, 58); ctx.stroke();
+  } else if (cfg.lv === 3) {
+    // Bald top
+    ctx.fillStyle = hexAlpha(cfg.skin, 0.7);
+    ctx.beginPath(); ellipse(ctx, 100, 48, 34, 22); ctx.fill();
+    // Side hair tufts
+    ctx.fillStyle = hairGrad(60, 58, 18);
+    ctx.lineWidth = 10; ctx.lineCap = 'round';
+    ctx.strokeStyle = hairGrad(60, 58, 18);
+    ctx.beginPath(); ctx.moveTo(62, 70); ctx.quadraticCurveTo(54, 50, 66, 38); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(138, 70); ctx.quadraticCurveTo(146, 50, 134, 38); ctx.stroke();
+  } else if (cfg.lv === 4) {
+    ctx.fillStyle = hairGrad(100, 44, 42);
+    ctx.beginPath(); ellipse(ctx, 100, 44, 42, 32); ctx.fill();
+    // Long sides
+    ctx.fillStyle = hairGrad(58, 85, 20);
+    ctx.beginPath(); ctx.moveTo(58, 60); ctx.quadraticCurveTo(48, 88, 56, 112);
+    ctx.lineTo(66, 112); ctx.quadraticCurveTo(60, 88, 66, 60); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(142, 60); ctx.quadraticCurveTo(152, 88, 144, 112);
+    ctx.lineTo(134, 112); ctx.quadraticCurveTo(140, 88, 134, 60); ctx.closePath(); ctx.fill();
+    // Shine
+    ctx.fillStyle = hexAlpha(lighten(cfg.hair, 20), 0.2);
+    ctx.save(); ctx.translate(90, 36); ctx.rotate(-0.1);
+    ctx.beginPath(); ellipse(ctx, 0, 0, 16, 6); ctx.fill(); ctx.restore();
+  } else if (cfg.lv === 5) {
+    ctx.fillStyle = hairGrad(100, 44, 40);
+    ctx.beginPath(); ellipse(ctx, 100, 44, 40, 30); ctx.fill();
+    ctx.fillStyle = hexAlpha(lighten(cfg.hair, 25), 0.2);
+    ctx.save(); ctx.translate(90, 36); ctx.rotate(-0.08);
+    ctx.beginPath(); ellipse(ctx, 0, 0, 14, 5); ctx.fill(); ctx.restore();
+  } else if (cfg.lv === 6) {
+    ctx.fillStyle = hairGrad(100, 44, 42);
+    ctx.beginPath(); ellipse(ctx, 100, 44, 42, 32); ctx.fill();
+    // 17c long sides
+    ctx.fillStyle = hairGrad(56, 88, 22);
+    ctx.beginPath(); ctx.moveTo(56, 58); ctx.quadraticCurveTo(44, 90, 52, 120);
+    ctx.lineTo(64, 118); ctx.quadraticCurveTo(56, 90, 64, 58); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(144, 58); ctx.quadraticCurveTo(156, 90, 148, 120);
+    ctx.lineTo(136, 118); ctx.quadraticCurveTo(144, 90, 136, 58); ctx.closePath(); ctx.fill();
+  } else if (cfg.lv === 7) {
+    // Powdered wig
+    ctx.fillStyle = hairGrad(100, 42, 44);
+    ctx.beginPath(); ellipse(ctx, 100, 42, 42, 32); ctx.fill();
+    ctx.fillStyle = hairGrad(58, 78, 20);
+    ctx.beginPath(); ctx.moveTo(58, 54); ctx.quadraticCurveTo(46, 78, 54, 102);
+    ctx.lineTo(66, 100); ctx.quadraticCurveTo(56, 78, 66, 54); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(142, 54); ctx.quadraticCurveTo(154, 78, 146, 102);
+    ctx.lineTo(134, 100); ctx.quadraticCurveTo(144, 78, 134, 54); ctx.closePath(); ctx.fill();
+    // Powder shine
+    ctx.fillStyle = hexAlpha('#fff', 0.2);
+    ctx.save(); ctx.translate(92, 34); ctx.rotate(-0.08);
+    ctx.beginPath(); ellipse(ctx, 0, 0, 16, 6); ctx.fill(); ctx.restore();
+  } else if (cfg.lv === 8) {
+    ctx.fillStyle = hairGrad(100, 44, 38);
+    ctx.beginPath(); ellipse(ctx, 100, 44, 38, 28); ctx.fill();
+    // Big sideburns
+    ctx.fillStyle = hairGrad(64, 78, 16);
+    ctx.beginPath(); ellipse(ctx, 62, 80, 15, 22); ctx.fill();
+    ctx.beginPath(); ellipse(ctx, 138, 80, 15, 22); ctx.fill();
+  } else if (cfg.lv === 9) {
+    ctx.fillStyle = hairGrad(100, 42, 40);
+    ctx.beginPath(); ellipse(ctx, 100, 42, 40, 30); ctx.fill();
+    // Dark intense spiky hints
+    ctx.fillStyle = darken(cfg.hair, 10);
+    ctx.beginPath(); ctx.moveTo(82, 26); ctx.lineTo(78, 18); ctx.lineTo(86, 22); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(118, 26); ctx.lineTo(122, 18); ctx.lineTo(114, 22); ctx.closePath(); ctx.fill();
+  } else if (cfg.lv === 10) {
+    // Crown/halo
+    ctx.strokeStyle = hexAlpha('#F59E0B', 0.8); ctx.lineWidth = 3;
+    ctx.beginPath(); ellipse(ctx, 100, 34, 36, 9); ctx.stroke();
+    ctx.strokeStyle = hexAlpha('#F59E0B', 0.35); ctx.lineWidth = 1.5;
+    ctx.beginPath(); ellipse(ctx, 100, 34, 42, 12); ctx.stroke();
+    // Crown points
+    ctx.fillStyle = '#F59E0B';
+    [[100,24,5],[84,28,3.5],[116,28,3.5]].forEach(([x,y,r]) => {
+      ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill();
+    });
+    // Gems
+    ctx.fillStyle = '#818CF8';
+    ctx.beginPath(); ctx.arc(84, 28, 2, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(116, 28, 2, 0, Math.PI*2); ctx.fill();
+    // Hair
+    ctx.fillStyle = hairGrad(100, 44, 38);
+    ctx.beginPath(); ellipse(ctx, 100, 44, 38, 28); ctx.fill();
+    ctx.fillStyle = hexAlpha(lighten(cfg.hair, 25), 0.4);
+    ctx.save(); ctx.translate(90, 36); ctx.rotate(-0.08);
+    ctx.beginPath(); ellipse(ctx, 0, 0, 14, 5); ctx.fill(); ctx.restore();
+  }
+  ctx.restore();
+}
+
+function drawBeard(ctx, cfg) {
+  const hairGrad = (cx, cy, r) => {
+    const g = ctx.createRadialGradient(cx, cy-r*0.2, r*0.1, cx, cy, r);
+    g.addColorStop(0, lighten(cfg.hair, 15)); g.addColorStop(1, darken(cfg.hair, 15));
+    return g;
+  };
+  if (cfg.lv === 3) {
+    ctx.fillStyle = hairGrad(100, 98, 22);
+    ctx.beginPath(); ellipse(ctx, 100, 100, 26, 20); ctx.fill();
+  } else if (cfg.lv === 4) {
+    ctx.fillStyle = hairGrad(100, 105, 24);
+    ctx.beginPath();
+    ctx.moveTo(74, 94); ctx.quadraticCurveTo(76, 116, 100, 122);
+    ctx.quadraticCurveTo(124, 116, 126, 94); ctx.closePath(); ctx.fill();
+  } else if (cfg.lv === 5) {
+    ctx.fillStyle = hairGrad(100, 98, 20);
+    ctx.beginPath(); ellipse(ctx, 100, 98, 22, 16); ctx.fill();
+  } else if (cfg.lv === 6) {
+    // Mustache + goatee
+    ctx.fillStyle = hairGrad(100, 84, 12);
+    ctx.lineWidth = 3.5; ctx.lineCap = 'round';
+    ctx.strokeStyle = cfg.hair;
+    ctx.beginPath(); ctx.moveTo(84, 85); ctx.quadraticCurveTo(92, 78, 100, 81);
+    ctx.quadraticCurveTo(108, 78, 116, 85); ctx.stroke();
+    ctx.fillStyle = hairGrad(100, 95, 8);
+    ctx.beginPath(); ellipse(ctx, 100, 95, 8, 7); ctx.fill();
+  } else if (cfg.lv === 8) {
+    ctx.fillStyle = hairGrad(100, 98, 20);
+    ctx.beginPath(); ellipse(ctx, 100, 98, 22, 16); ctx.fill();
+  } else if (cfg.lv === 9) {
+    // The magnificent walrus mustache
+    ctx.fillStyle = hairGrad(100, 90, 28);
+    ctx.beginPath();
+    ctx.moveTo(72, 86); ctx.quadraticCurveTo(86, 78, 100, 82);
+    ctx.quadraticCurveTo(114, 78, 128, 86);
+    ctx.quadraticCurveTo(134, 96, 128, 104);
+    ctx.quadraticCurveTo(114, 108, 100, 104);
+    ctx.quadraticCurveTo(86, 108, 72, 104);
+    ctx.quadraticCurveTo(66, 96, 72, 86);
+    ctx.closePath(); ctx.fill();
+  }
+}
+
+function drawAccessory(ctx, cfg) {
+  if (cfg.lv === 1) {
+    // Floating ?
+    ctx.fillStyle = hexAlpha(cfg.accent, 0.12);
+    ctx.beginPath(); ctx.arc(154, 42, 16, 0, Math.PI*2); ctx.fill();
+    ctx.font = '800 24px "Inter Tight", sans-serif';
+    ctx.fillStyle = hexAlpha(cfg.accent, 0.7);
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('?', 154, 43);
+    // Book
+    ctx.save(); ctx.translate(130, 136); ctx.rotate(-0.15);
+    const bookGrad = ctx.createLinearGradient(0,0,16,22);
+    bookGrad.addColorStop(0, '#FEF9C3'); bookGrad.addColorStop(1, '#FDE68A');
+    ctx.fillStyle = bookGrad;
+    roundRect(ctx, 0, 0, 16, 22, 3); ctx.fill();
+    ctx.strokeStyle = '#D97706'; ctx.lineWidth = 1.5;
+    roundRect(ctx, 0, 0, 16, 22, 3); ctx.stroke();
+    ctx.strokeStyle = hexAlpha('#D97706', 0.5); ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(3, 7); ctx.lineTo(13, 7); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(3, 11); ctx.lineTo(11, 11); ctx.stroke();
+    ctx.restore();
+  } else if (cfg.lv === 2) {
+    // Speech bubble
+    ctx.fillStyle = hexAlpha('#fff', 0.92);
+    roundRect(ctx, 136, 32, 42, 28, 14); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(140, 60); ctx.lineTo(146, 54); ctx.lineTo(152, 60); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = '#3B82F6'; ctx.lineWidth = 2.5; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(146, 42); ctx.lineTo(168, 42); ctx.stroke();
+    ctx.strokeStyle = hexAlpha('#3B82F6', 0.4); ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(146, 49); ctx.lineTo(162, 49); ctx.stroke();
+  } else if (cfg.lv === 3) {
+    ctx.font = '700 20px "Inter Tight", sans-serif';
+    ctx.fillStyle = hexAlpha('#EC4899', 0.45);
+    ctx.textAlign = 'center'; ctx.fillText('?', 150, 42);
+    ctx.font = '700 14px "Inter Tight", sans-serif';
+    ctx.fillStyle = hexAlpha('#EC4899', 0.3);
+    ctx.fillText('?', 164, 56);
+  } else if (cfg.lv === 4) {
+    // Platonic triangle with glow
+    ctx.fillStyle = hexAlpha('#8B5CF6', 0.1);
+    ctx.beginPath(); ctx.arc(158, 44, 18, 0, Math.PI*2); ctx.fill();
+    ctx.strokeStyle = hexAlpha('#8B5CF6', 0.55); ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.moveTo(158, 26); ctx.lineTo(176, 58); ctx.lineTo(140, 58); ctx.closePath(); ctx.stroke();
+    ctx.fillStyle = hexAlpha('#8B5CF6', 0.3);
+    ctx.beginPath(); ctx.arc(158, 44, 5, 0, Math.PI*2); ctx.fill();
+  } else if (cfg.lv === 5) {
+    // Open book
+    ctx.save(); ctx.translate(30, 144);
+    ctx.fillStyle = '#FEF9C3'; ctx.strokeStyle = '#D97706'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(30,-6); ctx.lineTo(30,28); ctx.lineTo(0,34); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#FFFBEB';
+    ctx.beginPath(); ctx.moveTo(30,-6); ctx.lineTo(60,0); ctx.lineTo(60,34); ctx.lineTo(30,28); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.strokeStyle = hexAlpha('#D97706', 0.5); ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(5,8); ctx.lineTo(25,4); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(5,16); ctx.lineTo(25,12); ctx.stroke();
+    ctx.restore();
+  } else if (cfg.lv === 6) {
+    // Coordinate axes
+    ctx.fillStyle = hexAlpha('#6366F1', 0.08);
+    ctx.beginPath(); ctx.arc(158, 48, 24, 0, Math.PI*2); ctx.fill();
+    ctx.strokeStyle = hexAlpha('#6366F1', 0.5); ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(158, 28); ctx.lineTo(158, 68); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(138, 48); ctx.lineTo(178, 48); ctx.stroke();
+    ctx.fillStyle = hexAlpha('#6366F1', 0.5);
+    ctx.beginPath(); ctx.arc(166, 38, 4, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = hexAlpha('#6366F1', 0.35);
+    ctx.beginPath(); ctx.arc(150, 56, 3, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(170, 55, 2.5, 0, Math.PI*2); ctx.fill();
+  } else if (cfg.lv === 7) {
+    // Stars
+    [[34,28],[166,22],[48,14],[152,38],[28,48],[172,46]].forEach(([x,y], i) => {
+      const r = i % 2 === 0 ? 3.5 : 2.5;
+      ctx.fillStyle = hexAlpha('#94A3B8', 0.3 + i*0.06);
+      ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.fill();
+      // 4-point star shine
+      if (i < 3) {
+        ctx.fillStyle = hexAlpha('#94A3B8', 0.2);
+        ctx.beginPath();
+        ctx.moveTo(x, y-r-2); ctx.lineTo(x+1, y); ctx.lineTo(x, y+r+2); ctx.lineTo(x-1, y); ctx.closePath();
+        ctx.fill();
+      }
+    });
+  } else if (cfg.lv === 8) {
+    // Thesis/Antithesis/Synthesis
+    ctx.fillStyle = hexAlpha('#14B8A6', 0.2);
+    ctx.beginPath(); ctx.arc(148, 34, 12, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(172, 34, 12, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = hexAlpha('#14B8A6', 0.35);
+    ctx.beginPath(); ctx.arc(160, 18, 12, 0, Math.PI*2); ctx.fill();
+    ctx.strokeStyle = hexAlpha('#0D9488', 0.5); ctx.lineWidth = 2; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(148, 24); ctx.lineTo(157, 20); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(172, 24); ctx.lineTo(163, 20); ctx.stroke();
+    ctx.font = '700 12px "Inter Tight", sans-serif';
+    ctx.fillStyle = hexAlpha('#0D9488', 0.6);
+    ctx.textAlign = 'center'; ctx.fillText('∴', 160, 22);
+  } else if (cfg.lv === 9) {
+    // Lightning bolt
+    ctx.fillStyle = hexAlpha('#EF4444', 0.08);
+    ctx.beginPath(); ctx.arc(152, 42, 18, 0, Math.PI*2); ctx.fill();
+    ctx.strokeStyle = hexAlpha('#EF4444', 0.7); ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.beginPath(); ctx.moveTo(156, 20); ctx.lineTo(146, 42); ctx.lineTo(158, 40); ctx.lineTo(148, 64); ctx.stroke();
+    ctx.strokeStyle = hexAlpha('#FCA5A5', 0.3); ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(158, 22); ctx.lineTo(150, 40); ctx.stroke();
+  } else if (cfg.lv === 10) {
+    // Lambda
+    ctx.fillStyle = hexAlpha('#F59E0B', 0.12);
+    ctx.beginPath(); ctx.arc(100, 166, 16, 0, Math.PI*2); ctx.fill();
+    ctx.font = 'bold 26px Georgia, serif';
+    ctx.fillStyle = hexAlpha('#F59E0B', 0.85);
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('Λ', 100, 168);
+  }
+}
+
+// Helpers
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.lineTo(x+w-r, y); ctx.arcTo(x+w, y, x+w, y+r, r);
+  ctx.lineTo(x+w, y+h-r); ctx.arcTo(x+w, y+h, x+w-r, y+h, r);
+  ctx.lineTo(x+r, y+h); ctx.arcTo(x, y+h, x, y+h-r, r);
+  ctx.lineTo(x, y+r); ctx.arcTo(x, y, x+r, y, r);
+  ctx.closePath();
+}
+function ellipse(ctx, cx, cy, rx, ry) {
+  ctx.beginPath(); ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI*2);
+}
+function hexToRgb(hex) {
+  hex = hex.replace('#','');
+  if (hex.length===3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+  return [parseInt(hex.slice(0,2),16), parseInt(hex.slice(2,4),16), parseInt(hex.slice(4,6),16)];
+}
+function rgbToHex(r,g,b) {
+  return '#'+[r,g,b].map(x=>Math.max(0,Math.min(255,Math.round(x))).toString(16).padStart(2,'0')).join('');
+}
+function lighten(hex, pct) {
+  const [r,g,b] = hexToRgb(hex); const f = pct/100;
+  return rgbToHex(r+(255-r)*f, g+(255-g)*f, b+(255-b)*f);
+}
+function darken(hex, pct) {
+  const [r,g,b] = hexToRgb(hex); const f = 1-pct/100;
+  return rgbToHex(r*f, g*f, b*f);
+}
+function hexAlpha(hex, a) {
+  const [r,g,b] = hexToRgb(hex);
+  return `rgba(${r},${g},${b},${a})`;
+}
+
+// Render
+const grid = document.getElementById('grid');
+const list = document.getElementById('list');
+const hero = document.getElementById('hero');
+
+levels.forEach((cfg, i) => {
+  // Grid
+  const card = document.createElement('div');
+  card.className = 'card';
+  const c1 = document.createElement('canvas');
+  card.appendChild(c1);
+  const lvDiv = document.createElement('div');
+  lvDiv.className = 'level'; lvDiv.textContent = `Lv.${cfg.lv}`;
+  card.appendChild(lvDiv);
+  const nameDiv = document.createElement('div');
+  nameDiv.className = 'name'; nameDiv.textContent = cfg.name;
+  card.appendChild(nameDiv);
+  grid.appendChild(card);
+  draw(c1, cfg, 140);
+
+  // List
+  const li = document.createElement('div');
+  li.className = 'list-item';
+  const c2 = document.createElement('canvas');
+  li.appendChild(c2);
+  const infoDiv = document.createElement('div');
+  infoDiv.className = 'info';
+  infoDiv.innerHTML = `<div class="lv">Lv.${cfg.lv}</div><div class="t">${cfg.name}</div><div class="xp">${cfg.lv*1000-1000} XP~</div>`;
+  li.appendChild(infoDiv);
+  list.appendChild(li);
+  draw(c2, cfg, 48);
+
+  // Hero (show lv 5 as sample)
+  if (i === 4) {
+    const c3 = document.createElement('canvas');
+    hero.appendChild(c3);
+    const badge = document.createElement('div');
+    badge.className = 'lv-badge'; badge.textContent = `Lv.${cfg.lv}`;
+    hero.appendChild(badge);
+    const titleEl = document.createElement('div');
+    titleEl.className = 'title-text'; titleEl.textContent = cfg.name;
+    hero.appendChild(titleEl);
+    draw(c3, cfg, 140);
+  }
+});
+</script>
+</body>
+</html>
