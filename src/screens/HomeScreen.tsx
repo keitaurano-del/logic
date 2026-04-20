@@ -431,7 +431,7 @@ function HomeMobile({
             </div>
             <div style={{ fontSize: 13, fontWeight: 700, color: '#0F1523', letterSpacing: '-.01em' }}>AI 問題生成</div>
             <div style={{ fontSize: 11, color: '#7A849E', marginTop: 2 }}>テーマを指定</div>
-            <div style={{ display: 'inline-block', marginTop: 7, fontSize: 9, fontWeight: 700, letterSpacing: '.07em', textTransform: 'uppercase', background: '#EEF2FF', color: '#3B5BDB', border: '1px solid #DBE4FF', borderRadius: 4, padding: '2px 6px' }}>Premium</div>
+            {/* Premiumバッジ: BETA_MODE時は非表示 */}
           </div>
         </div>
 
