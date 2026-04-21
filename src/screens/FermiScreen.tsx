@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { recordCompletion } from '../stats'
 import { ArrowLeftIcon, ArrowRightIcon, CheckIcon, LightbulbIcon } from '../icons'
 import { Button } from '../components/Button'
@@ -8,18 +8,22 @@ import { API_BASE } from './apiBase'
 import { t } from '../i18n'
 
 const BASE_STATS = [
-  { label: '日本の人口', value: '1.25億人' },
-  { label: '東京都の人口', value: '1,400万人' },
-  { label: '一世帯の平均人数', value: '2.4人' },
-  { label: '1年の日数', value: '365日' },
-  { label: '1日の秒数', value: '8.64万秒' },
-  { label: '平均寿命', value: '84歳' },
-  { label: '通勤時間（平均）', value: '48分' },
-  { label: '日本の世帯数', value: '5,400万世帯' },
-  { label: '女性の平均身長', value: '158cm' },
-  { label: '男性の平均身長', value: '171cm' },
-  { label: '東京23区の面積', value: '627km²' },
-  { label: '日本の会社数', value: '368万社' },
+  { label: '日本の人口', value: '約1億2,400万人' },
+  { label: '世帯数', value: '約5,700万世帯' },
+  { label: '平均世帯人数', value: '2.17人' },
+  { label: '労働力人口', value: '約6,900万人' },
+  { label: '東京都の人口', value: '約1,400万人' },
+  { label: '国土面積', value: '約37.8万km²' },
+  { label: 'コンビニ数', value: '約5.6万店' },
+  { label: '電柱数', value: '約3,500万本' },
+  { label: '自動車保有数', value: '約7,800万台' },
+  { label: '小学校数', value: '約1.9万校' },
+  { label: '鉄道利用者数/日', value: '約4,800万人' },
+  { label: 'GDP', value: '約600兆円' },
+  { label: '平均年収', value: '約460万円' },
+  { label: 'スマホ普及率', value: '約97%' },
+  { label: '平均寿命', value: '約84歳' },
+  { label: '会社数', value: '約368万社' },
 ]
 
 function BaseDataPanel() {
@@ -49,10 +53,7 @@ interface FermiQuestion {
 }
 
 interface FermiFeedback {
-  score: number
   feedback: string
-  answer: string
-  logic: string
 }
 
 const STARTER: FermiQuestion = {
@@ -92,15 +93,12 @@ function useFermiState(): FermiState {
       const res = await fetch(`${API_BASE}/api/fermi/feedback`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: question.question, answer }),
+        body: JSON.stringify({ question: question.question, userInput: answer }),
       })
       if (!res.ok) throw new Error('Network error')
       const data = await res.json()
       setFeedback({
-        score: data.score ?? 0,
         feedback: data.feedback ?? '',
-        answer: data.answer ?? '',
-        logic: data.logic ?? '',
       })
       recordCompletion('fermi')
     } catch (e) {
@@ -261,6 +259,62 @@ function FermiDesktop({ onBack, state, onReport }: { onBack: () => void; state: 
   )
 }
 
+/** Minimal markdown→JSX: handles ##, **, numbered lists, and plain text */
+function renderFeedbackMarkdown(text: string) {
+  const lines = text.split('\n')
+  const elements: React.JSX.Element[] = []
+  let key = 0
+
+  for (const line of lines) {
+    const trimmed = line.trim()
+    if (!trimmed) {
+      elements.push(<div key={key++} style={{ height: 8 }} />)
+      continue
+    }
+    // ## heading
+    if (trimmed.startsWith('## ')) {
+      const heading = trimmed.slice(3)
+      elements.push(
+        <div key={key++} className="eyebrow accent" style={{ marginTop: 'var(--s-3)', marginBottom: 'var(--s-1)', fontSize: 14 }}>
+          {heading}
+        </div>
+      )
+      continue
+    }
+    // Numbered list: 1. xxx
+    const numMatch = trimmed.match(/^(\d+)\.\s+(.+)/)
+    if (numMatch) {
+      elements.push(
+        <div key={key++} style={{ display: 'flex', gap: 8, fontSize: 15, lineHeight: 1.7, marginBottom: 2 }}>
+          <span style={{ color: 'var(--accent)', fontWeight: 700, minWidth: 20 }}>{numMatch[1]}.</span>
+          <span dangerouslySetInnerHTML={{ __html: boldify(numMatch[2]) }} />
+        </div>
+      )
+      continue
+    }
+    // Bullet list: - xxx
+    if (trimmed.startsWith('- ')) {
+      elements.push(
+        <div key={key++} style={{ display: 'flex', gap: 8, fontSize: 15, lineHeight: 1.7, marginBottom: 2, paddingLeft: 4 }}>
+          <span style={{ color: 'var(--text-muted)' }}>•</span>
+          <span dangerouslySetInnerHTML={{ __html: boldify(trimmed.slice(2)) }} />
+        </div>
+      )
+      continue
+    }
+    // Plain text (with bold support)
+    elements.push(
+      <div key={key++} style={{ fontSize: 15, lineHeight: 1.7 }} dangerouslySetInnerHTML={{ __html: boldify(trimmed) }} />
+    )
+  }
+  return elements
+}
+
+/** Convert **bold** to <strong> */
+function boldify(text: string): string {
+  return text.replace(/\*\*(.+?)\*\*/g, '<strong style="color:var(--accent)">$1</strong>')
+}
+
 function FermiFeedbackBlock({
   feedback,
   onNext,
@@ -279,27 +333,11 @@ function FermiFeedbackBlock({
           <div className="feedback-check">
             <CheckIcon />
           </div>
-          <div className="feedback-title">Score {feedback.score} / 10</div>
+          <div className="feedback-title">AI フィードバック</div>
         </div>
-        <div className="feedback-text" style={{ whiteSpace: 'pre-wrap' }}>
-          {feedback.feedback}
+        <div className="feedback-text">
+          {renderFeedbackMarkdown(feedback.feedback)}
         </div>
-        {feedback.answer && (
-          <div style={{ marginTop: 'var(--s-3)' }}>
-            <div className="eyebrow" style={{ marginBottom: 'var(--s-2)' }}>推定解</div>
-            <div style={{ fontSize: 16, lineHeight: 1.7, color: '#047857', whiteSpace: 'pre-wrap' }}>
-              {feedback.answer}
-            </div>
-          </div>
-        )}
-        {feedback.logic && (
-          <div style={{ marginTop: 'var(--s-3)' }}>
-            <div className="eyebrow" style={{ marginBottom: 'var(--s-2)' }}>計算ロジック</div>
-            <div style={{ fontSize: 16, lineHeight: 1.7, color: '#047857', whiteSpace: 'pre-wrap' }}>
-              {feedback.logic}
-            </div>
-          </div>
-        )}
         {onReport && (
           <button
             onClick={onReport}

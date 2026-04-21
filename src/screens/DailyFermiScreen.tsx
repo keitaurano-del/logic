@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { ArrowLeftIcon, LightbulbIcon, BarChartIcon } from '../icons'
 import { IconButton } from '../components/IconButton'
 import { Button } from '../components/Button'
@@ -18,19 +18,54 @@ function markDailyFermiDone() {
 
 // 基礎統計データ（フェルミ推定時の参考値）
 const BASE_STATS = [
-  { label: '日本の人口', value: '1.25億人' },
-  { label: '東京都の人口', value: '1,400万人' },
-  { label: '一世帯の平均人数', value: '2.4人' },
-  { label: '1年の日数', value: '365日' },
-  { label: '1日の秒数', value: '8.64万秒' },
-  { label: '平均寿命', value: '84歳' },
-  { label: '通勤時間（平均）', value: '48分' },
-  { label: '日本の世帯数', value: '5,400万世帯' },
-  { label: '女性の平均身長', value: '158cm' },
-  { label: '男性の平均身長', value: '171cm' },
-  { label: '東京23区の面積', value: '627km²' },
-  { label: '日本の会社数', value: '368万社' },
+  { label: '日本の人口', value: '約1億2,400万人' },
+  { label: '世帯数', value: '約5,700万世帯' },
+  { label: '平均世帯人数', value: '2.17人' },
+  { label: '労働力人口', value: '約6,900万人' },
+  { label: '東京都の人口', value: '約1,400万人' },
+  { label: '国土面積', value: '約37.8万km²' },
+  { label: 'コンビニ数', value: '約5.6万店' },
+  { label: '電柱数', value: '約3,500万本' },
+  { label: '自動車保有数', value: '約7,800万台' },
+  { label: '小学校数', value: '約1.9万校' },
+  { label: '鉄道利用者数/日', value: '約4,800万人' },
+  { label: 'GDP', value: '約600兆円' },
+  { label: '平均年収', value: '約460万円' },
+  { label: 'スマホ普及率', value: '約97%' },
+  { label: '平均寿命', value: '約84歳' },
+  { label: '会社数', value: '約368万社' },
 ]
+
+/** Convert **bold** to <strong> */
+function boldify(text: string): string {
+  return text.replace(/\*\*(.+?)\*\*/g, '<strong style="color:var(--accent)">$1</strong>')
+}
+
+/** Minimal markdown→JSX for AI feedback */
+function renderFeedbackMarkdown(text: string) {
+  const lines = text.split('\n')
+  const elements: React.JSX.Element[] = []
+  let key = 0
+  for (const line of lines) {
+    const trimmed = line.trim()
+    if (!trimmed) { elements.push(<div key={key++} style={{ height: 8 }} />); continue }
+    if (trimmed.startsWith('## ')) {
+      elements.push(<div key={key++} className="eyebrow accent" style={{ marginTop: 'var(--s-3)', marginBottom: 'var(--s-1)', fontSize: 14 }}>{trimmed.slice(3)}</div>)
+      continue
+    }
+    const numMatch = trimmed.match(/^(\d+)\.\s+(.+)/)
+    if (numMatch) {
+      elements.push(<div key={key++} style={{ display: 'flex', gap: 8, fontSize: 15, lineHeight: 1.7, marginBottom: 2 }}><span style={{ color: 'var(--accent)', fontWeight: 700, minWidth: 20 }}>{numMatch[1]}.</span><span dangerouslySetInnerHTML={{ __html: boldify(numMatch[2]) }} /></div>)
+      continue
+    }
+    if (trimmed.startsWith('- ')) {
+      elements.push(<div key={key++} style={{ display: 'flex', gap: 8, fontSize: 15, lineHeight: 1.7, marginBottom: 2, paddingLeft: 4 }}><span style={{ color: 'var(--text-muted)' }}>•</span><span dangerouslySetInnerHTML={{ __html: boldify(trimmed.slice(2)) }} /></div>)
+      continue
+    }
+    elements.push(<div key={key++} style={{ fontSize: 15, lineHeight: 1.7 }} dangerouslySetInnerHTML={{ __html: boldify(trimmed) }} />)
+  }
+  return elements
+}
 
 interface DailyFermiScreenProps {
   onBack: () => void
@@ -238,8 +273,8 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
                   </div>
                   <div className="feedback-title">{t('dailyFermi.feedbackTitle')}</div>
                 </div>
-                <div className="feedback-text" style={{ whiteSpace: 'pre-wrap', fontSize: 16, lineHeight: 1.75 }}>
-                  {feedback.feedback}
+                <div className="feedback-text">
+                  {renderFeedbackMarkdown(feedback.feedback)}
                 </div>
                 {onReport && (
                   <button
