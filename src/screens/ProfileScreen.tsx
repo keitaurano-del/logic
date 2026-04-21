@@ -84,7 +84,7 @@ export function ProfileScreen({ userName, onOpenSettings, onOpenFeedback, onOpen
 
       {/* ナビバー */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 12px', background: 'rgba(240,244,255,.95)', borderBottom: '1px solid #E2E8FF' }}>
-        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, color: '#3B5BDB', letterSpacing: '-.04em' }}>プロフィール</div>
+        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 26, fontWeight: 900, color: '#3B5BDB', letterSpacing: '-.04em' }}>プロフィール</div>
       </div>
 
       <div style={{ padding: '16px 16px 96px', display: 'flex', flexDirection: 'column', gap: 12, overflowY: 'auto' }}>
@@ -99,7 +99,7 @@ export function ProfileScreen({ userName, onOpenSettings, onOpenFeedback, onOpen
           <div style={{ position: 'absolute', left: -30, bottom: -30, width: 120, height: 120, borderRadius: '50%', background: 'rgba(255,255,255,.04)', pointerEvents: 'none' }} />
 
           {/* ユーザー名 */}
-          <div style={{ fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,.55)', letterSpacing: '.04em', marginBottom: 10 }}>{userName || 'ゲスト'}</div>
+          <div style={{ fontSize: 14, fontWeight: 600, color: 'rgba(255,255,255,.55)', letterSpacing: '.04em', marginBottom: 10 }}>{userName || 'ゲスト'}</div>
 
           {/* 哲学者イラスト */}
           <div style={{ marginBottom: 10 }}>
@@ -107,8 +107,8 @@ export function ProfileScreen({ userName, onOpenSettings, onOpenFeedback, onOpen
           </div>
 
           {/* ランク名 */}
-          <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)', marginBottom: 2 }}>LV.{tier.level}</div>
-          <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, color: '#fff', letterSpacing: '-.03em', marginBottom: 4 }}>{tier.title}</div>
+          <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)', marginBottom: 2 }}>LV.{tier.level}</div>
+          <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 26, fontWeight: 900, color: '#fff', letterSpacing: '-.03em', marginBottom: 4 }}>{tier.title}</div>
 
           {/* XPバー */}
           <div style={{ width: '100%', maxWidth: 200, marginBottom: 4 }}>
@@ -116,7 +116,7 @@ export function ProfileScreen({ userName, onOpenSettings, onOpenFeedback, onOpen
               <div style={{ height: '100%', width: `${xpPct}%`, background: 'rgba(255,255,255,.7)', borderRadius: 99, transition: 'width .4s ease' }} />
             </div>
           </div>
-          <div style={{ fontSize: 10, color: 'rgba(255,255,255,.45)' }}>
+          <div style={{ fontSize: 13, color: 'rgba(255,255,255,.45)' }}>
             {xpInLevel} / {xpToNext}{nextTier ? ` — 次: ${nextTier.title}` : ' — MAX'}
           </div>
 
@@ -128,14 +128,14 @@ export function ProfileScreen({ userName, onOpenSettings, onOpenFeedback, onOpen
               { value: topPct != null ? `Top ${Math.round(topPct)}%` : String(points), label: '偏差値' },
             ].map(({ value, label }) => (
               <div key={label} style={{ textAlign: 'center' }}>
-                <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 900, color: '#fff', letterSpacing: '-.02em' }}>{value}</div>
-                <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.45)' }}>{label}</div>
+                <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, color: '#fff', letterSpacing: '-.02em' }}>{value}</div>
+                <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.45)' }}>{label}</div>
               </div>
             ))}
           </div>
 
           {/* タップ誘導 */}
-          <div style={{ position: 'absolute', top: 14, right: 16, fontSize: 10, color: 'rgba(255,255,255,.35)', display: 'flex', alignItems: 'center', gap: 3 }}>
+          <div style={{ position: 'absolute', top: 14, right: 16, fontSize: 13, color: 'rgba(255,255,255,.35)', display: 'flex', alignItems: 'center', gap: 3 }}>
             全ランク
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.35)" strokeWidth="2.5" strokeLinecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </div>
@@ -153,8 +153,8 @@ export function ProfileScreen({ userName, onOpenSettings, onOpenFeedback, onOpen
                 {s.icon}
               </div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 14, fontWeight: 600, color: '#0F1523' }}>{s.name}</div>
-                <div style={{ fontSize: 11, color: '#7A849E', marginTop: 1 }}>{s.sub}</div>
+                <div style={{ fontSize: 16, fontWeight: 600, color: '#0F1523' }}>{s.name}</div>
+                <div style={{ fontSize: 14, color: '#7A849E', marginTop: 1 }}>{s.sub}</div>
               </div>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B8BFD0" strokeWidth="2" strokeLinecap="round"><path d="M9 18l6-6-6-6"/></svg>
             </div>
@@ -169,7 +169,7 @@ export function ProfileScreen({ userName, onOpenSettings, onOpenFeedback, onOpen
               <svg width="18" height="18" viewBox="0 0 24 24" fill="#F04438"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 14, fontWeight: 600, color: '#F04438' }}>ログアウト</div>
+              <div style={{ fontSize: 16, fontWeight: 600, color: '#F04438' }}>ログアウト</div>
             </div>
           </div>
         </div>

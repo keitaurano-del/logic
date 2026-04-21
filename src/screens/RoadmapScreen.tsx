@@ -165,8 +165,8 @@ export function RoadmapScreen({ onOpenLesson }: RoadmapScreenProps) {
     <div style={{ padding: '0 0 80px' }}>
       {/* ページヘッダー */}
       <div style={{ padding: '20px 16px 4px' }}>
-        <h1 style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 24, fontWeight: 900, color: ACCENT, letterSpacing: '-.03em', margin: 0 }}>学習パス</h1>
-        <p style={{ fontSize: 13, color: '#7A849E', marginTop: 4 }}>順番に進めると体系的に身につきます</p>
+        <h1 style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 28, fontWeight: 900, color: ACCENT, letterSpacing: '-.03em', margin: 0 }}>学習パス</h1>
+        <p style={{ fontSize: 16, color: '#7A849E', marginTop: 4 }}>順番に進めると体系的に身につきます</p>
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: '16px 16px 0' }}>
@@ -198,11 +198,11 @@ export function RoadmapScreen({ onOpenLesson }: RoadmapScreenProps) {
               >
                 <div style={{ flex: 1 }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-                    <span style={{ fontSize: 14, fontWeight: 800, color: '#0F1523', letterSpacing: '-.01em' }}>
+                    <span style={{ fontSize: 16, fontWeight: 800, color: '#0F1523', letterSpacing: '-.01em' }}>
                       {allDone ? '✅ ' : ''}{path.label}
                     </span>
                     <span style={{
-                      fontSize: 11, fontWeight: 700, color: allDone ? '#fff' : ACCENT,
+                      fontSize: 14, fontWeight: 700, color: allDone ? '#fff' : ACCENT,
                       background: allDone ? ACCENT : ACCENT_BG,
                       borderRadius: 99, padding: '2px 9px',
                     }}>
@@ -255,7 +255,7 @@ export function RoadmapScreen({ onOpenLesson }: RoadmapScreenProps) {
                         }}>
                           {done
                             ? <CheckIcon width={14} height={14} color="#fff" />
-                            : <span style={{ fontSize: 12, fontWeight: 800, color: ACCENT }}>{idx + 1}</span>
+                            : <span style={{ fontSize: 14, fontWeight: 800, color: ACCENT }}>{idx + 1}</span>
                           }
                         </div>
 
@@ -263,7 +263,7 @@ export function RoadmapScreen({ onOpenLesson }: RoadmapScreenProps) {
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                             <span style={{
-                              fontSize: 14, fontWeight: done ? 500 : 700,
+                              fontSize: 16, fontWeight: done ? 500 : 700,
                               color: done ? '#7A849E' : '#0F1523',
                               textDecoration: done ? 'line-through' : 'none',
                               letterSpacing: '-.01em',
@@ -272,7 +272,7 @@ export function RoadmapScreen({ onOpenLesson }: RoadmapScreenProps) {
                             </span>
                             {isNext && (
                               <span style={{
-                                fontSize: 9, fontWeight: 800, color: '#fff',
+                                fontSize: 12, fontWeight: 800, color: '#fff',
                                 background: ACCENT, borderRadius: 4,
                                 padding: '1px 6px', letterSpacing: '.05em',
                               }}>
@@ -280,7 +280,7 @@ export function RoadmapScreen({ onOpenLesson }: RoadmapScreenProps) {
                               </span>
                             )}
                           </div>
-                          <div style={{ fontSize: 12, color: '#7A849E', marginTop: 2, lineHeight: 1.4 }}>
+                          <div style={{ fontSize: 14, color: '#7A849E', marginTop: 2, lineHeight: 1.4 }}>
                             {lesson.sub}
                           </div>
                         </div>

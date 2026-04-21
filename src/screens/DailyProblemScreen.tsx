@@ -39,7 +39,7 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
           <div className="progress-text">今日の問題</div>
         </div>
         <div style={{ textAlign: 'center', padding: 'var(--s-8) 0', color: 'var(--text-muted)' }}>
-          <div style={{ fontSize: 14 }}>今日の問題を生成中…</div>
+          <div style={{ fontSize: 16 }}>今日の問題を生成中…</div>
         </div>
       </div>
     )
@@ -68,7 +68,7 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
           <div className="progress-text">今日の問題</div>
         </div>
         <div className="eyebrow accent">{t('label.todaysChallenge')}</div>
-        <h1 style={{ fontSize: 26, letterSpacing: '-0.025em' }}>今日の問題</h1>
+        <h1 style={{ fontSize: 30, letterSpacing: '-0.025em' }}>今日の問題</h1>
         <div className="feedback-card">
           <div className="feedback-head">
             <div className="feedback-check"><CheckIcon /></div>
@@ -93,11 +93,11 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
           <div className="progress-text">結果</div>
         </div>
         <div className="eyebrow accent">{t('label.todaysResult')}</div>
-        <h1 style={{ fontSize: 26, letterSpacing: '-0.025em' }}>結果</h1>
+        <h1 style={{ fontSize: 30, letterSpacing: '-0.025em' }}>結果</h1>
         <section className="profile-hero" style={{ textAlign: 'center' }}>
           <div className="eyebrow" style={{ color: 'rgba(255,255,255,0.65)', marginBottom: 'var(--s-3)' }}>スコア</div>
           <div className="display" style={{ fontSize: 80, lineHeight: 0.9, letterSpacing: '-0.04em', color: '#fff' }}>{pct}%</div>
-          <div style={{ marginTop: 'var(--s-3)', fontSize: 14, color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
+          <div style={{ marginTop: 'var(--s-3)', fontSize: 16, color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
             {correctCount} / {steps.length} 問正解
           </div>
         </section>
@@ -146,7 +146,7 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
       <div className="eyebrow accent" style={{ marginTop: 'var(--s-4)' }}>
         {t('label.todaysChallenge')} · {problem.category}
       </div>
-      <h2 style={{ fontSize: 20, lineHeight: 1.5, whiteSpace: 'pre-wrap', fontFamily: 'var(--font-display)' }}>
+      <h2 style={{ fontSize: 24, lineHeight: 1.5, whiteSpace: 'pre-wrap', fontFamily: 'var(--font-display)' }}>
         {quizStep ? quizStep.question : (step.type === 'explain' ? step.title : '')}
       </h2>
 
@@ -165,7 +165,7 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
                   cursor: isAnswered ? 'default' : 'pointer',
                   textAlign: 'left',
                   width: '100%',
-                  fontSize: 14,
+                  fontSize: 16,
                   fontWeight: 500,
                   display: 'flex',
                   alignItems: 'center',
@@ -179,7 +179,7 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
                   borderRadius: '999px',
                   border: '1.5px solid currentColor',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 11, fontWeight: 700, flexShrink: 0,
+                  fontSize: 14, fontWeight: 700, flexShrink: 0,
                   color: showCorrect ? 'var(--success)' : showWrong ? 'var(--danger)' : isSelected ? 'var(--brand)' : 'var(--text-muted)',
                 }}>
                   {String.fromCharCode(65 + i)}
@@ -195,7 +195,7 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
         <div className="feedback-card" style={{ marginTop: 'var(--s-3)' }}>
           <div className="feedback-head">
             <div className="feedback-check">
-              {isCorrect ? <CheckIcon /> : <span style={{ fontSize: 16 }}>✕</span>}
+              {isCorrect ? <CheckIcon /> : <span style={{ fontSize: 18 }}>✕</span>}
             </div>
             <div className="feedback-title">{isCorrect ? '正解！' : '不正解'}</div>
           </div>

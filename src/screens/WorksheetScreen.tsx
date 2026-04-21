@@ -129,11 +129,11 @@ export function WorksheetScreen({ onBack }: WorksheetScreenProps) {
           <div className="progress-text">結果</div>
         </div>
         <div className="eyebrow accent">ドリル結果</div>
-        <h1 style={{ fontSize: 28, letterSpacing: '-0.025em' }}>精算表ドリル結果</h1>
+        <h1 style={{ fontSize: 32, letterSpacing: '-0.025em' }}>精算表ドリル結果</h1>
         <section className="profile-hero" style={{ textAlign: 'center' }}>
           <div className="eyebrow" style={{ color: 'rgba(255,255,255,0.65)', marginBottom: 'var(--s-3)' }}>スコア</div>
           <div className="display" style={{ fontSize: 80, lineHeight: 0.9, letterSpacing: '-0.04em', color: '#fff' }}>{pct}%</div>
-          <div style={{ marginTop: 'var(--s-3)', fontSize: 14, color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
+          <div style={{ marginTop: 'var(--s-3)', fontSize: 16, color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
             {correctCells} / {totalCells} セル正解
           </div>
         </section>
@@ -165,14 +165,14 @@ export function WorksheetScreen({ onBack }: WorksheetScreenProps) {
       </div>
 
       <div className="eyebrow accent" style={{ marginTop: 'var(--s-4)' }}>精算表ドリル</div>
-      <h2 style={{ fontSize: 18, fontFamily: 'var(--font-display)' }}>{p.title}</h2>
+      <h2 style={{ fontSize: 22, fontFamily: 'var(--font-display)' }}>{p.title}</h2>
 
       <div className="card" style={{ padding: 'var(--s-3)', marginTop: 'var(--s-3)' }}>
-        <p style={{ fontSize: 14, lineHeight: 1.6, color: 'var(--text-muted)' }}>{p.instructions}</p>
+        <p style={{ fontSize: 16, lineHeight: 1.6, color: 'var(--text-muted)' }}>{p.instructions}</p>
       </div>
 
       <div style={{ marginTop: 'var(--s-3)', overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
-        <table style={{ borderCollapse: 'collapse', fontSize: 12, minWidth: 600, width: '100%' }}>
+        <table style={{ borderCollapse: 'collapse', fontSize: 14, minWidth: 600, width: '100%' }}>
           <thead>
             <tr>
               <th style={thStyle(true)}>勘定科目</th>
@@ -206,7 +206,7 @@ export function WorksheetScreen({ onBack }: WorksheetScreenProps) {
                             style={{
                               width: '100%',
                               padding: '4px 6px',
-                              fontSize: 12,
+                              fontSize: 14,
                               border: `1px solid ${isCorrect === undefined ? 'var(--border)' : isCorrect ? 'var(--success)' : 'var(--danger)'}`,
                               borderRadius: 4,
                               background: isCorrect === undefined ? 'var(--bg-secondary)' : isCorrect ? 'rgba(16,185,129,0.06)' : 'rgba(220,38,38,0.06)',
@@ -215,7 +215,7 @@ export function WorksheetScreen({ onBack }: WorksheetScreenProps) {
                             }}
                           />
                           {submitted && !isCorrect && (
-                            <div style={{ fontSize: 10, color: 'var(--success)', fontWeight: 600, textAlign: 'right', marginTop: 2 }}>
+                            <div style={{ fontSize: 13, color: 'var(--success)', fontWeight: 600, textAlign: 'right', marginTop: 2 }}>
                               {answer.toLocaleString()}
                             </div>
                           )}
@@ -268,7 +268,7 @@ function thStyle(wide = false): React.CSSProperties {
     borderBottom: '1px solid var(--border)',
     borderRight: '1px solid var(--border)',
     fontWeight: 700,
-    fontSize: 11,
+    fontSize: 14,
     color: 'var(--text-muted)',
     textTransform: 'uppercase',
     letterSpacing: '0.04em',
@@ -283,7 +283,7 @@ function tdStyle(wide = false): React.CSSProperties {
     padding: '6px 8px',
     borderBottom: '1px solid var(--border)',
     borderRight: '1px solid var(--border)',
-    fontSize: 12,
+    fontSize: 14,
     textAlign: wide ? 'left' : 'right',
     color: 'var(--text-muted)',
     minWidth: wide ? 100 : 72,

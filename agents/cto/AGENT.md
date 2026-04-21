@@ -14,3 +14,8 @@ Logicアプリの技術基盤を安定・拡張可能に保つ。
 - Google認証実装（Supabase OAuth）
 - 問題自動生成スクリプトの設計
 - CI/CDパイプライン（GitHub Actions）
+
+## 定期タスク
+- 毎日: SIT環境の動作確認、ビルドステータス確認
+- 週次: 技術負債レビュー、APIコスト監視
+- 報告先: Apollo（CEO）

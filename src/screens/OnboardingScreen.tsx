@@ -53,10 +53,10 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
           <BrainIcon width={36} height={36} style={{ color: '#fff' }} />
         </div>
         <div className="eyebrow accent" style={{ marginBottom: 'var(--s-2)' }}>LOGIC</div>
-        <h1 style={{ fontSize: 30, fontWeight: 800, letterSpacing: '-0.03em', lineHeight: 1.2, marginBottom: 'var(--s-3)' }}>
+        <h1 style={{ fontSize: 34, fontWeight: 800, letterSpacing: '-0.03em', lineHeight: 1.2, marginBottom: 'var(--s-3)' }}>
           論理的思考力を、<br />毎日5分で鍛えよう。
         </h1>
-        <p style={{ color: 'var(--text-muted)', fontSize: 15, lineHeight: 1.7, maxWidth: 300, marginBottom: 'var(--s-7)' }}>
+        <p style={{ color: 'var(--text-muted)', fontSize: 18, lineHeight: 1.7, maxWidth: 300, marginBottom: 'var(--s-7)' }}>
           フェルミ推定・ケース面接・ロジカルシンキングを、AIと一緒に実践トレーニング。
         </p>
         <Button variant="primary" size="lg" block style={{ maxWidth: 320 }} onClick={() => setStep(1)}>
@@ -75,10 +75,10 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
         background: 'var(--bg)', maxWidth: 480, margin: '0 auto', width: '100%',
       }}>
         <div className="eyebrow" style={{ marginBottom: 'var(--s-2)' }}>ステップ 1 / 2</div>
-        <h2 style={{ fontSize: 24, fontWeight: 800, letterSpacing: '-0.025em', lineHeight: 1.25, marginBottom: 'var(--s-2)' }}>
+        <h2 style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-0.025em', lineHeight: 1.25, marginBottom: 'var(--s-2)' }}>
           目標を教えてください
         </h2>
-        <p style={{ color: 'var(--text-muted)', fontSize: 14, marginBottom: 'var(--s-5)' }}>
+        <p style={{ color: 'var(--text-muted)', fontSize: 16, marginBottom: 'var(--s-5)' }}>
           あなたに合ったコンテンツをおすすめします。
         </p>
         <div className="stack-sm" style={{ flex: 1 }}>
@@ -103,8 +103,8 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
                 <Icon width={20} height={20} style={{ color: goal === id ? '#fff' : 'var(--text-muted)' }} />
               </div>
               <div>
-                <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)' }}>{title}</div>
-                <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>{sub}</div>
+                <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)' }}>{title}</div>
+                <div style={{ fontSize: 14, color: 'var(--text-muted)', marginTop: 2 }}>{sub}</div>
               </div>
               {goal === id && (
                 <div style={{ marginLeft: 'auto', color: 'var(--brand)' }}>
@@ -135,10 +135,10 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
       background: 'var(--bg)', maxWidth: 480, margin: '0 auto', width: '100%',
     }}>
       <div className="eyebrow" style={{ marginBottom: 'var(--s-2)' }}>ステップ 2 / 2</div>
-      <h2 style={{ fontSize: 24, fontWeight: 800, letterSpacing: '-0.025em', lineHeight: 1.25, marginBottom: 'var(--s-2)' }}>
+      <h2 style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-0.025em', lineHeight: 1.25, marginBottom: 'var(--s-2)' }}>
         7日間、無料で試せます
       </h2>
-      <p style={{ color: 'var(--text-muted)', fontSize: 14, lineHeight: 1.6, marginBottom: 'var(--s-4)' }}>
+      <p style={{ color: 'var(--text-muted)', fontSize: 16, lineHeight: 1.6, marginBottom: 'var(--s-4)' }}>
         トライアル期間中はすべての機能が使い放題。いつでもキャンセルできます。
       </p>
 
@@ -147,10 +147,10 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
         <div className="card">
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 'var(--s-2)' }}>
             <BrainIcon width={16} height={16} style={{ color: 'var(--text-muted)' }} />
-            <span style={{ fontWeight: 700, fontSize: 14 }}>スタンダード</span>
-            <span style={{ marginLeft: 'auto', fontSize: 14, fontWeight: 700 }}>¥500/月</span>
+            <span style={{ fontWeight: 700, fontSize: 16 }}>スタンダード</span>
+            <span style={{ marginLeft: 'auto', fontSize: 16, fontWeight: 700 }}>¥500/月</span>
           </div>
-          <ul style={{ fontSize: 13, color: 'var(--text-muted)', paddingLeft: 'var(--s-4)', lineHeight: 2 }}>
+          <ul style={{ fontSize: 16, color: 'var(--text-muted)', paddingLeft: 'var(--s-4)', lineHeight: 2 }}>
             <li>全レッスン・クイズ</li>
             <li>AI問題生成 月30問</li>
             <li>フェルミ推定・ロードマップ</li>
@@ -159,10 +159,10 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
         <div className="card" style={{ borderColor: 'var(--brand)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 'var(--s-2)' }}>
             <ZapIcon width={16} height={16} style={{ color: 'var(--brand)' }} />
-            <span style={{ fontWeight: 700, fontSize: 14 }}>プレミアム</span>
-            <span style={{ marginLeft: 'auto', fontSize: 14, fontWeight: 700, color: 'var(--brand)' }}>¥980/月</span>
+            <span style={{ fontWeight: 700, fontSize: 16 }}>プレミアム</span>
+            <span style={{ marginLeft: 'auto', fontSize: 16, fontWeight: 700, color: 'var(--brand)' }}>¥980/月</span>
           </div>
-          <ul style={{ fontSize: 13, paddingLeft: 'var(--s-4)', lineHeight: 2 }}>
+          <ul style={{ fontSize: 16, paddingLeft: 'var(--s-4)', lineHeight: 2 }}>
             <li>スタンダードの全機能</li>
             <li>AI問題生成 無制限</li>
             <li>全ロールプレイシナリオ</li>
@@ -179,20 +179,20 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
         {!loading && <ArrowRightIcon width={16} height={16} />}
       </Button>
 
-      <p style={{ fontSize: 11, color: 'var(--text-muted)', textAlign: 'center', lineHeight: 1.6, marginTop: 'var(--s-3)' }}>
+      <p style={{ fontSize: 14, color: 'var(--text-muted)', textAlign: 'center', lineHeight: 1.6, marginTop: 'var(--s-3)' }}>
         トライアル終了後はスタンダードプラン（¥500/月）に自動移行します。<br />
         7日以内にキャンセルすれば費用はかかりません。
       </p>
 
       {error && (
-        <div className="card" style={{ background: 'rgba(220,38,38,0.06)', borderColor: 'var(--danger)', color: 'var(--danger)', fontSize: 13, marginTop: 'var(--s-3)' }}>
+        <div className="card" style={{ background: 'rgba(220,38,38,0.06)', borderColor: 'var(--danger)', color: 'var(--danger)', fontSize: 16, marginTop: 'var(--s-3)' }}>
           {error}
         </div>
       )}
 
       <button
         onClick={onComplete}
-        style={{ marginTop: 'var(--s-4)', background: 'none', border: 'none', fontSize: 13, color: 'var(--text-muted)', cursor: 'pointer', textDecoration: 'underline' }}
+        style={{ marginTop: 'var(--s-4)', background: 'none', border: 'none', fontSize: 16, color: 'var(--text-muted)', cursor: 'pointer', textDecoration: 'underline' }}
       >
         スキップ（後で設定する）
       </button>

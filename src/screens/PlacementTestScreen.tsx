@@ -94,10 +94,10 @@ export function PlacementTestScreen({ onComplete, onBack, onSkip }: PlacementTes
           </div>
         )}
         <div className="eyebrow accent" style={{ marginTop: onBack ? undefined : 'var(--s-6)' }}>PLACEMENT TEST</div>
-        <h1 style={{ fontSize: 28, letterSpacing: '-0.025em', lineHeight: 1.2 }}>実力診断テスト</h1>
+        <h1 style={{ fontSize: 32, letterSpacing: '-0.025em', lineHeight: 1.2 }}>実力診断テスト</h1>
         <div className="card" style={{ marginTop: 'var(--s-4)' }}>
           <div className="eyebrow" style={{ marginBottom: 'var(--s-2)' }}>テスト概要</div>
-          <ul style={{ fontSize: 14, lineHeight: 1.8, paddingLeft: 'var(--s-4)' }}>
+          <ul style={{ fontSize: 16, lineHeight: 1.8, paddingLeft: 'var(--s-4)' }}>
             <li>問題数: <b>{total} 問</b></li>
             <li>所要時間: 約 <b>5 分</b></li>
             <li>結果に基づいて偏差値と全国ランキングを算出</li>
@@ -139,11 +139,11 @@ export function PlacementTestScreen({ onComplete, onBack, onSkip }: PlacementTes
           <div className="progress-text">結果</div>
         </div>
         <div className="eyebrow accent">テスト結果</div>
-        <h1 style={{ fontSize: 28, letterSpacing: '-0.025em' }}>診断結果</h1>
+        <h1 style={{ fontSize: 32, letterSpacing: '-0.025em' }}>診断結果</h1>
         <section className="profile-hero" style={{ textAlign: 'center' }}>
           <div className="eyebrow" style={{ color: 'rgba(255,255,255,0.65)', marginBottom: 'var(--s-3)' }}>偏差値</div>
           <div className="display" style={{ fontSize: 80, lineHeight: 0.9, letterSpacing: '-0.04em', color: '#fff' }}>{pct}</div>
-          <div style={{ marginTop: 'var(--s-3)', fontSize: 14, color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
+          <div style={{ marginTop: 'var(--s-3)', fontSize: 16, color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
             {correctCount} / {total} 問正解
           </div>
         </section>
@@ -176,7 +176,7 @@ export function PlacementTestScreen({ onComplete, onBack, onSkip }: PlacementTes
       <div className="eyebrow accent" style={{ marginTop: 'var(--s-4)' }}>
         {q.topic} · {q.difficulty}
       </div>
-      <h2 style={{ fontSize: 20, lineHeight: 1.5, whiteSpace: 'pre-wrap', fontFamily: 'var(--font-display)' }}>
+      <h2 style={{ fontSize: 24, lineHeight: 1.5, whiteSpace: 'pre-wrap', fontFamily: 'var(--font-display)' }}>
         {q.question}
       </h2>
       <div className="stack-sm" style={{ marginTop: 'var(--s-3)' }}>
@@ -193,7 +193,7 @@ export function PlacementTestScreen({ onComplete, onBack, onSkip }: PlacementTes
                 cursor: answered ? 'default' : 'pointer',
                 textAlign: 'left',
                 width: '100%',
-                fontSize: 14,
+                fontSize: 16,
                 fontWeight: 500,
                 display: 'flex',
                 alignItems: 'center',
@@ -207,7 +207,7 @@ export function PlacementTestScreen({ onComplete, onBack, onSkip }: PlacementTes
                 borderRadius: '999px',
                 border: '1.5px solid currentColor',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 11, fontWeight: 700, flexShrink: 0,
+                fontSize: 14, fontWeight: 700, flexShrink: 0,
                 color: showCorrect ? 'var(--success)' : showWrong ? 'var(--danger)' : isSelected ? 'var(--brand)' : 'var(--text-muted)',
               }}>
                 {String.fromCharCode(65 + i)}

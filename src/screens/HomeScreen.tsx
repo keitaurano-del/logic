@@ -190,12 +190,12 @@ function HomeMobile({
 
       {/* ── ナビバー ── */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 12px', background: 'rgba(240,244,255,.95)', borderBottom: '1px solid #E2E8FF' }}>
-        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, color: '#3B5BDB', letterSpacing: '-.04em' }}>Logic</div>
+        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 26, fontWeight: 900, color: '#3B5BDB', letterSpacing: '-.04em' }}>Logic</div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 5, background: '#EEF2FF', border: '1px solid #DBE4FF', borderRadius: 99, padding: '5px 12px' }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="#3B5BDB"><path d="M12 2c0 0-5 4-5 10a5 5 0 0 0 10 0c0-6-5-10-5-10zm0 14a2 2 0 0 1-2-2c0-2 2-4 2-4s2 2 2 4a2 2 0 0 1-2 2z"/></svg>
-            <span style={{ fontSize: 13, fontWeight: 800, color: '#3B5BDB' }}>{streak}</span>
-            <span style={{ fontSize: 11, fontWeight: 600, color: '#748FFC' }}>日連続</span>
+            <span style={{ fontSize: 16, fontWeight: 800, color: '#3B5BDB' }}>{streak}</span>
+            <span style={{ fontSize: 14, fontWeight: 600, color: '#748FFC' }}>日連続</span>
           </div>
           <div style={{ width: 32, height: 32, borderRadius: 99, background: 'linear-gradient(135deg, #3B5BDB, #748FFC)' }} />
         </div>
@@ -216,14 +216,14 @@ function HomeMobile({
             }}
           >
             <div style={{ position: 'absolute', right: -20, top: -20, width: 120, height: 120, borderRadius: '50%', background: 'rgba(255,255,255,.1)', pointerEvents: 'none' }} />
-            <div style={{ fontSize: 28, marginBottom: 8 }}>👋</div>
-            <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 900, color: '#fff', letterSpacing: '-.02em', marginBottom: 4 }}>
+            <div style={{ fontSize: 32, marginBottom: 8 }}>👋</div>
+            <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, color: '#fff', letterSpacing: '-.02em', marginBottom: 4 }}>
               まずはこの1問を解いてみよう！
             </div>
-            <div style={{ fontSize: 13, color: 'rgba(255,255,255,.8)', marginBottom: 14 }}>
+            <div style={{ fontSize: 16, color: 'rgba(255,255,255,.8)', marginBottom: 14 }}>
               MECE—論理的思考の基本を、3分で学べます
             </div>
-            <div style={{ background: '#fff', borderRadius: 12, padding: '10px 16px', fontSize: 14, fontWeight: 700, color: '#F97316', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+            <div style={{ background: '#fff', borderRadius: 12, padding: '10px 16px', fontSize: 16, fontWeight: 700, color: '#F97316', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
               レッスンを始める →
             </div>
           </button>
@@ -241,12 +241,12 @@ function HomeMobile({
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
               </div>
               <div>
-                <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,.6)' }}>今日の一問</div>
-                <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 900, color: '#fff', letterSpacing: '-.025em' }}>クリア済み ✓</div>
+                <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,.6)' }}>今日の一問</div>
+                <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, color: '#fff', letterSpacing: '-.025em' }}>クリア済み ✓</div>
               </div>
             </div>
-            <div style={{ fontSize: 13, color: 'rgba(255,255,255,.7)', marginBottom: 12 }}>お見事！明日もチャレンジしよう 💪</div>
-            <div style={{ width: '100%', background: 'rgba(255,255,255,.2)', borderRadius: 14, padding: 12, fontSize: 14, fontWeight: 700, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+            <div style={{ fontSize: 16, color: 'rgba(255,255,255,.7)', marginBottom: 12 }}>お見事！明日もチャレンジしよう 💪</div>
+            <div style={{ width: '100%', background: 'rgba(255,255,255,.2)', borderRadius: 14, padding: 12, fontSize: 16, fontWeight: 700, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
               フィードバックを見る
             </div>
           </div>
@@ -259,12 +259,12 @@ function HomeMobile({
             <div style={{ position: 'absolute', right: 20, bottom: -30, width: 120, height: 120, borderRadius: '50%', background: 'rgba(255,255,255,.04)', pointerEvents: 'none' }} />
             <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 10 }}>
               <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#93C5FD' }} />
-              <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,.6)' }}>今日の一問</span>
+              <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,.6)' }}>今日の一問</span>
             </div>
-            <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 19, fontWeight: 900, color: '#fff', lineHeight: 1.4, letterSpacing: '-.025em', marginBottom: 6 }}>
+            <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, color: '#fff', lineHeight: 1.4, letterSpacing: '-.025em', marginBottom: 6 }}>
               {t('home.fermiQuestion')}
             </div>
-            <div style={{ fontSize: 12, color: 'rgba(255,255,255,.5)', marginBottom: 18, display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div style={{ fontSize: 14, color: 'rgba(255,255,255,.5)', marginBottom: 18, display: 'flex', alignItems: 'center', gap: 8 }}>
               <span>フェルミ推定</span>
               <div style={{ width: 3, height: 3, borderRadius: '50%', background: 'rgba(255,255,255,.3)' }} />
               <span>レベル 2</span>
@@ -273,11 +273,11 @@ function HomeMobile({
               <div style={{ flex: 1, height: 2, background: 'rgba(255,255,255,.2)', borderRadius: 99, overflow: 'hidden' }}>
                 <div style={{ height: '100%', width: `${Math.round((1 - (recovery.hours * 60 + recovery.minutes) / (24 * 60)) * 100)}%`, background: 'rgba(255,255,255,.6)', borderRadius: 99 }} />
               </div>
-              <div style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,.45)', whiteSpace: 'nowrap' }}>
+              <div style={{ fontSize: 14, fontWeight: 600, color: 'rgba(255,255,255,.45)', whiteSpace: 'nowrap' }}>
                 残り {recovery.hours}h {recovery.minutes}m
               </div>
             </div>
-            <div style={{ width: '100%', background: '#fff', borderRadius: 14, padding: 14, fontSize: 15, fontWeight: 700, color: '#3B5BDB', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+            <div style={{ width: '100%', background: '#fff', borderRadius: 14, padding: 14, fontSize: 18, fontWeight: 700, color: '#3B5BDB', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" strokeWidth="2.5" strokeLinecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
               チャレンジする
             </div>
@@ -310,13 +310,13 @@ function HomeMobile({
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
               </div>
               <div>
-                <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,.55)', marginBottom: 1 }}>哲学者ランク</div>
-                <div style={{ fontSize: 18, fontWeight: 900, color: '#fff', letterSpacing: '-.025em', fontFamily: "'Inter Tight', sans-serif" }}>
+                <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,.55)', marginBottom: 1 }}>哲学者ランク</div>
+                <div style={{ fontSize: 22, fontWeight: 900, color: '#fff', letterSpacing: '-.025em', fontFamily: "'Inter Tight', sans-serif" }}>
                   Lv.{level} · {getLocale() === 'ja' ? tier.title : tier.titleEn}
                 </div>
               </div>
             </div>
-            <div onClick={onOpenRank} style={{ background: 'rgba(255,255,255,.18)', border: '1px solid rgba(255,255,255,.25)', borderRadius: 99, padding: '5px 12px', fontSize: 11, fontWeight: 700, color: '#fff', display: 'flex', alignItems: 'center', gap: 4, cursor: 'pointer' }}>
+            <div onClick={onOpenRank} style={{ background: 'rgba(255,255,255,.18)', border: '1px solid rgba(255,255,255,.25)', borderRadius: 99, padding: '5px 12px', fontSize: 14, fontWeight: 700, color: '#fff', display: 'flex', alignItems: 'center', gap: 4, cursor: 'pointer' }}>
               詳細 →
             </div>
           </div>
@@ -324,8 +324,8 @@ function HomeMobile({
           {/* XPバー */}
           <div style={{ marginBottom: 6 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
-              <span style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,.55)' }}>経験値</span>
-              <span style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,.85)' }}>{levelXp} / 1,000</span>
+              <span style={{ fontSize: 14, fontWeight: 600, color: 'rgba(255,255,255,.55)' }}>経験値</span>
+              <span style={{ fontSize: 14, fontWeight: 700, color: 'rgba(255,255,255,.85)' }}>{levelXp} / 1,000</span>
             </div>
             <div style={{ height: 6, background: 'rgba(255,255,255,.18)', borderRadius: 99, overflow: 'hidden' }}>
               <div style={{ height: '100%', width: `${levelPct}%`, background: '#fff', borderRadius: 99, boxShadow: '0 0 8px rgba(255,255,255,.5)' }} />
@@ -333,7 +333,7 @@ function HomeMobile({
           </div>
 
           {xpToNext > 0 && (
-            <div style={{ fontSize: 11, color: 'rgba(255,255,255,.5)', marginTop: 4 }}>
+            <div style={{ fontSize: 14, color: 'rgba(255,255,255,.5)', marginTop: 4 }}>
               次のランクまで {xpToNext}
             </div>
           )}
@@ -347,8 +347,8 @@ function HomeMobile({
             { value: deviation != null ? String(Math.round(deviation)) : '—', label: '偏差値', blue: false },
           ] as { value: string; label: string; blue: boolean }[]).map(({ value, label, blue }) => (
             <div key={label} style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: '12px 10px', textAlign: 'center', boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
-              <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 26, fontWeight: 900, letterSpacing: '-.04em', lineHeight: 1, color: blue ? '#3B5BDB' : '#0F1523' }}>{value}</div>
-              <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: '.08em', textTransform: 'uppercase', color: '#7A849E', marginTop: 4 }}>{label}</div>
+              <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 30, fontWeight: 900, letterSpacing: '-.04em', lineHeight: 1, color: blue ? '#3B5BDB' : '#0F1523' }}>{value}</div>
+              <div style={{ fontSize: 13, fontWeight: 600, letterSpacing: '.08em', textTransform: 'uppercase', color: '#7A849E', marginTop: 4 }}>{label}</div>
             </div>
           ))}
         </div>
@@ -356,8 +356,8 @@ function HomeMobile({
         {/* 今週の記録 */}
         <div style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: '14px 16px', boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-            <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 14, fontWeight: 800, color: '#0F1523', letterSpacing: '-.02em' }}>今週の記録</div>
-            <div onClick={onOpenStats} style={{ fontSize: 12, fontWeight: 600, color: '#3B5BDB', cursor: 'pointer' }}>詳細</div>
+            <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 16, fontWeight: 800, color: '#0F1523', letterSpacing: '-.02em' }}>今週の記録</div>
+            <div onClick={onOpenStats} style={{ fontSize: 14, fontWeight: 600, color: '#3B5BDB', cursor: 'pointer' }}>詳細</div>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             {weekDays.map((day, i) => {
@@ -367,13 +367,13 @@ function HomeMobile({
                   <div style={{ width: 34, height: 34, borderRadius: '50%', background: isDone ? '#EEF2FF' : '#E8EEFF', border: isDone ? '1.5px solid #DBE4FF' : 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {isDone && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" strokeWidth="2.5" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>}
                   </div>
-                  <div style={{ fontSize: 10, fontWeight: 600, color: '#7A849E' }}>{day}</div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: '#7A849E' }}>{day}</div>
                 </div>
               )
             })}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}>
               <div style={{ width: 34, height: 34, borderRadius: '50%', background: '#3B5BDB', boxShadow: '0 2px 8px rgba(59,91,219,.4)' }} />
-              <div style={{ fontSize: 10, fontWeight: 600, color: '#3B5BDB' }}>今日</div>
+              <div style={{ fontSize: 13, fontWeight: 600, color: '#3B5BDB' }}>今日</div>
             </div>
           </div>
         </div>
@@ -381,8 +381,8 @@ function HomeMobile({
         {/* 学習パス */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
-            <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 14, fontWeight: 800, color: '#0F1523' }}>学習パス</div>
-            <div style={{ fontSize: 12, fontWeight: 600, color: '#3B5BDB', cursor: 'pointer' }} onClick={() => onOpenRoadmap && onOpenRoadmap()}>すべて</div>
+            <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 16, fontWeight: 800, color: '#0F1523' }}>学習パス</div>
+            <div style={{ fontSize: 14, fontWeight: 600, color: '#3B5BDB', cursor: 'pointer' }} onClick={() => onOpenRoadmap && onOpenRoadmap()}>すべて</div>
           </div>
           {PATHS.map((path) => {
             const total = path.lessonIds.length
@@ -398,15 +398,15 @@ function HomeMobile({
                   {path.icon}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: '#0F1523', letterSpacing: '-.01em', marginBottom: 2 }}>{path.name}</div>
-                  <div style={{ fontSize: 11, color: '#7A849E' }}>{total} レッスン</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: '#0F1523', letterSpacing: '-.01em', marginBottom: 2 }}>{path.name}</div>
+                  <div style={{ fontSize: 14, color: '#7A849E' }}>{total} レッスン</div>
                   <div style={{ marginTop: 7 }}>
                     <div style={{ height: 4, background: '#E8EEFF', borderRadius: 99, overflow: 'hidden' }}>
                       <div style={{ height: '100%', width: `${pct}%`, background: '#3B5BDB', borderRadius: 99 }} />
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 3 }}>
-                      <div style={{ fontSize: 10, fontWeight: 700, color: pct > 0 ? '#3B5BDB' : '#7A849E' }}>{pct > 0 ? `${pct}%` : '未開始'}</div>
-                      <div style={{ fontSize: 10, color: '#7A849E' }}>{done} / {total}</div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: pct > 0 ? '#3B5BDB' : '#7A849E' }}>{pct > 0 ? `${pct}%` : '未開始'}</div>
+                      <div style={{ fontSize: 13, color: '#7A849E' }}>{done} / {total}</div>
                     </div>
                   </div>
                 </div>
@@ -422,15 +422,15 @@ function HomeMobile({
             <div style={{ width: 40, height: 40, borderRadius: 12, background: '#EEF2FF', border: '1px solid #DBE4FF', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 10 }}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="#3B5BDB"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             </div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: '#0F1523', letterSpacing: '-.01em' }}>ロールプレイ</div>
-            <div style={{ fontSize: 11, color: '#7A849E', marginTop: 2 }}>AI対話練習</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: '#0F1523', letterSpacing: '-.01em' }}>ロールプレイ</div>
+            <div style={{ fontSize: 14, color: '#7A849E', marginTop: 2 }}>AI対話練習</div>
           </div>
           <div onClick={() => onOpenAIProblemGen ? onOpenAIProblemGen() : onOpenAIGen()} style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: 16, cursor: 'pointer', boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
             <div style={{ width: 40, height: 40, borderRadius: 12, background: '#F5F3FF', border: '1px solid #DDD6FE', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 10 }}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="#7C3AED"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
             </div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: '#0F1523', letterSpacing: '-.01em' }}>AI 問題生成</div>
-            <div style={{ fontSize: 11, color: '#7A849E', marginTop: 2 }}>テーマを指定</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: '#0F1523', letterSpacing: '-.01em' }}>AI 問題生成</div>
+            <div style={{ fontSize: 14, color: '#7A849E', marginTop: 2 }}>テーマを指定</div>
             {/* Premiumバッジ: BETA_MODE時は非表示 */}
           </div>
         </div>
@@ -629,9 +629,9 @@ function HomeDesktop({
               onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-2px)' }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = '' }}
             >
-              <div style={{ fontSize: 28, marginBottom: 12 }}>{item.emoji}</div>
-              <div style={{ fontSize: 15, fontWeight: 700, color: item.color, letterSpacing: '-0.01em' }}>{item.label}</div>
-              <div style={{ fontSize: 12, color: item.color, opacity: 0.65, marginTop: 4 }}>{item.sub}</div>
+              <div style={{ fontSize: 32, marginBottom: 12 }}>{item.emoji}</div>
+              <div style={{ fontSize: 18, fontWeight: 700, color: item.color, letterSpacing: '-0.01em' }}>{item.label}</div>
+              <div style={{ fontSize: 14, color: item.color, opacity: 0.65, marginTop: 4 }}>{item.sub}</div>
             </button>
           ))}
         </div>
@@ -652,11 +652,11 @@ function HomeDesktop({
           }}
         >
           <div>
-            <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--brand)', marginBottom: 2, letterSpacing: '0.08em' }}>ベータ版</div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)' }}>ご意見・ご要望を教えてください</div>
-            <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 2 }}>アプリ改善のフィードバックをお待ちしています</div>
+            <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--brand)', marginBottom: 2, letterSpacing: '0.08em' }}>ベータ版</div>
+            <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)' }}>ご意見・ご要望を教えてください</div>
+            <div style={{ fontSize: 16, color: 'var(--text-muted)', marginTop: 2 }}>アプリ改善のフィードバックをお待ちしています</div>
           </div>
-          <div style={{ fontSize: 18, color: 'var(--brand)', fontWeight: 700, marginLeft: 16 }}>→</div>
+          <div style={{ fontSize: 22, color: 'var(--brand)', fontWeight: 700, marginLeft: 16 }}>→</div>
         </div>
     </>
   )

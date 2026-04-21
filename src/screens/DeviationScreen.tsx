@@ -24,10 +24,10 @@ export function DeviationScreen({ onBack, onRetakeTest, onStartLesson }: Deviati
           <div className="progress-text">偏差値</div>
         </div>
         <div className="card empty">
-          <h3 style={{ fontSize: 17, marginBottom: 'var(--s-2)' }}>
+          <h3 style={{ fontSize: 20, marginBottom: 'var(--s-2)' }}>
             プレースメントテスト未完了
           </h3>
-          <p className="muted" style={{ fontSize: 13 }}>
+          <p className="muted" style={{ fontSize: 16 }}>
             テストを受けると偏差値が算出されます
           </p>
           <Button
@@ -89,7 +89,7 @@ export function DeviationScreen({ onBack, onRetakeTest, onStartLesson }: Deviati
           style={{
             marginTop: 'var(--s-3)',
             position: 'relative',
-            fontSize: 13,
+            fontSize: 16,
             color: 'rgba(255,255,255,0.78)',
             fontWeight: 500,
           }}
@@ -119,12 +119,12 @@ export function DeviationScreen({ onBack, onRetakeTest, onStartLesson }: Deviati
         <div className="eyebrow" style={{ marginBottom: 'var(--s-2)' }}>
           コメント
         </div>
-        <p style={{ fontSize: 14, lineHeight: 1.7 }}>{rank.comment}</p>
+        <p style={{ fontSize: 16, lineHeight: 1.7 }}>{rank.comment}</p>
       </div>
 
       {recommended.length > 0 && (
         <section style={{ marginTop: 'var(--s-4)' }}>
-          <h2 style={{ fontSize: 17, marginBottom: 'var(--s-3)' }}>
+          <h2 style={{ fontSize: 20, marginBottom: 'var(--s-3)' }}>
             おすすめレッスン
           </h2>
           <div className="stack-sm">
@@ -143,7 +143,7 @@ export function DeviationScreen({ onBack, onRetakeTest, onStartLesson }: Deviati
                   border: '1px solid var(--border)',
                 }}
               >
-                <span style={{ fontSize: 14, fontWeight: 600 }}>
+                <span style={{ fontSize: 16, fontWeight: 600 }}>
                   Lesson #{id}
                 </span>
                 <span className="badge badge-accent">おすすめ</span>

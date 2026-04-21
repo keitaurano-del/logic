@@ -94,7 +94,7 @@ export function AppShell({
                 style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '8px 14px', background: 'none', border: 'none', cursor: 'pointer', minWidth: 60 }}
               >
                 {tab.icon(active)}
-                <div style={{ fontSize: 10, fontWeight: 600, color: active ? '#3B5BDB' : '#7A849E' }}>{tab.label}</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: active ? '#3B5BDB' : '#7A849E' }}>{tab.label}</div>
                 {active && <div style={{ width: 4, height: 4, borderRadius: '50%', background: '#3B5BDB', marginTop: -2 }} />}
               </button>
             )

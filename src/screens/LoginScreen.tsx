@@ -49,7 +49,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
           borderRadius: 20,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           margin: '0 auto 16px',
-          fontSize: 36,
+          fontSize: 40,
           boxShadow: 'var(--shadow-md)',
         }}>
           <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
@@ -57,8 +57,8 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
             <path d="M12 20h16M20 12l8 8-8 8" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </div>
-        <h1 style={{ fontSize: 28, fontWeight: 800, color: 'var(--text)', margin: 0 }}>Logic</h1>
-        <p style={{ fontSize: 15, color: 'var(--text-muted)', marginTop: 8 }}>
+        <h1 style={{ fontSize: 32, fontWeight: 800, color: 'var(--text)', margin: 0 }}>Logic</h1>
+        <p style={{ fontSize: 18, color: 'var(--text-muted)', marginTop: 8 }}>
           {t('auth.tagline')}
         </p>
       </div>
@@ -73,16 +73,16 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
         boxShadow: 'var(--shadow-md)',
         border: '1px solid var(--border)',
       }}>
-        <h2 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', margin: '0 0 6px' }}>
+        <h2 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text)', margin: '0 0 6px' }}>
           {t('auth.welcomeTitle')}
         </h2>
-        <p style={{ fontSize: 14, color: 'var(--text-muted)', margin: '0 0 24px' }}>
+        <p style={{ fontSize: 16, color: 'var(--text-muted)', margin: '0 0 24px' }}>
           {t('auth.welcomeDesc')}
         </p>
 
         {error && (
           <div style={{
-            fontSize: 13, color: 'var(--danger)',
+            fontSize: 16, color: 'var(--danger)',
             padding: '10px 14px',
             background: 'rgba(220,38,38,0.06)',
             borderRadius: 10,
@@ -102,13 +102,13 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
             borderRadius: 14,
             background: loading ? 'var(--bg-secondary)' : 'var(--bg-card)',
             cursor: (loading || !ready) ? 'not-allowed' : 'pointer',
-            fontSize: 15, fontWeight: 700, color: 'var(--text)',
+            fontSize: 18, fontWeight: 700, color: 'var(--text)',
             opacity: (loading || !ready) ? 0.6 : 1,
             transition: 'all 150ms',
           }}
         >
           {loading ? (
-            <span style={{ fontSize: 14, color: 'var(--text-muted)' }}>{t('auth.loggingIn')}</span>
+            <span style={{ fontSize: 16, color: 'var(--text-muted)' }}>{t('auth.loggingIn')}</span>
           ) : (
             <>
               <GoogleIcon />
@@ -117,7 +117,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
           )}
         </button>
 
-        <p style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', marginTop: 16, lineHeight: 1.6 }}>
+        <p style={{ fontSize: 14, color: 'var(--text-muted)', textAlign: 'center', marginTop: 16, lineHeight: 1.6 }}>
           {t('auth.termsNote')}
         </p>
       </div>

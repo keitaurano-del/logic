@@ -101,18 +101,18 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
       </div>
 
       <div className="eyebrow accent">デイリーフェルミ</div>
-      <h1 style={{ fontSize: 22, fontWeight: 800, letterSpacing: '-0.02em', lineHeight: 1.3 }}>
+      <h1 style={{ fontSize: 26, fontWeight: 800, letterSpacing: '-0.02em', lineHeight: 1.3 }}>
         {t('dailyFermi.heading')}
       </h1>
 
       {loadingQuestion && (
-        <div className="card" style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: 14 }}>
+        <div className="card" style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: 16 }}>
           {t('common.loading')}
         </div>
       )}
 
       {questionError && (
-        <div className="card" style={{ background: 'rgba(220,38,38,0.06)', borderColor: 'var(--danger)', color: 'var(--danger)', fontSize: 13 }}>
+        <div className="card" style={{ background: 'rgba(220,38,38,0.06)', borderColor: 'var(--danger)', color: 'var(--danger)', fontSize: 16 }}>
           {questionError}
         </div>
       )}
@@ -134,11 +134,11 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
             <div style={{ position: 'relative' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12 }}>
                 <BarChartIcon width={14} height={14} style={{ color: 'var(--brand)' }} />
-                <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--brand)' }}>
+                <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--brand)' }}>
                   {t('fermi.questionTag')}
                 </span>
               </div>
-              <p style={{ fontSize: 17, fontWeight: 600, lineHeight: 1.55, letterSpacing: '-0.01em' }}>
+              <p style={{ fontSize: 20, fontWeight: 600, lineHeight: 1.55, letterSpacing: '-0.01em' }}>
                 {question}
               </p>
             </div>
@@ -153,27 +153,27 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
                   style={{
                     display: 'flex', alignItems: 'center', gap: 6,
                     background: 'none', border: 'none', cursor: 'pointer',
-                    color: 'var(--brand)', fontSize: 13, fontWeight: 600, padding: 0,
+                    color: 'var(--brand)', fontSize: 16, fontWeight: 600, padding: 0,
                   }}
                 >
                   <LightbulbIcon width={15} height={15} />
                   {t('dailyFermi.showHint')}
                 </button>
               ) : (
-                <div className="card" style={{ background: 'var(--brand-soft)', borderColor: 'var(--brand)', fontSize: 13, lineHeight: 1.6 }}>
+                <div className="card" style={{ background: 'var(--brand-soft)', borderColor: 'var(--brand)', fontSize: 16, lineHeight: 1.6 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
                     <LightbulbIcon width={14} height={14} style={{ color: 'var(--brand)' }} />
-                    <span style={{ fontWeight: 700, color: 'var(--brand)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                    <span style={{ fontWeight: 700, color: 'var(--brand)', fontSize: 14, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                       HINT
                     </span>
                   </div>
                   <p style={{ color: 'var(--text-secondary)', margin: 0 }}>{hint}</p>
                   {/* 基礎統計データ */}
                   <div style={{ marginTop: 12, paddingTop: 10, borderTop: '1px solid var(--border)' }}>
-                    <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 8, textTransform: 'uppercase' }}>参考データ</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 8, textTransform: 'uppercase' }}>参考データ</div>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px 12px' }}>
                       {BASE_STATS.map((s) => (
-                        <div key={s.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, padding: '2px 0' }}>
+                        <div key={s.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, padding: '2px 0' }}>
                           <span style={{ color: 'var(--text-muted)' }}>{s.label}</span>
                           <span style={{ fontWeight: 700, color: 'var(--text)' }}>{s.value}</span>
                         </div>
@@ -188,7 +188,7 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
           {/* フィードバックが出ていない場合は回答入力 */}
           {!feedback && (
             <div className="stack-sm">
-              <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)' }}>
+              <label style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-secondary)' }}>
                 {t('dailyFermi.answerLabel')}
               </label>
               <textarea
@@ -204,7 +204,7 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
                   border: '1.5px solid var(--border)',
                   background: 'var(--bg-card)',
                   color: 'var(--text-primary)',
-                  fontSize: 14,
+                  fontSize: 16,
                   lineHeight: 1.6,
                   resize: 'vertical',
                   outline: 'none',
@@ -213,7 +213,7 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
               />
 
               {submitError && (
-                <div style={{ fontSize: 13, color: 'var(--danger)' }}>{submitError}</div>
+                <div style={{ fontSize: 16, color: 'var(--danger)' }}>{submitError}</div>
               )}
 
               <Button
@@ -238,13 +238,13 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
                   </div>
                   <div className="feedback-title">{t('dailyFermi.feedbackTitle')}</div>
                 </div>
-                <div className="feedback-text" style={{ whiteSpace: 'pre-wrap', fontSize: 14, lineHeight: 1.75 }}>
+                <div className="feedback-text" style={{ whiteSpace: 'pre-wrap', fontSize: 16, lineHeight: 1.75 }}>
                   {feedback.feedback}
                 </div>
                 {onReport && (
                   <button
                     onClick={() => onReport({ lessonTitle: t('report.dailyFermiTitle'), question })}
-                    style={{ marginTop: 'var(--s-3)', fontSize: 12, color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
+                    style={{ marginTop: 'var(--s-3)', fontSize: 14, color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
                   >
                     {t('report.linkText')}
                   </button>

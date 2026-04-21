@@ -72,7 +72,7 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
       </div>
 
       <div className="eyebrow accent">AI 問題ジェネレーター</div>
-      <h1 style={{ fontSize: 26, letterSpacing: '-0.025em', lineHeight: 1.2 }}>
+      <h1 style={{ fontSize: 30, letterSpacing: '-0.025em', lineHeight: 1.2 }}>
         あなただけの問題を作ろう
       </h1>
 
@@ -95,7 +95,7 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
               onClick={() => setPrompt(s)}
               disabled={generating}
               style={{
-                fontSize: 12,
+                fontSize: 14,
                 padding: '4px 10px',
                 borderRadius: 'var(--radius-full)',
                 border: '1px solid var(--border)',
@@ -112,13 +112,13 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
 
         {isAtLimit && (
           <div className="card" style={{ background: 'rgba(234,179,8,0.08)', borderColor: 'rgba(234,179,8,0.4)', marginTop: 'var(--s-3)' }}>
-            <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 4 }}>{t('report.aiLimitTitle')}</div>
-            <div style={{ fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.6 }}>{t('report.aiLimitBody')}</div>
-            <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>{usedThisMonth} / {limit} 問生成済み（今月）</div>
+            <div style={{ fontWeight: 700, fontSize: 16, marginBottom: 4 }}>{t('report.aiLimitTitle')}</div>
+            <div style={{ fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.6 }}>{t('report.aiLimitBody')}</div>
+            <div style={{ fontSize: 14, color: 'var(--text-muted)', marginTop: 4 }}>{usedThisMonth} / {limit} 問生成済み（今月）</div>
             {onUpgrade && (
               <button
                 onClick={onUpgrade}
-                style={{ marginTop: 'var(--s-3)', fontSize: 12, color: 'var(--brand)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontWeight: 700, textDecoration: 'underline' }}
+                style={{ marginTop: 'var(--s-3)', fontSize: 14, color: 'var(--brand)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontWeight: 700, textDecoration: 'underline' }}
               >
                 {t('report.aiLimitUpgrade')}
               </button>
@@ -127,7 +127,7 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
         )}
 
         {error && (
-          <div className="card" style={{ background: 'rgba(220,38,38,0.06)', borderColor: 'var(--danger)', color: 'var(--danger)', fontSize: 13, marginTop: 'var(--s-3)' }}>
+          <div className="card" style={{ background: 'rgba(220,38,38,0.06)', borderColor: 'var(--danger)', color: 'var(--danger)', fontSize: 16, marginTop: 'var(--s-3)' }}>
             {error}
           </div>
         )}
@@ -153,8 +153,8 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
               style={{ display: 'flex', alignItems: 'center', gap: 'var(--s-3)', cursor: 'pointer' }}
             >
               <div style={{ flex: 1 }} onClick={() => onPlay(p)}>
-                <div style={{ fontWeight: 600, fontSize: 14 }}>{p.title}</div>
-                <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
+                <div style={{ fontWeight: 600, fontSize: 16 }}>{p.title}</div>
+                <div style={{ fontSize: 14, color: 'var(--text-muted)', marginTop: 2 }}>
                   {p.steps.length}問 · {p.category}
                 </div>
               </div>
@@ -167,7 +167,7 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
                   background: 'none',
                   cursor: 'pointer',
                   color: 'var(--text-muted)',
-                  fontSize: 14,
+                  fontSize: 16,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}
               >

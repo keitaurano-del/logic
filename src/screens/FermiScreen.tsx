@@ -25,10 +25,10 @@ const BASE_STATS = [
 function BaseDataPanel() {
   return (
     <div style={{ marginTop: 12, paddingTop: 10, borderTop: '1px solid var(--border)' }}>
-      <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 8, textTransform: 'uppercase' }}>参考データ</div>
+      <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 8, textTransform: 'uppercase' }}>参考データ</div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px 12px' }}>
         {BASE_STATS.map((s) => (
-          <div key={s.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, padding: '2px 0' }}>
+          <div key={s.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, padding: '2px 0' }}>
             <span style={{ color: 'var(--text-muted)' }}>{s.label}</span>
             <span style={{ fontWeight: 700, color: 'var(--text)' }}>{s.value}</span>
           </div>
@@ -183,7 +183,7 @@ function FermiMobile({ onBack, state, onReport }: { onBack: () => void; state: F
       </div>
 
       {error && (
-        <div className="card" style={{ background: 'rgba(220,38,38,0.06)', borderColor: 'var(--danger)', color: 'var(--danger)', fontSize: 13 }}>
+        <div className="card" style={{ background: 'rgba(220,38,38,0.06)', borderColor: 'var(--danger)', color: 'var(--danger)', fontSize: 16 }}>
           {error}
         </div>
       )}
@@ -243,7 +243,7 @@ function FermiDesktop({ onBack, state, onReport }: { onBack: () => void; state: 
       </div>
 
       {error && (
-        <div className="card" style={{ background: 'rgba(220,38,38,0.06)', borderColor: 'var(--danger)', color: 'var(--danger)', fontSize: 13, marginBottom: 'var(--s-4)' }}>
+        <div className="card" style={{ background: 'rgba(220,38,38,0.06)', borderColor: 'var(--danger)', color: 'var(--danger)', fontSize: 16, marginBottom: 'var(--s-4)' }}>
           {error}
         </div>
       )}
@@ -287,7 +287,7 @@ function FermiFeedbackBlock({
         {feedback.answer && (
           <div style={{ marginTop: 'var(--s-3)' }}>
             <div className="eyebrow" style={{ marginBottom: 'var(--s-2)' }}>推定解</div>
-            <div style={{ fontSize: 13, lineHeight: 1.7, color: '#047857', whiteSpace: 'pre-wrap' }}>
+            <div style={{ fontSize: 16, lineHeight: 1.7, color: '#047857', whiteSpace: 'pre-wrap' }}>
               {feedback.answer}
             </div>
           </div>
@@ -295,7 +295,7 @@ function FermiFeedbackBlock({
         {feedback.logic && (
           <div style={{ marginTop: 'var(--s-3)' }}>
             <div className="eyebrow" style={{ marginBottom: 'var(--s-2)' }}>計算ロジック</div>
-            <div style={{ fontSize: 13, lineHeight: 1.7, color: '#047857', whiteSpace: 'pre-wrap' }}>
+            <div style={{ fontSize: 16, lineHeight: 1.7, color: '#047857', whiteSpace: 'pre-wrap' }}>
               {feedback.logic}
             </div>
           </div>
@@ -303,7 +303,7 @@ function FermiFeedbackBlock({
         {onReport && (
           <button
             onClick={onReport}
-            style={{ marginTop: 'var(--s-3)', fontSize: 12, color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
+            style={{ marginTop: 'var(--s-3)', fontSize: 14, color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
           >
             {t('report.linkText')}
           </button>

@@ -54,10 +54,10 @@ export function FlashcardsScreen({ onBack }: FlashcardsScreenProps) {
       {total === 0 ? (
         <div className="card empty" style={{ padding: 'var(--s-7)' }}>
           <div style={{ fontSize: 40, marginBottom: 'var(--s-3)' }}>✨</div>
-          <h3 style={{ fontSize: 17, marginBottom: 'var(--s-2)' }}>
+          <h3 style={{ fontSize: 20, marginBottom: 'var(--s-2)' }}>
             復習するカードはありません
           </h3>
-          <p className="muted" style={{ fontSize: 13 }}>
+          <p className="muted" style={{ fontSize: 16 }}>
             レッスンを完了するとここにカードが追加されます
           </p>
         </div>
@@ -113,7 +113,7 @@ export function FlashcardsScreen({ onBack }: FlashcardsScreenProps) {
               <div
                 className="display"
                 style={{
-                  fontSize: 22,
+                  fontSize: 26,
                   lineHeight: 1.5,
                   whiteSpace: 'pre-wrap',
                 }}
@@ -123,7 +123,7 @@ export function FlashcardsScreen({ onBack }: FlashcardsScreenProps) {
               {!flipped && (
                 <div
                   className="muted"
-                  style={{ marginTop: 'var(--s-4)', fontSize: 12 }}
+                  style={{ marginTop: 'var(--s-4)', fontSize: 14 }}
                 >
                   タップで答えを見る
                 </div>
@@ -164,7 +164,7 @@ export function FlashcardsScreen({ onBack }: FlashcardsScreenProps) {
               </div>
               <div
                 className="muted"
-                style={{ fontSize: 11, textAlign: 'center', marginTop: 'var(--s-2)' }}
+                style={{ fontSize: 14, textAlign: 'center', marginTop: 'var(--s-2)' }}
               >
                 間隔: {card.interval}日 · ease: {card.ease.toFixed(1)}
               </div>

@@ -110,20 +110,20 @@ export function CompletedLessonsScreen({ onBack }: CompletedLessonsScreenProps) 
         <div style={{ fontSize: 72, fontWeight: 800, lineHeight: 1, letterSpacing: '-0.04em', color: 'var(--brand)' }}>
           {keys.length}
         </div>
-        <div style={{ fontSize: 15, color: 'var(--text-muted)', marginTop: 'var(--s-2)', fontWeight: 600 }}>
+        <div style={{ fontSize: 18, color: 'var(--text-muted)', marginTop: 'var(--s-2)', fontWeight: 600 }}>
           {t('completed.lessonsDone')}
         </div>
       </div>
 
       {keys.length === 0 ? (
         <div className="card" style={{ textAlign: 'center', padding: 'var(--s-7) var(--s-5)', color: 'var(--text-muted)' }}>
-          <div style={{ fontSize: 14 }}>{t('completed.empty')}</div>
+          <div style={{ fontSize: 16 }}>{t('completed.empty')}</div>
         </div>
       ) : (
         grouped.map(([cat, catKeys]) => (
           <div key={cat}>
             <div style={{
-              fontSize: 11,
+              fontSize: 14,
               fontWeight: 700,
               letterSpacing: '0.07em',
               textTransform: 'uppercase',
@@ -143,7 +143,7 @@ export function CompletedLessonsScreen({ onBack }: CompletedLessonsScreenProps) 
                       <span style={{ color: 'var(--success)', flexShrink: 0 }}>
                         <CheckCircleIcon width={18} height={18} />
                       </span>
-                      <span style={{ fontSize: 14, color: 'var(--text)', flex: 1 }}>{name}</span>
+                      <span style={{ fontSize: 16, color: 'var(--text)', flex: 1 }}>{name}</span>
                     </div>
                   </div>
                 )

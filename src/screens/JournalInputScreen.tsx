@@ -135,17 +135,17 @@ export function JournalInputScreen({ onBack }: JournalInputScreenProps) {
           <div className="progress-text">結果</div>
         </div>
         <div className="eyebrow accent">ドリル結果</div>
-        <h1 style={{ fontSize: 28, letterSpacing: '-0.025em' }}>仕訳ドリル結果</h1>
+        <h1 style={{ fontSize: 32, letterSpacing: '-0.025em' }}>仕訳ドリル結果</h1>
         <section className="profile-hero" style={{ textAlign: 'center' }}>
           <div className="eyebrow" style={{ color: 'rgba(255,255,255,0.65)', marginBottom: 'var(--s-3)' }}>スコア</div>
           <div className="display" style={{ fontSize: 80, lineHeight: 0.9, letterSpacing: '-0.04em', color: '#fff' }}>{pct}%</div>
-          <div style={{ marginTop: 'var(--s-3)', fontSize: 14, color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
+          <div style={{ marginTop: 'var(--s-3)', fontSize: 16, color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
             {correctCount} / {problems.length} 問正解
           </div>
           <div className="badge" style={{
             marginTop: 'var(--s-3)',
             background: passed ? 'var(--success)' : 'rgba(255,255,255,0.16)',
-            color: '#fff', border: 'none', fontSize: 12, padding: '6px 14px',
+            color: '#fff', border: 'none', fontSize: 14, padding: '6px 14px',
           }}>
             {passed ? '合格' : '不合格（70% 必要）'}
           </div>
@@ -180,7 +180,7 @@ export function JournalInputScreen({ onBack }: JournalInputScreenProps) {
       </div>
 
       <div className="eyebrow accent" style={{ marginTop: 'var(--s-4)' }}>仕訳ドリル</div>
-      <h2 style={{ fontSize: 18, lineHeight: 1.6, fontFamily: 'var(--font-display)' }}>{p.question}</h2>
+      <h2 style={{ fontSize: 22, lineHeight: 1.6, fontFamily: 'var(--font-display)' }}>{p.question}</h2>
 
       <div className="card" style={{ marginTop: 'var(--s-3)', padding: 'var(--s-4)' }}>
         <div className="eyebrow" style={{ marginBottom: 'var(--s-3)' }}>仕訳を入力してください</div>
@@ -188,7 +188,7 @@ export function JournalInputScreen({ onBack }: JournalInputScreenProps) {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: 'var(--s-3)', alignItems: 'start' }}>
           {/* Debit */}
           <div className="stack-sm">
-            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--brand)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--brand)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
               借方
             </div>
             <select
@@ -212,13 +212,13 @@ export function JournalInputScreen({ onBack }: JournalInputScreenProps) {
             />
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', paddingTop: 36, color: 'var(--text-muted)', fontSize: 18, fontWeight: 300 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', paddingTop: 36, color: 'var(--text-muted)', fontSize: 22, fontWeight: 300 }}>
             /
           </div>
 
           {/* Credit */}
           <div className="stack-sm">
-            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--success)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--success)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
               貸方
             </div>
             <select
@@ -248,14 +248,14 @@ export function JournalInputScreen({ onBack }: JournalInputScreenProps) {
         <div className="feedback-card">
           <div className="feedback-head">
             <div className="feedback-check">
-              {isFullyCorrect ? <CheckIcon /> : <span style={{ fontSize: 16 }}>✕</span>}
+              {isFullyCorrect ? <CheckIcon /> : <span style={{ fontSize: 18 }}>✕</span>}
             </div>
             <div className="feedback-title">{isFullyCorrect ? '正解！' : '不正解'}</div>
           </div>
           <div className="feedback-text">
             <b>正解：</b> （借方）{p.answer.debitAccount} {p.answer.debitAmount.toLocaleString()} ／（貸方）{p.answer.creditAccount} {p.answer.creditAmount.toLocaleString()}
           </div>
-          <div style={{ marginTop: 'var(--s-2)', fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.6 }}>
+          <div style={{ marginTop: 'var(--s-2)', fontSize: 16, color: 'var(--text-muted)', lineHeight: 1.6 }}>
             {p.explanation}
           </div>
         </div>

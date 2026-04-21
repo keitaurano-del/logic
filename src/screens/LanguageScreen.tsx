@@ -29,7 +29,7 @@ export function LanguageScreen({ onBack }: LanguageScreenProps) {
         <div className="progress-text">{t('settings.support.appLanguage')}</div>
       </div>
 
-      <p style={{ fontSize: 14, color: 'var(--text-muted)', marginTop: 'var(--s-2)' }}>
+      <p style={{ fontSize: 16, color: 'var(--text-muted)', marginTop: 'var(--s-2)' }}>
         {t('language.description')}
       </p>
 
@@ -62,7 +62,7 @@ export function LanguageScreen({ onBack }: LanguageScreenProps) {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: 13,
+                  fontSize: 16,
                   fontWeight: 700,
                   color: selected ? '#fff' : 'var(--text-muted)',
                   flexShrink: 0,
@@ -72,11 +72,11 @@ export function LanguageScreen({ onBack }: LanguageScreenProps) {
                 </div>
 
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 16, fontWeight: selected ? 700 : 400, color: selected ? 'var(--brand)' : 'var(--text)' }}>
+                  <div style={{ fontSize: 18, fontWeight: selected ? 700 : 400, color: selected ? 'var(--brand)' : 'var(--text)' }}>
                     {lang.nativeName}
                   </div>
                   {lang.locale !== 'en' && (
-                    <div style={{ fontSize: 12, color: 'var(--text-faint)', marginTop: 2 }}>
+                    <div style={{ fontSize: 14, color: 'var(--text-faint)', marginTop: 2 }}>
                       {lang.englishName}
                     </div>
                   )}

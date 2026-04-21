@@ -34,23 +34,23 @@ export function RoleplaySelectScreen({ onBack, onStart, onUpgrade }: RoleplaySel
           <ArrowLeftIcon />
         </IconButton>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: '#3B5BDB', marginBottom: 1 }}>
+          <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: '#3B5BDB', marginBottom: 1 }}>
             REAL WORLD PRACTICE
           </div>
-          <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 20, fontWeight: 900, color: '#0F1523', letterSpacing: '-.025em' }}>
+          <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 24, fontWeight: 900, color: '#0F1523', letterSpacing: '-.025em' }}>
             ロールプレイ
           </div>
         </div>
       </div>
 
-      <p style={{ fontSize: 13, color: '#7A849E', lineHeight: 1.7, margin: 0 }}>
+      <p style={{ fontSize: 16, color: '#7A849E', lineHeight: 1.7, margin: 0 }}>
         実際のビジネスシーンで論理思考を試そう。AI があなたの対話相手になります。
       </p>
 
       {!premium && (
         <div style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 12, padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
-          <span style={{ fontSize: 13, color: '#7A849E' }}>今月の残り回数</span>
-          <span style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 15, fontWeight: 700, color: '#3B5BDB' }}>
+          <span style={{ fontSize: 16, color: '#7A849E' }}>今月の残り回数</span>
+          <span style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 700, color: '#3B5BDB' }}>
             {remaining} / {ROLEPLAY_FREE_LIMIT}
           </span>
         </div>
@@ -87,27 +87,27 @@ export function RoleplaySelectScreen({ onBack, onStart, onUpgrade }: RoleplaySel
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: 26,
+                fontSize: 30,
                 flexShrink: 0,
               }}>
                 {s.emoji}
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: '#3B5BDB', marginBottom: 3 }}>
+                <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: '#3B5BDB', marginBottom: 3 }}>
                   {s.frameworkLabel}
                 </div>
-                <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 15, fontWeight: 800, color: '#0F1523', letterSpacing: '-.015em', marginBottom: 3 }}>
+                <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 800, color: '#0F1523', letterSpacing: '-.015em', marginBottom: 3 }}>
                   {s.title}
                 </div>
-                <div style={{ fontSize: 12, color: '#7A849E', marginBottom: 2 }}>
+                <div style={{ fontSize: 14, color: '#7A849E', marginBottom: 2 }}>
                   相手: {s.partnerName}（{s.partnerRole}）
                 </div>
-                <div style={{ fontSize: 12, color: '#4A5568' }}>
+                <div style={{ fontSize: 14, color: '#4A5568' }}>
                   🎯 {s.goal}
                 </div>
               </div>
               {locked ? (
-                <div style={{ background: '#EEF2FF', color: '#3B5BDB', fontSize: 10, fontWeight: 700, letterSpacing: '.08em', padding: '3px 8px', borderRadius: 6 }}>
+                <div style={{ background: '#EEF2FF', color: '#3B5BDB', fontSize: 13, fontWeight: 700, letterSpacing: '.08em', padding: '3px 8px', borderRadius: 6 }}>
                   PREMIUM
                 </div>
               ) : (

@@ -40,7 +40,7 @@ export function ThemeSettingsScreen({ onBack, onUpgrade }: ThemeSettingsScreenPr
       </div>
 
       <div className="eyebrow accent">設定</div>
-      <h1 style={{ fontSize: 26, letterSpacing: '-0.025em' }}>テーマ設定</h1>
+      <h1 style={{ fontSize: 30, letterSpacing: '-0.025em' }}>テーマ設定</h1>
 
       <section style={{ marginTop: 'var(--s-4)' }}>
         <div className="eyebrow" style={{ marginBottom: 'var(--s-3)' }}>外観モード</div>
@@ -70,10 +70,10 @@ export function ThemeSettingsScreen({ onBack, onUpgrade }: ThemeSettingsScreenPr
                   border: '1px solid var(--border)',
                   marginBottom: 'var(--s-2)',
                 }} />
-                <div style={{ fontSize: 12, fontWeight: 600, color: active ? 'var(--brand)' : 'var(--text)' }}>
+                <div style={{ fontSize: 14, fontWeight: 600, color: active ? 'var(--brand)' : 'var(--text)' }}>
                   {m.name}
                 </div>
-                {locked && <div style={{ fontSize: 10, color: 'var(--text-muted)' }}>Premium</div>}
+                {locked && <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>Premium</div>}
               </button>
             )
           })}

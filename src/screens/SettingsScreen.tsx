@@ -28,10 +28,10 @@ function SettingsRow({
       padding: '14px 16px', background: 'none', border: 'none',
       cursor: onPress ? 'pointer' : 'default', textAlign: 'left', gap: 12,
     }}>
-      <span style={{ flex: 1, fontSize: 15, color: destructive ? 'var(--danger)' : 'var(--text)' }}>
+      <span style={{ flex: 1, fontSize: 18, color: destructive ? 'var(--danger)' : 'var(--text)' }}>
         {label}
       </span>
-      {value && <span style={{ fontSize: 14, color: 'var(--text-muted)', flexShrink: 0 }}>{value}</span>}
+      {value && <span style={{ fontSize: 16, color: 'var(--text-muted)', flexShrink: 0 }}>{value}</span>}
       {showChevron && onPress && (
         <ChevronRightIcon width={16} height={16} style={{ color: 'var(--text-faint)', flexShrink: 0 }} />
       )}
@@ -42,7 +42,7 @@ function SettingsRow({
 function SectionHeader({ label }: { label: string }) {
   return (
     <div style={{
-      fontSize: 12, fontWeight: 700, letterSpacing: '0.06em',
+      fontSize: 14, fontWeight: 700, letterSpacing: '0.06em',
       textTransform: 'uppercase', color: 'var(--text-muted)',
       padding: '16px 16px 6px',
     }}>
@@ -166,7 +166,7 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
             display: 'flex', alignItems: 'center',
             padding: '14px 16px', gap: 12,
           }}>
-            <span style={{ flex: 1, fontSize: 15, color: 'var(--text)' }}>
+            <span style={{ flex: 1, fontSize: 18, color: 'var(--text)' }}>
               {t('settings.reminder')}
             </span>
             <Toggle value={reminderEnabled} onChange={handleToggleReminder} />
@@ -177,12 +177,12 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
               <Divider />
               <div style={{ padding: '12px 16px' }}>
                 {!isNative() && (
-                  <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 10 }}>
+                  <div style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 10 }}>
                     {t('settings.notificationsWebOnly')}
                   </div>
                 )}
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span style={{ fontSize: 14, color: 'var(--text-muted)', flexShrink: 0 }}>
+                  <span style={{ fontSize: 16, color: 'var(--text-muted)', flexShrink: 0 }}>
                     毎日
                   </span>
                   <select
@@ -191,7 +191,7 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
                     style={{
                       padding: '8px 10px', borderRadius: 10,
                       border: '1.5px solid var(--border)', background: 'var(--bg-card)',
-                      fontSize: 15, fontWeight: 700, color: 'var(--text)',
+                      fontSize: 18, fontWeight: 700, color: 'var(--text)',
                       cursor: 'pointer', outline: 'none', fontFamily: 'var(--font-mono)',
                     }}
                   >
@@ -199,14 +199,14 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
                       <option key={i} value={i}>{pad(i)}</option>
                     ))}
                   </select>
-                  <span style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)' }}>:</span>
+                  <span style={{ fontSize: 22, fontWeight: 700, color: 'var(--text)' }}>:</span>
                   <select
                     value={reminderMinute}
                     onChange={(e) => handleTimeChange(reminderHour, Number(e.target.value))}
                     style={{
                       padding: '8px 10px', borderRadius: 10,
                       border: '1.5px solid var(--border)', background: 'var(--bg-card)',
-                      fontSize: 15, fontWeight: 700, color: 'var(--text)',
+                      fontSize: 18, fontWeight: 700, color: 'var(--text)',
                       cursor: 'pointer', outline: 'none', fontFamily: 'var(--font-mono)',
                     }}
                   >
@@ -214,7 +214,7 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
                       <option key={m} value={m}>{pad(m)}</option>
                     ))}
                   </select>
-                  <span style={{ fontSize: 13, color: 'var(--text-muted)', marginLeft: 4 }}>
+                  <span style={{ fontSize: 16, color: 'var(--text-muted)', marginLeft: 4 }}>
                     {timeLabel}
                   </span>
                 </div>
@@ -239,9 +239,9 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
             return (
               <>
                 <div style={{ padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <span style={{ flex: 1, fontSize: 15, color: 'var(--text)' }}>現在のプラン</span>
+                  <span style={{ flex: 1, fontSize: 18, color: 'var(--text)' }}>現在のプラン</span>
                   <span style={{
-                    fontSize: 13, fontWeight: 700, padding: '4px 10px',
+                    fontSize: 16, fontWeight: 700, padding: '4px 10px',
                     borderRadius: 20,
                     background: premium ? 'var(--brand-soft)' : 'var(--bg-secondary)',
                     color: premium ? 'var(--brand)' : 'var(--text-muted)',
@@ -301,7 +301,7 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
       </div>
 
       <div style={{ textAlign: 'center', paddingTop: 'var(--s-2)', paddingBottom: 'var(--s-5)' }}>
-        <span style={{ fontSize: 12, color: 'var(--text-faint)' }}>Logic v3 · Beta</span>
+        <span style={{ fontSize: 14, color: 'var(--text-faint)' }}>Logic v3 · Beta</span>
       </div>
     </div>
   )

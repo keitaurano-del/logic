@@ -50,8 +50,8 @@ export function LessonScreen({ lessonId, onBack, onComplete, onReport }: LessonS
   if (!lesson) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: 24, gap: 16 }}>
-        <div style={{ fontSize: 14, color: '#7A849E' }}>レッスンが見つかりません (id: {lessonId})</div>
-        <button onClick={onBack} style={{ background: '#3B5BDB', color: '#fff', border: 'none', borderRadius: 12, padding: '10px 20px', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>戻る</button>
+        <div style={{ fontSize: 16, color: '#7A849E' }}>レッスンが見つかりません (id: {lessonId})</div>
+        <button onClick={onBack} style={{ background: '#3B5BDB', color: '#fff', border: 'none', borderRadius: 12, padding: '10px 20px', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}>戻る</button>
       </div>
     )
   }
@@ -119,12 +119,12 @@ export function LessonScreen({ lessonId, onBack, onComplete, onReport }: LessonS
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3A4259" strokeWidth="2.5" strokeLinecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         </button>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 12, fontWeight: 600, color: accent, letterSpacing: '.04em', textTransform: 'uppercase', marginBottom: 1 }}>{catLabel}</div>
-          <div style={{ fontSize: 13, fontWeight: 700, color: '#0F1523', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{lesson.title}</div>
+          <div style={{ fontSize: 14, fontWeight: 600, color: accent, letterSpacing: '.04em', textTransform: 'uppercase', marginBottom: 1 }}>{catLabel}</div>
+          <div style={{ fontSize: 16, fontWeight: 700, color: '#0F1523', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{lesson.title}</div>
         </div>
         <div style={{
           flexShrink: 0, background: '#EEF2FF', borderRadius: 20,
-          padding: '4px 10px', fontSize: 11, fontWeight: 700, color: '#3B5BDB',
+          padding: '4px 10px', fontSize: 14, fontWeight: 700, color: '#3B5BDB',
         }}>
           {stepIdx + 1} / {total}
         </div>
@@ -186,8 +186,8 @@ function ExplainStep({ step, catLabel, accent, isLast, onNext }: {
         boxShadow: '0 1px 3px rgba(15,21,35,.06)',
         borderLeft: `4px solid ${accent}`,
       }}>
-        <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: accent, marginBottom: 6 }}>{catLabel}</div>
-        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 20, fontWeight: 800, color: '#0F1523', lineHeight: 1.4, letterSpacing: '-.025em' }}>{step.title}</div>
+        <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: accent, marginBottom: 6 }}>{catLabel}</div>
+        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 24, fontWeight: 800, color: '#0F1523', lineHeight: 1.4, letterSpacing: '-.025em' }}>{step.title}</div>
       </div>
 
       {/* 説明コンテンツ */}
@@ -204,7 +204,7 @@ function ExplainStep({ step, catLabel, accent, isLast, onNext }: {
             <div
               key={i}
               style={{
-                fontSize: 14,
+                fontSize: 16,
                 lineHeight: 1.75,
                 color: isBullet ? (isArrow ? '#3B5BDB' : '#3A4259') : '#3A4259',
                 fontWeight: isBullet ? 500 : 400,
@@ -224,7 +224,7 @@ function ExplainStep({ step, catLabel, accent, isLast, onNext }: {
         style={{
           width: '100%', background: accent, color: '#fff',
           border: 'none', borderRadius: 14, padding: '16px 20px',
-          fontSize: 15, fontWeight: 700, cursor: 'pointer',
+          fontSize: 18, fontWeight: 700, cursor: 'pointer',
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
           boxShadow: `0 4px 12px ${accent}40`,
         }}
@@ -261,8 +261,8 @@ function QuizStep({ step, catLabel, accent, selected, submitted, isLast, onSelec
         boxShadow: '0 1px 3px rgba(15,21,35,.06)',
         borderLeft: `4px solid ${accent}`,
       }}>
-        <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: accent, marginBottom: 6 }}>{catLabel}</div>
-        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 17, fontWeight: 800, color: '#0F1523', lineHeight: 1.5, letterSpacing: '-.02em' }}>{step.question}</div>
+        <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: accent, marginBottom: 6 }}>{catLabel}</div>
+        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 20, fontWeight: 800, color: '#0F1523', lineHeight: 1.5, letterSpacing: '-.02em' }}>{step.question}</div>
       </div>
 
       {/* 選択肢 */}
@@ -312,7 +312,7 @@ function QuizStep({ step, catLabel, accent, selected, submitted, isLast, onSelec
                 width: 30, height: 30, borderRadius: '50%',
                 background: badgeBg, border: `1.5px solid ${badgeBorder}`,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 11, fontWeight: 700, color: badgeColor, flexShrink: 0,
+                fontSize: 14, fontWeight: 700, color: badgeColor, flexShrink: 0,
               }}>
                 {submitted && correct
                   ? <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
@@ -321,7 +321,7 @@ function QuizStep({ step, catLabel, accent, selected, submitted, isLast, onSelec
                   : badgeLabel
                 }
               </div>
-              <span style={{ fontSize: 14, fontWeight: 500, color: textColor, flex: 1, lineHeight: 1.45 }}>{opt.label}</span>
+              <span style={{ fontSize: 16, fontWeight: 500, color: textColor, flex: 1, lineHeight: 1.45 }}>{opt.label}</span>
             </button>
           )
         })}
@@ -347,11 +347,11 @@ function QuizStep({ step, catLabel, accent, selected, submitted, isLast, onSelec
                 : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
               }
             </div>
-            <div style={{ fontSize: 14, fontWeight: 800, color: '#0F1523' }}>
+            <div style={{ fontSize: 16, fontWeight: 800, color: '#0F1523' }}>
               {isCorrect ? t('lesson.correctMark') : t('lesson.wrongMark')}
             </div>
           </div>
-          <div style={{ fontSize: 13, color: '#3A4259', lineHeight: 1.7 }}>{step.explanation}</div>
+          <div style={{ fontSize: 16, color: '#3A4259', lineHeight: 1.7 }}>{step.explanation}</div>
         </div>
       )}
 
@@ -365,7 +365,7 @@ function QuizStep({ step, catLabel, accent, selected, submitted, isLast, onSelec
               width: '100%',
               background: selected == null ? '#D1D9F0' : accent,
               color: '#fff', border: 'none', borderRadius: 14,
-              padding: '16px 20px', fontSize: 15, fontWeight: 700,
+              padding: '16px 20px', fontSize: 18, fontWeight: 700,
               cursor: selected == null ? 'default' : 'pointer',
               boxShadow: selected == null ? 'none' : `0 4px 12px ${accent}40`,
               transition: 'background 0.2s, box-shadow 0.2s',
@@ -379,7 +379,7 @@ function QuizStep({ step, catLabel, accent, selected, submitted, isLast, onSelec
             style={{
               width: '100%', background: accent, color: '#fff',
               border: 'none', borderRadius: 14, padding: '16px 20px',
-              fontSize: 15, fontWeight: 700, cursor: 'pointer',
+              fontSize: 18, fontWeight: 700, cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
               boxShadow: `0 4px 12px ${accent}40`,
             }}
@@ -395,7 +395,7 @@ function QuizStep({ step, catLabel, accent, selected, submitted, isLast, onSelec
             onClick={onReport}
             style={{
               background: 'none', border: 'none', cursor: 'pointer',
-              fontSize: 11, color: '#B0B8CC', textDecoration: 'none',
+              fontSize: 14, color: '#B0B8CC', textDecoration: 'none',
               padding: '4px 0', display: 'block', width: '100%', textAlign: 'center',
             }}
           >
@@ -480,12 +480,12 @@ function CelebrationScreen({ lessonTitle, streakBefore, onComplete }: {
           {newStreak}
         </div>
 
-        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,.45)', marginTop: 4, animation: 'slide-up-fade 0.4s 0.4s ease-out both' }}>連続学習</div>
+        <div style={{ fontSize: 14, fontWeight: 700, letterSpacing: '.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,.45)', marginTop: 4, animation: 'slide-up-fade 0.4s 0.4s ease-out both' }}>連続学習</div>
 
-        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 26, fontWeight: 900, color: '#fff', letterSpacing: '-0.03em', marginTop: 12, animation: 'slide-up-fade 0.4s 0.5s ease-out both' }}>
+        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 30, fontWeight: 900, color: '#fff', letterSpacing: '-0.03em', marginTop: 12, animation: 'slide-up-fade 0.4s 0.5s ease-out both' }}>
           {newStreak}日連続！
         </div>
-        <div style={{ fontSize: 14, color: 'rgba(255,255,255,.5)', marginTop: 6, marginBottom: 40, animation: 'slide-up-fade 0.4s 0.6s ease-out both' }}>
+        <div style={{ fontSize: 16, color: 'rgba(255,255,255,.5)', marginTop: 6, marginBottom: 40, animation: 'slide-up-fade 0.4s 0.6s ease-out both' }}>
           学習の習慣が身についています。
         </div>
 
@@ -498,7 +498,7 @@ function CelebrationScreen({ lessonTitle, streakBefore, onComplete }: {
             width: '100%', maxWidth: 300,
             background: 'linear-gradient(135deg, #F97316, #EF4444)',
             color: '#fff', border: 'none', borderRadius: 16,
-            padding: '18px 24px', fontSize: 16, fontWeight: 800,
+            padding: '18px 24px', fontSize: 18, fontWeight: 800,
             cursor: 'pointer', letterSpacing: '-.01em',
             boxShadow: '0 6px 20px rgba(249,115,22,.35)',
             animation: 'slide-up-fade 0.4s 0.8s ease-out both',
@@ -526,7 +526,7 @@ function CelebrationScreen({ lessonTitle, streakBefore, onComplete }: {
 
         {/* レッスン名バッジ */}
         <div style={{
-          fontSize: 11, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase',
+          fontSize: 14, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase',
           color: 'rgba(255,255,255,.55)', marginBottom: 20,
           animation: 'fade-in-up 0.3s ease-out both',
         }}>
@@ -539,8 +539,8 @@ function CelebrationScreen({ lessonTitle, streakBefore, onComplete }: {
         </div>
 
         {/* ランク名 */}
-        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.45)', marginTop: 16, animation: 'fade-in-up 0.35s 0.1s ease-out both' }}>LV.{level}</div>
-        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 28, fontWeight: 900, color: '#fff', letterSpacing: '-0.03em', marginTop: 2, animation: 'celebrate-pop 0.5s 0.12s cubic-bezier(0.34,1.56,0.64,1) both' }}>
+        <div style={{ fontSize: 14, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.45)', marginTop: 16, animation: 'fade-in-up 0.35s 0.1s ease-out both' }}>LV.{level}</div>
+        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 32, fontWeight: 900, color: '#fff', letterSpacing: '-0.03em', marginTop: 2, animation: 'celebrate-pop 0.5s 0.12s cubic-bezier(0.34,1.56,0.64,1) both' }}>
           {levelTitle}
         </div>
 
@@ -549,7 +549,7 @@ function CelebrationScreen({ lessonTitle, streakBefore, onComplete }: {
           display: 'inline-flex', alignItems: 'center', gap: 6,
           background: 'rgba(234,179,8,.15)', border: '1px solid rgba(234,179,8,.35)',
           color: '#FCD34D', borderRadius: 99,
-          padding: '10px 24px', fontSize: 22, fontWeight: 800, letterSpacing: '-0.01em',
+          padding: '10px 24px', fontSize: 26, fontWeight: 800, letterSpacing: '-0.01em',
           marginTop: 16, marginBottom: 36,
           animation: 'xp-badge-in 0.55s 0.25s cubic-bezier(0.34,1.56,0.64,1) both',
         }}>
@@ -558,7 +558,7 @@ function CelebrationScreen({ lessonTitle, streakBefore, onComplete }: {
 
         {/* ボタン or 自動遷移メッセージ */}
         {streakIncreased ? (
-          <div style={{ fontSize: 13, color: 'rgba(255,255,255,.4)', animation: 'fade-in-up 0.3s 0.5s ease-out both' }}>
+          <div style={{ fontSize: 16, color: 'rgba(255,255,255,.4)', animation: 'fade-in-up 0.3s 0.5s ease-out both' }}>
             🔥 連続学習を確認中...
           </div>
         ) : (
@@ -568,7 +568,7 @@ function CelebrationScreen({ lessonTitle, streakBefore, onComplete }: {
               width: '100%', maxWidth: 280,
               background: 'rgba(255,255,255,.15)', backdropFilter: 'blur(8px)',
               color: '#fff', border: '1.5px solid rgba(255,255,255,.25)', borderRadius: 16,
-              padding: '16px 24px', fontSize: 15, fontWeight: 700,
+              padding: '16px 24px', fontSize: 18, fontWeight: 700,
               cursor: 'pointer',
               animation: 'fade-in-up 0.3s 0.5s ease-out both',
             }}
@@ -614,7 +614,7 @@ function WeekBar({ style }: { style?: React.CSSProperties }) {
             }}>
               {done && <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>}
             </div>
-            <div style={{ fontSize: 10, fontWeight: 600, color: isToday ? '#F97316' : 'rgba(255,255,255,.4)' }}>{day}</div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: isToday ? '#F97316' : 'rgba(255,255,255,.4)' }}>{day}</div>
           </div>
         )
       })}

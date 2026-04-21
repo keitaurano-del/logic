@@ -55,8 +55,8 @@ export function FeedbackScreen({ onBack }: FeedbackScreenProps) {
           }}>
             <CheckIcon width={32} height={32} color="white" />
           </div>
-          <h2 style={{ fontSize: 22, fontWeight: 800, marginBottom: 8 }}>ありがとうございます！</h2>
-          <p style={{ fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.6 }}>
+          <h2 style={{ fontSize: 26, fontWeight: 800, marginBottom: 8 }}>ありがとうございます！</h2>
+          <p style={{ fontSize: 16, color: 'var(--text-muted)', lineHeight: 1.6 }}>
             フィードバックを受け取りました。<br />アプリ改善に活かします。
           </p>
         </div>
@@ -76,15 +76,15 @@ export function FeedbackScreen({ onBack }: FeedbackScreenProps) {
 
       <div>
         <div className="eyebrow accent">ベータ版</div>
-        <h1 style={{ fontSize: 22, fontWeight: 800, marginTop: 4 }}>ご意見・ご要望</h1>
-        <p style={{ fontSize: 14, color: 'var(--text-muted)', marginTop: 6 }}>
+        <h1 style={{ fontSize: 26, fontWeight: 800, marginTop: 4 }}>ご意見・ご要望</h1>
+        <p style={{ fontSize: 16, color: 'var(--text-muted)', marginTop: 6 }}>
           アプリをより良くするためのフィードバックをお聞かせください
         </p>
       </div>
 
       {/* カテゴリ */}
       <div>
-        <label style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: 8 }}>
+        <label style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: 8 }}>
           カテゴリ
         </label>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
@@ -98,7 +98,7 @@ export function FeedbackScreen({ onBack }: FeedbackScreenProps) {
                 border: `1.5px solid ${category === c ? 'var(--primary)' : 'var(--border)'}`,
                 background: category === c ? 'var(--brand-soft)' : 'var(--bg-card)',
                 color: category === c ? 'var(--primary)' : 'var(--text-secondary)',
-                fontSize: 13, fontWeight: 700, cursor: 'pointer',
+                fontSize: 16, fontWeight: 700, cursor: 'pointer',
               }}
             >
               {c}
@@ -109,7 +109,7 @@ export function FeedbackScreen({ onBack }: FeedbackScreenProps) {
 
       {/* メッセージ */}
       <div>
-        <label style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: 8 }}>
+        <label style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: 8 }}>
           内容
         </label>
         <textarea
@@ -119,20 +119,20 @@ export function FeedbackScreen({ onBack }: FeedbackScreenProps) {
           rows={5}
           style={{
             width: '100%', padding: '14px 16px',
-            fontSize: 14, fontFamily: 'inherit',
+            fontSize: 16, fontFamily: 'inherit',
             border: '1.5px solid var(--border)',
             borderRadius: 14, background: 'var(--bg-card)',
             color: 'var(--text)', outline: 'none', resize: 'vertical',
             boxSizing: 'border-box', lineHeight: 1.6,
           }}
         />
-        <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>
+        <div style={{ fontSize: 14, color: 'var(--text-muted)', marginTop: 4 }}>
           {message.length} 文字
         </div>
       </div>
 
       {error && (
-        <div style={{ fontSize: 13, color: 'var(--danger)', padding: '10px 14px', background: 'rgba(220,38,38,0.06)', borderRadius: 10 }}>
+        <div style={{ fontSize: 16, color: 'var(--danger)', padding: '10px 14px', background: 'rgba(220,38,38,0.06)', borderRadius: 10 }}>
           {error}
         </div>
       )}

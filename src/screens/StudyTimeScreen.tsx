@@ -76,7 +76,7 @@ export function StudyTimeScreen({ onBack }: StudyTimeScreenProps) {
         <div style={{ fontSize: 56, fontWeight: 800, lineHeight: 1, letterSpacing: '-0.04em', color: 'var(--brand)' }}>
           {fmt(totalMs)}
         </div>
-        <div style={{ fontSize: 14, color: 'var(--text-muted)', marginTop: 'var(--s-2)', fontWeight: 600 }}>
+        <div style={{ fontSize: 16, color: 'var(--text-muted)', marginTop: 'var(--s-2)', fontWeight: 600 }}>
           {t('studytime.totalLabel')}
         </div>
       </div>
@@ -84,22 +84,22 @@ export function StudyTimeScreen({ onBack }: StudyTimeScreenProps) {
       {/* Stats row */}
       <div style={{ display: 'flex', gap: 'var(--s-3)' }}>
         <div className="card" style={{ flex: 1, textAlign: 'center', padding: 'var(--s-4)' }}>
-          <div style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)' }}>{totalDays}</div>
-          <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>{t('studytime.studyDays')}</div>
+          <div style={{ fontSize: 28, fontWeight: 700, color: 'var(--text)' }}>{totalDays}</div>
+          <div style={{ fontSize: 14, color: 'var(--text-muted)', marginTop: 4 }}>{t('studytime.studyDays')}</div>
         </div>
         <div className="card" style={{ flex: 1, textAlign: 'center', padding: 'var(--s-4)' }}>
-          <div style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)' }}>{fmt(avgMs)}</div>
-          <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>{t('studytime.avgPerDay')}</div>
+          <div style={{ fontSize: 28, fontWeight: 700, color: 'var(--text)' }}>{fmt(avgMs)}</div>
+          <div style={{ fontSize: 14, color: 'var(--text-muted)', marginTop: 4 }}>{t('studytime.avgPerDay')}</div>
         </div>
         <div className="card" style={{ flex: 1, textAlign: 'center', padding: 'var(--s-4)' }}>
-          <div style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)' }}>{activeDaysLast30}</div>
-          <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>{t('studytime.last30Days')}</div>
+          <div style={{ fontSize: 28, fontWeight: 700, color: 'var(--text)' }}>{activeDaysLast30}</div>
+          <div style={{ fontSize: 14, color: 'var(--text-muted)', marginTop: 4 }}>{t('studytime.last30Days')}</div>
         </div>
       </div>
 
       {/* 30-day activity bar chart */}
       <div className="card" style={{ padding: 'var(--s-4)' }}>
-        <h2 style={{ fontSize: 14, fontWeight: 600, marginBottom: 'var(--s-4)', color: 'var(--text-muted)' }}>
+        <h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 'var(--s-4)', color: 'var(--text-muted)' }}>
           {t('studytime.last30Chart')}
         </h2>
         <div style={{ display: 'flex', gap: 3, alignItems: 'flex-end', height: 40 }}>
@@ -118,14 +118,14 @@ export function StudyTimeScreen({ onBack }: StudyTimeScreenProps) {
           ))}
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 'var(--s-2)' }}>
-          <span style={{ fontSize: 11, color: 'var(--text-faint)' }}>{t('label.daysAgo', { n: 30 })}</span>
-          <span style={{ fontSize: 11, color: 'var(--text-faint)' }}>{t('label.today')}</span>
+          <span style={{ fontSize: 14, color: 'var(--text-faint)' }}>{t('label.daysAgo', { n: 30 })}</span>
+          <span style={{ fontSize: 14, color: 'var(--text-faint)' }}>{t('label.today')}</span>
         </div>
       </div>
 
       {/* Recent 7 days */}
       <div className="card" style={{ padding: 'var(--s-4)' }}>
-        <h2 style={{ fontSize: 14, fontWeight: 600, marginBottom: 'var(--s-4)', color: 'var(--text-muted)' }}>
+        <h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 'var(--s-4)', color: 'var(--text-muted)' }}>
           {t('studytime.recentDays')}
         </h2>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
@@ -143,10 +143,10 @@ export function StudyTimeScreen({ onBack }: StudyTimeScreenProps) {
                     width: 10, height: 10, borderRadius: '50%', flexShrink: 0,
                     background: active ? 'var(--brand)' : 'var(--border)',
                   }} />
-                  <span style={{ flex: 1, fontSize: 14, color: isToday ? 'var(--text)' : 'var(--text-muted)', fontWeight: isToday ? 600 : 400 }}>
+                  <span style={{ flex: 1, fontSize: 16, color: isToday ? 'var(--text)' : 'var(--text-muted)', fontWeight: isToday ? 600 : 400 }}>
                     {label}{isToday ? (isJa ? ' (今日)' : ' (Today)') : ''}
                   </span>
-                  <span style={{ fontSize: 13, fontWeight: 600, color: active ? 'var(--brand)' : 'var(--text-faint)' }}>
+                  <span style={{ fontSize: 16, fontWeight: 600, color: active ? 'var(--brand)' : 'var(--text-faint)' }}>
                     {active ? (isJa ? '学習済み' : 'Studied') : '—'}
                   </span>
                 </div>
