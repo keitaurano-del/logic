@@ -81,7 +81,7 @@ function useFermiState(): FermiState {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    document.title = 'Fermi — Logic'
+    document.title = 'フェルミ推定 — Logic'
   }, [])
 
   const handleSubmit = async () => {

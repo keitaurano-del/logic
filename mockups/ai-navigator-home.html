@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Logic — AIナビゲーター モックアップ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;800;900&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    background: #F0F4FF;
+    color: #1a1a2e;
+    max-width: 390px;
+    margin: 0 auto;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* ── Navbar ── */
+  .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 52px 20px 12px;
+    background: rgba(240,244,255,.95);
+    border-bottom: 1px solid #E2E8FF;
+  }
+  .nav-brand {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 26px;
+    font-weight: 900;
+    color: #3B5BDB;
+    letter-spacing: -.04em;
+  }
+  .streak-badge {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: #EEF2FF;
+    border: 1px solid #DBE4FF;
+    border-radius: 99px;
+    padding: 5px 12px;
+  }
+  .streak-num { font-size: 16px; font-weight: 800; color: #3B5BDB; }
+  .streak-label { font-size: 14px; font-weight: 600; color: #748FFC; }
+
+  /* ── Content ── */
+  .content {
+    padding: 16px 16px 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  /* ── AI Navigator Card ── */
+  .navigator-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
+    border: 1.5px solid #E2E8FF;
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    box-shadow: 0 2px 12px rgba(59,91,219,.06);
+    position: relative;
+  }
+  .navigator-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #748FFC, #3B5BDB);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(59,91,219,.2);
+  }
+  .navigator-body {
+    flex: 1;
+    min-width: 0;
+  }
+  .navigator-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: #748FFC;
+    letter-spacing: .04em;
+    margin-bottom: 4px;
+  }
+  .navigator-message {
+    font-size: 16px;
+    font-weight: 500;
+    color: #1a1a2e;
+    line-height: 1.55;
+    margin-bottom: 12px;
+  }
+  .navigator-message strong {
+    color: #3B5BDB;
+    font-weight: 700;
+  }
+  .navigator-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #3B5BDB;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 18px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .navigator-action::after {
+    content: '→';
+    font-size: 16px;
+  }
+  .navigator-swap {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    font-size: 11px;
+    color: #B8BFD0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+
+  /* ── Daily Challenge ── */
+  .daily-card {
+    background: linear-gradient(135deg, #1e2a4a 0%, #3B5BDB 100%);
+    border-radius: 20px;
+    padding: 20px;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+  .daily-card::after {
+    content: '';
+    position: absolute;
+    right: -30px;
+    top: -30px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.06);
+  }
+  .daily-label {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.55);
+    margin-bottom: 6px;
+  }
+  .daily-title {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: -.02em;
+    margin-bottom: 4px;
+  }
+  .daily-meta {
+    font-size: 14px;
+    color: rgba(255,255,255,.5);
+    margin-bottom: 16px;
+  }
+  .daily-btn {
+    width: 100%;
+    background: #fff;
+    border-radius: 14px;
+    padding: 13px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #3B5BDB;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  /* ── Stats Row ── */
+  .stats-row {
+    display: flex;
+    gap: 10px;
+  }
+  .stat-card {
+    flex: 1;
+    background: #fff;
+    border: 1px solid #E2E8FF;
+    border-radius: 14px;
+    padding: 14px 12px;
+    text-align: center;
+  }
+  .stat-value {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 26px;
+    font-weight: 900;
+    color: #3B5BDB;
+  }
+  .stat-label { font-size: 13px; color: #7A849E; font-weight: 600; margin-top: 2px; }
+  .stat-sub { font-size: 12px; color: #93c5fd; font-weight: 600; }
+
+  /* ── Category Section ── */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 4px;
+  }
+  .section-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: #1a1a2e;
+  }
+  .section-link {
+    font-size: 14px;
+    font-weight: 700;
+    color: #3B5BDB;
+    cursor: pointer;
+  }
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .category-card {
+    background: #fff;
+    border: 1px solid #E2E8FF;
+    border-radius: 16px;
+    padding: 16px;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(15,21,35,.04);
+  }
+  .category-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: #EEF2FF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  .category-name { font-size: 16px; font-weight: 700; color: #1a1a2e; }
+  .category-progress { font-size: 13px; color: #7A849E; margin-top: 2px; }
+  .progress-bar {
+    height: 4px;
+    background: #E2E8FF;
+    border-radius: 99px;
+    margin-top: 8px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: #3B5BDB;
+    border-radius: 99px;
+  }
+
+  /* ── Tab Bar ── */
+  .tabbar {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 390px;
+    height: 82px;
+    background: rgba(240,244,255,.97);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid #E2E8FF;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 8px 16px;
+  }
+  .tab-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    min-width: 60px;
+    padding: 8px 14px;
+    cursor: pointer;
+  }
+  .tab-icon { font-size: 20px; }
+  .tab-label { font-size: 12px; font-weight: 600; color: #7A849E; }
+  .tab-item.active .tab-label { color: #3B5BDB; }
+  .tab-dot { width: 4px; height: 4px; border-radius: 50%; background: #3B5BDB; margin-top: -2px; }
+
+  /* ── Navigator variants ── */
+  .variant-section {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 2px dashed #DBE4FF;
+  }
+  .variant-label {
+    font-size: 14px;
+    font-weight: 800;
+    color: #748FFC;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  /* ── Mockup Label ── */
+  .mockup-banner {
+    background: #FF6B6B;
+    color: #fff;
+    text-align: center;
+    padding: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .1em;
+  }
+</style>
+</head>
+<body>
+
+<div class="mockup-banner">📐 MOCKUP — AIナビゲーター ホーム画面</div>
+
+<!-- Navbar -->
+<div class="navbar">
+  <span class="nav-brand">Logic</span>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div class="streak-badge">
+      <span>🔥</span>
+      <span class="streak-num">5</span>
+      <span class="streak-label">日連続</span>
+    </div>
+    <div style="width:32px;height:32px;border-radius:99px;background:linear-gradient(135deg,#3B5BDB,#748FFC);"></div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- ========== VARIANT A: 初回ユーザー ========== -->
+  <div class="variant-label">💡 パターンA: 初回ユーザー</div>
+
+  <div class="navigator-card">
+    <div class="navigator-avatar">👩‍🏫</div>
+    <div class="navigator-body">
+      <div class="navigator-name">リナ — あなたの学習ナビ</div>
+      <div class="navigator-message">
+        はじめまして！🎉<br>
+        まずは <strong>あなたの思考力レベル</strong> を測ってみましょう。<br>
+        5分で終わるテストだよ。
+      </div>
+      <button class="navigator-action">レベルチェックを受ける</button>
+    </div>
+    <div class="navigator-swap">🔄 変更</div>
+  </div>
+
+  <!-- ========== VARIANT B: 学習中ユーザー ========== -->
+  <div class="variant-section">
+    <div class="variant-label">📚 パターンB: 学習中ユーザー（3日目）</div>
+  </div>
+
+  <div class="navigator-card">
+    <div class="navigator-avatar">👩‍🏫</div>
+    <div class="navigator-body">
+      <div class="navigator-name">リナ — あなたの学習ナビ</div>
+      <div class="navigator-message">
+        3日連続すごい！🔥<br>
+        昨日のフェルミ推定、いい筋だったね。<br>
+        今日は <strong>MECE</strong> で論理の基礎を固めよう。
+      </div>
+      <button class="navigator-action">MECEを学ぶ</button>
+    </div>
+    <div class="navigator-swap">🔄 変更</div>
+  </div>
+
+  <!-- ========== VARIANT C: 復帰ユーザー ========== -->
+  <div class="variant-section">
+    <div class="variant-label">👋 パターンC: 5日ぶりの復帰</div>
+  </div>
+
+  <div class="navigator-card">
+    <div class="navigator-avatar">👩‍🏫</div>
+    <div class="navigator-body">
+      <div class="navigator-name">リナ — あなたの学習ナビ</div>
+      <div class="navigator-message">
+        おかえり！待ってたよ 😊<br>
+        前回の <strong>ロジックツリー</strong> の途中だったね。<br>
+        続きからすぐ始められるよ。
+      </div>
+      <button class="navigator-action">続きから再開する</button>
+    </div>
+    <div class="navigator-swap">🔄 変更</div>
+  </div>
+
+  <!-- ========== VARIANT D: 苦手克服 ========== -->
+  <div class="variant-section">
+    <div class="variant-label">🎯 パターンD: 苦手分野の提案</div>
+  </div>
+
+  <div class="navigator-card">
+    <div class="navigator-avatar">👩‍🏫</div>
+    <div class="navigator-body">
+      <div class="navigator-name">リナ — あなたの学習ナビ</div>
+      <div class="navigator-message">
+        ケース面接のスコアがちょっと低めだね 📊<br>
+        今日は <strong>仮説思考</strong> をやってみない？<br>
+        ケース面接の土台になる力がつくよ。
+      </div>
+      <button class="navigator-action">仮説思考を始める</button>
+    </div>
+    <div class="navigator-swap">🔄 変更</div>
+  </div>
+
+  <!-- ========== Daily Challenge ========== -->
+  <div class="variant-section">
+    <div class="variant-label">📱 共通パーツ: デイリー + カテゴリ</div>
+  </div>
+
+  <div class="daily-card">
+    <div class="daily-label">今日のチャレンジ · フェルミ推定 · 5分</div>
+    <div class="daily-title">日本にある電柱の本数はどれくらい？</div>
+    <div class="daily-meta">💡 リナのヒント: まず日本の面積から考えてみて</div>
+    <button class="daily-btn">⚡ スタート</button>
+  </div>
+
+  <!-- Stats Row -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-value">500</div>
+      <div class="stat-label">ポイント</div>
+      <div class="stat-sub">+100 今日</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">5</div>
+      <div class="stat-label">レッスン完了</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">52</div>
+      <div class="stat-label">偏差値</div>
+    </div>
+  </div>
+
+  <!-- Categories -->
+  <div class="section-header">
+    <div class="section-title">カテゴリ</div>
+    <div class="section-link">全て見る →</div>
+  </div>
+  <div class="category-grid">
+    <div class="category-card">
+      <div class="category-icon">⚡</div>
+      <div class="category-name">論理パズル</div>
+      <div class="category-progress">2 / 4 · 50%</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:50%"></div></div>
+    </div>
+    <div class="category-card">
+      <div class="category-icon">📊</div>
+      <div class="category-name">フェルミ推定</div>
+      <div class="category-progress">1 / 4 · 25%</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:25%"></div></div>
+    </div>
+    <div class="category-card">
+      <div class="category-icon">🏢</div>
+      <div class="category-name">ケース面接</div>
+      <div class="category-progress">0 / 4 · 0%</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+    </div>
+    <div class="category-card" style="border-color:#3B5BDB;background:#f8f9ff;">
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:6px;">
+        <span style="font-size:10px;font-weight:700;color:#3B5BDB;background:#EEF2FF;border:1px solid #DBE4FF;border-radius:4px;padding:1px 6px;">推奨</span>
+      </div>
+      <div class="category-icon">🧠</div>
+      <div class="category-name">思考法</div>
+      <div class="category-progress">2 / 22 · 9%</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:9%"></div></div>
+    </div>
+  </div>
+
+  <!-- ========== Navigator Selection ========== -->
+  <div class="variant-section">
+    <div class="variant-label">🔄 ナビゲーター選択画面</div>
+  </div>
+
+  <div style="background:#fff;border:1.5px solid #E2E8FF;border-radius:20px;padding:20px;">
+    <div style="font-size:20px;font-weight:800;margin-bottom:4px;">ナビゲーターを選ぼう</div>
+    <div style="font-size:14px;color:#7A849E;margin-bottom:16px;">あなたの学習をサポートするキャラクターを選んでね</div>
+
+    <!-- Option 1: Active -->
+    <div style="display:flex;align-items:center;gap:12px;padding:14px;background:#EEF2FF;border:2px solid #3B5BDB;border-radius:14px;margin-bottom:10px;cursor:pointer;">
+      <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#748FFC,#3B5BDB);display:flex;align-items:center;justify-content:center;font-size:22px;">👩‍🏫</div>
+      <div style="flex:1;">
+        <div style="font-size:16px;font-weight:700;">リナ</div>
+        <div style="font-size:13px;color:#7A849E;">明るくて頼れるお姉さん。やさしく導いてくれる。</div>
+      </div>
+      <div style="width:20px;height:20px;border-radius:50%;background:#3B5BDB;display:flex;align-items:center;justify-content:center;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="#fff"><polyline points="20 6 9 17 4 12" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/></svg>
+      </div>
+    </div>
+
+    <!-- Option 2 -->
+    <div style="display:flex;align-items:center;gap:12px;padding:14px;background:#fff;border:1.5px solid #E2E8FF;border-radius:14px;margin-bottom:10px;cursor:pointer;">
+      <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#ffd43b,#f59f00);display:flex;align-items:center;justify-content:center;font-size:22px;">🧔</div>
+      <div style="flex:1;">
+        <div style="font-size:16px;font-weight:700;">ソクラテス</div>
+        <div style="font-size:13px;color:#7A849E;">哲学者。問いかけで思考を深めてくれる。</div>
+      </div>
+      <div style="width:20px;height:20px;border-radius:50%;border:2px solid #E2E8FF;"></div>
+    </div>
+
+    <!-- Option 3 -->
+    <div style="display:flex;align-items:center;gap:12px;padding:14px;background:#fff;border:1.5px solid #E2E8FF;border-radius:14px;margin-bottom:10px;cursor:pointer;">
+      <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#69db7c,#2b8a3e);display:flex;align-items:center;justify-content:center;font-size:22px;">👨‍💼</div>
+      <div style="flex:1;">
+        <div style="font-size:16px;font-weight:700;">ケンジ</div>
+        <div style="font-size:13px;color:#7A849E;">元コンサルタント。実戦的にコーチしてくれる。</div>
+      </div>
+      <div style="width:20px;height:20px;border-radius:50%;border:2px solid #E2E8FF;"></div>
+    </div>
+
+    <!-- Option 4: Locked -->
+    <div style="display:flex;align-items:center;gap:12px;padding:14px;background:#fafafa;border:1.5px solid #E8E8E8;border-radius:14px;opacity:.6;cursor:not-allowed;">
+      <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#dee2e6,#adb5bd);display:flex;align-items:center;justify-content:center;font-size:22px;">🔒</div>
+      <div style="flex:1;">
+        <div style="font-size:16px;font-weight:700;">もっと追加予定...</div>
+        <div style="font-size:13px;color:#7A849E;">Premium で新しいナビゲーターが使えるように</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Tab Bar -->
+<div class="tabbar">
+  <div class="tab-item active">
+    <span class="tab-icon">🏠</span>
+    <span class="tab-label" style="color:#3B5BDB;">ホーム</span>
+    <div class="tab-dot"></div>
+  </div>
+  <div class="tab-item">
+    <span class="tab-icon">📖</span>
+    <span class="tab-label">レッスン</span>
+  </div>
+  <div class="tab-item">
+    <span class="tab-icon">📊</span>
+    <span class="tab-label">統計</span>
+  </div>
+  <div class="tab-item">
+    <span class="tab-icon">👤</span>
+    <span class="tab-label">プロフィール</span>
+  </div>
+</div>
+
+</body>
+</html>
