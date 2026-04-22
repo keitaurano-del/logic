@@ -181,11 +181,31 @@ interface RoadmapScreenProps {
   onOpenLesson: (lessonId: number) => void
 }
 
+/** レッスンIDからレベルを取得 */
+function getLessonLevel(lessonId: number): Difficulty {
+  for (const path of PATHS) {
+    if (path.lessons.some(l => l.id === lessonId)) {
+      return DIFFICULTY_MAP[path.id] ?? 'beginner'
+    }
+  }
+  return 'beginner'
+}
+
+const LEVEL_BADGE: Record<Difficulty, { label: string; color: string; bg: string }> = {
+  all: { label: '', color: '', bg: '' },
+  beginner: { label: '初級', color: '#059669', bg: '#ECFDF5' },
+  intermediate: { label: '中級', color: '#D97706', bg: '#FFFBEB' },
+  advanced: { label: '上級', color: '#DC2626', bg: '#FEF2F2' },
+}
+
 export function RoadmapScreen({ onOpenLesson }: RoadmapScreenProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [difficulty, setDifficulty] = useState<Difficulty>('all')
   const [progress, setProgress] = useState<ProgressFilter>('all')
   const [duration, setDuration] = useState<DurationFilter>('all')
+  const [showFilters, setShowFilters] = useState(false)
+
+  const isFilterActive = difficulty !== 'all' || progress !== 'all' || duration !== 'all' || searchQuery.trim() !== ''
 
   const completedSet = useMemo(() => {
     const raw = getCompletedLessons()
@@ -277,75 +297,119 @@ export function RoadmapScreen({ onOpenLesson }: RoadmapScreenProps) {
 
       {/* 検索・フィルター */}
       <div style={{ padding: '12px 16px 0', display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <input
-          type="text"
-          placeholder="レッスンを検索..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          style={{
-            width: '100%', padding: '10px 14px', fontSize: 15,
-            border: '1.5px solid #E2E8FF', borderRadius: 12,
-            background: '#fff', color: '#0F1523', outline: 'none',
-            fontFamily: 'inherit',
-          }}
-        />
-        {/* レベル */}
-        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-          <span style={{ fontSize: 13, fontWeight: 700, color: '#7A849E', lineHeight: '30px', marginRight: 2 }}>レベル</span>
-          {DIFFICULTY_LABELS.map((d) => (
+        <div style={{ position: 'relative' }}>
+          <input
+            type="text"
+            placeholder="🔍 レッスンを検索..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onFocus={() => setShowFilters(true)}
+            style={{
+              width: '100%', padding: '10px 14px', fontSize: 15,
+              border: `1.5px solid ${showFilters || isFilterActive ? ACCENT : '#E2E8FF'}`,
+              borderRadius: 12,
+              background: '#fff', color: '#0F1523', outline: 'none',
+              fontFamily: 'inherit',
+              transition: 'border-color 150ms',
+            }}
+          />
+          {isFilterActive && !showFilters && (
             <button
-              key={d.id}
-              onClick={() => setDifficulty(d.id)}
+              onClick={() => setShowFilters(true)}
               style={{
-                padding: '4px 12px', fontSize: 13, fontWeight: 700,
-                borderRadius: 99, border: 'none', cursor: 'pointer',
-                background: difficulty === d.id ? ACCENT : ACCENT_BG,
-                color: difficulty === d.id ? '#fff' : ACCENT,
-                transition: 'all 150ms',
+                position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)',
+                background: ACCENT, color: '#fff', border: 'none', borderRadius: 99,
+                padding: '2px 10px', fontSize: 12, fontWeight: 700, cursor: 'pointer',
               }}
             >
-              {d.label}
+              フィルター適用中
             </button>
-          ))}
+          )}
         </div>
-        {/* 進捗 */}
-        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-          <span style={{ fontSize: 13, fontWeight: 700, color: '#7A849E', lineHeight: '30px', marginRight: 2 }}>進捗</span>
-          {PROGRESS_LABELS.map((p) => (
-            <button
-              key={p.id}
-              onClick={() => setProgress(p.id)}
-              style={{
-                padding: '4px 12px', fontSize: 13, fontWeight: 700,
-                borderRadius: 99, border: 'none', cursor: 'pointer',
-                background: progress === p.id ? '#10B981' : '#ECFDF5',
-                color: progress === p.id ? '#fff' : '#10B981',
-                transition: 'all 150ms',
-              }}
-            >
-              {p.label}
-            </button>
-          ))}
-        </div>
-        {/* 所要時間 */}
-        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-          <span style={{ fontSize: 13, fontWeight: 700, color: '#7A849E', lineHeight: '30px', marginRight: 2 }}>時間</span>
-          {DURATION_LABELS.map((d) => (
-            <button
-              key={d.id}
-              onClick={() => setDuration(d.id)}
-              style={{
-                padding: '4px 12px', fontSize: 13, fontWeight: 700,
-                borderRadius: 99, border: 'none', cursor: 'pointer',
-                background: duration === d.id ? '#F59E0B' : '#FFFBEB',
-                color: duration === d.id ? '#fff' : '#D97706',
-                transition: 'all 150ms',
-              }}
-            >
-              {d.icon ? `${d.icon} ${d.label}` : d.label}
-            </button>
-          ))}
-        </div>
+
+        {/* フィルターパネル（検索フィールドタップ時 or フィルター適用中に表示） */}
+        {showFilters && (
+          <div style={{
+            display: 'flex', flexDirection: 'column', gap: 8,
+            background: '#FAFBFF', borderRadius: 12, padding: '12px 14px',
+            border: '1px solid #E2E8FF',
+          }}>
+            {/* レベル */}
+            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
+              <span style={{ fontSize: 12, fontWeight: 700, color: '#7A849E', minWidth: 40 }}>レベル</span>
+              {DIFFICULTY_LABELS.map((d) => (
+                <button
+                  key={d.id}
+                  onClick={() => setDifficulty(d.id)}
+                  style={{
+                    padding: '3px 10px', fontSize: 12, fontWeight: 700,
+                    borderRadius: 99, border: 'none', cursor: 'pointer',
+                    background: difficulty === d.id ? ACCENT : ACCENT_BG,
+                    color: difficulty === d.id ? '#fff' : ACCENT,
+                    transition: 'all 150ms',
+                  }}
+                >
+                  {d.label}
+                </button>
+              ))}
+            </div>
+            {/* 進捗 */}
+            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
+              <span style={{ fontSize: 12, fontWeight: 700, color: '#7A849E', minWidth: 40 }}>進捗</span>
+              {PROGRESS_LABELS.map((p) => (
+                <button
+                  key={p.id}
+                  onClick={() => setProgress(p.id)}
+                  style={{
+                    padding: '3px 10px', fontSize: 12, fontWeight: 700,
+                    borderRadius: 99, border: 'none', cursor: 'pointer',
+                    background: progress === p.id ? '#10B981' : '#ECFDF5',
+                    color: progress === p.id ? '#fff' : '#10B981',
+                    transition: 'all 150ms',
+                  }}
+                >
+                  {p.label}
+                </button>
+              ))}
+            </div>
+            {/* 所要時間 */}
+            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
+              <span style={{ fontSize: 12, fontWeight: 700, color: '#7A849E', minWidth: 40 }}>時間</span>
+              {DURATION_LABELS.map((d) => (
+                <button
+                  key={d.id}
+                  onClick={() => setDuration(d.id)}
+                  style={{
+                    padding: '3px 10px', fontSize: 12, fontWeight: 700,
+                    borderRadius: 99, border: 'none', cursor: 'pointer',
+                    background: duration === d.id ? '#F59E0B' : '#FFFBEB',
+                    color: duration === d.id ? '#fff' : '#D97706',
+                    transition: 'all 150ms',
+                  }}
+                >
+                  {d.icon ? `${d.icon} ${d.label}` : d.label}
+                </button>
+              ))}
+            </div>
+            {/* 閉じるボタン */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 2 }}>
+              {isFilterActive ? (
+                <button
+                  onClick={() => { setDifficulty('all'); setProgress('all'); setDuration('all'); setSearchQuery('') }}
+                  style={{ fontSize: 12, color: '#DC2626', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600, padding: 0 }}
+                >
+                  フィルターをリセット
+                </button>
+              ) : <div />}
+              <button
+                onClick={() => setShowFilters(false)}
+                style={{ fontSize: 12, color: ACCENT, background: 'none', border: 'none', cursor: 'pointer', fontWeight: 700, padding: 0 }}
+              >
+                閉じる
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {filteredPaths.length === 0 && (
@@ -446,7 +510,7 @@ export function RoadmapScreen({ onOpenLesson }: RoadmapScreenProps) {
 
                         {/* テキスト */}
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexWrap: 'wrap' }}>
                             <span style={{
                               fontSize: 16, fontWeight: done ? 500 : 700,
                               color: done ? '#7A849E' : '#0F1523',
@@ -457,13 +521,26 @@ export function RoadmapScreen({ onOpenLesson }: RoadmapScreenProps) {
                             </span>
                             {isNext && (
                               <span style={{
-                                fontSize: 12, fontWeight: 800, color: '#fff',
+                                fontSize: 11, fontWeight: 800, color: '#fff',
                                 background: ACCENT, borderRadius: 4,
-                                padding: '1px 6px', letterSpacing: '.05em',
+                                padding: '1px 5px', letterSpacing: '.05em',
                               }}>
                                 次
                               </span>
                             )}
+                            {(() => {
+                              const lvl = getLessonLevel(lesson.id)
+                              const badge = LEVEL_BADGE[lvl]
+                              return badge.label ? (
+                                <span style={{
+                                  fontSize: 11, fontWeight: 700, color: badge.color,
+                                  background: badge.bg, borderRadius: 4,
+                                  padding: '1px 5px',
+                                }}>
+                                  {badge.label}
+                                </span>
+                              ) : null
+                            })()}
                           </div>
                           <div style={{ fontSize: 14, color: '#7A849E', marginTop: 2, lineHeight: 1.4, display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
                             {lesson.sub}
