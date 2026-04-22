@@ -6,7 +6,7 @@ import { loadPlacementResult, rankLabel as rankLabelFull } from '../placementDat
 function rankLabel(dev: number): string {
   return rankLabelFull(dev).label
 }
-import { ArrowRightIcon, BarChartIcon, BrainIcon, BriefcaseIcon, FlameIcon, StarIcon, TrendingUpIcon, ZapIcon } from '../icons'
+import { ArrowRightIcon, BrainIcon, BriefcaseIcon, FlameIcon, StarIcon, TrendingUpIcon, ZapIcon } from '../icons'
 import { Button } from '../components/Button'
 import { useIsDesktop } from '../hooks/useMediaQuery'
 import { isAdmin } from '../admin'
@@ -462,7 +462,7 @@ function HomeDesktop({
 }: HomeScreenProps & { data: DerivedData; levelTitle: string }) {
   const {
     streak, streakState, completedSet, points, deviation, rankFill,
-    eyebrow, greeting, recovery, level, levelXp, levelPct, xp, weekPct,
+    eyebrow, greeting, recovery, level, levelXp, levelPct, weekPct,
   } = data
 
   return (
@@ -532,12 +532,12 @@ function HomeDesktop({
             </div>
           </button>
         ) : (
-          <button className="stat-pill" onClick={onOpenRank} style={{ cursor: 'pointer', border: 'none', background: 'none', padding: 0, textAlign: 'left', display: 'flex', alignItems: 'center', gap: 'var(--s-3)' }}>
-            <div className="icon-box"><BarChartIcon width={18} height={18} /></div>
+          <button className="stat-pill" onClick={onOpenDeviation} style={{ cursor: 'pointer', border: 'none', background: 'none', padding: 0, textAlign: 'left', display: 'flex', alignItems: 'center', gap: 'var(--s-3)' }}>
+            <div className="icon-box"><TrendingUpIcon width={18} height={18} /></div>
             <div>
-              <div className="lbl">ポイント</div>
-              <div className="val">{xp.toLocaleString()}</div>
-              <div className="delta">{t('home.totalEarned')}</div>
+              <div className="lbl">{t('ranking.deviationLabel')}</div>
+              <div className="val">—</div>
+              <div className="delta">テスト未実施</div>
             </div>
           </button>
         )}

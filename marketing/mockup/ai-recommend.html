@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>AI問題レコメンド — モックアップ</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, 'Hiragino Sans', sans-serif; background: #F0F4FF; min-height: 100vh; }
+  .phone { max-width: 390px; margin: 0 auto; min-height: 100vh; background: #F0F4FF; position: relative; }
+
+  .nav { display: flex; align-items: center; padding: calc(env(safe-area-inset-top, 44px) + 4px) 16px 12px; background: rgba(240,244,255,.97); border-bottom: 1px solid #E2E8FF; }
+  .nav-back { background: none; border: none; font-size: 24px; color: #3B5BDB; cursor: pointer; margin-right: 12px; }
+  .nav-title { font-size: 20px; font-weight: 800; color: #0F1523; letter-spacing: -.02em; }
+
+  .body { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+
+  /* モード選択 */
+  .mode-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .mode-tab { padding: 14px 12px; border-radius: 14px; border: 2px solid #E2E8FF; background: #fff; text-align: center; cursor: pointer; transition: all .15s; }
+  .mode-tab.active { border-color: #3B5BDB; background: #EEF2FF; }
+  .mode-tab-icon { font-size: 24px; margin-bottom: 6px; }
+  .mode-tab-label { font-size: 15px; font-weight: 700; color: #0F1523; }
+  .mode-tab-sub { font-size: 13px; color: #7A849E; margin-top: 2px; }
+
+  /* おすすめ分析カード */
+  .analysis-card { background: #fff; border-radius: 16px; padding: 18px; border: 1px solid #E2E8FF; }
+  .analysis-title { font-size: 14px; font-weight: 700; color: #7A849E; letter-spacing: .06em; margin-bottom: 12px; }
+
+  .weakness-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #F0F4FF; }
+  .weakness-item:last-child { border-bottom: none; }
+  .weakness-bar { flex: 1; }
+  .weakness-label { font-size: 14px; font-weight: 600; color: #0F1523; margin-bottom: 4px; }
+  .weakness-bar-bg { height: 6px; background: #E8EEFF; border-radius: 99px; overflow: hidden; }
+  .weakness-bar-fill { height: 100%; border-radius: 99px; transition: width .4s; }
+  .weakness-score { font-size: 20px; font-weight: 900; min-width: 44px; text-align: right; font-family: 'Inter Tight', sans-serif; letter-spacing: -.03em; }
+  .weakness-tag { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; }
+
+  /* おすすめ問題リスト */
+  .rec-list { display: flex; flex-direction: column; gap: 8px; }
+  .rec-item { background: #fff; border: 1px solid #E2E8FF; border-radius: 14px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; }
+  .rec-item:hover { background: #FAFBFF; }
+  .rec-num { width: 32px; height: 32px; border-radius: 50%; background: #3B5BDB; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; flex-shrink: 0; }
+  .rec-info { flex: 1; }
+  .rec-title { font-size: 15px; font-weight: 700; color: #0F1523; }
+  .rec-reason { font-size: 13px; color: #7A849E; margin-top: 2px; }
+  .rec-badge { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; background: #FEF2F2; color: #DC2626; }
+
+  .btn-generate { width: 100%; padding: 16px; border: none; border-radius: 14px; background: #3B5BDB; color: #fff; font-size: 16px; font-weight: 800; cursor: pointer; font-family: inherit; letter-spacing: -.01em; margin-top: 4px; }
+  .btn-generate:hover { background: #2B4BC8; }
+
+  /* テーマ入力モード */
+  .theme-input { width: 100%; padding: 14px 16px; border: 2px solid #E2E8FF; border-radius: 14px; font-size: 15px; font-family: inherit; color: #0F1523; background: #fff; outline: none; }
+  .theme-input:focus { border-color: #3B5BDB; }
+  .theme-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .theme-chip { padding: 8px 14px; border-radius: 99px; background: #fff; border: 1.5px solid #E2E8FF; font-size: 14px; font-weight: 600; color: #3B5BDB; cursor: pointer; }
+  .theme-chip:hover { background: #EEF2FF; }
+
+  .section-label { font-size: 13px; font-weight: 700; color: #7A849E; letter-spacing: .08em; }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="nav">
+    <button class="nav-back">←</button>
+    <div class="nav-title">AI 問題生成</div>
+  </div>
+
+  <div class="body">
+    <!-- モード選択 -->
+    <div class="mode-tabs">
+      <div class="mode-tab active" id="tab-recommend" onclick="switchMode('recommend')">
+        <div class="mode-tab-label">おすすめ</div>
+        <div class="mode-tab-sub">あなたに合った問題</div>
+      </div>
+      <div class="mode-tab" id="tab-theme" onclick="switchMode('theme')">
+        <div class="mode-tab-label">テーマ指定</div>
+        <div class="mode-tab-sub">好きなテーマで生成</div>
+      </div>
+    </div>
+
+    <!-- おすすめモード -->
+    <div id="mode-recommend">
+      <!-- 弱点分析 -->
+      <div class="analysis-card">
+        <div class="analysis-title">あなたの弱点分析</div>
+
+        <div class="weakness-item">
+          <div class="weakness-bar">
+            <div class="weakness-label">仮説思考</div>
+            <div class="weakness-bar-bg"><div class="weakness-bar-fill" style="width:35%; background:#DC2626"></div></div>
+          </div>
+          <div class="weakness-score" style="color:#DC2626">35</div>
+          <span class="weakness-tag" style="background:#FEF2F2; color:#DC2626">苦手</span>
+        </div>
+
+        <div class="weakness-item">
+          <div class="weakness-bar">
+            <div class="weakness-label">ケース面接</div>
+            <div class="weakness-bar-bg"><div class="weakness-bar-fill" style="width:42%; background:#D97706"></div></div>
+          </div>
+          <div class="weakness-score" style="color:#D97706">42</div>
+          <span class="weakness-tag" style="background:#FFFBEB; color:#D97706">要強化</span>
+        </div>
+
+        <div class="weakness-item">
+          <div class="weakness-bar">
+            <div class="weakness-label">具体と抽象</div>
+            <div class="weakness-bar-bg"><div class="weakness-bar-fill" style="width:50%; background:#3B5BDB"></div></div>
+          </div>
+          <div class="weakness-score" style="color:#3B5BDB">50</div>
+          <span class="weakness-tag" style="background:#EEF2FF; color:#3B5BDB">平均</span>
+        </div>
+
+        <div class="weakness-item">
+          <div class="weakness-bar">
+            <div class="weakness-label">MECE</div>
+            <div class="weakness-bar-bg"><div class="weakness-bar-fill" style="width:68%; background:#059669"></div></div>
+          </div>
+          <div class="weakness-score" style="color:#059669">68</div>
+          <span class="weakness-tag" style="background:#ECFDF5; color:#059669">得意</span>
+        </div>
+      </div>
+
+      <!-- おすすめ問題 -->
+      <div class="section-label">おすすめ問題（3問）</div>
+      <div class="rec-list">
+        <div class="rec-item">
+          <div class="rec-num">1</div>
+          <div class="rec-info">
+            <div class="rec-title">仮説を立てて検証する</div>
+            <div class="rec-reason">偏差値35 — 最も伸びしろがある分野</div>
+          </div>
+          <span class="rec-badge">苦手</span>
+        </div>
+        <div class="rec-item">
+          <div class="rec-num">2</div>
+          <div class="rec-info">
+            <div class="rec-title">新規事業の収益性を構造化する</div>
+            <div class="rec-reason">ケース面接の応用力を強化</div>
+          </div>
+          <span class="rec-badge" style="background:#FFFBEB; color:#D97706">要強化</span>
+        </div>
+        <div class="rec-item">
+          <div class="rec-num">3</div>
+          <div class="rec-info">
+            <div class="rec-title">抽象的な主張を具体化する</div>
+            <div class="rec-reason">具体と抽象の行き来を鍛える</div>
+          </div>
+          <span class="rec-badge" style="background:#EEF2FF; color:#3B5BDB">復習</span>
+        </div>
+      </div>
+
+      <button class="btn-generate">おすすめ問題を生成</button>
+    </div>
+
+    <!-- テーマ指定モード -->
+    <div id="mode-theme" class="hidden">
+      <input class="theme-input" placeholder="テーマを入力（例: 新規事業の市場分析）" />
+      <div style="margin-top: 12px">
+        <div class="section-label" style="margin-bottom: 8px">人気テーマ</div>
+        <div class="theme-chips">
+          <div class="theme-chip">市場分析</div>
+          <div class="theme-chip">論理的な説明</div>
+          <div class="theme-chip">データ解釈</div>
+          <div class="theme-chip">コスト削減</div>
+          <div class="theme-chip">組織改善</div>
+          <div class="theme-chip">新規事業</div>
+        </div>
+      </div>
+      <button class="btn-generate" style="margin-top: 16px">問題を生成</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function switchMode(mode) {
+  document.getElementById('tab-recommend').classList.toggle('active', mode === 'recommend')
+  document.getElementById('tab-theme').classList.toggle('active', mode === 'theme')
+  document.getElementById('mode-recommend').classList.toggle('hidden', mode !== 'recommend')
+  document.getElementById('mode-theme').classList.toggle('hidden', mode !== 'theme')
+}
+</script>
+</body>
+</html>

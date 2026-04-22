@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>統計・学習履歴 — モックアップ</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, 'Hiragino Sans', sans-serif; background: #F0F4FF; min-height: 100vh; }
+  .phone { max-width: 390px; margin: 0 auto; min-height: 100vh; background: #F0F4FF; }
+
+  .nav { display: flex; align-items: center; padding: calc(env(safe-area-inset-top, 44px) + 4px) 16px 12px; background: rgba(240,244,255,.97); border-bottom: 1px solid #E2E8FF; }
+  .nav-back { background: none; border: none; font-size: 24px; color: #3B5BDB; cursor: pointer; margin-right: 12px; }
+  .nav-title { font-size: 20px; font-weight: 800; color: #0F1523; letter-spacing: -.02em; }
+
+  .body { padding: 16px 16px 96px; display: flex; flex-direction: column; gap: 12px; }
+
+  /* タブ */
+  .tabs { display: flex; gap: 0; background: #E8EEFF; border-radius: 12px; padding: 3px; }
+  .tab { flex: 1; padding: 10px 0; text-align: center; font-size: 14px; font-weight: 700; color: #7A849E; border-radius: 10px; cursor: pointer; transition: all .15s; }
+  .tab.active { background: #fff; color: #3B5BDB; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+
+  /* 概要カード */
+  .overview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .overview-card { background: #fff; border: 1px solid #E2E8FF; border-radius: 14px; padding: 14px 16px; }
+  .overview-card-label { font-size: 13px; color: #7A849E; font-weight: 600; }
+  .overview-card-value { font-size: 28px; font-weight: 900; color: #0F1523; letter-spacing: -.03em; font-family: 'Inter Tight', sans-serif; margin-top: 4px; }
+  .overview-card-sub { font-size: 12px; color: #059669; font-weight: 600; margin-top: 2px; }
+  .overview-card-sub.down { color: #DC2626; }
+
+  /* 分野別正答率 */
+  .category-card { background: #fff; border: 1px solid #E2E8FF; border-radius: 14px; padding: 16px; }
+  .category-title { font-size: 14px; font-weight: 700; color: #7A849E; margin-bottom: 12px; letter-spacing: .06em; }
+  .category-item { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .category-item:last-child { margin-bottom: 0; }
+  .category-name { font-size: 14px; font-weight: 600; color: #0F1523; min-width: 100px; }
+  .category-bar-bg { flex: 1; height: 8px; background: #E8EEFF; border-radius: 99px; overflow: hidden; }
+  .category-bar-fill { height: 100%; border-radius: 99px; }
+  .category-pct { font-size: 14px; font-weight: 800; min-width: 36px; text-align: right; }
+
+  /* 履歴リスト */
+  .history-list { display: flex; flex-direction: column; gap: 8px; }
+  .history-date { font-size: 13px; font-weight: 700; color: #7A849E; margin: 8px 0 4px; letter-spacing: .06em; }
+  .history-item { background: #fff; border: 1px solid #E2E8FF; border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; }
+  .history-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px; font-weight: 800; color: #fff; }
+  .history-icon.lesson { background: #3B5BDB; }
+  .history-icon.ai { background: #7C3AED; }
+  .history-icon.fermi { background: #F59E0B; }
+  .history-info { flex: 1; min-width: 0; }
+  .history-title { font-size: 14px; font-weight: 600; color: #0F1523; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .history-meta { font-size: 12px; color: #7A849E; margin-top: 2px; }
+  .history-score { font-size: 16px; font-weight: 800; }
+  .history-score.good { color: #059669; }
+  .history-score.mid { color: #D97706; }
+  .history-score.bad { color: #DC2626; }
+
+  /* 週間トレンド */
+  .trend-card { background: #fff; border: 1px solid #E2E8FF; border-radius: 14px; padding: 16px; }
+  .trend-title { font-size: 14px; font-weight: 700; color: #7A849E; margin-bottom: 12px; letter-spacing: .06em; }
+  .trend-chart { display: flex; align-items: flex-end; gap: 6px; height: 100px; }
+  .trend-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .trend-bar { width: 100%; border-radius: 6px 6px 0 0; background: #3B5BDB; min-height: 2px; transition: height .3s; }
+  .trend-bar.low { background: #DBE4FF; }
+  .trend-day { font-size: 11px; color: #7A849E; font-weight: 600; }
+  .trend-val { font-size: 11px; color: #3B5BDB; font-weight: 700; }
+
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="nav">
+    <button class="nav-back">←</button>
+    <div class="nav-title">統計</div>
+  </div>
+
+  <div class="body">
+    <!-- タブ -->
+    <div class="tabs">
+      <div class="tab active" id="t-overview" onclick="switchTab('overview')">概要</div>
+      <div class="tab" id="t-history" onclick="switchTab('history')">履歴</div>
+      <div class="tab" id="t-analysis" onclick="switchTab('analysis')">分析</div>
+    </div>
+
+    <!-- ===== 概要タブ ===== -->
+    <div id="panel-overview">
+      <div class="overview-grid">
+        <div class="overview-card">
+          <div class="overview-card-label">今週の学習</div>
+          <div class="overview-card-value">3.5h</div>
+          <div class="overview-card-sub">+0.8h vs 先週</div>
+        </div>
+        <div class="overview-card">
+          <div class="overview-card-label">解いた問題数</div>
+          <div class="overview-card-value">24</div>
+          <div class="overview-card-sub">+6 vs 先週</div>
+        </div>
+        <div class="overview-card">
+          <div class="overview-card-label">正答率</div>
+          <div class="overview-card-value">72%</div>
+          <div class="overview-card-sub down">-3% vs 先週</div>
+        </div>
+        <div class="overview-card">
+          <div class="overview-card-label">偏差値</div>
+          <div class="overview-card-value">58</div>
+          <div class="overview-card-sub">+2 vs 先週</div>
+        </div>
+      </div>
+
+      <!-- 週間トレンド -->
+      <div class="trend-card">
+        <div class="trend-title">今週の学習量</div>
+        <div class="trend-chart">
+          <div class="trend-bar-wrap"><div class="trend-val">3</div><div class="trend-bar" style="height:30px"></div><div class="trend-day">月</div></div>
+          <div class="trend-bar-wrap"><div class="trend-val">5</div><div class="trend-bar" style="height:50px"></div><div class="trend-day">火</div></div>
+          <div class="trend-bar-wrap"><div class="trend-val">2</div><div class="trend-bar low" style="height:20px"></div><div class="trend-day">水</div></div>
+          <div class="trend-bar-wrap"><div class="trend-val">7</div><div class="trend-bar" style="height:70px"></div><div class="trend-day">木</div></div>
+          <div class="trend-bar-wrap"><div class="trend-val">4</div><div class="trend-bar" style="height:40px"></div><div class="trend-day">金</div></div>
+          <div class="trend-bar-wrap"><div class="trend-val">1</div><div class="trend-bar low" style="height:10px"></div><div class="trend-day">土</div></div>
+          <div class="trend-bar-wrap"><div class="trend-val">—</div><div class="trend-bar low" style="height:2px"></div><div class="trend-day">日</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== 履歴タブ ===== -->
+    <div id="panel-history" class="hidden">
+      <div class="history-list">
+        <div class="history-date">今日 — 4月22日</div>
+        <div class="history-item">
+          <div class="history-icon lesson">L</div>
+          <div class="history-info">
+            <div class="history-title">具体と抽象</div>
+            <div class="history-meta">ロジカルシンキング — 10分</div>
+          </div>
+          <div class="history-score good">4/5</div>
+        </div>
+        <div class="history-item">
+          <div class="history-icon ai">AI</div>
+          <div class="history-info">
+            <div class="history-title">新規事業の収益性分析</div>
+            <div class="history-meta">AI生成 — ケース面接</div>
+          </div>
+          <div class="history-score mid">2/3</div>
+        </div>
+        <div class="history-item">
+          <div class="history-icon fermi">F</div>
+          <div class="history-info">
+            <div class="history-title">日本のタクシー台数</div>
+            <div class="history-meta">フェルミ推定</div>
+          </div>
+          <div class="history-score good">回答済</div>
+        </div>
+
+        <div class="history-date">昨日 — 4月21日</div>
+        <div class="history-item">
+          <div class="history-icon lesson">L</div>
+          <div class="history-info">
+            <div class="history-title">MECE — 漏れなくダブりなく</div>
+            <div class="history-meta">ロジカルシンキング — 8分</div>
+          </div>
+          <div class="history-score good">5/5</div>
+        </div>
+        <div class="history-item">
+          <div class="history-icon lesson">L</div>
+          <div class="history-info">
+            <div class="history-title">ロジックツリー</div>
+            <div class="history-meta">ロジカルシンキング — 10分</div>
+          </div>
+          <div class="history-score mid">3/5</div>
+        </div>
+        <div class="history-item">
+          <div class="history-icon ai">AI</div>
+          <div class="history-info">
+            <div class="history-title">組織改善の仮説を立てる</div>
+            <div class="history-meta">AI生成 — 仮説思考</div>
+          </div>
+          <div class="history-score bad">1/3</div>
+        </div>
+
+        <div class="history-date">4月20日</div>
+        <div class="history-item">
+          <div class="history-icon lesson">L</div>
+          <div class="history-info">
+            <div class="history-title">So What / Why So</div>
+            <div class="history-meta">ロジカルシンキング — 7分</div>
+          </div>
+          <div class="history-score good">4/4</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== 分析タブ ===== -->
+    <div id="panel-analysis" class="hidden">
+      <!-- 分野別正答率 -->
+      <div class="category-card">
+        <div class="category-title">分野別正答率</div>
+
+        <div class="category-item">
+          <div class="category-name">MECE</div>
+          <div class="category-bar-bg"><div class="category-bar-fill" style="width:92%; background:#059669"></div></div>
+          <div class="category-pct" style="color:#059669">92%</div>
+        </div>
+        <div class="category-item">
+          <div class="category-name">ロジックツリー</div>
+          <div class="category-bar-bg"><div class="category-bar-fill" style="width:78%; background:#3B5BDB"></div></div>
+          <div class="category-pct" style="color:#3B5BDB">78%</div>
+        </div>
+        <div class="category-item">
+          <div class="category-name">So What</div>
+          <div class="category-bar-bg"><div class="category-bar-fill" style="width:85%; background:#059669"></div></div>
+          <div class="category-pct" style="color:#059669">85%</div>
+        </div>
+        <div class="category-item">
+          <div class="category-name">具体と抽象</div>
+          <div class="category-bar-bg"><div class="category-bar-fill" style="width:60%; background:#D97706"></div></div>
+          <div class="category-pct" style="color:#D97706">60%</div>
+        </div>
+        <div class="category-item">
+          <div class="category-name">仮説思考</div>
+          <div class="category-bar-bg"><div class="category-bar-fill" style="width:40%; background:#DC2626"></div></div>
+          <div class="category-pct" style="color:#DC2626">40%</div>
+        </div>
+        <div class="category-item">
+          <div class="category-name">ケース面接</div>
+          <div class="category-bar-bg"><div class="category-bar-fill" style="width:55%; background:#D97706"></div></div>
+          <div class="category-pct" style="color:#D97706">55%</div>
+        </div>
+      </div>
+
+      <!-- 得意・苦手サマリー -->
+      <div class="category-card">
+        <div class="category-title">得意・苦手サマリー</div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <div style="flex: 1; min-width: 140px; background: #ECFDF5; border-radius: 12px; padding: 12px;">
+            <div style="font-size: 12px; font-weight: 700; color: #059669; margin-bottom: 6px;">得意分野</div>
+            <div style="font-size: 15px; font-weight: 700; color: #0F1523;">MECE</div>
+            <div style="font-size: 13px; color: #7A849E;">正答率 92%</div>
+          </div>
+          <div style="flex: 1; min-width: 140px; background: #FEF2F2; border-radius: 12px; padding: 12px;">
+            <div style="font-size: 12px; font-weight: 700; color: #DC2626; margin-bottom: 6px;">苦手分野</div>
+            <div style="font-size: 15px; font-weight: 700; color: #0F1523;">仮説思考</div>
+            <div style="font-size: 13px; color: #7A849E;">正答率 40%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 偏差値推移 -->
+      <div class="trend-card">
+        <div class="trend-title">偏差値推移（過去4週）</div>
+        <div class="trend-chart">
+          <div class="trend-bar-wrap"><div class="trend-val">48</div><div class="trend-bar low" style="height:46px"></div><div class="trend-day">W1</div></div>
+          <div class="trend-bar-wrap"><div class="trend-val">52</div><div class="trend-bar" style="height:54px"></div><div class="trend-day">W2</div></div>
+          <div class="trend-bar-wrap"><div class="trend-val">55</div><div class="trend-bar" style="height:60px"></div><div class="trend-day">W3</div></div>
+          <div class="trend-bar-wrap"><div class="trend-val">58</div><div class="trend-bar" style="height:68px"></div><div class="trend-day">今週</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function switchTab(tab) {
+  ['overview', 'history', 'analysis'].forEach(t => {
+    document.getElementById('t-' + t).classList.toggle('active', t === tab)
+    document.getElementById('panel-' + t).classList.toggle('hidden', t !== tab)
+  })
+}
+</script>
+</body>
+</html>
