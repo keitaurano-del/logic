@@ -3,6 +3,28 @@ import { CheckIcon, ArrowRightIcon } from '../icons'
 import { getCompletedLessons } from '../stats'
 import { t } from '../i18n'
 
+type Difficulty = 'all' | 'beginner' | 'intermediate' | 'advanced'
+
+const DIFFICULTY_MAP: Record<string, Difficulty> = {
+  'logic': 'beginner',
+  'formal-logic': 'beginner',
+  'critical': 'beginner',
+  'case': 'intermediate',
+  'hypothesis': 'intermediate',
+  'problem-setting': 'intermediate',
+  'design-thinking': 'intermediate',
+  'lateral': 'advanced',
+  'analogy': 'advanced',
+  'systems': 'advanced',
+}
+
+const DIFFICULTY_LABELS: { id: Difficulty; label: string }[] = [
+  { id: 'all', label: 'すべて' },
+  { id: 'beginner', label: '初級' },
+  { id: 'intermediate', label: '中級' },
+  { id: 'advanced', label: '上級' },
+]
+
 interface RoadmapLesson {
   id: number
   title: string
@@ -17,16 +39,6 @@ interface RoadmapPath {
 
 const PATHS: RoadmapPath[] = [
   {
-    id: 'fermi',
-    label: t('home.category.fermi'),
-    lessons: [
-      { id: 25, title: '演繹法',              sub: '一般原則から個別の結論を導く思考法' },
-      { id: 26, title: '帰納法',              sub: '個別事例から法則・パターンを見つける' },
-      { id: 27, title: '形式論理',            sub: '「AならばB」の論理構造を理解する' },
-      { id: 24, title: 'ケーススタディ総合演習', sub: 'フレームワークを使った実践的問題解決' },
-    ],
-  },
-  {
     id: 'logic',
     label: t('home.category.logic'),
     lessons: [
@@ -34,6 +46,16 @@ const PATHS: RoadmapPath[] = [
       { id: 21, title: 'ロジックツリー',             sub: '問題をツリー状に分解して原因・対策を探る' },
       { id: 22, title: 'So What / Why So',          sub: '「だから何？」「なぜ？」で論理を検証する' },
       { id: 23, title: 'ピラミッド原則',            sub: '結論から先に伝える論理的な話し方' },
+    ],
+  },
+  {
+    id: 'formal-logic',
+    label: '論理学',
+    lessons: [
+      { id: 25, title: '演繹法',              sub: '一般原則から個別の結論を導く思考法' },
+      { id: 26, title: '帰納法',              sub: '個別事例から法則・パターンを見つける' },
+      { id: 27, title: '形式論理',            sub: '「AならばB」の論理構造を理解する' },
+      { id: 24, title: 'ケーススタディ総合演習', sub: 'フレームワークを使った実践的問題解決' },
     ],
   },
   {
@@ -121,6 +143,9 @@ interface RoadmapScreenProps {
 }
 
 export function RoadmapScreen({ onOpenLesson }: RoadmapScreenProps) {
+  const [searchQuery, setSearchQuery] = useState('')
+  const [difficulty, setDifficulty] = useState<Difficulty>('all')
+
   const completedSet = useMemo(() => {
     const raw = getCompletedLessons()
     const set = new Set<string>()
@@ -130,6 +155,22 @@ export function RoadmapScreen({ onOpenLesson }: RoadmapScreenProps) {
     })
     return set
   }, [])
+
+  // 検索・フィルター適用
+  const filteredPaths = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase()
+    return PATHS
+      .filter(path => difficulty === 'all' || DIFFICULTY_MAP[path.id] === difficulty)
+      .map(path => {
+        if (!q) return path
+        const matchedLessons = path.lessons.filter(
+          l => l.title.toLowerCase().includes(q) || l.sub.toLowerCase().includes(q) || path.label.toLowerCase().includes(q)
+        )
+        if (matchedLessons.length === 0 && !path.label.toLowerCase().includes(q)) return null
+        return { ...path, lessons: matchedLessons.length > 0 ? matchedLessons : path.lessons }
+      })
+      .filter(Boolean) as RoadmapPath[]
+  }, [searchQuery, difficulty])
 
   // 「次にやるべきレッスン」があるパスをデフォルトで開く
   const defaultOpen = useMemo(() => {
@@ -169,8 +210,47 @@ export function RoadmapScreen({ onOpenLesson }: RoadmapScreenProps) {
         <p style={{ fontSize: 16, color: '#7A849E', marginTop: 4 }}>順番に進めると体系的に身につきます</p>
       </div>
 
+      {/* 検索・フィルター */}
+      <div style={{ padding: '12px 16px 0', display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <input
+          type="text"
+          placeholder="レッスンを検索..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          style={{
+            width: '100%', padding: '10px 14px', fontSize: 15,
+            border: '1.5px solid #E2E8FF', borderRadius: 12,
+            background: '#fff', color: '#0F1523', outline: 'none',
+            fontFamily: 'inherit',
+          }}
+        />
+        <div style={{ display: 'flex', gap: 8 }}>
+          {DIFFICULTY_LABELS.map((d) => (
+            <button
+              key={d.id}
+              onClick={() => setDifficulty(d.id)}
+              style={{
+                padding: '5px 14px', fontSize: 14, fontWeight: 700,
+                borderRadius: 99, border: 'none', cursor: 'pointer',
+                background: difficulty === d.id ? ACCENT : ACCENT_BG,
+                color: difficulty === d.id ? '#fff' : ACCENT,
+                transition: 'all 150ms',
+              }}
+            >
+              {d.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {filteredPaths.length === 0 && (
+        <div style={{ padding: '40px 16px', textAlign: 'center', color: '#7A849E', fontSize: 16 }}>
+          該当するレッスンが見つかりません
+        </div>
+      )}
+
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: '16px 16px 0' }}>
-        {PATHS.map((path) => {
+        {filteredPaths.map((path) => {
           const completedCount = path.lessons.filter(l => completedSet.has(String(l.id))).length
           const pct = Math.round((completedCount / path.lessons.length) * 100)
           const allDone = completedCount === path.lessons.length
