@@ -4,6 +4,8 @@ import { getCompletedLessons } from '../stats'
 import { t } from '../i18n'
 
 type Difficulty = 'all' | 'beginner' | 'intermediate' | 'advanced'
+type ProgressFilter = 'all' | 'incomplete' | 'completed'
+type DurationFilter = 'all' | 'short' | 'medium' | 'long'
 
 const DIFFICULTY_MAP: Record<string, Difficulty> = {
   'logic': 'beginner',
@@ -24,6 +26,43 @@ const DIFFICULTY_LABELS: { id: Difficulty; label: string }[] = [
   { id: 'intermediate', label: '中級' },
   { id: 'advanced', label: '上級' },
 ]
+
+const PROGRESS_LABELS: { id: ProgressFilter; label: string }[] = [
+  { id: 'all', label: 'すべて' },
+  { id: 'incomplete', label: '未完了' },
+  { id: 'completed', label: '完了済' },
+]
+
+const DURATION_LABELS: { id: DurationFilter; label: string; icon: string }[] = [
+  { id: 'all', label: 'すべて', icon: '' },
+  { id: 'short', label: '5分以内', icon: '⚡' },
+  { id: 'medium', label: '10分', icon: '⏰' },
+  { id: 'long', label: '15分+', icon: '📖' },
+]
+
+/** レッスンごとの推定所要時間（分） */
+const LESSON_DURATION: Record<number, number> = {
+  // ロジカルシンキング
+  20: 8, 21: 10, 22: 7, 23: 8,
+  // 論理学
+  24: 15, 25: 7, 26: 7, 27: 10,
+  // ケース面接
+  28: 12, 29: 15, 35: 15, 36: 15,
+  // クリティカルシンキング
+  40: 8, 41: 10, 42: 10, 43: 8,
+  // 仮説思考
+  50: 8, 51: 10, 52: 12,
+  // 課題設定
+  53: 8, 54: 10, 55: 12,
+  // デザインシンキング
+  56: 8, 57: 10, 58: 12,
+  // ラテラルシンキング
+  59: 8, 60: 12, 61: 12,
+  // アナロジー思考
+  62: 8, 63: 10, 64: 12,
+  // システムシンキング
+  65: 10, 66: 12, 67: 15,
+}
 
 interface RoadmapLesson {
   id: number
@@ -145,6 +184,8 @@ interface RoadmapScreenProps {
 export function RoadmapScreen({ onOpenLesson }: RoadmapScreenProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [difficulty, setDifficulty] = useState<Difficulty>('all')
+  const [progress, setProgress] = useState<ProgressFilter>('all')
+  const [duration, setDuration] = useState<DurationFilter>('all')
 
   const completedSet = useMemo(() => {
     const raw = getCompletedLessons()
@@ -162,15 +203,39 @@ export function RoadmapScreen({ onOpenLesson }: RoadmapScreenProps) {
     return PATHS
       .filter(path => difficulty === 'all' || DIFFICULTY_MAP[path.id] === difficulty)
       .map(path => {
-        if (!q) return path
-        const matchedLessons = path.lessons.filter(
-          l => l.title.toLowerCase().includes(q) || l.sub.toLowerCase().includes(q) || path.label.toLowerCase().includes(q)
-        )
-        if (matchedLessons.length === 0 && !path.label.toLowerCase().includes(q)) return null
-        return { ...path, lessons: matchedLessons.length > 0 ? matchedLessons : path.lessons }
+        let lessons = path.lessons
+
+        // フリーワード検索
+        if (q) {
+          lessons = lessons.filter(
+            l => l.title.toLowerCase().includes(q) || l.sub.toLowerCase().includes(q) || path.label.toLowerCase().includes(q)
+          )
+          if (lessons.length === 0 && !path.label.toLowerCase().includes(q)) return null
+          if (lessons.length === 0) lessons = path.lessons
+        }
+
+        // 進捗フィルター
+        if (progress === 'incomplete') {
+          lessons = lessons.filter(l => !completedSet.has(String(l.id)))
+        } else if (progress === 'completed') {
+          lessons = lessons.filter(l => completedSet.has(String(l.id)))
+        }
+
+        // 所要時間フィルター
+        if (duration !== 'all') {
+          lessons = lessons.filter(l => {
+            const min = LESSON_DURATION[l.id] ?? 10
+            if (duration === 'short') return min <= 5
+            if (duration === 'medium') return min > 5 && min <= 10
+            return min > 10 // long
+          })
+        }
+
+        if (lessons.length === 0) return null
+        return { ...path, lessons }
       })
       .filter(Boolean) as RoadmapPath[]
-  }, [searchQuery, difficulty])
+  }, [searchQuery, difficulty, progress, duration, completedSet])
 
   // 「次にやるべきレッスン」があるパスをデフォルトで開く
   const defaultOpen = useMemo(() => {
@@ -224,13 +289,15 @@ export function RoadmapScreen({ onOpenLesson }: RoadmapScreenProps) {
             fontFamily: 'inherit',
           }}
         />
-        <div style={{ display: 'flex', gap: 8 }}>
+        {/* レベル */}
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+          <span style={{ fontSize: 13, fontWeight: 700, color: '#7A849E', lineHeight: '30px', marginRight: 2 }}>レベル</span>
           {DIFFICULTY_LABELS.map((d) => (
             <button
               key={d.id}
               onClick={() => setDifficulty(d.id)}
               style={{
-                padding: '5px 14px', fontSize: 14, fontWeight: 700,
+                padding: '4px 12px', fontSize: 13, fontWeight: 700,
                 borderRadius: 99, border: 'none', cursor: 'pointer',
                 background: difficulty === d.id ? ACCENT : ACCENT_BG,
                 color: difficulty === d.id ? '#fff' : ACCENT,
@@ -238,6 +305,44 @@ export function RoadmapScreen({ onOpenLesson }: RoadmapScreenProps) {
               }}
             >
               {d.label}
+            </button>
+          ))}
+        </div>
+        {/* 進捗 */}
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+          <span style={{ fontSize: 13, fontWeight: 700, color: '#7A849E', lineHeight: '30px', marginRight: 2 }}>進捗</span>
+          {PROGRESS_LABELS.map((p) => (
+            <button
+              key={p.id}
+              onClick={() => setProgress(p.id)}
+              style={{
+                padding: '4px 12px', fontSize: 13, fontWeight: 700,
+                borderRadius: 99, border: 'none', cursor: 'pointer',
+                background: progress === p.id ? '#10B981' : '#ECFDF5',
+                color: progress === p.id ? '#fff' : '#10B981',
+                transition: 'all 150ms',
+              }}
+            >
+              {p.label}
+            </button>
+          ))}
+        </div>
+        {/* 所要時間 */}
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+          <span style={{ fontSize: 13, fontWeight: 700, color: '#7A849E', lineHeight: '30px', marginRight: 2 }}>時間</span>
+          {DURATION_LABELS.map((d) => (
+            <button
+              key={d.id}
+              onClick={() => setDuration(d.id)}
+              style={{
+                padding: '4px 12px', fontSize: 13, fontWeight: 700,
+                borderRadius: 99, border: 'none', cursor: 'pointer',
+                background: duration === d.id ? '#F59E0B' : '#FFFBEB',
+                color: duration === d.id ? '#fff' : '#D97706',
+                transition: 'all 150ms',
+              }}
+            >
+              {d.icon ? `${d.icon} ${d.label}` : d.label}
             </button>
           ))}
         </div>
@@ -360,8 +465,13 @@ export function RoadmapScreen({ onOpenLesson }: RoadmapScreenProps) {
                               </span>
                             )}
                           </div>
-                          <div style={{ fontSize: 14, color: '#7A849E', marginTop: 2, lineHeight: 1.4 }}>
+                          <div style={{ fontSize: 14, color: '#7A849E', marginTop: 2, lineHeight: 1.4, display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
                             {lesson.sub}
+                            {LESSON_DURATION[lesson.id] && (
+                              <span style={{ fontSize: 12, color: '#D97706', background: '#FFFBEB', borderRadius: 4, padding: '1px 5px', fontWeight: 600, whiteSpace: 'nowrap' }}>
+                                {LESSON_DURATION[lesson.id]}分
+                              </span>
+                            )}
                           </div>
                         </div>
 
