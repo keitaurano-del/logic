@@ -16,15 +16,6 @@ function calcDev(value: number, b: { mean: number; sd: number }): number {
   return Math.max(25, Math.min(75, Math.round(50 + z * 10)))
 }
 
-function percentile(deviation: number): number {
-  const z = (deviation - 50) / 10
-  const t = 1 / (1 + 0.2316419 * Math.abs(z))
-  const d = 0.3989423 * Math.exp(-z * z / 2)
-  let p = d * t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274))))
-  if (z > 0) p = 1 - p
-  return Math.round(p * 100)
-}
-
 function rankLabel(dev: number): { label: string; color: string } {
   if (dev >= 65) return { label: 'トップクラス', color: '#D4915A' }
   if (dev >= 55) return { label: '優秀', color: '#5A8A5A' }
@@ -50,13 +41,12 @@ export default function DeviationScore({ onBack }: Props) {
 
   const totalDev = Math.round(items.reduce((sum, i) => sum + i.dev, 0) / items.length)
   const totalRank = rankLabel(totalDev)
-  const topPercent = 100 - percentile(totalDev)
 
   return (
     <div className="dev-screen">
       <header className="dev-header">
         <button className="dev-back" onClick={onBack}>← 戻る</button>
-        <h2>📊 あなたの偏差値</h2>
+        <h2>あなたの偏差値</h2>
       </header>
 
       <div className="dev-body">
@@ -64,7 +54,7 @@ export default function DeviationScore({ onBack }: Props) {
           <div className="dev-hero-label">総合偏差値</div>
           <div className="dev-hero-number">{totalDev}</div>
           <div className="dev-hero-rank" style={{ color: totalRank.color }}>{totalRank.label}</div>
-          <div className="dev-hero-percent">上位 {topPercent}%</div>
+
         </div>
 
         <div className="dev-items">
@@ -88,7 +78,7 @@ export default function DeviationScore({ onBack }: Props) {
         </div>
 
         <div className="dev-note">
-          ℹ️ 偏差値は学習データから推定した値です。<br/>
+          偏差値は学習データから推定した値です。<br/>
           学習を続けると数値が上がります。
         </div>
       </div>

@@ -1,6 +1,6 @@
 import { getCompletedCount, getStreak } from '../stats'
 import { loadPlacementResult } from '../placementData'
-import { getPoints, deviationToTopPercent, getCurrentTier, RANK_TIERS } from './homeHelpers'
+import { getCurrentTier, RANK_TIERS } from './homeHelpers'
 import { RankIllustration } from '../components/RankIllustration'
 import { logout } from '../supabase'
 import { getSubscriptionState, isPremiumPlan, isStandardPlan, daysLeftInTrial } from '../subscription'
@@ -36,7 +36,6 @@ interface ProfileScreenProps {
 export function ProfileScreen({ userName, onOpenSettings, onOpenFeedback, onOpenPricing, onOpenRank }: ProfileScreenProps) {
   const streak = getStreak()
   const completed = getCompletedCount()
-  const points = getPoints()
   const xp = completed * 100
   const tier = getCurrentTier(xp)
   const nextTier = RANK_TIERS.find(t => t.level === tier.level + 1)
@@ -45,7 +44,7 @@ export function ProfileScreen({ userName, onOpenSettings, onOpenFeedback, onOpen
   const xpPct = Math.min(100, Math.round((xpInLevel / xpToNext) * 100))
   const placement = loadPlacementResult()
   const deviation = placement?.deviation ?? null
-  const topPct = deviation != null ? deviationToTopPercent(deviation) : null
+
 
   const handleLogout = async () => {
     await logout()
@@ -125,7 +124,7 @@ export function ProfileScreen({ userName, onOpenSettings, onOpenFeedback, onOpen
             {[
               { value: String(completed), label: 'レッスン' },
               { value: `${streak}日`, label: '連続学習' },
-              { value: topPct != null ? `Top ${Math.round(topPct)}%` : String(points), label: '偏差値' },
+              { value: deviation != null ? String(Math.round(deviation)) : '—', label: '偏差値' },
             ].map(({ value, label }) => (
               <div key={label} style={{ textAlign: 'center' }}>
                 <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, color: '#fff', letterSpacing: '-.02em' }}>{value}</div>
