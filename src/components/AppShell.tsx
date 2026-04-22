@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from 'react'
 import type { ReactNode } from 'react'
 import { t } from '../i18n'
 
@@ -64,6 +65,23 @@ export function AppShell({
   hideTabBar = false,
 }: AppShellProps) {
   void t // keep import
+
+  // Hide tab bar on scroll down, show on scroll up
+  const [navHidden, setNavHidden] = useState(false)
+  const lastScrollY = useRef(0)
+  useEffect(() => {
+    if (hideTabBar) return
+    const threshold = 10
+    const onScroll = () => {
+      const y = window.scrollY
+      if (y > lastScrollY.current + threshold) setNavHidden(true)
+      else if (y < lastScrollY.current - threshold) setNavHidden(false)
+      lastScrollY.current = y
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [hideTabBar])
+
   return (
     <div style={{ position: 'relative', minHeight: '100dvh', background: '#F0F4FF', display: 'flex', flexDirection: 'column' }}>
       {/* コンテンツエリア */}
@@ -84,6 +102,8 @@ export function AppShell({
           justifyContent: 'space-around',
           padding: '0 8px 16px',
           zIndex: 100,
+          transform: navHidden ? 'translateY(100%)' : 'translateY(0)',
+          transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         }}>
           {TABS.map((tab) => {
             const active = activeTab === tab.id
