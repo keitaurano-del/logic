@@ -35,9 +35,9 @@ const PROGRESS_LABELS: { id: ProgressFilter; label: string }[] = [
 
 const DURATION_LABELS: { id: DurationFilter; label: string; icon: string }[] = [
   { id: 'all', label: 'すべて', icon: '' },
-  { id: 'short', label: '5分以内', icon: '⚡' },
-  { id: 'medium', label: '10分', icon: '⏰' },
-  { id: 'long', label: '15分+', icon: '📖' },
+  { id: 'short', label: '5分以内', icon: '' },
+  { id: 'medium', label: '10分', icon: '' },
+  { id: 'long', label: '15分+', icon: '' },
 ]
 
 /** レッスンごとの推定所要時間（分） */
@@ -329,7 +329,7 @@ export function RoadmapScreen({ onOpenLesson, initialCategory }: RoadmapScreenPr
         <div style={{ position: 'relative' }}>
           <input
             type="text"
-            placeholder="🔍 レッスンを検索..."
+            placeholder="レッスンを検索..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onFocus={() => setShowFilters(true)}
@@ -477,7 +477,7 @@ export function RoadmapScreen({ onOpenLesson, initialCategory }: RoadmapScreenPr
                 <div style={{ flex: 1 }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
                     <span style={{ fontSize: 16, fontWeight: 800, color: '#0F1523', letterSpacing: '-.01em' }}>
-                      {allDone ? '✅ ' : ''}{path.label}
+                      {path.label}
                     </span>
                     <span style={{
                       fontSize: 14, fontWeight: 700, color: allDone ? '#fff' : ACCENT,
