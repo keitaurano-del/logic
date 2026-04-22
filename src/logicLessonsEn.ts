@@ -747,6 +747,98 @@ export const logicFormalEn: LessonData = {
   ],
 }
 
+export const logicConcreteAbstractEn: LessonData = {
+  id: 68,
+  title: 'Concrete & Abstract — Moving Between Levels of Thinking',
+  category: 'Logical Thinking',
+  steps: [
+    {
+      type: 'explain',
+      title: 'What Are Concrete and Abstract?',
+      content:
+        'Moving between the concrete and the abstract is one of the most important skills in logical thinking.\n\n● Concrete: specific facts, data, individual examples\n● Abstract: patterns, rules, concepts drawn from those specifics\n\nExample:\nConcrete: "A forgot the handout at yesterday\'s meeting"\nAbstract: "Our information-sharing system has a problem"\n\nConcrete alone ends with "so what?" Abstract alone feels vague. When you can move between both, your persuasiveness multiplies.',
+    },
+    {
+      type: 'quiz',
+      question: '"Our team has bad communication" — is this concrete or abstract?',
+      options: [
+        { label: 'Concrete', correct: false },
+        { label: 'Abstract', correct: true },
+        { label: 'Neither', correct: false },
+        { label: 'Both', correct: false },
+      ],
+      explanation:
+        '"Bad communication" is abstract. To make it concrete, you\'d say something like "Weekly reports are written in a way that causes misunderstandings" or "Chat replies take over 24 hours."',
+    },
+    {
+      type: 'explain',
+      title: '3 Steps to Abstract',
+      content:
+        'Going from concrete to abstract:\n\nStep 1: Line up the facts\n"Sales dropped" "Web ad CTR declined" "New inquiries fell"\n\nStep 2: Find the common thread\n→ They all relate to "customer acquisition"\n\nStep 3: Summarize in one statement\n→ "Our acquisition channels are losing efficiency"\n\nThis is abstraction. You lift individual facts up with "So What?" to find the bigger picture.',
+    },
+    {
+      type: 'quiz',
+      question: 'Given these 3 facts, what is the best abstraction?\n• New product awareness is 15%\n• Shelf placement rate is 30%\n• Promotions are at an all-time low',
+      options: [
+        { label: 'Product quality is poor', correct: false },
+        { label: 'Market launch is insufficient', correct: true },
+        { label: 'Competition is too strong', correct: false },
+        { label: 'Price is too high', correct: false },
+      ],
+      explanation:
+        'Awareness, shelf placement, and promotions all relate to "bringing the product to market." Abstracting these gives us "market launch is insufficient." Quality and price can\'t be inferred from these facts.',
+    },
+    {
+      type: 'explain',
+      title: '3 Steps to Concrete',
+      content:
+        'Going from abstract to concrete:\n\nStep 1: Identify the abstract claim\n"We should improve customer experience"\n\nStep 2: Break it down with "For example?"\n→ In what situations? For whom? What specifically?\n\nStep 3: Land on concrete actions\n→ "Send follow-up emails within the same day after inquiries"\n→ "Reduce average checkout wait time by 30 seconds"\n\n"Improve customer experience" alone doesn\'t move anything. Concrete actions make things happen.',
+    },
+    {
+      type: 'quiz',
+      question: 'Which is the best concrete version of "improve productivity"?',
+      options: [
+        { label: 'Work more efficiently', correct: false },
+        { label: 'Everyone should change their mindset', correct: false },
+        { label: 'Cut weekly meetings from 45 min to 25 min and automate meeting notes', correct: true },
+        { label: 'Pursue digital transformation', correct: false },
+      ],
+      explanation:
+        '"Work efficiently," "change mindset," and "DX" are still abstract. "45 min → 25 min" and "automate notes" contain specific numbers and actions — that\'s truly concrete.',
+    },
+    {
+      type: 'explain',
+      title: 'The Abstraction Ladder',
+      content:
+        'Concrete and abstract aren\'t binary — they exist on a gradient.\n\nThe Abstraction Ladder:\n\n[Abstract] "Grow revenue"\n    ↓\n[Mid-level] "Lower new customer acquisition cost"\n    ↓\n[Concrete] "Reduce Instagram ad CPA from $30 to $20"\n\nFor executives, speak at higher abstraction. For team members, go concrete.\nProfessionals adjust the ladder height based on audience and context.\n\nKey takeaways:\n• Abstract up: Ask "So What?"\n• Concrete down: Ask "For example?"\n• Adjust the level to fit your audience',
+    },
+    {
+      type: 'quiz',
+      question: 'For reporting to the CEO vs. giving instructions to your team, which is correct?',
+      options: [
+        { label: 'Be concrete with both', correct: false },
+        { label: 'Be abstract with both', correct: false },
+        { label: 'More abstract for the CEO, more concrete for the team', correct: true },
+        { label: 'It depends, so you can\'t generalize', correct: false },
+      ],
+      explanation:
+        'The CEO wants the big picture and direction (abstract). Team members need to know what to do (concrete). Adjusting abstraction level to your audience is a core professional skill.',
+    },
+    {
+      type: 'quiz',
+      question: 'Which demonstrates concrete → abstract → concrete thinking?',
+      options: [
+        { label: '"Store A sales dropped, so let\'s fix Store A"', correct: false },
+        { label: '"Productivity is low, so let\'s do DX"', correct: false },
+        { label: '"Stores A and B both have declining average transaction values. So upselling is weak. Let\'s implement a checkout suggestion script at each store"', correct: true },
+        { label: '"Competition is tough, so let\'s differentiate"', correct: false },
+      ],
+      explanation:
+        'Concrete (declining transaction values at A and B) → Abstract (upselling is weak) → Concrete (checkout suggestion script). The other options stay at one level only.',
+    },
+  ],
+}
+
 export const logicLessonMapEn: Record<number, LessonData> = {
   20: logicMeceEn,
   21: logicTreeEn,
@@ -756,4 +848,5 @@ export const logicLessonMapEn: Record<number, LessonData> = {
   25: logicDeductionEn,
   26: logicInductionEn,
   27: logicFormalEn,
+  68: logicConcreteAbstractEn,
 }

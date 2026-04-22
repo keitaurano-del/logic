@@ -152,7 +152,7 @@ function HomeMobile({
     {
       id: 'logic' as const,
       name: 'ロジカルシンキング',
-      lessonIds: [20, 21, 22, 23, 25, 26, 27, 24],
+      lessonIds: [20, 21, 22, 23, 68, 25, 26, 27, 24],
       firstId: 20,
       iconBg: '#EEF2FF',
       iconBorder: '#DBE4FF',

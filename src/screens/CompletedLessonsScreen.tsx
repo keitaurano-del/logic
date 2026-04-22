@@ -19,6 +19,7 @@ const LESSON_MAP: Record<string, LessonMeta> = {
   'lesson-25': { name: '演繹法',                    category: 'ロジカルシンキング' },
   'lesson-26': { name: '帰納法',                    category: 'ロジカルシンキング' },
   'lesson-27': { name: '形式論理',                  category: 'ロジカルシンキング' },
+  'lesson-68': { name: '具体と抽象',                category: 'ロジカルシンキング' },
   'lesson-28': { name: 'ケース面接入門',            category: 'ケース面接' },
   'lesson-29': { name: 'プロフィタビリティケース',  category: 'ケース面接' },
   'lesson-35': { name: '市場参入ケース',            category: 'ケース面接' },

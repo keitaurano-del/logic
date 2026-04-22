@@ -43,7 +43,7 @@ const DURATION_LABELS: { id: DurationFilter; label: string; icon: string }[] = [
 /** レッスンごとの推定所要時間（分） */
 const LESSON_DURATION: Record<number, number> = {
   // ロジカルシンキング
-  20: 8, 21: 10, 22: 7, 23: 8,
+  20: 8, 21: 10, 22: 7, 23: 8, 68: 10,
   // 論理学
   24: 15, 25: 7, 26: 7, 27: 10,
   // ケース面接
@@ -85,6 +85,7 @@ const PATHS: RoadmapPath[] = [
       { id: 21, title: 'ロジックツリー',             sub: '問題をツリー状に分解して原因・対策を探る' },
       { id: 22, title: 'So What / Why So',          sub: '「だから何？」「なぜ？」で論理を検証する' },
       { id: 23, title: 'ピラミッド原則',            sub: '結論から先に伝える論理的な話し方' },
+      { id: 68, title: '具体と抽象',              sub: '思考の行き来を自在にする' },
     ],
   },
   {
