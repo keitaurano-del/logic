@@ -43,7 +43,7 @@ type Screen =
   | { type: 'home' }
   | { type: 'lessons' }
   | { type: 'stats' }
-  | { type: 'roadmap' }
+  | { type: 'roadmap'; category?: string }
   | { type: 'profile' }
   | { type: 'lesson'; lessonId: number }
   | { type: 'flashcards' }
@@ -219,7 +219,7 @@ function AppV3() {
           onOpenLesson={handleOpenLesson}
           onOpenCategory={(cat) => {
             if (cat === 'fermi') navigate({ type: 'daily-fermi' })
-            else navigate({ type: 'roadmap' })
+            else navigate({ type: 'roadmap', category: cat })
           }}
           onOpenRank={() => navigate({ type: 'rank' })}
           onOpenDeviation={() => navigate({ type: 'deviation' })}
@@ -243,7 +243,7 @@ function AppV3() {
       )}
 
       {screen.type === 'roadmap' && (
-        <RoadmapScreen onOpenLesson={handleOpenLesson} />
+        <RoadmapScreen onOpenLesson={handleOpenLesson} initialCategory={screen.category} />
       )}
 
       {screen.type === 'flashcards' && <FlashcardsScreen onBack={handleBack} />}

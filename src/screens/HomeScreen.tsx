@@ -343,7 +343,7 @@ function HomeMobile({
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8 }}>
           {([
             { value: `${streak}日`, label: '連続学習', blue: true },
-            { value: String(points), label: '偏差値', blue: true },
+            { value: String(points), label: 'ポイント', blue: true },
             { value: deviation != null ? String(Math.round(deviation)) : '—', label: '偏差値', blue: false },
           ] as { value: string; label: string; blue: boolean }[]).map(({ value, label, blue }) => (
             <div key={label} style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: '12px 10px', textAlign: 'center', boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
@@ -391,7 +391,7 @@ function HomeMobile({
             return (
               <div
                 key={path.id}
-                onClick={() => onOpenLesson(path.firstId)}
+                onClick={() => onOpenCategory(path.id)}
                 style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 14, cursor: 'pointer', boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}
               >
                 <div style={{ width: 44, height: 44, borderRadius: 13, background: path.iconBg, border: `1px solid ${path.iconBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>

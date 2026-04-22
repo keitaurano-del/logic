@@ -179,6 +179,7 @@ const ACCENT_LIGHT = '#DBE4FF'
 
 interface RoadmapScreenProps {
   onOpenLesson: (lessonId: number) => void
+  initialCategory?: string
 }
 
 /** レッスンIDからレベルを取得 */
@@ -198,9 +199,14 @@ const LEVEL_BADGE: Record<Difficulty, { label: string; color: string; bg: string
   advanced: { label: '上級', color: '#DC2626', bg: '#FEF2F2' },
 }
 
-export function RoadmapScreen({ onOpenLesson }: RoadmapScreenProps) {
+export function RoadmapScreen({ onOpenLesson, initialCategory }: RoadmapScreenProps) {
   const [searchQuery, setSearchQuery] = useState('')
-  const [difficulty, setDifficulty] = useState<Difficulty>('all')
+  const initialDifficulty = useMemo((): Difficulty => {
+    if (!initialCategory) return 'all'
+    const map: Record<string, Difficulty> = { logic: 'beginner', case: 'intermediate', thinking: 'all' }
+    return map[initialCategory] ?? 'all'
+  }, [initialCategory])
+  const [difficulty, setDifficulty] = useState<Difficulty>(initialDifficulty)
   const [progress, setProgress] = useState<ProgressFilter>('all')
   const [duration, setDuration] = useState<DurationFilter>('all')
   const [showFilters, setShowFilters] = useState(false)
@@ -259,14 +265,37 @@ export function RoadmapScreen({ onOpenLesson }: RoadmapScreenProps) {
 
   // 「次にやるべきレッスン」があるパスをデフォルトで開く
   const defaultOpen = useMemo(() => {
+    // カテゴリ指定があればそれを開く
+    if (initialCategory) {
+      // HomeScreenのidとRoadmapScreenのidのマッピング
+      const catMap: Record<string, string[]> = {
+        'logic': ['logic', 'formal-logic'],
+        'case': ['case'],
+        'thinking': ['critical', 'hypothesis', 'problem-setting', 'design-thinking', 'lateral', 'analogy', 'systems'],
+      }
+      return catMap[initialCategory]?.[0] ?? initialCategory
+    }
     for (const path of PATHS) {
       const hasIncomplete = path.lessons.some(l => !completedSet.has(String(l.id)))
       if (hasIncomplete) return path.id
     }
     return PATHS[0]?.id ?? ''
-  }, [completedSet])
+  }, [completedSet, initialCategory])
 
-  const [openSections, setOpenSections] = useState<Set<string>>(new Set([defaultOpen]))
+  // カテゴリ指定時は関連セクションを全部開く
+  const initialSections = useMemo(() => {
+    if (initialCategory) {
+      const catMap: Record<string, string[]> = {
+        'logic': ['logic', 'formal-logic'],
+        'case': ['case'],
+        'thinking': ['critical', 'hypothesis', 'problem-setting', 'design-thinking', 'lateral', 'analogy', 'systems'],
+      }
+      return new Set(catMap[initialCategory] ?? [initialCategory])
+    }
+    return new Set([defaultOpen])
+  }, [initialCategory, defaultOpen])
+
+  const [openSections, setOpenSections] = useState<Set<string>>(initialSections)
 
   const toggleSection = (id: string) => {
     setOpenSections(prev => {
