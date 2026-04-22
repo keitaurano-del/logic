@@ -1,13 +1,16 @@
 import { useMemo } from 'react'
 import type { ReactNode } from 'react'
 import { getStreak, getCompletedCount, getCompletedLessons, getStudyDates } from '../stats'
-import { loadPlacementResult } from '../placementData'
+import { loadPlacementResult, rankLabel as rankLabelFull } from '../placementData'
+
+function rankLabel(dev: number): string {
+  return rankLabelFull(dev).label
+}
 import { ArrowRightIcon, BarChartIcon, BrainIcon, BriefcaseIcon, FlameIcon, StarIcon, TrendingUpIcon, ZapIcon } from '../icons'
 import { Button } from '../components/Button'
 import { useIsDesktop } from '../hooks/useMediaQuery'
 import { isAdmin } from '../admin'
 import {
-  deviationToTopPercent,
   getPoints,
   getStreakState,
   hoursUntilMidnight,
@@ -62,7 +65,6 @@ interface DerivedData {
   completedSet: Set<string>
   points: number
   deviation: number | null
-  topPct: number | null
   rankFill: number
   eyebrow: string
   greeting: string
@@ -83,8 +85,7 @@ function useHomeData(): DerivedData {
   const placement = loadPlacementResult()
   const points = getPoints()
   const deviation = placement?.deviation ?? null
-  const topPct = deviation != null ? deviationToTopPercent(deviation) : null
-  const rankFill = topPct != null ? Math.min(100, Math.max(10, 100 - topPct)) : 0
+  const rankFill = deviation != null ? Math.min(100, Math.max(0, ((deviation - 25) / 50) * 100)) : 0
   const { eyebrow, greeting } = timeBasedGreeting(getLocale())
   const recovery = hoursUntilMidnight()
   const xp = completed * 100
@@ -94,7 +95,7 @@ function useHomeData(): DerivedData {
   const weekProgress = Math.min(7, streak)
   const weekPct = (weekProgress / 7) * 100
   return {
-    streak, streakState, completed, completedSet, points, deviation, topPct, rankFill,
+    streak, streakState, completed, completedSet, points, deviation, rankFill,
     eyebrow, greeting, recovery, level, levelXp, levelPct, xp, weekProgress, weekPct,
   }
 }
@@ -460,7 +461,7 @@ function HomeDesktop({
   levelTitle,
 }: HomeScreenProps & { data: DerivedData; levelTitle: string }) {
   const {
-    streak, streakState, completedSet, points, deviation, topPct, rankFill,
+    streak, streakState, completedSet, points, deviation, rankFill,
     eyebrow, greeting, recovery, level, levelXp, levelPct, xp, weekPct,
   } = data
 
@@ -540,17 +541,16 @@ function HomeDesktop({
             </div>
           </button>
         )}
-        {topPct != null ? (
+        {deviation != null ? (
           <button className="rank-card" onClick={onOpenRanking} style={{ cursor: 'pointer', border: 'none', background: 'none', padding: 0, textAlign: 'left', display: 'block', width: '100%' }}>
             <div className="rank-eyebrow">{t('home.nationalRanking')}</div>
             <div className="rank-row">
               <div className="rank-num">
-                {topPct}
-                <span className="rank-num-unit">%</span>
+                {deviation.toFixed(1)}
               </div>
               <div>
-                <div className="rank-meta-top">{t('ranking.topPercent', { pct: topPct })}</div>
-                <div className="rank-meta-sub">{t('ranking.deviationLabel')} {deviation!.toFixed(1)}</div>
+                <div className="rank-meta-top">偏差値</div>
+                <div className="rank-meta-sub">{rankLabel(deviation)}</div>
               </div>
             </div>
             <div className="rank-bar">
