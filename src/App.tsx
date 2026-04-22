@@ -175,6 +175,21 @@ function App() {
   const [screen, setScreen] = useState<Screen>({ type: 'home' })
   const [tab, setTab] = useState<Tab>('home')
 
+  // Hide bottom nav on scroll down, show on scroll up
+  const [navHidden, setNavHidden] = useState(false)
+  const lastScrollY = useRef(0)
+  useEffect(() => {
+    const threshold = 10
+    const onScroll = () => {
+      const y = window.scrollY
+      if (y > lastScrollY.current + threshold) setNavHidden(true)
+      else if (y < lastScrollY.current - threshold) setNavHidden(false)
+      lastScrollY.current = y
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
   // History stack for swipe-back support
   const screenHistoryRef = useRef<Screen[]>([])
 
@@ -699,7 +714,7 @@ function App() {
       />}
 
       {/* Bottom Navigation */}
-      <nav className="bottom-nav">
+      <nav className={`bottom-nav${navHidden ? ' bottom-nav--hidden' : ''}`}>
         <button className={`nav-item ${tab === 'home' ? 'active' : ''}`} onClick={() => setTab('home')}>
           <svg className="nav-icon" viewBox="0 0 24 24" fill={tab === 'home' ? 'currentColor' : 'none'} stroke={tab === 'home' ? 'none' : 'currentColor'} strokeWidth="2">
             <path d="M3 13h1v7c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-7h1a1 1 0 0 0 .7-1.7l-9-9a1 1 0 0 0-1.4 0l-9 9A1 1 0 0 0 3 13z" />
