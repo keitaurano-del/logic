@@ -430,7 +430,7 @@ function HomeMobile({
               <svg width="20" height="20" viewBox="0 0 24 24" fill="#7C3AED"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
             </div>
             <div style={{ fontSize: 16, fontWeight: 700, color: '#0F1523', letterSpacing: '-.01em' }}>AI 問題生成</div>
-            <div style={{ fontSize: 14, color: '#7A849E', marginTop: 2 }}>テーマを指定</div>
+            <div style={{ fontSize: 14, color: '#7A849E', marginTop: 2 }}>おすすめ問題を生成</div>
             {/* Premiumバッジ: BETA_MODE時は非表示 */}
           </div>
         </div>

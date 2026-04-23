@@ -63,10 +63,10 @@ export function LessonScreen({ lessonId, onBack, onComplete, onReport }: LessonS
   const accent = CATEGORY_COLOR[lesson.category] ?? '#3B5BDB'
   const catLabel = CATEGORY_LABEL[lesson.category] ?? lesson.category
 
-  const handleSubmit = () => {
+  const handleSubmitWith = (index: number) => {
     setSubmitted(true)
-    if (selected != null && step.type === 'quiz') {
-      const correct = step.options[selected].correct
+    if (step.type === 'quiz') {
+      const correct = step.options[index].correct
       setAnimClass(correct ? 'answer-bounce' : 'answer-shake')
     }
   }
@@ -155,8 +155,7 @@ export function LessonScreen({ lessonId, onBack, onComplete, onReport }: LessonS
             submitted={submitted}
             isLast={isLast}
             animClass={animClass}
-            onSelect={setSelected}
-            onSubmit={handleSubmit}
+            onSelect={(i) => { setSelected(i); handleSubmitWith(i) }}
             onNext={handleNext}
             onReport={onReport ? () => onReport({ lessonId: lesson.id, lessonTitle: lesson.title, question: step.question }) : undefined}
           />
@@ -237,7 +236,7 @@ function ExplainStep({ step, catLabel, accent, isLast, onNext }: {
 }
 
 // ── Quiz step ────────────────────────────────────────────────────
-function QuizStep({ step, catLabel, accent, selected, submitted, isLast, onSelect, onSubmit, onNext, onReport }: {
+function QuizStep({ step, catLabel, accent, selected, submitted, isLast, onSelect, onNext, onReport }: {
   step: LessonStep & { type: 'quiz' }
   catLabel: string
   accent: string
@@ -246,7 +245,6 @@ function QuizStep({ step, catLabel, accent, selected, submitted, isLast, onSelec
   isLast: boolean
   animClass: string
   onSelect: (i: number) => void
-  onSubmit: () => void
   onNext: () => void
   onReport?: () => void
 }) {
@@ -355,25 +353,9 @@ function QuizStep({ step, catLabel, accent, selected, submitted, isLast, onSelec
         </div>
       )}
 
-      {/* ボタンエリア */}
+      {/* ボタンエリア: 選択後のみ「次へ」表示 */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        {!submitted ? (
-          <button
-            disabled={selected == null}
-            onClick={onSubmit}
-            style={{
-              width: '100%',
-              background: selected == null ? '#D1D9F0' : accent,
-              color: '#fff', border: 'none', borderRadius: 14,
-              padding: '16px 20px', fontSize: 18, fontWeight: 700,
-              cursor: selected == null ? 'default' : 'pointer',
-              boxShadow: selected == null ? 'none' : `0 4px 12px ${accent}40`,
-              transition: 'background 0.2s, box-shadow 0.2s',
-            }}
-          >
-            回答する
-          </button>
-        ) : (
+        {submitted && (
           <button
             onClick={onNext}
             style={{
@@ -382,6 +364,7 @@ function QuizStep({ step, catLabel, accent, selected, submitted, isLast, onSelec
               fontSize: 18, fontWeight: 700, cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
               boxShadow: `0 4px 12px ${accent}40`,
+              animation: 'scale-in 0.2s ease-out both',
             }}
           >
             {isLast ? t('common.complete') : t('common.next')}
