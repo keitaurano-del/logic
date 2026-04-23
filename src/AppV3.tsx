@@ -17,6 +17,7 @@ import { ReportProblemScreen } from './screens/ReportProblemScreen'
 import { OnboardingScreen } from './screens/OnboardingScreen'
 
 import { AIProblemGenScreen } from './screens/AIProblemGenScreen'
+import { StatsScreen } from './screens/StatsScreen'
 import { AIProblemScreen } from './screens/AIProblemScreen'
 import { FeedbackScreen } from './screens/FeedbackScreen'
 import { PlacementTestScreen } from './screens/PlacementTestScreen'
@@ -279,7 +280,7 @@ function AppV3() {
       )}
 
       {screen.type === 'stats' && (
-        <RankingScreen
+        <StatsScreen
           onBack={handleBack}
           onTakeTest={() => navigate({ type: 'placement-test' })}
         />
