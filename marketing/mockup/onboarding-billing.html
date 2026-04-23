@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=390, initial-scale=1.0">
+<title>Logic — オンボーディング課金フロー</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, 'Hiragino Sans', sans-serif;
+    background: #1a1a2e;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 24px 16px 40px;
+    gap: 0;
+  }
+
+  .flow-container {
+    width: 100%;
+    max-width: 960px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .flow-title {
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    opacity: .6;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .screens-row {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .screen-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .screen-label {
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    opacity: .5;
+    text-transform: uppercase;
+  }
+
+  .arrow {
+    color: #6366f1;
+    font-size: 20px;
+    align-self: center;
+    margin-top: 24px;
+    opacity: .8;
+  }
+
+  /* ── Phone frame ── */
+  .phone {
+    width: 280px;
+    min-height: 560px;
+    background: #F0F4FF;
+    border-radius: 36px;
+    overflow: hidden;
+    box-shadow: 0 0 0 2px #2a2a4a, 0 20px 60px rgba(0,0,0,.5);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .phone-status {
+    height: 44px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 20px;
+    font-size: 12px;
+    color: #7A849E;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+
+  .phone-content {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Screen 1: ウェルカム ── */
+  .s1 .phone { background: #fff; }
+  .s1 .logo-area {
+    padding: 48px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .s1 .app-icon {
+    width: 72px; height: 72px;
+    border-radius: 18px;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .s1 .app-icon img { width: 72px; height: 72px; display: block; }
+  .s1 .app-name { font-size: 28px; font-weight: 800; color: #0F1523; letter-spacing: -.02em; }
+  .s1 .app-tagline { font-size: 14px; color: #7A849E; text-align: center; line-height: 1.5; }
+  .s1 .auth-btns {
+    padding: 0 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+  }
+  .s1 .btn-google {
+    background: #fff;
+    border: 1.5px solid #E2E8FF;
+    border-radius: 14px;
+    padding: 14px;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    font-size: 15px; font-weight: 600; color: #0F1523;
+    box-shadow: 0 1px 3px rgba(15,21,35,.08);
+  }
+  .s1 .btn-email {
+    background: #3B5BDB;
+    border: none;
+    border-radius: 14px;
+    padding: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 700; color: #fff;
+    box-shadow: 0 4px 12px rgba(59,91,219,.4);
+  }
+  .s1 .terms {
+    font-size: 11px; color: #B0B8CC;
+    text-align: center; padding: 16px 24px;
+    line-height: 1.6;
+  }
+
+  /* ── Screen 2: トライアル開始 ── */
+  .s2 .phone { background: #fff; }
+  .s2 .trial-hero {
+    background: linear-gradient(160deg, #3B5BDB 0%, #6366f1 100%);
+    padding: 32px 24px 28px;
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+  }
+  .s2 .trial-badge {
+    background: rgba(255,255,255,.2);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 11px; font-weight: 700; color: #fff;
+    letter-spacing: .08em; text-transform: uppercase;
+  }
+  .s2 .trial-days {
+    font-size: 52px; font-weight: 900; color: #fff; line-height: 1;
+    letter-spacing: -.03em;
+  }
+  .s2 .trial-label {
+    font-size: 16px; font-weight: 600; color: rgba(255,255,255,.85);
+  }
+  .s2 .features {
+    padding: 20px 20px 0;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .s2 .feat-row {
+    display: flex; align-items: center; gap: 12px;
+    background: #F8F9FF; border-radius: 12px; padding: 12px 14px;
+  }
+  .s2 .feat-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .s2 .feat-text { font-size: 13px; font-weight: 500; color: #3A4259; }
+  .s2 .feat-text strong { display: block; font-size: 14px; color: #0F1523; margin-bottom: 1px; }
+  .s2 .cta-area { padding: 16px 20px; }
+  .s2 .btn-trial {
+    background: #3B5BDB; color: #fff;
+    border: none; border-radius: 14px; padding: 15px;
+    font-size: 16px; font-weight: 700; width: 100%;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(59,91,219,.35);
+  }
+  .s2 .trial-note {
+    font-size: 11px; color: #B0B8CC; text-align: center;
+    padding: 0 20px 16px; line-height: 1.6;
+  }
+
+  /* ── Screen 3: キャンペーン訴求 ── */
+  .s3 .phone { background: #fff; }
+  .s3 .campaign-hero {
+    background: linear-gradient(160deg, #0F1523 0%, #1e2547 100%);
+    padding: 28px 20px 24px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .s3 .camp-eyebrow {
+    font-size: 11px; font-weight: 700; color: #F59E0B;
+    letter-spacing: .1em; text-transform: uppercase;
+  }
+  .s3 .camp-title {
+    font-size: 22px; font-weight: 800; color: #fff;
+    line-height: 1.3; letter-spacing: -.01em;
+  }
+  .s3 .camp-sub {
+    font-size: 13px; color: rgba(255,255,255,.6); line-height: 1.5;
+  }
+  .s3 .plans {
+    padding: 16px 16px 0;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .s3 .plan-card {
+    border: 1.5px solid #E2E8FF; border-radius: 14px;
+    padding: 14px 16px;
+    display: flex; align-items: center; gap: 12px;
+    position: relative;
+  }
+  .s3 .plan-card.featured {
+    border-color: #F59E0B;
+    background: #FFFBF0;
+    box-shadow: 0 0 0 2px #FEF3C7;
+  }
+  .s3 .camp-tag {
+    position: absolute; top: -10px; left: 16px;
+    background: #F59E0B; color: #fff;
+    font-size: 10px; font-weight: 700;
+    padding: 2px 10px; border-radius: 20px;
+    letter-spacing: .06em; text-transform: uppercase;
+  }
+  .s3 .plan-radio {
+    width: 20px; height: 20px; border-radius: 50%;
+    border: 2px solid #E2E8FF;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .s3 .plan-radio.on { border-color: #F59E0B; background: #F59E0B; }
+  .s3 .plan-radio.on::after {
+    content: ''; width: 8px; height: 8px;
+    border-radius: 50%; background: #fff;
+  }
+  .s3 .plan-info { flex: 1; }
+  .s3 .plan-name { font-size: 14px; font-weight: 700; color: #0F1523; }
+  .s3 .plan-desc { font-size: 12px; color: #7A849E; margin-top: 2px; }
+  .s3 .plan-price { text-align: right; }
+  .s3 .plan-price .price { font-size: 18px; font-weight: 800; color: #0F1523; }
+  .s3 .plan-price .price.featured { color: #D97706; }
+  .s3 .plan-price .per { font-size: 11px; color: #7A849E; }
+  .s3 .plan-price .original {
+    font-size: 11px; color: #B0B8CC;
+    text-decoration: line-through; display: block;
+  }
+  .s3 .cta-area { padding: 16px 16px 8px; }
+  .s3 .btn-campaign {
+    background: #F59E0B; color: #fff;
+    border: none; border-radius: 14px; padding: 15px;
+    font-size: 16px; font-weight: 700; width: 100%;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(245,158,11,.4);
+  }
+  .s3 .skip-link {
+    font-size: 12px; color: #B0B8CC; text-align: center;
+    padding: 0 16px 12px;
+  }
+  .s3 .skip-link span { text-decoration: underline; }
+
+  /* ── Screen 4: Google Play 決済 ── */
+  .s4 .phone { background: #F8F9FF; }
+  .s4 .play-header {
+    background: #fff;
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid #E2E8FF;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .s4 .play-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: linear-gradient(135deg, #3B5BDB, #6366f1);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .s4 .play-app { font-size: 15px; font-weight: 700; color: #0F1523; }
+  .s4 .play-store { font-size: 12px; color: #7A849E; }
+  .s4 .play-body { padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; }
+  .s4 .play-plan-row {
+    background: #fff; border-radius: 12px; padding: 14px 16px;
+    border: 1.5px solid #E2E8FF;
+  }
+  .s4 .play-plan-name { font-size: 14px; font-weight: 700; color: #0F1523; }
+  .s4 .play-plan-detail { font-size: 12px; color: #7A849E; margin-top: 3px; }
+  .s4 .play-price-row {
+    display: flex; justify-content: space-between; align-items: center;
+    background: #EEF2FF; border-radius: 12px; padding: 14px 16px;
+  }
+  .s4 .play-price-label { font-size: 13px; color: #3A4259; font-weight: 500; }
+  .s4 .play-price-val { font-size: 16px; font-weight: 800; color: #3B5BDB; }
+  .s4 .payment-methods {
+    background: #fff; border-radius: 12px; padding: 14px 16px;
+    border: 1.5px solid #E2E8FF;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .s4 .pm-label { font-size: 12px; font-weight: 600; color: #7A849E; letter-spacing: .04em; text-transform: uppercase; }
+  .s4 .pm-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: 10px;
+    border: 1.5px solid #3B5BDB; background: #EEF2FF;
+  }
+  .s4 .pm-card-icon {
+    width: 32px; height: 22px; border-radius: 4px;
+    background: linear-gradient(135deg, #1a1a3e, #3B5BDB);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .s4 .pm-card-num { font-size: 13px; color: #0F1523; font-weight: 500; }
+  .s4 .pm-add {
+    font-size: 13px; color: #3B5BDB; font-weight: 600;
+    padding: 8px 0;
+  }
+  .s4 .play-notice {
+    font-size: 11px; color: #B0B8CC; line-height: 1.6;
+    padding: 0 4px;
+  }
+  .s4 .btn-pay {
+    background: #3B5BDB; color: #fff;
+    border: none; border-radius: 14px; padding: 15px;
+    font-size: 16px; font-weight: 700; width: 100%;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(59,91,219,.35);
+  }
+
+  /* ── Screen 5: 完了 ── */
+  .s5 .phone { background: #fff; }
+  .s5 .complete-area {
+    flex: 1;
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; padding: 32px 24px;
+    gap: 16px;
+  }
+  .s5 .check-circle {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: linear-gradient(135deg, #12B76A, #059669);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 24px rgba(18,183,106,.35);
+  }
+  .s5 .complete-title {
+    font-size: 24px; font-weight: 800; color: #0F1523;
+    text-align: center; line-height: 1.3; letter-spacing: -.01em;
+  }
+  .s5 .complete-sub {
+    font-size: 14px; color: #7A849E; text-align: center; line-height: 1.6;
+  }
+  .s5 .plan-summary {
+    background: #F0F4FF; border-radius: 14px; padding: 14px 18px;
+    width: 100%; display: flex; flex-direction: column; gap: 6px;
+  }
+  .s5 .ps-row {
+    display: flex; justify-content: space-between;
+    font-size: 13px; color: #3A4259;
+  }
+  .s5 .ps-row strong { color: #0F1523; font-weight: 700; }
+  .s5 .trial-end-note {
+    font-size: 12px; color: #7A849E; text-align: center;
+    line-height: 1.6;
+  }
+  .s5 .btn-start {
+    background: #3B5BDB; color: #fff;
+    border: none; border-radius: 14px; padding: 15px;
+    font-size: 16px; font-weight: 700; width: 100%;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(59,91,219,.35);
+  }
+
+  /* step indicator */
+  .step-dots {
+    display: flex; gap: 6px; justify-content: center; margin-top: 4px;
+  }
+  .step-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: rgba(255,255,255,.2);
+  }
+  .step-dot.active { background: #6366f1; width: 20px; border-radius: 3px; }
+
+  @media (max-width: 600px) {
+    .arrow { display: none; }
+    .screens-row { flex-direction: column; align-items: center; }
+  }
+</style>
+</head>
+<body>
+<div class="flow-container">
+
+  <div class="flow-title">Logic — 課金オンボーディングフロー（B案: 初回のみ）</div>
+
+  <div class="screens-row">
+
+    <!-- Screen 1: ログイン / 新規登録 -->
+    <div class="screen-wrap s1">
+      <div class="screen-label">① ログイン</div>
+      <div class="phone">
+        <div class="phone-status">9:41</div>
+        <div class="phone-content">
+          <div class="logo-area">
+            <div class="app-icon">
+              <img src="/logo-512.png?v=1776954564" alt="Logic">
+            </div>
+            <div class="app-name">Logic</div>
+            <div class="app-tagline">論理思考を、<br>毎日少しずつ鍛える</div>
+          </div>
+          <div class="auth-btns">
+            <div class="btn-google">
+              <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+              Googleでログイン
+            </div>
+            <div class="btn-email">メールアドレスで登録</div>
+          </div>
+          <div class="terms">登録することで<u>利用規約</u>・<u>プライバシーポリシー</u>に同意したものとみなします</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow">→</div>
+
+    <!-- Screen 2: 7日間無料トライアル -->
+    <div class="screen-wrap s2">
+      <div class="screen-label">② 無料トライアル開始</div>
+      <div class="phone">
+        <div class="phone-status">9:41</div>
+        <div class="phone-content">
+          <div class="trial-hero">
+            <div class="trial-badge">Free Trial</div>
+            <div class="trial-days">7</div>
+            <div class="trial-label">日間 無料で全機能を体験</div>
+          </div>
+          <div class="features">
+            <div class="feat-row">
+              <div class="feat-icon" style="background:#EEF2FF">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" stroke-width="2" stroke-linecap="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              </div>
+              <div class="feat-text">
+                <strong>全レッスン解放</strong>
+                40以上のレッスンが使い放題
+              </div>
+            </div>
+            <div class="feat-row">
+              <div class="feat-icon" style="background:#F0FDF4">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#12B76A" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+              </div>
+              <div class="feat-text">
+                <strong>デイリーフェルミ推定</strong>
+                AIフィードバック付き毎日問題
+              </div>
+            </div>
+            <div class="feat-row">
+              <div class="feat-icon" style="background:#FFF7ED">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+              </div>
+              <div class="feat-text">
+                <strong>AI問題生成</strong>
+                弱点に合わせた問題を自動生成
+              </div>
+            </div>
+          </div>
+          <div class="cta-area">
+            <div class="btn-trial">無料トライアルを開始</div>
+          </div>
+          <div class="trial-note">クレジットカード登録が必要です。<br>7日以内に解約すれば費用は発生しません。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow">→</div>
+
+    <!-- Screen 3: キャンペーン訴求（初回限定） -->
+    <div class="screen-wrap s3">
+      <div class="screen-label">③ キャンペーン訴求（初回のみ）</div>
+      <div class="phone">
+        <div class="phone-status">9:41</div>
+        <div class="phone-content">
+          <div class="campaign-hero">
+            <div class="camp-eyebrow">Beta Campaign</div>
+            <div class="camp-title">今なら年額<br>¥1,980 で<br>全機能使い放題</div>
+            <div class="camp-sub">ベータ期間限定の特別価格。<br>通常価格になる前にロックインできます。</div>
+          </div>
+          <div class="plans">
+            <!-- ベータキャンペーン（選択済み） -->
+            <div class="plan-card featured">
+              <div class="camp-tag">おすすめ</div>
+              <div class="plan-radio on"></div>
+              <div class="plan-info">
+                <div class="plan-name">ベータキャンペーン</div>
+                <div class="plan-desc">AI生成含む全機能 / 7日間無料</div>
+              </div>
+              <div class="plan-price">
+                <span class="original">¥6,980/年</span>
+                <span class="price featured">¥1,980</span>
+                <span class="per">/年</span>
+              </div>
+            </div>
+            <!-- スタンダード -->
+            <div class="plan-card">
+              <div class="plan-radio"></div>
+              <div class="plan-info">
+                <div class="plan-name">スタンダード</div>
+                <div class="plan-desc">全レッスン / 7日間無料</div>
+              </div>
+              <div class="plan-price">
+                <span class="price">¥500</span>
+                <span class="per">/月</span>
+              </div>
+            </div>
+            <!-- 無料 -->
+            <div class="plan-card">
+              <div class="plan-radio"></div>
+              <div class="plan-info">
+                <div class="plan-name">無料プラン</div>
+                <div class="plan-desc">基本レッスンのみ</div>
+              </div>
+              <div class="plan-price">
+                <span class="price">¥0</span>
+                <span class="per"></span>
+              </div>
+            </div>
+          </div>
+          <div class="cta-area">
+            <div class="btn-campaign">ベータキャンペーンで始める</div>
+          </div>
+          <div class="skip-link"><span>スキップ（後で変更できます）</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow">→</div>
+
+    <!-- Screen 4: Google Play 決済シート -->
+    <div class="screen-wrap s4">
+      <div class="screen-label">④ Google Play 決済</div>
+      <div class="phone">
+        <div class="phone-status">9:41</div>
+        <div class="phone-content">
+          <div class="play-header">
+            <div class="play-icon">
+              <img src="/logo-512.png?v=1776954564" alt="Logic" style="width:24px;height:24px;border-radius:6px;">
+            </div>
+            <div>
+              <div class="play-app">Logic</div>
+              <div class="play-store">Google Play</div>
+            </div>
+          </div>
+          <div class="play-body">
+            <div class="play-plan-row">
+              <div class="play-plan-name">ベータキャンペーン年額プラン</div>
+              <div class="play-plan-detail">7日間無料 → その後 ¥1,980/年（自動更新）</div>
+            </div>
+            <div class="play-price-row">
+              <div class="play-price-label">今日のお支払い</div>
+              <div class="play-price-val">¥0（7日間無料）</div>
+            </div>
+            <div class="payment-methods">
+              <div class="pm-label">支払い方法</div>
+              <div class="pm-row">
+                <div class="pm-card-icon">
+                  <svg width="16" height="12" viewBox="0 0 16 12"><rect width="16" height="12" rx="2" fill="#1a1a3e"/><rect y="3" width="16" height="3" fill="#3B5BDB"/></svg>
+                </div>
+                <div class="pm-card-num">Visa •••• 4242</div>
+              </div>
+              <div class="pm-add">+ 別の支払い方法を追加</div>
+            </div>
+            <div class="play-notice">トライアル終了後（7日後）、¥1,980が請求されます。いつでも Google Play からキャンセルできます。</div>
+            <div class="btn-pay">無料体験を開始</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow">→</div>
+
+    <!-- Screen 5: 登録完了 -->
+    <div class="screen-wrap s5">
+      <div class="screen-label">⑤ 登録完了</div>
+      <div class="phone">
+        <div class="phone-status">9:41</div>
+        <div class="phone-content">
+          <div class="complete-area">
+            <div class="check-circle">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="complete-title">7日間の無料体験<br>スタート！</div>
+            <div class="complete-sub">トライアル期間中はすべての機能を<br>制限なく使えます。</div>
+            <div class="plan-summary">
+              <div class="ps-row"><span>プラン</span><strong>ベータキャンペーン</strong></div>
+              <div class="ps-row"><span>無料期間</span><strong>7日間</strong></div>
+              <div class="ps-row"><span>トライアル終了後</span><strong>¥1,980/年</strong></div>
+              <div class="ps-row"><span>自動更新</span><strong>あり（いつでも解約可）</strong></div>
+            </div>
+            <div class="trial-end-note">トライアル終了の2日前にリマインダーをお送りします。</div>
+            <div class="btn-start" style="width:100%">学習を始める</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end screens-row -->
+
+  <!-- 注記 -->
+  <div style="color:rgba(255,255,255,.4); font-size:12px; text-align:center; line-height:1.8;">
+    ③ キャンペーン訴求は初回登録時のみ表示。次回以降の起動ではスキップされる。<br>
+    ④ Google Play の決済シートは OS ネイティブ UI（実際の実装はGoogle提供のボトムシート）。<br>
+    無料プランを選んだ場合は④をスキップしてホームへ遷移。
+  </div>
+
+</div>
+</body>
+</html>
