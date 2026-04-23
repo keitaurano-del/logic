@@ -188,3 +188,33 @@ export async function verifyCheckout(sessionId: string): Promise<boolean> {
   }
   return false
 }
+
+// ── Beta Campaign ────────────────────────────────────────────────
+// ¥1,980/year plan with 7-day free trial
+// On Android: will use Google Play Billing (SCRUM-116)
+// On Web/iOS: falls through to Stripe checkout
+
+export const BETA_CAMPAIGN_PLAN: SubscriptionPlan = 'premium_yearly'
+
+export async function startBetaCampaignCheckout(guestId: string, userId?: string): Promise<void> {
+  // TODO (SCRUM-116): detect Android + use Google Play Billing Library
+  // For now, use Stripe checkout with beta_campaign flag
+  const res = await fetch(`${API_BASE}/api/checkout`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      plan: BETA_CAMPAIGN_PLAN,
+      guestId,
+      userId,
+      trial: true,
+      betaCampaign: true,
+    }),
+  })
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(err.error || 'チェックアウトに失敗しました')
+  }
+  const data = await res.json()
+  if (data.url) window.location.href = data.url
+  else throw new Error('チェックアウトURLが取得できませんでした')
+}
