@@ -28,10 +28,11 @@ interface LessonScreenProps {
   lessonId: number
   onBack: () => void
   onComplete: () => void
+  onNextLesson?: () => void
   onReport?: (context: { lessonId: number; lessonTitle: string; question: string }) => void
 }
 
-export function LessonScreen({ lessonId, onBack, onComplete, onReport }: LessonScreenProps) {
+export function LessonScreen({ lessonId, onBack, onComplete, onNextLesson, onReport }: LessonScreenProps) {
   const lesson = useMemo(() => allLessons[lessonId], [lessonId])
   const [stepIdx, setStepIdx] = useState(0)
   const [selected, setSelected] = useState<number | null>(null)
@@ -91,6 +92,7 @@ export function LessonScreen({ lessonId, onBack, onComplete, onReport }: LessonS
         lessonTitle={lesson.title}
         streakBefore={streakBefore.current}
         onComplete={onComplete}
+        onNextLesson={onNextLesson}
       />
     )
   }
@@ -394,10 +396,11 @@ function QuizStep({ step, catLabel, accent, selected, submitted, isLast, onSelec
 // Speak-inspired 2-phase completion screen:
 // Phase 1 (0-1.5s): XP / rank reveal
 // Phase 2 (1.6s+):  Streak celebration (only when streak increased)
-function CelebrationScreen({ lessonTitle, streakBefore, onComplete }: {
+function CelebrationScreen({ lessonTitle, streakBefore, onComplete, onNextLesson }: {
   lessonTitle: string
   streakBefore: number
   onComplete: () => void
+  onNextLesson?: () => void
 }) {
   const completedNow = getCompletedCount()
   const xp = completedNow * 100
@@ -545,19 +548,35 @@ function CelebrationScreen({ lessonTitle, streakBefore, onComplete }: {
             🔥 連続学習を確認中...
           </div>
         ) : (
-          <button
-            onClick={onComplete}
-            style={{
-              width: '100%', maxWidth: 280,
-              background: 'rgba(255,255,255,.15)', backdropFilter: 'blur(8px)',
-              color: '#fff', border: '1.5px solid rgba(255,255,255,.25)', borderRadius: 16,
-              padding: '16px 24px', fontSize: 18, fontWeight: 700,
-              cursor: 'pointer',
-              animation: 'fade-in-up 0.3s 0.5s ease-out both',
-            }}
-          >
-            ホームに戻る
-          </button>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, width: '100%', maxWidth: 300, animation: 'fade-in-up 0.3s 0.5s ease-out both' }}>
+            {onNextLesson && (
+              <button
+                onClick={onNextLesson}
+                style={{
+                  width: '100%',
+                  background: '#fff', color: '#3B5BDB',
+                  border: 'none', borderRadius: 16,
+                  padding: '16px 24px', fontSize: 18, fontWeight: 800,
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 16px rgba(0,0,0,.15)',
+                }}
+              >
+                次のレッスンへ
+              </button>
+            )}
+            <button
+              onClick={onComplete}
+              style={{
+                width: '100%',
+                background: 'rgba(255,255,255,.15)', backdropFilter: 'blur(8px)',
+                color: '#fff', border: '1.5px solid rgba(255,255,255,.25)', borderRadius: 16,
+                padding: '16px 24px', fontSize: 18, fontWeight: 700,
+                cursor: 'pointer',
+              }}
+            >
+              ホームに戻る
+            </button>
+          </div>
         )}
       </div>
     </>

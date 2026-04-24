@@ -226,6 +226,13 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
               <label style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-secondary)' }}>
                 {t('dailyFermi.answerLabel')}
               </label>
+              <div style={{
+                fontSize: 13, color: 'var(--text-muted)',
+                background: 'var(--bg-muted)', borderRadius: 8,
+                padding: '8px 12px', lineHeight: 1.6,
+              }}>
+                数字に追われなくていい。「対象・場所・頻度」の順に考えてみると分解しやすい。
+              </div>
               <textarea
                 value={answer}
                 onChange={(e) => setAnswer(e.target.value)}

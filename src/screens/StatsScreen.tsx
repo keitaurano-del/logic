@@ -31,6 +31,19 @@ function dayLabel(iso: string): string {
   return ['日', '月', '火', '水', '木', '金', '土'][d.getDay()]
 }
 
+const CATEGORY_LABEL_JP: Record<string, string> = {
+  fermi: 'フェルミ推定',
+  logic: 'ロジカルシンキング',
+  case: 'ケース面接',
+  thinking: '思考法',
+  critical: 'クリティカルシンキング',
+  pm: 'プロジェクト管理',
+  'formal-logic': '論理学',
+}
+function catLabel(cat: string): string {
+  return CATEGORY_LABEL_JP[cat] ?? cat
+}
+
 // 完了レッスンのカテゴリ別集計
 function getCategoryStats() {
   const completed = new Set(getCompletedLessons())
@@ -270,7 +283,7 @@ export function StatsScreen({ onBack, onTakeTest }: StatsScreenProps) {
             )}
           </div>
 
-          {/* 分野別進捗 */}
+          {/* 分野別進捗 — 全カテゴリを常時表示（0%も含む） */}
           {categoryStats.length > 0 && (
             <div className="card">
               <div style={{ fontSize: 13, fontWeight: 700, color: '#7A849E', letterSpacing: '.06em', marginBottom: 14 }}>
@@ -278,7 +291,7 @@ export function StatsScreen({ onBack, onTakeTest }: StatsScreenProps) {
               </div>
               {categoryStats.map(({ cat, total, done, rate }) => (
                 <div key={cat} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: '#0F1523', minWidth: 110 }}>{cat}</div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: '#0F1523', minWidth: 110 }}>{catLabel(cat)}</div>
                   <div style={{ flex: 1, height: 8, background: '#E8EEFF', borderRadius: 99, overflow: 'hidden' }}>
                     <div style={{ height: '100%', width: `${rate * 100}%`, background: rateColor(rate), borderRadius: 99 }} />
                   </div>
@@ -293,17 +306,17 @@ export function StatsScreen({ onBack, onTakeTest }: StatsScreenProps) {
           {/* 得意・苦手サマリー */}
           {categoryStats.length >= 2 && (
             <div style={{ display: 'flex', gap: 8 }}>
-              {bestCat && bestCat.done > 0 && (
+              {bestCat && bestCat.total > 0 && (
                 <div style={{ flex: 1, background: '#ECFDF5', borderRadius: 12, padding: 14 }}>
                   <div style={{ fontSize: 12, fontWeight: 700, color: '#059669', marginBottom: 6 }}>得意分野</div>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: '#0F1523' }}>{bestCat.cat}</div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: '#0F1523' }}>{catLabel(bestCat.cat)}</div>
                   <div style={{ fontSize: 13, color: '#7A849E' }}>{bestCat.done}/{bestCat.total} 完了</div>
                 </div>
               )}
               {worstCat && worstCat.total > 0 && worstCat.done < worstCat.total && (
                 <div style={{ flex: 1, background: '#FEF2F2', borderRadius: 12, padding: 14 }}>
                   <div style={{ fontSize: 12, fontWeight: 700, color: '#DC2626', marginBottom: 6 }}>伸びしろ</div>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: '#0F1523' }}>{worstCat.cat}</div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: '#0F1523' }}>{catLabel(worstCat.cat)}</div>
                   <div style={{ fontSize: 13, color: '#7A849E' }}>{worstCat.done}/{worstCat.total} 完了</div>
                 </div>
               )}

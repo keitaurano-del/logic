@@ -555,7 +555,7 @@ export function RoadmapScreen({ onOpenLesson, initialCategory }: RoadmapScreenPr
                                 background: ACCENT, borderRadius: 4,
                                 padding: '1px 5px', letterSpacing: '.05em',
                               }}>
-                                次
+                                おすすめ
                               </span>
                             )}
                             {(() => {

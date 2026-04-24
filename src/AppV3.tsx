@@ -33,12 +33,32 @@ import { RoadmapScreen } from './screens/RoadmapScreen'
 import type { AIProblemSet } from './aiProblemStore'
 import { loadTheme, applyTheme } from './theme'
 // import { loadGuestUser } from './guestUser'
-import { getCompletedCount } from './stats'
+import { getCompletedCount, getCompletedLessons } from './stats'
+import { allLessons } from './lessonData'
 import { isAdmin } from './admin'
 import { onAuthChange, logout, getInitialUser, type User } from './supabase'
 import { syncOnLogin, syncOnLogout } from './syncService'
 
 const ONBOARDED_KEY = 'logic-onboarded'
+
+// 同カテゴリの次の未完了レッスンIDを返す（なければ null）
+function getNextLessonId(currentLessonId: number): number | null {
+  const lesson = allLessons[currentLessonId]
+  if (!lesson) return null
+  const cat = lesson.category
+  const completed = new Set(getCompletedLessons())
+  // 同カテゴリのレッスンをID順に並べる
+  const sameCat = Object.values(allLessons)
+    .filter((l) => l.category === cat)
+    .sort((a, b) => a.id - b.id)
+  const idx = sameCat.findIndex((l) => l.id === currentLessonId)
+  if (idx < 0) return null
+  // 現在以降の未完了レッスンを探す
+  for (let i = idx + 1; i < sameCat.length; i++) {
+    if (!completed.has(`lesson-${sameCat[i].id}`)) return sameCat[i].id
+  }
+  return null
+}
 
 type Screen =
   | { type: 'home' }
@@ -362,6 +382,10 @@ function AppV3() {
           lessonId={screen.lessonId}
           onBack={handleBack}
           onComplete={handleComplete}
+          onNextLesson={(() => {
+            const nextId = getNextLessonId(screen.lessonId)
+            return nextId ? () => navigate({ type: 'lesson', lessonId: nextId }) : undefined
+          })()}
           onReport={(ctx) => navigate({ type: 'report-problem', context: ctx })}
         />
       )}
