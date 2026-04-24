@@ -66,3 +66,18 @@ export const allLessons: Record<number, LessonData> = new Proxy({} as Record<num
     return prop in base
   },
 })
+
+// Proxyは Object.values() で列挙できないため、フラットな Map を返すヘルパー
+export function getAllLessonsFlat(): Record<number, LessonData> {
+  return {
+    ..._activeLogicLessons(),
+    ...caseLessonMap,
+    ...criticalLessonMap,
+    ...hypothesisLessonMap,
+    ...problemSettingLessonMap,
+    ...designThinkingLessonMap,
+    ...lateralThinkingLessonMap,
+    ...analogyThinkingLessonMap,
+    ...systemsThinkingLessonMap,
+  }
+}

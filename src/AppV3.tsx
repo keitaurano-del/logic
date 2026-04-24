@@ -34,7 +34,7 @@ import type { AIProblemSet } from './aiProblemStore'
 import { loadTheme, applyTheme } from './theme'
 // import { loadGuestUser } from './guestUser'
 import { getCompletedCount, getCompletedLessons } from './stats'
-import { allLessons } from './lessonData'
+import { getAllLessonsFlat } from './lessonData'
 import { isAdmin } from './admin'
 import { onAuthChange, logout, getInitialUser, type User } from './supabase'
 import { syncOnLogin, syncOnLogout } from './syncService'
@@ -43,12 +43,13 @@ const ONBOARDED_KEY = 'logic-onboarded'
 
 // 同カテゴリの次の未完了レッスンIDを返す（なければ null）
 function getNextLessonId(currentLessonId: number): number | null {
-  const lesson = allLessons[currentLessonId]
+  const flat = getAllLessonsFlat()
+  const lesson = flat[currentLessonId]
   if (!lesson) return null
   const cat = lesson.category
   const completed = new Set(getCompletedLessons())
   // 同カテゴリのレッスンをID順に並べる
-  const sameCat = Object.values(allLessons)
+  const sameCat = Object.values(flat)
     .filter((l) => l.category === cat)
     .sort((a, b) => a.id - b.id)
   const idx = sameCat.findIndex((l) => l.id === currentLessonId)
