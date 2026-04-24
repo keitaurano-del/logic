@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
 import { getCompletedLessons, getStudyDates, getStreak, getStudyHours, getCompletedCount } from '../stats'
 import { loadPlacementResult, rankLabel } from '../placementData'
-import { allLessons } from '../lessonData'
+import { allLessons, getAllLessonsFlat } from '../lessonData'
 import { ArrowLeftIcon } from '../icons'
 import { IconButton } from '../components/IconButton'
 import { t } from '../i18n'
@@ -47,8 +47,9 @@ function catLabel(cat: string): string {
 // 完了レッスンのカテゴリ別集計
 function getCategoryStats() {
   const completed = new Set(getCompletedLessons())
+  const flat = getAllLessonsFlat()
   const map = new Map<string, { total: number; done: number }>()
-  for (const lesson of Object.values(allLessons)) {
+  for (const lesson of Object.values(flat)) {
     const cat = lesson.category ?? 'その他'
     if (!map.has(cat)) map.set(cat, { total: 0, done: 0 })
     const e = map.get(cat)!
