@@ -164,6 +164,10 @@ export function getPlanLabel(): string {
 import { API_BASE } from './apiBase'
 
 export async function startCheckout(plan: SubscriptionPlan, guestId: string, userId?: string, trial?: boolean): Promise<void> {
+  // SCRUM-121: Android native → Google Play Billingへルーティング（SCRUM-116完成待ち）
+  if (isAndroidNative()) {
+    throw new Error('Google Play購入は現在準備中です。')
+  }
   const res = await fetch(`${API_BASE}/api/checkout`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -189,6 +193,23 @@ export async function verifyCheckout(sessionId: string): Promise<boolean> {
   return false
 }
 
+// ── Platform detection (SCRUM-121) ─────────────────────────────
+// Web/iOS → Stripe checkout
+// Android native (Capacitor) → Google Play Billing (SCRUM-116)
+export type Platform = 'android-native' | 'web'
+
+export function detectPlatform(): Platform {
+  // Capacitor native Android
+  const isCapacitorAndroid =
+    typeof (window as unknown as Record<string, unknown>).Capacitor !== 'undefined' &&
+    /android/i.test(navigator.userAgent)
+  return isCapacitorAndroid ? 'android-native' : 'web'
+}
+
+export function isAndroidNative(): boolean {
+  return detectPlatform() === 'android-native'
+}
+
 // ── Beta Campaign ────────────────────────────────────────────────
 // ¥1,980/year plan with 7-day free trial
 // On Android: will use Google Play Billing (SCRUM-116)
@@ -197,8 +218,12 @@ export async function verifyCheckout(sessionId: string): Promise<boolean> {
 export const BETA_CAMPAIGN_PLAN: SubscriptionPlan = 'premium_yearly'
 
 export async function startBetaCampaignCheckout(guestId: string, userId?: string): Promise<void> {
-  // TODO (SCRUM-116): detect Android + use Google Play Billing Library
-  // For now, use Stripe checkout with beta_campaign flag
+  // SCRUM-121: Android native → Google Play Billing (SCRUM-116完成待ち)
+  if (isAndroidNative()) {
+    // Google Play Billing 導入待ちのスタブ。SCRUM-116完了後に実装済みの購入フローを呼び出す。
+    throw new Error('Google Play購入は現在準備中です。ウェブ版はブラウザでお試しください。')
+  }
+  // Web / iOS: Stripe checkout with beta_campaign flag
   const res = await fetch(`${API_BASE}/api/checkout`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { startCheckout, getSubscriptionState, daysLeftInTrial, isPremiumPlan, isStandardPlan } from '../subscription'
+import { startCheckout, getSubscriptionState, daysLeftInTrial, isPremiumPlan, isStandardPlan, isAndroidNative } from '../subscription'
 import { loadGuestUser } from '../guestUser'
 import { ArrowLeftIcon, CheckIcon, ZapIcon, BrainIcon } from '../icons'
 import { Button } from '../components/Button'
@@ -24,6 +24,12 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
     setLoading(plan)
     setError('')
     try {
+      // SCRUM-121: Android native → Google Play Billingへルーティング
+      if (isAndroidNative()) {
+        setError('Google Playからの購入は現在準備中です。ウェブ版はブラウザでお試しください。')
+        setLoading(null)
+        return
+      }
       const guest = loadGuestUser()
       await startCheckout(plan, guest.id)
     } catch (e: unknown) {

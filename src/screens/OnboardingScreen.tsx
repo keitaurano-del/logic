@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { startCheckout, startBetaCampaignCheckout } from '../subscription'
+import { startCheckout, startBetaCampaignCheckout, isAndroidNative } from '../subscription'
 import { loadGuestUser } from '../guestUser'
 import { ArrowRightIcon, CheckIcon } from '../icons'
 import { Button } from '../components/Button'
@@ -8,10 +8,7 @@ interface OnboardingScreenProps {
   onComplete: () => void
 }
 
-// ── Platform detection ───────────────────────────────────────────
-function isAndroid(): boolean {
-  return /android/i.test(navigator.userAgent)
-}
+// Platform detection: isAndroidNative() from subscription.ts (SCRUM-121)
 
 // ── Step 0: Welcome ──────────────────────────────────────────────
 function WelcomeStep({ onNext }: { onNext: () => void }) {
@@ -273,7 +270,7 @@ function PaymentStep({
   const [error, setError] = useState('')
   const [done, setDone] = useState(false)
 
-  const android = isAndroid()
+  const android = isAndroidNative()
 
   const handlePay = async () => {
     if (plan === 'free') {
