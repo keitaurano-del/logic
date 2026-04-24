@@ -20,7 +20,7 @@ const supabase = supabaseUrl
 const stripeKey = process.env.STRIPE_SECRET_KEY
 const stripe = stripeKey ? new Stripe(stripeKey) : null
 
-type PlanKey = 'monthly' | 'yearly' | 'standard_monthly' | 'standard_yearly' | 'premium_monthly' | 'premium_yearly'
+type PlanKey = 'monthly' | 'yearly' | 'standard_monthly' | 'standard_yearly' | 'premium_monthly' | 'premium_yearly' | 'beta_campaign'
 const PLANS: Record<PlanKey, { priceId: string; amount: number; interval: 'month' | 'year' }> = {
   monthly: {
     priceId: process.env.STRIPE_PRICE_STANDARD_MONTHLY || process.env.STRIPE_PRICE_MONTHLY || '',
@@ -50,6 +50,12 @@ const PLANS: Record<PlanKey, { priceId: string; amount: number; interval: 'month
   premium_yearly: {
     priceId: process.env.STRIPE_PRICE_PREMIUM_YEARLY || '',
     amount: 6980,
+    interval: 'year',
+  },
+  // ベータキャンペーン: AI生成包含全機能・年題¥1,980（7日トライアル）
+  beta_campaign: {
+    priceId: process.env.STRIPE_PRICE_BETA_CAMPAIGN || process.env.STRIPE_PRICE_PREMIUM_YEARLY || '',
+    amount: 1980,
     interval: 'year',
   },
 }
@@ -747,9 +753,65 @@ app.post('/api/journal/generate', generateProblemsLimiter, async (req, res) => {
 // =============================================
 // AI問題ジェネレーター
 // =============================================
+// AI生成クォータ管理 (SCRUM-120)
+// AI付きプラン: 月300問、ベータキャンペーン: 無制限
+const AI_GEN_LIMIT_STANDARD = 30   // スタンダードプラン: 月〉8差に丸めて月30問
+const AI_GEN_LIMIT_AI_PLAN  = 300  // AI付きプラン: 月300問
+
+async function checkAndIncrementAIQuota(userId: string | undefined, guestId: string | undefined): Promise<{ allowed: boolean; reason?: string }> {
+  // ゲストユーザーは制限あり（日に5問）
+  if (!userId && !guestId) return { allowed: true } // レートリミッタがかかる
+  if (!userId) return { allowed: true } // ゲスト: レートリミッタのみ
+
+  try {
+    const now = new Date()
+    const monthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
+
+    // profilesからクォータ情報とプランを取得
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('ai_gen_count, ai_gen_month, plan')
+      .eq('id', userId)
+      .single()
+
+    const currentPlan = profile?.plan ?? 'free'
+    const isBetaCampaign = currentPlan === 'beta_campaign' || currentPlan === 'premium_yearly'
+    const isAIPlan = isBetaCampaign || currentPlan === 'premium_monthly'
+    const limit = isAIPlan ? AI_GEN_LIMIT_AI_PLAN : AI_GEN_LIMIT_STANDARD
+
+    // 月をリセット
+    const savedMonth = profile?.ai_gen_month ?? ''
+    const count = savedMonth === monthKey ? (profile?.ai_gen_count ?? 0) : 0
+
+    if (count >= limit) {
+      return { allowed: false, reason: `今月のAI問題生成上限（${limit}問）に達しました。来月またはプランをアップグレードしてください。` }
+    }
+
+    // インクリメント
+    await supabase.from('profiles').upsert(
+      { id: userId, ai_gen_count: count + 1, ai_gen_month: monthKey },
+      { onConflict: 'id' }
+    )
+    return { allowed: true }
+  } catch (_e) {
+    // DBエラー時は通す（クォータはベストエフォート）
+    return { allowed: true }
+  }
+}
+
 app.post('/api/generate-problems', generateProblemsLimiter, async (req, res) => {
   try {
     const { prompt = '', locale } = req.body || {}
+    const userId = (req.body as { userId?: string }).userId
+    const guestId = (req.body as { guestId?: string }).guestId
+
+    // クォータチェック (BETA_MODE中はスキップ)
+    if (process.env.BETA_MODE !== 'true') {
+      const quota = await checkAndIncrementAIQuota(userId, guestId)
+      if (!quota.allowed) {
+        return res.status(429).json({ error: quota.reason })
+      }
+    }
     if (!prompt || prompt.length < 5) {
       return res.status(400).json({ error: 'prompt is required' })
     }
@@ -1278,7 +1340,8 @@ app.get('/api/reports', async (_req, res) => {
 app.post('/api/checkout', async (req, res) => {
   if (!stripe) return res.status(503).json({ error: 'Stripe not configured' })
   try {
-    const { plan, guestId, userId, trial } = req.body as { plan: PlanKey; guestId?: string; userId?: string; trial?: boolean }
+    const { plan: rawPlan, guestId, userId, trial, betaCampaign } = req.body as { plan: PlanKey; guestId?: string; userId?: string; trial?: boolean; betaCampaign?: boolean }
+    const plan: PlanKey = betaCampaign ? 'beta_campaign' : rawPlan
     if (!PLANS[plan]) return res.status(400).json({ error: 'invalid plan' })
     const planConfig = PLANS[plan]
     if (!planConfig.priceId) return res.status(503).json({ error: 'price not configured' })
