@@ -199,11 +199,14 @@ export async function verifyCheckout(sessionId: string): Promise<boolean> {
 export type Platform = 'android-native' | 'web'
 
 export function detectPlatform(): Platform {
-  // Capacitor native Android
-  const isCapacitorAndroid =
-    typeof (window as unknown as Record<string, unknown>).Capacitor !== 'undefined' &&
-    /android/i.test(navigator.userAgent)
-  return isCapacitorAndroid ? 'android-native' : 'web'
+  try {
+    // Capacitor.getPlatform() はネイティブで 'android'|'ios'|'web' を返す
+    const cap = (window as unknown as Record<string, unknown>).Capacitor as { getPlatform?: () => string } | undefined
+    if (cap?.getPlatform) {
+      return cap.getPlatform() === 'android' ? 'android-native' : 'web'
+    }
+  } catch { /* ignore */ }
+  return 'web'
 }
 
 export function isAndroidNative(): boolean {
