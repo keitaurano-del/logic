@@ -478,20 +478,35 @@ function CelebrationScreen({ lessonTitle, streakBefore, onComplete, onNextLesson
         {/* 曜日バー（今週の学習記録） */}
         <WeekBar style={{ marginBottom: 40, animation: 'slide-up-fade 0.4s 0.7s ease-out both' }} />
 
-        <button
-          onClick={onComplete}
-          style={{
-            width: '100%', maxWidth: 300,
-            background: 'linear-gradient(135deg, #F97316, #EF4444)',
-            color: '#fff', border: 'none', borderRadius: 16,
-            padding: '18px 24px', fontSize: 18, fontWeight: 800,
-            cursor: 'pointer', letterSpacing: '-.01em',
-            boxShadow: '0 6px 20px rgba(249,115,22,.35)',
-            animation: 'slide-up-fade 0.4s 0.8s ease-out both',
-          }}
-        >
-          続ける
-        </button>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, width: '100%', maxWidth: 300, animation: 'slide-up-fade 0.4s 0.8s ease-out both' }}>
+          {onNextLesson && (
+            <button
+              onClick={onNextLesson}
+              style={{
+                width: '100%',
+                background: '#fff', color: '#1A2E6B',
+                border: 'none', borderRadius: 16,
+                padding: '18px 24px', fontSize: 18, fontWeight: 800,
+                cursor: 'pointer',
+                boxShadow: '0 4px 16px rgba(0,0,0,.2)',
+              }}
+            >
+              次のレッスンへ
+            </button>
+          )}
+          <button
+            onClick={onComplete}
+            style={{
+              width: '100%',
+              background: 'rgba(255,255,255,.15)', backdropFilter: 'blur(8px)',
+              color: '#fff', border: '1.5px solid rgba(255,255,255,.3)', borderRadius: 16,
+              padding: '18px 24px', fontSize: 18, fontWeight: 700,
+              cursor: 'pointer',
+            }}
+          >
+            ホームに戻る
+          </button>
+        </div>
       </div>
     )
   }
