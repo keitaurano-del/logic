@@ -20,6 +20,35 @@ const supabase = supabaseUrl
 const stripeKey = process.env.STRIPE_SECRET_KEY
 const stripe = stripeKey ? new Stripe(stripeKey) : null
 
+// 起動時マイグレーション: feedbackテーブルの自動作成 (SCRUM-69)
+async function ensureFeedbackTable() {
+  if (!supabase) return
+  try {
+    const { error } = await supabase.from('feedback').select('id').limit(1)
+    if (error?.code === '42P01') {
+      // テーブルが存在しない → Supabase Management APIで作成するには別途のアクセストークンが必要なためログのみ
+      console.warn('[MIGRATION] feedback table not found. Please run supabase/migrations/004_feedback.sql in Supabase Dashboard.')
+    } else {
+      console.log('[MIGRATION] feedback table: ok')
+    }
+  } catch (_e) {
+    console.warn('[MIGRATION] Could not check feedback table:', _e)
+  }
+}
+
+// feedbackテーブルの代替チェック
+// Supabaseダッシュボードで SQL Editor から実行:
+// CREATE TABLE IF NOT EXISTS feedback (
+//   id bigserial primary key,
+//   category text not null default 'その他',
+//   message text not null,
+//   locale text not null default 'ja',
+//   created_at timestamptz not null default now()
+// );
+// ALTER TABLE feedback ENABLE ROW LEVEL SECURITY;
+// CREATE POLICY "Anyone can insert feedback" ON feedback FOR INSERT WITH CHECK (true);
+// CREATE POLICY "Service role can read feedback" ON feedback FOR SELECT USING (auth.role() = 'service_role');
+
 type PlanKey = 'monthly' | 'yearly' | 'standard_monthly' | 'standard_yearly' | 'premium_monthly' | 'premium_yearly' | 'beta_campaign'
 const PLANS: Record<PlanKey, { priceId: string; amount: number; interval: 'month' | 'year' }> = {
   monthly: {
@@ -1766,4 +1795,5 @@ app.get('/{*splat}', (req, res) => {
 const PORT = parseInt(process.env.PORT || '3001', 10)
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on http://localhost:${PORT}`)
+  ensureFeedbackTable().catch(console.warn)
 })

@@ -44,6 +44,7 @@ const DURATION_LABELS: { id: DurationFilter; label: string; icon: string }[] = [
 const LESSON_DURATION: Record<number, number> = {
   // ロジカルシンキング
   20: 8, 21: 10, 22: 7, 23: 8, 68: 10,
+  69: 12, 70: 10, 71: 12,
   // 論理学
   24: 15, 25: 7, 26: 7, 27: 10,
   // ケース面接
@@ -116,6 +117,8 @@ const PATHS: RoadmapPath[] = [
       { id: 41, title: '論理的誤謬を見破る',        sub: '一見正しそうな「嘘の論理」に気づく' },
       { id: 42, title: 'データを正しく読む',        sub: 'グラフ・統計の罠と正しい解釈' },
       { id: 43, title: '問いを立てる力',           sub: '良い問いが良い答えを生む' },
+      { id: 69, title: '認知バイアスを外す',        sub: '固定観念が判断を歪める3つのメカニズム' },
+      { id: 71, title: '相関と因果を見分ける',       sub: 'AとBの関係が「原因」か「たまたま」かを見極める' },
     ],
   },
   {
@@ -125,6 +128,7 @@ const PATHS: RoadmapPath[] = [
       { id: 50, title: '仮説思考入門',     sub: 'まず仮の答えを立ててから検証する' },
       { id: 51, title: '仮説の立て方と検証', sub: '良い仮説の3条件と検証設計' },
       { id: 52, title: '仮説ドリブンの課題解決', sub: 'Day 1 AnswerとQuick & Dirty検証' },
+      { id: 70, title: '仮説の検証設計',     sub: '「検証できる仮説」を最小コストで証明する' },
     ],
   },
   {
