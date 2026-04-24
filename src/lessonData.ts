@@ -37,6 +37,7 @@ import { designThinkingLessonMap } from './designThinkingLessons'
 import { lateralThinkingLessonMap } from './lateralThinkingLessons'
 import { analogyThinkingLessonMap } from './analogyThinkingLessons'
 import { systemsThinkingLessonMap } from './systemsThinkingLessons'
+import { proposalLessonMap } from './proposalLessons'
 
 // Logic lessons swap by locale
 const _activeLogicLessons = (): Record<number, LessonData> =>
@@ -54,6 +55,7 @@ export const allLessons: Record<number, LessonData> = new Proxy({} as Record<num
       ...lateralThinkingLessonMap,
       ...analogyThinkingLessonMap,
       ...systemsThinkingLessonMap,
+      ...proposalLessonMap,
     }
     return base[prop as unknown as number]
   },
@@ -62,6 +64,7 @@ export const allLessons: Record<number, LessonData> = new Proxy({} as Record<num
       ..._activeLogicLessons(), ...caseLessonMap, ...criticalLessonMap,
       ...hypothesisLessonMap, ...problemSettingLessonMap, ...designThinkingLessonMap,
       ...lateralThinkingLessonMap, ...analogyThinkingLessonMap, ...systemsThinkingLessonMap,
+      ...proposalLessonMap,
     }
     return prop in base
   },
@@ -79,5 +82,6 @@ export function getAllLessonsFlat(): Record<number, LessonData> {
     ...lateralThinkingLessonMap,
     ...analogyThinkingLessonMap,
     ...systemsThinkingLessonMap,
+    ...proposalLessonMap,
   }
 }

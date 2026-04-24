@@ -18,6 +18,7 @@ const DIFFICULTY_MAP: Record<string, Difficulty> = {
   'lateral': 'advanced',
   'analogy': 'advanced',
   'systems': 'advanced',
+  'proposal': 'intermediate',
 }
 
 const DIFFICULTY_LABELS: { id: Difficulty; label: string }[] = [
@@ -45,6 +46,7 @@ const LESSON_DURATION: Record<number, number> = {
   // ロジカルシンキング
   20: 8, 21: 10, 22: 7, 23: 8, 68: 10,
   69: 12, 70: 10, 71: 12,
+  72: 10, 73: 10, 74: 12, 75: 10, 76: 10,
   // 論理学
   24: 15, 25: 7, 26: 7, 27: 10,
   // ケース面接
@@ -174,6 +176,17 @@ const PATHS: RoadmapPath[] = [
       { id: 65, title: 'システムシンキング入門', sub: 'フィードバックループと氷山モデル' },
       { id: 66, title: 'システム原型',       sub: 'よくあるパターンで問題を診断' },
       { id: 67, title: 'システムシンキング実践', sub: '因果ループ図とレバレッジポイント' },
+    ],
+  },
+  {
+    id: 'proposal',
+    label: '提案・伝える技術',
+    lessons: [
+      { id: 72, title: '提案書の目的を定める', sub: '何を決めてもらうかから逆算する' },
+      { id: 73, title: '相手の立場で考える',   sub: 'ステークホルダーの関心軸と反論の先読み' },
+      { id: 74, title: 'ストーリーラインの設計', sub: 'SCR構造で提案を一本の流れにする' },
+      { id: 75, title: 'メッセージを磨く',      sub: 'So WhatでスライドのタイトルをInsightに変える' },
+      { id: 76, title: '反論を先読みする',      sub: '想定QAと「今やる理由」で承認確率を上げる' },
     ],
   },
 ]

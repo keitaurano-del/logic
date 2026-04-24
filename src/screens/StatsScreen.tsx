@@ -39,6 +39,13 @@ const CATEGORY_LABEL_JP: Record<string, string> = {
   critical: 'クリティカルシンキング',
   pm: 'プロジェクト管理',
   'formal-logic': '論理学',
+  hypothesis: '仮説思考',
+  'problem-setting': '課題設定',
+  'design-thinking': 'デザインシンキング',
+  lateral: 'ラテラルシンキング',
+  analogy: 'アナロジー思考',
+  systems: 'システムシンキング',
+  proposal: '提案・伝える技術',
 }
 function catLabel(cat: string): string {
   return CATEGORY_LABEL_JP[cat] ?? cat
