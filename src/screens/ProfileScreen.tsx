@@ -1,5 +1,4 @@
 import { getCompletedCount, getStreak } from '../stats'
-import { loadPlacementResult } from '../placementData'
 import { getCurrentTier, RANK_TIERS } from './homeHelpers'
 import { RankIllustration } from '../components/RankIllustration'
 import { logout } from '../supabase'
@@ -33,7 +32,7 @@ interface ProfileScreenProps {
   onOpenPricing?: () => void
 }
 
-export function ProfileScreen({ userName, onOpenSettings, onOpenFeedback, onOpenPricing, onOpenRank }: ProfileScreenProps) {
+export function ProfileScreen({ userName, onOpenSettings, onOpenFeedback, onOpenPricing, onOpenRank, onOpenStreak, onOpenCompleted }: ProfileScreenProps) {
   const streak = getStreak()
   const completed = getCompletedCount()
   const xp = completed * 100
@@ -42,8 +41,6 @@ export function ProfileScreen({ userName, onOpenSettings, onOpenFeedback, onOpen
   const xpInLevel = xp - tier.minXp
   const xpToNext = nextTier ? nextTier.minXp - tier.minXp : 1000
   const xpPct = Math.min(100, Math.round((xpInLevel / xpToNext) * 100))
-  const placement = loadPlacementResult()
-  const deviation = placement?.deviation ?? null
 
 
   const handleLogout = async () => {
@@ -121,12 +118,11 @@ export function ProfileScreen({ userName, onOpenSettings, onOpenFeedback, onOpen
 
           {/* ステータス行 */}
           <div style={{ display: 'flex', gap: 20, marginTop: 14, paddingTop: 14, borderTop: '1px solid rgba(255,255,255,.12)', width: '100%', justifyContent: 'center' }}>
-            {[
-              { value: String(completed), label: 'レッスン' },
-              { value: `${streak}日`, label: '連続学習' },
-              { value: deviation != null ? String(Math.round(deviation)) : '—', label: '偏差値' },
-            ].map(({ value, label }) => (
-              <div key={label} style={{ textAlign: 'center' }}>
+            {([
+              { value: String(completed), label: 'レッスン', onClick: onOpenCompleted },
+              { value: `${streak}日`, label: '連続学習', onClick: onOpenStreak },
+            ] as { value: string; label: string; onClick?: () => void }[]).map(({ value, label, onClick }) => (
+              <div key={label} onClick={onClick} style={{ textAlign: 'center', cursor: onClick ? 'pointer' : 'default', padding: '4px 8px', borderRadius: 10, transition: 'background .15s' }}>
                 <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, color: '#fff', letterSpacing: '-.02em' }}>{value}</div>
                 <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.45)' }}>{label}</div>
               </div>

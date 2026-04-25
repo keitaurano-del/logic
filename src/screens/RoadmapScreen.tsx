@@ -200,15 +200,6 @@ interface RoadmapScreenProps {
   initialCategory?: string
 }
 
-/** レッスンIDからレベルを取得 */
-function getLessonLevel(lessonId: number): Difficulty {
-  for (const path of PATHS) {
-    if (path.lessons.some(l => l.id === lessonId)) {
-      return DIFFICULTY_MAP[path.id] ?? 'beginner'
-    }
-  }
-  return 'beginner'
-}
 
 const LEVEL_BADGE: Record<Difficulty, { label: string; color: string; bg: string }> = {
   all: { label: '', color: '', bg: '' },
@@ -494,9 +485,20 @@ export function RoadmapScreen({ onOpenLesson, initialCategory }: RoadmapScreenPr
               >
                 <div style={{ flex: 1 }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-                    <span style={{ fontSize: 16, fontWeight: 800, color: '#0F1523', letterSpacing: '-.01em' }}>
-                      {path.label}
-                    </span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <span style={{ fontSize: 16, fontWeight: 800, color: '#0F1523', letterSpacing: '-.01em' }}>
+                        {path.label}
+                      </span>
+                      {(() => {
+                        const lvl = DIFFICULTY_MAP[path.id] as Difficulty | undefined
+                        const badge = lvl && LEVEL_BADGE[lvl]
+                        return badge && badge.label ? (
+                          <span style={{ fontSize: 11, fontWeight: 700, color: badge.color, background: badge.bg, borderRadius: 4, padding: '2px 6px' }}>
+                            {badge.label}
+                          </span>
+                        ) : null
+                      })()}
+                    </div>
                     <span style={{
                       fontSize: 14, fontWeight: 700, color: allDone ? '#fff' : ACCENT,
                       background: allDone ? ACCENT : ACCENT_BG,
@@ -566,28 +568,7 @@ export function RoadmapScreen({ onOpenLesson, initialCategory }: RoadmapScreenPr
                             }}>
                               {lesson.title}
                             </span>
-                            {isNext && (
-                              <span style={{
-                                fontSize: 11, fontWeight: 800, color: '#fff',
-                                background: ACCENT, borderRadius: 4,
-                                padding: '1px 5px', letterSpacing: '.05em',
-                              }}>
-                                おすすめ
-                              </span>
-                            )}
-                            {(() => {
-                              const lvl = getLessonLevel(lesson.id)
-                              const badge = LEVEL_BADGE[lvl]
-                              return badge.label ? (
-                                <span style={{
-                                  fontSize: 11, fontWeight: 700, color: badge.color,
-                                  background: badge.bg, borderRadius: 4,
-                                  padding: '1px 5px',
-                                }}>
-                                  {badge.label}
-                                </span>
-                              ) : null
-                            })()}
+
                           </div>
                           <div style={{ fontSize: 14, color: '#7A849E', marginTop: 2, lineHeight: 1.4, display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
                             {lesson.sub}
