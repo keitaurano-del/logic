@@ -204,3 +204,130 @@ export function timeBasedGreeting(locale: 'ja' | 'en' = 'ja'): { eyebrow: string
   if (h < 22) return { eyebrow: 'GOOD EVENING',   greeting: 'こんばんは' }
   return       { eyebrow: 'GOOD NIGHT',            greeting: 'お疲れさま' }
 }
+
+// ============================================================
+// NEW LEVEL SYSTEM (SCRUM-130) — Lv1〜99, 名称なし
+// XP閾値: minXp(n) = 50 * n * (n-1) / 2
+// Lv2=50, Lv5=500, Lv10=2250, Lv20=9500, Lv50=61250, Lv99=242550
+// ============================================================
+
+export type LevelInfo = {
+  level: number
+  minXp: number
+  nextXp: number
+  color: string
+}
+
+export const LEVEL_TABLE: LevelInfo[] = [
+  { level:  1, minXp:      0, nextXp:     50, color: '#3B5BDB' },
+  { level:  2, minXp:     50, nextXp:    150, color: '#3B5BDB' },
+  { level:  3, minXp:    150, nextXp:    300, color: '#3B5BDB' },
+  { level:  4, minXp:    300, nextXp:    500, color: '#3B5BDB' },
+  { level:  5, minXp:    500, nextXp:    750, color: '#3B5BDB' },
+  { level:  6, minXp:    750, nextXp:   1050, color: '#3B5BDB' },
+  { level:  7, minXp:   1050, nextXp:   1400, color: '#3B5BDB' },
+  { level:  8, minXp:   1400, nextXp:   1800, color: '#3B5BDB' },
+  { level:  9, minXp:   1800, nextXp:   2250, color: '#3B5BDB' },
+  { level: 10, minXp:   2250, nextXp:   2750, color: '#3B5BDB' },
+  { level: 11, minXp:   2750, nextXp:   3300, color: '#3B5BDB' },
+  { level: 12, minXp:   3300, nextXp:   3900, color: '#3B5BDB' },
+  { level: 13, minXp:   3900, nextXp:   4550, color: '#3B5BDB' },
+  { level: 14, minXp:   4550, nextXp:   5250, color: '#3B5BDB' },
+  { level: 15, minXp:   5250, nextXp:   6000, color: '#3B5BDB' },
+  { level: 16, minXp:   6000, nextXp:   6800, color: '#3B5BDB' },
+  { level: 17, minXp:   6800, nextXp:   7650, color: '#3B5BDB' },
+  { level: 18, minXp:   7650, nextXp:   8550, color: '#3B5BDB' },
+  { level: 19, minXp:   8550, nextXp:   9500, color: '#3B5BDB' },
+  { level: 20, minXp:   9500, nextXp:  10500, color: '#3B5BDB' },
+  { level: 21, minXp:  10500, nextXp:  11550, color: '#7B5EA7' },
+  { level: 22, minXp:  11550, nextXp:  12650, color: '#7B5EA7' },
+  { level: 23, minXp:  12650, nextXp:  13800, color: '#7B5EA7' },
+  { level: 24, minXp:  13800, nextXp:  15000, color: '#7B5EA7' },
+  { level: 25, minXp:  15000, nextXp:  16250, color: '#7B5EA7' },
+  { level: 26, minXp:  16250, nextXp:  17550, color: '#7B5EA7' },
+  { level: 27, minXp:  17550, nextXp:  18900, color: '#7B5EA7' },
+  { level: 28, minXp:  18900, nextXp:  20300, color: '#7B5EA7' },
+  { level: 29, minXp:  20300, nextXp:  21750, color: '#7B5EA7' },
+  { level: 30, minXp:  21750, nextXp:  23250, color: '#7B5EA7' },
+  { level: 31, minXp:  23250, nextXp:  24800, color: '#7B5EA7' },
+  { level: 32, minXp:  24800, nextXp:  26400, color: '#7B5EA7' },
+  { level: 33, minXp:  26400, nextXp:  28050, color: '#7B5EA7' },
+  { level: 34, minXp:  28050, nextXp:  29750, color: '#7B5EA7' },
+  { level: 35, minXp:  29750, nextXp:  31500, color: '#7B5EA7' },
+  { level: 36, minXp:  31500, nextXp:  33300, color: '#7B5EA7' },
+  { level: 37, minXp:  33300, nextXp:  35150, color: '#7B5EA7' },
+  { level: 38, minXp:  35150, nextXp:  37050, color: '#7B5EA7' },
+  { level: 39, minXp:  37050, nextXp:  39000, color: '#7B5EA7' },
+  { level: 40, minXp:  39000, nextXp:  41000, color: '#7B5EA7' },
+  { level: 41, minXp:  41000, nextXp:  43050, color: '#1A7A5E' },
+  { level: 42, minXp:  43050, nextXp:  45150, color: '#1A7A5E' },
+  { level: 43, minXp:  45150, nextXp:  47300, color: '#1A7A5E' },
+  { level: 44, minXp:  47300, nextXp:  49500, color: '#1A7A5E' },
+  { level: 45, minXp:  49500, nextXp:  51750, color: '#1A7A5E' },
+  { level: 46, minXp:  51750, nextXp:  54050, color: '#1A7A5E' },
+  { level: 47, minXp:  54050, nextXp:  56400, color: '#1A7A5E' },
+  { level: 48, minXp:  56400, nextXp:  58800, color: '#1A7A5E' },
+  { level: 49, minXp:  58800, nextXp:  61250, color: '#1A7A5E' },
+  { level: 50, minXp:  61250, nextXp:  63750, color: '#1A7A5E' },
+  { level: 51, minXp:  63750, nextXp:  66300, color: '#1A7A5E' },
+  { level: 52, minXp:  66300, nextXp:  68900, color: '#1A7A5E' },
+  { level: 53, minXp:  68900, nextXp:  71550, color: '#1A7A5E' },
+  { level: 54, minXp:  71550, nextXp:  74250, color: '#1A7A5E' },
+  { level: 55, minXp:  74250, nextXp:  77000, color: '#1A7A5E' },
+  { level: 56, minXp:  77000, nextXp:  79800, color: '#1A7A5E' },
+  { level: 57, minXp:  79800, nextXp:  82650, color: '#1A7A5E' },
+  { level: 58, minXp:  82650, nextXp:  85550, color: '#1A7A5E' },
+  { level: 59, minXp:  85550, nextXp:  88500, color: '#1A7A5E' },
+  { level: 60, minXp:  88500, nextXp:  91500, color: '#1A7A5E' },
+  { level: 61, minXp:  91500, nextXp:  94550, color: '#B8860B' },
+  { level: 62, minXp:  94550, nextXp:  97650, color: '#B8860B' },
+  { level: 63, minXp:  97650, nextXp: 100800, color: '#B8860B' },
+  { level: 64, minXp: 100800, nextXp: 104000, color: '#B8860B' },
+  { level: 65, minXp: 104000, nextXp: 107250, color: '#B8860B' },
+  { level: 66, minXp: 107250, nextXp: 110550, color: '#B8860B' },
+  { level: 67, minXp: 110550, nextXp: 113900, color: '#B8860B' },
+  { level: 68, minXp: 113900, nextXp: 117300, color: '#B8860B' },
+  { level: 69, minXp: 117300, nextXp: 120750, color: '#B8860B' },
+  { level: 70, minXp: 120750, nextXp: 124250, color: '#B8860B' },
+  { level: 71, minXp: 124250, nextXp: 127800, color: '#B8860B' },
+  { level: 72, minXp: 127800, nextXp: 131400, color: '#B8860B' },
+  { level: 73, minXp: 131400, nextXp: 135050, color: '#B8860B' },
+  { level: 74, minXp: 135050, nextXp: 138750, color: '#B8860B' },
+  { level: 75, minXp: 138750, nextXp: 142500, color: '#B8860B' },
+  { level: 76, minXp: 142500, nextXp: 146300, color: '#B8860B' },
+  { level: 77, minXp: 146300, nextXp: 150150, color: '#B8860B' },
+  { level: 78, minXp: 150150, nextXp: 154050, color: '#B8860B' },
+  { level: 79, minXp: 154050, nextXp: 158000, color: '#B8860B' },
+  { level: 80, minXp: 158000, nextXp: 162000, color: '#B8860B' },
+  { level: 81, minXp: 162000, nextXp: 166050, color: '#C0392B' },
+  { level: 82, minXp: 166050, nextXp: 170150, color: '#C0392B' },
+  { level: 83, minXp: 170150, nextXp: 174300, color: '#C0392B' },
+  { level: 84, minXp: 174300, nextXp: 178500, color: '#C0392B' },
+  { level: 85, minXp: 178500, nextXp: 182750, color: '#C0392B' },
+  { level: 86, minXp: 182750, nextXp: 187050, color: '#C0392B' },
+  { level: 87, minXp: 187050, nextXp: 191400, color: '#C0392B' },
+  { level: 88, minXp: 191400, nextXp: 195800, color: '#C0392B' },
+  { level: 89, minXp: 195800, nextXp: 200250, color: '#C0392B' },
+  { level: 90, minXp: 200250, nextXp: 204750, color: '#C0392B' },
+  { level: 91, minXp: 204750, nextXp: 209300, color: '#C0392B' },
+  { level: 92, minXp: 209300, nextXp: 213900, color: '#C0392B' },
+  { level: 93, minXp: 213900, nextXp: 218550, color: '#C0392B' },
+  { level: 94, minXp: 218550, nextXp: 223250, color: '#C0392B' },
+  { level: 95, minXp: 223250, nextXp: 228000, color: '#C0392B' },
+  { level: 96, minXp: 228000, nextXp: 232800, color: '#C0392B' },
+  { level: 97, minXp: 232800, nextXp: 237650, color: '#C0392B' },
+  { level: 98, minXp: 237650, nextXp: 242550, color: '#C0392B' },
+  { level: 99, minXp: 242550, nextXp: 242550, color: '#C0392B' },
+]
+
+export function getCurrentLevel(xp: number): LevelInfo {
+  return [...LEVEL_TABLE].reverse().find(l => xp >= l.minXp) ?? LEVEL_TABLE[0]
+}
+
+export function getXpProgress(xp: number): { pct: number; current: number; needed: number } {
+  const lv = getCurrentLevel(xp)
+  if (lv.level === 99) return { pct: 100, current: 0, needed: 0 }
+  const current = xp - lv.minXp
+  const needed = lv.nextXp - lv.minXp
+  return { pct: Math.min(100, Math.round((current / needed) * 100)), current, needed }
+}

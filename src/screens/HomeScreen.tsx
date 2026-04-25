@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import type { ReactNode } from 'react'
-import { getStreak, getCompletedCount, getCompletedLessons, getStudyDates } from '../stats'
+import { getXp, getStreak, getCompletedCount, getCompletedLessons, getStudyDates } from '../stats'
 import { loadPlacementResult, rankLabel as rankLabelFull } from '../placementData'
 
 function rankLabel(dev: number): string {
@@ -15,8 +15,8 @@ import {
   getStreakState,
   hoursUntilMidnight,
   timeBasedGreeting,
-  getLevelTitle,
-  getCurrentTier,
+  getCurrentLevel,
+  getXpProgress,
 } from './homeHelpers'
 import { getLocale, t } from '../i18n'
 import { isDailyFermiDone } from './DailyFermiScreen'
@@ -73,6 +73,7 @@ interface DerivedData {
   levelXp: number
   levelPct: number
   xp: number
+  lv: { level: number; minXp: number; nextXp: number; color: string }
   weekProgress: number
   weekPct: number
 }
@@ -88,25 +89,24 @@ function useHomeData(): DerivedData {
   const rankFill = deviation != null ? Math.min(100, Math.max(0, ((deviation - 25) / 50) * 100)) : 0
   const { eyebrow, greeting } = timeBasedGreeting(getLocale())
   const recovery = hoursUntilMidnight()
-  const xp = completed * 100
-  const level = Math.floor(xp / 1000) + 1
-  const levelXp = xp % 1000
-  const levelPct = (levelXp / 1000) * 100
+  const xp = getXp()
+  const lv = getCurrentLevel(xp)
+  const { pct: levelPct, current: levelXp } = getXpProgress(xp)
+  const level = lv.level
   const weekProgress = Math.min(7, streak)
   const weekPct = (weekProgress / 7) * 100
   return {
     streak, streakState, completed, completedSet, points, deviation, rankFill,
-    eyebrow, greeting, recovery, level, levelXp, levelPct, xp, weekProgress, weekPct,
+    eyebrow, greeting, recovery, level, levelXp, levelPct, xp, weekProgress, weekPct, lv,
   }
 }
 
 export function HomeScreen(props: HomeScreenProps) {
   const isDesktop = useIsDesktop()
   const data = useHomeData()
-  const levelTitle = getLevelTitle(data.xp, getLocale())
   return isDesktop
-    ? <HomeDesktop {...props} data={data} levelTitle={levelTitle} />
-    : <HomeMobile {...props} data={data} levelTitle={levelTitle} />
+    ? <HomeDesktop {...props} data={data} />
+    : <HomeMobile {...props} data={data} />
 }
 
 // ============================================================
@@ -123,12 +123,11 @@ function HomeMobile({
   onOpenRank,
   onOpenStats,
   data,
-}: HomeScreenProps & { data: DerivedData; levelTitle: string }) {
+}: HomeScreenProps & { data: DerivedData }) {
   const {
     streak, completedSet, points, deviation, recovery, xp, level, levelXp, levelPct,
   } = data
 
-  const tier = getCurrentTier(xp)
   const nextXpThreshold = xp < 1000 ? 1000 : xp < 2000 ? 2000 : xp < 3000 ? 3000 : xp < 4000 ? 4000 : xp < 5000 ? 5000 : xp < 6000 ? 6000 : xp < 7000 ? 7000 : 8000
   const xpToNext = Math.max(0, nextXpThreshold - xp)
 
@@ -284,7 +283,7 @@ function HomeMobile({
           </div>
         )}
 
-        {/* 哲学者ランクカード */}
+        {/* 経験値・レベルカード */}
         <button
           onClick={onOpenRank}
           style={{
@@ -310,9 +309,9 @@ function HomeMobile({
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
               </div>
               <div>
-                <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,.55)', marginBottom: 1 }}>哲学者ランク</div>
+                <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,.55)', marginBottom: 1 }}>経験値・レベル</div>
                 <div style={{ fontSize: 22, fontWeight: 900, color: '#fff', letterSpacing: '-.025em', fontFamily: "'Inter Tight', sans-serif" }}>
-                  Lv.{level} · {getLocale() === 'ja' ? tier.title : tier.titleEn}
+                  Lv.{level}
                 </div>
               </div>
             </div>
@@ -458,8 +457,7 @@ function HomeDesktop({
   onOpenAIGen,
   onOpenFeedback,
   data,
-  levelTitle,
-}: HomeScreenProps & { data: DerivedData; levelTitle: string }) {
+}: HomeScreenProps & { data: DerivedData }) {
   const {
     streak, streakState, completedSet, points, deviation, rankFill,
     eyebrow, greeting, recovery, level, levelXp, levelPct, weekPct,
@@ -568,7 +566,7 @@ function HomeDesktop({
       <button className="level-section" onClick={onOpenRank} style={{ cursor: 'pointer', border: 'none', background: 'none', padding: 0, textAlign: 'left', display: 'flex', alignItems: 'center', width: '100%' }}>
         <div style={{ flex: 1 }}>
           <div className="eyebrow">{t('home.levelProgress')}</div>
-          <div className="level-name">Lv.{level} · {levelTitle}</div>
+          <div className="level-name">Lv.{level}</div>
           <div className="progress" style={{ marginTop: 10, maxWidth: 600 }}>
             <div className="progress-fill" style={{ width: `${levelPct}%` }} />
           </div>

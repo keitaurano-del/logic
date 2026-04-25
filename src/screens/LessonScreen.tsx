@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect, useRef } from 'react'
 import { allLessons, type LessonStep } from '../lessonData'
-import { recordCompletion, getCompletedCount, getStreak, getStudyDates } from '../stats'
+import { recordCompletion, getCompletedCount, getStreak, getStudyDates, addXp } from '../stats'
 import { RankIllustration } from '../components/RankIllustration'
 import { Confetti } from '../components/Confetti'
 import { getCurrentTier } from './homeHelpers'
@@ -76,6 +76,7 @@ export function LessonScreen({ lessonId, onBack, onComplete, onNextLesson, onRep
     if (isLast) {
       streakBefore.current = getStreak()
       recordCompletion(`lesson-${lesson.id}`)
+      addXp('lesson')
       setShowCelebration(true)
       return
     }

@@ -1,6 +1,5 @@
-import { getCompletedCount, getStreak } from '../stats'
-import { getCurrentTier, RANK_TIERS } from './homeHelpers'
-import { RankIllustration } from '../components/RankIllustration'
+import { getCompletedCount, getStreak, getXp } from '../stats'
+import { getCurrentLevel, getXpProgress } from './homeHelpers'
 import { logout } from '../supabase'
 import { getSubscriptionState, isPremiumPlan, isStandardPlan, daysLeftInTrial } from '../subscription'
 
@@ -35,12 +34,9 @@ interface ProfileScreenProps {
 export function ProfileScreen({ userName, onOpenSettings, onOpenFeedback, onOpenPricing, onOpenRank, onOpenStreak, onOpenCompleted }: ProfileScreenProps) {
   const streak = getStreak()
   const completed = getCompletedCount()
-  const xp = completed * 100
-  const tier = getCurrentTier(xp)
-  const nextTier = RANK_TIERS.find(t => t.level === tier.level + 1)
-  const xpInLevel = xp - tier.minXp
-  const xpToNext = nextTier ? nextTier.minXp - tier.minXp : 1000
-  const xpPct = Math.min(100, Math.round((xpInLevel / xpToNext) * 100))
+  const xp = getXp()
+  const lv = getCurrentLevel(xp)
+  const { pct: xpPct, current: xpInLevel, needed: xpToNext } = getXpProgress(xp)
 
 
   const handleLogout = async () => {
@@ -97,23 +93,20 @@ export function ProfileScreen({ userName, onOpenSettings, onOpenFeedback, onOpen
           {/* ユーザー名 */}
           <div style={{ fontSize: 14, fontWeight: 600, color: 'rgba(255,255,255,.55)', letterSpacing: '.04em', marginBottom: 10 }}>{userName || 'ゲスト'}</div>
 
-          {/* 哲学者イラスト */}
-          <div style={{ marginBottom: 10 }}>
-            <RankIllustration level={tier.level} size={80} />
+          {/* レベルバッジ */}
+          <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'rgba(255,255,255,.15)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginBottom: 12, border: '2px solid rgba(255,255,255,.3)' }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,.6)', letterSpacing: '.1em' }}>LV</div>
+            <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 30, fontWeight: 900, color: '#fff', letterSpacing: '-.04em', lineHeight: 1 }}>{lv.level}</div>
           </div>
 
-          {/* ランク名 */}
-          <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)', marginBottom: 2 }}>LV.{tier.level}</div>
-          <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 26, fontWeight: 900, color: '#fff', letterSpacing: '-.03em', marginBottom: 4 }}>{tier.title}</div>
-
           {/* XPバー */}
-          <div style={{ width: '100%', maxWidth: 200, marginBottom: 4 }}>
-            <div style={{ height: 4, background: 'rgba(255,255,255,.15)', borderRadius: 99, overflow: 'hidden' }}>
+          <div style={{ width: '100%', maxWidth: 220, marginBottom: 4 }}>
+            <div style={{ height: 5, background: 'rgba(255,255,255,.15)', borderRadius: 99, overflow: 'hidden' }}>
               <div style={{ height: '100%', width: `${xpPct}%`, background: 'rgba(255,255,255,.7)', borderRadius: 99, transition: 'width .4s ease' }} />
             </div>
           </div>
           <div style={{ fontSize: 13, color: 'rgba(255,255,255,.45)' }}>
-            {xpInLevel} / {xpToNext}{nextTier ? ` — 次: ${nextTier.title}` : ' — MAX'}
+            {lv.level < 10 ? `${xpInLevel} / ${xpToNext} XP` : 'MAX LEVEL'}
           </div>
 
           {/* ステータス行 */}
@@ -131,7 +124,7 @@ export function ProfileScreen({ userName, onOpenSettings, onOpenFeedback, onOpen
 
           {/* タップ誘導 */}
           <div style={{ position: 'absolute', top: 14, right: 16, fontSize: 13, color: 'rgba(255,255,255,.35)', display: 'flex', alignItems: 'center', gap: 3 }}>
-            全ランク
+            レベル一覧
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.35)" strokeWidth="2.5" strokeLinecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </div>
         </div>

@@ -103,3 +103,27 @@ export function getTotalStudyDays(): number {
   return load().studyDates.length
 }
 
+
+const XP_KEY = 'logic-xp'
+
+export type XpEvent = 'lesson' | 'quiz_perfect' | 'streak' | 'fermi'
+
+export const XP_REWARDS: Record<XpEvent, number> = {
+  lesson: 50,
+  quiz_perfect: 20,
+  streak: 10,
+  fermi: 30,
+}
+
+export function getXp(): number {
+  try {
+    return parseInt(localStorage.getItem(XP_KEY) ?? '0', 10) || 0
+  } catch { return 0 }
+}
+
+export function addXp(event: XpEvent): number {
+  const gained = XP_REWARDS[event]
+  const newXp = getXp() + gained
+  localStorage.setItem(XP_KEY, String(newXp))
+  return newXp
+}
