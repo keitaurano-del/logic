@@ -31,7 +31,7 @@ const TABS: TabDef[] = [
   },
   {
     id: 'stats',
-    label: '統計',
+    label: '記録',
     icon: (active) => (
       <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? '#3B5BDB' : '#B8BFD0'}>
         <path d="M4 20h2V10H4v10zm5 0h2V4H9v16zm5 0h2V8h-2v12zm5 0h2v-6h-2v6z"/>
