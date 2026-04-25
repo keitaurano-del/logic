@@ -161,41 +161,40 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14, padding: '0 0 32px' }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 0 0' }}>
-        <IconButton aria-label="Back" onClick={onBack}>
-          <ArrowLeftIcon />
-        </IconButton>
-        <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: '#3B5BDB', marginBottom: 2 }}>
-            {situation.frameworkLabel}
+      <div style={{ padding: '12px 0 0' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+          <IconButton aria-label="Back" onClick={onBack}>
+            <ArrowLeftIcon />
+          </IconButton>
+          {/* パートナーアバター */}
+          <div style={{
+            width: 40, height: 40, borderRadius: '50%', background: '#EEF2FF',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+          }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" strokeWidth="2" strokeLinecap="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
           </div>
-          <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 800, color: '#0F1523', letterSpacing: '-.02em' }}>
-            {situation.partnerName}
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: '#0F1523' }}>{situation.partnerName}</div>
+            <div style={{ fontSize: 12, color: '#7A849E' }}>{situation.frameworkLabel}</div>
+          </div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: '#7A849E' }}>
+            残り <span style={{ color: '#3B5BDB' }}>{MAX_TURNS - Math.min(turnNumber - 1, MAX_TURNS)}</span> ターン
           </div>
         </div>
-        <div style={{ fontSize: 14, fontWeight: 700, color: '#7A849E' }}>
-          Turn <span style={{ color: '#3B5BDB' }}>{Math.min(turnNumber, MAX_TURNS)}</span> / {MAX_TURNS}
+        {/* Progress bar */}
+        <div style={{ height: 3, background: '#EEF2FF', borderRadius: 99, overflow: 'hidden' }}>
+          <div style={{ height: '100%', width: `${(Math.min(turnNumber, MAX_TURNS) / MAX_TURNS) * 100}%`, background: '#3B5BDB', borderRadius: 99, transition: 'width 300ms ease' }} />
         </div>
       </div>
 
       {!finished && (
         <>
-          {/* Progress bar */}
-          <div style={{ height: 4, background: '#EEF2FF', borderRadius: 99, overflow: 'hidden', marginBottom: 4 }}>
-            <div style={{ height: '100%', width: `${(Math.min(turnNumber, MAX_TURNS) / MAX_TURNS) * 100}%`, background: '#3B5BDB', borderRadius: 99, transition: 'width 300ms ease' }} />
-          </div>
-
-          {/* Scenario card */}
-          <div style={{ background: '#F8F9FF', border: '1px solid #E2E8FF', borderRadius: 12, padding: '12px 14px' }}>
-            <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: '#7A849E', marginBottom: 6 }}>
-              SCENARIO
-            </div>
-            <div style={{ fontSize: 16, color: '#0F1523', lineHeight: 1.6 }}>
-              {situation.context}
-            </div>
-            <div style={{ fontSize: 16, color: '#3B5BDB', marginTop: 8, fontWeight: 600 }}>
-              🎯 {situation.goal}
-            </div>
+          {/* Context card */}
+          <div style={{ background: '#EEF2FF', borderRadius: 12, padding: '10px 14px', fontSize: 13, color: '#3B5BDB', lineHeight: 1.55 }}>
+            <strong style={{ fontWeight: 700 }}>シナリオ: </strong>{situation.context}
           </div>
 
           {/* Chat messages */}
@@ -226,30 +225,44 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
           {/* Choices */}
           {choices.length > 0 && !loading && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: '#7A849E', marginBottom: 2 }}>
-                あなたの返答
+              {/* ヒントチップ（横スクロール） */}
+              <div style={{
+                display: 'flex', gap: 6, overflowX: 'auto', paddingBottom: 2,
+                msOverflowStyle: 'none', scrollbarWidth: 'none',
+              }}>
+                {choices.map((c, i) => (
+                  <button
+                    key={i}
+                    onClick={() => pickChoice(c)}
+                    style={{
+                      whiteSpace: 'nowrap', padding: '7px 14px',
+                      borderRadius: 99, border: '1.5px solid #DBE4FF',
+                      background: '#F8FAFF', fontSize: 13, fontWeight: 600,
+                      color: '#3B5BDB', cursor: 'pointer', flexShrink: 0,
+                    }}
+                  >
+                    {c.length > 24 ? c.slice(0, 22) + '…' : c}
+                  </button>
+                ))}
               </div>
-              {choices.map((c, i) => (
-                <button
-                  key={i}
-                  onClick={() => pickChoice(c)}
-                  style={{
-                    background: '#fff',
-                    border: '1.5px solid #DBE4FF',
-                    borderRadius: 12,
-                    padding: '12px 14px',
-                    cursor: 'pointer',
-                    textAlign: 'left',
-                    fontSize: 16,
-                    color: '#0F1523',
-                    lineHeight: 1.6,
-                    width: '100%',
-                    transition: 'border-color 120ms ease',
-                  }}
-                >
-                  {c}
-                </button>
-              ))}
+              {/* 選択肢カード */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                {choices.map((c, i) => (
+                  <button
+                    key={i}
+                    onClick={() => pickChoice(c)}
+                    style={{
+                      background: '#fff', border: '1.5px solid #DBE4FF',
+                      borderRadius: 12, padding: '12px 14px',
+                      cursor: 'pointer', textAlign: 'left',
+                      fontSize: 15, color: '#0F1523', lineHeight: 1.6, width: '100%',
+                      transition: 'border-color 120ms ease',
+                    }}
+                  >
+                    {c}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 

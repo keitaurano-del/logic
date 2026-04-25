@@ -2,12 +2,17 @@ import { getLocale } from './i18n'
 
 export type Framework = 'why-so' | 'mece' | 'pyramid' | 'logic-tree'
 
+export type SituationCategory = 'business' | 'philosophy'
+export type Difficulty = 'beginner' | 'intermediate' | 'advanced'
+
 export type Situation = {
   id: string
   framework: Framework
   frameworkLabel: string
   title: string
   emoji: string
+  category: SituationCategory
+  difficulty: Difficulty
   partnerName: string
   partnerRole: string
   partnerPersonality: string
@@ -25,6 +30,8 @@ const SITUATIONS_JA: Situation[] = [
     frameworkLabel: 'Why So / So What',
     title: '上司への報告',
     emoji: '📊',
+    category: 'business' as SituationCategory,
+    difficulty: 'beginner' as Difficulty,
     partnerName: '田中部長',
     partnerRole: '事業部長',
     partnerPersonality: '結論ファースト派・忙しく時間がない・曖昧な説明には「で、結局何?」と詰める',
@@ -41,6 +48,8 @@ const SITUATIONS_JA: Situation[] = [
     frameworkLabel: 'MECE',
     title: '会議のファシリテーション',
     emoji: '🗂️',
+    category: 'business' as SituationCategory,
+    difficulty: 'intermediate' as Difficulty,
     partnerName: '会議参加者',
     partnerRole: '複数部門のメンバー',
     partnerPersonality: '議論が脱線しがち・抜け漏れに気づかない・重複した論点を繰り返す',
@@ -57,6 +66,8 @@ const SITUATIONS_JA: Situation[] = [
     frameworkLabel: 'ピラミッド原則',
     title: 'クライアント説明',
     emoji: '💼',
+    category: 'business' as SituationCategory,
+    difficulty: 'intermediate' as Difficulty,
     partnerName: '佐藤様',
     partnerRole: 'クライアント企業の役員',
     partnerPersonality: '論理の飛躍に厳しい・根拠を執拗に求める・経験豊富で見抜く力が強い',
@@ -73,6 +84,8 @@ const SITUATIONS_JA: Situation[] = [
     frameworkLabel: 'ロジックツリー',
     title: '部下への指示',
     emoji: '🌳',
+    category: 'business' as SituationCategory,
+    difficulty: 'intermediate' as Difficulty,
     partnerName: '新人後輩',
     partnerRole: '入社2年目のメンバー',
     partnerPersonality: '指示待ち・問題を抽象的にしか捉えられない・「どこから手をつければ?」と聞いてくる',
@@ -92,6 +105,8 @@ const SITUATIONS_EN: Situation[] = [
     frameworkLabel: 'Why So / So What',
     title: 'Reporting to your manager',
     emoji: '📊',
+    category: 'business' as SituationCategory,
+    difficulty: 'beginner' as Difficulty,
     partnerName: 'Director Anderson',
     partnerRole: 'Business unit director',
     partnerPersonality: 'Conclusion-first. Always pressed for time. Cuts off vague explanations with "So what is the point?"',
@@ -108,6 +123,8 @@ const SITUATIONS_EN: Situation[] = [
     frameworkLabel: 'MECE',
     title: 'Facilitating a cross-functional meeting',
     emoji: '🗂️',
+    category: 'business' as SituationCategory,
+    difficulty: 'intermediate' as Difficulty,
     partnerName: 'Meeting participants',
     partnerRole: 'Members from multiple departments',
     partnerPersonality: 'Tend to drift off-topic. Miss gaps. Repeat overlapping points.',
@@ -124,6 +141,8 @@ const SITUATIONS_EN: Situation[] = [
     frameworkLabel: 'Pyramid Principle',
     title: 'Presenting to a client',
     emoji: '💼',
+    category: 'business' as SituationCategory,
+    difficulty: 'intermediate' as Difficulty,
     partnerName: 'Mr. Wright',
     partnerRole: 'Executive at a client company',
     partnerPersonality: 'Strict about logical leaps. Demands evidence. Highly experienced and quick to spot weak arguments.',
@@ -140,6 +159,8 @@ const SITUATIONS_EN: Situation[] = [
     frameworkLabel: 'Logic Tree',
     title: 'Giving direction to a junior team member',
     emoji: '🌳',
+    category: 'business' as SituationCategory,
+    difficulty: 'intermediate' as Difficulty,
     partnerName: 'Junior teammate',
     partnerRole: 'Second-year employee',
     partnerPersonality: 'Waits for instructions. Sees problems only abstractly. Asks "Where do I even start?"',
