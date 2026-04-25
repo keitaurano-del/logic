@@ -24,6 +24,8 @@ import { PlacementTestScreen } from './screens/PlacementTestScreen'
 import { PricingScreen } from './screens/PricingScreen'
 import { StreakScreen } from './screens/StreakScreen'
 import { SettingsScreen } from './screens/SettingsScreen'
+import { AccountSettingsScreen } from './screens/AccountSettingsScreen'
+import { NotificationSettingsScreen } from './screens/NotificationSettingsScreen'
 import { CompletedLessonsScreen } from './screens/CompletedLessonsScreen'
 import { StudyTimeScreen } from './screens/StudyTimeScreen'
 import { LanguageScreen } from './screens/LanguageScreen'
@@ -85,6 +87,8 @@ type Screen =
   | { type: 'pricing' }
   | { type: 'streak' }
   | { type: 'settings'; section?: 'account' | 'notifications' | 'plan' }
+  | { type: 'account-settings' }
+  | { type: 'notification-settings' }
   | { type: 'completed-lessons' }
   | { type: 'study-time' }
   | { type: 'language' }
@@ -341,7 +345,11 @@ function AppV3() {
         <ProfileScreen
           userName={userName}
           onOpenStreak={() => navigate({ type: 'streak' })}
-          onOpenSettings={(section) => navigate({ type: 'settings', section })}
+          onOpenSettings={(section) =>
+            section === 'account' ? navigate({ type: 'account-settings' })
+            : section === 'notifications' ? navigate({ type: 'notification-settings' })
+            : navigate({ type: 'settings', section })
+          }
           onOpenCompleted={() => navigate({ type: 'completed-lessons' })}
           onOpenStudyTime={() => navigate({ type: 'study-time' })}
           onOpenRank={() => navigate({ type: 'rank' })}
@@ -371,6 +379,17 @@ function AppV3() {
         />
       )}
       {screen.type === 'language' && <LanguageScreen onBack={() => navigate({ type: 'settings' })} />}
+      {screen.type === 'account-settings' && (
+        <AccountSettingsScreen
+          onBack={handleBack}
+          currentUser={currentUser ? { email: currentUser.email ?? '' } : null}
+          onOpenLogin={() => navigate({ type: 'login' })}
+          onLogout={() => { setCurrentUser(null); navigate({ type: 'profile' }) }}
+        />
+      )}
+      {screen.type === 'notification-settings' && (
+        <NotificationSettingsScreen onBack={handleBack} />
+      )}
 
       {screen.type === 'report-problem' && (
         <ReportProblemScreen
