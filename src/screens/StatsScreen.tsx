@@ -46,6 +46,7 @@ const CATEGORY_LABEL_JP: Record<string, string> = {
   analogy: 'アナロジー思考',
   systems: 'システムシンキング',
   proposal: '提案・伝える技術',
+  philosophy: '哲学・思考の原理',
 }
 function catLabel(cat: string): string {
   return CATEGORY_LABEL_JP[cat] ?? cat

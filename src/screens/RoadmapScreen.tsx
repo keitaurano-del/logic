@@ -19,6 +19,7 @@ const DIFFICULTY_MAP: Record<string, Difficulty> = {
   'analogy': 'advanced',
   'systems': 'advanced',
   'proposal': 'intermediate',
+  'philosophy': 'advanced',
 }
 
 const DIFFICULTY_LABELS: { id: Difficulty; label: string }[] = [
@@ -65,6 +66,8 @@ const LESSON_DURATION: Record<number, number> = {
   62: 8, 63: 10, 64: 12,
   // システムシンキング
   65: 10, 66: 12, 67: 15,
+  // 哲学
+  77: 10, 78: 8, 79: 10, 80: 10, 81: 12,
 }
 
 interface RoadmapLesson {
@@ -187,6 +190,17 @@ const PATHS: RoadmapPath[] = [
       { id: 74, title: 'ストーリーラインの設計', sub: 'SCR構造で提案を一本の流れにする' },
       { id: 75, title: 'メッセージを磨く',      sub: 'So WhatでスライドのタイトルをInsightに変える' },
       { id: 76, title: '反論を先読みする',      sub: '想定QAと「今やる理由」で承認確率を上げる' },
+    ],
+  },
+  {
+    id: 'philosophy',
+    label: '哲学・思考の原理',
+    lessons: [
+      { id: 77, title: 'ソクラテスの問答法',              sub: '対話で前提を崩し、より深い理解に辿り着く' },
+      { id: 78, title: '反証可能性',                      sub: '科学と疑似科学の境界を引く思考ツール' },
+      { id: 79, title: '功利主義と義務論',                sub: '倫理的判断の2つのフレームワーク' },
+      { id: 80, title: '認識論入門',                      sub: '「知っている」とはどういう状態か' },
+      { id: 81, title: '思考実験',                        sub: '仮想シナリオで概念の前提を検証する' },
     ],
   },
 ]
