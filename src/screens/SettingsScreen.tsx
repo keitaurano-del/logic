@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { ArrowLeftIcon, ChevronRightIcon } from '../icons'
 import { IconButton } from '../components/IconButton'
 import { getLocale, t } from '../i18n'
@@ -76,28 +76,14 @@ function Toggle({ value, onChange }: { value: boolean; onChange: (v: boolean) =>
 }
 
 export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUser, onLogout, onOpenPricing, initialSection }: SettingsScreenProps) {
-  const accountRef = useRef<HTMLDivElement>(null)
-  const notificationsRef = useRef<HTMLDivElement>(null)
-  const planRef = useRef<HTMLDivElement>(null)
+  const [highlightSection, setHighlightSection] = useState<string | undefined>(initialSection)
 
   useEffect(() => {
     if (!initialSection) return
-    const target = initialSection === 'account' ? accountRef.current
-      : initialSection === 'notifications' ? notificationsRef.current
-      : planRef.current
-    if (!target) return
-    // AppShellのスクロールコンテナは window ではなく div#app-scroll-container
-    const scrollContainer = document.getElementById('app-scroll-container')
-    const doScroll = () => {
-      if (scrollContainer) {
-        const containerTop = scrollContainer.getBoundingClientRect().top
-        const targetTop = target.getBoundingClientRect().top
-        scrollContainer.scrollBy({ top: targetTop - containerTop - 16, behavior: 'smooth' })
-      } else {
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      }
-    }
-    setTimeout(doScroll, 200)
+    setHighlightSection(initialSection)
+    // 1.2秒後にハイライト解除
+    const t = setTimeout(() => setHighlightSection(undefined), 1200)
+    return () => clearTimeout(t)
   }, [initialSection])
   const locale = getLocale()
   const pref = loadReminderPref()
@@ -148,7 +134,7 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
       </div>
 
       {/* ── アカウント ── */}
-      <div ref={accountRef}>
+      <div style={{ transition: 'background 0.3s', borderRadius: 12, background: highlightSection === 'account' ? 'rgba(59,91,219,0.08)' : 'transparent' }}>
         <SectionHeader label={t('settings.section.account')} />
         <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
           {currentUser ? (
@@ -182,7 +168,7 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
       </div>
 
       {/* ── 通知 ── */}
-      <div ref={notificationsRef}>
+      <div style={{ transition: 'background 0.3s', borderRadius: 12, background: highlightSection === 'notifications' ? 'rgba(59,91,219,0.08)' : 'transparent' }}>
         <SectionHeader label={t('settings.section.notifications')} />
         <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
           {/* Toggle row */}
@@ -249,7 +235,7 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
       </div>
 
       {/* ── プラン ── */}
-      <div ref={planRef}>
+      <div style={{ transition: 'background 0.3s', borderRadius: 12, background: highlightSection === 'plan' ? 'rgba(59,91,219,0.08)' : 'transparent' }}>
         <SectionHeader label="プラン" />
         <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
           {(() => {
