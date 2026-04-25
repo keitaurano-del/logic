@@ -1,6 +1,6 @@
 import { getLocale } from './i18n'
 
-export type Framework = 'why-so' | 'mece' | 'pyramid' | 'logic-tree'
+export type Framework = 'why-so' | 'mece' | 'pyramid' | 'logic-tree' | 'philosophy'
 
 export type SituationCategory = 'business' | 'philosophy'
 export type Difficulty = 'beginner' | 'intermediate' | 'advanced'
@@ -94,6 +94,61 @@ const SITUATIONS_JA: Situation[] = [
     goal: '問題をロジックツリーで分解し、具体的なアクションに落とし込ませる',
     context:
       'あなたは後輩に「売上が伸びない」という問題の解決を指示する場面。Whyツリー(なぜ?)とHowツリー(どうやって?)を使って後輩と一緒に問題を分解し、具体的なアクションへ導こう。',
+    premium: true,
+  },
+  // ── 哲学者シリーズ ──
+  {
+    id: 'socrates-dialog',
+    framework: 'philosophy',
+    frameworkLabel: '問答法',
+    title: 'ソクラテスとの対話',
+    emoji: '',
+    category: 'philosophy' as SituationCategory,
+    difficulty: 'intermediate' as Difficulty,
+    partnerName: 'ソクラテス',
+    partnerRole: '古代アテナイの哲学者',
+    partnerPersonality: '問いただけで答えない・相手の主張に「では反例は？」と必ず問う・「私は何も知らない」と言いながら深める',
+    partnerInterests: '定義の正確さ・前提の検証・反例の有無',
+    partnerConcerns: '曖昧な定義・要証のない主張',
+    goal: '「勇気」とは何かを問答法で定義し、ソクラテスの反論を乗り越える',
+    context:
+      'ソクラテスがあなたに問う。「勇気とは何か？」。あなたは自分なりの定義を答えるが、ソクラテスは必ず「ではこういう場合は？」と反例を提示し続ける。問答を繰り返す中で、より正確な定義に迺り着くことを目指せ。',
+    premium: true,
+  },
+  {
+    id: 'descartes-doubt',
+    framework: 'philosophy',
+    frameworkLabel: '方法的懐疑',
+    title: 'デカルトとの哲学的対話',
+    emoji: '',
+    category: 'philosophy' as SituationCategory,
+    difficulty: 'advanced' as Difficulty,
+    partnerName: 'デカルト',
+    partnerRole: '近代哲学の父',
+    partnerPersonality: 'すべてを疆う・「それは山カンでも幽霊が角に見せた幻覚では？」と問う・確実なるものだけを認める',
+    partnerInterests: '確実性の基盤・疆う余地のない命題・誰も否定できない事実',
+    partnerConcerns: 'がわれない主張・証明なき信念',
+    goal: '「我思う、ゆえに我あり」の出発点から、少なくとも1つの確実な命題を積み上げる',
+    context:
+      'デカルトが単列になる。「どんな信念も疆えることができる。それでも疆いきれない一つの事実は何か？」。あなたは所持・記憶・感覚・信念を一つずつ疆い、疆いきれない確実な事実を導き出せ。',
+    premium: true,
+  },
+  {
+    id: 'nietzsche-values',
+    framework: 'philosophy',
+    frameworkLabel: '価値の転化',
+    title: 'ニーチェとの対話',
+    emoji: '',
+    category: 'philosophy' as SituationCategory,
+    difficulty: 'advanced' as Difficulty,
+    partnerName: 'ニーチェ',
+    partnerRole: 'ドイツの哲学者',
+    partnerPersonality: '常識を急に射撕する・「それは崎人の道徳だ」と切り捨てる・「そこにおまえの意志はあるか？」と追い込む',
+    partnerInterests: '自分の意志・创造性・ニヒリズムの唔免',
+    partnerConcerns: '「みんながそう言ってる」系の終わりない安逆',
+    goal: '自分独自の価値観を述べ、ニーチェの「意志への意志」に対抗できる',
+    context:
+      'ニーチェが単列になる。「おまえが今まで信じてきた『良いこと』の基準は、誰が決めたのか？」自分が大切にしてきた価値観を対話の中で導き出し、「それは自分が選んだ価値か？定相化した常識か？」を問い直せ。',
     premium: true,
   },
 ]
@@ -190,6 +245,7 @@ export function buildSetup(s: Situation) {
   return {
     template: { mode: 'conversation', title: s.title },
     format: 'online',
+    category: s.category,
     partner: {
       name: s.partnerName,
       role: s.partnerRole,

@@ -55,6 +55,22 @@ function SituationIcon({ id, size = 22 }: { id: string; size?: number }) {
       <circle cx="12" cy="2" r="2"/>
     </svg>
   )
+  if (id === 'socrates-dialog') return (
+    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" strokeWidth="2" strokeLinecap="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+  )
+  if (id === 'descartes-doubt') return (
+    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="#7C3AED" strokeWidth="2" strokeLinecap="round">
+      <circle cx="12" cy="12" r="10"/>
+      <path d="M12 8v4M12 16h.01"/>
+    </svg>
+  )
+  if (id === 'nietzsche-values') return (
+    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2" strokeLinecap="round">
+      <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+    </svg>
+  )
   // default
   return (
     <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" strokeWidth="2" strokeLinecap="round">
@@ -68,6 +84,9 @@ const ICON_BG: Record<string, string> = {
   'mece-meeting': '#ECFDF5',
   'pyramid-client': '#F3F0FF',
   'logic-tree-sub': '#FFFBEB',
+  'socrates-dialog': '#EEF2FF',
+  'descartes-doubt': '#F3F0FF',
+  'nietzsche-values': '#FFF1F1',
 }
 
 const CATEGORY_LABELS: Record<SituationCategory, string> = {
@@ -87,7 +106,7 @@ function SituationCard({
   onClick: () => void
 }) {
   const locked = (s.premium && !premium) || (!premium && remaining <= 0 && !s.premium)
-  const comingSoon = s.category === 'philosophy'
+  const comingSoon = false // 哲学者シリーズも開放
 
   return (
     <button

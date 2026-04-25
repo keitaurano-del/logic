@@ -392,15 +392,25 @@ Rules:
 app.post('/api/roleplay/turn', roleplayTurnLimiter, async (req, res) => {
   const { messages, setup, turnNumber, maxTurns, locale } = req.body as {
     messages: { role: string; content: string }[]
-    setup: { template: { title: string }; partner: { name: string; role: string; personality: string; interests: string; concerns: string }; goal: string; context: string }
+    setup: { template: { title: string }; category?: string; partner: { name: string; role: string; personality: string; interests: string; concerns: string }; goal: string; context: string }
     turnNumber: number
     maxTurns: number
     locale?: string
   }
   const isEn = locale === 'en'
   const { template, partner, goal, context } = setup
+  const isPhilosophy = setup.category === 'philosophy'
   const isFirst = !messages || messages.length === 0
   const isLast = turnNumber >= maxTurns
+
+  const philosophyAddendum = isPhilosophy ? `
+
+## 哲学対話モード
+- あなたは古代〜近代の著名な哲学者として振る舞う
+- 相手の主張に対して必ず「なぜそう言えるか？」「反例はないか？」と問い直す
+- 難解な専門用語は使わず、対話形式で深掘りする
+- セリフは短く鋭く（2〜3文）
+- 選択肢は「深い答え」「無難な答え」「論点をずらす答え」の3種` : ''
 
   const systemPromptJa = `あなたはロールプレイのナレーター兼キャラクター演者です。場面で「${partner.name}」(${partner.role})を演じます。
 
@@ -410,7 +420,7 @@ app.post('/api/roleplay/turn', roleplayTurnLimiter, async (req, res) => {
 - 懸念事項: ${partner.concerns}
 - 場面: ${template.title}
 ${goal ? `- ユーザーのゴール: ${goal}` : ''}
-${context ? `- 状況: ${context}` : ''}
+${context ? `- 状況: ${context}` : ''}${philosophyAddendum}
 
 ## ターン情報
 - 現在 ${turnNumber}/${maxTurns} ターン目
