@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { startCheckout, getSubscriptionState, daysLeftInTrial, isPremiumPlan, isStandardPlan, isAndroidNative } from '../subscription'
+import { startCheckout, getSubscriptionState, daysLeftInTrial, isPremiumPlan, isStandardPlan, isBasicPlan, isAndroidNative } from '../subscription'
 import { loadGuestUser } from '../guestUser'
 import { ArrowLeftIcon, CheckIcon, ZapIcon, BrainIcon } from '../icons'
 import { Button } from '../components/Button'
@@ -9,7 +9,7 @@ interface PricingScreenProps {
   onBack: () => void
 }
 
-type PlanId = 'standard_monthly' | 'standard_yearly' | 'premium_monthly' | 'premium_yearly'
+type PlanId = 'basic_monthly' | 'basic_yearly' | 'standard_monthly' | 'standard_yearly' | 'premium_monthly' | 'premium_yearly'
 
 export function PricingScreen({ onBack }: PricingScreenProps) {
   const [loading, setLoading] = useState<PlanId | null>(null)
@@ -19,6 +19,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
   const trialDays = daysLeftInTrial()
   const isActivePremium = isPremiumPlan()
   const isActiveStandard = isStandardPlan()
+  const isActiveBasic = isBasicPlan()
 
   const handleUpgrade = async (plan: PlanId) => {
     setLoading(plan)
@@ -38,6 +39,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
     }
   }
 
+  const basicPlan: PlanId = billingCycle === 'yearly' ? 'basic_yearly' : 'basic_monthly'
   const stdPlan: PlanId = billingCycle === 'yearly' ? 'standard_yearly' : 'standard_monthly'
   const prmPlan: PlanId = billingCycle === 'yearly' ? 'premium_yearly' : 'premium_monthly'
 
@@ -87,6 +89,46 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
       </div>
 
       <div className="stack-sm" style={{ marginTop: 'var(--s-3)' }}>
+        {/* Basic plan */}
+        <div className="card">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--s-3)' }}>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+                <span className="eyebrow">ベーシック</span>
+              </div>
+              <div style={{ fontSize: 32, fontWeight: 800, letterSpacing: '-0.02em' }}>
+                {billingCycle === 'yearly'
+                  ? <><span>¥2,500</span><span style={{ fontSize: 16, fontWeight: 500 }}>/年</span></>
+                  : <><span>¥250</span><span style={{ fontSize: 16, fontWeight: 500 }}>/月</span></>
+                }
+              </div>
+              {billingCycle === 'yearly' && (
+                <div style={{ fontSize: 14, color: 'var(--text-muted)' }}>月々約 ¥208（2ヶ月分お得）</div>
+              )}
+            </div>
+          </div>
+          <ul style={{ fontSize: 16, lineHeight: 2, paddingLeft: 'var(--s-4)', color: 'var(--text-muted)', marginBottom: 'var(--s-3)' }}>
+            <li>初級レッスン全て</li>
+            <li>クイズ</li>
+          </ul>
+          <div style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 'var(--s-3)', paddingLeft: 4 }}>
+            AI問題生成・ロールプレイ・統計は含まれません
+          </div>
+          {isActiveBasic && !isActiveStandard && !isActivePremium ? (
+            <div style={{ textAlign: 'center', fontSize: 16, fontWeight: 600, color: 'var(--brand)', padding: 'var(--s-2)' }}>
+              現在のプラン
+            </div>
+          ) : (
+            <Button
+              variant="default" size="md" block
+              onClick={() => handleUpgrade(basicPlan)}
+              disabled={!!loading}
+            >
+              {loading === basicPlan ? '処理中…' : 'ベーシックで始める'}
+            </Button>
+          )}
+        </div>
+
         {/* Standard plan */}
         <div className="card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--s-3)' }}>

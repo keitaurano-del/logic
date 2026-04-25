@@ -8,6 +8,8 @@ export type SubscriptionPlan =
   | 'free'
   | 'monthly'
   | 'yearly'
+  | 'basic_monthly'
+  | 'basic_yearly'
   | 'standard_monthly'
   | 'standard_yearly'
   | 'premium_monthly'
@@ -53,7 +55,7 @@ export function getSubscriptionState(): SubscriptionState {
       save(s)
     }
   }
-  const paidPlans: SubscriptionPlan[] = ['monthly', 'yearly', 'standard_monthly', 'standard_yearly', 'premium_monthly', 'premium_yearly']
+  const paidPlans: SubscriptionPlan[] = ['monthly', 'yearly', 'basic_monthly', 'basic_yearly', 'standard_monthly', 'standard_yearly', 'premium_monthly', 'premium_yearly']
   if (paidPlans.includes(s.plan) && s.expiresAt) {
     if (Date.now() > new Date(s.expiresAt).getTime()) {
       s.plan = 'free'
@@ -74,6 +76,12 @@ export function daysLeftInTrial(): number {
 // Beta mode: true = 全機能無料開放、課金UI非表示
 // Android正式課金(Google Play Billing)導入時にfalseに戻す
 export const BETA_MODE = true
+
+export function isBasicPlan(): boolean {
+  if (BETA_MODE) return true
+  const s = getSubscriptionState()
+  return s.plan === 'basic_monthly' || s.plan === 'basic_yearly'
+}
 
 export function isPremiumPlan(): boolean {
   if (BETA_MODE) return true
@@ -132,6 +140,8 @@ export function isPremium(): boolean {
   return s.plan === 'trial'
     || s.plan === 'monthly'
     || s.plan === 'yearly'
+    || s.plan === 'basic_monthly'
+    || s.plan === 'basic_yearly'
     || s.plan === 'standard_monthly'
     || s.plan === 'standard_yearly'
     || s.plan === 'premium_monthly'
@@ -150,6 +160,8 @@ export function getPlanLabel(): string {
   const s = getSubscriptionState()
   switch (s.plan) {
     case 'trial': return `7日間トライアル (残り${daysLeftInTrial()}日)`
+    case 'basic_monthly': return 'ベーシック (¥250/月)'
+    case 'basic_yearly': return 'ベーシック (¥2,500/年)'
     case 'standard_monthly': return 'スタンダード (¥500/月)'
     case 'standard_yearly': return 'スタンダード (¥3,500/年)'
     case 'premium_monthly': return 'プレミアム (¥980/月)'
