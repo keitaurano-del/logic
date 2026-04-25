@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=390, initial-scale=1">
+<title>ロールプレイ UI v2 モックアップ</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'Inter', sans-serif; background: #F0F4FF; color: #0F1523; max-width: 390px; margin: 0 auto; min-height: 100vh; }
+
+  /* ── ヘッダー ── */
+  .header { display: flex; align-items: center; gap: 12px; padding: 52px 16px 14px; background: #fff; border-bottom: 1px solid #E2E8FF; }
+  .header-back { width: 36px; height: 36px; border-radius: 10px; background: #F0F4FF; border: 1px solid #E2E8FF; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .header-title { font-size: 18px; font-weight: 800; color: #0F1523; letter-spacing: -.02em; }
+  .header-sub { font-size: 13px; color: #7A849E; margin-top: 1px; }
+
+  /* ── シナリオ選択画面 ── */
+  .scenario-screen { padding: 16px 16px 100px; }
+  .section-label { font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: #7A849E; margin-bottom: 10px; }
+
+  .scenario-card {
+    background: #fff; border: 1.5px solid #E2E8FF; border-radius: 16px;
+    padding: 16px; margin-bottom: 10px; cursor: pointer;
+    transition: border-color .15s, box-shadow .15s;
+    display: flex; align-items: flex-start; gap: 14px;
+  }
+  .scenario-card:hover { border-color: #3B5BDB; box-shadow: 0 2px 12px rgba(59,91,219,.12); }
+  .scenario-card.locked { opacity: .55; cursor: default; }
+
+  .scenario-icon {
+    width: 48px; height: 48px; border-radius: 14px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+  .scenario-icon.blue { background: #EEF2FF; }
+  .scenario-icon.green { background: #ECFDF5; }
+  .scenario-icon.purple { background: #F3F0FF; }
+  .scenario-icon.amber { background: #FFFBEB; }
+
+  .scenario-info { flex: 1; }
+  .scenario-title { font-size: 16px; font-weight: 700; color: #0F1523; margin-bottom: 3px; }
+  .scenario-desc { font-size: 13px; color: #7A849E; line-height: 1.5; }
+  .scenario-tags { display: flex; gap: 5px; margin-top: 8px; flex-wrap: wrap; }
+  .tag { font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 99px; background: #F0F4FF; color: #3B5BDB; }
+  .tag.adv { background: #F3F0FF; color: #7C3AED; }
+  .lock-badge { font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 99px; background: #F5F5F5; color: #9CA3AF; margin-left: auto; }
+
+  /* ── チャット画面 ── */
+  .chat-screen { display: none; flex-direction: column; height: 100vh; }
+  .chat-header { padding: 52px 16px 14px; background: #fff; border-bottom: 1px solid #E2E8FF; }
+  .chat-header-row { display: flex; align-items: center; gap: 10px; }
+  .chat-avatar { width: 40px; height: 40px; border-radius: 50%; background: #EEF2FF; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .chat-partner-name { font-size: 15px; font-weight: 700; color: #0F1523; }
+  .chat-partner-role { font-size: 12px; color: #7A849E; }
+  .chat-context { font-size: 13px; color: #3B5BDB; background: #EEF2FF; border-radius: 10px; padding: 10px 12px; margin-top: 10px; line-height: 1.5; }
+  .chat-context strong { font-weight: 700; }
+
+  .chat-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+
+  .msg { max-width: 78%; display: flex; flex-direction: column; gap: 4px; }
+  .msg.partner { align-self: flex-start; }
+  .msg.user { align-self: flex-end; }
+
+  .msg-bubble {
+    padding: 11px 14px; border-radius: 18px; font-size: 15px; line-height: 1.55;
+  }
+  .msg.partner .msg-bubble { background: #fff; border: 1.5px solid #E2E8FF; color: #0F1523; border-bottom-left-radius: 5px; }
+  .msg.user .msg-bubble { background: #3B5BDB; color: #fff; border-bottom-right-radius: 5px; }
+
+  .msg-meta { font-size: 11px; color: #B0B8CC; }
+  .msg.user .msg-meta { text-align: right; }
+
+  /* フィードバックバブル */
+  .feedback-bubble {
+    background: #FFFBEB; border: 1.5px solid #F59E0B; border-radius: 14px;
+    padding: 12px 14px; font-size: 13px; color: #92400E; line-height: 1.6;
+    align-self: center; max-width: 90%;
+  }
+  .feedback-bubble strong { font-weight: 700; display: block; margin-bottom: 4px; color: #B45309; }
+
+  /* 入力エリア */
+  .chat-input-area {
+    padding: 10px 12px; padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+    background: #fff; border-top: 1px solid #E2E8FF;
+  }
+  .chat-input-row { display: flex; align-items: flex-end; gap: 8px; }
+  .chat-input {
+    flex: 1; border: 1.5px solid #E2E8FF; border-radius: 18px; padding: 11px 14px;
+    font-size: 15px; color: #0F1523; resize: none; min-height: 44px; max-height: 120px;
+    font-family: inherit; outline: none;
+  }
+  .chat-input:focus { border-color: #3B5BDB; }
+  .send-btn {
+    width: 44px; height: 44px; border-radius: 50%; background: #3B5BDB;
+    border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* ヒントボタン */
+  .hint-row { display: flex; gap: 6px; margin-bottom: 8px; overflow-x: auto; padding-bottom: 2px; }
+  .hint-chip {
+    white-space: nowrap; padding: 6px 12px; border-radius: 99px;
+    border: 1.5px solid #E2E8FF; background: #F8FAFF;
+    font-size: 13px; color: #3B5BDB; font-weight: 600; cursor: pointer;
+    transition: background .15s;
+  }
+  .hint-chip:hover { background: #EEF2FF; }
+
+  /* スコアカード */
+  .score-card { background: #fff; border: 1.5px solid #E2E8FF; border-radius: 16px; padding: 16px; margin: 10px 16px; }
+  .score-title { font-size: 15px; font-weight: 800; color: #0F1523; margin-bottom: 12px; }
+  .score-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .score-label { font-size: 13px; color: #7A849E; }
+  .score-bar-wrap { width: 120px; height: 6px; background: #E8EEFF; border-radius: 99px; overflow: hidden; }
+  .score-bar { height: 100%; border-radius: 99px; background: #3B5BDB; }
+  .score-num { font-size: 14px; font-weight: 700; color: #0F1523; min-width: 32px; text-align: right; }
+
+  /* タブバー */
+  .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 390px; background: #fff; border-top: 1px solid #E2E8FF; display: flex; padding: 8px 0 24px; }
+  .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 10px; font-weight: 600; color: #B0B8CC; cursor: pointer; }
+  .nav-item.active { color: #3B5BDB; }
+
+  /* ビュー切り替え */
+  #chat-view { display: none; flex-direction: column; height: 100vh; position: fixed; top: 0; left: 50%; transform: translateX(-50%); width: 390px; background: #F0F4FF; z-index: 10; }
+</style>
+</head>
+<body>
+
+<!-- ── シナリオ選択 ── -->
+<div id="select-view">
+  <div class="header">
+    <div class="header-back">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3A4259" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </div>
+    <div>
+      <div class="header-title">ロールプレイ</div>
+      <div class="header-sub">実践的な思考力を鍛える</div>
+    </div>
+  </div>
+
+  <div class="scenario-screen">
+    <div class="section-label">ビジネス思考</div>
+
+    <div class="scenario-card" onclick="openChat('consult')">
+      <div class="scenario-icon blue">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      </div>
+      <div class="scenario-info">
+        <div class="scenario-title">コンサルタントの壁打ち</div>
+        <div class="scenario-desc">クライアントの課題を深掘りし、構造化された提案を作る</div>
+        <div class="scenario-tags">
+          <span class="tag">初級</span>
+          <span class="tag">仮説思考</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="scenario-card" onclick="openChat('interview')">
+      <div class="scenario-icon green">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div class="scenario-info">
+        <div class="scenario-title">ケース面接の練習</div>
+        <div class="scenario-desc">面接官役のAIがケース問題を出題。ロジカルに答える訓練</div>
+        <div class="scenario-tags">
+          <span class="tag adv">中級</span>
+          <span class="tag">問題解決</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="scenario-card" onclick="openChat('debate')">
+      <div class="scenario-icon purple">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <div class="scenario-info">
+        <div class="scenario-title">論点整理のディスカッション</div>
+        <div class="scenario-desc">複数の視点を持つAIと対話し、論点を構造化する</div>
+        <div class="scenario-tags">
+          <span class="tag adv">中級</span>
+          <span class="tag">批判的思考</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 20px;" class="section-label">哲学・思考実験</div>
+
+    <div class="scenario-card locked">
+      <div class="scenario-icon amber">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+      </div>
+      <div class="scenario-info">
+        <div class="scenario-title">ソクラテスとの対話</div>
+        <div class="scenario-desc">問答法で自分の信念を問い直す哲学的セッション</div>
+        <div class="scenario-tags">
+          <span class="tag adv">上級</span>
+          <span class="tag">哲学</span>
+        </div>
+      </div>
+      <span class="lock-badge">近日公開</span>
+    </div>
+
+    <div class="scenario-card locked">
+      <div class="scenario-icon blue">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" stroke-width="2" stroke-linecap="round"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4m0 0h18"/></svg>
+      </div>
+      <div class="scenario-info">
+        <div class="scenario-title">デカルトと方法的懐疑</div>
+        <div class="scenario-desc">「我思う、ゆえに我あり」を出発点に論理を構築する</div>
+        <div class="scenario-tags">
+          <span class="tag adv">上級</span>
+          <span class="tag">哲学</span>
+        </div>
+      </div>
+      <span class="lock-badge">近日公開</span>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <div class="nav-item">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      ホーム
+    </div>
+    <div class="nav-item active">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm1 14.93V17a1 1 0 0 1-2 0v-.07A8.001 8.001 0 0 1 4 9h1a7 7 0 0 0 7 7 7 7 0 0 0 7-7h1a8.001 8.001 0 0 1-7 7.93z" opacity=".3"/><circle cx="12" cy="9" r="3"/></svg>
+      レッスン
+    </div>
+    <div class="nav-item">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      統計
+    </div>
+    <div class="nav-item">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      プロフィール
+    </div>
+  </div>
+</div>
+
+<!-- ── チャット画面 ── -->
+<div id="chat-view">
+  <div class="chat-header">
+    <div class="chat-header-row">
+      <div onclick="closeChat()" style="width:36px;height:36px;border-radius:10px;background:#F0F4FF;border:1px solid #E2E8FF;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3A4259" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </div>
+      <div class="chat-avatar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div>
+        <div class="chat-partner-name">田中部長</div>
+        <div class="chat-partner-role">コンサルタントの壁打ち</div>
+      </div>
+      <div style="margin-left:auto;font-size:13px;color:#7A849E;font-weight:600;">残り8分</div>
+    </div>
+    <div class="chat-context">
+      <strong>シナリオ:</strong> 中堅メーカーの営業部長として、売上が3年連続で下がっている原因と対策を構造化してください
+    </div>
+  </div>
+
+  <div class="chat-messages" id="chat-messages">
+    <div class="msg partner">
+      <div class="msg-bubble">よろしくお願いします。早速ですが、わが社の売上が3年連続で落ちています。まず、どう考えますか？</div>
+      <div class="msg-meta">田中部長</div>
+    </div>
+
+    <div class="msg user">
+      <div class="msg-bubble">まず売上の構造を確認させてください。売上＝顧客数×単価×購買頻度で分解すると、どの要素が特に落ちているか分かりますか？</div>
+      <div class="msg-meta">あなた</div>
+    </div>
+
+    <div class="msg partner">
+      <div class="msg-bubble">顧客数は横ばいですが、単価が下がっています。値引き要請が増えているんです。</div>
+      <div class="msg-meta">田中部長</div>
+    </div>
+
+    <div class="feedback-bubble">
+      <strong>AIコーチからのヒント</strong>
+      値引き要請の原因を仮説立てしてみましょう。競合比較によるものか、製品価値の訴求不足か、購買担当者の変化か。MECE に分解すると次の質問が絞れます。
+    </div>
+  </div>
+
+  <div class="chat-input-area">
+    <div class="hint-row">
+      <div class="hint-chip">競合を確認する</div>
+      <div class="hint-chip">価値訴求を問う</div>
+      <div class="hint-chip">顧客担当者の変化</div>
+    </div>
+    <div class="chat-input-row">
+      <textarea class="chat-input" placeholder="返答を入力..." rows="1"></textarea>
+      <button class="send-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+function openChat(type) {
+  document.getElementById('chat-view').style.display = 'flex';
+}
+function closeChat() {
+  document.getElementById('chat-view').style.display = 'none';
+}
+</script>
+</body>
+</html>
