@@ -85,7 +85,7 @@ export function AppShell({
   return (
     <div style={{ position: 'relative', minHeight: '100dvh', background: '#F0F4FF', display: 'flex', flexDirection: 'column' }}>
       {/* コンテンツエリア */}
-      <div style={{ flex: 1, paddingBottom: hideTabBar ? 0 : 82, overflowY: 'auto' }}>
+      <div id="app-scroll-container" style={{ flex: 1, paddingBottom: hideTabBar ? 0 : 82, overflowY: 'auto' }}>
         {children}
       </div>
 

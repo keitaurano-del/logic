@@ -85,9 +85,19 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
     const target = initialSection === 'account' ? accountRef.current
       : initialSection === 'notifications' ? notificationsRef.current
       : planRef.current
-    if (target) {
-      setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150)
+    if (!target) return
+    // AppShellのスクロールコンテナは window ではなく div#app-scroll-container
+    const scrollContainer = document.getElementById('app-scroll-container')
+    const doScroll = () => {
+      if (scrollContainer) {
+        const containerTop = scrollContainer.getBoundingClientRect().top
+        const targetTop = target.getBoundingClientRect().top
+        scrollContainer.scrollBy({ top: targetTop - containerTop - 16, behavior: 'smooth' })
+      } else {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
     }
+    setTimeout(doScroll, 200)
   }, [initialSection])
   const locale = getLocale()
   const pref = loadReminderPref()
