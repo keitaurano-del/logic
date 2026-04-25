@@ -84,7 +84,7 @@ type Screen =
   | { type: 'placement-test' }
   | { type: 'pricing' }
   | { type: 'streak' }
-  | { type: 'settings' }
+  | { type: 'settings'; section?: 'account' | 'notifications' | 'plan' }
   | { type: 'completed-lessons' }
   | { type: 'study-time' }
   | { type: 'language' }
@@ -341,7 +341,7 @@ function AppV3() {
         <ProfileScreen
           userName={userName}
           onOpenStreak={() => navigate({ type: 'streak' })}
-          onOpenSettings={() => navigate({ type: 'settings' })}
+          onOpenSettings={(section) => navigate({ type: 'settings', section })}
           onOpenCompleted={() => navigate({ type: 'completed-lessons' })}
           onOpenStudyTime={() => navigate({ type: 'study-time' })}
           onOpenRank={() => navigate({ type: 'rank' })}
@@ -362,6 +362,7 @@ function AppV3() {
           onOpenPricing={() => navigate({ type: 'pricing' })}
           currentUser={currentUser ? { email: currentUser.email ?? '' } : null}
           onLogout={async () => { await logout(); setCurrentUser(null) }}
+          initialSection={screen.section}
         />
       )}
       {screen.type === 'login' && (

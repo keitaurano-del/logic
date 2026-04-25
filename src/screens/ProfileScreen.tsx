@@ -24,7 +24,7 @@ function getPlanLabel(): string {
 interface ProfileScreenProps {
   userName: string
   onOpenStreak: () => void
-  onOpenSettings: () => void
+  onOpenSettings: (section?: 'account' | 'notifications' | 'plan') => void
   onOpenCompleted: () => void
   onOpenStudyTime: () => void
   onOpenRank: () => void
@@ -56,13 +56,13 @@ export function ProfileScreen({ userName, onOpenSettings, onOpenFeedback, onOpen
       icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="#3B5BDB"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-5.33 0-8 2.67-8 4v2h16v-2c0-1.33-2.67-4-8-4z"/></svg>,
       name: 'アカウント',
       sub: userName || 'ゲスト',
-      onClick: onOpenSettings,
+      onClick: () => onOpenSettings('account'),
     },
     {
       icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="#3B5BDB"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></svg>,
       name: '通知設定',
       sub: '毎日 08:00',
-      onClick: onOpenSettings,
+      onClick: () => onOpenSettings('notifications'),
     },
     {
       icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="#3B5BDB"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10" stroke="white" strokeWidth="2"/></svg>,

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { ArrowLeftIcon, ChevronRightIcon } from '../icons'
 import { IconButton } from '../components/IconButton'
 import { getLocale, t } from '../i18n'
@@ -15,6 +15,7 @@ interface SettingsScreenProps {
   currentUser: { email: string } | null
   onLogout: () => void
   onOpenPricing?: () => void
+  initialSection?: 'account' | 'notifications' | 'plan'
 }
 
 function SettingsRow({
@@ -74,7 +75,20 @@ function Toggle({ value, onChange }: { value: boolean; onChange: (v: boolean) =>
   )
 }
 
-export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUser, onLogout, onOpenPricing }: SettingsScreenProps) {
+export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUser, onLogout, onOpenPricing, initialSection }: SettingsScreenProps) {
+  const accountRef = useRef<HTMLDivElement>(null)
+  const notificationsRef = useRef<HTMLDivElement>(null)
+  const planRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!initialSection) return
+    const target = initialSection === 'account' ? accountRef.current
+      : initialSection === 'notifications' ? notificationsRef.current
+      : planRef.current
+    if (target) {
+      setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150)
+    }
+  }, [initialSection])
   const locale = getLocale()
   const pref = loadReminderPref()
   const [reminderEnabled, setReminderEnabled] = useState(pref.enabled)
@@ -124,7 +138,7 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
       </div>
 
       {/* ── アカウント ── */}
-      <div>
+      <div ref={accountRef}>
         <SectionHeader label={t('settings.section.account')} />
         <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
           {currentUser ? (
@@ -158,7 +172,7 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
       </div>
 
       {/* ── 通知 ── */}
-      <div>
+      <div ref={notificationsRef}>
         <SectionHeader label={t('settings.section.notifications')} />
         <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
           {/* Toggle row */}
@@ -225,7 +239,7 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
       </div>
 
       {/* ── プラン ── */}
-      <div>
+      <div ref={planRef}>
         <SectionHeader label="プラン" />
         <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
           {(() => {
