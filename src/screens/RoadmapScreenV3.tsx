@@ -10,9 +10,14 @@ const IMG = '/images/v3'
 interface RoadmapScreenV3Props {
   onOpenLesson: (id: number) => void
   onOpenCategory: (cat: string) => void
+  initialCategory?: string
+  onBack?: () => void
 }
 
 export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
+  if (props.initialCategory) {
+    return <CategoryDetailView category={props.initialCategory} onOpenLesson={props.onOpenLesson} onBack={props.onBack} />
+  }
   return (
     <div style={{ background: v3.color.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: v3.color.text }}>
       <div style={{ padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -141,6 +146,65 @@ function CategoryCard({ icon, iconBg, name, meta, progress, onClick }: { icon: R
         <div style={{ fontSize: 12, color: v3.color.text2, fontWeight: 500 }}>{meta}</div>
       </div>
       <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 13, fontWeight: 700, color: v3.color.accent }}>{progress}</div>
+    </div>
+  )
+}
+
+
+import { getAllLessonsFlat } from '../lessonData'
+import { getCompletedLessons } from '../stats'
+
+const CATEGORY_LABEL_JP: Record<string, string> = {
+  fermi: 'フェルミ推定',
+  logic: 'ロジカルシンキング',
+  case: 'ケース面接',
+  thinking: '思考法',
+  critical: 'クリティカルシンキング',
+  pm: 'プロジェクト管理',
+  'formal-logic': '論理学',
+  hypothesis: '仮説思考',
+  'problem-setting': '課題設定',
+  'design-thinking': 'デザインシンキング',
+  lateral: 'ラテラルシンキング',
+  analogy: 'アナロジー思考',
+  systems: 'システムシンキング',
+  proposal: '提案・伝える技術',
+  philosophy: '哲学・思考の原理',
+}
+
+function CategoryDetailView({ category, onOpenLesson, onBack }: { category: string; onOpenLesson: (id: number) => void; onBack?: () => void }) {
+  const flat = getAllLessonsFlat()
+  const completed = new Set(getCompletedLessons())
+  const lessons = Object.values(flat).filter((l: any) => l.category === category).sort((a: any, b: any) => a.id - b.id)
+  const label = CATEGORY_LABEL_JP[category] || category
+  return (
+    <div style={{ background: v3.color.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: v3.color.text }}>
+      <div style={{ padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 14px', display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div onClick={onBack} style={{ width: 36, height: 36, borderRadius: '50%', background: v3.color.card, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6" /></svg>
+        </div>
+        <div style={{ fontSize: 20, fontWeight: 700, color: v3.color.text }}>{label}</div>
+      </div>
+      <div style={{ flex: 1, padding: '16px 16px 100px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+        {lessons.length === 0 && (
+          <div style={{ padding: 32, textAlign: 'center', color: v3.color.text2 }}>このカテゴリにはまだレッスンがありません。</div>
+        )}
+        {lessons.map((lesson: any) => {
+          const isDone = completed.has(`lesson-${lesson.id}`)
+          return (
+            <div key={lesson.id} onClick={() => onOpenLesson(lesson.id)} style={{ background: v3.color.card, borderRadius: 16, padding: 16, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14 }}>
+              <div style={{ width: 32, height: 32, borderRadius: '50%', border: `1.5px solid ${isDone ? v3.color.accent : v3.color.text3}`, background: isDone ? v3.color.accent : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                {isDone && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={v3.color.bg} strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12" /></svg>}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 15, fontWeight: 700, color: v3.color.text, marginBottom: 3 }}>{lesson.title}</div>
+                <div style={{ fontSize: 12, color: v3.color.text2, fontWeight: 500 }}>{lesson.steps?.length ?? 0}ステップ · {lesson.difficulty || '初級'}</div>
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6" /></svg>
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }

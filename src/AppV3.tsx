@@ -250,6 +250,8 @@ function AppV3() {
         <RoadmapScreenV3
           onOpenLesson={handleOpenLesson}
           onOpenCategory={(cat) => navigate({ type: 'roadmap', category: cat as any })}
+          initialCategory={screen.category}
+          onBack={handleBack}
         />
       )}
 
