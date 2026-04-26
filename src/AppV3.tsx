@@ -32,12 +32,15 @@ import { RoadmapScreenV3 } from './screens/RoadmapScreenV3'
 import { StatsScreenV3 } from './screens/StatsScreenV3'
 import { ProfileScreenV3 } from './screens/ProfileScreenV3'
 import { LessonStoriesScreen } from './screens/LessonStoriesScreen'
+import { LessonCompleteScreen } from './screens/LessonCompleteScreen'
+import { allLessons } from './lessonData'
+import { getCurrentLevel } from './screens/homeHelpers'
 
 
 import type { AIProblemSet } from './aiProblemStore'
 import { loadTheme, applyTheme } from './theme'
 // import { loadGuestUser } from './guestUser'
-import { getCompletedCount } from './stats'
+import { getCompletedCount, getXp } from './stats'
 import { isAdmin } from './admin'
 import { onAuthChange, logout, getInitialUser, type User } from './supabase'
 import { syncOnLogin, syncOnLogout } from './syncService'
@@ -52,6 +55,7 @@ type Screen =
   | { type: 'roadmap'; category?: string }
   | { type: 'profile' }
   | { type: 'lesson'; lessonId: number }
+  | { type: 'lesson-complete'; lessonId: number; durationSec: number; prevLevel: number }
   | { type: 'flashcards' }
   | { type: 'fermi' }
   | { type: 'daily-fermi' }
@@ -189,8 +193,16 @@ function AppV3() {
     }
   }
 
+  const lessonStartTimeRef = useRef<number>(Date.now())
   const handleComplete = () => {
-    navigate({ type: tab }, true)
+    if (screen.type === 'lesson') {
+      const lessonId = screen.lessonId
+      const durationSec = Math.max(60, Math.floor((Date.now() - lessonStartTimeRef.current) / 1000))
+      const prevLevel = getCurrentLevel(getXp() - 50).level  // before XP add
+      navigate({ type: 'lesson-complete', lessonId, durationSec, prevLevel })
+    } else {
+      navigate({ type: tab }, true)
+    }
   }
 
   // 認証完了前はスプラッシュ表示
@@ -220,7 +232,7 @@ function AppV3() {
       onTabChange={handleTabChange}
       userName={userName}
       userLevel={`Lv.${level}`}
-      hideTabBar={screen.type === 'lesson'}
+      hideTabBar={screen.type === 'lesson' || screen.type === 'lesson-complete'}
     >
       {screen.type === 'home' && (
         <HomeScreenV3
@@ -374,6 +386,26 @@ function AppV3() {
           lessonId={screen.lessonId}
           onComplete={handleComplete}
           onClose={handleBack}
+        />
+      )}
+
+      {screen.type === 'lesson-complete' && (
+        <LessonCompleteScreen
+          userName={userName}
+          lessonTitle={(() => {
+            // ロード
+            try {
+              const lesson = allLessons[screen.lessonId]
+              return lesson?.title || 'レッスン'
+            } catch { return 'レッスン' }
+          })()}
+          durationSec={screen.durationSec}
+          prevLevel={screen.prevLevel}
+          onNext={() => {
+            // 同カテゴリの次レッスンを探す
+            navigate({ type: tab }, true)
+          }}
+          onHome={() => navigate({ type: 'home' }, true)}
         />
       )}
     </AppShell>
