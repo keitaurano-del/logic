@@ -7,15 +7,15 @@ export type Tab = 'home' | 'lessons' | 'stats' | 'profile'
 export interface TabDef {
   id: Tab
   label: string
-  icon: (active: boolean) => ReactNode
+  icon: (active: boolean, dark?: boolean) => ReactNode
 }
 
 const TABS: TabDef[] = [
   {
     id: 'home',
     label: 'ホーム',
-    icon: (active) => (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? '#3B5BDB' : '#B8BFD0'}>
+    icon: (active, dark) => (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? (dark ? '#70D8BD' : '#3B5BDB') : (dark ? '#7A8E8D' : '#B8BFD0')}>
         <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
       </svg>
     ),
@@ -23,8 +23,8 @@ const TABS: TabDef[] = [
   {
     id: 'lessons',
     label: 'レッスン',
-    icon: (active) => (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? '#3B5BDB' : '#B8BFD0'}>
+    icon: (active, dark) => (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? (dark ? '#70D8BD' : '#3B5BDB') : (dark ? '#7A8E8D' : '#B8BFD0')}>
         <path d="M6.5 2A2.5 2.5 0 0 0 4 4.5v15A2.5 2.5 0 0 0 6.5 22H20V2H6.5zm0 18A.5.5 0 0 1 6 19.5V17h14v3H6.5zM6 15V4h12v11H6z"/>
       </svg>
     ),
@@ -32,8 +32,8 @@ const TABS: TabDef[] = [
   {
     id: 'stats',
     label: '記録',
-    icon: (active) => (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? '#3B5BDB' : '#B8BFD0'}>
+    icon: (active, dark) => (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? (dark ? '#70D8BD' : '#3B5BDB') : (dark ? '#7A8E8D' : '#B8BFD0')}>
         <path d="M4 20h2V10H4v10zm5 0h2V4H9v16zm5 0h2V8h-2v12zm5 0h2v-6h-2v6z"/>
       </svg>
     ),
@@ -41,8 +41,8 @@ const TABS: TabDef[] = [
   {
     id: 'profile',
     label: 'プロフィール',
-    icon: (active) => (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? '#3B5BDB' : '#B8BFD0'}>
+    icon: (active, dark) => (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? (dark ? '#70D8BD' : '#3B5BDB') : (dark ? '#7A8E8D' : '#B8BFD0')}>
         <path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-5.33 0-8 2.67-8 4v2h16v-2c0-1.33-2.67-4-8-4z"/>
       </svg>
     ),
@@ -64,6 +64,8 @@ export function AppShell({
   children,
   hideTabBar = false,
 }: AppShellProps) {
+  const isV3 = typeof window !== 'undefined' && localStorage.getItem('logic_v3') === '1'
+
   void t // keep import
 
   // Hide tab bar on scroll down, show on scroll up
@@ -83,7 +85,7 @@ export function AppShell({
   }, [hideTabBar])
 
   return (
-    <div style={{ position: 'relative', minHeight: '100dvh', background: '#F0F4FF', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ position: 'relative', minHeight: '100dvh', background: isV3 ? '#082121' : '#F0F4FF', display: 'flex', flexDirection: 'column' }}>
       {/* コンテンツエリア */}
       <div id="app-scroll-container" style={{ flex: 1, paddingBottom: hideTabBar ? 0 : 82, overflowY: 'auto' }}>
         {children}
@@ -94,9 +96,9 @@ export function AppShell({
         <div style={{
           position: 'fixed', bottom: 0, left: 0, right: 0,
           height: 82,
-          background: 'rgba(240,244,255,.97)',
+          background: isV3 ? 'rgba(8,33,33,.97)' : 'rgba(240,244,255,.97)',
           backdropFilter: 'blur(20px)',
-          borderTop: '1px solid #E2E8FF',
+          borderTop: isV3 ? '1px solid rgba(255,255,255,.05)' : '1px solid #E2E8FF',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-around',
@@ -113,9 +115,9 @@ export function AppShell({
                 onClick={() => onTabChange(tab.id)}
                 style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '8px 14px', background: 'none', border: 'none', cursor: 'pointer', minWidth: 60 }}
               >
-                {tab.icon(active)}
-                <div style={{ fontSize: 13, fontWeight: 600, color: active ? '#3B5BDB' : '#7A849E' }}>{tab.label}</div>
-                {active && <div style={{ width: 4, height: 4, borderRadius: '50%', background: '#3B5BDB', marginTop: -2 }} />}
+                {tab.icon(active, isV3)}
+                <div style={{ fontSize: 13, fontWeight: 600, color: active ? (isV3 ? '#70D8BD' : '#3B5BDB') : (isV3 ? '#7A8E8D' : '#7A849E') }}>{tab.label}</div>
+                {active && <div style={{ width: 4, height: 4, borderRadius: '50%', background: isV3 ? '#70D8BD' : '#3B5BDB', marginTop: -2 }} />}
               </button>
             )
           })}
