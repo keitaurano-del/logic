@@ -36,6 +36,7 @@ import { RoadmapScreen } from './screens/RoadmapScreen'
 import { RoadmapScreenV3 } from './screens/RoadmapScreenV3'
 import { StatsScreenV3 } from './screens/StatsScreenV3'
 import { ProfileScreenV3 } from './screens/ProfileScreenV3'
+import { LessonStoriesScreen } from './screens/LessonStoriesScreen'
 
 const isV3 = () => typeof window !== 'undefined' && localStorage.getItem('logic_v3') === '1'
 
@@ -441,7 +442,15 @@ function AppV3() {
         />
       )}
 
-      {screen.type === 'lesson' && (
+      {screen.type === 'lesson' && isV3() && (
+        <LessonStoriesScreen
+          lessonId={screen.lessonId}
+          onComplete={handleComplete}
+          onClose={handleBack}
+        />
+      )}
+
+      {screen.type === 'lesson' && !isV3() && (
         <LessonScreen
           lessonId={screen.lessonId}
           onBack={handleBack}
