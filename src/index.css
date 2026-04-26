@@ -532,3 +532,10 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--accent) !important;
   color: var(--accent-fg) !important;
 }
+
+/* Override brand gradient to mint accent */
+.mode-dark, body {
+  --brand:           #70D8BD !important;
+  --brand-grad:      linear-gradient(135deg, #70D8BD 0%, #A5E8D5 100%) !important;
+  --hero-grad:       linear-gradient(135deg, #1A3A39 0%, #234D4B 60%, #082121 100%) !important;
+}
