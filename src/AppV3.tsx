@@ -246,6 +246,7 @@ function AppV3() {
       onTabChange={handleTabChange}
       userName={userName}
       userLevel={`Lv.${level}`}
+      hideTabBar={isV3() && screen.type === 'lesson'}
     >
       {screen.type === 'home' && (typeof window !== 'undefined' && localStorage.getItem('logic_v3') === '1') && (
         <HomeScreenV3
