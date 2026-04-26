@@ -1,10 +1,7 @@
 // Logic v3 — full app shell with all screens
 import { useEffect, useState, useRef, useCallback } from 'react'
 import { AppShell, type Tab } from './components/AppShell'
-import { HomeScreen } from './screens/HomeScreen'
 import { HomeScreenV3 } from './screens/HomeScreenV3'
-import { LessonScreen } from './screens/LessonScreen'
-import { ProfileScreen } from './screens/ProfileScreen'
 import { FlashcardsScreen } from './screens/FlashcardsScreen'
 import { FermiScreen } from './screens/FermiScreen'
 import { DailyFermiScreen } from './screens/DailyFermiScreen'
@@ -18,7 +15,6 @@ import { ReportProblemScreen } from './screens/ReportProblemScreen'
 import { OnboardingScreen } from './screens/OnboardingScreen'
 
 import { AIProblemGenScreen } from './screens/AIProblemGenScreen'
-import { StatsScreen } from './screens/StatsScreen'
 import { AIProblemScreen } from './screens/AIProblemScreen'
 import { FeedbackScreen } from './screens/FeedbackScreen'
 import { PlacementTestScreen } from './screens/PlacementTestScreen'
@@ -32,19 +28,16 @@ import { StudyTimeScreen } from './screens/StudyTimeScreen'
 import { LanguageScreen } from './screens/LanguageScreen'
 import { RankScreen } from './screens/RankScreen'
 import { LoginScreen } from './screens/LoginScreen'
-import { RoadmapScreen } from './screens/RoadmapScreen'
 import { RoadmapScreenV3 } from './screens/RoadmapScreenV3'
 import { StatsScreenV3 } from './screens/StatsScreenV3'
 import { ProfileScreenV3 } from './screens/ProfileScreenV3'
 import { LessonStoriesScreen } from './screens/LessonStoriesScreen'
 
-const isV3 = () => typeof window !== 'undefined' && localStorage.getItem('logic_v3') === '1'
 
 import type { AIProblemSet } from './aiProblemStore'
 import { loadTheme, applyTheme } from './theme'
 // import { loadGuestUser } from './guestUser'
-import { getCompletedCount, getCompletedLessons } from './stats'
-import { getAllLessonsFlat } from './lessonData'
+import { getCompletedCount } from './stats'
 import { isAdmin } from './admin'
 import { onAuthChange, logout, getInitialUser, type User } from './supabase'
 import { syncOnLogin, syncOnLogout } from './syncService'
@@ -52,25 +45,6 @@ import { syncOnLogin, syncOnLogout } from './syncService'
 const ONBOARDED_KEY = 'logic-onboarded'
 
 // 同カテゴリの次の未完了レッスンIDを返す（なければ null）
-function getNextLessonId(currentLessonId: number): number | null {
-  const flat = getAllLessonsFlat()
-  const lesson = flat[currentLessonId]
-  if (!lesson) return null
-  const cat = lesson.category
-  const completed = new Set(getCompletedLessons())
-  // 同カテゴリのレッスンをID順に並べる
-  const sameCat = Object.values(flat)
-    .filter((l) => l.category === cat)
-    .sort((a, b) => a.id - b.id)
-  const idx = sameCat.findIndex((l) => l.id === currentLessonId)
-  if (idx < 0) return null
-  // 現在以降の未完了レッスンを探す
-  for (let i = idx + 1; i < sameCat.length; i++) {
-    if (!completed.has(`lesson-${sameCat[i].id}`)) return sameCat[i].id
-  }
-  return null
-}
-
 type Screen =
   | { type: 'home' }
   | { type: 'lessons' }
@@ -246,9 +220,9 @@ function AppV3() {
       onTabChange={handleTabChange}
       userName={userName}
       userLevel={`Lv.${level}`}
-      hideTabBar={isV3() && screen.type === 'lesson'}
+      hideTabBar={screen.type === 'lesson'}
     >
-      {screen.type === 'home' && (typeof window !== 'undefined' && localStorage.getItem('logic_v3') === '1') && (
+      {screen.type === 'home' && (
         <HomeScreenV3
           userName={userName}
           onOpenLesson={handleOpenLesson}
@@ -264,44 +238,19 @@ function AppV3() {
         />
       )}
 
-      {screen.type === 'home' && !(typeof window !== 'undefined' && localStorage.getItem('logic_v3') === '1') && (
-        <HomeScreen
-          userName={userName}
-          onOpenLesson={handleOpenLesson}
-          onOpenCategory={(cat) => {
-            if (cat === 'fermi') navigate({ type: 'daily-fermi' })
-            else navigate({ type: 'roadmap', category: cat })
-          }}
-          onOpenRank={() => navigate({ type: 'rank' })}
-          onOpenDeviation={() => navigate({ type: 'deviation' })}
-          onOpenRanking={() => navigate({ type: 'ranking' })}
-          onOpenStreak={() => navigate({ type: 'streak' })}
-          onOpenRoleplay={() => navigate({ type: 'roleplay' })}
-          onOpenFlashcards={() => navigate({ type: 'flashcards' })}
-          onOpenAIGen={() => navigate({ type: 'ai-problem-gen' })}
-          onOpenPricing={() => navigate({ type: 'pricing' })}
-          onOpenFeedback={() => navigate({ type: 'feedback' })}
-          onOpenStats={() => { setTab('stats'); navigate({ type: 'stats' }, true) }}
-          onOpenProfile={() => { setTab('profile'); navigate({ type: 'profile' }, true) }}
-          onOpenRoadmap={() => { setTab('lessons'); navigate({ type: 'lessons' }, true) }}
-          onOpenAIProblemGen={() => navigate({ type: 'ai-problem-gen' })}
-          onNavigateToDailyFermi={() => navigate({ type: 'daily-fermi' })}
-        />
-      )}
 
-      {screen.type === 'lessons' && isV3() && (
+      {screen.type === 'lessons' && (
         <RoadmapScreenV3
           onOpenLesson={handleOpenLesson}
           onOpenCategory={(cat) => navigate({ type: 'roadmap', category: cat as any })}
         />
       )}
 
-      {screen.type === 'lessons' && !isV3() && (
-        <RoadmapScreen onOpenLesson={handleOpenLesson} />
-      )}
-
       {screen.type === 'roadmap' && (
-        <RoadmapScreen onOpenLesson={handleOpenLesson} initialCategory={screen.category} />
+        <RoadmapScreenV3
+          onOpenLesson={handleOpenLesson}
+          onOpenCategory={(cat) => navigate({ type: 'roadmap', category: cat as any })}
+        />
       )}
 
       {screen.type === 'flashcards' && <FlashcardsScreen onBack={handleBack} />}
@@ -336,15 +285,8 @@ function AppV3() {
         />
       )}
 
-      {screen.type === 'stats' && isV3() && (
+      {screen.type === 'stats' && (
         <StatsScreenV3 onBack={handleBack} />
-      )}
-
-      {screen.type === 'stats' && !isV3() && (
-        <StatsScreen
-          onBack={handleBack}
-          onTakeTest={() => navigate({ type: 'placement-test' })}
-        />
       )}
 
       {screen.type === 'ranking' && (
@@ -377,28 +319,10 @@ function AppV3() {
         />
       )}
 
-      {screen.type === 'profile' && isV3() && (
+      {screen.type === 'profile' && (
         <ProfileScreenV3
           userName={userName}
           onOpenSettings={(section) => navigate(section === 'account' ? { type: 'account-settings' } : section === 'notifications' ? { type: 'notification-settings' } : { type: 'settings' })}
-          onOpenFeedback={() => navigate({ type: 'feedback' })}
-          onOpenPricing={() => navigate({ type: 'pricing' })}
-        />
-      )}
-
-      {screen.type === 'profile' && !isV3() && (
-        <ProfileScreen
-          userName={userName}
-          onOpenStreak={() => navigate({ type: 'streak' })}
-          onOpenSettings={(section) =>
-            section === 'account' ? navigate({ type: 'account-settings' })
-            : section === 'notifications' ? navigate({ type: 'notification-settings' })
-            : navigate({ type: 'settings', section })
-          }
-          onOpenCompleted={() => navigate({ type: 'completed-lessons' })}
-          onOpenStudyTime={() => navigate({ type: 'study-time' })}
-          onOpenRank={() => navigate({ type: 'rank' })}
-          onOpenRanking={() => navigate({ type: 'ranking' })}
           onOpenFeedback={() => navigate({ type: 'feedback' })}
           onOpenPricing={() => navigate({ type: 'pricing' })}
         />
@@ -443,24 +367,11 @@ function AppV3() {
         />
       )}
 
-      {screen.type === 'lesson' && isV3() && (
+      {screen.type === 'lesson' && (
         <LessonStoriesScreen
           lessonId={screen.lessonId}
           onComplete={handleComplete}
           onClose={handleBack}
-        />
-      )}
-
-      {screen.type === 'lesson' && !isV3() && (
-        <LessonScreen
-          lessonId={screen.lessonId}
-          onBack={handleBack}
-          onComplete={handleComplete}
-          onNextLesson={(() => {
-            const nextId = getNextLessonId(screen.lessonId)
-            return nextId ? () => navigate({ type: 'lesson', lessonId: nextId }) : undefined
-          })()}
-          onReport={(ctx) => navigate({ type: 'report-problem', context: ctx })}
         />
       )}
     </AppShell>
