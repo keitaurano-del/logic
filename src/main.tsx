@@ -7,6 +7,9 @@ import { initSentry } from './sentry'
 
 initSentry()
 
+// Apply v3 dark theme to body
+document.body.classList.add('mode-dark')
+
 // Opt-in v3 preview via ?v=3 query param or localStorage flag.
 // Default route remains the existing App; no regression for existing users.
 const params = new URLSearchParams(window.location.search)
