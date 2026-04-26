@@ -7,6 +7,7 @@ import { getCurrentLevel, getXpProgress } from './homeHelpers'
 import { logout } from '../supabase'
 import { getSubscriptionState, isPremiumPlan, isStandardPlan, daysLeftInTrial } from '../subscription'
 import { v3 } from '../styles/tokensV3'
+import { getStudyDates as _getStudyDatesArr } from '../stats'
 
 function getPlanLabel(): string {
   const state = getSubscriptionState()
@@ -75,6 +76,25 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
       </div>
 
       <div style={{ flex: 1, padding: '16px 16px 100px', display: 'flex', flexDirection: 'column', gap: v3.spacing.gap }}>
+        {/* 学習サマリー */}
+        <div style={{ background: v3.color.card, borderRadius: v3.radius.card, padding: 18, boxShadow: v3.shadow.card }}>
+          <div style={{ fontSize: 13, color: v3.color.text2, fontWeight: 600, marginBottom: 12 }}>今週の学習サマリー</div>
+          <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, height: 70, marginBottom: 8 }}>
+            {['月', '火', '水', '木', '金', '土', '日'].map((d, i) => {
+              const studied = getStudiedThisWeek()[i]
+              return (
+                <div key={d} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+                  <div style={{ flex: 1, width: '100%', display: 'flex', alignItems: 'flex-end' }}>
+                    <div style={{ width: '100%', height: studied ? '100%' : '20%', minHeight: 8, background: studied ? v3.color.accent : v3.color.cardSoft, borderRadius: 5 }}></div>
+                  </div>
+                  <span style={{ fontSize: 10, color: v3.color.text3, fontWeight: 500 }}>{d}</span>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* 設定 */}
         <div style={{ background: v3.color.card, borderRadius: v3.radius.card, overflow: 'hidden', boxShadow: v3.shadow.card }}>
           <SettingRow icon="user" name="アカウント" sub={userName || 'ゲスト'} onClick={() => onOpenSettings('account')} />
           <SettingRow icon="bell" name="通知設定" sub="毎日 8:00" onClick={() => onOpenSettings('notifications')} />
@@ -87,6 +107,22 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
       </div>
     </div>
   )
+}
+
+
+
+function getStudiedThisWeek(): boolean[] {
+  const studyDates = new Set(_getStudyDatesArr())
+  const today = new Date()
+  const todayDow = (today.getDay() + 6) % 7
+  const monday = new Date(today)
+  monday.setDate(today.getDate() - todayDow)
+  return Array.from({ length: 7 }).map((_, i) => {
+    const d = new Date(monday)
+    d.setDate(monday.getDate() + i)
+    const iso = d.toISOString().slice(0, 10)
+    return studyDates.has(iso)
+  })
 }
 
 function StatCard({ val, label }: { val: string; label: string }) {

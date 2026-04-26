@@ -78,6 +78,7 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
           name="ロジカルシンキング"
           meta="5レッスン · 初〜中級"
           progress="3/5"
+          image={`${IMG}/course-logical.webp`}
           onClick={() => props.onOpenCategory('logic')}
         />
         <CategoryCard
@@ -86,6 +87,7 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
           name="ケース面接"
           meta="4レッスン · 中〜上級"
           progress="1/4"
+          image={`${IMG}/course-business.webp`}
           onClick={() => props.onOpenCategory('case')}
         />
         <CategoryCard
@@ -94,6 +96,7 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
           name="思考法"
           meta="22レッスン · 全レベル"
           progress="3/22"
+          image={`${IMG}/course-thinking.webp`}
           onClick={() => props.onOpenCategory('thinking')}
         />
         <CategoryCard
@@ -102,6 +105,7 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
           name="哲学・思考の原理"
           meta="5レッスン · 上級"
           progress="0/5"
+          image={`${IMG}/course-philosophy.webp`}
           onClick={() => props.onOpenCategory('philosophy')}
         />
       </div>
@@ -131,21 +135,6 @@ function PathCard({ image, tag, name, meta, progress, done, total, accent, onCli
           <div style={{ height: '100%', width: `${progress}%`, background: accent, borderRadius: 99 }}></div>
         </div>
       </div>
-    </div>
-  )
-}
-
-function CategoryCard({ icon, iconBg, name, meta, progress, onClick }: { icon: React.ReactNode; iconBg: string; name: string; meta: string; progress: string; onClick: () => void }) {
-  return (
-    <div onClick={onClick} style={{ background: v3.color.card, borderRadius: v3.radius.card, padding: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14, boxShadow: v3.shadow.card }}>
-      <div style={{ width: 48, height: 48, borderRadius: 14, background: iconBg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        {icon}
-      </div>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 3 }}>{name}</div>
-        <div style={{ fontSize: 12, color: v3.color.text2, fontWeight: 500 }}>{meta}</div>
-      </div>
-      <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 13, fontWeight: 700, color: v3.color.accent }}>{progress}</div>
     </div>
   )
 }
@@ -181,6 +170,29 @@ const CATEGORY_LABEL_JP: Record<string, string> = {
   systems: 'システムシンキング',
   proposal: '提案・伝える技術',
   philosophy: '哲学・思考の原理',
+}
+
+
+function CategoryCard({ icon, iconBg, name, meta, progress, onClick, image }: { icon: React.ReactNode; iconBg: string; name: string; meta: string; progress: string; onClick: () => void; image?: string }) {
+  return (
+    <div onClick={onClick} style={{ background: v3.color.card, borderRadius: v3.radius.card, overflow: 'hidden', cursor: 'pointer', boxShadow: v3.shadow.card }}>
+      {image && (
+        <div style={{ height: 100, overflow: 'hidden' }}>
+          <img src={image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+        </div>
+      )}
+      <div style={{ padding: 14, display: 'flex', alignItems: 'center', gap: 14 }}>
+        <div style={{ width: 44, height: 44, borderRadius: 12, background: iconBg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          {icon}
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: 15, fontWeight: 700, color: v3.color.text, marginBottom: 3 }}>{name}</div>
+          <div style={{ fontSize: 12, color: v3.color.text2, fontWeight: 500 }}>{meta}</div>
+        </div>
+        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 13, fontWeight: 700, color: v3.color.accent }}>{progress}</div>
+      </div>
+    </div>
+  )
 }
 
 function CategoryDetailView({ category, onOpenLesson, onBack }: { category: string; onOpenLesson: (id: number) => void; onBack?: () => void }) {

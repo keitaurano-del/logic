@@ -127,6 +127,29 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
           </div>
         </div>
 
+        {/* 今日の1問 (Daily Fermi) */}
+        <div onClick={onNavigateToDailyFermi} style={{ background: 'linear-gradient(135deg, #1A3A39 0%, #234D4B 100%)', borderRadius: v3.radius.card, padding: '20px', cursor: 'pointer', position: 'relative', overflow: 'hidden', boxShadow: v3.shadow.hero, flexShrink: 0 }}>
+          <div style={{ position: 'absolute', right: -30, top: -30, width: 140, height: 140, borderRadius: '50%', background: v3.color.accentGlow, filter: 'blur(36px)', pointerEvents: 'none' }}></div>
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+              <div style={{ width: 6, height: 6, borderRadius: '50%', background: v3.color.accent }}></div>
+              <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: v3.color.accent }}>今日の1問</span>
+            </div>
+            <div style={{ fontFamily: "'Noto Sans JP', sans-serif", fontSize: 19, fontWeight: 700, color: v3.color.text, lineHeight: 1.4, letterSpacing: '-.005em', marginBottom: 8 }}>
+              フェルミ推定で、思考力を1日5分鍛える
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: v3.color.text2, fontSize: 12, fontWeight: 500, marginBottom: 16 }}>
+              <span>毎日更新</span>
+              <div style={{ width: 3, height: 3, borderRadius: '50%', background: v3.color.text3 }}></div>
+              <span>+30 XP</span>
+            </div>
+            <div style={{ background: v3.color.accent, color: v3.color.bg, borderRadius: v3.radius.pill, padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700, boxShadow: v3.shadow.cta }}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill={v3.color.bg}><polygon points="5 3 19 12 5 21 5 3" /></svg>
+              チャレンジする
+            </div>
+          </div>
+        </div>
+
         {/* Week */}
         <div style={{ background: v3.color.card, borderRadius: v3.radius.card, padding: 18, flexShrink: 0, boxShadow: v3.shadow.card }}>
           <div style={{ fontSize: 13, color: v3.color.text2, fontWeight: 500, marginBottom: 14 }}>
@@ -157,11 +180,9 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
           <CourseCard name="哲学・<br>思考の原理" image={`${IMG}/course-philosophy.webp`} progress={0} accent="#C4B5FD" meta="5レッスン · 0%" onClick={() => props.onOpenCategory('philosophy')} />
         </div>
 
-        {/* AI grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-          <AICard image={`${IMG}/ai-bot.webp`} name="AI問題生成" sub="テーマ別オリジナル問題" onClick={onOpenAIGen} />
-          <AICard image={`${IMG}/ai-chat.webp`} name="ロールプレイ" sub="対話形式で論理訓練" onClick={onOpenRoleplay} />
-        </div>
+        {/* AI practice cards (large, vertical) */}
+        <AILargeCard image={`${IMG}/ai-bot.webp`} name="AI問題生成" sub="テーマ別のオリジナル問題で練習" onClick={onOpenAIGen} />
+        <AILargeCard image={`${IMG}/ai-chat.webp`} name="ロールプレイ" sub="ビジネス・哲学のシナリオで対話練習" onClick={onOpenRoleplay} />
 
         {/* XP */}
         <div onClick={onOpenRank} style={{ background: v3.color.card, borderRadius: v3.radius.card, padding: 18, cursor: 'pointer', position: 'relative', overflow: 'hidden', boxShadow: v3.shadow.card }}>
@@ -209,16 +230,19 @@ function CourseCard({ name, image, progress, accent, meta, onClick }: { name: st
   )
 }
 
-function AICard({ image, name, sub, onClick }: { image: string; name: string; sub: string; onClick: () => void }) {
+
+
+function AILargeCard({ image, name, sub, onClick }: { image: string; name: string; sub: string; onClick: () => void }) {
   return (
-    <div onClick={onClick} style={{ background: v3.color.card, borderRadius: v3.radius.card, overflow: 'hidden', cursor: 'pointer', boxShadow: v3.shadow.card }}>
-      <div style={{ height: 80, overflow: 'hidden' }}>
+    <div onClick={onClick} style={{ background: v3.color.card, borderRadius: v3.radius.card, overflow: 'hidden', cursor: 'pointer', boxShadow: v3.shadow.card, flexShrink: 0 }}>
+      <div style={{ height: 140, overflow: 'hidden' }}>
         <img src={image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
       </div>
-      <div style={{ padding: '12px 14px 16px' }}>
-        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 3 }}>{name}</div>
-        <div style={{ fontSize: 11, color: v3.color.text2, fontWeight: 500, lineHeight: 1.5 }}>{sub}</div>
+      <div style={{ padding: '16px 18px 18px' }}>
+        <div style={{ fontSize: 17, fontWeight: 700, marginBottom: 4 }}>{name}</div>
+        <div style={{ fontSize: 13, color: v3.color.text2, fontWeight: 500, lineHeight: 1.5 }}>{sub}</div>
       </div>
     </div>
   )
 }
+
