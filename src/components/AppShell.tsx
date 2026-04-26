@@ -64,7 +64,7 @@ export function AppShell({
   children,
   hideTabBar = false,
 }: AppShellProps) {
-  const isV3 = typeof window !== 'undefined' && localStorage.getItem('logic_v3') === '1'
+  const isV3 = true
 
   void t // keep import
 
