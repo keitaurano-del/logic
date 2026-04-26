@@ -2,6 +2,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react'
 import { AppShell, type Tab } from './components/AppShell'
 import { HomeScreen } from './screens/HomeScreen'
+import { HomeScreenV3 } from './screens/HomeScreenV3'
 import { LessonScreen } from './screens/LessonScreen'
 import { ProfileScreen } from './screens/ProfileScreen'
 import { FlashcardsScreen } from './screens/FlashcardsScreen'
@@ -239,7 +240,23 @@ function AppV3() {
       userName={userName}
       userLevel={`Lv.${level}`}
     >
-      {screen.type === 'home' && (
+      {screen.type === 'home' && (typeof window !== 'undefined' && localStorage.getItem('logic_v3') === '1') && (
+        <HomeScreenV3
+          userName={userName}
+          onOpenLesson={handleOpenLesson}
+          onOpenCategory={(cat) => {
+            if (cat === 'fermi') navigate({ type: 'daily-fermi' })
+            else navigate({ type: 'roadmap', category: cat as any })
+          }}
+          onOpenRank={() => navigate({ type: 'rank' })}
+          onOpenRoleplay={() => navigate({ type: 'roleplay' })}
+          onOpenAIGen={() => navigate({ type: 'ai-problem-gen' })}
+          onOpenRoadmap={() => { setTab('lessons'); navigate({ type: 'lessons' }, true) }}
+          onNavigateToDailyFermi={() => navigate({ type: 'daily-fermi' })}
+        />
+      )}
+
+      {screen.type === 'home' && !(typeof window !== 'undefined' && localStorage.getItem('logic_v3') === '1') && (
         <HomeScreen
           userName={userName}
           onOpenLesson={handleOpenLesson}
