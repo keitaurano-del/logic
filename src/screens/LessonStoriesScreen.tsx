@@ -60,7 +60,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
   }
 
   return (
-    <div style={{ background: v3.color.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: v3.color.text, position: 'relative' }}>
+    <div style={{ background: v3.color.bg, height: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: v3.color.text, position: 'relative' }}>
       {/* Progress bars */}
       <div style={{ display: 'flex', gap: 4, padding: 'calc(env(safe-area-inset-top, 44px) + 8px) 16px 12px' }}>
         {slides.map((_, i) => (
