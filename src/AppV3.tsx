@@ -33,6 +33,10 @@ import { LanguageScreen } from './screens/LanguageScreen'
 import { RankScreen } from './screens/RankScreen'
 import { LoginScreen } from './screens/LoginScreen'
 import { RoadmapScreen } from './screens/RoadmapScreen'
+import { RoadmapScreenV3 } from './screens/RoadmapScreenV3'
+
+const isV3 = () => typeof window !== 'undefined' && localStorage.getItem('logic_v3') === '1'
+
 import type { AIProblemSet } from './aiProblemStore'
 import { loadTheme, applyTheme } from './theme'
 // import { loadGuestUser } from './guestUser'
@@ -281,7 +285,14 @@ function AppV3() {
         />
       )}
 
-      {screen.type === 'lessons' && (
+      {screen.type === 'lessons' && isV3() && (
+        <RoadmapScreenV3
+          onOpenLesson={handleOpenLesson}
+          onOpenCategory={(cat) => navigate({ type: 'roadmap', category: cat as any })}
+        />
+      )}
+
+      {screen.type === 'lessons' && !isV3() && (
         <RoadmapScreen onOpenLesson={handleOpenLesson} />
       )}
 

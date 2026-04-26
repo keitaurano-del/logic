@@ -4,7 +4,7 @@
  * モックアップ: lv3-home.html
  */
 import { useMemo } from 'react'
-import { getXp, getStreak, getCompletedCount, getStudyDates } from '../stats'
+import { getXp, getStreak, getStudyDates } from '../stats'
 import { v3 } from '../styles/tokensV3'
 import { getCurrentLevel, getXpProgress } from './homeHelpers'
 
@@ -25,7 +25,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
   const { userName, onOpenLesson, onOpenAIGen, onOpenRoleplay, onOpenRank, onNavigateToDailyFermi } = props
 
   const streak = getStreak()
-  const completed = getCompletedCount()
+  // completed unused
   const xp = getXp()
   const lv = getCurrentLevel(xp)
   const { pct: levelPct, current: levelXp, needed: nextThreshold } = getXpProgress(xp)
