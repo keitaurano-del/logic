@@ -4,6 +4,7 @@
  */
 
 export type LessonSlide =
+  | { kind: 'hero'; image: string; category: string; title: string; meta: string }
   | { kind: 'intro'; tag: string; title: string; body: string }
   | { kind: 'concept'; tag?: string; title: string; body: string; example?: string }
   | { kind: 'diagram'; title: string; nodes: { label: string; kind: 'premise' | 'conclusion' }[] }
@@ -65,6 +66,23 @@ function formatBody(text: string): string {
 }
 
 /**
+ * Map lesson.category → hero image filename (without extension)
+ */
+function getHeroImage(category: string): string {
+  const c = (category || '').toLowerCase()
+  if (c.includes('ロジカル') || c.includes('logical')) return '/images/v3/hero-deduction.webp'
+  if (c.includes('ケース面接')) return '/images/v3/course-business.webp'
+  if (c.includes('哲学') || c === 'philosophy') return '/images/v3/course-philosophy.webp'
+  if (c.includes('提案') || c.includes('伝える')) return '/images/v3/ai-chat.webp'
+  if (c.includes('フェルミ')) return '/images/v3/ai-bot.webp'
+  // 思考法系
+  if (c.includes('クリティカル') || c.includes('仮説') || c.includes('課題') || c.includes('デザインシンキング') || c.includes('ラテラル') || c.includes('アナロジー') || c.includes('システム')) {
+    return '/images/v3/course-thinking.webp'
+  }
+  return '/images/v3/course-logical.webp'
+}
+
+/**
  * Convert legacy lesson.steps to v3 slides.
  * - 'explain' / 'intro' steps → 'concept' slides (split if too long)
  * - 'quiz' steps → 'quiz' slides
@@ -74,6 +92,15 @@ export function convertLessonToSlides(lesson: any): LessonSlide[] {
   if (!lesson?.steps || !Array.isArray(lesson.steps)) return []
 
   const slides: LessonSlide[] = []
+  // Add hero slide as first
+  const stepCount = lesson.steps.length
+  slides.push({
+    kind: 'hero',
+    image: getHeroImage(lesson.category),
+    category: lesson.category || '',
+    title: lesson.title || '',
+    meta: `${stepCount}ステップ · ${lesson.difficulty || '初級'}`,
+  })
 
   for (const step of lesson.steps) {
     const stepType = step.type || step.kind

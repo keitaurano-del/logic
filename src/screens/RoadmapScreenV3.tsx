@@ -154,6 +154,17 @@ function CategoryCard({ icon, iconBg, name, meta, progress, onClick }: { icon: R
 import { getAllLessonsFlat } from '../lessonData'
 import { getCompletedLessons } from '../stats'
 
+const CATEGORY_ID_TO_NAMES: Record<string, string[]> = {
+  logic: ['ロジカルシンキング', 'Logical Thinking'],
+  case: ['ケース面接'],
+  thinking: ['思考法', 'クリティカルシンキング', '仮説思考', '課題設定', 'デザインシンキング', 'ラテラルシンキング', 'アナロジー思考', 'システムシンキング'],
+  philosophy: ['哲学・思考の原理', 'philosophy'],
+  proposal: ['提案・伝える技術'],
+  fermi: ['フェルミ推定'],
+  critical: ['クリティカルシンキング'],
+  hypothesis: ['仮説思考'],
+}
+
 const CATEGORY_LABEL_JP: Record<string, string> = {
   fermi: 'フェルミ推定',
   logic: 'ロジカルシンキング',
@@ -175,7 +186,11 @@ const CATEGORY_LABEL_JP: Record<string, string> = {
 function CategoryDetailView({ category, onOpenLesson, onBack }: { category: string; onOpenLesson: (id: number) => void; onBack?: () => void }) {
   const flat = getAllLessonsFlat()
   const completed = new Set(getCompletedLessons())
-  const lessons = Object.values(flat).filter((l: any) => l.category === category).sort((a: any, b: any) => a.id - b.id)
+  const candidates = CATEGORY_ID_TO_NAMES[category] || [CATEGORY_LABEL_JP[category] || category, category]
+  const lessons = Object.values(flat).filter((l: any) => {
+    if (!l) return false
+    return candidates.includes(l.category)
+  }).sort((a: any, b: any) => a.id - b.id)
   const label = CATEGORY_LABEL_JP[category] || category
   return (
     <div style={{ background: v3.color.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: v3.color.text }}>

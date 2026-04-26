@@ -123,6 +123,19 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
 }
 
 function SlideContent({ slide, quizAnswered, onSelectQuiz }: { slide: LessonSlide; quizAnswered: { correct: boolean; selected: number } | null; onSelectQuiz: (idx: number) => void }) {
+  if (slide.kind === 'hero') {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'flex-start' }}>
+        <div style={{ marginTop: 8, marginBottom: 24, borderRadius: 18, overflow: 'hidden', position: 'relative', boxShadow: v3.shadow.hero }}>
+          <img src={slide.image} alt="" loading="lazy" style={{ width: '100%', height: 200, objectFit: 'cover', display: 'block' }} />
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, transparent 40%, rgba(8,33,33,0.85) 100%)' }}></div>
+        </div>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: v3.color.accentSoft, borderRadius: 99, padding: '6px 12px', fontSize: 11, fontWeight: 600, color: v3.color.accent, marginBottom: 16, width: 'fit-content' }}>{slide.category}</span>
+        <h1 style={{ fontFamily: 'Noto Sans JP', fontSize: 30, fontWeight: 700, lineHeight: 1.3, marginBottom: 16, color: v3.color.text }}>{slide.title}</h1>
+        <div style={{ fontSize: 14, color: v3.color.text2, fontWeight: 500 }}>{slide.meta}</div>
+      </div>
+    )
+  }
   if (slide.kind === 'concept' || slide.kind === 'intro') {
     return (
       <>
