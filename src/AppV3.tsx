@@ -34,6 +34,8 @@ import { RankScreen } from './screens/RankScreen'
 import { LoginScreen } from './screens/LoginScreen'
 import { RoadmapScreen } from './screens/RoadmapScreen'
 import { RoadmapScreenV3 } from './screens/RoadmapScreenV3'
+import { StatsScreenV3 } from './screens/StatsScreenV3'
+import { ProfileScreenV3 } from './screens/ProfileScreenV3'
 
 const isV3 = () => typeof window !== 'undefined' && localStorage.getItem('logic_v3') === '1'
 
@@ -332,7 +334,11 @@ function AppV3() {
         />
       )}
 
-      {screen.type === 'stats' && (
+      {screen.type === 'stats' && isV3() && (
+        <StatsScreenV3 onBack={handleBack} />
+      )}
+
+      {screen.type === 'stats' && !isV3() && (
         <StatsScreen
           onBack={handleBack}
           onTakeTest={() => navigate({ type: 'placement-test' })}
@@ -369,7 +375,16 @@ function AppV3() {
         />
       )}
 
-      {screen.type === 'profile' && (
+      {screen.type === 'profile' && isV3() && (
+        <ProfileScreenV3
+          userName={userName}
+          onOpenSettings={(section) => navigate(section === 'account' ? { type: 'account-settings' } : section === 'notifications' ? { type: 'notification-settings' } : { type: 'settings' })}
+          onOpenFeedback={() => navigate({ type: 'feedback' })}
+          onOpenPricing={() => navigate({ type: 'pricing' })}
+        />
+      )}
+
+      {screen.type === 'profile' && !isV3() && (
         <ProfileScreen
           userName={userName}
           onOpenStreak={() => navigate({ type: 'streak' })}
