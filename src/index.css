@@ -486,3 +486,49 @@ h1, h2, h3, h4, h5, h6 {
 [style*="color: rgb(15, 20, 36)"] {
   color: var(--text-primary) !important;
 }
+
+/* Additional light colors used in legacy screens */
+[style*="background: #EEF2FF"],
+[style*="background:#EEF2FF"],
+[style*="background: rgb(238, 242, 255)"],
+[style*="background: #DBE4FF"],
+[style*="background:#DBE4FF"],
+[style*="background: #FAFAFB"],
+[style*="background:#FAFAFB"] {
+  background: var(--bg-card) !important;
+  color: var(--text-primary);
+}
+
+[style*="border: 1.5px solid #C5D0FB"],
+[style*="border:1.5px solid #C5D0FB"],
+[style*="border: 1px solid #C5D0FB"],
+[style*="border: 1px solid #DBE4FF"],
+[style*="border: 1.5px solid #DBE4FF"],
+[style*="border: 1px solid #C8D0E7"] {
+  border-color: var(--border) !important;
+}
+
+/* Dim accent color text (#3B5BDB) to mint */
+[style*="color: #748FFC"],
+[style*="color:#748FFC"] {
+  color: var(--accent) !important;
+}
+
+/* Light gray text color #7A849E etc */
+[style*="color: #7A849E"],
+[style*="color:#7A849E"],
+[style*="color: #9BA3B8"],
+[style*="color: #C8D0E7"] {
+  color: var(--text-muted) !important;
+}
+
+/* HomeScreen v3 image placeholders fix when inside .card */
+.card img { display: block; }
+
+/* Buttons inline gradient */
+[style*="linear-gradient(135deg, #3B5BDB"],
+[style*="linear-gradient(135deg,#3B5BDB"],
+[style*="linear-gradient(180deg, #3B5BDB"] {
+  background: var(--accent) !important;
+  color: var(--accent-fg) !important;
+}
