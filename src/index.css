@@ -566,3 +566,96 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--accent) !important;
   color: var(--accent-fg) !important;
 }
+
+/* ==========================================================
+ * Catch-all sanitizer for legacy light-theme inline styles
+ * ========================================================== */
+
+/* Any nearly-white background → bg-card */
+[style*="background: #F"],
+[style*="background:#F"],
+[style*="background-color: #F"] {
+  /* This is overly broad; skip unless explicit white */
+}
+
+/* Specific common values */
+[style*="background: #FAFAFB"],
+[style*="background:#FAFAFB"],
+[style*="background: #FAFAFC"],
+[style*="background:#FAFAFC"],
+[style*="background: #F9FAFB"],
+[style*="background:#F9FAFB"],
+[style*="background: #F4F5F9"],
+[style*="background:#F4F5F9"],
+[style*="background: #F3F4F6"],
+[style*="background: #F1F2F6"],
+[style*="background: #E9EBF2"],
+[style*="background: #FFFFFF"],
+[style*="background:#FFFFFF"] {
+  background: var(--bg-card) !important;
+  color: var(--text-primary);
+}
+
+/* Common dark text colors */
+[style*="color: #1F2937"],
+[style*="color:#1F2937"],
+[style*="color: #111827"],
+[style*="color: #1A2138"],
+[style*="color: #2A3350"],
+[style*="color: #161C33"] {
+  color: var(--text-primary) !important;
+}
+
+/* Common gray text */
+[style*="color: #6B7280"],
+[style*="color: #4B5563"],
+[style*="color: #9CA3AF"],
+[style*="color: #B1B5C6"] {
+  color: var(--text-secondary) !important;
+}
+
+/* All borders that look light */
+[style*="border: 1px solid #F"],
+[style*="border:1px solid #F"],
+[style*="border: 1.5px solid #F"],
+[style*="border-color: #F"] {
+  /* skip too broad */
+}
+[style*="border: 1px solid #E"],
+[style*="border-color: #E"] {
+  border-color: var(--border) !important;
+}
+
+/* Common indigo/blue accents that should become mint */
+[style*="color: #6366F1"],
+[style*="color: #4F46E5"],
+[style*="color: #3D5FC4"],
+[style*="color: #2E4BA8"],
+[style*="color: #4338CA"] {
+  color: var(--accent) !important;
+}
+
+/* Common indigo/blue backgrounds */
+[style*="background: #6366F1"],
+[style*="background:#6366F1"],
+[style*="background: #4F46E5"],
+[style*="background: #3D5FC4"] {
+  background: var(--accent) !important;
+  color: var(--accent-fg) !important;
+}
+
+/* Common indigo/purple gradient buttons → mint */
+[style*="linear-gradient(135deg, #6366F1"],
+[style*="linear-gradient(135deg,#6366F1"],
+[style*="linear-gradient(135deg, #4F46E5"],
+[style*="linear-gradient(135deg, #3D5FC4"],
+[style*="linear-gradient(180deg, #3D5FC4"] {
+  background: linear-gradient(135deg, #70D8BD 0%, #A5E8D5 100%) !important;
+  color: var(--accent-fg) !important;
+}
+
+/* Override --accent in mode-dark to mint (catches any class-based use) */
+.mode-dark {
+  --brand: #70D8BD !important;
+  --brand-grad: linear-gradient(135deg, #70D8BD 0%, #A5E8D5 100%) !important;
+}
