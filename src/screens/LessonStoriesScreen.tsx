@@ -92,9 +92,13 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
 
         <SlideContent slide={slide} quizAnswered={quizAnswered} onSelectQuiz={(idx) => {
           if (slide.kind !== 'quiz') return
-          setQuizAnswered({ correct: idx === slide.correctIndex, selected: idx })
-          if (idx === slide.correctIndex) {
+          const correct = idx === slide.correctIndex
+          setQuizAnswered({ correct, selected: idx })
+          if (correct) {
             setTimeout(goNext, 1200)
+          } else {
+            // 不正解の場合 2.5秒後に再選択可能にする
+            setTimeout(() => setQuizAnswered(null), 2500)
           }
         }} />
       </div>
