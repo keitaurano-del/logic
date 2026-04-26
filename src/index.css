@@ -659,3 +659,76 @@ h1, h2, h3, h4, h5, h6 {
   --brand: #70D8BD !important;
   --brand-grad: linear-gradient(135deg, #70D8BD 0%, #A5E8D5 100%) !important;
 }
+
+/* RGB form catch */
+[style*="background: rgb(59, 91, 219)"],
+[style*="background:rgb(59, 91, 219)"] {
+  background: var(--accent) !important;
+  color: var(--accent-fg) !important;
+}
+
+/* === RGB form overrides (React inline style outputs in rgb) === */
+[style*="background: rgb(59, 91, 219)"],
+[style*="background:rgb(59, 91, 219)"],
+[style*="background: rgb(99, 102, 241)"],
+[style*="background:rgb(99, 102, 241)"],
+[style*="background: rgb(79, 70, 229)"],
+[style*="background:rgb(79, 70, 229)"],
+[style*="background: rgb(61, 95, 196)"],
+[style*="background:rgb(61, 95, 196)"] {
+  background: var(--accent) !important;
+  color: var(--accent-fg) !important;
+}
+
+[style*="color: rgb(59, 91, 219)"],
+[style*="color:rgb(59, 91, 219)"],
+[style*="color: rgb(99, 102, 241)"],
+[style*="color: rgb(61, 95, 196)"] {
+  color: var(--accent) !important;
+}
+
+/* RGB white backgrounds */
+[style*="background: rgb(255, 255, 255)"],
+[style*="background:rgb(255, 255, 255)"] {
+  background: var(--bg-card) !important;
+  color: var(--text-primary);
+}
+
+/* RGB light backgrounds */
+[style*="background: rgb(238, 242, 255)"],
+[style*="background:rgb(238, 242, 255)"],
+[style*="background: rgb(248, 249, 255)"],
+[style*="background:rgb(248, 249, 255)"],
+[style*="background: rgb(240, 244, 255)"],
+[style*="background:rgb(240, 244, 255)"] {
+  background: var(--bg-card) !important;
+}
+
+/* RGB dark text → white */
+[style*="color: rgb(15, 21, 35)"],
+[style*="color:rgb(15, 21, 35)"],
+[style*="color: rgb(15, 20, 36)"],
+[style*="color:rgb(15, 20, 36)"] {
+  color: var(--text-primary) !important;
+}
+
+/* React-rendered linear-gradient (with rgb commas) */
+[style*="linear-gradient(160deg, rgb(59, 91, 219)"],
+[style*="linear-gradient(135deg, rgb(59, 91, 219)"],
+[style*="linear-gradient(135deg, rgb(99, 102, 241)"],
+[style*="linear-gradient(135deg, rgb(61, 95, 196)"] {
+  background: linear-gradient(135deg, #70D8BD 0%, #A5E8D5 100%) !important;
+  color: var(--accent-fg) !important;
+}
+
+/* Box-shadow with brand blue → mint shadow */
+[style*="rgba(59, 91, 219"],
+[style*="rgba(99, 102, 241"] {
+  /* keep box-shadow but tone down */
+}
+
+/* RGB borders */
+[style*="border: 1px solid rgb(226, 232, 255)"],
+[style*="border-color: rgb(226, 232, 255)"] {
+  border-color: var(--border) !important;
+}
