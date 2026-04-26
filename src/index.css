@@ -392,3 +392,127 @@ input, textarea, select { -webkit-tap-highlight-color: transparent; }
     --grid-gap: 3rem;
   }
 }
+
+/* ==========================================================
+ * V3 Global Dark Mode Overrides
+ * Applied to all legacy screens (旧 White-card based screens)
+ * ========================================================== */
+:root {
+  --v3-bg: #082121;
+  --v3-card: #1A3A39;
+  --v3-card-2: #234D4B;
+  --v3-card-soft: #163938;
+  --v3-accent: #70D8BD;
+  --v3-accent-soft: rgba(112, 216, 189, 0.16);
+  --v3-warm: #F4A261;
+  --v3-warm-soft: rgba(244, 162, 97, 0.16);
+  --v3-text: #F2F7F6;
+  --v3-text-2: #A3B8B7;
+  --v3-text-3: #7A8E8D;
+  --v3-line: rgba(255, 255, 255, 0.05);
+}
+
+body {
+  background: var(--v3-bg) !important;
+  color: var(--v3-text);
+}
+
+/* Headers (h1, h2, h3) */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--v3-text) !important;
+}
+
+/* White cards, light backgrounds */
+[style*="background: #fff"],
+[style*="background:#fff"],
+[style*="background: white"],
+[style*="background:white"],
+[style*="background: rgb(255, 255, 255)"],
+[style*="background-color: #fff"],
+[style*="background-color: white"] {
+  background: var(--v3-card) !important;
+  color: var(--v3-text) !important;
+}
+
+/* Light blue/purple background pages (#F0F4FF, #F5F8FF, #EEF2FF) */
+[style*="background: #F0F4FF"],
+[style*="background:#F0F4FF"],
+[style*="background: #F5F8FF"],
+[style*="background: #EEF2FF"],
+[style*="rgba(240,244,255"],
+[style*="rgba(240, 244, 255"] {
+  background: var(--v3-bg) !important;
+}
+
+/* Dark blue text → white */
+[style*="color: #0F1523"],
+[style*="color:#0F1523"],
+[style*="color: #0F1424"],
+[style*="color:#0F1424"],
+[style*="color: rgb(15, 21, 35)"],
+[style*="color: rgb(15, 20, 36)"] {
+  color: var(--v3-text) !important;
+}
+
+/* Brand blue (#3B5BDB) → mint accent */
+[style*="color: #3B5BDB"],
+[style*="color:#3B5BDB"],
+[style*="color: rgb(59, 91, 219)"] {
+  color: var(--v3-accent) !important;
+}
+
+/* Mid blue text → text-2 (subtle) */
+[style*="color: #7A849E"],
+[style*="color:#7A849E"],
+[style*="color: #748FFC"] {
+  color: var(--v3-text-2) !important;
+}
+
+/* Borders: light blue → dark line */
+[style*="border: 1px solid #E2E8FF"],
+[style*="border:1px solid #E2E8FF"],
+[style*="border: 1.5px solid #E2E8FF"],
+[style*="border-color: #E2E8FF"],
+[style*="border-top: 1px solid #E2E8FF"] {
+  border-color: var(--v3-line) !important;
+}
+
+/* Light blue backgrounds → card-soft */
+[style*="background: #EEF2FF"],
+[style*="background:#EEF2FF"],
+[style*="background: #DBE4FF"],
+[style*="background: #F8FAFF"] {
+  background: var(--v3-card-soft) !important;
+}
+
+/* Inputs / textareas */
+input, textarea, select {
+  background: var(--v3-card-soft) !important;
+  color: var(--v3-text) !important;
+  border: 1px solid var(--v3-line) !important;
+}
+
+input::placeholder, textarea::placeholder {
+  color: var(--v3-text-3) !important;
+}
+
+/* Buttons with #3B5BDB background → accent */
+button[style*="background: #3B5BDB"],
+button[style*="background:#3B5BDB"],
+[style*="background: linear-gradient(135deg, #3B5BDB"],
+[style*="background:linear-gradient(135deg,#3B5BDB"] {
+  background: var(--v3-accent) !important;
+  color: var(--v3-bg) !important;
+}
+
+/* Light gradient backgrounds (homescreen-like) → card */
+[style*="linear-gradient(135deg, #F0F4FF"],
+[style*="linear-gradient(180deg, #F0F4FF"] {
+  background: var(--v3-card) !important;
+}
+
+/* App.css editorial-h1 / h2 */
+.editorial-h1, .editorial-h2 {
+  color: var(--v3-text) !important;
+}
+

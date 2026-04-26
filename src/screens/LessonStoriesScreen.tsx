@@ -123,7 +123,7 @@ function SlideContent({ slide, quizAnswered, onSelectQuiz }: { slide: LessonSlid
     return (
       <>
         {slide.kind === 'concept' && (slide as any).tag && <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: v3.color.accentSoft, borderRadius: 99, padding: '6px 12px', fontSize: 11, fontWeight: 600, color: v3.color.accent, marginBottom: 24, marginTop: 24 }}>{(slide as any).tag}</span>}
-        <h1 style={{ fontFamily: 'Noto Sans JP', fontSize: 28, fontWeight: 700, lineHeight: 1.4, marginBottom: 20, marginTop: (slide as any).tag ? 0 : 32, letterSpacing: '.005em' }}>{slide.title}</h1>
+        <h1 style={{ fontFamily: 'Noto Sans JP', fontSize: 28, fontWeight: 700, lineHeight: 1.4, marginBottom: 20, marginTop: (slide as any).tag ? 0 : 32, letterSpacing: '.005em', color: v3.color.text }}>{slide.title}</h1>
         <p style={{ fontSize: 16, lineHeight: 1.75, fontWeight: 400, color: v3.color.text, marginBottom: 20 }} dangerouslySetInnerHTML={{ __html: slide.body }}></p>
         {(slide as any).example && (
           <div style={{ background: v3.color.card, borderRadius: 16, padding: 18 }}>
@@ -138,7 +138,7 @@ function SlideContent({ slide, quizAnswered, onSelectQuiz }: { slide: LessonSlid
   if (slide.kind === 'diagram') {
     return (
       <>
-        <h1 style={{ fontSize: 26, fontWeight: 700, lineHeight: 1.4, marginBottom: 24, marginTop: 32 }}>{slide.title}</h1>
+        <h1 style={{ fontSize: 26, fontWeight: 700, lineHeight: 1.4, marginBottom: 24, marginTop: 32, color: v3.color.text }}>{slide.title}</h1>
         <div style={{ background: v3.color.card, borderRadius: 16, padding: 20, display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'center' }}>
           {slide.nodes.map((n, i) => (
             <div key={i} style={{ width: '100%' }}>
@@ -163,7 +163,7 @@ function SlideContent({ slide, quizAnswered, onSelectQuiz }: { slide: LessonSlid
     return (
       <>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: v3.color.warmSoft, borderRadius: 99, padding: '6px 12px', fontSize: 11, fontWeight: 600, color: v3.color.warm, marginBottom: 24, marginTop: 24 }}>確認問題</span>
-        <h2 style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.5, marginBottom: 24 }}>{slide.question}</h2>
+        <h2 style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.5, marginBottom: 24, color: v3.color.text }}>{slide.question}</h2>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {slide.choices.map((c, i) => {
             const answered = quizAnswered !== null
@@ -193,7 +193,7 @@ function SlideContent({ slide, quizAnswered, onSelectQuiz }: { slide: LessonSlid
   if (slide.kind === 'summary') {
     return (
       <>
-        <h1 style={{ fontSize: 28, fontWeight: 700, lineHeight: 1.4, marginBottom: 28, marginTop: 32 }}>{slide.title}</h1>
+        <h1 style={{ fontSize: 28, fontWeight: 700, lineHeight: 1.4, marginBottom: 28, marginTop: 32, color: v3.color.text }}>{slide.title}</h1>
         <ul style={{ display: 'flex', flexDirection: 'column', gap: 12, listStyle: 'none', padding: 0 }}>
           {slide.points.map((p, i) => (
             <li key={i} style={{ display: 'flex', gap: 12, alignItems: 'flex-start', background: v3.color.card, borderRadius: 14, padding: '14px 16px' }}>
@@ -209,7 +209,7 @@ function SlideContent({ slide, quizAnswered, onSelectQuiz }: { slide: LessonSlid
   if (slide.kind === 'compare') {
     return (
       <>
-        <h1 style={{ fontSize: 26, fontWeight: 700, marginBottom: 24, marginTop: 32 }}>{slide.title}</h1>
+        <h1 style={{ fontSize: 26, fontWeight: 700, marginBottom: 24, marginTop: 32, color: v3.color.text }}>{slide.title}</h1>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <div style={{ background: v3.color.card, borderRadius: 14, padding: 16 }}>
             <div style={{ fontSize: 12, fontWeight: 700, color: v3.color.accent, marginBottom: 6 }}>{slide.left.label}</div>
