@@ -539,3 +539,30 @@ h1, h2, h3, h4, h5, h6 {
   --brand-grad:      linear-gradient(135deg, #70D8BD 0%, #A5E8D5 100%) !important;
   --hero-grad:       linear-gradient(135deg, #1A3A39 0%, #234D4B 60%, #082121 100%) !important;
 }
+
+/* Onboarding feature cards */
+[style*="background: #F8F9FF"],
+[style*="background:#F8F9FF"],
+[style*="background: rgb(248, 249, 255)"] {
+  background: var(--bg-card) !important;
+}
+
+/* Onboarding container "background: white" override */
+[style*="background: rgb(255, 255, 255)"] {
+  background: var(--bg-primary) !important;
+}
+
+/* Onboarding free trial gradient header (purple) */
+[style*="linear-gradient(135deg, #6366F1"],
+[style*="linear-gradient(180deg, #6366F1"],
+[style*="background: #6366F1"] {
+  background: var(--accent) !important;
+  color: var(--accent-fg) !important;
+}
+
+/* Subscription/pricing default-blue trial card */
+[style*="background: #4F46E5"],
+[style*="background:#4F46E5"] {
+  background: var(--accent) !important;
+  color: var(--accent-fg) !important;
+}
