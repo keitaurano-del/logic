@@ -3,6 +3,7 @@ import { startCheckout, startBetaCampaignCheckout, isAndroidNative } from '../su
 import { loadGuestUser } from '../guestUser'
 import { ArrowRightIcon, CheckIcon } from '../icons'
 import { Button } from '../components/Button'
+import { v3 } from '../styles/tokensV3'
 
 interface OnboardingScreenProps {
   onComplete: () => void
@@ -433,14 +434,242 @@ function PaymentStep({
   )
 }
 
+// ── プロフィール属性質問 (SCRUM-153) ────────────────────────────
+
+interface UserProfileData {
+  ageRange: string
+  occupation: string
+  purposes: string[]
+  selfAssessment: number
+}
+
+function saveUserProfile(data: Partial<UserProfileData>) {
+  try {
+    const existing = JSON.parse(localStorage.getItem('logic-user-profile') || '{}')
+    localStorage.setItem('logic-user-profile', JSON.stringify({
+      ...existing,
+      ...data,
+      onboardedAt: new Date().toISOString(),
+    }))
+  } catch { /* ignore */ }
+}
+
+const AGE_OPTIONS = [
+  { value: 'under-18', label: '【18歳' },
+  { value: '19-24', label: '19【24歳' },
+  { value: '25-34', label: '25【34歳' },
+  { value: '35-44', label: '35【44歳' },
+  { value: '45-54', label: '45【54歳' },
+  { value: '55-plus', label: '55歳〜' },
+]
+
+const OCCUPATION_OPTIONS = [
+  { value: 'business', label: 'ビジネスパーソン（会社員）' },
+  { value: 'student', label: '学生' },
+  { value: 'executive', label: '経営者・起業家' },
+  { value: 'consultant', label: 'コンサルタント' },
+  { value: 'engineer', label: 'エンジニア・IT職' },
+  { value: 'education', label: '教育・研究職' },
+  { value: 'other', label: 'その他' },
+]
+
+const PURPOSE_OPTIONS = [
+  { value: 'work', label: '仕事の意思決定力を上げたい' },
+  { value: 'interview', label: '面接・就職活動の対策' },
+  { value: 'career', label: 'コンサル・外資転職の準備' },
+  { value: 'exam', label: 'MBA・資格試験対策' },
+  { value: 'teaching', label: '子供や部下への教育' },
+  { value: 'hobby', label: '趣味・自己研鳽' },
+]
+
+const SELF_ASSESSMENT_OPTIONS = [
+  { value: 1, label: 'まったく自信がない' },
+  { value: 2, label: '少し苦手' },
+  { value: 3, label: '普通' },
+  { value: 4, label: '得意だと思う' },
+  { value: 5, label: '自信がある' },
+]
+
+function ProfileStepWrapper({
+  title, subtitle, step, totalSteps, onSkip, children,
+}: {
+  title: string
+  subtitle: string
+  step: number
+  totalSteps: number
+  onSkip: () => void
+  children: React.ReactNode
+}) {
+  const pct = (step / totalSteps) * 100
+  return (
+    <div style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column', background: v3.color.bg, fontFamily: "'Noto Sans JP', sans-serif", color: v3.color.text }}>
+      {/* Header */}
+      <div style={{ padding: 'calc(env(safe-area-inset-top, 44px) + 8px) 20px 0' }}>
+        {/* Progress bar */}
+        <div style={{ height: 3, background: v3.color.card, borderRadius: 99, marginBottom: 16, overflow: 'hidden' }}>
+          <div style={{ height: '100%', width: `${pct}%`, background: v3.color.accent, borderRadius: 99, transition: 'width 0.3s ease' }} />
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ fontSize: 11, color: v3.color.text3, fontWeight: 600 }}>{step} / {totalSteps}</div>
+          <button onClick={onSkip} style={{ fontSize: 13, color: v3.color.text3, background: 'none', border: 'none', cursor: 'pointer', padding: '4px 8px' }}>あとで</button>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div style={{ flex: 1, padding: '24px 20px 40px', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ marginBottom: 28 }}>
+          <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: '-.02em', lineHeight: 1.3, marginBottom: 8 }}>{title}</div>
+          <div style={{ fontSize: 14, color: v3.color.text2, lineHeight: 1.6 }}>{subtitle}</div>
+        </div>
+        {children}
+      </div>
+    </div>
+  )
+}
+
+function SelectCard({ label, selected, onClick }: { label: string; selected: boolean; onClick: () => void }) {
+  return (
+    <div
+      onClick={onClick}
+      style={{
+        padding: '14px 16px',
+        border: `2px solid ${selected ? v3.color.accent : v3.color.line}`,
+        borderRadius: 14,
+        cursor: 'pointer',
+        background: selected ? v3.color.accentSoft : v3.color.card,
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        transition: 'all 150ms',
+      }}
+    >
+      <span style={{ fontSize: 15, fontWeight: selected ? 700 : 500, color: selected ? v3.color.accent : v3.color.text }}>{label}</span>
+      {selected && (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2.5" strokeLinecap="round"><polyline points="20 6 9 17 4 12" /></svg>
+      )}
+    </div>
+  )
+}
+
+function ProfileStep_Age({ onNext, onSkip }: { onNext: (val: string) => void; onSkip: () => void }) {
+  const [selected, setSelected] = useState('')
+  return (
+    <ProfileStepWrapper title="あなたの年齢は？" subtitle="学習内容のカスタマイズに使います" step={1} totalSteps={4} onSkip={onSkip}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10, flex: 1 }}>
+        {AGE_OPTIONS.map(o => (
+          <SelectCard key={o.value} label={o.label} selected={selected === o.value} onClick={() => setSelected(o.value)} />
+        ))}
+      </div>
+      <button
+        onClick={() => onNext(selected)}
+        disabled={!selected}
+        style={{
+          marginTop: 24, width: '100%', padding: '16px 0',
+          background: selected ? v3.color.accent : v3.color.card,
+          color: selected ? '#fff' : v3.color.text3,
+          border: 'none', borderRadius: 16, fontSize: 16, fontWeight: 700, cursor: selected ? 'pointer' : 'not-allowed', transition: 'all 150ms',
+        }}
+      >
+        次へ
+      </button>
+    </ProfileStepWrapper>
+  )
+}
+
+function ProfileStep_Occupation({ onNext, onSkip }: { onNext: (val: string) => void; onSkip: () => void }) {
+  const [selected, setSelected] = useState('')
+  return (
+    <ProfileStepWrapper title="ご職業は？" subtitle="ビジネスシーンに合わせた問題を提案します" step={2} totalSteps={4} onSkip={onSkip}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10, flex: 1 }}>
+        {OCCUPATION_OPTIONS.map(o => (
+          <SelectCard key={o.value} label={o.label} selected={selected === o.value} onClick={() => setSelected(o.value)} />
+        ))}
+      </div>
+      <button
+        onClick={() => onNext(selected)}
+        disabled={!selected}
+        style={{
+          marginTop: 24, width: '100%', padding: '16px 0',
+          background: selected ? v3.color.accent : v3.color.card,
+          color: selected ? '#fff' : v3.color.text3,
+          border: 'none', borderRadius: 16, fontSize: 16, fontWeight: 700, cursor: selected ? 'pointer' : 'not-allowed', transition: 'all 150ms',
+        }}
+      >
+        次へ
+      </button>
+    </ProfileStepWrapper>
+  )
+}
+
+function ProfileStep_Purpose({ onNext, onSkip }: { onNext: (vals: string[]) => void; onSkip: () => void }) {
+  const [selected, setSelected] = useState<string[]>([])
+  const toggle = (v: string) => setSelected(prev => prev.includes(v) ? prev.filter(x => x !== v) : [...prev, v])
+  return (
+    <ProfileStepWrapper title="Logicを使う目的は？" subtitle="複数選んでOKです" step={3} totalSteps={4} onSkip={onSkip}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10, flex: 1 }}>
+        {PURPOSE_OPTIONS.map(o => (
+          <SelectCard key={o.value} label={o.label} selected={selected.includes(o.value)} onClick={() => toggle(o.value)} />
+        ))}
+      </div>
+      <button
+        onClick={() => onNext(selected)}
+        disabled={selected.length === 0}
+        style={{
+          marginTop: 24, width: '100%', padding: '16px 0',
+          background: selected.length > 0 ? v3.color.accent : v3.color.card,
+          color: selected.length > 0 ? '#fff' : v3.color.text3,
+          border: 'none', borderRadius: 16, fontSize: 16, fontWeight: 700, cursor: selected.length > 0 ? 'pointer' : 'not-allowed', transition: 'all 150ms',
+        }}
+      >
+        次へ
+      </button>
+    </ProfileStepWrapper>
+  )
+}
+
+function ProfileStep_SelfAssessment({ onNext, onSkip }: { onNext: (val: number) => void; onSkip: () => void }) {
+  const [selected, setSelected] = useState<number | null>(null)
+  return (
+    <ProfileStepWrapper title="論理的思考の自信は？" subtitle="現在の自分を正直に教えてください！" step={4} totalSteps={4} onSkip={onSkip}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10, flex: 1 }}>
+        {SELF_ASSESSMENT_OPTIONS.map(o => (
+          <SelectCard key={o.value} label={`${o.value}. ${o.label}`} selected={selected === o.value} onClick={() => setSelected(o.value)} />
+        ))}
+      </div>
+      <button
+        onClick={() => { if (selected !== null) onNext(selected) }}
+        disabled={selected === null}
+        style={{
+          marginTop: 24, width: '100%', padding: '16px 0',
+          background: selected !== null ? v3.color.accent : v3.color.card,
+          color: selected !== null ? '#fff' : v3.color.text3,
+          border: 'none', borderRadius: 16, fontSize: 16, fontWeight: 700, cursor: selected !== null ? 'pointer' : 'not-allowed', transition: 'all 150ms',
+        }}
+      >
+        完了する
+      </button>
+    </ProfileStepWrapper>
+  )
+}
+
 // ── Main OnboardingScreen ────────────────────────────────────────
 export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
-  const [step, setStep] = useState<'welcome' | 'trial' | 'campaign' | 'payment'>('welcome')
+  const [step, setStep] = useState<'welcome' | 'trial' | 'campaign' | 'payment' | 'profile-age' | 'profile-occupation' | 'profile-purpose' | 'profile-assessment'>('welcome')
   const [selectedPlan, setSelectedPlan] = useState<PlanChoice>('beta')
+  const [profileData, setProfileData] = useState<Partial<UserProfileData>>({})
+
+  const finishProfile = (finalData: Partial<UserProfileData>) => {
+    const merged = { ...profileData, ...finalData }
+    saveUserProfile(merged)
+    onComplete()
+  }
+
+  const skipAllProfile = () => {
+    saveUserProfile(profileData)
+    onComplete()
+  }
 
   const handleCampaignSelect = (plan: PlanChoice) => {
     if (plan === 'free') {
-      onComplete()
+      setStep('profile-age')
       return
     }
     setSelectedPlan(plan)
@@ -450,10 +679,34 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
   if (step === 'welcome') return <WelcomeStep onNext={() => setStep('trial')} />
   if (step === 'trial')   return <TrialStep onNext={() => setStep('campaign')} />
   if (step === 'campaign') return <CampaignStep onSelect={handleCampaignSelect} />
+  if (step === 'profile-age') return (
+    <ProfileStep_Age
+      onNext={(ageRange) => { setProfileData(p => ({ ...p, ageRange })); setStep('profile-occupation') }}
+      onSkip={skipAllProfile}
+    />
+  )
+  if (step === 'profile-occupation') return (
+    <ProfileStep_Occupation
+      onNext={(occupation) => { setProfileData(p => ({ ...p, occupation })); setStep('profile-purpose') }}
+      onSkip={() => { saveUserProfile(profileData); onComplete() }}
+    />
+  )
+  if (step === 'profile-purpose') return (
+    <ProfileStep_Purpose
+      onNext={(purposes) => { setProfileData(p => ({ ...p, purposes })); setStep('profile-assessment') }}
+      onSkip={() => { saveUserProfile(profileData); onComplete() }}
+    />
+  )
+  if (step === 'profile-assessment') return (
+    <ProfileStep_SelfAssessment
+      onNext={(selfAssessment) => finishProfile({ selfAssessment })}
+      onSkip={skipAllProfile}
+    />
+  )
   return (
     <PaymentStep
       plan={selectedPlan}
-      onComplete={onComplete}
+      onComplete={() => setStep('profile-age')}
       onBack={() => setStep('campaign')}
     />
   )
