@@ -86,6 +86,10 @@ type Screen =
 // LESSON_LIST is now managed within RoadmapScreen
 
 function getInitialScreen(user: User | null): Screen {
+  // ?preview=onboarding で強制表示（確認用）
+  if (typeof location !== 'undefined' && new URL(location.href).searchParams.get('preview') === 'onboarding') {
+    return { type: 'onboarding' }
+  }
   // ログイン済みユーザーはオンボーディングをスキップ
   if (user) return { type: 'home' }
   if (localStorage.getItem(ONBOARDED_KEY) !== '1') {
