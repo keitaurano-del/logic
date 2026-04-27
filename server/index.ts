@@ -1101,6 +1101,46 @@ Output format (use these exact headings):
 })
 
 // =============================================
+// フェルミ推定 — 音声テキスト整形
+// =============================================
+app.post('/api/fermi/transcribe-format', fermiLimiter, async (req, res) => {
+  try {
+    const { rawText, context, locale } = req.body || {}
+    if (!rawText) return res.status(400).json({ error: 'rawText required' })
+    const isEn = locale === 'en'
+
+    const systemPrompt = isEn
+      ? `You are a text formatter. The user spoke their Fermi estimation decomposition aloud. The raw speech-to-text transcript may be rough, repetitive, or unpolished. Your job is to:
+1. Clean up the transcript into clear, structured text
+2. Preserve all the user\'s ideas and numbers exactly — do NOT add new content
+3. Use simple bullet points or numbered steps if appropriate
+4. Return ONLY the formatted text, no commentary`
+      : `あなたはテキスト整形を詳説するアシスタントです。ユーザーがフェルミ推定の分解を音声で話したものの、音声認識の生テキストを整形してください。
+ルール:
+1. 話し言葉や繰り返しを整理し、読みやすい構造化テキストにする
+2. ユーザーのアイデア・数字は必ず保持する（新しい内容を追加しない）
+3. 箇条書きやステップ形式を適宜使用
+4. 整形したテキストのみ返す（誨明・コメント不要）`
+
+    const userMsg = isEn
+      ? `Context: ${context || 'Fermi estimation'}\n\nRaw transcript:\n${rawText}`
+      : `問題: ${context || 'フェルミ推定'}\n\n音声認識テキスト:\n${rawText}`
+
+    const response = await client.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 400,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: userMsg }],
+    })
+    const formatted = response.content[0].type === 'text' ? response.content[0].text.trim() : rawText
+    res.json({ formatted })
+  } catch (e: any) {
+    console.error('transcribe-format error:', e)
+    res.status(500).json({ error: e.message || 'failed' })
+  }
+})
+
+// =============================================
 // フェルミ推定 — 前提確認チャット
 // =============================================
 app.post('/api/fermi/chat', fermiLimiter, async (req, res) => {

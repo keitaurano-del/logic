@@ -212,4 +212,8 @@
   --shadow-hero:    0 24px 64px rgba(0, 0, 0, 0.50), 0 8px 16px rgba(107, 133, 214, 0.14);
 
   --hero-grad:    linear-gradient(135deg, #2E4BA8 0%, #0F1629 60%, #060A14 100%);
+
+  /* brand-soft: ダークモード用（ライトは #EEF2FE、ダークは深めのネイビー） */
+  --brand-soft:   rgba(107, 133, 214, 0.12);
+  --brand:        #6B85D6;
 }

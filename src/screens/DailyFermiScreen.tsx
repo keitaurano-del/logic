@@ -67,46 +67,74 @@ function renderFeedbackMarkdown(text: string) {
   return elements
 }
 
-/** マイクボタンコンポーネント */
-function MicButton({ onTranscript, locale, disabled }: {
+/** マイクボタン — 録音→停止→AI整形方式 */
+function MicButton({ onTranscript, locale, context, disabled }: {
   onTranscript: (text: string) => void
   locale: string
+  context?: string
   disabled?: boolean
 }) {
-  const [listening, setListening] = useState(false)
+  const [phase, setPhase] = useState<'idle' | 'recording' | 'formatting'>('idle')
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const recogRef = useRef<any>(null)
+  const rawChunksRef = useRef<string[]>([])
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const SR: any = typeof window !== 'undefined' && ((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition)
   if (!SR) return null
 
-  const toggle = () => {
-    if (listening) {
-      recogRef.current?.stop()
-      setListening(false)
-      return
-    }
+  const startRecording = () => {
+    rawChunksRef.current = []
     const recog = new SR()
     recog.lang = locale === 'en' ? 'en-US' : 'ja-JP'
     recog.continuous = true
     recog.interimResults = false
     recog.onresult = (e: any) => {
-      const transcript = Array.from({ length: e.results.length }, (_: any, i: number) => e.results[i][0].transcript).join('')
-      onTranscript(transcript)
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        if (e.results[i].isFinal) {
+          rawChunksRef.current.push(e.results[i][0].transcript)
+        }
+      }
     }
-    recog.onerror = () => { setListening(false) }
-    recog.onend = () => { setListening(false) }
+    recog.onerror = () => { setPhase('idle') }
+    recog.onend = () => {
+      // 録音終了 → AI整形
+      const raw = rawChunksRef.current.join(' ').trim()
+      if (!raw) { setPhase('idle'); return }
+      setPhase('formatting')
+      fetch(`${API_BASE}/api/fermi/transcribe-format`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rawText: raw, context, locale }),
+      })
+        .then(r => r.json())
+        .then(data => { onTranscript(data.formatted || raw) })
+        .catch(() => { onTranscript(raw) })
+        .finally(() => setPhase('idle'))
+    }
     recog.start()
     recogRef.current = recog
-    setListening(true)
+    setPhase('recording')
   }
+
+  const stopRecording = () => {
+    recogRef.current?.stop()
+    // onend が発火して整形フローへ
+  }
+
+  const toggle = () => {
+    if (phase === 'recording') { stopRecording(); return }
+    if (phase === 'idle') { startRecording() }
+  }
+
+  const isRecording = phase === 'recording'
+  const isFormatting = phase === 'formatting'
 
   return (
     <button
       onClick={toggle}
-      disabled={disabled}
-      title={listening ? '録音を停止' : '音声入力'}
+      disabled={disabled || isFormatting}
+      title={isRecording ? '停止して整形' : isFormatting ? 'AI整形中...' : '音声入力'}
       style={{
         position: 'absolute',
         bottom: 10,
@@ -114,10 +142,10 @@ function MicButton({ onTranscript, locale, disabled }: {
         width: 36,
         height: 36,
         borderRadius: '50%',
-        border: listening ? '2px solid var(--danger)' : '1.5px solid var(--border)',
-        background: listening ? 'rgba(220,38,38,0.08)' : 'var(--bg-card)',
-        color: listening ? 'var(--danger)' : 'var(--text-muted)',
-        cursor: 'pointer',
+        border: isRecording ? '2px solid var(--danger)' : '1.5px solid var(--border)',
+        background: isRecording ? 'rgba(220,38,38,0.1)' : isFormatting ? 'var(--bg-secondary)' : 'var(--bg-card)',
+        color: isRecording ? 'var(--danger)' : isFormatting ? 'var(--brand)' : 'var(--text-muted)',
+        cursor: isFormatting ? 'not-allowed' : 'pointer',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -125,10 +153,15 @@ function MicButton({ onTranscript, locale, disabled }: {
         flexShrink: 0,
       }}
     >
-      {listening ? (
-        // 録音中: 停止アイコン（点滅）
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style={{ animation: 'pulse 1s infinite' }}>
-          <rect x="6" y="6" width="12" height="12" rx="2" />
+      {isRecording ? (
+        // 録音中: 赤点滅
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style={{ animation: 'pulse 0.8s ease-in-out infinite' }}>
+          <circle cx="12" cy="12" r="8" />
+        </svg>
+      ) : isFormatting ? (
+        // 整形中: スピナー
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" style={{ animation: 'spin 0.8s linear infinite' }}>
+          <circle cx="12" cy="12" r="9" strokeDasharray="20 40" />
         </svg>
       ) : (
         // マイクアイコン
@@ -275,7 +308,7 @@ function FermiChatModal({ question, locale, onClose }: {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send() } }}
-              placeholder="質問を入力（音声入力も使えます）"
+              placeholder="質問を入力してください。マイクボタンから音声で入力することもできます。"
               rows={2}
               style={{
                 width: '100%',
@@ -293,8 +326,9 @@ function FermiChatModal({ question, locale, onClose }: {
               }}
             />
             <MicButton
-              onTranscript={(text) => setInput(prev => prev + text)}
+              onTranscript={(text) => setInput(prev => (prev ? prev + '\n' : '') + text)}
               locale={locale}
+              context={question}
               disabled={loading}
             />
           </div>
@@ -494,25 +528,29 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
                   {t('dailyFermi.showHint')}
                 </button>
               ) : (
-                <div className="card" style={{ background: 'var(--brand-soft)', borderColor: 'var(--brand)', fontSize: 16, lineHeight: 1.6 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <LightbulbIcon width={14} height={14} style={{ color: 'var(--brand)' }} />
-                      <span style={{ fontWeight: 700, color: 'var(--brand)', fontSize: 14, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                        HINT
-                      </span>
-                    </div>
-                    <span style={{ fontSize: 11, color: 'var(--danger)', fontWeight: 600, background: 'rgba(220,38,38,0.08)', padding: '2px 8px', borderRadius: 99 }}>− 10点</span>
+                <div style={{
+                  borderRadius: 16,
+                  border: '1.5px solid rgba(107,133,214,0.4)',
+                  background: 'rgba(107,133,214,0.08)',
+                  padding: '16px',
+                  fontSize: 16,
+                  lineHeight: 1.6,
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
+                    <LightbulbIcon width={14} height={14} style={{ color: 'var(--brand)' }} />
+                    <span style={{ fontWeight: 700, color: 'var(--brand)', fontSize: 13, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                      HINT
+                    </span>
                   </div>
-                  <p style={{ color: 'var(--text-primary)', margin: '0 0 12px', fontWeight: 500 }}>{hint}</p>
+                  <p style={{ color: 'var(--text-primary)', margin: '0 0 14px', fontWeight: 500, fontSize: 15, lineHeight: 1.7 }}>{hint}</p>
                   {/* 基礎統計データ */}
-                  <div style={{ marginTop: 12, paddingTop: 10, borderTop: '1px solid var(--border)' }}>
-                    <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 8, textTransform: 'uppercase' }}>参考データ</div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px 12px' }}>
+                  <div style={{ paddingTop: 12, borderTop: '1px solid rgba(107,133,214,0.2)' }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', color: 'var(--text-muted)', marginBottom: 10, textTransform: 'uppercase' }}>参考データ</div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                       {BASE_STATS.map((s) => (
-                        <div key={s.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, padding: '2px 0' }}>
-                          <span style={{ color: 'var(--text-muted)' }}>{s.label}</span>
-                          <span style={{ fontWeight: 700, color: 'var(--text)' }}>{s.value}</span>
+                        <div key={s.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 13 }}>
+                          <span style={{ color: 'var(--text-secondary)' }}>{s.label}</span>
+                          <span style={{ fontWeight: 700, color: 'var(--text-primary)', marginLeft: 12 }}>{s.value}</span>
                         </div>
                       ))}
                     </div>
@@ -559,8 +597,9 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
                   }}
                 />
                 <MicButton
-                  onTranscript={(text) => setAnswer(prev => prev + text)}
+                  onTranscript={(text) => setAnswer(prev => (prev ? prev + '\n' : '') + text)}
                   locale={locale}
+                  context={question}
                 />
               </div>
 
