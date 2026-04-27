@@ -464,6 +464,82 @@ const SHAPES: Record<number, ShapeFn> = {
   ),
 
   // ─── 哲学 ───
+  // 78: 反証可能性 — 1本の黒い白鳥で崩れる「すべての白鳥は白い」
+  78: s => (
+    <g>
+      {/* すべての白線 */}
+      <line x1="18" y1="26" x2="50" y2="26" stroke={s} strokeWidth="2" strokeLinecap="round" opacity={0.35}/>
+      <line x1="18" y1="38" x2="50" y2="38" stroke={s} strokeWidth="2" strokeLinecap="round" opacity={0.35}/>
+      <line x1="18" y1="50" x2="50" y2="50" stroke={s} strokeWidth="2" strokeLinecap="round" opacity={0.35}/>
+      {/* 1本だけ打ち消し線（反証例） */}
+      <line x1="55" y1="64" x2="82" y2="64" stroke={s} strokeWidth="2.5" strokeLinecap="round"/>
+      <line x1="55" y1="56" x2="82" y2="72" stroke={s} strokeWidth="2.5" strokeLinecap="round" opacity={0.9}/>
+      {/* ×印 */}
+      <line x1="58" y1="78" x2="80" y2="56" stroke={s} strokeWidth="1.5" strokeLinecap="round" opacity={0.5}/>
+      {/* 枠 */}
+      <rect x="14" y="18" width="42" height="42" rx="4" fill="none" stroke={s} strokeWidth="1.2" opacity={0.3}/>
+      <rect x="51" y="52" width="35" height="28" rx="4" fill="none" stroke={s} strokeWidth="1.5"/>
+    </g>
+  ),
+  // 79: 功利主義 vs 義務論 — 天秤
+  79: s => (
+    <g>
+      {/* 天秤の支柱 */}
+      <line x1="50" y1="20" x2="50" y2="60" stroke={s} strokeWidth="2.2" strokeLinecap="round"/>
+      <line x1="26" y1="44" x2="74" y2="44" stroke={s} strokeWidth="2" strokeLinecap="round"/>
+      {/* 左皿（功利主義: 少し下がってる） */}
+      <line x1="26" y1="44" x2="26" y2="58" stroke={s} strokeWidth="1.5" strokeLinecap="round"/>
+      <path d="M 14 58 Q 26 66 38 58" fill="none" stroke={s} strokeWidth="1.8" strokeLinecap="round"/>
+      {/* 右皿（義務論: 少し上がってる） */}
+      <line x1="74" y1="44" x2="74" y2="54" stroke={s} strokeWidth="1.5" strokeLinecap="round"/>
+      <path d="M 62 54 Q 74 62 86 54" fill="none" stroke={s} strokeWidth="1.8" strokeLinecap="round"/>
+      {/* 底部台座 */}
+      <rect x="44" y="60" width="12" height="6" rx="2" fill={s} opacity={0.5}/>
+      <line x1="38" y1="66" x2="62" y2="66" stroke={s} strokeWidth="2" strokeLinecap="round" opacity={0.6}/>
+    </g>
+  ),
+  // 80: 認識論 — デカルト「我思う、ゆえに我あり」: 思考の泡から生まれる「私」
+  80: s => (
+    <g>
+      {/* 中心の自己 */}
+      <circle cx="50" cy="62" r="8" fill={s} opacity={0.85}/>
+      {/* 疑念の泡（次第に薄くなる） */}
+      <circle cx="36" cy="48" r="5" fill="none" stroke={s} strokeWidth="1.8" opacity={0.7}/>
+      <circle cx="56" cy="40" r="7" fill="none" stroke={s} strokeWidth="1.5" opacity={0.5}/>
+      <circle cx="34" cy="28" r="6" fill="none" stroke={s} strokeWidth="1.2" opacity={0.35}/>
+      <circle cx="62" cy="24" r="4" fill="none" stroke={s} strokeWidth="1.2" opacity={0.25}/>
+      <circle cx="72" cy="48" r="5" fill="none" stroke={s} strokeWidth="1.5" opacity={0.4}/>
+      {/* 接続線 */}
+      <line x1="50" y1="54" x2="40" y2="52" stroke={s} strokeWidth="1" strokeLinecap="round" opacity={0.4}/>
+      <line x1="50" y1="54" x2="57" y2="47" stroke={s} strokeWidth="1" strokeLinecap="round" opacity={0.4}/>
+      <line x1="50" y1="54" x2="67" y2="51" stroke={s} strokeWidth="1" strokeLinecap="round" opacity={0.4}/>
+      {/* Cogito ergo sum: 「思う」の矢印 */}
+      <polyline points="50,80 50,72" stroke={s} strokeWidth="0" strokeLinecap="round"/>
+    </g>
+  ),
+  // 81: 思考実験 — トロッコ問題: 分岐するレール
+  81: s => (
+    <g>
+      {/* メインレール */}
+      <line x1="18" y1="30" x2="50" y2="30" stroke={s} strokeWidth="2.5" strokeLinecap="round"/>
+      <line x1="18" y1="38" x2="50" y2="38" stroke={s} strokeWidth="2.5" strokeLinecap="round"/>
+      {/* 枕木 */}
+      <line x1="24" y1="28" x2="24" y2="40" stroke={s} strokeWidth="1.5" strokeLinecap="round" opacity={0.5}/>
+      <line x1="36" y1="28" x2="36" y2="40" stroke={s} strokeWidth="1.5" strokeLinecap="round" opacity={0.5}/>
+      <line x1="46" y1="28" x2="46" y2="40" stroke={s} strokeWidth="1.5" strokeLinecap="round" opacity={0.5}/>
+      {/* 分岐レール A（直進） */}
+      <line x1="50" y1="30" x2="82" y2="22" stroke={s} strokeWidth="2.2" strokeLinecap="round" opacity={0.6}/>
+      <line x1="50" y1="38" x2="82" y2="30" stroke={s} strokeWidth="2.2" strokeLinecap="round" opacity={0.6}/>
+      {/* 分岐レール B（下） */}
+      <line x1="50" y1="38" x2="82" y2="60" stroke={s} strokeWidth="2.2" strokeLinecap="round"/>
+      <line x1="50" y1="30" x2="82" y2="52" stroke={s} strokeWidth="2.2" strokeLinecap="round"/>
+      {/* 切り替えポイント（強調） */}
+      <circle cx="50" cy="34" r="4" fill={s}/>
+      {/* 人（ピン人） */}
+      <circle cx="78" cy="56" r="3" fill={s} opacity={0.7}/>
+      <line x1="78" y1="59" x2="78" y2="68" stroke={s} strokeWidth="1.5" strokeLinecap="round" opacity={0.7}/>
+    </g>
+  ),
   77: s => ( // ソクラテスの問答法: 2人の対話
     <g>
       <circle cx="30" cy="38" r="10" fill="none" stroke={s} strokeWidth="2"/>
