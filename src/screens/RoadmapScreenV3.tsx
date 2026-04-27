@@ -220,10 +220,20 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
           const isDone = completed.has(`lesson-${lesson.id}`)
           // カテゴリごとに画像をマッピング（既存 v3 画像を活用）
           const lessonImage = (() => {
-            const cat = lesson.category || ''
-            if (cat.includes('哲学') || category === 'philosophy') return '/images/v3/course-philosophy.webp'
-            if (cat.includes('ケース') || cat.includes('提案')) return '/images/v3/course-business.webp'
-            if (cat.includes('ロジカル') || cat.includes('論理学')) return '/images/v3/course-logical.webp'
+            const cat = (lesson.category || '').toLowerCase()
+            if (cat.includes('哲学') || cat === 'philosophy') return '/images/v3/course-philosophy.webp'
+            if (cat.includes('ケース') || cat === 'business') return '/images/v3/course-business.webp'
+            if (cat.includes('ロジカル') || cat.includes('logical')) return '/images/v3/hero-deduction.webp'
+            if (cat.includes('提案') || cat.includes('伝える')) return '/images/v3/lesson-proposal.webp'
+            if (cat.includes('フェルミ') || cat.includes('fermi')) return '/images/v3/home-daily-fermi.webp'
+            if (cat.includes('クリティカル')) return '/images/v3/lesson-critical-thinking.webp'
+            if (cat.includes('仮説')) return '/images/v3/lesson-hypothesis.webp'
+            if (cat.includes('課題')) return '/images/v3/lesson-issue-setting.webp'
+            if (cat.includes('デザイン')) return '/images/v3/lesson-design-thinking.webp'
+            if (cat.includes('ラテラル')) return '/images/v3/lesson-lateral-thinking.webp'
+            if (cat.includes('アナロジー') || cat.includes('analogy')) return '/images/v3/lesson-analogy.webp'
+            if (cat.includes('システム')) return '/images/v3/lesson-systems-thinking.webp'
+            if (cat.includes('coffee') || cat.includes('コーヒー')) return '/images/v3/home-daily-question.webp'
             return '/images/v3/course-thinking.webp'
           })()
           return (
