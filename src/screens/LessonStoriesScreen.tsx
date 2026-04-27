@@ -26,6 +26,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
   const [reportOpen, setReportOpen] = useState(false)
   const [reportSent, setReportSent] = useState(false)
   const [reportText, setReportText] = useState('')
+  const [reportDetail, setReportDetail] = useState('')
 
   const slides: LessonSlide[] = useMemo(() => {
     if (!lesson) return []
@@ -81,6 +82,8 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
     touchRef.current = null
     // 水平スワイプ識別: 50px以上、垂直より水平が長い、500ms以内
     if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5 && dt < 500) {
+      // クイズ未回答時はスワイプでの前進も禁止（左刺しは允可）
+      if (dx < 0 && isQuiz && !quizAnswered) return
       if (dx < 0) goNext()
       else goPrev()
     }
@@ -177,11 +180,12 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
         </div>
       )}
 
-      {/* 誤りを報告 — 右下の小さなボタン */}
+      {/* 誤りを報告 — 左下のボタン（少し大きめ） */}
       <button
         onPointerDown={(e) => { e.stopPropagation(); setReportOpen(true) }}
-        style={{ position: 'absolute', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 12px)', right: 16, fontSize: 10, color: v3.color.text3, background: 'none', border: 'none', cursor: 'pointer', opacity: 0.5, zIndex: 7, padding: '8px 4px' }}
+        style={{ position: 'absolute', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 16px)', left: 16, fontSize: 12, color: v3.color.text2, background: v3.color.card, border: `1px solid ${v3.color.line}`, borderRadius: 99, cursor: 'pointer', zIndex: 7, padding: '8px 14px', display: 'flex', alignItems: 'center', gap: 5 }}
       >
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg>
         誤りを報告
       </button>
 
@@ -199,7 +203,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
                   <div style={{ fontSize: 16, fontWeight: 700, color: v3.color.accent }}>報告を受け付けました</div>
                   <div style={{ fontSize: 13, color: v3.color.text2, marginTop: 6 }}>ご協力ありがとうございます。内容を確認して改善します。</div>
                 </div>
-                <button onPointerDown={() => { setReportOpen(false); setReportSent(false); setReportText('') }} style={{ width: '100%', background: v3.color.card, border: 'none', borderRadius: 14, padding: '14px', fontSize: 14, fontWeight: 600, color: v3.color.text, cursor: 'pointer' }}>閉じる</button>
+                <button onPointerDown={() => { setReportOpen(false); setReportSent(false); setReportText(''); setReportDetail('') }} style={{ width: '100%', background: v3.color.card, border: 'none', borderRadius: 14, padding: '14px', fontSize: 14, fontWeight: 600, color: v3.color.text, cursor: 'pointer' }}>閉じる</button>
               </>
             ) : (
               <>
@@ -211,6 +215,16 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
                       style={{ background: reportText === opt ? v3.color.accentSoft : v3.color.card, border: `1.5px solid ${reportText === opt ? v3.color.accent : 'transparent'}`, borderRadius: 12, padding: '12px 14px', fontSize: 14, fontWeight: 500, color: v3.color.text, cursor: 'pointer', textAlign: 'left' }}
                     >{opt}</button>
                   ))}
+                </div>
+                <div style={{ marginBottom: 16 }}>
+                  <div style={{ fontSize: 13, color: v3.color.text2, marginBottom: 8 }}>詳しく教えてください（任意）</div>
+                  <textarea
+                    value={reportDetail}
+                    onChange={(e) => setReportDetail(e.target.value)}
+                    placeholder="どの箇所が、どのように間違っているか…"
+                    rows={3}
+                    style={{ width: '100%', background: v3.color.card, border: `1px solid ${v3.color.line}`, borderRadius: 12, padding: '12px 14px', fontSize: 14, color: v3.color.text, resize: 'none', outline: 'none', fontFamily: "'Noto Sans JP', sans-serif", boxSizing: 'border-box' }}
+                  />
                 </div>
                 <button
                   onPointerDown={() => { if (reportText) { setReportSent(true) } }}
