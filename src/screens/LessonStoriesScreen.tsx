@@ -3,7 +3,7 @@
  * 仕様: docs/DESIGN_V3.md §3.3
  * モックアップ: lv3-lesson.html
  */
-import { useState, useMemo, useRef } from 'react'
+import { useState, useMemo, useRef, useEffect } from 'react'
 import { v3 } from '../styles/tokensV3'
 import type { LessonSlide } from '../lessonSlides'
 import { convertLessonToSlides } from '../lessonSlides'
@@ -28,6 +28,13 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
   const [reportText, setReportText] = useState('')
   const [reportDetail, setReportDetail] = useState('')
 
+  // ── タッチガード: スライド遷移後 280ms は全タッチを無視 ──
+  const slideEnteredAt = useRef<number>(Date.now())
+  const isGuarded = () => Date.now() - slideEnteredAt.current < 280
+  useEffect(() => {
+    slideEnteredAt.current = Date.now()
+  }, [index])
+
   const slides: LessonSlide[] = useMemo(() => {
     if (!lesson) return []
     return convertLessonToSlides(lesson)
@@ -49,6 +56,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
   const isQuiz = slide.kind === 'quiz'
 
   const goNext = () => {
+    if (isGuarded()) return
     if (index < total - 1) {
       setIndex(index + 1)
       setQuizAnswered(null)
@@ -60,6 +68,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
     }
   }
   const goPrev = () => {
+    if (isGuarded()) return
     if (index > 0) {
       setIndex(index - 1)
       setQuizAnswered(null)
@@ -132,11 +141,12 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
           quizAnswered={quizAnswered}
           multiSelected={multiSelected}
           onToggleMulti={(idx) => {
-            if (quizAnswered) return
+            if (isGuarded() || quizAnswered) return
             setMultiSelected(prev => prev.includes(idx) ? prev.filter(i => i !== idx) : [...prev, idx])
           }}
           onSubmitMulti={() => {
             if (slide.kind !== 'quiz' || !slide.multi) return
+            if (isGuarded()) return
             const correctSet = new Set(slide.correctIndexes ?? [slide.correctIndex])
             const selectedSet = new Set(multiSelected)
             const correct = correctSet.size === selectedSet.size && [...correctSet].every(i => selectedSet.has(i))
@@ -144,6 +154,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
           }}
           onSelectQuiz={(idx) => {
             if (slide.kind !== 'quiz') return
+            if (isGuarded()) return
             const correct = idx === slide.correctIndex
             setQuizAnswered({ correct, selected: idx })
             if (!correct) {
@@ -153,18 +164,18 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
         />
       </div>
 
-      {/* タップゾーン: クイズスライド以外のみ有効 */}
+      {/* タップゾーン: クイズスライド以外のみ有効 (onClickでガード適用) */}
       {!isQuiz && (
         <div style={{ position: 'absolute', inset: 0, display: 'flex', zIndex: 5 }}>
-          <div onPointerUp={() => goPrev()} style={{ flex: 1, cursor: 'pointer' }}></div>
-          <div onPointerUp={() => goNext()} style={{ flex: 1, cursor: 'pointer' }}></div>
+          <div onClick={() => { if (!isGuarded()) goPrev() }} style={{ flex: 1, cursor: 'pointer' }}></div>
+          <div onClick={() => { if (!isGuarded()) goNext() }} style={{ flex: 1, cursor: 'pointer' }}></div>
         </div>
       )}
 
       {/* クイズ正解後: 「次へ」ボタン（大） */}
       {isQuiz && quizAnswered?.correct && (
         <button
-          onPointerDown={goNext}
+          onClick={goNext}
           style={{ position: 'absolute', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 28px)', left: '50%', transform: 'translateX(-50%)', display: 'inline-flex', alignItems: 'center', gap: 8, background: v3.color.accent, border: 'none', borderRadius: 99, padding: '18px 48px', fontSize: 16, fontWeight: 700, color: v3.color.bg, cursor: 'pointer', zIndex: 6, boxShadow: `0 4px 20px ${v3.color.accent}70`, WebkitTapHighlightColor: 'transparent' }}
         >
           次へ
