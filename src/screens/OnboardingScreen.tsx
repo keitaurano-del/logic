@@ -189,6 +189,7 @@ function CampaignStep({ onSelect }: { onSelect: (plan: PlanChoice) => void }) {
               display: 'flex', alignItems: 'center', gap: 12,
               cursor: 'pointer', textAlign: 'left', width: '100%',
               position: 'relative',
+              color: '#0F1523',
               boxShadow: selected === p.id && p.featured ? '0 0 0 2px #FEF3C7' : 'none',
             }}
           >

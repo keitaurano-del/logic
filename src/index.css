@@ -427,6 +427,11 @@ input, textarea, select { -webkit-tap-highlight-color: transparent; }
   --shadow-elevated: 0 6px 24px rgba(0,0,0,0.55);
 }
 
+html {
+  background: var(--bg-primary) !important;
+  background-color: var(--bg-primary) !important;
+}
+
 body {
   background: var(--bg-primary) !important;
   color: var(--text-primary);
@@ -435,6 +440,19 @@ body {
 /* Header tags retain v3 text color */
 h1, h2, h3, h4, h5, h6 {
   color: var(--text-primary);
+}
+
+/* v3 dark — ensure ALL fullscreen screens fall back to dark base */
+.mode-dark, body {
+  /* every <button> resets its own color box, so make sure plan cards readable */
+}
+
+/* v3 — fix legacy cream/yellow backgrounds in headers and hero areas */
+[style*="background: rgba(245,241,232"],
+[style*="background: rgba(255,252,246"],
+[style*="background:rgba(245,241,232"],
+[style*="background:rgba(255,252,246"] {
+  background: var(--bg-primary) !important;
 }
 
 /* Inline white backgrounds (style="background: #fff" on legacy components) */
