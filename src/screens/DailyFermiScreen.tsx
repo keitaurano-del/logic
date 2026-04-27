@@ -578,11 +578,11 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
 
               {/* スコアカード */}
               <div style={{
-                background: 'linear-gradient(135deg, #1a2d6e 0%, #2d4db8 100%)',
+                background: 'linear-gradient(135deg, #0F2E2D 0%, #1A4A48 100%)',
                 borderRadius: 20,
                 padding: '28px 24px',
                 textAlign: 'center',
-                boxShadow: '0 8px 32px rgba(45,77,184,0.4)',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.4)', border: '1px solid rgba(112,216,189,0.25)',
               }}>
                 <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: '.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)', marginBottom: 12 }}>採点結果</div>
 

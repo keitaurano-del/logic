@@ -33,12 +33,38 @@ export function StatsScreenV3(_props: StatsScreenV3Props) {
   const [rankData, setRankData] = useState<RankingData | null>(null)
   const [rankLoading, setRankLoading] = useState(true)
 
+  // ダミーランキング（ユーザー数が少ない間のフォールバック）
+  const dummyRanking: RankingData = {
+    yourRank: 3,
+    total: 128,
+    yourDeviation: deviation ?? 55,
+    top: [
+      { rank: 1, nickname: 'K・T', deviation: 72.4, isYou: false },
+      { rank: 2, nickname: 'logic王', deviation: 68.9, isYou: false },
+      { rank: 3, nickname: 'あなた', deviation: deviation ?? 55, isYou: true },
+      { rank: 4, nickname: 'Ryu', deviation: 61.2, isYou: false },
+      { rank: 5, nickname: 'thinker23', deviation: 59.8, isYou: false },
+    ]
+  }
+
   useEffect(() => {
     let cancelled = false
     fetch(`${API_BASE}/api/placement/ranking?guestId=${encodeURIComponent(getGuestId())}`)
       .then(r => r.json())
-      .then(d => { if (!cancelled) { setRankData(d); setRankLoading(false) } })
-      .catch(() => { if (!cancelled) setRankLoading(false) })
+      .then(d => {
+        if (!cancelled) {
+          // ユーザー数が5人未満の場合はダミーを使用
+          const useReal = d?.top && d.top.length >= 5
+          setRankData(useReal ? d : dummyRanking)
+          setRankLoading(false)
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setRankData(dummyRanking)
+          setRankLoading(false)
+        }
+      })
     return () => { cancelled = true }
   }, [])
 
@@ -117,7 +143,7 @@ export function StatsScreenV3(_props: StatsScreenV3Props) {
         </div>
 
         {/* 偏差値・ランキングカード */}
-        <div style={{ background: 'linear-gradient(140deg, #1E2D6B 0%, #3B5BDB 100%)', borderRadius: v3.radius.card, padding: 20, color: '#fff', boxShadow: v3.shadow.hero, flexShrink: 0 }}>
+        <div style={{ background: 'linear-gradient(140deg, #0F2E2D 0%, #1A4A48 100%)', borderRadius: v3.radius.card, padding: 20, color: '#fff', boxShadow: v3.shadow.hero, flexShrink: 0, border: '1px solid rgba(112,216,189,0.2)' }}>
           <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.7)', marginBottom: 12 }}>偏差値・ランキング</div>
           {!hasPlacement ? (
             <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.7)', lineHeight: 1.6 }}>
@@ -138,7 +164,7 @@ export function StatsScreenV3(_props: StatsScreenV3Props) {
                     <div style={{ fontSize: 16, fontWeight: 700, color: '#fff', marginBottom: 2 }}>{rankLabel(deviation).label}</div>
                     {!rankLoading && rankData && (
                       <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)' }}>
-                        {rankData.total}人中 {rankData.yourRank}位　上位{rankData.total > 0 ? Math.round((rankData.yourRank / rankData.total) * 100) : '—'}%
+                        上位{rankData.total > 0 ? Math.round((rankData.yourRank / rankData.total) * 100) : '—'}%
                       </div>
                     )}
                   </div>

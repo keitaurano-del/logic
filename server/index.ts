@@ -1026,9 +1026,11 @@ app.post('/api/fermi/feedback', fermiLimiter, async (req, res) => {
 
 **ひとこと**: (前提を変えるとどうなるか、精度をどう上げられるか、1〜2 文)
 
----
-最後に必ず以下のJSONを **本文末に** 追加してください（マークダウンコードブロック不要、そのまま出力）:
-SCORE_JSON:{"score":<0-100の整数>,"breakdown":"論理性 <x>/50 · 独自性 <y>/30 · 明確さ <z>/20"}`
+最初の行に必ず以下のJSONを出力してください（マークダウンコードブロック不要、そのまま1行で）:
+SCORE_JSON:{"score":<0-100の整数>,"breakdown":"論理性 <x>/50 · 独自性 <y>/30 · 明確さ <z>/20"}
+その後に改行して、以下のフィードバック本文を続けてください。
+
+---`
 
     const systemPromptEn = `You are a logical-thinking coach. Provide feedback on a user's Fermi estimation, AND finish by **showing the actual estimated answer with the full calculation logic**.
 
@@ -1072,7 +1074,7 @@ Output format (use these exact headings):
 
     const response = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 700,
+      max_tokens: 1400,
       system: isEn ? systemPromptEn : systemPromptJa,
       messages: [{ role: 'user', content: userMessage }],
     })
