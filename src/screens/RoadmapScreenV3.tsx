@@ -219,21 +219,36 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
         {lessons.map((lesson: any) => {
           const isDone = completed.has(`lesson-${lesson.id}`)
           // カテゴリごとに画像をマッピング（既存 v3 画像を活用）
-          const lessonImage = (() => {
+          // ID別個別画像マッピング
+          const LESSON_IMG_MAP: Record<number, string> = {
+            20: '/images/v3/lesson-20.webp', 21: '/images/v3/lesson-21.webp',
+            22: '/images/v3/lesson-22.webp', 23: '/images/v3/lesson-23.webp',
+            24: '/images/v3/lesson-24.webp', 25: '/images/v3/lesson-25.webp',
+            26: '/images/v3/lesson-26.webp', 27: '/images/v3/lesson-27.webp',
+            28: '/images/v3/lesson-28.webp', 29: '/images/v3/lesson-29.webp',
+            35: '/images/v3/lesson-35.webp', 36: '/images/v3/lesson-36.webp',
+            40: '/images/v3/lesson-40.webp', 41: '/images/v3/lesson-41.webp',
+            42: '/images/v3/lesson-42.webp', 43: '/images/v3/lesson-43.webp',
+            50: '/images/v3/lesson-50.webp', 51: '/images/v3/lesson-51.webp',
+            52: '/images/v3/lesson-52.webp', 53: '/images/v3/lesson-53.webp',
+            54: '/images/v3/lesson-54.webp', 55: '/images/v3/lesson-55.webp',
+            56: '/images/v3/lesson-56.webp', 57: '/images/v3/lesson-57.webp',
+            58: '/images/v3/lesson-58.webp', 59: '/images/v3/lesson-59.webp',
+            60: '/images/v3/lesson-60.webp', 61: '/images/v3/lesson-61.webp',
+            62: '/images/v3/lesson-62.webp', 63: '/images/v3/lesson-63.webp',
+            64: '/images/v3/lesson-64.webp', 65: '/images/v3/lesson-65.webp',
+            66: '/images/v3/lesson-66.webp', 67: '/images/v3/lesson-67.webp',
+            68: '/images/v3/lesson-68.webp', 69: '/images/v3/lesson-69.webp',
+            70: '/images/v3/lesson-70.webp', 71: '/images/v3/lesson-71.webp',
+            72: '/images/v3/lesson-72.webp', 73: '/images/v3/lesson-73.webp',
+            74: '/images/v3/lesson-74.webp', 75: '/images/v3/lesson-75.webp',
+            76: '/images/v3/lesson-76.webp', 77: '/images/v3/lesson-77.webp',
+          }
+          const lessonImage = LESSON_IMG_MAP[lesson.id] ?? (() => {
             const cat = (lesson.category || '').toLowerCase()
             if (cat.includes('哲学') || cat === 'philosophy') return '/images/v3/course-philosophy.webp'
             if (cat.includes('ケース') || cat === 'business') return '/images/v3/course-business.webp'
             if (cat.includes('ロジカル') || cat.includes('logical')) return '/images/v3/hero-deduction.webp'
-            if (cat.includes('提案') || cat.includes('伝える')) return '/images/v3/lesson-proposal.webp'
-            if (cat.includes('フェルミ') || cat.includes('fermi')) return '/images/v3/home-daily-fermi.webp'
-            if (cat.includes('クリティカル')) return '/images/v3/lesson-critical-thinking.webp'
-            if (cat.includes('仮説')) return '/images/v3/lesson-hypothesis.webp'
-            if (cat.includes('課題')) return '/images/v3/lesson-issue-setting.webp'
-            if (cat.includes('デザイン')) return '/images/v3/lesson-design-thinking.webp'
-            if (cat.includes('ラテラル')) return '/images/v3/lesson-lateral-thinking.webp'
-            if (cat.includes('アナロジー') || cat.includes('analogy')) return '/images/v3/lesson-analogy.webp'
-            if (cat.includes('システム')) return '/images/v3/lesson-systems-thinking.webp'
-            if (cat.includes('coffee') || cat.includes('コーヒー')) return '/images/v3/home-daily-question.webp'
             return '/images/v3/course-thinking.webp'
           })()
           return (

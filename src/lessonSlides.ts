@@ -68,9 +68,72 @@ function formatBody(text: string): string {
 /**
  * Map lesson.category → hero image filename (without extension)
  */
-function getHeroImage(category: string): string {
+/** レッスンID → 個別画像マッピング */
+const LESSON_IMAGES: Record<number, string> = {
+  // ロジカルシンキング
+  20: '/images/v3/lesson-20.webp',  // MECE
+  21: '/images/v3/lesson-21.webp',  // ロジックツリー
+  22: '/images/v3/lesson-22.webp',  // So What / Why So
+  23: '/images/v3/lesson-23.webp',  // ピラミッド原則
+  24: '/images/v3/lesson-24.webp',  // ケーススタディ
+  25: '/images/v3/lesson-25.webp',  // 演繹法
+  26: '/images/v3/lesson-26.webp',  // 帰納法
+  27: '/images/v3/lesson-27.webp',  // 形式論理
+  68: '/images/v3/lesson-68.webp',  // 具体と抽象
+  // ケース面接
+  28: '/images/v3/lesson-28.webp',  // ケース面接入門
+  29: '/images/v3/lesson-29.webp',  // プロフィタビリティ
+  35: '/images/v3/lesson-35.webp',  // 新市場参入
+  36: '/images/v3/lesson-36.webp',  // M&A
+  // クリティカルシンキング
+  40: '/images/v3/lesson-40.webp',  // クリティカルシンキング入門
+  41: '/images/v3/lesson-41.webp',  // 論理的誤謬
+  42: '/images/v3/lesson-42.webp',  // データを読む
+  43: '/images/v3/lesson-43.webp',  // 問いを立てる
+  69: '/images/v3/lesson-69.webp',  // 認知バイアス
+  71: '/images/v3/lesson-71.webp',  // 相関と因果
+  // 仮説思考
+  50: '/images/v3/lesson-50.webp',  // 仮説思考入門
+  51: '/images/v3/lesson-51.webp',  // 仮説の立て方
+  52: '/images/v3/lesson-52.webp',  // 仮説ドリブン
+  70: '/images/v3/lesson-70.webp',  // 仮説の検証設計
+  // 課題設定
+  53: '/images/v3/lesson-53.webp',  // 課題設定入門
+  54: '/images/v3/lesson-54.webp',  // イシュー分析
+  55: '/images/v3/lesson-55.webp',  // 課題設定実践
+  // デザインシンキング
+  56: '/images/v3/lesson-56.webp',  // デザインシンキング入門
+  57: '/images/v3/lesson-57.webp',  // 共感マップ
+  58: '/images/v3/lesson-58.webp',  // デザインシンキング実践
+  // ラテラルシンキング
+  59: '/images/v3/lesson-59.webp',  // ラテラルシンキング入門
+  60: '/images/v3/lesson-60.webp',  // ラテラル技法
+  61: '/images/v3/lesson-61.webp',  // ラテラル実践
+  // アナロジー思考
+  62: '/images/v3/lesson-62.webp',  // アナロジー思考入門
+  63: '/images/v3/lesson-63.webp',  // アナロジー技法
+  64: '/images/v3/lesson-64.webp',  // アナロジー実践
+  // システムシンキング
+  65: '/images/v3/lesson-65.webp',  // システムシンキング入門
+  66: '/images/v3/lesson-66.webp',  // システム原型
+  67: '/images/v3/lesson-67.webp',  // システム実践
+  // 提案・伝える技術
+  72: '/images/v3/lesson-72.webp',  // 提案書の目的
+  73: '/images/v3/lesson-73.webp',  // 相手の立場
+  74: '/images/v3/lesson-74.webp',  // ストーリーライン
+  75: '/images/v3/lesson-75.webp',  // メッセージを磨く
+  76: '/images/v3/lesson-76.webp',  // 反論を先読み
+  // 哲学
+  77: '/images/v3/lesson-77.webp',  // ソクラテス
+}
+
+function getHeroImage(category: string, lessonId?: number): string {
+  // IDが指定されていれば個別画像を優先
+  if (lessonId != null && LESSON_IMAGES[lessonId]) {
+    return LESSON_IMAGES[lessonId]
+  }
+  // フォールバック: カテゴリ別
   const c = (category || '').toLowerCase()
-  // 各カテゴリ専用画像
   if (c.includes('ロジカル') || c.includes('logical')) return '/images/v3/hero-deduction.webp'
   if (c.includes('ケース面接') || c === 'business') return '/images/v3/course-business.webp'
   if (c.includes('哲学') || c === 'philosophy') return '/images/v3/course-philosophy.webp'
@@ -102,7 +165,7 @@ export function convertLessonToSlides(lesson: any): LessonSlide[] {
   const stepCount = lesson.steps.length
   slides.push({
     kind: 'hero',
-    image: getHeroImage(lesson.category),
+    image: getHeroImage(lesson.category, lesson.id),
     category: lesson.category || '',
     title: lesson.title || '',
     meta: `${stepCount}ステップ · ${lesson.difficulty || '初級'}`,

@@ -4,6 +4,7 @@ import { IconButton } from '../components/IconButton'
 import { Button } from '../components/Button'
 import { API_BASE } from './apiBase'
 import { t, getLocale } from '../i18n'
+import { getGuestId } from '../guestId'
 
 // デイリーフェルミ完了状態管理
 const DAILY_FERMI_KEY = 'logic-daily-fermi-done'
@@ -313,7 +314,7 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
       const res = await fetch(`${API_BASE}/api/fermi/feedback`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question, userInput: answer, locale, hintUsed, elapsedSec }),
+        body: JSON.stringify({ question, userInput: answer, locale, hintUsed, elapsedSec, guestId: getGuestId() }),
       })
       const data = await res.json()
       if (!res.ok || data.error) throw new Error(data.error || t('common.error'))
