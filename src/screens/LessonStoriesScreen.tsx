@@ -22,6 +22,9 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
   const lesson = allLessons[lessonId]
   const [index, setIndex] = useState(0)
   const [quizAnswered, setQuizAnswered] = useState<{ correct: boolean; selected: number } | null>(null)
+  const [reportOpen, setReportOpen] = useState(false)
+  const [reportSent, setReportSent] = useState(false)
+  const [reportText, setReportText] = useState('')
 
   const slides: LessonSlide[] = useMemo(() => {
     if (!lesson) return []
@@ -107,8 +110,11 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
             <span style={{ fontSize: 13, fontWeight: 700 }}>{lesson.title}</span>
           </div>
         </div>
-        <div onClick={onClose} style={{ width: 32, height: 32, borderRadius: '50%', background: v3.color.card, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+        <div
+          onPointerDown={(e) => { e.stopPropagation(); onClose() }}
+          style={{ width: 44, height: 44, borderRadius: '50%', background: v3.color.card, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', WebkitTapHighlightColor: 'transparent' }}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
         </div>
       </div>
 
@@ -128,40 +134,78 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
         }} onGoNext={goNext} />
       </div>
 
-      {/* Tap zones (クイズ以外) */}
-      {!isQuiz && (
+      {/* タップゾーン: 全スライド共通 (クイズ回答済み時を除く) */}
+      {!(isQuiz && quizAnswered) && (
         <div style={{ position: 'absolute', inset: 0, display: 'flex', zIndex: 5 }}>
-          <div onClick={goPrev} style={{ flex: 1, cursor: 'pointer' }}></div>
-          <div onClick={goNext} style={{ flex: 1, cursor: 'pointer' }}></div>
+          <div onPointerUp={() => goPrev()} style={{ flex: 1, cursor: 'pointer' }}></div>
+          <div onPointerUp={() => goNext()} style={{ flex: 1, cursor: 'pointer' }}></div>
         </div>
       )}
 
-      {/* クイズ画面: 解説表示中は「次へ」ボタン、未回答時は「前へ」ボタン */}
+      {/* クイズ正解後: 「次へ」ボタン（大） */}
       {isQuiz && quizAnswered?.correct && (
         <button
-          onClick={goNext}
-          style={{ position: 'absolute', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 24px)', left: '50%', transform: 'translateX(-50%)', display: 'inline-flex', alignItems: 'center', gap: 8, background: v3.color.accent, border: 'none', borderRadius: 99, padding: '14px 32px', fontSize: 14, fontWeight: 700, color: v3.color.bg, cursor: 'pointer', zIndex: 6, boxShadow: `0 4px 16px ${v3.color.accent}60` }}
+          onPointerDown={goNext}
+          style={{ position: 'absolute', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 28px)', left: '50%', transform: 'translateX(-50%)', display: 'inline-flex', alignItems: 'center', gap: 8, background: v3.color.accent, border: 'none', borderRadius: 99, padding: '18px 48px', fontSize: 16, fontWeight: 700, color: v3.color.bg, cursor: 'pointer', zIndex: 6, boxShadow: `0 4px 20px ${v3.color.accent}70`, WebkitTapHighlightColor: 'transparent' }}
         >
           次へ
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={v3.color.bg} strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6" /></svg>
-        </button>
-      )}
-      {isQuiz && !quizAnswered && index > 0 && (
-        <button
-          onClick={goPrev}
-          style={{ position: 'absolute', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 24px)', left: '50%', transform: 'translateX(-50%)', display: 'inline-flex', alignItems: 'center', gap: 6, background: v3.color.card, border: '1px solid rgba(255,255,255,.08)', borderRadius: 99, padding: '10px 18px', fontSize: 12, fontWeight: 600, color: v3.color.text2, cursor: 'pointer', zIndex: 6 }}
-          aria-label="前のスライドに戻る"
-        >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6" /></svg>
-          前のスライド
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.bg} strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6" /></svg>
         </button>
       )}
 
-      {/* Tap hint */}
-      {!isQuiz && (
-        <div style={{ position: 'absolute', bottom: 32, left: '50%', transform: 'translateX(-50%)', display: 'flex', alignItems: 'center', gap: 8, background: v3.color.card, border: '1px solid rgba(255,255,255,.08)', borderRadius: 99, padding: '10px 18px', fontSize: 12, fontWeight: 500, color: v3.color.text2, zIndex: 6 }}>
-          タップ / スワイプで進む
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6" /></svg>
+      {/* Tap hint (非クイズ、未回答クイズ) */}
+      {!(isQuiz && quizAnswered) && (
+        <div style={{ position: 'absolute', bottom: 28, left: '50%', transform: 'translateX(-50%)', display: 'flex', alignItems: 'center', gap: 10, zIndex: 6, pointerEvents: 'none' }}>
+          <span style={{ fontSize: 11, color: v3.color.text3, opacity: 0.6 }}>◀ 戻る</span>
+          <span style={{ fontSize: 11, color: v3.color.text3, opacity: 0.6 }}>進む ▶</span>
+        </div>
+      )}
+
+      {/* 誤りを報告 — 右下の小さなボタン */}
+      <button
+        onPointerDown={(e) => { e.stopPropagation(); setReportOpen(true) }}
+        style={{ position: 'absolute', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 12px)', right: 16, fontSize: 10, color: v3.color.text3, background: 'none', border: 'none', cursor: 'pointer', opacity: 0.5, zIndex: 7, padding: '8px 4px' }}
+      >
+        誤りを報告
+      </button>
+
+      {/* 誤り報告モーダル */}
+      {reportOpen && (
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,.6)', zIndex: 20, display: 'flex', alignItems: 'flex-end' }} onPointerDown={() => setReportOpen(false)}>
+          <div
+            onPointerDown={(e) => e.stopPropagation()}
+            style={{ background: v3.color.bg, borderRadius: '20px 20px 0 0', padding: '24px 20px calc(env(safe-area-inset-bottom, 0px) + 24px)', width: '100%' }}
+          >
+            {reportSent ? (
+              <>
+                <div style={{ textAlign: 'center', marginBottom: 16 }}>
+                  <div style={{ fontSize: 32, marginBottom: 8 }}>✓</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: v3.color.accent }}>報告を受け付けました</div>
+                  <div style={{ fontSize: 13, color: v3.color.text2, marginTop: 6 }}>ご協力ありがとうございます。内容を確認して改善します。</div>
+                </div>
+                <button onPointerDown={() => { setReportOpen(false); setReportSent(false); setReportText('') }} style={{ width: '100%', background: v3.color.card, border: 'none', borderRadius: 14, padding: '14px', fontSize: 14, fontWeight: 600, color: v3.color.text, cursor: 'pointer' }}>閉じる</button>
+              </>
+            ) : (
+              <>
+                <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 6 }}>誤りを報告</div>
+                <div style={{ fontSize: 13, color: v3.color.text2, marginBottom: 16 }}>どのような誤りがありましたか？</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
+                  {['内容・説明が間違っている', '選択肢の正解が違う', '日本語がおかしい・誤字', 'その他'].map(opt => (
+                    <button key={opt} onPointerDown={() => setReportText(opt)}
+                      style={{ background: reportText === opt ? v3.color.accentSoft : v3.color.card, border: `1.5px solid ${reportText === opt ? v3.color.accent : 'transparent'}`, borderRadius: 12, padding: '12px 14px', fontSize: 14, fontWeight: 500, color: v3.color.text, cursor: 'pointer', textAlign: 'left' }}
+                    >{opt}</button>
+                  ))}
+                </div>
+                <button
+                  onPointerDown={() => { if (reportText) { setReportSent(true) } }}
+                  disabled={!reportText}
+                  style={{ width: '100%', background: reportText ? v3.color.accent : v3.color.card, border: 'none', borderRadius: 14, padding: '14px', fontSize: 14, fontWeight: 700, color: reportText ? v3.color.bg : v3.color.text3, cursor: reportText ? 'pointer' : 'default' }}
+                >
+                  送信する
+                </button>
+              </>
+            )}
+          </div>
         </div>
       )}
     </div>
