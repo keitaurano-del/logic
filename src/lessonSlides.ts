@@ -10,7 +10,7 @@ export type LessonSlide =
   | { kind: 'diagram'; title: string; nodes: { label: string; kind: 'premise' | 'conclusion' }[] }
   | { kind: 'compare'; title: string; left: { label: string; body: string }; right: { label: string; body: string } }
   | { kind: 'quote'; author: string; quote: string }
-  | { kind: 'quiz'; question: string; choices: string[]; correctIndex: number; explain: string }
+  | { kind: 'quiz'; question: string; choices: string[]; correctIndex: number; correctIndexes?: number[]; multi?: boolean; explain: string }
   | { kind: 'summary'; title: string; points: string[] }
 
 export interface LessonV3 {
@@ -214,11 +214,21 @@ export function convertLessonToSlides(lesson: any): LessonSlide[] {
         ;[finalChoices[newCorrect], finalChoices[swapIdx]] = [finalChoices[swapIdx], finalChoices[newCorrect]]
       }
 
+      // multi対応: step.multi=true かつ correctTexts[]がある場合
+      const isMulti = !!(step.multi || (Array.isArray(step.correctIndexes) && step.correctIndexes.length > 1))
+      const correctTextsMulti: string[] = isMulti
+        ? (step.correctIndexes as number[] ?? [correctIndex]).map((ci: number) => choices[ci])
+        : []
+
       slides.push({
         kind: 'quiz',
         question: step.question || step.text || '',
         choices: finalChoices,
         correctIndex: finalChoices.indexOf(correctText),
+        ...(isMulti ? {
+          multi: true,
+          correctIndexes: correctTextsMulti.map(t => finalChoices.indexOf(t)).filter(i => i >= 0),
+        } : {}),
         explain: step.explanation || step.explain || '',
       })
     } else if (stepType === 'example') {

@@ -21,7 +21,8 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
   const { lessonId, onComplete, onClose } = props
   const lesson = allLessons[lessonId]
   const [index, setIndex] = useState(0)
-  const [quizAnswered, setQuizAnswered] = useState<{ correct: boolean; selected: number } | null>(null)
+  const [quizAnswered, setQuizAnswered] = useState<{ correct: boolean; selected: number; selectedMulti?: number[] } | null>(null)
+  const [multiSelected, setMultiSelected] = useState<number[]>([])
   const [reportOpen, setReportOpen] = useState(false)
   const [reportSent, setReportSent] = useState(false)
   const [reportText, setReportText] = useState('')
@@ -50,6 +51,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
     if (index < total - 1) {
       setIndex(index + 1)
       setQuizAnswered(null)
+      setMultiSelected([])
     } else {
       // 完了
       addXp('lesson')
@@ -122,20 +124,34 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
       <div style={{ flex: 1, padding: '8px 24px 100px', position: 'relative', overflow: 'auto' }}>
         <div style={{ position: 'absolute', top: 8, right: 24, fontFamily: "'Inter Tight', sans-serif", fontSize: 13, fontWeight: 700, color: v3.color.text3 }}>{index + 1} / {total}</div>
 
-        <SlideContent slide={slide} quizAnswered={quizAnswered} onSelectQuiz={(idx) => {
-          if (slide.kind !== 'quiz') return
-          const correct = idx === slide.correctIndex
-          setQuizAnswered({ correct, selected: idx })
-          if (!correct) {
-            // 不正解の場合 2.5秒後に再選択可能にする
-            setTimeout(() => setQuizAnswered(null), 2500)
-          }
-          // 正解でも自動遷移しない → 解説を読んでから「次へ」ボタンで進む
-        }} onGoNext={goNext} />
+        <SlideContent
+          slide={slide}
+          quizAnswered={quizAnswered}
+          multiSelected={multiSelected}
+          onToggleMulti={(idx) => {
+            if (quizAnswered) return
+            setMultiSelected(prev => prev.includes(idx) ? prev.filter(i => i !== idx) : [...prev, idx])
+          }}
+          onSubmitMulti={() => {
+            if (slide.kind !== 'quiz' || !slide.multi) return
+            const correctSet = new Set(slide.correctIndexes ?? [slide.correctIndex])
+            const selectedSet = new Set(multiSelected)
+            const correct = correctSet.size === selectedSet.size && [...correctSet].every(i => selectedSet.has(i))
+            setQuizAnswered({ correct, selected: -1, selectedMulti: multiSelected })
+          }}
+          onSelectQuiz={(idx) => {
+            if (slide.kind !== 'quiz') return
+            const correct = idx === slide.correctIndex
+            setQuizAnswered({ correct, selected: idx })
+            if (!correct) {
+              setTimeout(() => setQuizAnswered(null), 2500)
+            }
+          }}
+        />
       </div>
 
-      {/* タップゾーン: 全スライド共通 (クイズ回答済み時を除く) */}
-      {!(isQuiz && quizAnswered) && (
+      {/* タップゾーン: クイズスライド以外のみ有効 */}
+      {!isQuiz && (
         <div style={{ position: 'absolute', inset: 0, display: 'flex', zIndex: 5 }}>
           <div onPointerUp={() => goPrev()} style={{ flex: 1, cursor: 'pointer' }}></div>
           <div onPointerUp={() => goNext()} style={{ flex: 1, cursor: 'pointer' }}></div>
@@ -153,8 +169,8 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
         </button>
       )}
 
-      {/* Tap hint (非クイズ、未回答クイズ) */}
-      {!(isQuiz && quizAnswered) && (
+      {/* Tap hint (非クイズのみ) */}
+      {!isQuiz && (
         <div style={{ position: 'absolute', bottom: 28, left: '50%', transform: 'translateX(-50%)', display: 'flex', alignItems: 'center', gap: 10, zIndex: 6, pointerEvents: 'none' }}>
           <span style={{ fontSize: 11, color: v3.color.text3, opacity: 0.6 }}>◀ 戻る</span>
           <span style={{ fontSize: 11, color: v3.color.text3, opacity: 0.6 }}>進む ▶</span>
@@ -212,7 +228,14 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
   )
 }
 
-function SlideContent({ slide, quizAnswered, onSelectQuiz }: { slide: LessonSlide; quizAnswered: { correct: boolean; selected: number } | null; onSelectQuiz: (idx: number) => void; onGoNext?: () => void }) {
+function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSubmitMulti, onSelectQuiz }: {
+  slide: LessonSlide
+  quizAnswered: { correct: boolean; selected: number; selectedMulti?: number[] } | null
+  multiSelected: number[]
+  onToggleMulti: (idx: number) => void
+  onSubmitMulti: () => void
+  onSelectQuiz: (idx: number) => void
+}) {
   if (slide.kind === 'hero') {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'flex-start' }}>
@@ -269,29 +292,67 @@ function SlideContent({ slide, quizAnswered, onSelectQuiz }: { slide: LessonSlid
   }
 
   if (slide.kind === 'quiz') {
+    const isMulti = !!slide.multi
+    const correctSet = new Set(slide.correctIndexes ?? [slide.correctIndex])
+
     return (
       <>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: v3.color.warmSoft, borderRadius: 99, padding: '6px 12px', fontSize: 11, fontWeight: 600, color: v3.color.warm, marginBottom: 24, marginTop: 24 }}>確認問題</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 24, marginTop: 24 }}>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: v3.color.warmSoft, borderRadius: 99, padding: '6px 12px', fontSize: 11, fontWeight: 600, color: v3.color.warm }}>確認問題</span>
+          {isMulti && <span style={{ fontSize: 11, color: v3.color.text2, background: v3.color.card, borderRadius: 99, padding: '4px 10px', fontWeight: 600 }}>複数選択</span>}
+        </div>
         <h2 style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.5, marginBottom: 24, color: v3.color.text }}>{slide.question}</h2>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {slide.choices.map((c, i) => {
             const answered = quizAnswered !== null
+            const isCorrect = correctSet.has(i)
+
+            if (isMulti) {
+              const isPicked = multiSelected.includes(i)
+              const wasSelected = quizAnswered?.selectedMulti?.includes(i)
+              const bg: string = !answered
+                ? (isPicked ? v3.color.accentSoft : v3.color.card)
+                : (wasSelected && isCorrect ? v3.color.accent : wasSelected && !isCorrect ? '#4A1C1C' : isCorrect ? v3.color.accentSoft : v3.color.card)
+              const color: string = !answered ? v3.color.text : (wasSelected && isCorrect ? v3.color.bg : v3.color.text)
+              const border: string = !answered ? (isPicked ? `2px solid ${v3.color.accent}` : '2px solid transparent') : 'none'
+              return (
+                <div key={i} onClick={() => !answered && onToggleMulti(i)}
+                  style={{ background: bg, color, borderRadius: 14, padding: '14px 18px', fontSize: 15, fontWeight: 600, cursor: answered ? 'default' : 'pointer', transition: v3.motion.tap, border, display: 'flex', alignItems: 'center', gap: 10 }}
+                >
+                  <div style={{ width: 20, height: 20, borderRadius: 6, border: `2px solid ${answered ? 'transparent' : isPicked ? v3.color.accent : v3.color.text3}`, background: isPicked && !answered ? v3.color.accent : answered && wasSelected && isCorrect ? v3.color.bg + '30' : 'transparent', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {(isPicked && !answered) || (answered && wasSelected) ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={answered && wasSelected && isCorrect ? v3.color.bg : v3.color.accent} strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg> : null}
+                  </div>
+                  {c}
+                </div>
+              )
+            }
+
+            // 単一選択
             const isSelected = quizAnswered?.selected === i
-            const isCorrect = i === slide.correctIndex
-            const bg = !answered ? v3.color.card : isSelected && isCorrect ? v3.color.accent : isSelected && !isCorrect ? '#FCA5A5' : isCorrect ? v3.color.accentSoft : v3.color.card
-            const color = !answered ? v3.color.text : isSelected && isCorrect ? v3.color.bg : isSelected && !isCorrect ? '#7F1D1D' : v3.color.text
+            const bg: string = !answered ? v3.color.card : isSelected && isCorrect ? v3.color.accent : isSelected && !isCorrect ? '#4A1C1C' : isCorrect && answered ? v3.color.accentSoft : v3.color.card
+            const color: string = !answered ? v3.color.text : isSelected && isCorrect ? v3.color.bg : v3.color.text
             return (
-              <div
-                key={i}
-                onClick={() => !answered && onSelectQuiz(i)}
+              <div key={i} onClick={() => !answered && onSelectQuiz(i)}
                 style={{ background: bg, color, borderRadius: 14, padding: '14px 18px', fontSize: 15, fontWeight: 600, cursor: answered ? 'default' : 'pointer', transition: v3.motion.tap }}
               >{c}</div>
             )
           })}
         </div>
+
+        {/* 複数選択: 回答ボタン */}
+        {isMulti && !quizAnswered && (
+          <button
+            onClick={onSubmitMulti}
+            disabled={multiSelected.length === 0}
+            style={{ marginTop: 20, width: '100%', background: multiSelected.length > 0 ? v3.color.accent : v3.color.card, color: multiSelected.length > 0 ? v3.color.bg : v3.color.text3, border: 'none', borderRadius: 14, padding: '14px', fontSize: 15, fontWeight: 700, cursor: multiSelected.length > 0 ? 'pointer' : 'default' }}
+          >
+            {multiSelected.length === 0 ? '選択してください' : `${multiSelected.length}つ選択中 — 回答する`}
+          </button>
+        )}
+
         {quizAnswered && (
           <div style={{ marginTop: 20, padding: 16, background: v3.color.card, borderRadius: 14, fontSize: 14, lineHeight: 1.6 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: quizAnswered.correct ? v3.color.accent : '#FCA5A5', marginBottom: 6 }}>{quizAnswered.correct ? '正解' : 'もう一度考えてみよう'}</div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: quizAnswered.correct ? v3.color.accent : '#FCA5A5', marginBottom: 6 }}>{quizAnswered.correct ? '正解' : isMulti ? `不正解 — 正解は${[...correctSet].map(i => slide.choices[i]).join('、')}` : 'もう一度考えてみよう'}</div>
             {slide.explain}
           </div>
         )}
