@@ -120,13 +120,12 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
           if (slide.kind !== 'quiz') return
           const correct = idx === slide.correctIndex
           setQuizAnswered({ correct, selected: idx })
-          if (correct) {
-            setTimeout(goNext, 1200)
-          } else {
+          if (!correct) {
             // 不正解の場合 2.5秒後に再選択可能にする
             setTimeout(() => setQuizAnswered(null), 2500)
           }
-        }} />
+          // 正解でも自動遷移しない → 解説を読んでから「次へ」ボタンで進む
+        }} onGoNext={goNext} />
       </div>
 
       {/* Tap zones (クイズ以外) */}
@@ -137,8 +136,17 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
         </div>
       )}
 
-      {/* クイズ画面だけ: 「前に戻る」ボタンを右下に表示 (タップで進めないため) */}
-      {isQuiz && index > 0 && (
+      {/* クイズ画面: 解説表示中は「次へ」ボタン、未回答時は「前へ」ボタン */}
+      {isQuiz && quizAnswered?.correct && (
+        <button
+          onClick={goNext}
+          style={{ position: 'absolute', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 24px)', left: '50%', transform: 'translateX(-50%)', display: 'inline-flex', alignItems: 'center', gap: 8, background: v3.color.accent, border: 'none', borderRadius: 99, padding: '14px 32px', fontSize: 14, fontWeight: 700, color: v3.color.bg, cursor: 'pointer', zIndex: 6, boxShadow: `0 4px 16px ${v3.color.accent}60` }}
+        >
+          次へ
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={v3.color.bg} strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6" /></svg>
+        </button>
+      )}
+      {isQuiz && !quizAnswered && index > 0 && (
         <button
           onClick={goPrev}
           style={{ position: 'absolute', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 24px)', left: '50%', transform: 'translateX(-50%)', display: 'inline-flex', alignItems: 'center', gap: 6, background: v3.color.card, border: '1px solid rgba(255,255,255,.08)', borderRadius: 99, padding: '10px 18px', fontSize: 12, fontWeight: 600, color: v3.color.text2, cursor: 'pointer', zIndex: 6 }}
@@ -160,7 +168,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
   )
 }
 
-function SlideContent({ slide, quizAnswered, onSelectQuiz }: { slide: LessonSlide; quizAnswered: { correct: boolean; selected: number } | null; onSelectQuiz: (idx: number) => void }) {
+function SlideContent({ slide, quizAnswered, onSelectQuiz }: { slide: LessonSlide; quizAnswered: { correct: boolean; selected: number } | null; onSelectQuiz: (idx: number) => void; onGoNext?: () => void }) {
   if (slide.kind === 'hero') {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'flex-start' }}>

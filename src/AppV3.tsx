@@ -33,7 +33,7 @@ import { StatsScreenV3 } from './screens/StatsScreenV3'
 import { ProfileScreenV3 } from './screens/ProfileScreenV3'
 import { LessonStoriesScreen } from './screens/LessonStoriesScreen'
 import { LessonCompleteScreen } from './screens/LessonCompleteScreen'
-import { allLessons } from './lessonData'
+import { allLessons, getAllLessonsFlat } from './lessonData'
 import { getCurrentLevel } from './screens/homeHelpers'
 
 
@@ -412,8 +412,23 @@ function AppV3() {
           durationSec={screen.durationSec}
           prevLevel={screen.prevLevel}
           onNext={() => {
-            // 同カテゴリの次レッスンを探す
-            navigate({ type: tab }, true)
+            // 同カテゴリの次レッスンを探して遷移
+            const allFlat = getAllLessonsFlat()
+            const currentLesson = allFlat[screen.lessonId]
+            if (currentLesson) {
+              // 同カテゴリのレッスンをID順に並べて次を探す
+              const sameCategory = Object.values(allFlat)
+                .filter(l => l.category === currentLesson.category)
+                .sort((a, b) => a.id - b.id)
+              const idx = sameCategory.findIndex(l => l.id === screen.lessonId)
+              const nextLesson = sameCategory[idx + 1]
+              if (nextLesson) {
+                navigate({ type: 'lesson', lessonId: nextLesson.id })
+                return
+              }
+            }
+            // 次レッスンなければホームに戻る
+            navigate({ type: 'home' }, true)
           }}
           onHome={() => navigate({ type: 'home' }, true)}
         />

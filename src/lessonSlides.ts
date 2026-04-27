@@ -200,11 +200,25 @@ export function convertLessonToSlides(lesson: any): LessonSlide[] {
         correctIndex = step.correctIndex ?? step.answer ?? 0
       }
 
+      // 選択肢をシャッフルして正解位置の偏りを解消
+      const correctText = choices[correctIndex]
+      const shuffled = [...choices]
+        .map((c, i) => ({ c, i }))
+        .sort(() => Math.random() - 0.5)
+      // 一致しないよう元の正解位置とが同じ場合は再シャッフル
+      const finalChoices = shuffled.map(x => x.c)
+      // 正解位置が元と同じだったら小さい方とswap
+      const newCorrect = finalChoices.indexOf(correctText)
+      if (newCorrect === correctIndex && finalChoices.length > 1) {
+        const swapIdx = (correctIndex + 1) % finalChoices.length
+        ;[finalChoices[newCorrect], finalChoices[swapIdx]] = [finalChoices[swapIdx], finalChoices[newCorrect]]
+      }
+
       slides.push({
         kind: 'quiz',
         question: step.question || step.text || '',
-        choices,
-        correctIndex,
+        choices: finalChoices,
+        correctIndex: finalChoices.indexOf(correctText),
         explain: step.explanation || step.explain || '',
       })
     } else if (stepType === 'example') {
