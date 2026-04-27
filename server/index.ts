@@ -1553,6 +1553,75 @@ app.get('/api/checkout-verify', async (req, res) => {
 })
 
 // =============================================
+// Google Play Billing Verify (SCRUM-116)
+// =============================================
+app.post('/api/billing/verify', async (req, res) => {
+  try {
+    const { purchaseToken, productId, userId } = req.body as {
+      purchaseToken: string
+      productId: string
+      userId?: string
+    }
+
+    if (!purchaseToken || !productId) {
+      return res.status(400).json({ error: 'purchaseToken and productId are required' })
+    }
+
+    // TODO(SCRUM-116): Verify purchase with Google Play Developer API
+    // Requires GOOGLE_PLAY_PRIVATE_KEY and GOOGLE_PLAY_PACKAGE_NAME env vars
+    // const auth = new GoogleAuth({ credentials: JSON.parse(process.env.GOOGLE_PLAY_PRIVATE_KEY || '{}') })
+    // const androidpublisher = google.androidpublisher({ version: 'v3', auth })
+    // const result = await androidpublisher.purchases.subscriptions.get({
+    //   packageName: process.env.GOOGLE_PLAY_PACKAGE_NAME,
+    //   subscriptionId: productId,
+    //   token: purchaseToken,
+    // })
+
+    // Determine plan from productId
+    type PlanType = 'basic_monthly' | 'basic_yearly' | 'standard_monthly' | 'standard_yearly' | 'premium_monthly' | 'premium_yearly'
+    const productToPlan: Record<string, PlanType> = {
+      logic_basic_monthly: 'basic_monthly',
+      logic_basic_yearly: 'basic_yearly',
+      logic_standard_monthly: 'standard_monthly',
+      logic_standard_yearly: 'standard_yearly',
+      logic_premium_monthly: 'premium_monthly',
+      logic_premium_yearly: 'premium_yearly',
+    }
+    const plan = productToPlan[productId]
+    if (!plan) {
+      return res.status(400).json({ error: `Unknown productId: ${productId}` })
+    }
+
+    // Calculate expiry (30 days for monthly, 365 days for yearly)
+    const isYearly = plan.endsWith('_yearly')
+    const expiryMs = isYearly ? 365 * 24 * 60 * 60 * 1000 : 30 * 24 * 60 * 60 * 1000
+    const currentPeriodEnd = new Date(Date.now() + expiryMs).toISOString()
+
+    // Upsert subscription in Supabase
+    if (supabase && userId) {
+      await supabase
+        .from('subscriptions')
+        .upsert(
+          {
+            user_id: userId,
+            plan,
+            status: 'active',
+            current_period_end: currentPeriodEnd,
+            // Store purchase token for future verification
+            stripe_subscription_id: `gp:${purchaseToken}`,
+          },
+          { onConflict: 'user_id' }
+        )
+    }
+
+    res.json({ success: true, plan, currentPeriodEnd })
+  } catch (e: any) {
+    console.error('billing/verify error:', e)
+    res.status(500).json({ error: e.message })
+  }
+})
+
+// =============================================
 // Stripe Customer Portal
 // =============================================
 app.post('/api/subscription/portal', async (req, res) => {

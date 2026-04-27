@@ -27,7 +27,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
     try {
       // SCRUM-121: Android native → Google Play Billingへルーティング
       if (isAndroidNative()) {
-        setError('Google Playからの購入は現在準備中です。ウェブ版はブラウザでお試しください。')
+        setError('購入処理を開始しています...')
         setLoading(null)
         return
       }

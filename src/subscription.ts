@@ -174,11 +174,32 @@ export function getPlanLabel(): string {
 }
 
 import { API_BASE } from './apiBase'
+import { purchaseProduct } from './billing'
+import { PLAY_PRODUCTS } from './billing/products'
+
+// ── Google Play product ID mapping (SCRUM-116) ─────────────────────
+export function planToPlayProductId(plan: SubscriptionPlan): string {
+  switch (plan) {
+    case 'basic_monthly':    return PLAY_PRODUCTS.basic_monthly
+    case 'basic_yearly':     return PLAY_PRODUCTS.basic_yearly
+    case 'standard_monthly': return PLAY_PRODUCTS.standard_monthly
+    case 'standard_yearly':  return PLAY_PRODUCTS.standard_yearly
+    case 'premium_monthly':  return PLAY_PRODUCTS.premium_monthly
+    case 'premium_yearly':   return PLAY_PRODUCTS.premium_yearly
+    // Legacy plan names → map to closest equivalent
+    case 'monthly':          return PLAY_PRODUCTS.standard_monthly
+    case 'yearly':           return PLAY_PRODUCTS.standard_yearly
+    // Non-purchasable plans
+    default:                 return PLAY_PRODUCTS.standard_monthly
+  }
+}
 
 export async function startCheckout(plan: SubscriptionPlan, guestId: string, userId?: string, trial?: boolean): Promise<void> {
-  // SCRUM-121: Android native → Google Play Billingへルーティング（SCRUM-116完成待ち）
+  // SCRUM-116/121: Android native → Google Play Billing
   if (isAndroidNative()) {
-    throw new Error('Google Play購入は現在準備中です。')
+    const productId = planToPlayProductId(plan)
+    await purchaseProduct(productId)
+    return
   }
   const res = await fetch(`${API_BASE}/api/checkout`, {
     method: 'POST',
@@ -233,10 +254,11 @@ export function isAndroidNative(): boolean {
 export const BETA_CAMPAIGN_PLAN: SubscriptionPlan = 'premium_yearly'
 
 export async function startBetaCampaignCheckout(guestId: string, userId?: string): Promise<void> {
-  // SCRUM-121: Android native → Google Play Billing (SCRUM-116完成待ち)
+  // SCRUM-116/121: Android native → Google Play Billing
   if (isAndroidNative()) {
-    // Google Play Billing 導入待ちのスタブ。SCRUM-116完了後に実装済みの購入フローを呼び出す。
-    throw new Error('Google Play購入は現在準備中です。ウェブ版はブラウザでお試しください。')
+    const productId = planToPlayProductId(BETA_CAMPAIGN_PLAN)
+    await purchaseProduct(productId)
+    return
   }
   // Web / iOS: Stripe checkout with beta_campaign flag
   const res = await fetch(`${API_BASE}/api/checkout`, {
