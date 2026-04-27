@@ -1093,6 +1093,28 @@ Output format (use these exact headings):
       } catch { /* ignore */ }
       feedbackText = rawText.replace(/SCORE_JSON:[^\n]*/g, '').trimEnd()
     }
+    // ======= DB保存 (non-blocking) =======
+    const { guestId, userId } = req.body as { guestId?: string; userId?: string }
+    if (supabase) {
+      const today = new Date().toISOString().slice(0, 10)
+      supabase.from('fermi_answers').insert({
+        question_date: today,
+        question_text: question,
+        user_id: userId || null,
+        guest_id: guestId || null,
+        user_input: userInput,
+        hint_used: hintUsed ?? false,
+        elapsed_sec: elapsedSec ?? null,
+        score: score ?? null,
+        score_breakdown: scoreBreakdown ?? null,
+        ai_feedback: feedbackText,
+        locale: locale || 'ja',
+      }).then(({ error }) => {
+        if (error) console.warn('fermi_answers insert error:', error.message)
+      })
+    }
+    // ==========================================
+
     res.json({ feedback: feedbackText, score, scoreBreakdown })
   } catch (e: any) {
     console.error('fermi feedback error:', e)
