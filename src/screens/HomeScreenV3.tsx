@@ -127,6 +127,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
 
         {/* 今日の1問 (Daily Fermi) */}
         <div onClick={onNavigateToDailyFermi} style={{ background: 'linear-gradient(135deg, #1A3A39 0%, #234D4B 100%)', borderRadius: v3.radius.card, padding: '20px', cursor: 'pointer', position: 'relative', overflow: 'hidden', boxShadow: v3.shadow.hero, flexShrink: 0 }}>
+          <img src={`${IMG}/home-daily-fermi.webp`} alt="" loading="lazy" style={{ position: 'absolute', right: -10, top: -10, width: 140, height: 140, objectFit: 'cover', opacity: 0.18, pointerEvents: 'none', borderRadius: 16 }} />
           <div style={{ position: 'absolute', right: -30, top: -30, width: 140, height: 140, borderRadius: '50%', background: v3.color.accentGlow, filter: 'blur(36px)', pointerEvents: 'none' }}></div>
           <div style={{ position: 'relative', zIndex: 1 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
@@ -179,8 +180,8 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
         </div>
 
         {/* AI practice cards (large, vertical) */}
-        <AILargeCard image={`${IMG}/ai-bot.webp`} name="AI問題生成" sub="テーマ別のオリジナル問題で練習" onClick={onOpenAIGen} />
-        <AILargeCard image={`${IMG}/ai-chat.webp`} name="ロールプレイ" sub="ビジネス・哲学のシナリオで対話練習" onClick={onOpenRoleplay} />
+        <AILargeCard image={`${IMG}/home-daily-question.webp`} name="AI問題生成" sub="テーマ別のオリジナル問題で練習" onClick={onOpenAIGen} />
+        <AILargeCard image={`${IMG}/home-roleplay.webp`} name="ロールプレイ" sub="ビジネス・哲学のシナリオで対話練習" onClick={onOpenRoleplay} />
 
         {/* 記録を見る CTA */}
         <div
