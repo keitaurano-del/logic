@@ -88,6 +88,7 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
     opacity: phase >= minPhase ? 1 : 0,
     transform: phase >= minPhase ? 'translateY(0px)' : 'translateY(18px)',
     transition: 'opacity 0.45s ease, transform 0.45s ease',
+    pointerEvents: phase >= minPhase ? 'auto' : 'none' as React.CSSProperties['pointerEvents'],
   })
 
   return (
@@ -234,6 +235,8 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
               border: 'none', cursor: 'pointer',
               letterSpacing: '.02em',
               boxShadow: `0 4px 24px ${v3.color.accent}45`,
+              WebkitTapHighlightColor: 'transparent',
+              touchAction: 'manipulation',
             }}
           >
             次のレッスンへ進む →
@@ -247,6 +250,8 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
               color: v3.color.text2,
               padding: '14px 0', borderRadius: 99,
               fontSize: 14, fontWeight: 600, cursor: 'pointer',
+              WebkitTapHighlightColor: 'transparent',
+              touchAction: 'manipulation',
             }}
           >
             ホームに戻る

@@ -72,6 +72,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
     if (index > 0) {
       setIndex(index - 1)
       setQuizAnswered(null)
+      setMultiSelected([])  // 戻り時もmultiSelectedをリセット
     }
   }
 
@@ -91,8 +92,9 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
     touchRef.current = null
     // 水平スワイプ識別: 50px以上、垂直より水平が長い、500ms以内
     if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5 && dt < 500) {
-      // クイズ未回答時はスワイプでの前進も禁止（左刺しは允可）
-      if (dx < 0 && isQuiz && !quizAnswered) return
+      if (reportOpen) return  // モーダル表示中はスワイプ無効
+      // クイズスライドは正解後のみ前進可（不正解時・未回答時は前進禁止）
+      if (dx < 0 && isQuiz && !quizAnswered?.correct) return
       if (dx < 0) goNext()
       else goPrev()
     }
@@ -164,11 +166,17 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
         />
       </div>
 
-      {/* タップゾーン: クイズスライド以外のみ有効 (onClickでガード適用) */}
+      {/* タップゾーン: クイズ以外・左右端20%のみ（コンテンツエリアに干渉しない） */}
       {!isQuiz && (
-        <div style={{ position: 'absolute', inset: 0, display: 'flex', zIndex: 5 }}>
-          <div onClick={() => { if (!isGuarded()) goPrev() }} style={{ flex: 1, cursor: 'pointer' }}></div>
-          <div onClick={() => { if (!isGuarded()) goNext() }} style={{ flex: 1, cursor: 'pointer' }}></div>
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', zIndex: 5, pointerEvents: 'none' }}>
+          <div
+            onClick={() => { if (!isGuarded()) goPrev() }}
+            style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: '22%', cursor: 'pointer', pointerEvents: 'auto' }}
+          />
+          <div
+            onClick={() => { if (!isGuarded()) goNext() }}
+            style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: '22%', cursor: 'pointer', pointerEvents: 'auto' }}
+          />
         </div>
       )}
 
@@ -183,11 +191,11 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
         </button>
       )}
 
-      {/* Tap hint (非クイズのみ) */}
+      {/* Tap hint (非クイズのみ) — 左右端ゾーンに対応した位置 */}
       {!isQuiz && (
-        <div style={{ position: 'absolute', bottom: 28, left: '50%', transform: 'translateX(-50%)', display: 'flex', alignItems: 'center', gap: 10, zIndex: 6, pointerEvents: 'none' }}>
-          <span style={{ fontSize: 11, color: v3.color.text3, opacity: 0.6 }}>◀ 戻る</span>
-          <span style={{ fontSize: 11, color: v3.color.text3, opacity: 0.6 }}>進む ▶</span>
+        <div style={{ position: 'absolute', bottom: 28, left: 0, right: 0, display: 'flex', justifyContent: 'space-between', zIndex: 6, pointerEvents: 'none', padding: '0 8px' }}>
+          <span style={{ fontSize: 11, color: v3.color.text3, opacity: 0.5, width: '22%', textAlign: 'center' }}>◀</span>
+          <span style={{ fontSize: 11, color: v3.color.text3, opacity: 0.5, width: '22%', textAlign: 'center' }}>▶</span>
         </div>
       )}
 
@@ -342,7 +350,7 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
               const border: string = !answered ? (isPicked ? `2px solid ${v3.color.accent}` : '2px solid transparent') : 'none'
               return (
                 <div key={i} onClick={() => !answered && onToggleMulti(i)}
-                  style={{ background: bg, color, borderRadius: 14, padding: '14px 18px', fontSize: 15, fontWeight: 600, cursor: answered ? 'default' : 'pointer', transition: v3.motion.tap, border, display: 'flex', alignItems: 'center', gap: 10 }}
+                  style={{ background: bg, color, borderRadius: 14, padding: '14px 18px', fontSize: 15, fontWeight: 600, cursor: answered ? 'default' : 'pointer', transition: v3.motion.tap, border, display: 'flex', alignItems: 'center', gap: 10, WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation' }}
                 >
                   <div style={{ width: 20, height: 20, borderRadius: 6, border: `2px solid ${answered ? 'transparent' : isPicked ? v3.color.accent : v3.color.text3}`, background: isPicked && !answered ? v3.color.accent : answered && wasSelected && isCorrect ? v3.color.bg + '30' : 'transparent', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {(isPicked && !answered) || (answered && wasSelected) ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={answered && wasSelected && isCorrect ? v3.color.bg : v3.color.accent} strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg> : null}
@@ -358,7 +366,7 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
             const color: string = !answered ? v3.color.text : isSelected && isCorrect ? v3.color.bg : v3.color.text
             return (
               <div key={i} onClick={() => !answered && onSelectQuiz(i)}
-                style={{ background: bg, color, borderRadius: 14, padding: '14px 18px', fontSize: 15, fontWeight: 600, cursor: answered ? 'default' : 'pointer', transition: v3.motion.tap }}
+                style={{ background: bg, color, borderRadius: 14, padding: '14px 18px', fontSize: 15, fontWeight: 600, cursor: answered ? 'default' : 'pointer', transition: v3.motion.tap, WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation' }}
               >{c}</div>
             )
           })}
