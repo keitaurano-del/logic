@@ -67,114 +67,6 @@ function renderFeedbackMarkdown(text: string) {
   return elements
 }
 
-/** マイクボタン — 録音→停止→AI整形方式 */
-function MicButton({ onTranscript, locale, context, disabled }: {
-  onTranscript: (text: string) => void
-  locale: string
-  context?: string
-  disabled?: boolean
-}) {
-  const [phase, setPhase] = useState<'idle' | 'recording' | 'formatting'>('idle')
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const recogRef = useRef<any>(null)
-  const rawChunksRef = useRef<string[]>([])
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const SR: any = typeof window !== 'undefined' && ((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition)
-  if (!SR) return null
-
-  const startRecording = () => {
-    rawChunksRef.current = []
-    const recog = new SR()
-    recog.lang = locale === 'en' ? 'en-US' : 'ja-JP'
-    recog.continuous = true
-    recog.interimResults = false
-    recog.onresult = (e: any) => {
-      for (let i = e.resultIndex; i < e.results.length; i++) {
-        if (e.results[i].isFinal) {
-          rawChunksRef.current.push(e.results[i][0].transcript)
-        }
-      }
-    }
-    recog.onerror = () => { setPhase('idle') }
-    recog.onend = () => {
-      // 録音終了 → AI整形
-      const raw = rawChunksRef.current.join(' ').trim()
-      if (!raw) { setPhase('idle'); return }
-      setPhase('formatting')
-      fetch(`${API_BASE}/api/fermi/transcribe-format`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ rawText: raw, context, locale }),
-      })
-        .then(r => r.json())
-        .then(data => { onTranscript(data.formatted || raw) })
-        .catch(() => { onTranscript(raw) })
-        .finally(() => setPhase('idle'))
-    }
-    recog.start()
-    recogRef.current = recog
-    setPhase('recording')
-  }
-
-  const stopRecording = () => {
-    recogRef.current?.stop()
-    // onend が発火して整形フローへ
-  }
-
-  const toggle = () => {
-    if (phase === 'recording') { stopRecording(); return }
-    if (phase === 'idle') { startRecording() }
-  }
-
-  const isRecording = phase === 'recording'
-  const isFormatting = phase === 'formatting'
-
-  return (
-    <button
-      onClick={toggle}
-      disabled={disabled || isFormatting}
-      title={isRecording ? '停止して整形' : isFormatting ? 'AI整形中...' : '音声入力'}
-      style={{
-        position: 'absolute',
-        bottom: 10,
-        right: 10,
-        width: 36,
-        height: 36,
-        borderRadius: '50%',
-        border: isRecording ? '2px solid var(--danger)' : '1.5px solid var(--border)',
-        background: isRecording ? 'rgba(220,38,38,0.1)' : isFormatting ? 'var(--bg-secondary)' : 'var(--bg-card)',
-        color: isRecording ? 'var(--danger)' : isFormatting ? 'var(--brand)' : 'var(--text-muted)',
-        cursor: isFormatting ? 'not-allowed' : 'pointer',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        transition: 'all 0.15s',
-        flexShrink: 0,
-      }}
-    >
-      {isRecording ? (
-        // 録音中: 赤点滅
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style={{ animation: 'pulse 0.8s ease-in-out infinite' }}>
-          <circle cx="12" cy="12" r="8" />
-        </svg>
-      ) : isFormatting ? (
-        // 整形中: スピナー
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" style={{ animation: 'spin 0.8s linear infinite' }}>
-          <circle cx="12" cy="12" r="9" strokeDasharray="20 40" />
-        </svg>
-      ) : (
-        // マイクアイコン
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-          <rect x="9" y="2" width="6" height="12" rx="3" />
-          <path d="M5 10a7 7 0 0 0 14 0" />
-          <line x1="12" y1="19" x2="12" y2="22" />
-          <line x1="8" y1="22" x2="16" y2="22" />
-        </svg>
-      )}
-    </button>
-  )
-}
 
 interface ChatMessage {
   role: 'user' | 'assistant'
@@ -308,11 +200,11 @@ function FermiChatModal({ question, locale, onClose }: {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send() } }}
-              placeholder="質問を入力してください。マイクボタンから音声で入力することもできます。"
+              placeholder="質問を入力してください。"
               rows={2}
               style={{
                 width: '100%',
-                padding: '10px 44px 10px 12px',
+                padding: '10px 12px',
                 borderRadius: 12,
                 border: '1.5px solid var(--border)',
                 background: 'var(--bg-secondary)',
@@ -324,12 +216,6 @@ function FermiChatModal({ question, locale, onClose }: {
                 fontFamily: 'inherit',
                 boxSizing: 'border-box',
               }}
-            />
-            <MicButton
-              onTranscript={(text) => setInput(prev => (prev ? prev + '\n' : '') + text)}
-              locale={locale}
-              context={question}
-              disabled={loading}
             />
           </div>
           <button
@@ -574,16 +460,14 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
                 数字に追われなくていい。「対象・場所・頻度」の順に考えてみると分解しやすい。
               </div>
 
-              {/* textareaとマイクボタン */}
-              <div style={{ position: 'relative' }}>
-                <textarea
+              <textarea
                   value={answer}
                   onChange={(e) => setAnswer(e.target.value)}
                   placeholder={t('fermi.placeholder')}
                   style={{
                     width: '100%',
                     minHeight: 160,
-                    padding: '12px 50px 12px 14px',
+                    padding: '12px 14px',
                     borderRadius: 'var(--radius-md)',
                     border: '1.5px solid var(--border)',
                     background: 'var(--bg-card)',
@@ -596,12 +480,6 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
                     boxSizing: 'border-box',
                   }}
                 />
-                <MicButton
-                  onTranscript={(text) => setAnswer(prev => (prev ? prev + '\n' : '') + text)}
-                  locale={locale}
-                  context={question}
-                />
-              </div>
 
               {submitError && (
                 <div style={{ fontSize: 15, color: 'var(--danger)' }}>{submitError}</div>

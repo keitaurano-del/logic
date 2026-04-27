@@ -1100,13 +1100,6 @@ Output format (use these exact headings):
   }
 })
 
-// =============================================
-// フェルミ推定 — 音声テキスト整形
-// =============================================
-app.post('/api/fermi/transcribe-format', fermiLimiter, async (req, res) => {
-  try {
-    const { rawText, context, locale } = req.body || {}
-    if (!rawText) return res.status(400).json({ error: 'rawText required' })
     const isEn = locale === 'en'
 
     const systemPrompt = isEn
