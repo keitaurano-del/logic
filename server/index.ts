@@ -8,6 +8,8 @@ import Stripe from 'stripe'
 import rateLimit from 'express-rate-limit'
 import { createClient } from '@supabase/supabase-js'
 import nodemailer from 'nodemailer'
+import { google } from 'googleapis'
+import { GoogleAuth } from 'google-auth-library'
 
 // Supabase サーバーサイドクライアント（service role key 使用）
 const supabaseUrl = process.env.SUPABASE_URL || ''
@@ -1567,15 +1569,34 @@ app.post('/api/billing/verify', async (req, res) => {
       return res.status(400).json({ error: 'purchaseToken and productId are required' })
     }
 
-    // TODO(SCRUM-116): Verify purchase with Google Play Developer API
-    // Requires GOOGLE_PLAY_PRIVATE_KEY and GOOGLE_PLAY_PACKAGE_NAME env vars
-    // const auth = new GoogleAuth({ credentials: JSON.parse(process.env.GOOGLE_PLAY_PRIVATE_KEY || '{}') })
-    // const androidpublisher = google.androidpublisher({ version: 'v3', auth })
-    // const result = await androidpublisher.purchases.subscriptions.get({
-    //   packageName: process.env.GOOGLE_PLAY_PACKAGE_NAME,
-    //   subscriptionId: productId,
-    //   token: purchaseToken,
-    // })
+    // Google Play Developer API による実検証（SCRUM-116）
+    const gpPrivateKey = process.env.GOOGLE_PLAY_PRIVATE_KEY
+    const gpPackageName = process.env.GOOGLE_PLAY_PACKAGE_NAME
+    if (gpPrivateKey && gpPackageName) {
+      const auth = new GoogleAuth({
+        credentials: JSON.parse(gpPrivateKey) as Record<string, unknown>,
+        scopes: ['https://www.googleapis.com/auth/androidpublisher'],
+      })
+      const androidpublisher = google.androidpublisher({ version: 'v3', auth })
+      const result = await androidpublisher.purchases.subscriptions.get({
+        packageName: gpPackageName,
+        subscriptionId: productId,
+        token: purchaseToken,
+      })
+      const sub = result.data
+      const paymentState = sub.paymentState
+      const expiryTimeMillis = Number(sub.expiryTimeMillis ?? '0')
+      const validPayment = paymentState === 1 || paymentState === 2
+      const notExpired = expiryTimeMillis > Date.now()
+      if (!validPayment || !notExpired) {
+        return res.status(400).json({
+          error: 'Purchase verification failed',
+          details: `paymentState=${paymentState}, expiryTimeMillis=${expiryTimeMillis}`,
+        })
+      }
+    } else {
+      console.log('[BILLING] Google Play verification skipped: env vars not configured')
+    }
 
     // Determine plan from productId
     type PlanType = 'basic_monthly' | 'basic_yearly' | 'standard_monthly' | 'standard_yearly' | 'premium_monthly' | 'premium_yearly'
@@ -1615,9 +1636,10 @@ app.post('/api/billing/verify', async (req, res) => {
     }
 
     res.json({ success: true, plan, currentPeriodEnd })
-  } catch (e: any) {
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : 'Internal server error'
     console.error('billing/verify error:', e)
-    res.status(500).json({ error: e.message })
+    res.status(500).json({ error: message })
   }
 })
 
