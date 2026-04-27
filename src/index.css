@@ -721,13 +721,11 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--bg-card) !important;
 }
 
-/* RGB dark text → white */
-[style*="color: rgb(15, 21, 35)"],
-[style*="color:rgb(15, 21, 35)"],
-[style*="color: rgb(15, 20, 36)"],
-[style*="color:rgb(15, 20, 36)"] {
-  color: var(--text-primary) !important;
-}
+/* RGB dark text → white
+ * 2026-04-27 REMOVED: This rule masked legitimate dark text on light cards
+ * (e.g. onboarding plan cards with cream background). Re-add only with a
+ * more specific scope (className-based) if a legacy screen requires it.
+ */
 
 /* React-rendered linear-gradient (with rgb commas) */
 [style*="linear-gradient(160deg, rgb(59, 91, 219)"],

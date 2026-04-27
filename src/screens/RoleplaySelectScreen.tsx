@@ -203,17 +203,17 @@ export function RoleplaySelectScreen({ onBack, onStart, onUpgrade }: RoleplaySel
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', padding: '0 0 40px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', padding: '16px 16px 40px', background: 'var(--bg-primary)', minHeight: '100vh', color: 'var(--text-primary)' }}>
       {/* ヘッダー */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 0 16px' }}>
         <IconButton aria-label="Back" onClick={onBack}>
           <ArrowLeftIcon />
         </IconButton>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 18, fontWeight: 800, color: '#0F1523', letterSpacing: '-.02em' }}>
+          <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-.02em' }}>
             ロールプレイ
           </div>
-          <div style={{ fontSize: 13, color: '#7A849E', marginTop: 1 }}>
+          <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 1 }}>
             実践的な思考力を鍛える
           </div>
         </div>
