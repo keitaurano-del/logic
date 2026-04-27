@@ -972,13 +972,25 @@ app.get('/auth/callback', (_req, res) => {
 // =============================================
 app.post('/api/fermi/feedback', fermiLimiter, async (req, res) => {
   try {
-    const { question, userInput, locale } = req.body || {}
+    const { question, userInput, locale, hintUsed, elapsedSec } = req.body || {}
     if (!question || !userInput) {
       return res.status(400).json({ error: 'question and userInput required' })
     }
     const isEn = locale === 'en'
+    const elapsedMin = Math.round((elapsedSec || 0) / 60)
 
-    const systemPromptJa = `あなたはロジカルシンキングのコーチです。フェルミ推定を学ぶユーザーの分解プロセスにフィードバックを返し、最後に**実際の概算解と計算ロジックを提示**します。
+    const hintPenalty = hintUsed ? 10 : 0
+    const timePenalty = elapsedMin >= 5 ? 10 : elapsedMin >= 3 ? 5 : 0
+
+    const systemPromptJa = `あなたはロジカルシンキングのコーチです。フェルミ推定を学ぶユーザーの分解プロセスにフィードバックを返し、スコアを算出し、最後に**実際の概算解と計算ロジックを提示**します。
+
+採点基準 (合計100点):
+- 論理的分解の構造 (50点): 要素の網羅性・MECEさ・数値の妥当性
+- 思考の独自性 (30点): 新鮮な切り口・意外な視点
+- 回答の明確さ (20点): 結論が明確か・計算が追いやすいか
+- ヒント使用ペナルティ: ${hintPenalty}点減点
+- 解答時間ペナルティ: ${timePenalty}点減点 (解答時間 ${elapsedMin}分)
+- 最終スコア = 論理+独自性+明確さ - ペナルティ合計 (0〜100に収める)
 
 ルール:
 - 励まし (「いいですね」「素晴らしい」) で必ず始める
@@ -1012,7 +1024,13 @@ app.post('/api/fermi/feedback', fermiLimiter, async (req, res) => {
 
 **実際の値 (参考)**: 約 ◯◯◯ (出典が分かれば併記、不明なら省略可)
 
-**ひとこと**: (前提を変えるとどうなるか、精度をどう上げられるか、1〜2 文)`
+**ひとこと**: (前提を変えるとどうなるか、精度をどう上げられるか、1〜2 文)
+
+---
+最後に必ず以下のJSONを **本文末に** 追加してください（マークダウンコードブロック不要、そのまま出力）:
+SCORE_JSON:{"score":<0-100の整数>,"breakdown":"論理性 <x>/50 · 独自性 <y>/30 · 明確さ <z>/20"}
+\``
+
 
     const systemPromptEn = `You are a logical-thinking coach. Provide feedback on a user's Fermi estimation, AND finish by **showing the actual estimated answer with the full calculation logic**.
 
@@ -1060,8 +1078,22 @@ Output format (use these exact headings):
       system: isEn ? systemPromptEn : systemPromptJa,
       messages: [{ role: 'user', content: userMessage }],
     })
-    const text = response.content[0].type === 'text' ? response.content[0].text : ''
-    res.json({ feedback: text })
+    const rawText = response.content[0].type === 'text' ? response.content[0].text : ''
+
+    // SCORE_JSON パース
+    let score: number | undefined
+    let scoreBreakdown: string | undefined
+    let feedbackText = rawText
+    const scoreMatch = rawText.match(/SCORE_JSON:\s*({[^}]+})/)
+    if (scoreMatch) {
+      try {
+        const parsed = JSON.parse(scoreMatch[1])
+        score = Math.min(100, Math.max(0, Math.round(parsed.score || 0)))
+        scoreBreakdown = parsed.breakdown
+      } catch { /* ignore */ }
+      feedbackText = rawText.replace(/SCORE_JSON:[^\n]*/g, '').trimEnd()
+    }
+    res.json({ feedback: feedbackText, score, scoreBreakdown })
   } catch (e: any) {
     console.error('fermi feedback error:', e)
     res.status(500).json({ error: e.message || 'failed' })

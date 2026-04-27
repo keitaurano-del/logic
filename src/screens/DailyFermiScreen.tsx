@@ -74,6 +74,8 @@ interface DailyFermiScreenProps {
 
 interface FermiFeedback {
   feedback: string
+  score?: number        // 0-100
+  scoreBreakdown?: string  // eg. '論理性 40/50・速さ 30/30・ヒント未使用 +10'
 }
 
 export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
@@ -89,6 +91,21 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
   const [feedback, setFeedback] = useState<FermiFeedback | null>(null)
   const [submitError, setSubmitError] = useState('')
   const [showHint, setShowHint] = useState(false)
+  const [hintUsed, setHintUsed] = useState(false)
+
+  // タイマー
+  const [elapsedSec, setElapsedSec] = useState(0)
+  const [timerRunning, setTimerRunning] = useState(false)
+  const timerRef = React.useRef<ReturnType<typeof setInterval> | null>(null)
+
+  useEffect(() => {
+    if (timerRunning) {
+      timerRef.current = setInterval(() => setElapsedSec(s => s + 1), 1000)
+    } else {
+      if (timerRef.current) clearInterval(timerRef.current)
+    }
+    return () => { if (timerRef.current) clearInterval(timerRef.current) }
+  }, [timerRunning])
 
   useEffect(() => {
     setLoadingQuestion(true)
@@ -99,6 +116,8 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
         if (data.error) throw new Error(data.error)
         setQuestion(data.question || '')
         setHint(data.hint || '')
+        setElapsedSec(0)
+        setTimerRunning(true)
       })
       .catch((e: Error) => setQuestionError(e.message || t('common.error')))
       .finally(() => setLoadingQuestion(false))
@@ -106,6 +125,7 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
 
   const handleSubmit = async () => {
     if (!answer.trim()) return
+    setTimerRunning(false)
     setSubmitting(true)
     setSubmitError('')
     setFeedback(null)
@@ -113,7 +133,7 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
       const res = await fetch(`${API_BASE}/api/fermi/feedback`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question, userInput: answer, locale }),
+        body: JSON.stringify({ question, userInput: answer, locale, hintUsed, elapsedSec }),
       })
       const data = await res.json()
       if (!res.ok || data.error) throw new Error(data.error || t('common.error'))
@@ -167,11 +187,20 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
               pointerEvents: 'none',
             }} />
             <div style={{ position: 'relative' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12 }}>
-                <BarChartIcon width={14} height={14} style={{ color: 'var(--brand)' }} />
-                <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--brand)' }}>
-                  {t('fermi.questionTag')}
-                </span>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <BarChartIcon width={14} height={14} style={{ color: 'var(--brand)' }} />
+                  <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--brand)' }}>
+                    {t('fermi.questionTag')}
+                  </span>
+                </div>
+                {/* タイマー */}
+                {!feedback && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 14, fontWeight: 700, color: elapsedSec >= 120 ? 'var(--danger)' : 'var(--text-muted)', fontFamily: "'Inter Tight', monospace" }}>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    {String(Math.floor(elapsedSec / 60)).padStart(2,'0')}:{String(elapsedSec % 60).padStart(2,'0')}
+                  </div>
+                )}
               </div>
               <p style={{ fontSize: 20, fontWeight: 600, lineHeight: 1.55, letterSpacing: '-0.01em' }}>
                 {question}
@@ -184,7 +213,7 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
             <div>
               {!showHint ? (
                 <button
-                  onClick={() => setShowHint(true)}
+                  onClick={() => { setShowHint(true); setHintUsed(true) }}
                   style={{
                     display: 'flex', alignItems: 'center', gap: 6,
                     background: 'none', border: 'none', cursor: 'pointer',
@@ -196,13 +225,16 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
                 </button>
               ) : (
                 <div className="card" style={{ background: 'var(--brand-soft)', borderColor: 'var(--brand)', fontSize: 16, lineHeight: 1.6 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
-                    <LightbulbIcon width={14} height={14} style={{ color: 'var(--brand)' }} />
-                    <span style={{ fontWeight: 700, color: 'var(--brand)', fontSize: 14, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                      HINT
-                    </span>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <LightbulbIcon width={14} height={14} style={{ color: 'var(--brand)' }} />
+                      <span style={{ fontWeight: 700, color: 'var(--brand)', fontSize: 14, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                        HINT
+                      </span>
+                    </div>
+                    <span style={{ fontSize: 11, color: 'var(--danger)', fontWeight: 600, background: 'rgba(220,38,38,0.08)', padding: '2px 8px', borderRadius: 99 }}>− 10点</span>
                   </div>
-                  <p style={{ color: 'var(--text-secondary)', margin: 0 }}>{hint}</p>
+                  <p style={{ color: 'var(--text-primary)', margin: '0 0 12px', fontWeight: 500 }}>{hint}</p>
                   {/* 基礎統計データ */}
                   <div style={{ marginTop: 12, paddingTop: 10, borderTop: '1px solid var(--border)' }}>
                     <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 8, textTransform: 'uppercase' }}>参考データ</div>
@@ -273,6 +305,31 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
           {/* AI フィードバック表示 */}
           {feedback && (
             <div className="stack-sm">
+              {/* スコアバッジ */}
+              {feedback.score != null && (
+                <div style={{
+                  animation: 'scale-in 0.3s ease-out both',
+                  background: 'linear-gradient(135deg, #1E2D6B 0%, #3B5BDB 100%)',
+                  borderRadius: 20, padding: '24px 20px', textAlign: 'center',
+                  boxShadow: '0 4px 24px rgba(59,91,219,0.35)',
+                }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.65)', marginBottom: 8 }}>あなたのスコア</div>
+                  <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 72, fontWeight: 900, color: '#fff', lineHeight: 1, letterSpacing: '-0.04em', marginBottom: 4 }}>
+                    {feedback.score}
+                  </div>
+                  <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.65)', marginBottom: feedback.scoreBreakdown ? 14 : 0 }}>/ 100点満点</div>
+                  {feedback.scoreBreakdown && (
+                    <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.8)', background: 'rgba(255,255,255,0.1)', borderRadius: 10, padding: '8px 14px', marginTop: 4 }}>
+                      {feedback.scoreBreakdown}
+                    </div>
+                  )}
+                  <div style={{ display: 'flex', justifyContent: 'center', gap: 16, marginTop: 14, fontSize: 12, color: 'rgba(255,255,255,0.55)' }}>
+                    <span>⏱ {String(Math.floor(elapsedSec / 60)).padStart(2,'0')}:{String(elapsedSec % 60).padStart(2,'0')}</span>
+                    {hintUsed && <span>💡 ヒント使用 (-10点)</span>}
+                  </div>
+                </div>
+              )}
+
               <div className="feedback-card" style={{ animation: 'scale-in 0.2s ease-out both' }}>
                 <div className="feedback-head">
                   <div className="feedback-check">
