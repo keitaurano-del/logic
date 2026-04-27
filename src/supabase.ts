@@ -94,6 +94,19 @@ export async function signupWithEmail(email: string, password: string): Promise<
   }
 }
 
+export async function resetPasswordForEmail(email: string): Promise<{ error?: string }> {
+  if (!supabase) return { error: 'Supabase が設定されていません' }
+  try {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    })
+    if (error) return { error: error.message }
+    return {}
+  } catch {
+    return { error: 'auth/generic' }
+  }
+}
+
 export async function logout() {
   if (supabase) await supabase.auth.signOut()
 }

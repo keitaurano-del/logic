@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { t } from '../i18n'
-import { loginWithGoogle, isSupabaseConfigured, type User } from '../supabase'
+import { loginWithGoogle, loginWithEmail, signupWithEmail, resetPasswordForEmail, isSupabaseConfigured, type User } from '../supabase'
+import { v3 } from '../styles/tokensV3'
 
 interface LoginScreenProps {
   onLoginSuccess: (user: User) => void
+  initialTab?: 'google' | 'email'
 }
 
 function GoogleIcon() {
@@ -17,18 +19,103 @@ function GoogleIcon() {
   )
 }
 
-export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
+type Tab = 'google' | 'email'
+type EmailMode = 'login' | 'signup' | 'reset'
+
+export function LoginScreen({ onLoginSuccess, initialTab = 'google' }: LoginScreenProps) {
+  const [tab, setTab] = useState<Tab>(initialTab)
+  const [emailMode, setEmailMode] = useState<EmailMode>('login')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [successMsg, setSuccessMsg] = useState('')
   const ready = isSupabaseConfigured()
 
+  const inputStyle: React.CSSProperties = {
+    width: '100%',
+    padding: '14px 16px',
+    border: `1.5px solid ${v3.color.line}`,
+    borderRadius: 12,
+    background: v3.color.bg,
+    color: v3.color.text,
+    fontSize: 16,
+    fontFamily: 'inherit',
+    outline: 'none',
+    boxSizing: 'border-box',
+  }
+
+  const btnPrimary: React.CSSProperties = {
+    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+    width: '100%', padding: '14px 20px',
+    border: 'none',
+    borderRadius: 14,
+    background: loading ? v3.color.line : v3.color.accent,
+    cursor: (loading || !ready) ? 'not-allowed' : 'pointer',
+    fontSize: 16, fontWeight: 700, color: '#fff',
+    opacity: (loading || !ready) ? 0.6 : 1,
+    transition: 'all 150ms',
+  }
+
+  const btnSecondary: React.CSSProperties = {
+    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12,
+    width: '100%', padding: '14px 20px',
+    border: `1.5px solid ${v3.color.line}`,
+    borderRadius: 14,
+    background: v3.color.card,
+    cursor: (loading || !ready) ? 'not-allowed' : 'pointer',
+    fontSize: 16, fontWeight: 700, color: v3.color.text,
+    opacity: (loading || !ready) ? 0.6 : 1,
+    transition: 'all 150ms',
+  }
+
   async function handleGoogle() {
-    setError('')
-    setLoading(true)
+    setError(''); setSuccessMsg(''); setLoading(true)
     const result = await loginWithGoogle()
     setLoading(false)
     if (result.user) { onLoginSuccess(result.user); return }
     if (result.error) setError(t('auth.genericError'))
+  }
+
+  async function handleEmailLogin() {
+    if (!email || !password) { setError('メールアドレスとパスワードを入力してください'); return }
+    setError(''); setSuccessMsg(''); setLoading(true)
+    const result = await loginWithEmail(email, password)
+    setLoading(false)
+    if (result.user) { onLoginSuccess(result.user); return }
+    if (result.error === 'auth/wrong-password' || result.error === 'auth/user-not-found') {
+      setError('メールアドレスまたはパスワードが正しくありません')
+    } else {
+      setError(t('auth.genericError'))
+    }
+  }
+
+  async function handleEmailSignup() {
+    if (!email || !password) { setError('メールアドレスとパスワードを入力してください'); return }
+    if (password.length < 6) { setError('パスワードは6文字以上にしてください'); return }
+    setError(''); setSuccessMsg(''); setLoading(true)
+    const result = await signupWithEmail(email, password)
+    setLoading(false)
+    if (result.user) { onLoginSuccess(result.user); return }
+    if (result.error === 'auth/email-already-in-use') {
+      setError('このメールアドレスは既に登録されています')
+    } else if (result.error === 'auth/weak-password') {
+      setError('パスワードが弱すぎます。6文字以上にしてください')
+    } else {
+      setError(t('auth.genericError'))
+    }
+  }
+
+  async function handlePasswordReset() {
+    if (!email) { setError('メールアドレスを入力してください'); return }
+    setError(''); setSuccessMsg(''); setLoading(true)
+    const result = await resetPasswordForEmail(email)
+    setLoading(false)
+    if (result.error) {
+      setError('リセットメールの送信に失敗しました')
+    } else {
+      setSuccessMsg('パスワードリセット用のリンクをメールで送りました')
+    }
   }
 
   return (
@@ -39,85 +126,152 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
       alignItems: 'center',
       justifyContent: 'center',
       padding: '32px 24px',
-      background: 'var(--bg)',
+      background: v3.color.bg,
     }}>
-      {/* Logo area */}
-      <div style={{ textAlign: 'center', marginBottom: 48 }}>
+      {/* Logo */}
+      <div style={{ textAlign: 'center', marginBottom: 40 }}>
         <div style={{
           width: 72, height: 72,
-          background: 'var(--primary)',
+          background: v3.color.accent,
           borderRadius: 20,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           margin: '0 auto 16px',
-          fontSize: 40,
-          boxShadow: 'var(--shadow-md)',
+          boxShadow: `0 0 32px ${v3.color.accentGlow}`,
         }}>
           <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-            <circle cx="20" cy="20" r="20" fill="var(--primary)"/>
             <path d="M12 20h16M20 12l8 8-8 8" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </div>
-        <h1 style={{ fontSize: 32, fontWeight: 800, color: 'var(--text)', margin: 0 }}>Logic</h1>
-        <p style={{ fontSize: 18, color: 'var(--text-muted)', marginTop: 8 }}>
-          {t('auth.tagline')}
-        </p>
+        <h1 style={{ fontSize: 32, fontWeight: 800, color: v3.color.text, margin: 0, fontFamily: "'Inter Tight', sans-serif" }}>Logic</h1>
+        <p style={{ fontSize: 16, color: v3.color.text2, marginTop: 6 }}>{t('auth.tagline')}</p>
       </div>
 
-      {/* Login card */}
+      {/* Card */}
       <div style={{
         width: '100%',
         maxWidth: 360,
-        background: 'var(--bg-card)',
+        background: v3.color.card,
         borderRadius: 20,
         padding: '28px 24px',
-        boxShadow: 'var(--shadow-md)',
-        border: '1px solid var(--border)',
+        boxShadow: v3.shadow.card,
+        border: `1px solid ${v3.color.line}`,
       }}>
-        <h2 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text)', margin: '0 0 6px' }}>
-          {t('auth.welcomeTitle')}
-        </h2>
-        <p style={{ fontSize: 16, color: 'var(--text-muted)', margin: '0 0 24px' }}>
-          {t('auth.welcomeDesc')}
-        </p>
+        {/* Tab switcher */}
+        <div style={{ display: 'flex', background: v3.color.bg, borderRadius: 12, padding: 4, gap: 2, marginBottom: 24 }}>
+          {(['google', 'email'] as Tab[]).map(t2 => (
+            <div
+              key={t2}
+              onClick={() => { setTab(t2); setError(''); setSuccessMsg('') }}
+              style={{
+                flex: 1, padding: '9px 0', textAlign: 'center',
+                fontSize: 14, fontWeight: 700,
+                borderRadius: 9,
+                background: tab === t2 ? v3.color.card : 'transparent',
+                color: tab === t2 ? v3.color.text : v3.color.text2,
+                cursor: 'pointer',
+                transition: 'all 150ms',
+                boxShadow: tab === t2 ? v3.shadow.card : 'none',
+              }}
+            >
+              {t2 === 'google' ? 'Google' : 'メール'}
+            </div>
+          ))}
+        </div>
 
+        {/* Error / Success */}
         {error && (
-          <div style={{
-            fontSize: 16, color: 'var(--danger)',
-            padding: '10px 14px',
-            background: 'rgba(220,38,38,0.06)',
-            borderRadius: 10,
-            marginBottom: 16,
-          }}>
+          <div style={{ fontSize: 14, color: '#F04438', padding: '10px 14px', background: 'rgba(240,68,56,0.08)', borderRadius: 10, marginBottom: 16 }}>
             {error}
           </div>
         )}
+        {successMsg && (
+          <div style={{ fontSize: 14, color: '#12B76A', padding: '10px 14px', background: 'rgba(18,183,106,0.08)', borderRadius: 10, marginBottom: 16 }}>
+            {successMsg}
+          </div>
+        )}
 
-        <button
-          onClick={handleGoogle}
-          disabled={loading || !ready}
-          style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12,
-            width: '100%', padding: '14px 20px',
-            border: '1.5px solid var(--border)',
-            borderRadius: 14,
-            background: loading ? 'var(--bg-secondary)' : 'var(--bg-card)',
-            cursor: (loading || !ready) ? 'not-allowed' : 'pointer',
-            fontSize: 18, fontWeight: 700, color: 'var(--text)',
-            opacity: (loading || !ready) ? 0.6 : 1,
-            transition: 'all 150ms',
-          }}
-        >
-          {loading ? (
-            <span style={{ fontSize: 16, color: 'var(--text-muted)' }}>{t('auth.loggingIn')}</span>
-          ) : (
-            <>
-              <GoogleIcon />
-              {t('auth.googleBtn')}
-            </>
-          )}
-        </button>
+        {/* Google Tab */}
+        {tab === 'google' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <p style={{ fontSize: 14, color: v3.color.text2, margin: '0 0 8px', textAlign: 'center' }}>
+              Googleアカウントでかんたんログイン
+            </p>
+            <button onClick={handleGoogle} disabled={loading || !ready} style={btnSecondary}>
+              {loading ? (
+                <span style={{ fontSize: 14, color: v3.color.text2 }}>{t('auth.loggingIn')}</span>
+              ) : (
+                <><GoogleIcon />{t('auth.googleBtn')}</>
+              )}
+            </button>
+            {!ready && (
+              <p style={{ fontSize: 12, color: v3.color.text3, textAlign: 'center', margin: 0 }}>
+                ※ 現在 Supabase が未設定のため利用できません
+              </p>
+            )}
+          </div>
+        )}
 
-        <p style={{ fontSize: 14, color: 'var(--text-muted)', textAlign: 'center', marginTop: 16, lineHeight: 1.6 }}>
+        {/* Email Tab */}
+        {tab === 'email' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {/* Sub-tab: login / signup / reset */}
+            <div style={{ display: 'flex', gap: 8, marginBottom: 4 }}>
+              {(['login', 'signup', 'reset'] as EmailMode[]).map(m => (
+                <div
+                  key={m}
+                  onClick={() => { setEmailMode(m); setError(''); setSuccessMsg('') }}
+                  style={{
+                    flex: 1, padding: '7px 0', textAlign: 'center',
+                    fontSize: 12, fontWeight: 700,
+                    borderRadius: 8,
+                    background: emailMode === m ? v3.color.accentSoft : 'transparent',
+                    color: emailMode === m ? v3.color.accent : v3.color.text3,
+                    cursor: 'pointer',
+                    transition: 'all 150ms',
+                  }}
+                >
+                  {m === 'login' ? 'ログイン' : m === 'signup' ? '新規登録' : 'リセット'}
+                </div>
+              ))}
+            </div>
+
+            <input
+              type="email"
+              placeholder="メールアドレス"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              style={inputStyle}
+              autoComplete="email"
+            />
+            {emailMode !== 'reset' && (
+              <input
+                type="password"
+                placeholder={emailMode === 'signup' ? 'パスワード（6文字以上）' : 'パスワード'}
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                style={inputStyle}
+                autoComplete={emailMode === 'signup' ? 'new-password' : 'current-password'}
+                onKeyDown={e => { if (e.key === 'Enter') emailMode === 'login' ? handleEmailLogin() : handleEmailSignup() }}
+              />
+            )}
+
+            <button
+              onClick={emailMode === 'login' ? handleEmailLogin : emailMode === 'signup' ? handleEmailSignup : handlePasswordReset}
+              disabled={loading || !ready}
+              style={btnPrimary}
+            >
+              {loading ? t('auth.loggingIn') : emailMode === 'login' ? 'ログイン' : emailMode === 'signup' ? 'アカウント作成' : 'リセットメールを送る'}
+            </button>
+
+            {!ready && (
+              <p style={{ fontSize: 12, color: v3.color.text3, textAlign: 'center', margin: 0 }}>
+                ※ 現在 Supabase が未設定のため利用できません
+              </p>
+            )}
+          </div>
+        )}
+
+        <p style={{ fontSize: 12, color: v3.color.text3, textAlign: 'center', marginTop: 20, lineHeight: 1.6 }}>
           {t('auth.termsNote')}
         </p>
       </div>

@@ -5,7 +5,7 @@ import { logout } from '../supabase'
 interface Props {
   onBack: () => void
   currentUser: { email: string } | null
-  onOpenLogin: () => void
+  onOpenLogin: (tab?: 'google' | 'email') => void
   onLogout: () => void
 }
 
@@ -55,8 +55,8 @@ export function AccountSettingsScreen({ onBack, currentUser, onOpenLogin, onLogo
             </>
           ) : (
             <>
-              <Row label="Googleでログイン" onClick={onOpenLogin} />
-              <Row label="メールアドレスでログイン" onClick={onOpenLogin} />
+              <Row label="Googleでログイン" onClick={() => onOpenLogin('google')} />
+              <Row label="メールアドレスでログイン" onClick={() => onOpenLogin('email')} />
             </>
           )}
         </div>

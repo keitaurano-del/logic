@@ -79,7 +79,7 @@ type Screen =
   | { type: 'study-time' }
   | { type: 'language' }
   | { type: 'rank' }
-  | { type: 'login' }
+  | { type: 'login'; tab?: 'google' | 'email' }
   | { type: 'report-problem'; context: { lessonId?: number; lessonTitle?: string; question?: string } }
   | { type: 'onboarding' }
 
@@ -243,6 +243,7 @@ function AppV3() {
             else navigate({ type: 'roadmap', category: cat as any })
           }}
           onOpenRank={() => navigate({ type: 'rank' })}
+          onOpenStats={() => { setTab('stats'); navigate({ type: 'stats' }, true) }}
           onOpenRoleplay={() => navigate({ type: 'roleplay' })}
           onOpenAIGen={() => navigate({ type: 'ai-problem-gen' })}
           onOpenRoadmap={() => { setTab('lessons'); navigate({ type: 'lessons' }, true) }}
@@ -358,6 +359,7 @@ function AppV3() {
       )}
       {screen.type === 'login' && (
         <LoginScreen
+          initialTab={screen.tab}
           onLoginSuccess={(user) => { setCurrentUser(user); navigate({ type: 'settings' }) }}
         />
       )}
@@ -366,7 +368,7 @@ function AppV3() {
         <AccountSettingsScreen
           onBack={handleBack}
           currentUser={currentUser ? { email: currentUser.email ?? '' } : null}
-          onOpenLogin={() => navigate({ type: 'login' })}
+          onOpenLogin={(tab) => navigate({ type: 'login', tab })}
           onLogout={() => { setCurrentUser(null); navigate({ type: 'profile' }) }}
         />
       )}

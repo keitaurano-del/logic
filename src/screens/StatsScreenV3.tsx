@@ -2,12 +2,17 @@
  * StatsScreenV3 - Logic v3 redesign
  * 仕様: docs/DESIGN_V3.md §3.5
  */
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { getStudyDates, getStreak, getCompletedCount, getCompletedLessons, getXp } from '../stats'
 import { v3 } from '../styles/tokensV3'
 import { allLessons } from '../lessonData'
+import { hasCompletedPlacement, loadPlacementResult, rankLabel } from '../placementData'
+import { getGuestId } from '../guestId'
+import { API_BASE } from './apiBase'
 
 type Period = 'day' | 'week' | 'month'
+type RankEntry = { rank: number; nickname: string; deviation: number; isYou: boolean }
+type RankingData = { total: number; top: RankEntry[]; yourRank: number; yourDeviation: number }
 
 interface StatsScreenV3Props {
   onBack: () => void
@@ -20,6 +25,22 @@ export function StatsScreenV3(_props: StatsScreenV3Props) {
   const completed = getCompletedCount()
   const completedLessons = useMemo(() => getCompletedLessons(), [])
   const xp = getXp()
+
+  // 偏差値・ランキング
+  const placement = loadPlacementResult()
+  const deviation = placement?.deviation ?? null
+  const hasPlacement = hasCompletedPlacement() && (placement?.totalCount ?? 0) > 0
+  const [rankData, setRankData] = useState<RankingData | null>(null)
+  const [rankLoading, setRankLoading] = useState(true)
+
+  useEffect(() => {
+    let cancelled = false
+    fetch(`${API_BASE}/api/placement/ranking?guestId=${encodeURIComponent(getGuestId())}`)
+      .then(r => r.json())
+      .then(d => { if (!cancelled) { setRankData(d); setRankLoading(false) } })
+      .catch(() => { if (!cancelled) setRankLoading(false) })
+    return () => { cancelled = true }
+  }, [])
 
   // 月カレンダー
   const today = new Date()
@@ -93,6 +114,64 @@ export function StatsScreenV3(_props: StatsScreenV3Props) {
           <SummaryStat val={String(completed)} label="完了レッスン" />
           <SummaryStat val={String(streak)} label="連続学習日" />
           <SummaryStat val={xp.toLocaleString()} label="総XP" />
+        </div>
+
+        {/* 偏差値・ランキングカード */}
+        <div style={{ background: 'linear-gradient(140deg, #1E2D6B 0%, #3B5BDB 100%)', borderRadius: v3.radius.card, padding: 20, color: '#fff', boxShadow: v3.shadow.hero, flexShrink: 0 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.7)', marginBottom: 12 }}>偏差値・ランキング</div>
+          {!hasPlacement ? (
+            <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.7)', lineHeight: 1.6 }}>
+              プレースメントテストを受けると偏差値・ランキングが表示されます
+            </div>
+          ) : (
+            <>
+              {/* 偏差値大表示 */}
+              <div style={{ display: 'flex', alignItems: 'flex-end', gap: 16, marginBottom: 16 }}>
+                <div>
+                  <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 56, fontWeight: 900, lineHeight: 1, letterSpacing: '-0.04em' }}>
+                    {deviation != null ? Math.round(deviation) : '—'}
+                  </div>
+                  <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)', marginTop: 4 }}>偏差値</div>
+                </div>
+                {deviation != null && (
+                  <div style={{ marginBottom: 8 }}>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: '#fff', marginBottom: 2 }}>{rankLabel(deviation).label}</div>
+                    {!rankLoading && rankData && (
+                      <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)' }}>
+                        {rankData.total}人中 {rankData.yourRank}位　上位{rankData.total > 0 ? Math.round((rankData.yourRank / rankData.total) * 100) : '—'}%
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+              {/* 偏差値バー */}
+              {deviation != null && (
+                <>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6, fontSize: 11, color: 'rgba(255,255,255,0.5)' }}>
+                    <span>25</span><span>50</span><span>75</span>
+                  </div>
+                  <div style={{ height: 8, background: 'rgba(255,255,255,0.15)', borderRadius: 99, overflow: 'hidden' }}>
+                    <div style={{ height: '100%', width: `${Math.min(100, Math.max(0, ((deviation - 25) / 50) * 100))}%`, background: '#fff', borderRadius: 99 }}></div>
+                  </div>
+                </>
+              )}
+              {/* Top10ランキング */}
+              {!rankLoading && rankData && rankData.top && rankData.top.length > 0 && (
+                <div style={{ marginTop: 16 }}>
+                  <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', marginBottom: 8, fontWeight: 600 }}>ランキング TOP 5</div>
+                  {rankData.top.slice(0, 5).map((entry) => (
+                    <div key={entry.rank} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '7px 0', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+                      <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 13, fontWeight: 800, color: entry.rank <= 3 ? '#FFD700' : 'rgba(255,255,255,0.5)', minWidth: 24 }}>#{entry.rank}</div>
+                      <div style={{ flex: 1, fontSize: 13, fontWeight: entry.isYou ? 700 : 500, color: entry.isYou ? '#fff' : 'rgba(255,255,255,0.8)' }}>
+                        {entry.isYou ? '» ' : ''}{entry.nickname}
+                      </div>
+                      <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.9)' }}>{Math.round(entry.deviation)}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
         </div>
 
         {period === 'month' && (

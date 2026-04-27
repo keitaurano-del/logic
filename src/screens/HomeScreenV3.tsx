@@ -4,9 +4,9 @@
  * モックアップ: lv3-home.html
  */
 import { useMemo } from 'react'
-import { getXp, getStreak, getStudyDates } from '../stats'
+import { getStreak, getStudyDates } from '../stats'
 import { v3 } from '../styles/tokensV3'
-import { getCurrentLevel, getXpProgress } from './homeHelpers'
+
 
 interface HomeScreenV3Props {
   userName: string
@@ -16,20 +16,18 @@ interface HomeScreenV3Props {
   onOpenAIGen: () => void
   onOpenRoleplay: () => void
   onOpenRank: () => void
+  onOpenStats?: () => void
   onNavigateToDailyFermi?: () => void
 }
 
 const IMG = '/images/v3'
 
 export function HomeScreenV3(props: HomeScreenV3Props) {
-  const { userName, onOpenLesson, onOpenAIGen, onOpenRoleplay, onOpenRank, onNavigateToDailyFermi } = props
+  const { userName, onOpenLesson, onOpenAIGen, onOpenRoleplay, onOpenStats, onNavigateToDailyFermi } = props
 
   const streak = getStreak()
   // completed unused
-  const xp = getXp()
-  const lv = getCurrentLevel(xp)
-  const { pct: levelPct, current: levelXp, needed: nextThreshold } = getXpProgress(xp)
-  const xpToNext = Math.max(0, nextThreshold - levelXp)
+
 
   // 今週カレンダー
   const todayDow = (new Date().getDay() + 6) % 7
@@ -184,29 +182,24 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
         <AILargeCard image={`${IMG}/ai-bot.webp`} name="AI問題生成" sub="テーマ別のオリジナル問題で練習" onClick={onOpenAIGen} />
         <AILargeCard image={`${IMG}/ai-chat.webp`} name="ロールプレイ" sub="ビジネス・哲学のシナリオで対話練習" onClick={onOpenRoleplay} />
 
-        {/* XP */}
-        <div onClick={onOpenRank} style={{ background: v3.color.card, borderRadius: v3.radius.card, padding: 18, cursor: 'pointer', position: 'relative', overflow: 'hidden', boxShadow: v3.shadow.card }}>
-          <div style={{ position: 'absolute', right: -40, top: -40, width: 140, height: 140, borderRadius: '50%', background: v3.color.accentGlow, filter: 'blur(36px)', pointerEvents: 'none' }}></div>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14, position: 'relative', zIndex: 1 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ width: 44, height: 44, borderRadius: 12, background: v3.color.accentSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: `0 0 16px ${v3.color.accentGlow}` }}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
-              </div>
-              <div>
-                <div style={{ fontSize: 11, color: v3.color.text2, fontWeight: 500, marginBottom: 3 }}>レベル</div>
-                <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 800, letterSpacing: '-.02em', lineHeight: 1 }}>Lv.{lv.level}</div>
-              </div>
+        {/* 記録を見る CTA */}
+        <div
+          onClick={onOpenStats}
+          style={{ background: v3.color.card, borderRadius: v3.radius.card, padding: '18px 20px', cursor: 'pointer', position: 'relative', overflow: 'hidden', boxShadow: v3.shadow.card, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+        >
+          <div style={{ position: 'absolute', right: -40, top: -40, width: 140, height: 140, borderRadius: '50%', background: v3.color.accentGlow, filter: 'blur(40px)', pointerEvents: 'none' }}></div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14, position: 'relative', zIndex: 1 }}>
+            <div style={{ width: 44, height: 44, borderRadius: 12, background: v3.color.accentSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+              </svg>
             </div>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2" strokeLinecap="round"><polyline points="9 18 15 12 9 6" /></svg>
+            <div>
+              <div style={{ fontSize: 11, color: v3.color.text2, fontWeight: 500, marginBottom: 3 }}>学習記録</div>
+              <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 17, fontWeight: 800, letterSpacing: '-.02em', lineHeight: 1.2, color: v3.color.text }}>偏差値・ランキングを見る</div>
+            </div>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 7, position: 'relative', zIndex: 1 }}>
-            <span style={{ fontSize: 12, color: v3.color.text2, fontWeight: 500 }}>経験値</span>
-            <span style={{ fontSize: 12, fontWeight: 600, fontFamily: "'Inter Tight', sans-serif" }}>{levelXp} / {nextThreshold} XP</span>
-          </div>
-          <div style={{ height: 5, background: 'rgba(255,255,255,.06)', borderRadius: 99, overflow: 'hidden', position: 'relative', zIndex: 1 }}>
-            <div style={{ height: '100%', width: `${levelPct}%`, background: v3.color.accent, borderRadius: 99, boxShadow: `0 0 8px ${v3.color.accentGlow}` }}></div>
-          </div>
-          <div style={{ fontSize: 11, color: v3.color.text3, marginTop: 7, position: 'relative', zIndex: 1 }}>次のレベルまで {xpToNext} XP</div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2" strokeLinecap="round" style={{ flexShrink: 0, position: 'relative', zIndex: 1 }}><polyline points="9 18 15 12 9 6" /></svg>
         </div>
       </div>
     </div>
