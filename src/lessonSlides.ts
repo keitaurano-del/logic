@@ -4,7 +4,7 @@
  */
 
 export type LessonSlide =
-  | { kind: 'hero'; image: string; category: string; title: string; meta: string }
+  | { kind: 'hero'; image: string; lessonId?: number; category: string; title: string; meta: string }
   | { kind: 'intro'; tag: string; title: string; body: string }
   | { kind: 'concept'; tag?: string; title: string; body: string; example?: string }
   | { kind: 'diagram'; title: string; nodes: { label: string; kind: 'premise' | 'conclusion' }[] }
@@ -166,6 +166,7 @@ export function convertLessonToSlides(lesson: any): LessonSlide[] {
   slides.push({
     kind: 'hero',
     image: getHeroImage(lesson.category, lesson.id),
+    lessonId: lesson.id,
     category: lesson.category || '',
     title: lesson.title || '',
     meta: `${stepCount}ステップ · ${lesson.difficulty || '初級'}`,

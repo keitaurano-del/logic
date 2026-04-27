@@ -4,6 +4,7 @@
  * モックアップ: lv3-courses.html
  */
 import { v3 } from '../styles/tokensV3'
+import { LessonThumbnail } from '../components/LessonThumbnail'
 
 const IMG = '/images/v3'
 
@@ -219,44 +220,12 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
         {lessons.map((lesson: any) => {
           const isDone = completed.has(`lesson-${lesson.id}`)
           // カテゴリごとに画像をマッピング（既存 v3 画像を活用）
-          // ID別個別画像マッピング
-          const LESSON_IMG_MAP: Record<number, string> = {
-            20: '/images/v3/lesson-20.webp', 21: '/images/v3/lesson-21.webp',
-            22: '/images/v3/lesson-22.webp', 23: '/images/v3/lesson-23.webp',
-            24: '/images/v3/lesson-24.webp', 25: '/images/v3/lesson-25.webp',
-            26: '/images/v3/lesson-26.webp', 27: '/images/v3/lesson-27.webp',
-            28: '/images/v3/lesson-28.webp', 29: '/images/v3/lesson-29.webp',
-            35: '/images/v3/lesson-35.webp', 36: '/images/v3/lesson-36.webp',
-            40: '/images/v3/lesson-40.webp', 41: '/images/v3/lesson-41.webp',
-            42: '/images/v3/lesson-42.webp', 43: '/images/v3/lesson-43.webp',
-            50: '/images/v3/lesson-50.webp', 51: '/images/v3/lesson-51.webp',
-            52: '/images/v3/lesson-52.webp', 53: '/images/v3/lesson-53.webp',
-            54: '/images/v3/lesson-54.webp', 55: '/images/v3/lesson-55.webp',
-            56: '/images/v3/lesson-56.webp', 57: '/images/v3/lesson-57.webp',
-            58: '/images/v3/lesson-58.webp', 59: '/images/v3/lesson-59.webp',
-            60: '/images/v3/lesson-60.webp', 61: '/images/v3/lesson-61.webp',
-            62: '/images/v3/lesson-62.webp', 63: '/images/v3/lesson-63.webp',
-            64: '/images/v3/lesson-64.webp', 65: '/images/v3/lesson-65.webp',
-            66: '/images/v3/lesson-66.webp', 67: '/images/v3/lesson-67.webp',
-            68: '/images/v3/lesson-68.webp', 69: '/images/v3/lesson-69.webp',
-            70: '/images/v3/lesson-70.webp', 71: '/images/v3/lesson-71.webp',
-            72: '/images/v3/lesson-72.webp', 73: '/images/v3/lesson-73.webp',
-            74: '/images/v3/lesson-74.webp', 75: '/images/v3/lesson-75.webp',
-            76: '/images/v3/lesson-76.webp', 77: '/images/v3/lesson-77.webp',
-          }
-          const lessonImage = LESSON_IMG_MAP[lesson.id] ?? (() => {
-            const cat = (lesson.category || '').toLowerCase()
-            if (cat.includes('哲学') || cat === 'philosophy') return '/images/v3/course-philosophy.webp'
-            if (cat.includes('ケース') || cat === 'business') return '/images/v3/course-business.webp'
-            if (cat.includes('ロジカル') || cat.includes('logical')) return '/images/v3/hero-deduction.webp'
-            return '/images/v3/course-thinking.webp'
-          })()
+          // SVGサムネイルを使用（LessonThumbnailコンポーネント）
           return (
             <div key={lesson.id} onClick={() => onOpenLesson(lesson.id)} style={{ background: v3.color.card, borderRadius: 16, padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'stretch', gap: 0, overflow: 'hidden' }}>
-              {/* サムネイル画像 */}
-              <div style={{ width: 88, flexShrink: 0, position: 'relative', background: '#0F2C2B' }}>
-                <img src={lessonImage} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(8,33,33,0) 60%, rgba(26,58,57,.7) 100%)' }} />
+              {/* SVGサムネイル */}
+              <div style={{ width: 88, height: 88, flexShrink: 0, overflow: 'hidden', borderRadius: '0' }}>
+                <LessonThumbnail lessonId={lesson.id} size={88} />
               </div>
               <div style={{ padding: '14px 14px 14px 14px', display: 'flex', alignItems: 'center', gap: 12, flex: 1, minWidth: 0 }}>
                 <div style={{ width: 28, height: 28, borderRadius: '50%', border: `1.5px solid ${isDone ? v3.color.accent : v3.color.text3}`, background: isDone ? v3.color.accent : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
