@@ -574,49 +574,82 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
 
           {/* 採点結果 */}
           {submitPhase === 'result' && feedback && (
-            <div className="stack-sm">
-              {/* スコアバッジ */}
-              {feedback.score != null && (
-                <div style={{
-                  animation: 'scale-in 0.3s ease-out both',
-                  background: 'linear-gradient(135deg, #1E2D6B 0%, #3B5BDB 100%)',
-                  borderRadius: 20, padding: '24px 20px', textAlign: 'center',
-                  boxShadow: '0 4px 24px rgba(59,91,219,0.35)',
-                }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.65)', marginBottom: 8 }}>採点結果</div>
-                  <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 72, fontWeight: 900, color: '#fff', lineHeight: 1, letterSpacing: '-0.04em', marginBottom: 4 }}>
-                    {feedback.score}
-                  </div>
-                  <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.65)', marginBottom: feedback.scoreBreakdown ? 14 : 0 }}>/ 100点満点</div>
-                  {feedback.scoreBreakdown && (
-                    <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.8)', background: 'rgba(255,255,255,0.1)', borderRadius: 10, padding: '8px 14px', marginTop: 4 }}>
-                      {feedback.scoreBreakdown}
-                    </div>
-                  )}
-                  <div style={{ display: 'flex', justifyContent: 'center', gap: 16, marginTop: 14, fontSize: 12, color: 'rgba(255,255,255,0.55)' }}>
-                    <span>経過時間 {String(Math.floor(elapsedSec / 60)).padStart(2,'0')}:{String(elapsedSec % 60).padStart(2,'0')}</span>
-                    {hintUsed && <span>ヒント使用 (-10点)</span>}
-                  </div>
-                </div>
-              )}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16, animation: 'scale-in 0.25s ease-out both' }}>
 
-              <div className="feedback-card" style={{ animation: 'scale-in 0.2s ease-out both' }}>
-                <div className="feedback-head">
-                  <div className="feedback-check">
-                    <BarChartIcon width={16} height={16} />
-                  </div>
-                  <div className="feedback-title">AIからのフィードバック</div>
+              {/* スコアカード */}
+              <div style={{
+                background: 'linear-gradient(135deg, #1a2d6e 0%, #2d4db8 100%)',
+                borderRadius: 20,
+                padding: '28px 24px',
+                textAlign: 'center',
+                boxShadow: '0 8px 32px rgba(45,77,184,0.4)',
+              }}>
+                <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: '.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)', marginBottom: 12 }}>採点結果</div>
+
+                {/* スコア数字 */}
+                <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'center', gap: 6, marginBottom: 8 }}>
+                  <span style={{ fontSize: 80, fontWeight: 900, color: '#fff', lineHeight: 1, letterSpacing: '-0.04em' }}>
+                    {feedback.score ?? '—'}
+                  </span>
+                  <span style={{ fontSize: 20, color: 'rgba(255,255,255,0.5)', fontWeight: 600, paddingBottom: 10 }}>/100</span>
                 </div>
-                <div className="feedback-text">
+
+                {/* スコアバー */}
+                {feedback.score != null && (
+                  <div style={{ margin: '0 auto 16px', maxWidth: 200 }}>
+                    <div style={{ height: 6, borderRadius: 99, background: 'rgba(255,255,255,0.15)' }}>
+                      <div style={{
+                        height: '100%', borderRadius: 99,
+                        width: `${feedback.score}%`,
+                        background: feedback.score >= 80 ? '#4ADE80' : feedback.score >= 60 ? '#FCD34D' : '#F87171',
+                        transition: 'width 0.8s ease-out',
+                      }} />
+                    </div>
+                  </div>
+                )}
+
+                {/* 内訳 */}
+                {feedback.scoreBreakdown && (
+                  <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.75)', background: 'rgba(255,255,255,0.08)', borderRadius: 10, padding: '10px 16px', marginBottom: 14, lineHeight: 1.7 }}>
+                    {feedback.scoreBreakdown}
+                  </div>
+                )}
+
+                {/* メタ情報 */}
+                <div style={{ display: 'flex', justifyContent: 'center', gap: 20, fontSize: 12, color: 'rgba(255,255,255,0.45)' }}>
+                  <span>経過時間 {String(Math.floor(elapsedSec / 60)).padStart(2,'0')}:{String(elapsedSec % 60).padStart(2,'0')}</span>
+                  {hintUsed && <span>ヒント使用</span>}
+                </div>
+              </div>
+
+              {/* フィードバック本文 */}
+              <div style={{
+                background: 'var(--bg-card)',
+                borderRadius: 16,
+                border: '1px solid var(--border)',
+                overflow: 'hidden',
+              }}>
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: 8,
+                  padding: '14px 18px',
+                  borderBottom: '1px solid var(--border)',
+                  background: 'var(--bg-secondary)',
+                }}>
+                  <BarChartIcon width={15} height={15} style={{ color: 'var(--brand)' }} />
+                  <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>AIからのフィードバック</span>
+                </div>
+                <div style={{ padding: '16px 18px', fontSize: 15, lineHeight: 1.75, color: 'var(--text-primary)' }}>
                   {renderFeedbackMarkdown(feedback.feedback)}
                 </div>
                 {onReport && (
-                  <button
-                    onClick={() => onReport({ lessonTitle: t('report.dailyFermiTitle'), question })}
-                    style={{ marginTop: 'var(--s-3)', fontSize: 14, color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
-                  >
-                    {t('report.linkText')}
-                  </button>
+                  <div style={{ padding: '0 18px 14px' }}>
+                    <button
+                      onClick={() => onReport({ lessonTitle: t('report.dailyFermiTitle'), question })}
+                      style={{ fontSize: 13, color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
+                    >
+                      {t('report.linkText')}
+                    </button>
+                  </div>
                 )}
               </div>
 

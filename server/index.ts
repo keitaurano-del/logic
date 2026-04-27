@@ -1029,7 +1029,6 @@ app.post('/api/fermi/feedback', fermiLimiter, async (req, res) => {
 ---
 最後に必ず以下のJSONを **本文末に** 追加してください（マークダウンコードブロック不要、そのまま出力）:
 SCORE_JSON:{"score":<0-100の整数>,"breakdown":"論理性 <x>/50 · 独自性 <y>/30 · 明確さ <z>/20"}
-\``
 
 
     const systemPromptEn = `You are a logical-thinking coach. Provide feedback on a user's Fermi estimation, AND finish by **showing the actual estimated answer with the full calculation logic**.
@@ -1084,7 +1083,7 @@ Output format (use these exact headings):
     let score: number | undefined
     let scoreBreakdown: string | undefined
     let feedbackText = rawText
-    const scoreMatch = rawText.match(/SCORE_JSON:\s*({[^}]+})/)
+    const scoreMatch = rawText.match(/SCORE_JSON:\s*({.*?})(?:\n|$)/s)
     if (scoreMatch) {
       try {
         const parsed = JSON.parse(scoreMatch[1])
