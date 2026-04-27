@@ -162,7 +162,11 @@ function AppV3() {
       setCurrentUser(user)
       if (user) {
         await syncOnLogin(user.id)
-        setScreen((s) => s.type === 'onboarding' ? { type: 'home' } : s)
+        // preview=onboarding 中はホームに戻さない
+        const isPreview = typeof location !== 'undefined' && new URL(location.href).searchParams.get('preview') === 'onboarding'
+        if (!isPreview) {
+          setScreen((s) => s.type === 'onboarding' ? { type: 'home' } : s)
+        }
       } else {
         syncOnLogout()
       }
