@@ -223,7 +223,7 @@ export function RoleplaySelectScreen({ onBack, onStart, onUpgrade }: RoleplaySel
   const philosophySituations = situations.filter((s) => s.category === 'philosophy')
 
   const handleClick = (s: Situation) => {
-    if (s.category === 'philosophy') return
+    // 2026-04-27: 哲学シリーズも開放済み。タップをフィルタしてた早期 return を削除した。
     if (s.premium && !premium) { onUpgrade(); return }
     if (!premium && remaining <= 0) { onUpgrade(); return }
     onStart(s.id)
