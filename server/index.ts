@@ -1028,8 +1028,7 @@ app.post('/api/fermi/feedback', fermiLimiter, async (req, res) => {
 
 ---
 最後に必ず以下のJSONを **本文末に** 追加してください（マークダウンコードブロック不要、そのまま出力）:
-SCORE_JSON:{"score":<0-100の整数>,"breakdown":"論理性 <x>/50 · 独自性 <y>/30 · 明確さ <z>/20"}
-
+SCORE_JSON:{"score":<0-100の整数>,"breakdown":"論理性 <x>/50 · 独自性 <y>/30 · 明確さ <z>/20"}`
 
     const systemPromptEn = `You are a logical-thinking coach. Provide feedback on a user's Fermi estimation, AND finish by **showing the actual estimated answer with the full calculation logic**.
 
@@ -1095,39 +1094,6 @@ Output format (use these exact headings):
     res.json({ feedback: feedbackText, score, scoreBreakdown })
   } catch (e: any) {
     console.error('fermi feedback error:', e)
-    res.status(500).json({ error: e.message || 'failed' })
-  }
-})
-
-    const isEn = locale === 'en'
-
-    const systemPrompt = isEn
-      ? `You are a text formatter. The user spoke their Fermi estimation decomposition aloud. The raw speech-to-text transcript may be rough, repetitive, or unpolished. Your job is to:
-1. Clean up the transcript into clear, structured text
-2. Preserve all the user\'s ideas and numbers exactly — do NOT add new content
-3. Use simple bullet points or numbered steps if appropriate
-4. Return ONLY the formatted text, no commentary`
-      : `あなたはテキスト整形を詳説するアシスタントです。ユーザーがフェルミ推定の分解を音声で話したものの、音声認識の生テキストを整形してください。
-ルール:
-1. 話し言葉や繰り返しを整理し、読みやすい構造化テキストにする
-2. ユーザーのアイデア・数字は必ず保持する（新しい内容を追加しない）
-3. 箇条書きやステップ形式を適宜使用
-4. 整形したテキストのみ返す（誨明・コメント不要）`
-
-    const userMsg = isEn
-      ? `Context: ${context || 'Fermi estimation'}\n\nRaw transcript:\n${rawText}`
-      : `問題: ${context || 'フェルミ推定'}\n\n音声認識テキスト:\n${rawText}`
-
-    const response = await client.messages.create({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 400,
-      system: systemPrompt,
-      messages: [{ role: 'user', content: userMsg }],
-    })
-    const formatted = response.content[0].type === 'text' ? response.content[0].text.trim() : rawText
-    res.json({ formatted })
-  } catch (e: any) {
-    console.error('transcribe-format error:', e)
     res.status(500).json({ error: e.message || 'failed' })
   }
 })
