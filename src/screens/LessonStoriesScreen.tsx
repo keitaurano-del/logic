@@ -3,7 +3,7 @@
  * 仕様: docs/DESIGN_V3.md §3.3
  * モックアップ: lv3-lesson.html
  */
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import { v3 } from '../styles/tokensV3'
 import type { LessonSlide } from '../lessonSlides'
 import { convertLessonToSlides } from '../lessonSlides'
@@ -59,13 +59,38 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
     }
   }
 
+  // ===== Swipe 対応 =====
+  const touchRef = useRef<{ x: number; y: number; t: number } | null>(null)
+  const onTouchStart = (e: React.TouchEvent) => {
+    const t = e.touches[0]
+    touchRef.current = { x: t.clientX, y: t.clientY, t: Date.now() }
+  }
+  const onTouchEnd = (e: React.TouchEvent) => {
+    const start = touchRef.current
+    if (!start) return
+    const t = e.changedTouches[0]
+    const dx = t.clientX - start.x
+    const dy = t.clientY - start.y
+    const dt = Date.now() - start.t
+    touchRef.current = null
+    // 水平スワイプ識別: 50px以上、垂直より水平が長い、500ms以内
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5 && dt < 500) {
+      if (dx < 0) goNext()
+      else goPrev()
+    }
+  }
+
   return (
-    <div style={{ background: v3.color.bg, height: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: v3.color.text, position: 'relative' }}>
-      {/* Progress bars */}
-      <div style={{ display: 'flex', gap: 4, padding: 'calc(env(safe-area-inset-top, 44px) + 8px) 16px 12px' }}>
+    <div
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
+      style={{ background: v3.color.bg, height: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: v3.color.text, position: 'relative', touchAction: 'pan-y' }}
+    >
+      {/* Progress bars — v3 mint accentでコントラストを上げる */}
+      <div style={{ display: 'flex', gap: 5, padding: 'calc(env(safe-area-inset-top, 44px) + 8px) 16px 12px' }}>
         {slides.map((_, i) => (
-          <div key={i} style={{ flex: 1, height: 3, background: 'rgba(255,255,255,.15)', borderRadius: 99, overflow: 'hidden' }}>
-            <div style={{ height: '100%', background: '#fff', width: i < index ? '100%' : i === index ? '60%' : '0%', transition: 'width .3s ease' }}></div>
+          <div key={i} style={{ flex: 1, height: 4, background: 'rgba(255,255,255,.18)', borderRadius: 99, overflow: 'hidden' }}>
+            <div style={{ height: '100%', background: v3.color.accent, width: i < index ? '100%' : i === index ? '55%' : '0%', transition: 'width .3s ease', boxShadow: i <= index ? `0 0 8px ${v3.color.accent}80` : 'none' }}></div>
           </div>
         ))}
       </div>
@@ -103,7 +128,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
         }} />
       </div>
 
-      {/* Tap zones */}
+      {/* Tap zones (クイズ以外) */}
       {!isQuiz && (
         <div style={{ position: 'absolute', inset: 0, display: 'flex', zIndex: 5 }}>
           <div onClick={goPrev} style={{ flex: 1, cursor: 'pointer' }}></div>
@@ -111,10 +136,22 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
         </div>
       )}
 
+      {/* クイズ画面だけ: 「前に戻る」ボタンを右下に表示 (タップで進めないため) */}
+      {isQuiz && index > 0 && (
+        <button
+          onClick={goPrev}
+          style={{ position: 'absolute', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 24px)', left: '50%', transform: 'translateX(-50%)', display: 'inline-flex', alignItems: 'center', gap: 6, background: v3.color.card, border: '1px solid rgba(255,255,255,.08)', borderRadius: 99, padding: '10px 18px', fontSize: 12, fontWeight: 600, color: v3.color.text2, cursor: 'pointer', zIndex: 6 }}
+          aria-label="前のスライドに戻る"
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6" /></svg>
+          前のスライド
+        </button>
+      )}
+
       {/* Tap hint */}
       {!isQuiz && (
         <div style={{ position: 'absolute', bottom: 32, left: '50%', transform: 'translateX(-50%)', display: 'flex', alignItems: 'center', gap: 8, background: v3.color.card, border: '1px solid rgba(255,255,255,.08)', borderRadius: 99, padding: '10px 18px', fontSize: 12, fontWeight: 500, color: v3.color.text2, zIndex: 6 }}>
-          タップで次へ
+          タップ / スワイプで進む
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6" /></svg>
         </div>
       )}

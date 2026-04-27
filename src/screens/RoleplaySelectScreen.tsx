@@ -80,13 +80,24 @@ function SituationIcon({ id, size = 22 }: { id: string; size?: number }) {
 }
 
 const ICON_BG: Record<string, string> = {
-  'why-so-report': '#EEF2FF',
-  'mece-meeting': '#ECFDF5',
-  'pyramid-client': '#F3F0FF',
-  'logic-tree-sub': '#FFFBEB',
-  'socrates-dialog': '#EEF2FF',
-  'descartes-doubt': '#F3F0FF',
-  'nietzsche-values': '#FFF1F1',
+  'why-so-report': 'rgba(112,216,189,.14)',
+  'mece-meeting': 'rgba(112,216,189,.14)',
+  'pyramid-client': 'rgba(165,180,252,.14)',
+  'logic-tree-sub': 'rgba(244,162,97,.14)',
+  'socrates-dialog': 'rgba(196,181,253,.14)',
+  'descartes-doubt': 'rgba(196,181,253,.14)',
+  'nietzsche-values': 'rgba(196,181,253,.14)',
+}
+
+// シナリオごとの表現画像（既存 v3 画像を活用）
+const SCENARIO_IMAGE: Record<string, string> = {
+  'why-so-report': '/images/v3/course-business.webp',
+  'mece-meeting': '/images/v3/course-business.webp',
+  'pyramid-client': '/images/v3/course-business.webp',
+  'logic-tree-sub': '/images/v3/course-business.webp',
+  'socrates-dialog': '/images/v3/course-philosophy.webp',
+  'descartes-doubt': '/images/v3/course-philosophy.webp',
+  'nietzsche-values': '/images/v3/course-philosophy.webp',
 }
 
 const CATEGORY_LABELS: Record<SituationCategory, string> = {
@@ -108,81 +119,97 @@ function SituationCard({
   const locked = (s.premium && !premium) || (!premium && remaining <= 0 && !s.premium)
   const comingSoon = false // 哲学者シリーズも開放
 
+  const image = SCENARIO_IMAGE[s.id]
   return (
     <button
       onClick={comingSoon ? undefined : onClick}
       disabled={comingSoon}
       style={{
-        background: '#fff',
-        border: `1.5px solid ${comingSoon ? '#E8EEFF' : '#E2E8FF'}`,
+        background: 'var(--bg-card, #1A3A39)',
+        border: `1.5px solid ${comingSoon ? 'rgba(255,255,255,.06)' : 'rgba(255,255,255,.08)'}`,
         borderRadius: 16,
-        padding: 16,
+        padding: 0,
         cursor: comingSoon ? 'default' : 'pointer',
         textAlign: 'left',
         display: 'flex',
-        alignItems: 'flex-start',
-        gap: 14,
+        flexDirection: 'column',
+        gap: 0,
         opacity: comingSoon ? 0.55 : 1,
         width: '100%',
-        transition: 'border-color .15s',
+        overflow: 'hidden',
+        transition: 'border-color .15s, transform .12s',
       }}
     >
-      {/* アイコン */}
-      <div style={{
-        width: 48, height: 48, borderRadius: 14, flexShrink: 0,
-        background: ICON_BG[s.id] ?? '#EEF2FF',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-      }}>
-        <SituationIcon id={s.id} />
-      </div>
-
-      {/* テキスト */}
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 16, fontWeight: 700, color: '#0F1523', marginBottom: 4 }}>
-          {s.title}
-        </div>
-        <div style={{ fontSize: 13, color: '#7A849E', lineHeight: 1.5, marginBottom: 8 }}>
-          {s.goal}
-        </div>
-        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-          <span style={{
-            fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 99,
-            background: '#F0F4FF', color: '#3B5BDB',
+      {/* 表現画像 */}
+      {image && (
+        <div style={{ width: '100%', height: 96, overflow: 'hidden', position: 'relative' }}>
+          <img src={image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(8,33,33,0) 50%, rgba(8,33,33,.55) 100%)' }} />
+          {/* アイコンを画像上に重ねる */}
+          <div style={{
+            position: 'absolute', bottom: 8, left: 12,
+            width: 36, height: 36, borderRadius: 10, flexShrink: 0,
+            background: ICON_BG[s.id] ?? 'rgba(112,216,189,.18)',
+            backdropFilter: 'blur(6px)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
-            {s.frameworkLabel}
-          </span>
-          <span style={{
-            fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 99,
-            background: '#F8FAFF',
-            color: DIFF_COLOR[s.difficulty] ?? '#7A849E',
-          }}>
-            {DIFF_LABEL[s.difficulty] ?? s.difficulty}
-          </span>
+            <SituationIcon id={s.id} size={18} />
+          </div>
         </div>
-      </div>
-
-      {/* バッジ */}
-      {comingSoon ? (
-        <span style={{
-          flexShrink: 0, fontSize: 11, fontWeight: 700, padding: '3px 8px',
-          borderRadius: 99, background: '#F5F5F5', color: '#9CA3AF',
-          alignSelf: 'flex-start', whiteSpace: 'nowrap',
-        }}>
-          近日公開
-        </span>
-      ) : locked ? (
-        <span style={{
-          flexShrink: 0, fontSize: 11, fontWeight: 700, padding: '3px 8px',
-          borderRadius: 99, background: '#EEF2FF', color: '#3B5BDB',
-          alignSelf: 'flex-start', whiteSpace: 'nowrap',
-        }}>
-          PRO
-        </span>
-      ) : (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C5CDE8" strokeWidth="2.5" strokeLinecap="round" style={{ flexShrink: 0, alignSelf: 'center' }}>
-          <polyline points="9 18 15 12 9 6"/>
-        </svg>
       )}
+
+      {/* テキスト部 */}
+      <div style={{ padding: 14, display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--accent, #70D8BD)', marginBottom: 4, letterSpacing: '.04em' }}>
+            {s.partnerRole}
+          </div>
+          <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary, #F2F7F6)', marginBottom: 4, lineHeight: 1.4 }}>
+            {s.title}
+          </div>
+          <div style={{ fontSize: 13, color: 'var(--text-secondary, #A3B8B7)', lineHeight: 1.5, marginBottom: 10 }}>
+            {s.goal}
+          </div>
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+            <span style={{
+              fontSize: 11, fontWeight: 700, padding: '3px 9px', borderRadius: 99,
+              background: 'rgba(112,216,189,.12)', color: 'var(--accent, #70D8BD)',
+            }}>
+              {s.frameworkLabel}
+            </span>
+            <span style={{
+              fontSize: 11, fontWeight: 700, padding: '3px 9px', borderRadius: 99,
+              background: 'rgba(255,255,255,.06)',
+              color: DIFF_COLOR[s.difficulty] ?? 'var(--text-secondary, #A3B8B7)',
+            }}>
+              {DIFF_LABEL[s.difficulty] ?? s.difficulty}
+            </span>
+          </div>
+        </div>
+
+        {/* 右端のバッジ / 矢印 */}
+        {comingSoon ? (
+          <span style={{
+            flexShrink: 0, fontSize: 11, fontWeight: 700, padding: '3px 8px',
+            borderRadius: 99, background: 'rgba(255,255,255,.06)', color: 'var(--text-muted, #7A8E8D)',
+            alignSelf: 'flex-start', whiteSpace: 'nowrap',
+          }}>
+            近日公開
+          </span>
+        ) : locked ? (
+          <span style={{
+            flexShrink: 0, fontSize: 11, fontWeight: 700, padding: '3px 8px',
+            borderRadius: 99, background: 'rgba(112,216,189,.16)', color: 'var(--accent, #70D8BD)',
+            alignSelf: 'flex-start', whiteSpace: 'nowrap',
+          }}>
+            PRO
+          </span>
+        ) : (
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted, #7A8E8D)" strokeWidth="2.5" strokeLinecap="round" style={{ flexShrink: 0, alignSelf: 'center' }}>
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        )}
+      </div>
     </button>
   )
 }
