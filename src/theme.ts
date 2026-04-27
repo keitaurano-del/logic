@@ -50,7 +50,8 @@ export type ThemeState = {
   customHex: string  // for mode === 'custom'
 }
 
-const DEFAULT: ThemeState = { mode: 'light', accent: 'orange', customHex: '#D4915A' }
+// 2026-04-27: v3 dark is the default. Kept the field for backwards compat but force dark.
+const DEFAULT: ThemeState = { mode: 'dark', accent: 'orange', customHex: '#D4915A' }
 
 export function loadTheme(): ThemeState {
   try {

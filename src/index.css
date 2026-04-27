@@ -427,13 +427,13 @@ input, textarea, select { -webkit-tap-highlight-color: transparent; }
   --shadow-elevated: 0 6px 24px rgba(0,0,0,0.55);
 }
 
-html {
-  background: var(--bg-primary) !important;
-  background-color: var(--bg-primary) !important;
+html, html.mode-light, html.mode-dark {
+  background: #082121 !important;
+  background-color: #082121 !important;
 }
 
 body {
-  background: var(--bg-primary) !important;
+  background: #082121 !important;
   color: var(--text-primary);
 }
 
@@ -496,14 +496,13 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--accent) !important;
 }
 
-/* Dark blue/black text → primary text white */
-[style*="color: #0F1523"],
-[style*="color:#0F1523"],
-[style*="color: #0F1424"],
-[style*="color: rgb(15, 21, 35)"],
-[style*="color: rgb(15, 20, 36)"] {
-  color: var(--text-primary) !important;
-}
+/* Dark blue/black text → primary text white
+ * NOTE 2026-04-27: Removed the global override that flipped #0F1523/#0F1424 to white.
+ * Reason: it broke legitimate dark-on-light cards (onboarding plan cards) where
+ * the design intentionally keeps a cream/white card background and dark text.
+ * If a screen needs the legacy white-on-dark behavior, set the color via a
+ * className or a CSS variable instead of inline #0F1523.
+ */
 
 /* Additional light colors used in legacy screens */
 [style*="background: #EEF2FF"],

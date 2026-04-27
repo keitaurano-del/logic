@@ -7,7 +7,11 @@ import { initSentry } from './sentry'
 
 initSentry()
 
-// Apply v3 dark theme to body
+// Apply v3 dark theme to both html and body so CSS variables resolve consistently.
+// Without the html class, computed `--bg-primary` on <html> falls back to the
+// :root light value (#FAFAFB) and bleeds through behind the app shell.
+document.documentElement.classList.add('mode-dark')
+document.documentElement.classList.remove('mode-light')
 document.body.classList.add('mode-dark')
 
 // Opt-in v3 preview via ?v=3 query param or localStorage flag.
