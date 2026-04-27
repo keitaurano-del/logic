@@ -1101,6 +1101,54 @@ Output format (use these exact headings):
 })
 
 // =============================================
+// フェルミ推定 — 前提確認チャット
+// =============================================
+app.post('/api/fermi/chat', fermiLimiter, async (req, res) => {
+  try {
+    const { question, messages, locale } = req.body || {}
+    if (!question || !Array.isArray(messages)) {
+      return res.status(400).json({ error: 'question and messages required' })
+    }
+    const isEn = locale === 'en'
+
+    const systemPrompt = isEn
+      ? `You are a Fermi estimation coach. The user is working on the following problem:
+
+"${question}"
+
+Your role is to help the user clarify assumptions and think through their decomposition — but you must NOT give away the answer or the final number. You may:
+- Confirm or correct factual assumptions (e.g. population figures, market sizes)
+- Suggest what factors or categories to consider
+- Ask clarifying questions to help them structure their thinking
+
+Keep responses concise (2-4 sentences). Do not solve the problem for them.`
+      : `あなたはフェルミ推定のコーチです。ユーザーは以下の問題に取り組んでいます:
+
+「${question}」
+
+あなたの役割は、ユーザーが前提を整理し、分解思考を進められるよう手助けすることです。ただし、答えや最終的な数字を教えてはいけません。以下のことはOKです:
+- 事実に基づく前提の確認・修正（人口・市場規模など）
+- 考慮すべき要素やカテゴリの提案
+- 思考を構造化する質問
+
+回答は簡潔に（2〜4文程度）。問題を解いてあげないこと。`
+
+    // messages: [{role: 'user'|'assistant', content: string}]
+    const response = await client.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 300,
+      system: systemPrompt,
+      messages: messages.slice(-10), // 直近10往復まで
+    })
+    const text = response.content[0].type === 'text' ? response.content[0].text.trim() : ''
+    res.json({ reply: text })
+  } catch (e: any) {
+    console.error('fermi chat error:', e)
+    res.status(500).json({ error: e.message || 'failed' })
+  }
+})
+
+// =============================================
 // フェルミ推定 — AI 問題生成 (premium)
 // =============================================
 app.post('/api/fermi/question', fermiLimiter, async (req, res) => {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { ArrowLeftIcon, LightbulbIcon, BarChartIcon } from '../icons'
 import { IconButton } from '../components/IconButton'
 import { Button } from '../components/Button'
@@ -67,6 +67,262 @@ function renderFeedbackMarkdown(text: string) {
   return elements
 }
 
+/** マイクボタンコンポーネント */
+function MicButton({ onTranscript, locale, disabled }: {
+  onTranscript: (text: string) => void
+  locale: string
+  disabled?: boolean
+}) {
+  const [listening, setListening] = useState(false)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const recogRef = useRef<any>(null)
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const SR: any = typeof window !== 'undefined' && ((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition)
+  if (!SR) return null
+
+  const toggle = () => {
+    if (listening) {
+      recogRef.current?.stop()
+      setListening(false)
+      return
+    }
+    const recog = new SR()
+    recog.lang = locale === 'en' ? 'en-US' : 'ja-JP'
+    recog.continuous = true
+    recog.interimResults = false
+    recog.onresult = (e: any) => {
+      const transcript = Array.from({ length: e.results.length }, (_: any, i: number) => e.results[i][0].transcript).join('')
+      onTranscript(transcript)
+    }
+    recog.onerror = () => { setListening(false) }
+    recog.onend = () => { setListening(false) }
+    recog.start()
+    recogRef.current = recog
+    setListening(true)
+  }
+
+  return (
+    <button
+      onClick={toggle}
+      disabled={disabled}
+      title={listening ? '録音を停止' : '音声入力'}
+      style={{
+        position: 'absolute',
+        bottom: 10,
+        right: 10,
+        width: 36,
+        height: 36,
+        borderRadius: '50%',
+        border: listening ? '2px solid var(--danger)' : '1.5px solid var(--border)',
+        background: listening ? 'rgba(220,38,38,0.08)' : 'var(--bg-card)',
+        color: listening ? 'var(--danger)' : 'var(--text-muted)',
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        transition: 'all 0.15s',
+        flexShrink: 0,
+      }}
+    >
+      {listening ? (
+        // 録音中: 停止アイコン（点滅）
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style={{ animation: 'pulse 1s infinite' }}>
+          <rect x="6" y="6" width="12" height="12" rx="2" />
+        </svg>
+      ) : (
+        // マイクアイコン
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <rect x="9" y="2" width="6" height="12" rx="3" />
+          <path d="M5 10a7 7 0 0 0 14 0" />
+          <line x1="12" y1="19" x2="12" y2="22" />
+          <line x1="8" y1="22" x2="16" y2="22" />
+        </svg>
+      )}
+    </button>
+  )
+}
+
+interface ChatMessage {
+  role: 'user' | 'assistant'
+  content: string
+}
+
+/** 前提確認チャットモーダル */
+function FermiChatModal({ question, locale, onClose }: {
+  question: string
+  locale: string
+  onClose: () => void
+}) {
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    { role: 'assistant', content: '前提や数字について何でも聞いてください。ただし、答えそのものは教えられません。' }
+  ])
+  const [input, setInput] = useState('')
+  const [loading, setLoading] = useState(false)
+  const bottomRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages])
+
+  const send = async () => {
+    const text = input.trim()
+    if (!text || loading) return
+    const newMessages: ChatMessage[] = [...messages, { role: 'user', content: text }]
+    setMessages(newMessages)
+    setInput('')
+    setLoading(true)
+    try {
+      const res = await fetch(`${API_BASE}/api/fermi/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question, messages: newMessages, locale }),
+      })
+      const data = await res.json()
+      if (data.reply) {
+        setMessages(prev => [...prev, { role: 'assistant', content: data.reply }])
+      }
+    } catch {
+      setMessages(prev => [...prev, { role: 'assistant', content: 'エラーが発生しました。もう一度お試しください。' }])
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    // オーバーレイ
+    <div
+      style={{
+        position: 'fixed', inset: 0, zIndex: 1000,
+        background: 'rgba(0,0,0,0.55)',
+        display: 'flex', alignItems: 'flex-end',
+      }}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
+    >
+      <div style={{
+        width: '100%',
+        maxHeight: '80vh',
+        background: 'var(--bg-card)',
+        borderRadius: '20px 20px 0 0',
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden',
+        animation: 'slide-up 0.25s ease-out both',
+      }}>
+        {/* ヘッダー */}
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '16px 20px',
+          borderBottom: '1px solid var(--border)',
+          flexShrink: 0,
+        }}>
+          <div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>前提を確認する</div>
+            <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>答えは教えません。前提の整理を手伝います。</div>
+          </div>
+          <button
+            onClick={onClose}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: 4 }}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+
+        {/* メッセージ一覧 */}
+        <div style={{ flex: 1, overflowY: 'auto', padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {messages.map((msg, i) => (
+            <div key={i} style={{
+              display: 'flex',
+              justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start',
+            }}>
+              <div style={{
+                maxWidth: '80%',
+                padding: '10px 14px',
+                borderRadius: msg.role === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
+                background: msg.role === 'user' ? 'var(--brand)' : 'var(--bg-secondary)',
+                color: msg.role === 'user' ? '#fff' : 'var(--text-primary)',
+                fontSize: 15,
+                lineHeight: 1.6,
+              }}>
+                {msg.content}
+              </div>
+            </div>
+          ))}
+          {loading && (
+            <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+              <div style={{
+                padding: '10px 14px', borderRadius: '16px 16px 16px 4px',
+                background: 'var(--bg-secondary)', color: 'var(--text-muted)', fontSize: 15,
+              }}>
+                考えています...
+              </div>
+            </div>
+          )}
+          <div ref={bottomRef} />
+        </div>
+
+        {/* 入力エリア */}
+        <div style={{
+          padding: '12px 16px',
+          borderTop: '1px solid var(--border)',
+          display: 'flex', gap: 8, alignItems: 'flex-end',
+          flexShrink: 0,
+        }}>
+          <div style={{ flex: 1, position: 'relative' }}>
+            <textarea
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send() } }}
+              placeholder="質問を入力（音声入力も使えます）"
+              rows={2}
+              style={{
+                width: '100%',
+                padding: '10px 44px 10px 12px',
+                borderRadius: 12,
+                border: '1.5px solid var(--border)',
+                background: 'var(--bg-secondary)',
+                color: 'var(--text-primary)',
+                fontSize: 15,
+                lineHeight: 1.5,
+                resize: 'none',
+                outline: 'none',
+                fontFamily: 'inherit',
+                boxSizing: 'border-box',
+              }}
+            />
+            <MicButton
+              onTranscript={(text) => setInput(prev => prev + text)}
+              locale={locale}
+              disabled={loading}
+            />
+          </div>
+          <button
+            onClick={send}
+            disabled={!input.trim() || loading}
+            style={{
+              width: 40, height: 40,
+              borderRadius: '50%',
+              background: input.trim() && !loading ? 'var(--brand)' : 'var(--bg-muted)',
+              border: 'none',
+              cursor: input.trim() && !loading ? 'pointer' : 'not-allowed',
+              color: input.trim() && !loading ? '#fff' : 'var(--text-muted)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              flexShrink: 0,
+              transition: 'all 0.15s',
+            }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 interface DailyFermiScreenProps {
   onBack: () => void
   onReport?: (context: { lessonTitle: string; question: string }) => void
@@ -74,9 +330,12 @@ interface DailyFermiScreenProps {
 
 interface FermiFeedback {
   feedback: string
-  score?: number        // 0-100
-  scoreBreakdown?: string  // eg. '論理性 40/50・速さ 30/30・ヒント未使用 +10'
+  score?: number
+  scoreBreakdown?: string
 }
+
+// 提出フロー状態
+type SubmitPhase = 'idle' | 'scoring' | 'done' | 'result'
 
 export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
   const locale = getLocale()
@@ -87,16 +346,17 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
   const [questionError, setQuestionError] = useState('')
 
   const [answer, setAnswer] = useState('')
-  const [submitting, setSubmitting] = useState(false)
+  const [submitPhase, setSubmitPhase] = useState<SubmitPhase>('idle')
   const [feedback, setFeedback] = useState<FermiFeedback | null>(null)
   const [submitError, setSubmitError] = useState('')
   const [showHint, setShowHint] = useState(false)
   const [hintUsed, setHintUsed] = useState(false)
+  const [showChat, setShowChat] = useState(false)
 
   // タイマー
   const [elapsedSec, setElapsedSec] = useState(0)
   const [timerRunning, setTimerRunning] = useState(false)
-  const timerRef = React.useRef<ReturnType<typeof setInterval> | null>(null)
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   useEffect(() => {
     if (timerRunning) {
@@ -126,7 +386,7 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
   const handleSubmit = async () => {
     if (!answer.trim()) return
     setTimerRunning(false)
-    setSubmitting(true)
+    setSubmitPhase('scoring')
     setSubmitError('')
     setFeedback(null)
     try {
@@ -139,15 +399,25 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
       if (!res.ok || data.error) throw new Error(data.error || t('common.error'))
       setFeedback(data)
       markDailyFermiDone()
+      setSubmitPhase('done')
     } catch (e: unknown) {
       setSubmitError((e as Error).message || t('common.error'))
-    } finally {
-      setSubmitting(false)
+      setSubmitPhase('idle')
+      setTimerRunning(true)
     }
   }
 
   return (
     <div className="stack">
+      {/* チャットモーダル */}
+      {showChat && (
+        <FermiChatModal
+          question={question}
+          locale={locale}
+          onClose={() => setShowChat(false)}
+        />
+      )}
+
       <div className="screen-header">
         <IconButton aria-label={t('common.back')} onClick={onBack}>
           <ArrowLeftIcon />
@@ -195,7 +465,7 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
                   </span>
                 </div>
                 {/* タイマー */}
-                {!feedback && (
+                {submitPhase === 'idle' && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 14, fontWeight: 700, color: elapsedSec >= 120 ? 'var(--danger)' : 'var(--text-muted)', fontFamily: "'Inter Tight', monospace" }}>
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                     {String(Math.floor(elapsedSec / 60)).padStart(2,'0')}:{String(elapsedSec % 60).padStart(2,'0')}
@@ -209,7 +479,7 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
           </div>
 
           {/* ヒント */}
-          {hint && (
+          {hint && submitPhase === 'idle' && (
             <div>
               {!showHint ? (
                 <button
@@ -252,8 +522,8 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
             </div>
           )}
 
-          {/* フィードバックが出ていない場合は回答入力 */}
-          {!feedback && (
+          {/* 回答入力エリア */}
+          {submitPhase === 'idle' && (
             <div className="stack-sm">
               <label style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-secondary)' }}>
                 {t('dailyFermi.answerLabel')}
@@ -265,45 +535,128 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
               }}>
                 数字に追われなくていい。「対象・場所・頻度」の順に考えてみると分解しやすい。
               </div>
-              <textarea
-                value={answer}
-                onChange={(e) => setAnswer(e.target.value)}
-                placeholder={t('fermi.placeholder')}
-                disabled={submitting}
-                style={{
-                  width: '100%',
-                  minHeight: 160,
-                  padding: '12px 14px',
-                  borderRadius: 'var(--radius-md)',
-                  border: '1.5px solid var(--border)',
-                  background: 'var(--bg-card)',
-                  color: 'var(--text-primary)',
-                  fontSize: 16,
-                  lineHeight: 1.6,
-                  resize: 'vertical',
-                  outline: 'none',
-                  fontFamily: 'inherit',
-                }}
-              />
+
+              {/* textareaとマイクボタン */}
+              <div style={{ position: 'relative' }}>
+                <textarea
+                  value={answer}
+                  onChange={(e) => setAnswer(e.target.value)}
+                  placeholder={t('fermi.placeholder')}
+                  style={{
+                    width: '100%',
+                    minHeight: 160,
+                    padding: '12px 50px 12px 14px',
+                    borderRadius: 'var(--radius-md)',
+                    border: '1.5px solid var(--border)',
+                    background: 'var(--bg-card)',
+                    color: 'var(--text-primary)',
+                    fontSize: 16,
+                    lineHeight: 1.6,
+                    resize: 'vertical',
+                    outline: 'none',
+                    fontFamily: 'inherit',
+                    boxSizing: 'border-box',
+                  }}
+                />
+                <MicButton
+                  onTranscript={(text) => setAnswer(prev => prev + text)}
+                  locale={locale}
+                />
+              </div>
 
               {submitError && (
-                <div style={{ fontSize: 16, color: 'var(--danger)' }}>{submitError}</div>
+                <div style={{ fontSize: 15, color: 'var(--danger)' }}>{submitError}</div>
               )}
 
-              <Button
-                variant="primary"
-                size="lg"
-                block
-                disabled={!answer.trim() || submitting}
-                onClick={handleSubmit}
-              >
-                {submitting ? t('fermi.submitting') : t('fermi.submitButton')}
+              {/* ボタン2つ */}
+              <div style={{ display: 'flex', gap: 10 }}>
+                <button
+                  onClick={() => setShowChat(true)}
+                  style={{
+                    flex: 1,
+                    padding: '13px 16px',
+                    borderRadius: 'var(--radius-md)',
+                    border: '1.5px solid var(--border)',
+                    background: 'var(--bg-card)',
+                    color: 'var(--text-primary)',
+                    fontSize: 15,
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    fontFamily: 'inherit',
+                  }}
+                >
+                  前提を確認する
+                </button>
+                <button
+                  onClick={handleSubmit}
+                  disabled={!answer.trim()}
+                  style={{
+                    flex: 1,
+                    padding: '13px 16px',
+                    borderRadius: 'var(--radius-md)',
+                    border: 'none',
+                    background: answer.trim() ? 'var(--brand)' : 'var(--bg-muted)',
+                    color: answer.trim() ? '#fff' : 'var(--text-muted)',
+                    fontSize: 15,
+                    fontWeight: 700,
+                    cursor: answer.trim() ? 'pointer' : 'not-allowed',
+                    fontFamily: 'inherit',
+                    transition: 'all 0.15s',
+                  }}
+                >
+                  回答を提出する
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* 採点中 */}
+          {submitPhase === 'scoring' && (
+            <div className="card" style={{ textAlign: 'center', padding: '40px 20px' }}>
+              <div style={{
+                width: 48, height: 48, borderRadius: '50%',
+                border: '3px solid var(--brand)',
+                borderTopColor: 'transparent',
+                margin: '0 auto 20px',
+                animation: 'spin 0.8s linear infinite',
+              }} />
+              <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 8 }}>
+                採点しています
+              </div>
+              <div style={{ fontSize: 14, color: 'var(--text-muted)' }}>
+                AIが回答を分析しています...
+              </div>
+            </div>
+          )}
+
+          {/* 採点完了 */}
+          {submitPhase === 'done' && (
+            <div className="card" style={{ textAlign: 'center', padding: '40px 20px' }}>
+              <div style={{
+                width: 56, height: 56, borderRadius: '50%',
+                background: 'rgba(34,197,94,0.1)',
+                border: '2px solid #22C55E',
+                margin: '0 auto 20px',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="2.5" strokeLinecap="round">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </div>
+              <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 8 }}>
+                採点が終わりました。
+              </div>
+              <div style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 28 }}>
+                結果を確認してみてください。
+              </div>
+              <Button variant="primary" size="lg" block onClick={() => setSubmitPhase('result')}>
+                結果を確認する
               </Button>
             </div>
           )}
 
-          {/* AI フィードバック表示 */}
-          {feedback && (
+          {/* 採点結果 */}
+          {submitPhase === 'result' && feedback && (
             <div className="stack-sm">
               {/* スコアバッジ */}
               {feedback.score != null && (
@@ -313,7 +666,7 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
                   borderRadius: 20, padding: '24px 20px', textAlign: 'center',
                   boxShadow: '0 4px 24px rgba(59,91,219,0.35)',
                 }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.65)', marginBottom: 8 }}>あなたのスコア</div>
+                  <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.65)', marginBottom: 8 }}>採点結果</div>
                   <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 72, fontWeight: 900, color: '#fff', lineHeight: 1, letterSpacing: '-0.04em', marginBottom: 4 }}>
                     {feedback.score}
                   </div>
@@ -324,8 +677,8 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
                     </div>
                   )}
                   <div style={{ display: 'flex', justifyContent: 'center', gap: 16, marginTop: 14, fontSize: 12, color: 'rgba(255,255,255,0.55)' }}>
-                    <span>⏱ {String(Math.floor(elapsedSec / 60)).padStart(2,'0')}:{String(elapsedSec % 60).padStart(2,'0')}</span>
-                    {hintUsed && <span>💡 ヒント使用 (-10点)</span>}
+                    <span>経過時間 {String(Math.floor(elapsedSec / 60)).padStart(2,'0')}:{String(elapsedSec % 60).padStart(2,'0')}</span>
+                    {hintUsed && <span>ヒント使用 (-10点)</span>}
                   </div>
                 </div>
               )}
@@ -335,7 +688,7 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
                   <div className="feedback-check">
                     <BarChartIcon width={16} height={16} />
                   </div>
-                  <div className="feedback-title">{t('dailyFermi.feedbackTitle')}</div>
+                  <div className="feedback-title">AIからのフィードバック</div>
                 </div>
                 <div className="feedback-text">
                   {renderFeedbackMarkdown(feedback.feedback)}
