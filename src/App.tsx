@@ -13,12 +13,14 @@ import RoleplayChat from './RoleplayChat'
 import CoffeeBreak from './CoffeeBreak'
 import ThemeSettings from './ThemeSettings'
 import PlacementTest from './PlacementTest'
-import Onboarding, { hasSeenOnboarding } from './Onboarding'
+import { hasSeenOnboarding, markOnboardingDone } from './Onboarding'
+import { OnboardingScreen } from './screens/OnboardingScreen'
 import Ranking from './Ranking'
 import FermiLesson from './FermiLesson'
 import { hasCompletedPlacement, loadPlacementResult } from './placementData'
 import { t, getLocale } from './i18n'
 import { getAIProblem, type AIProblemSet } from './aiProblemStore'
+import { getInitialUser, onAuthChange } from './supabase'
 import { verifyCheckout } from './subscription'
 import { getTodayProblem, generateTodayProblem, isDailyCompleted, markDailyCompleted } from './dailyProblem'
 import { allLessons } from './lessonData'
@@ -170,10 +172,12 @@ type Screen =
 
 function App() {
   const [showOnboarding, setShowOnboarding] = useState(!hasSeenOnboarding())
+  const [_userName, setUserName] = useState('')
   const [showPlacement, setShowPlacement] = useState(!hasCompletedPlacement())
   const [placementResult, setPlacementResult] = useState(loadPlacementResult())
   const [screen, setScreen] = useState<Screen>({ type: 'home' })
   const [tab, setTab] = useState<Tab>('home')
+  const [lessonSearch, setLessonSearch] = useState('')
 
   // Hide bottom nav on scroll down, show on scroll up
   const [navHidden, setNavHidden] = useState(false)
@@ -246,6 +250,17 @@ function App() {
   // Init progress from flashcards on mount
   useEffect(() => { initFromFlashcards() }, [])
 
+  // SCRUM-160: Supabaseユーザー名を取得
+  useEffect(() => {
+    getInitialUser().then(user => {
+      if (user) setUserName(user.user_metadata?.full_name || user.user_metadata?.name || user.email || '')
+    })
+    const unsub = onAuthChange(user => {
+      setUserName(user ? (user.user_metadata?.full_name || user.user_metadata?.name || user.email || '') : '')
+    })
+    return unsub
+  }, [])
+
   const refreshStats = useCallback(() => {
     setCompletedCount(getCompletedCount())
     setStreak(getStreak())
@@ -283,7 +298,10 @@ function App() {
   }, [refreshStats])
 
   if (showOnboarding) {
-    return <Onboarding onComplete={() => setShowOnboarding(false)} />
+    return <OnboardingScreen onComplete={() => {
+      markOnboardingDone()
+      setShowOnboarding(false)
+    }} />
   }
 
   if (showPlacement) {
@@ -646,6 +664,28 @@ function App() {
 
       {tab === 'lessons' && (
         <div className="lessons-tab">
+          {/* SCRUM-161: 検索ボックス */}
+          <div style={{ padding: '12px 16px 0' }}>
+            <div style={{ position: 'relative' }}>
+              <input
+                type="search"
+                placeholder="レッスンを検索..."
+                value={lessonSearch}
+                onChange={e => setLessonSearch(e.target.value)}
+                style={{
+                  width: '100%', boxSizing: 'border-box',
+                  padding: '10px 16px 10px 36px',
+                  borderRadius: 12, border: '1px solid var(--color-line, #2a2a3a)',
+                  background: 'var(--color-card, #1a1a2e)', color: 'var(--color-text, #fff)',
+                  fontSize: 14, outline: 'none',
+                }}
+              />
+              <svg style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', opacity: 0.4 }}
+                width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+            </div>
+          </div>
           {/* Flashcards in lessons tab */}
           {(() => {
             const fc = getCardStats()
@@ -662,6 +702,11 @@ function App() {
           })()}
           {Object.entries(
             localizeLessons(lessons)
+              .filter(l => {
+                if (!lessonSearch.trim()) return true
+                const q = lessonSearch.toLowerCase()
+                return l.title.toLowerCase().includes(q) || (l.description || '').toLowerCase().includes(q)
+              })
               .reduce<Record<string, typeof lessons>>((acc, l) => {
                 const cat = l.category
                 if (!acc[cat]) acc[cat] = []
