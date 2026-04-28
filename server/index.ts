@@ -115,9 +115,10 @@ app.post(
       try {
         if (!stripe) return res.status(503).json({ error: 'Stripe not configured' })
         event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret)
-      } catch (err: any) {
-        console.error('[webhook] Signature verification failed:', err.message)
-        return res.status(400).json({ error: `Webhook error: ${err.message}` })
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : String(err)
+        console.error('[webhook] Signature verification failed:', message)
+        return res.status(400).json({ error: `Webhook error: ${message}` })
       }
     } else {
       // STRIPE_WEBHOOK_SECRET 未設定時は署名検証をスキップ（開発用）
@@ -197,9 +198,10 @@ app.post(
       }
 
       res.json({ received: true })
-    } catch (e: any) {
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : String(e)
       console.error('[webhook] Handler error:', e)
-      res.status(500).json({ error: e.message })
+      res.status(500).json({ error: message })
     }
   }
 )
@@ -785,9 +787,9 @@ app.post('/api/journal/generate', generateProblemsLimiter, async (req, res) => {
       .join('')
 
     res.json({ summary: text.trim() })
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.error('journal generate error:', e)
-    res.status(500).json({ error: e.message || 'failed' })
+    res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
   }
 })
 
@@ -951,9 +953,9 @@ Rules:
       category: data.category || (isEn ? 'AI Generated' : 'AI生成'),
       steps: data.steps || [],
     })
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.error('generate-problems error:', e)
-    res.status(500).json({ error: e.message || 'failed' })
+    res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
   }
 })
 
@@ -1118,9 +1120,9 @@ Output format (use these exact headings):
     // ==========================================
 
     res.json({ feedback: feedbackText, score, scoreBreakdown })
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.error('fermi feedback error:', e)
-    res.status(500).json({ error: e.message || 'failed' })
+    res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
   }
 })
 
@@ -1166,9 +1168,9 @@ Keep responses concise (2-4 sentences). Do not solve the problem for them.`
     })
     const text = response.content[0].type === 'text' ? response.content[0].text.trim() : ''
     res.json({ reply: text })
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.error('fermi chat error:', e)
-    res.status(500).json({ error: e.message || 'failed' })
+    res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
   }
 })
 
@@ -1189,9 +1191,9 @@ app.post('/api/fermi/question', fermiLimiter, async (req, res) => {
     })
     const text = response.content[0].type === 'text' ? response.content[0].text.trim() : ''
     res.json({ question: text })
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.error('fermi question error:', e)
-    res.status(500).json({ error: e.message || 'failed' })
+    res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
   }
 })
 
@@ -1229,8 +1231,8 @@ app.post('/api/placement/submit', async (req, res) => {
     }
 
     res.json({ ok: true })
-  } catch (e: any) {
-    res.status(500).json({ error: e.message })
+  } catch (e: unknown) {
+    res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
   }
 })
 
@@ -1254,8 +1256,8 @@ app.post('/api/placement/delete', async (req, res) => {
     }
 
     res.json({ ok: true })
-  } catch (e: any) {
-    res.status(500).json({ error: e.message })
+  } catch (e: unknown) {
+    res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
   }
 })
 
@@ -1298,8 +1300,8 @@ app.get('/api/placement/ranking', async (req, res) => {
     }
 
     res.json({ total, top, yourRank, yourDeviation })
-  } catch (e: any) {
-    res.status(500).json({ error: e.message })
+  } catch (e: unknown) {
+    res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
   }
 })
 
@@ -1360,8 +1362,8 @@ async function jiraCreateIssue(opts: {
     const data = (await response.json()) as { key: string }
     console.log('[jira] Created issue:', data.key)
     return data
-  } catch (e: any) {
-    console.error('[jira] Error creating issue:', e.message)
+  } catch (e: unknown) {
+    console.error('[jira] Error creating issue:', e instanceof Error ? e.message : String(e))
     return null
   }
 }
@@ -1449,9 +1451,9 @@ app.post('/api/report-problem', async (req, res) => {
     })
 
     res.json({ ok: true, id: data?.id })
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.error('report-problem error:', e)
-    res.status(500).json({ error: e.message || 'failed' })
+    res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
   }
 })
 
@@ -1472,8 +1474,8 @@ app.get('/api/reports', async (_req, res) => {
     }
 
     res.json(data || [])
-  } catch (e: any) {
-    res.status(500).json({ error: e.message })
+  } catch (e: unknown) {
+    res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
   }
 })
 
@@ -1527,9 +1529,9 @@ app.post('/api/checkout', async (req, res) => {
       ...(customerId ? { customer: customerId } : {}),
     })
     res.json({ url: session.url })
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.error('checkout error:', e)
-    res.status(500).json({ error: e.message })
+    res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
   }
 })
 
@@ -1548,9 +1550,9 @@ app.get('/api/checkout-verify', async (req, res) => {
       plan,
       expiresAt: expiresAt.toISOString(),
     })
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.error('checkout-verify error:', e)
-    res.status(500).json({ error: e.message })
+    res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
   }
 })
 
@@ -1669,9 +1671,9 @@ app.post('/api/subscription/portal', async (req, res) => {
     })
 
     res.json({ url: portalSession.url })
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.error('portal error:', e)
-    res.status(500).json({ error: e.message })
+    res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
   }
 })
 
@@ -1705,9 +1707,9 @@ app.post('/api/subscription/cancel', async (req, res) => {
       .eq('user_id', userId)
 
     res.json({ success: true })
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.error('cancel error:', e)
-    res.status(500).json({ error: e.message })
+    res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
   }
 })
 
@@ -1813,9 +1815,9 @@ Respond in English.`
     const jsonMatch = text.match(/\{[\s\S]*\}/)
     if (!jsonMatch) return res.status(500).json({ error: 'parse failed' })
     res.json(JSON.parse(jsonMatch[0]))
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.error('daily-problem error:', e)
-    res.status(500).json({ error: e.message })
+    res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
   }
 })
 
@@ -1875,9 +1877,9 @@ app.get('/api/daily-fermi', async (req, res) => {
     }
 
     res.json({ question, hint, date: today })
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.error('daily-fermi error:', e)
-    res.status(500).json({ error: e.message || 'failed' })
+    res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
   }
 })
 
@@ -1915,8 +1917,8 @@ app.post('/api/admin/grant-premium', async (req, res) => {
 
     console.log('[ADMIN] Granted premium to', userId)
     res.json({ ok: true })
-  } catch (e: any) {
-    res.status(500).json({ error: e.message })
+  } catch (e: unknown) {
+    res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
   }
 })
 
@@ -1948,9 +1950,9 @@ app.post('/api/feedback', makeLimiter({ windowMs: 60*1000, max: 5 }), async (req
     }
 
     res.json({ ok: true, message: isEn ? 'Thank you!' : 'ありがとうございました！' })
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.error('feedback error:', e)
-    res.status(500).json({ error: e.message || 'failed' })
+    res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
   }
 })
 
