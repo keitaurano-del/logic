@@ -146,6 +146,18 @@ export default function FermiLesson({ onBack, onUpgrade }: Props) {
         {step === 'input' && (
           <>
             <div className="fl-question-mini">{currentQuestion}</div>
+            {/* SCRUM-67: 思考プロセスガイド */}
+            <div style={{
+              background: 'var(--accent-soft)',
+              borderRadius: 10,
+              padding: '10px 14px',
+              fontSize: 13,
+              color: 'var(--text-secondary)',
+              lineHeight: 1.6,
+              marginBottom: 4,
+            }}>
+              💡 <strong>分解のヒント</strong>：「対象・場所・頻度」の順に考えると整理しやすい。
+            </div>
             <textarea
               className="fl-textarea"
               value={userInput}
