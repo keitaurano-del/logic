@@ -100,6 +100,17 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
           accent="#A5B4FC"
           onClick={() => props.onOpenCategory('philosophy')}
         />
+        <PathCard
+          image={`${IMG}/course-business.webp`}
+          tag="実践・推奨"
+          name="提案書作成実践コース"
+          meta="7レッスン · 仮説思考・検証プロセス"
+          progress={0}
+          done={0}
+          total={7}
+          accent={v3.color.warm}
+          onClick={() => props.onOpenCategory('提案書作成')}
+        />
 
         <SectionLabel>すべてのカテゴリ</SectionLabel>
 
@@ -138,6 +149,15 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
           progress="0/5"
           image={`${IMG}/course-philosophy.webp`}
           onClick={() => props.onOpenCategory('philosophy')}
+        />
+        <CategoryCard
+          icon={<svg width="22" height="22" viewBox="0 0 24 24" fill={v3.color.warm}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" fill="none" stroke={v3.color.warm} strokeWidth="2" /><polyline points="14 2 14 8 20 8" fill="none" stroke={v3.color.warm} strokeWidth="2" /><line x1="16" y1="13" x2="8" y2="13" stroke={v3.color.warm} strokeWidth="2" /><line x1="16" y1="17" x2="8" y2="17" stroke={v3.color.warm} strokeWidth="2" /><polyline points="10 9 9 9 8 9" stroke={v3.color.warm} strokeWidth="2" /></svg>}
+          iconBg="rgba(244,162,97,.14)"
+          name="提案書作成"
+          meta="7レッスン · 実践・全レベル"
+          progress="0/7"
+          image={`${IMG}/course-business.webp`}
+          onClick={() => props.onOpenCategory('提案書作成')}
         />
       </div>}
     </div>
