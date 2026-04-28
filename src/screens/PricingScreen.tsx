@@ -135,7 +135,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 14 }}>
             {FREE_FEATURES.map((f) => (
               <div key={f.text} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <span style={{ fontSize: 15 }}>{f.icon}</span>
+                <span style={{ fontSize: 15, fontFamily: 'Apple Color Emoji, Segoe UI Emoji, sans-serif', lineHeight: 1 }}>{f.icon}</span>
                 <span style={{ fontSize: 13, color: v3.color.text2 }}>{f.text}</span>
               </div>
             ))}
@@ -167,7 +167,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
             {STANDARD_FEATURES.map((f) => (
               <div key={f.text} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <span style={{ fontSize: 15 }}>{f.icon}</span>
+                <span style={{ fontSize: 15, fontFamily: 'Apple Color Emoji, Segoe UI Emoji, sans-serif', lineHeight: 1 }}>{f.icon}</span>
                 <span style={{ fontSize: 13, color: v3.color.text2 }}>{f.text}</span>
               </div>
             ))}
@@ -211,7 +211,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
             {PREMIUM_FEATURES.map((f) => (
               <div key={f.text} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <span style={{ fontSize: 15 }}>{f.icon}</span>
+                <span style={{ fontSize: 15, fontFamily: 'Apple Color Emoji, Segoe UI Emoji, sans-serif', lineHeight: 1 }}>{f.icon}</span>
                 <span style={{ fontSize: 13, color: f.text.includes('スタンダード') ? v3.color.text3 : v3.color.text2 }}>{f.text}</span>
               </div>
             ))}
