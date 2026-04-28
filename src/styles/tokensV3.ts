@@ -13,9 +13,9 @@ export const tokensV3 = {
     accentGlow: 'rgba(112,216,189,.25)',
     warm: '#F4A261',
     warmSoft: 'rgba(244,162,97,.16)',
-    text: '#F2F7F6',
-    text2: '#A3B8B7',
-    text3: '#7A8E8D',
+    text: '#F5FAF9',       // メインテキスト: 辝度を微上げ
+    text2: '#C4D8D6',       // サブテキスト: #A3B8B7 → #C4D8D6（コントラスト比改善）
+    text3: '#9AB3B1',       // プレースホルダー等: #7A8E8D → #9AB3B1（読みやすさ改善）
     line: 'rgba(255,255,255,.05)',
   },
   radius: {

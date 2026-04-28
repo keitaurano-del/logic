@@ -291,7 +291,7 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
       <>
         {slide.kind === 'concept' && (slide as any).tag && <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: v3.color.accentSoft, borderRadius: 99, padding: '6px 12px', fontSize: 11, fontWeight: 600, color: v3.color.accent, marginBottom: 24, marginTop: 24 }}>{(slide as any).tag}</span>}
         <h1 style={{ fontFamily: 'Noto Sans JP', fontSize: 28, fontWeight: 700, lineHeight: 1.4, marginBottom: 20, marginTop: (slide as any).tag ? 0 : 32, letterSpacing: '.005em', color: v3.color.text }}>{slide.title}</h1>
-        <p style={{ fontSize: 16, lineHeight: 1.75, fontWeight: 400, color: v3.color.text, marginBottom: 20 }} dangerouslySetInnerHTML={{ __html: slide.body }}></p>
+        <p style={{ fontSize: 17, lineHeight: 1.85, fontWeight: 400, color: v3.color.text, marginBottom: 20 }} dangerouslySetInnerHTML={{ __html: slide.body }}></p>
         {(slide as any).example && (
           <div style={{ background: v3.color.card, borderRadius: 16, padding: 18 }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: v3.color.accent, letterSpacing: '.08em', marginBottom: 8 }}>EXAMPLE</div>
@@ -386,7 +386,7 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
         )}
 
         {quizAnswered && (
-          <div style={{ marginTop: 20, padding: 16, background: v3.color.card, borderRadius: 14, fontSize: 14, lineHeight: 1.6 }}>
+          <div style={{ marginTop: 20, padding: 16, background: v3.color.card, borderRadius: 14, fontSize: 15, lineHeight: 1.75 }}>
             <div style={{ fontSize: 12, fontWeight: 700, color: quizAnswered.correct ? v3.color.accent : '#FCA5A5', marginBottom: 6 }}>{quizAnswered.correct ? '正解' : isMulti ? `不正解 — 正解は${[...correctSet].map(i => slide.choices[i]).join('、')}` : 'もう一度考えてみよう'}</div>
             {slide.explain}
           </div>
