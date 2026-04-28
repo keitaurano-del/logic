@@ -29,7 +29,6 @@ import { LanguageScreen } from './screens/LanguageScreen'
 import { RankScreen } from './screens/RankScreen'
 import { LoginScreen } from './screens/LoginScreen'
 import { RoadmapScreenV3 } from './screens/RoadmapScreenV3'
-import { StatsScreenV3 } from './screens/StatsScreenV3'
 import { ProfileScreenV3 } from './screens/ProfileScreenV3'
 import { LessonStoriesScreen } from './screens/LessonStoriesScreen'
 import { LessonCompleteScreen } from './screens/LessonCompleteScreen'
@@ -51,7 +50,6 @@ const ONBOARDED_KEY = 'logic-onboarded'
 type Screen =
   | { type: 'home' }
   | { type: 'lessons' }
-  | { type: 'stats' }
   | { type: 'roadmap'; category?: string }
   | { type: 'profile' }
   | { type: 'lesson'; lessonId: number }
@@ -99,7 +97,7 @@ function getInitialScreen(user: User | null): Screen {
 }
 
 // ── ルート画面かどうか判定 ──
-const ROOT_SCREENS = new Set<string>(['home', 'lessons', 'stats', 'profile'])
+const ROOT_SCREENS = new Set<string>(['home', 'lessons', 'profile'])
 
 function AppV3() {
   const [tab, setTab] = useState<Tab>('home')
@@ -184,8 +182,7 @@ function AppV3() {
 
   const handleTabChange = (next: Tab) => {
     setTab(next)
-    if (next === 'stats') navigate({ type: 'stats' }, true)
-    else navigate({ type: next }, true)
+    navigate({ type: next }, true)
   }
 
   const handleOpenLesson = (lessonId: number) => {
@@ -251,7 +248,7 @@ function AppV3() {
             else navigate({ type: 'roadmap', category: cat as any })
           }}
           onOpenRank={() => navigate({ type: 'rank' })}
-          onOpenStats={() => { setTab('stats'); navigate({ type: 'stats' }, true) }}
+          onOpenStats={() => navigate({ type: 'profile' }, true)}
           onOpenRoleplay={() => navigate({ type: 'roleplay' })}
           onOpenAIGen={() => navigate({ type: 'ai-problem-gen' })}
           onOpenRoadmap={() => { setTab('lessons'); navigate({ type: 'lessons' }, true) }}
@@ -306,10 +303,6 @@ function AppV3() {
           onRetakeTest={() => navigate({ type: 'placement-test' })}
           onStartLesson={handleOpenLesson}
         />
-      )}
-
-      {screen.type === 'stats' && (
-        <StatsScreenV3 onBack={handleBack} />
       )}
 
       {screen.type === 'ranking' && (

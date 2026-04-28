@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import type { ReactNode } from 'react'
 import { t } from '../i18n'
 
-export type Tab = 'home' | 'lessons' | 'stats' | 'profile'
+export type Tab = 'home' | 'lessons' | 'profile'
 
 export interface TabDef {
   id: Tab
@@ -26,15 +26,6 @@ const TABS: TabDef[] = [
     icon: (active, dark) => (
       <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? (dark ? '#70D8BD' : '#3B5BDB') : (dark ? '#7A8E8D' : '#B8BFD0')}>
         <path d="M6.5 2A2.5 2.5 0 0 0 4 4.5v15A2.5 2.5 0 0 0 6.5 22H20V2H6.5zm0 18A.5.5 0 0 1 6 19.5V17h14v3H6.5zM6 15V4h12v11H6z"/>
-      </svg>
-    ),
-  },
-  {
-    id: 'stats',
-    label: '記録',
-    icon: (active, dark) => (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? (dark ? '#70D8BD' : '#3B5BDB') : (dark ? '#7A8E8D' : '#B8BFD0')}>
-        <path d="M4 20h2V10H4v10zm5 0h2V4H9v16zm5 0h2V8h-2v12zm5 0h2v-6h-2v6z"/>
       </svg>
     ),
   },

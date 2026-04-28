@@ -3,6 +3,7 @@
  * 仕様: docs/DESIGN_V3.md §3.2
  * モックアップ: lv3-courses.html
  */
+import { useState } from 'react'
 import { v3 } from '../styles/tokensV3'
 import { LessonThumbnail } from '../components/LessonThumbnail'
 
@@ -16,19 +17,48 @@ interface RoadmapScreenV3Props {
 }
 
 export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
+  const [searchQuery, setSearchQuery] = useState('')
+
   if (props.initialCategory) {
     return <CategoryDetailView category={props.initialCategory} onOpenLesson={props.onOpenLesson} onBack={props.onBack} />
   }
+
+  // SCRUM-161: 検索フィルタリングは CategoryDetailView 内で行うので、ここでは検索UIのみ
   return (
     <div style={{ background: v3.color.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: v3.color.text }}>
       <div style={{ padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ fontSize: 24, fontWeight: 700, letterSpacing: '-.005em' }}>レッスン</div>
-        <div style={{ width: 36, height: 36, borderRadius: '50%', background: v3.color.card, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
+      </div>
+      {/* SCRUM-161: 検索ボックス */}
+      <div style={{ padding: '0 16px 8px' }}>
+        <div style={{ position: 'relative' }}>
+          <input
+            type="search"
+            placeholder="レッスンを検索..."
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            style={{
+              width: '100%', boxSizing: 'border-box',
+              padding: '10px 16px 10px 38px',
+              borderRadius: 12,
+              border: `1px solid ${v3.color.line}`,
+              background: v3.color.card,
+              color: v3.color.text,
+              fontSize: 14, outline: 'none',
+              fontFamily: "'Noto Sans JP', sans-serif",
+            }}
+          />
+          <svg style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', opacity: 0.4 }}
+            width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
         </div>
       </div>
+      {searchQuery.trim() && (
+        <SearchResults query={searchQuery} onOpenLesson={props.onOpenLesson} />
+      )}
 
-      <div style={{ flex: 1, padding: '0 16px 100px', display: 'flex', flexDirection: 'column', gap: v3.spacing.gap }}>
+      {!searchQuery.trim() && <div style={{ flex: 1, padding: '0 16px 100px', display: 'flex', flexDirection: 'column', gap: v3.spacing.gap }}>
 
         <div style={{ padding: '4px 4px 8px' }}>
           <div style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.45, letterSpacing: '-.005em' }}>どこから<br />はじめましょうか。</div>
@@ -109,7 +139,32 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
           image={`${IMG}/course-philosophy.webp`}
           onClick={() => props.onOpenCategory('philosophy')}
         />
-      </div>
+      </div>}
+    </div>
+  )
+}
+
+function SearchResults({ query, onOpenLesson }: { query: string; onOpenLesson: (id: number) => void }) {
+  const q = query.toLowerCase().trim()
+  const all = getAllLessonsFlat() as Record<number, { id: number; title: string; category: string; description?: string }>
+  const results = Object.values(all).filter(l =>
+    l.title.toLowerCase().includes(q) || (l.category || '').toLowerCase().includes(q)
+  ).slice(0, 20)
+  return (
+    <div style={{ flex: 1, padding: '8px 16px 100px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+      {results.length === 0 && (
+        <div style={{ padding: 32, textAlign: 'center', color: v3.color.text2, fontSize: 14 }}>「{query}」に一致するレッスンが見つかりません</div>
+      )}
+      {results.map(lesson => (
+        <div key={lesson.id} onClick={() => onOpenLesson(lesson.id)}
+          style={{ background: v3.color.card, borderRadius: 14, padding: '14px 16px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: v3.color.text, marginBottom: 2 }}>{lesson.title}</div>
+            <div style={{ fontSize: 12, color: v3.color.text2 }}>{lesson.category}</div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5"><polyline points="9 18 15 12 9 6" /></svg>
+        </div>
+      ))}
     </div>
   )
 }

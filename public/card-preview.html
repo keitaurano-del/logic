@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>レッスンカード デザイン案</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #082121; color: #F2F7F6; font-family: 'Inter', 'Noto Sans JP', sans-serif; padding: 20px; }
+  h3 { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: #70D8BD; margin-bottom: 16px; }
+  .note { font-size: 12px; color: rgba(255,255,255,0.4); margin-bottom: 24px; line-height: 1.7; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 32px; }
+  .card { border-radius: 14px; overflow: hidden; aspect-ratio: 1; position: relative; }
+  .card svg { width: 100%; height: 100%; }
+  .label { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 6px; text-align: center; }
+</style>
+</head>
+<body>
+
+<h3>レッスンカード — コードベースデザイン案</h3>
+<p class="note">webp画像なし。Reactコードで描画するため、ピクセルパーフェクト・AIっぽさゼロ。</p>
+
+<div class="grid">
+
+  <!-- MECE: 3つの分離した円 -->
+  <div>
+    <div class="card">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="background:#0B2827">
+        <circle cx="28" cy="50" r="18" fill="none" stroke="#70D8BD" stroke-width="2.5"/>
+        <circle cx="50" cy="50" r="18" fill="none" stroke="#70D8BD" stroke-width="2.5"/>
+        <circle cx="72" cy="50" r="18" fill="none" stroke="#70D8BD" stroke-width="2.5"/>
+      </svg>
+    </div>
+    <div class="label">MECE</div>
+  </div>
+
+  <!-- ロジックツリー: 分岐ライン -->
+  <div>
+    <div class="card">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="background:#0B2827">
+        <line x1="50" y1="20" x2="50" y2="40" stroke="#70D8BD" stroke-width="2" stroke-linecap="round"/>
+        <line x1="50" y1="40" x2="25" y2="60" stroke="#70D8BD" stroke-width="2" stroke-linecap="round"/>
+        <line x1="50" y1="40" x2="75" y2="60" stroke="#70D8BD" stroke-width="2" stroke-linecap="round"/>
+        <line x1="25" y1="60" x2="15" y2="78" stroke="#70D8BD" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="25" y1="60" x2="35" y2="78" stroke="#70D8BD" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="75" y1="60" x2="65" y2="78" stroke="#70D8BD" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="75" y1="60" x2="85" y2="78" stroke="#70D8BD" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="50" cy="20" r="4" fill="#70D8BD"/>
+        <circle cx="25" cy="60" r="3" fill="#70D8BD"/>
+        <circle cx="75" cy="60" r="3" fill="#70D8BD"/>
+      </svg>
+    </div>
+    <div class="label">ロジックツリー</div>
+  </div>
+
+  <!-- ピラミッド: 階層三角形 -->
+  <div>
+    <div class="card">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="background:#0B2827">
+        <polygon points="50,18 88,82 12,82" fill="none" stroke="#70D8BD" stroke-width="2.2" stroke-linejoin="round"/>
+        <line x1="28" y1="58" x2="72" y2="58" stroke="#70D8BD" stroke-width="1.5"/>
+        <line x1="37" y1="40" x2="63" y2="40" stroke="#70D8BD" stroke-width="1.5"/>
+      </svg>
+    </div>
+    <div class="label">ピラミッド原則</div>
+  </div>
+
+  <!-- 演繹法: 3段の横棒 →矢印 -->
+  <div>
+    <div class="card">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="background:#112E1E">
+        <rect x="15" y="28" width="55" height="8" rx="2" fill="#70D8BD" opacity="0.9"/>
+        <rect x="15" y="46" width="40" height="8" rx="2" fill="#70D8BD" opacity="0.6"/>
+        <line x1="15" y1="72" x2="60" y2="72" stroke="#70D8BD" stroke-width="2.5" stroke-linecap="round"/>
+        <polyline points="54,65 63,72 54,79" fill="none" stroke="#70D8BD" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="label">演繹法</div>
+  </div>
+
+  <!-- 仮説思考: ループ矢印 -->
+  <div>
+    <div class="card">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="background:#1A2B1A">
+        <path d="M 50 20 A 30 30 0 1 1 20 50" fill="none" stroke="#70D8BD" stroke-width="2.5" stroke-linecap="round"/>
+        <polyline points="14,42 20,50 28,44" fill="none" stroke="#70D8BD" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="50" cy="50" r="6" fill="#70D8BD" opacity="0.3"/>
+        <circle cx="50" cy="50" r="3" fill="#70D8BD"/>
+      </svg>
+    </div>
+    <div class="label">仮説思考</div>
+  </div>
+
+  <!-- 課題設定: 的(ターゲット) -->
+  <div>
+    <div class="card">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="background:#1E1A2E">
+        <circle cx="50" cy="50" r="32" fill="none" stroke="#A78BFA" stroke-width="1.5" opacity="0.4"/>
+        <circle cx="50" cy="50" r="20" fill="none" stroke="#A78BFA" stroke-width="1.8" opacity="0.7"/>
+        <circle cx="50" cy="50" r="8" fill="#A78BFA"/>
+        <line x1="50" y1="10" x2="50" y2="36" stroke="#A78BFA" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
+        <line x1="50" y1="64" x2="50" y2="90" stroke="#A78BFA" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
+        <line x1="10" y1="50" x2="36" y2="50" stroke="#A78BFA" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
+        <line x1="64" y1="50" x2="90" y2="50" stroke="#A78BFA" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
+      </svg>
+    </div>
+    <div class="label">課題設定</div>
+  </div>
+
+  <!-- クリティカルシンキング: 拡大鏡 -->
+  <div>
+    <div class="card">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="background:#2B1A1A">
+        <circle cx="42" cy="42" r="24" fill="none" stroke="#F87171" stroke-width="2.5"/>
+        <line x1="60" y1="60" x2="82" y2="82" stroke="#F87171" stroke-width="3" stroke-linecap="round"/>
+        <line x1="34" y1="42" x2="50" y2="42" stroke="#F87171" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+        <line x1="42" y1="34" x2="42" y2="50" stroke="#F87171" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+      </svg>
+    </div>
+    <div class="label">クリティカルシンキング</div>
+  </div>
+
+  <!-- アナロジー: 2つの形が変換 -->
+  <div>
+    <div class="card">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="background:#1A1F2E">
+        <rect x="12" y="35" width="28" height="28" rx="4" fill="none" stroke="#60A5FA" stroke-width="2.2"/>
+        <circle cx="74" cy="49" r="16" fill="none" stroke="#60A5FA" stroke-width="2.2"/>
+        <line x1="44" y1="49" x2="54" y2="49" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/>
+        <polyline points="51,44 57,49 51,54" fill="none" stroke="#60A5FA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="44" y1="42" x2="44" y2="56" stroke="#60A5FA" stroke-width="1" stroke-linecap="round" stroke-dasharray="2,3"/>
+      </svg>
+    </div>
+    <div class="label">アナロジー思考</div>
+  </div>
+
+  <!-- システムシンキング: 循環矢印 -->
+  <div>
+    <div class="card">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="background:#0B2827">
+        <circle cx="50" cy="28" r="8" fill="#70D8BD" opacity="0.8"/>
+        <circle cx="74" cy="66" r="8" fill="#70D8BD" opacity="0.8"/>
+        <circle cx="26" cy="66" r="8" fill="#70D8BD" opacity="0.8"/>
+        <path d="M 56 34 Q 74 46 70 58" fill="none" stroke="#70D8BD" stroke-width="2" stroke-linecap="round"/>
+        <path d="M 68 74 Q 50 88 34 74" fill="none" stroke="#70D8BD" stroke-width="2" stroke-linecap="round"/>
+        <path d="M 30 58 Q 26 46 44 34" fill="none" stroke="#70D8BD" stroke-width="2" stroke-linecap="round"/>
+        <polyline points="64,57 70,58 68,65" fill="none" stroke="#70D8BD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <polyline points="35,74 34,67 28,66" fill="none" stroke="#70D8BD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <polyline points="44,27 44,34 51,34" fill="none" stroke="#70D8BD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="label">システムシンキング</div>
+  </div>
+
+</div>
+
+<p class="note" style="color:#70D8BD; font-size:13px;">
+  ✅ コードベースなのでピクセルパーフェクト。AIっぽさゼロ。<br>
+  📱 実機でも完璧にシャープに表示される。<br>
+  🎨 カテゴリごとに背景色とアクセントカラーを変えて差別化。
+</p>
+
+</body>
+</html>
