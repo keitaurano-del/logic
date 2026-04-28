@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LOGIC — Onboarding & Paywall 実装仕様書</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --color-navy: #0B2545;
+  --color-blue: #4A7EC7;
+  --color-blue-light: #EBF2FF;
+  --color-white: #FAFAF8;
+  --color-gray-bg: #F0EFED;
+  --color-gray-border: #E2E0DC;
+  --color-gold: #C9A84C;
+  --color-text-primary: #1A1A2E;
+  --color-text-secondary: #6B7280;
+  --color-text-muted: #9CA3AF;
+  --color-success: #16A34A;
+  --color-danger: #DC2626;
+  --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-xl: 20px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.10);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Noto Sans JP', 'Inter', sans-serif; background: var(--color-white); color: var(--color-text-primary); line-height: 1.7; }
+.page-header { background: var(--color-navy); color: white; padding: 48px 32px; }
+.page-header h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+.page-header p { color: rgba(255,255,255,0.7); font-size: 14px; }
+.badge { display: inline-block; background: var(--color-gold); color: white; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-left: 12px; vertical-align: middle; }
+nav { background: white; border-bottom: 1px solid var(--color-gray-border); padding: 16px 32px; position: sticky; top: 0; z-index: 100; display: flex; gap: 24px; flex-wrap: wrap; }
+nav a { color: var(--color-blue); font-size: 13px; text-decoration: none; white-space: nowrap; }
+nav a:hover { text-decoration: underline; }
+.container { max-width: 960px; margin: 0 auto; padding: 48px 32px; }
+h2 { font-size: 22px; font-weight: 700; color: var(--color-navy); margin: 48px 0 20px; padding-bottom: 12px; border-bottom: 2px solid var(--color-blue-light); display: flex; align-items: center; gap: 10px; }
+h2::before { content: ''; display: inline-block; width: 4px; height: 24px; background: var(--color-blue); border-radius: 2px; }
+h3 { font-size: 16px; font-weight: 700; color: var(--color-navy); margin: 28px 0 12px; }
+h4 { font-size: 14px; font-weight: 600; color: var(--color-text-secondary); margin: 20px 0 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+p { margin-bottom: 12px; font-size: 15px; }
+pre { background: #1E2D40; color: #E2E8F0; border-radius: var(--radius-md); padding: 20px 24px; overflow-x: auto; font-size: 13px; line-height: 1.6; margin: 16px 0; font-family: 'Fira Code', 'Cascadia Code', monospace; }
+code { background: var(--color-blue-light); color: var(--color-navy); padding: 2px 6px; border-radius: 4px; font-size: 13px; font-family: monospace; }
+.screen-card { background: white; border: 1px solid var(--color-gray-border); border-radius: var(--radius-lg); padding: 24px; margin: 16px 0; box-shadow: var(--shadow-sm); }
+.screen-card .screen-num { font-size: 12px; font-weight: 700; color: var(--color-blue); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+.screen-card h3 { margin-top: 0; font-size: 18px; color: var(--color-navy); }
+.copy-block { background: var(--color-blue-light); border-left: 3px solid var(--color-blue); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; padding: 12px 16px; margin: 12px 0; }
+.copy-block .label { font-size: 11px; font-weight: 700; color: var(--color-blue); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+.copy-block .text { font-size: 15px; color: var(--color-text-primary); }
+.rule-block { background: #FFF8E1; border: 1px solid #F59E0B; border-radius: var(--radius-md); padding: 16px 20px; margin: 16px 0; }
+.rule-block strong { color: #92400E; }
+.warn-block { background: #FEF2F2; border: 1px solid var(--color-danger); border-radius: var(--radius-md); padding: 16px 20px; margin: 16px 0; }
+.warn-block strong { color: var(--color-danger); }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+th { background: var(--color-navy); color: white; padding: 10px 14px; text-align: left; font-weight: 600; font-size: 13px; }
+td { padding: 10px 14px; border-bottom: 1px solid var(--color-gray-border); }
+tr:nth-child(even) td { background: var(--color-gray-bg); }
+.ok { color: var(--color-success); font-weight: 700; }
+.limit { color: #D97706; font-weight: 600; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+.plan-card { border: 2px solid var(--color-gray-border); border-radius: var(--radius-lg); padding: 20px; background: white; }
+.plan-card.recommended { border-color: var(--color-blue); background: var(--color-blue-light); }
+.plan-badge { display: inline-block; background: var(--color-gold); color: white; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-bottom: 8px; }
+.plan-price { font-size: 26px; font-weight: 700; color: var(--color-navy); }
+.plan-sub { font-size: 13px; color: var(--color-text-secondary); }
+.tag { display: inline-block; background: var(--color-gray-bg); border: 1px solid var(--color-gray-border); border-radius: 20px; padding: 4px 12px; font-size: 12px; margin: 3px; }
+@media(max-width: 640px) { .grid-2 { grid-template-columns: 1fr; } nav { padding: 12px 16px; } .container { padding: 24px 16px; } }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>LOGIC — Onboarding &amp; Paywall 実装仕様書 <span class="badge">v1.0</span></h1>
+  <p>作成日: 2026-04-28 ／ 対象: フロントエンドエンジニア ／ スタック: React + TypeScript + Capacitor</p>
+</div>
+
+<nav>
+  <a href="#types">型定義</a>
+  <a href="#hook">Hookコード</a>
+  <a href="#navigator">Navigator</a>
+  <a href="#components">コンポーネント</a>
+  <a href="#analytics">アナリティクス</a>
+  <a href="#screens">画面仕様</a>
+  <a href="#edge">エッジケース</a>
+  <a href="#copy">コピー一貫性</a>
+  <a href="#tokens">デザイントークン</a>
+</nav>
+
+<div class="container">
+
+<div class="rule-block">
+  <strong>⚡ 絶対ルール:</strong>
+  有料プラン名は <strong>「LOGIC Pro」のみ</strong>。「Standard」「Premium」「プレミアム」は禁止。
+  価格: <strong>¥500/月・¥3,500/年</strong>。
+  クォータ: <strong>「AI問題生成 月300問まで」</strong>（この文字列のみ使用）。
+  トライアル: <strong>「7日間無料トライアル」</strong>。
+</div>
+
+<!-- ==================== TYPES ==================== -->
+<h2 id="types">1. TypeScript 型定義</h2>
+
+<pre>// types/onboarding.ts
+
+export type Goal =
+  | 'consulting'      // コンサル・戦略職を目指している
+  | 'job_hunting'     // 就活・面接で論理的に話せるようになりたい
+  | 'work_thinking'   // 仕事で考えを整理する力を伸ばしたい
+  | 'general';        // 幅広く論理思考を鍛えたい
+
+export type SubscriptionStatus =
+  | 'none'
+  | 'trial'
+  | 'active'
+  | 'expired'
+  | 'cancelled';
+
+export type BillingPlan = 'annual' | 'monthly';
+
+export type OnboardingScreen =
+  | 'welcome'
+  | 'goal'
+  | 'placement_intro'
+  | 'placement_result'
+  | 'ai_preview'
+  | 'paywall'
+  | 'home';
+
+export interface OnboardingState {
+  hasSeenWelcome: boolean;
+  selectedGoal: Goal | null;
+  hasSeenPlacementIntro: boolean;
+  hasCompletedPlacement: boolean;
+  placementScore: number | null;
+  hasSeenAiPreview: boolean;
+  hasSeenPaywall: boolean;
+  subscriptionStatus: SubscriptionStatus;
+  trialStartedAt: string | null;   // ISO 8601
+  selectedBillingPlan: BillingPlan | null;
+}
+
+export interface LessonRef {
+  id: string;
+  title: string;
+  description: string;
+}
+
+// ── Screen Props ──────────────────────────────────────
+export interface WelcomeScreenProps {
+  onStart: () => void;
+  onSkip: () => void;
+}
+
+export interface GoalSelectionScreenProps {
+  selectedGoal: Goal | null;
+  onSelect: (goal: Goal) => void;
+  onNext: () => void;
+  onSkip: () => void;
+}
+
+export interface PlacementIntroScreenProps {
+  onStart: () => void;
+  onTryOne: () => void;
+}
+
+export interface PlacementResultScreenProps {
+  score: number;
+  summary: string;
+  recommendedPath: LessonRef[];
+  onTryAI: () => void;
+  onGoHome: () => void;
+}
+
+export interface AIPreviewScreenProps {
+  onStartTrial: () => void;
+  onContinueFree: () => void;
+}
+
+export interface PaywallScreenProps {
+  selectedPlan: BillingPlan;
+  onSelectPlan: (plan: BillingPlan) => void;
+  onStartTrial: () => void;
+  onContinueFree: () => void;
+  isLoading: boolean;
+  error: string | null;
+}</pre>
+
+<!-- ==================== HOOK ==================== -->
+<h2 id="hook">2. useOnboardingState Hook</h2>
+
+<pre>// hooks/useOnboardingState.ts
+import { useState, useCallback } from 'react';
+import type { OnboardingState, Goal, BillingPlan, OnboardingScreen } from '../types/onboarding';
+
+const STORAGE_KEY = 'logic_onboarding_v1';
+
+const defaultState: OnboardingState = {
+  hasSeenWelcome: false,
+  selectedGoal: null,
+  hasSeenPlacementIntro: false,
+  hasCompletedPlacement: false,
+  placementScore: null,
+  hasSeenAiPreview: false,
+  hasSeenPaywall: false,
+  subscriptionStatus: 'none',
+  trialStartedAt: null,
+  selectedBillingPlan: null,
+};
+
+export function useOnboardingState() {
+  const [state, setState] = useState&lt;OnboardingState&gt;(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      return saved ? { ...defaultState, ...JSON.parse(saved) } : defaultState;
+    } catch {
+      return defaultState;
+    }
+  });
+
+  const update = useCallback((patch: Partial&lt;OnboardingState&gt;) => {
+    setState(prev => {
+      const next = { ...prev, ...patch };
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch { /* quota exceeded */ }
+      return next;
+    });
+  }, []);
+
+  const reset = useCallback(() => {
+    try { localStorage.removeItem(STORAGE_KEY); } catch { /* ignore */ }
+    setState(defaultState);
+  }, []);
+
+  /** アプリ起動時にどの画面に戻るか決定する */
+  const getResumeScreen = useCallback((): OnboardingScreen => {
+    if (state.subscriptionStatus === 'active' || state.subscriptionStatus === 'trial') return 'home';
+    if (!state.hasSeenWelcome) return 'welcome';
+    if (!state.hasCompletedPlacement) {
+      return state.hasSeenPlacementIntro ? 'placement_intro' : 'goal';
+    }
+    if (!state.hasSeenAiPreview) return 'ai_preview';
+    if (!state.hasSeenPaywall && state.subscriptionStatus === 'none') return 'paywall';
+    return 'home';
+  }, [state]);
+
+  return { state, update, reset, getResumeScreen };
+}</pre>
+
+<!-- ==================== NAVIGATOR ==================== -->
+<h2 id="navigator">3. OnboardingNavigator</h2>
+
+<pre>// components/OnboardingNavigator.tsx
+import React, { useState } from 'react';
+import { useOnboardingState } from '../hooks/useOnboardingState';
+import { trackEvent } from '../lib/analytics';
+import type { Goal, BillingPlan, OnboardingScreen } from '../types/onboarding';
+
+const RECOMMENDED_PATH = [
+  { id: 'logic-tree', title: 'ロジックツリー', description: '問いを構造化する土台を作る' },
+  { id: 'fermi', title: 'フェルミ推定', description: '分解 → 仮説 → 数値感覚を実践で鍛える' },
+  { id: 'conclusion-first', title: '結論ファースト', description: '面接や報告で伝わる話し方を身につける' },
+];
+
+export function OnboardingNavigator({ onComplete }: { onComplete: () => void }) {
+  const { state, update, getResumeScreen } = useOnboardingState();
+  const [screen, setScreen] = useState&lt;OnboardingScreen&gt;(getResumeScreen());
+  const [selectedPlan, setSelectedPlan] = useState&lt;BillingPlan&gt;('annual');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState&lt;string | null&gt;(null);
+
+  const go = (s: OnboardingScreen) => setScreen(s);
+
+  // ── Handlers ──────────────────────────────────────
+  const onWelcomeStart = () => {
+    update({ hasSeenWelcome: true });
+    trackEvent('onboarding_welcome_view', {});
+    go('goal');
+  };
+
+  const onGoalSelect = (goal: Goal) => {
+    update({ selectedGoal: goal });
+    trackEvent('onboarding_goal_selected', { selected_goal: goal });
+  };
+
+  const onGoalNext = () => {
+    trackEvent('onboarding_goal_view', { selected_goal: state.selectedGoal ?? 'none' });
+    go('placement_intro');
+  };
+
+  const onPlacementStart = () => {
+    update({ hasSeenPlacementIntro: true });
+    trackEvent('onboarding_placement_started', { selected_goal: state.selectedGoal ?? 'none' });
+    // TODO: 実際のテスト画面へ遷移。今はシミュレーション:
+    setTimeout(() => {
+      update({ hasCompletedPlacement: true, placementScore: 48 });
+      trackEvent('onboarding_placement_completed', { score_band: 'mid' });
+      go('placement_result');
+    }, 0);
+  };
+
+  const onResultTryAI = () => {
+    trackEvent('onboarding_result_view', { score_band: 'mid' });
+    go('ai_preview');
+  };
+
+  const onAiPreviewTrial = () => {
+    update({ hasSeenAiPreview: true });
+    trackEvent('onboarding_ai_preview_view', {});
+    go('paywall');
+  };
+
+  const onStartTrial = async () => {
+    setIsLoading(true);
+    setError(null);
+    trackEvent('trial_started', { billing_plan: selectedPlan });
+    try {
+      // TODO: Stripe / Google Play / App Store API call
+      // await purchaseSubscription(selectedPlan);
+      update({
+        subscriptionStatus: 'trial',
+        trialStartedAt: new Date().toISOString(),
+        selectedBillingPlan: selectedPlan,
+        hasSeenPaywall: true,
+      });
+      onComplete();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : '購入処理に失敗しました。もう一度お試しください。');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const onContinueFree = () => {
+    update({ hasSeenPaywall: true });
+    trackEvent('free_continue_selected', { source_screen: screen });
+    onComplete();
+  };
+
+  // ── Render ──────────────────────────────────────
+  switch (screen) {
+    case 'welcome':
+      return &lt;WelcomeScreen onStart={onWelcomeStart} onSkip={() => go('goal')} /&gt;;
+    case 'goal':
+      return &lt;GoalSelectionScreen selectedGoal={state.selectedGoal} onSelect={onGoalSelect} onNext={onGoalNext} onSkip={() => go('placement_intro')} /&gt;;
+    case 'placement_intro':
+      return &lt;PlacementIntroScreen onStart={onPlacementStart} onTryOne={onPlacementStart} /&gt;;
+    case 'placement_result':
+      return &lt;PlacementResultScreen score={state.placementScore ?? 48} summary="分解の筋は良いですが、前提の置き方に伸びしろがあります" recommendedPath={RECOMMENDED_PATH} onTryAI={onResultTryAI} onGoHome={onContinueFree} /&gt;;
+    case 'ai_preview':
+      return &lt;AIPreviewScreen onStartTrial={onAiPreviewTrial} onContinueFree={onContinueFree} /&gt;;
+    case 'paywall':
+      return &lt;PaywallScreen selectedPlan={selectedPlan} onSelectPlan={setSelectedPlan} onStartTrial={onStartTrial} onContinueFree={onContinueFree} isLoading={isLoading} error={error} /&gt;;
+    default:
+      return null;
+  }
+}</pre>
+
+<!-- ==================== COMPONENTS ==================== -->
+<h2 id="components">4. コンポーネント実装</h2>
+
+<h3>OnboardingScaffold</h3>
+<pre>// components/OnboardingScaffold.tsx
+interface OnboardingScaffoldProps {
+  currentStep: number;   // 1-6
+  totalSteps?: number;   // default 6
+  onBack?: () => void;
+  onSkip?: () => void;
+  children: React.ReactNode;
+  stickyFooter?: React.ReactNode;
+}
+
+export function OnboardingScaffold({
+  currentStep, totalSteps = 6, onBack, onSkip, children, stickyFooter
+}: OnboardingScaffoldProps) {
+  return (
+    &lt;div style={{ display: 'flex', flexDirection: 'column', minHeight: '100dvh', background: 'var(--color-white)' }}&gt;
+      {/* Header */}
+      &lt;div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px' }}&gt;
+        {onBack
+          ? &lt;button onClick={onBack} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '8px' }}&gt;
+              &lt;ChevronLeftIcon /&gt;
+            &lt;/button&gt;
+          : &lt;div style={{ width: 40 }} /&gt;
+        }
+        &lt;ProgressDots current={currentStep} total={totalSteps} /&gt;
+        {onSkip
+          ? &lt;button onClick={onSkip} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-text-muted)', fontSize: 14 }}&gt;
+              スキップ
+            &lt;/button&gt;
+          : &lt;div style={{ width: 40 }} /&gt;
+        }
+      &lt;/div&gt;
+      {/* Scrollable content */}
+      &lt;div style={{ flex: 1, overflowY: 'auto', padding: '8px 20px 24px' }}&gt;
+        {children}
+      &lt;/div&gt;
+      {/* Sticky footer */}
+      {stickyFooter &amp;&amp; (
+        &lt;div style={{ padding: '12px 20px 32px', borderTop: '1px solid var(--color-gray-border)', background: 'var(--color-white)' }}&gt;
+          {stickyFooter}
+        &lt;/div&gt;
+      )}
+    &lt;/div&gt;
+  );
+}</pre>
+
+<h3>ProgressDots</h3>
+<pre>// components/ProgressDots.tsx
+interface ProgressDotsProps { current: number; total: number; }
+
+export function ProgressDots({ current, total }: ProgressDotsProps) {
+  return (
+    &lt;div style={{ display: 'flex', gap: 6 }}&gt;
+      {Array.from({ length: total }, (_, i) => (
+        &lt;div key={i} style={{
+          width: i + 1 === current ? 20 : 6,
+          height: 6,
+          borderRadius: 3,
+          background: i + 1 === current ? 'var(--color-blue)' : 'var(--color-gray-border)',
+          transition: 'all 0.3s ease',
+        }} /&gt;
+      ))}
+    &lt;/div&gt;
+  );
+}</pre>
+
+<h3>GoalOptionCard</h3>
+<pre>// components/GoalOptionCard.tsx
+interface GoalOptionCardProps {
+  title: string;
+  description: string;
+  isSelected: boolean;
+  onSelect: () => void;
+}
+
+export function GoalOptionCard({ title, description, isSelected, onSelect }: GoalOptionCardProps) {
+  return (
+    &lt;button
+      onClick={onSelect}
+      style={{
+        width: '100%', textAlign: 'left', padding: '16px',
+        border: `2px solid ${isSelected ? 'var(--color-blue)' : 'var(--color-gray-border)'}`,
+        borderRadius: 'var(--radius-lg)',
+        background: isSelected ? 'var(--color-blue-light)' : 'white',
+        cursor: 'pointer', transition: 'all 0.15s ease',
+        boxShadow: isSelected ? 'var(--shadow-md)' : 'var(--shadow-sm)',
+        display: 'flex', alignItems: 'flex-start', gap: 12,
+      }}
+    &gt;
+      &lt;div style={{
+        width: 20, height: 20, borderRadius: '50%', flexShrink: 0, marginTop: 2,
+        border: `2px solid ${isSelected ? 'var(--color-blue)' : 'var(--color-gray-border)'}`,
+        background: isSelected ? 'var(--color-blue)' : 'white',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+      }}&gt;
+        {isSelected &amp;&amp; &lt;div style={{ width: 8, height: 8, borderRadius: '50%', background: 'white' }} /&gt;}
+      &lt;/div&gt;
+      &lt;div&gt;
+        &lt;div style={{ fontWeight: 600, fontSize: 15, color: 'var(--color-text-primary)', marginBottom: 4 }}&gt;
+          {title}
+        &lt;/div&gt;
+        &lt;div style={{ fontSize: 13, color: 'var(--color-text-secondary)', lineHeight: 1.5 }}&gt;
+          {description}
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/button&gt;
+  );
+}</pre>
+
+<h3>PlanCard</h3>
+<pre>// components/PlanCard.tsx
+interface PlanCardProps {
+  plan: 'annual' | 'monthly';
+  isSelected: boolean;
+  onSelect: () => void;
+}
+
+export function PlanCard({ plan, isSelected, onSelect }: PlanCardProps) {
+  const isAnnual = plan === 'annual';
+  return (
+    &lt;button
+      onClick={onSelect}
+      style={{
+        width: '100%', textAlign: 'left', padding: '20px',
+        border: `2px solid ${isSelected ? 'var(--color-blue)' : 'var(--color-gray-border)'}`,
+        borderRadius: 'var(--radius-lg)', background: isSelected ? 'var(--color-blue-light)' : 'white',
+        cursor: 'pointer', transition: 'all 0.15s ease', position: 'relative',
+      }}
+    &gt;
+      {isAnnual &amp;&amp; (
+        &lt;div style={{
+          position: 'absolute', top: -12, left: 16,
+          background: 'var(--color-gold)', color: 'white',
+          fontSize: 11, fontWeight: 700, padding: '3px 12px', borderRadius: 20,
+        }}&gt;いちばん人気&lt;/div&gt;
+      )}
+      &lt;div style={{ fontWeight: 700, fontSize: 15, color: 'var(--color-navy)', marginBottom: 4 }}&gt;
+        {isAnnual ? '年額プラン' : '月額プラン'}
+      &lt;/div&gt;
+      &lt;div style={{ fontSize: 26, fontWeight: 700, color: 'var(--color-navy)' }}&gt;
+        {isAnnual ? '¥3,500' : '¥500'}
+        &lt;span style={{ fontSize: 14, fontWeight: 400, color: 'var(--color-text-secondary)' }}&gt;
+          {isAnnual ? ' / 年' : ' / 月'}
+        &lt;/span&gt;
+      &lt;/div&gt;
+      {isAnnual &amp;&amp; (
+        &lt;&gt;
+          &lt;div style={{ fontSize: 13, color: 'var(--color-text-secondary)' }}&gt;月々 約¥292&lt;/div&gt;
+          &lt;div style={{ display: 'inline-block', background: '#DCFCE7', color: '#15803D', fontSize: 12, fontWeight: 700, padding: '2px 8px', borderRadius: 4, margin: '4px 0' }}&gt;
+            42% OFF
+          &lt;/div&gt;
+        &lt;/&gt;
+      )}
+      &lt;div style={{ fontSize: 13, color: 'var(--color-text-secondary)', marginTop: 4 }}&gt;
+        7日間無料トライアル付き
+      &lt;/div&gt;
+    &lt;/button&gt;
+  );
+}</pre>
+
+<h3>StickyPaywallCTA</h3>
+<pre>// components/StickyPaywallCTA.tsx
+interface StickyPaywallCTAProps {
+  selectedPlan: BillingPlan;
+  onStartTrial: () => void;
+  onContinueFree: () => void;
+  isLoading: boolean;
+  error: string | null;
+}
+
+export function StickyPaywallCTA({ selectedPlan, onStartTrial, onContinueFree, isLoading, error }: StickyPaywallCTAProps) {
+  return (
+    &lt;div style={{ padding: '12px 20px 32px', borderTop: '1px solid var(--color-gray-border)', background: 'var(--color-white)' }}&gt;
+      {error &amp;&amp; (
+        &lt;div style={{ color: 'var(--color-danger)', fontSize: 13, marginBottom: 8, textAlign: 'center' }}&gt;
+          {error}
+        &lt;/div&gt;
+      )}
+      &lt;button
+        onClick={onStartTrial}
+        disabled={isLoading}
+        style={{
+          width: '100%', padding: '16px', borderRadius: 'var(--radius-lg)',
+          background: isLoading ? 'var(--color-gray-border)' : 'var(--color-navy)',
+          color: 'white', fontWeight: 700, fontSize: 16, border: 'none',
+          cursor: isLoading ? 'not-allowed' : 'pointer', marginBottom: 12,
+        }}
+      &gt;
+        {isLoading ? '処理中...' : (selectedPlan === 'annual' ? '年額で7日無料トライアルを始める' : '月額で7日無料トライアルを始める')}
+      &lt;/button&gt;
+      &lt;button
+        onClick={onContinueFree}
+        style={{
+          width: '100%', padding: '12px', borderRadius: 'var(--radius-lg)',
+          background: 'transparent', color: 'var(--color-text-secondary)',
+          fontSize: 14, border: '1px solid var(--color-gray-border)', cursor: 'pointer',
+        }}
+      &gt;
+        月額で試す
+      &lt;/button&gt;
+      &lt;p style={{ fontSize: 11, color: 'var(--color-text-muted)', textAlign: 'center', marginTop: 12 }}&gt;
+        7日以内に解約すれば料金はかかりません。決済はStripe / App Store / Google Playで管理されます。
+      &lt;/p&gt;
+    &lt;/div&gt;
+  );
+}</pre>
+
+<!-- ==================== ANALYTICS ==================== -->
+<h2 id="analytics">5. アナリティクス実装</h2>
+
+<pre>// lib/analytics.ts
+export type OnboardingEventName =
+  | 'onboarding_welcome_view'
+  | 'onboarding_goal_view'
+  | 'onboarding_goal_selected'
+  | 'onboarding_placement_intro_view'
+  | 'onboarding_placement_started'
+  | 'onboarding_placement_completed'
+  | 'onboarding_result_view'
+  | 'onboarding_ai_preview_view'
+  | 'onboarding_paywall_view'
+  | 'paywall_annual_selected'
+  | 'paywall_monthly_selected'
+  | 'trial_started'
+  | 'paywall_dismissed'
+  | 'free_continue_selected'
+  | 'first_lesson_started'
+  | 'first_ai_feedback_used'
+  | 'first_fermi_started'
+  | 'first_roleplay_started';
+
+export interface EventParams {
+  selected_goal?: string;
+  score_band?: 'low' | 'mid' | 'high';  // &lt;40 / 40-60 / &gt;60
+  billing_plan?: 'annual' | 'monthly';
+  source_screen?: string;
+  subscription_status?: string;
+}
+
+export function trackEvent(name: OnboardingEventName, params: EventParams): void {
+  // Firebase Analytics via Capacitor plugin
+  try {
+    if (typeof window !== 'undefined' &amp;&amp; (window as Record&lt;string,unknown&gt;).FirebaseAnalytics) {
+      ((window as Record&lt;string,unknown&gt;).FirebaseAnalytics as { logEvent: (p: unknown) =&gt; void })
+        .logEvent({ name, params });
+    }
+  } catch { /* ignore */ }
+  if (import.meta.env.DEV) console.log('[Analytics]', name, params);
+}</pre>
+
+<h4>イベント発火タイミング一覧</h4>
+<table>
+<tr><th>画面</th><th>イベント</th><th>タイミング</th></tr>
+<tr><td>Welcome</td><td>onboarding_welcome_view</td><td>画面mount時</td></tr>
+<tr><td>Goal</td><td>onboarding_goal_view</td><td>画面mount時</td></tr>
+<tr><td>Goal</td><td>onboarding_goal_selected</td><td>カード選択時</td></tr>
+<tr><td>Placement Intro</td><td>onboarding_placement_intro_view</td><td>画面mount時</td></tr>
+<tr><td>Placement Intro</td><td>onboarding_placement_started</td><td>「診断を始める」タップ時</td></tr>
+<tr><td>Placement Result</td><td>onboarding_placement_completed</td><td>結果が出た瞬間</td></tr>
+<tr><td>Placement Result</td><td>onboarding_result_view</td><td>画面mount時</td></tr>
+<tr><td>AI Preview</td><td>onboarding_ai_preview_view</td><td>画面mount時</td></tr>
+<tr><td>Paywall</td><td>onboarding_paywall_view</td><td>画面mount時</td></tr>
+<tr><td>Paywall</td><td>paywall_annual_selected / paywall_monthly_selected</td><td>プランカード選択時</td></tr>
+<tr><td>Paywall</td><td>trial_started</td><td>「無料トライアル開始」タップ時</td></tr>
+<tr><td>Paywall</td><td>free_continue_selected</td><td>「無料で始める」タップ時</td></tr>
+</table>
+
+<!-- ==================== SCREENS ==================== -->
+<h2 id="screens">6. 画面仕様（コピー含む）</h2>
+
+<div class="screen-card">
+  <div class="screen-num">Screen 1 / 6</div>
+  <h3>Welcome</h3>
+  <div class="copy-block"><div class="label">Title</div><div class="text">考える力は、毎日5分で伸ばせる</div></div>
+  <div class="copy-block"><div class="label">Body</div><div class="text">フェルミ推定・ケース面接・ロジカルシンキングを、AIのフィードバック付きで実践トレーニング。正解よりも、「どう考えたか」を磨くアプリです。</div></div>
+  <div class="copy-block"><div class="label">Chip</div><div class="text">就活・面接・仕事で使える論理思考</div></div>
+  <div class="copy-block"><div class="label">Primary CTA</div><div class="text">3分で診断を始める</div></div>
+  <div class="copy-block"><div class="label">Secondary CTA</div><div class="text">あとで見る</div></div>
+  <div class="copy-block"><div class="label">Small note</div><div class="text">カード登録はまだ不要です</div></div>
+  <h4>レイアウト</h4>
+  <p>上部: LOGICロゴ。中央: アブストラクトな思考構造のイラスト（SVG）。その下にchip → title → body → note の順。最下部sticky: Primary CTA（濃紺・フル幅）＋ Secondary CTA（テキストボタン）。</p>
+</div>
+
+<div class="screen-card">
+  <div class="screen-num">Screen 2 / 6</div>
+  <h3>Goal Selection</h3>
+  <div class="copy-block"><div class="label">Title</div><div class="text">使う目的を教えてください</div></div>
+  <div class="copy-block"><div class="label">Body</div><div class="text">あなたに合った問題と学習順をおすすめします</div></div>
+  <h4>ゴールカード（4択・1つ必須）</h4>
+  <table>
+    <tr><th>Key</th><th>Title</th><th>Description</th></tr>
+    <tr><td>consulting</td><td>コンサル・戦略職を目指している</td><td>ケース面接・フェルミ推定を重点的に練習</td></tr>
+    <tr><td>job_hunting</td><td>就活・面接で論理的に話せるようになりたい</td><td>結論から話す力、分解力、伝え方を強化</td></tr>
+    <tr><td>work_thinking</td><td>仕事で考えを整理する力を伸ばしたい</td><td>会議・報告・意思決定に使える思考法を学ぶ</td></tr>
+    <tr><td>general</td><td>幅広く論理思考を鍛えたい</td><td>MECE・ロジックツリー・仮説思考を広く学ぶ</td></tr>
+  </table>
+  <div class="copy-block"><div class="label">Primary CTA</div><div class="text">次へ（ゴール未選択時はdisabled）</div></div>
+  <div class="copy-block"><div class="label">Secondary CTA</div><div class="text">あとで選ぶ（selectedGoal=nullのままnext画面へ）</div></div>
+</div>
+
+<div class="screen-card">
+  <div class="screen-num">Screen 3 / 6</div>
+  <h3>Placement Intro</h3>
+  <div class="copy-block"><div class="label">Title</div><div class="text">8問で、今の論理思考レベルがわかります</div></div>
+  <div class="copy-block"><div class="label">Body</div><div class="text">短い診断で、あなたの強みと伸びしろを可視化します。結果に合わせて、おすすめの学習ルートも提案します。</div></div>
+  <h4>Bullets</h4>
+  <ul style="margin: 8px 0 8px 20px; font-size: 15px;">
+    <li>約3分で完了</li>
+    <li>MECE / 演繹 / 帰納 / 分解思考をチェック</li>
+    <li>結果に応じて、最初にやるべきレッスンがわかる</li>
+  </ul>
+  <div class="copy-block"><div class="label">Primary CTA</div><div class="text">診断を始める</div></div>
+  <div class="copy-block"><div class="label">Secondary CTA</div><div class="text">まずは1問だけ試す</div></div>
+  <div class="copy-block"><div class="label">Note</div><div class="text">無料で試せます</div></div>
+</div>
+
+<div class="screen-card">
+  <div class="screen-num">Screen 4 / 6</div>
+  <h3>Placement Result</h3>
+  <div class="copy-block"><div class="label">Title</div><div class="text">あなたの現在地</div></div>
+  <div class="copy-block"><div class="label">Score display</div><div class="text">偏差値 {score}（大きく表示。判定的なトーンにしない）</div></div>
+  <div class="copy-block"><div class="label">Summary</div><div class="text">分解の筋は良いですが、前提の置き方に伸びしろがあります</div></div>
+  <h4>おすすめ学習ルート（3カード）</h4>
+  <table>
+    <tr><th>番号</th><th>Title</th><th>Description</th></tr>
+    <tr><td>1</td><td>ロジックツリー</td><td>問いを構造化する土台を作る</td></tr>
+    <tr><td>2</td><td>フェルミ推定</td><td>分解 → 仮説 → 数値感覚を実践で鍛える</td></tr>
+    <tr><td>3</td><td>結論ファースト</td><td>面接や報告で伝わる話し方を身につける</td></tr>
+  </table>
+  <div class="copy-block"><div class="label">Primary CTA</div><div class="text">AI添削を1回試す → ai_preview へ</div></div>
+  <div class="copy-block"><div class="label">Secondary CTA</div><div class="text">ホームへ進む → free home へ</div></div>
+</div>
+
+<div class="screen-card">
+  <div class="screen-num">Screen 5 / 6</div>
+  <h3>AI Feedback Preview</h3>
+  <div class="copy-block"><div class="label">Title</div><div class="text">これが、LOGICのAIフィードバックです</div></div>
+  <h4>積み重ねカード構成</h4>
+  <p><strong>カード①（問題）:</strong> 日本にあるコンビニの年間売上を推定してください</p>
+  <p><strong>カード②（ユーザー解答）:</strong> 店舗数 × 1店舗あたり売上で考えます。全国に5万店あり、1日50万円売ると仮定すると…</p>
+  <p><strong>カード③（AIフィードバック・強調）:</strong></p>
+  <ul style="margin: 4px 0 8px 20px; font-size: 15px;">
+    <li>✓ 分解の方向性は良いです</li>
+    <li>⚠ ただし、1日売上の前提がやや大きく、根拠が弱いです</li>
+    <li>💡 客単価 × 来店者数 に分けると精度が上がります</li>
+    <li>💡 最後にレンジで示すと、より実務的な答えになります</li>
+  </ul>
+  <div class="copy-block"><div class="label">Tagline</div><div class="text">答えの正誤だけでなく、「考え方」を返すから伸びる</div></div>
+  <div class="copy-block"><div class="label">Primary CTA</div><div class="text">7日無料で続ける → paywall へ</div></div>
+  <div class="copy-block"><div class="label">Secondary CTA</div><div class="text">無料範囲で始める → free home へ</div></div>
+</div>
+
+<div class="screen-card">
+  <div class="screen-num">Screen 6 / 6</div>
+  <h3>Paywall</h3>
+  <div class="copy-block"><div class="label">Title</div><div class="text">7日間、無料で試せます</div></div>
+  <div class="copy-block"><div class="label">Body</div><div class="text">診断結果に合わせた学習ルート、AI問題生成、フェルミ推定、ロールプレイをまとめて使えます。まずは無料で試して、合わなければいつでも解約できます。</div></div>
+  <h4>Trust chips（3つ）</h4>
+  <p><span class="tag">✓ 7日間無料トライアル</span> <span class="tag">✓ いつでも解約可能</span> <span class="tag">✓ 年額がいちばんお得</span></p>
+  <h4>プランカード</h4>
+  <div class="grid-2">
+    <div class="plan-card recommended">
+      <div class="plan-badge">いちばん人気</div>
+      <div style="font-weight:700;font-size:15px;color:var(--color-navy);margin-bottom:4px">年額プラン</div>
+      <div class="plan-price">¥3,500 <span style="font-size:14px;font-weight:400;color:var(--color-text-secondary)">/ 年</span></div>
+      <div class="plan-sub">月々 約¥292</div>
+      <div style="display:inline-block;background:#DCFCE7;color:#15803D;font-size:12px;font-weight:700;padding:2px 8px;border-radius:4px;margin:4px 0">42% OFF</div>
+      <div class="plan-sub">7日間無料トライアル付き</div>
+    </div>
+    <div class="plan-card">
+      <div style="font-weight:700;font-size:15px;color:var(--color-navy);margin-bottom:4px">月額プラン</div>
+      <div class="plan-price">¥500 <span style="font-size:14px;font-weight:400;color:var(--color-text-secondary)">/ 月</span></div>
+      <div class="plan-sub" style="margin-top:4px">7日間無料トライアル付き</div>
+    </div>
+  </div>
+  <h4>LOGIC Pro 機能</h4>
+  <ul style="margin: 8px 0 12px 20px; font-size:15px; line-height:2;">
+    <li>全レッスン・クイズ</li>
+    <li>AI問題生成 月300問まで</li>
+    <li>フェルミ推定の実践練習</li>
+    <li>AIロールプレイ</li>
+    <li>偏差値分析</li>
+    <li>学習履歴と振り返り</li>
+    <li>今後追加される機能への優先アクセス</li>
+  </ul>
+  <h4>無料版との比較</h4>
+  <table>
+    <tr><th>機能</th><th>無料版</th><th>LOGIC Pro</th></tr>
+    <tr><td>今日の1問</td><td class="ok">○</td><td class="ok">○</td></tr>
+    <tr><td>一部レッスン</td><td class="ok">○</td><td class="ok">○</td></tr>
+    <tr><td>プレイスメント診断</td><td class="ok">○</td><td class="ok">○</td></tr>
+    <tr><td>AI問題生成</td><td class="limit">制限あり</td><td class="ok">月300問</td></tr>
+    <tr><td>フェルミ推定</td><td class="limit">制限あり</td><td class="ok">○</td></tr>
+    <tr><td>AIロールプレイ</td><td class="limit">制限あり</td><td class="ok">○</td></tr>
+    <tr><td>偏差値分析</td><td class="limit">基本表示</td><td class="ok">詳細表示</td></tr>
+  </table>
+  <h4>FAQ</h4>
+  <p><strong>Q: いつ課金されますか？</strong><br>A: 7日間の無料トライアル終了後に自動更新されます。終了前ならいつでも解約できます。</p>
+  <p><strong>Q: 年額と月額の違いは何ですか？</strong><br>A: 使える機能は同じです。違うのは請求期間だけで、年額の方が割安です。</p>
+  <p><strong>Q: 途中で解約できますか？</strong><br>A: はい。いつでも解約できます。</p>
+</div>
+
+<!-- ==================== EDGE CASES ==================== -->
+<h2 id="edge">7. エッジケース・エラーハンドリング</h2>
+
+<table>
+<tr><th>状況</th><th>ふるまい</th><th>実装メモ</th></tr>
+<tr><td>ゴール未選択で「次へ」</td><td>ボタンをdisabled。「あとで選ぶ」はnull許容</td><td><code>disabled={!selectedGoal}</code></td></tr>
+<tr><td>診断を途中で離脱</td><td>次回起動時にplacement_introへresume</td><td><code>hasCompletedPlacement=false</code>なら戻る</td></tr>
+<tr><td>トライアル開始API失敗</td><td>エラーメッセージ表示 + リトライボタン</td><td><code>error</code> stateをPaywallに渡す</td></tr>
+<tr><td>オフライン時にpaywall到達</td><td>「インターネット接続を確認してください」を表示</td><td><code>navigator.onLine</code>チェック</td></tr>
+<tr><td>トライアル期限切れで再起動</td><td>paywallを再表示（「トライアルが終了しました」バナー付き）</td><td><code>subscriptionStatus === 'expired'</code>判定</td></tr>
+<tr><td>既存サブスク有効で起動</td><td>オンボーディングスキップして直接home</td><td><code>getResumeScreen()</code>が'home'を返す</td></tr>
+<tr><td>localStorageがない環境</td><td>try/catchでdefaultStateにフォールバック</td><td>hookに実装済み</td></tr>
+</table>
+
+<h3>オフライン処理コード例</h3>
+<pre>// PaywallScreen内
+const handleStartTrial = async () => {
+  if (!navigator.onLine) {
+    setError('インターネット接続を確認してください');
+    return;
+  }
+  // ... 通常処理
+};</pre>
+
+<!-- ==================== COPY ==================== -->
+<h2 id="copy">8. コピー一貫性チェックリスト</h2>
+
+<div class="warn-block">
+  <strong>⛔ 以下の文言は禁止（出力コードを必ずgrepで確認）</strong><br>
+  <code>Standard</code> / <code>Premium</code> / <code>プレミアム</code> / <code>30問</code> / <code>1週間</code> / <code>7日間のトライアル</code>（「の」付き）
+</div>
+
+<table>
+<tr><th>要素</th><th>正規文字列</th><th>禁止バリアント</th></tr>
+<tr><td>プロダクト名</td><td><strong>LOGIC Pro</strong></td><td>Standard, Premium, プレミアム</td></tr>
+<tr><td>月額価格</td><td><strong>¥500 / 月</strong></td><td>500円, ¥500/month, 月500円</td></tr>
+<tr><td>年額価格</td><td><strong>¥3,500 / 年</strong></td><td>3500円, ¥3500, 年3,500円</td></tr>
+<tr><td>AIクォータ</td><td><strong>AI問題生成 月300問まで</strong></td><td>30問, 300問/月, AI 300問</td></tr>
+<tr><td>トライアル</td><td><strong>7日間無料トライアル</strong></td><td>1週間, 7日間のトライアル, 無料期間7日</td></tr>
+<tr><td>月換算表示</td><td><strong>月々 約¥292</strong></td><td>292円/月, 月292円</td></tr>
+<tr><td>割引表示</td><td><strong>42% OFF</strong></td><td>42%引き, 58%の価格</td></tr>
+</table>
+
+<!-- ==================== TOKENS ==================== -->
+<h2 id="tokens">9. デザイントークン（CSS Custom Properties）</h2>
+
+<pre>/* src/styles/tokens.css — 全コンポーネントで使用 */
+:root {
+  /* Colors */
+  --color-navy: #0B2545;
+  --color-blue: #4A7EC7;
+  --color-blue-light: #EBF2FF;
+  --color-white: #FAFAF8;
+  --color-gray-bg: #F0EFED;
+  --color-gray-border: #E2E0DC;
+  --color-gold: #C9A84C;
+  --color-text-primary: #1A1A2E;
+  --color-text-secondary: #6B7280;
+  --color-text-muted: #9CA3AF;
+  --color-success: #16A34A;
+  --color-danger: #DC2626;
+
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.10);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+
+  /* Typography */
+  --font-xs: 11px;
+  --font-sm: 13px;
+  --font-base: 15px;
+  --font-md: 17px;
+  --font-lg: 20px;
+  --font-xl: 24px;
+  --font-2xl: 28px;
+  --font-3xl: 34px;
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.25s ease;
+}</pre>
+
+<div style="margin-top: 64px; padding: 24px; background: var(--color-gray-bg); border-radius: var(--radius-lg); text-align: center;">
+  <p style="font-size: 13px; color: var(--color-text-secondary);">
+    LOGIC Onboarding &amp; Paywall 実装仕様書 v1.0 ／ 2026-04-28<br>
+    このドキュメントはエンジニア向け実装リファレンスです。
+  </p>
+</div>
+
+</div>
+</body>
+</html>
