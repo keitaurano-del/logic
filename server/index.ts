@@ -1960,6 +1960,81 @@ app.post('/api/feedback', makeLimiter({ windowMs: 60*1000, max: 5 }), async (req
 // それ以外のルート（/api/* 以外）は Play Store 誘導ページを返す
 // ※ APIルートが全て定義された後に配置すること（catch-all が先に来るとAPIが塞がれる）
 const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.keitaurano.logic'
+// ================================================================
+// SCRUM-90: Apollo提案 → Jira自動起票 API
+// ================================================================
+app.post('/api/jira-create', async (req: Request, res) => {
+  // 認証: JIRA_WEBHOOK_SECRETが設定されている場合は検証
+  const webhookSecret = process.env.JIRA_WEBHOOK_SECRET
+  if (webhookSecret) {
+    const authHeader = req.headers.authorization || ''
+    if (authHeader !== `Bearer ${webhookSecret}`) {
+      return res.status(401).json({ error: 'Unauthorized' })
+    }
+  }
+
+  const { summary, description, issueType = 'Story', priority = 'Medium', labels = [] } = req.body
+  if (!summary) return res.status(400).json({ error: 'summary is required' })
+
+  const jiraEmail = process.env.JIRA_EMAIL
+  const jiraToken = process.env.JIRA_API_TOKEN
+  const jiraUrl = process.env.JIRA_URL || 'https://logic.atlassian.net'
+  const projectKey = process.env.JIRA_PROJECT_KEY || 'SCRUM'
+
+  if (!jiraEmail || !jiraToken) {
+    return res.status(503).json({ error: 'Jira credentials not configured' })
+  }
+
+  const issueTypeMap: Record<string, { id: string }> = {
+    'Story': { id: '10004' },
+    'Bug':   { id: '10007' },
+  }
+  const priorityMap: Record<string, string> = {
+    'High': 'High', 'Medium': 'Medium', 'Low': 'Low',
+  }
+
+  try {
+    const auth = Buffer.from(`${jiraEmail}:${jiraToken}`).toString('base64')
+    const body = {
+      fields: {
+        project: { key: projectKey },
+        summary,
+        description: {
+          type: 'doc', version: 1,
+          content: [{ type: 'paragraph', content: [{ type: 'text', text: description || summary }] }],
+        },
+        issuetype: issueTypeMap[issueType] ?? issueTypeMap['Story'],
+        priority: { name: priorityMap[priority] ?? 'Medium' },
+        labels: ['apollo-proposal', ...labels],
+      },
+    }
+
+    const response = await fetch(`${jiraUrl}/rest/api/3/issue`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Basic ${auth}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    })
+
+    if (!response.ok) {
+      const errText = await response.text()
+      return res.status(response.status).json({ error: errText })
+    }
+
+    const data = await response.json() as { key: string }
+    const issueKey = data.key
+    const issueUrl = `${jiraUrl}/browse/${issueKey}`
+
+    console.log(`[JIRA] Created issue: ${issueKey} - ${summary}`)
+    return res.json({ key: issueKey, url: issueUrl })
+  } catch (err) {
+    console.error('[JIRA] Error creating issue:', err)
+    return res.status(500).json({ error: 'Failed to create Jira issue' })
+  }
+})
+
 app.get('/{*splat}', (req, res) => {
   // /api/* へのリクエストがここに来た場合は 404 を返す（APIルート未定義の保護）
   if (req.path.startsWith('/api/')) {
