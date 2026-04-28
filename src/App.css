@@ -68,7 +68,7 @@
   height: 36px;
   border-radius: 50%;
   background: var(--brand-grad);
-  color: #fff;
+  color: var(--text-on-hero, #fff);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -137,7 +137,7 @@
   font-family: var(--serif);
   font-size: 72px;
   font-weight: 900;
-  color: #FFFFFF;
+  color: var(--text-on-hero, #FFFFFF);
   line-height: 1;
   letter-spacing: -0.04em;
   font-feature-settings: "lnum", "tnum";
@@ -159,7 +159,7 @@
   padding: 5px 12px;
   border-radius: var(--radius-full);
   background: rgba(255,255,255,0.2);
-  color: #FFFFFF;
+  color: var(--text-on-hero, #FFFFFF);
   letter-spacing: 0.12em;
   backdrop-filter: blur(8px);
   border: 1px solid rgba(255,255,255,0.25);
@@ -187,7 +187,7 @@
   font-weight: 700;
   line-height: 1.3;
   letter-spacing: -0.01em;
-  color: #FFFFFF;
+  color: var(--text-on-hero, #FFFFFF);
 }
 
 .hero-stats {
@@ -218,7 +218,7 @@
   font-size: 28px;
   font-weight: 800;
   letter-spacing: -0.02em;
-  color: #FFFFFF;
+  color: var(--text-on-hero, #FFFFFF);
   font-feature-settings: "lnum", "tnum";
   line-height: 1;
 }
@@ -315,7 +315,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: #fff;
+  color: var(--text-on-hero, #fff);
   border: none;
   font-size: 20px;
 }
@@ -593,11 +593,11 @@
   overflow: hidden;
 }
 
-/* Per-card gradient top border accent */
+/* Per-card gradient top border accent — SCRUM-168: CSS変数化 */
 .home-cta-grid .ai-gen-card:nth-child(1)::before { background: var(--brand-grad); }
-.home-cta-grid .ai-gen-card:nth-child(2)::before { background: linear-gradient(135deg, #059669, #34D399); }
-.home-cta-grid .ai-gen-card:nth-child(3)::before { background: linear-gradient(135deg, #D97706, #FCD34D); }
-.home-cta-grid .ai-gen-card:nth-child(4)::before { background: linear-gradient(135deg, #7C3AED, #A78BFA); }
+.home-cta-grid .ai-gen-card:nth-child(2)::before { background: linear-gradient(135deg, var(--success, #059669), #34D399); }
+.home-cta-grid .ai-gen-card:nth-child(3)::before { background: linear-gradient(135deg, var(--warning, #D97706), #FCD34D); }
+.home-cta-grid .ai-gen-card:nth-child(4)::before { background: linear-gradient(135deg, var(--brand-pop, #7C3AED), #A78BFA); }
 
 .ai-gen-card::before {
   content: '';
@@ -642,7 +642,7 @@
 
 .ai-gen-badge {
   background: var(--brand-grad);
-  color: #fff;
+  color: var(--text-on-hero, #fff);
   font-size: 9px;
   font-weight: 800;
   padding: 2px 6px;
@@ -802,7 +802,7 @@
 }
 .daily-badge.new {
   background: var(--brand-grad);
-  color: #fff;
+  color: var(--text-on-hero, #fff);
 }
 .daily-badge.done {
   background: var(--success-soft);

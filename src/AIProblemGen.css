@@ -94,7 +94,7 @@
 .aip-input:focus {
   outline: none;
   border-color: var(--accent-dark);
-  background: #FFFCF6;
+  background: var(--bg-card, #FFFCF6);
 }
 
 .aip-input::placeholder {

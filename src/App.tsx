@@ -686,20 +686,7 @@ function App() {
               </svg>
             </div>
           </div>
-          {/* Flashcards in lessons tab */}
-          {(() => {
-            const fc = getCardStats()
-            return (
-              <div className="flashcard-banner lesson-tab-fc" onClick={() => navigateTo({ type: 'flashcards' })}>
-                <div className="flashcard-banner-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="14" height="18" rx="2" /><path d="M8 4V2" /><path d="M22 8v12a2 2 0 0 1-2 2" /><path d="M18 2v2" /><rect x="8" y="2" width="14" height="18" rx="2" opacity="0.3" /></svg></div>
-                <div className="flashcard-banner-text">
-                  <strong>フラッシュカード</strong>
-                  <span>{fc.total === 0 ? 'レッスンを完了するとカードが作られます' : fc.due > 0 ? `${fc.due}枚の復習待ち` : `${fc.total}枚 (今日の復習完了)`}</span>
-                </div>
-                <span className="flashcard-banner-arrow">›</span>
-              </div>
-            )
-          })()}
+          {/* SCRUM-169: レッスンタブの重複フラッシュカードバナーを削除（ホームタブに集約） */}
           {Object.entries(
             localizeLessons(lessons)
               .filter(l => {
