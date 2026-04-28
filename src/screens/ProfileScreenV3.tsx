@@ -29,10 +29,11 @@ interface ProfileScreenV3Props {
   onOpenSettings: (section?: 'account' | 'notifications' | 'plan') => void
   onOpenFeedback?: () => void
   onOpenPricing?: () => void
+  onOpenPlacementTest?: () => void
 }
 
 export function ProfileScreenV3(props: ProfileScreenV3Props) {
-  const { userName, onOpenSettings, onOpenFeedback, onOpenPricing } = props
+  const { userName, onOpenSettings, onOpenFeedback, onOpenPricing, onOpenPlacementTest } = props
   const streak = getStreak()
   const completed = getCompletedCount()
   const xp = getXp()
@@ -93,6 +94,25 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
             })}
           </div>
         </div>
+
+        {/* SCRUM-165: プレイスメントテスト導線 */}
+        {onOpenPlacementTest && (
+          <div onClick={onOpenPlacementTest} style={{
+            background: `linear-gradient(135deg, ${v3.color.accentSoft} 0%, rgba(112,216,189,.1) 100%)`,
+            border: `1px solid ${v3.color.accent}40`,
+            borderRadius: v3.radius.card, padding: '16px 18px',
+            cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14,
+          }}>
+            <div style={{ width: 40, height: 40, borderRadius: 12, background: v3.color.accent, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={v3.color.bg} strokeWidth="2.5" strokeLinecap="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 14, fontWeight: 700, color: v3.color.text }}>プレイスメントテスト</div>
+              <div style={{ fontSize: 12, color: v3.color.text2, marginTop: 2 }}>自分のレベルを確認して最適なレッスンを履わせる</div>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5"><polyline points="9 18 15 12 9 6" /></svg>
+          </div>
+        )}
 
         {/* 設定 */}
         <div style={{ background: v3.color.card, borderRadius: v3.radius.card, overflow: 'hidden', boxShadow: v3.shadow.card }}>

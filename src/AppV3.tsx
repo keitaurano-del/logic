@@ -341,6 +341,7 @@ function AppV3() {
           onOpenSettings={(section) => navigate(section === 'account' ? { type: 'account-settings' } : section === 'notifications' ? { type: 'notification-settings' } : { type: 'settings' })}
           onOpenFeedback={() => navigate({ type: 'feedback' })}
           onOpenPricing={() => navigate({ type: 'pricing' })}
+          onOpenPlacementTest={() => navigate({ type: 'placement-test' })}
         />
       )}
       {screen.type === 'rank' && <RankScreen onBack={handleBack} />}

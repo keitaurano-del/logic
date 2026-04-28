@@ -3,9 +3,10 @@
  * 仕様: docs/DESIGN_V3.md §3.1
  * モックアップ: lv3-home.html
  */
-import { useMemo } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { getStreak, getStudyDates } from '../stats'
 import { v3 } from '../styles/tokensV3'
+import { API_BASE } from './apiBase'
 
 
 interface HomeScreenV3Props {
@@ -27,6 +28,15 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
 
   const streak = getStreak()
   // completed unused
+
+  // SCRUM-164: 今日の1問を動的取得
+  const [dailyQuestion, setDailyQuestion] = useState<string>('')
+  useEffect(() => {
+    fetch(`${API_BASE}/api/daily-fermi?locale=ja`)
+      .then(r => r.json())
+      .then(d => { if (d.question) setDailyQuestion(d.question) })
+      .catch(() => {})
+  }, [])
 
 
   // 今週カレンダー
@@ -83,7 +93,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
               <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: v3.color.accent }}>今日の1問</span>
             </div>
             <div style={{ fontFamily: "'Noto Sans JP', sans-serif", fontSize: 19, fontWeight: 700, color: v3.color.text, lineHeight: 1.4, letterSpacing: '-.005em', marginBottom: 8 }}>
-              フェルミ推定で、思考力を1日5分鍛える
+              {dailyQuestion || 'フェルミ推定で、思考力を1日5分鍛える'}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: v3.color.text2, fontSize: 12, fontWeight: 500, marginBottom: 16 }}>
               <span>毎日更新</span>
@@ -180,8 +190,8 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
         </div>
 
         {/* AI practice cards (large, vertical) */}
-        <AILargeCard image={`${IMG}/home-daily-question.webp`} name="AI問題生成" sub="テーマ別のオリジナル問題で練習" onClick={onOpenAIGen} />
-        <AILargeCard image={`${IMG}/home-roleplay.webp`} name="ロールプレイ" sub="ビジネス・哲学のシナリオで対話練習" onClick={onOpenRoleplay} />
+        <AILargeCard image={`${IMG}/home-daily-question.webp`} name="AI問題生成" sub="テーマ別のオリジナル問題で練習" onClick={onOpenAIGen} beta />
+        <AILargeCard image={`${IMG}/home-roleplay.webp`} name="ロールプレイ" sub="ビジネス・哲学のシナリオで対話練習" onClick={onOpenRoleplay} beta />
 
         {/* 記録を見る CTA */}
         <div
@@ -226,12 +236,21 @@ function CourseCard({ name, image, progress, accent, meta, onClick }: { name: st
 
 
 
-function AILargeCard({ image, name, sub, onClick }: { image: string; name: string; sub: string; onClick: () => void }) {
+function AILargeCard({ image, name, sub, onClick, beta }: { image: string; name: string; sub: string; onClick: () => void; beta?: boolean }) {
   return (
-    <div onClick={onClick} style={{ background: v3.color.card, borderRadius: v3.radius.card, overflow: 'hidden', cursor: 'pointer', boxShadow: v3.shadow.card, flexShrink: 0 }}>
+    <div onClick={onClick} style={{ background: v3.color.card, borderRadius: v3.radius.card, overflow: 'hidden', cursor: 'pointer', boxShadow: v3.shadow.card, flexShrink: 0, position: 'relative' }}>
       <div style={{ height: 140, overflow: 'hidden' }}>
         <img src={image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
       </div>
+      {beta && (
+        <div style={{
+          position: 'absolute', top: 10, left: 10,
+          background: 'rgba(0,0,0,.55)', backdropFilter: 'blur(4px)',
+          borderRadius: 20, padding: '3px 9px',
+          fontSize: 10, fontWeight: 700, color: v3.color.accent,
+          letterSpacing: '.08em', textTransform: 'uppercase',
+        }}>BETA</div>
+      )}
       <div style={{ padding: '16px 18px 18px' }}>
         <div style={{ fontSize: 17, fontWeight: 700, marginBottom: 4 }}>{name}</div>
         <div style={{ fontSize: 13, color: v3.color.text2, fontWeight: 500, lineHeight: 1.5 }}>{sub}</div>
