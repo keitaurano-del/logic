@@ -163,6 +163,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
               setTimeout(() => setQuizAnswered(null), 2500)
             }
           }}
+          onNext={goNext}
         />
       </div>
 
@@ -261,13 +262,14 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
   )
 }
 
-function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSubmitMulti, onSelectQuiz }: {
+function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSubmitMulti, onSelectQuiz, onNext }: {
   slide: LessonSlide
   quizAnswered: { correct: boolean; selected: number; selectedMulti?: number[] } | null
   multiSelected: number[]
   onToggleMulti: (idx: number) => void
   onSubmitMulti: () => void
   onSelectQuiz: (idx: number) => void
+  onNext: () => void
 }) {
   if (slide.kind === 'hero') {
     return (
@@ -393,7 +395,17 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
     )
   }
 
-  if (slide.kind === 'summary') {
+  // ── think スライド: 自由記述思考問題 ──
+  if (slide.kind === 'think') {
+    return <ThinkSlide slide={slide} onNext={onNext} />
+  }
+
+  // ── case スライド: ケース問題（段階開示） ──
+  if (slide.kind === 'case') {
+    return <CaseSlide slide={slide} onNext={onNext} />
+  }
+
+    if (slide.kind === 'summary') {
     return (
       <>
         <h1 style={{ fontSize: 28, fontWeight: 700, lineHeight: 1.4, marginBottom: 28, marginTop: 32, color: v3.color.text }}>{slide.title}</h1>
@@ -438,4 +450,213 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
   }
 
   return null
+}
+
+// ─────────────────────────────────────────────
+// ThinkSlide: 自由記述思考問題 (type: 'think')
+// ─────────────────────────────────────────────
+function ThinkSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides').LessonSlide, { kind: 'think' }>; onNext: () => void }) {
+  const [revealed, setRevealed] = useState(false)
+
+  return (
+    <>
+      {/* ヘッダーバッジ */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 24, marginTop: 24 }}>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: `${v3.color.warm}20`, borderRadius: 99, padding: '6px 12px', fontSize: 11, fontWeight: 700, color: v3.color.warm, letterSpacing: '.04em' }}>
+          💡 考えてみよう
+        </span>
+      </div>
+
+      {/* 問い */}
+      <h2 style={{ fontSize: 21, fontWeight: 800, lineHeight: 1.55, marginBottom: 20, color: v3.color.text }}>
+        {slide.question}
+      </h2>
+
+      {/* ヒント */}
+      {slide.hint && (
+        <div style={{ background: `${v3.color.accent}12`, border: `1px solid ${v3.color.accent}30`, borderRadius: 12, padding: '12px 16px', marginBottom: 20, fontSize: 13, color: v3.color.text2, lineHeight: 1.6 }}>
+          <span style={{ fontWeight: 700, color: v3.color.accent }}>ヒント: </span>{slide.hint}
+        </div>
+      )}
+
+      {/* 考える時間のプレースホルダー */}
+      {!revealed && (
+        <div style={{ background: v3.color.card, borderRadius: 16, padding: '20px', marginBottom: 20, border: `1.5px dashed ${v3.color.line}` }}>
+          <div style={{ fontSize: 13, color: v3.color.text3, textAlign: 'center', lineHeight: 1.8 }}>
+            🧠 自分なりの答えを考えてみよう<br />
+            <span style={{ fontSize: 12 }}>準備ができたら「モデル解答を見る」を押してね</span>
+          </div>
+        </div>
+      )}
+
+      {/* モデル解答（開示後） */}
+      {revealed && (
+        <div style={{ marginBottom: 20 }}>
+          <div style={{ fontSize: 12, fontWeight: 700, color: v3.color.accent, letterSpacing: '.06em', marginBottom: 10 }}>モデル解答</div>
+          <div style={{ background: v3.color.card, borderRadius: 16, padding: '18px 20px', fontSize: 14, lineHeight: 1.8, color: v3.color.text, marginBottom: 14, borderLeft: `3px solid ${v3.color.accent}` }}>
+            {slide.modelAnswer}
+          </div>
+
+          {/* 考え方のポイント */}
+          {slide.points.length > 0 && (
+            <>
+              <div style={{ fontSize: 12, fontWeight: 700, color: v3.color.text2, letterSpacing: '.04em', marginBottom: 8 }}>考え方のポイント</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {slide.points.map((p, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, background: v3.color.card, borderRadius: 12, padding: '12px 14px' }}>
+                    <div style={{ width: 20, height: 20, borderRadius: '50%', background: v3.color.accentSoft, color: v3.color.accent, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800, flexShrink: 0 }}>{i + 1}</div>
+                    <div style={{ fontSize: 13, lineHeight: 1.6, color: v3.color.text2 }}>{p}</div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
+      {/* アクションボタン */}
+      {!revealed ? (
+        <button
+          onClick={() => setRevealed(true)}
+          style={{ width: '100%', padding: '15px 0', borderRadius: 14, border: `1.5px solid ${v3.color.accent}`, background: 'transparent', color: v3.color.accent, fontSize: 15, fontWeight: 700, cursor: 'pointer' }}
+        >
+          モデル解答を見る
+        </button>
+      ) : (
+        <button
+          onClick={onNext}
+          style={{ width: '100%', padding: '15px 0', borderRadius: 14, border: 'none', background: v3.color.accent, color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}
+        >
+          次へ進む
+        </button>
+      )}
+    </>
+  )
+}
+
+// ─────────────────────────────────────────────
+// CaseSlide: ケース問題（段階開示）(type: 'case')
+// ─────────────────────────────────────────────
+function CaseSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides').LessonSlide, { kind: 'case' }>; onNext: () => void }) {
+  const [phaseIndex, setPhaseIndex] = useState(0)
+  const [answered, setAnswered] = useState<{ selected: number; correct: boolean } | null>(null)
+  const [concluded, setConcluded] = useState(false)
+
+  const phase = slide.phases[phaseIndex]
+  const isLastPhase = phaseIndex === slide.phases.length - 1
+
+  const handleSelect = (i: number) => {
+    if (answered) return
+    const correct = slide.phases[phaseIndex].options[i].correct
+    setAnswered({ selected: i, correct })
+  }
+
+  const handleNext = () => {
+    if (!answered) return
+    if (isLastPhase) {
+      setConcluded(true)
+    } else {
+      setPhaseIndex(p => p + 1)
+      setAnswered(null)
+    }
+  }
+
+  if (concluded) {
+    return (
+      <>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 24, marginTop: 24 }}>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: `${v3.color.accent}20`, borderRadius: 99, padding: '6px 12px', fontSize: 11, fontWeight: 700, color: v3.color.accent }}>
+            ✅ ケース完了
+          </span>
+        </div>
+        <h2 style={{ fontSize: 20, fontWeight: 800, lineHeight: 1.5, marginBottom: 16, color: v3.color.text }}>フレームワークまとめ</h2>
+        <div style={{ background: v3.color.card, borderRadius: 16, padding: '18px 20px', fontSize: 14, lineHeight: 1.9, color: v3.color.text2, marginBottom: 28, borderLeft: `3px solid ${v3.color.accent}` }}>
+          {slide.conclusion}
+        </div>
+        <button
+          onClick={onNext}
+          style={{ width: '100%', padding: '15px 0', borderRadius: 14, border: 'none', background: v3.color.accent, color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}
+        >
+          次へ進む
+        </button>
+      </>
+    )
+  }
+
+  return (
+    <>
+      {/* ヘッダー */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, marginTop: 24 }}>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: `${v3.color.accent}16`, borderRadius: 99, padding: '6px 12px', fontSize: 11, fontWeight: 700, color: v3.color.accent }}>
+          📋 ケース — Phase {phaseIndex + 1}/{slide.phases.length}
+        </span>
+        <span style={{ fontSize: 11, color: v3.color.text3 }}>{slide.title}</span>
+      </div>
+
+      {/* 状況説明（Phase 1のみ） */}
+      {phaseIndex === 0 && (
+        <div style={{ background: `${v3.color.warm}14`, border: `1px solid ${v3.color.warm}30`, borderRadius: 12, padding: '14px 16px', marginBottom: 18, fontSize: 13, color: v3.color.text2, lineHeight: 1.7 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: v3.color.warm, marginBottom: 6 }}>状況</div>
+          {slide.situation}
+        </div>
+      )}
+
+      {/* フェーズ情報（追加開示） */}
+      {phaseIndex > 0 && (
+        <div style={{ background: v3.color.card, borderRadius: 12, padding: '14px 16px', marginBottom: 18, fontSize: 13, color: v3.color.text2, lineHeight: 1.7, borderLeft: `3px solid ${v3.color.accent}50` }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: v3.color.text3, marginBottom: 6 }}>追加情報</div>
+          {phase.info}
+        </div>
+      )}
+      {phaseIndex === 0 && phase.info && (
+        <div style={{ background: v3.color.card, borderRadius: 12, padding: '14px 16px', marginBottom: 18, fontSize: 13, color: v3.color.text2, lineHeight: 1.7 }}>
+          {phase.info}
+        </div>
+      )}
+
+      {/* 問い */}
+      <h2 style={{ fontSize: 19, fontWeight: 800, lineHeight: 1.55, marginBottom: 18, color: v3.color.text }}>{phase.question}</h2>
+
+      {/* 選択肢 */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 16 }}>
+        {phase.options.map((opt, i) => {
+          const isSelected = answered?.selected === i
+          const isCorrect = opt.correct
+          const bg = !answered
+            ? v3.color.card
+            : isSelected && isCorrect ? v3.color.accent
+            : isSelected && !isCorrect ? '#4A1C1C'
+            : isCorrect && answered ? v3.color.accentSoft
+            : v3.color.card
+          const color = isSelected && isCorrect && answered ? '#fff' : v3.color.text
+          return (
+            <div key={i} onClick={() => handleSelect(i)}
+              style={{ background: bg, color, borderRadius: 14, padding: '14px 18px', fontSize: 14, fontWeight: 600, cursor: answered ? 'default' : 'pointer', transition: 'background 0.2s', lineHeight: 1.5, WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation' }}
+            >
+              {opt.label}
+            </div>
+          )
+        })}
+      </div>
+
+      {/* フィードバック */}
+      {answered && (
+        <div style={{ background: v3.color.card, borderRadius: 14, padding: '14px 16px', marginBottom: 16, fontSize: 13, lineHeight: 1.7, color: v3.color.text2 }}>
+          <div style={{ fontSize: 12, fontWeight: 700, color: answered.correct ? v3.color.accent : '#FCA5A5', marginBottom: 6 }}>
+            {answered.correct ? '✅ 良い判断！' : '💡 惜しい！'}
+          </div>
+          {phase.options[answered.selected].feedback}
+        </div>
+      )}
+
+      {answered && (
+        <button
+          onClick={handleNext}
+          style={{ width: '100%', padding: '15px 0', borderRadius: 14, border: 'none', background: v3.color.accent, color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}
+        >
+          {isLastPhase ? 'まとめを見る' : `次のフェーズへ (${phaseIndex + 2}/${slide.phases.length})`}
+        </button>
+      )}
+    </>
+  )
 }

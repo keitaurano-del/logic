@@ -233,7 +233,7 @@ export default function Lesson({ lesson, onBack, onComplete, onNextLesson }: Pro
               {t('lesson.next')}
             </button>
           </div>
-        ) : (
+        ) : step.type === 'quiz' ? (
           <div className="ls-quiz">
             <div className="ls-quiz-header">
               <h3>{step.question}</h3>
@@ -286,7 +286,7 @@ export default function Lesson({ lesson, onBack, onComplete, onNextLesson }: Pro
               {t('lesson.report')}
             </button>
           </div>
-        )}
+        ) : null}
       </div>
       {showReport && step.type === 'quiz' && (
         <ReportProblem

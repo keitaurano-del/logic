@@ -149,7 +149,7 @@ export function LessonScreen({ lessonId, onBack, onComplete, onNextLesson, onRep
             isLast={isLast}
             onNext={handleNext}
           />
-        ) : (
+        ) : step.type === 'quiz' ? (
           <QuizStep
             step={step}
             catLabel={catLabel}
@@ -162,6 +162,9 @@ export function LessonScreen({ lessonId, onBack, onComplete, onNextLesson, onRep
             onNext={handleNext}
             onReport={onReport ? () => onReport({ lessonId: lesson.id, lessonTitle: lesson.title, question: step.question }) : undefined}
           />
+        ) : (
+          // think / case は LessonStoriesScreen で処理されるため、旧コンポーネントではスキップ
+          <div style={{ padding: 20, color: '#888', fontSize: 14 }}>次へ</div>
         )}
       </div>
     </div>

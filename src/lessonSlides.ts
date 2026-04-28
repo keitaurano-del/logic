@@ -12,6 +12,9 @@ export type LessonSlide =
   | { kind: 'quote'; author: string; quote: string }
   | { kind: 'quiz'; question: string; choices: string[]; correctIndex: number; correctIndexes?: number[]; multi?: boolean; explain: string }
   | { kind: 'summary'; title: string; points: string[] }
+  // SCRUM-新: 思考系スライド
+  | { kind: 'think'; question: string; hint?: string; modelAnswer: string; points: string[] }
+  | { kind: 'case'; title: string; situation: string; phases: { info: string; question: string; options: { label: string; correct: boolean; feedback: string }[] }[]; conclusion: string }
 
 export interface LessonV3 {
   id: number
@@ -230,6 +233,22 @@ export function convertLessonToSlides(lesson: any): LessonSlide[] {
           correctIndexes: correctTextsMulti.map(t => finalChoices.indexOf(t)).filter(i => i >= 0),
         } : {}),
         explain: step.explanation || step.explain || '',
+      })
+    } else if (stepType === 'think') {
+      slides.push({
+        kind: 'think',
+        question: step.question || '',
+        hint: step.hint,
+        modelAnswer: step.modelAnswer || '',
+        points: step.points || [],
+      })
+    } else if (stepType === 'case') {
+      slides.push({
+        kind: 'case',
+        title: step.title || '',
+        situation: step.situation || '',
+        phases: step.phases || [],
+        conclusion: step.conclusion || '',
       })
     } else if (stepType === 'example') {
       slides.push({
