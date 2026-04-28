@@ -8,11 +8,11 @@
 
 | ワークフロー | 種別 | トリガー | アウトプット |
 |------------|------|---------|------------|
-| `logic-classify-request` | Genspark Workflows | Teams #logic-product 投稿 | 分類結果 → Claw |
-| `logic-build-notify` | Genspark Workflows | ビルドスクリプト完了 | #logic-build-ops 通知 |
-| `logic-bug-intake` | Genspark Workflows | #logic-bugs 投稿 | 受付確認返信 |
-| `logic-release-candidate` | Genspark Workflows | git tag push | #logic-release 通知 |
-| `logic-prerelease-check` | Advanced Workflows | #logic-release「リリース準備」 | チェックリスト結果 |
+| `logic-classify-request` | Genspark Workflows | Teams 「💡 Logic プロダクト」 投稿 | 分類結果 → Claw |
+| `logic-build-notify` | Genspark Workflows | ビルドスクリプト完了 | 「🔨 Logic ビルド管理」 通知 |
+| `logic-bug-intake` | Genspark Workflows | 「🐛 Logic バグ報告」 投稿 | 受付確認返信 |
+| `logic-release-candidate` | Genspark Workflows | git tag push | 「🚀 Logic リリース」 通知 |
+| `logic-prerelease-check` | Advanced Workflows | 「🚀 Logic リリース」「リリース準備」 | チェックリスト結果 |
 | `logic-store-submit-approval` | Advanced Workflows | Clawからのリリース承認依頼 | 承認待ちフロー |
 | `logic-bug-escalation` | Advanced Workflows | P0バグ判定 | Keita-san緊急通知 |
 | `logic-exception-handler` | Advanced Workflows | ビルド失敗 / 例外 | エラー対応分岐 |
@@ -25,19 +25,19 @@
 
 **目的**: Teams に投稿された依頼をCrawlが処理しやすいよう分類する
 
-**トリガー**: `#logic-product` への新規メッセージ
+**トリガー**: 「💡 Logic プロダクト」 への新規メッセージ
 
 **処理フロー**:
 ```
 1. メッセージ受信
 2. 分類判定:
    - 実装依頼 → [implementation]
-   - バグ報告 → [bug] → #logic-bugs にリダイレクト
+   - バグ報告 → [bug] → 「🐛 Logic バグ報告」 にリダイレクト
    - 質問/相談 → [question]
-   - ビルド依頼 → [build] → #logic-build-ops にリダイレクト
-   - リリース依頼 → [release] → #logic-release にリダイレクト
+   - ビルド依頼 → [build] → 「🔨 Logic ビルド管理」 にリダイレクト
+   - リリース依頼 → [release] → 「🚀 Logic リリース」 にリダイレクト
 3. Claw に分類結果と元メッセージを渡す
-4. 分類結果を #logic-product に返信
+4. 分類結果を 「💡 Logic プロダクト」 に返信
 ```
 
 **Teamsへの返信フォーマット**:
@@ -62,10 +62,10 @@ Claw が [X分以内] に計画を返します
 2. 成功の場合:
    - AABファイルサイズ取得
    - versionCode/versionName取得
-   - #logic-build-ops に成功通知
+   - 「🔨 Logic ビルド管理」 に成功通知
 3. 失敗の場合:
    - エラーログ取得
-   - #logic-build-ops にエラー通知
+   - 「🔨 Logic ビルド管理」 にエラー通知
    - logic-exception-handler を起動
 ```
 
@@ -92,7 +92,7 @@ Claw が調査します
 
 **目的**: バグ報告の自動受付確認
 
-**トリガー**: `#logic-bugs` への新規メッセージ
+**トリガー**: 「🐛 Logic バグ報告」 への新規メッセージ
 
 **処理フロー**:
 ```
@@ -121,7 +121,7 @@ Claw が1時間以内にトリアージ結果を返します
 ```
 1. git tag 検出
 2. CHANGELOG / コミット差分を取得
-3. #logic-release に通知
+3. 「🚀 Logic リリース」 に通知
 4. Keita-san の承認を待つ
 ```
 
@@ -143,7 +143,7 @@ SIT確認URL: https://logic-sit.onrender.com/
 
 **目的**: リリース前の総合チェックを自動実行
 
-**トリガー**: #logic-release に「リリース準備」と投稿
+**トリガー**: 「🚀 Logic リリース」 に「リリース準備」と投稿
 
 **処理フロー**:
 ```
@@ -165,7 +165,7 @@ START
   │     なし → 続行
   │     あり → 警告通知（続行可能）
   │
-  └── 全チェック完了 → #logic-release に結果通知 → store-submit-approval 起動
+  └── 全チェック完了 → 「🚀 Logic リリース」 に結果通知 → store-submit-approval 起動
 ```
 
 ---
@@ -180,20 +180,20 @@ START
 ```
 START
   │
-  ├── #logic-release に承認依頼メッセージ送信
+  ├── 「🚀 Logic リリース」 に承認依頼メッセージ送信
   │   「ストア提出の承認をお願いします。以下を確認して返信ください。」
   │   + チェックリスト表示
   │
   ├── [待機] Keita-sanの返信を待つ（タイムアウト: 72時間）
   │
   ├── 「承認 ✅」受信
-  │   → AAB ビルド起動 → ビルド結果を #logic-build-ops に通知
+  │   → AAB ビルド起動 → ビルド結果を 「🔨 Logic ビルド管理」 に通知
   │
   ├── 「差し戻し 🔄」受信
   │   → 理由を記録 → Claw に差し戻し内容を通知
   │
   └── タイムアウト（72時間経過）
-      → #logic-release にリマインド送信
+      → 「🚀 Logic リリース」 にリマインド送信
 ```
 
 ---
@@ -208,7 +208,7 @@ START
 ```
 START
   │
-  ├── Keita-san に緊急通知（Teams DM + #logic-bugs）
+  ├── Keita-san に緊急通知（Teams DM + 「🐛 Logic バグ報告」）
   │   「🚨 P0バグ発生: {bug_summary}」
   │
   ├── Claw に緊急対応フローを通知
@@ -217,7 +217,7 @@ START
   │
   ├── 1時間経過で未確認の場合 → リマインド送信（最大3回）
   │
-  └── 対応完了通知受信 → #logic-bugs にクローズ通知
+  └── 対応完了通知受信 → 「🐛 Logic バグ報告」 にクローズ通知
 ```
 
 ---
@@ -244,7 +244,7 @@ ERROR 受信
   │     失敗（2回） → 手動対応依頼に切り替え
   │
   └── 手動対応依頼:
-      → #logic-build-ops にエラー詳細 + 対応手順を通知
+      → 「🔨 Logic ビルド管理」 にエラー詳細 + 対応手順を通知
       → Claw に解析依頼
 ```
 

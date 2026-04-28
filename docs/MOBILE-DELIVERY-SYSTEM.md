@@ -46,14 +46,14 @@
 
 ## 3. Teams起点の運用アーキテクチャ
 
-### チャネル構成
+### グループチャット構成
 
-| チャネル | 用途 | 受信者 |
+| グループチャット名 | 用途 | 受信者 |
 |---------|------|-------|
-| `#logic-build-ops` | ビルド依頼・ビルド結果通知 | Claw + 開発担当 |
-| `#logic-release` | リリース候補・ストア提出・承認フロー | Keita-san + Claw |
-| `#logic-bugs` | バグ報告・トリアージ結果 | Claw + Keita-san |
-| `#logic-product` | 機能依頼・ロードマップ・意思決定 | Keita-san + Claw |
+| 「🔨 Logic ビルド管理」 | ビルド依頼・ビルド結果通知 | Claw + 開発担当 |
+| 「🚀 Logic リリース」 | リリース候補・ストア提出・承認フロー | Keita-san + Claw |
+| 「🐛 Logic バグ報告」 | バグ報告・トリアージ結果 | Claw + Keita-san |
+| 「💡 Logic プロダクト」 | 機能依頼・ロードマップ・意思決定 | Keita-san + Claw |
 
 ### メッセージの流れ
 
@@ -61,7 +61,7 @@
 Keita-san (Teams)
     │
     ▼
-#logic-build-ops / #logic-product / #logic-bugs
+「🔨 Logic ビルド管理」 / 「💡 Logic プロダクト」 / 「🐛 Logic バグ報告」
     │
     ▼
 Claw が受信・分類・計画化
@@ -99,10 +99,10 @@ Claw が受信・分類・計画化
 
 | ワークフロー名 | トリガー | アクション |
 |--------------|---------|---------|
-| `logic-classify-request` | Teams #logic-product メッセージ | 依頼分類 → Claw に渡す |
-| `logic-build-notify` | ビルド完了イベント | ビルド結果を #logic-build-ops に通知 |
-| `logic-bug-intake` | #logic-bugs への投稿 | バグテンプレート自動返信 |
-| `logic-release-candidate` | バージョンタグ push | リリース候補を #logic-release に通知 |
+| `logic-classify-request` | Teams 「💡 Logic プロダクト」 メッセージ | 依頼分類 → Claw に渡す |
+| `logic-build-notify` | ビルド完了イベント | ビルド結果を 「🔨 Logic ビルド管理」 に通知 |
+| `logic-bug-intake` | 「🐛 Logic バグ報告」 への投稿 | バグテンプレート自動返信 |
+| `logic-release-candidate` | バージョンタグ push | リリース候補を 「🚀 Logic リリース」 に通知 |
 
 ### Advanced Workflows の担当
 
@@ -125,7 +125,7 @@ Claw が受信・分類・計画化
 ## 5. 実装依頼フロー
 
 ```
-[Keita-san] Teams #logic-product に投稿
+[Keita-san] Teams 「💡 Logic プロダクト」 に投稿
     │  テンプレート: → 「実装依頼テンプレート」参照
     ▼
 [Claw] 受信・解析（30秒以内）
@@ -140,7 +140,7 @@ Claw が受信・分類・計画化
     │  ・テスト実行
     │  ・SIT にデプロイ (develop branch)
     ▼
-[Workflows] ビルド結果を #logic-build-ops に通知
+[Workflows] ビルド結果を 「🔨 Logic ビルド管理」 に通知
     │
     ▼
 [Keita-san] SIT で動作確認 → 「本番OK」と返信
@@ -158,7 +158,7 @@ Claw が受信・分類・計画化
 ## 6. リリース準備フロー
 
 ```
-[トリガー] Keita-san が #logic-release に「リリース準備」と投稿
+[トリガー] Keita-san が 「🚀 Logic リリース」 に「リリース準備」と投稿
     │
     ▼
 [Claw] リリース前チェックリスト実行（自動）
@@ -171,17 +171,17 @@ Claw が受信・分類・計画化
     ▼ チェックOK
 [Advanced Workflows] ストア提出前確認フロー起動
     ├── AAB ビルド自動実行
-    ├── ビルド成功 → #logic-release に結果通知
-    └── ビルド失敗 → #logic-build-ops にエラー詳細
+    ├── ビルド成功 → 「🚀 Logic リリース」 に結果通知
+    └── ビルド失敗 → 「🔨 Logic ビルド管理」 にエラー詳細
     │
     ▼
-[Keita-san] #logic-release で「提出承認」
+[Keita-san] 「🚀 Logic リリース」 で「提出承認」
     │
 [Claw] Play Console / App Store Connect へ提出手順を提示
 （実際の提出操作は Keita-san が実施 または 委任）
     │
     ▼
-[Workflows] 配信状況を #logic-release に定期通知
+[Workflows] 配信状況を 「🚀 Logic リリース」 に定期通知
 ```
 
 **Android AAB ビルドコマンド（自動化済み）**:
@@ -199,7 +199,7 @@ npx cap sync android
 ## 7. バグトリアージフロー
 
 ```
-[誰でも] #logic-bugs にバグ報告を投稿
+[誰でも] 「🐛 Logic バグ報告」 にバグ報告を投稿
     │  テンプレート: → 「バグ報告テンプレート」参照
     ▼
 [Workflows] 自動受付確認メッセージ返信
@@ -332,10 +332,10 @@ Claw作業:
 ```
 Keita-san作業（15分）:
 □ Teams に以下チャネルを作成:
-  - #logic-build-ops
-  - #logic-release
-  - #logic-bugs
-  - #logic-product
+  - 「🔨 Logic ビルド管理」
+  - 「🚀 Logic リリース」
+  - 「🐛 Logic バグ報告」
+  - 「💡 Logic プロダクト」
 □ 各チャネルの Incoming Webhook URL を Claw に渡す
 
 Claw作業:
@@ -347,7 +347,7 @@ Claw作業:
 
 ```
 Claw作業:
-□ #logic-bugs へのバグ報告フォーマットを周知
+□ 「🐛 Logic バグ報告」 へのバグ報告フォーマットを周知
 □ トリアージ自動化スクリプト（Claw → Jira連携）確認
 □ P0バグ発生時の緊急対応フロー文書化
 ```
