@@ -1,19 +1,45 @@
 import { useState } from 'react'
+import { createClient } from '@supabase/supabase-js'
+import { getLocale } from './i18n'
 import './Feedback.css'
 
 const CATEGORIES = ['機能追加', 'バグ報告', 'UI改善', 'その他'] as const
+
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || ''
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || ''
+const _supabase = supabaseUrl && supabaseAnonKey ? createClient(supabaseUrl, supabaseAnonKey) : null
 
 export default function Feedback({ onBack }: { onBack: () => void }) {
   const [category, setCategory] = useState<string>(CATEGORIES[0])
   const [message, setMessage] = useState('')
   const [sent, setSent] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!message.trim()) return
-    const subject = encodeURIComponent(`[Logic フィードバック] ${category}`)
-    const body = encodeURIComponent(`カテゴリ: ${category}\n\n${message.trim()}\n\n---\nSent from Logic App`)
-    window.location.href = `mailto:keita.urano@gmail.com?subject=${subject}&body=${body}`
-    setSent(true)
+    setLoading(true)
+    setError('')
+    try {
+      if (_supabase) {
+        const { error: dbErr } = await _supabase.from('feedback').insert({
+          category,
+          message: message.trim(),
+          locale: getLocale(),
+        })
+        if (dbErr) throw new Error(dbErr.message)
+      } else {
+        // Supabase未設定時のフォールバック
+        const subject = encodeURIComponent(`[Logic フィードバック] ${category}`)
+        const body = encodeURIComponent(`カテゴリ: ${category}\n\n${message.trim()}`)
+        window.location.href = `mailto:keita.urano@gmail.com?subject=${subject}&body=${body}`
+      }
+      setSent(true)
+    } catch (e: unknown) {
+      setError((e as Error).message || '送信に失敗しました。もう一度お試しください')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -48,8 +74,9 @@ export default function Feedback({ onBack }: { onBack: () => void }) {
             rows={6}
           />
 
-          <button className="fb-submit" onClick={handleSubmit} disabled={!message.trim()}>
-            📩 フィードバックを送信
+          {error && <p style={{ color: 'var(--danger, #EF4444)', fontSize: 13, marginTop: 8 }}>{error}</p>}
+          <button className="fb-submit" onClick={handleSubmit} disabled={!message.trim() || loading}>
+            {loading ? '送信中...' : '📩 フィードバックを送信'}
           </button>
         </div>
       )}
