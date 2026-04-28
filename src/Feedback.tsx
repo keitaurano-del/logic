@@ -5,6 +5,13 @@ import './Feedback.css'
 
 const CATEGORIES = ['機能追加', 'バグ報告', 'UI改善', 'その他'] as const
 
+const CATEGORY_GUIDE: Record<string, string> = {
+  '機能追加': 'どんな機能があると嫌いですか？なぜ必要かも教えてもらえると実現しやすいです。',
+  'バグ報告': 'どの画面で、どのような問題が発生しましたか？再現手順があればめちゃくちゃ実際に助かります。',
+  'UI改善': 'どの画面のどこが使いにくいですか？具体的な位置や機能を教えてもらえると改善しやすいです。',
+  'その他': '何でもお気軽にお書きください。コンテンツや使い心地、感想何でも心待ちしています。',
+}
+
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || ''
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || ''
 const _supabase = supabaseUrl && supabaseAnonKey ? createClient(supabaseUrl, supabaseAnonKey) : null
@@ -66,9 +73,14 @@ export default function Feedback({ onBack }: { onBack: () => void }) {
           </div>
 
           <label className="fb-label">内容</label>
+          {CATEGORY_GUIDE[category] && (
+            <p style={{ fontSize: 13, color: 'var(--text-secondary, #7A849E)', margin: '4px 0 8px', lineHeight: 1.6 }}>
+              {CATEGORY_GUIDE[category]}
+            </p>
+          )}
           <textarea
             className="fb-textarea"
-            placeholder="アプリの改善点やほしい機能を教えてください..."
+            placeholder={category === 'バグ報告' ? '例: レッスン第3問目で「次へ」ボタンを押すと画面が白くなる。iOS 17.2、iPhone 15で発生。' : 'アプリの改善点やほしい機能を教えてください...'}
             value={message}
             onChange={e => setMessage(e.target.value)}
             rows={6}
