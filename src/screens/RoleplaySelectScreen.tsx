@@ -163,11 +163,11 @@ function SituationCard({
       <div style={{ padding: '14px 16px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
-            <span style={{ fontSize: 11, fontWeight: 700, color: v3.color.accent, letterSpacing: '.04em' }}>
+            <span style={{ fontSize: 14, fontWeight: 700, color: v3.color.accent, letterSpacing: '.04em' }}>
               {s.partnerRole}
             </span>
             <span style={{
-              fontSize: 10, fontWeight: 700, padding: '2px 7px', borderRadius: 99,
+              fontSize: 14, fontWeight: 700, padding: '2px 7px', borderRadius: 99,
               background: `${v3.color.accent}18`, color: DIFF_COLOR[s.difficulty] ?? v3.color.text2,
             }}>
               {DIFF_LABEL[s.difficulty] ?? s.difficulty}
@@ -176,19 +176,19 @@ function SituationCard({
           <div style={{ fontSize: 17, fontWeight: 800, color: v3.color.text, marginBottom: 6, lineHeight: 1.35 }}>
             {s.title}
           </div>
-          <div style={{ fontSize: 13, color: v3.color.text2, lineHeight: 1.6, marginBottom: 8 }}>
+          <div style={{ fontSize: 14, color: v3.color.text2, lineHeight: 1.6, marginBottom: 8 }}>
             {s.goal}
           </div>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: `${v3.color.accent}14`, borderRadius: 8, padding: '4px 10px' }}>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2"><path d="M9 11l3 3L22 4"/></svg>
-            <span style={{ fontSize: 11, fontWeight: 700, color: v3.color.accent }}>{s.frameworkLabel}</span>
+            <span style={{ fontSize: 14, fontWeight: 700, color: v3.color.accent }}>{s.frameworkLabel}</span>
           </div>
         </div>
 
         {/* 右端のバッジ / 矢印 */}
         {comingSoon ? (
           <span style={{
-            flexShrink: 0, fontSize: 11, fontWeight: 700, padding: '3px 8px',
+            flexShrink: 0, fontSize: 14, fontWeight: 700, padding: '3px 8px',
             borderRadius: 99, background: `${v3.color.accent}12`, color: v3.color.text3,
             alignSelf: 'flex-start', whiteSpace: 'nowrap',
           }}>
@@ -196,7 +196,7 @@ function SituationCard({
           </span>
         ) : locked ? (
           <span style={{
-            flexShrink: 0, fontSize: 11, fontWeight: 700, padding: '3px 8px',
+            flexShrink: 0, fontSize: 14, fontWeight: 700, padding: '3px 8px',
             borderRadius: 99, background: `${v3.color.accent}28`, color: v3.color.accent,
             alignSelf: 'flex-start', whiteSpace: 'nowrap',
           }}>
@@ -238,7 +238,7 @@ export function RoleplaySelectScreen({ onBack, onStart, onUpgrade }: RoleplaySel
           <div style={{ fontSize: 18, fontWeight: 800, color: v3.color.text, letterSpacing: '-.02em' }}>
             ロールプレイ
           </div>
-          <div style={{ fontSize: 13, color: v3.color.text2, marginTop: 1 }}>
+          <div style={{ fontSize: 14, color: v3.color.text2, marginTop: 1 }}>
             実践的な思考力を鍛える
           </div>
         </div>
@@ -261,7 +261,7 @@ export function RoleplaySelectScreen({ onBack, onStart, onUpgrade }: RoleplaySel
       {/* ビジネス思考 */}
       <div style={{ marginBottom: 24 }}>
         <div style={{
-          fontSize: 11, fontWeight: 800, letterSpacing: '.1em', textTransform: 'uppercase',
+          fontSize: 14, fontWeight: 800, letterSpacing: '.1em', textTransform: 'uppercase',
           color: '#7A849E', marginBottom: 12,
         }}>
           {CATEGORY_LABELS.business}
@@ -283,7 +283,7 @@ export function RoleplaySelectScreen({ onBack, onStart, onUpgrade }: RoleplaySel
       {philosophySituations.length > 0 && (
         <div>
           <div style={{
-            fontSize: 11, fontWeight: 800, letterSpacing: '.1em', textTransform: 'uppercase',
+            fontSize: 14, fontWeight: 800, letterSpacing: '.1em', textTransform: 'uppercase',
             color: '#7A849E', marginBottom: 12,
           }}>
             {CATEGORY_LABELS.philosophy}

@@ -58,11 +58,11 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
         <SearchResults query={searchQuery} onOpenLesson={props.onOpenLesson} />
       )}
 
-      {!searchQuery.trim() && <div style={{ flex: 1, padding: '0 16px 100px', display: 'flex', flexDirection: 'column', gap: v3.spacing.gap }}>
+      {!searchQuery.trim() && <div style={{ flex: 1, padding: '0 16px 80px', display: 'flex', flexDirection: 'column', gap: v3.spacing.gap }}>
 
         <div style={{ padding: '4px 4px 8px' }}>
           <div style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.45, letterSpacing: '-.005em' }}>どこから<br />はじめましょうか。</div>
-          <div style={{ fontSize: 13, color: v3.color.text2, marginTop: 6, lineHeight: 1.6 }}>目的に合ったコースを選ぶか、<br />気になるカテゴリから始められます。</div>
+          <div style={{ fontSize: 14, color: v3.color.text2, marginTop: 6, lineHeight: 1.6 }}>目的に合ったコースを選ぶか、<br />気になるカテゴリから始められます。</div>
         </div>
 
         <SectionLabel>ラーニングパス</SectionLabel>
@@ -180,7 +180,7 @@ function SearchResults({ query, onOpenLesson }: { query: string; onOpenLesson: (
           style={{ background: v3.color.card, borderRadius: 14, padding: '14px 16px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 12 }}>
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: 15, fontWeight: 700, color: v3.color.text, marginBottom: 2 }}>{lesson.title}</div>
-            <div style={{ fontSize: 12, color: v3.color.text2 }}>{lesson.category}</div>
+            <div style={{ fontSize: 14, color: v3.color.text2 }}>{lesson.category}</div>
           </div>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5"><polyline points="9 18 15 12 9 6" /></svg>
         </div>
@@ -190,7 +190,7 @@ function SearchResults({ query, onOpenLesson }: { query: string; onOpenLesson: (
 }
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
-  return <div style={{ fontSize: 13, color: v3.color.text2, fontWeight: 600, padding: '8px 4px 0', marginBottom: -6 }}>{children}</div>
+  return <div style={{ fontSize: 14, color: v3.color.text2, fontWeight: 600, padding: '8px 4px 0', marginBottom: -6 }}>{children}</div>
 }
 
 function PathCard({ image, tag, name, meta, progress, done, total, accent, onClick }: { image: string; tag: string; name: string; meta: string; progress: number; done: number; total: number; accent: string; onClick: () => void }) {
@@ -200,12 +200,12 @@ function PathCard({ image, tag, name, meta, progress, done, total, accent, onCli
         <img src={image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
       </div>
       <div style={{ padding: '18px 20px' }}>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: 'rgba(255,255,255,.08)', borderRadius: v3.radius.pill, padding: '4px 10px', fontSize: 11, fontWeight: 600, color: v3.color.text2, marginBottom: 10 }}>{tag}</span>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: 'rgba(255,255,255,.08)', borderRadius: v3.radius.pill, padding: '4px 10px', fontSize: 14, fontWeight: 600, color: v3.color.text2, marginBottom: 10 }}>{tag}</span>
         <div style={{ fontSize: 18, fontWeight: 700, marginBottom: 6, lineHeight: 1.3 }}>{name}</div>
-        <div style={{ fontSize: 12, color: v3.color.text2, fontWeight: 500, marginBottom: 14 }}>{meta}</div>
+        <div style={{ fontSize: 14, color: v3.color.text2, fontWeight: 500, marginBottom: 14 }}>{meta}</div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-          <span style={{ fontSize: 12, fontWeight: 600, color: v3.color.text2 }}>{done > 0 ? `${done} / ${total} 完了` : '未着手'}</span>
-          <span style={{ fontSize: 12, fontWeight: 600, color: accent }}>{progress}%</span>
+          <span style={{ fontSize: 14, fontWeight: 600, color: v3.color.text2 }}>{done > 0 ? `${done} / ${total} 完了` : '未着手'}</span>
+          <span style={{ fontSize: 14, fontWeight: 600, color: accent }}>{progress}%</span>
         </div>
         <div style={{ height: 5, background: v3.color.cardSoft, borderRadius: 99, overflow: 'hidden' }}>
           <div style={{ height: '100%', width: `${progress}%`, background: accent, borderRadius: 99 }}></div>
@@ -263,9 +263,9 @@ function CategoryCard({ icon, iconBg, name, meta, progress, onClick, image }: { 
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontSize: 15, fontWeight: 700, color: v3.color.text, marginBottom: 3 }}>{name}</div>
-          <div style={{ fontSize: 12, color: v3.color.text2, fontWeight: 500 }}>{meta}</div>
+          <div style={{ fontSize: 14, color: v3.color.text2, fontWeight: 500 }}>{meta}</div>
         </div>
-        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 13, fontWeight: 700, color: v3.color.accent }}>{progress}</div>
+        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 14, fontWeight: 700, color: v3.color.accent }}>{progress}</div>
       </div>
     </div>
   )
@@ -308,7 +308,7 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 15, fontWeight: 700, color: v3.color.text, marginBottom: 3, lineHeight: 1.4 }}>{lesson.title}</div>
-                  <div style={{ fontSize: 12, color: v3.color.text2, fontWeight: 500 }}>{lesson.steps?.length ?? 0}ステップ · {lesson.difficulty || '初級'}</div>
+                  <div style={{ fontSize: 14, color: v3.color.text2, fontWeight: 500 }}>{lesson.steps?.length ?? 0}ステップ · {lesson.difficulty || '初級'}</div>
                 </div>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6" /></svg>
               </div>

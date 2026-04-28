@@ -56,17 +56,17 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
           </div>
           <div>
             <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, letterSpacing: '-.02em', marginBottom: 2 }}>{userName || 'ゲスト'}</div>
-            <div style={{ fontSize: 12, color: v3.color.text2, fontWeight: 500 }}>{userName ? `ロジカルシンカー トレーニー` : `ログインすると進捗が保存されるよ`}</div>
+            <div style={{ fontSize: 14, color: v3.color.text2, fontWeight: 500 }}>{userName ? `ロジカルシンカー トレーニー` : `ログインすると進捗が保存されるよ`}</div>
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8, position: 'relative', zIndex: 1 }}>
-          <span style={{ fontSize: 12, fontWeight: 700, color: v3.color.text2, letterSpacing: '.12em', textTransform: 'uppercase' }}>レベル</span>
+          <span style={{ fontSize: 14, fontWeight: 700, color: v3.color.text2, letterSpacing: '.12em', textTransform: 'uppercase' }}>レベル</span>
           <span style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 900, letterSpacing: '-.02em' }}>Lv.{lv.level}</span>
         </div>
         <div style={{ height: 12, background: 'rgba(255,255,255,.1)', borderRadius: 99, overflow: 'hidden', marginBottom: 8, position: 'relative', zIndex: 1 }}>
           <div style={{ height: '100%', width: `${levelPct}%`, background: v3.color.accent, borderRadius: 99, boxShadow: `0 0 12px ${v3.color.accentGlow}` }}></div>
         </div>
-        <div style={{ fontSize: 12, color: v3.color.text2, fontWeight: 500, textAlign: 'right', position: 'relative', zIndex: 1 }}>次のLvまで {Math.max(0, needed - levelXp)} XP</div>
+        <div style={{ fontSize: 14, color: v3.color.text2, fontWeight: 500, textAlign: 'right', position: 'relative', zIndex: 1 }}>次のLvまで {Math.max(0, needed - levelXp)} XP</div>
       </div>
 
       {/* Stats grid */}
@@ -79,7 +79,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
       <div style={{ flex: 1, padding: '16px 16px 100px', display: 'flex', flexDirection: 'column', gap: v3.spacing.gap }}>
         {/* 学習サマリー */}
         <div style={{ background: v3.color.card, borderRadius: v3.radius.card, padding: 18, boxShadow: v3.shadow.card }}>
-          <div style={{ fontSize: 13, color: v3.color.text2, fontWeight: 600, marginBottom: 12 }}>今週の学習サマリー</div>
+          <div style={{ fontSize: 14, color: v3.color.text2, fontWeight: 600, marginBottom: 12 }}>今週の学習サマリー</div>
           <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, height: 70, marginBottom: 8 }}>
             {['月', '火', '水', '木', '金', '土', '日'].map((d, i) => {
               const studied = getStudiedThisWeek()[i]
@@ -88,7 +88,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
                   <div style={{ flex: 1, width: '100%', display: 'flex', alignItems: 'flex-end' }}>
                     <div style={{ width: '100%', height: studied ? '100%' : '20%', minHeight: 8, background: studied ? v3.color.accent : v3.color.cardSoft, borderRadius: 5 }}></div>
                   </div>
-                  <span style={{ fontSize: 10, color: v3.color.text3, fontWeight: 500 }}>{d}</span>
+                  <span style={{ fontSize: 14, color: v3.color.text3, fontWeight: 500 }}>{d}</span>
                 </div>
               )
             })}
@@ -108,7 +108,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
             </div>
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 14, fontWeight: 700, color: v3.color.text }}>プレイスメントテスト</div>
-              <div style={{ fontSize: 12, color: v3.color.text2, marginTop: 2 }}>自分のレベルを確認して最適なレッスンを履わせる</div>
+              <div style={{ fontSize: 14, color: v3.color.text2, marginTop: 2 }}>自分のレベルを確認して最適なレッスンを履わせる</div>
             </div>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5"><polyline points="9 18 15 12 9 6" /></svg>
           </div>
@@ -149,7 +149,7 @@ function StatCard({ val, label }: { val: string; label: string }) {
   return (
     <div style={{ background: v3.color.card, borderRadius: 16, padding: '14px 8px', textAlign: 'center', boxShadow: '0 4px 16px rgba(112,216,189,.06)' }}>
       <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, color: v3.color.accent, letterSpacing: '-.03em', lineHeight: 1 }}>{val}</div>
-      <div style={{ fontSize: 11, fontWeight: 600, color: v3.color.text2, marginTop: 5 }}>{label}</div>
+      <div style={{ fontSize: 14, fontWeight: 600, color: v3.color.text2, marginTop: 5 }}>{label}</div>
     </div>
   )
 }
@@ -167,7 +167,7 @@ function SettingRow({ icon, name, sub, onClick }: { icon: string; name: string; 
       <div style={{ width: 36, height: 36, borderRadius: 10, background: v3.color.accentSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{iconSvg}</div>
       <div style={{ flex: 1 }}>
         <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 2 }}>{name}</div>
-        <div style={{ fontSize: 11, color: v3.color.text2, fontWeight: 500 }}>{sub}</div>
+        <div style={{ fontSize: 14, color: v3.color.text2, fontWeight: 500 }}>{sub}</div>
       </div>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6" /></svg>
     </div>
