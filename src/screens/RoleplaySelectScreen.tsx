@@ -126,8 +126,8 @@ function SituationCard({
       onClick={comingSoon ? undefined : onClick}
       disabled={comingSoon}
       style={{
-        background: 'v3.color.card',
-        border: `1.5px solid ${comingSoon ? '`${v3.color.accent}12`' : '`${v3.color.accent}18`'}`,
+        background: v3.color.card,
+        border: `1.5px solid ${comingSoon ? `${v3.color.accent}12` : `${v3.color.accent}18`}`,
         borderRadius: 16,
         padding: 0,
         cursor: comingSoon ? 'default' : 'pointer',
@@ -162,26 +162,26 @@ function SituationCard({
       {/* テキスト部 */}
       <div style={{ padding: 14, display: 'flex', alignItems: 'flex-start', gap: 12 }}>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: 'v3.color.accent', marginBottom: 4, letterSpacing: '.04em' }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: v3.color.accent, marginBottom: 4, letterSpacing: '.04em' }}>
             {s.partnerRole}
           </div>
-          <div style={{ fontSize: 16, fontWeight: 700, color: 'v3.color.text', marginBottom: 4, lineHeight: 1.4 }}>
+          <div style={{ fontSize: 16, fontWeight: 700, color: v3.color.text, marginBottom: 4, lineHeight: 1.4 }}>
             {s.title}
           </div>
-          <div style={{ fontSize: 13, color: 'v3.color.text2', lineHeight: 1.5, marginBottom: 10 }}>
+          <div style={{ fontSize: 13, color: v3.color.text2, lineHeight: 1.5, marginBottom: 10 }}>
             {s.goal}
           </div>
           <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
             <span style={{
               fontSize: 11, fontWeight: 700, padding: '3px 9px', borderRadius: 99,
-              background: '`${v3.color.accent}20`', color: 'v3.color.accent',
+              background: `${v3.color.accent}20`, color: v3.color.accent,
             }}>
               {s.frameworkLabel}
             </span>
             <span style={{
               fontSize: 11, fontWeight: 700, padding: '3px 9px', borderRadius: 99,
-              background: '`${v3.color.accent}12`',
-              color: DIFF_COLOR[s.difficulty] ?? 'v3.color.text2',
+              background: `${v3.color.accent}12`,
+              color: DIFF_COLOR[s.difficulty] ?? v3.color.text2,
             }}>
               {DIFF_LABEL[s.difficulty] ?? s.difficulty}
             </span>
@@ -192,7 +192,7 @@ function SituationCard({
         {comingSoon ? (
           <span style={{
             flexShrink: 0, fontSize: 11, fontWeight: 700, padding: '3px 8px',
-            borderRadius: 99, background: '`${v3.color.accent}12`', color: 'v3.color.text3',
+            borderRadius: 99, background: `${v3.color.accent}12`, color: v3.color.text3,
             alignSelf: 'flex-start', whiteSpace: 'nowrap',
           }}>
             近日公開
@@ -200,13 +200,13 @@ function SituationCard({
         ) : locked ? (
           <span style={{
             flexShrink: 0, fontSize: 11, fontWeight: 700, padding: '3px 8px',
-            borderRadius: 99, background: '`${v3.color.accent}28`', color: 'v3.color.accent',
+            borderRadius: 99, background: `${v3.color.accent}28`, color: v3.color.accent,
             alignSelf: 'flex-start', whiteSpace: 'nowrap',
           }}>
             PRO
           </span>
         ) : (
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="v3.color.text3" strokeWidth="2.5" strokeLinecap="round" style={{ flexShrink: 0, alignSelf: 'center' }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5" strokeLinecap="round" style={{ flexShrink: 0, alignSelf: 'center' }}>
             <polyline points="9 18 15 12 9 6"/>
           </svg>
         )}
@@ -238,10 +238,10 @@ export function RoleplaySelectScreen({ onBack, onStart, onUpgrade }: RoleplaySel
           <ArrowLeftIcon />
         </IconButton>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 18, fontWeight: 800, color: 'v3.color.text', letterSpacing: '-.02em' }}>
+          <div style={{ fontSize: 18, fontWeight: 800, color: v3.color.text, letterSpacing: '-.02em' }}>
             ロールプレイ
           </div>
-          <div style={{ fontSize: 13, color: 'v3.color.text2', marginTop: 1 }}>
+          <div style={{ fontSize: 13, color: v3.color.text2, marginTop: 1 }}>
             実践的な思考力を鍛える
           </div>
         </div>
