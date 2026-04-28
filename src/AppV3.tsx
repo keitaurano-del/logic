@@ -13,10 +13,12 @@ import { JournalInputScreen } from './screens/JournalInputScreen'
 import { WorksheetScreen } from './screens/WorksheetScreen'
 import { ReportProblemScreen } from './screens/ReportProblemScreen'
 import { OnboardingScreen } from './screens/OnboardingScreen'
+import { BetaCodeScreen } from './screens/BetaCodeScreen'
 
 import { AIProblemGenScreen } from './screens/AIProblemGenScreen'
 import { AIProblemScreen } from './screens/AIProblemScreen'
 import { FeedbackScreen } from './screens/FeedbackScreen'
+import { FeedbackDashboardScreen } from './screens/FeedbackDashboardScreen'
 import { PlacementTestScreen } from './screens/PlacementTestScreen'
 import { PricingScreen } from './screens/PricingScreen'
 import { StreakScreen } from './screens/StreakScreen'
@@ -68,6 +70,7 @@ type Screen =
   | { type: 'ai-problem-gen' }
   | { type: 'ai-problem'; problem: AIProblemSet }
   | { type: 'feedback' }
+  | { type: 'feedback-dashboard' }
   | { type: 'placement-test' }
   | { type: 'pricing' }
   | { type: 'streak' }
@@ -82,6 +85,7 @@ type Screen =
   | { type: 'report-problem'; context: { lessonId?: number; lessonTitle?: string; question?: string } }
   | { type: 'onboarding' }
   | { type: 'login-gate'; feature: 'ai-gen' | 'roleplay' | 'advanced-lessons' }
+  | { type: 'beta-code' }
 
 // LESSON_LIST is now managed within RoadmapScreen
 
@@ -264,6 +268,16 @@ function AppV3() {
     )
   }
 
+  // BetaCode: show full-screen, no AppShell
+  if (screen.type === 'beta-code') {
+    return (
+      <BetaCodeScreen
+        onSuccess={() => navigate({ type: 'home' })}
+        onSkip={() => navigate({ type: 'home' })}
+      />
+    )
+  }
+
   return (
     <AppShell
       activeTab={tab}
@@ -315,6 +329,7 @@ function AppV3() {
       {screen.type === 'worksheet' && <WorksheetScreen onBack={handleBack} />}
 
       {screen.type === 'feedback' && <FeedbackScreen onBack={handleBack} />}
+      {screen.type === 'feedback-dashboard' && <FeedbackDashboardScreen onClose={handleBack} />}
       {screen.type === 'pricing' && <PricingScreen onBack={handleBack} />}
       {screen.type === 'ai-problem-gen' && (
         <AIProblemGenScreen
