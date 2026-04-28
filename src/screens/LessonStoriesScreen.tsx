@@ -408,8 +408,13 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
     if (slide.kind === 'summary') {
     return (
       <>
-        <h1 style={{ fontSize: 28, fontWeight: 700, lineHeight: 1.4, marginBottom: 28, marginTop: 32, color: v3.color.text }}>{slide.title}</h1>
-        <ul style={{ display: 'flex', flexDirection: 'column', gap: 12, listStyle: 'none', padding: 0 }}>
+        {/* 完了アイコン */}
+        <div style={{ textAlign: 'center', marginTop: 24, marginBottom: 20 }}>
+          <div style={{ fontSize: 48, lineHeight: 1, marginBottom: 12 }}>✨</div>
+          <h1 style={{ fontSize: 26, fontWeight: 800, lineHeight: 1.4, color: v3.color.text, marginBottom: 4 }}>{slide.title}</h1>
+          <p style={{ fontSize: 14, color: v3.color.text2 }}>学習が完了したよ！</p>
+        </div>
+        <ul style={{ display: 'flex', flexDirection: 'column', gap: 12, listStyle: 'none', padding: 0, marginBottom: 28 }}>
           {slide.points.map((p, i) => (
             <li key={i} style={{ display: 'flex', gap: 12, alignItems: 'flex-start', background: v3.color.card, borderRadius: 14, padding: '14px 16px' }}>
               <div style={{ width: 24, height: 24, borderRadius: '50%', background: v3.color.accent, color: v3.color.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 800, flexShrink: 0 }}>{i + 1}</div>
@@ -417,6 +422,20 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
             </li>
           ))}
         </ul>
+        {/* 次への導線 CTA */}
+        <button
+          onClick={onNext}
+          style={{
+            width: '100%', padding: '16px 0', borderRadius: 99,
+            background: v3.color.accent, color: v3.color.bg,
+            fontSize: 16, fontWeight: 700, border: 'none', cursor: 'pointer',
+            boxShadow: `0 4px 20px ${v3.color.accent}45`,
+            WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation',
+            letterSpacing: '.02em',
+          }}
+        >
+          結果を確認する →
+        </button>
       </>
     )
   }

@@ -1024,3 +1024,58 @@
 
   .pf-screen, .pf-tab { max-width: 960px !important; margin: 0 auto !important; padding: 32px 40px !important; }
 }
+
+/* ============================================
+   タップフィードバック (SCRUM UX改善)
+   ============================================ */
+/* ボタン全般: タップ時にわずかにスケールダウン */
+button:active:not(:disabled) {
+  transform: scale(0.97);
+  opacity: 0.88;
+  transition: transform 0.08s ease, opacity 0.08s ease;
+}
+
+/* v3スタイルボタン専用: より反応感を出す */
+.btn-v3:active {
+  transform: scale(0.96) !important;
+  opacity: 0.85 !important;
+}
+
+/* レッスン選択肢カード */
+.quiz-choice:active {
+  transform: scale(0.98) !important;
+}
+
+/* ホーム・ロードマップ等のタップカード */
+.tap-card:active {
+  transform: scale(0.98) !important;
+  transition: transform 0.1s ease !important;
+}
+
+/* タブバーアイコン */
+.tab-btn:active {
+  opacity: 0.6;
+  transition: opacity 0.08s ease;
+}
+
+/* ============================================
+   スクリーン遷移 fade-in (SCRUM UX改善)
+   ============================================ */
+@keyframes screenFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.screen-fade-in {
+  animation: screenFadeIn 0.22s ease forwards;
+}
+
+/* タブ切り替えは横スライドなし, 単純fade */
+@keyframes tabFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.tab-fade-in {
+  animation: tabFadeIn 0.18s ease forwards;
+}

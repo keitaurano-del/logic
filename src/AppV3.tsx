@@ -272,6 +272,8 @@ function AppV3() {
       userLevel={`Lv.${level}`}
       hideTabBar={screen.type === 'lesson' || screen.type === 'lesson-complete'}
     >
+      {/* スクリーン遷移fade-in: screen.typeが変わるたびにkeyで再マウント */}
+      <div key={screen.type} className="tab-fade-in" style={{ display: 'contents' }}>
       {screen.type === 'home' && (
         <HomeScreenV3
           userName={userName}
@@ -460,6 +462,7 @@ function AppV3() {
           onHome={() => navigate({ type: 'home' }, true)}
         />
       )}
+      </div>
     </AppShell>
   )
 }
