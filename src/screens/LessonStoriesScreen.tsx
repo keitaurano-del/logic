@@ -200,10 +200,10 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
         </div>
       )}
 
-      {/* 誤りを報告 — 左下のボタン（少し大きめ） */}
+      {/* 誤りを報告 — 左下のボタン（サマリースライドでは非表示） */}
       <button
         onPointerDown={(e) => { e.stopPropagation(); setReportOpen(true) }}
-        style={{ position: 'absolute', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 16px)', left: 16, fontSize: 12, color: v3.color.text2, background: v3.color.card, border: `1px solid ${v3.color.line}`, borderRadius: 99, cursor: 'pointer', zIndex: 7, padding: '8px 14px', display: 'flex', alignItems: 'center', gap: 5 }}
+        style={{ position: 'absolute', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 16px)', left: 16, fontSize: 12, color: v3.color.text2, background: v3.color.card, border: `1px solid ${v3.color.line}`, borderRadius: 99, cursor: 'pointer', zIndex: 7, padding: '8px 14px', display: slide.kind === 'summary' ? 'none' : 'flex', alignItems: 'center', gap: 5 }}
       >
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg>
         誤りを報告
@@ -227,7 +227,13 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
               </>
             ) : (
               <>
-                <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 6 }}>誤りを報告</div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+                  <div style={{ fontSize: 16, fontWeight: 700 }}>誤りを報告</div>
+                  <button
+                    onPointerDown={() => setReportOpen(false)}
+                    style={{ background: v3.color.card, border: 'none', borderRadius: '50%', width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: v3.color.text2, fontSize: 18, lineHeight: 1 }}
+                  >×</button>
+                </div>
                 <div style={{ fontSize: 13, color: v3.color.text2, marginBottom: 16 }}>どのような誤りがありましたか？</div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
                   {['内容・説明が間違っている', '選択肢の正解が違う', '日本語がおかしい・誤字', 'その他'].map(opt => (
