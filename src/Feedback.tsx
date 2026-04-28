@@ -2,6 +2,12 @@ import { useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import { getLocale } from './i18n'
 import './Feedback.css'
+import { Capacitor } from '@capacitor/core'
+
+const PROD_API = import.meta.env.VITE_API_URL ?? 'https://logic-u5wn.onrender.com'
+const _API_BASE = import.meta.env.DEV
+  ? `http://${window.location.hostname}:3001`
+  : Capacitor.isNativePlatform() ? PROD_API : ''
 
 const CATEGORIES = ['機能追加', 'バグ報告', 'UI改善', 'その他'] as const
 
@@ -28,14 +34,25 @@ export default function Feedback({ onBack }: { onBack: () => void }) {
     setLoading(true)
     setError('')
     try {
-      if (_supabase) {
-        const { error: dbErr } = await _supabase.from('feedback').insert({
-          category,
-          message: message.trim(),
-          locale: getLocale(),
+      // サーバーサイドAPI経由で送信（Supabase保存 + Jira起票）
+      try {
+        const res = await fetch(`${_API_BASE}/api/feedback`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ category, message: message.trim(), locale: getLocale() }),
         })
-        if (dbErr) throw new Error(dbErr.message)
-      } else {
+        if (!res.ok) throw new Error('server error')
+      } catch {
+        // サーバー未接続時はSupabase直接フォールバック
+        if (_supabase) {
+          const { error: dbErr } = await _supabase.from('feedback').insert({
+            category, message: message.trim(), locale: getLocale(),
+          })
+          if (dbErr) throw new Error(dbErr.message)
+        }
+      }
+
+      if (false) {
         // Supabase未設定時のフォールバック
         const subject = encodeURIComponent(`[Logic フィードバック] ${category}`)
         const body = encodeURIComponent(`カテゴリ: ${category}\n\n${message.trim()}`)

@@ -1934,8 +1934,9 @@ app.post('/api/feedback', makeLimiter({ windowMs: 60*1000, max: 5 }), async (req
     const isEn = locale === 'en'
 
     // Supabase に保存
+    let insertedId: string | null = null
     if (supabase) {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('feedback')
         .insert({
           category,
@@ -1943,11 +1944,27 @@ app.post('/api/feedback', makeLimiter({ windowMs: 60*1000, max: 5 }), async (req
           locale: locale || 'ja',
           created_at: new Date().toISOString(),
         })
+        .select('id')
+        .single()
       if (error) {
-        // テーブルがなくても無視して成功を返す
         console.warn('[feedback] Supabase insert warning:', error.message)
+      } else {
+        insertedId = data?.id ?? null
       }
     }
+
+    // Jira チケット起票（バグ報告・コンテンツ誤りは Bug、改善提案は Story）
+    const isUrgent = category === 'バグ報告' || category === '内容・説明が間違っている' || category === '選択肢の正解が違う'
+    await jiraCreateIssue({
+      summary: `[フィードバック] ${category}: ${message.trim().slice(0, 60)}`,
+      description: [
+        `カテゴリ: ${category}`,
+        `内容: ${message.trim()}`,
+        `言語: ${locale || 'ja'}`,
+        insertedId ? `Supabase ID: ${insertedId}` : '',
+      ].filter(Boolean).join('\n'),
+      issueType: isUrgent ? 'Bug' : 'Story',
+    })
 
     res.json({ ok: true, message: isEn ? 'Thank you!' : 'ありがとうございました！' })
   } catch (e: unknown) {

@@ -10,6 +10,7 @@ import { convertLessonToSlides } from '../lessonSlides'
 import { allLessons } from '../lessonData'
 import { addXp } from '../stats'
 import { LessonThumbnail } from '../components/LessonThumbnail'
+import { API_BASE } from './apiBase'
 
 interface LessonStoriesScreenProps {
   lessonId: number
@@ -253,7 +254,26 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
                   />
                 </div>
                 <button
-                  onPointerDown={() => { if (reportText) { setReportSent(true) } }}
+                  onPointerDown={async () => {
+                    if (!reportText) return
+                    try {
+                      await fetch(`${API_BASE}/api/report-problem`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                          lessonTitle: allLessons[lessonId]?.title ?? '',
+                          lessonId,
+                          question: '',
+                          options: [],
+                          issueType: reportText,
+                          comment: reportDetail,
+                        }),
+                      })
+                    } catch (e) {
+                      console.warn('[report] API call failed (non-fatal):', e)
+                    }
+                    setReportSent(true)
+                  }}
                   disabled={!reportText}
                   style={{ width: '100%', background: reportText ? v3.color.accent : v3.color.card, border: 'none', borderRadius: 14, padding: '14px', fontSize: 14, fontWeight: 700, color: reportText ? v3.color.bg : v3.color.text3, cursor: reportText ? 'pointer' : 'default' }}
                 >
