@@ -40,8 +40,8 @@ function WelcomeStep({ onNext }: { onNext: () => void }) {
       }}>
         論理的思考力を、<br />毎日5分で鍛えよう。
       </h1>
-      <p style={{ fontSize: 16, color: v3.color.text2, lineHeight: 1.7, maxWidth: 300, marginBottom: 40 }}>
-        フェルミ推定・ケース面接・ロジカルシンキングをAIと一緒に実践トレーニング。
+      <p style={{ fontSize: 15, color: v3.color.text2, lineHeight: 1.75, maxWidth: 340, marginBottom: 40 }}>
+        フェルミ推定・ケース面接・ロジカルシンキングを<br />AIと一緒に実践トレーニング。
       </p>
       <Button variant="primary" size="lg" block style={{ maxWidth: 320 }} onClick={onNext}>
         はじめる
@@ -453,12 +453,12 @@ function saveUserProfile(data: Partial<UserProfileData>) {
 }
 
 const AGE_OPTIONS = [
-  { value: 'under-18', label: '【18歳' },
-  { value: '19-24', label: '19【24歳' },
-  { value: '25-34', label: '25【34歳' },
-  { value: '35-44', label: '35【44歳' },
-  { value: '45-54', label: '45【54歳' },
-  { value: '55-plus', label: '55歳〜' },
+  { value: 'under-18', label: '18歳未満' },
+  { value: '19-24', label: '19〜24歳' },
+  { value: '25-34', label: '25〜34歳' },
+  { value: '35-44', label: '35〜44歳' },
+  { value: '45-54', label: '45〜54歳' },
+  { value: '55-plus', label: '55歳以上' },
 ]
 
 const OCCUPATION_OPTIONS = [
@@ -477,7 +477,7 @@ const PURPOSE_OPTIONS = [
   { value: 'career', label: 'コンサル・外資転職の準備' },
   { value: 'exam', label: 'MBA・資格試験対策' },
   { value: 'teaching', label: '子供や部下への教育' },
-  { value: 'hobby', label: '趣味・自己研鳽' },
+  { value: 'hobby', label: '趣味・自己研鑽' },
 ]
 
 const SELF_ASSESSMENT_OPTIONS = [
