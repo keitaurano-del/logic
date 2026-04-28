@@ -15,6 +15,14 @@ export type SubscriptionPlan =
   | 'premium_monthly'
   | 'premium_yearly'
 
+// SCRUM-182: 新プラン価格定義
+export const PLAN_PRICES = {
+  standard_monthly: 450,
+  standard_yearly: 4500,   // 2ヶ月分お得 (月⅔375)
+  premium_monthly: 980,
+  premium_yearly: 9800,    // 2ヶ月分お得 (月⅔817)
+} as const
+
 export type SubscriptionState = {
   trialStartedAt: string | null
   plan: SubscriptionPlan
@@ -95,9 +103,30 @@ export function isStandardPlan(): boolean {
 }
 
 export function getAIGenerationLimit(): number {
-  if (isPremiumPlan()) return -1 // unlimited
-  if (isStandardPlan()) return 30
-  return 10
+  if (BETA_MODE) return -1
+  const s = getSubscriptionState()
+  // SCRUM-182: 新プラン別制限
+  if (s.plan === 'premium_monthly' || s.plan === 'premium_yearly') return 200 // 月200問
+  if (s.plan === 'standard_monthly' || s.plan === 'standard_yearly') return 30  // 月30問
+  if (s.plan === 'trial') return 30
+  if (s.plan === 'monthly' || s.plan === 'yearly') return 30 // legacy
+  return 0 // フリーはAI生成不可
+}
+
+export function getRoleplayLimit(): number {
+  if (BETA_MODE) return -1
+  const s = getSubscriptionState()
+  if (s.plan === 'premium_monthly' || s.plan === 'premium_yearly') return -1 // 無制限
+  if (s.plan === 'standard_monthly' || s.plan === 'standard_yearly') return 3  // 月3回
+  if (s.plan === 'trial') return 3
+  return 0 // フリーはロールプレイ不可
+}
+
+export function canAccessAdvancedLessons(): boolean {
+  if (BETA_MODE) return true
+  const s = getSubscriptionState()
+  const paid: SubscriptionPlan[] = ['standard_monthly', 'standard_yearly', 'premium_monthly', 'premium_yearly', 'monthly', 'yearly', 'trial']
+  return paid.includes(s.plan)
 }
 
 export async function getPremiumStatus(userId: string): Promise<boolean> {
@@ -160,16 +189,16 @@ export function getPlanLabel(): string {
   const s = getSubscriptionState()
   switch (s.plan) {
     case 'trial': return `7日間トライアル (残り${daysLeftInTrial()}日)`
-    case 'basic_monthly': return 'ベーシック (¥250/月)'
-    case 'basic_yearly': return 'ベーシック (¥2,500/年)'
-    case 'standard_monthly': return 'スタンダード (¥500/月)'
-    case 'standard_yearly': return 'スタンダード (¥3,500/年)'
+    case 'basic_monthly': return 'スタンダード (¥450/月)' // legacy basic → standard稱号
+    case 'basic_yearly': return 'スタンダード (¥4,500/年)'
+    case 'standard_monthly': return 'スタンダード (¥450/月)'
+    case 'standard_yearly': return 'スタンダード (¥4,500/年)'
     case 'premium_monthly': return 'プレミアム (¥980/月)'
-    case 'premium_yearly': return 'プレミアム (¥6,980/年)'
-    case 'monthly': return 'スタンダード (¥500/月)'
-    case 'yearly': return 'スタンダード (¥3,500/年)'
-    case 'free': return '無料プラン'
-    default: return '無料プラン'
+    case 'premium_yearly': return 'プレミアム (¥9,800/年)'
+    case 'monthly': return 'スタンダード (¥450/月)'
+    case 'yearly': return 'スタンダード (¥4,500/年)'
+    case 'free': return '無料 (キャンペーン中)'
+    default: return '無料 (キャンペーン中)'
   }
 }
 
