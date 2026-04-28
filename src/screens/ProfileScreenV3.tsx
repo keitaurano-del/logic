@@ -21,7 +21,7 @@ function getPlanLabel(): string {
   if (isStandardPlan()) {
     return state.plan.includes('yearly') ? 'スタンダード（年）' : 'スタンダード'
   }
-  return '無料プラン'
+  return '無料（キャンペーン中）'
 }
 
 interface ProfileScreenV3Props {
