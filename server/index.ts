@@ -1310,6 +1310,31 @@ app.get('/api/placement/ranking', async (req, res) => {
 // =============================================
 
 // Jira チケット作成ヘルパー
+// Apolloフィードバック通知 — VM上のwebhookサーバーを叫び出し、即座にApolloに分析させる
+async function notifyApollo(payload: { category: string; message: string; jiraKey?: string }): Promise<void> {
+  const webhookUrl = process.env.APOLLO_WEBHOOK_URL
+  const webhookSecret = process.env.APOLLO_FEEDBACK_SECRET || 'apollo-logic-2026'
+  if (!webhookUrl) {
+    // fallback: 本番環境変数未設定の場合はスキップ
+    console.log('[apollo] APOLLO_WEBHOOK_URL not set — skipping real-time notification')
+    return
+  }
+  try {
+    await fetch(webhookUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-apollo-secret': webhookSecret,
+      },
+      body: JSON.stringify(payload),
+      signal: AbortSignal.timeout(5000), // 5秒タイムアウト（非同期ウェイト）
+    })
+    console.log('[apollo] notified:', payload.category)
+  } catch (e: unknown) {
+    console.warn('[apollo] notify failed (non-fatal):', (e as Error).message)
+  }
+}
+
 async function jiraCreateIssue(opts: {
   summary: string
   description: string
@@ -1438,7 +1463,7 @@ app.post('/api/report-problem', async (req, res) => {
     }
 
     // Jira チケット作成を試みる
-    await jiraCreateIssue({
+    const reportJiraResult = await jiraCreateIssue({
       summary: `[Logic] ${issueType}: ${(question || '').slice(0, 80)}`,
       description: [
         `レッスン: ${lessonTitle || '不明'} (ID: ${lessonId || '-'})`,
@@ -1449,6 +1474,13 @@ app.post('/api/report-problem', async (req, res) => {
       ].join('\n'),
       issueType: 'Bug',
     })
+
+    // Apolloに即座通知 — リアルタイム分析・改善提案
+    notifyApollo({
+      category: issueType,
+      message: `レッスン[${lessonTitle || '不明'}] ${question}${comment ? ' / ' + comment : ''}`,
+      jiraKey: reportJiraResult?.key,
+    }).catch(() => {})
 
     res.json({ ok: true, id: data?.id })
   } catch (e: unknown) {
@@ -1955,7 +1987,7 @@ app.post('/api/feedback', makeLimiter({ windowMs: 60*1000, max: 5 }), async (req
 
     // Jira チケット起票（バグ報告・コンテンツ誤りは Bug、改善提案は Story）
     const isUrgent = category === 'バグ報告' || category === '内容・説明が間違っている' || category === '選択肢の正解が違う'
-    await jiraCreateIssue({
+    const feedbackJiraResult = await jiraCreateIssue({
       summary: `[フィードバック] ${category}: ${message.trim().slice(0, 60)}`,
       description: [
         `カテゴリ: ${category}`,
@@ -1965,6 +1997,13 @@ app.post('/api/feedback', makeLimiter({ windowMs: 60*1000, max: 5 }), async (req
       ].filter(Boolean).join('\n'),
       issueType: isUrgent ? 'Bug' : 'Story',
     })
+
+    // Apolloに即座通知 — 受信後即座に分析・改善提案
+    notifyApollo({
+      category,
+      message: message.trim(),
+      jiraKey: feedbackJiraResult?.key,
+    }).catch(() => {})
 
     res.json({ ok: true, message: isEn ? 'Thank you!' : 'ありがとうございました！' })
   } catch (e: unknown) {

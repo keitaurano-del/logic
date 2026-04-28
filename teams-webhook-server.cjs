@@ -69,10 +69,58 @@ function sendToClaw(channelName, sender, message) {
   }
 }
 
+/**
+ * フィードバック来時に即座インジェクション — Renderサーバから呼び出される
+ * POST /api/feedback-received
+ * Body: { category, message, locale, jiraKey?, reportId? }
+ * Secret: x-apollo-secret header
+ */
+const APOLLO_SECRET = process.env.APOLLO_FEEDBACK_SECRET || 'apollo-logic-2026';
+
+function sendFeedbackAlert(category, message, jiraKey) {
+  const isUrgent = category === 'バグ報告' ||
+    category === '内容・説明が間違っている' ||
+    category === '選択肢の正解が違う';
+
+  const urgentFlag = isUrgent ? '🔴紧急 ' : '💡 ';
+  const text = [
+    `[アプリフィードバック受信] ${urgentFlag}${category}`,
+    `内容: ${message.slice(0, 200)}`,
+    jiraKey ? `Jira: ${jiraKey}` : '',
+    '',
+    `Apolloへ: このフィードバックを分析して改善提案をTeamsの💡プロダクトチャンネルに投稿してください。`,
+    `TEAM_ID=dc5c2932-f8c4-4196-b161-e18ec6a25985 💡プロダクト=19:901b1112f7a94cd29e4e14c7a566e4fd@thread.tacv2`,
+  ].filter(Boolean).join('\n');
+
+  return sendToClaw('feedback-received', 'Renderサーバー', text);
+}
+
 const server = http.createServer((req, res) => {
   if (req.method === 'GET' && req.url === '/health') {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ status: 'ok', service: 'teams-webhook', port: PORT }));
+    return;
+  }
+
+  // フィードバック受信エンドポイント
+  if (req.method === 'POST' && req.url === '/api/feedback-received') {
+    const secret = req.headers['x-apollo-secret'] || '';
+    if (secret !== APOLLO_SECRET) {
+      res.writeHead(401); res.end(JSON.stringify({ error: 'Unauthorized' })); return;
+    }
+    let body = '';
+    req.on('data', chunk => { body += chunk.toString(); });
+    req.on('end', () => {
+      try {
+        const { category = 'その他', message = '', jiraKey } = JSON.parse(body);
+        console.log(`[FEEDBACK] ${category}: ${message.slice(0, 80)}`);
+        const ok = sendFeedbackAlert(category, message, jiraKey);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ status: ok ? 'ok' : 'warn', injected: ok }));
+      } catch(e) {
+        res.writeHead(400); res.end(JSON.stringify({ error: e.message }));
+      }
+    });
     return;
   }
 
