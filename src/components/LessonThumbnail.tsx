@@ -540,6 +540,83 @@ const SHAPES: Record<number, ShapeFn> = {
       <line x1="78" y1="59" x2="78" y2="68" stroke={s} strokeWidth="1.5" strokeLinecap="round" opacity={0.7}/>
     </g>
   ),
+  // 提案書作成コース (ID 82-88) SCRUM-184
+  82: s => ( // コース導入: 思考→成果物の流れ
+    <g>
+      <circle cx="28" cy="50" r="12" fill="none" stroke={s} strokeWidth="2"/>
+      <line x1="40" y1="50" x2="56" y2="50" stroke={s} strokeWidth="2" strokeLinecap="round"/>
+      <polyline points="52,44 58,50 52,56" fill="none" stroke={s} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <rect x="62" y="38" width="22" height="24" rx="3" fill="none" stroke={s} strokeWidth="2"/>
+      <line x1="67" y1="46" x2="79" y2="46" stroke={s} strokeWidth="1.5" strokeLinecap="round"/>
+      <line x1="67" y1="52" x2="75" y2="52" stroke={s} strokeWidth="1.5" strokeLinecap="round" opacity={0.6}/>
+    </g>
+  ),
+  83: s => ( // 仮説思考: サイクル矢印
+    <g>
+      <circle cx="50" cy="50" r="24" fill="none" stroke={s} strokeWidth="1.5" opacity={0.3}/>
+      <path d="M 50 26 A 24 24 0 0 1 74 50" fill="none" stroke={s} strokeWidth="2.2" strokeLinecap="round"/>
+      <polyline points="70,44 74,50 68,52" fill="none" stroke={s} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M 74 50 A 24 24 0 1 1 50 26" fill="none" stroke={s} strokeWidth="2" strokeLinecap="round" opacity={0.5}/>
+      <circle cx="50" cy="50" r="6" fill={s}/>
+    </g>
+  ),
+  84: s => ( // 調査設計: リストと虫眼鏡
+    <g>
+      <rect x="22" y="20" width="56" height="60" rx="4" fill="none" stroke={s} strokeWidth="1.8"/>
+      <line x1="30" y1="34" x2="70" y2="34" stroke={s} strokeWidth="1.8" strokeLinecap="round"/>
+      <line x1="30" y1="44" x2="60" y2="44" stroke={s} strokeWidth="1.5" strokeLinecap="round" opacity={0.7}/>
+      <line x1="30" y1="54" x2="65" y2="54" stroke={s} strokeWidth="1.5" strokeLinecap="round" opacity={0.5}/>
+      <line x1="30" y1="64" x2="55" y2="64" stroke={s} strokeWidth="1.5" strokeLinecap="round" opacity={0.35}/>
+      <circle cx="66" cy="60" r="9" fill="none" stroke={s} strokeWidth="2" opacity={0.8}/>
+      <line x1="73" y1="67" x2="78" y2="72" stroke={s} strokeWidth="2.5" strokeLinecap="round" opacity={0.8}/>
+    </g>
+  ),
+  85: s => ( // 仮説検証: ダイヤル循環
+    <g>
+      <circle cx="50" cy="50" r="28" fill="none" stroke={s} strokeWidth="1.5" opacity={0.35}/>
+      <path d="M 50 22 A 28 28 0 0 1 78 50" fill="none" stroke={s} strokeWidth="2.2" strokeLinecap="round"/>
+      <polyline points="74,44 78,50 72,52" fill="none" stroke={s} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M 78 50 A 28 28 0 0 1 50 78" fill="none" stroke={s} strokeWidth="2.2" strokeLinecap="round" opacity={0.7}/>
+      <polyline points="44,74 50,78 52,72" fill="none" stroke={s} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" opacity={0.7}/>
+      <path d="M 50 78 A 28 28 0 0 1 22 50" fill="none" stroke={s} strokeWidth="2" strokeLinecap="round" opacity={0.4}/>
+      <path d="M 22 50 A 28 28 0 0 1 50 22" fill="none" stroke={s} strokeWidth="2" strokeLinecap="round" opacity={0.2}/>
+      <circle cx="50" cy="50" r="5" fill={s}/>
+    </g>
+  ),
+  86: s => ( // 課題構造化: ロジックツリー
+    <g>
+      <line x1="50" y1="18" x2="50" y2="36" stroke={s} strokeWidth="2" strokeLinecap="round"/>
+      <circle cx="50" cy="18" r="4" fill={s}/>
+      <line x1="50" y1="36" x2="28" y2="54" stroke={s} strokeWidth="2" strokeLinecap="round"/>
+      <line x1="50" y1="36" x2="72" y2="54" stroke={s} strokeWidth="2" strokeLinecap="round"/>
+      <circle cx="28" cy="54" r="4" fill={s}/>
+      <circle cx="72" cy="54" r="4" fill={s}/>
+      <line x1="28" y1="58" x2="18" y2="74" stroke={s} strokeWidth="1.5" strokeLinecap="round" opacity={0.7}/>
+      <line x1="28" y1="58" x2="38" y2="74" stroke={s} strokeWidth="1.5" strokeLinecap="round" opacity={0.7}/>
+      <line x1="72" y1="58" x2="62" y2="74" stroke={s} strokeWidth="1.5" strokeLinecap="round" opacity={0.7}/>
+      <line x1="72" y1="58" x2="82" y2="74" stroke={s} strokeWidth="1.5" strokeLinecap="round" opacity={0.7}/>
+    </g>
+  ),
+  87: s => ( // 提案書骨子: ピラミッド型スライド構造
+    <g>
+      <rect x="18" y="22" width="64" height="12" rx="2" fill="none" stroke={s} strokeWidth="2"/>
+      <rect x="24" y="40" width="52" height="10" rx="2" fill="none" stroke={s} strokeWidth="1.8" opacity={0.75}/>
+      <rect x="30" y="56" width="40" height="9" rx="2" fill="none" stroke={s} strokeWidth="1.5" opacity={0.5}/>
+      <rect x="36" y="71" width="28" height="8" rx="2" fill="none" stroke={s} strokeWidth="1.2" opacity={0.3}/>
+      <line x1="50" y1="34" x2="50" y2="40" stroke={s} strokeWidth="1.5" strokeLinecap="round" opacity={0.5}/>
+      <line x1="50" y1="50" x2="50" y2="56" stroke={s} strokeWidth="1.5" strokeLinecap="round" opacity={0.4}/>
+    </g>
+  ),
+  88: s => ( // 演習: チェックマーク + 文書
+    <g>
+      <rect x="20" y="16" width="50" height="64" rx="4" fill="none" stroke={s} strokeWidth="1.8"/>
+      <line x1="30" y1="32" x2="60" y2="32" stroke={s} strokeWidth="1.5" strokeLinecap="round" opacity={0.6}/>
+      <line x1="30" y1="42" x2="58" y2="42" stroke={s} strokeWidth="1.5" strokeLinecap="round" opacity={0.5}/>
+      <line x1="30" y1="52" x2="56" y2="52" stroke={s} strokeWidth="1.5" strokeLinecap="round" opacity={0.4}/>
+      <circle cx="68" cy="64" r="14" fill={s} opacity={0.12}/>
+      <polyline points="60,64 65,70 78,57" fill="none" stroke={s} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </g>
+  ),
   77: s => ( // ソクラテスの問答法: 2人の対話
     <g>
       <circle cx="30" cy="38" r="10" fill="none" stroke={s} strokeWidth="2"/>
@@ -563,7 +640,7 @@ function getPalette(lessonId: number): { bg: string; stroke: string } {
   if ([59,60,61].includes(lessonId)) return PALETTE.lateral
   if ([62,63,64].includes(lessonId)) return PALETTE.analogy
   if ([65,66,67].includes(lessonId)) return PALETTE.systems
-  if ([72,73,74,75,76].includes(lessonId)) return PALETTE.proposal
+  if ([72,73,74,75,76,82,83,84,85,86,87,88].includes(lessonId)) return PALETTE.proposal
   if ([77,78,79,80,81].includes(lessonId)) return PALETTE.philo
   return PALETTE.logic
 }

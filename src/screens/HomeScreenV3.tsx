@@ -8,6 +8,22 @@ import { getStreak, getStudyDates } from '../stats'
 import { v3 } from '../styles/tokensV3'
 import { API_BASE } from './apiBase'
 
+// SCRUM-185: グリーティングメッセージ複数パターン
+const GREETING_MESSAGES = [
+  '今日も論理を、\nひとつ深めましょう。',
+  '思考の筋肉を、\n今日も鍛えよう。',
+  'ひとつの問いが、\n思考を変える。',
+  '考える力は、\n毎日の積み重ね。',
+  '今日の1問が、\n明日の洞察になる。',
+  '論理的思考は、\n習慣から生まれる。',
+  '問い続けることが、\n答えへの道。',
+]
+
+function getDailyGreeting(): string {
+  const day = new Date().getDate()
+  return GREETING_MESSAGES[day % GREETING_MESSAGES.length].replace('\\n', '\n')
+}
+
 
 interface HomeScreenV3Props {
   userName: string
@@ -24,7 +40,7 @@ interface HomeScreenV3Props {
 const IMG = '/images/v3'
 
 export function HomeScreenV3(props: HomeScreenV3Props) {
-  const { userName, onOpenLesson, onOpenAIGen, onOpenRoleplay, onOpenStats, onNavigateToDailyFermi } = props
+  const { userName, onOpenLesson, onOpenAIGen, onOpenRoleplay, onNavigateToDailyFermi } = props
 
   const streak = getStreak()
   // completed unused
@@ -80,7 +96,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
         {/* Greeting */}
         <div style={{ padding: '4px 4px 8px' }}>
           <div style={{ fontSize: 13, color: v3.color.text2, marginBottom: 4, fontWeight: 500 }}>こんにちは、{userName || 'ゲスト'} さん</div>
-          <div style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.45, letterSpacing: '-.005em' }}>今日も論理を、<br />ひとつ深めましょう。</div>
+          <div style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.45, letterSpacing: '-.005em' }}>{getDailyGreeting().split('\n').map((line, i) => i === 0 ? <span key={i}>{line}<br /></span> : <span key={i}>{line}</span>)}</div>
         </div>
 
         {/* 今日の1問 (Daily Fermi) */}
@@ -193,24 +209,13 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
         <AILargeCard image={`${IMG}/home-daily-question.webp`} name="AI問題生成" sub="テーマ別のオリジナル問題で練習" onClick={onOpenAIGen} beta />
         <AILargeCard image={`${IMG}/home-roleplay.webp`} name="ロールプレイ" sub="ビジネス・哲学のシナリオで対話練習" onClick={onOpenRoleplay} beta />
 
-        {/* 記録を見る CTA */}
-        <div
-          onClick={onOpenStats}
-          style={{ background: v3.color.card, borderRadius: v3.radius.card, padding: '18px 20px', cursor: 'pointer', position: 'relative', overflow: 'hidden', boxShadow: v3.shadow.card, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
-        >
-          <div style={{ position: 'absolute', right: -40, top: -40, width: 140, height: 140, borderRadius: '50%', background: v3.color.accentGlow, filter: 'blur(40px)', pointerEvents: 'none' }}></div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14, position: 'relative', zIndex: 1 }}>
-            <div style={{ width: 44, height: 44, borderRadius: 12, background: v3.color.accentSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-              </svg>
-            </div>
-            <div>
-              <div style={{ fontSize: 11, color: v3.color.text2, fontWeight: 500, marginBottom: 3 }}>学習記録</div>
-              <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 17, fontWeight: 800, letterSpacing: '-.02em', lineHeight: 1.2, color: v3.color.text }}>偏差値・ランキングを見る</div>
-            </div>
+        {/* SCRUM-178: ベータ版注意バナー（偏差値ランキング堆導線を削除し置換） */}
+        <div style={{ background: `${v3.color.warm}14`, border: `1px solid ${v3.color.warm}40`, borderRadius: v3.radius.card, padding: '14px 18px', display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+          <div style={{ fontSize: 18, flexShrink: 0, lineHeight: 1 }}>⚠️</div>
+          <div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: v3.color.warm, marginBottom: 4, letterSpacing: '.04em' }}>BETA版</div>
+            <div style={{ fontSize: 13, color: v3.color.text2, lineHeight: 1.6 }}>一部機能は正常に動作しない場合があります。問題を見つけたらフィードバックを送ってね。</div>
           </div>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2" strokeLinecap="round" style={{ flexShrink: 0, position: 'relative', zIndex: 1 }}><polyline points="9 18 15 12 9 6" /></svg>
         </div>
       </div>
     </div>
@@ -254,6 +259,11 @@ function AILargeCard({ image, name, sub, onClick, beta }: { image: string; name:
       <div style={{ padding: '16px 18px 18px' }}>
         <div style={{ fontSize: 17, fontWeight: 700, marginBottom: 4 }}>{name}</div>
         <div style={{ fontSize: 13, color: v3.color.text2, fontWeight: 500, lineHeight: 1.5 }}>{sub}</div>
+        {beta && (
+          <div style={{ marginTop: 10, fontSize: 11, color: v3.color.warm, background: `${v3.color.warm}14`, borderRadius: 8, padding: '6px 10px', lineHeight: 1.5 }}>
+            ベータ版のため、一部機能は正常に動作しない場合があります
+          </div>
+        )}
       </div>
     </div>
   )

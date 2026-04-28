@@ -56,7 +56,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
           </div>
           <div>
             <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, letterSpacing: '-.02em', marginBottom: 2 }}>{userName || 'ゲスト'}</div>
-            <div style={{ fontSize: 12, color: v3.color.text2, fontWeight: 500 }}>2026年4月から学習中</div>
+            <div style={{ fontSize: 12, color: v3.color.text2, fontWeight: 500 }}>{userName ? `ロジカルシンカー トレーニー` : `ログインすると進捗が保存されるよ`}</div>
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8, position: 'relative', zIndex: 1 }}>

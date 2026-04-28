@@ -175,7 +175,7 @@ function AppV3() {
   const userName = currentUser?.user_metadata?.full_name
     ?? currentUser?.user_metadata?.name
     ?? currentUser?.email
-    ?? '思考トレーニー'
+    ?? 'ゲスト'
   const completed = getCompletedCount()
   const xp = completed * 100
   const level = Math.floor(xp / 1000) + 1

@@ -101,7 +101,7 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
           onClick={() => props.onOpenCategory('philosophy')}
         />
         <PathCard
-          image={`${IMG}/course-business.webp`}
+          image={`${IMG}/lesson-proposal.webp`}
           tag="実践・推奨"
           name="提案書作成実践コース"
           meta="7レッスン · 仮説思考・検証プロセス"
@@ -156,7 +156,7 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
           name="提案書作成"
           meta="7レッスン · 実践・全レベル"
           progress="0/7"
-          image={`${IMG}/course-business.webp`}
+          image={`${IMG}/lesson-proposal.webp`}
           onClick={() => props.onOpenCategory('提案書作成')}
         />
       </div>}
