@@ -23,6 +23,7 @@ import { StreakScreen } from './screens/StreakScreen'
 import { SettingsScreen } from './screens/SettingsScreen'
 import { AccountSettingsScreen } from './screens/AccountSettingsScreen'
 import { NotificationSettingsScreen } from './screens/NotificationSettingsScreen'
+import { LoginGate } from './components/LoginGate'
 import { CompletedLessonsScreen } from './screens/CompletedLessonsScreen'
 import { StudyTimeScreen } from './screens/StudyTimeScreen'
 import { LanguageScreen } from './screens/LanguageScreen'
@@ -80,6 +81,7 @@ type Screen =
   | { type: 'login'; tab?: 'google' | 'email' }
   | { type: 'report-problem'; context: { lessonId?: number; lessonTitle?: string; question?: string } }
   | { type: 'onboarding' }
+  | { type: 'login-gate'; feature: 'ai-gen' | 'roleplay' | 'advanced-lessons' }
 
 // LESSON_LIST is now managed within RoadmapScreen
 
@@ -219,6 +221,37 @@ function AppV3() {
     )
   }
 
+  // LoginGate: full-screen, no AppShell
+  if (screen.type === 'login-gate') {
+    const GATE_CONFIG = {
+      'ai-gen': {
+        featureName: 'AI問題生成',
+        featureIcon: '🤖',
+        featureDesc: 'テーマを選ぶだけで、あなた専用の問題をAIが生成します。ロジカルシンキング・フェルミ推定・ケース面接など月30問まで無料で使えます。',
+      },
+      'roleplay': {
+        featureName: 'ロールプレイ',
+        featureIcon: '🎭',
+        featureDesc: 'ビジネスや哲学のシナリオでAIと対話練習。コンサル面接・プレゼン・ディベートなど実践的なシナリオで思考力を鍛えます。',
+      },
+      'advanced-lessons': {
+        featureName: '中・上級レッスン',
+        featureIcon: '📚',
+        featureDesc: 'ケース面接・仮説思考・批判的思考など、より実践的で高度なレッスンにアクセスできます。',
+      },
+    } as const
+    const cfg = GATE_CONFIG[screen.feature]
+    return (
+      <LoginGate
+        featureName={cfg.featureName}
+        featureIcon={cfg.featureIcon}
+        featureDesc={cfg.featureDesc}
+        onLogin={() => navigate({ type: 'login' })}
+        onBack={handleBack}
+      />
+    )
+  }
+
   // Onboarding: show full-screen, no AppShell
   if (screen.type === 'onboarding') {
     return (
@@ -249,8 +282,8 @@ function AppV3() {
           }}
           onOpenRank={() => navigate({ type: 'rank' })}
           onOpenStats={() => navigate({ type: 'profile' }, true)}
-          onOpenRoleplay={() => navigate({ type: 'roleplay' })}
-          onOpenAIGen={() => navigate({ type: 'ai-problem-gen' })}
+          onOpenRoleplay={() => currentUser ? navigate({ type: 'roleplay' }) : navigate({ type: 'login-gate', feature: 'roleplay' })}
+          onOpenAIGen={() => currentUser ? navigate({ type: 'ai-problem-gen' }) : navigate({ type: 'login-gate', feature: 'ai-gen' })}
           onOpenRoadmap={() => { setTab('lessons'); navigate({ type: 'lessons' }, true) }}
           onNavigateToDailyFermi={() => navigate({ type: 'daily-fermi' })}
         />
