@@ -51,26 +51,36 @@ async function ensureFeedbackTable() {
 // CREATE POLICY "Anyone can insert feedback" ON feedback FOR INSERT WITH CHECK (true);
 // CREATE POLICY "Service role can read feedback" ON feedback FOR SELECT USING (auth.role() = 'service_role');
 
-type PlanKey = 'monthly' | 'yearly' | 'standard_monthly' | 'standard_yearly' | 'premium_monthly' | 'premium_yearly' | 'beta_campaign'
+type PlanKey = 'monthly' | 'yearly' | 'basic_monthly' | 'basic_yearly' | 'standard_monthly' | 'standard_yearly' | 'premium_monthly' | 'premium_yearly' | 'beta_campaign'
 const PLANS: Record<PlanKey, { priceId: string; amount: number; interval: 'month' | 'year' }> = {
   monthly: {
     priceId: process.env.STRIPE_PRICE_STANDARD_MONTHLY || process.env.STRIPE_PRICE_MONTHLY || '',
-    amount: 500,
+    amount: 650,
     interval: 'month',
   },
   yearly: {
     priceId: process.env.STRIPE_PRICE_STANDARD_YEARLY || process.env.STRIPE_PRICE_YEARLY || '',
-    amount: 3500,
+    amount: 4550,
+    interval: 'year',
+  },
+  basic_monthly: {
+    priceId: process.env.STRIPE_PRICE_BASIC_MONTHLY || '',
+    amount: 250,
+    interval: 'month',
+  },
+  basic_yearly: {
+    priceId: process.env.STRIPE_PRICE_BASIC_YEARLY || '',
+    amount: 1750,
     interval: 'year',
   },
   standard_monthly: {
     priceId: process.env.STRIPE_PRICE_STANDARD_MONTHLY || process.env.STRIPE_PRICE_MONTHLY || '',
-    amount: 500,
+    amount: 650,
     interval: 'month',
   },
   standard_yearly: {
     priceId: process.env.STRIPE_PRICE_STANDARD_YEARLY || process.env.STRIPE_PRICE_YEARLY || '',
-    amount: 3500,
+    amount: 4550,
     interval: 'year',
   },
   premium_monthly: {
@@ -80,12 +90,12 @@ const PLANS: Record<PlanKey, { priceId: string; amount: number; interval: 'month
   },
   premium_yearly: {
     priceId: process.env.STRIPE_PRICE_PREMIUM_YEARLY || '',
-    amount: 6980,
+    amount: 6860,
     interval: 'year',
   },
   // ベータキャンペーン: AI生成包含全機能・年題¥1,980（7日トライアル）
   beta_campaign: {
-    priceId: process.env.STRIPE_PRICE_BETA_CAMPAIGN || process.env.STRIPE_PRICE_PREMIUM_YEARLY || '',
+    priceId: process.env.STRIPE_PRICE_BETA_CAMPAIGN || '',
     amount: 1980,
     interval: 'year',
   },
