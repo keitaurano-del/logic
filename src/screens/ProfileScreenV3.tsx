@@ -120,6 +120,8 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
           <SettingRow icon="bell" name="通知設定" sub="毎日 8:00" onClick={() => onOpenSettings('notifications')} />
           <SettingRow icon="card" name="プラン" sub={getPlanLabel()} onClick={onOpenPricing} />
           <SettingRow icon="message" name="フィードバック" sub="ご意見をお聞かせください" onClick={onOpenFeedback} />
+          <SettingRow icon="doc" name="利用規約" sub="" onClick={() => window.open('/terms.html', '_blank')} />
+          <SettingRow icon="doc" name="特定商取引法に基づく表記" sub="" onClick={() => window.open('/tokushoho.html', '_blank')} />
         </div>
         <div onClick={handleLogout} style={{ background: 'transparent', border: '1px solid rgba(252,165,165,.4)', borderRadius: 14, padding: 13, textAlign: 'center', fontSize: 14, fontWeight: 700, color: '#FCA5A5', cursor: 'pointer' }}>
           ログアウト
