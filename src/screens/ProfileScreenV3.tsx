@@ -54,9 +54,17 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
           <div style={{ width: 64, height: 64, borderRadius: '50%', background: `linear-gradient(135deg, ${v3.color.accent}, #A5E8D5)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Inter Tight', sans-serif", fontSize: 26, fontWeight: 900, color: v3.color.bg, boxShadow: `0 0 24px ${v3.color.accentGlow}` }}>
             {(userName || 'G').slice(0, 1).toUpperCase()}
           </div>
-          <div>
+          <div style={{ flex: 1 }}>
             <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, letterSpacing: '-.02em', marginBottom: 2 }}>{userName || 'ゲスト'}</div>
             <div style={{ fontSize: 14, color: v3.color.text2, fontWeight: 500 }}>{userName ? `ロジカルシンカー トレーニー` : `ログインすると進捗が保存されるよ`}</div>
+            {!userName && (
+              <button
+                onClick={() => onOpenSettings('account')}
+                style={{ marginTop: 8, padding: '6px 16px', background: v3.color.accent, color: v3.color.bg, border: 'none', borderRadius: 99, fontSize: 13, fontWeight: 700, cursor: 'pointer' }}
+              >
+                ログイン / 新規登録
+              </button>
+            )}
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8, position: 'relative', zIndex: 1 }}>

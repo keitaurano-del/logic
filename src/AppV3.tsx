@@ -113,10 +113,12 @@ function getInitialScreen(user: User | null): Screen {
   }
   // ログイン済みユーザーはオンボーディングをスキップ
   if (user) return { type: 'home' }
+  // 未ログインは必ずオンボーディングまたはログイン画面へ
   if (localStorage.getItem(ONBOARDED_KEY) !== '1') {
     return { type: 'onboarding' }
   }
-  return { type: 'home' }
+  // オンボーディング完了済みだが未ログインの場合はログイン画面へ
+  return { type: 'login' }
 }
 
 // ── ルート画面かどうか判定 ──
