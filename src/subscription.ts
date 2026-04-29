@@ -15,12 +15,15 @@ export type SubscriptionPlan =
   | 'premium_monthly'
   | 'premium_yearly'
 
-// SCRUM-182: 新プラン価格定義
+// SCRUM-182: 新プラン価格定義（年額 = 月額×7ヶ月分）
 export const PLAN_PRICES = {
+  basic_monthly: 250,
+  basic_yearly: 1750,      // 月額×7ヶ月分お得
   standard_monthly: 650,
-  standard_yearly: 4500,   // 5ヶ月分お得 (月々約¥375)
+  standard_yearly: 4550,   // 月額×7ヶ月分お得
   premium_monthly: 980,
-  premium_yearly: 9800,    // 5ヶ月分お得 (月々約¥817)
+  premium_yearly: 6860,    // 月額×7ヶ月分お得
+  beta_campaign: 1980,
 } as const
 
 export type SubscriptionState = {
