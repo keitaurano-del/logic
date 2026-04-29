@@ -46,6 +46,7 @@ import { getCompletedCount, getXp } from './stats'
 import { isAdmin } from './admin'
 import { onAuthChange, logout, getInitialUser, type User } from './supabase'
 import { syncOnLogin, syncOnLogout } from './syncService'
+import { TutorialOverlay, shouldShowTutorial } from './components/TutorialOverlay'
 
 const ONBOARDED_KEY = 'logic-onboarded'
 
@@ -110,6 +111,7 @@ function AppV3() {
   const [screen, setScreen] = useState<Screen>(() => getInitialScreen(null))
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [authReady, setAuthReady] = useState(false)
+  const [showTutorial, setShowTutorial] = useState(false)
   // popstate ハンドラ内でscreen stateを参照するための ref
   const screenRef = useRef<Screen>(screen)
   screenRef.current = screen
@@ -170,6 +172,8 @@ function AppV3() {
         const isPreview = typeof location !== 'undefined' && new URL(location.href).searchParams.get('preview') === 'onboarding'
         if (!isPreview) {
           setScreen((s) => s.type === 'onboarding' ? { type: 'home' } : s)
+          // SCRUM-195: 初回ログイン時にチュートリアルを表示
+          if (shouldShowTutorial()) setShowTutorial(true)
         }
       } else {
         syncOnLogout()
@@ -279,6 +283,7 @@ function AppV3() {
   }
 
   return (
+    <>
     <AppShell
       activeTab={tab}
       onTabChange={handleTabChange}
@@ -479,6 +484,12 @@ function AppV3() {
       )}
       </div>
     </AppShell>
+
+    {/* SCRUM-195: チュートリアルオーバーレイ */}
+    {showTutorial && (
+      <TutorialOverlay onDone={() => setShowTutorial(false)} />
+    )}
+    </>
   )
 }
 

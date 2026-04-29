@@ -84,6 +84,9 @@ export function LessonScreen({ lessonId, onBack, onComplete, onNextLesson, onRep
     setSelected(null)
     setSubmitted(false)
     setAnimClass('')
+    // SCRUM-196: スライド切り替え時にスクロール位置をリセット
+    document.getElementById('app-scroll-container')?.scrollTo({ top: 0, behavior: 'instant' })
+    window.scrollTo({ top: 0, behavior: 'instant' })
   }
 
   // ── Celebration overlay ──────────────────────────────────────────

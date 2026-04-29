@@ -395,14 +395,7 @@ input, textarea, select { -webkit-tap-highlight-color: transparent; }
   }
 }
 
-/* ===== Wide Desktop (1280px+) ===== */
-@media (min-width: 1280px) {
-  :root {
-    --content-width: 1400px;
-    --content-padding: 4rem;
-    --grid-gap: 3rem;
-  }
-}
+/* ===== Wide Desktop (1280px+) — DISABLED: native app release only ===== */
 
 
 /* ==========================================================
