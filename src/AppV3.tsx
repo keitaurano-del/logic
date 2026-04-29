@@ -285,6 +285,8 @@ function AppV3() {
         onComplete={() => {
           localStorage.setItem(ONBOARDED_KEY, '1')
           navigate({ type: 'home' })
+          // SCRUM-195: オンボーディング完了後にチュートリアルを表示
+          if (shouldShowTutorial()) setShowTutorial(true)
         }}
       />
     )
