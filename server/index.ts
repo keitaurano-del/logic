@@ -1425,6 +1425,7 @@ app.post('/api/report-problem', async (req, res) => {
       return res.status(503).json({ error: 'Supabase not configured' })
     }
 
+    const appSource = process.env.APP_ENV === 'sit' ? 'sit' : 'production'
     const { data, error } = await supabase
       .from('reports')
       .insert({
@@ -1434,6 +1435,7 @@ app.post('/api/report-problem', async (req, res) => {
         options: options || [],
         issue_type: issueType,
         comment: comment || '',
+        source: appSource,
       })
       .select('id')
       .single()
@@ -1988,6 +1990,7 @@ app.post('/api/feedback', makeLimiter({ windowMs: 60*1000, max: 5 }), async (req
     // Supabase に保存
     let insertedId: string | null = null
     if (supabase) {
+      const appSource = process.env.APP_ENV === 'sit' ? 'sit' : 'production'
       const { data, error } = await supabase
         .from('feedback')
         .insert({
@@ -1995,6 +1998,7 @@ app.post('/api/feedback', makeLimiter({ windowMs: 60*1000, max: 5 }), async (req
           message: message.trim(),
           locale: locale || 'ja',
           created_at: new Date().toISOString(),
+          source: appSource,
         })
         .select('id')
         .single()
