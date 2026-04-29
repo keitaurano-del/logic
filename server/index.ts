@@ -145,7 +145,17 @@ app.post(
         case 'customer.subscription.updated': {
           const sub = event.data.object as Stripe.Subscription
           const customerId = sub.customer as string
-          const plan = sub.items.data[0]?.price?.recurring?.interval === 'year' ? 'yearly' : 'monthly'
+          // Price IDからプランを特定
+          const priceId = sub.items.data[0]?.price?.id || ''
+          const interval = sub.items.data[0]?.price?.recurring?.interval
+          let plan = interval === 'year' ? 'yearly' : 'monthly'
+          if (priceId === process.env.STRIPE_PRICE_BASIC_MONTHLY) plan = 'basic_monthly'
+          else if (priceId === process.env.STRIPE_PRICE_BASIC_YEARLY) plan = 'basic_yearly'
+          else if (priceId === process.env.STRIPE_PRICE_STANDARD_MONTHLY) plan = 'standard_monthly'
+          else if (priceId === process.env.STRIPE_PRICE_STANDARD_YEARLY) plan = 'standard_yearly'
+          else if (priceId === process.env.STRIPE_PRICE_PREMIUM_MONTHLY) plan = 'premium_monthly'
+          else if (priceId === process.env.STRIPE_PRICE_PREMIUM_YEARLY) plan = 'premium_yearly'
+          else if (priceId === process.env.STRIPE_PRICE_BETA_CAMPAIGN) plan = 'premium_yearly'
           const periodEnd = new Date(sub.current_period_end * 1000).toISOString()
 
           // customer_id → user_id を profiles テーブルから取得
