@@ -49,6 +49,22 @@ import { syncOnLogin, syncOnLogout } from './syncService'
 import { TutorialOverlay, shouldShowTutorial } from './components/TutorialOverlay'
 
 const ONBOARDED_KEY = 'logic-onboarded'
+const INSTALL_ID_KEY = 'logic-install-id'
+
+// SCRUM-200: 新規インストール検知とlocalStorageリセット
+// Capacitor AndroidはアンインストールしてもWebViewデータが残る場合があるため、
+// インストール識別子がなければ新規インストールとみなしリセットする
+function checkAndInitInstall(): void {
+  const installId = localStorage.getItem(INSTALL_ID_KEY)
+  if (!installId) {
+    // 新規インストール: localStorage全前置データをクリア
+    const newId = `install-${Date.now()}-${Math.random().toString(36).slice(2)}`
+    localStorage.clear()
+    localStorage.setItem(INSTALL_ID_KEY, newId)
+    // ONBOARDED_KEYを明示的に削除（クリア後なので不要だが念のため）
+    localStorage.removeItem(ONBOARDED_KEY)
+  }
+}
 
 // 同カテゴリの次の未完了レッスンIDを返す（なければ null）
 type Screen =
@@ -107,6 +123,8 @@ function getInitialScreen(user: User | null): Screen {
 const ROOT_SCREENS = new Set<string>(['home', 'lessons', 'profile'])
 
 function AppV3() {
+  // SCRUM-200: 新規インストール時にlocalStorageリセット（アンインストール後のデータ残留対策）
+  checkAndInitInstall()
   const [tab, setTab] = useState<Tab>('home')
   const [screen, setScreen] = useState<Screen>(() => getInitialScreen(null))
   const [currentUser, setCurrentUser] = useState<User | null>(null)
