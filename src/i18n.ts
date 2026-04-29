@@ -194,7 +194,7 @@ const STRINGS: Record<Locale, Strings> = {
     'fermi.backButton': '戻る',
     'fermi.recapLabel': 'あなたの分解',
     'fermi.upsellH': 'もっと練習したい?',
-    'fermi.upsellBody': 'プレミアムなら毎日新しい AI 生成問題でこの体験を続けられます (¥500/月)。',
+    'fermi.upsellBody': 'プレミアムなら毎日新しい AI 生成問題でこの体験を続けられます (¥700/月)。',
     'fermi.upsellBtn': 'プレミアムを試す (7 日間無料)',
     'fermi.nextAi': '次の AI 生成問題へ',
     'fermi.generating': '生成中...',
@@ -453,7 +453,7 @@ const STRINGS: Record<Locale, Strings> = {
     'onboarding.premium.f3': '全ロールプレイシナリオ',
     'onboarding.premium.f4': 'ケース面接 深掘りモード',
     'onboarding.ctaButton': '今すぐ始める（カード登録へ）',
-    'onboarding.ctaNote': 'トライアル終了後は月額¥500（スタンダード）が自動的に請求されます',
+    'onboarding.ctaNote': 'トライアル終了後は月額¥650（スタンダード）が自動的に請求されます',
   },
 
   en: {
@@ -873,7 +873,7 @@ const STRINGS: Record<Locale, Strings> = {
     'onboarding.premium.f3': 'All roleplay scenarios',
     'onboarding.premium.f4': 'Case interview deep dive mode',
     'onboarding.ctaButton': 'Start now (card registration)',
-    'onboarding.ctaNote': 'After the trial, Standard plan (¥500/mo) will be charged automatically',
+    'onboarding.ctaNote': 'After the trial, Standard plan (¥650/mo) will be charged automatically',
   },
 }
 

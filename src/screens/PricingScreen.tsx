@@ -112,7 +112,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
               {cycle === 'monthly' ? '月払い' : '年払い'}
               {cycle === 'yearly' && (
                 <span style={{ fontSize: 10, fontWeight: 700, background: billingCycle === 'yearly' ? 'rgba(255,255,255,.25)' : `${v3.color.warm}28`, color: billingCycle === 'yearly' ? '#fff' : v3.color.warm, borderRadius: 99, padding: '1px 6px' }}>
-                  2ヶ月分お得
+                  5ヶ月分お得
                 </span>
               )}
             </button>
@@ -153,11 +153,11 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
             <div>
               <div style={{ fontSize: 11, fontWeight: 700, color: v3.color.text2, letterSpacing: '.06em', marginBottom: 4 }}>STANDARD</div>
               <div style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-.02em' }}>
-                ¥{billingCycle === 'yearly' ? '4,500' : '450'}
+                ¥{billingCycle === 'yearly' ? '4,500' : '650'}
                 <span style={{ fontSize: 14, fontWeight: 500, color: v3.color.text2 }}>/{billingCycle === 'yearly' ? '年' : '月'}</span>
               </div>
               {billingCycle === 'yearly' && (
-                <div style={{ fontSize: 12, color: v3.color.text3, marginTop: 2 }}>月々約¥375（2ヶ月分お得）</div>
+                <div style={{ fontSize: 12, color: v3.color.text3, marginTop: 2 }}>月々約¥375（5ヶ月分お得）</div>
               )}
             </div>
             <div style={{ fontSize: 11, fontWeight: 700, background: `${v3.color.accent}18`, color: v3.color.accent, borderRadius: 99, padding: '4px 10px' }}>
@@ -197,11 +197,11 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
             <div>
               <div style={{ fontSize: 11, fontWeight: 700, color: v3.color.accent, letterSpacing: '.06em', marginBottom: 4 }}>PREMIUM</div>
               <div style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-.02em' }}>
-                ¥{billingCycle === 'yearly' ? '9,800' : '980'}
+                ¥{billingCycle === 'yearly' ? '9,800' : '1,400'}
                 <span style={{ fontSize: 14, fontWeight: 500, color: v3.color.text2 }}>/{billingCycle === 'yearly' ? '年' : '月'}</span>
               </div>
               {billingCycle === 'yearly' && (
-                <div style={{ fontSize: 12, color: v3.color.text3, marginTop: 2 }}>月々約¥817（2ヶ月分お得）</div>
+                <div style={{ fontSize: 12, color: v3.color.text3, marginTop: 2 }}>月々約¥817（5ヶ月分お得）</div>
               )}
             </div>
             <div style={{ fontSize: 11, fontWeight: 700, background: `${v3.color.accent}22`, color: v3.color.accent, borderRadius: 99, padding: '4px 10px' }}>

@@ -145,7 +145,7 @@ function CampaignStep({ onSelect }: { onSelect: (plan: PlanChoice) => void }) {
       id: 'standard',
       name: 'スタンダード',
       desc: '全レッスン / 7日間無料',
-      price: '¥500',
+      price: '¥650',
       per: '/月',
     },
     {
@@ -325,7 +325,7 @@ function PaymentStep({
             {[
               ['プラン', plan === 'beta' ? 'ベータキャンペーン' : 'スタンダード'],
               ['無料期間', '7日間'],
-              ['トライアル終了後', plan === 'beta' ? '¥1,980/年' : '¥500/月'],
+              ['トライアル終了後', plan === 'beta' ? '¥1,980/年' : '¥650/月'],
               ['自動更新', 'あり（いつでも解約可）'],
             ].map(([label, val]) => (
               <div key={label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: v3.color.text }}>
@@ -353,7 +353,7 @@ function PaymentStep({
   const planLabel = plan === 'beta' ? 'ベータキャンペーン年額プラン' : 'スタンダード月額プラン'
   const planDetail = plan === 'beta'
     ? '7日間無料 → その後 ¥1,980/年（自動更新）'
-    : '7日間無料 → その後 ¥500/月（自動更新）'
+    : '7日間無料 → その後 ¥650/月（自動更新）'
 
   return (
     <div style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column', background: v3.color.bg }}>

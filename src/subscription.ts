@@ -17,10 +17,10 @@ export type SubscriptionPlan =
 
 // SCRUM-182: 新プラン価格定義
 export const PLAN_PRICES = {
-  standard_monthly: 450,
-  standard_yearly: 4500,   // 2ヶ月分お得 (月⅔375)
+  standard_monthly: 650,
+  standard_yearly: 4500,   // 5ヶ月分お得 (月々約¥375)
   premium_monthly: 980,
-  premium_yearly: 9800,    // 2ヶ月分お得 (月⅔817)
+  premium_yearly: 9800,    // 5ヶ月分お得 (月々約¥817)
 } as const
 
 export type SubscriptionState = {
@@ -189,13 +189,13 @@ export function getPlanLabel(): string {
   const s = getSubscriptionState()
   switch (s.plan) {
     case 'trial': return `7日間トライアル (残り${daysLeftInTrial()}日)`
-    case 'basic_monthly': return 'スタンダード (¥450/月)' // legacy basic → standard稱号
+    case 'basic_monthly': return 'スタンダード (¥650/月)' // legacy basic → standard稱号
     case 'basic_yearly': return 'スタンダード (¥4,500/年)'
-    case 'standard_monthly': return 'スタンダード (¥450/月)'
+    case 'standard_monthly': return 'スタンダード (¥650/月)'
     case 'standard_yearly': return 'スタンダード (¥4,500/年)'
-    case 'premium_monthly': return 'プレミアム (¥980/月)'
+    case 'premium_monthly': return 'プレミアム (¥1,400/月)'
     case 'premium_yearly': return 'プレミアム (¥9,800/年)'
-    case 'monthly': return 'スタンダード (¥450/月)'
+    case 'monthly': return 'スタンダード (¥650/月)'
     case 'yearly': return 'スタンダード (¥4,500/年)'
     case 'free': return '無料 (キャンペーン中)'
     default: return '無料 (キャンペーン中)'

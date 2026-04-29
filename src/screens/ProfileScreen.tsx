@@ -14,7 +14,7 @@ function getPlanLabel(): string {
     return 'Premium — プレミアムプラン'
   }
   if (isStandardPlan()) {
-    return state.plan.includes('yearly') ? 'Standard — 年額プラン' : 'Standard — ¥500/月'
+    return state.plan.includes('yearly') ? 'Standard — 年額プラン' : 'Standard — ¥650/月'
   }
   return '無料プラン'
 }

@@ -69,7 +69,7 @@ export default function SubscriptionManagement({ userId, onChangePlan }: Props) 
 
   const planLabel = () => {
     if (plan === 'yearly') return '年額プラン (¥3,500/年)'
-    if (plan === 'monthly') return '月額プラン (¥500/月)'
+    if (plan === 'monthly') return '月額プャン (¥650/月)'
     if (plan === 'trial') return `7日間トライアル`
     return '無料プラン'
   }

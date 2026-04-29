@@ -49,7 +49,7 @@ export default function Pricing({ onBack }: Props) {
             <div className="pr-plan-name">年額プラン</div>
             <div className="pr-price">¥3,500<span>/年</span></div>
             <div className="pr-price-monthly">月々 <strong>¥292</strong></div>
-            <div className="pr-price-savings">年額で約2ヶ月分お得！ <span className="pr-off-badge">42% OFF</span></div>
+            <div className="pr-price-savings">年額で約5ヶ月分お得！ <span className="pr-off-badge">42% OFF</span></div>
             <div className="pr-trial-note">🎁 7日間無料トライアル付き</div>
             <ul className="pr-features">
               <li>✓ AI問題生成 <strong>月300問</strong>まで</li>
@@ -70,7 +70,7 @@ export default function Pricing({ onBack }: Props) {
           {/* 月額プラン */}
           <div className="pr-card">
             <div className="pr-plan-name">月額プラン</div>
-            <div className="pr-price">¥500<span>/月</span></div>
+            <div className="pr-price">¥650<span>/月</span></div>
             <div className="pr-trial-note">🎁 7日間無料トライアル付き</div>
             <ul className="pr-features">
               <li>✓ AI問題生成 <strong>月300問</strong>まで</li>
