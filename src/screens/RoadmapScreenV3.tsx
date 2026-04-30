@@ -228,6 +228,7 @@ const CATEGORY_ID_TO_NAMES: Record<string, string[]> = {
   fermi: ['フェルミ推定'],
   critical: ['クリティカルシンキング'],
   hypothesis: ['仮説思考'],
+  client: ['クライアントワーク'],
 }
 
 const CATEGORY_LABEL_JP: Record<string, string> = {
@@ -246,6 +247,7 @@ const CATEGORY_LABEL_JP: Record<string, string> = {
   systems: 'システムシンキング',
   proposal: '提案・伝える技術',
   philosophy: '哲学・思考の原理',
+  client: 'クライアントワーク',
 }
 
 

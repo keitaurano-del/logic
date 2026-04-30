@@ -66,6 +66,7 @@ import { systemsThinkingLessonMap } from './systemsThinkingLessons'
 import { proposalLessonMap } from './proposalLessons'
 import { proposalCourseLessonMap } from './proposalCourseLessons'
 import { philosophyLessonMap } from './philosophyLessons'
+import { clientWorkLessonMap } from './clientWorkLessons'
 
 // Logic lessons swap by locale
 const _activeLogicLessons = (): Record<number, LessonData> =>
@@ -86,6 +87,7 @@ export const allLessons: Record<number, LessonData> = new Proxy({} as Record<num
       ...proposalLessonMap,
       ...proposalCourseLessonMap,
       ...philosophyLessonMap,
+      ...clientWorkLessonMap,
     }
     return base[prop as unknown as number]
   },
@@ -96,6 +98,7 @@ export const allLessons: Record<number, LessonData> = new Proxy({} as Record<num
       ...lateralThinkingLessonMap, ...analogyThinkingLessonMap, ...systemsThinkingLessonMap,
       ...proposalLessonMap, ...proposalCourseLessonMap,
       ...philosophyLessonMap,
+      ...clientWorkLessonMap,
     }
     return prop in base
   },

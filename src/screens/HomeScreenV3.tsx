@@ -208,6 +208,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
         <div style={{ margin: '0 -16px', padding: '0 16px', overflowX: 'auto', display: 'flex', gap: 12, scrollSnapType: 'x mandatory', scrollPaddingLeft: 16 }}>
           <CourseCard name="ロジカル<br>シンキング" image={`${IMG}/course-logical.webp`} progress={60} accent={v3.color.accent} meta="5レッスン · 60%" onClick={() => props.onOpenCategory('logic')} />
           <CourseCard name="ケース面接" image={`${IMG}/course-business.webp`} progress={25} accent={v3.color.warm} meta="4レッスン · 25%" onClick={() => props.onOpenCategory('case')} />
+          <CourseCard name="クライアント<br>ワーク" image={`${IMG}/course-business.webp`} progress={0} accent="#F59E0B" meta="9レッスン · 中級" onClick={() => props.onOpenCategory('client')} />
           <CourseCard name="思考法" image={`${IMG}/course-thinking.webp`} progress={15} accent="#A5B4FC" meta="22レッスン · 15%" onClick={() => props.onOpenCategory('thinking')} />
           <CourseCard name="哲学・<br>思考の原理" image={`${IMG}/course-philosophy.webp`} progress={0} accent="#C4B5FD" meta="5レッスン · 0%" onClick={() => props.onOpenCategory('philosophy')} />
         </div>
