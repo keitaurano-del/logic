@@ -119,5 +119,6 @@ export function getAllLessonsFlat(): Record<number, LessonData> {
     ...proposalLessonMap,
     ...proposalCourseLessonMap,
     ...philosophyLessonMap,
+    ...clientWorkLessonMap,
   }
 }
