@@ -27,8 +27,8 @@ const SLIDES = [
     bg: '#F0FAFA',
     accentColor: C.teal,
     emojiIcon: '🧠',
-    title: 'フェルミ推定で\n思考力を鍛えよう',
-    subtitle: '毎日1問、数字で世界を読む力が身につく。',
+    title: '論理思考力を、\n毎日鍛えよう',
+    subtitle: 'レッスン・フェルミ推定・AIフィードバックで\nビジネス思考力が着実に伸びる。',
     btnLabel: 'つぎへ',
   },
   {

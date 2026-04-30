@@ -7,6 +7,7 @@ import { FermiScreen } from './screens/FermiScreen'
 import { DailyFermiScreen } from './screens/DailyFermiScreen'
 import { DeviationScreen } from './screens/DeviationScreen'
 import { RankingScreen } from './screens/RankingScreen'
+import { FermiRankingScreen } from './screens/FermiRankingScreen'
 import { RoleplaySelectScreen } from './screens/RoleplaySelectScreen'
 import { RoleplayChatScreen } from './screens/RoleplayChatScreen'
 import { JournalInputScreen } from './screens/JournalInputScreen'
@@ -79,6 +80,7 @@ type Screen =
   | { type: 'daily-fermi' }
   | { type: 'deviation' }
   | { type: 'ranking' }
+  | { type: 'fermi-ranking' }
   | { type: 'roleplay' }
   | { type: 'roleplay-chat'; situationId: string }
   | { type: 'journal-input' }
@@ -122,7 +124,7 @@ function getInitialScreen(user: User | null): Screen {
 }
 
 // ── ルート画面かどうか判定 ──
-const ROOT_SCREENS = new Set<string>(['home', 'lessons', 'profile'])
+const ROOT_SCREENS = new Set<string>(['home', 'lessons', 'ranking', 'profile'])
 
 function AppV3() {
   // SCRUM-200: 新規インストール時にlocalStorageリセット（アンインストール後のデータ残留対策）
@@ -158,6 +160,7 @@ function AppV3() {
         const s = e.state.screen as Screen
         setScreen(s)
         if (ROOT_SCREENS.has(s.type)) setTab(s.type as Tab)
+        if (s.type === 'fermi-ranking') setTab('ranking')
         isPopNavRef.current = false
       } else {
         // state がない場合はホームへ
@@ -212,7 +215,12 @@ function AppV3() {
 
   const handleTabChange = (next: Tab) => {
     setTab(next)
-    navigate({ type: next }, true)
+    // rankingタブはフェルミランキング画面へ
+    if (next === 'ranking') {
+      navigate({ type: 'fermi-ranking' }, true)
+    } else {
+      navigate({ type: next }, true)
+    }
   }
 
   const handleOpenLesson = (lessonId: number) => {
@@ -388,6 +396,10 @@ function AppV3() {
           onBack={handleBack}
           onTakeTest={() => navigate({ type: 'placement-test' })}
         />
+      )}
+
+      {screen.type === 'fermi-ranking' && (
+        <FermiRankingScreen />
       )}
 
       {screen.type === 'placement-test' && (

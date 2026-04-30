@@ -6,6 +6,35 @@ import { API_BASE } from './apiBase'
 import { t, getLocale } from '../i18n'
 import { getGuestId } from '../guestId'
 import { useDailyGuide, GuideLabel, GuideStyle } from '../tutorial/dailyGuide'
+import { isStandardPlan, isPremiumPlan } from '../subscription'
+
+// ── プラン別デイリー制限 ──────────────────────────────────────
+const TODAY = new Date().toISOString().slice(0, 10)
+const DAILY_COUNT_KEY = 'logic-daily-fermi-count'
+const REROLL_COUNT_KEY = 'logic-daily-fermi-reroll'
+
+function getDailyCount(): number {
+  try { const s = JSON.parse(localStorage.getItem(DAILY_COUNT_KEY) || '{}'); return s.date === TODAY ? (s.count ?? 0) : 0 } catch { return 0 }
+}
+function incrementDailyCount() {
+  try { const c = getDailyCount(); localStorage.setItem(DAILY_COUNT_KEY, JSON.stringify({ date: TODAY, count: c + 1 })) } catch { /* */ }
+}
+function getRerollCount(): number {
+  try { const s = JSON.parse(localStorage.getItem(REROLL_COUNT_KEY) || '{}'); return s.date === TODAY ? (s.count ?? 0) : 0 } catch { return 0 }
+}
+function incrementRerollCount() {
+  try { const c = getRerollCount(); localStorage.setItem(REROLL_COUNT_KEY, JSON.stringify({ date: TODAY, count: c + 1 })) } catch { /* */ }
+}
+
+export function getDailyFermiLimit(): number {
+  if (isPremiumPlan()) return 10
+  if (isStandardPlan()) return 5
+  return 1 // フリープラン
+}
+export function getDailyRerollLimit(): number {
+  if (isPremiumPlan() || isStandardPlan()) return 3
+  return 0
+}
 
 // デイリーフェルミ完了状態管理
 const DAILY_FERMI_KEY = 'logic-daily-fermi-done'
@@ -263,6 +292,14 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
   const locale = getLocale()
   const { active: guideActive, dismiss: dismissGuide } = useDailyGuide()
 
+  // プラン別制限
+  const dailyLimit = getDailyFermiLimit()
+  const rerollLimit = getDailyRerollLimit()
+  const [dailyCount, setDailyCount] = useState(getDailyCount)
+  const [rerollCount, setRerollCount] = useState(getRerollCount)
+  const canAnswer = dailyCount < dailyLimit
+  const canReroll = rerollCount < rerollLimit && canAnswer
+
   const [question, setQuestion] = useState('')
   const [hint, setHint] = useState('')
   const [loadingQuestion, setLoadingQuestion] = useState(true)
@@ -290,6 +327,8 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
     return () => { if (timerRef.current) clearInterval(timerRef.current) }
   }, [timerRunning])
 
+  const [fetchTrigger, setFetchTrigger] = useState(0)
+
   useEffect(() => {
     setLoadingQuestion(true)
     setQuestionError('')
@@ -304,7 +343,20 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
       })
       .catch((e: Error) => setQuestionError(e.message || t('common.error')))
       .finally(() => setLoadingQuestion(false))
-  }, [locale])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [locale, fetchTrigger])
+
+  const handleReroll = () => {
+    if (!canReroll) return
+    incrementRerollCount()
+    setRerollCount(getRerollCount())
+    setAnswer('')
+    setFeedback(null)
+    setSubmitPhase('idle')
+    setShowHint(false)
+    setHintUsed(false)
+    setFetchTrigger(t => t + 1)
+  }
 
   const handleSubmit = async () => {
     if (!answer.trim()) return
@@ -322,6 +374,8 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
       if (!res.ok || data.error) throw new Error(data.error || t('common.error'))
       setFeedback(data)
       markDailyFermiDone()
+      incrementDailyCount()
+      setDailyCount(getDailyCount())
       setSubmitPhase('done')
     } catch (e: unknown) {
       setSubmitError((e as Error).message || t('common.error'))
@@ -400,6 +454,38 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
                 {question}
               </p>
             </div>
+          </div>
+
+          {/* プラン別制限・別の問題を選ぶボタン */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 2px' }}>
+            <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+              {dailyCount + 1} / {dailyLimit}問目
+              {rerollLimit > 0 && (
+                <span style={{ marginLeft: 8, opacity: 0.7 }}>
+                  (別問題: {rerollCount}/{rerollLimit}回使用済)
+                </span>
+              )}
+            </div>
+            {canReroll && submitPhase === 'idle' && (
+              <button
+                onClick={handleReroll}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 5,
+                  background: 'none', border: '1.5px solid var(--brand)',
+                  borderRadius: 20, padding: '6px 14px',
+                  color: 'var(--brand)', fontSize: 13, fontWeight: 700,
+                  cursor: 'pointer',
+                }}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+                別の問題を選ぶ
+              </button>
+            )}
+            {!canAnswer && (
+              <span style={{ fontSize: 12, color: 'var(--danger)', fontWeight: 700 }}>
+                今日の回答数上限に達しました
+              </span>
+            )}
           </div>
 
           {/* ヒント */}
