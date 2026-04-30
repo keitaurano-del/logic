@@ -127,12 +127,15 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
             <span style={{ fontSize: 13, fontWeight: 700 }}>{lesson.title}</span>
           </div>
         </div>
-        <div
-          onPointerDown={(e) => { e.stopPropagation(); onClose() }}
-          style={{ width: 44, height: 44, borderRadius: '50%', background: v3.color.card, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', WebkitTapHighlightColor: 'transparent' }}
+        {/* SCRUM-226: ×ボタン — onClickも追加しzIndexをタップゾーンより上に */}
+        <button
+          onPointerDown={(e) => { e.stopPropagation(); e.preventDefault(); onClose() }}
+          onClick={(e) => { e.stopPropagation(); onClose() }}
+          style={{ width: 44, height: 44, borderRadius: '50%', background: v3.color.card, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', WebkitTapHighlightColor: 'transparent', border: 'none', zIndex: 10, position: 'relative', flexShrink: 0 }}
+          aria-label="閉じる"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
-        </div>
+        </button>
       </div>
 
       {/* Slide content */}

@@ -162,8 +162,13 @@ export default function FermiLesson({ onBack, onUpgrade }: Props) {
               className="fl-textarea"
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
+              onPaste={(e) => e.preventDefault()}
+              onCopy={(e) => e.preventDefault()}
+              onCut={(e) => e.preventDefault()}
+              onContextMenu={(e) => e.preventDefault()}
               placeholder={t('fermi.placeholder')}
               rows={10}
+              style={{ userSelect: 'none', WebkitUserSelect: 'none' } as React.CSSProperties}
             />
             {error && <div className="fl-error">{error}</div>}
             <button className="fl-primary-btn" onClick={submit} disabled={isLoading || !userInput.trim()}>
