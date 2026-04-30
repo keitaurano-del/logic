@@ -165,7 +165,7 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
           name="クライアントワーク"
           meta="9レッスン · 中級"
           progress="0/9"
-          image={`${IMG}/course-business.webp`}
+          image={`${IMG}/course-client.webp`}
           onClick={() => props.onOpenCategory('クライアントワーク')}
         />
       </div>}
@@ -291,18 +291,40 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
     return candidates.includes(l.category)
   }).sort((a: any, b: any) => a.id - b.id)
   const label = CATEGORY_LABEL_JP[category] || category
+  // SCRUM-218: レッスンが多いカテゴリ向けに「ここから始めよう」ピン表示
+  const firstUndone = lessons.find((l: any) => !completed.has(`lesson-${l.id}`))
+  const showStartHint = lessons.length >= 5 && firstUndone
   return (
     <div style={{ background: v3.color.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: v3.color.text }}>
       <div style={{ padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 14px', display: 'flex', alignItems: 'center', gap: 12 }}>
         <div onClick={onBack} style={{ width: 36, height: 36, borderRadius: '50%', background: v3.color.card, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6" /></svg>
         </div>
-        <div style={{ fontSize: 20, fontWeight: 700, color: v3.color.text }}>{label}</div>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 20, fontWeight: 700, color: v3.color.text }}>{label}</div>
+          <div style={{ fontSize: 13, color: v3.color.text2, marginTop: 2 }}>{lessons.length}レッスン · {completed.size > 0 ? `${[...completed].filter(k => lessons.some((l: any) => k === `lesson-${l.id}`)).length}/${lessons.length}完了` : '未着手'}</div>
+        </div>
       </div>
-      <div style={{ flex: 1, padding: '16px 16px 100px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+      {/* SCRUM-218: 始め方ヒントバナー */}
+      {showStartHint && (
+        <div
+          onClick={() => onOpenLesson((firstUndone as any).id)}
+          style={{ margin: '0 16px 12px', background: v3.color.accentSoft, borderRadius: 14, padding: '14px 18px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14, border: `1px solid ${v3.color.accent}30` }}
+        >
+          <div style={{ width: 36, height: 36, borderRadius: '50%', background: v3.color.accent, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.bg} strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6" style={{ transform: 'scaleX(-1)', transformOrigin: '50% 50%' }} /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: v3.color.accent, marginBottom: 2 }}>ここから始めよう</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: v3.color.text }}>{(firstUndone as any).title}</div>
+          </div>
+        </div>
+      )}
+      <div style={{ flex: 1, padding: '0 16px 100px', display: 'flex', flexDirection: 'column', gap: 10 }}>
         {lessons.length === 0 && (
           <div style={{ padding: 32, textAlign: 'center', color: v3.color.text2 }}>このカテゴリにはまだレッスンがありません。</div>
         )}
+        {showStartHint && <div style={{ fontSize: 12, color: v3.color.text3, padding: '4px 4px 0', fontWeight: 600 }}>すべてのレッスン</div>}
         {lessons.map((lesson: any) => {
           const isDone = completed.has(`lesson-${lesson.id}`)
           // カテゴリごとに画像をマッピング（既存 v3 画像を活用）
