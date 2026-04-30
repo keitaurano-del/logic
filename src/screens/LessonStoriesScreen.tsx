@@ -182,6 +182,28 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
         </div>
       )}
 
+      {/* SCRUM-214: デスクトップ向け明示的な次へ/前へボタン（非クイズ・非最初のスライド） */}
+      {!isQuiz && (
+        <>
+          {index > 0 && (
+            <button
+              onClick={() => { if (!isGuarded()) goPrev() }}
+              style={{ position: 'absolute', left: 12, bottom: 'calc(env(safe-area-inset-bottom, 0px) + 16px)', zIndex: 8, background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.18)', borderRadius: '50%', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', WebkitTapHighlightColor: 'transparent' }}
+              aria-label="前へ"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6" /></svg>
+            </button>
+          )}
+          <button
+            onClick={() => { if (!isGuarded()) goNext() }}
+            style={{ position: 'absolute', right: 12, bottom: 'calc(env(safe-area-inset-bottom, 0px) + 16px)', zIndex: 8, background: v3.color.accent, border: 'none', borderRadius: '50%', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: `0 2px 8px ${v3.color.accent}60`, WebkitTapHighlightColor: 'transparent' }}
+            aria-label="次へ"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.bg} strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6" style={{ transform: 'scaleX(-1)', transformOrigin: '50% 50%' }} /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+          </button>
+        </>
+      )}
+
       {/* クイズ正解後: 「次へ」ボタン（大） */}
       {isQuiz && quizAnswered?.correct && (
         <button
@@ -193,21 +215,15 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
         </button>
       )}
 
-      {/* Tap hint (非クイズのみ) — 左右端ゾーンに対応した位置 */}
-      {!isQuiz && (
-        <div style={{ position: 'absolute', bottom: 28, left: 0, right: 0, display: 'flex', justifyContent: 'space-between', zIndex: 6, pointerEvents: 'none', padding: '0 8px' }}>
-          <span style={{ fontSize: 11, color: v3.color.text3, opacity: 0.5, width: '22%', textAlign: 'center' }}>◀</span>
-          <span style={{ fontSize: 11, color: v3.color.text3, opacity: 0.5, width: '22%', textAlign: 'center' }}>▶</span>
-        </div>
-      )}
+      {/* Tap hint — モバイル向けヒント（非クイズのみ） */}
 
-      {/* 誤りを報告 — 左下のボタン（サマリースライドでは非表示） */}
+      {/* SCRUM-215: 誤りを報告 — アイコンのみのコンパクト表示（誤タップ防止）、非クイズ時は次へボタンと重ならない位置へ */}
       <button
         onPointerDown={(e) => { e.stopPropagation(); setReportOpen(true) }}
-        style={{ position: 'absolute', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 16px)', left: 16, fontSize: 12, color: v3.color.text2, background: v3.color.card, border: `1px solid ${v3.color.line}`, borderRadius: 99, cursor: 'pointer', zIndex: 7, padding: '8px 14px', display: slide.kind === 'summary' ? 'none' : 'flex', alignItems: 'center', gap: 5 }}
+        style={{ position: 'absolute', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 68px)', left: 16, fontSize: 11, color: v3.color.text3, background: 'transparent', border: 'none', borderRadius: 99, cursor: 'pointer', zIndex: 7, padding: '6px', display: slide.kind === 'summary' ? 'none' : 'flex', alignItems: 'center', gap: 4, opacity: 0.5 }}
+        title="誤りを報告"
       >
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg>
-        誤りを報告
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg>
       </button>
 
       {/* 誤り報告モーダル */}
