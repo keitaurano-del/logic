@@ -5,6 +5,7 @@ import { Button } from '../components/Button'
 import { API_BASE } from './apiBase'
 import { t, getLocale } from '../i18n'
 import { getGuestId } from '../guestId'
+import { useDailyGuide, GuideLabel, GuideStyle } from '../tutorial/dailyGuide'
 
 // デイリーフェルミ完了状態管理
 const DAILY_FERMI_KEY = 'logic-daily-fermi-done'
@@ -260,6 +261,7 @@ type SubmitPhase = 'idle' | 'scoring' | 'done' | 'result'
 
 export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
   const locale = getLocale()
+  const { active: guideActive, dismiss: dismissGuide } = useDailyGuide()
 
   const [question, setQuestion] = useState('')
   const [hint, setHint] = useState('')
@@ -330,6 +332,7 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
 
   return (
     <div className="stack">
+      {guideActive && <GuideStyle />}
       {/* チャットモーダル */}
       {showChat && (
         <FermiChatModal
@@ -403,17 +406,21 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
           {hint && submitPhase === 'idle' && (
             <div>
               {!showHint ? (
-                <button
-                  onClick={() => { setShowHint(true); setHintUsed(true) }}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: 6,
-                    background: 'none', border: 'none', cursor: 'pointer',
-                    color: 'var(--brand)', fontSize: 16, fontWeight: 600, padding: 0,
-                  }}
-                >
-                  <LightbulbIcon width={15} height={15} />
-                  {t('dailyFermi.showHint')}
-                </button>
+                <div style={{ position: 'relative', display: 'inline-block' }}>
+                  <button
+                    onClick={() => { setShowHint(true); setHintUsed(true) }}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: 6,
+                      background: 'none', border: 'none', cursor: 'pointer',
+                      color: 'var(--brand)', fontSize: 16, fontWeight: 600, padding: 0,
+                      animation: guideActive ? 'tut-pulse 1.2s ease 2' : 'none',
+                    }}
+                  >
+                    <LightbulbIcon width={15} height={15} />
+                    {t('dailyFermi.showHint')}
+                  </button>
+                  {guideActive && <GuideLabel text="詰まったら見てみましょう" position="bottom" />}
+                </div>
               ) : (
                 <div style={{
                   borderRadius: 16,
@@ -461,9 +468,10 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
                 数字に追われなくていい。「対象・場所・頻度」の順に考えてみると分解しやすい。
               </div>
 
+              {guideActive && <GuideLabel text="まず自分の考えを書いてみましょう" position="top" />}
               <textarea
                   value={answer}
-                  onChange={(e) => setAnswer(e.target.value)}
+                  onChange={(e) => { setAnswer(e.target.value); if (guideActive) dismissGuide() }}
                   placeholder={t('fermi.placeholder')}
                   style={{
                     width: '100%',

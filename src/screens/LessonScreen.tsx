@@ -5,6 +5,7 @@ import { RankIllustration } from '../components/RankIllustration'
 import { Confetti } from '../components/Confetti'
 import { getCurrentTier } from './homeHelpers'
 import { t, getLocale } from '../i18n'
+import { LessonTapGuide } from '../tutorial/lessonGuide'
 
 // カテゴリ表示名
 const CATEGORY_LABEL: Record<string, string> = {
@@ -104,6 +105,8 @@ export function LessonScreen({ lessonId, onBack, onComplete, onNextLesson, onRep
   // ── Main lesson UI ───────────────────────────────────────────────
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: '#F0F4FF' }}>
+      {/* レッスン左右タップガイド（初回のみ） */}
+      <LessonTapGuide />
 
       {/* ヘッダー */}
       <div style={{

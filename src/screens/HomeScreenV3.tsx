@@ -3,10 +3,13 @@
  * 仕様: docs/DESIGN_V3.md §3.1
  * モックアップ: lv3-home.html
  */
-import { useMemo, useState, useEffect } from 'react'
+import { useMemo, useState, useEffect, useRef } from 'react'
 import { getStreak, getStudyDates } from '../stats'
 import { v3 } from '../styles/tokensV3'
 import { API_BASE } from './apiBase'
+import { HomeCoachmark, useShouldShowHomeCoachmark } from '../tutorial/coachmark'
+import { PlacementCard, shouldShowPlacementCard } from '../tutorial/placementCard'
+import { hasCompletedPlacement } from '../placementData'
 
 // SCRUM-185: グリーティングメッセージ複数パターン
 const GREETING_MESSAGES = [
@@ -35,12 +38,15 @@ interface HomeScreenV3Props {
   onOpenRank: () => void
   onOpenStats?: () => void
   onNavigateToDailyFermi?: () => void
+  onOpenPlacementTest?: () => void
 }
 
 const IMG = '/images/v3'
 
 export function HomeScreenV3(props: HomeScreenV3Props) {
-  const { userName, onOpenLesson, onOpenAIGen, onOpenRoleplay, onNavigateToDailyFermi } = props
+  const { userName, onOpenLesson, onOpenAIGen, onOpenRoleplay, onNavigateToDailyFermi, onOpenPlacementTest } = props
+  const dailyCardRef = useRef<HTMLDivElement>(null)
+  const [showCoachmark, dismissCoachmark] = useShouldShowHomeCoachmark()
 
   const streak = getStreak()
   // completed unused
@@ -72,6 +78,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
   const thisWeekStudied = thisWeekDates.filter(d => studyDateSet.has(d)).length
 
   return (
+    <>
     <div style={{ background: v3.color.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: v3.color.text }}>
       {/* Navbar */}
       <div style={{ padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -100,7 +107,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
         </div>
 
         {/* 今日の1問 (Daily Fermi) */}
-        <div onClick={onNavigateToDailyFermi} style={{ background: 'linear-gradient(135deg, #1A3A39 0%, #234D4B 100%)', borderRadius: v3.radius.card, padding: '20px', cursor: 'pointer', position: 'relative', overflow: 'hidden', boxShadow: v3.shadow.hero, flexShrink: 0 }}>
+        <div ref={dailyCardRef} onClick={onNavigateToDailyFermi} style={{ background: 'linear-gradient(135deg, #1A3A39 0%, #234D4B 100%)', borderRadius: v3.radius.card, padding: '20px', cursor: 'pointer', position: 'relative', overflow: 'hidden', boxShadow: v3.shadow.hero, flexShrink: 0 }}>
           <img src={`${IMG}/home-daily-fermi.webp`} alt="" loading="lazy" style={{ position: 'absolute', right: -10, top: -10, width: 140, height: 140, objectFit: 'cover', opacity: 0.18, pointerEvents: 'none', borderRadius: 16 }} />
           <div style={{ position: 'absolute', right: -30, top: -30, width: 140, height: 140, borderRadius: '50%', background: v3.color.accentGlow, filter: 'blur(36px)', pointerEvents: 'none' }}></div>
           <div style={{ position: 'relative', zIndex: 1 }}>
@@ -218,7 +225,26 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
           </div>
         </div>
       </div>
+
+      {/* プレースメント誘導カード（1問完了後1回のみ） */}
+      {shouldShowPlacementCard(hasCompletedPlacement()) && onOpenPlacementTest && (
+        <div style={{ padding: '0 16px 16px' }}>
+          <PlacementCard onTakeTest={onOpenPlacementTest} />
+        </div>
+      )}
     </div>
+
+    {/* ホームコーチマーク（初回のみ・オーバーレイ） */}
+    {showCoachmark && (
+      <HomeCoachmark
+        targetRef={dailyCardRef}
+        onDismiss={() => {
+          dismissCoachmark()
+          onNavigateToDailyFermi?.()
+        }}
+      />
+    )}
+    </>
   )
 }
 

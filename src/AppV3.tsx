@@ -329,6 +329,7 @@ function AppV3() {
           onOpenAIGen={() => currentUser ? navigate({ type: 'ai-problem-gen' }) : navigate({ type: 'login-gate', feature: 'ai-gen' })}
           onOpenRoadmap={() => { setTab('lessons'); navigate({ type: 'lessons' }, true) }}
           onNavigateToDailyFermi={() => navigate({ type: 'daily-fermi' })}
+          onOpenPlacementTest={() => navigate({ type: 'placement-test' })}
         />
       )}
 
