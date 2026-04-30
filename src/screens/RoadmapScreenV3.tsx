@@ -159,6 +159,15 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
           image={`${IMG}/lesson-proposal.webp`}
           onClick={() => props.onOpenCategory('提案書作成')}
         />
+        <CategoryCard
+          icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="#C49A3C"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" fill="none" stroke="#C49A3C" strokeWidth="2" /><circle cx="9" cy="7" r="4" fill="none" stroke="#C49A3C" strokeWidth="2" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" fill="none" stroke="#C49A3C" strokeWidth="2" /><path d="M16 3.13a4 4 0 0 1 0 7.75" fill="none" stroke="#C49A3C" strokeWidth="2" /></svg>}
+          iconBg="rgba(196,154,60,.14)"
+          name="クライアントワーク"
+          meta="9レッスン · 中級"
+          progress="0/9"
+          image={`${IMG}/course-business.webp`}
+          onClick={() => props.onOpenCategory('クライアントワーク')}
+        />
       </div>}
     </div>
   )
