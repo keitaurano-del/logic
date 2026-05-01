@@ -338,6 +338,7 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
         if (data.error) throw new Error(data.error)
         setQuestion(data.question || '')
         setHint(data.hint || '')
+        if (typeof data.poolIndex === 'number') setCurrentPoolIndex(data.poolIndex)
         setElapsedSec(0)
         setTimerRunning(true)
       })
@@ -346,7 +347,10 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [locale, fetchTrigger])
 
-  const handleReroll = () => {
+  const [excludedIndexes, setExcludedIndexes] = useState<number[]>([])
+  const [currentPoolIndex, setCurrentPoolIndex] = useState<number>(-1)
+
+  const handleReroll = async () => {
     if (!canReroll) return
     incrementRerollCount()
     setRerollCount(getRerollCount())
@@ -355,7 +359,26 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
     setSubmitPhase('idle')
     setShowHint(false)
     setHintUsed(false)
-    setFetchTrigger(t => t + 1)
+    setLoadingQuestion(true)
+    try {
+      const exclude = [...excludedIndexes, currentPoolIndex].filter(i => i >= 0)
+      const res = await fetch(`${API_BASE}/api/fermi/next?exclude=${exclude.join(',')}`)
+      const data = await res.json()
+      if (data.error) throw new Error(data.error)
+      setQuestion(data.question || '')
+      setHint(data.hint || '')
+      if (typeof data.poolIndex === 'number') {
+        setCurrentPoolIndex(data.poolIndex)
+        setExcludedIndexes(prev => [...prev, data.poolIndex])
+      }
+      setElapsedSec(0)
+      setTimerRunning(true)
+    } catch {
+      // フォールバック: 既存のfetchTrigger方式
+      setFetchTrigger((t: number) => t + 1)
+    } finally {
+      setLoadingQuestion(false)
+    }
   }
 
   const handleSubmit = async () => {
@@ -377,6 +400,22 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
       incrementDailyCount()
       setDailyCount(getDailyCount())
       setSubmitPhase('done')
+      // スコアをランキングに記録
+      if (data.score != null) {
+        const { getDisplayName } = await import('../stats')
+        fetch(`${API_BASE}/api/fermi/record-score`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId: getGuestId(),
+            userName: getDisplayName(),
+            score: data.score,
+            questionIndex: currentPoolIndex,
+            elapsedSec,
+            hintUsed,
+          }),
+        }).catch(() => {})
+      }
     } catch (e: unknown) {
       setSubmitError((e as Error).message || t('common.error'))
       setSubmitPhase('idle')
