@@ -6,9 +6,9 @@ import { useWindowSize, getGridColumns } from '../hooks/useResponsive'
 
 const IMG = '/images/v3'
 
-export function LessonGridSection({ onOpenCategory }: { onOpenCategory: (cat: string) => void }) {
+export function LessonGridSection({ onOpenCategory, columns: overrideColumns }: { onOpenCategory: (cat: string) => void; columns?: number }) {
   const { width } = useWindowSize()
-  const columns = getGridColumns(width)
+  const columns = overrideColumns ?? 1  // ホーム画面では1列固定
   
   const lessons = [
     { cat: 'logic', name: 'ロジカルシンキング', meta: '5レッスン · 初級', progress: 60, accent: v3.color.accent, image: `${IMG}/course-logical.webp` },

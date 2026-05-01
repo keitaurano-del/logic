@@ -189,7 +189,7 @@ function SearchResults({ query, onOpenLesson }: { query: string; onOpenLesson: (
     l.title.toLowerCase().includes(q) || (l.category || '').toLowerCase().includes(q)
   ).slice(0, 20)
   return (
-    <div style={{ flex: 1, padding: '8px 16px 100px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+    <div style={{ flex: 1, padding: '8px 16px 100px', display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
       {results.length === 0 && (
         <div style={{ padding: 32, textAlign: 'center', color: v3.color.text2, fontSize: 14 }}>「{query}」に一致するレッスンが見つかりません</div>
       )}
@@ -329,11 +329,11 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
           </div>
         </div>
       )}
-      <div style={{ flex: 1, padding: '0 16px 100px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <div style={{ flex: 1, padding: '0 16px 100px', display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
         {lessons.length === 0 && (
           <div style={{ padding: 32, textAlign: 'center', color: v3.color.text2 }}>このカテゴリにはまだレッスンがありません。</div>
         )}
-        {showStartHint && <div style={{ fontSize: 12, color: v3.color.text3, padding: '4px 4px 0', fontWeight: 600 }}>すべてのレッスン</div>}
+        {showStartHint && <div style={{ fontSize: 12, color: v3.color.text3, padding: '4px 4px 0', fontWeight: 600, gridColumn: '1 / -1' }}>すべてのレッスン</div>}
         {lessons.map((lesson: any) => {
           const isDone = completed.has(`lesson-${lesson.id}`)
           // カテゴリごとに画像をマッピング（既存 v3 画像を活用）
