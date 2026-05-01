@@ -32,11 +32,11 @@ export function LessonGridSection({ onOpenCategory }: { onOpenCategory: (cat: st
 
 function LessonGridCard({ lesson, onOpen }: { lesson: any; onOpen: () => void }) {
   return (
-    <div onClick={onOpen} style={{ background: v3.color.card, borderRadius: v3.radius.card, overflow: 'hidden', cursor: 'pointer', boxShadow: v3.shadow.card }}>
-      <div style={{ height: 100, overflow: 'hidden', background: v3.color.card }}>
+    <div onClick={onOpen} style={{ background: v3.color.cardSoft, borderRadius: v3.radius.card, overflow: 'hidden', cursor: 'pointer', boxShadow: v3.shadow.card }}>
+      <div style={{ height: 100, overflow: 'hidden', background: v3.color.cardSoft }}>
         <img src={lesson.image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
       </div>
-      <div style={{ padding: '12px 14px 14px', background: v3.color.card }}>
+      <div style={{ padding: '12px 14px 14px', background: v3.color.cardSoft }}>
         <div style={{ fontSize: 13, fontWeight: 700, color: v3.color.text, marginBottom: 3, lineHeight: 1.3 }}>{lesson.name}</div>
         <div style={{ fontSize: 12, color: v3.color.text2, fontWeight: 500, marginBottom: 10 }}>{lesson.meta}</div>
         <div style={{ height: 3, background: 'rgba(255,255,255,.06)', borderRadius: 99, overflow: 'hidden' }}>
