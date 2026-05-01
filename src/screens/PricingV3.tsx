@@ -29,9 +29,9 @@ export default function PricingV3({ onBack }: Props) {
         price: 390,
         priceLabel: '390円/月',
         features: [
-          'AI問題生成 月300問まで',
+          'フェルミ推定 月5問',
           '全レッスン 40コース',
-          'ランキング機能',
+          'AI問題生成は別途購入',
           '広告なし',
         ],
         cta: '月額プランを始める',
@@ -46,9 +46,9 @@ export default function PricingV3({ onBack }: Props) {
         badge: '期間限定',
         badgeColor: '#ff6b6b',
         features: [
-          'AI問題生成 月300問まで',
+          'フェルミ推定 月5問',
           '全レッスン 40コース',
-          'ランキング機能',
+          'AI問題生成は別途購入',
           '広告なし',
         ],
         cta: 'キャンペーンプランを始める',
@@ -63,9 +63,9 @@ export default function PricingV3({ onBack }: Props) {
         badge: '41% OFF',
         badgeColor: '#4caf50',
         features: [
-          'AI問題生成 月300問まで',
+          'フェルミ推定 月5問',
           '全レッスン 40コース',
-          'ランキング機能',
+          'AI問題生成は別途購入',
           '広告なし',
         ],
         cta: '年額プランを始める',
@@ -113,9 +113,18 @@ export default function PricingV3({ onBack }: Props) {
             color: v3.color.text2,
             fontSize: 18,
             cursor: 'pointer',
+            width: 36,
+            height: 36,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: '50%',
+            padding: 0,
           }}
         >
-          ←
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
         </button>
         <h2
           style={{
@@ -300,11 +309,12 @@ export default function PricingV3({ onBack }: Props) {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        fontSize: 12,
-                        color: v3.color.accent,
+                        flexShrink: 0,
                       }}
                     >
-                      ✓
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2.5" strokeLinecap="round">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
                     </span>
                     {feature}
                   </li>
