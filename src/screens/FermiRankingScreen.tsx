@@ -15,15 +15,15 @@ interface RankEntry {
 
 function getMockRanking(myScore: number, myName: string): RankEntry[] {
   const others = [
-    { name: 'Taro M.', score: 4820 },
-    { name: 'Yuki S.', score: 4110 },
-    { name: 'Hana K.', score: 3750 },
-    { name: 'Ryo T.', score: 3200 },
-    { name: 'Ami F.', score: 2890 },
-    { name: 'Ken N.', score: 2600 },
-    { name: 'Saki I.', score: 2200 },
-    { name: 'Jiro W.', score: 1950 },
-    { name: 'Mika O.', score: 1700 },
+    { name: 'Taro M.', score: 98 },
+    { name: 'Yuki S.', score: 87 },
+    { name: 'Hana K.', score: 76 },
+    { name: 'Ryo T.', score: 65 },
+    { name: 'Ami F.', score: 54 },
+    { name: 'Ken N.', score: 43 },
+    { name: 'Saki I.', score: 38 },
+    { name: 'Jiro W.', score: 27 },
+    { name: 'Mika O.', score: 15 },
   ]
   const all = [...others, { name: myName, score: myScore, isMe: true }]
   all.sort((a, b) => b.score - a.score)

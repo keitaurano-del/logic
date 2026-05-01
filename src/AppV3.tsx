@@ -115,7 +115,7 @@ function getInitialScreen(user: User | null): Screen {
     return { type: 'onboarding' }
   }
   // ログイン済みユーザーはオンボーディングをスキップ
-  if (user) return { type: 'home' }
+  if (user) return { type: 'daily-fermi' }
   // 未ログインは必ずオンボーディングまたはログイン画面へ
   if (localStorage.getItem(ONBOARDED_KEY) !== '1') {
     return { type: 'onboarding' }
@@ -562,7 +562,12 @@ function AppV3() {
           background: '#252C40', borderRadius: 20, padding: '32px 24px',
           width: '100%', maxWidth: 360, boxShadow: '0 24px 48px rgba(0,0,0,0.4)',
         }}>
-          <div style={{ fontSize: 22, fontWeight: 800, color: '#E8ECF4', marginBottom: 8, letterSpacing: '-0.02em' }}>🎉 ようこそ！</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+            <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(108,142,245,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6C8EF5" strokeWidth="2" strokeLinecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div style={{ fontSize: 22, fontWeight: 800, color: '#E8ECF4', letterSpacing: '-0.02em' }}>ようこそ！</div>
+          </div>
           <div style={{ fontSize: 15, color: '#8FA3C8', marginBottom: 24, lineHeight: 1.6 }}>
             アプリで表示する名前を設定してね
           </div>

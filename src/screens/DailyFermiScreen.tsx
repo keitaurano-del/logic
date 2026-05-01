@@ -551,7 +551,7 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
                 background: 'var(--bg-muted)', borderRadius: 8,
                 padding: '8px 12px', lineHeight: 1.6,
               }}>
-                数字に追われなくていい。「対象・場所・頻度」の順に考えてみると分解しやすい。
+                まずは「誰が・どこで・どれくらいの頻度で」を考えてみよう。数字は大まかでOK！
               </div>
 
               {guideActive && <GuideLabel text="まず自分の考えを書いてみましょう" position="top" />}

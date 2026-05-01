@@ -154,34 +154,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
           </div>
         </div>
 
-        {/* Today's routine */}
-        <div style={{ background: v3.color.card, borderRadius: v3.radius.card, overflow: 'hidden', flexShrink: 0, boxShadow: v3.shadow.card }}>
-          <div style={{ padding: '16px 18px 8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <span style={{ fontSize: 14, fontWeight: 600 }}>今日のルーティン</span>
-            <span style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 14, color: v3.color.accent, fontWeight: 700 }}>1 / 2</span>
-          </div>
-          <div style={{ margin: '0 18px 14px', height: 4, background: 'rgba(112,216,189,.12)', borderRadius: 99, overflow: 'hidden' }}>
-            <div style={{ height: '100%', width: '50%', background: v3.color.accent, borderRadius: 99, boxShadow: `0 0 8px ${v3.color.accentGlow}` }}></div>
-          </div>
-          <div onClick={onNavigateToDailyFermi} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '13px 18px', cursor: 'pointer' }}>
-            <div style={{ width: 24, height: 24, borderRadius: '50%', background: v3.color.accent, border: `1.5px solid ${v3.color.accent}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: `0 0 8px ${v3.color.accentGlow}` }}>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={v3.color.bg} strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12" /></svg>
-            </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 15, fontWeight: 600, color: v3.color.text2, textDecoration: 'line-through' }}>今日のフェルミ推定</div>
-              <div style={{ fontSize: 14, color: v3.color.text2, marginTop: 2 }}>東京のコンビニの数</div>
-            </div>
-            <span style={{ fontSize: 14, fontWeight: 700, color: v3.color.accent, fontFamily: "'Inter Tight', sans-serif", background: v3.color.accentSoft, borderRadius: 8, padding: '5px 9px', whiteSpace: 'nowrap' }}>+30</span>
-          </div>
-          <div onClick={() => onOpenLesson(20)} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '13px 18px', cursor: 'pointer', borderTop: `1px solid ${v3.color.line}` }}>
-            <div style={{ width: 24, height: 24, borderRadius: '50%', border: `1.5px solid ${v3.color.text3}`, flexShrink: 0 }}></div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 15, fontWeight: 600 }}>レッスンを1つ完了</div>
-              <div style={{ fontSize: 14, color: v3.color.text2, marginTop: 2 }}>演繹法と帰納法 · 3分</div>
-            </div>
-            <span style={{ fontSize: 14, fontWeight: 700, color: v3.color.accent, fontFamily: "'Inter Tight', sans-serif", background: v3.color.accentSoft, borderRadius: 8, padding: '5px 9px', whiteSpace: 'nowrap' }}>+50</span>
-          </div>
-        </div>
+
 
         {/* Week */}
         <div style={{ background: v3.color.card, borderRadius: v3.radius.card, padding: 18, flexShrink: 0, boxShadow: v3.shadow.card }}>

@@ -717,6 +717,63 @@ const SHAPES: Record<number, ShapeFn> = {
       <polygon points="72,22 76,26 78,18" fill={s} opacity={0.7}/>
     </g>
   ),
+
+  // フェルミ推定コース (200〜204)
+  200: s => ( // フェルミ推定とは: 疑問符+グラフ
+    <g>
+      <circle cx="50" cy="38" r="18" fill="none" stroke={s} strokeWidth="2"/>
+      <text x="50" y="44" textAnchor="middle" fontSize="16" fill={s} fontFamily="monospace" fontWeight="bold">?</text>
+      <polyline points="22,72 34,60 46,66 58,52 74,64" fill="none" stroke={s} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" opacity={0.7}/>
+      <circle cx="22" cy="72" r="2.5" fill={s} opacity={0.7}/>
+      <circle cx="74" cy="64" r="2.5" fill={s} opacity={0.7}/>
+    </g>
+  ),
+  201: s => ( // 分解の技術: ツリー構造
+    <g>
+      <rect x="43" y="14" width="14" height="10" rx="2" fill="none" stroke={s} strokeWidth="1.8"/>
+      <line x1="50" y1="24" x2="50" y2="34" stroke={s} strokeWidth="1.5"/>
+      <line x1="50" y1="34" x2="28" y2="44" stroke={s} strokeWidth="1.5"/>
+      <line x1="50" y1="34" x2="72" y2="44" stroke={s} strokeWidth="1.5"/>
+      <rect x="20" y="44" width="16" height="10" rx="2" fill="none" stroke={s} strokeWidth="1.6"/>
+      <rect x="64" y="44" width="16" height="10" rx="2" fill="none" stroke={s} strokeWidth="1.6"/>
+      <line x1="28" y1="54" x2="20" y2="64" stroke={s} strokeWidth="1.2" opacity={0.6}/>
+      <line x1="28" y1="54" x2="36" y2="64" stroke={s} strokeWidth="1.2" opacity={0.6}/>
+      <line x1="72" y1="54" x2="64" y2="64" stroke={s} strokeWidth="1.2" opacity={0.6}/>
+      <line x1="72" y1="54" x2="80" y2="64" stroke={s} strokeWidth="1.2" opacity={0.6}/>
+    </g>
+  ),
+  202: s => ( // 実践①都市: スカイライン+矢印
+    <g>
+      <rect x="16" y="58" width="10" height="18" fill="none" stroke={s} strokeWidth="1.8"/>
+      <rect x="30" y="46" width="10" height="30" fill="none" stroke={s} strokeWidth="1.8"/>
+      <rect x="44" y="36" width="12" height="40" fill="none" stroke={s} strokeWidth="1.8"/>
+      <rect x="60" y="50" width="10" height="26" fill="none" stroke={s} strokeWidth="1.8"/>
+      <rect x="74" y="42" width="10" height="34" fill="none" stroke={s} strokeWidth="1.8"/>
+      <line x1="12" y1="76" x2="88" y2="76" stroke={s} strokeWidth="1.5" strokeLinecap="round"/>
+      <line x1="50" y1="22" x2="50" y2="14" stroke={s} strokeWidth="1.5" strokeLinecap="round" opacity={0.5}/>
+      <polyline points="44,18 50,12 56,18" fill="none" stroke={s} strokeWidth="1.5" strokeLinecap="round" opacity={0.5}/>
+    </g>
+  ),
+  203: s => ( // 実践②ビジネス: 掛け算＝市場規模
+    <g>
+      <text x="50" y="30" textAnchor="middle" fontSize="10" fill={s} fontFamily="monospace" fontWeight="bold" opacity={0.9}>人口×利用率</text>
+      <line x1="20" y1="36" x2="80" y2="36" stroke={s} strokeWidth="1" opacity={0.4}/>
+      <text x="50" y="46" textAnchor="middle" fontSize="9" fill={s} fontFamily="monospace" opacity={0.6}>× 購入頻度 × 単価</text>
+      <line x1="20" y1="52" x2="80" y2="52" stroke={s} strokeWidth="1.5" strokeDasharray="4,3" opacity={0.5}/>
+      <text x="50" y="66" textAnchor="middle" fontSize="13" fill={s} fontFamily="monospace" fontWeight="bold">＝市場</text>
+      <circle cx="28" cy="76" r="4" fill={s} opacity={0.4}/>
+      <circle cx="50" cy="78" r="5" fill={s} opacity={0.7}/>
+      <circle cx="72" cy="76" r="4" fill={s} opacity={0.4}/>
+    </g>
+  ),
+  204: s => ( // よくある罠: 警告三角+チェック
+    <g>
+      <polygon points="50,16 80,68 20,68" fill="none" stroke={s} strokeWidth="2.2" strokeLinejoin="round"/>
+      <line x1="50" y1="30" x2="50" y2="52" stroke={s} strokeWidth="2.5" strokeLinecap="round"/>
+      <circle cx="50" cy="60" r="2.5" fill={s}/>
+      <polyline points="28,80 36,76 42,82 52,72 62,80" fill="none" stroke={s} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity={0.5}/>
+    </g>
+  ),
 }
 
 // ─── カテゴリ → パレット ───
@@ -733,6 +790,7 @@ function getPalette(lessonId: number): { bg: string; stroke: string } {
   if ([72,73,74,75,76,82,83,84,85,86,87,88].includes(lessonId)) return PALETTE.proposal
   if ([77,78,79,80,81].includes(lessonId)) return PALETTE.philo
   if ([89,90,91,92,93,94,95,96,97].includes(lessonId)) return PALETTE.client
+  if ([200,201,202,203,204].includes(lessonId)) return { bg: '#1A2438', stroke: '#6C8EF5' }  // フェルミ: Slate Blue
   return PALETTE.logic
 }
 
