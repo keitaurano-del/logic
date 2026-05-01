@@ -39,6 +39,9 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
   const startedRef = useRef(false)
   const scrollRef = useRef<HTMLDivElement>(null)
 
+  // スクリプト駆動か否か
+  const hasScript = !!(situation?.script && situation.script.length > 0)
+
   useEffect(() => {
     if (situation && !incrementedRef.current && !isPremium()) {
       incrementRoleplayUsage()
@@ -49,7 +52,15 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
   useEffect(() => {
     if (situation && !startedRef.current) {
       startedRef.current = true
-      fetchTurn([], 1)
+      if (hasScript) {
+        // スクリプト駆動: 即座に最初のセリフを表示（APIコールなし）
+        const first = situation.script![0]
+        setMessages([{ role: 'assistant', content: first.partnerLine }])
+        setChoices(first.choices)
+      } else {
+        // API駆動（デカルト等）
+        fetchTurn([], 1)
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [situation])
@@ -75,7 +86,35 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
   }
 
   const setup = buildSetup(situation)
+  const maxTurns = hasScript ? situation.script!.length : MAX_TURNS
 
+  // スクリプト駆動: ユーザーが選択肢を選んだとき
+  const pickScriptChoice = (choice: string) => {
+    const next: Msg[] = [...messages, { role: 'user', content: choice }]
+    setMessages(next)
+    setChoices([])
+
+    const nextTurn = turnNumber + 1
+    setTurnNumber(nextTurn)
+
+    if (nextTurn > maxTurns) {
+      // スクリプト終了 → 採点へ
+      finish(next)
+    } else {
+      // 次のスクリプトターン
+      const nextScript = situation.script![nextTurn - 1]
+      if (nextScript) {
+        setTimeout(() => {
+          setMessages([...next, { role: 'assistant', content: nextScript.partnerLine }])
+          setChoices(nextScript.choices)
+        }, 400) // 少し間を置いて自然に
+      } else {
+        finish(next)
+      }
+    }
+  }
+
+  // API駆動: ターン取得
   async function fetchTurn(history: Msg[], turn: number) {
     setLoading(true)
     setChoices([])
@@ -108,7 +147,8 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
     }
   }
 
-  const pickChoice = (choice: string) => {
+  // API駆動: 選択肢タップ
+  const pickApiChoice = (choice: string) => {
     if (loading) return
     const next: Msg[] = [...messages, { role: 'user', content: choice }]
     setMessages(next)
@@ -122,6 +162,8 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
     }
   }
 
+  const pickChoice = hasScript ? pickScriptChoice : pickApiChoice
+
   const finish = async (finalMessages: Msg[]) => {
     setScoring(true)
     setFinished(true)
@@ -130,16 +172,12 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
         fetch(`${API_BASE}/api/roleplay/score`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(
-            localeBody({ messages: finalMessages, setup }),
-          ),
+          body: JSON.stringify(localeBody({ messages: finalMessages, setup })),
         }).then((r) => r.json()),
         fetch(`${API_BASE}/api/roleplay/summary`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(
-            localeBody({ messages: finalMessages, setup }),
-          ),
+          body: JSON.stringify(localeBody({ messages: finalMessages, setup })),
         }).then((r) => r.json()),
       ])
       if (scoreRes.scores) setScore(scoreRes)
@@ -167,12 +205,11 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
           <IconButton aria-label="Back" onClick={onBack}>
             <ArrowLeftIcon />
           </IconButton>
-          {/* パートナーアバター */}
           <div style={{
             width: 40, height: 40, borderRadius: '50%', background: v3.color.accentSoft,
             display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
           }}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" strokeWidth="2" strokeLinecap="round">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
               <circle cx="12" cy="7" r="4"/>
             </svg>
@@ -182,12 +219,12 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
             <div style={{ fontSize: 14, color: v3.color.text2 }}>{situation.frameworkLabel}</div>
           </div>
           <div style={{ fontSize: 13, fontWeight: 700, color: v3.color.text2 }}>
-            残り <span style={{ color: v3.color.accent }}>{MAX_TURNS - Math.min(turnNumber - 1, MAX_TURNS)}</span> ターン
+            残り <span style={{ color: v3.color.accent }}>{maxTurns - Math.min(turnNumber - 1, maxTurns)}</span> ターン
           </div>
         </div>
         {/* Progress bar */}
         <div style={{ height: 3, background: v3.color.accentSoft, borderRadius: 99, overflow: 'hidden' }}>
-          <div style={{ height: '100%', width: `${(Math.min(turnNumber, MAX_TURNS) / MAX_TURNS) * 100}%`, background: v3.color.accent, borderRadius: 99, transition: 'width 300ms ease' }} />
+          <div style={{ height: '100%', width: `${(Math.min(turnNumber, maxTurns) / maxTurns) * 100}%`, background: v3.color.accent, borderRadius: 99, transition: 'width 300ms ease' }} />
         </div>
       </div>
 
@@ -199,25 +236,26 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
           </div>
 
           {/* Chat messages */}
-          <div ref={scrollRef} style={{ display: 'flex', flexDirection: 'column', gap: 10, maxHeight: 320, overflowY: 'auto' }}>
+          <div ref={scrollRef} style={{ display: 'flex', flexDirection: 'column', gap: 10, maxHeight: 360, overflowY: 'auto' }}>
             {messages.map((m, i) => (
               <div key={i} style={{
-                maxWidth: '80%',
-                padding: '10px 14px',
-                borderRadius: m.role === 'user' ? '14px 14px 4px 14px' : '14px 14px 14px 4px',
-                background: m.role === 'user' ? '#3B5BDB' : '#fff',
-                color: m.role === 'user' ? '#fff' : '#0F1523',
+                maxWidth: '85%',
+                padding: '12px 16px',
+                borderRadius: m.role === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
+                background: m.role === 'user' ? v3.color.accent : v3.color.card,
+                color: m.role === 'user' ? '#fff' : v3.color.text,
                 fontSize: 16,
-                lineHeight: 1.6,
-                border: m.role === 'user' ? 'none' : '1px solid #E2E8FF',
+                lineHeight: 1.65,
+                border: m.role === 'user' ? 'none' : `1px solid ${v3.color.line}`,
                 alignSelf: m.role === 'user' ? 'flex-end' : 'flex-start',
-                boxShadow: '0 1px 2px rgba(15,21,35,.06)',
+                boxShadow: '0 1px 3px rgba(15,21,35,.06)',
+                whiteSpace: 'pre-wrap',
               }}>
                 {m.content}
               </div>
             ))}
             {loading && (
-              <div style={{ maxWidth: '80%', padding: '12px 16px', borderRadius: '14px 14px 14px 4px', background: v3.color.card, border: `1px solid ${v3.color.line}`, alignSelf: 'flex-start', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div style={{ maxWidth: '80%', padding: '12px 16px', borderRadius: '16px 16px 16px 4px', background: v3.color.card, border: `1px solid ${v3.color.line}`, alignSelf: 'flex-start', display: 'flex', alignItems: 'center', gap: 8 }}>
                 <div style={{ display: 'flex', gap: 4 }}>
                   {[0,1,2].map(i => (
                     <div key={i} style={{ width: 7, height: 7, borderRadius: '50%', background: v3.color.accent, opacity: 0.5 + i * 0.15 }} />
@@ -228,54 +266,39 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
             )}
           </div>
 
-          {/* Choices */}
+          {/* 選択肢 */}
           {choices.length > 0 && !loading && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {/* ヒントチップ（横スクロール） */}
-              <div style={{
-                display: 'flex', gap: 6, overflowX: 'auto', paddingBottom: 2,
-                msOverflowStyle: 'none', scrollbarWidth: 'none',
-              }}>
-                {choices.map((c, i) => (
-                  <button
-                    key={i}
-                    onClick={() => pickChoice(c)}
-                    style={{
-                      whiteSpace: 'nowrap', padding: '7px 14px',
-                      borderRadius: 99, border: '1.5px solid #DBE4FF',
-                      background: '#F8FAFF', fontSize: 13, fontWeight: 600,
-                      color: v3.color.accent, cursor: 'pointer', flexShrink: 0,
-                    }}
-                  >
-                    {c.length > 24 ? c.slice(0, 22) + '…' : c}
-                  </button>
-                ))}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: v3.color.text3, letterSpacing: '.04em', padding: '2px 2px 4px' }}>
+                どう返しますか？
               </div>
-              {/* 選択肢カード */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                {choices.map((c, i) => (
-                  <button
-                    key={i}
-                    onClick={() => pickChoice(c)}
-                    style={{
-                      background: '#fff', border: '1.5px solid #DBE4FF',
-                      borderRadius: 12, padding: '12px 14px',
-                      cursor: 'pointer', textAlign: 'left',
-                      fontSize: 15, color: v3.color.text, lineHeight: 1.6, width: '100%',
-                      transition: 'border-color 120ms ease',
-                    }}
-                  >
-                    {c}
-                  </button>
-                ))}
-              </div>
+              {choices.map((c, i) => (
+                <button
+                  key={i}
+                  onClick={() => pickChoice(c)}
+                  style={{
+                    background: v3.color.card,
+                    border: `1.5px solid ${v3.color.line}`,
+                    borderRadius: 14, padding: '14px 16px',
+                    cursor: 'pointer', textAlign: 'left',
+                    fontSize: 15, color: v3.color.text, lineHeight: 1.6, width: '100%',
+                    transition: 'border-color 120ms ease',
+                    display: 'flex', alignItems: 'flex-start', gap: 10,
+                  }}
+                >
+                  <span style={{ fontSize: 13, fontWeight: 800, color: v3.color.accent, flexShrink: 0, minWidth: 18, paddingTop: 1 }}>
+                    {i + 1}
+                  </span>
+                  <span>{c}</span>
+                </button>
+              ))}
             </div>
           )}
 
-          {messages.length >= 2 && (
+          {messages.length >= 2 && choices.length > 0 && (
             <button
               onClick={endEarly}
-              style={{ background: 'none', border: 'none', color: v3.color.text2, fontSize: 16, fontWeight: 600, cursor: 'pointer', padding: '4px 0', textAlign: 'center' }}
+              style={{ background: 'none', border: 'none', color: v3.color.text2, fontSize: 15, fontWeight: 600, cursor: 'pointer', padding: '4px 0', textAlign: 'center' }}
             >
               終了して採点する
             </button>
@@ -286,9 +309,9 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
       {finished && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           {scoring && (
-            <div style={{ background: '#fff', border: `1px solid ${v3.color.line}`, borderRadius: 14, padding: '24px 16px', textAlign: 'center', boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
-              <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 800, color: v3.color.text, marginBottom: 8 }}>採点中…</div>
-              <p style={{ fontSize: 14, color: v3.color.text2, margin: 0 }}>AI があなたの対話を 5 項目で評価しています</p>
+            <div style={{ background: v3.color.card, border: `1px solid ${v3.color.line}`, borderRadius: 14, padding: '24px 16px', textAlign: 'center', boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
+              <div style={{ fontSize: 18, fontWeight: 800, color: v3.color.text, marginBottom: 8 }}>採点中…</div>
+              <p style={{ fontSize: 14, color: v3.color.text2, margin: 0 }}>AIがあなたの対話を評価しています</p>
             </div>
           )}
 
@@ -298,15 +321,15 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
                 <div style={{ width: 28, height: 28, background: '#22C55E', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                   <CheckIcon />
                 </div>
-                <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 800, color: v3.color.text }}>採点完了</div>
+                <div style={{ fontSize: 18, fontWeight: 800, color: v3.color.text }}>採点完了</div>
               </div>
               <p style={{ fontSize: 16, color: v3.color.text, lineHeight: 1.6, marginBottom: 12 }}>{score.overall}</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {score.scores.map((s) => (
                   <div key={s.name} style={{ background: '#fff', borderRadius: 10, padding: '10px 12px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4 }}>
-                      <span style={{ fontSize: 16, fontWeight: 600, color: v3.color.text }}>{s.name}</span>
-                      <span style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 16, fontWeight: 700, color: v3.color.accent }}>{s.score} / {s.maxScore}</span>
+                      <span style={{ fontSize: 15, fontWeight: 600, color: v3.color.text }}>{s.name}</span>
+                      <span style={{ fontSize: 16, fontWeight: 700, color: v3.color.accent }}>{s.score} / {s.maxScore}</span>
                     </div>
                     <div style={{ fontSize: 14, color: v3.color.text2, lineHeight: 1.6 }}>{s.feedback}</div>
                   </div>
@@ -316,13 +339,13 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
           )}
 
           {summary && (
-            <div style={{ background: '#fff', border: `1px solid ${v3.color.line}`, borderRadius: 14, padding: '16px', boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
-              <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: v3.color.accent, marginBottom: 10 }}>総評</div>
+            <div style={{ background: v3.color.card, border: `1px solid ${v3.color.line}`, borderRadius: 14, padding: '16px', boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
+              <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: v3.color.accent, marginBottom: 10 }}>総評</div>
               <p style={{ fontSize: 16, color: v3.color.text, lineHeight: 1.7, marginBottom: 14 }}>{summary.summary}</p>
               {summary.goodPoints.length > 0 && (
                 <div style={{ marginBottom: 12 }}>
                   <div style={{ fontSize: 14, fontWeight: 700, color: v3.color.accent, marginBottom: 6 }}>✓ 良かった点</div>
-                  <ul style={{ fontSize: 16, color: v3.color.text, lineHeight: 1.7, paddingLeft: 18, margin: 0 }}>
+                  <ul style={{ fontSize: 15, color: v3.color.text, lineHeight: 1.7, paddingLeft: 18, margin: 0 }}>
                     {summary.goodPoints.map((p, i) => <li key={i}>{p}</li>)}
                   </ul>
                 </div>
@@ -330,7 +353,7 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
               {summary.improvements.length > 0 && (
                 <div>
                   <div style={{ fontSize: 14, fontWeight: 700, color: '#D97706', marginBottom: 6 }}>△ 改善点</div>
-                  <ul style={{ fontSize: 16, color: v3.color.text, lineHeight: 1.7, paddingLeft: 18, margin: 0 }}>
+                  <ul style={{ fontSize: 15, color: v3.color.text, lineHeight: 1.7, paddingLeft: 18, margin: 0 }}>
                     {summary.improvements.map((p, i) => <li key={i}>{p}</li>)}
                   </ul>
                 </div>
@@ -340,7 +363,7 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
 
           <button
             onClick={onBack}
-            style={{ background: v3.color.accent, border: 'none', borderRadius: 14, padding: '16px', color: '#fff', fontSize: 18, fontWeight: 800, fontFamily: "'Inter Tight', sans-serif", cursor: 'pointer', width: '100%', boxShadow: '0 4px 12px rgba(59,91,219,.25)', marginTop: 4 }}
+            style={{ background: v3.color.accent, border: 'none', borderRadius: 14, padding: '16px', color: '#fff', fontSize: 17, fontWeight: 800, cursor: 'pointer', width: '100%', boxShadow: '0 4px 12px rgba(59,91,219,.25)', marginTop: 4 }}
           >
             別のシナリオに戻る
           </button>
