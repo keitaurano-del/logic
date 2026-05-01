@@ -295,7 +295,7 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
             <polyline points="9 18 15 12 9 6"/>
           </svg>
         </div>
-      )
+      )}
 
       {/* Daily reminder (today's problem) */}
       <div className="pf-deviation-card" style={{ display: 'block' }}>
