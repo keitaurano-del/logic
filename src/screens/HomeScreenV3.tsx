@@ -129,7 +129,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
         {/* Hero Recommend */}
         <div
           onClick={() => onOpenLesson(20)}
-          style={{ background: `linear-gradient(135deg, #4C63B6 0%, #6B8EF5 100%)`, borderRadius: v3.radius.card, overflow: 'hidden', cursor: 'pointer', boxShadow: v3.shadow.hero, flexShrink: 0 }}
+          style={{ background: v3.color.card, borderRadius: v3.radius.card, overflow: 'hidden', cursor: 'pointer', boxShadow: v3.shadow.card, flexShrink: 0 }}
         >
           <div style={{ height: 160, position: 'relative', overflow: 'hidden' }}>
             <img src={`${IMG}/hero-deduction.webp`} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
@@ -142,8 +142,8 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
               <span>5スライド</span><div style={{ width: 3, height: 3, borderRadius: '50%', background: v3.color.text3 }}></div>
               <span>+50 XP</span>
             </div>
-            <div style={{ background: 'rgba(108,142,245,0.15)', color: v3.color.accent, border: `1.5px solid rgba(108,142,245,0.35)`, borderRadius: v3.radius.pill, padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700 }}>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill={v3.color.accent}><polygon points="5 3 19 12 5 21 5 3" /></svg>
+            <div style={{ background: v3.color.accent, color: v3.color.bg, borderRadius: v3.radius.pill, padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700 }}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill={v3.color.bg}><polygon points="5 3 19 12 5 21 5 3" /></svg>
               レッスンをはじめる
             </div>
           </div>
