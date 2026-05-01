@@ -107,9 +107,10 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
         </div>
 
         {/* 今日の1問 (Daily Fermi) */}
-        <div ref={dailyCardRef} onClick={onNavigateToDailyFermi} style={{ background: 'linear-gradient(135deg, #1A3A39 0%, #234D4B 100%)', borderRadius: v3.radius.card, padding: '20px', cursor: 'pointer', position: 'relative', overflow: 'hidden', boxShadow: v3.shadow.hero, flexShrink: 0 }}>
-          <img src={`${IMG}/home-daily-fermi.webp`} alt="" loading="lazy" style={{ position: 'absolute', right: -10, top: -10, width: 140, height: 140, objectFit: 'cover', opacity: 0.18, pointerEvents: 'none', borderRadius: 16 }} />
-          <div style={{ position: 'absolute', right: -30, top: -30, width: 140, height: 140, borderRadius: '50%', background: v3.color.accentGlow, filter: 'blur(36px)', pointerEvents: 'none' }}></div>
+        <div ref={dailyCardRef} onClick={onNavigateToDailyFermi} style={{ background: 'linear-gradient(135deg, #1E2540 0%, #252C40 100%)', borderRadius: v3.radius.card, padding: '20px', cursor: 'pointer', position: 'relative', overflow: 'hidden', boxShadow: v3.shadow.hero, flexShrink: 0, minHeight: 180 }}>
+          {/* フェルミ推定イメージ画像 */}
+          <img src="/images/v3/fermi-card.png" alt="" loading="lazy" style={{ position: 'absolute', right: 0, top: 0, width: '55%', height: '100%', objectFit: 'cover', opacity: 0.28, pointerEvents: 'none', maskImage: 'linear-gradient(to left, rgba(0,0,0,0.8) 0%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to left, rgba(0,0,0,0.8) 0%, transparent 100%)' }} />
+          <div style={{ position: 'absolute', right: -30, top: -30, width: 140, height: 140, borderRadius: '50%', background: 'rgba(108,142,245,0.25)', filter: 'blur(36px)', pointerEvents: 'none' }}></div>
           <div style={{ position: 'relative', zIndex: 1 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
               <div style={{ width: 6, height: 6, borderRadius: '50%', background: v3.color.accent }}></div>

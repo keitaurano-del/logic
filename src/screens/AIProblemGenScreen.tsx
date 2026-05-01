@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
 import { loadAIProblems, generateAIProblems, deleteAIProblem, type AIProblemSet } from '../aiProblemStore'
 import { getCompletedLessons } from '../stats'
-import { loadPlacementResult, rankLabel } from '../placementData'
+import { loadPlacementResult } from '../placementData'
 import { allLessons } from '../lessonData'
 import { ArrowLeftIcon } from '../icons'
-import { getAIGenerationLimit, isStandardPlan } from '../subscription'
+import { getAIGenDailyLimit, getAIGenDailyCount, incrementAIGenDailyCount } from '../subscription'
 import { v3 } from '../styles/tokensV3'
 
 interface AIProblemGenScreenProps {
@@ -33,7 +33,6 @@ type WeaknessItem = {
 
 function analyzeWeakness(): WeaknessItem[] {
   const completed = new Set(getCompletedLessons())
-  const placement = loadPlacementResult()
   const categoryMap = new Map<string, { total: number; done: number; label: string }>()
   for (const lesson of Object.values(allLessons)) {
     const cat = lesson.category ?? 'その他'
@@ -46,7 +45,8 @@ function analyzeWeakness(): WeaknessItem[] {
   for (const [cat, { total, done, label }] of categoryMap.entries()) {
     if (total === 0) continue
     const progressRate = done / total
-    const deviationFactor = placement ? Math.min(1, placement.deviation / 70) : 0.5
+    const pl = loadPlacementResult()
+    const deviationFactor = pl ? Math.min(1, pl.deviation / 70) : 0.5
     const score = Math.round((progressRate * 60 + deviationFactor * 40) * 100) / 100
     items.push({ category: cat, label, completedCount: done, totalCount: total, score })
   }
@@ -57,9 +57,9 @@ function buildRecommendPrompt(weakness: WeaknessItem[]): string {
   const top = weakness.slice(0, 2)
   if (top.length === 0) return 'ロジカルシンキングの総合練習問題を3問（初級〜中級）'
   const cats = top.map(w => w.label).join('と')
-  const placement = loadPlacementResult()
-  const level = placement
-    ? (placement.deviation < 40 ? '初級' : placement.deviation < 55 ? '中級' : '上級')
+  const pl2 = loadPlacementResult()
+  const level = pl2
+    ? (pl2.deviation < 40 ? '初級' : pl2.deviation < 55 ? '中級' : '上級')
     : '初級〜中級'
   return `${cats}の練習問題を3問（${level}、実際のビジネス場面を想定）`
 }
@@ -75,9 +75,10 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
   const [weakness, setWeakness] = useState<WeaknessItem[]>([])
   const [recommendPrompt, setRecommendPrompt] = useState('')
 
-  const limit = getAIGenerationLimit()
-  const isAtLimit = !isStandardPlan() && problems.length >= limit
-  const placement = loadPlacementResult()
+  const dailyLimit = getAIGenDailyLimit()
+  const [dailyCount, setDailyCount] = useState(getAIGenDailyCount)
+  const isAtLimit = dailyCount >= dailyLimit
+  const canUse = dailyLimit > 0
 
   useEffect(() => {
     const w = analyzeWeakness()
@@ -89,11 +90,13 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
   const handleGenerate = async (targetPrompt?: string) => {
     const p = targetPrompt ?? prompt
     if (!p.trim() || generating) return
-    if (isAtLimit) return
+    if (!canUse || isAtLimit) return
     setGenerating(true)
     setError('')
     try {
       const newSet = await generateAIProblems(p)
+      incrementAIGenDailyCount()
+      setDailyCount(getAIGenDailyCount())
       setProblems(loadAIProblems())
       setPrompt('')
       onPlay(newSet)
@@ -131,9 +134,13 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
           <div style={{ fontSize: 12, color: v3.color.text2, marginTop: 1 }}>BETA · 弱点に合った問題を自動生成</div>
         </div>
         {/* 生成残り回数 */}
-        {!isStandardPlan() && (
+        {dailyLimit > 0 ? (
           <div style={{ marginLeft: 'auto', background: v3.color.card, borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700, color: isAtLimit ? '#F87171' : v3.color.accent }}>
-            {problems.length}/{limit}
+            {dailyCount}/{dailyLimit}問 (今日)
+          </div>
+        ) : (
+          <div style={{ marginLeft: 'auto', background: 'rgba(248,113,113,0.15)', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700, color: '#F87171' }}>
+            プランアップのみ
           </div>
         )}
       </div>
@@ -155,27 +162,7 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
         {/* ===== おすすめタブ ===== */}
         {tab === 'recommend' && (
           <>
-            {/* 偏差値カード */}
-            <div style={{ background: `linear-gradient(135deg, ${v3.color.accent}22 0%, ${v3.color.card} 100%)`, borderRadius: v3.radius.card, padding: '16px 18px', border: `1px solid ${v3.color.accent}30` }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                <div>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: v3.color.text2, letterSpacing: '.06em', marginBottom: 4 }}>現在の偏差値</div>
-                  <div style={{ fontSize: 36, fontWeight: 900, color: v3.color.accent, letterSpacing: '-.03em', lineHeight: 1 }}>
-                    {placement ? placement.deviation.toFixed(1) : '—'}
-                  </div>
-                  {placement && (
-                    <div style={{ fontSize: 13, color: rankLabel(placement.deviation).color, fontWeight: 700, marginTop: 4 }}>
-                      {rankLabel(placement.deviation).label}
-                    </div>
-                  )}
-                </div>
-                {!placement && (
-                  <div style={{ fontSize: 13, color: v3.color.text2, lineHeight: 1.6 }}>
-                    プレースメントテストを受けると<br />より正確なおすすめが届くよ
-                  </div>
-                )}
-              </div>
-            </div>
+
 
             {/* 弱点分析 */}
             {weakness.length > 0 && (
@@ -215,12 +202,12 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
               </div>
               <button
                 onClick={() => handleGenerate(recommendPrompt)}
-                disabled={generating || isAtLimit}
-                style={{ width: '100%', background: generating || isAtLimit ? v3.color.card : v3.color.accent, color: generating || isAtLimit ? v3.color.text3 : v3.color.bg, border: 'none', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700, cursor: generating || isAtLimit ? 'not-allowed' : 'pointer' }}
+                disabled={generating || isAtLimit || !canUse}
+                style={{ width: '100%', background: generating || isAtLimit || !canUse ? v3.color.card : v3.color.accent, color: generating || isAtLimit || !canUse ? v3.color.text3 : v3.color.bg, border: 'none', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700, cursor: generating || isAtLimit || !canUse ? 'not-allowed' : 'pointer' }}
               >
-                {generating ? '生成中…' : isAtLimit ? '生成上限に達しました' : '✦ この問題を生成する'}
+                {generating ? '生成中…' : !canUse ? 'スタンダード以上で利用可能' : isAtLimit ? '今日の上限に達しました' : '✦ この問題を生成する'}
               </button>
-              {isAtLimit && onUpgrade && (
+              {(!canUse || isAtLimit) && onUpgrade && (
                 <button onClick={onUpgrade} style={{ width: '100%', marginTop: 8, background: 'transparent', border: `1px solid ${v3.color.accent}`, color: v3.color.accent, borderRadius: 12, padding: '12px', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
                   プランをアップグレード
                 </button>

@@ -72,7 +72,7 @@ export default function RoleplayChat({ situationId, onBack }: Props) {
       const res = await fetch(`${API_BASE}/api/roleplay/turn`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(localeBody({ messages: history, setup, turnNumber: turn, maxTurns: MAX_TURNS })),
+        body: JSON.stringify(localeBody({ messages: history, setup, turnNumber: turn, maxTurns: MAX_TURNS, situationId })),
       })
       const data = await res.json()
       if (data.partner) {
@@ -220,8 +220,14 @@ export default function RoleplayChat({ situationId, onBack }: Props) {
         <div className="rp-choices">
           <div className="rp-choices-label">{t('roleplay.choicesLabel')}</div>
           {choices.map((c, i) => (
-            <button key={i} className="rp-choice-btn" onClick={() => pickChoice(c)}>
-              {c}
+            <button key={i} className="rp-choice-btn" onClick={() => pickChoice(c)} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+              <span style={{
+                flexShrink: 0, width: 22, height: 22, borderRadius: '50%',
+                background: i === 0 ? 'rgba(108,142,245,0.2)' : i === 1 ? 'rgba(251,191,36,0.15)' : 'rgba(248,113,113,0.15)',
+                color: i === 0 ? '#6C8EF5' : i === 1 ? '#FBBF24' : '#F87171',
+                fontSize: 11, fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 2,
+              }}>{i + 1}</span>
+              <span>{c}</span>
             </button>
           ))}
         </div>

@@ -412,7 +412,7 @@ function AppV3() {
 
       {screen.type === 'roleplay' && (
         <RoleplaySelectScreen
-          onBack={handleBack}
+          onBack={() => navigate({ type: 'lessons' }, true)}
           onStart={(situationId) => navigate({ type: 'roleplay-chat', situationId })}
           onUpgrade={() => navigate({ type: 'pricing' })}
         />

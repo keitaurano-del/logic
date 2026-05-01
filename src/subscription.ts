@@ -312,3 +312,27 @@ export async function startBetaCampaignCheckout(guestId: string, userId?: string
   if (data.url) window.location.href = data.url
   else throw new Error('チェックアウトURLが取得できませんでした')
 }
+
+// ── AI問題生成 日次制限（Keita-san指定: フリー0/スタンダード3/プレミアム10） ──
+const AI_GEN_DAILY_KEY = 'logic-ai-gen-daily'
+const TODAY_STR = () => new Date().toISOString().slice(0, 10)
+
+export function getAIGenDailyLimit(): number {
+  if (isPremiumPlan()) return 10
+  if (isStandardPlan()) return 3
+  return 0
+}
+
+export function getAIGenDailyCount(): number {
+  try {
+    const s = JSON.parse(localStorage.getItem(AI_GEN_DAILY_KEY) || '{}')
+    return s.date === TODAY_STR() ? (s.count ?? 0) : 0
+  } catch { return 0 }
+}
+
+export function incrementAIGenDailyCount() {
+  try {
+    const c = getAIGenDailyCount()
+    localStorage.setItem(AI_GEN_DAILY_KEY, JSON.stringify({ date: TODAY_STR(), count: c + 1 }))
+  } catch { /* */ }
+}
