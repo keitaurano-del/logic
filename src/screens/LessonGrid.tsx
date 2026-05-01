@@ -2,12 +2,10 @@
  * LessonGrid - Responsive Design対応（1列/2列/3列自動切り替え）
  */
 import { v3 } from '../styles/tokensV3'
-import { useWindowSize, getGridColumns } from '../hooks/useResponsive'
 
 const IMG = '/images/v3'
 
 export function LessonGridSection({ onOpenCategory, columns: overrideColumns }: { onOpenCategory: (cat: string) => void; columns?: number }) {
-  const { width } = useWindowSize()
   const columns = overrideColumns ?? 1  // ホーム画面では1列固定
   
   const lessons = [
