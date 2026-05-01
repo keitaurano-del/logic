@@ -97,7 +97,7 @@ export default function SubscriptionManagement({ userId, onChangePlan }: Props) 
 
   return (
     <div className="sm-container">
-      <h3 className="sm-title">📋 サブスクリプション</h3>
+      <h3 className="sm-title">サブスクリプション</h3>
 
       {/* 現在のプラン */}
       <div className="sm-card">
@@ -108,7 +108,7 @@ export default function SubscriptionManagement({ userId, onChangePlan }: Props) 
 
         {isTrial && (
           <div className="sm-trial-info">
-            <span className="sm-trial-icon">🎁</span>
+            <span className="sm-trial-icon">●</span>
             <span>無料トライアル中</span>
             {trialDays > 0 && (
               <strong>あと {trialDays} 日</strong>
@@ -141,7 +141,7 @@ export default function SubscriptionManagement({ userId, onChangePlan }: Props) 
       {/* アクションボタン */}
       <div className="sm-actions">
         <button className="sm-btn sm-btn-primary" onClick={onChangePlan}>
-          🔄 プランを変更
+          プランを変更
         </button>
 
         {isActive && (
@@ -149,7 +149,7 @@ export default function SubscriptionManagement({ userId, onChangePlan }: Props) 
             className="sm-btn sm-btn-secondary"
             onClick={handleOpenPlayStoreManagement}
           >
-            📱 Google Playで管理
+            Google Playで管理
           </button>
         )}
       </div>
