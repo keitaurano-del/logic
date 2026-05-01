@@ -2146,7 +2146,7 @@ app.post('/api/fermi/record-score', async (req, res) => {
     if (typeof score !== 'number') return res.status(400).json({ error: 'score required' })
 
     if (supabase) {
-      await supabase.from('fermi_scores').insert({
+      const { error } = await supabase.from('fermi_scores').insert({
         user_id: userId || 'guest',
         user_name: userName || 'ゲスト',
         score,
@@ -2154,7 +2154,8 @@ app.post('/api/fermi/record-score', async (req, res) => {
         elapsed_sec: elapsedSec ?? 0,
         hint_used: hintUsed ?? false,
         created_at: new Date().toISOString(),
-      }).catch((e: unknown) => { console.warn('fermi_scores insert:', e) })
+      })
+      if (error) console.warn('fermi_scores insert error:', error.message)
     }
 
     res.json({ ok: true })
