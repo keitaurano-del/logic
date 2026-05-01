@@ -119,7 +119,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
               {cycle === 'monthly' ? '月払い' : '年払い'}
               {cycle === 'yearly' && (
                 <span style={{ fontSize: 10, fontWeight: 700, background: billingCycle === 'yearly' ? 'rgba(255,255,255,.25)' : `${v3.color.warm}28`, color: billingCycle === 'yearly' ? '#fff' : v3.color.warm, borderRadius: 99, padding: '1px 6px' }}>
-                  7ヶ月分お得
+                  年払いがお得
                 </span>
               )}
             </button>
