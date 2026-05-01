@@ -8,7 +8,7 @@ import { getStreak, getStudyDates } from '../stats'
 import { v3 } from '../styles/tokensV3'
 import { API_BASE } from './apiBase'
 import { HomeCoachmark, useShouldShowHomeCoachmark } from '../tutorial/coachmark'
-import { PlacementCard, shouldShowPlacementCard } from '../tutorial/placementCard'
+import { PlacementCard } from '../tutorial/placementCard'
 import { hasCompletedPlacement } from '../placementData'
 
 // SCRUM-185: グリーティングメッセージ複数パターン
@@ -228,8 +228,8 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
         </div>
       </div>
 
-      {/* プレースメント誘導カード（1問完了後1回のみ） */}
-      {shouldShowPlacementCard(hasCompletedPlacement()) && onOpenPlacementTest && (
+      {/* SCRUM-228: プレースメント誘導バナー（未完了の場合は常に表示） */}
+      {!hasCompletedPlacement() && onOpenPlacementTest && (
         <div style={{ padding: '0 16px 16px' }}>
           <PlacementCard onTakeTest={onOpenPlacementTest} />
         </div>

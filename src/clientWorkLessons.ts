@@ -24,7 +24,7 @@ const clientLesson89: LessonData = {
     },
     {
       type: 'quiz',
-      explanation: '',
+      explanation: '100万 ＝ 10の6乗。6乗 × 6乗 ＝ 12乗 ＝ 1兆。「万 × 万 ＝ 億」「億 × 万 ＝ 兆」の桁感覚を覚えておこう。',
       question: '100万 × 100万 はいくらになりますか？',
       options: [
         { label: '1億', correct: false },
@@ -40,7 +40,7 @@ const clientLesson89: LessonData = {
     },
     {
       type: 'quiz',
-      explanation: '',
+      explanation: '300万 × 6,000 ＝ 300万 × 0.6万 ＝ 180 × 億 ＝ 180億円。「万 × 万 ＝ 億」の法則を使うと素早く計算できる。',
       question: 'ある商品のユーザー数が300万人、年間平均購入額が6,000円の場合、年間市場規模はいくらですか？',
       options: [
         { label: '約18億円', correct: false },
@@ -70,7 +70,7 @@ const clientLesson90: LessonData = {
     },
     {
       type: 'quiz',
-      explanation: '',
+      explanation: '「すぐに解決策」に飛びつく前に、まず「いつから・どこで・なぜ」を把握する。論点を正しく定めることが最優先。',
       question: 'クライアントから「最近、問い合わせが減っています」と言われました。まず確認すべきことはどれですか？',
       options: [
         { label: 'すぐに広告費を増やす提案を出す', correct: false },
@@ -86,7 +86,7 @@ const clientLesson90: LessonData = {
     },
     {
       type: 'quiz',
-      explanation: '',
+      explanation: 'プレゼン直前のタイミングでは「どこが弱いか」の特定が最重要。解決策の検討はその後。限られた時間で最大の改善を。',
       question: '次の4つの問いのうち、「今解くべき論点」として最も優先度が高いのはどれですか？（来月のプレゼンに向けて、クライアントの商品Aの販売戦略を提案する場面）',
       options: [
         { label: '5年後の市場全体のトレンド予測', correct: false },
@@ -116,7 +116,7 @@ const clientLesson91: LessonData = {
     },
     {
       type: 'quiz',
-      explanation: '',
+      explanation: '仮説「サポートの質が原因」を検証するには、サポートへの不満があるかを直接確認するのが最短。価格満足度は別の仮説の検証。',
       question: '仮説「顧客離脱は価格ではなくサポートの質が原因」を検証したいとき、最も適切な質問はどれですか？',
       options: [
         { label: '「何か困っていることはありますか？」', correct: false },
@@ -132,7 +132,7 @@ const clientLesson91: LessonData = {
     },
     {
       type: 'quiz',
-      explanation: '',
+      explanation: '沈黙は相手が考えている証拠。急いで次の質問をすると思考を遮る。待つことで本音や重要な情報が引き出せることが多い。',
       question: 'ヒアリング中、相手が「うーん...」と沈黙しました。次の行動として最も適切なのはどれですか？',
       options: [
         { label: '「では次の質問に移りましょう」と進める', correct: false },
@@ -162,7 +162,7 @@ const clientLesson92: LessonData = {
     },
     {
       type: 'quiz',
-      explanation: '',
+      explanation: '「〜すべき」「〜と考える」は主張。「〜という調査結果」「〜社が〜した」は事実・根拠。主張と根拠を区別する力が論理思考の基本。',
       question: '次の文章のうち「主張」にあたるのはどれですか？\n\n「①弊社のツールを導入した企業の85%が顧客満足度向上を報告しています。②B社では導入後3ヶ月でNPSが15ポイント上昇しました。③弊社ツールは貴社の顧客体験を改善できます。」',
       options: [
         { label: '①弊社のツールを導入した企業の85%が顧客満足度向上を報告', correct: false },
@@ -178,7 +178,7 @@ const clientLesson92: LessonData = {
     },
     {
       type: 'quiz',
-      explanation: '',
+      explanation: '日本のペット市場は実際には約6兆円規模。AIは自信を持って間違えることがある。数字は必ず元データや計算根拠を確認しよう。',
       question: 'AIが「日本のペット市場は年間50兆円規模です」と出力しました。この数字について最初に確認すべきことはどれですか？',
       options: [
         { label: 'ペットの種類ごとの内訳を調べる', correct: false },
@@ -208,7 +208,7 @@ const clientLesson93: LessonData = {
     },
     {
       type: 'quiz',
-      explanation: '',
+      explanation: '「新規顧客減少＋競合価格競争」→外部要因。「CS評価低下＋解約率上昇」→内部要因。原因の帰属先でMECEに分けると構造が見えやすい。',
       question: '次の4つの情報を2つのグループに正しくまとめるとしたら、どのグループ分けが適切ですか？\n\nA: 新規顧客数が減少している\nB: ウェブサイトのアクセス数が落ちている\nC: 既存顧客のリピート率が下がっている\nD: サポート対応の満足度が低下している',
       options: [
         { label: '①集客系（A・B）と②顧客維持系（C・D）', correct: true },
@@ -224,7 +224,7 @@ const clientLesson93: LessonData = {
     },
     {
       type: 'quiz',
-      explanation: '',
+      explanation: '提案書は「①現状 → ②課題 → ③解決策 → ④期待効果」が基本。「効果 → 課題」のように結論を課題より先に出すと読み手が混乱する。',
       question: '提案書の構成として「おかしい順番」はどれですか？',
       options: [
         { label: '①課題の特定 → ②原因の分析 → ③打ち手の提案', correct: false },
@@ -254,7 +254,7 @@ const clientLesson94: LessonData = {
     },
     {
       type: 'quiz',
-      explanation: '',
+      explanation: '社内の上司には「So what（だから何）」を先に伝えるのが効果的。専門用語もある程度使える。顧客向けよりも率直・簡潔に。',
       question: '同じ内容を上司（社内）向けに伝える場合、より適切な表現はどれですか？',
       options: [
         { label: '「UXの改善によりCVRの向上が期待されます」', correct: false },
@@ -270,7 +270,7 @@ const clientLesson94: LessonData = {
     },
     {
       type: 'quiz',
-      explanation: '',
+      explanation: '「様々な観点から検討した結果」は中身がない言葉。具体的に何を検討し、どんな結論に至ったかを明示することで説得力が増す。',
       question: '次のAIが書いた文章を、より伝わりやすく修正したのはどれですか？\n\n元の文：「本施策については、様々な観点から検討した結果、一定の効果が見込まれる可能性があると考えられます。」',
       options: [
         { label: '「本施策は有効です。」', correct: false },
@@ -300,7 +300,7 @@ const clientLesson95: LessonData = {
     },
     {
       type: 'quiz',
-      explanation: '',
+      explanation: '課題発見 → 原因分析 → 対策提案 → 期待効果が自然な流れ。読み手が「なぜこの提案なのか」を納得しながら読み進められる。',
       question: '3つの事実があります。提案書のストーリーとして最も自然な順番はどれですか？\n\nA: 対策として、サポート品質の向上プログラムを導入する\nB: 顧客満足度調査で、サポート対応への不満が最多だった\nC: 直近6ヶ月で既存顧客の解約率が15%上昇している',
       options: [
         { label: 'C → B → A', correct: true },
@@ -316,7 +316,7 @@ const clientLesson95: LessonData = {
     },
     {
       type: 'quiz',
-      explanation: '',
+      explanation: '解決策を提示した後に「課題がある」と言うのは論理的に逆。課題→解決策の順が基本。構成を乱すと読み手の信頼を失う。',
       question: '提案書のストーリーとして「おかしい点」があるのはどれですか？',
       options: [
         { label: '①課題提示 → ②原因分析 → ③解決策 → ④期待効果', correct: false },
@@ -346,7 +346,7 @@ const clientLesson96: LessonData = {
     },
     {
       type: 'quiz',
-      explanation: '',
+      explanation: '議事録では「誰が・何を・いつまでに」を明確に。「〜について議論した」だけでは次回確認できない。アクションアイテムを必ず記録。',
       question: '次の議事録の記述のうち、最も改善が必要なのはどれですか？',
       options: [
         { label: '「売上目標を来期から月次管理に変更することを決定した」', correct: false },
@@ -362,7 +362,7 @@ const clientLesson96: LessonData = {
     },
     {
       type: 'quiz',
-      explanation: '',
+      explanation: '報告メールは「結論→現状数字→来月の計画」の順が読みやすい。相手の時間を尊重し、結論から書くのがビジネス文書の基本。',
       question: 'クライアントへの月次報告メールとして最も適切な構成はどれですか？',
       options: [
         { label: '今月の全作業内容を時系列で詳細に記述する', correct: false },
@@ -392,7 +392,7 @@ const clientLesson97: LessonData = {
     },
     {
       type: 'quiz',
-      explanation: '',
+      explanation: '「弱い」という抽象的なフィードバックには、何が弱いのかを確認するのが先。自己判断で直しても的外れになることが多い。',
       question: '上司から「この提案書、なんか弱いな」と言われました。次の行動として最も適切なのはどれですか？',
       options: [
         { label: '「わかりました、作り直します」とすぐに席に戻る', correct: false },
@@ -408,7 +408,7 @@ const clientLesson97: LessonData = {
     },
     {
       type: 'quiz',
-      explanation: '',
+      explanation: '防衛的にならず、まず理解しようとする姿勢が重要。「ありがとうございます。具体的にどの部分でしょうか？」が模範的な返し方。',
       question: 'フィードバックへの返し方として最も適切なのはどれですか？',
       options: [
         { label: '「申し訳ありません、以後気をつけます」と謝って終わる', correct: false },

@@ -168,6 +168,15 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
           image={`${IMG}/course-client.webp`}
           onClick={() => props.onOpenCategory('クライアントワーク')}
         />
+        <CategoryCard
+          icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6C8EF5" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>}
+          iconBg="rgba(108,142,245,.14)"
+          name="フェルミ推定"
+          meta="5レッスン · 中級〜上級"
+          progress="0/5"
+          image={`${IMG}/fermi-card.png`}
+          onClick={() => props.onOpenCategory('フェルミ推定')}
+        />
       </div>}
     </div>
   )

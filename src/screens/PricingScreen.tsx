@@ -12,18 +12,18 @@ type PlanId = 'standard_monthly' | 'standard_yearly' | 'premium_monthly' | 'prem
 // SCRUM-182: 新プラン特典定義
 const STANDARD_FEATURES = [
   { icon: '📚', text: '全レッスン（初級〜上級）' },
-  { icon: '🤖', text: 'AI問題生成 月30問' },
-  { icon: '🎭', text: 'ロールプレイ 月3回' },
+  { icon: '🤖', text: 'AI問題生成 毎日3問' },
+  { icon: '🎭', text: 'ロールプレイ 月5回' },
   { icon: '📊', text: '学習記録・進捗管理' },
   { icon: '📝', text: '提案書作成コース' },
 ]
 
 const PREMIUM_FEATURES = [
-  { icon: '✅', text: 'スタンダードの全機能' },
-  { icon: '⚡', text: 'AI問題生成 月200問' },
+  { icon: '📚', text: '全レッスン（初級〜上級）' },
+  { icon: '🤖', text: 'AI問題生成 毎日10問' },
   { icon: '🎭', text: 'ロールプレイ 無制限' },
-  { icon: '🔍', text: 'ケース面接 深掘りモード' },
-  { icon: '📈', text: '週次学習分析レポート' },
+  { icon: '🏆', text: 'フェルミランキング 参加' },
+  { icon: '📈', text: '月次学習分析レポート' },
   { icon: '💬', text: '優先サポート' },
 ]
 
@@ -205,7 +205,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
               )}
             </div>
             <div style={{ fontSize: 11, fontWeight: 700, background: `${v3.color.accent}22`, color: v3.color.accent, borderRadius: 99, padding: '4px 10px' }}>
-              コミット層向け
+              最強プラン
             </div>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
