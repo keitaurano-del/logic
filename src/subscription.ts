@@ -2,7 +2,7 @@ const STORAGE_KEY = 'logic-subscription'
 const TRIAL_DAYS = 7
 
 import { createClient } from '@supabase/supabase-js'
-import { purchaseProduct } from './billing'
+import { purchaseProduct, verifyPurchase } from './billing'
 import { PLAY_PRODUCTS } from './billing/products'
 
 export type SubscriptionPlan =
@@ -213,15 +213,15 @@ export function getPlanLabel(): string {
 
 export function planToPlayProductId(plan: SubscriptionPlan): string {
   switch (plan) {
-    case 'basic_monthly':    return PLAY_PRODUCTS.basic_monthly
-    case 'basic_yearly':     return PLAY_PRODUCTS.basic_yearly
     case 'standard_monthly': return PLAY_PRODUCTS.standard_monthly
     case 'standard_yearly':  return PLAY_PRODUCTS.standard_yearly
-    case 'premium_monthly':  return PLAY_PRODUCTS.premium_monthly
-    case 'premium_yearly':   return PLAY_PRODUCTS.premium_yearly
     // Legacy plan names → map to closest equivalent
+    case 'basic_monthly':
     case 'monthly':          return PLAY_PRODUCTS.standard_monthly
+    case 'basic_yearly':
     case 'yearly':           return PLAY_PRODUCTS.standard_yearly
+    case 'premium_monthly':
+    case 'premium_yearly':   return PLAY_PRODUCTS.campaign_yearly
     // Non-purchasable plans
     default:                 return PLAY_PRODUCTS.standard_monthly
   }
@@ -233,14 +233,38 @@ export function planToPlayProductId(plan: SubscriptionPlan): string {
  */
 export async function startCheckout(plan: SubscriptionPlan): Promise<void> {
   const productId = planToPlayProductId(plan)
-  await purchaseProduct(productId)
+  try {
+    const purchase = await purchaseProduct(productId)
+    // Purchase successful - verify with server
+    await verifyPurchase({
+      purchaseToken: purchase.purchaseToken,
+      productId: purchase.productId,
+    })
+    // Update local subscription state
+    const expiresAt = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString() // TODO: calculate from receipt
+    setPaidPlan(plan, expiresAt, purchase.purchaseToken)
+  } catch (error) {
+    const message = error instanceof Error ? error.message : '購入に失敗しました'
+    throw new Error(message)
+  }
 }
 
-export const BETA_CAMPAIGN_PLAN: SubscriptionPlan = 'premium_yearly'
+export const BETA_CAMPAIGN_PLAN: SubscriptionPlan = 'standard_yearly'
 
 export async function startBetaCampaignCheckout(): Promise<void> {
-  const productId = planToPlayProductId(BETA_CAMPAIGN_PLAN)
-  await purchaseProduct(productId)
+  const productId = PLAY_PRODUCTS.campaign_yearly
+  try {
+    const purchase = await purchaseProduct(productId)
+    await verifyPurchase({
+      purchaseToken: purchase.purchaseToken,
+      productId: purchase.productId,
+    })
+    const expiresAt = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString()
+    setPaidPlan(BETA_CAMPAIGN_PLAN, expiresAt, purchase.purchaseToken)
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'キャンペーン購入に失敗しました'
+    throw new Error(message)
+  }
 }
 
 // ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
