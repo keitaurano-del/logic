@@ -61,58 +61,10 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
       {!searchQuery.trim() && <div style={{ flex: 1, padding: '0 16px 80px', display: 'flex', flexDirection: 'column', gap: v3.spacing.gap }}>
 
         <div style={{ padding: '4px 4px 8px' }}>
-          <div style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.45, letterSpacing: '-.005em' }}>どこから<br />はじめましょうか。</div>
-          <div style={{ fontSize: 14, color: v3.color.text2, marginTop: 6, lineHeight: 1.6 }}>目的に合ったコースを選ぶか、<br />気になるカテゴリから始められます。</div>
+          <div style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.45, letterSpacing: '-.005em' }}>コースを<br />選んでください。</div>
         </div>
 
-        <SectionLabel>ラーニングパス</SectionLabel>
 
-        <PathCard
-          image={`${IMG}/hero-deduction.webp`}
-          tag="入門 · 推奨"
-          name="Logic 入門コース"
-          meta="6レッスン · 約2週間で完走"
-          progress={50}
-          done={3}
-          total={6}
-          accent={v3.color.accent}
-          onClick={() => props.onOpenLesson(20)}
-        />
-        <PathCard
-          image={`${IMG}/course-business.webp`}
-          tag="中〜上級"
-          name="ビジネス強化コース"
-          meta="8レッスン · ケース面接 + 提案技術"
-          progress={25}
-          done={2}
-          total={8}
-          accent={v3.color.warm}
-          onClick={() => props.onOpenCategory('case')}
-        />
-        <PathCard
-          image={`${IMG}/course-philosophy.webp`}
-          tag="上級"
-          name="哲学・深掘りコース"
-          meta="8レッスン · 哲学 + 対話形式"
-          progress={0}
-          done={0}
-          total={8}
-          accent="#A5B4FC"
-          onClick={() => props.onOpenCategory('philosophy')}
-        />
-        <PathCard
-          image={`${IMG}/lesson-proposal.webp`}
-          tag="実践・推奨"
-          name="提案書作成実践コース"
-          meta="7レッスン · 仮説思考・検証プロセス"
-          progress={0}
-          done={0}
-          total={7}
-          accent={v3.color.warm}
-          onClick={() => props.onOpenCategory('提案書作成')}
-        />
-
-        <SectionLabel>すべてのカテゴリ</SectionLabel>
 
         {/* 2列グリッド */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
@@ -210,31 +162,6 @@ function SearchResults({ query, onOpenLesson }: { query: string; onOpenLesson: (
   )
 }
 
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return <div style={{ fontSize: 14, color: v3.color.text2, fontWeight: 600, padding: '8px 4px 0', marginBottom: -6 }}>{children}</div>
-}
-
-function PathCard({ image, tag, name, meta, progress, done, total, accent, onClick }: { image: string; tag: string; name: string; meta: string; progress: number; done: number; total: number; accent: string; onClick: () => void }) {
-  return (
-    <div onClick={onClick} style={{ borderRadius: v3.radius.card, overflow: 'hidden', cursor: 'pointer', background: v3.color.card, boxShadow: v3.shadow.card }}>
-      <div style={{ height: 140, overflow: 'hidden' }}>
-        <img src={image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-      </div>
-      <div style={{ padding: '18px 20px' }}>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: 'rgba(255,255,255,.08)', borderRadius: v3.radius.pill, padding: '4px 10px', fontSize: 14, fontWeight: 600, color: v3.color.text2, marginBottom: 10 }}>{tag}</span>
-        <div style={{ fontSize: 18, fontWeight: 700, marginBottom: 6, lineHeight: 1.3 }}>{name}</div>
-        <div style={{ fontSize: 14, color: v3.color.text2, fontWeight: 500, marginBottom: 14 }}>{meta}</div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-          <span style={{ fontSize: 14, fontWeight: 600, color: v3.color.text2 }}>{done > 0 ? `${done} / ${total} 完了` : '未着手'}</span>
-          <span style={{ fontSize: 14, fontWeight: 600, color: accent }}>{progress}%</span>
-        </div>
-        <div style={{ height: 5, background: v3.color.cardSoft, borderRadius: 99, overflow: 'hidden' }}>
-          <div style={{ height: '100%', width: `${progress}%`, background: accent, borderRadius: 99 }}></div>
-        </div>
-      </div>
-    </div>
-  )
-}
 
 
 import { getAllLessonsFlat } from '../lessonData'

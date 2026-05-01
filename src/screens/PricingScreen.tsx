@@ -167,9 +167,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
                 <div style={{ fontSize: 12, color: v3.color.text3, marginTop: 2 }}>月々約¥{stdMonthly}（年払いでお得）</div>
               )}
             </div>
-            <div style={{ fontSize: 11, fontWeight: 700, background: `${v3.color.accent}18`, color: v3.color.accent, borderRadius: 99, padding: '4px 10px' }}>
-              月1.5杯のコーヒー代
-            </div>
+  
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
             {STANDARD_FEATURES.map((f) => (
