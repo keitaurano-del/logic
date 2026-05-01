@@ -4,7 +4,7 @@
  * モックアップ: lv3-home.html
  */
 import { useMemo, useState, useEffect, useRef } from 'react'
-import { getStreak, getStudyDates } from '../stats'
+import { getStudyDates } from '../stats'
 import { v3 } from '../styles/tokensV3'
 import { API_BASE } from './apiBase'
 import { HomeCoachmark, useShouldShowHomeCoachmark } from '../tutorial/coachmark'
@@ -53,9 +53,6 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
   const isTablet = width >= BREAKPOINTS.md
   const isLargeTablet = width >= BREAKPOINTS.lg
 
-  const streak = getStreak()
-  // completed unused
-
   // SCRUM-164: 今日の1問を動的取得
   const [dailyQuestion, setDailyQuestion] = useState<string>('')
   useEffect(() => {
@@ -91,14 +88,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
           Logic<span style={{ color: v3.color.accent }}>.</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: v3.color.card, borderRadius: v3.radius.pill, padding: '7px 14px' }}>
-            <svg width="13" height="13" viewBox="0 0 24 24" fill={v3.color.accent}><path d="M12 2c0 0-5 4-5 10a5 5 0 0 0 10 0c0-6-5-10-5-10z" /></svg>
-            <span style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 14, fontWeight: 700, color: v3.color.accent }}>{streak}</span>
-            <span style={{ fontSize: 14, fontWeight: 500, color: v3.color.text2 }}>日</span>
-          </div>
-          <div style={{ width: 36, height: 36, borderRadius: '50%', background: `linear-gradient(135deg, ${v3.color.card2}, ${v3.color.card})`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Inter Tight', sans-serif", fontSize: 14, fontWeight: 700, color: v3.color.accent }}>
-            {(userName || 'G').slice(0, 1).toUpperCase()}
-          </div>
+          {/* Streak display削除予定 */}
         </div>
       </div>
 
