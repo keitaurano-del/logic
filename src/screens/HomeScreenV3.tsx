@@ -10,6 +10,7 @@ import { API_BASE } from './apiBase'
 import { HomeCoachmark, useShouldShowHomeCoachmark } from '../tutorial/coachmark'
 import { PlacementCard } from '../tutorial/placementCard'
 import { hasCompletedPlacement } from '../placementData'
+import { LessonGridSection } from './LessonGrid'
 
 // SCRUM-185: グリーティングメッセージ複数パターン
 const GREETING_MESSAGES = [
@@ -134,7 +135,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
         {/* Hero Recommend */}
         <div
           onClick={() => onOpenLesson(20)}
-          style={{ background: 'linear-gradient(140deg, #1A3A39 0%, #2C5856 100%)', borderRadius: v3.radius.card, overflow: 'hidden', cursor: 'pointer', boxShadow: v3.shadow.hero, flexShrink: 0 }}
+          style={{ background: `linear-gradient(140deg, ${v3.color.card2} 0%, ${v3.color.card} 100%)`, borderRadius: v3.radius.card, overflow: 'hidden', cursor: 'pointer', boxShadow: v3.shadow.hero, flexShrink: 0 }}
         >
           <div style={{ height: 160, position: 'relative', overflow: 'hidden' }}>
             <img src={`${IMG}/hero-deduction.webp`} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
@@ -178,14 +179,8 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
           </div>
         </div>
 
-        {/* Courses horizontal scroll */}
-        <div style={{ margin: '0 -16px', padding: '0 16px', overflowX: 'auto', display: 'flex', gap: 12, scrollSnapType: 'x mandatory', scrollPaddingLeft: 16 }}>
-          <CourseCard name="ロジカル<br>シンキング" image={`${IMG}/course-logical.webp`} progress={60} accent={v3.color.accent} meta="5レッスン · 60%" onClick={() => props.onOpenCategory('logic')} />
-          <CourseCard name="ケース面接" image={`${IMG}/course-business.webp`} progress={25} accent={v3.color.warm} meta="4レッスン · 25%" onClick={() => props.onOpenCategory('case')} />
-          <CourseCard name="クライアント<br>ワーク" image={`${IMG}/course-client.webp`} progress={0} accent="#F59E0B" meta="9レッスン · 中級" onClick={() => props.onOpenCategory('client')} />
-          <CourseCard name="思考法" image={`${IMG}/course-thinking.webp`} progress={15} accent="#A5B4FC" meta="22レッスン · 15%" onClick={() => props.onOpenCategory('thinking')} />
-          <CourseCard name="哲学・<br>思考の原理" image={`${IMG}/course-philosophy.webp`} progress={0} accent="#C4B5FD" meta="5レッスン · 0%" onClick={() => props.onOpenCategory('philosophy')} />
-        </div>
+        {/* Courses - Grid 2列表示 with Categories */}
+        <LessonGridSection onOpenCategory={props.onOpenCategory} />
 
         {/* AI practice cards (large, vertical) */}
         <AILargeCard image={`${IMG}/home-daily-question.webp`} name="AI問題生成" sub="テーマ別のオリジナル問題で練習" onClick={onOpenAIGen} beta />
