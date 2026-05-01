@@ -50,7 +50,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
         setLoading(null)
         return
       }
-      await startCheckout(plan as any)
+      await startCheckout(plan)
     } catch (e: unknown) {
       setError((e as Error).message || 'エラーが発生しました')
       setLoading(null)

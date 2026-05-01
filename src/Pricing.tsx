@@ -14,7 +14,7 @@ export default function Pricing({ onBack }: Props) {
     setLoading(plan)
     setError('')
     try {
-      await startCheckout(plan as any)
+      await startCheckout(plan)
     } catch (e: any) {
       setError(e.message || 'エラーが発生しました')
       setLoading(null)
