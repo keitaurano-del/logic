@@ -194,14 +194,14 @@ export function getPlanLabel(): string {
   const s = getSubscriptionState()
   switch (s.plan) {
     case 'trial': return `7日間トライアル (残り${daysLeftInTrial()}日)`
-    case 'basic_monthly': return 'スタンダード (¥650/月)' // legacy basic → standard稱号
-    case 'basic_yearly': return 'スタンダード (¥4,500/年)'
-    case 'standard_monthly': return 'スタンダード (¥650/月)'
-    case 'standard_yearly': return 'スタンダード (¥4,500/年)'
-    case 'premium_monthly': return 'プレミアム (¥1,400/月)'
-    case 'premium_yearly': return 'プレミアム (¥9,800/年)'
-    case 'monthly': return 'スタンダード (¥650/月)'
-    case 'yearly': return 'スタンダード (¥4,500/年)'
+    case 'basic_monthly': return 'スタンダード (¥390/月)' // legacy basic → standard称号
+    case 'basic_yearly': return 'スタンダード (¥2,730/年)'
+    case 'standard_monthly': return 'スタンダード (¥390/月)'
+    case 'standard_yearly': return 'スタンダード (¥2,730/年)'
+    case 'premium_monthly': return 'プレミアム (¥760/月)'
+    case 'premium_yearly': return 'プレミアム (¥5,320/年)'
+    case 'monthly': return 'スタンダード (¥390/月)'
+    case 'yearly': return 'スタンダード (¥2,730/年)'
     case 'free': return '無料 (キャンペーン中)'
     default: return '無料 (キャンペーン中)'
   }
@@ -220,8 +220,8 @@ export function planToPlayProductId(plan: SubscriptionPlan): string {
     case 'monthly':          return PLAY_PRODUCTS.standard_monthly
     case 'basic_yearly':
     case 'yearly':           return PLAY_PRODUCTS.standard_yearly
-    case 'premium_monthly':
-    case 'premium_yearly':   return PLAY_PRODUCTS.campaign_yearly
+    case 'premium_monthly':  return PLAY_PRODUCTS.premium_monthly
+    case 'premium_yearly':   return PLAY_PRODUCTS.premium_yearly
     // Non-purchasable plans
     default:                 return PLAY_PRODUCTS.standard_monthly
   }

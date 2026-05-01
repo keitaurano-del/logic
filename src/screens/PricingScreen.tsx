@@ -62,6 +62,9 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
 
   const stdPrice = billingCycle === 'yearly' ? PLAN_PRICES.standard_yearly : PLAN_PRICES.standard_monthly
   const prmPrice = billingCycle === 'yearly' ? PLAN_PRICES.premium_yearly : PLAN_PRICES.premium_monthly
+  // 年額の月換算
+  const stdMonthly = Math.round(PLAN_PRICES.standard_yearly / 12)
+  const prmMonthly = Math.round(PLAN_PRICES.premium_yearly / 12)
 
   return (
     <div style={{ minHeight: '100dvh', background: v3.color.bg, color: v3.color.text, paddingBottom: 40 }}>
@@ -151,11 +154,11 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
             <div>
               <div style={{ fontSize: 11, fontWeight: 700, color: v3.color.text2, letterSpacing: '.06em', marginBottom: 4 }}>STANDARD</div>
               <div style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-.02em' }}>
-                ¥{billingCycle === 'yearly' ? '2,730' : '390'}
+                ¥{stdPrice.toLocaleString()}
                 <span style={{ fontSize: 14, fontWeight: 500, color: v3.color.text2 }}>/{billingCycle === 'yearly' ? '年' : '月'}</span>
               </div>
               {billingCycle === 'yearly' && (
-                <div style={{ fontSize: 12, color: v3.color.text3, marginTop: 2 }}>月々約¥379（7ヶ月分お得）</div>
+                <div style={{ fontSize: 12, color: v3.color.text3, marginTop: 2 }}>月々約¥{stdMonthly}（年払いでお得）</div>
               )}
             </div>
             <div style={{ fontSize: 11, fontWeight: 700, background: `${v3.color.accent}18`, color: v3.color.accent, borderRadius: 99, padding: '4px 10px' }}>
@@ -195,11 +198,11 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
             <div>
               <div style={{ fontSize: 11, fontWeight: 700, color: v3.color.accent, letterSpacing: '.06em', marginBottom: 4 }}>PREMIUM</div>
               <div style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-.02em' }}>
-                ¥{billingCycle === 'yearly' ? '6,860' : '1,400'}
+                ¥{prmPrice.toLocaleString()}
                 <span style={{ fontSize: 14, fontWeight: 500, color: v3.color.text2 }}>/{billingCycle === 'yearly' ? '年' : '月'}</span>
               </div>
               {billingCycle === 'yearly' && (
-                <div style={{ fontSize: 12, color: v3.color.text3, marginTop: 2 }}>月々約¥572（7ヶ月分お得）</div>
+                <div style={{ fontSize: 12, color: v3.color.text3, marginTop: 2 }}>月々約¥{prmMonthly}（年払いでお得）</div>
               )}
             </div>
             <div style={{ fontSize: 11, fontWeight: 700, background: `${v3.color.accent}22`, color: v3.color.accent, borderRadius: 99, padding: '4px 10px' }}>
@@ -231,7 +234,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
 
         {/* 注記 */}
         <div style={{ fontSize: 12, color: v3.color.text3, textAlign: 'center', lineHeight: 1.8, padding: '0 8px' }}>
-          いつでもキャンセル可能 · 自動更新 · カード登録後に課金開始<br />
+          Google Playで管理 · 自動更新 · 買切り後に課金開始<br />
           年払いは一括請求です。キャンセル後は期間終了まで利用可能。
         </div>
 
