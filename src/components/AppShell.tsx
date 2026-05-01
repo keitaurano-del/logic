@@ -68,6 +68,14 @@ export function AppShell({
 
   void t // keep import
 
+  // スクロール位置リセット（タブ切り替え時）
+  useEffect(() => {
+    const container = document.getElementById('app-scroll-container')
+    if (container) {
+      container.scrollTop = 0
+    }
+  }, [activeTab])
+
   // Hide tab bar on scroll down, show on scroll up
   const [navHidden, setNavHidden] = useState(false)
   const lastScrollY = useRef(0)
