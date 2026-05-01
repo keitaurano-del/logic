@@ -151,7 +151,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
             <div>
               <div style={{ fontSize: 11, fontWeight: 700, color: v3.color.text2, letterSpacing: '.06em', marginBottom: 4 }}>STANDARD</div>
               <div style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-.02em' }}>
-                ¥{billingCycle === 'yearly' ? '4,550' : '650'}
+                ¥{billingCycle === 'yearly' ? '2,730' : '390'}
                 <span style={{ fontSize: 14, fontWeight: 500, color: v3.color.text2 }}>/{billingCycle === 'yearly' ? '年' : '月'}</span>
               </div>
               {billingCycle === 'yearly' && (

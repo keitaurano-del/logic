@@ -17,14 +17,14 @@ export type SubscriptionPlan =
   | 'premium_monthly'
   | 'premium_yearly'
 
-// SCRUM-182: 新プラン価格定義（年額 = 月額×7ヶ月分）
+// SCRUM-182: 新プラン価格定義（消費税込み、Android Play Store決済対応）
 export const PLAN_PRICES = {
   basic_monthly: 250,
-  basic_yearly: 1750,      // 月額×7ヶ月分お得
-  standard_monthly: 650,
-  standard_yearly: 4550,   // 月額×7ヶ月分お得
-  premium_monthly: 980,
-  premium_yearly: 6860,    // 月額×7ヶ月分お得
+  basic_yearly: 1750,
+  standard_monthly: 390,      // 消費税込み
+  standard_yearly: 2730,      // 消費税込み
+  premium_monthly: 760,       // 消費税込み
+  premium_yearly: 5320,       // 消費税込み
   beta_campaign: 1980,
 } as const
 
