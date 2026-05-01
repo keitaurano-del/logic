@@ -135,6 +135,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
           <SettingRow icon="card" name="プラン" sub={getPlanLabel()} onClick={onOpenPricing} />
           <SettingRow icon="message" name="フィードバック" sub="ご意見をお聞かせください" onClick={onOpenFeedback} />
           <SettingRow icon="doc" name="利用規約" sub="" onClick={() => window.open('/terms.html', '_blank')} />
+          <SettingRow icon="shield" name="プライバシーポリシー" sub="" onClick={() => window.open('/privacy.html', '_blank')} />
           <SettingRow icon="scale" name="特定商取引法に基づく表記" sub="" onClick={() => window.open('/tokushoho.html', '_blank')} />
         </div>
         <div onClick={handleLogout} style={{ background: 'transparent', border: '1px solid rgba(252,165,165,.4)', borderRadius: 14, padding: 13, textAlign: 'center', fontSize: 14, fontWeight: 700, color: '#FCA5A5', cursor: 'pointer' }}>
@@ -305,6 +306,7 @@ function SettingRow({ icon, name, sub, onClick }: { icon: string; name: string; 
     card: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round"><rect x="2" y="5" width="20" height="14" rx="2" /><line x1="2" y1="10" x2="22" y2="10" /></svg>,
     message: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>,
     doc: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>,
+    shield: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
     scale: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>,
   }
 

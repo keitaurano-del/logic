@@ -240,8 +240,8 @@ function RegisterScreen({ onComplete, onSkip }: { onComplete: () => void; onSkip
             )}
           </div>
           <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.7)', lineHeight: 1.6 }}>
-            <span style={{ color: C.teal, textDecoration: 'underline', cursor: 'pointer' }}>利用規約</span>と
-            <span style={{ color: C.teal, textDecoration: 'underline', cursor: 'pointer' }}>プライバシーポリシー</span>に同意する
+            <span style={{ color: C.teal, textDecoration: 'underline', cursor: 'pointer' }} onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open('/terms.html', '_blank') }}>利用規約</span>と
+            <span style={{ color: C.teal, textDecoration: 'underline', cursor: 'pointer' }} onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open('/privacy.html', '_blank') }}>プライバシーポリシー</span>に同意する
           </span>
         </label>
 
