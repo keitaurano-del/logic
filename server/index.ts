@@ -2280,6 +2280,65 @@ app.get('/{*splat}', (req, res) => {
 </html>`)
 })
 
+// ─────────────────────────────────────────────
+// 登録完了メール送信
+// ─────────────────────────────────────────────
+app.post('/api/send-welcome-email', async (req, res) => {
+  const { email } = req.body as { email: string }
+  if (!email) return res.status(400).json({ error: 'email required' })
+
+  const smtpHost = process.env.SMTP_HOST
+  const smtpUser = process.env.SMTP_USER
+  const smtpPass = process.env.SMTP_PASS
+
+  // SMTP未設定の場合はログのみ
+  if (!smtpHost || !smtpUser || !smtpPass) {
+    console.log(`[WELCOME-EMAIL] Would send to ${email} (SMTP not configured)`)
+    return res.json({ ok: true, note: 'smtp_not_configured' })
+  }
+
+  try {
+    const transporter = nodemailer.createTransport({
+      host: smtpHost,
+      port: parseInt(process.env.SMTP_PORT || '587', 10),
+      auth: { user: smtpUser, pass: smtpPass },
+    })
+    await transporter.sendMail({
+      from: `"Logic 学習アプリ" <${smtpUser}>`,
+      to: email,
+      subject: '【Logic】登録完了のお知らせ',
+      html: `
+        <div style="font-family:'Helvetica Neue',Arial,sans-serif;max-width:520px;margin:0 auto;background:#1A1F2E;color:#E8ECF4;padding:40px 32px;border-radius:16px;">
+          <div style="text-align:center;margin-bottom:32px;">
+            <div style="font-size:32px;font-weight:900;color:#6C8EF5;letter-spacing:-0.02em;">Logic</div>
+            <div style="font-size:13px;color:#8FA3C8;margin-top:4px;">論理思考力トレーニング</div>
+          </div>
+          <h2 style="font-size:20px;font-weight:700;margin-bottom:12px;color:#E8ECF4;">登録完了しました🎉</h2>
+          <p style="font-size:15px;line-height:1.7;color:#8FA3C8;margin-bottom:24px;">
+            Logicへようこそ！アカウント登録が完了しました。<br>
+            毎日少しずつ、論理思考力を鍛えていきましょう。
+          </p>
+          <div style="background:#252C40;border-radius:12px;padding:20px;margin-bottom:24px;">
+            <div style="font-size:13px;color:#6B82A8;margin-bottom:8px;">登録メールアドレス</div>
+            <div style="font-size:16px;font-weight:700;color:#6C8EF5;">${email}</div>
+          </div>
+          <a href="https://logic-sit.onrender.com" style="display:block;background:#6C8EF5;color:#1A1F2E;text-align:center;padding:16px;border-radius:12px;font-size:15px;font-weight:700;text-decoration:none;margin-bottom:24px;">
+            アプリを開く →
+          </a>
+          <p style="font-size:12px;color:#6B82A8;text-align:center;">
+            お問い合わせ: <a href="mailto:support@logic-m.com" style="color:#6C8EF5;">support@logic-m.com</a>
+          </p>
+        </div>
+      `,
+    })
+    res.json({ ok: true })
+  } catch (err) {
+    console.error('[WELCOME-EMAIL] send failed:', err)
+    res.status(500).json({ error: 'send failed' })
+  }
+})
+
+
 const PORT = parseInt(process.env.PORT || '3001', 10)
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on http://localhost:${PORT}`)

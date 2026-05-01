@@ -34,6 +34,7 @@ export function recordCompletion(lessonKey: string) {
     stats.studyDates.push(d)
   }
   save(stats)
+  recordLessonStreak()
   if (getSyncUser()) pushProgress(stats)
 }
 
@@ -125,5 +126,76 @@ export function addXp(event: XpEvent): number {
   const gained = XP_REWARDS[event]
   const newXp = getXp() + gained
   localStorage.setItem(XP_KEY, String(newXp))
+  appendXpLog(event, gained)
   return newXp
+}
+
+// ── XP履歴ログ（月別内訳用） ──
+export type XpLogEntry = { ts: number; event: XpEvent; xp: number }
+const XP_LOG_KEY = 'logic-xp-log'
+
+export function appendXpLog(event: XpEvent, xp: number) {
+  try {
+    const log: XpLogEntry[] = JSON.parse(localStorage.getItem(XP_LOG_KEY) || '[]')
+    log.push({ ts: Date.now(), event, xp })
+    // 最大500件
+    if (log.length > 500) log.splice(0, log.length - 500)
+    localStorage.setItem(XP_LOG_KEY, JSON.stringify(log))
+  } catch { /* */ }
+}
+
+export function getXpLogThisMonth(): XpLogEntry[] {
+  try {
+    const log: XpLogEntry[] = JSON.parse(localStorage.getItem(XP_LOG_KEY) || '[]')
+    const now = new Date()
+    const ym = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
+    return log.filter(e => new Date(e.ts).toISOString().slice(0, 7) === ym)
+  } catch { return [] }
+}
+
+export const XP_EVENT_LABEL: Record<XpEvent, string> = {
+  lesson: 'レッスン完了',
+  quiz_perfect: 'クイズ満点',
+  streak: '連続学習ボーナス',
+  fermi: 'フェルミ推定',
+}
+
+// ── 連続学習日数（レッスン完了ベース、1日スキップOK） ──
+const LESSON_STREAK_KEY = 'logic-lesson-streak'
+type LessonStreak = { count: number; lastDate: string }
+
+export function getLessonStreak(): number {
+  try {
+    const s: LessonStreak = JSON.parse(localStorage.getItem(LESSON_STREAK_KEY) || '{}')
+    if (!s.lastDate) return 0
+    const today = new Date().toISOString().slice(0, 10)
+    const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10)
+    const twoDaysAgo = new Date(Date.now() - 172800000).toISOString().slice(0, 10)
+    // 今日か昨日か一昨日（1日スキップOK = 最大2日空白まで）
+    if (s.lastDate === today || s.lastDate === yesterday || s.lastDate === twoDaysAgo) {
+      return s.count
+    }
+    return 0
+  } catch { return 0 }
+}
+
+export function recordLessonStreak() {
+  try {
+    const today = new Date().toISOString().slice(0, 10)
+    const s: LessonStreak = JSON.parse(localStorage.getItem(LESSON_STREAK_KEY) || '{}')
+    if (s.lastDate === today) return // 今日は既にカウント済み
+    const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10)
+    const twoDaysAgo = new Date(Date.now() - 172800000).toISOString().slice(0, 10)
+    const newCount = (s.lastDate === yesterday || s.lastDate === twoDaysAgo) ? (s.count || 0) + 1 : 1
+    localStorage.setItem(LESSON_STREAK_KEY, JSON.stringify({ count: newCount, lastDate: today }))
+  } catch { /* */ }
+}
+
+// 表示名をlocalStorageに保存
+const DISPLAY_NAME_KEY = 'logic-display-name'
+export function getDisplayName(): string {
+  return localStorage.getItem(DISPLAY_NAME_KEY) || ''
+}
+export function setDisplayName(name: string) {
+  localStorage.setItem(DISPLAY_NAME_KEY, name)
 }

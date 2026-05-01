@@ -70,7 +70,15 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
       if (password.length < 6) { setLoading(false); setError('パスワードは6文字以上にしてください'); return }
       const result = await signupWithEmail(email, password)
       setLoading(false)
-      if (result.user) { onLoginSuccess(result.user); return }
+      if (result.user) {
+        // 登録完了メール送信（バックグラウンド、失敗しても続行）
+        fetch('/api/send-welcome-email', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email }),
+        }).catch(() => {})
+        onLoginSuccess(result.user)
+        return
+      }
       if (result.error === 'auth/email-already-in-use') setError('このメールアドレスは既に登録されています')
       else setError('アカウント作成に失敗しました。もう一度お試しください。')
     }
