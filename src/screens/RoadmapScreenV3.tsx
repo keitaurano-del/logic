@@ -189,7 +189,7 @@ function SearchResults({ query, onOpenLesson }: { query: string; onOpenLesson: (
     l.title.toLowerCase().includes(q) || (l.category || '').toLowerCase().includes(q)
   ).slice(0, 20)
   return (
-    <div style={{ flex: 1, padding: '8px 16px 100px', display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
+    <div style={{ flex: 1, padding: '8px 16px 100px', display: 'grid', gridTemplateColumns: '1fr', gap: 12 }}>
       {results.length === 0 && (
         <div style={{ padding: 32, textAlign: 'center', color: v3.color.text2, fontSize: 14 }}>「{query}」に一致するレッスンが見つかりません</div>
       )}
@@ -329,7 +329,7 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
           </div>
         </div>
       )}
-      <div style={{ flex: 1, padding: '0 16px 100px', display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
+      <div style={{ flex: 1, padding: '0 16px 100px', display: 'grid', gridTemplateColumns: '1fr', gap: 12 }}>
         {lessons.length === 0 && (
           <div style={{ padding: 32, textAlign: 'center', color: v3.color.text2 }}>このカテゴリにはまだレッスンがありません。</div>
         )}
