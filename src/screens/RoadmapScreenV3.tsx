@@ -259,11 +259,11 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
           </div>
         </div>
       )}
-      <div style={{ flex: 1, padding: '0 16px 100px', display: 'grid', gridTemplateColumns: '1fr', gap: 12 }}>
+      <div style={{ flex: 1, padding: '0 16px 100px', display: 'flex', flexDirection: 'column', gap: 12 }}>
         {lessons.length === 0 && (
           <div style={{ padding: 32, textAlign: 'center', color: v3.color.text2 }}>このカテゴリにはまだレッスンがありません。</div>
         )}
-        {showStartHint && <div style={{ fontSize: 12, color: v3.color.text3, padding: '4px 4px 0', fontWeight: 600, gridColumn: '1 / -1' }}>すべてのレッスン</div>}
+        {showStartHint && <div style={{ fontSize: 12, color: v3.color.text3, padding: '4px 4px 0', fontWeight: 600 }}>すべてのレッスン</div>}
         {lessons.map((lesson: any) => {
           const isDone = completed.has(`lesson-${lesson.id}`)
           // カテゴリごとに画像をマッピング（既存 v3 画像を活用）
@@ -287,6 +287,54 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
             </div>
           )
         })}
+        {/* おすすめレッスン */}
+        <RecommendedLessonsSection currentCategory={label} onOpenLesson={onOpenLesson} />
+      </div>
+    </div>
+  )
+}
+
+// カテゴリ詳細画面のおすすめレッスンコンポーネント
+const CATEGORY_RECOMMEND: Record<string, number[]> = {
+  'ロジカルシンキング': [40, 50, 28],
+  'クリティカルシンキング': [20, 50, 53],
+  '仮説思考': [22, 40, 53],
+  'ケース面接': [20, 50, 89],
+  'デザインシンキング': [40, 59, 62],
+  'ラテラルシンキング': [56, 62, 59],
+  'アナロジー思考': [59, 65, 40],
+  'システムシンキング': [50, 62, 40],
+  '哲学・思考の原理': [77, 78, 40],
+  'クライアントワーク': [20, 50, 28],
+  'フェルミ推定': [20, 89, 200],
+  '提案書作成': [20, 22, 50],
+  '課題設定': [40, 50, 22],
+}
+
+import { getAllLessonsFlat as getAllFlat } from '../lessonData'
+
+function RecommendedLessonsSection({ currentCategory, onOpenLesson }: { currentCategory: string; onOpenLesson: (id: number) => void }) {
+  const recIds = CATEGORY_RECOMMEND[currentCategory] || [20, 40, 50]
+  const flat = getAllFlat()
+  const recs = recIds.map(id => flat[id]).filter(Boolean) as Array<{ id: number; title: string; category: string }>
+  if (recs.length === 0) return null
+  return (
+    <div style={{ marginTop: 8 }}>
+      <div style={{ fontSize: 13, color: v3.color.text2, fontWeight: 600, marginBottom: 10, padding: '0 4px' }}>他のおすすめレッスン</div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {recs.map(lesson => (
+          <div key={lesson.id} onClick={() => onOpenLesson(lesson.id)}
+            style={{ background: v3.color.card, borderRadius: 14, padding: '12px 16px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 12, border: `1px solid ${v3.color.line}` }}>
+            <div style={{ width: 32, height: 32, borderRadius: 10, background: v3.color.accentSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2.5" strokeLinecap="round"><polygon points="5 3 19 12 5 21 5 3" /></svg>
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 14, fontWeight: 700, color: v3.color.text, marginBottom: 2, lineHeight: 1.3 }}>{lesson.title}</div>
+              <div style={{ fontSize: 12, color: v3.color.text2 }}>{lesson.category}</div>
+            </div>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6" /></svg>
+          </div>
+        ))}
       </div>
     </div>
   )

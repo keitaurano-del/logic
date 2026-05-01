@@ -3,14 +3,69 @@
  * 仕様: docs/DESIGN_V3.md §3.1
  * モックアップ: lv3-home.html
  */
-import { useMemo, useState, useEffect, useRef } from 'react'
+import { useMemo, useRef } from 'react'
 import { getStudyDates } from '../stats'
 import { v3 } from '../styles/tokensV3'
-import { API_BASE } from './apiBase'
 import { HomeCoachmark, useShouldShowHomeCoachmark } from '../tutorial/coachmark'
 import { PlacementCard } from '../tutorial/placementCard'
 import { hasCompletedPlacement } from '../placementData'
 import { useWindowSize, BREAKPOINTS } from '../hooks/useResponsive'
+
+// フェルミ問題20問ハードコード
+const FERMI_QUESTIONS = [
+  '日本全国のコンビニの店舗数は？',
+  '東京都内の自転車台数は？',
+  '日本全国の美容院・理容院の数は？',
+  'GDP1兆円が全部一万円札なら何枚？',
+  '東京ドームの濡れた水を全部バケツで汲み出すに何時間？',
+  '日本全国の小、中、高校の教師数は？',
+  '東京タワーの高さに屋上を重ねると何枚？',
+  '日本で年間消費されるチーズケーキの数は？',
+  '小学生が小学校中に歩く合計距離は？',
+  '渋谷駅の一日当たりの乗降客数は？',
+  '世界中のピアノの全台数は？',
+  '日本全国のゆうパック数は？',
+  '東京のビルの窓の合計枚数は？',
+  '日本全国の医師数は？',
+  'コンビニのおにぎりは年間何個売れる？',
+  '東京のタクシー台数は？',
+  '日本全国のスーパーの店舗数は？',
+  '一日にインターネットに投稿されるツイート数（日本）は？',
+  '日本全国の消火器の数は？',
+  '東京で一年間に連れまれる新生児は何人？',
+]
+
+// おすすめレッスンリスト（ランダム表示用）
+const RECOMMENDED_LESSONS = [
+  { id: 20, title: 'MECE — 漏れなくダブりなく', category: 'ロジカルシンキング', level: '初級', image: '/images/v3/hero-deduction.webp' },
+  { id: 21, title: 'ロジックツリー — 問題を分解する', category: 'ロジカルシンキング', level: '初級', image: '/images/v3/course-logical.webp' },
+  { id: 22, title: 'So What / Why So — 論理の検証', category: 'ロジカルシンキング', level: '初級', image: '/images/v3/course-logical.webp' },
+  { id: 25, title: '演繹法 — 一般から個別を導く', category: 'ロジカルシンキング', level: '初級', image: '/images/v3/hero-deduction.webp' },
+  { id: 26, title: '帰納法 — 個別事例から法則を見つける', category: 'ロジカルシンキング', level: '初級', image: '/images/v3/hero-deduction.webp' },
+  { id: 40, title: 'クリティカルシンキング入門', category: 'クリティカルシンキング', level: '初級', image: '/images/v3/course-thinking.webp' },
+  { id: 50, title: '仮説思考入門 — 考えてから調べる', category: '仮説思考', level: '中級', image: '/images/v3/course-thinking.webp' },
+  { id: 56, title: 'デザインシンキング入門', category: 'デザインシンキング', level: '初級', image: '/images/v3/course-thinking.webp' },
+  { id: 59, title: 'ラテラルシンキング入門', category: 'ラテラルシンキング', level: '初級', image: '/images/v3/course-thinking.webp' },
+  { id: 62, title: 'アナロジー思考入門 — 類推で考える', category: 'アナロジー思考', level: '中級', image: '/images/v3/course-thinking.webp' },
+  { id: 65, title: 'システムシンキング入門 — 全体を見る', category: 'システムシンキング', level: '中級', image: '/images/v3/course-thinking.webp' },
+  { id: 68, title: '具体と抽象 — 思考の行き来を自在にする', category: 'ロジカルシンキング', level: '中級', image: '/images/v3/course-logical.webp' },
+  { id: 28, title: 'ケース面接入門', category: 'ケース面接', level: '中級', image: '/images/v3/course-business.webp' },
+  { id: 77, title: 'ソクラテスの問答法', category: '哲学・思考の原理', level: '上級', image: '/images/v3/course-philosophy.webp' },
+  { id: 78, title: '反証可能性 — 科学と疑似科学の境界', category: '哲学・思考の原理', level: '上級', image: '/images/v3/course-philosophy.webp' },
+  { id: 89, title: '大きい数字の捉え方・概算力', category: 'クライアントワーク', level: '中級', image: '/images/v3/course-client.webp' },
+  { id: 200, title: 'フェルミ推定とは何か', category: 'フェルミ推定', level: '中級', image: '/images/v3/fermi-card.png' },
+  { id: 41, title: '論理的誤謬を見破る', category: 'クリティカルシンキング', level: '中級', image: '/images/v3/course-thinking.webp' },
+  { id: 53, title: '課題設定入門 — 正しい問いを立てる', category: '課題設定', level: '中級', image: '/images/v3/course-thinking.webp' },
+  { id: 23, title: 'ピラミッド原則 — 伝わる話し方', category: 'ロジカルシンキング', level: '初級', image: '/images/v3/course-logical.webp' },
+]
+
+function getRandomLesson() {
+  return RECOMMENDED_LESSONS[Math.floor(Math.random() * RECOMMENDED_LESSONS.length)]
+}
+
+function getRandomFermi() {
+  return FERMI_QUESTIONS[Math.floor(Math.random() * FERMI_QUESTIONS.length)]
+}
 
 // SCRUM-185: グリーティングメッセージ複数パターン
 const GREETING_MESSAGES = [
@@ -52,14 +107,9 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
   const isTablet = width >= BREAKPOINTS.md
   const isLargeTablet = width >= BREAKPOINTS.lg
 
-  // SCRUM-164: 今日の1問を動的取得
-  const [dailyQuestion, setDailyQuestion] = useState<string>('')
-  useEffect(() => {
-    fetch(`${API_BASE}/api/daily-fermi?locale=ja`)
-      .then(r => r.json())
-      .then(d => { if (d.question) setDailyQuestion(d.question) })
-      .catch(() => {})
-  }, [])
+  // ランダムレッスン・フェルミ問題（マウント時に1回決定）
+  const recommendedLesson = useRef(getRandomLesson()).current
+  const fermiQuestion = useRef(getRandomFermi()).current
 
 
   // 今週カレンダー
@@ -111,7 +161,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
               <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: v3.color.accent }}>今日の1問</span>
             </div>
             <div style={{ fontFamily: "'Noto Sans JP', sans-serif", fontSize: 19, fontWeight: 700, color: v3.color.text, lineHeight: 1.4, letterSpacing: '-.005em', marginBottom: 8 }}>
-              {dailyQuestion || 'フェルミ推定で、思考力を1日5分鍛える'}
+              {fermiQuestion}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: v3.color.text2, fontSize: 14, fontWeight: 500, marginBottom: 16 }}>
               <span>毎日更新</span>
@@ -125,20 +175,18 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
           </div>
         </div>
 
-        {/* Hero Recommend */}
+        {/* Hero Recommend - ランダム表示 */}
         <div
-          onClick={() => onOpenLesson(20)}
+          onClick={() => onOpenLesson(recommendedLesson.id)}
           style={{ background: v3.color.card, borderRadius: v3.radius.card, overflow: 'hidden', cursor: 'pointer', boxShadow: v3.shadow.card, flexShrink: 0 }}
         >
           <div style={{ height: 160, position: 'relative', overflow: 'hidden' }}>
-            <img src={`${IMG}/hero-deduction.webp`} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+            <img src={recommendedLesson.image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
           </div>
           <div style={{ padding: '18px 20px 20px' }}>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: v3.color.accentSoft, borderRadius: v3.radius.pill, padding: '4px 11px', fontSize: 14, fontWeight: 600, color: v3.color.accent, marginBottom: 10 }}>ロジカルシンキング · 初級</span>
-            <div style={{ fontSize: 19, fontWeight: 700, marginBottom: 6, lineHeight: 1.35, letterSpacing: '-.005em' }}>演繹法と帰納法</div>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: v3.color.accentSoft, borderRadius: v3.radius.pill, padding: '4px 11px', fontSize: 14, fontWeight: 600, color: v3.color.accent, marginBottom: 10 }}>{recommendedLesson.category} · {recommendedLesson.level}</span>
+            <div style={{ fontSize: 19, fontWeight: 700, marginBottom: 6, lineHeight: 1.35, letterSpacing: '-.005em' }}>{recommendedLesson.title}</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: v3.color.text2, fontSize: 14, fontWeight: 500, marginBottom: 16 }}>
-              <span>3分</span><div style={{ width: 3, height: 3, borderRadius: '50%', background: v3.color.text3 }}></div>
-              <span>5スライド</span><div style={{ width: 3, height: 3, borderRadius: '50%', background: v3.color.text3 }}></div>
               <span>+50 XP</span>
             </div>
             <div style={{ background: v3.color.accent, color: v3.color.bg, borderRadius: v3.radius.pill, padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700 }}>
