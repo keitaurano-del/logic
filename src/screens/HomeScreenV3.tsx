@@ -1,5 +1,5 @@
 /**
- * HomeScreenV3 - Logic v3 redesign
+ * HomeScreenV3 - Logic v3 redesign (Responsive Design対応)
  * 仕様: docs/DESIGN_V3.md §3.1
  * モックアップ: lv3-home.html
  */
@@ -11,6 +11,7 @@ import { HomeCoachmark, useShouldShowHomeCoachmark } from '../tutorial/coachmark
 import { PlacementCard } from '../tutorial/placementCard'
 import { hasCompletedPlacement } from '../placementData'
 import { LessonGridSection } from './LessonGrid'
+import { useWindowSize, BREAKPOINTS } from '../hooks/useResponsive'
 
 // SCRUM-185: グリーティングメッセージ複数パターン
 const GREETING_MESSAGES = [
@@ -48,6 +49,9 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
   const { userName, onOpenLesson, onOpenAIGen, onOpenRoleplay, onNavigateToDailyFermi, onOpenPlacementTest } = props
   const dailyCardRef = useRef<HTMLDivElement>(null)
   const [showCoachmark, dismissCoachmark] = useShouldShowHomeCoachmark()
+  const { width } = useWindowSize()
+  const isTablet = width >= BREAKPOINTS.md
+  const isLargeTablet = width >= BREAKPOINTS.lg
 
   const streak = getStreak()
   // completed unused
@@ -98,8 +102,8 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
         </div>
       </div>
 
-      {/* Scrollable content */}
-      <div style={{ flex: 1, padding: '0 16px 80px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+      {/* Scrollable content - Responsive */}
+      <div style={{ flex: 1, padding: isTablet ? '0 24px 80px' : '0 16px 80px', display: 'flex', flexDirection: 'column', gap: 12, maxWidth: isLargeTablet ? 1200 : undefined, margin: isLargeTablet ? '0 auto' : undefined, width: '100%' }}>
 
         {/* Greeting */}
         <div style={{ padding: '4px 4px 8px' }}>

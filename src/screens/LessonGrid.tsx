@@ -1,11 +1,15 @@
 /**
- * LessonGrid - 2列レッスンカード表示 + カテゴリ分け
+ * LessonGrid - Responsive Design対応（1列/2列/3列自動切り替え）
  */
 import { v3 } from '../styles/tokensV3'
+import { useWindowSize, getGridColumns } from '../hooks/useResponsive'
 
 const IMG = '/images/v3'
 
 export function LessonGridSection({ onOpenCategory }: { onOpenCategory: (cat: string) => void }) {
+  const { width } = useWindowSize()
+  const columns = getGridColumns(width)
+  
   const lessons = [
     { cat: 'logic', name: 'ロジカルシンキング', meta: '5レッスン · 初級', progress: 60, accent: v3.color.accent, image: `${IMG}/course-logical.webp` },
     { cat: 'case', name: 'ケース面接', meta: '4レッスン · 中級', progress: 25, accent: v3.color.warm, image: `${IMG}/course-business.webp` },
@@ -16,8 +20,8 @@ export function LessonGridSection({ onOpenCategory }: { onOpenCategory: (cat: st
 
   return (
     <div>
-      {/* Lesson Grid - 2列表示 */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12, marginBottom: 12 }}>
+      {/* Lesson Grid - Responsive: 1列(SM) / 2列(MD) / 3列(LG) */}
+      <div style={{ display: 'grid', gridTemplateColumns: `repeat(${columns}, 1fr)`, gap: 12, marginBottom: 12 }}>
         {lessons.map(lesson => (
           <LessonGridCard key={lesson.cat} lesson={lesson} onOpen={() => onOpenCategory(lesson.cat)} />
         ))}
