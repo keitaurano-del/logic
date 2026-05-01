@@ -1,4 +1,11 @@
-# Play Store スクリーンショット 共有URL
+# Play Store グラフィックアセット 共有URL
+
+## アプリアイコン (512×512px)
+```
+https://www.genspark.ai/claw/files?vm=support-ed1ee32f-9242-vm&path=%2Fhome%2Fwork%2F.openclaw%2Fworkspace%2Flogic%2Fplay_store_assets%2Fapp_icon_512.png&expires=1777613756&uid=ed1ee32f-890e-46b6-bc51-bfebb43fd4f5&token=e9342abf6cb0f8d888102874309e451ef3ddfe842d623bd19b8bcc8e22941ab5
+```
+仕様: PNG, 512×512px, 0.01 MB (1 MB以下)
+有効期限: 約10分
 
 ## ダウンロード可能なスクリーンショット
 
