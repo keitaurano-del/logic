@@ -12,6 +12,7 @@ import { PlacementCard } from '../tutorial/placementCard'
 import { hasCompletedPlacement } from '../placementData'
 import { LessonGridSection } from './LessonGrid'
 import { useWindowSize, BREAKPOINTS } from '../hooks/useResponsive'
+import { getAllLessonsFlat } from '../lessonData'
 
 // SCRUM-185: グリーティングメッセージ複数パターン
 const GREETING_MESSAGES = [
@@ -139,7 +140,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
         {/* Hero Recommend */}
         <div
           onClick={() => onOpenLesson(20)}
-          style={{ background: `linear-gradient(140deg, ${v3.color.card2} 0%, ${v3.color.card} 100%)`, borderRadius: v3.radius.card, overflow: 'hidden', cursor: 'pointer', boxShadow: v3.shadow.hero, flexShrink: 0 }}
+          style={{ background: `linear-gradient(135deg, #4C63B6 0%, #6B8EF5 100%)`, borderRadius: v3.radius.card, overflow: 'hidden', cursor: 'pointer', boxShadow: v3.shadow.hero, flexShrink: 0 }}
         >
           <div style={{ height: 160, position: 'relative', overflow: 'hidden' }}>
             <img src={`${IMG}/hero-deduction.webp`} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
