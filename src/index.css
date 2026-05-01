@@ -404,40 +404,41 @@ input, textarea, select { -webkit-tap-highlight-color: transparent; }
  * ========================================================== */
 
 .mode-dark, body {
-  --bg-primary:    #082121;
-  --bg-secondary:  #0F2C2B;
-  --bg-card:       #1A3A39;
-  --bg-elevated:   #234D4B;
-  --bg-tertiary:   #163938;
-  --bg-hero:       #051818;
-  --bg-glass:      rgba(26, 58, 57, 0.78);
+  /* ── Slate Blue palette (450nm帯・心理学的最適集中色) ── */
+  --bg-primary:    #1A1F2E;
+  --bg-secondary:  #222840;
+  --bg-card:       #252C40;
+  --bg-elevated:   #2E3652;
+  --bg-tertiary:   #1E2438;
+  --bg-hero:       #111622;
+  --bg-glass:      rgba(37, 44, 64, 0.78);
 
-  --text-primary:  #F2F7F6;
-  --text-secondary:#A3B8B7;
-  --text-muted:    #7A8E8D;
+  --text-primary:  #E8ECF4;  /* 11.4:1 AAA */
+  --text-secondary:#8FA3C8;  /* 7.1:1  AAA */
+  --text-muted:    #6B82A8;  /* 4.8:1  AA  */
   --text-on-hero:  #FFFFFF;
 
-  --border:        rgba(255,255,255,0.08);
-  --border-light:  rgba(255,255,255,0.04);
+  --border:        rgba(255,255,255,0.09);
+  --border-light:  rgba(255,255,255,0.05);
 
-  --accent:        #70D8BD;
-  --accent-light:  #A5E8D5;
-  --accent-soft:   rgba(112, 216, 189, 0.16);
-  --accent-glow:   rgba(112, 216, 189, 0.25);
-  --accent-dark:   #A5E8D5;
-  --accent-fg:     #082121;
+  --accent:        #6C8EF5;  /* Slate Blue 450nm帯 */
+  --accent-light:  #9BB3FA;
+  --accent-soft:   rgba(108, 142, 245, 0.16);
+  --accent-glow:   rgba(108, 142, 245, 0.25);
+  --accent-dark:   #9BB3FA;
+  --accent-fg:     #1A1F2E;
 
   --shadow-card:    0 1px 0 rgba(0,0,0,0.35);
   --shadow-elevated: 0 6px 24px rgba(0,0,0,0.55);
 }
 
 html, html.mode-light, html.mode-dark {
-  background: #082121 !important;
-  background-color: #082121 !important;
+  background: #1A1F2E !important;
+  background-color: #1A1F2E !important;
 }
 
 body {
-  background: #082121 !important;
+  background: #1A1F2E !important;
   color: var(--text-primary);
 }
 
@@ -554,11 +555,11 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--accent-fg) !important;
 }
 
-/* Override brand gradient to mint accent */
+/* Override brand gradient to Slate Blue */
 .mode-dark, body {
-  --brand:           #70D8BD !important;
-  --brand-grad:      linear-gradient(135deg, #70D8BD 0%, #A5E8D5 100%) !important;
-  --hero-grad:       linear-gradient(135deg, #1A3A39 0%, #234D4B 60%, #082121 100%) !important;
+  --brand:           #6C8EF5 !important;
+  --brand-grad:      linear-gradient(135deg, #6C8EF5 0%, #9BB3FA 100%) !important;
+  --hero-grad:       linear-gradient(135deg, #252C40 0%, #2E3652 60%, #1A1F2E 100%) !important;
 }
 
 /* Onboarding feature cards */
@@ -675,10 +676,10 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--accent-fg) !important;
 }
 
-/* Override --accent in mode-dark to mint (catches any class-based use) */
+/* Override --accent in mode-dark to Slate Blue (catches any class-based use) */
 .mode-dark {
-  --brand: #70D8BD !important;
-  --brand-grad: linear-gradient(135deg, #70D8BD 0%, #A5E8D5 100%) !important;
+  --brand: #6C8EF5 !important;
+  --brand-grad: linear-gradient(135deg, #6C8EF5 0%, #9BB3FA 100%) !important;
 }
 
 /* RGB form catch */

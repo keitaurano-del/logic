@@ -5,14 +5,14 @@ interface OnboardingScreenProps {
   onComplete: () => void
 }
 
-// ── カラー（ティールライト系 — スクショ参考） ──
+// ── カラー（Slate Blue — 450nm帯・心理学的最適集中色） ──
 const C = {
-  bg: '#F4FAFA',
-  teal: '#2DD4BF',
-  tealDark: '#0D9488',
-  darkBg: '#0D1F1F',
-  text: '#0F1F1F',
-  text2: '#4A6A6A',
+  bg: '#F0F2FA',
+  teal: '#6C8EF5',
+  tealDark: '#4A6BD6',
+  darkBg: '#1A1F2E',
+  text: '#1A1F2E',
+  text2: '#4A5578',
   white: '#FFFFFF',
   border: 'rgba(255,255,255,0.18)',
   inputBg: 'rgba(255,255,255,0.07)',
@@ -303,7 +303,7 @@ function RegisterScreen({ onComplete, onSkip }: { onComplete: () => void; onSkip
           disabled={loading || !ready}
           style={{
             width: '100%', padding: '17px',
-            background: loading ? 'rgba(45,212,191,0.4)' : `linear-gradient(135deg, ${C.teal}, #0EA5E9)`,
+            background: loading ? 'rgba(108,142,245,0.4)' : `linear-gradient(135deg, ${C.teal}, #818CF8)`,
             border: 'none', borderRadius: 12,
             fontSize: 16, fontWeight: 700, color: C.white,
             cursor: loading ? 'not-allowed' : 'pointer',

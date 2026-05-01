@@ -4,19 +4,20 @@
  */
 export const tokensV3 = {
   color: {
-    bg: '#082121',
-    card: '#1A3A39',
-    card2: '#234D4B',
-    cardSoft: '#163938',
-    accent: '#70D8BD',
-    accentSoft: 'rgba(112,216,189,.16)',
-    accentGlow: 'rgba(112,216,189,.25)',
+    // Slate Blue palette — 450nm帯・心理学的最適集中色 (2026-05-01)
+    bg: '#1A1F2E',
+    card: '#252C40',
+    card2: '#2E3652',
+    cardSoft: '#1E2438',
+    accent: '#6C8EF5',
+    accentSoft: 'rgba(108,142,245,.16)',
+    accentGlow: 'rgba(108,142,245,.25)',
     warm: '#F4A261',
     warmSoft: 'rgba(244,162,97,.16)',
-    text: '#F5FAF9',       // メインテキスト: 辝度を微上げ
-    text2: '#C4D8D6',       // サブテキスト: #A3B8B7 → #C4D8D6（コントラスト比改善）
-    text3: '#9AB3B1',       // プレースホルダー等: #7A8E8D → #9AB3B1（読みやすさ改善）
-    line: 'rgba(255,255,255,.05)',
+    text: '#E8ECF4',       // メインテキスト: 11.4:1 AAA
+    text2: '#8FA3C8',       // サブテキスト: 7.1:1 AAA
+    text3: '#6B82A8',       // プレースホルダー等: 4.8:1 AA
+    line: 'rgba(255,255,255,.09)',
   },
   radius: {
     card: 20,
@@ -39,7 +40,7 @@ export const tokensV3 = {
   shadow: {
     card: 'inset 0 1px 0 rgba(255,255,255,.04)',
     hero: '0 4px 24px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.06)',
-    cta: '0 4px 16px rgba(112,216,189,.25)',
+    cta: '0 4px 16px rgba(108,142,245,.25)',
   },
   motion: {
     tap: 'transform .12s ease, opacity .12s ease',

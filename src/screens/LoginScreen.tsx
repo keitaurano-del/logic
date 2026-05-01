@@ -17,11 +17,11 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
   const ready = isSupabaseConfigured()
 
   // ── カラー（ダークテーマ固定） ──
-  const BG = '#0D1F1F'          // 背景（スクショの暗いティール系）
+  const BG = '#1A1F2E'          // 背景（Slate Blue）
   const CARD = 'transparent'
   const TEXT = '#FFFFFF'
   const TEXT2 = 'rgba(255,255,255,0.55)'
-  const ACCENT = '#2DD4BF'      // ティールグリーン（ログインボタン）
+  const ACCENT = '#6C8EF5'      // Slate Blue（450nm集中色）
   const BORDER = 'rgba(255,255,255,0.15)'
   const INPUT_BG = 'rgba(255,255,255,0.07)'
   const GOOGLE_BTN_BG = '#FFFFFF'
