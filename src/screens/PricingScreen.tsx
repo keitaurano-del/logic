@@ -8,28 +8,40 @@ interface PricingScreenProps {
 
 type PlanId = 'standard_monthly' | 'standard_yearly' | 'premium_monthly' | 'premium_yearly'
 
-// SCRUM-182: 新プラン特典定義
+// SVGアイコン定義
+const IconBook = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+const IconAI = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
+const IconRoleplay = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+const IconStats = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+const IconDoc = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+const IconTrophy = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="8 21 12 17 16 21"/><line x1="12" y1="17" x2="12" y2="11"/><path d="M7 4H4a1 1 0 0 0-1 1v3a4 4 0 0 0 4 4h10a4 4 0 0 0 4-4V5a1 1 0 0 0-1-1h-3"/><rect x="7" y="2" width="10" height="6" rx="1"/></svg>
+const IconReport = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+const IconSupport = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+const IconQuestion = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+const IconSave = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+
+// プラン特典定義
 const STANDARD_FEATURES = [
-  { icon: '📚', text: '全レッスン（初級〜上級）' },
-  { icon: '🤖', text: 'AI問題生成 毎日3問' },
-  { icon: '🎭', text: 'ロールプレイ 月5回' },
-  { icon: '📊', text: '学習記録・進捗管理' },
-  { icon: '📝', text: '提案書作成コース' },
+  { icon: <IconBook />, text: '全レッスン' },
+  { icon: <IconAI />, text: 'AI問題 日3問' },
+  { icon: <IconRoleplay />, text: 'ロールプレイ 月5回' },
+  { icon: <IconStats />, text: '学習記録・進捗' },
+  { icon: <IconDoc />, text: '提案書作成コース' },
 ]
 
 const PREMIUM_FEATURES = [
-  { icon: '📚', text: '全レッスン（初級〜上級）' },
-  { icon: '🤖', text: 'AI問題生成 毎日10問' },
-  { icon: '🎭', text: 'ロールプレイ 無制限' },
-  { icon: '🏆', text: 'フェルミランキング 参加' },
-  { icon: '📈', text: '月次学習分析レポート' },
-  { icon: '💬', text: '優先サポート' },
+  { icon: <IconBook />, text: '全レッスン' },
+  { icon: <IconAI />, text: 'AI問題 日10問' },
+  { icon: <IconRoleplay />, text: 'ロールプレイ 無制限' },
+  { icon: <IconTrophy />, text: 'フェルミランキング' },
+  { icon: <IconReport />, text: '月次学習レポート' },
+  { icon: <IconSupport />, text: '優先サポート' },
 ]
 
 const FREE_FEATURES = [
-  { icon: '📚', text: '初級レッスン 全件' },
-  { icon: '❓', text: '1問チャレンジ（毎日）' },
-  { icon: '💾', text: '学習記録 無制限保存' },
+  { icon: <IconBook />, text: '初級レッスン全件' },
+  { icon: <IconQuestion />, text: '1問チャレンジ（毎日）' },
+  { icon: <IconSave />, text: '学習記録 無制限' },
 ]
 
 export function PricingScreen({ onBack }: PricingScreenProps) {
@@ -77,16 +89,10 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
       </div>
 
       <div style={{ padding: '0 20px' }}>
-        {/* キャンペーンヒーロー */}
-        <div style={{ background: `linear-gradient(135deg, ${v3.color.accent}22 0%, ${v3.color.warm}18 100%)`, border: `1px solid ${v3.color.accent}40`, borderRadius: v3.radius.card, padding: '20px 20px 18px', marginBottom: 20, position: 'relative', overflow: 'hidden' }}>
-          <div style={{ position: 'absolute', right: -20, top: -20, width: 120, height: 120, borderRadius: '50%', background: v3.color.accentGlow, filter: 'blur(36px)', pointerEvents: 'none' }} />
-          <div style={{ fontSize: 11, fontWeight: 700, color: v3.color.warm, letterSpacing: '.08em', marginBottom: 6 }}>🎉 期間限定キャンペーン</div>
-          <div style={{ fontSize: 22, fontWeight: 800, lineHeight: 1.3, marginBottom: 8, color: v3.color.text }}>
-            今なら<span style={{ color: v3.color.accent }}>フリープラン</span>で<br />ずっと無料で使える
-          </div>
-          <div style={{ fontSize: 13, color: v3.color.text2, lineHeight: 1.6 }}>
-            初級レッスン全件 + 毎日の1問チャレンジ + 学習記録が無料。<br />有料プランはいつでもアップグレード可能。
-          </div>
+        {/* プランヘッダー */}
+        <div style={{ marginBottom: 20 }}>
+          <div style={{ fontSize: 22, fontWeight: 800, lineHeight: 1.3, color: v3.color.text, marginBottom: 6 }}>プランを選んでください</div>
+          <div style={{ fontSize: 13, color: v3.color.text2 }}>いつでもキャンセル・変更可能です</div>
         </div>
 
         {state.plan === 'trial' && (
@@ -136,7 +142,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 14 }}>
             {FREE_FEATURES.map((f) => (
               <div key={f.text} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <span style={{ fontSize: 15, fontFamily: 'Apple Color Emoji, Segoe UI Emoji, sans-serif', lineHeight: 1 }}>{f.icon}</span>
+                <span style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>{f.icon}</span>
                 <span style={{ fontSize: 13, color: v3.color.text2 }}>{f.text}</span>
               </div>
             ))}
@@ -168,7 +174,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
             {STANDARD_FEATURES.map((f) => (
               <div key={f.text} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <span style={{ fontSize: 15, fontFamily: 'Apple Color Emoji, Segoe UI Emoji, sans-serif', lineHeight: 1 }}>{f.icon}</span>
+                <span style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>{f.icon}</span>
                 <span style={{ fontSize: 13, color: v3.color.text2 }}>{f.text}</span>
               </div>
             ))}
@@ -212,7 +218,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
             {PREMIUM_FEATURES.map((f) => (
               <div key={f.text} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <span style={{ fontSize: 15, fontFamily: 'Apple Color Emoji, Segoe UI Emoji, sans-serif', lineHeight: 1 }}>{f.icon}</span>
+                <span style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>{f.icon}</span>
                 <span style={{ fontSize: 13, color: f.text.includes('スタンダード') ? v3.color.text3 : v3.color.text2 }}>{f.text}</span>
               </div>
             ))}

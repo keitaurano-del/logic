@@ -114,69 +114,72 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
 
         <SectionLabel>すべてのカテゴリ</SectionLabel>
 
-        <CategoryCard
-          icon={<svg width="22" height="22" viewBox="0 0 24 24" fill={v3.color.accent}><rect x="3" y="3" width="8" height="8" rx="1.5" /><rect x="13" y="3" width="8" height="8" rx="1.5" /><rect x="3" y="13" width="8" height="8" rx="1.5" /><rect x="13" y="13" width="8" height="8" rx="1.5" /></svg>}
-          iconBg="rgba(112,216,189,.14)"
-          name="ロジカルシンキング"
-          meta="5レッスン · 初〜中級"
-          progress="3/5"
-          image={`${IMG}/course-logical.webp`}
-          onClick={() => props.onOpenCategory('logic')}
-        />
-        <CategoryCard
-          icon={<svg width="22" height="22" viewBox="0 0 24 24" fill={v3.color.warm}><rect x="2" y="7" width="20" height="14" rx="2" /><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" fill="none" stroke={v3.color.warm} strokeWidth="2" /></svg>}
-          iconBg="rgba(244,162,97,.14)"
-          name="ケース面接"
-          meta="4レッスン · 中〜上級"
-          progress="1/4"
-          image={`${IMG}/course-business.webp`}
-          onClick={() => props.onOpenCategory('case')}
-        />
-        <CategoryCard
-          icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="#A5B4FC"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" /></svg>}
-          iconBg="rgba(165,180,252,.14)"
-          name="思考法"
-          meta="22レッスン · 全レベル"
-          progress="3/22"
-          image={`${IMG}/course-thinking.webp`}
-          onClick={() => props.onOpenCategory('thinking')}
-        />
-        <CategoryCard
-          icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="#C4B5FD"><circle cx="12" cy="12" r="4" /><circle cx="12" cy="12" r="9" fill="none" stroke="#C4B5FD" strokeWidth="2" strokeDasharray="4 3" /></svg>}
-          iconBg="rgba(196,181,253,.14)"
-          name="哲学・思考の原理"
-          meta="5レッスン · 上級"
-          progress="0/5"
-          image={`${IMG}/course-philosophy.webp`}
-          onClick={() => props.onOpenCategory('philosophy')}
-        />
-        <CategoryCard
-          icon={<svg width="22" height="22" viewBox="0 0 24 24" fill={v3.color.warm}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" fill="none" stroke={v3.color.warm} strokeWidth="2" /><polyline points="14 2 14 8 20 8" fill="none" stroke={v3.color.warm} strokeWidth="2" /><line x1="16" y1="13" x2="8" y2="13" stroke={v3.color.warm} strokeWidth="2" /><line x1="16" y1="17" x2="8" y2="17" stroke={v3.color.warm} strokeWidth="2" /><polyline points="10 9 9 9 8 9" stroke={v3.color.warm} strokeWidth="2" /></svg>}
-          iconBg="rgba(244,162,97,.14)"
-          name="提案書作成"
-          meta="7レッスン · 実践・全レベル"
-          progress="0/7"
-          image={`${IMG}/lesson-proposal.webp`}
-          onClick={() => props.onOpenCategory('提案書作成')}
-        />
-        <CategoryCard
-          icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="#C49A3C"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" fill="none" stroke="#C49A3C" strokeWidth="2" /><circle cx="9" cy="7" r="4" fill="none" stroke="#C49A3C" strokeWidth="2" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" fill="none" stroke="#C49A3C" strokeWidth="2" /><path d="M16 3.13a4 4 0 0 1 0 7.75" fill="none" stroke="#C49A3C" strokeWidth="2" /></svg>}
-          iconBg="rgba(196,154,60,.14)"
-          name="クライアントワーク"
-          meta="9レッスン · 中級"
-          progress="0/9"
-          image={`${IMG}/course-client.webp`}
-          onClick={() => props.onOpenCategory('クライアントワーク')}
-        />
-        <CategoryCard
-          icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6C8EF5" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>}
-          iconBg="rgba(108,142,245,.14)"
-          name="フェルミ推定"
-          meta="5レッスン · 中級〜上級"
-          progress="0/5"
-          image={`${IMG}/fermi-card.png`}
-          onClick={() => props.onOpenCategory('フェルミ推定')}
-        />
+        {/* 2列グリッド */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+          <CategoryCard
+            icon={<svg width="22" height="22" viewBox="0 0 24 24" fill={v3.color.accent}><rect x="3" y="3" width="8" height="8" rx="1.5" /><rect x="13" y="3" width="8" height="8" rx="1.5" /><rect x="3" y="13" width="8" height="8" rx="1.5" /><rect x="13" y="13" width="8" height="8" rx="1.5" /></svg>}
+            iconBg="rgba(112,216,189,.14)"
+            name="ロジカルシンキング"
+            meta="5レッスン · 初〜中級"
+            progress="3/5"
+            image={`${IMG}/course-logical.webp`}
+            onClick={() => props.onOpenCategory('logic')}
+          />
+          <CategoryCard
+            icon={<svg width="22" height="22" viewBox="0 0 24 24" fill={v3.color.warm}><rect x="2" y="7" width="20" height="14" rx="2" /><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" fill="none" stroke={v3.color.warm} strokeWidth="2" /></svg>}
+            iconBg="rgba(244,162,97,.14)"
+            name="ケース面接"
+            meta="4レッスン · 中〜上級"
+            progress="1/4"
+            image={`${IMG}/course-business.webp`}
+            onClick={() => props.onOpenCategory('case')}
+          />
+          <CategoryCard
+            icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="#A5B4FC"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" /></svg>}
+            iconBg="rgba(165,180,252,.14)"
+            name="思考法"
+            meta="22レッスン · 全レベル"
+            progress="3/22"
+            image={`${IMG}/course-thinking.webp`}
+            onClick={() => props.onOpenCategory('thinking')}
+          />
+          <CategoryCard
+            icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="#C4B5FD"><circle cx="12" cy="12" r="4" /><circle cx="12" cy="12" r="9" fill="none" stroke="#C4B5FD" strokeWidth="2" strokeDasharray="4 3" /></svg>}
+            iconBg="rgba(196,181,253,.14)"
+            name="哲学・思考の原理"
+            meta="5レッスン · 上級"
+            progress="0/5"
+            image={`${IMG}/course-philosophy.webp`}
+            onClick={() => props.onOpenCategory('philosophy')}
+          />
+          <CategoryCard
+            icon={<svg width="22" height="22" viewBox="0 0 24 24" fill={v3.color.warm}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" fill="none" stroke={v3.color.warm} strokeWidth="2" /><polyline points="14 2 14 8 20 8" fill="none" stroke={v3.color.warm} strokeWidth="2" /><line x1="16" y1="13" x2="8" y2="13" stroke={v3.color.warm} strokeWidth="2" /><line x1="16" y1="17" x2="8" y2="17" stroke={v3.color.warm} strokeWidth="2" /><polyline points="10 9 9 9 8 9" stroke={v3.color.warm} strokeWidth="2" /></svg>}
+            iconBg="rgba(244,162,97,.14)"
+            name="提案書作成"
+            meta="7レッスン · 実践・全レベル"
+            progress="0/7"
+            image={`${IMG}/lesson-proposal.webp`}
+            onClick={() => props.onOpenCategory('提案書作成')}
+          />
+          <CategoryCard
+            icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="#C49A3C"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" fill="none" stroke="#C49A3C" strokeWidth="2" /><circle cx="9" cy="7" r="4" fill="none" stroke="#C49A3C" strokeWidth="2" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" fill="none" stroke="#C49A3C" strokeWidth="2" /><path d="M16 3.13a4 4 0 0 1 0 7.75" fill="none" stroke="#C49A3C" strokeWidth="2" /></svg>}
+            iconBg="rgba(196,154,60,.14)"
+            name="クライアントワーク"
+            meta="9レッスン · 中級"
+            progress="0/9"
+            image={`${IMG}/course-client.webp`}
+            onClick={() => props.onOpenCategory('クライアントワーク')}
+          />
+          <CategoryCard
+            icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6C8EF5" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>}
+            iconBg="rgba(108,142,245,.14)"
+            name="フェルミ推定"
+            meta="5レッスン · 中級〜上級"
+            progress="0/5"
+            image={`${IMG}/fermi-card.png`}
+            onClick={() => props.onOpenCategory('フェルミ推定')}
+          />
+        </div>
       </div>}
     </div>
   )
@@ -271,21 +274,21 @@ const CATEGORY_LABEL_JP: Record<string, string> = {
 
 function CategoryCard({ icon, iconBg, name, meta, progress, onClick, image }: { icon: React.ReactNode; iconBg: string; name: string; meta: string; progress: string; onClick: () => void; image?: string }) {
   return (
-    <div onClick={onClick} style={{ background: v3.color.card, borderRadius: v3.radius.card, overflow: 'hidden', cursor: 'pointer', boxShadow: v3.shadow.card }}>
+    <div onClick={onClick} style={{ background: v3.color.card, borderRadius: v3.radius.card, overflow: 'hidden', cursor: 'pointer', boxShadow: v3.shadow.card, display: 'flex', flexDirection: 'column' }}>
       {image && (
-        <div style={{ height: 100, overflow: 'hidden' }}>
+        <div style={{ height: 80, overflow: 'hidden', flexShrink: 0 }}>
           <img src={image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
         </div>
       )}
-      <div style={{ padding: 14, display: 'flex', alignItems: 'center', gap: 14 }}>
-        <div style={{ width: 44, height: 44, borderRadius: 12, background: iconBg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+      <div style={{ padding: '10px 12px 12px', display: 'flex', flexDirection: 'column', gap: 6, flex: 1 }}>
+        <div style={{ width: 34, height: 34, borderRadius: 10, background: iconBg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
           {icon}
         </div>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 15, fontWeight: 700, color: v3.color.text, marginBottom: 3 }}>{name}</div>
-          <div style={{ fontSize: 14, color: v3.color.text2, fontWeight: 500 }}>{meta}</div>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: v3.color.text, marginBottom: 2, lineHeight: 1.3 }}>{name}</div>
+          <div style={{ fontSize: 11, color: v3.color.text2, fontWeight: 500 }}>{meta}</div>
         </div>
-        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 14, fontWeight: 700, color: v3.color.accent }}>{progress}</div>
+        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 12, fontWeight: 700, color: v3.color.accent }}>{progress}</div>
       </div>
     </div>
   )

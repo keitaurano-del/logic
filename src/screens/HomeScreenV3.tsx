@@ -10,7 +10,6 @@ import { API_BASE } from './apiBase'
 import { HomeCoachmark, useShouldShowHomeCoachmark } from '../tutorial/coachmark'
 import { PlacementCard } from '../tutorial/placementCard'
 import { hasCompletedPlacement } from '../placementData'
-import { LessonGridSection } from './LessonGrid'
 import { useWindowSize, BREAKPOINTS } from '../hooks/useResponsive'
 
 // SCRUM-185: グリーティングメッセージ複数パターン
@@ -172,9 +171,6 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
             })}
           </div>
         </div>
-
-        {/* Courses - Grid 2列表示 with Categories */}
-        <LessonGridSection onOpenCategory={props.onOpenCategory} />
 
         {/* AI practice cards (large, vertical) */}
         <AILargeCard image={`${IMG}/home-daily-question.webp`} name="AI問題生成" sub="テーマ別のオリジナル問題で練習" onClick={onOpenAIGen} beta />
