@@ -2,6 +2,8 @@ const STORAGE_KEY = 'logic-subscription'
 const TRIAL_DAYS = 7
 
 import { createClient } from '@supabase/supabase-js'
+import { purchaseProduct } from './billing'
+import { PLAY_PRODUCTS } from './billing/products'
 
 export type SubscriptionPlan =
   | 'trial'
@@ -30,14 +32,14 @@ export type SubscriptionState = {
   trialStartedAt: string | null
   plan: SubscriptionPlan
   expiresAt: string | null
-  stripeSessionId: string | null
+  playStoreToken: string | null // Google Play 購買トークン（RTDN用）
 }
 
 const DEFAULT_STATE: SubscriptionState = {
   trialStartedAt: null,
   plan: 'free',
   expiresAt: null,
-  stripeSessionId: null,
+  playStoreToken: null,
 }
 
 function load(): SubscriptionState {
@@ -180,11 +182,11 @@ export function isPremium(): boolean {
     || s.plan === 'premium_yearly'
 }
 
-export function setPaidPlan(plan: SubscriptionPlan, sessionId: string, expiresAt: string) {
+export function setPaidPlan(plan: SubscriptionPlan, expiresAt: string, playStoreToken?: string) {
   const s = load()
   s.plan = plan
-  s.stripeSessionId = sessionId
   s.expiresAt = expiresAt
+  if (playStoreToken) s.playStoreToken = playStoreToken
   save(s)
 }
 
@@ -205,11 +207,10 @@ export function getPlanLabel(): string {
   }
 }
 
-import { API_BASE } from './apiBase'
-import { purchaseProduct } from './billing'
-import { PLAY_PRODUCTS } from './billing/products'
+// ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+// Google Play Billing (2026-05-01: App版のみリリース、Play Store決済一本化)
+// ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
-// ── Google Play product ID mapping (SCRUM-116) ─────────────────────
 export function planToPlayProductId(plan: SubscriptionPlan): string {
   switch (plan) {
     case 'basic_monthly':    return PLAY_PRODUCTS.basic_monthly
@@ -226,41 +227,26 @@ export function planToPlayProductId(plan: SubscriptionPlan): string {
   }
 }
 
-export async function startCheckout(plan: SubscriptionPlan, guestId: string, userId?: string, trial?: boolean): Promise<void> {
-  // SCRUM-116/121: Android native → Google Play Billing
-  if (isAndroidNative()) {
-    const productId = planToPlayProductId(plan)
-    await purchaseProduct(productId)
-    return
-  }
-  const res = await fetch(`${API_BASE}/api/checkout`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ plan, guestId, userId, trial }),
-  })
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}))
-    throw new Error(err.error || 'チェックアウトに失敗しました')
-  }
-  const data = await res.json()
-  if (data.url) window.location.href = data.url
-  else throw new Error('チェックアウトURLが取得できませんでした')
+/**
+ * App版リリース後: Play Store Billing のみ使用
+ * Web版は廃止済み（2026-05-01）
+ */
+export async function startCheckout(plan: SubscriptionPlan): Promise<void> {
+  const productId = planToPlayProductId(plan)
+  await purchaseProduct(productId)
 }
 
-export async function verifyCheckout(sessionId: string): Promise<boolean> {
-  const res = await fetch(`${API_BASE}/api/checkout-verify?session_id=${sessionId}`)
-  if (!res.ok) return false
-  const data = await res.json()
-  if (data.paid && data.plan && data.expiresAt) {
-    setPaidPlan(data.plan as SubscriptionPlan, sessionId, data.expiresAt)
-    return true
-  }
-  return false
+export const BETA_CAMPAIGN_PLAN: SubscriptionPlan = 'premium_yearly'
+
+export async function startBetaCampaignCheckout(): Promise<void> {
+  const productId = planToPlayProductId(BETA_CAMPAIGN_PLAN)
+  await purchaseProduct(productId)
 }
 
-// ── Platform detection (SCRUM-121) ─────────────────────────────
-// Web/iOS → Stripe checkout
-// Android native (Capacitor) → Google Play Billing (SCRUM-116)
+// ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+// Platform detection
+// ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
 export type Platform = 'android-native' | 'web'
 
 export function detectPlatform(): Platform {
@@ -278,42 +264,10 @@ export function isAndroidNative(): boolean {
   return detectPlatform() === 'android-native'
 }
 
-// ── Beta Campaign ────────────────────────────────────────────────
-// ¥1,980/year plan with 7-day free trial
-// On Android: will use Google Play Billing (SCRUM-116)
-// On Web/iOS: falls through to Stripe checkout
+// ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+// AI問題生成 日次制限（Keita-san指定: フリー0/スタンダード3/プレミアム10）
+// ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
-export const BETA_CAMPAIGN_PLAN: SubscriptionPlan = 'premium_yearly'
-
-export async function startBetaCampaignCheckout(guestId: string, userId?: string): Promise<void> {
-  // SCRUM-116/121: Android native → Google Play Billing
-  if (isAndroidNative()) {
-    const productId = planToPlayProductId(BETA_CAMPAIGN_PLAN)
-    await purchaseProduct(productId)
-    return
-  }
-  // Web / iOS: Stripe checkout with beta_campaign flag
-  const res = await fetch(`${API_BASE}/api/checkout`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      plan: BETA_CAMPAIGN_PLAN,
-      guestId,
-      userId,
-      trial: true,
-      betaCampaign: true,
-    }),
-  })
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}))
-    throw new Error(err.error || 'チェックアウトに失敗しました')
-  }
-  const data = await res.json()
-  if (data.url) window.location.href = data.url
-  else throw new Error('チェックアウトURLが取得できませんでした')
-}
-
-// ── AI問題生成 日次制限（Keita-san指定: フリー0/スタンダード3/プレミアム10） ──
 const AI_GEN_DAILY_KEY = 'logic-ai-gen-daily'
 const TODAY_STR = () => new Date().toISOString().slice(0, 10)
 

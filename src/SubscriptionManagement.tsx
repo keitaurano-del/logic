@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import { daysLeftInTrial, getSubscriptionState } from './subscription'
+import { isAndroidNative } from './subscription'
 import './SubscriptionManagement.css'
 
 import { API_BASE } from './apiBase'
@@ -19,13 +20,11 @@ type Props = {
 export default function SubscriptionManagement({ userId, onChangePlan }: Props) {
   const [subData, setSubData] = useState<SubData | null>(null)
   const [loading, setLoading] = useState(true)
-  const [cancelLoading, setCancelLoading] = useState(false)
-  const [portalLoading, setPortalLoading] = useState(false)
   const [error, setError] = useState('')
-  const [cancelConfirm, setCancelConfirm] = useState(false)
 
   const localState = getSubscriptionState()
   const trialDays = daysLeftInTrial()
+  const isAndroid = isAndroidNative()
 
   useEffect(() => {
     if (!userId) {
@@ -77,49 +76,14 @@ export default function SubscriptionManagement({ userId, onChangePlan }: Props) 
   const isActive = plan === 'monthly' || plan === 'yearly' || plan === 'trial'
   const isTrial = plan === 'trial' || status === 'trialing'
 
-  const handleCancel = async () => {
-    if (!userId) return
-    setCancelLoading(true)
-    setError('')
-    try {
-      const res = await fetch(`${API_BASE}/api/subscription/cancel`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId }),
-      })
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}))
-        throw new Error(err.error || 'キャンセルに失敗しました')
-      }
-      setSubData(prev => prev ? { ...prev, plan: 'free', status: 'inactive' } : null)
-      setCancelConfirm(false)
-    } catch (e: any) {
-      setError(e.message || 'エラーが発生しました')
-    } finally {
-      setCancelLoading(false)
-    }
-  }
-
-  const handlePortal = async () => {
-    if (!userId) return
-    setPortalLoading(true)
-    setError('')
-    try {
-      const res = await fetch(`${API_BASE}/api/subscription/portal`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId }),
-      })
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}))
-        throw new Error(err.error || 'ポータルへのアクセスに失敗しました')
-      }
-      const data = await res.json()
-      if (data.url) window.location.href = data.url
-    } catch (e: any) {
-      setError(e.message || 'エラーが発生しました')
-    } finally {
-      setPortalLoading(false)
+  // Google Play 定期購入管理へのリンク
+  const handleOpenPlayStoreManagement = () => {
+    const intent = 'intent://account/subscriptions'
+    if (isAndroid) {
+      window.location.href = intent
+    } else {
+      // Web: play.google.com に誘導
+      window.open('https://play.google.com/account/subscriptions', '_blank')
     }
   }
 
@@ -177,49 +141,16 @@ export default function SubscriptionManagement({ userId, onChangePlan }: Props) 
       {/* アクションボタン */}
       <div className="sm-actions">
         <button className="sm-btn sm-btn-primary" onClick={onChangePlan}>
-          🔄 プランを変更・確認
+          🔄 プランを変更
         </button>
 
-        {isActive && userId && (
+        {isActive && (
           <button
             className="sm-btn sm-btn-secondary"
-            onClick={handlePortal}
-            disabled={portalLoading}
+            onClick={handleOpenPlayStoreManagement}
           >
-            {portalLoading ? '読み込み中...' : '💳 お支払い方法を変更'}
+            📱 Google Playで管理
           </button>
-        )}
-
-        {isActive && userId && !cancelConfirm && (
-          <button
-            className="sm-btn sm-btn-danger-outline"
-            onClick={() => setCancelConfirm(true)}
-          >
-            サブスクをキャンセル
-          </button>
-        )}
-
-        {cancelConfirm && (
-          <div className="sm-cancel-confirm">
-            <p>本当にキャンセルしますか？<br/>
-              <span className="sm-cancel-note">現在の期間終了まで利用できます。</span>
-            </p>
-            <div className="sm-cancel-btns">
-              <button
-                className="sm-btn sm-btn-danger"
-                onClick={handleCancel}
-                disabled={cancelLoading}
-              >
-                {cancelLoading ? 'キャンセル中...' : 'はい、解約する'}
-              </button>
-              <button
-                className="sm-btn sm-btn-secondary"
-                onClick={() => setCancelConfirm(false)}
-              >
-                戻る
-              </button>
-            </div>
-          </div>
         )}
       </div>
 
