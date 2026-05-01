@@ -6,6 +6,7 @@ import { localeBody } from '../i18n'
 import { ArrowLeftIcon, CheckIcon } from '../icons'
 import { IconButton } from '../components/IconButton'
 import { API_BASE } from './apiBase'
+import { v3 } from '../styles/tokensV3'
 
 interface RoleplayChatScreenProps {
   situationId: string
@@ -168,7 +169,7 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
           </IconButton>
           {/* パートナーアバター */}
           <div style={{
-            width: 40, height: 40, borderRadius: '50%', background: '#EEF2FF',
+            width: 40, height: 40, borderRadius: '50%', background: v3.color.accentSoft,
             display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
           }}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" strokeWidth="2" strokeLinecap="round">
@@ -177,23 +178,23 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
             </svg>
           </div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 15, fontWeight: 700, color: '#0F1523' }}>{situation.partnerName}</div>
-            <div style={{ fontSize: 12, color: '#7A849E' }}>{situation.frameworkLabel}</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: v3.color.text }}>{situation.partnerName}</div>
+            <div style={{ fontSize: 14, color: v3.color.text2 }}>{situation.frameworkLabel}</div>
           </div>
-          <div style={{ fontSize: 13, fontWeight: 700, color: '#7A849E' }}>
-            残り <span style={{ color: '#3B5BDB' }}>{MAX_TURNS - Math.min(turnNumber - 1, MAX_TURNS)}</span> ターン
+          <div style={{ fontSize: 13, fontWeight: 700, color: v3.color.text2 }}>
+            残り <span style={{ color: v3.color.accent }}>{MAX_TURNS - Math.min(turnNumber - 1, MAX_TURNS)}</span> ターン
           </div>
         </div>
         {/* Progress bar */}
-        <div style={{ height: 3, background: '#EEF2FF', borderRadius: 99, overflow: 'hidden' }}>
-          <div style={{ height: '100%', width: `${(Math.min(turnNumber, MAX_TURNS) / MAX_TURNS) * 100}%`, background: '#3B5BDB', borderRadius: 99, transition: 'width 300ms ease' }} />
+        <div style={{ height: 3, background: v3.color.accentSoft, borderRadius: 99, overflow: 'hidden' }}>
+          <div style={{ height: '100%', width: `${(Math.min(turnNumber, MAX_TURNS) / MAX_TURNS) * 100}%`, background: v3.color.accent, borderRadius: 99, transition: 'width 300ms ease' }} />
         </div>
       </div>
 
       {!finished && (
         <>
           {/* Context card */}
-          <div style={{ background: '#EEF2FF', borderRadius: 12, padding: '10px 14px', fontSize: 13, color: '#3B5BDB', lineHeight: 1.55 }}>
+          <div style={{ background: v3.color.accentSoft, borderRadius: 12, padding: '10px 14px', fontSize: 13, color: v3.color.accent, lineHeight: 1.55 }}>
             <strong style={{ fontWeight: 700 }}>シナリオ: </strong>{situation.context}
           </div>
 
@@ -216,8 +217,13 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
               </div>
             ))}
             {loading && (
-              <div style={{ maxWidth: '80%', padding: '10px 14px', borderRadius: '14px 14px 14px 4px', background: '#fff', border: '1px solid #E2E8FF', fontSize: 16, color: '#7A849E', alignSelf: 'flex-start' }}>
-                考え中…
+              <div style={{ maxWidth: '80%', padding: '12px 16px', borderRadius: '14px 14px 14px 4px', background: v3.color.card, border: `1px solid ${v3.color.line}`, alignSelf: 'flex-start', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ display: 'flex', gap: 4 }}>
+                  {[0,1,2].map(i => (
+                    <div key={i} style={{ width: 7, height: 7, borderRadius: '50%', background: v3.color.accent, opacity: 0.5 + i * 0.15 }} />
+                  ))}
+                </div>
+                <span style={{ fontSize: 14, color: v3.color.text2 }}>返答を生成中</span>
               </div>
             )}
           </div>
@@ -238,7 +244,7 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
                       whiteSpace: 'nowrap', padding: '7px 14px',
                       borderRadius: 99, border: '1.5px solid #DBE4FF',
                       background: '#F8FAFF', fontSize: 13, fontWeight: 600,
-                      color: '#3B5BDB', cursor: 'pointer', flexShrink: 0,
+                      color: v3.color.accent, cursor: 'pointer', flexShrink: 0,
                     }}
                   >
                     {c.length > 24 ? c.slice(0, 22) + '…' : c}
@@ -255,7 +261,7 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
                       background: '#fff', border: '1.5px solid #DBE4FF',
                       borderRadius: 12, padding: '12px 14px',
                       cursor: 'pointer', textAlign: 'left',
-                      fontSize: 15, color: '#0F1523', lineHeight: 1.6, width: '100%',
+                      fontSize: 15, color: v3.color.text, lineHeight: 1.6, width: '100%',
                       transition: 'border-color 120ms ease',
                     }}
                   >
@@ -269,7 +275,7 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
           {messages.length >= 2 && (
             <button
               onClick={endEarly}
-              style={{ background: 'none', border: 'none', color: '#7A849E', fontSize: 16, fontWeight: 600, cursor: 'pointer', padding: '4px 0', textAlign: 'center' }}
+              style={{ background: 'none', border: 'none', color: v3.color.text2, fontSize: 16, fontWeight: 600, cursor: 'pointer', padding: '4px 0', textAlign: 'center' }}
             >
               終了して採点する
             </button>
@@ -280,9 +286,9 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
       {finished && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           {scoring && (
-            <div style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: '24px 16px', textAlign: 'center', boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
-              <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 800, color: '#0F1523', marginBottom: 8 }}>採点中…</div>
-              <p style={{ fontSize: 14, color: '#7A849E', margin: 0 }}>AI があなたの対話を 5 項目で評価しています</p>
+            <div style={{ background: '#fff', border: `1px solid ${v3.color.line}`, borderRadius: 14, padding: '24px 16px', textAlign: 'center', boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
+              <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 800, color: v3.color.text, marginBottom: 8 }}>採点中…</div>
+              <p style={{ fontSize: 14, color: v3.color.text2, margin: 0 }}>AI があなたの対話を 5 項目で評価しています</p>
             </div>
           )}
 
@@ -292,17 +298,17 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
                 <div style={{ width: 28, height: 28, background: '#22C55E', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                   <CheckIcon />
                 </div>
-                <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 800, color: '#15803D' }}>採点完了</div>
+                <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 800, color: v3.color.text }}>採点完了</div>
               </div>
-              <p style={{ fontSize: 16, color: '#166534', lineHeight: 1.6, marginBottom: 12 }}>{score.overall}</p>
+              <p style={{ fontSize: 16, color: v3.color.text, lineHeight: 1.6, marginBottom: 12 }}>{score.overall}</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {score.scores.map((s) => (
                   <div key={s.name} style={{ background: '#fff', borderRadius: 10, padding: '10px 12px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4 }}>
-                      <span style={{ fontSize: 16, fontWeight: 600, color: '#065F46' }}>{s.name}</span>
-                      <span style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 16, fontWeight: 700, color: '#16A34A' }}>{s.score} / {s.maxScore}</span>
+                      <span style={{ fontSize: 16, fontWeight: 600, color: v3.color.text }}>{s.name}</span>
+                      <span style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 16, fontWeight: 700, color: v3.color.accent }}>{s.score} / {s.maxScore}</span>
                     </div>
-                    <div style={{ fontSize: 14, color: '#047857', lineHeight: 1.6 }}>{s.feedback}</div>
+                    <div style={{ fontSize: 14, color: v3.color.text2, lineHeight: 1.6 }}>{s.feedback}</div>
                   </div>
                 ))}
               </div>
@@ -310,13 +316,13 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
           )}
 
           {summary && (
-            <div style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: '16px', boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
-              <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: '#3B5BDB', marginBottom: 10 }}>総評</div>
-              <p style={{ fontSize: 16, color: '#0F1523', lineHeight: 1.7, marginBottom: 14 }}>{summary.summary}</p>
+            <div style={{ background: '#fff', border: `1px solid ${v3.color.line}`, borderRadius: 14, padding: '16px', boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
+              <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: v3.color.accent, marginBottom: 10 }}>総評</div>
+              <p style={{ fontSize: 16, color: v3.color.text, lineHeight: 1.7, marginBottom: 14 }}>{summary.summary}</p>
               {summary.goodPoints.length > 0 && (
                 <div style={{ marginBottom: 12 }}>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: '#16A34A', marginBottom: 6 }}>✓ 良かった点</div>
-                  <ul style={{ fontSize: 16, color: '#0F1523', lineHeight: 1.7, paddingLeft: 18, margin: 0 }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: v3.color.accent, marginBottom: 6 }}>✓ 良かった点</div>
+                  <ul style={{ fontSize: 16, color: v3.color.text, lineHeight: 1.7, paddingLeft: 18, margin: 0 }}>
                     {summary.goodPoints.map((p, i) => <li key={i}>{p}</li>)}
                   </ul>
                 </div>
@@ -324,7 +330,7 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
               {summary.improvements.length > 0 && (
                 <div>
                   <div style={{ fontSize: 14, fontWeight: 700, color: '#D97706', marginBottom: 6 }}>△ 改善点</div>
-                  <ul style={{ fontSize: 16, color: '#0F1523', lineHeight: 1.7, paddingLeft: 18, margin: 0 }}>
+                  <ul style={{ fontSize: 16, color: v3.color.text, lineHeight: 1.7, paddingLeft: 18, margin: 0 }}>
                     {summary.improvements.map((p, i) => <li key={i}>{p}</li>)}
                   </ul>
                 </div>
@@ -334,7 +340,7 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
 
           <button
             onClick={onBack}
-            style={{ background: '#3B5BDB', border: 'none', borderRadius: 14, padding: '16px', color: '#fff', fontSize: 18, fontWeight: 800, fontFamily: "'Inter Tight', sans-serif", cursor: 'pointer', width: '100%', boxShadow: '0 4px 12px rgba(59,91,219,.25)', marginTop: 4 }}
+            style={{ background: v3.color.accent, border: 'none', borderRadius: 14, padding: '16px', color: '#fff', fontSize: 18, fontWeight: 800, fontFamily: "'Inter Tight', sans-serif", cursor: 'pointer', width: '100%', boxShadow: '0 4px 12px rgba(59,91,219,.25)', marginTop: 4 }}
           >
             別のシナリオに戻る
           </button>

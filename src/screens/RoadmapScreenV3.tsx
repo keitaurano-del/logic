@@ -259,30 +259,33 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
           </div>
         </div>
       )}
-      <div style={{ flex: 1, padding: '0 16px 100px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div style={{ flex: 1, padding: '0 16px 100px', display: 'flex', flexDirection: 'column', gap: 8 }}>
         {lessons.length === 0 && (
           <div style={{ padding: 32, textAlign: 'center', color: v3.color.text2 }}>このカテゴリにはまだレッスンがありません。</div>
         )}
-        {showStartHint && <div style={{ fontSize: 12, color: v3.color.text3, padding: '4px 4px 0', fontWeight: 600 }}>すべてのレッスン</div>}
+        {showStartHint && <div style={{ fontSize: 13, color: v3.color.text3, padding: '8px 4px 4px', fontWeight: 600, letterSpacing: '.04em' }}>すべてのレッスン</div>}
         {lessons.map((lesson: any) => {
           const isDone = completed.has(`lesson-${lesson.id}`)
-          // カテゴリごとに画像をマッピング（既存 v3 画像を活用）
-          // SVGサムネイルを使用（LessonThumbnailコンポーネント）
           return (
-            <div key={lesson.id} onClick={() => onOpenLesson(lesson.id)} style={{ background: v3.color.card, borderRadius: 16, padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'stretch', gap: 0, overflow: 'hidden' }}>
-              {/* SVGサムネイル */}
-              <div style={{ width: 88, height: 88, flexShrink: 0, overflow: 'hidden', borderRadius: '0' }}>
-                <LessonThumbnail lessonId={lesson.id} size={88} />
+            <div key={lesson.id} onClick={() => onOpenLesson(lesson.id)}
+              style={{ background: v3.color.card, borderRadius: 14, padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'stretch', overflow: 'hidden', boxShadow: v3.shadow.card }}>
+              {/* サムネイル */}
+              <div style={{ width: 80, height: 80, flexShrink: 0 }}>
+                <LessonThumbnail lessonId={lesson.id} size={80} />
               </div>
-              <div style={{ padding: '14px 14px 14px 14px', display: 'flex', alignItems: 'center', gap: 12, flex: 1, minWidth: 0 }}>
-                <div style={{ width: 28, height: 28, borderRadius: '50%', border: `1.5px solid ${isDone ? v3.color.accent : v3.color.text3}`, background: isDone ? v3.color.accent : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  {isDone && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={v3.color.bg} strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12" /></svg>}
-                </div>
+              <div style={{ padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0 }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 15, fontWeight: 700, color: v3.color.text, marginBottom: 3, lineHeight: 1.4 }}>{lesson.title}</div>
-                  <div style={{ fontSize: 14, color: v3.color.text2, fontWeight: 500 }}>{lesson.steps?.length ?? 0}ステップ · {lesson.difficulty || '初級'}</div>
+                  <div style={{ fontSize: 13, color: v3.color.text2, fontWeight: 500 }}>
+                    {lesson.steps?.length ?? 0}ステップ · {lesson.difficulty || '初級'}
+                  </div>
                 </div>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6" /></svg>
+                <div style={{ flexShrink: 0, width: 26, height: 26, borderRadius: '50%', background: isDone ? v3.color.accent : `${v3.color.text3}22`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  {isDone
+                    ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12" /></svg>
+                    : <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6" /></svg>
+                  }
+                </div>
               </div>
             </div>
           )
