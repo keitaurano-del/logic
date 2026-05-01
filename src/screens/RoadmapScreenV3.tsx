@@ -6,6 +6,8 @@
 import { useState } from 'react'
 import { v3 } from '../styles/tokensV3'
 import { LessonThumbnail } from '../components/LessonThumbnail'
+import { getAllLessonsFlat } from '../lessonData'
+import { getCompletedLessons } from '../stats'
 
 const IMG = '/images/v3'
 
@@ -164,8 +166,6 @@ function SearchResults({ query, onOpenLesson }: { query: string; onOpenLesson: (
 
 
 
-import { getAllLessonsFlat } from '../lessonData'
-import { getCompletedLessons } from '../stats'
 
 const CATEGORY_ID_TO_NAMES: Record<string, string[]> = {
   logic: ['ロジカルシンキング', 'Logical Thinking'],
@@ -308,14 +308,14 @@ const CATEGORY_RECOMMEND: Record<string, number[]> = {
   'クライアントワーク': [20, 50, 28],
   'フェルミ推定': [20, 89, 200],
   '提案書作成': [20, 22, 50],
+  '提案・伝える技術': [20, 22, 50],
   '課題設定': [40, 50, 22],
 }
 
-import { getAllLessonsFlat as getAllFlat } from '../lessonData'
 
 function RecommendedLessonsSection({ currentCategory, onOpenLesson }: { currentCategory: string; onOpenLesson: (id: number) => void }) {
   const recIds = CATEGORY_RECOMMEND[currentCategory] || [20, 40, 50]
-  const flat = getAllFlat()
+  const flat = getAllLessonsFlat()
   const recs = recIds.map(id => flat[id]).filter(Boolean) as Array<{ id: number; title: string; category: string }>
   if (recs.length === 0) return null
   return (
