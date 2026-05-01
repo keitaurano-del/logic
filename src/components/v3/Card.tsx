@@ -42,7 +42,7 @@ export function HeroCard({ imageSrc, children, onClick, imageHeight = 160 }: Her
     <div
       onClick={onClick}
       style={{
-        background: 'linear-gradient(140deg, #1A3A39 0%, #2C5856 100%)',
+        background: `linear-gradient(140deg, ${v3.color.card2} 0%, ${v3.color.card} 100%)`,
         borderRadius: v3.radius.card,
         overflow: 'hidden',
         cursor: onClick ? 'pointer' : 'default',

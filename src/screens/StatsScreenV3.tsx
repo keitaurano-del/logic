@@ -276,7 +276,7 @@ export function StatsScreenV3(_props: StatsScreenV3Props) {
         )}
 
         {/* AI Weekly Report */}
-        <div style={{ background: 'linear-gradient(140deg, #1A3A39 0%, #2C5856 100%)', borderRadius: v3.radius.card, padding: 18, color: '#fff', boxShadow: v3.shadow.hero, flexShrink: 0 }}>
+        <div style={{ background: `linear-gradient(140deg, ${v3.color.card2} 0%, ${v3.color.card} 100%)`, borderRadius: v3.radius.card, padding: 18, color: '#fff', boxShadow: v3.shadow.hero, flexShrink: 0 }}>
           <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: v3.color.accent, marginBottom: 6 }}>今週のあなた</div>
           <div style={{ fontFamily: 'Noto Sans JP', fontSize: 18, fontWeight: 700, marginBottom: 8, lineHeight: 1.3 }}>{streak >= 5 ? `${streak}日連続学習中` : 'コツコツ続けていますね'}</div>
           <div style={{ fontSize: 13, color: v3.color.text2, lineHeight: 1.6 }}>
