@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { startCheckout, getSubscriptionState, daysLeftInTrial, isPremiumPlan, isStandardPlan, isAndroidNative, PLAN_PRICES } from '../subscription'
-import { loadGuestUser } from '../guestUser'
 import { v3 } from '../styles/tokensV3'
 
 interface PricingScreenProps {
@@ -51,8 +50,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
         setLoading(null)
         return
       }
-      const guest = loadGuestUser()
-      await startCheckout(plan, guest.id)
+      await startCheckout(plan as any)
     } catch (e: unknown) {
       setError((e as Error).message || 'エラーが発生しました')
       setLoading(null)

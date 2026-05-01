@@ -12,7 +12,6 @@ import { PlacementCard } from '../tutorial/placementCard'
 import { hasCompletedPlacement } from '../placementData'
 import { LessonGridSection } from './LessonGrid'
 import { useWindowSize, BREAKPOINTS } from '../hooks/useResponsive'
-import { getAllLessonsFlat } from '../lessonData'
 
 // SCRUM-185: グリーティングメッセージ複数パターン
 const GREETING_MESSAGES = [
@@ -222,25 +221,6 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
     </>
   )
 }
-
-function CourseCard({ name, image, progress, accent, meta, onClick }: { name: string; image: string; progress: number; accent: string; meta: string; onClick: () => void }) {
-  return (
-    <div onClick={onClick} style={{ flexShrink: 0, width: 180, background: v3.color.card, borderRadius: v3.radius.card, overflow: 'hidden', cursor: 'pointer', scrollSnapAlign: 'start', boxShadow: v3.shadow.card }}>
-      <div style={{ height: 90, overflow: 'hidden' }}>
-        <img src={image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-      </div>
-      <div style={{ padding: '14px 16px 16px' }}>
-        <div style={{ fontSize: 14, fontWeight: 700, color: v3.color.text, marginBottom: 5, lineHeight: 1.3, minHeight: 18 }} dangerouslySetInnerHTML={{ __html: name }}></div>
-        <div style={{ fontSize: 14, color: v3.color.text2, fontWeight: 500, marginBottom: 12 }}>{meta}</div>
-        <div style={{ height: 4, background: 'rgba(255,255,255,.06)', borderRadius: 99, overflow: 'hidden' }}>
-          <div style={{ height: '100%', width: `${progress}%`, background: accent, borderRadius: 99 }}></div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-
 
 function AILargeCard({ image, name, sub, onClick, beta }: { image: string; name: string; sub: string; onClick: () => void; beta?: boolean }) {
   return (

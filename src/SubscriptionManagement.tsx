@@ -4,8 +4,6 @@ import { daysLeftInTrial, getSubscriptionState } from './subscription'
 import { isAndroidNative } from './subscription'
 import './SubscriptionManagement.css'
 
-import { API_BASE } from './apiBase'
-
 type SubData = {
   plan: string
   status: string
@@ -20,7 +18,6 @@ type Props = {
 export default function SubscriptionManagement({ userId, onChangePlan }: Props) {
   const [subData, setSubData] = useState<SubData | null>(null)
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
 
   const localState = getSubscriptionState()
   const trialDays = daysLeftInTrial()
@@ -153,8 +150,6 @@ export default function SubscriptionManagement({ userId, onChangePlan }: Props) 
           </button>
         )}
       </div>
-
-      {error && <div className="sm-error">{error}</div>}
 
       {!userId && (
         <div className="sm-note">

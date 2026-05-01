@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { startCheckout, getSubscriptionState, daysLeftInTrial } from './subscription'
-import { loadGuestUser } from './guestUser'
 import './Pricing.css'
 
 type Props = { onBack: () => void }
@@ -15,8 +14,7 @@ export default function Pricing({ onBack }: Props) {
     setLoading(plan)
     setError('')
     try {
-      const guest = loadGuestUser()
-      await startCheckout(plan, guest.id)
+      await startCheckout(plan as any)
     } catch (e: any) {
       setError(e.message || 'エラーが発生しました')
       setLoading(null)
