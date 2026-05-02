@@ -22,7 +22,7 @@ const TABS: TabDef[] = [
   },
   {
     id: 'lessons',
-    label: 'レッスン',
+    label: 'トレーニング',
     icon: (active, dark) => (
       <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? (dark ? '#6C8EF5' : '#3B5BDB') : (dark ? '#6B82A8' : '#B8BFD0')}>
         <path d="M6.5 2A2.5 2.5 0 0 0 4 4.5v15A2.5 2.5 0 0 0 6.5 22H20V2H6.5zm0 18A.5.5 0 0 1 6 19.5V17h14v3H6.5zM6 15V4h12v11H6z"/>
