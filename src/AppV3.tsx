@@ -48,7 +48,7 @@ import { updateDisplayName } from './supabase'
 import { isAdmin } from './admin'
 import { onAuthChange, logout, getInitialUser, type User } from './supabase'
 import { syncOnLogin, syncOnLogout } from './syncService'
-import { TutorialOverlay, shouldShowTutorial } from './components/TutorialOverlay'
+import { TutorialOverlay, TutorialFAB } from './components/TutorialOverlay'
 
 const ONBOARDED_KEY = 'logic-onboarded'
 const INSTALL_ID_KEY = 'logic-install-id'
@@ -199,8 +199,7 @@ function AppV3() {
         const isPreview = typeof location !== 'undefined' && new URL(location.href).searchParams.get('preview') === 'onboarding'
         if (!isPreview) {
           setScreen((s) => s.type === 'onboarding' ? { type: 'home' } : s)
-          // SCRUM-195: 初回ログイン時にチュートリアルを表示
-          if (shouldShowTutorial()) setShowTutorial(true)
+          // チュートリアルは右下FABから任意で起動
         }
       } else {
         syncOnLogout()
@@ -314,8 +313,7 @@ function AppV3() {
         onComplete={() => {
           localStorage.setItem(ONBOARDED_KEY, '1')
           navigate({ type: 'home' })
-          // SCRUM-195: オンボーディング完了後にチュートリアルを表示
-          if (shouldShowTutorial()) setShowTutorial(true)
+          // チュートリアルは右下FABから任意で起動
         }}
       />
     )
@@ -547,8 +545,15 @@ function AppV3() {
     </AppShell>
 
     {/* SCRUM-195: チュートリアルオーバーレイ */}
+    {/* チュートリアルFAB（右下固定ボタン） */}
+    {screen.type === 'home' && !showTutorial && (
+      <TutorialFAB onClick={() => setShowTutorial(true)} />
+    )}
     {showTutorial && (
-      <TutorialOverlay onDone={() => setShowTutorial(false)} />
+      <TutorialOverlay
+        onDone={() => setShowTutorial(false)}
+        onGoFermi={() => navigate({ type: 'daily-fermi' })}
+      />
     )}
 
     {/* 登録後: 表示名入力ポップアップ */}
