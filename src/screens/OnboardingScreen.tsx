@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { loginWithGoogle, loginWithEmail, signupWithEmail, isSupabaseConfigured } from '../supabase'
 
 interface OnboardingScreenProps {
@@ -240,9 +240,124 @@ function OBCell({ value }: { value: string | boolean }) {
   return <span style={{ fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.9)' }}>{value}</span>
 }
 
-function OnboardingPricingView({ onNext }: { onNext: () => void }) {
+// ── 属性質問ステップ ─────────────────────────────────────────
+const OCCUPATION_OPTIONS = [
+  { id: 'student',    label: '学生',         icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 1.5 9 1.5 12 0v-5"/></svg> },
+  { id: 'newgrad',    label: '新卒〜3年目',   icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg> },
+  { id: 'mid',        label: 'ミドル（4〜10年）', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></svg> },
+  { id: 'senior',     label: 'シニア・管理職', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg> },
+  { id: 'freelance',  label: 'フリーランス',  icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> },
+  { id: 'other',      label: 'その他',        icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> },
+]
+
+function OnboardingAttributeView({ onNext }: { onNext: (occupation: string) => void }) {
+  const [selected, setSelected] = React.useState('')
+  const ACCENT = '#6C8EF5'
+
+  return (
+    <div style={{ minHeight: '100dvh', background: 'linear-gradient(160deg, #0F1220 0%, #1A2340 60%, #0F1A35 100%)', color: '#fff', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", padding: 'calc(env(safe-area-inset-top, 44px) + 24px) 24px calc(env(safe-area-inset-bottom, 24px) + 24px)' }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+        <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.2em', color: `${ACCENT}90`, textAlign: 'center', marginBottom: 16 }}>LOGIC</div>
+        <h1 style={{ fontSize: 26, fontWeight: 800, textAlign: 'center', margin: '0 0 10px', lineHeight: 1.35, letterSpacing: '-0.02em' }}>
+          あなたについて<br />教えてください
+        </h1>
+        <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', textAlign: 'center', margin: '0 0 32px', lineHeight: 1.6 }}>
+          あなたに最適なコースを提案するよ
+        </p>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {OCCUPATION_OPTIONS.map(opt => (
+            <button key={opt.id} onClick={() => setSelected(opt.id)}
+              style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '16px 18px', borderRadius: 14, border: `2px solid ${selected === opt.id ? ACCENT : 'rgba(255,255,255,0.1)'}`, background: selected === opt.id ? `${ACCENT}18` : 'rgba(255,255,255,0.04)', color: '#fff', cursor: 'pointer', transition: 'all .15s', textAlign: 'left' }}>
+              <div style={{ color: selected === opt.id ? ACCENT : 'rgba(255,255,255,0.5)', flexShrink: 0 }}>{opt.icon}</div>
+              <span style={{ fontSize: 15, fontWeight: selected === opt.id ? 700 : 500 }}>{opt.label}</span>
+              {selected === opt.id && (
+                <svg style={{ marginLeft: 'auto' }} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={ACCENT} strokeWidth="2.5" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <button onClick={() => selected && onNext(selected)} disabled={!selected}
+        style={{ width: '100%', padding: '17px', borderRadius: 16, border: 'none', background: selected ? ACCENT : 'rgba(255,255,255,0.1)', color: selected ? '#fff' : 'rgba(255,255,255,0.3)', fontSize: 16, fontWeight: 800, cursor: selected ? 'pointer' : 'not-allowed', marginTop: 24, boxShadow: selected ? `0 8px 24px ${ACCENT}50` : 'none', transition: 'all .2s' }}>
+        次へ
+      </button>
+    </div>
+  )
+}
+
+// ── 月払い/年払い選択画面 ─────────────────────────────────────
+function OnboardingBillingView({ planKey, onSelect, onBack }: { planKey: 'standard' | 'premium'; onSelect: (plan: 'standard_monthly' | 'standard_yearly' | 'premium_monthly' | 'premium_yearly') => void; onBack: () => void }) {
   const ACCENT = '#6C8EF5'
   const WARM = '#F4A261'
+  const color = planKey === 'standard' ? ACCENT : WARM
+  const label = planKey === 'standard' ? 'スタンダード' : 'プレミアム'
+  const monthlyPrice = planKey === 'standard' ? 390 : 760
+  const yearlyPrice = planKey === 'standard' ? 2730 : 5320
+  const yearlyPerMonth = Math.round(yearlyPrice / 12)
+  const savedMonths = Math.round(12 - yearlyPrice / monthlyPrice)
+
+  return (
+    <div style={{ minHeight: '100dvh', background: 'linear-gradient(160deg, #0F1220 0%, #1A2340 60%, #0F1A35 100%)', color: '#fff', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", padding: 'calc(env(safe-area-inset-top, 44px) + 16px) 24px calc(env(safe-area-inset-bottom, 24px) + 24px)' }}>
+      {/* 戻るボタン */}
+      <button onClick={onBack} style={{ alignSelf: 'flex-start', background: 'rgba(255,255,255,0.08)', border: 'none', borderRadius: '50%', width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', marginBottom: 24 }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+
+      <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.2em', color: `${color}90`, textAlign: 'center', marginBottom: 12 }}>{label.toUpperCase()}</div>
+      <h1 style={{ fontSize: 24, fontWeight: 800, textAlign: 'center', margin: '0 0 8px', lineHeight: 1.35 }}>支払いサイクルを<br />選んでください</h1>
+      <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', textAlign: 'center', margin: '0 0 32px' }}>いつでもキャンセル可能</p>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+        {/* 年払いカード（推奨） */}
+        <button onClick={() => onSelect(planKey === 'standard' ? 'standard_yearly' : 'premium_yearly')}
+          style={{ position: 'relative', padding: '20px 20px 20px', borderRadius: 18, border: `2px solid ${color}`, background: `${color}14`, color: '#fff', cursor: 'pointer', textAlign: 'left' }}>
+          {/* 推奨バッジ */}
+          <div style={{ position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)', background: color, borderRadius: 99, padding: '3px 12px', fontSize: 11, fontWeight: 800, whiteSpace: 'nowrap' }}>
+            {savedMonths}ヶ月分お得
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: color, marginBottom: 6 }}>年払い（おすすめ）</div>
+              <div style={{ fontSize: 28, fontWeight: 900, letterSpacing: '-0.03em' }}>¥{yearlyPrice.toLocaleString()}<span style={{ fontSize: 14, fontWeight: 600, color: 'rgba(255,255,255,0.6)' }}> / 年</span></div>
+              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)', marginTop: 4 }}>月々 ¥{yearlyPerMonth} · 一括払い</div>
+              {planKey === 'standard' && <div style={{ fontSize: 12, color: '#FF6B35', fontWeight: 700, marginTop: 4 }}>キャンペーン適用で ¥1,980 / 年</div>}
+            </div>
+            <div style={{ width: 24, height: 24, borderRadius: '50%', background: color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 4 }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+          </div>
+        </button>
+
+        {/* 月払いカード */}
+        <button onClick={() => onSelect(planKey === 'standard' ? 'standard_monthly' : 'premium_monthly')}
+          style={{ padding: '18px 20px', borderRadius: 18, border: '1.5px solid rgba(255,255,255,0.15)', background: 'rgba(255,255,255,0.04)', color: '#fff', cursor: 'pointer', textAlign: 'left' }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.6)', marginBottom: 6 }}>月払い</div>
+          <div style={{ fontSize: 28, fontWeight: 900, letterSpacing: '-0.03em' }}>¥{monthlyPrice.toLocaleString()}<span style={{ fontSize: 14, fontWeight: 600, color: 'rgba(255,255,255,0.5)' }}> / 月</span></div>
+        </button>
+      </div>
+    </div>
+  )
+}
+
+// ── オンボーディング用料金プラン表示 ─────────────────────────────
+function OnboardingPricingView({ onNext, onSelectPlan }: { onNext: () => void; onSelectPlan: (plan: 'standard' | 'premium') => void }) {
+  const ACCENT = '#6C8EF5'
+  const WARM = '#F4A261'
+  const [loading, setLoading] = React.useState(false)
+
+  const handleCampaignTap = async () => {
+    setLoading(true)
+    try {
+      const { startBetaCampaignCheckout } = await import('../subscription')
+      await startBetaCampaignCheckout()
+    } catch {
+      // エラー無視（非ネイティブ環境）
+    }
+    setLoading(false)
+    onSelectPlan('standard')
+  }
 
   return (
     <div style={{ minHeight: '100dvh', background: 'linear-gradient(160deg, #0F1220 0%, #1A2340 60%, #0F1A35 100%)', color: '#fff', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", overflowY: 'auto' }}>
@@ -253,43 +368,48 @@ function OnboardingPricingView({ onNext }: { onNext: () => void }) {
         <h1 style={{ fontSize: 26, fontWeight: 800, margin: '0 0 8px', lineHeight: 1.3, letterSpacing: '-0.02em' }}>
           あなたに合ったプランを<br />選んでください
         </h1>
-        <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.55)', margin: '0 0 24px', lineHeight: 1.6 }}>
-          いつでも変更・キャンセル可能。まずは無料で始められるよ。
+        <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.55)', margin: '0 0 20px', lineHeight: 1.6 }}>
+          いつでも変更・キャンセル可能。
         </p>
       </div>
 
-      {/* キャンペーンバナー */}
-      <div style={{ margin: '0 16px 16px', background: 'linear-gradient(135deg,#FF6B35,#FF4D6D)', borderRadius: 14, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 10 }}>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" style={{ flexShrink: 0 }}>
+      {/* キャンペーンバナー（タップで決済） */}
+      <div onClick={handleCampaignTap} style={{ margin: '0 16px 16px', background: 'linear-gradient(135deg,#FF6B35,#FF4D6D)', borderRadius: 14, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer', opacity: loading ? 0.7 : 1 }}>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" style={{ flexShrink: 0 }}>
           <path d="M12 2c0 0-4 4-4 9a4 4 0 0 0 8 0c0-5-4-9-4-9z"/><path d="M12 14c0 0-2 1-2 3a2 2 0 0 0 4 0c0-2-2-3-2-3z"/>
         </svg>
-        <div>
-          <div style={{ fontSize: 12, fontWeight: 800 }}>期間限定キャンペーン中！</div>
-          <div style={{ fontSize: 12, opacity: 0.9 }}>スタンダード年払いが今だけ <strong>¥1,980</strong></div>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 13, fontWeight: 800 }}>期間限定キャンペーン中！タップで即購入</div>
+          <div style={{ fontSize: 12, opacity: 0.9, marginTop: 2 }}>スタンダード年払いが今だけ <strong style={{ fontSize: 15 }}>¥1,980</strong> <span style={{ textDecoration: 'line-through', opacity: 0.7 }}>¥2,730</span></div>
         </div>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
       </div>
 
       {/* 機能比較テーブル */}
       <div style={{ margin: '0 16px 20px', background: 'rgba(255,255,255,0.06)', borderRadius: 16, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
         {/* ヘッダー */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 70px 70px 70px', padding: '14px 16px', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 70px 80px 80px', padding: '14px 16px', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
           <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.4)' }}>機能</div>
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: 10, fontWeight: 800, color: 'rgba(255,255,255,0.4)', letterSpacing: '.08em' }}>FREE</div>
             <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)', marginTop: 2 }}>無料</div>
           </div>
-          <div style={{ textAlign: 'center', background: `${ACCENT}18`, borderRadius: 8, padding: '0 4px' }}>
+          <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: 10, fontWeight: 800, color: ACCENT, letterSpacing: '.08em' }}>STD</div>
-            <div style={{ fontSize: 12, fontWeight: 800, color: '#fff', marginTop: 2 }}>¥390<span style={{ fontSize: 9 }}>/月</span></div>
+            <div style={{ fontSize: 13, fontWeight: 800, color: '#fff', marginTop: 2 }}>¥390<span style={{ fontSize: 10 }}>/月</span></div>
+            <div style={{ fontSize: 10, color: ACCENT, marginTop: 1 }}>年¥2,730</div>
+            <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', marginTop: 0 }}>5ヶ月お得</div>
           </div>
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: 10, fontWeight: 800, color: WARM, letterSpacing: '.08em' }}>PRE</div>
-            <div style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.7)', marginTop: 2 }}>¥760<span style={{ fontSize: 9 }}>/月</span></div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)', marginTop: 2 }}>¥760<span style={{ fontSize: 10 }}>/月</span></div>
+            <div style={{ fontSize: 10, color: WARM, marginTop: 1 }}>年¥5,320</div>
+            <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', marginTop: 0 }}>5ヶ月お得</div>
           </div>
         </div>
         {/* 機能行 */}
         {OB_FEATURES.map((row, i) => (
-          <div key={row.label} style={{ display: 'grid', gridTemplateColumns: '1fr 70px 70px 70px', padding: '13px 16px', borderTop: i === 0 ? 'none' : '1px solid rgba(255,255,255,0.06)', alignItems: 'center' }}>
+          <div key={row.label} style={{ display: 'grid', gridTemplateColumns: '1fr 70px 80px 80px', padding: '13px 16px', borderTop: i === 0 ? 'none' : '1px solid rgba(255,255,255,0.06)', alignItems: 'center' }}>
             <div style={{ fontSize: 13, fontWeight: 600, color: 'rgba(255,255,255,0.85)' }}>{row.label}</div>
             <div style={{ display: 'flex', justifyContent: 'center' }}><OBCell value={row.free} /></div>
             <div style={{ display: 'flex', justifyContent: 'center', background: `${ACCENT}10`, borderRadius: 6, padding: '4px 0' }}><OBCell value={row.standard} /></div>
@@ -298,12 +418,17 @@ function OnboardingPricingView({ onNext }: { onNext: () => void }) {
         ))}
       </div>
 
-      {/* ボタン */}
-      <div style={{ padding: '0 16px calc(env(safe-area-inset-bottom, 24px) + 24px)', display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <button onClick={onNext} style={{ width: '100%', padding: '17px', borderRadius: 16, border: 'none', background: ACCENT, color: '#fff', fontSize: 16, fontWeight: 800, cursor: 'pointer', boxShadow: `0 8px 24px ${ACCENT}50` }}>
+      {/* CTAボタン */}
+      <div style={{ padding: '0 16px calc(env(safe-area-inset-bottom, 24px) + 20px)', display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <button onClick={() => onSelectPlan('standard')} style={{ width: '100%', padding: '17px', borderRadius: 16, border: 'none', background: ACCENT, color: '#fff', fontSize: 15, fontWeight: 800, cursor: 'pointer', boxShadow: `0 8px 24px ${ACCENT}50` }}>
+          スタンダードプランではじめる
+        </button>
+        <button onClick={() => onSelectPlan('premium')} style={{ width: '100%', padding: '17px', borderRadius: 16, border: `2px solid ${WARM}`, background: 'transparent', color: WARM, fontSize: 15, fontWeight: 800, cursor: 'pointer' }}>
+          プレミアムプランではじめる
+        </button>
+        <button onClick={onNext} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)', fontSize: 13, cursor: 'pointer', padding: '8px 0', textAlign: 'center' }}>
           無料で始める
         </button>
-        <div style={{ textAlign: 'center', fontSize: 12, color: 'rgba(255,255,255,0.35)' }}>登録後にプランを変更できます</div>
       </div>
     </div>
   )
@@ -514,14 +639,36 @@ function GoogleIcon() {
 
 // ── メインエクスポート ────────────────────────────────────────────
 export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
-  const [phase, setPhase] = useState<'slides' | 'pricing' | 'register'>('slides')
+  const [phase, setPhase] = useState<'slides' | 'attribute' | 'pricing' | 'billing' | 'register'>('slides')
+  const [selectedPlan, setSelectedPlan] = useState<'standard' | 'premium'>('standard')
+
+  const handlePlanSelect = (plan: 'standard' | 'premium') => {
+    setSelectedPlan(plan)
+    setPhase('billing')
+  }
+
+  const handleBillingSelect = async (planId: 'standard_monthly' | 'standard_yearly' | 'premium_monthly' | 'premium_yearly') => {
+    try {
+      const { startCheckout } = await import('../subscription')
+      await startCheckout(planId)
+    } catch { /* ignore on web */ }
+    setPhase('register')
+  }
 
   if (phase === 'slides') {
-    return <WelcomeSlides onDone={() => setPhase('pricing')} />
+    return <WelcomeSlides onDone={() => setPhase('attribute')} />
+  }
+
+  if (phase === 'attribute') {
+    return <OnboardingAttributeView onNext={() => setPhase('pricing')} />
   }
 
   if (phase === 'pricing') {
-    return <OnboardingPricingView onNext={() => setPhase('register')} />
+    return <OnboardingPricingView onNext={() => setPhase('register')} onSelectPlan={handlePlanSelect} />
+  }
+
+  if (phase === 'billing') {
+    return <OnboardingBillingView planKey={selectedPlan} onSelect={handleBillingSelect} onBack={() => setPhase('pricing')} />
   }
 
   return (
