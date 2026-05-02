@@ -5,12 +5,12 @@ interface OnboardingScreenProps {
   onComplete: () => void
 }
 
-// ── カラー（Slate Blue — 450nm帯・心理学的最適集中色） ──
+// ── カラー ──
 const C = {
   bg: '#F0F2FA',
   teal: '#6C8EF5',
   tealDark: '#4A6BD6',
-  darkBg: '#1A1F2E',
+  darkBg: '#0F1220',
   text: '#1A1F2E',
   text2: '#4A5578',
   white: '#FFFFFF',
@@ -24,27 +24,63 @@ const C = {
 // ── スライドデータ ──
 const SLIDES = [
   {
-    bg: '#F0FAFA',
-    accentColor: C.teal,
-    emojiIcon: '🧠',
-    title: '論理思考力を、\n毎日鍛えよう',
+    gradient: 'linear-gradient(160deg, #0F1220 0%, #1A2340 50%, #0F1A35 100%)',
+    accentColor: '#6C8EF5',
+    particleColor: '#6C8EF5',
+    icon: (
+      <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+        <circle cx="40" cy="40" r="36" stroke="#6C8EF5" strokeWidth="1.5" strokeDasharray="6 4" opacity="0.4"/>
+        <circle cx="40" cy="40" r="24" fill="rgba(108,142,245,0.12)" stroke="#6C8EF5" strokeWidth="1.5"/>
+        <path d="M28 40h8l4-10 4 20 4-10h4" stroke="#6C8EF5" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <circle cx="40" cy="18" r="3" fill="#6C8EF5" opacity="0.8"/>
+        <circle cx="58" cy="28" r="2" fill="#8BA8FF" opacity="0.6"/>
+        <circle cx="62" cy="48" r="2.5" fill="#6C8EF5" opacity="0.5"/>
+        <circle cx="22" cy="56" r="2" fill="#8BA8FF" opacity="0.7"/>
+      </svg>
+    ),
+    title: '論理思考力を\n毎日鍛えよう。',
     subtitle: 'レッスン・フェルミ推定・AIフィードバックで\nビジネス思考力が着実に伸びる。',
     btnLabel: 'つぎへ',
   },
   {
-    bg: '#FFF8EE',
-    accentColor: '#F59E0B',
-    emojiIcon: '🏆',
-    title: 'ランキングで\n仲間と競い合おう',
-    subtitle: 'ポイントを積み上げて、あなたの論理力を証明する。',
+    gradient: 'linear-gradient(160deg, #120F20 0%, #1F1535 50%, #150F28 100%)',
+    accentColor: '#A78BFA',
+    particleColor: '#A78BFA',
+    icon: (
+      <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+        <circle cx="40" cy="40" r="36" stroke="#A78BFA" strokeWidth="1.5" opacity="0.3"/>
+        <rect x="20" y="46" width="12" height="20" rx="3" fill="rgba(167,139,250,0.3)" stroke="#A78BFA" strokeWidth="1.5"/>
+        <rect x="34" y="34" width="12" height="32" rx="3" fill="rgba(167,139,250,0.5)" stroke="#A78BFA" strokeWidth="1.5"/>
+        <rect x="48" y="22" width="12" height="44" rx="3" fill="rgba(167,139,250,0.7)" stroke="#A78BFA" strokeWidth="1.5"/>
+        <path d="M22 44l14-12 14 8 14-18" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        <circle cx="22" cy="44" r="3" fill="#A78BFA"/>
+        <circle cx="36" cy="32" r="3" fill="#A78BFA"/>
+        <circle cx="50" cy="40" r="3" fill="#A78BFA"/>
+        <circle cx="64" cy="22" r="3" fill="#A78BFA"/>
+      </svg>
+    ),
+    title: 'ランキングで\n自分の実力を証明。',
+    subtitle: 'ポイントを積み上げ、あなたの論理力を\n仲間と競い合おう。',
     btnLabel: 'つぎへ',
   },
   {
-    bg: '#F0F4FF',
-    accentColor: '#6366F1',
-    emojiIcon: '🤖',
-    title: 'AIが採点して\nフィードバック',
-    subtitle: '回答を送るとAIがすぐに評価。弱点もひと目でわかる。',
+    gradient: 'linear-gradient(160deg, #0F1818 0%, #0F2420 50%, #0A1A18 100%)',
+    accentColor: '#34D399',
+    particleColor: '#34D399',
+    icon: (
+      <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+        <circle cx="40" cy="40" r="36" stroke="#34D399" strokeWidth="1.5" opacity="0.3"/>
+        <rect x="18" y="24" width="44" height="32" rx="8" fill="rgba(52,211,153,0.1)" stroke="#34D399" strokeWidth="1.5"/>
+        <circle cx="30" cy="36" r="5" fill="rgba(52,211,153,0.3)" stroke="#34D399" strokeWidth="1.5"/>
+        <line x1="40" y1="34" x2="56" y2="34" stroke="#34D399" strokeWidth="2" strokeLinecap="round"/>
+        <line x1="40" y1="40" x2="52" y2="40" stroke="#34D399" strokeWidth="2" strokeLinecap="round" opacity="0.6"/>
+        <path d="M26 52l6-4 4 3 8-6" stroke="#34D399" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        <circle cx="58" cy="20" r="10" fill="#0F2420" stroke="#34D399" strokeWidth="1.5"/>
+        <path d="M54 20l2.5 2.5L62 17" stroke="#34D399" strokeWidth="2" strokeLinecap="round"/>
+      </svg>
+    ),
+    title: 'AIが即座に採点\nフィードバック。',
+    subtitle: '回答を送るとAIがすぐに評価。\n弱点を把握して、確実に成長できる。',
     btnLabel: 'はじめる',
   },
 ]
@@ -65,71 +101,101 @@ function WelcomeSlides({ onDone }: { onDone: () => void }) {
       minHeight: '100dvh',
       display: 'flex',
       flexDirection: 'column',
-      background: slide.bg,
+      background: slide.gradient,
       fontFamily: "'Noto Sans JP', sans-serif",
-      transition: 'background 0.4s ease',
+      transition: 'background 0.5s ease',
+      position: 'relative',
+      overflow: 'hidden',
     }}>
-      {/* ビジュアルエリア（上60%） */}
+      {/* 背景グロー */}
       <div style={{
-        flex: '0 0 58%',
+        position: 'absolute', inset: 0, pointerEvents: 'none',
+        background: `radial-gradient(ellipse at 50% 30%, ${slide.accentColor}22 0%, transparent 65%)`,
+        transition: 'background 0.5s ease',
+      }} />
+      <div style={{
+        position: 'absolute', top: -80, right: -80, width: 260, height: 260, borderRadius: '50%',
+        background: `radial-gradient(circle, ${slide.accentColor}18 0%, transparent 70%)`,
+        pointerEvents: 'none',
+      }} />
+      <div style={{
+        position: 'absolute', bottom: 120, left: -60, width: 200, height: 200, borderRadius: '50%',
+        background: `radial-gradient(circle, ${slide.accentColor}10 0%, transparent 70%)`,
+        pointerEvents: 'none',
+      }} />
+
+      {/* ビジュアルエリア（上55%） */}
+      <div style={{
+        flex: '0 0 55%',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        flexDirection: 'column',
+        gap: 24,
         position: 'relative',
-        overflow: 'hidden',
+        padding: 'calc(env(safe-area-inset-top, 44px) + 24px) 24px 0',
       }}>
-        {/* 背景デコ */}
+        {/* Logic ロゴ */}
+        <div style={{ fontSize: 13, fontWeight: 800, letterSpacing: '0.25em', color: `${slide.accentColor}90`, textTransform: 'uppercase' }}>Logic</div>
+
+        {/* メインアイコン */}
         <div style={{
-          position: 'absolute', inset: 0,
-          background: `radial-gradient(ellipse at 30% 40%, ${slide.accentColor}25 0%, transparent 70%)`,
-        }} />
-        {/* アイコン */}
-        <div style={{
-          fontSize: 96,
-          filter: 'drop-shadow(0 12px 32px rgba(0,0,0,0.12))',
-          animation: 'float 3s ease-in-out infinite',
-          position: 'relative', zIndex: 1,
+          animation: 'floatIcon 3.5s ease-in-out infinite',
+          filter: `drop-shadow(0 0 24px ${slide.accentColor}60)`,
         }}>
-          {slide.emojiIcon}
+          {slide.icon}
         </div>
+
         {/* ドットインジケーター */}
-        <div style={{
-          position: 'absolute', bottom: 20, left: 0, right: 0,
-          display: 'flex', justifyContent: 'center', gap: 8,
-        }}>
+        <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
           {SLIDES.map((_, i) => (
-            <div key={i} style={{
-              width: i === idx ? 20 : 8,
+            <div key={i} onClick={() => setIdx(i)} style={{
+              width: i === idx ? 24 : 8,
               height: 8, borderRadius: 4,
-              background: i === idx ? slide.accentColor : `${slide.accentColor}40`,
-              transition: 'all 0.3s ease',
+              background: i === idx ? slide.accentColor : `${slide.accentColor}30`,
+              transition: 'all 0.35s ease',
+              cursor: 'pointer',
             }} />
           ))}
         </div>
       </div>
 
-      {/* テキスト + ボタン（下40%） */}
+      {/* テキスト + ボタン（下45%） */}
       <div style={{
         flex: 1,
-        background: C.white,
-        borderRadius: '24px 24px 0 0',
-        padding: '32px 28px 48px',
+        padding: '32px 28px calc(env(safe-area-inset-bottom, 24px) + 32px)',
         display: 'flex',
         flexDirection: 'column',
-        boxShadow: '0 -4px 24px rgba(0,0,0,0.06)',
+        justifyContent: 'flex-end',
       }}>
+        {/* タグライン */}
+        <div style={{
+          display: 'inline-flex', alignItems: 'center', gap: 6,
+          background: `${slide.accentColor}18`,
+          border: `1px solid ${slide.accentColor}40`,
+          borderRadius: 99, padding: '4px 12px',
+          marginBottom: 16, alignSelf: 'flex-start',
+        }}>
+          <div style={{ width: 6, height: 6, borderRadius: '50%', background: slide.accentColor }} />
+          <span style={{ fontSize: 11, fontWeight: 700, color: slide.accentColor, letterSpacing: '0.08em' }}>
+            {idx === 0 ? 'LEARN' : idx === 1 ? 'COMPETE' : 'AI FEEDBACK'}
+          </span>
+        </div>
+
         <h1 style={{
-          fontSize: 28, fontWeight: 800,
-          color: C.text,
-          lineHeight: 1.4,
+          fontSize: 30, fontWeight: 800,
+          color: '#FFFFFF',
+          lineHeight: 1.35,
           whiteSpace: 'pre-line',
-          margin: '0 0 12px',
+          margin: '0 0 14px',
+          letterSpacing: '-0.02em',
         }}>
           {slide.title}
         </h1>
         <p style={{
-          fontSize: 15, color: C.text2,
-          lineHeight: 1.7, margin: '0 0 32px',
+          fontSize: 15, color: 'rgba(255,255,255,0.6)',
+          lineHeight: 1.75, margin: '0 0 32px',
+          whiteSpace: 'pre-line',
         }}>
           {slide.subtitle}
         </p>
@@ -137,11 +203,12 @@ function WelcomeSlides({ onDone }: { onDone: () => void }) {
           onClick={next}
           style={{
             width: '100%', padding: '18px',
-            background: `linear-gradient(135deg, ${slide.accentColor}, ${C.tealDark})`,
-            border: 'none', borderRadius: 99,
-            fontSize: 17, fontWeight: 700, color: C.white,
+            background: slide.accentColor,
+            border: 'none', borderRadius: 16,
+            fontSize: 16, fontWeight: 700, color: '#fff',
             cursor: 'pointer',
-            boxShadow: `0 4px 20px ${slide.accentColor}50`,
+            boxShadow: `0 8px 32px ${slide.accentColor}50`,
+            letterSpacing: '0.02em',
           }}
         >
           {slide.btnLabel}
@@ -149,9 +216,9 @@ function WelcomeSlides({ onDone }: { onDone: () => void }) {
       </div>
 
       <style>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-16px); }
+        @keyframes floatIcon {
+          0%, 100% { transform: translateY(0px) scale(1); }
+          50% { transform: translateY(-14px) scale(1.03); }
         }
       `}</style>
     </div>
