@@ -171,23 +171,24 @@ function SearchResults({ query, onOpenLesson }: { query: string; onOpenLesson: (
 const CATEGORY_ID_TO_NAMES: Record<string, string[]> = {
   logic: ['ロジカルシンキング', 'Logical Thinking'],
   case: ['ケース面接'],
-  thinking: ['思考法', 'クリティカルシンキング', '仮説思考', '課題設定', 'デザインシンキング', 'ラテラルシンキング', 'アナロジー思考', 'システムシンキング'],
-  philosophy: ['哲学・思考の原理', 'philosophy'],
-  proposal: ['提案・伝える技術'],
-  fermi: ['フェルミ推定'],
   critical: ['クリティカルシンキング'],
   hypothesis: ['仮説思考'],
-  client: ['クライアントワーク'],
+  'problem-setting': ['課題設定'],
+  'design-thinking': ['デザインシンキング'],
+  lateral: ['ラテラルシンキング'],
+  analogy: ['アナロジー思考'],
+  systems: ['システムシンキング'],
+  proposal: ['提案・伝える技術'],
+  '提案書作成': ['提案書作成'],
+  philosophy: ['哲学・思考の原理', 'philosophy'],
+  'クライアントワーク': ['クライアントワーク'],
+  'フェルミ推定': ['フェルミ推定'],
 }
 
 const CATEGORY_LABEL_JP: Record<string, string> = {
-  fermi: 'フェルミ推定',
   logic: 'ロジカルシンキング',
   case: 'ケース面接',
-  thinking: '思考法',
   critical: 'クリティカルシンキング',
-  pm: 'プロジェクト管理',
-  'formal-logic': '論理学',
   hypothesis: '仮説思考',
   'problem-setting': '課題設定',
   'design-thinking': 'デザインシンキング',
@@ -195,8 +196,10 @@ const CATEGORY_LABEL_JP: Record<string, string> = {
   analogy: 'アナロジー思考',
   systems: 'システムシンキング',
   proposal: '提案・伝える技術',
+  '提案書作成': '提案書作成',
   philosophy: '哲学・思考の原理',
-  client: 'クライアントワーク',
+  'クライアントワーク': 'クライアントワーク',
+  'フェルミ推定': 'フェルミ推定',
 }
 
 
