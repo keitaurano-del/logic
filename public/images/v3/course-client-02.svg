@@ -1,94 +1,58 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
   <defs>
-    <linearGradient id="bg-cl2" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#1F2942"/>
-      <stop offset="100%" stop-color="#101729"/>
-    </linearGradient>
-    <radialGradient id="lamp-cl2" cx="0.5" cy="0.5" r="0.5">
-      <stop offset="0%" stop-color="#FFD566" stop-opacity="0.32"/>
-      <stop offset="100%" stop-color="#FFD566" stop-opacity="0"/>
-    </radialGradient>
-    <linearGradient id="figureL-cl2" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#3B5BBF"/>
-      <stop offset="100%" stop-color="#1B2954"/>
-    </linearGradient>
-    <linearGradient id="figureR-cl2" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#4A6BD6"/>
-      <stop offset="100%" stop-color="#22305A"/>
-    </linearGradient>
-    <linearGradient id="table-cl2" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#2A3656"/>
-      <stop offset="100%" stop-color="#0E1424"/>
-    </linearGradient>
+    <filter id="skCL2" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" seed="7" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="sk2CL2" x="-8%" y="-8%" width="116%" height="116%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" seed="3" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <pattern id="linesCL2" x="0" y="0" width="800" height="28" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="27" x2="800" y2="27" stroke="#B3D0F5" stroke-width="0.9"/>
+    </pattern>
   </defs>
+  <rect width="800" height="400" fill="#FEFEF2"/>
+  <rect width="800" height="400" fill="url(#linesCL2)" opacity="0.7"/>
+  <line x1="72" y1="0" x2="72" y2="400" stroke="#F4A0A0" stroke-width="1.5" filter="url(#skCL2)"/>
+  <line x1="760" y1="0" x2="760" y2="400" stroke="#B3D0F5" stroke-width="1" opacity="0.4"/>
+  <rect x="78" y="16" width="148" height="34" fill="#C49A3C" opacity="0.22" rx="2" filter="url(#skCL2)"/>
+  <text x="86" y="43" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="22" font-weight="bold" fill="#1A1A2E">クライアント管理</text>
+  <text x="86" y="66" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="13" fill="#C49A3C" opacity="0.9">関係性を深める技術</text>
+  <line x1="78" y1="76" x2="740" y2="76" stroke="#1A1A2E" stroke-width="1" opacity="0.2" filter="url(#skCL2)"/>
+  <g transform="translate(85,90)" filter="url(#sk2CL2)">
 
-  <rect width="800" height="400" fill="url(#bg-cl2)"/>
-
-  <g stroke="#2A3656" stroke-width="1" opacity="0.25">
-    <line x1="0" y1="100" x2="800" y2="100"/>
-    <line x1="0" y1="200" x2="800" y2="200"/>
+    <polygon points="140,8 260,8 285,75 115,75" fill="#C49A3C" opacity="0.7"/>
+    <text x="200" y="48" text-anchor="middle" font-family="'Bradley Hand','Segoe Print',cursive" font-size="13" fill="#fff">パートナー</text>
+    <polygon points="100,80 300,80 325,145 75,145" fill="#C49A3C" opacity="0.5"/>
+    <text x="200" y="118" text-anchor="middle" font-family="'Bradley Hand','Segoe Print',cursive" font-size="13" fill="#fff">アドバイザー</text>
+    <polygon points="55,150 345,150 370,215 30,215" fill="#C49A3C" opacity="0.3"/>
+    <text x="200" y="188" text-anchor="middle" font-family="'Bradley Hand','Segoe Print',cursive" font-size="13" fill="#1A1A2E">ベンダー</text>
+    <g transform="translate(8,225) rotate(-11)">
+      <rect x="0" y="0" width="36" height="9" rx="2" fill="#FFD566" opacity="0.7"/>
+      <polygon points="36,0 45,4.5 36,9" fill="#FFA500" opacity="0.6"/>
+    </g>
   </g>
+  <g transform="translate(430,88)">
+<text x="0" y="0" font-family="'Bradley Hand','Segoe Print',cursive" font-size="14" font-weight="bold" fill="#1A1A2E" opacity="0.75">🏦 関係管理</text>
+<line x1="0" y1="6" x2="290" y2="6" stroke="#C49A3C" stroke-width="1.5" opacity="0.45"/>
+  <rect x="0" y="27" width="11" height="11" fill="#C49A3C" opacity="0.90" rx="1" transform="rotate(-3,5,32)"/>
+  <text x="20" y="38" font-family="'Bradley Hand','Segoe Print',cursive" font-size="13" fill="#1A1A2E" opacity="0.90">ステークホルダー分析</text>
+  <line x1="0" y1="46" x2="290" y2="46" stroke="#B3D0F5" stroke-width="0.8" opacity="0.45"/>
+  <rect x="0" y="65" width="11" height="11" fill="#C49A3C" opacity="0.80" rx="1" transform="rotate(-3,5,70)"/>
+  <text x="20" y="76" font-family="'Bradley Hand','Segoe Print',cursive" font-size="13" fill="#1A1A2E" opacity="0.80">キーパーソン特定</text>
+  <line x1="0" y1="84" x2="290" y2="84" stroke="#B3D0F5" stroke-width="0.8" opacity="0.45"/>
+  <rect x="0" y="103" width="11" height="11" fill="#C49A3C" opacity="0.70" rx="1" transform="rotate(-3,5,108)"/>
+  <text x="20" y="114" font-family="'Bradley Hand','Segoe Print',cursive" font-size="13" fill="#1A1A2E" opacity="0.70">会議のファシリテート</text>
+  <line x1="0" y1="122" x2="290" y2="122" stroke="#B3D0F5" stroke-width="0.8" opacity="0.45"/>
+  <rect x="0" y="141" width="11" height="11" fill="#C49A3C" opacity="0.60" rx="1" transform="rotate(-3,5,146)"/>
+  <text x="20" y="152" font-family="'Bradley Hand','Segoe Print',cursive" font-size="13" fill="#1A1A2E" opacity="0.60">合意形成の技術</text>
+  <line x1="0" y1="160" x2="290" y2="160" stroke="#B3D0F5" stroke-width="0.8" opacity="0.45"/>
+  <rect x="0" y="179" width="11" height="11" fill="#C49A3C" opacity="0.50" rx="1" transform="rotate(-3,5,184)"/>
+  <text x="20" y="190" font-family="'Bradley Hand','Segoe Print',cursive" font-size="13" fill="#1A1A2E" opacity="0.50">信頼口座を増やす</text>
+  <line x1="0" y1="198" x2="290" y2="198" stroke="#B3D0F5" stroke-width="0.8" opacity="0.45"/>
 
-  <!-- 中央のランプ光 -->
-  <circle cx="400" cy="220" r="180" fill="url(#lamp-cl2)"/>
-
-  <!-- 後ろの窓（夜景） -->
-  <g opacity="0.55">
-    <rect x="240" y="60" width="320" height="120" rx="2" fill="none" stroke="#6C8EF5" stroke-width="1.2"/>
-    <line x1="400" y1="60" x2="400" y2="180" stroke="#6C8EF5" stroke-width="1" opacity="0.5"/>
-    <line x1="240" y1="120" x2="560" y2="120" stroke="#6C8EF5" stroke-width="1" opacity="0.5"/>
   </g>
-  <!-- 窓の星 -->
-  <g fill="#7AAEFF" opacity="0.7">
-    <circle cx="280" cy="90" r="1.4"/>
-    <circle cx="340" cy="100" r="1.2"/>
-    <circle cx="450" cy="85" r="1.4"/>
-    <circle cx="520" cy="110" r="1.2"/>
-  </g>
-
-  <!-- テーブル -->
-  <ellipse cx="400" cy="320" rx="280" ry="22" fill="url(#table-cl2)"/>
-  <rect x="120" y="320" width="560" height="14" fill="#0B1424" opacity="0.85"/>
-
-  <!-- テーブル上のティーカップ -->
-  <g transform="translate(400,308)">
-    <ellipse cx="0" cy="0" rx="14" ry="3" fill="#0B1424"/>
-    <path d="M -10 -2 Q -12 -14 0 -14 Q 12 -14 10 -2 Z" fill="#E7ECF7" opacity="0.9"/>
-    <path d="M 10 -10 Q 16 -8 16 -4" fill="none" stroke="#E7ECF7" stroke-width="1.4"/>
-  </g>
-
-  <!-- 左の人物（聴く側・少し前傾） -->
-  <g transform="translate(220,260)">
-    <!-- 体（前傾） -->
-    <path d="M -50 70 Q -54 10 -20 -12 Q -6 -20 6 -20 Q 26 -20 38 -8 Q 56 16 50 70 Z" fill="url(#figureL-cl2)"/>
-    <!-- 首 -->
-    <path d="M -8 -16 L 16 -16 L 14 -36 L -6 -36 Z" fill="url(#figureL-cl2)"/>
-    <!-- 頭（横顔・右向き） -->
-    <ellipse cx="6" cy="-46" rx="18" ry="20" fill="url(#figureL-cl2)"/>
-    <!-- 髪 -->
-    <path d="M -12 -52 Q 0 -66 22 -64 Q 26 -50 22 -42 L -10 -42 Z" fill="#0E1424"/>
-    <!-- 手をテーブルに（聴く姿勢） -->
-    <path d="M 30 0 Q 60 30 70 50" fill="none" stroke="url(#figureL-cl2)" stroke-width="14" stroke-linecap="round"/>
-  </g>
-
-  <!-- 右の人物（話す側・落ち着いた姿勢） -->
-  <g transform="translate(580,250)">
-    <!-- 体 -->
-    <path d="M -52 80 Q -58 16 -26 -8 Q -10 -16 4 -16 Q 22 -16 36 -8 Q 60 16 50 80 Z" fill="url(#figureR-cl2)"/>
-    <!-- 首 -->
-    <path d="M -10 -12 L 14 -12 L 12 -32 L -8 -32 Z" fill="url(#figureR-cl2)"/>
-    <!-- 頭（横顔・左向き） -->
-    <ellipse cx="-4" cy="-44" rx="18" ry="20" fill="url(#figureR-cl2)"/>
-    <!-- 髪 -->
-    <path d="M 12 -52 Q 0 -66 -22 -62 Q -26 -50 -22 -42 L 14 -42 Z" fill="#0E1424"/>
-    <!-- 手（軽く手前に出す） -->
-    <path d="M -28 6 Q -52 24 -64 40" fill="none" stroke="url(#figureR-cl2)" stroke-width="14" stroke-linecap="round"/>
-  </g>
-
-  <!-- 聴く側の小さな耳のサイン（…） -->
-  <g transform="translate(140,200)" fill="#FFD566" opacity="0.85">
-    <circle cx="0" cy="0" r="2"/>
-    <circle cx="10" cy="0" r="2"/>
-    <circle cx="20" cy="0" r="2"/>
-  </g>
+  <line x1="78" y1="374" x2="740" y2="374" stroke="#1A1A2E" stroke-width="0.8" opacity="0.15" filter="url(#skCL2)"/>
+  <text x="400" y="390" text-anchor="middle" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="11" fill="#C49A3C" opacity="0.65">関係性を深める技術</text>
 </svg>
