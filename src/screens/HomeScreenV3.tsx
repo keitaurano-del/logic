@@ -199,7 +199,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
         </div>
 
         {/* AI practice cards (large, vertical) */}
-        <AILargeCard image={`${IMG}/home-daily-question.webp`} name="AI問題生成" sub="テーマ別のオリジナル問題で練習" onClick={onOpenAIGen} beta />
+        <AILargeCard image={`${IMG}/home-daily-question.webp`} name="AIで自分だけの問題を作る" sub="テーマ別のオリジナル問題で練習" onClick={onOpenAIGen} beta />
         <AILargeCard image={`${IMG}/home-roleplay.webp`} name="ロールプレイ" sub="ビジネス・哲学のシナリオで対話練習" onClick={onOpenRoleplay} beta />
 
         {/* SCRUM-178: ベータ版注意バナー（偏差値ランキング堆導線を削除し置換） */}

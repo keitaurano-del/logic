@@ -288,6 +288,21 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
         {/* ===== 問題を作るタブ ===== */}
         {tab === 'create' && (
           <>
+            {/* あなたにあった問題を自動生成（弱点ベース・ワンタップ） */}
+            <button
+              onClick={() => handleGenerate(recommendPrompt)}
+              disabled={generating || isAtLimit || !canUse || !recommendPrompt}
+              style={{ width: '100%', background: generating || isAtLimit || !canUse ? v3.color.card : `linear-gradient(135deg, ${v3.color.accent} 0%, #8B6EF5 100%)`, color: generating || isAtLimit || !canUse ? v3.color.text3 : '#fff', border: 'none', borderRadius: 14, padding: '16px 20px', fontSize: 15, fontWeight: 700, cursor: generating || isAtLimit || !canUse ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: 12, boxShadow: generating || isAtLimit || !canUse ? 'none' : v3.shadow.hero }}>
+              <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+              </div>
+              <div style={{ flex: 1, textAlign: 'left' }}>
+                <div style={{ fontSize: 15, fontWeight: 800, lineHeight: 1.2 }}>あなたにあった問題を自動生成する</div>
+                <div style={{ fontSize: 11, opacity: 0.85, marginTop: 3 }}>弱点分析をもとにAIが最適な問題を作成</div>
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+
             {/* 自由テキスト入力（最上部） */}
             <div style={{ background: v3.color.card, borderRadius: v3.radius.card, padding: '16px 18px' }}>
               <div style={{ fontSize: 13, fontWeight: 700, color: v3.color.text, marginBottom: 6 }}>どんな問題を作る？</div>
