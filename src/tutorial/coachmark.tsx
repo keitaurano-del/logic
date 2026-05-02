@@ -83,12 +83,12 @@ export function HomeCoachmark({ targetRef, onDismiss }: CoachmarkProps) {
           onClick={dismiss}
           style={{
             marginTop: 14, width: '100%',
-            background: '#70D8BD', color: '#fff',
+            background: '#6C8EF5', color: '#fff',
             border: 'none', borderRadius: 10, padding: '12px 0',
             fontSize: 15, fontWeight: 700, cursor: 'pointer',
           }}
         >
-          わかりました
+          さっそくやってみよう！
         </button>
       </div>
 
