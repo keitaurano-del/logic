@@ -104,7 +104,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
       return d.toISOString().slice(0, 10)
     })
   }, [todayDow])
-  const thisWeekStudied = thisWeekDates.filter(d => studyDateSet.has(d)).length
+
 
   return (
     <>
