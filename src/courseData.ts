@@ -13,7 +13,7 @@ export const COURSES: Course[] = [
   // ── ロジカルシンキング ──────────────────────────────
   {
     id: 'logic-01',
-    title: '「論理の型」を手に入れる',
+    title: 'ロジカルに考えて、整理する',
     category: 'ロジカルシンキング',
     lessonIds: [20, 21, 22, 23, 24],
     level: '初級',
@@ -21,7 +21,7 @@ export const COURSES: Course[] = [
   },
   {
     id: 'logic-02',
-    title: '論理で組み立て、相手に伝える',
+    title: '論理を組み立て、相手を動かす',
     category: 'ロジカルシンキング',
     lessonIds: [25, 26, 27, 68, 23],
     level: '初級',
@@ -39,7 +39,7 @@ export const COURSES: Course[] = [
   },
   {
     id: 'critical-02',
-    title: 'バイアスから抜け出し、客観的に見る',
+    title: 'バイアスを外し、客観的に見る',
     category: 'クリティカルシンキング',
     lessonIds: [71, 300, 301, 302, 303],
     level: '中級',
@@ -49,7 +49,7 @@ export const COURSES: Course[] = [
   // ── 仮説思考 ────────────────────────────────────────
   {
     id: 'hypothesis-01',
-    title: '考えてから調べる習慣をつくる',
+    title: '仮説を立ててから、調べる',
     category: '仮説思考',
     lessonIds: [50, 51, 52, 70, 304],
     level: '中級',
@@ -59,7 +59,7 @@ export const COURSES: Course[] = [
   // ── 課題設定 ────────────────────────────────────────
   {
     id: 'problem-01',
-    title: '解くべき問いを見極める',
+    title: '本当の問題を見極め、定義する',
     category: '課題設定',
     lessonIds: [53, 54, 55, 305, 306],
     level: '中級',
@@ -69,7 +69,7 @@ export const COURSES: Course[] = [
   // ── デザインシンキング ──────────────────────────────
   {
     id: 'design-01',
-    title: 'ユーザーの本音から解決策をつくる',
+    title: 'ユーザーの本音を掘り下げ、解決する',
     category: 'デザインシンキング',
     lessonIds: [56, 57, 58, 307, 308],
     level: '初級',
@@ -79,7 +79,7 @@ export const COURSES: Course[] = [
   // ── ラテラルシンキング ──────────────────────────────
   {
     id: 'lateral-01',
-    title: '常識の外から突破口を見つける',
+    title: '常識を疑い、突破口を開く',
     category: 'ラテラルシンキング',
     lessonIds: [59, 60, 61, 309, 310],
     level: '中級',
@@ -89,7 +89,7 @@ export const COURSES: Course[] = [
   // ── アナロジー思考 ──────────────────────────────────
   {
     id: 'analogy-01',
-    title: '他の世界から答えを借りてくる',
+    title: '別分野の知恵を借りて、応用する',
     category: 'アナロジー思考',
     lessonIds: [62, 63, 64, 311, 312],
     level: '中級',
@@ -99,7 +99,7 @@ export const COURSES: Course[] = [
   // ── システムシンキング ──────────────────────────────
   {
     id: 'systems-01',
-    title: '全体を見て、根本から変える',
+    title: '全体を俯瞰し、根本から変える',
     category: 'システムシンキング',
     lessonIds: [65, 66, 67, 313, 314],
     level: '上級',
@@ -109,7 +109,7 @@ export const COURSES: Course[] = [
   // ── 提案・伝える技術 ────────────────────────────────
   {
     id: 'proposal-01',
-    title: '相手が動く提案書をつくる',
+    title: '相手が動く提案をつくる',
     category: '提案・伝える技術',
     lessonIds: [72, 73, 74, 75, 76],
     level: '中級',
@@ -119,7 +119,7 @@ export const COURSES: Course[] = [
   // ── 提案書作成 ──────────────────────────────────────
   {
     id: 'proposal-course-01',
-    title: '仮説→検証で提案書を仕上げる',
+    title: '仮説と検証で、提案書を仕上げる',
     category: '提案書作成',
     lessonIds: [82, 83, 84, 86, 87],
     level: '上級',
@@ -129,7 +129,7 @@ export const COURSES: Course[] = [
   // ── 哲学 ────────────────────────────────────────────
   {
     id: 'philosophy-01',
-    title: '哲学者の問いで思考を深める',
+    title: '哲学の問いで、思考を深める',
     category: '哲学・思考の原理',
     lessonIds: [77, 78, 79, 80, 81],
     level: '上級',
@@ -139,7 +139,7 @@ export const COURSES: Course[] = [
   // ── クライアントワーク ──────────────────────────────
   {
     id: 'client-01',
-    title: '数字で素早く状況を読む',
+    title: '数字で状況を素早く読み解く',
     category: 'クライアントワーク',
     lessonIds: [89, 90, 91, 92, 97],
     level: '中級',
@@ -147,7 +147,7 @@ export const COURSES: Course[] = [
   },
   {
     id: 'client-02',
-    title: '論点を定め、深く聞き出す',
+    title: '論点を定め、深く引き出す',
     category: 'クライアントワーク',
     lessonIds: [93, 94, 95, 96, 315],
     level: '中級',
@@ -157,7 +157,7 @@ export const COURSES: Course[] = [
   // ── ケース面接 ──────────────────────────────────────
   {
     id: 'case-01',
-    title: 'ケース面接で論理的思考を実証する',
+    title: 'ケース面接で、論理力を証明する',
     category: 'ケース面接',
     lessonIds: [28, 29, 35, 36, 316],
     level: '上級',
@@ -167,7 +167,7 @@ export const COURSES: Course[] = [
   // ── フェルミ推定 ────────────────────────────────────
   {
     id: 'fermi-01',
-    title: '概算で世界の規模を掴む',
+    title: '概算で、世界の規模を掴む',
     category: 'フェルミ推定',
     lessonIds: [200, 201, 202, 203, 204],
     level: '中級',
