@@ -129,6 +129,25 @@ export const roadmaps: RoadmapDef[] = [
       { lessonId: 67, title: 'システムシンキング実践', description: '因果ループ図とレバレッジポイント' },
     ],
   },
+  {
+    id: 'strategy',
+    title: '経営戦略の進化',
+    subtitle: '古典から共進化まで',
+    emoji: '📈',
+    color: '#6C8EF5',
+    steps: [
+      { lessonId: 320, title: '戦略の起源', description: 'テイラー・フォードと「計画する経営」の誕生' },
+      { lessonId: 321, title: 'アンゾフのマトリクス', description: '製品×市場で成長の方向を決める' },
+      { lessonId: 322, title: 'PPM', description: 'BCGマトリクスで事業ポートフォリオを管理する' },
+      { lessonId: 323, title: 'ポーターの5フォース', description: '業界構造から収益性を読み解く' },
+      { lessonId: 324, title: '3つの基本戦略', description: 'コストリーダーシップ・差別化・集中' },
+      { lessonId: 325, title: 'RBVとVRIO', description: '内部資源で競争優位を説明する' },
+      { lessonId: 326, title: 'コアコンピタンス', description: '組織能力を競争源泉に' },
+      { lessonId: 327, title: 'ブルーオーシャン戦略', description: '競争のない市場をERRCで創る' },
+      { lessonId: 328, title: 'ダイナミック・ケイパビリティ', description: '変化に適応するSense・Seize・Transform' },
+      { lessonId: 329, title: 'プラットフォーム戦略', description: 'エコシステムと共進化で勝つ' },
+    ],
+  },
 ]
 
 /** Look up a roadmap by its id */
