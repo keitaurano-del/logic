@@ -154,7 +154,7 @@ const CATEGORY_LABEL_JP: Record<string, string> = {
 }
 
 
-function CategoryCard({ icon, iconBg, name, meta, progress, onClick, image }: { icon: React.ReactNode; iconBg: string; name: string; meta: string; progress: string; onClick: () => void; image?: string }) {
+function CategoryCard({ icon, iconBg, name, meta, progress, onClick, image }: { icon: React.ReactNode; iconBg: string; name: string; meta: string; progress?: string; onClick: () => void; image?: string }) {
   return (
     <div onClick={onClick} style={{ background: v3.color.card, borderRadius: v3.radius.card, overflow: 'hidden', cursor: 'pointer', boxShadow: v3.shadow.card, display: 'flex', flexDirection: 'column' }}>
       {image && (
