@@ -260,7 +260,7 @@ function RegisterScreen({ onComplete, onSkip }: { onComplete: () => void; onSkip
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12,
             width: '100%', padding: '16px',
             background: C.white, border: 'none', borderRadius: 12,
-            fontSize: 16, fontWeight: 700, color: '#111',
+            fontSize: 16, fontWeight: 700, color: '#fff',
             cursor: loading ? 'not-allowed' : 'pointer',
             opacity: loading ? 0.7 : 1,
           }}

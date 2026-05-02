@@ -24,7 +24,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
   const ACCENT = '#6C8EF5'      // Slate Blue（450nm集中色）
   const BORDER = 'rgba(255,255,255,0.15)'
   const INPUT_BG = 'rgba(255,255,255,0.07)'
-  const GOOGLE_BTN_BG = '#FFFFFF'
+  const GOOGLE_BTN_BG = '#4285F4'
 
   const inputStyle: React.CSSProperties = {
     width: '100%',
@@ -119,7 +119,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
               width: '100%', padding: '15px 20px',
               background: GOOGLE_BTN_BG,
               border: 'none', borderRadius: 12,
-              fontSize: 16, fontWeight: 700, color: '#111',
+              fontSize: 16, fontWeight: 700, color: '#fff',
               cursor: loading ? 'not-allowed' : 'pointer',
               opacity: loading ? 0.7 : 1,
             }}
