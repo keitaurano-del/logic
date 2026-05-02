@@ -222,7 +222,10 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
             <div key={course.id} style={{ background: v3.color.card, borderRadius: 16, overflow: 'hidden', boxShadow: v3.shadow.card }}>
               {/* コースヘッダー */}
               <div style={{ padding: '14px 16px 10px', borderBottom: `1px solid ${v3.color.line}` }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4, flexWrap: 'wrap' }}>
+                  <div style={{ fontSize: 10, fontWeight: 800, color: v3.color.text3, letterSpacing: '.06em', background: `${v3.color.text3}14`, borderRadius: 6, padding: '2px 7px' }}>
+                    {course.category}
+                  </div>
                   <div style={{ fontSize: 10, fontWeight: 800, color: v3.color.accent, letterSpacing: '.08em', background: v3.color.accentSoft, borderRadius: 6, padding: '2px 7px' }}>
                     {course.level}
                   </div>
