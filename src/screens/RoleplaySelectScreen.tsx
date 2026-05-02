@@ -90,15 +90,15 @@ const ICON_BG: Record<string, string> = {
   'nietzsche-values': 'rgba(196,181,253,.14)',
 }
 
-// シナリオごとの表現画像（既存 v3 画像を活用）
+// シナリオごとの表現画像（題材レッスンに対応する個別画像で重複を回避）
 const SCENARIO_IMAGE: Record<string, string> = {
-  'why-so-report': '/images/v3/course-business.webp',
-  'mece-meeting': '/images/v3/course-business.webp',
-  'pyramid-client': '/images/v3/course-business.webp',
-  'logic-tree-sub': '/images/v3/course-business.webp',
-  'socrates-dialog': '/images/v3/course-philosophy.webp',
-  'descartes-doubt': '/images/v3/course-philosophy.webp',
-  'nietzsche-values': '/images/v3/course-philosophy.webp',
+  'why-so-report': '/images/v3/lesson-22.webp',
+  'mece-meeting': '/images/v3/lesson-20.webp',
+  'pyramid-client': '/images/v3/lesson-23.webp',
+  'logic-tree-sub': '/images/v3/lesson-21.webp',
+  'socrates-dialog': '/images/v3/lesson-77.webp',
+  'descartes-doubt': '/images/v3/ai-bot.webp',
+  'nietzsche-values': '/images/v3/ai-chat.webp',
 }
 
 const CATEGORY_LABELS: Record<SituationCategory, string> = {

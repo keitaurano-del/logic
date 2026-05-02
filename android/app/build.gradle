@@ -7,8 +7,8 @@ android {
         applicationId "io.logic.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 18
-        versionName "1.4.1"
+        versionCode 20
+        versionName "1.5.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -18,10 +18,10 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file('/home/work/.openclaw/workspace/logic/keystores/logic-release.keystore')
-            storePassword 'LogicApp2026Release'
-            keyAlias 'logic'
-            keyPassword 'LogicApp2026Release'
+            storeFile file(System.getenv('LOGIC_KEYSTORE_PATH') ?: "${rootDir}/../keystores/logic-release.keystore")
+            storePassword System.getenv('LOGIC_KEYSTORE_PASSWORD') ?: 'LogicApp2026Release'
+            keyAlias System.getenv('LOGIC_KEY_ALIAS') ?: 'logic'
+            keyPassword System.getenv('LOGIC_KEY_PASSWORD') ?: 'LogicApp2026Release'
         }
     }
     buildTypes {
