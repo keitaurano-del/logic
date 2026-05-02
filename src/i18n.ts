@@ -187,7 +187,7 @@ const STRINGS: Record<Locale, Strings> = {
     'fermi.questionTag': '問題',
     'fermi.hint': '💡 まずは自分なりに分解してみましょう。提出後に概算解と計算ロジックも提示します。',
     'fermi.thinkButton': '考えてみる',
-    'fermi.placeholder': '考えたことを自由に書いてみよう！\n音声入力も使ってみよう（マイクアイコンをタップ）。式でも箇条書きでもOK。',
+    'fermi.placeholder': '考えたことを自由に書いてみよう！式でも箇条書きでもOK。',
     'fermi.submitButton': 'AIにフィードバックをもらおう',
     'fermi.submitting': 'フィードバックを生成中...',
     'fermi.backButton': '戻る',
@@ -406,7 +406,7 @@ const STRINGS: Record<Locale, Strings> = {
     // Daily Fermi
     'dailyFermi.title': 'デイリーフェルミ',
     'dailyFermi.heading': '今日のフェルミ問題',
-    'dailyFermi.showHint': 'ヒントを見る',
+    'dailyFermi.showHint': '参考データを確認する',
     'dailyFermi.answerLabel': 'あなたの推定アプローチ',
     'dailyFermi.feedbackTitle': 'AI フィードバック',
 

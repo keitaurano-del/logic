@@ -3,7 +3,7 @@ import { ArrowLeftIcon, LightbulbIcon, BarChartIcon } from '../icons'
 import { IconButton } from '../components/IconButton'
 import { Button } from '../components/Button'
 import { API_BASE } from './apiBase'
-import { getDailyFermi, getDailyFermiIndex, FERMI_POOL } from '../fermiData'
+import { getDailyFermi, getDailyFermiIndex, FERMI_POOL, getDailyFermiStats } from '../fermiData'
 import { t, getLocale } from '../i18n'
 import { getGuestId } from '../guestId'
 import { useDailyGuide, GuideLabel, GuideStyle } from '../tutorial/dailyGuide'
@@ -52,24 +52,7 @@ function markDailyFermiDone() {
 }
 
 // 基礎統計データ（フェルミ推定時の参考値）
-const BASE_STATS = [
-  { label: '日本の人口', value: '約1億2,400万人' },
-  { label: '世帯数', value: '約5,700万世帯' },
-  { label: '平均世帯人数', value: '2.17人' },
-  { label: '労働力人口', value: '約6,900万人' },
-  { label: '東京都の人口', value: '約1,400万人' },
-  { label: '国土面積', value: '約37.8万km²' },
-  { label: 'コンビニ数', value: '約5.6万店' },
-  { label: '電柱数', value: '約3,500万本' },
-  { label: '自動車保有数', value: '約7,800万台' },
-  { label: '小学校数', value: '約1.9万校' },
-  { label: '鉄道利用者数/日', value: '約4,800万人' },
-  { label: 'GDP', value: '約600兆円' },
-  { label: '平均年収', value: '約460万円' },
-  { label: 'スマホ普及率', value: '約97%' },
-  { label: '平均寿命', value: '約84歳' },
-  { label: '会社数', value: '約368万社' },
-]
+// 参考データは fermiData.ts の getDailyFermiStats() を使用
 
 /** Convert **bold** to <strong> */
 function boldify(text: string): string {
@@ -177,7 +160,7 @@ function FermiChatModal({ question, locale, onClose }: {
           flexShrink: 0,
         }}>
           <div>
-            <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>前提を確認する</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>ヒントを聞く</div>
             <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>答えは教えません。前提の整理を手伝います。</div>
           </div>
           <button
@@ -563,7 +546,7 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
                   <div style={{ paddingTop: 12, borderTop: '1px solid rgba(107,133,214,0.2)' }}>
                     <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', color: 'var(--text-muted)', marginBottom: 10, textTransform: 'uppercase' }}>参考データ</div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                      {BASE_STATS.map((s) => (
+                      {getDailyFermiStats().map((s) => (
                         <div key={s.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 13 }}>
                           <span style={{ color: 'var(--text-secondary)' }}>{s.label}</span>
                           <span style={{ fontWeight: 700, color: 'var(--text-primary)', marginLeft: 12 }}>{s.value}</span>
@@ -633,7 +616,7 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
                     fontFamily: 'inherit',
                   }}
                 >
-                  前提を確認する
+                  ヒントを聞く
                 </button>
                 <button
                   onClick={handleSubmit}

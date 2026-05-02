@@ -37,3 +37,54 @@ export function getDailyFermiIndex(): number {
 export function getDailyFermi(): FermiQuestion {
   return FERMI_POOL[getDailyFermiIndex()]
 }
+
+// 問題ごとの参考データ（最小限・問題に直結するものだけ）
+export type FermiStat = { label: string; value: string }
+
+export const FERMI_STATS: FermiStat[][] = [
+  // 0: 自動販売機
+  [{ label: '日本の人口', value: '約1億2,400万人' }, { label: 'コンビニ数', value: '約5.6万店' }, { label: '自販機設置密度', value: '人口23人あたり1台（参考）' }],
+  // 1: 東京タワーの重さ
+  [{ label: '東京タワーの高さ', value: '333m' }, { label: '鉄骨構造の密度', value: '約7,850 kg/m³' }, { label: '使用鉄骨量（実績）', value: '約4,000トン' }],
+  // 2: カップラーメン消費
+  [{ label: '日本の人口', value: '約1億2,400万人' }, { label: '世帯数', value: '約5,700万世帯' }, { label: '平均世帯人数', value: '2.17人' }],
+  // 3: 美容室の数
+  [{ label: 'コンビニ数', value: '約5.6万店' }, { label: '日本の人口', value: '約1億2,400万人' }, { label: '美容師1人あたり対象人口（参考）', value: '約100〜150人' }],
+  // 4: 東京ドームに水
+  [{ label: '東京ドームの体積', value: '約124万m³' }, { label: '1m³ = 1,000リットル', value: '換算基準' }],
+  // 5: おにぎり消費
+  [{ label: '日本の人口', value: '約1億2,400万人' }, { label: 'コンビニ数', value: '約5.6万店' }, { label: '1店舗の1日おにぎり販売数（参考）', value: '約100〜200個' }],
+  // 6: 信号機の数
+  [{ label: '日本の交差点数', value: '約19万か所' }, { label: '信号機のある交差点', value: '約13万か所' }, { label: '1交差点あたりの信号機', value: '平均約3基' }],
+  // 7: タクシー台数
+  [{ label: '東京のタクシー台数', value: '約5万台' }, { label: '日本の人口', value: '約1億2,400万人' }, { label: '東京都の人口', value: '約1,400万人' }],
+  // 8: スーパーのレジ通過商品
+  [{ label: 'スーパー店舗数（全国）', value: '約2万店' }, { label: '1店舗の1日来客数（参考）', value: '約500〜1,000人' }, { label: '1人の平均購入品数', value: '約5〜10品' }],
+  // 9: 道路の総延長
+  [{ label: '日本の国土面積', value: '約37.8万km²' }, { label: '高速道路', value: '約9,000km' }, { label: '国道', value: '約5.6万km' }, { label: '一般道路（推定）', value: '約120万km' }],
+  // 10: YouTubeアップロード
+  [{ label: '世界のYouTubeクリエイター数（参考）', value: '約5,000万人' }, { label: '1日の動画アップロード数（参考）', value: '約50万本' }, { label: '平均動画時間', value: '約7分' }],
+  // 11: 東京→大阪徒歩
+  [{ label: '東京〜大阪の距離', value: '約500km' }, { label: '1日の歩行距離（参考）', value: '約25〜40km' }],
+  // 12: コンビニ食品廃棄
+  [{ label: 'コンビニ店舗数', value: '約5.6万店' }, { label: '1店舗の廃棄率（参考）', value: '約3〜5%' }, { label: '1店舗の1日の仕入れ量（参考）', value: '約200〜400kg' }],
+  // 13: スマホ使用時間
+  [{ label: '日本の人口', value: '約1億2,400万人' }, { label: 'スマホ普及率', value: '約97%' }, { label: '1日の平均使用時間（参考）', value: '約4〜5時間' }],
+  // 14: 学校の数
+  [{ label: '小学校数', value: '約1.9万校' }, { label: '中学校数', value: '約1万校' }, { label: '高校数', value: '約4,800校' }, { label: '大学数', value: '約800校' }],
+  // 15: 新幹線の乗客数
+  [{ label: '新幹線開業年', value: '1964年' }, { label: '年間利用者数（参考）', value: '約3〜4億人' }, { label: '路線数', value: '9路線' }],
+  // 16: メールの送受信数
+  [{ label: '日本の人口', value: '約1億2,400万人' }, { label: '労働力人口', value: '約6,900万人' }, { label: 'ビジネスメール 1人/日（参考）', value: '約30〜50通' }],
+  // 17: 富士山の体積
+  [{ label: '富士山の高さ', value: '3,776m' }, { label: '富士山の底面半径（参考）', value: '約25km' }, { label: '東京ドームの体積', value: '約124万m³' }],
+  // 18: テレビCM本数
+  [{ label: 'テレビチャンネル数（全国）', value: '約100局' }, { label: '1時間あたりのCM時間', value: '約12分' }, { label: '1本のCM時間', value: '15〜30秒' }],
+  // 19: 電車の走行距離
+  [{ label: 'JR総路線距離', value: '約2万km' }, { label: '私鉄・地下鉄路線距離', value: '約1.5万km' }, { label: '1路線の1日の運行本数（参考）', value: '約100〜500本' }],
+]
+
+/** 今日の問題に対応した参考データを返す */
+export function getDailyFermiStats(): FermiStat[] {
+  return FERMI_STATS[getDailyFermiIndex()] ?? []
+}
