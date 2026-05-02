@@ -4,6 +4,7 @@
  * モックアップ: lv3-home.html
  */
 import { useMemo, useRef } from 'react'
+import { getDailyFermi } from '../fermiData'
 import { getStudyDates } from '../stats'
 import { v3 } from '../styles/tokensV3'
 import { HomeCoachmark, useShouldShowHomeCoachmark } from '../tutorial/coachmark'
@@ -11,29 +12,7 @@ import { PlacementCard } from '../tutorial/placementCard'
 import { hasCompletedPlacement } from '../placementData'
 import { useWindowSize, BREAKPOINTS } from '../hooks/useResponsive'
 
-// フェルミ問題20問ハードコード
-const FERMI_QUESTIONS = [
-  '日本全国のコンビニの店舗数は？',
-  '東京都内の自転車台数は？',
-  '日本全国の美容院・理容院の数は？',
-  'GDP1兆円が全部一万円札なら何枚？',
-  '東京ドームの濡れた水を全部バケツで汲み出すに何時間？',
-  '日本全国の小、中、高校の教師数は？',
-  '東京タワーの高さに屋上を重ねると何枚？',
-  '日本で年間消費されるチーズケーキの数は？',
-  '小学生が小学校中に歩く合計距離は？',
-  '渋谷駅の一日当たりの乗降客数は？',
-  '世界中のピアノの全台数は？',
-  '日本全国のゆうパック数は？',
-  '東京のビルの窓の合計枚数は？',
-  '日本全国の医師数は？',
-  'コンビニのおにぎりは年間何個売れる？',
-  '東京のタクシー台数は？',
-  '日本全国のスーパーの店舗数は？',
-  '一日にインターネットに投稿されるツイート数（日本）は？',
-  '日本全国の消火器の数は？',
-  '東京で一年間に連れまれる新生児は何人？',
-]
+// フェルミ問題は fermiData.ts の FERMI_POOL を使用（日付ベース共通）
 
 // おすすめレッスンリスト（ランダム表示用）
 const RECOMMENDED_LESSONS = [
@@ -63,9 +42,7 @@ function getRandomLesson() {
   return RECOMMENDED_LESSONS[Math.floor(Math.random() * RECOMMENDED_LESSONS.length)]
 }
 
-function getRandomFermi() {
-  return FERMI_QUESTIONS[Math.floor(Math.random() * FERMI_QUESTIONS.length)]
-}
+
 
 // SCRUM-185: グリーティングメッセージ複数パターン
 const GREETING_MESSAGES = [
@@ -109,7 +86,8 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
 
   // ランダムレッスン・フェルミ問題（マウント時に1回決定）
   const recommendedLesson = useRef(getRandomLesson()).current
-  const fermiQuestion = useRef(getRandomFermi()).current
+  const dailyFermi = getDailyFermi()
+  const fermiQuestion = dailyFermi.question
 
 
   // 今週カレンダー

@@ -3,6 +3,7 @@ import { ArrowLeftIcon, LightbulbIcon, BarChartIcon } from '../icons'
 import { IconButton } from '../components/IconButton'
 import { Button } from '../components/Button'
 import { API_BASE } from './apiBase'
+import { getDailyFermi, getDailyFermiIndex, FERMI_POOL } from '../fermiData'
 import { t, getLocale } from '../i18n'
 import { getGuestId } from '../guestId'
 import { useDailyGuide, GuideLabel, GuideStyle } from '../tutorial/dailyGuide'
@@ -303,10 +304,10 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
   const canAnswer = dailyCount < dailyLimit
   const canReroll = rerollCount < rerollLimit && canAnswer
 
-  const [question, setQuestion] = useState('')
-  const [hint, setHint] = useState('')
-  const [loadingQuestion, setLoadingQuestion] = useState(true)
-  const [questionError, setQuestionError] = useState('')
+  const [question, setQuestion] = useState(() => getDailyFermi().question)
+  const [hint, setHint] = useState(() => getDailyFermi().hint)
+  const loadingQuestion = false
+  const questionError = ''
 
   const [answer, setAnswer] = useState('')
   const [submitPhase, setSubmitPhase] = useState<SubmitPhase>('idle')
@@ -330,30 +331,16 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
     return () => { if (timerRef.current) clearInterval(timerRef.current) }
   }, [timerRunning])
 
-  const [fetchTrigger, setFetchTrigger] = useState(0)
-
+  // タイマー開始（マウント時）
   useEffect(() => {
-    setLoadingQuestion(true)
-    setQuestionError('')
-    fetch(`${API_BASE}/api/daily-fermi?locale=${locale}`)
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.error) throw new Error(data.error)
-        setQuestion(data.question || '')
-        setHint(data.hint || '')
-        if (typeof data.poolIndex === 'number') setCurrentPoolIndex(data.poolIndex)
-        setElapsedSec(0)
-        setTimerRunning(true)
-      })
-      .catch((e: Error) => setQuestionError(e.message || t('common.error')))
-      .finally(() => setLoadingQuestion(false))
+    setTimerRunning(true)
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [locale, fetchTrigger])
+  }, [])
 
-  const [excludedIndexes, setExcludedIndexes] = useState<number[]>([])
-  const [currentPoolIndex, setCurrentPoolIndex] = useState<number>(-1)
+  const [excludedIndexes, setExcludedIndexes] = useState<number[]>([getDailyFermiIndex()])
+  const [currentPoolIndex, setCurrentPoolIndex] = useState<number>(getDailyFermiIndex())
 
-  const handleReroll = async () => {
+  const handleReroll = () => {
     if (!canReroll) return
     incrementRerollCount()
     setRerollCount(getRerollCount())
@@ -362,26 +349,19 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
     setSubmitPhase('idle')
     setShowHint(false)
     setHintUsed(false)
-    setLoadingQuestion(true)
-    try {
-      const exclude = [...excludedIndexes, currentPoolIndex].filter(i => i >= 0)
-      const res = await fetch(`${API_BASE}/api/fermi/next?exclude=${exclude.join(',')}`)
-      const data = await res.json()
-      if (data.error) throw new Error(data.error)
-      setQuestion(data.question || '')
-      setHint(data.hint || '')
-      if (typeof data.poolIndex === 'number') {
-        setCurrentPoolIndex(data.poolIndex)
-        setExcludedIndexes(prev => [...prev, data.poolIndex])
-      }
-      setElapsedSec(0)
-      setTimerRunning(true)
-    } catch {
-      // フォールバック: 既存のfetchTrigger方式
-      setFetchTrigger((t: number) => t + 1)
-    } finally {
-      setLoadingQuestion(false)
-    }
+    // 除外済みインデックス以外からランダムに選ぶ
+    const excluded = new Set([...excludedIndexes, currentPoolIndex].filter(i => i >= 0))
+    const available = FERMI_POOL.map((_, i) => i).filter(i => !excluded.has(i))
+    const nextIdx = available.length > 0
+      ? available[Math.floor(Math.random() * available.length)]
+      : Math.floor(Math.random() * FERMI_POOL.length)
+    const next = FERMI_POOL[nextIdx]
+    setQuestion(next.question)
+    setHint(next.hint)
+    setCurrentPoolIndex(nextIdx)
+    setExcludedIndexes(prev => [...prev, nextIdx])
+    setElapsedSec(0)
+    setTimerRunning(true)
   }
 
   const handleSubmit = async () => {
