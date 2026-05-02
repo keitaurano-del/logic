@@ -118,7 +118,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
       <div style={{ padding: '0 12px', flexShrink: 0 }}>
         {/* キャンペーンバナー */}
         <div style={{ background: 'linear-gradient(135deg, #FF6B35 0%, #FF4D6D 100%)', borderRadius: 10, padding: '10px 14px', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontSize: 16 }}>🔥</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><path d="M12 2c0 0-4 4-4 9a4 4 0 0 0 8 0c0-5-4-9-4-9z"/><path d="M12 14c0 0-2 1-2 3a2 2 0 0 0 4 0c0-2-2-3-2-3z"/></svg>
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: 12, fontWeight: 800, color: '#fff', letterSpacing: '.02em' }}>期間限定キャンペーン中！</div>
             <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.9)', marginTop: 1 }}>
@@ -184,7 +184,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
                 )}
                 {plan.savings && (
                   <div style={{ fontSize: 10, fontWeight: 700, color: v3.color.warm, marginTop: 2 }}>
-                    🎉 {plan.savings}
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill={v3.color.warm} stroke="none" style={{ flexShrink: 0 }}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> {plan.savings}
                   </div>
                 )}
               </div>
@@ -202,7 +202,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
               {/* CTAボタン */}
               <div style={{ marginTop: 4 }}>
                 {current ? (
-                  <div style={{ textAlign: 'center', fontSize: 11, fontWeight: 700, color, padding: '6px 0' }}>✅ 現在のプラン</div>
+                  <div style={{ textAlign: 'center', fontSize: 11, fontWeight: 700, color, padding: '6px 0' }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" style={{ display: 'inline', marginRight: 4 }}><polyline points="20 6 9 17 4 12"/></svg>現在のプラン</div>
                 ) : plan.id === 'free' ? (
                   <div style={{ textAlign: 'center', fontSize: 11, color: v3.color.text3, padding: '6px 0' }}>登録不要</div>
                 ) : (
