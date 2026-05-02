@@ -130,6 +130,19 @@ export function addXp(event: XpEvent): number {
   return newXp
 }
 
+/** 任意のXP量を直接加算（AI問題生成・解答完了などのカスタムXP用） */
+export function addXP(amount: number): number {
+  const newXp = getXp() + amount
+  localStorage.setItem(XP_KEY, String(newXp))
+  try {
+    const log: XpLogEntry[] = JSON.parse(localStorage.getItem(XP_LOG_KEY) || '[]')
+    log.push({ ts: Date.now(), event: 'lesson' as XpEvent, xp: amount })
+    if (log.length > 500) log.splice(0, log.length - 500)
+    localStorage.setItem(XP_LOG_KEY, JSON.stringify(log))
+  } catch { /* */ }
+  return newXp
+}
+
 // ── XP履歴ログ（月別内訳用） ──
 export type XpLogEntry = { ts: number; event: XpEvent; xp: number }
 const XP_LOG_KEY = 'logic-xp-log'

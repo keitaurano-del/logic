@@ -1107,6 +1107,54 @@ Rules:
   }
 })
 
+// =============================================
+// AI問題 — ユーザー作成問題を全件保存
+// =============================================
+app.post('/api/user-problems/save', async (req, res) => {
+  try {
+    const { userId, guestId, problem } = req.body as { userId?: string; guestId?: string; problem: Record<string, unknown> }
+    if (!problem) return res.status(400).json({ error: 'problem required' })
+    if (supabase) {
+      await supabase.from('user_ai_problems').insert({
+        user_id: userId || null,
+        guest_id: guestId || null,
+        problem_json: problem,
+        prompt: problem.prompt || '',
+        title: problem.title || '',
+        created_at: new Date().toISOString(),
+      })
+    }
+    res.json({ ok: true })
+  } catch (e: unknown) {
+    console.error('user-problems/save error:', e)
+    res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
+  }
+})
+
+// =============================================
+// AI問題 — 評価（星・コメント）保存
+// =============================================
+app.post('/api/user-problems/rate', async (req, res) => {
+  try {
+    const { userId, guestId, problemId, rating, comment } = req.body as { userId?: string; guestId?: string; problemId: number; rating: number; comment?: string }
+    if (!problemId || !rating) return res.status(400).json({ error: 'problemId and rating required' })
+    if (supabase) {
+      await supabase.from('user_ai_problem_ratings').insert({
+        user_id: userId || null,
+        guest_id: guestId || null,
+        problem_id: problemId,
+        rating,
+        comment: comment || '',
+        created_at: new Date().toISOString(),
+      })
+    }
+    res.json({ ok: true })
+  } catch (e: unknown) {
+    console.error('user-problems/rate error:', e)
+    res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
+  }
+})
+
 // 静的ファイル（public/ → dist/）は配信する
 const distPath = path.resolve(__dirname, '..', 'dist')
 app.use(express.static(distPath))
