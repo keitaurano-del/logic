@@ -110,9 +110,15 @@ type Screen =
 // LESSON_LIST is now managed within RoadmapScreen
 
 function getInitialScreen(user: User | null): Screen {
-  // ?preview=onboarding で強制表示（確認用）
-  if (typeof location !== 'undefined' && new URL(location.href).searchParams.get('preview') === 'onboarding') {
-    return { type: 'onboarding' }
+  if (typeof location !== 'undefined') {
+    const preview = new URL(location.href).searchParams.get('preview')
+    if (preview === 'onboarding') return { type: 'onboarding' }
+    if (preview === 'home') return { type: 'home' }
+    if (preview === 'lessons') return { type: 'lessons' }
+    if (preview === 'ranking') return { type: 'ranking' }
+    if (preview === 'profile') return { type: 'profile' }
+    if (preview === 'fermi') return { type: 'daily-fermi' }
+    if (preview === 'pricing') return { type: 'pricing' }
   }
   // ログイン済みユーザーはオンボーディングをスキップ
   if (user) return { type: 'daily-fermi' }
