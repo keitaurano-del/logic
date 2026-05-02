@@ -8,6 +8,7 @@ import { v3 } from '../styles/tokensV3'
 import { LessonThumbnail } from '../components/LessonThumbnail'
 import { getAllLessonsFlat } from '../lessonData'
 import { getCompletedLessons } from '../stats'
+import { getCoursesByCategory } from '../courseData'
 
 const IMG = '/images/v3'
 
@@ -224,121 +225,132 @@ function CategoryCard({ icon, iconBg, name, meta, progress, onClick, image }: { 
 function CategoryDetailView({ category, onOpenLesson, onBack }: { category: string; onOpenLesson: (id: number) => void; onBack?: () => void }) {
   const flat = getAllLessonsFlat()
   const completed = new Set(getCompletedLessons())
-  const candidates = CATEGORY_ID_TO_NAMES[category] || [CATEGORY_LABEL_JP[category] || category, category]
-  const lessons = Object.values(flat).filter((l: any) => {
-    if (!l) return false
-    return candidates.includes(l.category)
-  }).sort((a: any, b: any) => a.id - b.id)
   const label = CATEGORY_LABEL_JP[category] || category
-  // SCRUM-218: レッスンが多いカテゴリ向けに「ここから始めよう」ピン表示
-  const firstUndone = lessons.find((l: any) => !completed.has(`lesson-${l.id}`))
-  const showStartHint = lessons.length >= 5 && firstUndone
+  const courses = getCoursesByCategory(label)
+
+  // コースが定義されていないカテゴリはフォールバック表示
+  const candidates = CATEGORY_ID_TO_NAMES[category] || [label, category]
+  const fallbackLessons = courses.length === 0
+    ? Object.values(flat).filter((l: any) => l && candidates.includes(l.category)).sort((a: any, b: any) => a.id - b.id)
+    : []
+
+  const totalLessons = courses.length > 0
+    ? courses.reduce((acc, c) => acc + c.lessonIds.length, 0)
+    : fallbackLessons.length
+  const completedCount = courses.length > 0
+    ? courses.flatMap(c => c.lessonIds).filter(id => completed.has(`lesson-${id}`)).length
+    : fallbackLessons.filter((l: any) => completed.has(`lesson-${l.id}`)).length
+
   return (
     <div style={{ background: v3.color.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: v3.color.text }}>
+      {/* ヘッダー */}
       <div style={{ padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 14px', display: 'flex', alignItems: 'center', gap: 12 }}>
         <div onClick={onBack} style={{ width: 36, height: 36, borderRadius: '50%', background: v3.color.card, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6" /></svg>
         </div>
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 20, fontWeight: 700, color: v3.color.text }}>{label}</div>
-          <div style={{ fontSize: 13, color: v3.color.text2, marginTop: 2 }}>{lessons.length}レッスン · {completed.size > 0 ? `${[...completed].filter(k => lessons.some((l: any) => k === `lesson-${l.id}`)).length}/${lessons.length}完了` : '未着手'}</div>
+          <div style={{ fontSize: 13, color: v3.color.text2, marginTop: 2 }}>
+            {courses.length > 0 ? `${courses.length}コース · ` : ''}{totalLessons}レッスン · {completedCount > 0 ? `${completedCount}/${totalLessons}完了` : '未着手'}
+          </div>
         </div>
       </div>
-      {/* SCRUM-218: 始め方ヒントバナー */}
-      {showStartHint && (
-        <div
-          onClick={() => onOpenLesson((firstUndone as any).id)}
-          style={{ margin: '0 16px 12px', background: v3.color.accentSoft, borderRadius: 14, padding: '14px 18px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14, border: `1px solid ${v3.color.accent}30` }}
-        >
-          <div style={{ width: 36, height: 36, borderRadius: '50%', background: v3.color.accent, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.bg} strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6" style={{ transform: 'scaleX(-1)', transformOrigin: '50% 50%' }} /><line x1="5" y1="12" x2="19" y2="12" /></svg>
-          </div>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: v3.color.accent, marginBottom: 2 }}>ここから始めよう</div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: v3.color.text }}>{(firstUndone as any).title}</div>
-          </div>
-        </div>
-      )}
-      <div style={{ flex: 1, padding: '0 16px 100px', display: 'flex', flexDirection: 'column', gap: 8 }}>
-        {lessons.length === 0 && (
-          <div style={{ padding: 32, textAlign: 'center', color: v3.color.text2 }}>このカテゴリにはまだレッスンがありません。</div>
-        )}
-        {showStartHint && <div style={{ fontSize: 13, color: v3.color.text3, padding: '8px 4px 4px', fontWeight: 600, letterSpacing: '.04em' }}>すべてのレッスン</div>}
-        {lessons.map((lesson: any) => {
+
+      <div style={{ flex: 1, padding: '0 16px 100px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+        {/* コース単位表示 */}
+        {courses.map((course) => {
+          const courseLessons = course.lessonIds.map(id => flat[id]).filter(Boolean) as any[]
+          const courseCompleted = course.lessonIds.filter(id => completed.has(`lesson-${id}`)).length
+          const allDone = courseCompleted === course.lessonIds.length
+          const firstUndone = courseLessons.find((l: any) => !completed.has(`lesson-${l.id}`))
+
+          return (
+            <div key={course.id} style={{ background: v3.color.card, borderRadius: 16, overflow: 'hidden', boxShadow: v3.shadow.card }}>
+              {/* コースヘッダー */}
+              <div style={{ padding: '14px 16px 10px', borderBottom: `1px solid ${v3.color.line}` }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                  <div style={{ fontSize: 10, fontWeight: 800, color: v3.color.accent, letterSpacing: '.08em', background: v3.color.accentSoft, borderRadius: 6, padding: '2px 7px' }}>
+                    {course.level}
+                  </div>
+                  {allDone && (
+                    <div style={{ fontSize: 10, fontWeight: 700, color: '#22C55E', background: '#22C55E18', borderRadius: 6, padding: '2px 7px', display: 'flex', alignItems: 'center', gap: 3 }}>
+                      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                      完了
+                    </div>
+                  )}
+                </div>
+                <div style={{ fontSize: 16, fontWeight: 700, color: v3.color.text, lineHeight: 1.3, marginBottom: 4 }}>{course.title}</div>
+                <div style={{ fontSize: 12, color: v3.color.text2, lineHeight: 1.5 }}>{course.description}</div>
+                {/* プログレスバー */}
+                <div style={{ marginTop: 10 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                    <div style={{ fontSize: 11, color: v3.color.text3 }}>{course.lessonIds.length}レッスン</div>
+                    <div style={{ fontSize: 11, color: v3.color.accent, fontWeight: 600 }}>{courseCompleted}/{course.lessonIds.length}</div>
+                  </div>
+                  <div style={{ height: 4, background: `${v3.color.text3}22`, borderRadius: 2, overflow: 'hidden' }}>
+                    <div style={{ height: '100%', width: `${(courseCompleted / course.lessonIds.length) * 100}%`, background: allDone ? '#22C55E' : v3.color.accent, borderRadius: 2, transition: 'width .3s' }} />
+                  </div>
+                </div>
+              </div>
+
+              {/* レッスン一覧 */}
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                {courseLessons.map((lesson: any, idx: number) => {
+                  const isDone = completed.has(`lesson-${lesson.id}`)
+                  const isNext = firstUndone?.id === lesson.id
+                  return (
+                    <div key={lesson.id} onClick={() => onOpenLesson(lesson.id)}
+                      style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', cursor: 'pointer', borderTop: idx > 0 ? `1px solid ${v3.color.line}` : 'none', background: isNext ? `${v3.color.accent}08` : 'transparent' }}>
+                      {/* ステップ番号 or チェック */}
+                      <div style={{ width: 28, height: 28, borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: isDone ? v3.color.accent : isNext ? `${v3.color.accent}20` : `${v3.color.text3}18`, border: isNext && !isDone ? `1.5px solid ${v3.color.accent}` : 'none' }}>
+                        {isDone
+                          ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                          : <span style={{ fontSize: 11, fontWeight: 700, color: isNext ? v3.color.accent : v3.color.text3 }}>{idx + 1}</span>
+                        }
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: 14, fontWeight: isNext ? 700 : 600, color: isDone ? v3.color.text2 : v3.color.text, lineHeight: 1.3 }}>{lesson.title}</div>
+                        <div style={{ fontSize: 12, color: v3.color.text3, marginTop: 2 }}>{lesson.steps?.length ?? 0}ステップ</div>
+                      </div>
+                      {isNext && !isDone && (
+                        <div style={{ fontSize: 10, fontWeight: 700, color: v3.color.accent, background: v3.color.accentSoft, borderRadius: 6, padding: '3px 8px', flexShrink: 0 }}>次へ</div>
+                      )}
+                      {!isDone && !isNext && (
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )
+        })}
+
+        {/* コース未定義のカテゴリのフォールバック */}
+        {fallbackLessons.map((lesson: any) => {
           const isDone = completed.has(`lesson-${lesson.id}`)
           return (
             <div key={lesson.id} onClick={() => onOpenLesson(lesson.id)}
               style={{ background: v3.color.card, borderRadius: 14, padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'stretch', overflow: 'hidden', boxShadow: v3.shadow.card }}>
-              {/* サムネイル */}
-              <div style={{ width: 80, height: 80, flexShrink: 0 }}>
-                <LessonThumbnail lessonId={lesson.id} size={80} />
-              </div>
+              <div style={{ width: 80, height: 80, flexShrink: 0 }}><LessonThumbnail lessonId={lesson.id} size={80} /></div>
               <div style={{ padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0 }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 15, fontWeight: 700, color: v3.color.text, marginBottom: 3, lineHeight: 1.4 }}>{lesson.title}</div>
-                  <div style={{ fontSize: 13, color: v3.color.text2, fontWeight: 500 }}>
-                    {lesson.steps?.length ?? 0}ステップ · {lesson.difficulty || '初級'}
-                  </div>
+                  <div style={{ fontSize: 13, color: v3.color.text2 }}>{lesson.steps?.length ?? 0}ステップ</div>
                 </div>
-                <div style={{ flexShrink: 0, width: 26, height: 26, borderRadius: '50%', background: isDone ? v3.color.accent : `${v3.color.text3}22`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: 26, height: 26, borderRadius: '50%', background: isDone ? v3.color.accent : `${v3.color.text3}22`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   {isDone
-                    ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12" /></svg>
-                    : <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6" /></svg>
+                    ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    : <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
                   }
                 </div>
               </div>
             </div>
           )
         })}
-        {/* おすすめレッスン */}
-        <RecommendedLessonsSection currentCategory={label} onOpenLesson={onOpenLesson} />
       </div>
     </div>
   )
 }
 
-// カテゴリ詳細画面のおすすめレッスンコンポーネント
-const CATEGORY_RECOMMEND: Record<string, number[]> = {
-  'ロジカルシンキング': [40, 50, 28],
-  'クリティカルシンキング': [20, 50, 53],
-  '仮説思考': [22, 40, 53],
-  'ケース面接': [20, 50, 89],
-  'デザインシンキング': [40, 59, 62],
-  'ラテラルシンキング': [56, 62, 59],
-  'アナロジー思考': [59, 65, 40],
-  'システムシンキング': [50, 62, 40],
-  '哲学・思考の原理': [77, 78, 40],
-  'クライアントワーク': [20, 50, 28],
-  'フェルミ推定': [20, 89, 200],
-  '提案書作成': [20, 22, 50],
-  '提案・伝える技術': [20, 22, 50],
-  '課題設定': [40, 50, 22],
-}
 
-
-function RecommendedLessonsSection({ currentCategory, onOpenLesson }: { currentCategory: string; onOpenLesson: (id: number) => void }) {
-  const recIds = CATEGORY_RECOMMEND[currentCategory] || [20, 40, 50]
-  const flat = getAllLessonsFlat()
-  const recs = recIds.map(id => flat[id]).filter(Boolean) as Array<{ id: number; title: string; category: string }>
-  if (recs.length === 0) return null
-  return (
-    <div style={{ marginTop: 8 }}>
-      <div style={{ fontSize: 13, color: v3.color.text2, fontWeight: 600, marginBottom: 10, padding: '0 4px' }}>他のおすすめレッスン</div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        {recs.map(lesson => (
-          <div key={lesson.id} onClick={() => onOpenLesson(lesson.id)}
-            style={{ background: v3.color.card, borderRadius: 14, padding: '12px 16px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 12, border: `1px solid ${v3.color.line}` }}>
-            <div style={{ width: 32, height: 32, borderRadius: 10, background: v3.color.accentSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2.5" strokeLinecap="round"><polygon points="5 3 19 12 5 21 5 3" /></svg>
-            </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 14, fontWeight: 700, color: v3.color.text, marginBottom: 2, lineHeight: 1.3 }}>{lesson.title}</div>
-              <div style={{ fontSize: 12, color: v3.color.text2 }}>{lesson.category}</div>
-            </div>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6" /></svg>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
