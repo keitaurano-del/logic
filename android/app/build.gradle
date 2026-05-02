@@ -18,10 +18,10 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file('/home/work/.openclaw/workspace/logic/keystores/logic-release.keystore')
-            storePassword 'LogicApp2026Release'
-            keyAlias 'logic'
-            keyPassword 'LogicApp2026Release'
+            storeFile file(System.getenv('LOGIC_KEYSTORE_PATH') ?: "${rootDir}/../keystores/logic-release.keystore")
+            storePassword System.getenv('LOGIC_KEYSTORE_PASSWORD') ?: 'LogicApp2026Release'
+            keyAlias System.getenv('LOGIC_KEY_ALIAS') ?: 'logic'
+            keyPassword System.getenv('LOGIC_KEY_PASSWORD') ?: 'LogicApp2026Release'
         }
     }
     buildTypes {
