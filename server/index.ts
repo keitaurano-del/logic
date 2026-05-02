@@ -2060,9 +2060,9 @@ app.get('/api/daily-fermi', async (req, res) => {
     // プールから今日の問題を使う（英語の場合はAI生成）
     if (!isEn && poolQuestion) {
       if (supabase) {
-        await supabase.from('daily_fermi_problems').insert({
+        try { await supabase.from('daily_fermi_problems').insert({
           date: today, question: poolQuestion.question, hint: poolQuestion.hint, locale
-        }).catch(() => {})
+        }) } catch { /* ignore */ }
       }
       return res.json({ question: poolQuestion.question, hint: poolQuestion.hint, date: today, poolIndex: dayIndex })
     }
