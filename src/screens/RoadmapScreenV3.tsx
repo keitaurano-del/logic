@@ -64,7 +64,7 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
       {!searchQuery.trim() && <div style={{ flex: 1, padding: '0 16px 80px', display: 'flex', flexDirection: 'column', gap: v3.spacing.gap }}>
 
         <div style={{ padding: '4px 4px 8px' }}>
-          <div style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.45, letterSpacing: '-.005em' }}>今日、どのスキルを<br />鳔える？</div>
+          <div style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.45, letterSpacing: '-.005em' }}>今日、どのスキルを<br />鍛える？</div>
         </div>
 
 
