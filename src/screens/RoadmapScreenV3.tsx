@@ -90,9 +90,6 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
     </div>
   )
 }
-    </div>
-  )
-}
 
 function SearchResults({ query, onOpenLesson }: { query: string; onOpenLesson: (id: number) => void }) {
   const q = query.toLowerCase().trim()
