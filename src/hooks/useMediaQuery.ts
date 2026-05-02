@@ -24,7 +24,11 @@ export function useMediaQuery(query: string): boolean {
   return matches
 }
 
-/** Shortcut for the 900px desktop breakpoint used throughout v3 mocks. */
+/**
+ * Desktop layout is disabled — Logic releases as a native app only.
+ * Always returns false so the mobile layout is used universally.
+ * TODO: remove desktop components when native migration is complete.
+ */
 export function useIsDesktop(): boolean {
-  return useMediaQuery('(min-width: 900px)')
+  return false
 }

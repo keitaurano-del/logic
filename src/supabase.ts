@@ -37,7 +37,7 @@ export async function loginWithGoogle(): Promise<{ user: User | null; error?: st
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: window.location.origin,
         },
       })
       if (error) return { user: null, error: error.message }
@@ -130,3 +130,14 @@ export function onAuthChange(callback: (user: User | null) => void): () => void 
 }
 
 export type { User }
+
+export async function updateDisplayName(name: string): Promise<{ error?: string }> {
+  if (!supabase) return { error: 'Supabase が設定されていません' }
+  try {
+    const { error } = await supabase.auth.updateUser({ data: { full_name: name } })
+    if (error) return { error: error.message }
+    return {}
+  } catch {
+    return { error: '名前の更新に失敗しました' }
+  }
+}

@@ -3,8 +3,42 @@ import { ArrowLeftIcon, LightbulbIcon, BarChartIcon } from '../icons'
 import { IconButton } from '../components/IconButton'
 import { Button } from '../components/Button'
 import { API_BASE } from './apiBase'
+import { getDailyFermi, getDailyFermiIndex, FERMI_POOL, getDailyFermiStats } from '../fermiData'
 import { t, getLocale } from '../i18n'
 import { getGuestId } from '../guestId'
+import { useDailyGuide, GuideLabel, GuideStyle } from '../tutorial/dailyGuide'
+import { isStandardPlan, isPremiumPlan } from '../subscription'
+
+// ── プラン別デイリー制限 ──────────────────────────────────────
+const TODAY = new Date().toISOString().slice(0, 10)
+const DAILY_COUNT_KEY = 'logic-daily-fermi-count'
+const REROLL_COUNT_KEY = 'logic-daily-fermi-reroll'
+
+function getDailyCount(): number {
+  try { const s = JSON.parse(localStorage.getItem(DAILY_COUNT_KEY) || '{}'); return s.date === TODAY ? (s.count ?? 0) : 0 } catch { return 0 }
+}
+function incrementDailyCount() {
+  try { const c = getDailyCount(); localStorage.setItem(DAILY_COUNT_KEY, JSON.stringify({ date: TODAY, count: c + 1 })) } catch { /* */ }
+}
+function getRerollCount(): number {
+  try { const s = JSON.parse(localStorage.getItem(REROLL_COUNT_KEY) || '{}'); return s.date === TODAY ? (s.count ?? 0) : 0 } catch { return 0 }
+}
+function incrementRerollCount() {
+  try { const c = getRerollCount(); localStorage.setItem(REROLL_COUNT_KEY, JSON.stringify({ date: TODAY, count: c + 1 })) } catch { /* */ }
+}
+
+export function getDailyFermiLimit(): number {
+  if (isPremiumPlan()) return 10
+  if (isStandardPlan()) return 5
+  return 1 // フリープラン
+}
+export function getDailyRerollLimit(): number {
+  // SIT環境では無制限
+  if (typeof window !== 'undefined' && window.location.hostname.includes('logic-sit')) return 999
+  if (isPremiumPlan()) return 10
+  if (isStandardPlan()) return 5
+  return 0 // フリープラン
+}
 
 // デイリーフェルミ完了状態管理
 const DAILY_FERMI_KEY = 'logic-daily-fermi-done'
@@ -18,24 +52,7 @@ function markDailyFermiDone() {
 }
 
 // 基礎統計データ（フェルミ推定時の参考値）
-const BASE_STATS = [
-  { label: '日本の人口', value: '約1億2,400万人' },
-  { label: '世帯数', value: '約5,700万世帯' },
-  { label: '平均世帯人数', value: '2.17人' },
-  { label: '労働力人口', value: '約6,900万人' },
-  { label: '東京都の人口', value: '約1,400万人' },
-  { label: '国土面積', value: '約37.8万km²' },
-  { label: 'コンビニ数', value: '約5.6万店' },
-  { label: '電柱数', value: '約3,500万本' },
-  { label: '自動車保有数', value: '約7,800万台' },
-  { label: '小学校数', value: '約1.9万校' },
-  { label: '鉄道利用者数/日', value: '約4,800万人' },
-  { label: 'GDP', value: '約600兆円' },
-  { label: '平均年収', value: '約460万円' },
-  { label: 'スマホ普及率', value: '約97%' },
-  { label: '平均寿命', value: '約84歳' },
-  { label: '会社数', value: '約368万社' },
-]
+// 参考データは fermiData.ts の getDailyFermiStats() を使用
 
 /** Convert **bold** to <strong> */
 function boldify(text: string): string {
@@ -143,7 +160,7 @@ function FermiChatModal({ question, locale, onClose }: {
           flexShrink: 0,
         }}>
           <div>
-            <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>前提を確認する</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>ヒントを聞く</div>
             <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>答えは教えません。前提の整理を手伝います。</div>
           </div>
           <button
@@ -260,11 +277,20 @@ type SubmitPhase = 'idle' | 'scoring' | 'done' | 'result'
 
 export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
   const locale = getLocale()
+  const { active: guideActive, dismiss: dismissGuide } = useDailyGuide()
 
-  const [question, setQuestion] = useState('')
-  const [hint, setHint] = useState('')
-  const [loadingQuestion, setLoadingQuestion] = useState(true)
-  const [questionError, setQuestionError] = useState('')
+  // プラン別制限
+  const dailyLimit = getDailyFermiLimit()
+  const rerollLimit = getDailyRerollLimit()
+  const [dailyCount, setDailyCount] = useState(getDailyCount)
+  const [rerollCount, setRerollCount] = useState(getRerollCount)
+  const canAnswer = dailyCount < dailyLimit
+  const canReroll = rerollCount < rerollLimit && canAnswer
+
+  const [question, setQuestion] = useState(() => getDailyFermi().question)
+  const [hint, setHint] = useState(() => getDailyFermi().hint)
+  const loadingQuestion = false
+  const questionError = ''
 
   const [answer, setAnswer] = useState('')
   const [submitPhase, setSubmitPhase] = useState<SubmitPhase>('idle')
@@ -288,21 +314,38 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
     return () => { if (timerRef.current) clearInterval(timerRef.current) }
   }, [timerRunning])
 
+  // タイマー開始（マウント時）
   useEffect(() => {
-    setLoadingQuestion(true)
-    setQuestionError('')
-    fetch(`${API_BASE}/api/daily-fermi?locale=${locale}`)
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.error) throw new Error(data.error)
-        setQuestion(data.question || '')
-        setHint(data.hint || '')
-        setElapsedSec(0)
-        setTimerRunning(true)
-      })
-      .catch((e: Error) => setQuestionError(e.message || t('common.error')))
-      .finally(() => setLoadingQuestion(false))
-  }, [locale])
+    setTimerRunning(true)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const [excludedIndexes, setExcludedIndexes] = useState<number[]>([getDailyFermiIndex()])
+  const [currentPoolIndex, setCurrentPoolIndex] = useState<number>(getDailyFermiIndex())
+
+  const handleReroll = () => {
+    if (!canReroll) return
+    incrementRerollCount()
+    setRerollCount(getRerollCount())
+    setAnswer('')
+    setFeedback(null)
+    setSubmitPhase('idle')
+    setShowHint(false)
+    setHintUsed(false)
+    // 除外済みインデックス以外からランダムに選ぶ
+    const excluded = new Set([...excludedIndexes, currentPoolIndex].filter(i => i >= 0))
+    const available = FERMI_POOL.map((_, i) => i).filter(i => !excluded.has(i))
+    const nextIdx = available.length > 0
+      ? available[Math.floor(Math.random() * available.length)]
+      : Math.floor(Math.random() * FERMI_POOL.length)
+    const next = FERMI_POOL[nextIdx]
+    setQuestion(next.question)
+    setHint(next.hint)
+    setCurrentPoolIndex(nextIdx)
+    setExcludedIndexes(prev => [...prev, nextIdx])
+    setElapsedSec(0)
+    setTimerRunning(true)
+  }
 
   const handleSubmit = async () => {
     if (!answer.trim()) return
@@ -320,7 +363,25 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
       if (!res.ok || data.error) throw new Error(data.error || t('common.error'))
       setFeedback(data)
       markDailyFermiDone()
+      incrementDailyCount()
+      setDailyCount(getDailyCount())
       setSubmitPhase('done')
+      // スコアをランキングに記録
+      if (data.score != null) {
+        const { getDisplayName } = await import('../stats')
+        fetch(`${API_BASE}/api/fermi/record-score`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId: getGuestId(),
+            userName: getDisplayName(),
+            score: data.score,
+            questionIndex: currentPoolIndex,
+            elapsedSec,
+            hintUsed,
+          }),
+        }).catch(() => {})
+      }
     } catch (e: unknown) {
       setSubmitError((e as Error).message || t('common.error'))
       setSubmitPhase('idle')
@@ -330,6 +391,7 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
 
   return (
     <div className="stack">
+      {guideActive && <GuideStyle />}
       {/* チャットモーダル */}
       {showChat && (
         <FermiChatModal
@@ -399,21 +461,57 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
             </div>
           </div>
 
+          {/* プラン別制限・別の問題を選ぶボタン */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 2px' }}>
+            <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+              {dailyCount + 1} / {dailyLimit}問目
+              {rerollLimit > 0 && (
+                <span style={{ marginLeft: 8, opacity: 0.7 }}>
+                  (別問題: {rerollCount}/{rerollLimit}回使用済)
+                </span>
+              )}
+            </div>
+            {canReroll && submitPhase === 'idle' && (
+              <button
+                onClick={handleReroll}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 5,
+                  background: 'none', border: '1.5px solid var(--brand)',
+                  borderRadius: 20, padding: '6px 14px',
+                  color: 'var(--brand)', fontSize: 13, fontWeight: 700,
+                  cursor: 'pointer',
+                }}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+                別の問題を選ぶ
+              </button>
+            )}
+            {!canAnswer && (
+              <span style={{ fontSize: 12, color: 'var(--danger)', fontWeight: 700 }}>
+                今日の回答数上限に達しました
+              </span>
+            )}
+          </div>
+
           {/* ヒント */}
           {hint && submitPhase === 'idle' && (
             <div>
               {!showHint ? (
-                <button
-                  onClick={() => { setShowHint(true); setHintUsed(true) }}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: 6,
-                    background: 'none', border: 'none', cursor: 'pointer',
-                    color: 'var(--brand)', fontSize: 16, fontWeight: 600, padding: 0,
-                  }}
-                >
-                  <LightbulbIcon width={15} height={15} />
-                  {t('dailyFermi.showHint')}
-                </button>
+                <div style={{ position: 'relative', display: 'inline-block' }}>
+                  <button
+                    onClick={() => { setShowHint(true); setHintUsed(true) }}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: 6,
+                      background: 'none', border: 'none', cursor: 'pointer',
+                      color: 'var(--brand)', fontSize: 16, fontWeight: 600, padding: 0,
+                      animation: guideActive ? 'tut-pulse 1.2s ease 2' : 'none',
+                    }}
+                  >
+                    <LightbulbIcon width={15} height={15} />
+                    {t('dailyFermi.showHint')}
+                  </button>
+                  {guideActive && <GuideLabel text="詰まったら見てみましょう" position="bottom" />}
+                </div>
               ) : (
                 <div style={{
                   borderRadius: 16,
@@ -426,15 +524,29 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
                     <LightbulbIcon width={14} height={14} style={{ color: 'var(--brand)' }} />
                     <span style={{ fontWeight: 700, color: 'var(--brand)', fontSize: 13, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                      HINT
+                      ヒント
                     </span>
                   </div>
-                  <p style={{ color: 'var(--text-primary)', margin: '0 0 14px', fontWeight: 500, fontSize: 15, lineHeight: 1.7 }}>{hint}</p>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, marginBottom: 14 }}>
+                    <p style={{ color: 'var(--text-primary)', margin: 0, fontWeight: 500, fontSize: 15, lineHeight: 1.7, flex: 1 }}>{hint}</p>
+                    <button
+                      onClick={() => setShowHint(false)}
+                      style={{
+                        background: 'none', border: 'none', cursor: 'pointer',
+                        color: 'var(--text-muted)', fontSize: 16, padding: 0,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        minWidth: 24, minHeight: 24,
+                      }}
+                      title="ヒントを閉じる"
+                    >
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+                    </button>
+                  </div>
                   {/* 基礎統計データ */}
                   <div style={{ paddingTop: 12, borderTop: '1px solid rgba(107,133,214,0.2)' }}>
                     <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', color: 'var(--text-muted)', marginBottom: 10, textTransform: 'uppercase' }}>参考データ</div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                      {BASE_STATS.map((s) => (
+                      {getDailyFermiStats().map((s) => (
                         <div key={s.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 13 }}>
                           <span style={{ color: 'var(--text-secondary)' }}>{s.label}</span>
                           <span style={{ fontWeight: 700, color: 'var(--text-primary)', marginLeft: 12 }}>{s.value}</span>
@@ -458,12 +570,13 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
                 background: 'var(--bg-muted)', borderRadius: 8,
                 padding: '8px 12px', lineHeight: 1.6,
               }}>
-                数字に追われなくていい。「対象・場所・頻度」の順に考えてみると分解しやすい。
+                まずは「誰が・どこで・どれくらいの頻度で」を考えてみよう。数字は大まかでOK！
               </div>
 
+              {guideActive && <GuideLabel text="まず自分の考えを書いてみましょう" position="top" />}
               <textarea
                   value={answer}
-                  onChange={(e) => setAnswer(e.target.value)}
+                  onChange={(e) => { setAnswer(e.target.value); if (guideActive) dismissGuide() }}
                   placeholder={t('fermi.placeholder')}
                   style={{
                     width: '100%',
@@ -503,7 +616,7 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
                     fontFamily: 'inherit',
                   }}
                 >
-                  前提を確認する
+                  ヒントを聞く
                 </button>
                 <button
                   onClick={handleSubmit}

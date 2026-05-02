@@ -21,7 +21,6 @@ import { hasCompletedPlacement, loadPlacementResult } from './placementData'
 import { t, getLocale } from './i18n'
 import { getAIProblem, type AIProblemSet } from './aiProblemStore'
 import { getInitialUser, onAuthChange } from './supabase'
-import { verifyCheckout } from './subscription'
 import { getTodayProblem, generateTodayProblem, isDailyCompleted, markDailyCompleted } from './dailyProblem'
 import { allLessons } from './lessonData'
 import { recordCompletion, addStudyTime, getCompletedCount, getStreak, getStudyHours, getCompletedLessons } from './stats'
@@ -224,14 +223,8 @@ function App() {
   const [loadingDaily, setLoadingDaily] = useState(false)
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    const sessionId = params.get('session_id')
-    if (params.get('checkout') === 'success' && sessionId) {
-      verifyCheckout(sessionId).then(ok => {
-        if (ok) alert('プレミアムにアップグレードしました！')
-        window.history.replaceState({}, '', window.location.pathname)
-      })
-    }
+    // Play Store Billing では Stripe の決済検証は不要（2026-05-01削除）
+    window.history.replaceState({}, '', window.location.pathname)
   }, [])
 
   useEffect(() => {

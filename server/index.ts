@@ -411,15 +411,143 @@ Rules:
 })
 
 // =============================================
+
+// ─────────────────────────────────────────────
+// ロールプレイ固定パターン（AIコスト削減のためパターン化）
+// ─────────────────────────────────────────────
+const ROLEPLAY_PATTERNS: Record<string, {
+  partner: string[]
+  choices: string[][]
+}> = {
+  'why-so-report': {
+    partner: [
+      'お疲れ様。ちょうど良かった。今進めてる新商品プロジェクト、どうなってる？スケジュール通り進んでるのか、何か問題あるのか、ざっくりで良いから結論をくれ。',
+      '82%か。じゃあ残りの18%は何が原因だ？そこが問題の本質だろ。',
+      'ニーズの変化はいつ分かったんだ？それを早く教えてくれれば対策もあったんじゃないか。',
+      'なるほど。今後どうする？具体的なアクションを聞かせてくれ。',
+      '分かった。来週の月曜までに2機能に絞った計画書を持ってきてくれ。以上だ。',
+    ],
+    choices: [
+      [
+        '目標の売上見込み1200万円に対し、現在の受注予測が980万円で進捗率は82%です。納期は予定通りですが、顧客ニーズの変化で3機能のうち2機能に絞る必要が出ています。',
+        'おおむね順調に進んでいます。チーム一丸となって頑張っていますし、顧客の反応も悪くないと思います。',
+        'まだ道半ばという感じで、もう少し時間をいただけると判断できると思います。',
+      ],
+      [
+        '顧客ヒアリングで機能Cは既存ツールで代替できると判明したためです。その分、機能AとBの品質向上に集中できます。',
+        '市場環境が変わってきているので、柔軟に対応していく必要があります。',
+        'チームの技術的な問題もあり、全部は難しい状況です。',
+      ],
+      [
+        '先週の顧客ヒアリングで判明しました。対策の目処が立ってからご報告しようと考えていましたが、今後は速報ベースで共有します。',
+        '少し前から感じていましたが、確信が持てずにいました。',
+        'ちょっと様子を見ていました。大丈夫だと思っていたのですが…。',
+      ],
+      [
+        '機能AとBに集中し、来週中に仕様確定。残りのリソースを品質向上に振り向け、納期通りリリースします。機能Cは次フェーズで対応することを顧客にも説明済みです。',
+        '引き続き頑張ります。チームと相談しながら最善を尽くします。',
+        'もう少し検討させてください。',
+      ],
+      [
+        'ありがとうございます。月曜日に2機能版の計画書と、機能C対応の次フェーズ案もあわせてお持ちします。',
+        'はい、準備します。よろしくお願いします。',
+        '月曜ですね。なるべく準備します。',
+      ],
+    ],
+  },
+  'mece-meeting': {
+    partner: [
+      '今日の会議のテーマは「来期の売上目標達成策」です。各自意見はあると思いますが、まず論点を整理したいと思います。どこから始めますか？',
+      'なるほど。既存顧客と新規顧客に分けて考えるということですね。重複や漏れはないですか？',
+      '単価向上の具体的な方法は何が考えられますか？',
+      'それらの施策、優先順位はどうつけますか？',
+      'では今日のアクションプランをまとめましょう。誰が、何を、いつまでに、という形で。',
+    ],
+    choices: [
+      [
+        '売上を「既存顧客」と「新規顧客」に分けて、それぞれ「単価向上」「件数増加」の軸で施策を整理しましょう。漏れなくダブりなく議論できます。',
+        'まずは各自が重要だと思う施策を出し合って、そこから絞り込みましょう。',
+        'とりあえずブレストから始めて、後で整理しましょうか。',
+      ],
+      [
+        '既存顧客は「アップセル」「クロスセル」「解約防止」の3つ、新規は「リード獲得」「商談化」「成約率向上」で網羅できます。',
+        '大体カバーできていると思います。細かいところは後で調整します。',
+        '少し重なるところもありますが、まあ大丈夫ではないでしょうか。',
+      ],
+      [
+        '既存顧客へのプレミアムプラン案内と、オプション追加の提案営業が即効性高いです。新規向けには参照価格の見直しも検討できます。',
+        '価格を上げるか、付加価値をつけるかのどちらかだと思います。',
+        '単価向上は難しいですよね。顧客の反発も考えると慎重にならざるを得ません。',
+      ],
+      [
+        '即効性と実現可能性のマトリクスで評価します。既存顧客アップセルを最優先、次いで成約率向上、単価見直しは中期で取り組みます。',
+        '重要なものからやっていく感じで良いと思います。',
+        '全部大事なので並行して進めましょう。',
+      ],
+      [
+        '山田さんがアップセル提案書作成（今月末）、田中さんが成約率改善スクリプト見直し（来週金曜）、私がプレミアムプランの価格設計（来週水曜）を担当します。',
+        '担当を決めて次回に持ち寄りましょう。',
+        'それぞれ頑張りましょう。',
+      ],
+    ],
+  },
+  'pyramid-client': {
+    partner: [
+      'それで、今回の提案の結論は何ですか？最初に教えてください。',
+      'コスト削減20%の根拠は何ですか？',
+      'リスクはありませんか？導入コストや社内の混乱とか。',
+      '競合他社と比べた差別化ポイントは何ですか？',
+      '分かりました。次のステップとして何を提案しますか？',
+    ],
+    choices: [
+      [
+        '御社の物流コストを年間20%削減し、在庫回転率を1.5倍に改善できます。そのための3つの施策をご提案します。',
+        '今日は物流改善の提案を持ってきました。詳しくご説明させてください。',
+        '資料を作ってきましたので、順番に説明させてください。',
+      ],
+      [
+        '御社の過去3年のデータと同業他社20社のベンチマークに基づいています。倉庫稼働率が業界平均比15%低く、ここに最大の改善余地があります。',
+        '業界の平均的な改善事例から算出しています。',
+        '概算ですが、一般的にこのような施策で20%程度の削減が見込めます。',
+      ],
+      [
+        '初期導入コストは約500万円ですが6ヶ月で回収できます。段階的導入と専任サポートで社内混乱を最小化し、移行期間中の生産性低下も試算済みです。',
+        'メリットの方が大きいと考えています。一緒に対策を考えましょう。',
+        'リスクは低いと思います。他社でも問題なく導入できています。',
+      ],
+      [
+        '既存システムとのシームレスな連携と、導入後12ヶ月の専任サポートです。競合は製品を売って終わりですが、私たちはKPI達成まで伴走します。',
+        '価格と品質のバランスが優れていると自負しています。',
+        '長年の実績と信頼性が強みです。',
+      ],
+      [
+        '来週中に基幹システムの連携要件を確認させてください。その後2週間で詳細提案書を作成し、月末に意思決定者を交えた場を設けることを提案します。',
+        'ご検討いただいて、ご連絡いただければと思います。',
+        'またご連絡します。',
+      ],
+    ],
+  },
+}
+
 // ロールプレイ自動進行ターン (AI セリフ + ユーザー選択肢)
 // =============================================
 app.post('/api/roleplay/turn', roleplayTurnLimiter, async (req, res) => {
-  const { messages, setup, turnNumber, maxTurns, locale } = req.body as {
+  const { messages, setup, turnNumber, maxTurns, locale, situationId } = req.body as {
     messages: { role: string; content: string }[]
     setup: { template: { title: string }; category?: string; partner: { name: string; role: string; personality: string; interests: string; concerns: string }; goal: string; context: string }
     turnNumber: number
     maxTurns: number
     locale?: string
+    situationId?: string
+  }
+  // ── パターンモード（AIコスト削減） ──
+  const pattern = situationId ? ROLEPLAY_PATTERNS[situationId] : undefined
+  if (pattern) {
+    const idx = Math.min(turnNumber - 1, pattern.partner.length - 1)
+    const partnerLine = pattern.partner[idx] ?? pattern.partner[pattern.partner.length - 1]
+    const choiceSet = pattern.choices[idx] ?? pattern.choices[pattern.choices.length - 1]
+    const isLast = turnNumber >= maxTurns
+    return res.json({ partner: partnerLine, choices: choiceSet, done: isLast })
   }
   const isEn = locale === 'en'
   const { template, partner, goal, context } = setup
@@ -979,6 +1107,54 @@ Rules:
   }
 })
 
+// =============================================
+// AI問題 — ユーザー作成問題を全件保存
+// =============================================
+app.post('/api/user-problems/save', async (req, res) => {
+  try {
+    const { userId, guestId, problem } = req.body as { userId?: string; guestId?: string; problem: Record<string, unknown> }
+    if (!problem) return res.status(400).json({ error: 'problem required' })
+    if (supabase) {
+      await supabase.from('user_ai_problems').insert({
+        user_id: userId || null,
+        guest_id: guestId || null,
+        problem_json: problem,
+        prompt: problem.prompt || '',
+        title: problem.title || '',
+        created_at: new Date().toISOString(),
+      })
+    }
+    res.json({ ok: true })
+  } catch (e: unknown) {
+    console.error('user-problems/save error:', e)
+    res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
+  }
+})
+
+// =============================================
+// AI問題 — 評価（星・コメント）保存
+// =============================================
+app.post('/api/user-problems/rate', async (req, res) => {
+  try {
+    const { userId, guestId, problemId, rating, comment } = req.body as { userId?: string; guestId?: string; problemId: number; rating: number; comment?: string }
+    if (!problemId || !rating) return res.status(400).json({ error: 'problemId and rating required' })
+    if (supabase) {
+      await supabase.from('user_ai_problem_ratings').insert({
+        user_id: userId || null,
+        guest_id: guestId || null,
+        problem_id: problemId,
+        rating,
+        comment: comment || '',
+        created_at: new Date().toISOString(),
+      })
+    }
+    res.json({ ok: true })
+  } catch (e: unknown) {
+    console.error('user-problems/rate error:', e)
+    res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
+  }
+})
+
 // 静的ファイル（public/ → dist/）は配信する
 const distPath = path.resolve(__dirname, '..', 'dist')
 app.use(express.static(distPath))
@@ -1202,7 +1378,7 @@ app.post('/api/fermi/question', fermiLimiter, async (req, res) => {
     const isEn = req.body?.locale === 'en'
     const userPrompt = isEn
       ? 'Generate exactly one Fermi estimation problem in English. Pick something from everyday Western/global business or society that is good for decomposition practice. Return only the question on a single line — no preface, no explanation.'
-      : 'フェルミ推定の問題を 1 問だけ日本語で生成してください。日常的な日本の社会・経済に関する問いで、分解思考の練習に適したものを出してください。問題文のみを 1 行で返してください。前置きや説明は不要です。'
+      : `フェルミ推定の問題を1問だけ日本語で出してください。以下のカテゴリからランダムに選んでください：ビジネス規模・インフラ・消費行動・テクノロジー・社会統計・環境・スポーツ。参加者が分解して考えられる、面白くて意外性のある問題を作ってください。難易度は中級〜上級。問題文のみ1行で返してください（前置き・説明不要）。本日の日付ヒント: ${today}`
 
     const response = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
@@ -1425,6 +1601,7 @@ app.post('/api/report-problem', async (req, res) => {
       return res.status(503).json({ error: 'Supabase not configured' })
     }
 
+    const appSource = process.env.APP_ENV === 'sit' ? 'sit' : 'production'
     const { data, error } = await supabase
       .from('reports')
       .insert({
@@ -1434,6 +1611,7 @@ app.post('/api/report-problem', async (req, res) => {
         options: options || [],
         issue_type: issueType,
         comment: comment || '',
+        source: appSource,
       })
       .select('id')
       .single()
@@ -1873,6 +2051,33 @@ Respond in English.`
   }
 })
 
+
+// =============================================
+// フェルミ推定 問題プール（20問、日付ローテーション）
+// =============================================
+const FERMI_QUESTION_POOL_JA: Array<{ question: string; hint: string }> = [
+  { question: '日本全国に自動販売機は何台あるか？', hint: '人口÷自販機の密度で考えてみよう。コンビニより多いか少ないかを基準に。' },
+  { question: '東京タワーの重さは何トンか？', hint: '高さ333mの鉄骨構造物。1mあたりの重量×高さで分解してみよう。' },
+  { question: '日本で1年間に消費されるカップラーメンの個数は？', hint: '人口×世帯数×週の消費頻度×52週で計算できる。' },
+  { question: '日本全国の美容室の数はコンビニより多いか少ないか？その数は？', hint: 'コンビニ約6万店が基準。美容室は需要（何人に1軒）から推定しよう。' },
+  { question: '東京ドームに水を満たすと何リットル入るか？', hint: 'ドームの体積は約124万㎥。㎥とリットルの変換を使おう。' },
+  { question: '日本人が1年間に食べるおにぎりの総数は？', hint: '1人が週に何個食べるか×人口×52週で分解できる。コンビニ販売分も含めよう。' },
+  { question: '日本全国の信号機は何基あるか？', hint: '交差点の数×信号機の数で考えよう。市区町村数×平均交差点数が出発点。' },
+  { question: '日本のタクシーは全部で何台あるか？', hint: '大都市と地方で密度が違う。東京の台数を基準に全国へ外挿しよう。' },
+  { question: 'スーパーのレジを通過する商品は1日何品か（全国合計）？', hint: 'スーパーの数×1店舗の1日の来客数×1人の購入品数で計算しよう。' },
+  { question: '日本の道路の総延長は何kmか？', hint: '高速・国道・県道・市区町村道の4段階で分解しよう。面積あたりの密度を使うと便利。' },
+  { question: 'Youtubeに毎分アップロードされる動画は何分か？', hint: '世界中のクリエイター数×1人あたりのアップロード頻度×平均動画時間で分解。' },
+  { question: '東京→大阪間を徒歩で歩いたら何日かかるか？', hint: '距離約500km÷1日の歩行距離で計算。1日何km歩けるかを考えよう。' },
+  { question: '日本のコンビニが1日に捨てる食品廃棄物は何トンか？', hint: '店舗数×1店舗の1日の廃棄量。廃棄率とメニュー数から推定しよう。' },
+  { question: '日本人の平均的なスマホ使用時間は1日何時間か。全国合計すると？', hint: '個人の平均時間は統計的に4〜5時間。人口×時間で総量を出そう。' },
+  { question: '日本全国の学校の数（小中高大合計）は？', hint: '小学校から大学まで段階ごとに分けて計算。人口÷1校あたりの生徒数が使える。' },
+  { question: '新幹線は開業以来、何人の乗客を運んだか？', hint: '1964年開業。年間利用者数×60年で概算できる。利用者数は人口と路線数から推定。' },
+  { question: '日本で1日に送受信されるメールの総数は？', hint: 'ビジネスメールと個人メールに分けよう。1人が1日に送受信する数×人口。' },
+  { question: '富士山の体積は東京ドーム何個分か？', hint: '円錐の体積＝1/3×底面積×高さ。底面の半径と高さから計算しよう。' },
+  { question: '日本の全テレビ局が1日に放送するCMは合計何本か？', hint: 'CM枠は1時間に約12分。チャンネル数×放送時間×CM本数/分で計算。' },
+  { question: '日本の電車が1日に走る距離の合計は何kmか？', hint: '路線数×1路線の1日の運行本数×路線距離で分解。JR+私鉄+地下鉄を忘れずに。' },
+]
+
 // =============================================
 // デイリーフェルミ — Supabase キャッシュ付き
 // =============================================
@@ -1881,6 +2086,10 @@ app.get('/api/daily-fermi', async (req, res) => {
     const locale = (req.query.locale as string) || 'ja'
     const isEn = locale === 'en'
     const today = new Date().toISOString().slice(0, 10) // YYYY-MM-DD
+
+    // 日付ベースでプールから問題を選択（毎日変わる）
+    const dayIndex = Math.floor(Date.now() / 86400000) % FERMI_QUESTION_POOL_JA.length
+    const poolQuestion = FERMI_QUESTION_POOL_JA[dayIndex]
 
     // Supabase から今日の問題を確認
     if (supabase) {
@@ -1892,8 +2101,18 @@ app.get('/api/daily-fermi', async (req, res) => {
         .single()
 
       if (existing) {
-        return res.json({ question: existing.question, hint: existing.hint, date: today })
+        return res.json({ question: existing.question, hint: existing.hint, date: today, poolIndex: dayIndex })
       }
+    }
+
+    // プールから今日の問題を使う（英語の場合はAI生成）
+    if (!isEn && poolQuestion) {
+      if (supabase) {
+        try { await supabase.from('daily_fermi_problems').insert({
+          date: today, question: poolQuestion.question, hint: poolQuestion.hint, locale
+        }) } catch { /* ignore */ }
+      }
+      return res.json({ question: poolQuestion.question, hint: poolQuestion.hint, date: today, poolIndex: dayIndex })
     }
 
     // 存在しない場合は AI で生成
@@ -1931,6 +2150,117 @@ app.get('/api/daily-fermi', async (req, res) => {
     res.json({ question, hint, date: today })
   } catch (e: unknown) {
     console.error('daily-fermi error:', e)
+    res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
+  }
+})
+
+// =============================================
+// フェルミ — 別問題を取得（プールからランダム）
+// =============================================
+app.get('/api/fermi/next', async (req, res) => {
+  try {
+    const exclude = (req.query.exclude as string || '').split(',').map(Number).filter(Boolean)
+    const available = FERMI_QUESTION_POOL_JA
+      .map((q, i) => ({ ...q, index: i }))
+      .filter(q => !exclude.includes(q.index))
+
+    if (available.length === 0) {
+      // 全問使い切ったらランダムに返す
+      const idx = Math.floor(Math.random() * FERMI_QUESTION_POOL_JA.length)
+      const q = FERMI_QUESTION_POOL_JA[idx]
+      return res.json({ question: q.question, hint: q.hint, poolIndex: idx })
+    }
+
+    const pick = available[Math.floor(Math.random() * available.length)]
+    res.json({ question: pick.question, hint: pick.hint, poolIndex: pick.index })
+  } catch (e: unknown) {
+    res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
+  }
+})
+
+// =============================================
+// フェルミ — スコア記録（ランキング用）
+// =============================================
+app.post('/api/fermi/record-score', async (req, res) => {
+  try {
+    const { userId, userName, score, questionIndex, elapsedSec, hintUsed } = req.body as {
+      userId?: string
+      userName?: string
+      score: number
+      questionIndex?: number
+      elapsedSec?: number
+      hintUsed?: boolean
+    }
+    if (typeof score !== 'number') return res.status(400).json({ error: 'score required' })
+
+    if (supabase) {
+      const { error } = await supabase.from('fermi_scores').insert({
+        user_id: userId || 'guest',
+        user_name: userName || 'ゲスト',
+        score,
+        question_index: questionIndex ?? -1,
+        elapsed_sec: elapsedSec ?? 0,
+        hint_used: hintUsed ?? false,
+        created_at: new Date().toISOString(),
+      })
+      if (error) console.warn('fermi_scores insert error:', error.message)
+    }
+
+    res.json({ ok: true })
+  } catch (e: unknown) {
+    res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
+  }
+})
+
+// =============================================
+// フェルミ — ランキング取得（実データ + フォールバック）
+// =============================================
+app.get('/api/fermi/ranking', async (req, res) => {
+  try {
+    const period = (req.query.period as string) || 'week'
+    let since = new Date()
+    if (period === 'week') since.setDate(since.getDate() - 7)
+    else if (period === 'month') since.setDate(since.getDate() - 30)
+    else since = new Date('2020-01-01')
+
+    if (supabase) {
+      const { data, error } = await supabase
+        .from('fermi_scores')
+        .select('user_name, score, created_at')
+        .gte('created_at', since.toISOString())
+        .order('score', { ascending: false })
+        .limit(50)
+
+      if (!error && data && data.length >= 3) {
+        // ユーザーごとに最高スコアを集計
+        const byUser: Record<string, { name: string; score: number }> = {}
+        for (const row of data) {
+          const name = row.user_name || 'ゲスト'
+          if (!byUser[name] || byUser[name].score < row.score) {
+            byUser[name] = { name, score: row.score }
+          }
+        }
+        const ranking = Object.values(byUser).sort((a, b) => b.score - a.score).slice(0, 20)
+        return res.json({ ranking, source: 'real' })
+      }
+    }
+
+    // フォールバック: ダミーデータ（100pt以下）
+    res.json({
+      ranking: [
+        { name: 'Taro M.', score: 98 },
+        { name: 'Yuki S.', score: 87 },
+        { name: 'Hana K.', score: 76 },
+        { name: 'Ryo T.', score: 65 },
+        { name: 'Ami F.', score: 54 },
+        { name: 'Ken N.', score: 43 },
+        { name: 'Saki I.', score: 38 },
+        { name: 'Jiro W.', score: 27 },
+        { name: 'Mika O.', score: 15 },
+      ],
+      source: 'mock'
+    })
+  } catch (e: unknown) {
     res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
   }
 })
@@ -1988,6 +2318,7 @@ app.post('/api/feedback', makeLimiter({ windowMs: 60*1000, max: 5 }), async (req
     // Supabase に保存
     let insertedId: string | null = null
     if (supabase) {
+      const appSource = process.env.APP_ENV === 'sit' ? 'sit' : 'production'
       const { data, error } = await supabase
         .from('feedback')
         .insert({
@@ -1995,6 +2326,7 @@ app.post('/api/feedback', makeLimiter({ windowMs: 60*1000, max: 5 }), async (req
           message: message.trim(),
           locale: locale || 'ja',
           created_at: new Date().toISOString(),
+          source: appSource,
         })
         .select('id')
         .single()
@@ -2147,6 +2479,65 @@ app.get('/{*splat}', (req, res) => {
 </body>
 </html>`)
 })
+
+// ─────────────────────────────────────────────
+// 登録完了メール送信
+// ─────────────────────────────────────────────
+app.post('/api/send-welcome-email', async (req, res) => {
+  const { email } = req.body as { email: string }
+  if (!email) return res.status(400).json({ error: 'email required' })
+
+  const smtpHost = process.env.SMTP_HOST
+  const smtpUser = process.env.SMTP_USER
+  const smtpPass = process.env.SMTP_PASS
+
+  // SMTP未設定の場合はログのみ
+  if (!smtpHost || !smtpUser || !smtpPass) {
+    console.log(`[WELCOME-EMAIL] Would send to ${email} (SMTP not configured)`)
+    return res.json({ ok: true, note: 'smtp_not_configured' })
+  }
+
+  try {
+    const transporter = nodemailer.createTransport({
+      host: smtpHost,
+      port: parseInt(process.env.SMTP_PORT || '587', 10),
+      auth: { user: smtpUser, pass: smtpPass },
+    })
+    await transporter.sendMail({
+      from: `"Logic 学習アプリ" <${smtpUser}>`,
+      to: email,
+      subject: '【Logic】登録完了のお知らせ',
+      html: `
+        <div style="font-family:'Helvetica Neue',Arial,sans-serif;max-width:520px;margin:0 auto;background:#1A1F2E;color:#E8ECF4;padding:40px 32px;border-radius:16px;">
+          <div style="text-align:center;margin-bottom:32px;">
+            <div style="font-size:32px;font-weight:900;color:#6C8EF5;letter-spacing:-0.02em;">Logic</div>
+            <div style="font-size:13px;color:#8FA3C8;margin-top:4px;">論理思考力トレーニング</div>
+          </div>
+          <h2 style="font-size:20px;font-weight:700;margin-bottom:12px;color:#E8ECF4;">登録完了しました🎉</h2>
+          <p style="font-size:15px;line-height:1.7;color:#8FA3C8;margin-bottom:24px;">
+            Logicへようこそ！アカウント登録が完了しました。<br>
+            毎日少しずつ、論理思考力を鍛えていきましょう。
+          </p>
+          <div style="background:#252C40;border-radius:12px;padding:20px;margin-bottom:24px;">
+            <div style="font-size:13px;color:#6B82A8;margin-bottom:8px;">登録メールアドレス</div>
+            <div style="font-size:16px;font-weight:700;color:#6C8EF5;">${email}</div>
+          </div>
+          <a href="https://logic-sit.onrender.com" style="display:block;background:#6C8EF5;color:#1A1F2E;text-align:center;padding:16px;border-radius:12px;font-size:15px;font-weight:700;text-decoration:none;margin-bottom:24px;">
+            アプリを開く →
+          </a>
+          <p style="font-size:12px;color:#6B82A8;text-align:center;">
+            お問い合わせ: <a href="mailto:support@logic-m.com" style="color:#6C8EF5;">support@logic-m.com</a>
+          </p>
+        </div>
+      `,
+    })
+    res.json({ ok: true })
+  } catch (err) {
+    console.error('[WELCOME-EMAIL] send failed:', err)
+    res.status(500).json({ error: 'send failed' })
+  }
+})
+
 
 const PORT = parseInt(process.env.PORT || '3001', 10)
 app.listen(PORT, '0.0.0.0', () => {

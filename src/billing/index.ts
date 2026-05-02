@@ -1,11 +1,11 @@
 /**
  * Google Play Billing abstraction layer (SCRUM-116)
  *
- * Plugin packages were unavailable at install time, so this module provides
- * TypeScript stubs that log in dev mode. When a compatible plugin is available
- * the `getPlugin()` helper should return it instead of null.
+ * Uses Capacitor native bridge to interface with Google Play Billing Library.
+ * On web, returns stub implementations.
  */
 
+import { Capacitor, registerPlugin } from '@capacitor/core'
 import { API_BASE } from '../apiBase'
 import type { BillingProduct, PurchaseResult, BillingVerifyRequest } from './types'
 
@@ -13,39 +13,58 @@ import type { BillingProduct, PurchaseResult, BillingVerifyRequest } from './typ
 export type { BillingProduct, PurchaseResult, BillingVerifyRequest }
 
 // ---------------------------------------------------------------------------
-// Plugin detection
+// Capacitor Plugin Interface
 // ---------------------------------------------------------------------------
 
-/**
- * Minimal interface describing the subset of a Capacitor in-app-purchases
- * plugin that this module uses. Typed loosely enough to work with multiple
- * potential plugin packages while remaining free of `any`.
- */
-interface InAppPurchasePlugin {
-  getProducts(opts: { productIds: string[] }): Promise<{ products: BillingProduct[] }>
-  purchaseProduct(opts: { productId: string }): Promise<{ purchase: PurchaseResult }>
+interface InAppBillingPlugin {
+  /**
+   * Initialize the billing client. Must be called before using other methods.
+   */
+  initialize(): Promise<{ success: boolean }>
+
+  /**
+   * Fetch product details for the given product IDs.
+   * @param productIds Array of product IDs from Play Store Console
+   */
+  getProducts(options: {
+    productIds: string[]
+  }): Promise<{ products: BillingProduct[] }>
+
+  /**
+   * Launch the purchase flow for a specific product.
+   * @param productId Product ID from Play Store Console
+   */
+  purchaseProduct(options: { productId: string }): Promise<{
+    success: boolean
+    purchase?: PurchaseResult
+    error?: string
+  }>
+
+  /**
+   * Restore previously purchased items.
+   */
   restorePurchases(): Promise<{ purchases: PurchaseResult[] }>
+
+  /**
+   * Query purchase history for a specific product.
+   */
+  queryPurchaseHistory(options: {
+    productType: 'subs' | 'inapp'
+  }): Promise<{ purchases: PurchaseResult[] }>
 }
 
-/**
- * Try to resolve the native in-app-purchase plugin from the Capacitor global.
- * Returns `null` when running on web or when no plugin is registered.
- */
-function getPlugin(): InAppPurchasePlugin | null {
-  try {
-    const cap = (window as unknown as Record<string, unknown>).Capacitor as
-      | { Plugins?: Record<string, unknown> }
-      | undefined
-
-    const plugin = cap?.Plugins?.['InAppPurchases'] as InAppPurchasePlugin | undefined
-    if (plugin && typeof plugin.purchaseProduct === 'function') {
-      return plugin
-    }
-  } catch {
-    // ignore
-  }
-  return null
-}
+const plugin = registerPlugin<InAppBillingPlugin>('InAppBillingPlugin', {
+  web: () => ({
+    initialize: async () => ({ success: true }),
+    getProducts: async () => ({ products: [] }),
+    purchaseProduct: async () => ({
+      success: false,
+      error: 'Not available on web',
+    }),
+    restorePurchases: async () => ({ purchases: [] }),
+    queryPurchaseHistory: async () => ({ purchases: [] }),
+  }),
+})
 
 // ---------------------------------------------------------------------------
 // Public API
@@ -53,68 +72,88 @@ function getPlugin(): InAppPurchasePlugin | null {
 
 /**
  * Initialize the billing client.
- * On web / when the plugin is absent this is a no-op (dev log only).
+ * Must be called once during app startup.
  */
 export async function initBilling(): Promise<void> {
-  const plugin = getPlugin()
-  if (!plugin) {
-    if (import.meta.env.DEV) {
-      console.debug('[billing] Plugin not available — running in stub mode')
+  try {
+    const result = await plugin.initialize()
+    if (result.success) {
+      if (import.meta.env.DEV) {
+        console.debug('[billing] Plugin initialized')
+      }
+    } else {
+      console.warn('[billing] Initialization returned false')
     }
-    return
-  }
-  // Plugin-specific initialisation would go here if the plugin requires it.
-  if (import.meta.env.DEV) {
-    console.debug('[billing] Plugin initialised')
+  } catch (error) {
+    console.error('[billing] Initialization failed:', error)
   }
 }
 
 /**
  * Fetch product details for the given product IDs from Google Play.
- * Returns an empty array in stub mode.
  */
 export async function getProducts(productIds: string[]): Promise<BillingProduct[]> {
-  const plugin = getPlugin()
-  if (!plugin) {
+  if (!isAndroidNative()) {
     if (import.meta.env.DEV) {
-      console.debug('[billing] getProducts() stub — returning []', productIds)
+      console.debug('[billing] getProducts() stub — not Android native')
     }
     return []
   }
-  const result = await plugin.getProducts({ productIds })
-  return result.products
+
+  try {
+    const result = await plugin.getProducts({ productIds })
+    return result.products || []
+  } catch (error) {
+    console.error('[billing] getProducts() failed:', error)
+    return []
+  }
 }
 
 /**
  * Initiate a purchase flow for the given product ID.
- * Throws in stub mode so callers can handle the "not available" case.
+ * Throws if purchase fails or if plugin is unavailable.
  */
 export async function purchaseProduct(productId: string): Promise<PurchaseResult> {
-  const plugin = getPlugin()
-  if (!plugin) {
-    if (import.meta.env.DEV) {
-      console.debug('[billing] purchaseProduct() stub called with', productId)
-    }
-    throw new Error('Google Play Billingプラグインが利用できません。')
+  if (!isAndroidNative()) {
+    throw new Error('Google Play Billing プラグインが利用できません。(Web のみ)')
   }
-  const result = await plugin.purchaseProduct({ productId })
-  return result.purchase
+
+  try {
+    const result = await plugin.purchaseProduct({ productId })
+    if (!result.success || !result.purchase) {
+      throw new Error(
+        result.error || '購入フローが完了しませんでした。別のエラーが発生した可能性があります。'
+      )
+    }
+    return result.purchase
+  } catch (error) {
+    const message =
+      error instanceof Error
+        ? error.message
+        : '購入処理に失敗しました。もう一度お試しください。'
+    throw new Error(message)
+  }
 }
 
 /**
  * Restore previously completed purchases.
- * Returns an empty array in stub mode.
+ * Queries billing client for all owned subscriptions.
  */
 export async function restorePurchases(): Promise<PurchaseResult[]> {
-  const plugin = getPlugin()
-  if (!plugin) {
+  if (!isAndroidNative()) {
     if (import.meta.env.DEV) {
-      console.debug('[billing] restorePurchases() stub — returning []')
+      console.debug('[billing] restorePurchases() stub — not Android native')
     }
     return []
   }
-  const result = await plugin.restorePurchases()
-  return result.purchases
+
+  try {
+    const result = await plugin.restorePurchases()
+    return result.purchases || []
+  } catch (error) {
+    console.error('[billing] restorePurchases() failed:', error)
+    return []
+  }
 }
 
 /**
@@ -128,7 +167,18 @@ export async function verifyPurchase(request: BillingVerifyRequest): Promise<voi
     body: JSON.stringify(request),
   })
   if (!res.ok) {
-    const err = await res.json().catch(() => ({})) as { error?: string }
+    const err = (await res.json().catch(() => ({}))) as { error?: string }
     throw new Error(err.error ?? '購入の検証に失敗しました')
   }
+}
+
+// ---------------------------------------------------------------------------
+// Platform Detection
+// ---------------------------------------------------------------------------
+
+/**
+ * Check if running on Android native platform.
+ */
+function isAndroidNative(): boolean {
+  return Capacitor.getPlatform() === 'android'
 }

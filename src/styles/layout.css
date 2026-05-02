@@ -1,23 +1,24 @@
-/* Logic v3 — App shell (sidebar desktop + bottom tab mobile) */
+/* Logic v3 — App shell (mobile-only; desktop layout disabled — native app release only) */
+/* TODO: remove desktop CSS blocks when native migration is complete */
 
 .app-shell {
   min-height: 100vh;
   background: var(--bg-primary);
 }
 
-/* === Desktop: sidebar + main === */
-@media (min-width: 900px) {
+/* === Desktop: sidebar + main (DISABLED — native app only) === */
+/* @media (min-width: 900px) {
   .app-shell {
     display: grid;
     grid-template-columns: var(--sidebar-w) 1fr;
   }
-}
+} */
 
 .sidebar {
-  display: none;
+  display: none; /* always hidden — mobile tab bar used instead */
 }
 
-@media (min-width: 900px) {
+/* @media (min-width: 900px) {
   .sidebar {
     display: flex;
     flex-direction: column;
@@ -28,7 +29,7 @@
     top: 0;
     height: 100vh;
   }
-}
+} */
 
 .sidebar-brand {
   display: flex;
@@ -111,12 +112,12 @@
   max-width: 100%;
   min-width: 0;
 }
-@media (min-width: 900px) {
+/* @media (min-width: 900px) {
   .main {
     padding: var(--s-6) var(--s-7) var(--s-8);
     max-width: none;
   }
-}
+} */
 
 .main-inner {
   max-width: 1040px;
@@ -137,9 +138,9 @@
   font-weight: 800;
   letter-spacing: -0.025em;
 }
-@media (min-width: 900px) {
+/* @media (min-width: 900px) {
   .main-title { font-size: 28px; }
-}
+} */
 .main-subtitle { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
 
 /* === Mobile bottom tab bar === */
@@ -158,9 +159,9 @@
 }
 .mode-dark .tabbar { background: rgba(26, 33, 56, 0.94); }
 
-@media (min-width: 900px) {
+/* @media (min-width: 900px) {
   .tabbar { display: none; }
-}
+} */
 
 .tab {
   flex: 1;

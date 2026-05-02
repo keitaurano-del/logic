@@ -5,76 +5,206 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>プライバシーポリシー — Logic</title>
 <style>
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Meiryo', sans-serif; max-width: 720px; margin: 0 auto; padding: 32px 24px 64px; line-height: 1.8; color: #2D2820; background: #F5F1E8; }
-  h1 { font-size: 26px; margin-bottom: 8px; }
-  h2 { font-size: 18px; margin-top: 32px; margin-bottom: 8px; color: #B07442; border-bottom: 2px solid #E8E0D0; padding-bottom: 4px; }
-  p, li { font-size: 14px; }
-  ul { padding-left: 20px; }
-  .meta { color: #6B6258; font-size: 12px; margin-bottom: 24px; }
-  a { color: #B07442; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #1A1F2E; color: #E8ECF4;
+    max-width: 720px; margin: 0 auto;
+    padding: 0 0 80px;
+    line-height: 1.8;
+  }
+  header {
+    background: linear-gradient(160deg, #1A1F2E 0%, #252C40 100%);
+    padding: 48px 24px 32px;
+    border-bottom: 1px solid rgba(108,142,245,0.2);
+  }
+  .logo { font-size: 13px; font-weight: 800; color: #6C8EF5; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .logo svg { width: 20px; height: 20px; }
+  h1 { font-size: 28px; font-weight: 900; color: #FFFFFF; letter-spacing: -0.02em; margin-bottom: 8px; }
+  .meta { font-size: 13px; color: #8FA3C8; }
+  main { padding: 32px 24px; }
+  section { margin-bottom: 32px; }
+  h2 {
+    font-size: 15px; font-weight: 800; color: #9BB3FA;
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px;
+    background: rgba(108,142,245,0.08);
+    border-left: 3px solid #6C8EF5;
+    border-radius: 0 10px 10px 0;
+  }
+  p { font-size: 14px; color: #C8D4E8; line-height: 1.8; }
+  ul, ol { padding-left: 20px; display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+  li { font-size: 14px; color: #C8D4E8; line-height: 1.8; }
+  li::marker { color: #6C8EF5; }
+  a { color: #6C8EF5; text-decoration: none; }
+  table { width: 100%; border-collapse: collapse; margin-top: 8px; border-radius: 12px; overflow: hidden; }
+  th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid rgba(108,142,245,0.12); font-size: 14px; vertical-align: top; }
+  th { width: 38%; background: rgba(108,142,245,0.08); font-weight: 700; color: #9BB3FA; }
+  td { color: #C8D4E8; background: rgba(37,44,64,0.6); }
+  tr:last-child td, tr:last-child th { border-bottom: none; }
+  .back-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 40px; padding: 12px 20px;
+    background: rgba(108,142,245,0.15); color: #6C8EF5;
+    border: 1px solid rgba(108,142,245,0.3); border-radius: 12px;
+    font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: none;
+  }
 </style>
 </head>
 <body>
-<h1>プライバシーポリシー</h1>
-<p class="meta">最終更新日: 2026年4月7日 / 適用サービス: Logic (Web 版・モバイルアプリ版)</p>
+<header>
+  <div class="logo">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    Logic
+  </div>
+  <h1>プライバシーポリシー</h1>
+  <p class="meta">最終更新日: 2026年5月1日 / 適用サービス: Logic (Web 版・モバイルアプリ版)</p>
+</header>
 
-<p>本プライバシーポリシー (以下「本ポリシー」) は、Logic (以下「本サービス」) におけるユーザー情報の取扱いについて定めるものです。本サービスをご利用いただく前に必ずお読みください。</p>
+<main>
+  <p style="margin-bottom:24px;">アポロ合同会社（以下「当社」）は、論理思考学習サービス「Logic」（以下「本サービス」）において取得するユーザーの個人情報の取扱いについて、以下のとおりプライバシーポリシーを定めます。</p>
 
-<h2>1. 取得する情報</h2>
-<p>本サービスは、ユーザーが入力または操作した以下の情報を取得します。</p>
-<ul>
-  <li><strong>学習データ:</strong> 完了したレッスン、クイズの解答、学習時間、連続学習日数、フラッシュカードの習熟状況</li>
-  <li><strong>プレイスメントテスト結果:</strong> 偏差値、正答数</li>
-  <li><strong>ニックネーム:</strong> ランキング表示用にユーザーが任意で設定する表示名</li>
-  <li><strong>ゲスト ID:</strong> 端末ごとに自動生成されるランダムな識別子 (個人を特定する情報は含みません)</li>
-  <li><strong>テーマ設定・通知設定:</strong> ユーザーが選択したアプリ表示設定</li>
-  <li><strong>AI 機能の入力内容:</strong> ロールプレイ・フェルミ推定・問題生成等で送信されたテキスト</li>
-</ul>
+  <section>
+    <h2>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+      第1条 収集する情報
+    </h2>
+    <p>本サービスでは、以下の情報を収集することがあります。</p>
+    <table>
+      <tr><th>情報の種類</th><th>具体的な内容</th></tr>
+      <tr><td>アカウント情報</td><td>メールアドレス、表示名（任意）、Google アカウント情報（Google ログイン利用時）</td></tr>
+      <tr><td>学習データ</td><td>レッスン完了記録、クイズ回答履歴、フェルミ推定の回答、ロールプレイの会話内容、学習ストリーク、XP（経験値）</td></tr>
+      <tr><td>課金情報</td><td>サブスクリプションプラン、課金ステータス（カード番号等の決済情報は Stripe / Google Play が管理し、当社は保持しません）</td></tr>
+      <tr><td>利用状況データ</td><td>アクセス日時、使用機能、エラーログ</td></tr>
+      <tr><td>端末情報</td><td>OS バージョン、端末種別（クラッシュ解析・改善目的）</td></tr>
+    </table>
+  </section>
 
-<h2>2. 情報の保存場所</h2>
-<ul>
-  <li><strong>端末内 (localStorage):</strong> 学習履歴、ニックネーム、テーマ設定などの大半は端末内のみに保存されます。本サービス運営者は内容を取得しません。</li>
-  <li><strong>サーバー (Render):</strong> 偏差値ランキング表示のため、ニックネーム・偏差値・ゲスト ID をサーバーに保存します。</li>
-  <li><strong>AI 処理 (Anthropic API):</strong> ロールプレイ・問題生成等の AI 応答生成のため、入力内容を Anthropic 社の Claude API に送信します。Anthropic のプライバシーポリシーは <a href="https://www.anthropic.com/legal/privacy" target="_blank" rel="noopener">こちら</a>。</li>
-</ul>
+  <section>
+    <h2>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      第2条 情報の利用目的
+    </h2>
+    <p>収集した情報は、以下の目的で利用します。</p>
+    <ul>
+      <li>本サービスの提供・運営・改善</li>
+      <li>ユーザー認証およびアカウント管理</li>
+      <li>学習進捗の記録・分析・パーソナライズ</li>
+      <li>AI によるフィードバック生成（フェルミ推定・ロールプレイ）</li>
+      <li>サブスクリプション管理・課金処理</li>
+      <li>サポート対応・お問い合わせへの回答</li>
+      <li>不正利用の検知・防止</li>
+      <li>サービスに関するお知らせの送信（ユーザーが許可した場合）</li>
+    </ul>
+  </section>
 
-<h2>3. 情報の利用目的</h2>
-<ul>
-  <li>本サービスの提供・維持・改善</li>
-  <li>偏差値ランキングの表示</li>
-  <li>ユーザー個別の学習進捗の表示</li>
-  <li>AI 機能における応答生成</li>
-</ul>
+  <section>
+    <h2>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      第3条 第三者への情報提供
+    </h2>
+    <p>当社は、以下の場合を除き、ユーザーの個人情報を第三者に提供・開示しません。</p>
+    <ul>
+      <li>ユーザーの同意がある場合</li>
+      <li>法令に基づく開示が必要な場合</li>
+      <li>人の生命・身体・財産の保護のために必要な場合</li>
+      <li>下記の業務委託先（サービス提供に必要な範囲内のみ）</li>
+    </ul>
+    <table style="margin-top:12px;">
+      <tr><th>委託先・サービス</th><th>目的・取扱い情報</th></tr>
+      <tr><td>Supabase, Inc.</td><td>データベース・認証基盤（アカウント情報・学習データ）</td></tr>
+      <tr><td>Stripe, Inc.</td><td>Web 版決済処理（課金情報）</td></tr>
+      <tr><td>Google LLC（Google Play）</td><td>Android 版決済処理（課金情報）</td></tr>
+      <tr><td>Anthropic, PBC</td><td>AI フィードバック生成（フェルミ推定・ロールプレイの回答内容）</td></tr>
+      <tr><td>Render Services, Inc.</td><td>サーバーホスティング</td></tr>
+    </table>
+  </section>
 
-<h2>4. 第三者提供</h2>
-<p>本サービスは、法令に基づく場合を除き、ユーザーの情報を第三者に提供しません。AI 機能の提供のために Anthropic 社に入力データを送信することがありますが、これは本サービスの提供に必要な範囲に限定されます。</p>
+  <section>
+    <h2>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      第4条 データの保存・セキュリティ
+    </h2>
+    <ul>
+      <li>学習データ・アカウント情報は Supabase（米国）のサーバーに保存されます</li>
+      <li>通信はすべて HTTPS（TLS 1.2 以上）で暗号化されます</li>
+      <li>パスワードはハッシュ化して保存し、平文では保持しません</li>
+      <li>決済カード情報は当社のサーバーを経由せず、Stripe / Google Pay が直接処理します</li>
+    </ul>
+  </section>
 
-<h2>5. 個人を特定する情報</h2>
-<p>本サービスはアカウント登録なしで利用できます。氏名・メールアドレス・電話番号・住所などの個人を特定する情報は取得しません。ニックネームはユーザーが任意で設定する表示名であり、本名である必要はありません。</p>
+  <section>
+    <h2>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+      第5条 データの保持・削除
+    </h2>
+    <ul>
+      <li>アカウント情報・学習データは、アカウント存続中は保持します</li>
+      <li>アカウント削除の申請は <a href="mailto:support@logic-m.com">support@logic-m.com</a> にご連絡ください</li>
+      <li>削除申請から30日以内に個人を特定できるデータを消去します（法令上の保持義務がある場合を除く）</li>
+      <li>端末のローカルストレージ（localStorage）に保存されたデータは、アプリのアンインストールまたはブラウザデータのクリアで削除されます</li>
+    </ul>
+  </section>
 
-<h2>6. クッキー・トラッキング</h2>
-<p>本サービスは広告 SDK や行動追跡ツール (Google Analytics 等) を使用していません。Apple App Tracking Transparency における「トラッキング」は行いません。</p>
+  <section>
+    <h2>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+      第6条 Cookie・ローカルストレージの利用
+    </h2>
+    <p>本サービスでは、以下の目的で Cookie およびローカルストレージを使用します。</p>
+    <ul>
+      <li>ログインセッションの維持</li>
+      <li>学習進捗・設定の端末内保存</li>
+      <li>言語設定の保存</li>
+    </ul>
+    <p style="margin-top:8px;">広告目的の Cookie・トラッキングは使用しません。</p>
+  </section>
 
-<h2>7. データの削除</h2>
-<p>ユーザーはいつでも以下の方法で自身のデータを削除できます。</p>
-<ul>
-  <li>アプリ内「プロフィール → データを削除」から、端末内データとサーバー上の自身のランキングエントリを一括削除できます。</li>
-  <li>アプリをアンインストールすると端末内データは消去されます (サーバー側ランキングエントリは別途削除リクエストが必要)。</li>
-  <li>削除リクエストはサポート窓口 (本ポリシー末尾) まで連絡してください。</li>
-</ul>
+  <section>
+    <h2>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      第7条 子どものプライバシー
+    </h2>
+    <p>本サービスは13歳以上を対象としています。13歳未満の方から意図的に個人情報を収集することはありません。13歳未満のお子様が登録していることが判明した場合は、速やかにアカウントを削除します。</p>
+  </section>
 
-<h2>8. 子どもの利用</h2>
-<p>本サービスは 13 歳未満のお子様を対象としていません。13 歳未満のお子様の情報を意図的に収集することはありません。</p>
+  <section>
+    <h2>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      第8条 ユーザーの権利
+    </h2>
+    <p>ユーザーは、自身の個人情報に関して以下の権利を有します。</p>
+    <ul>
+      <li><strong>開示請求</strong>：保有している個人情報の内容を確認する権利</li>
+      <li><strong>訂正・削除</strong>：不正確な情報の訂正、またはデータ削除を求める権利</li>
+      <li><strong>利用停止</strong>：個人情報の利用停止を求める権利</li>
+    </ul>
+    <p style="margin-top:8px;">これらの権利を行使する場合は <a href="mailto:support@logic-m.com">support@logic-m.com</a> までご連絡ください。</p>
+  </section>
 
-<h2>9. セキュリティ</h2>
-<p>本サービスは取得した情報を適切に管理し、不正アクセス・改ざん・漏洩等の防止に努めます。ただし完全な安全性を保証するものではありません。</p>
+  <section>
+    <h2>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      第9条 お問い合わせ
+    </h2>
+    <p>プライバシーに関するご質問・ご要望は、下記までご連絡ください。</p>
+    <table style="margin-top:12px;">
+      <tr><td>事業者名</td><td>アポロ合同会社</td></tr>
+      <tr><td>メールアドレス</td><td><a href="mailto:support@logic-m.com">support@logic-m.com</a></td></tr>
+      <tr><td>所在地</td><td>〒170-0013 東京都豊島区東池袋2丁目62番8号 BIGオフィスプラザ池袋1206</td></tr>
+    </table>
+  </section>
 
-<h2>10. ポリシーの変更</h2>
-<p>本ポリシーは、必要に応じて改訂されることがあります。重要な変更がある場合はアプリ内またはストアの更新情報で通知します。</p>
+  <section>
+    <h2>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      第10条 ポリシーの変更
+    </h2>
+    <p>当社は、法令の変更やサービスの変化に応じて本ポリシーを改定することがあります。重要な変更がある場合はアプリ内またはメールでお知らせします。最新版は常に本ページに掲載します。</p>
+  </section>
 
-<h2>11. お問い合わせ</h2>
-<p>本ポリシーに関するお問い合わせは、アプリ内「プロフィール → ご要望・フィードバック」よりご連絡ください。</p>
-
-<p style="margin-top: 48px; text-align: center;"><a href="/">← Logic に戻る</a></p>
+  <a class="back-btn" href="javascript:history.back()">← 戻る</a>
+</main>
 </body>
 </html>

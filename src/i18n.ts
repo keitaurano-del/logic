@@ -10,9 +10,8 @@ function detectLocale(): Locale {
     const saved = localStorage.getItem(STORAGE_KEY) as Locale | null
     if (saved === 'ja' || saved === 'en') return saved
   } catch { /* */ }
-  // Browser language detection
-  const lang = (typeof navigator !== 'undefined' && navigator.language) || 'en'
-  return lang.toLowerCase().startsWith('ja') ? 'ja' : 'en'
+  // SCRUM-216: 日本語アプリなのでデフォルトをjaに固定（ブラウザ言語に関わらず日本語に）
+  return 'ja'
 }
 
 let currentLocale: Locale = detectLocale()
@@ -188,8 +187,8 @@ const STRINGS: Record<Locale, Strings> = {
     'fermi.questionTag': '問題',
     'fermi.hint': '💡 まずは自分なりに分解してみましょう。提出後に概算解と計算ロジックも提示します。',
     'fermi.thinkButton': '考えてみる',
-    'fermi.placeholder': '分解のプロセスを自由に記述してください。式や箇条書きで構いません。\n例：対象となる人・場所・頻度の順に整理すると分解しやすい。',
-    'fermi.submitButton': 'AI にフィードバックをもらう',
+    'fermi.placeholder': '考えたことを自由に書いてみよう！式でも箇条書きでもOK。',
+    'fermi.submitButton': 'AIにフィードバックをもらおう',
     'fermi.submitting': 'フィードバックを生成中...',
     'fermi.backButton': '戻る',
     'fermi.recapLabel': 'あなたの分解',
@@ -407,7 +406,7 @@ const STRINGS: Record<Locale, Strings> = {
     // Daily Fermi
     'dailyFermi.title': 'デイリーフェルミ',
     'dailyFermi.heading': '今日のフェルミ問題',
-    'dailyFermi.showHint': 'ヒントを見る',
+    'dailyFermi.showHint': '参考データを確認する',
     'dailyFermi.answerLabel': 'あなたの推定アプローチ',
     'dailyFermi.feedbackTitle': 'AI フィードバック',
 

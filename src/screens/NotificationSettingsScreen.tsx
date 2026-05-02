@@ -19,7 +19,6 @@ interface ExtraNotifPref {
   rankingUpdate: boolean   // ランキング更新（週次）
   deviationChange: boolean // 偏差値変動
   streakAlert: boolean     // 連続学習アラート（途切れそう）
-  aiComplete: boolean      // AI添削完了
 }
 
 function loadExtraPref(): ExtraNotifPref {
@@ -32,7 +31,6 @@ function loadExtraPref(): ExtraNotifPref {
     rankingUpdate: true,
     deviationChange: false,
     streakAlert: true,
-    aiComplete: true,
   }
 }
 
@@ -213,13 +211,7 @@ export function NotificationSettingsScreen({ onBack }: Props) {
               value={extra.newLesson}
               onChange={(v) => updateExtra('newLesson', v)}
             />
-            <div style={{ display: 'flex', alignItems: 'center', padding: '15px 20px', gap: 12 }}>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 15, fontWeight: 600, color: v3.color.text }}>AI添削完了</div>
-                <div style={{ fontSize: 12, color: v3.color.text2, marginTop: 2, lineHeight: 1.5 }}>AIによるフィードバックが届いたときに通知</div>
-              </div>
-              <Toggle value={extra.aiComplete} onChange={(v) => updateExtra('aiComplete', v)} />
-            </div>
+            
           </div>
         </div>
 

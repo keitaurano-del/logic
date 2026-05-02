@@ -7,6 +7,7 @@ import { FermiScreen } from './screens/FermiScreen'
 import { DailyFermiScreen } from './screens/DailyFermiScreen'
 import { DeviationScreen } from './screens/DeviationScreen'
 import { RankingScreen } from './screens/RankingScreen'
+import { FermiRankingScreen } from './screens/FermiRankingScreen'
 import { RoleplaySelectScreen } from './screens/RoleplaySelectScreen'
 import { RoleplayChatScreen } from './screens/RoleplayChatScreen'
 import { JournalInputScreen } from './screens/JournalInputScreen'
@@ -42,11 +43,12 @@ import { getCurrentLevel } from './screens/homeHelpers'
 import type { AIProblemSet } from './aiProblemStore'
 import { loadTheme, applyTheme } from './theme'
 // import { loadGuestUser } from './guestUser'
-import { getCompletedCount, getXp } from './stats'
+import { getCompletedCount, getXp, getDisplayName, setDisplayName } from './stats'
+import { updateDisplayName } from './supabase'
 import { isAdmin } from './admin'
 import { onAuthChange, logout, getInitialUser, type User } from './supabase'
 import { syncOnLogin, syncOnLogout } from './syncService'
-import { TutorialOverlay, shouldShowTutorial } from './components/TutorialOverlay'
+import { TutorialOverlay, TutorialFAB } from './components/TutorialOverlay'
 
 const ONBOARDED_KEY = 'logic-onboarded'
 const INSTALL_ID_KEY = 'logic-install-id'
@@ -79,6 +81,7 @@ type Screen =
   | { type: 'daily-fermi' }
   | { type: 'deviation' }
   | { type: 'ranking' }
+  | { type: 'fermi-ranking' }
   | { type: 'roleplay' }
   | { type: 'roleplay-chat'; situationId: string }
   | { type: 'journal-input' }
@@ -107,20 +110,28 @@ type Screen =
 // LESSON_LIST is now managed within RoadmapScreen
 
 function getInitialScreen(user: User | null): Screen {
-  // ?preview=onboarding で強制表示（確認用）
-  if (typeof location !== 'undefined' && new URL(location.href).searchParams.get('preview') === 'onboarding') {
-    return { type: 'onboarding' }
+  if (typeof location !== 'undefined') {
+    const preview = new URL(location.href).searchParams.get('preview')
+    if (preview === 'onboarding') return { type: 'onboarding' }
+    if (preview === 'home') return { type: 'home' }
+    if (preview === 'lessons') return { type: 'lessons' }
+    if (preview === 'ranking') return { type: 'ranking' }
+    if (preview === 'profile') return { type: 'profile' }
+    if (preview === 'fermi') return { type: 'daily-fermi' }
+    if (preview === 'pricing') return { type: 'pricing' }
   }
   // ログイン済みユーザーはオンボーディングをスキップ
-  if (user) return { type: 'home' }
+  if (user) return { type: 'daily-fermi' }
+  // 未ログインは必ずオンボーディングまたはログイン画面へ
   if (localStorage.getItem(ONBOARDED_KEY) !== '1') {
     return { type: 'onboarding' }
   }
-  return { type: 'home' }
+  // オンボーディング完了済みだが未ログインの場合はログイン画面へ
+  return { type: 'login' }
 }
 
 // ── ルート画面かどうか判定 ──
-const ROOT_SCREENS = new Set<string>(['home', 'lessons', 'profile'])
+const ROOT_SCREENS = new Set<string>(['home', 'lessons', 'ranking', 'profile'])
 
 function AppV3() {
   // SCRUM-200: 新規インストール時にlocalStorageリセット（アンインストール後のデータ残留対策）
@@ -130,6 +141,9 @@ function AppV3() {
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [authReady, setAuthReady] = useState(false)
   const [showTutorial, setShowTutorial] = useState(false)
+  const [showNamePopup, setShowNamePopup] = useState(false)
+  const [nameInput, setNameInput] = useState('')
+  const [nameSaving, setNameSaving] = useState(false)
   // popstate ハンドラ内でscreen stateを参照するための ref
   const screenRef = useRef<Screen>(screen)
   screenRef.current = screen
@@ -156,6 +170,7 @@ function AppV3() {
         const s = e.state.screen as Screen
         setScreen(s)
         if (ROOT_SCREENS.has(s.type)) setTab(s.type as Tab)
+        if (s.type === 'fermi-ranking') setTab('ranking')
         isPopNavRef.current = false
       } else {
         // state がない場合はホームへ
@@ -190,8 +205,7 @@ function AppV3() {
         const isPreview = typeof location !== 'undefined' && new URL(location.href).searchParams.get('preview') === 'onboarding'
         if (!isPreview) {
           setScreen((s) => s.type === 'onboarding' ? { type: 'home' } : s)
-          // SCRUM-195: 初回ログイン時にチュートリアルを表示
-          if (shouldShowTutorial()) setShowTutorial(true)
+          // チュートリアルは右下FABから任意で起動
         }
       } else {
         syncOnLogout()
@@ -200,17 +214,37 @@ function AppV3() {
     return unsub
   }, [])
 
-  const userName = currentUser?.user_metadata?.full_name
-    ?? currentUser?.user_metadata?.name
-    ?? currentUser?.email
-    ?? 'ゲスト'
+  // 表示名: localStorage優先 → user_metadata → email
+  const storedName = getDisplayName()
+  const userName = storedName
+    || currentUser?.user_metadata?.full_name
+    || currentUser?.user_metadata?.name
+    || currentUser?.email
+    || 'ゲスト'
   const completed = getCompletedCount()
   const xp = completed * 100
   const level = Math.floor(xp / 1000) + 1
 
+  const handleSaveName = async () => {
+    const name = nameInput.trim()
+    if (!name) return
+    setNameSaving(true)
+    setDisplayName(name)
+    if (currentUser) {
+      await updateDisplayName(name).catch(() => {})
+    }
+    setNameSaving(false)
+    setShowNamePopup(false)
+  }
+
   const handleTabChange = (next: Tab) => {
     setTab(next)
-    navigate({ type: next }, true)
+    // rankingタブはフェルミランキング画面へ
+    if (next === 'ranking') {
+      navigate({ type: 'fermi-ranking' }, true)
+    } else {
+      navigate({ type: next }, true)
+    }
   }
 
   const handleOpenLesson = (lessonId: number) => {
@@ -285,8 +319,7 @@ function AppV3() {
         onComplete={() => {
           localStorage.setItem(ONBOARDED_KEY, '1')
           navigate({ type: 'home' })
-          // SCRUM-195: オンボーディング完了後にチュートリアルを表示
-          if (shouldShowTutorial()) setShowTutorial(true)
+          // チュートリアルは右下FABから任意で起動
         }}
       />
     )
@@ -327,6 +360,7 @@ function AppV3() {
           onOpenAIGen={() => currentUser ? navigate({ type: 'ai-problem-gen' }) : navigate({ type: 'login-gate', feature: 'ai-gen' })}
           onOpenRoadmap={() => { setTab('lessons'); navigate({ type: 'lessons' }, true) }}
           onNavigateToDailyFermi={() => navigate({ type: 'daily-fermi' })}
+          onOpenPlacementTest={() => navigate({ type: 'placement-test' })}
         />
       )}
 
@@ -387,6 +421,10 @@ function AppV3() {
         />
       )}
 
+      {screen.type === 'fermi-ranking' && (
+        <FermiRankingScreen />
+      )}
+
       {screen.type === 'placement-test' && (
         <PlacementTestScreen
           onBack={handleBack}
@@ -397,7 +435,7 @@ function AppV3() {
 
       {screen.type === 'roleplay' && (
         <RoleplaySelectScreen
-          onBack={handleBack}
+          onBack={() => navigate({ type: 'lessons' }, true)}
           onStart={(situationId) => navigate({ type: 'roleplay-chat', situationId })}
           onUpgrade={() => navigate({ type: 'pricing' })}
         />
@@ -417,6 +455,7 @@ function AppV3() {
           onOpenFeedback={() => navigate({ type: 'feedback' })}
           onOpenPricing={() => navigate({ type: 'pricing' })}
           onOpenPlacementTest={() => navigate({ type: 'placement-test' })}
+          onOpenLesson={(id) => navigate({ type: 'lesson', lessonId: id })}
         />
       )}
       {screen.type === 'rank' && <RankScreen onBack={handleBack} />}
@@ -437,7 +476,13 @@ function AppV3() {
       {screen.type === 'login' && (
         <LoginScreen
           initialTab={screen.tab}
-          onLoginSuccess={(user) => { setCurrentUser(user); navigate({ type: 'settings' }) }}
+          onLoginSuccess={(user) => {
+            setCurrentUser(user)
+            // 名前が未設定の場合はポップアップ表示
+            const hasName = user?.user_metadata?.full_name || user?.user_metadata?.name || getDisplayName()
+            if (!hasName) { setShowNamePopup(true) }
+            navigate({ type: 'home' })
+          }}
         />
       )}
       {screen.type === 'language' && <LanguageScreen onBack={() => navigate({ type: 'settings' })} />}
@@ -506,8 +551,68 @@ function AppV3() {
     </AppShell>
 
     {/* SCRUM-195: チュートリアルオーバーレイ */}
+    {/* チュートリアルFAB（右下固定ボタン） */}
+    {screen.type === 'home' && !showTutorial && (
+      <TutorialFAB onClick={() => setShowTutorial(true)} />
+    )}
     {showTutorial && (
-      <TutorialOverlay onDone={() => setShowTutorial(false)} />
+      <TutorialOverlay
+        onDone={() => setShowTutorial(false)}
+        onGoFermi={() => navigate({ type: 'daily-fermi' })}
+      />
+    )}
+
+    {/* 登録後: 表示名入力ポップアップ */}
+    {showNamePopup && (
+      <div style={{
+        position: 'fixed', inset: 0, zIndex: 9999,
+        background: 'rgba(0,0,0,0.7)', display: 'flex',
+        alignItems: 'center', justifyContent: 'center', padding: 24,
+      }}>
+        <div style={{
+          background: '#252C40', borderRadius: 20, padding: '32px 24px',
+          width: '100%', maxWidth: 360, boxShadow: '0 24px 48px rgba(0,0,0,0.4)',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+            <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(108,142,245,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6C8EF5" strokeWidth="2" strokeLinecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div style={{ fontSize: 22, fontWeight: 800, color: '#E8ECF4', letterSpacing: '-0.02em' }}>ようこそ！</div>
+          </div>
+          <div style={{ fontSize: 15, color: '#8FA3C8', marginBottom: 24, lineHeight: 1.6 }}>
+            アプリで表示する名前を設定してね
+          </div>
+          <input
+            type="text"
+            placeholder="名前を入力（例：田中 太郎）"
+            value={nameInput}
+            onChange={e => setNameInput(e.target.value)}
+            onKeyDown={e => { if (e.key === 'Enter' && nameInput.trim()) handleSaveName() }}
+            autoFocus
+            style={{
+              width: '100%', padding: '14px 16px', border: '1px solid rgba(255,255,255,0.15)',
+              borderRadius: 10, background: 'rgba(255,255,255,0.07)', color: '#E8ECF4',
+              fontSize: 16, fontFamily: "'Noto Sans JP', sans-serif",
+              outline: 'none', boxSizing: 'border-box', marginBottom: 8,
+            }}
+          />
+          <div style={{ fontSize: 12, color: '#6B82A8', marginBottom: 20 }}>あとで設定画面から変更できるよ</div>
+          <button
+            onClick={handleSaveName}
+            disabled={nameSaving || !nameInput.trim()}
+            style={{
+              width: '100%', padding: '15px', background: nameInput.trim() ? '#6C8EF5' : '#2E3652',
+              border: 'none', borderRadius: 12, fontSize: 16, fontWeight: 700,
+              color: nameInput.trim() ? '#1A1F2E' : '#6B82A8',
+              cursor: nameInput.trim() ? 'pointer' : 'not-allowed', marginBottom: 10,
+            }}
+          >{nameSaving ? '保存中…' : '設定する'}</button>
+          <button
+            onClick={() => setShowNamePopup(false)}
+            style={{ width: '100%', background: 'none', border: 'none', color: '#6B82A8', fontSize: 14, cursor: 'pointer', padding: '8px 0' }}
+          >あとで設定する</button>
+        </div>
+      </div>
     )}
     </>
   )

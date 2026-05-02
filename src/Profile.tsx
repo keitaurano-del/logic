@@ -169,7 +169,10 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
         </button>
         <div className="pf-avatar-area">
           <div className="pf-avatar">
-            <span style={{ fontSize: 48 }}>👤</span>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
           </div>
         </div>
         <h2 className="pf-name">{user?.user_metadata?.full_name ?? user?.user_metadata?.name ?? user?.email ?? guest.id}</h2>
@@ -243,7 +246,9 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
           <div className="pf-completed-list">
             {completedLessons.map((key) => (
               <div key={key} className="pf-completed-item">
-                <span className="pf-completed-check">✓</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
                 <span className="pf-completed-name">{formatLessonKey(key)}</span>
               </div>
             ))}
@@ -254,7 +259,10 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
       {/* Empty state */}
       {completedLessons.length === 0 && (
         <div className="pf-empty">
-          <span style={{ fontSize: 56 }}>📚</span>
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+            <path d="M6.5 2H20a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4"/>
+          </svg>
           <p>レッスンを始めると<br />ここに記録が表示されます</p>
         </div>
       )}
@@ -263,7 +271,9 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
       {onDeviation && (
         <div className="pf-deviation-card" onClick={onDeviation}>
           <span>{t('profile.deviation')}</span>
-          <span>›</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
         </div>
       )}
 
@@ -271,7 +281,9 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
       {onRanking && (
         <div className="pf-deviation-card" onClick={onRanking}>
           <span>{t('profile.ranking')}</span>
-          <span>›</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
         </div>
       )}
 
@@ -279,7 +291,9 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
       {onTheme && (
         <div className="pf-deviation-card" onClick={onTheme}>
           <span>{t('profile.theme')}</span>
-          <span>›</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
         </div>
       )}
 
@@ -365,15 +379,21 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
       {/* Legal links */}
       <div className="pf-deviation-card" onClick={() => window.open('/privacy.html', '_blank')}>
         <span>{t('profile.privacy')}</span>
-        <span>›</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
       </div>
       <div className="pf-deviation-card" onClick={() => window.open('/terms.html', '_blank')}>
         <span>{t('profile.terms')}</span>
-        <span>›</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
       </div>
       <div className="pf-deviation-card" onClick={() => window.open('/tokushoho.html', '_blank')}>
         <span>{t('profile.tokushoho')}</span>
-        <span>›</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
       </div>
 
       {/* Data deletion (GDPR / Play Store 必須) */}
@@ -384,7 +404,9 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
         window.location.reload()
       }}>
         <span style={{ color: 'var(--danger)' }}>{t('profile.deleteData')}</span>
-        <span>›</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
       </div>
 
       {/* Subscription management — hidden during beta (BETA_MODE) */}

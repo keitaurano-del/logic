@@ -2,6 +2,8 @@ const STORAGE_KEY = 'logic-subscription'
 const TRIAL_DAYS = 7
 
 import { createClient } from '@supabase/supabase-js'
+import { purchaseProduct, verifyPurchase } from './billing'
+import { PLAY_PRODUCTS } from './billing/products'
 
 export type SubscriptionPlan =
   | 'trial'
@@ -15,14 +17,14 @@ export type SubscriptionPlan =
   | 'premium_monthly'
   | 'premium_yearly'
 
-// SCRUM-182: 新プラン価格定義（年額 = 月額×7ヶ月分）
+// SCRUM-182: 新プラン価格定義（消費税込み、Android Play Store決済対応）
 export const PLAN_PRICES = {
   basic_monthly: 250,
-  basic_yearly: 1750,      // 月額×7ヶ月分お得
-  standard_monthly: 650,
-  standard_yearly: 4550,   // 月額×7ヶ月分お得
-  premium_monthly: 980,
-  premium_yearly: 6860,    // 月額×7ヶ月分お得
+  basic_yearly: 1750,
+  standard_monthly: 390,      // 消費税込み
+  standard_yearly: 2730,      // 消費税込み
+  premium_monthly: 760,       // 消費税込み
+  premium_yearly: 5320,       // 消費税込み
   beta_campaign: 1980,
 } as const
 
@@ -30,14 +32,14 @@ export type SubscriptionState = {
   trialStartedAt: string | null
   plan: SubscriptionPlan
   expiresAt: string | null
-  stripeSessionId: string | null
+  playStoreToken: string | null // Google Play 購買トークン（RTDN用）
 }
 
 const DEFAULT_STATE: SubscriptionState = {
   trialStartedAt: null,
   plan: 'free',
   expiresAt: null,
-  stripeSessionId: null,
+  playStoreToken: null,
 }
 
 function load(): SubscriptionState {
@@ -180,11 +182,11 @@ export function isPremium(): boolean {
     || s.plan === 'premium_yearly'
 }
 
-export function setPaidPlan(plan: SubscriptionPlan, sessionId: string, expiresAt: string) {
+export function setPaidPlan(plan: SubscriptionPlan, expiresAt: string, playStoreToken?: string) {
   const s = load()
   s.plan = plan
-  s.stripeSessionId = sessionId
   s.expiresAt = expiresAt
+  if (playStoreToken) s.playStoreToken = playStoreToken
   save(s)
 }
 
@@ -192,75 +194,83 @@ export function getPlanLabel(): string {
   const s = getSubscriptionState()
   switch (s.plan) {
     case 'trial': return `7日間トライアル (残り${daysLeftInTrial()}日)`
-    case 'basic_monthly': return 'スタンダード (¥650/月)' // legacy basic → standard稱号
-    case 'basic_yearly': return 'スタンダード (¥4,500/年)'
-    case 'standard_monthly': return 'スタンダード (¥650/月)'
-    case 'standard_yearly': return 'スタンダード (¥4,500/年)'
-    case 'premium_monthly': return 'プレミアム (¥1,400/月)'
-    case 'premium_yearly': return 'プレミアム (¥9,800/年)'
-    case 'monthly': return 'スタンダード (¥650/月)'
-    case 'yearly': return 'スタンダード (¥4,500/年)'
+    case 'basic_monthly': return 'スタンダード (¥390/月)' // legacy basic → standard称号
+    case 'basic_yearly': return 'スタンダード (¥2,730/年)'
+    case 'standard_monthly': return 'スタンダード (¥390/月)'
+    case 'standard_yearly': return 'スタンダード (¥2,730/年)'
+    case 'premium_monthly': return 'プレミアム (¥760/月)'
+    case 'premium_yearly': return 'プレミアム (¥5,320/年)'
+    case 'monthly': return 'スタンダード (¥390/月)'
+    case 'yearly': return 'スタンダード (¥2,730/年)'
     case 'free': return '無料 (キャンペーン中)'
     default: return '無料 (キャンペーン中)'
   }
 }
 
-import { API_BASE } from './apiBase'
-import { purchaseProduct } from './billing'
-import { PLAY_PRODUCTS } from './billing/products'
+// ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+// Google Play Billing (2026-05-01: App版のみリリース、Play Store決済一本化)
+// ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
-// ── Google Play product ID mapping (SCRUM-116) ─────────────────────
 export function planToPlayProductId(plan: SubscriptionPlan): string {
   switch (plan) {
-    case 'basic_monthly':    return PLAY_PRODUCTS.basic_monthly
-    case 'basic_yearly':     return PLAY_PRODUCTS.basic_yearly
     case 'standard_monthly': return PLAY_PRODUCTS.standard_monthly
     case 'standard_yearly':  return PLAY_PRODUCTS.standard_yearly
+    // Legacy plan names → map to closest equivalent
+    case 'basic_monthly':
+    case 'monthly':          return PLAY_PRODUCTS.standard_monthly
+    case 'basic_yearly':
+    case 'yearly':           return PLAY_PRODUCTS.standard_yearly
     case 'premium_monthly':  return PLAY_PRODUCTS.premium_monthly
     case 'premium_yearly':   return PLAY_PRODUCTS.premium_yearly
-    // Legacy plan names → map to closest equivalent
-    case 'monthly':          return PLAY_PRODUCTS.standard_monthly
-    case 'yearly':           return PLAY_PRODUCTS.standard_yearly
     // Non-purchasable plans
     default:                 return PLAY_PRODUCTS.standard_monthly
   }
 }
 
-export async function startCheckout(plan: SubscriptionPlan, guestId: string, userId?: string, trial?: boolean): Promise<void> {
-  // SCRUM-116/121: Android native → Google Play Billing
-  if (isAndroidNative()) {
-    const productId = planToPlayProductId(plan)
-    await purchaseProduct(productId)
-    return
+/**
+ * App版リリース後: Play Store Billing のみ使用
+ * Web版は廃止済み（2026-05-01）
+ */
+export async function startCheckout(plan: SubscriptionPlan): Promise<void> {
+  const productId = planToPlayProductId(plan)
+  try {
+    const purchase = await purchaseProduct(productId)
+    // Purchase successful - verify with server
+    await verifyPurchase({
+      purchaseToken: purchase.purchaseToken,
+      productId: purchase.productId,
+    })
+    // Update local subscription state
+    const expiresAt = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString() // TODO: calculate from receipt
+    setPaidPlan(plan, expiresAt, purchase.purchaseToken)
+  } catch (error) {
+    const message = error instanceof Error ? error.message : '購入に失敗しました'
+    throw new Error(message)
   }
-  const res = await fetch(`${API_BASE}/api/checkout`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ plan, guestId, userId, trial }),
-  })
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}))
-    throw new Error(err.error || 'チェックアウトに失敗しました')
-  }
-  const data = await res.json()
-  if (data.url) window.location.href = data.url
-  else throw new Error('チェックアウトURLが取得できませんでした')
 }
 
-export async function verifyCheckout(sessionId: string): Promise<boolean> {
-  const res = await fetch(`${API_BASE}/api/checkout-verify?session_id=${sessionId}`)
-  if (!res.ok) return false
-  const data = await res.json()
-  if (data.paid && data.plan && data.expiresAt) {
-    setPaidPlan(data.plan as SubscriptionPlan, sessionId, data.expiresAt)
-    return true
+export const BETA_CAMPAIGN_PLAN: SubscriptionPlan = 'standard_yearly'
+
+export async function startBetaCampaignCheckout(): Promise<void> {
+  const productId = PLAY_PRODUCTS.campaign_yearly
+  try {
+    const purchase = await purchaseProduct(productId)
+    await verifyPurchase({
+      purchaseToken: purchase.purchaseToken,
+      productId: purchase.productId,
+    })
+    const expiresAt = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString()
+    setPaidPlan(BETA_CAMPAIGN_PLAN, expiresAt, purchase.purchaseToken)
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'キャンペーン購入に失敗しました'
+    throw new Error(message)
   }
-  return false
 }
 
-// ── Platform detection (SCRUM-121) ─────────────────────────────
-// Web/iOS → Stripe checkout
-// Android native (Capacitor) → Google Play Billing (SCRUM-116)
+// ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+// Platform detection
+// ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
 export type Platform = 'android-native' | 'web'
 
 export function detectPlatform(): Platform {
@@ -278,37 +288,29 @@ export function isAndroidNative(): boolean {
   return detectPlatform() === 'android-native'
 }
 
-// ── Beta Campaign ────────────────────────────────────────────────
-// ¥1,980/year plan with 7-day free trial
-// On Android: will use Google Play Billing (SCRUM-116)
-// On Web/iOS: falls through to Stripe checkout
+// ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+// AI問題生成 日次制限（Keita-san指定: フリー0/スタンダード3/プレミアム10）
+// ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
-export const BETA_CAMPAIGN_PLAN: SubscriptionPlan = 'premium_yearly'
+const AI_GEN_DAILY_KEY = 'logic-ai-gen-daily'
+const TODAY_STR = () => new Date().toISOString().slice(0, 10)
 
-export async function startBetaCampaignCheckout(guestId: string, userId?: string): Promise<void> {
-  // SCRUM-116/121: Android native → Google Play Billing
-  if (isAndroidNative()) {
-    const productId = planToPlayProductId(BETA_CAMPAIGN_PLAN)
-    await purchaseProduct(productId)
-    return
-  }
-  // Web / iOS: Stripe checkout with beta_campaign flag
-  const res = await fetch(`${API_BASE}/api/checkout`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      plan: BETA_CAMPAIGN_PLAN,
-      guestId,
-      userId,
-      trial: true,
-      betaCampaign: true,
-    }),
-  })
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}))
-    throw new Error(err.error || 'チェックアウトに失敗しました')
-  }
-  const data = await res.json()
-  if (data.url) window.location.href = data.url
-  else throw new Error('チェックアウトURLが取得できませんでした')
+export function getAIGenDailyLimit(): number {
+  if (isPremiumPlan()) return 10
+  if (isStandardPlan()) return 3
+  return 0
+}
+
+export function getAIGenDailyCount(): number {
+  try {
+    const s = JSON.parse(localStorage.getItem(AI_GEN_DAILY_KEY) || '{}')
+    return s.date === TODAY_STR() ? (s.count ?? 0) : 0
+  } catch { return 0 }
+}
+
+export function incrementAIGenDailyCount() {
+  try {
+    const c = getAIGenDailyCount()
+    localStorage.setItem(AI_GEN_DAILY_KEY, JSON.stringify({ date: TODAY_STR(), count: c + 1 }))
+  } catch { /* */ }
 }

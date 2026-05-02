@@ -122,7 +122,8 @@ export function AIProblemScreen({ problem, onBack, onReport }: AIProblemScreenPr
                   alignItems: 'center',
                   gap: 'var(--s-3)',
                   borderColor: showCorrect ? 'var(--success)' : showWrong ? 'var(--danger)' : isSelected ? 'var(--brand)' : undefined,
-                  background: showCorrect ? 'rgba(16,185,129,0.06)' : showWrong ? 'rgba(220,38,38,0.06)' : isSelected ? 'var(--brand-soft)' : undefined,
+                  background: showCorrect ? 'rgba(16,185,129,0.06)' : showWrong ? 'rgba(220,38,38,0.06)' : isSelected ? 'var(--brand-soft)' : '#FFFFFF',
+                  color: showCorrect ? undefined : showWrong ? undefined : isSelected ? undefined : '#000000',
                 }}
               >
                 <span style={{

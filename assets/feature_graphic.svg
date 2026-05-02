@@ -1,0 +1,44 @@
+<svg viewBox="0 0 1024 500" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1A1F2E;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2D3A52;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6C8EF5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00D4FF;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <rect width="1024" height="500" fill="url(#bgGrad)"/>
+  
+  <!-- Left side: Visual representation -->
+  <g transform="translate(100, 80)">
+    <!-- Logic tree visualization -->
+    <circle cx="50" cy="50" r="35" fill="url(#accentGrad)"/>
+    <line x1="25" y1="85" x2="0" y2="160" stroke="url(#accentGrad)" stroke-width="5"/>
+    <line x1="50" y1="85" x2="50" y2="160" stroke="url(#accentGrad)" stroke-width="5"/>
+    <line x1="75" y1="85" x2="100" y2="160" stroke="url(#accentGrad)" stroke-width="5"/>
+    
+    <circle cx="0" cy="180" r="25" fill="#6C8EF5" opacity="0.7"/>
+    <circle cx="50" cy="180" r="25" fill="#6C8EF5" opacity="0.7"/>
+    <circle cx="100" cy="180" r="25" fill="#6C8EF5" opacity="0.7"/>
+  </g>
+  
+  <!-- Right side: Text -->
+  <text x="550" y="120" font-family="Arial, sans-serif" font-size="64" font-weight="bold" fill="#FFFFFF">
+    Logic
+  </text>
+  
+  <text x="550" y="200" font-family="Arial, sans-serif" font-size="48" font-weight="600" fill="url(#accentGrad)">
+    毎日3分で
+  </text>
+  
+  <text x="550" y="270" font-family="Arial, sans-serif" font-size="44" font-weight="600" fill="#FFFFFF">
+    論理的思考を鍛える
+  </text>
+  
+  <!-- Accent line -->
+  <line x1="550" y1="310" x2="900" y2="310" stroke="url(#accentGrad)" stroke-width="4"/>
+</svg>

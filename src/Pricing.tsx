@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { startCheckout, getSubscriptionState, daysLeftInTrial } from './subscription'
-import { loadGuestUser } from './guestUser'
 import './Pricing.css'
 
 type Props = { onBack: () => void }
@@ -15,8 +14,7 @@ export default function Pricing({ onBack }: Props) {
     setLoading(plan)
     setError('')
     try {
-      const guest = loadGuestUser()
-      await startCheckout(plan, guest.id)
+      await startCheckout(plan)
     } catch (e: any) {
       setError(e.message || 'エラーが発生しました')
       setLoading(null)
@@ -47,9 +45,9 @@ export default function Pricing({ onBack }: Props) {
           <div className="pr-card pr-card-recommended">
             <div className="pr-recommended-badge">🏆 おすすめ</div>
             <div className="pr-plan-name">年額プラン</div>
-            <div className="pr-price">¥3,500<span>/年</span></div>
-            <div className="pr-price-monthly">月々 <strong>¥292</strong></div>
-            <div className="pr-price-savings">年額で約5ヶ月分お得！ <span className="pr-off-badge">42% OFF</span></div>
+            <div className="pr-price">¥2,730<span>/年</span></div>
+            <div className="pr-price-monthly">月々 <strong>¥228</strong></div>
+            <div className="pr-price-savings">年額でぐんとお得！ <span className="pr-off-badge">41% OFF</span></div>
             <div className="pr-trial-note">🎁 7日間無料トライアル付き</div>
             <ul className="pr-features">
               <li>✓ AI問題生成 <strong>月300問</strong>まで</li>
@@ -70,7 +68,7 @@ export default function Pricing({ onBack }: Props) {
           {/* 月額プラン */}
           <div className="pr-card">
             <div className="pr-plan-name">月額プラン</div>
-            <div className="pr-price">¥650<span>/月</span></div>
+            <div className="pr-price">¥390<span>/月</span></div>
             <div className="pr-trial-note">🎁 7日間無料トライアル付き</div>
             <ul className="pr-features">
               <li>✓ AI問題生成 <strong>月300問</strong>まで</li>

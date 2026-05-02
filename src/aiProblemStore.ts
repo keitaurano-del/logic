@@ -72,6 +72,12 @@ export async function generateAIProblems(prompt: string): Promise<AIProblemSet> 
   sets.unshift(newSet)
   save(sets)
   recordGeneration()
+  // バックエンドに全件保存（非同期・エラーは無視）
+  fetch(`${API_BASE}/api/user-problems/save`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ problem: newSet }),
+  }).catch(() => {})
   return newSet
 }
 

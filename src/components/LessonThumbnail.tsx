@@ -21,6 +21,7 @@ const PALETTE = {
   systems:  { bg: '#1C3230', stroke: '#5FA898' },  // システム: ダークティール + セージ
   proposal: { bg: '#2A2418', stroke: '#A89B6A' },  // 提案: ダークアンバー + ゴールドカーキ
   philo:    { bg: '#22201C', stroke: '#9E9070' },  // 哲学: ダークオーカー + ウォームグレー
+  client:   { bg: '#2A1E0E', stroke: '#C49A3C' },  // クライアントワーク: ダークアンバー + ゴールド
 }
 
 // ──────────────────────────────────────────────
@@ -627,6 +628,152 @@ const SHAPES: Record<number, ShapeFn> = {
       <circle cx="60" cy="56" r="5" fill="none" stroke={s} strokeWidth="1.5" opacity={0.6}/>
     </g>
   ),
+
+  // ── クライアントワークコース (89-97) ──
+  89: s => ( // 概算力: 数字と桌
+    <g>
+      <rect x="20" y="30" width="60" height="40" rx="4" fill="none" stroke={s} strokeWidth="2"/>
+      <text x="50" y="57" textAnchor="middle" fontSize="20" fill={s} fontFamily="monospace" opacity={0.9}>10¹²</text>
+      <line x1="20" y1="42" x2="80" y2="42" stroke={s} strokeWidth="1" opacity={0.3}/>
+    </g>
+  ),
+  90: s => ( // 論点: クロスヘア・ターゲット
+    <g>
+      <circle cx="50" cy="50" r="26" fill="none" stroke={s} strokeWidth="2"/>
+      <circle cx="50" cy="50" r="14" fill="none" stroke={s} strokeWidth="1.5" opacity={0.6}/>
+      <circle cx="50" cy="50" r="4" fill={s}/>
+      <line x1="50" y1="24" x2="50" y2="30" stroke={s} strokeWidth="2" strokeLinecap="round"/>
+      <line x1="50" y1="70" x2="50" y2="76" stroke={s} strokeWidth="2" strokeLinecap="round"/>
+      <line x1="24" y1="50" x2="30" y2="50" stroke={s} strokeWidth="2" strokeLinecap="round"/>
+      <line x1="70" y1="50" x2="76" y2="50" stroke={s} strokeWidth="2" strokeLinecap="round"/>
+    </g>
+  ),
+  91: s => ( // ヒアリング: 耳とチェックリスト
+    <g>
+      <path d="M 35 30 Q 25 30 25 45 Q 25 60 35 62 L 35 70 Q 45 65 45 62 Q 55 62 55 45 Q 55 30 35 30 Z" fill="none" stroke={s} strokeWidth="2"/>
+      <line x1="62" y1="35" x2="78" y2="35" stroke={s} strokeWidth="1.5" strokeLinecap="round" opacity={0.7}/>
+      <line x1="62" y1="45" x2="78" y2="45" stroke={s} strokeWidth="1.5" strokeLinecap="round" opacity={0.7}/>
+      <line x1="62" y1="55" x2="74" y2="55" stroke={s} strokeWidth="1.5" strokeLinecap="round" opacity={0.5}/>
+      <circle cx="70" cy="35" r="0" fill={s}/>
+    </g>
+  ),
+  92: s => ( // 情報読み解き: 提案・根拠・具体例の層
+    <g>
+      <rect x="22" y="22" width="56" height="12" rx="3" fill="none" stroke={s} strokeWidth="1.8"/>
+      <rect x="26" y="38" width="48" height="12" rx="3" fill="none" stroke={s} strokeWidth="1.5" opacity={0.7}/>
+      <rect x="30" y="54" width="40" height="12" rx="3" fill="none" stroke={s} strokeWidth="1.2" opacity={0.5}/>
+      <line x1="50" y1="34" x2="50" y2="38" stroke={s} strokeWidth="1.5" opacity={0.5}/>
+      <line x1="50" y1="50" x2="50" y2="54" stroke={s} strokeWidth="1.5" opacity={0.5}/>
+    </g>
+  ),
+  93: s => ( // 構造化思考: ピラミッド
+    <g>
+      <polygon points="50,18 78,75 22,75" fill="none" stroke={s} strokeWidth="2"/>
+      <line x1="35" y1="53" x2="65" y2="53" stroke={s} strokeWidth="1.5" opacity={0.6}/>
+      <line x1="40" y1="65" x2="60" y2="65" stroke={s} strokeWidth="1.5" opacity={0.4}/>
+      <circle cx="50" cy="18" r="3" fill={s}/>
+    </g>
+  ),
+  94: s => ( // 伝え方: チャットバブル
+    <g>
+      <path d="M 20 28 Q 20 20 28 20 L 72 20 Q 80 20 80 28 L 80 52 Q 80 60 72 60 L 50 60 L 38 76 L 38 60 L 28 60 Q 20 60 20 52 Z" fill="none" stroke={s} strokeWidth="2"/>
+      <line x1="32" y1="34" x2="68" y2="34" stroke={s} strokeWidth="1.5" strokeLinecap="round" opacity={0.7}/>
+      <line x1="32" y1="44" x2="60" y2="44" stroke={s} strokeWidth="1.5" strokeLinecap="round" opacity={0.5}/>
+    </g>
+  ),
+  95: s => ( // ストーリーライン: 流れる矢印スライド
+    <g>
+      <rect x="18" y="24" width="28" height="18" rx="3" fill="none" stroke={s} strokeWidth="1.8"/>
+      <rect x="54" y="24" width="28" height="18" rx="3" fill="none" stroke={s} strokeWidth="1.8"/>
+      <rect x="18" y="56" width="28" height="18" rx="3" fill="none" stroke={s} strokeWidth="1.5" opacity={0.6}/>
+      <rect x="54" y="56" width="28" height="18" rx="3" fill="none" stroke={s} strokeWidth="1.5" opacity={0.6}/>
+      <path d="M 46 33 L 54 33" stroke={s} strokeWidth="1.5" strokeLinecap="round" markerEnd="url(#arr)"/>
+      <path d="M 32 42 L 32 56" stroke={s} strokeWidth="1.5" strokeLinecap="round" opacity={0.5}/>
+      <path d="M 68 42 L 68 56" stroke={s} strokeWidth="1.5" strokeLinecap="round" opacity={0.5}/>
+      <polygon points="50,31 54,33 50,35" fill={s}/>
+      <polygon points="32,53 30,56 34,56" fill={s} opacity={0.5}/>
+      <polygon points="68,53 66,56 70,56" fill={s} opacity={0.5}/>
+    </g>
+  ),
+  96: s => ( // レポーティング: 文書とチェック
+    <g>
+      <rect x="24" y="18" width="40" height="52" rx="4" fill="none" stroke={s} strokeWidth="2"/>
+      <line x1="32" y1="30" x2="56" y2="30" stroke={s} strokeWidth="1.5" strokeLinecap="round" opacity={0.8}/>
+      <line x1="32" y1="40" x2="56" y2="40" stroke={s} strokeWidth="1.2" strokeLinecap="round" opacity={0.6}/>
+      <line x1="32" y1="50" x2="48" y2="50" stroke={s} strokeWidth="1.2" strokeLinecap="round" opacity={0.4}/>
+      <circle cx="68" cy="62" r="12" fill="none" stroke={s} strokeWidth="2"/>
+      <polyline points="62,62 66,67 74,57" stroke={s} strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+    </g>
+  ),
+  97: s => ( // フィードバック: 微笑み・山の図
+    <g>
+      <polyline points="20,70 35,42 50,56 65,30 80,45" fill="none" stroke={s} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <circle cx="20" cy="70" r="3" fill={s}/>
+      <circle cx="35" cy="42" r="3" fill={s}/>
+      <circle cx="50" cy="56" r="3" fill={s}/>
+      <circle cx="65" cy="30" r="3" fill={s}/>
+      <circle cx="80" cy="45" r="3" fill={s}/>
+      <line x1="65" y1="30" x2="72" y2="22" stroke={s} strokeWidth="1.5" strokeLinecap="round" opacity={0.5}/>
+      <polygon points="72,22 76,26 78,18" fill={s} opacity={0.7}/>
+    </g>
+  ),
+
+  // フェルミ推定コース (200〜204)
+  200: s => ( // フェルミ推定とは: 疑問符+グラフ
+    <g>
+      <circle cx="50" cy="38" r="18" fill="none" stroke={s} strokeWidth="2"/>
+      <text x="50" y="44" textAnchor="middle" fontSize="16" fill={s} fontFamily="monospace" fontWeight="bold">?</text>
+      <polyline points="22,72 34,60 46,66 58,52 74,64" fill="none" stroke={s} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" opacity={0.7}/>
+      <circle cx="22" cy="72" r="2.5" fill={s} opacity={0.7}/>
+      <circle cx="74" cy="64" r="2.5" fill={s} opacity={0.7}/>
+    </g>
+  ),
+  201: s => ( // 分解の技術: ツリー構造
+    <g>
+      <rect x="43" y="14" width="14" height="10" rx="2" fill="none" stroke={s} strokeWidth="1.8"/>
+      <line x1="50" y1="24" x2="50" y2="34" stroke={s} strokeWidth="1.5"/>
+      <line x1="50" y1="34" x2="28" y2="44" stroke={s} strokeWidth="1.5"/>
+      <line x1="50" y1="34" x2="72" y2="44" stroke={s} strokeWidth="1.5"/>
+      <rect x="20" y="44" width="16" height="10" rx="2" fill="none" stroke={s} strokeWidth="1.6"/>
+      <rect x="64" y="44" width="16" height="10" rx="2" fill="none" stroke={s} strokeWidth="1.6"/>
+      <line x1="28" y1="54" x2="20" y2="64" stroke={s} strokeWidth="1.2" opacity={0.6}/>
+      <line x1="28" y1="54" x2="36" y2="64" stroke={s} strokeWidth="1.2" opacity={0.6}/>
+      <line x1="72" y1="54" x2="64" y2="64" stroke={s} strokeWidth="1.2" opacity={0.6}/>
+      <line x1="72" y1="54" x2="80" y2="64" stroke={s} strokeWidth="1.2" opacity={0.6}/>
+    </g>
+  ),
+  202: s => ( // 実践①都市: スカイライン+矢印
+    <g>
+      <rect x="16" y="58" width="10" height="18" fill="none" stroke={s} strokeWidth="1.8"/>
+      <rect x="30" y="46" width="10" height="30" fill="none" stroke={s} strokeWidth="1.8"/>
+      <rect x="44" y="36" width="12" height="40" fill="none" stroke={s} strokeWidth="1.8"/>
+      <rect x="60" y="50" width="10" height="26" fill="none" stroke={s} strokeWidth="1.8"/>
+      <rect x="74" y="42" width="10" height="34" fill="none" stroke={s} strokeWidth="1.8"/>
+      <line x1="12" y1="76" x2="88" y2="76" stroke={s} strokeWidth="1.5" strokeLinecap="round"/>
+      <line x1="50" y1="22" x2="50" y2="14" stroke={s} strokeWidth="1.5" strokeLinecap="round" opacity={0.5}/>
+      <polyline points="44,18 50,12 56,18" fill="none" stroke={s} strokeWidth="1.5" strokeLinecap="round" opacity={0.5}/>
+    </g>
+  ),
+  203: s => ( // 実践②ビジネス: 掛け算＝市場規模
+    <g>
+      <text x="50" y="30" textAnchor="middle" fontSize="10" fill={s} fontFamily="monospace" fontWeight="bold" opacity={0.9}>人口×利用率</text>
+      <line x1="20" y1="36" x2="80" y2="36" stroke={s} strokeWidth="1" opacity={0.4}/>
+      <text x="50" y="46" textAnchor="middle" fontSize="9" fill={s} fontFamily="monospace" opacity={0.6}>× 購入頻度 × 単価</text>
+      <line x1="20" y1="52" x2="80" y2="52" stroke={s} strokeWidth="1.5" strokeDasharray="4,3" opacity={0.5}/>
+      <text x="50" y="66" textAnchor="middle" fontSize="13" fill={s} fontFamily="monospace" fontWeight="bold">＝市場</text>
+      <circle cx="28" cy="76" r="4" fill={s} opacity={0.4}/>
+      <circle cx="50" cy="78" r="5" fill={s} opacity={0.7}/>
+      <circle cx="72" cy="76" r="4" fill={s} opacity={0.4}/>
+    </g>
+  ),
+  204: s => ( // よくある罠: 警告三角+チェック
+    <g>
+      <polygon points="50,16 80,68 20,68" fill="none" stroke={s} strokeWidth="2.2" strokeLinejoin="round"/>
+      <line x1="50" y1="30" x2="50" y2="52" stroke={s} strokeWidth="2.5" strokeLinecap="round"/>
+      <circle cx="50" cy="60" r="2.5" fill={s}/>
+      <polyline points="28,80 36,76 42,82 52,72 62,80" fill="none" stroke={s} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity={0.5}/>
+    </g>
+  ),
 }
 
 // ─── カテゴリ → パレット ───
@@ -642,6 +789,8 @@ function getPalette(lessonId: number): { bg: string; stroke: string } {
   if ([65,66,67].includes(lessonId)) return PALETTE.systems
   if ([72,73,74,75,76,82,83,84,85,86,87,88].includes(lessonId)) return PALETTE.proposal
   if ([77,78,79,80,81].includes(lessonId)) return PALETTE.philo
+  if ([89,90,91,92,93,94,95,96,97].includes(lessonId)) return PALETTE.client
+  if ([200,201,202,203,204].includes(lessonId)) return { bg: '#1A2438', stroke: '#6C8EF5' }  // フェルミ: Slate Blue
   return PALETTE.logic
 }
 
