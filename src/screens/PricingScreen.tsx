@@ -27,6 +27,7 @@ type PlanCard = {
   monthlyEquiv?: number
   badge?: string
   recommended?: boolean
+  savings?: string
   features: string[]
 }
 
@@ -57,6 +58,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
       price: PLAN_PRICES.standard_yearly, unit: '/年',
       monthlyEquiv: stdMonthly,
       badge: 'お得',
+      savings: '5ヶ月分お得',
       features: STD_FEATURES,
     },
     {
@@ -70,6 +72,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
       monthlyEquiv: prmMonthly,
       badge: 'おすすめ',
       recommended: true,
+      savings: '5ヶ月分お得',
       features: PRE_FEATURES,
     },
   ]
@@ -113,8 +116,19 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
       </div>
 
       <div style={{ padding: '0 12px', flexShrink: 0 }}>
+        {/* キャンペーンバナー */}
+        <div style={{ background: 'linear-gradient(135deg, #FF6B35 0%, #FF4D6D 100%)', borderRadius: 10, padding: '10px 14px', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ fontSize: 16 }}>🔥</span>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 12, fontWeight: 800, color: '#fff', letterSpacing: '.02em' }}>期間限定キャンペーン中！</div>
+            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.9)', marginTop: 1 }}>
+              年払いプランが今だけ <span style={{ fontWeight: 800, fontSize: 13 }}>¥1,980</span>（通常¥{PLAN_PRICES.standard_yearly.toLocaleString()}〜）
+            </div>
+          </div>
+        </div>
+
         {state.plan === 'trial' && (
-          <div style={{ background: `${v3.color.accent}18`, border: `1px solid ${v3.color.accent}40`, borderRadius: 10, padding: '8px 14px', marginBottom: 12, fontSize: 13, color: v3.color.accent, fontWeight: 600 }}>
+          <div style={{ background: `${v3.color.accent}18`, border: `1px solid ${v3.color.accent}40`, borderRadius: 10, padding: '8px 14px', marginBottom: 10, fontSize: 13, color: v3.color.accent, fontWeight: 600 }}>
             7日間トライアル中 — あと {trialDays} 日
           </div>
         )}
@@ -166,6 +180,11 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
                 {plan.monthlyEquiv && (
                   <div style={{ fontSize: 10, color: v3.color.text3, marginTop: 2 }}>
                     月々¥{plan.monthlyEquiv}
+                  </div>
+                )}
+                {plan.savings && (
+                  <div style={{ fontSize: 10, fontWeight: 700, color: v3.color.warm, marginTop: 2 }}>
+                    🎉 {plan.savings}
                   </div>
                 )}
               </div>
