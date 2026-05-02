@@ -44,3 +44,9 @@ android/captures/
 *.apk
 *.aab
 *.ipa
+
+# Android signing
+keystores/
+android/keystore.properties
+android/app/*.keystore
+android/app/*.jks

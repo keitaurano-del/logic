@@ -106,20 +106,63 @@ npm run cap:open:android
    cp ~/keystores/logic.keystore /path/to/secure/backup/
    ```
 
+### ステップ 5.5: `android/keystore.properties` を作成 (ローカルビルド用)
+
+`android/app/build.gradle` は `android/keystore.properties` を読んで署名するようになっています。git にはコミットされません (.gitignore 済み)。
+
+```bash
+cp android/keystore.properties.example android/keystore.properties
+# 開いてパスを実物に合わせて編集
+#   storeFile=../keystores/logic-release.keystore
+#   storePassword=<実際のパスワード>
+#   keyAlias=logic
+#   keyPassword=<実際のパスワード>
+```
+
+`storeFile` は `android/` (= rootProject) からの相対パスです。
+
 ---
 
 ## ステップ 6: AAB ビルド
 
-ステップ 5 の続き:
+### 推奨: コマンドラインで一発ビルド
 
-1. **Generate Signed Bundle** ダイアログに戻る (キーストア情報が入っている状態)
-2. **Next**
-3. **Build Variants** で **release** を選択
-4. **Signature Versions**: V1 と V2 両方チェック
-5. **Create**
-6. ビルド完了後、右下の通知で **locate** をクリック → `android/app/release/app-release.aab` が生成されている
+```bash
+npm run cap:sync             # Web ビルド + Capacitor sync
+cd android
+./gradlew bundleRelease
+```
 
-これが Play Console にアップロードする本体です。
+成果物: `android/app/build/outputs/bundle/release/app-release.aab`
+
+これを Play Console にアップロードします。
+
+### Android Studio の GUI でビルドする場合
+
+1. **Build → Generate Signed Bundle / APK...**
+2. **Android App Bundle** を選んで Next
+3. キーストア情報を入力 (ステップ 5 で作ったもの)
+4. **Build Variants** で **release** を選択
+5. **Create** → 完了通知で **locate** をクリック → `app-release.aab` を取得
+
+---
+
+## CI 経由のリリース (GitHub Actions)
+
+`.github/workflows/android-deploy.yml` が main ブランチへの push (または手動 dispatch) で自動的に AAB をビルドし、Play Console の内部テストトラックに配信します。
+
+必要な GitHub Actions secrets:
+
+| Secret 名 | 内容 |
+|---|---|
+| `ANDROID_KEYSTORE_BASE64` | キーストアファイルを `base64 -w0` した文字列 |
+| `ANDROID_KEYSTORE_PASSWORD` | キーストアのパスワード |
+| `ANDROID_KEY_ALIAS` | 鍵のエイリアス (例: `logic`) |
+| `ANDROID_KEY_PASSWORD` | 鍵のパスワード |
+| `PLAY_STORE_SERVICE_ACCOUNT_JSON` | Play Console API のサービスアカウント JSON 全文 |
+| `VITE_API_BASE` | Web ビルド時の API ベース URL |
+
+CI 側ではキーストアを base64 secret から復号 → `android/keystore.properties` を secrets から書き出し → `./gradlew bundleRelease` という流れ。`build.gradle` はローカルと CI で同じものが使えます。
 
 ---
 
