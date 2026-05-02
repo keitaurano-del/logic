@@ -81,7 +81,7 @@ const SLIDES = [
     ),
     title: 'AIが即座に採点\nフィードバック。',
     subtitle: '回答を送るとAIがすぐに評価。\n弱点を把握して、確実に成長できる。',
-    btnLabel: 'はじめる',
+    btnLabel: 'プランをみる',
   },
 ]
 
@@ -221,6 +221,90 @@ function WelcomeSlides({ onDone }: { onDone: () => void }) {
           50% { transform: translateY(-14px) scale(1.03); }
         }
       `}</style>
+    </div>
+  )
+}
+
+// ── オンボーディング用料金プラン表示 ───────────────────────────
+const OB_FEATURES = [
+  { label: 'レッスン',     free: '初級のみ',   standard: '全レッスン', premium: '全レッスン' },
+  { label: 'AI問題生成',   free: false,         standard: '日3問',      premium: '日10問' },
+  { label: 'ロールプレイ', free: false,         standard: '月5回',      premium: '無制限' },
+  { label: 'フェルミ問題', free: '日1問',       standard: '日5問',      premium: '日10問' },
+  { label: '学習記録',     free: true,          standard: true,         premium: true },
+]
+
+function OBCell({ value }: { value: string | boolean }) {
+  if (value === true) return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="2.5" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+  if (value === false) return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="2" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  return <span style={{ fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.9)' }}>{value}</span>
+}
+
+function OnboardingPricingView({ onNext }: { onNext: () => void }) {
+  const ACCENT = '#6C8EF5'
+  const WARM = '#F4A261'
+
+  return (
+    <div style={{ minHeight: '100dvh', background: 'linear-gradient(160deg, #0F1220 0%, #1A2340 60%, #0F1A35 100%)', color: '#fff', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", overflowY: 'auto' }}>
+
+      {/* ヘッダー */}
+      <div style={{ padding: 'calc(env(safe-area-inset-top, 44px) + 16px) 24px 0', textAlign: 'center' }}>
+        <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.2em', color: `${ACCENT}90`, marginBottom: 12 }}>LOGIC</div>
+        <h1 style={{ fontSize: 26, fontWeight: 800, margin: '0 0 8px', lineHeight: 1.3, letterSpacing: '-0.02em' }}>
+          あなたに合ったプランを<br />選んでください
+        </h1>
+        <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.55)', margin: '0 0 24px', lineHeight: 1.6 }}>
+          いつでも変更・キャンセル可能。まずは無料で始められるよ。
+        </p>
+      </div>
+
+      {/* キャンペーンバナー */}
+      <div style={{ margin: '0 16px 16px', background: 'linear-gradient(135deg,#FF6B35,#FF4D6D)', borderRadius: 14, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 10 }}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" style={{ flexShrink: 0 }}>
+          <path d="M12 2c0 0-4 4-4 9a4 4 0 0 0 8 0c0-5-4-9-4-9z"/><path d="M12 14c0 0-2 1-2 3a2 2 0 0 0 4 0c0-2-2-3-2-3z"/>
+        </svg>
+        <div>
+          <div style={{ fontSize: 12, fontWeight: 800 }}>期間限定キャンペーン中！</div>
+          <div style={{ fontSize: 12, opacity: 0.9 }}>スタンダード年払いが今だけ <strong>¥1,980</strong></div>
+        </div>
+      </div>
+
+      {/* 機能比較テーブル */}
+      <div style={{ margin: '0 16px 20px', background: 'rgba(255,255,255,0.06)', borderRadius: 16, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
+        {/* ヘッダー */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 70px 70px 70px', padding: '14px 16px', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.4)' }}>機能</div>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: 10, fontWeight: 800, color: 'rgba(255,255,255,0.4)', letterSpacing: '.08em' }}>FREE</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)', marginTop: 2 }}>無料</div>
+          </div>
+          <div style={{ textAlign: 'center', background: `${ACCENT}18`, borderRadius: 8, padding: '0 4px' }}>
+            <div style={{ fontSize: 10, fontWeight: 800, color: ACCENT, letterSpacing: '.08em' }}>STD</div>
+            <div style={{ fontSize: 12, fontWeight: 800, color: '#fff', marginTop: 2 }}>¥390<span style={{ fontSize: 9 }}>/月</span></div>
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: 10, fontWeight: 800, color: WARM, letterSpacing: '.08em' }}>PRE</div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.7)', marginTop: 2 }}>¥760<span style={{ fontSize: 9 }}>/月</span></div>
+          </div>
+        </div>
+        {/* 機能行 */}
+        {OB_FEATURES.map((row, i) => (
+          <div key={row.label} style={{ display: 'grid', gridTemplateColumns: '1fr 70px 70px 70px', padding: '13px 16px', borderTop: i === 0 ? 'none' : '1px solid rgba(255,255,255,0.06)', alignItems: 'center' }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: 'rgba(255,255,255,0.85)' }}>{row.label}</div>
+            <div style={{ display: 'flex', justifyContent: 'center' }}><OBCell value={row.free} /></div>
+            <div style={{ display: 'flex', justifyContent: 'center', background: `${ACCENT}10`, borderRadius: 6, padding: '4px 0' }}><OBCell value={row.standard} /></div>
+            <div style={{ display: 'flex', justifyContent: 'center' }}><OBCell value={row.premium} /></div>
+          </div>
+        ))}
+      </div>
+
+      {/* ボタン */}
+      <div style={{ padding: '0 16px calc(env(safe-area-inset-bottom, 24px) + 24px)', display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <button onClick={onNext} style={{ width: '100%', padding: '17px', borderRadius: 16, border: 'none', background: ACCENT, color: '#fff', fontSize: 16, fontWeight: 800, cursor: 'pointer', boxShadow: `0 8px 24px ${ACCENT}50` }}>
+          無料で始める
+        </button>
+        <div style={{ textAlign: 'center', fontSize: 12, color: 'rgba(255,255,255,0.35)' }}>登録後にプランを変更できます</div>
+      </div>
     </div>
   )
 }
@@ -430,10 +514,14 @@ function GoogleIcon() {
 
 // ── メインエクスポート ────────────────────────────────────────────
 export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
-  const [phase, setPhase] = useState<'slides' | 'register'>('slides')
+  const [phase, setPhase] = useState<'slides' | 'pricing' | 'register'>('slides')
 
   if (phase === 'slides') {
-    return <WelcomeSlides onDone={() => setPhase('register')} />
+    return <WelcomeSlides onDone={() => setPhase('pricing')} />
+  }
+
+  if (phase === 'pricing') {
+    return <OnboardingPricingView onNext={() => setPhase('register')} />
   }
 
   return (
