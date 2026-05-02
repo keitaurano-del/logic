@@ -41,7 +41,7 @@ export function PlacementCard({ onTakeTest }: PlacementCardProps) {
           </svg>
         </div>
         <div>
-          <div style={{ fontSize: 14, fontWeight: 700, color: v3.color.text }}>あなたのレベルを診断しましょう</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: v3.color.text }}>あなたの実力を診断しましょう</div>
           <div style={{ fontSize: 12, color: v3.color.text2, marginTop: 1 }}>8問・約3分で現在の実力がわかります</div>
         </div>
       </div>

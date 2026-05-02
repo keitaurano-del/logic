@@ -176,27 +176,10 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
 
 
 
-        {/* Week */}
-        <div style={{ background: v3.color.card, borderRadius: v3.radius.card, padding: 18, flexShrink: 0, boxShadow: v3.shadow.card }}>
-          <div style={{ fontSize: 14, color: v3.color.text2, fontWeight: 500, marginBottom: 14 }}>
-            今週は <b style={{ color: v3.color.text, fontWeight: 700 }}>{thisWeekStudied}日</b> 学習しました
-          </div>
-          <div style={{ display: 'flex', gap: 6, justifyContent: 'space-between' }}>
-            {weekDays.map((d, i) => {
-              const studied = studyDateSet.has(thisWeekDates[i])
-              const isToday = i === todayDow
-              return (
-                <div key={d} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 7, flex: 1 }}>
-                  <span style={{ fontSize: 14, color: v3.color.text3, fontWeight: 500 }}>{d}</span>
-                  <div style={{ width: 30, height: 30, borderRadius: '50%', background: studied ? v3.color.accent : v3.color.cardSoft, border: isToday && !studied ? `1.5px solid ${v3.color.accent}` : 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: studied ? `0 0 10px ${v3.color.accentGlow}` : 'none' }}>
-                    {studied && <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={v3.color.bg} strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12" /></svg>}
-                    {isToday && !studied && <div style={{ width: 6, height: 6, borderRadius: '50%', background: v3.color.accent, boxShadow: `0 0 6px ${v3.color.accentGlow}` }}></div>}
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        </div>
+        {/* 診断カード（HeroRecommendの直下） */}
+        {!hasCompletedPlacement() && onOpenPlacementTest && (
+          <PlacementCard onTakeTest={onOpenPlacementTest} />
+        )}
 
         {/* AI practice cards (large, vertical) */}
         <AILargeCard image={`${IMG}/home-daily-question.webp`} name="AIで自分だけの問題を作る" sub="テーマ別のオリジナル問題で練習" onClick={onOpenAIGen} beta />
@@ -212,12 +195,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
         </div>
       </div>
 
-      {/* SCRUM-228: プレースメント誘導バナー（未完了の場合は常に表示） */}
-      {!hasCompletedPlacement() && onOpenPlacementTest && (
-        <div style={{ padding: '0 16px 16px' }}>
-          <PlacementCard onTakeTest={onOpenPlacementTest} />
-        </div>
-      )}
+
     </div>
 
     {/* ホームコーチマーク（初回のみ・オーバーレイ） */}
