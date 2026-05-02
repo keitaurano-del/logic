@@ -3,9 +3,8 @@
  * 仕様: docs/DESIGN_V3.md §3.1
  * モックアップ: lv3-home.html
  */
-import { useMemo, useRef } from 'react'
+import { useRef } from 'react'
 import { getDailyFermi } from '../fermiData'
-import { getStudyDates } from '../stats'
 import { v3 } from '../styles/tokensV3'
 import { HomeCoachmark, useShouldShowHomeCoachmark } from '../tutorial/coachmark'
 import { PlacementCard } from '../tutorial/placementCard'
@@ -90,20 +89,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
   const fermiQuestion = dailyFermi.question
 
 
-  // 今週カレンダー
-  const todayDow = (new Date().getDay() + 6) % 7
-  const weekDays = ['月', '火', '水', '木', '金', '土', '日']
-  const studyDateSet = useMemo(() => new Set(getStudyDates()), [])
-  const thisWeekDates = useMemo(() => {
-    const today = new Date()
-    const monday = new Date(today)
-    monday.setDate(today.getDate() - todayDow)
-    return weekDays.map((_, i) => {
-      const d = new Date(monday)
-      d.setDate(monday.getDate() + i)
-      return d.toISOString().slice(0, 10)
-    })
-  }, [todayDow])
+
 
 
   return (
