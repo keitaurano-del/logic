@@ -30,7 +30,7 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
   return (
     <div style={{ background: v3.color.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: v3.color.text }}>
       <div style={{ padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ fontSize: 24, fontWeight: 700, letterSpacing: '-.005em' }}>レッスン</div>
+        <div style={{ fontSize: 24, fontWeight: 700, letterSpacing: '-.005em' }}>トレーニング</div>
       </div>
       {/* SCRUM-161: 検索ボックス */}
       <div style={{ padding: '0 16px 8px' }}>
@@ -64,7 +64,7 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
       {!searchQuery.trim() && <div style={{ flex: 1, padding: '0 16px 80px', display: 'flex', flexDirection: 'column', gap: v3.spacing.gap }}>
 
         <div style={{ padding: '4px 4px 8px' }}>
-          <div style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.45, letterSpacing: '-.005em' }}>コースを<br />選んでください。</div>
+          <div style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.45, letterSpacing: '-.005em' }}>今日、どのスキルを<br />鳔える？</div>
         </div>
 
 
