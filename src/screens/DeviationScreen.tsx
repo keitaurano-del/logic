@@ -13,6 +13,7 @@ interface DeviationScreenProps {
 
 export function DeviationScreen({ onBack, onRetakeTest, onStartLesson }: DeviationScreenProps) {
   const result = loadPlacementResult()
+  const [showModal, setShowModal] = useState(false)
 
   if (!result) {
     return (
@@ -42,8 +43,6 @@ export function DeviationScreen({ onBack, onRetakeTest, onStartLesson }: Deviati
       </div>
     )
   }
-
-  const [showModal, setShowModal] = useState(false)
   const rank = rankLabel(result.deviation)
   const recommended = recommendedLessons(result.deviation)
   // バーの幅: 偏差値25〜75を 0%〜100% にマップ

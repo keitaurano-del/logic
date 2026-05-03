@@ -63,11 +63,11 @@ function getDailyGreeting(): string {
 interface HomeScreenV3Props {
   userName: string
   onOpenLesson: (lessonId: number) => void
-  onOpenCategory: (cat: string) => void
+  onOpenCategory?: (cat: string) => void
   onOpenRoadmap?: () => void
   onOpenAIGen: () => void
   onOpenRoleplay: () => void
-  onOpenRank: () => void
+  onOpenRank?: () => void
   onOpenStats?: () => void
   onNavigateToDailyFermi?: () => void
   onOpenPlacementTest?: () => void
@@ -76,7 +76,7 @@ interface HomeScreenV3Props {
 const IMG = '/images/v3'
 
 export function HomeScreenV3(props: HomeScreenV3Props) {
-  const { userName, onOpenLesson, onOpenAIGen, onOpenRoleplay, onNavigateToDailyFermi, onOpenPlacementTest } = props
+  const { userName, onOpenLesson, onOpenAIGen, onOpenRoleplay, onNavigateToDailyFermi, onOpenPlacementTest, onOpenCategory: _onOpenCategory, onOpenRank: _onOpenRank, onOpenStats: _onOpenStats, onOpenRoadmap: _onOpenRoadmap } = props
   const dailyCardRef = useRef<HTMLDivElement>(null)
   const [showCoachmark, dismissCoachmark] = useShouldShowHomeCoachmark()
   const { width } = useWindowSize()

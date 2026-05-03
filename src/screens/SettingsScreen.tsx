@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useLayoutEffect } from 'react'
 import { ArrowLeftIcon, ChevronRightIcon } from '../icons'
 import { IconButton } from '../components/IconButton'
 import { getLocale, t } from '../i18n'
@@ -78,10 +78,12 @@ function Toggle({ value, onChange }: { value: boolean; onChange: (v: boolean) =>
 export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUser, onLogout, onOpenPricing, initialSection }: SettingsScreenProps) {
   const [highlightSection, setHighlightSection] = useState<string | undefined>(initialSection)
 
-  useEffect(() => {
+  // initialSection が変わったらハイライトを即時同期し、1.2秒後に解除
+  // useLayoutEffect でペイント前に同期更新する（外部 prop との同期）
+  useLayoutEffect(() => {
     if (!initialSection) return
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setHighlightSection(initialSection)
-    // 1.2秒後にハイライト解除
     const t = setTimeout(() => setHighlightSection(undefined), 1200)
     return () => clearTimeout(t)
   }, [initialSection])

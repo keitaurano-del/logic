@@ -18,6 +18,8 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
   const [rankData, setRankData] = useState<RankingData | null>(null)
   const [loading, setLoading] = useState(true)
   const [rankTab, setRankTab] = useState<'week' | 'all'>('week')
+  // マウント時刻を固定（useMemo内でDate.now()を呼ばないようにする）
+  const [mountTime] = useState(() => Date.now())
 
   const streak = getStreak()
   const points = getPoints()
@@ -71,8 +73,8 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
   // 最近の活動 — 実データから生成
   const recentActivity = useMemo(() => {
     const completed = getCompletedLessons()
-    const today = new Date().toISOString().slice(0, 10)
-    const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10)
+    const today = new Date(mountTime).toISOString().slice(0, 10)
+    const yesterday = new Date(mountTime - 86400000).toISOString().slice(0, 10)
     const studyDatesArr = getStudyDates()
 
     const titleMap: Record<string, string> = {
@@ -106,7 +108,7 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
       const dateLabel = isToday ? '今日' : isYesterday ? '昨日' : ''
       return { name, date: dateLabel, pts: '+20', icon: lessonIcon }
     })
-  }, [])
+  }, [mountTime])
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: '#F0F4FF' }}>

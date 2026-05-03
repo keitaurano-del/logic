@@ -1,5 +1,5 @@
 // チュートリアルオーバーレイ（スポットライト誘導型）
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useLayoutEffect } from 'react'
 
 const TUTORIAL_KEY = 'logic-tutorial-done-v2'
 
@@ -121,14 +121,12 @@ export function TutorialOverlay({ onDone, onGoFermi }: TutorialOverlayProps) {
     setTimeout(() => setVisible(true), 50)
   }, [])
 
-  useEffect(() => {
+  // DOM計測: useLayoutEffect でペイント前に同期的に測定する
+  useLayoutEffect(() => {
     if (current.targetId) {
       const el = document.getElementById(current.targetId)
-      if (el) {
-        setTargetRect(el.getBoundingClientRect())
-      } else {
-        setTargetRect(null)
-      }
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setTargetRect(el ? el.getBoundingClientRect() : null)
     } else {
       setTargetRect(null)
     }
@@ -318,10 +316,6 @@ export function TutorialOverlay({ onDone, onGoFermi }: TutorialOverlayProps) {
   )
 }
 
-// チュートリアルを表示すべきか判定
-export function shouldShowTutorial(): boolean {
-  return false  // デフォルトでは自動表示しない
-}
 
 // チュートリアルボタン（右下に常駐）
 export function TutorialFAB({ onClick, onHide }: { onClick: () => void; onHide: () => void }) {

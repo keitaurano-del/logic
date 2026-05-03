@@ -9,6 +9,7 @@ import { getGuestId } from '../guestId'
 import { useDailyGuide, GuideLabel, GuideStyle } from '../tutorial/dailyGuide'
 import { isStandardPlan, isPremiumPlan } from '../subscription'
 import { getDisplayName } from '../stats'
+import { markDailyFermiDone } from './dailyFermiState'
 
 // ── プラン別デイリー制限 ──────────────────────────────────────
 const TODAY = new Date().toISOString().slice(0, 10)
@@ -28,12 +29,12 @@ function incrementRerollCount() {
   try { const c = getRerollCount(); localStorage.setItem(REROLL_COUNT_KEY, JSON.stringify({ date: TODAY, count: c + 1 })) } catch { /* */ }
 }
 
-export function getDailyFermiLimit(): number {
+function getDailyFermiLimit(): number {
   if (isPremiumPlan()) return 10
   if (isStandardPlan()) return 5
   return 1 // フリープラン
 }
-export function getDailyRerollLimit(): number {
+function getDailyRerollLimit(): number {
   // SIT環境では無制限
   if (typeof window !== 'undefined' && window.location.hostname.includes('logic-sit')) return 999
   if (isPremiumPlan()) return 10
@@ -41,23 +42,12 @@ export function getDailyRerollLimit(): number {
   return 0 // フリープラン
 }
 
-// デイリーフェルミ完了状態管理
-const DAILY_FERMI_KEY = 'logic-daily-fermi-done'
-export function isDailyFermiDone(): boolean {
-  const saved = localStorage.getItem(DAILY_FERMI_KEY)
-  if (!saved) return false
-  return saved === new Date().toISOString().slice(0, 10)
-}
-function markDailyFermiDone() {
-  localStorage.setItem(DAILY_FERMI_KEY, new Date().toISOString().slice(0, 10))
-}
-
 // 基礎統計データ（フェルミ推定時の参考値）
 // 参考データは fermiData.ts の getDailyFermiStats() を使用
 
 /** Convert **bold** to <strong> */
 function boldify(text: string): string {
-  return text.replace(/\*\*(.+?)\*\*/g, '<strong style="color:var(--accent)">$1</strong>')
+  return text.replace(/\*\*(.+?)\*\*/g, '<strong style="color:var(--brand)">$1</strong>')
 }
 
 /** Minimal markdown→JSX for AI feedback */
@@ -74,7 +64,7 @@ function renderFeedbackMarkdown(text: string) {
     }
     const numMatch = trimmed.match(/^(\d+)\.\s+(.+)/)
     if (numMatch) {
-      elements.push(<div key={key++} style={{ display: 'flex', gap: 8, fontSize: 15, lineHeight: 1.7, marginBottom: 2 }}><span style={{ color: 'var(--accent)', fontWeight: 700, minWidth: 20 }}>{numMatch[1]}.</span><span dangerouslySetInnerHTML={{ __html: boldify(numMatch[2]) }} /></div>)
+      elements.push(<div key={key++} style={{ display: 'flex', gap: 8, fontSize: 15, lineHeight: 1.7, marginBottom: 2 }}><span style={{ color: 'var(--brand)', fontWeight: 700, minWidth: 20 }}>{numMatch[1]}.</span><span dangerouslySetInnerHTML={{ __html: boldify(numMatch[2]) }} /></div>)
       continue
     }
     if (trimmed.startsWith('- ')) {
@@ -303,7 +293,7 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
 
   // タイマー
   const [elapsedSec, setElapsedSec] = useState(0)
-  const [timerRunning, setTimerRunning] = useState(false)
+  const [timerRunning, setTimerRunning] = useState(true)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   useEffect(() => {
@@ -314,12 +304,6 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
     }
     return () => { if (timerRef.current) clearInterval(timerRef.current) }
   }, [timerRunning])
-
-  // タイマー開始（マウント時）
-  useEffect(() => {
-    setTimerRunning(true)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   const [excludedIndexes, setExcludedIndexes] = useState<number[]>([getDailyFermiIndex()])
   const [currentPoolIndex, setCurrentPoolIndex] = useState<number>(getDailyFermiIndex())

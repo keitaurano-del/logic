@@ -3,7 +3,7 @@
  * 仕様: docs/DESIGN_V3.md §3.2
  * モックアップ: lv3-courses.html
  */
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import type { ReactNode } from 'react'
 import { v3 } from '../styles/tokensV3'
 import { LessonThumbnail } from '../components/LessonThumbnail'
@@ -271,8 +271,9 @@ function SearchPanel(p: {
   onOpenCategory: (cat: string) => void
   onPickKeyword: (k: string) => void
 }) {
-  const [history, setHistory] = useState<string[]>(() => loadSearchHistory())
-  useEffect(() => { setHistory(loadSearchHistory()) }, [p.query])
+  // p.query が変わるたびに最新の検索履歴を取得（useEffect の同期 setState を避けるため useMemo で計算）
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const history = useMemo(() => loadSearchHistory(), [p.query])
 
   const all = getAllLessonsFlat()
   const completed = useMemo(() => new Set(getCompletedLessons()), [])
@@ -555,7 +556,7 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
   // コースが定義されていないカテゴリはフォールバック表示
   const candidates = CATEGORY_ID_TO_NAMES[category] || [label, category]
   const fallbackLessons = courses.length === 0
-    ? Object.values(flat).filter((l: any) => l && candidates.includes(l.category)).sort((a: any, b: any) => a.id - b.id)
+    ? Object.values(flat).filter((l): l is LessonData => !!l && candidates.includes(l.category)).sort((a, b) => a.id - b.id)
     : []
 
   const totalLessons = courses.length > 0
@@ -563,7 +564,7 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
     : fallbackLessons.length
   const completedCount = courses.length > 0
     ? courses.flatMap(c => c.lessonIds).filter(id => completed.has(`lesson-${id}`)).length
-    : fallbackLessons.filter((l: any) => completed.has(`lesson-${l.id}`)).length
+    : fallbackLessons.filter(l => completed.has(`lesson-${l.id}`)).length
 
   return (
     <div style={{ background: v3.color.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: v3.color.text }}>
@@ -583,10 +584,10 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
       <div style={{ flex: 1, padding: '0 16px 100px', display: 'flex', flexDirection: 'column', gap: 12 }}>
         {/* コース単位表示 */}
         {courses.map((course) => {
-          const courseLessons = course.lessonIds.map(id => flat[id]).filter(Boolean) as any[]
+          const courseLessons = course.lessonIds.map(id => flat[id]).filter((l): l is LessonData => !!l)
           const courseCompleted = course.lessonIds.filter(id => completed.has(`lesson-${id}`)).length
           const allDone = courseCompleted === course.lessonIds.length
-          const firstUndone = courseLessons.find((l: any) => !completed.has(`lesson-${l.id}`))
+          const firstUndone = courseLessons.find(l => !completed.has(`lesson-${l.id}`))
 
           return (
             <div key={course.id} style={{ background: v3.color.card, borderRadius: 16, overflow: 'hidden', boxShadow: v3.shadow.card }}>
@@ -622,7 +623,7 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
 
               {/* レッスン一覧 */}
               <div style={{ display: 'flex', flexDirection: 'column' }}>
-                {courseLessons.map((lesson: any, idx: number) => {
+                {courseLessons.map((lesson, idx) => {
                   const isDone = completed.has(`lesson-${lesson.id}`)
                   const isNext = firstUndone?.id === lesson.id
                   return (
@@ -654,7 +655,7 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
         })}
 
         {/* コース未定義のカテゴリのフォールバック */}
-        {fallbackLessons.map((lesson: any) => {
+        {fallbackLessons.map((lesson) => {
           const isDone = completed.has(`lesson-${lesson.id}`)
           return (
             <div key={lesson.id} onClick={() => onOpenLesson(lesson.id)}
