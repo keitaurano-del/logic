@@ -194,7 +194,9 @@ export function PlacementTestScreen({ onComplete, onBack, onSkip }: PlacementTes
                 textAlign: 'left',
                 width: '100%',
                 fontSize: 16,
-                fontWeight: 500,
+                fontWeight: 600,
+                lineHeight: 1.55,
+                color: 'var(--text-primary)',
                 display: 'flex',
                 alignItems: 'center',
                 gap: 'var(--s-3)',
@@ -208,11 +210,11 @@ export function PlacementTestScreen({ onComplete, onBack, onSkip }: PlacementTes
                 border: '1.5px solid currentColor',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontSize: 14, fontWeight: 700, flexShrink: 0,
-                color: showCorrect ? 'var(--success)' : showWrong ? 'var(--danger)' : isSelected ? 'var(--brand)' : 'var(--text-muted)',
+                color: showCorrect ? 'var(--success)' : showWrong ? 'var(--danger)' : isSelected ? 'var(--brand)' : 'var(--text-secondary)',
               }}>
                 {String.fromCharCode(65 + i)}
               </span>
-              <span style={{ flex: 1 }}>{opt.label}</span>
+              <span style={{ flex: 1, color: 'var(--text-primary)' }}>{opt.label}</span>
             </button>
           )
         })}
