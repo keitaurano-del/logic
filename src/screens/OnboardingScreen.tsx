@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { loginWithGoogle, loginWithEmail, signupWithEmail, isSupabaseConfigured } from '../supabase'
+import { startBetaCampaignCheckout, startCheckout } from '../subscription'
 
 interface OnboardingScreenProps {
   onComplete: () => void
@@ -350,7 +351,6 @@ function OnboardingPricingView({ onNext, onSelectPlan }: { onNext: () => void; o
   const handleCampaignTap = async () => {
     setLoading(true)
     try {
-      const { startBetaCampaignCheckout } = await import('../subscription')
       await startBetaCampaignCheckout()
     } catch {
       // エラー無視（非ネイティブ環境）
@@ -649,7 +649,6 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
 
   const handleBillingSelect = async (planId: 'standard_monthly' | 'standard_yearly' | 'premium_monthly' | 'premium_yearly') => {
     try {
-      const { startCheckout } = await import('../subscription')
       await startCheckout(planId)
     } catch { /* ignore on web */ }
     setPhase('register')

@@ -8,6 +8,7 @@ import { t, getLocale } from '../i18n'
 import { getGuestId } from '../guestId'
 import { useDailyGuide, GuideLabel, GuideStyle } from '../tutorial/dailyGuide'
 import { isStandardPlan, isPremiumPlan } from '../subscription'
+import { getDisplayName } from '../stats'
 
 // ── プラン別デイリー制限 ──────────────────────────────────────
 const TODAY = new Date().toISOString().slice(0, 10)
@@ -368,7 +369,6 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
       setSubmitPhase('done')
       // スコアをランキングに記録
       if (data.score != null) {
-        const { getDisplayName } = await import('../stats')
         fetch(`${API_BASE}/api/fermi/record-score`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

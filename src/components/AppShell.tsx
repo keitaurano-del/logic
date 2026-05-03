@@ -132,7 +132,7 @@ export function AppShell({
                 style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '8px 14px', background: 'none', border: 'none', cursor: 'pointer', minWidth: 60 }}
               >
                 {tab.icon(active, isV3)}
-                <div style={{ fontSize: 13, fontWeight: 600, color: active ? (isV3 ? '#6C8EF5' : '#3B5BDB') : (isV3 ? '#6B82A8' : '#7A849E') }}>{tab.label}</div>
+                <div className="app-nav-label" style={{ fontSize: 13, fontWeight: 600, color: active ? (isV3 ? '#6C8EF5' : '#3B5BDB') : (isV3 ? '#6B82A8' : '#7A849E') }}>{tab.label}</div>
                 {active && <div style={{ width: 4, height: 4, borderRadius: '50%', background: isV3 ? '#6C8EF5' : '#3B5BDB', marginTop: -2 }} />}
               </button>
             )

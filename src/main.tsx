@@ -1,8 +1,6 @@
-import { StrictMode } from 'react'
+import { StrictMode, lazy, Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import App from './App.tsx'
-import AppV3 from './AppV3.tsx'
 import { initSentry } from './sentry'
 
 initSentry()
@@ -24,8 +22,13 @@ if (params.get('v') === '3') {
 }
 const useV3 = localStorage.getItem('logic-v3-preview') !== '0'
 
+const App = lazy(() => import('./App'))
+const AppV3 = lazy(() => import('./AppV3'))
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    {useV3 ? <AppV3 /> : <App />}
+    <Suspense fallback={null}>
+      {useV3 ? <AppV3 /> : <App />}
+    </Suspense>
   </StrictMode>,
 )
