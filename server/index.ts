@@ -16,7 +16,8 @@ import { createProblemsRouter } from './routes/problems.js'
 const supabaseUrl = process.env.SUPABASE_URL || ''
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 if (!supabaseUrl) console.warn('[WARN] SUPABASE_URL is not set — Supabase features will be disabled')
-const supabase = supabaseUrl
+if (supabaseUrl && !supabaseKey) console.warn('[WARN] SUPABASE_SERVICE_ROLE_KEY is not set — Supabase features will be disabled')
+const supabase = supabaseUrl && supabaseKey
   ? createClient(supabaseUrl, supabaseKey)
   : null
 
