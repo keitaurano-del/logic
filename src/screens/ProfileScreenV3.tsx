@@ -131,7 +131,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
         {/* 設定 */}
         <div style={{ background: v3.color.card, borderRadius: v3.radius.card, overflow: 'hidden', boxShadow: v3.shadow.card }}>
           <SettingRow icon="user" name="アカウント" sub={userName || 'ゲスト'} onClick={() => onOpenSettings('account')} />
-          <SettingRow icon="bell" name="通知設定" sub="毎日 8:00" onClick={() => onOpenSettings('notifications')} />
+          <SettingRow icon="bell" name="通知設定" sub="" onClick={() => onOpenSettings('notifications')} />
           <SettingRow icon="card" name="プラン" sub={getPlanLabel()} onClick={onOpenPricing} />
           <SettingRow icon="message" name="フィードバック" sub="ご意見をお聞かせください" onClick={onOpenFeedback} />
           <SettingRow icon="doc" name="利用規約" sub="" onClick={() => window.open('/terms.html', '_blank')} />
