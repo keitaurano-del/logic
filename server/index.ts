@@ -112,7 +112,25 @@ const app = express()
 // (without this all requests look like they come from the load balancer = no per-IP limiting).
 app.set('trust proxy', 1)
 
-app.use(cors({ origin: process.env.CORS_ORIGIN || 'http://localhost:5173' }))
+// CORS オリジン: カンマ区切りで複数指定可能。制御文字・引用符・前後空白は除去。
+// 例: "capacitor://localhost,https://localhost,https://logic-u5wn.onrender.com"
+function parseCorsOrigins(raw: string | undefined): string[] {
+  const fallback = ['http://localhost:5173']
+  if (!raw) return fallback
+  // eslint-disable-next-line no-control-regex
+  const cleaned = raw
+    .split(',')
+    .map(s => s.replace(/[\x00-\x1f\x7f"']/g, '').trim())
+    .filter(Boolean)
+  if (cleaned.length === 0) {
+    console.warn('[WARN] CORS_ORIGIN contained no valid entries — falling back to default')
+    return fallback
+  }
+  return cleaned
+}
+const corsOrigins = parseCorsOrigins(process.env.CORS_ORIGIN)
+console.log('[CORS] allowed origins:', corsOrigins.join(', '))
+app.use(cors({ origin: corsOrigins }))
 
 // Billing ルート（Stripe webhook は RAW ボディが必要なので express.json() より前にマウント）
 if (supabase) {
