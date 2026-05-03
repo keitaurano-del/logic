@@ -5,6 +5,7 @@
  */
 import { useRef } from 'react'
 import { getDailyFermi } from '../fermiData'
+import { getCardStats } from '../flashcardData'
 import { v3 } from '../styles/tokensV3'
 import { HomeCoachmark, useShouldShowHomeCoachmark } from '../tutorial/coachmark'
 import { PlacementCard } from '../tutorial/placementCard'
@@ -71,12 +72,13 @@ interface HomeScreenV3Props {
   onOpenStats?: () => void
   onNavigateToDailyFermi?: () => void
   onOpenPlacementTest?: () => void
+  onOpenFlashcards?: (mode?: 'due' | 'weak') => void
 }
 
 const IMG = '/images/v3'
 
 export function HomeScreenV3(props: HomeScreenV3Props) {
-  const { userName, onOpenLesson, onOpenAIGen, onOpenRoleplay, onNavigateToDailyFermi, onOpenPlacementTest, onOpenCategory: _onOpenCategory, onOpenRank: _onOpenRank, onOpenStats: _onOpenStats, onOpenRoadmap: _onOpenRoadmap } = props
+  const { userName, onOpenLesson, onOpenAIGen, onOpenRoleplay, onNavigateToDailyFermi, onOpenPlacementTest, onOpenFlashcards, onOpenCategory: _onOpenCategory, onOpenRank: _onOpenRank, onOpenStats: _onOpenStats, onOpenRoadmap: _onOpenRoadmap } = props
   const dailyCardRef = useRef<HTMLDivElement>(null)
   const [showCoachmark, dismissCoachmark] = useShouldShowHomeCoachmark()
   const { width } = useWindowSize()
@@ -87,6 +89,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
   const recommendedLesson = useRef(getRandomLesson()).current
   const dailyFermi = getDailyFermi()
   const fermiQuestion = dailyFermi.question
+  const cardStats = getCardStats()
 
 
 
@@ -167,6 +170,16 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
           <PlacementCard onTakeTest={onOpenPlacementTest} />
         )}
 
+        {/* 復習カード - 過去に学んだ内容と間違えた問題を重点復習 */}
+        {onOpenFlashcards && cardStats.total > 0 && (
+          <ReviewCard
+            due={cardStats.due}
+            weak={cardStats.weak}
+            total={cardStats.total}
+            onOpen={(mode) => onOpenFlashcards(mode)}
+          />
+        )}
+
         {/* AI practice cards (large, vertical) */}
         <AILargeCard image={`${IMG}/home-daily-question.webp`} name="AIで自分だけの問題を作る" sub="テーマ別のオリジナル問題で練習" onClick={onOpenAIGen} beta />
         <AILargeCard image={`${IMG}/home-roleplay.webp`} name="ロールプレイ" sub="ビジネス・哲学のシナリオで対話練習" onClick={onOpenRoleplay} beta />
@@ -186,6 +199,86 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
       />
     )}
     </>
+  )
+}
+
+function ReviewCard({ due, weak, total, onOpen }: { due: number; weak: number; total: number; onOpen: (mode?: 'due' | 'weak') => void }) {
+  const hasDue = due > 0
+  const hasWeak = weak > 0
+  const primaryMode: 'due' | 'weak' = hasDue ? 'due' : 'weak'
+  const headline = hasDue
+    ? `今日の復習 ${due}枚`
+    : hasWeak
+      ? `弱点の復習 ${weak}枚`
+      : 'すべて完了'
+  const sub = hasDue
+    ? hasWeak
+      ? `うち弱点 ${weak}枚 · 全${total}枚`
+      : `全${total}枚`
+    : hasWeak
+      ? `間違えた問題を重点的に学び直そう`
+      : `また明日カードを追加しましょう`
+
+  return (
+    <div
+      onClick={() => onOpen(primaryMode)}
+      style={{
+        background: v3.color.card,
+        borderRadius: v3.radius.card,
+        padding: '18px 20px',
+        cursor: 'pointer',
+        boxShadow: v3.shadow.card,
+        flexShrink: 0,
+        position: 'relative',
+        overflow: 'hidden',
+        border: hasDue || hasWeak ? `1px solid ${v3.color.accentSoft}` : '1px solid transparent',
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+        <div style={{
+          width: 44, height: 44, flexShrink: 0,
+          borderRadius: 12,
+          background: v3.color.accentSoft,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          color: v3.color.accent,
+        }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 12a9 9 0 1 0 3-6.7" />
+            <path d="M3 4v5h5" />
+          </svg>
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: v3.color.accent }}>復習</span>
+          </div>
+          <div style={{ fontSize: 16, fontWeight: 700, lineHeight: 1.35, marginBottom: 2 }}>{headline}</div>
+          <div style={{ fontSize: 13, color: v3.color.text2, fontWeight: 500, lineHeight: 1.4 }}>{sub}</div>
+        </div>
+        <div style={{ color: v3.color.text3, fontSize: 22, fontWeight: 400, lineHeight: 1, paddingLeft: 4 }}>›</div>
+      </div>
+
+      {hasDue && hasWeak && (
+        <button
+          type="button"
+          onClick={(e) => { e.stopPropagation(); onOpen('weak') }}
+          style={{
+            marginTop: 12,
+            width: '100%',
+            background: 'transparent',
+            border: `1px solid ${v3.color.line}`,
+            borderRadius: v3.radius.pill,
+            padding: '10px 14px',
+            color: v3.color.text,
+            fontSize: 14,
+            fontWeight: 600,
+            cursor: 'pointer',
+            fontFamily: "'Noto Sans JP', sans-serif",
+          }}
+        >
+          弱点だけ復習する（{weak}枚）
+        </button>
+      )}
+    </div>
   )
 }
 
