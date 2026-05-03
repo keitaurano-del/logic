@@ -53,6 +53,7 @@ import { isAdmin } from './admin'
 import { onAuthChange, logout, getInitialUser, type User } from './supabase'
 import { syncOnLogin, syncOnLogout } from './syncService'
 import { TutorialOverlay, TutorialFAB } from './components/TutorialOverlay'
+import { tutorial } from './tutorial/tutorialStorage'
 
 const ONBOARDED_KEY = 'logic-onboarded'
 const INSTALL_ID_KEY = 'logic-install-id'
@@ -143,7 +144,7 @@ function AppV3() {
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [authReady, setAuthReady] = useState(false)
   const [showTutorial, setShowTutorial] = useState(false)
-  const [showFAB, setShowFAB] = useState(true)
+  const [showFAB, setShowFAB] = useState(() => !tutorial.hasFABDismissed())
   const [showNamePopup, setShowNamePopup] = useState(false)
   const [nameInput, setNameInput] = useState('')
   const [nameSaving, setNameSaving] = useState(false)
@@ -570,7 +571,7 @@ function AppV3() {
     {/* SCRUM-195: チュートリアルオーバーレイ */}
     {/* チュートリアルFAB（右下固定ボタン） */}
     {screen.type === 'home' && !showTutorial && showFAB && (
-      <TutorialFAB onClick={() => setShowTutorial(true)} onHide={() => setShowFAB(false)} />
+      <TutorialFAB onClick={() => setShowTutorial(true)} onHide={() => { tutorial.markFABDismissed(); setShowFAB(false) }} />
     )}
     {showTutorial && (
       <TutorialOverlay
