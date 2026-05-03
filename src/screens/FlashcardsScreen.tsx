@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { getDueCards, reviewCard, type Flashcard } from '../flashcardData'
+import { getDueCards, getWeakCards, reviewCard, type Flashcard } from '../flashcardData'
 import { ArrowLeftIcon, CheckIcon } from '../icons'
 import { Button } from '../components/Button'
 import { IconButton } from '../components/IconButton'
@@ -7,10 +7,13 @@ import { t } from '../i18n'
 
 interface FlashcardsScreenProps {
   onBack: () => void
+  mode?: 'due' | 'weak'
 }
 
-export function FlashcardsScreen({ onBack }: FlashcardsScreenProps) {
-  const [queue] = useState<Flashcard[]>(() => getDueCards())
+export function FlashcardsScreen({ onBack, mode = 'due' }: FlashcardsScreenProps) {
+  const [queue] = useState<Flashcard[]>(() =>
+    mode === 'weak' ? getWeakCards() : getDueCards(),
+  )
   const [idx, setIdx] = useState(0)
   const [flipped, setFlipped] = useState(false)
   const total = useMemo(() => queue.length, [queue.length])
@@ -55,10 +58,14 @@ export function FlashcardsScreen({ onBack }: FlashcardsScreenProps) {
         <div className="card empty" style={{ padding: 'var(--s-7)' }}>
           <div style={{ fontSize: 40, marginBottom: 'var(--s-3)' }}>✨</div>
           <h3 style={{ fontSize: 20, marginBottom: 'var(--s-2)' }}>
-            復習するカードはありません
+            {mode === 'weak'
+              ? '復習する弱点カードはありません'
+              : '復習するカードはありません'}
           </h3>
           <p className="muted" style={{ fontSize: 16 }}>
-            レッスンを完了するとここにカードが追加されます
+            {mode === 'weak'
+              ? 'まだ間違えた問題がありません。レッスンを進めましょう。'
+              : 'レッスンを完了するとここにカードが追加されます'}
           </p>
         </div>
       ) : done ? (

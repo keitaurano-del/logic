@@ -80,7 +80,7 @@ type Screen =
   | { type: 'profile' }
   | { type: 'lesson'; lessonId: number }
   | { type: 'lesson-complete'; lessonId: number; durationSec: number; prevLevel: number }
-  | { type: 'flashcards' }
+  | { type: 'flashcards'; mode?: 'due' | 'weak' }
   | { type: 'fermi' }
   | { type: 'daily-fermi' }
   | { type: 'deviation' }
@@ -376,6 +376,7 @@ function AppV3() {
           onOpenRoadmap={() => { setTab('lessons'); navigate({ type: 'lessons' }, true) }}
           onNavigateToDailyFermi={() => navigate({ type: 'daily-fermi' })}
           onOpenPlacementTest={() => navigate({ type: 'placement-test' })}
+          onOpenFlashcards={(mode) => navigate({ type: 'flashcards', mode })}
         />
       )}
 
@@ -396,7 +397,7 @@ function AppV3() {
         />
       )}
 
-      {screen.type === 'flashcards' && <FlashcardsScreen onBack={handleBack} />}
+      {screen.type === 'flashcards' && <FlashcardsScreen onBack={handleBack} mode={screen.mode} />}
       {screen.type === 'fermi' && <FermiScreen onBack={handleBack} onReport={(ctx) => navigate({ type: 'report-problem', context: ctx })} />}
       {screen.type === 'daily-fermi' && <DailyFermiScreen onBack={handleBack} onReport={(ctx) => navigate({ type: 'report-problem', context: ctx })} />}
       {screen.type === 'journal-input' && <JournalInputScreen onBack={handleBack} />}
