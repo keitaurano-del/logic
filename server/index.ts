@@ -219,6 +219,8 @@ app.use((req, res, next) => {
 })
 
 
+app.get('/api/health', (_req, res) => { res.json({ ok: true }) })
+
 // ロールプレイ
 app.use('/api/roleplay', createRoleplayRouter(client, supabase, roleplayTurnLimiter))
 
