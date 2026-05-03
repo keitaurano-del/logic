@@ -325,6 +325,7 @@ export function createBillingRouter(deps: BillingDeps): express.Router {
         logic_standard_yearly: 'standard_yearly',
         logic_premium_monthly: 'premium_monthly',
         logic_premium_yearly: 'premium_yearly',
+        logic_campaign_yearly: 'standard_yearly',
       }
       const plan = productToPlan[productId]
       if (!plan) {

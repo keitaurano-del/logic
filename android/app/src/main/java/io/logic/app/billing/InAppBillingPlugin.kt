@@ -1,7 +1,5 @@
 package io.logic.app.billing
 
-import android.app.Activity
-import android.content.Context
 import android.util.Log
 import com.android.billingclient.api.*
 import com.getcapacitor.JSArray
@@ -9,14 +7,11 @@ import com.getcapacitor.JSObject
 import com.getcapacitor.Plugin
 import com.getcapacitor.PluginCall
 import com.getcapacitor.annotation.CapacitorPlugin
+import com.getcapacitor.annotation.CapacitorPluginMethod
 import kotlinx.coroutines.*
 
-/**
- * Capacitor plugin for Google Play Billing (SCRUM-116)
- * Handles in-app purchases and subscription management.
- */
 @CapacitorPlugin(name = "InAppBillingPlugin")
-class InAppBillingPlugin : Plugin(), PurchasesUpdatedListener, BillingClientStateListener {
+class InAppBillingPlugin : Plugin(), PurchasesUpdatedListener {
 
     companion object {
         private const val TAG = "InAppBilling"
@@ -24,276 +19,199 @@ class InAppBillingPlugin : Plugin(), PurchasesUpdatedListener, BillingClientStat
 
     private var billingClient: BillingClient? = null
     private var productDetailsMap: MutableMap<String, ProductDetails> = mutableMapOf()
+    private var pendingPurchaseCall: PluginCall? = null
     private val scope = CoroutineScope(Dispatchers.Main + Job())
 
     override fun load() {
         Log.d(TAG, "Plugin loaded")
     }
 
-    /**
-     * Initialize the billing client.
-     */
-    @com.getcapacitor.annotation.CapacitorPluginMethod()
+    @CapacitorPluginMethod
     fun initialize(call: PluginCall) {
-        try {
-            val context = context ?: run {
-                call.reject("Context not available")
-                return
-            }
+        val context = context ?: run { call.reject("Context not available"); return }
 
-            if (billingClient != null) {
-                val result = JSObject()
-                result.put("success", true)
-                call.resolve(result)
-                return
-            }
-
-            billingClient = BillingClient.newBuilder(context)
-                .setListener(this)
-                .enablePendingPurchases()
-                .build()
-
-            billingClient?.startConnection(object : BillingClientStateListener {
-                override fun onBillingSetupFinished(billingResult: BillingResult) {
-                    Log.d(TAG, "Billing setup finished: ${billingResult.responseCode}")
-                    val result = JSObject()
-                    result.put("success", billingResult.responseCode == BillingClient.BillingResponseCode.OK)
-                    call.resolve(result)
-                }
-
-                override fun onBillingServiceDisconnected() {
-                    Log.w(TAG, "Billing service disconnected")
-                }
-            })
-        } catch (e: Exception) {
-            Log.e(TAG, "Initialize failed", e)
-            call.reject("Initialization failed: ${e.message}")
+        if (billingClient?.isReady == true) {
+            call.resolve(JSObject().apply { put("success", true) })
+            return
         }
+
+        billingClient = BillingClient.newBuilder(context)
+            .setListener(this)
+            .enablePendingPurchases(
+                PendingPurchasesParams.newBuilder().enableOneTimeProducts().build()
+            )
+            .build()
+
+        billingClient!!.startConnection(object : BillingClientStateListener {
+            override fun onBillingSetupFinished(result: BillingResult) {
+                val ok = result.responseCode == BillingClient.BillingResponseCode.OK
+                Log.d(TAG, "Setup finished: ${result.responseCode}")
+                call.resolve(JSObject().apply { put("success", ok) })
+            }
+
+            override fun onBillingServiceDisconnected() {
+                Log.w(TAG, "Service disconnected")
+            }
+        })
     }
 
-    /**
-     * Fetch product details from Google Play.
-     */
-    @com.getcapacitor.annotation.CapacitorPluginMethod()
+    @CapacitorPluginMethod
     fun getProducts(call: PluginCall) {
         val productIds = call.getArray("productIds")?.toList<String>() ?: emptyList()
         if (productIds.isEmpty()) {
-            val result = JSObject()
-            result.put("products", JSArray())
-            call.resolve(result)
+            call.resolve(JSObject().apply { put("products", JSArray()) })
             return
         }
 
-        scope.launch {
-            try {
-                val productList = productIds.map { ProductReference(it, "subs") }
-                val queryProductDetailsParams = QueryProductDetailsParams.newBuilder()
-                    .setProductList(productList)
-                    .build()
-
-                billingClient?.queryProductDetailsAsync(queryProductDetailsParams) { billingResult, productDetailsList ->
-                    try {
-                        if (billingResult.responseCode != BillingClient.BillingResponseCode.OK) {
-                            Log.w(TAG, "queryProductDetails failed: ${billingResult.responseCode}")
-                            val result = JSObject()
-                            result.put("products", JSArray())
-                            call.resolve(result)
-                            return@queryProductDetailsAsync
-                        }
-
-                        val products = JSArray()
-                        productDetailsList?.forEach { productDetails ->
-                            val obj = JSObject()
-                            obj.put("productId", productDetails.productId)
-                            obj.put("title", productDetails.title)
-                            obj.put("description", productDetails.description)
-
-                            val subscription = productDetails.subscriptionOfferDetails?.firstOrNull()
-                            if (subscription != null) {
-                                val pricingPhase = subscription.pricingPhases.pricingPhaseList.firstOrNull()
-                                if (pricingPhase != null) {
-                                    obj.put("priceAmountMicros", pricingPhase.priceAmountMicros)
-                                    obj.put("priceCurrencyCode", pricingPhase.priceCurrencyCode)
-                                    obj.put("price", formatPrice(pricingPhase.priceAmountMicros, pricingPhase.priceCurrencyCode))
-
-                                    // Store for later use
-                                    productDetailsMap[productDetails.productId] = productDetails
-                                }
-                            }
-                            products.put(obj)
-                        }
-
-                        val result = JSObject()
-                        result.put("products", products)
-                        call.resolve(result)
-                    } catch (e: Exception) {
-                        Log.e(TAG, "Error processing product details", e)
-                        call.reject("Error processing products: ${e.message}")
-                    }
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, "getProducts failed", e)
-                call.reject("getProducts failed: ${e.message}")
-            }
-        }
-    }
-
-    /**
-     * Launch purchase flow.
-     */
-    @com.getcapacitor.annotation.CapacitorPluginMethod()
-    fun purchaseProduct(call: PluginCall) {
-        val productId = call.getString("productId") ?: run {
-            call.reject("productId is required")
-            return
-        }
-
-        val activity = activity ?: run {
-            call.reject("Activity not available")
-            return
-        }
-
-        try {
-            val productDetails = productDetailsMap[productId]
-            if (productDetails == null) {
-                call.reject("Product not found: $productId")
-                return
-            }
-
-            val subscription = productDetails.subscriptionOfferDetails?.firstOrNull()
-            if (subscription == null) {
-                call.reject("No subscription offer found for: $productId")
-                return
-            }
-
-            val billingFlowParams = BillingFlowParams.newBuilder()
-                .setProductDetailsParamsList(
-                    listOf(
-                        BillingFlowParams.ProductDetailsParams.newBuilder()
-                            .setProductDetails(productDetails)
-                            .setOfferToken(subscription.offerToken)
-                            .build()
-                    )
-                )
+        val productList = productIds.map { id ->
+            QueryProductDetailsParams.Product.newBuilder()
+                .setProductId(id)
+                .setProductType(BillingClient.ProductType.SUBS)
                 .build()
+        }
 
-            val result = billingClient?.launchBillingFlow(activity, billingFlowParams)
-            if (result?.responseCode != BillingClient.BillingResponseCode.OK) {
-                call.reject("Launch billing flow failed: ${result?.responseCode}")
+        val params = QueryProductDetailsParams.newBuilder()
+            .setProductList(productList)
+            .build()
+
+        billingClient?.queryProductDetailsAsync(params) { result, detailsList ->
+            if (result.responseCode != BillingClient.BillingResponseCode.OK) {
+                Log.w(TAG, "queryProductDetails failed: ${result.responseCode}")
+                call.resolve(JSObject().apply { put("products", JSArray()) })
+                return@queryProductDetailsAsync
             }
-            // Result will be handled in onPurchasesUpdated
-        } catch (e: Exception) {
-            Log.e(TAG, "purchaseProduct failed", e)
-            call.reject("Purchase failed: ${e.message}")
+
+            val products = JSArray()
+            detailsList.forEach { pd ->
+                val offer = pd.subscriptionOfferDetails?.firstOrNull() ?: return@forEach
+                val phase = offer.pricingPhases.pricingPhaseList.firstOrNull() ?: return@forEach
+
+                productDetailsMap[pd.productId] = pd
+                products.put(JSObject().apply {
+                    put("productId", pd.productId)
+                    put("title", pd.title)
+                    put("description", pd.description)
+                    put("price", "¥${phase.priceAmountMicros / 1_000_000}")
+                    put("priceAmountMicros", phase.priceAmountMicros)
+                    put("priceCurrencyCode", phase.priceCurrencyCode)
+                })
+            }
+
+            call.resolve(JSObject().apply { put("products", products) })
         }
     }
 
-    /**
-     * Restore previous purchases.
-     */
-    @com.getcapacitor.annotation.CapacitorPluginMethod()
+    @CapacitorPluginMethod
+    fun purchaseProduct(call: PluginCall) {
+        val productId = call.getString("productId") ?: run { call.reject("productId required"); return }
+        val activity = activity ?: run { call.reject("Activity not available"); return }
+
+        val productDetails = productDetailsMap[productId] ?: run {
+            call.reject("Product not found: $productId. Call getProducts() first.")
+            return
+        }
+
+        val offer = productDetails.subscriptionOfferDetails?.firstOrNull() ?: run {
+            call.reject("No subscription offer found for: $productId")
+            return
+        }
+
+        pendingPurchaseCall = call
+
+        val params = BillingFlowParams.newBuilder()
+            .setProductDetailsParamsList(listOf(
+                BillingFlowParams.ProductDetailsParams.newBuilder()
+                    .setProductDetails(productDetails)
+                    .setOfferToken(offer.offerToken)
+                    .build()
+            ))
+            .build()
+
+        val result = billingClient?.launchBillingFlow(activity, params)
+        if (result?.responseCode != BillingClient.BillingResponseCode.OK) {
+            pendingPurchaseCall = null
+            call.reject("Failed to launch billing flow: ${result?.responseCode}")
+        }
+        // 購入結果は onPurchasesUpdated で処理される
+    }
+
+    @CapacitorPluginMethod
     fun restorePurchases(call: PluginCall) {
-        scope.launch {
-            try {
-                queryPurchases("subs", call)
-            } catch (e: Exception) {
-                Log.e(TAG, "restorePurchases failed", e)
-                call.reject("Restore failed: ${e.message}")
-            }
-        }
+        scope.launch { queryPurchases(BillingClient.ProductType.SUBS, call) }
     }
 
-    /**
-     * Query purchase history.
-     */
-    @com.getcapacitor.annotation.CapacitorPluginMethod()
+    @CapacitorPluginMethod
     fun queryPurchaseHistory(call: PluginCall) {
-        val productType = call.getString("productType", "subs")
-        scope.launch {
-            try {
-                queryPurchases(productType, call)
-            } catch (e: Exception) {
-                Log.e(TAG, "queryPurchaseHistory failed", e)
-                call.reject("Query failed: ${e.message}")
-            }
-        }
+        val type = if (call.getString("productType") == "inapp")
+            BillingClient.ProductType.INAPP else BillingClient.ProductType.SUBS
+        scope.launch { queryPurchases(type, call) }
     }
 
-    // ─────────────────────────────────────────────────────────────
-    // Private Methods
-    // ─────────────────────────────────────────────────────────────
+    // ── PurchasesUpdatedListener ──────────────────────────────────
+
+    override fun onPurchasesUpdated(result: BillingResult, purchases: MutableList<Purchase>?) {
+        val pending = pendingPurchaseCall ?: return
+        pendingPurchaseCall = null
+
+        if (result.responseCode != BillingClient.BillingResponseCode.OK) {
+            val msg = if (result.responseCode == BillingClient.BillingResponseCode.USER_CANCELED)
+                "購入がキャンセルされました" else "購入に失敗しました: ${result.responseCode}"
+            pending.reject(msg)
+            return
+        }
+
+        val purchase = purchases?.firstOrNull() ?: run {
+            pending.reject("購入情報が取得できませんでした")
+            return
+        }
+
+        pending.resolve(JSObject().apply {
+            put("success", true)
+            put("purchase", JSObject().apply {
+                put("purchaseToken", purchase.purchaseToken)
+                put("productId", purchase.products.firstOrNull() ?: "")
+                put("orderId", purchase.orderId ?: "")
+                put("purchaseTime", purchase.purchaseTime)
+                put("purchaseState", purchase.purchaseState)
+            })
+        })
+    }
+
+    // ── Private ───────────────────────────────────────────────────
 
     private suspend fun queryPurchases(productType: String, call: PluginCall) {
-        val billingClient = billingClient ?: run {
-            call.reject("Billing client not initialized")
-            return
-        }
+        val client = billingClient ?: run { call.reject("Billing client not initialized"); return }
 
         try {
-            val result = billingClient.queryPurchasesAsync(QueryPurchasesParams.newBuilder()
-                .setProductType(productType)
-                .build())
+            val result = client.queryPurchasesAsync(
+                QueryPurchasesParams.newBuilder().setProductType(productType).build()
+            )
 
             val purchases = JSArray()
-            result.purchasesList?.forEach { purchase ->
-                if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-                    val obj = JSObject()
-                    obj.put("purchaseToken", purchase.purchaseToken)
-                    obj.put("productId", purchase.products[0])
-                    obj.put("orderId", purchase.orderId)
-                    obj.put("purchaseTime", purchase.purchaseTime)
-                    purchases.put(obj)
+            result.purchasesList
+                .filter { it.purchaseState == Purchase.PurchaseState.PURCHASED }
+                .forEach { p ->
+                    purchases.put(JSObject().apply {
+                        put("purchaseToken", p.purchaseToken)
+                        put("productId", p.products.firstOrNull() ?: "")
+                        put("orderId", p.orderId ?: "")
+                        put("purchaseTime", p.purchaseTime)
+                        put("purchaseState", p.purchaseState)
+                    })
                 }
-            }
 
-            val response = JSObject()
-            response.put("purchases", purchases)
-            call.resolve(response)
+            call.resolve(JSObject().apply { put("purchases", purchases) })
         } catch (e: Exception) {
             Log.e(TAG, "queryPurchases failed", e)
             call.reject("Query failed: ${e.message}")
         }
     }
-
-    private fun formatPrice(priceAmountMicros: Long, currencyCode: String): String {
-        return "¥${priceAmountMicros / 1_000_000}"
-    }
-
-    // ─────────────────────────────────────────────────────────────
-    // Listeners
-    // ─────────────────────────────────────────────────────────────
-
-    override fun onPurchasesUpdated(billingResult: BillingResult, purchases: MutableList<Purchase>?) {
-        Log.d(TAG, "onPurchasesUpdated: ${billingResult.responseCode}")
-        // Purchases are typically handled by the TypeScript layer after retrieving via restorePurchases
-    }
-
-    override fun onBillingServiceDisconnected() {
-        Log.w(TAG, "Billing service disconnected")
-    }
-
-    override fun onBillingAvailable() {
-        Log.d(TAG, "Billing available")
-    }
-
-    override fun onSetupFinished(billingResult: BillingResult) {
-        Log.d(TAG, "Setup finished: ${billingResult.responseCode}")
-    }
-
-    override fun onBillingSetupFinished(billingResult: BillingResult) {
-        Log.d(TAG, "Billing setup finished: ${billingResult.responseCode}")
-    }
 }
 
-// Extension function to convert JSArray to List
 inline fun <reified T> JSArray.toList(): List<T> {
     val list = mutableListOf<T>()
     for (i in 0 until length()) {
-        try {
-            list.add(get(i) as T)
-        } catch (e: Exception) {
-            Log.e("JSArray", "Error converting element $i", e)
-        }
+        try { list.add(get(i) as T) } catch (_: Exception) {}
     }
     return list
 }
