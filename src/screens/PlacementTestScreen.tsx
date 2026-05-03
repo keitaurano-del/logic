@@ -12,6 +12,7 @@ import { ArrowLeftIcon, ArrowRightIcon, CheckIcon } from '../icons'
 import { Button } from '../components/Button'
 import { IconButton } from '../components/IconButton'
 import { API_BASE } from './apiBase'
+import { getXp } from '../stats'
 
 interface PlacementTestScreenProps {
   onComplete: () => void
@@ -24,7 +25,7 @@ async function submitPlacement(deviation: number, correctCount: number, totalCou
     await fetch(`${API_BASE}/api/placement/submit`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ guestId: getGuestId(), nickname, deviation, correctCount, totalCount }),
+      body: JSON.stringify({ guestId: getGuestId(), nickname, deviation, correctCount, totalCount, xp: getXp() }),
     })
   } catch { /* silent */ }
 }
