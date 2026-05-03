@@ -1409,18 +1409,22 @@ app.post('/api/placement/submit', async (req, res) => {
       return res.status(503).json({ error: 'Supabase not configured' })
     }
 
-    const { error } = await supabase.from('placement_results').upsert(
-      {
-        guest_id: guestId,
-        nickname: (nickname || 'ゲスト').slice(0, 20),
-        deviation,
-        correct_count: correctCount || 0,
-        total_count: totalCount || 0,
-        xp: typeof xp === 'number' && xp >= 0 ? xp : 0,
-        completed_at: new Date().toISOString(),
-      },
-      { onConflict: 'guest_id' }
-    )
+    const basePayload = {
+      guest_id: guestId,
+      nickname: (nickname || 'ゲスト').slice(0, 20),
+      deviation,
+      correct_count: correctCount || 0,
+      total_count: totalCount || 0,
+      completed_at: new Date().toISOString(),
+    }
+    const fullPayload = { ...basePayload, xp: typeof xp === 'number' && xp >= 0 ? xp : 0 }
+
+    let { error } = await supabase.from('placement_results').upsert(fullPayload, { onConflict: 'guest_id' })
+    // Migration 008 未適用環境では xp 列が無いためエラーになる。基本ペイロードで再試行。
+    if (error && /xp/i.test(error.message)) {
+      const retry = await supabase.from('placement_results').upsert(basePayload, { onConflict: 'guest_id' })
+      error = retry.error
+    }
 
     if (error) {
       console.error('[placement/submit] Supabase error:', error.message)
@@ -1496,11 +1500,22 @@ app.get('/api/placement/ranking', async (req, res) => {
       return res.status(503).json({ error: 'Supabase not configured' })
     }
 
-    const { data, error } = await supabase
+    let { data, error } = await supabase
       .from('placement_results')
       .select('guest_id, nickname, deviation, correct_count, total_count, xp')
       .gt('total_count', 0)  // スキップユーザー除外
       .order('deviation', { ascending: false })
+
+    // Migration 008 未適用環境では xp 列が無い。フォールバックで再取得。
+    if (error && /xp/i.test(error.message)) {
+      const retry = await supabase
+        .from('placement_results')
+        .select('guest_id, nickname, deviation, correct_count, total_count')
+        .gt('total_count', 0)
+        .order('deviation', { ascending: false })
+      data = retry.data
+      error = retry.error
+    }
 
     if (error) {
       console.error('[placement/ranking] Supabase error:', error.message)
