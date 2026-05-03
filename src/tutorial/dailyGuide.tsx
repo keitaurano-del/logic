@@ -41,14 +41,16 @@ export function GuideLabel({ text, position = 'bottom' }: LabelProps) {
   return (
     <div style={{
       position: 'absolute',
-      [position === 'bottom' ? 'top' : 'bottom']: 'calc(100% + 6px)',
+      [position === 'bottom' ? 'top' : 'bottom']: 'calc(100% + 8px)',
       left: '50%', transform: 'translateX(-50%)',
       whiteSpace: 'nowrap',
-      background: 'rgba(15,21,35,0.82)',
+      background: '#0f1523',
       color: '#fff', fontSize: 12, fontWeight: 600,
-      padding: '5px 10px', borderRadius: 8,
+      padding: '6px 12px', borderRadius: 8,
+      border: '1px solid rgba(107,133,214,0.5)',
+      boxShadow: '0 4px 14px rgba(0,0,0,0.45)',
       pointerEvents: 'none',
-      zIndex: 10,
+      zIndex: 100,
     }}>
       {text}
     </div>

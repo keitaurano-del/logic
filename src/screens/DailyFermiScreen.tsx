@@ -479,7 +479,7 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
 
           {/* ヒント */}
           {hint && submitPhase === 'idle' && (
-            <div>
+            <div style={{ paddingBottom: guideActive && !showHint ? 36 : 0 }}>
               {!showHint ? (
                 <div style={{ position: 'relative', display: 'inline-block' }}>
                   <button
