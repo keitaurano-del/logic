@@ -2,16 +2,18 @@ apply plugin: 'com.android.application'
 
 // 署名情報は android/key.properties から読み込む（コミット禁止・gitignore済）。
 // CI 等で key.properties が無い場合は環境変数からのフォールバックを試す。
+// 注: ローカル変数名は signingConfig DSL のメソッド名（keyAlias / keyPassword）と
+//     衝突するため、`release_*` プレフィクスを付けている。
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('key.properties')
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
-def keystoreFilePath = keystoreProperties['LOGIC_KEYSTORE_FILE'] ?: System.getenv('LOGIC_KEYSTORE_FILE')
-def keystorePassword = keystoreProperties['LOGIC_KEYSTORE_PASSWORD'] ?: System.getenv('LOGIC_KEYSTORE_PASSWORD')
-def keyAlias           = keystoreProperties['LOGIC_KEY_ALIAS']         ?: System.getenv('LOGIC_KEY_ALIAS')
-def keyPassword        = keystoreProperties['LOGIC_KEY_PASSWORD']      ?: System.getenv('LOGIC_KEY_PASSWORD')
-def hasReleaseSigning  = keystoreFilePath && keystorePassword && keyAlias && keyPassword
+def releaseKeystoreFile     = keystoreProperties['LOGIC_KEYSTORE_FILE']     ?: System.getenv('LOGIC_KEYSTORE_FILE')
+def releaseKeystorePassword = keystoreProperties['LOGIC_KEYSTORE_PASSWORD'] ?: System.getenv('LOGIC_KEYSTORE_PASSWORD')
+def releaseKeyAlias         = keystoreProperties['LOGIC_KEY_ALIAS']         ?: System.getenv('LOGIC_KEY_ALIAS')
+def releaseKeyPassword      = keystoreProperties['LOGIC_KEY_PASSWORD']      ?: System.getenv('LOGIC_KEY_PASSWORD')
+def hasReleaseSigning       = releaseKeystoreFile && releaseKeystorePassword && releaseKeyAlias && releaseKeyPassword
 
 android {
     namespace "io.logic.app"
@@ -32,10 +34,10 @@ android {
     if (hasReleaseSigning) {
         signingConfigs {
             release {
-                storeFile file(keystoreFilePath)
-                storePassword keystorePassword
-                keyAlias keyAlias
-                keyPassword keyPassword
+                storeFile file(releaseKeystoreFile)
+                storePassword releaseKeystorePassword
+                keyAlias releaseKeyAlias
+                keyPassword releaseKeyPassword
             }
         }
     }
