@@ -15,6 +15,9 @@
     "cap:open:ios": "npx cap open ios",
     "cap:open:android": "npx cap open android",
     "android:release": "git pull && npm run build && node scripts/bump-android-version.js && npx cap sync android && npm run cap:open:android",
+    "ios:bump": "node scripts/bump-ios-version.js",
+    "ios:beta": "gh workflow run ios-beta.yml --ref main",
+    "ios:release": "gh workflow run ios-release.yml --ref main",
     "deploy:web": "npm run build && vercel --prod",
     "db:migrate": "node scripts/run-migration.js"
   },

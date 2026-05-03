@@ -1,0 +1,5 @@
+app_identifier(ENV["APP_BUNDLE_ID"] || "io.logic.app")
+apple_id(ENV["APPLE_ID"]) # Apple Developer account email (set in CI)
+
+itc_team_id(ENV["ITC_TEAM_ID"]) # App Store Connect team ID
+team_id(ENV["DEVELOPER_TEAM_ID"]) # Developer Portal team ID

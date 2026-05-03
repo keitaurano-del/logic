@@ -1,0 +1,9 @@
+app_identifier(ENV["APP_BUNDLE_ID"] || "io.logic.app")
+username(ENV["APPLE_ID"])
+team_id(ENV["DEVELOPER_TEAM_ID"])
+
+# Skip screenshots upload by default (we manage them in App Store Connect UI)
+skip_screenshots(true)
+
+# Use metadata/ folder under fastlane/ for description, keywords, etc.
+metadata_path("./metadata")

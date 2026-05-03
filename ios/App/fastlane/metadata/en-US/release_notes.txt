@@ -1,0 +1,5 @@
+Initial iOS release. All features from the Android version are available.
+- Evolution of Strategy: 2 courses, 10 lessons (classical to modern)
+- Client Work: launching in unfamiliar industries
+- Improved training search (full-text, filters, history, suggestions)
+- XP shown per user on the ranking screen
