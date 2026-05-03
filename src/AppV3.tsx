@@ -142,6 +142,7 @@ function AppV3() {
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [authReady, setAuthReady] = useState(false)
   const [showTutorial, setShowTutorial] = useState(false)
+  const [showFAB, setShowFAB] = useState(true)
   const [showNamePopup, setShowNamePopup] = useState(false)
   const [nameInput, setNameInput] = useState('')
   const [nameSaving, setNameSaving] = useState(false)
@@ -560,8 +561,8 @@ function AppV3() {
 
     {/* SCRUM-195: チュートリアルオーバーレイ */}
     {/* チュートリアルFAB（右下固定ボタン） */}
-    {screen.type === 'home' && !showTutorial && (
-      <TutorialFAB onClick={() => setShowTutorial(true)} />
+    {screen.type === 'home' && !showTutorial && showFAB && (
+      <TutorialFAB onClick={() => setShowTutorial(true)} onHide={() => setShowFAB(false)} />
     )}
     {showTutorial && (
       <TutorialOverlay
