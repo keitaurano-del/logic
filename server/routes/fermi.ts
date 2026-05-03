@@ -376,7 +376,7 @@ Keep responses concise (2-4 sentences). Do not solve the problem for them.`
         elapsedSec?: number
         hintUsed?: boolean
       }
-      if (typeof score !== 'number') return res.status(400).json({ error: 'score required' })
+      if (typeof score !== 'number' || score < 0 || score > 100) return res.status(400).json({ error: 'score must be a number between 0 and 100' })
 
       if (supabase) {
         const { error } = await supabase.from('fermi_scores').insert({

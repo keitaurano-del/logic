@@ -65,7 +65,18 @@ export function createBillingRouter(deps: BillingDeps): express.Router {
       const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
       let event: Stripe.Event
 
-      if (webhookSecret) {
+      if (!webhookSecret) {
+        if (process.env.NODE_ENV === 'development') {
+          // 開発環境のみ署名検証をスキップ
+          try {
+            event = JSON.parse(req.body.toString()) as Stripe.Event
+          } catch {
+            return res.status(400).json({ error: 'Invalid JSON' })
+          }
+        } else {
+          return res.status(400).json({ error: 'Webhook secret not configured' })
+        }
+      } else {
         const sig = req.headers['stripe-signature'] as string
         try {
           if (!stripe) return res.status(503).json({ error: 'Stripe not configured' })
@@ -74,13 +85,6 @@ export function createBillingRouter(deps: BillingDeps): express.Router {
           const message = err instanceof Error ? err.message : String(err)
           console.error('[webhook] Signature verification failed:', message)
           return res.status(400).json({ error: `Webhook error: ${message}` })
-        }
-      } else {
-        // STRIPE_WEBHOOK_SECRET 未設定時は署名検証をスキップ（開発用）
-        try {
-          event = JSON.parse(req.body.toString()) as Stripe.Event
-        } catch {
-          return res.status(400).json({ error: 'Invalid JSON' })
         }
       }
 
@@ -274,8 +278,14 @@ export function createBillingRouter(deps: BillingDeps): express.Router {
 
       // Google Play Developer API による実検証
       const gpPrivateKey = process.env.GOOGLE_PLAY_PRIVATE_KEY
+      const gpClientEmail = process.env.GOOGLE_PLAY_CLIENT_EMAIL
       const gpPackageName = process.env.GOOGLE_PLAY_PACKAGE_NAME
-      if (gpPrivateKey && gpPackageName) {
+      if (!gpPrivateKey || !gpClientEmail) {
+        return res.status(503).json({ error: 'Google Play verification not configured' })
+      }
+
+      let gpExpiryTimeMillis: number | null = null
+      if (gpPackageName) {
         const auth = new GoogleAuth({
           credentials: JSON.parse(gpPrivateKey) as Record<string, unknown>,
           scopes: ['https://www.googleapis.com/auth/androidpublisher'],
@@ -297,8 +307,7 @@ export function createBillingRouter(deps: BillingDeps): express.Router {
             details: `paymentState=${paymentState}, expiryTimeMillis=${expiryTimeMillis}`,
           })
         }
-      } else {
-        console.log('[BILLING] Google Play verification skipped: env vars not configured')
+        gpExpiryTimeMillis = expiryTimeMillis
       }
 
       // productId からプランを特定
@@ -322,10 +331,11 @@ export function createBillingRouter(deps: BillingDeps): express.Router {
         return res.status(400).json({ error: `Unknown productId: ${productId}` })
       }
 
-      // 有効期限算出（monthly: 30日, yearly: 365日）
+      // 有効期限算出: APIレスポンスの expiryTimeMillis を優先、なければ固定計算
       const isYearly = plan.endsWith('_yearly')
-      const expiryMs = isYearly ? 365 * 24 * 60 * 60 * 1000 : 30 * 24 * 60 * 60 * 1000
-      const currentPeriodEnd = new Date(Date.now() + expiryMs).toISOString()
+      const currentPeriodEnd = gpExpiryTimeMillis
+        ? new Date(gpExpiryTimeMillis).toISOString()
+        : new Date(Date.now() + (isYearly ? 365 : 30) * 24 * 60 * 60 * 1000).toISOString()
 
       // Supabase に upsert
       if (supabase && userId) {
@@ -374,7 +384,7 @@ export function createBillingRouter(deps: BillingDeps): express.Router {
 
       const portalSession = await stripe.billingPortal.sessions.create({
         customer: profile.stripe_customer_id,
-        return_url: 'https://logic-taupe.vercel.app',
+        return_url: process.env.APP_URL || 'https://logic-taupe.vercel.app',
       })
 
       res.json({ url: portalSession.url })

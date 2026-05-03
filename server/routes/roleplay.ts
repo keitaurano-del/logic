@@ -132,6 +132,20 @@ export function createRoleplayRouter(
   router.post('/chat', roleplayTurnLimiter, async (req, res) => {
     const { messages, setup, locale } = req.body
     const isEn = locale === 'en'
+
+    if (!setup || !setup.template || !setup.partner) {
+      res.status(400).json({ error: 'Invalid situation setup' }); return
+    }
+
+    const MAX_MESSAGES = 50
+    const MAX_CONTENT_LENGTH = 5000
+    if (!Array.isArray(messages) || messages.length > MAX_MESSAGES) {
+      res.status(400).json({ error: 'Invalid messages' }); return
+    }
+    if (messages.some((m: { role: string; content: unknown }) => typeof m.content !== 'string' || m.content.length > MAX_CONTENT_LENGTH)) {
+      res.status(400).json({ error: 'Message content too long' }); return
+    }
+
     const { template, format, partner, goal, context } = setup
 
     const formatLabel = isEn
@@ -240,6 +254,15 @@ Rules:
       locale?: string
       situationId?: string
     }
+    const MAX_MESSAGES_TURN = 50
+    const MAX_CONTENT_LENGTH_TURN = 5000
+    if (!Array.isArray(messages) || messages.length > MAX_MESSAGES_TURN) {
+      res.status(400).json({ error: 'Invalid messages' }); return
+    }
+    if (messages.some((m: { role: string; content: unknown }) => typeof m.content !== 'string' || m.content.length > MAX_CONTENT_LENGTH_TURN)) {
+      res.status(400).json({ error: 'Message content too long' }); return
+    }
+
     // ── パターンモード（AIコスト削減） ──
     const pattern = situationId ? ROLEPLAY_PATTERNS[situationId] : undefined
     if (pattern) {
@@ -354,6 +377,16 @@ Respond ONLY with the following JSON (no extra text before or after):
   router.post('/score', roleplayTurnLimiter, async (req, res) => {
     const { messages, setup, historySummary, locale } = req.body
     const isEn = locale === 'en'
+
+    const MAX_MESSAGES_SCORE = 50
+    const MAX_CONTENT_LENGTH_SCORE = 5000
+    if (!Array.isArray(messages) || messages.length > MAX_MESSAGES_SCORE) {
+      res.status(400).json({ error: 'Invalid messages' }); return
+    }
+    if (messages.some((m: { role: string; content: unknown }) => typeof m.content !== 'string' || m.content.length > MAX_CONTENT_LENGTH_SCORE)) {
+      res.status(400).json({ error: 'Message content too long' }); return
+    }
+
     const { template, partner, goal } = setup
 
     const categoriesJa = template.mode === 'presentation'
@@ -460,6 +493,16 @@ Respond ONLY with the following JSON (no extra text):
   router.post('/summary', roleplayTurnLimiter, async (req, res) => {
     const { messages, setup, locale } = req.body
     const isEn = locale === 'en'
+
+    const MAX_MESSAGES_SUMMARY = 50
+    const MAX_CONTENT_LENGTH_SUMMARY = 5000
+    if (!Array.isArray(messages) || messages.length > MAX_MESSAGES_SUMMARY) {
+      res.status(400).json({ error: 'Invalid messages' }); return
+    }
+    if (messages.some((m: { role: string; content: unknown }) => typeof m.content !== 'string' || m.content.length > MAX_CONTENT_LENGTH_SUMMARY)) {
+      res.status(400).json({ error: 'Message content too long' }); return
+    }
+
     const { template, partner, goal } = setup
 
     const conversationText = messages

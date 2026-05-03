@@ -196,6 +196,9 @@ export function createProblemsRouter(
           return res.status(429).json({ error: quota.reason })
         }
       }
+      if (typeof prompt !== 'string' || prompt.length > 2000) {
+        return res.status(400).json({ error: 'Prompt too long' })
+      }
       if (!prompt || prompt.length < 5) {
         return res.status(400).json({ error: 'prompt is required' })
       }

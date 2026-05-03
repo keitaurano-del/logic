@@ -18,7 +18,7 @@ const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 if (!supabaseUrl) console.warn('[WARN] SUPABASE_URL is not set — Supabase features will be disabled')
 const supabase = supabaseUrl
   ? createClient(supabaseUrl, supabaseKey)
-  : null as unknown as ReturnType<typeof createClient>
+  : null
 
 const stripeKey = process.env.STRIPE_SECRET_KEY
 const stripe = stripeKey ? new Stripe(stripeKey) : null
@@ -111,10 +111,14 @@ const app = express()
 // (without this all requests look like they come from the load balancer = no per-IP limiting).
 app.set('trust proxy', 1)
 
-app.use(cors())
+app.use(cors({ origin: process.env.CORS_ORIGIN || 'http://localhost:5173' }))
 
 // Billing ルート（Stripe webhook は RAW ボディが必要なので express.json() より前にマウント）
-app.use(createBillingRouter({ stripe, supabase, PLANS }))
+if (supabase) {
+  app.use(createBillingRouter({ stripe, supabase, PLANS }))
+} else {
+  console.warn('[WARN] Billing routes disabled: SUPABASE_URL not set')
+}
 
 app.use(express.json({ limit: '1mb' }))
 
@@ -129,8 +133,8 @@ const client = new Anthropic()
 function makeLimiter(opts: {
   windowMs: number
   max: number
-  msgJa: string
-  msgEn: string
+  msgJa?: string
+  msgEn?: string
 }) {
   return rateLimit({
     windowMs: opts.windowMs,
@@ -189,6 +193,22 @@ const flashcardsLimiter = makeLimiter({
   max: 20,
   msgJa: 'フラッシュカード生成のリクエストが多すぎます。しばらく待ってからお試しください。',
   msgEn: 'Too many flashcard generation requests. Please try again later.',
+})
+
+// 管理者エンドポイント用: 1時間10回
+const adminLimiter = makeLimiter({
+  windowMs: 60 * 60 * 1000,
+  max: 10,
+  msgJa: '管理者APIのリクエストが多すぎます。しばらく待ってからお試しください。',
+  msgEn: 'Too many admin requests. Please try again later.',
+})
+
+// ウェルカムメール送信用: 1時間5回
+const welcomeEmailLimiter = makeLimiter({
+  windowMs: 60 * 60 * 1000,
+  max: 5,
+  msgJa: 'メール送信のリクエストが多すぎます。しばらく待ってからお試しください。',
+  msgEn: 'Too many email requests. Please try again later.',
 })
 
 // グローバル制限を /api/* に適用 (ヘルスチェックは除外)
@@ -585,7 +605,11 @@ app.post('/api/report-problem', async (req, res) => {
   }
 })
 
-app.get('/api/reports', async (_req, res) => {
+app.get('/api/reports', async (req, res) => {
+  const adminSecret = process.env.ADMIN_SECRET
+  if (!adminSecret || req.headers['x-admin-secret'] !== adminSecret) {
+    res.status(401).json({ error: 'Unauthorized' }); return
+  }
   try {
     if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
       return res.json([])
@@ -613,7 +637,7 @@ app.get('/api/reports', async (_req, res) => {
 // =============================================
 // 管理者: Premium 付与
 // =============================================
-app.post('/api/admin/grant-premium', async (req, res) => {
+app.post('/api/admin/grant-premium', adminLimiter, async (req, res) => {
   const adminSecret = req.headers['x-admin-secret']
   if (!adminSecret || adminSecret !== process.env.ADMIN_SECRET) {
     return res.status(403).json({ error: 'Forbidden' })
@@ -717,13 +741,13 @@ const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.keitau
 // SCRUM-90: Apollo提案 → Jira自動起票 API
 // ================================================================
 app.post('/api/jira-create', async (req: Request, res) => {
-  // 認証: JIRA_WEBHOOK_SECRETが設定されている場合は検証
-  const webhookSecret = process.env.JIRA_WEBHOOK_SECRET
-  if (webhookSecret) {
-    const authHeader = req.headers.authorization || ''
-    if (authHeader !== `Bearer ${webhookSecret}`) {
-      return res.status(401).json({ error: 'Unauthorized' })
-    }
+  // 認証: JIRA_WEBHOOK_SECRETが未設定の場合はエンドポイントを無効化
+  if (!process.env.JIRA_WEBHOOK_SECRET) {
+    res.status(503).json({ error: 'Not configured' }); return
+  }
+  const authHeader = req.headers.authorization || ''
+  if (authHeader !== `Bearer ${process.env.JIRA_WEBHOOK_SECRET}`) {
+    return res.status(401).json({ error: 'Unauthorized' })
   }
 
   const { summary, description, issueType = 'Story', priority = 'Medium', labels = [] } = req.body
@@ -828,9 +852,11 @@ app.get('/{*splat}', (req, res) => {
 // ─────────────────────────────────────────────
 // 登録完了メール送信
 // ─────────────────────────────────────────────
-app.post('/api/send-welcome-email', async (req, res) => {
+app.post('/api/send-welcome-email', welcomeEmailLimiter, async (req, res) => {
   const { email } = req.body as { email: string }
-  if (!email) return res.status(400).json({ error: 'email required' })
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.status(400).json({ error: 'valid email required' })
+  }
 
   const smtpHost = process.env.SMTP_HOST
   const smtpUser = process.env.SMTP_USER
