@@ -142,16 +142,6 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
           </div>
         </div>
 
-        {/* 復習カード - 過去に学んだ内容と間違えた問題を重点復習 */}
-        {onOpenFlashcards && cardStats.total > 0 && (
-          <ReviewCard
-            due={cardStats.due}
-            weak={cardStats.weak}
-            total={cardStats.total}
-            onOpen={(mode) => onOpenFlashcards(mode)}
-          />
-        )}
-
         {/* Hero Recommend - ランダム表示 */}
         <div
           onClick={() => onOpenLesson(recommendedLesson.id)}
@@ -178,6 +168,16 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
         {/* 診断カード（HeroRecommendの直下） */}
         {!hasCompletedPlacement() && onOpenPlacementTest && (
           <PlacementCard onTakeTest={onOpenPlacementTest} />
+        )}
+
+        {/* 復習カード - 過去に学んだ内容と間違えた問題を重点復習 */}
+        {onOpenFlashcards && cardStats.total > 0 && (
+          <ReviewCard
+            due={cardStats.due}
+            weak={cardStats.weak}
+            total={cardStats.total}
+            onOpen={(mode) => onOpenFlashcards(mode)}
+          />
         )}
 
         {/* AI practice cards (large, vertical) */}
