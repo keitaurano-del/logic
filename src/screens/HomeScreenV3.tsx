@@ -170,17 +170,6 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
         {/* AI practice cards (large, vertical) */}
         <AILargeCard image={`${IMG}/home-daily-question.webp`} name="AIで自分だけの問題を作る" sub="テーマ別のオリジナル問題で練習" onClick={onOpenAIGen} beta />
         <AILargeCard image={`${IMG}/home-roleplay.webp`} name="ロールプレイ" sub="ビジネス・哲学のシナリオで対話練習" onClick={onOpenRoleplay} beta />
-
-        {/* SCRUM-178: ベータ版注意バナー（偏差値ランキング堆導線を削除し置換） */}
-        <div style={{ background: `${v3.color.warm}14`, border: `1px solid ${v3.color.warm}40`, borderRadius: v3.radius.card, padding: '14px 18px', display: 'flex', alignItems: 'flex-start', gap: 12 }}>
-          <div style={{ flexShrink: 0, lineHeight: 1 }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={v3.color.warm} strokeWidth="2" strokeLinecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          </div>
-          <div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: v3.color.warm, marginBottom: 4, letterSpacing: '.04em' }}>BETA版</div>
-            <div style={{ fontSize: 14, color: v3.color.text2, lineHeight: 1.6 }}>一部機能は正常に動作しない場合があります。問題を見つけたらフィードバックを送ってね。</div>
-          </div>
-        </div>
       </div>
 
 
