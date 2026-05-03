@@ -4,8 +4,11 @@
 #
 # キーストアファイル本体（logic-release.keystore）は keystores/ にあるが、
 # パス・パスワード等のシークレットはここに分離する。
+#
+# 注: LOGIC_KEYSTORE_FILE は android/app/build.gradle 起点の相対パス。
+#     <repo>/keystores/logic-release.keystore を指すには ../../keystores/...
 
-LOGIC_KEYSTORE_FILE=../keystores/logic-release.keystore
+LOGIC_KEYSTORE_FILE=../../keystores/logic-release.keystore
 LOGIC_KEYSTORE_PASSWORD=YOUR_KEYSTORE_PASSWORD
 LOGIC_KEY_ALIAS=logic
 LOGIC_KEY_PASSWORD=YOUR_KEY_PASSWORD
