@@ -60,7 +60,7 @@ export function LessonScreen({ lessonId, onBack, onComplete, onNextLesson, onRep
 
   const total = lesson.steps.length
   const step: LessonStep = lesson.steps[stepIdx]
-  const progressPct = ((stepIdx + 1) / total) * 100
+
   const isLast = stepIdx === total - 1
   const accent = CATEGORY_COLOR[lesson.category] ?? '#3B5BDB'
   const catLabel = CATEGORY_LABEL[lesson.category] ?? lesson.category
@@ -139,9 +139,20 @@ export function LessonScreen({ lessonId, onBack, onComplete, onNextLesson, onRep
         </div>
       </div>
 
-      {/* プログレスバー */}
-      <div style={{ height: 4, background: '#E8EEFF' }}>
-        <div style={{ height: '100%', width: `${progressPct}%`, background: accent, transition: 'width 0.35s ease', borderRadius: '0 2px 2px 0' }} />
+      {/* プログレスバー（セグメント型） */}
+      <div style={{ display: 'flex', gap: 4, padding: '8px 16px 0', background: '#fff' }}>
+        {Array.from({ length: total }).map((_, i) => (
+          <div
+            key={i}
+            style={{
+              flex: 1,
+              height: 3,
+              borderRadius: 9999,
+              background: i < stepIdx + 1 ? accent : '#E8EEFF',
+              transition: 'background 0.3s ease',
+            }}
+          />
+        ))}
       </div>
 
       {/* コンテンツ */}
