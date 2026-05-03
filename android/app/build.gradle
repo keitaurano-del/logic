@@ -1,5 +1,18 @@
 apply plugin: 'com.android.application'
 
+// 署名情報は android/key.properties から読み込む（コミット禁止・gitignore済）。
+// CI 等で key.properties が無い場合は環境変数からのフォールバックを試す。
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('key.properties')
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+def keystoreFilePath = keystoreProperties['LOGIC_KEYSTORE_FILE'] ?: System.getenv('LOGIC_KEYSTORE_FILE')
+def keystorePassword = keystoreProperties['LOGIC_KEYSTORE_PASSWORD'] ?: System.getenv('LOGIC_KEYSTORE_PASSWORD')
+def keyAlias           = keystoreProperties['LOGIC_KEY_ALIAS']         ?: System.getenv('LOGIC_KEY_ALIAS')
+def keyPassword        = keystoreProperties['LOGIC_KEY_PASSWORD']      ?: System.getenv('LOGIC_KEY_PASSWORD')
+def hasReleaseSigning  = keystoreFilePath && keystorePassword && keyAlias && keyPassword
+
 android {
     namespace "io.logic.app"
     compileSdk rootProject.ext.compileSdkVersion
@@ -7,8 +20,8 @@ android {
         applicationId "io.logic.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 18
-        versionName "1.4.1"
+        versionCode 21
+        versionName "1.5.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -16,17 +29,23 @@ android {
             ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
-    signingConfigs {
-        release {
-            storeFile file('/home/work/.openclaw/workspace/logic/keystores/logic-release.keystore')
-            storePassword 'LogicApp2026Release'
-            keyAlias 'logic'
-            keyPassword 'LogicApp2026Release'
+    if (hasReleaseSigning) {
+        signingConfigs {
+            release {
+                storeFile file(keystoreFilePath)
+                storePassword keystorePassword
+                keyAlias keyAlias
+                keyPassword keyPassword
+            }
         }
     }
     buildTypes {
         release {
-            signingConfig signingConfigs.release
+            if (hasReleaseSigning) {
+                signingConfig signingConfigs.release
+            } else {
+                logger.warn('[logic] key.properties が無いため release は debug 鍵で署名されます (Play Store 提出には key.properties が必要)')
+            }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
