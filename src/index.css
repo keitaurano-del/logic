@@ -360,6 +360,13 @@ input, textarea, select { -webkit-tap-highlight-color: transparent; }
   animation: fade-in-up 0.32s ease-out both;
 }
 
+/* ===== Small phones: hide bottom nav text labels (icon-only) ===== */
+@media (max-width: 360px) {
+  .app-nav-label {
+    display: none;
+  }
+}
+
 /* ===== Tablet (768px+) ===== */
 @media (min-width: 768px) {
   :root {

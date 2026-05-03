@@ -7,7 +7,7 @@ export const strategyLessonMap: Record<number, LessonData> = {
   320: {
     id: 320,
     title: '戦略の起源 — テイラーとフォード',
-    category: 'strategy',
+    category: '経営戦略',
     steps: [
       {
         type: 'explain',
@@ -51,7 +51,7 @@ export const strategyLessonMap: Record<number, LessonData> = {
   321: {
     id: 321,
     title: 'アンゾフのマトリクス — 成長の方向を決める',
-    category: 'strategy',
+    category: '経営戦略',
     steps: [
       {
         type: 'explain',
@@ -95,7 +95,7 @@ export const strategyLessonMap: Record<number, LessonData> = {
   322: {
     id: 322,
     title: 'PPM — 事業ポートフォリオを管理する',
-    category: 'strategy',
+    category: '経営戦略',
     steps: [
       {
         type: 'explain',
@@ -139,7 +139,7 @@ export const strategyLessonMap: Record<number, LessonData> = {
   323: {
     id: 323,
     title: 'ポーターの5フォース — 業界構造を読み解く',
-    category: 'strategy',
+    category: '経営戦略',
     steps: [
       {
         type: 'explain',
@@ -183,7 +183,7 @@ export const strategyLessonMap: Record<number, LessonData> = {
   324: {
     id: 324,
     title: '3つの基本戦略 — どこで勝つかを決める',
-    category: 'strategy',
+    category: '経営戦略',
     steps: [
       {
         type: 'explain',
@@ -227,7 +227,7 @@ export const strategyLessonMap: Record<number, LessonData> = {
   325: {
     id: 325,
     title: 'RBV と VRIO — 内部資源で競争優位を説明する',
-    category: 'strategy',
+    category: '経営戦略',
     steps: [
       {
         type: 'explain',
@@ -240,6 +240,18 @@ export const strategyLessonMap: Record<number, LessonData> = {
         title: 'VRIO — 4つの問いで資源を診断する',
         content:
           'バーニーは資源が競争優位を生むかを4つの問いでチェックした。これが VRIO だ。\n\nV (Valuable) その資源は顧客価値を生むか？\nR (Rare) 競合が持っていない希少な資源か？\nI (Inimitable) 真似されにくいか？（歴史的経緯・社会的複雑さ・因果の不明さ）\nO (Organized) その資源を活かす組織体制があるか？\n\n4つすべてYesなら「持続的競争優位」を生む。1つでも欠けると、価値はあっても長続きしない。\n\n例: スターバックスのバリスタの接客ノウハウは、価値あり・他チェーンに少ない・組織文化に埋め込まれて模倣困難・店舗運営に組織化されている → 持続的優位。',
+      },
+      {
+        type: 'think',
+        question: 'あなたの会社（または身近な企業）の「強み」を一つ挙げ、VRIOの4つの問いで診断してみよう。どこが弱点で、どう補強できるか？',
+        hint: 'V→R→I→O の順に「Yes/No」で答え、最初に「No」が出た要素が補強ポイント。例: 技術はあるが知名度がない（Rが弱い）、組織がそれを活かせていない（Oが弱い）など。',
+        modelAnswer:
+          '例（地方の老舗和菓子店）:\n\nV（価値）: Yes — 「地元で100年の信頼」は顧客に価値を提供している。\nR（希少性）: Yes — 同じ歴史を持つ店は地域に少ない。\nI（模倣困難）: Yes — 歴史的経緯・地元コミュニティとの関係は新規参入では再現不能。\nO（組織）: No — 職人技をマニュアル化・後継者育成できておらず、活かしきれていない。\n\n補強策: 製法の言語化＋若手育成プログラム、ECチャネル整備で「Oで止まっている価値」を顧客まで届ける。',
+        points: [
+          'VRIO は順番が大事 — Vでない資源はそもそも資源ではない',
+          '日本企業はI（模倣困難性）が高くてもO（組織）で詰まっていることが多い',
+          '「弱点はどこか」を診断する道具として使うと実用性が上がる',
+        ],
       },
       {
         type: 'quiz',
@@ -271,7 +283,7 @@ export const strategyLessonMap: Record<number, LessonData> = {
   326: {
     id: 326,
     title: 'コアコンピタンス — 組織能力を競争源泉に',
-    category: 'strategy',
+    category: '経営戦略',
     steps: [
       {
         type: 'explain',
@@ -315,7 +327,7 @@ export const strategyLessonMap: Record<number, LessonData> = {
   327: {
     id: 327,
     title: 'ブルーオーシャン戦略 — 競争のない市場を創る',
-    category: 'strategy',
+    category: '経営戦略',
     steps: [
       {
         type: 'explain',
@@ -359,7 +371,7 @@ export const strategyLessonMap: Record<number, LessonData> = {
   328: {
     id: 328,
     title: 'ダイナミック・ケイパビリティ — 変化に適応する組織力',
-    category: 'strategy',
+    category: '経営戦略',
     steps: [
       {
         type: 'explain',
@@ -372,6 +384,18 @@ export const strategyLessonMap: Record<number, LessonData> = {
         title: 'Sense・Seize・Transform',
         content:
           'ティースはダイナミック・ケイパビリティを3つの組織能力に分けた。\n\nSense（感知）: 環境変化・新しい機会と脅威を察知する力。市場・技術・競合を読み続ける。\nSeize（捕捉）: 察知した機会に資源を投入し、新しいビジネスモデルを設計・実行する力。\nTransform（変革）: 既存の組織・資産を組み替え、新しい姿に進化させる力。古い成功体験を捨てる勇気も含む。\n\n例: 富士フイルムは写真フィルム市場の崩壊を Sense し、化粧品・医薬品へ Seize、研究開発と組織を Transform した。これに失敗したコダックとの差はここにあった。',
+      },
+      {
+        type: 'think',
+        question: 'あなたが知っている「環境変化に適応できなかった会社」を1つ挙げ、Sense / Seize / Transform のどこで詰まったかを言語化してみよう。',
+        hint: '「気づけなかった（Sense）」「気づいたが動けなかった（Seize）」「動いたが古い組織を捨てきれなかった（Transform）」のどこで止まったか、を考える。',
+        modelAnswer:
+          '例（コダック）:\n\nSense: ◯ デジタルカメラ自体は世界初で社内発明していた。変化は感知していた。\nSeize: △ デジタル事業に投資はしたが、本業のフィルムを食う意思決定を遅らせた。\nTransform: ✕ フィルム製造設備・流通・人材を組み替える決断ができず、旧事業を温存し続けた。\n\n結論: コダックは「感知」したが「変革」できなかった典型。富士フイルムは同じ感知から、化粧品（コラーゲン技術）・医薬品へ大胆に組み替えた。差は Transform の能力だった。',
+        points: [
+          '「気づき」と「動き」と「捨てる」は別の能力 — 1つでも欠けると失敗する',
+          '日本企業の多くは Sense は強いが、Transform で旧事業を捨てる勇気が足りない',
+          '危機が来てから動いても遅い。平時から「組み替えの筋肉」を鍛えるのが本質',
+        ],
       },
       {
         type: 'quiz',
@@ -403,7 +427,7 @@ export const strategyLessonMap: Record<number, LessonData> = {
   329: {
     id: 329,
     title: 'プラットフォーム戦略 — エコシステムと共進化',
-    category: 'strategy',
+    category: '経営戦略',
     steps: [
       {
         type: 'explain',

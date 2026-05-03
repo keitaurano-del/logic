@@ -1,41 +1,42 @@
 // Logic v3 — full app shell with all screens
-import { useEffect, useState, useRef, useCallback } from 'react'
+import { useEffect, useState, useRef, useCallback, lazy, Suspense } from 'react'
 import { AppShell, type Tab } from './components/AppShell'
 import { HomeScreenV3 } from './screens/HomeScreenV3'
-import { FlashcardsScreen } from './screens/FlashcardsScreen'
-import { FermiScreen } from './screens/FermiScreen'
-import { DailyFermiScreen } from './screens/DailyFermiScreen'
-import { DeviationScreen } from './screens/DeviationScreen'
 import { RankingScreen } from './screens/RankingScreen'
-import { FermiRankingScreen } from './screens/FermiRankingScreen'
-import { RoleplaySelectScreen } from './screens/RoleplaySelectScreen'
-import { RoleplayChatScreen } from './screens/RoleplayChatScreen'
-import { JournalInputScreen } from './screens/JournalInputScreen'
-import { WorksheetScreen } from './screens/WorksheetScreen'
-import { ReportProblemScreen } from './screens/ReportProblemScreen'
-import { OnboardingScreen } from './screens/OnboardingScreen'
-import { BetaCodeScreen } from './screens/BetaCodeScreen'
-
-import { AIProblemGenScreen } from './screens/AIProblemGenScreen'
-import { AIProblemScreen } from './screens/AIProblemScreen'
-import { FeedbackScreen } from './screens/FeedbackScreen'
-import { FeedbackDashboardScreen } from './screens/FeedbackDashboardScreen'
-import { PlacementTestScreen } from './screens/PlacementTestScreen'
-import { PricingScreen } from './screens/PricingScreen'
-import { StreakScreen } from './screens/StreakScreen'
-import { SettingsScreen } from './screens/SettingsScreen'
-import { AccountSettingsScreen } from './screens/AccountSettingsScreen'
-import { NotificationSettingsScreen } from './screens/NotificationSettingsScreen'
 import { LoginGate } from './components/LoginGate'
-import { CompletedLessonsScreen } from './screens/CompletedLessonsScreen'
-import { StudyTimeScreen } from './screens/StudyTimeScreen'
-import { LanguageScreen } from './screens/LanguageScreen'
-import { RankScreen } from './screens/RankScreen'
-import { LoginScreen } from './screens/LoginScreen'
 import { RoadmapScreenV3 } from './screens/RoadmapScreenV3'
 import { ProfileScreenV3 } from './screens/ProfileScreenV3'
 import { LessonStoriesScreen } from './screens/LessonStoriesScreen'
 import { LessonCompleteScreen } from './screens/LessonCompleteScreen'
+
+// Lazy-load lower-frequency screens to keep initial bundle small.
+const FlashcardsScreen = lazy(() => import('./screens/FlashcardsScreen').then(m => ({ default: m.FlashcardsScreen })))
+const FermiScreen = lazy(() => import('./screens/FermiScreen').then(m => ({ default: m.FermiScreen })))
+const DailyFermiScreen = lazy(() => import('./screens/DailyFermiScreen').then(m => ({ default: m.DailyFermiScreen })))
+const DeviationScreen = lazy(() => import('./screens/DeviationScreen').then(m => ({ default: m.DeviationScreen })))
+const FermiRankingScreen = lazy(() => import('./screens/FermiRankingScreen').then(m => ({ default: m.FermiRankingScreen })))
+const RoleplaySelectScreen = lazy(() => import('./screens/RoleplaySelectScreen').then(m => ({ default: m.RoleplaySelectScreen })))
+const RoleplayChatScreen = lazy(() => import('./screens/RoleplayChatScreen').then(m => ({ default: m.RoleplayChatScreen })))
+const JournalInputScreen = lazy(() => import('./screens/JournalInputScreen').then(m => ({ default: m.JournalInputScreen })))
+const WorksheetScreen = lazy(() => import('./screens/WorksheetScreen').then(m => ({ default: m.WorksheetScreen })))
+const ReportProblemScreen = lazy(() => import('./screens/ReportProblemScreen').then(m => ({ default: m.ReportProblemScreen })))
+const OnboardingScreen = lazy(() => import('./screens/OnboardingScreen').then(m => ({ default: m.OnboardingScreen })))
+const BetaCodeScreen = lazy(() => import('./screens/BetaCodeScreen').then(m => ({ default: m.BetaCodeScreen })))
+const AIProblemGenScreen = lazy(() => import('./screens/AIProblemGenScreen').then(m => ({ default: m.AIProblemGenScreen })))
+const AIProblemScreen = lazy(() => import('./screens/AIProblemScreen').then(m => ({ default: m.AIProblemScreen })))
+const FeedbackScreen = lazy(() => import('./screens/FeedbackScreen').then(m => ({ default: m.FeedbackScreen })))
+const FeedbackDashboardScreen = lazy(() => import('./screens/FeedbackDashboardScreen').then(m => ({ default: m.FeedbackDashboardScreen })))
+const PlacementTestScreen = lazy(() => import('./screens/PlacementTestScreen').then(m => ({ default: m.PlacementTestScreen })))
+const PricingScreen = lazy(() => import('./screens/PricingScreen').then(m => ({ default: m.PricingScreen })))
+const StreakScreen = lazy(() => import('./screens/StreakScreen').then(m => ({ default: m.StreakScreen })))
+const SettingsScreen = lazy(() => import('./screens/SettingsScreen').then(m => ({ default: m.SettingsScreen })))
+const AccountSettingsScreen = lazy(() => import('./screens/AccountSettingsScreen').then(m => ({ default: m.AccountSettingsScreen })))
+const NotificationSettingsScreen = lazy(() => import('./screens/NotificationSettingsScreen').then(m => ({ default: m.NotificationSettingsScreen })))
+const CompletedLessonsScreen = lazy(() => import('./screens/CompletedLessonsScreen').then(m => ({ default: m.CompletedLessonsScreen })))
+const StudyTimeScreen = lazy(() => import('./screens/StudyTimeScreen').then(m => ({ default: m.StudyTimeScreen })))
+const LanguageScreen = lazy(() => import('./screens/LanguageScreen').then(m => ({ default: m.LanguageScreen })))
+const RankScreen = lazy(() => import('./screens/RankScreen').then(m => ({ default: m.RankScreen })))
+const LoginScreen = lazy(() => import('./screens/LoginScreen').then(m => ({ default: m.LoginScreen })))
 import { allLessons, getAllLessonsFlat } from './lessonData'
 import { getCurrentLevel } from './screens/homeHelpers'
 
@@ -315,23 +316,27 @@ function AppV3() {
   // Onboarding: show full-screen, no AppShell
   if (screen.type === 'onboarding') {
     return (
-      <OnboardingScreen
-        onComplete={() => {
-          localStorage.setItem(ONBOARDED_KEY, '1')
-          navigate({ type: 'home' })
-          // チュートリアルは右下FABから任意で起動
-        }}
-      />
+      <Suspense fallback={null}>
+        <OnboardingScreen
+          onComplete={() => {
+            localStorage.setItem(ONBOARDED_KEY, '1')
+            navigate({ type: 'home' })
+            // チュートリアルは右下FABから任意で起動
+          }}
+        />
+      </Suspense>
     )
   }
 
   // BetaCode: show full-screen, no AppShell
   if (screen.type === 'beta-code') {
     return (
-      <BetaCodeScreen
-        onSuccess={() => navigate({ type: 'home' })}
-        onSkip={() => navigate({ type: 'home' })}
-      />
+      <Suspense fallback={null}>
+        <BetaCodeScreen
+          onSuccess={() => navigate({ type: 'home' })}
+          onSkip={() => navigate({ type: 'home' })}
+        />
+      </Suspense>
     )
   }
 
@@ -345,6 +350,7 @@ function AppV3() {
       hideTabBar={screen.type === 'lesson' || screen.type === 'lesson-complete'}
     >
       {/* スクリーン遷移fade-in: screen.typeが変わるたびにkeyで再マウント */}
+      <Suspense fallback={null}>
       <div key={screen.type} className="tab-fade-in" style={{ display: 'contents' }}>
       {screen.type === 'home' && (
         <HomeScreenV3
@@ -548,6 +554,7 @@ function AppV3() {
         />
       )}
       </div>
+      </Suspense>
     </AppShell>
 
     {/* SCRUM-195: チュートリアルオーバーレイ */}

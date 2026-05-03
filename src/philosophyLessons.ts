@@ -4,7 +4,7 @@ export const philosophyLessonMap: Record<number, LessonData> = {
   77: {
     id: 77,
     title: 'ソクラテスの問答法',
-    category: 'philosophy',
+    category: '哲学・思考の原理',
     steps: [
       {
         type: 'explain',
@@ -48,7 +48,7 @@ export const philosophyLessonMap: Record<number, LessonData> = {
   78: {
     id: 78,
     title: '反証可能性 — 科学と疑似科学の境界',
-    category: 'philosophy',
+    category: '哲学・思考の原理',
     steps: [
       {
         type: 'explain',
@@ -80,7 +80,7 @@ export const philosophyLessonMap: Record<number, LessonData> = {
   79: {
     id: 79,
     title: '功利主義と義務論 — 倫理的判断の2つの軸',
-    category: 'philosophy',
+    category: '哲学・思考の原理',
     steps: [
       {
         type: 'explain',
@@ -112,7 +112,7 @@ export const philosophyLessonMap: Record<number, LessonData> = {
   80: {
     id: 80,
     title: '認識論入門 — 私たちはどこまで知れるか',
-    category: 'philosophy',
+    category: '哲学・思考の原理',
     steps: [
       {
         type: 'explain',
@@ -144,7 +144,7 @@ export const philosophyLessonMap: Record<number, LessonData> = {
   81: {
     id: 81,
     title: '思考実験 — 哲学の実験室',
-    category: 'philosophy',
+    category: '哲学・思考の原理',
     steps: [
       {
         type: 'explain',
