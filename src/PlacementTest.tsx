@@ -9,7 +9,6 @@ import {
 } from './placementData'
 import { getGuestId, getNickname, setNickname, defaultNickname } from './guestId'
 import { t } from './i18n'
-import { getXp } from './stats'
 import './PlacementTest.css'
 
 import { API_BASE } from './apiBase'
@@ -25,7 +24,6 @@ async function submitPlacement(deviation: number, correctCount: number, totalCou
         deviation,
         correctCount,
         totalCount,
-        xp: getXp(),
       }),
     })
   } catch { /* silent */ }

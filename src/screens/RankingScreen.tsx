@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from 'react'
-import { getGuestId } from '../guestId'
+import { getGuestId, getNickname } from '../guestId'
 import { hasCompletedPlacement, loadPlacementResult } from '../placementData'
 import { API_BASE } from './apiBase'
 import { getStreak, getStudyDates, getCompletedLessons, getXp } from '../stats'
@@ -46,13 +46,14 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
   useEffect(() => {
     let cancelled = false
     const guestId = getGuestId()
-    // 自分の最新XPをサーバに同期してからランキングを取得（サーバ未対応時は無視して続行）
+    const nickname = getNickname()
+    // 自分の最新XP/ニックネームを user_stats に upsert してからランキング取得
     const syncThenFetch = async () => {
       try {
-        await fetch(`${API_BASE}/api/placement/sync-xp`, {
+        await fetch(`${API_BASE}/api/profile/sync-xp`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ guestId, xp }),
+          body: JSON.stringify({ guestId, nickname, xp }),
         })
       } catch { /* オフライン・未対応サーバは無視 */ }
       try {
