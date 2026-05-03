@@ -77,25 +77,37 @@ jobs:
           key: gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: gradle-
 
-      # ── 11. キーストアをファイルに展開 + key.properties を生成 ───
-      #     PR #28 で build.gradle が key.properties から署名情報を読む方式に
-      #     変わったので、CI 側で key.properties を生成する。
-      - name: Decode keystore and write key.properties
+      # ── 11. key.properties を生成（リポ内 keystore を直接参照）─────
+      #     ANDROID_KEYSTORE_BASE64 secret は使わない。
+      #     keystores/logic-release.keystore は既にリポにコミット済みで
+      #     SHA1 が Play Console 期待値と一致しているため、これを直接使う。
+      #     パスワードのみ secret 経由（ハードコード防止）。
+      - name: Write key.properties
         run: |
-          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/app/logic.keystore
+          KEYSTORE_PATH=keystores/logic-release.keystore
+          if [ ! -f "$KEYSTORE_PATH" ]; then
+            echo "::error::Keystore file not found at $KEYSTORE_PATH"
+            exit 1
+          fi
+          KSIZE=$(wc -c < "$KEYSTORE_PATH")
+          echo "Using committed keystore: $KEYSTORE_PATH ($KSIZE bytes)"
+          # build.gradle の file() は android/app/ 起点の相対解決
           cat > android/key.properties << EOF
-          LOGIC_KEYSTORE_FILE=logic.keystore
+          LOGIC_KEYSTORE_FILE=../../keystores/logic-release.keystore
           LOGIC_KEYSTORE_PASSWORD=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           LOGIC_KEY_ALIAS=${{ secrets.ANDROID_KEY_ALIAS }}
           LOGIC_KEY_PASSWORD=${{ secrets.ANDROID_KEY_PASSWORD }}
           EOF
-          # 値が空でないか軽くチェック（base64 デコード後のバイト数）
-          KSIZE=$(wc -c < android/app/logic.keystore)
-          echo "logic.keystore size: $KSIZE bytes"
-          if [ "$KSIZE" -lt 100 ]; then
-            echo "::error::ANDROID_KEYSTORE_BASE64 secret may be empty or invalid"
+          # 平文を出さずに secret が空でないか確認
+          if [ -z "${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" ] || [ -z "${{ secrets.ANDROID_KEY_ALIAS }}" ] || [ -z "${{ secrets.ANDROID_KEY_PASSWORD }}" ]; then
+            echo "::error::署名関連の secrets (ANDROID_KEYSTORE_PASSWORD / ANDROID_KEY_ALIAS / ANDROID_KEY_PASSWORD) のいずれかが未設定"
             exit 1
           fi
+          # 鍵が読めるかローカル検証 (apksigner が無いので keytool で list だけ)
+          keytool -list -keystore "$KEYSTORE_PATH" \
+            -storepass "${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" \
+            -alias "${{ secrets.ANDROID_KEY_ALIAS }}" \
+            > /dev/null && echo "✓ keystore + password verified"
 
       # ── 12. AAB ビルド ────────────────────────────────────
       - name: Build release AAB
