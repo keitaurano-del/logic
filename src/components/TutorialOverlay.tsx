@@ -323,30 +323,73 @@ export function shouldShowTutorial(): boolean {
   return false  // デフォルトでは自動表示しない
 }
 
-// チュートリアルボタン（右下に常駐）
+// チュートリアルボタン（右下に常駐 / ×ボタンで非表示にできる）
+const TUTORIAL_FAB_DISMISSED_KEY = 'logic-tutorial-fab-dismissed'
+
 export function TutorialFAB({ onClick }: { onClick: () => void }) {
+  const [dismissed, setDismissed] = useState<boolean>(() => {
+    try { return localStorage.getItem(TUTORIAL_FAB_DISMISSED_KEY) === '1' } catch { return false }
+  })
+
+  if (dismissed) return null
+
+  const handleClose = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    try { localStorage.setItem(TUTORIAL_FAB_DISMISSED_KEY, '1') } catch {}
+    setDismissed(true)
+  }
+
   return (
-    <button
-      onClick={onClick}
+    <div
       style={{
         position: 'fixed',
         right: 20,
         bottom: 'calc(env(safe-area-inset-bottom, 16px) + 80px)',
         zIndex: 500,
         width: 44, height: 44,
-        borderRadius: '50%',
-        background: 'linear-gradient(135deg, #6C8EF5, #8B6EF5)',
-        border: 'none',
-        boxShadow: '0 4px 16px rgba(108,142,245,0.45)',
-        cursor: 'pointer',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}
     >
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round">
-        <circle cx="12" cy="12" r="10"/>
-        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-        <line x1="12" y1="17" x2="12.01" y2="17"/>
-      </svg>
-    </button>
+      <button
+        onClick={onClick}
+        aria-label="チュートリアルを開く"
+        style={{
+          width: '100%', height: '100%',
+          borderRadius: '50%',
+          background: 'linear-gradient(135deg, #6C8EF5, #8B6EF5)',
+          border: 'none',
+          boxShadow: '0 4px 16px rgba(108,142,245,0.45)',
+          cursor: 'pointer',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          padding: 0,
+        }}
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+      </button>
+      <button
+        onClick={handleClose}
+        aria-label="ヘルプボタンを閉じる"
+        style={{
+          position: 'absolute',
+          top: -6, right: -6,
+          width: 20, height: 20,
+          borderRadius: '50%',
+          background: '#fff',
+          border: '1px solid rgba(0,0,0,0.1)',
+          boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
+          cursor: 'pointer',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          padding: 0,
+        }}
+      >
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="3" strokeLinecap="round">
+          <line x1="6" y1="6" x2="18" y2="18"/>
+          <line x1="18" y1="6" x2="6" y2="18"/>
+        </svg>
+      </button>
+    </div>
   )
 }
