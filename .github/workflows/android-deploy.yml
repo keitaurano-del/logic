@@ -77,48 +77,32 @@ jobs:
           key: gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: gradle-
 
-      # ── 11. キーストアをファイルに展開 ───────────────────
-      - name: Decode keystore
+      # ── 11. キーストアをファイルに展開 + key.properties を生成 ───
+      #     PR #28 で build.gradle が key.properties から署名情報を読む方式に
+      #     変わったので、CI 側で key.properties を生成する。
+      - name: Decode keystore and write key.properties
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/app/logic.keystore
-
-      # ── 12. 署名設定を build.gradle に注入 ───────────────
-      - name: Configure signing
-        working-directory: android
-        run: |
-          cat >> app/build.gradle << 'EOF'
-
-          android {
-              signingConfigs {
-                  release {
-                      storeFile file("logic.keystore")
-                      storePassword System.getenv("KEYSTORE_PASSWORD")
-                      keyAlias System.getenv("KEY_ALIAS")
-                      keyPassword System.getenv("KEY_PASSWORD")
-                  }
-              }
-              buildTypes {
-                  release {
-                      signingConfig signingConfigs.release
-                  }
-              }
-          }
+          cat > android/key.properties << EOF
+          LOGIC_KEYSTORE_FILE=logic.keystore
+          LOGIC_KEYSTORE_PASSWORD=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          LOGIC_KEY_ALIAS=${{ secrets.ANDROID_KEY_ALIAS }}
+          LOGIC_KEY_PASSWORD=${{ secrets.ANDROID_KEY_PASSWORD }}
           EOF
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          # 値が空でないか軽くチェック（base64 デコード後のバイト数）
+          KSIZE=$(wc -c < android/app/logic.keystore)
+          echo "logic.keystore size: $KSIZE bytes"
+          if [ "$KSIZE" -lt 100 ]; then
+            echo "::error::ANDROID_KEYSTORE_BASE64 secret may be empty or invalid"
+            exit 1
+          fi
 
-      # ── 13. AAB ビルド ────────────────────────────────────
+      # ── 12. AAB ビルド ────────────────────────────────────
       - name: Build release AAB
         working-directory: android
-        run: ./gradlew bundleRelease
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: ./gradlew bundleRelease --stacktrace
 
-      # ── 14. AAB を成果物として保存 ───────────────────────
+      # ── 13. AAB を成果物として保存 ───────────────────────
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
         with:
@@ -126,7 +110,7 @@ jobs:
           path: android/app/build/outputs/bundle/release/app-release.aab
           retention-days: 30
 
-      # ── 15. Play Console 内部テストに配信 ────────────────
+      # ── 14. Play Console 内部テストに配信 ────────────────
       - name: Deploy to Play Console (Internal Test)
         uses: r0adkll/upload-google-play@v1
         with:
