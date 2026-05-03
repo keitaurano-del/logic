@@ -77,48 +77,44 @@ jobs:
           key: gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: gradle-
 
-      # ── 11. キーストアをファイルに展開 ───────────────────
-      - name: Decode keystore
+      # ── 11. key.properties を生成（リポ内 keystore を直接参照）─────
+      #     ANDROID_KEYSTORE_BASE64 secret は使わない。
+      #     keystores/logic-release.keystore は既にリポにコミット済みで
+      #     SHA1 が Play Console 期待値と一致しているため、これを直接使う。
+      #     パスワードのみ secret 経由（ハードコード防止）。
+      - name: Write key.properties
         run: |
-          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/app/logic.keystore
-
-      # ── 12. 署名設定を build.gradle に注入 ───────────────
-      - name: Configure signing
-        working-directory: android
-        run: |
-          cat >> app/build.gradle << 'EOF'
-
-          android {
-              signingConfigs {
-                  release {
-                      storeFile file("logic.keystore")
-                      storePassword System.getenv("KEYSTORE_PASSWORD")
-                      keyAlias System.getenv("KEY_ALIAS")
-                      keyPassword System.getenv("KEY_PASSWORD")
-                  }
-              }
-              buildTypes {
-                  release {
-                      signingConfig signingConfigs.release
-                  }
-              }
-          }
+          KEYSTORE_PATH=keystores/logic-release.keystore
+          if [ ! -f "$KEYSTORE_PATH" ]; then
+            echo "::error::Keystore file not found at $KEYSTORE_PATH"
+            exit 1
+          fi
+          KSIZE=$(wc -c < "$KEYSTORE_PATH")
+          echo "Using committed keystore: $KEYSTORE_PATH ($KSIZE bytes)"
+          # build.gradle の file() は android/app/ 起点の相対解決
+          cat > android/key.properties << EOF
+          LOGIC_KEYSTORE_FILE=../../keystores/logic-release.keystore
+          LOGIC_KEYSTORE_PASSWORD=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          LOGIC_KEY_ALIAS=${{ secrets.ANDROID_KEY_ALIAS }}
+          LOGIC_KEY_PASSWORD=${{ secrets.ANDROID_KEY_PASSWORD }}
           EOF
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          # 平文を出さずに secret が空でないか確認
+          if [ -z "${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" ] || [ -z "${{ secrets.ANDROID_KEY_ALIAS }}" ] || [ -z "${{ secrets.ANDROID_KEY_PASSWORD }}" ]; then
+            echo "::error::署名関連の secrets (ANDROID_KEYSTORE_PASSWORD / ANDROID_KEY_ALIAS / ANDROID_KEY_PASSWORD) のいずれかが未設定"
+            exit 1
+          fi
+          # 鍵が読めるかローカル検証 (apksigner が無いので keytool で list だけ)
+          keytool -list -keystore "$KEYSTORE_PATH" \
+            -storepass "${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" \
+            -alias "${{ secrets.ANDROID_KEY_ALIAS }}" \
+            > /dev/null && echo "✓ keystore + password verified"
 
-      # ── 13. AAB ビルド ────────────────────────────────────
+      # ── 12. AAB ビルド ────────────────────────────────────
       - name: Build release AAB
         working-directory: android
-        run: ./gradlew bundleRelease
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: ./gradlew bundleRelease --stacktrace
 
-      # ── 14. AAB を成果物として保存 ───────────────────────
+      # ── 13. AAB を成果物として保存 ───────────────────────
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
         with:
@@ -126,7 +122,7 @@ jobs:
           path: android/app/build/outputs/bundle/release/app-release.aab
           retention-days: 30
 
-      # ── 15. Play Console 内部テストに配信 ────────────────
+      # ── 14. Play Console 内部テストに配信 ────────────────
       - name: Deploy to Play Console (Internal Test)
         uses: r0adkll/upload-google-play@v1
         with:

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { getSituation, buildSetup } from '../situations'
 import { isPremium } from '../subscription'
 import { incrementRoleplayUsage } from '../roleplayUsage'
@@ -27,8 +27,23 @@ const MAX_TURNS = 5
 
 export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenProps) {
   const situation = getSituation(situationId)
-  const [messages, setMessages] = useState<Msg[]>([])
-  const [choices, setChoices] = useState<string[]>([])
+
+  // スクリプト駆動か否か
+  const hasScript = !!(situation?.script && situation.script.length > 0)
+
+  // スクリプト駆動の場合は初期メッセージ・選択肢を useState の initializer で設定（useEffect の同期 setState を避ける）
+  const [messages, setMessages] = useState<Msg[]>(() => {
+    if (situation?.script && situation.script.length > 0) {
+      return [{ role: 'assistant', content: situation.script[0].partnerLine }]
+    }
+    return []
+  })
+  const [choices, setChoices] = useState<string[]>(() => {
+    if (situation?.script && situation.script.length > 0) {
+      return situation.script[0].choices
+    }
+    return []
+  })
   const [turnNumber, setTurnNumber] = useState(1)
   const [loading, setLoading] = useState(false)
   const [finished, setFinished] = useState(false)
@@ -36,86 +51,18 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
   const [summary, setSummary] = useState<SummaryResult | null>(null)
   const [scoring, setScoring] = useState(false)
   const incrementedRef = useRef(false)
-  const startedRef = useRef(false)
+  const startedRef = useRef(!!hasScript) // スクリプト駆動は initializer で開始済み
   const scrollRef = useRef<HTMLDivElement>(null)
 
-  // スクリプト駆動か否か
-  const hasScript = !!(situation?.script && situation.script.length > 0)
+  // setup をメモ化（situation が変わらない限り再生成しない）
+  const setup = useMemo(
+    () => (situation ? buildSetup(situation) : null),
+    [situation],
+  )
 
-  useEffect(() => {
-    if (situation && !incrementedRef.current && !isPremium()) {
-      incrementRoleplayUsage()
-      incrementedRef.current = true
-    }
-  }, [situation])
-
-  useEffect(() => {
-    if (situation && !startedRef.current) {
-      startedRef.current = true
-      if (hasScript) {
-        // スクリプト駆動: 即座に最初のセリフを表示（APIコールなし）
-        const first = situation.script![0]
-        setMessages([{ role: 'assistant', content: first.partnerLine }])
-        setChoices(first.choices)
-      } else {
-        // API駆動（デカルト等）
-        fetchTurn([], 1)
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [situation])
-
-  useEffect(() => {
-    scrollRef.current?.scrollTo({
-      top: scrollRef.current.scrollHeight,
-      behavior: 'smooth',
-    })
-  }, [messages, loading, choices])
-
-  if (!situation) {
-    return (
-      <div className="stack">
-        <div className="screen-header">
-          <IconButton aria-label="Back" onClick={onBack}>
-            <ArrowLeftIcon />
-          </IconButton>
-        </div>
-        <div className="card empty">シナリオが見つかりません</div>
-      </div>
-    )
-  }
-
-  const setup = buildSetup(situation)
-  const maxTurns = hasScript ? situation.script!.length : MAX_TURNS
-
-  // スクリプト駆動: ユーザーが選択肢を選んだとき
-  const pickScriptChoice = (choice: string) => {
-    const next: Msg[] = [...messages, { role: 'user', content: choice }]
-    setMessages(next)
-    setChoices([])
-
-    const nextTurn = turnNumber + 1
-    setTurnNumber(nextTurn)
-
-    if (nextTurn > maxTurns) {
-      // スクリプト終了 → 採点へ
-      finish(next)
-    } else {
-      // 次のスクリプトターン
-      const nextScript = situation.script![nextTurn - 1]
-      if (nextScript) {
-        setTimeout(() => {
-          setMessages([...next, { role: 'assistant', content: nextScript.partnerLine }])
-          setChoices(nextScript.choices)
-        }, 400) // 少し間を置いて自然に
-      } else {
-        finish(next)
-      }
-    }
-  }
-
-  // API駆動: ターン取得
-  async function fetchTurn(history: Msg[], turn: number) {
+  // API駆動: ターン取得（useCallback で安定した参照を保つ）
+  const fetchTurn = useCallback(async (history: Msg[], turn: number) => {
+    if (!setup) return
     setLoading(true)
     setChoices([])
     try {
@@ -145,6 +92,69 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
     } finally {
       setLoading(false)
     }
+  }, [setup])
+
+  useEffect(() => {
+    if (situation && !incrementedRef.current && !isPremium()) {
+      incrementRoleplayUsage()
+      incrementedRef.current = true
+    }
+  }, [situation])
+
+  useEffect(() => {
+    // API駆動のみ: initializer で未開始の場合にフェッチ
+    if (situation && !startedRef.current) {
+      startedRef.current = true
+      fetchTurn([], 1)
+    }
+  }, [situation, fetchTurn])
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo({
+      top: scrollRef.current.scrollHeight,
+      behavior: 'smooth',
+    })
+  }, [messages, loading, choices])
+
+  if (!situation) {
+    return (
+      <div className="stack">
+        <div className="screen-header">
+          <IconButton aria-label="Back" onClick={onBack}>
+            <ArrowLeftIcon />
+          </IconButton>
+        </div>
+        <div className="card empty">シナリオが見つかりません</div>
+      </div>
+    )
+  }
+
+  const maxTurns = hasScript ? situation.script!.length : MAX_TURNS
+
+  // スクリプト駆動: ユーザーが選択肢を選んだとき
+  const pickScriptChoice = (choice: string) => {
+    const next: Msg[] = [...messages, { role: 'user', content: choice }]
+    setMessages(next)
+    setChoices([])
+
+    const nextTurn = turnNumber + 1
+    setTurnNumber(nextTurn)
+
+    if (nextTurn > maxTurns) {
+      // スクリプト終了 → 採点へ
+      finish(next)
+    } else {
+      // 次のスクリプトターン
+      const nextScript = situation.script![nextTurn - 1]
+      if (nextScript) {
+        setTimeout(() => {
+          setMessages([...next, { role: 'assistant', content: nextScript.partnerLine }])
+          setChoices(nextScript.choices)
+        }, 400) // 少し間を置いて自然に
+      } else {
+        finish(next)
+      }
+    }
   }
 
   // API駆動: 選択肢タップ
@@ -172,12 +182,12 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
         fetch(`${API_BASE}/api/roleplay/score`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(localeBody({ messages: finalMessages, setup })),
+          body: JSON.stringify(localeBody({ messages: finalMessages, setup: setup! })),
         }).then((r) => r.json()),
         fetch(`${API_BASE}/api/roleplay/summary`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(localeBody({ messages: finalMessages, setup })),
+          body: JSON.stringify(localeBody({ messages: finalMessages, setup: setup! })),
         }).then((r) => r.json()),
       ])
       if (scoreRes.scores) setScore(scoreRes)

@@ -28,6 +28,8 @@ const FeedbackScreen = lazy(() => import('./screens/FeedbackScreen').then(m => (
 const FeedbackDashboardScreen = lazy(() => import('./screens/FeedbackDashboardScreen').then(m => ({ default: m.FeedbackDashboardScreen })))
 const PlacementTestScreen = lazy(() => import('./screens/PlacementTestScreen').then(m => ({ default: m.PlacementTestScreen })))
 const PricingScreen = lazy(() => import('./screens/PricingScreen').then(m => ({ default: m.PricingScreen })))
+// PricingV3.tsx は AppV3 では未使用。PricingScreen.tsx が最新・完全な実装（startCheckout 接続済み）であるため、
+// PricingV3 は削除せず残しておく（将来参照用）
 const StreakScreen = lazy(() => import('./screens/StreakScreen').then(m => ({ default: m.StreakScreen })))
 const SettingsScreen = lazy(() => import('./screens/SettingsScreen').then(m => ({ default: m.SettingsScreen })))
 const AccountSettingsScreen = lazy(() => import('./screens/AccountSettingsScreen').then(m => ({ default: m.AccountSettingsScreen })))
@@ -37,6 +39,7 @@ const StudyTimeScreen = lazy(() => import('./screens/StudyTimeScreen').then(m =>
 const LanguageScreen = lazy(() => import('./screens/LanguageScreen').then(m => ({ default: m.LanguageScreen })))
 const RankScreen = lazy(() => import('./screens/RankScreen').then(m => ({ default: m.RankScreen })))
 const LoginScreen = lazy(() => import('./screens/LoginScreen').then(m => ({ default: m.LoginScreen })))
+const DailyProblemScreen = lazy(() => import('./screens/DailyProblemScreen').then(m => ({ default: m.DailyProblemScreen })))
 import { allLessons, getAllLessonsFlat } from './lessonData'
 import { getCurrentLevel } from './screens/homeHelpers'
 
@@ -50,6 +53,7 @@ import { isAdmin } from './admin'
 import { onAuthChange, logout, getInitialUser, type User } from './supabase'
 import { syncOnLogin, syncOnLogout } from './syncService'
 import { TutorialOverlay, TutorialFAB } from './components/TutorialOverlay'
+import { tutorial } from './tutorial/tutorialStorage'
 
 const ONBOARDED_KEY = 'logic-onboarded'
 const INSTALL_ID_KEY = 'logic-install-id'
@@ -77,7 +81,7 @@ type Screen =
   | { type: 'profile' }
   | { type: 'lesson'; lessonId: number }
   | { type: 'lesson-complete'; lessonId: number; durationSec: number; prevLevel: number }
-  | { type: 'flashcards' }
+  | { type: 'flashcards'; mode?: 'due' | 'weak' }
   | { type: 'fermi' }
   | { type: 'daily-fermi' }
   | { type: 'deviation' }
@@ -135,22 +139,27 @@ function getInitialScreen(user: User | null): Screen {
 const ROOT_SCREENS = new Set<string>(['home', 'lessons', 'ranking', 'profile'])
 
 function AppV3() {
-  // SCRUM-200: 新規インストール時にlocalStorageリセット（アンインストール後のデータ残留対策）
-  checkAndInitInstall()
   const [tab, setTab] = useState<Tab>('home')
   const [screen, setScreen] = useState<Screen>(() => getInitialScreen(null))
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [authReady, setAuthReady] = useState(false)
   const [showTutorial, setShowTutorial] = useState(false)
+  const [showFAB, setShowFAB] = useState(() => !tutorial.hasFABDismissed())
   const [showNamePopup, setShowNamePopup] = useState(false)
   const [nameInput, setNameInput] = useState('')
   const [nameSaving, setNameSaving] = useState(false)
   // popstate ハンドラ内でscreen stateを参照するための ref
   const screenRef = useRef<Screen>(screen)
-  screenRef.current = screen
   // popstate による遷移かどうかのフラグ（push 抑制用）
   const isPopNavRef = useRef(false)
   void isAdmin() // reserved for future admin checks
+
+  // SCRUM-200: 新規インストール時にlocalStorageリセット（アンインストール後のデータ残留対策）
+  // useEffect に移すことで React Strict Mode の二重レンダリングでの意図しない複数回実行を防ぐ
+  useEffect(() => { checkAndInitInstall() }, [])
+
+  // screenRef を常に最新の screen と同期させる（コンカレントレンダリング対策）
+  useEffect(() => { screenRef.current = screen }, [screen])
 
   // ── History 連動の setScreen ラッパー ──
   const navigate = useCallback((next: Screen, replace = false) => {
@@ -323,6 +332,7 @@ function AppV3() {
             navigate({ type: 'home' })
             // チュートリアルは右下FABから任意で起動
           }}
+          onNavigateToLogin={() => navigate({ type: 'login' })}
         />
       </Suspense>
     )
@@ -367,6 +377,7 @@ function AppV3() {
           onOpenRoadmap={() => { setTab('lessons'); navigate({ type: 'lessons' }, true) }}
           onNavigateToDailyFermi={() => navigate({ type: 'daily-fermi' })}
           onOpenPlacementTest={() => navigate({ type: 'placement-test' })}
+          onOpenFlashcards={(mode) => navigate({ type: 'flashcards', mode })}
         />
       )}
 
@@ -387,11 +398,12 @@ function AppV3() {
         />
       )}
 
-      {screen.type === 'flashcards' && <FlashcardsScreen onBack={handleBack} />}
+      {screen.type === 'flashcards' && <FlashcardsScreen onBack={handleBack} mode={screen.mode} />}
       {screen.type === 'fermi' && <FermiScreen onBack={handleBack} onReport={(ctx) => navigate({ type: 'report-problem', context: ctx })} />}
       {screen.type === 'daily-fermi' && <DailyFermiScreen onBack={handleBack} onReport={(ctx) => navigate({ type: 'report-problem', context: ctx })} />}
       {screen.type === 'journal-input' && <JournalInputScreen onBack={handleBack} />}
       {screen.type === 'worksheet' && <WorksheetScreen onBack={handleBack} />}
+      {screen.type === 'daily-problem' && <DailyProblemScreen onBack={handleBack} />}
 
       {screen.type === 'feedback' && <FeedbackScreen onBack={handleBack} />}
       {screen.type === 'feedback-dashboard' && <FeedbackDashboardScreen onClose={handleBack} />}
@@ -559,8 +571,8 @@ function AppV3() {
 
     {/* SCRUM-195: チュートリアルオーバーレイ */}
     {/* チュートリアルFAB（右下固定ボタン） */}
-    {screen.type === 'home' && !showTutorial && (
-      <TutorialFAB onClick={() => setShowTutorial(true)} />
+    {screen.type === 'home' && !showTutorial && showFAB && (
+      <TutorialFAB onClick={() => setShowTutorial(true)} onHide={() => { tutorial.markFABDismissed(); setShowFAB(false) }} />
     )}
     {showTutorial && (
       <TutorialOverlay

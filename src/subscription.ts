@@ -86,9 +86,7 @@ export function daysLeftInTrial(): number {
   return Math.max(0, Math.ceil(remaining / 86400000))
 }
 
-// Beta mode: true = 全機能無料開放、課金UI非表示
-// Android正式課金(Google Play Billing)導入時にfalseに戻す
-export const BETA_MODE = true
+export const BETA_MODE = false
 
 export function isBasicPlan(): boolean {
   if (BETA_MODE) return true

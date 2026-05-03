@@ -40,14 +40,14 @@ interface Props {
 }
 
 export function FeedbackDashboardScreen({ onClose }: Props) {
+  const supabase = getSupabaseClient()
   const [items, setItems] = useState<FeedbackItem[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(!!supabase)
+  const [error, setError] = useState<string | null>(supabase ? null : 'Supabase未接続')
   const [filter, setFilter] = useState<string>('all')
 
   useEffect(() => {
-    const supabase = getSupabaseClient()
-    if (!supabase) { setError('Supabase未接続'); setLoading(false); return }
+    if (!supabase) return
 
     supabase
       .from('feedback')
@@ -59,6 +59,7 @@ export function FeedbackDashboardScreen({ onClose }: Props) {
         setItems(data ?? [])
         setLoading(false)
       })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // カテゴリ別集計
@@ -79,8 +80,8 @@ export function FeedbackDashboardScreen({ onClose }: Props) {
 
   const filtered = filter === 'all' ? items : items.filter(i => i.category === filter)
 
-  // 直近7日 vs 前7日比較
-  const now = Date.now()
+  // 直近7日 vs 前7日比較（マウント時に固定）
+  const [now] = useState(() => Date.now())
   const day7 = 7 * 24 * 60 * 60 * 1000
   const last7 = items.filter(i => now - new Date(i.created_at).getTime() < day7).length
   const prev7 = items.filter(i => {

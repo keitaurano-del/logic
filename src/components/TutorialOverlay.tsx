@@ -1,5 +1,5 @@
 // チュートリアルオーバーレイ（スポットライト誘導型）
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useLayoutEffect } from 'react'
 
 const TUTORIAL_KEY = 'logic-tutorial-done-v2'
 
@@ -121,14 +121,12 @@ export function TutorialOverlay({ onDone, onGoFermi }: TutorialOverlayProps) {
     setTimeout(() => setVisible(true), 50)
   }, [])
 
-  useEffect(() => {
+  // DOM計測: useLayoutEffect でペイント前に同期的に測定する
+  useLayoutEffect(() => {
     if (current.targetId) {
       const el = document.getElementById(current.targetId)
-      if (el) {
-        setTargetRect(el.getBoundingClientRect())
-      } else {
-        setTargetRect(null)
-      }
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setTargetRect(el ? el.getBoundingClientRect() : null)
     } else {
       setTargetRect(null)
     }
@@ -318,35 +316,64 @@ export function TutorialOverlay({ onDone, onGoFermi }: TutorialOverlayProps) {
   )
 }
 
-// チュートリアルを表示すべきか判定
-export function shouldShowTutorial(): boolean {
-  return false  // デフォルトでは自動表示しない
-}
 
 // チュートリアルボタン（右下に常駐）
-export function TutorialFAB({ onClick }: { onClick: () => void }) {
+export function TutorialFAB({ onClick, onHide }: { onClick: () => void; onHide: () => void }) {
   return (
-    <button
-      onClick={onClick}
+    <div
       style={{
         position: 'fixed',
         right: 20,
         bottom: 'calc(env(safe-area-inset-bottom, 16px) + 80px)',
         zIndex: 500,
-        width: 44, height: 44,
-        borderRadius: '50%',
-        background: 'linear-gradient(135deg, #6C8EF5, #8B6EF5)',
-        border: 'none',
-        boxShadow: '0 4px 16px rgba(108,142,245,0.45)',
-        cursor: 'pointer',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}
     >
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round">
-        <circle cx="12" cy="12" r="10"/>
-        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-        <line x1="12" y1="17" x2="12.01" y2="17"/>
-      </svg>
-    </button>
+      {/* 閉じるボタン（右上） */}
+      <button
+        onClick={onHide}
+        aria-label="閉じる"
+        style={{
+          position: 'absolute',
+          top: -8,
+          right: -8,
+          zIndex: 501,
+          width: 20,
+          height: 20,
+          borderRadius: '50%',
+          background: 'rgba(30,32,48,0.92)',
+          border: '1px solid rgba(255,255,255,0.18)',
+          boxShadow: '0 1px 4px rgba(0,0,0,0.4)',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: 0,
+        }}
+      >
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="1.8" strokeLinecap="round">
+          <line x1="2" y1="2" x2="8" y2="8"/>
+          <line x1="8" y1="2" x2="2" y2="8"/>
+        </svg>
+      </button>
+      {/* メインの?ボタン */}
+      <button
+        onClick={onClick}
+        style={{
+          width: 44, height: 44,
+          borderRadius: '50%',
+          background: 'linear-gradient(135deg, #6C8EF5, #8B6EF5)',
+          border: 'none',
+          boxShadow: '0 4px 16px rgba(108,142,245,0.45)',
+          cursor: 'pointer',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+      </button>
+    </div>
   )
 }

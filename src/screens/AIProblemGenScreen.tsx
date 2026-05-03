@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { loadAIProblems, generateAIProblems, deleteAIProblem, type AIProblemSet } from '../aiProblemStore'
 import { getCompletedLessons } from '../stats'
 import { loadPlacementResult } from '../placementData'
@@ -175,9 +175,9 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
   const [prompt, setPrompt] = useState('')
   const [generating, setGenerating] = useState(false)
   const [error, setError] = useState('')
-  const [problems, setProblems] = useState<AIProblemSet[]>([])
-  const [weakness, setWeakness] = useState<WeaknessItem[]>([])
-  const [recommendPrompt, setRecommendPrompt] = useState('')
+  const [problems, setProblems] = useState<AIProblemSet[]>(() => filterByHistoryDays(loadAIProblems()))
+  const weakness = analyzeWeakness()
+  const recommendPrompt = buildRecommendPrompt(weakness)
   const [showRating, setShowRating] = useState(false)
   const [pendingProblem, setPendingProblem] = useState<AIProblemSet | null>(null)
 
@@ -188,13 +188,6 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
 
   const historyDays = getHistoryDays()
   const planLabel = isPremiumPlan() ? 'プレミアム' : isStandardPlan() ? 'スタンダード' : 'フリー'
-
-  useEffect(() => {
-    const w = analyzeWeakness()
-    setWeakness(w)
-    setRecommendPrompt(buildRecommendPrompt(w))
-    setProblems(filterByHistoryDays(loadAIProblems()))
-  }, [])
 
   const handleGenerate = async (targetPrompt?: string) => {
     const p = targetPrompt ?? prompt

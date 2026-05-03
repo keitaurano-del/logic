@@ -13,6 +13,7 @@ import {
 
 interface OnboardingScreenProps {
   onComplete: () => void
+  onNavigateToLogin?: () => void
 }
 
 // ── カラー ──
@@ -82,8 +83,8 @@ const SLIDES = [
       </svg>
     ),
     tag: 'LEARN',
-    title: '論理思考力を\n毎日鍛えよう。',
-    subtitle: 'レッスン・フェルミ推定・AIフィードバックで\nビジネス思考力が着実に伸びる。',
+    title: '頭の回転を\n鍛えるアプリ。',
+    subtitle: 'フェルミ推定・論理・ケース思考を\n毎日5分でトレーニング。',
     btnLabel: 'つぎへ',
     preview: (color: string) => (
       <div style={{ display: 'flex', gap: 10, width: '100%', maxWidth: 360 }}>
@@ -699,7 +700,7 @@ function OnboardingPricingView({ onNext, onSelectPlan, onBack }: { onNext: () =>
 }
 
 // ── 登録画面（スクショ参考） ──────────────────────────────────
-function RegisterScreen({ onComplete, onSkip, onBack }: { onComplete: () => void; onSkip: () => void; onBack: () => void }) {
+function RegisterScreen({ onComplete, onSkip, onBack, onNavigateToLogin }: { onComplete: () => void; onSkip: () => void; onBack: () => void; onNavigateToLogin?: () => void }) {
   const [termsChecked, setTermsChecked] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -872,11 +873,7 @@ function RegisterScreen({ onComplete, onSkip, onBack }: { onComplete: () => void
             お持ちのアカウントをお持ちの方は
           </span>
           <button
-            onClick={() => {
-              // ログイン画面に遷移（AppV3側でlogin画面に飛ばす）
-              // onComplete の代わりに login 画面へ — ここでは簡易的に onComplete
-              onComplete()
-            }}
+            onClick={onNavigateToLogin}
             style={{
               background: 'none', border: 'none',
               color: C.teal, fontSize: 13, fontWeight: 700,
@@ -917,7 +914,7 @@ function GoogleIcon() {
 }
 
 // ── メインエクスポート ────────────────────────────────────────────
-export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
+export function OnboardingScreen({ onComplete, onNavigateToLogin }: OnboardingScreenProps) {
   const [phase, setPhase] = useState<'slides' | 'attribute' | 'pricing' | 'billing' | 'register'>('slides')
   const [selectedPlan, setSelectedPlan] = useState<'standard' | 'premium'>('standard')
   const [slideIdx, setSlideIdx] = useState(0)
@@ -975,6 +972,7 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
       onComplete={onComplete}
       onSkip={onComplete}
       onBack={() => setPhase('pricing')}
+      onNavigateToLogin={onNavigateToLogin}
     />
   )
 }

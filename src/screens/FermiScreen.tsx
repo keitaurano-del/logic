@@ -286,7 +286,7 @@ function renderFeedbackMarkdown(text: string) {
     if (numMatch) {
       elements.push(
         <div key={key++} style={{ display: 'flex', gap: 8, fontSize: 15, lineHeight: 1.7, marginBottom: 2 }}>
-          <span style={{ color: 'var(--accent)', fontWeight: 700, minWidth: 20 }}>{numMatch[1]}.</span>
+          <span style={{ color: 'var(--brand)', fontWeight: 700, minWidth: 20 }}>{numMatch[1]}.</span>
           <span dangerouslySetInnerHTML={{ __html: boldify(numMatch[2]) }} />
         </div>
       )
@@ -312,7 +312,7 @@ function renderFeedbackMarkdown(text: string) {
 
 /** Convert **bold** to <strong> */
 function boldify(text: string): string {
-  return text.replace(/\*\*(.+?)\*\*/g, '<strong style="color:var(--accent)">$1</strong>')
+  return text.replace(/\*\*(.+?)\*\*/g, '<strong style="color:var(--brand)">$1</strong>')
 }
 
 function FermiFeedbackBlock({

@@ -18,7 +18,7 @@ interface StatsScreenV3Props {
   onBack: () => void
 }
 
-export function StatsScreenV3(_props: StatsScreenV3Props) {
+export function StatsScreenV3({ onBack: _onBack }: StatsScreenV3Props) {
   const [period, setPeriod] = useState<Period>('month')
   const studyDates = useMemo(() => new Set(getStudyDates()), [])
   const streak = getStreak()

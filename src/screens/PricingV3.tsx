@@ -29,12 +29,12 @@ export default function PricingV3({ onBack }: Props) {
         price: 390,
         priceLabel: '390円/月',
         features: [
-          'フェルミ推定 月5問',
-          '全レッスン 40コース',
-          'AI問題生成は別途購入',
+          'AIがリアルタイムで思考を採点',
+          '全コース・全レッスン解放',
+          'フェルミ推定 毎日練習',
           '広告なし',
         ],
-        cta: '月額プランを始める',
+        cta: '始める',
       },
     ],
     yearly: [
@@ -46,12 +46,12 @@ export default function PricingV3({ onBack }: Props) {
         badge: '期間限定',
         badgeColor: '#ff6b6b',
         features: [
-          'フェルミ推定 月5問',
-          '全レッスン 40コース',
-          'AI問題生成は別途購入',
+          'AIがリアルタイムで思考を採点',
+          '全コース・全レッスン解放',
+          'フェルミ推定 毎日練習',
           '広告なし',
         ],
-        cta: 'キャンペーンプランを始める',
+        cta: '始める',
         highlighted: true,
       },
       {
@@ -59,16 +59,15 @@ export default function PricingV3({ onBack }: Props) {
         name: 'スタンダード',
         price: 2730,
         priceLabel: '2,730円/年',
-        priceHint: '月々 228円相当',
         badge: '41% OFF',
         badgeColor: '#4caf50',
         features: [
-          'フェルミ推定 月5問',
-          '全レッスン 40コース',
-          'AI問題生成は別途購入',
+          'AIがリアルタイムで思考を採点',
+          '全コース・全レッスン解放',
+          'フェルミ推定 毎日練習',
           '広告なし',
         ],
-        cta: '年額プランを始める',
+        cta: '始める',
       },
     ],
   }
@@ -150,7 +149,7 @@ export default function PricingV3({ onBack }: Props) {
               margin: '0 0 8px 0',
             }}
           >
-            論理的思考を、もっと深く鍛える
+            思考力は、鍛えるほど研ぎ澄まされる。
           </h3>
           <p
             style={{
@@ -159,7 +158,7 @@ export default function PricingV3({ onBack }: Props) {
               margin: '0',
             }}
           >
-            プレミアムプランで全機能解放
+            AIと毎日練習して、地力をつける。
           </p>
         </div>
 

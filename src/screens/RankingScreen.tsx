@@ -1,8 +1,8 @@
 import { useEffect, useState, useMemo } from 'react'
-import { getGuestId } from '../guestId'
+import { getGuestId, getNickname } from '../guestId'
 import { hasCompletedPlacement, loadPlacementResult } from '../placementData'
 import { API_BASE } from './apiBase'
-import { getStreak, getStudyDates, getCompletedLessons } from '../stats'
+import { getStreak, getStudyDates, getCompletedLessons, getXp } from '../stats'
 import { getPoints } from './homeHelpers'
 
 
@@ -11,16 +11,19 @@ interface RankingScreenProps {
   onTakeTest: () => void
 }
 
-type RankEntry = { rank: number; nickname: string; deviation: number; isYou: boolean }
-type RankingData = { total: number; top: RankEntry[]; yourRank: number; yourDeviation: number }
+type RankEntry = { rank: number; nickname: string; deviation: number; xp: number; isYou: boolean }
+type RankingData = { total: number; top: RankEntry[]; yourRank: number; yourDeviation: number; yourXp: number }
 
 export function RankingScreen({ onTakeTest }: RankingScreenProps) {
   const [rankData, setRankData] = useState<RankingData | null>(null)
   const [loading, setLoading] = useState(true)
   const [rankTab, setRankTab] = useState<'week' | 'all'>('week')
+  // マウント時刻を固定（useMemo内でDate.now()を呼ばないようにする）
+  const [mountTime] = useState(() => Date.now())
 
   const streak = getStreak()
   const points = getPoints()
+  const xp = getXp()
   const placement = loadPlacementResult()
   const deviation = placement?.deviation ?? null
   const completed = hasCompletedPlacement() && (placement?.totalCount ?? 0) > 0
@@ -44,18 +47,34 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
 
   useEffect(() => {
     let cancelled = false
-    fetch(`${API_BASE}/api/placement/ranking?guestId=${encodeURIComponent(getGuestId())}`)
-      .then((r) => r.json())
-      .then((d) => { if (!cancelled) { setRankData(d); setLoading(false) } })
-      .catch(() => { if (!cancelled) setLoading(false) })
+    const guestId = getGuestId()
+    const nickname = getNickname()
+    // 自分の最新XP/ニックネームを user_stats に upsert してからランキング取得
+    const syncThenFetch = async () => {
+      try {
+        await fetch(`${API_BASE}/api/profile/sync-xp`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ guestId, nickname, xp }),
+        })
+      } catch { /* オフライン・未対応サーバは無視 */ }
+      try {
+        const r = await fetch(`${API_BASE}/api/placement/ranking?guestId=${encodeURIComponent(guestId)}`)
+        const d = await r.json()
+        if (!cancelled) { setRankData(d); setLoading(false) }
+      } catch {
+        if (!cancelled) setLoading(false)
+      }
+    }
+    syncThenFetch()
     return () => { cancelled = true }
-  }, [])
+  }, [xp])
 
   // 最近の活動 — 実データから生成
   const recentActivity = useMemo(() => {
     const completed = getCompletedLessons()
-    const today = new Date().toISOString().slice(0, 10)
-    const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10)
+    const today = new Date(mountTime).toISOString().slice(0, 10)
+    const yesterday = new Date(mountTime - 86400000).toISOString().slice(0, 10)
     const studyDatesArr = getStudyDates()
 
     const titleMap: Record<string, string> = {
@@ -89,7 +108,7 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
       const dateLabel = isToday ? '今日' : isYesterday ? '昨日' : ''
       return { name, date: dateLabel, pts: '+20', icon: lessonIcon }
     })
-  }, [])
+  }, [mountTime])
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: '#F0F4FF' }}>
@@ -104,20 +123,25 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
         {/* スコアヒーロー */}
         <div style={{ background: '#3B5BDB', borderRadius: 28, padding: '24px 20px', position: 'relative', overflow: 'hidden' }}>
           <div style={{ position: 'absolute', right: -40, top: -40, width: 160, height: 160, borderRadius: '50%', background: 'rgba(255,255,255,.06)', pointerEvents: 'none' }} />
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1px 1fr 1px 1fr' }}>
-            <div style={{ textAlign: 'center', padding: '0 4px' }}>
-              <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 32, fontWeight: 900, color: '#fff', letterSpacing: '-.04em', lineHeight: 1 }}>{streak}</div>
-              <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)', marginTop: 5 }}>連続学習</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1px 1fr 1px 1fr 1px 1fr' }}>
+            <div style={{ textAlign: 'center', padding: '0 2px' }}>
+              <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 28, fontWeight: 900, color: '#fff', letterSpacing: '-.04em', lineHeight: 1 }}>{streak}</div>
+              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)', marginTop: 5 }}>連続</div>
             </div>
             <div style={{ background: 'rgba(255,255,255,.15)', margin: '4px 0' }} />
-            <div style={{ textAlign: 'center', padding: '0 4px' }}>
-              <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 32, fontWeight: 900, color: '#fff', letterSpacing: '-.04em', lineHeight: 1 }}>{points}</div>
-              <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)', marginTop: 5 }}>ポイント</div>
+            <div style={{ textAlign: 'center', padding: '0 2px' }}>
+              <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 28, fontWeight: 900, color: '#fff', letterSpacing: '-.04em', lineHeight: 1 }}>{xp}</div>
+              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)', marginTop: 5 }}>XP</div>
             </div>
             <div style={{ background: 'rgba(255,255,255,.15)', margin: '4px 0' }} />
-            <div style={{ textAlign: 'center', padding: '0 4px' }}>
-              <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 26, fontWeight: 900, color: '#fff', letterSpacing: '-.04em', lineHeight: 1 }}>{deviation != null ? Math.round(deviation) : '—'}</div>
-              <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)', marginTop: 5 }}>偏差値</div>
+            <div style={{ textAlign: 'center', padding: '0 2px' }}>
+              <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 28, fontWeight: 900, color: '#fff', letterSpacing: '-.04em', lineHeight: 1 }}>{points}</div>
+              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)', marginTop: 5 }}>ポイント</div>
+            </div>
+            <div style={{ background: 'rgba(255,255,255,.15)', margin: '4px 0' }} />
+            <div style={{ textAlign: 'center', padding: '0 2px' }}>
+              <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 24, fontWeight: 900, color: '#fff', letterSpacing: '-.04em', lineHeight: 1 }}>{deviation != null ? Math.round(deviation) : '—'}</div>
+              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)', marginTop: 5 }}>偏差値</div>
             </div>
           </div>
         </div>
@@ -177,11 +201,21 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
                   <div key={`${e.rank}-${e.nickname}`} style={{ background: e.isYou ? '#EEF2FF' : '#fff', border: `1px solid ${e.isYou ? '#DBE4FF' : '#E2E8FF'}`, borderRadius: 14, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 12, boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
                     <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 900, color: posColor, width: 24, textAlign: 'center', flexShrink: 0 }}>{e.rank}</div>
                     <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg, #3B5BDB, #748FFC)', flexShrink: 0, boxShadow: e.isYou ? '0 0 0 2px #3B5BDB' : 'none' }} />
-                    <div style={{ flex: 1, fontSize: 16, fontWeight: 600, color: '#0F1523' }}>
-                      {e.nickname}
-                      {e.isYou && <span style={{ fontSize: 13, fontWeight: 700, color: '#3B5BDB', background: '#EEF2FF', borderRadius: 4, padding: '1px 5px', marginLeft: 6 }}>あなた</span>}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 16, fontWeight: 600, color: '#0F1523', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {e.nickname}
+                        {e.isYou && <span style={{ fontSize: 13, fontWeight: 700, color: '#3B5BDB', background: '#EEF2FF', borderRadius: 4, padding: '1px 5px', marginLeft: 6 }}>あなた</span>}
+                      </div>
+                      <div style={{ fontSize: 12, color: '#7A849E', marginTop: 2, display: 'flex', alignItems: 'center', gap: 4 }}>
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="#FBBF24"><path d="M12 2L15 8.5l7 1-5 4.7 1.5 7L12 17.8 5.5 21.2 7 14.2 2 9.5l7-1z"/></svg>
+                        <span style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 700 }}>{e.xp.toLocaleString()}</span>
+                        <span>XP</span>
+                      </div>
                     </div>
-                    <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 900, color: '#3B5BDB' }}>{e.deviation}</div>
+                    <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                      <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 900, color: '#3B5BDB', lineHeight: 1 }}>{e.deviation}</div>
+                      <div style={{ fontSize: 10, color: '#7A849E', fontWeight: 700, letterSpacing: '.06em', marginTop: 3 }}>偏差値</div>
+                    </div>
                   </div>
                 )
               })}

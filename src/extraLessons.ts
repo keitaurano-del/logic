@@ -68,13 +68,13 @@ const hypothesisAbduction: LessonData = {
   title: 'アブダクションで仮説を飛躍させる',
   category: '仮説思考',
   steps: [
-    { type: 'explain', title: 'アブダクション（仮説的推論）とは', content: '演繹でも帰納でもなく、「最も合理的な説明」を推論する思考法。限られた情報から大胆な仮説を立て、それを検証するアプローチ。コンサルタントや医師が日常的に使う。' },
+    { type: 'explain', title: 'アブダクション（最良の説明への推論）とは', content: '演繹でも帰納でもなく、「現在の状況を最もうまく説明できる仮説を選ぶ」推論。C.S.パースが提唱し、「最良の説明への推論（Inference to the Best Explanation）」とも呼ばれる。複数の候補仮説のうち現状を最も合理的に説明できるものを選ぶプロセスで、コンサルタントや医師が「データをひとつ見て、おそらく◯◯が原因だろう」と瞬時に仮説を絞り込む思考がこれにあたる。' },
     { type: 'quiz', question: '売上が突然20%減少した。アブダクションのアプローチとして最も適切なものはどれか？', options: [
       { label: '全データを収集してから原因を考える', correct: false },
-      { label: '「競合の新商品が原因では？」と仮説を立てすぐ検証する', correct: true },
+      { label: '考えられる複数の原因のうち、現状を最もよく説明できるものを選んで仮説とする', correct: true },
       { label: '過去の成功パターンを繰り返す', correct: false },
       { label: '上司に報告して指示を待つ', correct: false },
-    ], explanation: 'アブダクションは「データが揃ってから考える」のではなく、「仮説を先に立てて検証する」。限られた情報でも最も合理的な説明に飛躍するのが特徴。' },
+    ], explanation: 'アブダクションは「データが揃ってから考える」のではなく、現在の情報から「最もうまく状況を説明できる仮説」を選ぶ。複数の候補（競合の新商品・自社品質問題・季節要因など）の中から最良の説明を絞り込むプロセスが核心。' },
   ],
 }
 
@@ -146,7 +146,7 @@ const lateralPMI: LessonData = {
   title: 'PMI法で視点を意図的に広げる',
   category: 'ラテラルシンキング',
   steps: [
-    { type: 'explain', title: 'PMI法とは', content: 'Plus（良い点）・Minus（悪い点）・Interesting（面白い点）の3視点でアイデアを評価する手法。デボノが提唱。「面白い点」を加えることで、固定的な二項対立を超えた思考が生まれる。' },
+    { type: 'explain', title: 'PMI法とは', content: 'Plus（良い点）・Minus（悪い点）・Interesting（面白い点）の3視点でアイデアを評価する手法。エドワード・デ・ボノが提唱。「面白い点」を加えることで、固定的な二項対立を超えた思考が生まれる。' },
     { type: 'quiz', question: '「全社員を週3日テレワークにする」というアイデアにPMI法を適用する。Interesting（面白い点）として最も適切なものはどれか？', options: [
       { label: '通勤コストが減る（コスト削減）', correct: false },
       { label: 'コミュニケーションが減るかもしれない（リスク）', correct: false },
@@ -208,13 +208,13 @@ const systemsArchetype: LessonData = {
   title: 'システム原型で「よくある罠」を見抜く',
   category: 'システムシンキング',
   steps: [
-    { type: 'explain', title: 'システム原型とは', content: '組織や社会で繰り返し現れる典型的な構造パターンを「システム原型」という。「成功の限界」「問題のすり替え」「共有地の悲劇」などがある。原型を知ることで、複雑な問題の本質をすばやく見抜ける。' },
-    { type: 'quiz', question: '「対症療法を繰り返すことで根本問題が先送りされ続ける」というパターンはどのシステム原型か？', options: [
-      { label: '成功の限界', correct: false },
+    { type: 'explain', title: 'システム原型とは', content: '組織や社会で繰り返し現れる典型的な構造パターンを「システム原型」という。「成長の限界」「問題のすり替え（Fixes that Fail）」「責任の転嫁（Shifting the Burden）」「共有地の悲劇」などがある。原型を知ることで、複雑な問題の本質をすばやく見抜ける。' },
+    { type: 'quiz', question: '「対症療法を繰り返すたびに副作用が蓄積し、根本問題がかえって悪化し続ける」というパターンはどのシステム原型か？', options: [
+      { label: '成長の限界', correct: false },
       { label: '問題のすり替え（Fixes that Fail）', correct: true },
       { label: '共有地の悲劇', correct: false },
-      { label: '成長と過小投資', correct: false },
-    ], explanation: '「問題のすり替え」は、症状を一時的に緩和する対症療法が、根本解決への取り組みを遅らせ問題を長期化させる構造。バグ修正を繰り返しても根本のアーキテクチャを直さない状況などが典型例。' },
+      { label: '目標の侵食', correct: false },
+    ], explanation: '「問題のすり替え（Fixes that Fail）」は、対症療法が一時的に問題を緩和するが、その副作用が蓄積して原問題をさらに悪化させる構造。例：バグ修正のたびに別の不具合が増えるアーキテクチャ問題。なお「責任の転嫁（Shifting the Burden）」は対症療法によって根本解決への取り組みが先送りされるパターンで、似て非なる別の原型。' },
   ],
 }
 

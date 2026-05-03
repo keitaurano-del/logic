@@ -1,0 +1,29 @@
+name: Daily Fermi Post to X
+
+on:
+  schedule:
+    - cron: '0 23 * * *'  # 毎朝 8:00 JST
+  workflow_dispatch:       # 手動実行も可能
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Post daily Fermi problem
+        env:
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: npx tsx scripts/post-daily-fermi.ts
+        continue-on-error: true  # 失敗しても翌日は継続

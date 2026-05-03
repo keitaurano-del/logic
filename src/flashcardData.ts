@@ -83,12 +83,25 @@ export function getDueCards(): Flashcard[] {
   return loadCards().filter((c) => c.nextReview <= today)
 }
 
+/** 過去に間違えたことがあるカード（弱点カード）。間違えた回数が多い順 */
+export function getWeakCards(): Flashcard[] {
+  return loadCards()
+    .filter((c) => c.wrongCount > 0)
+    .sort((a, b) => {
+      const aScore = b.wrongCount - b.correctCount
+      const bScore = a.wrongCount - a.correctCount
+      if (aScore !== bScore) return aScore - bScore
+      return b.wrongCount - a.wrongCount
+    })
+}
+
 export function getCardStats() {
   const cards = loadCards()
   const today = new Date().toISOString().slice(0, 10)
   const due = cards.filter((c) => c.nextReview <= today).length
+  const weak = cards.filter((c) => c.wrongCount > 0).length
   const mastered = cards.filter((c) => c.correctCount >= 3 && c.interval >= 7).length
-  return { total: cards.length, due, mastered }
+  return { total: cards.length, due, weak, mastered }
 }
 
 // Generate flashcards from lesson quiz results

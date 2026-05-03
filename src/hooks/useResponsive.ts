@@ -2,7 +2,7 @@
  * useWindowSize - Responsive Design用 Hook
  * ウィンドウサイズ監視、メディアクエリ判定
  */
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useLayoutEffect } from 'react'
 
 export const BREAKPOINTS = {
   sm: 360,   // スマートフォン
@@ -33,18 +33,22 @@ export function useWindowSize() {
 }
 
 export function useMediaQuery(query: string): boolean {
-  const [matches, setMatches] = useState(false)
+  const [matches, setMatches] = useState(() =>
+    typeof window !== 'undefined' ? window.matchMedia(query).matches : false
+  )
 
-  useEffect(() => {
+  // query が変わったときに同期するため useLayoutEffect を使用（DOM/BOM API との同期）
+  useLayoutEffect(() => {
     const mediaQueryList = window.matchMedia(query)
-    
+    // query 変更時に現在の matches を即時同期
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMatches(mediaQueryList.matches)
+
     const handleChange = (e: MediaQueryListEvent) => {
       setMatches(e.matches)
     }
-    
-    setMatches(mediaQueryList.matches)
+
     mediaQueryList.addEventListener('change', handleChange)
-    
     return () => mediaQueryList.removeEventListener('change', handleChange)
   }, [query])
 

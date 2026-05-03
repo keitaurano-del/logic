@@ -19,7 +19,7 @@ import {
   getXpProgress,
 } from './homeHelpers'
 import { getLocale, t } from '../i18n'
-import { isDailyFermiDone } from './DailyFermiScreen'
+import { isDailyFermiDone } from './dailyFermiState'
 
 interface HomeScreenProps {
   userName: string
@@ -453,7 +453,7 @@ function HomeDesktop({
   onOpenDeviation,
   onOpenRanking,
   onOpenRoleplay,
-  onOpenFlashcards: _onOpenFlashcards,
+  onOpenFlashcards: _onOpenFlashcards, // eslint-disable-line @typescript-eslint/no-unused-vars
   onOpenAIGen,
   onOpenFeedback,
   data,
