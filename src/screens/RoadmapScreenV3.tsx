@@ -3,14 +3,91 @@
  * 仕様: docs/DESIGN_V3.md §3.2
  * モックアップ: lv3-courses.html
  */
-import { useState } from 'react'
+import { useState, useMemo, useEffect } from 'react'
+import type { ReactNode } from 'react'
 import { v3 } from '../styles/tokensV3'
 import { LessonThumbnail } from '../components/LessonThumbnail'
+import LessonIcon from '../LessonIcon'
 import { getAllLessonsFlat } from '../lessonData'
+import type { LessonData } from '../lessonData'
 import { getCompletedLessons } from '../stats'
-import { getCoursesByCategory } from '../courseData'
+import { getCoursesByCategory, COURSES, type Course } from '../courseData'
 
 const IMG = '/images/v3'
+
+// ──────── 検索ユーティリティ ────────
+// クエリを正規化（NFKC + 小文字 + カタカナ→ひらがな）
+function normalizeQ(s: string): string {
+  return (s || '')
+    .normalize('NFKC')
+    .toLowerCase()
+    .replace(/[ァ-ヶ]/g, c => String.fromCharCode(c.charCodeAt(0) - 0x60))
+}
+
+const SEARCH_HISTORY_KEY = 'logic-search-history'
+function loadSearchHistory(): string[] {
+  try {
+    const raw = localStorage.getItem(SEARCH_HISTORY_KEY)
+    return raw ? (JSON.parse(raw) as string[]).slice(0, 5) : []
+  } catch { return [] }
+}
+function saveSearchHistory(q: string) {
+  const t = q.trim()
+  if (!t) return
+  const cur = loadSearchHistory().filter(x => x !== t)
+  localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify([t, ...cur].slice(0, 5)))
+}
+const SUGGESTED_KEYWORDS = ['MECE', '仮説思考', 'VRIO', '5フォース', 'ブルーオーシャン', 'デザインシンキング']
+
+type LevelFilter = '初級' | '中級' | '上級'
+type ProgressFilter = 'todo' | 'done'
+type FormatFilter = 'quiz' | 'think' | 'case'
+type SortOption = 'relevance' | 'level' | 'id'
+
+// 検索結果項目
+type LessonResult = {
+  kind: 'lesson'
+  lesson: LessonData
+  course: Course | null
+  status: 'todo' | 'done'
+  level: LevelFilter | undefined
+  formats: Set<FormatFilter>
+  score: number
+  snippet?: string
+}
+type CourseResult = {
+  kind: 'course'
+  course: Course
+  doneCount: number
+  totalCount: number
+  score: number
+}
+type SearchResult = LessonResult | CourseResult
+
+// ハイライト
+function Highlight({ text, query }: { text: string; query: string }): ReactNode {
+  const q = query.trim()
+  if (!q || !text) return text
+  const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const re = new RegExp(`(${escaped})`, 'gi')
+  const parts = text.split(re)
+  return parts.map((p, i) =>
+    i % 2 === 1
+      ? <mark key={i} style={{ background: 'rgba(108,142,245,.32)', color: 'inherit', borderRadius: 3, padding: '0 2px' }}>{p}</mark>
+      : <span key={i}>{p}</span>
+  )
+}
+
+// 本文のヒット箇所からスニペット抽出（前後30文字）
+function extractSnippet(text: string, nq: string, ctx = 30): string {
+  if (!text) return ''
+  const nt = normalizeQ(text)
+  const idx = nt.indexOf(nq)
+  if (idx < 0) return ''
+  const start = Math.max(0, idx - ctx)
+  const end = Math.min(text.length, idx + nq.length + ctx)
+  return (start > 0 ? '…' : '') + text.slice(start, end) + (end < text.length ? '…' : '')
+}
 
 interface RoadmapScreenV3Props {
   onOpenLesson: (id: number) => void
@@ -21,28 +98,35 @@ interface RoadmapScreenV3Props {
 
 export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
   const [searchQuery, setSearchQuery] = useState('')
+  const [levelFilters, setLevelFilters] = useState<Set<LevelFilter>>(new Set())
+  const [progressFilters, setProgressFilters] = useState<Set<ProgressFilter>>(new Set())
+  const [formatFilters, setFormatFilters] = useState<Set<FormatFilter>>(new Set())
+  const [sortOption, setSortOption] = useState<SortOption>('relevance')
 
   if (props.initialCategory) {
     return <CategoryDetailView category={props.initialCategory} onOpenLesson={props.onOpenLesson} onBack={props.onBack} />
   }
 
-  // SCRUM-161: 検索フィルタリングは CategoryDetailView 内で行うので、ここでは検索UIのみ
+  const hasFilter = levelFilters.size + progressFilters.size + formatFilters.size > 0
+  const showSearch = searchQuery.trim().length > 0 || hasFilter
+
   return (
     <div style={{ background: v3.color.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: v3.color.text }}>
       <div style={{ padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ fontSize: 24, fontWeight: 700, letterSpacing: '-.005em' }}>トレーニング</div>
       </div>
-      {/* SCRUM-161: 検索ボックス */}
+      {/* 検索ボックス */}
       <div style={{ padding: '0 16px 8px' }}>
         <div style={{ position: 'relative' }}>
           <input
             type="search"
-            placeholder="レッスンを検索..."
+            placeholder="レッスン・コースを検索..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
+            onBlur={() => saveSearchHistory(searchQuery)}
             style={{
               width: '100%', boxSizing: 'border-box',
-              padding: '10px 16px 10px 38px',
+              padding: '10px 38px 10px 38px',
               borderRadius: 12,
               border: `1px solid ${v3.color.line}`,
               background: v3.color.card,
@@ -55,13 +139,38 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
             width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
           </svg>
+          {searchQuery && (
+            <button onClick={() => setSearchQuery('')} aria-label="クリア"
+              style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', padding: 6, color: v3.color.text2 }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          )}
         </div>
       </div>
-      {searchQuery.trim() && (
-        <SearchResults query={searchQuery} onOpenLesson={props.onOpenLesson} />
+
+      {/* フィルタ・ソート */}
+      <FilterBar
+        levelFilters={levelFilters} setLevelFilters={setLevelFilters}
+        progressFilters={progressFilters} setProgressFilters={setProgressFilters}
+        formatFilters={formatFilters} setFormatFilters={setFormatFilters}
+        sortOption={sortOption} setSortOption={setSortOption}
+        showSort={showSearch}
+      />
+
+      {showSearch && (
+        <SearchPanel
+          query={searchQuery}
+          levelFilters={levelFilters}
+          progressFilters={progressFilters}
+          formatFilters={formatFilters}
+          sortOption={sortOption}
+          onOpenLesson={props.onOpenLesson}
+          onOpenCategory={props.onOpenCategory}
+          onPickKeyword={(k) => setSearchQuery(k)}
+        />
       )}
 
-      {!searchQuery.trim() && <div style={{ flex: 1, padding: '0 16px 80px', display: 'flex', flexDirection: 'column', gap: v3.spacing.gap }}>
+      {!showSearch && <div style={{ flex: 1, padding: '0 16px 80px', display: 'flex', flexDirection: 'column', gap: v3.spacing.gap }}>
 
         <div style={{ padding: '4px 4px 8px' }}>
           <div style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.45, letterSpacing: '-.005em' }}>今日、どのスキルを<br />鍛える？</div>
@@ -69,21 +178,22 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
 
 
 
-        {/* 2列グリッド — courseData.ts の全14カテゴリ */}
+        {/* 2列グリッド — courseData.ts の全15カテゴリ */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
           <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/></svg>} iconBg="rgba(108,142,245,.14)" name="ロジカルシンキング" meta="2コース · 初〜中級" image={`${IMG}/course-logical.webp`} onClick={() => props.onOpenCategory('logic')} />
-          <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F87171" strokeWidth="2" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>} iconBg="rgba(248,113,113,.14)" name="クリティカルシンキング" meta="2コース · 初〜中級" image={`${IMG}/course-thinking.webp`} onClick={() => props.onOpenCategory('critical')} />
-          <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FBBF24" strokeWidth="2" strokeLinecap="round"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>} iconBg="rgba(251,191,36,.14)" name="仮説思考" meta="1コース · 中級" image={`${IMG}/course-thinking.webp`} onClick={() => props.onOpenCategory('hypothesis')} />
-          <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#34D399" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>} iconBg="rgba(52,211,153,.14)" name="課題設定" meta="1コース · 中級" image={`${IMG}/course-thinking.webp`} onClick={() => props.onOpenCategory('problem-setting')} />
-          <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" strokeWidth="2" strokeLinecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>} iconBg="rgba(96,165,250,.14)" name="デザインシンキング" meta="1コース · 初級" image={`${IMG}/course-thinking.webp`} onClick={() => props.onOpenCategory('design-thinking')} />
-          <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>} iconBg="rgba(167,139,250,.14)" name="ラテラルシンキング" meta="1コース · 中級" image={`${IMG}/course-thinking.webp`} onClick={() => props.onOpenCategory('lateral')} />
-          <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F472B6" strokeWidth="2" strokeLinecap="round"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>} iconBg="rgba(244,114,182,.14)" name="アナロジー思考" meta="1コース · 中級" image={`${IMG}/course-thinking.webp`} onClick={() => props.onOpenCategory('analogy')} />
-          <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2DD4BF" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>} iconBg="rgba(45,212,191,.14)" name="システムシンキング" meta="1コース · 上級" image={`${IMG}/course-thinking.webp`} onClick={() => props.onOpenCategory('systems')} />
+          <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F87171" strokeWidth="2" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>} iconBg="rgba(248,113,113,.14)" name="クリティカルシンキング" meta="2コース · 初〜中級" image={`${IMG}/lesson-critical-thinking.webp`} onClick={() => props.onOpenCategory('critical')} />
+          <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FBBF24" strokeWidth="2" strokeLinecap="round"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>} iconBg="rgba(251,191,36,.14)" name="仮説思考" meta="1コース · 中級" image={`${IMG}/lesson-hypothesis.webp`} onClick={() => props.onOpenCategory('hypothesis')} />
+          <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#34D399" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>} iconBg="rgba(52,211,153,.14)" name="課題設定" meta="1コース · 中級" image={`${IMG}/lesson-issue-setting.webp`} onClick={() => props.onOpenCategory('problem-setting')} />
+          <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" strokeWidth="2" strokeLinecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>} iconBg="rgba(96,165,250,.14)" name="デザインシンキング" meta="1コース · 初級" image={`${IMG}/lesson-design-thinking.webp`} onClick={() => props.onOpenCategory('design-thinking')} />
+          <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>} iconBg="rgba(167,139,250,.14)" name="ラテラルシンキング" meta="1コース · 中級" image={`${IMG}/lesson-lateral-thinking.webp`} onClick={() => props.onOpenCategory('lateral')} />
+          <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F472B6" strokeWidth="2" strokeLinecap="round"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>} iconBg="rgba(244,114,182,.14)" name="アナロジー思考" meta="1コース · 中級" image={`${IMG}/lesson-analogy.webp`} onClick={() => props.onOpenCategory('analogy')} />
+          <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2DD4BF" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>} iconBg="rgba(45,212,191,.14)" name="システムシンキング" meta="1コース · 上級" image={`${IMG}/lesson-systems-thinking.webp`} onClick={() => props.onOpenCategory('systems')} />
           <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={v3.color.warm} strokeWidth="2" strokeLinecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>} iconBg="rgba(244,162,97,.14)" name="提案・伝える技術" meta="1コース · 中級" image={`${IMG}/lesson-proposal.webp`} onClick={() => props.onOpenCategory('proposal')} />
-          <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FB923C" strokeWidth="2" strokeLinecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>} iconBg="rgba(251,146,60,.14)" name="提案書作成" meta="1コース · 上級" image={`${IMG}/lesson-proposal.webp`} onClick={() => props.onOpenCategory('提案書作成')} />
+          <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FB923C" strokeWidth="2" strokeLinecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>} iconBg="rgba(251,146,60,.14)" name="提案書作成" meta="1コース · 上級" image={`${IMG}/course-proposal-writing.svg`} onClick={() => props.onOpenCategory('提案書作成')} />
           <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C4B5FD" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="10" strokeDasharray="4 3"/></svg>} iconBg="rgba(196,181,253,.14)" name="哲学・思考の原理" meta="1コース · 上級" image={`${IMG}/course-philosophy.webp`} onClick={() => props.onOpenCategory('philosophy')} />
           <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C49A3C" strokeWidth="2" strokeLinecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>} iconBg="rgba(196,154,60,.14)" name="クライアントワーク" meta="2コース · 中級" image={`${IMG}/course-client.webp`} onClick={() => props.onOpenCategory('クライアントワーク')} />
           <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={v3.color.warm} strokeWidth="2" strokeLinecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>} iconBg="rgba(244,162,97,.14)" name="ケース面接" meta="1コース · 上級" image={`${IMG}/course-business.webp`} onClick={() => props.onOpenCategory('case')} />
+          <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7AAEFF" strokeWidth="2" strokeLinecap="round"><path d="M3 21V10l5 3V10l5 3V10l5 3v8z"/><line x1="3" y1="21" x2="21" y2="21"/></svg>} iconBg="rgba(122,174,255,.14)" name="経営戦略" meta="2コース · 上級" image={`${IMG}/course-strategy.svg`} onClick={() => props.onOpenCategory('経営戦略')} />
           <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6C8EF5" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>} iconBg="rgba(108,142,245,.14)" name="フェルミ推定" meta="1コース · 中級" image={`${IMG}/fermi-card.png`} onClick={() => props.onOpenCategory('フェルミ推定')} />
         </div>
       </div>}
@@ -91,27 +201,285 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
   )
 }
 
-function SearchResults({ query, onOpenLesson }: { query: string; onOpenLesson: (id: number) => void }) {
-  const q = query.toLowerCase().trim()
-  const all = getAllLessonsFlat() as Record<number, { id: number; title: string; category: string; description?: string }>
-  const results = Object.values(all).filter(l =>
-    l.title.toLowerCase().includes(q) || (l.category || '').toLowerCase().includes(q)
-  ).slice(0, 20)
+// ──────── フィルタバー ────────
+function FilterBar(p: {
+  levelFilters: Set<LevelFilter>; setLevelFilters: (s: Set<LevelFilter>) => void
+  progressFilters: Set<ProgressFilter>; setProgressFilters: (s: Set<ProgressFilter>) => void
+  formatFilters: Set<FormatFilter>; setFormatFilters: (s: Set<FormatFilter>) => void
+  sortOption: SortOption; setSortOption: (s: SortOption) => void
+  showSort: boolean
+}) {
+  const toggle = <T,>(set: Set<T>, val: T, setter: (s: Set<T>) => void) => {
+    const next = new Set(set)
+    if (next.has(val)) next.delete(val); else next.add(val)
+    setter(next)
+  }
   return (
-    <div style={{ flex: 1, padding: '8px 16px 100px', display: 'grid', gridTemplateColumns: '1fr', gap: 12 }}>
-      {results.length === 0 && (
-        <div style={{ padding: 32, textAlign: 'center', color: v3.color.text2, fontSize: 14 }}>「{query}」に一致するレッスンが見つかりません</div>
-      )}
-      {results.map(lesson => (
-        <div key={lesson.id} onClick={() => onOpenLesson(lesson.id)}
-          style={{ background: v3.color.card, borderRadius: 14, padding: '14px 16px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 12 }}>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 15, fontWeight: 700, color: v3.color.text, marginBottom: 2 }}>{lesson.title}</div>
-            <div style={{ fontSize: 14, color: v3.color.text2 }}>{lesson.category}</div>
-          </div>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5"><polyline points="9 18 15 12 9 6" /></svg>
+    <div style={{ padding: '0 16px 6px', display: 'flex', flexDirection: 'column', gap: 6 }}>
+      <div style={{ display: 'flex', gap: 6, overflowX: 'auto', paddingBottom: 4, scrollbarWidth: 'none' }}>
+        {(['初級', '中級', '上級'] as LevelFilter[]).map(l => (
+          <Pill key={l} active={p.levelFilters.has(l)} onClick={() => toggle(p.levelFilters, l, p.setLevelFilters)} label={l} />
+        ))}
+        <Pill active={p.progressFilters.has('todo')} onClick={() => toggle(p.progressFilters, 'todo', p.setProgressFilters)} label="未着手" />
+        <Pill active={p.progressFilters.has('done')} onClick={() => toggle(p.progressFilters, 'done', p.setProgressFilters)} label="完了" />
+        <Pill active={p.formatFilters.has('quiz')} onClick={() => toggle(p.formatFilters, 'quiz', p.setFormatFilters)} label="クイズ" />
+        <Pill active={p.formatFilters.has('think')} onClick={() => toggle(p.formatFilters, 'think', p.setFormatFilters)} label="思考問題" />
+        <Pill active={p.formatFilters.has('case')} onClick={() => toggle(p.formatFilters, 'case', p.setFormatFilters)} label="ケース" />
+      </div>
+      {p.showSort && (
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <select value={p.sortOption} onChange={e => p.setSortOption(e.target.value as SortOption)}
+            style={{ background: v3.color.card, color: v3.color.text2, border: `1px solid ${v3.color.line}`, borderRadius: 8, padding: '4px 8px', fontSize: 12, fontFamily: 'inherit' }}>
+            <option value="relevance">関連度順</option>
+            <option value="level">難易度順</option>
+            <option value="id">レッスン番号順</option>
+          </select>
         </div>
-      ))}
+      )}
+    </div>
+  )
+}
+
+function Pill({ active, onClick, label }: { active: boolean; onClick: () => void; label: string }) {
+  return (
+    <button onClick={onClick}
+      style={{
+        flexShrink: 0,
+        padding: '6px 12px',
+        borderRadius: 100,
+        border: `1px solid ${active ? v3.color.accent : v3.color.line}`,
+        background: active ? 'rgba(108,142,245,.18)' : v3.color.card,
+        color: active ? v3.color.accent : v3.color.text2,
+        fontSize: 12, fontWeight: 600,
+        cursor: 'pointer',
+        fontFamily: 'inherit',
+        whiteSpace: 'nowrap',
+      }}>
+      {label}
+    </button>
+  )
+}
+
+// ──────── 検索パネル本体 ────────
+function SearchPanel(p: {
+  query: string
+  levelFilters: Set<LevelFilter>
+  progressFilters: Set<ProgressFilter>
+  formatFilters: Set<FormatFilter>
+  sortOption: SortOption
+  onOpenLesson: (id: number) => void
+  onOpenCategory: (cat: string) => void
+  onPickKeyword: (k: string) => void
+}) {
+  const [history, setHistory] = useState<string[]>(() => loadSearchHistory())
+  useEffect(() => { setHistory(loadSearchHistory()) }, [p.query])
+
+  const all = getAllLessonsFlat()
+  const completed = useMemo(() => new Set(getCompletedLessons()), [])
+
+  // レッスンID → 所属コース（最初に見つかったもの）
+  const lessonToCourse: Map<number, Course> = useMemo(() => {
+    const m = new Map<number, Course>()
+    for (const c of COURSES) for (const id of c.lessonIds) if (!m.has(id)) m.set(id, c)
+    return m
+  }, [])
+
+  const nq = normalizeQ(p.query)
+  const hasQuery = nq.length > 0
+  const hasFilter = p.levelFilters.size + p.progressFilters.size + p.formatFilters.size > 0
+
+  const results = useMemo<SearchResult[]>(() => {
+    const out: SearchResult[] = []
+
+    // コース検索（タイトル / 説明 / カテゴリ）
+    if (hasQuery) {
+      for (const c of COURSES) {
+        const fields = [c.title, c.description, c.category]
+        let score = 0
+        if (normalizeQ(c.title).includes(nq)) score += 12
+        else if (normalizeQ(c.category).includes(nq)) score += 6
+        else if (normalizeQ(c.description).includes(nq)) score += 4
+        if (score === 0) {
+          // 全体ヒットなしならスキップ
+          continue
+        }
+        const doneCount = c.lessonIds.filter(id => completed.has(`lesson-${id}`)).length
+        out.push({ kind: 'course', course: c, doneCount, totalCount: c.lessonIds.length, score })
+        void fields
+      }
+    }
+
+    // レッスン検索
+    for (const lesson of Object.values(all)) {
+      if (!lesson) continue
+      const course = lessonToCourse.get(lesson.id) || null
+      const status: 'todo' | 'done' = completed.has(`lesson-${lesson.id}`) ? 'done' : 'todo'
+      const level = course?.level as LevelFilter | undefined
+
+      // 形式判定
+      const formats: Set<FormatFilter> = new Set()
+      for (const s of lesson.steps) {
+        if (s.type === 'quiz') formats.add('quiz')
+        else if (s.type === 'think') formats.add('think')
+        else if (s.type === 'case') formats.add('case')
+      }
+
+      // フィルタ適用
+      if (p.levelFilters.size && (!level || !p.levelFilters.has(level))) continue
+      if (p.progressFilters.size && !p.progressFilters.has(status)) continue
+      if (p.formatFilters.size) {
+        let ok = false
+        for (const f of p.formatFilters) if (formats.has(f)) { ok = true; break }
+        if (!ok) continue
+      }
+
+      // スコア計算
+      let score = 0
+      let snippet: string | undefined
+      if (hasQuery) {
+        if (normalizeQ(lesson.title).includes(nq)) score += 10
+        if (normalizeQ(lesson.category).includes(nq)) score += 5
+        // 本文検索
+        for (const s of lesson.steps) {
+          let target = ''
+          if (s.type === 'explain') target = s.title + '\n' + s.content
+          else if (s.type === 'quiz') target = s.question + '\n' + s.explanation + '\n' + s.options.map(o => o.label).join('\n')
+          else if (s.type === 'think') target = s.question + '\n' + s.modelAnswer + '\n' + s.points.join('\n')
+          else if (s.type === 'case') target = s.title + '\n' + s.situation + '\n' + s.conclusion
+          if (target && normalizeQ(target).includes(nq)) {
+            score += 2
+            if (!snippet) snippet = extractSnippet(target, nq)
+          }
+        }
+        if (score === 0) continue
+      }
+
+      out.push({ kind: 'lesson', lesson, course, status, level, formats, score: score || 1, snippet })
+    }
+
+    // ソート
+    const levelOrder: Record<string, number> = { '初級': 0, '中級': 1, '上級': 2 }
+    out.sort((a, b) => {
+      if (p.sortOption === 'level') {
+        const la = a.kind === 'lesson' ? (levelOrder[a.level || ''] ?? 99) : (levelOrder[a.course.level] ?? 99)
+        const lb = b.kind === 'lesson' ? (levelOrder[b.level || ''] ?? 99) : (levelOrder[b.course.level] ?? 99)
+        if (la !== lb) return la - lb
+      }
+      if (p.sortOption === 'id') {
+        const ia = a.kind === 'lesson' ? a.lesson.id : 0
+        const ib = b.kind === 'lesson' ? b.lesson.id : 0
+        if (ia !== ib) return ia - ib
+      }
+      // 関連度（コース優先 → score 降順）
+      if (a.kind !== b.kind) return a.kind === 'course' ? -1 : 1
+      return b.score - a.score
+    })
+
+    return out.slice(0, 50)
+  }, [all, lessonToCourse, completed, nq, hasQuery, p.levelFilters, p.progressFilters, p.formatFilters, p.sortOption])
+
+  // クエリもフィルタも空 → 履歴・サジェスト
+  if (!hasQuery && !hasFilter) {
+    return (
+      <div style={{ padding: '12px 16px 100px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+        {history.length > 0 && (
+          <div>
+            <div style={{ fontSize: 12, fontWeight: 600, color: v3.color.text2, marginBottom: 6 }}>最近の検索</div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+              {history.map(h => (
+                <Pill key={h} active={false} onClick={() => p.onPickKeyword(h)} label={h} />
+              ))}
+            </div>
+          </div>
+        )}
+        <div>
+          <div style={{ fontSize: 12, fontWeight: 600, color: v3.color.text2, marginBottom: 6 }}>おすすめキーワード</div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+            {SUGGESTED_KEYWORDS.map(k => (
+              <Pill key={k} active={false} onClick={() => p.onPickKeyword(k)} label={k} />
+            ))}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (results.length === 0) {
+    return (
+      <div style={{ padding: 32, textAlign: 'center', color: v3.color.text2, fontSize: 14 }}>
+        条件に一致する{hasQuery ? `レッスンが見つかりません` : `項目がありません`}
+        {hasQuery && (<><br /><span style={{ fontSize: 12 }}>「{p.query}」</span></>)}
+      </div>
+    )
+  }
+
+  return (
+    <div style={{ flex: 1, padding: '8px 16px 100px', display: 'grid', gridTemplateColumns: '1fr', gap: 10 }}>
+      <div style={{ fontSize: 11, color: v3.color.text2, fontWeight: 600, padding: '0 2px' }}>
+        {results.length}件
+      </div>
+      {results.map(r => r.kind === 'course'
+        ? <CourseResultCard key={`c-${r.course.id}`} result={r} query={p.query} onOpen={() => p.onOpenCategory(r.course.category)} />
+        : <LessonResultCard key={`l-${r.lesson.id}`} result={r} query={p.query} onOpen={() => p.onOpenLesson(r.lesson.id)} />
+      )}
+    </div>
+  )
+}
+
+function CourseResultCard({ result, query, onOpen }: { result: CourseResult; query: string; onOpen: () => void }) {
+  const c = result.course
+  return (
+    <div onClick={onOpen}
+      style={{ background: v3.color.card, borderRadius: 14, padding: '12px 14px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 12, border: `1px solid ${v3.color.line}` }}>
+      <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(108,142,245,.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: v3.color.accent }}>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15Z"/></svg>
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 11, color: v3.color.accent, fontWeight: 700, marginBottom: 2 }}>コース · {c.category}</div>
+        <div style={{ fontSize: 14, fontWeight: 700, color: v3.color.text, marginBottom: 2, lineHeight: 1.3 }}>
+          <Highlight text={c.title} query={query} />
+        </div>
+        <div style={{ fontSize: 12, color: v3.color.text2 }}>
+          {c.level} · {result.doneCount}/{result.totalCount} 完了
+        </div>
+      </div>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5"><polyline points="9 18 15 12 9 6" /></svg>
+    </div>
+  )
+}
+
+function LessonResultCard({ result, query, onOpen }: { result: LessonResult; query: string; onOpen: () => void }) {
+  const l = result.lesson
+  const courseTitle = result.course?.title
+  return (
+    <div onClick={onOpen}
+      style={{ background: v3.color.card, borderRadius: 14, padding: '12px 14px', cursor: 'pointer', display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+      <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(108,142,245,.10)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: v3.color.accent }}>
+        <LessonIcon id={l.id} action="lesson" size={20} />
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2, flexWrap: 'wrap' }}>
+          {result.level && (
+            <span style={{ fontSize: 10, fontWeight: 700, padding: '1px 6px', borderRadius: 4, background: result.level === '初級' ? 'rgba(52,211,153,.18)' : result.level === '中級' ? 'rgba(251,191,36,.18)' : 'rgba(248,113,113,.18)', color: result.level === '初級' ? '#34D399' : result.level === '中級' ? '#FBBF24' : '#F87171' }}>{result.level}</span>
+          )}
+          {result.status === 'done' && (
+            <span style={{ fontSize: 10, fontWeight: 700, padding: '1px 6px', borderRadius: 4, background: 'rgba(108,142,245,.18)', color: v3.color.accent, display: 'inline-flex', alignItems: 'center', gap: 3 }}>
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5"><polyline points="20 6 9 17 4 12"/></svg>
+              完了
+            </span>
+          )}
+          <span style={{ fontSize: 11, color: v3.color.text2 }}>{l.category}{courseTitle ? ` · ${courseTitle}` : ''}</span>
+        </div>
+        <div style={{ fontSize: 14, fontWeight: 700, color: v3.color.text, marginBottom: result.snippet ? 4 : 0, lineHeight: 1.3 }}>
+          <Highlight text={l.title} query={query} />
+        </div>
+        {result.snippet && (
+          <div style={{ fontSize: 11, color: v3.color.text2, lineHeight: 1.4 }}>
+            <Highlight text={result.snippet} query={query} />
+          </div>
+        )}
+      </div>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5" style={{ marginTop: 10, flexShrink: 0 }}><polyline points="9 18 15 12 9 6" /></svg>
     </div>
   )
 }
@@ -134,6 +502,7 @@ const CATEGORY_ID_TO_NAMES: Record<string, string[]> = {
   philosophy: ['哲学・思考の原理', 'philosophy'],
   'クライアントワーク': ['クライアントワーク'],
   'フェルミ推定': ['フェルミ推定'],
+  '経営戦略': ['経営戦略', 'strategy'],
 }
 
 const CATEGORY_LABEL_JP: Record<string, string> = {
@@ -151,6 +520,7 @@ const CATEGORY_LABEL_JP: Record<string, string> = {
   philosophy: '哲学・思考の原理',
   'クライアントワーク': 'クライアントワーク',
   'フェルミ推定': 'フェルミ推定',
+  '経営戦略': '経営戦略',
 }
 
 

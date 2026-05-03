@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg-pw" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#21283C"/>
+      <stop offset="100%" stop-color="#0F1525"/>
+    </linearGradient>
+    <linearGradient id="page" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.97"/>
+      <stop offset="100%" stop-color="#E8EEFF" stop-opacity="0.92"/>
+    </linearGradient>
+    <linearGradient id="page2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F4F7FF" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#D4DEFA" stop-opacity="0.75"/>
+    </linearGradient>
+    <radialGradient id="glow-pw" cx="0.7" cy="0.4" r="0.6">
+      <stop offset="0%" stop-color="#FB923C" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#FB923C" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="800" height="400" fill="url(#bg-pw)"/>
+  <circle cx="560" cy="160" r="260" fill="url(#glow-pw)"/>
+
+  <!-- 背景の紙束 -->
+  <g transform="translate(140,90) rotate(-6)">
+    <rect width="220" height="280" rx="6" fill="url(#page2)" opacity="0.55"/>
+  </g>
+  <g transform="translate(170,80) rotate(-2)">
+    <rect width="220" height="280" rx="6" fill="url(#page2)" opacity="0.75"/>
+  </g>
+
+  <!-- メインの紙 -->
+  <g transform="translate(200,70)">
+    <rect width="240" height="300" rx="8" fill="url(#page)"/>
+    <!-- ヘッダ帯 -->
+    <rect x="20" y="22" width="120" height="14" rx="3" fill="#1A1F2E" opacity="0.85"/>
+    <rect x="20" y="42" width="80" height="8" rx="2" fill="#6C8EF5" opacity="0.85"/>
+    <!-- 本文ライン -->
+    <g fill="#3B4663" opacity="0.55">
+      <rect x="20" y="74" width="200" height="6" rx="2"/>
+      <rect x="20" y="88" width="200" height="6" rx="2"/>
+      <rect x="20" y="102" width="160" height="6" rx="2"/>
+    </g>
+    <!-- ピラミッド構造の図 -->
+    <g transform="translate(60,130)">
+      <polygon points="60,0 120,90 0,90" fill="#6C8EF5" opacity="0.85"/>
+      <line x1="40" y1="60" x2="80" y2="60" stroke="#FFFFFF" stroke-width="1.5"/>
+      <line x1="20" y1="90" x2="100" y2="90" stroke="#FFFFFF" stroke-width="1.5"/>
+    </g>
+    <!-- 下部の本文 -->
+    <g fill="#3B4663" opacity="0.55">
+      <rect x="20" y="246" width="200" height="6" rx="2"/>
+      <rect x="20" y="260" width="180" height="6" rx="2"/>
+      <rect x="20" y="274" width="140" height="6" rx="2"/>
+    </g>
+  </g>
+
+  <!-- ペン -->
+  <g transform="translate(490,180) rotate(28)">
+    <rect x="0" y="0" width="180" height="14" rx="3" fill="#FB923C"/>
+    <rect x="0" y="0" width="40" height="14" rx="3" fill="#C0440E"/>
+    <polygon points="180,0 196,7 180,14" fill="#1A1F2E"/>
+  </g>
+
+  <!-- アクセント: チェックマーク（仕上がりの証） -->
+  <g transform="translate(620,90)">
+    <circle cx="0" cy="0" r="22" fill="#34D399"/>
+    <polyline points="-8,0 -2,7 9,-6" stroke="#FFFFFF" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>
