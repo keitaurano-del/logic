@@ -323,6 +323,7 @@ function AppV3() {
             navigate({ type: 'home' })
             // チュートリアルは右下FABから任意で起動
           }}
+          onNavigateToLogin={() => navigate({ type: 'login' })}
         />
       </Suspense>
     )

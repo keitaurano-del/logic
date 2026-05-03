@@ -1,10 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { v3 } from '../styles/tokensV3'
 import { getXp } from '../stats'
-
-// ── フェルミランキング画面（SCRUM-237） ────────────────────────
-// フェルミ推定の回答スコアをランキング表示
-// 初期実装: モックデータ（後でSupabase連携）
+import { getGuestId, getNickname } from '../guestId'
+import { API_BASE } from './apiBase'
 
 interface RankEntry {
   rank: number
@@ -13,36 +11,49 @@ interface RankEntry {
   isMe?: boolean
 }
 
-function getMockRanking(myScore: number, myName: string): RankEntry[] {
-  const others = [
-    { name: 'Taro M.', score: 98 },
-    { name: 'Yuki S.', score: 87 },
-    { name: 'Hana K.', score: 76 },
-    { name: 'Ryo T.', score: 65 },
-    { name: 'Ami F.', score: 54 },
-    { name: 'Ken N.', score: 43 },
-    { name: 'Saki I.', score: 38 },
-    { name: 'Jiro W.', score: 27 },
-    { name: 'Mika O.', score: 15 },
-  ]
-  const all = [...others, { name: myName, score: myScore, isMe: true }]
-  all.sort((a, b) => b.score - a.score)
-  return all.map((e, i) => ({ ...e, rank: i + 1 }))
-}
-
 export function FermiRankingScreen() {
   const [period, setPeriod] = useState<'weekly' | 'monthly' | 'alltime'>('weekly')
+  const [entries, setEntries] = useState<RankEntry[]>([])
+  const [loading, setLoading] = useState(true)
   const myScore = getXp()
-  const myName = (() => {
-    try {
-      return JSON.parse(localStorage.getItem('logic-user-profile') || '{}').displayName || 'あなた'
-    } catch { return 'あなた' }
-  })()
 
-  const ranking = getMockRanking(myScore, myName)
-  const myEntry = ranking.find(e => e.isMe)
-  const top3 = ranking.slice(0, 3)
-  const rest = ranking.slice(3)
+  useEffect(() => {
+    let cancelled = false
+    const guestId = getGuestId()
+    const nickname = getNickname()
+    const run = async () => {
+      try {
+        await fetch(`${API_BASE}/api/profile/sync-xp`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ guestId, nickname, xp: myScore }),
+        })
+      } catch { /* オフライン時は無視 */ }
+      try {
+        const r = await fetch(`${API_BASE}/api/placement/ranking?guestId=${encodeURIComponent(guestId)}`)
+        const d = await r.json()
+        if (!cancelled && d.top) {
+          const mapped: RankEntry[] = d.top.map((e: { rank: number; nickname: string; xp: number; isYou: boolean }) => ({
+            rank: e.rank,
+            name: e.nickname,
+            score: e.xp,
+            isMe: e.isYou,
+          }))
+          setEntries(mapped)
+        }
+      } catch { /* ネットワークエラー時は空リスト */ }
+      if (!cancelled) setLoading(false)
+    }
+    run()
+    return () => { cancelled = true }
+  }, [myScore])
+
+  // 期間フィルタ: APIがupdated_atを返さないため現状はalltime相当で表示
+  const filtered = entries
+
+  const myEntry = filtered.find(e => e.isMe)
+  const top3 = filtered.slice(0, 3)
+  const rest = filtered.slice(3)
 
   const periodLabel = { weekly: '今週', monthly: '今月', alltime: '累計' }
 
@@ -69,6 +80,13 @@ export function FermiRankingScreen() {
           </button>
         ))}
       </div>
+
+      {/* ローディング */}
+      {loading && (
+        <div style={{ textAlign: 'center', padding: '40px 20px', color: v3.color.text3, fontSize: 14 }}>
+          読み込み中...
+        </div>
+      )}
 
       {/* 自分のスコア */}
       {myEntry && (

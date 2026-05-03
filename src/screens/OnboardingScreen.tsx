@@ -4,6 +4,7 @@ import { startBetaCampaignCheckout, startCheckout } from '../subscription'
 
 interface OnboardingScreenProps {
   onComplete: () => void
+  onNavigateToLogin?: () => void
 }
 
 // ── カラー ──
@@ -435,7 +436,7 @@ function OnboardingPricingView({ onNext, onSelectPlan }: { onNext: () => void; o
 }
 
 // ── 登録画面（スクショ参考） ──────────────────────────────────
-function RegisterScreen({ onComplete, onSkip }: { onComplete: () => void; onSkip: () => void }) {
+function RegisterScreen({ onComplete, onSkip, onNavigateToLogin }: { onComplete: () => void; onSkip: () => void; onNavigateToLogin?: () => void }) {
   const [termsChecked, setTermsChecked] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -594,11 +595,7 @@ function RegisterScreen({ onComplete, onSkip }: { onComplete: () => void; onSkip
             お持ちのアカウントをお持ちの方は
           </span>
           <button
-            onClick={() => {
-              // ログイン画面に遷移（AppV3側でlogin画面に飛ばす）
-              // onComplete の代わりに login 画面へ — ここでは簡易的に onComplete
-              onComplete()
-            }}
+            onClick={onNavigateToLogin}
             style={{
               background: 'none', border: 'none',
               color: C.teal, fontSize: 13, fontWeight: 700,
@@ -638,7 +635,7 @@ function GoogleIcon() {
 }
 
 // ── メインエクスポート ────────────────────────────────────────────
-export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
+export function OnboardingScreen({ onComplete, onNavigateToLogin }: OnboardingScreenProps) {
   const [phase, setPhase] = useState<'slides' | 'attribute' | 'pricing' | 'billing' | 'register'>('slides')
   const [selectedPlan, setSelectedPlan] = useState<'standard' | 'premium'>('standard')
 
@@ -674,6 +671,7 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
     <RegisterScreen
       onComplete={onComplete}
       onSkip={onComplete}
+      onNavigateToLogin={onNavigateToLogin}
     />
   )
 }
