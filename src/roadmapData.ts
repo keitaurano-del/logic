@@ -47,13 +47,13 @@ export const roadmaps: RoadmapDef[] = [
   {
     id: 'critical',
     title: 'クリティカルシンキング',
-    subtitle: '情報を魜呪みにせず判断する',
+    subtitle: '情報を鵜呑みにせず判断する',
     emoji: '🔍',
     color: '#059669',
     steps: [
       { lessonId: 40, title: 'クリティカルシンキング入門', description: '根拠をもとに自分の頭で判断する' },
       { lessonId: 41, title: '論理的誤謬を見破る', description: '「正しそうな嘘」に騙されない' },
-      { lessonId: 42, title: 'データを正しく読む', description: '統計やグラフのトリックを見抑く' },
+      { lessonId: 42, title: 'データを正しく読む', description: '統計やグラフのトリックを見抜く' },
       { lessonId: 43, title: '問いを立てる力', description: '良い問いが良い答えを生む' },
     ],
   },

@@ -75,47 +75,14 @@ import { strategyLessonMap } from './strategyLessons'
 const _activeLogicLessons = (): Record<number, LessonData> =>
   getLocale() === 'en' ? logicLessonMapEn : logicLessonMap
 
-export const allLessons: Record<number, LessonData> = new Proxy({} as Record<number, LessonData>, {
-  get(_t, prop) {
-    const base: Record<number, LessonData> = {
-      ..._activeLogicLessons(),
-      ...caseLessonMap,
-      ...criticalLessonMap,
-      ...hypothesisLessonMap,
-      ...problemSettingLessonMap,
-      ...designThinkingLessonMap,
-      ...lateralThinkingLessonMap,
-      ...analogyThinkingLessonMap,
-      ...systemsThinkingLessonMap,
-      ...proposalLessonMap,
-      ...proposalCourseLessonMap,
-      ...philosophyLessonMap,
-      ...clientWorkLessonMap,
-      ...fermiLessonMap,
-      ...extraLessonMap,
-      ...strategyLessonMap,
-    }
-    return base[prop as unknown as number]
-  },
-  has(_t, prop) {
-    const base: Record<number, LessonData> = {
-      ..._activeLogicLessons(), ...caseLessonMap, ...criticalLessonMap,
-      ...hypothesisLessonMap, ...problemSettingLessonMap, ...designThinkingLessonMap,
-      ...lateralThinkingLessonMap, ...analogyThinkingLessonMap, ...systemsThinkingLessonMap,
-      ...proposalLessonMap, ...proposalCourseLessonMap,
-      ...philosophyLessonMap,
-      ...clientWorkLessonMap,
-      ...fermiLessonMap,
-      ...extraLessonMap,
-      ...strategyLessonMap,
-    }
-    return prop in base
-  },
-})
-
-// Proxyは Object.values() で列挙できないため、フラットな Map を返すヘルパー
-export function getAllLessonsFlat(): Record<number, LessonData> {
-  return {
+// ロケールが変わるたびに再構築する以外は同じマージ結果を使い回す。
+// Proxy / getAllLessonsFlat のホットパスで毎回 spread するのを避ける。
+let _cachedMerged: Record<number, LessonData> | null = null
+let _cachedLocale: string | null = null
+function _getMergedLessons(): Record<number, LessonData> {
+  const locale = getLocale()
+  if (_cachedMerged && _cachedLocale === locale) return _cachedMerged
+  _cachedMerged = {
     ..._activeLogicLessons(),
     ...caseLessonMap,
     ...criticalLessonMap,
@@ -133,4 +100,20 @@ export function getAllLessonsFlat(): Record<number, LessonData> {
     ...extraLessonMap,
     ...strategyLessonMap,
   }
+  _cachedLocale = locale
+  return _cachedMerged
+}
+
+export const allLessons: Record<number, LessonData> = new Proxy({} as Record<number, LessonData>, {
+  get(_t, prop) {
+    return _getMergedLessons()[prop as unknown as number]
+  },
+  has(_t, prop) {
+    return prop in _getMergedLessons()
+  },
+})
+
+// Proxyは Object.values() で列挙できないため、フラットな Map を返すヘルパー
+export function getAllLessonsFlat(): Record<number, LessonData> {
+  return _getMergedLessons()
 }

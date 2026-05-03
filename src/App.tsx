@@ -99,7 +99,7 @@ const lessons = [
   // クリティカルシンキング
   { id: 40, category: 'クリティカルシンキング', title: 'クリティカルシンキング入門', description: '根拠をもとに自分の頭で判断する', progress: 0, action: 'lesson' as const },
   { id: 41, category: 'クリティカルシンキング', title: '論理的誤謬を見破る', description: '「正しそうな嘘」に騙されない', progress: 0, action: 'lesson' as const },
-  { id: 42, category: 'クリティカルシンキング', title: 'データを正しく読む', description: 'グラフや統計のトリックを見抑く', progress: 0, action: 'lesson' as const },
+  { id: 42, category: 'クリティカルシンキング', title: 'データを正しく読む', description: 'グラフや統計のトリックを見抜く', progress: 0, action: 'lesson' as const },
   { id: 43, category: 'クリティカルシンキング', title: '問いを立てる力', description: '良い問いが良い答えを生む', progress: 0, action: 'lesson' as const },
   // 仮説思考
   { id: 50, category: '仮説思考', title: '仮説思考入門', description: 'まず仮の答えを立ててから検証する', progress: 0, action: 'lesson' as const },
