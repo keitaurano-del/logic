@@ -40,8 +40,8 @@ const SLIDES = [
         <circle cx="22" cy="56" r="2" fill="#8BA8FF" opacity="0.7"/>
       </svg>
     ),
-    title: '論理思考力を\n毎日鍛えよう。',
-    subtitle: 'レッスン・フェルミ推定・AIフィードバックで\nビジネス思考力が着実に伸びる。',
+    title: '頭の回転を\n鍛えるアプリ。',
+    subtitle: 'フェルミ推定・論理・ケース思考を\n毎日5分でトレーニング。',
     btnLabel: 'つぎへ',
   },
   {

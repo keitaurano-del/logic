@@ -146,7 +146,7 @@ const fermiLesson203: LessonData = {
     },
     {
       type: 'quiz',
-      explanation: '日本のスマートフォン普及率は約90%。iPhoneとAndroidがほぼ半々。「成人×普及率」で対象人口を計算するのが基本パターン。',
+      explanation: '日本のスマートフォン普及率は約90%。日本ではiOSが約6割・Androidが約4割が目安（他国に比べiOS比率が高い）。「成人×普及率」で対象人口を計算するのが基本パターン。',
       question: '日本のスマートフォン保有台数（SIM含む）として最も近いのはどれですか？',
       options: [
         { label: '約3,000万台', correct: false },
