@@ -1,6 +1,15 @@
 import React, { useState } from 'react'
 import { loginWithGoogle, loginWithEmail, signupWithEmail, isSupabaseConfigured } from '../supabase'
 import { startBetaCampaignCheckout, startCheckout } from '../subscription'
+import {
+  saveUserProfile,
+  AGE_LABELS,
+  GENDER_LABELS,
+  OCCUPATION_LABELS,
+  type AgeGroup,
+  type Gender,
+  type Occupation,
+} from '../userProfile'
 
 interface OnboardingScreenProps {
   onComplete: () => void
@@ -242,47 +251,165 @@ function OBCell({ value }: { value: string | boolean }) {
 }
 
 // ── 属性質問ステップ ─────────────────────────────────────────
-const OCCUPATION_OPTIONS = [
-  { id: 'student',    label: '学生',         icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 1.5 9 1.5 12 0v-5"/></svg> },
-  { id: 'newgrad',    label: '新卒〜3年目',   icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg> },
-  { id: 'mid',        label: 'ミドル（4〜10年）', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></svg> },
-  { id: 'senior',     label: 'シニア・管理職', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg> },
-  { id: 'freelance',  label: 'フリーランス',  icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> },
-  { id: 'other',      label: 'その他',        icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> },
+const ACCENT = '#6C8EF5'
+
+const AGE_ORDER: AgeGroup[] = ['teens', '20s', '30s', '40s', '50plus']
+const GENDER_ORDER: Gender[] = ['male', 'female', 'other', 'na']
+const OCCUPATION_ORDER: Occupation[] = [
+  'executive',
+  'consultant',
+  'strategy',
+  'sales_marketing',
+  'engineering',
+  'admin',
+  'professional',
+  'student',
+  'other',
 ]
 
-function OnboardingAttributeView({ onNext }: { onNext: (occupation: string) => void }) {
-  const [selected, setSelected] = React.useState('')
-  const ACCENT = '#6C8EF5'
+type AttrStep = 'age' | 'gender' | 'occupation'
+const STEP_ORDER: AttrStep[] = ['age', 'gender', 'occupation']
+
+function AttrOption<T extends string>({
+  value,
+  label,
+  selected,
+  onSelect,
+}: { value: T; label: string; selected: boolean; onSelect: (v: T) => void }) {
+  return (
+    <button
+      onClick={() => onSelect(value)}
+      style={{
+        display: 'flex', alignItems: 'center', gap: 14,
+        padding: '16px 18px', borderRadius: 14,
+        border: `2px solid ${selected ? ACCENT : 'rgba(255,255,255,0.1)'}`,
+        background: selected ? `${ACCENT}18` : 'rgba(255,255,255,0.04)',
+        color: '#fff', cursor: 'pointer', transition: 'all .15s', textAlign: 'left',
+      }}
+    >
+      <span style={{ fontSize: 15, fontWeight: selected ? 700 : 500, flex: 1 }}>{label}</span>
+      {selected && (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={ACCENT} strokeWidth="2.5" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+      )}
+    </button>
+  )
+}
+
+function OnboardingAttributeView({ onNext }: { onNext: () => void }) {
+  const [step, setStep] = React.useState<AttrStep>('age')
+  const [age, setAge] = React.useState<AgeGroup | ''>('')
+  const [gender, setGender] = React.useState<Gender | ''>('')
+  const [occupation, setOccupation] = React.useState<Occupation | ''>('')
+
+  const stepIdx = STEP_ORDER.indexOf(step)
+  const currentValue = step === 'age' ? age : step === 'gender' ? gender : occupation
+  const isLast = stepIdx === STEP_ORDER.length - 1
+
+  const goNext = () => {
+    if (!currentValue) return
+    if (isLast) {
+      saveUserProfile({
+        age: age || undefined,
+        gender: gender || undefined,
+        occupation: occupation || undefined,
+        completedAt: new Date().toISOString(),
+      })
+      onNext()
+      return
+    }
+    setStep(STEP_ORDER[stepIdx + 1])
+  }
+
+  const goBack = () => {
+    if (stepIdx === 0) return
+    setStep(STEP_ORDER[stepIdx - 1])
+  }
+
+  const heading = step === 'age'
+    ? '年齢を教えてください'
+    : step === 'gender'
+      ? '性別を教えてください'
+      : '職種を教えてください'
+
+  const sub = step === 'age'
+    ? '年代別の傾向を学習体験に反映します'
+    : step === 'gender'
+      ? '統計データの分析にのみ使用します'
+      : 'あなたに合ったレッスンを提案します'
 
   return (
-    <div style={{ minHeight: '100dvh', background: 'linear-gradient(160deg, #0F1220 0%, #1A2340 60%, #0F1A35 100%)', color: '#fff', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", padding: 'calc(env(safe-area-inset-top, 44px) + 24px) 24px calc(env(safe-area-inset-bottom, 24px) + 24px)' }}>
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-        <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.2em', color: `${ACCENT}90`, textAlign: 'center', marginBottom: 16 }}>LOGIC</div>
-        <h1 style={{ fontSize: 26, fontWeight: 800, textAlign: 'center', margin: '0 0 10px', lineHeight: 1.35, letterSpacing: '-0.02em' }}>
-          あなたについて<br />教えてください
+    <div style={{
+      minHeight: '100dvh',
+      background: 'linear-gradient(160deg, #0F1220 0%, #1A2340 60%, #0F1A35 100%)',
+      color: '#fff', display: 'flex', flexDirection: 'column',
+      fontFamily: "'Noto Sans JP', sans-serif",
+      padding: 'calc(env(safe-area-inset-top, 44px) + 16px) 24px calc(env(safe-area-inset-bottom, 24px) + 24px)',
+    }}>
+      {/* ヘッダー: 戻る + 進捗 */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 28 }}>
+        <button
+          onClick={goBack}
+          disabled={stepIdx === 0}
+          style={{
+            width: 36, height: 36, borderRadius: '50%',
+            background: 'rgba(255,255,255,0.08)', border: 'none',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: stepIdx === 0 ? 'default' : 'pointer',
+            opacity: stepIdx === 0 ? 0.3 : 1, flexShrink: 0,
+          }}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div style={{ flex: 1, display: 'flex', gap: 6 }}>
+          {STEP_ORDER.map((_, i) => (
+            <div key={i} style={{
+              flex: 1, height: 4, borderRadius: 2,
+              background: i <= stepIdx ? ACCENT : 'rgba(255,255,255,0.12)',
+              transition: 'background .25s',
+            }} />
+          ))}
+        </div>
+        <div style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.5)', minWidth: 28, textAlign: 'right' }}>
+          {stepIdx + 1}/{STEP_ORDER.length}
+        </div>
+      </div>
+
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
+        <h1 style={{ fontSize: 24, fontWeight: 800, margin: '0 0 8px', lineHeight: 1.35, letterSpacing: '-0.02em' }}>
+          {heading}
         </h1>
-        <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', textAlign: 'center', margin: '0 0 32px', lineHeight: 1.6 }}>
-          あなたに最適なコースを提案するよ
+        <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', margin: '0 0 24px', lineHeight: 1.6 }}>
+          {sub}
         </p>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {OCCUPATION_OPTIONS.map(opt => (
-            <button key={opt.id} onClick={() => setSelected(opt.id)}
-              style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '16px 18px', borderRadius: 14, border: `2px solid ${selected === opt.id ? ACCENT : 'rgba(255,255,255,0.1)'}`, background: selected === opt.id ? `${ACCENT}18` : 'rgba(255,255,255,0.04)', color: '#fff', cursor: 'pointer', transition: 'all .15s', textAlign: 'left' }}>
-              <div style={{ color: selected === opt.id ? ACCENT : 'rgba(255,255,255,0.5)', flexShrink: 0 }}>{opt.icon}</div>
-              <span style={{ fontSize: 15, fontWeight: selected === opt.id ? 700 : 500 }}>{opt.label}</span>
-              {selected === opt.id && (
-                <svg style={{ marginLeft: 'auto' }} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={ACCENT} strokeWidth="2.5" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-              )}
-            </button>
+          {step === 'age' && AGE_ORDER.map(v => (
+            <AttrOption key={v} value={v} label={AGE_LABELS[v]} selected={age === v} onSelect={setAge} />
+          ))}
+          {step === 'gender' && GENDER_ORDER.map(v => (
+            <AttrOption key={v} value={v} label={GENDER_LABELS[v]} selected={gender === v} onSelect={setGender} />
+          ))}
+          {step === 'occupation' && OCCUPATION_ORDER.map(v => (
+            <AttrOption key={v} value={v} label={OCCUPATION_LABELS[v]} selected={occupation === v} onSelect={setOccupation} />
           ))}
         </div>
       </div>
 
-      <button onClick={() => selected && onNext(selected)} disabled={!selected}
-        style={{ width: '100%', padding: '17px', borderRadius: 16, border: 'none', background: selected ? ACCENT : 'rgba(255,255,255,0.1)', color: selected ? '#fff' : 'rgba(255,255,255,0.3)', fontSize: 16, fontWeight: 800, cursor: selected ? 'pointer' : 'not-allowed', marginTop: 24, boxShadow: selected ? `0 8px 24px ${ACCENT}50` : 'none', transition: 'all .2s' }}>
-        次へ
+      <button
+        onClick={goNext}
+        disabled={!currentValue}
+        style={{
+          width: '100%', padding: '17px', borderRadius: 16, border: 'none',
+          background: currentValue ? ACCENT : 'rgba(255,255,255,0.1)',
+          color: currentValue ? '#fff' : 'rgba(255,255,255,0.3)',
+          fontSize: 16, fontWeight: 800,
+          cursor: currentValue ? 'pointer' : 'not-allowed',
+          marginTop: 24,
+          boxShadow: currentValue ? `0 8px 24px ${ACCENT}50` : 'none',
+          transition: 'all .2s',
+        }}
+      >
+        {isLast ? '次へ進む' : '次へ'}
       </button>
     </div>
   )
