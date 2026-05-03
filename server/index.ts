@@ -1399,7 +1399,7 @@ app.post('/api/fermi/question', fermiLimiter, async (req, res) => {
 
 app.post('/api/placement/submit', async (req, res) => {
   try {
-    const { guestId, nickname, deviation, correctCount, totalCount } = req.body || {}
+    const { guestId, nickname, deviation, correctCount, totalCount, xp } = req.body || {}
     if (!guestId || typeof deviation !== 'number') {
       return res.status(400).json({ error: 'guestId and deviation required' })
     }
@@ -1409,20 +1409,55 @@ app.post('/api/placement/submit', async (req, res) => {
       return res.status(503).json({ error: 'Supabase not configured' })
     }
 
-    const { error } = await supabase.from('placement_results').upsert(
-      {
-        guest_id: guestId,
-        nickname: (nickname || 'ゲスト').slice(0, 20),
-        deviation,
-        correct_count: correctCount || 0,
-        total_count: totalCount || 0,
-        completed_at: new Date().toISOString(),
-      },
-      { onConflict: 'guest_id' }
-    )
+    const basePayload = {
+      guest_id: guestId,
+      nickname: (nickname || 'ゲスト').slice(0, 20),
+      deviation,
+      correct_count: correctCount || 0,
+      total_count: totalCount || 0,
+      completed_at: new Date().toISOString(),
+    }
+    const fullPayload = { ...basePayload, xp: typeof xp === 'number' && xp >= 0 ? xp : 0 }
+
+    let { error } = await supabase.from('placement_results').upsert(fullPayload, { onConflict: 'guest_id' })
+    // Migration 008 未適用環境では xp 列が無いためエラーになる。基本ペイロードで再試行。
+    if (error && /xp/i.test(error.message)) {
+      const retry = await supabase.from('placement_results').upsert(basePayload, { onConflict: 'guest_id' })
+      error = retry.error
+    }
 
     if (error) {
       console.error('[placement/submit] Supabase error:', error.message)
+      return res.status(500).json({ error: error.message })
+    }
+
+    res.json({ ok: true })
+  } catch (e: unknown) {
+    res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
+  }
+})
+
+// Sync XP only — used by the ranking screen on mount so other users see
+// the latest XP without requiring a fresh placement submission.
+// No-op if the user hasn't yet taken the placement test.
+app.post('/api/placement/sync-xp', async (req, res) => {
+  try {
+    const { guestId, xp } = req.body || {}
+    if (!guestId || typeof xp !== 'number' || xp < 0) {
+      return res.status(400).json({ error: 'guestId and non-negative xp required' })
+    }
+
+    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      return res.status(503).json({ error: 'Supabase not configured' })
+    }
+
+    const { error } = await supabase
+      .from('placement_results')
+      .update({ xp })
+      .eq('guest_id', guestId)
+
+    if (error) {
+      console.error('[placement/sync-xp] Supabase error:', error.message)
       return res.status(500).json({ error: error.message })
     }
 
@@ -1465,11 +1500,22 @@ app.get('/api/placement/ranking', async (req, res) => {
       return res.status(503).json({ error: 'Supabase not configured' })
     }
 
-    const { data, error } = await supabase
+    let { data, error } = await supabase
       .from('placement_results')
-      .select('guest_id, nickname, deviation, correct_count, total_count')
+      .select('guest_id, nickname, deviation, correct_count, total_count, xp')
       .gt('total_count', 0)  // スキップユーザー除外
       .order('deviation', { ascending: false })
+
+    // Migration 008 未適用環境では xp 列が無い。フォールバックで再取得。
+    if (error && /xp/i.test(error.message)) {
+      const retry = await supabase
+        .from('placement_results')
+        .select('guest_id, nickname, deviation, correct_count, total_count')
+        .gt('total_count', 0)
+        .order('deviation', { ascending: false })
+      data = retry.data
+      error = retry.error
+    }
 
     if (error) {
       console.error('[placement/ranking] Supabase error:', error.message)
@@ -1482,20 +1528,23 @@ app.get('/api/placement/ranking', async (req, res) => {
       rank: i + 1,
       nickname: e.nickname,
       deviation: e.deviation,
+      xp: typeof e.xp === 'number' ? e.xp : 0,
       isYou: e.guest_id === guestId,
     }))
 
     let yourRank = -1
     let yourDeviation = -1
+    let yourXp = 0
     if (guestId) {
       const idx = entries.findIndex((e: any) => e.guest_id === guestId)
       if (idx >= 0) {
         yourRank = idx + 1
         yourDeviation = (entries[idx] as any).deviation
+        yourXp = (entries[idx] as any).xp || 0
       }
     }
 
-    res.json({ total, top, yourRank, yourDeviation })
+    res.json({ total, top, yourRank, yourDeviation, yourXp })
   } catch (e: unknown) {
     res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
   }
