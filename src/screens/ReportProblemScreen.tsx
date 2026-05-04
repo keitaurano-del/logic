@@ -4,6 +4,7 @@ import { IconButton } from '../components/IconButton'
 import { Button } from '../components/Button'
 import { API_BASE } from './apiBase'
 import { t } from '../i18n'
+import { haptic } from '../platform/haptics'
 
 interface ReportContext {
   lessonId?: number
@@ -32,6 +33,7 @@ export function ReportProblemScreen({ context, onBack }: ReportProblemScreenProp
 
   const handleSubmit = async () => {
     if (!issueType) return
+    haptic.light()
     setSubmitting(true)
     setError('')
     try {

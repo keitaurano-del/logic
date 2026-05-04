@@ -7,6 +7,7 @@ import {
   cancelDailyReminder, requestNotificationPermission, isNative,
 } from '../notifications'
 import { getSubscriptionState, isPremium, daysLeftInTrial } from '../subscription'
+import { Switch } from '../components/Switch'
 import { confirm as confirmDialog } from '../platform/dialog'
 
 interface SettingsScreenProps {
@@ -58,23 +59,9 @@ function Divider() {
   return <div style={{ height: 1, background: 'var(--border)', marginLeft: 16 }} />
 }
 
-function Toggle({ value, onChange }: { value: boolean; onChange: (v: boolean) => void }) {
-  return (
-    <div onClick={() => onChange(!value)} style={{
-      width: 48, height: 28, borderRadius: 99,
-      background: value ? 'var(--brand)' : 'var(--border)',
-      position: 'relative', cursor: 'pointer', flexShrink: 0,
-      transition: 'background 200ms',
-    }}>
-      <div style={{
-        position: 'absolute', top: 3,
-        left: value ? 23 : 3, width: 22, height: 22,
-        borderRadius: '50%', background: '#fff',
-        boxShadow: '0 1px 4px rgba(0,0,0,0.2)',
-        transition: 'left 200ms',
-      }} />
-    </div>
-  )
+function Toggle({ value, onChange, label }: { value: boolean; onChange: (v: boolean) => void; label?: string }) {
+  // Platform-aware Switch (iOS / M3) — see src/components/Switch.tsx
+  return <Switch checked={value} onChange={onChange} aria-label={label ?? 'トグル'} />
 }
 
 export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUser, onLogout, onOpenPricing, initialSection }: SettingsScreenProps) {
@@ -189,7 +176,7 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
             <span style={{ flex: 1, fontSize: 18, color: 'var(--text)' }}>
               {t('settings.reminder')}
             </span>
-            <Toggle value={reminderEnabled} onChange={handleToggleReminder} />
+            <Toggle value={reminderEnabled} onChange={handleToggleReminder} label={t('settings.reminder')} />
           </div>
           {/* Time picker (shown when enabled) */}
           {reminderEnabled && (

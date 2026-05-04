@@ -572,8 +572,9 @@ function SearchPanel(p: {
 function CourseResultCard({ result, query, onOpen }: { result: CourseResult; query: string; onOpen: () => void }) {
   const c = result.course
   return (
-    <div onClick={onOpen}
-      style={{ background: v3.color.card, borderRadius: 14, padding: '12px 14px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 12, border: `1px solid ${v3.color.line}` }}>
+    <button type="button" onClick={onOpen}
+      aria-label={`${c.category} コース: ${c.title} (${result.doneCount}/${result.totalCount} 完了)`}
+      style={{ background: v3.color.card, borderRadius: 14, padding: '12px 14px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 12, border: `1px solid ${v3.color.line}`, color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%' }}>
       <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(108,142,245,.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: v3.color.accent }}>
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15Z"/></svg>
       </div>
@@ -587,7 +588,7 @@ function CourseResultCard({ result, query, onOpen }: { result: CourseResult; que
         </div>
       </div>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5"><polyline points="9 18 15 12 9 6" /></svg>
-    </div>
+    </button>
   )
 }
 
@@ -595,8 +596,9 @@ function LessonResultCard({ result, query, onOpen }: { result: LessonResult; que
   const l = result.lesson
   const courseTitle = result.course?.title
   return (
-    <div onClick={onOpen}
-      style={{ background: v3.color.card, borderRadius: 14, padding: '12px 14px', cursor: 'pointer', display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+    <button type="button" onClick={onOpen}
+      aria-label={`レッスン: ${l.title}${courseTitle ? ` (${courseTitle})` : ''}`}
+      style={{ background: v3.color.card, borderRadius: 14, padding: '12px 14px', cursor: 'pointer', display: 'flex', alignItems: 'flex-start', gap: 12, border: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%' }}>
       <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(108,142,245,.10)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: v3.color.accent }}>
         <LessonIcon id={l.id} action="lesson" size={20} />
       </div>
@@ -623,7 +625,7 @@ function LessonResultCard({ result, query, onOpen }: { result: LessonResult; que
         )}
       </div>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5" style={{ marginTop: 10, flexShrink: 0 }}><polyline points="9 18 15 12 9 6" /></svg>
-    </div>
+    </button>
   )
 }
 
@@ -671,7 +673,9 @@ const CATEGORY_LABEL_JP: Record<string, string> = {
 
 function CategoryCard({ name, meta, progress, onClick, image }: { name: string; meta: string; progress?: string; onClick: () => void; image?: string }) {
   return (
-    <div onClick={onClick} style={{ background: v3.color.card, borderRadius: v3.radius.card, overflow: 'hidden', cursor: 'pointer', boxShadow: v3.shadow.card, display: 'flex', flexDirection: 'column' }}>
+    <button type="button" onClick={onClick}
+      aria-label={`${name}: ${meta}${progress ? ` (${progress})` : ''}`}
+      style={{ background: v3.color.card, borderRadius: v3.radius.card, overflow: 'hidden', cursor: 'pointer', boxShadow: v3.shadow.card, display: 'flex', flexDirection: 'column', border: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', padding: 0 }}>
       {image && (
         <div style={{ height: 80, overflow: 'hidden', flexShrink: 0 }}>
           <img src={image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
@@ -684,7 +688,7 @@ function CategoryCard({ name, meta, progress, onClick, image }: { name: string; 
         </div>
         <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 12, fontWeight: 700, color: v3.color.accent }}>{progress}</div>
       </div>
-    </div>
+    </button>
   )
 }
 
@@ -768,8 +772,9 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
                   const isDone = completed.has(`lesson-${lesson.id}`)
                   const isNext = firstUndone?.id === lesson.id
                   return (
-                    <div key={lesson.id} onClick={() => onOpenLesson(lesson.id)}
-                      style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', cursor: 'pointer', borderTop: idx > 0 ? `1px solid ${v3.color.line}` : 'none', background: isNext ? `${v3.color.accent}08` : 'transparent' }}>
+                    <button type="button" key={lesson.id} onClick={() => onOpenLesson(lesson.id)}
+                      aria-label={`レッスン ${idx + 1}: ${lesson.title}${isDone ? ' (完了)' : isNext ? ' (次へ)' : ''}`}
+                      style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', cursor: 'pointer', borderTop: idx > 0 ? `1px solid ${v3.color.line}` : 'none', background: isNext ? `${v3.color.accent}08` : 'transparent', border: 'none', borderLeft: 'none', borderRight: 'none', borderBottom: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%' }}>
                       {/* ステップ番号 or チェック */}
                       <div style={{ width: 28, height: 28, borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: isDone ? v3.color.accent : isNext ? `${v3.color.accent}20` : `${v3.color.text3}18`, border: isNext && !isDone ? `1.5px solid ${v3.color.accent}` : 'none' }}>
                         {isDone
@@ -787,7 +792,7 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
                       {!isDone && !isNext && (
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
                       )}
-                    </div>
+                    </button>
                   )
                 })}
               </div>
@@ -799,8 +804,9 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
         {fallbackLessons.map((lesson) => {
           const isDone = completed.has(`lesson-${lesson.id}`)
           return (
-            <div key={lesson.id} onClick={() => onOpenLesson(lesson.id)}
-              style={{ background: v3.color.card, borderRadius: 14, padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'stretch', overflow: 'hidden', boxShadow: v3.shadow.card }}>
+            <button type="button" key={lesson.id} onClick={() => onOpenLesson(lesson.id)}
+              aria-label={`レッスン: ${lesson.title}${isDone ? ' (完了)' : ''}`}
+              style={{ background: v3.color.card, borderRadius: 14, padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'stretch', overflow: 'hidden', boxShadow: v3.shadow.card, border: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%' }}>
               <div style={{ width: 80, height: 80, flexShrink: 0 }}><LessonThumbnail lessonId={lesson.id} size={80} /></div>
               <div style={{ padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0 }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
@@ -814,7 +820,7 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
                   }
                 </div>
               </div>
-            </div>
+            </button>
           )
         })}
       </div>

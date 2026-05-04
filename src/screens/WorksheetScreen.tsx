@@ -3,6 +3,7 @@ import { recordCompletion } from '../stats'
 import { ArrowLeftIcon, ArrowRightIcon, CheckIcon } from '../icons'
 import { Button } from '../components/Button'
 import { IconButton } from '../components/IconButton'
+import { haptic } from '../platform/haptics'
 
 interface WorksheetScreenProps {
   onBack: () => void
@@ -100,6 +101,7 @@ export function WorksheetScreen({ onBack }: WorksheetScreenProps) {
   const getAnswer = (row: number, col: number) => p.blanks.find((b) => b.row === row && b.col === col)?.answer
 
   const handleSubmit = () => {
+    haptic.light()
     let correct = 0
     for (const b of p.blanks) {
       if (parseInt(inputs[cellKey(b.row, b.col)] || '0') === b.answer) correct++

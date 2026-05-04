@@ -6,6 +6,7 @@ import {
   cancelDailyReminder, requestNotificationPermission, isNative,
 } from '../notifications'
 import { v3 } from '../styles/tokensV3'
+import { Switch } from '../components/Switch'
 
 interface Props {
   onBack: () => void
@@ -39,24 +40,9 @@ function saveExtraPref(pref: ExtraNotifPref) {
 }
 
 // ── UI parts ──────────────────────────────────────────────────────
-function Toggle({ value, onChange }: { value: boolean; onChange: (v: boolean) => void }) {
-  return (
-    <div onClick={() => onChange(!value)} style={{
-      width: 48, height: 28, borderRadius: 99,
-      background: value ? v3.color.accent : v3.color.card,
-      position: 'relative', cursor: 'pointer', flexShrink: 0,
-      transition: 'background 200ms',
-      border: `1px solid ${value ? v3.color.accent : v3.color.line}`,
-    }}>
-      <div style={{
-        position: 'absolute', top: 3,
-        left: value ? 23 : 3, width: 22, height: 22,
-        borderRadius: '50%', background: '#fff',
-        boxShadow: '0 1px 4px rgba(0,0,0,0.25)',
-        transition: 'left 200ms',
-      }} />
-    </div>
-  )
+function Toggle({ value, onChange, label }: { value: boolean; onChange: (v: boolean) => void; label?: string }) {
+  // Platform-aware Switch (iOS / M3) — see src/components/Switch.tsx
+  return <Switch checked={value} onChange={onChange} aria-label={label ?? 'トグル'} />
 }
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
@@ -74,7 +60,7 @@ function NotifRow({ label, sub, value, onChange }: { label: string; sub: string;
         <div style={{ fontSize: 15, fontWeight: 600, color: v3.color.text }}>{label}</div>
         <div style={{ fontSize: 12, color: v3.color.text2, marginTop: 2, lineHeight: 1.5 }}>{sub}</div>
       </div>
-      <Toggle value={value} onChange={onChange} />
+      <Toggle value={value} onChange={onChange} label={label} />
     </div>
   )
 }
