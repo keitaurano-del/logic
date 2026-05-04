@@ -90,6 +90,12 @@ const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
     image: `${IMG}/course-philosophy.webp`,
     routeKey: 'philosophy',
   },
+  '東洋思想': {
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFD566" strokeWidth="2" strokeLinecap="round"><path d="M12 2a10 10 0 1 0 0 20 5 5 0 0 1 0-10 5 5 0 0 0 0-10z"/><circle cx="12" cy="7" r="1" fill="#FFD566"/><circle cx="12" cy="17" r="1" fill="#FFD566"/></svg>,
+    iconBg: 'rgba(255,213,102,.14)',
+    image: `${IMG}/course-eastern-01.svg`,
+    routeKey: '東洋思想',
+  },
   'クライアントワーク': {
     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C49A3C" strokeWidth="2" strokeLinecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
     iconBg: 'rgba(196,154,60,.14)',
@@ -312,7 +318,7 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
                       iconBg={v.iconBg}
                       name={course.title}
                       meta={`${course.lessonIds.length}レッスン · ${course.level}`}
-                      image={v.image}
+                      image={course.image || v.image}
                       onClick={() => props.onOpenCategory(v.routeKey)}
                     />
                   )
@@ -626,6 +632,7 @@ const CATEGORY_ID_TO_NAMES: Record<string, string[]> = {
   proposal: ['提案・伝える技術'],
   '提案書作成': ['提案書作成'],
   philosophy: ['哲学・思考の原理', 'philosophy'],
+  '東洋思想': ['東洋思想'],
   'クライアントワーク': ['クライアントワーク'],
   'フェルミ推定': ['フェルミ推定'],
   '経営戦略': ['経営戦略', 'strategy'],
@@ -644,6 +651,7 @@ const CATEGORY_LABEL_JP: Record<string, string> = {
   proposal: '提案・伝える技術',
   '提案書作成': '提案書作成',
   philosophy: '哲学・思考の原理',
+  '東洋思想': '東洋思想',
   'クライアントワーク': 'クライアントワーク',
   'フェルミ推定': 'フェルミ推定',
   '経営戦略': '経営戦略',

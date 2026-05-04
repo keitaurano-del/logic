@@ -66,6 +66,7 @@ import { systemsThinkingLessonMap } from './systemsThinkingLessons'
 import { proposalLessonMap } from './proposalLessons'
 import { proposalCourseLessonMap } from './proposalCourseLessons'
 import { philosophyLessonMap } from './philosophyLessons'
+import { easternPhilosophyLessonMap } from './easternPhilosophyLessons'
 import { clientWorkLessonMap } from './clientWorkLessons'
 import { catchupLessonMap } from './catchupLessons'
 import { fermiLessonMap } from './fermiLessons'
@@ -97,6 +98,7 @@ function _getMergedLessons(): Record<number, LessonData> {
     ...proposalLessonMap,
     ...proposalCourseLessonMap,
     ...philosophyLessonMap,
+    ...easternPhilosophyLessonMap,
     ...clientWorkLessonMap,
     ...catchupLessonMap,
     ...fermiLessonMap,

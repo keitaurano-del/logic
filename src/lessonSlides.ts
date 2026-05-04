@@ -140,6 +140,7 @@ function getHeroImage(category: string, lessonId?: number): string {
   if (c.includes('ロジカル') || c.includes('logical')) return '/images/v3/course-logical.webp'
   if (c.includes('ケース面接') || c === 'business') return '/images/v3/course-business.webp'
   if (c.includes('哲学') || c === 'philosophy') return '/images/v3/course-philosophy.webp'
+  if (c.includes('東洋思想')) return '/images/v3/course-eastern-01.svg'
   if (c.includes('提案') || c.includes('伝える')) return '/images/v3/lesson-proposal.webp'
   if (c.includes('フェルミ') || c.includes('fermi')) return '/images/v3/home-daily-fermi.webp'
   if (c.includes('クリティカル')) return '/images/v3/lesson-critical-thinking.webp'
