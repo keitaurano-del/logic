@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>新コース画像プレビュー</title>
+<style>
+  :root {
+    --bg: #0E1424;
+    --card: #1A2540;
+    --card2: #232F50;
+    --text: #E7ECF7;
+    --text2: #A8B3CD;
+    --text3: #6B7693;
+    --accent: #6C8EF5;
+    --accent-soft: rgba(108,142,245,.18);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: -apple-system, "Noto Sans JP", "Segoe UI", sans-serif; }
+  header { padding: 36px 24px 16px; max-width: 1200px; margin: 0 auto; }
+  header h1 { font-size: 22px; font-weight: 800; letter-spacing: -.01em; margin: 0 0 6px; }
+  header p { color: var(--text2); margin: 0; font-size: 14px; line-height: 1.6; }
+  main { max-width: 1200px; margin: 0 auto; padding: 16px 24px 80px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  @media (max-width: 760px) { main { grid-template-columns: 1fr; } }
+  .card {
+    background: linear-gradient(140deg, var(--card2) 0%, var(--card) 100%);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 14px 36px rgba(0,0,0,.35), 0 2px 8px rgba(0,0,0,.2);
+  }
+  .img-wrap { aspect-ratio: 2 / 1; overflow: hidden; position: relative; }
+  .img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .body { padding: 18px 20px 20px; }
+  .badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+  .badge { font-size: 10px; font-weight: 800; letter-spacing: .06em; padding: 2px 8px; border-radius: 6px; }
+  .badge.cat { color: var(--text3); background: rgba(107,118,147,.16); }
+  .badge.lvl { color: var(--accent); background: var(--accent-soft); }
+  .title { font-size: 17px; font-weight: 700; line-height: 1.35; margin: 0 0 6px; }
+  .desc { font-size: 13px; color: var(--text2); line-height: 1.55; margin: 0; }
+  .meta { font-size: 11px; color: var(--text3); margin-top: 12px; font-family: ui-monospace, monospace; }
+
+  .grid-mini-title { color: var(--text2); font-size: 13px; margin: 32px 24px 8px; max-width: 1200px; margin-left: auto; margin-right: auto; padding: 0 24px; font-weight: 600; letter-spacing: .04em; }
+  .mini { max-width: 1200px; margin: 0 auto; padding: 0 24px 80px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .mini .card { border-radius: 14px; }
+  .mini .img-wrap { aspect-ratio: 16 / 9; }
+  .mini .body { padding: 12px 14px 14px; }
+  .mini .title { font-size: 14px; }
+  .mini .desc { font-size: 12px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>新コース画像プレビュー（6枚）</h1>
+  <p>左右で見比べたり、下のミニサイズ（実機の2列レイアウト相当）で全体像を確認できます。</p>
+</header>
+
+<main>
+
+  <div class="card">
+    <div class="img-wrap"><img src="/images/v3/course-logic-02.svg" alt="" /></div>
+    <div class="body">
+      <div class="badges"><span class="badge cat">ロジカルシンキング</span><span class="badge lvl">初級</span></div>
+      <h2 class="title">論理を組み立て、相手を動かす</h2>
+      <p class="desc">So What / Why Soで論理を検証し、ピラミッド構造で伝わる話し方を習得する。</p>
+      <div class="meta">course-logic-02.svg</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="img-wrap"><img src="/images/v3/course-critical-02.svg" alt="" /></div>
+    <div class="body">
+      <div class="badges"><span class="badge cat">クリティカルシンキング</span><span class="badge lvl">中級</span></div>
+      <h2 class="title">バイアスを外し、客観的に見る</h2>
+      <p class="desc">確証バイアスをはじめとした認知の歪みを理解し、より精度の高い判断をする。</p>
+      <div class="meta">course-critical-02.svg</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="img-wrap"><img src="/images/v3/course-client-02.svg" alt="" /></div>
+    <div class="body">
+      <div class="badges"><span class="badge cat">クライアントワーク</span><span class="badge lvl">中級</span></div>
+      <h2 class="title">論点を定め、深く引き出す</h2>
+      <p class="desc">正しい論点設定とヒアリング技術で、クライアントの本質的な課題を引き出す。</p>
+      <div class="meta">course-client-02.svg</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="img-wrap"><img src="/images/v3/course-client-03.svg" alt="" /></div>
+    <div class="body">
+      <div class="badges"><span class="badge cat">クライアントワーク</span><span class="badge lvl">上級</span></div>
+      <h2 class="title">未経験の業界で、短期間で立ち上がる</h2>
+      <p class="desc">本・事例・有識者・仮説を総動員し、新しい案件で「専門家」として価値発揮するキャッチアップの技術を学ぶ。</p>
+      <div class="meta">course-client-03.svg</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="img-wrap"><img src="/images/v3/course-strategy-02.svg" alt="" /></div>
+    <div class="body">
+      <div class="badges"><span class="badge cat">経営戦略</span><span class="badge lvl">上級</span></div>
+      <h2 class="title">資源・能力・共進化の戦略へ</h2>
+      <p class="desc">RBV・コアコンピタンスからブルーオーシャン、ダイナミック・ケイパビリティ、プラットフォーム戦略まで現代の進化を学ぶ。</p>
+      <div class="meta">course-strategy-02.svg</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="img-wrap"><img src="/images/v3/course-numeracy.svg" alt="" /></div>
+    <div class="body">
+      <div class="badges"><span class="badge cat">数字に強くなる</span><span class="badge lvl">中級</span></div>
+      <h2 class="title">数字に強くなる</h2>
+      <p class="desc">伝え方・暗算・割合操作・単位換算・複利・統計・落とし穴の7本立てで、ビジネス数字感覚を体系的に鍛える。</p>
+      <div class="meta">course-numeracy.svg</div>
+    </div>
+  </div>
+
+</main>
+
+<div class="grid-mini-title">▼ 実機の2列カード相当（ミニサイズ）</div>
+<div class="mini">
+  <div class="card"><div class="img-wrap"><img src="/images/v3/course-logic-02.svg"></div><div class="body"><h2 class="title">論理を組み立て、相手を動かす</h2></div></div>
+  <div class="card"><div class="img-wrap"><img src="/images/v3/course-critical-02.svg"></div><div class="body"><h2 class="title">バイアスを外し、客観的に見る</h2></div></div>
+  <div class="card"><div class="img-wrap"><img src="/images/v3/course-client-02.svg"></div><div class="body"><h2 class="title">論点を定め、深く引き出す</h2></div></div>
+  <div class="card"><div class="img-wrap"><img src="/images/v3/course-client-03.svg"></div><div class="body"><h2 class="title">未経験の業界で、短期間で立ち上がる</h2></div></div>
+  <div class="card"><div class="img-wrap"><img src="/images/v3/course-strategy-02.svg"></div><div class="body"><h2 class="title">資源・能力・共進化の戦略へ</h2></div></div>
+  <div class="card"><div class="img-wrap"><img src="/images/v3/course-numeracy.svg"></div><div class="body"><h2 class="title">数字に強くなる</h2></div></div>
+</div>
+
+</body>
+</html>
