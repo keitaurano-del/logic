@@ -47,7 +47,7 @@ import { getCurrentLevel } from './screens/homeHelpers'
 import type { AIProblemSet } from './aiProblemStore'
 import { loadTheme, applyTheme } from './theme'
 // import { loadGuestUser } from './guestUser'
-import { getCompletedCount, getXp, getDisplayName, setDisplayName } from './stats'
+import { getCompletedCount, getXp, getDisplayName, setDisplayName, recordCompletion, addStudyTime } from './stats'
 import { updateDisplayName } from './supabase'
 import { isAdmin } from './admin'
 import { onAuthChange, logout, getInitialUser, type User } from './supabase'
@@ -258,6 +258,7 @@ function AppV3() {
   }
 
   const handleOpenLesson = (lessonId: number) => {
+    lessonStartTimeRef.current = Date.now()
     navigate({ type: 'lesson', lessonId })
   }
 
@@ -274,8 +275,11 @@ function AppV3() {
   const handleComplete = () => {
     if (screen.type === 'lesson') {
       const lessonId = screen.lessonId
-      const durationSec = Math.max(60, Math.floor((Date.now() - lessonStartTimeRef.current) / 1000))
+      const elapsedMs = Date.now() - lessonStartTimeRef.current
+      const durationSec = Math.max(60, Math.floor(elapsedMs / 1000))
       const prevLevel = getCurrentLevel(getXp() - 50).level  // before XP add
+      recordCompletion(`lesson-${lessonId}`)
+      if (elapsedMs > 5000) addStudyTime(elapsedMs)
       navigate({ type: 'lesson-complete', lessonId, durationSec, prevLevel })
     } else {
       navigate({ type: tab }, true)
