@@ -90,11 +90,11 @@ const STRINGS: Record<Locale, Strings> = {
     'onboarding.slide2.title': 'AI が「あなた専用」で練習相手に',
     'onboarding.slide2.body': 'ロールプレイ、フェルミ推定、AI 問題生成、コーヒーブレイクの日常シーン。座学だけでなく、実践しながら身につけられます。',
     'onboarding.slide3.title': 'まずは偏差値テストで現在地を知る',
-    'onboarding.slide3.body': '8 問のプレイスメントテストであなたの論理思考レベルを判定し、あなたに合った学習ルートをおすすめします。3 分で終わります。',
-    'onboarding.toPlacement': 'プレイスメントテストへ',
+    'onboarding.slide3.body': '8 問のプレースメントテストであなたの論理思考レベルを判定し、あなたに合った学習ルートをおすすめします。3 分で終わります。',
+    'onboarding.toPlacement': 'プレースメントテストへ',
 
     // Placement test
-    'placement.title': 'プレイスメントテスト',
+    'placement.title': 'プレースメントテスト',
     'placement.lead': 'あなたの論理思考力を 8 問でチェックします。所要時間は約 3 分。\n結果から偏差値を出し、レベルに合ったおすすめレッスンを表示します。',
     'placement.questionCount': '{count} 問・約 3 分',
     'placement.topicLine': 'MECE / 演繹 / 帰納 / 形式論理',
@@ -327,7 +327,7 @@ const STRINGS: Record<Locale, Strings> = {
 
     // Ranking
     'ranking.title': '偏差値ランキング',
-    'ranking.ctaTitle': 'まだプレイスメントテストを受けていません',
+    'ranking.ctaTitle': 'まだプレースメントテストを受けていません',
     'ranking.ctaDesc': 'テストを受けると、偏差値ランキングに参加できます。',
     'ranking.ctaButton': 'テストを受ける',
     'ranking.loading': '読み込み中...',
