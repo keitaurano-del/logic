@@ -479,7 +479,7 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
 
           {/* ヒント */}
           {hint && submitPhase === 'idle' && (
-            <div>
+            <div style={{ marginBottom: guideActive && !showHint ? 28 : 0 }}>
               {!showHint ? (
                 <div style={{ position: 'relative', display: 'inline-block' }}>
                   <button
@@ -557,8 +557,9 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
                 まずは「誰が・どこで・どれくらいの頻度で」を考えてみよう。数字は大まかでOK！
               </div>
 
-              {guideActive && <GuideLabel text="まず自分の考えを書いてみましょう" position="top" />}
-              <textarea
+              <div style={{ position: 'relative', marginTop: guideActive ? 28 : 0 }}>
+                {guideActive && <GuideLabel text="まず自分の考えを書いてみましょう" position="top" />}
+                <textarea
                   value={answer}
                   onChange={(e) => { setAnswer(e.target.value); if (guideActive) dismissGuide() }}
                   placeholder={t('fermi.placeholder')}
@@ -576,8 +577,10 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
                     outline: 'none',
                     fontFamily: 'inherit',
                     boxSizing: 'border-box',
+                    display: 'block',
                   }}
                 />
+              </div>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.5 }}>
                 <MicIcon width={14} height={14} style={{ flexShrink: 0, opacity: 0.8 }} />
