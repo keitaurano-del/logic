@@ -14,7 +14,7 @@
 |---|---|---|---|
 | **Phase 0** リリースブロッカー | 8h | ~7h 相当 | ✅ ほぼ完了（PR #73） |
 | **Phase 1** デザインシステム土台 | 32h | ~24h 相当 | ✅ ほぼ完了（PR #73） |
-| **Phase 2** 全画面 HIG/M3 適合 | 60h | ~10h 相当 | 🟡 着手済（高優先 4 画面 + Lesson 触覚） |
+| **Phase 2** 全画面 HIG/M3 適合 | 60h | ~18h 相当 | 🟡 中盤（高優先 5 画面 back button + 8 画面 触覚 + ローディング置換） |
 | **Phase 3** 個別最適化 | 80h | 0h | ⚪ 未着手（次セッション以降） |
 | **Phase 4** 仕上げ・検証 | 24h | ~3h 相当（build/lint/cap sync 通過） | 🟡 自動チェックのみ |
 
@@ -47,14 +47,24 @@
 - ✅ ブランド色 `#3D5FC4`/`#3B5BDB` → `var(--md-sys-color-primary)` (16 ファイル, 87+ 件)
 
 ### Phase 2 着手済項目
-- ✅ 4 画面の 36×36 戻るボタン → 44×44 + `aria-label="戻る"` + `<button>` 化
+- ✅ 5 画面の 36×36 戻るボタン → 44×44 + `aria-label="戻る"` + `<button>` 化
   - `AccountSettingsScreen.tsx:78` (was `<div onClick>`)
   - `AIProblemGenScreen.tsx:249`
   - `OnboardingScreen.tsx:556`
   - `PricingScreen.tsx:133`
-- ✅ `LessonScreen.tsx` 正解 → `haptic.success()` / 不正解 → `haptic.warning()`
-- ✅ `LessonCompleteScreen.tsx` 表示時 `haptic.success()`
-- ✅ `HomeScreenV3.tsx` の `<div onClick>` 2 箇所 + `AILargeCard` 内 1 箇所 を `<button>` 化、`aria-label` 追加
+  - `RoadmapScreenV3.tsx:714` (was `<div onClick>`)
+- ✅ 触覚フィードバック挿入
+  - `LessonScreen.tsx` 正解 → `haptic.success()` / 不正解 → `haptic.warning()`
+  - `LessonCompleteScreen.tsx` 表示時 `haptic.success()`
+  - `DailyFermiScreen.tsx` `handleSubmit` → `haptic.medium()`
+  - `DailyProblemScreen.tsx` `handleSelect` 正誤判定で success/warning
+  - `AIProblemScreen.tsx` 同上
+  - `PlacementTestScreen.tsx` `handleAnswer` → `haptic.selection()`
+  - `FlashcardsScreen.tsx` `handleReview` (again→warning, good/easy→selection)
+  - `RoleplayChatScreen.tsx` `pickScriptChoice` / `pickApiChoice` → `haptic.light()`
+  - `AppShell.tsx` Tab 切替 → `haptic.light()`（既存）
+- ✅ `<div onClick>` → `<button>` 化（HomeScreenV3 の 2 箇所 + `AILargeCard` 内 1 箇所、aria-label 付加）
+- ✅ ローディングスピナーを `<LoadingIndicator label="読み込み中">` に置換（FermiRankingScreen, FeedbackDashboardScreen）
 
 ### Phase 2 残（次セッション以降）
 - 残 41 画面の Header を `<Header>` コンポーネントに置換

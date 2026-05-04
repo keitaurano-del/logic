@@ -6,6 +6,7 @@ import { API_BASE } from './apiBase'
 import { getDailyFermi, getDailyFermiIndex, FERMI_POOL, getDailyFermiStats } from '../fermiData'
 import { t, getLocale } from '../i18n'
 import { getGuestId } from '../guestId'
+import { haptic } from '../platform/haptics'
 import { useDailyGuide, GuideLabel, GuideStyle } from '../tutorial/dailyGuide'
 import { isStandardPlan, isPremiumPlan } from '../subscription'
 import { getDisplayName } from '../stats'
@@ -334,6 +335,7 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
 
   const handleSubmit = async () => {
     if (!answer.trim()) return
+    haptic.medium()
     setTimerRunning(false)
     setSubmitPhase('scoring')
     setSubmitError('')

@@ -3,6 +3,7 @@ import { getDueCards, getWeakCards, reviewCard, type Flashcard } from '../flashc
 import { ArrowLeftIcon, CheckIcon, SparklesIcon } from '../icons'
 import { Button } from '../components/Button'
 import { IconButton } from '../components/IconButton'
+import { haptic } from '../platform/haptics'
 import { t } from '../i18n'
 
 interface FlashcardsScreenProps {
@@ -23,6 +24,8 @@ export function FlashcardsScreen({ onBack, mode = 'due' }: FlashcardsScreenProps
 
   const handleReview = (quality: 'again' | 'good' | 'easy') => {
     if (!card) return
+    if (quality === 'again') haptic.warning()
+    else haptic.selection()
     reviewCard(card.id, quality)
     setIdx((i) => i + 1)
     setFlipped(false)

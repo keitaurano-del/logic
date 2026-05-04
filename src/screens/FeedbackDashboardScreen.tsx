@@ -5,6 +5,7 @@
 import { useEffect, useState } from 'react'
 import { v3 } from '../styles/tokensV3'
 import { createClient } from '@supabase/supabase-js'
+import { LoadingIndicator } from '../components/LoadingIndicator'
 
 function getSupabaseClient() {
   const url = import.meta.env.VITE_SUPABASE_URL || ''
@@ -116,7 +117,9 @@ export function FeedbackDashboardScreen({ onClose }: Props) {
 
       <div style={{ flex: 1, overflowY: 'auto', padding: '16px 16px 80px' }}>
         {loading && (
-          <div style={{ textAlign: 'center', padding: 60, color: v3.color.text2 }}>読み込み中...</div>
+          <div style={{ textAlign: 'center', padding: 60 }}>
+            <LoadingIndicator label="読み込み中" />
+          </div>
         )}
         {error && (
           <div style={{ textAlign: 'center', padding: 40, color: '#EF4444', fontSize: 14 }}>{error}</div>

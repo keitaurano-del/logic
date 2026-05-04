@@ -3,6 +3,7 @@ import { v3 } from '../styles/tokensV3'
 import { TrophyIcon, MedalIcon } from '../icons'
 import { getXp } from '../stats'
 import { getGuestId, getNickname } from '../guestId'
+import { LoadingIndicator } from '../components/LoadingIndicator'
 import { API_BASE } from './apiBase'
 
 interface RankEntry {
@@ -87,8 +88,8 @@ export function FermiRankingScreen() {
 
       {/* ローディング */}
       {loading && (
-        <div style={{ textAlign: 'center', padding: '40px 20px', color: v3.color.text3, fontSize: 14 }}>
-          読み込み中...
+        <div style={{ textAlign: 'center', padding: '40px 20px' }}>
+          <LoadingIndicator label="読み込み中" />
         </div>
       )}
 
