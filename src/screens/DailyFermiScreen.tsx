@@ -709,7 +709,7 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
                       <div style={{
                         height: '100%', borderRadius: 99,
                         width: `${feedback.score}%`,
-                        background: feedback.score >= 80 ? '#4ADE80' : feedback.score >= 60 ? '#FCD34D' : '#F87171',
+                        background: feedback.score >= 80 ? '#4ADE80' : feedback.score >= 60 ? '#FCD34D' : 'var(--md-sys-color-error)',
                         transition: 'width 0.8s ease-out',
                       }} />
                     </div>

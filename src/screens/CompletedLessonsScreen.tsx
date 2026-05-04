@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { getCompletedLessons } from '../stats'
-import { ArrowLeftIcon, CheckCircleIcon } from '../icons'
-import { IconButton } from '../components/IconButton'
+import { CheckCircleIcon } from '../icons'
+import { Header } from '../components/platform/Header'
 import { t } from '../i18n'
 
 interface CompletedLessonsScreenProps {
@@ -60,14 +60,14 @@ function catColor(cat: string): string {
     'フェルミ推定':       '#7C3AED',
     'ケース面接':         '#0891B2',
     'クリティカルシンキング': '#059669',
-    '仮説思考':             '#DC2626',
+    '仮説思考':             'var(--md-sys-color-error)',
     '課題設定':             '#7C3AED',
     'デザインシンキング':   '#0891B2',
     'ラテラルシンキング':   '#DB2777',
     'アナロジー思考':       '#D97706',
     'システムシンキング':   '#2563EB',
     'AI練習':             '#D97706',
-    'デイリー':           '#DC2626',
+    'デイリー':           'var(--md-sys-color-error)',
     '復習':               '#6366F1',
     'テスト':             '#374151',
   }
@@ -99,12 +99,7 @@ export function CompletedLessonsScreen({ onBack }: CompletedLessonsScreenProps) 
 
   return (
     <div className="stack">
-      <div className="screen-header">
-        <IconButton aria-label={t('common.back')} onClick={onBack}>
-          <ArrowLeftIcon />
-        </IconButton>
-        <div className="progress-text">{t('completed.title')}</div>
-      </div>
+      <Header title={t('completed.title')} onBack={onBack} />
 
       {/* Count hero */}
       <div style={{ textAlign: 'center', padding: 'var(--s-5) 0 var(--s-3)' }}>

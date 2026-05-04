@@ -29,7 +29,7 @@ export function RadarChart({
   size = 280,
   maxLevel = 5,
   fillColor = 'rgba(108,142,245,.32)',
-  strokeColor = '#6C8EF5',
+  strokeColor = 'var(--md-sys-color-primary)',
   gridColor = 'rgba(255,255,255,.18)',
   labelColor = '#E8ECF4',
   style,

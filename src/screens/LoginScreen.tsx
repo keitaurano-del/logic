@@ -21,7 +21,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
   const CARD = 'transparent'
   const TEXT = '#FFFFFF'
   const TEXT2 = 'rgba(255,255,255,0.55)'
-  const ACCENT = '#6C8EF5'      // Slate Blue（450nm集中色）
+  const ACCENT = 'var(--md-sys-color-primary)'      // Slate Blue（450nm集中色）
   const BORDER = 'rgba(255,255,255,0.15)'
   const INPUT_BG = 'rgba(255,255,255,0.07)'
   const GOOGLE_BTN_BG = '#4285F4'
@@ -140,7 +140,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
 
         {/* エラー/成功 */}
         {error && (
-          <div style={{ fontSize: 14, color: '#F87171', padding: '10px 14px', background: 'rgba(248,113,113,0.1)', borderRadius: 10 }}>
+          <div style={{ fontSize: 14, color: 'var(--md-sys-color-error)', padding: '10px 14px', background: 'rgba(248,113,113,0.1)', borderRadius: 10 }}>
             {error}
           </div>
         )}

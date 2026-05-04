@@ -442,7 +442,7 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
 
         {quizAnswered && (
           <div style={{ marginTop: 20, padding: 16, background: v3.color.card, borderRadius: 14, fontSize: 15, lineHeight: 1.75 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: quizAnswered.correct ? v3.color.accent : '#FCA5A5', marginBottom: 6 }}>{quizAnswered.correct ? '正解' : isMulti ? `不正解 — 正解は${[...correctSet].map(i => slide.choices[i]).join('、')}` : 'もう一度考えてみよう'}</div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: quizAnswered.correct ? v3.color.accent : 'var(--md-sys-color-error)', marginBottom: 6 }}>{quizAnswered.correct ? '正解' : isMulti ? `不正解 — 正解は${[...correctSet].map(i => slide.choices[i]).join('、')}` : 'もう一度考えてみよう'}</div>
             {slide.explain}
           </div>
         )}
@@ -727,7 +727,7 @@ function CaseSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides')
       {/* フィードバック */}
       {answered && (
         <div style={{ background: v3.color.card, borderRadius: 14, padding: '14px 16px', marginBottom: 16, fontSize: 13, lineHeight: 1.7, color: v3.color.text2 }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 700, color: answered.correct ? v3.color.accent : '#FCA5A5', marginBottom: 6 }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 700, color: answered.correct ? v3.color.accent : 'var(--md-sys-color-error)', marginBottom: 6 }}>
             {answered.correct ? <CheckIcon width={12} height={12} /> : <LightbulbIcon width={12} height={12} />}
             <span>{answered.correct ? '良い判断！' : '惜しい！'}</span>
           </div>

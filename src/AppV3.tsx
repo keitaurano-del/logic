@@ -29,8 +29,6 @@ const FeedbackDashboardScreen = lazy(() => import('./screens/FeedbackDashboardSc
 const PlacementTestScreen = lazy(() => import('./screens/PlacementTestScreen').then(m => ({ default: m.PlacementTestScreen })))
 const PersonalCourseScreen = lazy(() => import('./screens/PersonalCourseScreen').then(m => ({ default: m.PersonalCourseScreen })))
 const PricingScreen = lazy(() => import('./screens/PricingScreen').then(m => ({ default: m.PricingScreen })))
-// PricingV3.tsx は AppV3 では未使用。PricingScreen.tsx が最新・完全な実装（startCheckout 接続済み）であるため、
-// PricingV3 は削除せず残しておく（将来参照用）
 const StreakScreen = lazy(() => import('./screens/StreakScreen').then(m => ({ default: m.StreakScreen })))
 const SettingsScreen = lazy(() => import('./screens/SettingsScreen').then(m => ({ default: m.SettingsScreen })))
 const AccountSettingsScreen = lazy(() => import('./screens/AccountSettingsScreen').then(m => ({ default: m.AccountSettingsScreen })))

@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { getCompletedCount } from '../stats'
 import { getPoints, RANK_TIERS, getCurrentTier, type RankTier } from './homeHelpers'
-import { ArrowLeftIcon, StarIcon, CheckIcon, LockIcon, LightbulbIcon } from '../icons'
-import { IconButton } from '../components/IconButton'
+import { StarIcon, CheckIcon, LockIcon, LightbulbIcon } from '../icons'
+import { Header } from '../components/platform/Header'
 import { RankIllustration } from '../components/RankIllustration'
 import { t, getLocale } from '../i18n'
 
@@ -28,18 +28,7 @@ export function RankScreen({ onBack }: RankScreenProps) {
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)', paddingBottom: 40 }}>
-      {/* Header */}
-      <div style={{
-        display: 'flex', alignItems: 'center', padding: '12px 16px',
-        position: 'sticky', top: 0, zIndex: 10,
-        background: 'transparent',
-      }}>
-        <IconButton aria-label={t('common.back')} onClick={onBack}>
-          <ArrowLeftIcon />
-        </IconButton>
-        <div style={{ flex: 1 }} />
-        <span style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-muted)' }}>{t('rank.title')}</span>
-      </div>
+      <Header title={t('rank.title')} onBack={onBack} />
 
       {/* Hero Card */}
       <div style={{

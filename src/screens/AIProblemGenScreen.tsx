@@ -254,11 +254,11 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
           <div style={{ fontSize: 12, color: v3.color.text2, marginTop: 1 }}>弱点に合った問題を自動生成</div>
         </div>
         {dailyLimit > 0 ? (
-          <div style={{ marginLeft: 'auto', background: v3.color.card, borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700, color: isAtLimit ? '#F87171' : v3.color.accent }}>
+          <div style={{ marginLeft: 'auto', background: v3.color.card, borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700, color: isAtLimit ? 'var(--md-sys-color-error)' : v3.color.accent }}>
             {dailyCount}/{dailyLimit}問 (今日)
           </div>
         ) : (
-          <div style={{ marginLeft: 'auto', background: 'rgba(248,113,113,0.15)', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700, color: '#F87171' }}>
+          <div style={{ marginLeft: 'auto', background: 'rgba(248,113,113,0.15)', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700, color: 'var(--md-sys-color-error)' }}>
             要アップグレード
           </div>
         )}
@@ -320,7 +320,7 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
               )}
             </div>
 
-            {error && <div style={{ fontSize: 13, color: '#F87171', textAlign: 'center' }}>{error}</div>}
+            {error && <div style={{ fontSize: 13, color: 'var(--md-sys-color-error)', textAlign: 'center' }}>{error}</div>}
 
             {/* テーマから選ぶ（下部） */}
             <div>
@@ -345,9 +345,9 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 16 }}>
                   {weakness.slice(0, 3).map((w) => {
                     const pct = Math.round(w.score * 100)
-                    const barColor = pct < 35 ? '#F87171' : pct < 55 ? '#FBBF24' : v3.color.accent
+                    const barColor = pct < 35 ? 'var(--md-sys-color-error)' : pct < 55 ? '#FBBF24' : v3.color.accent
                     const tagBg = pct < 35 ? 'rgba(248,113,113,.15)' : pct < 55 ? 'rgba(251,191,36,.15)' : `${v3.color.accent}20`
-                    const tagColor = pct < 35 ? '#F87171' : pct < 55 ? '#FBBF24' : v3.color.accent
+                    const tagColor = pct < 35 ? 'var(--md-sys-color-error)' : pct < 55 ? '#FBBF24' : v3.color.accent
                     const tagLabel = pct < 35 ? '苦手' : pct < 55 ? '要強化' : '練習中'
                     return (
                       <div key={w.category}>

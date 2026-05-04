@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { getStudyTimeMs, getStudyDates, getTotalStudyDays } from '../stats'
-import { ArrowLeftIcon, ClockIcon } from '../icons'
-import { IconButton } from '../components/IconButton'
+import { ClockIcon } from '../icons'
+import { Header } from '../components/platform/Header'
 import { t } from '../i18n'
 
 interface StudyTimeScreenProps {
@@ -61,12 +61,7 @@ export function StudyTimeScreen({ onBack }: StudyTimeScreenProps) {
 
   return (
     <div className="stack">
-      <div className="screen-header">
-        <IconButton aria-label={t('common.back')} onClick={onBack}>
-          <ArrowLeftIcon />
-        </IconButton>
-        <div className="progress-text">{t('studytime.title')}</div>
-      </div>
+      <Header title={t('studytime.title')} onBack={onBack} />
 
       {/* Hero */}
       <div style={{ textAlign: 'center', padding: 'var(--s-5) 0 var(--s-3)' }}>

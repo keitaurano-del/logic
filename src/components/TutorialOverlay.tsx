@@ -56,7 +56,7 @@ const STEPS: TutorialStep[] = [
     id: 'fermi',
     icon: Icons.fermi,
     tag: '今日の1問',
-    tagColor: '#6C8EF5',
+    tagColor: 'var(--md-sys-color-primary)',
     title: '毎日フェルミ問題に挑戦',
     description: 'ホーム画面の「今日のフェルミ問題」で、1日1問チャレンジできるよ。数字の感覚を毎日少しずつ鍛えよう。',
     targetId: 'home-fermi-card',

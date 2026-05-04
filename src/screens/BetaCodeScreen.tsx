@@ -86,7 +86,7 @@ export function BetaCodeScreen({ onSuccess, onSkip }: BetaCodeScreenProps) {
   const inputStyle: React.CSSProperties = {
     width: '100%',
     padding: '14px 16px',
-    border: `1.5px solid ${error ? '#F87171' : v3.color.line}`,
+    border: `1.5px solid ${error ? 'var(--md-sys-color-error)' : v3.color.line}`,
     borderRadius: 12,
     background: v3.color.bg,
     color: v3.color.text,
@@ -117,7 +117,7 @@ export function BetaCodeScreen({ onSuccess, onSkip }: BetaCodeScreenProps) {
   }
 
   const errorStyle: React.CSSProperties = {
-    color: '#F87171',
+    color: 'var(--md-sys-color-error)',
     fontSize: 13,
     fontWeight: 500,
     marginTop: 8,

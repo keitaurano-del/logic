@@ -19,7 +19,7 @@ interface OnboardingScreenProps {
 // ── カラー ──
 const C = {
   bg: '#F0F2FA',
-  teal: '#6C8EF5',
+  teal: 'var(--md-sys-color-primary)',
   tealDark: '#4A6BD6',
   darkBg: '#0F1220',
   text: '#1A1F2E',
@@ -28,7 +28,7 @@ const C = {
   border: 'rgba(255,255,255,0.18)',
   inputBg: 'rgba(255,255,255,0.07)',
   inputBorder: 'rgba(255,255,255,0.18)',
-  error: '#F87171',
+  error: 'var(--md-sys-color-error)',
   errorBg: 'rgba(248,113,113,0.10)',
 }
 
@@ -70,7 +70,7 @@ function RankRow({ rank, name, pt, color, highlight }: { rank: number; name: str
 const SLIDES = [
   {
     gradient: 'linear-gradient(160deg, #0F1220 0%, #1A2340 50%, #0F1A35 100%)',
-    accentColor: '#6C8EF5',
+    accentColor: 'var(--md-sys-color-primary)',
     icon: (
       <svg width="72" height="72" viewBox="0 0 80 80" fill="none">
         <circle cx="40" cy="40" r="36" stroke="#6C8EF5" strokeWidth="1.5" strokeDasharray="6 4" opacity="0.4"/>
@@ -378,7 +378,7 @@ function OBCell({ value }: { value: string | boolean }) {
 }
 
 // ── 属性質問ステップ ─────────────────────────────────────────
-const ACCENT = '#6C8EF5'
+const ACCENT = 'var(--md-sys-color-primary)'
 
 const AGE_ORDER: AgeGroup[] = ['teens', '20s', '30s', '40s', '50plus']
 const GENDER_ORDER: Gender[] = ['male', 'female', 'other', 'na']
@@ -546,7 +546,7 @@ function OnboardingAttributeView({ onNext, onBackToSlides }: { onNext: () => voi
 
 // ── 月払い/年払い選択画面 ─────────────────────────────────────
 function OnboardingBillingView({ planKey, onSelect, onBack }: { planKey: 'standard' | 'premium'; onSelect: (plan: 'standard_monthly' | 'standard_yearly' | 'premium_monthly' | 'premium_yearly') => void; onBack: () => void }) {
-  const ACCENT = '#6C8EF5'
+  const ACCENT = 'var(--md-sys-color-primary)'
   const WARM = '#F4A261'
   const color = planKey === 'standard' ? ACCENT : WARM
   const label = planKey === 'standard' ? 'スタンダード' : 'プレミアム'
@@ -600,7 +600,7 @@ function OnboardingBillingView({ planKey, onSelect, onBack }: { planKey: 'standa
 
 // ── オンボーディング用料金プラン表示 ─────────────────────────────
 function OnboardingPricingView({ onNext, onSelectPlan, onBack }: { onNext: () => void; onSelectPlan: (plan: 'standard' | 'premium') => void; onBack: () => void }) {
-  const ACCENT = '#6C8EF5'
+  const ACCENT = 'var(--md-sys-color-primary)'
   const WARM = '#F4A261'
   const [loading, setLoading] = React.useState(false)
 
