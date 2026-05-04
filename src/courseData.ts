@@ -24,11 +24,11 @@ export type CourseGroup = {
 }
 
 export const COURSE_GROUPS: CourseGroup[] = [
-  { id: 'foundations',     label: '論理的に考え、批判的に問い直す',  description: '論理・批判・哲学で、考える土台を固める' },
-  { id: 'problem-solving', label: '本質的な課題を見極めて、解決する', description: '問いを立て、仮説と構造で本質を捉える' },
-  { id: 'creative',        label: '常識を超えて、発想を広げる',       description: 'リフレーミングと類推で、新しい切り口を生む' },
-  { id: 'communication',   label: '論点を整理し、相手を動かす',       description: '対話・提案・面接で、論理を相手に届ける' },
-  { id: 'business',        label: '数字と戦略で、ビジネスを動かす',   description: 'クライアント現場・戦略・数字感覚を総動員する' },
+  { id: 'foundations',     label: '論理的に考える',  description: '論理・批判・哲学で土台を固める' },
+  { id: 'problem-solving', label: '課題を解決する',  description: '仮説と構造で本質に迫る' },
+  { id: 'creative',        label: '発想を広げる',    description: '常識を超えて、新しい切り口を生む' },
+  { id: 'communication',   label: '相手を動かす',    description: '提案・面接・ヒアリングで論理を届ける' },
+  { id: 'business',        label: '現場で実践する',  description: '戦略・数字・クライアント実務に活かす' },
 ]
 
 export const COURSES: Course[] = [
