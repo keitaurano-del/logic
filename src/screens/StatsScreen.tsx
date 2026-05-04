@@ -201,18 +201,18 @@ export function StatsScreen({ onBack, onTakeTest }: StatsScreenProps) {
             </div>
           </div>
 
-          {/* プレースメントテスト案内 */}
+          {/* 実力診断テスト案内 */}
           {!placement && (
             <div className="card" style={{ background: '#EEF2FF', border: '1.5px solid #C5D0FB' }}>
-              <div style={{ fontSize: 15, fontWeight: 700, color: '#3B5BDB', marginBottom: 6 }}>偏差値を測定しよう</div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: '#3B5BDB', marginBottom: 6 }}>実力を測定しよう</div>
               <div style={{ fontSize: 14, color: '#5A6478', marginBottom: 12, lineHeight: 1.6 }}>
-                プレースメントテストを受けると、自分のレベルと弱点がわかるよ
+                実力診断テストを受けると、5軸のスキル分布と弱点がわかるよ
               </div>
               <button
                 onClick={onTakeTest}
                 style={{ padding: '10px 20px', background: '#3B5BDB', color: '#fff', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}
               >
-                テストを受ける
+                診断を受ける
               </button>
             </div>
           )}

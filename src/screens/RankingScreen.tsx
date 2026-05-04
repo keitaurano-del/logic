@@ -181,12 +181,12 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
             ))}
           </div>
 
-          {/* プレースメント未受検 */}
+          {/* 実力診断未受検 */}
           {!completed && (
             <div style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: '18px 16px', textAlign: 'center' }}>
-              <div style={{ fontSize: 16, color: '#7A849E', marginBottom: 12 }}>プレースメントテストを受けて<br />全国ランキングに参加しよう</div>
+              <div style={{ fontSize: 16, color: '#7A849E', marginBottom: 12 }}>実力診断テストを受けて<br />全国ランキングに参加しよう</div>
               <button onClick={onTakeTest} style={{ background: '#3B5BDB', color: '#fff', border: 'none', borderRadius: 10, padding: '10px 20px', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}>
-                テストを受ける
+                診断を受ける
               </button>
             </div>
           )}
