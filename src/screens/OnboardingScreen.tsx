@@ -1,6 +1,15 @@
 import React, { useState } from 'react'
 import { loginWithGoogle, loginWithEmail, signupWithEmail, isSupabaseConfigured } from '../supabase'
 import { startBetaCampaignCheckout, startCheckout } from '../subscription'
+import {
+  saveUserProfile,
+  AGE_LABELS,
+  GENDER_LABELS,
+  OCCUPATION_LABELS,
+  type AgeGroup,
+  type Gender,
+  type Occupation,
+} from '../userProfile'
 
 interface OnboardingScreenProps {
   onComplete: () => void
@@ -23,14 +32,47 @@ const C = {
   errorBg: 'rgba(248,113,113,0.10)',
 }
 
+// ── スライド用ミニ部品 ────────────────────────────────────────
+function FeatureChip({ color, icon, label }: { color: string; icon: React.ReactNode; label: string }) {
+  return (
+    <div style={{
+      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
+      padding: '14px 8px', borderRadius: 12,
+      background: 'rgba(255,255,255,0.05)',
+      border: `1px solid ${color}30`,
+      flex: 1,
+    }}>
+      <div style={{ color }}>{icon}</div>
+      <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.85)', textAlign: 'center', lineHeight: 1.3 }}>{label}</div>
+    </div>
+  )
+}
+
+function RankRow({ rank, name, pt, color, highlight }: { rank: number; name: string; pt: number; color: string; highlight?: boolean }) {
+  const medals = ['🥇', '🥈', '🥉']
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: 10,
+      padding: '8px 10px', borderRadius: 10,
+      background: highlight ? `${color}20` : 'transparent',
+      border: highlight ? `1px solid ${color}50` : '1px solid transparent',
+    }}>
+      <div style={{ fontSize: 18, width: 22, textAlign: 'center' }}>{medals[rank - 1] || rank}</div>
+      <div style={{ flex: 1, fontSize: 13, fontWeight: highlight ? 800 : 600, color: '#fff' }}>{name}</div>
+      <div style={{ fontSize: 13, fontWeight: 800, color: highlight ? color : 'rgba(255,255,255,0.7)' }}>
+        {pt.toLocaleString()}<span style={{ fontSize: 10, fontWeight: 600, opacity: 0.7 }}> pt</span>
+      </div>
+    </div>
+  )
+}
+
 // ── スライドデータ ──
 const SLIDES = [
   {
     gradient: 'linear-gradient(160deg, #0F1220 0%, #1A2340 50%, #0F1A35 100%)',
     accentColor: '#6C8EF5',
-    particleColor: '#6C8EF5',
     icon: (
-      <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+      <svg width="72" height="72" viewBox="0 0 80 80" fill="none">
         <circle cx="40" cy="40" r="36" stroke="#6C8EF5" strokeWidth="1.5" strokeDasharray="6 4" opacity="0.4"/>
         <circle cx="40" cy="40" r="24" fill="rgba(108,142,245,0.12)" stroke="#6C8EF5" strokeWidth="1.5"/>
         <path d="M28 40h8l4-10 4 20 4-10h4" stroke="#6C8EF5" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -40,16 +82,29 @@ const SLIDES = [
         <circle cx="22" cy="56" r="2" fill="#8BA8FF" opacity="0.7"/>
       </svg>
     ),
+    tag: 'LEARN',
     title: '頭の回転を\n鍛えるアプリ。',
     subtitle: 'フェルミ推定・論理・ケース思考を\n毎日5分でトレーニング。',
     btnLabel: 'つぎへ',
+    preview: (color: string) => (
+      <div style={{ display: 'flex', gap: 10, width: '100%', maxWidth: 360 }}>
+        <FeatureChip color={color} label="体系レッスン" icon={
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        } />
+        <FeatureChip color={color} label="フェルミ推定" icon={
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="14" x2="9" y2="14"/><line x1="12" y1="14" x2="13" y2="14"/><line x1="16" y1="14" x2="17" y2="14"/><line x1="8" y1="18" x2="9" y2="18"/><line x1="12" y1="18" x2="13" y2="18"/><line x1="16" y1="18" x2="17" y2="18"/></svg>
+        } />
+        <FeatureChip color={color} label="ロールプレイ" icon={
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        } />
+      </div>
+    ),
   },
   {
     gradient: 'linear-gradient(160deg, #120F20 0%, #1F1535 50%, #150F28 100%)',
     accentColor: '#A78BFA',
-    particleColor: '#A78BFA',
     icon: (
-      <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+      <svg width="72" height="72" viewBox="0 0 80 80" fill="none">
         <circle cx="40" cy="40" r="36" stroke="#A78BFA" strokeWidth="1.5" opacity="0.3"/>
         <rect x="20" y="46" width="12" height="20" rx="3" fill="rgba(167,139,250,0.3)" stroke="#A78BFA" strokeWidth="1.5"/>
         <rect x="34" y="34" width="12" height="32" rx="3" fill="rgba(167,139,250,0.5)" stroke="#A78BFA" strokeWidth="1.5"/>
@@ -61,16 +116,34 @@ const SLIDES = [
         <circle cx="64" cy="22" r="3" fill="#A78BFA"/>
       </svg>
     ),
-    title: 'ランキングで\n自分の実力を証明。',
+    tag: 'COMPETE',
+    title: 'ランキングで\n実力を証明。',
     subtitle: 'ポイントを積み上げ、あなたの論理力を\n仲間と競い合おう。',
     btnLabel: 'つぎへ',
+    preview: (color: string) => (
+      <div style={{
+        width: '100%', maxWidth: 360,
+        background: 'rgba(255,255,255,0.06)',
+        border: `1px solid ${color}30`,
+        borderRadius: 14, padding: 14,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+          <span style={{ fontSize: 11, fontWeight: 800, color, letterSpacing: '0.12em' }}>WEEKLY RANKING</span>
+          <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>残り 2日</span>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+          <RankRow rank={1} name="さくら" pt={1250} color={color} />
+          <RankRow rank={2} name="ゆうき" pt={1180} color={color} />
+          <RankRow rank={3} name="あなた" pt={1090} color={color} highlight />
+        </div>
+      </div>
+    ),
   },
   {
     gradient: 'linear-gradient(160deg, #0F1818 0%, #0F2420 50%, #0A1A18 100%)',
     accentColor: '#34D399',
-    particleColor: '#34D399',
     icon: (
-      <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+      <svg width="72" height="72" viewBox="0 0 80 80" fill="none">
         <circle cx="40" cy="40" r="36" stroke="#34D399" strokeWidth="1.5" opacity="0.3"/>
         <rect x="18" y="24" width="44" height="32" rx="8" fill="rgba(52,211,153,0.1)" stroke="#34D399" strokeWidth="1.5"/>
         <circle cx="30" cy="36" r="5" fill="rgba(52,211,153,0.3)" stroke="#34D399" strokeWidth="1.5"/>
@@ -81,21 +154,55 @@ const SLIDES = [
         <path d="M54 20l2.5 2.5L62 17" stroke="#34D399" strokeWidth="2" strokeLinecap="round"/>
       </svg>
     ),
-    title: 'AIが即座に採点\nフィードバック。',
+    tag: 'AI FEEDBACK',
+    title: 'AIが即座に\n採点・フィードバック。',
     subtitle: '回答を送るとAIがすぐに評価。\n弱点を把握して、確実に成長できる。',
     btnLabel: 'プランをみる',
+    preview: (color: string) => (
+      <div style={{
+        width: '100%', maxWidth: 360,
+        background: 'rgba(255,255,255,0.06)',
+        border: `1px solid ${color}30`,
+        borderRadius: 14, padding: 14,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+          <div style={{ width: 30, height: 30, borderRadius: '50%', background: color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <span style={{ fontSize: 11, fontWeight: 900, color: '#0A1A18' }}>AI</span>
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', fontWeight: 700, letterSpacing: '0.08em' }}>採点完了</div>
+            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>3秒で返答</div>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 2 }}>
+            <span style={{ fontSize: 26, fontWeight: 900, color, letterSpacing: '-0.03em' }}>82</span>
+            <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)' }}>/100</span>
+          </div>
+        </div>
+        <div style={{
+          fontSize: 12, color: 'rgba(255,255,255,0.85)',
+          lineHeight: 1.65,
+          background: 'rgba(255,255,255,0.04)', borderRadius: 8, padding: '10px 12px',
+          borderLeft: `2px solid ${color}`,
+        }}>
+          MECEに分解できています。次は「So What」を一段深掘りしましょう。
+        </div>
+      </div>
+    ),
   },
 ]
 
 // ── ウェルカムスライド ─────────────────────────────────────────
-function WelcomeSlides({ onDone }: { onDone: () => void }) {
-  const [idx, setIdx] = useState(0)
+function WelcomeSlides({ idx, setIdx, onDone }: { idx: number; setIdx: (i: number) => void; onDone: () => void }) {
   const slide = SLIDES[idx]
   const isLast = idx === SLIDES.length - 1
+  const isFirst = idx === 0
 
   const next = () => {
     if (isLast) onDone()
-    else setIdx(i => i + 1)
+    else setIdx(idx + 1)
+  }
+  const back = () => {
+    if (!isFirst) setIdx(idx - 1)
   }
 
   return (
@@ -126,30 +233,49 @@ function WelcomeSlides({ onDone }: { onDone: () => void }) {
         pointerEvents: 'none',
       }} />
 
-      {/* ビジュアルエリア（上55%） */}
+      {/* 上部: 戻るボタン + LOGIC */}
       <div style={{
-        flex: '0 0 55%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'column',
-        gap: 24,
-        position: 'relative',
-        padding: 'calc(env(safe-area-inset-top, 44px) + 24px) 24px 0',
+        display: 'flex', alignItems: 'center',
+        padding: 'calc(env(safe-area-inset-top, 44px) + 12px) 20px 0',
+        position: 'relative', zIndex: 2,
       }}>
-        {/* Logic ロゴ */}
-        <div style={{ fontSize: 13, fontWeight: 800, letterSpacing: '0.25em', color: `${slide.accentColor}90`, textTransform: 'uppercase' }}>Logic</div>
+        <button
+          onClick={back}
+          aria-label="戻る"
+          style={{
+            width: 36, height: 36, borderRadius: '50%',
+            background: 'rgba(255,255,255,0.08)', border: 'none',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: isFirst ? 'default' : 'pointer',
+            opacity: isFirst ? 0 : 1,
+            pointerEvents: isFirst ? 'none' : 'auto',
+            transition: 'opacity .2s',
+            flexShrink: 0,
+          }}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div style={{
+          flex: 1, textAlign: 'center',
+          fontSize: 13, fontWeight: 800, letterSpacing: '0.25em',
+          color: `${slide.accentColor}90`, textTransform: 'uppercase',
+          marginRight: 36, /* 戻るボタンの幅ぶん中央寄せを調整 */
+        }}>Logic</div>
+      </div>
 
-        {/* メインアイコン */}
+      {/* ヒーローアイコン */}
+      <div style={{
+        display: 'flex', flexDirection: 'column', alignItems: 'center',
+        gap: 16, padding: '24px 24px 0',
+        position: 'relative', zIndex: 1,
+      }}>
         <div style={{
           animation: 'floatIcon 3.5s ease-in-out infinite',
           filter: `drop-shadow(0 0 24px ${slide.accentColor}60)`,
         }}>
           {slide.icon}
         </div>
-
-        {/* ドットインジケーター */}
-        <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+        <div style={{ display: 'flex', gap: 8 }}>
           {SLIDES.map((_, i) => (
             <div key={i} onClick={() => setIdx(i)} style={{
               width: i === idx ? 24 : 8,
@@ -162,41 +288,45 @@ function WelcomeSlides({ onDone }: { onDone: () => void }) {
         </div>
       </div>
 
-      {/* テキスト + ボタン（下45%） */}
+      {/* プレビュー（中央のリッチコンテンツ） */}
       <div style={{
         flex: 1,
-        padding: '32px 28px calc(env(safe-area-inset-bottom, 24px) + 32px)',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'flex-end',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: '20px 24px',
+        position: 'relative', zIndex: 1,
       }}>
-        {/* タグライン */}
+        {slide.preview(slide.accentColor)}
+      </div>
+
+      {/* テキスト + ボタン */}
+      <div style={{
+        padding: '0 28px calc(env(safe-area-inset-bottom, 24px) + 28px)',
+        display: 'flex', flexDirection: 'column',
+        position: 'relative', zIndex: 1,
+      }}>
         <div style={{
           display: 'inline-flex', alignItems: 'center', gap: 6,
           background: `${slide.accentColor}18`,
           border: `1px solid ${slide.accentColor}40`,
           borderRadius: 99, padding: '4px 12px',
-          marginBottom: 16, alignSelf: 'flex-start',
+          marginBottom: 14, alignSelf: 'flex-start',
         }}>
           <div style={{ width: 6, height: 6, borderRadius: '50%', background: slide.accentColor }} />
           <span style={{ fontSize: 11, fontWeight: 700, color: slide.accentColor, letterSpacing: '0.08em' }}>
-            {idx === 0 ? 'LEARN' : idx === 1 ? 'COMPETE' : 'AI FEEDBACK'}
+            {slide.tag}
           </span>
         </div>
-
         <h1 style={{
-          fontSize: 30, fontWeight: 800,
-          color: '#FFFFFF',
-          lineHeight: 1.35,
-          whiteSpace: 'pre-line',
-          margin: '0 0 14px',
+          fontSize: 28, fontWeight: 800,
+          color: '#FFFFFF', lineHeight: 1.35,
+          whiteSpace: 'pre-line', margin: '0 0 12px',
           letterSpacing: '-0.02em',
         }}>
           {slide.title}
         </h1>
         <p style={{
-          fontSize: 15, color: 'rgba(255,255,255,0.6)',
-          lineHeight: 1.75, margin: '0 0 32px',
+          fontSize: 14, color: 'rgba(255,255,255,0.6)',
+          lineHeight: 1.7, margin: '0 0 24px',
           whiteSpace: 'pre-line',
         }}>
           {slide.subtitle}
@@ -243,47 +373,167 @@ function OBCell({ value }: { value: string | boolean }) {
 }
 
 // ── 属性質問ステップ ─────────────────────────────────────────
-const OCCUPATION_OPTIONS = [
-  { id: 'student',    label: '学生',         icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 1.5 9 1.5 12 0v-5"/></svg> },
-  { id: 'newgrad',    label: '新卒〜3年目',   icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg> },
-  { id: 'mid',        label: 'ミドル（4〜10年）', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></svg> },
-  { id: 'senior',     label: 'シニア・管理職', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg> },
-  { id: 'freelance',  label: 'フリーランス',  icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> },
-  { id: 'other',      label: 'その他',        icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> },
+const ACCENT = '#6C8EF5'
+
+const AGE_ORDER: AgeGroup[] = ['teens', '20s', '30s', '40s', '50plus']
+const GENDER_ORDER: Gender[] = ['male', 'female', 'other', 'na']
+const OCCUPATION_ORDER: Occupation[] = [
+  'executive',
+  'consultant',
+  'strategy',
+  'sales_marketing',
+  'engineering',
+  'admin',
+  'professional',
+  'student',
+  'other',
 ]
 
-function OnboardingAttributeView({ onNext }: { onNext: (occupation: string) => void }) {
-  const [selected, setSelected] = React.useState('')
-  const ACCENT = '#6C8EF5'
+type AttrStep = 'age' | 'gender' | 'occupation'
+const STEP_ORDER: AttrStep[] = ['age', 'gender', 'occupation']
+
+function AttrOption<T extends string>({
+  value,
+  label,
+  selected,
+  onSelect,
+}: { value: T; label: string; selected: boolean; onSelect: (v: T) => void }) {
+  return (
+    <button
+      onClick={() => onSelect(value)}
+      style={{
+        display: 'flex', alignItems: 'center', gap: 14,
+        padding: '16px 18px', borderRadius: 14,
+        border: `2px solid ${selected ? ACCENT : 'rgba(255,255,255,0.1)'}`,
+        background: selected ? `${ACCENT}18` : 'rgba(255,255,255,0.04)',
+        color: '#fff', cursor: 'pointer', transition: 'all .15s', textAlign: 'left',
+      }}
+    >
+      <span style={{ fontSize: 15, fontWeight: selected ? 700 : 500, flex: 1 }}>{label}</span>
+      {selected && (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={ACCENT} strokeWidth="2.5" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+      )}
+    </button>
+  )
+}
+
+function OnboardingAttributeView({ onNext, onBackToSlides }: { onNext: () => void; onBackToSlides: () => void }) {
+  const [step, setStep] = React.useState<AttrStep>('age')
+  const [age, setAge] = React.useState<AgeGroup | ''>('')
+  const [gender, setGender] = React.useState<Gender | ''>('')
+  const [occupation, setOccupation] = React.useState<Occupation | ''>('')
+
+  const stepIdx = STEP_ORDER.indexOf(step)
+  const currentValue = step === 'age' ? age : step === 'gender' ? gender : occupation
+  const isLast = stepIdx === STEP_ORDER.length - 1
+
+  const goNext = () => {
+    if (!currentValue) return
+    if (isLast) {
+      saveUserProfile({
+        age: age || undefined,
+        gender: gender || undefined,
+        occupation: occupation || undefined,
+        completedAt: new Date().toISOString(),
+      })
+      onNext()
+      return
+    }
+    setStep(STEP_ORDER[stepIdx + 1])
+  }
+
+  const goBack = () => {
+    if (stepIdx === 0) {
+      onBackToSlides()
+      return
+    }
+    setStep(STEP_ORDER[stepIdx - 1])
+  }
+
+  const heading = step === 'age'
+    ? '年齢を教えてください'
+    : step === 'gender'
+      ? '性別を教えてください'
+      : '職種を教えてください'
+
+  const sub = step === 'age'
+    ? '年代別の傾向を学習体験に反映します'
+    : step === 'gender'
+      ? '統計データの分析にのみ使用します'
+      : 'あなたに合ったレッスンを提案します'
 
   return (
-    <div style={{ minHeight: '100dvh', background: 'linear-gradient(160deg, #0F1220 0%, #1A2340 60%, #0F1A35 100%)', color: '#fff', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", padding: 'calc(env(safe-area-inset-top, 44px) + 24px) 24px calc(env(safe-area-inset-bottom, 24px) + 24px)' }}>
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-        <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.2em', color: `${ACCENT}90`, textAlign: 'center', marginBottom: 16 }}>LOGIC</div>
-        <h1 style={{ fontSize: 26, fontWeight: 800, textAlign: 'center', margin: '0 0 10px', lineHeight: 1.35, letterSpacing: '-0.02em' }}>
-          あなたについて<br />教えてください
+    <div style={{
+      minHeight: '100dvh',
+      background: 'linear-gradient(160deg, #0F1220 0%, #1A2340 60%, #0F1A35 100%)',
+      color: '#fff', display: 'flex', flexDirection: 'column',
+      fontFamily: "'Noto Sans JP', sans-serif",
+      padding: 'calc(env(safe-area-inset-top, 44px) + 16px) 24px calc(env(safe-area-inset-bottom, 24px) + 24px)',
+    }}>
+      {/* ヘッダー: 戻る + 進捗 */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 28 }}>
+        <button
+          onClick={goBack}
+          aria-label="戻る"
+          style={{
+            width: 36, height: 36, borderRadius: '50%',
+            background: 'rgba(255,255,255,0.08)', border: 'none',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer', flexShrink: 0,
+          }}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div style={{ flex: 1, display: 'flex', gap: 6 }}>
+          {STEP_ORDER.map((_, i) => (
+            <div key={i} style={{
+              flex: 1, height: 4, borderRadius: 2,
+              background: i <= stepIdx ? ACCENT : 'rgba(255,255,255,0.12)',
+              transition: 'background .25s',
+            }} />
+          ))}
+        </div>
+        <div style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.5)', minWidth: 28, textAlign: 'right' }}>
+          {stepIdx + 1}/{STEP_ORDER.length}
+        </div>
+      </div>
+
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
+        <h1 style={{ fontSize: 24, fontWeight: 800, margin: '0 0 8px', lineHeight: 1.35, letterSpacing: '-0.02em' }}>
+          {heading}
         </h1>
-        <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', textAlign: 'center', margin: '0 0 32px', lineHeight: 1.6 }}>
-          あなたに最適なコースを提案するよ
+        <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', margin: '0 0 24px', lineHeight: 1.6 }}>
+          {sub}
         </p>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {OCCUPATION_OPTIONS.map(opt => (
-            <button key={opt.id} onClick={() => setSelected(opt.id)}
-              style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '16px 18px', borderRadius: 14, border: `2px solid ${selected === opt.id ? ACCENT : 'rgba(255,255,255,0.1)'}`, background: selected === opt.id ? `${ACCENT}18` : 'rgba(255,255,255,0.04)', color: '#fff', cursor: 'pointer', transition: 'all .15s', textAlign: 'left' }}>
-              <div style={{ color: selected === opt.id ? ACCENT : 'rgba(255,255,255,0.5)', flexShrink: 0 }}>{opt.icon}</div>
-              <span style={{ fontSize: 15, fontWeight: selected === opt.id ? 700 : 500 }}>{opt.label}</span>
-              {selected === opt.id && (
-                <svg style={{ marginLeft: 'auto' }} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={ACCENT} strokeWidth="2.5" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-              )}
-            </button>
+          {step === 'age' && AGE_ORDER.map(v => (
+            <AttrOption key={v} value={v} label={AGE_LABELS[v]} selected={age === v} onSelect={setAge} />
+          ))}
+          {step === 'gender' && GENDER_ORDER.map(v => (
+            <AttrOption key={v} value={v} label={GENDER_LABELS[v]} selected={gender === v} onSelect={setGender} />
+          ))}
+          {step === 'occupation' && OCCUPATION_ORDER.map(v => (
+            <AttrOption key={v} value={v} label={OCCUPATION_LABELS[v]} selected={occupation === v} onSelect={setOccupation} />
           ))}
         </div>
       </div>
 
-      <button onClick={() => selected && onNext(selected)} disabled={!selected}
-        style={{ width: '100%', padding: '17px', borderRadius: 16, border: 'none', background: selected ? ACCENT : 'rgba(255,255,255,0.1)', color: selected ? '#fff' : 'rgba(255,255,255,0.3)', fontSize: 16, fontWeight: 800, cursor: selected ? 'pointer' : 'not-allowed', marginTop: 24, boxShadow: selected ? `0 8px 24px ${ACCENT}50` : 'none', transition: 'all .2s' }}>
-        次へ
+      <button
+        onClick={goNext}
+        disabled={!currentValue}
+        style={{
+          width: '100%', padding: '17px', borderRadius: 16, border: 'none',
+          background: currentValue ? ACCENT : 'rgba(255,255,255,0.1)',
+          color: currentValue ? '#fff' : 'rgba(255,255,255,0.3)',
+          fontSize: 16, fontWeight: 800,
+          cursor: currentValue ? 'pointer' : 'not-allowed',
+          marginTop: 24,
+          boxShadow: currentValue ? `0 8px 24px ${ACCENT}50` : 'none',
+          transition: 'all .2s',
+        }}
+      >
+        {isLast ? '次へ進む' : '次へ'}
       </button>
     </div>
   )
@@ -344,7 +594,7 @@ function OnboardingBillingView({ planKey, onSelect, onBack }: { planKey: 'standa
 }
 
 // ── オンボーディング用料金プラン表示 ─────────────────────────────
-function OnboardingPricingView({ onNext, onSelectPlan }: { onNext: () => void; onSelectPlan: (plan: 'standard' | 'premium') => void }) {
+function OnboardingPricingView({ onNext, onSelectPlan, onBack }: { onNext: () => void; onSelectPlan: (plan: 'standard' | 'premium') => void; onBack: () => void }) {
   const ACCENT = '#6C8EF5'
   const WARM = '#F4A261'
   const [loading, setLoading] = React.useState(false)
@@ -363,8 +613,22 @@ function OnboardingPricingView({ onNext, onSelectPlan }: { onNext: () => void; o
   return (
     <div style={{ minHeight: '100dvh', background: 'linear-gradient(160deg, #0F1220 0%, #1A2340 60%, #0F1A35 100%)', color: '#fff', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", overflowY: 'auto' }}>
 
-      {/* ヘッダー */}
-      <div style={{ padding: 'calc(env(safe-area-inset-top, 44px) + 16px) 24px 0', textAlign: 'center' }}>
+      {/* ヘッダー（戻る + タイトル） */}
+      <div style={{ padding: 'calc(env(safe-area-inset-top, 44px) + 12px) 16px 0' }}>
+        <button
+          onClick={onBack}
+          aria-label="戻る"
+          style={{
+            width: 36, height: 36, borderRadius: '50%',
+            background: 'rgba(255,255,255,0.08)', border: 'none',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer', marginBottom: 12,
+          }}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+      </div>
+      <div style={{ padding: '0 24px', textAlign: 'center' }}>
         <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.2em', color: `${ACCENT}90`, marginBottom: 12 }}>LOGIC</div>
         <h1 style={{ fontSize: 26, fontWeight: 800, margin: '0 0 8px', lineHeight: 1.3, letterSpacing: '-0.02em' }}>
           あなたに合ったプランを<br />選んでください
@@ -436,7 +700,7 @@ function OnboardingPricingView({ onNext, onSelectPlan }: { onNext: () => void; o
 }
 
 // ── 登録画面（スクショ参考） ──────────────────────────────────
-function RegisterScreen({ onComplete, onSkip, onNavigateToLogin }: { onComplete: () => void; onSkip: () => void; onNavigateToLogin?: () => void }) {
+function RegisterScreen({ onComplete, onSkip, onBack, onNavigateToLogin }: { onComplete: () => void; onSkip: () => void; onBack: () => void; onNavigateToLogin?: () => void }) {
   const [termsChecked, setTermsChecked] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -487,9 +751,23 @@ function RegisterScreen({ onComplete, onSkip, onNavigateToLogin }: { onComplete:
       flexDirection: 'column',
       background: C.darkBg,
       fontFamily: "'Noto Sans JP', sans-serif",
-      padding: '0 24px',
-      justifyContent: 'center',
+      padding: 'calc(env(safe-area-inset-top, 44px) + 12px) 24px calc(env(safe-area-inset-bottom, 24px) + 24px)',
     }}>
+      <button
+        onClick={onBack}
+        aria-label="戻る"
+        style={{
+          width: 36, height: 36, borderRadius: '50%',
+          background: 'rgba(255,255,255,0.08)', border: 'none',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          cursor: 'pointer', flexShrink: 0, alignSelf: 'flex-start',
+          marginBottom: 24,
+        }}
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
       <h1 style={{
         fontSize: 24, fontWeight: 700,
         color: C.white, textAlign: 'center',
@@ -618,6 +896,7 @@ function RegisterScreen({ onComplete, onSkip, onNavigateToLogin }: { onComplete:
           登録せずにはじめる
         </button>
       </div>
+      </div>
     </div>
   )
 }
@@ -638,6 +917,7 @@ function GoogleIcon() {
 export function OnboardingScreen({ onComplete, onNavigateToLogin }: OnboardingScreenProps) {
   const [phase, setPhase] = useState<'slides' | 'attribute' | 'pricing' | 'billing' | 'register'>('slides')
   const [selectedPlan, setSelectedPlan] = useState<'standard' | 'premium'>('standard')
+  const [slideIdx, setSlideIdx] = useState(0)
 
   const handlePlanSelect = (plan: 'standard' | 'premium') => {
     setSelectedPlan(plan)
@@ -652,15 +932,35 @@ export function OnboardingScreen({ onComplete, onNavigateToLogin }: OnboardingSc
   }
 
   if (phase === 'slides') {
-    return <WelcomeSlides onDone={() => setPhase('attribute')} />
+    return (
+      <WelcomeSlides
+        idx={slideIdx}
+        setIdx={setSlideIdx}
+        onDone={() => setPhase('attribute')}
+      />
+    )
   }
 
   if (phase === 'attribute') {
-    return <OnboardingAttributeView onNext={() => setPhase('pricing')} />
+    return (
+      <OnboardingAttributeView
+        onNext={() => setPhase('pricing')}
+        onBackToSlides={() => {
+          setSlideIdx(SLIDES.length - 1)
+          setPhase('slides')
+        }}
+      />
+    )
   }
 
   if (phase === 'pricing') {
-    return <OnboardingPricingView onNext={() => setPhase('register')} onSelectPlan={handlePlanSelect} />
+    return (
+      <OnboardingPricingView
+        onNext={() => setPhase('register')}
+        onSelectPlan={handlePlanSelect}
+        onBack={() => setPhase('attribute')}
+      />
+    )
   }
 
   if (phase === 'billing') {
@@ -671,6 +971,7 @@ export function OnboardingScreen({ onComplete, onNavigateToLogin }: OnboardingSc
     <RegisterScreen
       onComplete={onComplete}
       onSkip={onComplete}
+      onBack={() => setPhase('pricing')}
       onNavigateToLogin={onNavigateToLogin}
     />
   )

@@ -59,7 +59,7 @@
     Logic
   </div>
   <h1>プライバシーポリシー</h1>
-  <p class="meta">最終更新日: 2026年5月1日 / 適用サービス: Logic (Web 版・モバイルアプリ版)</p>
+  <p class="meta">最終更新日: 2026年5月4日 / 適用サービス: Logic (モバイルアプリ版・Android)</p>
 </header>
 
 <main>
@@ -75,7 +75,7 @@
       <tr><th>情報の種類</th><th>具体的な内容</th></tr>
       <tr><td>アカウント情報</td><td>メールアドレス、表示名（任意）、Google アカウント情報（Google ログイン利用時）</td></tr>
       <tr><td>学習データ</td><td>レッスン完了記録、クイズ回答履歴、フェルミ推定の回答、ロールプレイの会話内容、学習ストリーク、XP（経験値）</td></tr>
-      <tr><td>課金情報</td><td>サブスクリプションプラン、課金ステータス（カード番号等の決済情報は Stripe / Google Play が管理し、当社は保持しません）</td></tr>
+      <tr><td>課金情報</td><td>サブスクリプションプラン、課金ステータス（カード番号等の決済情報は Google Play が管理し、当社は保持しません）</td></tr>
       <tr><td>利用状況データ</td><td>アクセス日時、使用機能、エラーログ</td></tr>
       <tr><td>端末情報</td><td>OS バージョン、端末種別（クラッシュ解析・改善目的）</td></tr>
     </table>
@@ -112,13 +112,26 @@
       <li>下記の業務委託先（サービス提供に必要な範囲内のみ）</li>
     </ul>
     <table style="margin-top:12px;">
-      <tr><th>委託先・サービス</th><th>目的・取扱い情報</th></tr>
-      <tr><td>Supabase, Inc.</td><td>データベース・認証基盤（アカウント情報・学習データ）</td></tr>
-      <tr><td>Stripe, Inc.</td><td>Web 版決済処理（課金情報）</td></tr>
-      <tr><td>Google LLC（Google Play）</td><td>Android 版決済処理（課金情報）</td></tr>
-      <tr><td>Anthropic, PBC</td><td>AI フィードバック生成（フェルミ推定・ロールプレイの回答内容）</td></tr>
-      <tr><td>Render Services, Inc.</td><td>サーバーホスティング</td></tr>
+      <tr><th>委託先・サービス</th><th>所在国</th><th>目的・取扱い情報</th></tr>
+      <tr><td>Supabase, Inc.</td><td>米国</td><td>データベース・認証基盤（アカウント情報・学習データ）</td></tr>
+      <tr><td>Google LLC（Google Play）</td><td>米国</td><td>Android 版決済処理（課金情報）</td></tr>
+      <tr><td>Anthropic, PBC</td><td>米国</td><td>AI フィードバック・レッスン生成（フェルミ推定・ロールプレイ・レッスン関連の入力内容）</td></tr>
+      <tr><td>Render Services, Inc.</td><td>米国</td><td>サーバーホスティング</td></tr>
     </table>
+  </section>
+
+  <section>
+    <h2>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      第3条の2 外国にある第三者への個人データの提供について
+    </h2>
+    <p>個人情報の保護に関する法律第28条に基づき、外国にある第三者への個人データの提供に関する情報を以下のとおり開示します。</p>
+    <ul>
+      <li><strong>提供先の所在国</strong>：いずれも米国（United States of America）</li>
+      <li><strong>当該国の個人情報保護に関する制度</strong>：米国においては、個人情報の保護に関する包括的な連邦法は存在しませんが、消費者プライバシーに関する州法（カリフォルニア州消費者プライバシー法 (CCPA/CPRA) 等）および分野別の連邦法が整備されています。詳細は個人情報保護委員会が公表する「外国における個人情報の保護に関する制度等の調査」(<a href="https://www.ppc.go.jp/personalinfo/legal/kaiseihogohou/" target="_blank" rel="noopener">https://www.ppc.go.jp/personalinfo/legal/kaiseihogohou/</a>) をご参照ください</li>
+      <li><strong>当該第三者が講ずる個人情報保護のための措置</strong>：各委託先は OECD プライバシーガイドラインに沿った社内規程・技術的安全管理措置（暗号化・アクセス制御等）を整備しています。当社は委託先と適切な契約（DPA 等）を締結し、当社プライバシーポリシーに準拠した取扱いを義務付けています</li>
+      <li><strong>AI 提供事業者における学習目的での利用</strong>：Anthropic, PBC に送信されたユーザー入力は、Anthropic API の標準利用規約に基づき、AI モデルの学習目的では利用されません</li>
+    </ul>
   </section>
 
   <section>
@@ -128,9 +141,10 @@
     </h2>
     <ul>
       <li>学習データ・アカウント情報は Supabase（米国）のサーバーに保存されます</li>
+      <li>アプリケーションサーバーは Render（米国）にホスティングされています</li>
       <li>通信はすべて HTTPS（TLS 1.2 以上）で暗号化されます</li>
       <li>パスワードはハッシュ化して保存し、平文では保持しません</li>
-      <li>決済カード情報は当社のサーバーを経由せず、Stripe / Google Pay が直接処理します</li>
+      <li>決済カード情報は当社のサーバーを経由せず、Google Play が直接処理します</li>
     </ul>
   </section>
 

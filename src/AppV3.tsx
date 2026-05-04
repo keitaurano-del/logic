@@ -47,7 +47,7 @@ import { getCurrentLevel } from './screens/homeHelpers'
 import type { AIProblemSet } from './aiProblemStore'
 import { loadTheme, applyTheme } from './theme'
 // import { loadGuestUser } from './guestUser'
-import { getCompletedCount, getXp, getDisplayName, setDisplayName } from './stats'
+import { getCompletedCount, getXp, getDisplayName, setDisplayName, recordCompletion, addStudyTime } from './stats'
 import { updateDisplayName } from './supabase'
 import { isAdmin } from './admin'
 import { onAuthChange, logout, getInitialUser, type User } from './supabase'
@@ -82,7 +82,7 @@ type Screen =
   | { type: 'profile' }
   | { type: 'lesson'; lessonId: number }
   | { type: 'lesson-complete'; lessonId: number; durationSec: number; prevLevel: number }
-  | { type: 'flashcards' }
+  | { type: 'flashcards'; mode?: 'due' | 'weak' }
   | { type: 'fermi' }
   | { type: 'daily-fermi' }
   | { type: 'deviation' }
@@ -259,6 +259,7 @@ function AppV3() {
   }
 
   const handleOpenLesson = (lessonId: number) => {
+    lessonStartTimeRef.current = Date.now()
     navigate({ type: 'lesson', lessonId })
   }
 
@@ -275,8 +276,11 @@ function AppV3() {
   const handleComplete = () => {
     if (screen.type === 'lesson') {
       const lessonId = screen.lessonId
-      const durationSec = Math.max(60, Math.floor((Date.now() - lessonStartTimeRef.current) / 1000))
+      const elapsedMs = Date.now() - lessonStartTimeRef.current
+      const durationSec = Math.max(60, Math.floor(elapsedMs / 1000))
       const prevLevel = getCurrentLevel(getXp() - 50).level  // before XP add
+      recordCompletion(`lesson-${lessonId}`)
+      if (elapsedMs > 5000) addStudyTime(elapsedMs)
       navigate({ type: 'lesson-complete', lessonId, durationSec, prevLevel })
     } else {
       navigate({ type: tab }, true)
@@ -378,6 +382,7 @@ function AppV3() {
           onOpenRoadmap={() => { setTab('lessons'); navigate({ type: 'lessons' }, true) }}
           onNavigateToDailyFermi={() => navigate({ type: 'daily-fermi' })}
           onOpenPlacementTest={() => navigate({ type: 'placement-test' })}
+          onOpenFlashcards={(mode) => navigate({ type: 'flashcards', mode })}
         />
       )}
 
@@ -398,7 +403,7 @@ function AppV3() {
         />
       )}
 
-      {screen.type === 'flashcards' && <FlashcardsScreen onBack={handleBack} />}
+      {screen.type === 'flashcards' && <FlashcardsScreen onBack={handleBack} mode={screen.mode} />}
       {screen.type === 'fermi' && <FermiScreen onBack={handleBack} onReport={(ctx) => navigate({ type: 'report-problem', context: ctx })} />}
       {screen.type === 'daily-fermi' && <DailyFermiScreen onBack={handleBack} onReport={(ctx) => navigate({ type: 'report-problem', context: ctx })} />}
       {screen.type === 'journal-input' && <JournalInputScreen onBack={handleBack} />}
