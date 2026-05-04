@@ -8,6 +8,7 @@ import { v3 } from '../styles/tokensV3'
 import { getStreak, getXp } from '../stats'
 import { FlameIcon, ArrowUpIcon, StarIcon } from '../icons'
 import { getCurrentLevel } from './homeHelpers'
+import { haptic } from '../platform/haptics'
 
 interface LessonCompleteScreenProps {
   userName: string
@@ -79,6 +80,7 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
   // フェーズ制演出
   const [phase, setPhase] = useState<0 | 1 | 2 | 3>(0)
   useEffect(() => {
+    haptic.success()
     const t1 = setTimeout(() => setPhase(1), 100)
     const t2 = setTimeout(() => setPhase(2), 800)
     const t3 = setTimeout(() => setPhase(3), 1500)

@@ -39,13 +39,14 @@ a:hover { color: var(--brand-hover); }
 }
 .eyebrow.accent { color: var(--brand); }
 
-/* Button */
+/* Button — minimum HIG 44pt / M3 48dp tap target */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--s-2);
-  padding: 14px 22px;
+  min-height: 44px;
+  padding: 12px 22px;
   font-family: var(--font-ui);
   font-size: 15px;
   font-weight: 600;
@@ -60,10 +61,15 @@ a:hover { color: var(--brand-hover); }
               border-color var(--dur-base) ease;
   text-decoration: none;
   white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
 }
+html[data-platform="android"] .btn { min-height: 48px; }
 .btn:active { transform: scale(0.97) !important; }
 .btn:hover { border-color: var(--text-muted); }
-.btn:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--accent-glow); }
+.btn:focus-visible {
+  outline: 2px solid var(--md-sys-color-primary);
+  outline-offset: 2px;
+}
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .btn-primary {
@@ -95,6 +101,26 @@ a:hover { color: var(--brand-hover); }
 }
 .card-compact { padding: var(--s-4); }
 .card-tight { padding: var(--s-3); }
+
+/* Interactive variant: rendered as <button>, needs button-reset + state layer */
+button.card {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--dur-base) var(--ease-out, ease),
+              border-color var(--dur-base) ease,
+              background var(--dur-base) ease;
+}
+button.card:hover { border-color: var(--md-sys-color-primary); }
+button.card:active { transform: scale(0.99); }
+button.card:focus-visible {
+  outline: 2px solid var(--md-sys-color-primary);
+  outline-offset: 2px;
+}
 
 /* Input / Textarea / Select */
 .input, .textarea, .select {
@@ -155,11 +181,24 @@ a:hover { color: var(--brand-hover); }
 }
 .progress-fill {
   height: 100%;
-  background: var(--brand);
+  background: var(--md-sys-color-primary);
   border-radius: var(--radius-full);
-  transition: width 300ms ease;
+  transition: width var(--motion-duration-medium2, 300ms) var(--motion-easing-emphasized-decelerate, ease-out);
 }
 .progress-lg { height: 12px; }
+
+/* M3 Linear Progress — indeterminate */
+.progress--indeterminate .progress-fill {
+  width: 30% !important;
+  animation: m3-progress-indet 1.6s var(--motion-easing-standard, ease-in-out) infinite;
+}
+@keyframes m3-progress-indet {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(400%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .progress--indeterminate .progress-fill { animation: none; width: 100% !important; }
+}
 
 /* Layout helpers */
 .stack { display: flex; flex-direction: column; gap: var(--s-4); }

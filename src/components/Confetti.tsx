@@ -1,4 +1,5 @@
 // CSS-only confetti — no external dependencies
+import { prefersReducedMotion } from '../platform/motion'
 
 const COLORS = [
   'var(--md-sys-color-primary)', '#9EB3F0', '#EEF2FE',  // brand indigo family
@@ -32,6 +33,8 @@ const pieces: Piece[] = Array.from({ length: 52 }, (_, i) => ({
 }))
 
 export function Confetti() {
+  // 動きを減らす設定がオンのときは演出をスキップ
+  if (prefersReducedMotion()) return null
   return (
     <div
       style={{

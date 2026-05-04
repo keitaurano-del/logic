@@ -8,6 +8,72 @@
 
 ---
 
+## 実装ステータス（2026-05-04 セッション時点）
+
+| Phase | 計画 | 実装 | 状態 |
+|---|---|---|---|
+| **Phase 0** リリースブロッカー | 8h | ~7h 相当 | ✅ ほぼ完了（PR #73） |
+| **Phase 1** デザインシステム土台 | 32h | ~24h 相当 | ✅ ほぼ完了（PR #73） |
+| **Phase 2** 全画面 HIG/M3 適合 | 60h | ~10h 相当 | 🟡 着手済（高優先 4 画面 + Lesson 触覚） |
+| **Phase 3** 個別最適化 | 80h | 0h | ⚪ 未着手（次セッション以降） |
+| **Phase 4** 仕上げ・検証 | 24h | ~3h 相当（build/lint/cap sync 通過） | 🟡 自動チェックのみ |
+
+### Phase 0 完了項目
+- ✅ `capacitor.config.ts` StatusBar `LIGHT` + `#1A1F2E` + `overlaysWebView`
+- ✅ `configureStatusBar()` / `configureKeyboard()` 起動配線
+- ✅ `hideSplash()` 配線（auth ready / 1500ms timeout）
+- ✅ Android `enableOnBackInvokedCallback` (Predictive Back)
+- ✅ `MainActivity.kt` `WindowCompat.setDecorFitsSystemWindows(window, false)` (Edge-to-Edge)
+- ✅ 5 プラグイン (`@capacitor/{haptics,dialog,share,keyboard,action-sheet}`) install + sync
+- ✅ `setHtmlPlatformAttr()` 配線
+- ✅ input font-size 14→16 (5 ファイル)
+- ✅ Stripe 残存コード削除
+- ⚪ iOS 関連 (PrivacyInfo, StoreKit, Sign in with Apple) は iOS リリース直前へ
+
+### Phase 1 完了項目
+- ✅ `src/styles/tokens-m3.css` 新規（M3 Color Roles 33 種 + iOS HIG alias + Elevation/Shape/Motion/State）
+- ✅ `tokensV3.ts` `m3` セクション追加
+- ✅ `src/platform/` 一式（platform/dialog/haptics/share/keyboard/statusBar/splash/actionSheet/motion/index）
+- ✅ `<Header>` 新規（プラットフォーム分岐）
+- ✅ `<ConfirmDialog>` 新規 + `window.confirm` 3 件置換
+- ✅ `<Snackbar>` + `SnackbarProvider` + `useSnackbar()`
+- ✅ Button / IconButton / Card / Badge / ProgressBar M3 リライト（haptic 自動付加 / aria / focus-visible / 44/48dp tap）
+- ✅ AppShell TabBar プラットフォーム分岐（iOS=ドット / Android=`secondaryContainer` pill, role=tablist, haptic）
+- ✅ `<ActionSheet>` 新規 + `selectFromActionSheet()` ヘルパー
+- ✅ `<LoadingIndicator>` 新規（iOS 8-bar / M3 indeterminate arc）
+- ✅ `<Switch>` 新規（iOS 風 / M3 風）
+- ✅ `<TextField>` 新規（filled/outlined, font-size 16px 強制）
+- ✅ `Confetti` `prefers-reduced-motion` 対応
+- ✅ ブランド色 `#3D5FC4`/`#3B5BDB` → `var(--md-sys-color-primary)` (16 ファイル, 87+ 件)
+
+### Phase 2 着手済項目
+- ✅ 4 画面の 36×36 戻るボタン → 44×44 + `aria-label="戻る"` + `<button>` 化
+  - `AccountSettingsScreen.tsx:78` (was `<div onClick>`)
+  - `AIProblemGenScreen.tsx:249`
+  - `OnboardingScreen.tsx:556`
+  - `PricingScreen.tsx:133`
+- ✅ `LessonScreen.tsx` 正解 → `haptic.success()` / 不正解 → `haptic.warning()`
+- ✅ `LessonCompleteScreen.tsx` 表示時 `haptic.success()`
+- ✅ `HomeScreenV3.tsx` の `<div onClick>` 2 箇所 + `AILargeCard` 内 1 箇所 を `<button>` 化、`aria-label` 追加
+
+### Phase 2 残（次セッション以降）
+- 残 41 画面の Header を `<Header>` コンポーネントに置換
+- 残 30+ の `<div onClick>` 全件 `<button>` 化
+- 既存 spinner を `<LoadingIndicator>` に置換
+- 既存 `<select>` を `<ActionSheet>`/`<Switch>` に置換
+- 全 px → rem 化 (font-size 275 件)
+- 触覚を Tab 切替・Submit・削除確認等に挿入（一部済）
+- ハードコード色値 残 600+ 件の CSS 変数化
+
+### 検証
+- ✅ `npm run build` (TypeScript + Vite)
+- ✅ `npx cap sync` (10 plugins for android)
+- ✅ `npx eslint` 新規ファイルはクリーン
+- ⚪ Android 実機検証
+- ⚪ iOS シミュレータ (iOS リリース時)
+
+---
+
 ## 0. Context — なぜこの設計書を書くのか
 
 Logic は Capacitor + React + TypeScript で構築された iOS / Android ネイティブ配布の学習アプリ。現状コードベースには次の構造的問題があり、**App Store / Google Play 両方の審査基準と UX 期待値を同時に満たすための統一設計書が存在しない**。

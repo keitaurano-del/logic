@@ -79,7 +79,7 @@ const IMG = '/images/v3'
 
 export function HomeScreenV3(props: HomeScreenV3Props) {
   const { userName, onOpenLesson, onOpenAIGen, onOpenRoleplay, onNavigateToDailyFermi, onOpenPlacementTest, onOpenFlashcards, onOpenCategory: _onOpenCategory, onOpenRank: _onOpenRank, onOpenStats: _onOpenStats, onOpenRoadmap: _onOpenRoadmap } = props
-  const dailyCardRef = useRef<HTMLDivElement>(null)
+  const dailyCardRef = useRef<HTMLButtonElement>(null)
   const [showCoachmark, dismissCoachmark] = useShouldShowHomeCoachmark()
   const { width } = useWindowSize()
   const isTablet = width >= BREAKPOINTS.md
@@ -118,7 +118,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
         </div>
 
         {/* 今日の1問 (Daily Fermi) */}
-        <div ref={dailyCardRef} onClick={onNavigateToDailyFermi} style={{ background: 'linear-gradient(135deg, #1E2540 0%, #252C40 100%)', borderRadius: v3.radius.card, padding: '20px', cursor: 'pointer', position: 'relative', overflow: 'hidden', boxShadow: v3.shadow.hero, flexShrink: 0, minHeight: 180 }}>
+        <button type="button" ref={dailyCardRef} onClick={onNavigateToDailyFermi} aria-label="今日の1問を解く" style={{ background: 'linear-gradient(135deg, #1E2540 0%, #252C40 100%)', borderRadius: v3.radius.card, padding: '20px', cursor: 'pointer', position: 'relative', overflow: 'hidden', boxShadow: v3.shadow.hero, flexShrink: 0, minHeight: 180, border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%' }}>
           {/* フェルミ推定イメージ画像 */}
           <img src="/images/v3/fermi-card.png" alt="" loading="lazy" style={{ position: 'absolute', right: 0, top: 0, width: '55%', height: '100%', objectFit: 'cover', opacity: 0.28, pointerEvents: 'none', maskImage: 'linear-gradient(to left, rgba(0,0,0,0.8) 0%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to left, rgba(0,0,0,0.8) 0%, transparent 100%)' }} />
           <div style={{ position: 'absolute', right: -30, top: -30, width: 140, height: 140, borderRadius: '50%', background: 'rgba(108,142,245,0.25)', filter: 'blur(36px)', pointerEvents: 'none' }}></div>
@@ -140,12 +140,14 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
               チャレンジする
             </div>
           </div>
-        </div>
+        </button>
 
         {/* Hero Recommend - ランダム表示 */}
-        <div
+        <button
+          type="button"
           onClick={() => onOpenLesson(recommendedLesson.id)}
-          style={{ background: v3.color.card, borderRadius: v3.radius.card, overflow: 'hidden', cursor: 'pointer', boxShadow: v3.shadow.card, flexShrink: 0 }}
+          aria-label={`${recommendedLesson.category} ${recommendedLesson.level}: ${recommendedLesson.title}`}
+          style={{ background: v3.color.card, borderRadius: v3.radius.card, overflow: 'hidden', cursor: 'pointer', boxShadow: v3.shadow.card, flexShrink: 0, border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%' }}
         >
           <div style={{ height: 160, position: 'relative', overflow: 'hidden' }}>
             <img src={recommendedLesson.image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
@@ -161,7 +163,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
               レッスンをはじめる
             </div>
           </div>
-        </div>
+        </button>
 
 
 
@@ -284,7 +286,7 @@ function ReviewCard({ due, weak, total, onOpen }: { due: number; weak: number; t
 
 function AILargeCard({ image, name, sub, onClick, beta }: { image: string; name: string; sub: string; onClick: () => void; beta?: boolean }) {
   return (
-    <div onClick={onClick} style={{ background: v3.color.card, borderRadius: v3.radius.card, overflow: 'hidden', cursor: 'pointer', boxShadow: v3.shadow.card, flexShrink: 0, position: 'relative' }}>
+    <button type="button" onClick={onClick} aria-label={`${name}: ${sub}`} style={{ background: v3.color.card, borderRadius: v3.radius.card, overflow: 'hidden', cursor: 'pointer', boxShadow: v3.shadow.card, flexShrink: 0, position: 'relative', border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%', padding: 0 }}>
       <div style={{ height: 140, overflow: 'hidden' }}>
         <img src={image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
       </div>
@@ -306,7 +308,7 @@ function AILargeCard({ image, name, sub, onClick, beta }: { image: string; name:
           </div>
         )}
       </div>
-    </div>
+    </button>
   )
 }
 

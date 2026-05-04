@@ -215,8 +215,8 @@
   margin-bottom: var(--s-5);
 }
 .icon-btn {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-full);
@@ -227,7 +227,15 @@
   color: var(--text-primary);
   padding: 0;
   transition: background 120ms ease;
+  -webkit-tap-highlight-color: transparent;
 }
+html[data-platform="android"] .icon-btn { width: 48px; height: 48px; }
 .icon-btn:hover { background: var(--bg-secondary); }
 .icon-btn:active { background: var(--bg-secondary); transform: scale(0.96); }
+.icon-btn:focus-visible {
+  outline: 2px solid var(--md-sys-color-primary);
+  outline-offset: 2px;
+}
 .icon-btn svg { width: 22px; height: 22px; }
+.icon-btn--destructive { color: var(--md-sys-color-error); }
+.icon-btn--destructive:hover { background: var(--md-sys-color-error-container); color: var(--md-sys-color-on-error-container); }

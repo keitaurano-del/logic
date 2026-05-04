@@ -7,6 +7,7 @@ import { Confetti } from '../components/Confetti'
 import { getCurrentTier } from './homeHelpers'
 import { t, getLocale } from '../i18n'
 import { LessonTapGuide } from '../tutorial/lessonGuide'
+import { haptic } from '../platform/haptics'
 
 // カテゴリ表示名
 const CATEGORY_LABEL: Record<string, string> = {
@@ -71,6 +72,8 @@ export function LessonScreen({ lessonId, onBack, onComplete, onNextLesson, onRep
     if (step.type === 'quiz') {
       const correct = step.options[index].correct
       setAnimClass(correct ? 'answer-bounce' : 'answer-shake')
+      if (correct) haptic.success()
+      else haptic.warning()
     }
   }
 

@@ -40,6 +40,7 @@ export function SnackbarProvider({ children }: { children: ReactNode }) {
   )
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useSnackbar(): SnackbarApi {
   const ctx = useContext(SnackbarContext)
   if (!ctx) throw new Error('useSnackbar must be used within <SnackbarProvider>')
