@@ -103,7 +103,7 @@ export function AccountSettingsScreen({ onBack, currentUser, onOpenLogin, onLogo
                       outline: 'none', boxSizing: 'border-box', marginBottom: 8,
                     }}
                   />
-                  {nameError && <div style={{ fontSize: 12, color: '#FCA5A5', marginBottom: 8 }}>{nameError}</div>}
+                  {nameError && <div style={{ fontSize: 12, color: 'var(--md-sys-color-error)', marginBottom: 8 }}>{nameError}</div>}
                   <div style={{ display: 'flex', gap: 8 }}>
                     <button
                       onClick={() => { setEditingName(false); setNameError(''); setNameInput(getDisplayName()) }}
@@ -144,7 +144,7 @@ export function AccountSettingsScreen({ onBack, currentUser, onOpenLogin, onLogo
           {currentUser ? (
             <div
               onClick={handleLogout}
-              style={{ padding: '16px 18px', cursor: 'pointer', color: '#FCA5A5', fontSize: 15, fontWeight: 700, textAlign: 'center' }}
+              style={{ padding: '16px 18px', cursor: 'pointer', color: 'var(--md-sys-color-error)', fontSize: 15, fontWeight: 700, textAlign: 'center' }}
             >ログアウト</div>
           ) : (
             <>

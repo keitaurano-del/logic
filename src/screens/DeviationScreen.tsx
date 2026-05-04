@@ -179,7 +179,7 @@ export function DeviationScreen({ onBack, onRetakeTest, onStartLesson }: Deviati
                 }}
               >
                 <span style={{ fontSize: 13, fontWeight: 700 }}>{axisLabel(a.axis).label}</span>
-                <span style={{ fontSize: 13, fontWeight: 800, color: '#6C8EF5' }}>{levelLabel(a.level)}</span>
+                <span style={{ fontSize: 13, fontWeight: 800, color: 'var(--md-sys-color-primary)' }}>{levelLabel(a.level)}</span>
               </div>
             ))}
           </div>

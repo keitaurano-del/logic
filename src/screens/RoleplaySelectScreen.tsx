@@ -20,7 +20,7 @@ const DIFF_LABEL: Record<string, string> = {
 const DIFF_COLOR: Record<string, string> = {
   beginner: '#34D399',
   intermediate: '#D97706',
-  advanced: '#DC2626',
+  advanced: 'var(--md-sys-color-error)',
 }
 
 // カテゴリ別SVGアイコン（絵文字なし）

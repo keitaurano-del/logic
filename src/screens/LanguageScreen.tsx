@@ -1,6 +1,6 @@
 import { getLocale, setLocale, type Locale } from '../i18n'
-import { ArrowLeftIcon, CheckIcon } from '../icons'
-import { IconButton } from '../components/IconButton'
+import { CheckIcon } from '../icons'
+import { Header } from '../components/platform/Header'
 import { t } from '../i18n'
 
 interface LanguageScreenProps {
@@ -22,12 +22,7 @@ export function LanguageScreen({ onBack }: LanguageScreenProps) {
 
   return (
     <div className="stack">
-      <div className="screen-header">
-        <IconButton aria-label={t('common.back')} onClick={onBack}>
-          <ArrowLeftIcon />
-        </IconButton>
-        <div className="progress-text">{t('settings.support.appLanguage')}</div>
-      </div>
+      <Header title={t('settings.support.appLanguage')} onBack={onBack} />
 
       <p style={{ fontSize: 16, color: 'var(--text-muted)', marginTop: 'var(--s-2)' }}>
         {t('language.description')}

@@ -256,7 +256,7 @@ function ResultView({
               }}
             >
               <span style={{ fontSize: 13, fontWeight: 700 }}>{axisLabel(a.axis).label}</span>
-              <span style={{ fontSize: 13, fontWeight: 800, color: '#6C8EF5' }}>{levelLabel(a.level)}</span>
+              <span style={{ fontSize: 13, fontWeight: 800, color: 'var(--md-sys-color-primary)' }}>{levelLabel(a.level)}</span>
             </div>
           ))}
         </div>
@@ -326,7 +326,7 @@ function ReviewItem({ index, ans }: { index: number; ans: PlacementAnswer }) {
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, flexWrap: 'wrap' }}>
         <div style={{
           fontSize: 11, fontWeight: 800,
-          color: ans.correct ? '#10B981' : '#DC2626',
+          color: ans.correct ? '#10B981' : 'var(--md-sys-color-error)',
           background: ans.correct ? 'rgba(16,185,129,.12)' : 'rgba(220,38,38,.12)',
           padding: '3px 8px', borderRadius: 6,
         }}>
@@ -374,7 +374,7 @@ function ReviewItem({ index, ans }: { index: number; ans: PlacementAnswer }) {
                 width: 22, height: 22, borderRadius: 999, flexShrink: 0,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontSize: 11, fontWeight: 700,
-                background: isCorrect ? '#10B981' : isUser ? '#DC2626' : 'transparent',
+                background: isCorrect ? '#10B981' : isUser ? 'var(--md-sys-color-error)' : 'transparent',
                 color: isCorrect || isUser ? '#fff' : 'var(--text-secondary)',
                 border: isCorrect || isUser ? 'none' : '1.2px solid var(--text-muted, rgba(0,0,0,0.2))',
               }}>
@@ -383,7 +383,7 @@ function ReviewItem({ index, ans }: { index: number; ans: PlacementAnswer }) {
               <span style={{ flex: 1 }}>{opt.label}</span>
               <span style={{ flexShrink: 0, fontSize: 10, fontWeight: 800, alignSelf: 'center' }}>
                 {isCorrect && <span style={{ color: '#10B981' }}>正答</span>}
-                {!isCorrect && isUser && <span style={{ color: '#DC2626' }}>あなた</span>}
+                {!isCorrect && isUser && <span style={{ color: 'var(--md-sys-color-error)' }}>あなた</span>}
               </span>
             </div>
           )

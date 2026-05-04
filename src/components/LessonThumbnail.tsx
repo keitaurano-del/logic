@@ -790,7 +790,7 @@ function getPalette(lessonId: number): { bg: string; stroke: string } {
   if ([72,73,74,75,76,82,83,84,85,86,87,88].includes(lessonId)) return PALETTE.proposal
   if ([77,78,79,80,81].includes(lessonId)) return PALETTE.philo
   if ([89,90,91,92,93,94,95,96,97].includes(lessonId)) return PALETTE.client
-  if ([200,201,202,203,204].includes(lessonId)) return { bg: '#1A2438', stroke: '#6C8EF5' }  // フェルミ: Slate Blue
+  if ([200,201,202,203,204].includes(lessonId)) return { bg: '#1A2438', stroke: 'var(--md-sys-color-primary)' }  // フェルミ: Slate Blue
   return PALETTE.logic
 }
 

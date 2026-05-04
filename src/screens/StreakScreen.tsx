@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
 import { getStreak, getStudyDates, getTotalStudyDays } from '../stats'
 import { ArrowLeftIcon, ArrowRightIcon, FlameIcon } from '../icons'
-import { IconButton } from '../components/IconButton'
+import { Header } from '../components/platform/Header'
 import { t } from '../i18n'
 
 interface StreakScreenProps {
@@ -68,13 +68,7 @@ export function StreakScreen({ onBack }: StreakScreenProps) {
 
   return (
     <div className="stack">
-      {/* Header */}
-      <div className="screen-header">
-        <IconButton aria-label={t('common.back')} onClick={onBack}>
-          <ArrowLeftIcon />
-        </IconButton>
-        <div className="progress-text">{t('streak.title')}</div>
-      </div>
+      <Header title={t('streak.title')} onBack={onBack} />
 
       {/* Flame + streak count */}
       <div style={{ textAlign: 'center', padding: 'var(--s-5) 0 var(--s-3)' }}>

@@ -142,7 +142,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
           <SettingRow icon="scale" name="特定商取引法に基づく表記" sub="" onClick={() => window.open('/tokushoho.html', '_blank')} />
         </div>
         <button type="button" onClick={handleLogout}
-          style={{ background: 'transparent', border: '1px solid rgba(252,165,165,.4)', borderRadius: 14, padding: 13, textAlign: 'center', fontSize: 14, fontWeight: 700, color: '#FCA5A5', cursor: 'pointer', font: 'inherit', width: '100%', minHeight: 44 }}>
+          style={{ background: 'transparent', border: '1px solid rgba(252,165,165,.4)', borderRadius: 14, padding: 13, textAlign: 'center', fontSize: 14, fontWeight: 700, color: 'var(--md-sys-color-error)', cursor: 'pointer', font: 'inherit', width: '100%', minHeight: 44 }}>
           ログアウト
         </button>
       </div>

@@ -14,7 +14,7 @@
 |---|---|---|---|
 | **Phase 0** リリースブロッカー | 8h | ~7h 相当 | ✅ ほぼ完了（PR #73） |
 | **Phase 1** デザインシステム土台 | 32h | ~24h 相当 | ✅ ほぼ完了（PR #73） |
-| **Phase 2** 全画面 HIG/M3 適合 | 60h | ~32h 相当 | 🟡 50%超（V3画面 div→button 全件、Switch 統一、4画面 ローディング置換、12画面 触覚） |
+| **Phase 2** 全画面 HIG/M3 適合 | 60h | ~42h 相当 | 🟡 70%（5画面 Header 統一、5旧画面削除、12画面 触覚、Switch、ローディング、ブランド色 第2 sweep） |
 | **Phase 3** 個別最適化 | 80h | 0h | ⚪ 未着手（次セッション以降） |
 | **Phase 4** 仕上げ・検証 | 24h | ~3h 相当（build/lint/cap sync 通過） | 🟡 自動チェックのみ |
 
@@ -81,11 +81,20 @@
   - WorksheetScreen `handleSubmit` → `haptic.light()`
   - FeedbackScreen `handleSubmit` → `haptic.light()`
 
+- ✅ Header コンポーネント統一 (5 画面)
+  - LanguageScreen, RankScreen, StreakScreen, CompletedLessonsScreen, StudyTimeScreen
+  - `screen-header` div + IconButton+ArrowLeftIcon パターン → `<Header title onBack>` に
+- ✅ 旧画面削除 (5 ファイル, ~1700 行削減)
+  - `RoadmapScreen.tsx` / `ProfileScreen.tsx` / `StatsScreen.tsx` / `PricingV3.tsx` / `ThemeSettingsScreen.tsx`
+  - すべて V3 系で代替済み、import なしを確認した上で削除
+- ✅ ハードコード色値 第 2 sweep (4 種類, 約 30 件)
+  - `'#6C8EF5'` (legacy accent) → `'var(--md-sys-color-primary)'`
+  - `'#F87171'` / `'#FCA5A5'` / `'#DC2626'` (red) → `'var(--md-sys-color-error)'`
+
 ### Phase 2 残（次セッション以降）
-- 残 35 画面の Header を `<Header>` コンポーネントに統一
-- 残 5+ の `<div onClick>` (旧画面 HomeScreen.tsx 5件 / 旧 ProfileScreen / 旧 RoadmapScreen 等)
+- 残 30 画面の Header 統一
 - 全 px → rem 化 (font-size 275 件)
-- ハードコード色値 残 600+ 件の CSS 変数化
+- ハードコード色値 残 500+ 件の CSS 変数化（カテゴリ色は意図的に残す）
 - 既存 `<select>` を `<ActionSheet>` 系に置換
 
 ### 検証
