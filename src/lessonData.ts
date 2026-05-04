@@ -73,6 +73,7 @@ import { fermiLessonMap } from './fermiLessons'
 import { extraLessonMap } from './extraLessons'
 import { strategyLessonMap } from './strategyLessons'
 import { numeracyLessonMap } from './numeracyLessons'
+import { peakPerformanceLessonMap } from './peakPerformanceLessons'
 
 // Logic lessons swap by locale
 const _activeLogicLessons = (): Record<number, LessonData> =>
@@ -105,6 +106,7 @@ function _getMergedLessons(): Record<number, LessonData> {
     ...extraLessonMap,
     ...strategyLessonMap,
     ...numeracyLessonMap,
+    ...peakPerformanceLessonMap,
   }
   _cachedLocale = locale
   return _cachedMerged
