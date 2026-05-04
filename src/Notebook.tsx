@@ -50,7 +50,7 @@ export default function Notebook() {
   return (
     <div className="nb-screen">
       <div className="nb-header">
-        <h2>📓 手帳（学習ジャーナル）</h2>
+        <h2>手帳（学習ジャーナル）</h2>
         <p>AIがあなたの学習を自動記録します</p>
       </div>
 
@@ -66,7 +66,7 @@ export default function Notebook() {
             </div>
 
             <div className="nb-section">
-              <div className="nb-section-label">✨ AI サマリー</div>
+              <div className="nb-section-label">AI サマリー</div>
               <div className="nb-ai-summary">
                 {entry.aiSummary ? (
                   entry.aiSummary
@@ -79,7 +79,7 @@ export default function Notebook() {
             </div>
 
             <div className="nb-section">
-              <div className="nb-section-label">📝 あなたのメモ</div>
+              <div className="nb-section-label">あなたのメモ</div>
               <textarea
                 className="nb-memo"
                 placeholder="今日の気づきや明日への目標..."

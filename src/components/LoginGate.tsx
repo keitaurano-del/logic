@@ -2,11 +2,13 @@
  * LoginGate — ログイン必須機能へのアクセスゲート
  * SCRUM-181: 未ログインユーザーへの自然なログイン誘導
  */
+import type { ReactNode } from 'react'
 import { v3 } from '../styles/tokensV3'
+import { CloudIcon, BarChartIcon, BotIcon } from '../icons'
 
 interface LoginGateProps {
   featureName: string        // 「AI問題生成」「ロールプレイ」など
-  featureIcon: string        // 絵文字アイコン
+  featureIcon: ReactNode     // SVGアイコン
   featureDesc: string        // 機能説明
   onLogin: () => void        // ログインボタン押下
   onBack: () => void         // 「あとで」
@@ -30,10 +32,11 @@ export function LoginGate({ featureName, featureIcon, featureDesc, onLogin, onBa
         background: `${v3.color.accent}18`,
         border: `1.5px solid ${v3.color.accent}40`,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontSize: 36, marginBottom: 24,
+        color: v3.color.accent,
+        marginBottom: 24,
         position: 'relative',
       }}>
-        <span style={{ fontFamily: 'Apple Color Emoji, Segoe UI Emoji, sans-serif' }}>{featureIcon}</span>
+        {featureIcon}
         {/* ロックアイコン */}
         <div style={{
           position: 'absolute', bottom: -6, right: -6,
@@ -65,12 +68,12 @@ export function LoginGate({ featureName, featureIcon, featureDesc, onLogin, onBa
         marginBottom: 28, display: 'flex', flexDirection: 'column', gap: 12,
       }}>
         {[
-          { icon: '☁️', text: '学習記録がクラウドに保存される' },
-          { icon: '📊', text: '進捗・XP・レベルが永続する' },
-          { icon: '🤖', text: 'AI機能（問題生成・ロールプレイ）が使える' },
+          { icon: <CloudIcon width={18} height={18} />, text: '学習記録がクラウドに保存される' },
+          { icon: <BarChartIcon width={18} height={18} />, text: '進捗・XP・レベルが永続する' },
+          { icon: <BotIcon width={18} height={18} />, text: 'AI機能（問題生成・ロールプレイ）が使える' },
         ].map(item => (
           <div key={item.text} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <span style={{ fontSize: 18, fontFamily: 'Apple Color Emoji, Segoe UI Emoji, sans-serif' }}>{item.icon}</span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 28, height: 28, borderRadius: 8, background: `${v3.color.accent}14`, color: v3.color.accent, flexShrink: 0 }}>{item.icon}</span>
             <span style={{ fontSize: 13, color: v3.color.text2, lineHeight: 1.5 }}>{item.text}</span>
           </div>
         ))}

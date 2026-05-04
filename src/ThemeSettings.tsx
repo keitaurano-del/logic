@@ -72,7 +72,7 @@ export default function ThemeSettings({ onBack, onUpgrade }: Props) {
                     </div>
                     <div className="ts-mode-desc">{m.description}</div>
                   </div>
-                  {active && <div className="ts-check">✓</div>}
+                  {active && <div className="ts-check"></div>}
                 </button>
               )
             })}
@@ -143,7 +143,7 @@ export default function ThemeSettings({ onBack, onUpgrade }: Props) {
                 aria-label={a.name}
                 title={a.name}
               >
-                {state.accent === a.id && state.mode !== 'custom' && <span>✓</span>}
+                {state.accent === a.id && state.mode !== 'custom' && <span></span>}
               </button>
             ))}
           </div>

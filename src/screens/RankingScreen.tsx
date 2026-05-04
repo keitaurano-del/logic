@@ -231,7 +231,7 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
           <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 16, fontWeight: 800, color: '#0F1523' }}>最近の活動</div>
           {recentActivity.length === 0 ? (
             <div style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: '28px 16px', textAlign: 'center' }}>
-              <div style={{ fontSize: 32, marginBottom: 8 }}>💪</div>
+              <div style={{ fontSize: 32, marginBottom: 8 }}></div>
               <div style={{ fontSize: 16, fontWeight: 700, color: '#0F1523', marginBottom: 4 }}>最初のレッスンを始めよう！</div>
               <div style={{ fontSize: 14, color: '#7A849E' }}>レッスンを完了すると、ここに学習記録が表示されます</div>
             </div>

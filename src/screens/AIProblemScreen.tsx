@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { AIProblemSet } from '../aiProblemStore'
 import type { QuizStep } from '../lessonData'
 import { recordCompletion } from '../stats'
-import { ArrowLeftIcon, ArrowRightIcon, CheckIcon } from '../icons'
+import { ArrowLeftIcon, ArrowRightIcon, CheckIcon, XIcon } from '../icons'
 import { Button } from '../components/Button'
 import { IconButton } from '../components/IconButton'
 import { t } from '../i18n'
@@ -173,7 +173,7 @@ export function AIProblemScreen({ problem, onBack, onReport }: AIProblemScreenPr
         <div className="feedback-card" style={{ marginTop: 'var(--s-3)' }}>
           <div className="feedback-head">
             <div className="feedback-check">
-              {isCorrect ? <CheckIcon /> : <span style={{ fontSize: 18 }}>✕</span>}
+              {isCorrect ? <CheckIcon /> : <XIcon />}
             </div>
             <div className="feedback-title">{isCorrect ? '正解！' : '不正解'}</div>
           </div>

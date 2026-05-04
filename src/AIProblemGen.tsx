@@ -51,13 +51,13 @@ export default function AIProblemGen({ onBack, onPlayProblem }: Props) {
     <div className="aip-screen">
       <header className="aip-header">
         <button className="aip-back" onClick={onBack}>← 戻る</button>
-        <h2>✨ AI問題ジェネレーター</h2>
+        <h2>AI問題ジェネレーター</h2>
       </header>
 
       <div className="aip-body">
         <div className="aip-card">
           <div className="aip-premium-badge">
-            {premium ? '✓ プレミアム有効' : '👑 プレミアム機能'}
+            {premium ? 'プレミアム有効' : 'プレミアム機能'}
           </div>
           <h3>あなただけの問題を作ろう</h3>
           <p className="aip-desc">
@@ -87,20 +87,20 @@ export default function AIProblemGen({ onBack, onPlayProblem }: Props) {
             ))}
           </div>
 
-          {error && <div className="aip-error">⚠ {error}</div>}
+          {error && <div className="aip-error">{error}</div>}
 
           <button
             className="aip-generate-btn"
             onClick={handleGenerate}
             disabled={generating || !prompt.trim()}
           >
-            {generating ? '⏳ 生成中...' : '✨ 問題を生成する'}
+            {generating ? '生成中...' : '問題を生成する'}
           </button>
         </div>
 
         {problems.length > 0 && (
           <div className="aip-history">
-            <h3>📚 作成済みの問題セット</h3>
+            <h3>作成済みの問題セット</h3>
             <div className="aip-history-list">
               {problems.map(p => (
                 <div key={p.id} className="aip-history-card">

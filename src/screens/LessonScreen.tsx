@@ -1,5 +1,6 @@
 import { useMemo, useState, useEffect, useRef } from 'react'
 import { allLessons, type LessonStep } from '../lessonData'
+import { FlameIcon } from '../icons'
 import { recordCompletion, getCompletedCount, getStreak, getStudyDates, addXp } from '../stats'
 import { RankIllustration } from '../components/RankIllustration'
 import { Confetti } from '../components/Confetti'
@@ -220,7 +221,7 @@ function ExplainStep({ step, catLabel, accent, isLast, onNext }: {
         display: 'flex', flexDirection: 'column', gap: 12,
       }}>
         {paragraphs.map((para: string, i: number) => {
-          const isBullet = para.startsWith('✓') || para.startsWith('×') || para.startsWith('→') || para.startsWith('・')
+          const isBullet = para.startsWith('×') || para.startsWith('→') || para.startsWith('・')
           const isArrow = para.startsWith('→')
           return (
             <div
@@ -580,8 +581,9 @@ function CelebrationScreen({ lessonTitle, streakBefore, onComplete, onNextLesson
 
         {/* ボタン or 自動遷移メッセージ */}
         {streakIncreased ? (
-          <div style={{ fontSize: 16, color: 'rgba(255,255,255,.4)', animation: 'fade-in-up 0.3s 0.5s ease-out both' }}>
-            🔥 連続学習を確認中...
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 16, color: 'rgba(255,255,255,.4)', animation: 'fade-in-up 0.3s 0.5s ease-out both' }}>
+            <FlameIcon width={14} height={14} />
+            <span>連続学習を確認中...</span>
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10, width: '100%', maxWidth: 300, animation: 'fade-in-up 0.3s 0.5s ease-out both' }}>

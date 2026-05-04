@@ -156,7 +156,7 @@ export default function FermiLesson({ onBack, onUpgrade }: Props) {
               lineHeight: 1.6,
               marginBottom: 4,
             }}>
-              💡 <strong>分解のヒント</strong>：「対象・場所・頻度」の順に考えると整理しやすい。
+              <strong>分解のヒント</strong>：「対象・場所・頻度」の順に考えると整理しやすい。
             </div>
             <textarea
               className="fl-textarea"

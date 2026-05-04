@@ -344,7 +344,7 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
       {/* Language picker */}
       <div className="pf-deviation-card" style={{ display: 'block' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
-          <span>🌐 {t('profile.languageTitle')}</span>
+          <span>{t('profile.languageTitle')}</span>
           <div style={{ display: 'flex', gap: 6 }}>
             <button
               onClick={() => getLocale() !== 'ja' && setLocale('ja')}

@@ -40,7 +40,7 @@ export default function CoffeeBreak({ onBack }: Props) {
       </header>
       <div className="cb-content">
         <div className="cb-intro">
-          <div className="cb-intro-emoji">☕</div>
+          <div className="cb-intro-emoji"></div>
           <h2>{t('coffeebreak.heading')}</h2>
           <p>{t('coffeebreak.lead')}</p>
         </div>

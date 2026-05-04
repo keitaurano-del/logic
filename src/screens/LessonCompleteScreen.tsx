@@ -6,6 +6,7 @@
 import { useEffect, useState } from 'react'
 import { v3 } from '../styles/tokensV3'
 import { getStreak, getXp } from '../stats'
+import { FlameIcon, ArrowUpIcon, StarIcon } from '../icons'
 import { getCurrentLevel } from './homeHelpers'
 
 interface LessonCompleteScreenProps {
@@ -157,10 +158,12 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
               : `1px solid ${v3.color.line}`,
           }}>
             <div style={{
-              fontSize: 30, lineHeight: 1, marginBottom: 6,
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
+              lineHeight: 1, marginBottom: 6,
+              color: streak >= 7 ? '#FF7A1A' : streak >= 3 ? '#FF9F47' : v3.color.text3,
               filter: streak < 1 ? 'grayscale(1) opacity(.25)' : 'none',
             }}>
-              {streak >= 7 ? '🔥🔥' : streak >= 3 ? '🔥' : '○'}
+              {streak >= 7 ? (<><FlameIcon width={24} height={24} /><FlameIcon width={24} height={24} /></>) : streak >= 3 ? <FlameIcon width={28} height={28} /> : <span style={{ fontSize: 28 }}>○</span>}
             </div>
             <div style={{
               fontFamily: "'Inter Tight', sans-serif",
@@ -175,7 +178,7 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
             flex: 1, borderRadius: 18, padding: '18px 12px', textAlign: 'center',
             background: v3.color.card, border: `1px solid ${v3.color.line}`,
           }}>
-            <div style={{ fontSize: 30, lineHeight: 1, marginBottom: 6 }}>⏱</div>
+            <div style={{ fontSize: 30, lineHeight: 1, marginBottom: 6 }}></div>
             <div style={{
               fontFamily: "'Inter Tight', sans-serif",
               fontSize: 28, fontWeight: 900, letterSpacing: '-.03em', lineHeight: 1,
@@ -193,7 +196,9 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
               ? `1px solid ${v3.color.accent}50`
               : `1px solid ${v3.color.line}`,
           }}>
-            <div style={{ fontSize: 30, lineHeight: 1, marginBottom: 6 }}>{leveledUp ? '⬆' : '★'}</div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1, marginBottom: 6, color: leveledUp ? v3.color.accent : v3.color.text3 }}>
+              {leveledUp ? <ArrowUpIcon width={28} height={28} /> : <StarIcon width={28} height={28} />}
+            </div>
             <div style={{
               fontFamily: "'Inter Tight', sans-serif",
               fontSize: 28, fontWeight: 900, letterSpacing: '-.03em', lineHeight: 1,
@@ -215,7 +220,7 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
             display: 'flex', alignItems: 'center', gap: 10,
             ...show(2),
           }}>
-            <span style={{ fontSize: 20 }}>⬆</span>
+            <ArrowUpIcon width={20} height={20} style={{ color: v3.color.accent }} />
             <span style={{ fontSize: 14, fontWeight: 800 }}>
               レベルアップ: <span style={{ color: v3.color.accent }}>Lv.{prevLevel} → Lv.{lv.level}</span>
             </span>

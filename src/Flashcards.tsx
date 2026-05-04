@@ -171,7 +171,7 @@ export default function Flashcards({ onBack }: Props) {
           {flipped && (
             <div className="fc-buttons">
               <button className="fc-btn again" onClick={() => handleReview('again')}>
-                <span className="fc-btn-icon">✕</span>
+                <span className="fc-btn-icon"></span>
                 もう一度
               </button>
               <button className="fc-btn good" onClick={() => handleReview('good')}>

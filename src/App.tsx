@@ -469,7 +469,7 @@ function App() {
           {/* Welcome card for first-time visitors */}
           {isFirstTime && (
             <div className="daily-card welcome" onClick={() => dailyProblem && navigateTo({ type: 'daily-problem' })}>
-              <div className="daily-icon">👋</div>
+              <div className="daily-icon"></div>
               <div className="daily-text">
                 <strong>{t('home.welcomeTitle')}</strong>
                 <span>{t('home.welcomeDesc')}</span>
@@ -499,7 +499,7 @@ function App() {
             if (!recLesson) return null
             return (
               <div className="daily-card placement" onClick={() => handleCardClick(recLesson)}>
-                <div className="daily-icon">🎯</div>
+                <div className="daily-icon"></div>
                 <div className="daily-text">
                   <strong>{t('home.placementTitle', { score: placementResult.deviation })}</strong>
                   <span>{recLesson.title}</span>
@@ -512,7 +512,7 @@ function App() {
           {/* Today's Problem */}
           {dailyProblem && (
             <div className="daily-card" onClick={() => navigateTo({ type: 'daily-problem' })}>
-              <div className="daily-icon">✨</div>
+              <div className="daily-icon"></div>
               <div className="daily-text">
                 <strong>{t('home.todayProblem')}</strong>
                 <span>{dailyProblem.title}</span>
@@ -526,7 +526,7 @@ function App() {
           )}
           {loadingDaily && !dailyProblem && (
             <div className="daily-card daily-loading">
-              <div className="daily-icon">⏳</div>
+              <div className="daily-icon"></div>
               <div className="daily-text">
                 <strong>{t('home.todayProblem')}</strong>
                 <span>{t('home.todayProblemLoading')}</span>
@@ -587,7 +587,7 @@ function App() {
           <div className="home-cta-grid">
           {/* AI Problem Generator entry */}
           <div className="ai-gen-card" onClick={() => navigateTo({ type: 'ai-gen' })}>
-            <div className="ai-gen-icon">✨</div>
+            <div className="ai-gen-icon"></div>
             <div className="ai-gen-text">
               <strong>{t('home.aiGenTitle')}</strong>
               <span>{t('home.aiGenDesc')}</span>
@@ -597,7 +597,7 @@ function App() {
 
           {/* Roleplay entry */}
           <div className="ai-gen-card" onClick={() => navigateTo({ type: 'roleplay' })}>
-            <div className="ai-gen-icon">💬</div>
+            <div className="ai-gen-icon"></div>
             <div className="ai-gen-text">
               <strong>{t('home.roleplayTitle')}</strong>
               <span>{t('home.roleplayDesc')} <span className="ai-gen-badge">{t('home.badgeNew')}</span></span>
@@ -607,7 +607,7 @@ function App() {
 
           {/* Coffee Break entry */}
           <div className="ai-gen-card" onClick={() => navigateTo({ type: 'coffee-break' })}>
-            <div className="ai-gen-icon">☕</div>
+            <div className="ai-gen-icon"></div>
             <div className="ai-gen-text">
               <strong>{t('home.coffeebreakTitle')}</strong>
               <span>{t('home.coffeebreakDesc')} <span className="ai-gen-badge">{t('home.badgeNew')}</span></span>
@@ -617,7 +617,7 @@ function App() {
 
           {/* Fermi estimation entry */}
           <div className="ai-gen-card" onClick={() => navigateTo({ type: 'fermi' })}>
-            <div className="ai-gen-icon">🔢</div>
+            <div className="ai-gen-icon"></div>
             <div className="ai-gen-text">
               <strong>{t('home.fermiTitle')}</strong>
               <span>{t('home.fermiDesc')} <span className="ai-gen-badge">{t('home.badgeNew')}</span></span>

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { getCompletedCount } from '../stats'
 import { getPoints, RANK_TIERS, getCurrentTier, type RankTier } from './homeHelpers'
-import { ArrowLeftIcon, StarIcon, CheckIcon } from '../icons'
+import { ArrowLeftIcon, StarIcon, CheckIcon, LockIcon, LightbulbIcon } from '../icons'
 import { IconButton } from '../components/IconButton'
 import { RankIllustration } from '../components/RankIllustration'
 import { t, getLocale } from '../i18n'
@@ -262,7 +262,7 @@ export function RankScreen({ onBack }: RankScreenProps) {
                   ) : isUnlocked ? (
                     <CheckIcon width={16} height={16} style={{ color: 'var(--success)', flexShrink: 0 }} />
                   ) : (
-                    <span style={{ fontSize: 14, color: 'var(--text-faint)', flexShrink: 0 }}>🔒</span>
+                    <LockIcon width={14} height={14} style={{ color: 'var(--text-faint)', flexShrink: 0 }} />
                   )}
                 </button>
               </div>
@@ -362,10 +362,12 @@ export function RankScreen({ onBack }: RankScreenProps) {
               background: 'var(--brand-soft)', borderRadius: 14, padding: '14px 16px',
             }}>
               <div style={{
+                display: 'inline-flex', alignItems: 'center', gap: 6,
                 fontSize: 13, fontWeight: 700, color: 'var(--brand)',
                 marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.08em',
               }}>
-                💡 学習ヒント
+                <LightbulbIcon width={14} height={14} />
+                <span>学習ヒント</span>
               </div>
               <div style={{ fontSize: 16, color: 'var(--brand-hover)', lineHeight: 1.7 }}>
                 {isJa ? selectedTier.tipJa : selectedTier.tipEn}
