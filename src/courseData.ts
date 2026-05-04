@@ -281,6 +281,17 @@ export const COURSES: Course[] = [
     description: '伝え方・暗算・割合操作・単位換算・複利・統計・落とし穴の7本立てで、ビジネス数字感覚を体系的に鍛える。',
     image: '/images/v3/course-numeracy.svg',
   },
+
+  // ── ピークパフォーマンス習慣 ────────────────────────
+  {
+    id: 'peak-performance-01',
+    title: '自分史上最高のパフォーマンスで働く',
+    category: 'ピークパフォーマンス習慣',
+    group: 'business',
+    lessonIds: [410, 411, 412, 413, 414],
+    level: '初級',
+    description: 'クロノタイプ・睡眠・運動・集中の波・自己計測の5レッスンで、自分の体に合った最高の働き方を設計する。',
+  },
 ]
 
 // カテゴリ別コース一覧

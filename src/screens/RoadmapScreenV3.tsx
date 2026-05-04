@@ -127,6 +127,12 @@ const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
     image: `${IMG}/course-numeracy.svg`,
     routeKey: '数字に強くなる',
   },
+  'ピークパフォーマンス習慣': {
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5BB97E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12h3l3-8 4 16 3-8h5"/></svg>,
+    iconBg: 'rgba(91,185,126,.14)',
+    image: `${IMG}/course-thinking.webp`,
+    routeKey: 'ピークパフォーマンス習慣',
+  },
 }
 
 const DEFAULT_VISUAL: CategoryVisual = {
