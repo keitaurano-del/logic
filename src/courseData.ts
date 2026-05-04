@@ -24,11 +24,11 @@ export type CourseGroup = {
 }
 
 export const COURSE_GROUPS: CourseGroup[] = [
-  { id: 'foundations',     label: '思考の基礎',       description: '論理と批判思考で、考える土台をつくる' },
-  { id: 'problem-solving', label: '課題発見・解決',   description: '問いを立て、仮説と構造で本質を捉える' },
-  { id: 'creative',        label: '発想・創造',       description: '常識を超え、新しい切り口を生み出す' },
-  { id: 'communication',   label: '伝える・提案する', description: '相手の判断基準から逆算して動かす' },
-  { id: 'business',        label: 'ビジネス実践',     description: '戦略・数字・ケースで現場に応用する' },
+  { id: 'foundations',     label: '論理的に考え、批判的に問い直す',  description: '論理・批判・哲学で、考える土台を固める' },
+  { id: 'problem-solving', label: '本質的な課題を見極めて、解決する', description: '問いを立て、仮説と構造で本質を捉える' },
+  { id: 'creative',        label: '常識を超えて、発想を広げる',       description: 'リフレーミングと類推で、新しい切り口を生む' },
+  { id: 'communication',   label: '論点を整理し、相手を動かす',       description: '対話・提案・面接で、論理を相手に届ける' },
+  { id: 'business',        label: '数字と戦略で、ビジネスを動かす',   description: 'クライアント現場・戦略・数字感覚を総動員する' },
 ]
 
 export const COURSES: Course[] = [
@@ -143,7 +143,7 @@ export const COURSES: Course[] = [
     id: 'philosophy-01',
     title: '哲学の問いで、思考を深める',
     category: '哲学・思考の原理',
-    group: 'creative',
+    group: 'foundations',
     lessonIds: [77, 78, 79, 80, 81],
     level: '上級',
     description: 'ソクラテスの問答法と反証可能性を通じて、思考の原理を学ぶ。',
@@ -185,7 +185,7 @@ export const COURSES: Course[] = [
     id: 'client-02',
     title: '論点を定め、深く引き出す',
     category: 'クライアントワーク',
-    group: 'business',
+    group: 'communication',
     lessonIds: [93, 94, 95, 96, 315],
     level: '中級',
     description: '正しい論点設定とヒアリング技術で、クライアントの本質的な課題を引き出す。',
@@ -205,7 +205,7 @@ export const COURSES: Course[] = [
     id: 'case-01',
     title: 'ケース面接で、論理力を証明する',
     category: 'ケース面接',
-    group: 'business',
+    group: 'communication',
     lessonIds: [28, 29, 35, 36, 316],
     level: '上級',
     description: '利益構造の分解から市場参入まで、ケース面接の頻出テーマを体系的に攻略する。',
