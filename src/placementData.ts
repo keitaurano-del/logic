@@ -31,6 +31,8 @@ export type PlacementAnswer = {
   axis: SkillAxis
   difficulty: Difficulty
   correct: boolean
+  /** ユーザーが選択した選択肢のインデックス（旧データでは undefined） */
+  selectedIndex?: number
 }
 
 export type AxisScore = {
@@ -650,10 +652,15 @@ export function recordAnswer(session: PlacementSession, q: PlacementQuestion, op
   const correct = q.options[optionIndex]?.correct === true
   const next: PlacementSession = {
     ...session,
-    answers: [...session.answers, { questionId: q.id, axis: q.axis, difficulty: q.difficulty, correct }],
+    answers: [...session.answers, { questionId: q.id, axis: q.axis, difficulty: q.difficulty, correct, selectedIndex: optionIndex }],
     cursor: session.cursor + 1,
   }
   return next
+}
+
+// 問題IDから問題定義を取得（解説表示用）
+export function getQuestionById(id: string): PlacementQuestion | undefined {
+  return getQuestionPool().find(q => q.id === id)
 }
 
 // ───────────────────────────────────────────────────────────────
