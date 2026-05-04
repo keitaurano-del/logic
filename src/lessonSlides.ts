@@ -151,6 +151,7 @@ function getHeroImage(category: string, lessonId?: number): string {
   if (c.includes('システム')) return '/images/v3/lesson-systems-thinking.webp'
   if (c.includes('クライアント')) return '/images/v3/course-client.webp'
   if (c.includes('経営戦略') || c === 'strategy') return '/images/v3/course-strategy.svg'
+  if (c.includes('数字')) return '/images/v3/course-numeracy.svg'
   if (c.includes('思考法') || c.includes('thinking')) return '/images/v3/course-thinking.webp'
   if (c.includes('coffee') || c.includes('コーヒー')) return '/images/v3/home-daily-question.webp'
   return '/images/v3/hero-deduction.webp'

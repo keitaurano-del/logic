@@ -1,0 +1,197 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1376 768" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg-num" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1B2542"/>
+      <stop offset="100%" stop-color="#141C36"/>
+    </linearGradient>
+    <linearGradient id="figure-num" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#B8C4EC"/>
+      <stop offset="100%" stop-color="#8C9BD4"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="1376" height="768" fill="url(#bg-num)"/>
+
+  <!-- 都市シルエット（右下のベースライン） -->
+  <g fill="#212B4E" opacity="0.85">
+    <rect x="780" y="640" width="36" height="80"/>
+    <rect x="820" y="620" width="44" height="100"/>
+    <rect x="868" y="650" width="30" height="70"/>
+    <rect x="902" y="605" width="56" height="115"/>
+    <rect x="962" y="635" width="40" height="85"/>
+    <rect x="1006" y="620" width="50" height="100"/>
+    <rect x="1060" y="650" width="34" height="70"/>
+    <rect x="1098" y="595" width="62" height="125"/>
+    <rect x="1164" y="635" width="42" height="85"/>
+    <rect x="1210" y="620" width="50" height="100"/>
+    <rect x="1264" y="650" width="38" height="70"/>
+    <rect x="1306" y="625" width="50" height="95"/>
+  </g>
+  <line x1="0" y1="720" x2="1376" y2="720" stroke="#3A4670" stroke-width="2" opacity="0.5"/>
+
+  <!-- 左：座って考える人物（fermi-cardと同じ構図） -->
+  <g transform="translate(160,330)">
+    <!-- 思考の渦：数字・パーセント・統計記号 -->
+    <g fill="#A4B2E8" font-family="'Inter', 'Helvetica', sans-serif" font-weight="700">
+      <text x="-30" y="-90" font-size="42" opacity="0.85">7</text>
+      <text x="20" y="-130" font-size="50" opacity="0.95">3</text>
+      <text x="80" y="-100" font-size="38" opacity="0.85">5</text>
+      <text x="-70" y="-150" font-size="30" opacity="0.6">9</text>
+      <text x="130" y="-170" font-size="32" opacity="0.7">2</text>
+      <text x="55" y="-200" font-size="38" opacity="0.85">8</text>
+      <text x="170" y="-110" font-size="34" opacity="0.6">4</text>
+      <text x="-110" y="-60" font-size="30" opacity="0.55">1</text>
+      <text x="200" y="-180" font-size="26" opacity="0.5">6</text>
+    </g>
+    <!-- パーセント記号と統計記号 -->
+    <g fill="#B8C4EC" font-family="'Inter', sans-serif" font-weight="700">
+      <text x="-110" y="-180" font-size="46" opacity="0.85">%</text>
+      <text x="220" y="-50" font-size="38" opacity="0.7">σ</text>
+      <text x="-130" y="-110" font-size="34" opacity="0.6">π</text>
+    </g>
+
+    <!-- 椅子（背もたれ・座面・脚） -->
+    <g fill="#2B3658" opacity="0.95">
+      <rect x="-10" y="200" width="170" height="14" rx="3"/>
+      <rect x="-10" y="200" width="14" height="180" rx="3"/>
+      <rect x="146" y="200" width="14" height="180" rx="3"/>
+    </g>
+
+    <!-- 頭 -->
+    <circle cx="55" cy="35" r="40" fill="url(#figure-num)"/>
+    <!-- 髪 -->
+    <path d="M 18 28 Q 28 0 60 0 Q 92 0 95 32 Q 86 18 70 16 Q 50 16 38 24 Q 28 30 22 38 Z" fill="#7A89C4"/>
+
+    <!-- 顎に手（考えるポーズ） -->
+    <g fill="url(#figure-num)">
+      <ellipse cx="40" cy="80" rx="14" ry="10"/>
+      <path d="M 28 86 Q 12 110 18 140 L 30 138 Q 28 112 38 92 Z"/>
+    </g>
+
+    <!-- 体（座位） -->
+    <path d="M 22 70 Q 0 95 -8 160 L 8 210 L 130 210 L 132 175 Q 130 130 110 105 Q 95 80 65 72 Q 42 68 28 70 Z" fill="url(#figure-num)"/>
+
+    <!-- 太もも（前に出す） -->
+    <path d="M 8 200 L 50 270 L 110 270 L 130 200 Z" fill="#7A89C4"/>
+    <!-- すね（下に折れ曲がる） -->
+    <rect x="50" y="262" width="26" height="118" rx="6" fill="#6B7AB8"/>
+    <rect x="92" y="262" width="26" height="118" rx="6" fill="#6B7AB8"/>
+    <!-- 靴 -->
+    <ellipse cx="63" cy="385" rx="22" ry="8" fill="#5A6AAA"/>
+    <ellipse cx="105" cy="385" rx="22" ry="8" fill="#5A6AAA"/>
+  </g>
+
+  <!-- 中央：演算式（¥ × 10³ = $） -->
+  <g transform="translate(540,310)">
+    <g fill="#B8C4EC" font-family="'Inter', 'Helvetica', sans-serif" font-weight="700">
+      <text x="0" y="0" font-size="80">¥</text>
+      <text x="80" y="0" font-size="60" opacity="0.85">×</text>
+      <text x="140" y="0" font-size="60" opacity="0.95">10³</text>
+      <text x="280" y="0" font-size="60" opacity="0.85">=</text>
+      <text x="345" y="0" font-size="80">$</text>
+    </g>
+  </g>
+
+  <!-- 中央下：割合・分布・棒グラフ -->
+  <g transform="translate(540,420)">
+    <!-- 円グラフ（割合） -->
+    <g>
+      <circle cx="40" cy="40" r="40" fill="none" stroke="#3A4670" stroke-width="10"/>
+      <path d="M 40 0 A 40 40 0 0 1 76 60 L 40 40 Z" fill="#A4B2E8"/>
+      <path d="M 76 60 A 40 40 0 0 1 40 80 L 40 40 Z" fill="#7A8AC8" opacity="0.85"/>
+    </g>
+
+    <!-- 矢印（割合 → 分布） -->
+    <g stroke="#A4B2E8" stroke-width="2" fill="none" opacity="0.7" stroke-linecap="round">
+      <line x1="95" y1="40" x2="125" y2="40"/>
+      <polyline points="118,33 125,40 118,47"/>
+    </g>
+
+    <!-- 統計分布曲線（正規分布） -->
+    <g transform="translate(135,0)" stroke="#B8C4EC" stroke-width="3" fill="none" opacity="0.9" stroke-linecap="round">
+      <path d="M 0 80 Q 20 78 35 70 Q 55 50 75 20 Q 90 5 105 0 Q 120 5 135 20 Q 155 50 175 70 Q 190 78 210 80"/>
+      <line x1="0" y1="80" x2="210" y2="80" stroke="#3A4670" stroke-width="2"/>
+      <line x1="105" y1="80" x2="105" y2="0" stroke="#3A4670" stroke-width="1.5" stroke-dasharray="4 4"/>
+    </g>
+
+    <!-- 矢印（分布 → 棒グラフ） -->
+    <g stroke="#A4B2E8" stroke-width="2" fill="none" opacity="0.7" stroke-linecap="round" transform="translate(355,0)">
+      <line x1="0" y1="40" x2="30" y2="40"/>
+      <polyline points="23,33 30,40 23,47"/>
+    </g>
+
+    <!-- 棒グラフ（複利による上昇） -->
+    <g transform="translate(395,0)" fill="#A4B2E8">
+      <rect x="0" y="50" width="22" height="30" rx="2"/>
+      <rect x="28" y="35" width="22" height="45" rx="2"/>
+      <rect x="56" y="20" width="22" height="60" rx="2"/>
+      <rect x="84" y="6" width="22" height="74" rx="2" fill="#C8D2EE"/>
+      <line x1="-4" y1="80" x2="112" y2="80" stroke="#3A4670" stroke-width="2"/>
+      <!-- 上昇矢印 -->
+      <polyline points="0,55 28,40 56,25 84,11 100,15" stroke="#C8D2EE" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.95"/>
+      <polygon points="100,15 92,7 102,5" fill="#C8D2EE"/>
+    </g>
+  </g>
+
+  <!-- 右：そろばん -->
+  <g transform="translate(1020,340)" opacity="0.92">
+    <rect x="0" y="0" width="220" height="160" rx="6" fill="none" stroke="#A4B2E8" stroke-width="3"/>
+    <line x1="0" y1="80" x2="220" y2="80" stroke="#A4B2E8" stroke-width="2"/>
+    <!-- 上段の珠 -->
+    <g fill="#B8C4EC">
+      <circle cx="30" cy="40" r="11"/>
+      <circle cx="70" cy="40" r="11"/>
+      <circle cx="110" cy="40" r="11"/>
+      <circle cx="150" cy="40" r="11"/>
+      <circle cx="190" cy="40" r="11"/>
+    </g>
+    <!-- 下段の珠（5珠中3珠を上、2珠を下に配置で「数値」感を演出） -->
+    <g fill="#8C9BD4">
+      <circle cx="30" cy="105" r="11"/>
+      <circle cx="30" cy="135" r="11"/>
+      <circle cx="70" cy="105" r="11"/>
+      <circle cx="70" cy="135" r="11"/>
+      <circle cx="110" cy="105" r="11"/>
+      <circle cx="110" cy="135" r="11"/>
+      <circle cx="150" cy="105" r="11"/>
+      <circle cx="150" cy="135" r="11"/>
+      <circle cx="190" cy="105" r="11"/>
+      <circle cx="190" cy="135" r="11"/>
+    </g>
+    <!-- 縦の串 -->
+    <g stroke="#3A4670" stroke-width="1.5" opacity="0.55">
+      <line x1="30" y1="10" x2="30" y2="150"/>
+      <line x1="70" y1="10" x2="70" y2="150"/>
+      <line x1="110" y1="10" x2="110" y2="150"/>
+      <line x1="150" y1="10" x2="150" y2="150"/>
+      <line x1="190" y1="10" x2="190" y2="150"/>
+    </g>
+  </g>
+
+  <!-- 中央上部：散らばった数字（思考の星屑） -->
+  <g fill="#A4B2E8" font-family="'Inter', sans-serif" font-weight="600">
+    <text x="500" y="120" font-size="22" opacity="0.5">42</text>
+    <text x="640" y="90" font-size="24" opacity="0.55">100</text>
+    <text x="760" y="140" font-size="20" opacity="0.45">12.5</text>
+    <text x="850" y="100" font-size="22" opacity="0.55">π</text>
+    <text x="940" y="160" font-size="22" opacity="0.5">√2</text>
+    <text x="1080" y="100" font-size="22" opacity="0.5">σ</text>
+    <text x="1200" y="170" font-size="24" opacity="0.55">μ</text>
+    <text x="540" y="200" font-size="18" opacity="0.4">15%</text>
+    <text x="1140" y="240" font-size="20" opacity="0.45">e</text>
+  </g>
+
+  <!-- 装飾的な点群 -->
+  <g fill="#A4B2E8">
+    <circle cx="430" cy="170" r="2.5" opacity="0.6"/>
+    <circle cx="470" cy="220" r="1.8" opacity="0.5"/>
+    <circle cx="700" cy="200" r="1.8" opacity="0.5"/>
+    <circle cx="800" cy="180" r="2.5" opacity="0.55"/>
+    <circle cx="950" cy="220" r="1.8" opacity="0.45"/>
+    <circle cx="1050" cy="180" r="2.5" opacity="0.55"/>
+    <circle cx="1150" cy="200" r="1.8" opacity="0.5"/>
+    <circle cx="1250" cy="270" r="2" opacity="0.5"/>
+    <circle cx="1300" cy="180" r="2" opacity="0.5"/>
+  </g>
+</svg>
