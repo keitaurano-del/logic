@@ -314,8 +314,6 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
                   return (
                     <CategoryCard
                       key={course.id}
-                      icon={v.icon}
-                      iconBg={v.iconBg}
                       name={course.title}
                       meta={`${course.lessonIds.length}レッスン · ${course.level}`}
                       image={course.image || v.image}
@@ -658,7 +656,7 @@ const CATEGORY_LABEL_JP: Record<string, string> = {
 }
 
 
-function CategoryCard({ icon, iconBg, name, meta, progress, onClick, image }: { icon: React.ReactNode; iconBg: string; name: string; meta: string; progress?: string; onClick: () => void; image?: string }) {
+function CategoryCard({ name, meta, progress, onClick, image }: { name: string; meta: string; progress?: string; onClick: () => void; image?: string }) {
   return (
     <div onClick={onClick} style={{ background: v3.color.card, borderRadius: v3.radius.card, overflow: 'hidden', cursor: 'pointer', boxShadow: v3.shadow.card, display: 'flex', flexDirection: 'column' }}>
       {image && (
@@ -667,9 +665,6 @@ function CategoryCard({ icon, iconBg, name, meta, progress, onClick, image }: { 
         </div>
       )}
       <div style={{ padding: '10px 12px 12px', display: 'flex', flexDirection: 'column', gap: 6, flex: 1 }}>
-        <div style={{ width: 34, height: 34, borderRadius: 10, background: iconBg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-          {icon}
-        </div>
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 13, fontWeight: 700, color: v3.color.text, marginBottom: 2, lineHeight: 1.3 }}>{name}</div>
           <div style={{ fontSize: 11, color: v3.color.text2, fontWeight: 500 }}>{meta}</div>
