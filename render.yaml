@@ -1,8 +1,14 @@
+previews:
+  generation: automatic
+  expireAfterDays: 7
+
 services:
   - type: web
     name: logic
     runtime: node
     autoDeploy: true
+    previews:
+      generation: automatic
     buildCommand: npm install --include=dev && npm run build
     startCommand: npm start
     envVars:

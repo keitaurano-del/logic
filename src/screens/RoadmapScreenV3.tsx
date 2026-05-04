@@ -12,6 +12,7 @@ import { getAllLessonsFlat } from '../lessonData'
 import type { LessonData } from '../lessonData'
 import { getCompletedLessons } from '../stats'
 import { getCoursesByCategory, getCoursesByGroup, COURSES, COURSE_GROUPS, type Course } from '../courseData'
+import { loadPersonalCourse, axisLabel } from '../placementData'
 
 const IMG = '/images/v3'
 
@@ -212,6 +213,8 @@ function extractSnippet(text: string, nq: string, ctx = 30): string {
 interface RoadmapScreenV3Props {
   onOpenLesson: (id: number) => void
   onOpenCategory: (cat: string) => void
+  onOpenPersonalCourse?: () => void
+  onOpenPlacementTest?: () => void
   initialCategory?: string
   onBack?: () => void
 }
@@ -296,7 +299,11 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
           <div style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.45, letterSpacing: '-.005em' }}>今日、どのスキルを<br />鍛える？</div>
         </div>
 
-
+        {/* パーソナルコース（診断結果から自動生成）— 一番上 */}
+        <PersonalCourseBanner
+          onOpenPersonalCourse={props.onOpenPersonalCourse}
+          onOpenPlacementTest={props.onOpenPlacementTest}
+        />
 
         {/* グループ別コース一覧 — 5グループ × 全21コース */}
         {COURSE_GROUPS.map(group => {
@@ -809,4 +816,101 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
   )
 }
 
+// ──────── パーソナルコース誘導バナー（トレーニング画面トップ） ────────
+function PersonalCourseBanner({
+  onOpenPersonalCourse,
+  onOpenPlacementTest,
+}: {
+  onOpenPersonalCourse?: () => void
+  onOpenPlacementTest?: () => void
+}) {
+  const course = loadPersonalCourse()
+  const flat = getAllLessonsFlat()
+  const completed = new Set(getCompletedLessons())
+
+  // 診断未受検 → 「実力診断テスト」誘導カード
+  if (!course) {
+    if (!onOpenPlacementTest) return null
+    return (
+      <div
+        onClick={onOpenPlacementTest}
+        style={{
+          background: v3.color.card,
+          borderRadius: 16,
+          padding: '14px 16px',
+          boxShadow: v3.shadow.card,
+          border: `1.5px dashed ${v3.color.accent}50`,
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 12,
+        }}
+      >
+        <div style={{
+          width: 40, height: 40, borderRadius: 12, flexShrink: 0,
+          background: v3.color.accentSoft, color: v3.color.accent,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+            <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
+          </svg>
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: v3.color.text }}>あなた専用コースを作成</div>
+          <div style={{ fontSize: 12, color: v3.color.text2, marginTop: 2, lineHeight: 1.5 }}>
+            実力診断（10問・約5分）で弱点を特定し、専用コースを自動生成します。
+          </div>
+        </div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    )
+  }
+
+  if (!onOpenPersonalCourse) return null
+
+  const lessons = course.lessonIds.map(id => flat[id]).filter((l): l is LessonData => !!l)
+  const completedCount = course.lessonIds.filter(id => completed.has(`lesson-${id}`)).length
+  const total = lessons.length || course.lessonIds.length
+  const allDone = total > 0 && completedCount >= total
+  const weakest = course.axisOrder[0]
+
+  return (
+    <div
+      onClick={onOpenPersonalCourse}
+      style={{
+        background: `linear-gradient(135deg, ${v3.color.accent}f5, ${v3.color.accent}c0)`,
+        borderRadius: 16,
+        padding: '16px 18px',
+        boxShadow: v3.shadow.card,
+        cursor: 'pointer',
+        color: '#fff',
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+        <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: '.1em', background: 'rgba(255,255,255,0.18)', padding: '2px 8px', borderRadius: 6 }}>YOUR COURSE</div>
+        {allDone && (
+          <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: '.1em', background: 'rgba(255,255,255,0.22)', padding: '2px 8px', borderRadius: 6 }}>完了</div>
+        )}
+      </div>
+      <div style={{ fontSize: 16, fontWeight: 800, lineHeight: 1.35, marginBottom: 4 }}>{course.title}</div>
+      <div style={{ fontSize: 12, opacity: 0.92, lineHeight: 1.55, marginBottom: 10 }}>
+        {weakest ? `「${axisLabel(weakest).label}」を最優先に` : '弱点を最優先に'} ・ {total}レッスン構成
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div style={{ flex: 1, height: 4, background: 'rgba(255,255,255,0.25)', borderRadius: 2, overflow: 'hidden' }}>
+          <div style={{ height: '100%', width: `${(completedCount / Math.max(1, total)) * 100}%`, background: '#fff', borderRadius: 2, transition: 'width .3s' }} />
+        </div>
+        <div style={{ fontSize: 12, fontWeight: 700 }}>{completedCount}/{total}</div>
+      </div>
+      <div style={{ marginTop: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ fontSize: 12, fontWeight: 700, opacity: 0.95 }}>
+          {allDone ? 'もう一度進める' : completedCount > 0 ? '続きから進める' : 'コースを進める'}
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </div>
+  )
+}
 

@@ -4,6 +4,8 @@ export type RadarAxis = {
   key: string
   label: string
   level: 1 | 2 | 3 | 4 | 5
+  /** Lv.X の代わりに表示するラベル文字列（例: 卓越/上級/中級/基礎/入門） */
+  levelLabel?: string
 }
 
 interface RadarChartProps {
@@ -159,7 +161,7 @@ export function RadarChart({
               fill={strokeColor}
               opacity={0.85}
             >
-              Lv.{a.level}
+              {a.levelLabel ?? `Lv.${a.level}`}
             </text>
           </g>
         )
