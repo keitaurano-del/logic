@@ -1,0 +1,90 @@
+name: 🔍 Deploy to SIT (Preview)
+
+# 本番デプロイ前にプレビュー（SIT環境）で動作確認するためのワークフロー。
+# - 任意のブランチを SIT (logic-sit.onrender.com) にデプロイできる
+# - 本番デプロイ (deploy-production.yml) の前段として実行することを想定
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'プレビューしたいブランチ名（空欄で現在のブランチ）'
+        required: false
+        default: ''
+
+jobs:
+  # ── ビルド検証 ─────────────────────────────────────────
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch || github.ref }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build
+        run: npm run build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+
+  # ── Render SIT デプロイ ────────────────────────────────
+  deploy-sit:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: preview
+      url: https://logic-sit.onrender.com
+    steps:
+      - name: Trigger Render SIT deploy
+        run: |
+          if [ -z "${{ secrets.RENDER_SIT_SERVICE_ID }}" ]; then
+            echo "❌ RENDER_SIT_SERVICE_ID secret が未設定です。"
+            echo "   GitHub → Settings → Secrets → Actions に追加してください。"
+            exit 1
+          fi
+          echo "🔍 Render SIT (プレビュー) デプロイをトリガーします..."
+          RESPONSE=$(curl -s -X POST \
+            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+            "https://api.render.com/v1/services/${{ secrets.RENDER_SIT_SERVICE_ID }}/deploys")
+          DEPLOY_ID=$(echo "$RESPONSE" | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('id','?'))")
+          echo "Deploy ID: $DEPLOY_ID"
+
+          # デプロイ完了まで待機（最大15分）
+          for i in $(seq 1 30); do
+            sleep 30
+            STATUS=$(curl -s \
+              -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+              "https://api.render.com/v1/services/${{ secrets.RENDER_SIT_SERVICE_ID }}/deploys?limit=1" \
+              | python3 -c "import json,sys; d=json.load(sys.stdin); print(d[0].get('deploy',d[0]).get('status',''))")
+            echo "$(date '+%H:%M:%S') Status: $STATUS"
+            if [ "$STATUS" = "live" ]; then
+              echo "✅ SIT プレビューデプロイ完了！"
+              echo "プレビュー URL: https://logic-sit.onrender.com"
+              echo ""
+              echo "👉 動作確認後、deploy-production.yml で本番デプロイを実行してください。"
+              exit 0
+            elif [ "$STATUS" = "update_failed" ]; then
+              echo "❌ デプロイ失敗"
+              exit 1
+            fi
+          done
+          echo "⚠️ タイムアウト（15分）"
+          exit 1
+
+      - name: Preview summary
+        if: success()
+        run: |
+          echo "## 🔍 プレビュー準備完了" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **URL**: https://logic-sit.onrender.com" >> $GITHUB_STEP_SUMMARY
+          echo "- **ブランチ**: \`${{ github.event.inputs.branch || github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "問題なければ **Deploy to Production** ワークフローを実行して本番反映してください。" >> $GITHUB_STEP_SUMMARY
