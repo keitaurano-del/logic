@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg-cl2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1F2942"/>
+      <stop offset="100%" stop-color="#101729"/>
+    </linearGradient>
+    <radialGradient id="lamp-cl2" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#FFD566" stop-opacity="0.32"/>
+      <stop offset="100%" stop-color="#FFD566" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="figureL-cl2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3B5BBF"/>
+      <stop offset="100%" stop-color="#1B2954"/>
+    </linearGradient>
+    <linearGradient id="figureR-cl2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4A6BD6"/>
+      <stop offset="100%" stop-color="#22305A"/>
+    </linearGradient>
+    <linearGradient id="table-cl2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2A3656"/>
+      <stop offset="100%" stop-color="#0E1424"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="400" fill="url(#bg-cl2)"/>
+
+  <g stroke="#2A3656" stroke-width="1" opacity="0.25">
+    <line x1="0" y1="100" x2="800" y2="100"/>
+    <line x1="0" y1="200" x2="800" y2="200"/>
+  </g>
+
+  <!-- 中央のランプ光 -->
+  <circle cx="400" cy="220" r="180" fill="url(#lamp-cl2)"/>
+
+  <!-- 後ろの窓（夜景） -->
+  <g opacity="0.55">
+    <rect x="240" y="60" width="320" height="120" rx="2" fill="none" stroke="#6C8EF5" stroke-width="1.2"/>
+    <line x1="400" y1="60" x2="400" y2="180" stroke="#6C8EF5" stroke-width="1" opacity="0.5"/>
+    <line x1="240" y1="120" x2="560" y2="120" stroke="#6C8EF5" stroke-width="1" opacity="0.5"/>
+  </g>
+  <!-- 窓の星 -->
+  <g fill="#7AAEFF" opacity="0.7">
+    <circle cx="280" cy="90" r="1.4"/>
+    <circle cx="340" cy="100" r="1.2"/>
+    <circle cx="450" cy="85" r="1.4"/>
+    <circle cx="520" cy="110" r="1.2"/>
+  </g>
+
+  <!-- テーブル -->
+  <ellipse cx="400" cy="320" rx="280" ry="22" fill="url(#table-cl2)"/>
+  <rect x="120" y="320" width="560" height="14" fill="#0B1424" opacity="0.85"/>
+
+  <!-- テーブル上のティーカップ -->
+  <g transform="translate(400,308)">
+    <ellipse cx="0" cy="0" rx="14" ry="3" fill="#0B1424"/>
+    <path d="M -10 -2 Q -12 -14 0 -14 Q 12 -14 10 -2 Z" fill="#E7ECF7" opacity="0.9"/>
+    <path d="M 10 -10 Q 16 -8 16 -4" fill="none" stroke="#E7ECF7" stroke-width="1.4"/>
+  </g>
+
+  <!-- 左の人物（聴く側・少し前傾） -->
+  <g transform="translate(220,260)">
+    <!-- 体（前傾） -->
+    <path d="M -50 70 Q -54 10 -20 -12 Q -6 -20 6 -20 Q 26 -20 38 -8 Q 56 16 50 70 Z" fill="url(#figureL-cl2)"/>
+    <!-- 首 -->
+    <path d="M -8 -16 L 16 -16 L 14 -36 L -6 -36 Z" fill="url(#figureL-cl2)"/>
+    <!-- 頭（横顔・右向き） -->
+    <ellipse cx="6" cy="-46" rx="18" ry="20" fill="url(#figureL-cl2)"/>
+    <!-- 髪 -->
+    <path d="M -12 -52 Q 0 -66 22 -64 Q 26 -50 22 -42 L -10 -42 Z" fill="#0E1424"/>
+    <!-- 手をテーブルに（聴く姿勢） -->
+    <path d="M 30 0 Q 60 30 70 50" fill="none" stroke="url(#figureL-cl2)" stroke-width="14" stroke-linecap="round"/>
+  </g>
+
+  <!-- 右の人物（話す側・落ち着いた姿勢） -->
+  <g transform="translate(580,250)">
+    <!-- 体 -->
+    <path d="M -52 80 Q -58 16 -26 -8 Q -10 -16 4 -16 Q 22 -16 36 -8 Q 60 16 50 80 Z" fill="url(#figureR-cl2)"/>
+    <!-- 首 -->
+    <path d="M -10 -12 L 14 -12 L 12 -32 L -8 -32 Z" fill="url(#figureR-cl2)"/>
+    <!-- 頭（横顔・左向き） -->
+    <ellipse cx="-4" cy="-44" rx="18" ry="20" fill="url(#figureR-cl2)"/>
+    <!-- 髪 -->
+    <path d="M 12 -52 Q 0 -66 -22 -62 Q -26 -50 -22 -42 L 14 -42 Z" fill="#0E1424"/>
+    <!-- 手（軽く手前に出す） -->
+    <path d="M -28 6 Q -52 24 -64 40" fill="none" stroke="url(#figureR-cl2)" stroke-width="14" stroke-linecap="round"/>
+  </g>
+
+  <!-- 聴く側の小さな耳のサイン（…） -->
+  <g transform="translate(140,200)" fill="#FFD566" opacity="0.85">
+    <circle cx="0" cy="0" r="2"/>
+    <circle cx="10" cy="0" r="2"/>
+    <circle cx="20" cy="0" r="2"/>
+  </g>
+</svg>

@@ -51,6 +51,7 @@ export const COURSES: Course[] = [
     lessonIds: [25, 26, 27, 68, 23],
     level: '初級',
     description: 'So What / Why Soで論理を検証し、ピラミッド構造で伝わる話し方を習得する。',
+    image: '/images/v3/course-logic-02.svg',
   },
 
   // ── クリティカルシンキング ──────────────────────────
@@ -71,6 +72,7 @@ export const COURSES: Course[] = [
     lessonIds: [71, 300, 301, 302, 303],
     level: '中級',
     description: '確証バイアスをはじめとした認知の歪みを理解し、より精度の高い判断をする。',
+    image: '/images/v3/course-critical-02.svg',
   },
 
   // ── 仮説思考 ────────────────────────────────────────
@@ -212,6 +214,7 @@ export const COURSES: Course[] = [
     lessonIds: [93, 94, 95, 96, 315],
     level: '中級',
     description: '正しい論点設定とヒアリング技術で、クライアントの本質的な課題を引き出す。',
+    image: '/images/v3/course-client-02.svg',
   },
   {
     id: 'client-03',
@@ -221,6 +224,7 @@ export const COURSES: Course[] = [
     lessonIds: [330, 331, 332, 333, 334, 335],
     level: '上級',
     description: '本・事例・有識者・仮説を総動員し、新しい案件で「専門家」として価値発揮するキャッチアップの技術を学ぶ。',
+    image: '/images/v3/course-client-03.svg',
   },
 
   // ── ケース面接 ──────────────────────────────────────
@@ -252,6 +256,7 @@ export const COURSES: Course[] = [
     lessonIds: [325, 326, 327, 328, 329],
     level: '上級',
     description: 'RBV・コアコンピタンスからブルーオーシャン、ダイナミック・ケイパビリティ、プラットフォーム戦略まで現代の進化を学ぶ。',
+    image: '/images/v3/course-strategy-02.svg',
   },
 
   // ── フェルミ推定 ────────────────────────────────────
@@ -274,6 +279,7 @@ export const COURSES: Course[] = [
     lessonIds: [401, 400, 402, 403, 404, 405, 406],
     level: '中級',
     description: '伝え方・暗算・割合操作・単位換算・複利・統計・落とし穴の7本立てで、ビジネス数字感覚を体系的に鍛える。',
+    image: '/images/v3/course-numeracy.svg',
   },
 ]
 

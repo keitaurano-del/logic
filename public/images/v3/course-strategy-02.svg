@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg-s2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1F2942"/>
+      <stop offset="60%" stop-color="#162038"/>
+      <stop offset="100%" stop-color="#0B1428"/>
+    </linearGradient>
+    <linearGradient id="ocean-s2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#243352"/>
+      <stop offset="100%" stop-color="#0B1428"/>
+    </linearGradient>
+    <radialGradient id="moon-glow-s2" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#F4ECC4" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#F4ECC4" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="800" height="400" fill="url(#bg-s2)"/>
+
+  <!-- 月のグロー -->
+  <circle cx="600" cy="120" r="160" fill="url(#moon-glow-s2)"/>
+
+  <!-- 月 -->
+  <g transform="translate(600,120)">
+    <circle cx="0" cy="0" r="48" fill="#F4ECC4"/>
+    <circle cx="-6" cy="-4" r="44" fill="#1F2942" opacity="0.85"/>
+  </g>
+
+  <!-- 月の海面の反射（縦の白い帯） -->
+  <g transform="translate(600,240)" opacity="0.55">
+    <path d="M -36 0 Q -8 30 0 80 Q 8 30 36 0 Z" fill="#F4ECC4"/>
+  </g>
+  <g transform="translate(600,260)" opacity="0.35">
+    <path d="M -28 0 Q -6 40 0 100 Q 6 40 28 0 Z" fill="#F4ECC4"/>
+  </g>
+
+  <!-- 星 -->
+  <g fill="#FFFFFF" opacity="0.7">
+    <circle cx="80" cy="60" r="1.4"/>
+    <circle cx="160" cy="40" r="1.6"/>
+    <circle cx="240" cy="80" r="1.2"/>
+    <circle cx="340" cy="50" r="1.4"/>
+    <circle cx="440" cy="70" r="1.2"/>
+    <circle cx="720" cy="60" r="1.4"/>
+    <circle cx="780" cy="100" r="1.2"/>
+    <circle cx="100" cy="120" r="1.2"/>
+  </g>
+
+  <!-- 海 -->
+  <rect x="0" y="220" width="800" height="180" fill="url(#ocean-s2)"/>
+
+  <!-- 海面の波（水平方向、繊細に） -->
+  <g stroke="#7AAEFF" stroke-width="1" fill="none" opacity="0.35" stroke-linecap="round">
+    <path d="M 0 250 Q 60 246 120 250 T 240 250 T 360 250 T 480 250 T 600 250 T 720 250 T 800 250"/>
+    <path d="M 0 280 Q 60 276 120 280 T 240 280 T 360 280 T 480 280 T 600 280 T 720 280 T 800 280" opacity="0.6"/>
+    <path d="M 0 312 Q 80 308 160 312 T 320 312 T 480 312 T 640 312 T 800 312" opacity="0.4"/>
+    <path d="M 0 348 Q 100 344 200 348 T 400 348 T 600 348 T 800 348" opacity="0.3"/>
+  </g>
+
+  <!-- 帆船（左、海面上） -->
+  <g transform="translate(220,240)">
+    <!-- マストの影（水面） -->
+    <ellipse cx="0" cy="40" rx="42" ry="3" fill="#0B1428" opacity="0.6"/>
+    <!-- 船体 -->
+    <path d="M -42 0 L 42 0 L 32 24 L -32 24 Z" fill="#0E1424" stroke="#7AAEFF" stroke-width="1.4"/>
+    <!-- マスト -->
+    <line x1="-2" y1="0" x2="-2" y2="-72" stroke="#0B1428" stroke-width="2"/>
+    <line x1="20" y1="0" x2="20" y2="-58" stroke="#0B1428" stroke-width="1.5"/>
+    <!-- 大きな帆 -->
+    <path d="M -2 -68 L -2 -4 L -36 -4 Z" fill="#E7ECF7" opacity="0.95"/>
+    <path d="M -2 -68 L -2 -4 L 26 -4 L 14 -36 Z" fill="#A8C7FF" opacity="0.92"/>
+    <!-- 第二の帆 -->
+    <path d="M 20 -54 L 20 -4 L 40 -4 Z" fill="#E7ECF7" opacity="0.85"/>
+  </g>
+
+  <!-- 遠景の島影（ぼんやり） -->
+  <g fill="#0B1428" opacity="0.7">
+    <path d="M 720 270 Q 740 260 760 268 Q 780 272 800 268 L 800 290 L 720 290 Z"/>
+  </g>
+
+  <!-- 鳥（小さなアクセント） -->
+  <g stroke="#7AAEFF" stroke-width="1.6" fill="none" stroke-linecap="round" opacity="0.7">
+    <path d="M 360 110 Q 366 104 372 110 Q 378 104 384 110"/>
+    <path d="M 410 90 Q 416 86 422 90 Q 428 86 434 90"/>
+  </g>
+</svg>

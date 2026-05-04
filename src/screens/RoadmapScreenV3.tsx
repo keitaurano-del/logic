@@ -123,7 +123,7 @@ const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
   '数字に強くなる': {
     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7AAEFF" strokeWidth="2" strokeLinecap="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg>,
     iconBg: 'rgba(122,174,255,.14)',
-    image: `${IMG}/fermi-card.png`,
+    image: `${IMG}/course-numeracy.svg`,
     routeKey: '数字に強くなる',
   },
 }

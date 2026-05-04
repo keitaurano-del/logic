@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg-c2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1F2942"/>
+      <stop offset="100%" stop-color="#101729"/>
+    </linearGradient>
+    <radialGradient id="lensGlow-c2" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#FFD566" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#FFD566" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="lens-c2" cx="0.4" cy="0.35" r="0.7">
+      <stop offset="0%" stop-color="#A8C7FF" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#3B5BBF" stop-opacity="0.30"/>
+    </radialGradient>
+    <linearGradient id="figure-c2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3B5BBF"/>
+      <stop offset="100%" stop-color="#1B2954"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="400" fill="url(#bg-c2)"/>
+
+  <g stroke="#2A3656" stroke-width="1" opacity="0.25">
+    <line x1="0" y1="100" x2="800" y2="100"/>
+    <line x1="0" y1="200" x2="800" y2="200"/>
+    <line x1="0" y1="300" x2="800" y2="300"/>
+  </g>
+
+  <!-- 視線の先のグロー（"見えてきたもの" -->
+  <circle cx="600" cy="180" r="170" fill="url(#lensGlow-c2)"/>
+
+  <!-- レンズが照らした先の小さな真実（鍵） -->
+  <g transform="translate(600,180)" stroke="#FFD566" stroke-width="2.5" fill="none" stroke-linecap="round">
+    <circle cx="-6" cy="-2" r="10"/>
+    <line x1="2" y1="0" x2="20" y2="0"/>
+    <line x1="14" y1="0" x2="14" y2="6"/>
+    <line x1="20" y1="0" x2="20" y2="6"/>
+  </g>
+
+  <!-- 人物（左、胸像シルエット） -->
+  <g transform="translate(220,220)">
+    <!-- 肩〜胸 -->
+    <path d="M -60 130 Q -70 50 -30 22 Q -10 14 4 14 Q 24 14 40 22 Q 70 50 60 130 Z" fill="url(#figure-c2)"/>
+    <!-- 首 -->
+    <path d="M -10 18 L 14 18 L 12 -2 L -8 -2 Z" fill="url(#figure-c2)"/>
+    <!-- 頭（横顔シルエット） -->
+    <path d="M -10 -2 Q -22 -16 -16 -36 Q -8 -56 14 -58 Q 36 -56 38 -32 Q 38 -16 30 -10 Q 28 -4 22 -2 Z" fill="url(#figure-c2)"/>
+    <!-- 上げた手（虫眼鏡を持つ） -->
+    <path d="M 40 26 Q 80 -4 130 -28" fill="none" stroke="url(#figure-c2)" stroke-width="14" stroke-linecap="round"/>
+  </g>
+
+  <!-- 虫眼鏡 -->
+  <g transform="translate(360,160)">
+    <!-- 持ち手 -->
+    <line x1="-30" y1="22" x2="-72" y2="48" stroke="#C49A3C" stroke-width="9" stroke-linecap="round"/>
+    <line x1="-30" y1="22" x2="-72" y2="48" stroke="#FFD566" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
+    <!-- レンズの枠 -->
+    <circle cx="6" cy="-4" r="56" fill="url(#lens-c2)" stroke="#FFD566" stroke-width="3"/>
+    <!-- レンズの反射 -->
+    <ellipse cx="-12" cy="-22" rx="14" ry="6" fill="#FFFFFF" opacity="0.5" transform="rotate(-30 -12 -22)"/>
+  </g>
+
+  <!-- 細かい星 -->
+  <g fill="#7AAEFF" opacity="0.55">
+    <circle cx="100" cy="60" r="1.4"/>
+    <circle cx="240" cy="50" r="1.2"/>
+    <circle cx="500" cy="70" r="1.4"/>
+    <circle cx="700" cy="60" r="1.2"/>
+    <circle cx="120" cy="350" r="1.4"/>
+  </g>
+</svg>
