@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg-l2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1F2942"/>
+      <stop offset="100%" stop-color="#101729"/>
+    </linearGradient>
+    <linearGradient id="pyr-l2" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#3B5BBF"/>
+      <stop offset="100%" stop-color="#7AAEFF"/>
+    </linearGradient>
+    <linearGradient id="pyr-top-l2" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#6C8EF5"/>
+      <stop offset="100%" stop-color="#A8C7FF"/>
+    </linearGradient>
+    <radialGradient id="glow-l2" cx="0.5" cy="0.4" r="0.55">
+      <stop offset="0%" stop-color="#7AAEFF" stop-opacity="0.32"/>
+      <stop offset="100%" stop-color="#7AAEFF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="800" height="400" fill="url(#bg-l2)"/>
+
+  <!-- 背景グリッド -->
+  <g stroke="#2A3656" stroke-width="1" opacity="0.35">
+    <line x1="0" y1="100" x2="800" y2="100"/>
+    <line x1="0" y1="200" x2="800" y2="200"/>
+    <line x1="0" y1="300" x2="800" y2="300"/>
+    <line x1="200" y1="0" x2="200" y2="400"/>
+    <line x1="400" y1="0" x2="400" y2="400"/>
+    <line x1="600" y1="0" x2="600" y2="400"/>
+  </g>
+
+  <!-- グロー -->
+  <circle cx="400" cy="180" r="240" fill="url(#glow-l2)"/>
+
+  <!-- ピラミッド構造（メイン結論 → 根拠 → 詳細） -->
+  <g transform="translate(400,80)">
+    <!-- 最上段（結論） -->
+    <rect x="-50" y="0" width="100" height="46" rx="4" fill="url(#pyr-top-l2)"/>
+    <!-- 中段（3つの根拠） -->
+    <rect x="-145" y="74" width="80" height="46" rx="4" fill="url(#pyr-l2)" opacity="0.95"/>
+    <rect x="-40" y="74" width="80" height="46" rx="4" fill="url(#pyr-l2)" opacity="0.95"/>
+    <rect x="65" y="74" width="80" height="46" rx="4" fill="url(#pyr-l2)" opacity="0.95"/>
+    <!-- 下段（詳細） -->
+    <rect x="-200" y="148" width="60" height="40" rx="3" fill="#2A3B7A" opacity="0.9"/>
+    <rect x="-130" y="148" width="60" height="40" rx="3" fill="#2A3B7A" opacity="0.9"/>
+    <rect x="-60" y="148" width="60" height="40" rx="3" fill="#2A3B7A" opacity="0.9"/>
+    <rect x="10" y="148" width="60" height="40" rx="3" fill="#2A3B7A" opacity="0.9"/>
+    <rect x="80" y="148" width="60" height="40" rx="3" fill="#2A3B7A" opacity="0.9"/>
+    <rect x="150" y="148" width="60" height="40" rx="3" fill="#2A3B7A" opacity="0.9"/>
+
+    <!-- 接続線 -->
+    <g stroke="#6C8EF5" stroke-width="1.6" opacity="0.55" fill="none">
+      <line x1="0" y1="46" x2="-105" y2="74"/>
+      <line x1="0" y1="46" x2="0" y2="74"/>
+      <line x1="0" y1="46" x2="105" y2="74"/>
+
+      <line x1="-105" y1="120" x2="-170" y2="148"/>
+      <line x1="-105" y1="120" x2="-100" y2="148"/>
+      <line x1="0" y1="120" x2="-30" y2="148"/>
+      <line x1="0" y1="120" x2="40" y2="148"/>
+      <line x1="105" y1="120" x2="110" y2="148"/>
+      <line x1="105" y1="120" x2="180" y2="148"/>
+    </g>
+  </g>
+
+  <!-- So What 矢印（上へ） -->
+  <g transform="translate(180,260)" stroke="#FFD566" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.95">
+    <line x1="0" y1="40" x2="0" y2="-30"/>
+    <polyline points="-10,-20 0,-30 10,-20"/>
+  </g>
+  <g transform="translate(150,295)" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#FFD566" opacity="0.95">
+    <text x="0" y="0">So What?</text>
+  </g>
+
+  <!-- Why So 矢印（下へ） -->
+  <g transform="translate(620,230)" stroke="#7AAEFF" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.95">
+    <line x1="0" y1="-40" x2="0" y2="30"/>
+    <polyline points="-10,20 0,30 10,20"/>
+  </g>
+  <g transform="translate(595,295)" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#7AAEFF" opacity="0.95">
+    <text x="0" y="0">Why So?</text>
+  </g>
+
+  <!-- 小さな星（アクセント） -->
+  <g fill="#FFD566" opacity="0.8">
+    <circle cx="80" cy="60" r="2"/>
+    <circle cx="720" cy="50" r="1.8"/>
+    <circle cx="360" cy="40" r="1.5"/>
+    <circle cx="540" cy="350" r="1.5"/>
+  </g>
+</svg>

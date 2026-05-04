@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg-n" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1F2942"/>
+      <stop offset="100%" stop-color="#101729"/>
+    </linearGradient>
+    <linearGradient id="card-n" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.97"/>
+      <stop offset="100%" stop-color="#E7ECF7" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="bar-n" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#3B5BBF"/>
+      <stop offset="100%" stop-color="#7AAEFF"/>
+    </linearGradient>
+    <linearGradient id="bar2-n" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#C49A3C"/>
+      <stop offset="100%" stop-color="#FFD566"/>
+    </linearGradient>
+    <radialGradient id="glow-n" cx="0.5" cy="0.5" r="0.6">
+      <stop offset="0%" stop-color="#7AAEFF" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#7AAEFF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="800" height="400" fill="url(#bg-n)"/>
+
+  <g stroke="#2A3656" stroke-width="1" opacity="0.30">
+    <line x1="0" y1="100" x2="800" y2="100"/>
+    <line x1="0" y1="200" x2="800" y2="200"/>
+    <line x1="0" y1="300" x2="800" y2="300"/>
+  </g>
+
+  <circle cx="400" cy="200" r="260" fill="url(#glow-n)"/>
+
+  <!-- 背景の大きな数字（淡い） -->
+  <g opacity="0.10" fill="#7AAEFF" font-family="-apple-system, 'Helvetica Neue', sans-serif" font-weight="900">
+    <text x="40" y="180" font-size="160">3</text>
+    <text x="640" y="340" font-size="160">7</text>
+  </g>
+
+  <!-- 中央：棒グラフ（数字感覚） -->
+  <g transform="translate(120,140)">
+    <!-- 軸 -->
+    <line x1="0" y1="0" x2="0" y2="160" stroke="#6C8EF5" stroke-width="1.5" opacity="0.6"/>
+    <line x1="0" y1="160" x2="220" y2="160" stroke="#6C8EF5" stroke-width="1.5" opacity="0.6"/>
+
+    <!-- バー -->
+    <rect x="20" y="100" width="32" height="60" rx="3" fill="url(#bar-n)" opacity="0.88"/>
+    <rect x="64" y="60" width="32" height="100" rx="3" fill="url(#bar-n)"/>
+    <rect x="108" y="80" width="32" height="80" rx="3" fill="url(#bar-n)" opacity="0.92"/>
+    <rect x="152" y="30" width="32" height="130" rx="3" fill="url(#bar2-n)"/>
+
+    <!-- トレンド線 -->
+    <polyline points="36,100 80,60 124,80 168,30" stroke="#FFFFFF" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
+    <g fill="#FFFFFF">
+      <circle cx="36" cy="100" r="3"/>
+      <circle cx="80" cy="60" r="3"/>
+      <circle cx="124" cy="80" r="3"/>
+      <circle cx="168" cy="30" r="4" stroke="#FFD566" stroke-width="1.5"/>
+    </g>
+  </g>
+
+  <!-- 右：電卓風カード -->
+  <g transform="translate(440,80)">
+    <rect x="0" y="0" width="240" height="240" rx="14" fill="url(#card-n)"/>
+    <!-- 表示部 -->
+    <rect x="16" y="16" width="208" height="48" rx="6" fill="#1F2942"/>
+    <text x="208" y="50" font-family="-apple-system, 'Helvetica Neue', sans-serif" font-size="26" font-weight="700" fill="#7AAEFF" text-anchor="end">1,247</text>
+    <!-- ボタン -->
+    <g fill="#1F2942" opacity="0.85">
+      <rect x="16" y="80" width="46" height="36" rx="6"/>
+      <rect x="70" y="80" width="46" height="36" rx="6"/>
+      <rect x="124" y="80" width="46" height="36" rx="6"/>
+      <rect x="178" y="80" width="46" height="36" rx="6"/>
+
+      <rect x="16" y="124" width="46" height="36" rx="6"/>
+      <rect x="70" y="124" width="46" height="36" rx="6"/>
+      <rect x="124" y="124" width="46" height="36" rx="6"/>
+    </g>
+    <g fill="url(#bar-n)">
+      <rect x="178" y="124" width="46" height="36" rx="6"/>
+      <rect x="178" y="168" width="46" height="36" rx="6"/>
+    </g>
+    <g fill="#1F2942" opacity="0.85">
+      <rect x="16" y="168" width="46" height="36" rx="6"/>
+      <rect x="70" y="168" width="46" height="36" rx="6"/>
+      <rect x="124" y="168" width="46" height="36" rx="6"/>
+    </g>
+    <!-- = ボタン -->
+    <rect x="16" y="212" width="208" height="14" rx="6" fill="url(#bar2-n)"/>
+
+    <!-- ボタン上の数字（示唆） -->
+    <g fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="13" font-weight="600" text-anchor="middle" opacity="0.85">
+      <text x="39" y="103">7</text>
+      <text x="93" y="103">8</text>
+      <text x="147" y="103">9</text>
+      <text x="201" y="103">×</text>
+
+      <text x="39" y="147">4</text>
+      <text x="93" y="147">5</text>
+      <text x="147" y="147">6</text>
+      <text x="201" y="147">−</text>
+
+      <text x="39" y="191">1</text>
+      <text x="93" y="191">2</text>
+      <text x="147" y="191">3</text>
+      <text x="201" y="191">+</text>
+    </g>
+  </g>
+
+  <!-- 左下：%（割合） -->
+  <g transform="translate(110,330)" font-family="-apple-system, 'Helvetica Neue', sans-serif" font-size="42" font-weight="800" fill="#FFD566">
+    <text x="0" y="0">%</text>
+  </g>
+
+  <!-- 通貨・単位記号 -->
+  <g font-family="-apple-system, 'Helvetica Neue', sans-serif" font-size="22" font-weight="700" opacity="0.85">
+    <text x="60" y="80" fill="#7AAEFF">¥</text>
+    <text x="720" y="100" fill="#7AAEFF">$</text>
+    <text x="380" y="370" fill="#FFD566">×10⁶</text>
+  </g>
+
+  <!-- 星 -->
+  <g fill="#FFD566" opacity="0.7">
+    <circle cx="40" cy="40" r="1.5"/>
+    <circle cx="760" cy="40" r="1.5"/>
+    <circle cx="60" cy="380" r="1.5"/>
+  </g>
+</svg>

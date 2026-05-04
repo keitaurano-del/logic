@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg-cl2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1F2942"/>
+      <stop offset="100%" stop-color="#101729"/>
+    </linearGradient>
+    <linearGradient id="bub-cl2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6C8EF5"/>
+      <stop offset="100%" stop-color="#3B5BBF"/>
+    </linearGradient>
+    <linearGradient id="bub2-cl2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E7ECF7" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#B8C4DD" stop-opacity="0.92"/>
+    </linearGradient>
+    <radialGradient id="glow-cl2" cx="0.5" cy="0.5" r="0.6">
+      <stop offset="0%" stop-color="#7AAEFF" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#7AAEFF" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="ring-cl2" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="60%" stop-color="#FFD566" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#FFD566" stop-opacity="0.4"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="800" height="400" fill="url(#bg-cl2)"/>
+
+  <!-- 背景グリッド -->
+  <g stroke="#2A3656" stroke-width="1" opacity="0.30">
+    <line x1="0" y1="100" x2="800" y2="100"/>
+    <line x1="0" y1="200" x2="800" y2="200"/>
+    <line x1="0" y1="300" x2="800" y2="300"/>
+  </g>
+
+  <circle cx="400" cy="200" r="260" fill="url(#glow-cl2)"/>
+
+  <!-- 中心：論点（同心円で深掘り） -->
+  <g transform="translate(400,200)">
+    <circle cx="0" cy="0" r="120" fill="none" stroke="#6C8EF5" stroke-width="1" opacity="0.25"/>
+    <circle cx="0" cy="0" r="85" fill="none" stroke="#6C8EF5" stroke-width="1" opacity="0.35" stroke-dasharray="4 3"/>
+    <circle cx="0" cy="0" r="55" fill="none" stroke="#7AAEFF" stroke-width="1.2" opacity="0.55"/>
+    <!-- 中心の的 -->
+    <circle cx="0" cy="0" r="22" fill="url(#bub-cl2)"/>
+    <circle cx="0" cy="0" r="22" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity="0.85"/>
+    <!-- 真ん中の点（本質） -->
+    <circle cx="0" cy="0" r="6" fill="#FFD566"/>
+  </g>
+
+  <!-- 矢印：周辺から中心へ（深く引き出す） -->
+  <g stroke="#FFD566" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.85">
+    <path d="M 200 110 L 350 180"/>
+    <polyline points="338 168 350 180 338 184"/>
+
+    <path d="M 600 110 L 450 180"/>
+    <polyline points="462 168 450 180 462 184"/>
+
+    <path d="M 200 290 L 350 220"/>
+    <polyline points="338 232 350 220 338 216"/>
+
+    <path d="M 600 290 L 450 220"/>
+    <polyline points="462 232 450 220 462 216"/>
+  </g>
+
+  <!-- 左上：質問のフキダシ -->
+  <g transform="translate(110,80)">
+    <path d="M 0 0 L 130 0 Q 145 0 145 14 L 145 50 Q 145 64 130 64 L 50 64 L 36 80 L 38 64 L 16 64 Q 0 64 0 50 Z" fill="url(#bub2-cl2)"/>
+    <text x="64" y="40" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="22" font-weight="700" fill="#1F2942" text-anchor="middle">なぜ？</text>
+  </g>
+
+  <!-- 右上：質問のフキダシ -->
+  <g transform="translate(560,75)">
+    <path d="M 0 0 L 150 0 Q 165 0 165 14 L 165 50 Q 165 64 150 64 L 110 64 L 124 84 L 96 64 L 16 64 Q 0 64 0 50 Z" fill="url(#bub-cl2)"/>
+    <text x="82" y="40" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="20" font-weight="700" fill="#FFFFFF" text-anchor="middle">本当に？</text>
+  </g>
+
+  <!-- 左下：質問のフキダシ -->
+  <g transform="translate(120,260)">
+    <path d="M 0 0 L 145 0 Q 160 0 160 14 L 160 50 Q 160 64 145 64 L 60 64 L 50 84 L 42 64 L 16 64 Q 0 64 0 50 Z" fill="url(#bub-cl2)" opacity="0.92"/>
+    <text x="80" y="40" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="20" font-weight="700" fill="#FFFFFF" text-anchor="middle">それで？</text>
+  </g>
+
+  <!-- 右下：質問のフキダシ -->
+  <g transform="translate(560,260)">
+    <path d="M 0 0 L 150 0 Q 165 0 165 14 L 165 50 Q 165 64 150 64 L 130 64 L 120 84 L 112 64 L 16 64 Q 0 64 0 50 Z" fill="url(#bub2-cl2)"/>
+    <text x="82" y="40" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="20" font-weight="700" fill="#1F2942" text-anchor="middle">具体的に？</text>
+  </g>
+
+  <!-- 細かい星 -->
+  <g fill="#FFD566" opacity="0.7">
+    <circle cx="60" cy="200" r="1.8"/>
+    <circle cx="740" cy="200" r="1.8"/>
+    <circle cx="400" cy="40" r="1.8"/>
+    <circle cx="400" cy="370" r="1.8"/>
+  </g>
+</svg>
