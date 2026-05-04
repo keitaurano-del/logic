@@ -46,25 +46,25 @@ export function ProfileScreen({ userName, onOpenSettings, onOpenFeedback, onOpen
 
   const settings = [
     {
-      icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="#3B5BDB"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-5.33 0-8 2.67-8 4v2h16v-2c0-1.33-2.67-4-8-4z"/></svg>,
+      icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--md-sys-color-primary)"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-5.33 0-8 2.67-8 4v2h16v-2c0-1.33-2.67-4-8-4z"/></svg>,
       name: 'アカウント',
       sub: userName || 'ゲスト',
       onClick: () => onOpenSettings('account'),
     },
     {
-      icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="#3B5BDB"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></svg>,
+      icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--md-sys-color-primary)"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></svg>,
       name: '通知設定',
       sub: '毎日 08:00',
       onClick: () => onOpenSettings('notifications'),
     },
     {
-      icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="#3B5BDB"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10" stroke="white" strokeWidth="2"/></svg>,
+      icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--md-sys-color-primary)"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10" stroke="white" strokeWidth="2"/></svg>,
       name: 'プラン',
       sub: getPlanLabel(),
       onClick: onOpenPricing,
     },
     {
-      icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="#3B5BDB"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
+      icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--md-sys-color-primary)"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
       name: 'フィードバック',
       sub: 'ご意見をお聞かせください',
       onClick: onOpenFeedback,
@@ -76,7 +76,7 @@ export function ProfileScreen({ userName, onOpenSettings, onOpenFeedback, onOpen
 
       {/* ナビバー */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 12px', background: 'rgba(240,244,255,.95)', borderBottom: '1px solid #E2E8FF' }}>
-        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 26, fontWeight: 900, color: '#3B5BDB', letterSpacing: '-.04em' }}>プロフィール</div>
+        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 26, fontWeight: 900, color: 'var(--md-sys-color-primary)', letterSpacing: '-.04em' }}>プロフィール</div>
       </div>
 
       <div style={{ padding: '16px 16px 96px', display: 'flex', flexDirection: 'column', gap: 12, overflowY: 'auto' }}>
@@ -84,7 +84,7 @@ export function ProfileScreen({ userName, onOpenSettings, onOpenFeedback, onOpen
         {/* プロフィールヒーロー — 哲学者ランク */}
         <div
           onClick={() => onOpenRank?.()}
-          style={{ background: 'linear-gradient(145deg, #1E3A8A 0%, #3B5BDB 60%, #4C6EF5 100%)', borderRadius: 24, padding: '20px 20px 18px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', position: 'relative', overflow: 'hidden', cursor: 'pointer' }}
+          style={{ background: 'linear-gradient(145deg, #1E3A8A 0%, var(--md-sys-color-primary) 60%, #4C6EF5 100%)', borderRadius: 24, padding: '20px 20px 18px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', position: 'relative', overflow: 'hidden', cursor: 'pointer' }}
         >
           {/* 背景装飾 */}
           <div style={{ position: 'absolute', right: -50, top: -50, width: 180, height: 180, borderRadius: '50%', background: 'rgba(255,255,255,.04)', pointerEvents: 'none' }} />

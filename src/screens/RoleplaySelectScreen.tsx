@@ -27,7 +27,7 @@ const DIFF_COLOR: Record<string, string> = {
 function SituationIcon({ id, size = 22 }: { id: string; size?: number }) {
   const s = `${size}`
   if (id === 'why-so-report') return (
-    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" strokeWidth="2" strokeLinecap="round">
+    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="var(--md-sys-color-primary)" strokeWidth="2" strokeLinecap="round">
       <rect x="2" y="3" width="20" height="14" rx="2"/>
       <line x1="8" y1="21" x2="16" y2="21"/>
       <line x1="12" y1="17" x2="12" y2="21"/>
@@ -57,7 +57,7 @@ function SituationIcon({ id, size = 22 }: { id: string; size?: number }) {
     </svg>
   )
   if (id === 'socrates-dialog') return (
-    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" strokeWidth="2" strokeLinecap="round">
+    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="var(--md-sys-color-primary)" strokeWidth="2" strokeLinecap="round">
       <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
     </svg>
   )
@@ -74,7 +74,7 @@ function SituationIcon({ id, size = 22 }: { id: string; size?: number }) {
   )
   // default
   return (
-    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" strokeWidth="2" strokeLinecap="round">
+    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="var(--md-sys-color-primary)" strokeWidth="2" strokeLinecap="round">
       <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
     </svg>
   )
@@ -251,8 +251,8 @@ export function RoleplaySelectScreen({ onBack, onStart, onUpgrade }: RoleplaySel
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           marginBottom: 20,
         }}>
-          <span style={{ fontSize: 14, color: '#3B5BDB', fontWeight: 600 }}>今月の残り回数</span>
-          <span style={{ fontSize: 16, fontWeight: 800, color: '#3B5BDB' }}>
+          <span style={{ fontSize: 14, color: 'var(--md-sys-color-primary)', fontWeight: 600 }}>今月の残り回数</span>
+          <span style={{ fontSize: 16, fontWeight: 800, color: 'var(--md-sys-color-primary)' }}>
             {remaining} / {ROLEPLAY_FREE_LIMIT}
           </span>
         </div>

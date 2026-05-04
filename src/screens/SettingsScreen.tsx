@@ -7,6 +7,7 @@ import {
   cancelDailyReminder, requestNotificationPermission, isNative,
 } from '../notifications'
 import { getSubscriptionState, isPremium, daysLeftInTrial } from '../subscription'
+import { confirm as confirmDialog } from '../platform/dialog'
 
 interface SettingsScreenProps {
   onBack: () => void
@@ -115,8 +116,14 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
     }
   }
 
-  function handleClearCache() {
-    if (window.confirm(t('settings.clearCacheConfirm'))) {
+  async function handleClearCache() {
+    const ok = await confirmDialog({
+      title: t('settings.clearCacheTitle') ?? 'キャッシュをクリア',
+      message: t('settings.clearCacheConfirm'),
+      okText: t('settings.clearCacheConfirmOk') ?? 'クリア',
+      cancelText: t('common.cancel') ?? 'キャンセル',
+    })
+    if (ok) {
       localStorage.clear()
       window.location.reload()
     }

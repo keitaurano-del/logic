@@ -246,8 +246,8 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
     }}>
       {/* ヘッダー */}
       <div style={{ padding: 'calc(env(safe-area-inset-top,44px) + 4px) 20px 0', display: 'flex', alignItems: 'center', gap: 12 }}>
-        <button onClick={onBack} style={{ width: 36, height: 36, borderRadius: '50%', background: v3.color.card, border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}>
-          <ArrowLeftIcon width={16} height={16} style={{ color: v3.color.accent }} />
+        <button type="button" onClick={onBack} aria-label="戻る" style={{ width: 44, height: 44, borderRadius: '50%', background: v3.color.card, border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}>
+          <ArrowLeftIcon width={20} height={20} style={{ color: 'var(--md-sys-color-primary)' }} />
         </button>
         <div>
           <div style={{ fontSize: 20, fontWeight: 800, color: v3.color.text, letterSpacing: '-.02em' }}>AI問題生成</div>

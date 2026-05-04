@@ -1,10 +1,10 @@
 /* Logic v3 — Design tokens
- * Brand-aligned with the indigo logo (#3D5FC4 / #EEF2FE / #9EB3F0)
+ * Brand-aligned with the indigo logo (var(--md-sys-color-primary) / #EEF2FE / #9EB3F0)
  * Refreshed: richer gradients, vibrant accents, animation tokens
  */
 :root {
   /* Brand (from logo) */
-  --brand:        #3D5FC4;
+  --brand:        var(--md-sys-color-primary);
   --brand-hover:  #2E4BA8;
   --brand-soft:   #EEF2FE;
   --brand-light:  #9EB3F0;
@@ -15,12 +15,12 @@
   /* Vibrant accent gradient — Duolingo-inspired energy */
   --brand-vivid:  #4F6FD8;  /* slightly brighter for gradient start */
   --brand-pop:    #7C3AED;  /* violet pop for gradient end */
-  --brand-grad:   linear-gradient(135deg, #3D5FC4 0%, #7C3AED 100%);
+  --brand-grad:   linear-gradient(135deg, var(--md-sys-color-primary) 0%, #7C3AED 100%);
   --brand-grad-h: linear-gradient(135deg, #2E4BA8 0%, #6D28D9 100%);
   --brand-grad-glow: 0 8px 32px rgba(124, 58, 237, 0.28), 0 2px 8px rgba(61, 95, 196, 0.20);
 
   /* Hero gradient — bold indigo→navy (Duolingo streak card style) */
-  --hero-grad:    linear-gradient(135deg, #3D5FC4 0%, #1E2D5C 60%, #120D2E 100%);
+  --hero-grad:    linear-gradient(135deg, var(--md-sys-color-primary) 0%, #1E2D5C 60%, #120D2E 100%);
   --hero-grad-alt: linear-gradient(145deg, #2E4BA8 0%, #4F1A8A 100%);
 
   /* Aliases for Logic's existing --accent-* usage (preserves downstream CSS) */
@@ -70,9 +70,9 @@
   --streak-grad:   linear-gradient(135deg, #F97316 0%, #F59E0B 100%);
 
   /* Categories — distinct colors per category (more vibrant) */
-  --cat-boki3:      #3D5FC4;
+  --cat-boki3:      var(--md-sys-color-primary);
   --cat-boki3-soft: rgba(61, 95, 196, 0.10);
-  --cat-boki3-grad: linear-gradient(135deg, #3D5FC4 0%, #6B85D6 100%);
+  --cat-boki3-grad: linear-gradient(135deg, var(--md-sys-color-primary) 0%, #6B85D6 100%);
 
   --cat-boki2:      #7C3AED;
   --cat-boki2-soft: rgba(124, 58, 237, 0.10);
@@ -84,7 +84,7 @@
 
   --cat-exam:       #1E2D5C;
   --cat-exam-soft:  rgba(30, 45, 92, 0.10);
-  --cat-exam-grad:  linear-gradient(135deg, #1E2D5C 0%, #3D5FC4 100%);
+  --cat-exam-grad:  linear-gradient(135deg, #1E2D5C 0%, var(--md-sys-color-primary) 100%);
 
   --cat-logic:      #2563EB;
   --cat-logic-soft: rgba(37, 99, 235, 0.10);
@@ -159,7 +159,7 @@
   --lesson-icon:   #059669;
   --time-bg:       rgba( 61, 95, 196, 0.12);
   --time-text:     #1E2D5C;
-  --time-icon:     #3D5FC4;
+  --time-icon:     var(--md-sys-color-primary);
   --xp-bg:         rgba(217, 119,   6, 0.12);
   --xp-text:       #92400E;
   --xp-icon:       #D97706;

@@ -1,0 +1,100 @@
+/* ActionSheet / BottomSheet — see docs/HIG_MATERIAL_AUDIT_20260504.md §4.9 */
+
+.m3-sheet__scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: var(--md-sys-color-scrim);
+  display: flex;
+  align-items: flex-end;
+  animation: m3-sheet-scrim-in var(--motion-duration-medium2, 300ms)
+    var(--motion-easing-standard, ease);
+}
+
+.m3-sheet {
+  background: var(--md-sys-color-surface-container);
+  color: var(--md-sys-color-on-surface);
+  width: 100%;
+  border-radius: var(--shape-xl, 28px) var(--shape-xl, 28px) 0 0;
+  padding: 12px 0 calc(env(safe-area-inset-bottom, 0px) + 16px);
+  max-height: 80vh;
+  overflow-y: auto;
+  animation: m3-sheet-in var(--motion-duration-medium2, 300ms)
+    var(--motion-easing-emphasized-decelerate, cubic-bezier(0.05, 0.7, 0.1, 1));
+}
+
+.m3-sheet__handle {
+  width: 36px;
+  height: 4px;
+  background: var(--md-sys-color-outline-variant);
+  border-radius: 2px;
+  margin: 4px auto 12px;
+}
+
+.m3-sheet__title {
+  font: 600 16px / 1.4 var(--font-ui, system-ui);
+  padding: 8px 24px;
+  color: var(--md-sys-color-on-surface);
+}
+
+.m3-sheet__msg {
+  font: 400 14px / 1.4 var(--font-ui, system-ui);
+  padding: 0 24px 8px;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.m3-sheet__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.m3-sheet__item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  min-height: 56px;
+  padding: 0 24px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: var(--md-sys-color-on-surface);
+  font: 400 16px / 1 var(--font-ui, system-ui);
+  text-align: left;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.m3-sheet__item:hover { background: var(--md-sys-color-surface-container-high); }
+.m3-sheet__item:focus-visible {
+  outline: 2px solid var(--md-sys-color-primary);
+  outline-offset: -2px;
+}
+
+.m3-sheet__item--destructive { color: var(--md-sys-color-error); }
+.m3-sheet__item--cancel {
+  font-weight: 700;
+  color: var(--md-sys-color-on-surface-variant);
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+  margin-top: 4px;
+  justify-content: center;
+}
+
+.m3-sheet__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.m3-sheet__cancel-row { margin-top: 4px; }
+
+@keyframes m3-sheet-scrim-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes m3-sheet-in {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}

@@ -8,6 +8,7 @@ import SubscriptionManagement from './SubscriptionManagement'
 import { resetAllData } from './dataReset'
 import { loadReminderPref, scheduleDailyReminder, cancelDailyReminder, requestNotificationPermission, isNative } from './notifications'
 import { t, getLocale, setLocale } from './i18n'
+import { confirm as confirmDialog } from './platform/dialog'
 import './Profile.css'
 
 type ProfileProps = {
@@ -63,8 +64,14 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
     setDevMode(next)
     persistDevMode(next)
   }
-  const handleResetProgress = () => {
-    if (confirm('学習データをすべてリセットしますか？この操作は取り消せません。')) {
+  const handleResetProgress = async () => {
+    const ok = await confirmDialog({
+      title: '学習データをリセット',
+      message: 'すべての学習データを削除します。この操作は取り消せません。',
+      okText: 'リセット',
+      cancelText: 'キャンセル',
+    })
+    if (ok) {
       localStorage.clear()
       location.reload()
     }

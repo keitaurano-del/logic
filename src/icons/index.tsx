@@ -383,7 +383,7 @@ export function MessageSquareIcon(p: IconProps) {
 export function BrandMark(p: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="54 54 92 92" xmlns="http://www.w3.org/2000/svg" {...p}>
-      <rect x="60" y="60" width="80" height="80" rx="20" fill="#3D5FC4" />
+      <rect x="60" y="60" width="80" height="80" rx="20" fill="var(--md-sys-color-primary)" />
       <rect x="78" y="76" width="12" height="44" rx="3" fill="#EEF2FE" />
       <rect x="78" y="108" width="36" height="12" rx="3" fill="#EEF2FE" />
       <circle cx="114" cy="82" r="6" fill="#9EB3F0" />

@@ -20,11 +20,16 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.82.0",
+    "@capacitor/action-sheet": "^6.0.4",
     "@capacitor/android": "^6.0.0",
     "@capacitor/app": "^6.0.0",
     "@capacitor/core": "^6.0.0",
+    "@capacitor/dialog": "^6.0.3",
+    "@capacitor/haptics": "^6.0.3",
     "@capacitor/ios": "^6.0.0",
+    "@capacitor/keyboard": "^6.0.4",
     "@capacitor/local-notifications": "^6.0.0",
+    "@capacitor/share": "^6.0.4",
     "@capacitor/splash-screen": "^6.0.0",
     "@capacitor/status-bar": "^6.0.0",
     "@codetrix-studio/capacitor-google-auth": "^3.4.0-rc.4",
@@ -38,7 +43,6 @@
     "nodemailer": "^8.0.5",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "stripe": "^19.1.0",
     "tsx": "^4.21.0"
   },
   "devDependencies": {

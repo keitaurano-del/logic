@@ -3,7 +3,6 @@ import cors from 'cors'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import Anthropic from '@anthropic-ai/sdk'
-import Stripe from 'stripe'
 import rateLimit from 'express-rate-limit'
 import { createClient } from '@supabase/supabase-js'
 import nodemailer from 'nodemailer'
@@ -20,9 +19,6 @@ if (supabaseUrl && !supabaseKey) console.warn('[WARN] SUPABASE_SERVICE_ROLE_KEY 
 const supabase = supabaseUrl && supabaseKey
   ? createClient(supabaseUrl, supabaseKey)
   : null
-
-const stripeKey = process.env.STRIPE_SECRET_KEY
-const stripe = stripeKey ? new Stripe(stripeKey) : null
 
 // 起動時マイグレーション: feedbackテーブルの自動作成 (SCRUM-69)
 async function ensureFeedbackTable() {
@@ -53,56 +49,6 @@ async function ensureFeedbackTable() {
 // CREATE POLICY "Anyone can insert feedback" ON feedback FOR INSERT WITH CHECK (true);
 // CREATE POLICY "Service role can read feedback" ON feedback FOR SELECT USING (auth.role() = 'service_role');
 
-type PlanKey = 'monthly' | 'yearly' | 'basic_monthly' | 'basic_yearly' | 'standard_monthly' | 'standard_yearly' | 'premium_monthly' | 'premium_yearly' | 'beta_campaign'
-const PLANS: Record<PlanKey, { priceId: string; amount: number; interval: 'month' | 'year' }> = {
-  monthly: {
-    priceId: process.env.STRIPE_PRICE_STANDARD_MONTHLY || process.env.STRIPE_PRICE_MONTHLY || '',
-    amount: 650,
-    interval: 'month',
-  },
-  yearly: {
-    priceId: process.env.STRIPE_PRICE_STANDARD_YEARLY || process.env.STRIPE_PRICE_YEARLY || '',
-    amount: 4550,
-    interval: 'year',
-  },
-  basic_monthly: {
-    priceId: process.env.STRIPE_PRICE_BASIC_MONTHLY || '',
-    amount: 250,
-    interval: 'month',
-  },
-  basic_yearly: {
-    priceId: process.env.STRIPE_PRICE_BASIC_YEARLY || '',
-    amount: 1750,
-    interval: 'year',
-  },
-  standard_monthly: {
-    priceId: process.env.STRIPE_PRICE_STANDARD_MONTHLY || process.env.STRIPE_PRICE_MONTHLY || '',
-    amount: 650,
-    interval: 'month',
-  },
-  standard_yearly: {
-    priceId: process.env.STRIPE_PRICE_STANDARD_YEARLY || process.env.STRIPE_PRICE_YEARLY || '',
-    amount: 4550,
-    interval: 'year',
-  },
-  premium_monthly: {
-    priceId: process.env.STRIPE_PRICE_PREMIUM_MONTHLY || '',
-    amount: 980,
-    interval: 'month',
-  },
-  premium_yearly: {
-    priceId: process.env.STRIPE_PRICE_PREMIUM_YEARLY || '',
-    amount: 6860,
-    interval: 'year',
-  },
-  // ベータキャンペーン: AI生成包含全機能・年題¥1,980（7日トライアル）
-  beta_campaign: {
-    priceId: process.env.STRIPE_PRICE_BETA_CAMPAIGN || '',
-    amount: 1980,
-    interval: 'year',
-  },
-}
-
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
@@ -132,9 +78,9 @@ const corsOrigins = parseCorsOrigins(process.env.CORS_ORIGIN)
 console.log('[CORS] allowed origins:', corsOrigins.join(', '))
 app.use(cors({ origin: corsOrigins }))
 
-// Billing ルート（Stripe webhook は RAW ボディが必要なので express.json() より前にマウント）
+// Google Play Billing 検証ルート
 if (supabase) {
-  app.use(createBillingRouter({ stripe, supabase, PLANS }))
+  app.use(createBillingRouter({ supabase }))
 } else {
   console.warn('[WARN] Billing routes disabled: SUPABASE_URL not set')
 }

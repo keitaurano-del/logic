@@ -553,8 +553,8 @@ function OnboardingBillingView({ planKey, onSelect, onBack }: { planKey: 'standa
   return (
     <div style={{ minHeight: '100dvh', background: 'linear-gradient(160deg, #0F1220 0%, #1A2340 60%, #0F1A35 100%)', color: '#fff', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", padding: 'calc(env(safe-area-inset-top, 44px) + 16px) 24px calc(env(safe-area-inset-bottom, 24px) + 24px)' }}>
       {/* 戻るボタン */}
-      <button onClick={onBack} style={{ alignSelf: 'flex-start', background: 'rgba(255,255,255,0.08)', border: 'none', borderRadius: '50%', width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', marginBottom: 24 }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+      <button type="button" onClick={onBack} aria-label="戻る" style={{ alignSelf: 'flex-start', background: 'rgba(255,255,255,0.08)', border: 'none', borderRadius: '50%', width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', marginBottom: 24 }}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
 
       <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.2em', color: `${color}90`, textAlign: 'center', marginBottom: 12 }}>{label.toUpperCase()}</div>

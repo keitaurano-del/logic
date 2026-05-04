@@ -1,0 +1,93 @@
+/* LoadingIndicator — see docs/HIG_MATERIAL_AUDIT_20260504.md §4.12 */
+
+.m3-loading {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: var(--md-sys-color-on-surface);
+}
+
+.m3-loading--sm { font-size: 12px; }
+.m3-loading--md { font-size: 14px; }
+.m3-loading--lg { font-size: 16px; }
+
+.m3-loading__label {
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+/* ---- iOS spinner (8 fading bars) ---- */
+.m3-loading__ios {
+  position: relative;
+  display: inline-block;
+}
+.m3-loading--sm .m3-loading__ios { width: 16px; height: 16px; }
+.m3-loading--md .m3-loading__ios { width: 24px; height: 24px; }
+.m3-loading--lg .m3-loading__ios { width: 40px; height: 40px; }
+
+.m3-loading__ios-bar {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 10%;
+  height: 30%;
+  background: var(--md-sys-color-on-surface);
+  border-radius: 999px;
+  transform-origin: 50% 167%; /* rotate around the center of the circle */
+  animation: m3-loading-ios 0.8s linear infinite;
+}
+.m3-loading__ios-bar:nth-child(1) { animation-delay: -0.7s; }
+.m3-loading__ios-bar:nth-child(2) { animation-delay: -0.6s; }
+.m3-loading__ios-bar:nth-child(3) { animation-delay: -0.5s; }
+.m3-loading__ios-bar:nth-child(4) { animation-delay: -0.4s; }
+.m3-loading__ios-bar:nth-child(5) { animation-delay: -0.3s; }
+.m3-loading__ios-bar:nth-child(6) { animation-delay: -0.2s; }
+.m3-loading__ios-bar:nth-child(7) { animation-delay: -0.1s; }
+.m3-loading__ios-bar:nth-child(8) { animation-delay: 0s; }
+
+@keyframes m3-loading-ios {
+  0%   { opacity: 1; }
+  100% { opacity: 0.15; }
+}
+
+/* ---- Material 3 circular indeterminate ---- */
+.m3-loading__md {
+  width: 24px;
+  height: 24px;
+  animation: m3-loading-md-rotate 1.4s linear infinite;
+}
+.m3-loading--sm .m3-loading__md { width: 16px; height: 16px; }
+.m3-loading--lg .m3-loading__md { width: 40px; height: 40px; }
+
+.m3-loading__md-track {
+  fill: none;
+  stroke: var(--md-sys-color-surface-container-high);
+  stroke-width: 4;
+}
+.m3-loading__md-arc {
+  fill: none;
+  stroke: var(--md-sys-color-primary);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-dasharray: 90 150;
+  stroke-dashoffset: 0;
+  transform-origin: center;
+  animation: m3-loading-md-arc 1.4s ease-in-out infinite;
+}
+
+@keyframes m3-loading-md-rotate {
+  to { transform: rotate(360deg); }
+}
+@keyframes m3-loading-md-arc {
+  0%   { stroke-dasharray: 1 150;   stroke-dashoffset: 0; }
+  50%  { stroke-dasharray: 90 150;  stroke-dashoffset: -35; }
+  100% { stroke-dasharray: 90 150;  stroke-dashoffset: -125; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .m3-loading__ios-bar,
+  .m3-loading__md,
+  .m3-loading__md-arc {
+    animation-duration: 6s !important;
+  }
+}

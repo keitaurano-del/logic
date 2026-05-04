@@ -30,7 +30,7 @@
 
 .ji-amount {
   padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm);
-  font-size: 14px; font-family: var(--sans); outline: none;
+  font-size: 16px; font-family: var(--sans); outline: none;
   background: var(--bg-elevated); color: var(--text-primary);
   text-align: right; font-variant-numeric: tabular-nums;
 }

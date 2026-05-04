@@ -90,8 +90,7 @@ export default function Pricing({ onBack }: Props) {
         {error && <div className="pr-error">{error}</div>}
 
         <div className="pr-note">
-          クレジットカード決済 / Stripe<br/>
-          7日間の無料トライアル付き（カード登録必要）<br/>
+          Google Play 決済<br/>
           いつでも解約可能
         </div>
       </div>

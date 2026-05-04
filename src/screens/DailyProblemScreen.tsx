@@ -6,6 +6,7 @@ import { recordCompletion } from '../stats'
 import { ArrowLeftIcon, ArrowRightIcon, CheckIcon, XIcon } from '../icons'
 import { Button } from '../components/Button'
 import { IconButton } from '../components/IconButton'
+import { haptic } from '../platform/haptics'
 import { t } from '../i18n'
 
 interface DailyProblemScreenProps {
@@ -115,9 +116,12 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
 
   const handleSelect = (i: number) => {
     if (isAnswered) return
+    const correct = quizStep?.options[i]?.correct
+    if (correct) haptic.success()
+    else haptic.warning()
     setSelected(i)
     setShowExplanation(true)
-    if (quizStep?.options[i]?.correct) setCorrectCount((c) => c + 1)
+    if (correct) setCorrectCount((c) => c + 1)
   }
 
   const handleNext = () => {

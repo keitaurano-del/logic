@@ -1,7 +1,9 @@
 import { StrictMode, lazy, Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
+import './styles/tokens-m3.css'
 import './index.css'
 import { initSentry } from './sentry'
+import { setHtmlPlatformAttr, configureStatusBar, configureKeyboard } from './platform'
 
 initSentry()
 
@@ -11,6 +13,14 @@ initSentry()
 document.documentElement.classList.add('mode-dark')
 document.documentElement.classList.remove('mode-light')
 document.body.classList.add('mode-dark')
+
+// Tag <html data-platform="ios|android|web"> so CSS can branch on platform
+// without a runtime JS check.
+setHtmlPlatformAttr()
+
+// Slate Blue dark status bar + Android edge-to-edge. Native-only no-op on web.
+void configureStatusBar()
+void configureKeyboard()
 
 // Opt-in v3 preview via ?v=3 query param or localStorage flag.
 // Default route remains the existing App; no regression for existing users.

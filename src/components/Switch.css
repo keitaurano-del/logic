@@ -1,0 +1,97 @@
+/* Switch — see docs/HIG_MATERIAL_AUDIT_20260504.md §4.13 */
+
+.m3-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  min-height: 44px;
+  -webkit-tap-highlight-color: transparent;
+}
+html[data-platform="android"] .m3-switch { min-height: 48px; }
+
+.m3-switch--disabled {
+  opacity: var(--state-disabled-content-opacity, 0.38);
+  cursor: not-allowed;
+}
+
+.m3-switch__input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.m3-switch__label {
+  font: 400 16px / 1.4 var(--font-ui, system-ui);
+  color: var(--md-sys-color-on-surface);
+}
+
+/* ---- iOS-style switch ---- */
+.m3-switch--ios .m3-switch__track {
+  width: 51px;
+  height: 31px;
+  border-radius: 999px;
+  background: var(--md-sys-color-surface-container-highest);
+  position: relative;
+  transition: background var(--motion-duration-short3, 150ms) var(--motion-easing-standard, ease);
+}
+.m3-switch--ios .m3-switch__thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 27px;
+  height: 27px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  transition: transform var(--motion-duration-short3, 150ms) var(--motion-easing-standard, ease);
+}
+.m3-switch--ios .m3-switch__input:checked + .m3-switch__track {
+  background: var(--md-sys-color-primary);
+}
+.m3-switch--ios .m3-switch__input:checked + .m3-switch__track .m3-switch__thumb {
+  transform: translateX(20px);
+}
+
+/* ---- Material 3 switch ---- */
+.m3-switch--android .m3-switch__track {
+  width: 52px;
+  height: 32px;
+  border-radius: 999px;
+  background: var(--md-sys-color-surface-container-highest);
+  border: 2px solid var(--md-sys-color-outline);
+  position: relative;
+  transition: background var(--motion-duration-short3, 150ms),
+              border-color var(--motion-duration-short3, 150ms);
+}
+.m3-switch--android .m3-switch__thumb {
+  position: absolute;
+  top: 50%;
+  left: 6px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--md-sys-color-outline);
+  transform: translateY(-50%);
+  transition: transform var(--motion-duration-short3, 150ms),
+              background var(--motion-duration-short3, 150ms),
+              width var(--motion-duration-short3, 150ms),
+              height var(--motion-duration-short3, 150ms);
+}
+.m3-switch--android .m3-switch__input:checked + .m3-switch__track {
+  background: var(--md-sys-color-primary);
+  border-color: var(--md-sys-color-primary);
+}
+.m3-switch--android .m3-switch__input:checked + .m3-switch__track .m3-switch__thumb {
+  width: 24px;
+  height: 24px;
+  background: var(--md-sys-color-on-primary);
+  transform: translate(16px, -50%);
+}
+
+.m3-switch__input:focus-visible + .m3-switch__track {
+  outline: 2px solid var(--md-sys-color-primary);
+  outline-offset: 4px;
+}

@@ -1,0 +1,144 @@
+/* ============================================================================
+ * Logic — Material 3 + iOS HIG bridge tokens
+ * Slate Blue ダーク固定。OS の prefers-color-scheme 追従はしない。
+ * 詳細: docs/HIG_MATERIAL_AUDIT_20260504.md §2
+ * ========================================================================= */
+
+:root {
+  /* ---- Material 3 Color Roles ---------------------------------------- */
+  --md-sys-color-primary:                  #A8C0FF;
+  --md-sys-color-on-primary:               #0A1F4D;
+  --md-sys-color-primary-container:        #2E45A8;
+  --md-sys-color-on-primary-container:     #DDE5FF;
+
+  --md-sys-color-secondary:                #BCC6DC;
+  --md-sys-color-on-secondary:             #26314A;
+  --md-sys-color-secondary-container:      #3C4661;
+  --md-sys-color-on-secondary-container:   #D8E2F9;
+
+  --md-sys-color-tertiary:                 #F5BFA0;
+  --md-sys-color-on-tertiary:              #4A2510;
+  --md-sys-color-tertiary-container:       #643C24;
+  --md-sys-color-on-tertiary-container:    #FFDCC4;
+
+  --md-sys-color-error:                    #FFB4AB;
+  --md-sys-color-on-error:                 #690005;
+  --md-sys-color-error-container:          #93000A;
+  --md-sys-color-on-error-container:       #FFDAD6;
+
+  --md-sys-color-surface:                  #1A1F2E;
+  --md-sys-color-on-surface:               #E8ECF4;
+  --md-sys-color-surface-variant:          #252C40;
+  --md-sys-color-on-surface-variant:       #8FA3C8;
+
+  --md-sys-color-surface-container-lowest: #13182A;
+  --md-sys-color-surface-container-low:    #1E2438;
+  --md-sys-color-surface-container:        #252C40;
+  --md-sys-color-surface-container-high:   #2E3652;
+  --md-sys-color-surface-container-highest:#37405F;
+
+  --md-sys-color-outline:                  #8FA3C8;
+  --md-sys-color-outline-variant:          rgba(255, 255, 255, 0.09);
+
+  --md-sys-color-inverse-surface:          #E8ECF4;
+  --md-sys-color-inverse-on-surface:       #1A1F2E;
+  --md-sys-color-inverse-primary:          #3E59B0;
+
+  --md-sys-color-scrim:                    rgba(0, 0, 0, 0.55);
+  --md-sys-color-surface-tint:             #A8C0FF;
+
+  /* ---- iOS HIG semantic alias ---------------------------------------- */
+  --ios-tint:            var(--md-sys-color-primary);
+  --ios-system-bg:       var(--md-sys-color-surface);
+  --ios-secondary-bg:    var(--md-sys-color-surface-variant);
+  --ios-grouped-bg:      var(--md-sys-color-surface-container-low);
+  --ios-label:           var(--md-sys-color-on-surface);
+  --ios-secondary-label: var(--md-sys-color-on-surface-variant);
+  --ios-tertiary-label:  #6B82A8;
+  --ios-separator:       var(--md-sys-color-outline-variant);
+  --ios-destructive:     var(--md-sys-color-error);
+
+  /* ---- Elevation (dark-tuned) --------------------------------------- */
+  --elev-0: none;
+  --elev-1: 0 1px 2px rgba(0, 0, 0, 0.30);
+  --elev-2: 0 1px 2px rgba(0, 0, 0, 0.30), 0 2px 6px rgba(0, 0, 0, 0.15);
+  --elev-3: 0 1px 3px rgba(0, 0, 0, 0.30), 0 4px 8px rgba(0, 0, 0, 0.15);
+  --elev-4: 0 2px 3px rgba(0, 0, 0, 0.30), 0 6px 10px rgba(0, 0, 0, 0.15);
+  --elev-5: 0 4px 4px rgba(0, 0, 0, 0.30), 0 8px 12px rgba(0, 0, 0, 0.15);
+
+  /* ---- Shape -------------------------------------------------------- */
+  --shape-xs:   4px;
+  --shape-sm:   8px;
+  --shape-md:   12px;
+  --shape-lg:   16px;
+  --shape-xl:   28px;
+  --shape-full: 9999px;
+
+  /* ---- Motion ------------------------------------------------------- */
+  --motion-easing-standard:               cubic-bezier(0.2, 0, 0, 1);
+  --motion-easing-emphasized-decelerate:  cubic-bezier(0.05, 0.7, 0.1, 1);
+  --motion-easing-emphasized-accelerate:  cubic-bezier(0.3, 0, 0.8, 0.15);
+  --motion-easing-standard-decelerate:    cubic-bezier(0, 0, 0, 1);
+  --motion-easing-standard-accelerate:    cubic-bezier(0.3, 0, 1, 1);
+
+  --motion-duration-short1:  50ms;
+  --motion-duration-short2:  100ms;
+  --motion-duration-short3:  150ms;
+  --motion-duration-short4:  200ms;
+  --motion-duration-medium1: 250ms;
+  --motion-duration-medium2: 300ms;
+  --motion-duration-medium3: 350ms;
+  --motion-duration-medium4: 400ms;
+  --motion-duration-long1:   450ms;
+  --motion-duration-long2:   500ms;
+
+  /* ---- State layer opacity ------------------------------------------ */
+  --state-hover-opacity:                0.08;
+  --state-focus-opacity:                0.10;
+  --state-pressed-opacity:              0.12;
+  --state-dragged-opacity:              0.16;
+  --state-disabled-content-opacity:     0.38;
+  --state-disabled-container-opacity:   0.12;
+
+  /* ---- Safe area (driven by env(safe-area-inset-*) on native) ------ */
+  --safe-top:    env(safe-area-inset-top, 0px);
+  --safe-right:  env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left:   env(safe-area-inset-left, 0px);
+
+  /* ---- Legacy aliases (Phase 2 で順次削除) -------------------------- */
+  --brand:          var(--md-sys-color-primary);
+  --bg-primary:     var(--md-sys-color-surface);
+  --bg-card:        var(--md-sys-color-surface-container);
+  --text-primary:   var(--md-sys-color-on-surface);
+  --text-secondary: var(--md-sys-color-on-surface-variant);
+}
+
+/* ---- Platform-specific overrides ------------------------------------ */
+html[data-platform="ios"] {
+  /* iOS: shadows are softer in dark mode per HIG */
+  --elev-1: 0 1px 1px rgba(0, 0, 0, 0.20);
+  --elev-2: 0 1px 2px rgba(0, 0, 0, 0.25);
+  --elev-3: 0 2px 4px rgba(0, 0, 0, 0.25);
+  --elev-4: 0 4px 8px rgba(0, 0, 0, 0.30);
+  --elev-5: 0 6px 16px rgba(0, 0, 0, 0.35);
+
+  /* HIG: corners are slightly rounder */
+  --shape-xs: 6px;
+  --shape-sm: 10px;
+  --shape-md: 14px;
+  --shape-xl: 14px; /* iOS UIAlert dialog */
+
+  /* HIG body text minimum is ~17pt */
+  --motion-duration-medium2: 350ms;
+}
+
+/* ---- Reduced motion ------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}

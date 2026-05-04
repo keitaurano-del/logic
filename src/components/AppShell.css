@@ -1,0 +1,110 @@
+/* AppShell + TabBar — see docs/HIG_MATERIAL_AUDIT_20260504.md §4.1 */
+
+.app-shell {
+  position: relative;
+  min-height: 100dvh;
+  background: var(--md-sys-color-surface);
+  display: flex;
+  flex-direction: column;
+}
+
+.app-scroll {
+  flex: 1;
+  padding-bottom: calc(82px + env(safe-area-inset-bottom, 0px));
+  overflow-y: auto;
+}
+
+.app-scroll--full {
+  padding-bottom: 0;
+}
+
+/* ---- TabBar ---- */
+.app-tabbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: color-mix(in srgb, var(--md-sys-color-surface) 95%, transparent);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 8px;
+  z-index: 100;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 8px);
+  transform: translateY(0);
+  transition: transform var(--motion-duration-medium2, 300ms) var(--motion-easing-standard, ease);
+}
+
+.app-tabbar--ios {
+  height: calc(56px + env(safe-area-inset-bottom, 0px));
+  padding-top: 4px;
+}
+
+.app-tabbar--android {
+  height: calc(80px + env(safe-area-inset-bottom, 0px));
+  padding-top: 12px;
+}
+
+.app-tabbar--hidden {
+  transform: translateY(100%);
+}
+
+/* ---- Individual tab ---- */
+.app-tab {
+  flex: 1;
+  min-height: 44px;
+  min-width: 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: var(--md-sys-color-on-surface-variant);
+  font-family: var(--font-ui, system-ui);
+  font-size: 12px;
+  font-weight: 600;
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+  padding: 6px 8px;
+}
+
+.app-tab:focus-visible {
+  outline: 2px solid var(--md-sys-color-primary);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+.app-tab--active { color: var(--md-sys-color-primary); }
+
+.app-tab__icon { display: inline-flex; align-items: center; justify-content: center; height: 24px; }
+.app-tab__label { white-space: nowrap; }
+
+/* iOS active indicator: small dot above the icon */
+.app-tabbar--ios .app-tab--active::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--md-sys-color-primary);
+}
+
+/* Android active indicator: M3 secondaryContainer pill */
+.app-tabbar--android .app-tab--active .app-tab__icon {
+  background: var(--md-sys-color-secondary-container);
+  border-radius: 16px;
+  padding: 4px 16px;
+  height: 32px;
+  margin-bottom: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-tabbar { transition: none; }
+}

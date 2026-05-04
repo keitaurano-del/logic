@@ -23,6 +23,7 @@ import { ArrowLeftIcon, ArrowRightIcon, CheckIcon } from '../icons'
 import { Button } from '../components/Button'
 import { IconButton } from '../components/IconButton'
 import { RadarChart } from '../components/RadarChart'
+import { haptic } from '../platform/haptics'
 import { API_BASE } from './apiBase'
 import { getXp } from '../stats'
 
@@ -63,6 +64,7 @@ export function PlacementTestScreen({ onComplete, onBack }: PlacementTestScreenP
   // 選択肢タップ → 即次の問題へ進む（解説・正解表示なし）
   const handleAnswer = (i: number) => {
     if (!currentQ) return
+    haptic.selection()
     const nextSession = recordAnswer(session, currentQ, i)
     setSession(nextSession)
     if (nextSession.cursor >= TOTAL_QUESTIONS) {

@@ -1,0 +1,90 @@
+/* TextField — see docs/HIG_MATERIAL_AUDIT_20260504.md §4.11 */
+
+.m3-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.m3-field__label {
+  font: 600 12px / 1.4 var(--font-ui, system-ui);
+  color: var(--md-sys-color-on-surface-variant);
+  letter-spacing: 0.4px;
+}
+
+.m3-field__control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.m3-field__input {
+  flex: 1;
+  width: 100%;
+  font-size: 16px;          /* iOS auto-zoom 回避のため必ず 16+ */
+  font-family: var(--font-ui, system-ui);
+  color: var(--md-sys-color-on-surface);
+  background: transparent;
+  border: 0;
+  padding: 12px 16px;
+  outline: none;
+  min-height: 44px;
+  -webkit-tap-highlight-color: transparent;
+}
+html[data-platform="android"] .m3-field__input { min-height: 48px; }
+
+.m3-field__input::placeholder { color: var(--md-sys-color-on-surface-variant); opacity: 0.7; }
+
+/* ---- Filled variant ---- */
+.m3-field--filled .m3-field__control {
+  background: var(--md-sys-color-surface-container-high);
+  border-radius: var(--shape-sm, 8px) var(--shape-sm, 8px) 0 0;
+  border-bottom: 1px solid var(--md-sys-color-outline);
+  transition: border-color var(--motion-duration-short2, 100ms) ease;
+}
+.m3-field--filled .m3-field__control:focus-within {
+  border-bottom: 2px solid var(--md-sys-color-primary);
+  padding-bottom: 0; /* keep input position stable */
+}
+
+/* ---- Outlined variant ---- */
+.m3-field--outlined .m3-field__control {
+  border: 1px solid var(--md-sys-color-outline);
+  border-radius: var(--shape-sm, 8px);
+  background: transparent;
+  transition: border-color var(--motion-duration-short2, 100ms) ease;
+}
+.m3-field--outlined .m3-field__control:focus-within {
+  border-color: var(--md-sys-color-primary);
+  box-shadow: inset 0 0 0 1px var(--md-sys-color-primary);
+}
+
+/* ---- Error ---- */
+.m3-field--error .m3-field__control,
+.m3-field--error .m3-field__control:focus-within {
+  border-color: var(--md-sys-color-error);
+  box-shadow: none;
+}
+
+/* ---- Disabled ---- */
+.m3-field--disabled .m3-field__control {
+  opacity: var(--state-disabled-content-opacity, 0.38);
+}
+
+/* ---- Supporting text / icons ---- */
+.m3-field__supporting {
+  font: 400 12px / 1.4 var(--font-ui, system-ui);
+  padding: 4px 16px;
+  color: var(--md-sys-color-on-surface-variant);
+}
+.m3-field__supporting.is-error { color: var(--md-sys-color-error); }
+
+.m3-field__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--md-sys-color-on-surface-variant);
+}
+.m3-field__icon--leading { padding-left: 12px; }
+.m3-field__icon--trailing { padding-right: 12px; }

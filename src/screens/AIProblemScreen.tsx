@@ -4,6 +4,7 @@ import type { QuizStep } from '../lessonData'
 import { recordCompletion } from '../stats'
 import { ArrowLeftIcon, ArrowRightIcon, CheckIcon, XIcon } from '../icons'
 import { Button } from '../components/Button'
+import { haptic } from '../platform/haptics'
 import { IconButton } from '../components/IconButton'
 import { t } from '../i18n'
 
@@ -30,8 +31,11 @@ export function AIProblemScreen({ problem, onBack, onReport }: AIProblemScreenPr
 
   const handleSelect = (i: number) => {
     if (isAnswered) return
+    const correct = quizStep?.options[i]?.correct
+    if (correct) haptic.success()
+    else haptic.warning()
     setSelected(i)
-    if (quizStep?.options[i]?.correct) setCorrectCount((c) => c + 1)
+    if (correct) setCorrectCount((c) => c + 1)
   }
 
   const handleNext = () => {

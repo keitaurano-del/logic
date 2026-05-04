@@ -1,26 +1,66 @@
 /**
  * Logic v3 Design Tokens
- * 仕様書: docs/DESIGN_V3.md §2
+ * 仕様書: docs/DESIGN_V3.md §2 / docs/HIG_MATERIAL_AUDIT_20260504.md §2
+ *
+ * `m3` ブロックが canonical の Material 3 Color Roles。
+ * 旧 `color` ブロックは互換 alias として残す（Phase 2 で順次削除）。
+ * CSS 側は src/styles/tokens-m3.css で同じ値を `--md-sys-color-*` 変数として発行。
  */
 export const tokensV3 = {
+  // ── Material 3 Color Roles (canonical) ──
+  m3: {
+    primary:                   '#A8C0FF',
+    onPrimary:                 '#0A1F4D',
+    primaryContainer:          '#2E45A8',
+    onPrimaryContainer:        '#DDE5FF',
+    secondary:                 '#BCC6DC',
+    onSecondary:               '#26314A',
+    secondaryContainer:        '#3C4661',
+    onSecondaryContainer:      '#D8E2F9',
+    tertiary:                  '#F5BFA0',
+    onTertiary:                '#4A2510',
+    tertiaryContainer:         '#643C24',
+    onTertiaryContainer:       '#FFDCC4',
+    error:                     '#FFB4AB',
+    onError:                   '#690005',
+    errorContainer:            '#93000A',
+    onErrorContainer:          '#FFDAD6',
+    surface:                   '#1A1F2E',
+    onSurface:                 '#E8ECF4',
+    surfaceVariant:            '#252C40',
+    onSurfaceVariant:          '#8FA3C8',
+    surfaceContainerLowest:    '#13182A',
+    surfaceContainerLow:       '#1E2438',
+    surfaceContainer:          '#252C40',
+    surfaceContainerHigh:      '#2E3652',
+    surfaceContainerHighest:   '#37405F',
+    outline:                   '#8FA3C8',
+    outlineVariant:            'rgba(255,255,255,.09)',
+    inverseSurface:            '#E8ECF4',
+    inverseOnSurface:          '#1A1F2E',
+    inversePrimary:            '#3E59B0',
+    scrim:                     'rgba(0,0,0,.55)',
+    surfaceTint:               '#A8C0FF',
+  },
+
+  // ── Legacy alias (deprecated, use m3.* instead) ──
   color: {
-    // Slate Blue palette — 450nm帯・心理学的最適集中色 (2026-05-01)
     bg: '#1A1F2E',
     card: '#252C40',
     card2: '#2E3652',
     cardSoft: '#1E2438',
-    accent: '#6C8EF5',
-    accentSoft: 'rgba(108,142,245,.16)',
-    accentGlow: 'rgba(108,142,245,.25)',
-    warm: '#F4A261',
-    warmSoft: 'rgba(244,162,97,.16)',
-    text: '#E8ECF4',       // メインテキスト: 11.4:1 AAA
-    text2: '#8FA3C8',       // サブテキスト: 7.1:1 AAA
-    text3: '#6B82A8',       // プレースホルダー等: 4.8:1 AA
+    accent: '#A8C0FF',
+    accentSoft: 'rgba(168,192,255,.16)',
+    accentGlow: 'rgba(168,192,255,.25)',
+    warm: '#F5BFA0',
+    warmSoft: 'rgba(245,191,160,.16)',
+    text: '#E8ECF4',
+    text2: '#8FA3C8',
+    text3: '#6B82A8',
     line: 'rgba(255,255,255,.09)',
   },
   radius: {
-    card: 20,
+    card: 16, // shape-lg, was 20
     pill: 99,
     chip: 14,
   },
@@ -40,7 +80,7 @@ export const tokensV3 = {
   shadow: {
     card: 'inset 0 1px 0 rgba(255,255,255,.04)',
     hero: '0 4px 24px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.06)',
-    cta: '0 4px 16px rgba(108,142,245,.25)',
+    cta: '0 4px 16px rgba(168,192,255,.25)',
   },
   motion: {
     tap: 'transform .12s ease, opacity .12s ease',
@@ -49,3 +89,4 @@ export const tokensV3 = {
 } as const
 
 export const v3 = tokensV3
+

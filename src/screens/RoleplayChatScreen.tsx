@@ -5,6 +5,7 @@ import { incrementRoleplayUsage } from '../roleplayUsage'
 import { localeBody } from '../i18n'
 import { ArrowLeftIcon, CheckIcon, ThumbsUpIcon, LightbulbIcon } from '../icons'
 import { IconButton } from '../components/IconButton'
+import { haptic } from '../platform/haptics'
 import { API_BASE } from './apiBase'
 import { v3 } from '../styles/tokensV3'
 
@@ -133,6 +134,7 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
 
   // スクリプト駆動: ユーザーが選択肢を選んだとき
   const pickScriptChoice = (choice: string) => {
+    haptic.light()
     const next: Msg[] = [...messages, { role: 'user', content: choice }]
     setMessages(next)
     setChoices([])
@@ -160,6 +162,7 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
   // API駆動: 選択肢タップ
   const pickApiChoice = (choice: string) => {
     if (loading) return
+    haptic.light()
     const next: Msg[] = [...messages, { role: 'user', content: choice }]
     setMessages(next)
     setChoices([])

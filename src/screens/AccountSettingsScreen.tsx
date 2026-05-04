@@ -4,6 +4,7 @@ import { getDisplayName, setDisplayName } from '../stats'
 import { updateDisplayName } from '../supabase'
 import { v3 } from '../styles/tokensV3'
 import { CheckIcon } from '../icons'
+import { confirm as confirmDialog } from '../platform/dialog'
 
 interface Props {
   onBack: () => void
@@ -34,7 +35,13 @@ export function AccountSettingsScreen({ onBack, currentUser, onOpenLogin, onLogo
   const [nameSuccess, setNameSuccess] = useState(false)
 
   const handleLogout = async () => {
-    if (window.confirm('ログアウトしますか？')) {
+    const ok = await confirmDialog({
+      title: 'ログアウト',
+      message: 'ログアウトしますか？',
+      okText: 'ログアウト',
+      cancelText: 'キャンセル',
+    })
+    if (ok) {
       await logout()
       onLogout()
     }
@@ -68,9 +75,9 @@ export function AccountSettingsScreen({ onBack, currentUser, onOpenLogin, onLogo
     <div style={{ minHeight: '100dvh', background: v3.color.bg, color: v3.color.text, fontFamily: "'Noto Sans JP', sans-serif" }}>
       {/* ヘッダー */}
       <div style={{ padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 14px', display: 'flex', alignItems: 'center', gap: 12 }}>
-        <div onClick={onBack} style={{ width: 36, height: 36, borderRadius: '50%', background: v3.color.card, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6" /></svg>
-        </div>
+        <button type="button" onClick={onBack} aria-label="戻る" style={{ width: 44, height: 44, borderRadius: '50%', background: v3.color.card, border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--md-sys-color-primary)" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="15 18 9 12 15 6" /></svg>
+        </button>
         <div style={{ fontSize: 18, fontWeight: 700 }}>アカウント</div>
       </div>
 

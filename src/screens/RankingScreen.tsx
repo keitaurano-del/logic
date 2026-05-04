@@ -97,7 +97,7 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
       'worksheet': 'ワークシート',
     }
 
-    const lessonIcon = <svg width="18" height="18" viewBox="0 0 24 24" fill="#3B5BDB"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
+    const lessonIcon = <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--md-sys-color-primary)"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
 
     if (completed.length === 0) return []
 
@@ -115,13 +115,13 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
 
       {/* ナビバー */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 12px', background: 'rgba(240,244,255,.95)', borderBottom: '1px solid #E2E8FF' }}>
-        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 26, fontWeight: 900, color: '#3B5BDB', letterSpacing: '-.04em' }}>統計</div>
+        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 26, fontWeight: 900, color: 'var(--md-sys-color-primary)', letterSpacing: '-.04em' }}>統計</div>
       </div>
 
       <div style={{ padding: '16px 16px 96px', display: 'flex', flexDirection: 'column', gap: 12, overflowY: 'auto' }}>
 
         {/* スコアヒーロー */}
-        <div style={{ background: '#3B5BDB', borderRadius: 28, padding: '24px 20px', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ background: 'var(--md-sys-color-primary)', borderRadius: 28, padding: '24px 20px', position: 'relative', overflow: 'hidden' }}>
           <div style={{ position: 'absolute', right: -40, top: -40, width: 160, height: 160, borderRadius: '50%', background: 'rgba(255,255,255,.06)', pointerEvents: 'none' }} />
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1px 1fr 1px 1fr 1px 1fr' }}>
             <div style={{ textAlign: 'center', padding: '0 2px' }}>
@@ -156,15 +156,15 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
               return (
                 <div key={day} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}>
                   <div style={{ width: 34, height: 34, borderRadius: '50%', background: isDone ? '#EEF2FF' : '#E8EEFF', border: isDone ? '1.5px solid #DBE4FF' : 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    {isDone && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" strokeWidth="2.5" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>}
+                    {isDone && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--md-sys-color-primary)" strokeWidth="2.5" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>}
                   </div>
                   <div style={{ fontSize: 13, fontWeight: 600, color: '#7A849E' }}>{day}</div>
                 </div>
               )
             })}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}>
-              <div style={{ width: 34, height: 34, borderRadius: '50%', background: '#3B5BDB', boxShadow: '0 2px 8px rgba(59,91,219,.4)' }} />
-              <div style={{ fontSize: 13, fontWeight: 600, color: '#3B5BDB' }}>今日</div>
+              <div style={{ width: 34, height: 34, borderRadius: '50%', background: 'var(--md-sys-color-primary)', boxShadow: '0 2px 8px rgba(59,91,219,.4)' }} />
+              <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--md-sys-color-primary)' }}>今日</div>
             </div>
           </div>
         </div>
@@ -175,7 +175,7 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
           {/* タブ */}
           <div style={{ display: 'flex', background: '#E8EEFF', borderRadius: 10, padding: 3, gap: 3 }}>
             {(['week', 'all'] as const).map((tab) => (
-              <div key={tab} onClick={() => setRankTab(tab)} style={{ flex: 1, textAlign: 'center', padding: 7, fontSize: 14, fontWeight: 700, cursor: 'pointer', borderRadius: 6, background: rankTab === tab ? '#fff' : 'transparent', color: rankTab === tab ? '#3B5BDB' : '#7A849E', boxShadow: rankTab === tab ? '0 1px 3px rgba(15,21,35,.08)' : 'none', transition: 'all .15s' }}>
+              <div key={tab} onClick={() => setRankTab(tab)} style={{ flex: 1, textAlign: 'center', padding: 7, fontSize: 14, fontWeight: 700, cursor: 'pointer', borderRadius: 6, background: rankTab === tab ? '#fff' : 'transparent', color: rankTab === tab ? 'var(--md-sys-color-primary)' : '#7A849E', boxShadow: rankTab === tab ? '0 1px 3px rgba(15,21,35,.08)' : 'none', transition: 'all .15s' }}>
                 {tab === 'week' ? '週間' : '全期間'}
               </div>
             ))}
@@ -185,7 +185,7 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
           {!completed && (
             <div style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: '18px 16px', textAlign: 'center' }}>
               <div style={{ fontSize: 16, color: '#7A849E', marginBottom: 12 }}>実力診断テストを受けて<br />全国ランキングに参加しよう</div>
-              <button onClick={onTakeTest} style={{ background: '#3B5BDB', color: '#fff', border: 'none', borderRadius: 10, padding: '10px 20px', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}>
+              <button onClick={onTakeTest} style={{ background: 'var(--md-sys-color-primary)', color: '#fff', border: 'none', borderRadius: 10, padding: '10px 20px', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}>
                 診断を受ける
               </button>
             </div>
@@ -200,11 +200,11 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
                 return (
                   <div key={`${e.rank}-${e.nickname}`} style={{ background: e.isYou ? '#EEF2FF' : '#fff', border: `1px solid ${e.isYou ? '#DBE4FF' : '#E2E8FF'}`, borderRadius: 14, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 12, boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
                     <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 900, color: posColor, width: 24, textAlign: 'center', flexShrink: 0 }}>{e.rank}</div>
-                    <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg, #3B5BDB, #748FFC)', flexShrink: 0, boxShadow: e.isYou ? '0 0 0 2px #3B5BDB' : 'none' }} />
+                    <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg, var(--md-sys-color-primary), #748FFC)', flexShrink: 0, boxShadow: e.isYou ? '0 0 0 2px var(--md-sys-color-primary)' : 'none' }} />
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontSize: 16, fontWeight: 600, color: '#0F1523', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                         {e.nickname}
-                        {e.isYou && <span style={{ fontSize: 13, fontWeight: 700, color: '#3B5BDB', background: '#EEF2FF', borderRadius: 4, padding: '1px 5px', marginLeft: 6 }}>あなた</span>}
+                        {e.isYou && <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--md-sys-color-primary)', background: '#EEF2FF', borderRadius: 4, padding: '1px 5px', marginLeft: 6 }}>あなた</span>}
                       </div>
                       <div style={{ fontSize: 12, color: '#7A849E', marginTop: 2, display: 'flex', alignItems: 'center', gap: 4 }}>
                         <svg width="11" height="11" viewBox="0 0 24 24" fill="#FBBF24"><path d="M12 2L15 8.5l7 1-5 4.7 1.5 7L12 17.8 5.5 21.2 7 14.2 2 9.5l7-1z"/></svg>
@@ -213,7 +213,7 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
                       </div>
                     </div>
                     <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                      <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 900, color: '#3B5BDB', lineHeight: 1 }}>{e.deviation}</div>
+                      <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 900, color: 'var(--md-sys-color-primary)', lineHeight: 1 }}>{e.deviation}</div>
                       <div style={{ fontSize: 10, color: '#7A849E', fontWeight: 700, letterSpacing: '.06em', marginTop: 3 }}>偏差値</div>
                     </div>
                   </div>
@@ -245,7 +245,7 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
                   <div style={{ fontSize: 16, fontWeight: 700, color: '#0F1523', marginBottom: 1 }}>{act.name}</div>
                   <div style={{ fontSize: 14, color: '#7A849E' }}>{act.date}</div>
                 </div>
-                <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 900, color: '#3B5BDB' }}>{act.pts}</div>
+                <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 900, color: 'var(--md-sys-color-primary)' }}>{act.pts}</div>
               </div>
             ))
           )}
