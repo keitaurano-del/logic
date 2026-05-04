@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { loadPlacementResult, rankLabel, recommendedLessons } from '../placementData'
+import { getAllLessonsFlat } from '../lessonData'
 import { ArrowLeftIcon } from '../icons'
 import { Button } from '../components/Button'
 import { IconButton } from '../components/IconButton'
@@ -45,6 +46,7 @@ export function DeviationScreen({ onBack, onRetakeTest, onStartLesson }: Deviati
   }
   const rank = rankLabel(result.deviation)
   const recommended = recommendedLessons(result.deviation)
+  const allLessons = getAllLessonsFlat()
   // バーの幅: 偏差値25〜75を 0%〜100% にマップ
   const fill = Math.min(100, Math.max(0, ((result.deviation - 25) / 50) * 100))
 
@@ -202,27 +204,37 @@ export function DeviationScreen({ onBack, onRetakeTest, onStartLesson }: Deviati
             おすすめレッスン
           </h2>
           <div className="stack-sm">
-            {recommended.map((id) => (
-              <button
-                key={id}
-                className="card card-compact"
-                onClick={() => onStartLesson(id)}
-                style={{
-                  cursor: 'pointer',
-                  textAlign: 'left',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  gap: 'var(--s-3)',
-                  border: '1px solid var(--border)',
-                }}
-              >
-                <span style={{ fontSize: 16, fontWeight: 600 }}>
-                  Lesson #{id}
-                </span>
-                <span className="badge badge-accent">おすすめ</span>
-              </button>
-            ))}
+            {recommended.map((id) => {
+              const lesson = allLessons[id]
+              return (
+                <button
+                  key={id}
+                  className="card card-compact"
+                  onClick={() => onStartLesson(id)}
+                  style={{
+                    cursor: 'pointer',
+                    textAlign: 'left',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: 'var(--s-3)',
+                    border: '1px solid var(--border)',
+                  }}
+                >
+                  <span style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 0, flex: 1 }}>
+                    <span style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 500 }}>
+                      Lesson #{id}
+                    </span>
+                    {lesson && (
+                      <span style={{ fontSize: 15, fontWeight: 600 }}>
+                        {lesson.title}
+                      </span>
+                    )}
+                  </span>
+                  <span className="badge badge-accent" style={{ flexShrink: 0 }}>おすすめ</span>
+                </button>
+              )
+            })}
           </div>
         </section>
       )}

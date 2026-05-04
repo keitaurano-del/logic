@@ -49,7 +49,7 @@ const LESSON_MAP: Record<string, LessonMeta> = {
   'fermi':          { name: 'フェルミ推定',      category: 'AI練習' },
   'daily-problem':  { name: '今日の問題',        category: 'デイリー' },
   'flashcards':     { name: 'フラッシュカード',  category: '復習' },
-  'placement-test': { name: 'プレイスメントテスト', category: 'テスト' },
+  'placement-test': { name: 'プレースメントテスト', category: 'テスト' },
 }
 
 const CAT_ORDER = ['ロジカルシンキング', 'ケース面接', 'クリティカルシンキング', '仮説思考', '課題設定', 'デザインシンキング', 'ラテラルシンキング', 'アナロジー思考', 'システムシンキング', 'AI練習', 'デイリー', '復習', 'テスト']
