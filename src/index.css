@@ -2,11 +2,11 @@
  * Logic — Brand edition (v3)
  *
  * Direction: International learning app. Inspired by Brilliant, Speak, Linear.
- * Brand-aligned indigo from logo (#3D5FC4 / #EEF2FE / #9EB3F0).
+ * Brand-aligned indigo from logo (var(--md-sys-color-primary) / #EEF2FE / #9EB3F0).
  * Inter Tight display + Inter body + Noto Sans JP fallback. Generous whitespace.
  *
  * Rules:
- *  - --accent (brand indigo #3D5FC4) is the single accent color for fills + headings
+ *  - --accent (brand indigo var(--md-sys-color-primary)) is the single accent color for fills + headings
  *  - --accent-dark (#2E4BA8) is the text-safe darker variant for small text
  *  - Inter Tight ONLY for h1/h2/large numerals; body always Inter + Noto Sans JP
  *  - Token NAMES preserved from Editorial Journal for backwards compat (24 CSS files)
@@ -41,7 +41,7 @@
   --border-light: #F4F5F9;
 
   /* Brand indigo — primary + text-safe variant */
-  --accent:        #3D5FC4;  /* brand primary, from logo square */
+  --accent:        var(--md-sys-color-primary);  /* brand primary, from logo square */
   --accent-light:  #9EB3F0;  /* brand light, from logo dot */
   --accent-soft:   rgba(61, 95, 196, 0.08);
   --accent-glow:   rgba(61, 95, 196, 0.20);
@@ -56,7 +56,7 @@
   --danger:        #DC2626;
 
   /* Categories — brand family tints */
-  --cat-boki3:     #3D5FC4;
+  --cat-boki3:     var(--md-sys-color-primary);
   --cat-boki3-soft: rgba(61, 95, 196, 0.10);
   --cat-boki2:     #6B85D6;
   --cat-boki2-soft: rgba(107, 133, 214, 0.10);
@@ -64,7 +64,7 @@
   --cat-practice-soft: rgba(46, 75, 168, 0.10);
   --cat-exam:      #1E2D5C;
   --cat-exam-soft: rgba(30, 45, 92, 0.10);
-  --cat-logic:     #3D5FC4;
+  --cat-logic:     var(--md-sys-color-primary);
   --cat-logic-soft: rgba(61, 95, 196, 0.10);
   --cat-pm:        #10B981;
   --cat-pm-soft:   rgba(16, 185, 129, 0.10);
@@ -479,8 +479,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Inline brand-blue solid backgrounds → mint */
-[style*="background: #3B5BDB"],
-[style*="background:#3B5BDB"] {
+[style*="background: var(--md-sys-color-primary)"],
+[style*="background:var(--md-sys-color-primary)"] {
   background: var(--accent) !important;
   color: var(--accent-fg) !important;
 }
@@ -502,8 +502,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Brand blue text → mint */
-[style*="color: #3B5BDB"],
-[style*="color:#3B5BDB"],
+[style*="color: var(--md-sys-color-primary)"],
+[style*="color:var(--md-sys-color-primary)"],
 [style*="color: rgb(59, 91, 219)"] {
   color: var(--accent) !important;
 }
@@ -537,7 +537,7 @@ h1, h2, h3, h4, h5, h6 {
   border-color: var(--border) !important;
 }
 
-/* Dim accent color text (#3B5BDB) to mint */
+/* Dim accent color text (var(--md-sys-color-primary)) to mint */
 [style*="color: #748FFC"],
 [style*="color:#748FFC"] {
   color: var(--accent) !important;
@@ -555,9 +555,9 @@ h1, h2, h3, h4, h5, h6 {
 .card img { display: block; }
 
 /* Buttons inline gradient */
-[style*="linear-gradient(135deg, #3B5BDB"],
-[style*="linear-gradient(135deg,#3B5BDB"],
-[style*="linear-gradient(180deg, #3B5BDB"] {
+[style*="linear-gradient(135deg, var(--md-sys-color-primary)"],
+[style*="linear-gradient(135deg,var(--md-sys-color-primary)"],
+[style*="linear-gradient(180deg, var(--md-sys-color-primary)"] {
   background: var(--accent) !important;
   color: var(--accent-fg) !important;
 }
@@ -658,7 +658,7 @@ h1, h2, h3, h4, h5, h6 {
 /* Common indigo/blue accents that should become mint */
 [style*="color: #6366F1"],
 [style*="color: #4F46E5"],
-[style*="color: #3D5FC4"],
+[style*="color: var(--md-sys-color-primary)"],
 [style*="color: #2E4BA8"],
 [style*="color: #4338CA"] {
   color: var(--accent) !important;
@@ -668,7 +668,7 @@ h1, h2, h3, h4, h5, h6 {
 [style*="background: #6366F1"],
 [style*="background:#6366F1"],
 [style*="background: #4F46E5"],
-[style*="background: #3D5FC4"] {
+[style*="background: var(--md-sys-color-primary)"] {
   background: var(--accent) !important;
   color: var(--accent-fg) !important;
 }
@@ -677,8 +677,8 @@ h1, h2, h3, h4, h5, h6 {
 [style*="linear-gradient(135deg, #6366F1"],
 [style*="linear-gradient(135deg,#6366F1"],
 [style*="linear-gradient(135deg, #4F46E5"],
-[style*="linear-gradient(135deg, #3D5FC4"],
-[style*="linear-gradient(180deg, #3D5FC4"] {
+[style*="linear-gradient(135deg, var(--md-sys-color-primary)"],
+[style*="linear-gradient(180deg, var(--md-sys-color-primary)"] {
   background: linear-gradient(135deg, #70D8BD 0%, #A5E8D5 100%) !important;
   color: var(--accent-fg) !important;
 }

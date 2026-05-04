@@ -156,7 +156,7 @@ function HomeMobile({
       iconBg: '#EEF2FF',
       iconBorder: '#DBE4FF',
       icon: (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="#3B5BDB"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="var(--md-sys-color-primary)"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
       ),
     },
     {
@@ -189,14 +189,14 @@ function HomeMobile({
 
       {/* ── ナビバー ── */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 12px', background: 'rgba(240,244,255,.95)', borderBottom: '1px solid #E2E8FF' }}>
-        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 26, fontWeight: 900, color: '#3B5BDB', letterSpacing: '-.04em' }}>Logic</div>
+        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 26, fontWeight: 900, color: 'var(--md-sys-color-primary)', letterSpacing: '-.04em' }}>Logic</div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 5, background: '#EEF2FF', border: '1px solid #DBE4FF', borderRadius: 99, padding: '5px 12px' }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="#3B5BDB"><path d="M12 2c0 0-5 4-5 10a5 5 0 0 0 10 0c0-6-5-10-5-10zm0 14a2 2 0 0 1-2-2c0-2 2-4 2-4s2 2 2 4a2 2 0 0 1-2 2z"/></svg>
-            <span style={{ fontSize: 16, fontWeight: 800, color: '#3B5BDB' }}>{streak}</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--md-sys-color-primary)"><path d="M12 2c0 0-5 4-5 10a5 5 0 0 0 10 0c0-6-5-10-5-10zm0 14a2 2 0 0 1-2-2c0-2 2-4 2-4s2 2 2 4a2 2 0 0 1-2 2z"/></svg>
+            <span style={{ fontSize: 16, fontWeight: 800, color: 'var(--md-sys-color-primary)' }}>{streak}</span>
             <span style={{ fontSize: 14, fontWeight: 600, color: '#748FFC' }}>日連続</span>
           </div>
-          <div style={{ width: 32, height: 32, borderRadius: 99, background: 'linear-gradient(135deg, #3B5BDB, #748FFC)' }} />
+          <div style={{ width: 32, height: 32, borderRadius: 99, background: 'linear-gradient(135deg, var(--md-sys-color-primary), #748FFC)' }} />
         </div>
       </div>
 
@@ -252,7 +252,7 @@ function HomeMobile({
         ) : (
           <div
             onClick={() => onNavigateToDailyFermi ? onNavigateToDailyFermi() : onOpenCategory('fermi')}
-            style={{ background: '#3B5BDB', borderRadius: 28, padding: '22px 20px', position: 'relative', overflow: 'hidden', cursor: 'pointer' }}
+            style={{ background: 'var(--md-sys-color-primary)', borderRadius: 28, padding: '22px 20px', position: 'relative', overflow: 'hidden', cursor: 'pointer' }}
           >
             <div style={{ position: 'absolute', right: -48, top: -48, width: 180, height: 180, borderRadius: '50%', background: 'rgba(255,255,255,.07)', pointerEvents: 'none' }} />
             <div style={{ position: 'absolute', right: 20, bottom: -30, width: 120, height: 120, borderRadius: '50%', background: 'rgba(255,255,255,.04)', pointerEvents: 'none' }} />
@@ -276,8 +276,8 @@ function HomeMobile({
                 残り {recovery.hours}h {recovery.minutes}m
               </div>
             </div>
-            <div style={{ width: '100%', background: '#fff', borderRadius: 14, padding: 14, fontSize: 18, fontWeight: 700, color: '#3B5BDB', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" strokeWidth="2.5" strokeLinecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <div style={{ width: '100%', background: '#fff', borderRadius: 14, padding: 14, fontSize: 18, fontWeight: 700, color: 'var(--md-sys-color-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--md-sys-color-primary)" strokeWidth="2.5" strokeLinecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
               チャレンジする
             </div>
           </div>
@@ -287,7 +287,7 @@ function HomeMobile({
         <button
           onClick={onOpenRank}
           style={{
-            background: 'linear-gradient(135deg, #1E2D6B 0%, #3B5BDB 60%, #748FFC 100%)',
+            background: 'linear-gradient(135deg, #1E2D6B 0%, var(--md-sys-color-primary) 60%, #748FFC 100%)',
             borderRadius: 20,
             padding: '18px 20px',
             border: 'none',
@@ -346,7 +346,7 @@ function HomeMobile({
             { value: deviation != null ? String(Math.round(deviation)) : '—', label: '偏差値', blue: false },
           ] as { value: string; label: string; blue: boolean }[]).map(({ value, label, blue }) => (
             <div key={label} style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: '12px 10px', textAlign: 'center', boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
-              <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 30, fontWeight: 900, letterSpacing: '-.04em', lineHeight: 1, color: blue ? '#3B5BDB' : '#0F1523' }}>{value}</div>
+              <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 30, fontWeight: 900, letterSpacing: '-.04em', lineHeight: 1, color: blue ? 'var(--md-sys-color-primary)' : '#0F1523' }}>{value}</div>
               <div style={{ fontSize: 13, fontWeight: 600, letterSpacing: '.08em', textTransform: 'uppercase', color: '#7A849E', marginTop: 4 }}>{label}</div>
             </div>
           ))}
@@ -356,7 +356,7 @@ function HomeMobile({
         <div style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: '14px 16px', boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
             <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 16, fontWeight: 800, color: '#0F1523', letterSpacing: '-.02em' }}>今週の記録</div>
-            <div onClick={onOpenStats} style={{ fontSize: 14, fontWeight: 600, color: '#3B5BDB', cursor: 'pointer' }}>詳細</div>
+            <div onClick={onOpenStats} style={{ fontSize: 14, fontWeight: 600, color: 'var(--md-sys-color-primary)', cursor: 'pointer' }}>詳細</div>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             {weekDays.map((day, i) => {
@@ -364,15 +364,15 @@ function HomeMobile({
               return (
                 <div key={day} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}>
                   <div style={{ width: 34, height: 34, borderRadius: '50%', background: isDone ? '#EEF2FF' : '#E8EEFF', border: isDone ? '1.5px solid #DBE4FF' : 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    {isDone && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" strokeWidth="2.5" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>}
+                    {isDone && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--md-sys-color-primary)" strokeWidth="2.5" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>}
                   </div>
                   <div style={{ fontSize: 13, fontWeight: 600, color: '#7A849E' }}>{day}</div>
                 </div>
               )
             })}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}>
-              <div style={{ width: 34, height: 34, borderRadius: '50%', background: '#3B5BDB', boxShadow: '0 2px 8px rgba(59,91,219,.4)' }} />
-              <div style={{ fontSize: 13, fontWeight: 600, color: '#3B5BDB' }}>今日</div>
+              <div style={{ width: 34, height: 34, borderRadius: '50%', background: 'var(--md-sys-color-primary)', boxShadow: '0 2px 8px rgba(59,91,219,.4)' }} />
+              <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--md-sys-color-primary)' }}>今日</div>
             </div>
           </div>
         </div>
@@ -381,7 +381,7 @@ function HomeMobile({
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
             <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 16, fontWeight: 800, color: '#0F1523' }}>学習パス</div>
-            <div style={{ fontSize: 14, fontWeight: 600, color: '#3B5BDB', cursor: 'pointer' }} onClick={() => onOpenRoadmap && onOpenRoadmap()}>すべて</div>
+            <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--md-sys-color-primary)', cursor: 'pointer' }} onClick={() => onOpenRoadmap && onOpenRoadmap()}>すべて</div>
           </div>
           {PATHS.map((path) => {
             const total = path.lessonIds.length
@@ -401,10 +401,10 @@ function HomeMobile({
                   <div style={{ fontSize: 14, color: '#7A849E' }}>{total} レッスン</div>
                   <div style={{ marginTop: 7 }}>
                     <div style={{ height: 4, background: '#E8EEFF', borderRadius: 99, overflow: 'hidden' }}>
-                      <div style={{ height: '100%', width: `${pct}%`, background: '#3B5BDB', borderRadius: 99 }} />
+                      <div style={{ height: '100%', width: `${pct}%`, background: 'var(--md-sys-color-primary)', borderRadius: 99 }} />
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 3 }}>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: pct > 0 ? '#3B5BDB' : '#7A849E' }}>{pct > 0 ? `${pct}%` : '未開始'}</div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: pct > 0 ? 'var(--md-sys-color-primary)' : '#7A849E' }}>{pct > 0 ? `${pct}%` : '未開始'}</div>
                       <div style={{ fontSize: 13, color: '#7A849E' }}>{done} / {total}</div>
                     </div>
                   </div>
@@ -419,7 +419,7 @@ function HomeMobile({
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
           <div onClick={() => onOpenRoleplay()} style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: 16, cursor: 'pointer', boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
             <div style={{ width: 40, height: 40, borderRadius: 12, background: '#EEF2FF', border: '1px solid #DBE4FF', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 10 }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="#3B5BDB"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="var(--md-sys-color-primary)"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             </div>
             <div style={{ fontSize: 16, fontWeight: 700, color: '#0F1523', letterSpacing: '-.01em' }}>ロールプレイ</div>
             <div style={{ fontSize: 14, color: '#7A849E', marginTop: 2 }}>AI対話練習</div>

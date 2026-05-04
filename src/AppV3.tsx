@@ -52,6 +52,8 @@ import { getCompletedCount, getXp, getDisplayName, setDisplayName, recordComplet
 import { updateDisplayName } from './supabase'
 import { isAdmin } from './admin'
 import { onAuthChange, logout, getInitialUser, type User } from './supabase'
+import { hideSplash } from './platform'
+import { SnackbarProvider } from './components/Snackbar'
 import { syncOnLogin, syncOnLogout } from './syncService'
 import { TutorialOverlay, TutorialFAB } from './components/TutorialOverlay'
 import { tutorial } from './tutorial/tutorialStorage'
@@ -201,6 +203,8 @@ function AppV3() {
 
   useEffect(() => {
     applyTheme(loadTheme())
+    // SplashScreen は launchAutoHide:false 設定。auth 解決後または 1500ms タイムアウトで必ず消す。
+    const splashTimer = setTimeout(() => { void hideSplash() }, 1500)
     // 初回起動時にセッションを取得し、ログイン済ならホームへ
     getInitialUser().then(async (user) => {
       setCurrentUser(user)
@@ -209,6 +213,8 @@ function AppV3() {
       setScreen(initial)
       window.history.replaceState({ screen: initial }, '')
       setAuthReady(true)
+      clearTimeout(splashTimer)
+      void hideSplash()
     })
     const unsub = onAuthChange(async (user) => {
       setCurrentUser(user)
@@ -653,4 +659,12 @@ function AppV3() {
   )
 }
 
-export default AppV3
+function AppV3WithProviders() {
+  return (
+    <SnackbarProvider>
+      <AppV3 />
+    </SnackbarProvider>
+  )
+}
+
+export default AppV3WithProviders

@@ -15,7 +15,7 @@ const TABS: TabDef[] = [
     id: 'home',
     label: 'ホーム',
     icon: (active, dark) => (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? (dark ? '#6C8EF5' : '#3B5BDB') : (dark ? '#6B82A8' : '#B8BFD0')}>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? (dark ? '#6C8EF5' : 'var(--md-sys-color-primary)') : (dark ? '#6B82A8' : '#B8BFD0')}>
         <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
       </svg>
     ),
@@ -24,7 +24,7 @@ const TABS: TabDef[] = [
     id: 'lessons',
     label: 'トレーニング',
     icon: (active, dark) => {
-      const c = active ? (dark ? '#6C8EF5' : '#3B5BDB') : (dark ? '#6B82A8' : '#B8BFD0')
+      const c = active ? (dark ? '#6C8EF5' : 'var(--md-sys-color-primary)') : (dark ? '#6B82A8' : '#B8BFD0')
       return (
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M6.5 6.5h1v11h-1z" fill={c} stroke="none"/>
@@ -41,7 +41,7 @@ const TABS: TabDef[] = [
     id: 'ranking',
     label: 'ランキング',
     icon: (active, dark) => (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? (dark ? '#6C8EF5' : '#3B5BDB') : (dark ? '#6B82A8' : '#B8BFD0')}>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? (dark ? '#6C8EF5' : 'var(--md-sys-color-primary)') : (dark ? '#6B82A8' : '#B8BFD0')}>
         <path d="M7 17H3v-5h4v5zm7-9h-4v9h4V8zm7-4h-4v13h4V4z"/>
       </svg>
     ),
@@ -50,7 +50,7 @@ const TABS: TabDef[] = [
     id: 'profile',
     label: 'プロフィール',
     icon: (active, dark) => (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? (dark ? '#6C8EF5' : '#3B5BDB') : (dark ? '#6B82A8' : '#B8BFD0')}>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? (dark ? '#6C8EF5' : 'var(--md-sys-color-primary)') : (dark ? '#6B82A8' : '#B8BFD0')}>
         <path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-5.33 0-8 2.67-8 4v2h16v-2c0-1.33-2.67-4-8-4z"/>
       </svg>
     ),
@@ -132,8 +132,8 @@ export function AppShell({
                 style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '8px 14px', background: 'none', border: 'none', cursor: 'pointer', minWidth: 60 }}
               >
                 {tab.icon(active, isV3)}
-                <div className="app-nav-label" style={{ fontSize: 13, fontWeight: 600, color: active ? (isV3 ? '#6C8EF5' : '#3B5BDB') : (isV3 ? '#6B82A8' : '#7A849E') }}>{tab.label}</div>
-                {active && <div style={{ width: 4, height: 4, borderRadius: '50%', background: isV3 ? '#6C8EF5' : '#3B5BDB', marginTop: -2 }} />}
+                <div className="app-nav-label" style={{ fontSize: 13, fontWeight: 600, color: active ? (isV3 ? '#6C8EF5' : 'var(--md-sys-color-primary)') : (isV3 ? '#6B82A8' : '#7A849E') }}>{tab.label}</div>
+                {active && <div style={{ width: 4, height: 4, borderRadius: '50%', background: isV3 ? '#6C8EF5' : 'var(--md-sys-color-primary)', marginTop: -2 }} />}
               </button>
             )
           })}

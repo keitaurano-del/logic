@@ -4,6 +4,7 @@ import { getDisplayName, setDisplayName } from '../stats'
 import { updateDisplayName } from '../supabase'
 import { v3 } from '../styles/tokensV3'
 import { CheckIcon } from '../icons'
+import { confirm as confirmDialog } from '../platform/dialog'
 
 interface Props {
   onBack: () => void
@@ -34,7 +35,13 @@ export function AccountSettingsScreen({ onBack, currentUser, onOpenLogin, onLogo
   const [nameSuccess, setNameSuccess] = useState(false)
 
   const handleLogout = async () => {
-    if (window.confirm('ログアウトしますか？')) {
+    const ok = await confirmDialog({
+      title: 'ログアウト',
+      message: 'ログアウトしますか？',
+      okText: 'ログアウト',
+      cancelText: 'キャンセル',
+    })
+    if (ok) {
       await logout()
       onLogout()
     }

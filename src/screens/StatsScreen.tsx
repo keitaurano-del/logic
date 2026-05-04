@@ -83,7 +83,7 @@ function lessonKeyToLabel(key: string): { title: string; type: string; category:
 }
 
 function typeColor(type: string): string {
-  if (type === 'レッスン') return '#3B5BDB'
+  if (type === 'レッスン') return 'var(--md-sys-color-primary)'
   if (type === 'AI問題') return '#7C3AED'
   if (type === 'フェルミ') return '#F59E0B'
   return '#94A3B8'
@@ -97,7 +97,7 @@ function typeLabel(type: string): string {
 
 function rateColor(rate: number): string {
   if (rate >= 0.8) return '#059669'
-  if (rate >= 0.5) return '#3B5BDB'
+  if (rate >= 0.5) return 'var(--md-sys-color-primary)'
   if (rate >= 0.3) return '#D97706'
   return '#DC2626'
 }
@@ -133,7 +133,7 @@ export function StatsScreen({ onBack, onTakeTest }: StatsScreenProps) {
   const tabStyle = (active: boolean): React.CSSProperties => ({
     flex: 1, padding: '10px 0', textAlign: 'center',
     fontSize: 14, fontWeight: 700,
-    color: active ? '#3B5BDB' : '#7A849E',
+    color: active ? 'var(--md-sys-color-primary)' : '#7A849E',
     background: active ? '#fff' : 'transparent',
     borderRadius: 10, border: 'none', cursor: 'pointer',
     transition: 'all .15s',
@@ -185,11 +185,11 @@ export function StatsScreen({ onBack, onTakeTest }: StatsScreenProps) {
                     <div style={{
                       width: '100%', height: 40,
                       borderRadius: 8,
-                      background: active ? '#3B5BDB' : '#E8EEFF',
-                      border: isToday ? '2px solid #3B5BDB' : '2px solid transparent',
+                      background: active ? 'var(--md-sys-color-primary)' : '#E8EEFF',
+                      border: isToday ? '2px solid var(--md-sys-color-primary)' : '2px solid transparent',
                       transition: 'background .2s',
                     }} />
-                    <div style={{ fontSize: 11, color: isToday ? '#3B5BDB' : '#7A849E', fontWeight: isToday ? 700 : 600 }}>
+                    <div style={{ fontSize: 11, color: isToday ? 'var(--md-sys-color-primary)' : '#7A849E', fontWeight: isToday ? 700 : 600 }}>
                       {dayLabel(date)}
                     </div>
                   </div>
@@ -204,13 +204,13 @@ export function StatsScreen({ onBack, onTakeTest }: StatsScreenProps) {
           {/* 実力診断テスト案内 */}
           {!placement && (
             <div className="card" style={{ background: '#EEF2FF', border: '1.5px solid #C5D0FB' }}>
-              <div style={{ fontSize: 15, fontWeight: 700, color: '#3B5BDB', marginBottom: 6 }}>実力を測定しよう</div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--md-sys-color-primary)', marginBottom: 6 }}>実力を測定しよう</div>
               <div style={{ fontSize: 14, color: '#5A6478', marginBottom: 12, lineHeight: 1.6 }}>
                 実力診断テストを受けると、5軸のスキル分布と弱点がわかるよ
               </div>
               <button
                 onClick={onTakeTest}
-                style={{ padding: '10px 20px', background: '#3B5BDB', color: '#fff', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}
+                style={{ padding: '10px 20px', background: 'var(--md-sys-color-primary)', color: '#fff', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}
               >
                 診断を受ける
               </button>
@@ -277,7 +277,7 @@ export function StatsScreen({ onBack, onTakeTest }: StatsScreenProps) {
                   <div style={{
                     height: '100%',
                     width: `${Math.min(100, ((placement.deviation - 30) / 40) * 100)}%`,
-                    background: '#3B5BDB', borderRadius: 99
+                    background: 'var(--md-sys-color-primary)', borderRadius: 99
                   }} />
                 </div>
                 <div style={{ fontSize: 12, color: '#7A849E' }}>
@@ -286,7 +286,7 @@ export function StatsScreen({ onBack, onTakeTest }: StatsScreenProps) {
               </div>
             )}
             {!placement && (
-              <button onClick={onTakeTest} style={{ padding: '8px 16px', background: '#3B5BDB', color: '#fff', border: 'none', borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+              <button onClick={onTakeTest} style={{ padding: '8px 16px', background: 'var(--md-sys-color-primary)', color: '#fff', border: 'none', borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
                 テストを受ける
               </button>
             )}

@@ -44,7 +44,7 @@
 .pt-info strong { font-family: var(--serif); color: var(--accent-dark); font-size: 16px; font-weight: 500; }
 .pt-nick-row { width: 100%; display: flex; flex-direction: column; gap: 8px; text-align: left; }
 .pt-nick-row label { font-size: 10px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.18em; text-transform: uppercase; }
-.pt-nick-input { padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg-card); color: var(--text-primary); font-size: 14px; font-family: var(--sans); outline: none; transition: border-color 0.15s; }
+.pt-nick-input { padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg-card); color: var(--text-primary); font-size: 16px; font-family: var(--sans); outline: none; transition: border-color 0.15s; }
 .pt-nick-input:focus { border-color: var(--accent-dark); }
 .pt-start-btn { width: 100%; padding: 18px; background: var(--accent); color: var(--accent-fg); border: none; border-radius: var(--radius-md); font-size: 15px; font-weight: 700; letter-spacing: 0.02em; cursor: pointer; font-family: var(--sans); margin-top: 12px; transition: background 0.2s, transform 0.15s; }
 .pt-start-btn:hover { background: var(--accent-dark); }

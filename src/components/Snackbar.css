@@ -1,0 +1,56 @@
+/* M3 Snackbar — see docs/HIG_MATERIAL_AUDIT_20260504.md §4.8 */
+
+.m3-snackbar-stack {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 96px);
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  pointer-events: none;
+}
+
+.m3-snackbar {
+  background: var(--md-sys-color-inverse-surface);
+  color: var(--md-sys-color-inverse-on-surface);
+  border-radius: var(--shape-xs, 4px);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--elev-3, 0 4px 16px rgba(0, 0, 0, 0.25));
+  max-width: 560px;
+  width: 100%;
+  pointer-events: auto;
+  font: 400 14px / 1.4 var(--font-ui, system-ui);
+  animation: m3-snackbar-in var(--motion-duration-medium2, 300ms)
+    var(--motion-easing-emphasized-decelerate, cubic-bezier(0.05, 0.7, 0.1, 1));
+}
+
+.m3-snackbar__msg { flex: 1; }
+
+.m3-snackbar__action {
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: var(--md-sys-color-inverse-primary);
+  font: 600 14px / 1 var(--font-ui, system-ui);
+  padding: 8px;
+  min-height: 36px;
+  border-radius: var(--shape-xs, 4px);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.m3-snackbar__action:focus-visible {
+  outline: 2px solid var(--md-sys-color-inverse-primary);
+  outline-offset: 2px;
+}
+
+@keyframes m3-snackbar-in {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

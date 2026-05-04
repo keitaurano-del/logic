@@ -112,7 +112,7 @@ export function ThemeSettingsScreen({ onBack, onUpgrade }: ThemeSettingsScreenPr
           <input
             className="input"
             type="color"
-            value={state.customHex || '#3D5FC4'}
+            value={state.customHex || 'var(--md-sys-color-primary)'}
             onChange={(e) => update({ ...state, customHex: e.target.value })}
             style={{ height: 44 }}
           />

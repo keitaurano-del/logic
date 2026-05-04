@@ -205,7 +205,7 @@ const PATHS: RoadmapPath[] = [
   },
 ]
 
-const ACCENT = '#3B5BDB'
+const ACCENT = 'var(--md-sys-color-primary)'
 const ACCENT_BG = '#EEF2FF'
 const ACCENT_LIGHT = '#DBE4FF'
 

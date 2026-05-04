@@ -20,7 +20,7 @@ const CATEGORY_LABEL: Record<string, string> = {
 // カテゴリアクセントカラー
 const CATEGORY_COLOR: Record<string, string> = {
   fermi:    '#F59E0B',
-  logic:    '#3B5BDB',
+  logic:    'var(--md-sys-color-primary)',
   case:     '#10B981',
   critical: '#7C3AED',
   pm:       '#0EA5E9',
@@ -54,7 +54,7 @@ export function LessonScreen({ lessonId, onBack, onComplete, onNextLesson, onRep
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: 24, gap: 16 }}>
         <div style={{ fontSize: 16, color: '#7A849E' }}>レッスンが見つかりません (id: {lessonId})</div>
-        <button onClick={onBack} style={{ background: '#3B5BDB', color: '#fff', border: 'none', borderRadius: 12, padding: '10px 20px', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}>戻る</button>
+        <button onClick={onBack} style={{ background: 'var(--md-sys-color-primary)', color: '#fff', border: 'none', borderRadius: 12, padding: '10px 20px', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}>戻る</button>
       </div>
     )
   }
@@ -63,7 +63,7 @@ export function LessonScreen({ lessonId, onBack, onComplete, onNextLesson, onRep
   const step: LessonStep = lesson.steps[stepIdx]
 
   const isLast = stepIdx === total - 1
-  const accent = CATEGORY_COLOR[lesson.category] ?? '#3B5BDB'
+  const accent = CATEGORY_COLOR[lesson.category] ?? 'var(--md-sys-color-primary)'
   const catLabel = CATEGORY_LABEL[lesson.category] ?? lesson.category
 
   const handleSubmitWith = (index: number) => {
@@ -134,7 +134,7 @@ export function LessonScreen({ lessonId, onBack, onComplete, onNextLesson, onRep
         </div>
         <div style={{
           flexShrink: 0, background: '#EEF2FF', borderRadius: 20,
-          padding: '4px 10px', fontSize: 14, fontWeight: 700, color: '#3B5BDB',
+          padding: '4px 10px', fontSize: 14, fontWeight: 700, color: 'var(--md-sys-color-primary)',
         }}>
           {stepIdx + 1} / {total}
         </div>
@@ -229,7 +229,7 @@ function ExplainStep({ step, catLabel, accent, isLast, onNext }: {
               style={{
                 fontSize: 16,
                 lineHeight: 1.75,
-                color: isBullet ? (isArrow ? '#3B5BDB' : '#3A4259') : '#3A4259',
+                color: isBullet ? (isArrow ? 'var(--md-sys-color-primary)' : '#3A4259') : '#3A4259',
                 fontWeight: isBullet ? 500 : 400,
                 paddingLeft: isArrow ? 10 : isBullet ? 4 : 0,
                 borderLeft: isArrow ? `3px solid ${accent}` : 'none',
@@ -539,7 +539,7 @@ function CelebrationScreen({ lessonTitle, streakBefore, onComplete, onNextLesson
       <Confetti />
       <div style={{
         position: 'fixed', inset: 0,
-        background: 'linear-gradient(160deg, #1E3A8A 0%, #3B5BDB 60%, #4C6EF5 100%)',
+        background: 'linear-gradient(160deg, #1E3A8A 0%, var(--md-sys-color-primary) 60%, #4C6EF5 100%)',
         display: 'flex', flexDirection: 'column',
         alignItems: 'center', justifyContent: 'center',
         zIndex: 100, padding: '32px 24px', textAlign: 'center',
@@ -592,7 +592,7 @@ function CelebrationScreen({ lessonTitle, streakBefore, onComplete, onNextLesson
                 onClick={onNextLesson}
                 style={{
                   width: '100%',
-                  background: '#fff', color: '#3B5BDB',
+                  background: '#fff', color: 'var(--md-sys-color-primary)',
                   border: 'none', borderRadius: 16,
                   padding: '16px 24px', fontSize: 18, fontWeight: 800,
                   cursor: 'pointer',

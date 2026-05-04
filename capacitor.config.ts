@@ -1,16 +1,17 @@
 import type { CapacitorConfig } from '@capacitor/cli'
 
+const SURFACE = '#1A1F2E' // Slate Blue dark surface; matches --md-sys-color-surface
+
 const config: CapacitorConfig = {
   appId: 'io.logic.app',
   appName: 'Logic',
   webDir: 'dist',
-  bundledWebRuntime: false,
   ios: {
     contentInset: 'always',
-    backgroundColor: '#F5F1E8',
+    backgroundColor: SURFACE,
   },
   android: {
-    backgroundColor: '#F5F1E8',
+    backgroundColor: SURFACE,
   },
   plugins: {
     GoogleAuth: {
@@ -20,8 +21,8 @@ const config: CapacitorConfig = {
     },
     SplashScreen: {
       launchShowDuration: 1500,
-      launchAutoHide: true,
-      backgroundColor: '#F5F1E8',
+      launchAutoHide: false, // hidden manually via src/platform/splash.ts once auth is ready
+      backgroundColor: SURFACE,
       androidScaleType: 'CENTER_CROP',
       showSpinner: false,
       splashFullScreen: true,
@@ -29,11 +30,16 @@ const config: CapacitorConfig = {
     },
     LocalNotifications: {
       smallIcon: 'ic_stat_icon',
-      iconColor: '#D4915A',
+      iconColor: '#A8C0FF',
     },
     StatusBar: {
+      style: 'LIGHT',
+      backgroundColor: SURFACE,
+      overlaysWebView: true,
+    },
+    Keyboard: {
+      resize: 'native',
       style: 'DARK',
-      backgroundColor: '#F5F1E8',
     },
   },
   // server: {
@@ -44,3 +50,4 @@ const config: CapacitorConfig = {
 }
 
 export default config
+

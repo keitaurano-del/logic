@@ -1,7 +1,7 @@
 // CSS-only confetti — no external dependencies
 
 const COLORS = [
-  '#3D5FC4', '#9EB3F0', '#EEF2FE',  // brand indigo family
+  'var(--md-sys-color-primary)', '#9EB3F0', '#EEF2FE',  // brand indigo family
   '#10B981', '#34D399',              // green
   '#F59E0B', '#FCD34D',              // gold
   '#F97316', '#FB923C',              // orange

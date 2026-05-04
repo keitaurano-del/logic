@@ -249,7 +249,7 @@ export function DeviationScreen({ onBack, onRetakeTest, onStartLesson }: Deviati
               style={{
                 width: '100%', marginTop: 8, padding: '12px',
                 borderRadius: 12, border: 'none', cursor: 'pointer',
-                background: 'var(--accent, #3B5BDB)', color: '#fff',
+                background: 'var(--accent, var(--md-sys-color-primary))', color: '#fff',
                 fontSize: 15, fontWeight: 700, fontFamily: 'inherit',
               }}
             >
