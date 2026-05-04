@@ -11,9 +11,123 @@ import LessonIcon from '../LessonIcon'
 import { getAllLessonsFlat } from '../lessonData'
 import type { LessonData } from '../lessonData'
 import { getCompletedLessons } from '../stats'
-import { getCoursesByCategory, COURSES, type Course } from '../courseData'
+import { getCoursesByCategory, getCoursesByGroup, COURSES, COURSE_GROUPS, type Course } from '../courseData'
 
 const IMG = '/images/v3'
+
+// ──────── カテゴリ別ビジュアル（アイコン・色・画像） ────────
+type CategoryVisual = {
+  icon: ReactNode
+  iconBg: string
+  image: string
+  routeKey: string  // CategoryDetailView へ渡す識別子
+}
+
+const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
+  'ロジカルシンキング': {
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/></svg>,
+    iconBg: 'rgba(108,142,245,.14)',
+    image: `${IMG}/course-logical.webp`,
+    routeKey: 'logic',
+  },
+  'クリティカルシンキング': {
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F87171" strokeWidth="2" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
+    iconBg: 'rgba(248,113,113,.14)',
+    image: `${IMG}/lesson-critical-thinking.webp`,
+    routeKey: 'critical',
+  },
+  '仮説思考': {
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FBBF24" strokeWidth="2" strokeLinecap="round"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>,
+    iconBg: 'rgba(251,191,36,.14)',
+    image: `${IMG}/lesson-hypothesis.webp`,
+    routeKey: 'hypothesis',
+  },
+  '課題設定': {
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#34D399" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>,
+    iconBg: 'rgba(52,211,153,.14)',
+    image: `${IMG}/lesson-issue-setting.webp`,
+    routeKey: 'problem-setting',
+  },
+  'デザインシンキング': {
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" strokeWidth="2" strokeLinecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>,
+    iconBg: 'rgba(96,165,250,.14)',
+    image: `${IMG}/lesson-design-thinking.webp`,
+    routeKey: 'design-thinking',
+  },
+  'ラテラルシンキング': {
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>,
+    iconBg: 'rgba(167,139,250,.14)',
+    image: `${IMG}/lesson-lateral-thinking.webp`,
+    routeKey: 'lateral',
+  },
+  'アナロジー思考': {
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F472B6" strokeWidth="2" strokeLinecap="round"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>,
+    iconBg: 'rgba(244,114,182,.14)',
+    image: `${IMG}/lesson-analogy.webp`,
+    routeKey: 'analogy',
+  },
+  'システムシンキング': {
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2DD4BF" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>,
+    iconBg: 'rgba(45,212,191,.14)',
+    image: `${IMG}/lesson-systems-thinking.webp`,
+    routeKey: 'systems',
+  },
+  '提案・伝える技術': {
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={v3.color.warm} strokeWidth="2" strokeLinecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
+    iconBg: 'rgba(244,162,97,.14)',
+    image: `${IMG}/lesson-proposal.webp`,
+    routeKey: 'proposal',
+  },
+  '提案書作成': {
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FB923C" strokeWidth="2" strokeLinecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,
+    iconBg: 'rgba(251,146,60,.14)',
+    image: `${IMG}/course-proposal-writing.svg`,
+    routeKey: '提案書作成',
+  },
+  '哲学・思考の原理': {
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C4B5FD" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="10" strokeDasharray="4 3"/></svg>,
+    iconBg: 'rgba(196,181,253,.14)',
+    image: `${IMG}/course-philosophy.webp`,
+    routeKey: 'philosophy',
+  },
+  'クライアントワーク': {
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C49A3C" strokeWidth="2" strokeLinecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
+    iconBg: 'rgba(196,154,60,.14)',
+    image: `${IMG}/course-client.webp`,
+    routeKey: 'クライアントワーク',
+  },
+  'ケース面接': {
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={v3.color.warm} strokeWidth="2" strokeLinecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>,
+    iconBg: 'rgba(244,162,97,.14)',
+    image: `${IMG}/course-business.webp`,
+    routeKey: 'case',
+  },
+  '経営戦略': {
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7AAEFF" strokeWidth="2" strokeLinecap="round"><path d="M3 21V10l5 3V10l5 3V10l5 3v8z"/><line x1="3" y1="21" x2="21" y2="21"/></svg>,
+    iconBg: 'rgba(122,174,255,.14)',
+    image: `${IMG}/course-strategy.svg`,
+    routeKey: '経営戦略',
+  },
+  'フェルミ推定': {
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6C8EF5" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>,
+    iconBg: 'rgba(108,142,245,.14)',
+    image: `${IMG}/fermi-card.png`,
+    routeKey: 'フェルミ推定',
+  },
+  '数字に強くなる': {
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7AAEFF" strokeWidth="2" strokeLinecap="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg>,
+    iconBg: 'rgba(122,174,255,.14)',
+    image: `${IMG}/fermi-card.png`,
+    routeKey: '数字に強くなる',
+  },
+}
+
+const DEFAULT_VISUAL: CategoryVisual = {
+  icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
+  iconBg: 'rgba(108,142,245,.14)',
+  image: `${IMG}/course-logical.webp`,
+  routeKey: '',
+}
 
 // ──────── 検索ユーティリティ ────────
 // クエリを正規化（NFKC + 小文字 + カタカナ→ひらがな）
@@ -178,24 +292,35 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
 
 
 
-        {/* 2列グリッド — courseData.ts の全15カテゴリ */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-          <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/></svg>} iconBg="rgba(108,142,245,.14)" name="ロジカルシンキング" meta="2コース · 初〜中級" image={`${IMG}/course-logical.webp`} onClick={() => props.onOpenCategory('logic')} />
-          <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F87171" strokeWidth="2" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>} iconBg="rgba(248,113,113,.14)" name="クリティカルシンキング" meta="2コース · 初〜中級" image={`${IMG}/lesson-critical-thinking.webp`} onClick={() => props.onOpenCategory('critical')} />
-          <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FBBF24" strokeWidth="2" strokeLinecap="round"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>} iconBg="rgba(251,191,36,.14)" name="仮説思考" meta="1コース · 中級" image={`${IMG}/lesson-hypothesis.webp`} onClick={() => props.onOpenCategory('hypothesis')} />
-          <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#34D399" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>} iconBg="rgba(52,211,153,.14)" name="課題設定" meta="1コース · 中級" image={`${IMG}/lesson-issue-setting.webp`} onClick={() => props.onOpenCategory('problem-setting')} />
-          <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" strokeWidth="2" strokeLinecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>} iconBg="rgba(96,165,250,.14)" name="デザインシンキング" meta="1コース · 初級" image={`${IMG}/lesson-design-thinking.webp`} onClick={() => props.onOpenCategory('design-thinking')} />
-          <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>} iconBg="rgba(167,139,250,.14)" name="ラテラルシンキング" meta="1コース · 中級" image={`${IMG}/lesson-lateral-thinking.webp`} onClick={() => props.onOpenCategory('lateral')} />
-          <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F472B6" strokeWidth="2" strokeLinecap="round"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>} iconBg="rgba(244,114,182,.14)" name="アナロジー思考" meta="1コース · 中級" image={`${IMG}/lesson-analogy.webp`} onClick={() => props.onOpenCategory('analogy')} />
-          <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2DD4BF" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>} iconBg="rgba(45,212,191,.14)" name="システムシンキング" meta="1コース · 上級" image={`${IMG}/lesson-systems-thinking.webp`} onClick={() => props.onOpenCategory('systems')} />
-          <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={v3.color.warm} strokeWidth="2" strokeLinecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>} iconBg="rgba(244,162,97,.14)" name="提案・伝える技術" meta="1コース · 中級" image={`${IMG}/lesson-proposal.webp`} onClick={() => props.onOpenCategory('proposal')} />
-          <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FB923C" strokeWidth="2" strokeLinecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>} iconBg="rgba(251,146,60,.14)" name="提案書作成" meta="1コース · 上級" image={`${IMG}/course-proposal-writing.svg`} onClick={() => props.onOpenCategory('提案書作成')} />
-          <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C4B5FD" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="10" strokeDasharray="4 3"/></svg>} iconBg="rgba(196,181,253,.14)" name="哲学・思考の原理" meta="1コース · 上級" image={`${IMG}/course-philosophy.webp`} onClick={() => props.onOpenCategory('philosophy')} />
-          <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C49A3C" strokeWidth="2" strokeLinecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>} iconBg="rgba(196,154,60,.14)" name="クライアントワーク" meta="3コース · 中〜上級" image={`${IMG}/course-client.webp`} onClick={() => props.onOpenCategory('クライアントワーク')} />
-          <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={v3.color.warm} strokeWidth="2" strokeLinecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>} iconBg="rgba(244,162,97,.14)" name="ケース面接" meta="1コース · 上級" image={`${IMG}/course-business.webp`} onClick={() => props.onOpenCategory('case')} />
-          <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7AAEFF" strokeWidth="2" strokeLinecap="round"><path d="M3 21V10l5 3V10l5 3V10l5 3v8z"/><line x1="3" y1="21" x2="21" y2="21"/></svg>} iconBg="rgba(122,174,255,.14)" name="経営戦略" meta="2コース · 上級" image={`${IMG}/course-strategy.svg`} onClick={() => props.onOpenCategory('経営戦略')} />
-          <CategoryCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6C8EF5" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>} iconBg="rgba(108,142,245,.14)" name="フェルミ推定" meta="1コース · 中級" image={`${IMG}/fermi-card.png`} onClick={() => props.onOpenCategory('フェルミ推定')} />
-        </div>
+        {/* グループ別コース一覧 — 5グループ × 全21コース */}
+        {COURSE_GROUPS.map(group => {
+          const groupCourses = getCoursesByGroup(group.id)
+          if (groupCourses.length === 0) return null
+          return (
+            <div key={group.id} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <div style={{ padding: '8px 4px 0' }}>
+                <div style={{ fontSize: 16, fontWeight: 700, color: v3.color.text, letterSpacing: '-.005em' }}>{group.label}</div>
+                <div style={{ fontSize: 12, color: v3.color.text2, marginTop: 2, lineHeight: 1.45 }}>{group.description}</div>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                {groupCourses.map(course => {
+                  const v = CATEGORY_VISUAL[course.category] || DEFAULT_VISUAL
+                  return (
+                    <CategoryCard
+                      key={course.id}
+                      icon={v.icon}
+                      iconBg={v.iconBg}
+                      name={course.title}
+                      meta={`${course.lessonIds.length}レッスン · ${course.level}`}
+                      image={v.image}
+                      onClick={() => props.onOpenCategory(v.routeKey)}
+                    />
+                  )
+                })}
+              </div>
+            </div>
+          )
+        })}
       </div>}
     </div>
   )
