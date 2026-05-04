@@ -15,6 +15,7 @@ export type Course = {
   lessonIds: number[]     // 5件のレッスンID
   level: '初級' | '中級' | '上級'
   description: string
+  image?: string          // コース固有の画像（省略時はカテゴリの画像にフォールバック）
 }
 
 export type CourseGroup = {
@@ -158,6 +159,7 @@ export const COURSES: Course[] = [
     lessonIds: [350, 351, 352, 353, 354],
     level: '上級',
     description: '孔子・孟子・荀子・墨子を通じ、関係性・定義・人間観・制度設計の原理を学ぶ。',
+    image: '/images/v3/course-eastern-01.svg',
   },
   {
     id: 'eastern-02',
@@ -167,6 +169,7 @@ export const COURSES: Course[] = [
     lessonIds: [355, 356, 357, 358, 359],
     level: '上級',
     description: '老子・荘子・韓非子・孫子を通じ、無為・しなやかさ・視点・仕組み・戦わずして勝つ戦略を学ぶ。',
+    image: '/images/v3/course-eastern-02.svg',
   },
 
   // ── 提案・伝える技術 ────────────────────────────────

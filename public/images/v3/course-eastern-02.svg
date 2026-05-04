@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg-e2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1F2942"/>
+      <stop offset="100%" stop-color="#101729"/>
+    </linearGradient>
+    <radialGradient id="glow-e2" cx="0.3" cy="0.5" r="0.6">
+      <stop offset="0%" stop-color="#7AAEFF" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#7AAEFF" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="rob-e2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3B5BBF"/>
+      <stop offset="100%" stop-color="#1B2954"/>
+    </linearGradient>
+    <linearGradient id="water-e2" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#6C8EF5" stop-opacity="0.4"/>
+      <stop offset="50%" stop-color="#7AAEFF" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#6C8EF5" stop-opacity="0.4"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="800" height="400" fill="url(#bg-e2)"/>
+
+  <!-- 山並み（道家：自然） -->
+  <g fill="#1A2540" opacity="0.85">
+    <polygon points="0,400 0,310 80,250 160,290 230,240 310,300 380,260 460,310 540,260 620,300 700,250 800,290 800,400"/>
+  </g>
+  <g fill="#0E1424" opacity="0.9">
+    <polygon points="0,400 0,340 100,300 200,330 290,290 380,330 480,300 580,330 680,290 800,330 800,400"/>
+  </g>
+
+  <!-- グロー -->
+  <circle cx="240" cy="180" r="220" fill="url(#glow-e2)"/>
+
+  <!-- 流れる水（上善若水） -->
+  <g stroke="url(#water-e2)" stroke-width="2.5" fill="none" opacity="0.75">
+    <path d="M 0 120 Q 100 100 200 120 T 400 120 T 600 120 T 800 120"/>
+    <path d="M 0 145 Q 100 130 200 150 T 400 150 T 600 150 T 800 150" opacity="0.55"/>
+  </g>
+
+  <!-- 月（道・無為） -->
+  <g transform="translate(660,90)">
+    <circle cx="0" cy="0" r="36" fill="#E7ECF7" opacity="0.92"/>
+    <circle cx="-12" cy="-6" r="32" fill="#1F2942"/>
+  </g>
+
+  <!-- 賢者（老子的） — 立って遠くを見る人物 -->
+  <g transform="translate(180,220)">
+    <!-- 流れる衣 -->
+    <path d="M -38 90 Q -50 40 -28 -5 Q -10 -20 0 -20 Q 10 -20 28 -5 Q 50 40 38 90 Q 60 95 38 100 L -38 100 Q -60 95 -38 90 Z" fill="url(#rob-e2)"/>
+    <!-- 衣の風の流れ -->
+    <path d="M -38 60 Q -54 70 -60 90" fill="none" stroke="#7AAEFF" stroke-width="2" opacity="0.55"/>
+    <path d="M 38 60 Q 54 70 60 90" fill="none" stroke="#7AAEFF" stroke-width="2" opacity="0.55"/>
+    <!-- 顔 -->
+    <circle cx="0" cy="-32" r="13" fill="#E7ECF7"/>
+    <!-- 髪 -->
+    <path d="M -13 -38 Q 0 -48 13 -38 L 13 -32 L -13 -32 Z" fill="#1A2540"/>
+    <!-- 杖 -->
+    <line x1="40" y1="-10" x2="46" y2="100" stroke="#C49A3C" stroke-width="2.5" stroke-linecap="round" opacity="0.85"/>
+  </g>
+
+  <!-- 胡蝶の夢：蝶 -->
+  <g transform="translate(490,140)">
+    <g fill="#FFD566" opacity="0.9">
+      <ellipse cx="-12" cy="-6" rx="14" ry="10" transform="rotate(-20 -12 -6)"/>
+      <ellipse cx="12" cy="-6" rx="14" ry="10" transform="rotate(20 12 -6)"/>
+      <ellipse cx="-10" cy="6" rx="10" ry="7" transform="rotate(20 -10 6)"/>
+      <ellipse cx="10" cy="6" rx="10" ry="7" transform="rotate(-20 10 6)"/>
+    </g>
+    <ellipse cx="0" cy="0" rx="2" ry="10" fill="#1A2540"/>
+    <!-- 触覚 -->
+    <path d="M -1 -10 Q -5 -16 -8 -18" fill="none" stroke="#1A2540" stroke-width="1.5"/>
+    <path d="M 1 -10 Q 5 -16 8 -18" fill="none" stroke="#1A2540" stroke-width="1.5"/>
+  </g>
+
+  <!-- 戦略の盤（孫子・碁盤的グリッド） -->
+  <g transform="translate(560,220)" opacity="0.85">
+    <rect x="0" y="0" width="120" height="120" rx="6" fill="#1A2540" stroke="#6C8EF5" stroke-width="1.5"/>
+    <g stroke="#6C8EF5" stroke-width="1" opacity="0.55">
+      <line x1="0" y1="30" x2="120" y2="30"/>
+      <line x1="0" y1="60" x2="120" y2="60"/>
+      <line x1="0" y1="90" x2="120" y2="90"/>
+      <line x1="30" y1="0" x2="30" y2="120"/>
+      <line x1="60" y1="0" x2="60" y2="120"/>
+      <line x1="90" y1="0" x2="90" y2="120"/>
+    </g>
+    <!-- 石 -->
+    <circle cx="60" cy="60" r="9" fill="#FFFFFF"/>
+    <circle cx="30" cy="30" r="9" fill="#1A2540" stroke="#6C8EF5" stroke-width="1.5"/>
+    <circle cx="90" cy="30" r="9" fill="#1A2540" stroke="#6C8EF5" stroke-width="1.5"/>
+    <circle cx="90" cy="90" r="9" fill="#FFFFFF"/>
+    <circle cx="30" cy="90" r="9" fill="#FFFFFF"/>
+  </g>
+
+  <!-- 漢字「道」（淡く） -->
+  <g transform="translate(360,310)" opacity="0.16">
+    <text x="0" y="0" font-family="serif" font-size="110" font-weight="700" fill="#FFFFFF">道</text>
+  </g>
+
+  <!-- 流れる線（無為自然・しなやかさ） -->
+  <g stroke="#7AAEFF" stroke-width="1.5" fill="none" opacity="0.45">
+    <path d="M 60 200 Q 100 220 140 200"/>
+    <path d="M 60 220 Q 100 240 140 220"/>
+  </g>
+
+  <!-- 星 -->
+  <g fill="#FFD566" opacity="0.85">
+    <circle cx="420" cy="50" r="1.8"/>
+    <circle cx="500" cy="80" r="1.5"/>
+    <circle cx="580" cy="40" r="1.8"/>
+    <circle cx="120" cy="50" r="1.5"/>
+    <circle cx="300" cy="40" r="1.5"/>
+  </g>
+</svg>
