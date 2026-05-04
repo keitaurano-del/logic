@@ -410,7 +410,7 @@ function CreatingView({ result, onSaved }: { result: PlacementResult; onSaved: (
     const personal = buildPersonalCourse(axisScores, dev)
     savePersonalCourse(personal)
     const elapsed = Date.now() - start
-    const remaining = Math.max(0, 1600 - elapsed)
+    const remaining = Math.max(0, 2500 - elapsed)
     const t = setTimeout(onSaved, remaining)
     return () => clearTimeout(t)
   }, [result, onSaved])
