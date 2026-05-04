@@ -42,7 +42,7 @@ export default function GoalSelect({ onComplete }: Props) {
         </div>
         {available.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-secondary)' }}>
-            <p style={{ fontSize: 48, marginBottom: 12 }}>🎯</p>
+            <p style={{ fontSize: 48, marginBottom: 12 }}></p>
             <p style={{ fontSize: 14 }}>すべての目標が追加済みです</p>
             <button style={{ marginTop: 16, padding: '10px 20px', borderRadius: 'var(--radius-md)', background: 'var(--bg-card)', color: 'var(--text-primary)', border: '1px solid var(--border)', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }} onClick={onComplete}>戻る</button>
           </div>
@@ -111,7 +111,7 @@ export default function GoalSelect({ onComplete }: Props) {
 
         {date && selectedRoadmap && (
           <div className="schedule-summary">
-            <span className="schedule-summary-icon">📅</span>
+            <span className="schedule-summary-icon"></span>
             <span>
               {selectedRoadmap.steps.length}ステップを{' '}
               {Math.ceil(
@@ -127,8 +127,7 @@ export default function GoalSelect({ onComplete }: Props) {
             ← 戻る
           </button>
           <button className="schedule-start" onClick={handleFinish}>
-            学習を始める 🚀
-          </button>
+            学習を始める           </button>
         </div>
       </div>
     </div>

@@ -65,9 +65,9 @@ export function LoginGate({ featureName, featureIcon, featureDesc, onLogin, onBa
         marginBottom: 28, display: 'flex', flexDirection: 'column', gap: 12,
       }}>
         {[
-          { icon: '☁️', text: '学習記録がクラウドに保存される' },
-          { icon: '📊', text: '進捗・XP・レベルが永続する' },
-          { icon: '🤖', text: 'AI機能（問題生成・ロールプレイ）が使える' },
+          { icon: '', text: '学習記録がクラウドに保存される' },
+          { icon: '', text: '進捗・XP・レベルが永続する' },
+          { icon: '', text: 'AI機能（問題生成・ロールプレイ）が使える' },
         ].map(item => (
           <div key={item.text} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <span style={{ fontSize: 18, fontFamily: 'Apple Color Emoji, Segoe UI Emoji, sans-serif' }}>{item.icon}</span>

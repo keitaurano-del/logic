@@ -70,12 +70,12 @@ export default function Feedback({ onBack }: { onBack: () => void }) {
     <div className="fb-screen">
       <header className="fb-header">
         <button className="fb-back" onClick={onBack}>← 戻る</button>
-        <h2>💡 ご要望・フィードバック</h2>
+        <h2>ご要望・フィードバック</h2>
       </header>
 
       {sent ? (
         <div className="fb-success">
-          <div className="fb-success-icon">✅</div>
+          <div className="fb-success-icon"></div>
           <h3>ありがとうございます！</h3>
           <p>メールアプリが開きます。送信ボタンを押してフィードバックを送ってください。</p>
           <button className="fb-done-btn" onClick={onBack}>ホームに戻る</button>
@@ -105,7 +105,7 @@ export default function Feedback({ onBack }: { onBack: () => void }) {
 
           {error && <p style={{ color: 'var(--danger, #EF4444)', fontSize: 13, marginTop: 8 }}>{error}</p>}
           <button className="fb-submit" onClick={handleSubmit} disabled={!message.trim() || loading}>
-            {loading ? '送信中...' : '📩 フィードバックを送信'}
+            {loading ? '送信中...' : 'フィードバックを送信'}
           </button>
         </div>
       )}

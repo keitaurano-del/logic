@@ -354,7 +354,7 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
               <p style={{ fontSize: 16, color: v3.color.text, lineHeight: 1.7, marginBottom: 14 }}>{summary.summary}</p>
               {summary.goodPoints.length > 0 && (
                 <div style={{ marginBottom: 12 }}>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: v3.color.accent, marginBottom: 6 }}>✓ 良かった点</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: v3.color.accent, marginBottom: 6 }}>良かった点</div>
                   <ul style={{ fontSize: 15, color: v3.color.text, lineHeight: 1.7, paddingLeft: 18, margin: 0 }}>
                     {summary.goodPoints.map((p, i) => <li key={i}>{p}</li>)}
                   </ul>

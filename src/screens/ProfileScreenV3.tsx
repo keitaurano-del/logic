@@ -172,7 +172,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
 function StreakSheet({ streak }: { streak: number }) {
   return (
     <>
-      <div style={{ fontSize: 18, fontWeight: 800, color: '#FFFFFF', marginBottom: 16 }}>🔥 連続学習日数</div>
+      <div style={{ fontSize: 18, fontWeight: 800, color: '#FFFFFF', marginBottom: 16 }}>連続学習日数</div>
       <div style={{ textAlign: 'center', padding: '20px 0' }}>
         <div style={{ fontSize: 72, fontWeight: 900, color: v3.color.accent, letterSpacing: '-0.04em', lineHeight: 1 }}>{streak}</div>
         <div style={{ fontSize: 18, color: v3.color.text2, marginTop: 8, fontWeight: 600 }}>日連続</div>
@@ -195,7 +195,7 @@ function LessonsSheet({ onOpenLesson }: { onOpenLesson: (id: number) => void }) 
 
   return (
     <>
-      <div style={{ fontSize: 18, fontWeight: 800, color: '#FFFFFF', marginBottom: 16 }}>📚 完了レッスン（{completedLessons.length}件）</div>
+      <div style={{ fontSize: 18, fontWeight: 800, color: '#FFFFFF', marginBottom: 16 }}>完了レッスン（{completedLessons.length}件）</div>
       {completedLessons.length === 0 ? (
         <div style={{ textAlign: 'center', color: v3.color.text2, padding: '32px 0', fontSize: 14 }}>まだレッスンを完了していないよ</div>
       ) : (
@@ -206,7 +206,7 @@ function LessonsSheet({ onOpenLesson }: { onOpenLesson: (id: number) => void }) 
               onClick={() => onOpenLesson(l.id)}
               style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', background: v3.color.bg, borderRadius: 12, cursor: 'pointer' }}
             >
-              <div style={{ width: 36, height: 36, borderRadius: 10, background: v3.color.accentSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>✓</div>
+              <div style={{ width: 36, height: 36, borderRadius: 10, background: v3.color.accentSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}></div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 14, fontWeight: 700, color: '#FFFFFF' }}>{l.title}</div>
                 <div style={{ fontSize: 12, color: v3.color.text2, marginTop: 2 }}>{l.category || ''}</div>

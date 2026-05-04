@@ -220,7 +220,7 @@ function ExplainStep({ step, catLabel, accent, isLast, onNext }: {
         display: 'flex', flexDirection: 'column', gap: 12,
       }}>
         {paragraphs.map((para: string, i: number) => {
-          const isBullet = para.startsWith('✓') || para.startsWith('×') || para.startsWith('→') || para.startsWith('・')
+          const isBullet = para.startsWith('×') || para.startsWith('→') || para.startsWith('・')
           const isArrow = para.startsWith('→')
           return (
             <div
@@ -581,7 +581,7 @@ function CelebrationScreen({ lessonTitle, streakBefore, onComplete, onNextLesson
         {/* ボタン or 自動遷移メッセージ */}
         {streakIncreased ? (
           <div style={{ fontSize: 16, color: 'rgba(255,255,255,.4)', animation: 'fade-in-up 0.3s 0.5s ease-out both' }}>
-            🔥 連続学習を確認中...
+            連続学習を確認中...
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10, width: '100%', maxWidth: 300, animation: 'fade-in-up 0.3s 0.5s ease-out both' }}>

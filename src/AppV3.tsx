@@ -296,17 +296,17 @@ function AppV3() {
     const GATE_CONFIG = {
       'ai-gen': {
         featureName: 'AI問題生成',
-        featureIcon: '🤖',
+        featureIcon: '',
         featureDesc: 'テーマを選ぶだけで、あなた専用の問題をAIが生成します。ロジカルシンキング・フェルミ推定・ケース面接など月30問まで無料で使えます。',
       },
       'roleplay': {
         featureName: 'ロールプレイ',
-        featureIcon: '🎭',
+        featureIcon: '',
         featureDesc: 'ビジネスや哲学のシナリオでAIと対話練習。コンサル面接・プレゼン・ディベートなど実践的なシナリオで思考力を鍛えます。',
       },
       'advanced-lessons': {
         featureName: '中・上級レッスン',
-        featureIcon: '📚',
+        featureIcon: '',
         featureDesc: 'ケース面接・仮説思考・批判的思考など、より実践的で高度なレッスンにアクセスできます。',
       },
     } as const

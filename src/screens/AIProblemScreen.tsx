@@ -173,7 +173,7 @@ export function AIProblemScreen({ problem, onBack, onReport }: AIProblemScreenPr
         <div className="feedback-card" style={{ marginTop: 'var(--s-3)' }}>
           <div className="feedback-head">
             <div className="feedback-check">
-              {isCorrect ? <CheckIcon /> : <span style={{ fontSize: 18 }}>✕</span>}
+              {isCorrect ? <CheckIcon /> : <span style={{ fontSize: 18 }}></span>}
             </div>
             <div className="feedback-title">{isCorrect ? '正解！' : '不正解'}</div>
           </div>

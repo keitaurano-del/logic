@@ -248,7 +248,7 @@ export function JournalInputScreen({ onBack }: JournalInputScreenProps) {
         <div className="feedback-card">
           <div className="feedback-head">
             <div className="feedback-check">
-              {isFullyCorrect ? <CheckIcon /> : <span style={{ fontSize: 18 }}>✕</span>}
+              {isFullyCorrect ? <CheckIcon /> : <span style={{ fontSize: 18 }}></span>}
             </div>
             <div className="feedback-title">{isFullyCorrect ? '正解！' : '不正解'}</div>
           </div>

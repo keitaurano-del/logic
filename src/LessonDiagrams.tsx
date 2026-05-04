@@ -51,14 +51,14 @@ export function AccountGroupsDiagram() {
         <div className="acct-section">
           <p className="acct-section-title debit-title">借方グループ（左）</p>
           <div className="acct-card green">
-            <span className="acct-icon">💰</span>
+            <span className="acct-icon"></span>
             <div>
               <strong>資産</strong>
               <span>現金・売掛金・建物</span>
             </div>
           </div>
           <div className="acct-card green">
-            <span className="acct-icon">📤</span>
+            <span className="acct-icon"></span>
             <div>
               <strong>費用</strong>
               <span>仕入・給料・家賃</span>
@@ -71,21 +71,21 @@ export function AccountGroupsDiagram() {
         <div className="acct-section">
           <p className="acct-section-title credit-title">貸方グループ（右）</p>
           <div className="acct-card blue">
-            <span className="acct-icon">📋</span>
+            <span className="acct-icon"></span>
             <div>
               <strong>負債</strong>
               <span>買掛金・借入金</span>
             </div>
           </div>
           <div className="acct-card blue">
-            <span className="acct-icon">🏦</span>
+            <span className="acct-icon"></span>
             <div>
               <strong>純資産</strong>
               <span>資本金</span>
             </div>
           </div>
           <div className="acct-card blue">
-            <span className="acct-icon">📥</span>
+            <span className="acct-icon"></span>
             <div>
               <strong>収益</strong>
               <span>売上・受取利息</span>
@@ -106,7 +106,7 @@ export function JournalEntryDiagram() {
       <p className="diagram-label">仕訳の例：商品100円を現金で仕入れた</p>
       <div className="journal-flow">
         <div className="journal-event">
-          <span className="journal-event-icon">🛒</span>
+          <span className="journal-event-icon"></span>
           <span>商品を仕入れた</span>
         </div>
         <svg viewBox="0 0 40 30" className="journal-arrow-svg">
@@ -141,11 +141,11 @@ export function JournalEntryDiagram() {
 // ==============================
 export function SettlementFlowDiagram() {
   const steps = [
-    { icon: '📊', label: '試算表の作成', desc: '記録の正確性を確認' },
-    { icon: '✏️', label: '決算整理仕訳', desc: '期末の修正・調整' },
-    { icon: '📋', label: '精算表の作成', desc: '一覧表で整理' },
-    { icon: '📄', label: 'P/L・B/S作成', desc: '財務諸表を完成' },
-    { icon: '📕', label: '帳簿の締め切り', desc: '次期への繰越' },
+    { icon: '', label: '試算表の作成', desc: '記録の正確性を確認' },
+    { icon: '', label: '決算整理仕訳', desc: '期末の修正・調整' },
+    { icon: '', label: '精算表の作成', desc: '一覧表で整理' },
+    { icon: '', label: 'P/L・B/S作成', desc: '財務諸表を完成' },
+    { icon: '', label: '帳簿の締め切り', desc: '次期への繰越' },
   ]
 
   return (
@@ -231,11 +231,11 @@ export function FinancialStatementsDiagram() {
 // ==============================
 export function AdjustmentsDiagram() {
   const items = [
-    { icon: '🛒', title: '売上原価の算定', formula: '期首棚卸 ＋ 当期仕入 − 期末棚卸' },
-    { icon: '⚠️', title: '貸倒引当金', formula: '売掛金 × 貸倒設定率' },
-    { icon: '🏢', title: '減価償却', formula: '(取得原価 − 残存価額) ÷ 耐用年数' },
-    { icon: '📅', title: '経過勘定', formula: '前払・未払・前受・未収の調整' },
-    { icon: '📎', title: '消耗品の処理', formula: '未使用分を資産に振替' },
+    { icon: '', title: '売上原価の算定', formula: '期首棚卸 ＋ 当期仕入 − 期末棚卸' },
+    { icon: '', title: '貸倒引当金', formula: '売掛金 × 貸倒設定率' },
+    { icon: '', title: '減価償却', formula: '(取得原価 − 残存価額) ÷ 耐用年数' },
+    { icon: '', title: '経過勘定', formula: '前払・未払・前受・未収の調整' },
+    { icon: '', title: '消耗品の処理', formula: '未使用分を資産に振替' },
   ]
 
   return (
@@ -272,11 +272,11 @@ export function ConsolidationDiagram() {
       <div className="consol-flow">
         <div className="consol-top">
           <div className="consol-entity parent">
-            <span>🏢</span><strong>親会社</strong>
+            <span></span><strong>親会社</strong>
           </div>
           <div className="consol-arrow-h">→ 支配 →</div>
           <div className="consol-entity child">
-            <span>🏠</span><strong>子会社</strong>
+            <span></span><strong>子会社</strong>
           </div>
         </div>
         <div className="consol-steps">
@@ -396,9 +396,9 @@ export function CostFlowDiagram() {
       <p className="diagram-label">原価計算の流れ</p>
       <div className="cost-flow">
         <div className="cost-inputs">
-          <div className="cost-element mat">💎 材料費</div>
-          <div className="cost-element lab">👷 労務費</div>
-          <div className="cost-element exp">⚡ 経費</div>
+          <div className="cost-element mat">材料費</div>
+          <div className="cost-element lab">労務費</div>
+          <div className="cost-element exp">経費</div>
         </div>
         <div className="cost-arrow-down">▼ 費目別計算</div>
         <div className="cost-stage">
@@ -704,7 +704,7 @@ export function SoWhatDiagram() {
       <p className="diagram-label">So What? / Why So? の関係</p>
       <div className="sw-flow">
         <div className="sw-box sw-data">
-          <span className="sw-icon">📊</span>
+          <span className="sw-icon"></span>
           <div>
             <strong>データ・事実</strong>
             <span>売上が前年比20%減少した</span>
@@ -727,7 +727,7 @@ export function SoWhatDiagram() {
           </div>
         </div>
         <div className="sw-box sw-insight">
-          <span className="sw-icon">💡</span>
+          <span className="sw-icon"></span>
           <div>
             <strong>示唆・主張</strong>
             <span>リテンション施策が急務である</span>
@@ -842,7 +842,7 @@ export function InductionDiagram() {
           <strong>仮説</strong>
           <span>「白鳥はみな白い」</span>
         </div>
-        <p className="ind-warning">⚠ 反例 1 つで覆る (例: 黒い白鳥)</p>
+        <p className="ind-warning">反例 1 つで覆る (例: 黒い白鳥)</p>
       </div>
     </div>
   )

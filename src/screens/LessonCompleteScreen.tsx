@@ -160,7 +160,7 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
               fontSize: 30, lineHeight: 1, marginBottom: 6,
               filter: streak < 1 ? 'grayscale(1) opacity(.25)' : 'none',
             }}>
-              {streak >= 7 ? '🔥🔥' : streak >= 3 ? '🔥' : '○'}
+              {streak >= 7 ? '' : streak >= 3 ? '' : '○'}
             </div>
             <div style={{
               fontFamily: "'Inter Tight', sans-serif",
@@ -175,7 +175,7 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
             flex: 1, borderRadius: 18, padding: '18px 12px', textAlign: 'center',
             background: v3.color.card, border: `1px solid ${v3.color.line}`,
           }}>
-            <div style={{ fontSize: 30, lineHeight: 1, marginBottom: 6 }}>⏱</div>
+            <div style={{ fontSize: 30, lineHeight: 1, marginBottom: 6 }}></div>
             <div style={{
               fontFamily: "'Inter Tight', sans-serif",
               fontSize: 28, fontWeight: 900, letterSpacing: '-.03em', lineHeight: 1,
@@ -193,7 +193,7 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
               ? `1px solid ${v3.color.accent}50`
               : `1px solid ${v3.color.line}`,
           }}>
-            <div style={{ fontSize: 30, lineHeight: 1, marginBottom: 6 }}>{leveledUp ? '⬆' : '★'}</div>
+            <div style={{ fontSize: 30, lineHeight: 1, marginBottom: 6 }}>{leveledUp ? '⬆' : ''}</div>
             <div style={{
               fontFamily: "'Inter Tight', sans-serif",
               fontSize: 28, fontWeight: 900, letterSpacing: '-.03em', lineHeight: 1,

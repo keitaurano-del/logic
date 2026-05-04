@@ -112,7 +112,7 @@ export function AccountSettingsScreen({ onBack, currentUser, onOpenLogin, onLogo
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <div style={{ fontSize: 15, fontWeight: 600, color: v3.color.text }}>{getDisplayName()}</div>
                   {nameSuccess ? (
-                    <div style={{ fontSize: 13, color: v3.color.accent, fontWeight: 700 }}>✓ 保存したよ</div>
+                    <div style={{ fontSize: 13, color: v3.color.accent, fontWeight: 700 }}>保存したよ</div>
                   ) : todayChanged ? (
                     <div style={{ fontSize: 12, color: v3.color.text3 }}>今日は変更済み</div>
                   ) : (

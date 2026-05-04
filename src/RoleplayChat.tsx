@@ -197,7 +197,7 @@ export default function RoleplayChat({ situationId, onBack }: Props) {
       <div className="rp-chat-context">
         <strong>{situation.frameworkLabel}</strong>
         <span>{t('roleplay.partnerLabel')} {situation.partnerName}（{situation.partnerRole}）</span>
-        <span>🎯 {situation.goal}</span>
+        <span>{situation.goal}</span>
         <span className="rp-turn-indicator">{t('roleplay.turnIndicator', { n: Math.min(turnNumber, MAX_TURNS), total: MAX_TURNS })}</span>
       </div>
 

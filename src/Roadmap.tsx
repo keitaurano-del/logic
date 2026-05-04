@@ -132,7 +132,7 @@ export default function Roadmap({ goalId, onBack, onStartLesson }: Props) {
       {/* Completion message */}
       {progress.completed === progress.total && progress.total > 0 && (
         <div className="roadmap-complete-banner">
-          <span className="roadmap-complete-emoji">🎉</span>
+          <span className="roadmap-complete-emoji"></span>
           <strong>おめでとうございます！</strong>
           <p>全ステップを完了しました</p>
         </div>

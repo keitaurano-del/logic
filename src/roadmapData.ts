@@ -21,7 +21,7 @@ export const roadmaps: RoadmapDef[] = [
     id: 'logic',
     title: 'ロジカルシンキング',
     subtitle: 'MECEからケーススタディまで',
-    emoji: '🧠',
+    emoji: '',
     color: '#FF8C00',
     steps: [
       { lessonId: 20, title: 'MECE', description: '情報を漏れなくダブりなく整理するフレームワーク' },
@@ -35,7 +35,7 @@ export const roadmaps: RoadmapDef[] = [
     id: 'case',
     title: 'ケース面接',
     subtitle: '戦略ケースの解き方',
-    emoji: '💼',
+    emoji: '',
     color: '#F79009',
     steps: [
       { lessonId: 28, title: 'ケース面接入門', description: 'ケース面接の基本的な進め方とフレームワーク' },
@@ -48,7 +48,7 @@ export const roadmaps: RoadmapDef[] = [
     id: 'critical',
     title: 'クリティカルシンキング',
     subtitle: '情報を鵜呑みにせず判断する',
-    emoji: '🔍',
+    emoji: '',
     color: '#059669',
     steps: [
       { lessonId: 40, title: 'クリティカルシンキング入門', description: '根拠をもとに自分の頭で判断する' },
@@ -61,7 +61,7 @@ export const roadmaps: RoadmapDef[] = [
     id: 'hypothesis',
     title: '仮説思考',
     subtitle: '考えてから調べる',
-    emoji: '🎯',
+    emoji: '',
     color: '#DC2626',
     steps: [
       { lessonId: 50, title: '仮説思考入門', description: 'まず仮の答えを立ててから検証する' },
@@ -73,7 +73,7 @@ export const roadmaps: RoadmapDef[] = [
     id: 'problem-setting',
     title: '課題設定',
     subtitle: '正しい問いを立てる',
-    emoji: '💡',
+    emoji: '',
     color: '#7C3AED',
     steps: [
       { lessonId: 53, title: '課題設定入門', description: 'Where → Why → Howのフレームワーク' },
@@ -85,7 +85,7 @@ export const roadmaps: RoadmapDef[] = [
     id: 'design-thinking',
     title: 'デザインシンキング',
     subtitle: '共感から始める問題解決',
-    emoji: '🎨',
+    emoji: '',
     color: '#0891B2',
     steps: [
       { lessonId: 56, title: 'デザインシンキング入門', description: '共感→定義→発想→試作→検証の5ステップ' },
@@ -97,7 +97,7 @@ export const roadmaps: RoadmapDef[] = [
     id: 'lateral',
     title: 'ラテラルシンキング',
     subtitle: '常識の外へ — 水平思考',
-    emoji: '🚀',
+    emoji: '',
     color: '#DB2777',
     steps: [
       { lessonId: 59, title: 'ラテラルシンキング入門', description: 'リフレーミングと逆転の発想' },
@@ -109,7 +109,7 @@ export const roadmaps: RoadmapDef[] = [
     id: 'analogy',
     title: 'アナロジー思考',
     subtitle: '異分野からヒントを得る',
-    emoji: '🔗',
+    emoji: '',
     color: '#D97706',
     steps: [
       { lessonId: 62, title: 'アナロジー思考入門', description: '構造的類似性を見抜く' },
@@ -121,7 +121,7 @@ export const roadmaps: RoadmapDef[] = [
     id: 'systems',
     title: 'システムシンキング',
     subtitle: '全体を見て根本から変える',
-    emoji: '🔄',
+    emoji: '',
     color: '#2563EB',
     steps: [
       { lessonId: 65, title: 'システムシンキング入門', description: 'フィードバックループと氷山モデル' },
@@ -133,7 +133,7 @@ export const roadmaps: RoadmapDef[] = [
     id: 'strategy',
     title: '経営戦略の進化',
     subtitle: '古典から共進化まで',
-    emoji: '📈',
+    emoji: '',
     color: '#6C8EF5',
     steps: [
       { lessonId: 320, title: '戦略の起源', description: 'テイラー・フォードと「計画する経営」の誕生' },

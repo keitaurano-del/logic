@@ -25,13 +25,13 @@ export default function Pricing({ onBack }: Props) {
     <div className="pr-screen">
       <header className="pr-header">
         <button className="pr-back" onClick={onBack}>← 戻る</button>
-        <h2>💎 プラン</h2>
+        <h2>プラン</h2>
       </header>
 
       <div className="pr-body">
         {state.plan === 'trial' && (
           <div className="pr-trial-banner">
-            🎁 トライアル中: あと {trialDays} 日
+            トライアル中: あと {trialDays} 日
           </div>
         )}
 
@@ -43,18 +43,18 @@ export default function Pricing({ onBack }: Props) {
         <div className="pr-plans">
           {/* 年額プラン（推奨・先に表示） */}
           <div className="pr-card pr-card-recommended">
-            <div className="pr-recommended-badge">🏆 おすすめ</div>
+            <div className="pr-recommended-badge">おすすめ</div>
             <div className="pr-plan-name">年額プラン</div>
             <div className="pr-price">¥2,730<span>/年</span></div>
             <div className="pr-price-monthly">月々 <strong>¥228</strong></div>
             <div className="pr-price-savings">年額でぐんとお得！ <span className="pr-off-badge">41% OFF</span></div>
-            <div className="pr-trial-note">🎁 7日間無料トライアル付き</div>
+            <div className="pr-trial-note">7日間無料トライアル付き</div>
             <ul className="pr-features">
-              <li>✓ AI問題生成 <strong>月300問</strong>まで</li>
-              <li>✓ デイリー問題</li>
-              <li>✓ AI手帳サマリー</li>
-              <li>✓ 偏差値分析</li>
-              <li>✓ 全機能アクセス</li>
+              <li>AI問題生成 <strong>月300問</strong>まで</li>
+              <li>デイリー問題</li>
+              <li>AI手帳サマリー</li>
+              <li>偏差値分析</li>
+              <li>全機能アクセス</li>
             </ul>
             <button
               className="pr-btn pr-btn-primary pr-btn-recommended"
@@ -69,13 +69,13 @@ export default function Pricing({ onBack }: Props) {
           <div className="pr-card">
             <div className="pr-plan-name">月額プラン</div>
             <div className="pr-price">¥390<span>/月</span></div>
-            <div className="pr-trial-note">🎁 7日間無料トライアル付き</div>
+            <div className="pr-trial-note">7日間無料トライアル付き</div>
             <ul className="pr-features">
-              <li>✓ AI問題生成 <strong>月300問</strong>まで</li>
-              <li>✓ デイリー問題</li>
-              <li>✓ AI手帳サマリー</li>
-              <li>✓ 偏差値分析</li>
-              <li>✓ 全機能アクセス</li>
+              <li>AI問題生成 <strong>月300問</strong>まで</li>
+              <li>デイリー問題</li>
+              <li>AI手帳サマリー</li>
+              <li>偏差値分析</li>
+              <li>全機能アクセス</li>
             </ul>
             <button
               className="pr-btn pr-btn-secondary"
@@ -90,9 +90,9 @@ export default function Pricing({ onBack }: Props) {
         {error && <div className="pr-error">{error}</div>}
 
         <div className="pr-note">
-          💳 クレジットカード決済 / Stripe<br/>
-          🎁 7日間の無料トライアル付き（カード登録必要）<br/>
-          ✕ いつでも解約可能
+          クレジットカード決済 / Stripe<br/>
+          7日間の無料トライアル付き（カード登録必要）<br/>
+          いつでも解約可能
         </div>
       </div>
     </div>

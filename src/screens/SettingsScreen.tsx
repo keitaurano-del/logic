@@ -265,7 +265,7 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
                   <>
                     <Divider />
                     <SettingsRow
-                      label="✨ プレミアムにアップグレード"
+                      label="プレミアムにアップグレード"
                       onPress={onOpenPricing}
                     />
                   </>

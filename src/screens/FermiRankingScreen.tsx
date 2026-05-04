@@ -62,7 +62,7 @@ export function FermiRankingScreen() {
 
       {/* ヘッダー */}
       <div style={{ padding: 'calc(env(safe-area-inset-top, 44px) + 8px) 20px 16px' }}>
-        <div style={{ fontSize: 22, fontWeight: 800 }}>ランキング 🏆</div>
+        <div style={{ fontSize: 22, fontWeight: 800 }}>ランキング </div>
         <div style={{ fontSize: 13, color: v3.color.text2, marginTop: 4 }}>フェルミ推定スコアの合計で競おう</div>
       </div>
 
@@ -133,7 +133,7 @@ export function FermiRankingScreen() {
 }
 
 function RankCard({ entry, compact }: { entry: RankEntry; compact?: boolean }) {
-  const medal = entry.rank === 1 ? '🥇' : entry.rank === 2 ? '🥈' : entry.rank === 3 ? '🥉' : null
+  const medal = entry.rank === 1 ? '' : entry.rank === 2 ? '' : entry.rank === 3 ? '' : null
 
   return (
     <div style={{

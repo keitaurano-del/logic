@@ -57,14 +57,14 @@ export default function ReportProblem({ lessonTitle, lessonId, question, options
       <div className="rp-card" onClick={e => e.stopPropagation()}>
         {done ? (
           <div className="rp-success">
-            <div className="rp-success-icon">✓</div>
+            <div className="rp-success-icon"></div>
             <h3>報告ありがとうございます</h3>
             <p>運営チームで確認します</p>
           </div>
         ) : (
           <>
             <div className="rp-header">
-              <h3>🚩 問題を報告</h3>
+              <h3>問題を報告</h3>
               <button className="rp-close" onClick={onClose}>×</button>
             </div>
 
@@ -99,7 +99,7 @@ export default function ReportProblem({ lessonTitle, lessonId, question, options
               />
             </div>
 
-            {error && <div className="rp-error">⚠ {error}</div>}
+            {error && <div className="rp-error">{error}</div>}
 
             <div className="rp-actions">
               <button className="rp-cancel" onClick={onClose}>キャンセル</button>

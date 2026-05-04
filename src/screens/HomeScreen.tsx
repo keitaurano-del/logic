@@ -215,7 +215,7 @@ function HomeMobile({
             }}
           >
             <div style={{ position: 'absolute', right: -20, top: -20, width: 120, height: 120, borderRadius: '50%', background: 'rgba(255,255,255,.1)', pointerEvents: 'none' }} />
-            <div style={{ fontSize: 32, marginBottom: 8 }}>👋</div>
+            <div style={{ fontSize: 32, marginBottom: 8 }} />
             <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, color: '#fff', letterSpacing: '-.02em', marginBottom: 4 }}>
               まずはこの1問を解いてみよう！
             </div>
@@ -241,10 +241,10 @@ function HomeMobile({
               </div>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,.6)' }}>今日の一問</div>
-                <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, color: '#fff', letterSpacing: '-.025em' }}>クリア済み ✓</div>
+                <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, color: '#fff', letterSpacing: '-.025em' }}>クリア済み</div>
               </div>
             </div>
-            <div style={{ fontSize: 16, color: 'rgba(255,255,255,.7)', marginBottom: 12 }}>お見事！明日もチャレンジしよう 💪</div>
+            <div style={{ fontSize: 16, color: 'rgba(255,255,255,.7)', marginBottom: 12 }}>お見事！明日もチャレンジしよう</div>
             <div style={{ width: '100%', background: 'rgba(255,255,255,.2)', borderRadius: 14, padding: 12, fontSize: 16, fontWeight: 700, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
               フィードバックを見る
             </div>
@@ -615,8 +615,8 @@ function HomeDesktop({
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
           {[
-            { label: 'ロールプレイ', sub: 'AI対話練習', emoji: '💬', onClick: onOpenRoleplay, bg: '#EEF2FE', color: '#1E3A8A' },
-            { label: 'AI問題生成', sub: 'プレミアム', emoji: '✨', onClick: onOpenAIGen, bg: '#F5F3FF', color: '#5B21B6' },
+            { label: 'ロールプレイ', sub: 'AI対話練習', onClick: onOpenRoleplay, bg: '#EEF2FE', color: '#1E3A8A' },
+            { label: 'AI問題生成', sub: 'プレミアム', onClick: onOpenAIGen, bg: '#F5F3FF', color: '#5B21B6' },
           ].map((item) => (
             <button key={item.label} onClick={item.onClick} style={{
               background: item.bg, border: 'none', borderRadius: 16,
@@ -626,7 +626,6 @@ function HomeDesktop({
               onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-2px)' }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = '' }}
             >
-              <div style={{ fontSize: 32, marginBottom: 12 }}>{item.emoji}</div>
               <div style={{ fontSize: 18, fontWeight: 700, color: item.color, letterSpacing: '-0.01em' }}>{item.label}</div>
               <div style={{ fontSize: 14, color: item.color, opacity: 0.65, marginTop: 4 }}>{item.sub}</div>
             </button>

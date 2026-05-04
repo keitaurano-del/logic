@@ -53,7 +53,7 @@ export function FlashcardsScreen({ onBack }: FlashcardsScreenProps) {
 
       {total === 0 ? (
         <div className="card empty" style={{ padding: 'var(--s-7)' }}>
-          <div style={{ fontSize: 40, marginBottom: 'var(--s-3)' }}>✨</div>
+          <div style={{ fontSize: 40, marginBottom: 'var(--s-3)' }}></div>
           <h3 style={{ fontSize: 20, marginBottom: 'var(--s-2)' }}>
             復習するカードはありません
           </h3>

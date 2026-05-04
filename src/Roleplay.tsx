@@ -59,7 +59,7 @@ export default function Roleplay({ onBack, onStart, onUpgrade }: Props) {
                   <span className="rp-card-framework">{s.frameworkLabel}</span>
                   <h3 className="rp-card-title">{s.title}</h3>
                   <p className="rp-card-partner">{t('roleplay.partnerLabel')} {s.partnerName}（{s.partnerRole}）</p>
-                  <p className="rp-card-goal">🎯 {s.goal}</p>
+                  <p className="rp-card-goal">{s.goal}</p>
                 </div>
                 {locked ? <span className="rp-badge premium">PREMIUM</span> : <span className="rp-card-arrow">›</span>}
               </button>

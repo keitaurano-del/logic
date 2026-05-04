@@ -240,7 +240,6 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
             {reportSent ? (
               <>
                 <div style={{ textAlign: 'center', marginBottom: 16 }}>
-                  <div style={{ fontSize: 32, marginBottom: 8 }}>✓</div>
                   <div style={{ fontSize: 16, fontWeight: 700, color: v3.color.accent }}>報告を受け付けました</div>
                   <div style={{ fontSize: 13, color: v3.color.text2, marginTop: 6 }}>ご協力ありがとうございます。内容を確認して改善します。</div>
                 </div>
@@ -456,7 +455,7 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
       <>
         {/* 完了アイコン */}
         <div style={{ textAlign: 'center', marginTop: 24, marginBottom: 20 }}>
-          <div style={{ fontSize: 48, lineHeight: 1, marginBottom: 12 }}>✨</div>
+          <div style={{ fontSize: 48, lineHeight: 1, marginBottom: 12 }} />
           <h1 style={{ fontSize: 26, fontWeight: 800, lineHeight: 1.4, color: v3.color.text, marginBottom: 4 }}>{slide.title}</h1>
           <p style={{ fontSize: 14, color: v3.color.text2 }}>学習が完了したよ！</p>
         </div>
@@ -528,7 +527,7 @@ function ThinkSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides'
       {/* ヘッダーバッジ */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 24, marginTop: 24 }}>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: `${v3.color.warm}20`, borderRadius: 99, padding: '6px 12px', fontSize: 11, fontWeight: 700, color: v3.color.warm, letterSpacing: '.04em' }}>
-          💡 考えてみよう
+          考えてみよう
         </span>
       </div>
 
@@ -548,7 +547,7 @@ function ThinkSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides'
       {!revealed && (
         <div style={{ background: v3.color.card, borderRadius: 16, padding: '20px', marginBottom: 20, border: `1.5px dashed ${v3.color.line}` }}>
           <div style={{ fontSize: 13, color: v3.color.text3, textAlign: 'center', lineHeight: 1.8 }}>
-            🧠 自分なりの答えを考えてみよう<br />
+            自分なりの答えを考えてみよう<br />
             <span style={{ fontSize: 12 }}>準備ができたら「モデル解答を見る」を押してね</span>
           </div>
         </div>
@@ -631,7 +630,7 @@ function CaseSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides')
       <>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 24, marginTop: 24 }}>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: `${v3.color.accent}20`, borderRadius: 99, padding: '6px 12px', fontSize: 11, fontWeight: 700, color: v3.color.accent }}>
-            ✅ ケース完了
+            ケース完了
           </span>
         </div>
         <h2 style={{ fontSize: 20, fontWeight: 800, lineHeight: 1.5, marginBottom: 16, color: v3.color.text }}>フレームワークまとめ</h2>
@@ -653,7 +652,7 @@ function CaseSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides')
       {/* ヘッダー */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, marginTop: 24 }}>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: `${v3.color.accent}16`, borderRadius: 99, padding: '6px 12px', fontSize: 11, fontWeight: 700, color: v3.color.accent }}>
-          📋 ケース — Phase {phaseIndex + 1}/{slide.phases.length}
+          ケース — Phase {phaseIndex + 1}/{slide.phases.length}
         </span>
         <span style={{ fontSize: 11, color: v3.color.text3 }}>{slide.title}</span>
       </div>
@@ -708,7 +707,7 @@ function CaseSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides')
       {answered && (
         <div style={{ background: v3.color.card, borderRadius: 14, padding: '14px 16px', marginBottom: 16, fontSize: 13, lineHeight: 1.7, color: v3.color.text2 }}>
           <div style={{ fontSize: 12, fontWeight: 700, color: answered.correct ? v3.color.accent : '#FCA5A5', marginBottom: 6 }}>
-            {answered.correct ? '✅ 良い判断！' : '💡 惜しい！'}
+            {answered.correct ? '良い判断！' : '惜しい！'}
           </div>
           {phase.options[answered.selected].feedback}
         </div>

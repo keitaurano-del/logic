@@ -47,7 +47,7 @@ export default function Ranking({ onBack, onTakeTest }: Props) {
       <div className="rk-content">
         {!completed && (
           <div className="rk-cta-card">
-            <div className="rk-cta-emoji">📋</div>
+            <div className="rk-cta-emoji"></div>
             <h3>{t('ranking.ctaTitle')}</h3>
             <p>{t('ranking.ctaDesc')}</p>
             <button className="rk-cta-btn" onClick={onTakeTest}>{t('ranking.ctaButton')}</button>
@@ -97,7 +97,7 @@ export default function Ranking({ onBack, onTakeTest }: Props) {
               {data.top.map((e) => (
                 <div key={`${e.rank}-${e.nickname}`} className={`rk-row ${e.isYou ? 'you' : ''} ${e.rank <= 3 ? 'top' : ''}`}>
                   <div className={`rk-rank ${e.rank <= 3 ? `medal-${e.rank}` : ''}`}>
-                    {e.rank === 1 ? '🥇' : e.rank === 2 ? '🥈' : e.rank === 3 ? '🥉' : e.rank}
+                    {e.rank === 1 ? '' : e.rank === 2 ? '' : e.rank === 3 ? '' : e.rank}
                   </div>
                   <div className="rk-name">{e.nickname}{e.isYou && <span className="rk-you-badge">{t('ranking.youBadge')}</span>}</div>
                   <div className="rk-dev">{t('ranking.deviationLabel')} <strong>{e.deviation}</strong></div>
