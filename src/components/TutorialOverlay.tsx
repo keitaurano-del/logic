@@ -334,15 +334,15 @@ export function TutorialFAB({ onClick, onHide }: { onClick: () => void; onHide: 
         aria-label="閉じる"
         style={{
           position: 'absolute',
-          top: -8,
-          right: -8,
+          top: -10,
+          right: -10,
           zIndex: 501,
-          width: 20,
-          height: 20,
+          width: 30,
+          height: 30,
           borderRadius: '50%',
-          background: 'rgba(30,32,48,0.92)',
-          border: '1px solid rgba(255,255,255,0.18)',
-          boxShadow: '0 1px 4px rgba(0,0,0,0.4)',
+          background: 'rgba(30,32,48,0.95)',
+          border: '1px solid rgba(255,255,255,0.22)',
+          boxShadow: '0 2px 6px rgba(0,0,0,0.45)',
           cursor: 'pointer',
           display: 'flex',
           alignItems: 'center',
@@ -350,7 +350,7 @@ export function TutorialFAB({ onClick, onHide }: { onClick: () => void; onHide: 
           padding: 0,
         }}
       >
-        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="1.8" strokeLinecap="round">
+        <svg width="14" height="14" viewBox="0 0 10 10" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.8" strokeLinecap="round">
           <line x1="2" y1="2" x2="8" y2="8"/>
           <line x1="8" y1="2" x2="2" y2="8"/>
         </svg>
@@ -358,17 +358,18 @@ export function TutorialFAB({ onClick, onHide }: { onClick: () => void; onHide: 
       {/* メインの?ボタン */}
       <button
         onClick={onClick}
+        aria-label="チュートリアル"
         style={{
-          width: 44, height: 44,
+          width: 56, height: 56,
           borderRadius: '50%',
           background: 'linear-gradient(135deg, #6C8EF5, #8B6EF5)',
           border: 'none',
-          boxShadow: '0 4px 16px rgba(108,142,245,0.45)',
+          boxShadow: '0 6px 20px rgba(108,142,245,0.5)',
           cursor: 'pointer',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}
       >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round">
           <circle cx="12" cy="12" r="10"/>
           <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
           <line x1="12" y1="17" x2="12.01" y2="17"/>

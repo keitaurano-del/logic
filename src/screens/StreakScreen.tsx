@@ -109,18 +109,18 @@ export function StreakScreen({ onBack }: StreakScreenProps) {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--s-4)' }}>
           <button
             onClick={() => setMonthOffset((o) => o - 1)}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 'var(--s-1)', color: 'var(--text-muted)', display: 'flex', alignItems: 'center' }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 12, color: 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: 44, minHeight: 44 }}
             aria-label="Previous month"
           >
-            <ArrowLeftIcon width={18} height={18} />
+            <ArrowLeftIcon width={22} height={22} />
           </button>
           <div style={{ fontWeight: 700, fontSize: 18 }}>{monthLabel}</div>
           <button
             onClick={() => setMonthOffset((o) => Math.min(0, o + 1))}
-            style={{ background: 'none', border: 'none', cursor: monthOffset < 0 ? 'pointer' : 'default', padding: 'var(--s-1)', color: monthOffset < 0 ? 'var(--text-muted)' : 'var(--text-faint)', display: 'flex', alignItems: 'center' }}
+            style={{ background: 'none', border: 'none', cursor: monthOffset < 0 ? 'pointer' : 'default', padding: 12, color: monthOffset < 0 ? 'var(--text-muted)' : 'var(--text-faint)', display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: 44, minHeight: 44 }}
             aria-label="Next month"
           >
-            <ArrowRightIcon width={18} height={18} />
+            <ArrowRightIcon width={22} height={22} />
           </button>
         </div>
 
