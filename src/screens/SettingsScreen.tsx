@@ -1,5 +1,5 @@
-import { useState, useLayoutEffect } from 'react'
-import { ArrowLeftIcon, ChevronRightIcon } from '../icons'
+import React, { useState, useLayoutEffect } from 'react'
+import { ArrowLeftIcon, ChevronRightIcon, SparklesIcon } from '../icons'
 import { IconButton } from '../components/IconButton'
 import { getLocale, t } from '../i18n'
 import {
@@ -19,9 +19,9 @@ interface SettingsScreenProps {
 }
 
 function SettingsRow({
-  label, value, onPress, showChevron = true, destructive = false,
+  label, value, onPress, showChevron = true, destructive = false, leading,
 }: {
-  label: string; value?: string; onPress?: () => void; showChevron?: boolean; destructive?: boolean
+  label: string; value?: string; onPress?: () => void; showChevron?: boolean; destructive?: boolean; leading?: React.ReactNode
 }) {
   return (
     <button onClick={onPress} style={{
@@ -29,6 +29,7 @@ function SettingsRow({
       padding: '14px 16px', background: 'none', border: 'none',
       cursor: onPress ? 'pointer' : 'default', textAlign: 'left', gap: 12,
     }}>
+      {leading && <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{leading}</span>}
       <span style={{ flex: 1, fontSize: 18, color: destructive ? 'var(--danger)' : 'var(--text)' }}>
         {label}
       </span>
@@ -265,6 +266,7 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
                   <>
                     <Divider />
                     <SettingsRow
+                      leading={<SparklesIcon width={18} height={18} style={{ color: 'var(--accent)' }} />}
                       label="プレミアムにアップグレード"
                       onPress={onOpenPricing}
                     />

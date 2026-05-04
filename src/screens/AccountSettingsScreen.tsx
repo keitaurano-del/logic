@@ -3,6 +3,7 @@ import { logout } from '../supabase'
 import { getDisplayName, setDisplayName } from '../stats'
 import { updateDisplayName } from '../supabase'
 import { v3 } from '../styles/tokensV3'
+import { CheckIcon } from '../icons'
 
 interface Props {
   onBack: () => void
@@ -112,7 +113,10 @@ export function AccountSettingsScreen({ onBack, currentUser, onOpenLogin, onLogo
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <div style={{ fontSize: 15, fontWeight: 600, color: v3.color.text }}>{getDisplayName()}</div>
                   {nameSuccess ? (
-                    <div style={{ fontSize: 13, color: v3.color.accent, fontWeight: 700 }}>保存したよ</div>
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 13, color: v3.color.accent, fontWeight: 700 }}>
+                      <CheckIcon width={14} height={14} />
+                      <span>保存したよ</span>
+                    </div>
                   ) : todayChanged ? (
                     <div style={{ fontSize: 12, color: v3.color.text3 }}>今日は変更済み</div>
                   ) : (

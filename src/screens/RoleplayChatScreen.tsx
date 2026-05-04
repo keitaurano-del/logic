@@ -3,7 +3,7 @@ import { getSituation, buildSetup } from '../situations'
 import { isPremium } from '../subscription'
 import { incrementRoleplayUsage } from '../roleplayUsage'
 import { localeBody } from '../i18n'
-import { ArrowLeftIcon, CheckIcon } from '../icons'
+import { ArrowLeftIcon, CheckIcon, ThumbsUpIcon, LightbulbIcon } from '../icons'
 import { IconButton } from '../components/IconButton'
 import { API_BASE } from './apiBase'
 import { v3 } from '../styles/tokensV3'
@@ -354,7 +354,10 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
               <p style={{ fontSize: 16, color: v3.color.text, lineHeight: 1.7, marginBottom: 14 }}>{summary.summary}</p>
               {summary.goodPoints.length > 0 && (
                 <div style={{ marginBottom: 12 }}>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: v3.color.accent, marginBottom: 6 }}>良かった点</div>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 14, fontWeight: 700, color: v3.color.accent, marginBottom: 6 }}>
+                    <ThumbsUpIcon width={14} height={14} />
+                    <span>良かった点</span>
+                  </div>
                   <ul style={{ fontSize: 15, color: v3.color.text, lineHeight: 1.7, paddingLeft: 18, margin: 0 }}>
                     {summary.goodPoints.map((p, i) => <li key={i}>{p}</li>)}
                   </ul>
@@ -362,7 +365,10 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
               )}
               {summary.improvements.length > 0 && (
                 <div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: '#D97706', marginBottom: 6 }}>△ 改善点</div>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 14, fontWeight: 700, color: '#D97706', marginBottom: 6 }}>
+                    <LightbulbIcon width={14} height={14} />
+                    <span>改善点</span>
+                  </div>
                   <ul style={{ fontSize: 15, color: v3.color.text, lineHeight: 1.7, paddingLeft: 18, margin: 0 }}>
                     {summary.improvements.map((p, i) => <li key={i}>{p}</li>)}
                   </ul>

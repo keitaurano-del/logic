@@ -274,6 +274,112 @@ export function LockIcon(p: IconProps) {
   )
 }
 
+export function MicIcon(p: IconProps) {
+  return (
+    <svg {...base} {...p}>
+      <rect x="9" y="2" width="6" height="12" rx="3" />
+      <path d="M5 10v2a7 7 0 0 0 14 0v-2" />
+      <line x1="12" y1="19" x2="12" y2="22" />
+    </svg>
+  )
+}
+
+export function XIcon(p: IconProps) {
+  return (
+    <svg {...base} {...p}>
+      <line x1="18" y1="6" x2="6" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="18" />
+    </svg>
+  )
+}
+
+export function FlagIcon(p: IconProps) {
+  return (
+    <svg {...base} {...p}>
+      <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+      <line x1="4" y1="22" x2="4" y2="15" />
+    </svg>
+  )
+}
+
+export function ThumbsUpIcon(p: IconProps) {
+  return (
+    <svg {...base} {...p}>
+      <path d="M7 10v12" />
+      <path d="M15 5.88L14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H7V10l4.42-9a1.5 1.5 0 0 1 2.7 1.04l-.12 3.84z" />
+    </svg>
+  )
+}
+
+export function AlertTriangleIcon(p: IconProps) {
+  return (
+    <svg {...base} {...p}>
+      <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+      <line x1="12" y1="9" x2="12" y2="13" />
+      <line x1="12" y1="17" x2="12.01" y2="17" />
+    </svg>
+  )
+}
+
+export function InfoIcon(p: IconProps) {
+  return (
+    <svg {...base} {...p}>
+      <circle cx="12" cy="12" r="10" />
+      <line x1="12" y1="16" x2="12" y2="12" />
+      <line x1="12" y1="8" x2="12.01" y2="8" />
+    </svg>
+  )
+}
+
+export function CloudIcon(p: IconProps) {
+  return (
+    <svg {...base} {...p}>
+      <path d="M17.5 19a4.5 4.5 0 1 0-1.7-8.6A6 6 0 0 0 4 12a4 4 0 0 0 0 8h13.5z" />
+    </svg>
+  )
+}
+
+export function BotIcon(p: IconProps) {
+  return (
+    <svg {...base} {...p}>
+      <rect x="3" y="11" width="18" height="10" rx="2" />
+      <circle cx="12" cy="5" r="2" />
+      <line x1="12" y1="7" x2="12" y2="11" />
+      <line x1="8" y1="16" x2="8" y2="16" />
+      <line x1="16" y1="16" x2="16" y2="16" />
+    </svg>
+  )
+}
+
+export function ArrowUpIcon(p: IconProps) {
+  return (
+    <svg {...base} {...p}>
+      <line x1="12" y1="19" x2="12" y2="5" />
+      <polyline points="5 12 12 5 19 12" />
+    </svg>
+  )
+}
+
+export function MedalIcon(p: IconProps) {
+  return (
+    <svg {...base} {...p}>
+      <path d="M7.21 15 2.66 7.14a2 2 0 0 1 .13-2.2L4.4 2.8A2 2 0 0 1 6 2h12a2 2 0 0 1 1.6.8l1.6 2.14a2 2 0 0 1 .14 2.2L16.79 15" />
+      <path d="M11 12 5.12 2.2" />
+      <path d="m13 12 5.88-9.8" />
+      <path d="M8 7h8" />
+      <circle cx="12" cy="17" r="5" />
+    </svg>
+  )
+}
+
+export function MessageSquareIcon(p: IconProps) {
+  return (
+    <svg {...base} {...p}>
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    </svg>
+  )
+}
+
 export function BrandMark(p: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="54 54 92 92" xmlns="http://www.w3.org/2000/svg" {...p}>

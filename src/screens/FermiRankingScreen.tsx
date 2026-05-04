@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { v3 } from '../styles/tokensV3'
+import { TrophyIcon, MedalIcon } from '../icons'
 import { getXp } from '../stats'
 import { getGuestId, getNickname } from '../guestId'
 import { API_BASE } from './apiBase'
@@ -62,7 +63,10 @@ export function FermiRankingScreen() {
 
       {/* ヘッダー */}
       <div style={{ padding: 'calc(env(safe-area-inset-top, 44px) + 8px) 20px 16px' }}>
-        <div style={{ fontSize: 22, fontWeight: 800 }}>ランキング </div>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 22, fontWeight: 800 }}>
+          <span>ランキング</span>
+          <TrophyIcon width={20} height={20} style={{ color: '#F59E0B' }} />
+        </div>
         <div style={{ fontSize: 13, color: v3.color.text2, marginTop: 4 }}>フェルミ推定スコアの合計で競おう</div>
       </div>
 
@@ -133,7 +137,7 @@ export function FermiRankingScreen() {
 }
 
 function RankCard({ entry, compact }: { entry: RankEntry; compact?: boolean }) {
-  const medal = entry.rank === 1 ? '' : entry.rank === 2 ? '' : entry.rank === 3 ? '' : null
+  const isPodium = entry.rank >= 1 && entry.rank <= 3
 
   return (
     <div style={{
@@ -152,8 +156,8 @@ function RankCard({ entry, compact }: { entry: RankEntry; compact?: boolean }) {
           : v3.color.bg,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
-        {medal
-          ? <span style={{ fontSize: compact ? 16 : 20 }}>{medal}</span>
+        {isPodium
+          ? <MedalIcon width={compact ? 16 : 20} height={compact ? 16 : 20} style={{ color: '#fff' }} />
           : <span style={{ fontSize: 13, fontWeight: 700, color: v3.color.text2 }}>{entry.rank}</span>
         }
       </div>

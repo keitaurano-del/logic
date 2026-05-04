@@ -5,6 +5,7 @@
  */
 import { useState, useMemo, useRef, useEffect } from 'react'
 import { v3 } from '../styles/tokensV3'
+import { CheckIcon, SparklesIcon, LightbulbIcon, BrainIcon, ClipboardListIcon } from '../icons'
 import type { LessonSlide } from '../lessonSlides'
 import { convertLessonToSlides } from '../lessonSlides'
 import { allLessons } from '../lessonData'
@@ -240,6 +241,9 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
             {reportSent ? (
               <>
                 <div style={{ textAlign: 'center', marginBottom: 16 }}>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44, borderRadius: '50%', background: `${v3.color.accent}1F`, color: v3.color.accent, marginBottom: 10 }}>
+                    <CheckIcon width={22} height={22} />
+                  </div>
                   <div style={{ fontSize: 16, fontWeight: 700, color: v3.color.accent }}>報告を受け付けました</div>
                   <div style={{ fontSize: 13, color: v3.color.text2, marginTop: 6 }}>ご協力ありがとうございます。内容を確認して改善します。</div>
                 </div>
@@ -455,7 +459,9 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
       <>
         {/* 完了アイコン */}
         <div style={{ textAlign: 'center', marginTop: 24, marginBottom: 20 }}>
-          <div style={{ fontSize: 48, lineHeight: 1, marginBottom: 12 }} />
+          <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 64, height: 64, borderRadius: 20, background: `${v3.color.accent}18`, color: v3.color.accent, marginBottom: 12 }}>
+            <SparklesIcon width={32} height={32} />
+          </div>
           <h1 style={{ fontSize: 26, fontWeight: 800, lineHeight: 1.4, color: v3.color.text, marginBottom: 4 }}>{slide.title}</h1>
           <p style={{ fontSize: 14, color: v3.color.text2 }}>学習が完了したよ！</p>
         </div>
@@ -527,6 +533,7 @@ function ThinkSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides'
       {/* ヘッダーバッジ */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 24, marginTop: 24 }}>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: `${v3.color.warm}20`, borderRadius: 99, padding: '6px 12px', fontSize: 11, fontWeight: 700, color: v3.color.warm, letterSpacing: '.04em' }}>
+          <LightbulbIcon width={12} height={12} />
           考えてみよう
         </span>
       </div>
@@ -547,7 +554,10 @@ function ThinkSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides'
       {!revealed && (
         <div style={{ background: v3.color.card, borderRadius: 16, padding: '20px', marginBottom: 20, border: `1.5px dashed ${v3.color.line}` }}>
           <div style={{ fontSize: 13, color: v3.color.text3, textAlign: 'center', lineHeight: 1.8 }}>
-            自分なりの答えを考えてみよう<br />
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: v3.color.warm, fontWeight: 700 }}>
+              <BrainIcon width={14} height={14} />
+              <span>自分なりの答えを考えてみよう</span>
+            </span><br />
             <span style={{ fontSize: 12 }}>準備ができたら「モデル解答を見る」を押してね</span>
           </div>
         </div>
@@ -630,6 +640,7 @@ function CaseSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides')
       <>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 24, marginTop: 24 }}>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: `${v3.color.accent}20`, borderRadius: 99, padding: '6px 12px', fontSize: 11, fontWeight: 700, color: v3.color.accent }}>
+            <CheckIcon width={12} height={12} />
             ケース完了
           </span>
         </div>
@@ -652,6 +663,7 @@ function CaseSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides')
       {/* ヘッダー */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, marginTop: 24 }}>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: `${v3.color.accent}16`, borderRadius: 99, padding: '6px 12px', fontSize: 11, fontWeight: 700, color: v3.color.accent }}>
+          <ClipboardListIcon width={12} height={12} />
           ケース — Phase {phaseIndex + 1}/{slide.phases.length}
         </span>
         <span style={{ fontSize: 11, color: v3.color.text3 }}>{slide.title}</span>
@@ -706,8 +718,9 @@ function CaseSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides')
       {/* フィードバック */}
       {answered && (
         <div style={{ background: v3.color.card, borderRadius: 14, padding: '14px 16px', marginBottom: 16, fontSize: 13, lineHeight: 1.7, color: v3.color.text2 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: answered.correct ? v3.color.accent : '#FCA5A5', marginBottom: 6 }}>
-            {answered.correct ? '良い判断！' : '惜しい！'}
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 700, color: answered.correct ? v3.color.accent : '#FCA5A5', marginBottom: 6 }}>
+            {answered.correct ? <CheckIcon width={12} height={12} /> : <LightbulbIcon width={12} height={12} />}
+            <span>{answered.correct ? '良い判断！' : '惜しい！'}</span>
           </div>
           {phase.options[answered.selected].feedback}
         </div>

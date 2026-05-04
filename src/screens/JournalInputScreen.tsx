@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { recordCompletion } from '../stats'
-import { ArrowLeftIcon, ArrowRightIcon, CheckIcon } from '../icons'
+import { ArrowLeftIcon, ArrowRightIcon, CheckIcon, XIcon } from '../icons'
 import { Button } from '../components/Button'
 import { IconButton } from '../components/IconButton'
 
@@ -248,7 +248,7 @@ export function JournalInputScreen({ onBack }: JournalInputScreenProps) {
         <div className="feedback-card">
           <div className="feedback-head">
             <div className="feedback-check">
-              {isFullyCorrect ? <CheckIcon /> : <span style={{ fontSize: 18 }}></span>}
+              {isFullyCorrect ? <CheckIcon /> : <XIcon />}
             </div>
             <div className="feedback-title">{isFullyCorrect ? '正解！' : '不正解'}</div>
           </div>

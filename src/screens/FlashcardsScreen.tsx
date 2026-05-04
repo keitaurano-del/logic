@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { getDueCards, reviewCard, type Flashcard } from '../flashcardData'
-import { ArrowLeftIcon, CheckIcon } from '../icons'
+import { ArrowLeftIcon, CheckIcon, SparklesIcon } from '../icons'
 import { Button } from '../components/Button'
 import { IconButton } from '../components/IconButton'
 import { t } from '../i18n'
@@ -53,7 +53,9 @@ export function FlashcardsScreen({ onBack }: FlashcardsScreenProps) {
 
       {total === 0 ? (
         <div className="card empty" style={{ padding: 'var(--s-7)' }}>
-          <div style={{ fontSize: 40, marginBottom: 'var(--s-3)' }}></div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 'var(--s-3)', color: 'var(--accent)' }}>
+            <SparklesIcon width={36} height={36} />
+          </div>
           <h3 style={{ fontSize: 20, marginBottom: 'var(--s-2)' }}>
             復習するカードはありません
           </h3>

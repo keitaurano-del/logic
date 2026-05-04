@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { ArrowLeftIcon, LightbulbIcon, BarChartIcon } from '../icons'
+import { ArrowLeftIcon, LightbulbIcon, BarChartIcon, MicIcon } from '../icons'
 import { IconButton } from '../components/IconButton'
 import { Button } from '../components/Button'
 import { API_BASE } from './apiBase'
@@ -578,6 +578,11 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
                     boxSizing: 'border-box',
                   }}
                 />
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.5 }}>
+                <MicIcon width={14} height={14} style={{ flexShrink: 0, opacity: 0.8 }} />
+                <span>{t('fermi.voiceHint')}</span>
+              </div>
 
               {submitError && (
                 <div style={{ fontSize: 15, color: 'var(--danger)' }}>{submitError}</div>
