@@ -183,6 +183,7 @@ export const COURSES: Course[] = [
     lessonIds: [72, 73, 74, 75, 76],
     level: '中級',
     description: '読み手の判断基準から逆算し、決断を引き出す提案書の構造を習得する。',
+    image: '/images/v3/course-proposal-01.svg',
   },
 
   // ── 提案書作成 ──────────────────────────────────────
@@ -194,6 +195,7 @@ export const COURSES: Course[] = [
     lessonIds: [82, 83, 84, 86, 87],
     level: '上級',
     description: 'コンサル的アプローチで仮説を立て、検証しながら説得力のある提案書を完成させる。',
+    image: '/images/v3/course-proposal-course-01.svg',
   },
 
   // ── クライアントワーク ──────────────────────────────
@@ -205,6 +207,7 @@ export const COURSES: Course[] = [
     lessonIds: [89, 90, 91, 92, 97],
     level: '中級',
     description: '桁感覚と概算力を鍛え、クライアントの場でも即座に数字を扱えるようになる。',
+    image: '/images/v3/course-client-01.svg',
   },
   {
     id: 'client-02',
@@ -236,6 +239,7 @@ export const COURSES: Course[] = [
     lessonIds: [28, 29, 35, 36, 316],
     level: '上級',
     description: '利益構造の分解から市場参入まで、ケース面接の頻出テーマを体系的に攻略する。',
+    image: '/images/v3/course-case-01.svg',
   },
 
   // ── 経営戦略 ────────────────────────────────────────
@@ -247,6 +251,7 @@ export const COURSES: Course[] = [
     lessonIds: [320, 321, 322, 323, 324],
     level: '上級',
     description: 'テイラー・フォードからアンゾフ、PPM、ポーターまで。経営戦略の古典理論を通史的に押さえる。',
+    image: '/images/v3/course-strategy-01.svg',
   },
   {
     id: 'strategy-02',
@@ -268,6 +273,7 @@ export const COURSES: Course[] = [
     lessonIds: [200, 201, 202, 203, 204],
     level: '中級',
     description: '数式を立てて分解し、正確さより「だいたい正しい」答えを素早く出す力を鍛える。',
+    image: '/images/v3/course-fermi-01.svg',
   },
 
   // ── 数字に強くなる ──────────────────────────────────
