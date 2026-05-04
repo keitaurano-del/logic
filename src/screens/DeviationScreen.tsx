@@ -221,15 +221,8 @@ export function DeviationScreen({ onBack, onRetakeTest, onStartLesson }: Deviati
                     border: '1px solid var(--border)',
                   }}
                 >
-                  <span style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 0, flex: 1 }}>
-                    <span style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 500 }}>
-                      Lesson #{id}
-                    </span>
-                    {lesson && (
-                      <span style={{ fontSize: 15, fontWeight: 600 }}>
-                        {lesson.title}
-                      </span>
-                    )}
+                  <span style={{ fontSize: 16, fontWeight: 600, minWidth: 0, flex: 1 }}>
+                    {lesson?.title ?? `Lesson #${id}`}
                   </span>
                   <span className="badge badge-accent" style={{ flexShrink: 0 }}>おすすめ</span>
                 </button>
