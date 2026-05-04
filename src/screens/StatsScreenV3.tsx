@@ -147,7 +147,7 @@ export function StatsScreenV3({ onBack: _onBack }: StatsScreenV3Props) {
           <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.7)', marginBottom: 12 }}>偏差値・ランキング</div>
           {!hasPlacement ? (
             <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.7)', lineHeight: 1.6 }}>
-              プレースメントテストを受けると偏差値・ランキングが表示されます
+              実力診断テストを受けると偏差値・ランキングが表示されます
             </div>
           ) : (
             <>

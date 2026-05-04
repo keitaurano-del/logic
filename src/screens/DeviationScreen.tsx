@@ -1,9 +1,19 @@
 import { useState } from 'react'
-import { loadPlacementResult, rankLabel, recommendedLessons } from '../placementData'
+import {
+  loadPlacementResult,
+  rankLabel,
+  recommendedLessons,
+  computeAxisScores,
+  axisLabel,
+  recommendCourses,
+  type AxisScore,
+} from '../placementData'
 import { getAllLessonsFlat } from '../lessonData'
-import { ArrowLeftIcon } from '../icons'
+import { getCourseById } from '../courseData'
+import { ArrowLeftIcon, SparklesIcon } from '../icons'
 import { Button } from '../components/Button'
 import { IconButton } from '../components/IconButton'
+import { RadarChart } from '../components/RadarChart'
 
 
 interface DeviationScreenProps {
@@ -16,21 +26,21 @@ export function DeviationScreen({ onBack, onRetakeTest, onStartLesson }: Deviati
   const result = loadPlacementResult()
   const [showModal, setShowModal] = useState(false)
 
-  if (!result) {
+  if (!result || result.totalCount === 0) {
     return (
       <div className="stack">
         <div className="screen-header">
           <IconButton aria-label="Back" onClick={onBack}>
             <ArrowLeftIcon />
           </IconButton>
-          <div className="progress-text">偏差値</div>
+          <div className="progress-text">実力診断</div>
         </div>
         <div className="card empty">
           <h3 style={{ fontSize: 20, marginBottom: 'var(--s-2)' }}>
-            プレースメントテスト未完了
+            実力診断テスト未受検
           </h3>
           <p className="muted" style={{ fontSize: 16 }}>
-            テストを受けると偏差値が算出されます
+            診断を受けると偏差値とスキル分布が表示されます
           </p>
           <Button
             variant="primary"
@@ -38,17 +48,48 @@ export function DeviationScreen({ onBack, onRetakeTest, onStartLesson }: Deviati
             onClick={onRetakeTest}
             style={{ marginTop: 'var(--s-4)' }}
           >
-            テストを受ける
+            診断を受ける
           </Button>
         </div>
       </div>
     )
   }
   const rank = rankLabel(result.deviation)
-  const recommended = recommendedLessons(result.deviation)
   const allLessons = getAllLessonsFlat()
+  // 軸スコアは新フィールド優先、なければanswersから再計算（後方互換）
+  const axisScores: AxisScore[] = result.axisScores.length
+    ? result.axisScores
+    : result.answers.length
+      ? computeAxisScores(result.answers)
+      : []
+
+  // コース推薦
+  const courseIds = result.recommendedCourseIds.length
+    ? result.recommendedCourseIds
+    : axisScores.length
+      ? recommendCourses(axisScores, result.deviation)
+      : []
+  const recommendedCourses = courseIds
+    .map(id => getCourseById(id))
+    .filter((c): c is NonNullable<typeof c> => !!c)
+
+  // レッスン推薦
+  const recommendedLessonIds = result.recommendedLessonIds.length
+    ? result.recommendedLessonIds
+    : axisScores.length
+      ? recommendedLessons(axisScores)
+      : recommendedLessons(result.deviation)
+
   // バーの幅: 偏差値25〜75を 0%〜100% にマップ
   const fill = Math.min(100, Math.max(0, ((result.deviation - 25) / 50) * 100))
+
+  const radarAxes = axisScores.map(a => ({
+    key: a.axis,
+    label: axisLabel(a.axis).short,
+    level: a.level,
+  }))
+  const weakest = axisScores.length ? [...axisScores].sort((a, b) => a.level - b.level)[0] : null
+  const strongest = axisScores.length ? [...axisScores].sort((a, b) => b.level - a.level)[0] : null
 
   return (
     <div className="stack">
@@ -56,7 +97,7 @@ export function DeviationScreen({ onBack, onRetakeTest, onStartLesson }: Deviati
         <IconButton aria-label="Back" onClick={onBack}>
           <ArrowLeftIcon />
         </IconButton>
-        <div className="progress-text">偏差値</div>
+        <div className="progress-text">実力診断</div>
       </div>
 
       <div className="eyebrow accent">あなたの結果</div>
@@ -74,7 +115,7 @@ export function DeviationScreen({ onBack, onRetakeTest, onStartLesson }: Deviati
             position: 'relative',
           }}
         >
-          偏差値スコア
+          推定偏差値
         </div>
         <div
           className="display"
@@ -128,6 +169,43 @@ export function DeviationScreen({ onBack, onRetakeTest, onStartLesson }: Deviati
         </div>
       </section>
 
+      {/* ── レーダーチャート ───────────────────────── */}
+      {radarAxes.length > 0 && (
+        <section className="card">
+          <div className="eyebrow" style={{ marginBottom: 'var(--s-2)' }}>5軸スキルマップ（5段階）</div>
+          <RadarChart axes={radarAxes} size={300} maxLevel={5} />
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: 'var(--s-3)' }}>
+            {axisScores.map(a => (
+              <div
+                key={a.axis}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '8px 10px',
+                  borderRadius: 10,
+                  background: 'rgba(108,142,245,.08)',
+                  border: '1px solid rgba(108,142,245,.18)',
+                }}
+              >
+                <span style={{ fontSize: 13, fontWeight: 700 }}>{axisLabel(a.axis).label}</span>
+                <span style={{ fontSize: 14, fontWeight: 800, color: '#6C8EF5' }}>Lv.{a.level}</span>
+              </div>
+            ))}
+          </div>
+          {weakest && strongest && weakest.axis !== strongest.axis && (
+            <div style={{ marginTop: 'var(--s-3)', padding: '12px', background: 'var(--bg-page, rgba(0,0,0,.04))', borderRadius: 12 }}>
+              <div style={{ fontSize: 13, marginBottom: 4 }}>
+                💪 <b>強み:</b> {axisLabel(strongest.axis).label}（Lv.{strongest.level}）
+              </div>
+              <div style={{ fontSize: 13 }}>
+                📈 <b>伸びしろ:</b> {axisLabel(weakest.axis).label}（Lv.{weakest.level}）
+              </div>
+            </div>
+          )}
+        </section>
+      )}
+
       {/* 偏差値説明モーダル */}
       {showModal && (
         <div
@@ -173,7 +251,7 @@ export function DeviationScreen({ onBack, onRetakeTest, onStartLesson }: Deviati
                 </div>
               </div>
               <p style={{ fontSize: 14, color: 'var(--text-muted, #9CA3AF)' }}>
-                偏差値はプレースメントテストの正答率と問題難易度から算出されます。テストを受け直すと更新されます。
+                偏差値は実力診断テストの正答率と問題難易度から算出されます。テストを受け直すと更新されます。
               </p>
             </div>
             <button
@@ -198,14 +276,63 @@ export function DeviationScreen({ onBack, onRetakeTest, onStartLesson }: Deviati
         <p style={{ fontSize: 16, lineHeight: 1.7 }}>{rank.comment}</p>
       </div>
 
-      {recommended.length > 0 && (
+      {/* ── おすすめコース ───────────────────────── */}
+      {recommendedCourses.length > 0 && (
         <section style={{ marginTop: 'var(--s-4)' }}>
-          <h2 style={{ fontSize: 20, marginBottom: 'var(--s-3)' }}>
-            おすすめレッスン
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 'var(--s-2)' }}>
+            <SparklesIcon width={18} height={18} />
+            <h2 style={{ fontSize: 20, margin: 0 }}>
+              おすすめコース
+            </h2>
+          </div>
+          <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 'var(--s-3)' }}>
+            診断結果に基づくあなたに最適なコース
+          </p>
+          <div className="stack-sm">
+            {recommendedCourses.map((c, idx) => (
+              <div
+                key={c.id}
+                className="card card-compact"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 12,
+                  border: idx === 0 ? '1.5px solid var(--brand, #6C8EF5)' : '1px solid var(--border)',
+                  background: idx === 0 ? 'rgba(108,142,245,.06)' : undefined,
+                }}
+              >
+                <div style={{
+                  width: 38, height: 38, borderRadius: 10, flexShrink: 0,
+                  background: 'rgba(108,142,245,.18)',
+                  color: '#6C8EF5',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontWeight: 800, fontSize: 16,
+                }}>{idx + 1}</div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 2 }}>
+                    {c.category} · {c.level}
+                  </div>
+                  <div style={{ fontSize: 15, fontWeight: 700, lineHeight: 1.4 }}>{c.title}</div>
+                  <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 4, lineHeight: 1.5 }}>
+                    {c.description}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ── 個別レッスン推薦 ─────────────────────── */}
+      {recommendedLessonIds.length > 0 && (
+        <section style={{ marginTop: 'var(--s-4)' }}>
+          <h2 style={{ fontSize: 18, marginBottom: 'var(--s-2)' }}>
+            まずはこのレッスンから
           </h2>
           <div className="stack-sm">
-            {recommended.map((id) => {
+            {recommendedLessonIds.slice(0, 4).map((id) => {
               const lesson = allLessons[id]
+              if (!lesson) return null
               return (
                 <button
                   key={id}
@@ -221,8 +348,8 @@ export function DeviationScreen({ onBack, onRetakeTest, onStartLesson }: Deviati
                     border: '1px solid var(--border)',
                   }}
                 >
-                  <span style={{ fontSize: 16, fontWeight: 600, minWidth: 0, flex: 1 }}>
-                    {lesson?.title ?? `Lesson #${id}`}
+                  <span style={{ fontSize: 15, fontWeight: 600, minWidth: 0, flex: 1 }}>
+                    {lesson.title}
                   </span>
                   <span className="badge badge-accent" style={{ flexShrink: 0 }}>おすすめ</span>
                 </button>
@@ -239,7 +366,7 @@ export function DeviationScreen({ onBack, onRetakeTest, onStartLesson }: Deviati
         onClick={onRetakeTest}
         style={{ marginTop: 'var(--s-4)' }}
       >
-        テストを受け直す
+        診断を受け直す
       </Button>
     </div>
   )

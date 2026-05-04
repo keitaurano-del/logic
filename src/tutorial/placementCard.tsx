@@ -7,7 +7,7 @@ interface PlacementCardProps {
 }
 
 /**
- * プレースメントテスト誘導カード
+ * 実力診断テスト誘導カード
  * 今日の1問完了後のホームに1回だけ表示。
  * 「後で」で永久非表示。
  */
@@ -42,12 +42,12 @@ export function PlacementCard({ onTakeTest }: PlacementCardProps) {
         </div>
         <div>
           <div style={{ fontSize: 14, fontWeight: 700, color: v3.color.text }}>あなたの実力を診断しましょう</div>
-          <div style={{ fontSize: 12, color: v3.color.text2, marginTop: 1 }}>8問・約3分で現在の実力がわかります</div>
+          <div style={{ fontSize: 12, color: v3.color.text2, marginTop: 1 }}>10問・約5分で5軸のスキル分布がわかります</div>
         </div>
       </div>
 
       <p style={{ margin: '0 0 14px', fontSize: 13, color: v3.color.text2, lineHeight: 1.6 }}>
-        結果に合わせたおすすめコースをご案内します。
+        推定偏差値・レーダーチャート・最適コースをご案内します。
       </p>
 
       {/* ボタン */}

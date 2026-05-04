@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import {
   PLACEMENT_QUESTIONS,
-  calcDeviation,
+  calcDeviationLegacy as calcDeviation,
   rankLabel,
   recommendedLessons,
   savePlacementResult,
@@ -72,6 +72,9 @@ export default function PlacementTest({ onComplete, onSkip }: Props) {
         totalCount: total,
         completedAt: new Date().toISOString(),
         recommendedLessonIds: recommendedLessons(dev),
+        axisScores: [],
+        recommendedCourseIds: [],
+        answers: [],
       })
       // Submit to ranking server (fire-and-forget)
       const nick = nicknameInput.trim() || defaultNickname(getGuestId())

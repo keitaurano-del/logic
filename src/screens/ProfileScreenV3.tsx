@@ -109,7 +109,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
           </div>
         </div>
 
-        {/* プレースメントテスト */}
+        {/* 実力診断テスト */}
         {onOpenPlacementTest && (
           <div onClick={onOpenPlacementTest} style={{
             background: `linear-gradient(135deg, ${v3.color.accentSoft} 0%, rgba(108,142,245,.1) 100%)`,
@@ -121,8 +121,8 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={v3.color.bg} strokeWidth="2.5" strokeLinecap="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 14, fontWeight: 700, color: '#FFFFFF' }}>プレースメントテスト</div>
-              <div style={{ fontSize: 13, color: v3.color.text2, marginTop: 2 }}>自分のレベルを確認して最適なレッスンを受けよう</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: '#FFFFFF' }}>実力診断テスト</div>
+              <div style={{ fontSize: 13, color: v3.color.text2, marginTop: 2 }}>5軸スキル診断で最適なコースを見つけよう</div>
             </div>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5"><polyline points="9 18 15 12 9 6" /></svg>
           </div>
