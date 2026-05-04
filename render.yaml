@@ -3,6 +3,10 @@ services:
     name: logic
     runtime: node
     autoDeploy: true
+    # PR ごとに自動でプレビュー環境を生成（独立した URL: logic-pr-<番号>.onrender.com）
+    # 本番デプロイ前にコミット単位で動作確認できる。PR クローズで自動削除。
+    previews:
+      generation: automatic
     buildCommand: npm install --include=dev && npm run build
     startCommand: npm start
     envVars:

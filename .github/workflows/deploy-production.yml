@@ -9,7 +9,7 @@ on:
         required: true
         default: 'no'
       preview_checked:
-        description: 'SIT (https://logic-sit.onrender.com) でプレビュー確認済みですか？ (yes と入力)'
+        description: 'PR プレビュー (logic-pr-XXX.onrender.com) または SIT で確認済みですか？ (yes と入力)'
         required: true
         default: 'no'
 
@@ -25,12 +25,13 @@ jobs:
             exit 1
           fi
           if [ "${{ github.event.inputs.preview_checked }}" != "yes" ]; then
-            echo "❌ SIT プレビュー確認が未完了です。"
-            echo "   先に Deploy to SIT (Preview) ワークフローを実行し、"
-            echo "   https://logic-sit.onrender.com で動作確認してから再実行してください。"
+            echo "❌ プレビュー確認が未完了です。"
+            echo "   PR を作成すると logic-pr-<番号>.onrender.com に自動で"
+            echo "   プレビュー環境が立ち上がります。そこで動作確認してから再実行してください。"
+            echo "   （または Deploy to SIT (Preview) ワークフローを使用）"
             exit 1
           fi
-          echo "✅ 承認確認OK（SIT プレビュー確認済み）"
+          echo "✅ 承認確認OK（プレビュー確認済み）"
 
   # ── ビルド確認 ─────────────────────────────────────────
   build:
