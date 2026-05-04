@@ -400,14 +400,17 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
               const color: string = !answered ? v3.color.text : (wasSelected && isCorrect ? v3.color.bg : v3.color.text)
               const border: string = !answered ? (isPicked ? `2px solid ${v3.color.accent}` : '2px solid transparent') : 'none'
               return (
-                <div key={i} onClick={() => !answered && onToggleMulti(i)}
-                  style={{ background: bg, color, borderRadius: 14, padding: '14px 18px', fontSize: 15, fontWeight: 600, cursor: answered ? 'default' : 'pointer', transition: v3.motion.tap, border, display: 'flex', alignItems: 'center', gap: 10, WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation' }}
+                <button type="button" key={i} onClick={() => !answered && onToggleMulti(i)}
+                  disabled={answered}
+                  role="checkbox"
+                  aria-checked={isPicked}
+                  style={{ background: bg, color, borderRadius: 14, padding: '14px 18px', fontSize: 15, fontWeight: 600, cursor: answered ? 'default' : 'pointer', transition: v3.motion.tap, border: border === 'none' ? 'none' : border, display: 'flex', alignItems: 'center', gap: 10, WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation', font: 'inherit', textAlign: 'left', width: '100%', minHeight: 44 }}
                 >
                   <div style={{ width: 20, height: 20, borderRadius: 6, border: `2px solid ${answered ? 'transparent' : isPicked ? v3.color.accent : v3.color.text3}`, background: isPicked && !answered ? v3.color.accent : answered && wasSelected && isCorrect ? v3.color.bg + '30' : 'transparent', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {(isPicked && !answered) || (answered && wasSelected) ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={answered && wasSelected && isCorrect ? v3.color.bg : v3.color.accent} strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg> : null}
                   </div>
                   {c}
-                </div>
+                </button>
               )
             }
 
@@ -416,9 +419,12 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
             const bg: string = !answered ? v3.color.card : isSelected && isCorrect ? v3.color.accent : isSelected && !isCorrect ? '#4A1C1C' : isCorrect && answered ? v3.color.accentSoft : v3.color.card
             const color: string = !answered ? v3.color.text : isSelected && isCorrect ? v3.color.bg : v3.color.text
             return (
-              <div key={i} onClick={() => !answered && onSelectQuiz(i)}
-                style={{ background: bg, color, borderRadius: 14, padding: '14px 18px', fontSize: 15, fontWeight: 600, cursor: answered ? 'default' : 'pointer', transition: v3.motion.tap, WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation' }}
-              >{c}</div>
+              <button type="button" key={i} onClick={() => !answered && onSelectQuiz(i)}
+                disabled={answered}
+                role="radio"
+                aria-checked={isSelected ?? false}
+                style={{ background: bg, color, borderRadius: 14, padding: '14px 18px', fontSize: 15, fontWeight: 600, cursor: answered ? 'default' : 'pointer', transition: v3.motion.tap, WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation', border: 'none', font: 'inherit', textAlign: 'left', width: '100%', minHeight: 44 }}
+              >{c}</button>
             )
           })}
         </div>
@@ -706,11 +712,14 @@ function CaseSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides')
             : v3.color.card
           const color = isSelected && isCorrect && answered ? '#fff' : v3.color.text
           return (
-            <div key={i} onClick={() => handleSelect(i)}
-              style={{ background: bg, color, borderRadius: 14, padding: '14px 18px', fontSize: 14, fontWeight: 600, cursor: answered ? 'default' : 'pointer', transition: 'background 0.2s', lineHeight: 1.5, WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation' }}
+            <button type="button" key={i} onClick={() => handleSelect(i)}
+              disabled={!!answered}
+              role="radio"
+              aria-checked={isSelected ?? false}
+              style={{ background: bg, color, borderRadius: 14, padding: '14px 18px', fontSize: 16, fontWeight: 600, cursor: answered ? 'default' : 'pointer', transition: 'background 0.2s', lineHeight: 1.5, WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation', border: 'none', font: 'inherit', textAlign: 'left', width: '100%', minHeight: 44 }}
             >
               {opt.label}
-            </div>
+            </button>
           )
         })}
       </div>

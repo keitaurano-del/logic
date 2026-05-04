@@ -127,7 +127,7 @@ export function AccountSettingsScreen({ onBack, currentUser, onOpenLogin, onLogo
                   ) : todayChanged ? (
                     <div style={{ fontSize: 12, color: v3.color.text3 }}>今日は変更済み</div>
                   ) : (
-                    <div onClick={() => setEditingName(true)} style={{ fontSize: 13, color: v3.color.accent, fontWeight: 700, cursor: 'pointer', padding: '4px 8px' }}>変更</div>
+                    <button type="button" onClick={() => setEditingName(true)} style={{ fontSize: 13, color: v3.color.accent, fontWeight: 700, cursor: 'pointer', padding: '4px 8px', background: 'transparent', border: 'none', minHeight: 32 }}>変更</button>
                   )}
                 </div>
               )}
@@ -148,14 +148,14 @@ export function AccountSettingsScreen({ onBack, currentUser, onOpenLogin, onLogo
             >ログアウト</div>
           ) : (
             <>
-              <div onClick={() => onOpenLogin('google')} style={{ padding: '16px 18px', borderBottom: `1px solid ${v3.color.line}`, cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <button type="button" onClick={() => onOpenLogin('google')} style={{ padding: '16px 18px', borderBottom: `1px solid ${v3.color.line}`, cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'transparent', border: 'none', borderTop: 'none', borderLeft: 'none', borderRight: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%', minHeight: 44 }}>
                 <span style={{ fontSize: 15, fontWeight: 600 }}>Googleでログイン</span>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2" strokeLinecap="round"><path d="M9 18l6-6-6-6"/></svg>
-              </div>
-              <div onClick={() => onOpenLogin('email')} style={{ padding: '16px 18px', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              </button>
+              <button type="button" onClick={() => onOpenLogin('email')} style={{ padding: '16px 18px', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'transparent', border: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%', minHeight: 44 }}>
                 <span style={{ fontSize: 15, fontWeight: 600 }}>メールアドレスでログイン</span>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2" strokeLinecap="round"><path d="M9 18l6-6-6-6"/></svg>
-              </div>
+              </button>
             </>
           )}
         </div>

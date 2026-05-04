@@ -4,6 +4,7 @@ import { hasCompletedPlacement, loadPlacementResult } from '../placementData'
 import { API_BASE } from './apiBase'
 import { getStreak, getStudyDates, getCompletedLessons, getXp } from '../stats'
 import { getPoints } from './homeHelpers'
+import { LoadingIndicator } from '../components/LoadingIndicator'
 
 
 interface RankingScreenProps {
@@ -192,7 +193,11 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
           )}
 
           {/* ランキングリスト */}
-          {loading && <div style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: 16, textAlign: 'center', color: '#7A849E', fontSize: 16 }}>読み込み中…</div>}
+          {loading && (
+            <div style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: 16, textAlign: 'center' }}>
+              <LoadingIndicator label="読み込み中" />
+            </div>
+          )}
           {!loading && rankData && rankData.total > 0 && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {rankData.top.map((e) => {

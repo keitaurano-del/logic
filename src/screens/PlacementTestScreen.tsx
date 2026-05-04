@@ -23,6 +23,7 @@ import { ArrowLeftIcon, ArrowRightIcon, CheckIcon } from '../icons'
 import { Button } from '../components/Button'
 import { IconButton } from '../components/IconButton'
 import { RadarChart } from '../components/RadarChart'
+import { LoadingIndicator } from '../components/LoadingIndicator'
 import { haptic } from '../platform/haptics'
 import { API_BASE } from './apiBase'
 import { getXp } from '../stats'
@@ -112,8 +113,8 @@ export function PlacementTestScreen({ onComplete, onBack }: PlacementTestScreenP
   // ── Quiz ────────────────────────────────────────────
   if (!currentQ) {
     return (
-      <div className="stack">
-        <p style={{ padding: 'var(--s-6)', textAlign: 'center' }}>問題の読み込み中...</p>
+      <div className="stack" style={{ padding: 'var(--s-6)', textAlign: 'center' }}>
+        <LoadingIndicator label="問題の読み込み中" />
       </div>
     )
   }

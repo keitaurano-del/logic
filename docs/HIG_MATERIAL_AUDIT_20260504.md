@@ -14,7 +14,7 @@
 |---|---|---|---|
 | **Phase 0** リリースブロッカー | 8h | ~7h 相当 | ✅ ほぼ完了（PR #73） |
 | **Phase 1** デザインシステム土台 | 32h | ~24h 相当 | ✅ ほぼ完了（PR #73） |
-| **Phase 2** 全画面 HIG/M3 適合 | 60h | ~18h 相当 | 🟡 中盤（高優先 5 画面 back button + 8 画面 触覚 + ローディング置換） |
+| **Phase 2** 全画面 HIG/M3 適合 | 60h | ~32h 相当 | 🟡 50%超（V3画面 div→button 全件、Switch 統一、4画面 ローディング置換、12画面 触覚） |
 | **Phase 3** 個別最適化 | 80h | 0h | ⚪ 未着手（次セッション以降） |
 | **Phase 4** 仕上げ・検証 | 24h | ~3h 相当（build/lint/cap sync 通過） | 🟡 自動チェックのみ |
 
@@ -63,17 +63,30 @@
   - `FlashcardsScreen.tsx` `handleReview` (again→warning, good/easy→selection)
   - `RoleplayChatScreen.tsx` `pickScriptChoice` / `pickApiChoice` → `haptic.light()`
   - `AppShell.tsx` Tab 切替 → `haptic.light()`（既存）
-- ✅ `<div onClick>` → `<button>` 化（HomeScreenV3 の 2 箇所 + `AILargeCard` 内 1 箇所、aria-label 付加）
-- ✅ ローディングスピナーを `<LoadingIndicator label="読み込み中">` に置換（FermiRankingScreen, FeedbackDashboardScreen）
+- ✅ `<div onClick>` → `<button>` 化 (約 25 箇所)
+  - HomeScreenV3 の 2 箇所 + `AILargeCard` 内 1 箇所
+  - RoadmapScreenV3 の 5 箇所（`CourseResultCard`, `LessonResultCard`, `CategoryCard`, レッスン行 2 種）
+  - ProfileScreenV3 の 3 箇所（実力診断テスト, ログアウトボタン, `SettingRow`）
+  - PersonalCourseScreen の 3 箇所（戻るボタン 2, レッスン行）
+  - LessonStoriesScreen の 3 箇所（multi-select / single-select / 単純選択肢, role=radio/checkbox）
+  - AccountSettingsScreen の 3 箇所（変更ボタン, Google ログイン, メールログイン）
+  - OnboardingScreen の 2 箇所（スライド ドット, キャンペーンバナー）
+- ✅ ローディング表示を `<LoadingIndicator label>` に置換 (4 画面)
+  - FermiRankingScreen, FeedbackDashboardScreen, RankingScreen, PlacementTestScreen
+- ✅ `Switch` 共通コンポーネント採用 (2 画面)
+  - SettingsScreen の `Toggle` を Switch wrapper に
+  - NotificationSettingsScreen の `Toggle` を Switch wrapper に
+- ✅ 触覚追加 (Phase 2 第 3 波 / 3 画面)
+  - ReportProblemScreen `handleSubmit` → `haptic.light()`
+  - WorksheetScreen `handleSubmit` → `haptic.light()`
+  - FeedbackScreen `handleSubmit` → `haptic.light()`
 
 ### Phase 2 残（次セッション以降）
-- 残 41 画面の Header を `<Header>` コンポーネントに置換
-- 残 30+ の `<div onClick>` 全件 `<button>` 化
-- 既存 spinner を `<LoadingIndicator>` に置換
-- 既存 `<select>` を `<ActionSheet>`/`<Switch>` に置換
+- 残 35 画面の Header を `<Header>` コンポーネントに統一
+- 残 5+ の `<div onClick>` (旧画面 HomeScreen.tsx 5件 / 旧 ProfileScreen / 旧 RoadmapScreen 等)
 - 全 px → rem 化 (font-size 275 件)
-- 触覚を Tab 切替・Submit・削除確認等に挿入（一部済）
 - ハードコード色値 残 600+ 件の CSS 変数化
+- 既存 `<select>` を `<ActionSheet>` 系に置換
 
 ### 検証
 - ✅ `npm run build` (TypeScript + Vite)

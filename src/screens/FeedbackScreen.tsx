@@ -4,6 +4,7 @@ import { Button } from '../components/Button'
 import { IconButton } from '../components/IconButton'
 import { API_BASE } from './apiBase'
 import { getLocale } from '../i18n'
+import { haptic } from '../platform/haptics'
 
 interface FeedbackScreenProps {
   onBack: () => void
@@ -21,6 +22,7 @@ export function FeedbackScreen({ onBack }: FeedbackScreenProps) {
 
   const handleSubmit = async () => {
     if (!message.trim() || sending) return
+    haptic.light()
     setSending(true)
     setError('')
     try {

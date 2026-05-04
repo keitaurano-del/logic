@@ -277,13 +277,18 @@ function WelcomeSlides({ idx, setIdx, onDone }: { idx: number; setIdx: (i: numbe
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
           {SLIDES.map((_, i) => (
-            <div key={i} onClick={() => setIdx(i)} style={{
-              width: i === idx ? 24 : 8,
-              height: 8, borderRadius: 4,
-              background: i === idx ? slide.accentColor : `${slide.accentColor}30`,
-              transition: 'all 0.35s ease',
-              cursor: 'pointer',
-            }} />
+            <button type="button" key={i} onClick={() => setIdx(i)}
+              aria-label={`スライド ${i + 1} / ${SLIDES.length}`}
+              aria-current={i === idx ? 'true' : 'false'}
+              style={{
+                width: i === idx ? 24 : 8,
+                height: 8, borderRadius: 4,
+                background: i === idx ? slide.accentColor : `${slide.accentColor}30`,
+                transition: 'all 0.35s ease',
+                cursor: 'pointer',
+                border: 'none',
+                padding: 0,
+              }} />
           ))}
         </div>
       </div>
@@ -639,7 +644,10 @@ function OnboardingPricingView({ onNext, onSelectPlan, onBack }: { onNext: () =>
       </div>
 
       {/* キャンペーンバナー（タップで決済） */}
-      <div onClick={handleCampaignTap} style={{ margin: '0 16px 16px', background: 'linear-gradient(135deg,#FF6B35,#FF4D6D)', borderRadius: 14, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer', opacity: loading ? 0.7 : 1 }}>
+      <button type="button" onClick={handleCampaignTap}
+        aria-label="期間限定キャンペーン: スタンダード年払いが¥1,980 (通常¥2,730)"
+        disabled={loading}
+        style={{ margin: '0 16px 16px', background: 'linear-gradient(135deg,#FF6B35,#FF4D6D)', borderRadius: 14, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer', opacity: loading ? 0.7 : 1, border: 'none', color: '#fff', font: 'inherit', textAlign: 'left', width: 'calc(100% - 32px)' }}>
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" style={{ flexShrink: 0 }}>
           <path d="M12 2c0 0-4 4-4 9a4 4 0 0 0 8 0c0-5-4-9-4-9z"/><path d="M12 14c0 0-2 1-2 3a2 2 0 0 0 4 0c0-2-2-3-2-3z"/>
         </svg>
@@ -648,7 +656,7 @@ function OnboardingPricingView({ onNext, onSelectPlan, onBack }: { onNext: () =>
           <div style={{ fontSize: 12, opacity: 0.9, marginTop: 2 }}>スタンダード年払いが今だけ <strong style={{ fontSize: 15 }}>¥1,980</strong> <span style={{ textDecoration: 'line-through', opacity: 0.7 }}>¥2,730</span></div>
         </div>
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-      </div>
+      </button>
 
       {/* 機能比較テーブル */}
       <div style={{ margin: '0 16px 20px', background: 'rgba(255,255,255,0.06)', borderRadius: 16, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>

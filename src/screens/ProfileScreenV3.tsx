@@ -111,12 +111,15 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
 
         {/* 実力診断テスト */}
         {onOpenPlacementTest && (
-          <div onClick={onOpenPlacementTest} style={{
-            background: `linear-gradient(135deg, ${v3.color.accentSoft} 0%, rgba(108,142,245,.1) 100%)`,
-            border: `1px solid ${v3.color.accent}40`,
-            borderRadius: v3.radius.card, padding: '16px 18px',
-            cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14,
-          }}>
+          <button type="button" onClick={onOpenPlacementTest}
+            aria-label="実力診断テスト: 5軸スキル診断で最適なコースを見つけよう"
+            style={{
+              background: `linear-gradient(135deg, ${v3.color.accentSoft} 0%, rgba(108,142,245,.1) 100%)`,
+              border: `1px solid ${v3.color.accent}40`,
+              borderRadius: v3.radius.card, padding: '16px 18px',
+              cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14,
+              color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%',
+            }}>
             <div style={{ width: 40, height: 40, borderRadius: 12, background: v3.color.accent, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={v3.color.bg} strokeWidth="2.5" strokeLinecap="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
             </div>
@@ -125,7 +128,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
               <div style={{ fontSize: 13, color: v3.color.text2, marginTop: 2 }}>5軸スキル診断で最適なコースを見つけよう</div>
             </div>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5"><polyline points="9 18 15 12 9 6" /></svg>
-          </div>
+          </button>
         )}
 
         {/* 設定 */}
@@ -138,9 +141,10 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
           <SettingRow icon="shield" name="プライバシーポリシー" sub="" onClick={() => window.open('/privacy.html', '_blank')} />
           <SettingRow icon="scale" name="特定商取引法に基づく表記" sub="" onClick={() => window.open('/tokushoho.html', '_blank')} />
         </div>
-        <div onClick={handleLogout} style={{ background: 'transparent', border: '1px solid rgba(252,165,165,.4)', borderRadius: 14, padding: 13, textAlign: 'center', fontSize: 14, fontWeight: 700, color: '#FCA5A5', cursor: 'pointer' }}>
+        <button type="button" onClick={handleLogout}
+          style={{ background: 'transparent', border: '1px solid rgba(252,165,165,.4)', borderRadius: 14, padding: 13, textAlign: 'center', fontSize: 14, fontWeight: 700, color: '#FCA5A5', cursor: 'pointer', font: 'inherit', width: '100%', minHeight: 44 }}>
           ログアウト
-        </div>
+        </button>
       </div>
 
       {/* ボトムシート */}
@@ -311,13 +315,15 @@ function SettingRow({ icon, name, sub, onClick }: { icon: string; name: string; 
   }
 
   return (
-    <div onClick={onClick} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px', cursor: 'pointer', borderBottom: `1px solid ${v3.color.line}` }}>
+    <button type="button" onClick={onClick}
+      aria-label={sub ? `${name}: ${sub}` : name}
+      style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px', cursor: 'pointer', borderBottom: `1px solid ${v3.color.line}`, background: 'transparent', border: 'none', borderTop: 'none', borderLeft: 'none', borderRight: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%', minHeight: 44 }}>
       <div style={{ width: 36, height: 36, borderRadius: 10, background: v3.color.accentSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{iconSvg[icon]}</div>
       <div style={{ flex: 1 }}>
         <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 2, color: '#FFFFFF' }}>{name}</div>
         {sub && <div style={{ fontSize: 13, color: v3.color.text2, fontWeight: 500 }}>{sub}</div>}
       </div>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6" /></svg>
-    </div>
+    </button>
   )
 }
