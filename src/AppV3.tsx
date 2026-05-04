@@ -27,6 +27,7 @@ const AIProblemScreen = lazy(() => import('./screens/AIProblemScreen').then(m =>
 const FeedbackScreen = lazy(() => import('./screens/FeedbackScreen').then(m => ({ default: m.FeedbackScreen })))
 const FeedbackDashboardScreen = lazy(() => import('./screens/FeedbackDashboardScreen').then(m => ({ default: m.FeedbackDashboardScreen })))
 const PlacementTestScreen = lazy(() => import('./screens/PlacementTestScreen').then(m => ({ default: m.PlacementTestScreen })))
+const PersonalCourseScreen = lazy(() => import('./screens/PersonalCourseScreen').then(m => ({ default: m.PersonalCourseScreen })))
 const PricingScreen = lazy(() => import('./screens/PricingScreen').then(m => ({ default: m.PricingScreen })))
 // PricingV3.tsx は AppV3 では未使用。PricingScreen.tsx が最新・完全な実装（startCheckout 接続済み）であるため、
 // PricingV3 は削除せず残しておく（将来参照用）
@@ -98,6 +99,7 @@ type Screen =
   | { type: 'feedback' }
   | { type: 'feedback-dashboard' }
   | { type: 'placement-test' }
+  | { type: 'personal-course' }
   | { type: 'pricing' }
   | { type: 'streak' }
   | { type: 'settings'; section?: 'account' | 'notifications' | 'plan' }
@@ -391,6 +393,8 @@ function AppV3() {
         <RoadmapScreenV3
           onOpenLesson={handleOpenLesson}
           onOpenCategory={(cat) => navigate({ type: 'roadmap', category: cat as any })}
+          onOpenPersonalCourse={() => navigate({ type: 'personal-course' })}
+          onOpenPlacementTest={() => navigate({ type: 'placement-test' })}
         />
       )}
 
@@ -451,8 +455,15 @@ function AppV3() {
       {screen.type === 'placement-test' && (
         <PlacementTestScreen
           onBack={handleBack}
-          onComplete={() => navigate({ type: 'deviation' })}
-          onSkip={handleBack}
+          onComplete={() => navigate({ type: 'personal-course' })}
+        />
+      )}
+
+      {screen.type === 'personal-course' && (
+        <PersonalCourseScreen
+          onStartLesson={handleOpenLesson}
+          onExit={() => { setTab('home'); navigate({ type: 'home' }, true) }}
+          onBack={handleBack}
         />
       )}
 

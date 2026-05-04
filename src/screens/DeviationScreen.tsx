@@ -5,12 +5,11 @@ import {
   recommendedLessons,
   computeAxisScores,
   axisLabel,
-  recommendCourses,
+  levelLabel,
   type AxisScore,
 } from '../placementData'
 import { getAllLessonsFlat } from '../lessonData'
-import { getCourseById } from '../courseData'
-import { ArrowLeftIcon, SparklesIcon } from '../icons'
+import { ArrowLeftIcon } from '../icons'
 import { Button } from '../components/Button'
 import { IconButton } from '../components/IconButton'
 import { RadarChart } from '../components/RadarChart'
@@ -63,16 +62,6 @@ export function DeviationScreen({ onBack, onRetakeTest, onStartLesson }: Deviati
       ? computeAxisScores(result.answers)
       : []
 
-  // コース推薦
-  const courseIds = result.recommendedCourseIds.length
-    ? result.recommendedCourseIds
-    : axisScores.length
-      ? recommendCourses(axisScores, result.deviation)
-      : []
-  const recommendedCourses = courseIds
-    .map(id => getCourseById(id))
-    .filter((c): c is NonNullable<typeof c> => !!c)
-
   // レッスン推薦
   const recommendedLessonIds = result.recommendedLessonIds.length
     ? result.recommendedLessonIds
@@ -87,6 +76,7 @@ export function DeviationScreen({ onBack, onRetakeTest, onStartLesson }: Deviati
     key: a.axis,
     label: axisLabel(a.axis).short,
     level: a.level,
+    levelLabel: levelLabel(a.level),
   }))
   const weakest = axisScores.length ? [...axisScores].sort((a, b) => a.level - b.level)[0] : null
   const strongest = axisScores.length ? [...axisScores].sort((a, b) => b.level - a.level)[0] : null
@@ -189,17 +179,17 @@ export function DeviationScreen({ onBack, onRetakeTest, onStartLesson }: Deviati
                 }}
               >
                 <span style={{ fontSize: 13, fontWeight: 700 }}>{axisLabel(a.axis).label}</span>
-                <span style={{ fontSize: 14, fontWeight: 800, color: '#6C8EF5' }}>Lv.{a.level}</span>
+                <span style={{ fontSize: 13, fontWeight: 800, color: '#6C8EF5' }}>{levelLabel(a.level)}</span>
               </div>
             ))}
           </div>
           {weakest && strongest && weakest.axis !== strongest.axis && (
             <div style={{ marginTop: 'var(--s-3)', padding: '12px', background: 'var(--bg-page, rgba(0,0,0,.04))', borderRadius: 12 }}>
               <div style={{ fontSize: 13, marginBottom: 4 }}>
-                💪 <b>強み:</b> {axisLabel(strongest.axis).label}（Lv.{strongest.level}）
+                💪 <b>強み:</b> {axisLabel(strongest.axis).label}（{levelLabel(strongest.level)}）
               </div>
               <div style={{ fontSize: 13 }}>
-                📈 <b>伸びしろ:</b> {axisLabel(weakest.axis).label}（Lv.{weakest.level}）
+                📈 <b>伸びしろ:</b> {axisLabel(weakest.axis).label}（{levelLabel(weakest.level)}）
               </div>
             </div>
           )}
@@ -275,53 +265,6 @@ export function DeviationScreen({ onBack, onRetakeTest, onStartLesson }: Deviati
         </div>
         <p style={{ fontSize: 16, lineHeight: 1.7 }}>{rank.comment}</p>
       </div>
-
-      {/* ── おすすめコース ───────────────────────── */}
-      {recommendedCourses.length > 0 && (
-        <section style={{ marginTop: 'var(--s-4)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 'var(--s-2)' }}>
-            <SparklesIcon width={18} height={18} />
-            <h2 style={{ fontSize: 20, margin: 0 }}>
-              おすすめコース
-            </h2>
-          </div>
-          <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 'var(--s-3)' }}>
-            診断結果に基づくあなたに最適なコース
-          </p>
-          <div className="stack-sm">
-            {recommendedCourses.map((c, idx) => (
-              <div
-                key={c.id}
-                className="card card-compact"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 12,
-                  border: idx === 0 ? '1.5px solid var(--brand, #6C8EF5)' : '1px solid var(--border)',
-                  background: idx === 0 ? 'rgba(108,142,245,.06)' : undefined,
-                }}
-              >
-                <div style={{
-                  width: 38, height: 38, borderRadius: 10, flexShrink: 0,
-                  background: 'rgba(108,142,245,.18)',
-                  color: '#6C8EF5',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontWeight: 800, fontSize: 16,
-                }}>{idx + 1}</div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 2 }}>
-                    {c.category} · {c.level}
-                  </div>
-                  <div style={{ fontSize: 15, fontWeight: 700, lineHeight: 1.4 }}>{c.title}</div>
-                  <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 4, lineHeight: 1.5 }}>
-                    {c.description}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
 
       {/* ── 個別レッスン推薦 ─────────────────────── */}
       {recommendedLessonIds.length > 0 && (

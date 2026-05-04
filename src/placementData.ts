@@ -629,11 +629,12 @@ export function startSession(): PlacementSession {
 export function getCurrentQuestion(session: PlacementSession): PlacementQuestion | null {
   const slot = session.plan[session.cursor]
   if (!slot) return null
-  // Phase Aは事前に確定
-  if (slot.phase === 'A' && slot.questionId) {
+  // 既に問題が確定していればキャッシュを返す（Phase A/B共通）。
+  // 過去にPhase Bでは毎回再抽選しており、再レンダーで問題が変わる不具合があった。
+  if (slot.questionId) {
     return getQuestionPool().find(q => q.id === slot.questionId) ?? null
   }
-  // Phase B: その軸のPhase A結果を見て難度確定
+  // Phase B 初回: その軸のPhase A結果を見て難度確定
   const aAnswer = session.answers.find(a => a.axis === slot.axis && session.plan.find(p => p.questionId === a.questionId)?.phase === 'A')
   const difficulty: Difficulty = aAnswer?.correct ? 'hard' : 'easy'
   const used = new Set(session.answers.map(a => a.questionId).concat(session.plan.filter(p => p.questionId).map(p => p.questionId)))
@@ -668,13 +669,22 @@ export function computeAxisScores(answers: PlacementAnswer[]): AxisScore[] {
     const phaseA = axisAns[0]
     const phaseB = axisAns[1]
 
+    // 厳しめスコアリング:
+    //  - medium正解 + hard正解 → Lv.5 (卓越)
+    //  - medium正解 + easyフォールバック正解 → Lv.4 (上級)
+    //  - medium正解 + hard不正解 → Lv.3 (中級: 基礎は理解、応用で詰まる)
+    //  - medium不正解 + easy正解 → Lv.2 (基礎: 基礎のみ)
+    //  - medium不正解 + easy不正解 → Lv.1 (入門)
+    //  - phase B未回答（暫定）はphase A結果で評価
     let level: 1 | 2 | 3 | 4 | 5 = 1
     if (phaseA?.correct && phaseB?.correct) {
       level = phaseB.difficulty === 'hard' ? 5 : 4
     } else if (phaseA?.correct && phaseB && !phaseB.correct) {
-      level = 4 // medium正解、hardでつまずく → 中級
-    } else if (!phaseA?.correct && phaseB?.correct) {
-      level = phaseB.difficulty === 'easy' ? 2 : 3
+      level = 3 // medium正解だが応用でつまずく → 中級
+    } else if (phaseA?.correct) {
+      level = 3 // 暫定: medium正解のみ
+    } else if (phaseB?.correct) {
+      level = 2 // 基礎のみ正解
     } else {
       level = 1
     }
@@ -689,10 +699,10 @@ export function calcDeviation(answers: PlacementAnswer[]): number {
   if (answers.length === 0) return 50
   const totalRaw = answers.reduce((sum, a) => sum + (a.correct ? DIFF_VALUE[a.difficulty] : 0), 0)
   // 最大スコア: 5 medium(2) + 5 hard(3) = 25 → 偏差値75
-  // 中央スコア: 全medium正解で 5 medium(2) + 5 easy(1) = 15 → 偏差値58
-  // 最低: 0 → 偏差値28
-  const dev = Math.round(28 + (totalRaw / 25) * 47)
-  return Math.max(25, Math.min(78, dev))
+  // 全問不正解: 0 → 偏差値22 (厳しめ下限)
+  // 旧式は28起点・47幅で底上げが大きかった。22起点・53幅に変更。
+  const dev = Math.round(22 + (totalRaw / 25) * 53)
+  return Math.max(20, Math.min(78, dev))
 }
 
 // 後方互換: 旧APIシグネチャ
@@ -718,6 +728,79 @@ export function rankLabel(dev: number): { label: string; color: string; comment:
   return en
     ? { label: 'Starter', color: '#9B8E7E', comment: 'Begin with the fundamentals of logical thinking, step by step.' }
     : { label: '入門', color: '#9B8E7E', comment: 'ロジカルシンキングの基礎から順番に学びましょう。' }
+}
+
+// 5段階レベル → 言葉ラベル
+export function levelLabel(level: number): string {
+  switch (level) {
+    case 5: return '卓越'
+    case 4: return '上級'
+    case 3: return '中級'
+    case 2: return '基礎'
+    default: return '入門'
+  }
+}
+
+// 軸ごとの強み・弱みコメント（言語化）
+function axisDetailComment(axis: SkillAxis, level: 1 | 2 | 3 | 4 | 5): string {
+  const a = axisLabel(axis).label
+  if (level >= 5) return `${a}は卓越レベル。応用問題でも論点を即座に押さえられている。`
+  if (level >= 4) return `${a}は上級レベル。フレームを使いこなし、実務でも安定して活用できる。`
+  if (level >= 3) return `${a}は中級レベル。基礎は理解しているが、応用問題で抜け漏れが出やすい。`
+  if (level >= 2) return `${a}は基礎レベル。基本問題は解けるが、応用への橋渡しが課題。`
+  return `${a}は入門レベル。まずはこの軸の基本概念から押さえ直す必要がある。`
+}
+
+// 詳細な診断コメント（複数行）
+export function detailedDiagnosis(axisScores: AxisScore[], deviation: number): string[] {
+  const sorted = [...axisScores].sort((a, b) => a.level - b.level)
+  const weakest = sorted[0]
+  const second = sorted[1]
+  const strongest = sorted[sorted.length - 1]
+  const avgLevel = axisScores.reduce((s, a) => s + a.level, 0) / Math.max(1, axisScores.length)
+  const lines: string[] = []
+
+  // 全体評価
+  if (deviation >= 65) {
+    lines.push('全体としてトップクラスの論理思考力。基本〜応用まで安定して解けており、実務でも複雑な論点を整理できる段階にあります。')
+  } else if (deviation >= 55) {
+    lines.push('全体として上級レベル。論理の基礎は完成しており、応用問題でも筋の良い切り口を選べています。あと一歩で「使いこなす側」に到達します。')
+  } else if (deviation >= 45) {
+    lines.push('全体として中級レベル。主要フレームは理解できていますが、応用問題で論点を一段深く詰める力がもう一段必要です。')
+  } else if (deviation >= 35) {
+    lines.push('全体として初級〜基礎レベル。基本概念の理解にバラつきが残っており、まずは土台となる「型」を一つずつ確実にしましょう。')
+  } else {
+    lines.push('全体として入門レベル。論理思考の用語・フレームが定着していない段階です。焦らず基本問題から順に積み上げていきましょう。')
+  }
+
+  // 強み・弱み
+  if (strongest && strongest.level >= 3 && strongest.axis !== weakest?.axis) {
+    lines.push(`強みは「${axisLabel(strongest.axis).label}」（${levelLabel(strongest.level)}）。${axisDetailComment(strongest.axis, strongest.level)}`)
+  }
+  if (weakest) {
+    lines.push(`最大の伸びしろは「${axisLabel(weakest.axis).label}」（${levelLabel(weakest.level)}）。${axisDetailComment(weakest.axis, weakest.level)}`)
+  }
+  if (second && second.axis !== weakest?.axis && second.level <= 2) {
+    lines.push(`次の課題は「${axisLabel(second.axis).label}」（${levelLabel(second.level)}）。ここを底上げすることで全体の安定感が増します。`)
+  }
+
+  // バランス・偏り
+  const minLv = Math.min(...axisScores.map(a => a.level))
+  const maxLv = Math.max(...axisScores.map(a => a.level))
+  if (maxLv - minLv >= 3) {
+    lines.push('軸間の差が大きく、得意・不得意がはっきり分かれています。総合力を上げるには、最も弱い軸を優先的に底上げするのが近道です。')
+  } else if (avgLevel >= 4 && maxLv - minLv <= 1) {
+    lines.push('5軸とも高水準で揃っており、バランス型の論理思考力です。今後はケース・戦略など実務応用で更に磨きをかけられます。')
+  } else if (avgLevel <= 2 && maxLv - minLv <= 1) {
+    lines.push('まだ全体的に基礎が固まりきっていない段階です。1日1レッスン、優先順位を絞って積み上げていきましょう。')
+  }
+
+  // 学習方針
+  if (weakest) {
+    lines.push(`次のアクション: 「${axisLabel(weakest.axis).label}」を補強するレッスンから着手。あなた専用のパーソナルコース（弱点優先順）を自動生成しています。`)
+  }
+
+  return lines
 }
 
 // ───────────────────────────────────────────────────────────────
@@ -860,4 +943,101 @@ export function buildResultFromSession(session: PlacementSession): PlacementResu
     recommendedCourseIds,
     answers: session.answers,
   }
+}
+
+// ───────────────────────────────────────────────────────────────
+// パーソナルコース（既存レッスンの組み合わせ）
+// ───────────────────────────────────────────────────────────────
+
+export type PersonalCourse = {
+  id: 'personal'
+  title: string
+  description: string
+  lessonIds: number[]
+  axisOrder: SkillAxis[]
+  createdAt: string
+}
+
+const PERSONAL_COURSE_KEY = 'logic-personal-course'
+// パーソナルコース内で使うレッスンIDの拡張プール（弱い軸ごとに3〜5件用意）
+const AXIS_LESSON_POOL: Record<SkillAxis, number[]> = {
+  structuring: [20, 21, 23, 22, 68],
+  reasoning:   [25, 26, 27, 68, 23],
+  critical:    [40, 41, 71, 42, 43, 69],
+  hypothesis:  [50, 51, 52, 53, 54, 70],
+  business:    [200, 201, 401, 400, 89, 90],
+}
+
+export function buildPersonalCourse(axisScores: AxisScore[], deviation: number): PersonalCourse {
+  const sorted = [...axisScores].sort((a, b) => a.level - b.level)
+  const axisOrder = sorted.map(a => a.axis)
+  const ids: number[] = []
+  // 弱い軸から優先して2レッスンずつ拾う
+  for (const a of sorted) {
+    let picked = 0
+    for (const id of AXIS_LESSON_POOL[a.axis]) {
+      if (ids.includes(id)) continue
+      ids.push(id)
+      picked++
+      if (picked >= 2) break
+    }
+    if (ids.length >= 8) break
+  }
+  // 8件未満なら他軸から穴埋め
+  if (ids.length < 6) {
+    for (const a of sorted) {
+      for (const id of AXIS_LESSON_POOL[a.axis]) {
+        if (ids.includes(id)) continue
+        ids.push(id)
+        if (ids.length >= 8) break
+      }
+      if (ids.length >= 8) break
+    }
+  }
+  const limit = Math.min(8, Math.max(5, ids.length))
+  const lessonIds = ids.slice(0, limit)
+  const weakestLabel = sorted[0] ? axisLabel(sorted[0].axis).label : ''
+  const title = weakestLabel
+    ? `あなた専用コース：${weakestLabel}を軸に底上げ`
+    : 'あなた専用パーソナルコース'
+  const description = weakestLabel
+    ? `診断結果（偏差値${deviation}）に基づき、最も伸びしろのある「${weakestLabel}」から優先的に学べる${lessonIds.length}レッスン構成のあなた専用コースです。`
+    : `診断結果（偏差値${deviation}）に基づき、あなたの弱点軸を優先的に補強する${lessonIds.length}レッスン構成のコースです。`
+  return {
+    id: 'personal',
+    title,
+    description,
+    lessonIds,
+    axisOrder,
+    createdAt: new Date().toISOString(),
+  }
+}
+
+export function savePersonalCourse(c: PersonalCourse): void {
+  try {
+    localStorage.setItem(PERSONAL_COURSE_KEY, JSON.stringify(c))
+  } catch { /* silent */ }
+}
+
+export function loadPersonalCourse(): PersonalCourse | null {
+  try {
+    const raw = localStorage.getItem(PERSONAL_COURSE_KEY)
+    if (!raw) return null
+    const parsed = JSON.parse(raw) as Partial<PersonalCourse>
+    if (!parsed.lessonIds || !Array.isArray(parsed.lessonIds)) return null
+    return {
+      id: 'personal',
+      title: parsed.title ?? 'あなた専用パーソナルコース',
+      description: parsed.description ?? '',
+      lessonIds: parsed.lessonIds,
+      axisOrder: parsed.axisOrder ?? [],
+      createdAt: parsed.createdAt ?? new Date().toISOString(),
+    }
+  } catch {
+    return null
+  }
+}
+
+export function clearPersonalCourse(): void {
+  try { localStorage.removeItem(PERSONAL_COURSE_KEY) } catch { /* silent */ }
 }
