@@ -4,7 +4,7 @@
  * モックアップ: lv3-courses.html
  */
 import { useState, useMemo } from 'react'
-import type { ReactNode } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 import { v3 } from '../styles/tokensV3'
 import { LessonThumbnail } from '../components/LessonThumbnail'
 import LessonIcon from '../LessonIcon'
@@ -12,6 +12,7 @@ import { getAllLessonsFlat } from '../lessonData'
 import type { LessonData } from '../lessonData'
 import { getCompletedLessons } from '../stats'
 import { getCoursesByCategory, getCoursesByGroup, COURSES, COURSE_GROUPS, type Course } from '../courseData'
+import { DRILL_GROUPS, getDrillsByGroup, type Drill } from '../drillData'
 import { loadPersonalCourse, axisLabel } from '../placementData'
 
 const IMG = '/images/v3'
@@ -215,6 +216,7 @@ interface RoadmapScreenV3Props {
   onOpenCategory: (cat: string) => void
   onOpenPersonalCourse?: () => void
   onOpenPlacementTest?: () => void
+  onOpenDrill?: (drillId: string) => void
   initialCategory?: string
   onBack?: () => void
 }
@@ -305,6 +307,9 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
           onOpenPlacementTest={props.onOpenPlacementTest}
         />
 
+        {/* コース — 大セクション見出し */}
+        <SectionHeader label="コース" sub="体系的に学ぶ。1コース = 5レッスン構成。" />
+
         {/* グループ別コース一覧 — 5グループ × 全21コース */}
         {COURSE_GROUPS.map(group => {
           const groupCourses = getCoursesByGroup(group.id)
@@ -328,6 +333,31 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
                     />
                   )
                 })}
+              </div>
+            </div>
+          )
+        })}
+
+        {/* ドリル — コースと同列の大セクション */}
+        <SectionHeader label="ドリル" sub="単発の問いを1本ずつ解く。フェルミ推定で実戦感覚を鍛える。" style={{ marginTop: 8 }} />
+
+        {DRILL_GROUPS.map(group => {
+          const drills = getDrillsByGroup(group.id)
+          if (drills.length === 0) return null
+          return (
+            <div key={group.id} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <div style={{ padding: '8px 4px 0' }}>
+                <div style={{ fontSize: 16, fontWeight: 700, color: v3.color.text, letterSpacing: '-.005em' }}>{group.label}</div>
+                <div style={{ fontSize: 12, color: v3.color.text2, marginTop: 2, lineHeight: 1.45 }}>{group.description}</div>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {drills.map(drill => (
+                  <DrillRow
+                    key={drill.id}
+                    drill={drill}
+                    onClick={() => props.onOpenDrill?.(drill.id)}
+                  />
+                ))}
               </div>
             </div>
           )
@@ -662,6 +692,40 @@ const CATEGORY_LABEL_JP: Record<string, string> = {
   '経営戦略': '経営戦略',
 }
 
+
+// ──────── 大セクション見出し（コース / ドリル）────────
+function SectionHeader({ label, sub, style }: { label: string; sub: string; style?: CSSProperties }) {
+  return (
+    <div style={{ padding: '4px 4px 0', display: 'flex', alignItems: 'baseline', gap: 10, ...style }}>
+      <div style={{ fontSize: 20, fontWeight: 800, color: v3.color.text, letterSpacing: '-.01em' }}>{label}</div>
+      <div style={{ fontSize: 12, color: v3.color.text2, lineHeight: 1.45 }}>{sub}</div>
+    </div>
+  )
+}
+
+// ──────── ドリルの行（横長カード）────────
+function DrillRow({ drill, onClick }: { drill: Drill; onClick: () => void }) {
+  return (
+    <div onClick={onClick}
+      style={{ background: v3.color.card, borderRadius: 14, padding: '12px 14px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 12, boxShadow: v3.shadow.card }}>
+      <div style={{
+        width: 40, height: 40, borderRadius: 10, flexShrink: 0,
+        background: v3.color.accentSoft, color: v3.color.accent,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+      }}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <path d="M3 3v18h18" />
+          <path d="M7 14l4-4 4 4 5-7" />
+        </svg>
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: v3.color.text, lineHeight: 1.35, marginBottom: 2 }}>{drill.title}</div>
+        <div style={{ fontSize: 11, color: v3.color.text2, fontWeight: 500 }}>{drill.level} · 約{drill.estimatedMinutes}分</div>
+      </div>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+  )
+}
 
 function CategoryCard({ name, meta, progress, onClick, image }: { name: string; meta: string; progress?: string; onClick: () => void; image?: string }) {
   return (

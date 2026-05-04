@@ -41,6 +41,7 @@ const LanguageScreen = lazy(() => import('./screens/LanguageScreen').then(m => (
 const RankScreen = lazy(() => import('./screens/RankScreen').then(m => ({ default: m.RankScreen })))
 const LoginScreen = lazy(() => import('./screens/LoginScreen').then(m => ({ default: m.LoginScreen })))
 const DailyProblemScreen = lazy(() => import('./screens/DailyProblemScreen').then(m => ({ default: m.DailyProblemScreen })))
+const DrillScreen = lazy(() => import('./screens/DrillScreen').then(m => ({ default: m.DrillScreen })))
 import { allLessons, getAllLessonsFlat } from './lessonData'
 import { getCurrentLevel } from './screens/homeHelpers'
 
@@ -114,6 +115,7 @@ type Screen =
   | { type: 'onboarding' }
   | { type: 'login-gate'; feature: 'ai-gen' | 'roleplay' | 'advanced-lessons' }
   | { type: 'beta-code' }
+  | { type: 'drill'; drillId: string }
 
 // LESSON_LIST is now managed within RoadmapScreen
 
@@ -395,6 +397,7 @@ function AppV3() {
           onOpenCategory={(cat) => navigate({ type: 'roadmap', category: cat as any })}
           onOpenPersonalCourse={() => navigate({ type: 'personal-course' })}
           onOpenPlacementTest={() => navigate({ type: 'placement-test' })}
+          onOpenDrill={(drillId) => navigate({ type: 'drill', drillId })}
         />
       )}
 
@@ -402,9 +405,14 @@ function AppV3() {
         <RoadmapScreenV3
           onOpenLesson={handleOpenLesson}
           onOpenCategory={(cat) => navigate({ type: 'roadmap', category: cat as any })}
+          onOpenDrill={(drillId) => navigate({ type: 'drill', drillId })}
           initialCategory={screen.category}
           onBack={handleBack}
         />
+      )}
+
+      {screen.type === 'drill' && (
+        <DrillScreen drillId={screen.drillId} onBack={handleBack} />
       )}
 
       {screen.type === 'flashcards' && <FlashcardsScreen onBack={handleBack} mode={screen.mode} />}
