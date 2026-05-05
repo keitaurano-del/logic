@@ -24,6 +24,13 @@ export default defineConfig([
       globals: globals.browser,
     },
     rules: {
+      // 「intentionally unused」を示す `_foo` 命名規約を尊重 (Phase 2 で多用)
+      '@typescript-eslint/no-unused-vars': ['error', {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+        caughtErrorsIgnorePattern: '^_',
+      }],
+
       // jsx-a11y curated rules — focus on screen-reader and keyboard a11y.
       // Full recommended set produces too many false positives on existing code;
       // these are the high-signal rules from docs/HIG_MATERIAL_AUDIT_20260504.md §6.

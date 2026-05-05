@@ -453,7 +453,7 @@ function HomeDesktop({
   onOpenDeviation,
   onOpenRanking,
   onOpenRoleplay,
-  onOpenFlashcards: _onOpenFlashcards, // eslint-disable-line @typescript-eslint/no-unused-vars
+  onOpenFlashcards: _onOpenFlashcards,
   onOpenAIGen,
   onOpenFeedback,
   data,

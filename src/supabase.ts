@@ -43,7 +43,7 @@ export async function loginWithGoogle(): Promise<{ user: User | null; error?: st
       if (error) return { user: null, error: error.message }
       return { user: null }
     }
-  } catch (error) {
+  } catch (_error) {
     return { user: null, error: 'ログインに失敗しました' }
   }
 }

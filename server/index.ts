@@ -63,9 +63,9 @@ app.set('trust proxy', 1)
 function parseCorsOrigins(raw: string | undefined): string[] {
   const fallback = ['http://localhost:5173']
   if (!raw) return fallback
-  // eslint-disable-next-line no-control-regex
   const cleaned = raw
     .split(',')
+    // eslint-disable-next-line no-control-regex
     .map(s => s.replace(/[\x00-\x1f\x7f"']/g, '').trim())
     .filter(Boolean)
   if (cleaned.length === 0) {

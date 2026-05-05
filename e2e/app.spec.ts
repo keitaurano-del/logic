@@ -38,7 +38,6 @@ test.describe('App shell', () => {
 test.describe('Tab navigation', () => {
   test('Home tab is active by default', async ({ page }) => {
     await goto(page)
-    const homeBtn = page.locator('[data-tab="home"], .tab, .sidebar-nav-item').first()
     // Home screen content visible
     await expect(page.locator('h1')).toBeVisible()
   })
@@ -93,7 +92,7 @@ test.describe('Home screen', () => {
     await expect(page.locator('text=Categories')).toBeVisible()
   })
 
-  test('category tile navigates to lesson', async ({ page, isMobile }) => {
+  test('category tile navigates to lesson', async ({ page, isMobile: _isMobile }) => {
     await goto(page)
     const tile = page.locator('.cat-tile, .cat-card').first()
     await tile.click()
@@ -207,7 +206,7 @@ test.describe('Lesson screen', () => {
     await page.locator('section').filter({ hasText: 'レッスン一覧' }).locator('.cat-tile').first().click()
   })
 
-  test('back button returns to lessons tab', async ({ page, isMobile }) => {
+  test('back button returns to lessons tab', async ({ page, isMobile: _isMobile }) => {
     const backBtn = page.locator('button[aria-label="Back"], button', { hasText: '戻る' }).first()
     if (await backBtn.isVisible()) {
       await backBtn.click()
