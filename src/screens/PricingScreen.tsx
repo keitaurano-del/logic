@@ -239,7 +239,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
         </div>
 
         {error && (
-          <div style={{ margin: '12px 0 0', background: 'rgba(220,38,38,0.08)', border: '1px solid rgba(220,38,38,0.3)', borderRadius: 12, padding: '12px 16px', color: '#EF4444', fontSize: 14 }}>
+          <div style={{ margin: '12px 0 0', background: 'rgba(220,38,38,0.08)', border: '1px solid rgba(220,38,38,0.3)', borderRadius: 12, padding: '12px 16px', color: 'var(--md-sys-color-error)', fontSize: 14 }}>
             {error}
           </div>
         )}

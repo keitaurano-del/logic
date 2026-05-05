@@ -14,7 +14,7 @@
 |---|---|---|---|
 | **Phase 0** リリースブロッカー | 8h | ~7h 相当 | ✅ ほぼ完了（PR #73） |
 | **Phase 1** デザインシステム土台 | 32h | ~24h 相当 | ✅ ほぼ完了（PR #73） |
-| **Phase 2** 全画面 HIG/M3 適合 | 60h | ~56h 相当 | 🟡 93%（21画面 Header 統一、5旧画面削除、12画面 触覚、Switch、ローディング、ブランド色 RGBA sweep） |
+| **Phase 2** 全画面 HIG/M3 適合 | 60h | ~58h 相当 | 🟢 97%（22画面 Header 統一、5旧画面削除、12画面 触覚、Switch、ローディング、色 sweep ×4） |
 | **Phase 3** 個別最適化 | 80h | 0h | ⚪ 未着手（次セッション以降） |
 | **Phase 4** 仕上げ・検証 | 24h | ~3h 相当（build/lint/cap sync 通過） | 🟡 自動チェックのみ |
 
@@ -81,27 +81,30 @@
   - WorksheetScreen `handleSubmit` → `haptic.light()`
   - FeedbackScreen `handleSubmit` → `haptic.light()`
 
-- ✅ Header コンポーネント統一 (21 画面累計)
+- ✅ Header コンポーネント統一 (22 画面累計)
   - LanguageScreen, RankScreen, StreakScreen, CompletedLessonsScreen, StudyTimeScreen,
-    FlashcardsScreen, SettingsScreen, RoleplayChatScreen, FeedbackScreen, JournalInputScreen,
-    ReportProblemScreen, AIProblemScreen, DailyFermiScreen, DailyProblemScreen, DeviationScreen,
-    WorksheetScreen, FermiScreen (Mobile/Desktop), PlacementTestScreen,
-    NotificationSettingsScreen, AccountSettingsScreen, PersonalCourseScreen, PricingScreen,
-    AIProblemGenScreen, RoadmapScreenV3
+    FlashcardsScreen, SettingsScreen, RoleplayChatScreen (空状態+メイン両方),
+    FeedbackScreen, JournalInputScreen, ReportProblemScreen, AIProblemScreen,
+    DailyFermiScreen, DailyProblemScreen, DeviationScreen, WorksheetScreen,
+    FermiScreen (Mobile/Desktop), PlacementTestScreen, NotificationSettingsScreen,
+    AccountSettingsScreen, PersonalCourseScreen, PricingScreen, AIProblemGenScreen,
+    RoadmapScreenV3
   - `screen-header` div + IconButton+ArrowLeftIcon パターン → `<Header title onBack>` に
   - V3 風カスタムヘッダー (44pt 戻る + タイトル + 副題/バッジ) → `<Header trailing>` で対応
+  - HomeScreenV3 / OnboardingScreen / LoginScreen / ProfileScreenV3 はタブルート/特殊レイアウトのため Header 化対象外
 - ✅ 旧画面削除 (5 ファイル, ~1700 行削減)
   - `RoadmapScreen.tsx` / `ProfileScreen.tsx` / `StatsScreen.tsx` / `PricingV3.tsx` / `ThemeSettingsScreen.tsx`
   - すべて V3 系で代替済み、import なしを確認した上で削除
-- ✅ ハードコード色値 第 2 sweep (4 種類, 約 30 件)
+- ✅ ハードコード色値 sweep (累計 ~70 件)
   - `'#6C8EF5'` (legacy accent) → `'var(--md-sys-color-primary)'`
-  - `'#F87171'` / `'#FCA5A5'` / `'#DC2626'` (red) → `'var(--md-sys-color-error)'`
+  - `'#F87171'` / `'#FCA5A5'` / `'#DC2626'` / `'#F04438'` / `'#EF4444'` (red destructive) → `'var(--md-sys-color-error)'`
+  - `rgba(108,142,245, ...)` (legacy accent alpha) → `rgba(168,192,255, ...)` (新 M3 primary RGB)
 
 ### Phase 2 残（次セッション以降）
-- 残 ~5 画面の Header 統一（HomeScreenV3 / OnboardingScreen 等の特殊レイアウト）
 - 全 px → rem 化 (font-size 275 件)
 - ハードコード色値 残 400+ 件の CSS 変数化（カテゴリ色は意図的に残す）
-- 既存 `<select>` を `<ActionSheet>` 系に置換
+- 既存 `<select>` を `<ActionSheet>` 系に置換（OS native picker でも実用的なため優先度低）
+- `index.css` のレガシー patch selectors (130 件) の削除（ハードコード色値を完了させた後）
 
 ### 検証
 - ✅ `npm run build` (TypeScript + Vite)
