@@ -150,12 +150,18 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
       {/* ボトムシート */}
       {sheet && (
         <div
+          role="dialog"
+          aria-modal="true"
           style={{ position: 'fixed', inset: 0, zIndex: 100, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'flex-end' }}
-          onClick={() => setSheet(null)}
         >
+          <button
+            type="button"
+            aria-label="シートを閉じる"
+            onClick={() => setSheet(null)}
+            style={{ position: 'absolute', inset: 0, background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}
+          />
           <div
-            style={{ background: v3.color.card, borderRadius: '20px 20px 0 0', width: '100%', maxHeight: '70vh', overflowY: 'auto', padding: '20px 20px 40px' }}
-            onClick={e => e.stopPropagation()}
+            style={{ position: 'relative', background: v3.color.card, borderRadius: '20px 20px 0 0', width: '100%', maxHeight: '70vh', overflowY: 'auto', padding: '20px 20px 40px' }}
           >
             {/* ドラッグバー */}
             <div style={{ width: 40, height: 4, background: v3.color.cardSoft, borderRadius: 2, margin: '0 auto 20px' }} />
@@ -205,10 +211,11 @@ function LessonsSheet({ onOpenLesson }: { onOpenLesson: (id: number) => void }) 
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {completedLessons.map(l => (
-            <div
+            <button
+              type="button"
               key={l.id}
               onClick={() => onOpenLesson(l.id)}
-              style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', background: v3.color.bg, borderRadius: 12, cursor: 'pointer' }}
+              style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', background: v3.color.bg, borderRadius: 12, cursor: 'pointer', border: 'none', textAlign: 'left', width: '100%', font: 'inherit', color: 'inherit' }}
             >
               <div style={{ width: 36, height: 36, borderRadius: 10, background: v3.color.accentSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}></div>
               <div style={{ flex: 1 }}>
@@ -216,7 +223,7 @@ function LessonsSheet({ onOpenLesson }: { onOpenLesson: (id: number) => void }) 
                 <div style={{ fontSize: 12, color: v3.color.text2, marginTop: 2 }}>{l.category || ''}</div>
               </div>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5"><polyline points="9 18 15 12 9 6" /></svg>
-            </div>
+            </button>
           ))}
         </div>
       )}
@@ -291,14 +298,15 @@ function getStudiedThisWeek(): boolean[] {
 
 function StatCard({ val, label, onClick }: { val: string; label: string; onClick: () => void }) {
   return (
-    <div
+    <button
+      type="button"
       onClick={onClick}
-      style={{ background: v3.color.card, borderRadius: 16, padding: '14px 8px', textAlign: 'center', boxShadow: '0 4px 16px rgba(168,192,255,.08)', cursor: 'pointer', position: 'relative' }}
+      style={{ background: v3.color.card, borderRadius: 16, padding: '14px 8px', textAlign: 'center', boxShadow: '0 4px 16px rgba(168,192,255,.08)', cursor: 'pointer', position: 'relative', border: 'none', font: 'inherit', color: 'inherit', width: '100%' }}
     >
       <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, color: v3.color.accent, letterSpacing: '-.03em', lineHeight: 1 }}>{val}</div>
       <div style={{ fontSize: 11, fontWeight: 600, color: v3.color.text2, marginTop: 5 }}>{label}</div>
       <div style={{ position: 'absolute', bottom: 6, right: 8, fontSize: 10, color: v3.color.text3 }}>›</div>
-    </div>
+    </button>
   )
 }
 

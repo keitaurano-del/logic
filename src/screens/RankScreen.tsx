@@ -263,16 +263,23 @@ export function RankScreen({ onBack }: RankScreenProps) {
       {/* Tier Detail Bottom Sheet */}
       {selectedTier && (
         <div
-          onClick={() => setSelectedTier(null)}
+          role="dialog"
+          aria-modal="true"
           style={{
             position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.55)',
             zIndex: 200, display: 'flex', alignItems: 'flex-end',
             animation: 'fade-in-up 0.2s ease-out both',
           }}
         >
+          <button
+            type="button"
+            aria-label="閉じる"
+            onClick={() => setSelectedTier(null)}
+            style={{ position: 'absolute', inset: 0, background: 'transparent', border: 'none', padding: 0, cursor: 'pointer' }}
+          />
           <div
-            onClick={(e) => e.stopPropagation()}
             style={{
+              position: 'relative',
               background: 'var(--bg-card)',
               borderRadius: '24px 24px 0 0',
               padding: '24px 20px 36px',

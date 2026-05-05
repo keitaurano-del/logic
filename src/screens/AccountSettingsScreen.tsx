@@ -137,10 +137,11 @@ export function AccountSettingsScreen({ onBack, currentUser, onOpenLogin, onLogo
         {/* ログイン/ログアウト */}
         <div style={{ background: v3.color.card, borderRadius: v3.radius.card, overflow: 'hidden' }}>
           {currentUser ? (
-            <div
+            <button
+              type="button"
               onClick={handleLogout}
-              style={{ padding: '16px 18px', cursor: 'pointer', color: 'var(--md-sys-color-error)', fontSize: 15, fontWeight: 700, textAlign: 'center' }}
-            >ログアウト</div>
+              style={{ padding: '16px 18px', cursor: 'pointer', color: 'var(--md-sys-color-error)', fontSize: 15, fontWeight: 700, textAlign: 'center', background: 'transparent', border: 'none', width: '100%', font: 'inherit', minHeight: 44 }}
+            >ログアウト</button>
           ) : (
             <>
               <button type="button" onClick={() => onOpenLogin('google')} style={{ padding: '16px 18px', borderBottom: `1px solid ${v3.color.line}`, cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'transparent', border: 'none', borderTop: 'none', borderLeft: 'none', borderRight: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%', minHeight: 44 }}>

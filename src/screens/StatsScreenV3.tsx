@@ -18,6 +18,8 @@ interface StatsScreenV3Props {
   onBack: () => void
 }
 
+const WEEK_DAYS_FULL = ['月', '火', '水', '木', '金', '土', '日'] as const
+
 export function StatsScreenV3({ onBack: _onBack }: StatsScreenV3Props) {
   const [period, setPeriod] = useState<Period>('month')
   const studyDates = useMemo(() => new Set(getStudyDates()), [])
@@ -33,8 +35,8 @@ export function StatsScreenV3({ onBack: _onBack }: StatsScreenV3Props) {
   const [rankData, setRankData] = useState<RankingData | null>(null)
   const [rankLoading, setRankLoading] = useState(true)
 
-  // ダミーランキング（ユーザー数が少ない間のフォールバック）
-  const dummyRanking: RankingData = {
+  // ダミーランキング（ユーザー数が少ない間のフォールバック）— deviation 依存で再生成
+  const dummyRanking: RankingData = useMemo(() => ({
     yourRank: 3,
     total: 128,
     yourDeviation: deviation ?? 55,
@@ -45,7 +47,7 @@ export function StatsScreenV3({ onBack: _onBack }: StatsScreenV3Props) {
       { rank: 4, nickname: 'Ryu', deviation: 61.2, isYou: false },
       { rank: 5, nickname: 'thinker23', deviation: 59.8, isYou: false },
     ]
-  }
+  }), [deviation])
 
   useEffect(() => {
     let cancelled = false
@@ -66,10 +68,10 @@ export function StatsScreenV3({ onBack: _onBack }: StatsScreenV3Props) {
         }
       })
     return () => { cancelled = true }
-  }, [])
+  }, [dummyRanking])
 
-  // 月カレンダー
-  const today = new Date()
+  // 月カレンダー（今日は mount 時に固定）
+  const today = useMemo(() => new Date(), [])
   const year = today.getFullYear()
   const month = today.getMonth()
   const firstDay = new Date(year, month, 1)
@@ -80,18 +82,17 @@ export function StatsScreenV3({ onBack: _onBack }: StatsScreenV3Props) {
   const studiedThisMonth = Array.from(studyDates).filter(d => d.startsWith(`${year}-${String(month + 1).padStart(2, '0')}`)).length
 
   // 週グラフ（日別の学習回数）
-  const weekDays = ['月', '火', '水', '木', '金', '土', '日']
   const weekStudyCounts = useMemo(() => {
     const todayDow = (today.getDay() + 6) % 7
     const monday = new Date(today)
     monday.setDate(today.getDate() - todayDow)
-    return weekDays.map((_, i) => {
+    return WEEK_DAYS_FULL.map((_, i) => {
       const d = new Date(monday)
       d.setDate(monday.getDate() + i)
       const iso = d.toISOString().slice(0, 10)
       return studyDates.has(iso) ? 1 : 0
     })
-  }, [studyDates])
+  }, [studyDates, today])
 
   // 学習タイムライン (最新の完了レッスン)
   const recentLessons = useMemo(() => {
@@ -115,9 +116,11 @@ export function StatsScreenV3({ onBack: _onBack }: StatsScreenV3Props) {
         {/* Period selector */}
         <div style={{ display: 'flex', background: v3.color.card, borderRadius: 14, padding: 4, gap: 2, flexShrink: 0 }}>
           {(['day', 'week', 'month'] as Period[]).map(p => (
-            <div
+            <button
+              type="button"
               key={p}
               onClick={() => setPeriod(p)}
+              aria-pressed={period === p}
               style={{
                 flex: 1,
                 padding: 8,
@@ -128,10 +131,12 @@ export function StatsScreenV3({ onBack: _onBack }: StatsScreenV3Props) {
                 background: period === p ? v3.color.accent : 'transparent',
                 borderRadius: 10,
                 cursor: 'pointer',
+                border: 'none',
+                font: 'inherit',
               }}
             >
               {p === 'day' ? '今日' : p === 'week' ? '週' : '月'}
-            </div>
+            </button>
           ))}
         </div>
 
@@ -209,7 +214,7 @@ export function StatsScreenV3({ onBack: _onBack }: StatsScreenV3Props) {
                 <div style={{ fontSize: 12, color: v3.color.text2 }}>{studiedThisMonth}日学習</div>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', gap: 4 }}>
-                {weekDays.map(d => (
+                {WEEK_DAYS_FULL.map(d => (
                   <div key={d} style={{ fontSize: 10, fontWeight: 700, color: v3.color.text3, textAlign: 'center', padding: '4px 0' }}>{d}</div>
                 ))}
                 {Array.from({ length: totalCells }).map((_, i) => {
@@ -247,7 +252,7 @@ export function StatsScreenV3({ onBack: _onBack }: StatsScreenV3Props) {
           <div style={{ background: v3.color.card, borderRadius: v3.radius.card, padding: 18, flexShrink: 0, boxShadow: v3.shadow.card }}>
             <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 16 }}>今週の学習リズム</div>
             <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, height: 140 }}>
-              {weekDays.map((d, i) => {
+              {WEEK_DAYS_FULL.map((d, i) => {
                 const cnt = weekStudyCounts[i]
                 const max = Math.max(...weekStudyCounts, 1)
                 const h = (cnt / max) * 100

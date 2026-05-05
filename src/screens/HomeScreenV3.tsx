@@ -223,7 +223,10 @@ function ReviewCard({ due, weak, total, onOpen }: { due: number; weak: number; t
 
   return (
     <div
+      role="button"
+      tabIndex={0}
       onClick={() => onOpen(primaryMode)}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpen(primaryMode) } }}
       style={{
         background: v3.color.card,
         borderRadius: v3.radius.card,

@@ -837,7 +837,8 @@ function PersonalCourseBanner({
   if (!course) {
     if (!onOpenPlacementTest) return null
     return (
-      <div
+      <button
+        type="button"
         onClick={onOpenPlacementTest}
         style={{
           background: v3.color.card,
@@ -849,6 +850,10 @@ function PersonalCourseBanner({
           display: 'flex',
           alignItems: 'center',
           gap: 12,
+          width: '100%',
+          textAlign: 'left',
+          font: 'inherit',
+          color: 'inherit',
         }}
       >
         <div style={{
@@ -867,7 +872,7 @@ function PersonalCourseBanner({
           </div>
         </div>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-      </div>
+      </button>
     )
   }
 
@@ -880,7 +885,8 @@ function PersonalCourseBanner({
   const weakest = course.axisOrder[0]
 
   return (
-    <div
+    <button
+      type="button"
       onClick={onOpenPersonalCourse}
       style={{
         background: `linear-gradient(135deg, ${v3.color.accent}f5, ${v3.color.accent}c0)`,
@@ -891,6 +897,10 @@ function PersonalCourseBanner({
         color: '#fff',
         position: 'relative',
         overflow: 'hidden',
+        border: 'none',
+        width: '100%',
+        textAlign: 'left',
+        font: 'inherit',
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
@@ -915,7 +925,7 @@ function PersonalCourseBanner({
         </div>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
       </div>
-    </div>
+    </button>
   )
 }
 

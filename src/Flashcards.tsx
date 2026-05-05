@@ -153,7 +153,11 @@ export default function Flashcards({ onBack }: Props) {
 
           <div
             className={`fc-card ${flipped ? 'flipped' : ''}`}
+            role="button"
+            tabIndex={0}
+            aria-label={flipped ? '解答表示中' : 'カードをめくる'}
             onClick={() => !flipped && setFlipped(true)}
+            onKeyDown={(e) => { if (!flipped && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); setFlipped(true) } }}
           >
             <div className="fc-card-inner">
               <div className="fc-card-front">

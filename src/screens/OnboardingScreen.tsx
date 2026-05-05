@@ -788,23 +788,29 @@ function RegisterScreen({ onComplete, onSkip, onBack, onNavigateToLogin }: { onC
 
         {/* 利用規約チェックボックス */}
         <label style={{ display: 'flex', alignItems: 'flex-start', gap: 12, cursor: 'pointer' }}>
-          <div
-            onClick={() => setTermsChecked(v => !v)}
+          <input
+            type="checkbox"
+            checked={termsChecked}
+            onChange={() => setTermsChecked(v => !v)}
+            style={{ position: 'absolute', opacity: 0, width: 0, height: 0 }}
+          />
+          <span
+            aria-hidden="true"
             style={{
               width: 22, height: 22, borderRadius: 4, flexShrink: 0,
               border: `2px solid ${termsChecked ? C.teal : C.inputBorder}`,
               background: termsChecked ? C.teal : 'transparent',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              marginTop: 2, cursor: 'pointer',
+              marginTop: 2,
             }}
           >
             {termsChecked && (
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
             )}
-          </div>
+          </span>
           <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.7)', lineHeight: 1.6 }}>
-            <span style={{ color: C.teal, textDecoration: 'underline', cursor: 'pointer' }} onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open('/terms.html', '_blank') }}>利用規約</span>と
-            <span style={{ color: C.teal, textDecoration: 'underline', cursor: 'pointer' }} onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open('/privacy.html', '_blank') }}>プライバシーポリシー</span>に同意する
+            <button type="button" style={{ color: C.teal, textDecoration: 'underline', cursor: 'pointer', background: 'transparent', border: 'none', padding: 0, font: 'inherit' }} onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open('/terms.html', '_blank') }}>利用規約</button>と
+            <button type="button" style={{ color: C.teal, textDecoration: 'underline', cursor: 'pointer', background: 'transparent', border: 'none', padding: 0, font: 'inherit' }} onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open('/privacy.html', '_blank') }}>プライバシーポリシー</button>に同意する
           </span>
         </label>
 

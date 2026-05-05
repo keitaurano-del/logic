@@ -30,20 +30,28 @@ export function HomeCoachmark({ targetRef, onDismiss }: CoachmarkProps) {
 
   return (
     <div
+      role="dialog"
+      aria-modal="true"
       style={{
         position: 'fixed', inset: 0, zIndex: 9999,
         background: 'transparent',
       }}
-      onClick={dismiss}
     >
+      {/* オーバーレイ全体をボタン化（背景タップで dismiss） */}
+      <button
+        type="button"
+        aria-label="チュートリアルを閉じる"
+        onClick={dismiss}
+        style={{ position: 'absolute', inset: 0, background: 'transparent', border: 'none', padding: 0, cursor: 'pointer' }}
+      />
       {/* 上 */}
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: h.top, background: 'rgba(0,0,0,0.72)' }} />
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: h.top, background: 'rgba(0,0,0,0.72)', pointerEvents: 'none' }} />
       {/* 左 */}
-      <div style={{ position: 'absolute', top: h.top, left: 0, width: h.left, height: h.height, background: 'rgba(0,0,0,0.72)' }} />
+      <div style={{ position: 'absolute', top: h.top, left: 0, width: h.left, height: h.height, background: 'rgba(0,0,0,0.72)', pointerEvents: 'none' }} />
       {/* 右 */}
-      <div style={{ position: 'absolute', top: h.top, left: h.left + h.width, right: 0, height: h.height, background: 'rgba(0,0,0,0.72)' }} />
+      <div style={{ position: 'absolute', top: h.top, left: h.left + h.width, right: 0, height: h.height, background: 'rgba(0,0,0,0.72)', pointerEvents: 'none' }} />
       {/* 下 */}
-      <div style={{ position: 'absolute', top: h.top + h.height, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.72)' }} />
+      <div style={{ position: 'absolute', top: h.top + h.height, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.72)', pointerEvents: 'none' }} />
 
       {/* ハイライト枠 */}
       <div
@@ -67,7 +75,6 @@ export function HomeCoachmark({ targetRef, onDismiss }: CoachmarkProps) {
           padding: '16px 18px',
           boxShadow: '0 4px 20px rgba(0,0,0,0.18)',
         }}
-        onClick={e => e.stopPropagation()}
       >
         {/* 三角 */}
         <div style={{
