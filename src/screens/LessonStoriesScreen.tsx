@@ -31,11 +31,14 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
   const [reportDetail, setReportDetail] = useState('')
 
   // ── タッチガード: スライド遷移後 280ms は全タッチを無視 ──
-  const slideEnteredAt = useRef<number>(Date.now())
+  const slideEnteredAt = useRef<number>(0)
   const isGuarded = () => Date.now() - slideEnteredAt.current < 280
   useEffect(() => {
     slideEnteredAt.current = Date.now()
   }, [index])
+
+  // ===== Swipe 用 touchRef（早期 return より前で確保し Hooks 順を固定） =====
+  const touchRef = useRef<{ x: number; y: number; t: number } | null>(null)
 
   const slides: LessonSlide[] = useMemo(() => {
     if (!lesson) return []
@@ -79,7 +82,6 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
   }
 
   // ===== Swipe 対応 =====
-  const touchRef = useRef<{ x: number; y: number; t: number } | null>(null)
   const onTouchStart = (e: React.TouchEvent) => {
     const t = e.touches[0]
     touchRef.current = { x: t.clientX, y: t.clientY, t: Date.now() }
@@ -336,15 +338,17 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
     )
   }
   if (slide.kind === 'concept' || slide.kind === 'intro') {
+    const tag = slide.kind === 'concept' ? slide.tag : slide.tag
+    const example = slide.kind === 'concept' ? slide.example : undefined
     return (
       <>
-        {slide.kind === 'concept' && (slide as any).tag && <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: v3.color.accentSoft, borderRadius: 99, padding: '6px 12px', fontSize: 11, fontWeight: 600, color: v3.color.accent, marginBottom: 24, marginTop: 24 }}>{(slide as any).tag}</span>}
-        <h1 style={{ fontFamily: 'Noto Sans JP', fontSize: 28, fontWeight: 700, lineHeight: 1.4, marginBottom: 20, marginTop: (slide as any).tag ? 0 : 32, letterSpacing: '.005em', color: v3.color.text }}>{slide.title}</h1>
+        {slide.kind === 'concept' && tag && <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: v3.color.accentSoft, borderRadius: 99, padding: '6px 12px', fontSize: 11, fontWeight: 600, color: v3.color.accent, marginBottom: 24, marginTop: 24 }}>{tag}</span>}
+        <h1 style={{ fontFamily: 'Noto Sans JP', fontSize: 28, fontWeight: 700, lineHeight: 1.4, marginBottom: 20, marginTop: tag ? 0 : 32, letterSpacing: '.005em', color: v3.color.text }}>{slide.title}</h1>
         <p style={{ fontSize: 17, lineHeight: 1.85, fontWeight: 400, color: v3.color.text, marginBottom: 20 }} dangerouslySetInnerHTML={{ __html: slide.body }}></p>
-        {(slide as any).example && (
+        {example && (
           <div style={{ background: v3.color.card, borderRadius: 16, padding: 18 }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: v3.color.accent, letterSpacing: '.08em', marginBottom: 8 }}>EXAMPLE</div>
-            <div style={{ fontSize: 15, lineHeight: 1.6, color: v3.color.text }}>{(slide as any).example}</div>
+            <div style={{ fontSize: 15, lineHeight: 1.6, color: v3.color.text }}>{example}</div>
           </div>
         )}
       </>

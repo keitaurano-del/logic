@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect, useRef } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { allLessons, type LessonStep } from '../lessonData'
 import { FlameIcon } from '../icons'
 import { recordCompletion, getCompletedCount, getStreak, getStudyDates, addXp } from '../stats'
@@ -43,7 +43,7 @@ export function LessonScreen({ lessonId, onBack, onComplete, onNextLesson, onRep
   const [animClass, setAnimClass] = useState<'answer-bounce' | 'answer-shake' | ''>('')
   const [showCelebration, setShowCelebration] = useState(false)
   // streak演出用: 完了前後のストリーク差分
-  const streakBefore = useRef(0)
+  const [streakBefore, setStreakBefore] = useState(0)
 
   useEffect(() => {
     if (!animClass) return
@@ -79,7 +79,7 @@ export function LessonScreen({ lessonId, onBack, onComplete, onNextLesson, onRep
 
   const handleNext = () => {
     if (isLast) {
-      streakBefore.current = getStreak()
+      setStreakBefore(getStreak())
       recordCompletion(`lesson-${lesson.id}`)
       addXp('lesson')
       setShowCelebration(true)
@@ -99,7 +99,7 @@ export function LessonScreen({ lessonId, onBack, onComplete, onNextLesson, onRep
     return (
       <CelebrationScreen
         lessonTitle={lesson.title}
-        streakBefore={streakBefore.current}
+        streakBefore={streakBefore}
         onComplete={onComplete}
         onNextLesson={onNextLesson}
       />
@@ -303,7 +303,7 @@ function QuizStep({ step, catLabel, accent, selected, submitted, isLast, onSelec
           let badgeBg = 'transparent'
           let badgeBorder = '#E2E8FF'
           let badgeColor = '#7A849E'
-          let textColor = '#0F1523'
+          const textColor = '#0F1523'
 
           if (submitted && correct) {
             bg = '#ECFDF3'; border = '1.5px solid #12B76A'
