@@ -647,7 +647,7 @@ function AppV3() {
             style={{
               width: '100%', padding: '15px', background: nameInput.trim() ? '#6C8EF5' : '#2E3652',
               border: 'none', borderRadius: 12, fontSize: 16, fontWeight: 700,
-              color: nameInput.trim() ? '#1A1F2E' : '#6B82A8',
+              color: nameInput.trim() ? '#FFFFFF' : '#6B82A8',
               cursor: nameInput.trim() ? 'pointer' : 'not-allowed', marginBottom: 10,
             }}
           >{nameSaving ? '保存中…' : '設定する'}</button>

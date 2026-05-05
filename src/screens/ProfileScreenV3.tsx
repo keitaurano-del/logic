@@ -57,7 +57,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
       <div style={{ background: 'linear-gradient(160deg, #1A1F2E 0%, #1E2540 70%, #252C40 100%)', padding: 'calc(env(safe-area-inset-top, 44px) + 14px) 20px 28px', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', right: -50, top: -50, width: 200, height: 200, borderRadius: '50%', background: 'rgba(108,142,245,0.2)', filter: 'blur(40px)', pointerEvents: 'none' }}></div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 18, position: 'relative', zIndex: 1 }}>
-          <div className="profile-avatar" style={{ width: 64, height: 64, borderRadius: '50%', background: `linear-gradient(135deg, ${v3.color.accent}, #9BB3FA)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Inter Tight', sans-serif", fontSize: 26, fontWeight: 900, color: v3.color.bg, boxShadow: `0 0 24px rgba(108,142,245,0.4)` }}>
+          <div className="profile-avatar" style={{ width: 64, height: 64, borderRadius: '50%', background: `linear-gradient(135deg, ${v3.color.accent}, #9BB3FA)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Inter Tight', sans-serif", fontSize: 26, fontWeight: 900, color: '#FFFFFF', boxShadow: `0 0 24px rgba(108,142,245,0.4)` }}>
             {(userName || 'G').slice(0, 1).toUpperCase()}
           </div>
           <div style={{ flex: 1 }}>
@@ -66,7 +66,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
             {!userName && (
               <button
                 onClick={() => onOpenSettings('account')}
-                style={{ marginTop: 8, padding: '6px 16px', background: v3.color.accent, color: v3.color.bg, border: 'none', borderRadius: 99, fontSize: 13, fontWeight: 700, cursor: 'pointer' }}
+                style={{ marginTop: 8, padding: '6px 16px', background: v3.color.accent, color: '#FFFFFF', border: 'none', borderRadius: 99, fontSize: 13, fontWeight: 700, cursor: 'pointer' }}
               >
                 ログイン / 新規登録
               </button>
@@ -121,7 +121,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
               color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%',
             }}>
             <div style={{ width: 40, height: 40, borderRadius: 12, background: v3.color.accent, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={v3.color.bg} strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
             </div>
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 14, fontWeight: 700, color: '#FFFFFF' }}>実力診断テスト</div>
