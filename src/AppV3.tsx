@@ -379,7 +379,7 @@ function AppV3() {
           onOpenLesson={handleOpenLesson}
           onOpenCategory={(cat) => {
             if (cat === 'fermi') navigate({ type: 'daily-fermi' })
-            else navigate({ type: 'roadmap', category: cat as any })
+            else navigate({ type: 'roadmap', category: cat })
           }}
           onOpenRank={() => navigate({ type: 'rank' })}
           onOpenStats={() => navigate({ type: 'profile' }, true)}
@@ -396,7 +396,7 @@ function AppV3() {
       {screen.type === 'lessons' && (
         <RoadmapScreenV3
           onOpenLesson={handleOpenLesson}
-          onOpenCategory={(cat) => navigate({ type: 'roadmap', category: cat as any })}
+          onOpenCategory={(cat) => navigate({ type: 'roadmap', category: cat })}
           onOpenPersonalCourse={() => navigate({ type: 'personal-course' })}
           onOpenPlacementTest={() => navigate({ type: 'placement-test' })}
         />
@@ -405,7 +405,7 @@ function AppV3() {
       {screen.type === 'roadmap' && (
         <RoadmapScreenV3
           onOpenLesson={handleOpenLesson}
-          onOpenCategory={(cat) => navigate({ type: 'roadmap', category: cat as any })}
+          onOpenCategory={(cat) => navigate({ type: 'roadmap', category: cat })}
           initialCategory={screen.category}
           onBack={handleBack}
         />
