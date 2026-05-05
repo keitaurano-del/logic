@@ -393,8 +393,8 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: v3.color.warmSoft, borderRadius: 99, padding: '6px 12px', fontSize: 11, fontWeight: 600, color: v3.color.warm }}>確認問題</span>
           {isMulti && <span style={{ fontSize: 11, color: v3.color.text2, background: v3.color.card, borderRadius: 99, padding: '4px 10px', fontWeight: 600 }}>複数選択</span>}
         </div>
-        <h2 style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.5, marginBottom: 24, color: v3.color.text }}>{slide.question}</h2>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <h2 aria-live="polite" style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.5, marginBottom: 24, color: v3.color.text }}>{slide.question}</h2>
+        <div role={isMulti ? 'group' : 'radiogroup'} aria-label={isMulti ? '選択肢（複数選択）' : '選択肢'} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {slide.choices.map((c, i) => {
             const answered = quizAnswered !== null
             const isCorrect = correctSet.has(i)
@@ -449,7 +449,7 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
         )}
 
         {quizAnswered && (
-          <div style={{ marginTop: 20, padding: 16, background: v3.color.card, borderRadius: 14, fontSize: 15, lineHeight: 1.75 }}>
+          <div role="status" aria-live="assertive" style={{ marginTop: 20, padding: 16, background: v3.color.card, borderRadius: 14, fontSize: 15, lineHeight: 1.75 }}>
             <div style={{ fontSize: 12, fontWeight: 700, color: quizAnswered.correct ? v3.color.accent : 'var(--md-sys-color-error)', marginBottom: 6 }}>{quizAnswered.correct ? '正解' : isMulti ? `不正解 — 正解は${[...correctSet].map(i => slide.choices[i]).join('、')}` : 'もう一度考えてみよう'}</div>
             {slide.explain}
           </div>

@@ -719,7 +719,7 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
         {courses.length > 0 ? `${courses.length}コース · ` : ''}{totalLessons}レッスン · {completedCount > 0 ? `${completedCount}/${totalLessons}完了` : '未着手'}
       </div>
 
-      <div style={{ flex: 1, padding: '0 16px 100px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div role="list" aria-label="コース一覧" style={{ flex: 1, padding: '0 16px 100px', display: 'flex', flexDirection: 'column', gap: 12 }}>
         {/* コース単位表示 */}
         {courses.map((course) => {
           const courseLessons = course.lessonIds.map(id => flat[id]).filter((l): l is LessonData => !!l)
@@ -728,7 +728,7 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
           const firstUndone = courseLessons.find(l => !completed.has(`lesson-${l.id}`))
 
           return (
-            <div key={course.id} style={{ background: v3.color.card, borderRadius: 16, overflow: 'hidden', boxShadow: v3.shadow.card }}>
+            <div key={course.id} role="listitem" aria-label={`${course.category} ${course.level} ${course.title} ${courseCompleted}/${course.lessonIds.length} 完了`} style={{ background: v3.color.card, borderRadius: 16, overflow: 'hidden', boxShadow: v3.shadow.card }}>
               {/* コースヘッダー */}
               <div style={{ padding: '14px 16px 10px', borderBottom: `1px solid ${v3.color.line}` }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4, flexWrap: 'wrap' }}>
@@ -753,7 +753,7 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
                     <div style={{ fontSize: 11, color: v3.color.text3 }}>{course.lessonIds.length}レッスン</div>
                     <div style={{ fontSize: 11, color: v3.color.accent, fontWeight: 600 }}>{courseCompleted}/{course.lessonIds.length}</div>
                   </div>
-                  <div style={{ height: 4, background: `${v3.color.text3}22`, borderRadius: 2, overflow: 'hidden' }}>
+                  <div role="progressbar" aria-valuemin={0} aria-valuemax={course.lessonIds.length} aria-valuenow={courseCompleted} aria-label={`${course.title} 進捗 ${courseCompleted} / ${course.lessonIds.length}`} style={{ height: 4, background: `${v3.color.text3}22`, borderRadius: 2, overflow: 'hidden' }}>
                     <div style={{ height: '100%', width: `${(courseCompleted / course.lessonIds.length) * 100}%`, background: allDone ? '#22C55E' : v3.color.accent, borderRadius: 2, transition: 'width .3s' }} />
                   </div>
                 </div>
@@ -914,7 +914,7 @@ function PersonalCourseBanner({
         {weakest ? `「${axisLabel(weakest).label}」を最優先に` : '弱点を最優先に'} ・ {total}レッスン構成
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-        <div style={{ flex: 1, height: 4, background: 'rgba(255,255,255,0.25)', borderRadius: 2, overflow: 'hidden' }}>
+        <div role="progressbar" aria-valuemin={0} aria-valuemax={total} aria-valuenow={completedCount} aria-label={`パーソナルコース 進捗 ${completedCount} / ${total}`} style={{ flex: 1, height: 4, background: 'rgba(255,255,255,0.25)', borderRadius: 2, overflow: 'hidden' }}>
           <div style={{ height: '100%', width: `${(completedCount / Math.max(1, total)) * 100}%`, background: '#fff', borderRadius: 2, transition: 'width .3s' }} />
         </div>
         <div style={{ fontSize: 12, fontWeight: 700 }}>{completedCount}/{total}</div>
