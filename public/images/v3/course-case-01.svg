@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg-cs1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1F2942"/>
+      <stop offset="100%" stop-color="#101729"/>
+    </linearGradient>
+    <radialGradient id="glow-cs1" cx="0.5" cy="0.4" r="0.45">
+      <stop offset="0%" stop-color="#FFD566" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#FFD566" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="figure-cs1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3B5BBF"/>
+      <stop offset="100%" stop-color="#1B2954"/>
+    </linearGradient>
+    <linearGradient id="figure-cs1b" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7A2E2E"/>
+      <stop offset="100%" stop-color="#3F1717"/>
+    </linearGradient>
+    <linearGradient id="paper-cs1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F4ECC4"/>
+      <stop offset="100%" stop-color="#D8C898"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="400" fill="url(#bg-cs1)"/>
+  <circle cx="400" cy="160" r="240" fill="url(#glow-cs1)"/>
+
+  <!-- 机（俯瞰風で大きく） -->
+  <g transform="translate(400,260)">
+    <ellipse cx="0" cy="40" rx="320" ry="60" fill="#3F2E0F"/>
+    <ellipse cx="0" cy="36" rx="312" ry="56" fill="#5A4214"/>
+    <ellipse cx="0" cy="32" rx="300" ry="50" fill="#7A5A1F" opacity="0.7"/>
+  </g>
+
+  <!-- 紙（ロジックツリー） -->
+  <g transform="translate(400,250)">
+    <rect x="-110" y="-50" width="220" height="100" rx="2" fill="url(#paper-cs1)"/>
+    <!-- 構造化フレームワーク -->
+    <g stroke="#3F2E0F" stroke-width="1.2" fill="none" opacity="0.85">
+      <rect x="-92" y="-40" width="40" height="14" rx="1" fill="#3B5BBF" stroke="none" opacity="0.85"/>
+      <rect x="-30" y="-40" width="40" height="14" rx="1" fill="none"/>
+      <rect x="32" y="-40" width="40" height="14" rx="1" fill="none"/>
+      <rect x="-92" y="-14" width="40" height="14" rx="1" fill="none"/>
+      <rect x="-30" y="-14" width="40" height="14" rx="1" fill="#FFD566" stroke="none" opacity="0.9"/>
+      <rect x="32" y="-14" width="40" height="14" rx="1" fill="none"/>
+      <line x1="-72" y1="-26" x2="-72" y2="-14"/>
+      <line x1="-10" y1="-26" x2="-10" y2="-14"/>
+      <line x1="52" y1="-26" x2="52" y2="-14"/>
+      <line x1="-92" y1="-7" x2="-30" y2="-7" opacity="0"/>
+    </g>
+    <!-- 下半分の書き込み -->
+    <g stroke="#3F2E0F" stroke-width="1" opacity="0.5">
+      <line x1="-90" y1="14" x2="80" y2="14"/>
+      <line x1="-90" y1="28" x2="60" y2="28"/>
+      <line x1="-90" y1="42" x2="80" y2="42"/>
+    </g>
+  </g>
+
+  <!-- 面接官（左、ジャケット） -->
+  <g transform="translate(160,170)">
+    <ellipse cx="0" cy="100" rx="50" ry="8" fill="#0B1424" opacity="0.7"/>
+    <path d="M -40 100 Q -42 30 -22 -8 Q -10 -16 0 -16 Q 10 -16 22 -8 Q 42 30 40 100 Z" fill="url(#figure-cs1)"/>
+    <circle cx="0" cy="-30" r="16" fill="#E7ECF7"/>
+    <path d="M -16 -36 Q 0 -48 16 -36 L 16 -28 L -16 -28 Z" fill="#1A2540"/>
+    <!-- ネクタイ -->
+    <polygon points="-4,-12 4,-12 6,30 0,46 -6,30" fill="#7A2E2E"/>
+  </g>
+
+  <!-- 候補者（右、メモを取る） -->
+  <g transform="translate(640,170)">
+    <ellipse cx="0" cy="100" rx="50" ry="8" fill="#0B1424" opacity="0.7"/>
+    <path d="M -40 100 Q -42 30 -22 -8 Q -10 -16 0 -16 Q 10 -16 22 -8 Q 42 30 40 100 Z" fill="url(#figure-cs1b)"/>
+    <circle cx="0" cy="-30" r="16" fill="#E7ECF7"/>
+    <path d="M -18 -36 Q 0 -50 18 -36 L 18 -26 L -18 -26 Z" fill="#1A2540"/>
+    <!-- 腕（前方に） -->
+    <path d="M -22 -8 Q -36 18 -28 50" fill="none" stroke="url(#figure-cs1b)" stroke-width="11" stroke-linecap="round"/>
+  </g>
+
+  <g fill="#7AAEFF" opacity="0.5">
+    <circle cx="80" cy="50" r="1.4"/>
+    <circle cx="220" cy="38" r="1.2"/>
+    <circle cx="660" cy="50" r="1.4"/>
+    <circle cx="740" cy="80" r="1.0"/>
+  </g>
+</svg>
