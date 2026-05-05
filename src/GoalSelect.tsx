@@ -13,6 +13,8 @@ export default function GoalSelect({ onComplete }: Props) {
   const [selectedGoalId, setSelectedGoalId] = useState<string | null>(null)
   const [date, setDate] = useState('')
   const [minutes, setMinutes] = useState(15)
+  // mount 時の "today" を固定（render 中に Date.now() を呼ばない）
+  const [todayMs] = useState(() => Date.now())
 
   const handleGoalPick = (goalId: string) => {
     setSelectedGoalId(goalId)
@@ -115,7 +117,7 @@ export default function GoalSelect({ onComplete }: Props) {
             <span>
               {selectedRoadmap.steps.length}ステップを{' '}
               {Math.ceil(
-                (new Date(date).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
+                (new Date(date).getTime() - todayMs) / (1000 * 60 * 60 * 24)
               )}
               日で完了
             </span>

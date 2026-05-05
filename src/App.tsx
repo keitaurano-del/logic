@@ -221,9 +221,9 @@ function App() {
   const [streak, setStreak] = useState(getStreak())
   const [studyHours, setStudyHours] = useState(getStudyHours())
   const [, setRoadmapState] = useState(loadRoadmapState())
-  const screenEnteredAt = useRef<number>(Date.now())
+  const screenEnteredAt = useRef<number>(0)
   const [dailyProblem, setDailyProblem] = useState<AIProblemSet | null>(getTodayProblem())
-  const [loadingDaily, setLoadingDaily] = useState(false)
+  const [loadingDaily, setLoadingDaily] = useState(() => !getTodayProblem())
 
   useEffect(() => {
     // Play Store Billing では Stripe の決済検証は不要（2026-05-01削除）
@@ -231,13 +231,13 @@ function App() {
   }, [])
 
   useEffect(() => {
-    if (!getTodayProblem()) {
-      setLoadingDaily(true)
-      generateTodayProblem()
-        .then(p => setDailyProblem(p))
-        .catch(console.error)
-        .finally(() => setLoadingDaily(false))
-    }
+    if (getTodayProblem()) return
+    let cancelled = false
+    generateTodayProblem()
+      .then(p => { if (!cancelled) setDailyProblem(p) })
+      .catch(console.error)
+      .finally(() => { if (!cancelled) setLoadingDaily(false) })
+    return () => { cancelled = true }
   }, [])
 
   // Apply saved theme on mount
@@ -275,9 +275,11 @@ function App() {
     refreshStats()
   }, [refreshStats])
 
-  // Reset timer when entering a sub-screen
+  // Reset timer when entering a sub-screen (also initializes on mount)
   useEffect(() => {
     if (screen.type !== 'home') {
+      screenEnteredAt.current = Date.now()
+    } else if (screenEnteredAt.current === 0) {
       screenEnteredAt.current = Date.now()
     }
   }, [screen])

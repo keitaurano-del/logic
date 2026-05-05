@@ -26,9 +26,11 @@ export default function Notebook() {
     setGenerating(false)
   }, [today, todayEntry])
 
+  // 当日 entry が無い場合は localStorage に作成し再読込、AI summary 未生成なら生成（外部状態同期）
   useEffect(() => {
     if (!todayEntry) {
       upsertEntry({ date: today })
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setEntries(loadEntries())
     }
     if (!todayEntry?.aiSummary) {

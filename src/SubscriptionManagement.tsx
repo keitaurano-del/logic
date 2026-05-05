@@ -17,23 +17,18 @@ type Props = {
 
 export default function SubscriptionManagement({ userId, onChangePlan }: Props) {
   const [subData, setSubData] = useState<SubData | null>(null)
-  const [loading, setLoading] = useState(true)
+  // env 未設定時 / userId 無し時は最初から非ローディングで初期化（render 中の setState を回避）
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || ''
+  const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || ''
+  const canFetch = !!userId && !!supabaseUrl && !!supabaseAnonKey
+  const [loading, setLoading] = useState(canFetch)
 
   const localState = getSubscriptionState()
   const trialDays = daysLeftInTrial()
   const isAndroid = isAndroidNative()
 
   useEffect(() => {
-    if (!userId) {
-      setLoading(false)
-      return
-    }
-    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || ''
-    const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || ''
-    if (!supabaseUrl || !supabaseAnonKey) {
-      setLoading(false)
-      return
-    }
+    if (!canFetch) return
     const supabase = createClient(supabaseUrl, supabaseAnonKey)
     const fetchSub = async () => {
       try {
@@ -48,7 +43,7 @@ export default function SubscriptionManagement({ userId, onChangePlan }: Props) 
       }
     }
     fetchSub()
-  }, [userId])
+  }, [userId, canFetch, supabaseUrl, supabaseAnonKey])
 
   const plan = subData?.plan || localState.plan
   const status = subData?.status || null
