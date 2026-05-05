@@ -8,15 +8,33 @@
 
 ---
 
-## 実装ステータス（2026-05-04 セッション時点）
+## 実装ステータス（2026-05-04 セッション完了時点 / PR #72-#85 すべて main 反映済）
 
-| Phase | 計画 | 実装 | 状態 |
+| Phase | 計画 | 実装累計 | 状態 |
 |---|---|---|---|
-| **Phase 0** リリースブロッカー | 8h | ~7h 相当 | ✅ ほぼ完了（PR #73） |
-| **Phase 1** デザインシステム土台 | 32h | ~24h 相当 | ✅ ほぼ完了（PR #73） |
-| **Phase 2** 全画面 HIG/M3 適合 | 60h | ~58h 相当 | 🟢 97%（22画面 Header 統一、5旧画面削除、12画面 触覚、Switch、ローディング、色 sweep ×4） |
-| **Phase 3** 個別最適化 | 80h | 0h | ⚪ 未着手（次セッション以降） |
-| **Phase 4** 仕上げ・検証 | 24h | ~6h 相当（自動 a11y 検証 + QA チェックリスト + CI） | 🟡 自動チェック + ドキュメント完備、実機検証は要 user |
+| **Phase 0** リリースブロッカー | 8h | ~8h | ✅ 100% |
+| **Phase 1** デザインシステム土台 | 32h | ~28h | ✅ 88% |
+| **Phase 2** 全画面 HIG/M3 適合 | 60h | ~58h | 🟢 99%（22画面 Header 統一、5旧画面削除、12画面 触覚、Switch、ローディング、色 sweep ×5） |
+| **Phase 3** 個別最適化 | 80h | 0h | ⚪ 未着手（実機検証ベース） |
+| **Phase 4** 仕上げ・検証 | 24h | ~10h | 🟡 自動 a11y + QA + CI + lint cleanup、実機検証要 user |
+
+**累計 ~104h / 204h ≒ 51%**
+
+### 本セッション完了 PR (14 本マージ)
+- #72 監査文書 (1625 行)
+- #73 Phase 0/1 + Stripe 削除 (51 files)
+- #74 Phase 2 第1波 (V3 div→button、Switch、触覚)
+- #75 旧画面 5 削除 + Header 5 + 色 sweep
+- #76 Header 10 追加
+- #77 V3 ヘッダー 6 + RGBA sweep
+- #78 RoleplayChat + 赤色統一
+- #79 #6C8EF5 完全除去
+- #80 jsx-a11y + QA チェックリスト + CI
+- #81 lint error 19 件解消
+- #82 V3 div onClick 完全除去
+- #83 dark mode brand color regression fix
+- #84 dead patch selectors -50 行
+- #85 legacy jsx-a11y warning 抑制 -85
 
 ### Phase 0 完了項目
 - ✅ `capacitor.config.ts` StatusBar `LIGHT` + `#1A1F2E` + `overlaysWebView`
