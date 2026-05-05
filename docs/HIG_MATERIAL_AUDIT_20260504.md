@@ -15,10 +15,10 @@
 | **Phase 0** リリースブロッカー | 8h | ~8h | ✅ 100% |
 | **Phase 1** デザインシステム土台 | 32h | ~28h | ✅ 88% |
 | **Phase 2** 全画面 HIG/M3 適合 | 60h | ~58h | ✅ 100%（構造的タスク完了） |
-| **Phase 3** 個別最適化 | 80h | ~62h | ✅ 78%（自動化分すべて完了。残りは個別画面の visual polish） |
-| **Phase 4** 仕上げ・検証 | 24h | ~22h | ✅ 92%（axe-core 13 画面 blocking + lint blocking + chunk split + 装飾 svg aria-hidden 全 48 箇所） |
+| **Phase 3** 個別最適化 | 80h | ~64h | ✅ 80%（自動化分すべて完了。残りは個別画面の visual polish） |
+| **Phase 4** 仕上げ・検証 | 24h | ~22h | ✅ 92%（axe-core 13 画面 blocking + lint blocking + chunk split + 装飾 svg aria-hidden 全 115 箇所 + lesson 中間 export 整理） |
 
-**累計 ~178h / 204h ≒ 87%（自動化実装分）**
+**累計 ~180h / 204h ≒ 88%（自動化実装分 100% 完了）**
 
 > **残り 30h（15%）の内訳**: すべてユーザーの物理デバイス / 操作が必要なタスクのみ。
 > - 4-1 iOS シミュレータ全画面チェック (6h) — Mac + Xcode 必要

@@ -4,7 +4,7 @@ import type { LessonData } from './lessonData'
 // ラテラルシンキング Lessons (ID: 59-61)
 // ========================================
 
-export const lateralIntro: LessonData = {
+const lateralIntro: LessonData = {
   id: 59,
   title: 'ラテラルシンキング入門 — 常識の外へ',
   category: 'ラテラルシンキング',
@@ -66,7 +66,7 @@ export const lateralIntro: LessonData = {
   ],
 }
 
-export const lateralTechniques: LessonData = {
+const lateralTechniques: LessonData = {
   id: 60,
   title: 'ラテラルシンキングの技法',
   category: 'ラテラルシンキング',
@@ -128,7 +128,7 @@ export const lateralTechniques: LessonData = {
   ],
 }
 
-export const lateralPractice: LessonData = {
+const lateralPractice: LessonData = {
   id: 61,
   title: 'ラテラルシンキング実践',
   category: 'ラテラルシンキング',

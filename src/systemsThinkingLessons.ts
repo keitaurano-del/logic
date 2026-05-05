@@ -4,7 +4,7 @@ import type { LessonData } from './lessonData'
 // システムシンキング Lessons (ID: 65-67)
 // ========================================
 
-export const systemsIntro: LessonData = {
+const systemsIntro: LessonData = {
   id: 65,
   title: 'システムシンキング入門 — 全体を見る',
   category: 'システムシンキング',
@@ -66,7 +66,7 @@ export const systemsIntro: LessonData = {
   ],
 }
 
-export const systemsLoops: LessonData = {
+const systemsLoops: LessonData = {
   id: 66,
   title: 'システム原型 — よくあるパターン',
   category: 'システムシンキング',
@@ -128,7 +128,7 @@ export const systemsLoops: LessonData = {
   ],
 }
 
-export const systemsPractice: LessonData = {
+const systemsPractice: LessonData = {
   id: 67,
   title: 'システムシンキング実践',
   category: 'システムシンキング',

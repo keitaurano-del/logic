@@ -4,7 +4,7 @@ import type { LessonData } from './lessonData'
 // デザインシンキング Lessons (ID: 56-58)
 // ========================================
 
-export const designThinkingIntro: LessonData = {
+const designThinkingIntro: LessonData = {
   id: 56,
   title: 'デザインシンキング入門 — 共感から始める',
   category: 'デザインシンキング',
@@ -66,7 +66,7 @@ export const designThinkingIntro: LessonData = {
   ],
 }
 
-export const designThinkingEmpathy: LessonData = {
+const designThinkingEmpathy: LessonData = {
   id: 57,
   title: '共感マップとペルソナ',
   category: 'デザインシンキング',
@@ -128,7 +128,7 @@ export const designThinkingEmpathy: LessonData = {
   ],
 }
 
-export const designThinkingPractice: LessonData = {
+const designThinkingPractice: LessonData = {
   id: 58,
   title: 'デザインシンキング実践',
   category: 'デザインシンキング',

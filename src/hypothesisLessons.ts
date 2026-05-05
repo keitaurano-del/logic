@@ -4,7 +4,7 @@ import type { LessonData } from './lessonData'
 // 仮説思考 Lessons (ID: 50-52)
 // ========================================
 
-export const hypothesisIntro: LessonData = {
+const hypothesisIntro: LessonData = {
   id: 50,
   title: '仮説思考入門 — 考えてから調べる',
   category: '仮説思考',
@@ -66,7 +66,7 @@ export const hypothesisIntro: LessonData = {
   ],
 }
 
-export const hypothesisBuilding: LessonData = {
+const hypothesisBuilding: LessonData = {
   id: 51,
   title: '仮説の立て方と検証',
   category: '仮説思考',
@@ -128,7 +128,7 @@ export const hypothesisBuilding: LessonData = {
   ],
 }
 
-export const hypothesisProblemSolving: LessonData = {
+const hypothesisProblemSolving: LessonData = {
   id: 52,
   title: '仮説ドリブンの課題解決',
   category: '仮説思考',
@@ -205,7 +205,7 @@ export const hypothesisProblemSolving: LessonData = {
 // ========================================
 // Lesson 70: 仮説の検証設計
 // ========================================
-export const hypothesisValidation: LessonData = {
+const hypothesisValidation: LessonData = {
   id: 70,
   title: '仮説の検証設計',
   category: '仮説思考',

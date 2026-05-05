@@ -4,7 +4,7 @@ import type { LessonData } from './lessonData'
 // 課題設定 Lessons (ID: 53-55)
 // ========================================
 
-export const problemSettingIntro: LessonData = {
+const problemSettingIntro: LessonData = {
   id: 53,
   title: '課題設定入門 — 正しい問いを立てる',
   category: '課題設定',
@@ -66,7 +66,7 @@ export const problemSettingIntro: LessonData = {
   ],
 }
 
-export const problemSettingFramework: LessonData = {
+const problemSettingFramework: LessonData = {
   id: 54,
   title: 'イシュー分析 — 解くべき問いを見極める',
   category: '課題設定',
@@ -128,7 +128,7 @@ export const problemSettingFramework: LessonData = {
   ],
 }
 
-export const problemSettingPractice: LessonData = {
+const problemSettingPractice: LessonData = {
   id: 55,
   title: '課題設定の実践ワークショップ',
   category: '課題設定',

@@ -3,7 +3,7 @@ import type { LessonData } from './lessonData'
 // ========================================
 // Lesson 20: MECE — 漏れなくダブりなく
 // ========================================
-export const logicMece: LessonData = {
+const logicMece: LessonData = {
   id: 20,
   title: 'MECE — 漏れなくダブりなく',
   category: 'ロジカルシンキング',
@@ -81,7 +81,7 @@ export const logicMece: LessonData = {
 // ========================================
 // Lesson 21: ロジックツリー — 問題を分解する
 // ========================================
-export const logicTree: LessonData = {
+const logicTree: LessonData = {
   id: 21,
   title: 'ロジックツリー — 問題を分解する',
   category: 'ロジカルシンキング',
@@ -141,7 +141,7 @@ export const logicTree: LessonData = {
 // ========================================
 // Lesson 22: So What / Why So — 論理の検証
 // ========================================
-export const logicSoWhat: LessonData = {
+const logicSoWhat: LessonData = {
   id: 22,
   title: 'So What / Why So — 論理の検証',
   category: 'ロジカルシンキング',
@@ -201,7 +201,7 @@ export const logicSoWhat: LessonData = {
 // ========================================
 // Lesson 23: ピラミッド原則 — 伝わる話し方
 // ========================================
-export const logicPyramid: LessonData = {
+const logicPyramid: LessonData = {
   id: 23,
   title: 'ピラミッド原則 — 伝わる話し方',
   category: 'ロジカルシンキング',
@@ -265,7 +265,7 @@ export const logicPyramid: LessonData = {
 // ========================================
 // Lesson 24: ケーススタディ — 総合演習
 // ========================================
-export const logicCaseStudies: LessonData = {
+const logicCaseStudies: LessonData = {
   id: 24,
   title: 'ケーススタディ — 総合演習',
   category: 'ロジカルシンキング',
@@ -338,7 +338,7 @@ export const logicCaseStudies: LessonData = {
 // ========================================
 // Lesson 25: 演繹法 — 一般から個別へ
 // ========================================
-export const logicDeduction: LessonData = {
+const logicDeduction: LessonData = {
   id: 25,
   title: '演繹法 — 一般から個別を導く',
   category: 'ロジカルシンキング',
@@ -394,7 +394,7 @@ export const logicDeduction: LessonData = {
 // ========================================
 // Lesson 26: 帰納法 — 個別から一般へ
 // ========================================
-export const logicInduction: LessonData = {
+const logicInduction: LessonData = {
   id: 26,
   title: '帰納法 — 個別事例から法則を見つける',
   category: 'ロジカルシンキング',
@@ -450,7 +450,7 @@ export const logicInduction: LessonData = {
 // ========================================
 // Lesson 27: 形式論理 — 「A ならば B」の世界
 // ========================================
-export const logicFormal: LessonData = {
+const logicFormal: LessonData = {
   id: 27,
   title: '形式論理 — 「A ならば B」の世界',
   category: 'ロジカルシンキング',
@@ -512,7 +512,7 @@ export const logicFormal: LessonData = {
 // ========================================
 // Lesson 68: 具体と抽象 — 思考の行き来を自在にする
 // ========================================
-export const logicConcreteAbstract: LessonData = {
+const logicConcreteAbstract: LessonData = {
   id: 68,
   title: '具体と抽象 — 思考の行き来を自在にする',
   category: 'ロジカルシンキング',

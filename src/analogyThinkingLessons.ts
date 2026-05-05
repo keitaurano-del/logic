@@ -4,7 +4,7 @@ import type { LessonData } from './lessonData'
 // アナロジー思考 Lessons (ID: 62-64)
 // ========================================
 
-export const analogyIntro: LessonData = {
+const analogyIntro: LessonData = {
   id: 62,
   title: 'アナロジー思考入門 — 類推で考える',
   category: 'アナロジー思考',
@@ -66,7 +66,7 @@ export const analogyIntro: LessonData = {
   ],
 }
 
-export const analogyDeepDive: LessonData = {
+const analogyDeepDive: LessonData = {
   id: 63,
   title: 'アナロジーの技法 — 遠くから借りる',
   category: 'アナロジー思考',
@@ -128,7 +128,7 @@ export const analogyDeepDive: LessonData = {
   ],
 }
 
-export const analogyPractice: LessonData = {
+const analogyPractice: LessonData = {
   id: 64,
   title: 'アナロジー思考の実践',
   category: 'アナロジー思考',
