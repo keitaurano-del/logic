@@ -238,8 +238,10 @@ function FermiChatModal({ question, locale, onClose }: {
             />
           </div>
           <button
+            type="button"
             onClick={send}
             disabled={!input.trim() || loading}
+            aria-label="送信"
             style={{
               width: 40, height: 40,
               borderRadius: '50%',

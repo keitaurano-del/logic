@@ -104,10 +104,12 @@ export function FeedbackDashboardScreen({ onClose }: Props) {
         borderBottom: `1px solid ${v3.color.line}`,
       }}>
         <button
+          type="button"
           onClick={onClose}
+          aria-label="閉じる"
           style={{ background: v3.color.card, border: 'none', borderRadius: '50%', width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: v3.color.text2, flexShrink: 0 }}
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
         </button>
         <div>
           <div style={{ fontSize: 18, fontWeight: 700 }}>フィードバック分析</div>
