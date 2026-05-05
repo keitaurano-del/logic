@@ -180,7 +180,7 @@ function SituationCard({
             {s.goal}
           </div>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: `${v3.color.accent}14`, borderRadius: 8, padding: '4px 10px' }}>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2"><path d="M9 11l3 3L22 4"/></svg>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" aria-hidden="true"><path d="M9 11l3 3L22 4"/></svg>
             <span style={{ fontSize: 14, fontWeight: 700, color: v3.color.accent }}>{s.frameworkLabel}</span>
           </div>
         </div>
@@ -203,7 +203,7 @@ function SituationCard({
             PRO
           </span>
         ) : (
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5" strokeLinecap="round" style={{ flexShrink: 0, alignSelf: 'center' }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5" strokeLinecap="round" style={{ flexShrink: 0, alignSelf: 'center' }} aria-hidden="true">
             <polyline points="9 18 15 12 9 6"/>
           </svg>
         )}

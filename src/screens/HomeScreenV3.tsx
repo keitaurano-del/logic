@@ -136,7 +136,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
               <span>+30 XP</span>
             </div>
             <div style={{ background: v3.color.accent, color: v3.color.bg, borderRadius: v3.radius.pill, padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700, boxShadow: v3.shadow.cta }}>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill={v3.color.bg}><polygon points="5 3 19 12 5 21 5 3" /></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill={v3.color.bg} aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>
               チャレンジする
             </div>
           </div>
@@ -159,7 +159,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
               <span>+50 XP</span>
             </div>
             <div style={{ background: v3.color.accent, color: v3.color.bg, borderRadius: v3.radius.pill, padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700 }}>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill={v3.color.bg}><polygon points="5 3 19 12 5 21 5 3" /></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill={v3.color.bg} aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>
               レッスンをはじめる
             </div>
           </div>

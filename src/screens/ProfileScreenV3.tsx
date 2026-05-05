@@ -121,13 +121,13 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
               color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%',
             }}>
             <div style={{ width: 40, height: 40, borderRadius: 12, background: v3.color.accent, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={v3.color.bg} strokeWidth="2.5" strokeLinecap="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={v3.color.bg} strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
             </div>
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 14, fontWeight: 700, color: '#FFFFFF' }}>実力診断テスト</div>
               <div style={{ fontSize: 13, color: v3.color.text2, marginTop: 2 }}>5軸スキル診断で最適なコースを見つけよう</div>
             </div>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5"><polyline points="9 18 15 12 9 6" /></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
           </button>
         )}
 
@@ -223,7 +223,7 @@ function LessonsSheet({ onOpenLesson }: { onOpenLesson: (id: number) => void }) 
                 <div style={{ fontSize: 14, fontWeight: 700, color: '#FFFFFF' }}>{l.title}</div>
                 <div style={{ fontSize: 12, color: v3.color.text2, marginTop: 2 }}>{l.category || ''}</div>
               </div>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5"><polyline points="9 18 15 12 9 6" /></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
             </button>
           ))}
         </div>
@@ -333,7 +333,7 @@ function SettingRow({ icon, name, sub, onClick }: { icon: string; name: string; 
         <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 2, color: '#FFFFFF' }}>{name}</div>
         {sub && <div style={{ fontSize: 13, color: v3.color.text2, fontWeight: 500 }}>{sub}</div>}
       </div>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6" /></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
     </button>
   )
 }

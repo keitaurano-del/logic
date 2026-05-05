@@ -137,7 +137,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
           style={{ width: 44, height: 44, borderRadius: '50%', background: v3.color.card, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', WebkitTapHighlightColor: 'transparent', border: 'none', zIndex: 10, position: 'relative', flexShrink: 0 }}
           aria-label="閉じる"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
         </button>
       </div>
 
@@ -201,7 +201,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
               style={{ position: 'absolute', left: 12, bottom: 'calc(env(safe-area-inset-bottom, 0px) + 16px)', zIndex: 8, background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.18)', borderRadius: '50%', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', WebkitTapHighlightColor: 'transparent' }}
               aria-label="前へ"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6" /></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="15 18 9 12 15 6" /></svg>
             </button>
           )}
           <button
@@ -210,7 +210,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
             aria-label="次へ"
           >
             次へ
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={v3.color.bg} strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6" /></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={v3.color.bg} strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
           </button>
         </>
       )}
@@ -222,7 +222,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
           style={{ position: 'absolute', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 28px)', left: '50%', transform: 'translateX(-50%)', display: 'inline-flex', alignItems: 'center', gap: 8, background: v3.color.accent, border: 'none', borderRadius: 99, padding: '18px 48px', fontSize: 16, fontWeight: 700, color: v3.color.bg, cursor: 'pointer', zIndex: 6, boxShadow: `0 4px 20px ${v3.color.accent}70`, WebkitTapHighlightColor: 'transparent' }}
         >
           次へ
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.bg} strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6" /></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.bg} strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
         </button>
       )}
 
@@ -234,7 +234,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
         style={{ position: 'absolute', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 68px)', left: 16, fontSize: 12, color: v3.color.text2, background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 99, cursor: 'pointer', zIndex: 7, padding: '5px 10px', display: slide.kind === 'summary' ? 'none' : 'flex', alignItems: 'center', gap: 5, opacity: 0.9 }}
         title="誤りを報告"
       >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg>誤りを報告
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg>誤りを報告
       </button>
 
       {/* 誤り報告モーダル */}
@@ -416,7 +416,7 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
                   style={{ background: bg, color, borderRadius: 14, padding: '14px 18px', fontSize: 15, fontWeight: 600, cursor: answered ? 'default' : 'pointer', transition: v3.motion.tap, border: border === 'none' ? 'none' : border, display: 'flex', alignItems: 'center', gap: 10, WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation', font: 'inherit', textAlign: 'left', width: '100%', minHeight: 44 }}
                 >
                   <div style={{ width: 20, height: 20, borderRadius: 6, border: `2px solid ${answered ? 'transparent' : isPicked ? v3.color.accent : v3.color.text3}`, background: isPicked && !answered ? v3.color.accent : answered && wasSelected && isCorrect ? v3.color.bg + '30' : 'transparent', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    {(isPicked && !answered) || (answered && wasSelected) ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={answered && wasSelected && isCorrect ? v3.color.bg : v3.color.accent} strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg> : null}
+                    {(isPicked && !answered) || (answered && wasSelected) ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={answered && wasSelected && isCorrect ? v3.color.bg : v3.color.accent} strokeWidth="3" strokeLinecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> : null}
                   </div>
                   {c}
                 </button>
