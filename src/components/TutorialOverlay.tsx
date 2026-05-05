@@ -364,7 +364,7 @@ export function TutorialFAB({ onClick, onHide }: { onClick: () => void; onHide: 
           borderRadius: '50%',
           background: 'linear-gradient(135deg, #6C8EF5, #8B6EF5)',
           border: 'none',
-          boxShadow: '0 6px 20px rgba(108,142,245,0.5)',
+          boxShadow: '0 6px 20px rgba(168,192,255,0.5)',
           cursor: 'pointer',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}

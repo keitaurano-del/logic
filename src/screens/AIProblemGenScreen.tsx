@@ -3,7 +3,7 @@ import { loadAIProblems, generateAIProblems, deleteAIProblem, type AIProblemSet 
 import { getCompletedLessons } from '../stats'
 import { loadPlacementResult } from '../placementData'
 import { allLessons } from '../lessonData'
-import { ArrowLeftIcon } from '../icons'
+import { Header } from '../components/platform/Header'
 import { getAIGenDailyLimit, getAIGenDailyCount, incrementAIGenDailyCount, isPremiumPlan, isStandardPlan } from '../subscription'
 import { v3 } from '../styles/tokensV3'
 import { addXP } from '../stats'
@@ -244,25 +244,20 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
       minHeight: '100dvh', background: v3.color.bg, color: v3.color.text,
       fontFamily: "'Noto Sans JP', sans-serif", display: 'flex', flexDirection: 'column',
     }}>
-      {/* ヘッダー */}
-      <div style={{ padding: 'calc(env(safe-area-inset-top,44px) + 4px) 20px 0', display: 'flex', alignItems: 'center', gap: 12 }}>
-        <button type="button" onClick={onBack} aria-label="戻る" style={{ width: 44, height: 44, borderRadius: '50%', background: v3.color.card, border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}>
-          <ArrowLeftIcon width={20} height={20} style={{ color: 'var(--md-sys-color-primary)' }} />
-        </button>
-        <div>
-          <div style={{ fontSize: 20, fontWeight: 800, color: v3.color.text, letterSpacing: '-.02em' }}>AI問題生成</div>
-          <div style={{ fontSize: 12, color: v3.color.text2, marginTop: 1 }}>弱点に合った問題を自動生成</div>
-        </div>
-        {dailyLimit > 0 ? (
-          <div style={{ marginLeft: 'auto', background: v3.color.card, borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700, color: isAtLimit ? 'var(--md-sys-color-error)' : v3.color.accent }}>
-            {dailyCount}/{dailyLimit}問 (今日)
+      <Header
+        title="AI問題生成"
+        onBack={onBack}
+        trailing={dailyLimit > 0 ? (
+          <div style={{ background: v3.color.card, borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700, color: isAtLimit ? 'var(--md-sys-color-error)' : v3.color.accent }}>
+            {dailyCount}/{dailyLimit}問
           </div>
         ) : (
-          <div style={{ marginLeft: 'auto', background: 'rgba(248,113,113,0.15)', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700, color: 'var(--md-sys-color-error)' }}>
+          <div style={{ background: 'rgba(248,113,113,0.15)', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700, color: 'var(--md-sys-color-error)' }}>
             要アップグレード
           </div>
         )}
-      </div>
+      />
+      <div style={{ padding: '0 20px 4px', fontSize: 12, color: v3.color.text2 }}>弱点に合った問題を自動生成</div>
 
       {/* タブ */}
       <div style={{ display: 'flex', padding: '16px 20px 0', gap: 6 }}>
