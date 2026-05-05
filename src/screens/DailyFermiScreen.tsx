@@ -3,7 +3,7 @@ import { LightbulbIcon, BarChartIcon, MicIcon } from '../icons'
 import { Header } from '../components/platform/Header'
 import { Button } from '../components/Button'
 import { API_BASE } from './apiBase'
-import { getDailyFermi, getDailyFermiIndex, FERMI_POOL, getDailyFermiStats } from '../fermiData'
+import { getDailyFermi, getDailyFermiIndex, FERMI_POOL, getFermiStatsByIndex } from '../fermiData'
 import { t, getLocale } from '../i18n'
 import { getGuestId } from '../guestId'
 import { haptic } from '../platform/haptics'
@@ -44,7 +44,7 @@ function getDailyRerollLimit(): number {
 }
 
 // 基礎統計データ（フェルミ推定時の参考値）
-// 参考データは fermiData.ts の getDailyFermiStats() を使用
+// 参考データは fermiData.ts の getFermiStatsByIndex() を使用（別問題リロール時も追従）
 
 /** Convert **bold** to <strong> */
 function boldify(text: string): string {
@@ -539,7 +539,7 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
                   <div style={{ paddingTop: 12, borderTop: '1px solid rgba(108,142,245,0.2)' }}>
                     <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', color: 'var(--text-muted)', marginBottom: 10, textTransform: 'uppercase' }}>参考データ</div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                      {getDailyFermiStats().map((s) => (
+                      {getFermiStatsByIndex(currentPoolIndex).map((s) => (
                         <div key={s.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 13 }}>
                           <span style={{ color: 'var(--text-secondary)' }}>{s.label}</span>
                           <span style={{ fontWeight: 700, color: 'var(--text-primary)', marginLeft: 12 }}>{s.value}</span>
