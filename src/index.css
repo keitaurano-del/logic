@@ -268,6 +268,19 @@
 .answer-bounce { animation: answer-bounce 0.4s ease-out; }
 .answer-shake  { animation: answer-shake  0.4s ease-out; }
 
+/* a11y: 動きを減らす設定が有効な場合は装飾アニメ・遷移をほぼ無効化する。
+   解像度や状態フィードバックは残す（duration を極小にして “瞬時” に変える）。 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* Editorial numeral — display utility */
 .editorial-numeral {
   font-family: var(--serif);
