@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg-pr1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1F2942"/>
+      <stop offset="100%" stop-color="#101729"/>
+    </linearGradient>
+    <radialGradient id="glow-pr1" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#FFD566" stop-opacity="0.32"/>
+      <stop offset="100%" stop-color="#FFD566" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3B5BBF" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#1B2954" stop-opacity="0.95"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="400" fill="url(#bg-pr1)"/>
+  <circle cx="400" cy="180" r="260" fill="url(#glow-pr1)"/>
+
+  <!-- 水面 -->
+  <rect x="0" y="200" width="800" height="200" fill="url(#water)"/>
+  <line x1="0" y1="200" x2="800" y2="200" stroke="#7AAEFF" stroke-width="1.2" opacity="0.7"/>
+  <g stroke="#7AAEFF" stroke-width="0.8" opacity="0.4">
+    <line x1="60" y1="220" x2="160" y2="220"/>
+    <line x1="240" y1="240" x2="340" y2="240"/>
+    <line x1="500" y1="230" x2="600" y2="230"/>
+    <line x1="660" y1="260" x2="740" y2="260"/>
+  </g>
+
+  <!-- 氷山（中央、tipは小さくbottomは巨大） -->
+  <g transform="translate(400,200)">
+    <!-- 水面下の本体（巨大） -->
+    <polygon points="-180,0 180,0 140,180 -140,180" fill="#7AAEFF" opacity="0.55"/>
+    <polygon points="-150,0 150,0 110,160 -110,160" fill="#3B5BBF" opacity="0.6"/>
+    <!-- 影/陰影 -->
+    <polygon points="-180,0 -90,0 -50,180 -140,180" fill="#1B2954" opacity="0.4"/>
+    <!-- 表面に出ている見える部分（小さい） -->
+    <polygon points="-50,0 50,0 30,-60 -30,-60" fill="#F4ECC4"/>
+    <polygon points="-50,0 -10,0 -22,-46 -30,-60" fill="#C9B57A"/>
+    <!-- ハイライト -->
+    <line x1="-22" y1="-46" x2="20" y2="-30" stroke="#F4ECC4" stroke-width="1" opacity="0.7"/>
+  </g>
+
+  <!-- 「症状」ラベル（水面上） -->
+  <g transform="translate(490,150)">
+    <rect x="-50" y="-16" width="100" height="32" rx="4" fill="#1A2540" stroke="#FFD566" stroke-width="1.2"/>
+    <text x="0" y="-2" text-anchor="middle" font-family="'SF Pro Display','Helvetica Neue',sans-serif" font-size="10" fill="#7AAEFF" opacity="0.85">表面の</text>
+    <text x="0" y="11" text-anchor="middle" font-family="'SF Pro Display','Helvetica Neue',sans-serif" font-size="11" font-weight="700" fill="#FFD566">症状</text>
+  </g>
+  <line x1="440" y1="160" x2="400" y2="180" stroke="#FFD566" stroke-width="1" stroke-dasharray="3 3" opacity="0.6"/>
+
+  <!-- 「本当の問題」ラベル（水面下） -->
+  <g transform="translate(620,330)">
+    <rect x="-70" y="-16" width="140" height="32" rx="4" fill="#1A2540" stroke="#C49A3C" stroke-width="1.4"/>
+    <text x="0" y="-2" text-anchor="middle" font-family="'SF Pro Display','Helvetica Neue',sans-serif" font-size="10" fill="#7AAEFF" opacity="0.85">深層にある</text>
+    <text x="0" y="11" text-anchor="middle" font-family="'SF Pro Display','Helvetica Neue',sans-serif" font-size="11" font-weight="700" fill="#C49A3C">本当の問題</text>
+  </g>
+  <line x1="550" y1="330" x2="500" y2="320" stroke="#C49A3C" stroke-width="1" stroke-dasharray="3 3" opacity="0.6"/>
+
+  <!-- 矢印（症状→深層へ掘り下げ） -->
+  <g stroke="#FFD566" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.85">
+    <path d="M 200 160 Q 200 250 200 340"/>
+    <polyline points="190,330 200,344 210,330"/>
+  </g>
+  <text x="180" y="250" font-family="'SF Pro Display','Helvetica Neue',sans-serif" font-size="10" fill="#FFD566" opacity="0.85">深掘り</text>
+
+  <g fill="#7AAEFF" opacity="0.5">
+    <circle cx="80" cy="50" r="1.4"/>
+    <circle cx="220" cy="36" r="1.0"/>
+    <circle cx="660" cy="50" r="1.4"/>
+    <circle cx="730" cy="80" r="1.0"/>
+  </g>
+</svg>

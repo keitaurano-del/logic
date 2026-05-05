@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg-la1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1F2942"/>
+      <stop offset="100%" stop-color="#101729"/>
+    </linearGradient>
+    <radialGradient id="glow-la1" cx="0.65" cy="0.5" r="0.45">
+      <stop offset="0%" stop-color="#FFD566" stop-opacity="0.36"/>
+      <stop offset="100%" stop-color="#FFD566" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="brick-la1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7A5A1F"/>
+      <stop offset="100%" stop-color="#3F2E0F"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="400" fill="url(#bg-la1)"/>
+  <circle cx="540" cy="200" r="260" fill="url(#glow-la1)"/>
+
+  <ellipse cx="400" cy="358" rx="280" ry="14" fill="#0B1424" opacity="0.6"/>
+
+  <!-- レンガの壁（左半分、堅牢） -->
+  <g transform="translate(200,200)">
+    <!-- 壁の枠 -->
+    <g fill="url(#brick-la1)" stroke="#1A1306" stroke-width="1.5">
+      <!-- 行1 -->
+      <rect x="-180" y="-130" width="62" height="26"/>
+      <rect x="-118" y="-130" width="62" height="26"/>
+      <rect x="-56" y="-130" width="62" height="26"/>
+      <rect x="6" y="-130" width="62" height="26"/>
+      <!-- 行2 -->
+      <rect x="-150" y="-104" width="62" height="26"/>
+      <rect x="-88" y="-104" width="62" height="26"/>
+      <rect x="-26" y="-104" width="62" height="26"/>
+      <rect x="36" y="-104" width="32" height="26"/>
+      <rect x="-180" y="-104" width="30" height="26"/>
+      <!-- 行3 -->
+      <rect x="-180" y="-78" width="62" height="26"/>
+      <rect x="-118" y="-78" width="62" height="26"/>
+      <rect x="-56" y="-78" width="62" height="26"/>
+      <rect x="6" y="-78" width="62" height="26"/>
+      <!-- 行4 -->
+      <rect x="-150" y="-52" width="62" height="26"/>
+      <rect x="-88" y="-52" width="62" height="26"/>
+      <rect x="-26" y="-52" width="62" height="26"/>
+      <rect x="36" y="-52" width="32" height="26"/>
+      <rect x="-180" y="-52" width="30" height="26"/>
+      <!-- 行5（穴の上） -->
+      <rect x="-180" y="-26" width="62" height="26"/>
+      <rect x="-118" y="-26" width="62" height="26"/>
+      <rect x="6" y="-26" width="62" height="26"/>
+      <!-- 行6（下） -->
+      <rect x="-150" y="0" width="62" height="26"/>
+      <rect x="-88" y="0" width="62" height="26"/>
+      <rect x="-26" y="0" width="62" height="26"/>
+      <rect x="36" y="0" width="32" height="26"/>
+      <rect x="-180" y="0" width="30" height="26"/>
+      <!-- 行7 -->
+      <rect x="-180" y="26" width="62" height="26"/>
+      <rect x="-118" y="26" width="62" height="26"/>
+      <rect x="-56" y="26" width="62" height="26"/>
+      <rect x="6" y="26" width="62" height="26"/>
+    </g>
+
+    <!-- 隙間（突破口）－光が漏れる -->
+    <rect x="-56" y="-26" width="62" height="26" fill="#FFD566" opacity="0.18"/>
+    <g stroke="#FFD566" stroke-width="2" opacity="0.85" fill="none">
+      <line x1="-30" y1="-13" x2="120" y2="-50" stroke-linecap="round"/>
+      <line x1="-30" y1="-13" x2="130" y2="-13" stroke-linecap="round"/>
+      <line x1="-30" y1="-13" x2="120" y2="22" stroke-linecap="round"/>
+    </g>
+  </g>
+
+  <!-- 突破した先（右、明るい風景：開けた空・道） -->
+  <g transform="translate(560,210)">
+    <!-- 空 -->
+    <rect x="-120" y="-130" width="240" height="200" rx="10" fill="#1A2540" opacity="0.4"/>
+    <!-- 太陽 -->
+    <circle cx="40" cy="-80" r="22" fill="#FFD566"/>
+    <g stroke="#FFD566" stroke-width="2" opacity="0.7" stroke-linecap="round">
+      <line x1="40" y1="-110" x2="40" y2="-118"/>
+      <line x1="68" y1="-80" x2="76" y2="-80"/>
+      <line x1="60" y1="-100" x2="66" y2="-106"/>
+      <line x1="20" y1="-100" x2="14" y2="-106"/>
+    </g>
+    <!-- 道（地平線） -->
+    <polygon points="-110,68 110,68 70,-10 -70,-10" fill="#3B5BBF" opacity="0.5"/>
+    <line x1="0" y1="-10" x2="0" y2="68" stroke="#FFD566" stroke-width="2" stroke-dasharray="6 4" opacity="0.85"/>
+    <!-- 山並み -->
+    <polygon points="-110,-10 -50,-50 0,-30 50,-60 110,-10" fill="#1B2954" opacity="0.85"/>
+  </g>
+
+  <!-- 矢印（穴を抜ける動線） -->
+  <g stroke="#FFD566" stroke-width="3" fill="#FFD566" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="200" y1="187" x2="430" y2="187"/>
+    <polygon points="424,178 444,187 424,196"/>
+  </g>
+
+  <g fill="#7AAEFF" opacity="0.5">
+    <circle cx="80" cy="50" r="1.4"/>
+    <circle cx="220" cy="36" r="1.0"/>
+    <circle cx="700" cy="60" r="1.4"/>
+  </g>
+</svg>
