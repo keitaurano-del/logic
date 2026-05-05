@@ -3,7 +3,7 @@ import type { LessonData } from './lessonData'
 // ========================================
 // Lesson 28: ケース面接入門
 // ========================================
-export const caseIntro: LessonData = {
+const caseIntro: LessonData = {
   id: 28,
   title: 'ケース面接入門',
   category: 'ケース面接',
@@ -56,7 +56,7 @@ export const caseIntro: LessonData = {
 // ========================================
 // Lesson 29: プロフィタビリティケース
 // ========================================
-export const caseProfitability: LessonData = {
+const caseProfitability: LessonData = {
   id: 29,
   title: 'プロフィタビリティケース',
   category: 'ケース面接',
@@ -110,7 +110,7 @@ export const caseProfitability: LessonData = {
 // ========================================
 // Lesson 35: 新市場参入ケース
 // ========================================
-export const caseMarketEntry: LessonData = {
+const caseMarketEntry: LessonData = {
   id: 35,
   title: '新市場参入ケース',
   category: 'ケース面接',
@@ -157,7 +157,7 @@ export const caseMarketEntry: LessonData = {
 // ========================================
 // Lesson 36: M&Aケース
 // ========================================
-export const caseMnA: LessonData = {
+const caseMnA: LessonData = {
   id: 36,
   title: 'M&Aケース',
   category: 'ケース面接',

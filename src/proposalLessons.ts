@@ -5,7 +5,7 @@ import type { LessonData } from './lessonData'
 // ========================================
 
 // Lesson 72: 提案書の目的を定める
-export const proposalPurpose: LessonData = {
+const proposalPurpose: LessonData = {
   id: 72,
   title: '提案書の目的を定める',
   category: '提案・伝える技術',
@@ -50,7 +50,7 @@ export const proposalPurpose: LessonData = {
 }
 
 // Lesson 73: 相手の立場で考える
-export const proposalStakeholder: LessonData = {
+const proposalStakeholder: LessonData = {
   id: 73,
   title: '相手の立場で考える',
   category: '提案・伝える技術',
@@ -95,7 +95,7 @@ export const proposalStakeholder: LessonData = {
 }
 
 // Lesson 74: ストーリーラインの設計
-export const proposalStoryline: LessonData = {
+const proposalStoryline: LessonData = {
   id: 74,
   title: 'ストーリーラインの設計',
   category: '提案・伝える技術',
@@ -140,7 +140,7 @@ export const proposalStoryline: LessonData = {
 }
 
 // Lesson 75: メッセージを磨く
-export const proposalMessage: LessonData = {
+const proposalMessage: LessonData = {
   id: 75,
   title: 'メッセージを磨く',
   category: '提案・伝える技術',
@@ -185,7 +185,7 @@ export const proposalMessage: LessonData = {
 }
 
 // Lesson 76: 反論を先読みする
-export const proposalQA: LessonData = {
+const proposalQA: LessonData = {
   id: 76,
   title: '反論を先読みする',
   category: '提案・伝える技術',

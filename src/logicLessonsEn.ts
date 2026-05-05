@@ -6,7 +6,7 @@ import type { LessonData } from './lessonData'
 // rest of the app (placement test recommendations, completion tracking,
 // continue-from card) keeps working.
 
-export const logicMeceEn: LessonData = {
+const logicMeceEn: LessonData = {
   id: 20,
   title: 'MECE — Mutually Exclusive, Collectively Exhaustive',
   category: 'Logical Thinking',
@@ -133,7 +133,7 @@ export const logicMeceEn: LessonData = {
   ],
 }
 
-export const logicTreeEn: LessonData = {
+const logicTreeEn: LessonData = {
   id: 21,
   title: 'Logic Tree — Decomposing Problems',
   category: 'Logical Thinking',
@@ -229,7 +229,7 @@ export const logicTreeEn: LessonData = {
   ],
 }
 
-export const logicSoWhatEn: LessonData = {
+const logicSoWhatEn: LessonData = {
   id: 22,
   title: 'So What / Why So — Validating Logic',
   category: 'Logical Thinking',
@@ -342,7 +342,7 @@ export const logicSoWhatEn: LessonData = {
   ],
 }
 
-export const logicPyramidEn: LessonData = {
+const logicPyramidEn: LessonData = {
   id: 23,
   title: 'Pyramid Principle — Communicating Clearly',
   category: 'Logical Thinking',
@@ -463,7 +463,7 @@ export const logicPyramidEn: LessonData = {
   ],
 }
 
-export const logicCaseStudiesEn: LessonData = {
+const logicCaseStudiesEn: LessonData = {
   id: 24,
   title: 'Case Studies — Applied Practice',
   category: 'Logical Thinking',
@@ -558,7 +558,7 @@ export const logicCaseStudiesEn: LessonData = {
   ],
 }
 
-export const logicDeductionEn: LessonData = {
+const logicDeductionEn: LessonData = {
   id: 25,
   title: 'Deduction — From the General to the Specific',
   category: 'Logical Thinking',
@@ -615,7 +615,7 @@ export const logicDeductionEn: LessonData = {
   ],
 }
 
-export const logicInductionEn: LessonData = {
+const logicInductionEn: LessonData = {
   id: 26,
   title: 'Induction — From Cases to Patterns',
   category: 'Logical Thinking',
@@ -672,7 +672,7 @@ export const logicInductionEn: LessonData = {
   ],
 }
 
-export const logicFormalEn: LessonData = {
+const logicFormalEn: LessonData = {
   id: 27,
   title: 'Formal Logic — The World of "A Implies B"',
   category: 'Logical Thinking',
@@ -747,7 +747,7 @@ export const logicFormalEn: LessonData = {
   ],
 }
 
-export const logicConcreteAbstractEn: LessonData = {
+const logicConcreteAbstractEn: LessonData = {
   id: 68,
   title: 'Concrete & Abstract — Moving Between Levels of Thinking',
   category: 'Logical Thinking',

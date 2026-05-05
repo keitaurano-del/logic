@@ -5,7 +5,7 @@ import type { LessonData } from './lessonData'
 // ========================================
 
 // Lesson 40: クリティカルシンキング入門
-export const criticalIntro: LessonData = {
+const criticalIntro: LessonData = {
   id: 40,
   title: 'クリティカルシンキング入門',
   category: 'クリティカルシンキング',
@@ -50,7 +50,7 @@ export const criticalIntro: LessonData = {
 }
 
 // Lesson 41: 論理的誤謬（ごびゅう）を見破る
-export const criticalFallacy: LessonData = {
+const criticalFallacy: LessonData = {
   id: 41,
   title: '論理的誤謬を見破る',
   category: 'クリティカルシンキング',
@@ -95,7 +95,7 @@ export const criticalFallacy: LessonData = {
 }
 
 // Lesson 42: 情報を正しく読む — データリテラシー
-export const criticalData: LessonData = {
+const criticalData: LessonData = {
   id: 42,
   title: 'データを正しく読む',
   category: 'クリティカルシンキング',
@@ -140,7 +140,7 @@ export const criticalData: LessonData = {
 }
 
 // Lesson 43: 問いを立てる力
-export const criticalQuestion: LessonData = {
+const criticalQuestion: LessonData = {
   id: 43,
   title: '問いを立てる力',
   category: 'クリティカルシンキング',
@@ -187,7 +187,7 @@ export const criticalQuestion: LessonData = {
 // ========================================
 // Lesson 69: 認知バイアスを外す
 // ========================================
-export const criticalBias: LessonData = {
+const criticalBias: LessonData = {
   id: 69,
   title: '認知バイアスを外す',
   category: 'クリティカルシンキング',
@@ -234,7 +234,7 @@ export const criticalBias: LessonData = {
 // ========================================
 // Lesson 71: 相関と因果を見分ける
 // ========================================
-export const criticalCorrelation: LessonData = {
+const criticalCorrelation: LessonData = {
   id: 71,
   title: '相関と因果を見分ける',
   category: 'クリティカルシンキング',
