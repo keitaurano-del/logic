@@ -1,3 +1,5 @@
+/* legacy ReportProblem (App.tsx 系)。AppV3 では ReportProblemScreen を使用。 */
+/* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
 import { useState } from 'react'
 import './ReportProblem.css'
 
