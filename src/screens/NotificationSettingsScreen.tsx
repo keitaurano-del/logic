@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import { ArrowLeftIcon } from '../icons'
-import { IconButton } from '../components/IconButton'
+import { Header } from '../components/platform/Header'
 import {
   loadReminderPref, scheduleDailyReminder,
   cancelDailyReminder, requestNotificationPermission, isNative,
@@ -99,10 +98,7 @@ export function NotificationSettingsScreen({ onBack }: Props) {
 
   return (
     <div style={{ background: v3.color.bg, minHeight: '100vh', fontFamily: "'Noto Sans JP', sans-serif", color: v3.color.text }}>
-      <div style={{ padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 14px', display: 'flex', alignItems: 'center', gap: 12 }}>
-        <IconButton aria-label="戻る" onClick={onBack}><ArrowLeftIcon /></IconButton>
-        <div style={{ fontSize: 18, fontWeight: 700 }}>通知設定</div>
-      </div>
+      <Header title="通知設定" onBack={onBack} />
 
       <div style={{ padding: '0 16px 80px', display: 'flex', flexDirection: 'column', gap: 20 }}>
 

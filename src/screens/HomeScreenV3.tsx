@@ -121,7 +121,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
         <button type="button" ref={dailyCardRef} onClick={onNavigateToDailyFermi} aria-label="今日の1問を解く" style={{ background: 'linear-gradient(135deg, #1E2540 0%, #252C40 100%)', borderRadius: v3.radius.card, padding: '20px', cursor: 'pointer', position: 'relative', overflow: 'hidden', boxShadow: v3.shadow.hero, flexShrink: 0, minHeight: 180, border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%' }}>
           {/* フェルミ推定イメージ画像 */}
           <img src="/images/v3/fermi-card.png" alt="" loading="lazy" style={{ position: 'absolute', right: 0, top: 0, width: '55%', height: '100%', objectFit: 'cover', opacity: 0.28, pointerEvents: 'none', maskImage: 'linear-gradient(to left, rgba(0,0,0,0.8) 0%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to left, rgba(0,0,0,0.8) 0%, transparent 100%)' }} />
-          <div style={{ position: 'absolute', right: -30, top: -30, width: 140, height: 140, borderRadius: '50%', background: 'rgba(108,142,245,0.25)', filter: 'blur(36px)', pointerEvents: 'none' }}></div>
+          <div style={{ position: 'absolute', right: -30, top: -30, width: 140, height: 140, borderRadius: '50%', background: 'rgba(168,192,255,0.25)', filter: 'blur(36px)', pointerEvents: 'none' }}></div>
           <div style={{ position: 'relative', zIndex: 1 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
               <div style={{ width: 6, height: 6, borderRadius: '50%', background: v3.color.accent }}></div>
