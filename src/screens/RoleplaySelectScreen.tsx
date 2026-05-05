@@ -27,14 +27,14 @@ const DIFF_COLOR: Record<string, string> = {
 function SituationIcon({ id, size = 22 }: { id: string; size?: number }) {
   const s = `${size}`
   if (id === 'why-so-report') return (
-    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="var(--md-sys-color-primary)" strokeWidth="2" strokeLinecap="round">
+    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="var(--md-sys-color-primary)" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
       <rect x="2" y="3" width="20" height="14" rx="2"/>
       <line x1="8" y1="21" x2="16" y2="21"/>
       <line x1="12" y1="17" x2="12" y2="21"/>
     </svg>
   )
   if (id === 'mece-meeting') return (
-    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2" strokeLinecap="round">
+    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
       <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
       <circle cx="9" cy="7" r="4"/>
       <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
@@ -42,13 +42,13 @@ function SituationIcon({ id, size = 22 }: { id: string; size?: number }) {
     </svg>
   )
   if (id === 'pyramid-client') return (
-    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="#7C3AED" strokeWidth="2" strokeLinecap="round">
+    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="#7C3AED" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
       <path d="M21.21 15.89A10 10 0 1 1 8 2.83"/>
       <path d="M22 12A10 10 0 0 0 12 2v10z"/>
     </svg>
   )
   if (id === 'logic-tree-sub') return (
-    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="#D97706" strokeWidth="2" strokeLinecap="round">
+    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="#D97706" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
       <line x1="12" y1="2" x2="12" y2="8"/>
       <path d="M12 8C9 8 6 10 6 13v1M12 8c3 0 6 2 6 5v1"/>
       <circle cx="6" cy="17" r="2"/>
@@ -57,24 +57,24 @@ function SituationIcon({ id, size = 22 }: { id: string; size?: number }) {
     </svg>
   )
   if (id === 'socrates-dialog') return (
-    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="var(--md-sys-color-primary)" strokeWidth="2" strokeLinecap="round">
+    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="var(--md-sys-color-primary)" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
       <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
     </svg>
   )
   if (id === 'descartes-doubt') return (
-    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="#7C3AED" strokeWidth="2" strokeLinecap="round">
+    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="#7C3AED" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
       <circle cx="12" cy="12" r="10"/>
       <path d="M12 8v4M12 16h.01"/>
     </svg>
   )
   if (id === 'nietzsche-values') return (
-    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2" strokeLinecap="round">
+    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
       <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
     </svg>
   )
   // default
   return (
-    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="var(--md-sys-color-primary)" strokeWidth="2" strokeLinecap="round">
+    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="var(--md-sys-color-primary)" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
       <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
     </svg>
   )

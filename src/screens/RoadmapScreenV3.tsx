@@ -28,109 +28,109 @@ type CategoryVisual = {
 
 const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
   'ロジカルシンキング': {
-    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/></svg>,
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/></svg>,
     iconBg: 'rgba(168,192,255,.14)',
     image: `${IMG}/course-logical.webp`,
     routeKey: 'logic',
   },
   'クリティカルシンキング': {
-    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F87171" strokeWidth="2" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F87171" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
     iconBg: 'rgba(248,113,113,.14)',
     image: `${IMG}/lesson-critical-thinking.webp`,
     routeKey: 'critical',
   },
   '仮説思考': {
-    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FBBF24" strokeWidth="2" strokeLinecap="round"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>,
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FBBF24" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>,
     iconBg: 'rgba(251,191,36,.14)',
     image: `${IMG}/lesson-hypothesis.webp`,
     routeKey: 'hypothesis',
   },
   '課題設定': {
-    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#34D399" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>,
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#34D399" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>,
     iconBg: 'rgba(52,211,153,.14)',
     image: `${IMG}/lesson-issue-setting.webp`,
     routeKey: 'problem-setting',
   },
   'デザインシンキング': {
-    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" strokeWidth="2" strokeLinecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>,
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>,
     iconBg: 'rgba(96,165,250,.14)',
     image: `${IMG}/lesson-design-thinking.webp`,
     routeKey: 'design-thinking',
   },
   'ラテラルシンキング': {
-    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>,
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>,
     iconBg: 'rgba(167,139,250,.14)',
     image: `${IMG}/lesson-lateral-thinking.webp`,
     routeKey: 'lateral',
   },
   'アナロジー思考': {
-    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F472B6" strokeWidth="2" strokeLinecap="round"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>,
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F472B6" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>,
     iconBg: 'rgba(244,114,182,.14)',
     image: `${IMG}/lesson-analogy.webp`,
     routeKey: 'analogy',
   },
   'システムシンキング': {
-    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2DD4BF" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>,
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2DD4BF" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>,
     iconBg: 'rgba(45,212,191,.14)',
     image: `${IMG}/lesson-systems-thinking.webp`,
     routeKey: 'systems',
   },
   '提案・伝える技術': {
-    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={v3.color.warm} strokeWidth="2" strokeLinecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={v3.color.warm} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
     iconBg: 'rgba(244,162,97,.14)',
     image: `${IMG}/lesson-proposal.webp`,
     routeKey: 'proposal',
   },
   '提案書作成': {
-    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FB923C" strokeWidth="2" strokeLinecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FB923C" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,
     iconBg: 'rgba(251,146,60,.14)',
     image: `${IMG}/course-proposal-writing.svg`,
     routeKey: '提案書作成',
   },
   '哲学・思考の原理': {
-    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C4B5FD" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="10" strokeDasharray="4 3"/></svg>,
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C4B5FD" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="10" strokeDasharray="4 3"/></svg>,
     iconBg: 'rgba(196,181,253,.14)',
     image: `${IMG}/course-philosophy.webp`,
     routeKey: 'philosophy',
   },
   '東洋思想': {
-    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFD566" strokeWidth="2" strokeLinecap="round"><path d="M12 2a10 10 0 1 0 0 20 5 5 0 0 1 0-10 5 5 0 0 0 0-10z"/><circle cx="12" cy="7" r="1" fill="#FFD566"/><circle cx="12" cy="17" r="1" fill="#FFD566"/></svg>,
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFD566" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 5 5 0 0 1 0-10 5 5 0 0 0 0-10z"/><circle cx="12" cy="7" r="1" fill="#FFD566"/><circle cx="12" cy="17" r="1" fill="#FFD566"/></svg>,
     iconBg: 'rgba(255,213,102,.14)',
     image: `${IMG}/course-eastern-01.svg`,
     routeKey: '東洋思想',
   },
   'クライアントワーク': {
-    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C49A3C" strokeWidth="2" strokeLinecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C49A3C" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
     iconBg: 'rgba(196,154,60,.14)',
     image: `${IMG}/course-client.webp`,
     routeKey: 'クライアントワーク',
   },
   'ケース面接': {
-    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={v3.color.warm} strokeWidth="2" strokeLinecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>,
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={v3.color.warm} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>,
     iconBg: 'rgba(244,162,97,.14)',
     image: `${IMG}/course-business.webp`,
     routeKey: 'case',
   },
   '経営戦略': {
-    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7AAEFF" strokeWidth="2" strokeLinecap="round"><path d="M3 21V10l5 3V10l5 3V10l5 3v8z"/><line x1="3" y1="21" x2="21" y2="21"/></svg>,
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7AAEFF" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M3 21V10l5 3V10l5 3V10l5 3v8z"/><line x1="3" y1="21" x2="21" y2="21"/></svg>,
     iconBg: 'rgba(122,174,255,.14)',
     image: `${IMG}/course-strategy.svg`,
     routeKey: '経営戦略',
   },
   'フェルミ推定': {
-    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--md-sys-color-primary)" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>,
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--md-sys-color-primary)" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>,
     iconBg: 'rgba(168,192,255,.14)',
     image: `${IMG}/fermi-card.png`,
     routeKey: 'フェルミ推定',
   },
   '数字に強くなる': {
-    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7AAEFF" strokeWidth="2" strokeLinecap="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg>,
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7AAEFF" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg>,
     iconBg: 'rgba(122,174,255,.14)',
     image: `${IMG}/course-numeracy.svg`,
     routeKey: '数字に強くなる',
   },
   'ピークパフォーマンス習慣': {
-    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5BB97E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12h3l3-8 4 16 3-8h5"/></svg>,
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5BB97E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3 12h3l3-8 4 16 3-8h5"/></svg>,
     iconBg: 'rgba(91,185,126,.14)',
     image: `${IMG}/course-thinking.webp`,
     routeKey: 'ピークパフォーマンス習慣',
@@ -138,7 +138,7 @@ const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
 }
 
 const DEFAULT_VISUAL: CategoryVisual = {
-  icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
+  icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
   iconBg: 'rgba(168,192,255,.14)',
   image: `${IMG}/course-logical.webp`,
   routeKey: '',
@@ -268,7 +268,7 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
             }}
           />
           <svg style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', opacity: 0.4 }}
-            width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
             <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
           </svg>
           {searchQuery && (
@@ -759,7 +759,7 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
                   </div>
                   {allDone && (
                     <div style={{ fontSize: 10, fontWeight: 700, color: '#22C55E', background: '#22C55E18', borderRadius: 6, padding: '2px 7px', display: 'flex', alignItems: 'center', gap: 3 }}>
-                      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="3" strokeLinecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
                       完了
                     </div>
                   )}

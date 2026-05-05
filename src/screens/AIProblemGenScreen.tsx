@@ -19,7 +19,7 @@ type ThemePreset = { id: string; label: string; prompt: string; icon: React.Reac
 
 const ICON_COLOR = v3.color.accent
 const mkIcon = (path: React.ReactNode) => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={ICON_COLOR} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{path}</svg>
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={ICON_COLOR} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{path}</svg>
 )
 
 const THEME_PRESETS: ThemePreset[] = [
@@ -125,7 +125,7 @@ function RatingPopup({ onSubmit, onSkip }: RatingPopupProps) {
       <div style={{ background: v3.color.card, borderRadius: '20px 20px 0 0', padding: '28px 24px 32px', width: '100%', maxWidth: 480 }}>
         {/* XP通知 */}
         <div style={{ background: `${v3.color.accent}18`, border: `1px solid ${v3.color.accent}40`, borderRadius: 12, padding: '10px 16px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 10 }}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill={v3.color.accent} stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill={v3.color.accent} stroke="none" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           <div>
             <div style={{ fontSize: 13, fontWeight: 700, color: v3.color.accent }}>+30 XP 獲得！</div>
             <div style={{ fontSize: 11, color: v3.color.text2 }}>問題を解き終えました</div>

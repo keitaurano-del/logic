@@ -44,7 +44,7 @@ export function LoginGate({ featureName, featureIcon, featureDesc, onLogin, onBa
           background: v3.color.bg, border: `1.5px solid ${v3.color.line}`,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={v3.color.text2} strokeWidth="2.5" strokeLinecap="round">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={v3.color.text2} strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
             <rect x="3" y="11" width="18" height="11" rx="2"/>
             <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
           </svg>

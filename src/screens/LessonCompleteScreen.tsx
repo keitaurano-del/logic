@@ -43,7 +43,7 @@ function RingProgress({ progress, size = 140, stroke = 10 }: { progress: number;
   const circ = 2 * Math.PI * r
   const offset = circ * (1 - progress)
   return (
-    <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
+    <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }} aria-hidden="true">
       <defs>
         <linearGradient id="ring-grad" x1="0%" y1="0%" x2="100%" y2="0%">
           <stop offset="0%" stopColor="#2dd4bf" />
