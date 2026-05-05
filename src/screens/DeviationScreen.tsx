@@ -9,9 +9,8 @@ import {
   type AxisScore,
 } from '../placementData'
 import { getAllLessonsFlat } from '../lessonData'
-import { ArrowLeftIcon } from '../icons'
 import { Button } from '../components/Button'
-import { IconButton } from '../components/IconButton'
+import { Header } from '../components/platform/Header'
 import { RadarChart } from '../components/RadarChart'
 
 
@@ -28,12 +27,7 @@ export function DeviationScreen({ onBack, onRetakeTest, onStartLesson }: Deviati
   if (!result || result.totalCount === 0) {
     return (
       <div className="stack">
-        <div className="screen-header">
-          <IconButton aria-label="Back" onClick={onBack}>
-            <ArrowLeftIcon />
-          </IconButton>
-          <div className="progress-text">実力診断</div>
-        </div>
+        <Header title="実力診断" onBack={onBack} />
         <div className="card empty">
           <h3 style={{ fontSize: 20, marginBottom: 'var(--s-2)' }}>
             実力診断テスト未受検
@@ -83,12 +77,7 @@ export function DeviationScreen({ onBack, onRetakeTest, onStartLesson }: Deviati
 
   return (
     <div className="stack">
-      <div className="screen-header">
-        <IconButton aria-label="Back" onClick={onBack}>
-          <ArrowLeftIcon />
-        </IconButton>
-        <div className="progress-text">実力診断</div>
-      </div>
+      <Header title="実力診断" onBack={onBack} />
 
       <div className="eyebrow accent">あなたの結果</div>
 

@@ -3,9 +3,9 @@ import { generateTodayProblem, isDailyCompleted, markDailyCompleted } from '../d
 import type { AIProblemSet } from '../aiProblemStore'
 import type { QuizStep } from '../lessonData'
 import { recordCompletion } from '../stats'
-import { ArrowLeftIcon, ArrowRightIcon, CheckIcon, XIcon } from '../icons'
+import { ArrowRightIcon, CheckIcon, XIcon } from '../icons'
 import { Button } from '../components/Button'
-import { IconButton } from '../components/IconButton'
+import { Header } from '../components/platform/Header'
 import { haptic } from '../platform/haptics'
 import { t } from '../i18n'
 
@@ -35,10 +35,7 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
   if (state === 'loading') {
     return (
       <div className="stack">
-        <div className="screen-header">
-          <IconButton aria-label="Back" onClick={onBack}><ArrowLeftIcon /></IconButton>
-          <div className="progress-text">今日の問題</div>
-        </div>
+        <Header title="今日の問題" onBack={onBack} />
         <div style={{ textAlign: 'center', padding: 'var(--s-8) 0', color: 'var(--text-muted)' }}>
           <div style={{ fontSize: 16 }}>今日の問題を生成中…</div>
         </div>
@@ -49,10 +46,7 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
   if (state === 'error') {
     return (
       <div className="stack">
-        <div className="screen-header">
-          <IconButton aria-label="Back" onClick={onBack}><ArrowLeftIcon /></IconButton>
-          <div className="progress-text">今日の問題</div>
-        </div>
+        <Header title="今日の問題" onBack={onBack} />
         <div className="card" style={{ background: 'rgba(220,38,38,0.06)', borderColor: 'var(--danger)', color: 'var(--danger)' }}>
           {error}
         </div>
@@ -64,10 +58,7 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
   if (state === 'done') {
     return (
       <div className="stack">
-        <div className="screen-header">
-          <IconButton aria-label="Back" onClick={onBack}><ArrowLeftIcon /></IconButton>
-          <div className="progress-text">今日の問題</div>
-        </div>
+        <Header title="今日の問題" onBack={onBack} />
         <div className="eyebrow accent">{t('label.todaysChallenge')}</div>
         <h1 style={{ fontSize: 30, letterSpacing: '-0.025em' }}>今日の問題</h1>
         <div className="feedback-card">
@@ -89,10 +80,7 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
     const pct = steps.length > 0 ? Math.round((correctCount / steps.length) * 100) : 0
     return (
       <div className="stack">
-        <div className="screen-header">
-          <IconButton aria-label="Back" onClick={onBack}><ArrowLeftIcon /></IconButton>
-          <div className="progress-text">結果</div>
-        </div>
+        <Header title="結果" onBack={onBack} />
         <div className="eyebrow accent">{t('label.todaysResult')}</div>
         <h1 style={{ fontSize: 30, letterSpacing: '-0.025em' }}>結果</h1>
         <section className="profile-hero" style={{ textAlign: 'center' }}>
@@ -138,10 +126,7 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
 
   return (
     <div className="stack">
-      <div className="screen-header">
-        <IconButton aria-label="Back" onClick={onBack}><ArrowLeftIcon /></IconButton>
-        <div className="progress-text"><b>{stepIdx + 1}</b> / {steps.length}</div>
-      </div>
+      <Header title={`${stepIdx + 1} / ${steps.length}`} onBack={onBack} />
 
       <div className="progress">
         <div className="progress-fill" style={{ width: `${stepProgress}%` }} />

@@ -19,9 +19,9 @@ import {
   type PlacementAnswer,
 } from '../placementData'
 import { getGuestId, getNickname, defaultNickname } from '../guestId'
-import { ArrowLeftIcon, ArrowRightIcon, CheckIcon } from '../icons'
+import { ArrowRightIcon, CheckIcon } from '../icons'
 import { Button } from '../components/Button'
-import { IconButton } from '../components/IconButton'
+import { Header } from '../components/platform/Header'
 import { RadarChart } from '../components/RadarChart'
 import { LoadingIndicator } from '../components/LoadingIndicator'
 import { haptic } from '../platform/haptics'
@@ -121,10 +121,7 @@ export function PlacementTestScreen({ onComplete, onBack }: PlacementTestScreenP
 
   return (
     <div className="stack">
-      <div className="screen-header">
-        {onBack && <IconButton aria-label="Back" onClick={onBack}><ArrowLeftIcon /></IconButton>}
-        <div className="progress-text"><b>{session.cursor + 1}</b> / {TOTAL_QUESTIONS}</div>
-      </div>
+      <Header title={`${session.cursor + 1} / ${TOTAL_QUESTIONS}`} onBack={onBack} />
       <div className="progress">
         <div className="progress-fill" style={{ width: `${progress}%` }} />
       </div>
@@ -206,10 +203,7 @@ function ResultView({
 
   return (
     <div className="stack">
-      <div className="screen-header">
-        {onBack && <IconButton aria-label="Back" onClick={onBack}><ArrowLeftIcon /></IconButton>}
-        <div className="progress-text">診断結果</div>
-      </div>
+      <Header title="診断結果" onBack={onBack} />
 
       <div className="eyebrow accent">SKILL ASSESSMENT</div>
       <h1 style={{ fontSize: 28, letterSpacing: '-0.025em' }}>あなたの実力診断結果</h1>
@@ -291,10 +285,7 @@ function ReviewView({ result, onBack }: { result: PlacementResult; onBack: () =>
   const answers = result.answers
   return (
     <div className="stack">
-      <div className="screen-header">
-        <IconButton aria-label="Back" onClick={onBack}><ArrowLeftIcon /></IconButton>
-        <div className="progress-text">問題の解説</div>
-      </div>
+      <Header title="問題の解説" onBack={onBack} />
 
       <div className="eyebrow accent">REVIEW</div>
       <h1 style={{ fontSize: 24, letterSpacing: '-0.025em' }}>全{answers.length}問の回答と解説</h1>

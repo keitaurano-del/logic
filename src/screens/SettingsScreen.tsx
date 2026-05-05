@@ -1,6 +1,6 @@
 import React, { useState, useLayoutEffect } from 'react'
-import { ArrowLeftIcon, ChevronRightIcon, SparklesIcon } from '../icons'
-import { IconButton } from '../components/IconButton'
+import { ChevronRightIcon, SparklesIcon } from '../icons'
+import { Header } from '../components/platform/Header'
 import { getLocale, t } from '../i18n'
 import {
   loadReminderPref, saveReminderPref, scheduleDailyReminder,
@@ -123,12 +123,7 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
 
   return (
     <div className="stack">
-      <div className="screen-header">
-        <IconButton aria-label={t('common.back')} onClick={onBack}>
-          <ArrowLeftIcon />
-        </IconButton>
-        <div className="progress-text">{t('settings.title')}</div>
-      </div>
+      <Header title={t('settings.title')} onBack={onBack} />
 
       {/* ── アカウント ── */}
       <div style={{ transition: 'background 0.3s', borderRadius: 12, background: highlightSection === 'account' ? 'rgba(59,91,219,0.08)' : 'transparent' }}>

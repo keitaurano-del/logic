@@ -5,6 +5,7 @@ import { incrementRoleplayUsage } from '../roleplayUsage'
 import { localeBody } from '../i18n'
 import { ArrowLeftIcon, CheckIcon, ThumbsUpIcon, LightbulbIcon } from '../icons'
 import { IconButton } from '../components/IconButton'
+import { Header } from '../components/platform/Header'
 import { haptic } from '../platform/haptics'
 import { API_BASE } from './apiBase'
 import { v3 } from '../styles/tokensV3'
@@ -120,11 +121,7 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
   if (!situation) {
     return (
       <div className="stack">
-        <div className="screen-header">
-          <IconButton aria-label="Back" onClick={onBack}>
-            <ArrowLeftIcon />
-          </IconButton>
-        </div>
+        <Header onBack={onBack} />
         <div className="card empty">シナリオが見つかりません</div>
       </div>
     )
