@@ -245,8 +245,8 @@ function ResultView({
                 justifyContent: 'space-between',
                 padding: '8px 10px',
                 borderRadius: 10,
-                background: 'rgba(168,192,255,.08)',
-                border: '1px solid rgba(168,192,255,.18)',
+                background: 'rgba(108,142,245,.08)',
+                border: '1px solid rgba(108,142,245,.18)',
               }}
             >
               <span style={{ fontSize: 13, fontWeight: 700 }}>{axisLabel(a.axis).label}</span>
@@ -323,7 +323,7 @@ function ReviewItem({ index, ans }: { index: number; ans: PlacementAnswer }) {
         }}>
           Q{index + 1} · {ans.correct ? '正解' : '不正解'}
         </div>
-        <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', background: 'rgba(168,192,255,.12)', padding: '3px 8px', borderRadius: 6 }}>
+        <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', background: 'rgba(108,142,245,.12)', padding: '3px 8px', borderRadius: 6 }}>
           {axisLabel(q.axis).label}
         </div>
         <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', background: 'var(--bg-card-soft, rgba(0,0,0,0.04))', padding: '3px 8px', borderRadius: 6 }}>
@@ -382,12 +382,12 @@ function ReviewItem({ index, ans }: { index: number; ans: PlacementAnswer }) {
       </div>
 
       <div style={{
-        background: 'rgba(168,192,255,.06)',
-        borderLeft: '3px solid var(--brand, #A8C0FF)',
+        background: 'rgba(108,142,245,.06)',
+        borderLeft: '3px solid var(--brand, #6C8EF5)',
         borderRadius: 8,
         padding: '10px 12px',
       }}>
-        <div className="eyebrow" style={{ marginBottom: 4, color: 'var(--brand, #A8C0FF)' }}>解説</div>
+        <div className="eyebrow" style={{ marginBottom: 4, color: 'var(--brand, #6C8EF5)' }}>解説</div>
         <p style={{ fontSize: 13, lineHeight: 1.7, margin: 0 }}>{q.explanation}</p>
       </div>
     </section>
@@ -424,7 +424,7 @@ function CreatingView({ result, onSaved }: { result: PlacementResult; onSaved: (
           width: 56px;
           height: 56px;
           border-radius: 50%;
-          border: 4px solid rgba(168,192,255,0.18);
+          border: 4px solid rgba(108,142,245,0.18);
           border-top-color: var(--md-sys-color-primary);
           animation: placement-spin 0.85s linear infinite;
         }

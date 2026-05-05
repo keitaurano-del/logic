@@ -6,7 +6,7 @@
 
 :root {
   /* ---- Material 3 Color Roles ---------------------------------------- */
-  --md-sys-color-primary:                  #A8C0FF;
+  --md-sys-color-primary:                  #6C8EF5;
   --md-sys-color-on-primary:               #0A1F4D;
   --md-sys-color-primary-container:        #2E45A8;
   --md-sys-color-on-primary-container:     #DDE5FF;
@@ -45,7 +45,7 @@
   --md-sys-color-inverse-primary:          #3E59B0;
 
   --md-sys-color-scrim:                    rgba(0, 0, 0, 0.55);
-  --md-sys-color-surface-tint:             #A8C0FF;
+  --md-sys-color-surface-tint:             #6C8EF5;
 
   /* ---- iOS HIG semantic alias ---------------------------------------- */
   --ios-tint:            var(--md-sys-color-primary);

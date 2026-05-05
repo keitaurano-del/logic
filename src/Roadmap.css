@@ -162,7 +162,7 @@
   background: var(--step-color, var(--accent));
   border-color: var(--step-color, var(--accent));
   color: #fff;
-  box-shadow: 0 0 16px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 0 16px rgba(108, 142, 245, 0.3);
   animation: glow-pulse 2s ease-in-out infinite;
 }
 

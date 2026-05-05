@@ -29,7 +29,7 @@ type CategoryVisual = {
 const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
   'ロジカルシンキング': {
     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/></svg>,
-    iconBg: 'rgba(168,192,255,.14)',
+    iconBg: 'rgba(108,142,245,.14)',
     image: `${IMG}/course-logical.webp`,
     routeKey: 'logic',
   },
@@ -119,7 +119,7 @@ const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
   },
   'フェルミ推定': {
     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--md-sys-color-primary)" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>,
-    iconBg: 'rgba(168,192,255,.14)',
+    iconBg: 'rgba(108,142,245,.14)',
     image: `${IMG}/fermi-card.png`,
     routeKey: 'フェルミ推定',
   },
@@ -139,7 +139,7 @@ const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
 
 const DEFAULT_VISUAL: CategoryVisual = {
   icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
-  iconBg: 'rgba(168,192,255,.14)',
+  iconBg: 'rgba(108,142,245,.14)',
   image: `${IMG}/course-logical.webp`,
   routeKey: '',
 }
@@ -202,7 +202,7 @@ function Highlight({ text, query }: { text: string; query: string }): ReactNode 
   const parts = text.split(re)
   return parts.map((p, i) =>
     i % 2 === 1
-      ? <mark key={i} style={{ background: 'rgba(168,192,255,.32)', color: 'inherit', borderRadius: 3, padding: '0 2px' }}>{p}</mark>
+      ? <mark key={i} style={{ background: 'rgba(108,142,245,.32)', color: 'inherit', borderRadius: 3, padding: '0 2px' }}>{p}</mark>
       : <span key={i}>{p}</span>
   )
 }
@@ -410,7 +410,7 @@ function Pill({ active, onClick, label }: { active: boolean; onClick: () => void
         padding: '6px 12px',
         borderRadius: 100,
         border: `1px solid ${active ? v3.color.accent : v3.color.line}`,
-        background: active ? 'rgba(168,192,255,.18)' : v3.color.card,
+        background: active ? 'rgba(108,142,245,.18)' : v3.color.card,
         color: active ? v3.color.accent : v3.color.text2,
         fontSize: 12, fontWeight: 600,
         cursor: 'pointer',
@@ -595,7 +595,7 @@ function CourseResultCard({ result, query, onOpen }: { result: CourseResult; que
     <button type="button" onClick={onOpen}
       aria-label={`${c.category} コース: ${c.title} (${result.doneCount}/${result.totalCount} 完了)`}
       style={{ background: v3.color.card, borderRadius: 14, padding: '12px 14px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 12, border: `1px solid ${v3.color.line}`, color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%' }}>
-      <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(168,192,255,.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: v3.color.accent }}>
+      <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(108,142,245,.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: v3.color.accent }}>
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15Z"/></svg>
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
@@ -619,7 +619,7 @@ function LessonResultCard({ result, query, onOpen }: { result: LessonResult; que
     <button type="button" onClick={onOpen}
       aria-label={`レッスン: ${l.title}${courseTitle ? ` (${courseTitle})` : ''}`}
       style={{ background: v3.color.card, borderRadius: 14, padding: '12px 14px', cursor: 'pointer', display: 'flex', alignItems: 'flex-start', gap: 12, border: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%' }}>
-      <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(168,192,255,.10)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: v3.color.accent }}>
+      <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(108,142,245,.10)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: v3.color.accent }}>
         <LessonIcon id={l.id} action="lesson" size={20} />
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
@@ -628,7 +628,7 @@ function LessonResultCard({ result, query, onOpen }: { result: LessonResult; que
             <span style={{ fontSize: 10, fontWeight: 700, padding: '1px 6px', borderRadius: 4, background: result.level === '初級' ? 'rgba(52,211,153,.18)' : result.level === '中級' ? 'rgba(251,191,36,.18)' : 'rgba(248,113,113,.18)', color: result.level === '初級' ? '#34D399' : result.level === '中級' ? '#FBBF24' : 'var(--md-sys-color-error)' }}>{result.level}</span>
           )}
           {result.status === 'done' && (
-            <span style={{ fontSize: 10, fontWeight: 700, padding: '1px 6px', borderRadius: 4, background: 'rgba(168,192,255,.18)', color: v3.color.accent, display: 'inline-flex', alignItems: 'center', gap: 3 }}>
+            <span style={{ fontSize: 10, fontWeight: 700, padding: '1px 6px', borderRadius: 4, background: 'rgba(108,142,245,.18)', color: v3.color.accent, display: 'inline-flex', alignItems: 'center', gap: 3 }}>
               <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
               完了
             </span>

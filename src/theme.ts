@@ -16,7 +16,7 @@ export type Accent = {
 
 export const ACCENTS: Accent[] = [
   { id: 'orange', get name() { return t('theme.accent.orange') }, accent: '#D4915A', accentSoft: 'rgba(212,145,90,0.10)', accentGlow: 'rgba(212,145,90,0.22)', accentDark: '#B07442' },
-  { id: 'blue',   get name() { return t('theme.accent.blue') },   accent: '#6366F1', accentSoft: 'rgba(99,102,241,0.10)',  accentGlow: 'rgba(99,102,241,0.22)',  accentDark: '#4F46E5' },
+  { id: 'blue',   get name() { return t('theme.accent.blue') },   accent: '#6C8EF5', accentSoft: 'rgba(108,142,245,0.16)', accentGlow: 'rgba(108,142,245,0.25)', accentDark: '#9BB3FA' },
   { id: 'purple', get name() { return t('theme.accent.purple') }, accent: '#8B5CF6', accentSoft: 'rgba(139,92,246,0.12)',  accentGlow: 'rgba(139,92,246,0.25)',  accentDark: '#7C3AED' },
   { id: 'green',  get name() { return t('theme.accent.green') },  accent: '#10B981', accentSoft: 'rgba(16,185,129,0.12)',  accentGlow: 'rgba(16,185,129,0.25)',  accentDark: '#059669' },
   { id: 'pink',   get name() { return t('theme.accent.pink') },   accent: '#EC4899', accentSoft: 'rgba(236,72,153,0.12)',  accentGlow: 'rgba(236,72,153,0.25)',  accentDark: '#DB2777' },

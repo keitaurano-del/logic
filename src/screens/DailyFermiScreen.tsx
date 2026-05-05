@@ -429,7 +429,7 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
           }}>
             <div style={{
               position: 'absolute', top: -30, right: -30, width: 120, height: 120,
-              background: 'radial-gradient(circle, rgba(61,95,196,0.1) 0%, transparent 70%)',
+              background: 'radial-gradient(circle, rgba(108,142,245,0.1) 0%, transparent 70%)',
               pointerEvents: 'none',
             }} />
             <div style={{ position: 'relative' }}>
@@ -508,8 +508,8 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
               ) : (
                 <div style={{
                   borderRadius: 16,
-                  border: '1.5px solid rgba(107,133,214,0.4)',
-                  background: 'rgba(107,133,214,0.08)',
+                  border: '1.5px solid rgba(108,142,245,0.4)',
+                  background: 'rgba(108,142,245,0.08)',
                   padding: '16px',
                   fontSize: 16,
                   lineHeight: 1.6,
@@ -536,7 +536,7 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
                     </button>
                   </div>
                   {/* 基礎統計データ */}
-                  <div style={{ paddingTop: 12, borderTop: '1px solid rgba(107,133,214,0.2)' }}>
+                  <div style={{ paddingTop: 12, borderTop: '1px solid rgba(108,142,245,0.2)' }}>
                     <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', color: 'var(--text-muted)', marginBottom: 10, textTransform: 'uppercase' }}>参考データ</div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                       {getDailyFermiStats().map((s) => (

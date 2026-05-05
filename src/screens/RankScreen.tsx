@@ -42,7 +42,7 @@ export function RankScreen({ onBack }: RankScreenProps) {
         {/* Decorative gradient orbs */}
         <div style={{
           position: 'absolute', top: -40, right: -40, width: 160, height: 160,
-          background: 'radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(108,142,245,0.15) 0%, transparent 70%)',
           pointerEvents: 'none',
         }} />
         <div style={{
@@ -101,7 +101,7 @@ export function RankScreen({ onBack }: RankScreenProps) {
           background: 'rgba(255,255,255,0.1)', height: 8, borderRadius: 99, overflow: 'hidden',
         }}>
           <div style={{
-            background: 'linear-gradient(90deg, #818CF8, #6366F1)',
+            background: 'linear-gradient(90deg, #6C8EF5, #9BB3FA)',
             height: '100%', width: `${Math.max(levelPct, 2)}%`, borderRadius: 99,
             transition: 'width 0.6s ease',
           }} />
@@ -225,7 +225,7 @@ export function RankScreen({ onBack }: RankScreenProps) {
                     overflow: 'hidden', opacity: isUnlocked ? 1 : 0.45,
                     outline: isCurrent ? '2.5px solid var(--brand)' : 'none',
                     outlineOffset: 2,
-                    boxShadow: isCurrent ? '0 2px 12px rgba(99,102,241,0.2)' : 'none',
+                    boxShadow: isCurrent ? '0 2px 12px rgba(108,142,245,0.2)' : 'none',
                   }}>
                     <RankIllustration level={r.level} size={48} />
                   </div>
