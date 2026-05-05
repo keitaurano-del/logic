@@ -16,9 +16,9 @@
 | **Phase 1** デザインシステム土台 | 32h | ~28h | ✅ 88% |
 | **Phase 2** 全画面 HIG/M3 適合 | 60h | ~58h | ✅ 100%（構造的タスク完了） |
 | **Phase 3** 個別最適化 | 80h | ~36h | 🟡 45%（機械的置換ほぼ完了） |
-| **Phase 4** 仕上げ・検証 | 24h | ~12h | 🟡 自動 a11y + QA + CI（lint blocking 化） |
+| **Phase 4** 仕上げ・検証 | 24h | ~14h | 🟡 自動 a11y + QA + CI（lint blocking 化 + axe-core CI 追加） |
 
-**累計 ~142h / 204h ≒ 70%**
+**累計 ~144h / 204h ≒ 71%**
 
 ### Phase 3 進捗（2026-05-05 セッション）
 - ✅ 第1波: prefers-reduced-motion + Lesson 系 a11y 強化 (#96)
@@ -30,6 +30,7 @@
 
 ### Phase 4 進捗（2026-05-05 セッション）
 - ✅ CI の `npm run lint` を `continue-on-error: true` から blocking に昇格（lint clean 達成済のため）
+- ✅ Phase 4-4: axe-core a11y 自動チェックを CI に追加（`e2e/a11y.spec.ts`、6 主要画面、WCAG 2.1 A/AA、`color-contrast` 除外）。初期投入は non-blocking、違反 0 達成後に blocking 昇格
 
 > **Phase 2 クローズ判断（2026-05-05）**: Phase 2 の構造タスク（Header 統一 22 画面、`<div onClick>` 撤廃、旧画面削除 5 本、Switch / LoadingIndicator 化、触覚 12 画面、`#6C8EF5` 完全除去、jsx-a11y 警告化、TS lint cleanup）は完了。残る純粋な機械的置換タスク（font-size px→rem 1451 箇所、ハードコード色 995 箇所のうちカテゴリ色を除く ~400 件、`<select>` → `<ActionSheet>`、`index.css` legacy patch ~130 件）は **実機での visual regression 確認が前提**になるため、画面単位で進める Phase 3 に統合する。
 
