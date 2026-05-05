@@ -15,10 +15,10 @@
 | **Phase 0** リリースブロッカー | 8h | ~8h | ✅ 100% |
 | **Phase 1** デザインシステム土台 | 32h | ~28h | ✅ 88% |
 | **Phase 2** 全画面 HIG/M3 適合 | 60h | ~58h | ✅ 100%（構造的タスク完了） |
-| **Phase 3** 個別最適化 | 80h | ~40h | 🟡 50%（機械的置換 + V2 cleanup + vendor split） |
+| **Phase 3** 個別最適化 | 80h | ~44h | 🟡 55%（機械的置換 + dead code 大量削除 -3000 行 + vendor split） |
 | **Phase 4** 仕上げ・検証 | 24h | ~14h | 🟡 axe-core blocking + lint blocking + QA |
 
-**累計 ~148h / 204h ≒ 73%**
+**累計 ~152h / 204h ≒ 75%**
 
 ### Phase 3 進捗（2026-05-05 セッション）
 - ✅ 第1波: prefers-reduced-motion + Lesson 系 a11y 強化 (#96)
@@ -33,6 +33,10 @@
 - ✅ Phase 4-4: axe-core a11y 自動チェックを CI に追加（`e2e/a11y.spec.ts`、6 主要画面、WCAG 2.1 A/AA、`color-contrast` 除外）。初回 CI で違反 0 を確認 → **blocking に昇格済**
 - ✅ Phase 3 続: 未使用 V2 スクリーン 3 本 削除（JournalInput / Worksheet / Notebook、-860 行 / -28KB）
 - ✅ Phase 3 続: vite manualChunks で vendor chunk を分離（react / supabase / capacitor / sentry）。chunkSizeWarning も解消
+- ✅ Phase 3 続: dead V3 系 screens 4 本削除（HomeScreen / LessonScreen / LessonGrid / StatsScreenV3、-1719 行）
+- ✅ Phase 3 続: dead components 4 本削除（Confetti / Eyebrow / ProgressBar / TextField、-278 行）
+- ✅ Phase 3 続: dead v3 components dir 全削除（Card / PillButton / Section、-144 行）
+- ✅ Phase 3 続: dead 型定義 + 未使用 v3 画像 cleanup（speech.d.ts / lessonGuide.tsx / Firebase 型 / 2 枚 webp）
 
 > **Phase 2 クローズ判断（2026-05-05）**: Phase 2 の構造タスク（Header 統一 22 画面、`<div onClick>` 撤廃、旧画面削除 5 本、Switch / LoadingIndicator 化、触覚 12 画面、`#6C8EF5` 完全除去、jsx-a11y 警告化、TS lint cleanup）は完了。残る純粋な機械的置換タスク（font-size px→rem 1451 箇所、ハードコード色 995 箇所のうちカテゴリ色を除く ~400 件、`<select>` → `<ActionSheet>`、`index.css` legacy patch ~130 件）は **実機での visual regression 確認が前提**になるため、画面単位で進める Phase 3 に統合する。
 
