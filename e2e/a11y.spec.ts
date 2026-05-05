@@ -82,6 +82,16 @@ test.describe('a11y / axe-core', () => {
     expect(results.violations, JSON.stringify(results.violations, null, 2)).toEqual([])
   })
 
-  // Onboarding / Pricing は別 PR で違反確認 + 修正 + 追加予定。
-  // 一旦コア 6 画面のみで blocking 運用を維持する。
+  test('Pricing screen has no critical accessibility violations', async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem('logic-onboarded', '1')
+      localStorage.setItem('logic-install-id', 'test')
+    })
+    await page.goto('/?preview=pricing')
+    await page.waitForSelector('.app-shell', { timeout: 10_000 })
+    // pricing screen のレイアウト遷移完了を待つ (Suspense / fade-in 含む)
+    await page.waitForLoadState('networkidle')
+    const results = await buildScanner(page).analyze()
+    expect(results.violations, JSON.stringify(results.violations, null, 2)).toEqual([])
+  })
 })
