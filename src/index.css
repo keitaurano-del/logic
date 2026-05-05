@@ -467,13 +467,6 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--text-primary);
 }
 
-/* v3 dark — ensure ALL fullscreen screens fall back to dark base */
-.mode-dark, body {
-  /* every <button> resets its own color box, so make sure plan cards readable */
-}
-
-/* legacy cream/yellow rgba を inline style で使う箇所はもう無いため patch 削除済 */
-
 /* Inline white backgrounds (style="background: #fff" on legacy components) */
 [style*="background: #fff"],
 [style*="background:#fff"],
@@ -603,13 +596,6 @@ h1, h2, h3, h4, h5, h6 {
  * Catch-all sanitizer for legacy light-theme inline styles
  * ========================================================== */
 
-/* Any nearly-white background → bg-card */
-[style*="background: #F"],
-[style*="background:#F"],
-[style*="background-color: #F"] {
-  /* This is overly broad; skip unless explicit white */
-}
-
 /* legacy 高頻度 light/dark/gray リテラルは inline style からほぼ撤退済み。
    残るのは #FFFFFF (装飾的に明示) と少数の gray のみ。 */
 [style*="background: #FFFFFF"],
@@ -621,13 +607,6 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--text-secondary) !important;
 }
 
-/* All borders that look light */
-[style*="border: 1px solid #F"],
-[style*="border:1px solid #F"],
-[style*="border: 1.5px solid #F"],
-[style*="border-color: #F"] {
-  /* skip too broad */
-}
 [style*="border: 1px solid #E"],
 [style*="border-color: #E"] {
   border-color: var(--border) !important;
@@ -644,13 +623,6 @@ h1, h2, h3, h4, h5, h6 {
 
 /* `--brand` は tokens-m3.css で var(--md-sys-color-primary) (#A8C0FF) に
    alias されているため、ここで個別上書きしない (旧 #6C8EF5 を再注入しない) */
-
-/* RGB form catch */
-[style*="background: rgb(59, 91, 219)"],
-[style*="background:rgb(59, 91, 219)"] {
-  background: var(--accent) !important;
-  color: var(--accent-fg) !important;
-}
 
 /* === RGB form overrides (React inline style outputs in rgb) === */
 [style*="background: rgb(59, 91, 219)"],
@@ -702,12 +674,6 @@ h1, h2, h3, h4, h5, h6 {
 [style*="linear-gradient(135deg, rgb(61, 95, 196)"] {
   background: linear-gradient(135deg, #70D8BD 0%, #A5E8D5 100%) !important;
   color: var(--accent-fg) !important;
-}
-
-/* Box-shadow with brand blue → mint shadow */
-[style*="rgba(59, 91, 219"],
-[style*="rgba(99, 102, 241"] {
-  /* keep box-shadow but tone down */
 }
 
 /* RGB borders */
