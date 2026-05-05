@@ -83,8 +83,11 @@ export function DeviationScreen({ onBack, onRetakeTest, onStartLesson }: Deviati
 
       <section
         className="profile-hero"
+        role="button"
+        tabIndex={0}
         style={{ marginTop: 'var(--s-3)', cursor: 'pointer' }}
         onClick={() => setShowModal(true)}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setShowModal(true) } }}
       >
         <div
           className="eyebrow"
@@ -188,21 +191,28 @@ export function DeviationScreen({ onBack, onRetakeTest, onStartLesson }: Deviati
       {/* 偏差値説明モーダル */}
       {showModal && (
         <div
+          role="dialog"
+          aria-modal="true"
           style={{
             position: 'fixed', inset: 0, zIndex: 1000,
             background: 'rgba(0,0,0,0.5)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             padding: 20,
           }}
-          onClick={() => setShowModal(false)}
         >
+          <button
+            type="button"
+            aria-label="モーダルを閉じる"
+            onClick={() => setShowModal(false)}
+            style={{ position: 'absolute', inset: 0, background: 'transparent', border: 'none', padding: 0, cursor: 'pointer' }}
+          />
           <div
             style={{
+              position: 'relative',
               background: 'var(--bg-card, #fff)', borderRadius: 20,
               padding: '28px 24px', maxWidth: 360, width: '100%',
               boxShadow: '0 20px 60px rgba(0,0,0,0.2)',
             }}
-            onClick={(e) => e.stopPropagation()}
           >
             <h3 style={{ fontSize: 20, fontWeight: 800, marginBottom: 16, color: 'var(--text-primary, #0F1523)' }}>
               偏差値とは？

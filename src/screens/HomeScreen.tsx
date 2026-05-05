@@ -60,6 +60,8 @@ const ALL_CATEGORIES: (Category & { adminOnly?: boolean })[] = [
 
 const CATEGORIES = ALL_CATEGORIES.filter((c) => isAdmin() || !c.adminOnly)
 
+const WEEK_DAYS = ['月', '火', '水', '木', '金', '土'] as const
+
 interface DerivedData {
   streak: number
   streakState: 'none' | 'active' | 'at-risk'
@@ -134,7 +136,6 @@ function HomeMobile({
   const xpToNext = Math.max(0, nextXpThreshold - xp)
 
   const todayDow = (new Date().getDay() + 6) % 7 // 0=月, 1=火, ..., 5=土, 6=日
-  const weekDays = ['月', '火', '水', '木', '金', '土']
 
   // 今週（月曜始まり）の各日付を生成してstudyDatesと照合
   const studyDateSet = useMemo(() => new Set(getStudyDates()), [])
@@ -142,7 +143,7 @@ function HomeMobile({
     const today = new Date()
     const monday = new Date(today)
     monday.setDate(today.getDate() - todayDow)
-    return weekDays.map((_, i) => {
+    return WEEK_DAYS.map((_, i) => {
       const d = new Date(monday)
       d.setDate(monday.getDate() + i)
       return d.toISOString().slice(0, 10)
@@ -361,7 +362,7 @@ function HomeMobile({
             <div onClick={onOpenStats} style={{ fontSize: 14, fontWeight: 600, color: 'var(--md-sys-color-primary)', cursor: 'pointer' }}>詳細</div>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            {weekDays.map((day, i) => {
+            {WEEK_DAYS.map((day, i) => {
               const isDone = studyDateSet.has(thisWeekDates[i])
               return (
                 <div key={day} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}>

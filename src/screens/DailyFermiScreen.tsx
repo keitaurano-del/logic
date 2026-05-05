@@ -127,14 +127,22 @@ function FermiChatModal({ question, locale, onClose }: {
   return (
     // オーバーレイ
     <div
+      role="dialog"
+      aria-modal="true"
       style={{
         position: 'fixed', inset: 0, zIndex: 1000,
         background: 'rgba(0,0,0,0.55)',
         display: 'flex', alignItems: 'flex-end',
       }}
-      onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
     >
+      <button
+        type="button"
+        aria-label="閉じる"
+        onClick={onClose}
+        style={{ position: 'absolute', inset: 0, background: 'transparent', border: 'none', padding: 0, cursor: 'pointer', zIndex: 0 }}
+      />
       <div style={{
+        position: 'relative',
         width: '100%',
         maxHeight: '80vh',
         background: 'var(--bg-card)',

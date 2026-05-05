@@ -177,13 +177,17 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
       {/* タップゾーン: クイズ以外・左右端20%のみ（コンテンツエリアに干渉しない） */}
       {!isQuiz && (
         <div style={{ position: 'absolute', inset: 0, display: 'flex', zIndex: 5, pointerEvents: 'none' }}>
-          <div
+          <button
+            type="button"
+            aria-label="前のスライド"
             onClick={() => { if (!isGuarded()) goPrev() }}
-            style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: '22%', cursor: 'pointer', pointerEvents: 'auto' }}
+            style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: '22%', cursor: 'pointer', pointerEvents: 'auto', background: 'transparent', border: 'none', padding: 0 }}
           />
-          <div
+          <button
+            type="button"
+            aria-label="次のスライド"
             onClick={() => { if (!isGuarded()) goNext() }}
-            style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: '22%', cursor: 'pointer', pointerEvents: 'auto' }}
+            style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: '22%', cursor: 'pointer', pointerEvents: 'auto', background: 'transparent', border: 'none', padding: 0 }}
           />
         </div>
       )}

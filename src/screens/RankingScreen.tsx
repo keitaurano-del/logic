@@ -15,6 +15,8 @@ interface RankingScreenProps {
 type RankEntry = { rank: number; nickname: string; deviation: number; xp: number; isYou: boolean }
 type RankingData = { total: number; top: RankEntry[]; yourRank: number; yourDeviation: number; yourXp: number }
 
+const WEEK_DAYS = ['月', '火', '水', '木', '金', '土'] as const
+
 export function RankingScreen({ onTakeTest }: RankingScreenProps) {
   const [rankData, setRankData] = useState<RankingData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -31,7 +33,6 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
 
   // 今週の曜日計算
   const todayDow = (new Date().getDay() + 6) % 7 // 0=月, 1=火, ..., 5=土, 6=日
-  const weekDays = ['月', '火', '水', '木', '金', '土']
 
   // 今週（月曜始まり）の各日付を生成して、studyDatesと照合
   const studyDateSet = useMemo(() => new Set(getStudyDates()), [])
@@ -39,7 +40,7 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
     const today = new Date()
     const monday = new Date(today)
     monday.setDate(today.getDate() - todayDow)
-    return weekDays.map((_, i) => {
+    return WEEK_DAYS.map((_, i) => {
       const d = new Date(monday)
       d.setDate(monday.getDate() + i)
       return d.toISOString().slice(0, 10) // YYYY-MM-DD
@@ -152,7 +153,7 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
         <div style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: '14px 16px', boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
           <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 16, fontWeight: 800, color: '#0F1523', letterSpacing: '-.02em', marginBottom: 12 }}>今週の記録</div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            {weekDays.map((day, i) => {
+            {WEEK_DAYS.map((day, i) => {
               const isDone = studyDateSet.has(thisWeekDates[i])
               return (
                 <div key={day} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}>

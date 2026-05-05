@@ -186,13 +186,18 @@ export function TutorialOverlay({ onDone, onGoFermi }: TutorialOverlayProps) {
       }}
     >
       {/* ダークオーバーレイ（スポットライト付き） */}
-      <div
+      <button
+        type="button"
+        aria-label="チュートリアルをスキップ"
         onClick={handleSkip}
         style={{
           position: 'absolute', inset: 0,
           background: 'rgba(0,0,0,0.82)',
           clipPath: spotlight,
           transition: 'clip-path 0.4s ease',
+          border: 'none',
+          padding: 0,
+          cursor: 'pointer',
         }}
       />
       {/* スポットライト枠（ハイライト枠線） */}
@@ -224,7 +229,6 @@ export function TutorialOverlay({ onDone, onGoFermi }: TutorialOverlayProps) {
           zIndex: 10000,
           pointerEvents: 'auto',
         }}
-        onClick={e => e.stopPropagation()}
       >
         <div style={{
           background: 'linear-gradient(160deg, #1A1F35 0%, #141828 100%)',
