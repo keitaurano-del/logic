@@ -42,6 +42,7 @@ export const COURSES: Course[] = [
     lessonIds: [20, 21, 22, 23, 24],
     level: '初級',
     description: 'MECEとロジックツリーで、考えを漏れなく・ダブりなく整理する力を身につける。',
+    image: '/images/v3/course-logic-01.svg',
   },
   {
     id: 'logic-02',
@@ -63,6 +64,7 @@ export const COURSES: Course[] = [
     lessonIds: [40, 41, 42, 43, 69],
     level: '初級',
     description: '批判的思考の基礎から論理的誤謬の見破り方まで、判断力を鍛える。',
+    image: '/images/v3/course-critical-01.svg',
   },
   {
     id: 'critical-02',
@@ -84,6 +86,7 @@ export const COURSES: Course[] = [
     lessonIds: [50, 51, 52, 70, 304],
     level: '中級',
     description: '仮説を先に立て、検証で磨く思考サイクルを身につける。',
+    image: '/images/v3/course-hypothesis-01.svg',
   },
 
   // ── 課題設定 ────────────────────────────────────────
@@ -95,6 +98,7 @@ export const COURSES: Course[] = [
     lessonIds: [53, 54, 55, 305, 306],
     level: '中級',
     description: '問題と課題の違いを理解し、本質的な問いを設定する力を養う。',
+    image: '/images/v3/course-problem-01.svg',
   },
 
   // ── デザインシンキング ──────────────────────────────
@@ -106,6 +110,7 @@ export const COURSES: Course[] = [
     lessonIds: [56, 57, 58, 307, 308],
     level: '初級',
     description: '共感からプロトタイプまで、人間中心設計の思考プロセスを実践する。',
+    image: '/images/v3/course-design-01.svg',
   },
 
   // ── システムシンキング ──────────────────────────────
@@ -117,6 +122,7 @@ export const COURSES: Course[] = [
     lessonIds: [65, 66, 67, 313, 314],
     level: '上級',
     description: 'フィードバックループと氷山モデルで、問題の根本原因を構造的に捉える。',
+    image: '/images/v3/course-systems-01.svg',
   },
 
   // ── ラテラルシンキング ──────────────────────────────
@@ -128,6 +134,7 @@ export const COURSES: Course[] = [
     lessonIds: [59, 60, 61, 309, 310],
     level: '中級',
     description: 'リフレーミングと逆転の発想で、固定観念を超えたアイデアを生み出す。',
+    image: '/images/v3/course-lateral-01.svg',
   },
 
   // ── アナロジー思考 ──────────────────────────────────
@@ -139,6 +146,7 @@ export const COURSES: Course[] = [
     lessonIds: [62, 63, 64, 311, 312],
     level: '中級',
     description: '構造的類似性を見抜き、異分野の知見を自分の課題に応用する。',
+    image: '/images/v3/course-analogy-01.svg',
   },
 
   // ── 哲学 ────────────────────────────────────────────
@@ -150,6 +158,7 @@ export const COURSES: Course[] = [
     lessonIds: [77, 78, 79, 80, 81],
     level: '上級',
     description: 'ソクラテスの問答法と反証可能性を通じて、思考の原理を学ぶ。',
+    image: '/images/v3/course-philosophy-01.svg',
   },
 
   // ── 東洋思想 ────────────────────────────────────────
