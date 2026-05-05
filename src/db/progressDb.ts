@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * src/db/progressDb.ts
  * progressStore の Supabase 版
  * テーブル: progress (user_id, lesson_id, category, score, completed_at)
+ *
+ * NOTE: (db as any) は Supabase 動的スキーマ未知の typing 回避。
  */
 import { getSupabaseClient } from './index'
 import type { Category, CategoryProgress } from '../progressStore'
