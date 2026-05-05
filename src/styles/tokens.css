@@ -198,7 +198,7 @@
   --accent-soft:  rgba(108, 142, 245, 0.16);
   --accent-glow:  rgba(108, 142, 245, 0.25);
   --accent-dark:  #9BB3FA;
-  --accent-fg:    #0D1220;
+  --accent-fg:    #FFFFFF;
 
   /* Richer category colors in dark mode */
   --cat-boki2:      #A78BFA;

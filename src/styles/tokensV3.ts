@@ -10,7 +10,7 @@ export const tokensV3 = {
   // ── Material 3 Color Roles (canonical) ──
   m3: {
     primary:                   '#6C8EF5',
-    onPrimary:                 '#0A1F4D',
+    onPrimary:                 '#FFFFFF',
     primaryContainer:          '#2E45A8',
     onPrimaryContainer:        '#DDE5FF',
     secondary:                 '#BCC6DC',

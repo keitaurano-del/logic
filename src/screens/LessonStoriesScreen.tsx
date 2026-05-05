@@ -50,7 +50,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
       <div style={{ background: v3.color.bg, minHeight: '100vh', color: v3.color.text, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Noto Sans JP', sans-serif" }}>
         <div style={{ textAlign: 'center' }}>
           <div>レッスンが見つかりません</div>
-          <button onClick={onClose} style={{ marginTop: 20, padding: '10px 20px', borderRadius: 12, background: v3.color.accent, color: v3.color.bg, border: 'none', fontWeight: 700 }}>戻る</button>
+          <button onClick={onClose} style={{ marginTop: 20, padding: '10px 20px', borderRadius: 12, background: v3.color.accent, color: '#FFFFFF', border: 'none', fontWeight: 700 }}>戻る</button>
         </div>
       </div>
     )
@@ -206,11 +206,11 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
           )}
           <button
             onClick={() => { if (!isGuarded()) goNext() }}
-            style={{ position: 'absolute', right: 12, bottom: 'calc(env(safe-area-inset-bottom, 0px) + 16px)', zIndex: 8, background: v3.color.accent, border: 'none', borderRadius: 99, height: 44, padding: '0 20px', display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', boxShadow: `0 4px 16px ${v3.color.accent}60`, WebkitTapHighlightColor: 'transparent', fontSize: 14, fontWeight: 700, color: v3.color.bg }}
+            style={{ position: 'absolute', right: 12, bottom: 'calc(env(safe-area-inset-bottom, 0px) + 16px)', zIndex: 8, background: v3.color.accent, border: 'none', borderRadius: 99, height: 44, padding: '0 20px', display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', boxShadow: `0 4px 16px ${v3.color.accent}60`, WebkitTapHighlightColor: 'transparent', fontSize: 14, fontWeight: 700, color: '#FFFFFF' }}
             aria-label="次へ"
           >
             次へ
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={v3.color.bg} strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
           </button>
         </>
       )}
@@ -219,10 +219,10 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
       {isQuiz && quizAnswered?.correct && (
         <button
           onClick={goNext}
-          style={{ position: 'absolute', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 28px)', left: '50%', transform: 'translateX(-50%)', display: 'inline-flex', alignItems: 'center', gap: 8, background: v3.color.accent, border: 'none', borderRadius: 99, padding: '18px 48px', fontSize: 16, fontWeight: 700, color: v3.color.bg, cursor: 'pointer', zIndex: 6, boxShadow: `0 4px 20px ${v3.color.accent}70`, WebkitTapHighlightColor: 'transparent' }}
+          style={{ position: 'absolute', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 28px)', left: '50%', transform: 'translateX(-50%)', display: 'inline-flex', alignItems: 'center', gap: 8, background: v3.color.accent, border: 'none', borderRadius: 99, padding: '18px 48px', fontSize: 16, fontWeight: 700, color: '#FFFFFF', cursor: 'pointer', zIndex: 6, boxShadow: `0 4px 20px ${v3.color.accent}70`, WebkitTapHighlightColor: 'transparent' }}
         >
           次へ
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.bg} strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
         </button>
       )}
 
@@ -305,7 +305,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
                     setReportSent(true)
                   }}
                   disabled={!reportText}
-                  style={{ width: '100%', background: reportText ? v3.color.accent : v3.color.card, border: 'none', borderRadius: 14, padding: '14px', fontSize: 14, fontWeight: 700, color: reportText ? v3.color.bg : v3.color.text3, cursor: reportText ? 'pointer' : 'default' }}
+                  style={{ width: '100%', background: reportText ? v3.color.accent : v3.color.card, border: 'none', borderRadius: 14, padding: '14px', fontSize: 14, fontWeight: 700, color: reportText ? '#FFFFFF' : v3.color.text3, cursor: reportText ? 'pointer' : 'default' }}
                 >
                   送信する
                 </button>
@@ -369,7 +369,7 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
             <div key={i} style={{ width: '100%' }}>
               <div style={{
                 background: n.kind === 'conclusion' ? v3.color.accent : v3.color.cardSoft,
-                color: n.kind === 'conclusion' ? v3.color.bg : v3.color.text,
+                color: n.kind === 'conclusion' ? '#FFFFFF' : v3.color.text,
                 fontWeight: n.kind === 'conclusion' ? 700 : 600,
                 borderRadius: 12,
                 padding: '12px 18px',
@@ -406,7 +406,7 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
               const bg: string = !answered
                 ? (isPicked ? v3.color.accentSoft : v3.color.card)
                 : (wasSelected && isCorrect ? v3.color.accent : wasSelected && !isCorrect ? '#4A1C1C' : isCorrect ? v3.color.accentSoft : v3.color.card)
-              const color: string = !answered ? v3.color.text : (wasSelected && isCorrect ? v3.color.bg : v3.color.text)
+              const color: string = !answered ? v3.color.text : (wasSelected && isCorrect ? '#FFFFFF' : v3.color.text)
               const border: string = !answered ? (isPicked ? `2px solid ${v3.color.accent}` : '2px solid transparent') : 'none'
               return (
                 <button type="button" key={i} onClick={() => !answered && onToggleMulti(i)}
@@ -426,7 +426,7 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
             // 単一選択
             const isSelected = quizAnswered?.selected === i
             const bg: string = !answered ? v3.color.card : isSelected && isCorrect ? v3.color.accent : isSelected && !isCorrect ? '#4A1C1C' : isCorrect && answered ? v3.color.accentSoft : v3.color.card
-            const color: string = !answered ? v3.color.text : isSelected && isCorrect ? v3.color.bg : v3.color.text
+            const color: string = !answered ? v3.color.text : isSelected && isCorrect ? '#FFFFFF' : v3.color.text
             return (
               <button type="button" key={i} onClick={() => !answered && onSelectQuiz(i)}
                 disabled={answered}
@@ -443,7 +443,7 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
           <button
             onClick={onSubmitMulti}
             disabled={multiSelected.length === 0}
-            style={{ marginTop: 20, width: '100%', background: multiSelected.length > 0 ? v3.color.accent : v3.color.card, color: multiSelected.length > 0 ? v3.color.bg : v3.color.text3, border: 'none', borderRadius: 14, padding: '14px', fontSize: 15, fontWeight: 700, cursor: multiSelected.length > 0 ? 'pointer' : 'default' }}
+            style={{ marginTop: 20, width: '100%', background: multiSelected.length > 0 ? v3.color.accent : v3.color.card, color: multiSelected.length > 0 ? '#FFFFFF' : v3.color.text3, border: 'none', borderRadius: 14, padding: '14px', fontSize: 15, fontWeight: 700, cursor: multiSelected.length > 0 ? 'pointer' : 'default' }}
           >
             {multiSelected.length === 0 ? '選択してください' : `${multiSelected.length}つ選択中 — 回答する`}
           </button>
@@ -483,7 +483,7 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
         <ul style={{ display: 'flex', flexDirection: 'column', gap: 12, listStyle: 'none', padding: 0, marginBottom: 28 }}>
           {slide.points.map((p, i) => (
             <li key={i} style={{ display: 'flex', gap: 12, alignItems: 'flex-start', background: v3.color.card, borderRadius: 14, padding: '14px 16px' }}>
-              <div style={{ width: 24, height: 24, borderRadius: '50%', background: v3.color.accent, color: v3.color.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 800, flexShrink: 0 }}>{i + 1}</div>
+              <div style={{ width: 24, height: 24, borderRadius: '50%', background: v3.color.accent, color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 800, flexShrink: 0 }}>{i + 1}</div>
               <div style={{ fontSize: 15, lineHeight: 1.6 }}>{p}</div>
             </li>
           ))}
@@ -493,7 +493,7 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
           onClick={onNext}
           style={{
             width: '100%', padding: '16px 0', borderRadius: 99,
-            background: v3.color.accent, color: v3.color.bg,
+            background: v3.color.accent, color: '#FFFFFF',
             fontSize: 16, fontWeight: 700, border: 'none', cursor: 'pointer',
             boxShadow: `0 4px 20px ${v3.color.accent}45`,
             WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation',
