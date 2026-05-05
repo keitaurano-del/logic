@@ -623,6 +623,7 @@ function AppV3() {
           </div>
           <input
             type="text"
+            aria-label="表示名"
             placeholder="名前を入力（例：田中 太郎）"
             value={nameInput}
             onChange={e => setNameInput(e.target.value)}

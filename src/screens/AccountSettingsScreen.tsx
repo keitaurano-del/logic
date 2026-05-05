@@ -87,6 +87,7 @@ export function AccountSettingsScreen({ onBack, currentUser, onOpenLogin, onLogo
                 <div>
                   <input
                     type="text"
+                    aria-label="表示名"
                     value={nameInput}
                     onChange={e => setNameInput(e.target.value)}
                     onKeyDown={e => { if (e.key === 'Enter') handleSaveName() }}

@@ -251,6 +251,7 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
         <div style={{ position: 'relative' }}>
           <input
             type="search"
+            aria-label="レッスン・コース検索"
             placeholder="レッスン・コースを検索..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}

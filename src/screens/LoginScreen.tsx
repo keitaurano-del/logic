@@ -153,6 +153,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
         {/* メールアドレス入力 */}
         <input
           type="email"
+          aria-label="メールアドレス"
           placeholder="メールアドレス"
           value={email}
           onChange={e => setEmail(e.target.value)}
@@ -164,6 +165,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
         {mode !== 'reset' && (
           <input
             type="password"
+            aria-label="パスワード"
             placeholder="パスワード"
             value={password}
             onChange={e => setPassword(e.target.value)}
