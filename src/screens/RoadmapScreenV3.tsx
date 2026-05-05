@@ -117,7 +117,7 @@ const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
     routeKey: '経営戦略',
   },
   'フェルミ推定': {
-    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6C8EF5" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>,
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--md-sys-color-primary)" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>,
     iconBg: 'rgba(168,192,255,.14)',
     image: `${IMG}/fermi-card.png`,
     routeKey: 'フェルミ推定',

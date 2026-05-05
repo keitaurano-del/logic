@@ -73,12 +73,12 @@ const SLIDES = [
     accentColor: 'var(--md-sys-color-primary)',
     icon: (
       <svg width="72" height="72" viewBox="0 0 80 80" fill="none">
-        <circle cx="40" cy="40" r="36" stroke="#6C8EF5" strokeWidth="1.5" strokeDasharray="6 4" opacity="0.4"/>
-        <circle cx="40" cy="40" r="24" fill="rgba(168,192,255,0.12)" stroke="#6C8EF5" strokeWidth="1.5"/>
-        <path d="M28 40h8l4-10 4 20 4-10h4" stroke="#6C8EF5" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-        <circle cx="40" cy="18" r="3" fill="#6C8EF5" opacity="0.8"/>
+        <circle cx="40" cy="40" r="36" stroke="var(--md-sys-color-primary)" strokeWidth="1.5" strokeDasharray="6 4" opacity="0.4"/>
+        <circle cx="40" cy="40" r="24" fill="rgba(168,192,255,0.12)" stroke="var(--md-sys-color-primary)" strokeWidth="1.5"/>
+        <path d="M28 40h8l4-10 4 20 4-10h4" stroke="var(--md-sys-color-primary)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <circle cx="40" cy="18" r="3" fill="var(--md-sys-color-primary)" opacity="0.8"/>
         <circle cx="58" cy="28" r="2" fill="#8BA8FF" opacity="0.6"/>
-        <circle cx="62" cy="48" r="2.5" fill="#6C8EF5" opacity="0.5"/>
+        <circle cx="62" cy="48" r="2.5" fill="var(--md-sys-color-primary)" opacity="0.5"/>
         <circle cx="22" cy="56" r="2" fill="#8BA8FF" opacity="0.7"/>
       </svg>
     ),
