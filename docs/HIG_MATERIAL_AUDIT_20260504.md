@@ -16,7 +16,7 @@
 | **Phase 1** デザインシステム土台 | 32h | ~24h 相当 | ✅ ほぼ完了（PR #73） |
 | **Phase 2** 全画面 HIG/M3 適合 | 60h | ~58h 相当 | 🟢 97%（22画面 Header 統一、5旧画面削除、12画面 触覚、Switch、ローディング、色 sweep ×4） |
 | **Phase 3** 個別最適化 | 80h | 0h | ⚪ 未着手（次セッション以降） |
-| **Phase 4** 仕上げ・検証 | 24h | ~3h 相当（build/lint/cap sync 通過） | 🟡 自動チェックのみ |
+| **Phase 4** 仕上げ・検証 | 24h | ~6h 相当（自動 a11y 検証 + QA チェックリスト + CI） | 🟡 自動チェック + ドキュメント完備、実機検証は要 user |
 
 ### Phase 0 完了項目
 - ✅ `capacitor.config.ts` StatusBar `LIGHT` + `#1A1F2E` + `overlaysWebView`
@@ -109,9 +109,14 @@
 ### 検証
 - ✅ `npm run build` (TypeScript + Vite)
 - ✅ `npx cap sync` (10 plugins for android)
-- ✅ `npx eslint` 新規ファイルはクリーン
-- ⚪ Android 実機検証
+- ✅ `npx eslint` 新規ファイルはクリーン (jsx-a11y 警告化)
+- ✅ `eslint-plugin-jsx-a11y` 導入 (146 件の warning が可視化, 順次解消)
+- ✅ `docs/QA_CHECKLIST_HIG_M3.md` 作成 (Phase 4 manual テスト用)
+- ✅ `.github/workflows/ci.yml` 作成 (PR 毎に build + lint 自動実行)
+- ⚪ Android 実機検証 (要 user)
 - ⚪ iOS シミュレータ (iOS リリース時)
+- ⚪ TalkBack / VoiceOver 全画面ナビ (要 user)
+- ⚪ Lighthouse / axe-core CI 化 (Playwright + @axe-core/playwright で将来追加)
 
 ---
 
