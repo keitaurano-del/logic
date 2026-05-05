@@ -7,6 +7,7 @@ import { useState, useMemo } from 'react'
 import type { ReactNode } from 'react'
 import { v3 } from '../styles/tokensV3'
 import { Header } from '../components/platform/Header'
+import { ActionSheet } from '../components/ActionSheet'
 import { LessonThumbnail } from '../components/LessonThumbnail'
 import LessonIcon from '../LessonIcon'
 import { getAllLessonsFlat } from '../lessonData'
@@ -357,6 +358,13 @@ function FilterBar(p: {
     if (next.has(val)) next.delete(val); else next.add(val)
     setter(next)
   }
+  const [sortSheetOpen, setSortSheetOpen] = useState(false)
+  const sortItems: { id: SortOption; label: string }[] = [
+    { id: 'relevance', label: '関連度順' },
+    { id: 'level', label: '難易度順' },
+    { id: 'id', label: 'レッスン番号順' },
+  ]
+  const sortLabel = sortItems.find(s => s.id === p.sortOption)?.label ?? '並べ替え'
   return (
     <div style={{ padding: '0 16px 6px', display: 'flex', flexDirection: 'column', gap: 6 }}>
       <div style={{ display: 'flex', gap: 6, overflowX: 'auto', paddingBottom: 4, scrollbarWidth: 'none' }}>
@@ -371,12 +379,22 @@ function FilterBar(p: {
       </div>
       {p.showSort && (
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <select value={p.sortOption} onChange={e => p.setSortOption(e.target.value as SortOption)}
-            style={{ background: v3.color.card, color: v3.color.text2, border: `1px solid ${v3.color.line}`, borderRadius: 8, padding: '4px 8px', fontSize: 12, fontFamily: 'inherit' }}>
-            <option value="relevance">関連度順</option>
-            <option value="level">難易度順</option>
-            <option value="id">レッスン番号順</option>
-          </select>
+          <button
+            type="button"
+            onClick={() => setSortSheetOpen(true)}
+            aria-haspopup="dialog"
+            style={{ background: v3.color.card, color: v3.color.text2, border: `1px solid ${v3.color.line}`, borderRadius: 8, padding: '4px 10px', fontSize: 12, fontFamily: 'inherit', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4 }}
+          >
+            {sortLabel}
+            <span aria-hidden="true" style={{ fontSize: 10, opacity: 0.7 }}>▾</span>
+          </button>
+          <ActionSheet
+            open={sortSheetOpen}
+            title="並べ替え"
+            items={sortItems.map(s => ({ id: s.id, label: s.label }))}
+            onSelect={(id) => { p.setSortOption(id as SortOption); setSortSheetOpen(false) }}
+            onCancel={() => setSortSheetOpen(false)}
+          />
         </div>
       )}
     </div>
