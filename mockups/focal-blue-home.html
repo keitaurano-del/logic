@@ -89,75 +89,74 @@
     letter-spacing: -.005em;
   }
 
-  /* ── Daily Fermi card (focal Hero) ── */
+  /* ── Daily Fermi card (focal Hero — カード自体が Slate Blue) ── */
   .hero-card {
-    background: linear-gradient(135deg, #1E2540 0%, #252C40 100%);
-    border-radius: 16px;
-    padding: 20px;
+    background: linear-gradient(135deg, #6C8EF5 0%, #5478E8 100%);
+    border-radius: 18px;
+    padding: 22px;
     position: relative;
     overflow: hidden;
-    min-height: 180px;
-    box-shadow: 0 4px 24px rgba(0,0,0,.3);
+    min-height: 188px;
+    box-shadow: 0 14px 32px rgba(108,142,245,.32);
   }
-  /* 装飾 blur 円 — neutral white@4% (青 glow を排除) */
+  /* 装飾 blur 円 — 白系 glow でカード内のハイライトに */
   .hero-blur {
     position: absolute;
-    right: -30px;
-    top: -30px;
-    width: 140px;
-    height: 140px;
+    right: -36px;
+    top: -36px;
+    width: 160px;
+    height: 160px;
     border-radius: 50%;
-    background: rgba(255,255,255,0.04);
-    filter: blur(36px);
+    background: rgba(255,255,255,0.18);
+    filter: blur(40px);
     pointer-events: none;
   }
-  /* 「今日の1問」eyebrow — focal なので Slate Blue で残す
-     （ユーザーがいま engage すべき対象であることを示す） */
+  /* eyebrow — 青背景上の白ラベル */
   .eyebrow-row {
     display: flex;
     align-items: center;
     gap: 6px;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     position: relative;
     z-index: 1;
   }
   .eyebrow-dot {
     width: 6px; height: 6px;
     border-radius: 50%;
-    background: var(--primary);
+    background: rgba(255,255,255,.85);
   }
   .eyebrow-label {
     font-size: 14px;
     font-weight: 700;
     letter-spacing: .12em;
     text-transform: uppercase;
-    color: var(--primary);
+    color: rgba(255,255,255,.92);
   }
   .hero-title {
-    font-size: 19px;
+    font-size: 20px;
     font-weight: 700;
     line-height: 1.4;
     letter-spacing: -.005em;
-    margin-bottom: 8px;
-    color: var(--text);
+    margin-bottom: 10px;
+    color: #FFFFFF;
     position: relative; z-index: 1;
   }
   .hero-meta {
     display: flex;
     align-items: center;
     gap: 8px;
-    color: var(--text-2);
+    color: rgba(255,255,255,.82);
     font-size: 14px;
     font-weight: 500;
-    margin-bottom: 16px;
+    margin-bottom: 18px;
     position: relative; z-index: 1;
   }
   .hero-meta .sep {
     width: 3px; height: 3px;
     border-radius: 50%;
-    background: var(--text-3);
+    background: rgba(255,255,255,.45);
   }
-  /* CTA — focal (Slate Blue + 白文字) */
+  /* 共通 CTA pill (Slate Blue ベース、白文字) */
   .cta-pill {
     background: var(--primary);
     color: #FFFFFF;
@@ -173,6 +172,13 @@
     position: relative; z-index: 1;
   }
   .cta-pill svg { fill: #FFFFFF; }
+  /* Hero 内 CTA — 白背景に青文字 (インバート) */
+  .hero-card .cta-pill {
+    background: #FFFFFF;
+    color: var(--primary);
+    box-shadow: 0 6px 18px rgba(0,0,0,.14);
+  }
+  .hero-card .cta-pill svg { fill: var(--primary); }
 
   /* ── Hero Recommend card ── */
   .recommend-card {
