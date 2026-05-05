@@ -109,4 +109,52 @@ test.describe('a11y / axe-core', () => {
     const results = await buildScanner(page).analyze()
     expect(results.violations, JSON.stringify(results.violations, null, 2)).toEqual([])
   })
+
+  test('Settings screen has no critical accessibility violations', async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem('logic-onboarded', '1')
+      localStorage.setItem('logic-install-id', 'test')
+    })
+    await page.goto('/?preview=settings')
+    await page.waitForSelector('.app-shell', { timeout: 10_000 })
+    await page.waitForLoadState('networkidle')
+    const results = await buildScanner(page).analyze()
+    expect(results.violations, JSON.stringify(results.violations, null, 2)).toEqual([])
+  })
+
+  test('Account settings screen has no critical accessibility violations', async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem('logic-onboarded', '1')
+      localStorage.setItem('logic-install-id', 'test')
+    })
+    await page.goto('/?preview=account')
+    await page.waitForSelector('.app-shell', { timeout: 10_000 })
+    await page.waitForLoadState('networkidle')
+    const results = await buildScanner(page).analyze()
+    expect(results.violations, JSON.stringify(results.violations, null, 2)).toEqual([])
+  })
+
+  test('Notification settings screen has no critical accessibility violations', async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem('logic-onboarded', '1')
+      localStorage.setItem('logic-install-id', 'test')
+    })
+    await page.goto('/?preview=notifications')
+    await page.waitForSelector('.app-shell', { timeout: 10_000 })
+    await page.waitForLoadState('networkidle')
+    const results = await buildScanner(page).analyze()
+    expect(results.violations, JSON.stringify(results.violations, null, 2)).toEqual([])
+  })
+
+  test('Roleplay select screen has no critical accessibility violations', async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem('logic-onboarded', '1')
+      localStorage.setItem('logic-install-id', 'test')
+    })
+    await page.goto('/?preview=roleplay-select')
+    await page.waitForSelector('.app-shell', { timeout: 10_000 })
+    await page.waitForLoadState('networkidle')
+    const results = await buildScanner(page).analyze()
+    expect(results.violations, JSON.stringify(results.violations, null, 2)).toEqual([])
+  })
 })
