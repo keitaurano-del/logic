@@ -1,3 +1,5 @@
+/* legacy ConfirmDialog (App.tsx 系で使用)。AppV3 では components/platform/ConfirmDialog.tsx を使用。 */
+/* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
 import { useEffect } from 'react'
 import './ConfirmDialog.css'
 

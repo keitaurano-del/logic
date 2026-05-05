@@ -50,6 +50,7 @@ export function ConfirmDialog(p: ConfirmDialogProps) {
   }
 
   const dialog = (
+    /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- scrim タップ dismiss は意図通り (Escape で代替済) */
     <div
       className="m3-dialog__scrim"
       role="dialog"

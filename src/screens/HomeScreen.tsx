@@ -1,3 +1,5 @@
+/* legacy HomeScreen (App.tsx 系)。AppV3 では HomeScreenV3 を使用。 */
+/* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
 import { useMemo } from 'react'
 import type { ReactNode } from 'react'
 import { getXp, getStreak, getCompletedCount, getCompletedLessons, getStudyDates } from '../stats'

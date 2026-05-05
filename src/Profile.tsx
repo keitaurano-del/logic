@@ -1,3 +1,5 @@
+/* legacy Profile (App.tsx 系)。AppV3 では ProfileScreenV3 を使用。 */
+/* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
 import { useState, useEffect } from 'react'
 import { getCompletedLessons, getStreak, getStudyHours, getTotalStudyDays } from './stats'
 import { loginWithGoogle, logout, onAuthChange, type User } from './supabase'

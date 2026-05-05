@@ -1,3 +1,6 @@
+/* legacy App.tsx 系コンポーネント。AppV3 では AIProblemGenScreen を使用。
+   div onClick が残るが a11y 化は次フェーズ (legacy 完全廃止時) で対応。 */
+/* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
 import { useState, useEffect } from 'react'
 import { loadAIProblems, generateAIProblems, deleteAIProblem, isPremium, type AIProblemSet } from './aiProblemStore'
 import './AIProblemGen.css'

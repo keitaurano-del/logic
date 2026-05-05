@@ -1,3 +1,6 @@
+/* legacy App router (V1 互換)。AppV3 が現役。div onClick が残るが、
+   legacy 完全廃止時に refactor する。 */
+/* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
 import { useState, useEffect, useRef, useCallback } from 'react'
 import Lesson from './Lesson'
 import Profile from './Profile'
