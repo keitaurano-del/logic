@@ -3,7 +3,7 @@
  * 仕様: docs/DESIGN_V3.md §3.1
  * モックアップ: lv3-home.html
  */
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { getDailyFermi } from '../fermiData'
 import { getCardStats } from '../flashcardData'
 import { v3 } from '../styles/tokensV3'
@@ -86,7 +86,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
   const isLargeTablet = width >= BREAKPOINTS.lg
 
   // ランダムレッスン・フェルミ問題（マウント時に1回決定）
-  const recommendedLesson = useRef(getRandomLesson()).current
+  const [recommendedLesson] = useState(getRandomLesson)
   const dailyFermi = getDailyFermi()
   const fermiQuestion = dailyFermi.question
   const cardStats = getCardStats()

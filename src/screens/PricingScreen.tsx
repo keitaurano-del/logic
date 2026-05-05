@@ -99,8 +99,8 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
       : { main: `¥${prePrice.toLocaleString()}`, sub: '/月' }
   }
 
-  // CTAボタン
-  function PlanCTA({ plan }: { plan: PlanKey }) {
+  // CTAボタン: コンポーネント化せずインライン関数で JSX を返す（render 中の component 定義回避）
+  const renderPlanCTA = (plan: PlanKey) => {
     if (plan === 'free') {
       return isCurrentFree
         ? <div style={{ textAlign: 'center', fontSize: 13, color: v3.color.text3, fontWeight: 700, padding: '14px 0' }}>現在のプラン</div>
@@ -196,7 +196,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
             <div style={{ fontSize: 12, color: '#FF6B35', fontWeight: 700, marginBottom: 8 }}>キャンペーン適用で ¥1,980 / 年</div>
           )}
           <div style={{ marginTop: 16 }}>
-            <PlanCTA plan={activePlan} />
+            {renderPlanCTA(activePlan)}
           </div>
         </div>
 
