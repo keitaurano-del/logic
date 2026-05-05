@@ -204,8 +204,8 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
                       const updated = updateGuestId(idDraft)
                       setGuest(updated)
                       setEditingId(false)
-                    } catch (e: any) {
-                      setIdError(e.message)
+                    } catch (e: unknown) {
+                      setIdError(e instanceof Error ? e.message : String(e))
                     }
                   }}
                 >保存</button>

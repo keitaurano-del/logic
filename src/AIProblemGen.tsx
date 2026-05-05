@@ -37,8 +37,8 @@ export default function AIProblemGen({ onBack, onPlayProblem }: Props) {
       setProblems(loadAIProblems())
       setPrompt('')
       setTimeout(() => onPlayProblem(newSet), 300)
-    } catch (e: any) {
-      setError(e.message || '生成に失敗しました')
+    } catch (e: unknown) {
+      setError((e instanceof Error ? e.message : null) || '生成に失敗しました')
     } finally {
       setGenerating(false)
     }
