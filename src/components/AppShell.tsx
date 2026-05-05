@@ -111,7 +111,7 @@ export function AppShell({
   return (
     <div className="app-shell">
       <div id="app-scroll-container" className={`app-scroll ${hideTabBar ? 'app-scroll--full' : ''}`}>
-        <div className="main-inner">{children}</div>
+        <main className="main-inner">{children}</main>
       </div>
       {!hideTabBar && (
         <nav className={`${tabbarClass} tabbar`} role="tablist" aria-label="メインナビゲーション">
