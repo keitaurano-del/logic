@@ -1,0 +1,142 @@
+name: Build Android AAB (manual)
+
+# 手動トリガー専用。Play Console には自動配信せず、AAB を artifact として
+# ダウンロードできる状態にする。Play Console には手動アップロードする想定。
+#
+# 必要な GitHub Secrets:
+#   ANDROID_KEYSTORE_PASSWORD  キーストア本体のパスワード
+#   ANDROID_KEY_ALIAS          鍵エイリアス (通常 "logic")
+#   ANDROID_KEY_PASSWORD       鍵のパスワード
+#   VITE_API_BASE              (任意) Vite のビルド時 env
+#
+# 使用キーストアはリポジトリにコミット済みの keystores/logic-release.keystore。
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_code_override:
+        description: "versionCode を指定 (空なら build.gradle の値をそのまま使用)"
+        required: false
+        default: ""
+      version_name_override:
+        description: "versionName を指定 (空なら build.gradle の値をそのまま使用)"
+        required: false
+        default: ""
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build web (Vite)
+        run: npm run build
+        env:
+          VITE_API_BASE: ${{ secrets.VITE_API_BASE }}
+
+      - name: Add Android platform (if not exists)
+        run: |
+          if [ ! -d "android" ]; then
+            npx cap add android
+          fi
+
+      - name: Capacitor sync
+        run: npx cap sync android
+
+      - name: Override versionCode / versionName (if input given)
+        run: |
+          GRADLE=android/app/build.gradle
+          if [ -n "${{ inputs.version_code_override }}" ]; then
+            sed -i "s/versionCode [0-9]*/versionCode ${{ inputs.version_code_override }}/" "$GRADLE"
+          fi
+          if [ -n "${{ inputs.version_name_override }}" ]; then
+            sed -i "s/versionName \"[^\"]*\"/versionName \"${{ inputs.version_name_override }}\"/" "$GRADLE"
+          fi
+          echo "── effective version ──"
+          grep -E "versionCode|versionName" "$GRADLE"
+
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: gradle-
+
+      - name: Verify required secrets
+        run: |
+          missing=0
+          for s in ANDROID_KEYSTORE_PASSWORD ANDROID_KEY_ALIAS ANDROID_KEY_PASSWORD; do
+            v="${!s}"
+            if [ -z "$v" ]; then
+              echo "::error::Secret $s is not set"
+              missing=1
+            fi
+          done
+          [ "$missing" = "0" ]
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
+      - name: Write key.properties
+        run: |
+          KEYSTORE_PATH=keystores/logic-release.keystore
+          if [ ! -f "$KEYSTORE_PATH" ]; then
+            echo "::error::Keystore file not found at $KEYSTORE_PATH"
+            exit 1
+          fi
+          cat > android/key.properties << EOF
+          LOGIC_KEYSTORE_FILE=../../keystores/logic-release.keystore
+          LOGIC_KEYSTORE_PASSWORD=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          LOGIC_KEY_ALIAS=${{ secrets.ANDROID_KEY_ALIAS }}
+          LOGIC_KEY_PASSWORD=${{ secrets.ANDROID_KEY_PASSWORD }}
+          EOF
+          keytool -list -keystore "$KEYSTORE_PATH" \
+            -storepass "${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" \
+            -alias "${{ secrets.ANDROID_KEY_ALIAS }}" \
+            > /dev/null && echo "✓ keystore + password verified"
+
+      - name: Build release AAB
+        working-directory: android
+        run: ./gradlew :app:bundleRelease --stacktrace --no-daemon
+
+      - name: Show AAB info
+        run: |
+          AAB=android/app/build/outputs/bundle/release/app-release.aab
+          ls -lh "$AAB"
+          echo "── sha256 ──"
+          sha256sum "$AAB"
+
+      - name: Upload AAB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-aab
+          path: android/app/build/outputs/bundle/release/app-release.aab
+          retention-days: 30
+
+      - name: Cleanup secrets file
+        if: always()
+        run: rm -f android/key.properties
