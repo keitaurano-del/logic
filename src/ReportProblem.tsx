@@ -47,8 +47,8 @@ export default function ReportProblem({ lessonTitle, lessonId, question, options
       if (!res.ok) throw new Error('送信に失敗しました')
       setDone(true)
       setTimeout(() => onClose(), 2000)
-    } catch (e: any) {
-      setError(e.message || '送信に失敗しました')
+    } catch (e: unknown) {
+      setError((e instanceof Error ? e.message : null) || '送信に失敗しました')
     } finally {
       setSubmitting(false)
     }
