@@ -52,12 +52,6 @@ export default function Feedback({ onBack }: { onBack: () => void }) {
         }
       }
 
-      if (false) {
-        // Supabase未設定時のフォールバック
-        const subject = encodeURIComponent(`[Logic フィードバック] ${category}`)
-        const body = encodeURIComponent(`カテゴリ: ${category}\n\n${message.trim()}`)
-        window.location.href = `mailto:keita.urano@gmail.com?subject=${subject}&body=${body}`
-      }
       setSent(true)
     } catch (e: unknown) {
       setError((e as Error).message || '送信に失敗しました。もう一度お試しください')

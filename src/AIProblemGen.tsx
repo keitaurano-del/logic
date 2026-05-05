@@ -1,7 +1,7 @@
 /* legacy App.tsx 系コンポーネント。AppV3 では AIProblemGenScreen を使用。
    div onClick が残るが a11y 化は次フェーズ (legacy 完全廃止時) で対応。 */
 /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { loadAIProblems, generateAIProblems, deleteAIProblem, isPremium, type AIProblemSet } from './aiProblemStore'
 import './AIProblemGen.css'
 
@@ -23,10 +23,6 @@ export default function AIProblemGen({ onBack, onPlayProblem }: Props) {
   const [error, setError] = useState('')
   const [problems, setProblems] = useState<AIProblemSet[]>(loadAIProblems())
   const [premium] = useState(isPremium())
-
-  useEffect(() => {
-    setProblems(loadAIProblems())
-  }, [])
 
   const handleGenerate = async () => {
     if (!prompt.trim()) return

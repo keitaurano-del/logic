@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { isPremium } from './subscription'
 import { t, getLocale, localeBody } from './i18n'
 import './FermiLesson.css'
@@ -41,14 +41,10 @@ export default function FermiLesson({ onBack, onUpgrade }: Props) {
   const [step, setStep] = useState<FermiStep>('problem')
   const [userInput, setUserInput] = useState('')
   const [feedback, setFeedback] = useState('')
-  const [currentQuestion, setCurrentQuestion] = useState<string>('')
+  const [currentQuestion, setCurrentQuestion] = useState<string>(() => pickRandom())
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const premium = isPremium()
-
-  useEffect(() => {
-    setCurrentQuestion(pickRandom())
-  }, [])
 
   const reset = (newQuestion?: string) => {
     setStep('problem')

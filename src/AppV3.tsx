@@ -278,7 +278,7 @@ function AppV3() {
     }
   }
 
-  const lessonStartTimeRef = useRef<number>(Date.now())
+  const lessonStartTimeRef = useRef<number>(0)
   const handleComplete = () => {
     if (screen.type === 'lesson') {
       const lessonId = screen.lessonId

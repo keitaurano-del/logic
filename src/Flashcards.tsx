@@ -16,9 +16,9 @@ export default function Flashcards({ onBack }: Props) {
   const [sessionCorrect, setSessionCorrect] = useState(0)
   const [sessionTotal, setSessionTotal] = useState(0)
 
-  useEffect(() => {
-    setStats(getCardStats())
-  }, [view])
+  // localStorage 由来の stats を view 切替時に再読込（外部状態との同期のため）
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { setStats(getCardStats()) }, [view])
 
   const startReview = () => {
     const cards = getDueCards()

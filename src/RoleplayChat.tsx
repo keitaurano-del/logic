@@ -39,12 +39,14 @@ export default function RoleplayChat({ situationId, onBack }: Props) {
   }, [situation])
 
   // Auto-start: fetch the first partner line + choices
+  // fetchTurn は下の function 宣言（hoist 済み）を参照する。React lint の immutability 警告は意図通り。
+  // eslint-disable-next-line react-hooks/immutability, react-hooks/exhaustive-deps
   useEffect(() => {
     if (situation && !startedRef.current) {
       startedRef.current = true
+      // eslint-disable-next-line react-hooks/immutability
       fetchTurn([], 1)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [situation])
 
   useEffect(() => {
