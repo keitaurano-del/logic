@@ -36,6 +36,38 @@ jobs:
 
       - name: ESLint (含む jsx-a11y)
         run: npm run lint
-        # 既存コードの error / warning が多数残るため一時的に non-blocking。
-        # docs/QA_CHECKLIST_HIG_M3.md §0 の合格基準 (error 0) は別途 PR で達成する方針。
-        continue-on-error: true
+        # PR #92 / #94 で error / warning ともに 0 件達成。今後は blocking で維持する。
+
+  # 自動アクセシビリティ検証（Phase 4-4）— axe-core を Playwright 経由で実行
+  axe-a11y:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run axe a11y tests
+        run: npx playwright test e2e/axe.spec.ts --project=chromium
+        env:
+          VITE_API_BASE: 'https://example.com'
+
+      - name: Upload axe report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: axe-report
+          path: e2e/report
+          retention-days: 14

@@ -186,6 +186,7 @@ export function JournalInputScreen({ onBack }: JournalInputScreenProps) {
               借方
             </div>
             <select
+              aria-label="借方 勘定科目"
               className="input"
               value={debitAccount}
               onChange={(e) => setDebitAccount(e.target.value)}
@@ -196,6 +197,7 @@ export function JournalInputScreen({ onBack }: JournalInputScreenProps) {
               {p.accountChoices.map((a) => <option key={a} value={a}>{a}</option>)}
             </select>
             <input
+              aria-label="借方 金額"
               className="input"
               type="number"
               placeholder="金額"
@@ -216,6 +218,7 @@ export function JournalInputScreen({ onBack }: JournalInputScreenProps) {
               貸方
             </div>
             <select
+              aria-label="貸方 勘定科目"
               className="input"
               value={creditAccount}
               onChange={(e) => setCreditAccount(e.target.value)}
@@ -226,6 +229,7 @@ export function JournalInputScreen({ onBack }: JournalInputScreenProps) {
               {p.accountChoices.map((a) => <option key={a} value={a}>{a}</option>)}
             </select>
             <input
+              aria-label="貸方 金額"
               className="input"
               type="number"
               placeholder="金額"

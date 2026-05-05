@@ -103,10 +103,11 @@ export function ReportProblemScreen({ context, onBack }: ReportProblemScreenProp
 
       <div className="stack-sm">
         {/* 種別ドロップダウン */}
-        <label style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-secondary)' }}>
+        <label htmlFor="report-issue-type" style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-secondary)' }}>
           {t('report.issueTypeLabel')}
         </label>
         <select
+          id="report-issue-type"
           value={issueType}
           onChange={(e) => setIssueType(e.target.value)}
           style={{

@@ -371,7 +371,7 @@ function FilterBar(p: {
       </div>
       {p.showSort && (
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <select value={p.sortOption} onChange={e => p.setSortOption(e.target.value as SortOption)}
+          <select aria-label="並び順" value={p.sortOption} onChange={e => p.setSortOption(e.target.value as SortOption)}
             style={{ background: v3.color.card, color: v3.color.text2, border: `1px solid ${v3.color.line}`, borderRadius: 8, padding: '4px 8px', fontSize: 12, fontFamily: 'inherit' }}>
             <option value="relevance">関連度順</option>
             <option value="level">難易度順</option>
