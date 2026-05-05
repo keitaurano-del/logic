@@ -94,4 +94,19 @@ test.describe('a11y / axe-core', () => {
     const results = await buildScanner(page).analyze()
     expect(results.violations, JSON.stringify(results.violations, null, 2)).toEqual([])
   })
+
+  test('Onboarding screen has no critical accessibility violations', async ({ page }) => {
+    await page.addInitScript(() => {
+      // logic-onboarded を意図的にセットしない → onboarding に進む
+      localStorage.setItem('logic-install-id', 'test')
+    })
+    await page.goto('/?preview=onboarding')
+    // OnboardingScreen は AppShell を介さず full-screen 表示なので
+    // .app-shell ではなく Suspense 解決後の内容ロードを待つ。
+    await page.waitForLoadState('networkidle')
+    // body に何らかの interactive element が出現するまで明示的に待機
+    await page.waitForSelector('button, input', { timeout: 10_000 })
+    const results = await buildScanner(page).analyze()
+    expect(results.violations, JSON.stringify(results.violations, null, 2)).toEqual([])
+  })
 })
