@@ -93,6 +93,7 @@ export default function ReportProblem({ lessonTitle, lessonId, question, options
             <div className="rp-field">
               <div className="rp-label">詳細（任意）</div>
               <textarea
+                aria-label="詳細（任意）"
                 className="rp-textarea"
                 placeholder="どこが間違っているか、何が不明か..."
                 value={comment}

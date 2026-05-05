@@ -155,6 +155,7 @@ export default function FermiLesson({ onBack, onUpgrade }: Props) {
               <strong>分解のヒント</strong>：「対象・場所・頻度」の順に考えると整理しやすい。
             </div>
             <textarea
+              aria-label="フェルミ推定の解答"
               className="fl-textarea"
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
