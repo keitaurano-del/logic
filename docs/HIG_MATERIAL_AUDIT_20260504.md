@@ -8,17 +8,25 @@
 
 ---
 
-## 実装ステータス（2026-05-05 Phase 2 クローズ時点 / PR #72-#89 すべて main 反映済）
+## 実装ステータス（2026-05-05 Phase 3 第2-5波 / PR #99 着手中）
 
 | Phase | 計画 | 実装累計 | 状態 |
 |---|---|---|---|
 | **Phase 0** リリースブロッカー | 8h | ~8h | ✅ 100% |
 | **Phase 1** デザインシステム土台 | 32h | ~28h | ✅ 88% |
-| **Phase 2** 全画面 HIG/M3 適合 | 60h | ~58h | ✅ 100%（構造的タスク完了。残る px→rem / 全色 sweep / ActionSheet 化は実機検証ベースのため Phase 3 に移管） |
-| **Phase 3** 個別最適化 | 80h | 0h | ⚪ 未着手（実機検証ベース。Phase 2 から繰越分も合流） |
-| **Phase 4** 仕上げ・検証 | 24h | ~10h | 🟡 自動 a11y + QA + CI + lint cleanup、実機検証要 user |
+| **Phase 2** 全画面 HIG/M3 適合 | 60h | ~58h | ✅ 100%（構造的タスク完了） |
+| **Phase 3** 個別最適化 | 80h | ~24h | 🟡 30%（実機検証完了 → 機械的置換進行中） |
+| **Phase 4** 仕上げ・検証 | 24h | ~10h | 🟡 自動 a11y + QA + CI + lint cleanup |
 
-**累計 ~104h / 204h ≒ 51%**
+**累計 ~128h / 204h ≒ 63%**
+
+### Phase 3 進捗（2026-05-05 セッション）
+- ✅ 第1波: prefers-reduced-motion + Lesson 系 a11y 強化 (#96)
+- ✅ 第2波: `<select>` → ActionSheet 化（カテゴリ系 4 箇所）。時刻ピッカーは OS ホイール優先で `<select>` 維持
+- ✅ 第3波: CSS の `font-size px → rem` 一括変換 (593 件 / 31 ファイル)。`:root { font-size: 15px }` を base に維持
+- ✅ 第4波: `index.css` dead patch 削除 (-34 行)。空 body の catch-all、重複 RGB ブロックを整理
+- ✅ 第5波: 活躍 V3 画面のハードコード色 → セマンティック token 置換（48 件 / 6 ファイル）
+- ⏸ 残: 残り画面の色 sweep、index.css の `[style*=...]` パッチ完全 retire（active 画面 source 改善後）
 
 > **Phase 2 クローズ判断（2026-05-05）**: Phase 2 の構造タスク（Header 統一 22 画面、`<div onClick>` 撤廃、旧画面削除 5 本、Switch / LoadingIndicator 化、触覚 12 画面、`#6C8EF5` 完全除去、jsx-a11y 警告化、TS lint cleanup）は完了。残る純粋な機械的置換タスク（font-size px→rem 1451 箇所、ハードコード色 995 箇所のうちカテゴリ色を除く ~400 件、`<select>` → `<ActionSheet>`、`index.css` legacy patch ~130 件）は **実機での visual regression 確認が前提**になるため、画面単位で進める Phase 3 に統合する。
 
