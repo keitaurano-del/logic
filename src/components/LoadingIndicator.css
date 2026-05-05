@@ -8,9 +8,9 @@
   color: var(--md-sys-color-on-surface);
 }
 
-.m3-loading--sm { font-size: 12px; }
-.m3-loading--md { font-size: 14px; }
-.m3-loading--lg { font-size: 16px; }
+.m3-loading--sm { font-size: 0.8rem; }
+.m3-loading--md { font-size: 0.9333rem; }
+.m3-loading--lg { font-size: 1.0667rem; }
 
 .m3-loading__label {
   color: var(--md-sys-color-on-surface-variant);

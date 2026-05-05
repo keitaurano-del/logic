@@ -247,7 +247,7 @@ export function RoleplaySelectScreen({ onBack, onStart, onUpgrade }: RoleplaySel
       {/* 残り回数バッジ */}
       {!premium && (
         <div style={{
-          background: '#EEF2FF', borderRadius: 12, padding: '10px 14px',
+          background: 'var(--bg-card)', borderRadius: 12, padding: '10px 14px',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           marginBottom: 20,
         }}>
@@ -262,7 +262,7 @@ export function RoleplaySelectScreen({ onBack, onStart, onUpgrade }: RoleplaySel
       <div style={{ marginBottom: 24 }}>
         <div style={{
           fontSize: 14, fontWeight: 800, letterSpacing: '.1em', textTransform: 'uppercase',
-          color: '#7A849E', marginBottom: 12,
+          color: 'var(--text-muted)', marginBottom: 12,
         }}>
           {CATEGORY_LABELS.business}
         </div>
@@ -284,7 +284,7 @@ export function RoleplaySelectScreen({ onBack, onStart, onUpgrade }: RoleplaySel
         <div>
           <div style={{
             fontSize: 14, fontWeight: 800, letterSpacing: '.1em', textTransform: 'uppercase',
-            color: '#7A849E', marginBottom: 12,
+            color: 'var(--text-muted)', marginBottom: 12,
           }}>
             {CATEGORY_LABELS.philosophy}
           </div>

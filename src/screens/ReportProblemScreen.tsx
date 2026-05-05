@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { CheckIcon } from '../icons'
 import { Header } from '../components/platform/Header'
 import { Button } from '../components/Button'
+import { ActionSheet } from '../components/ActionSheet'
 import { API_BASE } from './apiBase'
 import { t } from '../i18n'
 import { haptic } from '../platform/haptics'
@@ -30,6 +31,8 @@ export function ReportProblemScreen({ context, onBack }: ReportProblemScreenProp
   const [submitting, setSubmitting] = useState(false)
   const [done, setDone] = useState(false)
   const [error, setError] = useState('')
+  const [issueSheetOpen, setIssueSheetOpen] = useState(false)
+  const issueLabel = ISSUE_TYPES.find(it => it.value === issueType)?.label ?? ''
 
   const handleSubmit = async () => {
     if (!issueType) return
@@ -106,9 +109,10 @@ export function ReportProblemScreen({ context, onBack }: ReportProblemScreenProp
         <label style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-secondary)' }}>
           {t('report.issueTypeLabel')}
         </label>
-        <select
-          value={issueType}
-          onChange={(e) => setIssueType(e.target.value)}
+        <button
+          type="button"
+          onClick={() => setIssueSheetOpen(true)}
+          aria-haspopup="dialog"
           style={{
             width: '100%',
             padding: '11px 14px',
@@ -118,15 +122,25 @@ export function ReportProblemScreen({ context, onBack }: ReportProblemScreenProp
             color: issueType ? 'var(--text-primary)' : 'var(--text-muted)',
             fontSize: 16,
             outline: 'none',
-            appearance: 'none',
             cursor: 'pointer',
+            textAlign: 'left',
+            fontFamily: 'inherit',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 8,
           }}
         >
-          <option value="">{t('report.issueTypePlaceholder')}</option>
-          {ISSUE_TYPES.map((it) => (
-            <option key={it.value} value={it.value}>{it.label}</option>
-          ))}
-        </select>
+          <span>{issueLabel || t('report.issueTypePlaceholder')}</span>
+          <span aria-hidden="true" style={{ fontSize: 12, opacity: 0.6 }}>▾</span>
+        </button>
+        <ActionSheet
+          open={issueSheetOpen}
+          title={t('report.issueTypeLabel')}
+          items={ISSUE_TYPES.map(it => ({ id: it.value, label: it.label }))}
+          onSelect={(id) => { setIssueType(id); setIssueSheetOpen(false) }}
+          onCancel={() => setIssueSheetOpen(false)}
+        />
 
         {/* コメント */}
         <label style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-secondary)', marginTop: 'var(--s-2)' }}>

@@ -54,7 +54,7 @@ export function LessonScreen({ lessonId, onBack, onComplete, onNextLesson, onRep
   if (!lesson) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: 24, gap: 16 }}>
-        <div style={{ fontSize: 16, color: '#7A849E' }}>レッスンが見つかりません (id: {lessonId})</div>
+        <div style={{ fontSize: 16, color: 'var(--text-muted)' }}>レッスンが見つかりません (id: {lessonId})</div>
         <button onClick={onBack} style={{ background: 'var(--md-sys-color-primary)', color: '#fff', border: 'none', borderRadius: 12, padding: '10px 20px', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}>戻る</button>
       </div>
     )
@@ -108,7 +108,7 @@ export function LessonScreen({ lessonId, onBack, onComplete, onNextLesson, onRep
 
   // ── Main lesson UI ───────────────────────────────────────────────
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: '#F0F4FF' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: 'var(--bg-card)' }}>
       {/* レッスン左右タップガイド（初回のみ） */}
       <LessonTapGuide />
 
@@ -116,15 +116,15 @@ export function LessonScreen({ lessonId, onBack, onComplete, onNextLesson, onRep
       <div style={{
         display: 'flex', alignItems: 'center', gap: 12,
         padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 16px 12px',
-        background: '#fff',
-        borderBottom: '1px solid #E2E8FF',
+        background: 'var(--bg-card)',
+        borderBottom: '1px solid var(--border)',
         boxShadow: '0 1px 3px rgba(15,21,35,.06)',
       }}>
         <button
           onClick={onBack}
           style={{
             width: 36, height: 36, borderRadius: 10,
-            background: '#F0F4FF', border: '1px solid #E2E8FF',
+            background: 'var(--bg-card)', border: '1px solid var(--border)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             cursor: 'pointer', flexShrink: 0,
           }}
@@ -133,10 +133,10 @@ export function LessonScreen({ lessonId, onBack, onComplete, onNextLesson, onRep
         </button>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontSize: 14, fontWeight: 600, color: accent, letterSpacing: '.04em', textTransform: 'uppercase', marginBottom: 1 }}>{catLabel}</div>
-          <div style={{ fontSize: 16, fontWeight: 700, color: '#0F1523', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{lesson.title}</div>
+          <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{lesson.title}</div>
         </div>
         <div style={{
-          flexShrink: 0, background: '#EEF2FF', borderRadius: 20,
+          flexShrink: 0, background: 'var(--bg-card)', borderRadius: 20,
           padding: '4px 10px', fontSize: 14, fontWeight: 700, color: 'var(--md-sys-color-primary)',
         }}>
           {stepIdx + 1} / {total}
@@ -150,7 +150,7 @@ export function LessonScreen({ lessonId, onBack, onComplete, onNextLesson, onRep
         aria-valuemax={total}
         aria-valuenow={stepIdx + 1}
         aria-label={`進捗 ${stepIdx + 1} / ${total}`}
-        style={{ display: 'flex', gap: 4, padding: '8px 16px 0', background: '#fff' }}
+        style={{ display: 'flex', gap: 4, padding: '8px 16px 0', background: 'var(--bg-card)' }}
       >
         {Array.from({ length: total }).map((_, i) => (
           <div
@@ -214,18 +214,18 @@ function ExplainStep({ step, catLabel, accent, isLast, onNext }: {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
       {/* 問題カード */}
       <div style={{
-        background: '#fff', border: '1px solid #E2E8FF',
+        background: 'var(--bg-card)', border: '1px solid var(--border)',
         borderRadius: 16, padding: '18px 20px',
         boxShadow: '0 1px 3px rgba(15,21,35,.06)',
         borderLeft: `4px solid ${accent}`,
       }}>
         <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: accent, marginBottom: 6 }}>{catLabel}</div>
-        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 24, fontWeight: 800, color: '#0F1523', lineHeight: 1.4, letterSpacing: '-.025em' }}>{step.title}</div>
+        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 24, fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.4, letterSpacing: '-.025em' }}>{step.title}</div>
       </div>
 
       {/* 説明コンテンツ */}
       <div style={{
-        background: '#fff', border: '1px solid #E2E8FF',
+        background: 'var(--bg-card)', border: '1px solid var(--border)',
         borderRadius: 16, padding: '18px 20px',
         boxShadow: '0 1px 3px rgba(15,21,35,.06)',
         display: 'flex', flexDirection: 'column', gap: 12,
@@ -288,13 +288,13 @@ function QuizStep({ step, catLabel, accent, selected, submitted, isLast, onSelec
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
       {/* 問題カード */}
       <div role="group" aria-label="設問" style={{
-        background: '#fff', border: '1px solid #E2E8FF',
+        background: 'var(--bg-card)', border: '1px solid var(--border)',
         borderRadius: 16, padding: '18px 20px',
         boxShadow: '0 1px 3px rgba(15,21,35,.06)',
         borderLeft: `4px solid ${accent}`,
       }}>
         <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: accent, marginBottom: 6 }}>{catLabel}</div>
-        <div aria-live="polite" style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 20, fontWeight: 800, color: '#0F1523', lineHeight: 1.5, letterSpacing: '-.02em' }}>{step.question}</div>
+        <div aria-live="polite" style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 20, fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.5, letterSpacing: '-.02em' }}>{step.question}</div>
       </div>
 
       {/* 選択肢 */}
@@ -382,7 +382,7 @@ function QuizStep({ step, catLabel, accent, selected, submitted, isLast, onSelec
                 : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
               }
             </div>
-            <div style={{ fontSize: 16, fontWeight: 800, color: '#0F1523' }}>
+            <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-primary)' }}>
               {isCorrect ? t('lesson.correctMark') : t('lesson.wrongMark')}
             </div>
           </div>
@@ -519,7 +519,7 @@ function CelebrationScreen({ lessonTitle, streakBefore, onComplete, onNextLesson
               onClick={onNextLesson}
               style={{
                 width: '100%',
-                background: '#fff', color: '#1A2E6B',
+                background: 'var(--bg-card)', color: '#1A2E6B',
                 border: 'none', borderRadius: 16,
                 padding: '18px 24px', fontSize: 18, fontWeight: 800,
                 cursor: 'pointer',
@@ -605,7 +605,7 @@ function CelebrationScreen({ lessonTitle, streakBefore, onComplete, onNextLesson
                 onClick={onNextLesson}
                 style={{
                   width: '100%',
-                  background: '#fff', color: 'var(--md-sys-color-primary)',
+                  background: 'var(--bg-card)', color: 'var(--md-sys-color-primary)',
                   border: 'none', borderRadius: 16,
                   padding: '16px 24px', fontSize: 18, fontWeight: 800,
                   cursor: 'pointer',

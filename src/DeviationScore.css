@@ -19,7 +19,7 @@
 }
 
 .dev-header h2 {
-  font-size: 16px;
+  font-size: 1.0667rem;
   font-weight: 700;
   color: var(--text-primary);
 }
@@ -28,7 +28,7 @@
   background: none;
   border: none;
   color: var(--text-secondary);
-  font-size: 14px;
+  font-size: 0.9333rem;
   cursor: pointer;
   padding: 4px 8px;
   font-family: var(--sans);
@@ -51,7 +51,7 @@
 }
 
 .dev-hero-label {
-  font-size: 12px;
+  font-size: 0.8rem;
   font-weight: 700;
   color: var(--text-secondary);
   letter-spacing: 0.1em;
@@ -59,7 +59,7 @@
 }
 
 .dev-hero-number {
-  font-size: 88px;
+  font-size: 5.8667rem;
   font-weight: 900;
   color: var(--accent-dark);
   letter-spacing: -0.05em;
@@ -68,13 +68,13 @@
 }
 
 .dev-hero-rank {
-  font-size: 18px;
+  font-size: 1.2rem;
   font-weight: 700;
   margin-bottom: 4px;
 }
 
 .dev-hero-percent {
-  font-size: 13px;
+  font-size: 0.8667rem;
   color: var(--text-secondary);
   font-weight: 600;
 }
@@ -102,19 +102,19 @@
 }
 
 .dev-item-label {
-  font-size: 13px;
+  font-size: 0.8667rem;
   color: var(--text-secondary);
   font-weight: 600;
 }
 
 .dev-item-value {
-  font-size: 22px;
+  font-size: 1.4667rem;
   font-weight: 800;
   color: var(--text-primary);
 }
 
 .dev-item-unit {
-  font-size: 12px;
+  font-size: 0.8rem;
   color: var(--text-muted);
   margin-left: 2px;
   font-weight: 600;
@@ -135,14 +135,14 @@
 }
 
 .dev-item-dev {
-  font-size: 11px;
+  font-size: 0.7333rem;
   color: var(--text-muted);
   font-weight: 600;
 }
 
 .dev-note {
   text-align: center;
-  font-size: 11px;
+  font-size: 0.7333rem;
   color: var(--text-muted);
   line-height: 2;
   margin-top: 20px;

@@ -25,7 +25,7 @@
   left: 50%;
   transform: translateX(-50%);
   font-family: var(--sans);
-  font-size: 10px;
+  font-size: 0.6667rem;
   font-weight: 700;
   letter-spacing: 0.32em;
   color: var(--text-muted);
@@ -51,7 +51,7 @@
 
 .pf-name {
   font-family: var(--serif);
-  font-size: 30px;
+  font-size: 2rem;
   font-weight: 500;
   color: var(--text-primary);
   margin-bottom: 8px;
@@ -75,7 +75,7 @@
 
 .pf-level-num {
   font-family: var(--serif);
-  font-size: 13px;
+  font-size: 0.8667rem;
   font-weight: 500;
   color: var(--accent-dark);
   background: transparent;
@@ -85,7 +85,7 @@
 }
 
 .pf-level-title {
-  font-size: 11px;
+  font-size: 0.7333rem;
   font-weight: 700;
   color: var(--text-muted);
   letter-spacing: 0.18em;
@@ -109,7 +109,7 @@
 }
 
 .pf-xp-label {
-  font-size: 10px;
+  font-size: 0.6667rem;
   color: var(--text-muted);
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -139,7 +139,7 @@
 
 .pf-stat-value {
   font-family: var(--serif);
-  font-size: 32px;
+  font-size: 2.1333rem;
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--text-primary);
@@ -148,7 +148,7 @@
 }
 
 .pf-stat-label {
-  font-size: 10px;
+  font-size: 0.6667rem;
   font-weight: 700;
   color: var(--text-muted);
   letter-spacing: 0.18em;
@@ -170,7 +170,7 @@
 
 .pf-section-title {
   font-family: var(--serif);
-  font-size: 18px;
+  font-size: 1.2rem;
   font-weight: 500;
   letter-spacing: -0.01em;
   color: var(--text-primary);
@@ -193,7 +193,7 @@
 }
 
 .pf-section-count {
-  font-size: 11px;
+  font-size: 0.7333rem;
   color: var(--text-muted);
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -228,7 +228,7 @@
 
 .pf-cal-month {
   flex: 1;
-  font-size: 10px;
+  font-size: 0.6667rem;
   color: var(--text-secondary);
   font-weight: 700;
   text-align: center;
@@ -251,7 +251,7 @@
 
 .pf-cal-day-label {
   height: 18px;
-  font-size: 10px;
+  font-size: 0.6667rem;
   color: var(--text-muted);
   display: flex;
   align-items: center;
@@ -303,7 +303,7 @@
   justify-content: center;
   gap: 16px;
   margin-top: 4px;
-  font-size: 11px;
+  font-size: 0.7333rem;
   color: var(--text-secondary);
   flex-wrap: wrap;
 }
@@ -363,13 +363,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 0.8rem;
   font-weight: 800;
   flex-shrink: 0;
 }
 
 .pf-completed-name {
-  font-size: 14px;
+  font-size: 0.9333rem;
   font-weight: 600;
   color: var(--text-primary);
 }
@@ -386,7 +386,7 @@
 }
 
 .pf-empty p {
-  font-size: 14px;
+  font-size: 0.9333rem;
   color: var(--text-muted);
   text-align: center;
   line-height: 1.6;
@@ -398,7 +398,7 @@
 
 .pf-avatar-tap {
   display: block;
-  font-size: 10px;
+  font-size: 0.6667rem;
   color: var(--text-muted);
   font-weight: 600;
   margin-top: 4px;
@@ -443,7 +443,7 @@
 }
 
 .pf-evo-title {
-  font-size: 18px;
+  font-size: 1.2rem;
   font-weight: 800;
   color: var(--text-primary);
   text-align: center;
@@ -488,25 +488,25 @@
 }
 
 .pf-evo-lv {
-  font-size: 14px;
+  font-size: 0.9333rem;
   font-weight: 800;
   color: var(--text-primary);
 }
 
 .pf-evo-desc {
-  font-size: 12px;
+  font-size: 0.8rem;
   color: var(--text-secondary);
   font-weight: 600;
 }
 
 .pf-evo-xp {
-  font-size: 11px;
+  font-size: 0.7333rem;
   color: var(--text-muted);
   font-weight: 700;
 }
 
 .pf-evo-current-badge {
-  font-size: 10px;
+  font-size: 0.6667rem;
   font-weight: 800;
   color: var(--accent-dark);
   background: var(--accent-soft);
@@ -524,7 +524,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 0.8rem;
   font-weight: 800;
 }
 
@@ -535,7 +535,7 @@
   color: var(--text-primary);
   border: none;
   border-radius: var(--radius-md);
-  font-size: 15px;
+  font-size: 1rem;
   font-weight: 800;
   cursor: pointer;
   font-family: var(--sans);
@@ -623,7 +623,7 @@
 .pf-settings-back:active { transform: scale(0.9); }
 
 .pf-settings-title {
-  font-size: 18px;
+  font-size: 1.2rem;
   font-weight: 800;
   color: var(--text-primary);
 }
@@ -639,7 +639,7 @@
 }
 
 .pf-settings-group-title {
-  font-size: 12px;
+  font-size: 0.8rem;
   font-weight: 800;
   color: var(--text-muted);
   text-transform: uppercase;
@@ -660,13 +660,13 @@
 
 .pf-auth-error {
   padding: 8px 16px;
-  font-size: 13px;
+  font-size: 0.8667rem;
   color: var(--danger);
   font-weight: 600;
 }
 
 .pf-settings-label {
-  font-size: 16px;
+  font-size: 1.0667rem;
   font-weight: 600;
   color: var(--text-primary);
 }
@@ -736,13 +736,13 @@
 }
 
 .pf-settings-user-name {
-  font-size: 15px;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--text-primary);
 }
 
 .pf-settings-user-email {
-  font-size: 12px;
+  font-size: 0.8rem;
   color: var(--text-muted);
 }
 
@@ -752,7 +752,7 @@
 }
 
 .pf-settings-version {
-  font-size: 12px;
+  font-size: 0.8rem;
   color: var(--text-muted);
   font-weight: 600;
 }
@@ -773,21 +773,21 @@
 }
 
 .pf-dev-header-icon {
-  font-size: 16px;
+  font-size: 1.0667rem;
   font-weight: 800;
   color: var(--accent-dark);
   font-family: 'SF Mono', 'Consolas', monospace;
 }
 
 .pf-dev-title {
-  font-size: 16px;
+  font-size: 1.0667rem;
   font-weight: 800;
   color: var(--text-primary);
   margin: 0;
 }
 
 .pf-dev-subtitle {
-  font-size: 12px;
+  font-size: 0.8rem;
   color: var(--text-muted);
   margin-bottom: 16px;
   font-weight: 600;
@@ -805,7 +805,7 @@
 .pf-dev-stack-group:last-child { margin-bottom: 0; }
 
 .pf-dev-stack-cat {
-  font-size: 11px;
+  font-size: 0.7333rem;
   font-weight: 800;
   color: var(--accent-dark);
   text-transform: uppercase;
@@ -827,21 +827,21 @@
 }
 
 .pf-dev-stack-name {
-  font-size: 13px;
+  font-size: 0.8667rem;
   font-weight: 800;
   color: var(--text-primary);
   font-family: 'SF Mono', 'Consolas', monospace;
 }
 
 .pf-dev-stack-desc {
-  font-size: 12px;
+  font-size: 0.8rem;
   color: var(--text-secondary);
   line-height: 1.5;
 }
 
 /* Files section title */
 .pf-dev-files-title {
-  font-size: 11px;
+  font-size: 0.7333rem;
   font-weight: 800;
   color: var(--accent-dark);
   text-transform: uppercase;
@@ -886,14 +886,14 @@
 }
 
 .pf-dev-file-path {
-  font-size: 13px;
+  font-size: 0.8667rem;
   font-weight: 800;
   color: var(--accent-dark);
   font-family: 'SF Mono', 'Consolas', monospace;
 }
 
 .pf-dev-file-role {
-  font-size: 11px;
+  font-size: 0.7333rem;
   font-weight: 600;
   color: var(--text-muted);
 }
@@ -920,7 +920,7 @@
 }
 
 .pf-dev-file-desc {
-  font-size: 13px;
+  font-size: 0.8667rem;
   color: var(--text-secondary);
   line-height: 1.5;
   margin-bottom: 10px;
@@ -934,7 +934,7 @@
 }
 
 .pf-dev-tech-tag {
-  font-size: 10px;
+  font-size: 0.6667rem;
   font-weight: 800;
   color: var(--accent-dark);
   background: var(--accent-soft);
@@ -954,7 +954,7 @@
 
 .pf-dev-code code {
   font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
-  font-size: 12px;
+  font-size: 0.8rem;
   line-height: 1.65;
   color: #E8E8F0;
   white-space: pre;
@@ -968,11 +968,11 @@
 /* ===== Tablet ===== */
 @media (min-width: 768px) {
   .pf-hero { padding: 36px 24px 28px; }
-  .pf-name { font-size: 28px; }
+  .pf-name { font-size: 1.8667rem; }
   .pf-xp-bar { width: 260px; }
 
   .pf-stats-grid { padding: 0 20px; gap: 12px; }
-  .pf-stat-value { font-size: 30px; }
+  .pf-stat-value { font-size: 2rem; }
 
   .pf-section { padding: 0 20px; }
   .pf-completed-list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -1007,7 +1007,7 @@
   gap: 6px;
 }
 .pf-plan-card-label {
-  font-size: 10px;
+  font-size: 0.6667rem;
   font-weight: 700;
   color: var(--text-muted);
   letter-spacing: 0.18em;
@@ -1015,13 +1015,13 @@
 }
 .pf-plan-card-value {
   font-family: var(--serif);
-  font-size: 16px;
+  font-size: 1.0667rem;
   font-weight: 500;
   color: var(--text-primary);
   letter-spacing: -0.01em;
 }
 .pf-plan-card-arrow {
-  font-size: 22px;
+  font-size: 1.4667rem;
   color: var(--text-muted);
   font-weight: 200;
 }
@@ -1040,7 +1040,7 @@
   gap: 8px;
 }
 .pf-guest-badge {
-  font-size: 10px;
+  font-size: 0.6667rem;
   font-weight: 700;
   color: var(--accent-dark);
   background: var(--accent-soft);
@@ -1053,7 +1053,7 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-full);
   padding: 3px 12px;
-  font-size: 11px;
+  font-size: 0.7333rem;
   color: var(--text-secondary);
   cursor: pointer;
   font-family: var(--sans);
@@ -1073,7 +1073,7 @@
   border: 1.5px solid var(--accent);
   border-radius: var(--radius-md);
   padding: 6px 12px;
-  font-size: 13px;
+  font-size: 0.8667rem;
   font-family: var(--sans);
   color: var(--text-primary);
   width: 160px;
@@ -1085,7 +1085,7 @@
   border: none;
   border-radius: var(--radius-md);
   padding: 6px 14px;
-  font-size: 12px;
+  font-size: 0.8rem;
   font-weight: 700;
   cursor: pointer;
   font-family: var(--sans);
@@ -1095,13 +1095,13 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   padding: 4px 10px;
-  font-size: 16px;
+  font-size: 1.0667rem;
   color: var(--text-muted);
   cursor: pointer;
   line-height: 1;
 }
 .pf-guest-error {
-  font-size: 11px;
+  font-size: 0.7333rem;
   color: var(--danger);
 }
 
@@ -1115,7 +1115,7 @@
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 0.9333rem;
   font-weight: 600;
   color: var(--text-primary);
   box-shadow: var(--shadow-card);

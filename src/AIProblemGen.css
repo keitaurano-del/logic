@@ -19,7 +19,7 @@
 }
 
 .aip-header h2 {
-  font-size: 16px;
+  font-size: 1.0667rem;
   font-weight: 700;
   color: var(--text-primary);
   letter-spacing: -0.02em;
@@ -28,7 +28,7 @@
 .aip-back {
   background: none;
   border: none;
-  font-size: 14px;
+  font-size: 0.9333rem;
   color: var(--text-secondary);
   cursor: pointer;
   padding: 4px 8px;
@@ -52,7 +52,7 @@
 
 .aip-premium-badge {
   display: inline-block;
-  font-size: 11px;
+  font-size: 0.7333rem;
   font-weight: 700;
   color: var(--accent-dark);
   background: var(--accent-soft);
@@ -62,7 +62,7 @@
 }
 
 .aip-card h3 {
-  font-size: 19px;
+  font-size: 1.2667rem;
   font-weight: 700;
   color: var(--text-primary);
   letter-spacing: -0.02em;
@@ -70,7 +70,7 @@
 }
 
 .aip-desc {
-  font-size: 13px;
+  font-size: 0.8667rem;
   color: var(--text-secondary);
   line-height: 1.6;
   margin-bottom: 16px;
@@ -82,7 +82,7 @@
   border: 1.5px solid var(--border);
   border-radius: var(--radius-md);
   padding: 14px;
-  font-size: 14px;
+  font-size: 0.9333rem;
   font-family: var(--sans);
   color: var(--text-primary);
   resize: vertical;
@@ -110,7 +110,7 @@
 }
 
 .aip-samples-label {
-  font-size: 11px;
+  font-size: 0.7333rem;
   color: var(--text-muted);
   font-weight: 600;
   margin-right: 4px;
@@ -119,7 +119,7 @@
 }
 
 .aip-sample-chip {
-  font-size: 11px;
+  font-size: 0.7333rem;
   padding: 6px 12px;
   border-radius: var(--radius-full);
   background: var(--bg-secondary);
@@ -147,7 +147,7 @@
   background: rgba(196, 69, 69, 0.08);
   border-radius: var(--radius-md);
   color: var(--danger);
-  font-size: 13px;
+  font-size: 0.8667rem;
   border: 1px solid rgba(196, 69, 69, 0.2);
 }
 
@@ -159,7 +159,7 @@
   color: var(--accent-fg);
   border: none;
   border-radius: var(--radius-md);
-  font-size: 15px;
+  font-size: 1rem;
   font-weight: 800;
   cursor: pointer;
   font-family: var(--sans);
@@ -176,7 +176,7 @@
 }
 
 .aip-history h3 {
-  font-size: 16px;
+  font-size: 1.0667rem;
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 12px;
@@ -213,21 +213,21 @@
 }
 
 .aip-history-title {
-  font-size: 14px;
+  font-size: 0.9333rem;
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 4px;
 }
 
 .aip-history-meta {
-  font-size: 11px;
+  font-size: 0.7333rem;
   color: var(--accent-dark);
   font-weight: 600;
   margin-bottom: 4px;
 }
 
 .aip-history-prompt {
-  font-size: 11px;
+  font-size: 0.7333rem;
   color: var(--text-muted);
   font-style: italic;
   white-space: nowrap;
@@ -239,7 +239,7 @@
   background: none;
   border: none;
   color: var(--text-muted);
-  font-size: 18px;
+  font-size: 1.2rem;
   cursor: pointer;
   padding: 4px 8px;
   flex-shrink: 0;

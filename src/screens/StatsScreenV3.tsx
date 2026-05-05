@@ -182,7 +182,7 @@ export function StatsScreenV3({ onBack: _onBack }: StatsScreenV3Props) {
                     <span>25</span><span>50</span><span>75</span>
                   </div>
                   <div style={{ height: 8, background: 'rgba(255,255,255,0.15)', borderRadius: 99, overflow: 'hidden' }}>
-                    <div style={{ height: '100%', width: `${Math.min(100, Math.max(0, ((deviation - 25) / 50) * 100))}%`, background: '#fff', borderRadius: 99 }}></div>
+                    <div style={{ height: '100%', width: `${Math.min(100, Math.max(0, ((deviation - 25) / 50) * 100))}%`, background: 'var(--bg-card)', borderRadius: 99 }}></div>
                   </div>
                 </>
               )}

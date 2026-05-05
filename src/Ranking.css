@@ -1,43 +1,43 @@
 .rk-screen { min-height: 100svh; background: var(--bg-primary); display: flex; flex-direction: column; }
-.rk-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: var(--bg-card); border-bottom: 1px solid var(--border); color: var(--text-primary); font-size: 16px; font-weight: 800; backdrop-filter: blur(24px); }
-.rk-back { background: none; border: none; color: var(--text-primary); font-size: 22px; cursor: pointer; padding: 4px 8px; }
+.rk-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: var(--bg-card); border-bottom: 1px solid var(--border); color: var(--text-primary); font-size: 1.0667rem; font-weight: 800; backdrop-filter: blur(24px); }
+.rk-back { background: none; border: none; color: var(--text-primary); font-size: 1.4667rem; cursor: pointer; padding: 4px 8px; }
 .rk-header-spacer { width: 32px; }
 
 .rk-content { flex: 1; padding: 20px 16px 48px; display: flex; flex-direction: column; gap: 18px; max-width: 720px; width: 100%; margin: 0 auto; }
 
-.rk-loading, .rk-error, .rk-empty { text-align: center; padding: 40px 16px; color: var(--text-muted); font-size: 14px; }
+.rk-loading, .rk-error, .rk-empty { text-align: center; padding: 40px 16px; color: var(--text-muted); font-size: 0.9333rem; }
 .rk-error { color: var(--danger); }
 
 /* CTA when no test done */
 .rk-cta-card { background: var(--bg-card); border: 2px dashed var(--accent); border-radius: var(--radius-lg); padding: 24px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; }
-.rk-cta-emoji { font-size: 48px; }
-.rk-cta-card h3 { font-size: 16px; font-weight: 800; color: var(--text-primary); }
-.rk-cta-card p { font-size: 13px; color: var(--text-secondary); }
-.rk-cta-btn { padding: 14px 24px; background: var(--accent); color: var(--accent-fg); border: none; border-radius: var(--radius-md); font-size: 14px; font-weight: 800; cursor: pointer; font-family: var(--sans); margin-top: 8px; }
+.rk-cta-emoji { font-size: 3.2rem; }
+.rk-cta-card h3 { font-size: 1.0667rem; font-weight: 800; color: var(--text-primary); }
+.rk-cta-card p { font-size: 0.8667rem; color: var(--text-secondary); }
+.rk-cta-btn { padding: 14px 24px; background: var(--accent); color: var(--accent-fg); border: none; border-radius: var(--radius-md); font-size: 0.9333rem; font-weight: 800; cursor: pointer; font-family: var(--sans); margin-top: 8px; }
 
 /* Summary */
 .rk-summary { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: var(--radius-lg); padding: 18px; box-shadow: var(--shadow-card); }
 .rk-summary-row { display: flex; align-items: center; justify-content: space-around; gap: 12px; }
 .rk-summary-divider { width: 1px; height: 36px; background: var(--border); }
-.rk-summary-label { font-size: 10px; font-weight: 800; color: var(--text-muted); letter-spacing: 0.5px; text-transform: uppercase; }
-.rk-summary-value { font-size: 24px; font-weight: 900; color: var(--accent-dark); }
-.rk-summary-value span { font-size: 12px; font-weight: 700; color: var(--text-muted); margin-left: 2px; }
-.rk-summary-percent { text-align: center; font-size: 12px; color: var(--text-secondary); margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); }
+.rk-summary-label { font-size: 0.6667rem; font-weight: 800; color: var(--text-muted); letter-spacing: 0.5px; text-transform: uppercase; }
+.rk-summary-value { font-size: 1.6rem; font-weight: 900; color: var(--accent-dark); }
+.rk-summary-value span { font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-left: 2px; }
+.rk-summary-percent { text-align: center; font-size: 0.8rem; color: var(--text-secondary); margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); }
 
-.rk-section-title { font-size: 13px; font-weight: 800; color: var(--text-secondary); letter-spacing: 0.5px; text-transform: uppercase; padding: 0 4px; }
+.rk-section-title { font-size: 0.8667rem; font-weight: 800; color: var(--text-secondary); letter-spacing: 0.5px; text-transform: uppercase; padding: 0 4px; }
 
 .rk-list { display: flex; flex-direction: column; gap: 8px; }
 .rk-row { display: flex; align-items: center; gap: 14px; padding: 12px 16px; background: var(--bg-card); border: 1.5px solid var(--border); border-radius: var(--radius-md); }
 .rk-row.top { border-color: var(--accent-light); }
 .rk-row.you { border-color: var(--accent-dark); border-width: 2px; background: var(--accent-soft); }
-.rk-rank { width: 36px; text-align: center; font-size: 16px; font-weight: 900; color: var(--text-muted); flex-shrink: 0; }
-.rk-rank.medal-1, .rk-rank.medal-2, .rk-rank.medal-3 { font-size: 22px; }
-.rk-name { flex: 1; font-size: 14px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px; min-width: 0; }
-.rk-you-badge { font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 999px; background: var(--accent); color: var(--accent-fg); letter-spacing: 0.5px; }
-.rk-dev { font-size: 12px; color: var(--text-muted); flex-shrink: 0; }
-.rk-dev strong { font-size: 16px; color: var(--accent-dark); margin-left: 4px; }
+.rk-rank { width: 36px; text-align: center; font-size: 1.0667rem; font-weight: 900; color: var(--text-muted); flex-shrink: 0; }
+.rk-rank.medal-1, .rk-rank.medal-2, .rk-rank.medal-3 { font-size: 1.4667rem; }
+.rk-name { flex: 1; font-size: 0.9333rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px; min-width: 0; }
+.rk-you-badge { font-size: 0.6rem; font-weight: 900; padding: 2px 6px; border-radius: 999px; background: var(--accent); color: var(--accent-fg); letter-spacing: 0.5px; }
+.rk-dev { font-size: 0.8rem; color: var(--text-muted); flex-shrink: 0; }
+.rk-dev strong { font-size: 1.0667rem; color: var(--accent-dark); margin-left: 4px; }
 
-.rk-retake-btn { padding: 14px; background: transparent; border: 1.5px solid var(--border); color: var(--text-secondary); border-radius: var(--radius-md); font-size: 13px; font-weight: 700; cursor: pointer; font-family: var(--sans); margin-top: 12px; }
+.rk-retake-btn { padding: 14px; background: transparent; border: 1.5px solid var(--border); color: var(--text-secondary); border-radius: var(--radius-md); font-size: 0.8667rem; font-weight: 700; cursor: pointer; font-family: var(--sans); margin-top: 12px; }
 
 @media (min-width: 1280px) {
   .rk-screen { padding-top: 56px; }

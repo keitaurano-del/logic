@@ -3,6 +3,7 @@ import { recordCompletion } from '../stats'
 import { ArrowRightIcon, CheckIcon, XIcon } from '../icons'
 import { Button } from '../components/Button'
 import { Header } from '../components/platform/Header'
+import { ActionSheet } from '../components/ActionSheet'
 
 interface JournalInputScreenProps {
   onBack: () => void
@@ -125,6 +126,8 @@ export function JournalInputScreen({ onBack }: JournalInputScreenProps) {
     }
   }
 
+  const [accountSheet, setAccountSheet] = useState<null | 'debit' | 'credit'>(null)
+
   if (finished) {
     const pct = Math.round((correctCount / problems.length) * 100)
     const passed = pct >= 70
@@ -185,16 +188,16 @@ export function JournalInputScreen({ onBack }: JournalInputScreenProps) {
             <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--brand)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
               借方
             </div>
-            <select
+            <button
+              type="button"
               className="input"
-              value={debitAccount}
-              onChange={(e) => setDebitAccount(e.target.value)}
+              onClick={() => setAccountSheet('debit')}
               disabled={submitted}
-              style={fieldStyle(isCorrectField('da'))}
+              aria-haspopup="dialog"
+              style={{ ...fieldStyle(isCorrectField('da')), textAlign: 'left', cursor: submitted ? 'default' : 'pointer', color: debitAccount ? 'var(--text-primary)' : 'var(--text-muted)' }}
             >
-              <option value="">勘定科目を選択</option>
-              {p.accountChoices.map((a) => <option key={a} value={a}>{a}</option>)}
-            </select>
+              {debitAccount || '勘定科目を選択'}
+            </button>
             <input
               className="input"
               type="number"
@@ -215,16 +218,16 @@ export function JournalInputScreen({ onBack }: JournalInputScreenProps) {
             <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--success)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
               貸方
             </div>
-            <select
+            <button
+              type="button"
               className="input"
-              value={creditAccount}
-              onChange={(e) => setCreditAccount(e.target.value)}
+              onClick={() => setAccountSheet('credit')}
               disabled={submitted}
-              style={fieldStyle(isCorrectField('ca'))}
+              aria-haspopup="dialog"
+              style={{ ...fieldStyle(isCorrectField('ca')), textAlign: 'left', cursor: submitted ? 'default' : 'pointer', color: creditAccount ? 'var(--text-primary)' : 'var(--text-muted)' }}
             >
-              <option value="">勘定科目を選択</option>
-              {p.accountChoices.map((a) => <option key={a} value={a}>{a}</option>)}
-            </select>
+              {creditAccount || '勘定科目を選択'}
+            </button>
             <input
               className="input"
               type="number"
@@ -269,6 +272,18 @@ export function JournalInputScreen({ onBack }: JournalInputScreenProps) {
           <ArrowRightIcon width={16} height={16} />
         </Button>
       )}
+
+      <ActionSheet
+        open={accountSheet !== null}
+        title="勘定科目を選択"
+        items={p.accountChoices.map((a) => ({ id: a, label: a }))}
+        onSelect={(id) => {
+          if (accountSheet === 'debit') setDebitAccount(id)
+          else if (accountSheet === 'credit') setCreditAccount(id)
+          setAccountSheet(null)
+        }}
+        onCancel={() => setAccountSheet(null)}
+      />
     </div>
   )
 }

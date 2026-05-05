@@ -10,7 +10,7 @@
 }
 
 .nb-header h2 {
-  font-size: 22px;
+  font-size: 1.4667rem;
   font-weight: 700;
   color: var(--text-primary);
   letter-spacing: -0.02em;
@@ -18,7 +18,7 @@
 }
 
 .nb-header p {
-  font-size: 13px;
+  font-size: 0.8667rem;
   color: var(--text-secondary);
 }
 
@@ -32,7 +32,7 @@
   padding: 40px 20px;
   text-align: center;
   color: var(--text-muted);
-  font-size: 14px;
+  font-size: 0.9333rem;
   background: var(--bg-card);
   border-radius: var(--radius-lg);
   border: 1px dashed var(--border);
@@ -58,13 +58,13 @@
 }
 
 .nb-date {
-  font-size: 14px;
+  font-size: 0.9333rem;
   font-weight: 600;
   color: var(--text-primary);
 }
 
 .nb-today-badge {
-  font-size: 11px;
+  font-size: 0.7333rem;
   font-weight: 700;
   color: var(--accent-dark);
   background: var(--accent-soft);
@@ -81,7 +81,7 @@
 }
 
 .nb-section-label {
-  font-size: 11px;
+  font-size: 0.7333rem;
   font-weight: 600;
   color: var(--text-muted);
   margin-bottom: 6px;
@@ -92,7 +92,7 @@
   background: var(--bg-secondary);
   border-radius: var(--radius-md);
   padding: 12px 14px;
-  font-size: 13px;
+  font-size: 0.8667rem;
   line-height: 1.6;
   color: var(--text-primary);
   min-height: 40px;
@@ -109,7 +109,7 @@
   border: 1px dashed var(--border);
   border-radius: var(--radius-md);
   padding: 10px 12px;
-  font-size: 13px;
+  font-size: 0.8667rem;
   font-family: inherit;
   line-height: 1.6;
   color: var(--text-primary);
