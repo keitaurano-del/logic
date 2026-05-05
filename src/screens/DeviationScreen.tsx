@@ -193,6 +193,7 @@ export function DeviationScreen({ onBack, onRetakeTest, onStartLesson }: Deviati
         <div
           role="dialog"
           aria-modal="true"
+          aria-label="偏差値の説明"
           style={{
             position: 'fixed', inset: 0, zIndex: 1000,
             background: 'rgba(0,0,0,0.5)',

@@ -41,7 +41,7 @@ export function ActionSheet({ open, title, message, items, onSelect, onCancel }:
 
   return createPortal(
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events -- scrim タップでの dismiss は意図通り (キーボードは Escape で代替済)
-    <div className="m3-sheet__scrim" role="dialog" aria-modal="true" onClick={onCancel}>
+    <div className="m3-sheet__scrim" role="dialog" aria-modal="true" aria-label={title ?? 'Options'} onClick={onCancel}>
       {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- sheet 本体内クリックは event 伝播停止のみ */}
       <div
         className="m3-sheet"

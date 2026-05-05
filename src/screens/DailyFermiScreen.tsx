@@ -129,6 +129,7 @@ function FermiChatModal({ question, locale, onClose }: {
     <div
       role="dialog"
       aria-modal="true"
+      aria-label="フェルミ推定 質問入力"
       style={{
         position: 'fixed', inset: 0, zIndex: 1000,
         background: 'rgba(0,0,0,0.55)',

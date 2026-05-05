@@ -265,6 +265,7 @@ export function RankScreen({ onBack }: RankScreenProps) {
         <div
           role="dialog"
           aria-modal="true"
+          aria-label="ランク詳細"
           style={{
             position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.55)',
             zIndex: 200, display: 'flex', alignItems: 'flex-end',

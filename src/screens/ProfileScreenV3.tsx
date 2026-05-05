@@ -152,6 +152,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
         <div
           role="dialog"
           aria-modal="true"
+          aria-label="メニュー"
           style={{ position: 'fixed', inset: 0, zIndex: 100, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'flex-end' }}
         >
           <button
