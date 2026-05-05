@@ -467,219 +467,34 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--text-primary);
 }
 
-/* Inline white backgrounds (style="background: #fff" on legacy components) */
-[style*="background: #fff"],
-[style*="background:#fff"],
-[style*="background: white"],
-[style*="background: rgb(255, 255, 255)"],
-[style*="background-color: #fff"],
-[style*="background-color: white"] {
-  background: var(--bg-card) !important;
-  color: var(--text-primary);
-}
-
-/* M3 移行後: --accent は var(--md-sys-color-primary) の alias。
-   patch を残すと色は同じだが accent-fg を強制してテキスト色が壊れる。
-   on-primary を直接当てたい場合のみ生存。 */
+/* ==========================================================
+ * Legacy inline-style overrides
+ *
+ * 2026-05-05: ハードコード色を活躍画面の source 側で
+ * セマンティック token に置換完了 (Phase 3 第5波)。
+ * 旧 [style*=#FFFFFF / #E2E8FF / etc] パッチ群は dead に
+ * なったため除去。残るのは「inline で M3 primary を直接
+ * 当てた場合に on-primary 文字色を強制」する 1 ルールのみ。
+ * ========================================================== */
 [style*="background: var(--md-sys-color-primary)"],
 [style*="background:var(--md-sys-color-primary)"] {
   color: var(--md-sys-color-on-primary) !important;
 }
 
-/* Light blue page backgrounds (#F0F4FF / #F8FAFF) → bg */
-[style*="background: #F0F4FF"],
-[style*="background:#F0F4FF"],
-[style*="background: #F8FAFF"],
-[style*="background: rgba(240, 244, 255"],
-[style*="background:rgba(240, 244, 255"] {
-  background: var(--bg-primary) !important;
-}
-
-/* Light borders → dark line */
-[style*="border: 1px solid #E2E8FF"],
-[style*="border:1px solid #E2E8FF"],
-[style*="border: 1.5px solid #E2E8FF"] {
-  border-color: var(--border) !important;
-}
-
-/* M3 移行後: var(--md-sys-color-primary) を直接使えば足りるため、
-   無意味な !important 上書き (var(--accent) → 同じ値) は削除。
-   旧 RGB rgb(59, 91, 219) は保険として残す。 */
-[style*="color: rgb(59, 91, 219)"] {
-  color: var(--md-sys-color-primary) !important;
-}
-
-/* Dark blue/black text → primary text white
- * NOTE 2026-04-27: Removed the global override that flipped #0F1523/#0F1424 to white.
- * Reason: it broke legitimate dark-on-light cards (onboarding plan cards) where
- * the design intentionally keeps a cream/white card background and dark text.
- * If a screen needs the legacy white-on-dark behavior, set the color via a
- * className or a CSS variable instead of inline #0F1523.
- */
-
-/* Additional light colors used in legacy screens */
-[style*="background: #EEF2FF"],
-[style*="background:#EEF2FF"],
-[style*="background: rgb(238, 242, 255)"],
-[style*="background: #DBE4FF"],
-[style*="background:#DBE4FF"],
-[style*="background: #FAFAFB"],
-[style*="background:#FAFAFB"] {
-  background: var(--bg-card) !important;
-  color: var(--text-primary);
-}
-
-[style*="border: 1.5px solid #C5D0FB"],
-[style*="border:1.5px solid #C5D0FB"],
-[style*="border: 1px solid #C5D0FB"],
-[style*="border: 1px solid #DBE4FF"],
-[style*="border: 1.5px solid #DBE4FF"],
-[style*="border: 1px solid #C8D0E7"] {
-  border-color: var(--border) !important;
-}
-
-/* Dim accent color text (var(--md-sys-color-primary)) to mint */
+/* Dim accent color text (#748FFC は legacy 残存、M3 accent に統一) */
 [style*="color: #748FFC"],
 [style*="color:#748FFC"] {
   color: var(--accent) !important;
 }
 
-/* Light gray text color #7A849E etc */
-[style*="color: #7A849E"],
-[style*="color:#7A849E"],
-[style*="color: #9BA3B8"],
-[style*="color: #C8D0E7"] {
-  color: var(--text-muted) !important;
-}
-
 /* HomeScreen v3 image placeholders fix when inside .card */
 .card img { display: block; }
 
-/* M3 移行後: M3 primary を含むグラデーションを solid color に潰すと
-   元のデザイン意図 (グラデーション) が失われるため、patch 削除。 */
-
-/* Override brand gradient to Slate Blue */
+/* Brand gradient override (Slate Blue) */
 .mode-dark, body {
   --brand:           #6C8EF5 !important;
   --brand-grad:      linear-gradient(135deg, #6C8EF5 0%, #9BB3FA 100%) !important;
   --hero-grad:       linear-gradient(135deg, #252C40 0%, #2E3652 60%, #1A1F2E 100%) !important;
-}
-
-/* Onboarding feature cards */
-[style*="background: #F8F9FF"],
-[style*="background:#F8F9FF"],
-[style*="background: rgb(248, 249, 255)"] {
-  background: var(--bg-card) !important;
-}
-
-/* Onboarding container "background: white" override */
-[style*="background: rgb(255, 255, 255)"] {
-  background: var(--bg-primary) !important;
-}
-
-/* Onboarding free trial gradient header (purple) */
-[style*="linear-gradient(135deg, #6366F1"],
-[style*="linear-gradient(180deg, #6366F1"],
-[style*="background: #6366F1"] {
-  background: var(--accent) !important;
-  color: var(--accent-fg) !important;
-}
-
-/* Subscription/pricing default-blue trial card */
-[style*="background: #4F46E5"],
-[style*="background:#4F46E5"] {
-  background: var(--accent) !important;
-  color: var(--accent-fg) !important;
-}
-
-/* ==========================================================
- * Catch-all sanitizer for legacy light-theme inline styles
- * ========================================================== */
-
-/* legacy 高頻度 light/dark/gray リテラルは inline style からほぼ撤退済み。
-   残るのは #FFFFFF (装飾的に明示) と少数の gray のみ。 */
-[style*="background: #FFFFFF"],
-[style*="background:#FFFFFF"] {
-  background: var(--bg-card) !important;
-  color: var(--text-primary);
-}
-[style*="color: #4B5563"] {
-  color: var(--text-secondary) !important;
-}
-
-[style*="border: 1px solid #E"],
-[style*="border-color: #E"] {
-  border-color: var(--border) !important;
-}
-
-/* legacy indigo brand colors (#6366F1, #4F46E5, #2E4BA8, #4338CA) は
-   inline 残存ほぼ無し。M3 primary 経由で aliased されるため patch 不要。 */
-[style*="color: #6366F1"] {
-  color: var(--md-sys-color-primary) !important;
-}
-
-/* legacy mint override は M3 brand 移行に矛盾するため削除。
-   旧 #6366F1 / #4F46E5 (indigo) は近代化済みで残存リテラルはほぼ無し。 */
-
-/* `--brand` は tokens-m3.css で var(--md-sys-color-primary) (#A8C0FF) に
-   alias されているため、ここで個別上書きしない (旧 #6C8EF5 を再注入しない) */
-
-/* === RGB form overrides (React inline style outputs in rgb) === */
-[style*="background: rgb(59, 91, 219)"],
-[style*="background:rgb(59, 91, 219)"],
-[style*="background: rgb(99, 102, 241)"],
-[style*="background:rgb(99, 102, 241)"],
-[style*="background: rgb(79, 70, 229)"],
-[style*="background:rgb(79, 70, 229)"],
-[style*="background: rgb(61, 95, 196)"],
-[style*="background:rgb(61, 95, 196)"] {
-  background: var(--accent) !important;
-  color: var(--accent-fg) !important;
-}
-
-[style*="color: rgb(59, 91, 219)"],
-[style*="color:rgb(59, 91, 219)"],
-[style*="color: rgb(99, 102, 241)"],
-[style*="color: rgb(61, 95, 196)"] {
-  color: var(--accent) !important;
-}
-
-/* RGB white backgrounds */
-[style*="background: rgb(255, 255, 255)"],
-[style*="background:rgb(255, 255, 255)"] {
-  background: var(--bg-card) !important;
-  color: var(--text-primary);
-}
-
-/* RGB light backgrounds */
-[style*="background: rgb(238, 242, 255)"],
-[style*="background:rgb(238, 242, 255)"],
-[style*="background: rgb(248, 249, 255)"],
-[style*="background:rgb(248, 249, 255)"],
-[style*="background: rgb(240, 244, 255)"],
-[style*="background:rgb(240, 244, 255)"] {
-  background: var(--bg-card) !important;
-}
-
-/* RGB dark text → white
- * 2026-04-27 REMOVED: This rule masked legitimate dark text on light cards
- * (e.g. onboarding plan cards with cream background). Re-add only with a
- * more specific scope (className-based) if a legacy screen requires it.
- */
-
-/* React-rendered linear-gradient (with rgb commas) */
-[style*="linear-gradient(160deg, rgb(59, 91, 219)"],
-[style*="linear-gradient(135deg, rgb(59, 91, 219)"],
-[style*="linear-gradient(135deg, rgb(99, 102, 241)"],
-[style*="linear-gradient(135deg, rgb(61, 95, 196)"] {
-  background: linear-gradient(135deg, #70D8BD 0%, #A5E8D5 100%) !important;
-  color: var(--accent-fg) !important;
-}
-
-/* RGB borders */
-[style*="border: 1px solid rgb(226, 232, 255)"],
-[style*="border-color: rgb(226, 232, 255)"] {
-  border-color: var(--border) !important;
 }
 
 /* ============================================================
