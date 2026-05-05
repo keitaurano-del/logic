@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { recordCompletion } from '../stats'
-import { ArrowLeftIcon, ArrowRightIcon, CheckIcon, XIcon } from '../icons'
+import { ArrowRightIcon, CheckIcon, XIcon } from '../icons'
 import { Button } from '../components/Button'
-import { IconButton } from '../components/IconButton'
+import { Header } from '../components/platform/Header'
 
 interface JournalInputScreenProps {
   onBack: () => void
@@ -130,10 +130,7 @@ export function JournalInputScreen({ onBack }: JournalInputScreenProps) {
     const passed = pct >= 70
     return (
       <div className="stack">
-        <div className="screen-header">
-          <IconButton aria-label="Back" onClick={onBack}><ArrowLeftIcon /></IconButton>
-          <div className="progress-text">結果</div>
-        </div>
+        <Header title="結果" onBack={onBack} />
         <div className="eyebrow accent">ドリル結果</div>
         <h1 style={{ fontSize: 32, letterSpacing: '-0.025em' }}>仕訳ドリル結果</h1>
         <section className="profile-hero" style={{ textAlign: 'center' }}>
@@ -170,10 +167,7 @@ export function JournalInputScreen({ onBack }: JournalInputScreenProps) {
 
   return (
     <div className="stack">
-      <div className="screen-header">
-        <IconButton aria-label="Back" onClick={onBack}><ArrowLeftIcon /></IconButton>
-        <div className="progress-text"><b>{current + 1}</b> / {problems.length}</div>
-      </div>
+      <Header title={`${current + 1} / ${problems.length}`} onBack={onBack} />
 
       <div className="progress">
         <div className="progress-fill" style={{ width: `${progress}%` }} />

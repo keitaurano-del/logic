@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { ArrowLeftIcon, LightbulbIcon, BarChartIcon, MicIcon } from '../icons'
-import { IconButton } from '../components/IconButton'
+import { LightbulbIcon, BarChartIcon, MicIcon } from '../icons'
+import { Header } from '../components/platform/Header'
 import { Button } from '../components/Button'
 import { API_BASE } from './apiBase'
 import { getDailyFermi, getDailyFermiIndex, FERMI_POOL, getDailyFermiStats } from '../fermiData'
@@ -387,12 +387,7 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
         />
       )}
 
-      <div className="screen-header">
-        <IconButton aria-label={t('common.back')} onClick={onBack}>
-          <ArrowLeftIcon />
-        </IconButton>
-        <div className="progress-text">{t('dailyFermi.title')}</div>
-      </div>
+      <Header title={t('dailyFermi.title')} onBack={onBack} />
 
       <div className="eyebrow accent">デイリーフェルミ</div>
       <h1 style={{ fontSize: 26, fontWeight: 800, letterSpacing: '-0.02em', lineHeight: 1.3 }}>

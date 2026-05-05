@@ -14,7 +14,7 @@
 |---|---|---|---|
 | **Phase 0** リリースブロッカー | 8h | ~7h 相当 | ✅ ほぼ完了（PR #73） |
 | **Phase 1** デザインシステム土台 | 32h | ~24h 相当 | ✅ ほぼ完了（PR #73） |
-| **Phase 2** 全画面 HIG/M3 適合 | 60h | ~42h 相当 | 🟡 70%（5画面 Header 統一、5旧画面削除、12画面 触覚、Switch、ローディング、ブランド色 第2 sweep） |
+| **Phase 2** 全画面 HIG/M3 適合 | 60h | ~50h 相当 | 🟡 83%（15画面 Header 統一、5旧画面削除、12画面 触覚、Switch、ローディング、ブランド色 sweep） |
 | **Phase 3** 個別最適化 | 80h | 0h | ⚪ 未着手（次セッション以降） |
 | **Phase 4** 仕上げ・検証 | 24h | ~3h 相当（build/lint/cap sync 通過） | 🟡 自動チェックのみ |
 
@@ -81,8 +81,11 @@
   - WorksheetScreen `handleSubmit` → `haptic.light()`
   - FeedbackScreen `handleSubmit` → `haptic.light()`
 
-- ✅ Header コンポーネント統一 (5 画面)
-  - LanguageScreen, RankScreen, StreakScreen, CompletedLessonsScreen, StudyTimeScreen
+- ✅ Header コンポーネント統一 (15 画面累計)
+  - LanguageScreen, RankScreen, StreakScreen, CompletedLessonsScreen, StudyTimeScreen,
+    FlashcardsScreen, SettingsScreen, RoleplayChatScreen, FeedbackScreen, JournalInputScreen,
+    ReportProblemScreen, AIProblemScreen, DailyFermiScreen, DailyProblemScreen, DeviationScreen,
+    WorksheetScreen, FermiScreen (Mobile/Desktop), PlacementTestScreen
   - `screen-header` div + IconButton+ArrowLeftIcon パターン → `<Header title onBack>` に
 - ✅ 旧画面削除 (5 ファイル, ~1700 行削減)
   - `RoadmapScreen.tsx` / `ProfileScreen.tsx` / `StatsScreen.tsx` / `PricingV3.tsx` / `ThemeSettingsScreen.tsx`
@@ -92,7 +95,7 @@
   - `'#F87171'` / `'#FCA5A5'` / `'#DC2626'` (red) → `'var(--md-sys-color-error)'`
 
 ### Phase 2 残（次セッション以降）
-- 残 30 画面の Header 統一
+- 残 ~15 画面の Header 統一（V3画面のカスタムヘッダー含む）
 - 全 px → rem 化 (font-size 275 件)
 - ハードコード色値 残 500+ 件の CSS 変数化（カテゴリ色は意図的に残す）
 - 既存 `<select>` を `<ActionSheet>` 系に置換

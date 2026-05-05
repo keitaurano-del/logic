@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react'
 import { getDueCards, getWeakCards, reviewCard, type Flashcard } from '../flashcardData'
-import { ArrowLeftIcon, CheckIcon, SparklesIcon } from '../icons'
+import { CheckIcon, SparklesIcon } from '../icons'
 import { Button } from '../components/Button'
-import { IconButton } from '../components/IconButton'
+import { Header } from '../components/platform/Header'
 import { haptic } from '../platform/haptics'
 import { t } from '../i18n'
 
@@ -33,20 +33,7 @@ export function FlashcardsScreen({ onBack, mode = 'due' }: FlashcardsScreenProps
 
   return (
     <div className="stack">
-      <div className="screen-header">
-        <IconButton aria-label="Back" onClick={onBack}>
-          <ArrowLeftIcon />
-        </IconButton>
-        <div className="progress-text">
-          {done ? (
-            <span className="muted">完了</span>
-          ) : (
-            <>
-              <b>{Math.min(idx + 1, total)}</b> / {total}
-            </>
-          )}
-        </div>
-      </div>
+      <Header title={done ? '完了' : `${Math.min(idx + 1, total)} / ${total}`} onBack={onBack} />
 
       {total > 0 && !done && (
         <div className="progress" style={{ marginBottom: 'var(--s-5)' }}>

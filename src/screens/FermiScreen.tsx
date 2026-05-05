@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { recordCompletion } from '../stats'
-import { ArrowLeftIcon, ArrowRightIcon, CheckIcon, LightbulbIcon } from '../icons'
+import { ArrowRightIcon, CheckIcon, LightbulbIcon } from '../icons'
 import { Button } from '../components/Button'
-import { IconButton } from '../components/IconButton'
+import { Header } from '../components/platform/Header'
 import { useIsDesktop } from '../hooks/useMediaQuery'
 import { API_BASE } from './apiBase'
 import { t } from '../i18n'
@@ -149,12 +149,7 @@ function FermiMobile({ onBack, state, onReport }: { onBack: () => void; state: F
 
   return (
     <div className="stack">
-      <div className="screen-header">
-        <IconButton aria-label="Back" onClick={onBack}>
-          <ArrowLeftIcon />
-        </IconButton>
-        <div className="progress-text">{t('label.fermi')}</div>
-      </div>
+      <Header title={t('label.fermi')} onBack={onBack} />
 
       <div className="eyebrow accent">{t('label.fermi')}</div>
       <h1 className="lesson-question">{question.question}</h1>
@@ -205,11 +200,8 @@ function FermiDesktop({ onBack, state, onReport }: { onBack: () => void; state: 
 
   return (
     <div className="lesson-main">
-      <div className="screen-header" style={{ marginBottom: 32 }}>
-        <IconButton aria-label="Back" onClick={onBack}>
-          <ArrowLeftIcon />
-        </IconButton>
-        <div className="progress-text">{t('label.fermi')}</div>
+      <div style={{ marginBottom: 32 }}>
+        <Header title={t('label.fermi')} onBack={onBack} />
       </div>
 
       <div className="progress" style={{ marginBottom: 56 }}>

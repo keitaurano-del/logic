@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { ArrowLeftIcon, CheckIcon } from '../icons'
+import { CheckIcon } from '../icons'
 import { Button } from '../components/Button'
-import { IconButton } from '../components/IconButton'
+import { Header } from '../components/platform/Header'
 import { API_BASE } from './apiBase'
 import { getLocale } from '../i18n'
 import { haptic } from '../platform/haptics'
@@ -44,10 +44,7 @@ export function FeedbackScreen({ onBack }: FeedbackScreenProps) {
   if (sent) {
     return (
       <div className="stack">
-        <div className="screen-header">
-          <IconButton aria-label="Back" onClick={onBack}><ArrowLeftIcon /></IconButton>
-          <div className="progress-text">フィードバック</div>
-        </div>
+        <Header title="フィードバック" onBack={onBack} />
         <div style={{ marginTop: 40, textAlign: 'center' }}>
           <div style={{
             width: 64, height: 64, borderRadius: '50%',
@@ -71,10 +68,7 @@ export function FeedbackScreen({ onBack }: FeedbackScreenProps) {
 
   return (
     <div className="stack">
-      <div className="screen-header">
-        <IconButton aria-label="Back" onClick={onBack}><ArrowLeftIcon /></IconButton>
-        <div className="progress-text">フィードバック</div>
-      </div>
+      <Header title="フィードバック" onBack={onBack} />
 
       <div>
         <div className="eyebrow accent">ベータ版</div>

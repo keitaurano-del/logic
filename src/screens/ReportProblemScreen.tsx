@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { ArrowLeftIcon, CheckIcon } from '../icons'
-import { IconButton } from '../components/IconButton'
+import { CheckIcon } from '../icons'
+import { Header } from '../components/platform/Header'
 import { Button } from '../components/Button'
 import { API_BASE } from './apiBase'
 import { t } from '../i18n'
@@ -61,12 +61,7 @@ export function ReportProblemScreen({ context, onBack }: ReportProblemScreenProp
   if (done) {
     return (
       <div className="stack">
-        <div className="screen-header">
-          <IconButton aria-label={t('common.back')} onClick={onBack}>
-            <ArrowLeftIcon />
-          </IconButton>
-          <div className="progress-text">{t('report.title')}</div>
-        </div>
+        <Header title={t('report.title')} onBack={onBack} />
         <div className="feedback-card" style={{ animation: 'scale-in 0.2s ease-out both' }}>
           <div className="feedback-head">
             <div className="feedback-check"><CheckIcon /></div>
@@ -83,12 +78,7 @@ export function ReportProblemScreen({ context, onBack }: ReportProblemScreenProp
 
   return (
     <div className="stack">
-      <div className="screen-header">
-        <IconButton aria-label={t('common.back')} onClick={onBack}>
-          <ArrowLeftIcon />
-        </IconButton>
-        <div className="progress-text">{t('report.title')}</div>
-      </div>
+      <Header title={t('report.title')} onBack={onBack} />
 
       <div className="eyebrow">{t('report.eyebrow')}</div>
       <h1 style={{ fontSize: 26, fontWeight: 800, letterSpacing: '-0.02em' }}>

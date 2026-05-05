@@ -2,10 +2,10 @@ import { useState } from 'react'
 import type { AIProblemSet } from '../aiProblemStore'
 import type { QuizStep } from '../lessonData'
 import { recordCompletion } from '../stats'
-import { ArrowLeftIcon, ArrowRightIcon, CheckIcon, XIcon } from '../icons'
+import { ArrowRightIcon, CheckIcon, XIcon } from '../icons'
 import { Button } from '../components/Button'
 import { haptic } from '../platform/haptics'
-import { IconButton } from '../components/IconButton'
+import { Header } from '../components/platform/Header'
 import { t } from '../i18n'
 
 interface AIProblemScreenProps {
@@ -52,10 +52,7 @@ export function AIProblemScreen({ problem, onBack, onReport }: AIProblemScreenPr
     const pct = steps.length > 0 ? Math.round((correctCount / steps.length) * 100) : 0
     return (
       <div className="stack">
-        <div className="screen-header">
-          <IconButton aria-label="Back" onClick={onBack}><ArrowLeftIcon /></IconButton>
-          <div className="progress-text">結果</div>
-        </div>
+        <Header title="結果" onBack={onBack} />
         <div className="eyebrow accent">AI 問題の結果</div>
         <h1 style={{ fontSize: 30, letterSpacing: '-0.025em' }}>{problem.title}</h1>
         <section className="profile-hero" style={{ textAlign: 'center' }}>
@@ -81,9 +78,7 @@ export function AIProblemScreen({ problem, onBack, onReport }: AIProblemScreenPr
   if (!step) {
     return (
       <div className="stack">
-        <div className="screen-header">
-          <IconButton aria-label="Back" onClick={onBack}><ArrowLeftIcon /></IconButton>
-        </div>
+        <Header onBack={onBack} />
         <div className="card">問題が見つかりません</div>
       </div>
     )
@@ -91,10 +86,7 @@ export function AIProblemScreen({ problem, onBack, onReport }: AIProblemScreenPr
 
   return (
     <div className="stack">
-      <div className="screen-header">
-        <IconButton aria-label="Back" onClick={onBack}><ArrowLeftIcon /></IconButton>
-        <div className="progress-text"><b>{stepIdx + 1}</b> / {steps.length}</div>
-      </div>
+      <Header title={`${stepIdx + 1} / ${steps.length}`} onBack={onBack} />
 
       <div className="progress">
         <div className="progress-fill" style={{ width: `${progress}%` }} />
