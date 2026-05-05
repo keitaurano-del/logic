@@ -36,7 +36,7 @@
   align-items: center;
   gap: 10px;
   font-family: var(--font-display);
-  font-size: 28px;
+  font-size: 1.8667rem;
   font-weight: 900;
   letter-spacing: -0.025em;
   margin-bottom: 36px;
@@ -68,7 +68,7 @@
   padding: 10px 12px;
   border-radius: var(--radius-md);
   font-family: var(--font-ui);
-  font-size: 14px;
+  font-size: 0.9333rem;
   font-weight: 500;
   color: var(--text-secondary);
   background: transparent;
@@ -100,11 +100,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: 0.9333rem;
   flex-shrink: 0;
 }
-.sidebar-user-name { font-size: 13px; font-weight: 600; color: var(--text-primary); }
-.sidebar-user-meta { font-size: 11px; color: var(--text-muted); }
+.sidebar-user-name { font-size: 0.8667rem; font-weight: 600; color: var(--text-primary); }
+.sidebar-user-meta { font-size: 0.7333rem; color: var(--text-muted); }
 
 /* === Main content column === */
 .main {
@@ -134,14 +134,14 @@
   border-bottom: 1px solid var(--border);
 }
 .main-title {
-  font-size: 24px;
+  font-size: 1.6rem;
   font-weight: 800;
   letter-spacing: -0.025em;
 }
 /* @media (min-width: 900px) {
-  .main-title { font-size: 28px; }
+  .main-title { font-size: 1.8667rem; }
 } */
-.main-subtitle { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
+.main-subtitle { font-size: 0.8667rem; color: var(--text-secondary); margin-top: 4px; }
 
 /* === Mobile bottom tab bar === */
 .tabbar {
@@ -172,7 +172,7 @@
   border: none;
   background: transparent;
   color: var(--text-muted);
-  font-size: 11px;
+  font-size: 0.7333rem;
   font-weight: 600;
   font-family: var(--font-ui);
   cursor: pointer;

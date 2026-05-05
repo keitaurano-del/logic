@@ -30,7 +30,7 @@
 }
 
 .rp-header h3 {
-  font-size: 17px;
+  font-size: 1.1333rem;
   font-weight: 700;
   color: var(--text-primary);
   letter-spacing: -0.02em;
@@ -39,7 +39,7 @@
 .rp-close {
   background: none;
   border: none;
-  font-size: 22px;
+  font-size: 1.4667rem;
   color: var(--text-muted);
   cursor: pointer;
   padding: 0 8px;
@@ -56,13 +56,13 @@
 }
 
 .rp-question {
-  font-size: 13px;
+  font-size: 0.8667rem;
   color: var(--text-primary);
   line-height: 1.6;
 }
 
 .rp-label {
-  font-size: 11px;
+  font-size: 0.7333rem;
   font-weight: 600;
   color: var(--text-muted);
   margin-bottom: 6px;
@@ -84,7 +84,7 @@
   background: var(--bg-card);
   border: 1.5px solid var(--border);
   border-radius: var(--radius-md);
-  font-size: 13px;
+  font-size: 0.8667rem;
   text-align: left;
   cursor: pointer;
   font-family: var(--sans);
@@ -109,7 +109,7 @@
   border: 1.5px solid var(--border);
   border-radius: var(--radius-md);
   padding: 10px 12px;
-  font-size: 13px;
+  font-size: 0.8667rem;
   font-family: var(--sans);
   color: var(--text-primary);
   resize: vertical;
@@ -133,7 +133,7 @@
   background: rgba(196, 69, 69, 0.08);
   border-radius: var(--radius-md);
   color: var(--danger);
-  font-size: 12px;
+  font-size: 0.8rem;
   border: 1px solid rgba(196, 69, 69, 0.2);
 }
 
@@ -147,7 +147,7 @@
   flex: 1;
   padding: 12px;
   border-radius: var(--radius-md);
-  font-size: 14px;
+  font-size: 0.9333rem;
   font-weight: 700;
   cursor: pointer;
   font-family: var(--sans);
@@ -186,7 +186,7 @@
   border-radius: 50%;
   background: var(--success-soft);
   color: var(--success);
-  font-size: 32px;
+  font-size: 2.1333rem;
   font-weight: 800;
   display: flex;
   align-items: center;
@@ -195,13 +195,13 @@
 }
 
 .rp-success h3 {
-  font-size: 17px;
+  font-size: 1.1333rem;
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 6px;
 }
 
 .rp-success p {
-  font-size: 13px;
+  font-size: 0.8667rem;
   color: var(--text-secondary);
 }

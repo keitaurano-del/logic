@@ -5,12 +5,12 @@
 .sm-loading {
   text-align: center;
   color: var(--text-muted);
-  font-size: 13px;
+  font-size: 0.8667rem;
   padding: 24px 0;
 }
 
 .sm-title {
-  font-size: 15px;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--text-primary);
   margin: 0 0 12px;
@@ -39,14 +39,14 @@
 }
 
 .sm-label {
-  font-size: 13px;
+  font-size: 0.8667rem;
   color: var(--text-secondary);
   font-weight: 500;
   flex-shrink: 0;
 }
 
 .sm-value {
-  font-size: 13px;
+  font-size: 0.8667rem;
   color: var(--text-primary);
   font-weight: 600;
 }
@@ -57,7 +57,7 @@
 
 /* プランバッジ */
 .sm-plan-badge {
-  font-size: 12px;
+  font-size: 0.8rem;
   font-weight: 700;
   padding: 4px 10px;
   border-radius: var(--radius-full);
@@ -93,18 +93,18 @@
   padding: 8px 12px;
   background: var(--warning-soft);
   border-radius: var(--radius-md);
-  font-size: 13px;
+  font-size: 0.8667rem;
   color: var(--warning);
   font-weight: 600;
 }
 
 .sm-trial-info strong {
   margin-left: auto;
-  font-size: 14px;
+  font-size: 0.9333rem;
 }
 
 .sm-trial-icon {
-  font-size: 16px;
+  font-size: 1.0667rem;
 }
 
 /* アクションボタン群 */
@@ -118,7 +118,7 @@
   width: 100%;
   padding: 13px 16px;
   border-radius: var(--radius-md);
-  font-size: 14px;
+  font-size: 0.9333rem;
   font-weight: 600;
   cursor: pointer;
   font-family: var(--sans);
@@ -152,7 +152,7 @@
   background: transparent;
   color: var(--danger);
   border: 1px solid rgba(220, 38, 38, 0.3);
-  font-size: 13px;
+  font-size: 0.8667rem;
 }
 
 .sm-btn-danger {
@@ -169,14 +169,14 @@
 }
 
 .sm-cancel-confirm p {
-  font-size: 13px;
+  font-size: 0.8667rem;
   color: var(--text-primary);
   margin: 0 0 12px;
   line-height: 1.6;
 }
 
 .sm-cancel-note {
-  font-size: 12px;
+  font-size: 0.8rem;
   color: var(--text-secondary);
 }
 
@@ -188,7 +188,7 @@
 .sm-cancel-btns .sm-btn {
   flex: 1;
   padding: 11px;
-  font-size: 13px;
+  font-size: 0.8667rem;
 }
 
 /* エラー */
@@ -198,14 +198,14 @@
   background: rgba(220, 38, 38, 0.08);
   border-radius: var(--radius-md);
   color: var(--danger);
-  font-size: 12px;
+  font-size: 0.8rem;
   text-align: center;
 }
 
 /* ノート */
 .sm-note {
   margin-top: 12px;
-  font-size: 12px;
+  font-size: 0.8rem;
   color: var(--text-muted);
   text-align: center;
   line-height: 1.6;

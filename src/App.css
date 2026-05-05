@@ -32,7 +32,7 @@
 
 .logo {
   font-family: var(--serif);
-  font-size: 26px;
+  font-size: 1.7333rem;
   font-weight: 700;
   background: var(--brand-grad);
   -webkit-background-clip: text;
@@ -55,12 +55,12 @@
   padding: 6px 12px;
   border: none;
   border-radius: var(--radius-full);
-  font-size: 13px;
+  font-size: 0.8667rem;
   font-weight: 700;
   color: var(--streak-text);
 }
 
-.streak-icon { font-size: 14px; }
+.streak-icon { font-size: 0.9333rem; }
 .streak-count { color: var(--streak-text); font-weight: 800; letter-spacing: -0.02em; font-family: var(--serif); }
 
 .avatar {
@@ -72,7 +72,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: 0.9333rem;
   font-weight: 700;
   font-family: var(--serif);
 }
@@ -135,7 +135,7 @@
 
 .streak-count {
   font-family: var(--serif);
-  font-size: 72px;
+  font-size: 4.8rem;
   font-weight: 900;
   color: var(--text-on-hero, #FFFFFF);
   line-height: 1;
@@ -145,7 +145,7 @@
 }
 
 .streak-label {
-  font-size: 11px;
+  font-size: 0.7333rem;
   font-weight: 700;
   color: rgba(255,255,255,0.7);
   letter-spacing: 0.16em;
@@ -154,7 +154,7 @@
 
 .streak-badge {
   margin-top: 8px;
-  font-size: 10px;
+  font-size: 0.6667rem;
   font-weight: 800;
   padding: 5px 12px;
   border-radius: var(--radius-full);
@@ -174,7 +174,7 @@
 
 .hero-text { flex: 1; }
 .hero-greeting {
-  font-size: 11px;
+  font-size: 0.7333rem;
   color: rgba(255,255,255,0.6);
   margin-bottom: 8px;
   font-weight: 700;
@@ -183,7 +183,7 @@
 }
 .hero-title {
   font-family: var(--serif);
-  font-size: 26px;
+  font-size: 1.7333rem;
   font-weight: 700;
   line-height: 1.3;
   letter-spacing: -0.01em;
@@ -215,7 +215,7 @@
 
 .stat-value {
   font-family: var(--serif);
-  font-size: 28px;
+  font-size: 1.8667rem;
   font-weight: 800;
   letter-spacing: -0.02em;
   color: var(--text-on-hero, #FFFFFF);
@@ -224,7 +224,7 @@
 }
 
 .stat-label {
-  font-size: 10px;
+  font-size: 0.6667rem;
   color: rgba(255,255,255,0.6);
   margin-top: 5px;
   font-weight: 700;
@@ -253,7 +253,7 @@
 
 .section-title {
   font-family: var(--serif);
-  font-size: 20px;
+  font-size: 1.3333rem;
   font-weight: 700;
   color: var(--text-primary);
   letter-spacing: -0.01em;
@@ -317,7 +317,7 @@
   flex-shrink: 0;
   color: var(--text-on-hero, #fff);
   border: none;
-  font-size: 20px;
+  font-size: 1.3333rem;
 }
 
 .lesson-info {
@@ -326,7 +326,7 @@
 }
 
 .lesson-category {
-  font-size: 10px;
+  font-size: 0.6667rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.14em;
@@ -339,7 +339,7 @@
 
 .lesson-title {
   font-family: var(--serif);
-  font-size: 15px;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--text-primary);
   margin: 0 0 2px;
@@ -348,7 +348,7 @@
 }
 
 .lesson-desc {
-  font-size: 12px;
+  font-size: 0.8rem;
   color: var(--text-muted);
   line-height: 1.5;
   white-space: nowrap;
@@ -372,7 +372,7 @@
 }
 
 .lesson-arrow {
-  font-size: 16px;
+  font-size: 1.0667rem;
   color: var(--text-muted);
   flex-shrink: 0;
   font-weight: 400;
@@ -426,7 +426,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 10px;
+  font-size: 0.6667rem;
   color: var(--text-muted);
   font-family: var(--sans);
   transition: color var(--dur-base) ease;
@@ -498,19 +498,19 @@
 
 .flashcard-banner-text strong {
   font-family: var(--serif);
-  font-size: 15px;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--text-primary);
 }
 
 .flashcard-banner-text span {
-  font-size: 12px;
+  font-size: 0.8rem;
   color: var(--text-muted);
   font-weight: 500;
 }
 
 .flashcard-banner-arrow {
-  font-size: 20px;
+  font-size: 1.3333rem;
   color: var(--text-muted);
   font-weight: 300;
 }
@@ -526,7 +526,7 @@
 }
 
 .section-count {
-  font-size: 11px;
+  font-size: 0.7333rem;
   font-weight: 700;
   color: var(--text-muted);
   background: var(--bg-secondary);
@@ -556,12 +556,12 @@
   border-color: var(--border-brand);
 }
 
-.roadmap-widget-icon { font-size: 28px; flex-shrink: 0; }
+.roadmap-widget-icon { font-size: 1.8667rem; flex-shrink: 0; }
 .roadmap-widget-text { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.roadmap-widget-text strong { font-family: var(--serif); font-size: 15px; font-weight: 600; color: var(--text-primary); }
-.roadmap-widget-text span { font-size: 12px; color: var(--text-muted); font-weight: 500; }
-.roadmap-widget-next { font-size: 11px !important; color: var(--brand) !important; margin-top: 2px; font-weight: 700; }
-.roadmap-widget-arrow { font-size: 20px; color: var(--text-muted); flex-shrink: 0; }
+.roadmap-widget-text strong { font-family: var(--serif); font-size: 1rem; font-weight: 600; color: var(--text-primary); }
+.roadmap-widget-text span { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; }
+.roadmap-widget-next { font-size: 0.7333rem !important; color: var(--brand) !important; margin-top: 2px; font-weight: 700; }
+.roadmap-widget-arrow { font-size: 1.3333rem; color: var(--text-muted); flex-shrink: 0; }
 .roadmap-widget-ring { flex-shrink: 0; }
 .roadmap-widget-ring svg circle { transition: stroke-dasharray 0.4s ease; }
 
@@ -615,7 +615,7 @@
 .ai-gen-card:active { transform: scale(0.98); }
 
 .ai-gen-icon {
-  font-size: 30px;
+  font-size: 2rem;
   line-height: 1;
 }
 
@@ -624,7 +624,7 @@
 .ai-gen-text strong {
   display: block;
   font-family: var(--serif);
-  font-size: 14px;
+  font-size: 0.9333rem;
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 3px;
@@ -632,7 +632,7 @@
 }
 
 .ai-gen-text span {
-  font-size: 11px;
+  font-size: 0.7333rem;
   color: var(--text-muted);
   display: flex;
   align-items: center;
@@ -643,7 +643,7 @@
 .ai-gen-badge {
   background: var(--brand-grad);
   color: var(--text-on-hero, #fff);
-  font-size: 9px;
+  font-size: 0.6rem;
   font-weight: 800;
   padding: 2px 6px;
   border-radius: var(--radius-sm);
@@ -655,12 +655,12 @@
 /* ===== Tablet (768px+) ===== */
 @media (min-width: 768px) {
   .header { padding: 16px 24px; }
-  .logo { font-size: 26px; }
+  .logo { font-size: 1.7333rem; }
 
   .hero { margin: 12px 20px 28px; padding: 36px 32px 28px; }
-  .hero-title { font-size: 28px; }
-  .stat-value { font-size: 28px; }
-  .streak-count { font-size: 80px; }
+  .hero-title { font-size: 1.8667rem; }
+  .stat-value { font-size: 1.8667rem; }
+  .streak-count { font-size: 5.3333rem; }
 
   .section { padding: 0 20px; }
 
@@ -681,7 +681,7 @@
   .lessons-tab { padding-top: 20px; }
 
   .bottom-nav { padding: 10px 16px; }
-  .nav-item { font-size: 11px; gap: 5px; }
+  .nav-item { font-size: 0.7333rem; gap: 5px; }
   .nav-icon { width: 24px; height: 24px; }
 
   .home-cta-grid {
@@ -713,7 +713,7 @@
     padding: 10px 20px;
     border-radius: var(--radius-xl) var(--radius-xl) 0 0;
   }
-  .nav-item { padding: 10px 8px; font-size: 11px; }
+  .nav-item { padding: 10px 8px; font-size: 0.7333rem; }
 }
 
 /* ===== Daily / Highlight Cards ===== */
@@ -764,7 +764,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  font-size: 20px;
+  font-size: 1.3333rem;
   background: var(--accent-soft);
 }
 
@@ -775,7 +775,7 @@
 .daily-text strong {
   display: block;
   font-family: var(--serif);
-  font-size: 15px;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 3px;
@@ -783,7 +783,7 @@
   line-height: 1.3;
 }
 .daily-text span {
-  font-size: 12px;
+  font-size: 0.8rem;
   color: var(--text-muted);
   display: -webkit-box;
   -webkit-line-clamp: 1;
@@ -792,7 +792,7 @@
 }
 
 .daily-badge {
-  font-size: 9px;
+  font-size: 0.6rem;
   font-weight: 800;
   padding: 4px 9px;
   border-radius: var(--radius-full);
@@ -819,7 +819,7 @@
   color: var(--brand);
   border: 1px solid var(--border-brand);
   border-radius: var(--radius-sm);
-  font-size: 9px;
+  font-size: 0.6rem;
   font-weight: 800;
   letter-spacing: 0.14em;
   vertical-align: middle;

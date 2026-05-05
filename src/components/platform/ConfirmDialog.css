@@ -79,13 +79,13 @@
 }
 
 .m3-dialog--ios .m3-dialog__title {
-  font-size: 17px;
+  font-size: 1.1333rem;
   font-weight: 700;
   font-family: var(--font-ui, system-ui);
 }
 
 .m3-dialog--ios .m3-dialog__body {
-  font-size: 13px;
+  font-size: 0.8667rem;
   color: var(--md-sys-color-on-surface);
 }
 
@@ -100,7 +100,7 @@
   border-radius: 0;
   border-right: 0.5px solid var(--md-sys-color-outline-variant);
   min-height: 44px;
-  font-size: 17px;
+  font-size: 1.1333rem;
   font-weight: 400;
 }
 

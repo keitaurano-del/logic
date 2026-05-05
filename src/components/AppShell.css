@@ -67,7 +67,7 @@
   cursor: pointer;
   color: var(--md-sys-color-on-surface-variant);
   font-family: var(--font-ui, system-ui);
-  font-size: 12px;
+  font-size: 0.8rem;
   font-weight: 600;
   position: relative;
   -webkit-tap-highlight-color: transparent;
