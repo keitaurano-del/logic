@@ -113,7 +113,7 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
   }, [mountTime])
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: '#F0F4FF' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: 'var(--bg-card)' }}>
 
       {/* ナビバー */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 12px', background: 'rgba(240,244,255,.95)', borderBottom: '1px solid var(--border)' }}>
@@ -175,7 +175,7 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 16, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 0 }}>ランキング</div>
           {/* タブ */}
-          <div style={{ display: 'flex', background: '#E8EEFF', borderRadius: 10, padding: 3, gap: 3 }}>
+          <div style={{ display: 'flex', background: 'var(--bg-card)', borderRadius: 10, padding: 3, gap: 3 }}>
             {(['week', 'all'] as const).map((tab) => (
               <button type="button" key={tab} onClick={() => setRankTab(tab)}
                 role="tab"
@@ -213,7 +213,7 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                         {e.nickname}
-                        {e.isYou && <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--md-sys-color-primary)', background: '#EEF2FF', borderRadius: 4, padding: '1px 5px', marginLeft: 6 }}>あなた</span>}
+                        {e.isYou && <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--md-sys-color-primary)', background: 'var(--bg-card)', borderRadius: 4, padding: '1px 5px', marginLeft: 6 }}>あなた</span>}
                       </div>
                       <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2, display: 'flex', alignItems: 'center', gap: 4 }}>
                         <svg width="11" height="11" viewBox="0 0 24 24" fill="#FBBF24"><path d="M12 2L15 8.5l7 1-5 4.7 1.5 7L12 17.8 5.5 21.2 7 14.2 2 9.5l7-1z"/></svg>
@@ -247,7 +247,7 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
           ) : (
             recentActivity.map((act, i) => (
               <div key={i} style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 14, padding: '13px 16px', display: 'flex', alignItems: 'center', gap: 12, boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
-                <div style={{ width: 38, height: 38, borderRadius: 11, flexShrink: 0, background: '#EEF2FF', border: '1px solid #DBE4FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: 38, height: 38, borderRadius: 11, flexShrink: 0, background: 'var(--bg-card)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   {act.icon}
                 </div>
                 <div style={{ flex: 1 }}>

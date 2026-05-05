@@ -70,7 +70,7 @@ export function HomeCoachmark({ targetRef, onDismiss }: CoachmarkProps) {
           position: 'absolute',
           top: h.top + h.height + 16,
           left: 16, right: 16,
-          background: '#fff',
+          background: 'var(--bg-card)',
           borderRadius: 14,
           padding: '16px 18px',
           boxShadow: '0 4px 20px rgba(0,0,0,0.18)',
@@ -84,7 +84,7 @@ export function HomeCoachmark({ targetRef, onDismiss }: CoachmarkProps) {
           borderRight: '8px solid transparent',
           borderBottom: '8px solid #fff',
         }} />
-        <p style={{ margin: 0, fontSize: 15, fontWeight: 600, color: '#0F1523', lineHeight: 1.6 }}>
+        <p style={{ margin: 0, fontSize: 15, fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.6 }}>
           まずここから始めましょう。<br />タップして今日の問題を開いてみましょう。
         </p>
         <button

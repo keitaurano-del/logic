@@ -247,7 +247,7 @@ export function RoleplaySelectScreen({ onBack, onStart, onUpgrade }: RoleplaySel
       {/* 残り回数バッジ */}
       {!premium && (
         <div style={{
-          background: '#EEF2FF', borderRadius: 12, padding: '10px 14px',
+          background: 'var(--bg-card)', borderRadius: 12, padding: '10px 14px',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           marginBottom: 20,
         }}>

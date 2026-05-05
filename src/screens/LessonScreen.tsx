@@ -108,7 +108,7 @@ export function LessonScreen({ lessonId, onBack, onComplete, onNextLesson, onRep
 
   // ── Main lesson UI ───────────────────────────────────────────────
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: '#F0F4FF' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: 'var(--bg-card)' }}>
       {/* レッスン左右タップガイド（初回のみ） */}
       <LessonTapGuide />
 
@@ -124,7 +124,7 @@ export function LessonScreen({ lessonId, onBack, onComplete, onNextLesson, onRep
           onClick={onBack}
           style={{
             width: 36, height: 36, borderRadius: 10,
-            background: '#F0F4FF', border: '1px solid var(--border)',
+            background: 'var(--bg-card)', border: '1px solid var(--border)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             cursor: 'pointer', flexShrink: 0,
           }}
@@ -136,7 +136,7 @@ export function LessonScreen({ lessonId, onBack, onComplete, onNextLesson, onRep
           <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{lesson.title}</div>
         </div>
         <div style={{
-          flexShrink: 0, background: '#EEF2FF', borderRadius: 20,
+          flexShrink: 0, background: 'var(--bg-card)', borderRadius: 20,
           padding: '4px 10px', fontSize: 14, fontWeight: 700, color: 'var(--md-sys-color-primary)',
         }}>
           {stepIdx + 1} / {total}
