@@ -29,7 +29,7 @@ interface CategoryStat {
 }
 
 const CATEGORY_COLORS: Record<string, string> = {
-  'バグ報告':    '#EF4444',
+  'バグ報告':    'var(--md-sys-color-error)',
   '内容・説明が間違っている': '#F97316',
   '選択肢の正解が違う':      '#EAB308',
   '改善提案':    v3.color.accent,
@@ -122,7 +122,7 @@ export function FeedbackDashboardScreen({ onClose }: Props) {
           </div>
         )}
         {error && (
-          <div style={{ textAlign: 'center', padding: 40, color: '#EF4444', fontSize: 14 }}>{error}</div>
+          <div style={{ textAlign: 'center', padding: 40, color: 'var(--md-sys-color-error)', fontSize: 14 }}>{error}</div>
         )}
 
         {!loading && !error && (
@@ -137,7 +137,7 @@ export function FeedbackDashboardScreen({ onClose }: Props) {
                 <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 32, fontWeight: 900, color: last7 > 0 ? v3.color.accent : v3.color.text3, lineHeight: 1 }}>{last7}</div>
                 <div style={{ fontSize: 11, color: v3.color.text3, marginTop: 4 }}>直近7日</div>
                 {trend !== null && (
-                  <div style={{ fontSize: 11, color: trend >= 0 ? v3.color.accent : '#EF4444', marginTop: 2, fontWeight: 700 }}>
+                  <div style={{ fontSize: 11, color: trend >= 0 ? v3.color.accent : 'var(--md-sys-color-error)', marginTop: 2, fontWeight: 700 }}>
                     {trend >= 0 ? `+${trend}%` : `${trend}%`}
                   </div>
                 )}

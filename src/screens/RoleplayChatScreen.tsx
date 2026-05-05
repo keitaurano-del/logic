@@ -3,8 +3,7 @@ import { getSituation, buildSetup } from '../situations'
 import { isPremium } from '../subscription'
 import { incrementRoleplayUsage } from '../roleplayUsage'
 import { localeBody } from '../i18n'
-import { ArrowLeftIcon, CheckIcon, ThumbsUpIcon, LightbulbIcon } from '../icons'
-import { IconButton } from '../components/IconButton'
+import { CheckIcon, ThumbsUpIcon, LightbulbIcon } from '../icons'
 import { Header } from '../components/platform/Header'
 import { haptic } from '../platform/haptics'
 import { API_BASE } from './apiBase'
@@ -209,29 +208,17 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14, padding: '0 0 32px' }}>
-      {/* Header */}
-      <div style={{ padding: '12px 0 0' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-          <IconButton aria-label="Back" onClick={onBack}>
-            <ArrowLeftIcon />
-          </IconButton>
-          <div style={{
-            width: 40, height: 40, borderRadius: '50%', background: v3.color.accentSoft,
-            display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-          }}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-              <circle cx="12" cy="7" r="4"/>
-            </svg>
-          </div>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 16, fontWeight: 700, color: v3.color.text }}>{situation.partnerName}</div>
-            <div style={{ fontSize: 14, color: v3.color.text2 }}>{situation.frameworkLabel}</div>
-          </div>
-          <div style={{ fontSize: 13, fontWeight: 700, color: v3.color.text2 }}>
+      <Header
+        title={situation.partnerName}
+        onBack={onBack}
+        trailing={(
+          <div style={{ fontSize: 13, fontWeight: 700, color: v3.color.text2, paddingRight: 8 }}>
             残り <span style={{ color: v3.color.accent }}>{maxTurns - Math.min(turnNumber - 1, maxTurns)}</span> ターン
           </div>
-        </div>
+        )}
+      />
+      <div style={{ padding: '0 16px' }}>
+        <div style={{ fontSize: 14, color: v3.color.text2, marginBottom: 10 }}>{situation.frameworkLabel}</div>
         {/* Progress bar */}
         <div style={{ height: 3, background: v3.color.accentSoft, borderRadius: 99, overflow: 'hidden' }}>
           <div style={{ height: '100%', width: `${(Math.min(turnNumber, maxTurns) / maxTurns) * 100}%`, background: v3.color.accent, borderRadius: 99, transition: 'width 300ms ease' }} />

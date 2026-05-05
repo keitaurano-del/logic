@@ -311,7 +311,7 @@ function QuizStep({ step, catLabel, accent, selected, submitted, isLast, onSelec
             shadow = '0 2px 8px rgba(18,183,106,.15)'
           } else if (submitted && isSelected && !correct) {
             bg = '#FEF3F2'; border = '1.5px solid #F04438'
-            badgeBg = '#F04438'; badgeBorder = '#F04438'; badgeColor = '#fff'
+            badgeBg = 'var(--md-sys-color-error)'; badgeBorder = 'var(--md-sys-color-error)'; badgeColor = '#fff'
           } else if (isSelected) {
             bg = '#EEF2FF'; border = `1.5px solid ${accent}`
             badgeBorder = accent; badgeColor = accent
@@ -357,14 +357,14 @@ function QuizStep({ step, catLabel, accent, selected, submitted, isLast, onSelec
         <div style={{
           borderRadius: 16, padding: '16px 18px',
           background: isCorrect ? '#ECFDF3' : '#FEF3F2',
-          border: `1px solid ${isCorrect ? '#12B76A' : '#F04438'}`,
-          borderLeft: `4px solid ${isCorrect ? '#12B76A' : '#F04438'}`,
+          border: `1px solid ${isCorrect ? '#12B76A' : 'var(--md-sys-color-error)'}`,
+          borderLeft: `4px solid ${isCorrect ? '#12B76A' : 'var(--md-sys-color-error)'}`,
           animation: 'scale-in 0.2s ease-out both',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
             <div style={{
               width: 28, height: 28, borderRadius: '50%',
-              background: isCorrect ? '#12B76A' : '#F04438',
+              background: isCorrect ? '#12B76A' : 'var(--md-sys-color-error)',
               display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
             }}>
               {isCorrect
