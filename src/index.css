@@ -478,11 +478,12 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--text-primary);
 }
 
-/* Inline brand-blue solid backgrounds → mint */
+/* M3 移行後: --accent は var(--md-sys-color-primary) の alias。
+   patch を残すと色は同じだが accent-fg を強制してテキスト色が壊れる。
+   on-primary を直接当てたい場合のみ生存。 */
 [style*="background: var(--md-sys-color-primary)"],
 [style*="background:var(--md-sys-color-primary)"] {
-  background: var(--accent) !important;
-  color: var(--accent-fg) !important;
+  color: var(--md-sys-color-on-primary) !important;
 }
 
 /* Light blue page backgrounds (#F0F4FF / #F8FAFF) → bg */
@@ -501,11 +502,11 @@ h1, h2, h3, h4, h5, h6 {
   border-color: var(--border) !important;
 }
 
-/* Brand blue text → mint */
-[style*="color: var(--md-sys-color-primary)"],
-[style*="color:var(--md-sys-color-primary)"],
+/* M3 移行後: var(--md-sys-color-primary) を直接使えば足りるため、
+   無意味な !important 上書き (var(--accent) → 同じ値) は削除。
+   旧 RGB rgb(59, 91, 219) は保険として残す。 */
 [style*="color: rgb(59, 91, 219)"] {
-  color: var(--accent) !important;
+  color: var(--md-sys-color-primary) !important;
 }
 
 /* Dark blue/black text → primary text white
@@ -554,13 +555,8 @@ h1, h2, h3, h4, h5, h6 {
 /* HomeScreen v3 image placeholders fix when inside .card */
 .card img { display: block; }
 
-/* Buttons inline gradient */
-[style*="linear-gradient(135deg, var(--md-sys-color-primary)"],
-[style*="linear-gradient(135deg,var(--md-sys-color-primary)"],
-[style*="linear-gradient(180deg, var(--md-sys-color-primary)"] {
-  background: var(--accent) !important;
-  color: var(--accent-fg) !important;
-}
+/* M3 移行後: M3 primary を含むグラデーションを solid color に潰すと
+   元のデザイン意図 (グラデーション) が失われるため、patch 削除。 */
 
 /* Override brand gradient to Slate Blue */
 .mode-dark, body {
@@ -673,21 +669,11 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--accent-fg) !important;
 }
 
-/* Common indigo/purple gradient buttons → mint */
-[style*="linear-gradient(135deg, #6366F1"],
-[style*="linear-gradient(135deg,#6366F1"],
-[style*="linear-gradient(135deg, #4F46E5"],
-[style*="linear-gradient(135deg, var(--md-sys-color-primary)"],
-[style*="linear-gradient(180deg, var(--md-sys-color-primary)"] {
-  background: linear-gradient(135deg, #70D8BD 0%, #A5E8D5 100%) !important;
-  color: var(--accent-fg) !important;
-}
+/* legacy mint override は M3 brand 移行に矛盾するため削除。
+   旧 #6366F1 / #4F46E5 (indigo) は近代化済みで残存リテラルはほぼ無し。 */
 
-/* Override --accent in mode-dark to Slate Blue (catches any class-based use) */
-.mode-dark {
-  --brand: #6C8EF5 !important;
-  --brand-grad: linear-gradient(135deg, #6C8EF5 0%, #9BB3FA 100%) !important;
-}
+/* `--brand` は tokens-m3.css で var(--md-sys-color-primary) (#A8C0FF) に
+   alias されているため、ここで個別上書きしない (旧 #6C8EF5 を再注入しない) */
 
 /* RGB form catch */
 [style*="background: rgb(59, 91, 219)"],
