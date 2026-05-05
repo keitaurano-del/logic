@@ -206,10 +206,11 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 80px 80px 80px', padding: '12px 16px', borderBottom: `1px solid ${v3.color.line}` }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: v3.color.text3 }}>機能</div>
             {plans.map(plan => (
-              <div key={plan} onClick={() => setActivePlan(plan)}
-                style={{ textAlign: 'center', fontSize: 11, fontWeight: 800, color: activePlan === plan ? PLAN_META[plan].color : v3.color.text3, cursor: 'pointer', letterSpacing: '.06em' }}>
+              <button type="button" key={plan} onClick={() => setActivePlan(plan)}
+                aria-pressed={activePlan === plan}
+                style={{ textAlign: 'center', fontSize: 11, fontWeight: 800, color: activePlan === plan ? PLAN_META[plan].color : v3.color.text3, cursor: 'pointer', letterSpacing: '.06em', background: 'transparent', border: 'none', padding: 4, font: 'inherit' }}>
                 {PLAN_META[plan].en}
-              </div>
+              </button>
             ))}
           </div>
           {/* 機能行 */}
