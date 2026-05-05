@@ -28,9 +28,20 @@ export function LessonGridSection({ onOpenCategory, columns: overrideColumns }: 
   )
 }
 
-function LessonGridCard({ lesson, onOpen }: { lesson: any; onOpen: () => void }) {
+interface LessonInfo {
+  cat: string
+  name: string
+  meta: string
+  progress: number
+  accent: string
+  image: string
+}
+
+function LessonGridCard({ lesson, onOpen }: { lesson: LessonInfo; onOpen: () => void }) {
   return (
-    <div onClick={onOpen} style={{ background: v3.color.cardSoft, borderRadius: v3.radius.card, overflow: 'hidden', cursor: 'pointer', boxShadow: v3.shadow.card }}>
+    <button type="button" onClick={onOpen}
+      aria-label={`${lesson.name.replace('\n', '')}: ${lesson.meta} (${lesson.progress}% 完了)`}
+      style={{ background: v3.color.cardSoft, borderRadius: v3.radius.card, overflow: 'hidden', cursor: 'pointer', boxShadow: v3.shadow.card, border: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', padding: 0, width: '100%' }}>
       <div style={{ height: 100, overflow: 'hidden', background: v3.color.cardSoft }}>
         <img src={lesson.image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
       </div>
@@ -41,6 +52,6 @@ function LessonGridCard({ lesson, onOpen }: { lesson: any; onOpen: () => void })
           <div style={{ height: '100%', width: `${lesson.progress}%`, background: lesson.accent, borderRadius: 99 }}></div>
         </div>
       </div>
-    </div>
+    </button>
   )
 }

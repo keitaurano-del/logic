@@ -176,9 +176,12 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
           {/* タブ */}
           <div style={{ display: 'flex', background: '#E8EEFF', borderRadius: 10, padding: 3, gap: 3 }}>
             {(['week', 'all'] as const).map((tab) => (
-              <div key={tab} onClick={() => setRankTab(tab)} style={{ flex: 1, textAlign: 'center', padding: 7, fontSize: 14, fontWeight: 700, cursor: 'pointer', borderRadius: 6, background: rankTab === tab ? '#fff' : 'transparent', color: rankTab === tab ? 'var(--md-sys-color-primary)' : '#7A849E', boxShadow: rankTab === tab ? '0 1px 3px rgba(15,21,35,.08)' : 'none', transition: 'all .15s' }}>
+              <button type="button" key={tab} onClick={() => setRankTab(tab)}
+                role="tab"
+                aria-selected={rankTab === tab}
+                style={{ flex: 1, textAlign: 'center', padding: 7, fontSize: 14, fontWeight: 700, cursor: 'pointer', borderRadius: 6, background: rankTab === tab ? '#fff' : 'transparent', color: rankTab === tab ? 'var(--md-sys-color-primary)' : '#7A849E', boxShadow: rankTab === tab ? '0 1px 3px rgba(15,21,35,.08)' : 'none', transition: 'all .15s', border: 'none', font: 'inherit' }}>
                 {tab === 'week' ? '週間' : '全期間'}
-              </div>
+              </button>
             ))}
           </div>
 
