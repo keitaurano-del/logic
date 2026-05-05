@@ -6,13 +6,13 @@ const TUTORIAL_KEY = 'logic-tutorial-done-v2'
 // ── SVGアイコン ──────────────────────────────────────
 const Icons = {
   fermi: (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--md-sys-color-primary)" strokeWidth="1.8" strokeLinecap="round">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--md-sys-color-primary)" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
       <circle cx="12" cy="12" r="10"/>
       <path d="M12 8v4l3 3"/>
     </svg>
   ),
   training: (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" strokeLinecap="round">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" strokeLinecap="round" aria-hidden="true">
       <rect x="2" y="5" width="3" height="14" rx="1" fill="#A78BFA"/>
       <rect x="5" y="8" width="2" height="8" rx="0.5" fill="#A78BFA"/>
       <rect x="17" y="8" width="2" height="8" rx="0.5" fill="#A78BFA"/>
@@ -21,18 +21,18 @@ const Icons = {
     </svg>
   ),
   ranking: (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" strokeWidth="1.8" strokeLinecap="round">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
       <path d="M8 21H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h3v6zM14 21h-4v-8a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v8zM21 21h-3v-10a2 2 0 0 0-2-2h-1"/>
       <polyline points="7 8 12 3 17 8"/>
     </svg>
   ),
   xp: (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#34D399" strokeWidth="1.8" strokeLinecap="round">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#34D399" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
       <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
     </svg>
   ),
   start: (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FF6B35" strokeWidth="1.8" strokeLinecap="round">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FF6B35" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
       <circle cx="12" cy="12" r="10"/>
       <polygon points="10 8 16 12 10 16 10 8" fill="#FF6B35" stroke="none"/>
     </svg>

@@ -19,7 +19,7 @@ type ThemePreset = { id: string; label: string; prompt: string; icon: React.Reac
 
 const ICON_COLOR = v3.color.accent
 const mkIcon = (path: React.ReactNode) => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={ICON_COLOR} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{path}</svg>
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={ICON_COLOR} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{path}</svg>
 )
 
 const THEME_PRESETS: ThemePreset[] = [
@@ -125,7 +125,7 @@ function RatingPopup({ onSubmit, onSkip }: RatingPopupProps) {
       <div style={{ background: v3.color.card, borderRadius: '20px 20px 0 0', padding: '28px 24px 32px', width: '100%', maxWidth: 480 }}>
         {/* XP通知 */}
         <div style={{ background: `${v3.color.accent}18`, border: `1px solid ${v3.color.accent}40`, borderRadius: 12, padding: '10px 16px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 10 }}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill={v3.color.accent} stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill={v3.color.accent} stroke="none" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           <div>
             <div style={{ fontSize: 13, fontWeight: 700, color: v3.color.accent }}>+30 XP 獲得！</div>
             <div style={{ fontSize: 11, color: v3.color.text2 }}>問題を解き終えました</div>
@@ -141,7 +141,7 @@ function RatingPopup({ onSubmit, onSkip }: RatingPopupProps) {
               onMouseLeave={() => setHovered(0)}
               onClick={() => setRating(n)}
               style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}>
-              <svg width="36" height="36" viewBox="0 0 24 24" fill={(hovered || rating) >= n ? v3.color.warm : 'none'} stroke={v3.color.warm} strokeWidth="1.5">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill={(hovered || rating) >= n ? v3.color.warm : 'none'} stroke={v3.color.warm} strokeWidth="1.5" aria-hidden="true">
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
               </svg>
             </button>
@@ -283,13 +283,13 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
               disabled={generating || isAtLimit || !canUse || !recommendPrompt}
               style={{ width: '100%', background: generating || isAtLimit || !canUse ? v3.color.card : `linear-gradient(135deg, ${v3.color.accent} 0%, #8B6EF5 100%)`, color: generating || isAtLimit || !canUse ? v3.color.text3 : '#fff', border: 'none', borderRadius: 14, padding: '16px 20px', fontSize: 15, fontWeight: 700, cursor: generating || isAtLimit || !canUse ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: 12, boxShadow: generating || isAtLimit || !canUse ? 'none' : v3.shadow.hero }}>
               <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
               </div>
               <div style={{ flex: 1, textAlign: 'left' }}>
                 <div style={{ fontSize: 15, fontWeight: 800, lineHeight: 1.2 }}>あなたにあった問題を自動生成する</div>
                 <div style={{ fontSize: 11, opacity: 0.85, marginTop: 3 }}>弱点分析をもとにAIが最適な問題を作成</div>
               </div>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
             </button>
 
             {/* 自由テキスト入力（最上部） */}
@@ -393,7 +393,7 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
                   </div>
                   <button onClick={() => onPlay(p)} style={{ background: v3.color.accent, color: v3.color.bg, border: 'none', borderRadius: 10, padding: '8px 14px', fontSize: 13, fontWeight: 700, cursor: 'pointer', flexShrink: 0 }}>もう一度</button>
                   <button onClick={() => handleDelete(p.id)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 4, flexShrink: 0 }}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F87171" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F87171" strokeWidth="2" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
                   </button>
                 </div>
               ))

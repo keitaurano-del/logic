@@ -99,7 +99,7 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
       'worksheet': 'ワークシート',
     }
 
-    const lessonIcon = <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--md-sys-color-primary)"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
+    const lessonIcon = <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--md-sys-color-primary)" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
 
     if (completed.length === 0) return []
 
@@ -158,7 +158,7 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
               return (
                 <div key={day} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}>
                   <div style={{ width: 34, height: 34, borderRadius: '50%', background: isDone ? '#EEF2FF' : '#E8EEFF', border: isDone ? '1.5px solid #DBE4FF' : 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    {isDone && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--md-sys-color-primary)" strokeWidth="2.5" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>}
+                    {isDone && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--md-sys-color-primary)" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>}
                   </div>
                   <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-muted)' }}>{day}</div>
                 </div>
@@ -216,7 +216,7 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
                         {e.isYou && <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--md-sys-color-primary)', background: 'var(--bg-card)', borderRadius: 4, padding: '1px 5px', marginLeft: 6 }}>あなた</span>}
                       </div>
                       <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2, display: 'flex', alignItems: 'center', gap: 4 }}>
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="#FBBF24"><path d="M12 2L15 8.5l7 1-5 4.7 1.5 7L12 17.8 5.5 21.2 7 14.2 2 9.5l7-1z"/></svg>
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="#FBBF24" aria-hidden="true"><path d="M12 2L15 8.5l7 1-5 4.7 1.5 7L12 17.8 5.5 21.2 7 14.2 2 9.5l7-1z"/></svg>
                         <span style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 700 }}>{e.xp.toLocaleString()}</span>
                         <span>XP</span>
                       </div>

@@ -187,7 +187,7 @@ export default function Lesson({ lesson, onBack, onComplete, onNextLesson }: Pro
             {onNextLesson && (
               <button className="ls-next-lesson-btn" onClick={onNextLesson}>
                 {t('lesson.nextLesson')}
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               </button>
             )}
             <button className="ls-done-btn" onClick={onBack}>

@@ -746,20 +746,20 @@ function App() {
       {/* Bottom Navigation */}
       <nav className={`bottom-nav${navHidden ? ' bottom-nav--hidden' : ''}`}>
         <button className={`nav-item ${tab === 'home' ? 'active' : ''}`} onClick={() => setTab('home')}>
-          <svg className="nav-icon" viewBox="0 0 24 24" fill={tab === 'home' ? 'currentColor' : 'none'} stroke={tab === 'home' ? 'none' : 'currentColor'} strokeWidth="2">
+          <svg className="nav-icon" viewBox="0 0 24 24" fill={tab === 'home' ? 'currentColor' : 'none'} stroke={tab === 'home' ? 'none' : 'currentColor'} strokeWidth="2" aria-hidden="true">
             <path d="M3 13h1v7c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-7h1a1 1 0 0 0 .7-1.7l-9-9a1 1 0 0 0-1.4 0l-9 9A1 1 0 0 0 3 13z" />
           </svg>
           <span>{t('nav.home')}</span>
         </button>
         <button className={`nav-item ${tab === 'lessons' ? 'active' : ''}`} onClick={() => { setTab('lessons') }}>
-          <svg className="nav-icon" viewBox="0 0 24 24" fill={tab === 'lessons' ? 'currentColor' : 'none'} stroke={tab === 'lessons' ? 'none' : 'currentColor'} strokeWidth="2">
+          <svg className="nav-icon" viewBox="0 0 24 24" fill={tab === 'lessons' ? 'currentColor' : 'none'} stroke={tab === 'lessons' ? 'none' : 'currentColor'} strokeWidth="2" aria-hidden="true">
             <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
             <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
           </svg>
           <span>{t('nav.lessons')}</span>
         </button>
         <button className={`nav-item ${tab === 'profile' ? 'active' : ''}`} onClick={() => { setTab('profile'); refreshStats() }}>
-          <svg className="nav-icon" viewBox="0 0 24 24" fill={tab === 'profile' ? 'currentColor' : 'none'} stroke={tab === 'profile' ? 'none' : 'currentColor'} strokeWidth="2">
+          <svg className="nav-icon" viewBox="0 0 24 24" fill={tab === 'profile' ? 'currentColor' : 'none'} stroke={tab === 'profile' ? 'none' : 'currentColor'} strokeWidth="2" aria-hidden="true">
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
             <circle cx="12" cy="7" r="4" />
           </svg>
