@@ -459,13 +459,7 @@ h1, h2, h3, h4, h5, h6 {
   /* every <button> resets its own color box, so make sure plan cards readable */
 }
 
-/* v3 — fix legacy cream/yellow backgrounds in headers and hero areas */
-[style*="background: rgba(245,241,232"],
-[style*="background: rgba(255,252,246"],
-[style*="background:rgba(245,241,232"],
-[style*="background:rgba(255,252,246"] {
-  background: var(--bg-primary) !important;
-}
+/* legacy cream/yellow rgba を inline style で使う箇所はもう無いため patch 削除済 */
 
 /* Inline white backgrounds (style="background: #fff" on legacy components) */
 [style*="background: #fff"],
@@ -603,39 +597,14 @@ h1, h2, h3, h4, h5, h6 {
   /* This is overly broad; skip unless explicit white */
 }
 
-/* Specific common values */
-[style*="background: #FAFAFB"],
-[style*="background:#FAFAFB"],
-[style*="background: #FAFAFC"],
-[style*="background:#FAFAFC"],
-[style*="background: #F9FAFB"],
-[style*="background:#F9FAFB"],
-[style*="background: #F4F5F9"],
-[style*="background:#F4F5F9"],
-[style*="background: #F3F4F6"],
-[style*="background: #F1F2F6"],
-[style*="background: #E9EBF2"],
+/* legacy 高頻度 light/dark/gray リテラルは inline style からほぼ撤退済み。
+   残るのは #FFFFFF (装飾的に明示) と少数の gray のみ。 */
 [style*="background: #FFFFFF"],
 [style*="background:#FFFFFF"] {
   background: var(--bg-card) !important;
   color: var(--text-primary);
 }
-
-/* Common dark text colors */
-[style*="color: #1F2937"],
-[style*="color:#1F2937"],
-[style*="color: #111827"],
-[style*="color: #1A2138"],
-[style*="color: #2A3350"],
-[style*="color: #161C33"] {
-  color: var(--text-primary) !important;
-}
-
-/* Common gray text */
-[style*="color: #6B7280"],
-[style*="color: #4B5563"],
-[style*="color: #9CA3AF"],
-[style*="color: #B1B5C6"] {
+[style*="color: #4B5563"] {
   color: var(--text-secondary) !important;
 }
 
@@ -651,22 +620,10 @@ h1, h2, h3, h4, h5, h6 {
   border-color: var(--border) !important;
 }
 
-/* Common indigo/blue accents that should become mint */
-[style*="color: #6366F1"],
-[style*="color: #4F46E5"],
-[style*="color: var(--md-sys-color-primary)"],
-[style*="color: #2E4BA8"],
-[style*="color: #4338CA"] {
-  color: var(--accent) !important;
-}
-
-/* Common indigo/blue backgrounds */
-[style*="background: #6366F1"],
-[style*="background:#6366F1"],
-[style*="background: #4F46E5"],
-[style*="background: var(--md-sys-color-primary)"] {
-  background: var(--accent) !important;
-  color: var(--accent-fg) !important;
+/* legacy indigo brand colors (#6366F1, #4F46E5, #2E4BA8, #4338CA) は
+   inline 残存ほぼ無し。M3 primary 経由で aliased されるため patch 不要。 */
+[style*="color: #6366F1"] {
+  color: var(--md-sys-color-primary) !important;
 }
 
 /* legacy mint override は M3 brand 移行に矛盾するため削除。
