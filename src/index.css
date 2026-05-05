@@ -2,7 +2,7 @@
  * Logic — Brand edition (v3)
  *
  * Direction: International learning app. Inspired by Brilliant, Speak, Linear.
- * Brand-aligned indigo from logo (var(--md-sys-color-primary) / #EEF2FE / #9EB3F0).
+ * Brand-aligned Slate Blue from logo (var(--md-sys-color-primary) #6C8EF5 / #EEF2FE / #9BB3FA).
  * Inter Tight display + Inter body + Noto Sans JP fallback. Generous whitespace.
  *
  * Rules:
@@ -40,13 +40,13 @@
   --border:       #E9EBF2;
   --border-light: #F4F5F9;
 
-  /* Brand indigo — primary + text-safe variant */
-  --accent:        var(--md-sys-color-primary);  /* brand primary, from logo square */
-  --accent-light:  #9EB3F0;  /* brand light, from logo dot */
-  --accent-soft:   rgba(61, 95, 196, 0.08);
-  --accent-glow:   rgba(61, 95, 196, 0.20);
-  --accent-dark:   #2E4BA8;  /* 7.2:1 — text-safe darker brand */
-  --accent-fg:     #FFFFFF;  /* on indigo: 7.8:1 — AAA */
+  /* Brand Slate Blue — primary + text-safe variant */
+  --accent:        var(--md-sys-color-primary);  /* Slate Blue 450nm 帯 */
+  --accent-light:  #9BB3FA;  /* brand light */
+  --accent-soft:   rgba(108, 142, 245, 0.16);
+  --accent-glow:   rgba(108, 142, 245, 0.25);
+  --accent-dark:   #2E45A8;  /* text-safe darker brand on light bg */
+  --accent-fg:     #FFFFFF;  /* on indigo: AAA */
 
   /* Status */
   --success:       #10B981;
@@ -57,15 +57,15 @@
 
   /* Categories — brand family tints */
   --cat-boki3:     var(--md-sys-color-primary);
-  --cat-boki3-soft: rgba(61, 95, 196, 0.10);
-  --cat-boki2:     #6B85D6;
-  --cat-boki2-soft: rgba(107, 133, 214, 0.10);
-  --cat-practice:  #2E4BA8;
-  --cat-practice-soft: rgba(46, 75, 168, 0.10);
+  --cat-boki3-soft: rgba(108, 142, 245, 0.16);
+  --cat-boki2:     #5478E8;
+  --cat-boki2-soft: rgba(84, 120, 232, 0.14);
+  --cat-practice:  #2E45A8;
+  --cat-practice-soft: rgba(46, 69, 168, 0.14);
   --cat-exam:      #1E2D5C;
   --cat-exam-soft: rgba(30, 45, 92, 0.10);
   --cat-logic:     var(--md-sys-color-primary);
-  --cat-logic-soft: rgba(61, 95, 196, 0.10);
+  --cat-logic-soft: rgba(108, 142, 245, 0.16);
   --cat-pm:        #10B981;
   --cat-pm-soft:   rgba(16, 185, 129, 0.10);
 
@@ -116,11 +116,11 @@
   --border:        #2A3350;
   --border-light:  #1A2138;
 
-  --accent:        #9EB3F0;         /* brand-light — brighter on dark */
-  --accent-light:  #C1D0F7;
-  --accent-soft:   rgba(158, 179, 240, 0.12);
-  --accent-glow:   rgba(158, 179, 240, 0.25);
-  --accent-dark:   #C1D0F7;          /* lighter on dark for AA */
+  --accent:        #6C8EF5;         /* Slate Blue — brighter on dark */
+  --accent-light:  #9BB3FA;
+  --accent-soft:   rgba(108, 142, 245, 0.16);
+  --accent-glow:   rgba(108, 142, 245, 0.25);
+  --accent-dark:   #9BB3FA;          /* lighter on dark for AA */
   --accent-fg:     #0F1424;
 
   --shadow-card:    0 1px 0 rgba(0, 0, 0, 0.35);

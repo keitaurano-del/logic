@@ -209,7 +209,7 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
                 return (
                   <div key={`${e.rank}-${e.nickname}`} style={{ background: e.isYou ? '#EEF2FF' : '#fff', border: `1px solid ${e.isYou ? '#DBE4FF' : '#E2E8FF'}`, borderRadius: 14, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 12, boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
                     <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 900, color: posColor, width: 24, textAlign: 'center', flexShrink: 0 }}>{e.rank}</div>
-                    <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg, var(--md-sys-color-primary), #748FFC)', flexShrink: 0, boxShadow: e.isYou ? '0 0 0 2px var(--md-sys-color-primary)' : 'none' }} />
+                    <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg, var(--md-sys-color-primary), #9BB3FA)', flexShrink: 0, boxShadow: e.isYou ? '0 0 0 2px var(--md-sys-color-primary)' : 'none' }} />
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                         {e.nickname}

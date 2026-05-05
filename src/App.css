@@ -107,7 +107,7 @@
   left: -40px;
   width: 160px;
   height: 160px;
-  background: radial-gradient(circle, rgba(61, 95, 196, 0.4) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(108, 142, 245, 0.4) 0%, transparent 70%);
   border-radius: 50%;
   pointer-events: none;
 }
@@ -700,7 +700,7 @@
 
   .lesson-card.clickable:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 28px rgba(61, 95, 196, 0.15);
+    box-shadow: 0 8px 28px rgba(108, 142, 245, 0.15);
     border-color: var(--border-brand);
   }
 

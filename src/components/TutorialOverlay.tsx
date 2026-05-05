@@ -366,7 +366,7 @@ export function TutorialFAB({ onClick, onHide }: { onClick: () => void; onHide: 
         style={{
           width: 56, height: 56,
           borderRadius: '50%',
-          background: 'linear-gradient(135deg, var(--md-sys-color-primary), #8B6EF5)',
+          background: 'linear-gradient(135deg, var(--md-sys-color-primary), #9BB3FA)',
           border: 'none',
           boxShadow: '0 6px 20px rgba(108,142,245,0.5)',
           cursor: 'pointer',
