@@ -196,6 +196,7 @@ export function WorksheetScreen({ onBack }: WorksheetScreenProps) {
                         <div style={{ position: 'relative' }}>
                           <input
                             type="number"
+                            aria-label={`row ${row + 1} col ${col + 1}`}
                             value={inputs[key] || ''}
                             onChange={(e) => setInputs((prev) => ({ ...prev, [key]: e.target.value }))}
                             disabled={submitted}

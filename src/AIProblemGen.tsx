@@ -64,6 +64,7 @@ export default function AIProblemGen({ onBack, onPlayProblem }: Props) {
           </p>
 
           <textarea
+            aria-label="作りたい問題のテーマや条件"
             className="aip-input"
             placeholder="例: MECEの問題を3問作って"
             value={prompt}

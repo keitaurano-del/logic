@@ -129,6 +129,7 @@ function FermiChatModal({ question, locale, onClose }: {
     <div
       role="dialog"
       aria-modal="true"
+      aria-label="フェルミ推定 質問入力"
       style={{
         position: 'fixed', inset: 0, zIndex: 1000,
         background: 'rgba(0,0,0,0.55)',
@@ -215,6 +216,7 @@ function FermiChatModal({ question, locale, onClose }: {
         }}>
           <div style={{ flex: 1, position: 'relative' }}>
             <textarea
+              aria-label="質問を入力"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send() } }}
@@ -237,8 +239,10 @@ function FermiChatModal({ question, locale, onClose }: {
             />
           </div>
           <button
+            type="button"
             onClick={send}
             disabled={!input.trim() || loading}
+            aria-label="送信"
             style={{
               width: 40, height: 40,
               borderRadius: '50%',
@@ -565,6 +569,7 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
               <div style={{ position: 'relative', marginTop: guideActive ? 28 : 0 }}>
                 {guideActive && <GuideLabel text="まず自分の考えを書いてみましょう" position="top" />}
                 <textarea
+                  aria-label="フェルミ推定の解答"
                   value={answer}
                   onChange={(e) => { setAnswer(e.target.value); if (guideActive) dismissGuide() }}
                   placeholder={t('fermi.placeholder')}

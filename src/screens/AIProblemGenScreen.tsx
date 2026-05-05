@@ -149,6 +149,7 @@ function RatingPopup({ onSubmit, onSkip }: RatingPopupProps) {
         </div>
         {/* コメント */}
         <textarea
+          aria-label="感想・改善点（任意）"
           value={comment}
           onChange={e => setComment(e.target.value)}
           placeholder="感想・改善点など（任意）"
@@ -296,6 +297,7 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
               <div style={{ fontSize: 13, fontWeight: 700, color: v3.color.text, marginBottom: 6 }}>どんな問題を作る？</div>
               <div style={{ fontSize: 12, color: v3.color.text2, marginBottom: 10 }}>テーマや条件を自由に入力してね</div>
               <textarea
+                aria-label="作りたい問題のテーマや条件"
                 value={prompt}
                 onChange={e => setPrompt(e.target.value)}
                 placeholder="例：MECEを使った問題を3問（コンビニのターゲット分析）"

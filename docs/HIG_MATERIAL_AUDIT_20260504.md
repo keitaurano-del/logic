@@ -15,10 +15,10 @@
 | **Phase 0** リリースブロッカー | 8h | ~8h | ✅ 100% |
 | **Phase 1** デザインシステム土台 | 32h | ~28h | ✅ 88% |
 | **Phase 2** 全画面 HIG/M3 適合 | 60h | ~58h | ✅ 100%（構造的タスク完了） |
-| **Phase 3** 個別最適化 | 80h | ~44h | 🟡 55%（機械的置換 + dead code 大量削除 -3000 行 + vendor split） |
-| **Phase 4** 仕上げ・検証 | 24h | ~14h | 🟡 axe-core blocking + lint blocking + QA |
+| **Phase 3** 個別最適化 | 80h | ~46h | 🟡 58%（機械的置換 + dead code 大量削除 + 未使用 icons 整理） |
+| **Phase 4** 仕上げ・検証 | 24h | ~16h | 🟡 axe-core 8 画面 blocking + 全 input/textarea/icon button に aria-label 補完 |
 
-**累計 ~152h / 204h ≒ 75%**
+**累計 ~156h / 204h ≒ 76%**
 
 ### Phase 3 進捗（2026-05-05 セッション）
 - ✅ 第1波: prefers-reduced-motion + Lesson 系 a11y 強化 (#96)

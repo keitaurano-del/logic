@@ -275,6 +275,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
                 <div style={{ marginBottom: 16 }}>
                   <div style={{ fontSize: 13, color: v3.color.text2, marginBottom: 8 }}>詳しく教えてください（任意）</div>
                   <textarea
+                    aria-label="問題の詳細（任意）"
                     value={reportDetail}
                     onChange={(e) => setReportDetail(e.target.value)}
                     placeholder="どの箇所が、どのように間違っているか…"

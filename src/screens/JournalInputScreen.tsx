@@ -201,6 +201,7 @@ export function JournalInputScreen({ onBack }: JournalInputScreenProps) {
             <input
               className="input"
               type="number"
+              aria-label="借方金額"
               placeholder="金額"
               value={debitAmount}
               onChange={(e) => setDebitAmount(e.target.value)}
@@ -231,6 +232,7 @@ export function JournalInputScreen({ onBack }: JournalInputScreenProps) {
             <input
               className="input"
               type="number"
+              aria-label="貸方金額"
               placeholder="金額"
               value={creditAmount}
               onChange={(e) => setCreditAmount(e.target.value)}

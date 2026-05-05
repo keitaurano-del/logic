@@ -90,6 +90,7 @@ export default function Feedback({ onBack }: { onBack: () => void }) {
             </p>
           )}
           <textarea
+            aria-label="フィードバック内容"
             className="fb-textarea"
             placeholder={category === 'バグ報告' ? '例: レッスン第3問目で「次へ」ボタンを押すと画面が白くなる。iOS 17.2、iPhone 15で発生。' : 'アプリの改善点やほしい機能を教えてください...'}
             value={message}

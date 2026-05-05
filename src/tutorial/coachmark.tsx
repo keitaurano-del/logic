@@ -32,6 +32,7 @@ export function HomeCoachmark({ targetRef, onDismiss }: CoachmarkProps) {
     <div
       role="dialog"
       aria-modal="true"
+      aria-label="チュートリアル"
       style={{
         position: 'fixed', inset: 0, zIndex: 9999,
         background: 'transparent',

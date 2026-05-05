@@ -166,6 +166,7 @@ function FermiMobile({ onBack, state, onReport }: { onBack: () => void; state: F
       <div style={{ marginTop: 'var(--s-4)' }}>
         <label className="label">Your answer</label>
         <textarea
+          aria-label="フェルミ推定の解答"
           className="textarea"
           rows={6}
           placeholder="計算式や考え方を書いてみよう..."
@@ -217,6 +218,7 @@ function FermiDesktop({ onBack, state, onReport }: { onBack: () => void; state: 
         <div className="answer-card">
           <span className="answer-label">{t('label.yourAnswer')}</span>
           <textarea
+            aria-label="フェルミ推定の解答"
             placeholder="計算式や考え方を書いてみよう..."
             value={answer}
             onChange={(e) => setAnswer(e.target.value)}
