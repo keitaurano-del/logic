@@ -147,6 +147,7 @@ export function ReportProblemScreen({ context, onBack }: ReportProblemScreenProp
           {t('report.commentLabel')}
         </label>
         <textarea
+          aria-label={t('report.commentLabel')}
           value={comment}
           onChange={(e) => setComment(e.target.value)}
           placeholder={t('report.commentPlaceholder')}

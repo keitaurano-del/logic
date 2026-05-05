@@ -148,6 +148,7 @@ export function AIProblemScreen({ problem, onBack, onReport }: AIProblemScreenPr
               自分の言葉でまとめてみよう（任意）
             </label>
             <textarea
+              aria-label="自分の言葉でまとめる"
               value={thinkingNote}
               onChange={(e) => setThinkingNote(e.target.value)}
               placeholder="理解したことや気づいたことをメモ..."

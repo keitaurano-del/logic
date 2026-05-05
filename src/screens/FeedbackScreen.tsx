@@ -109,6 +109,7 @@ export function FeedbackScreen({ onBack }: FeedbackScreenProps) {
           内容
         </label>
         <textarea
+          aria-label="フィードバック内容"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="気になった点、改善してほしい点、欲しい機能など..."
