@@ -323,7 +323,7 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
               <p style={{ fontSize: 16, color: v3.color.text, lineHeight: 1.6, marginBottom: 12 }}>{score.overall}</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {score.scores.map((s) => (
-                  <div key={s.name} style={{ background: '#fff', borderRadius: 10, padding: '10px 12px' }}>
+                  <div key={s.name} style={{ background: 'var(--bg-card)', borderRadius: 10, padding: '10px 12px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4 }}>
                       <span style={{ fontSize: 15, fontWeight: 600, color: v3.color.text }}>{s.name}</span>
                       <span style={{ fontSize: 16, fontWeight: 700, color: v3.color.accent }}>{s.score} / {s.maxScore}</span>

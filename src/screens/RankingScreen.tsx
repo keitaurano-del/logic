@@ -116,7 +116,7 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: '#F0F4FF' }}>
 
       {/* ナビバー */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 12px', background: 'rgba(240,244,255,.95)', borderBottom: '1px solid #E2E8FF' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 12px', background: 'rgba(240,244,255,.95)', borderBottom: '1px solid var(--border)' }}>
         <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 26, fontWeight: 900, color: 'var(--md-sys-color-primary)', letterSpacing: '-.04em' }}>統計</div>
       </div>
 
@@ -150,8 +150,8 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
 
 
         {/* 今週の記録 */}
-        <div style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: '14px 16px', boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
-          <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 16, fontWeight: 800, color: '#0F1523', letterSpacing: '-.02em', marginBottom: 12 }}>今週の記録</div>
+        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 14, padding: '14px 16px', boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
+          <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 16, fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-.02em', marginBottom: 12 }}>今週の記録</div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             {WEEK_DAYS.map((day, i) => {
               const isDone = studyDateSet.has(thisWeekDates[i])
@@ -160,7 +160,7 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
                   <div style={{ width: 34, height: 34, borderRadius: '50%', background: isDone ? '#EEF2FF' : '#E8EEFF', border: isDone ? '1.5px solid #DBE4FF' : 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {isDone && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--md-sys-color-primary)" strokeWidth="2.5" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>}
                   </div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: '#7A849E' }}>{day}</div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-muted)' }}>{day}</div>
                 </div>
               )
             })}
@@ -173,7 +173,7 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
 
         {/* ランキング */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 16, fontWeight: 800, color: '#0F1523', marginBottom: 0 }}>ランキング</div>
+          <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 16, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 0 }}>ランキング</div>
           {/* タブ */}
           <div style={{ display: 'flex', background: '#E8EEFF', borderRadius: 10, padding: 3, gap: 3 }}>
             {(['week', 'all'] as const).map((tab) => (
@@ -188,8 +188,8 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
 
           {/* 実力診断未受検 */}
           {!completed && (
-            <div style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: '18px 16px', textAlign: 'center' }}>
-              <div style={{ fontSize: 16, color: '#7A849E', marginBottom: 12 }}>実力診断テストを受けて<br />全国ランキングに参加しよう</div>
+            <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 14, padding: '18px 16px', textAlign: 'center' }}>
+              <div style={{ fontSize: 16, color: 'var(--text-muted)', marginBottom: 12 }}>実力診断テストを受けて<br />全国ランキングに参加しよう</div>
               <button onClick={onTakeTest} style={{ background: 'var(--md-sys-color-primary)', color: '#fff', border: 'none', borderRadius: 10, padding: '10px 20px', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}>
                 診断を受ける
               </button>
@@ -198,7 +198,7 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
 
           {/* ランキングリスト */}
           {loading && (
-            <div style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: 16, textAlign: 'center' }}>
+            <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 14, padding: 16, textAlign: 'center' }}>
               <LoadingIndicator label="読み込み中" />
             </div>
           )}
@@ -211,11 +211,11 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
                     <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 900, color: posColor, width: 24, textAlign: 'center', flexShrink: 0 }}>{e.rank}</div>
                     <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg, var(--md-sys-color-primary), #748FFC)', flexShrink: 0, boxShadow: e.isYou ? '0 0 0 2px var(--md-sys-color-primary)' : 'none' }} />
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 16, fontWeight: 600, color: '#0F1523', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                         {e.nickname}
                         {e.isYou && <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--md-sys-color-primary)', background: '#EEF2FF', borderRadius: 4, padding: '1px 5px', marginLeft: 6 }}>あなた</span>}
                       </div>
-                      <div style={{ fontSize: 12, color: '#7A849E', marginTop: 2, display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2, display: 'flex', alignItems: 'center', gap: 4 }}>
                         <svg width="11" height="11" viewBox="0 0 24 24" fill="#FBBF24"><path d="M12 2L15 8.5l7 1-5 4.7 1.5 7L12 17.8 5.5 21.2 7 14.2 2 9.5l7-1z"/></svg>
                         <span style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 700 }}>{e.xp.toLocaleString()}</span>
                         <span>XP</span>
@@ -223,7 +223,7 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
                     </div>
                     <div style={{ textAlign: 'right', flexShrink: 0 }}>
                       <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 900, color: 'var(--md-sys-color-primary)', lineHeight: 1 }}>{e.deviation}</div>
-                      <div style={{ fontSize: 10, color: '#7A849E', fontWeight: 700, letterSpacing: '.06em', marginTop: 3 }}>偏差値</div>
+                      <div style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 700, letterSpacing: '.06em', marginTop: 3 }}>偏差値</div>
                     </div>
                   </div>
                 )
@@ -231,28 +231,28 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
             </div>
           )}
           {!loading && (!rankData || rankData.total === 0) && completed && (
-            <div style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: 16, textAlign: 'center', color: '#7A849E', fontSize: 16 }}>まだ参加者がいません</div>
+            <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 14, padding: 16, textAlign: 'center', color: 'var(--text-muted)', fontSize: 16 }}>まだ参加者がいません</div>
           )}
         </div>
 
         {/* 最近の活動 */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 16, fontWeight: 800, color: '#0F1523' }}>最近の活動</div>
+          <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 16, fontWeight: 800, color: 'var(--text-primary)' }}>最近の活動</div>
           {recentActivity.length === 0 ? (
-            <div style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: '28px 16px', textAlign: 'center' }}>
+            <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 14, padding: '28px 16px', textAlign: 'center' }}>
               <div style={{ fontSize: 32, marginBottom: 8 }}></div>
-              <div style={{ fontSize: 16, fontWeight: 700, color: '#0F1523', marginBottom: 4 }}>最初のレッスンを始めよう！</div>
-              <div style={{ fontSize: 14, color: '#7A849E' }}>レッスンを完了すると、ここに学習記録が表示されます</div>
+              <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4 }}>最初のレッスンを始めよう！</div>
+              <div style={{ fontSize: 14, color: 'var(--text-muted)' }}>レッスンを完了すると、ここに学習記録が表示されます</div>
             </div>
           ) : (
             recentActivity.map((act, i) => (
-              <div key={i} style={{ background: '#fff', border: '1px solid #E2E8FF', borderRadius: 14, padding: '13px 16px', display: 'flex', alignItems: 'center', gap: 12, boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
+              <div key={i} style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 14, padding: '13px 16px', display: 'flex', alignItems: 'center', gap: 12, boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
                 <div style={{ width: 38, height: 38, borderRadius: 11, flexShrink: 0, background: '#EEF2FF', border: '1px solid #DBE4FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   {act.icon}
                 </div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: '#0F1523', marginBottom: 1 }}>{act.name}</div>
-                  <div style={{ fontSize: 14, color: '#7A849E' }}>{act.date}</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 1 }}>{act.name}</div>
+                  <div style={{ fontSize: 14, color: 'var(--text-muted)' }}>{act.date}</div>
                 </div>
                 <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 900, color: 'var(--md-sys-color-primary)' }}>{act.pts}</div>
               </div>

@@ -933,7 +933,7 @@ function PersonalCourseBanner({
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
         <div style={{ flex: 1, height: 4, background: 'rgba(255,255,255,0.25)', borderRadius: 2, overflow: 'hidden' }}>
-          <div style={{ height: '100%', width: `${(completedCount / Math.max(1, total)) * 100}%`, background: '#fff', borderRadius: 2, transition: 'width .3s' }} />
+          <div style={{ height: '100%', width: `${(completedCount / Math.max(1, total)) * 100}%`, background: 'var(--bg-card)', borderRadius: 2, transition: 'width .3s' }} />
         </div>
         <div style={{ fontSize: 12, fontWeight: 700 }}>{completedCount}/{total}</div>
       </div>
