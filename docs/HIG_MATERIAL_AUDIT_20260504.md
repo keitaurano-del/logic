@@ -156,7 +156,8 @@
 - ⚪ Android 実機検証 (要 user)
 - ⚪ iOS シミュレータ (iOS リリース時)
 - ⚪ TalkBack / VoiceOver 全画面ナビ (要 user)
-- ⚪ Lighthouse / axe-core CI 化 (Playwright + @axe-core/playwright で将来追加)
+- ✅ axe-core CI 化 (`e2e/a11y.spec.ts`, 6 主要画面 / WCAG 2.1 A/AA / blocking)
+- ⚪ Lighthouse CI 化 (将来追加 — 現状は bundle size 制約あり)
 
 ---
 
