@@ -128,23 +128,23 @@ export function CompletedLessonsScreen({ onBack }: CompletedLessonsScreenProps) 
             }}>
               {cat}
             </div>
-            <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+            <ul className="card" style={{ padding: 0, overflow: 'hidden', listStyle: 'none', margin: 0 }}>
               {catKeys.map((key, i) => {
                 const meta = LESSON_MAP[key]
                 const name = meta?.name ?? key
                 return (
-                  <div key={key}>
+                  <li key={key} aria-label={`${name} 完了済み`}>
                     {i > 0 && <div style={{ height: 1, background: 'var(--border)', marginLeft: 'var(--s-4)' }} />}
                     <div style={{ display: 'flex', alignItems: 'center', padding: 'var(--s-3) var(--s-4)', gap: 'var(--s-3)' }}>
-                      <span style={{ color: 'var(--success)', flexShrink: 0 }}>
+                      <span aria-hidden="true" style={{ color: 'var(--success)', flexShrink: 0 }}>
                         <CheckCircleIcon width={18} height={18} />
                       </span>
                       <span style={{ fontSize: 16, color: 'var(--text)', flex: 1 }}>{name}</span>
                     </div>
-                  </div>
+                  </li>
                 )
               })}
-            </div>
+            </ul>
           </div>
         ))
       )}

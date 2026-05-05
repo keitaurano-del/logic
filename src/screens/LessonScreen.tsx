@@ -144,7 +144,14 @@ export function LessonScreen({ lessonId, onBack, onComplete, onNextLesson, onRep
       </div>
 
       {/* プログレスバー（セグメント型） */}
-      <div style={{ display: 'flex', gap: 4, padding: '8px 16px 0', background: '#fff' }}>
+      <div
+        role="progressbar"
+        aria-valuemin={0}
+        aria-valuemax={total}
+        aria-valuenow={stepIdx + 1}
+        aria-label={`進捗 ${stepIdx + 1} / ${total}`}
+        style={{ display: 'flex', gap: 4, padding: '8px 16px 0', background: '#fff' }}
+      >
         {Array.from({ length: total }).map((_, i) => (
           <div
             key={i}
@@ -280,18 +287,18 @@ function QuizStep({ step, catLabel, accent, selected, submitted, isLast, onSelec
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
       {/* 問題カード */}
-      <div style={{
+      <div role="group" aria-label="設問" style={{
         background: '#fff', border: '1px solid #E2E8FF',
         borderRadius: 16, padding: '18px 20px',
         boxShadow: '0 1px 3px rgba(15,21,35,.06)',
         borderLeft: `4px solid ${accent}`,
       }}>
         <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: accent, marginBottom: 6 }}>{catLabel}</div>
-        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 20, fontWeight: 800, color: '#0F1523', lineHeight: 1.5, letterSpacing: '-.02em' }}>{step.question}</div>
+        <div aria-live="polite" style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 20, fontWeight: 800, color: '#0F1523', lineHeight: 1.5, letterSpacing: '-.02em' }}>{step.question}</div>
       </div>
 
       {/* 選択肢 */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <div role="radiogroup" aria-label="選択肢" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {step.options.map((opt, i) => {
           const isSelected = selected === i
           const correct = opt.correct
@@ -321,11 +328,14 @@ function QuizStep({ step, catLabel, accent, selected, submitted, isLast, onSelec
           return (
             <button
               key={i}
+              role="radio"
+              aria-checked={isSelected}
               disabled={submitted}
               onClick={() => onSelect(i)}
               style={{
                 background: bg, border, borderRadius: 14,
                 padding: '14px 16px',
+                minHeight: 56,
                 display: 'flex', alignItems: 'center', gap: 12,
                 cursor: submitted ? 'default' : 'pointer',
                 textAlign: 'left', width: '100%',
@@ -354,7 +364,7 @@ function QuizStep({ step, catLabel, accent, selected, submitted, isLast, onSelec
 
       {/* フィードバックパネル */}
       {submitted && (
-        <div style={{
+        <div role="status" aria-live="assertive" style={{
           borderRadius: 16, padding: '16px 18px',
           background: isCorrect ? '#ECFDF3' : '#FEF3F2',
           border: `1px solid ${isCorrect ? '#12B76A' : 'var(--md-sys-color-error)'}`,
