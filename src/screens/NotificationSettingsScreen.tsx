@@ -122,6 +122,7 @@ export function NotificationSettingsScreen({ onBack }: Props) {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <span style={{ fontSize: 14, color: v3.color.text2 }}>毎日</span>
                   <select
+                    aria-label="通知 時"
                     value={hour}
                     onChange={(e) => handleTimeChange(Number(e.target.value), minute)}
                     style={{
@@ -137,6 +138,7 @@ export function NotificationSettingsScreen({ onBack }: Props) {
                   </select>
                   <span style={{ fontSize: 22, fontWeight: 700 }}>:</span>
                   <select
+                    aria-label="通知 分"
                     value={minute}
                     onChange={(e) => handleTimeChange(hour, Number(e.target.value))}
                     style={{

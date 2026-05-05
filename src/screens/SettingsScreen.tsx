@@ -188,6 +188,7 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
                     毎日
                   </span>
                   <select
+                    aria-label="リマインダー 時"
                     value={reminderHour}
                     onChange={(e) => handleTimeChange(Number(e.target.value), reminderMinute)}
                     style={{
@@ -203,6 +204,7 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
                   </select>
                   <span style={{ fontSize: 22, fontWeight: 700, color: 'var(--text)' }}>:</span>
                   <select
+                    aria-label="リマインダー 分"
                     value={reminderMinute}
                     onChange={(e) => handleTimeChange(reminderHour, Number(e.target.value))}
                     style={{

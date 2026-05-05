@@ -9,12 +9,13 @@
 
 ## 0. 自動チェック (CI で実行)
 
-| 項目 | コマンド | 合格基準 |
-|---|---|---|
-| TypeScript 型チェック | `npm run build` | exit 0、エラー 0 |
-| ESLint | `npm run lint` | error 0（warning は許容） |
-| jsx-a11y | `npm run lint` (上記に含む) | error 0 |
-| Capacitor sync | `npx cap sync` | exit 0、10 plugins 認識 |
+| 項目 | コマンド | 合格基準 | 状態 |
+|---|---|---|---|
+| TypeScript 型チェック | `npm run build` | exit 0、エラー 0 | ✅ blocking |
+| ESLint | `npm run lint` | error 0、warning 0 | ✅ blocking |
+| jsx-a11y | `npm run lint` (上記に含む) | error 0 | ✅ blocking |
+| axe-core (13 主要画面) | `npx playwright test e2e/a11y.spec.ts` | violation 0 (WCAG 2.1 A/AA) | ✅ blocking |
+| Capacitor sync | `npx cap sync` | exit 0、10 plugins 認識 | ⚪ ローカル実行 |
 
 ---
 

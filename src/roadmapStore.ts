@@ -290,7 +290,9 @@ export async function migrateLocalStorageToSupabase(userId: string): Promise<voi
       await saveAllRoadmapGoals(userId, local)
     }
 
-    console.log('[roadmapStore] migrated localStorage to Supabase')
+    if (import.meta.env.DEV) {
+      console.log('[roadmapStore] migrated localStorage to Supabase')
+    }
   } catch (e) {
     console.warn('[roadmapStore] migration failed:', e)
   }

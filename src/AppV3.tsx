@@ -127,6 +127,10 @@ function getInitialScreen(user: User | null): Screen {
     if (preview === 'profile') return { type: 'profile' }
     if (preview === 'fermi') return { type: 'daily-fermi' }
     if (preview === 'pricing') return { type: 'pricing' }
+    if (preview === 'settings') return { type: 'settings' }
+    if (preview === 'account') return { type: 'account-settings' }
+    if (preview === 'notifications') return { type: 'notification-settings' }
+    if (preview === 'roleplay-select') return { type: 'roleplay' }
   }
   // ログイン済みユーザーはオンボーディングをスキップ
   if (user) return { type: 'daily-fermi' }
