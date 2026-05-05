@@ -77,14 +77,14 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
           <span style={{ fontSize: 14, fontWeight: 700, color: v3.color.text2, letterSpacing: '.12em', textTransform: 'uppercase' }}>レベル</span>
           <span style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 900, letterSpacing: '-.02em', color: '#FFFFFF' }}>Lv.{lv.level}</span>
         </div>
-        <div style={{ height: 12, background: 'rgba(255,255,255,.1)', borderRadius: 99, overflow: 'hidden', marginBottom: 8, position: 'relative', zIndex: 1 }}>
+        <div role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(levelPct)} aria-label={`Lv.${lv.level} 進捗 ${Math.round(levelPct)}%`} style={{ height: 12, background: 'rgba(255,255,255,.1)', borderRadius: 99, overflow: 'hidden', marginBottom: 8, position: 'relative', zIndex: 1 }}>
           <div style={{ height: '100%', width: `${levelPct}%`, background: v3.color.accent, borderRadius: 99, boxShadow: '0 0 12px rgba(168,192,255,0.5)' }}></div>
         </div>
-        <div style={{ fontSize: 14, color: v3.color.text2, fontWeight: 500, textAlign: 'right', position: 'relative', zIndex: 1 }}>次のLvまで {Math.max(0, needed - levelXp)} XP</div>
+        <div aria-live="polite" style={{ fontSize: 14, color: v3.color.text2, fontWeight: 500, textAlign: 'right', position: 'relative', zIndex: 1 }}>次のLvまで {Math.max(0, needed - levelXp)} XP</div>
       </div>
 
       {/* Stats grid — タップで詳細シート */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8, marginTop: -32, position: 'relative', zIndex: 2, padding: '0 20px' }}>
+      <div role="list" aria-label="統計" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8, marginTop: -32, position: 'relative', zIndex: 2, padding: '0 20px' }}>
         <StatCard val={String(streak)} label="連続学習日数" onClick={() => setSheet('streak')} />
         <StatCard val={String(completed)} label="完了レッスン" onClick={() => setSheet('lessons')} />
         <StatCard val={xp.toLocaleString()} label="総XP" onClick={() => setSheet('xp')} />
@@ -184,8 +184,8 @@ function StreakSheet({ streak }: { streak: number }) {
     <>
       <div style={{ fontSize: 18, fontWeight: 800, color: '#FFFFFF', marginBottom: 16 }}>連続学習日数</div>
       <div style={{ textAlign: 'center', padding: '20px 0' }}>
-        <div style={{ fontSize: 72, fontWeight: 900, color: v3.color.accent, letterSpacing: '-0.04em', lineHeight: 1 }}>{streak}</div>
-        <div style={{ fontSize: 18, color: v3.color.text2, marginTop: 8, fontWeight: 600 }}>日連続</div>
+        <div aria-live="polite" aria-label={`連続 ${streak} 日`} style={{ fontSize: 72, fontWeight: 900, color: v3.color.accent, letterSpacing: '-0.04em', lineHeight: 1 }}>{streak}</div>
+        <div aria-hidden="true" style={{ fontSize: 18, color: v3.color.text2, marginTop: 8, fontWeight: 600 }}>日連続</div>
       </div>
       <div style={{ background: v3.color.bg, borderRadius: 14, padding: '14px 16px' }}>
         <div style={{ fontSize: 13, color: v3.color.text2, lineHeight: 1.7 }}>
