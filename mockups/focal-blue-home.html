@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Logic — Home (Focal Blue モックアップ)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700;800;900&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ==== 色トークン (focal-only-blue ルール) ==== */
+  :root {
+    /* canvas / surfaces */
+    --bg:               #1A1F2E;
+    --surface:          #252C40;
+    --surface-high:     #2E3652;
+    --surface-low:      #1E2438;
+    /* text */
+    --text:             #E8ECF4;
+    --text-2:           #8FA3C8;
+    --text-3:           #6B82A8;
+    /* focal Slate Blue (使用箇所を CTA / 進行 indicator のみに限定) */
+    --primary:          #6C8EF5;
+    --primary-light:    #9BB3FA;
+    /* line */
+    --line:             rgba(255,255,255,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    max-width: 390px;
+    margin: 0 auto;
+    min-height: 100vh;
+    position: relative;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Status bar (mock) ── */
+  .status-bar {
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 22px;
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  /* ── Navbar ── */
+  .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 20px 14px;
+  }
+  .nav-brand {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -.02em;
+    color: var(--text);
+  }
+  /* Logic のドット — focal でないので neutral text-2 に */
+  .nav-brand .dot { color: var(--text-2); }
+
+  /* ── Content ── */
+  .content {
+    padding: 0 16px 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* ── Greeting (no color) ── */
+  .greeting { padding: 4px 4px 8px; }
+  .greeting-hello {
+    font-size: 14px;
+    color: var(--text-2);
+    margin-bottom: 4px;
+    font-weight: 500;
+  }
+  .greeting-line {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: -.005em;
+  }
+
+  /* ── Daily Fermi card (focal Hero) ── */
+  .hero-card {
+    background: linear-gradient(135deg, #1E2540 0%, #252C40 100%);
+    border-radius: 16px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    min-height: 180px;
+    box-shadow: 0 4px 24px rgba(0,0,0,.3);
+  }
+  /* 装飾 blur 円 — neutral white@4% (青 glow を排除) */
+  .hero-blur {
+    position: absolute;
+    right: -30px;
+    top: -30px;
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+    filter: blur(36px);
+    pointer-events: none;
+  }
+  /* 「今日の1問」eyebrow — focal なので Slate Blue で残す
+     （ユーザーがいま engage すべき対象であることを示す） */
+  .eyebrow-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 1;
+  }
+  .eyebrow-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--primary);
+  }
+  .eyebrow-label {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--primary);
+  }
+  .hero-title {
+    font-size: 19px;
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: -.005em;
+    margin-bottom: 8px;
+    color: var(--text);
+    position: relative; z-index: 1;
+  }
+  .hero-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-2);
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 16px;
+    position: relative; z-index: 1;
+  }
+  .hero-meta .sep {
+    width: 3px; height: 3px;
+    border-radius: 50%;
+    background: var(--text-3);
+  }
+  /* CTA — focal (Slate Blue + 白文字) */
+  .cta-pill {
+    background: var(--primary);
+    color: #FFFFFF;
+    border-radius: 99px;
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    font-size: 14px;
+    font-weight: 700;
+    box-shadow: 0 4px 16px rgba(108,142,245,.25);
+    position: relative; z-index: 1;
+  }
+  .cta-pill svg { fill: #FFFFFF; }
+
+  /* ── Hero Recommend card ── */
+  .recommend-card {
+    background: var(--surface);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 1px 0 rgba(0,0,0,.35);
+  }
+  .recommend-image {
+    height: 160px;
+    background:
+      linear-gradient(135deg, rgba(0,0,0,.3) 0%, transparent 60%),
+      linear-gradient(160deg, #3a3457 0%, #4a3e6e 50%, #2a2540 100%);
+    position: relative;
+  }
+  .recommend-image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.08), transparent 60%);
+  }
+  .recommend-body { padding: 18px 20px 20px; }
+  /* カテゴリバッジ — neutral (青 tint を抜く) */
+  .cat-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--surface-high);
+    border-radius: 99px;
+    padding: 4px 11px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-2);
+    margin-bottom: 10px;
+  }
+  .recommend-title {
+    font-size: 19px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    line-height: 1.35;
+    letter-spacing: -.005em;
+    color: var(--text);
+  }
+  .recommend-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-2);
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 16px;
+  }
+
+  /* ── Review row card (neutral) ── */
+  .review-card {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border: 1px solid transparent;
+  }
+  /* 復習アイコン下地 — neutral (rgba(108,142,245,.14) を排除) */
+  .review-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    background: var(--surface-high);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-2);
+    flex-shrink: 0;
+  }
+  .review-eyebrow {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--text-2);  /* focal でないので neutral */
+    margin-bottom: 2px;
+  }
+  .review-title { font-size: 16px; font-weight: 700; line-height: 1.35; margin-bottom: 2px; color: var(--text); }
+  .review-sub { font-size: 13px; color: var(--text-2); font-weight: 500; line-height: 1.4; }
+  .review-arrow { color: var(--text-3); font-size: 22px; padding-left: 4px; }
+
+  /* ── AI Large Card (neutral surface) ── */
+  .ai-card {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .ai-card-image {
+    width: 64px; height: 64px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #2E3652 0%, #1E2438 100%);
+    flex-shrink: 0;
+  }
+  .ai-card-name { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .ai-card-sub { font-size: 13px; color: var(--text-2); font-weight: 500; }
+  /* Beta バッジ — neutral */
+  .beta-badge {
+    display: inline-block;
+    margin-left: 6px;
+    background: var(--surface-high);
+    color: var(--text-2);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 4px;
+    letter-spacing: .04em;
+    vertical-align: middle;
+  }
+
+  /* ── Bottom tab bar ── */
+  .tabbar {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 390px;
+    background: rgba(26, 31, 46, 0.92);
+    backdrop-filter: saturate(180%) blur(20px);
+    border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    padding: 8px 0 calc(env(safe-area-inset-bottom, 0px) + 6px);
+  }
+  .tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 0;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-2);
+  }
+  .tab.active {
+    /* current = focal Slate Blue */
+    color: var(--primary);
+  }
+  .tab svg { stroke: currentColor; }
+</style>
+</head>
+<body>
+
+<div class="status-bar">
+  <span>4:57</span>
+  <span style="display:flex;gap:6px;align-items:center;font-size:12px;">4G<span style="display:inline-block;width:18px;height:10px;border:1px solid var(--text-2);border-radius:3px;position:relative;"><span style="position:absolute;left:1px;top:1px;bottom:1px;width:80%;background:var(--text-2);border-radius:1px;"></span></span> 95%</span>
+</div>
+
+<div class="navbar">
+  <div class="nav-brand">Logic<span class="dot">.</span></div>
+  <div></div>
+</div>
+
+<div class="content">
+
+  <!-- Greeting -->
+  <div class="greeting">
+    <div class="greeting-hello">こんにちは、ゲスト さん</div>
+    <div class="greeting-line">今日も少しずつ、<br>論理力を鍛えよう</div>
+  </div>
+
+  <!-- ★ FOCAL: 今日の1問 (Daily Fermi) -->
+  <div class="hero-card">
+    <div class="hero-blur"></div>
+    <div class="eyebrow-row">
+      <div class="eyebrow-dot"></div>
+      <span class="eyebrow-label">今日の1問</span>
+    </div>
+    <div class="hero-title">日本にあるラーメン屋の総数を推定せよ</div>
+    <div class="hero-meta">
+      <span>毎日更新</span>
+      <span class="sep"></span>
+      <span>+30 XP</span>
+    </div>
+    <div class="cta-pill">
+      <svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>
+      チャレンジする
+    </div>
+  </div>
+
+  <!-- ★ FOCAL: Hero Recommend -->
+  <div class="recommend-card">
+    <div class="recommend-image"></div>
+    <div class="recommend-body">
+      <span class="cat-badge">論理思考 · 中級</span>
+      <div class="recommend-title">MECE で漏れなくダブりなく整理する</div>
+      <div class="recommend-meta"><span>+50 XP</span></div>
+      <div class="cta-pill">
+        <svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>
+        レッスンをはじめる
+      </div>
+    </div>
+  </div>
+
+  <!-- 復習カード — neutral -->
+  <div class="review-card">
+    <div class="review-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M3 12a9 9 0 1 0 3-6.7" />
+        <path d="M3 4v5h5" />
+      </svg>
+    </div>
+    <div style="flex:1;min-width:0;">
+      <div class="review-eyebrow">復習</div>
+      <div class="review-title">今日の復習 4枚</div>
+      <div class="review-sub">うち弱点 1枚 · 全32枚</div>
+    </div>
+    <div class="review-arrow">›</div>
+  </div>
+
+  <!-- AI 自分だけの問題 -->
+  <div class="ai-card">
+    <div class="ai-card-image"></div>
+    <div style="flex:1;min-width:0;">
+      <div class="ai-card-name">AIで自分だけの問題を作る<span class="beta-badge">BETA</span></div>
+      <div class="ai-card-sub">テーマ別のオリジナル問題で練習</div>
+    </div>
+  </div>
+
+  <!-- ロールプレイ -->
+  <div class="ai-card">
+    <div class="ai-card-image"></div>
+    <div style="flex:1;min-width:0;">
+      <div class="ai-card-name">ロールプレイ<span class="beta-badge">BETA</span></div>
+      <div class="ai-card-sub">ビジネス・哲学のシナリオで対話練習</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Bottom tab bar -->
+<div class="tabbar">
+  <div class="tab active">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1V9.5z"/></svg>
+    ホーム
+  </div>
+  <div class="tab">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20a15 15 0 0 1 0-20"/></svg>
+    ロードマップ
+  </div>
+  <div class="tab">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7v10l10 5 10-5V7l-10-5z"/></svg>
+    ランク
+  </div>
+  <div class="tab">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/><path d="M9 9.5c.5-1.5 1.5-2.5 3-2.5"/></svg>
+    ヘルプ
+  </div>
+  <div class="tab">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.42 3.58-8 8-8s8 3.58 8 8"/></svg>
+    プロフィール
+  </div>
+</div>
+
+</body>
+</html>
