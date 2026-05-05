@@ -236,7 +236,7 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
             style={{
               width: '100%',
               background: v3.color.accent,
-              color: v3.color.bg,
+              color: '#FFFFFF',
               padding: '17px 0', borderRadius: 99,
               fontSize: 16, fontWeight: 700,
               border: 'none', cursor: 'pointer',

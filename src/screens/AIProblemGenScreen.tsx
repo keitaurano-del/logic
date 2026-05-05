@@ -158,7 +158,7 @@ function RatingPopup({ onSubmit, onSkip }: RatingPopupProps) {
         />
         <button
           onClick={() => rating > 0 ? onSubmit(rating, comment) : onSkip()}
-          style={{ width: '100%', background: v3.color.accent, color: v3.color.bg, border: 'none', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700, cursor: 'pointer', marginBottom: 10 }}>
+          style={{ width: '100%', background: v3.color.accent, color: '#FFFFFF', border: 'none', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700, cursor: 'pointer', marginBottom: 10 }}>
           {rating > 0 ? '送信する' : 'スキップ'}
         </button>
         <button onClick={onSkip} style={{ width: '100%', background: 'none', border: 'none', color: v3.color.text3, fontSize: 13, cursor: 'pointer' }}>
@@ -391,7 +391,7 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
                     <div style={{ fontSize: 14, fontWeight: 700, color: v3.color.text, marginBottom: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.title}</div>
                     <div style={{ fontSize: 12, color: v3.color.text2 }}>{p.steps?.length ?? 0}問 · {new Date(p.createdAt).toLocaleDateString('ja-JP')}</div>
                   </div>
-                  <button onClick={() => onPlay(p)} style={{ background: v3.color.accent, color: v3.color.bg, border: 'none', borderRadius: 10, padding: '8px 14px', fontSize: 13, fontWeight: 700, cursor: 'pointer', flexShrink: 0 }}>もう一度</button>
+                  <button onClick={() => onPlay(p)} style={{ background: v3.color.accent, color: '#FFFFFF', border: 'none', borderRadius: 10, padding: '8px 14px', fontSize: 13, fontWeight: 700, cursor: 'pointer', flexShrink: 0 }}>もう一度</button>
                   <button onClick={() => handleDelete(p.id)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 4, flexShrink: 0 }}>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F87171" strokeWidth="2" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
                   </button>

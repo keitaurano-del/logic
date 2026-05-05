@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Logic — Roadmap (Focal Blue モックアップ)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700;800;900&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:               #1A1F2E;
+    --surface:          #252C40;
+    --surface-high:     #2E3652;
+    --surface-low:      #1E2438;
+    --text:             #E8ECF4;
+    --text-2:           #8FA3C8;
+    --text-3:           #6B82A8;
+    --primary:          #6C8EF5;
+    --primary-light:    #9BB3FA;
+    --line:             rgba(255,255,255,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    max-width: 390px;
+    margin: 0 auto;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .status-bar {
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 22px;
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  /* ── Header ── */
+  .header {
+    padding: 4px 20px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .header h1 {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -.02em;
+  }
+  .header-sub {
+    font-size: 13px;
+    color: var(--text-2);
+    font-weight: 500;
+  }
+
+  /* ── Category section ── */
+  .section {
+    padding: 8px 16px 24px;
+  }
+  .section-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--text-2);
+    margin-bottom: 10px;
+    padding-left: 4px;
+  }
+
+  /* ── Course node (default = neutral) ── */
+  .course {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    background: var(--surface);
+    border-radius: 14px;
+    margin-bottom: 8px;
+    border: 1px solid transparent;
+  }
+  .course-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    background: var(--surface-high);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-2);
+    flex-shrink: 0;
+  }
+  .course-body { flex: 1; min-width: 0; }
+  .course-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+    line-height: 1.35;
+  }
+  .course-meta {
+    font-size: 12px;
+    color: var(--text-2);
+    font-weight: 500;
+  }
+  .course-arrow {
+    color: var(--text-3);
+    font-size: 22px;
+    line-height: 1;
+  }
+
+  /* 完了マーク (neutral) */
+  .done-check {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--surface-high);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-2);
+    flex-shrink: 0;
+  }
+
+  /* ★ ACTIVE course = focal Slate Blue */
+  .course.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    box-shadow: 0 6px 24px rgba(108,142,245,.30), 0 2px 6px rgba(108,142,245,.15);
+  }
+  .course.active .course-icon {
+    background: rgba(255,255,255,0.18);
+    color: #FFFFFF;
+  }
+  .course.active .course-title { color: #FFFFFF; }
+  .course.active .course-meta {
+    color: rgba(255,255,255,0.85);
+    font-weight: 600;
+  }
+  .course.active .course-arrow { color: rgba(255,255,255,0.85); }
+
+  /* progress bar (active 内部) */
+  .active-progress-track {
+    height: 6px;
+    background: rgba(255,255,255,0.18);
+    border-radius: 99px;
+    margin-top: 8px;
+    overflow: hidden;
+  }
+  .active-progress-fill {
+    height: 100%;
+    background: #FFFFFF;
+    border-radius: 99px;
+    width: 35%;
+  }
+
+  /* lesson sub-list (折りたたみ展開後イメージ) */
+  .lessons {
+    list-style: none;
+    margin: 0;
+    padding: 12px 0 0 0;
+  }
+  .lesson-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 4px;
+    color: rgba(255,255,255,.92);
+    font-size: 13px;
+    border-top: 1px solid rgba(255,255,255,0.18);
+  }
+  .lesson-row:first-child { border-top: none; }
+  .lesson-num {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.20);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: #FFFFFF;
+    flex-shrink: 0;
+  }
+  .lesson-row.completed .lesson-num {
+    background: #FFFFFF;
+    color: var(--primary);
+  }
+  /* 現在いるレッスン (active 内部の focal-of-focal) */
+  .lesson-row.current .lesson-num {
+    background: #FFFFFF;
+    color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(255,255,255,0.30);
+  }
+  .lesson-row.current .lesson-title {
+    font-weight: 700;
+    color: #FFFFFF;
+  }
+  .lesson-title { flex: 1; }
+  .lesson-status {
+    font-size: 11px;
+    color: rgba(255,255,255,0.7);
+  }
+
+  /* ── Hero summary header ── */
+  .hero-summary {
+    margin: 0 16px 20px;
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 18px 20px;
+    border: 1px solid var(--line);
+  }
+  .hero-summary-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .hero-summary-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--text-2);
+  }
+  .hero-summary-num {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 26px;
+    font-weight: 900;
+    letter-spacing: -.02em;
+    color: var(--text);
+  }
+  .hero-summary-num .small {
+    font-size: 14px;
+    color: var(--text-2);
+    font-weight: 600;
+    margin-left: 4px;
+  }
+  /* progress bar (overall) */
+  .summary-track {
+    height: 6px;
+    background: var(--surface-high);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  /* 全体 progress fill — focal なので Slate Blue で残す */
+  .summary-fill {
+    height: 100%;
+    background: var(--primary);
+    border-radius: 99px;
+    width: 28%;
+  }
+
+  /* ── Bottom tab ── */
+  .tabbar {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 390px;
+    background: rgba(26, 31, 46, 0.92);
+    backdrop-filter: saturate(180%) blur(20px);
+    border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    padding: 8px 0 calc(env(safe-area-inset-bottom, 0px) + 6px);
+  }
+  .tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 0;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-2);
+  }
+  .tab.active { color: var(--primary); }
+  .tab svg { stroke: currentColor; }
+
+  /* spacing for fixed tab */
+  .content { padding-bottom: 100px; }
+</style>
+</head>
+<body>
+
+<div class="status-bar">
+  <span>4:57</span>
+  <span style="display:flex;gap:6px;align-items:center;font-size:12px;">4G<span style="display:inline-block;width:18px;height:10px;border:1px solid var(--text-2);border-radius:3px;position:relative;"><span style="position:absolute;left:1px;top:1px;bottom:1px;width:80%;background:var(--text-2);border-radius:1px;"></span></span> 95%</span>
+</div>
+
+<div class="header">
+  <div>
+    <h1>ロードマップ</h1>
+    <div class="header-sub">あなたの学習ジャーニー</div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- 全体 summary -->
+  <div class="hero-summary">
+    <div class="hero-summary-row">
+      <div class="hero-summary-label">全体進捗</div>
+      <div class="hero-summary-num">14<span class="small">/ 50 レッスン</span></div>
+    </div>
+    <div class="summary-track">
+      <div class="summary-fill"></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">論理思考の基礎</div>
+
+    <!-- 完了済み course (neutral) -->
+    <div class="course">
+      <div class="course-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/></svg>
+      </div>
+      <div class="course-body">
+        <div class="course-title">論理の基本：演繹と帰納</div>
+        <div class="course-meta">5 レッスン · 完了</div>
+      </div>
+      <div class="done-check">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+    </div>
+
+    <!-- ★ ACTIVE course = focal Slate Blue (1 件のみ) -->
+    <div class="course active">
+      <div class="course-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      </div>
+      <div class="course-body">
+        <div class="course-title">MECE と論点ツリー</div>
+        <div class="course-meta">いま受講中 · 3 / 8 レッスン</div>
+        <div class="active-progress-track"><div class="active-progress-fill"></div></div>
+
+        <ul class="lessons">
+          <li class="lesson-row completed">
+            <div class="lesson-num"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <span class="lesson-title">MECE とは何か</span>
+            <span class="lesson-status">完了</span>
+          </li>
+          <li class="lesson-row completed">
+            <div class="lesson-num"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <span class="lesson-title">漏れなくダブりなく</span>
+            <span class="lesson-status">完了</span>
+          </li>
+          <li class="lesson-row current">
+            <div class="lesson-num">3</div>
+            <span class="lesson-title">論点ツリーを描く</span>
+            <span class="lesson-status">いまここ ›</span>
+          </li>
+          <li class="lesson-row">
+            <div class="lesson-num">4</div>
+            <span class="lesson-title">縦の整合・横の網羅</span>
+            <span class="lesson-status">未着手</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 未着手 course (neutral) -->
+    <div class="course">
+      <div class="course-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M12 8v8"/></svg>
+      </div>
+      <div class="course-body">
+        <div class="course-title">仮説思考の基本</div>
+        <div class="course-meta">6 レッスン · 未着手</div>
+      </div>
+      <div class="course-arrow">›</div>
+    </div>
+
+    <div class="course">
+      <div class="course-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+      </div>
+      <div class="course-body">
+        <div class="course-title">フェルミ推定の型</div>
+        <div class="course-meta">8 レッスン · 未着手</div>
+      </div>
+      <div class="course-arrow">›</div>
+    </div>
+
+    <div class="course">
+      <div class="course-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M2 12h2M20 12h2M12 2v2M12 20v2"/></svg>
+      </div>
+      <div class="course-body">
+        <div class="course-title">クリティカルシンキング</div>
+        <div class="course-meta">10 レッスン · 未着手</div>
+      </div>
+      <div class="course-arrow">›</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="tabbar">
+  <div class="tab">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1V9.5z"/></svg>
+    ホーム
+  </div>
+  <div class="tab active">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20a15 15 0 0 1 0-20"/></svg>
+    ロードマップ
+  </div>
+  <div class="tab">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7v10l10 5 10-5V7l-10-5z"/></svg>
+    ランク
+  </div>
+  <div class="tab">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/><path d="M9 9.5c.5-1.5 1.5-2.5 3-2.5"/></svg>
+    ヘルプ
+  </div>
+  <div class="tab">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.42 3.58-8 8-8s8 3.58 8 8"/></svg>
+    プロフィール
+  </div>
+</div>
+
+</body>
+</html>

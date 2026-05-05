@@ -121,7 +121,7 @@
   --accent-soft:   rgba(108, 142, 245, 0.16);
   --accent-glow:   rgba(108, 142, 245, 0.25);
   --accent-dark:   #9BB3FA;          /* lighter on dark for AA */
-  --accent-fg:     #0F1424;
+  --accent-fg:     #FFFFFF;
 
   --shadow-card:    0 1px 0 rgba(0, 0, 0, 0.35);
   --shadow-elevated: 0 6px 24px rgba(0, 0, 0, 0.55);
@@ -446,7 +446,7 @@ input, textarea, select { -webkit-tap-highlight-color: transparent; }
   --accent-soft:   rgba(108, 142, 245, 0.16);
   --accent-glow:   rgba(108, 142, 245, 0.25);
   --accent-dark:   #9BB3FA;
-  --accent-fg:     #1A1F2E;
+  --accent-fg:     #FFFFFF;
 
   --shadow-card:    0 1px 0 rgba(0,0,0,0.35);
   --shadow-elevated: 0 6px 24px rgba(0,0,0,0.55);

@@ -118,25 +118,25 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
         </div>
 
         {/* 今日の1問 (Daily Fermi) */}
-        <button type="button" ref={dailyCardRef} onClick={onNavigateToDailyFermi} aria-label="今日の1問を解く" style={{ background: 'linear-gradient(135deg, #1E2540 0%, #252C40 100%)', borderRadius: v3.radius.card, padding: '20px', cursor: 'pointer', position: 'relative', overflow: 'hidden', boxShadow: v3.shadow.hero, flexShrink: 0, minHeight: 180, border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%' }}>
+        <button type="button" ref={dailyCardRef} onClick={onNavigateToDailyFermi} aria-label="今日の1問を解く" style={{ background: 'linear-gradient(135deg, #6C8EF5 0%, #5478E8 100%)', borderRadius: v3.radius.card, padding: '20px', cursor: 'pointer', position: 'relative', overflow: 'hidden', boxShadow: '0 14px 32px rgba(108,142,245,.32)', flexShrink: 0, minHeight: 180, border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%' }}>
           {/* フェルミ推定イメージ画像 */}
-          <img src="/images/v3/fermi-card.png" alt="" loading="lazy" style={{ position: 'absolute', right: 0, top: 0, width: '55%', height: '100%', objectFit: 'cover', opacity: 0.28, pointerEvents: 'none', maskImage: 'linear-gradient(to left, rgba(0,0,0,0.8) 0%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to left, rgba(0,0,0,0.8) 0%, transparent 100%)' }} />
-          <div style={{ position: 'absolute', right: -30, top: -30, width: 140, height: 140, borderRadius: '50%', background: 'rgba(108,142,245,0.25)', filter: 'blur(36px)', pointerEvents: 'none' }}></div>
+          <img src="/images/v3/fermi-card.png" alt="" loading="lazy" style={{ position: 'absolute', right: 0, top: 0, width: '55%', height: '100%', objectFit: 'cover', opacity: 0.18, pointerEvents: 'none', mixBlendMode: 'overlay', maskImage: 'linear-gradient(to left, rgba(0,0,0,0.8) 0%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to left, rgba(0,0,0,0.8) 0%, transparent 100%)' }} />
+          <div style={{ position: 'absolute', right: -30, top: -30, width: 140, height: 140, borderRadius: '50%', background: 'rgba(255,255,255,0.18)', filter: 'blur(36px)', pointerEvents: 'none' }}></div>
           <div style={{ position: 'relative', zIndex: 1 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-              <div style={{ width: 6, height: 6, borderRadius: '50%', background: v3.color.accent }}></div>
-              <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: v3.color.accent }}>今日の1問</span>
+              <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'rgba(255,255,255,.85)' }}></div>
+              <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,.92)' }}>今日の1問</span>
             </div>
-            <div style={{ fontFamily: "'Noto Sans JP', sans-serif", fontSize: 19, fontWeight: 700, color: v3.color.text, lineHeight: 1.4, letterSpacing: '-.005em', marginBottom: 8 }}>
+            <div style={{ fontFamily: "'Noto Sans JP', sans-serif", fontSize: 19, fontWeight: 700, color: '#FFFFFF', lineHeight: 1.4, letterSpacing: '-.005em', marginBottom: 8 }}>
               {fermiQuestion}
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: v3.color.text2, fontSize: 14, fontWeight: 500, marginBottom: 16 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'rgba(255,255,255,.82)', fontSize: 14, fontWeight: 500, marginBottom: 16 }}>
               <span>毎日更新</span>
-              <div style={{ width: 3, height: 3, borderRadius: '50%', background: v3.color.text3 }}></div>
+              <div style={{ width: 3, height: 3, borderRadius: '50%', background: 'rgba(255,255,255,.45)' }}></div>
               <span>+30 XP</span>
             </div>
-            <div style={{ background: v3.color.accent, color: v3.color.bg, borderRadius: v3.radius.pill, padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700, boxShadow: v3.shadow.cta }}>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill={v3.color.bg} aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>
+            <div style={{ background: '#FFFFFF', color: v3.color.accent, borderRadius: v3.radius.pill, padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700, boxShadow: '0 6px 18px rgba(0,0,0,.14)' }}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill={v3.color.accent} aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>
               チャレンジする
             </div>
           </div>
@@ -158,8 +158,8 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: v3.color.text2, fontSize: 14, fontWeight: 500, marginBottom: 16 }}>
               <span>+50 XP</span>
             </div>
-            <div style={{ background: v3.color.accent, color: v3.color.bg, borderRadius: v3.radius.pill, padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700 }}>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill={v3.color.bg} aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>
+            <div style={{ background: v3.color.accent, color: '#FFFFFF', borderRadius: v3.radius.pill, padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700 }}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="#FFFFFF" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>
               レッスンをはじめる
             </div>
           </div>
