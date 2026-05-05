@@ -57,11 +57,11 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
       <div style={{ background: 'linear-gradient(160deg, #1A1F2E 0%, #1E2540 70%, #252C40 100%)', padding: 'calc(env(safe-area-inset-top, 44px) + 14px) 20px 28px', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', right: -50, top: -50, width: 200, height: 200, borderRadius: '50%', background: 'rgba(168,192,255,0.2)', filter: 'blur(40px)', pointerEvents: 'none' }}></div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 18, position: 'relative', zIndex: 1 }}>
-          <div style={{ width: 64, height: 64, borderRadius: '50%', background: `linear-gradient(135deg, ${v3.color.accent}, #9BB3FA)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Inter Tight', sans-serif", fontSize: 26, fontWeight: 900, color: v3.color.bg, boxShadow: `0 0 24px rgba(168,192,255,0.4)` }}>
+          <div className="profile-avatar" style={{ width: 64, height: 64, borderRadius: '50%', background: `linear-gradient(135deg, ${v3.color.accent}, #9BB3FA)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Inter Tight', sans-serif", fontSize: 26, fontWeight: 900, color: v3.color.bg, boxShadow: `0 0 24px rgba(168,192,255,0.4)` }}>
             {(userName || 'G').slice(0, 1).toUpperCase()}
           </div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, letterSpacing: '-.02em', marginBottom: 2, color: '#FFFFFF' }}>{userName || 'ゲスト'}</div>
+            <div className="profile-hero-name" style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, letterSpacing: '-.02em', marginBottom: 2, color: '#FFFFFF' }}>{userName || 'ゲスト'}</div>
             <div style={{ fontSize: 14, color: v3.color.text2, fontWeight: 500 }}>{userName ? `ロジカルシンカー トレーニー` : `ログインすると進捗が保存されるよ`}</div>
             {!userName && (
               <button
@@ -84,7 +84,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
       </div>
 
       {/* Stats grid — タップで詳細シート */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8, marginTop: -32, position: 'relative', zIndex: 2, padding: '0 20px' }}>
+      <div className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8, marginTop: -32, position: 'relative', zIndex: 2, padding: '0 20px' }}>
         <StatCard val={String(streak)} label="連続学習日数" onClick={() => setSheet('streak')} />
         <StatCard val={String(completed)} label="完了レッスン" onClick={() => setSheet('lessons')} />
         <StatCard val={xp.toLocaleString()} label="総XP" onClick={() => setSheet('xp')} />
@@ -300,6 +300,7 @@ function StatCard({ val, label, onClick }: { val: string; label: string; onClick
   return (
     <button
       type="button"
+      className="stat"
       onClick={onClick}
       style={{ background: v3.color.card, borderRadius: 16, padding: '14px 8px', textAlign: 'center', boxShadow: '0 4px 16px rgba(168,192,255,.08)', cursor: 'pointer', position: 'relative', border: 'none', font: 'inherit', color: 'inherit', width: '100%' }}
     >

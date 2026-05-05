@@ -674,7 +674,7 @@ const CATEGORY_LABEL_JP: Record<string, string> = {
 
 function CategoryCard({ name, meta, progress, onClick, image }: { name: string; meta: string; progress?: string; onClick: () => void; image?: string }) {
   return (
-    <button type="button" onClick={onClick}
+    <button type="button" className="cat-tile" onClick={onClick}
       aria-label={`${name}: ${meta}${progress ? ` (${progress})` : ''}`}
       style={{ background: v3.color.card, borderRadius: v3.radius.card, overflow: 'hidden', cursor: 'pointer', boxShadow: v3.shadow.card, display: 'flex', flexDirection: 'column', border: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', padding: 0 }}>
       {image && (

@@ -111,10 +111,10 @@ export function AppShell({
   return (
     <div className="app-shell">
       <div id="app-scroll-container" className={`app-scroll ${hideTabBar ? 'app-scroll--full' : ''}`}>
-        {children}
+        <div className="main-inner">{children}</div>
       </div>
       {!hideTabBar && (
-        <nav className={tabbarClass} role="tablist" aria-label="メインナビゲーション">
+        <nav className={`${tabbarClass} tabbar`} role="tablist" aria-label="メインナビゲーション">
           {TABS.map((tab) => {
             const active = activeTab === tab.id
             return (
@@ -124,7 +124,7 @@ export function AppShell({
                 role="tab"
                 aria-selected={active}
                 aria-label={tab.label}
-                className={`app-tab ${active ? 'app-tab--active' : ''}`}
+                className={`app-tab tab ${active ? 'app-tab--active' : ''}`}
                 onClick={() => {
                   if (!active) haptic.light()
                   onTabChange(tab.id)
