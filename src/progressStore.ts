@@ -217,7 +217,9 @@ export async function migrateLocalStorageToSupabase(userId: string): Promise<voi
       await saveAllProgress(userId, local)
     }
 
-    console.log('[progressStore] migrated localStorage to Supabase')
+    if (import.meta.env.DEV) {
+      console.log('[progressStore] migrated localStorage to Supabase')
+    }
   } catch (e) {
     console.warn('[progressStore] migration failed:', e)
   }

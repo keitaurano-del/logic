@@ -195,7 +195,9 @@ export async function syncOnLogin(userId: string): Promise<void> {
       }))
     }
 
-    console.log('[sync] Login sync complete. Lessons:', merged.completedLessons.length)
+    if (import.meta.env.DEV) {
+      console.log('[sync] Login sync complete. Lessons:', merged.completedLessons.length)
+    }
   } catch (e) {
     console.warn('[sync] syncOnLogin failed:', e)
   }

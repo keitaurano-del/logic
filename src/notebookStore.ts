@@ -190,7 +190,9 @@ export async function migrateLocalStorageToSupabase(userId: string): Promise<voi
       await saveNotebook(userId, entry)
     }
 
-    console.log(`[notebookStore] migrated ${toMigrate.length} entries to Supabase`)
+    if (import.meta.env.DEV) {
+      console.log(`[notebookStore] migrated ${toMigrate.length} entries to Supabase`)
+    }
   } catch (e) {
     console.warn('[notebookStore] migration failed:', e)
   }
