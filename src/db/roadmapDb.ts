@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * src/db/roadmapDb.ts
  * roadmapStore の Supabase 版
+ * NOTE: (db as any) は Supabase 動的スキーマ未知の typing 回避。
  * テーブル: roadmap_progress (user_id, goal_id, target_date, daily_minutes, completed_steps, created_at)
  */
 import { getSupabaseClient } from './index'

@@ -2,7 +2,11 @@
  * src/db/notebookDb.ts
  * notebookStore の Supabase 版
  * テーブル: notebooks (user_id, date, ai_summary, user_memo, created_at)
+ *
+ * NOTE: (db as any) cast は Supabase の動的スキーマ未知の typing を回避するため。
+ * Database 型を src/database.types.ts に生成すれば型安全化可能。
  */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getSupabaseClient } from './index'
 import type { NotebookEntry } from '../notebookStore'
 

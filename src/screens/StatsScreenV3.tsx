@@ -5,7 +5,7 @@
 import { useState, useMemo, useEffect } from 'react'
 import { getStudyDates, getStreak, getCompletedCount, getCompletedLessons, getXp } from '../stats'
 import { v3 } from '../styles/tokensV3'
-import { allLessons } from '../lessonData'
+import { allLessons, type LessonData } from '../lessonData'
 import { hasCompletedPlacement, loadPlacementResult, rankLabel } from '../placementData'
 import { getGuestId } from '../guestId'
 import { API_BASE } from './apiBase'
@@ -289,7 +289,7 @@ export function StatsScreenV3({ onBack: _onBack }: StatsScreenV3Props) {
           <div style={{ flexShrink: 0 }}>
             <div style={{ fontSize: 13, color: v3.color.text2, fontWeight: 600, padding: '8px 4px 12px' }}>最近の学習</div>
             <div style={{ background: v3.color.card, borderRadius: v3.radius.card, overflow: 'hidden', boxShadow: v3.shadow.card }}>
-              {recentLessons.map((lesson: any, i: number) => (
+              {recentLessons.map((lesson: LessonData, i: number) => (
                 <div key={lesson.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: 14, borderBottom: i < recentLessons.length - 1 ? `1px solid ${v3.color.line}` : 'none' }}>
                   <div style={{ width: 32, height: 32, borderRadius: '50%', background: v3.color.accent, color: v3.color.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={v3.color.bg} strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12" /></svg>

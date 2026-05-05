@@ -197,7 +197,7 @@ export const hypothesisProblemSolving: LessonData = {
         '解約データ・ログ・アンケートは社内にある → まずQuick & Dirty',
         '「最初の24時間」というタイムボックスを設けることでアクションが具体化する',
       ],
-    } as any,
+    },
   ],
 }
 

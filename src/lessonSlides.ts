@@ -163,6 +163,9 @@ function getHeroImage(category: string, lessonId?: number): string {
  * - 'quiz' steps → 'quiz' slides
  * - Auto-summary appended at end
  */
+// legacy lesson shape は Record<string, unknown> 互換だが、現実装では多数の
+// プロパティに依存している。型導入は別 PR で行うため、ここでは any のまま。
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function convertLessonToSlides(lesson: any): LessonSlide[] {
   if (!lesson?.steps || !Array.isArray(lesson.steps)) return []
 
@@ -198,8 +201,8 @@ export function convertLessonToSlides(lesson: any): LessonSlide[] {
       let choices: string[] = []
       let correctIndex = 0
       if (Array.isArray(step.options)) {
-        choices = step.options.map((o: any) => typeof o === 'string' ? o : o.label || o.text || '')
-        correctIndex = step.options.findIndex((o: any) => o.correct === true)
+        choices = step.options.map((o: string | { label?: string; text?: string }) => typeof o === 'string' ? o : o.label || o.text || '')
+        correctIndex = step.options.findIndex((o: { correct?: boolean }) => o.correct === true)
         if (correctIndex < 0) correctIndex = step.correctIndex ?? step.answer ?? 0
       } else if (Array.isArray(step.choices)) {
         choices = step.choices
