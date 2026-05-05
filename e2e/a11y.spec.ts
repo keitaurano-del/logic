@@ -81,4 +81,26 @@ test.describe('a11y / axe-core', () => {
     const results = await buildScanner(page).analyze()
     expect(results.violations, JSON.stringify(results.violations, null, 2)).toEqual([])
   })
+
+  test('Onboarding screen has no critical accessibility violations', async ({ page }) => {
+    await page.addInitScript(() => {
+      // onboarding を意図的に表示するため logic-onboarded はセットしない
+      localStorage.setItem('logic-install-id', 'test')
+    })
+    await page.goto('/?preview=onboarding')
+    await page.waitForSelector('.app-shell', { timeout: 10_000 })
+    const results = await buildScanner(page).analyze()
+    expect(results.violations, JSON.stringify(results.violations, null, 2)).toEqual([])
+  })
+
+  test('Pricing screen has no critical accessibility violations', async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem('logic-onboarded', '1')
+      localStorage.setItem('logic-install-id', 'test')
+    })
+    await page.goto('/?preview=pricing')
+    await page.waitForSelector('.app-shell', { timeout: 10_000 })
+    const results = await buildScanner(page).analyze()
+    expect(results.violations, JSON.stringify(results.violations, null, 2)).toEqual([])
+  })
 })
