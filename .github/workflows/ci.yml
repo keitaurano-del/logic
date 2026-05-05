@@ -60,10 +60,7 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Run axe-core a11y tests
-        # 初期投入時点では既存違反のスナップショット取得が目的のため non-blocking。
-        # 実機検証 + 違反 0 達成後に continue-on-error を外して blocking に昇格する。
         run: npx playwright test e2e/a11y.spec.ts --project=chromium
-        continue-on-error: true
         env:
           VITE_API_BASE: 'https://example.com'
 
