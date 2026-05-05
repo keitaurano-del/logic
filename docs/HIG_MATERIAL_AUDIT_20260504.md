@@ -8,19 +8,21 @@
 
 ---
 
-## 実装ステータス（2026-05-04 セッション完了時点 / PR #72-#85 すべて main 反映済）
+## 実装ステータス（2026-05-05 Phase 2 クローズ時点 / PR #72-#89 すべて main 反映済）
 
 | Phase | 計画 | 実装累計 | 状態 |
 |---|---|---|---|
 | **Phase 0** リリースブロッカー | 8h | ~8h | ✅ 100% |
 | **Phase 1** デザインシステム土台 | 32h | ~28h | ✅ 88% |
-| **Phase 2** 全画面 HIG/M3 適合 | 60h | ~58h | 🟢 99%（22画面 Header 統一、5旧画面削除、12画面 触覚、Switch、ローディング、色 sweep ×5） |
-| **Phase 3** 個別最適化 | 80h | 0h | ⚪ 未着手（実機検証ベース） |
+| **Phase 2** 全画面 HIG/M3 適合 | 60h | ~58h | ✅ 100%（構造的タスク完了。残る px→rem / 全色 sweep / ActionSheet 化は実機検証ベースのため Phase 3 に移管） |
+| **Phase 3** 個別最適化 | 80h | 0h | ⚪ 未着手（実機検証ベース。Phase 2 から繰越分も合流） |
 | **Phase 4** 仕上げ・検証 | 24h | ~10h | 🟡 自動 a11y + QA + CI + lint cleanup、実機検証要 user |
 
 **累計 ~104h / 204h ≒ 51%**
 
-### 本セッション完了 PR (14 本マージ)
+> **Phase 2 クローズ判断（2026-05-05）**: Phase 2 の構造タスク（Header 統一 22 画面、`<div onClick>` 撤廃、旧画面削除 5 本、Switch / LoadingIndicator 化、触覚 12 画面、`#6C8EF5` 完全除去、jsx-a11y 警告化、TS lint cleanup）は完了。残る純粋な機械的置換タスク（font-size px→rem 1451 箇所、ハードコード色 995 箇所のうちカテゴリ色を除く ~400 件、`<select>` → `<ActionSheet>`、`index.css` legacy patch ~130 件）は **実機での visual regression 確認が前提**になるため、画面単位で進める Phase 3 に統合する。
+
+### 本セッション完了 PR (18 本マージ)
 - #72 監査文書 (1625 行)
 - #73 Phase 0/1 + Stripe 削除 (51 files)
 - #74 Phase 2 第1波 (V3 div→button、Switch、触覚)
@@ -35,6 +37,10 @@
 - #83 dark mode brand color regression fix
 - #84 dead patch selectors -50 行
 - #85 legacy jsx-a11y warning 抑制 -85
+- #86 audit doc セッション完了サマリー
+- #87 catch (e: unknown) 化 (-4 errors)
+- #88 TS lint error 51 → 31 (-20)
+- #89 AppV3 不要な as any 削除 (-3)
 
 ### Phase 0 完了項目
 - ✅ `capacitor.config.ts` StatusBar `LIGHT` + `#1A1F2E` + `overlaysWebView`
@@ -118,11 +124,13 @@
   - `'#F87171'` / `'#FCA5A5'` / `'#DC2626'` / `'#F04438'` / `'#EF4444'` (red destructive) → `'var(--md-sys-color-error)'`
   - `rgba(108,142,245, ...)` (legacy accent alpha) → `rgba(168,192,255, ...)` (新 M3 primary RGB)
 
-### Phase 2 残（次セッション以降）
-- 全 px → rem 化 (font-size 275 件)
-- ハードコード色値 残 400+ 件の CSS 変数化（カテゴリ色は意図的に残す）
-- 既存 `<select>` を `<ActionSheet>` 系に置換（OS native picker でも実用的なため優先度低）
-- `index.css` のレガシー patch selectors (130 件) の削除（ハードコード色値を完了させた後）
+### Phase 3 へ移管（実機検証ベース）
+> Phase 2 のクローズに伴い、以下は画面単位で実機確認しながら進める Phase 3 に統合した。
+
+- 全 px → rem 化（font-size の px リテラル 1451 箇所。inline style 含む）
+- ハードコード色値 残 ~400 件の CSS 変数化（カテゴリ色は意図的に残す）
+- 既存 `<select>` 10 箇所を `<ActionSheet>` 系に置換（OS native picker でも実用的なため低優先）
+- `index.css` のレガシー patch selectors 残 ~130 件の整理（ハードコード色値を完了させた後）
 
 ### 検証
 - ✅ `npm run build` (TypeScript + Vite)
