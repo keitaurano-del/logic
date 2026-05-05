@@ -8,17 +8,32 @@
 
 ---
 
-## 実装ステータス（2026-05-05 Phase 2 クローズ時点 / PR #72-#89 すべて main 反映済）
+## 実装ステータス（2026-05-05 Phase 3/4 着手時点）
 
 | Phase | 計画 | 実装累計 | 状態 |
 |---|---|---|---|
 | **Phase 0** リリースブロッカー | 8h | ~8h | ✅ 100% |
 | **Phase 1** デザインシステム土台 | 32h | ~28h | ✅ 88% |
 | **Phase 2** 全画面 HIG/M3 適合 | 60h | ~58h | ✅ 100%（構造的タスク完了。残る px→rem / 全色 sweep / ActionSheet 化は実機検証ベースのため Phase 3 に移管） |
-| **Phase 3** 個別最適化 | 80h | 0h | ⚪ 未着手（実機検証ベース。Phase 2 から繰越分も合流） |
-| **Phase 4** 仕上げ・検証 | 24h | ~10h | 🟡 自動 a11y + QA + CI + lint cleanup、実機検証要 user |
+| **Phase 3** 個別最適化 | 80h | ~6h | 🟢 7%（高優先 5 画面の a11y / motion 着手。詳細下記） |
+| **Phase 4** 仕上げ・検証 | 24h | ~12h | 🟢 50%（4-4 axe-core CI 完了。4-1/4-2/4-3/4-5/4-6 は実機検証要 user） |
 
-**累計 ~104h / 204h ≒ 51%**
+**累計 ~112h / 204h ≒ 55%**
+
+### Phase 3 着手分（本セッション）
+- **§5.5 LessonScreen**: 設問 aria-live、選択肢 role="radiogroup" / "radio" + aria-checked、min-height 56px、フィードバック role="status" + aria-live="assertive"、progressbar の ARIA
+- **§5.7 LessonStoriesScreen**: クイズ設問 aria-live、選択肢 wrapper role="radiogroup"/"group"、解説パネル role="status"
+- **§5.8 CompletedLessonsScreen**: `<ul>/<li>` セマンティクス、各 li に aria-label="<タイトル> 完了済み"
+- **§5.1 HomeScreenV3**: `<header role="banner">` / `<main role="main">`、ロゴに role="img" + aria-label
+- **§5.x ProfileScreenV3**: Lv 進捗バーに role="progressbar"、統計グリッドに role="list"、ストリーク数値に aria-live="polite"
+- **§5.3 RoadmapScreenV3**: コース一覧に role="list"/"listitem" + 進捗込み aria-label
+- **§6 motion**: `@media (prefers-reduced-motion: reduce)` グローバルガード（全 transition/animation を 0.01ms 化）
+- **§4 select / input a11y**: NotificationSettings, Settings, ReportProblem, JournalInput, RoadmapV3 の select に aria-label / htmlFor 関連付け
+
+### Phase 4-4 完了（本セッション）
+- `e2e/axe.spec.ts`: home / roadmap / profile の 3 画面に対し `@axe-core/playwright` で WCAG 2.0/2.1 AA 自動検証
+- `.github/workflows/ci.yml` に `axe-a11y` job 追加 — PR ごとに critical / serious 違反 0 件を維持
+- color-contrast は dynamic theme との相性のため自動対象外（手動 QA でカバー）
 
 > **Phase 2 クローズ判断（2026-05-05）**: Phase 2 の構造タスク（Header 統一 22 画面、`<div onClick>` 撤廃、旧画面削除 5 本、Switch / LoadingIndicator 化、触覚 12 画面、`#6C8EF5` 完全除去、jsx-a11y 警告化、TS lint cleanup）は完了。残る純粋な機械的置換タスク（font-size px→rem 1451 箇所、ハードコード色 995 箇所のうちカテゴリ色を除く ~400 件、`<select>` → `<ActionSheet>`、`index.css` legacy patch ~130 件）は **実機での visual regression 確認が前提**になるため、画面単位で進める Phase 3 に統合する。
 
