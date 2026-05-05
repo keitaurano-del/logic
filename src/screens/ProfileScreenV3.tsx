@@ -55,9 +55,9 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
     <div style={{ background: v3.color.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: v3.color.text }}>
       {/* Hero */}
       <div style={{ background: 'linear-gradient(160deg, #1A1F2E 0%, #1E2540 70%, #252C40 100%)', padding: 'calc(env(safe-area-inset-top, 44px) + 14px) 20px 28px', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', right: -50, top: -50, width: 200, height: 200, borderRadius: '50%', background: 'rgba(168,192,255,0.2)', filter: 'blur(40px)', pointerEvents: 'none' }}></div>
+        <div style={{ position: 'absolute', right: -50, top: -50, width: 200, height: 200, borderRadius: '50%', background: 'rgba(108,142,245,0.2)', filter: 'blur(40px)', pointerEvents: 'none' }}></div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 18, position: 'relative', zIndex: 1 }}>
-          <div className="profile-avatar" style={{ width: 64, height: 64, borderRadius: '50%', background: `linear-gradient(135deg, ${v3.color.accent}, #9BB3FA)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Inter Tight', sans-serif", fontSize: 26, fontWeight: 900, color: v3.color.bg, boxShadow: `0 0 24px rgba(168,192,255,0.4)` }}>
+          <div className="profile-avatar" style={{ width: 64, height: 64, borderRadius: '50%', background: `linear-gradient(135deg, ${v3.color.accent}, #9BB3FA)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Inter Tight', sans-serif", fontSize: 26, fontWeight: 900, color: v3.color.bg, boxShadow: `0 0 24px rgba(108,142,245,0.4)` }}>
             {(userName || 'G').slice(0, 1).toUpperCase()}
           </div>
           <div style={{ flex: 1 }}>
@@ -78,7 +78,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
           <span style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 900, letterSpacing: '-.02em', color: '#FFFFFF' }}>Lv.{lv.level}</span>
         </div>
         <div style={{ height: 12, background: 'rgba(255,255,255,.1)', borderRadius: 99, overflow: 'hidden', marginBottom: 8, position: 'relative', zIndex: 1 }}>
-          <div style={{ height: '100%', width: `${levelPct}%`, background: v3.color.accent, borderRadius: 99, boxShadow: '0 0 12px rgba(168,192,255,0.5)' }}></div>
+          <div style={{ height: '100%', width: `${levelPct}%`, background: v3.color.accent, borderRadius: 99, boxShadow: '0 0 12px rgba(108,142,245,0.5)' }}></div>
         </div>
         <div style={{ fontSize: 14, color: v3.color.text2, fontWeight: 500, textAlign: 'right', position: 'relative', zIndex: 1 }}>次のLvまで {Math.max(0, needed - levelXp)} XP</div>
       </div>
@@ -114,7 +114,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
           <button type="button" onClick={onOpenPlacementTest}
             aria-label="実力診断テスト: 5軸スキル診断で最適なコースを見つけよう"
             style={{
-              background: `linear-gradient(135deg, ${v3.color.accentSoft} 0%, rgba(168,192,255,.1) 100%)`,
+              background: `linear-gradient(135deg, ${v3.color.accentSoft} 0%, rgba(108,142,245,.1) 100%)`,
               border: `1px solid ${v3.color.accent}40`,
               borderRadius: v3.radius.card, padding: '16px 18px',
               cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14,
@@ -303,7 +303,7 @@ function StatCard({ val, label, onClick }: { val: string; label: string; onClick
       type="button"
       className="stat"
       onClick={onClick}
-      style={{ background: v3.color.card, borderRadius: 16, padding: '14px 8px', textAlign: 'center', boxShadow: '0 4px 16px rgba(168,192,255,.08)', cursor: 'pointer', position: 'relative', border: 'none', font: 'inherit', color: 'inherit', width: '100%' }}
+      style={{ background: v3.color.card, borderRadius: 16, padding: '14px 8px', textAlign: 'center', boxShadow: '0 4px 16px rgba(108,142,245,.08)', cursor: 'pointer', position: 'relative', border: 'none', font: 'inherit', color: 'inherit', width: '100%' }}
     >
       <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, color: v3.color.accent, letterSpacing: '-.03em', lineHeight: 1 }}>{val}</div>
       <div style={{ fontSize: 11, fontWeight: 600, color: v3.color.text2, marginTop: 5 }}>{label}</div>

@@ -9,7 +9,7 @@
 export const tokensV3 = {
   // ── Material 3 Color Roles (canonical) ──
   m3: {
-    primary:                   '#A8C0FF',
+    primary:                   '#6C8EF5',
     onPrimary:                 '#0A1F4D',
     primaryContainer:          '#2E45A8',
     onPrimaryContainer:        '#DDE5FF',
@@ -40,7 +40,7 @@ export const tokensV3 = {
     inverseOnSurface:          '#1A1F2E',
     inversePrimary:            '#3E59B0',
     scrim:                     'rgba(0,0,0,.55)',
-    surfaceTint:               '#A8C0FF',
+    surfaceTint:               '#6C8EF5',
   },
 
   // ── Legacy alias (deprecated, use m3.* instead) ──
@@ -49,9 +49,9 @@ export const tokensV3 = {
     card: '#252C40',
     card2: '#2E3652',
     cardSoft: '#1E2438',
-    accent: '#A8C0FF',
-    accentSoft: 'rgba(168,192,255,.16)',
-    accentGlow: 'rgba(168,192,255,.25)',
+    accent: '#6C8EF5',
+    accentSoft: 'rgba(108,142,245,.16)',
+    accentGlow: 'rgba(108,142,245,.25)',
     warm: '#F5BFA0',
     warmSoft: 'rgba(245,191,160,.16)',
     text: '#E8ECF4',
@@ -80,7 +80,7 @@ export const tokensV3 = {
   shadow: {
     card: 'inset 0 1px 0 rgba(255,255,255,.04)',
     hero: '0 4px 24px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.06)',
-    cta: '0 4px 16px rgba(168,192,255,.25)',
+    cta: '0 4px 16px rgba(108,142,245,.25)',
   },
   motion: {
     tap: 'transform .12s ease, opacity .12s ease',

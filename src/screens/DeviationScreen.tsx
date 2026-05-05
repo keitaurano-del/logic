@@ -166,8 +166,8 @@ export function DeviationScreen({ onBack, onRetakeTest, onStartLesson }: Deviati
                   justifyContent: 'space-between',
                   padding: '8px 10px',
                   borderRadius: 10,
-                  background: 'rgba(168,192,255,.08)',
-                  border: '1px solid rgba(168,192,255,.18)',
+                  background: 'rgba(108,142,245,.08)',
+                  border: '1px solid rgba(108,142,245,.18)',
                 }}
               >
                 <span style={{ fontSize: 13, fontWeight: 700 }}>{axisLabel(a.axis).label}</span>
