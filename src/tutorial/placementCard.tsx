@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { useState } from 'react'
 import { tutorial } from './tutorialStorage'
 import { v3 } from '../styles/tokensV3'

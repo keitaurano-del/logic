@@ -4,7 +4,12 @@ import { tutorial } from './tutorialStorage'
 /**
  * 今日の1問（デイリーフェルミ）インラインガイド
  * 初回のみ各要素にパルスアニメ＋ラベルを表示。入力開始で全消え。
+ *
+ * NOTE: コンポーネントと custom hook を同居しているため Fast Refresh
+ * 警告を file 全体で disable する。
  */
+
+/* eslint-disable react-refresh/only-export-components */
 
 const pulseKeyframes = `
 @keyframes tut-pulse {
