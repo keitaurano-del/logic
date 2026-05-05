@@ -383,11 +383,11 @@ function ReviewItem({ index, ans }: { index: number; ans: PlacementAnswer }) {
 
       <div style={{
         background: 'rgba(168,192,255,.06)',
-        borderLeft: '3px solid var(--brand, #6C8EF5)',
+        borderLeft: '3px solid var(--brand, #A8C0FF)',
         borderRadius: 8,
         padding: '10px 12px',
       }}>
-        <div className="eyebrow" style={{ marginBottom: 4, color: 'var(--brand, #6C8EF5)' }}>解説</div>
+        <div className="eyebrow" style={{ marginBottom: 4, color: 'var(--brand, #A8C0FF)' }}>解説</div>
         <p style={{ fontSize: 13, lineHeight: 1.7, margin: 0 }}>{q.explanation}</p>
       </div>
     </section>
@@ -425,7 +425,7 @@ function CreatingView({ result, onSaved }: { result: PlacementResult; onSaved: (
           height: 56px;
           border-radius: 50%;
           border: 4px solid rgba(168,192,255,0.18);
-          border-top-color: #6C8EF5;
+          border-top-color: var(--md-sys-color-primary);
           animation: placement-spin 0.85s linear infinite;
         }
         @keyframes placement-spin {

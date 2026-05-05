@@ -6,7 +6,7 @@ const TUTORIAL_KEY = 'logic-tutorial-done-v2'
 // ── SVGアイコン ──────────────────────────────────────
 const Icons = {
   fermi: (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#6C8EF5" strokeWidth="1.8" strokeLinecap="round">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--md-sys-color-primary)" strokeWidth="1.8" strokeLinecap="round">
       <circle cx="12" cy="12" r="10"/>
       <path d="M12 8v4l3 3"/>
     </svg>
@@ -362,7 +362,7 @@ export function TutorialFAB({ onClick, onHide }: { onClick: () => void; onHide: 
         style={{
           width: 56, height: 56,
           borderRadius: '50%',
-          background: 'linear-gradient(135deg, #6C8EF5, #8B6EF5)',
+          background: 'linear-gradient(135deg, var(--md-sys-color-primary), #8B6EF5)',
           border: 'none',
           boxShadow: '0 6px 20px rgba(168,192,255,0.5)',
           cursor: 'pointer',
