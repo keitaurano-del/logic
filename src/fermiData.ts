@@ -84,7 +84,12 @@ export const FERMI_STATS: FermiStat[][] = [
   [{ label: 'JR総路線距離', value: '約2万km' }, { label: '私鉄・地下鉄路線距離', value: '約1.5万km' }, { label: '1路線の1日の運行本数（参考）', value: '約100〜500本' }],
 ]
 
+/** 指定インデックスの問題に対応した参考データを返す */
+export function getFermiStatsByIndex(index: number): FermiStat[] {
+  return FERMI_STATS[index] ?? []
+}
+
 /** 今日の問題に対応した参考データを返す */
 export function getDailyFermiStats(): FermiStat[] {
-  return FERMI_STATS[getDailyFermiIndex()] ?? []
+  return getFermiStatsByIndex(getDailyFermiIndex())
 }
