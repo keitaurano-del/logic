@@ -12,20 +12,21 @@ import { v3 } from '../styles/tokensV3'
 import { getStudyDates as _getStudyDatesArr } from '../stats'
 import LessonIcon from '../LessonIcon'
 import { StarIcon } from '../icons'
+import { t } from '../i18n'
 
 function getPlanLabel(): string {
   const state = getSubscriptionState()
   if (isPremiumPlan()) {
     if (state.plan === 'trial') {
       const days = daysLeftInTrial()
-      return days > 0 ? `トライアル（残り${days}日）` : 'トライアル切れ'
+      return days > 0 ? t('profile.planTrialDays', { n: String(days) }) : t('profile.planTrialExpired')
     }
-    return 'プレミアム'
+    return t('profile.planPremium')
   }
   if (isStandardPlan()) {
-    return state.plan.includes('yearly') ? 'スタンダード（年）' : 'スタンダード'
+    return state.plan.includes('yearly') ? t('profile.planStandardYearly') : t('profile.planStandard')
   }
-  return '無料（キャンペーン中）'
+  return t('profile.planFreeCampaign')
 }
 
 interface ProfileScreenV3Props {
@@ -63,33 +64,33 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
             {(userName || 'G').slice(0, 1).toUpperCase()}
           </div>
           <div style={{ flex: 1 }}>
-            <div className="profile-hero-name" style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, letterSpacing: '-.02em', marginBottom: 2, color: 'var(--text-on-hero)' }}>{userName || 'ゲスト'}</div>
-            <div style={{ fontSize: 14, color: v3.color.text2, fontWeight: 500 }}>{userName ? `ロジカルシンカー トレーニー` : `ログインすると進捗が保存されるよ`}</div>
+            <div className="profile-hero-name" style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, letterSpacing: '-.02em', marginBottom: 2, color: 'var(--text-on-hero)' }}>{userName || t('home.guestName')}</div>
+            <div style={{ fontSize: 14, color: v3.color.text2, fontWeight: 500 }}>{userName ? t('profile.userTraineeRole') : t('profile.guestPrompt')}</div>
             {!userName && (
               <button
                 onClick={() => onOpenSettings('account')}
                 style={{ marginTop: 8, padding: '6px 16px', background: v3.color.accent, color: 'var(--text-on-hero)', border: 'none', borderRadius: 99, fontSize: 13, fontWeight: 700, cursor: 'pointer' }}
               >
-                ログイン / 新規登録
+                {t('profile.loginCta')}
               </button>
             )}
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8, position: 'relative', zIndex: 1 }}>
-          <span style={{ fontSize: 14, fontWeight: 700, color: v3.color.text2, letterSpacing: '.12em', textTransform: 'uppercase' }}>レベル</span>
+          <span style={{ fontSize: 14, fontWeight: 700, color: v3.color.text2, letterSpacing: '.12em', textTransform: 'uppercase' }}>{t('profile.level')}</span>
           <span style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 900, letterSpacing: '-.02em', color: 'var(--text-on-hero)' }}>Lv.{lv.level}</span>
         </div>
         <div style={{ height: 12, background: 'rgba(255,255,255,.1)', borderRadius: 99, overflow: 'hidden', marginBottom: 8, position: 'relative', zIndex: 1 }}>
           <div style={{ height: '100%', width: `${levelPct}%`, background: v3.color.accent, borderRadius: 99, boxShadow: '0 0 12px rgba(108,142,245,0.5)' }}></div>
         </div>
-        <div style={{ fontSize: 14, color: v3.color.text2, fontWeight: 500, textAlign: 'right', position: 'relative', zIndex: 1 }}>次のLvまで {Math.max(0, needed - levelXp)} XP</div>
+        <div style={{ fontSize: 14, color: v3.color.text2, fontWeight: 500, textAlign: 'right', position: 'relative', zIndex: 1 }}>{t('profile.toNextLevel', { xp: String(Math.max(0, needed - levelXp)) })}</div>
       </div>
 
       {/* Stats grid — タップで詳細シート */}
       <div className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8, marginTop: -28, position: 'relative', zIndex: 2, padding: '0 20px' }}>
-        <StatCard val={String(streak)} label="連続学習日数" highlight={streak > 0} onClick={() => setSheet('streak')} />
-        <StatCard val={String(completed)} label="完了レッスン" onClick={() => setSheet('lessons')} />
-        <StatCard val={xp.toLocaleString()} label="総XP" onClick={() => setSheet('xp')} />
+        <StatCard val={String(streak)} label={t('profile.statStreakDays')} highlight={streak > 0} onClick={() => setSheet('streak')} />
+        <StatCard val={String(completed)} label={t('profile.statCompleted')} onClick={() => setSheet('lessons')} />
+        <StatCard val={xp.toLocaleString()} label={t('profile.totalXp')} onClick={() => setSheet('xp')} />
       </div>
 
       <div style={{ flex: 1, padding: '16px 16px 100px', display: 'flex', flexDirection: 'column', gap: v3.spacing.gap }}>
@@ -101,14 +102,14 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
           return (
             <div style={{ background: v3.color.card, borderRadius: v3.radius.card, padding: 18, boxShadow: v3.shadow.card, border: '1px solid rgba(255,255,255,.06)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-                <div style={{ fontSize: 14, color: 'var(--text-on-hero)', fontWeight: 700 }}>今週の学習サマリー</div>
+                <div style={{ fontSize: 14, color: 'var(--text-on-hero)', fontWeight: 700 }}>{t('profile.weekSummary')}</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, fontWeight: 800, color: studiedCount > 0 ? '#FF8C00' : v3.color.text3 }}>
                   <FlameIcon size={16} dim={studiedCount === 0} />
-                  <span>{studiedCount}/7日</span>
+                  <span>{t('profile.studiedDaysOf7', { n: String(studiedCount) })}</span>
                 </div>
               </div>
               <div style={{ display: 'flex', gap: 6 }}>
-                {['月', '火', '水', '木', '金', '土', '日'].map((d, i) => {
+                {[t('profile.dayMon'), t('profile.dayTue'), t('profile.dayWed'), t('profile.dayThu'), t('profile.dayFri'), t('profile.daySat'), t('profile.daySun')].map((d, i) => {
                   const studied = week[i]
                   const isToday = i === todayDow
                   return (
@@ -141,7 +142,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
         {/* 実力診断テスト */}
         {onOpenPlacementTest && (
           <button type="button" onClick={onOpenPlacementTest}
-            aria-label="実力診断テスト: 5軸スキル診断で最適なコースを見つけよう"
+            aria-label={t('profile.assessmentAria')}
             style={{
               background: `linear-gradient(135deg, ${v3.color.accentSoft} 0%, rgba(108,142,245,.1) 100%)`,
               border: `1px solid ${v3.color.accent}40`,
@@ -149,12 +150,12 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
               cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14,
               color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%',
             }}>
-            <div style={{ width: 40, height: 40, borderRadius: 12, background: v3.color.accent, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            <div style={{ width: 40, height: 40, borderRadius: 12, background: v3.color.accent, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: 'var(--accent-fg)' }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-on-hero)' }}>実力診断テスト</div>
-              <div style={{ fontSize: 13, color: v3.color.text2, marginTop: 2 }}>5軸スキル診断で最適なコースを見つけよう</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-on-hero)' }}>{t('profile.assessmentTitle')}</div>
+              <div style={{ fontSize: 13, color: v3.color.text2, marginTop: 2 }}>{t('profile.assessmentDesc')}</div>
             </div>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
           </button>
@@ -162,17 +163,17 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
 
         {/* 設定 */}
         <div style={{ background: v3.color.card, borderRadius: v3.radius.card, overflow: 'hidden', boxShadow: v3.shadow.card }}>
-          <SettingRow icon="user" name="アカウント" sub={userName || 'ゲスト'} onClick={() => onOpenSettings('account')} />
-          <SettingRow icon="bell" name="通知設定" sub="" onClick={() => onOpenSettings('notifications')} />
-          <SettingRow icon="card" name="プラン" sub={getPlanLabel()} onClick={onOpenPricing} />
-          <SettingRow icon="message" name="フィードバック" sub="ご意見をお聞かせください" onClick={onOpenFeedback} />
-          <SettingRow icon="doc" name="利用規約" sub="" onClick={() => window.open('/terms.html', '_blank')} />
-          <SettingRow icon="shield" name="プライバシーポリシー" sub="" onClick={() => window.open('/privacy.html', '_blank')} />
-          <SettingRow icon="scale" name="特定商取引法に基づく表記" sub="" onClick={() => window.open('/tokushoho.html', '_blank')} />
+          <SettingRow icon="user" name={t('profile.account')} sub={userName || t('home.guestName')} onClick={() => onOpenSettings('account')} />
+          <SettingRow icon="bell" name={t('profile.notifications')} sub="" onClick={() => onOpenSettings('notifications')} />
+          <SettingRow icon="card" name={t('profile.plan')} sub={getPlanLabel()} onClick={onOpenPricing} />
+          <SettingRow icon="message" name={t('profile.feedbackName')} sub={t('profile.feedbackSub')} onClick={onOpenFeedback} />
+          <SettingRow icon="doc" name={t('profile.terms')} sub="" onClick={() => window.open('/terms.html', '_blank')} />
+          <SettingRow icon="shield" name={t('profile.privacy')} sub="" onClick={() => window.open('/privacy.html', '_blank')} />
+          <SettingRow icon="scale" name={t('profile.tokushoho')} sub="" onClick={() => window.open('/tokushoho.html', '_blank')} />
         </div>
         <button type="button" onClick={handleLogout}
           style={{ background: 'transparent', border: '1px solid rgba(252,165,165,.4)', borderRadius: 14, padding: 13, textAlign: 'center', fontSize: 14, fontWeight: 700, color: 'var(--md-sys-color-error)', cursor: 'pointer', font: 'inherit', width: '100%', minHeight: 44 }}>
-          ログアウト
+          {t('profile.logout')}
         </button>
       </div>
 
@@ -181,12 +182,12 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
         <div
           role="dialog"
           aria-modal="true"
-          aria-label="メニュー"
+          aria-label={t('profile.menu')}
           style={{ position: 'fixed', inset: 0, zIndex: 100, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'flex-end' }}
         >
           <button
             type="button"
-            aria-label="シートを閉じる"
+            aria-label={t('profile.closeSheet')}
             onClick={() => setSheet(null)}
             style={{ position: 'absolute', inset: 0, background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}
           />
@@ -200,7 +201,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
             {sheet === 'lessons' && <LessonsSheet onOpenLesson={(id) => { setSheet(null); onOpenLesson?.(id) }} />}
             {sheet === 'xp' && <XpSheet totalXp={xp} />}
 
-            <button onClick={() => setSheet(null)} style={{ marginTop: 20, width: '100%', background: v3.color.cardSoft, border: 'none', borderRadius: 12, padding: '13px', fontSize: 14, fontWeight: 700, color: v3.color.text2, cursor: 'pointer' }}>閉じる</button>
+            <button onClick={() => setSheet(null)} style={{ marginTop: 20, width: '100%', background: v3.color.cardSoft, border: 'none', borderRadius: 12, padding: '13px', fontSize: 14, fontWeight: 700, color: v3.color.text2, cursor: 'pointer' }}>{t('profile.close')}</button>
           </div>
         </div>
       )}
@@ -212,15 +213,15 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
 function StreakSheet({ streak }: { streak: number }) {
   return (
     <>
-      <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-on-hero)', marginBottom: 16 }}>連続学習日数</div>
+      <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-on-hero)', marginBottom: 16 }}>{t('profile.streakDaysHeading')}</div>
       <div style={{ textAlign: 'center', padding: '20px 0' }}>
         <div style={{ fontSize: 72, fontWeight: 900, color: v3.color.accent, letterSpacing: '-0.04em', lineHeight: 1 }}>{streak}</div>
-        <div style={{ fontSize: 18, color: v3.color.text2, marginTop: 8, fontWeight: 600 }}>日連続</div>
+        <div style={{ fontSize: 18, color: v3.color.text2, marginTop: 8, fontWeight: 600 }}>{t('profile.streakDaysUnit')}</div>
       </div>
       <div style={{ background: v3.color.bg, borderRadius: 14, padding: '14px 16px' }}>
         <div style={{ fontSize: 13, color: v3.color.text2, lineHeight: 1.7 }}>
-          レッスンを完了した日にカウントされるよ。<br />
-          1日サボっても翌日やれば継続できる！
+          {t('profile.streakNote1')}<br />
+          {t('profile.streakNote2')}
         </div>
       </div>
     </>
@@ -235,9 +236,9 @@ function LessonsSheet({ onOpenLesson }: { onOpenLesson: (id: number) => void }) 
 
   return (
     <>
-      <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-on-hero)', marginBottom: 16 }}>完了レッスン（{completedLessons.length}件）</div>
+      <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-on-hero)', marginBottom: 16 }}>{t('profile.completedLessonsTitle', { n: String(completedLessons.length) })}</div>
       {completedLessons.length === 0 ? (
-        <div style={{ textAlign: 'center', color: v3.color.text2, padding: '32px 0', fontSize: 14 }}>まだレッスンを完了していないよ</div>
+        <div style={{ textAlign: 'center', color: v3.color.text2, padding: '32px 0', fontSize: 14 }}>{t('profile.noLessonsYet')}</div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {completedLessons.map(l => (
@@ -274,27 +275,27 @@ function XpSheet({ totalXp }: { totalXp: number }) {
   const entries = Object.entries(grouped).sort((a, b) => b[1] - a[1])
   const thisMonthTotal = log.reduce((s, e) => s + e.xp, 0)
   const now = new Date()
-  const monthLabel = `${now.getMonth() + 1}月`
+  const monthLabel = t('profile.monthLabel', { n: String(now.getMonth() + 1) })
 
   return (
     <>
       <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-on-hero)', marginBottom: 4, display: 'flex', alignItems: 'center', gap: 8 }}>
         <StarIcon width={20} height={20} aria-hidden="true" />
-        <span>総XP</span>
+        <span>{t('profile.totalXp')}</span>
       </div>
-      <div style={{ fontSize: 13, color: v3.color.text2, marginBottom: 16 }}>{monthLabel}の獲得内訳</div>
+      <div style={{ fontSize: 13, color: v3.color.text2, marginBottom: 16 }}>{t('profile.monthBreakdown', { month: monthLabel })}</div>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: 36, fontWeight: 900, color: v3.color.accent }}>{totalXp.toLocaleString()}</div>
-          <div style={{ fontSize: 12, color: v3.color.text2 }}>累計XP</div>
+          <div style={{ fontSize: 12, color: v3.color.text2 }}>{t('profile.cumulativeXp')}</div>
         </div>
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: 36, fontWeight: 900, color: '#9BB3FA' }}>+{thisMonthTotal}</div>
-          <div style={{ fontSize: 12, color: v3.color.text2 }}>今月獲得</div>
+          <div style={{ fontSize: 12, color: v3.color.text2 }}>{t('profile.thisMonthEarned')}</div>
         </div>
       </div>
       {entries.length === 0 ? (
-        <div style={{ textAlign: 'center', color: v3.color.text2, padding: '16px 0', fontSize: 14 }}>今月はまだXPを獲得していないよ</div>
+        <div style={{ textAlign: 'center', color: v3.color.text2, padding: '16px 0', fontSize: 14 }}>{t('profile.noXpThisMonth')}</div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {entries.map(([label, xp]) => {
