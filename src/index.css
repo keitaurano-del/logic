@@ -25,6 +25,7 @@
   --bg-secondary:  #F4F5F9;
   --bg-card:       #FFFFFF;
   --bg-elevated:   #FFFFFF;
+  --bg-card-grad:  linear-gradient(180deg, #FFFFFF 0%, #F8F9FC 100%);
   --bg-tertiary:   #E9EBF2;
   --bg-hero:       #1E2D5C;   /* brand-dark navy */
   --bg-glass:      rgba(255, 255, 255, 0.78);
@@ -76,10 +77,22 @@
   --radius-xl: 24px;
   --radius-full: 9999px;
 
-  /* Shadows — 立体感 3 層構造（上端ハイライト + 接地影 + 中間ドロップ + 遠景拡散） */
-  --shadow-card:    inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 1px 2px rgba(15, 20, 36, 0.08), 0 6px 16px rgba(15, 20, 36, 0.12), 0 16px 32px rgba(15, 20, 36, 0.10);
-  --shadow-card-hover: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 2px 4px rgba(15, 20, 36, 0.10), 0 12px 24px rgba(15, 20, 36, 0.16), 0 24px 48px rgba(15, 20, 36, 0.14);
-  --shadow-elevated: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 4px 16px rgba(15, 20, 36, 0.12), 0 12px 32px rgba(15, 20, 36, 0.10);
+  /* Shadows — F案 (上端 rim + 下端 inset shade + 3層 drop) */
+  --shadow-card:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -1px 0 rgba(15, 20, 36, 0.04),
+    0 1px 2px rgba(15, 20, 36, 0.06),
+    0 8px 20px rgba(15, 20, 36, 0.10),
+    0 20px 40px rgba(15, 20, 36, 0.08);
+  --shadow-card-press:
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 0 rgba(15, 20, 36, 0.04),
+    0 1px 2px rgba(15, 20, 36, 0.06),
+    0 3px 8px rgba(15, 20, 36, 0.08);
+  --shadow-elevated:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    0 4px 16px rgba(15, 20, 36, 0.12),
+    0 12px 32px rgba(15, 20, 36, 0.10);
 
   /* Layout */
   --content-width: 480px;
@@ -124,8 +137,18 @@
   --accent-dark:   #9BB3FA;          /* lighter on dark for AA */
   --accent-fg:     #FFFFFF;
 
-  --shadow-card:    inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 2px 4px rgba(0, 0, 0, 0.35), 0 12px 28px rgba(0, 0, 0, 0.60), 0 24px 48px rgba(0, 0, 0, 0.35);
-  --shadow-card-hover: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 4px 8px rgba(0, 0, 0, 0.40), 0 20px 40px rgba(0, 0, 0, 0.70), 0 32px 64px rgba(0, 0, 0, 0.45);
+  /* F案 — 上端 rim highlight + 下端 inset shade + 3 層 drop */
+  --shadow-card:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.30),
+    0 4px 8px rgba(0, 0, 0, 0.35),
+    0 14px 28px rgba(0, 0, 0, 0.55),
+    0 28px 56px rgba(0, 0, 0, 0.30);
+  --shadow-card-press:
+    inset 0 1px 0 rgba(255, 255, 255, 0.10),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.40),
+    0 1px 2px rgba(0, 0, 0, 0.30),
+    0 4px 10px rgba(0, 0, 0, 0.45);
   --shadow-elevated: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 8px 32px rgba(0, 0, 0, 0.65), 0 2px 8px rgba(0, 0, 0, 0.35);
 }
 .mode-dark body, .mode-dark #root { background: var(--bg-primary); }
@@ -429,8 +452,9 @@ input, textarea, select { -webkit-tap-highlight-color: transparent; }
   /* ── Slate Blue palette (450nm帯・心理学的最適集中色) ── */
   --bg-primary:    #1A1F2E;
   --bg-secondary:  #222840;
-  --bg-card:       #252C40;
-  --bg-elevated:   #2E3652;
+  --bg-card:       #2D3552;   /* 立体感のため明色化 (#252C40 → #2D3552) */
+  --bg-elevated:   #34406B;
+  --bg-card-grad:  linear-gradient(180deg, #34406B 0%, #2D3552 100%);
   --bg-tertiary:   #1E2438;
   --bg-hero:       #111622;
   --bg-glass:      rgba(37, 44, 64, 0.78);
@@ -450,9 +474,18 @@ input, textarea, select { -webkit-tap-highlight-color: transparent; }
   --accent-dark:   #9BB3FA;
   --accent-fg:     #FFFFFF;
 
-  /* 立体感：上端ハイライト(inset) + 接地影 + 中間ドロップ + 遠景拡散 */
-  --shadow-card:    inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 2px 4px rgba(0, 0, 0, 0.35), 0 12px 28px rgba(0, 0, 0, 0.60), 0 24px 48px rgba(0, 0, 0, 0.35);
-  --shadow-card-hover: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 4px 8px rgba(0, 0, 0, 0.40), 0 20px 40px rgba(0, 0, 0, 0.70), 0 32px 64px rgba(0, 0, 0, 0.45);
+  /* F案 — 上端 rim highlight + 下端 inset shade + 3 層 drop */
+  --shadow-card:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.30),
+    0 4px 8px rgba(0, 0, 0, 0.35),
+    0 14px 28px rgba(0, 0, 0, 0.55),
+    0 28px 56px rgba(0, 0, 0, 0.30);
+  --shadow-card-press:
+    inset 0 1px 0 rgba(255, 255, 255, 0.10),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.40),
+    0 1px 2px rgba(0, 0, 0, 0.30),
+    0 4px 10px rgba(0, 0, 0, 0.45);
   --shadow-elevated: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 8px 32px rgba(0, 0, 0, 0.65), 0 2px 8px rgba(0, 0, 0, 0.35);
 }
 

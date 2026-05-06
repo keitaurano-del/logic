@@ -92,16 +92,15 @@ html[data-platform="android"] .btn { min-height: 48px; }
 .btn-lg { padding: 18px 28px; font-size: 1.0667rem; font-weight: 700; }
 .btn-block { width: 100%; }
 
-/* Card — subtle 3D depth (top-edge highlight + soft layered drop) */
+/* Card — F案 (グラデ + rim + 3層 drop) + タップ時のプレス */
 .card {
-  background: var(--bg-card);
+  background: var(--bg-card-grad, var(--bg-card));
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: var(--s-5);
   box-shadow: var(--shadow-card);
-  transition: transform var(--dur-base) var(--ease-out),
-              box-shadow var(--dur-base) var(--ease-out),
-              border-color var(--dur-base) ease;
+  transition: transform 120ms var(--ease-out),
+              box-shadow 120ms var(--ease-out);
 }
 .card-compact { padding: var(--s-4); }
 .card-tight { padding: var(--s-3); }
@@ -116,18 +115,66 @@ button.card {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
-button.card:hover {
-  border-color: var(--md-sys-color-primary);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-card-hover);
-}
 button.card:active {
-  transform: translateY(0) scale(0.99);
-  box-shadow: var(--shadow-card);
+  transform: translateY(1px) scale(0.995);
+  box-shadow: var(--shadow-card-press);
 }
 button.card:focus-visible {
   outline: 2px solid var(--md-sys-color-primary);
   outline-offset: 2px;
+}
+
+/* ============================================================
+ * F案を全画面のカードに一括適用するスイープルール
+ *
+ * primitives.css は screen 別 CSS より先に load されるため、
+ * 個別の背景指定を上書きするのに !important を使用。
+ * --shadow-card は既に全画面に伝播しているのでここでは扱わない。
+ * ============================================================ */
+
+/* グラデ背景 — 主要カード surface のみ */
+.lesson-card,
+.cb-card,
+.fl-question-card,
+.fl-feedback-card,
+.rp-card,
+.rp-score-card,
+.rp-summary-card,
+.rp-chat-empty,
+.rp-choice-btn,
+.rk-cta-card,
+.rk-summary,
+.rk-row,
+.pt-option,
+.pt-info,
+.pt-rec,
+.goal-card,
+.ts-mode-card,
+.aip-card,
+.sm-card,
+.pr-card {
+  background: var(--bg-card-grad, var(--bg-card)) !important;
+  transition: transform 120ms var(--ease-out),
+              box-shadow 120ms var(--ease-out),
+              border-color 0.15s ease;
+}
+
+/* タップ時の沈み込み — interactive なカードのみ */
+.lesson-card.clickable:active,
+.cb-card:active,
+.rp-card:active,
+.rp-choice-btn:active,
+.pt-option:active:not(:disabled),
+.goal-card:active,
+.ts-mode-card:active,
+button.card:active,
+button.lesson-card:active,
+button.cb-card:active,
+button.rp-card:active,
+button.aip-card:active,
+button.pr-card:active {
+  transform: translateY(1px) scale(0.995) !important;
+  box-shadow: var(--shadow-card-press) !important;
 }
 
 /* Input / Textarea / Select */
