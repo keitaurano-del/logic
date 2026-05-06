@@ -92,12 +92,16 @@ html[data-platform="android"] .btn { min-height: 48px; }
 .btn-lg { padding: 18px 28px; font-size: 1.0667rem; font-weight: 700; }
 .btn-block { width: 100%; }
 
-/* Card */
+/* Card — subtle 3D depth (top-edge highlight + soft layered drop) */
 .card {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: var(--s-5);
+  box-shadow: var(--shadow-card);
+  transition: transform var(--dur-base) var(--ease-out),
+              box-shadow var(--dur-base) var(--ease-out),
+              border-color var(--dur-base) ease;
 }
 .card-compact { padding: var(--s-4); }
 .card-tight { padding: var(--s-3); }
@@ -111,12 +115,16 @@ button.card {
   color: inherit;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition: transform var(--dur-base) var(--ease-out, ease),
-              border-color var(--dur-base) ease,
-              background var(--dur-base) ease;
 }
-button.card:hover { border-color: var(--md-sys-color-primary); }
-button.card:active { transform: scale(0.99); }
+button.card:hover {
+  border-color: var(--md-sys-color-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card-hover);
+}
+button.card:active {
+  transform: translateY(0) scale(0.99);
+  box-shadow: var(--shadow-card);
+}
 button.card:focus-visible {
   outline: 2px solid var(--md-sys-color-primary);
   outline-offset: 2px;

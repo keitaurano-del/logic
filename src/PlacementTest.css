@@ -35,6 +35,7 @@
   border: 1px solid var(--border);
   border-left: 3px solid var(--accent);
   border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
   font-size: 0.8rem;
   color: var(--text-secondary);
   margin: 12px 0;
@@ -61,8 +62,9 @@
 .pt-q-num { font-size: 0.7333rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0.18em; text-transform: uppercase; font-feature-settings: "tnum"; }
 .pt-q-text { font-family: var(--serif); font-size: 1.4667rem; font-weight: 500; color: var(--text-primary); line-height: 1.5; letter-spacing: -0.01em; }
 .pt-options { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
-.pt-option { padding: 18px 20px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); font-size: 0.9333rem; font-weight: 500; color: var(--text-primary); cursor: pointer; text-align: left; line-height: 1.6; font-family: var(--sans); transition: border-color 0.15s; }
-.pt-option:hover:not(:disabled) { border-color: var(--accent-dark); }
+.pt-option { padding: 18px 20px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: var(--shadow-card); font-size: 0.9333rem; font-weight: 500; color: var(--text-primary); cursor: pointer; text-align: left; line-height: 1.6; font-family: var(--sans); transition: border-color 0.15s, transform var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out); }
+.pt-option:hover:not(:disabled) { border-color: var(--accent-dark); transform: translateY(-2px); box-shadow: var(--shadow-card-hover); }
+.pt-option:active:not(:disabled) { transform: translateY(0) scale(0.99); box-shadow: var(--shadow-card); }
 .pt-option.selected { border-color: var(--accent-dark); background: var(--accent-soft); }
 .pt-option.correct { border-color: var(--success); background: var(--success-soft); }
 .pt-option.wrong { border-color: var(--danger); background: rgba(168, 50, 27, 0.06); }
@@ -121,6 +123,7 @@
   border: 1px solid var(--border);
   border-left: 3px solid var(--accent);
   border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
   padding: 24px 22px;
   margin-top: 16px;
   text-align: left;

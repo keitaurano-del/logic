@@ -306,6 +306,7 @@
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
   cursor: pointer;
   transition: transform 0.15s, border-color 0.2s, box-shadow 0.2s;
   font-family: var(--sans);
@@ -315,12 +316,13 @@
 
 .goal-card:hover {
   border-color: var(--goal-color, var(--accent));
-  transform: translateY(-1px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card-hover);
 }
 
 .goal-card:active {
-  transform: scale(0.98);
+  transform: translateY(0) scale(0.98);
+  box-shadow: var(--shadow-card);
 }
 
 .goal-card-emoji {

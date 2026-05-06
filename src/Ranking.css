@@ -9,7 +9,7 @@
 .rk-error { color: var(--danger); }
 
 /* CTA when no test done */
-.rk-cta-card { background: var(--bg-card); border: 2px dashed var(--accent); border-radius: var(--radius-lg); padding: 24px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.rk-cta-card { background: var(--bg-card); border: 2px dashed var(--accent); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); padding: 24px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; }
 .rk-cta-emoji { font-size: 3.2rem; }
 .rk-cta-card h3 { font-size: 1.0667rem; font-weight: 800; color: var(--text-primary); }
 .rk-cta-card p { font-size: 0.8667rem; color: var(--text-secondary); }
@@ -27,7 +27,7 @@
 .rk-section-title { font-size: 0.8667rem; font-weight: 800; color: var(--text-secondary); letter-spacing: 0.5px; text-transform: uppercase; padding: 0 4px; }
 
 .rk-list { display: flex; flex-direction: column; gap: 8px; }
-.rk-row { display: flex; align-items: center; gap: 14px; padding: 12px 16px; background: var(--bg-card); border: 1.5px solid var(--border); border-radius: var(--radius-md); }
+.rk-row { display: flex; align-items: center; gap: 14px; padding: 12px 16px; background: var(--bg-card); border: 1.5px solid var(--border); border-radius: var(--radius-md); box-shadow: var(--shadow-card); }
 .rk-row.top { border-color: var(--accent-light); }
 .rk-row.you { border-color: var(--accent-dark); border-width: 2px; background: var(--accent-soft); }
 .rk-rank { width: 36px; text-align: center; font-size: 1.0667rem; font-weight: 900; color: var(--text-muted); flex-shrink: 0; }
