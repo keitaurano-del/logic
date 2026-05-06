@@ -15,6 +15,15 @@ import type { LessonData } from '../lessonData'
 import { getCompletedLessons } from '../stats'
 import { getCoursesByCategory, getCoursesByGroup, COURSES, COURSE_GROUPS, type Course } from '../courseData'
 import { loadPersonalCourse, axisLabel } from '../placementData'
+import { t } from '../i18n'
+
+// レベル文字列（データ値）→ 表示用の翻訳キー
+function levelLabel(level: string): string {
+  if (level === '初級') return t('roadmap.levelBeginner')
+  if (level === '中級') return t('roadmap.levelIntermediate')
+  if (level === '上級') return t('roadmap.levelAdvanced')
+  return level
+}
 
 const IMG = '/images/v3'
 
@@ -244,15 +253,15 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
   return (
     <div style={{ background: v3.color.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: v3.color.text }}>
       <div style={{ padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ fontSize: 24, fontWeight: 700, letterSpacing: '-.005em' }}>トレーニング</div>
+        <div style={{ fontSize: 24, fontWeight: 700, letterSpacing: '-.005em' }}>{t('roadmap.heading')}</div>
       </div>
       {/* 検索ボックス */}
       <div style={{ padding: '0 16px 8px' }}>
         <div style={{ position: 'relative' }}>
           <input
             type="search"
-            aria-label="レッスン・コース検索"
-            placeholder="レッスン・コースを検索..."
+            aria-label={t('roadmap.searchAria')}
+            placeholder={t('roadmap.searchPlaceholder')}
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             onBlur={() => saveSearchHistory(searchQuery)}
@@ -272,7 +281,7 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
             <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
           </svg>
           {searchQuery && (
-            <button onClick={() => setSearchQuery('')} aria-label="クリア"
+            <button onClick={() => setSearchQuery('')} aria-label={t('roadmap.searchClear')}
               style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', padding: 6, color: v3.color.text2 }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
@@ -305,7 +314,7 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
       {!showSearch && <div style={{ flex: 1, padding: '0 16px 80px', display: 'flex', flexDirection: 'column', gap: v3.spacing.gap }}>
 
         <div style={{ padding: '4px 4px 8px' }}>
-          <div style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.45, letterSpacing: '-.005em' }}>今日、どのスキルを<br />鍛える？</div>
+          <div style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.45, letterSpacing: '-.005em', whiteSpace: 'pre-line' }}>{t('roadmap.todayQuestion')}</div>
         </div>
 
         {/* パーソナルコース（診断結果から自動生成）— 一番上 */}
@@ -331,7 +340,7 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
                     <CategoryCard
                       key={course.id}
                       name={course.title}
-                      meta={`${course.lessonIds.length}レッスン · ${course.level}`}
+                      meta={t('roadmap.lessonCountAndLevel', { count: course.lessonIds.length, level: levelLabel(course.level) })}
                       image={course.image || v.image}
                       onClick={() => props.onOpenCategory(v.routeKey)}
                     />
@@ -361,22 +370,22 @@ function FilterBar(p: {
   }
   const [sortSheetOpen, setSortSheetOpen] = useState(false)
   const sortItems: { id: SortOption; label: string }[] = [
-    { id: 'relevance', label: '関連度順' },
-    { id: 'level', label: '難易度順' },
-    { id: 'id', label: 'レッスン番号順' },
+    { id: 'relevance', label: t('roadmap.sortRelevance') },
+    { id: 'level', label: t('roadmap.sortLevel') },
+    { id: 'id', label: t('roadmap.sortId') },
   ]
-  const sortLabel = sortItems.find(s => s.id === p.sortOption)?.label ?? '並べ替え'
+  const sortLabel = sortItems.find(s => s.id === p.sortOption)?.label ?? t('roadmap.sortLabel')
   return (
     <div style={{ padding: '0 16px 6px', display: 'flex', flexDirection: 'column', gap: 6 }}>
       <div style={{ display: 'flex', gap: 6, overflowX: 'auto', paddingBottom: 4, scrollbarWidth: 'none' }}>
         {(['初級', '中級', '上級'] as LevelFilter[]).map(l => (
-          <Pill key={l} active={p.levelFilters.has(l)} onClick={() => toggle(p.levelFilters, l, p.setLevelFilters)} label={l} />
+          <Pill key={l} active={p.levelFilters.has(l)} onClick={() => toggle(p.levelFilters, l, p.setLevelFilters)} label={levelLabel(l)} />
         ))}
-        <Pill active={p.progressFilters.has('todo')} onClick={() => toggle(p.progressFilters, 'todo', p.setProgressFilters)} label="未着手" />
-        <Pill active={p.progressFilters.has('done')} onClick={() => toggle(p.progressFilters, 'done', p.setProgressFilters)} label="完了" />
-        <Pill active={p.formatFilters.has('quiz')} onClick={() => toggle(p.formatFilters, 'quiz', p.setFormatFilters)} label="クイズ" />
-        <Pill active={p.formatFilters.has('think')} onClick={() => toggle(p.formatFilters, 'think', p.setFormatFilters)} label="思考問題" />
-        <Pill active={p.formatFilters.has('case')} onClick={() => toggle(p.formatFilters, 'case', p.setFormatFilters)} label="ケース" />
+        <Pill active={p.progressFilters.has('todo')} onClick={() => toggle(p.progressFilters, 'todo', p.setProgressFilters)} label={t('roadmap.filterTodo')} />
+        <Pill active={p.progressFilters.has('done')} onClick={() => toggle(p.progressFilters, 'done', p.setProgressFilters)} label={t('roadmap.filterDone')} />
+        <Pill active={p.formatFilters.has('quiz')} onClick={() => toggle(p.formatFilters, 'quiz', p.setFormatFilters)} label={t('roadmap.filterQuiz')} />
+        <Pill active={p.formatFilters.has('think')} onClick={() => toggle(p.formatFilters, 'think', p.setFormatFilters)} label={t('roadmap.filterThink')} />
+        <Pill active={p.formatFilters.has('case')} onClick={() => toggle(p.formatFilters, 'case', p.setFormatFilters)} label={t('roadmap.filterCase')} />
       </div>
       {p.showSort && (
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -391,7 +400,7 @@ function FilterBar(p: {
           </button>
           <ActionSheet
             open={sortSheetOpen}
-            title="並べ替え"
+            title={t('roadmap.sortLabel')}
             items={sortItems.map(s => ({ id: s.id, label: s.label }))}
             onSelect={(id) => { p.setSortOption(id as SortOption); setSortSheetOpen(false) }}
             onCancel={() => setSortSheetOpen(false)}
@@ -547,7 +556,7 @@ function SearchPanel(p: {
       <div style={{ padding: '12px 16px 100px', display: 'flex', flexDirection: 'column', gap: 16 }}>
         {history.length > 0 && (
           <div>
-            <div style={{ fontSize: 12, fontWeight: 600, color: v3.color.text2, marginBottom: 6 }}>最近の検索</div>
+            <div style={{ fontSize: 12, fontWeight: 600, color: v3.color.text2, marginBottom: 6 }}>{t('roadmap.recentSearches')}</div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
               {history.map(h => (
                 <Pill key={h} active={false} onClick={() => p.onPickKeyword(h)} label={h} />
@@ -556,7 +565,7 @@ function SearchPanel(p: {
           </div>
         )}
         <div>
-          <div style={{ fontSize: 12, fontWeight: 600, color: v3.color.text2, marginBottom: 6 }}>おすすめキーワード</div>
+          <div style={{ fontSize: 12, fontWeight: 600, color: v3.color.text2, marginBottom: 6 }}>{t('roadmap.suggestedKeywords')}</div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
             {SUGGESTED_KEYWORDS.map(k => (
               <Pill key={k} active={false} onClick={() => p.onPickKeyword(k)} label={k} />
@@ -570,7 +579,7 @@ function SearchPanel(p: {
   if (results.length === 0) {
     return (
       <div style={{ padding: 32, textAlign: 'center', color: v3.color.text2, fontSize: 14 }}>
-        条件に一致する{hasQuery ? `レッスンが見つかりません` : `項目がありません`}
+        {hasQuery ? t('roadmap.noLessonsFound') : t('roadmap.noResults')}
         {hasQuery && (<><br /><span style={{ fontSize: 12 }}>「{p.query}」</span></>)}
       </div>
     )
@@ -579,7 +588,7 @@ function SearchPanel(p: {
   return (
     <div style={{ flex: 1, padding: '8px 16px 100px', display: 'grid', gridTemplateColumns: '1fr', gap: 10 }}>
       <div style={{ fontSize: 11, color: v3.color.text2, fontWeight: 600, padding: '0 2px' }}>
-        {results.length}件
+        {t('roadmap.resultsCount', { count: results.length })}
       </div>
       {results.map(r => r.kind === 'course'
         ? <CourseResultCard key={`c-${r.course.id}`} result={r} query={p.query} onOpen={() => p.onOpenCategory(r.course.category)} />
@@ -593,18 +602,18 @@ function CourseResultCard({ result, query, onOpen }: { result: CourseResult; que
   const c = result.course
   return (
     <button type="button" onClick={onOpen}
-      aria-label={`${c.category} コース: ${c.title} (${result.doneCount}/${result.totalCount} 完了)`}
+      aria-label={t('roadmap.courseAria', { category: c.category, title: c.title, done: result.doneCount, total: result.totalCount })}
       style={{ background: v3.color.card, borderRadius: 14, padding: '12px 14px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 12, border: `1px solid ${v3.color.line}`, color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%' }}>
       <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(108,142,245,.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: v3.color.accent }}>
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15Z"/></svg>
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 11, color: v3.color.accent, fontWeight: 700, marginBottom: 2 }}>コース · {c.category}</div>
+        <div style={{ fontSize: 11, color: v3.color.accent, fontWeight: 700, marginBottom: 2 }}>{t('roadmap.coursePrefix', { category: c.category })}</div>
         <div style={{ fontSize: 14, fontWeight: 700, color: v3.color.text, marginBottom: 2, lineHeight: 1.3 }}>
           <Highlight text={c.title} query={query} />
         </div>
         <div style={{ fontSize: 12, color: v3.color.text2 }}>
-          {c.level} · {result.doneCount}/{result.totalCount} 完了
+          {t('roadmap.courseDoneSummary', { level: levelLabel(c.level), done: result.doneCount, total: result.totalCount })}
         </div>
       </div>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
@@ -617,7 +626,7 @@ function LessonResultCard({ result, query, onOpen }: { result: LessonResult; que
   const courseTitle = result.course?.title
   return (
     <button type="button" onClick={onOpen}
-      aria-label={`レッスン: ${l.title}${courseTitle ? ` (${courseTitle})` : ''}`}
+      aria-label={courseTitle ? t('roadmap.lessonAriaWithCourse', { title: l.title, course: courseTitle }) : t('roadmap.lessonAria', { title: l.title })}
       style={{ background: v3.color.card, borderRadius: 14, padding: '12px 14px', cursor: 'pointer', display: 'flex', alignItems: 'flex-start', gap: 12, border: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%' }}>
       <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(108,142,245,.10)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: v3.color.accent }}>
         <LessonIcon id={l.id} action="lesson" size={20} />
@@ -625,12 +634,12 @@ function LessonResultCard({ result, query, onOpen }: { result: LessonResult; que
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2, flexWrap: 'wrap' }}>
           {result.level && (
-            <span style={{ fontSize: 10, fontWeight: 700, padding: '1px 6px', borderRadius: 4, background: result.level === '初級' ? 'rgba(52,211,153,.18)' : result.level === '中級' ? 'rgba(251,191,36,.18)' : 'rgba(248,113,113,.18)', color: result.level === '初級' ? '#34D399' : result.level === '中級' ? '#FBBF24' : 'var(--md-sys-color-error)' }}>{result.level}</span>
+            <span style={{ fontSize: 10, fontWeight: 700, padding: '1px 6px', borderRadius: 4, background: result.level === '初級' ? 'rgba(52,211,153,.18)' : result.level === '中級' ? 'rgba(251,191,36,.18)' : 'rgba(248,113,113,.18)', color: result.level === '初級' ? '#34D399' : result.level === '中級' ? '#FBBF24' : 'var(--md-sys-color-error)' }}>{levelLabel(result.level)}</span>
           )}
           {result.status === 'done' && (
             <span style={{ fontSize: 10, fontWeight: 700, padding: '1px 6px', borderRadius: 4, background: 'rgba(108,142,245,.18)', color: v3.color.accent, display: 'inline-flex', alignItems: 'center', gap: 3 }}>
               <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-              完了
+              {t('roadmap.doneBadge')}
             </span>
           )}
           <span style={{ fontSize: 11, color: v3.color.text2 }}>{l.category}{courseTitle ? ` · ${courseTitle}` : ''}</span>
@@ -671,7 +680,28 @@ const CATEGORY_ID_TO_NAMES: Record<string, string[]> = {
   '経営戦略': ['経営戦略', 'strategy'],
 }
 
-const CATEGORY_LABEL_JP: Record<string, string> = {
+// カテゴリID（ルートキー）→ 表示用ラベルを翻訳キー経由で解決
+const CATEGORY_LABEL_KEY: Record<string, string> = {
+  logic: 'category.logical',
+  case: 'category.case',
+  critical: 'category.critical',
+  hypothesis: 'category.hypothesis',
+  'problem-setting': 'category.problemSetting',
+  'design-thinking': 'category.designThinking',
+  lateral: 'category.lateral',
+  analogy: 'category.analogy',
+  systems: 'category.systems',
+  proposal: 'category.proposal',
+  '提案書作成': 'category.proposalWriting',
+  philosophy: 'category.philosophy',
+  '東洋思想': 'category.eastern',
+  'クライアントワーク': 'category.clientWork',
+  'フェルミ推定': 'category.fermi',
+  '経営戦略': 'category.strategy',
+}
+
+// カテゴリID → courseData が保持する日本語データ値（検索キー用）
+const CATEGORY_DATA_LABEL: Record<string, string> = {
   logic: 'ロジカルシンキング',
   case: 'ケース面接',
   critical: 'クリティカルシンキング',
@@ -688,6 +718,11 @@ const CATEGORY_LABEL_JP: Record<string, string> = {
   'クライアントワーク': 'クライアントワーク',
   'フェルミ推定': 'フェルミ推定',
   '経営戦略': '経営戦略',
+}
+
+function categoryLabel(category: string): string {
+  const key = CATEGORY_LABEL_KEY[category]
+  return key ? t(key) : category
 }
 
 
@@ -715,11 +750,13 @@ function CategoryCard({ name, meta, progress, onClick, image }: { name: string; 
 function CategoryDetailView({ category, onOpenLesson, onBack }: { category: string; onOpenLesson: (id: number) => void; onBack?: () => void }) {
   const flat = getAllLessonsFlat()
   const completed = new Set(getCompletedLessons())
-  const label = CATEGORY_LABEL_JP[category] || category
-  const courses = getCoursesByCategory(label)
+  // courseData の category は日本語データ値で保持されているため、検索用には JP ラベルが必要
+  const dataLabel = CATEGORY_DATA_LABEL[category] || category
+  const headerLabel = categoryLabel(category)
+  const courses = getCoursesByCategory(dataLabel)
 
   // コースが定義されていないカテゴリはフォールバック表示
-  const candidates = CATEGORY_ID_TO_NAMES[category] || [label, category]
+  const candidates = CATEGORY_ID_TO_NAMES[category] || [dataLabel, category]
   const fallbackLessons = courses.length === 0
     ? Object.values(flat).filter((l): l is LessonData => !!l && candidates.includes(l.category)).sort((a, b) => a.id - b.id)
     : []
@@ -733,9 +770,9 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
 
   return (
     <div style={{ background: v3.color.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: v3.color.text }}>
-      <Header title={label} onBack={onBack} />
+      <Header title={headerLabel} onBack={onBack} />
       <div style={{ padding: '0 20px 14px', fontSize: 13, color: v3.color.text2 }}>
-        {courses.length > 0 ? `${courses.length}コース · ` : ''}{totalLessons}レッスン · {completedCount > 0 ? `${completedCount}/${totalLessons}完了` : '未着手'}
+        {courses.length > 0 ? t('roadmap.detailCourseCount', { count: courses.length }) : ''}{t('roadmap.detailLessonCount', { count: totalLessons })} · {completedCount > 0 ? t('roadmap.detailCompleted', { done: completedCount, total: totalLessons }) : t('roadmap.detailNotStarted')}
       </div>
 
       <div style={{ flex: 1, padding: '0 16px 100px', display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -760,7 +797,7 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
                   {allDone && (
                     <div style={{ fontSize: 10, fontWeight: 700, color: '#22C55E', background: '#22C55E18', borderRadius: 6, padding: '2px 7px', display: 'flex', alignItems: 'center', gap: 3 }}>
                       <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="3" strokeLinecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                      完了
+                      {t('roadmap.doneBadge')}
                     </div>
                   )}
                 </div>
@@ -769,7 +806,7 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
                 {/* プログレスバー */}
                 <div style={{ marginTop: 10 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                    <div style={{ fontSize: 11, color: v3.color.text3 }}>{course.lessonIds.length}レッスン</div>
+                    <div style={{ fontSize: 11, color: v3.color.text3 }}>{t('roadmap.detailLessonCount', { count: course.lessonIds.length })}</div>
                     <div style={{ fontSize: 11, color: v3.color.accent, fontWeight: 600 }}>{courseCompleted}/{course.lessonIds.length}</div>
                   </div>
                   <div style={{ height: 4, background: `${v3.color.text3}22`, borderRadius: 2, overflow: 'hidden' }}>
@@ -785,7 +822,11 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
                   const isNext = firstUndone?.id === lesson.id
                   return (
                     <button type="button" key={lesson.id} onClick={() => onOpenLesson(lesson.id)}
-                      aria-label={`レッスン ${idx + 1}: ${lesson.title}${isDone ? ' (完了)' : isNext ? ' (次へ)' : ''}`}
+                      aria-label={isDone
+                        ? t('roadmap.lessonAriaInCourseDone', { n: idx + 1, title: lesson.title })
+                        : isNext
+                          ? t('roadmap.lessonAriaInCourseNext', { n: idx + 1, title: lesson.title })
+                          : t('roadmap.lessonAriaInCourse', { n: idx + 1, title: lesson.title })}
                       style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', cursor: 'pointer', borderTop: idx > 0 ? `1px solid ${v3.color.line}` : 'none', background: isNext ? `${v3.color.accent}08` : 'transparent', border: 'none', borderLeft: 'none', borderRight: 'none', borderBottom: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%' }}>
                       {/* ステップ番号 or チェック */}
                       <div style={{ width: 28, height: 28, borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: isDone ? v3.color.accent : isNext ? `${v3.color.accent}20` : `${v3.color.text3}18`, border: isNext && !isDone ? `1.5px solid ${v3.color.accent}` : 'none' }}>
@@ -796,10 +837,10 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ fontSize: 14, fontWeight: isNext ? 700 : 600, color: isDone ? v3.color.text2 : v3.color.text, lineHeight: 1.3 }}>{lesson.title}</div>
-                        <div style={{ fontSize: 12, color: v3.color.text3, marginTop: 2 }}>{lesson.steps?.length ?? 0}ステップ</div>
+                        <div style={{ fontSize: 12, color: v3.color.text3, marginTop: 2 }}>{t('roadmap.stepCount', { count: lesson.steps?.length ?? 0 })}</div>
                       </div>
                       {isNext && !isDone && (
-                        <div style={{ fontSize: 10, fontWeight: 700, color: v3.color.accent, background: v3.color.accentSoft, borderRadius: 6, padding: '3px 8px', flexShrink: 0 }}>次へ</div>
+                        <div style={{ fontSize: 10, fontWeight: 700, color: v3.color.accent, background: v3.color.accentSoft, borderRadius: 6, padding: '3px 8px', flexShrink: 0 }}>{t('roadmap.nextLabel')}</div>
                       )}
                       {!isDone && !isNext && (
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
@@ -817,13 +858,13 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
           const isDone = completed.has(`lesson-${lesson.id}`)
           return (
             <button type="button" key={lesson.id} onClick={() => onOpenLesson(lesson.id)}
-              aria-label={`レッスン: ${lesson.title}${isDone ? ' (完了)' : ''}`}
+              aria-label={isDone ? t('roadmap.lessonAriaDone', { title: lesson.title }) : t('roadmap.lessonAria', { title: lesson.title })}
               style={{ background: v3.color.card, borderRadius: 14, padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'stretch', overflow: 'hidden', boxShadow: v3.shadow.card, border: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%' }}>
               <div style={{ width: 80, height: 80, flexShrink: 0 }}><LessonThumbnail lessonId={lesson.id} size={80} /></div>
               <div style={{ padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0 }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 15, fontWeight: 700, color: v3.color.text, marginBottom: 3, lineHeight: 1.4 }}>{lesson.title}</div>
-                  <div style={{ fontSize: 13, color: v3.color.text2 }}>{lesson.steps?.length ?? 0}ステップ</div>
+                  <div style={{ fontSize: 13, color: v3.color.text2 }}>{t('roadmap.stepCount', { count: lesson.steps?.length ?? 0 })}</div>
                 </div>
                 <div style={{ width: 26, height: 26, borderRadius: '50%', background: isDone ? v3.color.accent : `${v3.color.text3}22`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   {isDone
@@ -885,9 +926,9 @@ function PersonalCourseBanner({
           </svg>
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: v3.color.text }}>あなた専用コースを作成</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: v3.color.text }}>{t('roadmap.personalCreateTitle')}</div>
           <div style={{ fontSize: 12, color: v3.color.text2, marginTop: 2, lineHeight: 1.5 }}>
-            実力診断（10問・約5分）で弱点を特定し、専用コースを自動生成します。
+            {t('roadmap.personalCreateDesc')}
           </div>
         </div>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
@@ -923,14 +964,14 @@ function PersonalCourseBanner({
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-        <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: '.1em', background: 'rgba(10,31,77,0.14)', padding: '2px 8px', borderRadius: 6 }}>YOUR COURSE</div>
+        <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: '.1em', background: 'rgba(10,31,77,0.14)', padding: '2px 8px', borderRadius: 6 }}>{t('roadmap.personalBadge')}</div>
         {allDone && (
-          <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: '.1em', background: 'rgba(10,31,77,0.18)', padding: '2px 8px', borderRadius: 6 }}>完了</div>
+          <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: '.1em', background: 'rgba(10,31,77,0.18)', padding: '2px 8px', borderRadius: 6 }}>{t('roadmap.personalDoneBadge')}</div>
         )}
       </div>
       <div style={{ fontSize: 16, fontWeight: 800, lineHeight: 1.35, marginBottom: 4 }}>{course.title}</div>
       <div style={{ fontSize: 12, lineHeight: 1.55, marginBottom: 10 }}>
-        {weakest ? `「${axisLabel(weakest).label}」を最優先に` : '弱点を最優先に'} ・ {total}レッスン構成
+        {weakest ? t('roadmap.personalSubtitleWeak', { axis: axisLabel(weakest).label, total }) : t('roadmap.personalSubtitleDefault', { total })}
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
         <div style={{ flex: 1, height: 4, background: 'rgba(10,31,77,0.20)', borderRadius: 2, overflow: 'hidden' }}>
@@ -940,7 +981,7 @@ function PersonalCourseBanner({
       </div>
       <div style={{ marginTop: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ fontSize: 12, fontWeight: 700 }}>
-          {allDone ? 'もう一度進める' : completedCount > 0 ? '続きから進める' : 'コースを進める'}
+          {allDone ? t('roadmap.personalCtaRedo') : completedCount > 0 ? t('roadmap.personalCtaContinue') : t('roadmap.personalCtaStart')}
         </div>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
       </div>
