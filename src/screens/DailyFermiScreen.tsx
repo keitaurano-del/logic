@@ -7,7 +7,7 @@ import { getDailyFermiIndex, FERMI_POOL, getFermiStatsByIndex } from '../fermiDa
 import { t, getLocale } from '../i18n'
 import { getGuestId } from '../guestId'
 import { haptic } from '../platform/haptics'
-import { useDailyGuide, GuideLabel, GuideStyle } from '../tutorial/dailyGuide'
+import { useDailyGuide, GuideStyle } from '../tutorial/dailyGuide'
 import { isStandardPlan, isPremiumPlan } from '../subscription'
 import { getDisplayName } from '../stats'
 import { markDailyFermiDone } from './dailyFermiState'
@@ -583,11 +583,6 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
 
       <Header title={t('dailyFermi.title')} onBack={onBack} />
 
-      <div className="eyebrow accent">デイリーフェルミ</div>
-      <h1 style={{ fontSize: 26, fontWeight: 800, letterSpacing: '-0.02em', lineHeight: 1.3 }}>
-        {t('dailyFermi.heading')}
-      </h1>
-
       {loadingQuestion && (
         <div className="card" style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: 16 }}>
           {t('common.loading')}
@@ -636,16 +631,8 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
             </div>
           </div>
 
-          {/* プラン別制限・別の問題を選ぶボタン */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 2px' }}>
-            <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
-              {dailyCount + 1} / {dailyLimit}問目
-              {rerollLimit > 0 && (
-                <span style={{ marginLeft: 8, opacity: 0.7 }}>
-                  (別問題: {rerollCount}/{rerollLimit}回使用済)
-                </span>
-              )}
-            </div>
+          {/* 別の問題を選ぶボタン / 上限到達時の警告 */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', padding: '0 2px' }}>
             {canReroll && submitPhase === 'idle' && (
               <button
                 onClick={handleReroll}
@@ -685,7 +672,6 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
                     <LightbulbIcon width={15} height={15} />
                     {t('dailyFermi.showHint')}
                   </button>
-                  {guideActive && <GuideLabel text="詰まったら見てみましょう" position="bottom" />}
                 </div>
               ) : (
                 <div style={{
@@ -737,19 +723,7 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
           {/* 回答入力エリア */}
           {submitPhase === 'idle' && (
             <div className="stack-sm">
-              <label style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-secondary)' }}>
-                {t('dailyFermi.answerLabel')}
-              </label>
-              <div style={{
-                fontSize: 13, color: 'var(--text-muted)',
-                background: 'var(--bg-muted)', borderRadius: 8,
-                padding: '8px 12px', lineHeight: 1.6,
-              }}>
-                まずは「誰が・どこで・どれくらいの頻度で」を考えてみよう。数字は大まかでOK！
-              </div>
-
-              <div style={{ position: 'relative', marginTop: guideActive ? 28 : 0 }}>
-                {guideActive && <GuideLabel text="まず自分の考えを書いてみましょう" position="top" />}
+              <div style={{ position: 'relative' }}>
                 <textarea
                   aria-label="フェルミ推定の解答"
                   value={answer}
