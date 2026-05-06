@@ -603,16 +603,16 @@ function AppV3() {
         alignItems: 'center', justifyContent: 'center', padding: 24,
       }}>
         <div style={{
-          background: '#252C40', borderRadius: 20, padding: '32px 24px',
+          background: 'var(--bg-elevated)', borderRadius: 20, padding: '32px 24px',
           width: '100%', maxWidth: 360, boxShadow: '0 24px 48px rgba(0,0,0,0.4)',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-            <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(108,142,245,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6C8EF5" strokeWidth="2" strokeLinecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <div style={{ width: 36, height: 36, borderRadius: 10, background: 'var(--accent-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: 'var(--brand)' }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             </div>
-            <div style={{ fontSize: 22, fontWeight: 800, color: '#E8ECF4', letterSpacing: '-0.02em' }}>ようこそ！</div>
+            <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--text-on-hero)', letterSpacing: '-0.02em' }}>ようこそ！</div>
           </div>
-          <div style={{ fontSize: 15, color: '#8FA3C8', marginBottom: 24, lineHeight: 1.6 }}>
+          <div style={{ fontSize: 15, color: 'var(--text-on-hero-muted)', marginBottom: 24, lineHeight: 1.6 }}>
             アプリで表示する名前を設定してね
           </div>
           <input
@@ -624,26 +624,26 @@ function AppV3() {
             onKeyDown={e => { if (e.key === 'Enter' && nameInput.trim()) handleSaveName() }}
             autoFocus
             style={{
-              width: '100%', padding: '14px 16px', border: '1px solid rgba(255,255,255,0.15)',
-              borderRadius: 10, background: 'rgba(255,255,255,0.07)', color: '#E8ECF4',
+              width: '100%', padding: '14px 16px', border: '1px solid var(--border-on-dark)',
+              borderRadius: 10, background: 'var(--bg-input-on-dark)', color: 'var(--text-on-hero)',
               fontSize: 16, fontFamily: "'Noto Sans JP', sans-serif",
               outline: 'none', boxSizing: 'border-box', marginBottom: 8,
             }}
           />
-          <div style={{ fontSize: 12, color: '#6B82A8', marginBottom: 20 }}>あとで設定画面から変更できるよ</div>
+          <div style={{ fontSize: 12, color: 'var(--text-on-hero-muted)', marginBottom: 20 }}>あとで設定画面から変更できるよ</div>
           <button
             onClick={handleSaveName}
             disabled={nameSaving || !nameInput.trim()}
             style={{
-              width: '100%', padding: '15px', background: nameInput.trim() ? '#6C8EF5' : '#2E3652',
+              width: '100%', padding: '15px', background: nameInput.trim() ? 'var(--brand)' : 'var(--bg-input-on-dark)',
               border: 'none', borderRadius: 12, fontSize: 16, fontWeight: 700,
-              color: nameInput.trim() ? '#FFFFFF' : '#6B82A8',
+              color: nameInput.trim() ? 'var(--accent-fg)' : 'var(--text-on-hero-muted)',
               cursor: nameInput.trim() ? 'pointer' : 'not-allowed', marginBottom: 10,
             }}
           >{nameSaving ? '保存中…' : '設定する'}</button>
           <button
             onClick={() => setShowNamePopup(false)}
-            style={{ width: '100%', background: 'none', border: 'none', color: '#6B82A8', fontSize: 14, cursor: 'pointer', padding: '8px 0' }}
+            style={{ width: '100%', background: 'none', border: 'none', color: 'var(--text-on-hero-muted)', fontSize: 14, cursor: 'pointer', padding: '8px 0' }}
           >あとで設定する</button>
         </div>
       </div>

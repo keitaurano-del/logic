@@ -94,6 +94,43 @@
   --cat-pm-soft:    rgba(5, 150, 105, 0.10);
   --cat-pm-grad:    linear-gradient(135deg, #059669 0%, #34D399 100%);
 
+  --cat-lateral:    #DB2777;
+  --cat-lateral-soft: rgba(219, 39, 119, 0.10);
+  --cat-lateral-grad: linear-gradient(135deg, #DB2777 0%, #F472B6 100%);
+
+  --cat-review:     #6366F1;
+  --cat-review-soft: rgba(99, 102, 241, 0.10);
+  --cat-review-grad: linear-gradient(135deg, #6366F1 0%, #A5B4FC 100%);
+
+  --cat-test:       #374151;
+  --cat-test-soft:  rgba(55, 65, 81, 0.10);
+  --cat-test-grad:  linear-gradient(135deg, #374151 0%, #6B7280 100%);
+
+  /* Medal colors (rankings, achievements) */
+  --medal-gold:        #F4B86A;
+  --medal-silver:      #C0C0C0;
+  --medal-bronze:      #CD7F32;
+  --medal-gold-grad:   linear-gradient(135deg, #FFD700, #FFA500);
+  --medal-silver-grad: linear-gradient(135deg, #C0C0C0, #909090);
+  --medal-bronze-grad: linear-gradient(135deg, #CD7F32, #A0522D);
+
+  /* Score tones (Fermi / accuracy feedback) */
+  --score-excellent:    #70D8BD;
+  --score-excellent-on: #0F2E2D;  /* legible text on teal */
+  --score-excellent-grad: linear-gradient(135deg, #70D8BD 0%, #4BB89C 100%);
+  --score-excellent-bg: linear-gradient(135deg, #0F2E2D 0%, #1A4A48 100%);
+  --score-good:         #F4B86A;
+  --score-keep:         #E89B7E;
+  --score-retry:        #E07A6F;
+
+  /* On-dark surface tokens (for hero / dark-themed screens) */
+  --text-on-hero-muted: rgba(255, 255, 255, 0.55);
+  --border-on-dark:     rgba(255, 255, 255, 0.15);
+  --bg-input-on-dark:   rgba(255, 255, 255, 0.07);
+
+  /* Brand-aligned dark surface (Slate Blue navy) */
+  --bg-slate-deep:  #1A1F2E;
+
   /* Radii */
   --radius-sm: 6px;
   --radius-md: 10px;

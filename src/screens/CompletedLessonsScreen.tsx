@@ -56,20 +56,20 @@ const CAT_ORDER = ['ロジカルシンキング', 'ケース面接', 'クリテ�
 
 function catColor(cat: string): string {
   const map: Record<string, string> = {
-    'ロジカルシンキング': 'var(--brand)',
-    'フェルミ推定':       '#7C3AED',
-    'ケース面接':         '#0891B2',
-    'クリティカルシンキング': '#059669',
-    '仮説思考':             'var(--md-sys-color-error)',
-    '課題設定':             '#7C3AED',
-    'デザインシンキング':   '#0891B2',
-    'ラテラルシンキング':   '#DB2777',
-    'アナロジー思考':       '#D97706',
-    'システムシンキング':   '#2563EB',
-    'AI練習':             '#D97706',
-    'デイリー':           'var(--md-sys-color-error)',
-    '復習':               '#6366F1',
-    'テスト':             '#374151',
+    'ロジカルシンキング':     'var(--brand)',
+    'フェルミ推定':           'var(--cat-boki2)',
+    'ケース面接':             'var(--cat-practice)',
+    'クリティカルシンキング': 'var(--cat-pm)',
+    '仮説思考':               'var(--md-sys-color-error)',
+    '課題設定':               'var(--cat-boki2)',
+    'デザインシンキング':     'var(--cat-practice)',
+    'ラテラルシンキング':     'var(--cat-lateral)',
+    'アナロジー思考':         'var(--warning)',
+    'システムシンキング':     'var(--cat-logic)',
+    'AI練習':                'var(--warning)',
+    'デイリー':              'var(--md-sys-color-error)',
+    '復習':                  'var(--cat-review)',
+    'テスト':                'var(--cat-test)',
   }
   return map[cat] ?? 'var(--brand)'
 }

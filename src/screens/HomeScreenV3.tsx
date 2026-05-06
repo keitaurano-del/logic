@@ -146,7 +146,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
             ref={dailyCardRef}
             onClick={onNavigateToDailyFermi}
             aria-label="今日の1問を解く"
-            style={{ background: 'linear-gradient(135deg, #6C8EF5 0%, #5478E8 100%)', padding: '20px', cursor: 'pointer', position: 'relative', overflow: 'hidden', minHeight: 180, border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%', borderRadius: 'inherit' }}
+            style={{ background: 'var(--brand-grad-h)', padding: '20px', cursor: 'pointer', position: 'relative', overflow: 'hidden', minHeight: 180, border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%', borderRadius: 'inherit' }}
           >
             {/* フェルミ推定イメージ画像 */}
             <img src="/images/v3/fermi-card.png" alt="" loading="lazy" style={{ position: 'absolute', right: 0, top: 0, width: '55%', height: '100%', objectFit: 'cover', opacity: 0.18, pointerEvents: 'none', mixBlendMode: 'overlay', maskImage: 'linear-gradient(to left, rgba(0,0,0,0.8) 0%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to left, rgba(0,0,0,0.8) 0%, transparent 100%)' }} />
@@ -156,7 +156,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
                 <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'rgba(255,255,255,.85)' }}></div>
                 <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,.92)' }}>今日の1問</span>
               </div>
-              <div style={{ fontFamily: "'Noto Sans JP', sans-serif", fontSize: 19, fontWeight: 700, color: '#FFFFFF', lineHeight: 1.4, letterSpacing: '-.005em', marginBottom: 8 }}>
+              <div style={{ fontFamily: "'Noto Sans JP', sans-serif", fontSize: 19, fontWeight: 700, color: 'var(--text-on-hero)', lineHeight: 1.4, letterSpacing: '-.005em', marginBottom: 8 }}>
                 {fermiQuestion}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'rgba(255,255,255,.82)', fontSize: 14, fontWeight: 500, marginBottom: 16 }}>
@@ -164,7 +164,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
                 <div style={{ width: 3, height: 3, borderRadius: '50%', background: 'rgba(255,255,255,.45)' }}></div>
                 <span>+30 XP</span>
               </div>
-              <div style={{ background: '#FFFFFF', color: v3.color.accent, borderRadius: v3.radius.pill, padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700, boxShadow: '0 6px 18px rgba(0,0,0,.14)' }}>
+              <div style={{ background: 'var(--text-on-hero)', color: v3.color.accent, borderRadius: v3.radius.pill, padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700, boxShadow: '0 6px 18px rgba(0,0,0,.14)' }}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill={v3.color.accent} aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>
                 チャレンジする
               </div>
@@ -184,7 +184,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
               border: '1px solid rgba(255,255,255,0.28)',
               borderRadius: 99,
               padding: '5px 10px',
-              color: '#FFFFFF',
+              color: 'var(--text-on-hero)',
               fontSize: 11, fontWeight: 700, letterSpacing: '.02em',
               cursor: 'pointer',
               fontFamily: 'inherit',
@@ -217,8 +217,8 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: v3.color.text2, fontSize: 14, fontWeight: 500, marginBottom: 16 }}>
               <span>+50 XP</span>
             </div>
-            <div style={{ background: v3.color.accent, color: '#FFFFFF', borderRadius: v3.radius.pill, padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700 }}>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="#FFFFFF" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>
+            <div style={{ background: v3.color.accent, color: 'var(--accent-fg)', borderRadius: v3.radius.pill, padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700 }}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>
               レッスンをはじめる
             </div>
           </div>

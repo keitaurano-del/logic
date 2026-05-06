@@ -158,7 +158,7 @@ function RatingPopup({ onSubmit, onSkip }: RatingPopupProps) {
         />
         <button
           onClick={() => rating > 0 ? onSubmit(rating, comment) : onSkip()}
-          style={{ width: '100%', background: v3.color.accent, color: '#FFFFFF', border: 'none', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700, cursor: 'pointer', marginBottom: 10 }}>
+          style={{ width: '100%', background: v3.color.accent, color: 'var(--accent-fg)', border: 'none', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700, cursor: 'pointer', marginBottom: 10 }}>
           {rating > 0 ? '送信する' : 'スキップ'}
         </button>
         <button onClick={onSkip} style={{ width: '100%', background: 'none', border: 'none', color: v3.color.text3, fontSize: 13, cursor: 'pointer' }}>
@@ -281,7 +281,7 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
             <button
               onClick={() => handleGenerate(recommendPrompt)}
               disabled={generating || isAtLimit || !canUse || !recommendPrompt}
-              style={{ width: '100%', background: generating || isAtLimit || !canUse ? v3.color.card : `linear-gradient(135deg, ${v3.color.accent} 0%, #9BB3FA 100%)`, color: generating || isAtLimit || !canUse ? v3.color.text3 : '#fff', border: 'none', borderRadius: 14, padding: '16px 20px', fontSize: 15, fontWeight: 700, cursor: generating || isAtLimit || !canUse ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: 12, boxShadow: generating || isAtLimit || !canUse ? 'none' : v3.shadow.hero }}>
+              style={{ width: '100%', background: generating || isAtLimit || !canUse ? v3.color.card : `linear-gradient(135deg, ${v3.color.accent} 0%, var(--brand-light) 100%)`, color: generating || isAtLimit || !canUse ? v3.color.text3 : 'var(--accent-fg)', border: 'none', borderRadius: 14, padding: '16px 20px', fontSize: 15, fontWeight: 700, cursor: generating || isAtLimit || !canUse ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: 12, boxShadow: generating || isAtLimit || !canUse ? 'none' : v3.shadow.hero }}>
               <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
               </div>
@@ -342,9 +342,9 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 16 }}>
                   {weakness.slice(0, 3).map((w) => {
                     const pct = Math.round(w.score * 100)
-                    const barColor = pct < 35 ? 'var(--md-sys-color-error)' : pct < 55 ? '#FBBF24' : v3.color.accent
+                    const barColor = pct < 35 ? 'var(--md-sys-color-error)' : pct < 55 ? 'var(--warning-mid)' : v3.color.accent
                     const tagBg = pct < 35 ? 'rgba(248,113,113,.15)' : pct < 55 ? 'rgba(251,191,36,.15)' : `${v3.color.accent}20`
-                    const tagColor = pct < 35 ? 'var(--md-sys-color-error)' : pct < 55 ? '#FBBF24' : v3.color.accent
+                    const tagColor = pct < 35 ? 'var(--md-sys-color-error)' : pct < 55 ? 'var(--warning-mid)' : v3.color.accent
                     const tagLabel = pct < 35 ? '苦手' : pct < 55 ? '要強化' : '練習中'
                     return (
                       <div key={w.category}>
@@ -391,7 +391,7 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
                     <div style={{ fontSize: 14, fontWeight: 700, color: v3.color.text, marginBottom: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.title}</div>
                     <div style={{ fontSize: 12, color: v3.color.text2 }}>{p.steps?.length ?? 0}問 · {new Date(p.createdAt).toLocaleDateString('ja-JP')}</div>
                   </div>
-                  <button onClick={() => onPlay(p)} style={{ background: v3.color.accent, color: '#FFFFFF', border: 'none', borderRadius: 10, padding: '8px 14px', fontSize: 13, fontWeight: 700, cursor: 'pointer', flexShrink: 0 }}>もう一度</button>
+                  <button onClick={() => onPlay(p)} style={{ background: v3.color.accent, color: 'var(--accent-fg)', border: 'none', borderRadius: 10, padding: '8px 14px', fontSize: 13, fontWeight: 700, cursor: 'pointer', flexShrink: 0 }}>もう一度</button>
                   <button onClick={() => handleDelete(p.id)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 4, flexShrink: 0 }}>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F87171" strokeWidth="2" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
                   </button>

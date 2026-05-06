@@ -16,15 +16,14 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
   const [successMsg, setSuccessMsg] = useState('')
   const ready = isSupabaseConfigured()
 
-  // ── カラー（ダークテーマ固定） ──
-  const BG = '#1A1F2E'          // 背景（Slate Blue）
+  // ── カラー（ダーク前提のヒーロー画面、tokens.css の on-dark 系を参照） ──
+  const BG = 'var(--bg-slate-deep)'                  // Slate Blue 背景
   const CARD = 'transparent'
-  const TEXT = '#FFFFFF'
-  const TEXT2 = 'rgba(255,255,255,0.55)'
-  const ACCENT = 'var(--md-sys-color-primary)'      // Slate Blue（450nm集中色）
-  const BORDER = 'rgba(255,255,255,0.15)'
-  const INPUT_BG = 'rgba(255,255,255,0.07)'
-  const GOOGLE_BTN_BG = '#4285F4'
+  const TEXT = 'var(--text-on-hero)'
+  const TEXT2 = 'var(--text-on-hero-muted)'
+  const BORDER = 'var(--border-on-dark)'
+  const INPUT_BG = 'var(--bg-input-on-dark)'
+  const GOOGLE_BTN_BG = '#4285F4'                    // Google brand color (固有色)
 
   const inputStyle: React.CSSProperties = {
     width: '100%',
@@ -119,7 +118,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
               width: '100%', padding: '15px 20px',
               background: GOOGLE_BTN_BG,
               border: 'none', borderRadius: 12,
-              fontSize: 16, fontWeight: 700, color: '#fff',
+              fontSize: 16, fontWeight: 700, color: 'var(--accent-fg)',
               cursor: loading ? 'not-allowed' : 'pointer',
               opacity: loading ? 0.7 : 1,
             }}
@@ -145,7 +144,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
           </div>
         )}
         {successMsg && (
-          <div style={{ fontSize: 14, color: '#34D399', padding: '10px 14px', background: 'rgba(52,211,153,0.1)', borderRadius: 10 }}>
+          <div style={{ fontSize: 14, color: 'var(--success-mid)', padding: '10px 14px', background: 'var(--success-soft)', borderRadius: 10 }}>
             {successMsg}
           </div>
         )}
@@ -181,9 +180,9 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
           disabled={loading || !ready}
           style={{
             width: '100%', padding: '16px',
-            background: loading ? 'rgba(45,212,191,0.5)' : `linear-gradient(135deg, ${ACCENT}, #0EA5E9)`,
+            background: loading ? 'var(--accent-soft)' : 'var(--brand-grad-h)',
             border: 'none', borderRadius: 12,
-            fontSize: 16, fontWeight: 700, color: '#fff',
+            fontSize: 16, fontWeight: 700, color: 'var(--accent-fg)',
             cursor: loading ? 'not-allowed' : 'pointer',
             marginTop: 4,
           }}
