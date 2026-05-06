@@ -25,142 +25,19 @@
  * 出力ファイル名:
  *   コース: course-{id}.png    例: course-logic-01.png
  *   レッスン: lesson-{id}.png  例: lesson-20.png
+ *
+ * プロンプトは scripts/imagePrompts.ts に集約されている。
  */
 
 import { writeFile, mkdir, access } from 'node:fs/promises'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
-
-// ────────────────────────────────────────────────────────────────────────────
-// 共通スタイル: すべてのプロンプトに付与
-// ────────────────────────────────────────────────────────────────────────────
-const STYLE_SUFFIX =
-  '3D isometric illustration, clean modern minimalist style, ' +
-  'deep navy blue gradient background (#101729 to #1F2942), ' +
-  'subtle warm golden glow accent in upper area, ' +
-  'soft pastel highlights, professional educational app thumbnail, ' +
-  'centered composition, cinematic lighting, octane render style, ' +
-  'no text, no captions, no watermarks, no logos, no letters, no numbers'
-
-// ────────────────────────────────────────────────────────────────────────────
-// コース別プロンプト (内容に沿った主題を 1-2 文で記述)
-// ────────────────────────────────────────────────────────────────────────────
-const COURSE_PROMPTS: Record<string, string> = {
-  // 思考の基礎
-  'logic-01':
-    'four colorful 3D isometric cubes arranged in a 2x2 grid (red, blue, gold, green) representing MECE classification, with a separate floating isometric tree of connected cube nodes branching outward like a logic tree, subtle floating papers with checkmarks',
-  'logic-02':
-    'a 3D isometric three-tier pyramid built from stacked cubes, with bidirectional vertical arrows on the side representing So What going up and Why So going down, a small figure presenting the pyramid to an audience',
-  'critical-01':
-    'a 3D isometric scene of a giant magnifying glass examining a floating document, with question marks transforming into green checkmarks, broken chain links representing logical fallacies floating around',
-  'critical-02':
-    'a 3D isometric translucent human brain with several glass filter panels being lifted away, releasing colored prismatic fragments representing cognitive biases drifting off',
-  // 課題発見・解決
-  'hypothesis-01':
-    'a 3D isometric scene with a floating hypothesis card connected by an arrow loop to a laboratory beaker and a magnifying glass, representing hypothesis-then-verify cycle',
-  'problem-01':
-    'a 3D isometric iceberg cut in half showing a small visible tip above the water and a massive submerged base with glowing root cause spheres inside, target marker on the deep core',
-  'design-01':
-    'a 3D isometric central persona figure surrounded by an empathy map split into four quadrants on the floor, sticky notes floating, prototype paper shapes, journey path lines',
-  'systems-01':
-    'a 3D isometric circular feedback loop diagram with connected nodes, large circular arrow flowing through them, an iceberg model integrated below the loop',
-  // 発想・創造
-  'lateral-01':
-    'a 3D isometric glowing lightbulb breaking out of a cube box, with sideways arrows pointing in unconventional directions, prism splitting white light into colors',
-  'analogy-01':
-    'a 3D isometric bridge connecting two distinct floating islands - left island shaped like a tree of nature, right island shaped like a business chart - with a glowing lightbulb hovering above the bridge',
-  'philosophy-01':
-    'a 3D isometric ancient Greek stone column with a contemplative thinker silhouette sitting beside it, an open scroll, abstract thought clouds with question marks above',
-  'eastern-01':
-    'a 3D isometric Chinese pavilion roof with a wise sage figure seated inside, traditional scrolls, glowing networked relationship lines connecting smaller figures around it, soft mist',
-  'eastern-02':
-    'a 3D isometric bamboo grove garden with a floating yin-yang symbol, abstract tao-flow lines like flowing water around stones, strategy chess pieces on a low platform',
-  // 伝える・提案する
-  'proposal-01':
-    'a 3D isometric professional document with a small presenter figure beside it, golden impact arrows radiating from the document toward a small target, audience silhouettes in front',
-  'proposal-course-01':
-    'a 3D isometric workflow from a small hypothesis card on the left to a polished bound proposal document on the right, with checkmark verification steps in between',
-  'client-01':
-    'a 3D isometric floating spreadsheet panel with bar charts and large numerical figures, a calculator, a business person reading the data with a confident posture',
-  'client-02':
-    'a 3D isometric scene with two figures across a small table, one extracting information through a glowing question stream, structured cards organizing the answers',
-  'client-03':
-    'a 3D isometric figure climbing a steeply rising learning curve graph, stacked books on the path, expert silhouettes guiding from above',
-  // ビジネス実践
-  'case-01':
-    'a 3D isometric profit equation tree splitting into revenue and cost branches with sub-cubes, a small interview chair scene, structured framework boards',
-  'strategy-01':
-    'a 3D isometric vintage industrial factory with conveyor belts on a circular platform, surrounded by five large arrows pointing inward representing five forces, a classic strategy book',
-  'strategy-02':
-    'a 3D isometric calm blue ocean with a small sailing ship, glowing resource gems on the seabed, mechanical capability gears interlocking, platform hub with radiating connections',
-  'fermi-01':
-    'a 3D isometric small earth globe with floating numerical figures around it, calculator, decomposition arrows breaking the globe into smaller cube estimates',
-  'numeracy-01':
-    'a 3D isometric scene with floating percentage symbol, yen currency sign, bar chart and pie chart, calculator, a person confidently reading numbers, scale balance',
-  'peak-performance-01':
-    'a 3D isometric morning scene with a moon-to-sun cycle arc, an energy graph rising and falling with peaks, an athletic figure stretching, a glowing focus zone marker',
-}
-
-// ────────────────────────────────────────────────────────────────────────────
-// レッスン別プロンプト (主要レッスンのみ。残りはカテゴリのフォールバックを使う)
-// ────────────────────────────────────────────────────────────────────────────
-const LESSON_PROMPTS: Record<number, string> = {
-  // ロジカルシンキング
-  20: 'a 3D isometric 2x2 grid of four large colored cubes (red, blue, gold, green) showing MECE classification, no overlap no gap',
-  21: 'a 3D isometric tree diagram with a single root cube branching into mid-level cubes and leaf cubes',
-  22: 'a 3D isometric pair of vertical arrows side by side, one pointing up and one pointing down, between layered cube stacks, representing So What and Why So',
-  23: 'a 3D isometric three-tier pyramid built from stacked cubes, conclusion on top supported by reason cubes below',
-  24: 'a 3D isometric briefcase opening with documents flying out, case study notebook, charts',
-  25: 'a 3D isometric flow from general principle cube down to specific conclusion cube, deduction arrow',
-  26: 'a 3D isometric flow from many small specific data cubes converging upward into a general pattern cube, induction arrow',
-  27: 'a 3D isometric formal logic gate diagram with truth state cubes glowing in a connected pattern',
-  68: 'a 3D isometric ladder of abstraction with concrete object cubes at the bottom and abstract idea cubes at the top, vertical arrow',
-  // ケース面接
-  28: 'a 3D isometric interview room with two chairs across a small table, structured frameworks floating between them',
-  29: 'a 3D isometric profit equation tree with revenue branch and cost branch breaking into smaller cubes',
-  35: 'a 3D isometric arrow pointing from a small island to a larger market continent, decision flowchart cubes around the arrow',
-  36: 'a 3D isometric two companies represented as separate cube clusters merging into one larger cluster, M&A handshake',
-  // クリティカルシンキング
-  40: 'a 3D isometric magnifying glass examining a checklist document, question marks turning into checkmarks',
-  41: 'a 3D isometric set of broken chain links labeled as logical fallacies, with a corrected solid chain link beside them',
-  42: 'a 3D isometric data dashboard with floating bar charts and a person carefully reading numbers, hidden patterns highlighted',
-  43: 'a 3D isometric large question mark cube being polished, surrounded by smaller question marks being filtered into a clearer one',
-  69: 'a 3D isometric brain with translucent biased glasses being removed, prismatic fragments drifting',
-  71: 'a 3D isometric two correlated wave lines diverging where one is a true cause arrow and the other is just correlation',
-  // 仮説思考
-  50: 'a 3D isometric thought bubble with a hypothesis card pointing forward to a verification path',
-  51: 'a 3D isometric figure drafting hypothesis cards on a desk, multiple options floating up',
-  52: 'a 3D isometric arrow loop from hypothesis card to data verification beaker and back',
-  70: 'a 3D isometric experimental setup with measurement instruments, control versus test cubes',
-  // 課題設定
-  53: 'a 3D isometric target board with concentric rings, an arrow finding the true bullseye among decoys',
-  54: 'a 3D isometric large issue card being decomposed downward into smaller sub-issue cubes',
-  55: 'a 3D isometric workspace with multiple problem cards being prioritized into a focused single card',
-  // デザインシンキング
-  56: 'a 3D isometric design thinking cycle with five connected stage cubes (empathize, define, ideate, prototype, test)',
-  57: 'a 3D isometric empathy map quadrants on the floor surrounding a central persona figure',
-  58: 'a 3D isometric prototype paper model being tested by a user figure with feedback bubbles',
-  // ラテラルシンキング
-  59: 'a 3D isometric lightbulb breaking out of a cube box, sideways arrows in unconventional directions',
-  60: 'a 3D isometric prism splitting a single light beam into multiple colorful diverging directions',
-  61: 'a 3D isometric flipped perspective scene where a problem cube is rotated to reveal a different unexpected facet',
-  // アナロジー思考
-  62: 'a 3D isometric bridge connecting two distinct floating islands with different visual themes',
-  63: 'a 3D isometric structural pattern card being lifted from one domain and placed onto another domain',
-  64: 'a 3D isometric two parallel scenes side by side with matching structural arrows showing analogy mapping',
-  // システムシンキング
-  65: 'a 3D isometric circular feedback loop with connected node cubes flowing in a circle',
-  66: 'a 3D isometric system archetype diagram with reinforcing and balancing loops shown as gears',
-  67: 'a 3D isometric iceberg model with events on top, patterns mid, structures and mental models at the deep base',
-  // 提案・伝える技術
-  72: 'a 3D isometric professional bound proposal document with a clear target arrow above it',
-  73: 'a 3D isometric two figures facing a document, one offering and one receiving, perspective lines aligning their viewpoints',
-  74: 'a 3D isometric storyline path with sequential narrative cube panels leading to a conclusion',
-  75: 'a 3D isometric message card being polished and sharpened on a workbench with sparkles',
-  76: 'a 3D isometric shield deflecting incoming counter-argument arrows, behind it a strong document',
-  // 哲学
-  77: 'a 3D isometric ancient Greek stone column with a Socrates-like silhouette and a scroll, question marks rising',
-}
+import {
+  STYLE_SUFFIX,
+  COURSE_PROMPTS,
+  LESSON_PROMPTS,
+  type ImagePromptEntry,
+} from './imagePrompts.ts'
 
 // ────────────────────────────────────────────────────────────────────────────
 // CLI 引数パース
@@ -202,7 +79,7 @@ function parseArgs(argv: string[]): Args {
 }
 
 // ────────────────────────────────────────────────────────────────────────────
-// Gemini Imagen API 呼び出し
+// Gemini API 呼び出し
 // ────────────────────────────────────────────────────────────────────────────
 type GenResult = { ok: true; bytes: Buffer } | { ok: false; error: string }
 
@@ -311,7 +188,36 @@ async function fileExists(path: string): Promise<boolean> {
 // ────────────────────────────────────────────────────────────────────────────
 // main
 // ────────────────────────────────────────────────────────────────────────────
-type Job = { kind: 'course' | 'lesson'; id: string; prompt: string; outFile: string }
+type Job = {
+  kind: 'course' | 'lesson'
+  id: string
+  prompt: string
+  outFile: string
+}
+
+function buildJobs(args: Args, outDir: string): Job[] {
+  const jobs: Job[] = []
+  const push = (kind: Job['kind'], entries: ImagePromptEntry[]) => {
+    for (const e of entries) {
+      if (args.only && !args.only.includes(e.id)) continue
+      jobs.push({
+        kind,
+        id: e.id,
+        prompt: e.prompt,
+        outFile: resolve(outDir, e.filename),
+      })
+    }
+  }
+
+  if (args.target === 'courses' || args.target === 'all') {
+    push('course', COURSE_PROMPTS)
+  }
+  if (args.target === 'lessons' || args.target === 'all') {
+    push('lesson', LESSON_PROMPTS)
+  }
+
+  return jobs
+}
 
 async function main() {
   const args = parseArgs(process.argv.slice(2))
@@ -322,30 +228,7 @@ async function main() {
   const outDir = resolve(repoRoot, args.out)
   await mkdir(outDir, { recursive: true })
 
-  const jobs: Job[] = []
-
-  if (args.target === 'courses' || args.target === 'all') {
-    for (const [id, prompt] of Object.entries(COURSE_PROMPTS)) {
-      if (args.only && !args.only.includes(id)) continue
-      jobs.push({
-        kind: 'course',
-        id,
-        prompt,
-        outFile: resolve(outDir, `course-${id}.png`),
-      })
-    }
-  }
-  if (args.target === 'lessons' || args.target === 'all') {
-    for (const [idStr, prompt] of Object.entries(LESSON_PROMPTS)) {
-      if (args.only && !args.only.includes(idStr)) continue
-      jobs.push({
-        kind: 'lesson',
-        id: idStr,
-        prompt,
-        outFile: resolve(outDir, `lesson-${idStr}.png`),
-      })
-    }
-  }
+  const jobs = buildJobs(args, outDir)
 
   if (jobs.length === 0) {
     console.error('no jobs to run (check --target / --only)')
