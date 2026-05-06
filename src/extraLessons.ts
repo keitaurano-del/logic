@@ -209,7 +209,7 @@ const systemsArchetype: LessonData = {
   category: 'システムシンキング',
   steps: [
     { type: 'explain', title: 'システム原型とは', content: '組織や社会で繰り返し現れる典型的な構造パターンを「システム原型」という。「成長の限界」「応急処置の失敗（Fixes that Fail）」「責任の転嫁（Shifting the Burden）」「共有地の悲劇」などがある。原型を知ることで、複雑な問題の本質をすばやく見抜ける。' },
-    { type: 'quiz', question: '「対症療法を繰り返すたびに副作用が蓄積し、根本問題がかえって悪化し続ける」というパターンはどのシステム原型か？', options: [
+    { type: 'quiz', question: '「対症療法を行うと、その処置自体が新たな副作用を生み、結果として元の問題までもが悪化していく」というパターンはどのシステム原型か？', options: [
       { label: '成長の限界', correct: false },
       { label: '応急処置の失敗（Fixes that Fail）', correct: true },
       { label: '共有地の悲劇', correct: false },

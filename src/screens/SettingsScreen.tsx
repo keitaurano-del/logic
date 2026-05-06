@@ -105,10 +105,10 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
 
   async function handleClearCache() {
     const ok = await confirmDialog({
-      title: t('settings.clearCacheTitle') ?? 'キャッシュをクリア',
+      title: t('settings.clearCacheTitle'),
       message: t('settings.clearCacheConfirm'),
-      okText: t('settings.clearCacheConfirmOk') ?? 'クリア',
-      cancelText: t('common.cancel') ?? 'キャンセル',
+      okText: t('settings.clearCacheConfirmOk'),
+      cancelText: t('common.cancel'),
     })
     if (ok) {
       localStorage.clear()
