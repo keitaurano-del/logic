@@ -4,7 +4,6 @@
  * 紙吹雪なし、シャープでモダンなデザイン
  */
 import { useEffect, useState } from 'react'
-import { v3 } from '../styles/tokensV3'
 import { getStreak, getXp } from '../stats'
 import { FlameIcon, ArrowUpIcon, StarIcon } from '../icons'
 import { getCurrentLevel } from './homeHelpers'
@@ -50,7 +49,7 @@ function RingProgress({ progress, size = 140, stroke = 10 }: { progress: number;
           <stop offset="100%" stopColor="#5FA898" />
         </linearGradient>
       </defs>
-      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={`${v3.color.accent}18`} strokeWidth={stroke} />
+      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={`color-mix(in srgb, var(--brand) 9%, transparent)`} strokeWidth={stroke} />
       <circle
         cx={size / 2} cy={size / 2} r={r}
         fill="none" stroke="url(#ring-grad)" strokeWidth={stroke}
@@ -96,12 +95,12 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
 
   return (
     <div style={{
-      background: v3.color.bg,
+      background: 'var(--bg-primary)',
       minHeight: '100dvh',
       display: 'flex',
       flexDirection: 'column',
       fontFamily: "'Noto Sans JP', sans-serif",
-      color: v3.color.text,
+      color: 'var(--text-primary)',
       position: 'relative',
       overflow: 'hidden',
     }}>
@@ -109,9 +108,9 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
       <div style={{
         position: 'absolute', inset: 0, pointerEvents: 'none',
         background: `
-          radial-gradient(circle at 50% 10%, ${v3.color.accent}14 0%, transparent 55%),
-          linear-gradient(${v3.color.line} 1px, transparent 1px),
-          linear-gradient(90deg, ${v3.color.line} 1px, transparent 1px)
+          radial-gradient(circle at 50% 10%, color-mix(in srgb, var(--brand) 8%, transparent) 0%, transparent 55%),
+          linear-gradient(${'var(--border)'} 1px, transparent 1px),
+          linear-gradient(90deg, ${'var(--border)'} 1px, transparent 1px)
         `,
         backgroundSize: '100% 100%, 40px 40px, 40px 40px',
         opacity: 0.6,
@@ -134,16 +133,16 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
           }}>
             <span style={{
               fontFamily: "'Inter Tight', sans-serif",
-              fontSize: 38, fontWeight: 900, color: v3.color.accent,
+              fontSize: 38, fontWeight: 900, color: 'var(--brand)',
               letterSpacing: '-.04em', lineHeight: 1,
             }}>+{xpCount}</span>
-            <span style={{ fontSize: 11, fontWeight: 700, color: v3.color.text3, letterSpacing: '.1em', marginTop: 3 }}>XP</span>
+            <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '.1em', marginTop: 3 }}>XP</span>
           </div>
         </div>
 
         {/* タイトル */}
         <div style={{ marginBottom: 6, ...show(1) }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: v3.color.accent, letterSpacing: '.1em', marginBottom: 6 }}>LESSON COMPLETE</div>
+          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--brand)', letterSpacing: '.1em', marginBottom: 6 }}>LESSON COMPLETE</div>
           <div style={{ fontSize: 22, fontWeight: 800, lineHeight: 1.35 }}>「{lessonTitle}」</div>
         </div>
 
@@ -154,15 +153,15 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
             flex: 1, borderRadius: 18, padding: '18px 12px', textAlign: 'center',
             background: streak >= 3
               ? 'linear-gradient(145deg, rgba(255,107,43,.15), rgba(255,154,58,.08))'
-              : v3.color.card,
+              : 'var(--bg-card)',
             border: streak >= 3
               ? '1px solid rgba(255,107,43,.35)'
-              : `1px solid ${v3.color.line}`,
+              : `1px solid ${'var(--border)'}`,
           }}>
             <div style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
               lineHeight: 1, marginBottom: 6,
-              color: streak >= 7 ? '#FF7A1A' : streak >= 3 ? '#FF9F47' : v3.color.text3,
+              color: streak >= 7 ? '#FF7A1A' : streak >= 3 ? '#FF9F47' : 'var(--text-muted)',
               filter: streak < 1 ? 'grayscale(1) opacity(.25)' : 'none',
             }}>
               {streak >= 7 ? (<><FlameIcon width={24} height={24} /><FlameIcon width={24} height={24} /></>) : streak >= 3 ? <FlameIcon width={28} height={28} /> : <span style={{ fontSize: 28 }}>○</span>}
@@ -170,43 +169,43 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
             <div style={{
               fontFamily: "'Inter Tight', sans-serif",
               fontSize: 28, fontWeight: 900, letterSpacing: '-.03em', lineHeight: 1,
-              color: streak >= 3 ? '#FF7A3A' : v3.color.text,
+              color: streak >= 3 ? '#FF7A3A' : 'var(--text-primary)',
             }}>{streak}</div>
-            <div style={{ fontSize: 11, fontWeight: 600, color: v3.color.text3, marginTop: 5 }}>日連続</div>
+            <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-muted)', marginTop: 5 }}>日連続</div>
           </div>
 
           {/* 学習時間 */}
           <div style={{
             flex: 1, borderRadius: 18, padding: '18px 12px', textAlign: 'center',
-            background: v3.color.card, border: `1px solid ${v3.color.line}`,
+            background: 'var(--bg-card)', border: `1px solid ${'var(--border)'}`,
           }}>
             <div style={{ fontSize: 30, lineHeight: 1, marginBottom: 6 }}></div>
             <div style={{
               fontFamily: "'Inter Tight', sans-serif",
               fontSize: 28, fontWeight: 900, letterSpacing: '-.03em', lineHeight: 1,
             }}>{timeStr}</div>
-            <div style={{ fontSize: 11, fontWeight: 600, color: v3.color.text3, marginTop: 5 }}>学習時間</div>
+            <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-muted)', marginTop: 5 }}>学習時間</div>
           </div>
 
           {/* レベル */}
           <div style={{
             flex: 1, borderRadius: 18, padding: '18px 12px', textAlign: 'center',
             background: leveledUp
-              ? `linear-gradient(145deg, ${v3.color.accent}18, ${v3.color.accent}08)`
-              : v3.color.card,
+              ? `linear-gradient(145deg, color-mix(in srgb, var(--brand) 9%, transparent), color-mix(in srgb, var(--brand) 3%, transparent))`
+              : 'var(--bg-card)',
             border: leveledUp
-              ? `1px solid ${v3.color.accent}50`
-              : `1px solid ${v3.color.line}`,
+              ? `1px solid color-mix(in srgb, var(--brand) 31%, transparent)`
+              : `1px solid ${'var(--border)'}`,
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1, marginBottom: 6, color: leveledUp ? v3.color.accent : v3.color.text3 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1, marginBottom: 6, color: leveledUp ? 'var(--brand)' : 'var(--text-muted)' }}>
               {leveledUp ? <ArrowUpIcon width={28} height={28} /> : <StarIcon width={28} height={28} />}
             </div>
             <div style={{
               fontFamily: "'Inter Tight', sans-serif",
               fontSize: 28, fontWeight: 900, letterSpacing: '-.03em', lineHeight: 1,
-              color: leveledUp ? v3.color.accent : v3.color.text,
+              color: leveledUp ? 'var(--brand)' : 'var(--text-primary)',
             }}>Lv.{lv.level}</div>
-            <div style={{ fontSize: 11, fontWeight: 600, color: leveledUp ? v3.color.accent : v3.color.text3, marginTop: 5 }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: leveledUp ? 'var(--brand)' : 'var(--text-muted)', marginTop: 5 }}>
               {leveledUp ? 'UP!' : 'レベル'}
             </div>
           </div>
@@ -216,15 +215,15 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
         {leveledUp && (
           <div style={{
             width: '100%', marginBottom: 14,
-            background: `linear-gradient(90deg, ${v3.color.accent}22, ${v3.color.accent}08)`,
-            border: `1px solid ${v3.color.accent}40`,
+            background: `linear-gradient(90deg, color-mix(in srgb, var(--brand) 13%, transparent), color-mix(in srgb, var(--brand) 3%, transparent))`,
+            border: `1px solid color-mix(in srgb, var(--brand) 25%, transparent)`,
             borderRadius: 14, padding: '12px 16px',
             display: 'flex', alignItems: 'center', gap: 10,
             ...show(2),
           }}>
-            <ArrowUpIcon width={20} height={20} style={{ color: v3.color.accent }} />
+            <ArrowUpIcon width={20} height={20} style={{ color: 'var(--brand)' }} />
             <span style={{ fontSize: 14, fontWeight: 800 }}>
-              レベルアップ: <span style={{ color: v3.color.accent }}>Lv.{prevLevel} → Lv.{lv.level}</span>
+              レベルアップ: <span style={{ color: 'var(--brand)' }}>Lv.{prevLevel} → Lv.{lv.level}</span>
             </span>
           </div>
         )}
@@ -235,13 +234,13 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
             onClick={onNext}
             style={{
               width: '100%',
-              background: v3.color.accent,
+              background: 'var(--brand)',
               color: '#FFFFFF',
               padding: '17px 0', borderRadius: 99,
               fontSize: 16, fontWeight: 700,
               border: 'none', cursor: 'pointer',
               letterSpacing: '.02em',
-              boxShadow: `0 4px 24px ${v3.color.accent}45`,
+              boxShadow: `0 4px 24px color-mix(in srgb, var(--brand) 27%, transparent)`,
               WebkitTapHighlightColor: 'transparent',
               touchAction: 'manipulation',
             }}
@@ -253,8 +252,8 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
             style={{
               width: '100%',
               background: 'transparent',
-              border: `1px solid ${v3.color.line}`,
-              color: v3.color.text2,
+              border: `1px solid ${'var(--border)'}`,
+              color: 'var(--text-secondary)',
               padding: '14px 0', borderRadius: 99,
               fontSize: 14, fontWeight: 600, cursor: 'pointer',
               WebkitTapHighlightColor: 'transparent',

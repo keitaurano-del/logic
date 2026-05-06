@@ -1,3 +1,7 @@
+/**
+ * RankingScreen — レガシー画面 (`?preview=ranking` 経由でのみ到達、通常導線では FermiRankingScreen にリダイレクト)。
+ * 削除候補だが Phase 5 で i18n だけ通している。将来の通常ランキング機能に転用する余地あり。
+ */
 import { useEffect, useState, useMemo } from 'react'
 import { getGuestId, getNickname } from '../guestId'
 import { hasCompletedPlacement, loadPlacementResult } from '../placementData'
@@ -5,6 +9,7 @@ import { API_BASE } from './apiBase'
 import { getStreak, getStudyDates, getCompletedLessons, getXp } from '../stats'
 import { getPoints } from './homeHelpers'
 import { LoadingIndicator } from '../components/LoadingIndicator'
+import { t } from '../i18n'
 
 
 interface RankingScreenProps {
@@ -15,9 +20,19 @@ interface RankingScreenProps {
 type RankEntry = { rank: number; nickname: string; deviation: number; xp: number; isYou: boolean }
 type RankingData = { total: number; top: RankEntry[]; yourRank: number; yourDeviation: number; yourXp: number }
 
-const WEEK_DAYS = ['月', '火', '水', '木', '金', '土'] as const
+function getWeekDays(): readonly string[] {
+  return [
+    t('rankingScreen.day.mon'),
+    t('rankingScreen.day.tue'),
+    t('rankingScreen.day.wed'),
+    t('rankingScreen.day.thu'),
+    t('rankingScreen.day.fri'),
+    t('rankingScreen.day.sat'),
+  ] as const
+}
 
 export function RankingScreen({ onTakeTest }: RankingScreenProps) {
+  const WEEK_DAYS = getWeekDays()
   const [rankData, setRankData] = useState<RankingData | null>(null)
   const [loading, setLoading] = useState(true)
   const [rankTab, setRankTab] = useState<'week' | 'all'>('week')
@@ -40,7 +55,8 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
     const today = new Date()
     const monday = new Date(today)
     monday.setDate(today.getDate() - todayDow)
-    return WEEK_DAYS.map((_, i) => {
+    // 6 = WEEK_DAYS.length (Mon-Sat)
+    return Array.from({ length: 6 }, (_, i) => {
       const d = new Date(monday)
       d.setDate(monday.getDate() + i)
       return d.toISOString().slice(0, 10) // YYYY-MM-DD
@@ -107,7 +123,7 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
       const name = titleMap[key] || key.replace('lesson-', 'Lesson ')
       const isToday = studyDatesArr.includes(today)
       const isYesterday = !isToday && studyDatesArr.includes(yesterday)
-      const dateLabel = isToday ? '今日' : isYesterday ? '昨日' : ''
+      const dateLabel = isToday ? t('rankingScreen.today') : isYesterday ? t('rankingScreen.yesterday') : ''
       return { name, date: dateLabel, pts: '+20', icon: lessonIcon }
     })
   }, [mountTime])
@@ -117,7 +133,7 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
 
       {/* ナビバー */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 12px', background: 'rgba(240,244,255,.95)', borderBottom: '1px solid var(--border)' }}>
-        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 26, fontWeight: 900, color: 'var(--md-sys-color-primary)', letterSpacing: '-.04em' }}>統計</div>
+        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 26, fontWeight: 900, color: 'var(--md-sys-color-primary)', letterSpacing: '-.04em' }}>{t('rankingScreen.title')}</div>
       </div>
 
       <div style={{ padding: '16px 16px 96px', display: 'flex', flexDirection: 'column', gap: 12, overflowY: 'auto' }}>
@@ -128,7 +144,7 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1px 1fr 1px 1fr 1px 1fr' }}>
             <div style={{ textAlign: 'center', padding: '0 2px' }}>
               <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 28, fontWeight: 900, color: '#fff', letterSpacing: '-.04em', lineHeight: 1 }}>{streak}</div>
-              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)', marginTop: 5 }}>連続</div>
+              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)', marginTop: 5 }}>{t('rankingScreen.streakLabel')}</div>
             </div>
             <div style={{ background: 'rgba(255,255,255,.15)', margin: '4px 0' }} />
             <div style={{ textAlign: 'center', padding: '0 2px' }}>
@@ -138,12 +154,12 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
             <div style={{ background: 'rgba(255,255,255,.15)', margin: '4px 0' }} />
             <div style={{ textAlign: 'center', padding: '0 2px' }}>
               <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 28, fontWeight: 900, color: '#fff', letterSpacing: '-.04em', lineHeight: 1 }}>{points}</div>
-              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)', marginTop: 5 }}>ポイント</div>
+              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)', marginTop: 5 }}>{t('rankingScreen.points')}</div>
             </div>
             <div style={{ background: 'rgba(255,255,255,.15)', margin: '4px 0' }} />
             <div style={{ textAlign: 'center', padding: '0 2px' }}>
               <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 24, fontWeight: 900, color: '#fff', letterSpacing: '-.04em', lineHeight: 1 }}>{deviation != null ? Math.round(deviation) : '—'}</div>
-              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)', marginTop: 5 }}>偏差値</div>
+              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)', marginTop: 5 }}>{t('rankingScreen.deviation')}</div>
             </div>
           </div>
         </div>
@@ -151,7 +167,7 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
 
         {/* 今週の記録 */}
         <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 14, padding: '14px 16px', boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
-          <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 16, fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-.02em', marginBottom: 12 }}>今週の記録</div>
+          <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 16, fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-.02em', marginBottom: 12 }}>{t('rankingScreen.weekRecord')}</div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             {WEEK_DAYS.map((day, i) => {
               const isDone = studyDateSet.has(thisWeekDates[i])
@@ -166,14 +182,14 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
             })}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}>
               <div style={{ width: 34, height: 34, borderRadius: '50%', background: 'var(--md-sys-color-primary)', boxShadow: '0 2px 8px rgba(59,91,219,.4)' }} />
-              <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--md-sys-color-primary)' }}>今日</div>
+              <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--md-sys-color-primary)' }}>{t('rankingScreen.today')}</div>
             </div>
           </div>
         </div>
 
         {/* ランキング */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 16, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 0 }}>ランキング</div>
+          <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 16, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 0 }}>{t('rankingScreen.rankingHeading')}</div>
           {/* タブ */}
           <div style={{ display: 'flex', background: 'var(--bg-card)', borderRadius: 10, padding: 3, gap: 3 }}>
             {(['week', 'all'] as const).map((tab) => (
@@ -181,7 +197,7 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
                 role="tab"
                 aria-selected={rankTab === tab}
                 style={{ flex: 1, textAlign: 'center', padding: 7, fontSize: 14, fontWeight: 700, cursor: 'pointer', borderRadius: 6, background: rankTab === tab ? '#fff' : 'transparent', color: rankTab === tab ? 'var(--md-sys-color-primary)' : '#7A849E', boxShadow: rankTab === tab ? '0 1px 3px rgba(15,21,35,.08)' : 'none', transition: 'all .15s', border: 'none', font: 'inherit' }}>
-                {tab === 'week' ? '週間' : '全期間'}
+                {tab === 'week' ? t('rankingScreen.tabWeek') : t('rankingScreen.tabAll')}
               </button>
             ))}
           </div>
@@ -189,9 +205,9 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
           {/* 実力診断未受検 */}
           {!completed && (
             <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 14, padding: '18px 16px', textAlign: 'center' }}>
-              <div style={{ fontSize: 16, color: 'var(--text-muted)', marginBottom: 12 }}>実力診断テストを受けて<br />全国ランキングに参加しよう</div>
+              <div style={{ fontSize: 16, color: 'var(--text-muted)', marginBottom: 12, whiteSpace: 'pre-line' }}>{t('rankingScreen.takeTestPrompt')}</div>
               <button onClick={onTakeTest} style={{ background: 'var(--md-sys-color-primary)', color: '#fff', border: 'none', borderRadius: 10, padding: '10px 20px', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}>
-                診断を受ける
+                {t('rankingScreen.takeTestBtn')}
               </button>
             </div>
           )}
@@ -199,7 +215,7 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
           {/* ランキングリスト */}
           {loading && (
             <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 14, padding: 16, textAlign: 'center' }}>
-              <LoadingIndicator label="読み込み中" />
+              <LoadingIndicator label={t('common.loading')} />
             </div>
           )}
           {!loading && rankData && rankData.total > 0 && (
@@ -213,7 +229,7 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                         {e.nickname}
-                        {e.isYou && <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--md-sys-color-primary)', background: 'var(--bg-card)', borderRadius: 4, padding: '1px 5px', marginLeft: 6 }}>あなた</span>}
+                        {e.isYou && <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--md-sys-color-primary)', background: 'var(--bg-card)', borderRadius: 4, padding: '1px 5px', marginLeft: 6 }}>{t('rankingScreen.youBadge')}</span>}
                       </div>
                       <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2, display: 'flex', alignItems: 'center', gap: 4 }}>
                         <svg width="11" height="11" viewBox="0 0 24 24" fill="#FBBF24" aria-hidden="true"><path d="M12 2L15 8.5l7 1-5 4.7 1.5 7L12 17.8 5.5 21.2 7 14.2 2 9.5l7-1z"/></svg>
@@ -223,7 +239,7 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
                     </div>
                     <div style={{ textAlign: 'right', flexShrink: 0 }}>
                       <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 900, color: 'var(--md-sys-color-primary)', lineHeight: 1 }}>{e.deviation}</div>
-                      <div style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 700, letterSpacing: '.06em', marginTop: 3 }}>偏差値</div>
+                      <div style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 700, letterSpacing: '.06em', marginTop: 3 }}>{t('rankingScreen.deviation')}</div>
                     </div>
                   </div>
                 )
@@ -231,18 +247,18 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
             </div>
           )}
           {!loading && (!rankData || rankData.total === 0) && completed && (
-            <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 14, padding: 16, textAlign: 'center', color: 'var(--text-muted)', fontSize: 16 }}>まだ参加者がいません</div>
+            <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 14, padding: 16, textAlign: 'center', color: 'var(--text-muted)', fontSize: 16 }}>{t('rankingScreen.empty')}</div>
           )}
         </div>
 
         {/* 最近の活動 */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 16, fontWeight: 800, color: 'var(--text-primary)' }}>最近の活動</div>
+          <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 16, fontWeight: 800, color: 'var(--text-primary)' }}>{t('rankingScreen.recentActivity')}</div>
           {recentActivity.length === 0 ? (
             <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 14, padding: '28px 16px', textAlign: 'center' }}>
               <div style={{ fontSize: 32, marginBottom: 8 }}></div>
-              <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4 }}>最初のレッスンを始めよう！</div>
-              <div style={{ fontSize: 14, color: 'var(--text-muted)' }}>レッスンを完了すると、ここに学習記録が表示されます</div>
+              <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4 }}>{t('rankingScreen.firstLessonTitle')}</div>
+              <div style={{ fontSize: 14, color: 'var(--text-muted)' }}>{t('rankingScreen.firstLessonDesc')}</div>
             </div>
           ) : (
             recentActivity.map((act, i) => (

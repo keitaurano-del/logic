@@ -131,7 +131,7 @@ export const philosophyLessonMap: Record<number, LessonData> = {
         question: '次のうち「知識」の3条件（真・信念・正当化）を満たしているものはどれか？',
         options: [
           { label: '根拠なく「A社が市場トップだろう」と思っている', correct: false },
-          { label: '調査データに基づき「A社の市場シェアは40%」と認識している（実際に40%）', correct: true },
+          { label: '信頼できる調査データに基づき「A社の市場シェアは40%」と確信しており、その認識は事実と一致している', correct: true },
           { label: '「なんとなく景気が良くなる気がする」と信じている', correct: false },
           { label: '間違ったデータを根拠に「A社がトップ」と確信している', correct: false },
         ],

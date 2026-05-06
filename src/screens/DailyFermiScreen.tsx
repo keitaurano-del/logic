@@ -119,7 +119,7 @@ const CALC_KEY_PALETTE: Record<CalcKeyKind, { bg: string; color: string; border:
   num: { bg: 'var(--bg-card)', color: 'var(--text-primary)', border: 'var(--border)' },
   op:  { bg: 'rgba(108,142,245,0.10)', color: 'var(--brand)', border: 'rgba(108,142,245,0.28)' },
   fn:  { bg: 'rgba(255,255,255,0.04)', color: 'var(--text-secondary)', border: 'var(--border)' },
-  eq:  { bg: 'var(--brand)', color: '#fff', border: 'var(--brand)' },
+  eq:  { bg: 'var(--brand)', color: 'var(--accent-fg)', border: 'var(--brand)' },
 }
 
 function CalcKey({ label, onClick, kind = 'num' }: { label: string; onClick: () => void; kind?: CalcKeyKind }) {
@@ -226,7 +226,7 @@ function FermiCalculator({ onInsert }: { onInsert: (text: string) => void }) {
           borderRadius: 10,
           border: 'none',
           background: result != null ? 'var(--brand)' : 'var(--bg-muted)',
-          color: result != null ? '#fff' : 'var(--text-muted)',
+          color: result != null ? 'var(--accent-fg)' : 'var(--text-muted)',
           fontSize: 14, fontWeight: 700,
           cursor: result != null ? 'pointer' : 'not-allowed',
           fontFamily: 'inherit',
@@ -346,7 +346,7 @@ function FermiChatModal({ question, locale, onClose }: {
                 padding: '10px 14px',
                 borderRadius: msg.role === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
                 background: msg.role === 'user' ? 'var(--brand)' : 'var(--bg-secondary)',
-                color: msg.role === 'user' ? '#fff' : 'var(--text-primary)',
+                color: msg.role === 'user' ? 'var(--accent-fg)' : 'var(--text-primary)',
                 fontSize: 15,
                 lineHeight: 1.6,
               }}>
@@ -409,7 +409,7 @@ function FermiChatModal({ question, locale, onClose }: {
               background: input.trim() && !loading ? 'var(--brand)' : 'var(--bg-muted)',
               border: 'none',
               cursor: input.trim() && !loading ? 'pointer' : 'not-allowed',
-              color: input.trim() && !loading ? '#fff' : 'var(--text-muted)',
+              color: input.trim() && !loading ? 'var(--accent-fg)' : 'var(--text-muted)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               flexShrink: 0,
               transition: 'all 0.15s',
@@ -431,12 +431,12 @@ interface DailyFermiScreenProps {
   onOpenRanking?: () => void
 }
 
-// スコア帯の配色（既存のティールカードと調和する成熟したパレット）
+// スコア帯の配色（tokens.css の --score-* と連動）
 function getScoreTone(score: number): { color: string; label: string } {
-  if (score >= 80) return { color: '#70D8BD', label: 'Excellent' }
-  if (score >= 60) return { color: '#F4B86A', label: 'Good' }
-  if (score >= 40) return { color: '#E89B7E', label: 'Keep going' }
-  return { color: '#E07A6F', label: 'Try again' }
+  if (score >= 80) return { color: 'var(--score-excellent)', label: 'Excellent' }
+  if (score >= 60) return { color: 'var(--score-good)',      label: 'Good' }
+  if (score >= 40) return { color: 'var(--score-keep)',      label: 'Keep going' }
+  return { color: 'var(--score-retry)', label: 'Try again' }
 }
 
 interface FermiFeedback {
@@ -734,9 +734,9 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
                   style={{
                     display: 'flex', alignItems: 'center', gap: 6,
                     background: showCalculator ? 'rgba(112,216,189,0.12)' : 'rgba(255,255,255,0.04)',
-                    border: `1px solid ${showCalculator ? '#70D8BD' : 'var(--border)'}`,
+                    border: `1px solid ${showCalculator ? 'var(--score-excellent)' : 'var(--border)'}`,
                     borderRadius: 6, padding: '6px 12px',
-                    color: showCalculator ? '#70D8BD' : 'var(--text-secondary)',
+                    color: showCalculator ? 'var(--score-excellent)' : 'var(--text-secondary)',
                     fontSize: 13, fontWeight: 700,
                     cursor: 'pointer',
                     fontFamily: 'inherit',
@@ -827,7 +827,7 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
                     borderRadius: 'var(--radius-md)',
                     border: 'none',
                     background: answer.trim() ? 'var(--brand)' : 'var(--bg-muted)',
-                    color: answer.trim() ? '#fff' : 'var(--text-muted)',
+                    color: answer.trim() ? 'var(--accent-fg)' : 'var(--text-muted)',
                     fontSize: 15,
                     fontWeight: 700,
                     cursor: answer.trim() ? 'pointer' : 'not-allowed',
@@ -865,12 +865,13 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
             <div className="card" style={{ textAlign: 'center', padding: '40px 20px' }}>
               <div style={{
                 width: 56, height: 56, borderRadius: '50%',
-                background: 'rgba(34,197,94,0.1)',
-                border: '2px solid #22C55E',
+                background: 'var(--success-soft)',
+                border: '2px solid var(--success-mid)',
                 margin: '0 auto 20px',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: 'var(--success-mid)',
               }}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
               </div>
@@ -892,7 +893,7 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
 
               {/* スコアカード */}
               <div style={{
-                background: 'linear-gradient(135deg, #0F2E2D 0%, #1A4A48 100%)',
+                background: 'var(--score-excellent-bg)',
                 borderRadius: 20,
                 padding: '28px 24px',
                 textAlign: 'center',
@@ -902,7 +903,7 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
 
                 {/* スコア数字 */}
                 <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'center', gap: 6, marginBottom: 4 }}>
-                  <span style={{ fontSize: 80, fontWeight: 900, color: feedback.score != null ? getScoreTone(feedback.score).color : '#fff', lineHeight: 1, letterSpacing: '-0.04em', transition: 'color 0.4s ease' }}>
+                  <span style={{ fontSize: 80, fontWeight: 900, color: feedback.score != null ? getScoreTone(feedback.score).color : 'var(--text-on-hero)', lineHeight: 1, letterSpacing: '-0.04em', transition: 'color 0.4s ease' }}>
                     {feedback.score ?? '—'}
                   </span>
                   <span style={{ fontSize: 20, color: 'rgba(255,255,255,0.5)', fontWeight: 600, paddingBottom: 10 }}>/100</span>
@@ -985,8 +986,8 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
                       padding: '14px 18px',
                       borderRadius: 'var(--radius-md)',
                       border: 'none',
-                      background: 'linear-gradient(135deg, #6C8EF5 0%, #5478E8 100%)',
-                      color: '#fff',
+                      background: 'var(--brand-grad-h)',
+                      color: 'var(--accent-fg)',
                       fontSize: 15, fontWeight: 800, letterSpacing: '.01em',
                       cursor: 'pointer',
                       boxShadow: '0 6px 18px rgba(108,142,245,.32)',

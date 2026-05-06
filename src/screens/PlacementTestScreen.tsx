@@ -27,6 +27,7 @@ import { LoadingIndicator } from '../components/LoadingIndicator'
 import { haptic } from '../platform/haptics'
 import { API_BASE } from './apiBase'
 import { getXp } from '../stats'
+import { t } from '../i18n'
 
 interface PlacementTestScreenProps {
   /** 「終了する」を押下し、パーソナルコース生成完了時に呼び出される */
@@ -35,10 +36,10 @@ interface PlacementTestScreenProps {
 }
 
 const TOTAL_QUESTIONS = 10
-const DIFF_LABEL: Record<'easy' | 'medium' | 'hard', string> = {
-  easy: '基礎',
-  medium: '応用',
-  hard: '発展',
+const DIFF_LABEL_KEYS: Record<'easy' | 'medium' | 'hard', string> = {
+  easy: 'placement.diffEasy',
+  medium: 'placement.diffMedium',
+  hard: 'placement.diffHard',
 }
 
 async function submitPlacement(deviation: number, correctCount: number, totalCount: number, nickname: string) {
@@ -114,7 +115,7 @@ export function PlacementTestScreen({ onComplete, onBack }: PlacementTestScreenP
   if (!currentQ) {
     return (
       <div className="stack" style={{ padding: 'var(--s-6)', textAlign: 'center' }}>
-        <LoadingIndicator label="問題の読み込み中" />
+        <LoadingIndicator label={t('placement.loadingQuestion')} />
       </div>
     )
   }
@@ -203,14 +204,14 @@ function ResultView({
 
   return (
     <div className="stack">
-      <Header title="診断結果" onBack={onBack} />
+      <Header title={t('placement.resultHeader')} onBack={onBack} />
 
       <div className="eyebrow accent">SKILL ASSESSMENT</div>
-      <h1 style={{ fontSize: 28, letterSpacing: '-0.025em' }}>あなたの実力診断結果</h1>
+      <h1 style={{ fontSize: 28, letterSpacing: '-0.025em' }}>{t('placement.resultH1')}</h1>
 
       {/* ── 偏差値・ランク ───────────────────── */}
       <section className="profile-hero" style={{ textAlign: 'center', padding: 'var(--s-5) var(--s-4)' }}>
-        <div className="eyebrow" style={{ color: 'rgba(255,255,255,0.65)', marginBottom: 'var(--s-2)' }}>推定偏差値</div>
+        <div className="eyebrow" style={{ color: 'rgba(255,255,255,0.65)', marginBottom: 'var(--s-2)' }}>{t('placement.estimatedScore')}</div>
         <div className="display" style={{
           fontSize: 80, lineHeight: 0.9, letterSpacing: '-0.04em', color: '#fff',
         }}>{dev}</div>
@@ -227,13 +228,13 @@ function ResultView({
           {rank.label}
         </div>
         <div style={{ marginTop: 'var(--s-3)', fontSize: 14, color: 'rgba(255,255,255,0.78)' }}>
-          {result.correctCount} / {result.totalCount} 問正解
+          {t('placement.correctCount', { correct: String(result.correctCount), total: String(result.totalCount) })}
         </div>
       </section>
 
       {/* ── レーダーチャート（言葉ラベル） ─────── */}
       <section className="card" style={{ padding: 'var(--s-4) var(--s-3)' }}>
-        <div className="eyebrow" style={{ marginBottom: 'var(--s-2)' }}>5軸スキルマップ</div>
+        <div className="eyebrow" style={{ marginBottom: 'var(--s-2)' }}>{t('placement.skillMap')}</div>
         <RadarChart axes={radarAxes} size={300} maxLevel={5} />
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: 'var(--s-3)' }}>
           {axisScores.map(a => (
@@ -258,7 +259,7 @@ function ResultView({
 
       {/* ── 詳細診断コメント ───────────────────── */}
       <section className="card">
-        <div className="eyebrow" style={{ marginBottom: 'var(--s-2)' }}>診断コメント</div>
+        <div className="eyebrow" style={{ marginBottom: 'var(--s-2)' }}>{t('placement.diagnosisComment')}</div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {diagnosisLines.map((line, i) => (
             <p key={i} style={{ fontSize: 14, lineHeight: 1.75, margin: 0 }}>{line}</p>
@@ -268,12 +269,12 @@ function ResultView({
 
       {/* ── 問題の解説を見る ───────────────────── */}
       <Button variant="default" size="lg" block onClick={onShowReview} style={{ marginTop: 'var(--s-2)' }}>
-        問題の解説を見る
+        {t('placement.viewExplanation')}
         <ArrowRightIcon width={16} height={16} />
       </Button>
 
       <Button variant="primary" size="lg" block onClick={onFinish} style={{ marginTop: 'var(--s-2)' }}>
-        終了する
+        {t('placement.finish')}
         <ArrowRightIcon width={16} height={16} />
       </Button>
     </div>
@@ -285,12 +286,12 @@ function ReviewView({ result, onBack }: { result: PlacementResult; onBack: () =>
   const answers = result.answers
   return (
     <div className="stack">
-      <Header title="問題の解説" onBack={onBack} />
+      <Header title={t('placement.explanationHeader')} onBack={onBack} />
 
       <div className="eyebrow accent">REVIEW</div>
-      <h1 style={{ fontSize: 24, letterSpacing: '-0.025em' }}>全{answers.length}問の回答と解説</h1>
+      <h1 style={{ fontSize: 24, letterSpacing: '-0.025em' }}>{t('placement.explanationH1', { n: String(answers.length) })}</h1>
       <p style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6, marginTop: 'var(--s-1)' }}>
-        各問題の正答・あなたの回答・解説を確認できます。
+        {t('placement.explanationLead')}
       </p>
 
       <div className="stack-sm" style={{ marginTop: 'var(--s-3)' }}>
@@ -300,7 +301,7 @@ function ReviewView({ result, onBack }: { result: PlacementResult; onBack: () =>
       </div>
 
       <Button variant="default" size="lg" block onClick={onBack} style={{ marginTop: 'var(--s-4)' }}>
-        診断結果に戻る
+        {t('placement.backToResult')}
       </Button>
     </div>
   )
@@ -321,13 +322,13 @@ function ReviewItem({ index, ans }: { index: number; ans: PlacementAnswer }) {
           background: ans.correct ? 'rgba(16,185,129,.12)' : 'rgba(220,38,38,.12)',
           padding: '3px 8px', borderRadius: 6,
         }}>
-          Q{index + 1} · {ans.correct ? '正解' : '不正解'}
+          {t('placement.questionLabel', { n: String(index + 1), result: ans.correct ? t('placement.correct') : t('placement.wrong') })}
         </div>
         <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', background: 'rgba(108,142,245,.12)', padding: '3px 8px', borderRadius: 6 }}>
           {axisLabel(q.axis).label}
         </div>
         <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', background: 'var(--bg-card-soft, rgba(0,0,0,0.04))', padding: '3px 8px', borderRadius: 6 }}>
-          {DIFF_LABEL[q.difficulty]} · {q.topic}
+          {t(DIFF_LABEL_KEYS[q.difficulty])} · {q.topic}
         </div>
       </div>
 
@@ -373,8 +374,8 @@ function ReviewItem({ index, ans }: { index: number; ans: PlacementAnswer }) {
               </span>
               <span style={{ flex: 1 }}>{opt.label}</span>
               <span style={{ flexShrink: 0, fontSize: 10, fontWeight: 800, alignSelf: 'center' }}>
-                {isCorrect && <span style={{ color: '#10B981' }}>正答</span>}
-                {!isCorrect && isUser && <span style={{ color: 'var(--md-sys-color-error)' }}>あなた</span>}
+                {isCorrect && <span style={{ color: 'var(--success-mid)' }}>{t('placement.correctAnswer')}</span>}
+                {!isCorrect && isUser && <span style={{ color: 'var(--md-sys-color-error)' }}>{t('placement.yourAnswer')}</span>}
               </span>
             </div>
           )
@@ -387,7 +388,7 @@ function ReviewItem({ index, ans }: { index: number; ans: PlacementAnswer }) {
         borderRadius: 8,
         padding: '10px 12px',
       }}>
-        <div className="eyebrow" style={{ marginBottom: 4, color: 'var(--brand, #6C8EF5)' }}>解説</div>
+        <div className="eyebrow" style={{ marginBottom: 4, color: 'var(--brand, #6C8EF5)' }}>{t('placement.explanationLabel')}</div>
         <p style={{ fontSize: 13, lineHeight: 1.7, margin: 0 }}>{q.explanation}</p>
       </div>
     </section>
@@ -413,11 +414,11 @@ function CreatingView({ result, onSaved }: { result: PlacementResult; onSaved: (
     <div className="stack" style={{ minHeight: 'calc(100dvh - 80px)', justifyContent: 'center', alignItems: 'center', padding: 'var(--s-6) var(--s-4)' }}>
       <div className="placement-spinner" style={{ marginBottom: 24 }} />
       <h2 style={{ fontSize: 20, fontWeight: 800, textAlign: 'center', letterSpacing: '-0.01em', margin: 0 }}>
-        あなた専用のコースを作成しています
+        {t('placement.creatingCourse')}
       </h2>
       <p style={{ fontSize: 13, color: 'var(--text-secondary)', textAlign: 'center', marginTop: 10, lineHeight: 1.7 }}>
-        診断結果から最適なレッスンを選定中…<br />
-        弱点を優先したカリキュラムを構成しています。
+        {t('placement.creatingDesc1')}<br />
+        {t('placement.creatingDesc2')}
       </p>
       <style>{`
         .placement-spinner {
@@ -449,11 +450,11 @@ function CreatedView({ onContinue }: { onContinue: () => void }) {
         <CheckIcon width={36} height={36} />
       </div>
       <h2 style={{ fontSize: 24, fontWeight: 800, textAlign: 'center', letterSpacing: '-0.01em', margin: 0 }}>
-        作成しました！
+        {t('placement.created')}
       </h2>
       <p style={{ fontSize: 14, color: 'var(--text-secondary)', textAlign: 'center', marginTop: 10, lineHeight: 1.7 }}>
-        あなた専用のパーソナルコースが完成しました。<br />
-        早速はじめましょう。
+        {t('placement.createdDesc1')}<br />
+        {t('placement.createdDesc2')}
       </p>
       <style>{`
         .placement-success-check {

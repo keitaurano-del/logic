@@ -6,11 +6,11 @@
 import { useRef, useState } from 'react'
 import { FERMI_POOL, getDailyFermiIndex } from '../fermiData'
 import { getCardStats } from '../flashcardData'
-import { v3 } from '../styles/tokensV3'
 import { HomeCoachmark, useShouldShowHomeCoachmark } from '../tutorial/coachmark'
 import { PlacementCard } from '../tutorial/placementCard'
 import { hasCompletedPlacement } from '../placementData'
 import { useWindowSize, BREAKPOINTS } from '../hooks/useResponsive'
+import { t } from '../i18n'
 
 // フェルミ問題は fermiData.ts の FERMI_POOL を使用（日付ベース共通）
 
@@ -44,20 +44,20 @@ function getRandomLesson() {
 
 
 
-// SCRUM-185: グリーティングメッセージ複数パターン
-const GREETING_MESSAGES = [
-  '今日も論理を、\nひとつ深めましょう。',
-  '思考の筋肉を、\n今日も鍛えよう。',
-  'ひとつの問いが、\n思考を変える。',
-  '考える力は、\n毎日の積み重ね。',
-  '今日の1問が、\n明日の洞察になる。',
-  '論理的思考は、\n習慣から生まれる。',
-  '問い続けることが、\n答えへの道。',
-]
+// SCRUM-185: グリーティングメッセージ複数パターン (i18n 化)
+const GREETING_MESSAGE_KEYS = [
+  'home.greetingMsg1',
+  'home.greetingMsg2',
+  'home.greetingMsg3',
+  'home.greetingMsg4',
+  'home.greetingMsg5',
+  'home.greetingMsg6',
+  'home.greetingMsg7',
+] as const
 
 function getDailyGreeting(): string {
   const day = new Date().getDate()
-  return GREETING_MESSAGES[day % GREETING_MESSAGES.length].replace('\\n', '\n')
+  return t(GREETING_MESSAGE_KEYS[day % GREETING_MESSAGE_KEYS.length]).replace('\\n', '\n')
 }
 
 
@@ -118,11 +118,11 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
 
   return (
     <>
-    <div style={{ background: v3.color.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: v3.color.text }}>
+    <div style={{ background: 'var(--bg-primary)', minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: 'var(--text-primary)' }}>
       {/* Navbar */}
       <div style={{ padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ fontFamily: v3.font.logo.family, fontSize: v3.font.logo.size, fontWeight: v3.font.logo.weight, letterSpacing: '-.02em' }}>
-          Logic<span style={{ color: v3.color.accent }}>.</span>
+        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 24, fontWeight: 800, letterSpacing: '-.02em' }}>
+          Logic<span style={{ color: 'var(--brand)' }}>.</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           {/* Streak display削除予定 */}
@@ -134,19 +134,19 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
 
         {/* Greeting */}
         <div style={{ padding: '4px 4px 8px' }}>
-          <div style={{ fontSize: 14, color: v3.color.text2, marginBottom: 4, fontWeight: 500 }}>こんにちは、{userName || 'ゲスト'} さん</div>
+          <div style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 4, fontWeight: 500 }}>{t('home.userGreeting', { name: userName || t('home.guestName') })}</div>
           <div style={{ fontSize: 20, fontWeight: 700, lineHeight: 1.4, letterSpacing: '-.005em' }}>{getDailyGreeting().split('\n').map((line, i) => i === 0 ? <span key={i}>{line}<br /></span> : <span key={i}>{line}</span>)}</div>
         </div>
 
         {/* 今日の1問 (Daily Fermi) */}
         {/* a11y: 外側 div は非インタラクティブ。中の「カード本体」と「別の問題」は兄弟の <button> として配置し、nested-interactive を回避 */}
-        <div style={{ position: 'relative', borderRadius: v3.radius.card, overflow: 'hidden', boxShadow: '0 14px 32px rgba(108,142,245,.32)', flexShrink: 0 }}>
+        <div style={{ position: 'relative', borderRadius: 'var(--radius-lg)', overflow: 'hidden', boxShadow: '0 14px 32px rgba(108,142,245,.32)', flexShrink: 0 }}>
           <button
             type="button"
             ref={dailyCardRef}
             onClick={onNavigateToDailyFermi}
-            aria-label="今日の1問を解く"
-            style={{ background: 'linear-gradient(135deg, #6C8EF5 0%, #5478E8 100%)', padding: '20px', cursor: 'pointer', position: 'relative', overflow: 'hidden', minHeight: 180, border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%', borderRadius: 'inherit' }}
+            aria-label={t('home.dailyOpenAria')}
+            style={{ background: 'var(--brand-grad-h)', padding: '20px', cursor: 'pointer', position: 'relative', overflow: 'hidden', minHeight: 180, border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%', borderRadius: 'inherit' }}
           >
             {/* フェルミ推定イメージ画像 */}
             <img src="/images/v3/fermi-card.png" alt="" loading="lazy" style={{ position: 'absolute', right: 0, top: 0, width: '55%', height: '100%', objectFit: 'cover', opacity: 0.18, pointerEvents: 'none', mixBlendMode: 'overlay', maskImage: 'linear-gradient(to left, rgba(0,0,0,0.8) 0%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to left, rgba(0,0,0,0.8) 0%, transparent 100%)' }} />
@@ -154,19 +154,19 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
             <div style={{ position: 'relative', zIndex: 1 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8, paddingRight: 96 }}>
                 <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'rgba(255,255,255,.85)' }}></div>
-                <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,.92)' }}>今日の1問</span>
+                <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,.92)' }}>{t('home.todayProblem')}</span>
               </div>
-              <div style={{ fontFamily: "'Noto Sans JP', sans-serif", fontSize: 19, fontWeight: 700, color: '#FFFFFF', lineHeight: 1.4, letterSpacing: '-.005em', marginBottom: 8 }}>
+              <div style={{ fontFamily: "'Noto Sans JP', sans-serif", fontSize: 19, fontWeight: 700, color: 'var(--text-on-hero)', lineHeight: 1.4, letterSpacing: '-.005em', marginBottom: 8 }}>
                 {fermiQuestion}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'rgba(255,255,255,.82)', fontSize: 14, fontWeight: 500, marginBottom: 16 }}>
-                <span>毎日更新</span>
+                <span>{t('home.dailyUpdate')}</span>
                 <div style={{ width: 3, height: 3, borderRadius: '50%', background: 'rgba(255,255,255,.45)' }}></div>
-                <span>+30 XP</span>
+                <span>{t('home.dailyXp')}</span>
               </div>
-              <div style={{ background: '#FFFFFF', color: v3.color.accent, borderRadius: v3.radius.pill, padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700, boxShadow: '0 6px 18px rgba(0,0,0,.14)' }}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill={v3.color.accent} aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>
-                チャレンジする
+              <div style={{ background: 'var(--text-on-hero)', color: 'var(--brand)', borderRadius: 'var(--radius-pill)', padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700, boxShadow: '0 6px 18px rgba(0,0,0,.14)' }}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill={'var(--brand)'} aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>
+                {t('home.dailyChallenge')}
               </div>
             </div>
           </button>
@@ -174,7 +174,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
           <button
             type="button"
             onClick={handleRerollFermi}
-            aria-label="別の問題を選ぶ"
+            aria-label={t('home.rerollAria')}
             style={{
               position: 'absolute',
               top: 16, right: 16,
@@ -184,7 +184,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
               border: '1px solid rgba(255,255,255,0.28)',
               borderRadius: 99,
               padding: '5px 10px',
-              color: '#FFFFFF',
+              color: 'var(--text-on-hero)',
               fontSize: 11, fontWeight: 700, letterSpacing: '.02em',
               cursor: 'pointer',
               fontFamily: 'inherit',
@@ -197,7 +197,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
               <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
               <path d="M8 16H3v5"/>
             </svg>
-            別の問題
+            {t('home.rerollShort')}
           </button>
         </div>
 
@@ -206,20 +206,20 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
           type="button"
           onClick={() => onOpenLesson(recommendedLesson.id)}
           aria-label={`${recommendedLesson.category} ${recommendedLesson.level}: ${recommendedLesson.title}`}
-          style={{ background: v3.color.card, borderRadius: v3.radius.card, overflow: 'hidden', cursor: 'pointer', boxShadow: v3.shadow.card, flexShrink: 0, border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%' }}
+          style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', cursor: 'pointer', boxShadow: 'var(--shadow-v3-card-inset)', flexShrink: 0, border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%' }}
         >
           <div style={{ height: 160, position: 'relative', overflow: 'hidden' }}>
             <img src={recommendedLesson.image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
           </div>
           <div style={{ padding: '18px 20px 20px' }}>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: v3.color.accentSoft, borderRadius: v3.radius.pill, padding: '4px 11px', fontSize: 14, fontWeight: 600, color: v3.color.accent, marginBottom: 10 }}>{recommendedLesson.category} · {recommendedLesson.level}</span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: 'var(--accent-soft)', borderRadius: 'var(--radius-pill)', padding: '4px 11px', fontSize: 14, fontWeight: 600, color: 'var(--brand)', marginBottom: 10 }}>{recommendedLesson.category} · {recommendedLesson.level}</span>
             <div style={{ fontSize: 19, fontWeight: 700, marginBottom: 6, lineHeight: 1.35, letterSpacing: '-.005em' }}>{recommendedLesson.title}</div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: v3.color.text2, fontSize: 14, fontWeight: 500, marginBottom: 16 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--text-secondary)', fontSize: 14, fontWeight: 500, marginBottom: 16 }}>
               <span>+50 XP</span>
             </div>
-            <div style={{ background: v3.color.accent, color: '#FFFFFF', borderRadius: v3.radius.pill, padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700 }}>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="#FFFFFF" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>
-              レッスンをはじめる
+            <div style={{ background: 'var(--brand)', color: 'var(--accent-fg)', borderRadius: 'var(--radius-pill)', padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700 }}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>
+              {t('home.lessonStart')}
             </div>
           </div>
         </button>
@@ -242,8 +242,8 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
         )}
 
         {/* AI practice cards (large, vertical) */}
-        <AILargeCard image={`${IMG}/home-daily-question.webp`} name="AIで自分だけの問題を作る" sub="テーマ別のオリジナル問題で練習" onClick={onOpenAIGen} beta />
-        <AILargeCard image={`${IMG}/home-roleplay.webp`} name="ロールプレイ" sub="ビジネス・哲学のシナリオで対話練習" onClick={onOpenRoleplay} beta />
+        <AILargeCard image={`${IMG}/home-daily-question.webp`} name={t('home.aiGenLargeName')} sub={t('home.aiGenLargeSub')} onClick={onOpenAIGen} beta />
+        <AILargeCard image={`${IMG}/home-roleplay.webp`} name={t('home.roleplayLargeName')} sub={t('home.roleplayLargeSub')} onClick={onOpenRoleplay} beta />
       </div>
 
 
@@ -268,17 +268,17 @@ function ReviewCard({ due, weak, total, onOpen }: { due: number; weak: number; t
   const hasWeak = weak > 0
   const primaryMode: 'due' | 'weak' = hasDue ? 'due' : 'weak'
   const headline = hasDue
-    ? `今日の復習 ${due}枚`
+    ? t('home.reviewTodayCount', { n: String(due) })
     : hasWeak
-      ? `弱点の復習 ${weak}枚`
-      : 'すべて完了'
+      ? t('home.reviewWeakCount', { n: String(weak) })
+      : t('home.reviewAllDone')
   const sub = hasDue
     ? hasWeak
-      ? `うち弱点 ${weak}枚 · 全${total}枚`
-      : `全${total}枚`
+      ? t('home.reviewSubWithWeak', { weak: String(weak), total: String(total) })
+      : t('home.reviewSubAll', { total: String(total) })
     : hasWeak
-      ? `間違えた問題を重点的に学び直そう`
-      : `また明日カードを追加しましょう`
+      ? t('home.reviewWeakHint')
+      : t('home.reviewTomorrow')
 
   return (
     <div
@@ -287,24 +287,24 @@ function ReviewCard({ due, weak, total, onOpen }: { due: number; weak: number; t
       onClick={() => onOpen(primaryMode)}
       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpen(primaryMode) } }}
       style={{
-        background: v3.color.card,
-        borderRadius: v3.radius.card,
+        background: 'var(--bg-card)',
+        borderRadius: 'var(--radius-lg)',
         padding: '18px 20px',
         cursor: 'pointer',
-        boxShadow: v3.shadow.card,
+        boxShadow: 'var(--shadow-v3-card-inset)',
         flexShrink: 0,
         position: 'relative',
         overflow: 'hidden',
-        border: hasDue || hasWeak ? `1px solid ${v3.color.accentSoft}` : '1px solid transparent',
+        border: hasDue || hasWeak ? `1px solid ${'var(--accent-soft)'}` : '1px solid transparent',
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
         <div style={{
           width: 44, height: 44, flexShrink: 0,
           borderRadius: 12,
-          background: v3.color.accentSoft,
+          background: 'var(--accent-soft)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          color: v3.color.accent,
+          color: 'var(--brand)',
         }}>
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M3 12a9 9 0 1 0 3-6.7" />
@@ -313,12 +313,12 @@ function ReviewCard({ due, weak, total, onOpen }: { due: number; weak: number; t
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: v3.color.accent }}>復習</span>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--brand)' }}>復習</span>
           </div>
           <div style={{ fontSize: 16, fontWeight: 700, lineHeight: 1.35, marginBottom: 2 }}>{headline}</div>
-          <div style={{ fontSize: 13, color: v3.color.text2, fontWeight: 500, lineHeight: 1.4 }}>{sub}</div>
+          <div style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 500, lineHeight: 1.4 }}>{sub}</div>
         </div>
-        <div style={{ color: v3.color.text3, fontSize: 22, fontWeight: 400, lineHeight: 1, paddingLeft: 4 }}>›</div>
+        <div style={{ color: 'var(--text-muted)', fontSize: 22, fontWeight: 400, lineHeight: 1, paddingLeft: 4 }}>›</div>
       </div>
 
       {hasDue && hasWeak && (
@@ -329,10 +329,10 @@ function ReviewCard({ due, weak, total, onOpen }: { due: number; weak: number; t
             marginTop: 12,
             width: '100%',
             background: 'transparent',
-            border: `1px solid ${v3.color.line}`,
-            borderRadius: v3.radius.pill,
+            border: `1px solid ${'var(--border)'}`,
+            borderRadius: 'var(--radius-pill)',
             padding: '10px 14px',
-            color: v3.color.text,
+            color: 'var(--text-primary)',
             fontSize: 14,
             fontWeight: 600,
             cursor: 'pointer',
@@ -348,7 +348,7 @@ function ReviewCard({ due, weak, total, onOpen }: { due: number; weak: number; t
 
 function AILargeCard({ image, name, sub, onClick, beta }: { image: string; name: string; sub: string; onClick: () => void; beta?: boolean }) {
   return (
-    <button type="button" onClick={onClick} aria-label={`${name}: ${sub}`} style={{ background: v3.color.card, borderRadius: v3.radius.card, overflow: 'hidden', cursor: 'pointer', boxShadow: v3.shadow.card, flexShrink: 0, position: 'relative', border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%', padding: 0 }}>
+    <button type="button" onClick={onClick} aria-label={`${name}: ${sub}`} style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', cursor: 'pointer', boxShadow: 'var(--shadow-v3-card-inset)', flexShrink: 0, position: 'relative', border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%', padding: 0 }}>
       <div style={{ height: 140, overflow: 'hidden' }}>
         <img src={image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
       </div>
@@ -357,15 +357,15 @@ function AILargeCard({ image, name, sub, onClick, beta }: { image: string; name:
           position: 'absolute', top: 10, left: 10,
           background: 'rgba(0,0,0,.55)', backdropFilter: 'blur(4px)',
           borderRadius: 20, padding: '3px 9px',
-          fontSize: 14, fontWeight: 700, color: v3.color.accent,
+          fontSize: 14, fontWeight: 700, color: 'var(--brand)',
           letterSpacing: '.08em', textTransform: 'uppercase',
         }}>BETA</div>
       )}
       <div style={{ padding: '16px 18px 18px' }}>
         <div style={{ fontSize: 17, fontWeight: 700, marginBottom: 4 }}>{name}</div>
-        <div style={{ fontSize: 14, color: v3.color.text2, fontWeight: 500, lineHeight: 1.5 }}>{sub}</div>
+        <div style={{ fontSize: 14, color: 'var(--text-secondary)', fontWeight: 500, lineHeight: 1.5 }}>{sub}</div>
         {beta && (
-          <div style={{ marginTop: 10, fontSize: 14, color: v3.color.warm, background: `${v3.color.warm}14`, borderRadius: 8, padding: '6px 10px', lineHeight: 1.5 }}>
+          <div style={{ marginTop: 10, fontSize: 14, color: 'var(--warm)', background: `color-mix(in srgb, var(--warm) 8%, transparent)`, borderRadius: 8, padding: '6px 10px', lineHeight: 1.5 }}>
             ベータ版のため、一部機能は正常に動作しない場合があります
           </div>
         )}

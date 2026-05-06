@@ -12,7 +12,7 @@ export type Course = {
   title: string           // Doingタイトル
   category: string        // カテゴリ（大分類）
   group: CourseGroupId    // コース一覧でのグルーピング
-  lessonIds: number[]     // 5件のレッスンID
+  lessonIds: number[]     // コース内のレッスンID（5〜7件）
   level: '初級' | '中級' | '上級'
   description: string
   image?: string          // コース固有の画像（省略時はカテゴリの画像にフォールバック）
@@ -201,7 +201,7 @@ export const COURSES: Course[] = [
     title: '仮説と検証で、提案書を仕上げる',
     category: '提案書作成',
     group: 'communication',
-    lessonIds: [82, 83, 84, 86, 87],
+    lessonIds: [82, 83, 84, 85, 86, 87, 88],
     level: '上級',
     description: 'コンサル的アプローチで仮説を立て、検証しながら説得力のある提案書を完成させる。',
     image: '/images/v3/course-proposal-course-01.svg',

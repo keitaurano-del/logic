@@ -8,22 +8,24 @@ import { getAllLessonsFlat } from '../lessonData'
 import { getCurrentLevel, getXpProgress } from './homeHelpers'
 import { logout } from '../supabase'
 import { getSubscriptionState, isPremiumPlan, isStandardPlan, daysLeftInTrial } from '../subscription'
-import { v3 } from '../styles/tokensV3'
 import { getStudyDates as _getStudyDatesArr } from '../stats'
+import LessonIcon from '../LessonIcon'
+import { StarIcon } from '../icons'
+import { t } from '../i18n'
 
 function getPlanLabel(): string {
   const state = getSubscriptionState()
   if (isPremiumPlan()) {
     if (state.plan === 'trial') {
       const days = daysLeftInTrial()
-      return days > 0 ? `トライアル（残り${days}日）` : 'トライアル切れ'
+      return days > 0 ? t('profile.planTrialDays', { n: String(days) }) : t('profile.planTrialExpired')
     }
-    return 'プレミアム'
+    return t('profile.planPremium')
   }
   if (isStandardPlan()) {
-    return state.plan.includes('yearly') ? 'スタンダード（年）' : 'スタンダード'
+    return state.plan.includes('yearly') ? t('profile.planStandardYearly') : t('profile.planStandard')
   }
-  return '無料（キャンペーン中）'
+  return t('profile.planFreeCampaign')
 }
 
 interface ProfileScreenV3Props {
@@ -52,61 +54,61 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
   }
 
   return (
-    <div style={{ background: v3.color.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: v3.color.text }}>
+    <div style={{ background: 'var(--bg-primary)', minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: 'var(--text-primary)' }}>
       {/* Hero */}
       <div style={{ background: 'linear-gradient(160deg, #1A1F2E 0%, #1E2540 70%, #1A2238 100%)', padding: 'calc(env(safe-area-inset-top, 44px) + 14px) 20px 56px', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', right: -50, top: -50, width: 200, height: 200, borderRadius: '50%', background: 'rgba(108,142,245,0.10)', filter: 'blur(40px)', pointerEvents: 'none' }}></div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 18, position: 'relative', zIndex: 1 }}>
-          <div className="profile-avatar" style={{ width: 64, height: 64, borderRadius: '50%', background: `linear-gradient(135deg, ${v3.color.accent}, #9BB3FA)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Inter Tight', sans-serif", fontSize: 26, fontWeight: 900, color: '#FFFFFF', boxShadow: `0 0 24px rgba(108,142,245,0.4)` }}>
+          <div className="profile-avatar" style={{ width: 64, height: 64, borderRadius: '50%', background: `linear-gradient(135deg, var(--brand), var(--brand-light))`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Inter Tight', sans-serif", fontSize: 26, fontWeight: 900, color: 'var(--text-on-hero)', boxShadow: `0 0 24px rgba(108,142,245,0.4)` }}>
             {(userName || 'G').slice(0, 1).toUpperCase()}
           </div>
           <div style={{ flex: 1 }}>
-            <div className="profile-hero-name" style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, letterSpacing: '-.02em', marginBottom: 2, color: '#FFFFFF' }}>{userName || 'ゲスト'}</div>
-            <div style={{ fontSize: 14, color: v3.color.text2, fontWeight: 500 }}>{userName ? `ロジカルシンカー トレーニー` : `ログインすると進捗が保存されるよ`}</div>
+            <div className="profile-hero-name" style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, letterSpacing: '-.02em', marginBottom: 2, color: 'var(--text-on-hero)' }}>{userName || t('home.guestName')}</div>
+            <div style={{ fontSize: 14, color: 'var(--text-secondary)', fontWeight: 500 }}>{userName ? t('profile.userTraineeRole') : t('profile.guestPrompt')}</div>
             {!userName && (
               <button
                 onClick={() => onOpenSettings('account')}
-                style={{ marginTop: 8, padding: '6px 16px', background: v3.color.accent, color: '#FFFFFF', border: 'none', borderRadius: 99, fontSize: 13, fontWeight: 700, cursor: 'pointer' }}
+                style={{ marginTop: 8, padding: '6px 16px', background: 'var(--brand)', color: 'var(--text-on-hero)', border: 'none', borderRadius: 99, fontSize: 13, fontWeight: 700, cursor: 'pointer' }}
               >
-                ログイン / 新規登録
+                {t('profile.loginCta')}
               </button>
             )}
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8, position: 'relative', zIndex: 1 }}>
-          <span style={{ fontSize: 14, fontWeight: 700, color: v3.color.text2, letterSpacing: '.12em', textTransform: 'uppercase' }}>レベル</span>
-          <span style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 900, letterSpacing: '-.02em', color: '#FFFFFF' }}>Lv.{lv.level}</span>
+          <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '.12em', textTransform: 'uppercase' }}>{t('profile.level')}</span>
+          <span style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 900, letterSpacing: '-.02em', color: 'var(--text-on-hero)' }}>Lv.{lv.level}</span>
         </div>
         <div style={{ height: 12, background: 'rgba(255,255,255,.1)', borderRadius: 99, overflow: 'hidden', marginBottom: 8, position: 'relative', zIndex: 1 }}>
-          <div style={{ height: '100%', width: `${levelPct}%`, background: v3.color.accent, borderRadius: 99, boxShadow: '0 0 12px rgba(108,142,245,0.5)' }}></div>
+          <div style={{ height: '100%', width: `${levelPct}%`, background: 'var(--brand)', borderRadius: 99, boxShadow: '0 0 12px rgba(108,142,245,0.5)' }}></div>
         </div>
-        <div style={{ fontSize: 14, color: v3.color.text2, fontWeight: 500, textAlign: 'right', position: 'relative', zIndex: 1 }}>次のLvまで {Math.max(0, needed - levelXp)} XP</div>
+        <div style={{ fontSize: 14, color: 'var(--text-secondary)', fontWeight: 500, textAlign: 'right', position: 'relative', zIndex: 1 }}>{t('profile.toNextLevel', { xp: String(Math.max(0, needed - levelXp)) })}</div>
       </div>
 
       {/* Stats grid — タップで詳細シート */}
       <div className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8, marginTop: -28, position: 'relative', zIndex: 2, padding: '0 20px' }}>
-        <StatCard val={String(streak)} label="連続学習日数" highlight={streak > 0} onClick={() => setSheet('streak')} />
-        <StatCard val={String(completed)} label="完了レッスン" onClick={() => setSheet('lessons')} />
-        <StatCard val={xp.toLocaleString()} label="総XP" onClick={() => setSheet('xp')} />
+        <StatCard val={String(streak)} label={t('profile.statStreakDays')} highlight={streak > 0} onClick={() => setSheet('streak')} />
+        <StatCard val={String(completed)} label={t('profile.statCompleted')} onClick={() => setSheet('lessons')} />
+        <StatCard val={xp.toLocaleString()} label={t('profile.totalXp')} onClick={() => setSheet('xp')} />
       </div>
 
-      <div style={{ flex: 1, padding: '16px 16px 100px', display: 'flex', flexDirection: 'column', gap: v3.spacing.gap }}>
+      <div style={{ flex: 1, padding: '16px 16px 100px', display: 'flex', flexDirection: 'column', gap: 14 }}>
         {/* 今週の学習サマリー */}
         {(() => {
           const week = getStudiedThisWeek()
           const studiedCount = week.filter(Boolean).length
           const todayDow = (new Date().getDay() + 6) % 7
           return (
-            <div style={{ background: v3.color.card, borderRadius: v3.radius.card, padding: 18, boxShadow: v3.shadow.card, border: '1px solid rgba(255,255,255,.06)' }}>
+            <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', padding: 18, boxShadow: 'var(--shadow-v3-card-inset)', border: '1px solid rgba(255,255,255,.06)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-                <div style={{ fontSize: 14, color: '#FFFFFF', fontWeight: 700 }}>今週の学習サマリー</div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, fontWeight: 800, color: studiedCount > 0 ? '#FF8C00' : v3.color.text3 }}>
+                <div style={{ fontSize: 14, color: 'var(--text-primary)', fontWeight: 700 }}>{t('profile.weekSummary')}</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, fontWeight: 800, color: studiedCount > 0 ? 'var(--streak-flame)' : 'var(--text-muted)' }}>
                   <FlameIcon size={16} dim={studiedCount === 0} />
-                  <span>{studiedCount}/7日</span>
+                  <span>{t('profile.studiedDaysOf7', { n: String(studiedCount) })}</span>
                 </div>
               </div>
               <div style={{ display: 'flex', gap: 6 }}>
-                {['月', '火', '水', '木', '金', '土', '日'].map((d, i) => {
+                {[t('profile.dayMon'), t('profile.dayTue'), t('profile.dayWed'), t('profile.dayThu'), t('profile.dayFri'), t('profile.daySat'), t('profile.daySun')].map((d, i) => {
                   const studied = week[i]
                   const isToday = i === todayDow
                   return (
@@ -115,8 +117,8 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
                         width: '100%',
                         aspectRatio: '1 / 1',
                         borderRadius: 12,
-                        background: studied ? 'linear-gradient(160deg, rgba(255,140,0,.18) 0%, rgba(255,61,0,.10) 100%)' : v3.color.cardSoft,
-                        border: isToday ? `1.5px solid ${v3.color.accent}` : '1px solid rgba(255,255,255,.04)',
+                        background: studied ? 'linear-gradient(160deg, rgba(255,140,0,.18) 0%, rgba(255,61,0,.10) 100%)' : 'var(--bg-tertiary)',
+                        border: isToday ? `1.5px solid ${'var(--brand)'}` : '1px solid rgba(255,255,255,.04)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -124,10 +126,10 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
                         {studied ? (
                           <FlameIcon size={26} />
                         ) : (
-                          <div style={{ width: 6, height: 6, borderRadius: '50%', background: v3.color.text3, opacity: .5 }} />
+                          <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--text-muted)', opacity: .5 }} />
                         )}
                       </div>
-                      <span style={{ fontSize: 12, color: studied ? '#FFFFFF' : v3.color.text3, fontWeight: studied ? 700 : 500 }}>{d}</span>
+                      <span style={{ fontSize: 12, color: studied ? 'var(--text-on-hero)' : 'var(--text-muted)', fontWeight: studied ? 700 : 500 }}>{d}</span>
                     </div>
                   )
                 })}
@@ -139,38 +141,38 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
         {/* 実力診断テスト */}
         {onOpenPlacementTest && (
           <button type="button" onClick={onOpenPlacementTest}
-            aria-label="実力診断テスト: 5軸スキル診断で最適なコースを見つけよう"
+            aria-label={t('profile.assessmentAria')}
             style={{
-              background: `linear-gradient(135deg, ${v3.color.accentSoft} 0%, rgba(108,142,245,.1) 100%)`,
-              border: `1px solid ${v3.color.accent}40`,
-              borderRadius: v3.radius.card, padding: '16px 18px',
+              background: `linear-gradient(135deg, ${'var(--accent-soft)'} 0%, rgba(108,142,245,.1) 100%)`,
+              border: `1px solid color-mix(in srgb, var(--brand) 25%, transparent)`,
+              borderRadius: 'var(--radius-lg)', padding: '16px 18px',
               cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14,
               color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%',
             }}>
-            <div style={{ width: 40, height: 40, borderRadius: 12, background: v3.color.accent, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            <div style={{ width: 40, height: 40, borderRadius: 12, background: 'var(--brand)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: 'var(--accent-fg)' }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 14, fontWeight: 700, color: '#FFFFFF' }}>実力診断テスト</div>
-              <div style={{ fontSize: 13, color: v3.color.text2, marginTop: 2 }}>5軸スキル診断で最適なコースを見つけよう</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>{t('profile.assessmentTitle')}</div>
+              <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 2 }}>{t('profile.assessmentDesc')}</div>
             </div>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2.5" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
           </button>
         )}
 
         {/* 設定 */}
-        <div style={{ background: v3.color.card, borderRadius: v3.radius.card, overflow: 'hidden', boxShadow: v3.shadow.card }}>
-          <SettingRow icon="user" name="アカウント" sub={userName || 'ゲスト'} onClick={() => onOpenSettings('account')} />
-          <SettingRow icon="bell" name="通知設定" sub="" onClick={() => onOpenSettings('notifications')} />
-          <SettingRow icon="card" name="プラン" sub={getPlanLabel()} onClick={onOpenPricing} />
-          <SettingRow icon="message" name="フィードバック" sub="ご意見をお聞かせください" onClick={onOpenFeedback} />
-          <SettingRow icon="doc" name="利用規約" sub="" onClick={() => window.open('/terms.html', '_blank')} />
-          <SettingRow icon="shield" name="プライバシーポリシー" sub="" onClick={() => window.open('/privacy.html', '_blank')} />
-          <SettingRow icon="scale" name="特定商取引法に基づく表記" sub="" onClick={() => window.open('/tokushoho.html', '_blank')} />
+        <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', boxShadow: 'var(--shadow-v3-card-inset)' }}>
+          <SettingRow icon="user" name={t('profile.account')} sub={userName || t('home.guestName')} onClick={() => onOpenSettings('account')} />
+          <SettingRow icon="bell" name={t('profile.notifications')} sub="" onClick={() => onOpenSettings('notifications')} />
+          <SettingRow icon="card" name={t('profile.plan')} sub={getPlanLabel()} onClick={onOpenPricing} />
+          <SettingRow icon="message" name={t('profile.feedbackName')} sub={t('profile.feedbackSub')} onClick={onOpenFeedback} />
+          <SettingRow icon="doc" name={t('profile.terms')} sub="" onClick={() => window.open('/terms.html', '_blank')} />
+          <SettingRow icon="shield" name={t('profile.privacy')} sub="" onClick={() => window.open('/privacy.html', '_blank')} />
+          <SettingRow icon="scale" name={t('profile.tokushoho')} sub="" onClick={() => window.open('/tokushoho.html', '_blank')} />
         </div>
         <button type="button" onClick={handleLogout}
           style={{ background: 'transparent', border: '1px solid rgba(252,165,165,.4)', borderRadius: 14, padding: 13, textAlign: 'center', fontSize: 14, fontWeight: 700, color: 'var(--md-sys-color-error)', cursor: 'pointer', font: 'inherit', width: '100%', minHeight: 44 }}>
-          ログアウト
+          {t('profile.logout')}
         </button>
       </div>
 
@@ -179,26 +181,26 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
         <div
           role="dialog"
           aria-modal="true"
-          aria-label="メニュー"
+          aria-label={t('profile.menu')}
           style={{ position: 'fixed', inset: 0, zIndex: 100, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'flex-end' }}
         >
           <button
             type="button"
-            aria-label="シートを閉じる"
+            aria-label={t('profile.closeSheet')}
             onClick={() => setSheet(null)}
             style={{ position: 'absolute', inset: 0, background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}
           />
           <div
-            style={{ position: 'relative', background: v3.color.card, borderRadius: '20px 20px 0 0', width: '100%', maxHeight: '70vh', overflowY: 'auto', padding: '20px 20px 40px' }}
+            style={{ position: 'relative', background: 'var(--bg-card)', borderRadius: '20px 20px 0 0', width: '100%', maxHeight: '70vh', overflowY: 'auto', padding: '20px 20px 40px' }}
           >
             {/* ドラッグバー */}
-            <div style={{ width: 40, height: 4, background: v3.color.cardSoft, borderRadius: 2, margin: '0 auto 20px' }} />
+            <div style={{ width: 40, height: 4, background: 'var(--bg-tertiary)', borderRadius: 2, margin: '0 auto 20px' }} />
 
             {sheet === 'streak' && <StreakSheet streak={streak} />}
             {sheet === 'lessons' && <LessonsSheet onOpenLesson={(id) => { setSheet(null); onOpenLesson?.(id) }} />}
             {sheet === 'xp' && <XpSheet totalXp={xp} />}
 
-            <button onClick={() => setSheet(null)} style={{ marginTop: 20, width: '100%', background: v3.color.cardSoft, border: 'none', borderRadius: 12, padding: '13px', fontSize: 14, fontWeight: 700, color: v3.color.text2, cursor: 'pointer' }}>閉じる</button>
+            <button onClick={() => setSheet(null)} style={{ marginTop: 20, width: '100%', background: 'var(--bg-tertiary)', border: 'none', borderRadius: 12, padding: '13px', fontSize: 14, fontWeight: 700, color: 'var(--text-secondary)', cursor: 'pointer' }}>{t('profile.close')}</button>
           </div>
         </div>
       )}
@@ -210,15 +212,15 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
 function StreakSheet({ streak }: { streak: number }) {
   return (
     <>
-      <div style={{ fontSize: 18, fontWeight: 800, color: '#FFFFFF', marginBottom: 16 }}>連続学習日数</div>
+      <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 16 }}>{t('profile.streakDaysHeading')}</div>
       <div style={{ textAlign: 'center', padding: '20px 0' }}>
-        <div style={{ fontSize: 72, fontWeight: 900, color: v3.color.accent, letterSpacing: '-0.04em', lineHeight: 1 }}>{streak}</div>
-        <div style={{ fontSize: 18, color: v3.color.text2, marginTop: 8, fontWeight: 600 }}>日連続</div>
+        <div style={{ fontSize: 72, fontWeight: 900, color: 'var(--brand)', letterSpacing: '-0.04em', lineHeight: 1 }}>{streak}</div>
+        <div style={{ fontSize: 18, color: 'var(--text-secondary)', marginTop: 8, fontWeight: 600 }}>{t('profile.streakDaysUnit')}</div>
       </div>
-      <div style={{ background: v3.color.bg, borderRadius: 14, padding: '14px 16px' }}>
-        <div style={{ fontSize: 13, color: v3.color.text2, lineHeight: 1.7 }}>
-          レッスンを完了した日にカウントされるよ。<br />
-          1日サボっても翌日やれば継続できる！
+      <div style={{ background: 'var(--bg-primary)', borderRadius: 14, padding: '14px 16px' }}>
+        <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+          {t('profile.streakNote1')}<br />
+          {t('profile.streakNote2')}
         </div>
       </div>
     </>
@@ -233,9 +235,9 @@ function LessonsSheet({ onOpenLesson }: { onOpenLesson: (id: number) => void }) 
 
   return (
     <>
-      <div style={{ fontSize: 18, fontWeight: 800, color: '#FFFFFF', marginBottom: 16 }}>完了レッスン（{completedLessons.length}件）</div>
+      <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 16 }}>{t('profile.completedLessonsTitle', { n: String(completedLessons.length) })}</div>
       {completedLessons.length === 0 ? (
-        <div style={{ textAlign: 'center', color: v3.color.text2, padding: '32px 0', fontSize: 14 }}>まだレッスンを完了していないよ</div>
+        <div style={{ textAlign: 'center', color: 'var(--text-secondary)', padding: '32px 0', fontSize: 14 }}>{t('profile.noLessonsYet')}</div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {completedLessons.map(l => (
@@ -243,14 +245,16 @@ function LessonsSheet({ onOpenLesson }: { onOpenLesson: (id: number) => void }) 
               type="button"
               key={l.id}
               onClick={() => onOpenLesson(l.id)}
-              style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', background: v3.color.bg, borderRadius: 12, cursor: 'pointer', border: 'none', textAlign: 'left', width: '100%', font: 'inherit', color: 'inherit' }}
+              style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', background: 'var(--bg-primary)', borderRadius: 12, cursor: 'pointer', border: 'none', textAlign: 'left', width: '100%', font: 'inherit', color: 'inherit' }}
             >
-              <div style={{ width: 36, height: 36, borderRadius: 10, background: v3.color.accentSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}></div>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 14, fontWeight: 700, color: '#FFFFFF' }}>{l.title}</div>
-                <div style={{ fontSize: 12, color: v3.color.text2, marginTop: 2 }}>{l.category || ''}</div>
+              <div style={{ width: 36, height: 36, borderRadius: 10, background: 'var(--accent-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: 'var(--brand)' }}>
+                <LessonIcon id={l.id} action="lesson" size={20} />
               </div>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>{l.title}</div>
+                <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2 }}>{l.category || ''}</div>
+              </div>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2.5" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
             </button>
           ))}
         </div>
@@ -270,24 +274,27 @@ function XpSheet({ totalXp }: { totalXp: number }) {
   const entries = Object.entries(grouped).sort((a, b) => b[1] - a[1])
   const thisMonthTotal = log.reduce((s, e) => s + e.xp, 0)
   const now = new Date()
-  const monthLabel = `${now.getMonth() + 1}月`
+  const monthLabel = t('profile.monthLabel', { n: String(now.getMonth() + 1) })
 
   return (
     <>
-      <div style={{ fontSize: 18, fontWeight: 800, color: '#FFFFFF', marginBottom: 4 }}>⭐️ 総XP</div>
-      <div style={{ fontSize: 13, color: v3.color.text2, marginBottom: 16 }}>{monthLabel}の獲得内訳</div>
+      <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 4, display: 'flex', alignItems: 'center', gap: 8 }}>
+        <StarIcon width={20} height={20} aria-hidden="true" />
+        <span>{t('profile.totalXp')}</span>
+      </div>
+      <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 16 }}>{t('profile.monthBreakdown', { month: monthLabel })}</div>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 36, fontWeight: 900, color: v3.color.accent }}>{totalXp.toLocaleString()}</div>
-          <div style={{ fontSize: 12, color: v3.color.text2 }}>累計XP</div>
+          <div style={{ fontSize: 36, fontWeight: 900, color: 'var(--brand)' }}>{totalXp.toLocaleString()}</div>
+          <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{t('profile.cumulativeXp')}</div>
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 36, fontWeight: 900, color: '#9BB3FA' }}>+{thisMonthTotal}</div>
-          <div style={{ fontSize: 12, color: v3.color.text2 }}>今月獲得</div>
+          <div style={{ fontSize: 36, fontWeight: 900, color: 'var(--brand-light)' }}>+{thisMonthTotal}</div>
+          <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{t('profile.thisMonthEarned')}</div>
         </div>
       </div>
       {entries.length === 0 ? (
-        <div style={{ textAlign: 'center', color: v3.color.text2, padding: '16px 0', fontSize: 14 }}>今月はまだXPを獲得していないよ</div>
+        <div style={{ textAlign: 'center', color: 'var(--text-secondary)', padding: '16px 0', fontSize: 14 }}>{t('profile.noXpThisMonth')}</div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {entries.map(([label, xp]) => {
@@ -295,11 +302,11 @@ function XpSheet({ totalXp }: { totalXp: number }) {
             return (
               <div key={label}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                  <span style={{ fontSize: 13, color: '#FFFFFF', fontWeight: 600 }}>{label}</span>
-                  <span style={{ fontSize: 13, color: v3.color.accent, fontWeight: 700 }}>+{xp} XP</span>
+                  <span style={{ fontSize: 13, color: 'var(--text-primary)', fontWeight: 600 }}>{label}</span>
+                  <span style={{ fontSize: 13, color: 'var(--brand)', fontWeight: 700 }}>+{xp} XP</span>
                 </div>
-                <div style={{ height: 6, background: v3.color.cardSoft, borderRadius: 4, overflow: 'hidden' }}>
-                  <div style={{ height: '100%', width: `${pct}%`, background: v3.color.accent, borderRadius: 4 }} />
+                <div style={{ height: 6, background: 'var(--bg-tertiary)', borderRadius: 4, overflow: 'hidden' }}>
+                  <div style={{ height: '100%', width: `${pct}%`, background: 'var(--brand)', borderRadius: 4 }} />
                 </div>
               </div>
             )
@@ -330,14 +337,14 @@ function StatCard({ val, label, onClick, highlight }: { val: string; label: stri
       type="button"
       className="stat"
       onClick={onClick}
-      style={{ background: v3.color.card, borderRadius: 16, padding: '14px 8px', textAlign: 'center', boxShadow: '0 6px 20px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.05)', cursor: 'pointer', position: 'relative', border: '1px solid rgba(255,255,255,.06)', font: 'inherit', color: 'inherit', width: '100%' }}
+      style={{ background: 'var(--bg-card)', borderRadius: 16, padding: '14px 8px', textAlign: 'center', boxShadow: '0 6px 20px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.05)', cursor: 'pointer', position: 'relative', border: '1px solid rgba(255,255,255,.06)', font: 'inherit', color: 'inherit', width: '100%' }}
     >
-      <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, color: v3.color.accent, letterSpacing: '-.03em', lineHeight: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+      <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, color: 'var(--brand)', letterSpacing: '-.03em', lineHeight: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
         {highlight && <FlameIcon size={18} />}
         {val}
       </div>
-      <div style={{ fontSize: 11, fontWeight: 600, color: v3.color.text2, marginTop: 5 }}>{label}</div>
-      <div style={{ position: 'absolute', bottom: 6, right: 8, fontSize: 10, color: v3.color.text3 }}>›</div>
+      <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-secondary)', marginTop: 5 }}>{label}</div>
+      <div style={{ position: 'absolute', bottom: 6, right: 8, fontSize: 10, color: 'var(--text-muted)' }}>›</div>
     </button>
   )
 }
@@ -414,25 +421,25 @@ function FlameIcon({ size = 20, dim = false }: { size?: number; dim?: boolean })
 function SettingRow({ icon, name, sub, onClick }: { icon: string; name: string; sub: string; onClick?: () => void }) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const iconSvg: Record<string, any> = {
-    user: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>,
-    bell: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 0 1-3.46 0" /></svg>,
-    card: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2" /><line x1="2" y1="10" x2="22" y2="10" /></svg>,
-    message: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>,
-    doc: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>,
-    shield: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
-    scale: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>,
+    user: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={'var(--brand)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>,
+    bell: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={'var(--brand)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 0 1-3.46 0" /></svg>,
+    card: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={'var(--brand)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2" /><line x1="2" y1="10" x2="22" y2="10" /></svg>,
+    message: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={'var(--brand)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>,
+    doc: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={'var(--brand)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>,
+    shield: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={'var(--brand)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
+    scale: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={'var(--brand)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>,
   }
 
   return (
     <button type="button" onClick={onClick}
       aria-label={sub ? `${name}: ${sub}` : name}
-      style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px', cursor: 'pointer', borderBottom: `1px solid ${v3.color.line}`, background: 'transparent', border: 'none', borderTop: 'none', borderLeft: 'none', borderRight: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%', minHeight: 44 }}>
-      <div style={{ width: 36, height: 36, borderRadius: 10, background: v3.color.accentSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{iconSvg[icon]}</div>
+      style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px', cursor: 'pointer', borderBottom: `1px solid ${'var(--border)'}`, background: 'transparent', border: 'none', borderTop: 'none', borderLeft: 'none', borderRight: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%', minHeight: 44 }}>
+      <div style={{ width: 36, height: 36, borderRadius: 10, background: 'var(--accent-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{iconSvg[icon]}</div>
       <div style={{ flex: 1 }}>
-        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 2, color: '#FFFFFF' }}>{name}</div>
-        {sub && <div style={{ fontSize: 13, color: v3.color.text2, fontWeight: 500 }}>{sub}</div>}
+        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 2, color: 'var(--text-primary)' }}>{name}</div>
+        {sub && <div style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 500 }}>{sub}</div>}
       </div>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
     </button>
   )
 }

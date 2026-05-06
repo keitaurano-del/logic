@@ -1,6 +1,13 @@
 /* Logic v3 — Design tokens
  * Brand-aligned with the Slate Blue logo (#6C8EF5 / #EEF2FE / #9BB3FA — 450nm 帯)
  * Refreshed: richer gradients, vibrant accents, animation tokens
+ *
+ * NOTE (Phase 4-7 完了時点):
+ * 現状の v3 アプリは main.tsx で .mode-dark を強制しつつ、AppV3 ルートで
+ * body.classList.add('theme-v3') を付与する。両方が常に効くため、
+ * :root のライト系トークンは「将来のライトテーマ予約」であり実行時には
+ * 到達しない (body.theme-v3 が最高特異度で勝つ)。
+ * 単一情報源は body.theme-v3 ブロック (下方)。
  */
 :root {
   /* Brand (Slate Blue 450nm 帯) */
@@ -94,6 +101,57 @@
   --cat-pm-soft:    rgba(5, 150, 105, 0.10);
   --cat-pm-grad:    linear-gradient(135deg, #059669 0%, #34D399 100%);
 
+  --cat-lateral:    #DB2777;
+  --cat-lateral-soft: rgba(219, 39, 119, 0.10);
+  --cat-lateral-grad: linear-gradient(135deg, #DB2777 0%, #F472B6 100%);
+
+  --cat-review:     #6366F1;
+  --cat-review-soft: rgba(99, 102, 241, 0.10);
+  --cat-review-grad: linear-gradient(135deg, #6366F1 0%, #A5B4FC 100%);
+
+  --cat-test:       #374151;
+  --cat-test-soft:  rgba(55, 65, 81, 0.10);
+  --cat-test-grad:  linear-gradient(135deg, #374151 0%, #6B7280 100%);
+
+  /* Medal colors (rankings, achievements) */
+  --medal-gold:        #F4B86A;
+  --medal-silver:      #C0C0C0;
+  --medal-bronze:      #CD7F32;
+  --medal-gold-grad:   linear-gradient(135deg, #FFD700, #FFA500);
+  --medal-silver-grad: linear-gradient(135deg, #C0C0C0, #909090);
+  --medal-bronze-grad: linear-gradient(135deg, #CD7F32, #A0522D);
+
+  /* Score tones (Fermi / accuracy feedback) */
+  --score-excellent:    #70D8BD;
+  --score-excellent-on: #0F2E2D;  /* legible text on teal */
+  --score-excellent-grad: linear-gradient(135deg, #70D8BD 0%, #4BB89C 100%);
+  --score-excellent-bg: linear-gradient(135deg, #0F2E2D 0%, #1A4A48 100%);
+  --score-good:         #F4B86A;
+  --score-keep:         #E89B7E;
+  --score-retry:        #E07A6F;
+
+  /* Streak flame (warmer than --streak-icon, used in ProfileScreenV3 weekly summary) */
+  --streak-flame:   #FF8C00;
+
+  /* Bright success (vivid green, used for completion badges) */
+  --success-bright: #22C55E;
+
+  /* Campaign banner (orange-to-pink urgent gradient) */
+  --campaign-grad:  linear-gradient(135deg, #FF6B35 0%, #FF4D6D 100%);
+  --campaign-text:  #FF6B35;
+
+  /* On-dark surface tokens (for hero / dark-themed screens) */
+  --text-on-hero-muted: rgba(255, 255, 255, 0.55);
+  --border-on-dark:     rgba(255, 255, 255, 0.15);
+  --bg-input-on-dark:   rgba(255, 255, 255, 0.07);
+
+  /* Brand-aligned dark surface (Slate Blue navy) */
+  --bg-slate-deep:  #1A1F2E;
+
+  /* Warm peach accent (used for premium / featured callouts in v3) */
+  --warm:           #F5BFA0;
+  --warm-soft:      rgba(245, 191, 160, 0.16);
+
   /* Radii */
   --radius-sm: 6px;
   --radius-md: 10px;
@@ -101,6 +159,8 @@
   --radius-xl: 24px;
   --radius-2xl: 32px;
   --radius-full: 9999px;
+  --radius-pill: 99px;
+  --radius-chip: 14px;
 
   /* Spacing (8px base) */
   --s-1: 4px;
@@ -123,6 +183,18 @@
   --shadow-elevated: var(--shadow-md);
   --shadow-hero:     0 24px 64px rgba(13, 18, 32, 0.22), 0 8px 16px rgba(108, 142, 245, 0.14);
   --shadow-float:    0 8px 24px rgba(13, 18, 32, 0.12), 0 2px 4px rgba(13, 18, 32, 0.06);
+
+  /* v3 inset highlight + hero shadows (used on dark surfaces) */
+  --shadow-v3-card-inset: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  --shadow-v3-hero:       0 4px 24px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+
+  /* Transitions */
+  --transition-tap:  transform 0.12s ease, opacity 0.12s ease;
+  --transition-fade: opacity 0.2s ease;
+
+  /* Focus ring (WCAG 2.4.7 — used as :focus-visible alternative when outline:none is desired for visual reasons) */
+  --ring:        0 0 0 3px color-mix(in srgb, var(--brand) 40%, transparent);
+  --ring-error:  0 0 0 3px color-mix(in srgb, var(--md-sys-color-error) 40%, transparent);
 
   /* Animation tokens */
   --ease-bounce:  cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -171,6 +243,37 @@
 
   /* Shimmer for featured borders */
   --shimmer-size: 200% auto;
+}
+
+/* v3 design — Slate Blue navy surfaces.
+ * Phase 4-7 で tokensV3.ts は完全削除され、tokens.css が単一情報源になった。
+ * `body.theme-v3` で .mode-dark より高い特異度にして必ず勝つようにする。
+ */
+body.theme-v3 {
+  --bg-primary:    #1A1F2E;
+  --bg-secondary:  #1E2438;
+  --bg-card:       #252C40;
+  --bg-elevated:   #2E3652;
+  --bg-tertiary:   #1E2438;
+  --bg-hero:       #1A1F2E;
+  --bg-app-grad:   linear-gradient(160deg, #13182A 0%, #1A1F2E 100%);
+  --bg-glass:      rgba(37, 44, 64, 0.88);
+  --bg-glass-dark: rgba(26, 31, 46, 0.95);
+
+  --text-primary:   #E8ECF4;
+  --text-secondary: #8FA3C8;
+  --text-muted:     #6B82A8;
+  --text-tertiary:  #6B82A8;
+
+  --border:       rgba(255, 255, 255, 0.09);
+  --border-light: rgba(255, 255, 255, 0.05);
+
+  --accent-soft:  rgba(108, 142, 245, 0.16);
+  --accent-glow:  rgba(108, 142, 245, 0.25);
+
+  --shadow-card:       0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-card-hover: 0 4px 8px rgba(0, 0, 0, 0.4), 0 12px 28px rgba(0, 0, 0, 0.5);
+  --shadow-elevated:   0 4px 24px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 /* Dark mode — deeper navy, more vibrant, higher contrast */

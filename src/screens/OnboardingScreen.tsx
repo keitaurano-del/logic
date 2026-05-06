@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { loginWithGoogle, loginWithEmail, signupWithEmail, isSupabaseConfigured } from '../supabase'
 import { startBetaCampaignCheckout, startCheckout } from '../subscription'
+import { MedalIcon } from '../icons'
+import { t } from '../i18n'
 import {
   saveUserProfile,
   AGE_LABELS,
@@ -48,7 +50,7 @@ function PhoneFrame({ children, color }: { children: React.ReactNode; color: str
         borderRadius: 28,
         padding: 3,
         background: 'linear-gradient(150deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.06) 35%, rgba(255,255,255,0.02) 70%, rgba(255,255,255,0.10) 100%)',
-        boxShadow: `0 50px 90px -25px ${color}55, 0 25px 50px -15px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(0,0,0,0.25)`,
+        boxShadow: `0 50px 90px -25px color-mix(in srgb, ${color} 33%, transparent), 0 25px 50px -15px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(0,0,0,0.25)`,
       }}>
         <div style={{
           position: 'relative',
@@ -64,7 +66,7 @@ function PhoneFrame({ children, color }: { children: React.ReactNode; color: str
           <div style={{
             position: 'absolute', top: -40, left: '50%', transform: 'translateX(-50%)',
             width: 220, height: 90, borderRadius: '50%',
-            background: `radial-gradient(circle, ${color}30 0%, transparent 70%)`,
+            background: `radial-gradient(circle, color-mix(in srgb, ${color} 19%, transparent) 0%, transparent 70%)`,
             pointerEvents: 'none',
           }} />
           <div style={{ position: 'relative', zIndex: 1 }}>
@@ -81,8 +83,8 @@ function OptionRow({ color, text, selected }: { color: string; text: string; sel
     <div style={{
       display: 'flex', alignItems: 'center', gap: 8,
       padding: '8px 10px', borderRadius: 10,
-      background: selected ? `${color}22` : 'rgba(255,255,255,0.03)',
-      border: selected ? `1px solid ${color}80` : '1px solid rgba(255,255,255,0.06)',
+      background: selected ? `color-mix(in srgb, ${color} 13%, transparent)` : 'rgba(255,255,255,0.03)',
+      border: selected ? `1px solid color-mix(in srgb, ${color} 50%, transparent)` : '1px solid rgba(255,255,255,0.06)',
     }}>
       <div style={{
         width: 14, height: 14, borderRadius: '50%',
@@ -108,15 +110,17 @@ function OptionRow({ color, text, selected }: { color: string; text: string; sel
 }
 
 function RankRow({ rank, name, pt, color, highlight }: { rank: number; name: string; pt: number; color: string; highlight?: boolean }) {
-  const medals = ['🥇', '🥈', '🥉']
+  const medalColor = rank === 1 ? '#F4B86A' : rank === 2 ? '#C0C0C0' : rank === 3 ? '#CD7F32' : null
   return (
     <div style={{
       display: 'flex', alignItems: 'center', gap: 10,
       padding: '8px 10px', borderRadius: 10,
-      background: highlight ? `${color}20` : 'transparent',
-      border: highlight ? `1px solid ${color}50` : '1px solid transparent',
+      background: highlight ? `color-mix(in srgb, ${color} 13%, transparent)` : 'transparent',
+      border: highlight ? `1px solid color-mix(in srgb, ${color} 31%, transparent)` : '1px solid transparent',
     }}>
-      <div style={{ fontSize: 18, width: 22, textAlign: 'center' }}>{medals[rank - 1] || rank}</div>
+      <div style={{ width: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', color: medalColor ?? 'rgba(255,255,255,0.6)' }}>
+        {medalColor ? <MedalIcon width={18} height={18} aria-label={t('onboarding.slidesRankUnit', { n: rank })} /> : <span style={{ fontSize: 13, fontWeight: 700 }}>{rank}</span>}
+      </div>
       <div style={{ flex: 1, fontSize: 13, fontWeight: highlight ? 800 : 600, color: '#fff' }}>{name}</div>
       <div style={{ fontSize: 13, fontWeight: 800, color: highlight ? color : 'rgba(255,255,255,0.7)' }}>
         {pt.toLocaleString()}<span style={{ fontSize: 10, fontWeight: 600, opacity: 0.7 }}> pt</span>
@@ -126,152 +130,165 @@ function RankRow({ rank, name, pt, color, highlight }: { rank: number; name: str
 }
 
 // ── スライドデータ ──
-const SLIDES = [
-  {
-    gradient: 'linear-gradient(160deg, #0F1220 0%, #1A2340 50%, #0F1A35 100%)',
-    accentColor: '#6C8EF5',
-    tag: 'LEARN',
-    title: '頭の回転を\n鍛えるアプリ。',
-    subtitle: 'フェルミ推定・論理・ケース思考を\n毎日5分でトレーニング。',
-    btnLabel: 'つぎへ',
-    preview: (color: string) => (
-      <PhoneFrame color={color}>
-        {/* ヘッダー: 戻る + 進捗バー + 進行度 */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-          <div style={{
-            width: 22, height: 22, borderRadius: 7,
-            background: 'rgba(255,255,255,0.08)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
-          </div>
-          <div style={{ flex: 1, height: 5, borderRadius: 3, background: 'rgba(255,255,255,0.08)', overflow: 'hidden' }}>
-            <div style={{ width: '60%', height: '100%', background: `linear-gradient(90deg, ${color}, #9BB3FA)`, borderRadius: 3 }} />
-          </div>
-          <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.5)', fontWeight: 800, letterSpacing: '0.05em' }}>3/5</div>
-        </div>
+type Slide = {
+  gradient: string
+  accentColor: string
+  tag: string
+  title: string
+  subtitle: string
+  btnLabel: string
+  preview: (color: string) => React.ReactNode
+}
 
-        {/* カテゴリーバッジ */}
-        <div style={{
-          display: 'inline-flex', alignItems: 'center', gap: 5,
-          padding: '3px 8px', borderRadius: 99,
-          background: `${color}18`, border: `1px solid ${color}40`,
-          marginBottom: 10,
-          fontSize: 9, fontWeight: 800, letterSpacing: '0.12em', color,
-        }}>
-          <div style={{ width: 4, height: 4, borderRadius: 2, background: color }} />
-          MECE
-        </div>
-
-        {/* 質問カード */}
-        <div style={{
-          background: 'rgba(255,255,255,0.04)',
-          border: '1px solid rgba(255,255,255,0.07)',
-          borderRadius: 12, padding: '10px 12px', marginBottom: 10,
-        }}>
-          <div style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.14em', color: 'rgba(255,255,255,0.4)', marginBottom: 4 }}>QUESTION</div>
-          <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', lineHeight: 1.5 }}>
-            MECEの「ME」は何の略？
-          </div>
-        </div>
-
-        {/* 選択肢 */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-          <OptionRow color={color} text="Mutually Exclusive" selected />
-          <OptionRow color={color} text="Multi-Element" />
-          <OptionRow color={color} text="Most Effective" />
-        </div>
-      </PhoneFrame>
-    ),
-  },
-  {
-    gradient: 'linear-gradient(160deg, #120F20 0%, #1F1535 50%, #150F28 100%)',
-    accentColor: '#A78BFA',
-    tag: 'COMPETE',
-    title: 'ランキングで\n実力を証明。',
-    subtitle: 'ポイントを積み上げ、あなたの論理力を\n仲間と競い合おう。',
-    btnLabel: 'つぎへ',
-    preview: (color: string) => (
-      <PhoneFrame color={color}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-          <span style={{ fontSize: 11, fontWeight: 800, color, letterSpacing: '0.12em' }}>WEEKLY RANKING</span>
-          <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>残り 2日</span>
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-          <RankRow rank={1} name="さくら" pt={1250} color={color} />
-          <RankRow rank={2} name="ゆうき" pt={1180} color={color} />
-          <RankRow rank={3} name="あなた" pt={1090} color={color} highlight />
-          <RankRow rank={4} name="たかし" pt={980} color={color} />
-        </div>
-        <div style={{
-          marginTop: 10, padding: '6px 10px',
-          background: `${color}14`, borderRadius: 8,
-          border: `1px solid ${color}30`,
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          fontSize: 10, color: 'rgba(255,255,255,0.85)',
-        }}>
-          <span style={{ fontWeight: 700 }}>あと 110pt で 2位</span>
-          <span style={{ color, fontWeight: 800 }}>↑</span>
-        </div>
-      </PhoneFrame>
-    ),
-  },
-  {
-    gradient: 'linear-gradient(160deg, #0F1818 0%, #0F2420 50%, #0A1A18 100%)',
-    accentColor: '#34D399',
-    tag: 'AI FEEDBACK',
-    title: 'AIが即座に\n採点・フィードバック。',
-    subtitle: '回答を送るとAIがすぐに評価。\n弱点を把握して、確実に成長できる。',
-    btnLabel: 'プランをみる',
-    preview: (color: string) => (
-      <PhoneFrame color={color}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-          <div style={{ width: 28, height: 28, borderRadius: '50%', background: color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <span style={{ fontSize: 10, fontWeight: 900, color: '#0A1A18' }}>AI</span>
-          </div>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', fontWeight: 700, letterSpacing: '0.08em' }}>採点完了</div>
-            <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>3秒で返答</div>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: 2 }}>
-            <span style={{ fontSize: 24, fontWeight: 900, color, letterSpacing: '-0.03em' }}>82</span>
-            <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)' }}>/100</span>
-          </div>
-        </div>
-        <div style={{
-          fontSize: 11, color: 'rgba(255,255,255,0.85)',
-          lineHeight: 1.6,
-          background: 'rgba(255,255,255,0.04)', borderRadius: 8, padding: '9px 11px',
-          borderLeft: `2px solid ${color}`,
-          marginBottom: 8,
-        }}>
-          MECEに分解できています。次は「So What」を一段深掘りしましょう。
-        </div>
-        {/* スコア内訳 */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-          {[
-            { label: '構造化', score: 90 },
-            { label: '論理性', score: 85 },
-            { label: '具体性', score: 70 },
-          ].map((item) => (
-            <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.65)', fontWeight: 700, width: 38 }}>{item.label}</span>
-              <div style={{ flex: 1, height: 4, borderRadius: 2, background: 'rgba(255,255,255,0.06)', overflow: 'hidden' }}>
-                <div style={{ width: `${item.score}%`, height: '100%', background: color, borderRadius: 2 }} />
-              </div>
-              <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.85)', fontWeight: 700, width: 18, textAlign: 'right' }}>{item.score}</span>
+function getSlides(): Slide[] {
+  return [
+    {
+      gradient: 'linear-gradient(160deg, #0F1220 0%, #1A2340 50%, #0F1A35 100%)',
+      accentColor: '#6C8EF5',
+      tag: t('onboarding.slidesTag1'),
+      title: t('onboarding.slidesTitle1'),
+      subtitle: t('onboarding.slidesSubtitle1'),
+      btnLabel: t('onboarding.slidesBtn1'),
+      preview: (color: string) => (
+        <PhoneFrame color={color}>
+          {/* ヘッダー: 戻る + 進捗バー + 進行度 */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+            <div style={{
+              width: 22, height: 22, borderRadius: 7,
+              background: 'rgba(255,255,255,0.08)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
             </div>
-          ))}
-        </div>
-      </PhoneFrame>
-    ),
-  },
-]
+            <div style={{ flex: 1, height: 5, borderRadius: 3, background: 'rgba(255,255,255,0.08)', overflow: 'hidden' }}>
+              <div style={{ width: '60%', height: '100%', background: `linear-gradient(90deg, ${color}, #9BB3FA)`, borderRadius: 3 }} />
+            </div>
+            <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.5)', fontWeight: 800, letterSpacing: '0.05em' }}>3/5</div>
+          </div>
+
+          {/* カテゴリーバッジ */}
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 5,
+            padding: '3px 8px', borderRadius: 99,
+            background: `color-mix(in srgb, ${color} 9%, transparent)`, border: `1px solid color-mix(in srgb, ${color} 25%, transparent)`,
+            marginBottom: 10,
+            fontSize: 9, fontWeight: 800, letterSpacing: '0.12em', color,
+          }}>
+            <div style={{ width: 4, height: 4, borderRadius: 2, background: color }} />
+            MECE
+          </div>
+
+          {/* 質問カード */}
+          <div style={{
+            background: 'rgba(255,255,255,0.04)',
+            border: '1px solid rgba(255,255,255,0.07)',
+            borderRadius: 12, padding: '10px 12px', marginBottom: 10,
+          }}>
+            <div style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.14em', color: 'rgba(255,255,255,0.4)', marginBottom: 4 }}>{t('onboarding.slidesQuestionLabel')}</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', lineHeight: 1.5 }}>
+              {t('onboarding.slidesQuestion1')}
+            </div>
+          </div>
+
+          {/* 選択肢 */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <OptionRow color={color} text="Mutually Exclusive" selected />
+            <OptionRow color={color} text="Multi-Element" />
+            <OptionRow color={color} text="Most Effective" />
+          </div>
+        </PhoneFrame>
+      ),
+    },
+    {
+      gradient: 'linear-gradient(160deg, #120F20 0%, #1F1535 50%, #150F28 100%)',
+      accentColor: '#A78BFA',
+      tag: t('onboarding.slidesTag2'),
+      title: t('onboarding.slidesTitle2'),
+      subtitle: t('onboarding.slidesSubtitle2'),
+      btnLabel: t('onboarding.slidesBtn2'),
+      preview: (color: string) => (
+        <PhoneFrame color={color}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+            <span style={{ fontSize: 11, fontWeight: 800, color, letterSpacing: '0.12em' }}>{t('onboarding.slidesWeeklyRanking')}</span>
+            <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>{t('onboarding.slidesDaysLeft', { n: 2 })}</span>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            <RankRow rank={1} name={t('onboarding.slidesRankName1')} pt={1250} color={color} />
+            <RankRow rank={2} name={t('onboarding.slidesRankName2')} pt={1180} color={color} />
+            <RankRow rank={3} name={t('onboarding.slidesRankNameYou')} pt={1090} color={color} highlight />
+            <RankRow rank={4} name={t('onboarding.slidesRankName4')} pt={980} color={color} />
+          </div>
+          <div style={{
+            marginTop: 10, padding: '6px 10px',
+            background: `color-mix(in srgb, ${color} 8%, transparent)`, borderRadius: 8,
+            border: `1px solid color-mix(in srgb, ${color} 19%, transparent)`,
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            fontSize: 10, color: 'rgba(255,255,255,0.85)',
+          }}>
+            <span style={{ fontWeight: 700 }}>{t('onboarding.slidesPointsToRank', { n: 110, rank: 2 })}</span>
+            <span style={{ color, fontWeight: 800 }}>↑</span>
+          </div>
+        </PhoneFrame>
+      ),
+    },
+    {
+      gradient: 'linear-gradient(160deg, #0F1818 0%, #0F2420 50%, #0A1A18 100%)',
+      accentColor: '#34D399',
+      tag: t('onboarding.slidesTag3'),
+      title: t('onboarding.slidesTitle3'),
+      subtitle: t('onboarding.slidesSubtitle3'),
+      btnLabel: t('onboarding.slidesBtn3'),
+      preview: (color: string) => (
+        <PhoneFrame color={color}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+            <div style={{ width: 28, height: 28, borderRadius: '50%', background: color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <span style={{ fontSize: 10, fontWeight: 900, color: '#0A1A18' }}>AI</span>
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', fontWeight: 700, letterSpacing: '0.08em' }}>{t('onboarding.slidesScoreDone')}</div>
+              <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>{t('onboarding.slidesScoreReply')}</div>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 2 }}>
+              <span style={{ fontSize: 24, fontWeight: 900, color, letterSpacing: '-0.03em' }}>82</span>
+              <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)' }}>/100</span>
+            </div>
+          </div>
+          <div style={{
+            fontSize: 11, color: 'rgba(255,255,255,0.85)',
+            lineHeight: 1.6,
+            background: 'rgba(255,255,255,0.04)', borderRadius: 8, padding: '9px 11px',
+            borderLeft: `2px solid ${color}`,
+            marginBottom: 8,
+          }}>
+            {t('onboarding.slidesAiComment')}
+          </div>
+          {/* スコア内訳 */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+            {[
+              { label: t('onboarding.slidesScoreStructure'), score: 90 },
+              { label: t('onboarding.slidesScoreLogic'), score: 85 },
+              { label: t('onboarding.slidesScoreConcrete'), score: 70 },
+            ].map((item) => (
+              <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.65)', fontWeight: 700, width: 38 }}>{item.label}</span>
+                <div style={{ flex: 1, height: 4, borderRadius: 2, background: 'rgba(255,255,255,0.06)', overflow: 'hidden' }}>
+                  <div style={{ width: `${item.score}%`, height: '100%', background: color, borderRadius: 2 }} />
+                </div>
+                <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.85)', fontWeight: 700, width: 18, textAlign: 'right' }}>{item.score}</span>
+              </div>
+            ))}
+          </div>
+        </PhoneFrame>
+      ),
+    },
+  ]
+}
 
 // ── ウェルカムスライド ─────────────────────────────────────────
 function WelcomeSlides({ idx, setIdx, onDone }: { idx: number; setIdx: (i: number) => void; onDone: () => void }) {
-  const slide = SLIDES[idx]
-  const isLast = idx === SLIDES.length - 1
+  const slides = getSlides()
+  const slide = slides[idx]
+  const isLast = idx === slides.length - 1
   const isFirst = idx === 0
 
   const next = () => {
@@ -296,17 +313,17 @@ function WelcomeSlides({ idx, setIdx, onDone }: { idx: number; setIdx: (i: numbe
       {/* 背景グロー */}
       <div style={{
         position: 'absolute', inset: 0, pointerEvents: 'none',
-        background: `radial-gradient(ellipse at 50% 30%, ${slide.accentColor}22 0%, transparent 65%)`,
+        background: `radial-gradient(ellipse at 50% 30%, color-mix(in srgb, ${slide.accentColor} 13%, transparent) 0%, transparent 65%)`,
         transition: 'background 0.5s ease',
       }} />
       <div style={{
         position: 'absolute', top: -80, right: -80, width: 260, height: 260, borderRadius: '50%',
-        background: `radial-gradient(circle, ${slide.accentColor}18 0%, transparent 70%)`,
+        background: `radial-gradient(circle, color-mix(in srgb, ${slide.accentColor} 9%, transparent) 0%, transparent 70%)`,
         pointerEvents: 'none',
       }} />
       <div style={{
         position: 'absolute', bottom: 120, left: -60, width: 200, height: 200, borderRadius: '50%',
-        background: `radial-gradient(circle, ${slide.accentColor}10 0%, transparent 70%)`,
+        background: `radial-gradient(circle, color-mix(in srgb, ${slide.accentColor} 6%, transparent) 0%, transparent 70%)`,
         pointerEvents: 'none',
       }} />
 
@@ -318,7 +335,7 @@ function WelcomeSlides({ idx, setIdx, onDone }: { idx: number; setIdx: (i: numbe
       }}>
         <button
           onClick={back}
-          aria-label="戻る"
+          aria-label={t('common.back')}
           style={{
             width: 36, height: 36, borderRadius: '50%',
             background: 'rgba(255,255,255,0.08)', border: 'none',
@@ -335,7 +352,7 @@ function WelcomeSlides({ idx, setIdx, onDone }: { idx: number; setIdx: (i: numbe
         <div style={{
           flex: 1, textAlign: 'center',
           fontSize: 13, fontWeight: 800, letterSpacing: '0.25em',
-          color: `${slide.accentColor}90`, textTransform: 'uppercase',
+          color: `color-mix(in srgb, ${slide.accentColor} 56%, transparent)`, textTransform: 'uppercase',
           marginRight: 36, /* 戻るボタンの幅ぶん中央寄せを調整 */
         }}>Logic</div>
       </div>
@@ -359,14 +376,14 @@ function WelcomeSlides({ idx, setIdx, onDone }: { idx: number; setIdx: (i: numbe
       }}>
         {/* ページドット */}
         <div style={{ display: 'flex', gap: 6, marginBottom: 18, alignSelf: 'flex-start' }}>
-          {SLIDES.map((_, i) => (
+          {slides.map((_, i) => (
             <button type="button" key={i} onClick={() => setIdx(i)}
-              aria-label={`スライド ${i + 1} / ${SLIDES.length}`}
+              aria-label={t('onboarding.slidesAriaSlide', { n: i + 1, total: slides.length })}
               aria-current={i === idx ? 'true' : 'false'}
               style={{
                 width: i === idx ? 22 : 6,
                 height: 6, borderRadius: 3,
-                background: i === idx ? slide.accentColor : `${slide.accentColor}30`,
+                background: i === idx ? slide.accentColor : `color-mix(in srgb, ${slide.accentColor} 19%, transparent)`,
                 transition: 'all 0.35s ease',
                 cursor: 'pointer',
                 border: 'none',
@@ -377,8 +394,8 @@ function WelcomeSlides({ idx, setIdx, onDone }: { idx: number; setIdx: (i: numbe
 
         <div style={{
           display: 'inline-flex', alignItems: 'center', gap: 6,
-          background: `${slide.accentColor}18`,
-          border: `1px solid ${slide.accentColor}40`,
+          background: `color-mix(in srgb, ${slide.accentColor} 9%, transparent)`,
+          border: `1px solid color-mix(in srgb, ${slide.accentColor} 25%, transparent)`,
           borderRadius: 99, padding: '4px 12px',
           marginBottom: 14, alignSelf: 'flex-start',
         }}>
@@ -406,11 +423,11 @@ function WelcomeSlides({ idx, setIdx, onDone }: { idx: number; setIdx: (i: numbe
           onClick={next}
           style={{
             width: '100%', padding: '18px',
-            background: `linear-gradient(180deg, ${slide.accentColor} 0%, ${slide.accentColor}DD 100%)`,
+            background: `linear-gradient(180deg, ${slide.accentColor} 0%, color-mix(in srgb, ${slide.accentColor} 87%, transparent) 100%)`,
             border: 'none', borderRadius: 16,
             fontSize: 16, fontWeight: 700, color: '#fff',
             cursor: 'pointer',
-            boxShadow: `0 12px 32px ${slide.accentColor}55, inset 0 1px 0 rgba(255,255,255,0.30), inset 0 -1px 0 rgba(0,0,0,0.15)`,
+            boxShadow: `0 12px 32px color-mix(in srgb, ${slide.accentColor} 33%, transparent), inset 0 1px 0 rgba(255,255,255,0.30), inset 0 -1px 0 rgba(0,0,0,0.15)`,
             letterSpacing: '0.02em',
           }}
         >
@@ -429,13 +446,17 @@ function WelcomeSlides({ idx, setIdx, onDone }: { idx: number; setIdx: (i: numbe
 }
 
 // ── オンボーディング用料金プラン表示 ───────────────────────────
-const OB_FEATURES = [
-  { label: 'レッスン',     free: '初級のみ',   standard: '全レッスン', premium: '全レッスン' },
-  { label: 'AI問題生成',   free: false,         standard: '日3問',      premium: '日10問' },
-  { label: 'ロールプレイ', free: false,         standard: '月5回',      premium: '無制限' },
-  { label: 'フェルミ問題', free: '日1問',       standard: '日5問',      premium: '日10問' },
-  { label: '学習記録',     free: true,          standard: true,         premium: true },
-]
+type OBFeature = { label: string; free: string | boolean; standard: string | boolean; premium: string | boolean }
+
+function getOBFeatures(): OBFeature[] {
+  return [
+    { label: t('pricing.featLessons'),  free: t('pricing.featBeginnerOnly'),   standard: t('pricing.featAllLessons'),         premium: t('pricing.featAllLessons') },
+    { label: t('pricing.featAiGen'),    free: false,                            standard: t('pricing.featDailyN', { n: 3 }),   premium: t('pricing.featDailyN', { n: 10 }) },
+    { label: t('pricing.featRoleplay'), free: false,                            standard: t('pricing.featMonthlyN', { n: 5 }), premium: t('pricing.featUnlimited') },
+    { label: t('pricing.featFermi'),    free: t('pricing.featDaily1'),         standard: t('pricing.featDailyN', { n: 5 }),   premium: t('pricing.featDailyN', { n: 10 }) },
+    { label: t('pricing.featRecord'),   free: true,                             standard: true,                                 premium: true },
+  ]
+}
 
 function OBCell({ value }: { value: string | boolean }) {
   if (value === true) return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
@@ -476,7 +497,7 @@ function AttrOption<T extends string>({
         display: 'flex', alignItems: 'center', gap: 14,
         padding: '16px 18px', borderRadius: 14,
         border: `2px solid ${selected ? ACCENT : 'rgba(255,255,255,0.1)'}`,
-        background: selected ? `${ACCENT}18` : 'rgba(255,255,255,0.04)',
+        background: selected ? `color-mix(in srgb, ${ACCENT} 9%, transparent)` : 'rgba(255,255,255,0.04)',
         color: '#fff', cursor: 'pointer', transition: 'all .15s', textAlign: 'left',
       }}
     >
@@ -522,16 +543,16 @@ function OnboardingAttributeView({ onNext, onBackToSlides }: { onNext: () => voi
   }
 
   const heading = step === 'age'
-    ? '年齢を教えてください'
+    ? t('onboarding.attrAgeHeading')
     : step === 'gender'
-      ? '性別を教えてください'
-      : '職種を教えてください'
+      ? t('onboarding.attrGenderHeading')
+      : t('onboarding.attrOccupationHeading')
 
   const sub = step === 'age'
-    ? '年代別の傾向を学習体験に反映します'
+    ? t('onboarding.attrAgeSub')
     : step === 'gender'
-      ? '統計データの分析にのみ使用します'
-      : 'あなたに合ったレッスンを提案します'
+      ? t('onboarding.attrGenderSub')
+      : t('onboarding.attrOccupationSub')
 
   return (
     <div style={{
@@ -545,7 +566,7 @@ function OnboardingAttributeView({ onNext, onBackToSlides }: { onNext: () => voi
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 28 }}>
         <button
           onClick={goBack}
-          aria-label="戻る"
+          aria-label={t('common.back')}
           style={{
             width: 36, height: 36, borderRadius: '50%',
             background: 'rgba(255,255,255,0.08)', border: 'none',
@@ -600,11 +621,11 @@ function OnboardingAttributeView({ onNext, onBackToSlides }: { onNext: () => voi
           fontSize: 16, fontWeight: 800,
           cursor: currentValue ? 'pointer' : 'not-allowed',
           marginTop: 24,
-          boxShadow: currentValue ? `0 8px 24px ${ACCENT}50` : 'none',
+          boxShadow: currentValue ? `0 8px 24px color-mix(in srgb, ${ACCENT} 31%, transparent)` : 'none',
           transition: 'all .2s',
         }}
       >
-        {isLast ? '次へ進む' : '次へ'}
+        {isLast ? t('onboarding.attrNextLast') : t('onboarding.attrNext')}
       </button>
     </div>
   )
@@ -615,7 +636,7 @@ function OnboardingBillingView({ planKey, onSelect, onBack }: { planKey: 'standa
   const ACCENT = 'var(--md-sys-color-primary)'
   const WARM = '#F4A261'
   const color = planKey === 'standard' ? ACCENT : WARM
-  const label = planKey === 'standard' ? 'スタンダード' : 'プレミアム'
+  const label = planKey === 'standard' ? t('onboarding.billingPlanStandard') : t('onboarding.billingPlanPremium')
   const monthlyPrice = planKey === 'standard' ? 390 : 760
   const yearlyPrice = planKey === 'standard' ? 2730 : 5320
   const yearlyPerMonth = Math.round(yearlyPrice / 12)
@@ -624,28 +645,28 @@ function OnboardingBillingView({ planKey, onSelect, onBack }: { planKey: 'standa
   return (
     <div style={{ minHeight: '100dvh', background: 'linear-gradient(160deg, #0F1220 0%, #1A2340 60%, #0F1A35 100%)', color: '#fff', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", padding: 'calc(env(safe-area-inset-top, 44px) + 16px) 24px calc(env(safe-area-inset-bottom, 24px) + 24px)' }}>
       {/* 戻るボタン */}
-      <button type="button" onClick={onBack} aria-label="戻る" style={{ alignSelf: 'flex-start', background: 'rgba(255,255,255,0.08)', border: 'none', borderRadius: '50%', width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', marginBottom: 24 }}>
+      <button type="button" onClick={onBack} aria-label={t('common.back')} style={{ alignSelf: 'flex-start', background: 'rgba(255,255,255,0.08)', border: 'none', borderRadius: '50%', width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', marginBottom: 24 }}>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
 
-      <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.2em', color: `${color}90`, textAlign: 'center', marginBottom: 12 }}>{label.toUpperCase()}</div>
-      <h1 style={{ fontSize: 24, fontWeight: 800, textAlign: 'center', margin: '0 0 8px', lineHeight: 1.35 }}>支払いサイクルを<br />選んでください</h1>
-      <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', textAlign: 'center', margin: '0 0 32px' }}>いつでもキャンセル可能</p>
+      <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.2em', color: `color-mix(in srgb, ${color} 56%, transparent)`, textAlign: 'center', marginBottom: 12 }}>{label.toUpperCase()}</div>
+      <h1 style={{ fontSize: 24, fontWeight: 800, textAlign: 'center', margin: '0 0 8px', lineHeight: 1.35, whiteSpace: 'pre-line' }}>{t('onboarding.billingTitle')}</h1>
+      <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', textAlign: 'center', margin: '0 0 32px' }}>{t('onboarding.billingSubtitle')}</p>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
         {/* 年払いカード（推奨） */}
         <button onClick={() => onSelect(planKey === 'standard' ? 'standard_yearly' : 'premium_yearly')}
-          style={{ position: 'relative', padding: '20px 20px 20px', borderRadius: 18, border: `2px solid ${color}`, background: `${color}14`, color: '#fff', cursor: 'pointer', textAlign: 'left' }}>
+          style={{ position: 'relative', padding: '20px 20px 20px', borderRadius: 18, border: `2px solid ${color}`, background: `color-mix(in srgb, ${color} 8%, transparent)`, color: '#fff', cursor: 'pointer', textAlign: 'left' }}>
           {/* 推奨バッジ */}
           <div style={{ position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)', background: color, borderRadius: 99, padding: '3px 12px', fontSize: 11, fontWeight: 800, whiteSpace: 'nowrap' }}>
-            {savedMonths}ヶ月分お得
+            {t('onboarding.billingSavedMonths', { n: savedMonths })}
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: color, marginBottom: 6 }}>年払い（おすすめ）</div>
-              <div style={{ fontSize: 28, fontWeight: 900, letterSpacing: '-0.03em' }}>¥{yearlyPrice.toLocaleString()}<span style={{ fontSize: 14, fontWeight: 600, color: 'rgba(255,255,255,0.6)' }}> / 年</span></div>
-              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)', marginTop: 4 }}>月々 ¥{yearlyPerMonth} · 一括払い</div>
-              {planKey === 'standard' && <div style={{ fontSize: 12, color: '#FF6B35', fontWeight: 700, marginTop: 4 }}>キャンペーン適用で ¥1,980 / 年</div>}
+              <div style={{ fontSize: 13, fontWeight: 700, color: color, marginBottom: 6 }}>{t('onboarding.billingYearlyTitle')}</div>
+              <div style={{ fontSize: 28, fontWeight: 900, letterSpacing: '-0.03em' }}>¥{yearlyPrice.toLocaleString()}<span style={{ fontSize: 14, fontWeight: 600, color: 'rgba(255,255,255,0.6)' }}> {t('onboarding.billingYearlyUnit')}</span></div>
+              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)', marginTop: 4 }}>{t('onboarding.billingMonthlyEquiv', { n: yearlyPerMonth })}</div>
+              {planKey === 'standard' && <div style={{ fontSize: 12, color: '#FF6B35', fontWeight: 700, marginTop: 4 }}>{t('pricing.campaignAppliedYearly')}</div>}
             </div>
             <div style={{ width: 24, height: 24, borderRadius: '50%', background: color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 4 }}>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
@@ -656,8 +677,8 @@ function OnboardingBillingView({ planKey, onSelect, onBack }: { planKey: 'standa
         {/* 月払いカード */}
         <button onClick={() => onSelect(planKey === 'standard' ? 'standard_monthly' : 'premium_monthly')}
           style={{ padding: '18px 20px', borderRadius: 18, border: '1.5px solid rgba(255,255,255,0.15)', background: 'rgba(255,255,255,0.04)', color: '#fff', cursor: 'pointer', textAlign: 'left' }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.6)', marginBottom: 6 }}>月払い</div>
-          <div style={{ fontSize: 28, fontWeight: 900, letterSpacing: '-0.03em' }}>¥{monthlyPrice.toLocaleString()}<span style={{ fontSize: 14, fontWeight: 600, color: 'rgba(255,255,255,0.5)' }}> / 月</span></div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.6)', marginBottom: 6 }}>{t('onboarding.billingMonthlyTitle')}</div>
+          <div style={{ fontSize: 28, fontWeight: 900, letterSpacing: '-0.03em' }}>¥{monthlyPrice.toLocaleString()}<span style={{ fontSize: 14, fontWeight: 600, color: 'rgba(255,255,255,0.5)' }}> {t('onboarding.billingMonthlyUnit')}</span></div>
         </button>
       </div>
     </div>
@@ -688,7 +709,7 @@ function OnboardingPricingView({ onNext, onSelectPlan, onBack }: { onNext: () =>
       <div style={{ padding: 'calc(env(safe-area-inset-top, 44px) + 12px) 16px 0' }}>
         <button
           onClick={onBack}
-          aria-label="戻る"
+          aria-label={t('common.back')}
           style={{
             width: 36, height: 36, borderRadius: '50%',
             background: 'rgba(255,255,255,0.08)', border: 'none',
@@ -700,26 +721,26 @@ function OnboardingPricingView({ onNext, onSelectPlan, onBack }: { onNext: () =>
         </button>
       </div>
       <div style={{ padding: '0 24px', textAlign: 'center' }}>
-        <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.2em', color: `${ACCENT}90`, marginBottom: 12 }}>LOGIC</div>
-        <h1 style={{ fontSize: 26, fontWeight: 800, margin: '0 0 8px', lineHeight: 1.3, letterSpacing: '-0.02em' }}>
-          あなたに合ったプランを<br />選んでください
+        <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.2em', color: `color-mix(in srgb, ${ACCENT} 56%, transparent)`, marginBottom: 12 }}>LOGIC</div>
+        <h1 style={{ fontSize: 26, fontWeight: 800, margin: '0 0 8px', lineHeight: 1.3, letterSpacing: '-0.02em', whiteSpace: 'pre-line' }}>
+          {t('onboarding.pricingTitle')}
         </h1>
         <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.55)', margin: '0 0 20px', lineHeight: 1.6 }}>
-          いつでも変更・キャンセル可能。
+          {t('onboarding.pricingSubtitle')}
         </p>
       </div>
 
       {/* キャンペーンバナー（タップで決済） */}
       <button type="button" onClick={handleCampaignTap}
-        aria-label="期間限定キャンペーン: スタンダード年払いが¥1,980 (通常¥2,730)"
+        aria-label={t('onboarding.pricingCampaignAria')}
         disabled={loading}
         style={{ margin: '0 16px 16px', background: 'linear-gradient(135deg,#FF6B35,#FF4D6D)', borderRadius: 14, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer', opacity: loading ? 0.7 : 1, border: 'none', color: '#fff', font: 'inherit', textAlign: 'left', width: 'calc(100% - 32px)' }}>
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" style={{ flexShrink: 0 }} aria-hidden="true">
           <path d="M12 2c0 0-4 4-4 9a4 4 0 0 0 8 0c0-5-4-9-4-9z"/><path d="M12 14c0 0-2 1-2 3a2 2 0 0 0 4 0c0-2-2-3-2-3z"/>
         </svg>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 13, fontWeight: 800 }}>期間限定キャンペーン中！タップで即購入</div>
-          <div style={{ fontSize: 12, opacity: 0.9, marginTop: 2 }}>スタンダード年払いが今だけ <strong style={{ fontSize: 15 }}>¥1,980</strong> <span style={{ textDecoration: 'line-through', opacity: 0.7 }}>¥2,730</span></div>
+          <div style={{ fontSize: 13, fontWeight: 800 }}>{t('onboarding.pricingCampaignTitle')}</div>
+          <div style={{ fontSize: 12, opacity: 0.9, marginTop: 2 }}>{t('onboarding.pricingCampaignDescPrefix')} <strong style={{ fontSize: 15 }}>¥1,980</strong> <span style={{ textDecoration: 'line-through', opacity: 0.7 }}>¥2,730</span></div>
         </div>
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
@@ -728,30 +749,30 @@ function OnboardingPricingView({ onNext, onSelectPlan, onBack }: { onNext: () =>
       <div style={{ margin: '0 16px 20px', background: 'rgba(255,255,255,0.06)', borderRadius: 16, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
         {/* ヘッダー */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 70px 80px 80px', padding: '14px 16px', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.4)' }}>機能</div>
+          <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.4)' }}>{t('onboarding.pricingTblFeature')}</div>
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: 10, fontWeight: 800, color: 'rgba(255,255,255,0.4)', letterSpacing: '.08em' }}>FREE</div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)', marginTop: 2 }}>無料</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)', marginTop: 2 }}>{t('onboarding.pricingTblFree')}</div>
           </div>
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: 10, fontWeight: 800, color: ACCENT, letterSpacing: '.08em' }}>STD</div>
-            <div style={{ fontSize: 13, fontWeight: 800, color: '#fff', marginTop: 2 }}>¥390<span style={{ fontSize: 10 }}>/月</span></div>
-            <div style={{ fontSize: 10, color: ACCENT, marginTop: 1 }}>年¥2,730</div>
-            <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', marginTop: 0 }}>5ヶ月お得</div>
+            <div style={{ fontSize: 13, fontWeight: 800, color: '#fff', marginTop: 2 }}>¥390<span style={{ fontSize: 10 }}>{t('onboarding.pricingTblPerMonth')}</span></div>
+            <div style={{ fontSize: 10, color: ACCENT, marginTop: 1 }}>{t('onboarding.pricingTblYearlyStandard')}</div>
+            <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', marginTop: 0 }}>{t('onboarding.pricingTblSavings')}</div>
           </div>
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: 10, fontWeight: 800, color: WARM, letterSpacing: '.08em' }}>PRE</div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)', marginTop: 2 }}>¥760<span style={{ fontSize: 10 }}>/月</span></div>
-            <div style={{ fontSize: 10, color: WARM, marginTop: 1 }}>年¥5,320</div>
-            <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', marginTop: 0 }}>5ヶ月お得</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)', marginTop: 2 }}>¥760<span style={{ fontSize: 10 }}>{t('onboarding.pricingTblPerMonth')}</span></div>
+            <div style={{ fontSize: 10, color: WARM, marginTop: 1 }}>{t('onboarding.pricingTblYearlyPremium')}</div>
+            <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', marginTop: 0 }}>{t('onboarding.pricingTblSavings')}</div>
           </div>
         </div>
         {/* 機能行 */}
-        {OB_FEATURES.map((row, i) => (
+        {getOBFeatures().map((row, i) => (
           <div key={row.label} style={{ display: 'grid', gridTemplateColumns: '1fr 70px 80px 80px', padding: '13px 16px', borderTop: i === 0 ? 'none' : '1px solid rgba(255,255,255,0.06)', alignItems: 'center' }}>
             <div style={{ fontSize: 13, fontWeight: 600, color: 'rgba(255,255,255,0.85)' }}>{row.label}</div>
             <div style={{ display: 'flex', justifyContent: 'center' }}><OBCell value={row.free} /></div>
-            <div style={{ display: 'flex', justifyContent: 'center', background: `${ACCENT}10`, borderRadius: 6, padding: '4px 0' }}><OBCell value={row.standard} /></div>
+            <div style={{ display: 'flex', justifyContent: 'center', background: `color-mix(in srgb, ${ACCENT} 6%, transparent)`, borderRadius: 6, padding: '4px 0' }}><OBCell value={row.standard} /></div>
             <div style={{ display: 'flex', justifyContent: 'center' }}><OBCell value={row.premium} /></div>
           </div>
         ))}
@@ -759,14 +780,14 @@ function OnboardingPricingView({ onNext, onSelectPlan, onBack }: { onNext: () =>
 
       {/* CTAボタン */}
       <div style={{ padding: '0 16px calc(env(safe-area-inset-bottom, 24px) + 20px)', display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <button onClick={() => onSelectPlan('standard')} style={{ width: '100%', padding: '17px', borderRadius: 16, border: 'none', background: ACCENT, color: '#fff', fontSize: 15, fontWeight: 800, cursor: 'pointer', boxShadow: `0 8px 24px ${ACCENT}50` }}>
-          スタンダードプランではじめる
+        <button onClick={() => onSelectPlan('standard')} style={{ width: '100%', padding: '17px', borderRadius: 16, border: 'none', background: ACCENT, color: '#fff', fontSize: 15, fontWeight: 800, cursor: 'pointer', boxShadow: `0 8px 24px color-mix(in srgb, ${ACCENT} 31%, transparent)` }}>
+          {t('onboarding.pricingStartStandard')}
         </button>
         <button onClick={() => onSelectPlan('premium')} style={{ width: '100%', padding: '17px', borderRadius: 16, border: `2px solid ${WARM}`, background: 'transparent', color: WARM, fontSize: 15, fontWeight: 800, cursor: 'pointer' }}>
-          プレミアムプランではじめる
+          {t('onboarding.pricingStartPremium')}
         </button>
         <button onClick={onNext} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)', fontSize: 13, cursor: 'pointer', padding: '8px 0', textAlign: 'center' }}>
-          無料で始める
+          {t('onboarding.pricingStartFree')}
         </button>
       </div>
     </div>
@@ -796,18 +817,18 @@ function RegisterScreen({ onComplete, onSkip, onBack, onNavigateToLogin }: { onC
   }
 
   async function handleGoogle() {
-    if (!termsChecked) { setError('利用規約に同意してください'); return }
+    if (!termsChecked) { setError(t('onboarding.registerErrTerms')); return }
     setError(''); setLoading(true)
     const result = await loginWithGoogle()
     setLoading(false)
     if (result.user) { onComplete(); return }
-    setError('Googleログインに失敗しました。もう一度お試しください。')
+    setError(t('auth.errGoogleFailed'))
   }
 
   async function handleEmailSignup() {
-    if (!termsChecked) { setError('利用規約に同意してください'); return }
-    if (!email || !password) { setError('メールアドレスとパスワードを入力してください'); return }
-    if (password.length < 6) { setError('パスワードは6文字以上にしてください'); return }
+    if (!termsChecked) { setError(t('onboarding.registerErrTerms')); return }
+    if (!email || !password) { setError(t('auth.errEmailPasswordRequired')); return }
+    if (password.length < 6) { setError(t('auth.weakPassword')); return }
     setError(''); setLoading(true)
     // まずログイン試行、失敗したら新規登録
     const loginResult = await loginWithEmail(email, password)
@@ -815,7 +836,7 @@ function RegisterScreen({ onComplete, onSkip, onBack, onNavigateToLogin }: { onC
     const signupResult = await signupWithEmail(email, password)
     setLoading(false)
     if (signupResult.user) { onComplete(); return }
-    setError('登録に失敗しました。既に登録済みの場合はログインをお試しください。')
+    setError(t('onboarding.registerErrSignupFailed'))
   }
 
   return (
@@ -829,7 +850,7 @@ function RegisterScreen({ onComplete, onSkip, onBack, onNavigateToLogin }: { onC
     }}>
       <button
         onClick={onBack}
-        aria-label="戻る"
+        aria-label={t('common.back')}
         style={{
           width: 36, height: 36, borderRadius: '50%',
           background: 'rgba(255,255,255,0.08)', border: 'none',
@@ -847,7 +868,7 @@ function RegisterScreen({ onComplete, onSkip, onBack, onNavigateToLogin }: { onC
         color: C.white, textAlign: 'center',
         margin: '0 0 28px',
       }}>
-        新規アカウント登録
+        {t('onboarding.registerTitle')}
       </h1>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 14, maxWidth: 400, width: '100%', margin: '0 auto' }}>
@@ -875,8 +896,8 @@ function RegisterScreen({ onComplete, onSkip, onBack, onNavigateToLogin }: { onC
             )}
           </span>
           <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.7)', lineHeight: 1.6 }}>
-            <button type="button" style={{ color: C.teal, textDecoration: 'underline', cursor: 'pointer', background: 'transparent', border: 'none', padding: 0, font: 'inherit' }} onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open('/terms.html', '_blank') }}>利用規約</button>と
-            <button type="button" style={{ color: C.teal, textDecoration: 'underline', cursor: 'pointer', background: 'transparent', border: 'none', padding: 0, font: 'inherit' }} onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open('/privacy.html', '_blank') }}>プライバシーポリシー</button>に同意する
+            <button type="button" style={{ color: C.teal, textDecoration: 'underline', cursor: 'pointer', background: 'transparent', border: 'none', padding: 0, font: 'inherit' }} onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open('/terms.html', '_blank') }}>{t('profile.terms')}</button>{t('onboarding.registerTermsPrefix')}
+            <button type="button" style={{ color: C.teal, textDecoration: 'underline', cursor: 'pointer', background: 'transparent', border: 'none', padding: 0, font: 'inherit' }} onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open('/privacy.html', '_blank') }}>{t('profile.privacy')}</button>{t('onboarding.registerTermsSuffix')}
           </span>
         </label>
 
@@ -901,7 +922,7 @@ function RegisterScreen({ onComplete, onSkip, onBack, onNavigateToLogin }: { onC
           }}
         >
           <GoogleIcon />
-          Googleで登録
+          {t('onboarding.registerGoogleBtn')}
         </button>
 
         {/* OR */}
@@ -914,8 +935,8 @@ function RegisterScreen({ onComplete, onSkip, onBack, onNavigateToLogin }: { onC
         {/* メール入力 */}
         <input
           type="email"
-          aria-label="メールアドレス"
-          placeholder="メールアドレス"
+          aria-label={t('auth.emailLabel')}
+          placeholder={t('onboarding.registerEmailPlaceholder')}
           value={email}
           onChange={e => setEmail(e.target.value)}
           style={inputStyle}
@@ -925,8 +946,8 @@ function RegisterScreen({ onComplete, onSkip, onBack, onNavigateToLogin }: { onC
         {/* パスワード入力 */}
         <input
           type="password"
-          aria-label="パスワード"
-          placeholder="パスワード"
+          aria-label={t('auth.passwordLabel')}
+          placeholder={t('onboarding.registerPasswordPlaceholder')}
           value={password}
           onChange={e => setPassword(e.target.value)}
           style={inputStyle}
@@ -946,13 +967,13 @@ function RegisterScreen({ onComplete, onSkip, onBack, onNavigateToLogin }: { onC
             cursor: loading ? 'not-allowed' : 'pointer',
           }}
         >
-          {loading ? '処理中...' : 'Logicをはじめる'}
+          {loading ? t('pricing.processing') : t('onboarding.registerSubmit')}
         </button>
 
         {/* ログインリンク */}
         <div style={{ textAlign: 'center', marginTop: 4 }}>
           <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)' }}>
-            お持ちのアカウントをお持ちの方は
+            {t('onboarding.registerHaveAccount')}
           </span>
           <button
             onClick={onNavigateToLogin}
@@ -962,7 +983,7 @@ function RegisterScreen({ onComplete, onSkip, onBack, onNavigateToLogin }: { onC
               cursor: 'pointer', display: 'block', margin: '4px auto 0',
             }}
           >
-            ログイン
+            {t('onboarding.registerLoginLink')}
           </button>
         </div>
 
@@ -975,7 +996,7 @@ function RegisterScreen({ onComplete, onSkip, onBack, onNavigateToLogin }: { onC
             cursor: 'pointer', padding: '8px 0', textAlign: 'center',
           }}
         >
-          登録せずにはじめる
+          {t('onboarding.registerSkip')}
         </button>
       </div>
       </div>
@@ -1028,7 +1049,7 @@ export function OnboardingScreen({ onComplete, onNavigateToLogin }: OnboardingSc
       <OnboardingAttributeView
         onNext={() => setPhase('pricing')}
         onBackToSlides={() => {
-          setSlideIdx(SLIDES.length - 1)
+          setSlideIdx(getSlides().length - 1)
           setPhase('slides')
         }}
       />

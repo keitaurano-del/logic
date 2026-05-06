@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { v3 } from '../styles/tokensV3'
 
 // ローカル検証用ベータコードリスト（本番では Supabase DB に繋ぐ）
 const VALID_BETA_CODES = ['LOGIC2026', 'EARLYBIRD', 'KEITA0429']
@@ -37,7 +36,7 @@ export function BetaCodeScreen({ onSuccess, onSkip }: BetaCodeScreenProps) {
 
   const containerStyle: React.CSSProperties = {
     minHeight: '100dvh',
-    background: v3.color.bg,
+    background: 'var(--bg-primary)',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -47,36 +46,36 @@ export function BetaCodeScreen({ onSuccess, onSkip }: BetaCodeScreenProps) {
   }
 
   const cardStyle: React.CSSProperties = {
-    background: v3.color.card,
-    borderRadius: v3.radius.card,
+    background: 'var(--bg-card)',
+    borderRadius: 'var(--radius-lg)',
     padding: '32px 28px',
     width: '100%',
     maxWidth: 400,
-    boxShadow: v3.shadow.hero,
+    boxShadow: 'var(--shadow-v3-hero)',
   }
 
   const headingStyle: React.CSSProperties = {
-    color: v3.color.text,
-    fontSize: v3.font.h1.size,
-    fontWeight: v3.font.h1.weight,
+    color: 'var(--text-primary)',
+    fontSize: 22,
+    fontWeight: 700,
     fontFamily: "'Inter Tight', sans-serif",
     margin: '0 0 8px 0',
     textAlign: 'center',
   }
 
   const subStyle: React.CSSProperties = {
-    color: v3.color.text2,
-    fontSize: v3.font.body.size,
-    fontWeight: v3.font.body.weight,
+    color: 'var(--text-secondary)',
+    fontSize: 15,
+    fontWeight: 500,
     textAlign: 'center',
     margin: '0 0 28px 0',
     lineHeight: 1.6,
   }
 
   const labelStyle: React.CSSProperties = {
-    color: v3.color.text2,
-    fontSize: v3.font.label.size,
-    fontWeight: v3.font.label.weight,
+    color: 'var(--text-secondary)',
+    fontSize: 11,
+    fontWeight: 600,
     letterSpacing: '0.08em',
     textTransform: 'uppercase',
     marginBottom: 8,
@@ -86,10 +85,10 @@ export function BetaCodeScreen({ onSuccess, onSkip }: BetaCodeScreenProps) {
   const inputStyle: React.CSSProperties = {
     width: '100%',
     padding: '14px 16px',
-    border: `1.5px solid ${error ? 'var(--md-sys-color-error)' : v3.color.line}`,
+    border: `1.5px solid ${error ? 'var(--md-sys-color-error)' : 'var(--border)'}`,
     borderRadius: 12,
-    background: v3.color.bg,
-    color: v3.color.text,
+    background: 'var(--bg-primary)',
+    color: 'var(--text-primary)',
     fontSize: 18,
     fontFamily: "'Inter Tight', 'Noto Sans JP', sans-serif",
     fontWeight: 700,
@@ -105,15 +104,15 @@ export function BetaCodeScreen({ onSuccess, onSkip }: BetaCodeScreenProps) {
     padding: '14px 20px',
     marginTop: 20,
     border: 'none',
-    borderRadius: v3.radius.pill,
-    background: loading ? v3.color.accentSoft : v3.color.accent,
-    color: loading ? v3.color.text2 : '#082121',
+    borderRadius: 'var(--radius-pill)',
+    background: loading ? 'var(--accent-soft)' : 'var(--brand)',
+    color: loading ? 'var(--text-secondary)' : '#082121',
     fontSize: 16,
     fontWeight: 700,
     fontFamily: "'Inter Tight', sans-serif",
     cursor: loading ? 'not-allowed' : 'pointer',
-    boxShadow: loading ? 'none' : v3.shadow.cta,
-    transition: v3.motion.tap,
+    boxShadow: loading ? 'none' : 'var(--shadow-cta)',
+    transition: 'var(--transition-tap)',
   }
 
   const errorStyle: React.CSSProperties = {
@@ -125,7 +124,7 @@ export function BetaCodeScreen({ onSuccess, onSkip }: BetaCodeScreenProps) {
   }
 
   const skipStyle: React.CSSProperties = {
-    color: v3.color.text3,
+    color: 'var(--text-muted)',
     fontSize: 13,
     fontWeight: 500,
     background: 'none',
@@ -143,13 +142,13 @@ export function BetaCodeScreen({ onSuccess, onSkip }: BetaCodeScreenProps) {
 
   const badgeStyle: React.CSSProperties = {
     display: 'inline-block',
-    background: v3.color.accentSoft,
-    color: v3.color.accent,
+    background: 'var(--accent-soft)',
+    color: 'var(--brand)',
     fontSize: 11,
     fontWeight: 700,
     letterSpacing: '0.1em',
     textTransform: 'uppercase',
-    borderRadius: v3.radius.chip,
+    borderRadius: 'var(--radius-chip)',
     padding: '4px 10px',
     marginBottom: 20,
   }
@@ -204,10 +203,10 @@ export function BetaCodeScreen({ onSuccess, onSkip }: BetaCodeScreenProps) {
           onClick={onSkip}
           style={skipStyle}
           onMouseEnter={(e) => {
-            ;(e.currentTarget as HTMLButtonElement).style.color = v3.color.text2
+            ;(e.currentTarget as HTMLButtonElement).style.color = 'var(--text-secondary)'
           }}
           onMouseLeave={(e) => {
-            ;(e.currentTarget as HTMLButtonElement).style.color = v3.color.text3
+            ;(e.currentTarget as HTMLButtonElement).style.color = 'var(--text-muted)'
           }}
         >
           後で入力する

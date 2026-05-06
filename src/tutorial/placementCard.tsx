@@ -1,7 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { useState } from 'react'
 import { tutorial } from './tutorialStorage'
-import { v3 } from '../styles/tokensV3'
 
 interface PlacementCardProps {
   onTakeTest: () => void
@@ -24,30 +23,30 @@ export function PlacementCard({ onTakeTest }: PlacementCardProps) {
 
   return (
     <div style={{
-      background: v3.color.card,
-      borderRadius: v3.radius.card,
+      background: 'var(--bg-card)',
+      borderRadius: 'var(--radius-lg)',
       padding: '18px 18px 14px',
-      boxShadow: v3.shadow.card,
-      border: `1.5px solid ${v3.color.accent}30`,
+      boxShadow: 'var(--shadow-v3-card-inset)',
+      border: `1.5px solid color-mix(in srgb, var(--brand) 19%, transparent)`,
     }}>
       {/* ヘッダー */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
         <div style={{
           width: 32, height: 32, borderRadius: 10,
-          background: v3.color.accentSoft,
+          background: 'var(--accent-soft)',
           display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
         }}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2.5" strokeLinecap="round">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={'var(--brand)'} strokeWidth="2.5" strokeLinecap="round">
             <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
           </svg>
         </div>
         <div>
-          <div style={{ fontSize: 14, fontWeight: 700, color: v3.color.text }}>あなたの実力を診断しましょう</div>
-          <div style={{ fontSize: 12, color: v3.color.text2, marginTop: 1 }}>10問・約5分で5軸のスキル分布がわかります</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>あなたの実力を診断しましょう</div>
+          <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 1 }}>10問・約5分で5軸のスキル分布がわかります</div>
         </div>
       </div>
 
-      <p style={{ margin: '0 0 14px', fontSize: 13, color: v3.color.text2, lineHeight: 1.6 }}>
+      <p style={{ margin: '0 0 14px', fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
         推定偏差値・レーダーチャート・最適コースをご案内します。
       </p>
 
@@ -56,7 +55,7 @@ export function PlacementCard({ onTakeTest }: PlacementCardProps) {
         <button
           onClick={onTakeTest}
           style={{
-            flex: 1, background: v3.color.accent, color: '#fff',
+            flex: 1, background: 'var(--brand)', color: '#fff',
             border: 'none', borderRadius: 10, padding: '11px 0',
             fontSize: 14, fontWeight: 700, cursor: 'pointer',
           }}
@@ -66,7 +65,7 @@ export function PlacementCard({ onTakeTest }: PlacementCardProps) {
         <button
           onClick={handleDismiss}
           style={{
-            flex: 1, background: v3.color.cardSoft, color: v3.color.text2,
+            flex: 1, background: 'var(--bg-tertiary)', color: 'var(--text-secondary)',
             border: 'none', borderRadius: 10, padding: '11px 0',
             fontSize: 14, fontWeight: 600, cursor: 'pointer',
           }}

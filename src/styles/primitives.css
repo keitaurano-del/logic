@@ -198,6 +198,16 @@ button.pr-card:active {
 }
 .input::placeholder, .textarea::placeholder { color: var(--text-muted); }
 
+/* WCAG 2.4.7: 任意の form control がインラインで outline:none を指定していても
+ * box-shadow ベースのフォーカスリングを保証する (inline 'outline:none' は
+ * outline プロパティだけを上書きするため box-shadow は影響を受けない)。
+ */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  box-shadow: var(--ring);
+}
+
 .label {
   display: block;
   font-size: 0.7333rem;

@@ -210,7 +210,7 @@ export function TutorialOverlay({ onDone, onGoFermi }: TutorialOverlayProps) {
           height: targetRect.height + 12,
           borderRadius: 14,
           border: `2px solid ${current.tagColor}`,
-          boxShadow: `0 0 20px ${current.tagColor}60`,
+          boxShadow: `0 0 20px color-mix(in srgb, ${current.tagColor} 38%, transparent)`,
           pointerEvents: 'none',
           transition: 'all 0.4s ease',
         }} />
@@ -234,14 +234,14 @@ export function TutorialOverlay({ onDone, onGoFermi }: TutorialOverlayProps) {
           background: 'linear-gradient(160deg, #1A1F35 0%, #141828 100%)',
           borderRadius: 24,
           padding: '24px 24px 20px',
-          border: `1px solid ${current.tagColor}30`,
+          border: `1px solid color-mix(in srgb, ${current.tagColor} 19%, transparent)`,
           boxShadow: `0 32px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04)`,
         }}>
           {/* プログレスバー */}
           <div style={{ height: 3, background: 'rgba(255,255,255,0.08)', borderRadius: 2, marginBottom: 20, overflow: 'hidden' }}>
             <div style={{
               height: '100%', borderRadius: 2,
-              background: `linear-gradient(90deg, ${current.tagColor}, ${current.tagColor}aa)`,
+              background: `linear-gradient(90deg, ${current.tagColor}, color-mix(in srgb, ${current.tagColor} 67%, transparent))`,
               width: `${progress * 100}%`,
               transition: 'width 0.4s ease',
             }} />
@@ -251,8 +251,8 @@ export function TutorialOverlay({ onDone, onGoFermi }: TutorialOverlayProps) {
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
             <div style={{
               width: 52, height: 52, borderRadius: 14, flexShrink: 0,
-              background: `${current.tagColor}18`,
-              border: `1px solid ${current.tagColor}30`,
+              background: `color-mix(in srgb, ${current.tagColor} 9%, transparent)`,
+              border: `1px solid color-mix(in srgb, ${current.tagColor} 19%, transparent)`,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
               {current.icon}
@@ -260,7 +260,7 @@ export function TutorialOverlay({ onDone, onGoFermi }: TutorialOverlayProps) {
             <div>
               <div style={{
                 display: 'inline-flex', alignItems: 'center', gap: 5,
-                background: `${current.tagColor}18`, border: `1px solid ${current.tagColor}40`,
+                background: `color-mix(in srgb, ${current.tagColor} 9%, transparent)`, border: `1px solid color-mix(in srgb, ${current.tagColor} 25%, transparent)`,
                 borderRadius: 99, padding: '3px 10px', marginBottom: 4,
               }}>
                 <div style={{ width: 5, height: 5, borderRadius: '50%', background: current.tagColor }} />
@@ -308,7 +308,7 @@ export function TutorialOverlay({ onDone, onGoFermi }: TutorialOverlayProps) {
               background: current.tagColor,
               color: '#fff', fontSize: 15, fontWeight: 800,
               cursor: 'pointer',
-              boxShadow: `0 8px 24px ${current.tagColor}50`,
+              boxShadow: `0 8px 24px color-mix(in srgb, ${current.tagColor} 31%, transparent)`,
               letterSpacing: '0.01em',
             }}>
               {isLast ? 'さっそくやってみよう' : '次へ'}
