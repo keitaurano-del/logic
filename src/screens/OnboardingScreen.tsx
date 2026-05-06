@@ -33,17 +33,76 @@ const C = {
 }
 
 // ── スライド用ミニ部品 ────────────────────────────────────────
-function FeatureChip({ color, icon, label }: { color: string; icon: React.ReactNode; label: string }) {
+function PhoneFrame({ children, color }: { children: React.ReactNode; color: string }) {
   return (
     <div style={{
-      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
-      padding: '14px 8px', borderRadius: 12,
-      background: 'rgba(255,255,255,0.05)',
-      border: `1px solid ${color}30`,
-      flex: 1,
+      width: '100%',
+      maxWidth: 280,
+      perspective: '1400px',
+      animation: 'floatFrame 5s ease-in-out infinite',
     }}>
-      <div style={{ color }}>{icon}</div>
-      <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.85)', textAlign: 'center', lineHeight: 1.3 }}>{label}</div>
+      <div style={{
+        position: 'relative',
+        transform: 'rotateY(-8deg) rotateX(5deg)',
+        transformStyle: 'preserve-3d',
+        borderRadius: 28,
+        padding: 3,
+        background: 'linear-gradient(150deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.06) 35%, rgba(255,255,255,0.02) 70%, rgba(255,255,255,0.10) 100%)',
+        boxShadow: `0 50px 90px -25px ${color}55, 0 25px 50px -15px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(0,0,0,0.25)`,
+      }}>
+        <div style={{
+          position: 'relative',
+          background: 'linear-gradient(180deg, rgba(15,18,32,0.92) 0%, rgba(20,24,42,0.96) 100%)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          borderRadius: 26,
+          padding: 14,
+          border: '1px solid rgba(255,255,255,0.06)',
+          overflow: 'hidden',
+        }}>
+          {/* 内側のソフトグロー */}
+          <div style={{
+            position: 'absolute', top: -40, left: '50%', transform: 'translateX(-50%)',
+            width: 220, height: 90, borderRadius: '50%',
+            background: `radial-gradient(circle, ${color}30 0%, transparent 70%)`,
+            pointerEvents: 'none',
+          }} />
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            {children}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function OptionRow({ color, text, selected }: { color: string; text: string; selected?: boolean }) {
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: 8,
+      padding: '8px 10px', borderRadius: 10,
+      background: selected ? `${color}22` : 'rgba(255,255,255,0.03)',
+      border: selected ? `1px solid ${color}80` : '1px solid rgba(255,255,255,0.06)',
+    }}>
+      <div style={{
+        width: 14, height: 14, borderRadius: '50%',
+        background: selected ? color : 'transparent',
+        border: selected ? 'none' : '1.5px solid rgba(255,255,255,0.25)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        flexShrink: 0,
+      }}>
+        {selected && (
+          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3.5" strokeLinecap="round" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        )}
+      </div>
+      <div style={{
+        fontSize: 11, fontWeight: selected ? 700 : 600,
+        color: selected ? '#fff' : 'rgba(255,255,255,0.7)',
+      }}>
+        {text}
+      </div>
     </div>
   )
 }
@@ -70,64 +129,71 @@ function RankRow({ rank, name, pt, color, highlight }: { rank: number; name: str
 const SLIDES = [
   {
     gradient: 'linear-gradient(160deg, #0F1220 0%, #1A2340 50%, #0F1A35 100%)',
-    accentColor: 'var(--md-sys-color-primary)',
-    icon: (
-      <svg width="72" height="72" viewBox="0 0 80 80" fill="none" aria-hidden="true">
-        <circle cx="40" cy="40" r="36" stroke="var(--md-sys-color-primary)" strokeWidth="1.5" strokeDasharray="6 4" opacity="0.4"/>
-        <circle cx="40" cy="40" r="24" fill="rgba(108,142,245,0.12)" stroke="var(--md-sys-color-primary)" strokeWidth="1.5"/>
-        <path d="M28 40h8l4-10 4 20 4-10h4" stroke="var(--md-sys-color-primary)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-        <circle cx="40" cy="18" r="3" fill="var(--md-sys-color-primary)" opacity="0.8"/>
-        <circle cx="58" cy="28" r="2" fill="#9BB3FA" opacity="0.6"/>
-        <circle cx="62" cy="48" r="2.5" fill="var(--md-sys-color-primary)" opacity="0.5"/>
-        <circle cx="22" cy="56" r="2" fill="#9BB3FA" opacity="0.7"/>
-      </svg>
-    ),
+    accentColor: '#6C8EF5',
     tag: 'LEARN',
     title: '頭の回転を\n鍛えるアプリ。',
     subtitle: 'フェルミ推定・論理・ケース思考を\n毎日5分でトレーニング。',
     btnLabel: 'つぎへ',
     preview: (color: string) => (
-      <div style={{ display: 'flex', gap: 10, width: '100%', maxWidth: 360 }}>
-        <FeatureChip color={color} label="体系レッスン" icon={
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-        } />
-        <FeatureChip color={color} label="フェルミ推定" icon={
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="14" x2="9" y2="14"/><line x1="12" y1="14" x2="13" y2="14"/><line x1="16" y1="14" x2="17" y2="14"/><line x1="8" y1="18" x2="9" y2="18"/><line x1="12" y1="18" x2="13" y2="18"/><line x1="16" y1="18" x2="17" y2="18"/></svg>
-        } />
-        <FeatureChip color={color} label="ロールプレイ" icon={
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        } />
-      </div>
+      <PhoneFrame color={color}>
+        {/* ヘッダー: 戻る + 進捗バー + 進行度 */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+          <div style={{
+            width: 22, height: 22, borderRadius: 7,
+            background: 'rgba(255,255,255,0.08)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+          </div>
+          <div style={{ flex: 1, height: 5, borderRadius: 3, background: 'rgba(255,255,255,0.08)', overflow: 'hidden' }}>
+            <div style={{ width: '60%', height: '100%', background: `linear-gradient(90deg, ${color}, #9BB3FA)`, borderRadius: 3 }} />
+          </div>
+          <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.5)', fontWeight: 800, letterSpacing: '0.05em' }}>3/5</div>
+        </div>
+
+        {/* カテゴリーバッジ */}
+        <div style={{
+          display: 'inline-flex', alignItems: 'center', gap: 5,
+          padding: '3px 8px', borderRadius: 99,
+          background: `${color}18`, border: `1px solid ${color}40`,
+          marginBottom: 10,
+          fontSize: 9, fontWeight: 800, letterSpacing: '0.12em', color,
+        }}>
+          <div style={{ width: 4, height: 4, borderRadius: 2, background: color }} />
+          MECE
+        </div>
+
+        {/* 質問カード */}
+        <div style={{
+          background: 'rgba(255,255,255,0.04)',
+          border: '1px solid rgba(255,255,255,0.07)',
+          borderRadius: 12, padding: '10px 12px', marginBottom: 10,
+        }}>
+          <div style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.14em', color: 'rgba(255,255,255,0.4)', marginBottom: 4 }}>QUESTION</div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', lineHeight: 1.5 }}>
+            MECEの「ME」は何の略？
+          </div>
+        </div>
+
+        {/* 選択肢 */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <OptionRow color={color} text="Mutually Exclusive" selected />
+          <OptionRow color={color} text="Multi-Element" />
+          <OptionRow color={color} text="Most Effective" />
+        </div>
+      </PhoneFrame>
     ),
   },
   {
     gradient: 'linear-gradient(160deg, #120F20 0%, #1F1535 50%, #150F28 100%)',
     accentColor: '#A78BFA',
-    icon: (
-      <svg width="72" height="72" viewBox="0 0 80 80" fill="none" aria-hidden="true">
-        <circle cx="40" cy="40" r="36" stroke="#A78BFA" strokeWidth="1.5" opacity="0.3"/>
-        <rect x="20" y="46" width="12" height="20" rx="3" fill="rgba(167,139,250,0.3)" stroke="#A78BFA" strokeWidth="1.5"/>
-        <rect x="34" y="34" width="12" height="32" rx="3" fill="rgba(167,139,250,0.5)" stroke="#A78BFA" strokeWidth="1.5"/>
-        <rect x="48" y="22" width="12" height="44" rx="3" fill="rgba(167,139,250,0.7)" stroke="#A78BFA" strokeWidth="1.5"/>
-        <path d="M22 44l14-12 14 8 14-18" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        <circle cx="22" cy="44" r="3" fill="#A78BFA"/>
-        <circle cx="36" cy="32" r="3" fill="#A78BFA"/>
-        <circle cx="50" cy="40" r="3" fill="#A78BFA"/>
-        <circle cx="64" cy="22" r="3" fill="#A78BFA"/>
-      </svg>
-    ),
     tag: 'COMPETE',
     title: 'ランキングで\n実力を証明。',
     subtitle: 'ポイントを積み上げ、あなたの論理力を\n仲間と競い合おう。',
     btnLabel: 'つぎへ',
     preview: (color: string) => (
-      <div style={{
-        width: '100%', maxWidth: 360,
-        background: 'rgba(255,255,255,0.06)',
-        border: `1px solid ${color}30`,
-        borderRadius: 14, padding: 14,
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+      <PhoneFrame color={color}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
           <span style={{ fontSize: 11, fontWeight: 800, color, letterSpacing: '0.12em' }}>WEEKLY RANKING</span>
           <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>残り 2日</span>
         </div>
@@ -135,58 +201,69 @@ const SLIDES = [
           <RankRow rank={1} name="さくら" pt={1250} color={color} />
           <RankRow rank={2} name="ゆうき" pt={1180} color={color} />
           <RankRow rank={3} name="あなた" pt={1090} color={color} highlight />
+          <RankRow rank={4} name="たかし" pt={980} color={color} />
         </div>
-      </div>
+        <div style={{
+          marginTop: 10, padding: '6px 10px',
+          background: `${color}14`, borderRadius: 8,
+          border: `1px solid ${color}30`,
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          fontSize: 10, color: 'rgba(255,255,255,0.85)',
+        }}>
+          <span style={{ fontWeight: 700 }}>あと 110pt で 2位</span>
+          <span style={{ color, fontWeight: 800 }}>↑</span>
+        </div>
+      </PhoneFrame>
     ),
   },
   {
     gradient: 'linear-gradient(160deg, #0F1818 0%, #0F2420 50%, #0A1A18 100%)',
     accentColor: '#34D399',
-    icon: (
-      <svg width="72" height="72" viewBox="0 0 80 80" fill="none" aria-hidden="true">
-        <circle cx="40" cy="40" r="36" stroke="#34D399" strokeWidth="1.5" opacity="0.3"/>
-        <rect x="18" y="24" width="44" height="32" rx="8" fill="rgba(52,211,153,0.1)" stroke="#34D399" strokeWidth="1.5"/>
-        <circle cx="30" cy="36" r="5" fill="rgba(52,211,153,0.3)" stroke="#34D399" strokeWidth="1.5"/>
-        <line x1="40" y1="34" x2="56" y2="34" stroke="#34D399" strokeWidth="2" strokeLinecap="round"/>
-        <line x1="40" y1="40" x2="52" y2="40" stroke="#34D399" strokeWidth="2" strokeLinecap="round" opacity="0.6"/>
-        <path d="M26 52l6-4 4 3 8-6" stroke="#34D399" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        <circle cx="58" cy="20" r="10" fill="#0F2420" stroke="#34D399" strokeWidth="1.5"/>
-        <path d="M54 20l2.5 2.5L62 17" stroke="#34D399" strokeWidth="2" strokeLinecap="round"/>
-      </svg>
-    ),
     tag: 'AI FEEDBACK',
     title: 'AIが即座に\n採点・フィードバック。',
     subtitle: '回答を送るとAIがすぐに評価。\n弱点を把握して、確実に成長できる。',
     btnLabel: 'プランをみる',
     preview: (color: string) => (
-      <div style={{
-        width: '100%', maxWidth: 360,
-        background: 'rgba(255,255,255,0.06)',
-        border: `1px solid ${color}30`,
-        borderRadius: 14, padding: 14,
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-          <div style={{ width: 30, height: 30, borderRadius: '50%', background: color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <span style={{ fontSize: 11, fontWeight: 900, color: '#0A1A18' }}>AI</span>
+      <PhoneFrame color={color}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+          <div style={{ width: 28, height: 28, borderRadius: '50%', background: color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <span style={{ fontSize: 10, fontWeight: 900, color: '#0A1A18' }}>AI</span>
           </div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', fontWeight: 700, letterSpacing: '0.08em' }}>採点完了</div>
-            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>3秒で返答</div>
+            <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', fontWeight: 700, letterSpacing: '0.08em' }}>採点完了</div>
+            <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>3秒で返答</div>
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 2 }}>
-            <span style={{ fontSize: 26, fontWeight: 900, color, letterSpacing: '-0.03em' }}>82</span>
-            <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)' }}>/100</span>
+            <span style={{ fontSize: 24, fontWeight: 900, color, letterSpacing: '-0.03em' }}>82</span>
+            <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)' }}>/100</span>
           </div>
         </div>
         <div style={{
-          fontSize: 12, color: 'rgba(255,255,255,0.85)',
-          lineHeight: 1.65,
-          background: 'rgba(255,255,255,0.04)', borderRadius: 8, padding: '10px 12px',
+          fontSize: 11, color: 'rgba(255,255,255,0.85)',
+          lineHeight: 1.6,
+          background: 'rgba(255,255,255,0.04)', borderRadius: 8, padding: '9px 11px',
           borderLeft: `2px solid ${color}`,
+          marginBottom: 8,
         }}>
           MECEに分解できています。次は「So What」を一段深掘りしましょう。
         </div>
-      </div>
+        {/* スコア内訳 */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+          {[
+            { label: '構造化', score: 90 },
+            { label: '論理性', score: 85 },
+            { label: '具体性', score: 70 },
+          ].map((item) => (
+            <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.65)', fontWeight: 700, width: 38 }}>{item.label}</span>
+              <div style={{ flex: 1, height: 4, borderRadius: 2, background: 'rgba(255,255,255,0.06)', overflow: 'hidden' }}>
+                <div style={{ width: `${item.score}%`, height: '100%', background: color, borderRadius: 2 }} />
+              </div>
+              <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.85)', fontWeight: 700, width: 18, textAlign: 'right' }}>{item.score}</span>
+            </div>
+          ))}
+        </div>
+      </PhoneFrame>
     ),
   },
 ]
@@ -263,26 +340,32 @@ function WelcomeSlides({ idx, setIdx, onDone }: { idx: number; setIdx: (i: numbe
         }}>Logic</div>
       </div>
 
-      {/* ヒーローアイコン */}
+      {/* プロダクトプレビュー（ヒーロー） */}
       <div style={{
-        display: 'flex', flexDirection: 'column', alignItems: 'center',
-        gap: 16, padding: '24px 24px 0',
+        flex: 1,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: '32px 24px 8px',
+        position: 'relative', zIndex: 1,
+        minHeight: 0,
+      }}>
+        {slide.preview(slide.accentColor)}
+      </div>
+
+      {/* テキスト + ボタン */}
+      <div style={{
+        padding: '0 28px calc(env(safe-area-inset-bottom, 24px) + 24px)',
+        display: 'flex', flexDirection: 'column',
         position: 'relative', zIndex: 1,
       }}>
-        <div style={{
-          animation: 'floatIcon 3.5s ease-in-out infinite',
-          filter: `drop-shadow(0 0 24px ${slide.accentColor}60)`,
-        }}>
-          {slide.icon}
-        </div>
-        <div style={{ display: 'flex', gap: 8 }}>
+        {/* ページドット */}
+        <div style={{ display: 'flex', gap: 6, marginBottom: 18, alignSelf: 'flex-start' }}>
           {SLIDES.map((_, i) => (
             <button type="button" key={i} onClick={() => setIdx(i)}
               aria-label={`スライド ${i + 1} / ${SLIDES.length}`}
               aria-current={i === idx ? 'true' : 'false'}
               style={{
-                width: i === idx ? 24 : 8,
-                height: 8, borderRadius: 4,
+                width: i === idx ? 22 : 6,
+                height: 6, borderRadius: 3,
                 background: i === idx ? slide.accentColor : `${slide.accentColor}30`,
                 transition: 'all 0.35s ease',
                 cursor: 'pointer',
@@ -291,24 +374,7 @@ function WelcomeSlides({ idx, setIdx, onDone }: { idx: number; setIdx: (i: numbe
               }} />
           ))}
         </div>
-      </div>
 
-      {/* プレビュー（中央のリッチコンテンツ） */}
-      <div style={{
-        flex: 1,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        padding: '20px 24px',
-        position: 'relative', zIndex: 1,
-      }}>
-        {slide.preview(slide.accentColor)}
-      </div>
-
-      {/* テキスト + ボタン */}
-      <div style={{
-        padding: '0 28px calc(env(safe-area-inset-bottom, 24px) + 28px)',
-        display: 'flex', flexDirection: 'column',
-        position: 'relative', zIndex: 1,
-      }}>
         <div style={{
           display: 'inline-flex', alignItems: 'center', gap: 6,
           background: `${slide.accentColor}18`,
@@ -322,16 +388,16 @@ function WelcomeSlides({ idx, setIdx, onDone }: { idx: number; setIdx: (i: numbe
           </span>
         </div>
         <h1 style={{
-          fontSize: 28, fontWeight: 800,
-          color: '#FFFFFF', lineHeight: 1.35,
+          fontSize: 30, fontWeight: 800,
+          color: '#FFFFFF', lineHeight: 1.3,
           whiteSpace: 'pre-line', margin: '0 0 12px',
-          letterSpacing: '-0.02em',
+          letterSpacing: '-0.025em',
         }}>
           {slide.title}
         </h1>
         <p style={{
-          fontSize: 14, color: 'rgba(255,255,255,0.6)',
-          lineHeight: 1.7, margin: '0 0 24px',
+          fontSize: 14, color: 'rgba(255,255,255,0.62)',
+          lineHeight: 1.7, margin: '0 0 22px',
           whiteSpace: 'pre-line',
         }}>
           {slide.subtitle}
@@ -340,11 +406,11 @@ function WelcomeSlides({ idx, setIdx, onDone }: { idx: number; setIdx: (i: numbe
           onClick={next}
           style={{
             width: '100%', padding: '18px',
-            background: slide.accentColor,
+            background: `linear-gradient(180deg, ${slide.accentColor} 0%, ${slide.accentColor}DD 100%)`,
             border: 'none', borderRadius: 16,
             fontSize: 16, fontWeight: 700, color: '#fff',
             cursor: 'pointer',
-            boxShadow: `0 8px 32px ${slide.accentColor}50`,
+            boxShadow: `0 12px 32px ${slide.accentColor}55, inset 0 1px 0 rgba(255,255,255,0.30), inset 0 -1px 0 rgba(0,0,0,0.15)`,
             letterSpacing: '0.02em',
           }}
         >
@@ -353,9 +419,9 @@ function WelcomeSlides({ idx, setIdx, onDone }: { idx: number; setIdx: (i: numbe
       </div>
 
       <style>{`
-        @keyframes floatIcon {
-          0%, 100% { transform: translateY(0px) scale(1); }
-          50% { transform: translateY(-14px) scale(1.03); }
+        @keyframes floatFrame {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-12px); }
         }
       `}</style>
     </div>
