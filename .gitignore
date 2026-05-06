@@ -21,7 +21,9 @@ e2e/report/
 !.env.example
 
 # Claude Code
-.claude/
+.claude/*
+!.claude/agents/
+!.claude/EVALUATOR_HINTS.md
 
 # Editor directories and files
 .vscode/*
