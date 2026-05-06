@@ -59,7 +59,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
       <div style={{ background: 'linear-gradient(160deg, #1A1F2E 0%, #1E2540 70%, #1A2238 100%)', padding: 'calc(env(safe-area-inset-top, 44px) + 14px) 20px 56px', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', right: -50, top: -50, width: 200, height: 200, borderRadius: '50%', background: 'rgba(108,142,245,0.10)', filter: 'blur(40px)', pointerEvents: 'none' }}></div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 18, position: 'relative', zIndex: 1 }}>
-          <div className="profile-avatar" style={{ width: 64, height: 64, borderRadius: '50%', background: `linear-gradient(135deg, ${'var(--brand)'}, #9BB3FA)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Inter Tight', sans-serif", fontSize: 26, fontWeight: 900, color: 'var(--text-on-hero)', boxShadow: `0 0 24px rgba(108,142,245,0.4)` }}>
+          <div className="profile-avatar" style={{ width: 64, height: 64, borderRadius: '50%', background: `linear-gradient(135deg, var(--brand), var(--brand-light))`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Inter Tight', sans-serif", fontSize: 26, fontWeight: 900, color: 'var(--text-on-hero)', boxShadow: `0 0 24px rgba(108,142,245,0.4)` }}>
             {(userName || 'G').slice(0, 1).toUpperCase()}
           </div>
           <div style={{ flex: 1 }}>
@@ -102,7 +102,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
             <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', padding: 18, boxShadow: 'var(--shadow-v3-card-inset)', border: '1px solid rgba(255,255,255,.06)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
                 <div style={{ fontSize: 14, color: 'var(--text-primary)', fontWeight: 700 }}>{t('profile.weekSummary')}</div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, fontWeight: 800, color: studiedCount > 0 ? '#FF8C00' : 'var(--text-muted)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, fontWeight: 800, color: studiedCount > 0 ? 'var(--streak-flame)' : 'var(--text-muted)' }}>
                   <FlameIcon size={16} dim={studiedCount === 0} />
                   <span>{t('profile.studiedDaysOf7', { n: String(studiedCount) })}</span>
                 </div>
@@ -129,7 +129,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
                           <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--text-muted)', opacity: .5 }} />
                         )}
                       </div>
-                      <span style={{ fontSize: 12, color: studied ? '#FFFFFF' : 'var(--text-muted)', fontWeight: studied ? 700 : 500 }}>{d}</span>
+                      <span style={{ fontSize: 12, color: studied ? 'var(--text-on-hero)' : 'var(--text-muted)', fontWeight: studied ? 700 : 500 }}>{d}</span>
                     </div>
                   )
                 })}
@@ -289,7 +289,7 @@ function XpSheet({ totalXp }: { totalXp: number }) {
           <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{t('profile.cumulativeXp')}</div>
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 36, fontWeight: 900, color: '#9BB3FA' }}>+{thisMonthTotal}</div>
+          <div style={{ fontSize: 36, fontWeight: 900, color: 'var(--brand-light)' }}>+{thisMonthTotal}</div>
           <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{t('profile.thisMonthEarned')}</div>
         </div>
       </div>

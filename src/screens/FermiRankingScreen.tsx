@@ -244,9 +244,11 @@ function RankCard({ entry, compact, highlight }: { entry: RankEntry; compact?: b
           : entry.rank === 3 ? 'var(--medal-bronze-grad)'
           : 'var(--bg-primary)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
+        // a11y: 順位 1-3 のメダルは色 (gold/silver/bronze) のみで差別化されているため、
+        // スクリーンリーダー / 色覚多様性ユーザー向けに aria-label で順位を明示する。
       }}>
         {isPodium
-          ? <MedalIcon width={compact ? 16 : 20} height={compact ? 16 : 20} style={{ color: 'var(--text-on-hero)' }} />
+          ? <MedalIcon width={compact ? 16 : 20} height={compact ? 16 : 20} aria-label={t('onboarding.slidesRankUnit', { n: entry.rank })} style={{ color: 'var(--text-on-hero)' }} />
           : <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-secondary)' }}>{entry.rank}</span>
         }
       </div>

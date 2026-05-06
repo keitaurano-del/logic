@@ -1,3 +1,7 @@
+/**
+ * RankingScreen — レガシー画面 (`?preview=ranking` 経由でのみ到達、通常導線では FermiRankingScreen にリダイレクト)。
+ * 削除候補だが Phase 5 で i18n だけ通している。将来の通常ランキング機能に転用する余地あり。
+ */
 import { useEffect, useState, useMemo } from 'react'
 import { getGuestId, getNickname } from '../guestId'
 import { hasCompletedPlacement, loadPlacementResult } from '../placementData'

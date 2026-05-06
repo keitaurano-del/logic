@@ -794,8 +794,8 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
                     {course.level}
                   </div>
                   {allDone && (
-                    <div style={{ fontSize: 10, fontWeight: 700, color: '#22C55E', background: '#22C55E18', borderRadius: 6, padding: '2px 7px', display: 'flex', alignItems: 'center', gap: 3 }}>
-                      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="3" strokeLinecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--success-bright)', background: 'color-mix(in srgb, var(--success-bright) 9%, transparent)', borderRadius: 6, padding: '2px 7px', display: 'flex', alignItems: 'center', gap: 3 }}>
+                      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
                       {t('roadmap.doneBadge')}
                     </div>
                   )}
@@ -809,7 +809,7 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
                     <div style={{ fontSize: 11, color: 'var(--brand)', fontWeight: 600 }}>{courseCompleted}/{course.lessonIds.length}</div>
                   </div>
                   <div style={{ height: 4, background: `color-mix(in srgb, var(--text-muted) 13%, transparent)`, borderRadius: 2, overflow: 'hidden' }}>
-                    <div style={{ height: '100%', width: `${(courseCompleted / course.lessonIds.length) * 100}%`, background: allDone ? '#22C55E' : 'var(--brand)', borderRadius: 2, transition: 'width .3s' }} />
+                    <div style={{ height: '100%', width: `${(courseCompleted / course.lessonIds.length) * 100}%`, background: allDone ? 'var(--success-bright)' : 'var(--brand)', borderRadius: 2, transition: 'width .3s' }} />
                   </div>
                 </div>
               </div>

@@ -1,6 +1,13 @@
 /* Logic v3 — Design tokens
  * Brand-aligned with the Slate Blue logo (#6C8EF5 / #EEF2FE / #9BB3FA — 450nm 帯)
  * Refreshed: richer gradients, vibrant accents, animation tokens
+ *
+ * NOTE (Phase 4-7 完了時点):
+ * 現状の v3 アプリは main.tsx で .mode-dark を強制しつつ、AppV3 ルートで
+ * body.classList.add('theme-v3') を付与する。両方が常に効くため、
+ * :root のライト系トークンは「将来のライトテーマ予約」であり実行時には
+ * 到達しない (body.theme-v3 が最高特異度で勝つ)。
+ * 単一情報源は body.theme-v3 ブロック (下方)。
  */
 :root {
   /* Brand (Slate Blue 450nm 帯) */
@@ -122,6 +129,16 @@
   --score-good:         #F4B86A;
   --score-keep:         #E89B7E;
   --score-retry:        #E07A6F;
+
+  /* Streak flame (warmer than --streak-icon, used in ProfileScreenV3 weekly summary) */
+  --streak-flame:   #FF8C00;
+
+  /* Bright success (vivid green, used for completion badges) */
+  --success-bright: #22C55E;
+
+  /* Campaign banner (orange-to-pink urgent gradient) */
+  --campaign-grad:  linear-gradient(135deg, #FF6B35 0%, #FF4D6D 100%);
+  --campaign-text:  #FF6B35;
 
   /* On-dark surface tokens (for hero / dark-themed screens) */
   --text-on-hero-muted: rgba(255, 255, 255, 0.55);
