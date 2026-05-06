@@ -3,8 +3,9 @@
  * 仕様書: docs/DESIGN_V3.md §2 / docs/HIG_MATERIAL_AUDIT_20260504.md §2
  *
  * `m3` ブロックが canonical の Material 3 Color Roles。
- * 旧 `color` ブロックは互換 alias として残す（Phase 2 で順次削除）。
- * CSS 側は src/styles/tokens-m3.css で同じ値を `--md-sys-color-*` 変数として発行。
+ * Phase 6 (PR #122) で legacy `color` block は削除済み。
+ * 色は CSS 変数 (`var(--bg-primary)` 等) を直接使用すること。
+ * 単一情報源は src/styles/tokens.css の `:root` / `body.theme-v3` ブロック。
  */
 export const tokensV3 = {
   // ── Material 3 Color Roles (canonical) ──
@@ -43,26 +44,6 @@ export const tokensV3 = {
     surfaceTint:               '#6C8EF5',
   },
 
-  // ── Legacy alias (Phase 4: tokens.css の .theme-v3 を単一の情報源として参照) ──
-  // CSS 変数経由で値を解決するため、ここを変えるのではなく
-  // src/styles/tokens.css の .theme-v3 ブロックを編集する。
-  // accent / warm は文字列連結 (`${v3.color.accent}40` 等) との互換性のため
-  // hex のまま残す（将来 color-mix() に移行）。
-  color: {
-    bg:         'var(--bg-primary)',
-    card:       'var(--bg-card)',
-    card2:      'var(--bg-elevated)',
-    cardSoft:   'var(--bg-tertiary)',
-    accent:     '#6C8EF5',
-    accentSoft: 'var(--accent-soft)',
-    accentGlow: 'var(--accent-glow)',
-    warm:       '#F5BFA0',
-    warmSoft:   'rgba(245,191,160,.16)',
-    text:       'var(--text-primary)',
-    text2:      'var(--text-secondary)',
-    text3:      'var(--text-muted)',
-    line:       'var(--border)',
-  },
   radius: {
     card: 16, // shape-lg, was 20
     pill: 99,

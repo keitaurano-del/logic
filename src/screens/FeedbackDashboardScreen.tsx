@@ -207,7 +207,7 @@ export function FeedbackDashboardScreen({ onClose }: Props) {
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
                       <span style={{
                         display: 'inline-block', padding: '3px 10px', borderRadius: 99, fontSize: 11, fontWeight: 600,
-                        background: `${CATEGORY_COLORS[item.category] ?? 'var(--text-muted)'}20`,
+                        background: `color-mix(in srgb, ${CATEGORY_COLORS[item.category] ?? 'var(--text-muted)'} 13%, transparent)`,
                         color: CATEGORY_COLORS[item.category] ?? 'var(--text-muted)',
                       }}>{item.category}</span>
                       <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
