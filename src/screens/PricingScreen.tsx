@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { startCheckout, getSubscriptionState, daysLeftInTrial, isPremiumPlan, isStandardPlan, isAndroidNative, PLAN_PRICES } from '../subscription'
-import { v3 } from '../styles/tokensV3'
 import { Header } from '../components/platform/Header'
 import { t } from '../i18n'
 
@@ -31,9 +30,9 @@ function getFeatures(): FeatureRow[] {
 
 function getPlanMeta(): Record<PlanKey, { label: string; en: string; color: string }> {
   return {
-    free:     { label: t('pricing.planFree'),     en: 'FREE', color: v3.color.text3 },
-    standard: { label: t('pricing.planStandard'), en: 'STD',  color: v3.color.accent },
-    premium:  { label: t('pricing.planPremium'),  en: 'PRE',  color: v3.color.warm },
+    free:     { label: t('pricing.planFree'),     en: 'FREE', color: 'var(--text-muted)' },
+    standard: { label: t('pricing.planStandard'), en: 'STD',  color: 'var(--brand)' },
+    premium:  { label: t('pricing.planPremium'),  en: 'PRE',  color: 'var(--warm)' },
   }
 }
 
@@ -46,7 +45,7 @@ function CheckIcon() {
 }
 function CrossIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true">
       <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
     </svg>
   )
@@ -55,7 +54,7 @@ function CrossIcon() {
 function Cell({ value }: { value: string | boolean }) {
   if (value === true) return <CheckIcon />
   if (value === false) return <CrossIcon />
-  return <span style={{ fontSize: 13, fontWeight: 600, color: v3.color.text }}>{value}</span>
+  return <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>{value}</span>
 }
 
 export function PricingScreen({ onBack }: PricingScreenProps) {
@@ -110,22 +109,22 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
   const renderPlanCTA = (plan: PlanKey) => {
     if (plan === 'free') {
       return isCurrentFree
-        ? <div style={{ textAlign: 'center', fontSize: 13, color: v3.color.text3, fontWeight: 700, padding: '14px 0' }}>{t('pricing.currentPlan')}</div>
+        ? <div style={{ textAlign: 'center', fontSize: 13, color: 'var(--text-muted)', fontWeight: 700, padding: '14px 0' }}>{t('pricing.currentPlan')}</div>
         : null
     }
     if (plan === 'standard') {
-      if (isCurrentStd) return <div style={{ textAlign: 'center', fontSize: 13, color: v3.color.accent, fontWeight: 700, padding: '14px 0' }}>{t('pricing.currentPlan')}</div>
+      if (isCurrentStd) return <div style={{ textAlign: 'center', fontSize: 13, color: 'var(--brand)', fontWeight: 700, padding: '14px 0' }}>{t('pricing.currentPlan')}</div>
       return (
         <button onClick={() => handleUpgrade(stdPlanId)} disabled={!!loading}
-          style={{ width: '100%', padding: '16px', borderRadius: 14, border: `2px solid ${v3.color.accent}`, background: 'transparent', color: v3.color.accent, fontSize: 16, fontWeight: 800, cursor: 'pointer', opacity: loading ? 0.6 : 1 }}>
+          style={{ width: '100%', padding: '16px', borderRadius: 14, border: `2px solid ${'var(--brand)'}`, background: 'transparent', color: 'var(--brand)', fontSize: 16, fontWeight: 800, cursor: 'pointer', opacity: loading ? 0.6 : 1 }}>
           {loading === stdPlanId ? t('pricing.processing') : t('pricing.startStandard')}
         </button>
       )
     }
-    if (isCurrentPre) return <div style={{ textAlign: 'center', fontSize: 13, color: v3.color.warm, fontWeight: 700, padding: '14px 0' }}>{t('pricing.currentPlan')}</div>
+    if (isCurrentPre) return <div style={{ textAlign: 'center', fontSize: 13, color: 'var(--warm)', fontWeight: 700, padding: '14px 0' }}>{t('pricing.currentPlan')}</div>
     return (
       <button onClick={() => handleUpgrade(prePlanId)} disabled={!!loading}
-        style={{ width: '100%', padding: '16px', borderRadius: 14, border: 'none', background: v3.color.warm, color: 'var(--accent-fg)', fontSize: 16, fontWeight: 800, cursor: 'pointer', opacity: loading ? 0.6 : 1 }}>
+        style={{ width: '100%', padding: '16px', borderRadius: 14, border: 'none', background: 'var(--warm)', color: 'var(--accent-fg)', fontSize: 16, fontWeight: 800, cursor: 'pointer', opacity: loading ? 0.6 : 1 }}>
         {loading === prePlanId ? t('pricing.processing') : t('pricing.startPremium')}
       </button>
     )
@@ -134,7 +133,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
   const plans: PlanKey[] = ['free', 'standard', 'premium']
 
   return (
-    <div style={{ minHeight: '100dvh', background: v3.color.bg, color: v3.color.text, display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif" }}>
+    <div style={{ minHeight: '100dvh', background: 'var(--bg-primary)', color: 'var(--text-primary)', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif" }}>
 
       <Header title={t('pricing.title')} onBack={onBack} />
 
@@ -156,18 +155,18 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
 
         {/* トライアルバナー */}
         {state.plan === 'trial' && (
-          <div style={{ background: `${v3.color.accent}18`, border: `1px solid ${v3.color.accent}40`, borderRadius: 12, padding: '10px 16px', fontSize: 14, color: v3.color.accent, fontWeight: 600 }}>
+          <div style={{ background: `color-mix(in srgb, var(--brand) 9%, transparent)`, border: `1px solid color-mix(in srgb, var(--brand) 25%, transparent)`, borderRadius: 12, padding: '10px 16px', fontSize: 14, color: 'var(--brand)', fontWeight: 600 }}>
             {t('pricing.trialBanner', { n: String(trialDays) })}
           </div>
         )}
 
         {/* 月払い / 年払い トグル */}
-        <div style={{ display: 'flex', background: v3.color.card, borderRadius: 14, padding: 4, gap: 4 }}>
+        <div style={{ display: 'flex', background: 'var(--bg-card)', borderRadius: 14, padding: 4, gap: 4 }}>
           {(['monthly', 'yearly'] as const).map(cycle => (
             <button key={cycle} onClick={() => setBillingCycle(cycle)}
-              style={{ flex: 1, padding: '10px', borderRadius: 11, border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 700, transition: 'all .15s', background: billingCycle === cycle ? v3.color.accent : 'transparent', color: billingCycle === cycle ? 'var(--accent-fg)' : v3.color.text2 }}>
+              style={{ flex: 1, padding: '10px', borderRadius: 11, border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 700, transition: 'all .15s', background: billingCycle === cycle ? 'var(--brand)' : 'transparent', color: billingCycle === cycle ? 'var(--accent-fg)' : 'var(--text-secondary)' }}>
               {cycle === 'monthly' ? t('pricing.cycleMonthly') : (
-                <span>{t('pricing.cycleYearly')} <span style={{ fontSize: 11, background: billingCycle === 'yearly' ? 'rgba(255,255,255,0.22)' : `${v3.color.warm}22`, color: billingCycle === 'yearly' ? 'var(--text-on-hero)' : v3.color.warm, borderRadius: 6, padding: '2px 6px', fontWeight: 800 }}>{t('pricing.cycleSavings')}</span></span>
+                <span>{t('pricing.cycleYearly')} <span style={{ fontSize: 11, background: billingCycle === 'yearly' ? 'rgba(255,255,255,0.22)' : `color-mix(in srgb, var(--warm) 13%, transparent)`, color: billingCycle === 'yearly' ? 'var(--text-on-hero)' : 'var(--warm)', borderRadius: 6, padding: '2px 6px', fontWeight: 800 }}>{t('pricing.cycleSavings')}</span></span>
               )}
             </button>
           ))}
@@ -180,9 +179,9 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
             const isActive = activePlan === plan
             return (
               <button key={plan} onClick={() => setActivePlan(plan)}
-                style={{ flex: 1, padding: '10px 4px', borderRadius: 12, border: `2px solid ${isActive ? meta.color : v3.color.line}`, background: isActive ? `${meta.color}14` : v3.color.card, cursor: 'pointer', transition: 'all .15s' }}>
+                style={{ flex: 1, padding: '10px 4px', borderRadius: 12, border: `2px solid ${isActive ? meta.color : 'var(--border)'}`, background: isActive ? `${meta.color}14` : 'var(--bg-card)', cursor: 'pointer', transition: 'all .15s' }}>
                 <div style={{ fontSize: 10, fontWeight: 800, color: meta.color, letterSpacing: '.08em' }}>{meta.en}</div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: isActive ? meta.color : v3.color.text2, marginTop: 2 }}>{meta.label}</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: isActive ? meta.color : 'var(--text-secondary)', marginTop: 2 }}>{meta.label}</div>
               </button>
             )
           })}
@@ -192,11 +191,11 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
       {/* 機能リスト + 価格 + CTA */}
       <div style={{ flex: 1, padding: '0 16px 100px', overflowY: 'auto' }}>
         {/* 価格カード */}
-        <div style={{ background: v3.color.card, borderRadius: 16, padding: '20px 20px 8px', marginBottom: 12, border: `2px solid ${accentColor}30` }}>
+        <div style={{ background: 'var(--bg-card)', borderRadius: 16, padding: '20px 20px 8px', marginBottom: 12, border: `2px solid ${accentColor}30` }}>
           <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, marginBottom: 4 }}>
-            <span style={{ fontSize: 32, fontWeight: 900, color: v3.color.text, letterSpacing: '-0.03em' }}>{planPrice(activePlan).main}</span>
+            <span style={{ fontSize: 32, fontWeight: 900, color: 'var(--text-primary)', letterSpacing: '-0.03em' }}>{planPrice(activePlan).main}</span>
             {planPrice(activePlan).sub && (
-              <span style={{ fontSize: 13, color: v3.color.text3, marginBottom: 6 }}>{planPrice(activePlan).sub}</span>
+              <span style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 6 }}>{planPrice(activePlan).sub}</span>
             )}
           </div>
           {activePlan === 'standard' && billingCycle === 'yearly' && (
@@ -208,22 +207,22 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
         </div>
 
         {/* 機能比較リスト */}
-        <div style={{ background: v3.color.card, borderRadius: 16, overflow: 'hidden' }}>
+        <div style={{ background: 'var(--bg-card)', borderRadius: 16, overflow: 'hidden' }}>
           {/* ヘッダー行 */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 80px 80px 80px', padding: '12px 16px', borderBottom: `1px solid ${v3.color.line}` }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: v3.color.text3 }}>{t('pricing.planFeatureHeader')}</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 80px 80px 80px', padding: '12px 16px', borderBottom: `1px solid ${'var(--border)'}` }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)' }}>{t('pricing.planFeatureHeader')}</div>
             {plans.map(plan => (
               <button type="button" key={plan} onClick={() => setActivePlan(plan)}
                 aria-pressed={activePlan === plan}
-                style={{ textAlign: 'center', fontSize: 11, fontWeight: 800, color: activePlan === plan ? PLAN_META[plan].color : v3.color.text3, cursor: 'pointer', letterSpacing: '.06em', background: 'transparent', border: 'none', padding: 4, font: 'inherit' }}>
+                style={{ textAlign: 'center', fontSize: 11, fontWeight: 800, color: activePlan === plan ? PLAN_META[plan].color : 'var(--text-muted)', cursor: 'pointer', letterSpacing: '.06em', background: 'transparent', border: 'none', padding: 4, font: 'inherit' }}>
                 {PLAN_META[plan].en}
               </button>
             ))}
           </div>
           {/* 機能行 */}
           {FEATURES.map((row, i) => (
-            <div key={row.label} style={{ display: 'grid', gridTemplateColumns: '1fr 80px 80px 80px', padding: '14px 16px', borderTop: i === 0 ? 'none' : `1px solid ${v3.color.line}`, background: i % 2 === 0 ? 'transparent' : `${v3.color.bg}50`, alignItems: 'center' }}>
-              <div style={{ fontSize: 14, fontWeight: 600, color: v3.color.text }}>{row.label}</div>
+            <div key={row.label} style={{ display: 'grid', gridTemplateColumns: '1fr 80px 80px 80px', padding: '14px 16px', borderTop: i === 0 ? 'none' : `1px solid ${'var(--border)'}`, background: i % 2 === 0 ? 'transparent' : `color-mix(in srgb, var(--bg-primary) 31%, transparent)`, alignItems: 'center' }}>
+              <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>{row.label}</div>
               {/* FREE */}
               <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', opacity: activePlan === 'free' ? 1 : 0.45 }}>
                 <Cell value={row.free} />
@@ -241,7 +240,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
         </div>
 
         {/* 注記 */}
-        <div style={{ fontSize: 12, color: v3.color.text3, textAlign: 'center', lineHeight: 1.8, marginTop: 16 }}>
+        <div style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', lineHeight: 1.8, marginTop: 16 }}>
           {t('pricing.note1')}<br />
           {t('pricing.note2')}
         </div>

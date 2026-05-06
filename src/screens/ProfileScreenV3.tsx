@@ -55,21 +55,21 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
   }
 
   return (
-    <div style={{ background: v3.color.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: v3.color.text }}>
+    <div style={{ background: 'var(--bg-primary)', minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: 'var(--text-primary)' }}>
       {/* Hero */}
       <div style={{ background: 'linear-gradient(160deg, #1A1F2E 0%, #1E2540 70%, #1A2238 100%)', padding: 'calc(env(safe-area-inset-top, 44px) + 14px) 20px 56px', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', right: -50, top: -50, width: 200, height: 200, borderRadius: '50%', background: 'rgba(108,142,245,0.10)', filter: 'blur(40px)', pointerEvents: 'none' }}></div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 18, position: 'relative', zIndex: 1 }}>
-          <div className="profile-avatar" style={{ width: 64, height: 64, borderRadius: '50%', background: `linear-gradient(135deg, ${v3.color.accent}, #9BB3FA)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Inter Tight', sans-serif", fontSize: 26, fontWeight: 900, color: 'var(--text-on-hero)', boxShadow: `0 0 24px rgba(108,142,245,0.4)` }}>
+          <div className="profile-avatar" style={{ width: 64, height: 64, borderRadius: '50%', background: `linear-gradient(135deg, ${'var(--brand)'}, #9BB3FA)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Inter Tight', sans-serif", fontSize: 26, fontWeight: 900, color: 'var(--text-on-hero)', boxShadow: `0 0 24px rgba(108,142,245,0.4)` }}>
             {(userName || 'G').slice(0, 1).toUpperCase()}
           </div>
           <div style={{ flex: 1 }}>
             <div className="profile-hero-name" style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, letterSpacing: '-.02em', marginBottom: 2, color: 'var(--text-on-hero)' }}>{userName || t('home.guestName')}</div>
-            <div style={{ fontSize: 14, color: v3.color.text2, fontWeight: 500 }}>{userName ? t('profile.userTraineeRole') : t('profile.guestPrompt')}</div>
+            <div style={{ fontSize: 14, color: 'var(--text-secondary)', fontWeight: 500 }}>{userName ? t('profile.userTraineeRole') : t('profile.guestPrompt')}</div>
             {!userName && (
               <button
                 onClick={() => onOpenSettings('account')}
-                style={{ marginTop: 8, padding: '6px 16px', background: v3.color.accent, color: 'var(--text-on-hero)', border: 'none', borderRadius: 99, fontSize: 13, fontWeight: 700, cursor: 'pointer' }}
+                style={{ marginTop: 8, padding: '6px 16px', background: 'var(--brand)', color: 'var(--text-on-hero)', border: 'none', borderRadius: 99, fontSize: 13, fontWeight: 700, cursor: 'pointer' }}
               >
                 {t('profile.loginCta')}
               </button>
@@ -77,13 +77,13 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8, position: 'relative', zIndex: 1 }}>
-          <span style={{ fontSize: 14, fontWeight: 700, color: v3.color.text2, letterSpacing: '.12em', textTransform: 'uppercase' }}>{t('profile.level')}</span>
+          <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '.12em', textTransform: 'uppercase' }}>{t('profile.level')}</span>
           <span style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 900, letterSpacing: '-.02em', color: 'var(--text-on-hero)' }}>Lv.{lv.level}</span>
         </div>
         <div style={{ height: 12, background: 'rgba(255,255,255,.1)', borderRadius: 99, overflow: 'hidden', marginBottom: 8, position: 'relative', zIndex: 1 }}>
-          <div style={{ height: '100%', width: `${levelPct}%`, background: v3.color.accent, borderRadius: 99, boxShadow: '0 0 12px rgba(108,142,245,0.5)' }}></div>
+          <div style={{ height: '100%', width: `${levelPct}%`, background: 'var(--brand)', borderRadius: 99, boxShadow: '0 0 12px rgba(108,142,245,0.5)' }}></div>
         </div>
-        <div style={{ fontSize: 14, color: v3.color.text2, fontWeight: 500, textAlign: 'right', position: 'relative', zIndex: 1 }}>{t('profile.toNextLevel', { xp: String(Math.max(0, needed - levelXp)) })}</div>
+        <div style={{ fontSize: 14, color: 'var(--text-secondary)', fontWeight: 500, textAlign: 'right', position: 'relative', zIndex: 1 }}>{t('profile.toNextLevel', { xp: String(Math.max(0, needed - levelXp)) })}</div>
       </div>
 
       {/* Stats grid — タップで詳細シート */}
@@ -100,10 +100,10 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
           const studiedCount = week.filter(Boolean).length
           const todayDow = (new Date().getDay() + 6) % 7
           return (
-            <div style={{ background: v3.color.card, borderRadius: v3.radius.card, padding: 18, boxShadow: v3.shadow.card, border: '1px solid rgba(255,255,255,.06)' }}>
+            <div style={{ background: 'var(--bg-card)', borderRadius: v3.radius.card, padding: 18, boxShadow: v3.shadow.card, border: '1px solid rgba(255,255,255,.06)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
                 <div style={{ fontSize: 14, color: 'var(--text-on-hero)', fontWeight: 700 }}>{t('profile.weekSummary')}</div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, fontWeight: 800, color: studiedCount > 0 ? '#FF8C00' : v3.color.text3 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, fontWeight: 800, color: studiedCount > 0 ? '#FF8C00' : 'var(--text-muted)' }}>
                   <FlameIcon size={16} dim={studiedCount === 0} />
                   <span>{t('profile.studiedDaysOf7', { n: String(studiedCount) })}</span>
                 </div>
@@ -118,8 +118,8 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
                         width: '100%',
                         aspectRatio: '1 / 1',
                         borderRadius: 12,
-                        background: studied ? 'linear-gradient(160deg, rgba(255,140,0,.18) 0%, rgba(255,61,0,.10) 100%)' : v3.color.cardSoft,
-                        border: isToday ? `1.5px solid ${v3.color.accent}` : '1px solid rgba(255,255,255,.04)',
+                        background: studied ? 'linear-gradient(160deg, rgba(255,140,0,.18) 0%, rgba(255,61,0,.10) 100%)' : 'var(--bg-tertiary)',
+                        border: isToday ? `1.5px solid ${'var(--brand)'}` : '1px solid rgba(255,255,255,.04)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -127,10 +127,10 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
                         {studied ? (
                           <FlameIcon size={26} />
                         ) : (
-                          <div style={{ width: 6, height: 6, borderRadius: '50%', background: v3.color.text3, opacity: .5 }} />
+                          <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--text-muted)', opacity: .5 }} />
                         )}
                       </div>
-                      <span style={{ fontSize: 12, color: studied ? '#FFFFFF' : v3.color.text3, fontWeight: studied ? 700 : 500 }}>{d}</span>
+                      <span style={{ fontSize: 12, color: studied ? '#FFFFFF' : 'var(--text-muted)', fontWeight: studied ? 700 : 500 }}>{d}</span>
                     </div>
                   )
                 })}
@@ -144,25 +144,25 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
           <button type="button" onClick={onOpenPlacementTest}
             aria-label={t('profile.assessmentAria')}
             style={{
-              background: `linear-gradient(135deg, ${v3.color.accentSoft} 0%, rgba(108,142,245,.1) 100%)`,
-              border: `1px solid ${v3.color.accent}40`,
+              background: `linear-gradient(135deg, ${'var(--accent-soft)'} 0%, rgba(108,142,245,.1) 100%)`,
+              border: `1px solid color-mix(in srgb, var(--brand) 25%, transparent)`,
               borderRadius: v3.radius.card, padding: '16px 18px',
               cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14,
               color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%',
             }}>
-            <div style={{ width: 40, height: 40, borderRadius: 12, background: v3.color.accent, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: 'var(--accent-fg)' }}>
+            <div style={{ width: 40, height: 40, borderRadius: 12, background: 'var(--brand)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: 'var(--accent-fg)' }}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
             </div>
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-on-hero)' }}>{t('profile.assessmentTitle')}</div>
-              <div style={{ fontSize: 13, color: v3.color.text2, marginTop: 2 }}>{t('profile.assessmentDesc')}</div>
+              <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 2 }}>{t('profile.assessmentDesc')}</div>
             </div>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2.5" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
           </button>
         )}
 
         {/* 設定 */}
-        <div style={{ background: v3.color.card, borderRadius: v3.radius.card, overflow: 'hidden', boxShadow: v3.shadow.card }}>
+        <div style={{ background: 'var(--bg-card)', borderRadius: v3.radius.card, overflow: 'hidden', boxShadow: v3.shadow.card }}>
           <SettingRow icon="user" name={t('profile.account')} sub={userName || t('home.guestName')} onClick={() => onOpenSettings('account')} />
           <SettingRow icon="bell" name={t('profile.notifications')} sub="" onClick={() => onOpenSettings('notifications')} />
           <SettingRow icon="card" name={t('profile.plan')} sub={getPlanLabel()} onClick={onOpenPricing} />
@@ -192,16 +192,16 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
             style={{ position: 'absolute', inset: 0, background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}
           />
           <div
-            style={{ position: 'relative', background: v3.color.card, borderRadius: '20px 20px 0 0', width: '100%', maxHeight: '70vh', overflowY: 'auto', padding: '20px 20px 40px' }}
+            style={{ position: 'relative', background: 'var(--bg-card)', borderRadius: '20px 20px 0 0', width: '100%', maxHeight: '70vh', overflowY: 'auto', padding: '20px 20px 40px' }}
           >
             {/* ドラッグバー */}
-            <div style={{ width: 40, height: 4, background: v3.color.cardSoft, borderRadius: 2, margin: '0 auto 20px' }} />
+            <div style={{ width: 40, height: 4, background: 'var(--bg-tertiary)', borderRadius: 2, margin: '0 auto 20px' }} />
 
             {sheet === 'streak' && <StreakSheet streak={streak} />}
             {sheet === 'lessons' && <LessonsSheet onOpenLesson={(id) => { setSheet(null); onOpenLesson?.(id) }} />}
             {sheet === 'xp' && <XpSheet totalXp={xp} />}
 
-            <button onClick={() => setSheet(null)} style={{ marginTop: 20, width: '100%', background: v3.color.cardSoft, border: 'none', borderRadius: 12, padding: '13px', fontSize: 14, fontWeight: 700, color: v3.color.text2, cursor: 'pointer' }}>{t('profile.close')}</button>
+            <button onClick={() => setSheet(null)} style={{ marginTop: 20, width: '100%', background: 'var(--bg-tertiary)', border: 'none', borderRadius: 12, padding: '13px', fontSize: 14, fontWeight: 700, color: 'var(--text-secondary)', cursor: 'pointer' }}>{t('profile.close')}</button>
           </div>
         </div>
       )}
@@ -215,11 +215,11 @@ function StreakSheet({ streak }: { streak: number }) {
     <>
       <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-on-hero)', marginBottom: 16 }}>{t('profile.streakDaysHeading')}</div>
       <div style={{ textAlign: 'center', padding: '20px 0' }}>
-        <div style={{ fontSize: 72, fontWeight: 900, color: v3.color.accent, letterSpacing: '-0.04em', lineHeight: 1 }}>{streak}</div>
-        <div style={{ fontSize: 18, color: v3.color.text2, marginTop: 8, fontWeight: 600 }}>{t('profile.streakDaysUnit')}</div>
+        <div style={{ fontSize: 72, fontWeight: 900, color: 'var(--brand)', letterSpacing: '-0.04em', lineHeight: 1 }}>{streak}</div>
+        <div style={{ fontSize: 18, color: 'var(--text-secondary)', marginTop: 8, fontWeight: 600 }}>{t('profile.streakDaysUnit')}</div>
       </div>
-      <div style={{ background: v3.color.bg, borderRadius: 14, padding: '14px 16px' }}>
-        <div style={{ fontSize: 13, color: v3.color.text2, lineHeight: 1.7 }}>
+      <div style={{ background: 'var(--bg-primary)', borderRadius: 14, padding: '14px 16px' }}>
+        <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.7 }}>
           {t('profile.streakNote1')}<br />
           {t('profile.streakNote2')}
         </div>
@@ -238,7 +238,7 @@ function LessonsSheet({ onOpenLesson }: { onOpenLesson: (id: number) => void }) 
     <>
       <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-on-hero)', marginBottom: 16 }}>{t('profile.completedLessonsTitle', { n: String(completedLessons.length) })}</div>
       {completedLessons.length === 0 ? (
-        <div style={{ textAlign: 'center', color: v3.color.text2, padding: '32px 0', fontSize: 14 }}>{t('profile.noLessonsYet')}</div>
+        <div style={{ textAlign: 'center', color: 'var(--text-secondary)', padding: '32px 0', fontSize: 14 }}>{t('profile.noLessonsYet')}</div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {completedLessons.map(l => (
@@ -246,16 +246,16 @@ function LessonsSheet({ onOpenLesson }: { onOpenLesson: (id: number) => void }) 
               type="button"
               key={l.id}
               onClick={() => onOpenLesson(l.id)}
-              style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', background: v3.color.bg, borderRadius: 12, cursor: 'pointer', border: 'none', textAlign: 'left', width: '100%', font: 'inherit', color: 'inherit' }}
+              style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', background: 'var(--bg-primary)', borderRadius: 12, cursor: 'pointer', border: 'none', textAlign: 'left', width: '100%', font: 'inherit', color: 'inherit' }}
             >
-              <div style={{ width: 36, height: 36, borderRadius: 10, background: v3.color.accentSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: v3.color.accent }}>
+              <div style={{ width: 36, height: 36, borderRadius: 10, background: 'var(--accent-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: 'var(--brand)' }}>
                 <LessonIcon id={l.id} action="lesson" size={20} />
               </div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-on-hero)' }}>{l.title}</div>
-                <div style={{ fontSize: 12, color: v3.color.text2, marginTop: 2 }}>{l.category || ''}</div>
+                <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2 }}>{l.category || ''}</div>
               </div>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2.5" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
             </button>
           ))}
         </div>
@@ -283,19 +283,19 @@ function XpSheet({ totalXp }: { totalXp: number }) {
         <StarIcon width={20} height={20} aria-hidden="true" />
         <span>{t('profile.totalXp')}</span>
       </div>
-      <div style={{ fontSize: 13, color: v3.color.text2, marginBottom: 16 }}>{t('profile.monthBreakdown', { month: monthLabel })}</div>
+      <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 16 }}>{t('profile.monthBreakdown', { month: monthLabel })}</div>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 36, fontWeight: 900, color: v3.color.accent }}>{totalXp.toLocaleString()}</div>
-          <div style={{ fontSize: 12, color: v3.color.text2 }}>{t('profile.cumulativeXp')}</div>
+          <div style={{ fontSize: 36, fontWeight: 900, color: 'var(--brand)' }}>{totalXp.toLocaleString()}</div>
+          <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{t('profile.cumulativeXp')}</div>
         </div>
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: 36, fontWeight: 900, color: '#9BB3FA' }}>+{thisMonthTotal}</div>
-          <div style={{ fontSize: 12, color: v3.color.text2 }}>{t('profile.thisMonthEarned')}</div>
+          <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{t('profile.thisMonthEarned')}</div>
         </div>
       </div>
       {entries.length === 0 ? (
-        <div style={{ textAlign: 'center', color: v3.color.text2, padding: '16px 0', fontSize: 14 }}>{t('profile.noXpThisMonth')}</div>
+        <div style={{ textAlign: 'center', color: 'var(--text-secondary)', padding: '16px 0', fontSize: 14 }}>{t('profile.noXpThisMonth')}</div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {entries.map(([label, xp]) => {
@@ -304,10 +304,10 @@ function XpSheet({ totalXp }: { totalXp: number }) {
               <div key={label}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
                   <span style={{ fontSize: 13, color: 'var(--text-on-hero)', fontWeight: 600 }}>{label}</span>
-                  <span style={{ fontSize: 13, color: v3.color.accent, fontWeight: 700 }}>+{xp} XP</span>
+                  <span style={{ fontSize: 13, color: 'var(--brand)', fontWeight: 700 }}>+{xp} XP</span>
                 </div>
-                <div style={{ height: 6, background: v3.color.cardSoft, borderRadius: 4, overflow: 'hidden' }}>
-                  <div style={{ height: '100%', width: `${pct}%`, background: v3.color.accent, borderRadius: 4 }} />
+                <div style={{ height: 6, background: 'var(--bg-tertiary)', borderRadius: 4, overflow: 'hidden' }}>
+                  <div style={{ height: '100%', width: `${pct}%`, background: 'var(--brand)', borderRadius: 4 }} />
                 </div>
               </div>
             )
@@ -338,14 +338,14 @@ function StatCard({ val, label, onClick, highlight }: { val: string; label: stri
       type="button"
       className="stat"
       onClick={onClick}
-      style={{ background: v3.color.card, borderRadius: 16, padding: '14px 8px', textAlign: 'center', boxShadow: '0 6px 20px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.05)', cursor: 'pointer', position: 'relative', border: '1px solid rgba(255,255,255,.06)', font: 'inherit', color: 'inherit', width: '100%' }}
+      style={{ background: 'var(--bg-card)', borderRadius: 16, padding: '14px 8px', textAlign: 'center', boxShadow: '0 6px 20px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.05)', cursor: 'pointer', position: 'relative', border: '1px solid rgba(255,255,255,.06)', font: 'inherit', color: 'inherit', width: '100%' }}
     >
-      <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, color: v3.color.accent, letterSpacing: '-.03em', lineHeight: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+      <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, color: 'var(--brand)', letterSpacing: '-.03em', lineHeight: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
         {highlight && <FlameIcon size={18} />}
         {val}
       </div>
-      <div style={{ fontSize: 11, fontWeight: 600, color: v3.color.text2, marginTop: 5 }}>{label}</div>
-      <div style={{ position: 'absolute', bottom: 6, right: 8, fontSize: 10, color: v3.color.text3 }}>›</div>
+      <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-secondary)', marginTop: 5 }}>{label}</div>
+      <div style={{ position: 'absolute', bottom: 6, right: 8, fontSize: 10, color: 'var(--text-muted)' }}>›</div>
     </button>
   )
 }
@@ -422,25 +422,25 @@ function FlameIcon({ size = 20, dim = false }: { size?: number; dim?: boolean })
 function SettingRow({ icon, name, sub, onClick }: { icon: string; name: string; sub: string; onClick?: () => void }) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const iconSvg: Record<string, any> = {
-    user: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>,
-    bell: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 0 1-3.46 0" /></svg>,
-    card: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2" /><line x1="2" y1="10" x2="22" y2="10" /></svg>,
-    message: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>,
-    doc: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>,
-    shield: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
-    scale: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>,
+    user: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={'var(--brand)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>,
+    bell: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={'var(--brand)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 0 1-3.46 0" /></svg>,
+    card: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={'var(--brand)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2" /><line x1="2" y1="10" x2="22" y2="10" /></svg>,
+    message: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={'var(--brand)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>,
+    doc: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={'var(--brand)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>,
+    shield: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={'var(--brand)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
+    scale: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={'var(--brand)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>,
   }
 
   return (
     <button type="button" onClick={onClick}
       aria-label={sub ? `${name}: ${sub}` : name}
-      style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px', cursor: 'pointer', borderBottom: `1px solid ${v3.color.line}`, background: 'transparent', border: 'none', borderTop: 'none', borderLeft: 'none', borderRight: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%', minHeight: 44 }}>
-      <div style={{ width: 36, height: 36, borderRadius: 10, background: v3.color.accentSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{iconSvg[icon]}</div>
+      style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px', cursor: 'pointer', borderBottom: `1px solid ${'var(--border)'}`, background: 'transparent', border: 'none', borderTop: 'none', borderLeft: 'none', borderRight: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%', minHeight: 44 }}>
+      <div style={{ width: 36, height: 36, borderRadius: 10, background: 'var(--accent-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{iconSvg[icon]}</div>
       <div style={{ flex: 1 }}>
         <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 2, color: 'var(--text-on-hero)' }}>{name}</div>
-        {sub && <div style={{ fontSize: 13, color: v3.color.text2, fontWeight: 500 }}>{sub}</div>}
+        {sub && <div style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 500 }}>{sub}</div>}
       </div>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
     </button>
   )
 }

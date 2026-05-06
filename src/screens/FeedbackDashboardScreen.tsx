@@ -3,7 +3,6 @@
  * COO/Apollo向け: ユーザーフィードバックの集計・可視化
  */
 import { useEffect, useState } from 'react'
-import { v3 } from '../styles/tokensV3'
 import { createClient } from '@supabase/supabase-js'
 import { LoadingIndicator } from '../components/LoadingIndicator'
 
@@ -32,8 +31,8 @@ const CATEGORY_COLORS: Record<string, string> = {
   'バグ報告':    'var(--md-sys-color-error)',
   '内容・説明が間違っている': '#F97316',
   '選択肢の正解が違う':      '#EAB308',
-  '改善提案':    v3.color.accent,
-  'その他':      v3.color.text3,
+  '改善提案':    'var(--brand)',
+  'その他':      'var(--text-muted)',
 }
 
 interface Props {
@@ -74,7 +73,7 @@ export function FeedbackDashboardScreen({ onClose }: Props) {
     .map(([category, count]) => ({
       category,
       count,
-      color: CATEGORY_COLORS[category] ?? v3.color.text3,
+      color: CATEGORY_COLORS[category] ?? 'var(--text-muted)',
     }))
 
   const maxCount = Math.max(...categoryCounts.map(c => c.count), 1)
@@ -93,27 +92,27 @@ export function FeedbackDashboardScreen({ onClose }: Props) {
 
   return (
     <div style={{
-      background: v3.color.bg, minHeight: '100dvh',
-      fontFamily: "'Noto Sans JP', sans-serif", color: v3.color.text,
+      background: 'var(--bg-primary)', minHeight: '100dvh',
+      fontFamily: "'Noto Sans JP', sans-serif", color: 'var(--text-primary)',
       display: 'flex', flexDirection: 'column',
     }}>
       {/* ヘッダー */}
       <div style={{
         padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 16px',
         display: 'flex', alignItems: 'center', gap: 12,
-        borderBottom: `1px solid ${v3.color.line}`,
+        borderBottom: `1px solid ${'var(--border)'}`,
       }}>
         <button
           type="button"
           onClick={onClose}
           aria-label="閉じる"
-          style={{ background: v3.color.card, border: 'none', borderRadius: '50%', width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: v3.color.text2, flexShrink: 0 }}
+          style={{ background: 'var(--bg-card)', border: 'none', borderRadius: '50%', width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text-secondary)', flexShrink: 0 }}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
         </button>
         <div>
           <div style={{ fontSize: 18, fontWeight: 700 }}>フィードバック分析</div>
-          <div style={{ fontSize: 12, color: v3.color.text3 }}>SCRUM-88 · COO/Apollo向け</div>
+          <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>SCRUM-88 · COO/Apollo向け</div>
         </div>
       </div>
 
@@ -131,32 +130,32 @@ export function FeedbackDashboardScreen({ onClose }: Props) {
           <>
             {/* サマリーカード */}
             <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
-              <div style={{ flex: 1, background: v3.color.card, borderRadius: 16, padding: '16px 12px', textAlign: 'center' }}>
-                <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 32, fontWeight: 900, color: v3.color.accent, lineHeight: 1 }}>{items.length}</div>
-                <div style={{ fontSize: 11, color: v3.color.text3, marginTop: 4 }}>合計件数</div>
+              <div style={{ flex: 1, background: 'var(--bg-card)', borderRadius: 16, padding: '16px 12px', textAlign: 'center' }}>
+                <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 32, fontWeight: 900, color: 'var(--brand)', lineHeight: 1 }}>{items.length}</div>
+                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>合計件数</div>
               </div>
-              <div style={{ flex: 1, background: v3.color.card, borderRadius: 16, padding: '16px 12px', textAlign: 'center' }}>
-                <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 32, fontWeight: 900, color: last7 > 0 ? v3.color.accent : v3.color.text3, lineHeight: 1 }}>{last7}</div>
-                <div style={{ fontSize: 11, color: v3.color.text3, marginTop: 4 }}>直近7日</div>
+              <div style={{ flex: 1, background: 'var(--bg-card)', borderRadius: 16, padding: '16px 12px', textAlign: 'center' }}>
+                <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 32, fontWeight: 900, color: last7 > 0 ? 'var(--brand)' : 'var(--text-muted)', lineHeight: 1 }}>{last7}</div>
+                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>直近7日</div>
                 {trend !== null && (
-                  <div style={{ fontSize: 11, color: trend >= 0 ? v3.color.accent : 'var(--md-sys-color-error)', marginTop: 2, fontWeight: 700 }}>
+                  <div style={{ fontSize: 11, color: trend >= 0 ? 'var(--brand)' : 'var(--md-sys-color-error)', marginTop: 2, fontWeight: 700 }}>
                     {trend >= 0 ? `+${trend}%` : `${trend}%`}
                   </div>
                 )}
               </div>
-              <div style={{ flex: 1, background: v3.color.card, borderRadius: 16, padding: '16px 12px', textAlign: 'center' }}>
-                <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 32, fontWeight: 900, color: v3.color.warm, lineHeight: 1 }}>
+              <div style={{ flex: 1, background: 'var(--bg-card)', borderRadius: 16, padding: '16px 12px', textAlign: 'center' }}>
+                <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 32, fontWeight: 900, color: 'var(--warm)', lineHeight: 1 }}>
                   {categoryCounts.find(c => c.category.includes('バグ') || c.category.includes('間違'))?.count ?? 0}
                 </div>
-                <div style={{ fontSize: 11, color: v3.color.text3, marginTop: 4 }}>要対応</div>
+                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>要対応</div>
               </div>
             </div>
 
             {/* カテゴリ別バーチャート */}
-            <div style={{ background: v3.color.card, borderRadius: 16, padding: '16px 18px', marginBottom: 20 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 14, color: v3.color.text2 }}>カテゴリ別</div>
+            <div style={{ background: 'var(--bg-card)', borderRadius: 16, padding: '16px 18px', marginBottom: 20 }}>
+              <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 14, color: 'var(--text-secondary)' }}>カテゴリ別</div>
               {categoryCounts.length === 0 ? (
-                <div style={{ fontSize: 13, color: v3.color.text3, textAlign: 'center', padding: '20px 0' }}>データなし</div>
+                <div style={{ fontSize: 13, color: 'var(--text-muted)', textAlign: 'center', padding: '20px 0' }}>データなし</div>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                   {categoryCounts.map(({ category, count, color }) => (
@@ -165,7 +164,7 @@ export function FeedbackDashboardScreen({ onClose }: Props) {
                         <span style={{ fontSize: 13, fontWeight: 500 }}>{category}</span>
                         <span style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 13, fontWeight: 700, color }}>{count}</span>
                       </div>
-                      <div style={{ height: 6, background: v3.color.bg, borderRadius: 99 }}>
+                      <div style={{ height: 6, background: 'var(--bg-primary)', borderRadius: 99 }}>
                         <div style={{
                           height: 6, borderRadius: 99,
                           background: color,
@@ -187,8 +186,8 @@ export function FeedbackDashboardScreen({ onClose }: Props) {
                   style={{
                     flexShrink: 0, padding: '6px 14px', borderRadius: 99, fontSize: 12, fontWeight: 600,
                     cursor: 'pointer', border: 'none',
-                    background: filter === cat ? v3.color.accent : v3.color.card,
-                    color: filter === cat ? v3.color.bg : v3.color.text2,
+                    background: filter === cat ? 'var(--brand)' : 'var(--bg-card)',
+                    color: filter === cat ? 'var(--bg-primary)' : 'var(--text-secondary)',
                   }}
                 >
                   {cat === 'all' ? 'すべて' : cat}
@@ -199,23 +198,23 @@ export function FeedbackDashboardScreen({ onClose }: Props) {
             {/* フィードバック一覧 */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {filtered.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: 40, color: v3.color.text3, fontSize: 14 }}>
+                <div style={{ textAlign: 'center', padding: 40, color: 'var(--text-muted)', fontSize: 14 }}>
                   フィードバックはまだありません
                 </div>
               ) : (
                 filtered.map(item => (
-                  <div key={item.id} style={{ background: v3.color.card, borderRadius: 14, padding: '14px 16px' }}>
+                  <div key={item.id} style={{ background: 'var(--bg-card)', borderRadius: 14, padding: '14px 16px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
                       <span style={{
                         display: 'inline-block', padding: '3px 10px', borderRadius: 99, fontSize: 11, fontWeight: 600,
-                        background: `${CATEGORY_COLORS[item.category] ?? v3.color.text3}20`,
-                        color: CATEGORY_COLORS[item.category] ?? v3.color.text3,
+                        background: `${CATEGORY_COLORS[item.category] ?? 'var(--text-muted)'}20`,
+                        color: CATEGORY_COLORS[item.category] ?? 'var(--text-muted)',
                       }}>{item.category}</span>
-                      <span style={{ fontSize: 11, color: v3.color.text3 }}>
+                      <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
                         {new Date(item.created_at).toLocaleDateString('ja-JP', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                       </span>
                     </div>
-                    <p style={{ fontSize: 14, lineHeight: 1.7, color: v3.color.text, margin: 0 }}>{item.message}</p>
+                    <p style={{ fontSize: 14, lineHeight: 1.7, color: 'var(--text-primary)', margin: 0 }}>{item.message}</p>
                   </div>
                 ))
               )}

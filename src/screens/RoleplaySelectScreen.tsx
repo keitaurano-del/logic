@@ -3,7 +3,6 @@ import { isPremium } from '../subscription'
 import { getRoleplayRemaining, ROLEPLAY_FREE_LIMIT } from '../roleplayUsage'
 import { ArrowLeftIcon } from '../icons'
 import { IconButton } from '../components/IconButton'
-import { v3 } from '../styles/tokensV3'
 
 interface RoleplaySelectScreenProps {
   onBack: () => void
@@ -126,8 +125,8 @@ function SituationCard({
       onClick={comingSoon ? undefined : onClick}
       disabled={comingSoon}
       style={{
-        background: v3.color.card,
-        border: `1.5px solid ${comingSoon ? `${v3.color.accent}12` : `${v3.color.accent}18`}`,
+        background: 'var(--bg-card)',
+        border: `1.5px solid ${comingSoon ? `color-mix(in srgb, var(--brand) 7%, transparent)` : `color-mix(in srgb, var(--brand) 9%, transparent)`}`,
         borderRadius: 16,
         padding: 0,
         cursor: comingSoon ? 'default' : 'pointer',
@@ -163,25 +162,25 @@ function SituationCard({
       <div style={{ padding: '14px 16px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
-            <span style={{ fontSize: 14, fontWeight: 700, color: v3.color.accent, letterSpacing: '.04em' }}>
+            <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--brand)', letterSpacing: '.04em' }}>
               {s.partnerRole}
             </span>
             <span style={{
               fontSize: 14, fontWeight: 700, padding: '2px 7px', borderRadius: 99,
-              background: `${v3.color.accent}18`, color: DIFF_COLOR[s.difficulty] ?? v3.color.text2,
+              background: `color-mix(in srgb, var(--brand) 9%, transparent)`, color: DIFF_COLOR[s.difficulty] ?? 'var(--text-secondary)',
             }}>
               {DIFF_LABEL[s.difficulty] ?? s.difficulty}
             </span>
           </div>
-          <div style={{ fontSize: 17, fontWeight: 800, color: v3.color.text, marginBottom: 6, lineHeight: 1.35 }}>
+          <div style={{ fontSize: 17, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 6, lineHeight: 1.35 }}>
             {s.title}
           </div>
-          <div style={{ fontSize: 14, color: v3.color.text2, lineHeight: 1.6, marginBottom: 8 }}>
+          <div style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: 8 }}>
             {s.goal}
           </div>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: `${v3.color.accent}14`, borderRadius: 8, padding: '4px 10px' }}>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" aria-hidden="true"><path d="M9 11l3 3L22 4"/></svg>
-            <span style={{ fontSize: 14, fontWeight: 700, color: v3.color.accent }}>{s.frameworkLabel}</span>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: `color-mix(in srgb, var(--brand) 8%, transparent)`, borderRadius: 8, padding: '4px 10px' }}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={'var(--brand)'} strokeWidth="2" aria-hidden="true"><path d="M9 11l3 3L22 4"/></svg>
+            <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--brand)' }}>{s.frameworkLabel}</span>
           </div>
         </div>
 
@@ -189,7 +188,7 @@ function SituationCard({
         {comingSoon ? (
           <span style={{
             flexShrink: 0, fontSize: 14, fontWeight: 700, padding: '3px 8px',
-            borderRadius: 99, background: `${v3.color.accent}12`, color: v3.color.text3,
+            borderRadius: 99, background: `color-mix(in srgb, var(--brand) 7%, transparent)`, color: 'var(--text-muted)',
             alignSelf: 'flex-start', whiteSpace: 'nowrap',
           }}>
             近日公開
@@ -197,13 +196,13 @@ function SituationCard({
         ) : locked ? (
           <span style={{
             flexShrink: 0, fontSize: 14, fontWeight: 700, padding: '3px 8px',
-            borderRadius: 99, background: `${v3.color.accent}28`, color: v3.color.accent,
+            borderRadius: 99, background: `color-mix(in srgb, var(--brand) 16%, transparent)`, color: 'var(--brand)',
             alignSelf: 'flex-start', whiteSpace: 'nowrap',
           }}>
             PRO
           </span>
         ) : (
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5" strokeLinecap="round" style={{ flexShrink: 0, alignSelf: 'center' }} aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2.5" strokeLinecap="round" style={{ flexShrink: 0, alignSelf: 'center' }} aria-hidden="true">
             <polyline points="9 18 15 12 9 6"/>
           </svg>
         )}
@@ -228,17 +227,17 @@ export function RoleplaySelectScreen({ onBack, onStart, onUpgrade }: RoleplaySel
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', padding: '16px 16px 40px', background: v3.color.bg, minHeight: '100vh', color: v3.color.text, fontFamily: "'Noto Sans JP', sans-serif" }}>
+    <div style={{ display: 'flex', flexDirection: 'column', padding: '16px 16px 40px', background: 'var(--bg-primary)', minHeight: '100vh', color: 'var(--text-primary)', fontFamily: "'Noto Sans JP', sans-serif" }}>
       {/* ヘッダー */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 0 16px' }}>
         <IconButton aria-label="Back" onClick={onBack}>
           <ArrowLeftIcon />
         </IconButton>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 18, fontWeight: 800, color: v3.color.text, letterSpacing: '-.02em' }}>
+          <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-.02em' }}>
             ロールプレイ
           </div>
-          <div style={{ fontSize: 14, color: v3.color.text2, marginTop: 1 }}>
+          <div style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 1 }}>
             実践的な思考力を鍛える
           </div>
         </div>

@@ -37,7 +37,7 @@ type CategoryVisual = {
 
 const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
   'ロジカルシンキング': {
-    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/></svg>,
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={'var(--brand)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/></svg>,
     iconBg: 'rgba(108,142,245,.14)',
     image: `${IMG}/course-logical.webp`,
     routeKey: 'logic',
@@ -85,7 +85,7 @@ const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
     routeKey: 'systems',
   },
   '提案・伝える技術': {
-    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={v3.color.warm} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={'var(--warm)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
     iconBg: 'rgba(244,162,97,.14)',
     image: `${IMG}/lesson-proposal.webp`,
     routeKey: 'proposal',
@@ -115,7 +115,7 @@ const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
     routeKey: 'クライアントワーク',
   },
   'ケース面接': {
-    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={v3.color.warm} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>,
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={'var(--warm)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>,
     iconBg: 'rgba(244,162,97,.14)',
     image: `${IMG}/course-business.webp`,
     routeKey: 'case',
@@ -147,7 +147,7 @@ const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
 }
 
 const DEFAULT_VISUAL: CategoryVisual = {
-  icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={v3.color.accent} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
+  icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={'var(--brand)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
   iconBg: 'rgba(108,142,245,.14)',
   image: `${IMG}/course-logical.webp`,
   routeKey: '',
@@ -251,7 +251,7 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
   const showSearch = searchQuery.trim().length > 0 || hasFilter
 
   return (
-    <div style={{ background: v3.color.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: v3.color.text }}>
+    <div style={{ background: 'var(--bg-primary)', minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: 'var(--text-primary)' }}>
       <div style={{ padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ fontSize: 24, fontWeight: 700, letterSpacing: '-.005em' }}>{t('roadmap.heading')}</div>
       </div>
@@ -269,9 +269,9 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
               width: '100%', boxSizing: 'border-box',
               padding: '10px 38px 10px 38px',
               borderRadius: 12,
-              border: `1px solid ${v3.color.line}`,
-              background: v3.color.card,
-              color: v3.color.text,
+              border: `1px solid ${'var(--border)'}`,
+              background: 'var(--bg-card)',
+              color: 'var(--text-primary)',
               fontSize: 14, outline: 'none',
               fontFamily: "'Noto Sans JP', sans-serif",
             }}
@@ -282,7 +282,7 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
           </svg>
           {searchQuery && (
             <button onClick={() => setSearchQuery('')} aria-label={t('roadmap.searchClear')}
-              style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', padding: 6, color: v3.color.text2 }}>
+              style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', padding: 6, color: 'var(--text-secondary)' }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
           )}
@@ -330,8 +330,8 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
           return (
             <div key={group.id} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               <div style={{ padding: '8px 4px 0' }}>
-                <div style={{ fontSize: 16, fontWeight: 700, color: v3.color.text, letterSpacing: '-.005em' }}>{group.label}</div>
-                <div style={{ fontSize: 12, color: v3.color.text2, marginTop: 2, lineHeight: 1.45 }}>{group.description}</div>
+                <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-.005em' }}>{group.label}</div>
+                <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.45 }}>{group.description}</div>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                 {groupCourses.map(course => {
@@ -393,7 +393,7 @@ function FilterBar(p: {
             type="button"
             onClick={() => setSortSheetOpen(true)}
             aria-haspopup="dialog"
-            style={{ background: v3.color.card, color: v3.color.text2, border: `1px solid ${v3.color.line}`, borderRadius: 8, padding: '4px 10px', fontSize: 12, fontFamily: 'inherit', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4 }}
+            style={{ background: 'var(--bg-card)', color: 'var(--text-secondary)', border: `1px solid ${'var(--border)'}`, borderRadius: 8, padding: '4px 10px', fontSize: 12, fontFamily: 'inherit', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4 }}
           >
             {sortLabel}
             <span aria-hidden="true" style={{ fontSize: 10, opacity: 0.7 }}>▾</span>
@@ -418,9 +418,9 @@ function Pill({ active, onClick, label }: { active: boolean; onClick: () => void
         flexShrink: 0,
         padding: '6px 12px',
         borderRadius: 100,
-        border: `1px solid ${active ? v3.color.accent : v3.color.line}`,
-        background: active ? 'rgba(108,142,245,.18)' : v3.color.card,
-        color: active ? v3.color.accent : v3.color.text2,
+        border: `1px solid ${active ? 'var(--brand)' : 'var(--border)'}`,
+        background: active ? 'rgba(108,142,245,.18)' : 'var(--bg-card)',
+        color: active ? 'var(--brand)' : 'var(--text-secondary)',
         fontSize: 12, fontWeight: 600,
         cursor: 'pointer',
         fontFamily: 'inherit',
@@ -556,7 +556,7 @@ function SearchPanel(p: {
       <div style={{ padding: '12px 16px 100px', display: 'flex', flexDirection: 'column', gap: 16 }}>
         {history.length > 0 && (
           <div>
-            <div style={{ fontSize: 12, fontWeight: 600, color: v3.color.text2, marginBottom: 6 }}>{t('roadmap.recentSearches')}</div>
+            <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 6 }}>{t('roadmap.recentSearches')}</div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
               {history.map(h => (
                 <Pill key={h} active={false} onClick={() => p.onPickKeyword(h)} label={h} />
@@ -565,7 +565,7 @@ function SearchPanel(p: {
           </div>
         )}
         <div>
-          <div style={{ fontSize: 12, fontWeight: 600, color: v3.color.text2, marginBottom: 6 }}>{t('roadmap.suggestedKeywords')}</div>
+          <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 6 }}>{t('roadmap.suggestedKeywords')}</div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
             {SUGGESTED_KEYWORDS.map(k => (
               <Pill key={k} active={false} onClick={() => p.onPickKeyword(k)} label={k} />
@@ -578,7 +578,7 @@ function SearchPanel(p: {
 
   if (results.length === 0) {
     return (
-      <div style={{ padding: 32, textAlign: 'center', color: v3.color.text2, fontSize: 14 }}>
+      <div style={{ padding: 32, textAlign: 'center', color: 'var(--text-secondary)', fontSize: 14 }}>
         {hasQuery ? t('roadmap.noLessonsFound') : t('roadmap.noResults')}
         {hasQuery && (<><br /><span style={{ fontSize: 12 }}>「{p.query}」</span></>)}
       </div>
@@ -587,7 +587,7 @@ function SearchPanel(p: {
 
   return (
     <div style={{ flex: 1, padding: '8px 16px 100px', display: 'grid', gridTemplateColumns: '1fr', gap: 10 }}>
-      <div style={{ fontSize: 11, color: v3.color.text2, fontWeight: 600, padding: '0 2px' }}>
+      <div style={{ fontSize: 11, color: 'var(--text-secondary)', fontWeight: 600, padding: '0 2px' }}>
         {t('roadmap.resultsCount', { count: results.length })}
       </div>
       {results.map(r => r.kind === 'course'
@@ -603,20 +603,20 @@ function CourseResultCard({ result, query, onOpen }: { result: CourseResult; que
   return (
     <button type="button" onClick={onOpen}
       aria-label={t('roadmap.courseAria', { category: c.category, title: c.title, done: result.doneCount, total: result.totalCount })}
-      style={{ background: v3.color.card, borderRadius: 14, padding: '12px 14px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 12, border: `1px solid ${v3.color.line}`, color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%' }}>
-      <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(108,142,245,.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: v3.color.accent }}>
+      style={{ background: 'var(--bg-card)', borderRadius: 14, padding: '12px 14px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 12, border: `1px solid ${'var(--border)'}`, color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%' }}>
+      <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(108,142,245,.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: 'var(--brand)' }}>
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15Z"/></svg>
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 11, color: v3.color.accent, fontWeight: 700, marginBottom: 2 }}>{t('roadmap.coursePrefix', { category: c.category })}</div>
-        <div style={{ fontSize: 14, fontWeight: 700, color: v3.color.text, marginBottom: 2, lineHeight: 1.3 }}>
+        <div style={{ fontSize: 11, color: 'var(--brand)', fontWeight: 700, marginBottom: 2 }}>{t('roadmap.coursePrefix', { category: c.category })}</div>
+        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 2, lineHeight: 1.3 }}>
           <Highlight text={c.title} query={query} />
         </div>
-        <div style={{ fontSize: 12, color: v3.color.text2 }}>
+        <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
           {t('roadmap.courseDoneSummary', { level: levelLabel(c.level), done: result.doneCount, total: result.totalCount })}
         </div>
       </div>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2.5" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
     </button>
   )
 }
@@ -627,8 +627,8 @@ function LessonResultCard({ result, query, onOpen }: { result: LessonResult; que
   return (
     <button type="button" onClick={onOpen}
       aria-label={courseTitle ? t('roadmap.lessonAriaWithCourse', { title: l.title, course: courseTitle }) : t('roadmap.lessonAria', { title: l.title })}
-      style={{ background: v3.color.card, borderRadius: 14, padding: '12px 14px', cursor: 'pointer', display: 'flex', alignItems: 'flex-start', gap: 12, border: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%' }}>
-      <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(108,142,245,.10)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: v3.color.accent }}>
+      style={{ background: 'var(--bg-card)', borderRadius: 14, padding: '12px 14px', cursor: 'pointer', display: 'flex', alignItems: 'flex-start', gap: 12, border: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%' }}>
+      <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(108,142,245,.10)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: 'var(--brand)' }}>
         <LessonIcon id={l.id} action="lesson" size={20} />
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
@@ -637,23 +637,23 @@ function LessonResultCard({ result, query, onOpen }: { result: LessonResult; que
             <span style={{ fontSize: 10, fontWeight: 700, padding: '1px 6px', borderRadius: 4, background: result.level === '初級' ? 'rgba(52,211,153,.18)' : result.level === '中級' ? 'rgba(251,191,36,.18)' : 'rgba(248,113,113,.18)', color: result.level === '初級' ? '#34D399' : result.level === '中級' ? '#FBBF24' : 'var(--md-sys-color-error)' }}>{levelLabel(result.level)}</span>
           )}
           {result.status === 'done' && (
-            <span style={{ fontSize: 10, fontWeight: 700, padding: '1px 6px', borderRadius: 4, background: 'rgba(108,142,245,.18)', color: v3.color.accent, display: 'inline-flex', alignItems: 'center', gap: 3 }}>
+            <span style={{ fontSize: 10, fontWeight: 700, padding: '1px 6px', borderRadius: 4, background: 'rgba(108,142,245,.18)', color: 'var(--brand)', display: 'inline-flex', alignItems: 'center', gap: 3 }}>
               <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
               {t('roadmap.doneBadge')}
             </span>
           )}
-          <span style={{ fontSize: 11, color: v3.color.text2 }}>{l.category}{courseTitle ? ` · ${courseTitle}` : ''}</span>
+          <span style={{ fontSize: 11, color: 'var(--text-secondary)' }}>{l.category}{courseTitle ? ` · ${courseTitle}` : ''}</span>
         </div>
-        <div style={{ fontSize: 14, fontWeight: 700, color: v3.color.text, marginBottom: result.snippet ? 4 : 0, lineHeight: 1.3 }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', marginBottom: result.snippet ? 4 : 0, lineHeight: 1.3 }}>
           <Highlight text={l.title} query={query} />
         </div>
         {result.snippet && (
-          <div style={{ fontSize: 11, color: v3.color.text2, lineHeight: 1.4 }}>
+          <div style={{ fontSize: 11, color: 'var(--text-secondary)', lineHeight: 1.4 }}>
             <Highlight text={result.snippet} query={query} />
           </div>
         )}
       </div>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5" style={{ marginTop: 10, flexShrink: 0 }} aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2.5" style={{ marginTop: 10, flexShrink: 0 }} aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
     </button>
   )
 }
@@ -730,7 +730,7 @@ function CategoryCard({ name, meta, progress, onClick, image }: { name: string; 
   return (
     <button type="button" className="cat-tile" onClick={onClick}
       aria-label={`${name}: ${meta}${progress ? ` (${progress})` : ''}`}
-      style={{ background: v3.color.card, borderRadius: v3.radius.card, overflow: 'hidden', cursor: 'pointer', boxShadow: v3.shadow.card, display: 'flex', flexDirection: 'column', border: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', padding: 0 }}>
+      style={{ background: 'var(--bg-card)', borderRadius: v3.radius.card, overflow: 'hidden', cursor: 'pointer', boxShadow: v3.shadow.card, display: 'flex', flexDirection: 'column', border: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', padding: 0 }}>
       {image && (
         <div style={{ height: 80, overflow: 'hidden', flexShrink: 0 }}>
           <img src={image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
@@ -738,10 +738,10 @@ function CategoryCard({ name, meta, progress, onClick, image }: { name: string; 
       )}
       <div style={{ padding: '10px 12px 12px', display: 'flex', flexDirection: 'column', gap: 6, flex: 1 }}>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: v3.color.text, marginBottom: 2, lineHeight: 1.3 }}>{name}</div>
-          <div style={{ fontSize: 11, color: v3.color.text2, fontWeight: 500 }}>{meta}</div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 2, lineHeight: 1.3 }}>{name}</div>
+          <div style={{ fontSize: 11, color: 'var(--text-secondary)', fontWeight: 500 }}>{meta}</div>
         </div>
-        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 12, fontWeight: 700, color: v3.color.accent }}>{progress}</div>
+        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 12, fontWeight: 700, color: 'var(--brand)' }}>{progress}</div>
       </div>
     </button>
   )
@@ -769,9 +769,9 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
     : fallbackLessons.filter(l => completed.has(`lesson-${l.id}`)).length
 
   return (
-    <div style={{ background: v3.color.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: v3.color.text }}>
+    <div style={{ background: 'var(--bg-primary)', minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: 'var(--text-primary)' }}>
       <Header title={headerLabel} onBack={onBack} />
-      <div style={{ padding: '0 20px 14px', fontSize: 13, color: v3.color.text2 }}>
+      <div style={{ padding: '0 20px 14px', fontSize: 13, color: 'var(--text-secondary)' }}>
         {courses.length > 0 ? t('roadmap.detailCourseCount', { count: courses.length }) : ''}{t('roadmap.detailLessonCount', { count: totalLessons })} · {completedCount > 0 ? t('roadmap.detailCompleted', { done: completedCount, total: totalLessons }) : t('roadmap.detailNotStarted')}
       </div>
 
@@ -784,14 +784,14 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
           const firstUndone = courseLessons.find(l => !completed.has(`lesson-${l.id}`))
 
           return (
-            <div key={course.id} style={{ background: v3.color.card, borderRadius: 16, overflow: 'hidden', boxShadow: v3.shadow.card }}>
+            <div key={course.id} style={{ background: 'var(--bg-card)', borderRadius: 16, overflow: 'hidden', boxShadow: v3.shadow.card }}>
               {/* コースヘッダー */}
-              <div style={{ padding: '14px 16px 10px', borderBottom: `1px solid ${v3.color.line}` }}>
+              <div style={{ padding: '14px 16px 10px', borderBottom: `1px solid ${'var(--border)'}` }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4, flexWrap: 'wrap' }}>
-                  <div style={{ fontSize: 10, fontWeight: 800, color: v3.color.text3, letterSpacing: '.06em', background: `${v3.color.text3}14`, borderRadius: 6, padding: '2px 7px' }}>
+                  <div style={{ fontSize: 10, fontWeight: 800, color: 'var(--text-muted)', letterSpacing: '.06em', background: `color-mix(in srgb, var(--text-muted) 8%, transparent)`, borderRadius: 6, padding: '2px 7px' }}>
                     {course.category}
                   </div>
-                  <div style={{ fontSize: 10, fontWeight: 800, color: v3.color.accent, letterSpacing: '.08em', background: v3.color.accentSoft, borderRadius: 6, padding: '2px 7px' }}>
+                  <div style={{ fontSize: 10, fontWeight: 800, color: 'var(--brand)', letterSpacing: '.08em', background: 'var(--accent-soft)', borderRadius: 6, padding: '2px 7px' }}>
                     {course.level}
                   </div>
                   {allDone && (
@@ -801,16 +801,16 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
                     </div>
                   )}
                 </div>
-                <div style={{ fontSize: 16, fontWeight: 700, color: v3.color.text, lineHeight: 1.3, marginBottom: 4 }}>{course.title}</div>
-                <div style={{ fontSize: 12, color: v3.color.text2, lineHeight: 1.5 }}>{course.description}</div>
+                <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.3, marginBottom: 4 }}>{course.title}</div>
+                <div style={{ fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.5 }}>{course.description}</div>
                 {/* プログレスバー */}
                 <div style={{ marginTop: 10 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                    <div style={{ fontSize: 11, color: v3.color.text3 }}>{t('roadmap.detailLessonCount', { count: course.lessonIds.length })}</div>
-                    <div style={{ fontSize: 11, color: v3.color.accent, fontWeight: 600 }}>{courseCompleted}/{course.lessonIds.length}</div>
+                    <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{t('roadmap.detailLessonCount', { count: course.lessonIds.length })}</div>
+                    <div style={{ fontSize: 11, color: 'var(--brand)', fontWeight: 600 }}>{courseCompleted}/{course.lessonIds.length}</div>
                   </div>
-                  <div style={{ height: 4, background: `${v3.color.text3}22`, borderRadius: 2, overflow: 'hidden' }}>
-                    <div style={{ height: '100%', width: `${(courseCompleted / course.lessonIds.length) * 100}%`, background: allDone ? '#22C55E' : v3.color.accent, borderRadius: 2, transition: 'width .3s' }} />
+                  <div style={{ height: 4, background: `color-mix(in srgb, var(--text-muted) 13%, transparent)`, borderRadius: 2, overflow: 'hidden' }}>
+                    <div style={{ height: '100%', width: `${(courseCompleted / course.lessonIds.length) * 100}%`, background: allDone ? '#22C55E' : 'var(--brand)', borderRadius: 2, transition: 'width .3s' }} />
                   </div>
                 </div>
               </div>
@@ -827,23 +827,23 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
                         : isNext
                           ? t('roadmap.lessonAriaInCourseNext', { n: idx + 1, title: lesson.title })
                           : t('roadmap.lessonAriaInCourse', { n: idx + 1, title: lesson.title })}
-                      style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', cursor: 'pointer', borderTop: idx > 0 ? `1px solid ${v3.color.line}` : 'none', background: isNext ? `${v3.color.accent}08` : 'transparent', border: 'none', borderLeft: 'none', borderRight: 'none', borderBottom: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%' }}>
+                      style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', cursor: 'pointer', borderTop: idx > 0 ? `1px solid ${'var(--border)'}` : 'none', background: isNext ? `color-mix(in srgb, var(--brand) 3%, transparent)` : 'transparent', border: 'none', borderLeft: 'none', borderRight: 'none', borderBottom: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%' }}>
                       {/* ステップ番号 or チェック */}
-                      <div style={{ width: 28, height: 28, borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: isDone ? v3.color.accent : isNext ? `${v3.color.accent}20` : `${v3.color.text3}18`, border: isNext && !isDone ? `1.5px solid ${v3.color.accent}` : 'none' }}>
+                      <div style={{ width: 28, height: 28, borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: isDone ? 'var(--brand)' : isNext ? `color-mix(in srgb, var(--brand) 13%, transparent)` : `color-mix(in srgb, var(--text-muted) 9%, transparent)`, border: isNext && !isDone ? `1.5px solid ${'var(--brand)'}` : 'none' }}>
                         {isDone
                           ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                          : <span style={{ fontSize: 11, fontWeight: 700, color: isNext ? v3.color.accent : v3.color.text3 }}>{idx + 1}</span>
+                          : <span style={{ fontSize: 11, fontWeight: 700, color: isNext ? 'var(--brand)' : 'var(--text-muted)' }}>{idx + 1}</span>
                         }
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: 14, fontWeight: isNext ? 700 : 600, color: isDone ? v3.color.text2 : v3.color.text, lineHeight: 1.3 }}>{lesson.title}</div>
-                        <div style={{ fontSize: 12, color: v3.color.text3, marginTop: 2 }}>{t('roadmap.stepCount', { count: lesson.steps?.length ?? 0 })}</div>
+                        <div style={{ fontSize: 14, fontWeight: isNext ? 700 : 600, color: isDone ? 'var(--text-secondary)' : 'var(--text-primary)', lineHeight: 1.3 }}>{lesson.title}</div>
+                        <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>{t('roadmap.stepCount', { count: lesson.steps?.length ?? 0 })}</div>
                       </div>
                       {isNext && !isDone && (
-                        <div style={{ fontSize: 10, fontWeight: 700, color: v3.color.accent, background: v3.color.accentSoft, borderRadius: 6, padding: '3px 8px', flexShrink: 0 }}>{t('roadmap.nextLabel')}</div>
+                        <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--brand)', background: 'var(--accent-soft)', borderRadius: 6, padding: '3px 8px', flexShrink: 0 }}>{t('roadmap.nextLabel')}</div>
                       )}
                       {!isDone && !isNext && (
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
                       )}
                     </button>
                   )
@@ -859,17 +859,17 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
           return (
             <button type="button" key={lesson.id} onClick={() => onOpenLesson(lesson.id)}
               aria-label={isDone ? t('roadmap.lessonAriaDone', { title: lesson.title }) : t('roadmap.lessonAria', { title: lesson.title })}
-              style={{ background: v3.color.card, borderRadius: 14, padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'stretch', overflow: 'hidden', boxShadow: v3.shadow.card, border: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%' }}>
+              style={{ background: 'var(--bg-card)', borderRadius: 14, padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'stretch', overflow: 'hidden', boxShadow: v3.shadow.card, border: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%' }}>
               <div style={{ width: 80, height: 80, flexShrink: 0 }}><LessonThumbnail lessonId={lesson.id} size={80} /></div>
               <div style={{ padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0 }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: v3.color.text, marginBottom: 3, lineHeight: 1.4 }}>{lesson.title}</div>
-                  <div style={{ fontSize: 13, color: v3.color.text2 }}>{t('roadmap.stepCount', { count: lesson.steps?.length ?? 0 })}</div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 3, lineHeight: 1.4 }}>{lesson.title}</div>
+                  <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>{t('roadmap.stepCount', { count: lesson.steps?.length ?? 0 })}</div>
                 </div>
-                <div style={{ width: 26, height: 26, borderRadius: '50%', background: isDone ? v3.color.accent : `${v3.color.text3}22`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: 26, height: 26, borderRadius: '50%', background: isDone ? 'var(--brand)' : `color-mix(in srgb, var(--text-muted) 13%, transparent)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   {isDone
                     ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                    : <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+                    : <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
                   }
                 </div>
               </div>
@@ -901,11 +901,11 @@ function PersonalCourseBanner({
         type="button"
         onClick={onOpenPlacementTest}
         style={{
-          background: v3.color.card,
+          background: 'var(--bg-card)',
           borderRadius: 16,
           padding: '14px 16px',
           boxShadow: v3.shadow.card,
-          border: `1.5px dashed ${v3.color.accent}50`,
+          border: `1.5px dashed color-mix(in srgb, var(--brand) 31%, transparent)`,
           cursor: 'pointer',
           display: 'flex',
           alignItems: 'center',
@@ -918,7 +918,7 @@ function PersonalCourseBanner({
       >
         <div style={{
           width: 40, height: 40, borderRadius: 12, flexShrink: 0,
-          background: v3.color.accentSoft, color: v3.color.accent,
+          background: 'var(--accent-soft)', color: 'var(--brand)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
@@ -926,12 +926,12 @@ function PersonalCourseBanner({
           </svg>
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: v3.color.text }}>{t('roadmap.personalCreateTitle')}</div>
-          <div style={{ fontSize: 12, color: v3.color.text2, marginTop: 2, lineHeight: 1.5 }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>{t('roadmap.personalCreateTitle')}</div>
+          <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.5 }}>
             {t('roadmap.personalCreateDesc')}
           </div>
         </div>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
     )
   }
@@ -949,7 +949,7 @@ function PersonalCourseBanner({
       type="button"
       onClick={onOpenPersonalCourse}
       style={{
-        background: `linear-gradient(135deg, ${v3.color.accent}f5, ${v3.color.accent}c0)`,
+        background: `linear-gradient(135deg, color-mix(in srgb, var(--brand) 96%, transparent), color-mix(in srgb, var(--brand) 75%, transparent))`,
         borderRadius: 16,
         padding: '16px 18px',
         boxShadow: v3.shadow.card,

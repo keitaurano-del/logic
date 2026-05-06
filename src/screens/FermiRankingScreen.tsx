@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo } from 'react'
-import { v3 } from '../styles/tokensV3'
 import { TrophyIcon, MedalIcon } from '../icons'
 import { getDisplayName } from '../stats'
 import { getNickname } from '../guestId'
@@ -73,7 +72,7 @@ export function FermiRankingScreen() {
   const periodLabel = { week: '今週', month: '今月', alltime: '累計' }
 
   return (
-    <div style={{ minHeight: '100vh', background: v3.color.bg, fontFamily: "'Noto Sans JP', sans-serif", color: v3.color.text }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', fontFamily: "'Noto Sans JP', sans-serif", color: 'var(--text-primary)' }}>
       <FermiRankingStyle />
 
       {/* 順位アップ・トースト */}
@@ -108,7 +107,7 @@ export function FermiRankingScreen() {
           <span>フェルミ ランキング</span>
           <TrophyIcon width={20} height={20} style={{ color: 'var(--medal-gold)' }} />
         </div>
-        <div style={{ fontSize: 13, color: v3.color.text2, marginTop: 4 }}>採点スコアのベスト記録で競おう</div>
+        <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 4 }}>採点スコアのベスト記録で競おう</div>
       </div>
 
       {/* 期間タブ */}
@@ -116,9 +115,9 @@ export function FermiRankingScreen() {
         {(['week', 'month', 'alltime'] as const).map(p => (
           <button key={p} onClick={() => setPeriod(p)} style={{
             padding: '8px 16px', borderRadius: 99,
-            border: `1.5px solid ${period === p ? v3.color.accent : v3.color.line}`,
-            background: period === p ? v3.color.accentSoft : 'transparent',
-            color: period === p ? v3.color.accent : v3.color.text2,
+            border: `1.5px solid ${period === p ? 'var(--brand)' : 'var(--border)'}`,
+            background: period === p ? 'var(--accent-soft)' : 'transparent',
+            color: period === p ? 'var(--brand)' : 'var(--text-secondary)',
             fontSize: 13, fontWeight: 700, cursor: 'pointer',
             fontFamily: 'inherit',
           }}>
@@ -141,8 +140,8 @@ export function FermiRankingScreen() {
             margin: '0 20px 20px',
             background: showRankUp
               ? 'linear-gradient(135deg, rgba(112,216,189,0.18), rgba(108,142,245,0.16))'
-              : `${v3.color.accent}15`,
-            border: `1.5px solid ${showRankUp ? 'var(--score-excellent)' : v3.color.accent + '40'}`,
+              : `color-mix(in srgb, var(--brand) 8%, transparent)`,
+            border: `1.5px solid ${showRankUp ? 'var(--score-excellent)' : 'color-mix(in srgb, var(--brand) 25%, transparent)'}`,
             borderRadius: 16, padding: '14px 18px',
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
             transition: 'background 0.4s ease, border-color 0.4s ease',
@@ -150,18 +149,18 @@ export function FermiRankingScreen() {
           }}
         >
           <div>
-            <div style={{ fontSize: 12, color: v3.color.accent, fontWeight: 700, marginBottom: 4 }}>あなたの順位</div>
+            <div style={{ fontSize: 12, color: 'var(--brand)', fontWeight: 700, marginBottom: 4 }}>あなたの順位</div>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
               <span
                 style={{
-                  fontSize: 32, fontWeight: 900, color: v3.color.accent,
+                  fontSize: 32, fontWeight: 900, color: 'var(--brand)',
                   display: 'inline-block',
                   animation: showRankUp ? 'rankup-pop 0.5s cubic-bezier(.2,.8,.2,1) both' : undefined,
                 }}
               >
                 {myEntry.rank}
               </span>
-              <span style={{ fontSize: 14, color: v3.color.text2 }}>位</span>
+              <span style={{ fontSize: 14, color: 'var(--text-secondary)' }}>位</span>
               {rankDelta != null && rankDelta > 0 && (
                 <span
                   style={{
@@ -181,8 +180,8 @@ export function FermiRankingScreen() {
             </div>
           </div>
           <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: 12, color: v3.color.text2, marginBottom: 4 }}>ベストスコア</div>
-            <div style={{ fontSize: 24, fontWeight: 800 }}>{myEntry.score}<span style={{ fontSize: 11, color: v3.color.text3, marginLeft: 2 }}>/100</span></div>
+            <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 4 }}>ベストスコア</div>
+            <div style={{ fontSize: 24, fontWeight: 800 }}>{myEntry.score}<span style={{ fontSize: 11, color: 'var(--text-muted)', marginLeft: 2 }}>/100</span></div>
           </div>
         </div>
       )}
@@ -190,7 +189,7 @@ export function FermiRankingScreen() {
       {/* TOP3 */}
       {!loading && top3.length > 0 && (
         <div style={{ padding: '0 20px 12px' }}>
-          <div style={{ fontSize: 12, color: v3.color.text3, fontWeight: 700, letterSpacing: '.08em', marginBottom: 10 }}>TOP 3</div>
+          <div style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 700, letterSpacing: '.08em', marginBottom: 10 }}>TOP 3</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {top3.map(e => <RankCard key={`${e.rank}-${e.name}`} entry={e} highlight={showRankUp && e.isMe} />)}
           </div>
@@ -200,7 +199,7 @@ export function FermiRankingScreen() {
       {/* 4位以降 */}
       {!loading && rest.length > 0 && (
         <div style={{ padding: '0 20px 100px' }}>
-          <div style={{ fontSize: 12, color: v3.color.text3, fontWeight: 700, letterSpacing: '.08em', margin: '8px 0 10px' }}>4位以降</div>
+          <div style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 700, letterSpacing: '.08em', margin: '8px 0 10px' }}>4位以降</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {rest.map(e => <RankCard key={`${e.rank}-${e.name}`} entry={e} compact highlight={showRankUp && e.isMe} />)}
           </div>
@@ -209,7 +208,7 @@ export function FermiRankingScreen() {
 
       {/* 空状態 */}
       {!loading && entries.length === 0 && (
-        <div style={{ textAlign: 'center', padding: '60px 20px', color: v3.color.text2 }}>
+        <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--text-secondary)' }}>
           <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 6 }}>まだスコアがありません</div>
           <div style={{ fontSize: 13 }}>デイリーフェルミに挑戦してランキングに登場しよう</div>
         </div>
@@ -223,8 +222,8 @@ function RankCard({ entry, compact, highlight }: { entry: RankEntry; compact?: b
 
   return (
     <div style={{
-      background: entry.isMe ? `${v3.color.accent}15` : v3.color.card,
-      border: `1.5px solid ${entry.isMe ? v3.color.accent : v3.color.line}`,
+      background: entry.isMe ? `color-mix(in srgb, var(--brand) 8%, transparent)` : 'var(--bg-card)',
+      border: `1.5px solid ${entry.isMe ? 'var(--brand)' : 'var(--border)'}`,
       borderRadius: compact ? 12 : 16,
       padding: compact ? '12px 14px' : '14px 18px',
       display: 'flex', alignItems: 'center', gap: 14,
@@ -238,12 +237,12 @@ function RankCard({ entry, compact, highlight }: { entry: RankEntry; compact?: b
         background: entry.rank === 1 ? 'var(--medal-gold-grad)'
           : entry.rank === 2 ? 'var(--medal-silver-grad)'
           : entry.rank === 3 ? 'var(--medal-bronze-grad)'
-          : v3.color.bg,
+          : 'var(--bg-primary)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
         {isPodium
           ? <MedalIcon width={compact ? 16 : 20} height={compact ? 16 : 20} style={{ color: 'var(--text-on-hero)' }} />
-          : <span style={{ fontSize: 13, fontWeight: 700, color: v3.color.text2 }}>{entry.rank}</span>
+          : <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-secondary)' }}>{entry.rank}</span>
         }
       </div>
 
@@ -251,18 +250,18 @@ function RankCard({ entry, compact, highlight }: { entry: RankEntry; compact?: b
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{
           fontSize: compact ? 14 : 15, fontWeight: entry.isMe ? 800 : 600,
-          color: entry.isMe ? v3.color.accent : v3.color.text,
+          color: entry.isMe ? 'var(--brand)' : 'var(--text-primary)',
           display: 'flex', alignItems: 'center', gap: 6,
         }}>
           {entry.name}
-          {entry.isMe && <span style={{ fontSize: 11, background: v3.color.accent, color: 'var(--accent-fg)', borderRadius: 4, padding: '1px 6px' }}>YOU</span>}
+          {entry.isMe && <span style={{ fontSize: 11, background: 'var(--brand)', color: 'var(--accent-fg)', borderRadius: 4, padding: '1px 6px' }}>YOU</span>}
         </div>
       </div>
 
       {/* スコア */}
       <div style={{ flexShrink: 0, textAlign: 'right' }}>
         <span style={{ fontSize: compact ? 15 : 18, fontWeight: 800 }}>{entry.score}</span>
-        <span style={{ fontSize: 11, color: v3.color.text3, marginLeft: 2 }}>/100</span>
+        <span style={{ fontSize: 11, color: 'var(--text-muted)', marginLeft: 2 }}>/100</span>
       </div>
     </div>
   )
@@ -277,10 +276,10 @@ function FermiRankingStyle() {
         100% { opacity: 1; transform: translate(-50%, 0)     scale(1);    }
       }
       @keyframes rankup-pop {
-        0%   { transform: scale(1);    color: ${v3.color.accent}; }
+        0%   { transform: scale(1);    color: ${'var(--brand)'}; }
         30%  { transform: scale(1.4);  color: var(--score-excellent); }
         60%  { transform: scale(0.96); color: var(--score-excellent); }
-        100% { transform: scale(1);    color: ${v3.color.accent}; }
+        100% { transform: scale(1);    color: ${'var(--brand)'}; }
       }
       @keyframes rankup-badge {
         0%   { opacity: 0; transform: translateY(-8px) scale(0.6); }

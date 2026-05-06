@@ -22,9 +22,9 @@ export function PersonalCourseScreen({ onStartLesson, onExit, onBack }: Personal
 
   if (!course) {
     return (
-      <div style={{ background: v3.color.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: v3.color.text }}>
+      <div style={{ background: 'var(--bg-primary)', minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: 'var(--text-primary)' }}>
         <Header title="パーソナルコース" onBack={onBack} />
-        <div style={{ padding: 24, textAlign: 'center', color: v3.color.text2, fontSize: 14, lineHeight: 1.7 }}>
+        <div style={{ padding: 24, textAlign: 'center', color: 'var(--text-secondary)', fontSize: 14, lineHeight: 1.7 }}>
           まだパーソナルコースが生成されていません。実力診断テストを受けると、あなた専用のコースが自動生成されます。
         </div>
       </div>
@@ -38,28 +38,28 @@ export function PersonalCourseScreen({ onStartLesson, onExit, onBack }: Personal
   const startId = firstUndone?.id ?? lessons[0]?.id
 
   return (
-    <div style={{ background: v3.color.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: v3.color.text }}>
+    <div style={{ background: 'var(--bg-primary)', minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: 'var(--text-primary)' }}>
       {/* ヘッダー */}
       <div style={{ padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 14px', display: 'flex', alignItems: 'center', gap: 12 }}>
         {onBack && (
-          <button type="button" onClick={onBack} aria-label="戻る" style={{ width: 44, height: 44, borderRadius: '50%', background: v3.color.card, border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}>
+          <button type="button" onClick={onBack} aria-label="戻る" style={{ width: 44, height: 44, borderRadius: '50%', background: 'var(--bg-card)', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--md-sys-color-primary)" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="15 18 9 12 15 6" /></svg>
           </button>
         )}
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 12, fontWeight: 800, color: v3.color.accent, letterSpacing: '.08em' }}>YOUR PERSONAL COURSE</div>
-          <div style={{ fontSize: 18, fontWeight: 700, color: v3.color.text, marginTop: 2, lineHeight: 1.35 }}>{course.title}</div>
+          <div style={{ fontSize: 12, fontWeight: 800, color: 'var(--brand)', letterSpacing: '.08em' }}>YOUR PERSONAL COURSE</div>
+          <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-primary)', marginTop: 2, lineHeight: 1.35 }}>{course.title}</div>
         </div>
       </div>
 
       <div style={{ flex: 1, padding: '0 16px 32px', display: 'flex', flexDirection: 'column', gap: 14 }}>
         {/* コース概要カード */}
-        <div style={{ background: v3.color.card, borderRadius: 16, padding: '16px 18px', boxShadow: v3.shadow.card, border: `1.5px solid ${v3.color.accent}30` }}>
-          <div style={{ fontSize: 13, color: v3.color.text2, lineHeight: 1.7, marginBottom: 10 }}>{course.description}</div>
+        <div style={{ background: 'var(--bg-card)', borderRadius: 16, padding: '16px 18px', boxShadow: v3.shadow.card, border: `1.5px solid color-mix(in srgb, var(--brand) 19%, transparent)` }}>
+          <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: 10 }}>{course.description}</div>
           {course.axisOrder.length > 0 && (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 12 }}>
               {course.axisOrder.slice(0, 3).map((axis, idx) => (
-                <div key={axis} style={{ fontSize: 11, fontWeight: 700, color: idx === 0 ? '#fff' : v3.color.accent, background: idx === 0 ? v3.color.accent : v3.color.accentSoft, borderRadius: 6, padding: '3px 8px' }}>
+                <div key={axis} style={{ fontSize: 11, fontWeight: 700, color: idx === 0 ? '#fff' : 'var(--brand)', background: idx === 0 ? 'var(--brand)' : 'var(--accent-soft)', borderRadius: 6, padding: '3px 8px' }}>
                   {idx === 0 ? '優先' : `次点${idx}`}：{axisLabel(axis).label}
                 </div>
               ))}
@@ -68,41 +68,41 @@ export function PersonalCourseScreen({ onStartLesson, onExit, onBack }: Personal
           {/* プログレス */}
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-              <div style={{ fontSize: 11, color: v3.color.text3 }}>{lessons.length}レッスン構成</div>
-              <div style={{ fontSize: 11, color: v3.color.accent, fontWeight: 600 }}>{completedCount}/{lessons.length} 完了</div>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{lessons.length}レッスン構成</div>
+              <div style={{ fontSize: 11, color: 'var(--brand)', fontWeight: 600 }}>{completedCount}/{lessons.length} 完了</div>
             </div>
-            <div style={{ height: 4, background: `${v3.color.text3}22`, borderRadius: 2, overflow: 'hidden' }}>
-              <div style={{ height: '100%', width: `${(completedCount / Math.max(1, lessons.length)) * 100}%`, background: allDone ? '#22C55E' : v3.color.accent, borderRadius: 2, transition: 'width .3s' }} />
+            <div style={{ height: 4, background: `color-mix(in srgb, var(--text-muted) 13%, transparent)`, borderRadius: 2, overflow: 'hidden' }}>
+              <div style={{ height: '100%', width: `${(completedCount / Math.max(1, lessons.length)) * 100}%`, background: allDone ? '#22C55E' : 'var(--brand)', borderRadius: 2, transition: 'width .3s' }} />
             </div>
           </div>
         </div>
 
         {/* レッスン一覧 */}
-        <div style={{ background: v3.color.card, borderRadius: 16, overflow: 'hidden', boxShadow: v3.shadow.card }}>
+        <div style={{ background: 'var(--bg-card)', borderRadius: 16, overflow: 'hidden', boxShadow: v3.shadow.card }}>
           {lessons.map((lesson, idx) => {
             const isDone = completed.has(`lesson-${lesson.id}`)
             const isNext = firstUndone?.id === lesson.id
             return (
               <button type="button" key={lesson.id} onClick={() => onStartLesson(lesson.id)}
                 aria-label={`レッスン ${idx + 1}: ${lesson.title}${isDone ? ' (完了)' : isNext ? ' (次へ)' : ''}`}
-                style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', cursor: 'pointer', borderTop: idx > 0 ? `1px solid ${v3.color.line}` : 'none', background: isNext ? `${v3.color.accent}08` : 'transparent', border: 'none', borderLeft: 'none', borderRight: 'none', borderBottom: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%' }}>
-                <div style={{ width: 28, height: 28, borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: isDone ? v3.color.accent : isNext ? `${v3.color.accent}20` : `${v3.color.text3}18`, border: isNext && !isDone ? `1.5px solid ${v3.color.accent}` : 'none' }}>
+                style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', cursor: 'pointer', borderTop: idx > 0 ? `1px solid ${'var(--border)'}` : 'none', background: isNext ? `color-mix(in srgb, var(--brand) 3%, transparent)` : 'transparent', border: 'none', borderLeft: 'none', borderRight: 'none', borderBottom: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%' }}>
+                <div style={{ width: 28, height: 28, borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: isDone ? 'var(--brand)' : isNext ? `color-mix(in srgb, var(--brand) 13%, transparent)` : `color-mix(in srgb, var(--text-muted) 9%, transparent)`, border: isNext && !isDone ? `1.5px solid ${'var(--brand)'}` : 'none' }}>
                   {isDone
                     ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                    : <span style={{ fontSize: 11, fontWeight: 700, color: isNext ? v3.color.accent : v3.color.text3 }}>{idx + 1}</span>
+                    : <span style={{ fontSize: 11, fontWeight: 700, color: isNext ? 'var(--brand)' : 'var(--text-muted)' }}>{idx + 1}</span>
                   }
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 14, fontWeight: isNext ? 700 : 600, color: isDone ? v3.color.text2 : v3.color.text, lineHeight: 1.35 }}>{lesson.title}</div>
-                  <div style={{ fontSize: 12, color: v3.color.text3, marginTop: 2 }}>
+                  <div style={{ fontSize: 14, fontWeight: isNext ? 700 : 600, color: isDone ? 'var(--text-secondary)' : 'var(--text-primary)', lineHeight: 1.35 }}>{lesson.title}</div>
+                  <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
                     {lesson.category} · {lesson.steps?.length ?? 0}ステップ
                   </div>
                 </div>
                 {isNext && !isDone && (
-                  <div style={{ fontSize: 10, fontWeight: 700, color: v3.color.accent, background: v3.color.accentSoft, borderRadius: 6, padding: '3px 8px', flexShrink: 0 }}>次へ</div>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--brand)', background: 'var(--accent-soft)', borderRadius: 6, padding: '3px 8px', flexShrink: 0 }}>次へ</div>
                 )}
                 {!isDone && !isNext && (
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={v3.color.text3} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
                 )}
               </button>
             )
@@ -116,7 +116,7 @@ export function PersonalCourseScreen({ onStartLesson, onExit, onBack }: Personal
             style={{
               marginTop: 8,
               width: '100%',
-              background: v3.color.accent,
+              background: 'var(--brand)',
               color: '#fff',
               border: 'none',
               borderRadius: 14,
@@ -141,7 +141,7 @@ export function PersonalCourseScreen({ onStartLesson, onExit, onBack }: Personal
           onClick={onExit}
           style={{
             background: 'transparent',
-            color: v3.color.text3,
+            color: 'var(--text-muted)',
             border: 'none',
             padding: '10px 0',
             fontSize: 13,
@@ -155,7 +155,7 @@ export function PersonalCourseScreen({ onStartLesson, onExit, onBack }: Personal
         </button>
 
         {course.axisOrder.length > 0 && (
-          <div style={{ marginTop: 4, fontSize: 11, color: v3.color.text3, lineHeight: 1.6, textAlign: 'center' }}>
+          <div style={{ marginTop: 4, fontSize: 11, color: 'var(--text-muted)', lineHeight: 1.6, textAlign: 'center' }}>
             診断で「{axisLabel(course.axisOrder[0]).label}（{levelLabel(1)}〜{levelLabel(3)}）」が伸びしろと判定されました。
           </div>
         )}
