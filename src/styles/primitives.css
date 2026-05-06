@@ -92,16 +92,15 @@ html[data-platform="android"] .btn { min-height: 48px; }
 .btn-lg { padding: 18px 28px; font-size: 1.0667rem; font-weight: 700; }
 .btn-block { width: 100%; }
 
-/* Card — subtle 3D depth (top-edge highlight + soft layered drop) */
+/* Card — F案 (グラデ + rim + 3層 drop) + タップ時のプレス */
 .card {
-  background: var(--bg-card);
+  background: var(--bg-card-grad, var(--bg-card));
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: var(--s-5);
   box-shadow: var(--shadow-card);
-  transition: transform var(--dur-base) var(--ease-out),
-              box-shadow var(--dur-base) var(--ease-out),
-              border-color var(--dur-base) ease;
+  transition: transform 120ms var(--ease-out),
+              box-shadow 120ms var(--ease-out);
 }
 .card-compact { padding: var(--s-4); }
 .card-tight { padding: var(--s-3); }
@@ -116,14 +115,9 @@ button.card {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
-button.card:hover {
-  border-color: var(--md-sys-color-primary);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-card-hover);
-}
 button.card:active {
-  transform: translateY(0) scale(0.99);
-  box-shadow: var(--shadow-card);
+  transform: translateY(1px) scale(0.995);
+  box-shadow: var(--shadow-card-press);
 }
 button.card:focus-visible {
   outline: 2px solid var(--md-sys-color-primary);

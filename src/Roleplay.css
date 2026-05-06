@@ -45,9 +45,9 @@
 
 .rp-choices { display: flex; flex-direction: column; gap: 10px; padding: 14px 16px 20px; background: var(--bg-card); border-top: 1px solid var(--border); }
 .rp-choices-label { font-size: 0.7333rem; color: var(--text-muted); font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 2px; }
-.rp-choice-btn { padding: 14px 16px; background: var(--bg-card); color: var(--text-primary); border: 1.5px solid var(--border); border-radius: var(--radius-md, 12px); box-shadow: var(--shadow-card); font-size: 0.9333rem; font-weight: 600; cursor: pointer; font-family: var(--sans); text-align: left; line-height: 1.6; transition: border-color 0.15s, transform var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out); letter-spacing: -0.01em; }
-.rp-choice-btn:hover { border-color: var(--accent-dark); transform: translateY(-2px); box-shadow: var(--shadow-card-hover); }
-.rp-choice-btn:active { transform: translateY(0) scale(0.98); box-shadow: var(--shadow-card); }
+.rp-choice-btn { padding: 14px 16px; background: var(--bg-card-grad, var(--bg-card)); color: var(--text-primary); border: 1.5px solid var(--border); border-radius: var(--radius-md, 12px); box-shadow: var(--shadow-card); font-size: 0.9333rem; font-weight: 600; cursor: pointer; font-family: var(--sans); text-align: left; line-height: 1.6; transition: border-color 0.15s, transform 120ms var(--ease-out), box-shadow 120ms var(--ease-out); letter-spacing: -0.01em; }
+.rp-choice-btn:hover { border-color: var(--accent-dark); }
+.rp-choice-btn:active { transform: translateY(1px) scale(0.995); box-shadow: var(--shadow-card-press); }
 
 .rp-input-bar { display: flex; gap: 8px; padding: 12px; background: var(--bg-card); border-top: 1px solid var(--border); }
 .rp-input { flex: 1; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-md, 12px); font-size: 1.0667rem; font-family: var(--sans); background: var(--bg-elevated); color: var(--text-primary); resize: none; outline: none; }
