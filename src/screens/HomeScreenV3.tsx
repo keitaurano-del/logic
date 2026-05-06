@@ -313,7 +313,7 @@ function ReviewCard({ due, weak, total, onOpen }: { due: number; weak: number; t
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--brand)' }}>復習</span>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--brand)' }}>{t('home.reviewEyebrow')}</span>
           </div>
           <div style={{ fontSize: 16, fontWeight: 700, lineHeight: 1.35, marginBottom: 2 }}>{headline}</div>
           <div style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 500, lineHeight: 1.4 }}>{sub}</div>
@@ -339,7 +339,7 @@ function ReviewCard({ due, weak, total, onOpen }: { due: number; weak: number; t
             fontFamily: "'Noto Sans JP', sans-serif",
           }}
         >
-          弱点だけ復習する（{weak}枚）
+          {t('home.reviewWeakOnly', { n: weak })}
         </button>
       )}
     </div>
@@ -366,7 +366,7 @@ function AILargeCard({ image, name, sub, onClick, beta }: { image: string; name:
         <div style={{ fontSize: 14, color: 'var(--text-secondary)', fontWeight: 500, lineHeight: 1.5 }}>{sub}</div>
         {beta && (
           <div style={{ marginTop: 10, fontSize: 14, color: 'var(--warm)', background: `color-mix(in srgb, var(--warm) 8%, transparent)`, borderRadius: 8, padding: '6px 10px', lineHeight: 1.5 }}>
-            ベータ版のため、一部機能は正常に動作しない場合があります
+            {t('home.betaNote')}
           </div>
         )}
       </div>

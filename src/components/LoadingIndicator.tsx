@@ -1,4 +1,5 @@
 import { isIOS } from '../platform'
+import { t } from '../i18n'
 import './LoadingIndicator.css'
 
 interface LoadingIndicatorProps {
@@ -18,7 +19,7 @@ export function LoadingIndicator({ size = 'md', label, className }: LoadingIndic
     <div
       className={['m3-loading', `m3-loading--${size}`, className].filter(Boolean).join(' ')}
       role="status"
-      aria-label={label ?? '読み込み中'}
+      aria-label={label ?? t('loadingIndicator.aria')}
     >
       {ios ? <IosSpinner /> : <MaterialSpinner />}
       {label && <span className="m3-loading__label">{label}</span>}

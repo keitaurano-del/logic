@@ -110,7 +110,9 @@ export function RankScreen({ onBack }: RankScreenProps) {
           <div style={{
             fontSize: 14, color: 'rgba(255,255,255,0.4)', marginTop: 10, textAlign: 'center',
           }}>
-            {isJa ? `次のランク「${nextTier.title}」まで ${xpToNext.toLocaleString()}` : `${xpToNext.toLocaleString()} to "${nextTier.titleEn}"`}
+            {isJa
+              ? t('rank.toNextRankJa', { name: nextTier.title, xp: xpToNext.toLocaleString() })
+              : t('rank.toNextRankEn', { name: nextTier.titleEn, xp: xpToNext.toLocaleString() })}
           </div>
         )}
       </div>
@@ -155,7 +157,7 @@ export function RankScreen({ onBack }: RankScreenProps) {
             fontSize: 32, fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.02em',
           }}>
             {completed}
-            <span style={{ fontSize: 16, fontWeight: 500, color: 'var(--text-muted)', marginLeft: 4 }}>lessons</span>
+            <span style={{ fontSize: 16, fontWeight: 500, color: 'var(--text-muted)', marginLeft: 4 }}>{t('rank.lessonsUnit')}</span>
           </div>
         </div>
       </div>
@@ -265,7 +267,7 @@ export function RankScreen({ onBack }: RankScreenProps) {
         <div
           role="dialog"
           aria-modal="true"
-          aria-label="ランク詳細"
+          aria-label={t('rank.detailDialogAria')}
           style={{
             position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.55)',
             zIndex: 200, display: 'flex', alignItems: 'flex-end',
@@ -274,7 +276,7 @@ export function RankScreen({ onBack }: RankScreenProps) {
         >
           <button
             type="button"
-            aria-label="閉じる"
+            aria-label={t('rank.closeAria')}
             onClick={() => setSelectedTier(null)}
             style={{ position: 'absolute', inset: 0, background: 'transparent', border: 'none', padding: 0, cursor: 'pointer' }}
           />
@@ -337,7 +339,7 @@ export function RankScreen({ onBack }: RankScreenProps) {
                 fontSize: 13, fontWeight: 700, letterSpacing: '0.12em',
                 textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', marginBottom: 8,
               }}>
-                名言
+                {t('rank.quoteLabel')}
               </div>
               <div style={{
                 fontSize: 18, fontStyle: 'italic', color: '#fff', lineHeight: 1.7,
@@ -364,7 +366,7 @@ export function RankScreen({ onBack }: RankScreenProps) {
                 marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.08em',
               }}>
                 <LightbulbIcon width={14} height={14} />
-                <span>学習ヒント</span>
+                <span>{t('rank.tipLabel')}</span>
               </div>
               <div style={{ fontSize: 16, color: 'var(--brand-hover)', lineHeight: 1.7 }}>
                 {isJa ? selectedTier.tipJa : selectedTier.tipEn}

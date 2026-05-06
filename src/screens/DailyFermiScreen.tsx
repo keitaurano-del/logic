@@ -101,16 +101,18 @@ function safeEval(expr: string): number | null {
 function toJpUnit(n: number): string {
   const abs = Math.abs(n)
   const sign = n < 0 ? '−' : ''
-  if (abs >= 1e12) return `${sign}約${(abs / 1e12).toFixed(2)}兆`
-  if (abs >= 1e8)  return `${sign}約${(abs / 1e8).toFixed(2)}億`
-  if (abs >= 1e4)  return `${sign}約${(abs / 1e4).toFixed(2)}万`
-  return n.toLocaleString('ja-JP', { maximumFractionDigits: 4 })
+  const localeStr = getLocale() === 'ja' ? 'ja-JP' : 'en-US'
+  if (abs >= 1e12) return t('dailyFermi.aboutTrillion', { sign, n: (abs / 1e12).toFixed(2) })
+  if (abs >= 1e8)  return t('dailyFermi.aboutHundredMil', { sign, n: (abs / 1e8).toFixed(2) })
+  if (abs >= 1e4)  return t('dailyFermi.aboutTenK', { sign, n: (abs / 1e4).toFixed(2) })
+  return n.toLocaleString(localeStr, { maximumFractionDigits: 4 })
 }
 
 function formatResult(n: number): string {
   const abs = Math.abs(n)
   if (abs !== 0 && (abs >= 1e15 || abs < 1e-4)) return n.toExponential(3)
-  return n.toLocaleString('ja-JP', { maximumFractionDigits: 6 })
+  const localeStr = getLocale() === 'ja' ? 'ja-JP' : 'en-US'
+  return n.toLocaleString(localeStr, { maximumFractionDigits: 6 })
 }
 
 type CalcKeyKind = 'num' | 'op' | 'fn' | 'eq'
@@ -179,7 +181,7 @@ function FermiCalculator({ onInsert }: { onInsert: (text: string) => void }) {
           color: 'var(--text-secondary)',
           wordBreak: 'break-all', lineHeight: 1.3,
         }}>
-          {expr.replace(/\*/g, '×').replace(/\//g, '÷') || <span style={{ opacity: 0.45 }}>計算式を入力</span>}
+          {expr.replace(/\*/g, '×').replace(/\//g, '÷') || <span style={{ opacity: 0.45 }}>{t('dailyFermi.exprPlaceholder')}</span>}
         </div>
         {result != null && (
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginTop: 4 }}>
@@ -232,7 +234,7 @@ function FermiCalculator({ onInsert }: { onInsert: (text: string) => void }) {
           fontFamily: 'inherit',
         }}
       >
-        計算結果を本文に挿入
+        {t('dailyFermi.insertResult')}
       </button>
     </div>
   )
@@ -250,7 +252,7 @@ function FermiChatModal({ question, locale, onClose }: {
   onClose: () => void
 }) {
   const [messages, setMessages] = useState<ChatMessage[]>([
-    { role: 'assistant', content: '前提や数字について何でも聞いてください。ただし、答えそのものは教えられません。' }
+    { role: 'assistant', content: t('dailyFermi.chatGreeting') }
   ])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
@@ -278,7 +280,7 @@ function FermiChatModal({ question, locale, onClose }: {
         setMessages(prev => [...prev, { role: 'assistant', content: data.reply }])
       }
     } catch {
-      setMessages(prev => [...prev, { role: 'assistant', content: 'エラーが発生しました。もう一度お試しください。' }])
+      setMessages(prev => [...prev, { role: 'assistant', content: t('dailyFermi.chatError') }])
     } finally {
       setLoading(false)
     }
@@ -289,7 +291,7 @@ function FermiChatModal({ question, locale, onClose }: {
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="フェルミ推定 質問入力"
+      aria-label={t('dailyFermi.askAria')}
       style={{
         position: 'fixed', inset: 0, zIndex: 1000,
         background: 'rgba(0,0,0,0.55)',
@@ -298,7 +300,7 @@ function FermiChatModal({ question, locale, onClose }: {
     >
       <button
         type="button"
-        aria-label="閉じる"
+        aria-label={t('dailyFermi.closeAria')}
         onClick={onClose}
         style={{ position: 'absolute', inset: 0, background: 'transparent', border: 'none', padding: 0, cursor: 'pointer', zIndex: 0 }}
       />
@@ -321,8 +323,8 @@ function FermiChatModal({ question, locale, onClose }: {
           flexShrink: 0,
         }}>
           <div>
-            <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>ヒントを聞く</div>
-            <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>答えは教えません。前提の整理を手伝います。</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>{t('dailyFermi.askHintTitle')}</div>
+            <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>{t('dailyFermi.askHintDesc')}</div>
           </div>
           <button
             onClick={onClose}
@@ -360,7 +362,7 @@ function FermiChatModal({ question, locale, onClose }: {
                 padding: '10px 14px', borderRadius: '16px 16px 16px 4px',
                 background: 'var(--bg-secondary)', color: 'var(--text-muted)', fontSize: 15,
               }}>
-                考えています...
+                {t('dailyFermi.thinking')}
               </div>
             </div>
           )}
@@ -376,11 +378,11 @@ function FermiChatModal({ question, locale, onClose }: {
         }}>
           <div style={{ flex: 1, position: 'relative' }}>
             <textarea
-              aria-label="質問を入力"
+              aria-label={t('dailyFermi.questionAria')}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send() } }}
-              placeholder="質問を入力してください。"
+              placeholder={t('dailyFermi.questionPlaceholder')}
               rows={2}
               style={{
                 width: '100%',
@@ -402,7 +404,7 @@ function FermiChatModal({ question, locale, onClose }: {
             type="button"
             onClick={send}
             disabled={!input.trim() || loading}
-            aria-label="送信"
+            aria-label={t('dailyFermi.sendAria')}
             style={{
               width: 40, height: 40,
               borderRadius: '50%',
@@ -645,14 +647,14 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
                 }}
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
-                別の問題を選ぶ
+                {t('dailyFermi.pickAnother')}
               </button>
             </div>
           )}
           {!canAnswer && (
             <div style={{ padding: '0 2px', textAlign: 'right' }}>
               <span style={{ fontSize: 12, color: 'var(--danger)', fontWeight: 700 }}>
-                今日の回答数上限に達しました
+                {t('dailyFermi.dailyLimit')}
               </span>
             </div>
           )}
@@ -687,7 +689,7 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
                     <LightbulbIcon width={14} height={14} style={{ color: 'var(--brand)' }} />
                     <span style={{ fontWeight: 700, color: 'var(--brand)', fontSize: 13, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                      ヒント
+                      {t('dailyFermi.hintLabel')}
                     </span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, marginBottom: 14 }}>
@@ -700,14 +702,14 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                         minWidth: 24, minHeight: 24,
                       }}
-                      title="ヒントを閉じる"
+                      title={t('dailyFermi.hintCloseTitle')}
                     >
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
                     </button>
                   </div>
                   {/* 基礎統計データ */}
                   <div style={{ paddingTop: 12, borderTop: '1px solid rgba(108,142,245,0.2)' }}>
-                    <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', color: 'var(--text-muted)', marginBottom: 10, textTransform: 'uppercase' }}>参考データ</div>
+                    <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', color: 'var(--text-muted)', marginBottom: 10, textTransform: 'uppercase' }}>{t('dailyFermi.refData')}</div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                       {getFermiStatsByIndex(currentPoolIndex).map((s) => (
                         <div key={s.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 13 }}>
@@ -753,12 +755,12 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
                     <line x1="12" y1="16" x2="13" y2="16" />
                     <line x1="16" y1="16" x2="16" y2="16" />
                   </svg>
-                  {showCalculator ? '電卓を閉じる' : '電卓を使う'}
+                  {showCalculator ? t('dailyFermi.calcClose') : t('dailyFermi.calcOpen')}
                 </button>
               </div>
               <div style={{ position: 'relative' }}>
                 <textarea
-                  aria-label="フェルミ推定の解答"
+                  aria-label={t('dailyFermi.answerAria')}
                   value={answer}
                   onChange={(e) => { setAnswer(e.target.value); if (guideActive) dismissGuide() }}
                   placeholder={t('fermi.placeholder')}
@@ -816,7 +818,7 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
                     fontFamily: 'inherit',
                   }}
                 >
-                  ヒントを聞く
+                  {t('dailyFermi.askHintBtn')}
                 </button>
                 <button
                   onClick={handleSubmit}
@@ -835,7 +837,7 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
                     transition: 'all 0.15s',
                   }}
                 >
-                  回答を提出する
+                  {t('dailyFermi.submit')}
                 </button>
               </div>
             </div>
@@ -852,10 +854,10 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
                 animation: 'spin 0.8s linear infinite',
               }} />
               <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 8 }}>
-                採点しています
+                {t('dailyFermi.scoring')}
               </div>
               <div style={{ fontSize: 14, color: 'var(--text-muted)' }}>
-                AIが回答を分析しています...
+                {t('dailyFermi.scoringDesc')}
               </div>
             </div>
           )}
@@ -876,13 +878,13 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
                 </svg>
               </div>
               <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 8 }}>
-                採点が終わりました。
+                {t('dailyFermi.scoringDoneTitle')}
               </div>
               <div style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 28 }}>
-                結果を確認してみてください。
+                {t('dailyFermi.scoringDoneDesc')}
               </div>
               <Button variant="primary" size="lg" block onClick={() => setSubmitPhase('result')}>
-                結果を確認する
+                {t('dailyFermi.viewResult')}
               </Button>
             </div>
           )}
@@ -899,7 +901,7 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
                 textAlign: 'center',
                 boxShadow: '0 8px 32px rgba(0,0,0,0.4)', border: '1px solid rgba(112,216,189,0.25)',
               }}>
-                <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: '.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)', marginBottom: 12 }}>採点結果</div>
+                <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: '.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)', marginBottom: 12 }}>{t('dailyFermi.scoreEyebrow')}</div>
 
                 {/* スコア数字 */}
                 <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'center', gap: 6, marginBottom: 4 }}>
@@ -939,8 +941,8 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
 
                 {/* メタ情報 */}
                 <div style={{ display: 'flex', justifyContent: 'center', gap: 20, fontSize: 12, color: 'rgba(255,255,255,0.45)' }}>
-                  <span>経過時間 {String(Math.floor(elapsedSec / 60)).padStart(2,'0')}:{String(elapsedSec % 60).padStart(2,'0')}</span>
-                  {hintUsed && <span>ヒント使用</span>}
+                  <span>{t('dailyFermi.elapsed', { m: String(Math.floor(elapsedSec / 60)).padStart(2,'0'), s: String(elapsedSec % 60).padStart(2,'0') })}</span>
+                  {hintUsed && <span>{t('dailyFermi.hintUsed')}</span>}
                 </div>
               </div>
 
@@ -958,7 +960,7 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
                   background: 'var(--bg-secondary)',
                 }}>
                   <BarChartIcon width={15} height={15} style={{ color: 'var(--brand)' }} />
-                  <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>AIからのフィードバック</span>
+                  <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>{t('dailyFermi.aiFeedback')}</span>
                 </div>
                 <div style={{ padding: '16px 18px', fontSize: 15, lineHeight: 1.75, color: 'var(--text-primary)' }}>
                   {renderFeedbackMarkdown(feedback.feedback)}
@@ -1002,7 +1004,7 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
                       <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
                       <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
                     </svg>
-                    ランキングを見る
+                    {t('dailyFermi.viewRanking')}
                   </button>
                 )}
                 <Button variant="default" size="md" block onClick={onBack}>

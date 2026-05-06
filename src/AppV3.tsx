@@ -559,8 +559,8 @@ function AppV3() {
             // ロード
             try {
               const lesson = allLessons[screen.lessonId]
-              return lesson?.title || 'レッスン'
-            } catch { return 'レッスン' }
+              return lesson?.title || t('app.lessonFallback')
+            } catch { return t('app.lessonFallback') }
           })()}
           durationSec={screen.durationSec}
           prevLevel={screen.prevLevel}

@@ -18,11 +18,12 @@ interface ReportProblemScreenProps {
   onBack: () => void
 }
 
-const ISSUE_TYPES = [
-  { value: '誤字/脱字', label: '誤字・脱字' },
-  { value: '解説が間違い', label: '解説が間違い' },
-  { value: '選択肢が不正確', label: '選択肢が不正確' },
-  { value: 'その他', label: 'その他' },
+// 値はサーバ送信用の固定文字列（ja）。表示は labelKey で翻訳する。
+const ISSUE_TYPES: { value: string; labelKey: string }[] = [
+  { value: '誤字/脱字', labelKey: 'report.issueTypo' },
+  { value: '解説が間違い', labelKey: 'report.issueExpl' },
+  { value: '選択肢が不正確', labelKey: 'report.issueOption' },
+  { value: 'その他', labelKey: 'report.issueOther' },
 ]
 
 export function ReportProblemScreen({ context, onBack }: ReportProblemScreenProps) {
@@ -32,7 +33,10 @@ export function ReportProblemScreen({ context, onBack }: ReportProblemScreenProp
   const [done, setDone] = useState(false)
   const [error, setError] = useState('')
   const [issueSheetOpen, setIssueSheetOpen] = useState(false)
-  const issueLabel = ISSUE_TYPES.find(it => it.value === issueType)?.label ?? ''
+  const issueLabel = (() => {
+    const it = ISSUE_TYPES.find(it => it.value === issueType)
+    return it ? t(it.labelKey) : ''
+  })()
 
   const handleSubmit = async () => {
     if (!issueType) return
@@ -137,7 +141,7 @@ export function ReportProblemScreen({ context, onBack }: ReportProblemScreenProp
         <ActionSheet
           open={issueSheetOpen}
           title={t('report.issueTypeLabel')}
-          items={ISSUE_TYPES.map(it => ({ id: it.value, label: it.label }))}
+          items={ISSUE_TYPES.map(it => ({ id: it.value, label: t(it.labelKey) }))}
           onSelect={(id) => { setIssueType(id); setIssueSheetOpen(false) }}
           onCancel={() => setIssueSheetOpen(false)}
         />
