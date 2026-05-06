@@ -631,8 +631,8 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
             </div>
           </div>
 
-          {/* 別の問題を選ぶボタン / 上限到達時の警告 */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', padding: '0 2px' }}>
+          {/* 別の問題を選ぶ・電卓トグル / 上限到達時の警告 */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 8, padding: '0 2px' }}>
             {canReroll && submitPhase === 'idle' && (
               <button
                 onClick={handleReroll}
@@ -646,6 +646,34 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
                 別の問題を選ぶ
+              </button>
+            )}
+            {submitPhase === 'idle' && (
+              <button
+                type="button"
+                onClick={() => setShowCalculator(s => !s)}
+                aria-expanded={showCalculator}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 5,
+                  background: showCalculator ? 'rgba(108,142,245,0.10)' : 'none',
+                  border: '1.5px solid var(--brand)',
+                  borderRadius: 20, padding: '6px 14px',
+                  color: 'var(--brand)', fontSize: 13, fontWeight: 700,
+                  cursor: 'pointer',
+                  fontFamily: 'inherit',
+                }}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <rect x="4" y="3" width="16" height="18" rx="2" />
+                  <line x1="8" y1="7" x2="16" y2="7" />
+                  <line x1="8" y1="12" x2="9" y2="12" />
+                  <line x1="12" y1="12" x2="13" y2="12" />
+                  <line x1="16" y1="12" x2="16" y2="12" />
+                  <line x1="8" y1="16" x2="9" y2="16" />
+                  <line x1="12" y1="16" x2="13" y2="16" />
+                  <line x1="16" y1="16" x2="16" y2="16" />
+                </svg>
+                {showCalculator ? '電卓を閉じる' : '電卓を使う'}
               </button>
             )}
             {!canAnswer && (
@@ -752,35 +780,6 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
                 <MicIcon width={14} height={14} style={{ flexShrink: 0, opacity: 0.8 }} />
                 <span>{t('fermi.voiceHint')}</span>
               </div>
-
-              {/* 電卓トグル */}
-              <button
-                type="button"
-                onClick={() => setShowCalculator(s => !s)}
-                aria-expanded={showCalculator}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: 8,
-                  alignSelf: 'flex-start',
-                  background: showCalculator ? 'rgba(108,142,245,0.10)' : 'transparent',
-                  border: `1.5px solid ${showCalculator ? 'rgba(108,142,245,0.4)' : 'var(--border)'}`,
-                  borderRadius: 99, padding: '7px 14px',
-                  color: showCalculator ? 'var(--brand)' : 'var(--text-secondary)',
-                  fontSize: 13, fontWeight: 700, cursor: 'pointer',
-                  fontFamily: 'inherit',
-                }}
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <rect x="4" y="3" width="16" height="18" rx="2" />
-                  <line x1="8" y1="7" x2="16" y2="7" />
-                  <line x1="8" y1="12" x2="9" y2="12" />
-                  <line x1="12" y1="12" x2="13" y2="12" />
-                  <line x1="16" y1="12" x2="16" y2="12" />
-                  <line x1="8" y1="16" x2="9" y2="16" />
-                  <line x1="12" y1="16" x2="13" y2="16" />
-                  <line x1="16" y1="16" x2="16" y2="16" />
-                </svg>
-                {showCalculator ? '電卓を閉じる' : '電卓を開く'}
-              </button>
 
               {showCalculator && (
                 <FermiCalculator
