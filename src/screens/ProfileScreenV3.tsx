@@ -2,7 +2,7 @@
  * ProfileScreenV3 - Logic v3 redesign
  * 仕様: docs/DESIGN_V3.md §3.6
  */
-import { useState } from 'react'
+import { useState, useId } from 'react'
 import { getCompletedCount, getLessonStreak, getXp, getCompletedLessons, getXpLogThisMonth, XP_EVENT_LABEL } from '../stats'
 import { getAllLessonsFlat } from '../lessonData'
 import { getCurrentLevel, getXpProgress } from './homeHelpers'
@@ -343,17 +343,70 @@ function StatCard({ val, label, onClick, highlight }: { val: string; label: stri
 }
 
 function FlameIcon({ size = 20, dim = false }: { size?: number; dim?: boolean }) {
-  const gradId = `pf-flame-${dim ? 'dim' : 'lit'}`
+  const uid = useId()
+  const outerId = `pf-flame-out-${uid}`
+  const innerId = `pf-flame-in-${uid}`
+  const coreId = `pf-flame-core-${uid}`
+
+  if (dim) {
+    return (
+      <svg width={size} height={size} viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <path
+          d="M19 2.5 C17.5 5 18.5 7.5 18 10 C20.5 9 23 11.5 24 15 C26 18.5 25.5 23.5 22.5 26.5 C18.5 30 12 30 8 26 C5 23 4 17.5 6 13.5 C7.5 11 10 10 12 8 C11 5.5 13 3 15.5 2 C15.5 4 16.5 4.5 18 3 C18.5 2 18.5 2 19 2.5 Z"
+          fill="#2E3550"
+          stroke="#3F4760"
+          strokeWidth="1"
+        />
+        <path
+          d="M16.5 12 C14.5 14.5 13 17 13.5 20 C14 23 16.5 23.5 18 22.5 C20.5 21 21 17.5 19 14.5 C18 13 17 12 16.5 12 Z"
+          fill="#3F4760"
+        />
+      </svg>
+    )
+  }
+
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true" style={{ filter: dim ? 'none' : 'drop-shadow(0 2px 6px rgba(255,140,0,.45))' }}>
-      <path d="M12 2C10.5 6 6 8 6 13a6 6 0 0 0 12 0c0-5-4.5-7-6-11Z" fill={`url(#${gradId})`} />
-      <path d="M12 10c-1 2-3 3-3 5.5a3 3 0 0 0 6 0c0-2.5-2-3.5-3-5.5Z" fill={dim ? '#3F4760' : '#FFEB3B'} />
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 32 32"
+      fill="none"
+      aria-hidden="true"
+      style={{ filter: 'drop-shadow(0 2px 8px rgba(255,107,0,.55))' }}
+    >
       <defs>
-        <linearGradient id={gradId} x1="12" y1="2" x2="12" y2="19" gradientUnits="userSpaceOnUse">
-          <stop stopColor={dim ? '#3F4760' : '#FF8C00'} />
-          <stop offset="1" stopColor={dim ? '#2A3148' : '#FF3D00'} />
+        <linearGradient id={outerId} x1="16" y1="1" x2="16" y2="30" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#FFC42E" />
+          <stop offset=".30" stopColor="#FF8A1A" />
+          <stop offset=".70" stopColor="#FF3D00" />
+          <stop offset="1" stopColor="#9F1A0B" />
         </linearGradient>
+        <linearGradient id={innerId} x1="16" y1="10" x2="16" y2="26" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#FFF176" />
+          <stop offset=".5" stopColor="#FFB300" />
+          <stop offset="1" stopColor="#FF6F00" stopOpacity=".7" />
+        </linearGradient>
+        <radialGradient id={coreId} cx="16.5" cy="21" r="3.5" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#FFFFFF" />
+          <stop offset=".4" stopColor="#FFF59D" />
+          <stop offset="1" stopColor="#FFEB3B" stopOpacity="0" />
+        </radialGradient>
       </defs>
+
+      {/* Outer flame: asymmetric tear-drop with curl on the top */}
+      <path
+        d="M19 2.5 C17.5 5 18.5 7.5 18 10 C20.5 9 23 11.5 24 15 C26 18.5 25.5 23.5 22.5 26.5 C18.5 30 12 30 8 26 C5 23 4 17.5 6 13.5 C7.5 11 10 10 12 8 C11 5.5 13 3 15.5 2 C15.5 4 16.5 4.5 18 3 C18.5 2 18.5 2 19 2.5 Z"
+        fill={`url(#${outerId})`}
+      />
+
+      {/* Inner flame: brighter, smaller */}
+      <path
+        d="M16.5 11 C14.5 13.5 12.5 16.5 13 20 C13.5 23 16 24 17.5 23.5 C20.5 22 21 18 19 15 C17.5 13 16.5 12 16.5 11 Z"
+        fill={`url(#${innerId})`}
+      />
+
+      {/* White-hot core */}
+      <ellipse cx="16.8" cy="20.5" rx="1.8" ry="2.6" fill={`url(#${coreId})`} />
     </svg>
   )
 }
