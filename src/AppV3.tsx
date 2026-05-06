@@ -13,7 +13,6 @@ import { LessonCompleteScreen } from './screens/LessonCompleteScreen'
 const FlashcardsScreen = lazy(() => import('./screens/FlashcardsScreen').then(m => ({ default: m.FlashcardsScreen })))
 const FermiScreen = lazy(() => import('./screens/FermiScreen').then(m => ({ default: m.FermiScreen })))
 const DailyFermiScreen = lazy(() => import('./screens/DailyFermiScreen').then(m => ({ default: m.DailyFermiScreen })))
-const DeviationScreen = lazy(() => import('./screens/DeviationScreen').then(m => ({ default: m.DeviationScreen })))
 const FermiRankingScreen = lazy(() => import('./screens/FermiRankingScreen').then(m => ({ default: m.FermiRankingScreen })))
 const RoleplaySelectScreen = lazy(() => import('./screens/RoleplaySelectScreen').then(m => ({ default: m.RoleplaySelectScreen })))
 const RoleplayChatScreen = lazy(() => import('./screens/RoleplayChatScreen').then(m => ({ default: m.RoleplayChatScreen })))
@@ -86,7 +85,6 @@ type Screen =
   | { type: 'flashcards'; mode?: 'due' | 'weak' }
   | { type: 'fermi' }
   | { type: 'daily-fermi' }
-  | { type: 'deviation' }
   | { type: 'ranking' }
   | { type: 'fermi-ranking' }
   | { type: 'roleplay' }
@@ -438,14 +436,6 @@ function AppV3() {
           problem={screen.problem}
           onBack={() => navigate({ type: 'ai-problem-gen' })}
           onReport={(ctx) => navigate({ type: 'report-problem', context: ctx })}
-        />
-      )}
-
-      {screen.type === 'deviation' && (
-        <DeviationScreen
-          onBack={handleBack}
-          onRetakeTest={() => navigate({ type: 'placement-test' })}
-          onStartLesson={handleOpenLesson}
         />
       )}
 
