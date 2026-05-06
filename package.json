@@ -16,7 +16,10 @@
     "cap:open:android": "npx cap open android",
     "android:release": "git pull && npm run build && node scripts/bump-android-version.js && npx cap sync android && npm run cap:open:android",
     "deploy:web": "npm run build && vercel --prod",
-    "db:migrate": "node scripts/run-migration.js"
+    "db:migrate": "node scripts/run-migration.js",
+    "gen:images": "tsx scripts/generate-course-images.ts",
+    "wire:images": "tsx scripts/wire-images.ts",
+    "prompts:md": "tsx scripts/print-prompts-md.ts --write"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.82.0",

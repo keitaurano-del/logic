@@ -1,0 +1,297 @@
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+画像生成バッチ依頼
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+以下のリストを上から順番に、1 件ずつ画像生成してください。
+各画像の生成時は必ず:
+  - 共通スタイル（下記）を完全に守る
+  - 16:9 のアスペクト比
+  - 文字・ロゴ・透かし・数字を一切含めない
+  - 出力時に「ファイル名: xxx.png」と一行添える
+  - 一回のメッセージで 1 枚ずつ生成 (ペースを守って続けてください)
+
+完成後、このチャット内のすべての画像を順次保存します。
+
+━━━ 共通スタイル（全画像共通） ━━━
+
+3D isometric illustration, clean modern minimalist style, deep navy blue gradient background (#101729 to #1F2942), subtle warm golden glow accent in upper area, soft pastel highlights, professional educational app thumbnail, centered composition, cinematic lighting, octane render style, no text, no captions, no watermarks, no logos, no letters, no numbers
+
+━━━ コース 24枚 ━━━
+
+01. ファイル名: course-logic-01.png
+    題材: ロジカルに考えて、整理する
+    プロンプト: four colorful 3D isometric cubes arranged in a 2x2 grid (red, blue, gold, green) representing MECE classification, with a separate floating isometric tree of connected cube nodes branching outward like a logic tree, subtle floating papers with checkmarks
+
+02. ファイル名: course-logic-02.png
+    題材: 論理を組み立て、相手を動かす
+    プロンプト: a 3D isometric three-tier pyramid built from stacked cubes, with bidirectional vertical arrows on the side representing So What going up and Why So going down, a small figure presenting the pyramid to an audience
+
+03. ファイル名: course-critical-01.png
+    題材: 思い込みを疑い、正しく判断する
+    プロンプト: a 3D isometric scene of a giant magnifying glass examining a floating document, with question marks transforming into green checkmarks, broken chain links representing logical fallacies floating around
+
+04. ファイル名: course-critical-02.png
+    題材: バイアスを外し、客観的に見る
+    プロンプト: a 3D isometric translucent human brain with several glass filter panels being lifted away, releasing colored prismatic fragments representing cognitive biases drifting off
+
+05. ファイル名: course-hypothesis-01.png
+    題材: 仮説を立ててから、調べる
+    プロンプト: a 3D isometric scene with a floating hypothesis card connected by an arrow loop to a laboratory beaker and a magnifying glass, representing hypothesis-then-verify cycle
+
+06. ファイル名: course-problem-01.png
+    題材: 本当の問題を見極め、定義する
+    プロンプト: a 3D isometric iceberg cut in half showing a small visible tip above the water and a massive submerged base with glowing root cause spheres inside, target marker on the deep core
+
+07. ファイル名: course-design-01.png
+    題材: ユーザーの本音を掘り下げ、解決する
+    プロンプト: a 3D isometric central persona figure surrounded by an empathy map split into four quadrants on the floor, sticky notes floating, prototype paper shapes, journey path lines
+
+08. ファイル名: course-systems-01.png
+    題材: 全体を俯瞰し、根本から変える
+    プロンプト: a 3D isometric circular feedback loop diagram with connected nodes, large circular arrow flowing through them, an iceberg model integrated below the loop
+
+09. ファイル名: course-lateral-01.png
+    題材: 常識を疑い、突破口を開く
+    プロンプト: a 3D isometric glowing lightbulb breaking out of a cube box, with sideways arrows pointing in unconventional directions, prism splitting white light into colors
+
+10. ファイル名: course-analogy-01.png
+    題材: 別分野の知恵を借りて、応用する
+    プロンプト: a 3D isometric bridge connecting two distinct floating islands - left island shaped like a tree of nature, right island shaped like a business chart - with a glowing lightbulb hovering above the bridge
+
+11. ファイル名: course-philosophy-01.png
+    題材: 哲学の問いで、思考を深める
+    プロンプト: a 3D isometric ancient Greek stone column with a contemplative thinker silhouette sitting beside it, an open scroll, abstract thought clouds with question marks above
+
+12. ファイル名: course-eastern-01.png
+    題材: 古代中国思想で、人と組織を見る
+    プロンプト: a 3D isometric Chinese pavilion roof with a wise sage figure seated inside, traditional scrolls, glowing networked relationship lines connecting smaller figures around it, soft mist
+
+13. ファイル名: course-eastern-02.png
+    題材: 古代中国思想で、戦略と決断を見る
+    プロンプト: a 3D isometric bamboo grove garden with a floating yin-yang symbol, abstract tao-flow lines like flowing water around stones, strategy chess pieces on a low platform
+
+14. ファイル名: course-proposal-01.png
+    題材: 相手が動く提案をつくる
+    プロンプト: a 3D isometric professional document with a small presenter figure beside it, golden impact arrows radiating from the document toward a small target, audience silhouettes in front
+
+15. ファイル名: course-proposal-course-01.png
+    題材: 仮説と検証で、提案書を仕上げる
+    プロンプト: a 3D isometric workflow from a small hypothesis card on the left to a polished bound proposal document on the right, with checkmark verification steps in between
+
+16. ファイル名: course-client-01.png
+    題材: 数字で状況を素早く読み解く
+    プロンプト: a 3D isometric floating spreadsheet panel with bar charts and large numerical figures, a calculator, a business person reading the data with a confident posture
+
+17. ファイル名: course-client-02.png
+    題材: 論点を定め、深く引き出す
+    プロンプト: a 3D isometric scene with two figures across a small table, one extracting information through a glowing question stream, structured cards organizing the answers
+
+18. ファイル名: course-client-03.png
+    題材: 未経験の業界で、短期間で立ち上がる
+    プロンプト: a 3D isometric figure climbing a steeply rising learning curve graph, stacked books on the path, expert silhouettes guiding from above
+
+19. ファイル名: course-case-01.png
+    題材: ケース面接で、論理力を証明する
+    プロンプト: a 3D isometric profit equation tree splitting into revenue and cost branches with sub-cubes, a small interview chair scene, structured framework boards
+
+20. ファイル名: course-strategy-01.png
+    題材: 戦略の源流と競争戦略を学ぶ
+    プロンプト: a 3D isometric vintage industrial factory with conveyor belts on a circular platform, surrounded by five large arrows pointing inward representing five forces, a classic strategy book
+
+21. ファイル名: course-strategy-02.png
+    題材: 資源・能力・共進化の戦略へ
+    プロンプト: a 3D isometric calm blue ocean with a small sailing ship, glowing resource gems on the seabed, mechanical capability gears interlocking, platform hub with radiating connections
+
+22. ファイル名: course-fermi-01.png
+    題材: 概算で、世界の規模を掴む
+    プロンプト: a 3D isometric small earth globe with floating numerical figures around it, calculator, decomposition arrows breaking the globe into smaller cube estimates
+
+23. ファイル名: course-numeracy-01.png
+    題材: 数字に強くなる
+    プロンプト: a 3D isometric scene with floating percentage symbol, yen currency sign, bar chart and pie chart, calculator, a person confidently reading numbers, scale balance
+
+24. ファイル名: course-peak-performance-01.png
+    題材: 自分史上最高のパフォーマンスで働く
+    プロンプト: a 3D isometric morning scene with a moon-to-sun cycle arc, an energy graph rising and falling with peaks, an athletic figure stretching, a glowing focus zone marker
+
+━━━ レッスン 44枚 ━━━
+
+25. ファイル名: lesson-20.png
+    題材: MECE
+    プロンプト: a 3D isometric 2x2 grid of four large colored cubes (red, blue, gold, green) showing MECE classification, no overlap no gap
+
+26. ファイル名: lesson-21.png
+    題材: ロジックツリー
+    プロンプト: a 3D isometric tree diagram with a single root cube branching into mid-level cubes and leaf cubes
+
+27. ファイル名: lesson-22.png
+    題材: So What / Why So
+    プロンプト: a 3D isometric pair of vertical arrows side by side, one pointing up and one pointing down, between layered cube stacks, representing So What and Why So
+
+28. ファイル名: lesson-23.png
+    題材: ピラミッド原則
+    プロンプト: a 3D isometric three-tier pyramid built from stacked cubes, conclusion on top supported by reason cubes below
+
+29. ファイル名: lesson-24.png
+    題材: ケーススタディ
+    プロンプト: a 3D isometric briefcase opening with documents flying out, case study notebook, charts
+
+30. ファイル名: lesson-25.png
+    題材: 演繹法
+    プロンプト: a 3D isometric flow from general principle cube down to specific conclusion cube, deduction arrow
+
+31. ファイル名: lesson-26.png
+    題材: 帰納法
+    プロンプト: a 3D isometric flow from many small specific data cubes converging upward into a general pattern cube, induction arrow
+
+32. ファイル名: lesson-27.png
+    題材: 形式論理
+    プロンプト: a 3D isometric formal logic gate diagram with truth state cubes glowing in a connected pattern
+
+33. ファイル名: lesson-68.png
+    題材: 具体と抽象
+    プロンプト: a 3D isometric ladder of abstraction with concrete object cubes at the bottom and abstract idea cubes at the top, vertical arrow
+
+34. ファイル名: lesson-28.png
+    題材: ケース面接入門
+    プロンプト: a 3D isometric interview room with two chairs across a small table, structured frameworks floating between them
+
+35. ファイル名: lesson-29.png
+    題材: プロフィタビリティ
+    プロンプト: a 3D isometric profit equation tree with revenue branch and cost branch breaking into smaller cubes
+
+36. ファイル名: lesson-35.png
+    題材: 新市場参入
+    プロンプト: a 3D isometric arrow pointing from a small island to a larger market continent, decision flowchart cubes around the arrow
+
+37. ファイル名: lesson-36.png
+    題材: M&A
+    プロンプト: a 3D isometric two companies represented as separate cube clusters merging into one larger cluster, M&A handshake
+
+38. ファイル名: lesson-40.png
+    題材: クリティカルシンキング入門
+    プロンプト: a 3D isometric magnifying glass examining a checklist document, question marks turning into checkmarks
+
+39. ファイル名: lesson-41.png
+    題材: 論理的誤謬
+    プロンプト: a 3D isometric set of broken chain links labeled as logical fallacies, with a corrected solid chain link beside them
+
+40. ファイル名: lesson-42.png
+    題材: データを読む
+    プロンプト: a 3D isometric data dashboard with floating bar charts and a person carefully reading numbers, hidden patterns highlighted
+
+41. ファイル名: lesson-43.png
+    題材: 問いを立てる
+    プロンプト: a 3D isometric large question mark cube being polished, surrounded by smaller question marks being filtered into a clearer one
+
+42. ファイル名: lesson-69.png
+    題材: 認知バイアス
+    プロンプト: a 3D isometric brain with translucent biased glasses being removed, prismatic fragments drifting
+
+43. ファイル名: lesson-71.png
+    題材: 相関と因果
+    プロンプト: a 3D isometric two correlated wave lines diverging where one is a true cause arrow and the other is just correlation
+
+44. ファイル名: lesson-50.png
+    題材: 仮説思考入門
+    プロンプト: a 3D isometric thought bubble with a hypothesis card pointing forward to a verification path
+
+45. ファイル名: lesson-51.png
+    題材: 仮説の立て方
+    プロンプト: a 3D isometric figure drafting hypothesis cards on a desk, multiple options floating up
+
+46. ファイル名: lesson-52.png
+    題材: 仮説ドリブン
+    プロンプト: a 3D isometric arrow loop from hypothesis card to data verification beaker and back
+
+47. ファイル名: lesson-70.png
+    題材: 仮説の検証設計
+    プロンプト: a 3D isometric experimental setup with measurement instruments, control versus test cubes
+
+48. ファイル名: lesson-53.png
+    題材: 課題設定入門
+    プロンプト: a 3D isometric target board with concentric rings, an arrow finding the true bullseye among decoys
+
+49. ファイル名: lesson-54.png
+    題材: イシュー分析
+    プロンプト: a 3D isometric large issue card being decomposed downward into smaller sub-issue cubes
+
+50. ファイル名: lesson-55.png
+    題材: 課題設定実践
+    プロンプト: a 3D isometric workspace with multiple problem cards being prioritized into a focused single card
+
+51. ファイル名: lesson-56.png
+    題材: デザインシンキング入門
+    プロンプト: a 3D isometric design thinking cycle with five connected stage cubes (empathize, define, ideate, prototype, test)
+
+52. ファイル名: lesson-57.png
+    題材: 共感マップ
+    プロンプト: a 3D isometric empathy map quadrants on the floor surrounding a central persona figure
+
+53. ファイル名: lesson-58.png
+    題材: デザインシンキング実践
+    プロンプト: a 3D isometric prototype paper model being tested by a user figure with feedback bubbles
+
+54. ファイル名: lesson-59.png
+    題材: ラテラルシンキング入門
+    プロンプト: a 3D isometric lightbulb breaking out of a cube box, sideways arrows in unconventional directions
+
+55. ファイル名: lesson-60.png
+    題材: ラテラル技法
+    プロンプト: a 3D isometric prism splitting a single light beam into multiple colorful diverging directions
+
+56. ファイル名: lesson-61.png
+    題材: ラテラル実践
+    プロンプト: a 3D isometric flipped perspective scene where a problem cube is rotated to reveal a different unexpected facet
+
+57. ファイル名: lesson-62.png
+    題材: アナロジー思考入門
+    プロンプト: a 3D isometric bridge connecting two distinct floating islands with different visual themes
+
+58. ファイル名: lesson-63.png
+    題材: アナロジー技法
+    プロンプト: a 3D isometric structural pattern card being lifted from one domain and placed onto another domain
+
+59. ファイル名: lesson-64.png
+    題材: アナロジー実践
+    プロンプト: a 3D isometric two parallel scenes side by side with matching structural arrows showing analogy mapping
+
+60. ファイル名: lesson-65.png
+    題材: システムシンキング入門
+    プロンプト: a 3D isometric circular feedback loop with connected node cubes flowing in a circle
+
+61. ファイル名: lesson-66.png
+    題材: システム原型
+    プロンプト: a 3D isometric system archetype diagram with reinforcing and balancing loops shown as gears
+
+62. ファイル名: lesson-67.png
+    題材: システム実践
+    プロンプト: a 3D isometric iceberg model with events on top, patterns mid, structures and mental models at the deep base
+
+63. ファイル名: lesson-72.png
+    題材: 提案書の目的
+    プロンプト: a 3D isometric professional bound proposal document with a clear target arrow above it
+
+64. ファイル名: lesson-73.png
+    題材: 相手の立場
+    プロンプト: a 3D isometric two figures facing a document, one offering and one receiving, perspective lines aligning their viewpoints
+
+65. ファイル名: lesson-74.png
+    題材: ストーリーライン
+    プロンプト: a 3D isometric storyline path with sequential narrative cube panels leading to a conclusion
+
+66. ファイル名: lesson-75.png
+    題材: メッセージを磨く
+    プロンプト: a 3D isometric message card being polished and sharpened on a workbench with sparkles
+
+67. ファイル名: lesson-76.png
+    題材: 反論を先読み
+    プロンプト: a 3D isometric shield deflecting incoming counter-argument arrows, behind it a strong document
+
+68. ファイル名: lesson-77.png
+    題材: ソクラテス
+    プロンプト: a 3D isometric ancient Greek stone column with a Socrates-like silhouette and a scroll, question marks rising
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+合計 68 枚。準備ができたら 1 番から順に生成を始めてください。
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
