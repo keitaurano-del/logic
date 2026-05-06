@@ -4,7 +4,7 @@
  * モックアップ: lv3-home.html
  */
 import { useRef, useState } from 'react'
-import { getDailyFermi } from '../fermiData'
+import { FERMI_POOL, getDailyFermiIndex } from '../fermiData'
 import { getCardStats } from '../flashcardData'
 import { v3 } from '../styles/tokensV3'
 import { HomeCoachmark, useShouldShowHomeCoachmark } from '../tutorial/coachmark'
@@ -77,9 +77,22 @@ interface HomeScreenV3Props {
 
 const IMG = '/images/v3'
 
+const HOME_FERMI_INDEX_KEY = 'home-fermi-index'
+
+function readStoredFermiIndex(): number {
+  try {
+    const raw = sessionStorage.getItem(HOME_FERMI_INDEX_KEY)
+    if (raw != null) {
+      const n = parseInt(raw, 10)
+      if (Number.isFinite(n) && n >= 0 && n < FERMI_POOL.length) return n
+    }
+  } catch { /* */ }
+  return getDailyFermiIndex()
+}
+
 export function HomeScreenV3(props: HomeScreenV3Props) {
   const { userName, onOpenLesson, onOpenAIGen, onOpenRoleplay, onNavigateToDailyFermi, onOpenPlacementTest, onOpenFlashcards, onOpenCategory: _onOpenCategory, onOpenRank: _onOpenRank, onOpenStats: _onOpenStats, onOpenRoadmap: _onOpenRoadmap } = props
-  const dailyCardRef = useRef<HTMLButtonElement>(null)
+  const dailyCardRef = useRef<HTMLDivElement>(null)
   const [showCoachmark, dismissCoachmark] = useShouldShowHomeCoachmark()
   const { width } = useWindowSize()
   const isTablet = width >= BREAKPOINTS.md
@@ -87,9 +100,18 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
 
   // ランダムレッスン・フェルミ問題（マウント時に1回決定）
   const [recommendedLesson] = useState(getRandomLesson)
-  const dailyFermi = getDailyFermi()
-  const fermiQuestion = dailyFermi.question
+  const [fermiIndex, setFermiIndex] = useState<number>(readStoredFermiIndex)
+  const fermiQuestion = FERMI_POOL[fermiIndex].question
   const cardStats = getCardStats()
+
+  const handleRerollFermi = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (FERMI_POOL.length <= 1) return
+    let next = Math.floor(Math.random() * FERMI_POOL.length)
+    while (next === fermiIndex) next = Math.floor(Math.random() * FERMI_POOL.length)
+    setFermiIndex(next)
+    try { sessionStorage.setItem(HOME_FERMI_INDEX_KEY, String(next)) } catch { /* */ }
+  }
 
 
 
@@ -118,14 +140,49 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
         </div>
 
         {/* 今日の1問 (Daily Fermi) */}
-        <button type="button" ref={dailyCardRef} onClick={onNavigateToDailyFermi} aria-label="今日の1問を解く" style={{ background: 'linear-gradient(135deg, #6C8EF5 0%, #5478E8 100%)', borderRadius: v3.radius.card, padding: '20px', cursor: 'pointer', position: 'relative', overflow: 'hidden', boxShadow: '0 14px 32px rgba(108,142,245,.32)', flexShrink: 0, minHeight: 180, border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%' }}>
+        <div
+          ref={dailyCardRef}
+          role="button"
+          tabIndex={0}
+          onClick={onNavigateToDailyFermi}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onNavigateToDailyFermi?.() } }}
+          aria-label="今日の1問を解く"
+          style={{ background: 'linear-gradient(135deg, #6C8EF5 0%, #5478E8 100%)', borderRadius: v3.radius.card, padding: '20px', cursor: 'pointer', position: 'relative', overflow: 'hidden', boxShadow: '0 14px 32px rgba(108,142,245,.32)', flexShrink: 0, minHeight: 180 }}
+        >
           {/* フェルミ推定イメージ画像 */}
           <img src="/images/v3/fermi-card.png" alt="" loading="lazy" style={{ position: 'absolute', right: 0, top: 0, width: '55%', height: '100%', objectFit: 'cover', opacity: 0.18, pointerEvents: 'none', mixBlendMode: 'overlay', maskImage: 'linear-gradient(to left, rgba(0,0,0,0.8) 0%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to left, rgba(0,0,0,0.8) 0%, transparent 100%)' }} />
           <div style={{ position: 'absolute', right: -30, top: -30, width: 140, height: 140, borderRadius: '50%', background: 'rgba(255,255,255,0.18)', filter: 'blur(36px)', pointerEvents: 'none' }}></div>
           <div style={{ position: 'relative', zIndex: 1 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-              <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'rgba(255,255,255,.85)' }}></div>
-              <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,.92)' }}>今日の1問</span>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 8 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'rgba(255,255,255,.85)' }}></div>
+                <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,.92)' }}>今日の1問</span>
+              </div>
+              <button
+                type="button"
+                onClick={handleRerollFermi}
+                aria-label="別の問題を選ぶ"
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 4,
+                  background: 'rgba(255,255,255,0.18)',
+                  border: '1px solid rgba(255,255,255,0.28)',
+                  borderRadius: 99,
+                  padding: '5px 10px',
+                  color: '#FFFFFF',
+                  fontSize: 11, fontWeight: 700, letterSpacing: '.02em',
+                  cursor: 'pointer',
+                  fontFamily: 'inherit',
+                  backdropFilter: 'blur(4px)',
+                }}
+              >
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+                  <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+                  <path d="M21 3v5h-5"/>
+                  <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+                  <path d="M8 16H3v5"/>
+                </svg>
+                別の問題
+              </button>
             </div>
             <div style={{ fontFamily: "'Noto Sans JP', sans-serif", fontSize: 19, fontWeight: 700, color: '#FFFFFF', lineHeight: 1.4, letterSpacing: '-.005em', marginBottom: 8 }}>
               {fermiQuestion}
@@ -140,7 +197,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
               チャレンジする
             </div>
           </div>
-        </button>
+        </div>
 
         {/* Hero Recommend - ランダム表示 */}
         <button

@@ -3,7 +3,7 @@ import { LightbulbIcon, BarChartIcon, MicIcon } from '../icons'
 import { Header } from '../components/platform/Header'
 import { Button } from '../components/Button'
 import { API_BASE } from './apiBase'
-import { getDailyFermi, getDailyFermiIndex, FERMI_POOL, getFermiStatsByIndex } from '../fermiData'
+import { getDailyFermiIndex, FERMI_POOL, getFermiStatsByIndex } from '../fermiData'
 import { t, getLocale } from '../i18n'
 import { getGuestId } from '../guestId'
 import { haptic } from '../platform/haptics'
@@ -77,6 +77,166 @@ function renderFeedbackMarkdown(text: string) {
   return elements
 }
 
+
+// ── 電卓ヘルパー ──
+function safeEval(expr: string): number | null {
+  // 半角化と空白除去
+  const normalized = expr
+    .replace(/×/g, '*')
+    .replace(/÷/g, '/')
+    .replace(/−/g, '-')
+    .replace(/\s+/g, '')
+  if (!normalized) return null
+  if (!/^[0-9+\-*/().]+$/.test(normalized)) return null
+  // 演算子の連続/末尾を弾く
+  if (/[+\-*/]{2,}/.test(normalized) || /[+\-*/(]$/.test(normalized)) return null
+  try {
+    // 入力は上記regexで数字・四則演算・括弧・小数点のみに制限
+    const r = new Function('return (' + normalized + ')')()
+    if (typeof r === 'number' && Number.isFinite(r)) return r
+  } catch { /* */ }
+  return null
+}
+
+function toJpUnit(n: number): string {
+  const abs = Math.abs(n)
+  const sign = n < 0 ? '−' : ''
+  if (abs >= 1e12) return `${sign}約${(abs / 1e12).toFixed(2)}兆`
+  if (abs >= 1e8)  return `${sign}約${(abs / 1e8).toFixed(2)}億`
+  if (abs >= 1e4)  return `${sign}約${(abs / 1e4).toFixed(2)}万`
+  return n.toLocaleString('ja-JP', { maximumFractionDigits: 4 })
+}
+
+function formatResult(n: number): string {
+  const abs = Math.abs(n)
+  if (abs !== 0 && (abs >= 1e15 || abs < 1e-4)) return n.toExponential(3)
+  return n.toLocaleString('ja-JP', { maximumFractionDigits: 6 })
+}
+
+type CalcKeyKind = 'num' | 'op' | 'fn' | 'eq'
+
+const CALC_KEY_PALETTE: Record<CalcKeyKind, { bg: string; color: string; border: string }> = {
+  num: { bg: 'var(--bg-card)', color: 'var(--text-primary)', border: 'var(--border)' },
+  op:  { bg: 'rgba(108,142,245,0.10)', color: 'var(--brand)', border: 'rgba(108,142,245,0.28)' },
+  fn:  { bg: 'rgba(255,255,255,0.04)', color: 'var(--text-secondary)', border: 'var(--border)' },
+  eq:  { bg: 'var(--brand)', color: '#fff', border: 'var(--brand)' },
+}
+
+function CalcKey({ label, onClick, kind = 'num' }: { label: string; onClick: () => void; kind?: CalcKeyKind }) {
+  const palette = CALC_KEY_PALETTE[kind]
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      style={{
+        height: 44, borderRadius: 10,
+        background: palette.bg,
+        border: `1px solid ${palette.border}`,
+        color: palette.color,
+        fontSize: 16, fontWeight: 700,
+        cursor: 'pointer', fontFamily: 'inherit',
+      }}
+    >
+      {label}
+    </button>
+  )
+}
+
+function FermiCalculator({ onInsert }: { onInsert: (text: string) => void }) {
+  const [expr, setExpr] = useState('')
+  const result = safeEval(expr)
+
+  const press = (s: string) => setExpr(prev => prev + s)
+  const clear = () => setExpr('')
+  const back = () => setExpr(prev => prev.slice(0, -1))
+  const equals = () => { if (result != null) setExpr(String(result)) }
+  const insert = () => {
+    if (result == null) return
+    const formatted = formatResult(result)
+    const display = expr.replace(/\*/g, '×').replace(/\//g, '÷').replace(/-/g, '−')
+    onInsert(`${display} = ${formatted}（${toJpUnit(result)}）`)
+  }
+
+  return (
+    <div style={{
+      borderRadius: 14,
+      border: '1px solid var(--border)',
+      background: 'var(--bg-secondary)',
+      padding: 12,
+      display: 'flex', flexDirection: 'column', gap: 10,
+    }}>
+      {/* 表示部 */}
+      <div style={{
+        background: 'var(--bg-card)',
+        border: '1px solid var(--border)',
+        borderRadius: 10,
+        padding: '10px 12px',
+        minHeight: 56,
+        display: 'flex', flexDirection: 'column', justifyContent: 'center',
+      }}>
+        <div style={{
+          fontSize: 14, fontFamily: "'Inter Tight', monospace",
+          color: 'var(--text-secondary)',
+          wordBreak: 'break-all', lineHeight: 1.3,
+        }}>
+          {expr.replace(/\*/g, '×').replace(/\//g, '÷') || <span style={{ opacity: 0.45 }}>計算式を入力</span>}
+        </div>
+        {result != null && (
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginTop: 4 }}>
+            <span style={{ fontSize: 18, fontWeight: 800, color: 'var(--brand)', fontFamily: "'Inter Tight', monospace" }}>= {formatResult(result)}</span>
+            <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>{toJpUnit(result)}</span>
+          </div>
+        )}
+      </div>
+
+      {/* キーパッド */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 6 }}>
+        <CalcKey label="AC" onClick={clear} kind="fn" />
+        <CalcKey label="⌫" onClick={back} kind="fn" />
+        <CalcKey label="(" onClick={() => press('(')} kind="fn" />
+        <CalcKey label=")" onClick={() => press(')')} kind="fn" />
+
+        <CalcKey label="7" onClick={() => press('7')} />
+        <CalcKey label="8" onClick={() => press('8')} />
+        <CalcKey label="9" onClick={() => press('9')} />
+        <CalcKey label="÷" onClick={() => press('/')} kind="op" />
+
+        <CalcKey label="4" onClick={() => press('4')} />
+        <CalcKey label="5" onClick={() => press('5')} />
+        <CalcKey label="6" onClick={() => press('6')} />
+        <CalcKey label="×" onClick={() => press('*')} kind="op" />
+
+        <CalcKey label="1" onClick={() => press('1')} />
+        <CalcKey label="2" onClick={() => press('2')} />
+        <CalcKey label="3" onClick={() => press('3')} />
+        <CalcKey label="−" onClick={() => press('-')} kind="op" />
+
+        <CalcKey label="0" onClick={() => press('0')} />
+        <CalcKey label="." onClick={() => press('.')} />
+        <CalcKey label="=" onClick={equals} kind="eq" />
+        <CalcKey label="+" onClick={() => press('+')} kind="op" />
+      </div>
+
+      <button
+        type="button"
+        onClick={insert}
+        disabled={result == null}
+        style={{
+          padding: '10px 14px',
+          borderRadius: 10,
+          border: 'none',
+          background: result != null ? 'var(--brand)' : 'var(--bg-muted)',
+          color: result != null ? '#fff' : 'var(--text-muted)',
+          fontSize: 14, fontWeight: 700,
+          cursor: result != null ? 'pointer' : 'not-allowed',
+          fontFamily: 'inherit',
+        }}
+      >
+        計算結果を本文に挿入
+      </button>
+    </div>
+  )
+}
 
 interface ChatMessage {
   role: 'user' | 'assistant'
@@ -268,6 +428,15 @@ function FermiChatModal({ question, locale, onClose }: {
 interface DailyFermiScreenProps {
   onBack: () => void
   onReport?: (context: { lessonTitle: string; question: string }) => void
+  onOpenRanking?: () => void
+}
+
+// スコア帯の配色（既存のティールカードと調和する成熟したパレット）
+function getScoreTone(score: number): { color: string; label: string } {
+  if (score >= 80) return { color: '#70D8BD', label: 'Excellent' }
+  if (score >= 60) return { color: '#F4B86A', label: 'Good' }
+  if (score >= 40) return { color: '#E89B7E', label: 'Keep going' }
+  return { color: '#E07A6F', label: 'Try again' }
 }
 
 interface FermiFeedback {
@@ -279,7 +448,7 @@ interface FermiFeedback {
 // 提出フロー状態
 type SubmitPhase = 'idle' | 'scoring' | 'done' | 'result'
 
-export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
+export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermiScreenProps) {
   const locale = getLocale()
   const { active: guideActive, dismiss: dismissGuide } = useDailyGuide()
 
@@ -291,8 +460,20 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
   const canAnswer = dailyCount < dailyLimit
   const canReroll = rerollCount < rerollLimit && canAnswer
 
-  const [question, setQuestion] = useState(() => getDailyFermi().question)
-  const [hint, setHint] = useState(() => getDailyFermi().hint)
+  // ホーム画面で「別の問題」を選ばれている場合はそれを優先
+  const initialIndex = (() => {
+    try {
+      const raw = sessionStorage.getItem('home-fermi-index')
+      if (raw != null) {
+        const n = parseInt(raw, 10)
+        if (Number.isFinite(n) && n >= 0 && n < FERMI_POOL.length) return n
+      }
+    } catch { /* */ }
+    return getDailyFermiIndex()
+  })()
+  const initialQuestion = FERMI_POOL[initialIndex]
+  const [question, setQuestion] = useState(initialQuestion.question)
+  const [hint, setHint] = useState(initialQuestion.hint)
   const loadingQuestion = false
   const questionError = ''
 
@@ -303,6 +484,7 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
   const [showHint, setShowHint] = useState(false)
   const [hintUsed, setHintUsed] = useState(false)
   const [showChat, setShowChat] = useState(false)
+  const [showCalculator, setShowCalculator] = useState(false)
 
   // タイマー
   const [elapsedSec, setElapsedSec] = useState(0)
@@ -318,8 +500,8 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
     return () => { if (timerRef.current) clearInterval(timerRef.current) }
   }, [timerRunning])
 
-  const [excludedIndexes, setExcludedIndexes] = useState<number[]>([getDailyFermiIndex()])
-  const [currentPoolIndex, setCurrentPoolIndex] = useState<number>(getDailyFermiIndex())
+  const [excludedIndexes, setExcludedIndexes] = useState<number[]>([initialIndex])
+  const [currentPoolIndex, setCurrentPoolIndex] = useState<number>(initialIndex)
 
   const handleReroll = () => {
     if (!canReroll) return
@@ -597,6 +779,44 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
                 <span>{t('fermi.voiceHint')}</span>
               </div>
 
+              {/* 電卓トグル */}
+              <button
+                type="button"
+                onClick={() => setShowCalculator(s => !s)}
+                aria-expanded={showCalculator}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 8,
+                  alignSelf: 'flex-start',
+                  background: showCalculator ? 'rgba(108,142,245,0.10)' : 'transparent',
+                  border: `1.5px solid ${showCalculator ? 'rgba(108,142,245,0.4)' : 'var(--border)'}`,
+                  borderRadius: 99, padding: '7px 14px',
+                  color: showCalculator ? 'var(--brand)' : 'var(--text-secondary)',
+                  fontSize: 13, fontWeight: 700, cursor: 'pointer',
+                  fontFamily: 'inherit',
+                }}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <rect x="4" y="3" width="16" height="18" rx="2" />
+                  <line x1="8" y1="7" x2="16" y2="7" />
+                  <line x1="8" y1="12" x2="9" y2="12" />
+                  <line x1="12" y1="12" x2="13" y2="12" />
+                  <line x1="16" y1="12" x2="16" y2="12" />
+                  <line x1="8" y1="16" x2="9" y2="16" />
+                  <line x1="12" y1="16" x2="13" y2="16" />
+                  <line x1="16" y1="16" x2="16" y2="16" />
+                </svg>
+                {showCalculator ? '電卓を閉じる' : '電卓を開く'}
+              </button>
+
+              {showCalculator && (
+                <FermiCalculator
+                  onInsert={(text) => {
+                    setAnswer(prev => prev + (prev && !prev.endsWith('\n') ? '\n' : '') + text)
+                    haptic.light()
+                  }}
+                />
+              )}
+
               {submitError && (
                 <div style={{ fontSize: 15, color: 'var(--danger)' }}>{submitError}</div>
               )}
@@ -703,12 +923,19 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
                 <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: '.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)', marginBottom: 12 }}>採点結果</div>
 
                 {/* スコア数字 */}
-                <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'center', gap: 6, marginBottom: 8 }}>
-                  <span style={{ fontSize: 80, fontWeight: 900, color: '#fff', lineHeight: 1, letterSpacing: '-0.04em' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'center', gap: 6, marginBottom: 4 }}>
+                  <span style={{ fontSize: 80, fontWeight: 900, color: feedback.score != null ? getScoreTone(feedback.score).color : '#fff', lineHeight: 1, letterSpacing: '-0.04em', transition: 'color 0.4s ease' }}>
                     {feedback.score ?? '—'}
                   </span>
                   <span style={{ fontSize: 20, color: 'rgba(255,255,255,0.5)', fontWeight: 600, paddingBottom: 10 }}>/100</span>
                 </div>
+
+                {/* バンドラベル */}
+                {feedback.score != null && (
+                  <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.16em', textTransform: 'uppercase', color: getScoreTone(feedback.score).color, opacity: 0.9, marginBottom: 12 }}>
+                    {getScoreTone(feedback.score).label}
+                  </div>
+                )}
 
                 {/* スコアバー */}
                 {feedback.score != null && (
@@ -717,8 +944,8 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
                       <div style={{
                         height: '100%', borderRadius: 99,
                         width: `${feedback.score}%`,
-                        background: feedback.score >= 80 ? '#4ADE80' : feedback.score >= 60 ? '#FCD34D' : 'var(--md-sys-color-error)',
-                        transition: 'width 0.8s ease-out',
+                        background: getScoreTone(feedback.score).color,
+                        transition: 'width 0.8s ease-out, background 0.4s ease',
                       }} />
                     </div>
                   </div>
@@ -769,9 +996,40 @@ export function DailyFermiScreen({ onBack, onReport }: DailyFermiScreenProps) {
                 )}
               </div>
 
-              <Button variant="default" size="md" block onClick={onBack}>
-                {t('common.back')}
-              </Button>
+              {/* CTA: ランキング & 戻る */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {onOpenRanking && (
+                  <button
+                    type="button"
+                    onClick={onOpenRanking}
+                    style={{
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                      padding: '14px 18px',
+                      borderRadius: 'var(--radius-md)',
+                      border: 'none',
+                      background: 'linear-gradient(135deg, #6C8EF5 0%, #5478E8 100%)',
+                      color: '#fff',
+                      fontSize: 15, fontWeight: 800, letterSpacing: '.01em',
+                      cursor: 'pointer',
+                      boxShadow: '0 6px 18px rgba(108,142,245,.32)',
+                      fontFamily: 'inherit',
+                    }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+                      <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+                      <path d="M4 22h16" />
+                      <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
+                      <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
+                      <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+                    </svg>
+                    ランキングを見る
+                  </button>
+                )}
+                <Button variant="default" size="md" block onClick={onBack}>
+                  {t('common.back')}
+                </Button>
+              </div>
             </div>
           )}
         </>
