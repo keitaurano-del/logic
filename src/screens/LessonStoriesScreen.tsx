@@ -4,7 +4,6 @@
  * モックアップ: lv3-lesson.html
  */
 import { useState, useMemo, useRef, useEffect } from 'react'
-import { v3 } from '../styles/tokensV3'
 import { CheckIcon, SparklesIcon, LightbulbIcon, BrainIcon, ClipboardListIcon } from '../icons'
 import type { LessonSlide } from '../lessonSlides'
 import { convertLessonToSlides } from '../lessonSlides'
@@ -330,7 +329,7 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
   if (slide.kind === 'hero') {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'flex-start' }}>
-        <div style={{ marginTop: 8, marginBottom: 24, borderRadius: 18, overflow: 'hidden', boxShadow: v3.shadow.hero }}>
+        <div style={{ marginTop: 8, marginBottom: 24, borderRadius: 18, overflow: 'hidden', boxShadow: 'var(--shadow-v3-hero)' }}>
           {slide.lessonId != null
             ? <LessonThumbnail lessonId={slide.lessonId} style={{ width: '100%', height: 200 }} />
             : <img src={slide.image} alt="" loading="lazy" style={{ width: '100%', height: 200, objectFit: 'cover', display: 'block' }} />
@@ -413,7 +412,7 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
                   disabled={answered}
                   role="checkbox"
                   aria-checked={isPicked}
-                  style={{ background: bg, color, borderRadius: 14, padding: '14px 18px', fontSize: 15, fontWeight: 600, cursor: answered ? 'default' : 'pointer', transition: v3.motion.tap, border: border === 'none' ? 'none' : border, display: 'flex', alignItems: 'center', gap: 10, WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation', font: 'inherit', textAlign: 'left', width: '100%', minHeight: 44 }}
+                  style={{ background: bg, color, borderRadius: 14, padding: '14px 18px', fontSize: 15, fontWeight: 600, cursor: answered ? 'default' : 'pointer', transition: 'var(--transition-tap)', border: border === 'none' ? 'none' : border, display: 'flex', alignItems: 'center', gap: 10, WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation', font: 'inherit', textAlign: 'left', width: '100%', minHeight: 44 }}
                 >
                   <div style={{ width: 20, height: 20, borderRadius: 6, border: `2px solid ${answered ? 'transparent' : isPicked ? 'var(--brand)' : 'var(--text-muted)'}`, background: isPicked && !answered ? 'var(--brand)' : answered && wasSelected && isCorrect ? 'var(--bg-primary)' + '30' : 'transparent', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {(isPicked && !answered) || (answered && wasSelected) ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={answered && wasSelected && isCorrect ? 'var(--bg-primary)' : 'var(--brand)'} strokeWidth="3" strokeLinecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> : null}
@@ -432,7 +431,7 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
                 disabled={answered}
                 role="radio"
                 aria-checked={isSelected ?? false}
-                style={{ background: bg, color, borderRadius: 14, padding: '14px 18px', fontSize: 15, fontWeight: 600, cursor: answered ? 'default' : 'pointer', transition: v3.motion.tap, WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation', border: 'none', font: 'inherit', textAlign: 'left', width: '100%', minHeight: 44 }}
+                style={{ background: bg, color, borderRadius: 14, padding: '14px 18px', fontSize: 15, fontWeight: 600, cursor: answered ? 'default' : 'pointer', transition: 'var(--transition-tap)', WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation', border: 'none', font: 'inherit', textAlign: 'left', width: '100%', minHeight: 44 }}
               >{c}</button>
             )
           })}

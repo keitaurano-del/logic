@@ -6,7 +6,6 @@
 import { useRef, useState } from 'react'
 import { FERMI_POOL, getDailyFermiIndex } from '../fermiData'
 import { getCardStats } from '../flashcardData'
-import { v3 } from '../styles/tokensV3'
 import { HomeCoachmark, useShouldShowHomeCoachmark } from '../tutorial/coachmark'
 import { PlacementCard } from '../tutorial/placementCard'
 import { hasCompletedPlacement } from '../placementData'
@@ -122,7 +121,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
     <div style={{ background: 'var(--bg-primary)', minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: 'var(--text-primary)' }}>
       {/* Navbar */}
       <div style={{ padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ fontFamily: v3.font.logo.family, fontSize: v3.font.logo.size, fontWeight: v3.font.logo.weight, letterSpacing: '-.02em' }}>
+        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 24, fontWeight: 800, letterSpacing: '-.02em' }}>
           Logic<span style={{ color: 'var(--brand)' }}>.</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -141,7 +140,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
 
         {/* 今日の1問 (Daily Fermi) */}
         {/* a11y: 外側 div は非インタラクティブ。中の「カード本体」と「別の問題」は兄弟の <button> として配置し、nested-interactive を回避 */}
-        <div style={{ position: 'relative', borderRadius: v3.radius.card, overflow: 'hidden', boxShadow: '0 14px 32px rgba(108,142,245,.32)', flexShrink: 0 }}>
+        <div style={{ position: 'relative', borderRadius: 'var(--radius-lg)', overflow: 'hidden', boxShadow: '0 14px 32px rgba(108,142,245,.32)', flexShrink: 0 }}>
           <button
             type="button"
             ref={dailyCardRef}
@@ -165,7 +164,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
                 <div style={{ width: 3, height: 3, borderRadius: '50%', background: 'rgba(255,255,255,.45)' }}></div>
                 <span>{t('home.dailyXp')}</span>
               </div>
-              <div style={{ background: 'var(--text-on-hero)', color: 'var(--brand)', borderRadius: v3.radius.pill, padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700, boxShadow: '0 6px 18px rgba(0,0,0,.14)' }}>
+              <div style={{ background: 'var(--text-on-hero)', color: 'var(--brand)', borderRadius: 'var(--radius-pill)', padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700, boxShadow: '0 6px 18px rgba(0,0,0,.14)' }}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill={'var(--brand)'} aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>
                 {t('home.dailyChallenge')}
               </div>
@@ -207,18 +206,18 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
           type="button"
           onClick={() => onOpenLesson(recommendedLesson.id)}
           aria-label={`${recommendedLesson.category} ${recommendedLesson.level}: ${recommendedLesson.title}`}
-          style={{ background: 'var(--bg-card)', borderRadius: v3.radius.card, overflow: 'hidden', cursor: 'pointer', boxShadow: v3.shadow.card, flexShrink: 0, border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%' }}
+          style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', cursor: 'pointer', boxShadow: 'var(--shadow-v3-card-inset)', flexShrink: 0, border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%' }}
         >
           <div style={{ height: 160, position: 'relative', overflow: 'hidden' }}>
             <img src={recommendedLesson.image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
           </div>
           <div style={{ padding: '18px 20px 20px' }}>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: 'var(--accent-soft)', borderRadius: v3.radius.pill, padding: '4px 11px', fontSize: 14, fontWeight: 600, color: 'var(--brand)', marginBottom: 10 }}>{recommendedLesson.category} · {recommendedLesson.level}</span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: 'var(--accent-soft)', borderRadius: 'var(--radius-pill)', padding: '4px 11px', fontSize: 14, fontWeight: 600, color: 'var(--brand)', marginBottom: 10 }}>{recommendedLesson.category} · {recommendedLesson.level}</span>
             <div style={{ fontSize: 19, fontWeight: 700, marginBottom: 6, lineHeight: 1.35, letterSpacing: '-.005em' }}>{recommendedLesson.title}</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--text-secondary)', fontSize: 14, fontWeight: 500, marginBottom: 16 }}>
               <span>+50 XP</span>
             </div>
-            <div style={{ background: 'var(--brand)', color: 'var(--accent-fg)', borderRadius: v3.radius.pill, padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700 }}>
+            <div style={{ background: 'var(--brand)', color: 'var(--accent-fg)', borderRadius: 'var(--radius-pill)', padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700 }}>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>
               {t('home.lessonStart')}
             </div>
@@ -289,10 +288,10 @@ function ReviewCard({ due, weak, total, onOpen }: { due: number; weak: number; t
       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpen(primaryMode) } }}
       style={{
         background: 'var(--bg-card)',
-        borderRadius: v3.radius.card,
+        borderRadius: 'var(--radius-lg)',
         padding: '18px 20px',
         cursor: 'pointer',
-        boxShadow: v3.shadow.card,
+        boxShadow: 'var(--shadow-v3-card-inset)',
         flexShrink: 0,
         position: 'relative',
         overflow: 'hidden',
@@ -331,7 +330,7 @@ function ReviewCard({ due, weak, total, onOpen }: { due: number; weak: number; t
             width: '100%',
             background: 'transparent',
             border: `1px solid ${'var(--border)'}`,
-            borderRadius: v3.radius.pill,
+            borderRadius: 'var(--radius-pill)',
             padding: '10px 14px',
             color: 'var(--text-primary)',
             fontSize: 14,
@@ -349,7 +348,7 @@ function ReviewCard({ due, weak, total, onOpen }: { due: number; weak: number; t
 
 function AILargeCard({ image, name, sub, onClick, beta }: { image: string; name: string; sub: string; onClick: () => void; beta?: boolean }) {
   return (
-    <button type="button" onClick={onClick} aria-label={`${name}: ${sub}`} style={{ background: 'var(--bg-card)', borderRadius: v3.radius.card, overflow: 'hidden', cursor: 'pointer', boxShadow: v3.shadow.card, flexShrink: 0, position: 'relative', border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%', padding: 0 }}>
+    <button type="button" onClick={onClick} aria-label={`${name}: ${sub}`} style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', cursor: 'pointer', boxShadow: 'var(--shadow-v3-card-inset)', flexShrink: 0, position: 'relative', border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%', padding: 0 }}>
       <div style={{ height: 140, overflow: 'hidden' }}>
         <img src={image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
       </div>

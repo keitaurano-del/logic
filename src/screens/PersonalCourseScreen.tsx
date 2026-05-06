@@ -6,7 +6,6 @@
 import { loadPersonalCourse, axisLabel, levelLabel } from '../placementData'
 import { getAllLessonsFlat, type LessonData } from '../lessonData'
 import { getCompletedLessons } from '../stats'
-import { v3 } from '../styles/tokensV3'
 import { Header } from '../components/platform/Header'
 
 interface PersonalCourseScreenProps {
@@ -54,7 +53,7 @@ export function PersonalCourseScreen({ onStartLesson, onExit, onBack }: Personal
 
       <div style={{ flex: 1, padding: '0 16px 32px', display: 'flex', flexDirection: 'column', gap: 14 }}>
         {/* コース概要カード */}
-        <div style={{ background: 'var(--bg-card)', borderRadius: 16, padding: '16px 18px', boxShadow: v3.shadow.card, border: `1.5px solid color-mix(in srgb, var(--brand) 19%, transparent)` }}>
+        <div style={{ background: 'var(--bg-card)', borderRadius: 16, padding: '16px 18px', boxShadow: 'var(--shadow-v3-card-inset)', border: `1.5px solid color-mix(in srgb, var(--brand) 19%, transparent)` }}>
           <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: 10 }}>{course.description}</div>
           {course.axisOrder.length > 0 && (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 12 }}>
@@ -78,7 +77,7 @@ export function PersonalCourseScreen({ onStartLesson, onExit, onBack }: Personal
         </div>
 
         {/* レッスン一覧 */}
-        <div style={{ background: 'var(--bg-card)', borderRadius: 16, overflow: 'hidden', boxShadow: v3.shadow.card }}>
+        <div style={{ background: 'var(--bg-card)', borderRadius: 16, overflow: 'hidden', boxShadow: 'var(--shadow-v3-card-inset)' }}>
           {lessons.map((lesson, idx) => {
             const isDone = completed.has(`lesson-${lesson.id}`)
             const isNext = firstUndone?.id === lesson.id

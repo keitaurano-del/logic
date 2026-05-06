@@ -3,7 +3,6 @@
  * SCRUM-181: 未ログインユーザーへの自然なログイン誘導
  */
 import type { ReactNode } from 'react'
-import { v3 } from '../styles/tokensV3'
 import { CloudIcon, BarChartIcon, BotIcon } from '../icons'
 
 interface LoginGateProps {
@@ -64,7 +63,7 @@ export function LoginGate({ featureName, featureIcon, featureDesc, onLogin, onBa
       {/* メリット */}
       <div style={{
         width: '100%', background: 'var(--bg-card)',
-        borderRadius: v3.radius.card, padding: '16px 20px',
+        borderRadius: 'var(--radius-lg)', padding: '16px 20px',
         marginBottom: 28, display: 'flex', flexDirection: 'column', gap: 12,
       }}>
         {[

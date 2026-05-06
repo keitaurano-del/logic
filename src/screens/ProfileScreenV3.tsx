@@ -8,7 +8,6 @@ import { getAllLessonsFlat } from '../lessonData'
 import { getCurrentLevel, getXpProgress } from './homeHelpers'
 import { logout } from '../supabase'
 import { getSubscriptionState, isPremiumPlan, isStandardPlan, daysLeftInTrial } from '../subscription'
-import { v3 } from '../styles/tokensV3'
 import { getStudyDates as _getStudyDatesArr } from '../stats'
 import LessonIcon from '../LessonIcon'
 import { StarIcon } from '../icons'
@@ -93,14 +92,14 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
         <StatCard val={xp.toLocaleString()} label={t('profile.totalXp')} onClick={() => setSheet('xp')} />
       </div>
 
-      <div style={{ flex: 1, padding: '16px 16px 100px', display: 'flex', flexDirection: 'column', gap: v3.spacing.gap }}>
+      <div style={{ flex: 1, padding: '16px 16px 100px', display: 'flex', flexDirection: 'column', gap: 14 }}>
         {/* 今週の学習サマリー */}
         {(() => {
           const week = getStudiedThisWeek()
           const studiedCount = week.filter(Boolean).length
           const todayDow = (new Date().getDay() + 6) % 7
           return (
-            <div style={{ background: 'var(--bg-card)', borderRadius: v3.radius.card, padding: 18, boxShadow: v3.shadow.card, border: '1px solid rgba(255,255,255,.06)' }}>
+            <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', padding: 18, boxShadow: 'var(--shadow-v3-card-inset)', border: '1px solid rgba(255,255,255,.06)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
                 <div style={{ fontSize: 14, color: 'var(--text-on-hero)', fontWeight: 700 }}>{t('profile.weekSummary')}</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, fontWeight: 800, color: studiedCount > 0 ? '#FF8C00' : 'var(--text-muted)' }}>
@@ -146,7 +145,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
             style={{
               background: `linear-gradient(135deg, ${'var(--accent-soft)'} 0%, rgba(108,142,245,.1) 100%)`,
               border: `1px solid color-mix(in srgb, var(--brand) 25%, transparent)`,
-              borderRadius: v3.radius.card, padding: '16px 18px',
+              borderRadius: 'var(--radius-lg)', padding: '16px 18px',
               cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14,
               color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%',
             }}>
@@ -162,7 +161,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
         )}
 
         {/* 設定 */}
-        <div style={{ background: 'var(--bg-card)', borderRadius: v3.radius.card, overflow: 'hidden', boxShadow: v3.shadow.card }}>
+        <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', boxShadow: 'var(--shadow-v3-card-inset)' }}>
           <SettingRow icon="user" name={t('profile.account')} sub={userName || t('home.guestName')} onClick={() => onOpenSettings('account')} />
           <SettingRow icon="bell" name={t('profile.notifications')} sub="" onClick={() => onOpenSettings('notifications')} />
           <SettingRow icon="card" name={t('profile.plan')} sub={getPlanLabel()} onClick={onOpenPricing} />

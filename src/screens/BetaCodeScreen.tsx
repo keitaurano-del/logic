@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { v3 } from '../styles/tokensV3'
 
 // ローカル検証用ベータコードリスト（本番では Supabase DB に繋ぐ）
 const VALID_BETA_CODES = ['LOGIC2026', 'EARLYBIRD', 'KEITA0429']
@@ -48,17 +47,17 @@ export function BetaCodeScreen({ onSuccess, onSkip }: BetaCodeScreenProps) {
 
   const cardStyle: React.CSSProperties = {
     background: 'var(--bg-card)',
-    borderRadius: v3.radius.card,
+    borderRadius: 'var(--radius-lg)',
     padding: '32px 28px',
     width: '100%',
     maxWidth: 400,
-    boxShadow: v3.shadow.hero,
+    boxShadow: 'var(--shadow-v3-hero)',
   }
 
   const headingStyle: React.CSSProperties = {
     color: 'var(--text-primary)',
-    fontSize: v3.font.h1.size,
-    fontWeight: v3.font.h1.weight,
+    fontSize: 22,
+    fontWeight: 700,
     fontFamily: "'Inter Tight', sans-serif",
     margin: '0 0 8px 0',
     textAlign: 'center',
@@ -66,8 +65,8 @@ export function BetaCodeScreen({ onSuccess, onSkip }: BetaCodeScreenProps) {
 
   const subStyle: React.CSSProperties = {
     color: 'var(--text-secondary)',
-    fontSize: v3.font.body.size,
-    fontWeight: v3.font.body.weight,
+    fontSize: 15,
+    fontWeight: 500,
     textAlign: 'center',
     margin: '0 0 28px 0',
     lineHeight: 1.6,
@@ -75,8 +74,8 @@ export function BetaCodeScreen({ onSuccess, onSkip }: BetaCodeScreenProps) {
 
   const labelStyle: React.CSSProperties = {
     color: 'var(--text-secondary)',
-    fontSize: v3.font.label.size,
-    fontWeight: v3.font.label.weight,
+    fontSize: 11,
+    fontWeight: 600,
     letterSpacing: '0.08em',
     textTransform: 'uppercase',
     marginBottom: 8,
@@ -105,15 +104,15 @@ export function BetaCodeScreen({ onSuccess, onSkip }: BetaCodeScreenProps) {
     padding: '14px 20px',
     marginTop: 20,
     border: 'none',
-    borderRadius: v3.radius.pill,
+    borderRadius: 'var(--radius-pill)',
     background: loading ? 'var(--accent-soft)' : 'var(--brand)',
     color: loading ? 'var(--text-secondary)' : '#082121',
     fontSize: 16,
     fontWeight: 700,
     fontFamily: "'Inter Tight', sans-serif",
     cursor: loading ? 'not-allowed' : 'pointer',
-    boxShadow: loading ? 'none' : v3.shadow.cta,
-    transition: v3.motion.tap,
+    boxShadow: loading ? 'none' : 'var(--shadow-cta)',
+    transition: 'var(--transition-tap)',
   }
 
   const errorStyle: React.CSSProperties = {
@@ -149,7 +148,7 @@ export function BetaCodeScreen({ onSuccess, onSkip }: BetaCodeScreenProps) {
     fontWeight: 700,
     letterSpacing: '0.1em',
     textTransform: 'uppercase',
-    borderRadius: v3.radius.chip,
+    borderRadius: 'var(--radius-chip)',
     padding: '4px 10px',
     marginBottom: 20,
   }

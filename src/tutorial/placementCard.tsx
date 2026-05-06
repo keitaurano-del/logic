@@ -1,7 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { useState } from 'react'
 import { tutorial } from './tutorialStorage'
-import { v3 } from '../styles/tokensV3'
 
 interface PlacementCardProps {
   onTakeTest: () => void
@@ -25,9 +24,9 @@ export function PlacementCard({ onTakeTest }: PlacementCardProps) {
   return (
     <div style={{
       background: 'var(--bg-card)',
-      borderRadius: v3.radius.card,
+      borderRadius: 'var(--radius-lg)',
       padding: '18px 18px 14px',
-      boxShadow: v3.shadow.card,
+      boxShadow: 'var(--shadow-v3-card-inset)',
       border: `1.5px solid color-mix(in srgb, var(--brand) 19%, transparent)`,
     }}>
       {/* ヘッダー */}

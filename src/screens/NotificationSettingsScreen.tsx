@@ -4,7 +4,6 @@ import {
   loadReminderPref, scheduleDailyReminder,
   cancelDailyReminder, requestNotificationPermission, isNative,
 } from '../notifications'
-import { v3 } from '../styles/tokensV3'
 import { Switch } from '../components/Switch'
 
 interface Props {
@@ -105,7 +104,7 @@ export function NotificationSettingsScreen({ onBack }: Props) {
         {/* ── 毎日リマインダー ── */}
         <div>
           <SectionLabel>毎日のリマインダー</SectionLabel>
-          <div style={{ background: 'var(--bg-card)', borderRadius: 16, overflow: 'hidden', boxShadow: v3.shadow.card }}>
+          <div style={{ background: 'var(--bg-card)', borderRadius: 16, overflow: 'hidden', boxShadow: 'var(--shadow-v3-card-inset)' }}>
             <NotifRow
               label="毎日リマインダー"
               sub="設定した時刻に学習を促す通知が届きます"
@@ -162,7 +161,7 @@ export function NotificationSettingsScreen({ onBack }: Props) {
         {/* ── 学習モチベーション ── */}
         <div>
           <SectionLabel>学習モチベーション</SectionLabel>
-          <div style={{ background: 'var(--bg-card)', borderRadius: 16, overflow: 'hidden', boxShadow: v3.shadow.card }}>
+          <div style={{ background: 'var(--bg-card)', borderRadius: 16, overflow: 'hidden', boxShadow: 'var(--shadow-v3-card-inset)' }}>
             <NotifRow
               label="連続学習アラート"
               sub="ストリークが途切れそうなときに通知"
@@ -188,7 +187,7 @@ export function NotificationSettingsScreen({ onBack }: Props) {
         {/* ── コンテンツ ── */}
         <div>
           <SectionLabel>コンテンツ</SectionLabel>
-          <div style={{ background: 'var(--bg-card)', borderRadius: 16, overflow: 'hidden', boxShadow: v3.shadow.card }}>
+          <div style={{ background: 'var(--bg-card)', borderRadius: 16, overflow: 'hidden', boxShadow: 'var(--shadow-v3-card-inset)' }}>
             <NotifRow
               label="新レッスン公開"
               sub="新しいレッスンが追加されたときに通知"

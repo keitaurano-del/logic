@@ -5,7 +5,6 @@
  */
 import { useState, useMemo } from 'react'
 import type { ReactNode } from 'react'
-import { v3 } from '../styles/tokensV3'
 import { Header } from '../components/platform/Header'
 import { ActionSheet } from '../components/ActionSheet'
 import { LessonThumbnail } from '../components/LessonThumbnail'
@@ -311,7 +310,7 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
         />
       )}
 
-      {!showSearch && <div style={{ flex: 1, padding: '0 16px 80px', display: 'flex', flexDirection: 'column', gap: v3.spacing.gap }}>
+      {!showSearch && <div style={{ flex: 1, padding: '0 16px 80px', display: 'flex', flexDirection: 'column', gap: 14 }}>
 
         <div style={{ padding: '4px 4px 8px' }}>
           <div style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.45, letterSpacing: '-.005em', whiteSpace: 'pre-line' }}>{t('roadmap.todayQuestion')}</div>
@@ -730,7 +729,7 @@ function CategoryCard({ name, meta, progress, onClick, image }: { name: string; 
   return (
     <button type="button" className="cat-tile" onClick={onClick}
       aria-label={`${name}: ${meta}${progress ? ` (${progress})` : ''}`}
-      style={{ background: 'var(--bg-card)', borderRadius: v3.radius.card, overflow: 'hidden', cursor: 'pointer', boxShadow: v3.shadow.card, display: 'flex', flexDirection: 'column', border: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', padding: 0 }}>
+      style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', cursor: 'pointer', boxShadow: 'var(--shadow-v3-card-inset)', display: 'flex', flexDirection: 'column', border: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', padding: 0 }}>
       {image && (
         <div style={{ height: 80, overflow: 'hidden', flexShrink: 0 }}>
           <img src={image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
@@ -784,7 +783,7 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
           const firstUndone = courseLessons.find(l => !completed.has(`lesson-${l.id}`))
 
           return (
-            <div key={course.id} style={{ background: 'var(--bg-card)', borderRadius: 16, overflow: 'hidden', boxShadow: v3.shadow.card }}>
+            <div key={course.id} style={{ background: 'var(--bg-card)', borderRadius: 16, overflow: 'hidden', boxShadow: 'var(--shadow-v3-card-inset)' }}>
               {/* コースヘッダー */}
               <div style={{ padding: '14px 16px 10px', borderBottom: `1px solid ${'var(--border)'}` }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4, flexWrap: 'wrap' }}>
@@ -859,7 +858,7 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
           return (
             <button type="button" key={lesson.id} onClick={() => onOpenLesson(lesson.id)}
               aria-label={isDone ? t('roadmap.lessonAriaDone', { title: lesson.title }) : t('roadmap.lessonAria', { title: lesson.title })}
-              style={{ background: 'var(--bg-card)', borderRadius: 14, padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'stretch', overflow: 'hidden', boxShadow: v3.shadow.card, border: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%' }}>
+              style={{ background: 'var(--bg-card)', borderRadius: 14, padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'stretch', overflow: 'hidden', boxShadow: 'var(--shadow-v3-card-inset)', border: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%' }}>
               <div style={{ width: 80, height: 80, flexShrink: 0 }}><LessonThumbnail lessonId={lesson.id} size={80} /></div>
               <div style={{ padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0 }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
@@ -904,7 +903,7 @@ function PersonalCourseBanner({
           background: 'var(--bg-card)',
           borderRadius: 16,
           padding: '14px 16px',
-          boxShadow: v3.shadow.card,
+          boxShadow: 'var(--shadow-v3-card-inset)',
           border: `1.5px dashed color-mix(in srgb, var(--brand) 31%, transparent)`,
           cursor: 'pointer',
           display: 'flex',
@@ -952,9 +951,9 @@ function PersonalCourseBanner({
         background: `linear-gradient(135deg, color-mix(in srgb, var(--brand) 96%, transparent), color-mix(in srgb, var(--brand) 75%, transparent))`,
         borderRadius: 16,
         padding: '16px 18px',
-        boxShadow: v3.shadow.card,
+        boxShadow: 'var(--shadow-v3-card-inset)',
         cursor: 'pointer',
-        color: v3.m3.onPrimary,
+        color: 'var(--text-on-hero)',
         position: 'relative',
         overflow: 'hidden',
         border: 'none',
@@ -975,7 +974,7 @@ function PersonalCourseBanner({
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
         <div style={{ flex: 1, height: 4, background: 'rgba(10,31,77,0.20)', borderRadius: 2, overflow: 'hidden' }}>
-          <div style={{ height: '100%', width: `${(completedCount / Math.max(1, total)) * 100}%`, background: v3.m3.onPrimary, borderRadius: 2, transition: 'width .3s' }} />
+          <div style={{ height: '100%', width: `${(completedCount / Math.max(1, total)) * 100}%`, background: 'var(--text-on-hero)', borderRadius: 2, transition: 'width .3s' }} />
         </div>
         <div style={{ fontSize: 12, fontWeight: 700 }}>{completedCount}/{total}</div>
       </div>

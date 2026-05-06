@@ -5,7 +5,6 @@ import { loadPlacementResult } from '../placementData'
 import { allLessons } from '../lessonData'
 import { Header } from '../components/platform/Header'
 import { getAIGenDailyLimit, getAIGenDailyCount, incrementAIGenDailyCount, isPremiumPlan, isStandardPlan } from '../subscription'
-import { v3 } from '../styles/tokensV3'
 import { addXP } from '../stats'
 
 interface AIProblemGenScreenProps {
@@ -281,7 +280,7 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
             <button
               onClick={() => handleGenerate(recommendPrompt)}
               disabled={generating || isAtLimit || !canUse || !recommendPrompt}
-              style={{ width: '100%', background: generating || isAtLimit || !canUse ? 'var(--bg-card)' : `linear-gradient(135deg, ${'var(--brand)'} 0%, var(--brand-light) 100%)`, color: generating || isAtLimit || !canUse ? 'var(--text-muted)' : 'var(--accent-fg)', border: 'none', borderRadius: 14, padding: '16px 20px', fontSize: 15, fontWeight: 700, cursor: generating || isAtLimit || !canUse ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: 12, boxShadow: generating || isAtLimit || !canUse ? 'none' : v3.shadow.hero }}>
+              style={{ width: '100%', background: generating || isAtLimit || !canUse ? 'var(--bg-card)' : `linear-gradient(135deg, ${'var(--brand)'} 0%, var(--brand-light) 100%)`, color: generating || isAtLimit || !canUse ? 'var(--text-muted)' : 'var(--accent-fg)', border: 'none', borderRadius: 14, padding: '16px 20px', fontSize: 15, fontWeight: 700, cursor: generating || isAtLimit || !canUse ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: 12, boxShadow: generating || isAtLimit || !canUse ? 'none' : 'var(--shadow-v3-hero)' }}>
               <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
               </div>
@@ -293,7 +292,7 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
             </button>
 
             {/* 自由テキスト入力（最上部） */}
-            <div style={{ background: 'var(--bg-card)', borderRadius: v3.radius.card, padding: '16px 18px' }}>
+            <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', padding: '16px 18px' }}>
               <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>どんな問題を作る？</div>
               <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 10 }}>テーマや条件を自由に入力してね</div>
               <textarea
@@ -337,7 +336,7 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
 
             {/* おすすめ（弱点ベース） */}
             {weakness.length > 0 && (
-              <div style={{ background: 'var(--bg-card)', borderRadius: v3.radius.card, padding: '16px 18px' }}>
+              <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', padding: '16px 18px' }}>
                 <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '.06em', marginBottom: 14 }}>弱点分析</div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 16 }}>
                   {weakness.slice(0, 3).map((w) => {
@@ -386,7 +385,7 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
               </div>
             ) : (
               problems.map(p => (
-                <div key={p.id} style={{ background: 'var(--bg-card)', borderRadius: v3.radius.card, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div key={p.id} style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.title}</div>
                     <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{p.steps?.length ?? 0}問 · {new Date(p.createdAt).toLocaleDateString('ja-JP')}</div>

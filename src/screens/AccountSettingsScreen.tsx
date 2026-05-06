@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { logout } from '../supabase'
 import { getDisplayName, setDisplayName } from '../stats'
 import { updateDisplayName } from '../supabase'
-import { v3 } from '../styles/tokensV3'
 import { CheckIcon } from '../icons'
 import { Header } from '../components/platform/Header'
 import { confirm as confirmDialog } from '../platform/dialog'
@@ -80,7 +79,7 @@ export function AccountSettingsScreen({ onBack, currentUser, onOpenLogin, onLogo
 
         {/* 表示名 */}
         {currentUser && (
-          <div style={{ background: 'var(--bg-card)', borderRadius: v3.radius.card, overflow: 'hidden' }}>
+          <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
             <div style={{ padding: '14px 18px', borderBottom: `1px solid ${'var(--border)'}` }}>
               <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '.06em', marginBottom: 6 }}>表示名</div>
               {editingName ? (
@@ -136,7 +135,7 @@ export function AccountSettingsScreen({ onBack, currentUser, onOpenLogin, onLogo
         )}
 
         {/* ログイン/ログアウト */}
-        <div style={{ background: 'var(--bg-card)', borderRadius: v3.radius.card, overflow: 'hidden' }}>
+        <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
           {currentUser ? (
             <button
               type="button"
