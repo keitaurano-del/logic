@@ -201,6 +201,12 @@ function AppV3() {
     return () => window.removeEventListener('popstate', onPop)
   }, [])
 
+  // v3 デザイン用テーマ class を body に付与（tokens.css の .theme-v3 が活性化）
+  useEffect(() => {
+    document.body.classList.add('theme-v3')
+    return () => { document.body.classList.remove('theme-v3') }
+  }, [])
+
   useEffect(() => {
     applyTheme(loadTheme())
     // SplashScreen は launchAutoHide:false 設定。auth 解決後または 1500ms タイムアウトで必ず消す。

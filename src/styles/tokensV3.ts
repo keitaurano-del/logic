@@ -43,21 +43,25 @@ export const tokensV3 = {
     surfaceTint:               '#6C8EF5',
   },
 
-  // ── Legacy alias (deprecated, use m3.* instead) ──
+  // ── Legacy alias (Phase 4: tokens.css の .theme-v3 を単一の情報源として参照) ──
+  // CSS 変数経由で値を解決するため、ここを変えるのではなく
+  // src/styles/tokens.css の .theme-v3 ブロックを編集する。
+  // accent / warm は文字列連結 (`${v3.color.accent}40` 等) との互換性のため
+  // hex のまま残す（将来 color-mix() に移行）。
   color: {
-    bg: '#1A1F2E',
-    card: '#252C40',
-    card2: '#2E3652',
-    cardSoft: '#1E2438',
-    accent: '#6C8EF5',
-    accentSoft: 'rgba(108,142,245,.16)',
-    accentGlow: 'rgba(108,142,245,.25)',
-    warm: '#F5BFA0',
-    warmSoft: 'rgba(245,191,160,.16)',
-    text: '#E8ECF4',
-    text2: '#8FA3C8',
-    text3: '#6B82A8',
-    line: 'rgba(255,255,255,.09)',
+    bg:         'var(--bg-primary)',
+    card:       'var(--bg-card)',
+    card2:      'var(--bg-elevated)',
+    cardSoft:   'var(--bg-tertiary)',
+    accent:     '#6C8EF5',
+    accentSoft: 'var(--accent-soft)',
+    accentGlow: 'var(--accent-glow)',
+    warm:       '#F5BFA0',
+    warmSoft:   'rgba(245,191,160,.16)',
+    text:       'var(--text-primary)',
+    text2:      'var(--text-secondary)',
+    text3:      'var(--text-muted)',
+    line:       'var(--border)',
   },
   radius: {
     card: 16, // shape-lg, was 20
