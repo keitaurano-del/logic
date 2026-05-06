@@ -224,7 +224,8 @@
   --shimmer-size: 200% auto;
 }
 
-/* v3 design — Slate Blue navy surfaces (single source of truth, mirrors tokensV3.color.*).
+/* v3 design — Slate Blue navy surfaces.
+ * Phase 4-7 で tokensV3.ts は完全削除され、tokens.css が単一情報源になった。
  * `body.theme-v3` で .mode-dark より高い特異度にして必ず勝つようにする。
  */
 body.theme-v3 {
