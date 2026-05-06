@@ -2,7 +2,7 @@
  * ProfileScreenV3 - Logic v3 redesign
  * 仕様: docs/DESIGN_V3.md §3.6
  */
-import { useState } from 'react'
+import { useState, useId } from 'react'
 import { getCompletedCount, getLessonStreak, getXp, getCompletedLessons, getXpLogThisMonth, XP_EVENT_LABEL } from '../stats'
 import { getAllLessonsFlat } from '../lessonData'
 import { getCurrentLevel, getXpProgress } from './homeHelpers'
@@ -54,7 +54,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
   return (
     <div style={{ background: v3.color.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: v3.color.text }}>
       {/* Hero */}
-      <div style={{ background: 'linear-gradient(160deg, #1A1F2E 0%, #1E2540 70%, #252C40 100%)', padding: 'calc(env(safe-area-inset-top, 44px) + 14px) 20px 28px', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ background: 'linear-gradient(160deg, #1A1F2E 0%, #1E2540 70%, #1A2238 100%)', padding: 'calc(env(safe-area-inset-top, 44px) + 14px) 20px 56px', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', right: -50, top: -50, width: 200, height: 200, borderRadius: '50%', background: 'rgba(108,142,245,0.10)', filter: 'blur(40px)', pointerEvents: 'none' }}></div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 18, position: 'relative', zIndex: 1 }}>
           <div className="profile-avatar" style={{ width: 64, height: 64, borderRadius: '50%', background: `linear-gradient(135deg, ${v3.color.accent}, #9BB3FA)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Inter Tight', sans-serif", fontSize: 26, fontWeight: 900, color: '#FFFFFF', boxShadow: `0 0 24px rgba(108,142,245,0.4)` }}>
@@ -84,30 +84,57 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
       </div>
 
       {/* Stats grid — タップで詳細シート */}
-      <div className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8, marginTop: -32, position: 'relative', zIndex: 2, padding: '0 20px' }}>
-        <StatCard val={String(streak)} label="連続学習日数" onClick={() => setSheet('streak')} />
+      <div className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8, marginTop: -28, position: 'relative', zIndex: 2, padding: '0 20px' }}>
+        <StatCard val={String(streak)} label="連続学習日数" highlight={streak > 0} onClick={() => setSheet('streak')} />
         <StatCard val={String(completed)} label="完了レッスン" onClick={() => setSheet('lessons')} />
         <StatCard val={xp.toLocaleString()} label="総XP" onClick={() => setSheet('xp')} />
       </div>
 
       <div style={{ flex: 1, padding: '16px 16px 100px', display: 'flex', flexDirection: 'column', gap: v3.spacing.gap }}>
         {/* 今週の学習サマリー */}
-        <div style={{ background: v3.color.card, borderRadius: v3.radius.card, padding: 18, boxShadow: v3.shadow.card }}>
-          <div style={{ fontSize: 14, color: '#FFFFFF', fontWeight: 600, marginBottom: 12 }}>今週の学習サマリー</div>
-          <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, height: 70, marginBottom: 8 }}>
-            {['月', '火', '水', '木', '金', '土', '日'].map((d, i) => {
-              const studied = getStudiedThisWeek()[i]
-              return (
-                <div key={d} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-                  <div style={{ flex: 1, width: '100%', display: 'flex', alignItems: 'flex-end' }}>
-                    <div style={{ width: '100%', height: studied ? '100%' : '20%', minHeight: 8, background: studied ? v3.color.accent : v3.color.cardSoft, borderRadius: 5 }}></div>
-                  </div>
-                  <span style={{ fontSize: 14, color: v3.color.text2, fontWeight: 500 }}>{d}</span>
+        {(() => {
+          const week = getStudiedThisWeek()
+          const studiedCount = week.filter(Boolean).length
+          const todayDow = (new Date().getDay() + 6) % 7
+          return (
+            <div style={{ background: v3.color.card, borderRadius: v3.radius.card, padding: 18, boxShadow: v3.shadow.card, border: '1px solid rgba(255,255,255,.06)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+                <div style={{ fontSize: 14, color: '#FFFFFF', fontWeight: 700 }}>今週の学習サマリー</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, fontWeight: 800, color: studiedCount > 0 ? '#FF8C00' : v3.color.text3 }}>
+                  <FlameIcon size={16} dim={studiedCount === 0} />
+                  <span>{studiedCount}/7日</span>
                 </div>
-              )
-            })}
-          </div>
-        </div>
+              </div>
+              <div style={{ display: 'flex', gap: 6 }}>
+                {['月', '火', '水', '木', '金', '土', '日'].map((d, i) => {
+                  const studied = week[i]
+                  const isToday = i === todayDow
+                  return (
+                    <div key={d} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+                      <div style={{
+                        width: '100%',
+                        aspectRatio: '1 / 1',
+                        borderRadius: 12,
+                        background: studied ? 'linear-gradient(160deg, rgba(255,140,0,.18) 0%, rgba(255,61,0,.10) 100%)' : v3.color.cardSoft,
+                        border: isToday ? `1.5px solid ${v3.color.accent}` : '1px solid rgba(255,255,255,.04)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                        {studied ? (
+                          <FlameIcon size={26} />
+                        ) : (
+                          <div style={{ width: 6, height: 6, borderRadius: '50%', background: v3.color.text3, opacity: .5 }} />
+                        )}
+                      </div>
+                      <span style={{ fontSize: 12, color: studied ? '#FFFFFF' : v3.color.text3, fontWeight: studied ? 700 : 500 }}>{d}</span>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )
+        })()}
 
         {/* 実力診断テスト */}
         {onOpenPlacementTest && (
@@ -297,18 +324,90 @@ function getStudiedThisWeek(): boolean[] {
   })
 }
 
-function StatCard({ val, label, onClick }: { val: string; label: string; onClick: () => void }) {
+function StatCard({ val, label, onClick, highlight }: { val: string; label: string; onClick: () => void; highlight?: boolean }) {
   return (
     <button
       type="button"
       className="stat"
       onClick={onClick}
-      style={{ background: v3.color.card, borderRadius: 16, padding: '14px 8px', textAlign: 'center', boxShadow: '0 4px 16px rgba(0,0,0,.18)', cursor: 'pointer', position: 'relative', border: 'none', font: 'inherit', color: 'inherit', width: '100%' }}
+      style={{ background: v3.color.card, borderRadius: 16, padding: '14px 8px', textAlign: 'center', boxShadow: '0 6px 20px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.05)', cursor: 'pointer', position: 'relative', border: '1px solid rgba(255,255,255,.06)', font: 'inherit', color: 'inherit', width: '100%' }}
     >
-      <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, color: v3.color.accent, letterSpacing: '-.03em', lineHeight: 1 }}>{val}</div>
+      <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, color: v3.color.accent, letterSpacing: '-.03em', lineHeight: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+        {highlight && <FlameIcon size={18} />}
+        {val}
+      </div>
       <div style={{ fontSize: 11, fontWeight: 600, color: v3.color.text2, marginTop: 5 }}>{label}</div>
       <div style={{ position: 'absolute', bottom: 6, right: 8, fontSize: 10, color: v3.color.text3 }}>›</div>
     </button>
+  )
+}
+
+function FlameIcon({ size = 20, dim = false }: { size?: number; dim?: boolean }) {
+  const uid = useId()
+  const outerId = `pf-flame-out-${uid}`
+  const innerId = `pf-flame-in-${uid}`
+  const coreId = `pf-flame-core-${uid}`
+
+  if (dim) {
+    return (
+      <svg width={size} height={size} viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <path
+          d="M19 2.5 C17.5 5 18.5 7.5 18 10 C20.5 9 23 11.5 24 15 C26 18.5 25.5 23.5 22.5 26.5 C18.5 30 12 30 8 26 C5 23 4 17.5 6 13.5 C7.5 11 10 10 12 8 C11 5.5 13 3 15.5 2 C15.5 4 16.5 4.5 18 3 C18.5 2 18.5 2 19 2.5 Z"
+          fill="#2E3550"
+          stroke="#3F4760"
+          strokeWidth="1"
+        />
+        <path
+          d="M16.5 12 C14.5 14.5 13 17 13.5 20 C14 23 16.5 23.5 18 22.5 C20.5 21 21 17.5 19 14.5 C18 13 17 12 16.5 12 Z"
+          fill="#3F4760"
+        />
+      </svg>
+    )
+  }
+
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 32 32"
+      fill="none"
+      aria-hidden="true"
+      style={{ filter: 'drop-shadow(0 2px 8px rgba(255,107,0,.55))' }}
+    >
+      <defs>
+        <linearGradient id={outerId} x1="16" y1="1" x2="16" y2="30" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#FFC42E" />
+          <stop offset=".30" stopColor="#FF8A1A" />
+          <stop offset=".70" stopColor="#FF3D00" />
+          <stop offset="1" stopColor="#9F1A0B" />
+        </linearGradient>
+        <linearGradient id={innerId} x1="16" y1="10" x2="16" y2="26" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#FFF176" />
+          <stop offset=".5" stopColor="#FFB300" />
+          <stop offset="1" stopColor="#FF6F00" stopOpacity=".7" />
+        </linearGradient>
+        <radialGradient id={coreId} cx="16.5" cy="21" r="3.5" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#FFFFFF" />
+          <stop offset=".4" stopColor="#FFF59D" />
+          <stop offset="1" stopColor="#FFEB3B" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+
+      {/* Outer flame: asymmetric tear-drop with curl on the top */}
+      <path
+        d="M19 2.5 C17.5 5 18.5 7.5 18 10 C20.5 9 23 11.5 24 15 C26 18.5 25.5 23.5 22.5 26.5 C18.5 30 12 30 8 26 C5 23 4 17.5 6 13.5 C7.5 11 10 10 12 8 C11 5.5 13 3 15.5 2 C15.5 4 16.5 4.5 18 3 C18.5 2 18.5 2 19 2.5 Z"
+        fill={`url(#${outerId})`}
+      />
+
+      {/* Inner flame: brighter, smaller */}
+      <path
+        d="M16.5 11 C14.5 13.5 12.5 16.5 13 20 C13.5 23 16 24 17.5 23.5 C20.5 22 21 18 19 15 C17.5 13 16.5 12 16.5 11 Z"
+        fill={`url(#${innerId})`}
+      />
+
+      {/* White-hot core */}
+      <ellipse cx="16.8" cy="20.5" rx="1.8" ry="2.6" fill={`url(#${coreId})`} />
+    </svg>
   )
 }
 
