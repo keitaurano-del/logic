@@ -143,7 +143,7 @@ const travelLessonEn: LessonData = {
         { label: 'Take separate trips', correct: false },
       ],
       explanation:
-        'Find the intersection of everyone\'s must-haves. Majority rule damages relationships, persuasion is slow, separate trips defeat the purpose. The beautiful thing about logical thinking is it can find win-win options. Coastal hot spring towns (Atami, Hakone-with-views, plenty of options) solve it.',
+        'Find the intersection of everyone\'s must-haves. Majority rule damages relationships, persuasion is slow, separate trips defeat the purpose. The beautiful thing about logical thinking is it can find win-win options. Coastal hot-spring or thermal-bath towns (Bath in the UK, Pamukkale in Turkey, Beppu in Japan, plenty of options worldwide) solve it.',
     },
     {
       type: 'quiz',

@@ -208,13 +208,13 @@ const systemsArchetype: LessonData = {
   title: 'システム原型で「よくある罠」を見抜く',
   category: 'システムシンキング',
   steps: [
-    { type: 'explain', title: 'システム原型とは', content: '組織や社会で繰り返し現れる典型的な構造パターンを「システム原型」という。「成長の限界」「問題のすり替え（Fixes that Fail）」「責任の転嫁（Shifting the Burden）」「共有地の悲劇」などがある。原型を知ることで、複雑な問題の本質をすばやく見抜ける。' },
+    { type: 'explain', title: 'システム原型とは', content: '組織や社会で繰り返し現れる典型的な構造パターンを「システム原型」という。「成長の限界」「応急処置の失敗（Fixes that Fail）」「責任の転嫁（Shifting the Burden）」「共有地の悲劇」などがある。原型を知ることで、複雑な問題の本質をすばやく見抜ける。' },
     { type: 'quiz', question: '「対症療法を繰り返すたびに副作用が蓄積し、根本問題がかえって悪化し続ける」というパターンはどのシステム原型か？', options: [
       { label: '成長の限界', correct: false },
-      { label: '問題のすり替え（Fixes that Fail）', correct: true },
+      { label: '応急処置の失敗（Fixes that Fail）', correct: true },
       { label: '共有地の悲劇', correct: false },
       { label: '目標の侵食', correct: false },
-    ], explanation: '「問題のすり替え（Fixes that Fail）」は、対症療法が一時的に問題を緩和するが、その副作用が蓄積して原問題をさらに悪化させる構造。例：バグ修正のたびに別の不具合が増えるアーキテクチャ問題。なお「責任の転嫁（Shifting the Burden）」は対症療法によって根本解決への取り組みが先送りされるパターンで、似て非なる別の原型。' },
+    ], explanation: '「応急処置の失敗（Fixes that Fail）」は、対症療法が一時的に問題を緩和するが、その副作用が蓄積して原問題をさらに悪化させる構造。例：バグ修正のたびに別の不具合が増えるアーキテクチャ問題。なお「責任の転嫁（Shifting the Burden）」は対症療法によって根本解決への取り組みが先送りされるパターンで、似て非なる別の原型。' },
   ],
 }
 
