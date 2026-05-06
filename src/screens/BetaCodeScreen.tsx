@@ -37,7 +37,7 @@ export function BetaCodeScreen({ onSuccess, onSkip }: BetaCodeScreenProps) {
 
   const containerStyle: React.CSSProperties = {
     minHeight: '100dvh',
-    background: v3.color.bg,
+    background: 'var(--bg-primary)',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -47,7 +47,7 @@ export function BetaCodeScreen({ onSuccess, onSkip }: BetaCodeScreenProps) {
   }
 
   const cardStyle: React.CSSProperties = {
-    background: v3.color.card,
+    background: 'var(--bg-card)',
     borderRadius: v3.radius.card,
     padding: '32px 28px',
     width: '100%',
@@ -56,7 +56,7 @@ export function BetaCodeScreen({ onSuccess, onSkip }: BetaCodeScreenProps) {
   }
 
   const headingStyle: React.CSSProperties = {
-    color: v3.color.text,
+    color: 'var(--text-primary)',
     fontSize: v3.font.h1.size,
     fontWeight: v3.font.h1.weight,
     fontFamily: "'Inter Tight', sans-serif",
@@ -65,7 +65,7 @@ export function BetaCodeScreen({ onSuccess, onSkip }: BetaCodeScreenProps) {
   }
 
   const subStyle: React.CSSProperties = {
-    color: v3.color.text2,
+    color: 'var(--text-secondary)',
     fontSize: v3.font.body.size,
     fontWeight: v3.font.body.weight,
     textAlign: 'center',
@@ -74,7 +74,7 @@ export function BetaCodeScreen({ onSuccess, onSkip }: BetaCodeScreenProps) {
   }
 
   const labelStyle: React.CSSProperties = {
-    color: v3.color.text2,
+    color: 'var(--text-secondary)',
     fontSize: v3.font.label.size,
     fontWeight: v3.font.label.weight,
     letterSpacing: '0.08em',
@@ -86,10 +86,10 @@ export function BetaCodeScreen({ onSuccess, onSkip }: BetaCodeScreenProps) {
   const inputStyle: React.CSSProperties = {
     width: '100%',
     padding: '14px 16px',
-    border: `1.5px solid ${error ? 'var(--md-sys-color-error)' : v3.color.line}`,
+    border: `1.5px solid ${error ? 'var(--md-sys-color-error)' : 'var(--border)'}`,
     borderRadius: 12,
-    background: v3.color.bg,
-    color: v3.color.text,
+    background: 'var(--bg-primary)',
+    color: 'var(--text-primary)',
     fontSize: 18,
     fontFamily: "'Inter Tight', 'Noto Sans JP', sans-serif",
     fontWeight: 700,
@@ -106,8 +106,8 @@ export function BetaCodeScreen({ onSuccess, onSkip }: BetaCodeScreenProps) {
     marginTop: 20,
     border: 'none',
     borderRadius: v3.radius.pill,
-    background: loading ? v3.color.accentSoft : v3.color.accent,
-    color: loading ? v3.color.text2 : '#082121',
+    background: loading ? 'var(--accent-soft)' : 'var(--brand)',
+    color: loading ? 'var(--text-secondary)' : '#082121',
     fontSize: 16,
     fontWeight: 700,
     fontFamily: "'Inter Tight', sans-serif",
@@ -125,7 +125,7 @@ export function BetaCodeScreen({ onSuccess, onSkip }: BetaCodeScreenProps) {
   }
 
   const skipStyle: React.CSSProperties = {
-    color: v3.color.text3,
+    color: 'var(--text-muted)',
     fontSize: 13,
     fontWeight: 500,
     background: 'none',
@@ -143,8 +143,8 @@ export function BetaCodeScreen({ onSuccess, onSkip }: BetaCodeScreenProps) {
 
   const badgeStyle: React.CSSProperties = {
     display: 'inline-block',
-    background: v3.color.accentSoft,
-    color: v3.color.accent,
+    background: 'var(--accent-soft)',
+    color: 'var(--brand)',
     fontSize: 11,
     fontWeight: 700,
     letterSpacing: '0.1em',
@@ -204,10 +204,10 @@ export function BetaCodeScreen({ onSuccess, onSkip }: BetaCodeScreenProps) {
           onClick={onSkip}
           style={skipStyle}
           onMouseEnter={(e) => {
-            ;(e.currentTarget as HTMLButtonElement).style.color = v3.color.text2
+            ;(e.currentTarget as HTMLButtonElement).style.color = 'var(--text-secondary)'
           }}
           onMouseLeave={(e) => {
-            ;(e.currentTarget as HTMLButtonElement).style.color = v3.color.text3
+            ;(e.currentTarget as HTMLButtonElement).style.color = 'var(--text-muted)'
           }}
         >
           後で入力する

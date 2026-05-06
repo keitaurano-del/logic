@@ -131,6 +131,10 @@
   /* Brand-aligned dark surface (Slate Blue navy) */
   --bg-slate-deep:  #1A1F2E;
 
+  /* Warm peach accent (used for premium / featured callouts in v3) */
+  --warm:           #F5BFA0;
+  --warm-soft:      rgba(245, 191, 160, 0.16);
+
   /* Radii */
   --radius-sm: 6px;
   --radius-md: 10px;
