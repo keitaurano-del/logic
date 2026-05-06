@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>カード立体感の比較モックアップ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;700;800&family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* 本番アプリと同じカラー */
+  --bg-primary:   #1A1F2E;
+  --bg-secondary: #222840;
+  --bg-card:      #252C40;
+  --bg-elevated:  #2E3652;
+  --bg-tertiary:  #1E2438;
+  --text-primary: #E8ECF4;
+  --text-secondary: #8FA3C8;
+  --text-muted:   #6B82A8;
+  --border:       rgba(255,255,255,0.09);
+  --accent:       #6C8EF5;
+  --accent-light: #9BB3FA;
+  --accent-soft:  rgba(108,142,245,0.16);
+  --radius-lg: 16px;
+  --radius-md: 10px;
+  --radius-full: 9999px;
+  --font-ui: 'Inter','Noto Sans JP',-apple-system,sans-serif;
+  --font-display: 'Inter Tight','Inter','Noto Sans JP',sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100svh;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 20px 80px;
+}
+
+h1 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 28px;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+.lede {
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+  font-size: 14px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 28px;
+  margin-bottom: 48px;
+}
+
+.option {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.opt-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.opt-name {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.opt-num {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--accent-light);
+  text-transform: uppercase;
+}
+.opt-note {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* ベースカード — 各案で box-shadow / background / border のみ差し替え */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: transform 200ms cubic-bezier(0.16,1,0.3,1),
+              box-shadow 200ms cubic-bezier(0.16,1,0.3,1);
+}
+.card-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.card-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #6C8EF5 0%, #9BB3FA 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 800;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.card-title {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.card-meta {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.card-body {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+.card-tag {
+  align-self: flex-start;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  background: var(--accent-soft);
+  color: var(--accent-light);
+}
+
+/* === 各案の影 === */
+
+/* A: 現在 (ほぼフラット) */
+.opt-a .card {
+  box-shadow: 0 1px 0 rgba(0,0,0,0.35);
+}
+
+/* B: 現在 PR の 3 層黒影 + 上端 inset (現状) */
+.opt-b .card {
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.06),
+    0 2px 4px rgba(0,0,0,0.35),
+    0 12px 28px rgba(0,0,0,0.60),
+    0 24px 48px rgba(0,0,0,0.35);
+}
+
+/* C: カード背景を明るくして影を効かせる */
+.opt-c .card {
+  background: #2E3652;
+  border-color: rgba(255,255,255,0.10);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.10),
+    0 2px 4px rgba(0,0,0,0.40),
+    0 12px 28px rgba(0,0,0,0.55);
+}
+
+/* D: リムライト型 (ニューモーフィック寄り) */
+.opt-d .card {
+  background: #252C40;
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.16),
+    inset 0 -1px 0 rgba(0,0,0,0.40),
+    0 8px 20px rgba(0,0,0,0.40),
+    0 16px 36px rgba(0,0,0,0.30);
+}
+
+/* E: 青 (accent) 寄りの色付き影 + 上端ハイライト */
+.opt-e .card {
+  background: #2A3250;
+  border: 1px solid rgba(108,142,245,0.18);
+  box-shadow:
+    inset 0 1px 0 rgba(155,179,250,0.18),
+    0 4px 12px rgba(108,142,245,0.15),
+    0 16px 40px rgba(0,0,0,0.55);
+}
+
+/* F: 二色グラデ背景 + 強めドロップ (おすすめ案) */
+.opt-f .card {
+  background: linear-gradient(180deg, #2E3652 0%, #252C40 100%);
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.14),
+    inset 0 -1px 0 rgba(0,0,0,0.30),
+    0 4px 8px rgba(0,0,0,0.35),
+    0 14px 28px rgba(0,0,0,0.55),
+    0 28px 56px rgba(0,0,0,0.30);
+}
+
+/* === 共通: ホバー時はリフトして影が深く === */
+.card.interactive { cursor: pointer; }
+.opt-a .card.interactive:hover { transform: translateY(-2px); box-shadow: 0 1px 0 rgba(0,0,0,0.35); }
+.opt-b .card.interactive:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 4px 8px rgba(0,0,0,0.40),
+    0 20px 40px rgba(0,0,0,0.70),
+    0 32px 64px rgba(0,0,0,0.45);
+}
+.opt-c .card.interactive:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.12),
+    0 4px 8px rgba(0,0,0,0.45),
+    0 20px 40px rgba(0,0,0,0.65);
+}
+.opt-d .card.interactive:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.20),
+    inset 0 -1px 0 rgba(0,0,0,0.40),
+    0 14px 32px rgba(0,0,0,0.55),
+    0 28px 56px rgba(0,0,0,0.40);
+}
+.opt-e .card.interactive:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    inset 0 1px 0 rgba(155,179,250,0.24),
+    0 8px 24px rgba(108,142,245,0.30),
+    0 24px 56px rgba(0,0,0,0.65);
+}
+.opt-f .card.interactive:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.18),
+    inset 0 -1px 0 rgba(0,0,0,0.30),
+    0 8px 16px rgba(0,0,0,0.45),
+    0 22px 44px rgba(0,0,0,0.65),
+    0 40px 72px rgba(0,0,0,0.40);
+}
+
+footer {
+  margin-top: 24px;
+  padding: 20px;
+  background: rgba(108,142,245,0.06);
+  border: 1px solid rgba(108,142,245,0.20);
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.7;
+}
+footer b { color: var(--accent-light); }
+kbd {
+  background: rgba(255,255,255,0.10);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 12px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>カード立体感の比較</h1>
+  <p class="lede">ダークモード（本番デフォルト）でカード背景 #252C40・ページ背景 #1A1F2E を再現。各案でホバーするとリフト挙動も確認できます。<b>気に入った案の番号 (A〜F) を教えてください。</b></p>
+
+  <div class="grid">
+    <!-- A -->
+    <div class="option opt-a">
+      <div class="opt-head">
+        <div class="opt-name">A. 現在</div><div class="opt-num">A · 0% lift</div>
+      </div>
+      <div class="opt-note">box-shadow: 0 1px 0 rgba(0,0,0,0.35) — 実質フラット。</div>
+      <button class="card interactive" type="button">
+        <div class="card-row"><div class="card-icon">L</div><div><div class="card-title">論理クイズ</div><div class="card-meta">5 問 · 中級</div></div></div>
+        <span class="card-tag">recommended</span>
+        <div class="card-body">論理的思考のレッスンを今日も継続。前回は 4/5 正解でした。</div>
+      </button>
+    </div>
+
+    <!-- B -->
+    <div class="option opt-b">
+      <div class="opt-head">
+        <div class="opt-name">B. 黒影 3 層 (PR #117)</div><div class="opt-num">B · 推し弱</div>
+      </div>
+      <div class="opt-note">前回の PR で当てた 3 層黒影。ダーク背景に黒影は埋もれがち。</div>
+      <button class="card interactive" type="button">
+        <div class="card-row"><div class="card-icon">L</div><div><div class="card-title">論理クイズ</div><div class="card-meta">5 問 · 中級</div></div></div>
+        <span class="card-tag">recommended</span>
+        <div class="card-body">論理的思考のレッスンを今日も継続。前回は 4/5 正解でした。</div>
+      </button>
+    </div>
+
+    <!-- C -->
+    <div class="option opt-c">
+      <div class="opt-head">
+        <div class="opt-name">C. カード明色化 + 黒影</div><div class="opt-num">C · 推し中</div>
+      </div>
+      <div class="opt-note">カード bg を #2E3652 に持ち上げて背景との差を作る。最もシンプル。</div>
+      <button class="card interactive" type="button">
+        <div class="card-row"><div class="card-icon">L</div><div><div class="card-title">論理クイズ</div><div class="card-meta">5 問 · 中級</div></div></div>
+        <span class="card-tag">recommended</span>
+        <div class="card-body">論理的思考のレッスンを今日も継続。前回は 4/5 正解でした。</div>
+      </button>
+    </div>
+
+    <!-- D -->
+    <div class="option opt-d">
+      <div class="opt-head">
+        <div class="opt-name">D. リムライト型</div><div class="opt-num">D · ニューモーフィック</div>
+      </div>
+      <div class="opt-note">上端に強い inset highlight + 下端に inset 影。素材厚みが出る。</div>
+      <button class="card interactive" type="button">
+        <div class="card-row"><div class="card-icon">L</div><div><div class="card-title">論理クイズ</div><div class="card-meta">5 問 · 中級</div></div></div>
+        <span class="card-tag">recommended</span>
+        <div class="card-body">論理的思考のレッスンを今日も継続。前回は 4/5 正解でした。</div>
+      </button>
+    </div>
+
+    <!-- E -->
+    <div class="option opt-e">
+      <div class="opt-head">
+        <div class="opt-name">E. アクセント色付き影</div><div class="opt-num">E · ブランド寄り</div>
+      </div>
+      <div class="opt-note">ブランドの Slate Blue を影に滲ませる。UI が華やぐが派手寄り。</div>
+      <button class="card interactive" type="button">
+        <div class="card-row"><div class="card-icon">L</div><div><div class="card-title">論理クイズ</div><div class="card-meta">5 問 · 中級</div></div></div>
+        <span class="card-tag">recommended</span>
+        <div class="card-body">論理的思考のレッスンを今日も継続。前回は 4/5 正解でした。</div>
+      </button>
+    </div>
+
+    <!-- F -->
+    <div class="option opt-f">
+      <div class="opt-head">
+        <div class="opt-name">F. グラデ + リム + 強影 (推奨)</div><div class="opt-num">F · 推し強</div>
+      </div>
+      <div class="opt-note">縦グラデで上面が明るく見える + 上端 inset rim + 強めの 3 層黒影。最も立体感あり。</div>
+      <button class="card interactive" type="button">
+        <div class="card-row"><div class="card-icon">L</div><div><div class="card-title">論理クイズ</div><div class="card-meta">5 問 · 中級</div></div></div>
+        <span class="card-tag">recommended</span>
+        <div class="card-body">論理的思考のレッスンを今日も継続。前回は 4/5 正解でした。</div>
+      </button>
+    </div>
+  </div>
+
+  <footer>
+    <b>選び方の目安:</b><br>
+    ・落ち着き重視 → <b>C</b><br>
+    ・素材感・物理的な厚みを出したい → <b>D</b> または <b>F</b><br>
+    ・ブランド色と一体化したい → <b>E</b><br>
+    ・最大限の立体感 → <b>F</b><br><br>
+    <b>使い方:</b> 各カードに <kbd>hover</kbd> してリフト挙動も含めて評価してください。気に入った番号を教えてもらえれば、それで全画面に反映します（既に <code>--shadow-card</code> を全カードが参照しているのでトークン書き換えだけで済みます）。
+  </footer>
+</div>
+</body>
+</html>
