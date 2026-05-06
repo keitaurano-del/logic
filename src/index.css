@@ -76,9 +76,10 @@
   --radius-xl: 24px;
   --radius-full: 9999px;
 
-  /* Shadows — soft brand-tinted */
-  --shadow-card:    0 1px 2px rgba(15, 20, 36, 0.04);
-  --shadow-elevated: 0 4px 16px rgba(15, 20, 36, 0.06);
+  /* Shadows — 立体感 3 層構造（上端ハイライト + 接地影 + 中間ドロップ + 遠景拡散） */
+  --shadow-card:    inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 1px 2px rgba(15, 20, 36, 0.08), 0 6px 16px rgba(15, 20, 36, 0.12), 0 16px 32px rgba(15, 20, 36, 0.10);
+  --shadow-card-hover: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 2px 4px rgba(15, 20, 36, 0.10), 0 12px 24px rgba(15, 20, 36, 0.16), 0 24px 48px rgba(15, 20, 36, 0.14);
+  --shadow-elevated: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 4px 16px rgba(15, 20, 36, 0.12), 0 12px 32px rgba(15, 20, 36, 0.10);
 
   /* Layout */
   --content-width: 480px;
@@ -123,8 +124,9 @@
   --accent-dark:   #9BB3FA;          /* lighter on dark for AA */
   --accent-fg:     #FFFFFF;
 
-  --shadow-card:    0 1px 0 rgba(0, 0, 0, 0.35);
-  --shadow-elevated: 0 6px 24px rgba(0, 0, 0, 0.55);
+  --shadow-card:    inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 2px 4px rgba(0, 0, 0, 0.35), 0 12px 28px rgba(0, 0, 0, 0.60), 0 24px 48px rgba(0, 0, 0, 0.35);
+  --shadow-card-hover: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 4px 8px rgba(0, 0, 0, 0.40), 0 20px 40px rgba(0, 0, 0, 0.70), 0 32px 64px rgba(0, 0, 0, 0.45);
+  --shadow-elevated: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 8px 32px rgba(0, 0, 0, 0.65), 0 2px 8px rgba(0, 0, 0, 0.35);
 }
 .mode-dark body, .mode-dark #root { background: var(--bg-primary); }
 
@@ -448,8 +450,10 @@ input, textarea, select { -webkit-tap-highlight-color: transparent; }
   --accent-dark:   #9BB3FA;
   --accent-fg:     #FFFFFF;
 
-  --shadow-card:    0 1px 0 rgba(0,0,0,0.35);
-  --shadow-elevated: 0 6px 24px rgba(0,0,0,0.55);
+  /* 立体感：上端ハイライト(inset) + 接地影 + 中間ドロップ + 遠景拡散 */
+  --shadow-card:    inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 2px 4px rgba(0, 0, 0, 0.35), 0 12px 28px rgba(0, 0, 0, 0.60), 0 24px 48px rgba(0, 0, 0, 0.35);
+  --shadow-card-hover: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 4px 8px rgba(0, 0, 0, 0.40), 0 20px 40px rgba(0, 0, 0, 0.70), 0 32px 64px rgba(0, 0, 0, 0.45);
+  --shadow-elevated: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 8px 32px rgba(0, 0, 0, 0.65), 0 2px 8px rgba(0, 0, 0, 0.35);
 }
 
 html, html.mode-light, html.mode-dark {
