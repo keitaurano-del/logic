@@ -570,7 +570,7 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
   }
 
   return (
-    <div className="stack">
+    <div className="stack" style={{ padding: '0 16px 24px' }}>
       {guideActive && <GuideStyle />}
       {/* チャットモーダル */}
       {showChat && (
