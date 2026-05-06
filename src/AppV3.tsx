@@ -55,6 +55,7 @@ import { syncOnLogin, syncOnLogout } from './syncService'
 import { TutorialOverlay, TutorialFAB } from './components/TutorialOverlay'
 import { tutorial } from './tutorial/tutorialStorage'
 import { SparklesIcon, MessageSquareIcon, BookOpenIcon } from './icons'
+import { t } from './i18n'
 
 const ONBOARDED_KEY = 'logic-onboarded'
 const INSTALL_ID_KEY = 'logic-install-id'
@@ -245,7 +246,7 @@ function AppV3() {
     || currentUser?.user_metadata?.full_name
     || currentUser?.user_metadata?.name
     || currentUser?.email
-    || 'ゲスト'
+    || t('home.guestName')
   const completed = getCompletedCount()
   const xp = completed * 100
   const level = Math.floor(xp / 1000) + 1
@@ -314,19 +315,19 @@ function AppV3() {
   if (screen.type === 'login-gate') {
     const GATE_CONFIG = {
       'ai-gen': {
-        featureName: 'AI問題生成',
+        featureName: t('loginGate.feature.aiGen'),
         featureIcon: <SparklesIcon width={36} height={36} />,
-        featureDesc: 'テーマを選ぶだけで、あなた専用の問題をAIが生成します。ロジカルシンキング・フェルミ推定・ケース面接など月30問まで無料で使えます。',
+        featureDesc: t('loginGate.feature.aiGenDesc'),
       },
       'roleplay': {
-        featureName: 'ロールプレイ',
+        featureName: t('loginGate.feature.roleplay'),
         featureIcon: <MessageSquareIcon width={36} height={36} />,
-        featureDesc: 'ビジネスや哲学のシナリオでAIと対話練習。コンサル面接・プレゼン・ディベートなど実践的なシナリオで思考力を鍛えます。',
+        featureDesc: t('loginGate.feature.roleplayDesc'),
       },
       'advanced-lessons': {
-        featureName: '中・上級レッスン',
+        featureName: t('loginGate.feature.advancedLessons'),
         featureIcon: <BookOpenIcon width={36} height={36} />,
-        featureDesc: 'ケース面接・仮説思考・批判的思考など、より実践的で高度なレッスンにアクセスできます。',
+        featureDesc: t('loginGate.feature.advancedLessonsDesc'),
       },
     } as const
     const cfg = GATE_CONFIG[screen.feature]
@@ -616,41 +617,41 @@ function AppV3() {
             <div style={{ width: 36, height: 36, borderRadius: 10, background: 'var(--accent-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: 'var(--brand)' }}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             </div>
-            <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--text-on-hero)', letterSpacing: '-0.02em' }}>ようこそ！</div>
+            <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>{t('welcomePopup.heading')}</div>
           </div>
-          <div style={{ fontSize: 15, color: 'var(--text-on-hero-muted)', marginBottom: 24, lineHeight: 1.6 }}>
-            アプリで表示する名前を設定してね
+          <div style={{ fontSize: 15, color: 'var(--text-secondary)', marginBottom: 24, lineHeight: 1.6 }}>
+            {t('welcomePopup.desc')}
           </div>
           <input
             type="text"
-            aria-label="表示名"
-            placeholder="名前を入力（例：田中 太郎）"
+            aria-label={t('welcomePopup.aria')}
+            placeholder={t('welcomePopup.placeholder')}
             value={nameInput}
             onChange={e => setNameInput(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter' && nameInput.trim()) handleSaveName() }}
             autoFocus
             style={{
-              width: '100%', padding: '14px 16px', border: '1px solid var(--border-on-dark)',
-              borderRadius: 10, background: 'var(--bg-input-on-dark)', color: 'var(--text-on-hero)',
+              width: '100%', padding: '14px 16px', border: '1px solid var(--border)',
+              borderRadius: 10, background: 'var(--bg-card)', color: 'var(--text-primary)',
               fontSize: 16, fontFamily: "'Noto Sans JP', sans-serif",
               outline: 'none', boxSizing: 'border-box', marginBottom: 8,
             }}
           />
-          <div style={{ fontSize: 12, color: 'var(--text-on-hero-muted)', marginBottom: 20 }}>あとで設定画面から変更できるよ</div>
+          <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 20 }}>{t('welcomePopup.note')}</div>
           <button
             onClick={handleSaveName}
             disabled={nameSaving || !nameInput.trim()}
             style={{
-              width: '100%', padding: '15px', background: nameInput.trim() ? 'var(--brand)' : 'var(--bg-input-on-dark)',
+              width: '100%', padding: '15px', background: nameInput.trim() ? 'var(--brand)' : 'var(--bg-card)',
               border: 'none', borderRadius: 12, fontSize: 16, fontWeight: 700,
-              color: nameInput.trim() ? 'var(--accent-fg)' : 'var(--text-on-hero-muted)',
+              color: nameInput.trim() ? 'var(--accent-fg)' : 'var(--text-muted)',
               cursor: nameInput.trim() ? 'pointer' : 'not-allowed', marginBottom: 10,
             }}
-          >{nameSaving ? '保存中…' : '設定する'}</button>
+          >{nameSaving ? t('welcomePopup.saving') : t('welcomePopup.save')}</button>
           <button
             onClick={() => setShowNamePopup(false)}
-            style={{ width: '100%', background: 'none', border: 'none', color: 'var(--text-on-hero-muted)', fontSize: 14, cursor: 'pointer', padding: '8px 0' }}
-          >あとで設定する</button>
+            style={{ width: '100%', background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: 14, cursor: 'pointer', padding: '8px 0' }}
+          >{t('welcomePopup.later')}</button>
         </div>
       </div>
     )}

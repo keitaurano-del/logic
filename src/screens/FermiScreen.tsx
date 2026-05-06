@@ -7,31 +7,34 @@ import { useIsDesktop } from '../hooks/useMediaQuery'
 import { API_BASE } from './apiBase'
 import { t } from '../i18n'
 
-const BASE_STATS = [
-  { label: '日本の人口', value: '約1億2,400万人' },
-  { label: '世帯数', value: '約5,700万世帯' },
-  { label: '平均世帯人数', value: '2.17人' },
-  { label: '労働力人口', value: '約6,900万人' },
-  { label: '東京都の人口', value: '約1,400万人' },
-  { label: '国土面積', value: '約37.8万km²' },
-  { label: 'コンビニ数', value: '約5.6万店' },
-  { label: '電柱数', value: '約3,500万本' },
-  { label: '自動車保有数', value: '約7,800万台' },
-  { label: '小学校数', value: '約1.9万校' },
-  { label: '鉄道利用者数/日', value: '約4,800万人' },
-  { label: 'GDP', value: '約600兆円' },
-  { label: '平均年収', value: '約460万円' },
-  { label: 'スマホ普及率', value: '約97%' },
-  { label: '平均寿命', value: '約84歳' },
-  { label: '会社数', value: '約368万社' },
-]
+function getBaseStats() {
+  return [
+    { label: t('fermiScreen.stat.population'), value: t('fermiScreen.stat.populationVal') },
+    { label: t('fermiScreen.stat.households'), value: t('fermiScreen.stat.householdsVal') },
+    { label: t('fermiScreen.stat.avgHousehold'), value: t('fermiScreen.stat.avgHouseholdVal') },
+    { label: t('fermiScreen.stat.workforce'), value: t('fermiScreen.stat.workforceVal') },
+    { label: t('fermiScreen.stat.tokyoPop'), value: t('fermiScreen.stat.tokyoPopVal') },
+    { label: t('fermiScreen.stat.area'), value: t('fermiScreen.stat.areaVal') },
+    { label: t('fermiScreen.stat.conbini'), value: t('fermiScreen.stat.conbiniVal') },
+    { label: t('fermiScreen.stat.poles'), value: t('fermiScreen.stat.polesVal') },
+    { label: t('fermiScreen.stat.cars'), value: t('fermiScreen.stat.carsVal') },
+    { label: t('fermiScreen.stat.schools'), value: t('fermiScreen.stat.schoolsVal') },
+    { label: t('fermiScreen.stat.rail'), value: t('fermiScreen.stat.railVal') },
+    { label: t('fermiScreen.stat.gdp'), value: t('fermiScreen.stat.gdpVal') },
+    { label: t('fermiScreen.stat.income'), value: t('fermiScreen.stat.incomeVal') },
+    { label: t('fermiScreen.stat.smartphone'), value: t('fermiScreen.stat.smartphoneVal') },
+    { label: t('fermiScreen.stat.lifespan'), value: t('fermiScreen.stat.lifespanVal') },
+    { label: t('fermiScreen.stat.companies'), value: t('fermiScreen.stat.companiesVal') },
+  ]
+}
 
 function BaseDataPanel() {
+  const stats = getBaseStats()
   return (
     <div style={{ marginTop: 12, paddingTop: 10, borderTop: '1px solid var(--border)' }}>
-      <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 8, textTransform: 'uppercase' }}>参考データ</div>
+      <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 8, textTransform: 'uppercase' }}>{t('fermiScreen.refData')}</div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px 12px' }}>
-        {BASE_STATS.map((s) => (
+        {stats.map((s) => (
           <div key={s.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, padding: '2px 0' }}>
             <span style={{ color: 'var(--text-muted)' }}>{s.label}</span>
             <span style={{ fontWeight: 700, color: 'var(--text)' }}>{s.value}</span>
@@ -56,9 +59,11 @@ interface FermiFeedback {
   feedback: string
 }
 
-const STARTER: FermiQuestion = {
-  question: '日本にある電柱の本数はどれくらい?',
-  hint: '国土面積と都市部の電柱密度から推定してみよう。住宅街では電柱は何 m 間隔だろう? 過疎地と都市部で密度の差を考慮するとより精度が上がります。',
+function getStarter(): FermiQuestion {
+  return {
+    question: t('fermiScreen.starterQuestion'),
+    hint: t('fermiScreen.starterHint'),
+  }
 }
 
 interface FermiState {
@@ -74,7 +79,7 @@ interface FermiState {
 }
 
 function useFermiState(): FermiState {
-  const [question, setQuestion] = useState<FermiQuestion>(STARTER)
+  const [question, setQuestion] = useState<FermiQuestion>(() => getStarter())
   const [answer, setAnswer] = useState('')
   const [loading, setLoading] = useState(false)
   const [loadingQ, setLoadingQ] = useState(false)
@@ -82,7 +87,7 @@ function useFermiState(): FermiState {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    document.title = 'フェルミ推定 — Logic'
+    document.title = t('fermiScreen.docTitle')
   }, [])
 
   const handleSubmit = async () => {
@@ -121,9 +126,10 @@ function useFermiState(): FermiState {
       })
       if (!res.ok) throw new Error('Network error')
       const data = await res.json()
+      const starter = getStarter()
       setQuestion({
-        question: data.question ?? STARTER.question,
-        hint: data.hint ?? STARTER.hint,
+        question: data.question ?? starter.question,
+        hint: data.hint ?? starter.hint,
       })
     } catch (e) {
       setError((e as Error).message)
@@ -164,12 +170,12 @@ function FermiMobile({ onBack, state, onReport }: { onBack: () => void; state: F
       </div>
 
       <div style={{ marginTop: 'var(--s-4)' }}>
-        <label className="label">Your answer</label>
+        <label className="label">{t('fermiScreen.yourAnswer')}</label>
         <textarea
-          aria-label="フェルミ推定の解答"
+          aria-label={t('fermiScreen.answerAria')}
           className="textarea"
           rows={6}
-          placeholder="計算式や考え方を書いてみよう..."
+          placeholder={t('fermiScreen.answerPlaceholder')}
           value={answer}
           onChange={(e) => setAnswer(e.target.value)}
           disabled={loading || feedback != null}
@@ -184,7 +190,7 @@ function FermiMobile({ onBack, state, onReport }: { onBack: () => void; state: F
 
       {!feedback ? (
         <Button variant="primary" size="lg" block onClick={handleSubmit} disabled={!answer.trim() || loading}>
-          {loading ? '採点中…' : '送信する'}
+          {loading ? t('fermiScreen.scoring') : t('fermiScreen.submit')}
         </Button>
       ) : (
         <FermiFeedbackBlock feedback={feedback} onNext={handleNext} loadingQ={loadingQ} onReport={onReport ? () => onReport({ lessonTitle: t('report.fermiTitle'), question: question.question }) : undefined} />
@@ -218,8 +224,8 @@ function FermiDesktop({ onBack, state, onReport }: { onBack: () => void; state: 
         <div className="answer-card">
           <span className="answer-label">{t('label.yourAnswer')}</span>
           <textarea
-            aria-label="フェルミ推定の解答"
-            placeholder="計算式や考え方を書いてみよう..."
+            aria-label={t('fermiScreen.answerAria')}
+            placeholder={t('fermiScreen.answerPlaceholder')}
             value={answer}
             onChange={(e) => setAnswer(e.target.value)}
             disabled={loading || feedback != null}
@@ -241,9 +247,9 @@ function FermiDesktop({ onBack, state, onReport }: { onBack: () => void; state: 
       )}
 
       <div className="submit-row">
-        <div className="submit-meta">回答後に AI が採点します</div>
+        <div className="submit-meta">{t('fermiScreen.submitMeta')}</div>
         <Button variant="primary" size="lg" onClick={handleSubmit} disabled={!answer.trim() || loading || feedback != null}>
-          {loading ? '採点中…' : 'Submit answer'}
+          {loading ? t('fermiScreen.scoring') : t('fermiScreen.submitDesktop')}
           <ArrowRightIcon width={16} height={16} />
         </Button>
       </div>
@@ -327,7 +333,7 @@ function FermiFeedbackBlock({
           <div className="feedback-check">
             <CheckIcon />
           </div>
-          <div className="feedback-title">AI フィードバック</div>
+          <div className="feedback-title">{t('fermiScreen.feedbackTitle')}</div>
         </div>
         <div className="feedback-text">
           {renderFeedbackMarkdown(feedback.feedback)}
@@ -342,7 +348,7 @@ function FermiFeedbackBlock({
         )}
       </div>
       <Button variant="primary" size="lg" block onClick={onNext} disabled={loadingQ} style={{ marginTop: 'var(--s-4)' }}>
-        {loadingQ ? '次の問題を生成中…' : '次の問題へ'}
+        {loadingQ ? t('fermiScreen.nextLoading') : t('fermiScreen.next')}
       </Button>
     </>
   )

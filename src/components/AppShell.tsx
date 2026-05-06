@@ -16,54 +16,56 @@ export interface TabDef {
 const ACTIVE = 'var(--md-sys-color-primary)'
 const INACTIVE = 'var(--md-sys-color-on-surface-variant)'
 
-const TABS: TabDef[] = [
-  {
-    id: 'home',
-    label: 'ホーム',
-    icon: (active) => (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill={active ? ACTIVE : INACTIVE}
-        aria-hidden="true">
-        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-      </svg>
-    ),
-  },
-  {
-    id: 'lessons',
-    label: 'トレーニング',
-    icon: (active) => {
-      const c = active ? ACTIVE : INACTIVE
-      return (
-        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
-          <rect x="2" y="5" width="3" height="14" rx="1" fill={c} />
-          <rect x="5" y="8" width="2" height="8" rx="0.5" fill={c} />
-          <rect x="17" y="8" width="2" height="8" rx="0.5" fill={c} />
-          <rect x="19" y="5" width="3" height="14" rx="1" fill={c} />
-          <rect x="7" y="11" width="10" height="2" rx="1" fill={c} />
+function getTabs(): TabDef[] {
+  return [
+    {
+      id: 'home',
+      label: t('nav.home'),
+      icon: (active) => (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill={active ? ACTIVE : INACTIVE}
+          aria-hidden="true">
+          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
         </svg>
-      )
+      ),
     },
-  },
-  {
-    id: 'ranking',
-    label: 'ランキング',
-    icon: (active) => (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill={active ? ACTIVE : INACTIVE}
-        aria-hidden="true">
-        <path d="M7 17H3v-5h4v5zm7-9h-4v9h4V8zm7-4h-4v13h4V4z" />
-      </svg>
-    ),
-  },
-  {
-    id: 'profile',
-    label: 'プロフィール',
-    icon: (active) => (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill={active ? ACTIVE : INACTIVE}
-        aria-hidden="true">
-        <path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-5.33 0-8 2.67-8 4v2h16v-2c0-1.33-2.67-4-8-4z" />
-      </svg>
-    ),
-  },
-]
+    {
+      id: 'lessons',
+      label: t('nav.training'),
+      icon: (active) => {
+        const c = active ? ACTIVE : INACTIVE
+        return (
+          <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="2" y="5" width="3" height="14" rx="1" fill={c} />
+            <rect x="5" y="8" width="2" height="8" rx="0.5" fill={c} />
+            <rect x="17" y="8" width="2" height="8" rx="0.5" fill={c} />
+            <rect x="19" y="5" width="3" height="14" rx="1" fill={c} />
+            <rect x="7" y="11" width="10" height="2" rx="1" fill={c} />
+          </svg>
+        )
+      },
+    },
+    {
+      id: 'ranking',
+      label: t('nav.ranking'),
+      icon: (active) => (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill={active ? ACTIVE : INACTIVE}
+          aria-hidden="true">
+          <path d="M7 17H3v-5h4v5zm7-9h-4v9h4V8zm7-4h-4v13h4V4z" />
+        </svg>
+      ),
+    },
+    {
+      id: 'profile',
+      label: t('nav.profile'),
+      icon: (active) => (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill={active ? ACTIVE : INACTIVE}
+          aria-hidden="true">
+          <path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-5.33 0-8 2.67-8 4v2h16v-2c0-1.33-2.67-4-8-4z" />
+        </svg>
+      ),
+    },
+  ]
+}
 
 interface AppShellProps {
   activeTab: Tab
@@ -80,7 +82,7 @@ export function AppShell({
   children,
   hideTabBar = false,
 }: AppShellProps) {
-  void t // keep import for translations side-effects elsewhere
+  const TABS = getTabs()
 
   // タブ切り替え時のスクロール位置リセット
   useEffect(() => {
@@ -120,7 +122,7 @@ export function AppShell({
         <main className="main-inner">{children}</main>
       </div>
       {!hideTabBar && (
-        <nav className={`${tabbarClass} tabbar`} role="tablist" aria-label="メインナビゲーション">
+        <nav className={`${tabbarClass} tabbar`} role="tablist" aria-label={t('nav.mainNav')}>
           {TABS.map((tab) => {
             const active = activeTab === tab.id
             return (

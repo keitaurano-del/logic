@@ -179,7 +179,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
             const isActive = activePlan === plan
             return (
               <button key={plan} onClick={() => setActivePlan(plan)}
-                style={{ flex: 1, padding: '10px 4px', borderRadius: 12, border: `2px solid ${isActive ? meta.color : 'var(--border)'}`, background: isActive ? `${meta.color}14` : 'var(--bg-card)', cursor: 'pointer', transition: 'all .15s' }}>
+                style={{ flex: 1, padding: '10px 4px', borderRadius: 12, border: `2px solid ${isActive ? meta.color : 'var(--border)'}`, background: isActive ? `color-mix(in srgb, ${meta.color} 8%, transparent)` : 'var(--bg-card)', cursor: 'pointer', transition: 'all .15s' }}>
                 <div style={{ fontSize: 10, fontWeight: 800, color: meta.color, letterSpacing: '.08em' }}>{meta.en}</div>
                 <div style={{ fontSize: 13, fontWeight: 700, color: isActive ? meta.color : 'var(--text-secondary)', marginTop: 2 }}>{meta.label}</div>
               </button>
@@ -191,7 +191,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
       {/* 機能リスト + 価格 + CTA */}
       <div style={{ flex: 1, padding: '0 16px 100px', overflowY: 'auto' }}>
         {/* 価格カード */}
-        <div style={{ background: 'var(--bg-card)', borderRadius: 16, padding: '20px 20px 8px', marginBottom: 12, border: `2px solid ${accentColor}30` }}>
+        <div style={{ background: 'var(--bg-card)', borderRadius: 16, padding: '20px 20px 8px', marginBottom: 12, border: `2px solid color-mix(in srgb, ${accentColor} 19%, transparent)` }}>
           <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, marginBottom: 4 }}>
             <span style={{ fontSize: 32, fontWeight: 900, color: 'var(--text-primary)', letterSpacing: '-0.03em' }}>{planPrice(activePlan).main}</span>
             {planPrice(activePlan).sub && (

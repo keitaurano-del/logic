@@ -4,6 +4,7 @@
  */
 import type { ReactNode } from 'react'
 import { CloudIcon, BarChartIcon, BotIcon } from '../icons'
+import { t } from '../i18n'
 
 interface LoginGateProps {
   featureName: string        // 「AI問題生成」「ロールプレイ」など
@@ -52,8 +53,8 @@ export function LoginGate({ featureName, featureIcon, featureDesc, onLogin, onBa
 
       {/* テキスト */}
       <div style={{ textAlign: 'center', marginBottom: 32 }}>
-        <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 10, lineHeight: 1.3 }}>
-          {featureName}を使うには<br />ログインが必要だよ
+        <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 10, lineHeight: 1.3, whiteSpace: 'pre-line' }}>
+          {t('loginGate.heading', { feature: featureName })}
         </div>
         <div style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.7 }}>
           {featureDesc}
@@ -67,9 +68,9 @@ export function LoginGate({ featureName, featureIcon, featureDesc, onLogin, onBa
         marginBottom: 28, display: 'flex', flexDirection: 'column', gap: 12,
       }}>
         {[
-          { icon: <CloudIcon width={18} height={18} />, text: '学習記録がクラウドに保存される' },
-          { icon: <BarChartIcon width={18} height={18} />, text: '進捗・XP・レベルが永続する' },
-          { icon: <BotIcon width={18} height={18} />, text: 'AI機能（問題生成・ロールプレイ）が使える' },
+          { icon: <CloudIcon width={18} height={18} />, text: t('loginGate.benefit1') },
+          { icon: <BarChartIcon width={18} height={18} />, text: t('loginGate.benefit2') },
+          { icon: <BotIcon width={18} height={18} />, text: t('loginGate.benefit3') },
         ].map(item => (
           <div key={item.text} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 28, height: 28, borderRadius: 8, background: `color-mix(in srgb, var(--brand) 8%, transparent)`, color: 'var(--brand)', flexShrink: 0 }}>{item.icon}</span>
@@ -84,12 +85,12 @@ export function LoginGate({ featureName, featureIcon, featureDesc, onLogin, onBa
         style={{
           width: '100%', padding: '16px 0',
           borderRadius: 14, border: 'none',
-          background: 'var(--brand)', color: '#fff',
+          background: 'var(--brand)', color: 'var(--accent-fg)',
           fontSize: 16, fontWeight: 800, cursor: 'pointer',
           marginBottom: 12,
         }}
       >
-        無料で登録してはじめる
+        {t('loginGate.cta')}
       </button>
       <button
         onClick={onBack}
@@ -100,11 +101,11 @@ export function LoginGate({ featureName, featureIcon, featureDesc, onLogin, onBa
           fontSize: 14, fontWeight: 600, cursor: 'pointer',
         }}
       >
-        あとで
+        {t('loginGate.later')}
       </button>
 
       <div style={{ marginTop: 20, fontSize: 12, color: 'var(--text-muted)', textAlign: 'center' }}>
-        すでにアカウントをお持ちの方は登録画面からログインできます
+        {t('loginGate.haveAccount')}
       </div>
     </div>
   )

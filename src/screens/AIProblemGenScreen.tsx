@@ -6,6 +6,7 @@ import { allLessons } from '../lessonData'
 import { Header } from '../components/platform/Header'
 import { getAIGenDailyLimit, getAIGenDailyCount, incrementAIGenDailyCount, isPremiumPlan, isStandardPlan } from '../subscription'
 import { addXP } from '../stats'
+import { t, getLocale } from '../i18n'
 
 interface AIProblemGenScreenProps {
   onBack: () => void
@@ -21,38 +22,40 @@ const mkIcon = (path: React.ReactNode) => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={ICON_COLOR} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{path}</svg>
 )
 
-const THEME_PRESETS: ThemePreset[] = [
-  {
-    id: 'fermi', label: 'フェルミ推定',
-    icon: mkIcon(<><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></>),
-    prompt: 'フェルミ推定の練習問題を3問（日常・ビジネス）',
-  },
-  {
-    id: 'logic', label: 'ロジカル思考',
-    icon: mkIcon(<><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></>),
-    prompt: 'MECEやロジックツリーを使う練習問題を3問',
-  },
-  {
-    id: 'case', label: 'ケース面接',
-    icon: mkIcon(<><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></>),
-    prompt: 'ケース面接の練習問題を3問（市場規模・戦略）',
-  },
-  {
-    id: 'critical', label: 'クリティカル思考',
-    icon: mkIcon(<><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></>),
-    prompt: '前提を疑いクリティカルに考える問題を3問',
-  },
-  {
-    id: 'hypo', label: '仮説思考',
-    icon: mkIcon(<><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></>),
-    prompt: '仮説を立て検証する問題を3問（ビジネス）',
-  },
-  {
-    id: 'mece', label: 'MECE・整理',
-    icon: mkIcon(<><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></>),
-    prompt: 'MECEを使った分類・整理の問題を3問',
-  },
-]
+function getThemePresets(): ThemePreset[] {
+  return [
+    {
+      id: 'fermi', label: t('aiGen.theme.fermi'),
+      icon: mkIcon(<><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></>),
+      prompt: t('aiGen.theme.fermiPrompt'),
+    },
+    {
+      id: 'logic', label: t('aiGen.theme.logic'),
+      icon: mkIcon(<><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></>),
+      prompt: t('aiGen.theme.logicPrompt'),
+    },
+    {
+      id: 'case', label: t('aiGen.theme.case'),
+      icon: mkIcon(<><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></>),
+      prompt: t('aiGen.theme.casePrompt'),
+    },
+    {
+      id: 'critical', label: t('aiGen.theme.critical'),
+      icon: mkIcon(<><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></>),
+      prompt: t('aiGen.theme.criticalPrompt'),
+    },
+    {
+      id: 'hypo', label: t('aiGen.theme.hypo'),
+      icon: mkIcon(<><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></>),
+      prompt: t('aiGen.theme.hypoPrompt'),
+    },
+    {
+      id: 'mece', label: t('aiGen.theme.mece'),
+      icon: mkIcon(<><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></>),
+      prompt: t('aiGen.theme.mecePrompt'),
+    },
+  ]
+}
 
 // 履歴の保持日数
 function getHistoryDays(): number {
@@ -101,13 +104,17 @@ function analyzeWeakness(): WeaknessItem[] {
 
 function buildRecommendPrompt(weakness: WeaknessItem[]): string {
   const top = weakness.slice(0, 2)
-  if (top.length === 0) return 'ロジカルシンキングの総合練習問題を3問（初級〜中級）'
-  const cats = top.map(w => w.label).join('と')
+  if (top.length === 0) return t('aiGen.recommend.fallbackPrompt')
+  const cats = top.map(w => w.label).join(t('aiGen.recommend.connector'))
   const pl2 = loadPlacementResult()
   const level = pl2
-    ? (pl2.deviation < 40 ? '初級' : pl2.deviation < 55 ? '中級' : '上級')
-    : '初級〜中級'
-  return `${cats}の練習問題を3問（${level}、実際のビジネス場面を想定）`
+    ? (pl2.deviation < 40
+        ? t('aiGen.recommend.levelBeginner')
+        : pl2.deviation < 55
+          ? t('aiGen.recommend.levelIntermediate')
+          : t('aiGen.recommend.levelAdvanced'))
+    : t('aiGen.recommend.levelDefault')
+  return t('aiGen.recommend.dynamicPrompt', { cats, level })
 }
 
 // 星評価ポップアップ
@@ -126,12 +133,12 @@ function RatingPopup({ onSubmit, onSkip }: RatingPopupProps) {
         <div style={{ background: `color-mix(in srgb, var(--brand) 9%, transparent)`, border: `1px solid color-mix(in srgb, var(--brand) 25%, transparent)`, borderRadius: 12, padding: '10px 16px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 10 }}>
           <svg width="18" height="18" viewBox="0 0 24 24" fill={'var(--brand)'} stroke="none" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           <div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--brand)' }}>+30 XP 獲得！</div>
-            <div style={{ fontSize: 11, color: 'var(--text-secondary)' }}>問題を解き終えました</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--brand)' }}>{t('aiGen.rating.xpEarned')}</div>
+            <div style={{ fontSize: 11, color: 'var(--text-secondary)' }}>{t('aiGen.rating.xpDesc')}</div>
           </div>
         </div>
-        <div style={{ fontSize: 17, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 6 }}>この問題はどうでしたか？</div>
-        <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 20 }}>評価してくれると次の問題生成に活かせるよ</div>
+        <div style={{ fontSize: 17, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 6 }}>{t('aiGen.rating.heading')}</div>
+        <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 20 }}>{t('aiGen.rating.desc')}</div>
         {/* 星5つ */}
         <div style={{ display: 'flex', justifyContent: 'center', gap: 10, marginBottom: 20 }}>
           {[1,2,3,4,5].map(n => (
@@ -148,20 +155,20 @@ function RatingPopup({ onSubmit, onSkip }: RatingPopupProps) {
         </div>
         {/* コメント */}
         <textarea
-          aria-label="感想・改善点（任意）"
+          aria-label={t('aiGen.rating.commentAria')}
           value={comment}
           onChange={e => setComment(e.target.value)}
-          placeholder="感想・改善点など（任意）"
+          placeholder={t('aiGen.rating.commentPlaceholder')}
           rows={3}
           style={{ width: '100%', boxSizing: 'border-box', background: `color-mix(in srgb, var(--brand) 3%, transparent)`, border: `1px solid ${'var(--border)'}`, borderRadius: 10, padding: '10px 12px', fontSize: 14, color: 'var(--text-primary)', resize: 'none', outline: 'none', fontFamily: "'Noto Sans JP', sans-serif", marginBottom: 14 }}
         />
         <button
           onClick={() => rating > 0 ? onSubmit(rating, comment) : onSkip()}
           style={{ width: '100%', background: 'var(--brand)', color: 'var(--accent-fg)', border: 'none', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700, cursor: 'pointer', marginBottom: 10 }}>
-          {rating > 0 ? '送信する' : 'スキップ'}
+          {rating > 0 ? t('aiGen.rating.submit') : t('aiGen.rating.skip')}
         </button>
         <button onClick={onSkip} style={{ width: '100%', background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: 13, cursor: 'pointer' }}>
-          スキップ
+          {t('aiGen.rating.skip')}
         </button>
       </div>
     </div>
@@ -187,7 +194,12 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
   const canUse = dailyLimit > 0
 
   const historyDays = getHistoryDays()
-  const planLabel = isPremiumPlan() ? 'プレミアム' : isStandardPlan() ? 'スタンダード' : 'フリー'
+  const planHeader = isPremiumPlan()
+    ? t('aiGen.history.headerPlanPremium', { days: historyDays })
+    : isStandardPlan()
+      ? t('aiGen.history.headerPlanStandard', { days: historyDays })
+      : t('aiGen.history.headerPlanFree', { days: historyDays })
+  const THEME_PRESETS = getThemePresets()
 
   const handleGenerate = async (targetPrompt?: string) => {
     const p = targetPrompt ?? prompt
@@ -207,7 +219,7 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
       setPendingProblem(newSet)
       onPlay(newSet)
     } catch (e: unknown) {
-      setError((e as Error).message || '生成に失敗しました')
+      setError((e as Error).message || t('aiGen.errGenerationFailed'))
     } finally {
       setGenerating(false)
     }
@@ -229,14 +241,14 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
   }
 
   const handleDelete = (id: number) => {
-    if (!confirm('この問題セットを削除しますか？')) return
+    if (!confirm(t('aiGen.history.deleteConfirm'))) return
     deleteAIProblem(id)
     setProblems(filterByHistoryDays(loadAIProblems()))
   }
 
   const TABS: { id: Tab; label: string }[] = [
-    { id: 'create', label: '問題を作る' },
-    { id: 'history', label: '履歴' },
+    { id: 'create', label: t('aiGen.tab.create') },
+    { id: 'history', label: t('aiGen.tab.history') },
   ]
 
   return (
@@ -245,19 +257,19 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
       fontFamily: "'Noto Sans JP', sans-serif", display: 'flex', flexDirection: 'column',
     }}>
       <Header
-        title="AI問題生成"
+        title={t('aiGen.title')}
         onBack={onBack}
         trailing={dailyLimit > 0 ? (
           <div style={{ background: 'var(--bg-card)', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700, color: isAtLimit ? 'var(--md-sys-color-error)' : 'var(--brand)' }}>
-            {dailyCount}/{dailyLimit}問
+            {t('aiGen.dailyCount', { count: dailyCount, limit: dailyLimit })}
           </div>
         ) : (
           <div style={{ background: 'rgba(248,113,113,0.15)', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700, color: 'var(--md-sys-color-error)' }}>
-            要アップグレード
+            {t('aiGen.upgradeRequired')}
           </div>
         )}
       />
-      <div style={{ padding: '0 20px 4px', fontSize: 12, color: 'var(--text-secondary)' }}>弱点に合った問題を自動生成</div>
+      <div style={{ padding: '0 20px 4px', fontSize: 12, color: 'var(--text-secondary)' }}>{t('aiGen.subtitle')}</div>
 
       {/* タブ */}
       <div style={{ display: 'flex', padding: '16px 20px 0', gap: 6 }}>
@@ -285,21 +297,21 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
               </div>
               <div style={{ flex: 1, textAlign: 'left' }}>
-                <div style={{ fontSize: 15, fontWeight: 800, lineHeight: 1.2 }}>あなたにあった問題を自動生成する</div>
-                <div style={{ fontSize: 11, opacity: 0.85, marginTop: 3 }}>弱点分析をもとにAIが最適な問題を作成</div>
+                <div style={{ fontSize: 15, fontWeight: 800, lineHeight: 1.2 }}>{t('aiGen.recommendBtn')}</div>
+                <div style={{ fontSize: 11, opacity: 0.85, marginTop: 3 }}>{t('aiGen.recommendDesc')}</div>
               </div>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
             </button>
 
             {/* 自由テキスト入力（最上部） */}
             <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', padding: '16px 18px' }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>どんな問題を作る？</div>
-              <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 10 }}>テーマや条件を自由に入力してね</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>{t('aiGen.inputLabel')}</div>
+              <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 10 }}>{t('aiGen.inputDesc')}</div>
               <textarea
-                aria-label="作りたい問題のテーマや条件"
+                aria-label={t('aiGen.inputAria')}
                 value={prompt}
                 onChange={e => setPrompt(e.target.value)}
-                placeholder="例：MECEを使った問題を3問（コンビニのターゲット分析）"
+                placeholder={t('aiGen.inputPlaceholder')}
                 rows={3}
                 style={{ width: '100%', boxSizing: 'border-box', background: `color-mix(in srgb, var(--brand) 3%, transparent)`, border: `1px solid ${'var(--border)'}`, borderRadius: 10, padding: '10px 12px', fontSize: 14, color: 'var(--text-primary)', resize: 'none', outline: 'none', fontFamily: "'Noto Sans JP', sans-serif" }}
               />
@@ -307,11 +319,11 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
                 onClick={() => handleGenerate()}
                 disabled={!prompt.trim() || generating || isAtLimit || !canUse}
                 style={{ marginTop: 10, width: '100%', background: prompt.trim() && !generating && !isAtLimit && canUse ? 'var(--brand)' : 'var(--bg-card)', color: prompt.trim() && !generating && !isAtLimit && canUse ? 'var(--bg-primary)' : 'var(--text-muted)', border: 'none', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700, cursor: prompt.trim() && !generating && !isAtLimit && canUse ? 'pointer' : 'not-allowed' }}>
-                {generating ? '生成中…' : !canUse ? 'スタンダード以上で利用可能' : isAtLimit ? '今日の上限に達しました' : '生成する (+10 XP)'}
+                {generating ? t('aiGen.generating') : !canUse ? t('aiGen.standardOnly') : isAtLimit ? t('aiGen.dailyLimitReached') : t('aiGen.generateXp')}
               </button>
               {(!canUse || isAtLimit) && onUpgrade && (
                 <button onClick={onUpgrade} style={{ width: '100%', marginTop: 8, background: 'transparent', border: `1px solid ${'var(--brand)'}`, color: 'var(--brand)', borderRadius: 12, padding: '12px', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
-                  プランをアップグレード
+                  {t('aiGen.upgradePlan')}
                 </button>
               )}
             </div>
@@ -320,7 +332,7 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
 
             {/* テーマから選ぶ（下部） */}
             <div>
-              <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '.06em', marginBottom: 10 }}>カテゴリから選ぶ</div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '.06em', marginBottom: 10 }}>{t('aiGen.categoryHeading')}</div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                 {THEME_PRESETS.map(p => (
                   <button key={p.id} onClick={() => handleGenerate(p.prompt)} disabled={generating || isAtLimit || !canUse}
@@ -337,14 +349,14 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
             {/* おすすめ（弱点ベース） */}
             {weakness.length > 0 && (
               <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', padding: '16px 18px' }}>
-                <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '.06em', marginBottom: 14 }}>弱点分析</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '.06em', marginBottom: 14 }}>{t('aiGen.weaknessHeading')}</div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 16 }}>
                   {weakness.slice(0, 3).map((w) => {
                     const pct = Math.round(w.score * 100)
                     const barColor = pct < 35 ? 'var(--md-sys-color-error)' : pct < 55 ? 'var(--warning-mid)' : 'var(--brand)'
                     const tagBg = pct < 35 ? 'rgba(248,113,113,.15)' : pct < 55 ? 'rgba(251,191,36,.15)' : `color-mix(in srgb, var(--brand) 13%, transparent)`
                     const tagColor = pct < 35 ? 'var(--md-sys-color-error)' : pct < 55 ? 'var(--warning-mid)' : 'var(--brand)'
-                    const tagLabel = pct < 35 ? '苦手' : pct < 55 ? '要強化' : '練習中'
+                    const tagLabel = pct < 35 ? t('aiGen.tagWeak') : pct < 55 ? t('aiGen.tagFocus') : t('aiGen.tagPracticing')
                     return (
                       <div key={w.category}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
@@ -366,7 +378,7 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
                   onClick={() => handleGenerate(recommendPrompt)}
                   disabled={generating || isAtLimit || !canUse}
                   style={{ width: '100%', background: generating || isAtLimit || !canUse ? 'var(--bg-card)' : 'var(--brand)', color: generating || isAtLimit || !canUse ? 'var(--text-muted)' : 'var(--bg-primary)', border: 'none', borderRadius: 12, padding: '12px', fontSize: 14, fontWeight: 700, cursor: generating || isAtLimit || !canUse ? 'not-allowed' : 'pointer' }}>
-                  {generating ? '生成中…' : 'この弱点で問題を生成する'}
+                  {generating ? t('aiGen.generating') : t('aiGen.generateForWeakness')}
                 </button>
               </div>
             )}
@@ -377,20 +389,20 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
         {tab === 'history' && (
           <>
             <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 4 }}>
-              {planLabel}プラン · 過去{historyDays}日分を表示
+              {planHeader}
             </div>
             {problems.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '48px 0', color: 'var(--text-secondary)', fontSize: 14 }}>
-                まだ生成した問題がないよ<br />「問題を作る」タブから作ってみよう
+              <div style={{ textAlign: 'center', padding: '48px 0', color: 'var(--text-secondary)', fontSize: 14, whiteSpace: 'pre-line' }}>
+                {t('aiGen.history.empty')}
               </div>
             ) : (
               problems.map(p => (
                 <div key={p.id} style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.title}</div>
-                    <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{p.steps?.length ?? 0}問 · {new Date(p.createdAt).toLocaleDateString('ja-JP')}</div>
+                    <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{t('aiGen.history.questionCount', { count: p.steps?.length ?? 0, date: new Date(p.createdAt).toLocaleDateString(getLocale() === 'ja' ? 'ja-JP' : 'en-US') })}</div>
                   </div>
-                  <button onClick={() => onPlay(p)} style={{ background: 'var(--brand)', color: 'var(--accent-fg)', border: 'none', borderRadius: 10, padding: '8px 14px', fontSize: 13, fontWeight: 700, cursor: 'pointer', flexShrink: 0 }}>もう一度</button>
+                  <button onClick={() => onPlay(p)} style={{ background: 'var(--brand)', color: 'var(--accent-fg)', border: 'none', borderRadius: 10, padding: '8px 14px', fontSize: 13, fontWeight: 700, cursor: 'pointer', flexShrink: 0 }}>{t('aiGen.history.replay')}</button>
                   <button onClick={() => handleDelete(p.id)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 4, flexShrink: 0 }}>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F87171" strokeWidth="2" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
                   </button>

@@ -50,7 +50,7 @@ function PhoneFrame({ children, color }: { children: React.ReactNode; color: str
         borderRadius: 28,
         padding: 3,
         background: 'linear-gradient(150deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.06) 35%, rgba(255,255,255,0.02) 70%, rgba(255,255,255,0.10) 100%)',
-        boxShadow: `0 50px 90px -25px ${color}55, 0 25px 50px -15px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(0,0,0,0.25)`,
+        boxShadow: `0 50px 90px -25px color-mix(in srgb, ${color} 33%, transparent), 0 25px 50px -15px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(0,0,0,0.25)`,
       }}>
         <div style={{
           position: 'relative',
@@ -66,7 +66,7 @@ function PhoneFrame({ children, color }: { children: React.ReactNode; color: str
           <div style={{
             position: 'absolute', top: -40, left: '50%', transform: 'translateX(-50%)',
             width: 220, height: 90, borderRadius: '50%',
-            background: `radial-gradient(circle, ${color}30 0%, transparent 70%)`,
+            background: `radial-gradient(circle, color-mix(in srgb, ${color} 19%, transparent) 0%, transparent 70%)`,
             pointerEvents: 'none',
           }} />
           <div style={{ position: 'relative', zIndex: 1 }}>
@@ -83,8 +83,8 @@ function OptionRow({ color, text, selected }: { color: string; text: string; sel
     <div style={{
       display: 'flex', alignItems: 'center', gap: 8,
       padding: '8px 10px', borderRadius: 10,
-      background: selected ? `${color}22` : 'rgba(255,255,255,0.03)',
-      border: selected ? `1px solid ${color}80` : '1px solid rgba(255,255,255,0.06)',
+      background: selected ? `color-mix(in srgb, ${color} 13%, transparent)` : 'rgba(255,255,255,0.03)',
+      border: selected ? `1px solid color-mix(in srgb, ${color} 50%, transparent)` : '1px solid rgba(255,255,255,0.06)',
     }}>
       <div style={{
         width: 14, height: 14, borderRadius: '50%',
@@ -115,8 +115,8 @@ function RankRow({ rank, name, pt, color, highlight }: { rank: number; name: str
     <div style={{
       display: 'flex', alignItems: 'center', gap: 10,
       padding: '8px 10px', borderRadius: 10,
-      background: highlight ? `${color}20` : 'transparent',
-      border: highlight ? `1px solid ${color}50` : '1px solid transparent',
+      background: highlight ? `color-mix(in srgb, ${color} 13%, transparent)` : 'transparent',
+      border: highlight ? `1px solid color-mix(in srgb, ${color} 31%, transparent)` : '1px solid transparent',
     }}>
       <div style={{ width: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', color: medalColor ?? 'rgba(255,255,255,0.6)' }}>
         {medalColor ? <MedalIcon width={18} height={18} aria-label={t('onboarding.slidesRankUnit', { n: rank })} /> : <span style={{ fontSize: 13, fontWeight: 700 }}>{rank}</span>}
@@ -170,7 +170,7 @@ function getSlides(): Slide[] {
           <div style={{
             display: 'inline-flex', alignItems: 'center', gap: 5,
             padding: '3px 8px', borderRadius: 99,
-            background: `${color}18`, border: `1px solid ${color}40`,
+            background: `color-mix(in srgb, ${color} 9%, transparent)`, border: `1px solid color-mix(in srgb, ${color} 25%, transparent)`,
             marginBottom: 10,
             fontSize: 9, fontWeight: 800, letterSpacing: '0.12em', color,
           }}>
@@ -220,8 +220,8 @@ function getSlides(): Slide[] {
           </div>
           <div style={{
             marginTop: 10, padding: '6px 10px',
-            background: `${color}14`, borderRadius: 8,
-            border: `1px solid ${color}30`,
+            background: `color-mix(in srgb, ${color} 8%, transparent)`, borderRadius: 8,
+            border: `1px solid color-mix(in srgb, ${color} 19%, transparent)`,
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
             fontSize: 10, color: 'rgba(255,255,255,0.85)',
           }}>
@@ -313,17 +313,17 @@ function WelcomeSlides({ idx, setIdx, onDone }: { idx: number; setIdx: (i: numbe
       {/* 背景グロー */}
       <div style={{
         position: 'absolute', inset: 0, pointerEvents: 'none',
-        background: `radial-gradient(ellipse at 50% 30%, ${slide.accentColor}22 0%, transparent 65%)`,
+        background: `radial-gradient(ellipse at 50% 30%, color-mix(in srgb, ${slide.accentColor} 13%, transparent) 0%, transparent 65%)`,
         transition: 'background 0.5s ease',
       }} />
       <div style={{
         position: 'absolute', top: -80, right: -80, width: 260, height: 260, borderRadius: '50%',
-        background: `radial-gradient(circle, ${slide.accentColor}18 0%, transparent 70%)`,
+        background: `radial-gradient(circle, color-mix(in srgb, ${slide.accentColor} 9%, transparent) 0%, transparent 70%)`,
         pointerEvents: 'none',
       }} />
       <div style={{
         position: 'absolute', bottom: 120, left: -60, width: 200, height: 200, borderRadius: '50%',
-        background: `radial-gradient(circle, ${slide.accentColor}10 0%, transparent 70%)`,
+        background: `radial-gradient(circle, color-mix(in srgb, ${slide.accentColor} 6%, transparent) 0%, transparent 70%)`,
         pointerEvents: 'none',
       }} />
 
@@ -352,7 +352,7 @@ function WelcomeSlides({ idx, setIdx, onDone }: { idx: number; setIdx: (i: numbe
         <div style={{
           flex: 1, textAlign: 'center',
           fontSize: 13, fontWeight: 800, letterSpacing: '0.25em',
-          color: `${slide.accentColor}90`, textTransform: 'uppercase',
+          color: `color-mix(in srgb, ${slide.accentColor} 56%, transparent)`, textTransform: 'uppercase',
           marginRight: 36, /* 戻るボタンの幅ぶん中央寄せを調整 */
         }}>Logic</div>
       </div>
@@ -383,7 +383,7 @@ function WelcomeSlides({ idx, setIdx, onDone }: { idx: number; setIdx: (i: numbe
               style={{
                 width: i === idx ? 22 : 6,
                 height: 6, borderRadius: 3,
-                background: i === idx ? slide.accentColor : `${slide.accentColor}30`,
+                background: i === idx ? slide.accentColor : `color-mix(in srgb, ${slide.accentColor} 19%, transparent)`,
                 transition: 'all 0.35s ease',
                 cursor: 'pointer',
                 border: 'none',
@@ -394,8 +394,8 @@ function WelcomeSlides({ idx, setIdx, onDone }: { idx: number; setIdx: (i: numbe
 
         <div style={{
           display: 'inline-flex', alignItems: 'center', gap: 6,
-          background: `${slide.accentColor}18`,
-          border: `1px solid ${slide.accentColor}40`,
+          background: `color-mix(in srgb, ${slide.accentColor} 9%, transparent)`,
+          border: `1px solid color-mix(in srgb, ${slide.accentColor} 25%, transparent)`,
           borderRadius: 99, padding: '4px 12px',
           marginBottom: 14, alignSelf: 'flex-start',
         }}>
@@ -423,11 +423,11 @@ function WelcomeSlides({ idx, setIdx, onDone }: { idx: number; setIdx: (i: numbe
           onClick={next}
           style={{
             width: '100%', padding: '18px',
-            background: `linear-gradient(180deg, ${slide.accentColor} 0%, ${slide.accentColor}DD 100%)`,
+            background: `linear-gradient(180deg, ${slide.accentColor} 0%, color-mix(in srgb, ${slide.accentColor} 87%, transparent) 100%)`,
             border: 'none', borderRadius: 16,
             fontSize: 16, fontWeight: 700, color: '#fff',
             cursor: 'pointer',
-            boxShadow: `0 12px 32px ${slide.accentColor}55, inset 0 1px 0 rgba(255,255,255,0.30), inset 0 -1px 0 rgba(0,0,0,0.15)`,
+            boxShadow: `0 12px 32px color-mix(in srgb, ${slide.accentColor} 33%, transparent), inset 0 1px 0 rgba(255,255,255,0.30), inset 0 -1px 0 rgba(0,0,0,0.15)`,
             letterSpacing: '0.02em',
           }}
         >
@@ -497,7 +497,7 @@ function AttrOption<T extends string>({
         display: 'flex', alignItems: 'center', gap: 14,
         padding: '16px 18px', borderRadius: 14,
         border: `2px solid ${selected ? ACCENT : 'rgba(255,255,255,0.1)'}`,
-        background: selected ? `${ACCENT}18` : 'rgba(255,255,255,0.04)',
+        background: selected ? `color-mix(in srgb, ${ACCENT} 9%, transparent)` : 'rgba(255,255,255,0.04)',
         color: '#fff', cursor: 'pointer', transition: 'all .15s', textAlign: 'left',
       }}
     >
@@ -621,7 +621,7 @@ function OnboardingAttributeView({ onNext, onBackToSlides }: { onNext: () => voi
           fontSize: 16, fontWeight: 800,
           cursor: currentValue ? 'pointer' : 'not-allowed',
           marginTop: 24,
-          boxShadow: currentValue ? `0 8px 24px ${ACCENT}50` : 'none',
+          boxShadow: currentValue ? `0 8px 24px color-mix(in srgb, ${ACCENT} 31%, transparent)` : 'none',
           transition: 'all .2s',
         }}
       >
@@ -649,14 +649,14 @@ function OnboardingBillingView({ planKey, onSelect, onBack }: { planKey: 'standa
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
 
-      <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.2em', color: `${color}90`, textAlign: 'center', marginBottom: 12 }}>{label.toUpperCase()}</div>
+      <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.2em', color: `color-mix(in srgb, ${color} 56%, transparent)`, textAlign: 'center', marginBottom: 12 }}>{label.toUpperCase()}</div>
       <h1 style={{ fontSize: 24, fontWeight: 800, textAlign: 'center', margin: '0 0 8px', lineHeight: 1.35, whiteSpace: 'pre-line' }}>{t('onboarding.billingTitle')}</h1>
       <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', textAlign: 'center', margin: '0 0 32px' }}>{t('onboarding.billingSubtitle')}</p>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
         {/* 年払いカード（推奨） */}
         <button onClick={() => onSelect(planKey === 'standard' ? 'standard_yearly' : 'premium_yearly')}
-          style={{ position: 'relative', padding: '20px 20px 20px', borderRadius: 18, border: `2px solid ${color}`, background: `${color}14`, color: '#fff', cursor: 'pointer', textAlign: 'left' }}>
+          style={{ position: 'relative', padding: '20px 20px 20px', borderRadius: 18, border: `2px solid ${color}`, background: `color-mix(in srgb, ${color} 8%, transparent)`, color: '#fff', cursor: 'pointer', textAlign: 'left' }}>
           {/* 推奨バッジ */}
           <div style={{ position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)', background: color, borderRadius: 99, padding: '3px 12px', fontSize: 11, fontWeight: 800, whiteSpace: 'nowrap' }}>
             {t('onboarding.billingSavedMonths', { n: savedMonths })}
@@ -721,7 +721,7 @@ function OnboardingPricingView({ onNext, onSelectPlan, onBack }: { onNext: () =>
         </button>
       </div>
       <div style={{ padding: '0 24px', textAlign: 'center' }}>
-        <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.2em', color: `${ACCENT}90`, marginBottom: 12 }}>LOGIC</div>
+        <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.2em', color: `color-mix(in srgb, ${ACCENT} 56%, transparent)`, marginBottom: 12 }}>LOGIC</div>
         <h1 style={{ fontSize: 26, fontWeight: 800, margin: '0 0 8px', lineHeight: 1.3, letterSpacing: '-0.02em', whiteSpace: 'pre-line' }}>
           {t('onboarding.pricingTitle')}
         </h1>
@@ -772,7 +772,7 @@ function OnboardingPricingView({ onNext, onSelectPlan, onBack }: { onNext: () =>
           <div key={row.label} style={{ display: 'grid', gridTemplateColumns: '1fr 70px 80px 80px', padding: '13px 16px', borderTop: i === 0 ? 'none' : '1px solid rgba(255,255,255,0.06)', alignItems: 'center' }}>
             <div style={{ fontSize: 13, fontWeight: 600, color: 'rgba(255,255,255,0.85)' }}>{row.label}</div>
             <div style={{ display: 'flex', justifyContent: 'center' }}><OBCell value={row.free} /></div>
-            <div style={{ display: 'flex', justifyContent: 'center', background: `${ACCENT}10`, borderRadius: 6, padding: '4px 0' }}><OBCell value={row.standard} /></div>
+            <div style={{ display: 'flex', justifyContent: 'center', background: `color-mix(in srgb, ${ACCENT} 6%, transparent)`, borderRadius: 6, padding: '4px 0' }}><OBCell value={row.standard} /></div>
             <div style={{ display: 'flex', justifyContent: 'center' }}><OBCell value={row.premium} /></div>
           </div>
         ))}
@@ -780,7 +780,7 @@ function OnboardingPricingView({ onNext, onSelectPlan, onBack }: { onNext: () =>
 
       {/* CTAボタン */}
       <div style={{ padding: '0 16px calc(env(safe-area-inset-bottom, 24px) + 20px)', display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <button onClick={() => onSelectPlan('standard')} style={{ width: '100%', padding: '17px', borderRadius: 16, border: 'none', background: ACCENT, color: '#fff', fontSize: 15, fontWeight: 800, cursor: 'pointer', boxShadow: `0 8px 24px ${ACCENT}50` }}>
+        <button onClick={() => onSelectPlan('standard')} style={{ width: '100%', padding: '17px', borderRadius: 16, border: 'none', background: ACCENT, color: '#fff', fontSize: 15, fontWeight: 800, cursor: 'pointer', boxShadow: `0 8px 24px color-mix(in srgb, ${ACCENT} 31%, transparent)` }}>
           {t('onboarding.pricingStartStandard')}
         </button>
         <button onClick={() => onSelectPlan('premium')} style={{ width: '100%', padding: '17px', borderRadius: 16, border: `2px solid ${WARM}`, background: 'transparent', color: WARM, fontSize: 15, fontWeight: 800, cursor: 'pointer' }}>

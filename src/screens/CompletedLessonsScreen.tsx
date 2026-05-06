@@ -133,7 +133,7 @@ export function CompletedLessonsScreen({ onBack }: CompletedLessonsScreenProps) 
                 const meta = LESSON_MAP[key]
                 const name = meta?.name ?? key
                 return (
-                  <li key={key} aria-label={`${name} 完了済み`}>
+                  <li key={key} aria-label={t('completed.itemAria', { name })}>
                     {i > 0 && <div style={{ height: 1, background: 'var(--border)', marginLeft: 'var(--s-4)' }} />}
                     <div style={{ display: 'flex', alignItems: 'center', padding: 'var(--s-3) var(--s-4)', gap: 'var(--s-3)' }}>
                       <span aria-hidden="true" style={{ color: 'var(--success)', flexShrink: 0 }}>

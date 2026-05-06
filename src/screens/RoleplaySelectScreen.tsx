@@ -3,6 +3,7 @@ import { isPremium } from '../subscription'
 import { getRoleplayRemaining, ROLEPLAY_FREE_LIMIT } from '../roleplayUsage'
 import { ArrowLeftIcon } from '../icons'
 import { IconButton } from '../components/IconButton'
+import { t } from '../i18n'
 
 interface RoleplaySelectScreenProps {
   onBack: () => void
@@ -10,10 +11,12 @@ interface RoleplaySelectScreenProps {
   onUpgrade: () => void
 }
 
-const DIFF_LABEL: Record<string, string> = {
-  beginner: '初級',
-  intermediate: '中級',
-  advanced: '上級',
+function getDiffLabel(): Record<string, string> {
+  return {
+    beginner: t('roleplaySelect.diff.beginner'),
+    intermediate: t('roleplaySelect.diff.intermediate'),
+    advanced: t('roleplaySelect.diff.advanced'),
+  }
 }
 
 const DIFF_COLOR: Record<string, string> = {
@@ -100,9 +103,11 @@ const SCENARIO_IMAGE: Record<string, string> = {
   'nietzsche-values': '/images/v3/course-philosophy.webp',
 }
 
-const CATEGORY_LABELS: Record<SituationCategory, string> = {
-  business: 'ビジネス思考',
-  philosophy: '哲学・思考実験',
+function getCategoryLabels(): Record<SituationCategory, string> {
+  return {
+    business: t('roleplaySelect.cat.business'),
+    philosophy: t('roleplaySelect.cat.philosophy'),
+  }
 }
 
 function SituationCard({
@@ -116,6 +121,7 @@ function SituationCard({
   remaining: number
   onClick: () => void
 }) {
+  const DIFF_LABEL = getDiffLabel()
   const locked = (s.premium && !premium) || (!premium && remaining <= 0 && !s.premium)
   const comingSoon = false // 哲学者シリーズも開放
 
@@ -191,7 +197,7 @@ function SituationCard({
             borderRadius: 99, background: `color-mix(in srgb, var(--brand) 7%, transparent)`, color: 'var(--text-muted)',
             alignSelf: 'flex-start', whiteSpace: 'nowrap',
           }}>
-            近日公開
+            {t('roleplaySelect.comingSoon')}
           </span>
         ) : locked ? (
           <span style={{
@@ -199,7 +205,7 @@ function SituationCard({
             borderRadius: 99, background: `color-mix(in srgb, var(--brand) 16%, transparent)`, color: 'var(--brand)',
             alignSelf: 'flex-start', whiteSpace: 'nowrap',
           }}>
-            PRO
+            {t('roleplaySelect.proBadge')}
           </span>
         ) : (
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2.5" strokeLinecap="round" style={{ flexShrink: 0, alignSelf: 'center' }} aria-hidden="true">
@@ -212,6 +218,7 @@ function SituationCard({
 }
 
 export function RoleplaySelectScreen({ onBack, onStart, onUpgrade }: RoleplaySelectScreenProps) {
+  const CATEGORY_LABELS = getCategoryLabels()
   const premium = isPremium()
   const remaining = getRoleplayRemaining()
 
@@ -230,15 +237,15 @@ export function RoleplaySelectScreen({ onBack, onStart, onUpgrade }: RoleplaySel
     <div style={{ display: 'flex', flexDirection: 'column', padding: '16px 16px 40px', background: 'var(--bg-primary)', minHeight: '100vh', color: 'var(--text-primary)', fontFamily: "'Noto Sans JP', sans-serif" }}>
       {/* ヘッダー */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 0 16px' }}>
-        <IconButton aria-label="Back" onClick={onBack}>
+        <IconButton aria-label={t('roleplaySelect.backAria')} onClick={onBack}>
           <ArrowLeftIcon />
         </IconButton>
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-.02em' }}>
-            ロールプレイ
+            {t('roleplaySelect.title')}
           </div>
           <div style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 1 }}>
-            実践的な思考力を鍛える
+            {t('roleplaySelect.subtitle')}
           </div>
         </div>
       </div>
@@ -250,7 +257,7 @@ export function RoleplaySelectScreen({ onBack, onStart, onUpgrade }: RoleplaySel
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           marginBottom: 20,
         }}>
-          <span style={{ fontSize: 14, color: 'var(--md-sys-color-primary)', fontWeight: 600 }}>今月の残り回数</span>
+          <span style={{ fontSize: 14, color: 'var(--md-sys-color-primary)', fontWeight: 600 }}>{t('roleplaySelect.remaining')}</span>
           <span style={{ fontSize: 16, fontWeight: 800, color: 'var(--md-sys-color-primary)' }}>
             {remaining} / {ROLEPLAY_FREE_LIMIT}
           </span>
