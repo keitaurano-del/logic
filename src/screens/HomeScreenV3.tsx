@@ -11,6 +11,7 @@ import { HomeCoachmark, useShouldShowHomeCoachmark } from '../tutorial/coachmark
 import { PlacementCard } from '../tutorial/placementCard'
 import { hasCompletedPlacement } from '../placementData'
 import { useWindowSize, BREAKPOINTS } from '../hooks/useResponsive'
+import { t } from '../i18n'
 
 // フェルミ問題は fermiData.ts の FERMI_POOL を使用（日付ベース共通）
 
@@ -44,20 +45,20 @@ function getRandomLesson() {
 
 
 
-// SCRUM-185: グリーティングメッセージ複数パターン
-const GREETING_MESSAGES = [
-  '今日も論理を、\nひとつ深めましょう。',
-  '思考の筋肉を、\n今日も鍛えよう。',
-  'ひとつの問いが、\n思考を変える。',
-  '考える力は、\n毎日の積み重ね。',
-  '今日の1問が、\n明日の洞察になる。',
-  '論理的思考は、\n習慣から生まれる。',
-  '問い続けることが、\n答えへの道。',
-]
+// SCRUM-185: グリーティングメッセージ複数パターン (i18n 化)
+const GREETING_MESSAGE_KEYS = [
+  'home.greetingMsg1',
+  'home.greetingMsg2',
+  'home.greetingMsg3',
+  'home.greetingMsg4',
+  'home.greetingMsg5',
+  'home.greetingMsg6',
+  'home.greetingMsg7',
+] as const
 
 function getDailyGreeting(): string {
   const day = new Date().getDate()
-  return GREETING_MESSAGES[day % GREETING_MESSAGES.length].replace('\\n', '\n')
+  return t(GREETING_MESSAGE_KEYS[day % GREETING_MESSAGE_KEYS.length]).replace('\\n', '\n')
 }
 
 
@@ -134,7 +135,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
 
         {/* Greeting */}
         <div style={{ padding: '4px 4px 8px' }}>
-          <div style={{ fontSize: 14, color: v3.color.text2, marginBottom: 4, fontWeight: 500 }}>こんにちは、{userName || 'ゲスト'} さん</div>
+          <div style={{ fontSize: 14, color: v3.color.text2, marginBottom: 4, fontWeight: 500 }}>{t('home.userGreeting', { name: userName || t('home.guestName') })}</div>
           <div style={{ fontSize: 20, fontWeight: 700, lineHeight: 1.4, letterSpacing: '-.005em' }}>{getDailyGreeting().split('\n').map((line, i) => i === 0 ? <span key={i}>{line}<br /></span> : <span key={i}>{line}</span>)}</div>
         </div>
 
@@ -145,7 +146,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
             type="button"
             ref={dailyCardRef}
             onClick={onNavigateToDailyFermi}
-            aria-label="今日の1問を解く"
+            aria-label={t('home.dailyOpenAria')}
             style={{ background: 'var(--brand-grad-h)', padding: '20px', cursor: 'pointer', position: 'relative', overflow: 'hidden', minHeight: 180, border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%', borderRadius: 'inherit' }}
           >
             {/* フェルミ推定イメージ画像 */}
@@ -154,19 +155,19 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
             <div style={{ position: 'relative', zIndex: 1 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8, paddingRight: 96 }}>
                 <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'rgba(255,255,255,.85)' }}></div>
-                <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,.92)' }}>今日の1問</span>
+                <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,.92)' }}>{t('home.todayProblem')}</span>
               </div>
               <div style={{ fontFamily: "'Noto Sans JP', sans-serif", fontSize: 19, fontWeight: 700, color: 'var(--text-on-hero)', lineHeight: 1.4, letterSpacing: '-.005em', marginBottom: 8 }}>
                 {fermiQuestion}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'rgba(255,255,255,.82)', fontSize: 14, fontWeight: 500, marginBottom: 16 }}>
-                <span>毎日更新</span>
+                <span>{t('home.dailyUpdate')}</span>
                 <div style={{ width: 3, height: 3, borderRadius: '50%', background: 'rgba(255,255,255,.45)' }}></div>
-                <span>+30 XP</span>
+                <span>{t('home.dailyXp')}</span>
               </div>
               <div style={{ background: 'var(--text-on-hero)', color: v3.color.accent, borderRadius: v3.radius.pill, padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700, boxShadow: '0 6px 18px rgba(0,0,0,.14)' }}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill={v3.color.accent} aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>
-                チャレンジする
+                {t('home.dailyChallenge')}
               </div>
             </div>
           </button>
@@ -174,7 +175,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
           <button
             type="button"
             onClick={handleRerollFermi}
-            aria-label="別の問題を選ぶ"
+            aria-label={t('home.rerollAria')}
             style={{
               position: 'absolute',
               top: 16, right: 16,
@@ -197,7 +198,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
               <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
               <path d="M8 16H3v5"/>
             </svg>
-            別の問題
+            {t('home.rerollShort')}
           </button>
         </div>
 
@@ -219,7 +220,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
             </div>
             <div style={{ background: v3.color.accent, color: 'var(--accent-fg)', borderRadius: v3.radius.pill, padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700 }}>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>
-              レッスンをはじめる
+              {t('home.lessonStart')}
             </div>
           </div>
         </button>
@@ -242,8 +243,8 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
         )}
 
         {/* AI practice cards (large, vertical) */}
-        <AILargeCard image={`${IMG}/home-daily-question.webp`} name="AIで自分だけの問題を作る" sub="テーマ別のオリジナル問題で練習" onClick={onOpenAIGen} beta />
-        <AILargeCard image={`${IMG}/home-roleplay.webp`} name="ロールプレイ" sub="ビジネス・哲学のシナリオで対話練習" onClick={onOpenRoleplay} beta />
+        <AILargeCard image={`${IMG}/home-daily-question.webp`} name={t('home.aiGenLargeName')} sub={t('home.aiGenLargeSub')} onClick={onOpenAIGen} beta />
+        <AILargeCard image={`${IMG}/home-roleplay.webp`} name={t('home.roleplayLargeName')} sub={t('home.roleplayLargeSub')} onClick={onOpenRoleplay} beta />
       </div>
 
 
@@ -268,17 +269,17 @@ function ReviewCard({ due, weak, total, onOpen }: { due: number; weak: number; t
   const hasWeak = weak > 0
   const primaryMode: 'due' | 'weak' = hasDue ? 'due' : 'weak'
   const headline = hasDue
-    ? `今日の復習 ${due}枚`
+    ? t('home.reviewTodayCount', { n: String(due) })
     : hasWeak
-      ? `弱点の復習 ${weak}枚`
-      : 'すべて完了'
+      ? t('home.reviewWeakCount', { n: String(weak) })
+      : t('home.reviewAllDone')
   const sub = hasDue
     ? hasWeak
-      ? `うち弱点 ${weak}枚 · 全${total}枚`
-      : `全${total}枚`
+      ? t('home.reviewSubWithWeak', { weak: String(weak), total: String(total) })
+      : t('home.reviewSubAll', { total: String(total) })
     : hasWeak
-      ? `間違えた問題を重点的に学び直そう`
-      : `また明日カードを追加しましょう`
+      ? t('home.reviewWeakHint')
+      : t('home.reviewTomorrow')
 
   return (
     <div
