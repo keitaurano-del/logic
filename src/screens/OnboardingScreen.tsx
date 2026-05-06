@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { loginWithGoogle, loginWithEmail, signupWithEmail, isSupabaseConfigured } from '../supabase'
 import { startBetaCampaignCheckout, startCheckout } from '../subscription'
+import { MedalIcon } from '../icons'
 import {
   saveUserProfile,
   AGE_LABELS,
@@ -108,7 +109,7 @@ function OptionRow({ color, text, selected }: { color: string; text: string; sel
 }
 
 function RankRow({ rank, name, pt, color, highlight }: { rank: number; name: string; pt: number; color: string; highlight?: boolean }) {
-  const medals = ['🥇', '🥈', '🥉']
+  const medalColor = rank === 1 ? '#F4B86A' : rank === 2 ? '#C0C0C0' : rank === 3 ? '#CD7F32' : null
   return (
     <div style={{
       display: 'flex', alignItems: 'center', gap: 10,
@@ -116,7 +117,9 @@ function RankRow({ rank, name, pt, color, highlight }: { rank: number; name: str
       background: highlight ? `${color}20` : 'transparent',
       border: highlight ? `1px solid ${color}50` : '1px solid transparent',
     }}>
-      <div style={{ fontSize: 18, width: 22, textAlign: 'center' }}>{medals[rank - 1] || rank}</div>
+      <div style={{ width: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', color: medalColor ?? 'rgba(255,255,255,0.6)' }}>
+        {medalColor ? <MedalIcon width={18} height={18} aria-label={`${rank}位`} /> : <span style={{ fontSize: 13, fontWeight: 700 }}>{rank}</span>}
+      </div>
       <div style={{ flex: 1, fontSize: 13, fontWeight: highlight ? 800 : 600, color: '#fff' }}>{name}</div>
       <div style={{ fontSize: 13, fontWeight: 800, color: highlight ? color : 'rgba(255,255,255,0.7)' }}>
         {pt.toLocaleString()}<span style={{ fontSize: 10, fontWeight: 600, opacity: 0.7 }}> pt</span>

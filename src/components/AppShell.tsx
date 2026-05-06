@@ -89,10 +89,16 @@ export function AppShell({
   }, [activeTab])
 
   // Android のみ「スクロールで隠す」を維持。iOS では HIG に反するので無効。
+  // prefers-reduced-motion が ON のユーザーには UI 消失が認知負荷になるので無効化。
   const [navHidden, setNavHidden] = useState(false)
   const lastScrollY = useRef(0)
   useEffect(() => {
     if (hideTabBar || isIOS()) return
+    const reduceMotion =
+      typeof window !== 'undefined' &&
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduceMotion) return
     const threshold = 10
     const onScroll = () => {
       const y = window.scrollY
