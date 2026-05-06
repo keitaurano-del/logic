@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { loginWithGoogle, loginWithEmail, signupWithEmail, resetPasswordForEmail, isSupabaseConfigured, type User } from '../supabase'
+import { t } from '../i18n'
 
 interface LoginScreenProps {
   onLoginSuccess: (user: User) => void
@@ -43,30 +44,30 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
     const result = await loginWithGoogle()
     setLoading(false)
     if (result.user) { onLoginSuccess(result.user); return }
-    if (result.error) setError('Googleログインに失敗しました。もう一度お試しください。')
+    if (result.error) setError(t('auth.errGoogleFailed'))
   }
 
   async function handleSubmit() {
     if (mode === 'reset') {
-      if (!email) { setError('メールアドレスを入力してください'); return }
+      if (!email) { setError(t('auth.errEmailRequired')); return }
       setError(''); setSuccessMsg(''); setLoading(true)
       const result = await resetPasswordForEmail(email)
       setLoading(false)
-      if (result.error) setError('リセットメールの送信に失敗しました')
-      else setSuccessMsg('パスワードリセット用のリンクをメールで送りました')
+      if (result.error) setError(t('auth.errResetFailed'))
+      else setSuccessMsg(t('auth.resetEmailSent'))
       return
     }
 
-    if (!email || !password) { setError('メールアドレスとパスワードを入力してください'); return }
+    if (!email || !password) { setError(t('auth.errEmailPasswordRequired')); return }
     setError(''); setSuccessMsg(''); setLoading(true)
 
     if (mode === 'login') {
       const result = await loginWithEmail(email, password)
       setLoading(false)
       if (result.user) { onLoginSuccess(result.user); return }
-      setError('メールアドレスまたはパスワードが正しくありません')
+      setError(t('auth.errInvalidCredentials'))
     } else {
-      if (password.length < 6) { setLoading(false); setError('パスワードは6文字以上にしてください'); return }
+      if (password.length < 6) { setLoading(false); setError(t('auth.weakPassword')); return }
       const result = await signupWithEmail(email, password)
       setLoading(false)
       if (result.user) {
@@ -78,15 +79,15 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
         onLoginSuccess(result.user)
         return
       }
-      if (result.error === 'auth/email-already-in-use') setError('このメールアドレスは既に登録されています')
-      else setError('アカウント作成に失敗しました。もう一度お試しください。')
+      if (result.error === 'auth/email-already-in-use') setError(t('auth.errEmailAlreadyRegistered'))
+      else setError(t('auth.errSignupFailed'))
     }
   }
 
-  const title = mode === 'reset' ? 'パスワードリセット' : 'ログイン'
+  const title = mode === 'reset' ? t('auth.resetTitle') : t('auth.loginTitle')
   const btnLabel = loading
-    ? '処理中...'
-    : mode === 'login' ? 'ログイン' : mode === 'signup' ? '新規登録' : 'リセットメールを送る'
+    ? t('auth.processing')
+    : mode === 'login' ? t('auth.loginBtn') : mode === 'signup' ? t('auth.signupBtn') : t('auth.sendResetEmail')
 
   return (
     <div style={{
@@ -124,7 +125,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
             }}
           >
             <GoogleIcon />
-            Googleでログイン
+            {t('auth.googleBtn')}
           </button>
         )}
 
@@ -152,8 +153,8 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
         {/* メールアドレス入力 */}
         <input
           type="email"
-          aria-label="メールアドレス"
-          placeholder="メールアドレス"
+          aria-label={t('auth.emailLabel')}
+          placeholder={t('auth.emailLabel')}
           value={email}
           onChange={e => setEmail(e.target.value)}
           style={inputStyle}
@@ -164,8 +165,8 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
         {mode !== 'reset' && (
           <input
             type="password"
-            aria-label="パスワード"
-            placeholder="パスワード"
+            aria-label={t('auth.passwordLabel')}
+            placeholder={t('auth.passwordLabel')}
             value={password}
             onChange={e => setPassword(e.target.value)}
             style={inputStyle}
@@ -197,13 +198,13 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
               onClick={() => { setMode('signup'); setError(''); setSuccessMsg('') }}
               style={{ background: 'none', border: 'none', color: TEXT2, fontSize: 14, cursor: 'pointer', padding: '4px 0' }}
             >
-              新規登録
+              {t('auth.signupTab')}
             </button>
             <button
               onClick={() => { setMode('reset'); setError(''); setSuccessMsg('') }}
               style={{ background: 'none', border: 'none', color: TEXT2, fontSize: 14, cursor: 'pointer', padding: '4px 0' }}
             >
-              パスワードをお忘れですか？
+              {t('auth.forgotPassword')}
             </button>
           </div>
         )}
@@ -213,7 +214,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
             onClick={() => { setMode('login'); setError(''); setSuccessMsg('') }}
             style={{ background: 'none', border: 'none', color: TEXT2, fontSize: 14, cursor: 'pointer', padding: '4px 0', textAlign: 'center', marginTop: 4 }}
           >
-            ← ログインに戻る
+            {t('auth.backToLogin')}
           </button>
         )}
       </div>
