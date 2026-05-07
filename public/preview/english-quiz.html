@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>英語学習モード (Quiz) — Logic Preview</title>
+<link rel="stylesheet" href="_shared.css">
+<style>
+  .lesson-progress { height: 4px; background: var(--bg-tertiary); }
+  .lesson-progress-fill { height: 100%; width: 33%; background: linear-gradient(90deg, var(--accent), var(--accent-dark)); border-radius: 0 2px 2px 0; }
+
+  .en-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 14px 20px 0;
+  }
+  .en-toolbar-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--bg-card);
+    color: var(--text-primary);
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .en-toolbar-btn.active {
+    background: var(--accent-soft);
+    border-color: var(--accent-dark);
+    color: var(--accent-dark);
+    font-weight: 700;
+  }
+  .en-toolbar-badge {
+    font-size: 9px;
+    font-weight: 900;
+    padding: 2px 6px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #C9A94A 0%, #B07442 100%);
+    color: #fff;
+    letter-spacing: 0.5px;
+    margin-left: 6px;
+  }
+
+  .lesson-content { padding: 20px 20px 100px; }
+
+  .question-num { font-size: 11px; font-weight: 800; color: var(--accent-text); letter-spacing: 1.4px; }
+  .question-text {
+    font-size: 19px;
+    font-weight: 700;
+    line-height: 1.55;
+    color: var(--text-primary);
+    margin: 10px 0 8px;
+  }
+
+  .ja-translation {
+    border-left: 2px solid var(--accent);
+    padding: 8px 12px;
+    background: var(--bg-secondary);
+    border-radius: 4px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    line-height: 1.7;
+    display: none;
+  }
+  .ja-translation.show { display: block; animation: fade-in 0.2s ease-out; }
+  .ja-translation-question { font-size: 13px; margin-bottom: 22px; }
+  .ja-translation-inline {
+    display: block;
+    border-left: none;
+    padding: 0;
+    margin: 4px 0 0 0;
+    background: transparent;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 400;
+    line-height: 1.5;
+  }
+  .ja-translation-feedback {
+    margin-top: 10px;
+    font-size: 12px;
+  }
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .options { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
+  .option {
+    background: var(--bg-card);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    font-size: 14px;
+    color: var(--text-primary);
+    cursor: pointer;
+    text-align: left;
+    line-height: 1.5;
+    font-family: inherit;
+    display: flex; align-items: center; gap: 12px;
+    transition: all 0.15s ease-out;
+    width: 100%;
+  }
+  .option-letter {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--bg-tertiary); color: var(--text-secondary);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 800;
+    flex-shrink: 0;
+  }
+  .option-text { flex: 1; }
+  .option.selected {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .option.correct {
+    border-color: var(--success);
+    background: var(--success-soft);
+  }
+  .option.wrong {
+    border-color: var(--danger);
+    background: rgba(196,69,69,0.10);
+  }
+
+  .feedback {
+    margin-top: 16px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: var(--success-soft);
+    border-left: 3px solid var(--success);
+    display: none;
+  }
+  .feedback.show { display: block; animation: fade-in 0.2s ease-out; }
+  .feedback-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--success);
+    margin-bottom: 6px;
+  }
+  .feedback-text {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text-primary);
+  }
+
+  /* Phrases panel */
+  .phrases {
+    margin-top: 16px;
+    padding: 16px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    display: none;
+  }
+  .phrases.show { display: block; animation: fade-in 0.2s ease-out; }
+  .phrases-header { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+  .phrases-title { font-size: 15px; font-weight: 800; color: var(--text-primary); }
+  .phrases-hint { font-size: 11px; color: var(--text-muted); }
+  .phrases-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .phrase {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .phrase-main { flex: 1; min-width: 0; }
+  .phrase-en { font-size: 14px; font-weight: 700; color: var(--text-primary); margin: 0 0 2px 0; }
+  .phrase-ja { font-size: 13px; color: var(--text-secondary); margin: 0; }
+  .phrase-note { font-size: 11px; color: var(--text-muted); margin: 4px 0 0 0; font-style: italic; line-height: 1.6; }
+  .phrase-save {
+    flex-shrink: 0;
+    padding: 7px 13px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .phrase-save.saved {
+    background: var(--bg-tertiary);
+    color: var(--text-muted);
+    cursor: default;
+  }
+
+  .demo-banner {
+    background: linear-gradient(135deg, rgba(201,169,74,0.15), rgba(176,116,66,0.15));
+    border: 1px solid rgba(201,169,74,0.4);
+    color: #6b5526;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 12px;
+    line-height: 1.7;
+    margin: 0 20px 12px;
+  }
+  .demo-banner b { color: #4a3a18; }
+
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--text-primary);
+    color: var(--bg-card);
+    padding: 12px 20px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    z-index: 100;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+<div class="preview-note">📱 Premium feature: 英語学習モード（Quiz: 選択肢のオプション単位で和訳）</div>
+<div class="app">
+  <header class="header">
+    <button class="header-back">‹</button>
+    <span class="header-title">MECE — Logical Thinking</span>
+    <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); letter-spacing: 1.4px;">4/12</span>
+  </header>
+  <div class="lesson-progress"><div class="lesson-progress-fill"></div></div>
+
+  <div class="demo-banner">
+    👆 <b>このモックアップは操作できます</b>。「日本語訳」を有効にすると、設問・選択肢・解説すべてに和訳が出ます。回答もしてみてください。
+  </div>
+
+  <div class="en-toolbar" role="toolbar">
+    <button id="btnTranslation" type="button" class="en-toolbar-btn">
+      <span aria-hidden="true">あ</span>
+      <span id="btnTranslationLabel">Show Japanese</span>
+      <span class="en-toolbar-badge">Premium</span>
+    </button>
+    <button id="btnPhrases" type="button" class="en-toolbar-btn">
+      <span aria-hidden="true">📖</span>
+      <span id="btnPhrasesLabel">Study phrases</span>
+      <span class="en-toolbar-badge">Premium</span>
+    </button>
+  </div>
+
+  <div class="lesson-content">
+    <div class="question-num">QUIZ</div>
+    <h2 class="question-text">When applying 3C MECE to a sales decline, which bucket fits "competitor lowered prices, so customers left us"?</h2>
+    <p id="trQ" class="ja-translation ja-translation-question">売上減少に3C MECEを当てはめるとき、「競合が値下げしたので顧客が離れた」はどのバケツに入る？</p>
+
+    <div class="options" id="options">
+      <button class="option" data-correct="false">
+        <span class="option-letter">A</span>
+        <span class="option-text">
+          Customer
+          <span class="ja-translation ja-translation-inline">Customer（顧客）</span>
+        </span>
+      </button>
+      <button class="option" data-correct="true">
+        <span class="option-letter">B</span>
+        <span class="option-text">
+          Competitor
+          <span class="ja-translation ja-translation-inline">Competitor（競合）</span>
+        </span>
+      </button>
+      <button class="option" data-correct="false">
+        <span class="option-letter">C</span>
+        <span class="option-text">
+          Company
+          <span class="ja-translation ja-translation-inline">Company（自社）</span>
+        </span>
+      </button>
+      <button class="option" data-correct="false">
+        <span class="option-letter">D</span>
+        <span class="option-text">
+          All three at once
+          <span class="ja-translation ja-translation-inline">3つすべて</span>
+        </span>
+      </button>
+    </div>
+
+    <div id="feedback" class="feedback">
+      <div class="feedback-title">正解！</div>
+      <p class="feedback-text">Classify by the root cause, not the visible effect. The trigger here is the competitor's pricing move, so it goes in Competitor.</p>
+      <p id="feedbackJa" class="ja-translation ja-translation-feedback">見えている結果ではなく、根本の原因で分類する。引き金は競合の価格戦略なので Competitor に入る。</p>
+    </div>
+
+    <div id="phrasesPanel" class="phrases" role="region">
+      <div class="phrases-header">
+        <span class="phrases-title">📖 重要フレーズ</span>
+        <span class="phrases-hint">保存ボタンで自動的にフラッシュカードに追加されます</span>
+      </div>
+      <ul class="phrases-list" id="phrasesList"></ul>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast">フラッシュカードに追加しました</div>
+
+<script>
+  const phrases = [
+    { en: 'fits in', ja: '〜に当てはまる', note: '"which bucket fits ..."（どのバケツが当てはまるか）' },
+    { en: 'visible effect', ja: '目に見える結果', note: 'visible = 目に見える' },
+    { en: 'violates the rule', ja: 'ルールに違反する' },
+  ]
+  const saved = new Set()
+  const list = document.getElementById('phrasesList')
+  list.innerHTML = phrases.map((p, i) => `
+    <li class="phrase">
+      <div class="phrase-main">
+        <p class="phrase-en">${p.en}</p>
+        <p class="phrase-ja">${p.ja}</p>
+        ${p.note ? `<p class="phrase-note">${p.note}</p>` : ''}
+      </div>
+      <button class="phrase-save" data-idx="${i}">カードに保存</button>
+    </li>
+  `).join('')
+
+  const toast = document.getElementById('toast')
+  let toastTimer = null
+  function showToast(msg) {
+    toast.textContent = msg
+    toast.classList.add('show')
+    clearTimeout(toastTimer)
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 1800)
+  }
+
+  list.addEventListener('click', (e) => {
+    const btn = e.target.closest('.phrase-save')
+    if (!btn || btn.classList.contains('saved')) return
+    saved.add(+btn.dataset.idx)
+    btn.classList.add('saved')
+    btn.textContent = '保存済み ✓'
+    showToast(`「${phrases[+btn.dataset.idx].en}」をフラッシュカードに追加しました`)
+  })
+
+  // Quiz answer
+  let answered = false
+  document.getElementById('options').addEventListener('click', (e) => {
+    const opt = e.target.closest('.option')
+    if (!opt || answered) return
+    answered = true
+    const correct = opt.dataset.correct === 'true'
+    document.querySelectorAll('.option').forEach(o => {
+      if (o.dataset.correct === 'true') o.classList.add('correct')
+    })
+    if (!correct) opt.classList.add('wrong')
+    document.getElementById('feedback').classList.add('show')
+    if (document.getElementById('btnTranslation').classList.contains('active')) {
+      document.getElementById('feedbackJa').classList.add('show')
+    }
+  })
+
+  // Toggles
+  const btnTr = document.getElementById('btnTranslation')
+  const btnTrLabel = document.getElementById('btnTranslationLabel')
+  btnTr.addEventListener('click', () => {
+    const on = !btnTr.classList.contains('active')
+    btnTr.classList.toggle('active', on)
+    btnTrLabel.textContent = on ? 'Hide Japanese' : 'Show Japanese'
+    document.querySelectorAll('.ja-translation').forEach(el => el.classList.toggle('show', on))
+  })
+
+  const btnPh = document.getElementById('btnPhrases')
+  const btnPhLabel = document.getElementById('btnPhrasesLabel')
+  const phrasesPanel = document.getElementById('phrasesPanel')
+  btnPh.addEventListener('click', () => {
+    const on = !btnPh.classList.contains('active')
+    btnPh.classList.toggle('active', on)
+    btnPhLabel.textContent = on ? 'Hide phrases' : 'Study phrases'
+    phrasesPanel.classList.toggle('show', on)
+    if (on) phrasesPanel.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  })
+</script>
+</body>
+</html>

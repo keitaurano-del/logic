@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>英語フレーズ復習 — Logic Preview</title>
+<link rel="stylesheet" href="_shared.css">
+<style>
+  .fc-content { padding: 20px; padding-bottom: 100px; }
+
+  .fc-stat-row {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 8px; margin-bottom: 24px;
+  }
+  .fc-stat {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 10px;
+    text-align: center;
+  }
+  .fc-stat .num { font-size: 22px; font-weight: 800; color: var(--accent-text); }
+  .fc-stat .label {
+    font-size: 10px; color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+  }
+
+  .filter-tabs {
+    display: flex; gap: 8px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+  }
+  .filter-tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    padding: 8px 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 12px; font-weight: 700;
+    color: var(--text-secondary);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+    font-family: inherit;
+  }
+  .tab.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  /* ============ Card review (active) ============ */
+  .review-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 24px;
+    box-shadow: var(--shadow-elevated);
+    text-align: center;
+    margin-bottom: 16px;
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+  }
+  .review-card-tag {
+    position: absolute; top: 12px; left: 16px;
+    font-size: 10px; font-weight: 800;
+    color: var(--accent-text);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+  }
+  .review-card-source {
+    position: absolute; top: 12px; right: 16px;
+    font-size: 10px; color: var(--text-muted);
+  }
+  .review-card-front {
+    font-size: 22px; font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1.4;
+    margin: 16px 0 8px;
+  }
+  .review-card-back {
+    font-size: 16px; color: var(--text-secondary);
+    line-height: 1.6;
+    display: none;
+  }
+  .review-card-back.show { display: block; animation: fade-in 0.2s ease-out; }
+  .review-card-note {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-light);
+    font-size: 12px; color: var(--text-muted);
+    font-style: italic;
+    line-height: 1.6;
+  }
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--bg-card);
+    border: 1.5px solid var(--accent);
+    color: var(--accent-dark);
+    border-radius: 14px;
+    font-size: 14px; font-weight: 800;
+    font-family: inherit;
+    cursor: pointer;
+    margin-bottom: 12px;
+  }
+
+  .review-actions {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    display: none;
+  }
+  .review-actions.show { display: grid; animation: fade-in 0.2s ease-out; }
+  .review-action {
+    padding: 14px 10px;
+    border: none;
+    border-radius: 12px;
+    font-size: 13px; font-weight: 800;
+    cursor: pointer;
+    font-family: inherit;
+    color: #fff;
+  }
+  .review-action.again { background: var(--danger); }
+  .review-action.good  { background: var(--accent); }
+  .review-action.easy  { background: var(--success); }
+  .review-action small { display: block; font-size: 10px; font-weight: 600; opacity: 0.85; margin-top: 2px; }
+
+  /* ============ Card list (all) ============ */
+  .card-list { display: flex; flex-direction: column; gap: 10px; }
+  .card-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex; gap: 12px;
+    align-items: center;
+  }
+  .card-item-main { flex: 1; min-width: 0; }
+  .card-item-en { font-size: 14px; font-weight: 700; margin: 0 0 2px 0; }
+  .card-item-ja { font-size: 12px; color: var(--text-secondary); margin: 0; }
+  .card-item-meta {
+    display: flex; flex-direction: column; align-items: flex-end;
+    gap: 2px;
+    flex-shrink: 0;
+  }
+  .badge-source {
+    font-size: 9px; font-weight: 800;
+    padding: 2px 6px; border-radius: 999px;
+    background: rgba(212,145,90,0.15); color: var(--accent-dark);
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+  }
+  .card-item-due { font-size: 10px; color: var(--text-muted); }
+
+  .section-title {
+    font-size: 12px; font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin: 24px 0 10px;
+  }
+
+  /* Demo banner */
+  .demo-banner {
+    background: linear-gradient(135deg, rgba(201,169,74,0.15), rgba(176,116,66,0.15));
+    border: 1px solid rgba(201,169,74,0.4);
+    color: #6b5526;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 12px;
+    line-height: 1.7;
+    margin-bottom: 16px;
+  }
+  .demo-banner b { color: #4a3a18; }
+</style>
+</head>
+<body>
+<div class="preview-note">📱 Premium feature: 保存した英語フレーズの復習（既存 Flashcards 画面に統合）</div>
+<div class="app">
+  <header class="header">
+    <button class="header-back">‹</button>
+    <span class="header-title">フラッシュカード</span>
+    <span style="width: 32px;"></span>
+  </header>
+
+  <div class="fc-content">
+    <div class="demo-banner">
+      💡 <b>既存のフラッシュカード機能を活用:</b> 英語学習モードで保存したフレーズは <code style="background:rgba(0,0,0,0.05);padding:1px 5px;border-radius:4px;">source: english-{lessonId}</code> のカードとして同じ Flashcards 画面に並びます。<b>SM-2 間隔反復</b>（再→1日→3日→7日…）で記憶定着。
+    </div>
+
+    <div class="fc-stat-row">
+      <div class="fc-stat">
+        <div class="num">14</div>
+        <div class="label">合計</div>
+      </div>
+      <div class="fc-stat">
+        <div class="num">8</div>
+        <div class="label">復習待ち</div>
+      </div>
+      <div class="fc-stat">
+        <div class="num">5</div>
+        <div class="label">習得</div>
+      </div>
+    </div>
+
+    <div class="filter-tabs">
+      <button class="tab active">すべて (14)</button>
+      <button class="tab">英語フレーズ (9)</button>
+      <button class="tab">レッスン (4)</button>
+      <button class="tab">弱点 (1)</button>
+    </div>
+
+    <!-- Active card review -->
+    <div class="section-title">📚 今日の復習</div>
+    <div class="review-card">
+      <div class="review-card-tag">EN PHRASE</div>
+      <div class="review-card-source">Lesson 20: MECE</div>
+      <div id="reviewFront" class="review-card-front">break things down</div>
+      <div id="reviewBack" class="review-card-back">
+        物事を分解する
+        <div class="review-card-note">break A down または break down A。MECE分解の文脈で頻出。</div>
+      </div>
+    </div>
+
+    <button id="revealBtn" class="reveal-btn">答えを見る</button>
+
+    <div id="reviewActions" class="review-actions">
+      <button class="review-action again" data-action="again">もう一度<small>0日後</small></button>
+      <button class="review-action good"  data-action="good">良い<small>1日後</small></button>
+      <button class="review-action easy"  data-action="easy">簡単<small>3日後</small></button>
+    </div>
+
+    <!-- All cards list -->
+    <div class="section-title">📋 すべてのカード</div>
+    <div class="card-list" id="cardList">
+      <!-- populated by JS -->
+    </div>
+  </div>
+</div>
+
+<div id="toast" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--text-primary);color:#fff;padding:12px 20px;border-radius:999px;font-size:13px;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,0.2);opacity:0;pointer-events:none;transition:all 0.25s ease;z-index:100;"></div>
+
+<script>
+  const cards = [
+    { en: 'break things down',         ja: '物事を分解する',                source: 'english-20', due: '今日' },
+    { en: 'component breakdown',       ja: '要素分解',                      source: 'english-20', due: '今日' },
+    { en: 'Mutually Exclusive',        ja: '相互に排他的（重複なし）',     source: 'english-20', due: '今日' },
+    { en: 'Collectively Exhaustive',   ja: '網羅的（漏れなし）',            source: 'english-20', due: '今日' },
+    { en: 'stands for',                ja: '〜の略',                        source: 'english-20', due: '今日' },
+    { en: 'blind spots',               ja: '死角',                          source: 'english-20', due: '1日後' },
+    { en: 'team alignment',            ja: 'チームの足並みが揃うこと',     source: 'english-20', due: '1日後' },
+    { en: 'general to specific',       ja: '一般から具体へ',                source: 'english-25', due: '今日' },
+    { en: 'syllogism',                 ja: '三段論法',                      source: 'english-25', due: '今日' },
+    { en: 'MECE分析の3つの切り口は？', ja: '3C・要素分解・時系列',          source: 'lesson-20', due: '今日' },
+    { en: '演繹法とは何か？',           ja: '一般原則から具体結論を導く推論',source: 'lesson-25', due: '3日後' },
+    { en: '仮説思考の最初のステップは？',ja: 'まず仮の答えを置く',           source: 'lesson-50', due: '7日後' },
+    { en: 'リフレーミングの定義',       ja: '同じ事実の見方を変えること',   source: 'lesson-59', due: '7日後' },
+    { en: 'バイアスの代表例3つ',         ja: '確証・利用可能性・アンカリング',source: 'ai-weak',   due: '0日後' },
+  ]
+  const $ = (id) => document.getElementById(id)
+
+  // Render list
+  $('cardList').innerHTML = cards.map(c => {
+    const isEn = c.source.startsWith('english-')
+    return `
+      <div class="card-item">
+        <div class="card-item-main">
+          <p class="card-item-en">${c.en}</p>
+          <p class="card-item-ja">${c.ja}</p>
+        </div>
+        <div class="card-item-meta">
+          <span class="badge-source" style="${isEn ? '' : 'background:rgba(120,120,120,0.12);color:var(--text-muted);'}">${isEn ? 'EN' : c.source.split('-')[0].toUpperCase()}</span>
+          <span class="card-item-due">復習: ${c.due}</span>
+        </div>
+      </div>
+    `
+  }).join('')
+
+  // Reveal flow
+  const revealBtn = $('revealBtn')
+  const back = $('reviewBack')
+  const actions = $('reviewActions')
+
+  revealBtn.addEventListener('click', () => {
+    back.classList.add('show')
+    actions.classList.add('show')
+    revealBtn.style.display = 'none'
+  })
+
+  // Review action - cycle to next
+  let cardIdx = 0
+  const enCards = cards.filter(c => c.source.startsWith('english-'))
+  const fronts = ['break things down', 'component breakdown', 'Mutually Exclusive', 'Collectively Exhaustive', 'stands for']
+  const backs = [
+    { ja: '物事を分解する', note: 'break A down または break down A。MECE分解の文脈で頻出。' },
+    { ja: '要素分解', note: '数式のように分解する手法' },
+    { ja: '相互に排他的（重複なし）', note: 'mutually = お互いに、exclusive = 排他的' },
+    { ja: '網羅的（漏れなし）', note: 'collectively = 全体として、exhaustive = 徹底的・すべて尽くす' },
+    { ja: '〜の略', note: '略語の元の意味を説明する定型表現' },
+  ]
+  function showToast(msg) {
+    const t = $('toast')
+    t.textContent = msg
+    t.style.opacity = '1'; t.style.transform = 'translateX(-50%) translateY(0)'
+    clearTimeout(t._timer)
+    t._timer = setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(-50%) translateY(20px)' }, 1500)
+  }
+  actions.addEventListener('click', (e) => {
+    const btn = e.target.closest('.review-action')
+    if (!btn) return
+    const action = btn.dataset.action
+    showToast(action === 'again' ? '🔁 もう一度復習します' : action === 'good' ? '✓ 1日後に再表示' : '★ 3日後に再表示')
+    cardIdx = (cardIdx + 1) % fronts.length
+    $('reviewFront').textContent = fronts[cardIdx]
+    back.innerHTML = `${backs[cardIdx].ja}<div class="review-card-note">${backs[cardIdx].note}</div>`
+    back.classList.remove('show')
+    actions.classList.remove('show')
+    revealBtn.style.display = 'block'
+  })
+</script>
+</body>
+</html>
