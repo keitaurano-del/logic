@@ -89,6 +89,29 @@ type Props = {
   onNextLesson?: () => void
 }
 
+// Persisted toggle state for the English-learning helpers. Keys are kept
+// outside the component so SSR-safe and shared across re-mounts.
+const TOGGLE_STORAGE_KEY = 'logic-en-toggles'
+type ToggleKey = 'translation' | 'phrases'
+
+function readToggle(key: ToggleKey): boolean {
+  try {
+    const raw = localStorage.getItem(TOGGLE_STORAGE_KEY)
+    if (!raw) return false
+    const parsed = JSON.parse(raw) as Partial<Record<ToggleKey, boolean>>
+    return !!parsed[key]
+  } catch { return false }
+}
+
+function writeToggle(key: ToggleKey, value: boolean): void {
+  try {
+    const raw = localStorage.getItem(TOGGLE_STORAGE_KEY)
+    const parsed = (raw ? JSON.parse(raw) : {}) as Partial<Record<ToggleKey, boolean>>
+    parsed[key] = value
+    localStorage.setItem(TOGGLE_STORAGE_KEY, JSON.stringify(parsed))
+  } catch { /* */ }
+}
+
 // Wrap every occurrence of each phrase in `text` with a clickable span.
 // Longer phrases take priority over shorter ones if they overlap, so a phrase
 // like "Mutually Exclusive" is preferred over a sub-match like "Exclusive".
@@ -156,8 +179,12 @@ export default function Lesson({ lesson, onBack, onComplete, onNextLesson }: Pro
   const [correctCount, setCorrectCount] = useState(0)
   const [finished, setFinished] = useState(false)
   const [showReport, setShowReport] = useState(false)
-  const [showTranslation, setShowTranslation] = useState(false)
-  const [showPhrases, setShowPhrases] = useState(false)
+  // Persist English-learning toggle state across steps and sessions so the
+  // learner doesn't have to re-enable translation on every step.
+  const [showTranslation, setShowTranslation] = useState(() => readToggle('translation'))
+  const [showPhrases, setShowPhrases] = useState(() => readToggle('phrases'))
+  useEffect(() => writeToggle('translation', showTranslation), [showTranslation])
+  useEffect(() => writeToggle('phrases', showPhrases), [showPhrases])
   const [savedPhrases, setSavedPhrases] = useState<Set<string>>(new Set())
   const [activePhrase, setActivePhrase] = useState<{ phrase: Phrase; rect: DOMRect; trigger: HTMLElement } | null>(null)
   const wrongAnswersRef = useRef<{ question: string; correctAnswer: string; explanation: string }[]>([])
@@ -247,8 +274,8 @@ export default function Lesson({ lesson, onBack, onComplete, onNextLesson }: Pro
       setCurrentStep((s) => s + 1)
       setSelectedOption(null)
       setShowResult(false)
-      setShowTranslation(false)
-      setShowPhrases(false)
+      // Do NOT reset showTranslation / showPhrases — keep the user's preferences
+      // for the duration of the lesson and across sessions (persisted via localStorage).
       setActivePhrase(null)
     }
   }
@@ -354,6 +381,15 @@ export default function Lesson({ lesson, onBack, onComplete, onNextLesson }: Pro
               <BookOpenIcon width={14} height={14} aria-hidden="true" />
               {showPhrases ? t('englishLearning.hidePhrases') : t('englishLearning.showPhrases')}
             </button>
+          )}
+          {savedPhrases.size > 0 && (
+            <span
+              className="ls-en-toolbar-count"
+              aria-label={t('englishLearning.savedCountLabel', { count: savedPhrases.size })}
+            >
+              <strong>{savedPhrases.size}</strong>
+              {t('englishLearning.savedCountSuffix')}
+            </span>
           )}
         </div>
       )}

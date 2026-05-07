@@ -1393,6 +1393,8 @@ const STRINGS: Record<Locale, Strings> = {
     'englishLearning.savePhrase': 'カードに保存',
     'englishLearning.phraseSaved': '保存済み',
     'englishLearning.popoverLabel': 'フレーズの意味',
+    'englishLearning.savedCountLabel': '今回のレッスンで {count} 枚のフレーズを保存済み',
+    'englishLearning.savedCountSuffix': '枚保存',
   },
 
   en: {
@@ -2753,6 +2755,8 @@ const STRINGS: Record<Locale, Strings> = {
     'englishLearning.savePhrase': 'Save card',
     'englishLearning.phraseSaved': 'Saved',
     'englishLearning.popoverLabel': 'Phrase meaning',
+    'englishLearning.savedCountLabel': '{count} phrases saved this lesson',
+    'englishLearning.savedCountSuffix': ' saved',
   },
 }
 
