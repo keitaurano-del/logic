@@ -665,7 +665,7 @@ function CaseSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides')
           </span>
         </div>
         <h2 style={{ fontSize: 20, fontWeight: 800, lineHeight: 1.5, marginBottom: 16, color: 'var(--text-primary)' }}>{t('stories.frameworkSummary')}</h2>
-        <div style={{ background: 'var(--bg-card)', borderRadius: 16, padding: '18px 20px', fontSize: 14, lineHeight: 1.9, color: 'var(--text-secondary)', marginBottom: 28, borderLeft: `3px solid ${'var(--brand)'}` }}>
+        <div style={{ background: 'var(--bg-card)', borderRadius: 16, padding: '18px 20px', fontSize: 14, lineHeight: 1.9, color: 'var(--text-secondary)', marginBottom: 28, borderLeft: `3px solid ${'var(--brand)'}`, whiteSpace: 'pre-line' }}>
           {slide.conclusion}
         </div>
         <button

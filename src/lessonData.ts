@@ -81,6 +81,8 @@ import { easternPhilosophyLessonMap } from './easternPhilosophyLessons'
 import { easternPhilosophyLessonMapEn } from './easternPhilosophyLessonsEn'
 import { clientWorkLessonMap } from './clientWorkLessons'
 import { clientWorkLessonMapEn } from './clientWorkLessonsEn'
+import { feedbackCaseLessonMap } from './feedbackCaseLessons'
+import { feedbackCaseLessonMapEn } from './feedbackCaseLessonsEn'
 import { catchupLessonMap } from './catchupLessons'
 import { catchupLessonMapEn } from './catchupLessonsEn'
 import { fermiLessonMap } from './fermiLessons'
@@ -120,6 +122,7 @@ function _getMergedLessons(): Record<number, LessonData> {
     ..._pickByLocale(philosophyLessonMap, philosophyLessonMapEn),
     ..._pickByLocale(easternPhilosophyLessonMap, easternPhilosophyLessonMapEn),
     ..._pickByLocale(clientWorkLessonMap, clientWorkLessonMapEn),
+    ..._pickByLocale(feedbackCaseLessonMap, feedbackCaseLessonMapEn),
     ..._pickByLocale(catchupLessonMap, catchupLessonMapEn),
     ..._pickByLocale(fermiLessonMap, fermiLessonMapEn),
     ..._pickByLocale(extraLessonMap, extraLessonMapEn),
