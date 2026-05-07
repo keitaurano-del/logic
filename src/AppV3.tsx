@@ -11,6 +11,8 @@ import { LessonCompleteScreen } from './screens/LessonCompleteScreen'
 
 // Lazy-load lower-frequency screens to keep initial bundle small.
 const FlashcardsScreen = lazy(() => import('./screens/FlashcardsScreen').then(m => ({ default: m.FlashcardsScreen })))
+const ReviewHubScreen = lazy(() => import('./screens/ReviewHubScreen').then(m => ({ default: m.ReviewHubScreen })))
+const WrongAnswerListScreen = lazy(() => import('./screens/WrongAnswerListScreen').then(m => ({ default: m.WrongAnswerListScreen })))
 const FermiScreen = lazy(() => import('./screens/FermiScreen').then(m => ({ default: m.FermiScreen })))
 const DailyFermiScreen = lazy(() => import('./screens/DailyFermiScreen').then(m => ({ default: m.DailyFermiScreen })))
 const FermiRankingScreen = lazy(() => import('./screens/FermiRankingScreen').then(m => ({ default: m.FermiRankingScreen })))
@@ -84,6 +86,8 @@ type Screen =
   | { type: 'lesson'; lessonId: number }
   | { type: 'lesson-complete'; lessonId: number; durationSec: number; prevLevel: number }
   | { type: 'flashcards'; mode?: 'due' | 'weak' }
+  | { type: 'review-hub' }
+  | { type: 'wrong-answers' }
   | { type: 'fermi' }
   | { type: 'daily-fermi' }
   | { type: 'ranking' }
@@ -397,7 +401,8 @@ function AppV3() {
           onOpenRoadmap={() => { setTab('lessons'); navigate({ type: 'lessons' }, true) }}
           onNavigateToDailyFermi={() => navigate({ type: 'daily-fermi' })}
           onOpenPlacementTest={() => navigate({ type: 'placement-test' })}
-          onOpenFlashcards={(mode) => navigate({ type: 'flashcards', mode })}
+          onOpenReviewHub={() => navigate({ type: 'review-hub' })}
+          onOpenPricing={() => navigate({ type: 'pricing' })}
         />
       )}
 
@@ -421,6 +426,19 @@ function AppV3() {
       )}
 
       {screen.type === 'flashcards' && <FlashcardsScreen onBack={handleBack} mode={screen.mode} />}
+      {screen.type === 'review-hub' && (
+        <ReviewHubScreen
+          onBack={handleBack}
+          onOpenFlashcards={(mode) => navigate({ type: 'flashcards', mode })}
+          onOpenWrongAnswers={() => navigate({ type: 'wrong-answers' })}
+        />
+      )}
+      {screen.type === 'wrong-answers' && (
+        <WrongAnswerListScreen
+          onBack={handleBack}
+          onOpenLesson={handleOpenLesson}
+        />
+      )}
       {screen.type === 'fermi' && <FermiScreen onBack={handleBack} onReport={(ctx) => navigate({ type: 'report-problem', context: ctx })} />}
       {screen.type === 'daily-fermi' && <DailyFermiScreen onBack={handleBack} onReport={(ctx) => navigate({ type: 'report-problem', context: ctx })} onOpenRanking={() => navigate({ type: 'fermi-ranking' })} />}
       {screen.type === 'journal-input' && <JournalInputScreen onBack={handleBack} />}
@@ -584,6 +602,7 @@ function AppV3() {
             navigate({ type: 'home' }, true)
           }}
           onHome={() => navigate({ type: 'home' }, true)}
+          onOpenReview={() => navigate({ type: 'review-hub' })}
         />
       )}
       </div>
