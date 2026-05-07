@@ -127,6 +127,10 @@ const mece: LessonAnnotations = {
       ],
       explanationJa:
         'オンライン／オフラインも、インバウンド／アウトバウンドも、二項対立的な切り口。要素分解は「売上 = 価格 × 数量」のような数式型のことです。',
+      phrases: [
+        { en: 'binary', ja: '二項対立的な・二者択一の', note: '対立概念パターンの典型形。「YES / NO」「A / B」のような2分割' },
+        { en: 'opposing-concept cuts', ja: '対立概念での切り分け', note: 'cut = 分類の切り口。オンライン／オフラインのような分け方' },
+      ],
     },
     // Step 7: Case 3 - coffee chain revenue
     {
@@ -147,6 +151,10 @@ const mece: LessonAnnotations = {
       questionJa: '売上を「顧客数 × 平均客単価」で分けた——どのMECEパターン？',
       optionsJa: ['時系列', '対立概念', '要素分解', '既存フレームワーク'],
       explanationJa: '全体を A × B や A + B のように数式の構成要素に分けるのが要素分解です。',
+      phrases: [
+        { en: 'mathematical components', ja: '数式の構成要素', note: 'A × B や A + B のように分解できる要素' },
+        { en: 'a whole', ja: '全体', note: '"split a whole into ..."（全体を〜に分ける）の文型で頻出' },
+      ],
     },
     // Step 9: Quiz NOT MECE
     {
@@ -161,6 +169,9 @@ const mece: LessonAnnotations = {
         '地域の選択肢は、地理（北部／南部／東部）と人口密度（都市部／郊外）という2つの異なる切り口を混ぜている。北部にも都市部・郊外があるので、カテゴリーが重複してしまいます。',
       phrases: [
         { en: 'mixes two different cuts', ja: '2つの異なる切り口を混ぜている', note: 'cut = 分類の切り口' },
+        { en: 'geographic', ja: '地理的な・地域による', note: 'North/South/East のような場所による分類' },
+        { en: 'population density', ja: '人口密度', note: 'urban（都市部）／rural（郊外）のような人口集中度の指標' },
+        { en: 'overlap', ja: '重複・重なる', note: '名詞・動詞の両方で使う。MECEの "Mutually Exclusive" とは「重複なし」の意味' },
       ],
     },
     // Step 10: Quiz missing categories
@@ -183,8 +194,10 @@ const mece: LessonAnnotations = {
       ],
       explanationJa: '良いMECE分解は、まず最上位の切り口（例：3Cで切る、オンライン／オフラインで切る）を決め、それから1段ずつ細かくしていきます。トップダウン的アプローチです。',
       phrases: [
-        { en: 'top-level cut', ja: '最上位の切り口' },
-        { en: 'progressively subdivide', ja: '段階的に細分化する', note: 'progressively = 段階的に' },
+        { en: 'top-level cut', ja: '最上位の切り口', note: 'MECE分解の最初の段階。3C・オンライン／オフライン などの大きな切り方' },
+        { en: 'progressively subdivide', ja: '段階的に細分化する', note: 'progressively = 段階的に。subdivide = さらに細かく分ける' },
+        { en: 'works top-down', ja: 'トップダウンで機能する', note: '上から下へ＝大きな切り口から細部へ向かう順序。MECEの基本姿勢' },
+        { en: 'easy to spot', ja: '見つけやすい', note: 'spot = （目で）見つける・気づく。"gaps and overlaps easy to spot"（漏れや重複が見つけやすい）' },
       ],
     },
   ],
