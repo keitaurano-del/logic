@@ -6,6 +6,8 @@
 import { useRef, useState } from 'react'
 import { FERMI_POOL, getDailyFermiIndex } from '../fermiData'
 import { getCardStats } from '../flashcardData'
+import { getWrongAnswerStats } from '../wrongAnswerStore'
+import { isPremium } from '../subscription'
 import { HomeCoachmark, useShouldShowHomeCoachmark } from '../tutorial/coachmark'
 import { PlacementCard } from '../tutorial/placementCard'
 import { hasCompletedPlacement } from '../placementData'
@@ -72,7 +74,8 @@ interface HomeScreenV3Props {
   onOpenStats?: () => void
   onNavigateToDailyFermi?: () => void
   onOpenPlacementTest?: () => void
-  onOpenFlashcards?: (mode?: 'due' | 'weak') => void
+  onOpenReviewHub?: () => void
+  onOpenPricing?: () => void
 }
 
 const IMG = '/images/v3'
@@ -91,7 +94,7 @@ function readStoredFermiIndex(): number {
 }
 
 export function HomeScreenV3(props: HomeScreenV3Props) {
-  const { userName, onOpenLesson, onOpenAIGen, onOpenRoleplay, onNavigateToDailyFermi, onOpenPlacementTest, onOpenFlashcards, onOpenCategory: _onOpenCategory, onOpenRank: _onOpenRank, onOpenStats: _onOpenStats, onOpenRoadmap: _onOpenRoadmap } = props
+  const { userName, onOpenLesson, onOpenAIGen, onOpenRoleplay, onNavigateToDailyFermi, onOpenPlacementTest, onOpenReviewHub, onOpenPricing, onOpenCategory: _onOpenCategory, onOpenRank: _onOpenRank, onOpenStats: _onOpenStats, onOpenRoadmap: _onOpenRoadmap } = props
   const dailyCardRef = useRef<HTMLButtonElement>(null)
   const [showCoachmark, dismissCoachmark] = useShouldShowHomeCoachmark()
   const { width } = useWindowSize()
@@ -103,6 +106,8 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
   const [fermiIndex, setFermiIndex] = useState<number>(readStoredFermiIndex)
   const fermiQuestion = FERMI_POOL[fermiIndex].question
   const cardStats = getCardStats()
+  const wrongStats = getWrongAnswerStats()
+  const proUnlocked = isPremium()
 
   const handleRerollFermi = () => {
     if (FERMI_POOL.length <= 1) return
@@ -231,13 +236,15 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
           <PlacementCard onTakeTest={onOpenPlacementTest} />
         )}
 
-        {/* 復習カード - 過去に学んだ内容と間違えた問題を重点復習 */}
-        {onOpenFlashcards && cardStats.total > 0 && (
+        {/* 復習カード - フラッシュカード + 過去の誤答リストへの導線 (Pro限定) */}
+        {(onOpenReviewHub || onOpenPricing) && (
           <ReviewCard
+            locked={!proUnlocked}
             due={cardStats.due}
             weak={cardStats.weak}
             total={cardStats.total}
-            onOpen={(mode) => onOpenFlashcards(mode)}
+            unresolved={wrongStats.unresolved}
+            onOpen={() => proUnlocked ? onOpenReviewHub?.() : onOpenPricing?.()}
           />
         )}
 
@@ -263,29 +270,38 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
   )
 }
 
-function ReviewCard({ due, weak, total, onOpen }: { due: number; weak: number; total: number; onOpen: (mode?: 'due' | 'weak') => void }) {
-  const hasDue = due > 0
-  const hasWeak = weak > 0
-  const primaryMode: 'due' | 'weak' = hasDue ? 'due' : 'weak'
-  const headline = hasDue
-    ? t('home.reviewTodayCount', { n: String(due) })
-    : hasWeak
-      ? t('home.reviewWeakCount', { n: String(weak) })
-      : t('home.reviewAllDone')
-  const sub = hasDue
-    ? hasWeak
-      ? t('home.reviewSubWithWeak', { weak: String(weak), total: String(total) })
-      : t('home.reviewSubAll', { total: String(total) })
-    : hasWeak
-      ? t('home.reviewWeakHint')
-      : t('home.reviewTomorrow')
+function ReviewCard({ locked, due, weak, total, unresolved, onOpen }: {
+  locked: boolean
+  due: number
+  weak: number
+  total: number
+  unresolved: number
+  onOpen: () => void
+}) {
+  const hasContent = total > 0 || unresolved > 0
+  const headline = locked
+    ? t('home.reviewLockedHeadline')
+    : hasContent
+      ? (due > 0
+          ? t('home.reviewTodayCount', { n: String(due) })
+          : unresolved > 0
+            ? t('home.reviewUnresolvedCount', { n: String(unresolved) })
+            : weak > 0
+              ? t('home.reviewWeakCount', { n: String(weak) })
+              : t('home.reviewAllDone'))
+      : t('home.reviewEmptyHeadline')
+  const sub = locked
+    ? t('home.reviewLockedSub')
+    : hasContent
+      ? buildReviewSub(due, weak, total, unresolved)
+      : t('home.reviewEmptySub')
 
   return (
     <div
       role="button"
       tabIndex={0}
-      onClick={() => onOpen(primaryMode)}
-      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpen(primaryMode) } }}
+      onClick={onOpen}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpen() } }}
       style={{
         background: 'var(--bg-card)',
         borderRadius: 'var(--radius-lg)',
@@ -295,55 +311,64 @@ function ReviewCard({ due, weak, total, onOpen }: { due: number; weak: number; t
         flexShrink: 0,
         position: 'relative',
         overflow: 'hidden',
-        border: hasDue || hasWeak ? `1px solid ${'var(--accent-soft)'}` : '1px solid transparent',
+        border: locked
+          ? `1px dashed ${'var(--border)'}`
+          : hasContent
+            ? `1px solid ${'var(--accent-soft)'}`
+            : '1px solid transparent',
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
         <div style={{
           width: 44, height: 44, flexShrink: 0,
           borderRadius: 12,
-          background: 'var(--accent-soft)',
+          background: locked ? 'var(--bg-elevated)' : 'var(--accent-soft)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          color: 'var(--brand)',
+          color: locked ? 'var(--text-muted)' : 'var(--brand)',
         }}>
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="M3 12a9 9 0 1 0 3-6.7" />
-            <path d="M3 4v5h5" />
-          </svg>
+          {locked ? (
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <rect x="4" y="11" width="16" height="10" rx="2" />
+              <path d="M8 11V7a4 4 0 1 1 8 0v4" />
+            </svg>
+          ) : (
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M3 12a9 9 0 1 0 3-6.7" />
+              <path d="M3 4v5h5" />
+            </svg>
+          )}
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--brand)' }}>{t('home.reviewEyebrow')}</span>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: locked ? 'var(--text-muted)' : 'var(--brand)' }}>
+              {t('home.reviewEyebrow')}
+            </span>
+            {locked && (
+              <span style={{
+                fontSize: 10, fontWeight: 800, letterSpacing: '.08em',
+                color: 'var(--warm)', background: 'rgba(255,149,0,0.12)',
+                padding: '2px 6px', borderRadius: 8, textTransform: 'uppercase',
+              }}>
+                {t('home.reviewProBadge')}
+              </span>
+            )}
           </div>
           <div style={{ fontSize: 16, fontWeight: 700, lineHeight: 1.35, marginBottom: 2 }}>{headline}</div>
           <div style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 500, lineHeight: 1.4 }}>{sub}</div>
         </div>
         <div style={{ color: 'var(--text-muted)', fontSize: 22, fontWeight: 400, lineHeight: 1, paddingLeft: 4 }}>›</div>
       </div>
-
-      {hasDue && hasWeak && (
-        <button
-          type="button"
-          onClick={(e) => { e.stopPropagation(); onOpen('weak') }}
-          style={{
-            marginTop: 12,
-            width: '100%',
-            background: 'transparent',
-            border: `1px solid ${'var(--border)'}`,
-            borderRadius: 'var(--radius-pill)',
-            padding: '10px 14px',
-            color: 'var(--text-primary)',
-            fontSize: 14,
-            fontWeight: 600,
-            cursor: 'pointer',
-            fontFamily: "'Noto Sans JP', sans-serif",
-          }}
-        >
-          {t('home.reviewWeakOnly', { n: weak })}
-        </button>
-      )}
     </div>
   )
+}
+
+function buildReviewSub(due: number, weak: number, total: number, unresolved: number): string {
+  const parts: string[] = []
+  if (due > 0) parts.push(t('home.reviewSubDue', { n: String(due) }))
+  if (weak > 0) parts.push(t('home.reviewSubWeak', { n: String(weak) }))
+  if (unresolved > 0) parts.push(t('home.reviewSubWrong', { n: String(unresolved) }))
+  if (parts.length === 0 && total > 0) return t('home.reviewSubAll', { total: String(total) })
+  return parts.join(' · ')
 }
 
 function AILargeCard({ image, name, sub, onClick, beta }: { image: string; name: string; sub: string; onClick: () => void; beta?: boolean }) {

@@ -24,6 +24,7 @@ function getFeatures(): FeatureRow[] {
     { label: t('pricing.featAiGen'),    free: false,                          standard: t('pricing.featDailyN', { n: '3' }),  premium: t('pricing.featDailyN', { n: '10' }) },
     { label: t('pricing.featRoleplay'), free: false,                          standard: t('pricing.featMonthlyN', { n: '5' }), premium: t('pricing.featUnlimited') },
     { label: t('pricing.featFermi'),    free: t('pricing.featDaily1'),       standard: t('pricing.featDailyN', { n: '5' }),  premium: t('pricing.featDailyN', { n: '10' }) },
+    { label: t('pricing.featReview'),   free: false,                          standard: true,                                  premium: true },
     { label: t('pricing.featRecord'),   free: true,                           standard: true,                                  premium: true },
   ]
 }

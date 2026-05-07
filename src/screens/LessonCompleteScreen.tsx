@@ -8,6 +8,9 @@ import { getStreak, getXp } from '../stats'
 import { FlameIcon, ArrowUpIcon, StarIcon } from '../icons'
 import { getCurrentLevel } from './homeHelpers'
 import { haptic } from '../platform/haptics'
+import { getCardStats } from '../flashcardData'
+import { getWrongAnswerStats } from '../wrongAnswerStore'
+import { isPremium } from '../subscription'
 import { t } from '../i18n'
 
 interface LessonCompleteScreenProps {
@@ -16,6 +19,7 @@ interface LessonCompleteScreenProps {
   durationSec: number
   onNext: () => void
   onHome: () => void
+  onOpenReview?: () => void
   prevLevel?: number
 }
 
@@ -64,7 +68,7 @@ function RingProgress({ progress, size = 140, stroke = 10 }: { progress: number;
 }
 
 export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
-  const { lessonTitle, durationSec, onNext, onHome, prevLevel } = props
+  const { lessonTitle, durationSec, onNext, onHome, onOpenReview, prevLevel } = props
   const xp = getXp()
   const lv = getCurrentLevel(xp)
   const streak = getStreak()
@@ -72,6 +76,14 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
   const minutes = Math.floor(durationSec / 60)
   const seconds = durationSec % 60
   const timeStr = `${minutes}:${String(seconds).padStart(2, '0')}`
+
+  // Pro加入時のみ「今すぐ復習」CTAを出す。
+  // 直前のレッスンで誤答が出た場合は強調、無くても due/weak カードがあれば軽く誘導。
+  const proUnlocked = isPremium()
+  const cardStats = getCardStats()
+  const wrongStats = getWrongAnswerStats()
+  const reviewBadgeCount = wrongStats.unresolved + cardStats.due
+  const showReviewCta = !!onOpenReview && proUnlocked && reviewBadgeCount > 0
 
   const XP_GAIN = 50
   const xpCount = useCountUp(XP_GAIN, 900, 600)
@@ -248,6 +260,23 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
           >
             {t('lessonComplete.next')}
           </button>
+          {showReviewCta && (
+            <button
+              onClick={onOpenReview}
+              style={{
+                width: '100%',
+                background: 'var(--accent-soft)',
+                color: 'var(--brand)',
+                padding: '14px 0', borderRadius: 99,
+                fontSize: 14, fontWeight: 700, cursor: 'pointer',
+                border: `1px solid color-mix(in srgb, var(--brand) 25%, transparent)`,
+                WebkitTapHighlightColor: 'transparent',
+                touchAction: 'manipulation',
+              }}
+            >
+              {t('lessonComplete.reviewNow', { n: String(reviewBadgeCount) })}
+            </button>
+          )}
           <button
             onClick={onHome}
             style={{
