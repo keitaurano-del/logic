@@ -56,28 +56,47 @@ import { logicLessonMap } from './logicLessons'
 import { logicLessonMapEn } from './logicLessonsEn'
 import { getLocale } from './i18n'
 import { caseLessonMap } from './caseLessons'
+import { caseLessonMapEn } from './caseLessonsEn'
 import { criticalLessonMap } from './criticalLessons'
+import { criticalLessonMapEn } from './criticalLessonsEn'
 import { hypothesisLessonMap } from './hypothesisLessons'
+import { hypothesisLessonMapEn } from './hypothesisLessonsEn'
 import { problemSettingLessonMap } from './problemSettingLessons'
+import { problemSettingLessonMapEn } from './problemSettingLessonsEn'
 import { designThinkingLessonMap } from './designThinkingLessons'
+import { designThinkingLessonMapEn } from './designThinkingLessonsEn'
 import { lateralThinkingLessonMap } from './lateralThinkingLessons'
+import { lateralThinkingLessonMapEn } from './lateralThinkingLessonsEn'
 import { analogyThinkingLessonMap } from './analogyThinkingLessons'
+import { analogyThinkingLessonMapEn } from './analogyThinkingLessonsEn'
 import { systemsThinkingLessonMap } from './systemsThinkingLessons'
+import { systemsThinkingLessonMapEn } from './systemsThinkingLessonsEn'
 import { proposalLessonMap } from './proposalLessons'
+import { proposalLessonMapEn } from './proposalLessonsEn'
 import { proposalCourseLessonMap } from './proposalCourseLessons'
+import { proposalCourseLessonMapEn } from './proposalCourseLessonsEn'
 import { philosophyLessonMap } from './philosophyLessons'
+import { philosophyLessonMapEn } from './philosophyLessonsEn'
 import { easternPhilosophyLessonMap } from './easternPhilosophyLessons'
+import { easternPhilosophyLessonMapEn } from './easternPhilosophyLessonsEn'
 import { clientWorkLessonMap } from './clientWorkLessons'
+import { clientWorkLessonMapEn } from './clientWorkLessonsEn'
 import { catchupLessonMap } from './catchupLessons'
+import { catchupLessonMapEn } from './catchupLessonsEn'
 import { fermiLessonMap } from './fermiLessons'
+import { fermiLessonMapEn } from './fermiLessonsEn'
 import { extraLessonMap } from './extraLessons'
+import { extraLessonMapEn } from './extraLessonsEn'
 import { strategyLessonMap } from './strategyLessons'
+import { strategyLessonMapEn } from './strategyLessonsEn'
 import { numeracyLessonMap } from './numeracyLessons'
+import { numeracyLessonMapEn } from './numeracyLessonsEn'
 import { peakPerformanceLessonMap } from './peakPerformanceLessons'
+import { peakPerformanceLessonMapEn } from './peakPerformanceLessonsEn'
 
-// Logic lessons swap by locale
-const _activeLogicLessons = (): Record<number, LessonData> =>
-  getLocale() === 'en' ? logicLessonMapEn : logicLessonMap
+// 全レッスンマップを locale で切り替える。en 版が存在するカテゴリは
+// 英訳済みマップを、それ以外は ja 版にフォールバック (transitional)。
+const _pickByLocale = <T>(ja: T, en: T): T => (getLocale() === 'en' ? en : ja)
 
 // ロケールが変わるたびに再構築する以外は同じマージ結果を使い回す。
 // Proxy / getAllLessonsFlat のホットパスで毎回 spread するのを避ける。
@@ -87,26 +106,26 @@ function _getMergedLessons(): Record<number, LessonData> {
   const locale = getLocale()
   if (_cachedMerged && _cachedLocale === locale) return _cachedMerged
   _cachedMerged = {
-    ..._activeLogicLessons(),
-    ...caseLessonMap,
-    ...criticalLessonMap,
-    ...hypothesisLessonMap,
-    ...problemSettingLessonMap,
-    ...designThinkingLessonMap,
-    ...lateralThinkingLessonMap,
-    ...analogyThinkingLessonMap,
-    ...systemsThinkingLessonMap,
-    ...proposalLessonMap,
-    ...proposalCourseLessonMap,
-    ...philosophyLessonMap,
-    ...easternPhilosophyLessonMap,
-    ...clientWorkLessonMap,
-    ...catchupLessonMap,
-    ...fermiLessonMap,
-    ...extraLessonMap,
-    ...strategyLessonMap,
-    ...numeracyLessonMap,
-    ...peakPerformanceLessonMap,
+    ..._pickByLocale(logicLessonMap, logicLessonMapEn),
+    ..._pickByLocale(caseLessonMap, caseLessonMapEn),
+    ..._pickByLocale(criticalLessonMap, criticalLessonMapEn),
+    ..._pickByLocale(hypothesisLessonMap, hypothesisLessonMapEn),
+    ..._pickByLocale(problemSettingLessonMap, problemSettingLessonMapEn),
+    ..._pickByLocale(designThinkingLessonMap, designThinkingLessonMapEn),
+    ..._pickByLocale(lateralThinkingLessonMap, lateralThinkingLessonMapEn),
+    ..._pickByLocale(analogyThinkingLessonMap, analogyThinkingLessonMapEn),
+    ..._pickByLocale(systemsThinkingLessonMap, systemsThinkingLessonMapEn),
+    ..._pickByLocale(proposalLessonMap, proposalLessonMapEn),
+    ..._pickByLocale(proposalCourseLessonMap, proposalCourseLessonMapEn),
+    ..._pickByLocale(philosophyLessonMap, philosophyLessonMapEn),
+    ..._pickByLocale(easternPhilosophyLessonMap, easternPhilosophyLessonMapEn),
+    ..._pickByLocale(clientWorkLessonMap, clientWorkLessonMapEn),
+    ..._pickByLocale(catchupLessonMap, catchupLessonMapEn),
+    ..._pickByLocale(fermiLessonMap, fermiLessonMapEn),
+    ..._pickByLocale(extraLessonMap, extraLessonMapEn),
+    ..._pickByLocale(strategyLessonMap, strategyLessonMapEn),
+    ..._pickByLocale(numeracyLessonMap, numeracyLessonMapEn),
+    ..._pickByLocale(peakPerformanceLessonMap, peakPerformanceLessonMapEn),
   }
   _cachedLocale = locale
   return _cachedMerged

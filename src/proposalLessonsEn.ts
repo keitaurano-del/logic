@@ -1,0 +1,242 @@
+import type { LessonData } from './lessonData'
+
+// ========================================
+// Proposal / Communication Lessons (ID: 72-76)
+// English version
+// ========================================
+
+// Lesson 72: Define the purpose of the proposal
+const proposalPurpose: LessonData = {
+  id: 72,
+  title: 'Define the purpose of your proposal',
+  category: 'Proposal & Communication',
+  steps: [
+    {
+      type: 'explain',
+      title: 'A proposal is a tool for getting decisions',
+      content:
+        'Before you start writing a proposal, answer one question.\n\n"What do I want the reader to decide after reading this?"\n\nIf this is fuzzy when you start writing, you end up with a proposal that has lots of information but leaves the reader thinking "so what are you actually saying?"\n\nProposal purposes fall into three buckets:\n\n(1) Approval\n"Approve this budget" / "Give us permission to execute this initiative"\n→ Build around the information needed for the decision and the risk mitigations.\n\n(2) Alignment / Understanding\n"Get on the same page about the current state" / "Share a sense of urgency"\n→ Use data and examples to make the situation visible and create shared concern or empathy.\n\n(3) Action\n"Start moving today" / "Decide the next step"\n→ Clearly specify next actions, owners, and deadlines.\n\nOnce you pick one purpose, treat everything else as supporting context. This single decision changes the density of your proposal.',
+    },
+    {
+      type: 'quiz',
+      question: 'For a proposal seeking approval of a new business initiative, what should be the top priority content?',
+      options: [
+        { label: 'Every possible market data point and a detailed competitor list', correct: false },
+        { label: 'The evidence and risk mitigations the decision-maker needs to approve', correct: true },
+        { label: 'Team member backgrounds and accomplishments', correct: false },
+        { label: 'A comprehensive analysis of industry trends and future forecasts', correct: false },
+      ],
+      explanation:
+        'When the goal is "approval," center the document on what the decision-maker needs to judge "why do this," "what are the risks," and "how will we handle them." Comprehensive information makes the decision harder and pushes approval further away.',
+    },
+    {
+      type: 'explain',
+      title: 'Reverse-engineer from the reader\'s decision criteria',
+      content:
+        'Once you know the purpose, imagine the reader\'s decision criteria.\n\nManagers, clients, and executives all judge on different axes:\n\n[Manager (department head, business unit lead)]\n"What\'s the cost and effort? Are the risks manageable? Will it conflict with our other priorities?"\n\n[Client (external)]\n"Why hire this firm? What\'s the ROI? What support comes after delivery?"\n\n[Executives / board]\n"Is this strategically the right direction? Can we beat the competition? Does it matter in the medium-to-long term?"\n\nPractical tip:\nBefore writing, put yourself in the reader\'s shoes and write down the three things you would check if asked to approve this. A proposal that answers those three head-on is the one that lands.',
+    },
+    {
+      type: 'quiz',
+      question: 'When pitching a cost-cutting initiative to executives, what should appear first?',
+      options: [
+        { label: 'A detailed execution plan and list of owners', correct: false },
+        { label: 'The current cost-structure problem and the business impact of inaction', correct: true },
+        { label: 'Case studies from other companies and industry benchmarks', correct: false },
+        { label: 'A line-item table of the costs to be cut', correct: false },
+      ],
+      explanation:
+        'Executives won\'t move without conviction that "this needs to happen now." First make the current issue visible, show the risk of inaction, and build shared understanding that "we have to do this." Execution steps come later.',
+    },
+  ],
+}
+
+// Lesson 73: Think from the other person's perspective
+const proposalStakeholder: LessonData = {
+  id: 73,
+  title: 'Think from the reader\'s perspective',
+  category: 'Proposal & Communication',
+  steps: [
+    {
+      type: 'explain',
+      title: 'Imagine the reader as a person',
+      content:
+        'A great proposal answers the question already in the reader\'s head — before they ask.\n\nStakeholder analysis basics:\n\n(1) Who reads it (decision-makers, influencers, hands-on operators)\n(2) What they care about (cost, quality, speed, risk, reputation)\n(3) What worries them (resistance to change, scope of responsibility, past failures)\n\nTypical reader concerns:\n\n[Finance / CFO]\n"What\'s the ROI? What\'s the payback period?"\n\n[Operations / front-line]\n"What\'s the actual workload? Impact on existing work? Who will do it?"\n\n[Marketing / business]\n"What\'s our competitive advantage? How will customers perceive it? What\'s the growth potential?"\n\nPeople interpret the same information through their own lens. Adjusting emphasis based on who you\'re showing the same proposal to is the mark of a pro.',
+    },
+    {
+      type: 'quiz',
+      question: 'When showing the same new-system proposal to a CFO and an operations manager, which combination of emphasis is best?',
+      options: [
+        { label: 'CFO: feature details / Ops manager: ROI calculation', correct: false },
+        { label: 'CFO: ROI and payback / Ops manager: workload and migration plan', correct: true },
+        { label: 'CFO: competitive comparison / Ops manager: market trends', correct: false },
+        { label: 'CFO and Ops manager: same materials work fine', correct: false },
+      ],
+      explanation:
+        'The CFO cares about cost and recovery; the operations manager cares about real-world impact and the burden of migration. Adjusting emphasis to the reader dramatically changes approval odds.',
+    },
+    {
+      type: 'explain',
+      title: 'Think about the dissenters first',
+      content:
+        'The biggest reason proposals fail is failing to anticipate objections.\n\nBefore you propose, write down "who will object, and why." Your weak spots will become visible.\n\nTypical objection patterns:\n\n[Cost concern] "We don\'t have the budget" / "Can\'t we do it cheaper?"\n→ Counter: Show concrete ROI, and show the cost of NOT doing it.\n\n[Feasibility concern] "Can we really pull this off?" / "Similar past initiatives failed"\n→ Counter: Show analogous cases, pilot results, risk-mitigation plans.\n\n[Priority concern] "We have other things to do" / "Doesn\'t need to be now"\n→ Counter: Show why now (seasonal, market, competitive timing).\n\n[Accountability concern] "Who takes responsibility?"\n→ Counter: Make the project owner and decision flow explicit.\n\nProactively addressing these in the proposal dramatically reduces meeting pushback.',
+    },
+    {
+      type: 'quiz',
+      question: 'What\'s the most effective way to handle the objection "we don\'t have budget"?',
+      options: [
+        { label: 'Explain that "we kept costs down"', correct: false },
+        { label: 'Note that "other companies are making similar investments"', correct: false },
+        { label: 'Quantify the opportunity cost and risk of NOT doing this', correct: true },
+        { label: 'Promise that "we can find the budget later"', correct: false },
+      ],
+      explanation:
+        'For budget objections, contrast "the cost of investing" against "the cost of NOT investing" (opportunity cost, risk). When the decision-maker feels "not doing it costs more," budget priority moves up.',
+    },
+  ],
+}
+
+// Lesson 74: Designing the storyline
+const proposalStoryline: LessonData = {
+  id: 74,
+  title: 'Designing the storyline',
+  category: 'Proposal & Communication',
+  steps: [
+    {
+      type: 'explain',
+      title: 'Design with the SCR structure',
+      content:
+        'There\'s a template for the flow of a proposal. The most usable one is SCR.\n\n[S] Situation\nConfirm the current state — something the reader already knows or agrees with.\nExample: "Our customer acquisition cost (CAC) is currently 1.5× the industry average."\n\n[C] Complication\nShow the problem, contradiction, or change that situation creates.\nExample: "Left alone, this puts us at risk of losing price competitiveness within three years."\n\n[R] Resolution\nPresent the answer that solves the problem.\nExample: "Shifting to digital marketing channels can cut CAC by 30%."\n\nWhy this order matters:\nSharing the "problem" before the "solution" creates the feeling of "so that\'s why we need this." Leading with the solution invites resistance ("why do we need this?").',
+    },
+    {
+      type: 'quiz',
+      question: 'Which corresponds to the Complication in SCR?',
+      options: [
+        { label: 'A SWOT analysis: "Our strengths are XXX, weaknesses YYY, opportunities ZZZ..."', correct: false },
+        { label: 'The solution: "This proposal will reduce costs by 20%"', correct: false },
+        { label: 'Problem framing: "Left alone, we risk losing 5% market share next quarter"', correct: true },
+        { label: 'Table of contents: "Today\'s agenda is as follows"', correct: false },
+      ],
+      explanation:
+        'Complication is the part that says "what is wrong as things stand, why we must act now." Building urgency and problem awareness sets up acceptance of the Resolution.',
+    },
+    {
+      type: 'explain',
+      title: 'Can you say the storyline in one sentence?',
+      content:
+        'Whether you can express the entire proposal\'s story in ONE sentence is the litmus test of logical strength.\n\nTemplate:\n"Given [Situation], [Complication] is happening, so we propose [Resolution]. This will achieve [Effect]."\n\nExample:\n"Customer inquiry response takes 2 days on average and customer satisfaction is dropping, so we propose deploying a chatbot. This shortens response time to under 4 hours and improves CS satisfaction by 15 points."\n\nIf you can\'t say it in one sentence, the story isn\'t organized yet.\n\nPractical flow:\n(1) Write the one-sentence story first\n(2) Gather the evidence and data that support it\n(3) Expand into slides\n\nMost people start at (3), which is why their proposals are dense yet directionless. Starting at (1) keeps the whole thing on rails.',
+    },
+    {
+      type: 'quiz',
+      question: 'Which one-sentence proposal is the most logically structured?',
+      options: [
+        { label: '"Digitalization is important. Because the market is changing. We should respond too."', correct: false },
+        { label: '"Competitor A grew sales 30%. We should do something similar."', correct: false },
+        { label: '"Our online sales ratio is 20 points below industry average, costing us revenue, so we propose rebuilding our e-commerce site. This is expected to add 200 million yen in annual sales."', correct: true },
+        { label: '"This initiative has benefits across cost, quality, and speed."', correct: false },
+      ],
+      explanation:
+        'A great one-sentence pitch chains situation → problem → solution → expected effect. "Digitalization is important" lacks evidence; "Competitor A grew" lacks our specific issue. Only option three has the problem → proposal → effect structure.',
+    },
+  ],
+}
+
+// Lesson 75: Sharpening the message
+const proposalMessage: LessonData = {
+  id: 75,
+  title: 'Sharpen the message',
+  category: 'Proposal & Communication',
+  steps: [
+    {
+      type: 'explain',
+      title: 'Topic title vs. message title',
+      content:
+        'Slide titles come in two flavors:\n\n[Topic title] Tells you what the slide is about\nExamples: "Market trends" / "Cost comparison" / "Implementation schedule"\n\n[Message title] Tells you what the slide is saying\nExamples: "The market will double in 3 years; early entry creates competitive advantage"\n"Costs are 20% below competitors and payback completes within 18 months"\n\nMost proposals are filled with topic titles. That forces the reader to read the slide and interpret it themselves — low transmission efficiency.\n\nThree benefits of message titles:\n- The claim lands before reading (time efficiency)\n- You can spot mismatches between claim and evidence (logic check)\n- The reader doesn\'t end up asking "so what\'s the point?" (persuasion)\n\nRule: every slide title should be a message title. Complete the claim in one sentence.',
+    },
+    {
+      type: 'quiz',
+      question: 'Convert the topic title "Sales data (2020-2024)" to a message title. Which is best?',
+      options: [
+        { label: '"Detailed analysis of sales data"', correct: false },
+        { label: '"Since 2022, sales have grown 15% annually and the momentum continues"', correct: true },
+        { label: '"Sales data overview and future direction"', correct: false },
+        { label: '"Sales trend and issues"', correct: false },
+      ],
+      explanation:
+        'A message title says "what we are claiming" in a complete sentence. "Detailed analysis" or "overview and direction" don\'t state any claim. Only option 2 makes the concrete claims "growing" and "continuing."',
+    },
+    {
+      type: 'explain',
+      title: 'Sharpen claims with "So What?"',
+      content:
+        'You can find weak proposal messages by asking "So What?"\n\nWeak example:\n"Company A entered the new market. Company B entered. Company C entered."\n→ So What? "New-market entry is accelerating across the industry, and our delay is becoming a competitive risk."\n\nLisitng data alone never produces an "implication."\nData → (add interpretation) → implication → (point to action) → proposal\n\nMaking that conversion sharpens the claim dramatically.\n\nPractical checklist:\n- Ask "So What?" of this slide\'s message — does a meaningful answer come out?\n- Are there any "leaps" between data and conclusion?\n- Does the conclusion lead to actionable implication?',
+    },
+    {
+      type: 'quiz',
+      question: 'For the data point "customer survey average satisfaction was 3.8 / 5," what\'s the best So What?',
+      options: [
+        { label: '"Customer satisfaction was 3.8 points." (just restating data)', correct: false },
+        { label: '"Customer satisfaction details — see appendix."', correct: false },
+        { label: '"Below the industry average of 4.2, indicating room to improve customer experience versus competitors."', correct: true },
+        { label: '"Some initiative may be needed to improve satisfaction."', correct: false },
+      ],
+      explanation:
+        'A So What clearly states what the data MEANS. The number 3.8 alone is meaningless. Adding context (industry average comparison) produces the implication "improvement is needed," which leads to the next action.',
+    },
+  ],
+}
+
+// Lesson 76: Anticipate objections
+const proposalQA: LessonData = {
+  id: 76,
+  title: 'Anticipate objections',
+  category: 'Proposal & Communication',
+  steps: [
+    {
+      type: 'explain',
+      title: 'The goal is to get the proposal approved',
+      content:
+        'The purpose of a proposal is to win approval. No matter how correct the content, if it stalls on objections it doesn\'t get approved.\n\nProfessional proposers re-read their own proposal from a critical reviewer\'s seat before presenting.\n\nQ&A preparation flow:\n\n(1) For each stakeholder, write down "what will this person ask?"\n(2) For each question, prepare an answer + supporting evidence pair\n(3) Identify hard-to-answer questions (your weak spots) and address them proactively in the body of the proposal\n\n"Address proactively" means:\nCovering the point in the proposal itself before the objection arises ("On this point, we believe..."). This builds the "they\'ve thought it through" trust signal and lowers the approval bar.\n\nThree topics that especially deserve preemptive coverage:\n- Cost / ROI evidence\n- Feasibility (team, schedule)\n- Risks and mitigations',
+    },
+    {
+      type: 'quiz',
+      question: 'Which best describes the effect of adding a "Risks and Mitigations" slide to a proposal?',
+      options: [
+        { label: 'Acknowledging risk exposes weaknesses and makes approval harder', correct: false },
+        { label: 'Showing risks first dissolves concerns before the meeting and lowers the approval bar', correct: true },
+        { label: 'Adds page count, making the proposal look more substantial', correct: false },
+        { label: 'Risks can be covered verbally; no need to put them on a slide', correct: false },
+      ],
+      explanation:
+        'Hiding risks creates suspicion ("did they think about risk?"). Showing risks and mitigations preemptively creates the trust of "they\'ve thought enough about this," producing an environment where dissent is less likely.',
+    },
+    {
+      type: 'explain',
+      title: 'Make the "why now" explicit',
+      content:
+        'Another reason proposals get rejected: the reader thinks "doesn\'t have to be now."\n\n"Timing rationale" is the most-forgotten component of proposals.\n\nFour angles for showing timing:\n\n(1) Market change\n"Competitors will launch a new feature next year. If we don\'t move now we lose first-mover advantage."\n\n(2) Cost change\n"Raw material prices rise next quarter. Locking in this quarter keeps the old price."\n\n(3) Internal cycle\n"If we don\'t decide before the next mid-term plan is finalized, budget gets pushed out a full year."\n\n(4) Customer / regulatory change\n"New regulations take effect next year. Delay creates legal risk."\n\nIf any one of these applies, weave it in as the "why now." This blocks the "let\'s defer this" decision pattern.',
+    },
+    {
+      type: 'quiz',
+      question: 'What\'s the biggest benefit of including a "why now" in a proposal?',
+      options: [
+        { label: 'Adds pages, making the proposal look more substantial', correct: false },
+        { label: 'Blocks the decision-maker\'s "defer it" instinct, raising in-quarter approval probability', correct: true },
+        { label: 'Showing competitor information conveys our advantage', correct: false },
+        { label: 'Proves the content of the proposal is accurate', correct: false },
+      ],
+      explanation:
+        'The "doesn\'t have to be now" deferral pattern is more common than outright rejection. Showing timing rationale (market, cost, internal cycle, regulation) raises in-period approval rates substantially.',
+    },
+  ],
+}
+
+// ========================================
+// Map
+// ========================================
+export const proposalLessonMapEn: Record<number, LessonData> = {
+  72: proposalPurpose,
+  73: proposalStakeholder,
+  74: proposalStoryline,
+  75: proposalMessage,
+  76: proposalQA,
+}
