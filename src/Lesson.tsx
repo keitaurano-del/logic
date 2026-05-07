@@ -1,4 +1,6 @@
-import { useState, useRef, useMemo, useEffect, type ComponentType, type MouseEvent as ReactMouseEvent, type ReactNode } from 'react'
+import { useState, useRef, useMemo, useEffect, useLayoutEffect, type ComponentType, type MouseEvent as ReactMouseEvent, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
+import { BookOpenIcon } from './icons'
 import {
   TAccountDiagram,
   AccountGroupsDiagram,
@@ -87,9 +89,9 @@ type Props = {
   onNextLesson?: () => void
 }
 
-// Wrap each phrase's first occurrence in `text` with a clickable span.
-// Returns a React node — either the original string (no matches) or an array
-// of strings + <span> elements. Matches are non-overlapping (earliest wins).
+// Wrap every occurrence of each phrase in `text` with a clickable span.
+// Longer phrases take priority over shorter ones if they overlap, so a phrase
+// like "Mutually Exclusive" is preferred over a sub-match like "Exclusive".
 function renderEnText(
   text: string,
   phrases: Phrase[] | undefined,
@@ -98,12 +100,18 @@ function renderEnText(
 ): ReactNode {
   if (!phrases || phrases.length === 0) return text
   const matches: { phrase: Phrase; start: number; end: number }[] = []
-  for (const p of phrases) {
-    const idx = text.indexOf(p.en)
-    if (idx >= 0) matches.push({ phrase: p, start: idx, end: idx + p.en.length })
+  // Sort phrases by length descending so longer ones take precedence on overlap
+  const sortedPhrases = [...phrases].sort((a, b) => b.en.length - a.en.length)
+  for (const p of sortedPhrases) {
+    let idx = text.indexOf(p.en)
+    while (idx >= 0) {
+      matches.push({ phrase: p, start: idx, end: idx + p.en.length })
+      idx = text.indexOf(p.en, idx + p.en.length)
+    }
   }
   if (matches.length === 0) return text
-  matches.sort((a, b) => a.start - b.start)
+  // Sort by start asc, then by length desc, then drop overlaps
+  matches.sort((a, b) => a.start - b.start || (b.end - b.start) - (a.end - a.start))
   const filtered: typeof matches = []
   let lastEnd = 0
   for (const m of matches) {
@@ -151,7 +159,7 @@ export default function Lesson({ lesson, onBack, onComplete, onNextLesson }: Pro
   const [showTranslation, setShowTranslation] = useState(false)
   const [showPhrases, setShowPhrases] = useState(false)
   const [savedPhrases, setSavedPhrases] = useState<Set<string>>(new Set())
-  const [activePhrase, setActivePhrase] = useState<{ phrase: Phrase; rect: DOMRect } | null>(null)
+  const [activePhrase, setActivePhrase] = useState<{ phrase: Phrase; rect: DOMRect; trigger: HTMLElement } | null>(null)
   const wrongAnswersRef = useRef<{ question: string; correctAnswer: string; explanation: string }[]>([])
 
   const step: LessonStep | undefined = lesson.steps[currentStep]
@@ -177,18 +185,27 @@ export default function Lesson({ lesson, onBack, onComplete, onNextLesson }: Pro
 
   const handleTapPhrase = (phrase: Phrase, e: ReactMouseEvent<HTMLSpanElement>) => {
     e.stopPropagation()
-    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
-    setActivePhrase({ phrase, rect })
+    const target = e.currentTarget as HTMLElement
+    setActivePhrase({ phrase, rect: target.getBoundingClientRect(), trigger: target })
   }
 
-  // Close popover on Escape, when stepping forward, or when toggling locale-affecting state
+  const closePhrase = () => {
+    const trigger = activePhrase?.trigger
+    setActivePhrase(null)
+    // Restore focus to the trigger so keyboard users return to where they were
+    requestAnimationFrame(() => trigger?.focus())
+  }
+
+  // Close popover on Escape
   useEffect(() => {
     if (!activePhrase) return
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setActivePhrase(null)
+      if (e.key === 'Escape') closePhrase()
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
+    // closePhrase is stable enough; tracking it would re-bind on every render
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activePhrase])
 
   // Helper applied only when englishMode + step has phrases
@@ -334,7 +351,7 @@ export default function Lesson({ lesson, onBack, onComplete, onNextLesson }: Pro
               onClick={() => setShowPhrases((v) => !v)}
               aria-pressed={showPhrases}
             >
-              <span aria-hidden="true">📖</span>
+              <BookOpenIcon width={14} height={14} aria-hidden="true" />
               {showPhrases ? t('englishLearning.hidePhrases') : t('englishLearning.showPhrases')}
             </button>
           )}
@@ -469,9 +486,9 @@ export default function Lesson({ lesson, onBack, onComplete, onNextLesson }: Pro
           saved={savedPhrases.has(activePhrase.phrase.en)}
           onSave={() => {
             handleSavePhrase(activePhrase.phrase)
-            setActivePhrase(null)
+            closePhrase()
           }}
-          onClose={() => setActivePhrase(null)}
+          onClose={closePhrase}
         />
       )}
     </div>
@@ -487,38 +504,84 @@ type PhrasePopoverProps = {
 }
 
 function PhrasePopover({ phrase, rect, saved, onSave, onClose }: PhrasePopoverProps) {
-  // Position popover under the tapped span; clamp to viewport
-  const POP_WIDTH = 280
-  const margin = 12
-  const viewportW = typeof window !== 'undefined' ? window.innerWidth : 480
-  let left = rect.left
-  if (left + POP_WIDTH > viewportW - margin) left = viewportW - POP_WIDTH - margin
-  if (left < margin) left = margin
-  const top = rect.bottom + 10
+  const popRef = useRef<HTMLDivElement | null>(null)
+  const saveBtnRef = useRef<HTMLButtonElement | null>(null)
+  const [pos, setPos] = useState<{ top: number; left: number; flipped: boolean } | null>(null)
 
-  return (
+  // Compute position after first paint so we have the popover's actual height.
+  // Using useLayoutEffect avoids a 1-frame visible jump.
+  useLayoutEffect(() => {
+    const el = popRef.current
+    if (!el) return
+    const POP_WIDTH = 280
+    const MARGIN = 12
+    const GAP = 10
+    const viewportW = window.innerWidth
+    const viewportH = window.innerHeight
+    const popHeight = el.offsetHeight
+
+    // Horizontal: clamp within viewport
+    let left = rect.left
+    if (left + POP_WIDTH > viewportW - MARGIN) left = viewportW - POP_WIDTH - MARGIN
+    if (left < MARGIN) left = MARGIN
+
+    // Vertical: prefer below, flip above if it would overflow
+    const wouldOverflowBelow = rect.bottom + GAP + popHeight > viewportH - MARGIN
+    const flipped = wouldOverflowBelow && rect.top - GAP - popHeight >= MARGIN
+    const top = flipped ? rect.top - GAP - popHeight : rect.bottom + GAP
+
+    // Convert viewport-relative to document-relative for position: absolute
+    setPos({ top: top + window.scrollY, left: left + window.scrollX, flipped })
+  }, [rect])
+
+  // Auto-focus the primary action so keyboard users land inside the dialog.
+  useEffect(() => {
+    saveBtnRef.current?.focus()
+  }, [])
+
+  // Close on outside scroll within the lesson body — keeps the popover anchored
+  // to the originally tapped phrase rather than drifting away.
+  useEffect(() => {
+    const onScroll = () => onClose()
+    window.addEventListener('scroll', onScroll, { passive: true, capture: true })
+    return () => window.removeEventListener('scroll', onScroll, { capture: true })
+  }, [onClose])
+
+  if (typeof document === 'undefined') return null
+
+  return createPortal(
     <>
       <div className="ls-en-popover-backdrop" onClick={onClose} aria-hidden="true" />
       <div
-        className="ls-en-popover"
+        ref={popRef}
+        className={`ls-en-popover${pos?.flipped ? ' flipped' : ''}`}
         role="dialog"
+        aria-modal="true"
         aria-label={t('englishLearning.popoverLabel')}
-        style={{ left, top, width: POP_WIDTH }}
+        style={pos ? { top: pos.top, left: pos.left, width: 280 } : { visibility: 'hidden', top: 0, left: 0, width: 280 }}
       >
-        <button className="ls-en-popover-close" onClick={onClose} aria-label={t('common.cancel')}>×</button>
+        <button
+          className="ls-en-popover-close"
+          onClick={onClose}
+          aria-label={t('common.cancel')}
+          type="button"
+        >×</button>
         <div className="ls-en-popover-en">{phrase.en}</div>
         <div className="ls-en-popover-ja">{phrase.ja}</div>
         {phrase.note && <div className="ls-en-popover-note">{phrase.note}</div>}
         <button
+          ref={saveBtnRef}
           type="button"
           className={`ls-en-popover-save${saved ? ' saved' : ''}`}
           onClick={onSave}
           disabled={saved}
+          aria-label={saved ? t('englishLearning.phraseSaved') : t('englishLearning.savePhrase')}
         >
           {saved ? t('englishLearning.phraseSaved') : t('englishLearning.savePhrase')}
         </button>
       </div>
-    </>
+    </>,
+    document.body,
   )
 }
 

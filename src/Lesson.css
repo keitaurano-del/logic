@@ -698,7 +698,7 @@
 
 /* ===== Inline phrase tap-to-translate (English-learning mode) ===== */
 .ls-en-phrase-mark {
-  background: linear-gradient(180deg, transparent 65%, rgba(212, 145, 90, 0.28) 65%);
+  background: linear-gradient(180deg, transparent 65%, var(--accent-soft) 65%);
   padding: 0 2px;
   cursor: pointer;
   border-radius: 2px;
@@ -708,7 +708,7 @@
   color: inherit;
 }
 .ls-en-phrase-mark:hover {
-  background: linear-gradient(180deg, transparent 60%, rgba(212, 145, 90, 0.50) 60%);
+  background: linear-gradient(180deg, transparent 60%, var(--accent-glow) 60%);
 }
 .ls-en-phrase-mark:focus-visible {
   outline: 2px solid var(--accent);
@@ -716,7 +716,7 @@
   border-radius: 2px;
 }
 .ls-en-phrase-mark.saved {
-  background: linear-gradient(180deg, transparent 65%, rgba(90, 138, 90, 0.32) 65%);
+  background: linear-gradient(180deg, transparent 65%, var(--success-soft) 65%);
 }
 
 /* ===== Phrase popover ===== */
@@ -727,7 +727,7 @@
   background: transparent;
 }
 .ls-en-popover {
-  position: fixed;
+  position: absolute;
   z-index: 100;
   background: var(--text-primary);
   color: #ffffff;
@@ -741,6 +741,8 @@
   from { opacity: 0; transform: scale(0.92) translateY(4px); }
   to   { opacity: 1; transform: scale(1) translateY(0); }
 }
+/* Arrow: down-pointing when popover is below the trigger (default),
+   up-pointing when flipped above. */
 .ls-en-popover::before {
   content: '';
   position: absolute;
@@ -751,6 +753,10 @@
   background: var(--text-primary);
   transform: rotate(45deg);
   border-radius: 2px;
+}
+.ls-en-popover.flipped::before {
+  top: auto;
+  bottom: -6px;
 }
 .ls-en-popover-close {
   position: absolute;
@@ -807,7 +813,13 @@
 .ls-en-popover-save:hover:not(:disabled) { background: var(--accent-dark); }
 .ls-en-popover-save.saved,
 .ls-en-popover-save:disabled {
-  background: rgba(90, 138, 90, 0.7);
+  background: var(--success);
   color: #fff;
   cursor: default;
+  opacity: 0.85;
+}
+.ls-en-popover-save:focus-visible,
+.ls-en-popover-close:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
 }
