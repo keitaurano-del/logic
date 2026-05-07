@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>英語学習モード — フル体験 — Logic Preview</title>
+<link rel="stylesheet" href="_shared.css">
+<style>
+  /* ============ Layout ============ */
+  .lesson-progress { height: 4px; background: var(--bg-tertiary); }
+  .lesson-progress-fill {
+    height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-dark));
+    border-radius: 0 2px 2px 0;
+    transition: width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* ============ EN toolbar ============ */
+  .en-toolbar {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    padding: 14px 20px 0;
+    align-items: center;
+  }
+  .en-toolbar-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 14px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--bg-card);
+    color: var(--text-primary);
+    font-size: 13px; font-family: inherit;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .en-toolbar-btn.active {
+    background: var(--accent-soft);
+    border-color: var(--accent-dark);
+    color: var(--accent-dark);
+    font-weight: 700;
+  }
+  .en-toolbar-badge {
+    font-size: 9px; font-weight: 900;
+    padding: 2px 6px; border-radius: 999px;
+    background: linear-gradient(135deg, #C9A94A 0%, #B07442 100%);
+    color: #fff; letter-spacing: 0.5px;
+    margin-left: 6px;
+  }
+  .saved-counter {
+    margin-left: auto;
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; font-weight: 700;
+    color: var(--text-muted);
+  }
+  .saved-counter strong { color: var(--accent-text); font-size: 14px; }
+
+  /* ============ Content ============ */
+  .lesson-content { padding: 20px 20px 120px; }
+
+  .step-tag {
+    font-size: 11px; font-weight: 800;
+    color: var(--accent-text); letter-spacing: 1.4px;
+    margin-bottom: 6px;
+  }
+  .explain-title {
+    font-size: 22px; font-weight: 800;
+    line-height: 1.5; color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+  .explain-body {
+    font-size: 15px; line-height: 1.85;
+    color: var(--text-primary);
+    margin-bottom: 24px;
+  }
+  .explain-body p { margin: 6px 0; }
+  .explain-body .label {
+    font-weight: 800;
+    color: var(--accent-text);
+    margin-top: 16px;
+  }
+
+  .question-text {
+    font-size: 18px; font-weight: 700;
+    line-height: 1.6; color: var(--text-primary);
+    margin: 8px 0 18px;
+  }
+
+  /* ============ Inline phrase highlight (tap-to-translate) ============ */
+  .phrase-mark {
+    background: linear-gradient(180deg, transparent 65%, rgba(212,145,90,0.28) 65%);
+    padding: 0 2px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+    text-decoration: none;
+    color: inherit;
+  }
+  .phrase-mark:hover { background: linear-gradient(180deg, transparent 60%, rgba(212,145,90,0.50) 60%); }
+  .phrase-mark.viewed {
+    background: linear-gradient(180deg, transparent 65%, rgba(90,138,90,0.30) 65%);
+  }
+
+  /* ============ Phrase popover ============ */
+  .popover {
+    position: absolute;
+    z-index: 50;
+    background: var(--text-primary);
+    color: #FFFFFF;
+    padding: 14px 16px;
+    border-radius: 12px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+    max-width: 280px;
+    min-width: 220px;
+    font-size: 13px;
+    line-height: 1.55;
+    pointer-events: auto;
+    animation: pop-in 0.18s ease-out;
+  }
+  @keyframes pop-in {
+    from { opacity: 0; transform: scale(0.92) translateY(4px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .popover::before {
+    content: ''; position: absolute;
+    top: -6px; left: 24px;
+    width: 12px; height: 12px;
+    background: var(--text-primary);
+    transform: rotate(45deg);
+    border-radius: 2px;
+  }
+  .popover-en {
+    font-size: 14px; font-weight: 800;
+    margin-bottom: 6px;
+  }
+  .popover-ja {
+    color: rgba(255,255,255,0.92);
+    font-weight: 600;
+  }
+  .popover-note {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255,255,255,0.18);
+    color: rgba(255,255,255,0.7);
+    font-size: 12px;
+    font-style: italic;
+  }
+  .popover-actions {
+    display: flex; gap: 8px;
+    margin-top: 12px;
+  }
+  .popover-save {
+    flex: 1;
+    padding: 8px 10px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 12px; font-weight: 800;
+    cursor: pointer; font-family: inherit;
+  }
+  .popover-save.saved {
+    background: var(--success);
+  }
+  .popover-close {
+    width: 32px; height: 32px;
+    background: rgba(255,255,255,0.12);
+    color: #fff; border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px; font-weight: 700;
+  }
+
+  /* ============ Translation block ============ */
+  .ja-translation {
+    border-left: 2px solid var(--accent);
+    padding: 10px 12px;
+    background: var(--bg-secondary);
+    border-radius: 4px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    line-height: 1.85;
+    margin: 8px 0 18px;
+    display: none;
+  }
+  .ja-translation.show { display: block; animation: fade-in 0.2s ease-out; }
+  .ja-translation-title { font-weight: 600; font-size: 14px; }
+  .ja-translation-inline {
+    display: block;
+    border-left: none;
+    padding: 0;
+    margin: 4px 0 0 0;
+    background: transparent;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 400;
+    line-height: 1.5;
+  }
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ============ Phrases panel ============ */
+  .phrases-panel {
+    margin-top: 16px;
+    padding: 16px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    display: none;
+  }
+  .phrases-panel.show { display: block; animation: fade-in 0.2s ease-out; }
+  .phrases-header { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+  .phrases-title { font-size: 15px; font-weight: 800; }
+  .phrases-hint { font-size: 11px; color: var(--text-muted); }
+  .phrases-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .phrase-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .phrase-main { flex: 1; min-width: 0; }
+  .phrase-en { font-size: 14px; font-weight: 700; margin: 0 0 2px 0; }
+  .phrase-ja { font-size: 13px; color: var(--text-secondary); margin: 0; }
+  .phrase-note { font-size: 11px; color: var(--text-muted); margin: 4px 0 0 0; font-style: italic; line-height: 1.6; }
+  .phrase-save {
+    flex-shrink: 0; padding: 7px 13px;
+    background: var(--accent); color: #fff;
+    border: none; border-radius: 999px;
+    font-size: 11px; font-weight: 800;
+    cursor: pointer; font-family: inherit;
+  }
+  .phrase-save.saved { background: var(--bg-tertiary); color: var(--text-muted); cursor: default; }
+
+  /* ============ Quiz options ============ */
+  .options { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
+  .option {
+    background: var(--bg-card);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    font-size: 14px;
+    color: var(--text-primary);
+    cursor: pointer;
+    text-align: left;
+    line-height: 1.5;
+    font-family: inherit;
+    display: flex; align-items: flex-start; gap: 12px;
+    transition: all 0.15s ease-out;
+    width: 100%;
+  }
+  .option-letter {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--bg-tertiary); color: var(--text-secondary);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 800;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .option-text { flex: 1; }
+  .option.selected { border-color: var(--accent); background: var(--accent-soft); }
+  .option.correct { border-color: var(--success); background: var(--success-soft); }
+  .option.wrong { border-color: var(--danger); background: rgba(196,69,69,0.10); }
+
+  .feedback {
+    margin-top: 16px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: var(--success-soft);
+    border-left: 3px solid var(--success);
+    display: none;
+  }
+  .feedback.wrong { background: rgba(196,69,69,0.10); border-left-color: var(--danger); }
+  .feedback.show { display: block; animation: fade-in 0.2s ease-out; }
+  .feedback-title { font-size: 14px; font-weight: 800; color: var(--success); margin-bottom: 6px; }
+  .feedback.wrong .feedback-title { color: var(--danger); }
+  .feedback-text { font-size: 13px; line-height: 1.7; color: var(--text-primary); }
+
+  /* ============ Bottom buttons ============ */
+  .step-bar {
+    position: fixed;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 480px;
+    padding: 14px 20px env(safe-area-inset-bottom);
+    background: linear-gradient(0deg, var(--bg-primary) 75%, transparent);
+    display: flex; gap: 10px;
+  }
+  .step-bar button {
+    border: none;
+    border-radius: 14px;
+    padding: 16px;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .step-back-btn {
+    flex: 0 0 80px;
+    background: var(--bg-card);
+    border: 1.5px solid var(--border) !important;
+    color: var(--text-secondary);
+  }
+  .step-back-btn:disabled { opacity: 0.4; cursor: default; }
+  .next-btn {
+    flex: 1;
+    background: var(--accent); color: #fff;
+    box-shadow: 0 4px 16px rgba(212,145,90,0.30);
+  }
+  .next-btn:disabled { opacity: 0.5; box-shadow: none; cursor: default; }
+
+  /* ============ Complete screen ============ */
+  .complete {
+    padding: 40px 24px 120px;
+    text-align: center;
+  }
+  .complete-trophy { font-size: 64px; margin-bottom: 12px; }
+  .complete h2 {
+    font-size: 26px; font-weight: 800;
+    margin-bottom: 8px;
+  }
+  .complete-msg {
+    font-size: 14px; color: var(--text-secondary);
+    margin-bottom: 28px;
+  }
+  .complete-stats {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .stat-card {
+    padding: 16px 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+  }
+  .stat-card .num {
+    font-size: 28px; font-weight: 800;
+    color: var(--accent-text);
+  }
+  .stat-card .label {
+    font-size: 11px; color: var(--text-muted);
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+  }
+  .complete-saved-list {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    text-align: left;
+    margin-bottom: 16px;
+  }
+  .complete-saved-list h3 {
+    font-size: 14px; font-weight: 800;
+    margin-bottom: 10px;
+  }
+  .complete-saved-list ul { list-style: none; padding: 0; margin: 0; }
+  .complete-saved-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-light);
+    font-size: 13px;
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  }
+  .complete-saved-list li:last-child { border-bottom: none; }
+  .complete-saved-list li .en { font-weight: 700; }
+  .complete-saved-list li .ja { color: var(--text-muted); font-size: 12px; }
+
+  /* Demo banner */
+  .demo-banner {
+    background: linear-gradient(135deg, rgba(201,169,74,0.15), rgba(176,116,66,0.15));
+    border: 1px solid rgba(201,169,74,0.4);
+    color: #6b5526;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 12px;
+    line-height: 1.7;
+    margin: 12px 20px 0;
+  }
+  .demo-banner b { color: #4a3a18; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 100px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--text-primary);
+    color: var(--bg-card);
+    padding: 12px 20px;
+    border-radius: 999px;
+    font-size: 13px; font-weight: 700;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    z-index: 110;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* Step views */
+  .step-view { display: none; }
+  .step-view.active { display: block; }
+
+  /* Backdrop for popover */
+  .popover-backdrop {
+    position: fixed; inset: 0; z-index: 40;
+    display: none;
+  }
+  .popover-backdrop.active { display: block; }
+</style>
+</head>
+<body>
+<div class="preview-note">📱 Premium feature: 英語学習モード（フル体験版・4ステップ）</div>
+<div class="app">
+  <header class="header">
+    <button class="header-back">‹</button>
+    <span class="header-title">MECE — Logical Thinking</span>
+    <span id="stepCount" style="font-size: 11px; font-weight: 700; color: var(--text-muted); letter-spacing: 1.4px;">1/4</span>
+  </header>
+  <div class="lesson-progress"><div id="progressFill" class="lesson-progress-fill" style="width: 25%;"></div></div>
+
+  <div class="demo-banner">
+    👆 <b>新機能 (拡張版):</b> 本文中の<span style="background: linear-gradient(180deg, transparent 65%, rgba(212,145,90,0.40) 65%); padding: 0 2px;">下線フレーズ</span>をタップすると、ポップオーバーで意味と注釈が出ます。「日本語訳」「フレーズを学ぶ」のトグルも併用できます。
+  </div>
+
+  <!-- EN toolbar -->
+  <div class="en-toolbar" role="toolbar">
+    <button id="btnTranslation" type="button" class="en-toolbar-btn">
+      <span aria-hidden="true">あ</span>
+      <span id="btnTranslationLabel">Show Japanese</span>
+      <span class="en-toolbar-badge">Premium</span>
+    </button>
+    <button id="btnPhrases" type="button" class="en-toolbar-btn">
+      <span aria-hidden="true">📖</span>
+      <span id="btnPhrasesLabel">Study phrases</span>
+    </button>
+    <span class="saved-counter">💾 <strong id="savedCount">0</strong>枚保存済</span>
+  </div>
+
+  <!-- ============ Step 1: explain ============ -->
+  <div id="step1" class="step-view active">
+    <div class="lesson-content">
+      <div class="step-tag">EXPLAIN</div>
+      <h2 class="explain-title">What is MECE?</h2>
+      <p class="ja-translation ja-translation-title">MECE（ミーシー）とは？</p>
+
+      <div class="explain-body">
+        <p>MECE (pronounced "mee-see") <span class="phrase-mark" data-phrase="stands-for">stands for</span> "Mutually Exclusive, Collectively Exhaustive." It is the most fundamental framework for analyzing and organizing information in business.</p>
+        <p class="ja-translation">MECE（「ミーシー」と発音）は "Mutually Exclusive, Collectively Exhaustive"（モレなく、ダブりなく）の略です。ビジネスで情報を分析・整理する最も基本的なフレームワークです。</p>
+
+        <p class="label">■ <span class="phrase-mark" data-phrase="mutually-exclusive">Mutually Exclusive</span></p>
+        <p>No <span class="phrase-mark" data-phrase="overlap">overlap</span> between categories. The same item never appears in more than one bucket.</p>
+        <p class="ja-translation">カテゴリー同士が重ならない。同じ項目が複数のバケツに入ることはない。</p>
+
+        <p class="label">■ <span class="phrase-mark" data-phrase="collectively-exhaustive">Collectively Exhaustive</span></p>
+        <p>Everything is covered. No gaps, no missing pieces.</p>
+        <p class="ja-translation">すべてが網羅されている。抜けや見落としがない。</p>
+
+        <p style="margin-top: 16px;">Why MECE matters:</p>
+        <p>① Prevents <span class="phrase-mark" data-phrase="blind-spots">blind spots</span> → better decisions</p>
+        <p>② Eliminates duplication → efficient resource allocation</p>
+        <p>③ Clearer communication → <span class="phrase-mark" data-phrase="team-alignment">team alignment</span></p>
+        <p class="ja-translation">MECEが大事な理由：<br>① 死角を防ぐ → よい意思決定<br>② 重複を排除する → 効率的な資源配分<br>③ コミュニケーションが明確 → チームの足並みが揃う</p>
+      </div>
+
+      <div id="phrasesPanel1" class="phrases-panel" role="region">
+        <div class="phrases-header">
+          <span class="phrases-title">📖 重要フレーズ</span>
+          <span class="phrases-hint">本文の下線フレーズを直接タップしてもOK</span>
+        </div>
+        <ul class="phrases-list" id="phrasesList1"></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ Step 2: explain ============ -->
+  <div id="step2" class="step-view">
+    <div class="lesson-content">
+      <div class="step-tag">EXPLAIN</div>
+      <h2 class="explain-title">Four ways to break things down MECE</h2>
+      <p class="ja-translation ja-translation-title">MECEに分解する4つの方法</p>
+
+      <div class="explain-body">
+        <p>There are four common patterns for MECE <span class="phrase-mark" data-phrase="decomposition">decomposition</span>.</p>
+        <p class="ja-translation">MECE分解には4つの代表的なパターンがあります。</p>
+
+        <p class="label">[1] <span class="phrase-mark" data-phrase="component-breakdown">Component breakdown</span> (formula-style)</p>
+        <p>Split a whole into its mathematical components.</p>
+        <p>Examples: Revenue = customers × <span class="phrase-mark" data-phrase="average-order-value">average order value</span></p>
+        <p class="ja-translation">全体を数式の構成要素に分ける。<br>例：売上 = 顧客数 × 平均客単価</p>
+
+        <p class="label">[2] Time sequence</p>
+        <p>Split by stages over time. Example: Buying journey = Awareness → Interest → Consideration → Purchase → Repeat</p>
+        <p class="ja-translation">時間の段階で分ける。例：購買ジャーニー = 認知 → 興味 → 検討 → 購入 → リピート</p>
+
+        <p class="label">[3] Opposing concepts</p>
+        <p>Split by binary or <span class="phrase-mark" data-phrase="near-binary">near-binary</span> categories.</p>
+        <p class="ja-translation">二項対立または近い分類で分ける。</p>
+
+        <p class="label">[4] Established framework</p>
+        <p>Use a known framework as the cut. Pick <span class="phrase-mark" data-phrase="whichever-gives">whichever pattern gives</span> the clearest, least-overlapping cut.</p>
+        <p class="ja-translation">既知のフレームワークで切る。最も明確で重複の少ない切り口を選ぼう。</p>
+      </div>
+
+      <div id="phrasesPanel2" class="phrases-panel" role="region">
+        <div class="phrases-header">
+          <span class="phrases-title">📖 重要フレーズ</span>
+          <span class="phrases-hint">本文の下線フレーズを直接タップしてもOK</span>
+        </div>
+        <ul class="phrases-list" id="phrasesList2"></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ Step 3: quiz ============ -->
+  <div id="step3" class="step-view">
+    <div class="lesson-content">
+      <div class="step-tag">QUIZ</div>
+      <h2 class="question-text">What does the "<span class="phrase-mark" data-phrase="mutually-exclusive">Mutually Exclusive</span>" <span class="phrase-mark" data-phrase="half-of">half of</span> MECE mean?</h2>
+      <p class="ja-translation">MECEの「Mutually Exclusive（重複なし）」の意味は？</p>
+
+      <div class="options" id="quizOptions">
+        <button class="option" data-correct="false">
+          <span class="option-letter">A</span>
+          <span class="option-text">
+            Everything is covered with no gaps
+            <span class="ja-translation ja-translation-inline">漏れなくすべて網羅されている</span>
+          </span>
+        </button>
+        <button class="option" data-correct="true">
+          <span class="option-letter">B</span>
+          <span class="option-text">
+            Categories do not overlap
+            <span class="ja-translation ja-translation-inline">カテゴリー同士が重ならない</span>
+          </span>
+        </button>
+        <button class="option" data-correct="false">
+          <span class="option-letter">C</span>
+          <span class="option-text">
+            The structure is hierarchical
+            <span class="ja-translation ja-translation-inline">構造が階層的になっている</span>
+          </span>
+        </button>
+        <button class="option" data-correct="false">
+          <span class="option-letter">D</span>
+          <span class="option-text">
+            Items are sorted in time order
+            <span class="ja-translation ja-translation-inline">時系列順に並んでいる</span>
+          </span>
+        </button>
+      </div>
+
+      <div id="feedback" class="feedback">
+        <div class="feedback-title" id="feedbackTitle">正解！</div>
+        <p class="feedback-text">"Mutually Exclusive" means categories do not overlap — the same item <span class="phrase-mark" data-phrase="never-lives">never lives</span> in two buckets.</p>
+        <p class="ja-translation">「Mutually Exclusive」とはカテゴリー同士が重ならないこと。同じ項目が2つのバケツに同時に入ることはありません。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ Step 4: complete ============ -->
+  <div id="step4" class="step-view">
+    <div class="complete">
+      <div class="complete-trophy">🏆</div>
+      <h2>レッスン完了！</h2>
+      <p class="complete-msg">英語で論理思考を学びながら、ビジネス英語フレーズも吸収できました。</p>
+
+      <div class="complete-stats">
+        <div class="stat-card">
+          <div class="num" id="finalSavedCount">0</div>
+          <div class="label">保存フレーズ</div>
+        </div>
+        <div class="stat-card">
+          <div class="num">+15</div>
+          <div class="label">XP 獲得</div>
+        </div>
+      </div>
+
+      <div class="complete-saved-list" id="finalSavedList" style="display: none;">
+        <h3>💾 今日新しく覚えたフレーズ</h3>
+        <ul id="finalSavedItems"></ul>
+      </div>
+
+      <p style="font-size: 12px; color: var(--text-muted); margin-top: 12px;">保存したフレーズは <a href="english-flashcards.html" style="color: var(--accent-dark); font-weight: 700;">フラッシュカード画面</a> で復習できます（SM-2 間隔反復）。</p>
+    </div>
+  </div>
+
+  <!-- Step bar -->
+  <div class="step-bar" id="stepBar">
+    <button id="backBtn" class="step-back-btn" disabled>戻る</button>
+    <button id="nextBtn" class="next-btn">次へ</button>
+  </div>
+</div>
+
+<!-- Popover container -->
+<div id="popoverBackdrop" class="popover-backdrop"></div>
+<div id="popover" style="display:none;"></div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+  // ============ Phrase data ============
+  const PHRASES = {
+    'stands-for':            { en: 'stands for',            ja: '〜の略',                           note: '略語の元の意味を説明する定型表現。' },
+    'mutually-exclusive':    { en: 'Mutually Exclusive',    ja: '相互に排他的（重複なし）',         note: 'mutually = お互いに、exclusive = 排他的' },
+    'collectively-exhaustive': { en: 'Collectively Exhaustive', ja: '網羅的（漏れなし）',         note: 'collectively = 全体として、exhaustive = 徹底的・すべて尽くす' },
+    'overlap':               { en: 'overlap',               ja: '重複（する）' },
+    'blind-spots':           { en: 'blind spots',           ja: '死角',                             note: '気づいていない欠点・見落とし' },
+    'team-alignment':        { en: 'team alignment',        ja: 'チームの足並みが揃うこと',         note: 'align = 一致させる、整列する' },
+    'decomposition':         { en: 'decomposition',         ja: '分解',                             note: 'decompose = 分解する。論理的な分解の文脈で頻出。' },
+    'component-breakdown':   { en: 'component breakdown',   ja: '要素分解',                         note: '数式のように分解する手法' },
+    'average-order-value':   { en: 'average order value',   ja: '平均客単価（AOV）',                note: 'EC でよく出る指標' },
+    'near-binary':           { en: 'near-binary',           ja: 'ほぼ二項対立的な',                 note: 'near- = ほぼ〜、近い' },
+    'whichever-gives':       { en: 'whichever ... gives',   ja: '〜を提供するものはどれでも',       note: '関係詞 whichever。"pick whichever pattern gives the clearest cut"' },
+    'half-of':               { en: 'half of',               ja: '〜の半分・片方',                   note: '"the Mutually Exclusive half of MECE" = MECEの片方' },
+    'never-lives':           { en: 'never lives in',        ja: '〜には決して存在しない',           note: 'live in = （比喩的に）〜に位置する／属する' },
+  }
+
+  // ============ State ============
+  const saved = new Set()
+  const viewedPhrases = new Set()
+  let currentStep = 1
+  let answered = false
+
+  // ============ Helpers ============
+  const $  = (id) => document.getElementById(id)
+  const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel))
+
+  function updateSavedCount() {
+    $('savedCount').textContent = saved.size
+    if ($('finalSavedCount')) $('finalSavedCount').textContent = saved.size
+  }
+
+  function showToast(msg) {
+    const t = $('toast')
+    t.textContent = msg
+    t.classList.add('show')
+    clearTimeout(t._timer)
+    t._timer = setTimeout(() => t.classList.remove('show'), 1800)
+  }
+
+  // ============ Render phrase panels (filtered by which phrases appear in each step) ============
+  const STEP_PHRASES = {
+    1: ['stands-for', 'mutually-exclusive', 'collectively-exhaustive', 'overlap', 'blind-spots', 'team-alignment'],
+    2: ['decomposition', 'component-breakdown', 'average-order-value', 'near-binary', 'whichever-gives'],
+    3: ['half-of', 'never-lives'],
+  }
+
+  function renderPhrasePanel(step) {
+    const list = $('phrasesList' + step)
+    if (!list) return
+    list.innerHTML = STEP_PHRASES[step].map(key => {
+      const p = PHRASES[key]
+      const isSaved = saved.has(key)
+      return `
+        <li class="phrase-row">
+          <div class="phrase-main">
+            <p class="phrase-en">${p.en}</p>
+            <p class="phrase-ja">${p.ja}</p>
+            ${p.note ? `<p class="phrase-note">${p.note}</p>` : ''}
+          </div>
+          <button class="phrase-save${isSaved ? ' saved' : ''}" data-key="${key}" ${isSaved ? 'disabled' : ''}>
+            ${isSaved ? '保存済み ✓' : 'カードに保存'}
+          </button>
+        </li>
+      `
+    }).join('')
+  }
+  ;[1, 2, 3].forEach(renderPhrasePanel)
+
+  function savePhrase(key) {
+    if (saved.has(key)) return
+    saved.add(key)
+    const p = PHRASES[key]
+    showToast(`「${p.en}」をフラッシュカードに追加しました`)
+    updateSavedCount()
+    // Re-render all phrase panels (cheap; tiny lists)
+    ;[1, 2, 3].forEach(renderPhrasePanel)
+    // Mark inline phrases as viewed
+    $$(`.phrase-mark[data-phrase="${key}"]`).forEach(el => el.classList.add('viewed'))
+  }
+
+  // ============ Inline phrase popover ============
+  const popover = $('popover')
+  const popoverBackdrop = $('popoverBackdrop')
+  let popoverKey = null
+
+  function openPopover(target, key) {
+    const p = PHRASES[key]
+    if (!p) return
+    popoverKey = key
+    const isSaved = saved.has(key)
+    popover.innerHTML = `
+      <div class="popover">
+        <button class="popover-close" aria-label="閉じる" id="popoverClose" style="position:absolute; top:8px; right:8px;">×</button>
+        <div class="popover-en">${p.en}</div>
+        <div class="popover-ja">${p.ja}</div>
+        ${p.note ? `<div class="popover-note">${p.note}</div>` : ''}
+        <div class="popover-actions">
+          <button class="popover-save${isSaved ? ' saved' : ''}" id="popoverSave" ${isSaved ? 'disabled' : ''}>
+            ${isSaved ? '✓ 保存済み' : '💾 カードに保存'}
+          </button>
+        </div>
+      </div>
+    `
+    popover.style.display = 'block'
+    // Position the popover under the target
+    const rect = target.getBoundingClientRect()
+    const pop = popover.querySelector('.popover')
+    const popWidth = 260
+    let left = rect.left + window.scrollX
+    if (left + popWidth > window.innerWidth - 16) left = window.innerWidth - popWidth - 16
+    if (left < 16) left = 16
+    pop.style.position = 'absolute'
+    pop.style.left = left + 'px'
+    pop.style.top = (rect.bottom + window.scrollY + 12) + 'px'
+    popoverBackdrop.classList.add('active')
+    target.classList.add('viewed')
+    viewedPhrases.add(key)
+
+    $('popoverClose').addEventListener('click', closePopover)
+    $('popoverSave').addEventListener('click', () => {
+      savePhrase(key)
+      closePopover()
+    })
+  }
+  function closePopover() {
+    popover.style.display = 'none'
+    popoverBackdrop.classList.remove('active')
+    popoverKey = null
+  }
+  popoverBackdrop.addEventListener('click', closePopover)
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePopover() })
+
+  // Delegate inline phrase taps
+  document.addEventListener('click', (e) => {
+    const mark = e.target.closest('.phrase-mark')
+    if (!mark) return
+    e.stopPropagation()
+    openPopover(mark, mark.dataset.phrase)
+  })
+
+  // Delegate phrase panel save clicks
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.phrase-save')
+    if (!btn || btn.classList.contains('saved')) return
+    savePhrase(btn.dataset.key)
+  })
+
+  // ============ Translation toggle ============
+  const btnTr = $('btnTranslation')
+  const btnTrLabel = $('btnTranslationLabel')
+  let translationOn = false
+  btnTr.addEventListener('click', () => {
+    translationOn = !translationOn
+    btnTr.classList.toggle('active', translationOn)
+    btnTrLabel.textContent = translationOn ? 'Hide Japanese' : 'Show Japanese'
+    $$('.ja-translation').forEach(el => el.classList.toggle('show', translationOn))
+  })
+
+  // ============ Phrases panel toggle ============
+  const btnPh = $('btnPhrases')
+  const btnPhLabel = $('btnPhrasesLabel')
+  let phrasesOn = false
+  btnPh.addEventListener('click', () => {
+    phrasesOn = !phrasesOn
+    btnPh.classList.toggle('active', phrasesOn)
+    btnPhLabel.textContent = phrasesOn ? 'Hide phrases' : 'Study phrases'
+    ;[1, 2, 3].forEach(s => {
+      const panel = $('phrasesPanel' + s)
+      if (panel) panel.classList.toggle('show', phrasesOn)
+    })
+  })
+
+  // ============ Quiz ============
+  $('quizOptions')?.addEventListener('click', (e) => {
+    const opt = e.target.closest('.option')
+    if (!opt || answered) return
+    answered = true
+    const correct = opt.dataset.correct === 'true'
+    $$('.option').forEach(o => {
+      if (o.dataset.correct === 'true') o.classList.add('correct')
+    })
+    if (!correct) opt.classList.add('wrong')
+    const fb = $('feedback')
+    fb.classList.add('show')
+    if (!correct) {
+      fb.classList.add('wrong')
+      $('feedbackTitle').textContent = '不正解'
+    }
+  })
+
+  // ============ Step navigation ============
+  function goToStep(n) {
+    currentStep = Math.max(1, Math.min(4, n))
+    $$('.step-view').forEach(v => v.classList.remove('active'))
+    $('step' + currentStep).classList.add('active')
+    const pct = (currentStep / 4) * 100
+    $('progressFill').style.width = pct + '%'
+    $('stepCount').textContent = `${currentStep}/4`
+    $('backBtn').disabled = currentStep === 1
+    $('nextBtn').textContent = currentStep === 3 ? (answered ? '結果を見る' : '回答してください') : (currentStep === 4 ? 'もう一度' : '次へ')
+    $('nextBtn').disabled = currentStep === 3 && !answered
+    if (currentStep === 4) {
+      $('stepBar').style.display = 'none'
+      // Build saved list
+      const list = $('finalSavedItems')
+      list.innerHTML = Array.from(saved).map(k => {
+        const p = PHRASES[k]
+        return `<li><span class="en">${p.en}</span><span class="ja">${p.ja}</span></li>`
+      }).join('')
+      $('finalSavedList').style.display = saved.size > 0 ? 'block' : 'none'
+    } else {
+      $('stepBar').style.display = 'flex'
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+  $('nextBtn').addEventListener('click', () => {
+    if (currentStep === 4) { saved.clear(); viewedPhrases.clear(); answered = false; updateSavedCount(); ;[1,2,3].forEach(renderPhrasePanel); $$('.phrase-mark').forEach(m => m.classList.remove('viewed')); $$('.option').forEach(o => o.classList.remove('correct','wrong','selected')); $('feedback').classList.remove('show','wrong'); goToStep(1); return }
+    goToStep(currentStep + 1)
+  })
+  $('backBtn').addEventListener('click', () => goToStep(currentStep - 1))
+</script>
+</body>
+</html>
