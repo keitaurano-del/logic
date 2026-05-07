@@ -13,6 +13,7 @@ import {
 } from './LessonDiagrams'
 import type { LessonData, LessonStep } from './lessonData'
 import { generateFromLesson, addCards } from './flashcardData'
+import { addWrongAnswers } from './wrongAnswerStore'
 import ReportProblem from './ReportProblem'
 import { t, localeBody, getLocale } from './i18n'
 import { getStepAnnotation, hasAnyAnnotation, savePhraseToFlashcards, type Phrase } from './englishLearningData'
@@ -71,7 +72,13 @@ export default function Lesson({ lesson, onBack, onComplete, onNextLesson }: Pro
   const [showTranslation, setShowTranslation] = useState(false)
   const [showPhrases, setShowPhrases] = useState(false)
   const [savedPhrases, setSavedPhrases] = useState<Set<string>>(new Set())
-  const wrongAnswersRef = useRef<{ question: string; correctAnswer: string; explanation: string }[]>([])
+  const wrongAnswersRef = useRef<{
+    question: string
+    correctAnswer: string
+    selectedAnswer: string
+    explanation: string
+    options: { label: string; correct: boolean }[]
+  }[]>([])
 
   const step: LessonStep | undefined = lesson.steps[currentStep]
   const totalSteps = lesson.steps.length
@@ -106,7 +113,9 @@ export default function Lesson({ lesson, onBack, onComplete, onNextLesson }: Pro
         wrongAnswersRef.current.push({
           question: step.question,
           correctAnswer: correct?.label || '',
+          selectedAnswer: step.options[index]?.label || '',
           explanation: step.explanation,
+          options: step.options.map((o) => ({ label: o.label, correct: !!o.correct })),
         })
       }
     }
@@ -120,8 +129,21 @@ export default function Lesson({ lesson, onBack, onComplete, onNextLesson }: Pro
         .filter((s): s is import('./lessonData').ExplainStep => s.type === 'explain')
         .map((s) => ({ title: s.title, content: s.content }))
       generateFromLesson(lesson.id, lesson.title, wrongAnswersRef.current, explainSteps)
-      // AI-generate extra cards for wrong answers
+      // 誤答リスト用の永続化（フラッシュカードとは独立）
       if (wrongAnswersRef.current.length > 0) {
+        addWrongAnswers(
+          wrongAnswersRef.current.map((w) => ({
+            lessonId: lesson.id,
+            lessonTitle: lesson.title,
+            category: lesson.category,
+            question: w.question,
+            correctAnswer: w.correctAnswer,
+            selectedAnswer: w.selectedAnswer,
+            explanation: w.explanation,
+            options: w.options,
+          })),
+        )
+        // AI-generate extra cards for wrong answers
         generateAiCards(lesson.title, lesson.category, wrongAnswersRef.current)
       }
       onComplete?.()
