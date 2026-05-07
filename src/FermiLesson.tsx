@@ -1,28 +1,18 @@
 import { useState } from 'react'
 import { isPremium } from './subscription'
-import { t, getLocale, localeBody } from './i18n'
+import { t, localeBody } from './i18n'
 import './FermiLesson.css'
 
 import { API_BASE } from './apiBase'
 
-const FREE_QUESTIONS_JA = [
-  '日本のコンビニは何店舗あるか?',
-  '東京都内に信号機は何基あるか?',
-  '日本で 1 日に消費されるペットボトルの本数は?',
-  '日本の美容院・理髪店の数は?',
-  '東京-大阪間を歩いて移動すると何歩になるか?',
-  '日本に自動販売機は何台あるか?',
-  '日本人が 1 年間に飲むコーヒーの杯数は?',
-]
-
-const FREE_QUESTIONS_EN = [
-  'How many Starbucks stores are there in the United States?',
-  'How many traffic lights are there in New York City?',
-  'How many plastic water bottles are consumed in the US per day?',
-  'How many hair salons and barber shops are in the US?',
-  'How many steps would it take to walk from New York to Los Angeles?',
-  'How many vending machines are there in the United States?',
-  'How many cups of coffee does an average American drink in a year?',
+const FREE_QUESTION_KEYS = [
+  'fermiLesson.q1',
+  'fermiLesson.q2',
+  'fermiLesson.q3',
+  'fermiLesson.q4',
+  'fermiLesson.q5',
+  'fermiLesson.q6',
+  'fermiLesson.q7',
 ]
 
 type FermiStep = 'problem' | 'input' | 'feedback'
@@ -33,8 +23,8 @@ type Props = {
 }
 
 function pickRandom(): string {
-  const arr = getLocale() === 'en' ? FREE_QUESTIONS_EN : FREE_QUESTIONS_JA
-  return arr[Math.floor(Math.random() * arr.length)]
+  const key = FREE_QUESTION_KEYS[Math.floor(Math.random() * FREE_QUESTION_KEYS.length)]
+  return t(key)
 }
 
 export default function FermiLesson({ onBack, onUpgrade }: Props) {
@@ -152,10 +142,10 @@ export default function FermiLesson({ onBack, onUpgrade }: Props) {
               lineHeight: 1.6,
               marginBottom: 4,
             }}>
-              <strong>分解のヒント</strong>：「対象・場所・頻度」の順に考えると整理しやすい。
+              <strong>{t('fermiLesson.decompositionHint')}</strong>：{t('fermiLesson.decompositionHintBody')}
             </div>
             <textarea
-              aria-label="フェルミ推定の解答"
+              aria-label={t('fermiLesson.answerAria')}
               className="fl-textarea"
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}

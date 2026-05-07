@@ -5,6 +5,7 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import { LoadingIndicator } from '../components/LoadingIndicator'
+import { t, getLocale } from '../i18n'
 
 function getSupabaseClient() {
   const url = import.meta.env.VITE_SUPABASE_URL || ''
@@ -35,6 +36,20 @@ const CATEGORY_COLORS: Record<string, string> = {
   'その他':      'var(--text-muted)',
 }
 
+// データキー (DB 値) → 表示ラベル翻訳キー
+const CATEGORY_LABEL_KEY: Record<string, string> = {
+  'バグ報告':                 'feedbackDashboard.cat.bug',
+  '内容・説明が間違っている': 'feedbackDashboard.cat.contentWrong',
+  '選択肢の正解が違う':       'feedbackDashboard.cat.choiceWrong',
+  '改善提案':                 'feedbackDashboard.cat.improvement',
+  'その他':                   'feedbackDashboard.cat.other',
+}
+
+function categoryLabel(cat: string): string {
+  const key = CATEGORY_LABEL_KEY[cat]
+  return key ? t(key) : cat
+}
+
 interface Props {
   onClose: () => void
 }
@@ -43,7 +58,7 @@ export function FeedbackDashboardScreen({ onClose }: Props) {
   const supabase = getSupabaseClient()
   const [items, setItems] = useState<FeedbackItem[]>([])
   const [loading, setLoading] = useState(!!supabase)
-  const [error, setError] = useState<string | null>(supabase ? null : 'Supabase未接続')
+  const [error, setError] = useState<string | null>(supabase ? null : t('feedbackDashboard.notConnected'))
   const [filter, setFilter] = useState<string>('all')
 
   useEffect(() => {
@@ -105,21 +120,21 @@ export function FeedbackDashboardScreen({ onClose }: Props) {
         <button
           type="button"
           onClick={onClose}
-          aria-label="閉じる"
+          aria-label={t('feedbackDashboard.closeAria')}
           style={{ background: 'var(--bg-card)', border: 'none', borderRadius: '50%', width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text-secondary)', flexShrink: 0 }}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
         </button>
         <div>
-          <div style={{ fontSize: 18, fontWeight: 700 }}>フィードバック分析</div>
-          <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>SCRUM-88 · COO/Apollo向け</div>
+          <div style={{ fontSize: 18, fontWeight: 700 }}>{t('feedbackDashboard.title')}</div>
+          <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{t('feedbackDashboard.subtitle')}</div>
         </div>
       </div>
 
       <div style={{ flex: 1, overflowY: 'auto', padding: '16px 16px 80px' }}>
         {loading && (
           <div style={{ textAlign: 'center', padding: 60 }}>
-            <LoadingIndicator label="読み込み中" />
+            <LoadingIndicator label={t('feedbackDashboard.loading')} />
           </div>
         )}
         {error && (
@@ -132,11 +147,11 @@ export function FeedbackDashboardScreen({ onClose }: Props) {
             <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
               <div style={{ flex: 1, background: 'var(--bg-card)', borderRadius: 16, padding: '16px 12px', textAlign: 'center' }}>
                 <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 32, fontWeight: 900, color: 'var(--brand)', lineHeight: 1 }}>{items.length}</div>
-                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>合計件数</div>
+                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>{t('feedbackDashboard.totalCount')}</div>
               </div>
               <div style={{ flex: 1, background: 'var(--bg-card)', borderRadius: 16, padding: '16px 12px', textAlign: 'center' }}>
                 <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 32, fontWeight: 900, color: last7 > 0 ? 'var(--brand)' : 'var(--text-muted)', lineHeight: 1 }}>{last7}</div>
-                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>直近7日</div>
+                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>{t('feedbackDashboard.last7days')}</div>
                 {trend !== null && (
                   <div style={{ fontSize: 11, color: trend >= 0 ? 'var(--brand)' : 'var(--md-sys-color-error)', marginTop: 2, fontWeight: 700 }}>
                     {trend >= 0 ? `+${trend}%` : `${trend}%`}
@@ -147,21 +162,21 @@ export function FeedbackDashboardScreen({ onClose }: Props) {
                 <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 32, fontWeight: 900, color: 'var(--warm)', lineHeight: 1 }}>
                   {categoryCounts.find(c => c.category.includes('バグ') || c.category.includes('間違'))?.count ?? 0}
                 </div>
-                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>要対応</div>
+                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>{t('feedbackDashboard.toFix')}</div>
               </div>
             </div>
 
             {/* カテゴリ別バーチャート */}
             <div style={{ background: 'var(--bg-card)', borderRadius: 16, padding: '16px 18px', marginBottom: 20 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 14, color: 'var(--text-secondary)' }}>カテゴリ別</div>
+              <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 14, color: 'var(--text-secondary)' }}>{t('feedbackDashboard.byCategory')}</div>
               {categoryCounts.length === 0 ? (
-                <div style={{ fontSize: 13, color: 'var(--text-muted)', textAlign: 'center', padding: '20px 0' }}>データなし</div>
+                <div style={{ fontSize: 13, color: 'var(--text-muted)', textAlign: 'center', padding: '20px 0' }}>{t('feedbackDashboard.noData')}</div>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                   {categoryCounts.map(({ category, count, color }) => (
                     <div key={category}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
-                        <span style={{ fontSize: 13, fontWeight: 500 }}>{category}</span>
+                        <span style={{ fontSize: 13, fontWeight: 500 }}>{categoryLabel(category)}</span>
                         <span style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 13, fontWeight: 700, color }}>{count}</span>
                       </div>
                       <div style={{ height: 6, background: 'var(--bg-primary)', borderRadius: 99 }}>
@@ -190,7 +205,7 @@ export function FeedbackDashboardScreen({ onClose }: Props) {
                     color: filter === cat ? 'var(--bg-primary)' : 'var(--text-secondary)',
                   }}
                 >
-                  {cat === 'all' ? 'すべて' : cat}
+                  {cat === 'all' ? t('feedbackDashboard.all') : categoryLabel(cat)}
                 </button>
               ))}
             </div>
@@ -199,7 +214,7 @@ export function FeedbackDashboardScreen({ onClose }: Props) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {filtered.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: 40, color: 'var(--text-muted)', fontSize: 14 }}>
-                  フィードバックはまだありません
+                  {t('feedbackDashboard.empty')}
                 </div>
               ) : (
                 filtered.map(item => (
@@ -209,9 +224,9 @@ export function FeedbackDashboardScreen({ onClose }: Props) {
                         display: 'inline-block', padding: '3px 10px', borderRadius: 99, fontSize: 11, fontWeight: 600,
                         background: `color-mix(in srgb, ${CATEGORY_COLORS[item.category] ?? 'var(--text-muted)'} 13%, transparent)`,
                         color: CATEGORY_COLORS[item.category] ?? 'var(--text-muted)',
-                      }}>{item.category}</span>
+                      }}>{categoryLabel(item.category)}</span>
                       <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
-                        {new Date(item.created_at).toLocaleDateString('ja-JP', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                        {new Date(item.created_at).toLocaleDateString(getLocale() === 'ja' ? 'ja-JP' : 'en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                       </span>
                     </div>
                     <p style={{ fontSize: 14, lineHeight: 1.7, color: 'var(--text-primary)', margin: 0 }}>{item.message}</p>

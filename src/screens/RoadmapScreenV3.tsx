@@ -579,7 +579,7 @@ function SearchPanel(p: {
     return (
       <div style={{ padding: 32, textAlign: 'center', color: 'var(--text-secondary)', fontSize: 14 }}>
         {hasQuery ? t('roadmap.noLessonsFound') : t('roadmap.noResults')}
-        {hasQuery && (<><br /><span style={{ fontSize: 12 }}>「{p.query}」</span></>)}
+        {hasQuery && (<><br /><span style={{ fontSize: 12 }}>{t('roadmap.searchQueryNotice', { q: p.query })}</span></>)}
       </div>
     )
   }

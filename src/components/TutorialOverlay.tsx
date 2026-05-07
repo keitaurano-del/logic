@@ -1,5 +1,6 @@
 // チュートリアルオーバーレイ（スポットライト誘導型）
 import { useState, useEffect, useLayoutEffect } from 'react'
+import { t } from '../i18n'
 
 const TUTORIAL_KEY = 'logic-tutorial-done-v2'
 
@@ -51,57 +52,59 @@ interface TutorialStep {
   position: 'center' | 'bottom' | 'top'
 }
 
-const STEPS: TutorialStep[] = [
-  {
-    id: 'fermi',
-    icon: Icons.fermi,
-    tag: '今日の1問',
-    tagColor: 'var(--md-sys-color-primary)',
-    title: '毎日フェルミ問題に挑戦',
-    description: 'ホーム画面の「今日のフェルミ問題」で、1日1問チャレンジできるよ。数字の感覚を毎日少しずつ鍛えよう。',
-    targetId: 'home-fermi-card',
-    position: 'bottom',
-  },
-  {
-    id: 'training',
-    icon: Icons.training,
-    tag: 'トレーニング',
-    tagColor: '#A78BFA',
-    title: 'コースでスキルを体系的に学ぶ',
-    description: '下メニューの「トレーニング」から14カテゴリのコースにアクセスできるよ。ロジカルシンキング・仮説思考など、実践で使えるスキルが揃ってる。',
-    targetId: 'bottom-tab-lessons',
-    position: 'top',
-  },
-  {
-    id: 'ranking',
-    icon: Icons.ranking,
-    tag: 'ランキング',
-    tagColor: '#F59E0B',
-    title: '実力をランキングで証明する',
-    description: '問題を解くたびにポイントが貯まって、ランキングに反映されるよ。仲間との競争がモチベーションになる。',
-    targetId: 'bottom-tab-ranking',
-    position: 'top',
-  },
-  {
-    id: 'xp',
-    icon: Icons.xp,
-    tag: 'ポイント',
-    tagColor: '#34D399',
-    title: 'XPを貯めてレベルアップ',
-    description: 'レッスン完了・フェルミ回答・AI問題生成などでXP（経験値）が貯まるよ。プロフィール画面でいつでも確認できる。',
-    targetId: 'bottom-tab-profile',
-    position: 'top',
-  },
-  {
-    id: 'start',
-    icon: Icons.start,
-    tag: 'スタート',
-    tagColor: '#FF6B35',
-    title: 'さっそくやってみよう！',
-    description: '最初の1問、フェルミ問題にチャレンジしてみよう。答えは何でもOK — まず考えることが大事だよ。',
-    position: 'center',
-  },
-]
+function getSteps(): TutorialStep[] {
+  return [
+    {
+      id: 'fermi',
+      icon: Icons.fermi,
+      tag: t('tutorial.step1.tag'),
+      tagColor: 'var(--md-sys-color-primary)',
+      title: t('tutorial.step1.title'),
+      description: t('tutorial.step1.description'),
+      targetId: 'home-fermi-card',
+      position: 'bottom',
+    },
+    {
+      id: 'training',
+      icon: Icons.training,
+      tag: t('tutorial.step2.tag'),
+      tagColor: '#A78BFA',
+      title: t('tutorial.step2.title'),
+      description: t('tutorial.step2.description'),
+      targetId: 'bottom-tab-lessons',
+      position: 'top',
+    },
+    {
+      id: 'ranking',
+      icon: Icons.ranking,
+      tag: t('tutorial.step3.tag'),
+      tagColor: '#F59E0B',
+      title: t('tutorial.step3.title'),
+      description: t('tutorial.step3.description'),
+      targetId: 'bottom-tab-ranking',
+      position: 'top',
+    },
+    {
+      id: 'xp',
+      icon: Icons.xp,
+      tag: t('tutorial.step4.tag'),
+      tagColor: '#34D399',
+      title: t('tutorial.step4.title'),
+      description: t('tutorial.step4.description'),
+      targetId: 'bottom-tab-profile',
+      position: 'top',
+    },
+    {
+      id: 'start',
+      icon: Icons.start,
+      tag: t('tutorial.step5.tag'),
+      tagColor: '#FF6B35',
+      title: t('tutorial.step5.title'),
+      description: t('tutorial.step5.description'),
+      position: 'center',
+    },
+  ]
+}
 
 interface TutorialOverlayProps {
   onDone: () => void
@@ -113,6 +116,7 @@ export function TutorialOverlay({ onDone, onGoFermi }: TutorialOverlayProps) {
   const [visible, setVisible] = useState(false)
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null)
 
+  const STEPS = getSteps()
   const current = STEPS[step]
   const isLast = step === STEPS.length - 1
   const progress = (step + 1) / STEPS.length
@@ -188,7 +192,7 @@ export function TutorialOverlay({ onDone, onGoFermi }: TutorialOverlayProps) {
       {/* ダークオーバーレイ（スポットライト付き） */}
       <button
         type="button"
-        aria-label="チュートリアルをスキップ"
+        aria-label={t('tutorial.skipAria')}
         onClick={handleSkip}
         style={{
           position: 'absolute', inset: 0,
@@ -300,7 +304,7 @@ export function TutorialOverlay({ onDone, onGoFermi }: TutorialOverlayProps) {
                 color: 'rgba(255,255,255,0.45)', fontSize: 14, fontWeight: 600,
                 cursor: 'pointer', flexShrink: 0,
               }}>
-                スキップ
+                {t('tutorial.skip')}
               </button>
             )}
             <button onClick={handleNext} style={{
@@ -311,7 +315,7 @@ export function TutorialOverlay({ onDone, onGoFermi }: TutorialOverlayProps) {
               boxShadow: `0 8px 24px color-mix(in srgb, ${current.tagColor} 31%, transparent)`,
               letterSpacing: '0.01em',
             }}>
-              {isLast ? 'さっそくやってみよう' : '次へ'}
+              {isLast ? t('tutorial.start') : t('tutorial.next')}
             </button>
           </div>
         </div>
@@ -335,7 +339,7 @@ export function TutorialFAB({ onClick, onHide }: { onClick: () => void; onHide: 
       {/* 閉じるボタン（右上） */}
       <button
         onClick={onHide}
-        aria-label="閉じる"
+        aria-label={t('tutorial.closeAria')}
         style={{
           position: 'absolute',
           top: -10,
@@ -362,7 +366,7 @@ export function TutorialFAB({ onClick, onHide }: { onClick: () => void; onHide: 
       {/* メインの?ボタン */}
       <button
         onClick={onClick}
-        aria-label="チュートリアル"
+        aria-label={t('tutorial.openAria')}
         style={{
           width: 56, height: 56,
           borderRadius: '50%',

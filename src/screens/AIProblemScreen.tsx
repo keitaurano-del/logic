@@ -52,25 +52,25 @@ export function AIProblemScreen({ problem, onBack, onReport }: AIProblemScreenPr
     const pct = steps.length > 0 ? Math.round((correctCount / steps.length) * 100) : 0
     return (
       <div className="stack">
-        <Header title="結果" onBack={onBack} />
-        <div className="eyebrow accent">AI 問題の結果</div>
+        <Header title={t('aiProblem.resultTitle')} onBack={onBack} />
+        <div className="eyebrow accent">{t('aiProblem.resultEyebrow')}</div>
         <h1 style={{ fontSize: 30, letterSpacing: '-0.025em' }}>{problem.title}</h1>
         <section className="profile-hero" style={{ textAlign: 'center' }}>
-          <div className="eyebrow" style={{ color: 'rgba(255,255,255,0.65)', marginBottom: 'var(--s-3)' }}>スコア</div>
+          <div className="eyebrow" style={{ color: 'rgba(255,255,255,0.65)', marginBottom: 'var(--s-3)' }}>{t('aiProblem.scoreLabel')}</div>
           <div className="display" style={{ fontSize: 80, lineHeight: 0.9, letterSpacing: '-0.04em', color: '#fff' }}>{pct}%</div>
           <div style={{ marginTop: 'var(--s-3)', fontSize: 16, color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
-            {correctCount} / {steps.length} 問正解
+            {t('aiProblem.scoreLine', { correct: correctCount, total: steps.length })}
           </div>
         </section>
         <div className="feedback-card">
           <div className="feedback-head">
             <div className="feedback-check"><CheckIcon /></div>
             <div className="feedback-title">
-              {pct >= 80 ? '素晴らしい！' : pct >= 60 ? 'よくできました！' : '復習しましょう。'}
+              {pct >= 80 ? t('aiProblem.feedbackPerfect') : pct >= 60 ? t('aiProblem.feedbackGood') : t('aiProblem.feedbackTryAgain')}
             </div>
           </div>
         </div>
-        <Button variant="primary" size="lg" block onClick={onBack}>戻る</Button>
+        <Button variant="primary" size="lg" block onClick={onBack}>{t('aiProblem.back')}</Button>
       </div>
     )
   }
@@ -79,7 +79,7 @@ export function AIProblemScreen({ problem, onBack, onReport }: AIProblemScreenPr
     return (
       <div className="stack">
         <Header onBack={onBack} />
-        <div className="card">問題が見つかりません</div>
+        <div className="card">{t('aiProblem.notFound')}</div>
       </div>
     )
   }
@@ -140,18 +140,18 @@ export function AIProblemScreen({ problem, onBack, onReport }: AIProblemScreenPr
       ) : (
         <div style={{ marginTop: 'var(--s-3)' }}>
           <div className="card" style={{ fontSize: 16, lineHeight: 1.7, whiteSpace: 'pre-wrap', color: 'var(--text-muted)', marginBottom: 12 }}>
-            {step.type === 'explain' ? step.content : '解説を読んでください。'}
+            {step.type === 'explain' ? step.content : t('aiProblem.fallbackExplain')}
           </div>
           {/* SCRUM-82: 思考プロセス入力ボックス */}
           <div style={{ marginTop: 12 }}>
             <label style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: 6 }}>
-              自分の言葉でまとめてみよう（任意）
+              {t('aiProblem.thinkingNoteLabel')}
             </label>
             <textarea
-              aria-label="自分の言葉でまとめる"
+              aria-label={t('aiProblem.thinkingNoteAria')}
               value={thinkingNote}
               onChange={(e) => setThinkingNote(e.target.value)}
-              placeholder="理解したことや気づいたことをメモ..."
+              placeholder={t('aiProblem.thinkingNotePlaceholder')}
               rows={3}
               style={{
                 width: '100%', padding: '12px 14px',
@@ -172,7 +172,7 @@ export function AIProblemScreen({ problem, onBack, onReport }: AIProblemScreenPr
             <div className="feedback-check">
               {isCorrect ? <CheckIcon /> : <XIcon />}
             </div>
-            <div className="feedback-title">{isCorrect ? '正解！' : '不正解'}</div>
+            <div className="feedback-title">{isCorrect ? t('aiProblem.correctMark') : t('aiProblem.wrongMark')}</div>
           </div>
           <div className="feedback-text" style={{ whiteSpace: 'pre-wrap' }}>{quizStep.explanation}</div>
           {onReport && (
@@ -188,7 +188,7 @@ export function AIProblemScreen({ problem, onBack, onReport }: AIProblemScreenPr
 
       {(isAnswered || !quizStep) && (
         <Button variant="primary" size="lg" block onClick={handleNext} style={{ marginTop: 'var(--s-3)' }}>
-          {stepIdx + 1 >= steps.length ? '結果を見る' : '次の問題'}
+          {stepIdx + 1 >= steps.length ? t('aiProblem.viewResult') : t('aiProblem.nextQuestion')}
           <ArrowRightIcon width={16} height={16} />
         </Button>
       )}

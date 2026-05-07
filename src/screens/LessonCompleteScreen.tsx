@@ -8,6 +8,7 @@ import { getStreak, getXp } from '../stats'
 import { FlameIcon, ArrowUpIcon, StarIcon } from '../icons'
 import { getCurrentLevel } from './homeHelpers'
 import { haptic } from '../platform/haptics'
+import { t } from '../i18n'
 
 interface LessonCompleteScreenProps {
   userName: string
@@ -142,8 +143,8 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
 
         {/* タイトル */}
         <div style={{ marginBottom: 6, ...show(1) }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--brand)', letterSpacing: '.1em', marginBottom: 6 }}>LESSON COMPLETE</div>
-          <div style={{ fontSize: 22, fontWeight: 800, lineHeight: 1.35 }}>「{lessonTitle}」</div>
+          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--brand)', letterSpacing: '.1em', marginBottom: 6 }}>{t('lessonComplete.eyebrow')}</div>
+          <div style={{ fontSize: 22, fontWeight: 800, lineHeight: 1.35 }}>{t('lessonComplete.titleQuoted', { title: lessonTitle })}</div>
         </div>
 
         {/* ストリーク + 時間 */}
@@ -171,7 +172,7 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
               fontSize: 28, fontWeight: 900, letterSpacing: '-.03em', lineHeight: 1,
               color: streak >= 3 ? '#FF7A3A' : 'var(--text-primary)',
             }}>{streak}</div>
-            <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-muted)', marginTop: 5 }}>日連続</div>
+            <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-muted)', marginTop: 5 }}>{t('lessonComplete.streakUnit')}</div>
           </div>
 
           {/* 学習時間 */}
@@ -184,7 +185,7 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
               fontFamily: "'Inter Tight', sans-serif",
               fontSize: 28, fontWeight: 900, letterSpacing: '-.03em', lineHeight: 1,
             }}>{timeStr}</div>
-            <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-muted)', marginTop: 5 }}>学習時間</div>
+            <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-muted)', marginTop: 5 }}>{t('lessonComplete.studyTime')}</div>
           </div>
 
           {/* レベル */}
@@ -206,7 +207,7 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
               color: leveledUp ? 'var(--brand)' : 'var(--text-primary)',
             }}>Lv.{lv.level}</div>
             <div style={{ fontSize: 11, fontWeight: 600, color: leveledUp ? 'var(--brand)' : 'var(--text-muted)', marginTop: 5 }}>
-              {leveledUp ? 'UP!' : 'レベル'}
+              {leveledUp ? t('lessonComplete.levelUp') : t('lessonComplete.levelLabel')}
             </div>
           </div>
         </div>
@@ -223,7 +224,7 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
           }}>
             <ArrowUpIcon width={20} height={20} style={{ color: 'var(--brand)' }} />
             <span style={{ fontSize: 14, fontWeight: 800 }}>
-              レベルアップ: <span style={{ color: 'var(--brand)' }}>Lv.{prevLevel} → Lv.{lv.level}</span>
+              {t('lessonComplete.levelUpBanner')}<span style={{ color: 'var(--brand)' }}>Lv.{prevLevel} → Lv.{lv.level}</span>
             </span>
           </div>
         )}
@@ -245,7 +246,7 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
               touchAction: 'manipulation',
             }}
           >
-            次のレッスンへ進む →
+            {t('lessonComplete.next')}
           </button>
           <button
             onClick={onHome}
@@ -260,7 +261,7 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
               touchAction: 'manipulation',
             }}
           >
-            ホームに戻る
+            {t('lessonComplete.home')}
           </button>
         </div>
       </div>

@@ -5,6 +5,7 @@ import { updateDisplayName } from '../supabase'
 import { CheckIcon } from '../icons'
 import { Header } from '../components/platform/Header'
 import { confirm as confirmDialog } from '../platform/dialog'
+import { t } from '../i18n'
 
 interface Props {
   onBack: () => void
@@ -36,10 +37,10 @@ export function AccountSettingsScreen({ onBack, currentUser, onOpenLogin, onLogo
 
   const handleLogout = async () => {
     const ok = await confirmDialog({
-      title: 'ログアウト',
-      message: 'ログアウトしますか？',
-      okText: 'ログアウト',
-      cancelText: 'キャンセル',
+      title: t('accountSettings.logoutTitle'),
+      message: t('accountSettings.logoutMessage'),
+      okText: t('accountSettings.logoutOk'),
+      cancelText: t('accountSettings.cancel'),
     })
     if (ok) {
       await logout()
@@ -50,7 +51,7 @@ export function AccountSettingsScreen({ onBack, currentUser, onOpenLogin, onLogo
   const handleSaveName = async () => {
     if (!nameInput.trim()) return
     if (!canChangeName()) {
-      setNameError('表示名の変更は1日1回までだよ')
+      setNameError(t('accountSettings.errLimit'))
       return
     }
     setNameSaving(true)
@@ -63,7 +64,7 @@ export function AccountSettingsScreen({ onBack, currentUser, onOpenLogin, onLogo
       setEditingName(false)
       setTimeout(() => setNameSuccess(false), 2000)
     } catch {
-      setNameError('保存に失敗したよ。もう一度試してね')
+      setNameError(t('accountSettings.errSave'))
     } finally {
       setNameSaving(false)
     }
@@ -73,7 +74,7 @@ export function AccountSettingsScreen({ onBack, currentUser, onOpenLogin, onLogo
 
   return (
     <div style={{ minHeight: '100dvh', background: 'var(--bg-primary)', color: 'var(--text-primary)', fontFamily: "'Noto Sans JP', sans-serif" }}>
-      <Header title="アカウント" onBack={onBack} />
+      <Header title={t('accountSettings.title')} onBack={onBack} />
 
       <div style={{ padding: '0 20px', display: 'flex', flexDirection: 'column', gap: 16 }}>
 
@@ -81,12 +82,12 @@ export function AccountSettingsScreen({ onBack, currentUser, onOpenLogin, onLogo
         {currentUser && (
           <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
             <div style={{ padding: '14px 18px', borderBottom: `1px solid ${'var(--border)'}` }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '.06em', marginBottom: 6 }}>表示名</div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '.06em', marginBottom: 6 }}>{t('accountSettings.displayName')}</div>
               {editingName ? (
                 <div>
                   <input
                     type="text"
-                    aria-label="表示名"
+                    aria-label={t('accountSettings.displayNameAria')}
                     value={nameInput}
                     onChange={e => setNameInput(e.target.value)}
                     onKeyDown={e => { if (e.key === 'Enter') handleSaveName() }}
@@ -103,12 +104,12 @@ export function AccountSettingsScreen({ onBack, currentUser, onOpenLogin, onLogo
                     <button
                       onClick={() => { setEditingName(false); setNameError(''); setNameInput(getDisplayName()) }}
                       style={{ flex: 1, padding: '10px', background: 'var(--bg-elevated)', border: 'none', borderRadius: 10, color: 'var(--text-secondary)', fontSize: 14, cursor: 'pointer' }}
-                    >キャンセル</button>
+                    >{t('accountSettings.cancel')}</button>
                     <button
                       onClick={handleSaveName}
                       disabled={nameSaving || !nameInput.trim()}
                       style={{ flex: 1, padding: '10px', background: nameInput.trim() ? 'var(--brand)' : 'var(--bg-elevated)', border: 'none', borderRadius: 10, color: nameInput.trim() ? '#fff' : 'var(--text-muted)', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}
-                    >{nameSaving ? '保存中…' : '保存する'}</button>
+                    >{nameSaving ? t('accountSettings.saving') : t('accountSettings.save')}</button>
                   </div>
                 </div>
               ) : (
@@ -117,18 +118,18 @@ export function AccountSettingsScreen({ onBack, currentUser, onOpenLogin, onLogo
                   {nameSuccess ? (
                     <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 13, color: 'var(--brand)', fontWeight: 700 }}>
                       <CheckIcon width={14} height={14} />
-                      <span>保存したよ</span>
+                      <span>{t('accountSettings.saved')}</span>
                     </div>
                   ) : todayChanged ? (
-                    <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>今日は変更済み</div>
+                    <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{t('accountSettings.changedToday')}</div>
                   ) : (
-                    <button type="button" onClick={() => setEditingName(true)} style={{ fontSize: 13, color: 'var(--brand)', fontWeight: 700, cursor: 'pointer', padding: '4px 8px', background: 'transparent', border: 'none', minHeight: 32 }}>変更</button>
+                    <button type="button" onClick={() => setEditingName(true)} style={{ fontSize: 13, color: 'var(--brand)', fontWeight: 700, cursor: 'pointer', padding: '4px 8px', background: 'transparent', border: 'none', minHeight: 32 }}>{t('accountSettings.change')}</button>
                   )}
                 </div>
               )}
             </div>
             <div style={{ padding: '12px 18px' }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '.06em', marginBottom: 4 }}>メールアドレス</div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '.06em', marginBottom: 4 }}>{t('accountSettings.email')}</div>
               <div style={{ fontSize: 14, color: 'var(--text-secondary)' }}>{currentUser.email}</div>
             </div>
           </div>
@@ -141,15 +142,15 @@ export function AccountSettingsScreen({ onBack, currentUser, onOpenLogin, onLogo
               type="button"
               onClick={handleLogout}
               style={{ padding: '16px 18px', cursor: 'pointer', color: 'var(--md-sys-color-error)', fontSize: 15, fontWeight: 700, textAlign: 'center', background: 'transparent', border: 'none', width: '100%', font: 'inherit', minHeight: 44 }}
-            >ログアウト</button>
+            >{t('accountSettings.logout')}</button>
           ) : (
             <>
               <button type="button" onClick={() => onOpenLogin('google')} style={{ padding: '16px 18px', borderBottom: `1px solid ${'var(--border)'}`, cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'transparent', border: 'none', borderTop: 'none', borderLeft: 'none', borderRight: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%', minHeight: 44 }}>
-                <span style={{ fontSize: 15, fontWeight: 600 }}>Googleでログイン</span>
+                <span style={{ fontSize: 15, fontWeight: 600 }}>{t('accountSettings.googleLogin')}</span>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
               </button>
               <button type="button" onClick={() => onOpenLogin('email')} style={{ padding: '16px 18px', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'transparent', border: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%', minHeight: 44 }}>
-                <span style={{ fontSize: 15, fontWeight: 600 }}>メールアドレスでログイン</span>
+                <span style={{ fontSize: 15, fontWeight: 600 }}>{t('accountSettings.emailLogin')}</span>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
               </button>
             </>
@@ -157,7 +158,7 @@ export function AccountSettingsScreen({ onBack, currentUser, onOpenLogin, onLogo
         </div>
 
         <div style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', lineHeight: 1.8 }}>
-          表示名の変更は1日1回まで
+          {t('accountSettings.changeOncePerDay')}
         </div>
       </div>
     </div>

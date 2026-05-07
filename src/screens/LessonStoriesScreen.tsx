@@ -11,6 +11,7 @@ import { allLessons } from '../lessonData'
 import { addXp } from '../stats'
 import { LessonThumbnail } from '../components/LessonThumbnail'
 import { API_BASE } from './apiBase'
+import { t } from '../i18n'
 
 interface LessonStoriesScreenProps {
   lessonId: number
@@ -48,8 +49,8 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
     return (
       <div style={{ background: 'var(--bg-primary)', minHeight: '100vh', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Noto Sans JP', sans-serif" }}>
         <div style={{ textAlign: 'center' }}>
-          <div>レッスンが見つかりません</div>
-          <button onClick={onClose} style={{ marginTop: 20, padding: '10px 20px', borderRadius: 12, background: 'var(--brand)', color: '#FFFFFF', border: 'none', fontWeight: 700 }}>戻る</button>
+          <div>{t('stories.notFound')}</div>
+          <button onClick={onClose} style={{ marginTop: 20, padding: '10px 20px', borderRadius: 12, background: 'var(--brand)', color: '#FFFFFF', border: 'none', fontWeight: 700 }}>{t('stories.back')}</button>
         </div>
       </div>
     )
@@ -134,7 +135,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
           onPointerDown={(e) => { e.stopPropagation(); e.preventDefault(); onClose() }}
           onClick={(e) => { e.stopPropagation(); onClose() }}
           style={{ width: 44, height: 44, borderRadius: '50%', background: 'var(--bg-card)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', WebkitTapHighlightColor: 'transparent', border: 'none', zIndex: 10, position: 'relative', flexShrink: 0 }}
-          aria-label="閉じる"
+          aria-label={t('stories.closeAria')}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
         </button>
@@ -178,13 +179,13 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
         <div style={{ position: 'absolute', inset: 0, display: 'flex', zIndex: 5, pointerEvents: 'none' }}>
           <button
             type="button"
-            aria-label="前のスライド"
+            aria-label={t('stories.prevSlide')}
             onClick={() => { if (!isGuarded()) goPrev() }}
             style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: '22%', cursor: 'pointer', pointerEvents: 'auto', background: 'transparent', border: 'none', padding: 0 }}
           />
           <button
             type="button"
-            aria-label="次のスライド"
+            aria-label={t('stories.nextSlide')}
             onClick={() => { if (!isGuarded()) goNext() }}
             style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: '22%', cursor: 'pointer', pointerEvents: 'auto', background: 'transparent', border: 'none', padding: 0 }}
           />
@@ -198,7 +199,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
             <button
               onClick={() => { if (!isGuarded()) goPrev() }}
               style={{ position: 'absolute', left: 12, bottom: 'calc(env(safe-area-inset-bottom, 0px) + 16px)', zIndex: 8, background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.18)', borderRadius: '50%', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', WebkitTapHighlightColor: 'transparent' }}
-              aria-label="前へ"
+              aria-label={t('stories.prevAria')}
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="15 18 9 12 15 6" /></svg>
             </button>
@@ -206,9 +207,9 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
           <button
             onClick={() => { if (!isGuarded()) goNext() }}
             style={{ position: 'absolute', right: 12, bottom: 'calc(env(safe-area-inset-bottom, 0px) + 16px)', zIndex: 8, background: 'var(--brand)', border: 'none', borderRadius: 99, height: 44, padding: '0 20px', display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', boxShadow: `0 4px 16px color-mix(in srgb, var(--brand) 38%, transparent)`, WebkitTapHighlightColor: 'transparent', fontSize: 14, fontWeight: 700, color: '#FFFFFF' }}
-            aria-label="次へ"
+            aria-label={t('stories.nextAria')}
           >
-            次へ
+            {t('stories.next')}
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
           </button>
         </>
@@ -220,7 +221,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
           onClick={goNext}
           style={{ position: 'absolute', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 28px)', left: '50%', transform: 'translateX(-50%)', display: 'inline-flex', alignItems: 'center', gap: 8, background: 'var(--brand)', border: 'none', borderRadius: 99, padding: '18px 48px', fontSize: 16, fontWeight: 700, color: '#FFFFFF', cursor: 'pointer', zIndex: 6, boxShadow: `0 4px 20px color-mix(in srgb, var(--brand) 44%, transparent)`, WebkitTapHighlightColor: 'transparent' }}
         >
-          次へ
+          {t('stories.next')}
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
         </button>
       )}
@@ -231,9 +232,9 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
       <button
         onPointerDown={(e) => { e.stopPropagation(); setReportOpen(true) }}
         style={{ position: 'absolute', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 68px)', left: 16, fontSize: 12, color: 'var(--text-secondary)', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 99, cursor: 'pointer', zIndex: 7, padding: '5px 10px', display: slide.kind === 'summary' ? 'none' : 'flex', alignItems: 'center', gap: 5, opacity: 0.9 }}
-        title="誤りを報告"
+        title={t('stories.reportTitle')}
       >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg>誤りを報告
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg>{t('stories.reportLink')}
       </button>
 
       {/* 誤り報告モーダル */}
@@ -249,35 +250,40 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
                   <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44, borderRadius: '50%', background: `color-mix(in srgb, var(--brand) 12%, transparent)`, color: 'var(--brand)', marginBottom: 10 }}>
                     <CheckIcon width={22} height={22} />
                   </div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--brand)' }}>報告を受け付けました</div>
-                  <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 6 }}>ご協力ありがとうございます。内容を確認して改善します。</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--brand)' }}>{t('stories.reportReceivedTitle')}</div>
+                  <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 6 }}>{t('stories.reportReceivedDesc')}</div>
                 </div>
-                <button onPointerDown={() => { setReportOpen(false); setReportSent(false); setReportText(''); setReportDetail('') }} style={{ width: '100%', background: 'var(--bg-card)', border: 'none', borderRadius: 14, padding: '14px', fontSize: 14, fontWeight: 600, color: 'var(--text-primary)', cursor: 'pointer' }}>閉じる</button>
+                <button onPointerDown={() => { setReportOpen(false); setReportSent(false); setReportText(''); setReportDetail('') }} style={{ width: '100%', background: 'var(--bg-card)', border: 'none', borderRadius: 14, padding: '14px', fontSize: 14, fontWeight: 600, color: 'var(--text-primary)', cursor: 'pointer' }}>{t('stories.close')}</button>
               </>
             ) : (
               <>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
-                  <div style={{ fontSize: 16, fontWeight: 700 }}>誤りを報告</div>
+                  <div style={{ fontSize: 16, fontWeight: 700 }}>{t('stories.reportTitle')}</div>
                   <button
                     onPointerDown={() => setReportOpen(false)}
                     style={{ background: 'var(--bg-card)', border: 'none', borderRadius: '50%', width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text-secondary)', fontSize: 18, lineHeight: 1 }}
                   >×</button>
                 </div>
-                <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 16 }}>どのような誤りがありましたか？</div>
+                <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 16 }}>{t('stories.reportPrompt')}</div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
-                  {['内容・説明が間違っている', '選択肢の正解が違う', '日本語がおかしい・誤字', 'その他'].map(opt => (
-                    <button key={opt} onPointerDown={() => setReportText(opt)}
-                      style={{ background: reportText === opt ? 'var(--accent-soft)' : 'var(--bg-card)', border: `1.5px solid ${reportText === opt ? 'var(--brand)' : 'transparent'}`, borderRadius: 12, padding: '12px 14px', fontSize: 14, fontWeight: 500, color: 'var(--text-primary)', cursor: 'pointer', textAlign: 'left' }}
-                    >{opt}</button>
+                  {[
+                    { value: '内容・説明が間違っている', labelKey: 'stories.reportOpt.contentWrong' },
+                    { value: '選択肢の正解が違う', labelKey: 'stories.reportOpt.choiceWrong' },
+                    { value: '日本語がおかしい・誤字', labelKey: 'stories.reportOpt.typo' },
+                    { value: 'その他', labelKey: 'stories.reportOpt.other' },
+                  ].map(opt => (
+                    <button key={opt.value} onPointerDown={() => setReportText(opt.value)}
+                      style={{ background: reportText === opt.value ? 'var(--accent-soft)' : 'var(--bg-card)', border: `1.5px solid ${reportText === opt.value ? 'var(--brand)' : 'transparent'}`, borderRadius: 12, padding: '12px 14px', fontSize: 14, fontWeight: 500, color: 'var(--text-primary)', cursor: 'pointer', textAlign: 'left' }}
+                    >{t(opt.labelKey)}</button>
                   ))}
                 </div>
                 <div style={{ marginBottom: 16 }}>
-                  <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 8 }}>詳しく教えてください（任意）</div>
+                  <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 8 }}>{t('stories.reportDetailLabel')}</div>
                   <textarea
-                    aria-label="問題の詳細（任意）"
+                    aria-label={t('stories.reportDetailAria')}
                     value={reportDetail}
                     onChange={(e) => setReportDetail(e.target.value)}
-                    placeholder="どの箇所が、どのように間違っているか…"
+                    placeholder={t('stories.reportDetailPlaceholder')}
                     rows={3}
                     style={{ width: '100%', background: 'var(--bg-card)', border: `1px solid ${'var(--border)'}`, borderRadius: 12, padding: '12px 14px', fontSize: 14, color: 'var(--text-primary)', resize: 'none', outline: 'none', fontFamily: "'Noto Sans JP', sans-serif", boxSizing: 'border-box' }}
                   />
@@ -306,7 +312,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
                   disabled={!reportText}
                   style={{ width: '100%', background: reportText ? 'var(--brand)' : 'var(--bg-card)', border: 'none', borderRadius: 14, padding: '14px', fontSize: 14, fontWeight: 700, color: reportText ? '#FFFFFF' : 'var(--text-muted)', cursor: reportText ? 'pointer' : 'default' }}
                 >
-                  送信する
+                  {t('stories.reportSend')}
                 </button>
               </>
             )}
@@ -390,8 +396,8 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
     return (
       <>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 24, marginTop: 24 }}>
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'var(--warm-soft)', borderRadius: 99, padding: '6px 12px', fontSize: 11, fontWeight: 600, color: 'var(--warm)' }}>確認問題</span>
-          {isMulti && <span style={{ fontSize: 11, color: 'var(--text-secondary)', background: 'var(--bg-card)', borderRadius: 99, padding: '4px 10px', fontWeight: 600 }}>複数選択</span>}
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'var(--warm-soft)', borderRadius: 99, padding: '6px 12px', fontSize: 11, fontWeight: 600, color: 'var(--warm)' }}>{t('stories.checkBadge')}</span>
+          {isMulti && <span style={{ fontSize: 11, color: 'var(--text-secondary)', background: 'var(--bg-card)', borderRadius: 99, padding: '4px 10px', fontWeight: 600 }}>{t('stories.multiSelect')}</span>}
         </div>
         <h2 style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.5, marginBottom: 24, color: 'var(--text-primary)' }}>{slide.question}</h2>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -444,13 +450,13 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
             disabled={multiSelected.length === 0}
             style={{ marginTop: 20, width: '100%', background: multiSelected.length > 0 ? 'var(--brand)' : 'var(--bg-card)', color: multiSelected.length > 0 ? '#FFFFFF' : 'var(--text-muted)', border: 'none', borderRadius: 14, padding: '14px', fontSize: 15, fontWeight: 700, cursor: multiSelected.length > 0 ? 'pointer' : 'default' }}
           >
-            {multiSelected.length === 0 ? '選択してください' : `${multiSelected.length}つ選択中 — 回答する`}
+            {multiSelected.length === 0 ? t('stories.pickPrompt') : t('stories.pickedAnswer', { n: multiSelected.length })}
           </button>
         )}
 
         {quizAnswered && (
           <div style={{ marginTop: 20, padding: 16, background: 'var(--bg-card)', borderRadius: 14, fontSize: 15, lineHeight: 1.75 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: quizAnswered.correct ? 'var(--brand)' : 'var(--md-sys-color-error)', marginBottom: 6 }}>{quizAnswered.correct ? '正解' : isMulti ? `不正解 — 正解は${[...correctSet].map(i => slide.choices[i]).join('、')}` : 'もう一度考えてみよう'}</div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: quizAnswered.correct ? 'var(--brand)' : 'var(--md-sys-color-error)', marginBottom: 6 }}>{quizAnswered.correct ? t('stories.correct') : isMulti ? t('stories.wrongMulti', { list: [...correctSet].map(i => slide.choices[i]).join(t('stories.commaSep')) }) : t('stories.wrongSingle')}</div>
             {slide.explain}
           </div>
         )}
@@ -477,7 +483,7 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
             <SparklesIcon width={32} height={32} />
           </div>
           <h1 style={{ fontSize: 26, fontWeight: 800, lineHeight: 1.4, color: 'var(--text-primary)', marginBottom: 4 }}>{slide.title}</h1>
-          <p style={{ fontSize: 14, color: 'var(--text-secondary)' }}>学習が完了したよ！</p>
+          <p style={{ fontSize: 14, color: 'var(--text-secondary)' }}>{t('stories.completeDesc')}</p>
         </div>
         <ul style={{ display: 'flex', flexDirection: 'column', gap: 12, listStyle: 'none', padding: 0, marginBottom: 28 }}>
           {slide.points.map((p, i) => (
@@ -499,7 +505,7 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
             letterSpacing: '.02em',
           }}
         >
-          結果を確認する →
+          {t('stories.viewResult')}
         </button>
       </>
     )
@@ -548,7 +554,7 @@ function ThinkSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides'
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 24, marginTop: 24 }}>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: `color-mix(in srgb, var(--warm) 13%, transparent)`, borderRadius: 99, padding: '6px 12px', fontSize: 11, fontWeight: 700, color: 'var(--warm)', letterSpacing: '.04em' }}>
           <LightbulbIcon width={12} height={12} />
-          考えてみよう
+          {t('stories.thinkPrompt')}
         </span>
       </div>
 
@@ -560,7 +566,7 @@ function ThinkSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides'
       {/* ヒント */}
       {slide.hint && (
         <div style={{ background: `color-mix(in srgb, var(--brand) 7%, transparent)`, border: `1px solid color-mix(in srgb, var(--brand) 19%, transparent)`, borderRadius: 12, padding: '12px 16px', marginBottom: 20, fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-          <span style={{ fontWeight: 700, color: 'var(--brand)' }}>ヒント: </span>{slide.hint}
+          <span style={{ fontWeight: 700, color: 'var(--brand)' }}>{t('stories.hintPrefix')}</span>{slide.hint}
         </div>
       )}
 
@@ -570,9 +576,9 @@ function ThinkSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides'
           <div style={{ fontSize: 13, color: 'var(--text-muted)', textAlign: 'center', lineHeight: 1.8 }}>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: 'var(--warm)', fontWeight: 700 }}>
               <BrainIcon width={14} height={14} />
-              <span>自分なりの答えを考えてみよう</span>
+              <span>{t('stories.thinkOwnAnswer')}</span>
             </span><br />
-            <span style={{ fontSize: 12 }}>準備ができたら「モデル解答を見る」を押してね</span>
+            <span style={{ fontSize: 12 }}>{t('stories.readyHint')}</span>
           </div>
         </div>
       )}
@@ -580,7 +586,7 @@ function ThinkSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides'
       {/* モデル解答（開示後） */}
       {revealed && (
         <div style={{ marginBottom: 20 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--brand)', letterSpacing: '.06em', marginBottom: 10 }}>モデル解答</div>
+          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--brand)', letterSpacing: '.06em', marginBottom: 10 }}>{t('stories.modelAnswer')}</div>
           <div style={{ background: 'var(--bg-card)', borderRadius: 16, padding: '18px 20px', fontSize: 14, lineHeight: 1.8, color: 'var(--text-primary)', marginBottom: 14, borderLeft: `3px solid ${'var(--brand)'}` }}>
             {slide.modelAnswer}
           </div>
@@ -588,7 +594,7 @@ function ThinkSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides'
           {/* 考え方のポイント */}
           {slide.points.length > 0 && (
             <>
-              <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '.04em', marginBottom: 8 }}>考え方のポイント</div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '.04em', marginBottom: 8 }}>{t('stories.points')}</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {slide.points.map((p, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, background: 'var(--bg-card)', borderRadius: 12, padding: '12px 14px' }}>
@@ -608,14 +614,14 @@ function ThinkSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides'
           onClick={() => setRevealed(true)}
           style={{ width: '100%', padding: '15px 0', borderRadius: 14, border: `1.5px solid ${'var(--brand)'}`, background: 'transparent', color: 'var(--brand)', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}
         >
-          モデル解答を見る
+          {t('stories.viewModel')}
         </button>
       ) : (
         <button
           onClick={onNext}
           style={{ width: '100%', padding: '15px 0', borderRadius: 14, border: 'none', background: 'var(--brand)', color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}
         >
-          次へ進む
+          {t('stories.proceed')}
         </button>
       )}
     </>
@@ -655,10 +661,10 @@ function CaseSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides')
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 24, marginTop: 24 }}>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: `color-mix(in srgb, var(--brand) 13%, transparent)`, borderRadius: 99, padding: '6px 12px', fontSize: 11, fontWeight: 700, color: 'var(--brand)' }}>
             <CheckIcon width={12} height={12} />
-            ケース完了
+            {t('stories.caseDone')}
           </span>
         </div>
-        <h2 style={{ fontSize: 20, fontWeight: 800, lineHeight: 1.5, marginBottom: 16, color: 'var(--text-primary)' }}>フレームワークまとめ</h2>
+        <h2 style={{ fontSize: 20, fontWeight: 800, lineHeight: 1.5, marginBottom: 16, color: 'var(--text-primary)' }}>{t('stories.frameworkSummary')}</h2>
         <div style={{ background: 'var(--bg-card)', borderRadius: 16, padding: '18px 20px', fontSize: 14, lineHeight: 1.9, color: 'var(--text-secondary)', marginBottom: 28, borderLeft: `3px solid ${'var(--brand)'}` }}>
           {slide.conclusion}
         </div>
@@ -666,7 +672,7 @@ function CaseSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides')
           onClick={onNext}
           style={{ width: '100%', padding: '15px 0', borderRadius: 14, border: 'none', background: 'var(--brand)', color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}
         >
-          次へ進む
+          {t('stories.proceed')}
         </button>
       </>
     )
@@ -678,7 +684,7 @@ function CaseSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides')
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, marginTop: 24 }}>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: `color-mix(in srgb, var(--brand) 9%, transparent)`, borderRadius: 99, padding: '6px 12px', fontSize: 11, fontWeight: 700, color: 'var(--brand)' }}>
           <ClipboardListIcon width={12} height={12} />
-          ケース — Phase {phaseIndex + 1}/{slide.phases.length}
+          {t('stories.casePhase', { n: phaseIndex + 1, total: slide.phases.length })}
         </span>
         <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{slide.title}</span>
       </div>
@@ -686,7 +692,7 @@ function CaseSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides')
       {/* 状況説明（Phase 1のみ） */}
       {phaseIndex === 0 && (
         <div style={{ background: `color-mix(in srgb, var(--warm) 8%, transparent)`, border: `1px solid color-mix(in srgb, var(--warm) 19%, transparent)`, borderRadius: 12, padding: '14px 16px', marginBottom: 18, fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.7 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--warm)', marginBottom: 6 }}>状況</div>
+          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--warm)', marginBottom: 6 }}>{t('stories.situation')}</div>
           {slide.situation}
         </div>
       )}
@@ -694,7 +700,7 @@ function CaseSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides')
       {/* フェーズ情報（追加開示） */}
       {phaseIndex > 0 && (
         <div style={{ background: 'var(--bg-card)', borderRadius: 12, padding: '14px 16px', marginBottom: 18, fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.7, borderLeft: `3px solid color-mix(in srgb, var(--brand) 31%, transparent)` }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', marginBottom: 6 }}>追加情報</div>
+          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', marginBottom: 6 }}>{t('stories.extraInfo')}</div>
           {phase.info}
         </div>
       )}
@@ -737,7 +743,7 @@ function CaseSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides')
         <div style={{ background: 'var(--bg-card)', borderRadius: 14, padding: '14px 16px', marginBottom: 16, fontSize: 13, lineHeight: 1.7, color: 'var(--text-secondary)' }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 700, color: answered.correct ? 'var(--brand)' : 'var(--md-sys-color-error)', marginBottom: 6 }}>
             {answered.correct ? <CheckIcon width={12} height={12} /> : <LightbulbIcon width={12} height={12} />}
-            <span>{answered.correct ? '良い判断！' : '惜しい！'}</span>
+            <span>{answered.correct ? t('stories.goodCall') : t('stories.closeCall')}</span>
           </div>
           {phase.options[answered.selected].feedback}
         </div>
@@ -748,7 +754,7 @@ function CaseSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides')
           onClick={handleNext}
           style={{ width: '100%', padding: '15px 0', borderRadius: 14, border: 'none', background: 'var(--brand)', color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}
         >
-          {isLastPhase ? 'まとめを見る' : `次のフェーズへ (${phaseIndex + 2}/${slide.phases.length})`}
+          {isLastPhase ? t('stories.viewSummary') : t('stories.nextPhase', { n: phaseIndex + 2, total: slide.phases.length })}
         </button>
       )}
     </>

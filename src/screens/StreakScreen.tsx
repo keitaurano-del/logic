@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react'
 import { getStreak, getStudyDates, getTotalStudyDays } from '../stats'
 import { ArrowLeftIcon, ArrowRightIcon, FlameIcon } from '../icons'
 import { Header } from '../components/platform/Header'
-import { t } from '../i18n'
+import { t, getLocale } from '../i18n'
 
 interface StreakScreenProps {
   onBack: () => void
@@ -63,8 +63,7 @@ export function StreakScreen({ onBack }: StreakScreenProps) {
     return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
   }
 
-  const isJa = t('nav.home') === 'ホーム'
-  const dowLabels = isJa ? DOW_JA : DOW_EN
+  const dowLabels = getLocale() === 'ja' ? DOW_JA : DOW_EN
 
   return (
     <div className="stack">

@@ -9,27 +9,18 @@ interface StudyTimeScreenProps {
 }
 
 function formatMs(ms: number): string {
-  if (ms < 60000) return `${Math.round(ms / 1000)}秒`
-  if (ms < 3600000) return `${Math.round(ms / 60000)}分`
+  if (ms < 60000) return t('studytime.unitSec', { n: Math.round(ms / 1000) })
+  if (ms < 3600000) return t('studytime.unitMin', { n: Math.round(ms / 60000) })
   const h = Math.floor(ms / 3600000)
   const m = Math.round((ms % 3600000) / 60000)
-  return m > 0 ? `${h}時間${m}分` : `${h}時間`
-}
-
-function formatMsEn(ms: number): string {
-  if (ms < 60000) return `${Math.round(ms / 1000)}s`
-  if (ms < 3600000) return `${Math.round(ms / 60000)}m`
-  const h = Math.floor(ms / 3600000)
-  const m = Math.round((ms % 3600000) / 60000)
-  return m > 0 ? `${h}h ${m}m` : `${h}h`
+  return m > 0 ? t('studytime.unitHourMin', { h, m }) : t('studytime.unitHour', { h })
 }
 
 export function StudyTimeScreen({ onBack }: StudyTimeScreenProps) {
   const totalMs = getStudyTimeMs()
   const totalDays = getTotalStudyDays()
   const studyDates = useMemo(() => getStudyDates(), [])
-  const isJa = t('nav.home') === 'ホーム'
-  const fmt = isJa ? formatMs : formatMsEn
+  const fmt = formatMs
 
   const avgMs = totalDays > 0 ? Math.round(totalMs / totalDays) : 0
 
@@ -126,9 +117,8 @@ export function StudyTimeScreen({ onBack }: StudyTimeScreenProps) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
           {recentDays.map(({ ds, active }, i) => {
             const d = new Date(ds)
-            const label = isJa
-              ? `${d.getMonth() + 1}/${d.getDate()}（${['日','月','火','水','木','金','土'][d.getDay()]}）`
-              : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', weekday: 'short' })
+            const dayKeys = ['studytime.daySun','studytime.dayMon','studytime.dayTue','studytime.dayWed','studytime.dayThu','studytime.dayFri','studytime.daySat']
+            const label = t('studytime.dateFormat', { m: d.getMonth() + 1, d: d.getDate(), w: t(dayKeys[d.getDay()]) })
             const isToday = i === 0
             return (
               <div key={ds}>
@@ -139,10 +129,10 @@ export function StudyTimeScreen({ onBack }: StudyTimeScreenProps) {
                     background: active ? 'var(--brand)' : 'var(--border)',
                   }} />
                   <span style={{ flex: 1, fontSize: 16, color: isToday ? 'var(--text)' : 'var(--text-muted)', fontWeight: isToday ? 600 : 400 }}>
-                    {label}{isToday ? (isJa ? ' (今日)' : ' (Today)') : ''}
+                    {label}{isToday ? t('studytime.todaySuffix') : ''}
                   </span>
                   <span style={{ fontSize: 16, fontWeight: 600, color: active ? 'var(--brand)' : 'var(--text-faint)' }}>
-                    {active ? (isJa ? '学習済み' : 'Studied') : '—'}
+                    {active ? t('studytime.studied') : '—'}
                   </span>
                 </div>
               </div>

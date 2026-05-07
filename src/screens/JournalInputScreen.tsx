@@ -4,6 +4,7 @@ import { ArrowRightIcon, CheckIcon, XIcon } from '../icons'
 import { Button } from '../components/Button'
 import { Header } from '../components/platform/Header'
 import { ActionSheet } from '../components/ActionSheet'
+import { t } from '../i18n'
 
 interface JournalInputScreenProps {
   onBack: () => void
@@ -133,37 +134,37 @@ export function JournalInputScreen({ onBack }: JournalInputScreenProps) {
     const passed = pct >= 70
     return (
       <div className="stack">
-        <Header title="結果" onBack={onBack} />
-        <div className="eyebrow accent">ドリル結果</div>
-        <h1 style={{ fontSize: 32, letterSpacing: '-0.025em' }}>仕訳ドリル結果</h1>
+        <Header title={t('journal.resultTitle')} onBack={onBack} />
+        <div className="eyebrow accent">{t('journal.resultEyebrow')}</div>
+        <h1 style={{ fontSize: 32, letterSpacing: '-0.025em' }}>{t('journal.resultHeading')}</h1>
         <section className="profile-hero" style={{ textAlign: 'center' }}>
-          <div className="eyebrow" style={{ color: 'rgba(255,255,255,0.65)', marginBottom: 'var(--s-3)' }}>スコア</div>
+          <div className="eyebrow" style={{ color: 'rgba(255,255,255,0.65)', marginBottom: 'var(--s-3)' }}>{t('journal.scoreLabel')}</div>
           <div className="display" style={{ fontSize: 80, lineHeight: 0.9, letterSpacing: '-0.04em', color: '#fff' }}>{pct}%</div>
           <div style={{ marginTop: 'var(--s-3)', fontSize: 16, color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
-            {correctCount} / {problems.length} 問正解
+            {t('journal.scoreLine', { correct: correctCount, total: problems.length })}
           </div>
           <div className="badge" style={{
             marginTop: 'var(--s-3)',
             background: passed ? 'var(--success)' : 'rgba(255,255,255,0.16)',
             color: '#fff', border: 'none', fontSize: 14, padding: '6px 14px',
           }}>
-            {passed ? '合格' : '不合格（70% 必要）'}
+            {passed ? t('journal.passed') : t('journal.failed')}
           </div>
         </section>
         {passed && (
           <div className="feedback-card">
             <div className="feedback-head">
               <div className="feedback-check"><CheckIcon /></div>
-              <div className="feedback-title">よくできました！</div>
+              <div className="feedback-title">{t('journal.greatTitle')}</div>
             </div>
-            <div className="feedback-text">仕訳の基本パターンを習得しています。</div>
+            <div className="feedback-text">{t('journal.greatDesc')}</div>
           </div>
         )}
         <Button variant="default" size="lg" block onClick={() => {
           setCurrent(0); setDebitAccount(''); setDebitAmount(''); setCreditAccount(''); setCreditAmount('');
           setSubmitted(false); setCorrectCount(0); setFinished(false)
-        }}>もう一度</Button>
-        <Button variant="primary" size="lg" block onClick={onBack}>戻る</Button>
+        }}>{t('journal.retry')}</Button>
+        <Button variant="primary" size="lg" block onClick={onBack}>{t('journal.back')}</Button>
       </div>
     )
   }
@@ -176,17 +177,17 @@ export function JournalInputScreen({ onBack }: JournalInputScreenProps) {
         <div className="progress-fill" style={{ width: `${progress}%` }} />
       </div>
 
-      <div className="eyebrow accent" style={{ marginTop: 'var(--s-4)' }}>仕訳ドリル</div>
+      <div className="eyebrow accent" style={{ marginTop: 'var(--s-4)' }}>{t('journal.questionEyebrow')}</div>
       <h2 style={{ fontSize: 22, lineHeight: 1.6, fontFamily: 'var(--font-display)' }}>{p.question}</h2>
 
       <div className="card" style={{ marginTop: 'var(--s-3)', padding: 'var(--s-4)' }}>
-        <div className="eyebrow" style={{ marginBottom: 'var(--s-3)' }}>仕訳を入力してください</div>
+        <div className="eyebrow" style={{ marginBottom: 'var(--s-3)' }}>{t('journal.entryHint')}</div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: 'var(--s-3)', alignItems: 'start' }}>
           {/* Debit */}
           <div className="stack-sm">
             <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--brand)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-              借方
+              {t('journal.debit')}
             </div>
             <button
               type="button"
@@ -196,13 +197,13 @@ export function JournalInputScreen({ onBack }: JournalInputScreenProps) {
               aria-haspopup="dialog"
               style={{ ...fieldStyle(isCorrectField('da')), textAlign: 'left', cursor: submitted ? 'default' : 'pointer', color: debitAccount ? 'var(--text-primary)' : 'var(--text-muted)' }}
             >
-              {debitAccount || '勘定科目を選択'}
+              {debitAccount || t('journal.selectAccount')}
             </button>
             <input
               className="input"
               type="number"
-              aria-label="借方金額"
-              placeholder="金額"
+              aria-label={t('journal.debitAmountAria')}
+              placeholder={t('journal.amountPlaceholder')}
               value={debitAmount}
               onChange={(e) => setDebitAmount(e.target.value)}
               disabled={submitted}
@@ -217,7 +218,7 @@ export function JournalInputScreen({ onBack }: JournalInputScreenProps) {
           {/* Credit */}
           <div className="stack-sm">
             <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--success)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-              貸方
+              {t('journal.credit')}
             </div>
             <button
               type="button"
@@ -227,13 +228,13 @@ export function JournalInputScreen({ onBack }: JournalInputScreenProps) {
               aria-haspopup="dialog"
               style={{ ...fieldStyle(isCorrectField('ca')), textAlign: 'left', cursor: submitted ? 'default' : 'pointer', color: creditAccount ? 'var(--text-primary)' : 'var(--text-muted)' }}
             >
-              {creditAccount || '勘定科目を選択'}
+              {creditAccount || t('journal.selectAccount')}
             </button>
             <input
               className="input"
               type="number"
-              aria-label="貸方金額"
-              placeholder="金額"
+              aria-label={t('journal.creditAmountAria')}
+              placeholder={t('journal.amountPlaceholder')}
               value={creditAmount}
               onChange={(e) => setCreditAmount(e.target.value)}
               disabled={submitted}
@@ -249,10 +250,10 @@ export function JournalInputScreen({ onBack }: JournalInputScreenProps) {
             <div className="feedback-check">
               {isFullyCorrect ? <CheckIcon /> : <XIcon />}
             </div>
-            <div className="feedback-title">{isFullyCorrect ? '正解！' : '不正解'}</div>
+            <div className="feedback-title">{isFullyCorrect ? t('journal.correctMark') : t('journal.wrongMark')}</div>
           </div>
           <div className="feedback-text">
-            <b>正解：</b> （借方）{p.answer.debitAccount} {p.answer.debitAmount.toLocaleString()} ／（貸方）{p.answer.creditAccount} {p.answer.creditAmount.toLocaleString()}
+            <b>{t('journal.correctAnswerLabel')}</b> {t('journal.correctAnswerLine', { debit: p.answer.debitAccount, debitAmount: p.answer.debitAmount.toLocaleString(), credit: p.answer.creditAccount, creditAmount: p.answer.creditAmount.toLocaleString() })}
           </div>
           <div style={{ marginTop: 'var(--s-2)', fontSize: 16, color: 'var(--text-muted)', lineHeight: 1.6 }}>
             {p.explanation}
@@ -266,18 +267,18 @@ export function JournalInputScreen({ onBack }: JournalInputScreenProps) {
           onClick={checkAnswer}
           disabled={!debitAccount || !debitAmount || !creditAccount || !creditAmount}
         >
-          解答する
+          {t('journal.submit')}
         </Button>
       ) : (
         <Button variant="primary" size="lg" block onClick={handleNext}>
-          {current + 1 >= problems.length ? '結果を見る' : '次の問題'}
+          {current + 1 >= problems.length ? t('journal.viewResult') : t('journal.nextQuestion')}
           <ArrowRightIcon width={16} height={16} />
         </Button>
       )}
 
       <ActionSheet
         open={accountSheet !== null}
-        title="勘定科目を選択"
+        title={t('journal.selectAccount')}
         items={p.accountChoices.map((a) => ({ id: a, label: a }))}
         onSelect={(id) => {
           if (accountSheet === 'debit') setDebitAccount(id)

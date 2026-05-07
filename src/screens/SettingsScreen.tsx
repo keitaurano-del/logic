@@ -61,7 +61,7 @@ function Divider() {
 
 function Toggle({ value, onChange, label }: { value: boolean; onChange: (v: boolean) => void; label?: string }) {
   // Platform-aware Switch (iOS / M3) — see src/components/Switch.tsx
-  return <Switch checked={value} onChange={onChange} aria-label={label ?? 'トグル'} />
+  return <Switch checked={value} onChange={onChange} aria-label={label ?? t('settings.toggleAria')} />
 }
 
 export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUser, onLogout, onOpenPricing, initialSection }: SettingsScreenProps) {
@@ -185,10 +185,10 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
                 )}
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <span style={{ fontSize: 16, color: 'var(--text-muted)', flexShrink: 0 }}>
-                    毎日
+                    {t('settings.daily')}
                   </span>
                   <select
-                    aria-label="リマインダー 時"
+                    aria-label={t('settings.reminderHourAria')}
                     value={reminderHour}
                     onChange={(e) => handleTimeChange(Number(e.target.value), reminderMinute)}
                     style={{
@@ -204,7 +204,7 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
                   </select>
                   <span style={{ fontSize: 22, fontWeight: 700, color: 'var(--text)' }}>:</span>
                   <select
-                    aria-label="リマインダー 分"
+                    aria-label={t('settings.reminderMinuteAria')}
                     value={reminderMinute}
                     onChange={(e) => handleTimeChange(reminderHour, Number(e.target.value))}
                     style={{
@@ -230,20 +230,20 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
 
       {/* ── プラン ── */}
       <div style={{ transition: 'background 0.3s', borderRadius: 12, background: highlightSection === 'plan' ? 'rgba(59,91,219,0.08)' : 'transparent' }}>
-        <SectionHeader label="プラン" />
+        <SectionHeader label={t('settings.section.plan')} />
         <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
           {(() => {
             const state = getSubscriptionState()
             const premium = isPremium()
             const planLabel =
-              state.plan === 'trial' ? `7日間トライアル（残り${daysLeftInTrial()}日）` :
-              state.plan === 'monthly' ? '月額プレミアム' :
-              state.plan === 'yearly' ? '年額プレミアム' :
-              '無料プラン'
+              state.plan === 'trial' ? t('settings.plan.trial', { n: daysLeftInTrial() }) :
+              state.plan === 'monthly' ? t('settings.plan.monthly') :
+              state.plan === 'yearly' ? t('settings.plan.yearly') :
+              t('settings.plan.free')
             return (
               <>
                 <div style={{ padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <span style={{ flex: 1, fontSize: 18, color: 'var(--text)' }}>現在のプラン</span>
+                  <span style={{ flex: 1, fontSize: 18, color: 'var(--text)' }}>{t('settings.currentPlan')}</span>
                   <span style={{
                     fontSize: 16, fontWeight: 700, padding: '4px 10px',
                     borderRadius: 20,
@@ -258,7 +258,7 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
                     <Divider />
                     <SettingsRow
                       leading={<SparklesIcon width={18} height={18} style={{ color: 'var(--accent)' }} />}
-                      label="プレミアムにアップグレード"
+                      label={t('settings.upgradePremium')}
                       onPress={onOpenPricing}
                     />
                   </>
@@ -275,7 +275,7 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
         <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
           <SettingsRow
             label={t('settings.support.appLanguage')}
-            value={locale === 'ja' ? '日本語' : 'English'}
+            value={locale === 'ja' ? t('profile.languageJa') : t('profile.languageEn')}
             onPress={onOpenLanguage}
           />
         </div>

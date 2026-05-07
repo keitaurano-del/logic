@@ -33,7 +33,7 @@ export function FlashcardsScreen({ onBack, mode = 'due' }: FlashcardsScreenProps
 
   return (
     <div className="stack">
-      <Header title={done ? '完了' : `${Math.min(idx + 1, total)} / ${total}`} onBack={onBack} />
+      <Header title={done ? t('flashcards.headerDone') : `${Math.min(idx + 1, total)} / ${total}`} onBack={onBack} />
 
       {total > 0 && !done && (
         <div className="progress" style={{ marginBottom: 'var(--s-5)' }}>
@@ -51,13 +51,13 @@ export function FlashcardsScreen({ onBack, mode = 'due' }: FlashcardsScreenProps
           </div>
           <h3 style={{ fontSize: 20, marginBottom: 'var(--s-2)' }}>
             {mode === 'weak'
-              ? '復習する弱点カードはありません'
-              : '復習するカードはありません'}
+              ? t('flashcards.emptyWeak')
+              : t('flashcards.emptyDue')}
           </h3>
           <p className="muted" style={{ fontSize: 16 }}>
             {mode === 'weak'
-              ? 'まだ間違えた問題がありません。レッスンを進めましょう。'
-              : 'レッスンを完了するとここにカードが追加されます'}
+              ? t('flashcards.emptyWeakDesc')
+              : t('flashcards.emptyDueDesc')}
           </p>
         </div>
       ) : done ? (
@@ -66,10 +66,10 @@ export function FlashcardsScreen({ onBack, mode = 'due' }: FlashcardsScreenProps
             <div className="feedback-check">
               <CheckIcon />
             </div>
-            <div className="feedback-title">All done!</div>
+            <div className="feedback-title">{t('flashcards.allDone')}</div>
           </div>
           <div className="feedback-text" style={{ marginTop: 'var(--s-2)' }}>
-            {total} 枚の復習を完了しました
+            {t('flashcards.allDoneDesc', { total })}
           </div>
           <Button
             variant="primary"
@@ -77,7 +77,7 @@ export function FlashcardsScreen({ onBack, mode = 'due' }: FlashcardsScreenProps
             onClick={onBack}
             style={{ marginTop: 'var(--s-4)' }}
           >
-            戻る
+            {t('flashcards.back')}
           </Button>
         </div>
       ) : (
@@ -124,7 +124,7 @@ export function FlashcardsScreen({ onBack, mode = 'due' }: FlashcardsScreenProps
                   className="muted"
                   style={{ marginTop: 'var(--s-4)', fontSize: 14 }}
                 >
-                  タップで答えを見る
+                  {t('flashcards.flipHint')}
                 </div>
               )}
             </div>
@@ -142,7 +142,7 @@ export function FlashcardsScreen({ onBack, mode = 'due' }: FlashcardsScreenProps
                   block
                   onClick={() => handleReview('again')}
                 >
-                  もう一度
+                  {t('flashcards.again')}
                 </Button>
                 <Button
                   variant="default"
@@ -150,7 +150,7 @@ export function FlashcardsScreen({ onBack, mode = 'due' }: FlashcardsScreenProps
                   block
                   onClick={() => handleReview('good')}
                 >
-                  わかった
+                  {t('flashcards.good')}
                 </Button>
                 <Button
                   variant="primary"
@@ -158,14 +158,14 @@ export function FlashcardsScreen({ onBack, mode = 'due' }: FlashcardsScreenProps
                   block
                   onClick={() => handleReview('easy')}
                 >
-                  簡単
+                  {t('flashcards.easy')}
                 </Button>
               </div>
               <div
                 className="muted"
                 style={{ fontSize: 14, textAlign: 'center', marginTop: 'var(--s-2)' }}
               >
-                間隔: {card.interval}日 · ease: {card.ease.toFixed(1)}
+                {t('flashcards.intervalEase', { interval: card.interval, ease: card.ease.toFixed(1) })}
               </div>
             </div>
           )}

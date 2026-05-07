@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { isNative } from '../platform'
 import { presentActionSheet } from '../platform/actionSheet'
 import { haptic } from '../platform/haptics'
+import { t } from '../i18n'
 import './ActionSheet.css'
 
 export interface ActionSheetItem {
@@ -66,7 +67,7 @@ export function ActionSheet({ open, title, message, items, onSelect, onCancel }:
           ))}
           <li className="m3-sheet__cancel-row">
             <button type="button" className="m3-sheet__item m3-sheet__item--cancel" onClick={onCancel}>
-              キャンセル
+              {t('actionSheet.cancel')}
             </button>
           </li>
         </ul>
@@ -92,7 +93,7 @@ export async function selectFromActionSheet(opts: {
       message: opts.message,
       options: [
         ...opts.items.map((it) => ({ title: it.label, destructive: it.destructive })),
-        { title: 'キャンセル', cancel: true },
+        { title: t('actionSheet.cancel'), cancel: true },
       ],
     })
     if (idx < 0 || idx >= opts.items.length) return null

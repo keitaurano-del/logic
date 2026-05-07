@@ -4,6 +4,7 @@ import { ArrowRightIcon, CheckIcon } from '../icons'
 import { Button } from '../components/Button'
 import { Header } from '../components/platform/Header'
 import { haptic } from '../platform/haptics'
+import { t } from '../i18n'
 
 interface WorksheetScreenProps {
   onBack: () => void
@@ -83,7 +84,7 @@ const problems: WorksheetProblem[] = [
   },
 ]
 
-const COL_HEADERS = ['試算表\n借方', '試算表\n貸方', '修正\n借方', '修正\n貸方', 'P/L\n借方', 'P/L\n貸方', 'B/S\n借方', 'B/S\n貸方']
+const COL_HEADER_KEYS = ['worksheet.col.tbDr', 'worksheet.col.tbCr', 'worksheet.col.adjDr', 'worksheet.col.adjCr', 'worksheet.col.plDr', 'worksheet.col.plCr', 'worksheet.col.bsDr', 'worksheet.col.bsCr']
 
 export function WorksheetScreen({ onBack }: WorksheetScreenProps) {
   const [current, setCurrent] = useState(0)
@@ -126,28 +127,28 @@ export function WorksheetScreen({ onBack }: WorksheetScreenProps) {
     const pct = totalCells > 0 ? Math.round((correctCells / totalCells) * 100) : 0
     return (
       <div className="stack">
-        <Header title="結果" onBack={onBack} />
-        <div className="eyebrow accent">ドリル結果</div>
-        <h1 style={{ fontSize: 32, letterSpacing: '-0.025em' }}>精算表ドリル結果</h1>
+        <Header title={t('worksheet.resultTitle')} onBack={onBack} />
+        <div className="eyebrow accent">{t('worksheet.resultEyebrow')}</div>
+        <h1 style={{ fontSize: 32, letterSpacing: '-0.025em' }}>{t('worksheet.resultHeading')}</h1>
         <section className="profile-hero" style={{ textAlign: 'center' }}>
-          <div className="eyebrow" style={{ color: 'rgba(255,255,255,0.65)', marginBottom: 'var(--s-3)' }}>スコア</div>
+          <div className="eyebrow" style={{ color: 'rgba(255,255,255,0.65)', marginBottom: 'var(--s-3)' }}>{t('worksheet.scoreLabel')}</div>
           <div className="display" style={{ fontSize: 80, lineHeight: 0.9, letterSpacing: '-0.04em', color: '#fff' }}>{pct}%</div>
           <div style={{ marginTop: 'var(--s-3)', fontSize: 16, color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
-            {correctCells} / {totalCells} セル正解
+            {t('worksheet.scoreLine', { correct: correctCells, total: totalCells })}
           </div>
         </section>
         {pct >= 80 && (
           <div className="feedback-card">
             <div className="feedback-head">
               <div className="feedback-check"><CheckIcon /></div>
-              <div className="feedback-title">精算表の理解はバッチリです！</div>
+              <div className="feedback-title">{t('worksheet.greatTitle')}</div>
             </div>
           </div>
         )}
         <Button variant="default" size="lg" block onClick={() => {
           setCurrent(0); setInputs({}); setSubmitted(false); setCorrectCells(0); setTotalCells(0); setFinished(false)
-        }}>もう一度</Button>
-        <Button variant="primary" size="lg" block onClick={onBack}>戻る</Button>
+        }}>{t('worksheet.retry')}</Button>
+        <Button variant="primary" size="lg" block onClick={onBack}>{t('worksheet.back')}</Button>
       </div>
     )
   }
@@ -160,7 +161,7 @@ export function WorksheetScreen({ onBack }: WorksheetScreenProps) {
         <div className="progress-fill" style={{ width: `${progress}%` }} />
       </div>
 
-      <div className="eyebrow accent" style={{ marginTop: 'var(--s-4)' }}>精算表ドリル</div>
+      <div className="eyebrow accent" style={{ marginTop: 'var(--s-4)' }}>{t('worksheet.eyebrow')}</div>
       <h2 style={{ fontSize: 22, fontFamily: 'var(--font-display)' }}>{p.title}</h2>
 
       <div className="card" style={{ padding: 'var(--s-3)', marginTop: 'var(--s-3)' }}>
@@ -171,10 +172,10 @@ export function WorksheetScreen({ onBack }: WorksheetScreenProps) {
         <table style={{ borderCollapse: 'collapse', fontSize: 14, minWidth: 600, width: '100%' }}>
           <thead>
             <tr>
-              <th style={thStyle(true)}>勘定科目</th>
-              {COL_HEADERS.map((h, i) => (
+              <th style={thStyle(true)}>{t('worksheet.account')}</th>
+              {COL_HEADER_KEYS.map((key, i) => (
                 <th key={i} style={thStyle()}>
-                  {h.split('\n').map((line, j) => (
+                  {t(key).split('\n').map((line, j) => (
                     <span key={j} style={{ display: 'block' }}>{line}</span>
                   ))}
                 </th>
@@ -196,7 +197,7 @@ export function WorksheetScreen({ onBack }: WorksheetScreenProps) {
                         <div style={{ position: 'relative' }}>
                           <input
                             type="number"
-                            aria-label={`row ${row + 1} col ${col + 1}`}
+                            aria-label={t('worksheet.cellAria', { row: row + 1, col: col + 1 })}
                             value={inputs[key] || ''}
                             onChange={(e) => setInputs((prev) => ({ ...prev, [key]: e.target.value }))}
                             disabled={submitted}
@@ -236,7 +237,7 @@ export function WorksheetScreen({ onBack }: WorksheetScreenProps) {
         <div className="feedback-card" style={{ marginTop: 'var(--s-3)' }}>
           <div className="feedback-head">
             <div className="feedback-check"><CheckIcon /></div>
-            <div className="feedback-title">解説</div>
+            <div className="feedback-title">{t('worksheet.explanation')}</div>
           </div>
           <div className="feedback-text">{p.explanation}</div>
         </div>
@@ -245,11 +246,11 @@ export function WorksheetScreen({ onBack }: WorksheetScreenProps) {
       <div style={{ marginTop: 'var(--s-3)' }}>
         {!submitted ? (
           <Button variant="primary" size="lg" block onClick={handleSubmit}>
-            解答する
+            {t('worksheet.submit')}
           </Button>
         ) : (
           <Button variant="primary" size="lg" block onClick={handleNext}>
-            {current + 1 >= problems.length ? '結果を見る' : '次の問題'}
+            {current + 1 >= problems.length ? t('worksheet.viewResult') : t('worksheet.nextQuestion')}
             <ArrowRightIcon width={16} height={16} />
           </Button>
         )}

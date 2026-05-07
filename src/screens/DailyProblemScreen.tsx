@@ -35,9 +35,9 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
   if (state === 'loading') {
     return (
       <div className="stack">
-        <Header title="今日の問題" onBack={onBack} />
+        <Header title={t('dailyProblem.title')} onBack={onBack} />
         <div style={{ textAlign: 'center', padding: 'var(--s-8) 0', color: 'var(--text-muted)' }}>
-          <div style={{ fontSize: 16 }}>今日の問題を生成中…</div>
+          <div style={{ fontSize: 16 }}>{t('dailyProblem.loading')}</div>
         </div>
       </div>
     )
@@ -46,11 +46,11 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
   if (state === 'error') {
     return (
       <div className="stack">
-        <Header title="今日の問題" onBack={onBack} />
+        <Header title={t('dailyProblem.title')} onBack={onBack} />
         <div className="card" style={{ background: 'rgba(220,38,38,0.06)', borderColor: 'var(--danger)', color: 'var(--danger)' }}>
           {error}
         </div>
-        <Button variant="default" size="lg" block onClick={onBack}>戻る</Button>
+        <Button variant="default" size="lg" block onClick={onBack}>{t('dailyProblem.back')}</Button>
       </div>
     )
   }
@@ -58,17 +58,17 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
   if (state === 'done') {
     return (
       <div className="stack">
-        <Header title="今日の問題" onBack={onBack} />
+        <Header title={t('dailyProblem.title')} onBack={onBack} />
         <div className="eyebrow accent">{t('label.todaysChallenge')}</div>
-        <h1 style={{ fontSize: 30, letterSpacing: '-0.025em' }}>今日の問題</h1>
+        <h1 style={{ fontSize: 30, letterSpacing: '-0.025em' }}>{t('dailyProblem.heading')}</h1>
         <div className="feedback-card">
           <div className="feedback-head">
             <div className="feedback-check"><CheckIcon /></div>
-            <div className="feedback-title">今日の問題は完了しました！</div>
+            <div className="feedback-title">{t('dailyProblem.alreadyDoneTitle')}</div>
           </div>
-          <div className="feedback-text">また明日チャレンジしましょう。</div>
+          <div className="feedback-text">{t('dailyProblem.alreadyDoneBody')}</div>
         </div>
-        <Button variant="primary" size="lg" block onClick={onBack}>ホームに戻る</Button>
+        <Button variant="primary" size="lg" block onClick={onBack}>{t('dailyProblem.backHome')}</Button>
       </div>
     )
   }
@@ -80,17 +80,17 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
     const pct = steps.length > 0 ? Math.round((correctCount / steps.length) * 100) : 0
     return (
       <div className="stack">
-        <Header title="結果" onBack={onBack} />
+        <Header title={t('dailyProblem.resultTitle')} onBack={onBack} />
         <div className="eyebrow accent">{t('label.todaysResult')}</div>
-        <h1 style={{ fontSize: 30, letterSpacing: '-0.025em' }}>結果</h1>
+        <h1 style={{ fontSize: 30, letterSpacing: '-0.025em' }}>{t('dailyProblem.resultHeading')}</h1>
         <section className="profile-hero" style={{ textAlign: 'center' }}>
-          <div className="eyebrow" style={{ color: 'rgba(255,255,255,0.65)', marginBottom: 'var(--s-3)' }}>スコア</div>
+          <div className="eyebrow" style={{ color: 'rgba(255,255,255,0.65)', marginBottom: 'var(--s-3)' }}>{t('dailyProblem.scoreLabel')}</div>
           <div className="display" style={{ fontSize: 80, lineHeight: 0.9, letterSpacing: '-0.04em', color: '#fff' }}>{pct}%</div>
           <div style={{ marginTop: 'var(--s-3)', fontSize: 16, color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
-            {correctCount} / {steps.length} 問正解
+            {t('dailyProblem.scoreLine', { correct: correctCount, total: steps.length })}
           </div>
         </section>
-        <Button variant="primary" size="lg" block onClick={onBack}>ホームに戻る</Button>
+        <Button variant="primary" size="lg" block onClick={onBack}>{t('dailyProblem.backHome')}</Button>
       </div>
     )
   }
@@ -186,7 +186,7 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
             <div className="feedback-check">
               {isCorrect ? <CheckIcon /> : <XIcon />}
             </div>
-            <div className="feedback-title">{isCorrect ? '正解！' : '不正解'}</div>
+            <div className="feedback-title">{isCorrect ? t('dailyProblem.correctMark') : t('dailyProblem.wrongMark')}</div>
           </div>
           <div className="feedback-text" style={{ whiteSpace: 'pre-wrap' }}>{quizStep.explanation}</div>
         </div>
@@ -194,7 +194,7 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
 
       {isAnswered && (
         <Button variant="primary" size="lg" block onClick={handleNext} style={{ marginTop: 'var(--s-3)' }}>
-          {stepIdx + 1 >= steps.length ? '結果を見る' : '次の問題'}
+          {stepIdx + 1 >= steps.length ? t('dailyProblem.viewResult') : t('dailyProblem.nextQuestion')}
           <ArrowRightIcon width={16} height={16} />
         </Button>
       )}

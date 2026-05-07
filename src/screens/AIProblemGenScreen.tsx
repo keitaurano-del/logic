@@ -14,6 +14,30 @@ interface AIProblemGenScreenProps {
   onUpgrade?: () => void
 }
 
+// データ値であるカテゴリ名 (lessonData.category) → 表示用の翻訳キー解決
+const CATEGORY_LABEL_KEY: Record<string, string> = {
+  'ロジカルシンキング': 'category.logical',
+  'ケース面接': 'category.case',
+  'クリティカルシンキング': 'category.critical',
+  '仮説思考': 'category.hypothesis',
+  '課題設定': 'category.problemSetting',
+  'デザインシンキング': 'category.designThinking',
+  'ラテラルシンキング': 'category.lateral',
+  'アナロジー思考': 'category.analogy',
+  'システムシンキング': 'category.systems',
+  '提案・伝える技術': 'category.proposal',
+  '提案書作成': 'category.proposalWriting',
+  '哲学・思考の原理': 'category.philosophy',
+  '東洋思想': 'category.eastern',
+  'クライアントワーク': 'category.clientWork',
+  'フェルミ推定': 'category.fermi',
+  '経営戦略': 'category.strategy',
+}
+function categoryLabel(cat: string): string {
+  const key = CATEGORY_LABEL_KEY[cat]
+  return key ? t(key) : cat
+}
+
 // テーマプリセット（SVGアイコン）
 type ThemePreset = { id: string; label: string; prompt: string; icon: React.ReactNode }
 
@@ -82,10 +106,11 @@ type WeaknessItem = {
 
 function analyzeWeakness(): WeaknessItem[] {
   const completed = new Set(getCompletedLessons())
+  // categoryMap のキーは lessonData の category (JP データ値)
   const categoryMap = new Map<string, { total: number; done: number; label: string }>()
   for (const lesson of Object.values(allLessons)) {
-    const cat = lesson.category ?? 'その他'
-    if (!categoryMap.has(cat)) categoryMap.set(cat, { total: 0, done: 0, label: cat })
+    const cat = lesson.category ?? t('aiGen.fallbackCategory')
+    if (!categoryMap.has(cat)) categoryMap.set(cat, { total: 0, done: 0, label: categoryLabel(cat) })
     const entry = categoryMap.get(cat)!
     entry.total++
     if (completed.has(`lesson-${lesson.id}`)) entry.done++

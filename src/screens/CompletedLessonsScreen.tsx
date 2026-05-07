@@ -4,6 +4,24 @@ import { CheckCircleIcon } from '../icons'
 import { Header } from '../components/platform/Header'
 import { t } from '../i18n'
 
+// データキー (LESSON_MAP の category) → 表示ラベル翻訳キー解決
+const CATEGORY_LABEL_KEY: Record<string, string> = {
+  'ロジカルシンキング': 'category.logical',
+  'ケース面接': 'category.case',
+  'クリティカルシンキング': 'category.critical',
+  '仮説思考': 'category.hypothesis',
+  '課題設定': 'category.problemSetting',
+  'デザインシンキング': 'category.designThinking',
+  'ラテラルシンキング': 'category.lateral',
+  'アナロジー思考': 'category.analogy',
+  'システムシンキング': 'category.systems',
+  'フェルミ推定': 'category.fermi',
+}
+function categoryLabel(cat: string): string {
+  const key = CATEGORY_LABEL_KEY[cat]
+  return key ? t(key) : cat
+}
+
 interface CompletedLessonsScreenProps {
   onBack: () => void
 }
@@ -82,7 +100,7 @@ export function CompletedLessonsScreen({ onBack }: CompletedLessonsScreenProps) 
     const map = new Map<string, string[]>()
     for (const key of keys) {
       const meta = LESSON_MAP[key]
-      const cat = meta?.category ?? 'その他'
+      const cat = meta?.category ?? t('completed.fallbackCategory')
       if (!map.has(cat)) map.set(cat, [])
       map.get(cat)!.push(key)
     }
@@ -126,7 +144,7 @@ export function CompletedLessonsScreen({ onBack }: CompletedLessonsScreenProps) 
               color: catColor(cat),
               padding: 'var(--s-2) 0 var(--s-2)',
             }}>
-              {cat}
+              {categoryLabel(cat)}
             </div>
             <ul className="card" style={{ padding: 0, overflow: 'hidden', listStyle: 'none', margin: 0 }}>
               {catKeys.map((key, i) => {

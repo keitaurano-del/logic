@@ -5,6 +5,7 @@ import {
   cancelDailyReminder, requestNotificationPermission, isNative,
 } from '../notifications'
 import { Switch } from '../components/Switch'
+import { t } from '../i18n'
 
 interface Props {
   onBack: () => void
@@ -40,7 +41,7 @@ function saveExtraPref(pref: ExtraNotifPref) {
 // ── UI parts ──────────────────────────────────────────────────────
 function Toggle({ value, onChange, label }: { value: boolean; onChange: (v: boolean) => void; label?: string }) {
   // Platform-aware Switch (iOS / M3) — see src/components/Switch.tsx
-  return <Switch checked={value} onChange={onChange} aria-label={label ?? 'トグル'} />
+  return <Switch checked={value} onChange={onChange} aria-label={label ?? t('notifSettings.toggleAria')} />
 }
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
@@ -97,17 +98,17 @@ export function NotificationSettingsScreen({ onBack }: Props) {
 
   return (
     <div style={{ background: 'var(--bg-primary)', minHeight: '100vh', fontFamily: "'Noto Sans JP', sans-serif", color: 'var(--text-primary)' }}>
-      <Header title="通知設定" onBack={onBack} />
+      <Header title={t('notifSettings.title')} onBack={onBack} />
 
       <div style={{ padding: '0 16px 80px', display: 'flex', flexDirection: 'column', gap: 20 }}>
 
         {/* ── 毎日リマインダー ── */}
         <div>
-          <SectionLabel>毎日のリマインダー</SectionLabel>
+          <SectionLabel>{t('notifSettings.dailyReminderHeading')}</SectionLabel>
           <div style={{ background: 'var(--bg-card)', borderRadius: 16, overflow: 'hidden', boxShadow: 'var(--shadow-v3-card-inset)' }}>
             <NotifRow
-              label="毎日リマインダー"
-              sub="設定した時刻に学習を促す通知が届きます"
+              label={t('notifSettings.dailyReminder')}
+              sub={t('notifSettings.dailyReminderSub')}
               value={enabled}
               onChange={handleToggle}
             />
@@ -115,13 +116,13 @@ export function NotificationSettingsScreen({ onBack }: Props) {
               <div style={{ padding: '16px 20px', borderBottom: `1px solid ${'var(--border)'}` }}>
                 {!isNative() && (
                   <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 12, padding: '8px 12px', background: 'var(--bg-primary)', borderRadius: 8 }}>
-                    ブラウザ版では通知はアプリを開いている間のみ機能します
+                    {t('notifSettings.browserOnly')}
                   </div>
                 )}
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <span style={{ fontSize: 14, color: 'var(--text-secondary)' }}>毎日</span>
+                  <span style={{ fontSize: 14, color: 'var(--text-secondary)' }}>{t('notifSettings.daily')}</span>
                   <select
-                    aria-label="通知 時"
+                    aria-label={t('notifSettings.hourAria')}
                     value={hour}
                     onChange={(e) => handleTimeChange(Number(e.target.value), minute)}
                     style={{
@@ -137,7 +138,7 @@ export function NotificationSettingsScreen({ onBack }: Props) {
                   </select>
                   <span style={{ fontSize: 22, fontWeight: 700 }}>:</span>
                   <select
-                    aria-label="通知 分"
+                    aria-label={t('notifSettings.minuteAria')}
                     value={minute}
                     onChange={(e) => handleTimeChange(hour, Number(e.target.value))}
                     style={{
@@ -151,7 +152,7 @@ export function NotificationSettingsScreen({ onBack }: Props) {
                       <option key={m} value={m}>{pad(m)}</option>
                     ))}
                   </select>
-                  <span style={{ fontSize: 14, color: 'var(--text-secondary)' }}>に通知</span>
+                  <span style={{ fontSize: 14, color: 'var(--text-secondary)' }}>{t('notifSettings.notifyAt')}</span>
                 </div>
               </div>
             )}
@@ -160,24 +161,24 @@ export function NotificationSettingsScreen({ onBack }: Props) {
 
         {/* ── 学習モチベーション ── */}
         <div>
-          <SectionLabel>学習モチベーション</SectionLabel>
+          <SectionLabel>{t('notifSettings.motivation')}</SectionLabel>
           <div style={{ background: 'var(--bg-card)', borderRadius: 16, overflow: 'hidden', boxShadow: 'var(--shadow-v3-card-inset)' }}>
             <NotifRow
-              label="連続学習アラート"
-              sub="ストリークが途切れそうなときに通知"
+              label={t('notifSettings.streakAlert')}
+              sub={t('notifSettings.streakAlertSub')}
               value={extra.streakAlert}
               onChange={(v) => updateExtra('streakAlert', v)}
             />
             <NotifRow
-              label="ランキング更新"
-              sub="週次ランキングが確定したときに通知"
+              label={t('notifSettings.rankingUpdate')}
+              sub={t('notifSettings.rankingUpdateSub')}
               value={extra.rankingUpdate}
               onChange={(v) => updateExtra('rankingUpdate', v)}
             />
             <div style={{ display: 'flex', alignItems: 'center', padding: '15px 20px', gap: 12 }}>
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)' }}>偏差値変動</div>
-                <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.5 }}>偏差値が大きく変動したときに通知</div>
+                <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)' }}>{t('notifSettings.deviationChange')}</div>
+                <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.5 }}>{t('notifSettings.deviationChangeSub')}</div>
               </div>
               <Toggle value={extra.deviationChange} onChange={(v) => updateExtra('deviationChange', v)} />
             </div>
@@ -186,21 +187,21 @@ export function NotificationSettingsScreen({ onBack }: Props) {
 
         {/* ── コンテンツ ── */}
         <div>
-          <SectionLabel>コンテンツ</SectionLabel>
+          <SectionLabel>{t('notifSettings.contentSection')}</SectionLabel>
           <div style={{ background: 'var(--bg-card)', borderRadius: 16, overflow: 'hidden', boxShadow: 'var(--shadow-v3-card-inset)' }}>
             <NotifRow
-              label="新レッスン公開"
-              sub="新しいレッスンが追加されたときに通知"
+              label={t('notifSettings.newLesson')}
+              sub={t('notifSettings.newLessonSub')}
               value={extra.newLesson}
               onChange={(v) => updateExtra('newLesson', v)}
             />
-            
+
           </div>
         </div>
 
         {/* note */}
         <div style={{ fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.7, padding: '0 4px' }}>
-          ※ プッシュ通知はネイティブアプリ（iOS/Android）でのみ完全に動作します。ブラウザ版は一部機能が制限されます。
+          {t('notifSettings.note')}
         </div>
       </div>
     </div>

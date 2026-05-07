@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { t } from '../i18n'
 
 // ローカル検証用ベータコードリスト（本番では Supabase DB に繋ぐ）
 const VALID_BETA_CODES = ['LOGIC2026', 'EARLYBIRD', 'KEITA0429']
@@ -17,7 +18,7 @@ export function BetaCodeScreen({ onSuccess, onSkip }: BetaCodeScreenProps) {
   const handleSubmit = async () => {
     const trimmed = code.trim().toUpperCase()
     if (!trimmed) {
-      setError('招待コードを入力してください')
+      setError(t('betaCode.errEmpty'))
       return
     }
     setLoading(true)
@@ -29,7 +30,7 @@ export function BetaCodeScreen({ onSuccess, onSkip }: BetaCodeScreenProps) {
       localStorage.setItem(BETA_CODE_KEY, 'true')
       onSuccess()
     } else {
-      setError('コードが正しくありません')
+      setError(t('betaCode.errInvalid'))
     }
     setLoading(false)
   }
@@ -160,14 +161,14 @@ export function BetaCodeScreen({ onSuccess, onSkip }: BetaCodeScreenProps) {
           <span style={badgeStyle}>BETA</span>
         </div>
 
-        <h1 style={headingStyle}>招待コードを入力</h1>
+        <h1 style={headingStyle}>{t('betaCode.heading')}</h1>
         <p style={subStyle}>
-          Logicベータ版へようこそ。<br />
-          招待コードを入力してアクセスしてください。
+          {t('betaCode.welcome1')}<br />
+          {t('betaCode.welcome2')}
         </p>
 
         <label htmlFor="beta-code-input" style={labelStyle}>
-          招待コード
+          {t('betaCode.label')}
         </label>
         <input
           id="beta-code-input"
@@ -196,7 +197,7 @@ export function BetaCodeScreen({ onSuccess, onSkip }: BetaCodeScreenProps) {
           disabled={loading}
           style={btnPrimaryStyle}
         >
-          {loading ? '確認中...' : 'コードを使用する'}
+          {loading ? t('betaCode.checking') : t('betaCode.useCode')}
         </button>
 
         <button
@@ -209,7 +210,7 @@ export function BetaCodeScreen({ onSuccess, onSkip }: BetaCodeScreenProps) {
             ;(e.currentTarget as HTMLButtonElement).style.color = 'var(--text-muted)'
           }}
         >
-          後で入力する
+          {t('betaCode.skip')}
         </button>
       </div>
     </div>
