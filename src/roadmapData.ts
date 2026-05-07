@@ -130,6 +130,19 @@ export const roadmaps: RoadmapDef[] = [
     ],
   },
   {
+    id: 'feedback-cases',
+    title: 'フィードバック対応',
+    subtitle: '「浅い・甘い・弱い」を次の一歩に変える',
+    emoji: '',
+    color: '#0EA5E9',
+    steps: [
+      { lessonId: 336, title: '考える観点を増やす', description: '9つの基本観点で思考の死角を埋める' },
+      { lessonId: 337, title: '「考えが浅い」と言われたとき', description: 'Why so?を3階層、構造原因まで掘る' },
+      { lessonId: 338, title: '「分析が甘い」と言われたとき', description: '出典×粒度×感度分析で精度を上げる' },
+      { lessonId: 339, title: '「示唆が弱い」と言われたとき', description: 'So what?3段階でアクションまで繋ぐ' },
+    ],
+  },
+  {
     id: 'strategy',
     title: '経営戦略の進化',
     subtitle: '古典から共進化まで',
