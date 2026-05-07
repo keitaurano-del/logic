@@ -125,6 +125,18 @@ export const COURSES: Course[] = [
     image: '/images/v3/course-systems-01.svg',
   },
 
+  // ── なぜなぜ分析 ────────────────────────────────────
+  {
+    id: 'whywhy-01',
+    title: 'なぜなぜ分析で根本原因にたどり着く',
+    category: 'なぜなぜ分析',
+    group: 'problem-solving',
+    lessonIds: [340, 341, 342, 343, 344, 345, 346],
+    level: '中級',
+    description: '対症療法ではなく根本原因まで掘り下げる思考技術。トヨタ式の古典から、人を責めない・飛躍しない・反証可能の原則まで体系的に学ぶ。',
+    image: '/images/v3/course-whywhy-01.svg',
+  },
+
   // ── ラテラルシンキング ──────────────────────────────
   {
     id: 'lateral-01',

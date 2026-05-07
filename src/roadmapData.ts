@@ -143,6 +143,22 @@ export const roadmaps: RoadmapDef[] = [
     ],
   },
   {
+    id: 'whywhy',
+    title: 'なぜなぜ分析',
+    subtitle: '対症療法から根本治療へ',
+    emoji: '',
+    color: '#10B981',
+    steps: [
+      { lessonId: 340, title: 'なぜなぜ分析入門', description: '対症療法と根本治療の違い、なぜ「5回」なのか' },
+      { lessonId: 341, title: 'トヨタ生産方式と古典事例', description: '大野耐一の「機械が止まった」5階層分析' },
+      { lessonId: 342, title: '基本ステップと止めどき', description: '具体化・因果検証・打ち手が打てる層で止める' },
+      { lessonId: 343, title: '3つの落とし穴', description: '人を責めない・飛躍しない・抽象化しすぎない' },
+      { lessonId: 344, title: '横展開と並行ループ', description: '1階層に複数の枝、根本原因を他の場面にも展開' },
+      { lessonId: 345, title: '仮説検証で各層を裏付ける', description: '反証可能性で「美しい誤答」を防ぐ' },
+      { lessonId: 346, title: '実践ケース', description: '不具合・サービス・組織の3シナリオで総合演習' },
+    ],
+  },
+  {
     id: 'strategy',
     title: '経営戦略の進化',
     subtitle: '古典から共進化まで',

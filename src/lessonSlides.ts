@@ -150,6 +150,7 @@ function getHeroImage(category: string, lessonId?: number): string {
   if (c.includes('ラテラル')) return '/images/v3/lesson-lateral-thinking.webp'
   if (c.includes('アナロジー') || c.includes('analogy')) return '/images/v3/lesson-analogy.webp'
   if (c.includes('システム')) return '/images/v3/lesson-systems-thinking.webp'
+  if (c.includes('なぜなぜ') || c.includes('why-why') || c.includes('why why')) return '/images/v3/course-whywhy-01.svg'
   if (c.includes('クライアント')) return '/images/v3/course-client.webp'
   if (c.includes('経営戦略') || c === 'strategy') return '/images/v3/course-strategy.svg'
   if (c.includes('思考法') || c.includes('thinking')) return '/images/v3/course-thinking.webp'
