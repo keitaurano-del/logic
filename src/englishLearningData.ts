@@ -37,12 +37,12 @@ const mece: LessonAnnotations = {
       contentJa:
         'MECE（「ミーシー」と発音）は "Mutually Exclusive, Collectively Exhaustive"（モレなく、ダブりなく）の略です。ビジネスで情報を分析・整理する最も基本的なフレームワークです。\n\n■ Mutually Exclusive（重複なし）\nカテゴリー同士が重ならない。同じ項目が複数のバケツに入ることはない。\n\n■ Collectively Exhaustive（漏れなし）\nすべてが網羅されている。抜けや見落としがない。\n\nMECEが大事な理由：\n① 死角を防ぐ → よい意思決定\n② 重複を排除する → 効率的な資源配分\n③ コミュニケーションが明確 → チームの足並みが揃う',
       phrases: [
-        { en: 'stands for', ja: '〜の略', note: '略語の元の意味を説明する定型表現。"MECE stands for ..."' },
-        { en: 'Mutually Exclusive', ja: '相互に排他的（重複なし）', note: 'mutually = お互いに、exclusive = 排他的' },
-        { en: 'Collectively Exhaustive', ja: '網羅的（漏れなし）', note: 'collectively = 全体として、exhaustive = 徹底的・すべて尽くす' },
+        { en: 'stands for', ja: '〜の略', note: '略語の元の意味を説明する定型表現。例：MECE stands for "Mutually Exclusive, Collectively Exhaustive."' },
+        { en: 'Mutually Exclusive', ja: '互いに重ならない（重複なし）', note: '直訳は「相互に排他的」。mutually = お互いに、exclusive = 排他的。MECEの片割れ' },
+        { en: 'Collectively Exhaustive', ja: '網羅的（漏れなし）', note: 'collectively = 全体として、exhaustive = 徹底的・すべて尽くす。MECEのもう片割れ' },
         { en: 'no overlap between', ja: '〜の間に重複なし' },
         { en: 'blind spots', ja: '死角', note: '気づいていない欠点・見落とし' },
-        { en: 'team alignment', ja: 'チームの足並みが揃うこと', note: 'align = 一致させる、整列する' },
+        { en: 'team alignment', ja: 'チームの足並みが揃うこと', note: 'align = 一致させる、整列する。ビジネスでは「目標・戦略の方向性が一致する」意味でも頻出' },
       ],
     },
     // Step 1: "Four ways to break things down MECE"
@@ -56,7 +56,7 @@ const mece: LessonAnnotations = {
         { en: 'time sequence', ja: '時系列' },
         { en: 'opposing concepts', ja: '対立概念' },
         { en: 'established framework', ja: '既存フレームワーク', note: 'establish = 確立する、established = 確立された' },
-        { en: 'whichever ... gives', ja: '〜を提供するものはどれでも', note: '関係詞 whichever。"pick whichever pattern gives the clearest cut"' },
+        { en: 'whichever pattern gives', ja: '〜してくれるどのパターンでも（最も〜なパターン）', note: '複合関係形容詞 whichever ＋ 名詞。"pick whichever pattern gives the clearest cut" =「最もはっきり切ってくれるパターンを選べ」' },
       ],
     },
     // Step 2: Quiz "What does Mutually Exclusive mean?"
@@ -72,7 +72,7 @@ const mece: LessonAnnotations = {
         '「Mutually Exclusive」とはカテゴリー同士が重ならないこと。同じ項目が2つのバケツに同時に入ることはありません。「漏れなく網羅」のほうはMECEのもう半分「Collectively Exhaustive」です。',
       phrases: [
         { en: 'half of', ja: '〜の半分・片方', note: '"the Mutually Exclusive half of MECE" = MECEの片方' },
-        { en: 'never lives in', ja: '〜には決して存在しない', note: 'live in = （比喩的に）〜に位置する／属する' },
+        { en: 'never lives in', ja: '〜の中には決して入っていない（属していない）', note: 'live in = （比喩的に）〜に居場所を持つ・〜の中に位置する。"the same item never lives in two buckets"（同じ項目は2つのバケツに同時に属さない）' },
       ],
     },
     // Step 3: Case 1 - sales falling
@@ -111,8 +111,8 @@ const mece: LessonAnnotations = {
       phrases: [
         { en: 'reallocating budget', ja: '予算を再配分する', note: 're- = 再び、allocate = 配分する' },
         { en: 'word-of-mouth', ja: '口コミ', note: '直訳すると「口の言葉」' },
-        { en: 'cold email', ja: '面識のない相手へのメール営業' },
-        { en: 'cold calling', ja: '電話営業（飛び込み）', note: '"cold" = アポなし' },
+        { en: 'cold email', ja: '面識のない相手へのメール営業', note: '"cold" = アポなし／面識なし' },
+        { en: 'cold calling', ja: '電話による新規開拓営業', note: '"cold" = アポなし。訪問の飛び込みは door-to-door。混同しやすいので注意' },
         { en: 'multi-level decomposition', ja: '多階層の分解' },
       ],
     },
@@ -135,11 +135,11 @@ const mece: LessonAnnotations = {
         '■ 状況設定\nあなたは10店舗のコーヒーチェーンの経営者。月間総売上が目標を20%下回っている。漏れを見つけるため、売上をMECEに分解する。\n\n■ 多階層の要素分解\n\n売上 = 顧客数 × 平均客単価\n\n[顧客数]\n├─ 新規顧客\n│  ├─ 通行客（立地）\n│  ├─ 広告経由\n│  ├─ 口コミ\n│  └─ レビューサイト経由\n├─ リピート顧客\n│  ├─ ヘビーユーザー（週3回以上）\n│  ├─ ミドルユーザー（週1-2回）\n│  └─ ライトユーザー（月1-3回）\n└─ 時間帯\n   ├─ 朝（7-10時）\n   ├─ ランチ（11-14時）\n   ├─ 午後（14-17時）\n   └─ 夕方（17-21時）\n\n[平均客単価]\n├─ ドリンク価格 × ドリンク付帯率\n├─ フード価格 × フード付帯率\n├─ デザート価格 × デザート付帯率\n└─ テイクアウト vs イートインの差\n\n■ データが示すもの\n調べると、リピート顧客は変わらず、新規顧客が30%減、特にレビューサイト経由の流入が激減。競合チェーンのレビュー評価上昇で初回客を奪われていた。\n\n■ なぜ機能するか\n「売上 = 顧客数 × 客単価」は古典的な要素分解。さらに1階層下げることで、分析を具体的なアクションに繋げられる。',
       phrases: [
         { en: 'find the leak', ja: '漏れ（穴）を見つける', note: 'leak = 漏れ。問題の原因の比喩' },
-        { en: 'foot traffic', ja: '通行人・来店客数', note: '直訳「足の交通」' },
-        { en: 'attach rate', ja: '付帯率・併売率', note: 'メイン商品に何かが追加される率' },
-        { en: 'dig in', ja: '深掘りする', note: '直訳「掘り進める」' },
-        { en: 'held steady', ja: '横ばいだった、安定していた' },
-        { en: 'connect ... to specific actions', ja: '〜を具体的なアクションに繋げる' },
+        { en: 'foot traffic', ja: '人通り・通行客（→ 来店客数の指標）', note: '直訳「足の交通」。立地に紐づく潜在客数を表す' },
+        { en: 'attach rate', ja: '付帯率・併売率', note: 'メイン商品に何かが追加される率（飲食・小売の指標）' },
+        { en: 'dig in', ja: '深掘りする・突き詰める', note: '直訳「掘り進める」。データ分析で頻出' },
+        { en: 'held steady', ja: '横ばいだった、安定していた', note: 'hold steady = 安定する／横ばいで推移する。held は hold の過去形' },
+        { en: 'connect the analysis to specific actions', ja: '分析を具体的なアクションに繋げる', note: 'connect A to B = A を B に繋げる。分析を施策に落とし込む文脈' },
       ],
     },
     // Step 8: Quiz Customers × Ticket
@@ -169,7 +169,7 @@ const mece: LessonAnnotations = {
       optionsJa: ['カテゴリーの重複', 'カテゴリーの抜け', '重複と抜けの両方', '問題なし'],
       explanationJa: '派遣やフリーランスが含まれていない「抜け」がある。MECEの片割れ「Collectively Exhaustive（網羅）」を満たしていません。',
       phrases: [
-        { en: 'fails the rule', ja: 'ルールを満たさない', note: 'fail = 満たさない・落ちる' },
+        { en: 'fails the', ja: '〜を満たさない・通らない', note: 'fail = 満たさない・落ちる。本文 "fails the \\"Collectively Exhaustive\\" half of MECE" は「網羅性のテストに通らない」' },
       ],
     },
     // Step 11: Quiz best approach
@@ -194,17 +194,22 @@ const mece: LessonAnnotations = {
 const deduction: LessonAnnotations = {
   steps: [
     {
-      titleJa: '演繹法 — 一般から個別へ',
+      titleJa: '演繹法とは？',
       contentJa:
-        '演繹的推論は、一般的な原則から始め、具体的な結論を導きます。古典的な構造は三段論法です：\n\n大前提：すべての人間は死ぬ運命にある\n小前提：ソクラテスは人間である\n結論：ゆえに、ソクラテスは死ぬ運命にある\n\n両方の前提が真であれば、結論は必ず真である。これが演繹の力です — 完全に厳密で、論理的に確実。\n\nビジネスでは、演繹はあなたの推論が確固たる原則の上に立っていることを示すために使われます。',
+        '演繹的推論は、一般的な原則から具体的な結論を導く推論です。\n\n古典的な例（三段論法）：\n① 大前提：すべての人間は死ぬ運命にある\n② 小前提：ソクラテスは人間である\n③ 結論：ゆえに、ソクラテスは死ぬ運命にある\n\n■ 特徴\n・前提が真であれば、結論は必ず真である\n・新しい情報は生まれない — 前提に既に含まれているものを取り出している\n・トップダウンの推論\n\n■ ビジネスでの例\n大前提：マージン5%未満の事業からは撤退する（社内ポリシー）\n小前提：A 事業のマージンは2%\n結論：A 事業は撤退対象\n\n■ 妥当性 vs 健全性 — 重要！\n論理学者は次の2つを区別します：\n\n・妥当性（Validity）：前提が真であると仮定した場合、結論は必然的に導かれるか？（形式の正しさ）\n・健全性（Soundness）：妥当である AND 前提が実際に真であること。\n\n例：\n大前提：「鳥は飛ぶ」/ 小前提：「ペンギンは鳥である」/ 結論：「ペンギンは飛ぶ」\n→ 形式は妥当（A はすべて B、X は A、ゆえに X は B）だが、大前提が偽。論証は妥当だが健全ではない。\n\nビジネスで演繹を使うときは、形式 AND 前提の真偽の両方を必ずチェックすること。',
       phrases: [
-        { en: 'general to specific', ja: '一般から具体へ' },
-        { en: 'syllogism', ja: '三段論法', note: '大前提・小前提・結論からなる演繹推論' },
+        { en: 'general principles to specific conclusions', ja: '一般的な原則から具体的な結論へ', note: '演繹法の方向性。inductive（帰納）はこの逆' },
+        { en: 'syllogism', ja: '三段論法', note: '大前提・小前提・結論からなる演繹推論の古典的形式' },
         { en: 'major premise', ja: '大前提' },
         { en: 'minor premise', ja: '小前提' },
-        { en: 'mortal', ja: '死ぬ運命の・必滅の' },
-        { en: 'rests on', ja: '〜の上に立っている、〜に基づいている', note: 'rest on = 〜に依存・基づく' },
-        { en: 'airtight', ja: '完璧な・隙のない', note: '直訳「空気が漏れない」→ 論理的に隙がない' },
+        { en: 'mortal', ja: '死ぬ運命の・必滅の', note: '哲学標準訳。"All humans are mortal" は三段論法の代表例' },
+        { en: 'No new information is created', ja: '新しい情報は生まれない', note: '演繹の本質。前提に既に含まれていることの取り出しに過ぎない' },
+        { en: 'Top-down reasoning', ja: 'トップダウンの推論', note: '一般 → 具体 の方向。ボトムアップ＝帰納' },
+        { en: 'exit-eligible', ja: '撤退対象（撤退の対象として該当する）', note: '-eligible = 〜の対象として適格な' },
+        { en: 'Validity', ja: '妥当性', note: '形式の正しさ。「前提が真なら結論も必ず真」が成り立つか' },
+        { en: 'Soundness', ja: '健全性', note: '妥当 AND 前提が実際に真。論理学の基本概念' },
+        { en: 'necessarily follow', ja: '必然的に導かれる', note: 'follow = （結論として）導かれる、続く' },
+        { en: 'valid but unsound', ja: '妥当だが健全ではない', note: '形式は正しいが前提が偽の論証' },
       ],
     },
   ],
