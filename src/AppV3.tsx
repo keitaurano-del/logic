@@ -16,8 +16,6 @@ const DailyFermiScreen = lazy(() => import('./screens/DailyFermiScreen').then(m 
 const FermiRankingScreen = lazy(() => import('./screens/FermiRankingScreen').then(m => ({ default: m.FermiRankingScreen })))
 const RoleplaySelectScreen = lazy(() => import('./screens/RoleplaySelectScreen').then(m => ({ default: m.RoleplaySelectScreen })))
 const RoleplayChatScreen = lazy(() => import('./screens/RoleplayChatScreen').then(m => ({ default: m.RoleplayChatScreen })))
-const JournalInputScreen = lazy(() => import('./screens/JournalInputScreen').then(m => ({ default: m.JournalInputScreen })))
-const WorksheetScreen = lazy(() => import('./screens/WorksheetScreen').then(m => ({ default: m.WorksheetScreen })))
 const ReportProblemScreen = lazy(() => import('./screens/ReportProblemScreen').then(m => ({ default: m.ReportProblemScreen })))
 const OnboardingScreen = lazy(() => import('./screens/OnboardingScreen').then(m => ({ default: m.OnboardingScreen })))
 const BetaCodeScreen = lazy(() => import('./screens/BetaCodeScreen').then(m => ({ default: m.BetaCodeScreen })))
@@ -90,8 +88,6 @@ type Screen =
   | { type: 'fermi-ranking' }
   | { type: 'roleplay' }
   | { type: 'roleplay-chat'; situationId: string }
-  | { type: 'journal-input' }
-  | { type: 'worksheet' }
   | { type: 'daily-problem' }
   | { type: 'ai-problem-gen' }
   | { type: 'ai-problem'; problem: AIProblemSet }
@@ -423,8 +419,6 @@ function AppV3() {
       {screen.type === 'flashcards' && <FlashcardsScreen onBack={handleBack} mode={screen.mode} />}
       {screen.type === 'fermi' && <FermiScreen onBack={handleBack} onReport={(ctx) => navigate({ type: 'report-problem', context: ctx })} />}
       {screen.type === 'daily-fermi' && <DailyFermiScreen onBack={handleBack} onReport={(ctx) => navigate({ type: 'report-problem', context: ctx })} onOpenRanking={() => navigate({ type: 'fermi-ranking' })} />}
-      {screen.type === 'journal-input' && <JournalInputScreen onBack={handleBack} />}
-      {screen.type === 'worksheet' && <WorksheetScreen onBack={handleBack} />}
       {screen.type === 'daily-problem' && <DailyProblemScreen onBack={handleBack} />}
 
       {screen.type === 'feedback' && <FeedbackScreen onBack={handleBack} />}

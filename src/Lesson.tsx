@@ -1,18 +1,5 @@
 import { useState, useRef, useMemo, type ComponentType } from 'react'
 import {
-  TAccountDiagram,
-  AccountGroupsDiagram,
-  JournalEntryDiagram,
-  SettlementFlowDiagram,
-  FinancialStatementsDiagram,
-  AdjustmentsDiagram,
-  ConsolidationDiagram,
-  TaxEffectDiagram,
-  LeaseDiagram,
-  SecuritiesDiagram,
-  CostFlowDiagram,
-  VarianceAnalysisDiagram,
-  CVPDiagram,
   MecePatternsDiagram,
   MeceCaseDiagram,
   LogicTreeDiagram,
@@ -55,19 +42,6 @@ async function generateAiCards(lessonTitle: string, category: string, wrongAnswe
 }
 
 const diagramMap: Record<string, ComponentType> = {
-  TAccountDiagram,
-  AccountGroupsDiagram,
-  JournalEntryDiagram,
-  SettlementFlowDiagram,
-  FinancialStatementsDiagram,
-  AdjustmentsDiagram,
-  ConsolidationDiagram,
-  TaxEffectDiagram,
-  LeaseDiagram,
-  SecuritiesDiagram,
-  CostFlowDiagram,
-  VarianceAnalysisDiagram,
-  CVPDiagram,
   MecePatternsDiagram,
   MeceCaseDiagram,
   LogicTreeDiagram,
