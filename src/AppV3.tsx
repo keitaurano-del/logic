@@ -132,7 +132,7 @@ function getInitialScreen(user: User | null): Screen {
     if (preview === 'roleplay-select') return { type: 'roleplay' }
   }
   // ログイン済みユーザーはオンボーディングをスキップ
-  if (user) return { type: 'daily-fermi' }
+  if (user) return { type: 'home' }
   // 未ログインは必ずオンボーディングまたはログイン画面へ
   if (localStorage.getItem(ONBOARDED_KEY) !== '1') {
     return { type: 'onboarding' }
