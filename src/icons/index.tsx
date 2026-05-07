@@ -172,6 +172,44 @@ export function MicIcon(p: IconProps) {
   )
 }
 
+export function BandageIcon(p: IconProps) {
+  return (
+    <svg {...base} {...p}>
+      <path d="m10 15-3 3a4.95 4.95 0 0 1-7-7l3-3" />
+      <path d="m14 9 3-3a4.95 4.95 0 0 1 7 7l-3 3" />
+      <line x1="9" y1="15" x2="15" y2="9" />
+      <circle cx="11" cy="11" r="0.5" />
+      <circle cx="13" cy="13" r="0.5" />
+    </svg>
+  )
+}
+
+export function SearchIcon(p: IconProps) {
+  return (
+    <svg {...base} {...p}>
+      <circle cx="11" cy="11" r="7" />
+      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+    </svg>
+  )
+}
+
+export function UserIcon(p: IconProps) {
+  return (
+    <svg {...base} {...p}>
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+      <circle cx="12" cy="7" r="4" />
+    </svg>
+  )
+}
+
+export function ZapIcon(p: IconProps) {
+  return (
+    <svg {...base} {...p}>
+      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+    </svg>
+  )
+}
+
 export function XIcon(p: IconProps) {
   return (
     <svg {...base} {...p}>

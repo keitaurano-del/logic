@@ -12,6 +12,14 @@ import {
   DeductionDiagram,
   InductionDiagram,
   ContrapositiveDiagram,
+  WhyWhySymptomVsRootDiagram,
+  WhyWhyChainDiagram,
+  WhyWhyVsLogicTreeDiagram,
+  WhyWhyToyotaDiagram,
+  WhyWhyStopRuleDiagram,
+  WhyWhyPitfallsDiagram,
+  WhyWhyParallelDiagram,
+  WhyWhyEvidenceDiagram,
 } from './LessonDiagrams'
 import type { LessonData, LessonStep } from './lessonData'
 import { generateFromLesson, addCards } from './flashcardData'
@@ -55,6 +63,14 @@ const diagramMap: Record<string, ComponentType> = {
   DeductionDiagram,
   InductionDiagram,
   ContrapositiveDiagram,
+  WhyWhySymptomVsRootDiagram,
+  WhyWhyChainDiagram,
+  WhyWhyVsLogicTreeDiagram,
+  WhyWhyToyotaDiagram,
+  WhyWhyStopRuleDiagram,
+  WhyWhyPitfallsDiagram,
+  WhyWhyParallelDiagram,
+  WhyWhyEvidenceDiagram,
 }
 
 type Props = {

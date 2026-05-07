@@ -95,6 +95,8 @@ import { numeracyLessonMap } from './numeracyLessons'
 import { numeracyLessonMapEn } from './numeracyLessonsEn'
 import { peakPerformanceLessonMap } from './peakPerformanceLessons'
 import { peakPerformanceLessonMapEn } from './peakPerformanceLessonsEn'
+import { whyWhyLessonMap } from './whyWhyLessons'
+import { whyWhyLessonMapEn } from './whyWhyLessonsEn'
 
 // 全レッスンマップを locale で切り替える。en 版が存在するカテゴリは
 // 英訳済みマップを、それ以外は ja 版にフォールバック (transitional)。
@@ -129,6 +131,7 @@ function _getMergedLessons(): Record<number, LessonData> {
     ..._pickByLocale(strategyLessonMap, strategyLessonMapEn),
     ..._pickByLocale(numeracyLessonMap, numeracyLessonMapEn),
     ..._pickByLocale(peakPerformanceLessonMap, peakPerformanceLessonMapEn),
+    ..._pickByLocale(whyWhyLessonMap, whyWhyLessonMapEn),
   }
   _cachedLocale = locale
   return _cachedMerged
