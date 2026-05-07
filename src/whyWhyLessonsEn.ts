@@ -305,7 +305,7 @@ const whyWhyParallel: LessonData = {
       question: 'Pick a small operational issue you ran into recently. List 3 or more parallel candidate causes at the Why1 layer.',
       hint: 'Do not chain yet — first ask "what other causes could there be?" Vary the axes: product, people, process, environment, timing.',
       modelAnswer:
-        'Phenomenon: "Last week\'s client proposal slipped 3 days past the deadline."\n\nWhy1 (parallel):\n① Manager review took 3× the expected time\n② Pulling the necessary internal data took 2 days\n③ The client added requirements twice mid-engagement\n④ My initial estimate was 30% too optimistic\n\nYou do not need the right answer yet. Listing them in parallel makes it clear that "if ① is the cause, set up a recurring review; if ② is, fix internal data access; if ④ is, reform the estimating procedure" — different roots imply different fixes.',
+        'Phenomenon: "Last week\'s client proposal slipped 3 days past the deadline."\n\nWhy1 (parallel):\n① Manager review took 3× the expected time\n② Pulling the necessary internal data took 2 days\n③ The client added requirements twice mid-engagement\n④ My initial estimate was too optimistic on hours\n\nYou do not need the right answer yet. Listing them in parallel makes it clear that "if ① is the cause, set up a recurring review; if ② is, fix internal data access; if ④ is, reform the estimating procedure" — different roots imply different fixes.',
       points: [
         'List several branches in parallel before drilling',
         'Do not rush to pick the right one',

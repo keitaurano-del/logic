@@ -1,4 +1,14 @@
 import './LessonDiagrams.css'
+import {
+  BandageIcon,
+  SearchIcon,
+  UserIcon,
+  ZapIcon,
+  CloudIcon,
+  CheckIcon,
+  XIcon,
+  LightbulbIcon,
+} from './icons'
 
 // ==============================
 // MECEの4つのパターン
@@ -442,7 +452,7 @@ export function WhyWhySymptomVsRootDiagram() {
         <div className="ww-sr-col">
           <div className="ww-sr-tag ww-sr-tag-red">対症療法</div>
           <div className="ww-sr-card ww-sr-shallow">
-            <div className="ww-sr-icon">🩹</div>
+            <BandageIcon className="ww-sr-icon" width={22} height={22} />
             <div className="ww-sr-text">
               <strong>症状を抑える</strong>
               <span>例：頭痛に鎮痛剤</span>
@@ -455,7 +465,7 @@ export function WhyWhySymptomVsRootDiagram() {
         <div className="ww-sr-col">
           <div className="ww-sr-tag ww-sr-tag-green">根本治療</div>
           <div className="ww-sr-card ww-sr-deep">
-            <div className="ww-sr-icon">🔍</div>
+            <SearchIcon className="ww-sr-icon" width={22} height={22} />
             <div className="ww-sr-text">
               <strong>原因を取り除く</strong>
               <span>例：睡眠不足を改善</span>
@@ -475,8 +485,8 @@ export function WhyWhySymptomVsRootDiagram() {
 // ==============================
 export function WhyWhyChainDiagram() {
   const layers = [
-    { n: 1, label: '症状の言い換え', tag: '表層', tone: 'shallow' },
-    { n: 2, label: '症状の言い換え', tag: '表層', tone: 'shallow' },
+    { n: 1, label: '事象の言い換え', tag: '表層', tone: 'shallow' },
+    { n: 2, label: '直接の症状', tag: '表層', tone: 'shallow' },
     { n: 3, label: '直接の原因', tag: '中層', tone: 'mid' },
     { n: 4, label: '仕組みの問題', tag: '構造', tone: 'deep' },
     { n: 5, label: '打ち手が打てる層', tag: '構造', tone: 'deep' },
@@ -528,9 +538,9 @@ export function WhyWhyVsLogicTreeDiagram() {
           <div className="ww-vs-horizontal">
             <div className="ww-vs-hroot">事象</div>
             <svg viewBox="0 0 200 24" className="ww-vs-hlines">
-              <line x1="100" y1="0" x2="30" y2="24" stroke="#f59e42" strokeWidth="1.5" />
-              <line x1="100" y1="0" x2="100" y2="24" stroke="#f59e42" strokeWidth="1.5" />
-              <line x1="100" y1="0" x2="170" y2="24" stroke="#f59e42" strokeWidth="1.5" />
+              <line x1="100" y1="0" x2="30" y2="24" stroke="currentColor" strokeWidth="1.5" />
+              <line x1="100" y1="0" x2="100" y2="24" stroke="currentColor" strokeWidth="1.5" />
+              <line x1="100" y1="0" x2="170" y2="24" stroke="currentColor" strokeWidth="1.5" />
             </svg>
             <div className="ww-vs-hbranches">
               <div className="ww-vs-hleaf">原因A</div>
@@ -582,27 +592,36 @@ export function WhyWhyStopRuleDiagram() {
       <p className="diagram-label">どこで止めるか</p>
       <div className="ww-stop">
         <div className="ww-stop-zone ww-stop-shallow">
-          <div className="ww-stop-zone-tag">浅すぎ</div>
+          <div className="ww-stop-zone-tag">
+            <XIcon className="ww-stop-zone-mark" width={14} height={14} />
+            <span>浅すぎ</span>
+          </div>
           <div className="ww-stop-zone-body">
             <span className="ww-stop-zone-label">人で止める</span>
             <span className="ww-stop-zone-ex">「Aさんがミスした」</span>
-            <span className="ww-stop-zone-result">×再発する</span>
+            <span className="ww-stop-zone-result">再発する</span>
           </div>
         </div>
         <div className="ww-stop-zone ww-stop-good">
-          <div className="ww-stop-zone-tag">適切</div>
+          <div className="ww-stop-zone-tag">
+            <CheckIcon className="ww-stop-zone-mark" width={14} height={14} />
+            <span>適切</span>
+          </div>
           <div className="ww-stop-zone-body">
             <span className="ww-stop-zone-label">仕組みで止める</span>
             <span className="ww-stop-zone-ex">「気づける仕組みがない」</span>
-            <span className="ww-stop-zone-result">○打ち手が打てる</span>
+            <span className="ww-stop-zone-result">打ち手が打てる</span>
           </div>
         </div>
         <div className="ww-stop-zone ww-stop-deep">
-          <div className="ww-stop-zone-tag">深すぎ</div>
+          <div className="ww-stop-zone-tag">
+            <LightbulbIcon className="ww-stop-zone-mark" width={14} height={14} />
+            <span>深すぎ</span>
+          </div>
           <div className="ww-stop-zone-body">
             <span className="ww-stop-zone-label">外部要因で止める</span>
             <span className="ww-stop-zone-ex">「景気・人口減少」</span>
-            <span className="ww-stop-zone-result">×手が出せない</span>
+            <span className="ww-stop-zone-result">手が出せない</span>
           </div>
         </div>
       </div>
@@ -614,21 +633,21 @@ export function WhyWhyStopRuleDiagram() {
 // なぜなぜ：3つの落とし穴
 // ==============================
 export function WhyWhyPitfallsDiagram() {
-  const pitfalls = [
+  const pitfalls: { Icon: typeof UserIcon; title: string; bad: string; good: string }[] = [
     {
-      icon: '👤',
+      Icon: UserIcon,
       title: '人で止める',
       bad: '「Aさんが不注意」',
       good: '「気づける仕組みがない」',
     },
     {
-      icon: '⤴️',
+      Icon: ZapIcon,
       title: '飛躍する',
       bad: '売上↓ → 意欲↓（途中省略）',
       good: '間の層を埋めて1段ずつ',
     },
     {
-      icon: '☁️',
+      Icon: CloudIcon,
       title: '抽象化しすぎ',
       bad: '「コミュニケーション不足」',
       good: '「定例が四半期1回のみ」',
@@ -638,19 +657,19 @@ export function WhyWhyPitfallsDiagram() {
     <div className="diagram">
       <p className="diagram-label">3つの落とし穴</p>
       <div className="ww-pitfalls">
-        {pitfalls.map((p, i) => (
+        {pitfalls.map(({ Icon, title, bad, good }, i) => (
           <div key={i} className="ww-pitfall">
             <div className="ww-pitfall-head">
-              <span className="ww-pitfall-icon">{p.icon}</span>
-              <span className="ww-pitfall-title">{p.title}</span>
+              <Icon className="ww-pitfall-icon" width={18} height={18} />
+              <span className="ww-pitfall-title">{title}</span>
             </div>
             <div className="ww-pitfall-row ww-pitfall-bad">
-              <span className="ww-pitfall-tag">×</span>
-              <span>{p.bad}</span>
+              <span className="ww-pitfall-tag" aria-label="bad"><XIcon width={12} height={12} /></span>
+              <span>{bad}</span>
             </div>
             <div className="ww-pitfall-row ww-pitfall-good">
-              <span className="ww-pitfall-tag">○</span>
-              <span>{p.good}</span>
+              <span className="ww-pitfall-tag" aria-label="good"><CheckIcon width={12} height={12} /></span>
+              <span>{good}</span>
             </div>
           </div>
         ))}
