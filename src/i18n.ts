@@ -1392,6 +1392,7 @@ const STRINGS: Record<Locale, Strings> = {
     'englishLearning.phrasesHint': '保存ボタンで自動的にフラッシュカードに追加されます',
     'englishLearning.savePhrase': 'カードに保存',
     'englishLearning.phraseSaved': '保存済み',
+    'englishLearning.popoverLabel': 'フレーズの意味',
   },
 
   en: {
@@ -2751,6 +2752,7 @@ const STRINGS: Record<Locale, Strings> = {
     'englishLearning.phrasesHint': 'Saved phrases are added to your flashcards automatically.',
     'englishLearning.savePhrase': 'Save card',
     'englishLearning.phraseSaved': 'Saved',
+    'englishLearning.popoverLabel': 'Phrase meaning',
   },
 }
 
