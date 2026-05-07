@@ -1,4 +1,4 @@
-import { useState, useRef, type ComponentType } from 'react'
+import { useState, useRef, useMemo, type ComponentType } from 'react'
 import {
   TAccountDiagram,
   AccountGroupsDiagram,
@@ -27,7 +27,9 @@ import {
 import type { LessonData, LessonStep } from './lessonData'
 import { generateFromLesson, addCards } from './flashcardData'
 import ReportProblem from './ReportProblem'
-import { t, localeBody } from './i18n'
+import { t, localeBody, getLocale } from './i18n'
+import { getStepAnnotation, hasAnyAnnotation, savePhraseToFlashcards, type Phrase } from './englishLearningData'
+import { isPremium } from './subscription'
 import './Lesson.css'
 
 import { API_BASE } from './apiBase'
@@ -92,11 +94,31 @@ export default function Lesson({ lesson, onBack, onComplete, onNextLesson }: Pro
   const [correctCount, setCorrectCount] = useState(0)
   const [finished, setFinished] = useState(false)
   const [showReport, setShowReport] = useState(false)
+  const [showTranslation, setShowTranslation] = useState(false)
+  const [showPhrases, setShowPhrases] = useState(false)
+  const [savedPhrases, setSavedPhrases] = useState<Set<string>>(new Set())
   const wrongAnswersRef = useRef<{ question: string; correctAnswer: string; explanation: string }[]>([])
 
   const step: LessonStep | undefined = lesson.steps[currentStep]
   const totalSteps = lesson.steps.length
   const progress = ((currentStep + (showResult || step?.type === 'explain' ? 1 : 0)) / totalSteps) * 100
+
+  // English learning mode: premium users on English locale see translation/phrase helpers
+  // when annotations exist for this lesson.
+  const englishMode = useMemo(
+    () => getLocale() === 'en' && isPremium() && hasAnyAnnotation(lesson.id),
+    [lesson.id],
+  )
+  const stepAnnotation = englishMode ? getStepAnnotation(lesson.id, currentStep) : undefined
+  const hasTranslation =
+    !!stepAnnotation &&
+    !!(stepAnnotation.titleJa || stepAnnotation.contentJa || stepAnnotation.questionJa || stepAnnotation.explanationJa || (stepAnnotation.optionsJa && stepAnnotation.optionsJa.length > 0))
+  const hasPhrases = !!stepAnnotation?.phrases && stepAnnotation.phrases.length > 0
+
+  const handleSavePhrase = (phrase: Phrase) => {
+    savePhraseToFlashcards(phrase, lesson.id, lesson.title)
+    setSavedPhrases((prev) => new Set(prev).add(phrase.en))
+  }
 
   const handleAnswer = (index: number) => {
     if (showResult) return
@@ -133,6 +155,8 @@ export default function Lesson({ lesson, onBack, onComplete, onNextLesson }: Pro
       setCurrentStep((s) => s + 1)
       setSelectedOption(null)
       setShowResult(false)
+      setShowTranslation(false)
+      setShowPhrases(false)
     }
   }
 
@@ -213,22 +237,67 @@ export default function Lesson({ lesson, onBack, onComplete, onNextLesson }: Pro
         <div className="ls-progress-fill" style={{ width: `${progress}%` }} />
       </div>
 
+      {/* English-learning toolbar (premium + en locale + annotations available) */}
+      {englishMode && (hasTranslation || hasPhrases) && (
+        <div className="ls-en-toolbar" role="toolbar" aria-label={t('englishLearning.toolbarLabel')}>
+          {hasTranslation && (
+            <button
+              type="button"
+              className={`ls-en-toolbar-btn${showTranslation ? ' active' : ''}`}
+              onClick={() => setShowTranslation((v) => !v)}
+              aria-pressed={showTranslation}
+            >
+              <span aria-hidden="true">あ</span>
+              {showTranslation ? t('englishLearning.hideTranslation') : t('englishLearning.showTranslation')}
+            </button>
+          )}
+          {hasPhrases && (
+            <button
+              type="button"
+              className={`ls-en-toolbar-btn${showPhrases ? ' active' : ''}`}
+              onClick={() => setShowPhrases((v) => !v)}
+              aria-pressed={showPhrases}
+            >
+              <span aria-hidden="true">📖</span>
+              {showPhrases ? t('englishLearning.hidePhrases') : t('englishLearning.showPhrases')}
+            </button>
+          )}
+        </div>
+      )}
+
       {/* Content */}
       <div className="ls-content">
         {step.type === 'explain' ? (
           <div className="ls-explain">
             <div className="ls-explain-header">
               <h3>{step.title}</h3>
+              {showTranslation && stepAnnotation?.titleJa && (
+                <p className="ls-en-translation ls-en-translation-title">{stepAnnotation.titleJa}</p>
+              )}
             </div>
             <div className="ls-explain-body">
               {step.content.split('\n').map((line, i) => (
                 <p key={i}>{line || '\u00A0'}</p>
               ))}
+              {showTranslation && stepAnnotation?.contentJa && (
+                <div className="ls-en-translation ls-en-translation-body">
+                  {stepAnnotation.contentJa.split('\n').map((line, i) => (
+                    <p key={i}>{line || '\u00A0'}</p>
+                  ))}
+                </div>
+              )}
               {step.visual && diagramMap[step.visual] && (() => {
                 const Diagram = diagramMap[step.visual!]
                 return <Diagram />
               })()}
             </div>
+            {showPhrases && stepAnnotation?.phrases && (
+              <PhrasePanel
+                phrases={stepAnnotation.phrases}
+                savedPhrases={savedPhrases}
+                onSave={handleSavePhrase}
+              />
+            )}
             <button className="ls-next-btn" onClick={handleNext}>
               {t('lesson.next')}
             </button>
@@ -238,6 +307,9 @@ export default function Lesson({ lesson, onBack, onComplete, onNextLesson }: Pro
             <div className="ls-quiz-header">
               <h3>{step.question}</h3>
             </div>
+            {showTranslation && stepAnnotation?.questionJa && (
+              <p className="ls-en-translation ls-en-translation-title">{stepAnnotation.questionJa}</p>
+            )}
             <div className="ls-options">
               {step.options.map((opt, i) => {
                 let cls = 'ls-option'
@@ -256,7 +328,14 @@ export default function Lesson({ lesson, onBack, onComplete, onNextLesson }: Pro
                     <span className="ls-option-label">
                       {['A', 'B', 'C', 'D'][i]}
                     </span>
-                    {opt.label}
+                    <span className="ls-option-text">
+                      {opt.label}
+                      {showTranslation && stepAnnotation?.optionsJa?.[i] && (
+                        <span className="ls-en-translation ls-en-translation-inline">
+                          {stepAnnotation.optionsJa[i]}
+                        </span>
+                      )}
+                    </span>
                   </button>
                 )
               })}
@@ -275,7 +354,17 @@ export default function Lesson({ lesson, onBack, onComplete, onNextLesson }: Pro
                   </p>
                 </div>
                 <p className="ls-feedback-text">{step.explanation}</p>
+                {showTranslation && stepAnnotation?.explanationJa && (
+                  <p className="ls-en-translation ls-en-translation-feedback">{stepAnnotation.explanationJa}</p>
+                )}
               </div>
+            )}
+            {showPhrases && stepAnnotation?.phrases && (
+              <PhrasePanel
+                phrases={stepAnnotation.phrases}
+                savedPhrases={savedPhrases}
+                onSave={handleSavePhrase}
+              />
             )}
             {showResult && (
               <button className="ls-next-btn" onClick={handleNext}>
@@ -297,6 +386,46 @@ export default function Lesson({ lesson, onBack, onComplete, onNextLesson }: Pro
           onClose={() => setShowReport(false)}
         />
       )}
+    </div>
+  )
+}
+
+type PhrasePanelProps = {
+  phrases: Phrase[]
+  savedPhrases: Set<string>
+  onSave: (phrase: Phrase) => void
+}
+
+function PhrasePanel({ phrases, savedPhrases, onSave }: PhrasePanelProps) {
+  return (
+    <div className="ls-en-phrases" role="region" aria-label={t('englishLearning.phrasesLabel')}>
+      <div className="ls-en-phrases-header">
+        <span className="ls-en-phrases-title">{t('englishLearning.phrasesTitle')}</span>
+        <span className="ls-en-phrases-hint">{t('englishLearning.phrasesHint')}</span>
+      </div>
+      <ul className="ls-en-phrases-list">
+        {phrases.map((p) => {
+          const saved = savedPhrases.has(p.en)
+          return (
+            <li key={p.en} className="ls-en-phrase">
+              <div className="ls-en-phrase-main">
+                <p className="ls-en-phrase-en">{p.en}</p>
+                <p className="ls-en-phrase-ja">{p.ja}</p>
+                {p.note && <p className="ls-en-phrase-note">{p.note}</p>}
+              </div>
+              <button
+                type="button"
+                className={`ls-en-phrase-save${saved ? ' saved' : ''}`}
+                onClick={() => onSave(p)}
+                disabled={saved}
+                aria-label={saved ? t('englishLearning.phraseSaved') : t('englishLearning.savePhrase')}
+              >
+                {saved ? t('englishLearning.phraseSaved') : t('englishLearning.savePhrase')}
+              </button>
+            </li>
+          )
+        })}
+      </ul>
     </div>
   )
 }

@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>英語学習モード — Logic Preview</title>
+<link rel="stylesheet" href="_shared.css">
+<style>
+  .lesson-progress { height: 4px; background: var(--bg-tertiary); }
+  .lesson-progress-fill { height: 100%; width: 24%; background: linear-gradient(90deg, var(--accent), var(--accent-dark)); border-radius: 0 2px 2px 0; }
+
+  /* English-learning toolbar */
+  .en-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 14px 20px 0;
+  }
+  .en-toolbar-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--bg-card);
+    color: var(--text-primary);
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .en-toolbar-btn:hover { border-color: var(--accent-dark); }
+  .en-toolbar-btn.active {
+    background: var(--accent-soft);
+    border-color: var(--accent-dark);
+    color: var(--accent-dark);
+    font-weight: 700;
+  }
+  .en-toolbar-badge {
+    font-size: 9px;
+    font-weight: 900;
+    padding: 2px 6px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #C9A94A 0%, #B07442 100%);
+    color: #fff;
+    letter-spacing: 0.5px;
+    margin-left: 6px;
+  }
+
+  .lesson-content { padding: 20px 20px 100px; }
+
+  /* Explain (header) */
+  .explain-title {
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1.5;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+  .explain-body {
+    font-size: 15px;
+    line-height: 1.85;
+    color: var(--text-primary);
+    margin-bottom: 24px;
+  }
+  .explain-body p {
+    margin: 6px 0;
+  }
+  .explain-body .label {
+    font-weight: 800;
+    color: var(--accent-text);
+    margin-top: 16px;
+  }
+
+  /* Translation block */
+  .ja-translation {
+    border-left: 2px solid var(--accent);
+    padding: 10px 12px;
+    background: var(--bg-secondary);
+    border-radius: 4px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    line-height: 1.85;
+    margin: 8px 0 18px;
+    display: none;
+  }
+  .ja-translation.show { display: block; animation: fade-in 0.2s ease-out; }
+  .ja-translation-title { font-weight: 600; font-size: 14px; }
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Phrases panel */
+  .phrases {
+    margin-top: 16px;
+    padding: 16px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    display: none;
+  }
+  .phrases.show { display: block; animation: fade-in 0.2s ease-out; }
+  .phrases-header {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 12px;
+  }
+  .phrases-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--text-primary);
+  }
+  .phrases-hint {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .phrases-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .phrase {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .phrase-main { flex: 1; min-width: 0; }
+  .phrase-en {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 2px 0;
+  }
+  .phrase-ja {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin: 0;
+  }
+  .phrase-note {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin: 4px 0 0 0;
+    font-style: italic;
+    line-height: 1.6;
+  }
+  .phrase-save {
+    flex-shrink: 0;
+    padding: 7px 13px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s ease;
+  }
+  .phrase-save:hover { background: var(--accent-dark); }
+  .phrase-save.saved {
+    background: var(--bg-tertiary);
+    color: var(--text-muted);
+    cursor: default;
+  }
+
+  .next-btn {
+    width: 100%;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    padding: 16px;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: inherit;
+    margin-top: 24px;
+    box-shadow: 0 4px 16px rgba(212,145,90,0.30);
+  }
+
+  .demo-banner {
+    background: linear-gradient(135deg, rgba(201,169,74,0.15), rgba(176,116,66,0.15));
+    border: 1px solid rgba(201,169,74,0.4);
+    color: #6b5526;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 12px;
+    line-height: 1.7;
+    margin: 0 20px 12px;
+  }
+  .demo-banner b { color: #4a3a18; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--text-primary);
+    color: var(--bg-card);
+    padding: 12px 20px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    z-index: 100;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+</style>
+</head>
+<body>
+<div class="preview-note">📱 Premium feature: 英語ロケール時の英語学習モード（Lesson 20: MECE / Step 1）</div>
+<div class="app">
+  <header class="header">
+    <button class="header-back">‹</button>
+    <span class="header-title">MECE — Logical Thinking</span>
+    <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); letter-spacing: 1.4px;">2/12</span>
+  </header>
+  <div class="lesson-progress"><div class="lesson-progress-fill"></div></div>
+
+  <div class="demo-banner">
+    👆 <b>このモックアップは操作できます</b>。下の「日本語訳」「フレーズを学ぶ」を押して、英語学習モードの動きを確認してください。
+  </div>
+
+  <!-- English-learning toolbar (only visible when premium + en locale + annotations exist) -->
+  <div class="en-toolbar" role="toolbar" aria-label="English learning tools">
+    <button id="btnTranslation" type="button" class="en-toolbar-btn" aria-pressed="false">
+      <span aria-hidden="true">あ</span>
+      <span id="btnTranslationLabel">Show Japanese</span>
+      <span class="en-toolbar-badge">Premium</span>
+    </button>
+    <button id="btnPhrases" type="button" class="en-toolbar-btn" aria-pressed="false">
+      <span aria-hidden="true">📖</span>
+      <span id="btnPhrasesLabel">Study phrases</span>
+      <span class="en-toolbar-badge">Premium</span>
+    </button>
+  </div>
+
+  <div class="lesson-content">
+    <h2 class="explain-title">Four ways to break things down MECE</h2>
+    <p id="trTitle" class="ja-translation ja-translation-title">MECEに分解する4つの方法</p>
+
+    <div class="explain-body">
+      <p>There are four common patterns for MECE decomposition.</p>
+      <p id="tr1" class="ja-translation">MECE分解には4つの代表的なパターンがあります。</p>
+
+      <p class="label">[1] Component breakdown (formula-style)</p>
+      <p id="tr2a" class="ja-translation ja-translation-title">[1] 要素分解（数式型）</p>
+      <p>Split a whole into its mathematical components.</p>
+      <p>Examples: Revenue = customers × average order value / Profit = Revenue − Cost</p>
+      <p id="tr2b" class="ja-translation">全体を数式の構成要素に分ける。<br>例：売上 = 顧客数 × 平均客単価／利益 = 売上 − コスト</p>
+
+      <p class="label">[2] Time sequence</p>
+      <p id="tr3a" class="ja-translation ja-translation-title">[2] 時系列</p>
+      <p>Split by stages over time.</p>
+      <p>Example: Buying journey = Awareness → Interest → Consideration → Purchase → Repeat</p>
+      <p id="tr3b" class="ja-translation">時間の段階で分ける。<br>例：購買ジャーニー = 認知 → 興味 → 検討 → 購入 → リピート</p>
+
+      <p class="label">[3] Opposing concepts</p>
+      <p id="tr4a" class="ja-translation ja-translation-title">[3] 対立概念</p>
+      <p>Split by binary or near-binary categories.</p>
+      <p>Examples: Domestic / International, Existing / New, Online / Offline</p>
+      <p id="tr4b" class="ja-translation">二項対立または近い分類で分ける。<br>例：国内／海外、既存／新規、オンライン／オフライン</p>
+
+      <p class="label">[4] Established framework</p>
+      <p id="tr5a" class="ja-translation ja-translation-title">[4] 既存フレームワーク</p>
+      <p>Use a known framework as the cut.</p>
+      <p>Examples: 3C (Customer, Competitor, Company), 4P (Product, Price, Place, Promotion)</p>
+      <p id="tr5b" class="ja-translation">既知のフレームワークで切る。<br>例：3C（顧客・競合・自社）、4P（製品・価格・流通・販促）</p>
+
+      <p style="margin-top: 18px;">Pick whichever pattern gives the clearest, least-overlapping cut for your problem.</p>
+      <p id="tr6" class="ja-translation">問題に対して最も明確で、重複の少ない切り口を選ぼう。</p>
+    </div>
+
+    <!-- Phrases panel -->
+    <div id="phrasesPanel" class="phrases" role="region" aria-label="Key phrases">
+      <div class="phrases-header">
+        <span class="phrases-title">📖 重要フレーズ</span>
+        <span class="phrases-hint">保存ボタンで自動的にフラッシュカードに追加されます</span>
+      </div>
+      <ul class="phrases-list" id="phrasesList">
+        <!-- populated by JS -->
+      </ul>
+    </div>
+
+    <button class="next-btn">次へ</button>
+  </div>
+</div>
+
+<div id="toast" class="toast">フラッシュカードに追加しました</div>
+
+<script>
+  const phrases = [
+    { en: 'break things down', ja: '物事を分解する', note: 'break A down または break down A。MECE分解の文脈で頻出。' },
+    { en: 'component breakdown', ja: '要素分解', note: '数式のように分解する手法。' },
+    { en: 'time sequence', ja: '時系列' },
+    { en: 'opposing concepts', ja: '対立概念' },
+    { en: 'established framework', ja: '既存フレームワーク', note: 'establish = 確立する、established = 確立された。' },
+    { en: 'whichever ... gives', ja: '〜を提供するものはどれでも', note: '関係詞 whichever。"pick whichever pattern gives the clearest cut"' },
+  ]
+
+  const saved = new Set()
+
+  // Render phrases list
+  const list = document.getElementById('phrasesList')
+  list.innerHTML = phrases.map((p, i) => `
+    <li class="phrase">
+      <div class="phrase-main">
+        <p class="phrase-en">${p.en}</p>
+        <p class="phrase-ja">${p.ja}</p>
+        ${p.note ? `<p class="phrase-note">${p.note}</p>` : ''}
+      </div>
+      <button class="phrase-save" data-idx="${i}">カードに保存</button>
+    </li>
+  `).join('')
+
+  // Toast
+  const toast = document.getElementById('toast')
+  let toastTimer = null
+  function showToast(msg) {
+    toast.textContent = msg
+    toast.classList.add('show')
+    clearTimeout(toastTimer)
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 1800)
+  }
+
+  // Save phrase
+  list.addEventListener('click', (e) => {
+    const btn = e.target.closest('.phrase-save')
+    if (!btn || btn.classList.contains('saved')) return
+    const idx = +btn.dataset.idx
+    saved.add(idx)
+    btn.classList.add('saved')
+    btn.textContent = '保存済み ✓'
+    showToast(`「${phrases[idx].en}」をフラッシュカードに追加しました`)
+  })
+
+  // Translation toggle
+  const btnTr = document.getElementById('btnTranslation')
+  const btnTrLabel = document.getElementById('btnTranslationLabel')
+  btnTr.addEventListener('click', () => {
+    const on = !btnTr.classList.contains('active')
+    btnTr.classList.toggle('active', on)
+    btnTr.setAttribute('aria-pressed', String(on))
+    btnTrLabel.textContent = on ? 'Hide Japanese' : 'Show Japanese'
+    document.querySelectorAll('.ja-translation').forEach(el => el.classList.toggle('show', on))
+  })
+
+  // Phrases toggle
+  const btnPh = document.getElementById('btnPhrases')
+  const btnPhLabel = document.getElementById('btnPhrasesLabel')
+  const phrasesPanel = document.getElementById('phrasesPanel')
+  btnPh.addEventListener('click', () => {
+    const on = !btnPh.classList.contains('active')
+    btnPh.classList.toggle('active', on)
+    btnPh.setAttribute('aria-pressed', String(on))
+    btnPhLabel.textContent = on ? 'Hide phrases' : 'Study phrases'
+    phrasesPanel.classList.toggle('show', on)
+    if (on) phrasesPanel.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  })
+</script>
+</body>
+</html>

@@ -1380,6 +1380,18 @@ const STRINGS: Record<Locale, Strings> = {
     'tutorial.step5.tag': 'スタート',
     'tutorial.step5.title': 'さっそくやってみよう！',
     'tutorial.step5.description': '最初の1問、フェルミ問題にチャレンジしてみよう。答えは何でもOK — まず考えることが大事だよ。',
+
+    // English learning mode (premium feature shown when locale === 'en')
+    'englishLearning.toolbarLabel': '英語学習ツール',
+    'englishLearning.showTranslation': '日本語訳を表示',
+    'englishLearning.hideTranslation': '日本語訳を隠す',
+    'englishLearning.showPhrases': 'フレーズを学ぶ',
+    'englishLearning.hidePhrases': 'フレーズを閉じる',
+    'englishLearning.phrasesLabel': '重要フレーズ',
+    'englishLearning.phrasesTitle': '重要フレーズ',
+    'englishLearning.phrasesHint': '保存ボタンで自動的にフラッシュカードに追加されます',
+    'englishLearning.savePhrase': 'カードに保存',
+    'englishLearning.phraseSaved': '保存済み',
   },
 
   en: {
@@ -2727,6 +2739,18 @@ const STRINGS: Record<Locale, Strings> = {
     'tutorial.step5.tag': 'Start',
     'tutorial.step5.title': "Let's give it a try!",
     'tutorial.step5.description': 'Take on your first Fermi problem. Any answer is fine — what matters is starting to think.',
+
+    // English learning mode (premium feature shown when locale === 'en')
+    'englishLearning.toolbarLabel': 'English learning tools',
+    'englishLearning.showTranslation': 'Show Japanese',
+    'englishLearning.hideTranslation': 'Hide Japanese',
+    'englishLearning.showPhrases': 'Study phrases',
+    'englishLearning.hidePhrases': 'Hide phrases',
+    'englishLearning.phrasesLabel': 'Key phrases',
+    'englishLearning.phrasesTitle': 'Key phrases',
+    'englishLearning.phrasesHint': 'Saved phrases are added to your flashcards automatically.',
+    'englishLearning.savePhrase': 'Save card',
+    'englishLearning.phraseSaved': 'Saved',
   },
 }
 
