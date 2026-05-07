@@ -519,7 +519,8 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 14px;
+  min-height: 44px;
+  padding: 10px 16px;
   border: 1px solid var(--border);
   border-radius: 999px;
   background: var(--bg-card);
@@ -537,6 +538,22 @@
   border-color: var(--accent-dark);
   color: var(--accent-dark);
   font-weight: 600;
+}
+
+.ls-en-toolbar-count {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.7333rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  font-feature-settings: "tnum";
+}
+.ls-en-toolbar-count strong {
+  font-size: 0.9333rem;
+  color: var(--accent-dark);
+  font-weight: 800;
 }
 
 .ls-en-translation {
@@ -665,7 +682,8 @@
 
 .ls-en-phrase-save {
   flex-shrink: 0;
-  padding: 6px 12px;
+  min-height: 44px;
+  padding: 10px 16px;
   background: var(--accent);
   color: #fff;
   border: none;
@@ -694,4 +712,133 @@
   .ls-en-phrase-en {
     font-size: 1.05rem;
   }
+}
+
+/* ===== Inline phrase tap-to-translate (English-learning mode) ===== */
+.ls-en-phrase-mark {
+  background: linear-gradient(180deg, transparent 65%, var(--accent-soft) 65%);
+  padding: 0 2px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: background 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+  text-decoration: none;
+  color: inherit;
+}
+.ls-en-phrase-mark:hover {
+  background: linear-gradient(180deg, transparent 60%, var(--accent-glow) 60%);
+}
+.ls-en-phrase-mark:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+.ls-en-phrase-mark.saved {
+  background: linear-gradient(180deg, transparent 65%, var(--success-soft) 65%);
+}
+
+/* ===== Phrase popover ===== */
+.ls-en-popover-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: transparent;
+}
+.ls-en-popover {
+  position: absolute;
+  z-index: 100;
+  background: var(--text-primary);
+  color: #ffffff;
+  padding: 14px 16px;
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+  font-family: var(--sans);
+  animation: ls-en-pop-in 0.18s ease-out;
+}
+@keyframes ls-en-pop-in {
+  from { opacity: 0; transform: scale(0.92) translateY(4px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+/* Arrow: down-pointing when popover is below the trigger (default),
+   up-pointing when flipped above. */
+.ls-en-popover::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 24px;
+  width: 12px;
+  height: 12px;
+  background: var(--text-primary);
+  transform: rotate(45deg);
+  border-radius: 2px;
+}
+.ls-en-popover.flipped::before {
+  top: auto;
+  bottom: -6px;
+}
+.ls-en-popover-close {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 700;
+  font-family: inherit;
+  line-height: 1;
+}
+.ls-en-popover-close:hover { background: rgba(255, 255, 255, 0.22); }
+.ls-en-popover-en {
+  font-size: 0.9333rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  padding-right: 28px;
+}
+.ls-en-popover-ja {
+  font-size: 0.8667rem;
+  color: rgba(255, 255, 255, 0.92);
+  font-weight: 500;
+  line-height: 1.5;
+}
+.ls-en-popover-note {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.7867rem;
+  font-style: italic;
+  line-height: 1.5;
+}
+.ls-en-popover-save {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 12px;
+  padding: 12px 14px;
+  background: var(--accent);
+  color: var(--accent-fg, #fff);
+  border: none;
+  border-radius: 10px;
+  font-size: 0.7867rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s ease;
+}
+.ls-en-popover-save:hover:not(:disabled) { background: var(--accent-dark); }
+.ls-en-popover-save.saved,
+.ls-en-popover-save:disabled {
+  background: var(--success);
+  color: #fff;
+  cursor: default;
+  opacity: 0.85;
+}
+.ls-en-popover-save:focus-visible,
+.ls-en-popover-close:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
 }

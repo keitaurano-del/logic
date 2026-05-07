@@ -1393,9 +1393,12 @@ const STRINGS: Record<Locale, Strings> = {
     'englishLearning.hidePhrases': 'フレーズを閉じる',
     'englishLearning.phrasesLabel': '重要フレーズ',
     'englishLearning.phrasesTitle': '重要フレーズ',
-    'englishLearning.phrasesHint': '保存ボタンで自動的にフラッシュカードに追加されます',
+    'englishLearning.phrasesHint': '本文の下線フレーズもタップできます。保存はフラッシュカードに自動反映されます。',
     'englishLearning.savePhrase': 'カードに保存',
     'englishLearning.phraseSaved': '保存済み',
+    'englishLearning.popoverLabel': 'フレーズの意味',
+    'englishLearning.savedCountLabel': '今回のレッスンで {count} 枚のフレーズを保存済み',
+    'englishLearning.savedCountSuffix': '枚保存',
   },
 
   en: {
@@ -2757,9 +2760,12 @@ const STRINGS: Record<Locale, Strings> = {
     'englishLearning.hidePhrases': 'Hide phrases',
     'englishLearning.phrasesLabel': 'Key phrases',
     'englishLearning.phrasesTitle': 'Key phrases',
-    'englishLearning.phrasesHint': 'Saved phrases are added to your flashcards automatically.',
+    'englishLearning.phrasesHint': 'Tap underlined phrases in the body too. Saved phrases sync to your flashcards automatically.',
     'englishLearning.savePhrase': 'Save card',
     'englishLearning.phraseSaved': 'Saved',
+    'englishLearning.popoverLabel': 'Phrase meaning',
+    'englishLearning.savedCountLabel': '{count} phrases saved this lesson',
+    'englishLearning.savedCountSuffix': ' saved',
   },
 }
 

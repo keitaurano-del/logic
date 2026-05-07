@@ -1,4 +1,6 @@
-import { useState, useRef, useMemo, type ComponentType } from 'react'
+import { useState, useRef, useMemo, useEffect, useLayoutEffect, type ComponentType, type MouseEvent as ReactMouseEvent, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
+import { BookOpenIcon } from './icons'
 import {
   MecePatternsDiagram,
   MeceCaseDiagram,
@@ -62,6 +64,89 @@ type Props = {
   onNextLesson?: () => void
 }
 
+// Persisted toggle state for the English-learning helpers. Keys are kept
+// outside the component so SSR-safe and shared across re-mounts.
+const TOGGLE_STORAGE_KEY = 'logic-en-toggles'
+type ToggleKey = 'translation' | 'phrases'
+
+function readToggle(key: ToggleKey): boolean {
+  try {
+    const raw = localStorage.getItem(TOGGLE_STORAGE_KEY)
+    if (!raw) return false
+    const parsed = JSON.parse(raw) as Partial<Record<ToggleKey, boolean>>
+    return !!parsed[key]
+  } catch { return false }
+}
+
+function writeToggle(key: ToggleKey, value: boolean): void {
+  try {
+    const raw = localStorage.getItem(TOGGLE_STORAGE_KEY)
+    const parsed = (raw ? JSON.parse(raw) : {}) as Partial<Record<ToggleKey, boolean>>
+    parsed[key] = value
+    localStorage.setItem(TOGGLE_STORAGE_KEY, JSON.stringify(parsed))
+  } catch { /* */ }
+}
+
+// Wrap every occurrence of each phrase in `text` with a clickable span.
+// Longer phrases take priority over shorter ones if they overlap, so a phrase
+// like "Mutually Exclusive" is preferred over a sub-match like "Exclusive".
+function renderEnText(
+  text: string,
+  phrases: Phrase[] | undefined,
+  onTap: (p: Phrase, e: ReactMouseEvent<HTMLSpanElement>) => void,
+  savedKeys: Set<string>,
+): ReactNode {
+  if (!phrases || phrases.length === 0) return text
+  const matches: { phrase: Phrase; start: number; end: number }[] = []
+  // Sort phrases by length descending so longer ones take precedence on overlap
+  const sortedPhrases = [...phrases].sort((a, b) => b.en.length - a.en.length)
+  for (const p of sortedPhrases) {
+    let idx = text.indexOf(p.en)
+    while (idx >= 0) {
+      matches.push({ phrase: p, start: idx, end: idx + p.en.length })
+      idx = text.indexOf(p.en, idx + p.en.length)
+    }
+  }
+  if (matches.length === 0) return text
+  // Sort by start asc, then by length desc, then drop overlaps
+  matches.sort((a, b) => a.start - b.start || (b.end - b.start) - (a.end - a.start))
+  const filtered: typeof matches = []
+  let lastEnd = 0
+  for (const m of matches) {
+    if (m.start >= lastEnd) {
+      filtered.push(m)
+      lastEnd = m.end
+    }
+  }
+  const out: ReactNode[] = []
+  let cursor = 0
+  filtered.forEach((m, i) => {
+    if (m.start > cursor) out.push(text.slice(cursor, m.start))
+    const phrase = m.phrase
+    const saved = savedKeys.has(phrase.en)
+    out.push(
+      <span
+        key={`p${i}-${m.start}`}
+        className={`ls-en-phrase-mark${saved ? ' saved' : ''}`}
+        onClick={(e) => onTap(phrase, e)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            onTap(phrase, e as unknown as ReactMouseEvent<HTMLSpanElement>)
+          }
+        }}
+        role="button"
+        tabIndex={0}
+      >
+        {text.slice(m.start, m.end)}
+      </span>,
+    )
+    cursor = m.end
+  })
+  if (cursor < text.length) out.push(text.slice(cursor))
+  return out
+}
+
 export default function Lesson({ lesson, onBack, onComplete, onNextLesson }: Props) {
   const [currentStep, setCurrentStep] = useState(0)
   const [selectedOption, setSelectedOption] = useState<number | null>(null)
@@ -69,9 +154,14 @@ export default function Lesson({ lesson, onBack, onComplete, onNextLesson }: Pro
   const [correctCount, setCorrectCount] = useState(0)
   const [finished, setFinished] = useState(false)
   const [showReport, setShowReport] = useState(false)
-  const [showTranslation, setShowTranslation] = useState(false)
-  const [showPhrases, setShowPhrases] = useState(false)
+  // Persist English-learning toggle state across steps and sessions so the
+  // learner doesn't have to re-enable translation on every step.
+  const [showTranslation, setShowTranslation] = useState(() => readToggle('translation'))
+  const [showPhrases, setShowPhrases] = useState(() => readToggle('phrases'))
+  useEffect(() => writeToggle('translation', showTranslation), [showTranslation])
+  useEffect(() => writeToggle('phrases', showPhrases), [showPhrases])
   const [savedPhrases, setSavedPhrases] = useState<Set<string>>(new Set())
+  const [activePhrase, setActivePhrase] = useState<{ phrase: Phrase; rect: DOMRect; trigger: HTMLElement } | null>(null)
   const wrongAnswersRef = useRef<{
     question: string
     correctAnswer: string
@@ -100,6 +190,35 @@ export default function Lesson({ lesson, onBack, onComplete, onNextLesson }: Pro
     savePhraseToFlashcards(phrase, lesson.id, lesson.title)
     setSavedPhrases((prev) => new Set(prev).add(phrase.en))
   }
+
+  const handleTapPhrase = (phrase: Phrase, e: ReactMouseEvent<HTMLSpanElement>) => {
+    e.stopPropagation()
+    const target = e.currentTarget as HTMLElement
+    setActivePhrase({ phrase, rect: target.getBoundingClientRect(), trigger: target })
+  }
+
+  const closePhrase = () => {
+    const trigger = activePhrase?.trigger
+    setActivePhrase(null)
+    // Restore focus to the trigger so keyboard users return to where they were
+    requestAnimationFrame(() => trigger?.focus())
+  }
+
+  // Close popover on Escape
+  useEffect(() => {
+    if (!activePhrase) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closePhrase()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+    // closePhrase is stable enough; tracking it would re-bind on every render
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activePhrase])
+
+  // Helper applied only when englishMode + step has phrases
+  const phrases = stepAnnotation?.phrases
+  const renderText = (text: string): ReactNode => englishMode ? renderEnText(text, phrases, handleTapPhrase, savedPhrases) : text
 
   const handleAnswer = (index: number) => {
     if (showResult) return
@@ -151,8 +270,9 @@ export default function Lesson({ lesson, onBack, onComplete, onNextLesson }: Pro
       setCurrentStep((s) => s + 1)
       setSelectedOption(null)
       setShowResult(false)
-      setShowTranslation(false)
-      setShowPhrases(false)
+      // Do NOT reset showTranslation / showPhrases — keep the user's preferences
+      // for the duration of the lesson and across sessions (persisted via localStorage).
+      setActivePhrase(null)
     }
   }
 
@@ -254,9 +374,18 @@ export default function Lesson({ lesson, onBack, onComplete, onNextLesson }: Pro
               onClick={() => setShowPhrases((v) => !v)}
               aria-pressed={showPhrases}
             >
-              <span aria-hidden="true">📖</span>
+              <BookOpenIcon width={14} height={14} aria-hidden="true" />
               {showPhrases ? t('englishLearning.hidePhrases') : t('englishLearning.showPhrases')}
             </button>
+          )}
+          {savedPhrases.size > 0 && (
+            <span
+              className="ls-en-toolbar-count"
+              aria-label={t('englishLearning.savedCountLabel', { count: savedPhrases.size })}
+            >
+              <strong>{savedPhrases.size}</strong>
+              {t('englishLearning.savedCountSuffix')}
+            </span>
           )}
         </div>
       )}
@@ -266,14 +395,14 @@ export default function Lesson({ lesson, onBack, onComplete, onNextLesson }: Pro
         {step.type === 'explain' ? (
           <div className="ls-explain">
             <div className="ls-explain-header">
-              <h3>{step.title}</h3>
+              <h3>{renderText(step.title)}</h3>
               {showTranslation && stepAnnotation?.titleJa && (
                 <p className="ls-en-translation ls-en-translation-title">{stepAnnotation.titleJa}</p>
               )}
             </div>
             <div className="ls-explain-body">
               {step.content.split('\n').map((line, i) => (
-                <p key={i}>{line || '\u00A0'}</p>
+                <p key={i}>{line ? renderText(line) : '\u00A0'}</p>
               ))}
               {showTranslation && stepAnnotation?.contentJa && (
                 <div className="ls-en-translation ls-en-translation-body">
@@ -301,7 +430,7 @@ export default function Lesson({ lesson, onBack, onComplete, onNextLesson }: Pro
         ) : step.type === 'quiz' ? (
           <div className="ls-quiz">
             <div className="ls-quiz-header">
-              <h3>{step.question}</h3>
+              <h3>{renderText(step.question)}</h3>
             </div>
             {showTranslation && stepAnnotation?.questionJa && (
               <p className="ls-en-translation ls-en-translation-title">{stepAnnotation.questionJa}</p>
@@ -349,7 +478,7 @@ export default function Lesson({ lesson, onBack, onComplete, onNextLesson }: Pro
                     {step.options[selectedOption!].correct ? t('lesson.correctMark') : t('lesson.wrongMark')}
                   </p>
                 </div>
-                <p className="ls-feedback-text">{step.explanation}</p>
+                <p className="ls-feedback-text">{renderText(step.explanation)}</p>
                 {showTranslation && stepAnnotation?.explanationJa && (
                   <p className="ls-en-translation ls-en-translation-feedback">{stepAnnotation.explanationJa}</p>
                 )}
@@ -382,7 +511,109 @@ export default function Lesson({ lesson, onBack, onComplete, onNextLesson }: Pro
           onClose={() => setShowReport(false)}
         />
       )}
+      {activePhrase && (
+        <PhrasePopover
+          phrase={activePhrase.phrase}
+          rect={activePhrase.rect}
+          saved={savedPhrases.has(activePhrase.phrase.en)}
+          onSave={() => {
+            handleSavePhrase(activePhrase.phrase)
+            closePhrase()
+          }}
+          onClose={closePhrase}
+        />
+      )}
     </div>
+  )
+}
+
+type PhrasePopoverProps = {
+  phrase: Phrase
+  rect: DOMRect
+  saved: boolean
+  onSave: () => void
+  onClose: () => void
+}
+
+function PhrasePopover({ phrase, rect, saved, onSave, onClose }: PhrasePopoverProps) {
+  const popRef = useRef<HTMLDivElement | null>(null)
+  const saveBtnRef = useRef<HTMLButtonElement | null>(null)
+  const [pos, setPos] = useState<{ top: number; left: number; flipped: boolean } | null>(null)
+
+  // Compute position after first paint so we have the popover's actual height.
+  // Using useLayoutEffect avoids a 1-frame visible jump.
+  useLayoutEffect(() => {
+    const el = popRef.current
+    if (!el) return
+    const POP_WIDTH = 280
+    const MARGIN = 12
+    const GAP = 10
+    const viewportW = window.innerWidth
+    const viewportH = window.innerHeight
+    const popHeight = el.offsetHeight
+
+    // Horizontal: clamp within viewport
+    let left = rect.left
+    if (left + POP_WIDTH > viewportW - MARGIN) left = viewportW - POP_WIDTH - MARGIN
+    if (left < MARGIN) left = MARGIN
+
+    // Vertical: prefer below, flip above if it would overflow
+    const wouldOverflowBelow = rect.bottom + GAP + popHeight > viewportH - MARGIN
+    const flipped = wouldOverflowBelow && rect.top - GAP - popHeight >= MARGIN
+    const top = flipped ? rect.top - GAP - popHeight : rect.bottom + GAP
+
+    // Convert viewport-relative to document-relative for position: absolute
+    setPos({ top: top + window.scrollY, left: left + window.scrollX, flipped })
+  }, [rect])
+
+  // Auto-focus the primary action so keyboard users land inside the dialog.
+  useEffect(() => {
+    saveBtnRef.current?.focus()
+  }, [])
+
+  // Close on outside scroll within the lesson body — keeps the popover anchored
+  // to the originally tapped phrase rather than drifting away.
+  useEffect(() => {
+    const onScroll = () => onClose()
+    window.addEventListener('scroll', onScroll, { passive: true, capture: true })
+    return () => window.removeEventListener('scroll', onScroll, { capture: true })
+  }, [onClose])
+
+  if (typeof document === 'undefined') return null
+
+  return createPortal(
+    <>
+      <div className="ls-en-popover-backdrop" onClick={onClose} aria-hidden="true" />
+      <div
+        ref={popRef}
+        className={`ls-en-popover${pos?.flipped ? ' flipped' : ''}`}
+        role="dialog"
+        aria-modal="true"
+        aria-label={t('englishLearning.popoverLabel')}
+        style={pos ? { top: pos.top, left: pos.left, width: 280 } : { visibility: 'hidden', top: 0, left: 0, width: 280 }}
+      >
+        <button
+          className="ls-en-popover-close"
+          onClick={onClose}
+          aria-label={t('common.cancel')}
+          type="button"
+        >×</button>
+        <div className="ls-en-popover-en">{phrase.en}</div>
+        <div className="ls-en-popover-ja">{phrase.ja}</div>
+        {phrase.note && <div className="ls-en-popover-note">{phrase.note}</div>}
+        <button
+          ref={saveBtnRef}
+          type="button"
+          className={`ls-en-popover-save${saved ? ' saved' : ''}`}
+          onClick={onSave}
+          disabled={saved}
+          aria-label={saved ? t('englishLearning.phraseSaved') : t('englishLearning.savePhrase')}
+        >
+          {saved ? t('englishLearning.phraseSaved') : t('englishLearning.savePhrase')}
+        </button>
+      </div>
+    </>,
+    document.body,
   )
 }
 
