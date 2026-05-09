@@ -26,7 +26,7 @@ export function StudyTimeScreen({ onBack }: StudyTimeScreenProps) {
 
   // Build last 30 days bar chart
   const today = new Date()
-  const studySet = new Set(studyDates)
+  const studySet = useMemo(() => new Set(studyDates), [studyDates])
   const last30 = useMemo(() => {
     return Array.from({ length: 30 }, (_, i) => {
       const d = new Date(today)
@@ -35,7 +35,7 @@ export function StudyTimeScreen({ onBack }: StudyTimeScreenProps) {
       return { ds, active: studySet.has(ds) }
     })
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [studySet])
 
   // Recent 7 days list
   const recentDays = useMemo(() => {
@@ -46,7 +46,7 @@ export function StudyTimeScreen({ onBack }: StudyTimeScreenProps) {
       return { ds, active: studySet.has(ds) }
     })
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [studySet])
 
   const activeDaysLast30 = last30.filter((d) => d.active).length
 

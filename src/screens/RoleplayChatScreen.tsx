@@ -53,6 +53,12 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
   const incrementedRef = useRef(false)
   const startedRef = useRef(!!hasScript) // スクリプト駆動は initializer で開始済み
   const scrollRef = useRef<HTMLDivElement>(null)
+  const abortRef = useRef<AbortController | null>(null)
+
+  // アンマウント時に進行中のfetchをキャンセル
+  useEffect(() => {
+    return () => { abortRef.current?.abort() }
+  }, [])
 
   // setup をメモ化（situation が変わらない限り再生成しない）
   const setup = useMemo(
@@ -63,6 +69,10 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
   // API駆動: ターン取得（useCallback で安定した参照を保つ）
   const fetchTurn = useCallback(async (history: Msg[], turn: number) => {
     if (!setup) return
+    // 前のリクエストをキャンセルして新しいコントローラを作成
+    abortRef.current?.abort()
+    abortRef.current = new AbortController()
+    const signal = abortRef.current.signal
     setLoading(true)
     setChoices([])
     try {
@@ -77,6 +87,7 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
             maxTurns: MAX_TURNS,
           }),
         ),
+        signal,
       })
       const data = await res.json()
       if (data.partner) {
@@ -84,6 +95,7 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
         setChoices(Array.isArray(data.choices) ? data.choices : [])
       }
     } catch (e) {
+      if (e instanceof DOMException && e.name === 'AbortError') return // アンマウント後のキャンセルは無視
       console.error(e)
       setMessages([
         ...history,
@@ -173,6 +185,9 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
   const pickChoice = hasScript ? pickScriptChoice : pickApiChoice
 
   const finish = async (finalMessages: Msg[]) => {
+    abortRef.current?.abort()
+    abortRef.current = new AbortController()
+    const signal = abortRef.current.signal
     setScoring(true)
     setFinished(true)
     try {
@@ -181,16 +196,19 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(localeBody({ messages: finalMessages, setup: setup! })),
+          signal,
         }).then((r) => r.json()),
         fetch(`${API_BASE}/api/roleplay/summary`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(localeBody({ messages: finalMessages, setup: setup! })),
+          signal,
         }).then((r) => r.json()),
       ])
       if (scoreRes.scores) setScore(scoreRes)
       if (sumRes.summary) setSummary(sumRes)
     } catch (e) {
+      if (e instanceof DOMException && (e as DOMException).name === 'AbortError') return
       console.error(e)
     } finally {
       setScoring(false)

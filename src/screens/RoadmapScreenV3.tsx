@@ -442,7 +442,6 @@ function SearchPanel(p: {
   onPickKeyword: (k: string) => void
 }) {
   // p.query が変わるたびに最新の検索履歴を取得（useEffect の同期 setState を避けるため useMemo で計算）
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const history = useMemo(() => loadSearchHistory(), [p.query])
 
   const all = getAllLessonsFlat()
