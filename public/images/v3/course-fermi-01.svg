@@ -54,14 +54,14 @@
   <rect width="800" height="400" filter="url(#grain-f1)" opacity="0.55"/>
 
   <!-- Faded background globe (blueprint memory of "world scale") -->
-  <g transform="translate(660,110)" opacity="0.55" filter="url(#softBlur-f1)">
-    <circle cx="0" cy="0" r="86" fill="url(#globe-f1)"/>
-    <g fill="none" stroke="#7AAEFF" stroke-width="0.8" opacity="0.55">
-      <ellipse cx="0" cy="0" rx="86" ry="28"/>
-      <ellipse cx="0" cy="0" rx="86" ry="58"/>
-      <ellipse cx="0" cy="0" rx="28" ry="86"/>
-      <ellipse cx="0" cy="0" rx="58" ry="86"/>
-      <line x1="-86" y1="0" x2="86" y2="0"/>
+  <g transform="translate(125,115)" opacity="0.7" filter="url(#softBlur-f1)">
+    <circle cx="0" cy="0" r="92" fill="url(#globe-f1)"/>
+    <g fill="none" stroke="#7AAEFF" stroke-width="0.9" opacity="0.6">
+      <ellipse cx="0" cy="0" rx="92" ry="30"/>
+      <ellipse cx="0" cy="0" rx="92" ry="62"/>
+      <ellipse cx="0" cy="0" rx="30" ry="92"/>
+      <ellipse cx="0" cy="0" rx="62" ry="92"/>
+      <line x1="-92" y1="0" x2="92" y2="0"/>
     </g>
   </g>
 
@@ -122,12 +122,11 @@
           stroke="#C49A3C" stroke-width="1.8" opacity="0.85"
           stroke-linecap="round" stroke-dasharray="1 8"/>
 
-    <!-- Result: ≈ 62.5兆 -->
-    <g font-family="'Helvetica Neue','Hiragino Sans','Yu Gothic',sans-serif">
-      <text x="-120" y="80" text-anchor="middle" font-size="34" font-weight="700" fill="#7B2D26">≈</text>
-      <text x="35"   y="80" text-anchor="middle" font-size="34" font-weight="700" fill="#7B2D26">¥62.5</text>
-      <text x="155"  y="80" text-anchor="middle" font-size="28" font-weight="600" fill="#7B2D26">兆</text>
-    </g>
+    <!-- Result: ≈ ¥62.5兆 (centered as one unit) -->
+    <text x="0" y="82" text-anchor="middle"
+          font-family="'Helvetica Neue','Hiragino Sans','Yu Gothic',sans-serif"
+          font-size="36" font-weight="700" fill="#7B2D26"
+          letter-spacing="2">≈ ¥62.5 兆</text>
 
     <!-- Margin doodle: small circle with a dot (a lightbulb / abstract idea mark) -->
     <g stroke="#3B4258" stroke-width="0.9" fill="none" opacity="0.32">
@@ -145,22 +144,22 @@
     </g>
   </g>
 
-  <!-- Pencil resting on lower-right, partially overlapping paper -->
-  <g transform="translate(580,318) rotate(28)">
-    <!-- Wood body -->
-    <rect x="-78" y="-5" width="125" height="9" rx="1.5" fill="url(#pencil-f1)"/>
-    <!-- Eraser end (warm amber) -->
-    <rect x="-86" y="-5" width="9"  height="9" rx="1.8" fill="#C49A3C"/>
-    <!-- Metal ferrule -->
-    <rect x="-77" y="-5" width="3"  height="9" fill="#A89466"/>
-    <!-- Wood tip -->
-    <polygon points="47,-5 47,4 67,0" fill="#A89466"/>
-    <!-- Graphite tip -->
-    <polygon points="60,-2 60,1 67,0" fill="#1A2238"/>
-    <!-- Highlight stripe -->
-    <line x1="-74" y1="-3" x2="46" y2="-3" stroke="#FFFFFF" stroke-width="0.7" opacity="0.18"/>
+  <!-- Pencil lying on the desk below the card (out of formula's way) -->
+  <g transform="translate(610,378) rotate(18)">
     <!-- Pencil shadow -->
-    <ellipse cx="-15" cy="9" rx="55" ry="2" fill="#000000" opacity="0.35"/>
+    <ellipse cx="-12" cy="10" rx="62" ry="2.2" fill="#000000" opacity="0.4"/>
+    <!-- Wood body -->
+    <rect x="-82" y="-5" width="130" height="9" rx="1.5" fill="url(#pencil-f1)"/>
+    <!-- Eraser end (warm amber) -->
+    <rect x="-90" y="-5" width="9"  height="9" rx="1.8" fill="#C49A3C"/>
+    <!-- Metal ferrule -->
+    <rect x="-81" y="-5" width="3"  height="9" fill="#A89466"/>
+    <!-- Wood tip -->
+    <polygon points="48,-5 48,4 68,0" fill="#A89466"/>
+    <!-- Graphite tip -->
+    <polygon points="61,-2 61,1 68,0" fill="#1A2238"/>
+    <!-- Highlight stripe -->
+    <line x1="-78" y1="-3" x2="47" y2="-3" stroke="#FFFFFF" stroke-width="0.7" opacity="0.18"/>
   </g>
 
   <!-- Eraser shavings / desk dust -->
