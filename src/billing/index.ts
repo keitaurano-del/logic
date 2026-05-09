@@ -159,8 +159,9 @@ export async function restorePurchases(): Promise<PurchaseResult[]> {
 /**
  * Send a purchase token to the server for verification and subscription
  * activation. POSTs to `${API_BASE}/api/billing/verify`.
+ * Returns the server-calculated expiry date string (ISO 8601).
  */
-export async function verifyPurchase(request: BillingVerifyRequest): Promise<void> {
+export async function verifyPurchase(request: BillingVerifyRequest): Promise<{ currentPeriodEnd: string }> {
   const res = await fetch(`${API_BASE}/api/billing/verify`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -170,6 +171,10 @@ export async function verifyPurchase(request: BillingVerifyRequest): Promise<voi
     const err = (await res.json().catch(() => ({}))) as { error?: string }
     throw new Error(err.error ?? '購入の検証に失敗しました')
   }
+  const data = (await res.json()) as { currentPeriodEnd?: string }
+  // サーバーが返す有効期限を使う。フォールバックとして1年後を計算。
+  const currentPeriodEnd = data.currentPeriodEnd ?? new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString()
+  return { currentPeriodEnd }
 }
 
 // ---------------------------------------------------------------------------

@@ -11,7 +11,15 @@ type Stats = {
 function load(): Stats {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    if (raw) return JSON.parse(raw)
+    if (raw) {
+      const parsed = JSON.parse(raw) as Partial<Stats>
+      // 型チェック: スキーマ変更時に壊れたデータをデフォルトにフォールバック
+      return {
+        completedLessons: Array.isArray(parsed.completedLessons) ? parsed.completedLessons : [],
+        studyDates: Array.isArray(parsed.studyDates) ? parsed.studyDates : [],
+        studyTimeMs: typeof parsed.studyTimeMs === 'number' ? parsed.studyTimeMs : 0,
+      }
+    }
   } catch { /* ignore */ }
   return { completedLessons: [], studyDates: [], studyTimeMs: 0 }
 }
@@ -21,7 +29,21 @@ function save(stats: Stats) {
 }
 
 function today(): string {
-  return new Date().toISOString().slice(0, 10)
+  // UTC基準ではなくローカル時刻（日本時間）で日付を取得
+  const d = new Date()
+  const year = d.getFullYear()
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+/** 任意のUnixミリ秒をローカル日付文字列（YYYY-MM-DD）に変換 */
+function localDateStr(ms: number): string {
+  const d = new Date(ms)
+  const year = d.getFullYear()
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
 }
 
 export function recordCompletion(lessonKey: string) {
@@ -58,7 +80,13 @@ export function getStreak(): number {
   if (dates.length === 0) return 0
 
   const todayStr = today()
-  const yesterdayStr = new Date(Date.now() - 86400000).toISOString().slice(0, 10)
+  const yesterdayStr = (() => {
+    const d = new Date(Date.now() - 86400000)
+    const year = d.getFullYear()
+    const month = String(d.getMonth() + 1).padStart(2, '0')
+    const day = String(d.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
+  })()
 
   // streak must include today or yesterday
   const last = dates[dates.length - 1]
@@ -181,11 +209,11 @@ export function getLessonStreak(): number {
   try {
     const s: LessonStreak = JSON.parse(localStorage.getItem(LESSON_STREAK_KEY) || '{}')
     if (!s.lastDate) return 0
-    const today = new Date().toISOString().slice(0, 10)
-    const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10)
-    const twoDaysAgo = new Date(Date.now() - 172800000).toISOString().slice(0, 10)
+    const todayStr = today()
+    const yesterday = localDateStr(Date.now() - 86400000)
+    const twoDaysAgo = localDateStr(Date.now() - 172800000)
     // 今日か昨日か一昨日（1日スキップOK = 最大2日空白まで）
-    if (s.lastDate === today || s.lastDate === yesterday || s.lastDate === twoDaysAgo) {
+    if (s.lastDate === todayStr || s.lastDate === yesterday || s.lastDate === twoDaysAgo) {
       return s.count
     }
     return 0
@@ -194,13 +222,13 @@ export function getLessonStreak(): number {
 
 export function recordLessonStreak() {
   try {
-    const today = new Date().toISOString().slice(0, 10)
+    const todayStr = today()
     const s: LessonStreak = JSON.parse(localStorage.getItem(LESSON_STREAK_KEY) || '{}')
-    if (s.lastDate === today) return // 今日は既にカウント済み
-    const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10)
-    const twoDaysAgo = new Date(Date.now() - 172800000).toISOString().slice(0, 10)
+    if (s.lastDate === todayStr) return // 今日は既にカウント済み
+    const yesterday = localDateStr(Date.now() - 86400000)
+    const twoDaysAgo = localDateStr(Date.now() - 172800000)
     const newCount = (s.lastDate === yesterday || s.lastDate === twoDaysAgo) ? (s.count || 0) + 1 : 1
-    localStorage.setItem(LESSON_STREAK_KEY, JSON.stringify({ count: newCount, lastDate: today }))
+    localStorage.setItem(LESSON_STREAK_KEY, JSON.stringify({ count: newCount, lastDate: todayStr }))
   } catch { /* */ }
 }
 
