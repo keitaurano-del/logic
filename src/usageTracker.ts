@@ -17,7 +17,20 @@ const DEFAULT: UsageState = {
 function load(): UsageState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    if (raw) return { ...DEFAULT, ...JSON.parse(raw) }
+    if (raw) {
+      const parsed = JSON.parse(raw) as Partial<UsageState>
+      // 型チェック: 壊れたデータはデフォルトにフォールバック
+      return {
+        daily: {
+          date: typeof parsed.daily?.date === 'string' ? parsed.daily.date : '',
+          count: typeof parsed.daily?.count === 'number' ? parsed.daily.count : 0,
+        },
+        monthly: {
+          month: typeof parsed.monthly?.month === 'string' ? parsed.monthly.month : '',
+          count: typeof parsed.monthly?.count === 'number' ? parsed.monthly.count : 0,
+        },
+      }
+    }
   } catch { /* */ }
   return { ...DEFAULT }
 }

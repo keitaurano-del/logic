@@ -233,14 +233,13 @@ export async function startCheckout(plan: SubscriptionPlan): Promise<void> {
   const productId = planToPlayProductId(plan)
   try {
     const purchase = await purchaseProduct(productId)
-    // Purchase successful - verify with server
-    await verifyPurchase({
+    // Purchase successful - verify with server and get server-calculated expiry
+    const { currentPeriodEnd } = await verifyPurchase({
       purchaseToken: purchase.purchaseToken,
       productId: purchase.productId,
     })
-    // Update local subscription state
-    const expiresAt = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString() // TODO: calculate from receipt
-    setPaidPlan(plan, expiresAt, purchase.purchaseToken)
+    // サーバーから返された有効期限を使用（クライアント側での計算を廃止）
+    setPaidPlan(plan, currentPeriodEnd, purchase.purchaseToken)
   } catch (error) {
     const message = error instanceof Error ? error.message : '購入に失敗しました'
     throw new Error(message)
@@ -253,12 +252,11 @@ export async function startBetaCampaignCheckout(): Promise<void> {
   const productId = PLAY_PRODUCTS.campaign_yearly
   try {
     const purchase = await purchaseProduct(productId)
-    await verifyPurchase({
+    const { currentPeriodEnd } = await verifyPurchase({
       purchaseToken: purchase.purchaseToken,
       productId: purchase.productId,
     })
-    const expiresAt = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString()
-    setPaidPlan(BETA_CAMPAIGN_PLAN, expiresAt, purchase.purchaseToken)
+    setPaidPlan(BETA_CAMPAIGN_PLAN, currentPeriodEnd, purchase.purchaseToken)
   } catch (error) {
     const message = error instanceof Error ? error.message : 'キャンペーン購入に失敗しました'
     throw new Error(message)

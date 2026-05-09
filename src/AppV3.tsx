@@ -222,6 +222,11 @@ function AppV3() {
       setAuthReady(true)
       clearTimeout(splashTimer)
       void hideSplash()
+    }).catch(() => {
+      // ネットワークエラー等でも必ずSplashを閉じてホームへ遷移させる
+      clearTimeout(splashTimer)
+      setAuthReady(true)
+      void hideSplash()
     })
     const unsub = onAuthChange(async (user) => {
       setCurrentUser(user)
@@ -237,7 +242,11 @@ function AppV3() {
         syncOnLogout()
       }
     })
-    return unsub
+    // splashTimer と authリスナーの両方をcleanup
+    return () => {
+      clearTimeout(splashTimer)
+      unsub()
+    }
   }, [])
 
   // 表示名: localStorage優先 → user_metadata → email
