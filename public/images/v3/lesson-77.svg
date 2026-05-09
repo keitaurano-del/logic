@@ -1,0 +1,353 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <!-- Ancient study: deep umber → warm dark wood -->
+    <linearGradient id="study-l77" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"  stop-color="#3A2A1A"/>
+      <stop offset="50%" stop-color="#28190E"/>
+      <stop offset="100%" stop-color="#160C04"/>
+    </linearGradient>
+
+    <!-- Oil lamp glow (upper-right, more saturated than fermi) -->
+    <radialGradient id="lamp-l77" cx="0.84" cy="0.18" r="0.7">
+      <stop offset="0%"   stop-color="#FFC65A" stop-opacity="0.65"/>
+      <stop offset="22%"  stop-color="#E89540" stop-opacity="0.40"/>
+      <stop offset="55%"  stop-color="#A85F2B" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#A85F2B" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Diagonal warm light rays -->
+    <linearGradient id="ray-l77" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"   stop-color="#FFC65A" stop-opacity="0.22"/>
+      <stop offset="40%"  stop-color="#FFC65A" stop-opacity="0.07"/>
+      <stop offset="100%" stop-color="#FFC65A" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Parchment: aged cream → warm orange-tan -->
+    <linearGradient id="parch-l77" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"  stop-color="#F0DFA8"/>
+      <stop offset="55%" stop-color="#DBC384"/>
+      <stop offset="100%" stop-color="#B89854"/>
+    </linearGradient>
+    <!-- Lamp warm cast on parchment top-right -->
+    <radialGradient id="parchWarm-l77" cx="0.92" cy="0.08" r="0.95">
+      <stop offset="0%"  stop-color="#FFC65A" stop-opacity="0.45"/>
+      <stop offset="55%" stop-color="#FFC65A" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#FFC65A" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Rolled-end shading -->
+    <linearGradient id="rollEnd-l77" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"  stop-color="#7C5A28"/>
+      <stop offset="50%" stop-color="#A88848"/>
+      <stop offset="100%" stop-color="#7C5A28"/>
+    </linearGradient>
+
+    <!-- Greek column gradient (faded warm grey) -->
+    <linearGradient id="col-l77" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"  stop-color="#5A4838" stop-opacity="0.7"/>
+      <stop offset="50%" stop-color="#8A7860" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#5A4838" stop-opacity="0.7"/>
+    </linearGradient>
+
+    <!-- Quill feather gradient -->
+    <linearGradient id="feather-l77" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"  stop-color="#E8D8A8"/>
+      <stop offset="50%" stop-color="#C8A878"/>
+      <stop offset="100%" stop-color="#A88848"/>
+    </linearGradient>
+
+    <!-- Brass / ink well -->
+    <radialGradient id="brass-l77" cx="0.4" cy="0.3" r="0.7">
+      <stop offset="0%"  stop-color="#D4A848"/>
+      <stop offset="60%" stop-color="#8A6028"/>
+      <stop offset="100%" stop-color="#3A2810"/>
+    </radialGradient>
+
+    <!-- Filters -->
+    <filter id="grain-l77" x="0%" y="0%" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="11"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.36  0 0 0 0 0.28  0 0 0 0 0.18  0 0 0 0.20 0"/>
+      <feComposite operator="in" in2="SourceGraphic"/>
+    </filter>
+    <filter id="parchGrain-l77" x="0%" y="0%" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="1.3" numOctaves="2" seed="5"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.50  0 0 0 0 0.38  0 0 0 0 0.20  0 0 0 0.22 0"/>
+      <feComposite operator="in" in2="SourceGraphic"/>
+    </filter>
+    <filter id="scrollShadow-l77" x="-15%" y="-15%" width="130%" height="135%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="11"/>
+      <feOffset dx="0" dy="14"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.6"/></feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softBlur-l77"><feGaussianBlur stdDeviation="2"/></filter>
+    <filter id="flameGlow-l77" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4"/>
+    </filter>
+
+    <!-- Parchment shape (irregular scroll body, both ends with rolled bumps) -->
+    <clipPath id="scrollShape-l77">
+      <path d="
+        M -240 -100
+        C -180 -106, -80 -103, 0 -105
+        C 80 -107, 180 -104, 240 -100
+        C 244 -50, 243 -10, 244 50
+        C 245 90, 244 100, 240 102
+        C 180 106, 80 102, 0 103
+        C -80 104, -180 107, -240 102
+        C -244 60, -243 10, -244 -50
+        C -245 -90, -244 -95, -240 -100
+        Z"/>
+    </clipPath>
+  </defs>
+
+  <!-- ───── Layer 1: Ancient study background ───── -->
+  <rect width="800" height="400" fill="url(#study-l77)"/>
+  <rect width="800" height="400" fill="url(#lamp-l77)"/>
+
+  <!-- Diagonal warm rays -->
+  <g opacity="0.85">
+    <polygon points="800,0 800,90 220,400 140,400" fill="url(#ray-l77)"/>
+    <polygon points="800,50 800,150 380,400 300,400" fill="url(#ray-l77)" opacity="0.7"/>
+    <polygon points="800,140 800,240 540,400 480,400" fill="url(#ray-l77)" opacity="0.5"/>
+  </g>
+
+  <!-- Wood-grain hints on desk surface -->
+  <g stroke="#1A0E04" stroke-width="0.5" opacity="0.35">
+    <line x1="0" y1="280" x2="800" y2="290"/>
+    <line x1="0" y1="320" x2="800" y2="328"/>
+    <line x1="0" y1="350" x2="800" y2="358"/>
+  </g>
+  <rect width="800" height="400" filter="url(#grain-l77)" opacity="0.55"/>
+
+  <!-- ───── Layer 2: Greek Doric column (left, faded) ───── -->
+  <g transform="translate(95,200)" opacity="0.78">
+    <!-- Capital (top block) -->
+    <rect x="-44" y="-180" width="88" height="10" fill="url(#col-l77)"/>
+    <rect x="-40" y="-170" width="80" height="6"  fill="#3A2810" opacity="0.5"/>
+    <!-- Echinus -->
+    <path d="M -38 -164 Q -32 -156, 0 -156 Q 32 -156, 38 -164 Z" fill="url(#col-l77)"/>
+    <!-- Shaft (fluted) -->
+    <rect x="-30" y="-156" width="60" height="320" fill="url(#col-l77)"/>
+    <g stroke="#3A2810" stroke-width="0.8" opacity="0.55">
+      <line x1="-22" y1="-150" x2="-22" y2="160"/>
+      <line x1="-12" y1="-150" x2="-12" y2="160"/>
+      <line x1="-2"  y1="-150" x2="-2"  y2="160"/>
+      <line x1="8"   y1="-150" x2="8"   y2="160"/>
+      <line x1="18"  y1="-150" x2="18"  y2="160"/>
+    </g>
+    <!-- Highlight from lamp on right side of shaft -->
+    <rect x="22" y="-156" width="8" height="320" fill="#FFC65A" opacity="0.18"/>
+    <!-- Base -->
+    <rect x="-40" y="160" width="80" height="6" fill="#3A2810" opacity="0.5"/>
+    <rect x="-44" y="166" width="88" height="10" fill="url(#col-l77)"/>
+    <!-- Soft halo around column -->
+    <rect x="-50" y="-186" width="100" height="368" filter="url(#softBlur-l77)" fill="#5A4838" opacity="0.18"/>
+  </g>
+
+  <!-- ───── Layer 3: Oil lamp (upper-right) — clay vessel with flame ───── -->
+  <g transform="translate(680,108)">
+    <!-- Lamp body (clay/brass) -->
+    <ellipse cx="0" cy="14" rx="48" ry="10" fill="#3A2810" opacity="0.55"/>
+    <path d="M -42 0 Q -48 -16, -28 -22 L 28 -22 Q 48 -16, 42 0 Q 38 12, 0 14 Q -38 12, -42 0 Z"
+          fill="url(#brass-l77)"/>
+    <!-- Wick housing -->
+    <path d="M 28 -22 L 56 -28 L 60 -18 L 36 -8 Z" fill="url(#brass-l77)"/>
+    <!-- Highlight band -->
+    <path d="M -32 -14 Q 0 -20, 32 -14" stroke="#F4D26A" stroke-width="1.2" opacity="0.7" fill="none" stroke-linecap="round"/>
+    <!-- Handle on left (loop) -->
+    <path d="M -42 -8 Q -58 -10, -56 -2 Q -50 4, -42 0" stroke="#8A6028" stroke-width="2.5" fill="none"/>
+    <!-- Flame -->
+    <g filter="url(#flameGlow-l77)">
+      <path d="M 50 -28 Q 56 -42, 60 -28 Q 56 -36, 52 -42 Q 48 -36, 50 -28 Z"
+            fill="#FFC65A" opacity="0.95"/>
+    </g>
+    <path d="M 50 -28 Q 56 -42, 60 -28 Q 56 -36, 52 -42 Q 48 -36, 50 -28 Z"
+          fill="#FFF0C4" opacity="0.95"/>
+    <ellipse cx="55" cy="-28" rx="3" ry="6" fill="#E8965D" opacity="0.7"/>
+  </g>
+
+  <!-- ───── Layer 4: Atmospheric dust motes / smoke from flame ───── -->
+  <g fill="#FFC65A">
+    <circle cx="730" cy="60"  r="0.7" opacity="0.45"/>
+    <circle cx="755" cy="80"  r="1.1" opacity="0.55"/>
+    <circle cx="710" cy="40"  r="0.6" opacity="0.40"/>
+    <circle cx="700" cy="20"  r="0.4" opacity="0.30"/>
+    <circle cx="680" cy="160" r="0.6" opacity="0.40"/>
+    <circle cx="600" cy="180" r="0.7" opacity="0.40"/>
+    <circle cx="540" cy="130" r="0.5" opacity="0.35"/>
+    <circle cx="640" cy="220" r="0.6" opacity="0.35"/>
+    <circle cx="450" cy="100" r="0.5" opacity="0.30"/>
+  </g>
+
+  <!-- ───── Layer 5: Parchment scroll (center, both ends rolled) ───── -->
+  <g transform="translate(400,210) rotate(-1)" filter="url(#scrollShadow-l77)">
+    <!-- Left rolled end -->
+    <g>
+      <ellipse cx="-242" cy="0" rx="20" ry="105" fill="url(#rollEnd-l77)"/>
+      <ellipse cx="-234" cy="0" rx="14" ry="100" fill="#3A2810" opacity="0.6"/>
+      <!-- Inner roll texture lines -->
+      <g stroke="#3A2810" stroke-width="0.5" opacity="0.5">
+        <line x1="-244" y1="-95" x2="-238" y2="-95"/>
+        <line x1="-244" y1="-60" x2="-238" y2="-60"/>
+        <line x1="-244" y1="-30" x2="-238" y2="-30"/>
+        <line x1="-244" y1="0"   x2="-238" y2="0"/>
+        <line x1="-244" y1="30"  x2="-238" y2="30"/>
+        <line x1="-244" y1="60"  x2="-238" y2="60"/>
+        <line x1="-244" y1="95"  x2="-238" y2="95"/>
+      </g>
+    </g>
+    <!-- Right rolled end -->
+    <g>
+      <ellipse cx="242" cy="0" rx="20" ry="105" fill="url(#rollEnd-l77)"/>
+      <ellipse cx="234" cy="0" rx="14" ry="100" fill="#3A2810" opacity="0.6"/>
+      <g stroke="#3A2810" stroke-width="0.5" opacity="0.5">
+        <line x1="238" y1="-95" x2="244" y2="-95"/>
+        <line x1="238" y1="-60" x2="244" y2="-60"/>
+        <line x1="238" y1="-30" x2="244" y2="-30"/>
+        <line x1="238" y1="0"   x2="244" y2="0"/>
+        <line x1="238" y1="30"  x2="244" y2="30"/>
+        <line x1="238" y1="60"  x2="244" y2="60"/>
+        <line x1="238" y1="95"  x2="244" y2="95"/>
+      </g>
+    </g>
+
+    <!-- Parchment body (irregular shape, between the two rolls) -->
+    <path d="
+      M -240 -100
+      C -180 -106, -80 -103, 0 -105
+      C 80 -107, 180 -104, 240 -100
+      C 244 -50, 243 -10, 244 50
+      C 245 90, 244 100, 240 102
+      C 180 106, 80 102, 0 103
+      C -80 104, -180 107, -240 102
+      C -244 60, -243 10, -244 -50
+      C -245 -90, -244 -95, -240 -100
+      Z" fill="url(#parch-l77)"/>
+
+    <!-- Warm cast + parchment grain -->
+    <g clip-path="url(#scrollShape-l77)">
+      <rect x="-245" y="-110" width="495" height="220" fill="url(#parchWarm-l77)"/>
+      <rect x="-245" y="-110" width="495" height="220" filter="url(#parchGrain-l77)" opacity="0.55"/>
+    </g>
+
+    <!-- Faint horizontal lines (where dialogue would go) -->
+    <g stroke="#7C5A28" stroke-width="0.4" opacity="0.20">
+      <line x1="-220" y1="-70" x2="220" y2="-68"/>
+      <line x1="-220" y1="-40" x2="220" y2="-38"/>
+      <line x1="-220" y1="-10" x2="220" y2="-8"/>
+      <line x1="-220" y1="20"  x2="220" y2="22"/>
+      <line x1="-220" y1="50"  x2="220" y2="52"/>
+      <line x1="-220" y1="80"  x2="220" y2="82"/>
+    </g>
+
+    <!-- Big central question mark (the Socratic core) -->
+    <g font-family="'Trajan Pro','Times New Roman','Hiragino Mincho ProN',serif" fill="#5C2E1F">
+      <text x="0" y="40" text-anchor="middle" font-size="120" font-weight="700" opacity="0.85">?</text>
+    </g>
+    <!-- Brush stroke under the question mark -->
+    <path d="M -42 70 C -20 76, 22 76, 44 70" stroke="#5C2E1F" stroke-width="2.4" stroke-linecap="round" fill="none" opacity="0.6"/>
+
+    <!-- Smaller satellite question marks (the cascade of questions) -->
+    <g font-family="'Trajan Pro','Times New Roman','Hiragino Mincho ProN',serif" fill="#5C2E1F">
+      <text x="-180" y="-40" text-anchor="middle" font-size="32" font-weight="700" opacity="0.55" transform="rotate(-12 -180 -40)">?</text>
+      <text x="-130" y="-70" text-anchor="middle" font-size="22" font-weight="700" opacity="0.40" transform="rotate(8 -130 -70)">?</text>
+      <text x="160" y="-50" text-anchor="middle" font-size="36" font-weight="700" opacity="0.55" transform="rotate(15 160 -50)">?</text>
+      <text x="125" y="-78" text-anchor="middle" font-size="20" font-weight="700" opacity="0.42" transform="rotate(-6 125 -78)">?</text>
+      <text x="-150" y="80" text-anchor="middle" font-size="26" font-weight="700" opacity="0.45" transform="rotate(-8 -150 80)">?</text>
+      <text x="170" y="80" text-anchor="middle" font-size="24" font-weight="700" opacity="0.45" transform="rotate(10 170 80)">?</text>
+    </g>
+
+    <!-- Greek alpha and omega (philosophical bookends) — small, faint, in corners -->
+    <g font-family="'Times New Roman',serif" fill="#5C2E1F" opacity="0.5">
+      <text x="-205" y="-72" font-size="20" font-style="italic">α</text>
+      <text x="195"  y="92"  font-size="20" font-style="italic">ω</text>
+    </g>
+
+    <!-- Connecting curve lines between the questions (Socratic chain) -->
+    <g stroke="#5C2E1F" stroke-width="1.0" stroke-linecap="round" fill="none" opacity="0.32" stroke-dasharray="2 5">
+      <path d="M -150 -45 C -110 -30, -50 -15, 0 0"/>
+      <path d="M 0 0 C 60 -10, 110 -25, 155 -45"/>
+      <path d="M -130 80 C -80 65, -30 55, 0 50"/>
+      <path d="M 0 50 C 60 60, 110 70, 160 80"/>
+    </g>
+
+    <!-- Wax seal at lower-right -->
+    <g transform="translate(200,75)">
+      <circle cx="0" cy="0" r="14" fill="#7B2D26" opacity="0.85"/>
+      <circle cx="0" cy="0" r="14" fill="none" stroke="#3A1010" stroke-width="0.5" opacity="0.6"/>
+      <text x="0" y="4" text-anchor="middle" font-family="'Times New Roman',serif" font-size="14" font-weight="700" fill="#F0DFA8">Σ</text>
+    </g>
+  </g>
+
+  <!-- ───── Layer 6: Quill pen lying on lower right ───── -->
+  <g transform="translate(620,360) rotate(-32)">
+    <!-- Shadow -->
+    <ellipse cx="0" cy="14" rx="80" ry="3" fill="#000000" opacity="0.45"/>
+    <!-- Shaft (taper) -->
+    <path d="M -90 -2 L 50 -3 L 60 0 L 50 3 L -90 2 Z" fill="#A88848"/>
+    <!-- Nib (metal tip) -->
+    <polygon points="50,-3 64,0 50,3 56,0" fill="#3A2810"/>
+    <!-- Ink at nib -->
+    <circle cx="64" cy="0" r="1.2" fill="#0A0A14"/>
+    <!-- Feather plume -->
+    <g transform="translate(-90,0)">
+      <!-- Main feather body -->
+      <path d="M 0 0 Q -30 -22, -86 -18 Q -110 -10, -120 0 Q -110 10, -86 18 Q -30 22, 0 0 Z"
+            fill="url(#feather-l77)" opacity="0.95"/>
+      <!-- Spine -->
+      <line x1="0" y1="0" x2="-120" y2="0" stroke="#7C5A28" stroke-width="0.8"/>
+      <!-- Barbs (radiating lines for feather texture) -->
+      <g stroke="#7C5A28" stroke-width="0.4" opacity="0.6">
+        <line x1="-12" y1="0" x2="-22" y2="-10"/>
+        <line x1="-22" y1="0" x2="-32" y2="-14"/>
+        <line x1="-32" y1="0" x2="-44" y2="-16"/>
+        <line x1="-44" y1="0" x2="-56" y2="-17"/>
+        <line x1="-56" y1="0" x2="-70" y2="-17"/>
+        <line x1="-70" y1="0" x2="-86" y2="-16"/>
+        <line x1="-86" y1="0" x2="-102" y2="-12"/>
+        <line x1="-12" y1="0" x2="-22" y2="10"/>
+        <line x1="-22" y1="0" x2="-32" y2="14"/>
+        <line x1="-32" y1="0" x2="-44" y2="16"/>
+        <line x1="-44" y1="0" x2="-56" y2="17"/>
+        <line x1="-56" y1="0" x2="-70" y2="17"/>
+        <line x1="-70" y1="0" x2="-86" y2="16"/>
+        <line x1="-86" y1="0" x2="-102" y2="12"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- ───── Layer 7: Brass ink well (left of scroll, on the desk) ───── -->
+  <g transform="translate(135,335)">
+    <!-- Shadow -->
+    <ellipse cx="0" cy="14" rx="22" ry="3" fill="#000000" opacity="0.5"/>
+    <!-- Body -->
+    <path d="M -18 -4 L -16 12 Q 0 16, 16 12 L 18 -4 Q 0 -8, -18 -4 Z" fill="url(#brass-l77)"/>
+    <!-- Rim -->
+    <ellipse cx="0" cy="-4" rx="18" ry="4" fill="#8A6028"/>
+    <ellipse cx="0" cy="-4" rx="14" ry="3" fill="#0A0A14"/>
+    <!-- Ink surface highlight -->
+    <ellipse cx="-3" cy="-5" rx="5" ry="0.8" fill="#3A4060" opacity="0.6"/>
+    <!-- Brass highlight -->
+    <path d="M -14 0 Q -12 8, -10 11" stroke="#F4D26A" stroke-width="0.8" opacity="0.7" fill="none"/>
+  </g>
+
+  <!-- Ink droplets / blots scattered near ink well -->
+  <g fill="#0A0A14" opacity="0.7">
+    <circle cx="170" cy="345" r="1.4"/>
+    <circle cx="178" cy="352" r="0.8"/>
+    <circle cx="155" cy="360" r="1.0"/>
+    <circle cx="105" cy="350" r="0.7"/>
+  </g>
+
+  <!-- Eraser-like dust + scattered desk marks -->
+  <g fill="#A88848">
+    <circle cx="240" cy="370" r="1.2" opacity="0.55"/>
+    <circle cx="265" cy="378" r="0.9" opacity="0.45"/>
+    <circle cx="525" cy="372" r="1.0" opacity="0.5"/>
+    <circle cx="555" cy="380" r="0.7" opacity="0.4"/>
+    <circle cx="700" cy="370" r="0.6" opacity="0.35"/>
+  </g>
+</svg>
