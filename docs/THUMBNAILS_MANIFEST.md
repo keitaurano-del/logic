@@ -79,3 +79,31 @@ Pixaクレジット不足により以下が未生成。クレジット追加後�
 - コース定義: `src/courseData.ts`
 - 既存サムネイル: `public/images/v3/course-*.{svg,webp}`
 - Notion DB: 「Logic素材」（38555f3f-86db-4fa0-b4af-f5d907af5395）
+
+---
+
+## Pixa再生成キュー（クレジット復活後に流す）
+
+design-visualizer サブエージェントの 4 候補ループで、生成準備済みだがクレジット不足で未実行のもの。`flux-2-max` 16:9 PNG を推奨。
+
+### course-fermi-01「概算で、世界の規模を掴む」
+
+- **概念タグ**: 巨大な未知量を、知っている小さな量に分解して掴む。厳密さより速くて当たる
+- **採用判定**: 4 候補生成 → 5軸25点ルーブリック自己採点 → 18/25未満なら再生成。SVG フォールバックは `public/images/v3/course-fermi-01.svg`（デスク + 紙メモ + 鉛筆 + 暖色ランプ halo の atmospheric 版）。
+
+```
+v1 (notebook tree): Cinematic editorial illustration of a hand-drawn branching decomposition diagram unfolding from an open worn leather notebook on a dark wooden study desk; the tree's nodes are abstract leaf-like shapes, no legible characters; warm amber desk lamp glow from upper-right casting soft directional light and long shadows; faint paper grain visible on the page; soft graphite pencil and brass eraser resting on the page; deep slate blue shadows with amber highlights; painterly brushwork, layered translucent washes, atmospheric depth; intimate composition, focused thinking mood, 16:9 horizontal. No text, no letters, no numbers, no watermark, no humans, no faces, no hands, no anime, no 3D render.
+
+v2 (city skyline overlay): Editorial painterly illustration of a misty Tokyo-style skyline at dawn seen through a translucent overlay of a hand-drawn decomposition tree etched in faint indigo lines; tree branches connect rooftops to ground level; warm amber sunrise glow on horizon, deep slate blue mid-tones; soft mist obscures details; aerial bird's-eye angle, cinematic depth, paper texture overlay, 16:9 horizontal. No text, no letters, no numbers, no watermark, no humans, no faces, no anime, no 3D render.
+
+v3 (still life with notebook + scale): Cinematic still-life of a leather notebook lying open on a wooden study desk, faint pencil sketch of a fanning estimation diagram visible on the page; small brass two-pan balance scale in soft focus background; slate blue evening light from a single window, warm tea cup glow on the right; painterly editorial style, paper grain, brush strokes visible, layered shadows, intimate composition, 16:9 horizontal. No text, no letters, no numbers, no watermark, no humans, no faces, no hands, no anime, no 3D render.
+
+v4 (chalkboard contemplation): Editorial illustration of a vintage chalkboard slate with a ghost-like decomposition tree drawn in chalk dust, slowly being erased; atmosphere of contemplative thought; deep navy backdrop, warm amber spotlight from upper-left, faint amber rim-light on the slate edge; painterly brushwork, dust particles in the light beam, paper-grain overlay; cinematic depth, 16:9 horizontal. No text, no letters, no numbers, no watermark, no humans, no faces, no hands, no anime, no 3D render.
+```
+
+採用後は:
+1. `mcp__...__get_download_url` で URL を取得
+2. `public/images/v3/course-fermi-01.png` で保存
+3. `src/courseData.ts` の `image:` を `.svg` → `.png` に切替
+4. このセクションに asset_id と勝者を追記
+
