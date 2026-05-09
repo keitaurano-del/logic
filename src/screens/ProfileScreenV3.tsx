@@ -11,7 +11,7 @@ import { getSubscriptionState, isPremiumPlan, isStandardPlan, daysLeftInTrial } 
 import { getStudyDates as _getStudyDatesArr } from '../stats'
 import LessonIcon from '../LessonIcon'
 import { StarIcon } from '../icons'
-import { t, getLocale, setLocale } from '../i18n'
+import { t, getLocale } from '../i18n'
 
 function getPlanLabel(): string {
   const state = getSubscriptionState()
@@ -35,12 +35,13 @@ interface ProfileScreenV3Props {
   onOpenPricing?: () => void
   onOpenPlacementTest?: () => void
   onOpenLesson?: (lessonId: number) => void
+  onOpenLanguage?: () => void
 }
 
 type Sheet = null | 'streak' | 'lessons' | 'xp'
 
 export function ProfileScreenV3(props: ProfileScreenV3Props) {
-  const { userName, onOpenSettings, onOpenFeedback, onOpenPricing, onOpenPlacementTest, onOpenLesson } = props
+  const { userName, onOpenSettings, onOpenFeedback, onOpenPricing, onOpenPlacementTest, onOpenLesson, onOpenLanguage } = props
   const [sheet, setSheet] = useState<Sheet>(null)
   const streak = getLessonStreak()
   const completed = getCompletedCount()
@@ -164,7 +165,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
         <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', boxShadow: 'var(--shadow-v3-card-inset)' }}>
           <SettingRow icon="user" name={t('profile.account')} sub={userName || t('home.guestName')} onClick={() => onOpenSettings('account')} />
           <SettingRow icon="bell" name={t('profile.notifications')} sub="" onClick={() => onOpenSettings('notifications')} />
-          <SettingRow icon="globe" name={t('profile.languageTitle')} sub={getLocale() === 'ja' ? t('profile.languageJa') : t('profile.languageEn')} onClick={() => setLocale(getLocale() === 'ja' ? 'en' : 'ja')} />
+          <SettingRow icon="globe" name={t('profile.languageTitle')} sub={getLocale() === 'ja' ? t('profile.languageJa') : t('profile.languageEn')} onClick={onOpenLanguage} />
           <SettingRow icon="card" name={t('profile.plan')} sub={getPlanLabel()} onClick={onOpenPricing} />
           <SettingRow icon="message" name={t('profile.feedbackName')} sub={t('profile.feedbackSub')} onClick={onOpenFeedback} />
           <SettingRow icon="doc" name={t('profile.terms')} sub="" onClick={() => window.open('/terms.html', '_blank')} />

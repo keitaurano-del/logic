@@ -507,6 +507,7 @@ function AppV3() {
           onOpenPricing={() => navigate({ type: 'pricing' })}
           onOpenPlacementTest={() => navigate({ type: 'placement-test' })}
           onOpenLesson={(id) => navigate({ type: 'lesson', lessonId: id })}
+          onOpenLanguage={() => navigate({ type: 'language' })}
         />
       )}
       {screen.type === 'rank' && <RankScreen onBack={handleBack} />}
