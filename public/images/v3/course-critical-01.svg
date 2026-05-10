@@ -1,75 +1,73 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
   <defs>
-    <linearGradient id="bg-cr1" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#1F2942"/>
-      <stop offset="100%" stop-color="#101729"/>
-    </linearGradient>
-    <radialGradient id="glow-cr1" cx="0.5" cy="0.4" r="0.5">
-      <stop offset="0%" stop-color="#FFD566" stop-opacity="0.30"/>
-      <stop offset="100%" stop-color="#FFD566" stop-opacity="0"/>
-    </radialGradient>
-    <linearGradient id="paper-cr1" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#F4ECC4"/>
-      <stop offset="100%" stop-color="#D8C898"/>
-    </linearGradient>
+    <filter id="decoCR1" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="3" seed="5" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="2.5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="shapeCR1" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="6" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="3.5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <pattern id="ruledCR1" x="0" y="0" width="800" height="28" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="27" x2="800" y2="27" stroke="#B3D0F5" stroke-width="0.85"/>
+    </pattern>
   </defs>
+  <rect width="800" height="400" fill="#FEFEF2"/>
+  <rect width="800" height="400" fill="url(#ruledCR1)" opacity="0.65"/>
+  <line x1="72" y1="0" x2="72" y2="400" stroke="#F4A0A0" stroke-width="1.8" filter="url(#decoCR1)"/>
+  <line x1="756" y1="14" x2="756" y2="386" stroke="#B3D0F5" stroke-width="1" opacity="0.4" filter="url(#decoCR1)"/>
+  <rect x="78" y="13" width="300" height="38" fill="#E05555" opacity="0.2" rx="3" filter="url(#decoCR1)"/>
+  <text x="86" y="44" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="24" font-weight="bold" fill="#1A1A2E">クリティカルシンキング基礎</text>
+  <text x="87" y="67" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#E05555">批判的思考 — 前提を疑う</text>
+  <line x1="78" y1="77" x2="736" y2="77" stroke="#E05555" stroke-width="1.2" opacity="0.28" filter="url(#decoCR1)"/>
+  <line x1="418" y1="80" x2="418" y2="370" stroke="#B3D0F5" stroke-width="0.9" opacity="0.5" filter="url(#decoCR1)"/>
+  <!-- 図形：フィルター適用 -->
+  <g transform="translate(82,88)" filter="url(#shapeCR1)">
 
-  <rect width="800" height="400" fill="url(#bg-cr1)"/>
-  <circle cx="400" cy="200" r="260" fill="url(#glow-cr1)"/>
+    <circle cx="128" cy="42" r="40" fill="#E05555" opacity="0.72"/>
+    <circle cx="252" cy="148" r="40" fill="#E05555" opacity="0.52"/>
+    <circle cx="58" cy="148" r="40" fill="#E05555" opacity="0.35"/>
+    <path d="M160,58 Q218,60 236,116" stroke="#444" stroke-width="1.8" fill="none" opacity="0.35"/>
+    <polygon points="232,114 240,124 228,122" fill="#444" opacity="0.35"/>
+    <path d="M220,168 Q152,204 92,166" stroke="#444" stroke-width="1.8" fill="none" opacity="0.35"/>
+    <polygon points="94,168 82,160 96,156" fill="#444" opacity="0.35"/>
+    <path d="M36,114 Q26,64 96,50" stroke="#444" stroke-width="1.8" fill="none" opacity="0.35"/>
+    <polygon points="94,48 106,42 102,54" fill="#444" opacity="0.35"/>
 
-  <ellipse cx="400" cy="350" rx="220" ry="12" fill="#0B1424" opacity="0.6"/>
-
-  <!-- 中央の文書 -->
-  <g transform="translate(400,210)">
-    <rect x="-150" y="-110" width="300" height="220" rx="4" fill="url(#paper-cr1)"/>
-    <rect x="-150" y="-110" width="300" height="34" fill="#7A2E2E"/>
-    <line x1="-130" y1="-90" x2="80" y2="-90" stroke="#F4ECC4" stroke-width="2" opacity="0.85"/>
-
-    <!-- 本文行 -->
-    <g stroke="#3F2E0F" stroke-width="1.2" opacity="0.55">
-      <line x1="-130" y1="-50" x2="130" y2="-50"/>
-      <line x1="-130" y1="-30" x2="100" y2="-30"/>
-      <line x1="-130" y1="-10" x2="120" y2="-10"/>
-      <line x1="-130" y1="10" x2="80" y2="10"/>
-      <line x1="-130" y1="30" x2="120" y2="30"/>
-      <line x1="-130" y1="50" x2="90" y2="50"/>
-      <line x1="-130" y1="70" x2="110" y2="70"/>
-      <line x1="-130" y1="90" x2="60" y2="90"/>
-    </g>
-
-    <!-- 怪しい主張に取り消し線 -->
-    <line x1="-100" y1="10" x2="60" y2="10" stroke="#7A2E2E" stroke-width="2.5" opacity="0.85"/>
-    <line x1="-100" y1="50" x2="50" y2="50" stroke="#7A2E2E" stroke-width="2.5" opacity="0.85"/>
-
-    <!-- チェックマーク（正しい論証） -->
-    <g stroke="#3F8C5F" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round">
-      <polyline points="-128,-30 -118,-22 -100,-38"/>
-      <polyline points="-128,30 -118,38 -100,22"/>
-      <polyline points="-128,90 -118,98 -100,82"/>
+    <g transform="translate(4,192) rotate(-10)">
+      <rect x="0" y="0" width="36" height="9" rx="2" fill="#FFD566" opacity="0.88"/>
+      <polygon points="36,0 46,4.5 36,9" fill="#E8A000" opacity="0.82"/>
+      <rect x="0" y="1" width="5" height="7" rx="1" fill="#F4A0A0" opacity="0.92"/>
     </g>
   </g>
+  <!-- ラベル：フィルターなし -->
+  <g transform="translate(82,88)">
 
-  <!-- 虫眼鏡（右上から覗き込む） -->
-  <g transform="translate(560,150) rotate(20)">
-    <circle cx="0" cy="0" r="64" fill="#7AAEFF" fill-opacity="0.18" stroke="#FFD566" stroke-width="6"/>
-    <circle cx="0" cy="0" r="64" fill="none" stroke="#1A2540" stroke-width="2" opacity="0.8"/>
-    <line x1="46" y1="46" x2="92" y2="92" stroke="#FFD566" stroke-width="14" stroke-linecap="round"/>
-    <line x1="46" y1="46" x2="92" y2="92" stroke="#1A2540" stroke-width="3" stroke-linecap="round"/>
-    <!-- 虫眼鏡内のクエスチョン → チェック -->
-    <text x="-22" y="14" font-family="'SF Pro Display','Helvetica Neue',sans-serif" font-size="42" font-weight="700" fill="#7A2E2E">?</text>
-    <polyline points="6,4 14,14 28,-6" stroke="#3F8C5F" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="128" y="47" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="600" fill="#fff">前提</text>
+    <text x="252" y="153" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" fill="#fff">検証</text>
+    <text x="58" y="153" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" fill="#333">判断</text>
   </g>
+  <!-- テキストリスト：フィルターなし -->
+  <g transform="translate(432,88)">
+<text x="0" y="2" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="15" font-weight="bold" fill="#1A1A2E" opacity="0.82">🔍 視点</text>
+<rect x="0" y="7" width="286" height="2" fill="#E05555" opacity="0.4" rx="1"/>
+  <rect x="1" y="26" width="11" height="11" fill="#E05555" opacity="0.92" rx="1.5" transform="rotate(-2 6 31)"/>
+  <text x="20" y="39" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.92">バイアスを認識する</text>
+  <line x1="0" y1="46" x2="286" y2="46" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
+  <rect x="1" y="66" width="11" height="11" fill="#E05555" opacity="0.86" rx="1.5" transform="rotate(-2 6 71)"/>
+  <text x="20" y="79" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.86">証拠を評価する</text>
+  <line x1="0" y1="86" x2="286" y2="86" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
+  <rect x="1" y="106" width="11" height="11" fill="#E05555" opacity="0.80" rx="1.5" transform="rotate(-2 6 111)"/>
+  <text x="20" y="119" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.80">反論を想定する</text>
+  <line x1="0" y1="126" x2="286" y2="126" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
+  <rect x="1" y="146" width="11" height="11" fill="#E05555" opacity="0.74" rx="1.5" transform="rotate(-2 6 151)"/>
+  <text x="20" y="159" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.74">多角的に見る</text>
+  <line x1="0" y1="166" x2="286" y2="166" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
+  <rect x="1" y="186" width="11" height="11" fill="#E05555" opacity="0.68" rx="1.5" transform="rotate(-2 6 191)"/>
+  <text x="20" y="199" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.68">結論を吟味する</text>
+  <line x1="0" y1="206" x2="286" y2="206" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
 
-  <!-- 浮かぶ クエスチョンマーク -->
-  <g font-family="'SF Pro Display','Helvetica Neue',sans-serif" font-weight="700" fill="#FFD566" opacity="0.85">
-    <text x="120" y="130" font-size="38">?</text>
-    <text x="160" y="80" font-size="22" opacity="0.6">?</text>
-    <text x="700" y="320" font-size="32" opacity="0.7">?</text>
   </g>
-
-  <g fill="#7AAEFF" opacity="0.5">
-    <circle cx="80" cy="50" r="1.4"/>
-    <circle cx="220" cy="36" r="1.0"/>
-    <circle cx="700" cy="60" r="1.4"/>
-  </g>
+  <line x1="78" y1="373" x2="736" y2="373" stroke="#1A1A2E" stroke-width="0.6" opacity="0.1" filter="url(#decoCR1)"/>
+  <text x="400" y="390" text-anchor="middle" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="11" fill="#E05555" opacity="0.6">批判的思考 — 前提を疑う</text>
 </svg>

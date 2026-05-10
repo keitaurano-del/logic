@@ -1,63 +1,72 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
   <defs>
-    <filter id="skCA" x="-5%" y="-5%" width="110%" height="110%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" seed="7" result="noise"/>
-      <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.5" xChannelSelector="R" yChannelSelector="G"/>
+    <filter id="decoCA" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="3" seed="41" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="2.5" xChannelSelector="R" yChannelSelector="G"/>
     </filter>
-    <filter id="sk2CA" x="-8%" y="-8%" width="116%" height="116%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" seed="3" result="noise"/>
-      <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" xChannelSelector="R" yChannelSelector="G"/>
+    <filter id="shapeCA" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="42" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="3.5" xChannelSelector="R" yChannelSelector="G"/>
     </filter>
-    <pattern id="linesCA" x="0" y="0" width="800" height="28" patternUnits="userSpaceOnUse">
-      <line x1="0" y1="27" x2="800" y2="27" stroke="#B3D0F5" stroke-width="0.9"/>
+    <pattern id="ruledCA" x="0" y="0" width="800" height="28" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="27" x2="800" y2="27" stroke="#B3D0F5" stroke-width="0.85"/>
     </pattern>
   </defs>
   <rect width="800" height="400" fill="#FEFEF2"/>
-  <rect width="800" height="400" fill="url(#linesCA)" opacity="0.7"/>
-  <line x1="72" y1="0" x2="72" y2="400" stroke="#F4A0A0" stroke-width="1.5" filter="url(#skCA)"/>
-  <line x1="760" y1="0" x2="760" y2="400" stroke="#B3D0F5" stroke-width="1" opacity="0.4"/>
-  <rect x="78" y="16" width="132" height="34" fill="#7AAEFF" opacity="0.22" rx="2" filter="url(#skCA)"/>
-  <text x="86" y="43" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="22" font-weight="bold" fill="#1A1A2E">ケーススタディ</text>
-  <text x="86" y="66" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="13" fill="#7AAEFF" opacity="0.9">事例で学ぶ思考法</text>
-  <line x1="78" y1="76" x2="740" y2="76" stroke="#1A1A2E" stroke-width="1" opacity="0.2" filter="url(#skCA)"/>
-  <g transform="translate(85,90)" filter="url(#sk2CA)">
+  <rect width="800" height="400" fill="url(#ruledCA)" opacity="0.65"/>
+  <line x1="72" y1="0" x2="72" y2="400" stroke="#F4A0A0" stroke-width="1.8" filter="url(#decoCA)"/>
+  <line x1="756" y1="14" x2="756" y2="386" stroke="#B3D0F5" stroke-width="1" opacity="0.4" filter="url(#decoCA)"/>
+  <rect x="78" y="13" width="180" height="38" fill="#4A80F0" opacity="0.2" rx="3" filter="url(#decoCA)"/>
+  <text x="86" y="44" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="24" font-weight="bold" fill="#1A1A2E">ケーススタディ</text>
+  <text x="87" y="67" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#4A80F0">事例で学ぶ思考法</text>
+  <line x1="78" y1="77" x2="736" y2="77" stroke="#4A80F0" stroke-width="1.2" opacity="0.28" filter="url(#decoCA)"/>
+  <line x1="418" y1="80" x2="418" y2="370" stroke="#B3D0F5" stroke-width="0.9" opacity="0.5" filter="url(#decoCA)"/>
+  <!-- 図形：フィルター適用 -->
+  <g transform="translate(82,88)" filter="url(#shapeCA)">
 
-    <rect x="18" y="8" width="100" height="78" rx="2" fill="#7AAEFF" opacity="0.6" transform="rotate(-0.5,68,47)"/>
-    <text x="68" y="52" text-anchor="middle" font-family="'Bradley Hand','Segoe Print',cursive" font-size="13" fill="#fff">成功</text>
-    <rect x="122" y="8" width="100" height="78" rx="2" fill="#7AAEFF" opacity="0.35" transform="rotate(0.5,172,47)"/>
-    <text x="172" y="52" text-anchor="middle" font-family="'Bradley Hand','Segoe Print',cursive" font-size="13" fill="#1A1A2E">失敗</text>
-    <rect x="18" y="90" width="100" height="78" rx="2" fill="#7AAEFF" opacity="0.25" transform="rotate(0.3,68,129)"/>
-    <text x="68" y="135" text-anchor="middle" font-family="'Bradley Hand','Segoe Print',cursive" font-size="13" fill="#1A1A2E">学び</text>
-    <rect x="122" y="90" width="100" height="78" rx="2" fill="#7AAEFF" opacity="0.12" transform="rotate(-0.4,172,129)"/>
-    <text x="172" y="135" text-anchor="middle" font-family="'Bradley Hand','Segoe Print',cursive" font-size="13" fill="#1A1A2E" opacity="0.7">リスク</text>
-    <line x1="120" y1="4" x2="120" y2="174" stroke="#1A1A2E" stroke-width="1.5" opacity="0.35"/>
-    <line x1="12" y1="88" x2="228" y2="88" stroke="#1A1A2E" stroke-width="1.5" opacity="0.35"/>
-    <text x="120" y="192" text-anchor="middle" font-family="'Bradley Hand','Segoe Print',cursive" font-size="10" fill="#1A1A2E" opacity="0.5">結果▶</text>
-    <g transform="translate(240,180) rotate(-14)">
-      <rect x="0" y="0" width="36" height="9" rx="2" fill="#FFD566" opacity="0.7"/>
-      <polygon points="36,0 45,4.5 36,9" fill="#FFA500" opacity="0.6"/>
+    <rect x="14" y="6" width="104" height="84" rx="3" fill="#4A80F0" opacity="0.62" transform="rotate(-0.5 66 48)"/>
+    <rect x="122" y="6" width="104" height="84" rx="3" fill="#4A80F0" opacity="0.35" transform="rotate(0.5 174 48)"/>
+    <rect x="14" y="94" width="104" height="84" rx="3" fill="#4A80F0" opacity="0.25" transform="rotate(0.3 66 136)"/>
+    <rect x="122" y="94" width="104" height="84" rx="3" fill="#4A80F0" opacity="0.12" transform="rotate(-0.4 174 136)"/>
+    <line x1="118" y1="2" x2="118" y2="184" stroke="#444" stroke-width="1.8" opacity="0.28"/>
+    <line x1="8" y1="92" x2="232" y2="92" stroke="#444" stroke-width="1.8" opacity="0.28"/>
+
+    <g transform="translate(4,192) rotate(-10)">
+      <rect x="0" y="0" width="36" height="9" rx="2" fill="#FFD566" opacity="0.88"/>
+      <polygon points="36,0 46,4.5 36,9" fill="#E8A000" opacity="0.82"/>
+      <rect x="0" y="1" width="5" height="7" rx="1" fill="#F4A0A0" opacity="0.92"/>
     </g>
   </g>
-  <g transform="translate(430,88)">
-<text x="0" y="0" font-family="'Bradley Hand','Segoe Print',cursive" font-size="14" font-weight="bold" fill="#1A1A2E" opacity="0.75">📊 分析法</text>
-<line x1="0" y1="6" x2="290" y2="6" stroke="#7AAEFF" stroke-width="1.5" opacity="0.45"/>
-  <rect x="0" y="27" width="11" height="11" fill="#7AAEFF" opacity="0.90" rx="1" transform="rotate(-3,5,32)"/>
-  <text x="20" y="38" font-family="'Bradley Hand','Segoe Print',cursive" font-size="13" fill="#1A1A2E" opacity="0.90">事例を構造化する</text>
-  <line x1="0" y1="46" x2="290" y2="46" stroke="#B3D0F5" stroke-width="0.8" opacity="0.45"/>
-  <rect x="0" y="65" width="11" height="11" fill="#7AAEFF" opacity="0.80" rx="1" transform="rotate(-3,5,70)"/>
-  <text x="20" y="76" font-family="'Bradley Hand','Segoe Print',cursive" font-size="13" fill="#1A1A2E" opacity="0.80">成功要因を抽出する</text>
-  <line x1="0" y1="84" x2="290" y2="84" stroke="#B3D0F5" stroke-width="0.8" opacity="0.45"/>
-  <rect x="0" y="103" width="11" height="11" fill="#7AAEFF" opacity="0.70" rx="1" transform="rotate(-3,5,108)"/>
-  <text x="20" y="114" font-family="'Bradley Hand','Segoe Print',cursive" font-size="13" fill="#1A1A2E" opacity="0.70">失敗から学ぶ</text>
-  <line x1="0" y1="122" x2="290" y2="122" stroke="#B3D0F5" stroke-width="0.8" opacity="0.45"/>
-  <rect x="0" y="141" width="11" height="11" fill="#7AAEFF" opacity="0.60" rx="1" transform="rotate(-3,5,146)"/>
-  <text x="20" y="152" font-family="'Bradley Hand','Segoe Print',cursive" font-size="13" fill="#1A1A2E" opacity="0.60">自社に応用する</text>
-  <line x1="0" y1="160" x2="290" y2="160" stroke="#B3D0F5" stroke-width="0.8" opacity="0.45"/>
-  <rect x="0" y="179" width="11" height="11" fill="#7AAEFF" opacity="0.50" rx="1" transform="rotate(-3,5,184)"/>
-  <text x="20" y="190" font-family="'Bradley Hand','Segoe Print',cursive" font-size="13" fill="#1A1A2E" opacity="0.50">フレームワーク化</text>
-  <line x1="0" y1="198" x2="290" y2="198" stroke="#B3D0F5" stroke-width="0.8" opacity="0.45"/>
+  <!-- ラベル：フィルターなし -->
+  <g transform="translate(82,88)">
+
+    <text x="66" y="52" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="14" font-weight="600" fill="#fff">成功</text>
+    <text x="174" y="52" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="14" fill="#333">失敗</text>
+    <text x="66" y="140" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="14" fill="#333">学び</text>
+    <text x="174" y="140" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="14" fill="#666" opacity="0.85">リスク</text>
+    <text x="118" y="200" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="10" fill="#666">結果▶</text>
+  </g>
+  <!-- テキストリスト：フィルターなし -->
+  <g transform="translate(432,88)">
+<text x="0" y="2" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="15" font-weight="bold" fill="#1A1A2E" opacity="0.82">📊 分析法</text>
+<rect x="0" y="7" width="286" height="2" fill="#4A80F0" opacity="0.4" rx="1"/>
+  <rect x="1" y="26" width="11" height="11" fill="#4A80F0" opacity="0.92" rx="1.5" transform="rotate(-2 6 31)"/>
+  <text x="20" y="39" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.92">事例を構造化する</text>
+  <line x1="0" y1="46" x2="286" y2="46" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
+  <rect x="1" y="66" width="11" height="11" fill="#4A80F0" opacity="0.86" rx="1.5" transform="rotate(-2 6 71)"/>
+  <text x="20" y="79" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.86">成功要因を抽出する</text>
+  <line x1="0" y1="86" x2="286" y2="86" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
+  <rect x="1" y="106" width="11" height="11" fill="#4A80F0" opacity="0.80" rx="1.5" transform="rotate(-2 6 111)"/>
+  <text x="20" y="119" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.80">失敗から学ぶ</text>
+  <line x1="0" y1="126" x2="286" y2="126" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
+  <rect x="1" y="146" width="11" height="11" fill="#4A80F0" opacity="0.74" rx="1.5" transform="rotate(-2 6 151)"/>
+  <text x="20" y="159" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.74">自社に応用する</text>
+  <line x1="0" y1="166" x2="286" y2="166" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
+  <rect x="1" y="186" width="11" height="11" fill="#4A80F0" opacity="0.68" rx="1.5" transform="rotate(-2 6 191)"/>
+  <text x="20" y="199" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.68">フレームワーク化</text>
+  <line x1="0" y1="206" x2="286" y2="206" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
 
   </g>
-  <line x1="78" y1="374" x2="740" y2="374" stroke="#1A1A2E" stroke-width="0.8" opacity="0.15" filter="url(#skCA)"/>
-  <text x="400" y="390" text-anchor="middle" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="11" fill="#7AAEFF" opacity="0.65">事例で学ぶ思考法</text>
+  <line x1="78" y1="373" x2="736" y2="373" stroke="#1A1A2E" stroke-width="0.6" opacity="0.1" filter="url(#decoCA)"/>
+  <text x="400" y="390" text-anchor="middle" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="11" fill="#4A80F0" opacity="0.6">事例で学ぶ思考法</text>
 </svg>

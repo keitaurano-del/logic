@@ -1,108 +1,73 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
   <defs>
-    <linearGradient id="bg-an1" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#1F2942"/>
-      <stop offset="100%" stop-color="#101729"/>
-    </linearGradient>
-    <radialGradient id="glow-an1" cx="0.5" cy="0.45" r="0.5">
-      <stop offset="0%" stop-color="#FFD566" stop-opacity="0.30"/>
-      <stop offset="100%" stop-color="#FFD566" stop-opacity="0"/>
-    </radialGradient>
-    <linearGradient id="trunk-an1" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#7A5A1F"/>
-      <stop offset="100%" stop-color="#3F2E0F"/>
-    </linearGradient>
-    <linearGradient id="leaf-an1" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#5FA37A"/>
-      <stop offset="100%" stop-color="#2C6244"/>
-    </linearGradient>
+    <filter id="decoAN" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="3" seed="21" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="2.5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="shapeAN" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="22" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="3.5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <pattern id="ruledAN" x="0" y="0" width="800" height="28" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="27" x2="800" y2="27" stroke="#B3D0F5" stroke-width="0.85"/>
+    </pattern>
   </defs>
+  <rect width="800" height="400" fill="#FEFEF2"/>
+  <rect width="800" height="400" fill="url(#ruledAN)" opacity="0.65"/>
+  <line x1="72" y1="0" x2="72" y2="400" stroke="#F4A0A0" stroke-width="1.8" filter="url(#decoAN)"/>
+  <line x1="756" y1="14" x2="756" y2="386" stroke="#B3D0F5" stroke-width="1" opacity="0.4" filter="url(#decoAN)"/>
+  <rect x="78" y="13" width="180" height="38" fill="#D45FA0" opacity="0.2" rx="3" filter="url(#decoAN)"/>
+  <text x="86" y="44" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="24" font-weight="bold" fill="#1A1A2E">アナロジー思考</text>
+  <text x="87" y="67" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#D45FA0">類推で発想する</text>
+  <line x1="78" y1="77" x2="736" y2="77" stroke="#D45FA0" stroke-width="1.2" opacity="0.28" filter="url(#decoAN)"/>
+  <line x1="418" y1="80" x2="418" y2="370" stroke="#B3D0F5" stroke-width="0.9" opacity="0.5" filter="url(#decoAN)"/>
+  <!-- 図形：フィルター適用 -->
+  <g transform="translate(82,88)" filter="url(#shapeAN)">
 
-  <rect width="800" height="400" fill="url(#bg-an1)"/>
-  <circle cx="400" cy="200" r="260" fill="url(#glow-an1)"/>
+    <circle cx="128" cy="42" r="40" fill="#D45FA0" opacity="0.72"/>
+    <circle cx="252" cy="148" r="40" fill="#D45FA0" opacity="0.52"/>
+    <circle cx="58" cy="148" r="40" fill="#D45FA0" opacity="0.35"/>
+    <path d="M160,58 Q218,60 236,116" stroke="#444" stroke-width="1.8" fill="none" opacity="0.35"/>
+    <polygon points="232,114 240,124 228,122" fill="#444" opacity="0.35"/>
+    <path d="M220,168 Q152,204 92,166" stroke="#444" stroke-width="1.8" fill="none" opacity="0.35"/>
+    <polygon points="94,168 82,160 96,156" fill="#444" opacity="0.35"/>
+    <path d="M36,114 Q26,64 96,50" stroke="#444" stroke-width="1.8" fill="none" opacity="0.35"/>
+    <polygon points="94,48 106,42 102,54" fill="#444" opacity="0.35"/>
 
-  <ellipse cx="200" cy="358" rx="120" ry="10" fill="#0B1424" opacity="0.6"/>
-  <ellipse cx="600" cy="358" rx="120" ry="10" fill="#0B1424" opacity="0.6"/>
-
-  <!-- 左：木 -->
-  <g transform="translate(200,210)">
-    <!-- 葉 -->
-    <ellipse cx="0" cy="-60" rx="100" ry="80" fill="url(#leaf-an1)"/>
-    <ellipse cx="-50" cy="-50" rx="40" ry="36" fill="#5FA37A" opacity="0.7"/>
-    <ellipse cx="40" cy="-30" rx="34" ry="32" fill="#5FA37A" opacity="0.7"/>
-    <!-- 幹 -->
-    <rect x="-12" y="0" width="24" height="120" fill="url(#trunk-an1)"/>
-    <!-- 枝（分岐構造を強調） -->
-    <g fill="none" stroke="url(#trunk-an1)" stroke-width="6" stroke-linecap="round">
-      <line x1="0" y1="20" x2="-50" y2="-10"/>
-      <line x1="0" y1="40" x2="60" y2="20"/>
-      <line x1="-50" y1="-10" x2="-78" y2="-30"/>
-      <line x1="-50" y1="-10" x2="-40" y2="-44"/>
-      <line x1="60" y1="20" x2="80" y2="-4"/>
-      <line x1="60" y1="20" x2="78" y2="40"/>
-    </g>
-    <!-- 葉のドット -->
-    <g fill="#FFD566" opacity="0.6">
-      <circle cx="-30" cy="-90" r="3"/>
-      <circle cx="40" cy="-100" r="3"/>
-      <circle cx="0" cy="-130" r="3"/>
-      <circle cx="-70" cy="-50" r="3"/>
+    <g transform="translate(4,192) rotate(-10)">
+      <rect x="0" y="0" width="36" height="9" rx="2" fill="#FFD566" opacity="0.88"/>
+      <polygon points="36,0 46,4.5 36,9" fill="#E8A000" opacity="0.82"/>
+      <rect x="0" y="1" width="5" height="7" rx="1" fill="#F4A0A0" opacity="0.92"/>
     </g>
   </g>
+  <!-- ラベル：フィルターなし -->
+  <g transform="translate(82,88)">
 
-  <!-- 右：回路基板 -->
-  <g transform="translate(600,210)">
-    <rect x="-110" y="-110" width="220" height="220" rx="6" fill="#1A2540" stroke="#3B5BBF" stroke-width="1.6"/>
-    <!-- グリッド -->
-    <g stroke="#3B5BBF" stroke-width="0.5" opacity="0.3">
-      <line x1="-110" y1="-50" x2="110" y2="-50"/>
-      <line x1="-110" y1="0" x2="110" y2="0"/>
-      <line x1="-110" y1="50" x2="110" y2="50"/>
-      <line x1="-50" y1="-110" x2="-50" y2="110"/>
-      <line x1="0" y1="-110" x2="0" y2="110"/>
-      <line x1="50" y1="-110" x2="50" y2="110"/>
-    </g>
-    <!-- 回路（同じ分岐構造） -->
-    <g fill="none" stroke="#FFD566" stroke-width="2.4" stroke-linecap="round">
-      <line x1="-90" y1="80" x2="-90" y2="40"/>
-      <line x1="-90" y1="40" x2="0" y2="40"/>
-      <line x1="0" y1="40" x2="0" y2="-30"/>
-      <line x1="0" y1="-30" x2="-50" y2="-30"/>
-      <line x1="0" y1="-30" x2="60" y2="-30"/>
-      <line x1="-50" y1="-30" x2="-50" y2="-80"/>
-      <line x1="-50" y1="-30" x2="-90" y2="-30"/>
-      <line x1="60" y1="-30" x2="60" y2="-80"/>
-      <line x1="60" y1="-30" x2="90" y2="0"/>
-    </g>
-    <!-- 抵抗とチップ -->
-    <g fill="#7A2E2E">
-      <rect x="-60" y="-86" width="20" height="10" rx="2"/>
-      <rect x="50" y="-86" width="20" height="10" rx="2"/>
-      <rect x="-100" y="-36" width="20" height="10" rx="2"/>
-    </g>
-    <g fill="#3F8C5F">
-      <circle cx="0" cy="40" r="6"/>
-      <circle cx="-90" cy="80" r="6"/>
-      <circle cx="90" cy="0" r="6"/>
-    </g>
+    <text x="128" y="47" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="600" fill="#fff">事例A</text>
+    <text x="252" y="153" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" fill="#fff">共通点</text>
+    <text x="58" y="153" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" fill="#333">事例B</text>
   </g>
+  <!-- テキストリスト：フィルターなし -->
+  <g transform="translate(432,88)">
+<text x="0" y="2" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="15" font-weight="bold" fill="#1A1A2E" opacity="0.82">🔗 思考法</text>
+<rect x="0" y="7" width="286" height="2" fill="#D45FA0" opacity="0.4" rx="1"/>
+  <rect x="1" y="26" width="11" height="11" fill="#D45FA0" opacity="0.92" rx="1.5" transform="rotate(-2 6 31)"/>
+  <text x="20" y="39" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.92">構造的類似を探す</text>
+  <line x1="0" y1="46" x2="286" y2="46" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
+  <rect x="1" y="66" width="11" height="11" fill="#D45FA0" opacity="0.86" rx="1.5" transform="rotate(-2 6 71)"/>
+  <text x="20" y="79" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.86">異分野から学ぶ</text>
+  <line x1="0" y1="86" x2="286" y2="86" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
+  <rect x="1" y="106" width="11" height="11" fill="#D45FA0" opacity="0.80" rx="1.5" transform="rotate(-2 6 111)"/>
+  <text x="20" y="119" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.80">メタファーを使う</text>
+  <line x1="0" y1="126" x2="286" y2="126" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
+  <rect x="1" y="146" width="11" height="11" fill="#D45FA0" opacity="0.74" rx="1.5" transform="rotate(-2 6 151)"/>
+  <text x="20" y="159" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.74">本質を抽象化</text>
+  <line x1="0" y1="166" x2="286" y2="166" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
+  <rect x="1" y="186" width="11" height="11" fill="#D45FA0" opacity="0.68" rx="1.5" transform="rotate(-2 6 191)"/>
+  <text x="20" y="199" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.68">新文脈に応用</text>
+  <line x1="0" y1="206" x2="286" y2="206" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
 
-  <!-- 構造的類似性を示す3本の点線 -->
-  <g stroke="#FFD566" stroke-width="1.4" stroke-dasharray="5 4" fill="none" opacity="0.7">
-    <line x1="280" y1="120" x2="490" y2="120"/>
-    <line x1="280" y1="200" x2="490" y2="200"/>
-    <line x1="280" y1="280" x2="490" y2="280"/>
   </g>
-
-  <!-- 中央のラベル -->
-  <g transform="translate(400,200)">
-    <rect x="-44" y="-16" width="88" height="32" rx="16" fill="#1A2540" stroke="#FFD566" stroke-width="1.4"/>
-    <text x="0" y="6" text-anchor="middle" font-family="'SF Pro Display','Helvetica Neue',sans-serif" font-size="11" font-weight="700" fill="#FFD566">≈ 構造</text>
-  </g>
-
-  <g fill="#7AAEFF" opacity="0.5">
-    <circle cx="80" cy="50" r="1.4"/>
-    <circle cx="220" cy="36" r="1.0"/>
-    <circle cx="720" cy="60" r="1.4"/>
-  </g>
+  <line x1="78" y1="373" x2="736" y2="373" stroke="#1A1A2E" stroke-width="0.6" opacity="0.1" filter="url(#decoAN)"/>
+  <text x="400" y="390" text-anchor="middle" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="11" fill="#D45FA0" opacity="0.6">類推で発想する</text>
 </svg>

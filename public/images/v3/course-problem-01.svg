@@ -1,73 +1,78 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
   <defs>
-    <linearGradient id="bg-pr1" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#1F2942"/>
-      <stop offset="100%" stop-color="#101729"/>
-    </linearGradient>
-    <radialGradient id="glow-pr1" cx="0.5" cy="0.5" r="0.5">
-      <stop offset="0%" stop-color="#FFD566" stop-opacity="0.32"/>
-      <stop offset="100%" stop-color="#FFD566" stop-opacity="0"/>
-    </radialGradient>
-    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#3B5BBF" stop-opacity="0.7"/>
-      <stop offset="100%" stop-color="#1B2954" stop-opacity="0.95"/>
-    </linearGradient>
+    <filter id="decoPB" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="3" seed="11" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="2.5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="shapePB" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="12" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="3.5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <pattern id="ruledPB" x="0" y="0" width="800" height="28" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="27" x2="800" y2="27" stroke="#B3D0F5" stroke-width="0.85"/>
+    </pattern>
   </defs>
+  <rect width="800" height="400" fill="#FEFEF2"/>
+  <rect width="800" height="400" fill="url(#ruledPB)" opacity="0.65"/>
+  <line x1="72" y1="0" x2="72" y2="400" stroke="#F4A0A0" stroke-width="1.8" filter="url(#decoPB)"/>
+  <line x1="756" y1="14" x2="756" y2="386" stroke="#B3D0F5" stroke-width="1" opacity="0.4" filter="url(#decoPB)"/>
+  <rect x="78" y="13" width="120" height="38" fill="#2BAF7B" opacity="0.2" rx="3" filter="url(#decoPB)"/>
+  <text x="86" y="44" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="24" font-weight="bold" fill="#1A1A2E">課題設定</text>
+  <text x="87" y="67" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#2BAF7B">本質的な問いを立てる</text>
+  <line x1="78" y1="77" x2="736" y2="77" stroke="#2BAF7B" stroke-width="1.2" opacity="0.28" filter="url(#decoPB)"/>
+  <line x1="418" y1="80" x2="418" y2="370" stroke="#B3D0F5" stroke-width="0.9" opacity="0.5" filter="url(#decoPB)"/>
+  <!-- 図形：フィルター適用 -->
+  <g transform="translate(82,88)" filter="url(#shapePB)">
 
-  <rect width="800" height="400" fill="url(#bg-pr1)"/>
-  <circle cx="400" cy="180" r="260" fill="url(#glow-pr1)"/>
+    <rect x="0" y="24" width="84" height="30" rx="4" fill="#2BAF7B" opacity="0.82" transform="rotate(-1 42 39)"/>
+    <line x1="86" y1="39" x2="106" y2="39" stroke="#444" stroke-width="1.8" opacity="0.45"/>
+    <polygon points="104,35 114,39 104,43" fill="#444" opacity="0.45"/>
+    <rect x="114" y="24" width="64" height="30" rx="4" fill="#2BAF7B" opacity="0.65" transform="rotate(0.5 146 39)"/>
+    <line x1="180" y1="39" x2="196" y2="39" stroke="#444" stroke-width="1.8" opacity="0.4"/>
+    <polygon points="194,35 204,39 194,43" fill="#444" opacity="0.4"/>
+    <rect x="204" y="24" width="64" height="30" rx="4" fill="#2BAF7B" opacity="0.5" transform="rotate(-0.5 236 39)"/>
+    <path d="M236,56 Q236,72 210,84" stroke="#444" stroke-width="1.4" fill="none" opacity="0.3"/>
+    <polygon points="207,82 215,90 203,88" fill="#444" opacity="0.3"/>
+    <rect x="148" y="90" width="120" height="30" rx="4" fill="#2BAF7B" opacity="0.35" transform="rotate(0.7 208 105)"/>
 
-  <!-- 水面 -->
-  <rect x="0" y="200" width="800" height="200" fill="url(#water)"/>
-  <line x1="0" y1="200" x2="800" y2="200" stroke="#7AAEFF" stroke-width="1.2" opacity="0.7"/>
-  <g stroke="#7AAEFF" stroke-width="0.8" opacity="0.4">
-    <line x1="60" y1="220" x2="160" y2="220"/>
-    <line x1="240" y1="240" x2="340" y2="240"/>
-    <line x1="500" y1="230" x2="600" y2="230"/>
-    <line x1="660" y1="260" x2="740" y2="260"/>
+    <g transform="translate(4,192) rotate(-10)">
+      <rect x="0" y="0" width="36" height="9" rx="2" fill="#FFD566" opacity="0.88"/>
+      <polygon points="36,0 46,4.5 36,9" fill="#E8A000" opacity="0.82"/>
+      <rect x="0" y="1" width="5" height="7" rx="1" fill="#F4A0A0" opacity="0.92"/>
+    </g>
   </g>
+  <!-- ラベル：フィルターなし -->
+  <g transform="translate(82,88)">
 
-  <!-- 氷山（中央、tipは小さくbottomは巨大） -->
-  <g transform="translate(400,200)">
-    <!-- 水面下の本体（巨大） -->
-    <polygon points="-180,0 180,0 140,180 -140,180" fill="#7AAEFF" opacity="0.55"/>
-    <polygon points="-150,0 150,0 110,160 -110,160" fill="#3B5BBF" opacity="0.6"/>
-    <!-- 影/陰影 -->
-    <polygon points="-180,0 -90,0 -50,180 -140,180" fill="#1B2954" opacity="0.4"/>
-    <!-- 表面に出ている見える部分（小さい） -->
-    <polygon points="-50,0 50,0 30,-60 -30,-60" fill="#F4ECC4"/>
-    <polygon points="-50,0 -10,0 -22,-46 -30,-60" fill="#C9B57A"/>
-    <!-- ハイライト -->
-    <line x1="-22" y1="-46" x2="20" y2="-30" stroke="#F4ECC4" stroke-width="1" opacity="0.7"/>
+    <text x="0" y="16" font-family="'Segoe UI',sans-serif" font-size="15" font-weight="700" fill="#2BAF7B">なぜ × 5</text>
+    <text x="42" y="43" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="600" fill="#fff">問題発生</text>
+    <text x="146" y="43" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" fill="#fff">なぜ?</text>
+    <text x="236" y="43" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" fill="#fff">なぜ?</text>
+    <text x="208" y="109" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" fill="#333">真の原因</text>
+    <text x="10" y="158" font-size="32" fill="#FFD566" opacity="0.65">💡</text>
+    <text x="50" y="164" font-family="'Segoe UI',sans-serif" font-size="12" fill="#555" opacity="0.65">根本原因を探る</text>
   </g>
+  <!-- テキストリスト：フィルターなし -->
+  <g transform="translate(432,88)">
+<text x="0" y="2" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="15" font-weight="bold" fill="#1A1A2E" opacity="0.82">🎯 スキル</text>
+<rect x="0" y="7" width="286" height="2" fill="#2BAF7B" opacity="0.4" rx="1"/>
+  <rect x="1" y="26" width="11" height="11" fill="#2BAF7B" opacity="0.92" rx="1.5" transform="rotate(-2 6 31)"/>
+  <text x="20" y="39" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.92">問題 vs 課題の違い</text>
+  <line x1="0" y1="46" x2="286" y2="46" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
+  <rect x="1" y="66" width="11" height="11" fill="#2BAF7B" opacity="0.86" rx="1.5" transform="rotate(-2 6 71)"/>
+  <text x="20" y="79" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.86">イシューから始めよ</text>
+  <line x1="0" y1="86" x2="286" y2="86" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
+  <rect x="1" y="106" width="11" height="11" fill="#2BAF7B" opacity="0.80" rx="1.5" transform="rotate(-2 6 111)"/>
+  <text x="20" y="119" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.80">課題の優先順位</text>
+  <line x1="0" y1="126" x2="286" y2="126" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
+  <rect x="1" y="146" width="11" height="11" fill="#2BAF7B" opacity="0.74" rx="1.5" transform="rotate(-2 6 151)"/>
+  <text x="20" y="159" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.74">ステークホルダー視点</text>
+  <line x1="0" y1="166" x2="286" y2="166" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
+  <rect x="1" y="186" width="11" height="11" fill="#2BAF7B" opacity="0.68" rx="1.5" transform="rotate(-2 6 191)"/>
+  <text x="20" y="199" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.68">問いの質を上げる</text>
+  <line x1="0" y1="206" x2="286" y2="206" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
 
-  <!-- 「症状」ラベル（水面上） -->
-  <g transform="translate(490,150)">
-    <rect x="-50" y="-16" width="100" height="32" rx="4" fill="#1A2540" stroke="#FFD566" stroke-width="1.2"/>
-    <text x="0" y="-2" text-anchor="middle" font-family="'SF Pro Display','Helvetica Neue',sans-serif" font-size="10" fill="#7AAEFF" opacity="0.85">表面の</text>
-    <text x="0" y="11" text-anchor="middle" font-family="'SF Pro Display','Helvetica Neue',sans-serif" font-size="11" font-weight="700" fill="#FFD566">症状</text>
   </g>
-  <line x1="440" y1="160" x2="400" y2="180" stroke="#FFD566" stroke-width="1" stroke-dasharray="3 3" opacity="0.6"/>
-
-  <!-- 「本当の問題」ラベル（水面下） -->
-  <g transform="translate(620,330)">
-    <rect x="-70" y="-16" width="140" height="32" rx="4" fill="#1A2540" stroke="#C49A3C" stroke-width="1.4"/>
-    <text x="0" y="-2" text-anchor="middle" font-family="'SF Pro Display','Helvetica Neue',sans-serif" font-size="10" fill="#7AAEFF" opacity="0.85">深層にある</text>
-    <text x="0" y="11" text-anchor="middle" font-family="'SF Pro Display','Helvetica Neue',sans-serif" font-size="11" font-weight="700" fill="#C49A3C">本当の問題</text>
-  </g>
-  <line x1="550" y1="330" x2="500" y2="320" stroke="#C49A3C" stroke-width="1" stroke-dasharray="3 3" opacity="0.6"/>
-
-  <!-- 矢印（症状→深層へ掘り下げ） -->
-  <g stroke="#FFD566" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.85">
-    <path d="M 200 160 Q 200 250 200 340"/>
-    <polyline points="190,330 200,344 210,330"/>
-  </g>
-  <text x="180" y="250" font-family="'SF Pro Display','Helvetica Neue',sans-serif" font-size="10" fill="#FFD566" opacity="0.85">深掘り</text>
-
-  <g fill="#7AAEFF" opacity="0.5">
-    <circle cx="80" cy="50" r="1.4"/>
-    <circle cx="220" cy="36" r="1.0"/>
-    <circle cx="660" cy="50" r="1.4"/>
-    <circle cx="730" cy="80" r="1.0"/>
-  </g>
+  <line x1="78" y1="373" x2="736" y2="373" stroke="#1A1A2E" stroke-width="0.6" opacity="0.1" filter="url(#decoPB)"/>
+  <text x="400" y="390" text-anchor="middle" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="11" fill="#2BAF7B" opacity="0.6">本質的な問いを立てる</text>
 </svg>

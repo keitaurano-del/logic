@@ -1,104 +1,72 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
   <defs>
-    <linearGradient id="bg-la1" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#1F2942"/>
-      <stop offset="100%" stop-color="#101729"/>
-    </linearGradient>
-    <radialGradient id="glow-la1" cx="0.65" cy="0.5" r="0.45">
-      <stop offset="0%" stop-color="#FFD566" stop-opacity="0.36"/>
-      <stop offset="100%" stop-color="#FFD566" stop-opacity="0"/>
-    </radialGradient>
-    <linearGradient id="brick-la1" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#7A5A1F"/>
-      <stop offset="100%" stop-color="#3F2E0F"/>
-    </linearGradient>
+    <filter id="decoLA" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="3" seed="19" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="2.5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="shapeLA" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="20" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="3.5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <pattern id="ruledLA" x="0" y="0" width="800" height="28" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="27" x2="800" y2="27" stroke="#B3D0F5" stroke-width="0.85"/>
+    </pattern>
   </defs>
+  <rect width="800" height="400" fill="#FEFEF2"/>
+  <rect width="800" height="400" fill="url(#ruledLA)" opacity="0.65"/>
+  <line x1="72" y1="0" x2="72" y2="400" stroke="#F4A0A0" stroke-width="1.8" filter="url(#decoLA)"/>
+  <line x1="756" y1="14" x2="756" y2="386" stroke="#B3D0F5" stroke-width="1" opacity="0.4" filter="url(#decoLA)"/>
+  <rect x="78" y="13" width="220" height="38" fill="#8B6FE8" opacity="0.2" rx="3" filter="url(#decoLA)"/>
+  <text x="86" y="44" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="24" font-weight="bold" fill="#1A1A2E">ラテラルシンキング</text>
+  <text x="87" y="67" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#8B6FE8">水平思考 — 常識を壊す</text>
+  <line x1="78" y1="77" x2="736" y2="77" stroke="#8B6FE8" stroke-width="1.2" opacity="0.28" filter="url(#decoLA)"/>
+  <line x1="418" y1="80" x2="418" y2="370" stroke="#B3D0F5" stroke-width="0.9" opacity="0.5" filter="url(#decoLA)"/>
+  <!-- 図形：フィルター適用 -->
+  <g transform="translate(82,88)" filter="url(#shapeLA)">
 
-  <rect width="800" height="400" fill="url(#bg-la1)"/>
-  <circle cx="540" cy="200" r="260" fill="url(#glow-la1)"/>
+    <rect x="14" y="6" width="104" height="84" rx="3" fill="#8B6FE8" opacity="0.62" transform="rotate(-0.5 66 48)"/>
+    <rect x="122" y="6" width="104" height="84" rx="3" fill="#8B6FE8" opacity="0.35" transform="rotate(0.5 174 48)"/>
+    <rect x="14" y="94" width="104" height="84" rx="3" fill="#8B6FE8" opacity="0.25" transform="rotate(0.3 66 136)"/>
+    <rect x="122" y="94" width="104" height="84" rx="3" fill="#8B6FE8" opacity="0.12" transform="rotate(-0.4 174 136)"/>
+    <line x1="118" y1="2" x2="118" y2="184" stroke="#444" stroke-width="1.8" opacity="0.28"/>
+    <line x1="8" y1="92" x2="232" y2="92" stroke="#444" stroke-width="1.8" opacity="0.28"/>
 
-  <ellipse cx="400" cy="358" rx="280" ry="14" fill="#0B1424" opacity="0.6"/>
-
-  <!-- レンガの壁（左半分、堅牢） -->
-  <g transform="translate(200,200)">
-    <!-- 壁の枠 -->
-    <g fill="url(#brick-la1)" stroke="#1A1306" stroke-width="1.5">
-      <!-- 行1 -->
-      <rect x="-180" y="-130" width="62" height="26"/>
-      <rect x="-118" y="-130" width="62" height="26"/>
-      <rect x="-56" y="-130" width="62" height="26"/>
-      <rect x="6" y="-130" width="62" height="26"/>
-      <!-- 行2 -->
-      <rect x="-150" y="-104" width="62" height="26"/>
-      <rect x="-88" y="-104" width="62" height="26"/>
-      <rect x="-26" y="-104" width="62" height="26"/>
-      <rect x="36" y="-104" width="32" height="26"/>
-      <rect x="-180" y="-104" width="30" height="26"/>
-      <!-- 行3 -->
-      <rect x="-180" y="-78" width="62" height="26"/>
-      <rect x="-118" y="-78" width="62" height="26"/>
-      <rect x="-56" y="-78" width="62" height="26"/>
-      <rect x="6" y="-78" width="62" height="26"/>
-      <!-- 行4 -->
-      <rect x="-150" y="-52" width="62" height="26"/>
-      <rect x="-88" y="-52" width="62" height="26"/>
-      <rect x="-26" y="-52" width="62" height="26"/>
-      <rect x="36" y="-52" width="32" height="26"/>
-      <rect x="-180" y="-52" width="30" height="26"/>
-      <!-- 行5（穴の上） -->
-      <rect x="-180" y="-26" width="62" height="26"/>
-      <rect x="-118" y="-26" width="62" height="26"/>
-      <rect x="6" y="-26" width="62" height="26"/>
-      <!-- 行6（下） -->
-      <rect x="-150" y="0" width="62" height="26"/>
-      <rect x="-88" y="0" width="62" height="26"/>
-      <rect x="-26" y="0" width="62" height="26"/>
-      <rect x="36" y="0" width="32" height="26"/>
-      <rect x="-180" y="0" width="30" height="26"/>
-      <!-- 行7 -->
-      <rect x="-180" y="26" width="62" height="26"/>
-      <rect x="-118" y="26" width="62" height="26"/>
-      <rect x="-56" y="26" width="62" height="26"/>
-      <rect x="6" y="26" width="62" height="26"/>
-    </g>
-
-    <!-- 隙間（突破口）－光が漏れる -->
-    <rect x="-56" y="-26" width="62" height="26" fill="#FFD566" opacity="0.18"/>
-    <g stroke="#FFD566" stroke-width="2" opacity="0.85" fill="none">
-      <line x1="-30" y1="-13" x2="120" y2="-50" stroke-linecap="round"/>
-      <line x1="-30" y1="-13" x2="130" y2="-13" stroke-linecap="round"/>
-      <line x1="-30" y1="-13" x2="120" y2="22" stroke-linecap="round"/>
+    <g transform="translate(4,192) rotate(-10)">
+      <rect x="0" y="0" width="36" height="9" rx="2" fill="#FFD566" opacity="0.88"/>
+      <polygon points="36,0 46,4.5 36,9" fill="#E8A000" opacity="0.82"/>
+      <rect x="0" y="1" width="5" height="7" rx="1" fill="#F4A0A0" opacity="0.92"/>
     </g>
   </g>
+  <!-- ラベル：フィルターなし -->
+  <g transform="translate(82,88)">
 
-  <!-- 突破した先（右、明るい風景：開けた空・道） -->
-  <g transform="translate(560,210)">
-    <!-- 空 -->
-    <rect x="-120" y="-130" width="240" height="200" rx="10" fill="#1A2540" opacity="0.4"/>
-    <!-- 太陽 -->
-    <circle cx="40" cy="-80" r="22" fill="#FFD566"/>
-    <g stroke="#FFD566" stroke-width="2" opacity="0.7" stroke-linecap="round">
-      <line x1="40" y1="-110" x2="40" y2="-118"/>
-      <line x1="68" y1="-80" x2="76" y2="-80"/>
-      <line x1="60" y1="-100" x2="66" y2="-106"/>
-      <line x1="20" y1="-100" x2="14" y2="-106"/>
-    </g>
-    <!-- 道（地平線） -->
-    <polygon points="-110,68 110,68 70,-10 -70,-10" fill="#3B5BBF" opacity="0.5"/>
-    <line x1="0" y1="-10" x2="0" y2="68" stroke="#FFD566" stroke-width="2" stroke-dasharray="6 4" opacity="0.85"/>
-    <!-- 山並み -->
-    <polygon points="-110,-10 -50,-50 0,-30 50,-60 110,-10" fill="#1B2954" opacity="0.85"/>
+    <text x="66" y="52" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="14" font-weight="600" fill="#fff">突飛</text>
+    <text x="174" y="52" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="14" fill="#333">普通</text>
+    <text x="66" y="140" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="14" fill="#333">深い</text>
+    <text x="174" y="140" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="14" fill="#666" opacity="0.85">浅い</text>
+    <text x="118" y="200" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="10" fill="#666">新しさ▶</text>
   </g>
+  <!-- テキストリスト：フィルターなし -->
+  <g transform="translate(432,88)">
+<text x="0" y="2" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="15" font-weight="bold" fill="#1A1A2E" opacity="0.82">🎩 技法</text>
+<rect x="0" y="7" width="286" height="2" fill="#8B6FE8" opacity="0.4" rx="1"/>
+  <rect x="1" y="26" width="11" height="11" fill="#8B6FE8" opacity="0.92" rx="1.5" transform="rotate(-2 6 31)"/>
+  <text x="20" y="39" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.92">前提を捨てる</text>
+  <line x1="0" y1="46" x2="286" y2="46" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
+  <rect x="1" y="66" width="11" height="11" fill="#8B6FE8" opacity="0.86" rx="1.5" transform="rotate(-2 6 71)"/>
+  <text x="20" y="79" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.86">ランダム刺激法</text>
+  <line x1="0" y1="86" x2="286" y2="86" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
+  <rect x="1" y="106" width="11" height="11" fill="#8B6FE8" opacity="0.80" rx="1.5" transform="rotate(-2 6 111)"/>
+  <text x="20" y="119" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.80">逆転の発想</text>
+  <line x1="0" y1="126" x2="286" y2="126" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
+  <rect x="1" y="146" width="11" height="11" fill="#8B6FE8" opacity="0.74" rx="1.5" transform="rotate(-2 6 151)"/>
+  <text x="20" y="159" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.74">6つの帽子</text>
+  <line x1="0" y1="166" x2="286" y2="166" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
+  <rect x="1" y="186" width="11" height="11" fill="#8B6FE8" opacity="0.68" rx="1.5" transform="rotate(-2 6 191)"/>
+  <text x="20" y="199" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.68">制約を逆手に</text>
+  <line x1="0" y1="206" x2="286" y2="206" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
 
-  <!-- 矢印（穴を抜ける動線） -->
-  <g stroke="#FFD566" stroke-width="3" fill="#FFD566" stroke-linecap="round" stroke-linejoin="round">
-    <line x1="200" y1="187" x2="430" y2="187"/>
-    <polygon points="424,178 444,187 424,196"/>
   </g>
-
-  <g fill="#7AAEFF" opacity="0.5">
-    <circle cx="80" cy="50" r="1.4"/>
-    <circle cx="220" cy="36" r="1.0"/>
-    <circle cx="700" cy="60" r="1.4"/>
-  </g>
+  <line x1="78" y1="373" x2="736" y2="373" stroke="#1A1A2E" stroke-width="0.6" opacity="0.1" filter="url(#decoLA)"/>
+  <text x="400" y="390" text-anchor="middle" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="11" fill="#8B6FE8" opacity="0.6">水平思考 — 常識を壊す</text>
 </svg>
