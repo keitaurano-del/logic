@@ -1,71 +1,72 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
   <defs>
-    <linearGradient id="bg-c2" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#1F2942"/>
-      <stop offset="100%" stop-color="#101729"/>
-    </linearGradient>
-    <radialGradient id="lensGlow-c2" cx="0.5" cy="0.5" r="0.5">
-      <stop offset="0%" stop-color="#FFD566" stop-opacity="0.45"/>
-      <stop offset="100%" stop-color="#FFD566" stop-opacity="0"/>
-    </radialGradient>
-    <radialGradient id="lens-c2" cx="0.4" cy="0.35" r="0.7">
-      <stop offset="0%" stop-color="#A8C7FF" stop-opacity="0.55"/>
-      <stop offset="100%" stop-color="#3B5BBF" stop-opacity="0.30"/>
-    </radialGradient>
-    <linearGradient id="figure-c2" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#3B5BBF"/>
-      <stop offset="100%" stop-color="#1B2954"/>
-    </linearGradient>
+    <filter id="decoCR2" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="3" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="2.5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="shapeCR2" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="8" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="3.5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <pattern id="ruledCR2" x="0" y="0" width="800" height="28" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="27" x2="800" y2="27" stroke="#B3D0F5" stroke-width="0.85"/>
+    </pattern>
   </defs>
+  <rect width="800" height="400" fill="#FEFEF2"/>
+  <rect width="800" height="400" fill="url(#ruledCR2)" opacity="0.65"/>
+  <line x1="72" y1="0" x2="72" y2="400" stroke="#F4A0A0" stroke-width="1.8" filter="url(#decoCR2)"/>
+  <line x1="756" y1="14" x2="756" y2="386" stroke="#B3D0F5" stroke-width="1" opacity="0.4" filter="url(#decoCR2)"/>
+  <rect x="78" y="13" width="300" height="38" fill="#E05555" opacity="0.2" rx="3" filter="url(#decoCR2)"/>
+  <text x="86" y="44" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="24" font-weight="bold" fill="#1A1A2E">クリティカルシンキング応用</text>
+  <text x="87" y="67" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#E05555">批判的分析の実践</text>
+  <line x1="78" y1="77" x2="736" y2="77" stroke="#E05555" stroke-width="1.2" opacity="0.28" filter="url(#decoCR2)"/>
+  <line x1="418" y1="80" x2="418" y2="370" stroke="#B3D0F5" stroke-width="0.9" opacity="0.5" filter="url(#decoCR2)"/>
+  <!-- 図形：フィルター適用 -->
+  <g transform="translate(82,88)" filter="url(#shapeCR2)">
 
-  <rect width="800" height="400" fill="url(#bg-c2)"/>
+    <rect x="14" y="6" width="104" height="84" rx="3" fill="#E05555" opacity="0.62" transform="rotate(-0.5 66 48)"/>
+    <rect x="122" y="6" width="104" height="84" rx="3" fill="#E05555" opacity="0.35" transform="rotate(0.5 174 48)"/>
+    <rect x="14" y="94" width="104" height="84" rx="3" fill="#E05555" opacity="0.25" transform="rotate(0.3 66 136)"/>
+    <rect x="122" y="94" width="104" height="84" rx="3" fill="#E05555" opacity="0.12" transform="rotate(-0.4 174 136)"/>
+    <line x1="118" y1="2" x2="118" y2="184" stroke="#444" stroke-width="1.8" opacity="0.28"/>
+    <line x1="8" y1="92" x2="232" y2="92" stroke="#444" stroke-width="1.8" opacity="0.28"/>
 
-  <g stroke="#2A3656" stroke-width="1" opacity="0.25">
-    <line x1="0" y1="100" x2="800" y2="100"/>
-    <line x1="0" y1="200" x2="800" y2="200"/>
-    <line x1="0" y1="300" x2="800" y2="300"/>
+    <g transform="translate(4,192) rotate(-10)">
+      <rect x="0" y="0" width="36" height="9" rx="2" fill="#FFD566" opacity="0.88"/>
+      <polygon points="36,0 46,4.5 36,9" fill="#E8A000" opacity="0.82"/>
+      <rect x="0" y="1" width="5" height="7" rx="1" fill="#F4A0A0" opacity="0.92"/>
+    </g>
   </g>
+  <!-- ラベル：フィルターなし -->
+  <g transform="translate(82,88)">
 
-  <!-- 視線の先のグロー（"見えてきたもの" -->
-  <circle cx="600" cy="180" r="170" fill="url(#lensGlow-c2)"/>
-
-  <!-- レンズが照らした先の小さな真実（鍵） -->
-  <g transform="translate(600,180)" stroke="#FFD566" stroke-width="2.5" fill="none" stroke-linecap="round">
-    <circle cx="-6" cy="-2" r="10"/>
-    <line x1="2" y1="0" x2="20" y2="0"/>
-    <line x1="14" y1="0" x2="14" y2="6"/>
-    <line x1="20" y1="0" x2="20" y2="6"/>
+    <text x="66" y="52" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="14" font-weight="600" fill="#fff">強</text>
+    <text x="174" y="52" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="14" fill="#333">弱</text>
+    <text x="66" y="140" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="14" fill="#333">好</text>
+    <text x="174" y="140" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="14" fill="#666" opacity="0.85">嫌</text>
+    <text x="118" y="200" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="10" fill="#666">証拠の強さ▶</text>
   </g>
+  <!-- テキストリスト：フィルターなし -->
+  <g transform="translate(432,88)">
+<text x="0" y="2" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="15" font-weight="bold" fill="#1A1A2E" opacity="0.82">📚 内容</text>
+<rect x="0" y="7" width="286" height="2" fill="#E05555" opacity="0.4" rx="1"/>
+  <rect x="1" y="26" width="11" height="11" fill="#E05555" opacity="0.92" rx="1.5" transform="rotate(-2 6 31)"/>
+  <text x="20" y="39" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.92">認知バイアス15種</text>
+  <line x1="0" y1="46" x2="286" y2="46" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
+  <rect x="1" y="66" width="11" height="11" fill="#E05555" opacity="0.86" rx="1.5" transform="rotate(-2 6 71)"/>
+  <text x="20" y="79" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.86">メディアリテラシー</text>
+  <line x1="0" y1="86" x2="286" y2="86" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
+  <rect x="1" y="106" width="11" height="11" fill="#E05555" opacity="0.80" rx="1.5" transform="rotate(-2 6 111)"/>
+  <text x="20" y="119" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.80">エビデンスの層</text>
+  <line x1="0" y1="126" x2="286" y2="126" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
+  <rect x="1" y="146" width="11" height="11" fill="#E05555" opacity="0.74" rx="1.5" transform="rotate(-2 6 151)"/>
+  <text x="20" y="159" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.74">論理的誤謬</text>
+  <line x1="0" y1="166" x2="286" y2="166" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
+  <rect x="1" y="186" width="11" height="11" fill="#E05555" opacity="0.68" rx="1.5" transform="rotate(-2 6 191)"/>
+  <text x="20" y="199" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.68">意思決定品質</text>
+  <line x1="0" y1="206" x2="286" y2="206" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
 
-  <!-- 人物（左、胸像シルエット） -->
-  <g transform="translate(220,220)">
-    <!-- 肩〜胸 -->
-    <path d="M -60 130 Q -70 50 -30 22 Q -10 14 4 14 Q 24 14 40 22 Q 70 50 60 130 Z" fill="url(#figure-c2)"/>
-    <!-- 首 -->
-    <path d="M -10 18 L 14 18 L 12 -2 L -8 -2 Z" fill="url(#figure-c2)"/>
-    <!-- 頭（横顔シルエット） -->
-    <path d="M -10 -2 Q -22 -16 -16 -36 Q -8 -56 14 -58 Q 36 -56 38 -32 Q 38 -16 30 -10 Q 28 -4 22 -2 Z" fill="url(#figure-c2)"/>
-    <!-- 上げた手（虫眼鏡を持つ） -->
-    <path d="M 40 26 Q 80 -4 130 -28" fill="none" stroke="url(#figure-c2)" stroke-width="14" stroke-linecap="round"/>
   </g>
-
-  <!-- 虫眼鏡 -->
-  <g transform="translate(360,160)">
-    <!-- 持ち手 -->
-    <line x1="-30" y1="22" x2="-72" y2="48" stroke="#C49A3C" stroke-width="9" stroke-linecap="round"/>
-    <line x1="-30" y1="22" x2="-72" y2="48" stroke="#FFD566" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
-    <!-- レンズの枠 -->
-    <circle cx="6" cy="-4" r="56" fill="url(#lens-c2)" stroke="#FFD566" stroke-width="3"/>
-    <!-- レンズの反射 -->
-    <ellipse cx="-12" cy="-22" rx="14" ry="6" fill="#FFFFFF" opacity="0.5" transform="rotate(-30 -12 -22)"/>
-  </g>
-
-  <!-- 細かい星 -->
-  <g fill="#7AAEFF" opacity="0.55">
-    <circle cx="100" cy="60" r="1.4"/>
-    <circle cx="240" cy="50" r="1.2"/>
-    <circle cx="500" cy="70" r="1.4"/>
-    <circle cx="700" cy="60" r="1.2"/>
-    <circle cx="120" cy="350" r="1.4"/>
-  </g>
+  <line x1="78" y1="373" x2="736" y2="373" stroke="#1A1A2E" stroke-width="0.6" opacity="0.1" filter="url(#decoCR2)"/>
+  <text x="400" y="390" text-anchor="middle" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="11" fill="#E05555" opacity="0.6">批判的分析の実践</text>
 </svg>

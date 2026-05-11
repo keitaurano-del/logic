@@ -1,81 +1,73 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
   <defs>
-    <linearGradient id="bg-sy1" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#1F2942"/>
-      <stop offset="100%" stop-color="#101729"/>
-    </linearGradient>
-    <radialGradient id="glow-sy1" cx="0.5" cy="0.45" r="0.5">
-      <stop offset="0%" stop-color="#7AAEFF" stop-opacity="0.30"/>
-      <stop offset="100%" stop-color="#7AAEFF" stop-opacity="0"/>
-    </radialGradient>
-    <linearGradient id="ice-sy1" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#F4ECC4"/>
-      <stop offset="100%" stop-color="#C9B57A"/>
-    </linearGradient>
-    <linearGradient id="water-sy1" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#3B5BBF" stop-opacity="0.7"/>
-      <stop offset="100%" stop-color="#1B2954" stop-opacity="0.95"/>
-    </linearGradient>
+    <filter id="decoSY" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="3" seed="15" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="2.5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="shapeSY" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="16" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="3.5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <pattern id="ruledSY" x="0" y="0" width="800" height="28" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="27" x2="800" y2="27" stroke="#B3D0F5" stroke-width="0.85"/>
+    </pattern>
   </defs>
+  <rect width="800" height="400" fill="#FEFEF2"/>
+  <rect width="800" height="400" fill="url(#ruledSY)" opacity="0.65"/>
+  <line x1="72" y1="0" x2="72" y2="400" stroke="#F4A0A0" stroke-width="1.8" filter="url(#decoSY)"/>
+  <line x1="756" y1="14" x2="756" y2="386" stroke="#B3D0F5" stroke-width="1" opacity="0.4" filter="url(#decoSY)"/>
+  <rect x="78" y="13" width="220" height="38" fill="#22B8A8" opacity="0.2" rx="3" filter="url(#decoSY)"/>
+  <text x="86" y="44" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="24" font-weight="bold" fill="#1A1A2E">システムシンキング</text>
+  <text x="87" y="67" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#22B8A8">全体の構造を見抜く</text>
+  <line x1="78" y1="77" x2="736" y2="77" stroke="#22B8A8" stroke-width="1.2" opacity="0.28" filter="url(#decoSY)"/>
+  <line x1="418" y1="80" x2="418" y2="370" stroke="#B3D0F5" stroke-width="0.9" opacity="0.5" filter="url(#decoSY)"/>
+  <!-- 図形：フィルター適用 -->
+  <g transform="translate(82,88)" filter="url(#shapeSY)">
 
-  <rect width="800" height="400" fill="url(#bg-sy1)"/>
-  <circle cx="400" cy="180" r="260" fill="url(#glow-sy1)"/>
+    <circle cx="128" cy="42" r="40" fill="#22B8A8" opacity="0.72"/>
+    <circle cx="252" cy="148" r="40" fill="#22B8A8" opacity="0.52"/>
+    <circle cx="58" cy="148" r="40" fill="#22B8A8" opacity="0.35"/>
+    <path d="M160,58 Q218,60 236,116" stroke="#444" stroke-width="1.8" fill="none" opacity="0.35"/>
+    <polygon points="232,114 240,124 228,122" fill="#444" opacity="0.35"/>
+    <path d="M220,168 Q152,204 92,166" stroke="#444" stroke-width="1.8" fill="none" opacity="0.35"/>
+    <polygon points="94,168 82,160 96,156" fill="#444" opacity="0.35"/>
+    <path d="M36,114 Q26,64 96,50" stroke="#444" stroke-width="1.8" fill="none" opacity="0.35"/>
+    <polygon points="94,48 106,42 102,54" fill="#444" opacity="0.35"/>
 
-  <!-- 水面 -->
-  <rect x="0" y="190" width="800" height="210" fill="url(#water-sy1)"/>
-  <line x1="0" y1="190" x2="800" y2="190" stroke="#7AAEFF" stroke-width="1.4" opacity="0.7"/>
-
-  <!-- 氷山 -->
-  <g transform="translate(400,190)">
-    <!-- 水面下 -->
-    <polygon points="-150,0 150,0 110,170 -100,170" fill="#3B5BBF" opacity="0.55"/>
-    <polygon points="-130,0 130,0 90,150 -90,150" fill="#3B5BBF" opacity="0.7"/>
-    <polygon points="-150,0 -90,0 -70,170 -100,170" fill="#1B2954" opacity="0.5"/>
-    <!-- 表面 -->
-    <polygon points="-60,0 60,0 36,-70 -38,-70" fill="url(#ice-sy1)"/>
-    <polygon points="-60,0 -16,0 -28,-54 -38,-70" fill="#9B8A4F" opacity="0.7"/>
-    <line x1="-28" y1="-54" x2="22" y2="-32" stroke="#F4ECC4" stroke-width="1" opacity="0.6"/>
-  </g>
-
-  <!-- 氷山の各層ラベル -->
-  <g font-family="'SF Pro Display','Helvetica Neue',sans-serif" font-weight="700">
-    <g transform="translate(620,140)">
-      <text x="0" y="0" font-size="12" fill="#FFD566">事象</text>
-      <line x1="-110" y1="-4" x2="-30" y2="-4" stroke="#FFD566" stroke-width="1" stroke-dasharray="3 3" opacity="0.6"/>
-    </g>
-    <g transform="translate(620,250)">
-      <text x="0" y="0" font-size="12" fill="#7AAEFF">パターン</text>
-      <line x1="-130" y1="-4" x2="-50" y2="-4" stroke="#7AAEFF" stroke-width="1" stroke-dasharray="3 3" opacity="0.6"/>
-    </g>
-    <g transform="translate(620,330)">
-      <text x="0" y="0" font-size="12" fill="#C49A3C">構造</text>
-      <line x1="-110" y1="-4" x2="-30" y2="-4" stroke="#C49A3C" stroke-width="1" stroke-dasharray="3 3" opacity="0.6"/>
+    <g transform="translate(4,192) rotate(-10)">
+      <rect x="0" y="0" width="36" height="9" rx="2" fill="#FFD566" opacity="0.88"/>
+      <polygon points="36,0 46,4.5 36,9" fill="#E8A000" opacity="0.82"/>
+      <rect x="0" y="1" width="5" height="7" rx="1" fill="#F4A0A0" opacity="0.92"/>
     </g>
   </g>
+  <!-- ラベル：フィルターなし -->
+  <g transform="translate(82,88)">
 
-  <!-- フィードバックループ（左下、円環矢印） -->
-  <g transform="translate(180,250)">
-    <circle cx="0" cy="0" r="68" fill="none" stroke="#FFD566" stroke-width="3" stroke-dasharray="8 6" opacity="0.85"/>
-    <!-- 矢印頭 -->
-    <polygon points="60,-22 76,-12 60,-2" fill="#FFD566"/>
-    <polygon points="-60,22 -76,12 -60,2" fill="#FFD566"/>
-    <!-- 中心 -->
-    <circle cx="0" cy="0" r="14" fill="#FFD566"/>
-    <text x="0" y="6" text-anchor="middle" font-family="'SF Pro Display','Helvetica Neue',sans-serif" font-size="14" font-weight="700" fill="#1A2540">∞</text>
-    <!-- ノード -->
-    <g fill="#7AAEFF">
-      <circle cx="0" cy="-68" r="8"/>
-      <circle cx="68" cy="0" r="8"/>
-      <circle cx="0" cy="68" r="8"/>
-      <circle cx="-68" cy="0" r="8"/>
-    </g>
+    <text x="128" y="47" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="600" fill="#fff">インプット</text>
+    <text x="252" y="153" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" fill="#fff">処理</text>
+    <text x="58" y="153" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" fill="#333">出力</text>
   </g>
+  <!-- テキストリスト：フィルターなし -->
+  <g transform="translate(432,88)">
+<text x="0" y="2" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="15" font-weight="bold" fill="#1A1A2E" opacity="0.82">🌐 概念</text>
+<rect x="0" y="7" width="286" height="2" fill="#22B8A8" opacity="0.4" rx="1"/>
+  <rect x="1" y="26" width="11" height="11" fill="#22B8A8" opacity="0.92" rx="1.5" transform="rotate(-2 6 31)"/>
+  <text x="20" y="39" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.92">フィードバックループ</text>
+  <line x1="0" y1="46" x2="286" y2="46" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
+  <rect x="1" y="66" width="11" height="11" fill="#22B8A8" opacity="0.86" rx="1.5" transform="rotate(-2 6 71)"/>
+  <text x="20" y="79" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.86">レバレッジポイント</text>
+  <line x1="0" y1="86" x2="286" y2="86" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
+  <rect x="1" y="106" width="11" height="11" fill="#22B8A8" opacity="0.80" rx="1.5" transform="rotate(-2 6 111)"/>
+  <text x="20" y="119" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.80">遅延効果を知る</text>
+  <line x1="0" y1="126" x2="286" y2="126" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
+  <rect x="1" y="146" width="11" height="11" fill="#22B8A8" opacity="0.74" rx="1.5" transform="rotate(-2 6 151)"/>
+  <text x="20" y="159" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.74">創発的性質</text>
+  <line x1="0" y1="166" x2="286" y2="166" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
+  <rect x="1" y="186" width="11" height="11" fill="#22B8A8" opacity="0.68" rx="1.5" transform="rotate(-2 6 191)"/>
+  <text x="20" y="199" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.68">氷山モデル</text>
+  <line x1="0" y1="206" x2="286" y2="206" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
 
-  <g fill="#7AAEFF" opacity="0.5">
-    <circle cx="80" cy="50" r="1.4"/>
-    <circle cx="220" cy="36" r="1.0"/>
-    <circle cx="560" cy="50" r="1.2"/>
-    <circle cx="700" cy="50" r="1.4"/>
-    <circle cx="730" cy="80" r="1.0"/>
   </g>
+  <line x1="78" y1="373" x2="736" y2="373" stroke="#1A1A2E" stroke-width="0.6" opacity="0.1" filter="url(#decoSY)"/>
+  <text x="400" y="390" text-anchor="middle" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="11" fill="#22B8A8" opacity="0.6">全体の構造を見抜く</text>
 </svg>
