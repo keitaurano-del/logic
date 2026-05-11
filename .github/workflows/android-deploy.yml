@@ -96,12 +96,7 @@ jobs:
           echo "✓ Keystore generated: $KEYSTORE_PATH"
           keytool -list -keystore "$KEYSTORE_PATH" -storepass "$PASSWORD" -alias "$ALIAS" > /dev/null && echo "✓ Verified"
           # key.properties 書き出し
-          cat > android/key.properties << EOF
-LOGIC_KEYSTORE_FILE=../../keystores/logicalthinking-release.keystore
-LOGIC_KEYSTORE_PASSWORD=${PASSWORD}
-LOGIC_KEY_ALIAS=${ALIAS}
-LOGIC_KEY_PASSWORD=${PASSWORD}
-EOF
+          printf 'LOGIC_KEYSTORE_FILE=../../keystores/logicalthinking-release.keystore\nLOGIC_KEYSTORE_PASSWORD=%s\nLOGIC_KEY_ALIAS=%s\nLOGIC_KEY_PASSWORD=%s\n' "$PASSWORD" "$ALIAS" "$PASSWORD" > android/key.properties
           echo "✓ key.properties written"
 
       # ── 12. AAB ビルド ────────────────────────────────────
