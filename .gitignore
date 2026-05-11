@@ -25,6 +25,7 @@ e2e/report/
 !.claude/agents/
 !.claude/memory/
 !.claude/settings.json
+!.claude/bootstrap-rin.sh
 !.claude/EVALUATOR_HINTS.md
 
 # Editor directories and files
