@@ -124,6 +124,6 @@ jobs:
           packageName: com.logicalthinking.app
           releaseFiles: android/app/build/outputs/bundle/release/app-release.aab
           track: alpha
-          status: completed
+          status: draft
           whatsNewDirectory: distribution/whatsnew
           inAppUpdatePriority: 2
