@@ -23,6 +23,8 @@ e2e/report/
 # Claude Code
 .claude/*
 !.claude/agents/
+!.claude/memory/
+!.claude/settings.json
 !.claude/EVALUATOR_HINTS.md
 
 # Editor directories and files
