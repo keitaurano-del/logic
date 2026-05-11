@@ -60,15 +60,17 @@ jobs:
 
       # ── 9. versionCode を GITHUB_RUN_NUMBER で設定 ────────
       #      毎回ユニークなversionCodeを保証するためRUN_NUMBERを使用
-      - name: Set Android versionCode from run number
+      - name: Set Android versionCode and versionName from run number
         run: |
           GRADLE=android/app/build.gradle
-          # RUN_NUMBER + 1000 でオフセット → Play Console の既存versionCodeと衝突しない
+          # versionCode: RUN_NUMBER + 1000
           VERSION_CODE=$(( ${{ github.run_number }} + 1000 ))
-          # versionCode の行を置換
           sed -i "s/versionCode [0-9]*/versionCode ${VERSION_CODE}/" "$GRADLE"
-          echo "✓ versionCode set to ${VERSION_CODE}"
-          grep versionCode "$GRADLE"
+          # versionName: 1.5.<RUN_NUMBER> 形式で自動インクリメント
+          VERSION_NAME="1.5.${{ github.run_number }}"
+          sed -i "s/versionName \"[^\"]*\"/versionName \"${VERSION_NAME}\"/" "$GRADLE"
+          echo "✓ versionCode=${VERSION_CODE}, versionName=${VERSION_NAME}"
+          grep -E "versionCode|versionName" "$GRADLE"
 
       # ── 10. Gradle キャッシュ ─────────────────────────────
       - name: Cache Gradle
