@@ -77,25 +77,24 @@ jobs:
           key: gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: gradle-
 
-      # ── 11. 新しいキーストアを生成して key.properties を作成 ──────
-      - name: Generate keystore and write key.properties
+      # ── 11. キーストアをSecretからリストアして key.properties を作成 ──
+      - name: Restore keystore and write key.properties
         run: |
           mkdir -p keystores
           KEYSTORE_PATH=keystores/logicalthinking-release.keystore
           ALIAS=logicalthinking
           PASSWORD=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          # keytool でキーストア生成（CI環境はJDKが入っている）
-          keytool -genkeypair -v \
-            -keystore "$KEYSTORE_PATH" \
-            -alias "$ALIAS" \
-            -keyalg RSA -keysize 2048 -validity 10000 \
-            -storepass "$PASSWORD" \
-            -keypass "$PASSWORD" \
-            -dname "CN=LogicalThinking, OU=App, O=LogicalThinking, L=Tokyo, S=Tokyo, C=JP" \
-            -noprompt
-          echo "✓ Keystore generated: $KEYSTORE_PATH"
-          keytool -list -keystore "$KEYSTORE_PATH" -storepass "$PASSWORD" -alias "$ALIAS" > /dev/null && echo "✓ Verified"
-          # key.properties 書き出し
+          B64="${{ secrets.ANDROID_KEYSTORE_BASE64 }}"
+          if [ -n "$B64" ]; then
+            echo "$B64" | base64 -d > "$KEYSTORE_PATH"
+            echo "✓ Keystore restored from secret ($( wc -c < $KEYSTORE_PATH ) bytes)"
+          else
+            echo "::error::ANDROID_KEYSTORE_BASE64 secret が未設定です"
+            exit 1
+          fi
+          keytool -list -keystore "$KEYSTORE_PATH" -storepass "$PASSWORD" -alias "$ALIAS" > /dev/null \
+            && echo "✓ Keystore verified" \
+            || { echo "::error::キーストアの検証失敗（パスワードまたはエイリアスが不正）"; exit 1; }
           printf 'LOGIC_KEYSTORE_FILE=../../keystores/logicalthinking-release.keystore\nLOGIC_KEYSTORE_PASSWORD=%s\nLOGIC_KEY_ALIAS=%s\nLOGIC_KEY_PASSWORD=%s\n' "$PASSWORD" "$ALIAS" "$PASSWORD" > android/key.properties
           echo "✓ key.properties written"
 
