@@ -126,4 +126,4 @@ jobs:
           track: alpha
           status: draft
           whatsNewDirectory: distribution/whatsnew
-          inAppUpdatePriority: 2
+          changesNotSentForReview: true
