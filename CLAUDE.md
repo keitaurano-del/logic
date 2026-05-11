@@ -221,7 +221,8 @@ agent-config の `projects/-root-projects/memory/` から sync。個別ファイ
 
 # MEMORY.md
 
-- [cxo-agentリポジトリを使わない](feedback_no_cxo_agent.md) — GitHub Issue起票等でcxo-agentリポジトリは使用しない（logicかsengoku-chaikaiを使う）
+- [cxo-agentリポジトリを使わない](feedback_no_cxo_agent.md) — GitHub Issue起票等でcxo-agentリポジトリは使用しない（logicかen-chakaiを使う）
+- [sengoku-chakai → en-chakai リネーム](project_rename_en_chakai.md) — GitHub リポ・ローカルディレクトリを sengoku-chakai → en-chakai に rename 完了（2026-05-11）。ブランド名は円茶会
 - [口調スタイル](feedback_tone.md) — きれいなお姉さん風：落ち着いてテキパキ、語尾に「わ」「のよ」などを自然に混ぜる
 - [Logic マーケティング方針](feedback_logic_marketing.md) — 「コーヒー1杯」系の安さアピールNG。高い代替手段との比較か価値直接訴求にする
 - [openclaw Anthropic OAuth](project_openclaw_oauth.md) — Claude.ai プラン OAuth で認証済み、env var の API キーは削除。default は sonnet-4-6
@@ -230,6 +231,8 @@ agent-config の `projects/-root-projects/memory/` から sync。個別ファイ
 - [Logic サムネは手書き+図解](feedback_logic_course_thumbnails.md) — コースサムネイルは手書きフォント+図解スタイルで統一。ダーク背景シーン構成は方針外
 - [designer subagent 新設](project_designer_subagent.md) — ビジュアルデザイン専門 subagent を ~/.claude/projects-meta/agents/designer.md に追加（2026-05-10）
 - [subagent 整理](project_agent_cleanup_20260511.md) — pm / dev-chakai を削除して 5体構成（ceo, secretary, dev-logic, marketing, designer）に整理（2026-05-11）
+- [Pixa は使わない](feedback_no_pixa.md) — 画像生成ツールとして Pixa は今後一切不使用。Figma + 手書き素材 or 外部ツール経由で対応（2026-05-11）
+- [Figma ログイン](reference_figma_login.md) — Figma は keita.urano@gmail.com の Google アカウントでログイン済み
 
 ### feedback_assistant_name.md
 
@@ -295,6 +298,26 @@ GitHub IssueやタスクをKeitaのリポジトリに起票する際、`cxo-agen
 **Why:** Keitaから明示的に「cxo-agentは使わないで、これからずっと」と指示された。
 
 **How to apply:** Issue起票・タスク管理などでリポジトリを選ぶ際、cxo-agentは選択肢から除外する。`logic` か `sengoku-chakai`、またはKeitaが指定したリポジトリを使う。
+
+### feedback_no_pixa.md
+
+---
+name: feedback-no-pixa
+description: Pixa は今後一切使わない。画像生成は Figma + 手書き素材組み合わせ、または Keita が外部ツールで生成して凜が配置担当
+metadata: 
+  node_type: memory
+  type: feedback
+  originSessionId: 061c2e27-a5d0-43f9-a1d9-034cb1893332
+---
+
+Pixa は今後一切使わない方針。
+
+**Why:** Keita 判断（2026-05-11）。クレジット消費・refill タイミング不確実性・Pixa の手書き感再現が方針に合わない、などの要因。
+
+**How to apply:**
+- designer subagent の方針で Pixa は除外。`mcp__claude_ai_Pixa__*` ツール群は使わない。
+- 画像生成が必要な場合は (1) Figma で手書き素材組み合わせ、(2) Keita が外部ツール（Midjourney / Firefly / 手書き写真等）で生成 → 凜が配置整理、のいずれかで対応。
+- [[project-designer-subagent]] の定義からも Pixa の記述を外しておくこと。
 
 ### feedback_tone.md
 
@@ -418,5 +441,45 @@ openclaw の Anthropic provider 認証は **Claude.ai プラン (Max) OAuth** �
 - registry stale で `Unknown provider` 系エラーが出たら `openclaw plugins registry --refresh` を最初に試す
 - 環境変数 `ANTHROPIC_API_KEY` を再追加すると effective が profiles から env に戻る可能性あり。基本入れない
 - 旧 API キー（`sk-ant-api03-xMV80...` で始まっていたもの）はローカルから完全削除済み。Anthropic コンソール側で Revoke 済みかは未確認 — もし未対応なら https://console.anthropic.com/settings/keys で対応推奨
+
+### project_rename_en_chakai.md
+
+---
+name: project-rename-en-chakai
+description: sengoku-chakai → en-chakai のリポ／ローカルディレクトリ rename 完了。残作業は render.yaml と en-chakai.com ドメイン取得
+metadata: 
+  node_type: memory
+  type: project
+  originSessionId: 061c2e27-a5d0-43f9-a1d9-034cb1893332
+---
+
+GitHub リポ `keitaurano-del/sengoku-chakai` → `keitaurano-del/en-chakai` にリネーム完了（2026-05-11）。ローカルディレクトリも `/root/projects/sengoku-chakai` → `/root/projects/en-chakai` に変更済み。
+
+**Why:** 2026-04-22 コミット `cb1caba` で千石茶会 → 円茶会 (En Chakai) のリブランドが完了済みだったが、リポ名・ローカルパス・agent-config 内の参照が古いままだった。サンプル調査でこれが判明し、Keita 承認のもと一括整理した。
+
+**How to apply:**
+- 今後 sengoku-chakai という名前は使わない。コード・ドキュメント・コミットメッセージともに `en-chakai` / 円茶会 を使用。
+- ローカルパスは `/root/projects/en-chakai`。
+- まだ残ってる作業: (1) `render.yaml` の `name: sengoku-chakai` → `en-chakai`（Render サービス名は不可変なので新サービス作成 → 切り替え）、(2) ドメイン `en-chakai.com` の取得確認・DNS 設定・301 リダイレクト。これは [[task-en-chakai-domain]] / [[task-render-rename]] として個別判断。
+- 「千石」「Sengoku」が残っている12ファイルはほぼ全部が**地名としての文京区千石**（駅・所在地）なので保持して OK。
+- GitHub は古い URL から自動リダイレクトが効くので外部リンクは一定期間は動く。
+
+### reference_figma_login.md
+
+---
+name: reference-figma-login
+description: Figma は keita.urano@gmail.com の Google アカウントでログイン
+metadata: 
+  node_type: memory
+  type: reference
+  originSessionId: 061c2e27-a5d0-43f9-a1d9-034cb1893332
+---
+
+Figma は Keita の Google アカウント **keita.urano@gmail.com** でログイン済み。
+
+**How to apply:**
+- designer subagent が Figma 操作する際、このアカウントでアクセスできるチーム / プロジェクト前提。
+- `mcp__claude_ai_Figma__whoami` で現在のアカウント確認可能。
+- `mcp__claude_ai_Figma__get_libraries` でアクセス可能なライブラリ一覧。
 
 <!-- END: claude-config-memory -->
