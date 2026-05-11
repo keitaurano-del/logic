@@ -1,4 +1,4 @@
-name: Android Deploy → Play Console (Closed Test / Alpha)
+name: Android Deploy → Play Console (Internal Test, promote to Alpha via UI)
 
 on:
   push:
@@ -116,14 +116,17 @@ jobs:
           path: android/app/build/outputs/bundle/release/app-release.aab
           retention-days: 30
 
-      # ── 14. Play Console クローズドテスト (Alpha) に配信 ───
-      - name: Deploy to Play Console (Closed Test / Alpha)
+      # ── 14. Play Console 内部テストに配信 ──────────────────
+      #      Draft App の制約で alpha/beta track には API 経由で
+      #      deploy 不可。internal で deploy → Play Console UI で
+      #      手動 promote (Internal → Closed/Alpha) する運用。
+      - name: Deploy to Play Console (Internal Test)
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}
           packageName: com.logicalthinking.app
           releaseFiles: android/app/build/outputs/bundle/release/app-release.aab
-          track: alpha
-          status: draft
+          track: internal
+          status: completed
           whatsNewDirectory: distribution/whatsnew
-          changesNotSentForReview: true
+          inAppUpdatePriority: 2
