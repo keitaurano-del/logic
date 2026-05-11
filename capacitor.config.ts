@@ -3,7 +3,7 @@ import type { CapacitorConfig } from '@capacitor/cli'
 const SURFACE = '#1A1F2E' // Slate Blue dark surface; matches --md-sys-color-surface
 
 const config: CapacitorConfig = {
-  appId: 'io.logic.app',
+  appId: 'com.logicalthinking.app',
   appName: 'Logic',
   webDir: 'dist',
   ios: {

@@ -16,10 +16,10 @@ def releaseKeyPassword      = keystoreProperties['LOGIC_KEY_PASSWORD']      ?: S
 def hasReleaseSigning       = releaseKeystoreFile && releaseKeystorePassword && releaseKeyAlias && releaseKeyPassword
 
 android {
-    namespace "io.logic.app"
+    namespace "com.logicalthinking.app"
     compileSdk rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "io.logic.app"
+        applicationId "com.logicalthinking.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 21
