@@ -3,11 +3,26 @@
  * 仕様: docs/DESIGN_V3.md §3.2
  * モックアップ: lv3-courses.html
  */
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import type { ReactNode } from 'react'
 import { Header } from '../components/platform/Header'
 import { ActionSheet } from '../components/ActionSheet'
 import { LessonThumbnail } from '../components/LessonThumbnail'
+
+function LessonImage({ lessonId, size }: { lessonId: number; size: number }) {
+  const [failed, setFailed] = useState(false)
+  const handleError = useCallback(() => setFailed(true), [])
+  if (failed) return <LessonThumbnail lessonId={lessonId} size={size} />
+  return (
+    <img
+      src={`/images/v3/lesson-${lessonId}.webp`}
+      alt=""
+      loading="lazy"
+      onError={handleError}
+      style={{ width: size, height: size, objectFit: 'cover', display: 'block' }}
+    />
+  )
+}
 import LessonIcon from '../LessonIcon'
 import { getAllLessonsFlat } from '../lessonData'
 import type { LessonData } from '../lessonData'
@@ -858,7 +873,7 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
             <button type="button" key={lesson.id} onClick={() => onOpenLesson(lesson.id)}
               aria-label={isDone ? t('roadmap.lessonAriaDone', { title: lesson.title }) : t('roadmap.lessonAria', { title: lesson.title })}
               style={{ background: 'var(--bg-card)', borderRadius: 14, padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'stretch', overflow: 'hidden', boxShadow: 'var(--shadow-v3-card-inset)', border: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%' }}>
-              <div style={{ width: 80, height: 80, flexShrink: 0 }}><LessonThumbnail lessonId={lesson.id} size={80} /></div>
+              <div style={{ width: 80, height: 80, flexShrink: 0, overflow: 'hidden', borderRadius: '14px 0 0 14px' }}><LessonImage lessonId={lesson.id} size={80} /></div>
               <div style={{ padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0 }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 3, lineHeight: 1.4 }}>{lesson.title}</div>
