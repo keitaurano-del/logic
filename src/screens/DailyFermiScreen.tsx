@@ -9,7 +9,7 @@ import { getGuestId } from '../guestId'
 import { haptic } from '../platform/haptics'
 import { useDailyGuide, GuideStyle } from '../tutorial/dailyGuide'
 import { isStandardPlan, isPremiumPlan } from '../subscription'
-import { getDisplayName } from '../stats'
+import { getDisplayName, addXp } from '../stats'
 import { markDailyFermiDone } from './dailyFermiState'
 
 // ── プラン別デイリー制限 ──────────────────────────────────────
@@ -549,6 +549,7 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
       incrementDailyCount()
       setDailyCount(getDailyCount())
       setSubmitPhase('done')
+      addXp('fermi')
       // スコアをランキングに記録
       if (data.score != null) {
         fetch(`${API_BASE}/api/fermi/record-score`, {

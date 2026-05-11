@@ -409,15 +409,31 @@ Keep responses concise (2-4 sentences). Do not solve the problem for them.`
   })
 
   // =============================================
-  // フェルミ — ランキング取得（実データ + フォールバック）
+  // フェルミ — ランキング取得（実データ優先 + ダミーで穴埋め）
   // =============================================
   router.get('/ranking', async (req: Request, res: Response) => {
+    const DISPLAY_LIMIT = 10
+    // ダミーデータ（実データが足りないときの穴埋め用、スコア順）
+    const MOCK_RANKING: Array<{ name: string; score: number; isMock: boolean }> = [
+      { name: 'Taro M.', score: 98, isMock: true },
+      { name: 'Yuki S.', score: 87, isMock: true },
+      { name: 'Hana K.', score: 76, isMock: true },
+      { name: 'Ryo T.', score: 65, isMock: true },
+      { name: 'Ami F.', score: 54, isMock: true },
+      { name: 'Ken N.', score: 43, isMock: true },
+      { name: 'Saki I.', score: 38, isMock: true },
+      { name: 'Jiro W.', score: 27, isMock: true },
+      { name: 'Mika O.', score: 15, isMock: true },
+    ]
+
     try {
       const period = (req.query.period as string) || 'week'
       let since = new Date()
       if (period === 'week') since.setDate(since.getDate() - 7)
       else if (period === 'month') since.setDate(since.getDate() - 30)
       else since = new Date('2020-01-01')
+
+      let realRanking: Array<{ name: string; score: number; isMock: boolean }> = []
 
       if (supabase) {
         const { data, error } = await supabase
@@ -427,7 +443,7 @@ Keep responses concise (2-4 sentences). Do not solve the problem for them.`
           .order('score', { ascending: false })
           .limit(50)
 
-        if (!error && data && data.length >= 3) {
+        if (!error && data && data.length > 0) {
           // ユーザーごとに最高スコアを集計
           const byUser: Record<string, { name: string; score: number }> = {}
           for (const row of data) {
@@ -436,26 +452,24 @@ Keep responses concise (2-4 sentences). Do not solve the problem for them.`
               byUser[name] = { name, score: row.score }
             }
           }
-          const ranking = Object.values(byUser).sort((a, b) => b.score - a.score).slice(0, 20)
-          return res.json({ ranking, source: 'real' })
+          realRanking = Object.values(byUser)
+            .sort((a, b) => b.score - a.score)
+            .map((r) => ({ ...r, isMock: false }))
         }
       }
 
-      // フォールバック: ダミーデータ（100pt以下）
-      res.json({
-        ranking: [
-          { name: 'Taro M.', score: 98 },
-          { name: 'Yuki S.', score: 87 },
-          { name: 'Hana K.', score: 76 },
-          { name: 'Ryo T.', score: 65 },
-          { name: 'Ami F.', score: 54 },
-          { name: 'Ken N.', score: 43 },
-          { name: 'Saki I.', score: 38 },
-          { name: 'Jiro W.', score: 27 },
-          { name: 'Mika O.', score: 15 },
-        ],
-        source: 'mock'
-      })
+      // 実データ + ダミーをマージしてスコア降順、表示上限まで
+      // 安定ソート: スコアが同じなら実データを優先
+      const merged = [...realRanking, ...MOCK_RANKING]
+        .sort((a, b) => {
+          if (b.score !== a.score) return b.score - a.score
+          if (a.isMock === b.isMock) return 0
+          return a.isMock ? 1 : -1
+        })
+        .slice(0, DISPLAY_LIMIT)
+
+      const source = realRanking.length === 0 ? 'mock' : (realRanking.length >= DISPLAY_LIMIT ? 'real' : 'hybrid')
+      res.json({ ranking: merged, source, realCount: realRanking.length })
     } catch (e: unknown) {
       res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
     }

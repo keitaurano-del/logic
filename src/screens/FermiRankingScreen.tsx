@@ -11,6 +11,7 @@ interface RankEntry {
   name: string
   score: number
   isMe?: boolean
+  isMock?: boolean
 }
 
 type Period = 'week' | 'month' | 'alltime'
@@ -37,11 +38,13 @@ export function FermiRankingScreen() {
         const d = await r.json()
         if (cancelled) return
         const list = Array.isArray(d.ranking) ? d.ranking : []
-        const ranked: RankEntry[] = list.map((row: { name: string; score: number }, i: number) => ({
+        const ranked: RankEntry[] = list.map((row: { name: string; score: number; isMock?: boolean }, i: number) => ({
           rank: i + 1,
           name: row.name,
           score: row.score,
-          isMe: row.name === myName,
+          isMock: row.isMock === true,
+          // ダミー行に自分の名前が偶然一致しても自分扱いにしない
+          isMe: row.isMock !== true && row.name === myName,
         }))
         setEntries(ranked)
 

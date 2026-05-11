@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { recordCompletion } from '../stats'
+import { recordCompletion, addXp, getDisplayName } from '../stats'
+import { getGuestId } from '../guestId'
 import { ArrowRightIcon, CheckIcon, LightbulbIcon } from '../icons'
 import { Button } from '../components/Button'
 import { Header } from '../components/platform/Header'
@@ -57,6 +58,8 @@ interface FermiQuestion {
 
 interface FermiFeedback {
   feedback: string
+  score?: number
+  scoreBreakdown?: string
 }
 
 function getStarter(): FermiQuestion {
@@ -98,14 +101,32 @@ function useFermiState(): FermiState {
       const res = await fetch(`${API_BASE}/api/fermi/feedback`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: question.question, userInput: answer }),
+        body: JSON.stringify({ question: question.question, userInput: answer, guestId: getGuestId() }),
       })
       if (!res.ok) throw new Error('Network error')
       const data = await res.json()
       setFeedback({
         feedback: data.feedback ?? '',
+        score: data.score,
+        scoreBreakdown: data.scoreBreakdown,
       })
       recordCompletion('fermi')
+      addXp('fermi')
+      // スコアをランキングに記録（fire-and-forget）
+      if (typeof data.score === 'number') {
+        fetch(`${API_BASE}/api/fermi/record-score`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId: getGuestId(),
+            userName: getDisplayName(),
+            score: data.score,
+            questionIndex: -1,
+            elapsedSec: 0,
+            hintUsed: false,
+          }),
+        }).catch(() => { /* ignore */ })
+      }
     } catch (e) {
       setError((e as Error).message)
     } finally {
