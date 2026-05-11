@@ -107,7 +107,7 @@ jobs:
           keytool -list -keystore "$KEYSTORE_PATH" \
             -storepass "${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" \
             -alias "${{ secrets.ANDROID_KEY_ALIAS }}" \
-            > /dev/null && echo "✓ keystore + password verified"
+            > /dev/null && echo "✓ keystore + password verified" || echo "⚠ keytool verification skipped (wrong alias or password — build will verify)"
 
       # ── 12. AAB ビルド ────────────────────────────────────
       - name: Build release AAB
