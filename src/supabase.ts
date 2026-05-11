@@ -21,17 +21,8 @@ export async function loginWithGoogle(): Promise<{ user: User | null; error?: st
   if (!supabase) return { user: null, error: 'Supabase が設定されていません' }
   try {
     if (Capacitor.isNativePlatform()) {
-      // ネイティブ: Capacitor Google Auth → Supabase signInWithIdToken
-      const { GoogleAuth } = await import('@codetrix-studio/capacitor-google-auth')
-      const result = await GoogleAuth.signIn()
-      const idToken = result.authentication?.idToken
-      if (!idToken) return { user: null, error: 'Google認証トークンが取得できませんでした' }
-      const { data, error } = await supabase.auth.signInWithIdToken({
-        provider: 'google',
-        token: idToken,
-      })
-      if (error) return { user: null, error: error.message }
-      return { user: data?.user ?? null }
+      // Google Auth は一時無効化中（google-services.json未設定）
+      return { user: null, error: 'Googleログインは現在ご利用いただけません' }
     } else {
       // Web: 既存のOAuthフロー
       const { error } = await supabase.auth.signInWithOAuth({
