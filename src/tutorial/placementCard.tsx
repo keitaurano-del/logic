@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { useState } from 'react'
 import { tutorial } from './tutorialStorage'
+import { t } from '../i18n'
 
 interface PlacementCardProps {
   onTakeTest: () => void
@@ -41,13 +42,13 @@ export function PlacementCard({ onTakeTest }: PlacementCardProps) {
           </svg>
         </div>
         <div>
-          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>あなたの実力を診断しましょう</div>
-          <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 1 }}>10問・約5分で5軸のスキル分布がわかります</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>{t('placementCard.title')}</div>
+          <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 1 }}>{t('placementCard.subtitle')}</div>
         </div>
       </div>
 
       <p style={{ margin: '0 0 14px', fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-        推定偏差値・レーダーチャート・最適コースをご案内します。
+        {t('placementCard.desc')}
       </p>
 
       {/* ボタン */}
@@ -60,7 +61,7 @@ export function PlacementCard({ onTakeTest }: PlacementCardProps) {
             fontSize: 14, fontWeight: 700, cursor: 'pointer',
           }}
         >
-          診断を受ける
+          {t('placementCard.takeTest')}
         </button>
         <button
           onClick={handleDismiss}
@@ -70,7 +71,7 @@ export function PlacementCard({ onTakeTest }: PlacementCardProps) {
             fontSize: 14, fontWeight: 600, cursor: 'pointer',
           }}
         >
-          後で
+          {t('placementCard.later')}
         </button>
       </div>
     </div>

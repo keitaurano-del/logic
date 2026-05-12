@@ -1,7 +1,7 @@
 import React, { useState, useLayoutEffect } from 'react'
 import { ChevronRightIcon, SparklesIcon } from '../icons'
 import { Header } from '../components/platform/Header'
-import { getLocale, t } from '../i18n'
+import { getLocale, t, localizedHtmlPath } from '../i18n'
 import {
   loadReminderPref, saveReminderPref, scheduleDailyReminder,
   cancelDailyReminder, requestNotificationPermission, isNative,
@@ -300,7 +300,7 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
         <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
           <SettingsRow
             label={t('settings.support.terms')}
-            onPress={() => window.open('/terms.html', '_blank')}
+            onPress={() => window.open(localizedHtmlPath('terms'), '_blank')}
           />
         </div>
       </div>

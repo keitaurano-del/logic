@@ -9,7 +9,7 @@ import { BETA_MODE } from './subscription'
 import SubscriptionManagement from './SubscriptionManagement'
 import { resetAllData } from './dataReset'
 import { loadReminderPref, scheduleDailyReminder, cancelDailyReminder, requestNotificationPermission, isNative } from './notifications'
-import { t, getLocale, setLocale } from './i18n'
+import { t, getLocale, setLocale, localizedHtmlPath } from './i18n'
 import { confirm as confirmDialog } from './platform/dialog'
 import './Profile.css'
 
@@ -386,19 +386,19 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
       </div>
 
       {/* Legal links */}
-      <div className="pf-deviation-card" onClick={() => window.open('/privacy.html', '_blank')}>
+      <div className="pf-deviation-card" onClick={() => window.open(localizedHtmlPath('privacy'), '_blank')}>
         <span>{t('profile.privacy')}</span>
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <polyline points="9 18 15 12 9 6"/>
         </svg>
       </div>
-      <div className="pf-deviation-card" onClick={() => window.open('/terms.html', '_blank')}>
+      <div className="pf-deviation-card" onClick={() => window.open(localizedHtmlPath('terms'), '_blank')}>
         <span>{t('profile.terms')}</span>
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <polyline points="9 18 15 12 9 6"/>
         </svg>
       </div>
-      <div className="pf-deviation-card" onClick={() => window.open('/tokushoho.html', '_blank')}>
+      <div className="pf-deviation-card" onClick={() => window.open(localizedHtmlPath('tokushoho'), '_blank')}>
         <span>{t('profile.tokushoho')}</span>
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <polyline points="9 18 15 12 9 6"/>

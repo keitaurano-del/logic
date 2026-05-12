@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { loginWithGoogle, loginWithEmail, signupWithEmail, isSupabaseConfigured } from '../supabase'
 import { startBetaCampaignCheckout, startCheckout } from '../subscription'
 import { MedalIcon } from '../icons'
-import { t } from '../i18n'
+import { t, localizedHtmlPath } from '../i18n'
 import {
   saveUserProfile,
   AGE_LABELS,
@@ -896,8 +896,8 @@ function RegisterScreen({ onComplete, onSkip, onBack, onNavigateToLogin }: { onC
             )}
           </span>
           <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.7)', lineHeight: 1.6 }}>
-            <button type="button" style={{ color: C.teal, textDecoration: 'underline', cursor: 'pointer', background: 'transparent', border: 'none', padding: 0, font: 'inherit' }} onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open('/terms.html', '_blank') }}>{t('profile.terms')}</button>{t('onboarding.registerTermsPrefix')}
-            <button type="button" style={{ color: C.teal, textDecoration: 'underline', cursor: 'pointer', background: 'transparent', border: 'none', padding: 0, font: 'inherit' }} onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open('/privacy.html', '_blank') }}>{t('profile.privacy')}</button>{t('onboarding.registerTermsSuffix')}
+            <button type="button" style={{ color: C.teal, textDecoration: 'underline', cursor: 'pointer', background: 'transparent', border: 'none', padding: 0, font: 'inherit' }} onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open(localizedHtmlPath('terms'), '_blank') }}>{t('profile.terms')}</button>{t('onboarding.registerTermsPrefix')}
+            <button type="button" style={{ color: C.teal, textDecoration: 'underline', cursor: 'pointer', background: 'transparent', border: 'none', padding: 0, font: 'inherit' }} onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open(localizedHtmlPath('privacy'), '_blank') }}>{t('profile.privacy')}</button>{t('onboarding.registerTermsSuffix')}
           </span>
         </label>
 
