@@ -29,6 +29,11 @@ export function setLocale(loc: Locale): void {
   window.location.reload()
 }
 
+// Static HTML pages live in /public; English variants use the `-en` suffix.
+export function localizedHtmlPath(slug: 'privacy' | 'terms' | 'tokushoho' | 'account-deletion' | 'delete-account'): string {
+  return getLocale() === 'en' ? `/${slug}-en.html` : `/${slug}.html`
+}
+
 // ============================================================
 // Translation strings
 // ============================================================
@@ -1110,6 +1115,13 @@ const STRINGS: Record<Locale, Strings> = {
     'personalCourse.ctaStart': 'コースを進める',
     'personalCourse.exit': '終了する',
     'personalCourse.diagnosisLine': '診断で「{axis}（{from}〜{to}）」が伸びしろと判定されました。',
+
+    // Placement test entry card (shown on Home after first daily question)
+    'placementCard.title': 'あなたの実力を診断しましょう',
+    'placementCard.subtitle': '10問・約5分で5軸のスキル分布がわかります',
+    'placementCard.desc': '推定偏差値・レーダーチャート・最適コースをご案内します。',
+    'placementCard.takeTest': '診断を受ける',
+    'placementCard.later': '後で',
 
     // AI Problem
     'aiProblem.resultTitle': '結果',
@@ -2512,6 +2524,13 @@ const STRINGS: Record<Locale, Strings> = {
     'personalCourse.ctaStart': 'Start course',
     'personalCourse.exit': 'Finish',
     'personalCourse.diagnosisLine': 'Your assessment indicated "{axis} ({from}-{to})" as your biggest growth area.',
+
+    // Placement test entry card (shown on Home after first daily question)
+    'placementCard.title': 'Assess your current level',
+    'placementCard.subtitle': '10 questions, ~5 minutes — see your skill profile across 5 axes',
+    'placementCard.desc': 'You\'ll get an estimated score, a radar chart, and a recommended course.',
+    'placementCard.takeTest': 'Start the assessment',
+    'placementCard.later': 'Later',
 
     // AI Problem
     'aiProblem.resultTitle': 'Result',

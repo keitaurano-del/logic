@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Account Deletion Request — Logic</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #1A1F2E; color: #E8ECF4;
+    max-width: 720px; margin: 0 auto;
+    padding: 0 0 80px;
+    line-height: 1.8;
+  }
+  header {
+    background: linear-gradient(160deg, #1A1F2E 0%, #252C40 100%);
+    padding: 48px 24px 32px;
+    border-bottom: 1px solid rgba(108,142,245,0.2);
+  }
+  .logo { font-size: 13px; font-weight: 800; color: #6C8EF5; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .logo svg { width: 20px; height: 20px; }
+  h1 { font-size: 28px; font-weight: 900; color: #FFFFFF; letter-spacing: -0.02em; margin-bottom: 8px; }
+  .meta { font-size: 13px; color: #8FA3C8; }
+  main { padding: 32px 24px; }
+  section { margin-bottom: 32px; }
+  h2 {
+    font-size: 15px; font-weight: 800; color: #9BB3FA;
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px;
+    background: rgba(108,142,245,0.08);
+    border-left: 3px solid #6C8EF5;
+    border-radius: 0 10px 10px 0;
+  }
+  p { font-size: 14px; color: #C8D4E8; line-height: 1.8; }
+  ul, ol { padding-left: 20px; display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+  li { font-size: 14px; color: #C8D4E8; line-height: 1.8; }
+  li::marker { color: #6C8EF5; }
+  a { color: #6C8EF5; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  table { width: 100%; border-collapse: collapse; margin-top: 8px; border-radius: 12px; overflow: hidden; }
+  th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid rgba(108,142,245,0.12); font-size: 14px; vertical-align: top; }
+  th { width: 38%; background: rgba(108,142,245,0.08); font-weight: 700; color: #9BB3FA; }
+  td { color: #C8D4E8; background: rgba(37,44,64,0.6); }
+  tr:last-child td, tr:last-child th { border-bottom: none; }
+  .mail-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    margin-top: 16px; padding: 14px 24px;
+    background: rgba(108,142,245,0.15); color: #6C8EF5;
+    border: 1px solid rgba(108,142,245,0.3); border-radius: 12px;
+    font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: none;
+  }
+  .mail-btn:hover { background: rgba(108,142,245,0.25); text-decoration: none; }
+  .mail-btn svg { width: 16px; height: 16px; }
+  .callout {
+    margin-top: 12px;
+    padding: 14px 18px;
+    background: rgba(108,142,245,0.06);
+    border: 1px solid rgba(108,142,245,0.15);
+    border-radius: 10px;
+    font-size: 13px; color: #C8D4E8;
+  }
+  .back-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 40px; padding: 12px 20px;
+    background: rgba(108,142,245,0.15); color: #6C8EF5;
+    border: 1px solid rgba(108,142,245,0.3); border-radius: 12px;
+    font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: none;
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    Logic
+  </div>
+  <h1>Account Deletion Request</h1>
+  <p class="meta">Last updated: May 11, 2026 / Applies to: Logic (Mobile App, Android)</p>
+</header>
+
+<main>
+  <p style="margin-bottom:24px;">Apollo LLC (hereinafter "the Company") provides the following procedure for users of the logical-thinking learning service "Logic" (hereinafter "the Service") who wish to delete their account and associated data.</p>
+
+  <section>
+    <h2>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Article 1. How to Submit a Deletion Request
+    </h2>
+    <p>To request account deletion, please contact us at the email address below. Our support team will review your request, verify your identity, and proceed with the deletion.</p>
+
+    <a class="mail-btn" href="mailto:support@logic-m.com?subject=Logic%20Account%20Deletion%20Request&body=I%20would%20like%20to%20request%20deletion%20of%20the%20following%20account.%0A%0A%E2%96%A0%20Registered%20email%20address%3A%0A%0A%E2%96%A0%20Scope%20of%20deletion%20(entire%20account%2C%20learning%20data%20only%2C%20etc.)%3A%0A%0A%E2%96%A0%20Reason%20for%20deletion%20(optional)%3A%0A">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      Send an email to support@logic-m.com
+    </a>
+
+    <div class="callout">
+      <strong>Please include the following in your email:</strong>
+      <ul style="margin-top:6px;">
+        <li>Registered email address (to identify your account)</li>
+        <li>Scope of deletion (entire account / learning data only / other)</li>
+        <li>Reason for deletion (optional)</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+      Article 2. Data That Will Be Deleted
+    </h2>
+    <p>Upon receiving a deletion request, the following data will be removed.</p>
+    <table>
+      <tr><th>Type of data</th><th>Data deleted</th></tr>
+      <tr><td>Account information</td><td>Email address, display name, Google account linkage</td></tr>
+      <tr><td>Learning data</td><td>Lesson completion records, quiz answer history, Fermi estimation responses, roleplay conversation content, learning streaks, XP (experience points)</td></tr>
+      <tr><td>Subscription information</td><td>Plan type, billing status (payment details are not retained by the Company)</td></tr>
+      <tr><td>Deviation-score ranking</td><td>Placement test results and ranking data</td></tr>
+      <tr><td>Notes and favorites</td><td>Personal memos and bookmarks saved within the app</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+      Article 3. Time Required for Deletion
+    </h2>
+    <ul>
+      <li>Personally identifiable data will be erased from our servers within <strong>30 days</strong> of receiving the deletion request</li>
+      <li>Backup data is fully deleted within <strong>90 days at the latest</strong>, in accordance with our regular backup cycle</li>
+      <li>After deletion is complete, we will send a confirmation email to your registered email address</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Article 4. Data That Will Not Be Deleted
+    </h2>
+    <p>The following data may be retained for a certain period either because retention is required by law or because the Company has a legitimate business reason to retain it.</p>
+    <ul>
+      <li>Accounting books and transaction records (up to 7 years, in accordance with the Corporation Tax Act, the Income Tax Act, and similar laws)</li>
+      <li>Support records (up to 3 years, in anonymized form, retained in preparation for any legal dispute)</li>
+      <li>Fraud-detection logs (up to 1 year, after being converted to a non-personally-identifiable form)</li>
+      <li>Anonymized statistical and analytical data (not subject to deletion, as it cannot identify individuals)</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72a2 2 0 0 1 1.72 2z"/></svg>
+      Article 5. Contact
+    </h2>
+    <p>For questions about deletion requests or this page, please contact us using the information below.</p>
+    <table style="margin-top:12px;">
+      <tr><th>Operating company</th><td>Apollo LLC</td></tr>
+      <tr><th>Support contact</th><td><a href="mailto:support@logic-m.com">support@logic-m.com</a></td></tr>
+      <tr><th>Supported languages</th><td>Japanese, English</td></tr>
+      <tr><th>Support hours</th><td>Weekdays 10:00–18:00 (JST)</td></tr>
+    </table>
+  </section>
+
+  <a class="back-btn" href="/privacy-en.html">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+    Back to Privacy Policy
+  </a>
+</main>
+</body>
+</html>
