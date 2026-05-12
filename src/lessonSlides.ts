@@ -137,9 +137,9 @@ function getHeroImage(category: string, lessonId?: number): string {
   }
   // フォールバック: カテゴリ別
   const c = (category || '').toLowerCase()
-  if (c.includes('ロジカル') || c.includes('logical')) return '/images/v3/course-logical.webp'
-  if (c.includes('ケース面接') || c === 'business') return '/images/v3/course-business.webp'
-  if (c.includes('哲学') || c === 'philosophy') return '/images/v3/course-philosophy.webp'
+  if (c.includes('ロジカル') || c.includes('logical')) return '/images/v3/course-logic-01.svg'
+  if (c.includes('ケース面接') || c === 'business') return '/images/v3/course-case-01.svg'
+  if (c.includes('哲学') || c === 'philosophy') return '/images/v3/course-philosophy-01.svg'
   if (c.includes('東洋思想')) return '/images/v3/course-eastern-01.svg'
   if (c.includes('提案') || c.includes('伝える')) return '/images/v3/lesson-proposal.webp'
   if (c.includes('フェルミ') || c.includes('fermi')) return '/images/v3/home-daily-fermi.webp'
@@ -151,7 +151,7 @@ function getHeroImage(category: string, lessonId?: number): string {
   if (c.includes('アナロジー') || c.includes('analogy')) return '/images/v3/lesson-analogy.webp'
   if (c.includes('システム')) return '/images/v3/lesson-systems-thinking.webp'
   if (c.includes('なぜなぜ') || c.includes('why-why') || c.includes('why why')) return '/images/v3/course-whywhy-01.svg'
-  if (c.includes('クライアント')) return '/images/v3/course-client.webp'
+  if (c.includes('クライアント')) return '/images/v3/course-client-01.svg'
   if (c.includes('経営戦略') || c === 'strategy') return '/images/v3/course-strategy.svg'
   if (c.includes('思考法') || c.includes('thinking')) return '/images/v3/course-thinking.webp'
   if (c.includes('coffee') || c.includes('コーヒー')) return '/images/v3/home-daily-question.webp'

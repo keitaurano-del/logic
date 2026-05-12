@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
+  <!--
+    Logic Handdrawn Style — Pilot v2
+    Course: クリティカルシンキング基礎 (course-critical-01)
+    変更点:
+      - 紙テクスチャ + ノート罫線で統一トーン
+      - 主役モチーフ = 虫眼鏡 (手描き) + 思考の連鎖図
+      - アクセント色: 朱赤 (#C8634B) + ロイヤルブルー (#3D5FC4)
+  -->
+  <defs>
+    <filter id="paperTex2" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="2" seed="11" stitchTiles="stitch"/>
+      <feColorMatrix values="0 0 0 0 0.55  0 0 0 0 0.45  0 0 0 0 0.32  0 0 0 0.18 0"/>
+    </filter>
+    <filter id="jitterFine2" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="5" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.6" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="jitterMed2" x="-8%" y="-8%" width="116%" height="116%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="3" seed="13" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="2.8" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="inkBleed2" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="4" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.0" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <pattern id="ruled2" x="0" y="0" width="800" height="30" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="29" x2="800" y2="29" stroke="#D9CDB0" stroke-width="0.65" opacity="0.55"/>
+    </pattern>
+  </defs>
+
+  <!-- 用紙 -->
+  <rect width="800" height="400" fill="#FDF8E9"/>
+  <rect width="800" height="400" fill="url(#ruled2)"/>
+  <rect width="800" height="400" filter="url(#paperTex2)" opacity="0.55"/>
+
+  <!-- 左マージン -->
+  <line x1="72" y1="0" x2="72" y2="400" stroke="#C8634B" stroke-width="1.6" filter="url(#jitterFine2)" opacity="0.78"/>
+
+  <!-- タイトル -->
+  <text x="86" y="56" font-family="'Caveat','Patrick Hand','Klee One','Yuji Mai','Bradley Hand','Segoe Print',cursive" font-size="32" font-weight="700" fill="#1F2A44">クリティカルシンキング基礎</text>
+  <text x="88" y="76" font-family="'Caveat','Patrick Hand','Klee One','Bradley Hand',cursive" font-size="16" fill="#C8634B" opacity="0.9">批判的思考 — 前提を疑う</text>
+  <path d="M82,82 Q200,76 320,82 T560,82" stroke="#C8634B" stroke-width="2.2" fill="none" filter="url(#jitterFine2)" opacity="0.5"/>
+
+  <line x1="420" y1="100" x2="420" y2="360" stroke="#C9BFA7" stroke-width="0.9" stroke-dasharray="3 4" opacity="0.6" filter="url(#jitterFine2)"/>
+
+  <!-- 左ブロック: 虫眼鏡 + 思考連鎖 -->
+  <g transform="translate(96,110)">
+    <!-- 虫眼鏡レンズ -->
+    <g filter="url(#jitterMed2)">
+      <circle cx="100" cy="90" r="62" fill="#FFF8E8" stroke="#1F2A44" stroke-width="3" opacity="0.95"/>
+      <!-- 取っ手 -->
+      <line x1="146" y1="136" x2="200" y2="190" stroke="#1F2A44" stroke-width="6" stroke-linecap="round"/>
+      <line x1="146" y1="136" x2="200" y2="190" stroke="#C8634B" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
+    </g>
+
+    <!-- レンズ内: クエスチョン記号 (拡大されたもの) -->
+    <g transform="translate(100,90)" filter="url(#inkBleed2)">
+      <path d="M-14,-18 Q-14,-30 0,-30 Q14,-30 14,-18 Q14,-8 0,-2 Q0,2 0,8" stroke="#C8634B" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+      <circle cx="0" cy="18" r="3.5" fill="#C8634B"/>
+    </g>
+
+    <!-- レンズ周りの「疑問の連鎖」小さい？マーク -->
+    <g font-family="'Caveat','Patrick Hand','Klee One','Bradley Hand',cursive" font-size="22" fill="#3D5FC4" opacity="0.55" filter="url(#inkBleed2)">
+      <text x="-10" y="20">?</text>
+      <text x="200" y="40" transform="rotate(15 200 40)">?</text>
+      <text x="220" y="120" transform="rotate(-10 220 120)">?</text>
+      <text x="20" y="190" transform="rotate(8 20 190)">?</text>
+    </g>
+  </g>
+
+  <!-- 右ブロック: 視点リスト -->
+  <g transform="translate(440,108)">
+    <text x="0" y="0" font-family="'Caveat','Patrick Hand','Klee One','Bradley Hand',cursive" font-size="20" font-weight="700" fill="#1F2A44">🔍 視点</text>
+    <line x1="0" y1="8" x2="240" y2="8" stroke="#C8634B" stroke-width="1.4" filter="url(#jitterFine2)" opacity="0.45"/>
+
+    <g font-family="'Caveat','Patrick Hand','Klee One','Bradley Hand',cursive" font-size="16" fill="#1F2A44">
+      <g transform="translate(0,32)">
+        <path d="M2,2 L8,9 L18,-3" stroke="#C8634B" stroke-width="2.4" fill="none" filter="url(#inkBleed2)"/>
+        <text x="28" y="8">バイアスを認識する</text>
+      </g>
+      <g transform="translate(0,60)">
+        <path d="M2,2 L8,9 L18,-3" stroke="#C8634B" stroke-width="2.4" fill="none" filter="url(#inkBleed2)"/>
+        <text x="28" y="8">証拠を評価する</text>
+      </g>
+      <g transform="translate(0,88)">
+        <path d="M2,2 L8,9 L18,-3" stroke="#C8634B" stroke-width="2.4" fill="none" filter="url(#inkBleed2)"/>
+        <text x="28" y="8">反論を想定する</text>
+      </g>
+      <g transform="translate(0,116)">
+        <path d="M2,2 L8,9 L18,-3" stroke="#C8634B" stroke-width="2.4" fill="none" filter="url(#inkBleed2)"/>
+        <text x="28" y="8">多角的に見る</text>
+      </g>
+      <g transform="translate(0,144)">
+        <path d="M2,2 L8,9 L18,-3" stroke="#C8634B" stroke-width="2.4" fill="none" filter="url(#inkBleed2)"/>
+        <text x="28" y="8">結論を吟味する</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- ブランドスタンプ -->
+  <g transform="translate(700,360) rotate(-6)" opacity="0.85">
+    <rect x="-46" y="-16" width="92" height="32" rx="3" fill="none" stroke="#C8634B" stroke-width="1.6" filter="url(#jitterMed2)"/>
+    <text x="0" y="5" text-anchor="middle" font-family="'Caveat','Patrick Hand','Klee One','Bradley Hand',cursive" font-size="15" font-weight="700" fill="#C8634B" filter="url(#inkBleed2)">Logic</text>
+  </g>
+</svg>
