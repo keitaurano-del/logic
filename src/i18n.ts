@@ -174,6 +174,36 @@ const STRINGS: Record<Locale, Strings> = {
     'placement.created': '作成しました！',
     'placement.createdDesc1': 'あなた専用のパーソナルコースが完成しました。',
     'placement.createdDesc2': '早速はじめましょう。',
+    // 5段階レベルラベル
+    'placement.level1': '入門',
+    'placement.level2': '基礎',
+    'placement.level3': '中級',
+    'placement.level4': '上級',
+    'placement.level5': '卓越',
+    // 軸ごとの詳細コメント（{axis} に軸名が入る）
+    'placement.axisDetail.level5': '{axis}は卓越レベル。応用問題でも論点を即座に押さえられている。',
+    'placement.axisDetail.level4': '{axis}は上級レベル。フレームを使いこなし、実務でも安定して活用できる。',
+    'placement.axisDetail.level3': '{axis}は中級レベル。基礎は理解しているが、応用問題で抜け漏れが出やすい。',
+    'placement.axisDetail.level2': '{axis}は基礎レベル。基本問題は解けるが、応用への橋渡しが課題。',
+    'placement.axisDetail.level1': '{axis}は入門レベル。まずはこの軸の基本概念から押さえ直す必要がある。',
+    // 詳細診断コメント
+    'placement.diagnosis.overall.top': '全体としてトップクラスの論理思考力。基本〜応用まで安定して解けており、実務でも複雑な論点を整理できる段階にあります。',
+    'placement.diagnosis.overall.advanced': '全体として上級レベル。論理の基礎は完成しており、応用問題でも筋の良い切り口を選べています。あと一歩で「使いこなす側」に到達します。',
+    'placement.diagnosis.overall.intermediate': '全体として中級レベル。主要フレームは理解できていますが、応用問題で論点を一段深く詰める力がもう一段必要です。',
+    'placement.diagnosis.overall.beginner': '全体として初級〜基礎レベル。基本概念の理解にバラつきが残っており、まずは土台となる「型」を一つずつ確実にしましょう。',
+    'placement.diagnosis.overall.starter': '全体として入門レベル。論理思考の用語・フレームが定着していない段階です。焦らず基本問題から順に積み上げていきましょう。',
+    'placement.diagnosis.strength': '強みは「{axis}」（{level}）。{detail}',
+    'placement.diagnosis.weakness': '最大の伸びしろは「{axis}」（{level}）。{detail}',
+    'placement.diagnosis.secondary': '次の課題は「{axis}」（{level}）。ここを底上げすることで全体の安定感が増します。',
+    'placement.diagnosis.balanceUneven': '軸間の差が大きく、得意・不得意がはっきり分かれています。総合力を上げるには、最も弱い軸を優先的に底上げするのが近道です。',
+    'placement.diagnosis.balanceHigh': '5軸とも高水準で揃っており、バランス型の論理思考力です。今後はケース・戦略など実務応用で更に磨きをかけられます。',
+    'placement.diagnosis.balanceLow': 'まだ全体的に基礎が固まりきっていない段階です。1日1レッスン、優先順位を絞って積み上げていきましょう。',
+    'placement.diagnosis.nextAction': '次のアクション: 「{axis}」を補強するレッスンから着手。あなた専用のパーソナルコース（弱点優先順）を自動生成しています。',
+    // パーソナルコース
+    'placement.personalCourse.titleWith': 'あなた専用コース：{axis}を軸に底上げ',
+    'placement.personalCourse.titleDefault': 'あなた専用パーソナルコース',
+    'placement.personalCourse.descWith': '診断結果（偏差値{deviation}）に基づき、最も伸びしろのある「{axis}」から優先的に学べる{count}レッスン構成のあなた専用コースです。',
+    'placement.personalCourse.descDefault': '診断結果（偏差値{deviation}）に基づき、あなたの弱点軸を優先的に補強する{count}レッスン構成のコースです。',
 
     // Profile
     'profile.title': 'プロフィール',
@@ -1548,6 +1578,36 @@ const STRINGS: Record<Locale, Strings> = {
     'placement.created': 'Done!',
     'placement.createdDesc1': 'Your personal course is ready.',
     'placement.createdDesc2': "Let's get started.",
+    // 5-level labels
+    'placement.level1': 'Starter',
+    'placement.level2': 'Foundation',
+    'placement.level3': 'Intermediate',
+    'placement.level4': 'Advanced',
+    'placement.level5': 'Mastery',
+    // Per-axis detail comments ({axis} = axis name)
+    'placement.axisDetail.level5': '{axis} is at mastery level — you immediately grasp the key point even in advanced problems.',
+    'placement.axisDetail.level4': '{axis} is at advanced level — you handle frameworks fluently and apply them reliably at work.',
+    'placement.axisDetail.level3': '{axis} is at intermediate level — fundamentals are clear, but gaps tend to appear on applied problems.',
+    'placement.axisDetail.level2': '{axis} is at foundation level — you can solve basic problems but the bridge to application is the gap.',
+    'placement.axisDetail.level1': '{axis} is at starter level — start by relearning the core concepts of this axis.',
+    // Detailed diagnosis comments
+    'placement.diagnosis.overall.top': 'Overall, top-tier logical thinking. You handle both basics and applied problems reliably and can structure complex points in practice.',
+    'placement.diagnosis.overall.advanced': 'Overall, advanced level. Your fundamentals are solid and you pick strong angles on applied problems — one step from fully mastering it.',
+    'placement.diagnosis.overall.intermediate': 'Overall, intermediate level. The main frameworks are understood, but you need a bit more depth when pushing into applied problems.',
+    'placement.diagnosis.overall.beginner': 'Overall, beginner-to-foundation level. Understanding of core concepts is uneven — first, lock in one foundational pattern at a time.',
+    'placement.diagnosis.overall.starter': 'Overall, starter level. The vocabulary and frameworks of logical thinking are not yet settled. Build up from basic problems, one step at a time.',
+    'placement.diagnosis.strength': 'Strongest axis: "{axis}" ({level}). {detail}',
+    'placement.diagnosis.weakness': 'Biggest upside: "{axis}" ({level}). {detail}',
+    'placement.diagnosis.secondary': 'Next focus: "{axis}" ({level}). Raising this will broaden your overall stability.',
+    'placement.diagnosis.balanceUneven': 'The gap between axes is large — your strengths and weaknesses are clear. The fastest path is to lift the weakest axis first.',
+    'placement.diagnosis.balanceHigh': 'All five axes are high and well-balanced — a well-rounded logical thinker. Sharpen further with case and strategy applications.',
+    'placement.diagnosis.balanceLow': 'Foundations are not yet fully set across the board. Build up with one lesson a day, focusing on priorities.',
+    'placement.diagnosis.nextAction': 'Next action: start with lessons that strengthen "{axis}." Your personal course (ordered by weakness) is being generated.',
+    // Personal course
+    'placement.personalCourse.titleWith': 'Your course: lift up "{axis}"',
+    'placement.personalCourse.titleDefault': 'Your personal course',
+    'placement.personalCourse.descWith': 'Based on your result (score {deviation}), a {count}-lesson course built to lift up your highest-upside axis "{axis}" first.',
+    'placement.personalCourse.descDefault': 'Based on your result (score {deviation}), a {count}-lesson course built to shore up your weakest axes first.',
 
     // Profile
     'profile.title': 'Profile',
