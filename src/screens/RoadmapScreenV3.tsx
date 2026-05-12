@@ -53,7 +53,7 @@ const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
   'ロジカルシンキング': {
     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={'var(--brand)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/></svg>,
     iconBg: 'rgba(108,142,245,.14)',
-    image: `${IMG}/course-logical.webp`,
+    image: `${IMG}/course-logic-01.svg`,
     routeKey: 'logic',
   },
   'クリティカルシンキング': {
@@ -113,7 +113,7 @@ const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
   '哲学・思考の原理': {
     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C4B5FD" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="10" strokeDasharray="4 3"/></svg>,
     iconBg: 'rgba(196,181,253,.14)',
-    image: `${IMG}/course-philosophy.webp`,
+    image: `${IMG}/course-philosophy-01.svg`,
     routeKey: 'philosophy',
   },
   '東洋思想': {
@@ -125,13 +125,13 @@ const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
   'クライアントワーク': {
     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C49A3C" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
     iconBg: 'rgba(196,154,60,.14)',
-    image: `${IMG}/course-client.webp`,
+    image: `${IMG}/course-client-01.svg`,
     routeKey: 'クライアントワーク',
   },
   'ケース面接': {
     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={'var(--warm)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>,
     iconBg: 'rgba(244,162,97,.14)',
-    image: `${IMG}/course-business.webp`,
+    image: `${IMG}/course-case-01.svg`,
     routeKey: 'case',
   },
   '経営戦略': {
@@ -163,7 +163,7 @@ const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
 const DEFAULT_VISUAL: CategoryVisual = {
   icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={'var(--brand)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
   iconBg: 'rgba(108,142,245,.14)',
-  image: `${IMG}/course-logical.webp`,
+  image: `${IMG}/course-logic-01.svg`,
   routeKey: '',
 }
 
