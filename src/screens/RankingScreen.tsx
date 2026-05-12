@@ -9,7 +9,8 @@ import { API_BASE } from './apiBase'
 import { getStreak, getStudyDates, getCompletedLessons, getXp } from '../stats'
 import { getPoints } from './homeHelpers'
 import { LoadingIndicator } from '../components/LoadingIndicator'
-import { t } from '../i18n'
+import { allLessons } from '../lessonData'
+import { t, getLocale } from '../i18n'
 
 
 interface RankingScreenProps {
@@ -95,24 +96,18 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
     const yesterday = new Date(mountTime - 86400000).toISOString().slice(0, 10)
     const studyDatesArr = getStudyDates()
 
-    const titleMap: Record<string, string> = {
-      'lesson-20': 'MECE — 漏れなくダブりなく',
-      'lesson-21': 'ロジックツリー',
-      'lesson-22': 'So What / Why So',
-      'lesson-23': 'ピラミッド原則',
-      'lesson-24': 'ケーススタディ総合演習',
-      'lesson-25': '演繹法',
-      'lesson-26': '帰納法',
-      'lesson-27': '形式論理',
-      'lesson-28': 'ケース面接入門',
-      'lesson-29': 'プロフィタビリティケース',
-      'lesson-40': 'クリティカルシンキング入門',
-      'lesson-41': '論理的誤謬を見破る',
-      'lesson-42': 'データを正しく読む',
-      'lesson-43': '問いを立てる力',
-      'mock-exam': '模擬試験',
-      'journal-input': 'ジャーナル',
-      'worksheet': 'ワークシート',
+    // lessonData から ja/en で自動切り替え。レッスン以外の特殊キーは ja/en 両方用意。
+    const specialMap: Record<string, string> = getLocale() === 'en'
+      ? { 'mock-exam': 'Mock Exam', 'journal-input': 'Journal', 'worksheet': 'Worksheet' }
+      : { 'mock-exam': '模擬試験', 'journal-input': 'ジャーナル', 'worksheet': 'ワークシート' }
+    const lessonPrefixLabel = getLocale() === 'en' ? 'Lesson ' : 'レッスン '
+    function resolveTitle(key: string): string {
+      const m = /^lesson-(\d+)$/.exec(key)
+      if (m) {
+        const id = Number(m[1])
+        return allLessons[id]?.title ?? `${lessonPrefixLabel}${m[1]}`
+      }
+      return specialMap[key] ?? key
     }
 
     const lessonIcon = <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--md-sys-color-primary)" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
@@ -120,7 +115,7 @@ export function RankingScreen({ onTakeTest }: RankingScreenProps) {
     if (completed.length === 0) return []
 
     return completed.slice(-4).reverse().map((key) => {
-      const name = titleMap[key] || key.replace('lesson-', 'Lesson ')
+      const name = resolveTitle(key)
       const isToday = studyDatesArr.includes(today)
       const isYesterday = !isToday && studyDatesArr.includes(yesterday)
       const dateLabel = isToday ? t('rankingScreen.today') : isYesterday ? t('rankingScreen.yesterday') : ''

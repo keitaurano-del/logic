@@ -12,36 +12,54 @@ import { HomeCoachmark, useShouldShowHomeCoachmark } from '../tutorial/coachmark
 import { PlacementCard } from '../tutorial/placementCard'
 import { hasCompletedPlacement } from '../placementData'
 import { useWindowSize, BREAKPOINTS } from '../hooks/useResponsive'
+import { allLessons } from '../lessonData'
 import { t } from '../i18n'
 
 // フェルミ問題は fermiData.ts の FERMI_POOL を使用（日付ベース共通）
 
 // おすすめレッスンリスト（ランダム表示用）
-const RECOMMENDED_LESSONS = [
-  { id: 20, title: 'MECE — 漏れなくダブりなく', category: 'ロジカルシンキング', level: '初級', image: '/images/v3/lesson-20.webp' },
-  { id: 21, title: 'ロジックツリー — 問題を分解する', category: 'ロジカルシンキング', level: '初級', image: '/images/v3/lesson-21.webp' },
-  { id: 22, title: 'So What / Why So — 論理の検証', category: 'ロジカルシンキング', level: '初級', image: '/images/v3/lesson-22.webp' },
-  { id: 25, title: '演繹法 — 一般から個別を導く', category: 'ロジカルシンキング', level: '初級', image: '/images/v3/lesson-25.webp' },
-  { id: 26, title: '帰納法 — 個別事例から法則を見つける', category: 'ロジカルシンキング', level: '初級', image: '/images/v3/lesson-26.webp' },
-  { id: 40, title: 'クリティカルシンキング入門', category: 'クリティカルシンキング', level: '初級', image: '/images/v3/lesson-40.webp' },
-  { id: 50, title: '仮説思考入門 — 考えてから調べる', category: '仮説思考', level: '中級', image: '/images/v3/lesson-50.webp' },
-  { id: 56, title: 'デザインシンキング入門', category: 'デザインシンキング', level: '初級', image: '/images/v3/lesson-56.webp' },
-  { id: 59, title: 'ラテラルシンキング入門', category: 'ラテラルシンキング', level: '初級', image: '/images/v3/lesson-59.webp' },
-  { id: 62, title: 'アナロジー思考入門 — 類推で考える', category: 'アナロジー思考', level: '中級', image: '/images/v3/lesson-62.webp' },
-  { id: 65, title: 'システムシンキング入門 — 全体を見る', category: 'システムシンキング', level: '中級', image: '/images/v3/lesson-65.webp' },
-  { id: 68, title: '具体と抽象 — 思考の行き来を自在にする', category: 'ロジカルシンキング', level: '中級', image: '/images/v3/lesson-68.webp' },
-  { id: 28, title: 'ケース面接入門', category: 'ケース面接', level: '中級', image: '/images/v3/lesson-28.webp' },
-  { id: 77, title: 'ソクラテスの問答法', category: '哲学・思考の原理', level: '上級', image: '/images/v3/lesson-77.webp' },
-  { id: 78, title: '反証可能性 — 科学と疑似科学の境界', category: '哲学・思考の原理', level: '上級', image: '/images/v3/course-philosophy-01.svg' },
-  { id: 89, title: '大きい数字の捉え方・概算力', category: 'クライアントワーク', level: '中級', image: '/images/v3/course-client-01.svg' },
-  { id: 200, title: 'フェルミ推定とは何か', category: 'フェルミ推定', level: '中級', image: '/images/v3/fermi-card.png' },
-  { id: 41, title: '論理的誤謬を見破る', category: 'クリティカルシンキング', level: '中級', image: '/images/v3/lesson-41.webp' },
-  { id: 53, title: '課題設定入門 — 正しい問いを立てる', category: '課題設定', level: '中級', image: '/images/v3/lesson-53.webp' },
-  { id: 23, title: 'ピラミッド原則 — 伝わる話し方', category: 'ロジカルシンキング', level: '初級', image: '/images/v3/lesson-23.webp' },
+// title / category は lessonData から取得して ja/en 自動切り替え。
+// level / image はレッスン本体に持っていないメタデータなのでここで保持する。
+type RecommendedLessonMeta = { id: number; level: '初級' | '中級' | '上級'; image: string }
+const RECOMMENDED_LESSON_META: RecommendedLessonMeta[] = [
+  { id: 20, level: '初級', image: '/images/v3/lesson-20.webp' },
+  { id: 21, level: '初級', image: '/images/v3/lesson-21.webp' },
+  { id: 22, level: '初級', image: '/images/v3/lesson-22.webp' },
+  { id: 25, level: '初級', image: '/images/v3/lesson-25.webp' },
+  { id: 26, level: '初級', image: '/images/v3/lesson-26.webp' },
+  { id: 40, level: '初級', image: '/images/v3/lesson-40.webp' },
+  { id: 50, level: '中級', image: '/images/v3/lesson-50.webp' },
+  { id: 56, level: '初級', image: '/images/v3/lesson-56.webp' },
+  { id: 59, level: '初級', image: '/images/v3/lesson-59.webp' },
+  { id: 62, level: '中級', image: '/images/v3/lesson-62.webp' },
+  { id: 65, level: '中級', image: '/images/v3/lesson-65.webp' },
+  { id: 68, level: '中級', image: '/images/v3/lesson-68.webp' },
+  { id: 28, level: '中級', image: '/images/v3/lesson-28.webp' },
+  { id: 77, level: '上級', image: '/images/v3/lesson-77.webp' },
+  { id: 78, level: '上級', image: '/images/v3/course-philosophy-01.svg' },
+  { id: 89, level: '中級', image: '/images/v3/course-client-01.svg' },
+  { id: 200, level: '中級', image: '/images/v3/fermi-card.png' },
+  { id: 41, level: '中級', image: '/images/v3/lesson-41.webp' },
+  { id: 53, level: '中級', image: '/images/v3/lesson-53.webp' },
+  { id: 23, level: '初級', image: '/images/v3/lesson-23.webp' },
 ]
 
+const LEVEL_KEY: Record<string, string> = {
+  '初級': 'roadmap.levelBeginner',
+  '中級': 'roadmap.levelIntermediate',
+  '上級': 'roadmap.levelAdvanced',
+}
+
 function getRandomLesson() {
-  return RECOMMENDED_LESSONS[Math.floor(Math.random() * RECOMMENDED_LESSONS.length)]
+  const meta = RECOMMENDED_LESSON_META[Math.floor(Math.random() * RECOMMENDED_LESSON_META.length)]
+  const data = allLessons[meta.id]
+  return {
+    id: meta.id,
+    title: data?.title ?? '',
+    category: data?.category ?? '',
+    level: t(LEVEL_KEY[meta.level] ?? meta.level),
+    image: meta.image,
+  }
 }
 
 
@@ -145,7 +163,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
 
         {/* 今日の1問 (Daily Fermi) */}
         {/* a11y: 外側 div は非インタラクティブ。中の「カード本体」と「別の問題」は兄弟の <button> として配置し、nested-interactive を回避 */}
-        <div style={{ position: 'relative', borderRadius: 'var(--radius-lg)', overflow: 'hidden', boxShadow: '0 14px 32px rgba(108,142,245,.32)', flexShrink: 0 }}>
+        <div id="home-fermi-card" style={{ position: 'relative', borderRadius: 'var(--radius-lg)', overflow: 'hidden', boxShadow: '0 14px 32px rgba(108,142,245,.32)', flexShrink: 0 }}>
           <button
             type="button"
             ref={dailyCardRef}

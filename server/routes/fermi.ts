@@ -440,17 +440,16 @@ Keep responses concise (2-4 sentences). Do not solve the problem for them.`
           .from('fermi_scores')
           .select('user_name, score, created_at')
           .gte('created_at', since.toISOString())
-          .order('score', { ascending: false })
-          .limit(50)
+          .order('created_at', { ascending: false })
+          .limit(500)
 
         if (!error && data && data.length > 0) {
-          // ユーザーごとに最高スコアを集計
+          // ユーザーごとにスコアを累積（合計）
           const byUser: Record<string, { name: string; score: number }> = {}
           for (const row of data) {
             const name = row.user_name || 'ゲスト'
-            if (!byUser[name] || byUser[name].score < row.score) {
-              byUser[name] = { name, score: row.score }
-            }
+            if (!byUser[name]) byUser[name] = { name, score: 0 }
+            byUser[name].score += row.score
           }
           realRanking = Object.values(byUser)
             .sort((a, b) => b.score - a.score)
