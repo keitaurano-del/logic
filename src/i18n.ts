@@ -852,14 +852,14 @@ const STRINGS: Record<Locale, Strings> = {
 
     // Fermi Ranking
     'fermiRank.heading': 'フェルミ ランキング',
-    'fermiRank.subtitle': '採点スコアのベスト記録で競おう',
+    'fermiRank.subtitle': '採点スコアの累計で競おう',
     'fermiRank.period.week': '今週',
     'fermiRank.period.month': '今月',
     'fermiRank.period.alltime': '累計',
     'fermiRank.rankUp': '順位アップ！ +{n}位',
     'fermiRank.yourRank': 'あなたの順位',
     'fermiRank.rankUnit': '位',
-    'fermiRank.bestScore': 'ベストスコア',
+    'fermiRank.bestScore': '累計スコア',
     'fermiRank.top3': 'TOP 3',
     'fermiRank.fourPlus': '4位以降',
     'fermiRank.empty.title': 'まだスコアがありません',
@@ -2218,14 +2218,14 @@ const STRINGS: Record<Locale, Strings> = {
 
     // Fermi Ranking
     'fermiRank.heading': 'Fermi Ranking',
-    'fermiRank.subtitle': "Compete with your best graded score",
+    'fermiRank.subtitle': "Compete with your total graded score",
     'fermiRank.period.week': 'This week',
     'fermiRank.period.month': 'This month',
     'fermiRank.period.alltime': 'All time',
     'fermiRank.rankUp': 'Rank up! +{n}',
     'fermiRank.yourRank': 'Your rank',
     'fermiRank.rankUnit': '',
-    'fermiRank.bestScore': 'Best score',
+    'fermiRank.bestScore': 'Total score',
     'fermiRank.top3': 'TOP 3',
     'fermiRank.fourPlus': 'Rank 4+',
     'fermiRank.empty.title': 'No scores yet',

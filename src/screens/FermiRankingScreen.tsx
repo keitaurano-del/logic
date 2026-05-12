@@ -189,7 +189,7 @@ export function FermiRankingScreen() {
           </div>
           <div style={{ textAlign: 'right' }}>
             <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 4 }}>{t('fermiRank.bestScore')}</div>
-            <div style={{ fontSize: 24, fontWeight: 800 }}>{myEntry.score}<span style={{ fontSize: 11, color: 'var(--text-muted)', marginLeft: 2 }}>/100</span></div>
+            <div style={{ fontSize: 24, fontWeight: 800 }}>{myEntry.score}</div>
           </div>
         </div>
       )}
@@ -271,7 +271,6 @@ function RankCard({ entry, compact, highlight }: { entry: RankEntry; compact?: b
       {/* スコア */}
       <div style={{ flexShrink: 0, textAlign: 'right' }}>
         <span style={{ fontSize: compact ? 15 : 18, fontWeight: 800 }}>{entry.score}</span>
-        <span style={{ fontSize: 11, color: 'var(--text-muted)', marginLeft: 2 }}>/100</span>
       </div>
     </div>
   )
