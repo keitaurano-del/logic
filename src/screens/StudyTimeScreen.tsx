@@ -26,6 +26,7 @@ export function StudyTimeScreen({ onBack }: StudyTimeScreenProps) {
 
   // Build last 30 days bar chart
   const today = new Date()
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization
   const studySet = useMemo(() => new Set(studyDates), [studyDates])
   const last30 = useMemo(() => {
     return Array.from({ length: 30 }, (_, i) => {
