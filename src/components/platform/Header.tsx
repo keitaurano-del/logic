@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { isIOS } from '../../platform'
 import { haptic } from '../../platform/haptics'
+import { t } from '../../i18n'
 import './Header.css'
 
 export interface HeaderProps {
@@ -35,10 +36,10 @@ export function Header({ title, largeTitle, onBack, trailing }: HeaderProps) {
             type="button"
             className="pf-header__back"
             onClick={() => { haptic.light(); onBack() }}
-            aria-label="戻る"
+            aria-label={t('common.back')}
           >
             {ios ? <ChevronLeftIcon /> : <ArrowLeftIcon />}
-            {ios && <span className="pf-header__back-label">戻る</span>}
+            {ios && <span className="pf-header__back-label">{t('common.back')}</span>}
           </button>
         ) : (
           <span className="pf-header__back pf-header__back--placeholder" aria-hidden="true" />

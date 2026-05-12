@@ -2,9 +2,11 @@ import { useMemo } from 'react'
 import { getCompletedLessons } from '../stats'
 import { CheckCircleIcon } from '../icons'
 import { Header } from '../components/platform/Header'
+import { allLessons } from '../lessonData'
 import { t } from '../i18n'
 
 // データキー (LESSON_MAP の category) → 表示ラベル翻訳キー解決
+// カテゴリの「内部キー」は日本語で固定。表示時に t() で翻訳する。
 const CATEGORY_LABEL_KEY: Record<string, string> = {
   'ロジカルシンキング': 'category.logical',
   'ケース面接': 'category.case',
@@ -16,10 +18,38 @@ const CATEGORY_LABEL_KEY: Record<string, string> = {
   'アナロジー思考': 'category.analogy',
   'システムシンキング': 'category.systems',
   'フェルミ推定': 'category.fermi',
+  'AI練習': 'completed.cat.aiPractice',
+  'デイリー': 'completed.cat.daily',
+  '復習': 'completed.cat.review',
+  'テスト': 'completed.cat.test',
 }
 function categoryLabel(cat: string): string {
   const key = CATEGORY_LABEL_KEY[cat]
   return key ? t(key) : cat
+}
+
+// 特殊キー（レッスン以外）の表示名翻訳マップ
+const SPECIAL_NAME_KEY: Record<string, string> = {
+  'fermi': 'completed.specialName.fermi',
+  'daily-problem': 'completed.specialName.daily',
+  'flashcards': 'completed.specialName.flashcards',
+  'placement-test': 'completed.specialName.placementTest',
+}
+
+/**
+ * "lesson-20" のような key からレッスン表示名を取得。
+ * lessonData.allLessons は ja/en で自動切り替えされるので、ID 経由で引けば翻訳済みのタイトルが返る。
+ * 特殊キー（fermi 等）は SPECIAL_NAME_KEY 経由で翻訳。
+ */
+function resolveLessonName(key: string, fallback: string): string {
+  const m = /^lesson-(\d+)$/.exec(key)
+  if (m) {
+    const id = Number(m[1])
+    return allLessons[id]?.title ?? fallback
+  }
+  const sp = SPECIAL_NAME_KEY[key]
+  if (sp) return t(sp)
+  return fallback
 }
 
 interface CompletedLessonsScreenProps {
@@ -149,7 +179,7 @@ export function CompletedLessonsScreen({ onBack }: CompletedLessonsScreenProps) 
             <ul className="card" style={{ padding: 0, overflow: 'hidden', listStyle: 'none', margin: 0 }}>
               {catKeys.map((key, i) => {
                 const meta = LESSON_MAP[key]
-                const name = meta?.name ?? key
+                const name = resolveLessonName(key, meta?.name ?? key)
                 return (
                   <li key={key} aria-label={t('completed.itemAria', { name })}>
                     {i > 0 && <div style={{ height: 1, background: 'var(--border)', marginLeft: 'var(--s-4)' }} />}

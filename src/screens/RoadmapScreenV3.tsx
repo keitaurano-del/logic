@@ -29,7 +29,7 @@ import type { LessonData } from '../lessonData'
 import { getCompletedLessons } from '../stats'
 import { getCoursesByCategory, getCoursesByGroup, COURSES, COURSE_GROUPS, type Course } from '../courseData'
 import { loadPersonalCourse, axisLabel } from '../placementData'
-import { t } from '../i18n'
+import { t, getLocale } from '../i18n'
 
 // レベル文字列（データ値）→ 表示用の翻訳キー
 function levelLabel(level: string): string {
@@ -189,7 +189,11 @@ function saveSearchHistory(q: string) {
   const cur = loadSearchHistory().filter(x => x !== t)
   localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify([t, ...cur].slice(0, 5)))
 }
-const SUGGESTED_KEYWORDS = ['MECE', '仮説思考', 'VRIO', '5フォース', 'ブルーオーシャン', 'デザインシンキング']
+const SUGGESTED_KEYWORDS_JA = ['MECE', '仮説思考', 'VRIO', '5フォース', 'ブルーオーシャン', 'デザインシンキング']
+const SUGGESTED_KEYWORDS_EN = ['MECE', 'Hypothesis Thinking', 'VRIO', '5 Forces', 'Blue Ocean', 'Design Thinking']
+function getSuggestedKeywords(): string[] {
+  return getLocale() === 'en' ? SUGGESTED_KEYWORDS_EN : SUGGESTED_KEYWORDS_JA
+}
 
 type LevelFilter = '初級' | '中級' | '上級'
 type ProgressFilter = 'todo' | 'done'
@@ -580,7 +584,7 @@ function SearchPanel(p: {
         <div>
           <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 6 }}>{t('roadmap.suggestedKeywords')}</div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-            {SUGGESTED_KEYWORDS.map(k => (
+            {getSuggestedKeywords().map(k => (
               <Pill key={k} active={false} onClick={() => p.onPickKeyword(k)} label={k} />
             ))}
           </div>
