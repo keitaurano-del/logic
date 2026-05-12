@@ -77,7 +77,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Stack
 
 - **Frontend:** React 19 + Vite 8 + TypeScript 5.9 — entry `src/main.tsx`, active app `AppV3.tsx`
-- **Backend:** Express 5.x monolith — `server/index.ts` (~2600 lines, port 3001)
+- **Backend:** Express 5.x monolith with route extraction — `server/index.ts` (~900 lines, port 3001) + `server/routes/*.ts`
 - **Database:** Supabase (PostgreSQL with RLS) + localStorage for offline state
 - **Mobile:** Capacitor 6.x wrapping the Vite bundle (iOS 14+, Android 8+)
 - **AI:** Anthropic Claude API (`@anthropic-ai/sdk`) for roleplay, Fermi feedback, flashcard/problem generation
@@ -171,7 +171,8 @@ Key tokens:
 - Spacing: `--s-1` (4px) … `--s-8` (64px)
 - Radius: `--radius-sm/md/lg/full`
 - Sidebar: `var(--sidebar-w)` = 240px
-- **Do not use** `var(--accent)`, `var(--serif)`, or `var(--accent-dark)` — these do not exist
+- `var(--accent)`, `var(--accent-soft)`, `var(--accent-fg)`, `var(--accent-dark)` are defined in `tokens.css` and OK to use
+- `var(--serif)` is **not** defined — do not use it
 - **Do not hardcode hex colors** — use CSS vars
 
 ### localStorage keys
@@ -198,7 +199,7 @@ Key tokens:
 
 1. **Unused imports** — `@typescript-eslint/no-unused-vars` is strict and breaks the build
 2. **`tokens.css` must be first** import in `index.css` — other CSS files depend on its variables
-3. **`@sentry/react` and `@capacitor/*` are not installed** — `src/sentry.ts` and `src/notifications.ts` are stubs; do not add real imports
+3. **`src/sentry.ts` and `src/notifications.ts` are stubs** — both `@sentry/react` and `@capacitor/*` are installed (Capacitor is actively used for mobile builds), but these two helper files remain no-op stubs. Do not turn them into real implementations without aligning with the broader observability/notifications strategy.
 4. **i18n** — every new user-facing string needs both `ja` and `en` entries in `src/i18n.ts`
 5. **Icons** — use SVG from `src/icons/index.tsx`, never emoji in UI
 6. **Screen union** — forgetting to add a new screen variant to the union in `AppV3.tsx` causes TS errors

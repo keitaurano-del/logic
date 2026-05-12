@@ -2,7 +2,6 @@
 import { useEffect, useState, useRef, useCallback, lazy, Suspense } from 'react'
 import { AppShell, type Tab } from './components/AppShell'
 import { HomeScreenV3 } from './screens/HomeScreenV3'
-import { RankingScreen } from './screens/RankingScreen'
 import { LoginGate } from './components/LoginGate'
 import { RoadmapScreenV3 } from './screens/RoadmapScreenV3'
 import { ProfileScreenV3 } from './screens/ProfileScreenV3'
@@ -24,7 +23,6 @@ const BetaCodeScreen = lazy(() => import('./screens/BetaCodeScreen').then(m => (
 const AIProblemGenScreen = lazy(() => import('./screens/AIProblemGenScreen').then(m => ({ default: m.AIProblemGenScreen })))
 const AIProblemScreen = lazy(() => import('./screens/AIProblemScreen').then(m => ({ default: m.AIProblemScreen })))
 const FeedbackScreen = lazy(() => import('./screens/FeedbackScreen').then(m => ({ default: m.FeedbackScreen })))
-const FeedbackDashboardScreen = lazy(() => import('./screens/FeedbackDashboardScreen').then(m => ({ default: m.FeedbackDashboardScreen })))
 const PlacementTestScreen = lazy(() => import('./screens/PlacementTestScreen').then(m => ({ default: m.PlacementTestScreen })))
 const PersonalCourseScreen = lazy(() => import('./screens/PersonalCourseScreen').then(m => ({ default: m.PersonalCourseScreen })))
 const PricingScreen = lazy(() => import('./screens/PricingScreen').then(m => ({ default: m.PricingScreen })))
@@ -88,7 +86,6 @@ type Screen =
   | { type: 'wrong-answers' }
   | { type: 'fermi' }
   | { type: 'daily-fermi' }
-  | { type: 'ranking' }
   | { type: 'fermi-ranking' }
   | { type: 'roleplay' }
   | { type: 'roleplay-chat'; situationId: string }
@@ -96,7 +93,6 @@ type Screen =
   | { type: 'ai-problem-gen' }
   | { type: 'ai-problem'; problem: AIProblemSet }
   | { type: 'feedback' }
-  | { type: 'feedback-dashboard' }
   | { type: 'placement-test' }
   | { type: 'personal-course' }
   | { type: 'pricing' }
@@ -122,7 +118,6 @@ function getInitialScreen(user: User | null): Screen {
     if (preview === 'onboarding') return { type: 'onboarding' }
     if (preview === 'home') return { type: 'home' }
     if (preview === 'lessons') return { type: 'lessons' }
-    if (preview === 'ranking') return { type: 'ranking' }
     if (preview === 'profile') return { type: 'profile' }
     if (preview === 'fermi') return { type: 'daily-fermi' }
     if (preview === 'pricing') return { type: 'pricing' }
@@ -142,7 +137,8 @@ function getInitialScreen(user: User | null): Screen {
 }
 
 // ── ルート画面かどうか判定 ──
-const ROOT_SCREENS = new Set<string>(['home', 'lessons', 'ranking', 'profile'])
+// 'ranking' タブ ID は Screen.type 'fermi-ranking' に対応する（handleTabChange / popstate 参照）。
+const ROOT_SCREENS = new Set<string>(['home', 'lessons', 'fermi-ranking', 'profile'])
 
 function AppV3() {
   const [tab, setTab] = useState<Tab>('home')
@@ -185,8 +181,11 @@ function AppV3() {
         isPopNavRef.current = true
         const s = e.state.screen as Screen
         setScreen(s)
-        if (ROOT_SCREENS.has(s.type)) setTab(s.type as Tab)
-        if (s.type === 'fermi-ranking') setTab('ranking')
+        if (s.type === 'fermi-ranking') {
+          setTab('ranking')
+        } else if (ROOT_SCREENS.has(s.type)) {
+          setTab(s.type as Tab)
+        }
         isPopNavRef.current = false
       } else {
         // state がない場合はホームへ
@@ -291,6 +290,8 @@ function AppV3() {
     // History にエントリがあれば戻る、なければタブルートへ
     if (window.history.state?.screen && !ROOT_SCREENS.has(screenRef.current.type)) {
       window.history.back()
+    } else if (tab === 'ranking') {
+      navigate({ type: 'fermi-ranking' }, true)
     } else {
       navigate({ type: tab }, true)
     }
@@ -306,6 +307,8 @@ function AppV3() {
       recordCompletion(`lesson-${lessonId}`)
       if (elapsedMs > 5000) addStudyTime(elapsedMs)
       navigate({ type: 'lesson-complete', lessonId, durationSec, prevLevel })
+    } else if (tab === 'ranking') {
+      navigate({ type: 'fermi-ranking' }, true)
     } else {
       navigate({ type: tab }, true)
     }
@@ -449,7 +452,6 @@ function AppV3() {
       {screen.type === 'daily-problem' && <DailyProblemScreen onBack={handleBack} />}
 
       {screen.type === 'feedback' && <FeedbackScreen onBack={handleBack} />}
-      {screen.type === 'feedback-dashboard' && <FeedbackDashboardScreen onClose={handleBack} />}
       {screen.type === 'pricing' && <PricingScreen onBack={handleBack} />}
       {screen.type === 'ai-problem-gen' && (
         <AIProblemGenScreen
@@ -464,13 +466,6 @@ function AppV3() {
           problem={screen.problem}
           onBack={() => navigate({ type: 'ai-problem-gen' })}
           onReport={(ctx) => navigate({ type: 'report-problem', context: ctx })}
-        />
-      )}
-
-      {screen.type === 'ranking' && (
-        <RankingScreen
-          onBack={handleBack}
-          onTakeTest={() => navigate({ type: 'placement-test' })}
         />
       )}
 
