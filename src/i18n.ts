@@ -1289,6 +1289,14 @@ const STRINGS: Record<Locale, Strings> = {
 
     // CompletedLessons (fallback category)
     'completed.fallbackCategory': 'その他',
+    'completed.cat.aiPractice': 'AI練習',
+    'completed.cat.daily': 'デイリー',
+    'completed.cat.review': '復習',
+    'completed.cat.test': 'テスト',
+    'completed.specialName.fermi': 'フェルミ推定',
+    'completed.specialName.daily': '今日の問題',
+    'completed.specialName.flashcards': 'フラッシュカード',
+    'completed.specialName.placementTest': '実力診断テスト',
 
     // DailyFermi residuals
     'dailyFermi.exprPlaceholder': '計算式を入力',
@@ -2656,6 +2664,14 @@ const STRINGS: Record<Locale, Strings> = {
 
     // CompletedLessons (fallback category)
     'completed.fallbackCategory': 'Other',
+    'completed.cat.aiPractice': 'AI Practice',
+    'completed.cat.daily': 'Daily',
+    'completed.cat.review': 'Review',
+    'completed.cat.test': 'Test',
+    'completed.specialName.fermi': 'Fermi Estimation',
+    'completed.specialName.daily': "Today's Problem",
+    'completed.specialName.flashcards': 'Flashcards',
+    'completed.specialName.placementTest': 'Placement Test',
 
     // DailyFermi residuals
     'dailyFermi.exprPlaceholder': 'Enter an expression',

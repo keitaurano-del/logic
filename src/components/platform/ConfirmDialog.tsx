@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { isIOS } from '../../platform'
 import { haptic } from '../../platform/haptics'
+import { t } from '../../i18n'
 import './ConfirmDialog.css'
 
 export interface ConfirmDialogProps {
@@ -71,7 +72,7 @@ export function ConfirmDialog(p: ConfirmDialogProps) {
             className="m3-dialog__btn"
             onClick={cancel}
           >
-            {p.cancelText ?? 'キャンセル'}
+            {p.cancelText ?? t('common.cancel')}
           </button>
           <button
             type="button"

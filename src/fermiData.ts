@@ -1,12 +1,17 @@
 // fermiData.ts — フェルミ問題プール（ホーム・DailyFermiScreen共通）
 // ビジネス系 × ちょっと面白い系に厳選
+//
+// 28問の question / hint と対応する FERMI_STATS を ja / en で持つ。
+// 起動時の getLocale() で FERMI_POOL / FERMI_STATS が決まる。
+
+import { getLocale } from './i18n'
 
 export type FermiQuestion = {
   question: string
   hint: string
 }
 
-export const FERMI_POOL: FermiQuestion[] = [
+const FERMI_POOL_JA: FermiQuestion[] = [
   // ── 王道ビジネス：市場規模・売上 ──
   { question: '日本国内のSaaS市場の年間売上規模は何円か？', hint: '日本の法人数×SaaS導入率×1社あたり年間支出で分解。中小と大企業で支出額が大きく違う。' },
   { question: '日本のスタバ全店舗が1日に売り上げる総額は何円か？', hint: '店舗数×1店舗の客数×客単価で分解。営業時間と回転率も意識しよう。' },
@@ -40,6 +45,42 @@ export const FERMI_POOL: FermiQuestion[] = [
   { question: '日本のプロ野球（NPB）の年間観客動員数は何人か？', hint: '12球団×1球団のホーム試合数×1試合の平均観客（球場収容人数×稼働率）で分解。' },
 ]
 
+const FERMI_POOL_EN: FermiQuestion[] = [
+  // ── Classic business: market size / revenue ──
+  { question: 'What is the annual revenue size of the SaaS market in Japan (JPY)?', hint: 'Break down as: number of companies × SaaS adoption rate × annual spend per company. SMB and enterprise spend differ greatly.' },
+  { question: 'What is the total daily revenue of all Starbucks stores in Japan (JPY)?', hint: 'Break down as: number of stores × customers per store × spend per customer. Consider operating hours and turnover.' },
+  { question: 'What is the daily total revenue of a 300-store izakaya chain (JPY)?', hint: 'Compute as: seats per store × turnover × spend per customer × number of stores. Mind weekday vs weekend.' },
+  { question: 'What is the annual GMV of the EC market in Japan (JPY)?', hint: 'Break down as: internet users × EC usage rate × annual EC spend per person. Include travel and tickets, not just goods.' },
+  { question: 'How many M&A deals are closed annually in Japan?', hint: 'Split into strategic deals at listed firms + succession deals at SMBs. The successor-shortage problem is the key scale driver.' },
+
+  // ── Business cost / operations ──
+  { question: 'What is the annual office rent for a 50-person SMB in Japan (JPY)?', hint: 'Compute as: floor area per person × rent per tsubo × 12 months. Central Tokyo and suburbs differ widely.' },
+  { question: 'How many projects do major consulting firms win annually in Japan?', hint: 'Think: headcount ÷ people per project × number of project cycles per year.' },
+
+  // ── Quirky business observations ──
+  { question: 'How many hanko (stamps) do Japanese office workers press in a year nationwide?', hint: 'Break down as: workforce × white-collar ratio × stamps per person per day × working days per year. Subtract digitization progress.' },
+  { question: 'How many times per day is "otsukaresama desu" uttered by Japanese business people in total?', hint: 'Workforce × utterances per person per day. Count by scene: greetings, signing off, email openings, chat openings…' },
+  { question: 'How many "ryōkai desu / shōchi shimashita" (acknowledgment) messages are sent in business chat (Slack/Teams etc.) per day in Japan?', hint: 'Business-chat users × messages per person per day × ratio that are acknowledgments.' },
+  { question: 'How many cups of coffee are brewed daily in Japanese offices?', hint: 'White-collar population × cups per person per day at the office. Include both coffee machines and café take-ins.' },
+  { question: 'How many times per day, nationwide, does someone say "your mic is on mute" in online meetings?', hint: 'Daily online meetings × probability that this happens per meeting. Factor in remote/hybrid penetration.' },
+  { question: 'How many receipts are filed through expense reports annually in Japan?', hint: 'White-collar population × receipts per person per month × 12 months. Sales roles file far more than back-office.' },
+  { question: 'How many "no-longer-needed" business cards sit unused in business-card holders across Japan?', hint: 'Workforce × sales-role ratio × lifetime cards collected per salesperson. Adjust for cards that "go to sleep" when people change roles or retire.' },
+
+  // ── Consulting case-interview staples (market sizing) ──
+  { question: 'What is the annual size of the golf market in Japan (JPY)?', hint: 'Golf population × rounds per year × cost per round (greens fee + equipment + food). Mind the skew across age groups.' },
+  { question: 'What is the annual size of the pet food market in Japan (JPY)?', hint: 'Dogs and cats owned × annual food spend per animal. Per-animal spend differs between dogs and cats.' },
+  { question: 'How many fitness gym members are there in Tokyo?', hint: 'Tokyo population × age-group gym membership rates. Urban workers in their 20s–40s are the core; don\'t forget senior gyms.' },
+  { question: 'What is the annual size of the wedding market in Japan (JPY)?', hint: 'Annual marriages × ceremony rate × reception cost per couple. Subtracting "no-ceremony" couples is the key.' },
+  { question: 'What is the annual size of the online advertising market in Japan (JPY)?', hint: 'Total ad spend (~1–1.2% of GDP) × digital share. Mind the mix: search + display + video + social.' },
+  { question: 'What is the annual size of the eyewear market in Japan (JPY)?', hint: 'Population × vision-correction rate ÷ average replacement cycle × price per pair. Watch substitution with contact lenses.' },
+  { question: 'How many parcels does the delivery industry handle annually in Japan?', hint: 'Split into consumer receipts + BtoB logistics: population × parcels per person per year + business volume. Mind the rise in EC penetration.' },
+  { question: 'What is the annual size of the subscription video market (Netflix, Prime Video, etc.) in Japan (JPY)?', hint: 'Households × SVOD adoption × services subscribed per household × monthly fee × 12 months. Multi-subscription is common.' },
+  { question: 'What is the annual total revenue of the drugstore industry in Japan (JPY)?', hint: 'Number of stores × daily sales per store × operating days. Check per-store mix of cosmetics, food, and OTC drugs.' },
+  { question: 'What is the annual attendance at Japan\'s professional baseball (NPB) games?', hint: '12 teams × home games per team × average attendance per game (stadium capacity × utilization).' },
+]
+
+export const FERMI_POOL: FermiQuestion[] = getLocale() === 'en' ? FERMI_POOL_EN : FERMI_POOL_JA
+
 /** 今日の問題インデックス（日付ベース・全画面共通） */
 export function getDailyFermiIndex(): number {
   return Math.floor(Date.now() / 86400000) % FERMI_POOL.length
@@ -53,7 +94,7 @@ export function getDailyFermi(): FermiQuestion {
 // 問題ごとの参考データ（最小限・問題に直結するものだけ）
 export type FermiStat = { label: string; value: string }
 
-export const FERMI_STATS: FermiStat[][] = [
+const FERMI_STATS_JA: FermiStat[][] = [
   // 0: SaaS市場規模
   [{ label: '日本の法人数', value: '約400万社' }, { label: 'SaaS導入率（参考）', value: '約30〜50%' }, { label: '1社あたりSaaS年間支出（参考）', value: '約10万〜500万円' }],
   // 1: スタバ全店舗の1日売上
@@ -103,6 +144,59 @@ export const FERMI_STATS: FermiStat[][] = [
   // 23: プロ野球年間観客動員数
   [{ label: 'NPB球団数', value: '12球団' }, { label: '1球団のホーム試合数（参考）', value: '約70試合' }, { label: '1試合あたり平均観客（参考）', value: '約3万人' }],
 ]
+
+const FERMI_STATS_EN: FermiStat[][] = [
+  // 0: SaaS market
+  [{ label: 'Companies in Japan', value: '~4 million' }, { label: 'SaaS adoption rate (ref.)', value: '~30–50%' }, { label: 'Annual SaaS spend per company (ref.)', value: '~¥100K–5M' }],
+  // 1: Starbucks daily revenue
+  [{ label: 'Starbucks stores in Japan', value: '~1,900' }, { label: 'Spend per customer (ref.)', value: '~¥700' }, { label: 'Customers per store per day (ref.)', value: '~500–800' }],
+  // 2: Izakaya chain daily revenue
+  [{ label: 'Seats per izakaya (ref.)', value: '~60–80' }, { label: 'Spend per customer (ref.)', value: '~¥3,000–4,500' }, { label: 'Daily turnover (ref.)', value: '~1.5–2.5×' }],
+  // 3: EC GMV
+  [{ label: 'Internet users in Japan', value: '~100 million' }, { label: 'EC usage rate (ref.)', value: '~75%' }, { label: 'Annual EC spend per person (ref.)', value: '~¥150,000' }],
+  // 4: M&A annual count
+  [{ label: 'Companies in Japan', value: '~4 million' }, { label: 'SMB successor-shortage rate (ref.)', value: '~60%' }, { label: 'Listed companies', value: '~4,000' }],
+  // 5: SMB office rent
+  [{ label: 'Floor area per person', value: '~3–5 tsubo' }, { label: 'Central Tokyo rent per tsubo (monthly)', value: '~¥20K–30K' }, { label: 'Suburban rent per tsubo (monthly)', value: '~¥10K' }],
+  // 6: Consulting projects
+  [{ label: 'Headcount at major consulting firms (ref.)', value: '~2,000–5,000 / firm' }, { label: 'People per project', value: '~3–10' }, { label: 'Projects per person per year (ref.)', value: '~3–5' }],
+  // 7: Hanko stamps
+  [{ label: 'Workforce', value: '~69 million' }, { label: 'White-collar ratio (ref.)', value: '~50%' }, { label: 'Stamps per person per day (ref.)', value: '~3–10' }, { label: 'Working days per year', value: '~240' }],
+  // 8: "Otsukaresama" utterances
+  [{ label: 'Workforce', value: '~69 million' }, { label: 'Utterances per person per day (in-person + email + chat, ref.)', value: '~10–30' }],
+  // 9: "Ryōkai" chat messages
+  [{ label: 'Business chat users in Japan (ref.)', value: '~20 million' }, { label: 'Messages per person per day (ref.)', value: '~30–50' }, { label: 'Acknowledgment ratio (ref.)', value: '~10%' }],
+  // 10: Office coffee cups
+  [{ label: 'White-collar population (ref.)', value: '~35 million' }, { label: 'Cups per person per day (ref.)', value: '~2–3' }, { label: 'Share drunk at office (ref.)', value: '~60%' }],
+  // 11: "Mic is muted" moments
+  [{ label: 'White-collar population (ref.)', value: '~35 million' }, { label: 'Online meetings per person per day (ref.)', value: '~2–4' }, { label: 'Mute-incident probability (ref.)', value: '~20–30%' }],
+  // 12: Expense report receipts
+  [{ label: 'White-collar population (ref.)', value: '~35 million' }, { label: 'Receipts per person per month (ref.)', value: '~5–20' }, { label: 'Period', value: '12 months' }],
+  // 13: Dormant business cards
+  [{ label: 'Workforce', value: '~69 million' }, { label: 'Sales role ratio (ref.)', value: '~8–10%' }, { label: 'Lifetime cards per salesperson (ref.)', value: '~3,000–5,000' }],
+  // 14: Golf market
+  [{ label: 'Golf population in Japan (ref.)', value: '~5–6 million' }, { label: 'Rounds per year (ref.)', value: '~8–12' }, { label: 'Cost per round (ref.)', value: '~¥10K–30K' }],
+  // 15: Pet food market
+  [{ label: 'Dogs in Japan', value: '~7 million' }, { label: 'Cats in Japan', value: '~9 million' }, { label: 'Annual food spend per animal (ref.)', value: '~¥20K–40K' }],
+  // 16: Tokyo gym members
+  [{ label: 'Tokyo population', value: '~14 million' }, { label: 'Share aged 20–40s (ref.)', value: '~35%' }, { label: 'Gym membership in that age group (ref.)', value: '~10–15%' }],
+  // 17: Wedding market
+  [{ label: 'Annual marriages in Japan', value: '~500K' }, { label: 'Ceremony rate (ref.)', value: '~60–70%' }, { label: 'Cost per couple (ref.)', value: '~¥3–4 million' }],
+  // 18: Online ad market
+  [{ label: 'Total ad spend in Japan (ref.)', value: '~¥7 trillion' }, { label: 'Digital share (ref.)', value: '~45–50%' }, { label: 'Mix', value: 'Search + display + video + social' }],
+  // 19: Eyewear market
+  [{ label: 'Japan population', value: '~124 million' }, { label: 'Vision-correction rate (ref.)', value: '~60%' }, { label: 'Replacement cycle (ref.)', value: '~3–4 years' }, { label: 'Price per pair (ref.)', value: '~¥20,000' }],
+  // 20: Parcel deliveries
+  [{ label: 'Japan population', value: '~124 million' }, { label: 'Personal parcels per person per year (ref.)', value: '~30–40' }, { label: 'BtoB logistics share', value: 'Similar to or slightly less than consumer' }],
+  // 21: SVOD market
+  [{ label: 'Households in Japan', value: '~57 million' }, { label: 'SVOD adoption (ref.)', value: '~40%' }, { label: 'Services per household (ref.)', value: '~1.5–2' }, { label: 'Monthly fee (ref.)', value: '~¥1,000' }],
+  // 22: Drugstore industry
+  [{ label: 'Drugstore count in Japan', value: '~23,000' }, { label: 'Daily sales per store (ref.)', value: '~¥800K–1.2M' }, { label: 'Operating days (ref.)', value: '~350' }],
+  // 23: NPB attendance
+  [{ label: 'NPB teams', value: '12 teams' }, { label: 'Home games per team (ref.)', value: '~70' }, { label: 'Avg attendance per game (ref.)', value: '~30,000' }],
+]
+
+export const FERMI_STATS: FermiStat[][] = getLocale() === 'en' ? FERMI_STATS_EN : FERMI_STATS_JA
 
 /** 指定インデックスの問題に対応した参考データを返す */
 export function getFermiStatsByIndex(index: number): FermiStat[] {
