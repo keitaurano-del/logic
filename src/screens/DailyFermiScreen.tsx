@@ -601,7 +601,7 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
       {!loadingQuestion && question && (
         <>
           {/* 問題カード */}
-          <div className="card" style={{
+          <div id="dailyFermi-question" className="card" style={{
             background: 'linear-gradient(145deg, var(--bg-secondary) 0%, var(--bg-card) 100%)',
             borderColor: 'var(--brand)',
             position: 'relative',
@@ -666,6 +666,7 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
               {!showHint ? (
                 <div style={{ position: 'relative', display: 'inline-block' }}>
                   <button
+                    id="dailyFermi-hint-btn"
                     onClick={() => { setShowHint(true); setHintUsed(true) }}
                     style={{
                       display: 'flex', alignItems: 'center', gap: 6,
@@ -731,6 +732,7 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
               {/* 電卓トグル: テキストエリア右上 */}
               <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '0 2px' }}>
                 <button
+                  id="dailyFermi-calc-btn"
                   type="button"
                   onClick={() => setShowCalculator(s => !s)}
                   aria-expanded={showCalculator}
@@ -822,6 +824,7 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
                   {t('dailyFermi.askHintBtn')}
                 </button>
                 <button
+                  id="dailyFermi-submit-btn"
                   onClick={handleSubmit}
                   disabled={!answer.trim()}
                   style={{

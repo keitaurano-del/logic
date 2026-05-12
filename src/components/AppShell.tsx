@@ -128,6 +128,7 @@ export function AppShell({
             return (
               <button
                 key={tab.id}
+                id={`bottom-tab-${tab.id}`}
                 type="button"
                 role="tab"
                 aria-selected={active}

@@ -163,7 +163,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
 
         {/* 今日の1問 (Daily Fermi) */}
         {/* a11y: 外側 div は非インタラクティブ。中の「カード本体」と「別の問題」は兄弟の <button> として配置し、nested-interactive を回避 */}
-        <div style={{ position: 'relative', borderRadius: 'var(--radius-lg)', overflow: 'hidden', boxShadow: '0 14px 32px rgba(108,142,245,.32)', flexShrink: 0 }}>
+        <div id="home-fermi-card" style={{ position: 'relative', borderRadius: 'var(--radius-lg)', overflow: 'hidden', boxShadow: '0 14px 32px rgba(108,142,245,.32)', flexShrink: 0 }}>
           <button
             type="button"
             ref={dailyCardRef}
