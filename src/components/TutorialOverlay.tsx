@@ -1,41 +1,49 @@
 // チュートリアルオーバーレイ（スポットライト誘導型）
-import { useState, useEffect, useLayoutEffect } from 'react'
+// Daily Fermi 画面の主要機能（問題→ヒント→電卓→提出/ランキング反映）を順に案内する
+import { useState, useEffect, useLayoutEffect, useRef } from 'react'
 import { t } from '../i18n'
 
 const TUTORIAL_KEY = 'logic-tutorial-done-v2'
 
-// ── SVGアイコン ──────────────────────────────────────
+// ── SVGアイコン（各ステップ用） ──────────────────────────
 const Icons = {
-  fermi: (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--md-sys-color-primary)" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+  question: (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--md-sys-color-primary)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+      <line x1="12" y1="17" x2="12.01" y2="17"/>
       <circle cx="12" cy="12" r="10"/>
-      <path d="M12 8v4l3 3"/>
     </svg>
   ),
-  training: (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" strokeLinecap="round" aria-hidden="true">
-      <rect x="2" y="5" width="3" height="14" rx="1" fill="#A78BFA"/>
-      <rect x="5" y="8" width="2" height="8" rx="0.5" fill="#A78BFA"/>
-      <rect x="17" y="8" width="2" height="8" rx="0.5" fill="#A78BFA"/>
-      <rect x="19" y="5" width="3" height="14" rx="1" fill="#A78BFA"/>
-      <rect x="7" y="11" width="10" height="2" rx="1" fill="#A78BFA"/>
+  hint: (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M9 18h6"/>
+      <path d="M10 22h4"/>
+      <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/>
     </svg>
   ),
-  ranking: (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
-      <path d="M8 21H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h3v6zM14 21h-4v-8a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v8zM21 21h-3v-10a2 2 0 0 0-2-2h-1"/>
-      <polyline points="7 8 12 3 17 8"/>
+  calculator: (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#34D399" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="4" y="2" width="16" height="20" rx="2"/>
+      <line x1="8" y1="6" x2="16" y2="6"/>
+      <line x1="8" y1="11" x2="8" y2="11"/>
+      <line x1="12" y1="11" x2="12" y2="11"/>
+      <line x1="16" y1="11" x2="16" y2="11"/>
+      <line x1="8" y1="15" x2="8" y2="15"/>
+      <line x1="12" y1="15" x2="12" y2="15"/>
+      <line x1="16" y1="15" x2="16" y2="15"/>
+      <line x1="8" y1="19" x2="8" y2="19"/>
+      <line x1="12" y1="19" x2="12" y2="19"/>
+      <line x1="16" y1="19" x2="16" y2="19"/>
     </svg>
   ),
-  xp: (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#34D399" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
-      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-    </svg>
-  ),
-  start: (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FF6B35" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
-      <circle cx="12" cy="12" r="10"/>
-      <polygon points="10 8 16 12 10 16 10 8" fill="#FF6B35" stroke="none"/>
+  trophy: (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FF6B35" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
+      <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
+      <path d="M4 22h16"/>
+      <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>
+      <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
+      <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
     </svg>
   ),
 }
@@ -55,66 +63,57 @@ interface TutorialStep {
 function getSteps(): TutorialStep[] {
   return [
     {
-      id: 'fermi',
-      icon: Icons.fermi,
+      id: 'question',
+      icon: Icons.question,
       tag: t('tutorial.step1.tag'),
       tagColor: 'var(--md-sys-color-primary)',
       title: t('tutorial.step1.title'),
       description: t('tutorial.step1.description'),
-      targetId: 'home-fermi-card',
+      targetId: 'dailyFermi-question',
       position: 'bottom',
     },
     {
-      id: 'training',
-      icon: Icons.training,
+      id: 'hint',
+      icon: Icons.hint,
       tag: t('tutorial.step2.tag'),
-      tagColor: '#A78BFA',
+      tagColor: '#F59E0B',
       title: t('tutorial.step2.title'),
       description: t('tutorial.step2.description'),
-      targetId: 'bottom-tab-lessons',
-      position: 'top',
+      targetId: 'dailyFermi-hint-btn',
+      position: 'bottom',
+    },
+    {
+      id: 'calculator',
+      icon: Icons.calculator,
+      tag: t('tutorial.step3.tag'),
+      tagColor: '#34D399',
+      title: t('tutorial.step3.title'),
+      description: t('tutorial.step3.description'),
+      targetId: 'dailyFermi-calc-btn',
+      position: 'bottom',
     },
     {
       id: 'ranking',
-      icon: Icons.ranking,
-      tag: t('tutorial.step3.tag'),
-      tagColor: '#F59E0B',
-      title: t('tutorial.step3.title'),
-      description: t('tutorial.step3.description'),
-      targetId: 'bottom-tab-ranking',
-      position: 'top',
-    },
-    {
-      id: 'xp',
-      icon: Icons.xp,
+      icon: Icons.trophy,
       tag: t('tutorial.step4.tag'),
-      tagColor: '#34D399',
+      tagColor: '#FF6B35',
       title: t('tutorial.step4.title'),
       description: t('tutorial.step4.description'),
-      targetId: 'bottom-tab-profile',
+      targetId: 'dailyFermi-submit-btn',
       position: 'top',
-    },
-    {
-      id: 'start',
-      icon: Icons.start,
-      tag: t('tutorial.step5.tag'),
-      tagColor: '#FF6B35',
-      title: t('tutorial.step5.title'),
-      description: t('tutorial.step5.description'),
-      position: 'center',
     },
   ]
 }
 
 interface TutorialOverlayProps {
   onDone: () => void
-  onGoFermi?: () => void
 }
 
-export function TutorialOverlay({ onDone, onGoFermi }: TutorialOverlayProps) {
+export function TutorialOverlay({ onDone }: TutorialOverlayProps) {
   const [step, setStep] = useState(0)
   const [visible, setVisible] = useState(false)
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null)
+  const retryRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const STEPS = getSteps()
   const current = STEPS[step]
@@ -126,13 +125,51 @@ export function TutorialOverlay({ onDone, onGoFermi }: TutorialOverlayProps) {
   }, [])
 
   // DOM計測: useLayoutEffect でペイント前に同期的に測定する
+  // 対象要素が未マウント（lazy 読み込み中など）の場合は短いリトライを行う
   useLayoutEffect(() => {
-    if (current.targetId) {
+    if (retryRef.current) {
+      clearTimeout(retryRef.current)
+      retryRef.current = null
+    }
+
+    let attempts = 0
+    const measure = () => {
+      if (!current.targetId) {
+        setTargetRect(null)
+        return
+      }
       const el = document.getElementById(current.targetId)
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setTargetRect(el ? el.getBoundingClientRect() : null)
-    } else {
-      setTargetRect(null)
+      if (el) {
+        // 画面内にスクロール（ターゲットが画面外なら中央付近に持ってくる）
+        const rect = el.getBoundingClientRect()
+        const inView = rect.top >= 0 && rect.bottom <= window.innerHeight
+        if (!inView) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+          // スクロール後に再計測
+          retryRef.current = setTimeout(() => {
+            const r = el.getBoundingClientRect()
+            setTargetRect(r)
+          }, 320)
+          return
+        }
+        setTargetRect(rect)
+        return
+      }
+      // 未マウントなら最大 10 回 × 100ms までリトライ（lazy load 対策）
+      if (attempts < 10) {
+        attempts += 1
+        retryRef.current = setTimeout(measure, 100)
+      } else {
+        setTargetRect(null)
+      }
+    }
+    measure()
+
+    return () => {
+      if (retryRef.current) {
+        clearTimeout(retryRef.current)
+        retryRef.current = null
+      }
     }
   }, [step, current.targetId])
 
@@ -147,10 +184,7 @@ export function TutorialOverlay({ onDone, onGoFermi }: TutorialOverlayProps) {
   const handleFinish = () => {
     setVisible(false)
     localStorage.setItem(TUTORIAL_KEY, 'true')
-    setTimeout(() => {
-      onDone()
-      if (onGoFermi) onGoFermi()
-    }, 300)
+    setTimeout(onDone, 300)
   }
 
   const handleSkip = () => {
@@ -172,7 +206,7 @@ export function TutorialOverlay({ onDone, onGoFermi }: TutorialOverlayProps) {
       )`
     : undefined
 
-  // カードの表示位置
+  // カードの表示位置（ターゲットに対して上 or 下）
   const cardBottom = current.position === 'top' && targetRect
     ? `calc(100dvh - ${targetRect.top - 16}px)`
     : undefined
@@ -204,20 +238,29 @@ export function TutorialOverlay({ onDone, onGoFermi }: TutorialOverlayProps) {
           cursor: 'pointer',
         }}
       />
-      {/* スポットライト枠（ハイライト枠線） */}
+      {/* スポットライト枠（ハイライト枠線 + 脈動アニメ） */}
       {targetRect && (
-        <div style={{
-          position: 'absolute',
-          top: targetRect.top - 6,
-          left: targetRect.left - 6,
-          width: targetRect.width + 12,
-          height: targetRect.height + 12,
-          borderRadius: 14,
-          border: `2px solid ${current.tagColor}`,
-          boxShadow: `0 0 20px color-mix(in srgb, ${current.tagColor} 38%, transparent)`,
-          pointerEvents: 'none',
-          transition: 'all 0.4s ease',
-        }} />
+        <>
+          <div style={{
+            position: 'absolute',
+            top: targetRect.top - 6,
+            left: targetRect.left - 6,
+            width: targetRect.width + 12,
+            height: targetRect.height + 12,
+            borderRadius: 14,
+            border: `2px solid ${current.tagColor}`,
+            boxShadow: `0 0 20px color-mix(in srgb, ${current.tagColor} 38%, transparent)`,
+            pointerEvents: 'none',
+            transition: 'all 0.4s ease',
+            animation: 'tut-spotlight-pulse 2.2s ease-in-out infinite',
+          }} />
+          <style>{`
+            @keyframes tut-spotlight-pulse {
+              0%, 100% { box-shadow: 0 0 20px color-mix(in srgb, ${current.tagColor} 38%, transparent); }
+              50%      { box-shadow: 0 0 32px color-mix(in srgb, ${current.tagColor} 60%, transparent); }
+            }
+          `}</style>
+        </>
       )}
 
       {/* カード本体 */}
@@ -228,6 +271,9 @@ export function TutorialOverlay({ onDone, onGoFermi }: TutorialOverlayProps) {
           bottom: cardBottom,
           top: cardTop,
           ...(current.position === 'center' && !cardBottom && !cardTop ? {
+            top: '50%', transform: 'translateY(-50%)',
+          } : {}),
+          ...(!targetRect ? {
             top: '50%', transform: 'translateY(-50%)',
           } : {}),
           zIndex: 10000,
