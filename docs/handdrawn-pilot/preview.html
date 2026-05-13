@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>Logic Handdrawn Pilot — Before / After</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Klee+One:wght@400;600&family=Patrick+Hand&family=Yuji+Mai&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brand: #3D5FC4;
+    --paper: #FDF8E9;
+    --ink: #1F2A44;
+    --accent: #C8634B;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Klee One', 'Yuji Mai', system-ui, -apple-system, sans-serif;
+    background: #f4f1e8;
+    color: var(--ink);
+    margin: 0;
+    padding: 32px;
+    line-height: 1.6;
+  }
+  h1 {
+    font-family: 'Caveat', 'Yuji Mai', cursive;
+    font-size: 48px;
+    margin: 0 0 8px;
+    color: var(--ink);
+  }
+  .sub { color: #6b6553; margin-bottom: 40px; }
+  .pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 48px;
+    background: #fff;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .pair h2 {
+    grid-column: 1 / -1;
+    margin: 0 0 8px;
+    font-family: 'Caveat', cursive;
+    font-size: 28px;
+    color: var(--brand);
+  }
+  figure { margin: 0; }
+  figcaption {
+    font-size: 14px;
+    color: #6b6553;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  figcaption .badge {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-weight: 600;
+  }
+  .badge.before { background: #fde8e8; color: #b13434; }
+  .badge.after { background: #e8f1de; color: #4a7d28; }
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8px;
+    border: 1px solid #e5e0d2;
+  }
+  ul.diff {
+    margin: 24px 0 0;
+    padding: 16px 20px;
+    background: #fdf8e9;
+    border-radius: 8px;
+    list-style: none;
+  }
+  ul.diff li {
+    font-size: 14px;
+    padding: 4px 0;
+    padding-left: 24px;
+    position: relative;
+  }
+  ul.diff li::before {
+    content: '✎';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .nb {
+    background: #fff7d1;
+    border: 1px dashed #c0a838;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 32px;
+    font-size: 14px;
+  }
+  .nb b { color: #8a5500; }
+</style>
+</head>
+<body>
+
+<h1>Logic Handdrawn Style — Pilot Preview</h1>
+<p class="sub">2026-05-12 / designer (凜) / 比較用</p>
+
+<div class="nb">
+  <b>注:</b> 下の "After" は SVG をブラウザでネイティブレンダリングしている (webfont 効く)。
+  PNG ファイル (<code>*-v2.png</code>) はサーバーレンダリングでフォントフォールバックが起きる可能性がある。
+  本番アプリでも SVG のまま使うので、ブラウザレンダリングの結果 = 本番表示に近い。
+</div>
+
+<div class="pair">
+  <h2>1. course-logic-01「ロジカルシンキング入門」</h2>
+  <figure>
+    <img src="../../public/images/v3/course-logic-01.svg" alt="before">
+    <figcaption><span class="badge before">Before</span> 現行 (course-logic-01.svg)</figcaption>
+  </figure>
+  <figure>
+    <img src="./course-logic-01-v2.svg" alt="after">
+    <figcaption><span class="badge after">After</span> v2 パイロット (course-logic-01-v2.svg)</figcaption>
+  </figure>
+  <ul class="diff">
+    <li>紙テクスチャを overlay で追加（生成り感アップ）</li>
+    <li>罫線を青系 → ベージュ系に変更（よりノート感）</li>
+    <li>図解の鉛筆風枝（path Q カーブ + inkBleed フィルター）に</li>
+    <li>リスト項目を「四角チェック」→「手書き ✓」に</li>
+    <li>付箋（So What? / Why So?）を新規追加</li>
+    <li>右下に控えめなブランドスタンプ追加</li>
+  </ul>
+</div>
+
+<div class="pair">
+  <h2>2. course-critical-01「クリティカルシンキング基礎」</h2>
+  <figure>
+    <img src="../../public/images/v3/course-critical-01.svg" alt="before">
+    <figcaption><span class="badge before">Before</span> 現行 (course-critical-01.svg)</figcaption>
+  </figure>
+  <figure>
+    <img src="./course-critical-01-v2.svg" alt="after">
+    <figcaption><span class="badge after">After</span> v2 パイロット (course-critical-01-v2.svg)</figcaption>
+  </figure>
+  <ul class="diff">
+    <li>3 つの重なる円（抽象的）→ 虫眼鏡（具象的・批判的思考の象徴）</li>
+    <li>レンズ内に大きな「？」、レンズ外に小さな「？」3 つ（思考の連鎖）</li>
+    <li>取っ手は朱赤と濃紺の二重線で手描き感</li>
+    <li>背景は他のサムネと統一（紙＋罫線＋紙テクスチャ）</li>
+  </ul>
+</div>
+
+<div class="pair">
+  <h2>参考: 既存の差し替え必須 WebP</h2>
+  <figure>
+    <img src="../../public/images/v3/course-business.webp" alt="business webp">
+    <figcaption><span class="badge before">NG</span> course-business.webp (写実写真、方針外)</figcaption>
+  </figure>
+  <figure>
+    <img src="../../public/images/v3/lesson-20.webp" alt="lesson 20">
+    <figcaption><span class="badge before">NG</span> lesson-20.webp (ダーク背景、方針外)</figcaption>
+  </figure>
+</div>
+
+<p style="text-align: center; color: #999; font-size: 13px; margin-top: 64px;">
+  詳細: docs/HANDDRAWN_STYLE_GUIDE.md / docs/HANDDRAWN_ROLLOUT_PLAN.md
+</p>
+
+</body>
+</html>

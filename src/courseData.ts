@@ -1,4 +1,12 @@
 // courseData.ts — コース定義（1コース = 5レッスン）
+//
+// title / description / グループ label / description は ja / en の両言語版を持ち、
+// 起動時の getLocale() に応じて COURSE_GROUPS / COURSES として export する。
+//
+// category と level は内部識別子（日本語）として保持。表示時は呼び出し側で
+// CATEGORY_TO_KEY / levelLabel() 等のマッピングを通して t() で翻訳する。
+
+import { getLocale } from './i18n'
 
 export type CourseGroupId =
   | 'foundations'    // 思考の基礎
@@ -10,7 +18,7 @@ export type CourseGroupId =
 export type Course = {
   id: string
   title: string           // Doingタイトル
-  category: string        // カテゴリ（大分類）
+  category: string        // カテゴリ（大分類）— 内部識別子（日本語固定）
   group: CourseGroupId    // コース一覧でのグルーピング
   lessonIds: number[]     // コース内のレッスンID（5〜7件）
   level: '初級' | '中級' | '上級'
@@ -24,7 +32,7 @@ export type CourseGroup = {
   description: string
 }
 
-export const COURSE_GROUPS: CourseGroup[] = [
+const COURSE_GROUPS_JA: CourseGroup[] = [
   { id: 'foundations',     label: '論理的に考える',  description: '論理・批判・哲学で土台を固める' },
   { id: 'problem-solving', label: '課題を解決する',  description: '仮説と構造で本質に迫る' },
   { id: 'creative',        label: '発想を広げる',    description: '常識を超えて、新しい切り口を生む' },
@@ -32,7 +40,15 @@ export const COURSE_GROUPS: CourseGroup[] = [
   { id: 'business',        label: '現場で実践する',  description: '戦略・数字・クライアント実務に活かす' },
 ]
 
-export const COURSES: Course[] = [
+const COURSE_GROUPS_EN: CourseGroup[] = [
+  { id: 'foundations',     label: 'Think Logically',       description: 'Build foundations with logic, criticism, and philosophy' },
+  { id: 'problem-solving', label: 'Solve Problems',        description: 'Use hypotheses and structure to reach the essence' },
+  { id: 'creative',        label: 'Expand Your Thinking',  description: 'Go beyond convention to create new angles' },
+  { id: 'communication',   label: 'Move People',           description: 'Deliver logic through proposals, interviews, and listening' },
+  { id: 'business',        label: 'Apply in Practice',     description: 'Strategy, numbers, and client work in the real world' },
+]
+
+const COURSES_JA: Course[] = [
   // ── ロジカルシンキング ──────────────────────────────
   {
     id: 'logic-01',
@@ -99,6 +115,18 @@ export const COURSES: Course[] = [
     level: '中級',
     description: '問題と課題の違いを理解し、本質的な問いを設定する力を養う。',
     image: '/images/v3/course-problem-01.svg',
+  },
+
+  // ── 論点設定 ────────────────────────────────────────
+  {
+    id: 'issue-01',
+    title: '論点を洗い出し、論理で答えに迫る',
+    category: '論点設定',
+    group: 'business',
+    lessonIds: [500, 501, 502, 503, 504, 505, 506],
+    level: '中級',
+    description: '経験のないテーマでも、論点を網羅的に洗い出し、構造化し、数字と論理で裏取りしながら、解釈を積み上げて本質に到達する思考プロセスを身につける。',
+    image: '/images/v3/course-issue-01.svg',
   },
 
   // ── デザインシンキング ──────────────────────────────
@@ -329,6 +357,128 @@ export const COURSES: Course[] = [
     description: 'クロノタイプ・睡眠・運動・集中の波・自己計測の5レッスンで、自分の体に合った最高の働き方を設計する。',
   },
 ]
+
+// 英訳: id / category / group / lessonIds / level / image は ja と完全に同じ。
+// title / description のみ英訳。id をキーに ja → en にマッピングする。
+const COURSE_EN_OVERRIDES: Record<string, { title: string; description: string }> = {
+  'logic-01': {
+    title: 'Think Logically and Organize Your Ideas',
+    description: 'Master MECE and logic trees to organize your thinking without gaps or overlaps.',
+  },
+  'logic-02': {
+    title: 'Build Logic to Persuade',
+    description: 'Use So What / Why So to test your logic, and master the Pyramid structure to communicate clearly.',
+  },
+  'critical-01': {
+    title: 'Challenge Assumptions, Judge Correctly',
+    description: 'From the basics of critical thinking to spotting logical fallacies — sharpen your judgment.',
+  },
+  'critical-02': {
+    title: 'Remove Bias, See Objectively',
+    description: 'Understand cognitive distortions starting with confirmation bias for more accurate judgment.',
+  },
+  'hypothesis-01': {
+    title: 'Hypothesize First, Then Investigate',
+    description: 'Build a hypothesis first, then sharpen it through validation.',
+  },
+  'problem-01': {
+    title: 'Identify and Define the Real Problem',
+    description: 'Understand the difference between problems and issues, and develop the ability to set essential questions.',
+  },
+  'issue-01': {
+    title: 'Surface the Issues, Reach the Answer with Logic',
+    description: 'Even in unfamiliar territory, master the thinking process — surface issues comprehensively, structure them, validate with numbers and logic, and stack interpretations to reach the essence.',
+  },
+  'design-01': {
+    title: 'Uncover User Needs and Solve',
+    description: 'Practice the human-centered design thinking process from empathy to prototype.',
+  },
+  'systems-01': {
+    title: 'See the Whole, Change at the Root',
+    description: 'Use feedback loops and the iceberg model to structurally grasp root causes.',
+  },
+  'whywhy-01': {
+    title: 'Reach Root Causes with the 5 Whys',
+    description: 'Dig down to root causes instead of treating symptoms. Learn the Toyota classic with principles like no-blame, no-leaps, and falsifiability.',
+  },
+  'lateral-01': {
+    title: 'Challenge the Obvious, Find Breakthroughs',
+    description: 'Use reframing and reverse thinking to generate ideas beyond fixed assumptions.',
+  },
+  'analogy-01': {
+    title: 'Borrow Wisdom from Other Fields',
+    description: 'Spot structural similarities and apply insights from other domains to your own challenges.',
+  },
+  'philosophy-01': {
+    title: 'Deepen Thinking with Philosophical Questions',
+    description: 'Learn the principles of thinking through Socratic dialogue and falsifiability.',
+  },
+  'eastern-01': {
+    title: 'See People and Organizations through Ancient Chinese Thought',
+    description: 'Learn principles of relationships, definitions, human nature, and system design through Confucius, Mencius, Xunzi, and Mozi.',
+  },
+  'eastern-02': {
+    title: 'See Strategy and Decisions through Ancient Chinese Thought',
+    description: 'Learn wu wei, suppleness, perspective, systems, and winning without fighting through Laozi, Zhuangzi, Han Feizi, and Sun Tzu.',
+  },
+  'proposal-01': {
+    title: 'Craft Proposals That Move People',
+    description: "Work backward from the reader's decision criteria to master the structure that drives action.",
+  },
+  'proposal-course-01': {
+    title: 'Finish Proposals with Hypothesis and Validation',
+    description: "Take a consultant's approach: hypothesize, validate, and complete a compelling proposal.",
+  },
+  'client-01': {
+    title: 'Read Situations Quickly with Numbers',
+    description: 'Train your sense of scale and estimation so you can handle numbers fluently in client settings.',
+  },
+  'client-02': {
+    title: 'Set the Right Issues, Listen Deeply',
+    description: "Use sharp issue-setting and listening techniques to surface clients' real challenges.",
+  },
+  'client-03': {
+    title: 'Ramp Up Fast in an Unfamiliar Industry',
+    description: 'Use books, cases, experts, and hypotheses to deliver value as an "expert" on new engagements.',
+  },
+  'client-04': {
+    title: 'Turn Feedback into the Next Step',
+    description: 'When a manager says "your thinking is shallow," "your analysis is weak," or "your implications are thin" — learn what to ask and how to convert it into action through real cases.',
+  },
+  'case-01': {
+    title: 'Prove Your Logic in Case Interviews',
+    description: 'Systematically tackle frequent case interview themes from profit structure to market entry.',
+  },
+  'strategy-01': {
+    title: 'Learn the Origins and Competitive Strategy',
+    description: 'From Taylor and Ford to Ansoff, PPM, and Porter — cover the classics of strategy chronologically.',
+  },
+  'strategy-02': {
+    title: 'Resources, Capabilities, and Co-evolution',
+    description: 'From RBV and core competencies to Blue Ocean, dynamic capabilities, and platform strategy — learn modern strategy evolution.',
+  },
+  'fermi-01': {
+    title: "Grasp the World's Scale with Estimation",
+    description: 'Build equations, decompose, and produce "roughly right" answers quickly — accuracy comes second.',
+  },
+  'numeracy-01': {
+    title: 'Get Strong with Numbers',
+    description: 'Seven lessons — presentation, mental math, ratios, unit conversion, compounding, statistics, and pitfalls — to systematically build business numeracy.',
+  },
+  'peak-performance-01': {
+    title: 'Work at Your Peak Performance',
+    description: 'Five lessons on chronotype, sleep, exercise, focus rhythms, and self-tracking — design your best-fit way of working.',
+  },
+}
+
+const COURSES_EN: Course[] = COURSES_JA.map(c => {
+  const en = COURSE_EN_OVERRIDES[c.id]
+  return en ? { ...c, title: en.title, description: en.description } : c
+})
+
+// 起動時の locale で決定（setLocale は window.location.reload を呼ぶので再評価される）
+export const COURSE_GROUPS: CourseGroup[] = getLocale() === 'en' ? COURSE_GROUPS_EN : COURSE_GROUPS_JA
+export const COURSES: Course[] = getLocale() === 'en' ? COURSES_EN : COURSES_JA
 
 // カテゴリ別コース一覧
 export function getCoursesByCategory(category: string): Course[] {

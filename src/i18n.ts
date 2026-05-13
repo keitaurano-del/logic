@@ -29,6 +29,11 @@ export function setLocale(loc: Locale): void {
   window.location.reload()
 }
 
+// Static HTML pages live in /public; English variants use the `-en` suffix.
+export function localizedHtmlPath(slug: 'privacy' | 'terms' | 'tokushoho' | 'account-deletion' | 'delete-account'): string {
+  return getLocale() === 'en' ? `/${slug}-en.html` : `/${slug}.html`
+}
+
 // ============================================================
 // Translation strings
 // ============================================================
@@ -174,6 +179,36 @@ const STRINGS: Record<Locale, Strings> = {
     'placement.created': '作成しました！',
     'placement.createdDesc1': 'あなた専用のパーソナルコースが完成しました。',
     'placement.createdDesc2': '早速はじめましょう。',
+    // 5段階レベルラベル
+    'placement.level1': '入門',
+    'placement.level2': '基礎',
+    'placement.level3': '中級',
+    'placement.level4': '上級',
+    'placement.level5': '卓越',
+    // 軸ごとの詳細コメント（{axis} に軸名が入る）
+    'placement.axisDetail.level5': '{axis}は卓越レベル。応用問題でも論点を即座に押さえられている。',
+    'placement.axisDetail.level4': '{axis}は上級レベル。フレームを使いこなし、実務でも安定して活用できる。',
+    'placement.axisDetail.level3': '{axis}は中級レベル。基礎は理解しているが、応用問題で抜け漏れが出やすい。',
+    'placement.axisDetail.level2': '{axis}は基礎レベル。基本問題は解けるが、応用への橋渡しが課題。',
+    'placement.axisDetail.level1': '{axis}は入門レベル。まずはこの軸の基本概念から押さえ直す必要がある。',
+    // 詳細診断コメント
+    'placement.diagnosis.overall.top': '全体としてトップクラスの論理思考力。基本〜応用まで安定して解けており、実務でも複雑な論点を整理できる段階にあります。',
+    'placement.diagnosis.overall.advanced': '全体として上級レベル。論理の基礎は完成しており、応用問題でも筋の良い切り口を選べています。あと一歩で「使いこなす側」に到達します。',
+    'placement.diagnosis.overall.intermediate': '全体として中級レベル。主要フレームは理解できていますが、応用問題で論点を一段深く詰める力がもう一段必要です。',
+    'placement.diagnosis.overall.beginner': '全体として初級〜基礎レベル。基本概念の理解にバラつきが残っており、まずは土台となる「型」を一つずつ確実にしましょう。',
+    'placement.diagnosis.overall.starter': '全体として入門レベル。論理思考の用語・フレームが定着していない段階です。焦らず基本問題から順に積み上げていきましょう。',
+    'placement.diagnosis.strength': '強みは「{axis}」（{level}）。{detail}',
+    'placement.diagnosis.weakness': '最大の伸びしろは「{axis}」（{level}）。{detail}',
+    'placement.diagnosis.secondary': '次の課題は「{axis}」（{level}）。ここを底上げすることで全体の安定感が増します。',
+    'placement.diagnosis.balanceUneven': '軸間の差が大きく、得意・不得意がはっきり分かれています。総合力を上げるには、最も弱い軸を優先的に底上げするのが近道です。',
+    'placement.diagnosis.balanceHigh': '5軸とも高水準で揃っており、バランス型の論理思考力です。今後はケース・戦略など実務応用で更に磨きをかけられます。',
+    'placement.diagnosis.balanceLow': 'まだ全体的に基礎が固まりきっていない段階です。1日1レッスン、優先順位を絞って積み上げていきましょう。',
+    'placement.diagnosis.nextAction': '次のアクション: 「{axis}」を補強するレッスンから着手。あなた専用のパーソナルコース（弱点優先順）を自動生成しています。',
+    // パーソナルコース
+    'placement.personalCourse.titleWith': 'あなた専用コース：{axis}を軸に底上げ',
+    'placement.personalCourse.titleDefault': 'あなた専用パーソナルコース',
+    'placement.personalCourse.descWith': '診断結果（偏差値{deviation}）に基づき、最も伸びしろのある「{axis}」から優先的に学べる{count}レッスン構成のあなた専用コースです。',
+    'placement.personalCourse.descDefault': '診断結果（偏差値{deviation}）に基づき、あなたの弱点軸を優先的に補強する{count}レッスン構成のコースです。',
 
     // Profile
     'profile.title': 'プロフィール',
@@ -240,6 +275,7 @@ const STRINGS: Record<Locale, Strings> = {
     'category.critical': 'クリティカルシンキング',
     'category.hypothesis': '仮説思考',
     'category.problemSetting': '課題設定',
+    'category.issueSetting': '論点設定',
     'category.designThinking': 'デザインシンキング',
     'category.lateral': 'ラテラルシンキング',
     'category.analogy': 'アナロジー思考',
@@ -852,14 +888,14 @@ const STRINGS: Record<Locale, Strings> = {
 
     // Fermi Ranking
     'fermiRank.heading': 'フェルミ ランキング',
-    'fermiRank.subtitle': '採点スコアのベスト記録で競おう',
+    'fermiRank.subtitle': '採点スコアの累計で競おう',
     'fermiRank.period.week': '今週',
     'fermiRank.period.month': '今月',
     'fermiRank.period.alltime': '累計',
     'fermiRank.rankUp': '順位アップ！ +{n}位',
     'fermiRank.yourRank': 'あなたの順位',
     'fermiRank.rankUnit': '位',
-    'fermiRank.bestScore': 'ベストスコア',
+    'fermiRank.bestScore': '累計スコア',
     'fermiRank.top3': 'TOP 3',
     'fermiRank.fourPlus': '4位以降',
     'fermiRank.empty.title': 'まだスコアがありません',
@@ -1055,6 +1091,13 @@ const STRINGS: Record<Locale, Strings> = {
     'personalCourse.ctaStart': 'コースを進める',
     'personalCourse.exit': '終了する',
     'personalCourse.diagnosisLine': '診断で「{axis}（{from}〜{to}）」が伸びしろと判定されました。',
+
+    // Placement test entry card (shown on Home after first daily question)
+    'placementCard.title': 'あなたの実力を診断しましょう',
+    'placementCard.subtitle': '10問・約5分で5軸のスキル分布がわかります',
+    'placementCard.desc': '推定偏差値・レーダーチャート・最適コースをご案内します。',
+    'placementCard.takeTest': '診断を受ける',
+    'placementCard.later': '後で',
 
     // AI Problem
     'aiProblem.resultTitle': '結果',
@@ -1264,6 +1307,14 @@ const STRINGS: Record<Locale, Strings> = {
 
     // CompletedLessons (fallback category)
     'completed.fallbackCategory': 'その他',
+    'completed.cat.aiPractice': 'AI練習',
+    'completed.cat.daily': 'デイリー',
+    'completed.cat.review': '復習',
+    'completed.cat.test': 'テスト',
+    'completed.specialName.fermi': 'フェルミ推定',
+    'completed.specialName.daily': '今日の問題',
+    'completed.specialName.flashcards': 'フラッシュカード',
+    'completed.specialName.placementTest': '実力診断テスト',
 
     // DailyFermi residuals
     'dailyFermi.exprPlaceholder': '計算式を入力',
@@ -1342,23 +1393,20 @@ const STRINGS: Record<Locale, Strings> = {
     'tutorial.closeAria': '閉じる',
     'tutorial.openAria': 'チュートリアル',
     'tutorial.skip': 'スキップ',
-    'tutorial.start': 'さっそくやってみよう',
+    'tutorial.start': 'さっそく解いてみよう',
     'tutorial.next': '次へ',
-    'tutorial.step1.tag': '今日の1問',
-    'tutorial.step1.title': '毎日フェルミ問題に挑戦',
-    'tutorial.step1.description': 'ホーム画面の「今日のフェルミ問題」で、1日1問チャレンジできるよ。数字の感覚を毎日少しずつ鍛えよう。',
-    'tutorial.step2.tag': 'トレーニング',
-    'tutorial.step2.title': 'コースでスキルを体系的に学ぶ',
-    'tutorial.step2.description': '下メニューの「トレーニング」から14カテゴリのコースにアクセスできるよ。ロジカルシンキング・仮説思考など、実践で使えるスキルが揃ってる。',
-    'tutorial.step3.tag': 'ランキング',
-    'tutorial.step3.title': '実力をランキングで証明する',
-    'tutorial.step3.description': '問題を解くたびにポイントが貯まって、ランキングに反映されるよ。仲間との競争がモチベーションになる。',
-    'tutorial.step4.tag': 'ポイント',
-    'tutorial.step4.title': 'XPを貯めてレベルアップ',
-    'tutorial.step4.description': 'レッスン完了・フェルミ回答・AI問題生成などでXP（経験値）が貯まるよ。プロフィール画面でいつでも確認できる。',
-    'tutorial.step5.tag': 'スタート',
-    'tutorial.step5.title': 'さっそくやってみよう！',
-    'tutorial.step5.description': '最初の1問、フェルミ問題にチャレンジしてみよう。答えは何でもOK — まず考えることが大事だよ。',
+    'tutorial.step1.tag': 'フェルミ問題',
+    'tutorial.step1.title': '答えを論理的に推定する',
+    'tutorial.step1.description': '正確な答えは要らないわ。要素に分解して、前提を置きながら掛け算・割り算で組み立てるのがコツ。「だいたい合ってる」レベルを目指していこう。',
+    'tutorial.step2.tag': 'ヒント',
+    'tutorial.step2.title': '迷ったらヒントを開く',
+    'tutorial.step2.description': '分解の切り口に加えて、人口・店舗数などの参考統計データもまとめて見られる。ただし使うと採点で10点減点になるから、まず自分の頭で考えてみてね。',
+    'tutorial.step3.tag': '電卓',
+    'tutorial.step3.title': '計算結果を回答にそのまま貼れる',
+    'tutorial.step3.description': '桁が大きい掛け算もここでサクッと。「= 結果（約X兆円）」の形で回答欄に挿入できるわ。途中式が残るから、AIの採点でも分解の根拠が伝わりやすい。',
+    'tutorial.step4.tag': 'ランキング反映',
+    'tutorial.step4.title': 'AIが採点 → ランキングに自動反映',
+    'tutorial.step4.description': '提出するとAIが分解の質を100点満点で採点。スコアはそのままランキングに記録されて、週・月・全期間で他のユーザーと競えるわよ。',
 
     // English learning mode (premium feature shown when locale === 'en')
     'englishLearning.toolbarLabel': '英語学習ツール',
@@ -1515,6 +1563,36 @@ const STRINGS: Record<Locale, Strings> = {
     'placement.created': 'Done!',
     'placement.createdDesc1': 'Your personal course is ready.',
     'placement.createdDesc2': "Let's get started.",
+    // 5-level labels
+    'placement.level1': 'Starter',
+    'placement.level2': 'Foundation',
+    'placement.level3': 'Intermediate',
+    'placement.level4': 'Advanced',
+    'placement.level5': 'Mastery',
+    // Per-axis detail comments ({axis} = axis name)
+    'placement.axisDetail.level5': '{axis} is at mastery level — you immediately grasp the key point even in advanced problems.',
+    'placement.axisDetail.level4': '{axis} is at advanced level — you handle frameworks fluently and apply them reliably at work.',
+    'placement.axisDetail.level3': '{axis} is at intermediate level — fundamentals are clear, but gaps tend to appear on applied problems.',
+    'placement.axisDetail.level2': '{axis} is at foundation level — you can solve basic problems but the bridge to application is the gap.',
+    'placement.axisDetail.level1': '{axis} is at starter level — start by relearning the core concepts of this axis.',
+    // Detailed diagnosis comments
+    'placement.diagnosis.overall.top': 'Overall, top-tier logical thinking. You handle both basics and applied problems reliably and can structure complex points in practice.',
+    'placement.diagnosis.overall.advanced': 'Overall, advanced level. Your fundamentals are solid and you pick strong angles on applied problems — one step from fully mastering it.',
+    'placement.diagnosis.overall.intermediate': 'Overall, intermediate level. The main frameworks are understood, but you need a bit more depth when pushing into applied problems.',
+    'placement.diagnosis.overall.beginner': 'Overall, beginner-to-foundation level. Understanding of core concepts is uneven — first, lock in one foundational pattern at a time.',
+    'placement.diagnosis.overall.starter': 'Overall, starter level. The vocabulary and frameworks of logical thinking are not yet settled. Build up from basic problems, one step at a time.',
+    'placement.diagnosis.strength': 'Strongest axis: "{axis}" ({level}). {detail}',
+    'placement.diagnosis.weakness': 'Biggest upside: "{axis}" ({level}). {detail}',
+    'placement.diagnosis.secondary': 'Next focus: "{axis}" ({level}). Raising this will broaden your overall stability.',
+    'placement.diagnosis.balanceUneven': 'The gap between axes is large — your strengths and weaknesses are clear. The fastest path is to lift the weakest axis first.',
+    'placement.diagnosis.balanceHigh': 'All five axes are high and well-balanced — a well-rounded logical thinker. Sharpen further with case and strategy applications.',
+    'placement.diagnosis.balanceLow': 'Foundations are not yet fully set across the board. Build up with one lesson a day, focusing on priorities.',
+    'placement.diagnosis.nextAction': 'Next action: start with lessons that strengthen "{axis}." Your personal course (ordered by weakness) is being generated.',
+    // Personal course
+    'placement.personalCourse.titleWith': 'Your course: lift up "{axis}"',
+    'placement.personalCourse.titleDefault': 'Your personal course',
+    'placement.personalCourse.descWith': 'Based on your result (score {deviation}), a {count}-lesson course built to lift up your highest-upside axis "{axis}" first.',
+    'placement.personalCourse.descDefault': 'Based on your result (score {deviation}), a {count}-lesson course built to shore up your weakest axes first.',
 
     // Profile
     'profile.title': 'Profile',
@@ -1581,6 +1659,7 @@ const STRINGS: Record<Locale, Strings> = {
     'category.critical': 'Critical Thinking',
     'category.hypothesis': 'Hypothesis Thinking',
     'category.problemSetting': 'Problem Setting',
+    'category.issueSetting': 'Issue Setting',
     'category.designThinking': 'Design Thinking',
     'category.lateral': 'Lateral Thinking',
     'category.analogy': 'Analogy Thinking',
@@ -2193,14 +2272,14 @@ const STRINGS: Record<Locale, Strings> = {
 
     // Fermi Ranking
     'fermiRank.heading': 'Fermi Ranking',
-    'fermiRank.subtitle': "Compete with your best graded score",
+    'fermiRank.subtitle': "Compete with your total graded score",
     'fermiRank.period.week': 'This week',
     'fermiRank.period.month': 'This month',
     'fermiRank.period.alltime': 'All time',
     'fermiRank.rankUp': 'Rank up! +{n}',
     'fermiRank.yourRank': 'Your rank',
     'fermiRank.rankUnit': '',
-    'fermiRank.bestScore': 'Best score',
+    'fermiRank.bestScore': 'Total score',
     'fermiRank.top3': 'TOP 3',
     'fermiRank.fourPlus': 'Rank 4+',
     'fermiRank.empty.title': 'No scores yet',
@@ -2397,6 +2476,13 @@ const STRINGS: Record<Locale, Strings> = {
     'personalCourse.ctaStart': 'Start course',
     'personalCourse.exit': 'Finish',
     'personalCourse.diagnosisLine': 'Your assessment indicated "{axis} ({from}-{to})" as your biggest growth area.',
+
+    // Placement test entry card (shown on Home after first daily question)
+    'placementCard.title': 'Assess your current level',
+    'placementCard.subtitle': '10 questions, ~5 minutes — see your skill profile across 5 axes',
+    'placementCard.desc': 'You\'ll get an estimated score, a radar chart, and a recommended course.',
+    'placementCard.takeTest': 'Start the assessment',
+    'placementCard.later': 'Later',
 
     // AI Problem
     'aiProblem.resultTitle': 'Result',
@@ -2606,6 +2692,14 @@ const STRINGS: Record<Locale, Strings> = {
 
     // CompletedLessons (fallback category)
     'completed.fallbackCategory': 'Other',
+    'completed.cat.aiPractice': 'AI Practice',
+    'completed.cat.daily': 'Daily',
+    'completed.cat.review': 'Review',
+    'completed.cat.test': 'Test',
+    'completed.specialName.fermi': 'Fermi Estimation',
+    'completed.specialName.daily': "Today's Problem",
+    'completed.specialName.flashcards': 'Flashcards',
+    'completed.specialName.placementTest': 'Placement Test',
 
     // DailyFermi residuals
     'dailyFermi.exprPlaceholder': 'Enter an expression',
@@ -2684,23 +2778,20 @@ const STRINGS: Record<Locale, Strings> = {
     'tutorial.closeAria': 'Close',
     'tutorial.openAria': 'Tutorial',
     'tutorial.skip': 'Skip',
-    'tutorial.start': "Let's go",
+    'tutorial.start': 'Solve one now',
     'tutorial.next': 'Next',
-    'tutorial.step1.tag': "Today's problem",
-    'tutorial.step1.title': 'Try a Fermi problem every day',
-    'tutorial.step1.description': 'Tap "Today\'s Fermi problem" on the home screen to take on one a day. Sharpen your sense of numbers, bit by bit.',
-    'tutorial.step2.tag': 'Training',
-    'tutorial.step2.title': 'Build skills systematically through courses',
-    'tutorial.step2.description': 'Open "Training" in the bottom menu to access courses across 14 categories — logical thinking, hypothesis thinking, and more practical skills.',
-    'tutorial.step3.tag': 'Ranking',
-    'tutorial.step3.title': 'Prove your skills on the ranking',
-    'tutorial.step3.description': 'Each problem you solve earns points and counts toward the ranking. Healthy competition keeps you motivated.',
-    'tutorial.step4.tag': 'Points',
-    'tutorial.step4.title': 'Earn XP and level up',
-    'tutorial.step4.description': 'Completing lessons, answering Fermi problems, and using AI generation all earn XP. Check your progress anytime in your profile.',
-    'tutorial.step5.tag': 'Start',
-    'tutorial.step5.title': "Let's give it a try!",
-    'tutorial.step5.description': 'Take on your first Fermi problem. Any answer is fine — what matters is starting to think.',
+    'tutorial.step1.tag': 'Fermi problem',
+    'tutorial.step1.title': 'Estimate logically, not exactly',
+    'tutorial.step1.description': "You don't need the exact answer. Break the problem into pieces, make reasonable assumptions, and multiply your way to a ballpark. \"Roughly right\" is the target.",
+    'tutorial.step2.tag': 'Hint',
+    'tutorial.step2.title': 'Stuck? Open a hint',
+    'tutorial.step2.description': 'See decomposition angles plus reference statistics (population, store counts, etc.). Heads up: using a hint costs 10 points at scoring, so try thinking on your own first.',
+    'tutorial.step3.tag': 'Calculator',
+    'tutorial.step3.title': 'Drop calculation results into your answer',
+    'tutorial.step3.description': 'Crunch big multiplications without leaving the page. Tap "Insert" and the calculation lands in your answer as "= result (about X billion)" — so the AI sees your full reasoning.',
+    'tutorial.step4.tag': 'Ranking',
+    'tutorial.step4.title': 'AI scores you. Ranking updates instantly.',
+    'tutorial.step4.description': 'Submit and the AI scores your decomposition out of 100. The score posts straight to the leaderboard — compete on weekly, monthly, or all-time rankings.',
 
     // English learning mode (premium feature shown when locale === 'en')
     'englishLearning.toolbarLabel': 'English learning tools',

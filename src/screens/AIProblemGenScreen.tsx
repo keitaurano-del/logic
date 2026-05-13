@@ -21,6 +21,7 @@ const CATEGORY_LABEL_KEY: Record<string, string> = {
   'クリティカルシンキング': 'category.critical',
   '仮説思考': 'category.hypothesis',
   '課題設定': 'category.problemSetting',
+  '論点設定': 'category.issueSetting',
   'デザインシンキング': 'category.designThinking',
   'ラテラルシンキング': 'category.lateral',
   'アナロジー思考': 'category.analogy',

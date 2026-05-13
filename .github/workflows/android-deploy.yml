@@ -117,9 +117,8 @@ jobs:
           retention-days: 30
 
       # ── 14. Play Console 内部テストに配信 ──────────────────
-      #      Draft App の制約で alpha/beta track には API 経由で
-      #      deploy 不可。internal で deploy → Play Console UI で
-      #      手動 promote (Internal → Closed/Alpha) する運用。
+      #      Production 初回公開済みなので status: completed で
+      #      内部テスターへ自動 rollout する。
       - name: Deploy to Play Console (Internal Test)
         uses: r0adkll/upload-google-play@v1
         with:

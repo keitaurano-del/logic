@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <filter id="decoIS1" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="3" seed="61" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="2.5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="shapeIS1" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="62" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="3.5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <pattern id="ruledIS1" x="0" y="0" width="800" height="28" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="27" x2="800" y2="27" stroke="#B3D0F5" stroke-width="0.85"/>
+    </pattern>
+  </defs>
+  <rect width="800" height="400" fill="#FEFEF2"/>
+  <rect width="800" height="400" fill="url(#ruledIS1)" opacity="0.65"/>
+  <line x1="72" y1="0" x2="72" y2="400" stroke="#F4A0A0" stroke-width="1.8" filter="url(#decoIS1)"/>
+  <line x1="756" y1="14" x2="756" y2="386" stroke="#B3D0F5" stroke-width="1" opacity="0.4" filter="url(#decoIS1)"/>
+  <rect x="78" y="13" width="130" height="38" fill="#C9543F" opacity="0.2" rx="3" filter="url(#decoIS1)"/>
+  <text x="86" y="44" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="24" font-weight="bold" fill="#1A1A2E">論点思考</text>
+  <text x="87" y="67" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#C9543F">論理で答えに迫る</text>
+  <line x1="78" y1="77" x2="736" y2="77" stroke="#C9543F" stroke-width="1.2" opacity="0.28" filter="url(#decoIS1)"/>
+  <line x1="418" y1="80" x2="418" y2="370" stroke="#B3D0F5" stroke-width="0.9" opacity="0.5" filter="url(#decoIS1)"/>
+  <!-- 図形：フィルター適用（イシューツリー） -->
+  <g transform="translate(82,88)" filter="url(#shapeIS1)">
+
+    <!-- ルートノード：大きな「？」 -->
+    <circle cx="34" cy="96" r="30" fill="#C9543F" opacity="0.78"/>
+
+    <!-- 枝（root → 3つの中間ノード） -->
+    <path d="M64,84 Q92,60 118,42" stroke="#444" stroke-width="1.8" fill="none" opacity="0.45"/>
+    <path d="M64,96 Q92,96 118,96" stroke="#444" stroke-width="1.8" fill="none" opacity="0.45"/>
+    <path d="M64,108 Q92,132 118,150" stroke="#444" stroke-width="1.8" fill="none" opacity="0.45"/>
+
+    <!-- 中間ノード（3つ） -->
+    <rect x="118" y="28" width="76" height="28" rx="3" fill="#C9543F" opacity="0.62" transform="rotate(0.6 156 42)"/>
+    <rect x="118" y="82" width="76" height="28" rx="3" fill="#C9543F" opacity="0.55" transform="rotate(-0.4 156 96)"/>
+    <rect x="118" y="136" width="76" height="28" rx="3" fill="#C9543F" opacity="0.48" transform="rotate(0.4 156 150)"/>
+
+    <!-- 中間ノード → 末端ノード（小さな✓付き） -->
+    <line x1="194" y1="42" x2="216" y2="30" stroke="#444" stroke-width="1" opacity="0.32"/>
+    <line x1="194" y1="42" x2="216" y2="54" stroke="#444" stroke-width="1" opacity="0.32"/>
+    <line x1="194" y1="96" x2="216" y2="84" stroke="#444" stroke-width="1" opacity="0.32"/>
+    <line x1="194" y1="96" x2="216" y2="108" stroke="#444" stroke-width="1" opacity="0.32"/>
+    <line x1="194" y1="150" x2="216" y2="138" stroke="#444" stroke-width="1" opacity="0.32"/>
+    <line x1="194" y1="150" x2="216" y2="162" stroke="#444" stroke-width="1" opacity="0.32"/>
+
+    <!-- 末端ノード（薄めの小箱、6個） -->
+    <rect x="216" y="22" width="58" height="16" rx="2" fill="#C9543F" opacity="0.32"/>
+    <rect x="216" y="46" width="58" height="16" rx="2" fill="#C9543F" opacity="0.32"/>
+    <rect x="216" y="76" width="58" height="16" rx="2" fill="#C9543F" opacity="0.28"/>
+    <rect x="216" y="100" width="58" height="16" rx="2" fill="#C9543F" opacity="0.28"/>
+    <rect x="216" y="130" width="58" height="16" rx="2" fill="#C9543F" opacity="0.24"/>
+    <rect x="216" y="154" width="58" height="16" rx="2" fill="#C9543F" opacity="0.22"/>
+
+    <!-- pencil sticker -->
+    <g transform="translate(4,196) rotate(-11)">
+      <rect x="0" y="0" width="38" height="9" rx="2" fill="#FFD566" opacity="0.88"/>
+      <polygon points="38,0 48,4.5 38,9" fill="#E8A000" opacity="0.82"/>
+      <rect x="0" y="1" width="5" height="7" rx="1" fill="#F4A0A0" opacity="0.92"/>
+    </g>
+  </g>
+  <!-- ラベル：フィルターなし -->
+  <g transform="translate(82,88)">
+
+    <text x="34" y="103" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="22" font-weight="700" fill="#fff">?</text>
+    <text x="156" y="46" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="600" fill="#fff">論点A</text>
+    <text x="156" y="100" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="600" fill="#fff">論点B</text>
+    <text x="156" y="154" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="600" fill="#fff">論点C</text>
+    <!-- ✓マーク（末端ノードの右端） -->
+    <text x="268" y="34" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="700" fill="#C9543F" opacity="0.78">✓</text>
+    <text x="268" y="58" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="700" fill="#C9543F" opacity="0.78">✓</text>
+    <text x="268" y="88" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="700" fill="#C9543F" opacity="0.72">✓</text>
+    <text x="268" y="112" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="700" fill="#C9543F" opacity="0.72">✓</text>
+    <text x="268" y="142" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="700" fill="#C9543F" opacity="0.66">✓</text>
+    <text x="268" y="166" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="700" fill="#C9543F" opacity="0.66">✓</text>
+  </g>
+  <!-- テキストリスト：フィルターなし -->
+  <g transform="translate(432,88)">
+<text x="0" y="2" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="15" font-weight="bold" fill="#1A1A2E" opacity="0.82">🔍 アプローチ</text>
+<rect x="0" y="7" width="286" height="2" fill="#C9543F" opacity="0.4" rx="1"/>
+  <rect x="1" y="26" width="11" height="11" fill="#C9543F" opacity="0.92" rx="1.5" transform="rotate(-2 6 31)"/>
+  <text x="20" y="39" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.92">論点を網羅する</text>
+  <line x1="0" y1="46" x2="286" y2="46" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
+  <rect x="1" y="66" width="11" height="11" fill="#C9543F" opacity="0.86" rx="1.5" transform="rotate(-2 6 71)"/>
+  <text x="20" y="79" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.86">ツリーで構造化する</text>
+  <line x1="0" y1="86" x2="286" y2="86" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
+  <rect x="1" y="106" width="11" height="11" fill="#C9543F" opacity="0.80" rx="1.5" transform="rotate(-2 6 111)"/>
+  <text x="20" y="119" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.80">数字で裏取りする</text>
+  <line x1="0" y1="126" x2="286" y2="126" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
+  <rect x="1" y="146" width="11" height="11" fill="#C9543F" opacity="0.74" rx="1.5" transform="rotate(-2 6 151)"/>
+  <text x="20" y="159" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.74">解釈を積み上げる</text>
+  <line x1="0" y1="166" x2="286" y2="166" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
+  <rect x="1" y="186" width="11" height="11" fill="#C9543F" opacity="0.68" rx="1.5" transform="rotate(-2 6 191)"/>
+  <text x="20" y="199" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="14" fill="#1A1A2E" opacity="0.68">本質に到達する</text>
+  <line x1="0" y1="206" x2="286" y2="206" stroke="#B3D0F5" stroke-width="0.8" opacity="0.4"/>
+
+  </g>
+  <line x1="78" y1="373" x2="736" y2="373" stroke="#1A1A2E" stroke-width="0.6" opacity="0.1" filter="url(#decoIS1)"/>
+  <text x="400" y="390" text-anchor="middle" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive" font-size="11" fill="#C9543F" opacity="0.6">論点を洗い出し、論理で答えに迫る</text>
+</svg>

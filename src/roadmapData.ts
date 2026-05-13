@@ -82,6 +82,22 @@ export const roadmaps: RoadmapDef[] = [
     ],
   },
   {
+    id: 'issue-setting',
+    title: '論点設定',
+    subtitle: '経験のない問いに論理で挑む',
+    emoji: '',
+    color: '#10B981',
+    steps: [
+      { lessonId: 500, title: '論点とは何か', description: '問題・課題・論点の違いを理解し、論理で答えに迫る基本姿勢' },
+      { lessonId: 501, title: '網羅的に論点を洗い出す', description: 'MECE・5W1H・ステークホルダー視点で思考の死角を埋める' },
+      { lessonId: 502, title: '論点を構造化する', description: '主要論点とサブ論点に階層化し、筋の通ったイシューツリーを描く' },
+      { lessonId: 503, title: '論点に仮説と論拠を当てる', description: '各論点に仮の答えを置き、演繹・帰納で論拠を積み上げる' },
+      { lessonId: 504, title: 'フェルミ感覚で論点の重みを測る', description: '数字で裏を取り、論点の効き目を桁で見極める' },
+      { lessonId: 505, title: '未経験テーマに挑む', description: '知らない業界でも、類似ケース転用と仮置きの勇気で初手を打つ' },
+      { lessonId: 506, title: '議論をまとめて場を導く', description: '論点ペーパー1枚に統合し、論点ベースで会議を回しきる' },
+    ],
+  },
+  {
     id: 'design-thinking',
     title: 'デザインシンキング',
     subtitle: '共感から始める問題解決',

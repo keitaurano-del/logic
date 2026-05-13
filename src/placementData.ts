@@ -1,4 +1,4 @@
-import { getLocale } from './i18n'
+import { getLocale, t } from './i18n'
 import { pushPlacement, getSyncUser } from './syncService'
 
 // ───────────────────────────────────────────────────────────────
@@ -740,22 +740,22 @@ export function rankLabel(dev: number): { label: string; color: string; comment:
 // 5段階レベル → 言葉ラベル
 export function levelLabel(level: number): string {
   switch (level) {
-    case 5: return '卓越'
-    case 4: return '上級'
-    case 3: return '中級'
-    case 2: return '基礎'
-    default: return '入門'
+    case 5: return t('placement.level5')
+    case 4: return t('placement.level4')
+    case 3: return t('placement.level3')
+    case 2: return t('placement.level2')
+    default: return t('placement.level1')
   }
 }
 
 // 軸ごとの強み・弱みコメント（言語化）
 function axisDetailComment(axis: SkillAxis, level: 1 | 2 | 3 | 4 | 5): string {
   const a = axisLabel(axis).label
-  if (level >= 5) return `${a}は卓越レベル。応用問題でも論点を即座に押さえられている。`
-  if (level >= 4) return `${a}は上級レベル。フレームを使いこなし、実務でも安定して活用できる。`
-  if (level >= 3) return `${a}は中級レベル。基礎は理解しているが、応用問題で抜け漏れが出やすい。`
-  if (level >= 2) return `${a}は基礎レベル。基本問題は解けるが、応用への橋渡しが課題。`
-  return `${a}は入門レベル。まずはこの軸の基本概念から押さえ直す必要がある。`
+  if (level >= 5) return t('placement.axisDetail.level5', { axis: a })
+  if (level >= 4) return t('placement.axisDetail.level4', { axis: a })
+  if (level >= 3) return t('placement.axisDetail.level3', { axis: a })
+  if (level >= 2) return t('placement.axisDetail.level2', { axis: a })
+  return t('placement.axisDetail.level1', { axis: a })
 }
 
 // 詳細な診断コメント（複数行）
@@ -769,42 +769,53 @@ export function detailedDiagnosis(axisScores: AxisScore[], deviation: number): s
 
   // 全体評価
   if (deviation >= 65) {
-    lines.push('全体としてトップクラスの論理思考力。基本〜応用まで安定して解けており、実務でも複雑な論点を整理できる段階にあります。')
+    lines.push(t('placement.diagnosis.overall.top'))
   } else if (deviation >= 55) {
-    lines.push('全体として上級レベル。論理の基礎は完成しており、応用問題でも筋の良い切り口を選べています。あと一歩で「使いこなす側」に到達します。')
+    lines.push(t('placement.diagnosis.overall.advanced'))
   } else if (deviation >= 45) {
-    lines.push('全体として中級レベル。主要フレームは理解できていますが、応用問題で論点を一段深く詰める力がもう一段必要です。')
+    lines.push(t('placement.diagnosis.overall.intermediate'))
   } else if (deviation >= 35) {
-    lines.push('全体として初級〜基礎レベル。基本概念の理解にバラつきが残っており、まずは土台となる「型」を一つずつ確実にしましょう。')
+    lines.push(t('placement.diagnosis.overall.beginner'))
   } else {
-    lines.push('全体として入門レベル。論理思考の用語・フレームが定着していない段階です。焦らず基本問題から順に積み上げていきましょう。')
+    lines.push(t('placement.diagnosis.overall.starter'))
   }
 
   // 強み・弱み
   if (strongest && strongest.level >= 3 && strongest.axis !== weakest?.axis) {
-    lines.push(`強みは「${axisLabel(strongest.axis).label}」（${levelLabel(strongest.level)}）。${axisDetailComment(strongest.axis, strongest.level)}`)
+    lines.push(t('placement.diagnosis.strength', {
+      axis: axisLabel(strongest.axis).label,
+      level: levelLabel(strongest.level),
+      detail: axisDetailComment(strongest.axis, strongest.level),
+    }))
   }
   if (weakest) {
-    lines.push(`最大の伸びしろは「${axisLabel(weakest.axis).label}」（${levelLabel(weakest.level)}）。${axisDetailComment(weakest.axis, weakest.level)}`)
+    lines.push(t('placement.diagnosis.weakness', {
+      axis: axisLabel(weakest.axis).label,
+      level: levelLabel(weakest.level),
+      detail: axisDetailComment(weakest.axis, weakest.level),
+    }))
   }
   if (second && second.axis !== weakest?.axis && second.level <= 2) {
-    lines.push(`次の課題は「${axisLabel(second.axis).label}」（${levelLabel(second.level)}）。ここを底上げすることで全体の安定感が増します。`)
+    lines.push(t('placement.diagnosis.secondary', {
+      axis: axisLabel(second.axis).label,
+      level: levelLabel(second.level),
+    }))
   }
 
   // バランス・偏り
   const minLv = Math.min(...axisScores.map(a => a.level))
   const maxLv = Math.max(...axisScores.map(a => a.level))
   if (maxLv - minLv >= 3) {
-    lines.push('軸間の差が大きく、得意・不得意がはっきり分かれています。総合力を上げるには、最も弱い軸を優先的に底上げするのが近道です。')
+    lines.push(t('placement.diagnosis.balanceUneven'))
   } else if (avgLevel >= 4 && maxLv - minLv <= 1) {
-    lines.push('5軸とも高水準で揃っており、バランス型の論理思考力です。今後はケース・戦略など実務応用で更に磨きをかけられます。')
+    lines.push(t('placement.diagnosis.balanceHigh'))
   } else if (avgLevel <= 2 && maxLv - minLv <= 1) {
-    lines.push('まだ全体的に基礎が固まりきっていない段階です。1日1レッスン、優先順位を絞って積み上げていきましょう。')
+    lines.push(t('placement.diagnosis.balanceLow'))
   }
 
   // 学習方針
   if (weakest) {
-    lines.push(`次のアクション: 「${axisLabel(weakest.axis).label}」を補強するレッスンから着手。あなた専用のパーソナルコース（弱点優先順）を自動生成しています。`)
+    lines.push(t('placement.diagnosis.nextAction', { axis: axisLabel(weakest.axis).label }))
   }
 
   return lines
@@ -1005,11 +1016,11 @@ export function buildPersonalCourse(axisScores: AxisScore[], deviation: number):
   const lessonIds = ids.slice(0, limit)
   const weakestLabel = sorted[0] ? axisLabel(sorted[0].axis).label : ''
   const title = weakestLabel
-    ? `あなた専用コース：${weakestLabel}を軸に底上げ`
-    : 'あなた専用パーソナルコース'
+    ? t('placement.personalCourse.titleWith', { axis: weakestLabel })
+    : t('placement.personalCourse.titleDefault')
   const description = weakestLabel
-    ? `診断結果（偏差値${deviation}）に基づき、最も伸びしろのある「${weakestLabel}」から優先的に学べる${lessonIds.length}レッスン構成のあなた専用コースです。`
-    : `診断結果（偏差値${deviation}）に基づき、あなたの弱点軸を優先的に補強する${lessonIds.length}レッスン構成のコースです。`
+    ? t('placement.personalCourse.descWith', { deviation, axis: weakestLabel, count: lessonIds.length })
+    : t('placement.personalCourse.descDefault', { deviation, count: lessonIds.length })
   return {
     id: 'personal',
     title,
@@ -1034,7 +1045,7 @@ export function loadPersonalCourse(): PersonalCourse | null {
     if (!parsed.lessonIds || !Array.isArray(parsed.lessonIds)) return null
     return {
       id: 'personal',
-      title: parsed.title ?? 'あなた専用パーソナルコース',
+      title: parsed.title ?? t('placement.personalCourse.titleDefault'),
       description: parsed.description ?? '',
       lessonIds: parsed.lessonIds,
       axisOrder: parsed.axisOrder ?? [],

@@ -2,24 +2,55 @@ import { useMemo } from 'react'
 import { getCompletedLessons } from '../stats'
 import { CheckCircleIcon } from '../icons'
 import { Header } from '../components/platform/Header'
+import { allLessons } from '../lessonData'
 import { t } from '../i18n'
 
 // データキー (LESSON_MAP の category) → 表示ラベル翻訳キー解決
+// カテゴリの「内部キー」は日本語で固定。表示時に t() で翻訳する。
 const CATEGORY_LABEL_KEY: Record<string, string> = {
   'ロジカルシンキング': 'category.logical',
   'ケース面接': 'category.case',
   'クリティカルシンキング': 'category.critical',
   '仮説思考': 'category.hypothesis',
   '課題設定': 'category.problemSetting',
+  '論点設定': 'category.issueSetting',
   'デザインシンキング': 'category.designThinking',
   'ラテラルシンキング': 'category.lateral',
   'アナロジー思考': 'category.analogy',
   'システムシンキング': 'category.systems',
   'フェルミ推定': 'category.fermi',
+  'AI練習': 'completed.cat.aiPractice',
+  'デイリー': 'completed.cat.daily',
+  '復習': 'completed.cat.review',
+  'テスト': 'completed.cat.test',
 }
 function categoryLabel(cat: string): string {
   const key = CATEGORY_LABEL_KEY[cat]
   return key ? t(key) : cat
+}
+
+// 特殊キー（レッスン以外）の表示名翻訳マップ
+const SPECIAL_NAME_KEY: Record<string, string> = {
+  'fermi': 'completed.specialName.fermi',
+  'daily-problem': 'completed.specialName.daily',
+  'flashcards': 'completed.specialName.flashcards',
+  'placement-test': 'completed.specialName.placementTest',
+}
+
+/**
+ * "lesson-20" のような key からレッスン表示名を取得。
+ * lessonData.allLessons は ja/en で自動切り替えされるので、ID 経由で引けば翻訳済みのタイトルが返る。
+ * 特殊キー（fermi 等）は SPECIAL_NAME_KEY 経由で翻訳。
+ */
+function resolveLessonName(key: string, fallback: string): string {
+  const m = /^lesson-(\d+)$/.exec(key)
+  if (m) {
+    const id = Number(m[1])
+    return allLessons[id]?.title ?? fallback
+  }
+  const sp = SPECIAL_NAME_KEY[key]
+  if (sp) return t(sp)
+  return fallback
 }
 
 interface CompletedLessonsScreenProps {
@@ -52,6 +83,13 @@ const LESSON_MAP: Record<string, LessonMeta> = {
   'lesson-53': { name: '課題設定入門',             category: '課題設定' },
   'lesson-54': { name: 'イシュー分析',             category: '課題設定' },
   'lesson-55': { name: '課題設定実践',             category: '課題設定' },
+  'lesson-500': { name: '論点とは何か',           category: '論点設定' },
+  'lesson-501': { name: '網羅的に論点を洗い出す', category: '論点設定' },
+  'lesson-502': { name: '論点を構造化する',       category: '論点設定' },
+  'lesson-503': { name: '論点に仮説と論拠を当てる', category: '論点設定' },
+  'lesson-504': { name: 'フェルミ感覚で論点の重みを測る', category: '論点設定' },
+  'lesson-505': { name: '未経験テーマに挑む',     category: '論点設定' },
+  'lesson-506': { name: '議論をまとめて場を導く', category: '論点設定' },
   'lesson-56': { name: 'デザインシンキング入門',   category: 'デザインシンキング' },
   'lesson-57': { name: '共感マップとペルソナ',     category: 'デザインシンキング' },
   'lesson-58': { name: 'デザインシンキング実践',   category: 'デザインシンキング' },
@@ -70,7 +108,7 @@ const LESSON_MAP: Record<string, LessonMeta> = {
   'placement-test': { name: '実力診断テスト', category: 'テスト' },
 }
 
-const CAT_ORDER = ['ロジカルシンキング', 'ケース面接', 'クリティカルシンキング', '仮説思考', '課題設定', 'デザインシンキング', 'ラテラルシンキング', 'アナロジー思考', 'システムシンキング', 'AI練習', 'デイリー', '復習', 'テスト']
+const CAT_ORDER = ['ロジカルシンキング', 'ケース面接', 'クリティカルシンキング', '仮説思考', '課題設定', '論点設定', 'デザインシンキング', 'ラテラルシンキング', 'アナロジー思考', 'システムシンキング', 'AI練習', 'デイリー', '復習', 'テスト']
 
 function catColor(cat: string): string {
   const map: Record<string, string> = {
@@ -80,6 +118,7 @@ function catColor(cat: string): string {
     'クリティカルシンキング': 'var(--cat-pm)',
     '仮説思考':               'var(--md-sys-color-error)',
     '課題設定':               'var(--cat-boki2)',
+    '論点設定':               'var(--cat-boki2)',
     'デザインシンキング':     'var(--cat-practice)',
     'ラテラルシンキング':     'var(--cat-lateral)',
     'アナロジー思考':         'var(--warning)',
@@ -149,7 +188,7 @@ export function CompletedLessonsScreen({ onBack }: CompletedLessonsScreenProps) 
             <ul className="card" style={{ padding: 0, overflow: 'hidden', listStyle: 'none', margin: 0 }}>
               {catKeys.map((key, i) => {
                 const meta = LESSON_MAP[key]
-                const name = meta?.name ?? key
+                const name = resolveLessonName(key, meta?.name ?? key)
                 return (
                   <li key={key} aria-label={t('completed.itemAria', { name })}>
                     {i > 0 && <div style={{ height: 1, background: 'var(--border)', marginLeft: 'var(--s-4)' }} />}

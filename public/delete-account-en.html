@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Account Deletion Request — Logic</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #1A1F2E; color: #E8ECF4;
+    max-width: 600px; margin: 0 auto;
+    padding: 0 0 80px;
+    line-height: 1.8;
+  }
+  header {
+    background: linear-gradient(160deg, #1A1F2E 0%, #252C40 100%);
+    padding: 48px 24px 32px;
+    border-bottom: 1px solid rgba(108,142,245,0.2);
+  }
+  .logo { font-size: 13px; font-weight: 800; color: #6C8EF5; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  h1 { font-size: 26px; font-weight: 900; color: #FFFFFF; letter-spacing: -0.02em; margin-bottom: 8px; }
+  .meta { font-size: 13px; color: #8FA3C8; }
+  main { padding: 32px 24px; }
+  .card {
+    background: #252C40; border-radius: 16px;
+    padding: 24px; margin-bottom: 20px;
+    border: 1px solid rgba(108,142,245,0.15);
+  }
+  h2 { font-size: 16px; font-weight: 800; color: #9BB3FA; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  p { font-size: 14px; color: #C8D4E8; line-height: 1.8; margin-bottom: 12px; }
+  ul { padding-left: 20px; display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+  li { font-size: 14px; color: #C8D4E8; }
+  li::marker { color: #6C8EF5; }
+  a { color: #6C8EF5; text-decoration: none; }
+  .warning {
+    background: rgba(252,165,165,0.08);
+    border: 1px solid rgba(252,165,165,0.3);
+    border-radius: 12px; padding: 14px 16px;
+    margin-bottom: 20px;
+  }
+  .warning p { color: #FCA5A5; margin: 0; }
+  .mailto-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: #6C8EF5; color: #1A1F2E;
+    border: none; border-radius: 14px;
+    padding: 16px 24px; font-size: 15px; font-weight: 800;
+    cursor: pointer; text-decoration: none;
+    width: 100%; justify-content: center;
+    margin-top: 8px;
+  }
+  .steps { counter-reset: step; display: flex; flex-direction: column; gap: 12px; }
+  .step { display: flex; gap: 14px; align-items: flex-start; }
+  .step-num {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: rgba(108,142,245,0.15); border: 1.5px solid #6C8EF5;
+    color: #6C8EF5; font-size: 13px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 2px;
+  }
+  .step-text { font-size: 14px; color: #C8D4E8; line-height: 1.7; }
+  .back-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 40px; padding: 12px 20px;
+    background: rgba(108,142,245,0.15); color: #6C8EF5;
+    border: 1px solid rgba(108,142,245,0.3); border-radius: 12px;
+    font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: none;
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    Logic
+  </div>
+  <h1>Account Deletion Request</h1>
+  <p class="meta">About data deletion and account closure</p>
+</header>
+
+<main>
+  <div class="warning">
+    <p>Warning: deleting your account permanently removes all learning data, progress, and purchase history. This action cannot be undone.</p>
+  </div>
+
+  <div class="card">
+    <h2>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      Deletion Steps
+    </h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text">Tap the button below to open your mail app</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text">Check the subject and body, then send the email from the address registered on your account</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text">Once we have verified your identity, your account and data will be deleted <strong>within 30 days</strong></div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-text">A confirmation email will be sent once deletion is complete</div>
+      </div>
+    </div>
+
+    <a class="mailto-btn" href="mailto:support@logic-m.com?subject=Account%20Deletion%20Request&body=Please%20fill%20in%20the%20information%20below%20and%20send%20this%20email.%0A%0ARegistered%20email%20address%3A%0AReason%20for%20deletion%20(optional)%3A%0A%0A*%20For%20identity%20verification%2C%20please%20send%20this%20email%20from%20the%20address%20registered%20with%20Logic.">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      Send deletion request email
+    </a>
+  </div>
+
+  <div class="card">
+    <h2>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg>
+      Data That Will Be Deleted
+    </h2>
+    <ul>
+      <li>Account information (email address, display name)</li>
+      <li>Learning progress and lesson completion records</li>
+      <li>Fermi estimation answer history</li>
+      <li>XP, level, and streak</li>
+      <li>Subscription information</li>
+    </ul>
+    <p style="font-size:13px; color:#8FA3C8; margin:0;">* Information subject to a statutory retention obligation (such as payment records) may be retained for a certain period.</p>
+  </div>
+
+  <div class="card">
+    <h2>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Contact
+    </h2>
+    <p>For any other inquiries, please contact <a href="mailto:support@logic-m.com">support@logic-m.com</a>.</p>
+  </div>
+
+  <a class="back-btn" href="javascript:history.back()">← Back</a>
+</main>
+</body>
+</html>

@@ -29,7 +29,7 @@ import type { LessonData } from '../lessonData'
 import { getCompletedLessons } from '../stats'
 import { getCoursesByCategory, getCoursesByGroup, COURSES, COURSE_GROUPS, type Course } from '../courseData'
 import { loadPersonalCourse, axisLabel } from '../placementData'
-import { t } from '../i18n'
+import { t, getLocale } from '../i18n'
 
 // レベル文字列（データ値）→ 表示用の翻訳キー
 function levelLabel(level: string): string {
@@ -53,7 +53,7 @@ const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
   'ロジカルシンキング': {
     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={'var(--brand)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/></svg>,
     iconBg: 'rgba(108,142,245,.14)',
-    image: `${IMG}/course-logical.webp`,
+    image: `${IMG}/course-logic-01.svg`,
     routeKey: 'logic',
   },
   'クリティカルシンキング': {
@@ -73,6 +73,12 @@ const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
     iconBg: 'rgba(52,211,153,.14)',
     image: `${IMG}/lesson-issue-setting.webp`,
     routeKey: 'problem-setting',
+  },
+  '論点設定': {
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#34D399" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="11" y1="7" x2="11" y2="11"/><line x1="11" y1="11" x2="15" y2="11"/><line x1="16" y1="16" x2="21" y2="21"/></svg>,
+    iconBg: 'rgba(52,211,153,.14)',
+    image: `${IMG}/course-issue-01.svg`,
+    routeKey: 'issue-setting',
   },
   'デザインシンキング': {
     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>,
@@ -113,7 +119,7 @@ const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
   '哲学・思考の原理': {
     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C4B5FD" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="10" strokeDasharray="4 3"/></svg>,
     iconBg: 'rgba(196,181,253,.14)',
-    image: `${IMG}/course-philosophy.webp`,
+    image: `${IMG}/course-philosophy-01.svg`,
     routeKey: 'philosophy',
   },
   '東洋思想': {
@@ -125,13 +131,13 @@ const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
   'クライアントワーク': {
     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C49A3C" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
     iconBg: 'rgba(196,154,60,.14)',
-    image: `${IMG}/course-client.webp`,
+    image: `${IMG}/course-client-01.svg`,
     routeKey: 'クライアントワーク',
   },
   'ケース面接': {
     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={'var(--warm)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>,
     iconBg: 'rgba(244,162,97,.14)',
-    image: `${IMG}/course-business.webp`,
+    image: `${IMG}/course-case-01.svg`,
     routeKey: 'case',
   },
   '経営戦略': {
@@ -163,7 +169,7 @@ const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
 const DEFAULT_VISUAL: CategoryVisual = {
   icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={'var(--brand)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
   iconBg: 'rgba(108,142,245,.14)',
-  image: `${IMG}/course-logical.webp`,
+  image: `${IMG}/course-logic-01.svg`,
   routeKey: '',
 }
 
@@ -189,7 +195,11 @@ function saveSearchHistory(q: string) {
   const cur = loadSearchHistory().filter(x => x !== t)
   localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify([t, ...cur].slice(0, 5)))
 }
-const SUGGESTED_KEYWORDS = ['MECE', '仮説思考', 'VRIO', '5フォース', 'ブルーオーシャン', 'デザインシンキング']
+const SUGGESTED_KEYWORDS_JA = ['MECE', '仮説思考', 'VRIO', '5フォース', 'ブルーオーシャン', 'デザインシンキング']
+const SUGGESTED_KEYWORDS_EN = ['MECE', 'Hypothesis Thinking', 'VRIO', '5 Forces', 'Blue Ocean', 'Design Thinking']
+function getSuggestedKeywords(): string[] {
+  return getLocale() === 'en' ? SUGGESTED_KEYWORDS_EN : SUGGESTED_KEYWORDS_JA
+}
 
 type LevelFilter = '初級' | '中級' | '上級'
 type ProgressFilter = 'todo' | 'done'
@@ -580,7 +590,7 @@ function SearchPanel(p: {
         <div>
           <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 6 }}>{t('roadmap.suggestedKeywords')}</div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-            {SUGGESTED_KEYWORDS.map(k => (
+            {getSuggestedKeywords().map(k => (
               <Pill key={k} active={false} onClick={() => p.onPickKeyword(k)} label={k} />
             ))}
           </div>
@@ -680,6 +690,7 @@ const CATEGORY_ID_TO_NAMES: Record<string, string[]> = {
   critical: ['クリティカルシンキング'],
   hypothesis: ['仮説思考'],
   'problem-setting': ['課題設定'],
+  'issue-setting': ['論点設定'],
   'design-thinking': ['デザインシンキング'],
   lateral: ['ラテラルシンキング'],
   analogy: ['アナロジー思考'],
@@ -700,6 +711,7 @@ const CATEGORY_LABEL_KEY: Record<string, string> = {
   critical: 'category.critical',
   hypothesis: 'category.hypothesis',
   'problem-setting': 'category.problemSetting',
+  'issue-setting': 'category.issueSetting',
   'design-thinking': 'category.designThinking',
   lateral: 'category.lateral',
   analogy: 'category.analogy',
@@ -720,6 +732,7 @@ const CATEGORY_DATA_LABEL: Record<string, string> = {
   critical: 'クリティカルシンキング',
   hypothesis: '仮説思考',
   'problem-setting': '課題設定',
+  'issue-setting': '論点設定',
   'design-thinking': 'デザインシンキング',
   lateral: 'ラテラルシンキング',
   analogy: 'アナロジー思考',

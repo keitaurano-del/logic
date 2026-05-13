@@ -609,14 +609,20 @@ function AppV3() {
     </AppShell>
 
     {/* SCRUM-195: チュートリアルオーバーレイ */}
-    {/* チュートリアルFAB（右下固定ボタン） */}
-    {screen.type === 'home' && !showTutorial && showFAB && (
-      <TutorialFAB onClick={() => setShowTutorial(true)} onHide={() => { tutorial.markFABDismissed(); setShowFAB(false) }} />
+    {/* チュートリアルFAB（右下固定ボタン） — Daily Fermi 画面でも常駐 */}
+    {(screen.type === 'home' || screen.type === 'daily-fermi') && !showTutorial && showFAB && (
+      <TutorialFAB
+        onClick={() => {
+          // ホームから起動した場合は Daily Fermi 画面に遷移してからオーバーレイを開く
+          if (screen.type === 'home') navigate({ type: 'daily-fermi' })
+          setShowTutorial(true)
+        }}
+        onHide={() => { tutorial.markFABDismissed(); setShowFAB(false) }}
+      />
     )}
     {showTutorial && (
       <TutorialOverlay
         onDone={() => setShowTutorial(false)}
-        onGoFermi={() => navigate({ type: 'daily-fermi' })}
       />
     )}
 
