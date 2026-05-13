@@ -94,11 +94,11 @@ const ICON_BG: Record<string, string> = {
 
 // シナリオごとの表現画像（題材レッスンに対応する個別画像で重複を回避）
 const SCENARIO_IMAGE: Record<string, string> = {
-  'why-so-report': '/images/v3/lesson-22.webp',
-  'mece-meeting': '/images/v3/lesson-20.webp',
-  'pyramid-client': '/images/v3/lesson-23.webp',
-  'logic-tree-sub': '/images/v3/lesson-21.webp',
-  'socrates-dialog': '/images/v3/lesson-77.webp',
+  'why-so-report': '/images/v3/lesson-22.png',
+  'mece-meeting': '/images/v3/lesson-20.png',
+  'pyramid-client': '/images/v3/lesson-23.png',
+  'logic-tree-sub': '/images/v3/lesson-21.png',
+  'socrates-dialog': '/images/v3/lesson-77.png',
   'descartes-doubt': '/images/v3/ai-bot.webp',
   'nietzsche-values': '/images/v3/ai-chat.webp',
 }
