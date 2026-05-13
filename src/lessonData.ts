@@ -63,6 +63,8 @@ import { hypothesisLessonMap } from './hypothesisLessons'
 import { hypothesisLessonMapEn } from './hypothesisLessonsEn'
 import { problemSettingLessonMap } from './problemSettingLessons'
 import { problemSettingLessonMapEn } from './problemSettingLessonsEn'
+import { issueLessonMap } from './issueLessons'
+import { issueLessonMapEn } from './issueLessonsEn'
 import { designThinkingLessonMap } from './designThinkingLessons'
 import { designThinkingLessonMapEn } from './designThinkingLessonsEn'
 import { lateralThinkingLessonMap } from './lateralThinkingLessons'
@@ -115,6 +117,7 @@ function _getMergedLessons(): Record<number, LessonData> {
     ..._pickByLocale(criticalLessonMap, criticalLessonMapEn),
     ..._pickByLocale(hypothesisLessonMap, hypothesisLessonMapEn),
     ..._pickByLocale(problemSettingLessonMap, problemSettingLessonMapEn),
+    ..._pickByLocale(issueLessonMap, issueLessonMapEn),
     ..._pickByLocale(designThinkingLessonMap, designThinkingLessonMapEn),
     ..._pickByLocale(lateralThinkingLessonMap, lateralThinkingLessonMapEn),
     ..._pickByLocale(analogyThinkingLessonMap, analogyThinkingLessonMapEn),

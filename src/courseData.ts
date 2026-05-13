@@ -117,6 +117,18 @@ const COURSES_JA: Course[] = [
     image: '/images/v3/course-problem-01.svg',
   },
 
+  // ── 論点設定 ────────────────────────────────────────
+  {
+    id: 'issue-01',
+    title: '論点を洗い出し、論理で答えに迫る',
+    category: '論点設定',
+    group: 'business',
+    lessonIds: [500, 501, 502, 503, 504, 505, 506],
+    level: '中級',
+    description: '経験のないテーマでも、論点を網羅的に洗い出し、構造化し、数字と論理で裏取りしながら、解釈を積み上げて本質に到達する思考プロセスを身につける。',
+    image: '/images/v3/course-issue-01.svg',
+  },
+
   // ── デザインシンキング ──────────────────────────────
   {
     id: 'design-01',
@@ -372,6 +384,10 @@ const COURSE_EN_OVERRIDES: Record<string, { title: string; description: string }
   'problem-01': {
     title: 'Identify and Define the Real Problem',
     description: 'Understand the difference between problems and issues, and develop the ability to set essential questions.',
+  },
+  'issue-01': {
+    title: 'Surface the Issues, Reach the Answer with Logic',
+    description: 'Even in unfamiliar territory, master the thinking process — surface issues comprehensively, structure them, validate with numbers and logic, and stack interpretations to reach the essence.',
   },
   'design-01': {
     title: 'Uncover User Needs and Solve',

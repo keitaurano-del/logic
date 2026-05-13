@@ -13,6 +13,7 @@ const CATEGORY_LABEL_KEY: Record<string, string> = {
   'クリティカルシンキング': 'category.critical',
   '仮説思考': 'category.hypothesis',
   '課題設定': 'category.problemSetting',
+  '論点設定': 'category.issueSetting',
   'デザインシンキング': 'category.designThinking',
   'ラテラルシンキング': 'category.lateral',
   'アナロジー思考': 'category.analogy',
@@ -82,6 +83,13 @@ const LESSON_MAP: Record<string, LessonMeta> = {
   'lesson-53': { name: '課題設定入門',             category: '課題設定' },
   'lesson-54': { name: 'イシュー分析',             category: '課題設定' },
   'lesson-55': { name: '課題設定実践',             category: '課題設定' },
+  'lesson-500': { name: '論点とは何か',           category: '論点設定' },
+  'lesson-501': { name: '網羅的に論点を洗い出す', category: '論点設定' },
+  'lesson-502': { name: '論点を構造化する',       category: '論点設定' },
+  'lesson-503': { name: '論点に仮説と論拠を当てる', category: '論点設定' },
+  'lesson-504': { name: 'フェルミ感覚で論点の重みを測る', category: '論点設定' },
+  'lesson-505': { name: '未経験テーマに挑む',     category: '論点設定' },
+  'lesson-506': { name: '議論をまとめて場を導く', category: '論点設定' },
   'lesson-56': { name: 'デザインシンキング入門',   category: 'デザインシンキング' },
   'lesson-57': { name: '共感マップとペルソナ',     category: 'デザインシンキング' },
   'lesson-58': { name: 'デザインシンキング実践',   category: 'デザインシンキング' },
@@ -100,7 +108,7 @@ const LESSON_MAP: Record<string, LessonMeta> = {
   'placement-test': { name: '実力診断テスト', category: 'テスト' },
 }
 
-const CAT_ORDER = ['ロジカルシンキング', 'ケース面接', 'クリティカルシンキング', '仮説思考', '課題設定', 'デザインシンキング', 'ラテラルシンキング', 'アナロジー思考', 'システムシンキング', 'AI練習', 'デイリー', '復習', 'テスト']
+const CAT_ORDER = ['ロジカルシンキング', 'ケース面接', 'クリティカルシンキング', '仮説思考', '課題設定', '論点設定', 'デザインシンキング', 'ラテラルシンキング', 'アナロジー思考', 'システムシンキング', 'AI練習', 'デイリー', '復習', 'テスト']
 
 function catColor(cat: string): string {
   const map: Record<string, string> = {
@@ -110,6 +118,7 @@ function catColor(cat: string): string {
     'クリティカルシンキング': 'var(--cat-pm)',
     '仮説思考':               'var(--md-sys-color-error)',
     '課題設定':               'var(--cat-boki2)',
+    '論点設定':               'var(--cat-boki2)',
     'デザインシンキング':     'var(--cat-practice)',
     'ラテラルシンキング':     'var(--cat-lateral)',
     'アナロジー思考':         'var(--warning)',
