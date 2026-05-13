@@ -153,7 +153,7 @@ function getHeroImage(category: string, lessonId?: number): string {
   if (c.includes('なぜなぜ') || c.includes('why-why') || c.includes('why why')) return '/images/v3/course-whywhy-01.svg'
   if (c.includes('クライアント')) return '/images/v3/course-client-01.svg'
   if (c.includes('経営戦略') || c === 'strategy') return '/images/v3/course-strategy.svg'
-  if (c.includes('思考法') || c.includes('thinking')) return '/images/v3/course-thinking.webp'
+  if (c.includes('思考法') || c.includes('thinking')) return '/images/v3/course-critical-01.svg'
   if (c.includes('coffee') || c.includes('コーヒー')) return '/images/v3/home-daily-question.webp'
   return '/images/v3/hero-deduction.webp'
 }
