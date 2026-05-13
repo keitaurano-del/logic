@@ -58,7 +58,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [20, 21, 22, 23, 24],
     level: '初級',
     description: 'MECEとロジックツリーで、考えを漏れなく・ダブりなく整理する力を身につける。',
-    image: '/images/v3/course-logic-01.svg',
+    image: '/images/v3/course-logic-01.png',
   },
   {
     id: 'logic-02',
@@ -68,7 +68,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [25, 26, 27, 68, 23],
     level: '初級',
     description: 'So What / Why Soで論理を検証し、ピラミッド構造で伝わる話し方を習得する。',
-    image: '/images/v3/course-logic-02.svg',
+    image: '/images/v3/course-logic-02.png',
   },
 
   // ── クリティカルシンキング ──────────────────────────
@@ -80,7 +80,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [40, 41, 42, 43, 69],
     level: '初級',
     description: '批判的思考の基礎から論理的誤謬の見破り方まで、判断力を鍛える。',
-    image: '/images/v3/course-critical-01.svg',
+    image: '/images/v3/course-critical-01.png',
   },
   {
     id: 'critical-02',
@@ -90,7 +90,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [71, 300, 301, 302, 303],
     level: '中級',
     description: '確証バイアスをはじめとした認知の歪みを理解し、より精度の高い判断をする。',
-    image: '/images/v3/course-critical-02.svg',
+    image: '/images/v3/course-critical-02.png',
   },
 
   // ── 仮説思考 ────────────────────────────────────────
@@ -102,7 +102,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [50, 51, 52, 70, 304],
     level: '中級',
     description: '仮説を先に立て、検証で磨く思考サイクルを身につける。',
-    image: '/images/v3/course-hypothesis-01.svg',
+    image: '/images/v3/course-hypothesis-01.png',
   },
 
   // ── 課題設定 ────────────────────────────────────────
@@ -114,7 +114,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [53, 54, 55, 305, 306],
     level: '中級',
     description: '問題と課題の違いを理解し、本質的な問いを設定する力を養う。',
-    image: '/images/v3/course-problem-01.svg',
+    image: '/images/v3/course-problem-01.png',
   },
 
   // ── 論点設定 ────────────────────────────────────────
@@ -138,7 +138,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [56, 57, 58, 307, 308],
     level: '初級',
     description: '共感からプロトタイプまで、人間中心設計の思考プロセスを実践する。',
-    image: '/images/v3/course-design-01.svg',
+    image: '/images/v3/course-design-01.png',
   },
 
   // ── システムシンキング ──────────────────────────────
@@ -150,7 +150,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [65, 66, 67, 313, 314],
     level: '上級',
     description: 'フィードバックループと氷山モデルで、問題の根本原因を構造的に捉える。',
-    image: '/images/v3/course-systems-01.svg',
+    image: '/images/v3/course-systems-01.png',
   },
 
   // ── なぜなぜ分析 ────────────────────────────────────
@@ -162,7 +162,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [340, 341, 342, 343, 344, 345, 346],
     level: '中級',
     description: '対症療法ではなく根本原因まで掘り下げる思考技術。トヨタ式の古典から、人を責めない・飛躍しない・反証可能の原則まで体系的に学ぶ。',
-    image: '/images/v3/course-whywhy-01.svg',
+    image: '/images/v3/course-whywhy-01.png',
   },
 
   // ── ラテラルシンキング ──────────────────────────────
@@ -174,7 +174,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [59, 60, 61, 309, 310],
     level: '中級',
     description: 'リフレーミングと逆転の発想で、固定観念を超えたアイデアを生み出す。',
-    image: '/images/v3/course-lateral-01.svg',
+    image: '/images/v3/course-lateral-01.png',
   },
 
   // ── アナロジー思考 ──────────────────────────────────
@@ -186,7 +186,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [62, 63, 64, 311, 312],
     level: '中級',
     description: '構造的類似性を見抜き、異分野の知見を自分の課題に応用する。',
-    image: '/images/v3/course-analogy-01.svg',
+    image: '/images/v3/course-analogy-01.png',
   },
 
   // ── 哲学 ────────────────────────────────────────────
@@ -198,7 +198,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [77, 78, 79, 80, 81],
     level: '上級',
     description: 'ソクラテスの問答法と反証可能性を通じて、思考の原理を学ぶ。',
-    image: '/images/v3/course-philosophy-01.svg',
+    image: '/images/v3/course-philosophy-01.png',
   },
 
   // ── 東洋思想 ────────────────────────────────────────
@@ -210,7 +210,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [350, 351, 352, 353, 354],
     level: '上級',
     description: '孔子・孟子・荀子・墨子を通じ、関係性・定義・人間観・制度設計の原理を学ぶ。',
-    image: '/images/v3/course-eastern-01.svg',
+    image: '/images/v3/course-eastern-01.png',
   },
   {
     id: 'eastern-02',
@@ -220,7 +220,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [355, 356, 357, 358, 359],
     level: '上級',
     description: '老子・荘子・韓非子・孫子を通じ、無為・しなやかさ・視点・仕組み・戦わずして勝つ戦略を学ぶ。',
-    image: '/images/v3/course-eastern-02.svg',
+    image: '/images/v3/course-eastern-02.png',
   },
 
   // ── 提案・伝える技術 ────────────────────────────────
@@ -232,7 +232,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [72, 73, 74, 75, 76],
     level: '中級',
     description: '読み手の判断基準から逆算し、決断を引き出す提案書の構造を習得する。',
-    image: '/images/v3/course-proposal-01.svg',
+    image: '/images/v3/course-proposal-01.png',
   },
 
   // ── 提案書作成 ──────────────────────────────────────
@@ -244,7 +244,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [82, 83, 84, 85, 86, 87, 88],
     level: '上級',
     description: 'コンサル的アプローチで仮説を立て、検証しながら説得力のある提案書を完成させる。',
-    image: '/images/v3/course-proposal-course-01.svg',
+    image: '/images/v3/course-proposal-course-01.png',
   },
 
   // ── クライアントワーク ──────────────────────────────
@@ -256,7 +256,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [89, 90, 91, 92, 97],
     level: '中級',
     description: '桁感覚と概算力を鍛え、クライアントの場でも即座に数字を扱えるようになる。',
-    image: '/images/v3/course-client-01.svg',
+    image: '/images/v3/course-client-01.png',
   },
   {
     id: 'client-02',
@@ -266,7 +266,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [93, 94, 95, 96, 315],
     level: '中級',
     description: '正しい論点設定とヒアリング技術で、クライアントの本質的な課題を引き出す。',
-    image: '/images/v3/course-client-02.svg',
+    image: '/images/v3/course-client-02.png',
   },
   {
     id: 'client-03',
@@ -276,7 +276,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [330, 331, 332, 333, 334, 335],
     level: '上級',
     description: '本・事例・有識者・仮説を総動員し、新しい案件で「専門家」として価値発揮するキャッチアップの技術を学ぶ。',
-    image: '/images/v3/course-client-03.svg',
+    image: '/images/v3/course-client-03.png',
   },
   {
     id: 'client-04',
@@ -286,7 +286,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [336, 337, 338, 339],
     level: '中級',
     description: '上司やマネージャーから「考えが浅い」「分析が甘い」「示唆が弱い」と言われたとき、その場で何を聞き、どう次のアクションに繋げるかを実戦ケースで学ぶ。',
-    image: '/images/v3/course-client-01.svg',
+    image: '/images/v3/course-client-04.png',
   },
 
   // ── ケース面接 ──────────────────────────────────────
@@ -298,7 +298,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [28, 29, 35, 36, 316],
     level: '上級',
     description: '利益構造の分解から市場参入まで、ケース面接の頻出テーマを体系的に攻略する。',
-    image: '/images/v3/course-case-01.svg',
+    image: '/images/v3/course-case-01.png',
   },
 
   // ── 経営戦略 ────────────────────────────────────────
@@ -310,7 +310,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [320, 321, 322, 323, 324],
     level: '上級',
     description: 'テイラー・フォードからアンゾフ、PPM、ポーターまで。経営戦略の古典理論を通史的に押さえる。',
-    image: '/images/v3/course-strategy-01.svg',
+    image: '/images/v3/course-strategy-01.png',
   },
   {
     id: 'strategy-02',
@@ -320,7 +320,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [325, 326, 327, 328, 329],
     level: '上級',
     description: 'RBV・コアコンピタンスからブルーオーシャン、ダイナミック・ケイパビリティ、プラットフォーム戦略まで現代の進化を学ぶ。',
-    image: '/images/v3/course-strategy-02.svg',
+    image: '/images/v3/course-strategy-02.png',
   },
 
   // ── フェルミ推定 ────────────────────────────────────
@@ -332,7 +332,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [200, 201, 202, 203, 204],
     level: '中級',
     description: '数式を立てて分解し、正確さより「だいたい正しい」答えを素早く出す力を鍛える。',
-    image: '/images/v3/course-fermi-01.svg',
+    image: '/images/v3/course-fermi-01.png',
   },
 
   // ── 数字に強くなる ──────────────────────────────────
@@ -344,7 +344,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [401, 400, 402, 403, 404, 405, 406],
     level: '中級',
     description: '伝え方・暗算・割合操作・単位換算・複利・統計・落とし穴の7本立てで、ビジネス数字感覚を体系的に鍛える。',
-    image: '/images/v3/course-numeracy.svg',
+    image: '/images/v3/course-numeracy-01.png',
   },
 
   // ── ピークパフォーマンス習慣 ────────────────────────
@@ -356,7 +356,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [410, 411, 412, 413, 414],
     level: '初級',
     description: 'クロノタイプ・睡眠・運動・集中の波・自己計測の5レッスンで、自分の体に合った最高の働き方を設計する。',
-    image: '/images/v3/course-systems-01.svg',
+    image: '/images/v3/course-peak-performance-01.png',
   },
 ]
 

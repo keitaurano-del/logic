@@ -1,8 +1,9 @@
 # Logic 手書きスタイル ガイド
 
-**最終更新:** 2026-05-12
+**最終更新:** 2026-05-13
 **担当:** designer (凜)
 **目的:** Logic アプリの全画像を「手書き感のある親しみやすい教科書ノート風」スタイルに統一する
+**現行マスター:** `public/images/v3/course-*.png`（v4、Figma 製、PR #140）
 
 ---
 
@@ -18,8 +19,12 @@ Logic は「論理思考を学ぶ・身につける」というやや堅いテ�
 - **手書き図解** = 概念を「自分で噛み砕いて整理した」感
 - **ペン書きの揺らぎ** = AI 生成丸投げではない、人の手による知性
 
-このスタイルは既に `course-logic-01.svg` 系で 2026-05-11 に確立済み。
+このスタイルは **2026-05-13 に v4 PNG（Figma 製、26 コース）として確立** した（PR #140）。
 本ドキュメントは その方向性をさらに洗練・体系化して **全画像（コース / レッスン / ホーム / ヒーロー / マーケ素材）に適用** するためのリファレンス。
+
+> ⚠️ **legacy `course-*.svg`（インライン SVG + turbulence filter）は参照しない。**
+> 新規制作は必ず Figma マスター → PNG 書き出しで行うこと。
+> SVG 直書きパイプラインは v3 まで。v4 以降は Figma 制作が標準。
 
 ---
 
@@ -269,31 +274,34 @@ font-family: 'Caveat', 'Klee One', 'Patrick Hand',
 | **Gemini (Nano Banana / Imagen)** | リッチなテクスチャ・自然な手書き感 / 高速生成 | 完全再現性なし / 日本語焼き込み困難 / ブランド色精密制御困難 / API クレジット消費 | モチーフ素材（虫眼鏡・付箋・古典書 etc）の生成 → Figma で配置 |
 | **Canva** | 大量のテンプレ・素材 / SNS サイズ展開楽 | 手書き感の素材が薄い / カスタマイズ自由度低 | SNS 投稿画像、ストア素材、季節バナー |
 
-### 7.3 推奨パイプライン (コースサムネ 1 枚あたり)
+### 7.3 推奨パイプライン (コースサムネ 1 枚あたり) — **v4 以降は Figma 中心**
 
-**ベスト構成: A + C のハイブリッド**
+**ベスト構成: Figma 制作 → PNG 書き出し**
 
 ```
 1. (Concept, 2分)
-   モチーフとコピー確定
+   モチーフとコピー確定（カテゴリ別アクセント色 + 図解タイプ決定）
 
-2. (Asset, 5-15分) ← Gemini で「素材」だけ作る
-   Gemini に「白背景 / 手描きペン線 / 単色 / 透過 PNG」で
-   モチーフ 1 つを生成 (虫眼鏡、付箋、巻物 等)
-   - 例プロンプト: "hand-drawn ink sketch of an old magnifying glass,
-     single object, white background, transparent PNG, thin pen strokes,
-     no shading, minimal detail, illustration style"
+2. (Layout, 10-20分) ← Figma マスターで制作
+   v4 マスター (https://www.figma.com/design/2SJYbSyMbBlSOyd3DJzbUc) を複製
+   - クリーム notebook 背景 + ruled lines はマスターから継承
+   - タイトル: Caveat 手書き英字 + 朱赤下線
+   - サブタイトル: Noto Sans JP Light 日本語
+   - 中央〜右に図解（カテゴリに応じた 23 種から選定）
+   - 右上に手書き電球アイコン
 
-3. (Layout, 10-15分)
-   SVG テンプレ (course-logic-01-v2.svg) を複製 → モチーフ画像を埋め込み
-   タイトル・サブタイトル・リスト・色を入れ替え
-   feTurbulence で揺らぎを加える
+3. (Export, 1分)
+   Figma → Export PNG, 800×400px, 2x scale で書き出し
 
-4. (Export & Place, 2分)
-   sharp で PNG 化して確認 → 問題なければ public/images/v3/ に配置
+4. (Place & Reference, 2分)
+   public/images/v3/course-{ID}.png に配置
+   courseData.ts の image refs を .png で更新
 ```
 
-**所要時間:** 1 枚 20-35 分（モチーフを使い回せば 10-15 分）
+**所要時間:** 1 枚 15-25 分（マスターから複製ベース）
+
+> ⚠️ legacy パイプライン（SVG 直書き + turbulence filter + Gemini 素材生成）は v3 まで。
+> v4 以降は Figma マスターからの複製が標準。Gemini / Pixa は使用しない（[[feedback-no-pixa]]）。
 
 ### 7.4 Gemini プロンプトテンプレ
 
@@ -343,30 +351,32 @@ no people, no faces, no hands
 
 ### 7.5 Figma マスターファイル
 
-**ファイル URL:** https://www.figma.com/design/WWW1jdNEe90B01jo4Myo2t
+**v4 マスター（現行・コースサムネ）:** https://www.figma.com/design/2SJYbSyMbBlSOyd3DJzbUc
+**用途:** 26 コース v4 PNG の制作元。新コース追加時はここから複製。
+
+**v2 パイロット（legacy・参照のみ）:** https://www.figma.com/design/WWW1jdNEe90B01jo4Myo2t
 **file_key:** `WWW1jdNEe90B01jo4Myo2t`
 **名称:** "Logic Handdrawn Style — Master Pilot"
+**状態:** v4 で置き換え済。新規制作には使わない。履歴参照のみ。
 
-ここに以下を順次追加していく:
+v4 マスターには以下を順次追加していく:
 - ページ 1: スタイルガイド・カラーパレット・フォントサンプル
-- ページ 2: コースサムネテンプレ（コンポーネント化）
-- ページ 3: レッスンサムネテンプレ
-- ページ 4: ホーム/ヒーローテンプレ
+- ページ 2: コースサムネテンプレ（コンポーネント化済 / 26 枚）
+- ページ 3: レッスンサムネテンプレ（Phase 2 で追加予定）
+- ページ 4: ホーム/ヒーローテンプレ（Phase 3 で追加予定）
 - ページ 5: 素材ライブラリ（モチーフ）
 
-### 7.6 SVG テンプレ運用
+### 7.6 legacy SVG テンプレ運用（参照のみ・新規利用禁止）
 
-凜が SVG ベースで作業する場合のテンプレ:
+> ⚠️ 以下は v3 までのパイプライン。v4 以降は Figma 制作が標準。
+> 新規サムネ作成時は §7.3 を参照すること。
 
+旧パイプライン (v3 まで):
 ```bash
-# 新規コースサムネ作成
+# 旧: SVG 直書き
 cp docs/handdrawn-pilot/course-logic-01-v2.svg \
    public/images/v3/course-{ID}.svg
-
-# 編集: タイトル / サブタイトル / 図解 / リスト / アクセント色 を差し替え
-# feTurbulence の seed 値は course ID ごとに変えて偶然性を出す
-
-# PNG プレビュー化
+# feTurbulence の seed 値で偶然性を出していた
 node scripts/svg2png.mjs public/images/v3/course-{ID}.svg
 ```
 
