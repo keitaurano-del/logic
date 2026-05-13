@@ -161,7 +161,7 @@ const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
   'ピークパフォーマンス習慣': {
     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5BB97E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3 12h3l3-8 4 16 3-8h5"/></svg>,
     iconBg: 'rgba(91,185,126,.14)',
-    image: `${IMG}/course-thinking.webp`,
+    image: `${IMG}/course-critical-01.svg`,
     routeKey: 'ピークパフォーマンス習慣',
   },
 }
