@@ -4,9 +4,9 @@
 > 現行方針は `docs/HANDDRAWN_STYLE_GUIDE.md` と `docs/HANDDRAWN_ROLLOUT_PLAN.md` を参照してください。
 >
 > - 旧方針: Pixa Ideogram v3 によるダーク背景シーン構成
-> - 現行方針: 手書きフォント + 図解 + 紙背景（SVG ベース）
+> - 現行方針: **Figma 制作 → PNG 書き出し**（v4、`public/images/v3/course-*.png`、PR #140）
 > - Pixa は不使用（[[feedback-no-pixa]] 参照）
-> - 既存 25 枚の SVG コースサムネは v2 紙テクスチャ強化版に順次差し替え予定（Phase 1）
+> - 旧 SVG コースサムネ（`course-*.svg`）は legacy。v4 PNG に置き換え済（参照しない）
 >
 > 以下は履歴参照用。新規サムネイル生成時はこのマニフェストを更新せず、ROLLOUT_PLAN 側で進捗管理する。
 
