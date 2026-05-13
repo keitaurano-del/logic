@@ -3,7 +3,7 @@
  * 仕様: docs/DESIGN_V3.md §3.3
  * モックアップ: lv3-lesson.html
  */
-import { useState, useMemo, useRef, useEffect } from 'react'
+import { useState, useMemo, useRef, useEffect, useCallback } from 'react'
 import { CheckIcon, SparklesIcon, LightbulbIcon, BrainIcon, ClipboardListIcon } from '../icons'
 import type { LessonSlide } from '../lessonSlides'
 import { convertLessonToSlides } from '../lessonSlides'
@@ -323,6 +323,23 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
   )
 }
 
+function HeroImage({ image, lessonId }: { image: string; lessonId?: number }) {
+  const [failed, setFailed] = useState(false)
+  const handleError = useCallback(() => setFailed(true), [])
+  if (failed && lessonId != null) {
+    return <LessonThumbnail lessonId={lessonId} style={{ width: '100%', height: 200 }} />
+  }
+  return (
+    <img
+      src={image}
+      alt=""
+      loading="lazy"
+      onError={handleError}
+      style={{ width: '100%', height: 200, objectFit: 'cover', display: 'block' }}
+    />
+  )
+}
+
 function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSubmitMulti, onSelectQuiz, onNext }: {
   slide: LessonSlide
   quizAnswered: { correct: boolean; selected: number; selectedMulti?: number[] } | null
@@ -336,10 +353,7 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
     return (
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'flex-start' }}>
         <div style={{ marginTop: 8, marginBottom: 24, borderRadius: 18, overflow: 'hidden', boxShadow: 'var(--shadow-v3-hero)' }}>
-          {slide.lessonId != null
-            ? <LessonThumbnail lessonId={slide.lessonId} style={{ width: '100%', height: 200 }} />
-            : <img src={slide.image} alt="" loading="lazy" style={{ width: '100%', height: 200, objectFit: 'cover', display: 'block' }} />
-          }
+          <HeroImage image={slide.image} lessonId={slide.lessonId} />
         </div>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'var(--accent-soft)', borderRadius: 99, padding: '6px 12px', fontSize: 11, fontWeight: 600, color: 'var(--brand)', marginBottom: 16, width: 'fit-content' }}>{slide.category}</span>
         <h1 style={{ fontFamily: 'Noto Sans JP', fontSize: 30, fontWeight: 700, lineHeight: 1.3, marginBottom: 16, color: 'var(--text-primary)' }}>{slide.title}</h1>
