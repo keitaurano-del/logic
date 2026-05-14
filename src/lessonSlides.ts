@@ -142,7 +142,7 @@ function getHeroImage(category: string, lessonId?: number): string {
   if (c.includes('哲学') || c === 'philosophy') return '/images/v3/course-philosophy-01.svg'
   if (c.includes('東洋思想')) return '/images/v3/course-eastern-01.svg'
   if (c.includes('提案') || c.includes('伝える')) return '/images/v3/lesson-proposal.png'
-  if (c.includes('フェルミ') || c.includes('fermi')) return '/images/v3/home-daily-fermi.webp'
+  if (c.includes('フェルミ') || c.includes('fermi')) return '/images/v3/home-daily-fermi.png'
   if (c.includes('クリティカル')) return '/images/v3/lesson-critical-thinking.png'
   if (c.includes('仮説')) return '/images/v3/lesson-hypothesis.png'
   if (c.includes('課題')) return '/images/v3/lesson-issue-setting.png'
@@ -154,8 +154,8 @@ function getHeroImage(category: string, lessonId?: number): string {
   if (c.includes('クライアント')) return '/images/v3/course-client-01.svg'
   if (c.includes('経営戦略') || c === 'strategy') return '/images/v3/course-strategy.svg'
   if (c.includes('思考法') || c.includes('thinking')) return '/images/v3/course-thinking.webp'
-  if (c.includes('coffee') || c.includes('コーヒー')) return '/images/v3/home-daily-question.webp'
-  return '/images/v3/hero-deduction.webp'
+  if (c.includes('coffee') || c.includes('コーヒー')) return '/images/v3/home-daily-question.png'
+  return '/images/v3/hero-deduction.png'
 }
 
 /**
