@@ -1,27 +1,40 @@
 import { useEffect, useRef, useState } from 'react'
-import { fetchGoal, upsertGoal, fetchGoalReviews, insertGoalReview, fetchJournalsBetween } from './journalDb'
+import {
+  fetchGoals,
+  createGoal,
+  updateGoal,
+  deleteGoal,
+  fetchGoalReviews,
+  insertGoalReview,
+  fetchJournalsBetween,
+} from './journalDb'
 import { goalFeedback } from './journalApi'
-import { dateRangeFor, periodKeyFor } from './types'
-import type { Goal, GoalReview, PeriodType } from './types'
+import { dateRangeFor, periodKeyFor, GOAL_CATEGORIES } from './types'
+import type { Goal, GoalCategory, GoalReview, PeriodType } from './types'
 import { SparkleIcon } from './MoodWeatherIcons'
 import { t } from '../../i18n'
 
 interface JournalGoalsProps {
   userId: string
   assistantName: string
+  initialPeriod?: PeriodType
 }
 
-const PERIOD_TYPES: PeriodType[] = ['daily', 'weekly', 'monthly', 'yearly']
+const PERIOD_TYPES: PeriodType[] = ['weekly', 'monthly', 'yearly']
 
 const PERIOD_LABEL_KEY: Record<PeriodType, string> = {
-  daily:   'journal.periodDaily',
   weekly:  'journal.periodWeekly',
   monthly: 'journal.periodMonthly',
   yearly:  'journal.periodYearly',
 }
 
-export function JournalGoals({ userId, assistantName }: JournalGoalsProps) {
-  const [periodType, setPeriodType] = useState<PeriodType>('weekly')
+const CATEGORY_LABEL_KEY: Record<GoalCategory, string> = {
+  work:    'journal.goalCategoryWork',
+  private: 'journal.goalCategoryPrivate',
+}
+
+export function JournalGoals({ userId, assistantName, initialPeriod }: JournalGoalsProps) {
+  const [periodType, setPeriodType] = useState<PeriodType>(initialPeriod ?? 'weekly')
   // periodKey は periodType から派生する値なので useState ではなく直接計算する
   const periodKey = periodKeyFor(periodType)
 
@@ -42,7 +55,7 @@ export function JournalGoals({ userId, assistantName }: JournalGoalsProps) {
         ))}
       </div>
 
-      <GoalForPeriod
+      <GoalsForPeriod
         userId={userId}
         assistantName={assistantName}
         periodType={periodType}
@@ -52,72 +65,139 @@ export function JournalGoals({ userId, assistantName }: JournalGoalsProps) {
   )
 }
 
-interface GoalForPeriodProps {
+interface GoalsForPeriodProps {
   userId: string
   assistantName: string
   periodType: PeriodType
   periodKey: string
 }
 
-function GoalForPeriod({ userId, assistantName, periodType, periodKey }: GoalForPeriodProps) {
-  const [goal, setGoal] = useState<Goal | null>(null)
-  const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
-  const [reviews, setReviews] = useState<GoalReview[]>([])
+function GoalsForPeriod({ userId, assistantName, periodType, periodKey }: GoalsForPeriodProps) {
+  const [goals, setGoals] = useState<Goal[]>([])
   const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
-  const [savedToast, setSavedToast] = useState(false)
+  const [editorMode, setEditorMode] = useState<{ kind: 'create' } | { kind: 'edit'; goal: Goal } | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+    ;(async () => {
+      setLoading(true)
+      const list = await fetchGoals(userId, periodType, periodKey)
+      if (cancelled) return
+      setGoals(list)
+      setLoading(false)
+    })()
+    return () => { cancelled = true }
+  }, [userId, periodType, periodKey])
+
+  const handleCreated = (g: Goal) => {
+    setGoals((gs) => [...gs, g])
+    setEditorMode(null)
+  }
+  const handleUpdated = (g: Goal) => {
+    setGoals((gs) => gs.map((x) => (x.id === g.id ? g : x)))
+    setEditorMode(null)
+  }
+  const handleDeleted = (id: string) => {
+    setGoals((gs) => gs.filter((x) => x.id !== id))
+  }
+
+  if (loading) {
+    return <div style={{ color: 'var(--text-muted)', fontSize: 13 }}>{t('common.loading')}</div>
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      {goals.length === 0 && !editorMode && (
+        <div className="journal-goal-card" style={{ color: 'var(--text-muted)', fontSize: 13, alignItems: 'center', textAlign: 'center' }}>
+          {t('journal.goalsEmptyForPeriod')}
+        </div>
+      )}
+
+      {goals.map((g) => (
+        editorMode?.kind === 'edit' && editorMode.goal.id === g.id ? (
+          <GoalEditor
+            key={g.id}
+            userId={userId}
+            periodType={periodType}
+            periodKey={periodKey}
+            existing={g}
+            onSaved={handleUpdated}
+            onCancel={() => setEditorMode(null)}
+          />
+        ) : (
+          <GoalCard
+            key={g.id}
+            goal={g}
+            assistantName={assistantName}
+            periodType={periodType}
+            periodKey={periodKey}
+            userId={userId}
+            onEdit={() => setEditorMode({ kind: 'edit', goal: g })}
+            onDelete={() => handleDeleted(g.id)}
+          />
+        )
+      ))}
+
+      {editorMode?.kind === 'create' && (
+        <GoalEditor
+          userId={userId}
+          periodType={periodType}
+          periodKey={periodKey}
+          existing={null}
+          onSaved={handleCreated}
+          onCancel={() => setEditorMode(null)}
+        />
+      )}
+
+      {!editorMode && (
+        <button
+          type="button"
+          className="journal-summarize-btn journal-summarize-btn--secondary"
+          onClick={() => setEditorMode({ kind: 'create' })}
+        >
+          {t('journal.addGoalCta')}
+        </button>
+      )}
+    </div>
+  )
+}
+
+// ─── Goal card with feedback ──────────────────────────────────────
+interface GoalCardProps {
+  goal: Goal
+  assistantName: string
+  periodType: PeriodType
+  periodKey: string
+  userId: string
+  onEdit: () => void
+  onDelete: () => void
+}
+
+function GoalCard({ goal, assistantName, periodType, periodKey, userId, onEdit, onDelete }: GoalCardProps) {
+  const [reviews, setReviews] = useState<GoalReview[]>([])
+  const [reviewsLoaded, setReviewsLoaded] = useState(false)
   const [generating, setGenerating] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  // AI フィードバック中の経過秒数（タイムアウト表示用）
   const [elapsedSec, setElapsedSec] = useState(0)
   const elapsedTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   useEffect(() => {
     let cancelled = false
     ;(async () => {
-      setLoading(true)
-      const g = await fetchGoal(userId, periodType, periodKey)
+      const r = await fetchGoalReviews(goal.id)
       if (cancelled) return
-      setGoal(g)
-      setTitle(g?.title ?? '')
-      setDescription(g?.description ?? '')
-      if (g) {
-        const r = await fetchGoalReviews(g.id)
-        if (cancelled) return
-        setReviews(r)
-      } else {
-        setReviews([])
-      }
-      setLoading(false)
+      setReviews(r)
+      setReviewsLoaded(true)
     })()
     return () => { cancelled = true }
-  }, [userId, periodType, periodKey])
+  }, [goal.id])
 
   useEffect(() => () => {
     if (elapsedTimerRef.current) clearInterval(elapsedTimerRef.current)
   }, [])
 
-  const handleSave = async () => {
-    if (!title.trim()) return
-    setSaving(true)
-    setError(null)
-    const { goal: saved, error: err } = await upsertGoal({
-      user_id: userId,
-      period_type: periodType,
-      period_key: periodKey,
-      title: title.trim(),
-      description: description.trim() || null,
-    })
-    setSaving(false)
-    if (err) { setError(t('journal.errorGeneric')); return }
-    if (saved) setGoal(saved)
-    setSavedToast(true)
-    setTimeout(() => setSavedToast(false), 2000)
-  }
-
   const handleAiFeedback = async () => {
-    if (!goal || generating) return
+    if (generating) return
     setGenerating(true)
     setError(null)
     setElapsedSec(0)
@@ -157,36 +237,27 @@ function GoalForPeriod({ userId, assistantName, periodType, periodKey }: GoalFor
     }
   }
 
-  if (loading) {
-    return <div style={{ color: 'var(--text-muted)', fontSize: 13 }}>{t('common.loading')}</div>
+  const handleDeleteClick = async () => {
+    if (!window.confirm(t('journal.deleteGoalConfirm'))) return
+    const { error: delErr } = await deleteGoal(goal.id)
+    if (delErr) { setError(t('journal.errorGeneric')); return }
+    onDelete()
   }
 
   return (
     <div className="journal-goal-card">
-      <div className="journal-section__label">
-        {goal ? t('journal.currentGoal') : t('journal.setGoalPlaceholder')}
+      <div className="journal-goal-card__header">
+        <div className="journal-goal-card__title">{goal.title}</div>
+        {goal.category && (
+          <CategoryChip category={goal.category} />
+        )}
       </div>
 
-      <input
-        type="text"
-        className="journal-goal-input"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder={t('journal.goalTitlePlaceholder')}
-        aria-label={t('journal.goalTitle')}
-      />
+      {goal.description && (
+        <div className="journal-goal-card__desc">{goal.description}</div>
+      )}
 
-      <textarea
-        className="journal-textarea"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        placeholder={t('journal.goalDescPlaceholder')}
-        style={{ minHeight: 80, paddingRight: 14 }}
-        aria-label={t('journal.goalDescription')}
-      />
-
-      {/* AI フィードバックを主 CTA、保存を副 CTA に。ホーム CTA との階層を揃える。 */}
-      {goal && (
+      <div className="journal-goal-card__actions">
         <button
           type="button"
           className={`journal-summarize-btn ${generating ? 'journal-summarize-btn--working' : ''}`}
@@ -208,20 +279,30 @@ function GoalForPeriod({ userId, assistantName, periodType, periodKey }: GoalFor
             </>
           )}
         </button>
-      )}
 
-      <button
-        type="button"
-        className="journal-summarize-btn journal-summarize-btn--secondary"
-        onClick={handleSave}
-        disabled={!title.trim() || saving}
-      >
-        {saving ? t('common.loading') : t('common.save')}
-      </button>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button
+            type="button"
+            className="journal-goal-card__icon-btn"
+            onClick={onEdit}
+            aria-label={t('journal.editGoalCta')}
+          >
+            {t('journal.editGoalCta')}
+          </button>
+          <button
+            type="button"
+            className="journal-goal-card__icon-btn journal-goal-card__icon-btn--danger"
+            onClick={handleDeleteClick}
+            aria-label={t('journal.deleteGoalCta')}
+          >
+            {t('journal.deleteGoalCta')}
+          </button>
+        </div>
+      </div>
 
-      {error && <div style={{ fontSize: 13, color: 'var(--md-sys-color-error)' }}>{error}</div>}
+      {error && <div className="journal-error">{error}</div>}
 
-      {reviews.length > 0 && (
+      {reviewsLoaded && reviews.length > 0 && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 6 }}>
           <div className="journal-modal__section-label">{t('journal.feedbackHistory')}</div>
           {reviews.map((r) => (
@@ -235,10 +316,141 @@ function GoalForPeriod({ userId, assistantName, periodType, periodKey }: GoalFor
           ))}
         </div>
       )}
-
-      {savedToast && (
-        <div className="journal-toast" role="status">{t('journal.savedToast')}</div>
-      )}
     </div>
+  )
+}
+
+// ─── Editor (create / edit) ───────────────────────────────────────
+interface GoalEditorProps {
+  userId: string
+  periodType: PeriodType
+  periodKey: string
+  existing: Goal | null
+  onSaved: (g: Goal) => void
+  onCancel: () => void
+}
+
+function GoalEditor({ userId, periodType, periodKey, existing, onSaved, onCancel }: GoalEditorProps) {
+  const [title, setTitle] = useState(existing?.title ?? '')
+  const [description, setDescription] = useState(existing?.description ?? '')
+  const [category, setCategory] = useState<GoalCategory | null>(existing?.category ?? null)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const handleSave = async () => {
+    if (!title.trim()) return
+    setSaving(true)
+    setError(null)
+    if (existing) {
+      const { goal, error: err } = await updateGoal(existing.id, {
+        title: title.trim(),
+        description: description.trim() || null,
+        category,
+      })
+      setSaving(false)
+      if (err || !goal) { setError(t('journal.errorGeneric')); return }
+      onSaved(goal)
+    } else {
+      const { goal, error: err } = await createGoal({
+        user_id: userId,
+        period_type: periodType,
+        period_key: periodKey,
+        title: title.trim(),
+        description: description.trim() || null,
+        category,
+      })
+      setSaving(false)
+      if (err || !goal) { setError(t('journal.errorGeneric')); return }
+      onSaved(goal)
+    }
+  }
+
+  return (
+    <div className="journal-goal-card">
+      <div className="journal-section__label">
+        {existing ? t('journal.currentGoal') : t('journal.setGoalPlaceholder')}
+      </div>
+
+      {/* カテゴリ選択（仕事 / プライベート / なし） */}
+      <div>
+        <div className="journal-section__label" style={{ fontSize: 12, marginBottom: 6, color: 'var(--text-muted)' }}>
+          {t('journal.goalCategoryLabel')}
+        </div>
+        <div className="journal-goal-cat-row" role="radiogroup" aria-label={t('journal.goalCategoryLabel')}>
+          {GOAL_CATEGORIES.map((c) => (
+            <button
+              key={c}
+              type="button"
+              role="radio"
+              aria-checked={category === c}
+              className={`journal-goal-cat-btn journal-goal-cat-btn--${c} ${category === c ? 'journal-goal-cat-btn--active' : ''}`}
+              onClick={() => setCategory(c)}
+            >
+              {t(CATEGORY_LABEL_KEY[c])}
+            </button>
+          ))}
+          <button
+            type="button"
+            role="radio"
+            aria-checked={category === null}
+            className={`journal-goal-cat-btn ${category === null ? 'journal-goal-cat-btn--active' : ''}`}
+            onClick={() => setCategory(null)}
+          >
+            {t('journal.goalCategoryNone')}
+          </button>
+        </div>
+      </div>
+
+      <input
+        type="text"
+        className="journal-goal-input"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        placeholder={t('journal.goalTitlePlaceholder')}
+        aria-label={t('journal.goalTitle')}
+        autoFocus
+      />
+
+      <textarea
+        className="journal-textarea"
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+        placeholder={t('journal.goalDescPlaceholder')}
+        style={{ minHeight: 80, paddingRight: 14 }}
+        aria-label={t('journal.goalDescription')}
+      />
+
+      <div style={{ display: 'flex', gap: 8 }}>
+        <button
+          type="button"
+          className="journal-summarize-btn"
+          onClick={handleSave}
+          disabled={!title.trim() || saving}
+          style={{ flex: 1 }}
+        >
+          {saving ? t('common.loading') : t('common.save')}
+        </button>
+        <button
+          type="button"
+          className="journal-summarize-btn journal-summarize-btn--secondary"
+          onClick={onCancel}
+          disabled={saving}
+          style={{ flex: 1 }}
+        >
+          {t('journal.cancelCta')}
+        </button>
+      </div>
+
+      {error && <div className="journal-error">{error}</div>}
+    </div>
+  )
+}
+
+// ─── Category chip ───────────────────────────────────────────────
+export function CategoryChip({ category, compact = false }: { category: GoalCategory; compact?: boolean }) {
+  return (
+    <span className={`journal-goal-cat-chip journal-goal-cat-chip--${category} ${compact ? 'journal-goal-cat-chip--compact' : ''}`}>
+      {t(CATEGORY_LABEL_KEY[category])}
+    </span>
   )
 }

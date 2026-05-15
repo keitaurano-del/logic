@@ -2,7 +2,9 @@ import { useState } from 'react'
 import { JournalToday } from '../components/journal/JournalToday'
 import { JournalCalendar } from '../components/journal/JournalCalendar'
 import { JournalGoals } from '../components/journal/JournalGoals'
+import { JournalGoalsHeader } from '../components/journal/JournalGoalsHeader'
 import { JournalSearch } from '../components/journal/JournalSearch'
+import type { PeriodType } from '../components/journal/types'
 import { t } from '../i18n'
 import '../components/journal/journal.css'
 
@@ -26,6 +28,12 @@ const SUB_LABEL_KEY: Record<Sub, string> = {
 
 export function JournalScreen({ userId, assistantName, initialSub, onRequestLogin }: JournalScreenProps) {
   const [sub, setSub] = useState<Sub>(initialSub ?? 'today')
+  const [goalsInitialPeriod, setGoalsInitialPeriod] = useState<PeriodType | undefined>(undefined)
+
+  const openGoalsTab = (period?: PeriodType) => {
+    setGoalsInitialPeriod(period)
+    setSub('goals')
+  }
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', display: 'flex', flexDirection: 'column' }}>
@@ -57,6 +65,14 @@ export function JournalScreen({ userId, assistantName, initialSub, onRequestLogi
           </div>
         ) : (
           <>
+            {/* 「今日」タブのときだけ、年→月→週 の目標サマリーを上部に常時表示 */}
+            {sub === 'today' && (
+              <JournalGoalsHeader
+                userId={userId}
+                onOpenAll={openGoalsTab}
+              />
+            )}
+
             <div className="journal-subtabs" role="tablist" aria-label={t('journal.viewTabs')}>
               {SUB_ORDER.map((s) => (
                 <button
@@ -65,7 +81,10 @@ export function JournalScreen({ userId, assistantName, initialSub, onRequestLogi
                   role="tab"
                   aria-selected={sub === s}
                   className={`journal-subtab ${sub === s ? 'journal-subtab--active' : ''}`}
-                  onClick={() => setSub(s)}
+                  onClick={() => {
+                    if (s !== 'goals') setGoalsInitialPeriod(undefined)
+                    setSub(s)
+                  }}
                 >
                   {t(SUB_LABEL_KEY[s])}
                 </button>
@@ -74,7 +93,7 @@ export function JournalScreen({ userId, assistantName, initialSub, onRequestLogi
 
             {sub === 'today'    && <JournalToday    userId={userId} assistantName={assistantName} />}
             {sub === 'calendar' && <JournalCalendar userId={userId} />}
-            {sub === 'goals'    && <JournalGoals    userId={userId} assistantName={assistantName} />}
+            {sub === 'goals'    && <JournalGoals    userId={userId} assistantName={assistantName} initialPeriod={goalsInitialPeriod} />}
             {sub === 'search'   && <JournalSearch   userId={userId} />}
           </>
         )}
