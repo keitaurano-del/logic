@@ -1,7 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
 import { getSituation, buildSetup } from './situations'
-import { isPremium } from './subscription'
-import { incrementRoleplayUsage } from './roleplayUsage'
 import { t, localeBody } from './i18n'
 
 type Msg = { role: 'user' | 'assistant'; content: string }
@@ -27,16 +25,10 @@ export default function RoleplayChat({ situationId, onBack }: Props) {
   const [score, setScore] = useState<ScoreResult | null>(null)
   const [summary, setSummary] = useState<SummaryResult | null>(null)
   const [scoring, setScoring] = useState(false)
-  const incrementedRef = useRef(false)
   const startedRef = useRef(false)
   const scrollRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    if (situation && !incrementedRef.current && !isPremium()) {
-      incrementRoleplayUsage()
-      incrementedRef.current = true
-    }
-  }, [situation])
+  // 2026-05-15: ロールプレイは全プラン無制限化。incrementRoleplayUsage を呼ばない。
 
   // Auto-start: fetch the first partner line + choices
   // fetchTurn は下の function 宣言（hoist 済み）を参照する。意図的に deps に含めない。

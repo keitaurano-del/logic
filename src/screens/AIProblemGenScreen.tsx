@@ -4,7 +4,7 @@ import { getCompletedLessons } from '../stats'
 import { loadPlacementResult } from '../placementData'
 import { allLessons } from '../lessonData'
 import { Header } from '../components/platform/Header'
-import { getAIGenDailyLimit, getAIGenDailyCount, incrementAIGenDailyCount, isPremiumPlan, isStandardPlan } from '../subscription'
+import { isPaid } from '../subscription'
 import { addXP } from '../stats'
 import { t, getLocale } from '../i18n'
 
@@ -82,16 +82,16 @@ function getThemePresets(): ThemePreset[] {
   ]
 }
 
-// 履歴の保持日数
+// 履歴の保持日数（2026-05-15 単一有料プラン化）
+// 有料: 長期保持（実質無制限。100日でフィルタ）/ 無料: そもそも生成できないので不要
 function getHistoryDays(): number {
-  if (isPremiumPlan()) return 100
-  if (isStandardPlan()) return 10
-  return 3
+  return isPaid() ? 100 : 0
 }
 
 // 履歴フィルタリング（プランに応じた日数内のもののみ）
 function filterByHistoryDays(problems: AIProblemSet[]): AIProblemSet[] {
   const days = getHistoryDays()
+  if (days <= 0) return problems // 無料プラン: 過去ローカル保存分の表示は許容（生成は不可）
   const cutoff = new Date()
   cutoff.setDate(cutoff.getDate() - days)
   return problems.filter(p => new Date(p.createdAt) >= cutoff)
@@ -214,17 +214,13 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
   const [showRating, setShowRating] = useState(false)
   const [pendingProblem, setPendingProblem] = useState<AIProblemSet | null>(null)
 
-  const dailyLimit = getAIGenDailyLimit()
-  const [dailyCount, setDailyCount] = useState(getAIGenDailyCount)
-  const isAtLimit = dailyCount >= dailyLimit
-  const canUse = dailyLimit > 0
+  // 2026-05-15 単一有料プラン化: 日次キャップは廃止（内部は無制限）
+  const canUse = isPaid()
+  const isAtLimit = false
 
-  const historyDays = getHistoryDays()
-  const planHeader = isPremiumPlan()
-    ? t('aiGen.history.headerPlanPremium', { days: historyDays })
-    : isStandardPlan()
-      ? t('aiGen.history.headerPlanStandard', { days: historyDays })
-      : t('aiGen.history.headerPlanFree', { days: historyDays })
+  const planHeader = canUse
+    ? t('aiGen.history.headerPaid')
+    : t('aiGen.history.headerFree')
   const THEME_PRESETS = getThemePresets()
 
   const handleGenerate = async (targetPrompt?: string) => {
@@ -235,8 +231,6 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
     setError('')
     try {
       const newSet = await generateAIProblems(p)
-      incrementAIGenDailyCount()
-      setDailyCount(getAIGenDailyCount())
       setProblems(filterByHistoryDays(loadAIProblems()))
       setPrompt('')
       // +10 XP（問題作成）
@@ -285,9 +279,9 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
       <Header
         title={t('aiGen.title')}
         onBack={onBack}
-        trailing={dailyLimit > 0 ? (
-          <div style={{ background: 'var(--bg-card)', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700, color: isAtLimit ? 'var(--md-sys-color-error)' : 'var(--brand)' }}>
-            {t('aiGen.dailyCount', { count: dailyCount, limit: dailyLimit })}
+        trailing={canUse ? (
+          <div style={{ background: 'var(--bg-card)', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700, color: 'var(--brand)' }}>
+            {t('aiGen.unlimited')}
           </div>
         ) : (
           <div style={{ background: 'rgba(248,113,113,0.15)', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700, color: 'var(--md-sys-color-error)' }}>
@@ -345,7 +339,7 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
                 onClick={() => handleGenerate()}
                 disabled={!prompt.trim() || generating || isAtLimit || !canUse}
                 style={{ marginTop: 10, width: '100%', background: prompt.trim() && !generating && !isAtLimit && canUse ? 'var(--brand)' : 'var(--bg-card)', color: prompt.trim() && !generating && !isAtLimit && canUse ? 'var(--bg-primary)' : 'var(--text-muted)', border: 'none', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700, cursor: prompt.trim() && !generating && !isAtLimit && canUse ? 'pointer' : 'not-allowed' }}>
-                {generating ? t('aiGen.generating') : !canUse ? t('aiGen.standardOnly') : isAtLimit ? t('aiGen.dailyLimitReached') : t('aiGen.generateXp')}
+                {generating ? t('aiGen.generating') : !canUse ? t('aiGen.standardOnly') : t('aiGen.generateXp')}
               </button>
               {(!canUse || isAtLimit) && onUpgrade && (
                 <button onClick={onUpgrade} style={{ width: '100%', marginTop: 8, background: 'transparent', border: `1px solid ${'var(--brand)'}`, color: 'var(--brand)', borderRadius: 12, padding: '12px', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>

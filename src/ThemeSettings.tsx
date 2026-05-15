@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { ACCENTS, MODES, loadTheme, saveTheme, applyTheme, type ModeId, type AccentId, type ThemeState } from './theme'
-import { isPremium, BETA_MODE } from './subscription'
+import { isPaid, BETA_MODE } from './subscription'
 import { contrastRatio, describeContrast } from './colorContrast'
 import { t } from './i18n'
 import './ThemeSettings.css'
@@ -9,7 +9,7 @@ type Props = { onBack: () => void; onUpgrade: () => void }
 
 export default function ThemeSettings({ onBack, onUpgrade }: Props) {
   const [state, setState] = useState<ThemeState>(loadTheme())
-  const premium = isPremium()
+  const premium = isPaid()
 
   const update = (next: ThemeState) => {
     setState(next)

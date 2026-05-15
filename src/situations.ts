@@ -327,7 +327,7 @@ const SITUATIONS_JA: Situation[] = [
     partnerConcerns: '会議が長引くこと・決まらないこと',
     goal: '論点をMECEに整理して合意形成する',
     context: 'あなたは部門横断会議のファシリテーター。参加者の発言を「漏れなくダブりなく」整理し、論点を構造化する必要がある。MECEを意識して切り口を提示しよう。',
-    premium: true,
+    premium: false,
     script: SCRIPT_MECE_MEETING,
   },
   {
@@ -345,7 +345,7 @@ const SITUATIONS_JA: Situation[] = [
     partnerConcerns: '主張の根拠が弱いこと・話が飛ぶこと',
     goal: 'ピラミッド原則(結論→理由→根拠)で提案を伝え、納得を得る',
     context: 'あなたはクライアントに重要な提案を行う場面。結論を頂点に、3つの理由とその根拠で支える「ピラミッド構造」で話すこと。論理の飛躍は即座に指摘される。',
-    premium: true,
+    premium: false,
     script: SCRIPT_PYRAMID_CLIENT,
   },
   {
@@ -363,7 +363,7 @@ const SITUATIONS_JA: Situation[] = [
     partnerConcerns: '何から手をつければいいか分からないこと',
     goal: '問題をロジックツリーで分解し、具体的なアクションに落とし込ませる',
     context: 'あなたは後輩に「売上が伸びない」という問題の解決を指示する場面。Whyツリー(なぜ?)とHowツリー(どうやって?)を使って後輩と一緒に問題を分解し、具体的なアクションへ導こう。',
-    premium: true,
+    premium: false,
     script: SCRIPT_LOGIC_TREE_SUB,
   },
   {
@@ -381,7 +381,7 @@ const SITUATIONS_JA: Situation[] = [
     partnerConcerns: '曖昧な定義・要証のない主張',
     goal: '「勇気」とは何かを問答法で定義し、ソクラテスの反論を乗り越える',
     context: 'ソクラテスがあなたに問う。「勇気とは何か？」。あなたは自分なりの定義を答えるが、ソクラテスは必ず「ではこういう場合は？」と反例を提示し続ける。問答を繰り返す中で、より正確な定義に辿り着くことを目指せ。',
-    premium: true,
+    premium: false,
     script: SCRIPT_SOCRATES,
   },
   {
@@ -399,7 +399,7 @@ const SITUATIONS_JA: Situation[] = [
     partnerConcerns: '疑われない主張・証明なき信念',
     goal: '「我思う、ゆえに我あり」の出発点から、少なくとも1つの確実な命題を積み上げる',
     context: 'デカルトが問いかける。「どんな信念も疑うことができる。それでも疑いきれない一つの事実は何か？」。あなたは知覚・記憶・感覚・信念を一つずつ疑い、疑いきれない確実な事実を導き出せ。',
-    premium: true,
+    premium: false,
     script: undefined, // デカルト・ニーチェはAPIを引き続き使用
   },
   {
@@ -417,7 +417,7 @@ const SITUATIONS_JA: Situation[] = [
     partnerConcerns: '「みんながそう言ってる」系の思考停止',
     goal: '自分独自の価値観を述べ、ニーチェの「力への意志」に対抗できる',
     context: 'ニーチェが問いかける。「おまえが今まで信じてきた『良いこと』の基準は、誰が決めたのか？」自分が大切にしてきた価値観を対話の中で洗い出し、「それは自分が選んだ価値か？内面化した常識か？」を問い直せ。',
-    premium: true,
+    premium: false,
     script: SCRIPT_NIETZSCHE,
   },
 ]
@@ -456,7 +456,7 @@ const SITUATIONS_EN: Situation[] = [
     partnerConcerns: 'Long meetings, decisions never being made',
     goal: 'Organize the issues MECE-style and reach consensus',
     context: 'You are facilitating a cross-functional meeting. You need to organize the participants\' input "with no gaps and no overlaps" and structure the discussion. Keep MECE in mind when proposing how to slice the problem.',
-    premium: true,
+    premium: false,
     script: SCRIPT_MECE_MEETING,
   },
   {
@@ -474,7 +474,7 @@ const SITUATIONS_EN: Situation[] = [
     partnerConcerns: 'Weakly-supported claims, jumping topics',
     goal: 'Use the Pyramid Principle (conclusion → reasons → evidence) to win the client\'s buy-in',
     context: 'You are presenting an important proposal to a client. Lead with the conclusion at the top of the pyramid, supported by 3 reasons and their evidence. Logical leaps will be called out immediately.',
-    premium: true,
+    premium: false,
     script: SCRIPT_PYRAMID_CLIENT,
   },
   {
@@ -492,7 +492,7 @@ const SITUATIONS_EN: Situation[] = [
     partnerConcerns: 'Not knowing where to begin',
     goal: 'Use a logic tree to decompose the problem with them and turn it into concrete actions',
     context: 'You are giving your junior teammate the problem "sales aren\'t growing." Use Why trees (why?) and How trees (how?) to decompose the problem together with them and guide them toward concrete actions.',
-    premium: true,
+    premium: false,
     script: SCRIPT_LOGIC_TREE_SUB,
   },
 ]

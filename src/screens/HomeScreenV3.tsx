@@ -3,11 +3,11 @@
  * 仕様: docs/DESIGN_V3.md §3.1
  * モックアップ: lv3-home.html
  */
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { FERMI_POOL, getDailyFermiIndex } from '../fermiData'
 import { getCardStats } from '../flashcardData'
 import { getWrongAnswerStats } from '../wrongAnswerStore'
-import { isPremium } from '../subscription'
+import { isPaid } from '../subscription'
 import { HomeCoachmark, useShouldShowHomeCoachmark } from '../tutorial/coachmark'
 import { PlacementCard } from '../tutorial/placementCard'
 import { hasCompletedPlacement } from '../placementData'
@@ -112,7 +112,7 @@ function readStoredFermiIndex(): number {
 }
 
 export function HomeScreenV3(props: HomeScreenV3Props) {
-  const { userName, onOpenLesson, onOpenAIGen, onOpenRoleplay, onNavigateToDailyFermi, onOpenPlacementTest, onOpenReviewHub, onOpenPricing, onOpenCategory: _onOpenCategory, onOpenRank: _onOpenRank, onOpenStats: _onOpenStats, onOpenRoadmap: _onOpenRoadmap } = props
+  const { userName, onOpenLesson, onOpenAIGen, onOpenRoleplay, onNavigateToDailyFermi, onOpenPlacementTest, onOpenReviewHub, onOpenPricing: _onOpenPricing, onOpenCategory: _onOpenCategory, onOpenRank: _onOpenRank, onOpenStats: _onOpenStats, onOpenRoadmap: _onOpenRoadmap } = props
   const dailyCardRef = useRef<HTMLButtonElement>(null)
   const [showCoachmark, dismissCoachmark] = useShouldShowHomeCoachmark()
   const { width } = useWindowSize()
@@ -125,7 +125,10 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
   const fermiQuestion = FERMI_POOL[fermiIndex].question
   const cardStats = getCardStats()
   const wrongStats = getWrongAnswerStats()
-  const proUnlocked = isPremium()
+  // 2026-05-15 単一有料プラン化:
+  //   復習・誤答リストは無料解放。プラン昇格時の祝福トーストはここで判定する。
+  const paid = isPaid()
+  const showUpgradeToast = useUpgradeWelcomeToast(paid)
 
   const handleRerollFermi = () => {
     if (FERMI_POOL.length <= 1) return
@@ -254,15 +257,14 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
           <PlacementCard onTakeTest={onOpenPlacementTest} />
         )}
 
-        {/* 復習カード - フラッシュカード + 過去の誤答リストへの導線 (Pro限定) */}
-        {(onOpenReviewHub || onOpenPricing) && (
+        {/* 復習カード - フラッシュカード + 過去の誤答リストへの導線（全プラン解放） */}
+        {onOpenReviewHub && (
           <ReviewCard
-            locked={!proUnlocked}
             due={cardStats.due}
             weak={cardStats.weak}
             total={cardStats.total}
             unresolved={wrongStats.unresolved}
-            onOpen={() => proUnlocked ? onOpenReviewHub?.() : onOpenPricing?.()}
+            onOpen={() => onOpenReviewHub?.()}
           />
         )}
 
@@ -284,12 +286,107 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
         }}
       />
     )}
+
+    {/* 有料プラン昇格後の祝福トースト（初回のみ） */}
+    {showUpgradeToast.visible && (
+      <UpgradeWelcomeToast
+        onClose={showUpgradeToast.dismiss}
+        onCta={() => {
+          showUpgradeToast.dismiss()
+          onOpenAIGen()
+        }}
+      />
+    )}
     </>
   )
 }
 
-function ReviewCard({ locked, due, weak, total, unresolved, onOpen }: {
-  locked: boolean
+// ─────────────────────────────────────────────────────────────────────
+// 有料プランへ昇格したことを最初の HomeScreen 表示時に一度だけ祝福する。
+// 判定キー: localStorage['logic-plan-upgrade-seen'] = '1'
+// ─────────────────────────────────────────────────────────────────────
+const UPGRADE_SEEN_KEY = 'logic-plan-upgrade-seen'
+function useUpgradeWelcomeToast(paid: boolean): { visible: boolean; dismiss: () => void } {
+  const [visible, setVisible] = useState(false)
+  useEffect(() => {
+    if (!paid) return
+    try {
+      if (localStorage.getItem(UPGRADE_SEEN_KEY) === '1') return
+    } catch { /* */ }
+    setVisible(true)
+  }, [paid])
+
+  const dismiss = () => {
+    try { localStorage.setItem(UPGRADE_SEEN_KEY, '1') } catch { /* */ }
+    setVisible(false)
+  }
+  return { visible, dismiss }
+}
+
+function UpgradeWelcomeToast({ onClose, onCta }: { onClose: () => void; onCta: () => void }) {
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="upgrade-toast-title"
+      style={{
+        position: 'fixed', inset: 0, zIndex: 1100,
+        background: 'rgba(0,0,0,0.55)',
+        display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
+        padding: '0 0 calc(env(safe-area-inset-bottom, 0) + 24px)',
+      }}
+    >
+      <button
+        type="button"
+        aria-label="閉じる"
+        onClick={onClose}
+        style={{ position: 'absolute', inset: 0, background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}
+      />
+      <div style={{
+        position: 'relative',
+        width: 'min(100%, 480px)',
+        background: 'var(--bg-card)',
+        borderRadius: 20,
+        padding: '24px 22px 22px',
+        boxShadow: '0 12px 48px rgba(0,0,0,0.4)',
+        border: `1px solid color-mix(in srgb, var(--brand) 28%, transparent)`,
+      }}>
+        <div style={{ fontSize: 12, fontWeight: 800, color: 'var(--brand)', letterSpacing: '.12em', textTransform: 'uppercase', marginBottom: 6 }}>
+          {t('pricing.welcomeToastTitle')}
+        </div>
+        <div style={{ fontSize: 15, color: 'var(--text-primary)', lineHeight: 1.7, marginBottom: 18 }}>
+          {t('pricing.welcomeToastBody')}
+        </div>
+        <div style={{ display: 'flex', gap: 10 }}>
+          <button
+            type="button"
+            onClick={onClose}
+            style={{
+              flex: 1, padding: '13px 0', borderRadius: 12,
+              border: `1px solid ${'var(--border)'}`, background: 'transparent',
+              color: 'var(--text-secondary)', fontSize: 14, fontWeight: 700, cursor: 'pointer',
+            }}
+          >
+            {t('common.complete')}
+          </button>
+          <button
+            type="button"
+            onClick={onCta}
+            style={{
+              flex: 1, padding: '13px 0', borderRadius: 12,
+              border: 'none', background: 'var(--brand)', color: 'var(--accent-fg)',
+              fontSize: 14, fontWeight: 800, cursor: 'pointer',
+            }}
+          >
+            {t('pricing.welcomeToastCta')}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function ReviewCard({ due, weak, total, unresolved, onOpen }: {
   due: number
   weak: number
   total: number
@@ -297,22 +394,18 @@ function ReviewCard({ locked, due, weak, total, unresolved, onOpen }: {
   onOpen: () => void
 }) {
   const hasContent = total > 0 || unresolved > 0
-  const headline = locked
-    ? t('home.reviewLockedHeadline')
-    : hasContent
-      ? (due > 0
-          ? t('home.reviewTodayCount', { n: String(due) })
-          : unresolved > 0
-            ? t('home.reviewUnresolvedCount', { n: String(unresolved) })
-            : weak > 0
-              ? t('home.reviewWeakCount', { n: String(weak) })
-              : t('home.reviewAllDone'))
-      : t('home.reviewEmptyHeadline')
-  const sub = locked
-    ? t('home.reviewLockedSub')
-    : hasContent
-      ? buildReviewSub(due, weak, total, unresolved)
-      : t('home.reviewEmptySub')
+  const headline = hasContent
+    ? (due > 0
+        ? t('home.reviewTodayCount', { n: String(due) })
+        : unresolved > 0
+          ? t('home.reviewUnresolvedCount', { n: String(unresolved) })
+          : weak > 0
+            ? t('home.reviewWeakCount', { n: String(weak) })
+            : t('home.reviewAllDone'))
+    : t('home.reviewEmptyHeadline')
+  const sub = hasContent
+    ? buildReviewSub(due, weak, total, unresolved)
+    : t('home.reviewEmptySub')
 
   return (
     <div
@@ -329,47 +422,29 @@ function ReviewCard({ locked, due, weak, total, unresolved, onOpen }: {
         flexShrink: 0,
         position: 'relative',
         overflow: 'hidden',
-        border: locked
-          ? `1px dashed ${'var(--border)'}`
-          : hasContent
-            ? `1px solid ${'var(--accent-soft)'}`
-            : '1px solid transparent',
+        border: hasContent
+          ? `1px solid ${'var(--accent-soft)'}`
+          : '1px solid transparent',
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
         <div style={{
           width: 44, height: 44, flexShrink: 0,
           borderRadius: 12,
-          background: locked ? 'var(--bg-elevated)' : 'var(--accent-soft)',
+          background: 'var(--accent-soft)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          color: locked ? 'var(--text-muted)' : 'var(--brand)',
+          color: 'var(--brand)',
         }}>
-          {locked ? (
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <rect x="4" y="11" width="16" height="10" rx="2" />
-              <path d="M8 11V7a4 4 0 1 1 8 0v4" />
-            </svg>
-          ) : (
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M3 12a9 9 0 1 0 3-6.7" />
-              <path d="M3 4v5h5" />
-            </svg>
-          )}
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M3 12a9 9 0 1 0 3-6.7" />
+            <path d="M3 4v5h5" />
+          </svg>
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: locked ? 'var(--text-muted)' : 'var(--brand)' }}>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--brand)' }}>
               {t('home.reviewEyebrow')}
             </span>
-            {locked && (
-              <span style={{
-                fontSize: 10, fontWeight: 800, letterSpacing: '.08em',
-                color: 'var(--warm)', background: 'rgba(255,149,0,0.12)',
-                padding: '2px 6px', borderRadius: 8, textTransform: 'uppercase',
-              }}>
-                {t('home.reviewProBadge')}
-              </span>
-            )}
           </div>
           <div style={{ fontSize: 16, fontWeight: 700, lineHeight: 1.35, marginBottom: 2 }}>{headline}</div>
           <div style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 500, lineHeight: 1.4 }}>{sub}</div>

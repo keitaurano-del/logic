@@ -8,7 +8,7 @@ import { t, getLocale } from '../i18n'
 import { getGuestId } from '../guestId'
 import { haptic } from '../platform/haptics'
 import { useDailyGuide, GuideStyle } from '../tutorial/dailyGuide'
-import { isStandardPlan, isPremiumPlan } from '../subscription'
+import { isPaid } from '../subscription'
 import { getDisplayName, addXp } from '../stats'
 import { markDailyFermiDone } from './dailyFermiState'
 
@@ -30,17 +30,16 @@ function incrementRerollCount() {
   try { const c = getRerollCount(); localStorage.setItem(REROLL_COUNT_KEY, JSON.stringify({ date: TODAY, count: c + 1 })) } catch { /* */ }
 }
 
+// 2026-05-15 単一有料プラン化:
+//   - 有料プラン: 無制限（実装上は 999 = 実質無制限）
+//   - 無料プラン: フェルミ推定は日1問、別問題リロール不可
 function getDailyFermiLimit(): number {
-  if (isPremiumPlan()) return 10
-  if (isStandardPlan()) return 5
-  return 1 // フリープラン
+  return isPaid() ? 999 : 1
 }
 function getDailyRerollLimit(): number {
   // SIT環境では無制限
   if (typeof window !== 'undefined' && window.location.hostname.includes('logic-sit')) return 999
-  if (isPremiumPlan()) return 10
-  if (isStandardPlan()) return 5
-  return 0 // フリープラン
+  return isPaid() ? 999 : 0
 }
 
 // 基礎統計データ（フェルミ推定時の参考値）

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { isPremium } from './subscription'
+import { isPaid } from './subscription'
 import { t, localeBody } from './i18n'
 import './FermiLesson.css'
 
@@ -34,7 +34,7 @@ export default function FermiLesson({ onBack, onUpgrade }: Props) {
   const [currentQuestion, setCurrentQuestion] = useState<string>(() => pickRandom())
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const premium = isPremium()
+  const premium = isPaid()
 
   const reset = (newQuestion?: string) => {
     setStep('problem')

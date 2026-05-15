@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { loginWithGoogle, loginWithEmail, signupWithEmail, isSupabaseConfigured } from '../supabase'
-import { startBetaCampaignCheckout, startCheckout } from '../subscription'
+import { startCheckout, PLAN_PRICES } from '../subscription'
 import { MedalIcon } from '../icons'
 import { t, localizedHtmlPath } from '../i18n'
 import {
@@ -445,16 +445,17 @@ function WelcomeSlides({ idx, setIdx, onDone }: { idx: number; setIdx: (i: numbe
   )
 }
 
-// ── オンボーディング用料金プラン表示 ───────────────────────────
-type OBFeature = { label: string; free: string | boolean; standard: string | boolean; premium: string | boolean }
+// ── オンボーディング用料金プラン表示（2026-05-15 単一有料プラン化） ──
+type OBFeature = { label: string; free: string | boolean; paid: string | boolean }
 
 function getOBFeatures(): OBFeature[] {
   return [
-    { label: t('pricing.featLessons'),  free: t('pricing.featBeginnerOnly'),   standard: t('pricing.featAllLessons'),         premium: t('pricing.featAllLessons') },
-    { label: t('pricing.featAiGen'),    free: false,                            standard: t('pricing.featDailyN', { n: 3 }),   premium: t('pricing.featDailyN', { n: 10 }) },
-    { label: t('pricing.featRoleplay'), free: false,                            standard: t('pricing.featMonthlyN', { n: 5 }), premium: t('pricing.featUnlimited') },
-    { label: t('pricing.featFermi'),    free: t('pricing.featDaily1'),         standard: t('pricing.featDailyN', { n: 5 }),   premium: t('pricing.featDailyN', { n: 10 }) },
-    { label: t('pricing.featRecord'),   free: true,                             standard: true,                                 premium: true },
+    { label: t('pricing.featLessons'),    free: t('pricing.featAllLessons'), paid: t('pricing.featAllLessons') },
+    { label: t('pricing.featRoleplay'),   free: t('pricing.featUnlimited'),  paid: t('pricing.featUnlimited') },
+    { label: t('pricing.featReview'),     free: true,                         paid: true },
+    { label: t('pricing.featFermi'),      free: t('pricing.featDaily1'),     paid: t('pricing.featUnlimited') },
+    { label: t('pricing.featAiGen'),      free: t('pricing.featAiGenFree'),  paid: t('pricing.featAiGenPaid') },
+    { label: t('pricing.featRecord'),     free: true,                         paid: true },
   ]
 }
 
@@ -631,14 +632,14 @@ function OnboardingAttributeView({ onNext, onBackToSlides }: { onNext: () => voi
   )
 }
 
-// ── 月払い/年払い選択画面 ─────────────────────────────────────
-function OnboardingBillingView({ planKey, onSelect, onBack }: { planKey: 'standard' | 'premium'; onSelect: (plan: 'standard_monthly' | 'standard_yearly' | 'premium_monthly' | 'premium_yearly') => void; onBack: () => void }) {
+// ── オンボーディング用 月払い/年払い選択画面（2026-05-15 単一有料プラン化） ──
+function OnboardingBillingView({ onSelect, onBack }: {
+  onSelect: (plan: 'paid_monthly' | 'paid_yearly') => void
+  onBack: () => void
+}) {
   const ACCENT = 'var(--md-sys-color-primary)'
-  const WARM = '#F4A261'
-  const color = planKey === 'standard' ? ACCENT : WARM
-  const label = planKey === 'standard' ? t('onboarding.billingPlanStandard') : t('onboarding.billingPlanPremium')
-  const monthlyPrice = planKey === 'standard' ? 390 : 760
-  const yearlyPrice = planKey === 'standard' ? 2730 : 5320
+  const monthlyPrice = PLAN_PRICES.monthly
+  const yearlyPrice = PLAN_PRICES.yearly
   const yearlyPerMonth = Math.round(yearlyPrice / 12)
   const savedMonths = Math.round(12 - yearlyPrice / monthlyPrice)
 
@@ -649,33 +650,32 @@ function OnboardingBillingView({ planKey, onSelect, onBack }: { planKey: 'standa
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
 
-      <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.2em', color: `color-mix(in srgb, ${color} 56%, transparent)`, textAlign: 'center', marginBottom: 12 }}>{label.toUpperCase()}</div>
+      <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.2em', color: `color-mix(in srgb, ${ACCENT} 56%, transparent)`, textAlign: 'center', marginBottom: 12 }}>{t('pricing.planPaid').toUpperCase()}</div>
       <h1 style={{ fontSize: 24, fontWeight: 800, textAlign: 'center', margin: '0 0 8px', lineHeight: 1.35, whiteSpace: 'pre-line' }}>{t('onboarding.billingTitle')}</h1>
       <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', textAlign: 'center', margin: '0 0 32px' }}>{t('onboarding.billingSubtitle')}</p>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
         {/* 年払いカード（推奨） */}
-        <button onClick={() => onSelect(planKey === 'standard' ? 'standard_yearly' : 'premium_yearly')}
-          style={{ position: 'relative', padding: '20px 20px 20px', borderRadius: 18, border: `2px solid ${color}`, background: `color-mix(in srgb, ${color} 8%, transparent)`, color: '#fff', cursor: 'pointer', textAlign: 'left' }}>
+        <button onClick={() => onSelect('paid_yearly')}
+          style={{ position: 'relative', padding: '20px 20px 20px', borderRadius: 18, border: `2px solid ${ACCENT}`, background: `color-mix(in srgb, ${ACCENT} 8%, transparent)`, color: '#fff', cursor: 'pointer', textAlign: 'left' }}>
           {/* 推奨バッジ */}
-          <div style={{ position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)', background: color, borderRadius: 99, padding: '3px 12px', fontSize: 11, fontWeight: 800, whiteSpace: 'nowrap' }}>
+          <div style={{ position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)', background: ACCENT, borderRadius: 99, padding: '3px 12px', fontSize: 11, fontWeight: 800, whiteSpace: 'nowrap' }}>
             {t('onboarding.billingSavedMonths', { n: savedMonths })}
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: color, marginBottom: 6 }}>{t('onboarding.billingYearlyTitle')}</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: ACCENT, marginBottom: 6 }}>{t('onboarding.billingYearlyTitle')}</div>
               <div style={{ fontSize: 28, fontWeight: 900, letterSpacing: '-0.03em' }}>¥{yearlyPrice.toLocaleString()}<span style={{ fontSize: 14, fontWeight: 600, color: 'rgba(255,255,255,0.6)' }}> {t('onboarding.billingYearlyUnit')}</span></div>
               <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)', marginTop: 4 }}>{t('onboarding.billingMonthlyEquiv', { n: yearlyPerMonth })}</div>
-              {planKey === 'standard' && <div style={{ fontSize: 12, color: '#FF6B35', fontWeight: 700, marginTop: 4 }}>{t('pricing.campaignAppliedYearly')}</div>}
             </div>
-            <div style={{ width: 24, height: 24, borderRadius: '50%', background: color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 4 }}>
+            <div style={{ width: 24, height: 24, borderRadius: '50%', background: ACCENT, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 4 }}>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
             </div>
           </div>
         </button>
 
         {/* 月払いカード */}
-        <button onClick={() => onSelect(planKey === 'standard' ? 'standard_monthly' : 'premium_monthly')}
+        <button onClick={() => onSelect('paid_monthly')}
           style={{ padding: '18px 20px', borderRadius: 18, border: '1.5px solid rgba(255,255,255,0.15)', background: 'rgba(255,255,255,0.04)', color: '#fff', cursor: 'pointer', textAlign: 'left' }}>
           <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.6)', marginBottom: 6 }}>{t('onboarding.billingMonthlyTitle')}</div>
           <div style={{ fontSize: 28, fontWeight: 900, letterSpacing: '-0.03em' }}>¥{monthlyPrice.toLocaleString()}<span style={{ fontSize: 14, fontWeight: 600, color: 'rgba(255,255,255,0.5)' }}> {t('onboarding.billingMonthlyUnit')}</span></div>
@@ -685,22 +685,13 @@ function OnboardingBillingView({ planKey, onSelect, onBack }: { planKey: 'standa
   )
 }
 
-// ── オンボーディング用料金プラン表示 ─────────────────────────────
-function OnboardingPricingView({ onNext, onSelectPlan, onBack }: { onNext: () => void; onSelectPlan: (plan: 'standard' | 'premium') => void; onBack: () => void }) {
+// ── オンボーディング用料金プラン表示（2026-05-15 単一有料プラン化） ─────
+function OnboardingPricingView({ onNext, onSelectPaid, onBack }: {
+  onNext: () => void
+  onSelectPaid: () => void
+  onBack: () => void
+}) {
   const ACCENT = 'var(--md-sys-color-primary)'
-  const WARM = '#F4A261'
-  const [loading, setLoading] = React.useState(false)
-
-  const handleCampaignTap = async () => {
-    setLoading(true)
-    try {
-      await startBetaCampaignCheckout()
-    } catch {
-      // エラー無視（非ネイティブ環境）
-    }
-    setLoading(false)
-    onSelectPlan('standard')
-  }
 
   return (
     <div style={{ minHeight: '100dvh', background: 'linear-gradient(160deg, #0F1220 0%, #1A2340 60%, #0F1A35 100%)', color: '#fff', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", overflowY: 'auto' }}>
@@ -723,68 +714,37 @@ function OnboardingPricingView({ onNext, onSelectPlan, onBack }: { onNext: () =>
       <div style={{ padding: '0 24px', textAlign: 'center' }}>
         <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.2em', color: `color-mix(in srgb, ${ACCENT} 56%, transparent)`, marginBottom: 12 }}>LOGIC</div>
         <h1 style={{ fontSize: 26, fontWeight: 800, margin: '0 0 8px', lineHeight: 1.3, letterSpacing: '-0.02em', whiteSpace: 'pre-line' }}>
-          {t('onboarding.pricingTitle')}
+          {t('pricing.heroHeadline')}
         </h1>
         <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.55)', margin: '0 0 20px', lineHeight: 1.6 }}>
-          {t('onboarding.pricingSubtitle')}
+          {t('pricing.heroSub')}
         </p>
       </div>
 
-      {/* キャンペーンバナー（タップで決済） */}
-      <button type="button" onClick={handleCampaignTap}
-        aria-label={t('onboarding.pricingCampaignAria')}
-        disabled={loading}
-        style={{ margin: '0 16px 16px', background: 'linear-gradient(135deg,#FF6B35,#FF4D6D)', borderRadius: 14, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer', opacity: loading ? 0.7 : 1, border: 'none', color: '#fff', font: 'inherit', textAlign: 'left', width: 'calc(100% - 32px)' }}>
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" style={{ flexShrink: 0 }} aria-hidden="true">
-          <path d="M12 2c0 0-4 4-4 9a4 4 0 0 0 8 0c0-5-4-9-4-9z"/><path d="M12 14c0 0-2 1-2 3a2 2 0 0 0 4 0c0-2-2-3-2-3z"/>
-        </svg>
-        <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 13, fontWeight: 800 }}>{t('onboarding.pricingCampaignTitle')}</div>
-          <div style={{ fontSize: 12, opacity: 0.9, marginTop: 2 }}>{t('onboarding.pricingCampaignDescPrefix')} <strong style={{ fontSize: 15 }}>¥1,980</strong> <span style={{ textDecoration: 'line-through', opacity: 0.7 }}>¥2,730</span></div>
-        </div>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
-
-      {/* 機能比較テーブル */}
+      {/* 機能比較テーブル（2列: 無料 / 有料） */}
       <div style={{ margin: '0 16px 20px', background: 'rgba(255,255,255,0.06)', borderRadius: 16, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
-        {/* ヘッダー */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 70px 80px 80px', padding: '14px 16px', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.4)' }}>{t('onboarding.pricingTblFeature')}</div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 0.8fr 0.8fr', padding: '14px 16px', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.4)' }}>{t('pricing.planFeatureHeader')}</div>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 10, fontWeight: 800, color: 'rgba(255,255,255,0.4)', letterSpacing: '.08em' }}>FREE</div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)', marginTop: 2 }}>{t('onboarding.pricingTblFree')}</div>
+            <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.55)', letterSpacing: '.08em' }}>{t('pricing.planFree').toUpperCase()}</div>
           </div>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 10, fontWeight: 800, color: ACCENT, letterSpacing: '.08em' }}>STD</div>
-            <div style={{ fontSize: 13, fontWeight: 800, color: '#fff', marginTop: 2 }}>¥390<span style={{ fontSize: 10 }}>{t('onboarding.pricingTblPerMonth')}</span></div>
-            <div style={{ fontSize: 10, color: ACCENT, marginTop: 1 }}>{t('onboarding.pricingTblYearlyStandard')}</div>
-            <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', marginTop: 0 }}>{t('onboarding.pricingTblSavings')}</div>
-          </div>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 10, fontWeight: 800, color: WARM, letterSpacing: '.08em' }}>PRE</div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)', marginTop: 2 }}>¥760<span style={{ fontSize: 10 }}>{t('onboarding.pricingTblPerMonth')}</span></div>
-            <div style={{ fontSize: 10, color: WARM, marginTop: 1 }}>{t('onboarding.pricingTblYearlyPremium')}</div>
-            <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', marginTop: 0 }}>{t('onboarding.pricingTblSavings')}</div>
+            <div style={{ fontSize: 11, fontWeight: 800, color: ACCENT, letterSpacing: '.08em' }}>{t('pricing.planPaid').toUpperCase()}</div>
           </div>
         </div>
-        {/* 機能行 */}
         {getOBFeatures().map((row, i) => (
-          <div key={row.label} style={{ display: 'grid', gridTemplateColumns: '1fr 70px 80px 80px', padding: '13px 16px', borderTop: i === 0 ? 'none' : '1px solid rgba(255,255,255,0.06)', alignItems: 'center' }}>
+          <div key={row.label} style={{ display: 'grid', gridTemplateColumns: '1.4fr 0.8fr 0.8fr', padding: '13px 16px', borderTop: i === 0 ? 'none' : '1px solid rgba(255,255,255,0.06)', alignItems: 'center' }}>
             <div style={{ fontSize: 13, fontWeight: 600, color: 'rgba(255,255,255,0.85)' }}>{row.label}</div>
             <div style={{ display: 'flex', justifyContent: 'center' }}><OBCell value={row.free} /></div>
-            <div style={{ display: 'flex', justifyContent: 'center', background: `color-mix(in srgb, ${ACCENT} 6%, transparent)`, borderRadius: 6, padding: '4px 0' }}><OBCell value={row.standard} /></div>
-            <div style={{ display: 'flex', justifyContent: 'center' }}><OBCell value={row.premium} /></div>
+            <div style={{ display: 'flex', justifyContent: 'center', background: `color-mix(in srgb, ${ACCENT} 8%, transparent)`, borderRadius: 6, padding: '4px 0' }}><OBCell value={row.paid} /></div>
           </div>
         ))}
       </div>
 
       {/* CTAボタン */}
       <div style={{ padding: '0 16px calc(env(safe-area-inset-bottom, 24px) + 20px)', display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <button onClick={() => onSelectPlan('standard')} style={{ width: '100%', padding: '17px', borderRadius: 16, border: 'none', background: ACCENT, color: '#fff', fontSize: 15, fontWeight: 800, cursor: 'pointer', boxShadow: `0 8px 24px color-mix(in srgb, ${ACCENT} 31%, transparent)` }}>
-          {t('onboarding.pricingStartStandard')}
-        </button>
-        <button onClick={() => onSelectPlan('premium')} style={{ width: '100%', padding: '17px', borderRadius: 16, border: `2px solid ${WARM}`, background: 'transparent', color: WARM, fontSize: 15, fontWeight: 800, cursor: 'pointer' }}>
-          {t('onboarding.pricingStartPremium')}
+        <button onClick={onSelectPaid} style={{ width: '100%', padding: '17px', borderRadius: 16, border: 'none', background: ACCENT, color: '#fff', fontSize: 15, fontWeight: 800, cursor: 'pointer', boxShadow: `0 8px 24px color-mix(in srgb, ${ACCENT} 31%, transparent)` }}>
+          {t('pricing.startPaid')}
         </button>
         <button onClick={onNext} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)', fontSize: 13, cursor: 'pointer', padding: '8px 0', textAlign: 'center' }}>
           {t('onboarding.pricingStartFree')}
@@ -1019,15 +979,13 @@ function GoogleIcon() {
 // ── メインエクスポート ────────────────────────────────────────────
 export function OnboardingScreen({ onComplete, onNavigateToLogin }: OnboardingScreenProps) {
   const [phase, setPhase] = useState<'slides' | 'attribute' | 'pricing' | 'billing' | 'register'>('slides')
-  const [selectedPlan, setSelectedPlan] = useState<'standard' | 'premium'>('standard')
   const [slideIdx, setSlideIdx] = useState(0)
 
-  const handlePlanSelect = (plan: 'standard' | 'premium') => {
-    setSelectedPlan(plan)
+  const handlePaidSelect = () => {
     setPhase('billing')
   }
 
-  const handleBillingSelect = async (planId: 'standard_monthly' | 'standard_yearly' | 'premium_monthly' | 'premium_yearly') => {
+  const handleBillingSelect = async (planId: 'paid_monthly' | 'paid_yearly') => {
     try {
       await startCheckout(planId)
     } catch { /* ignore on web */ }
@@ -1060,14 +1018,14 @@ export function OnboardingScreen({ onComplete, onNavigateToLogin }: OnboardingSc
     return (
       <OnboardingPricingView
         onNext={() => setPhase('register')}
-        onSelectPlan={handlePlanSelect}
+        onSelectPaid={handlePaidSelect}
         onBack={() => setPhase('attribute')}
       />
     )
   }
 
   if (phase === 'billing') {
-    return <OnboardingBillingView planKey={selectedPlan} onSelect={handleBillingSelect} onBack={() => setPhase('pricing')} />
+    return <OnboardingBillingView onSelect={handleBillingSelect} onBack={() => setPhase('pricing')} />
   }
 
   return (
