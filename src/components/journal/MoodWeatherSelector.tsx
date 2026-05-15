@@ -3,7 +3,7 @@ import type { Mood, Weather } from './types'
 import { t } from '../../i18n'
 
 const MOOD_VALUES: Mood[] = [1, 2, 3, 4, 5]
-const WEATHER_VALUES: Weather[] = ['sunny', 'cloudy', 'rainy', 'snowy']
+const WEATHER_VALUES: Weather[] = ['snowy', 'rainy', 'cloudy', 'sunny']
 
 const MOOD_LABEL_KEY: Record<Mood, string> = {
   1: 'journal.moodVeryBad',
