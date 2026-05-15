@@ -2,7 +2,8 @@
    div onClick が残るが a11y 化は次フェーズ (legacy 完全廃止時) で対応。 */
 /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
 import { useState } from 'react'
-import { loadAIProblems, generateAIProblems, deleteAIProblem, isPremium, type AIProblemSet } from './aiProblemStore'
+import { loadAIProblems, generateAIProblems, deleteAIProblem, type AIProblemSet } from './aiProblemStore'
+import { isPaid } from './subscription'
 import './AIProblemGen.css'
 
 type Props = {
@@ -22,7 +23,7 @@ export default function AIProblemGen({ onBack, onPlayProblem }: Props) {
   const [generating, setGenerating] = useState(false)
   const [error, setError] = useState('')
   const [problems, setProblems] = useState<AIProblemSet[]>(loadAIProblems())
-  const [premium] = useState(isPremium())
+  const [premium] = useState(isPaid())
 
   const handleGenerate = async () => {
     if (!prompt.trim()) return

@@ -1,6 +1,5 @@
 import type { LessonData } from './lessonData'
-import { isPremium as subIsPremium } from './subscription'
-import { canGenerate, recordGeneration } from './usageTracker'
+import { isPaid } from './subscription'
 import { localeBody, getLocale } from './i18n'
 
 const STORAGE_KEY = 'logic-ai-problems'
@@ -40,14 +39,14 @@ export function deleteAIProblem(id: number): void {
 
 export async function generateAIProblems(prompt: string): Promise<AIProblemSet> {
   const isEn = getLocale() === 'en'
-  if (!canGenerate()) {
-    if (subIsPremium()) {
-      throw new Error(isEn ? 'You\'ve hit this month\'s limit (300 problems)' : '今月の生成回数の上限(300問)に達しました')
-    } else {
-      throw new Error(isEn
-        ? 'You\'ve hit today\'s free limit (10 problems). Premium gives you 300/month.'
-        : '今日の生成回数の上限(10問)に達しました。プレミアムプランで月300問まで生成できます。')
-    }
+  // 2026-05-15 単一有料プラン化:
+  //   - 無料プラン: AI 問題生成は利用不可（サーバ側 /api/generate-problems が 403 を返す）
+  //   - 有料プラン: 無制限（サーバ側のキャップ未実装）
+  // クライアント側でも先に弾いて、UX を改善する。
+  if (!isPaid()) {
+    throw new Error(isEn
+      ? 'AI problem generation is available on the paid plan.'
+      : 'AI 問題生成は有料プランの機能です。')
   }
   const res = await fetch(`${API_BASE}/api/generate-problems`, {
     method: 'POST',
@@ -71,7 +70,6 @@ export async function generateAIProblems(prompt: string): Promise<AIProblemSet> 
   }
   sets.unshift(newSet)
   save(sets)
-  recordGeneration()
   // バックエンドに全件保存（非同期・エラーは無視）
   fetch(`${API_BASE}/api/user-problems/save`, {
     method: 'POST',
@@ -81,4 +79,5 @@ export async function generateAIProblems(prompt: string): Promise<AIProblemSet> 
   return newSet
 }
 
-export { isPremium } from './subscription'
+// Re-export legacy aliases for backward compatibility with v1 components.
+export { isPremium, isPaid } from './subscription'

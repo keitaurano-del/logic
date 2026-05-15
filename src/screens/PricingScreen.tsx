@@ -1,5 +1,11 @@
 import { useState } from 'react'
-import { startCheckout, getSubscriptionState, daysLeftInTrial, isPremiumPlan, isStandardPlan, isAndroidNative, PLAN_PRICES } from '../subscription'
+import {
+  startCheckout,
+  getSubscriptionState,
+  isPaid,
+  isAndroidNative,
+  PLAN_PRICES,
+} from '../subscription'
 import { Header } from '../components/platform/Header'
 import { t } from '../i18n'
 
@@ -7,34 +13,27 @@ interface PricingScreenProps {
   onBack: () => void
 }
 
-type PlanId = 'standard_monthly' | 'standard_yearly' | 'premium_monthly' | 'premium_yearly'
-type PlanKey = 'free' | 'standard' | 'premium'
+type PaidPlanId = 'paid_monthly' | 'paid_yearly'
+type BillingCycle = 'monthly' | 'yearly'
 
-// ── 機能比較データ ──────────────────────────────────
+// ── 機能比較データ（2列：無料 vs 有料） ───────────────────────────────
 type FeatureRow = {
   label: string
   free: string | boolean
-  standard: string | boolean
-  premium: string | boolean
+  paid: string | boolean
 }
 
 function getFeatures(): FeatureRow[] {
   return [
-    { label: t('pricing.featLessons'),  free: t('pricing.featBeginnerOnly'), standard: t('pricing.featAllLessons'), premium: t('pricing.featAllLessons') },
-    { label: t('pricing.featAiGen'),    free: false,                          standard: t('pricing.featDailyN', { n: '3' }),  premium: t('pricing.featDailyN', { n: '10' }) },
-    { label: t('pricing.featRoleplay'), free: false,                          standard: t('pricing.featMonthlyN', { n: '5' }), premium: t('pricing.featUnlimited') },
-    { label: t('pricing.featFermi'),    free: t('pricing.featDaily1'),       standard: t('pricing.featDailyN', { n: '5' }),  premium: t('pricing.featDailyN', { n: '10' }) },
-    { label: t('pricing.featReview'),   free: false,                          standard: true,                                  premium: true },
-    { label: t('pricing.featRecord'),   free: true,                           standard: true,                                  premium: true },
+    { label: t('pricing.featLessons'), free: t('pricing.featAllLessons'), paid: t('pricing.featAllLessons') },
+    { label: t('pricing.featRoleplay'), free: t('pricing.featUnlimited'), paid: t('pricing.featUnlimited') },
+    { label: t('pricing.featReview'), free: true, paid: true },
+    { label: t('pricing.featFermi'), free: t('pricing.featDaily1'), paid: t('pricing.featUnlimited') },
+    { label: t('pricing.featAiGen'), free: t('pricing.featAiGenFree'), paid: t('pricing.featAiGenPaid') },
+    { label: t('pricing.featTheme'), free: false, paid: true },
+    { label: t('pricing.featEnglishMode'), free: false, paid: true },
+    { label: t('pricing.featRecord'), free: true, paid: true },
   ]
-}
-
-function getPlanMeta(): Record<PlanKey, { label: string; en: string; color: string }> {
-  return {
-    free:     { label: t('pricing.planFree'),     en: 'FREE', color: 'var(--text-muted)' },
-    standard: { label: t('pricing.planStandard'), en: 'STD',  color: 'var(--brand)' },
-    premium:  { label: t('pricing.planPremium'),  en: 'PRE',  color: 'var(--warm)' },
-  }
 }
 
 function CheckIcon() {
@@ -52,195 +51,196 @@ function CrossIcon() {
   )
 }
 
-function Cell({ value }: { value: string | boolean }) {
-  if (value === true) return <CheckIcon />
-  if (value === false) return <CrossIcon />
-  return <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>{value}</span>
+function Cell({ value, dim }: { value: string | boolean; dim?: boolean }) {
+  const opacity = dim ? 0.45 : 1
+  if (value === true) return <span style={{ opacity }}><CheckIcon /></span>
+  if (value === false) return <span style={{ opacity }}><CrossIcon /></span>
+  return <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)', opacity }}>{value}</span>
 }
 
 export function PricingScreen({ onBack }: PricingScreenProps) {
-  const [loading, setLoading] = useState<PlanId | null>(null)
+  const [loading, setLoading] = useState<PaidPlanId | null>(null)
   const [error, setError] = useState('')
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('yearly')
-  const [activePlan, setActivePlan] = useState<PlanKey>('standard')
+  const [billingCycle, setBillingCycle] = useState<BillingCycle>('yearly')
 
   const state = getSubscriptionState()
-  const trialDays = daysLeftInTrial()
-  const isActivePremium = isPremiumPlan()
-  const isActiveStandard = isStandardPlan()
-  const isCurrentFree = state.plan === 'free'
-  const isCurrentStd = isActiveStandard && !isActivePremium
-  const isCurrentPre = isActivePremium
+  const isCurrentlyPaid = isPaid()
+  const isCurrentFree = !isCurrentlyPaid
 
-  const stdPrice = billingCycle === 'yearly' ? PLAN_PRICES.standard_yearly : PLAN_PRICES.standard_monthly
-  const prePrice = billingCycle === 'yearly' ? PLAN_PRICES.premium_yearly : PLAN_PRICES.premium_monthly
-  const stdMonthly = Math.round(PLAN_PRICES.standard_yearly / 12)
-  const preMonthly = Math.round(PLAN_PRICES.premium_yearly / 12)
-  const stdPlanId: PlanId = billingCycle === 'yearly' ? 'standard_yearly' : 'standard_monthly'
-  const prePlanId: PlanId = billingCycle === 'yearly' ? 'premium_yearly' : 'premium_monthly'
+  const monthlyPrice = PLAN_PRICES.monthly
+  const yearlyPrice = PLAN_PRICES.yearly
+  const yearlyMonthlyEquiv = Math.round(yearlyPrice / 12)
+  const yearlySavingsPercent = Math.round((1 - yearlyPrice / (monthlyPrice * 12)) * 100)
 
-  const handleUpgrade = async (plan: PlanId) => {
-    setLoading(plan)
+  const targetPlanId: PaidPlanId = billingCycle === 'yearly' ? 'paid_yearly' : 'paid_monthly'
+  const isCurrentTargetPlan = state.plan === targetPlanId
+
+  const priceMain = billingCycle === 'yearly' ? `¥${yearlyPrice.toLocaleString()}` : `¥${monthlyPrice.toLocaleString()}`
+  const priceSub = billingCycle === 'yearly'
+    ? t('pricing.pricePerYearWithMonthly', { monthly: String(yearlyMonthlyEquiv) })
+    : t('pricing.pricePerMonth')
+
+  const handleUpgrade = async () => {
+    setLoading(targetPlanId)
     setError('')
     try {
-      if (isAndroidNative()) { setError(t('pricing.purchaseStarting')); setLoading(null); return }
-      await startCheckout(plan)
+      if (!isAndroidNative()) {
+        // Web は決済を持っていないので案内だけ
+        setError(t('pricing.purchaseStarting'))
+        setLoading(null)
+        return
+      }
+      await startCheckout(targetPlanId)
     } catch (e: unknown) {
       setError((e as Error).message || t('pricing.purchaseError'))
       setLoading(null)
     }
   }
 
-  const PLAN_META = getPlanMeta()
   const FEATURES = getFeatures()
-  const accentColor = PLAN_META[activePlan].color
-
-  // プランごとの価格テキスト
-  function planPrice(plan: PlanKey) {
-    if (plan === 'free') return { main: t('pricing.priceFree'), sub: '' }
-    if (plan === 'standard') return billingCycle === 'yearly'
-      ? { main: `¥${stdPrice.toLocaleString()}`, sub: t('pricing.pricePerYearWithMonthly', { monthly: String(stdMonthly) }) }
-      : { main: `¥${stdPrice.toLocaleString()}`, sub: t('pricing.pricePerMonth') }
-    return billingCycle === 'yearly'
-      ? { main: `¥${prePrice.toLocaleString()}`, sub: t('pricing.pricePerYearWithMonthly', { monthly: String(preMonthly) }) }
-      : { main: `¥${prePrice.toLocaleString()}`, sub: t('pricing.pricePerMonth') }
-  }
-
-  // CTAボタン: コンポーネント化せずインライン関数で JSX を返す（render 中の component 定義回避）
-  const renderPlanCTA = (plan: PlanKey) => {
-    if (plan === 'free') {
-      return isCurrentFree
-        ? <div style={{ textAlign: 'center', fontSize: 13, color: 'var(--text-muted)', fontWeight: 700, padding: '14px 0' }}>{t('pricing.currentPlan')}</div>
-        : null
-    }
-    if (plan === 'standard') {
-      if (isCurrentStd) return <div style={{ textAlign: 'center', fontSize: 13, color: 'var(--brand)', fontWeight: 700, padding: '14px 0' }}>{t('pricing.currentPlan')}</div>
-      return (
-        <button onClick={() => handleUpgrade(stdPlanId)} disabled={!!loading}
-          style={{ width: '100%', padding: '16px', borderRadius: 14, border: `2px solid ${'var(--brand)'}`, background: 'transparent', color: 'var(--brand)', fontSize: 16, fontWeight: 800, cursor: 'pointer', opacity: loading ? 0.6 : 1 }}>
-          {loading === stdPlanId ? t('pricing.processing') : t('pricing.startStandard')}
-        </button>
-      )
-    }
-    if (isCurrentPre) return <div style={{ textAlign: 'center', fontSize: 13, color: 'var(--warm)', fontWeight: 700, padding: '14px 0' }}>{t('pricing.currentPlan')}</div>
-    return (
-      <button onClick={() => handleUpgrade(prePlanId)} disabled={!!loading}
-        style={{ width: '100%', padding: '16px', borderRadius: 14, border: 'none', background: 'var(--warm)', color: 'var(--accent-fg)', fontSize: 16, fontWeight: 800, cursor: 'pointer', opacity: loading ? 0.6 : 1 }}>
-        {loading === prePlanId ? t('pricing.processing') : t('pricing.startPremium')}
-      </button>
-    )
-  }
-
-  const plans: PlanKey[] = ['free', 'standard', 'premium']
 
   return (
     <div style={{ minHeight: '100dvh', background: 'var(--bg-primary)', color: 'var(--text-primary)', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif" }}>
-
       <Header title={t('pricing.title')} onBack={onBack} />
 
-      <div style={{ padding: '0 16px 12px', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
-
-        {/* キャンペーンバナー */}
-        <div style={{ background: 'var(--campaign-grad)', borderRadius: 14, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, color: 'var(--text-on-hero)' }} aria-hidden="true">
-            <path d="M12 2c0 0-4 4-4 9a4 4 0 0 0 8 0c0-5-4-9-4-9z"/><path d="M12 14c0 0-2 1-2 3a2 2 0 0 0 4 0c0-2-2-3-2-3z"/>
-          </svg>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 13, fontWeight: 800, color: 'var(--text-on-hero)' }}>{t('pricing.campaignBadge')}</div>
-            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.9)', marginTop: 2 }}>
-              {t('pricing.campaignDesc')}
-              <span style={{ marginLeft: 6, textDecoration: 'line-through', opacity: 0.7, fontSize: 12 }}>¥{PLAN_PRICES.standard_yearly.toLocaleString()}</span>
-            </div>
+      <div style={{ flex: 1, padding: '0 16px 100px', overflowY: 'auto' }}>
+        {/* ─── Hero copy ─── */}
+        <div style={{ padding: '12px 4px 16px' }}>
+          <div style={{ fontSize: 12, fontWeight: 800, color: 'var(--brand)', letterSpacing: '.12em', textTransform: 'uppercase', marginBottom: 6 }}>
+            {t('pricing.heroEyebrow')}
+          </div>
+          <div style={{ fontSize: 22, fontWeight: 800, lineHeight: 1.4, marginBottom: 10, color: 'var(--text-primary)', whiteSpace: 'pre-line' }}>
+            {t('pricing.heroHeadline')}
+          </div>
+          <div style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+            {t('pricing.heroSub')}
           </div>
         </div>
 
-        {/* トライアルバナー */}
-        {state.plan === 'trial' && (
-          <div style={{ background: `color-mix(in srgb, var(--brand) 9%, transparent)`, border: `1px solid color-mix(in srgb, var(--brand) 25%, transparent)`, borderRadius: 12, padding: '10px 16px', fontSize: 14, color: 'var(--brand)', fontWeight: 600 }}>
-            {t('pricing.trialBanner', { n: String(trialDays) })}
-          </div>
-        )}
-
-        {/* 月払い / 年払い トグル */}
-        <div style={{ display: 'flex', background: 'var(--bg-card)', borderRadius: 14, padding: 4, gap: 4 }}>
+        {/* ─── 月/年トグル ─── */}
+        <div style={{ display: 'flex', background: 'var(--bg-card)', borderRadius: 14, padding: 4, gap: 4, marginBottom: 16 }}>
           {(['monthly', 'yearly'] as const).map(cycle => (
-            <button key={cycle} onClick={() => setBillingCycle(cycle)}
-              style={{ flex: 1, padding: '10px', borderRadius: 11, border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 700, transition: 'all .15s', background: billingCycle === cycle ? 'var(--brand)' : 'transparent', color: billingCycle === cycle ? 'var(--accent-fg)' : 'var(--text-secondary)' }}>
+            <button
+              key={cycle}
+              type="button"
+              onClick={() => setBillingCycle(cycle)}
+              aria-pressed={billingCycle === cycle}
+              style={{
+                flex: 1, padding: '10px', borderRadius: 11, border: 'none', cursor: 'pointer',
+                fontSize: 14, fontWeight: 700, transition: 'all .15s',
+                background: billingCycle === cycle ? 'var(--brand)' : 'transparent',
+                color: billingCycle === cycle ? 'var(--accent-fg)' : 'var(--text-secondary)',
+              }}
+            >
               {cycle === 'monthly' ? t('pricing.cycleMonthly') : (
-                <span>{t('pricing.cycleYearly')} <span style={{ fontSize: 11, background: billingCycle === 'yearly' ? 'rgba(255,255,255,0.22)' : `color-mix(in srgb, var(--warm) 13%, transparent)`, color: billingCycle === 'yearly' ? 'var(--text-on-hero)' : 'var(--warm)', borderRadius: 6, padding: '2px 6px', fontWeight: 800 }}>{t('pricing.cycleSavings')}</span></span>
+                <span>
+                  {t('pricing.cycleYearly')}
+                  <span style={{
+                    marginLeft: 6,
+                    fontSize: 11,
+                    background: billingCycle === 'yearly' ? 'rgba(255,255,255,0.22)' : `color-mix(in srgb, var(--warm) 13%, transparent)`,
+                    color: billingCycle === 'yearly' ? 'var(--text-on-hero)' : 'var(--warm)',
+                    borderRadius: 6, padding: '2px 6px', fontWeight: 800,
+                  }}>
+                    {t('pricing.yearlySavings', { percent: String(yearlySavingsPercent) })}
+                  </span>
+                </span>
               )}
             </button>
           ))}
         </div>
 
-        {/* プランタブ */}
-        <div style={{ display: 'flex', gap: 8 }}>
-          {plans.map(plan => {
-            const meta = PLAN_META[plan]
-            const isActive = activePlan === plan
-            return (
-              <button key={plan} onClick={() => setActivePlan(plan)}
-                style={{ flex: 1, padding: '10px 4px', borderRadius: 12, border: `2px solid ${isActive ? meta.color : 'var(--border)'}`, background: isActive ? `color-mix(in srgb, ${meta.color} 8%, transparent)` : 'var(--bg-card)', cursor: 'pointer', transition: 'all .15s' }}>
-                <div style={{ fontSize: 10, fontWeight: 800, color: meta.color, letterSpacing: '.08em' }}>{meta.en}</div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: isActive ? meta.color : 'var(--text-secondary)', marginTop: 2 }}>{meta.label}</div>
-              </button>
-            )
-          })}
-        </div>
-      </div>
-
-      {/* 機能リスト + 価格 + CTA */}
-      <div style={{ flex: 1, padding: '0 16px 100px', overflowY: 'auto' }}>
-        {/* 価格カード */}
-        <div style={{ background: 'var(--bg-card)', borderRadius: 16, padding: '20px 20px 8px', marginBottom: 12, border: `2px solid color-mix(in srgb, ${accentColor} 19%, transparent)` }}>
-          <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, marginBottom: 4 }}>
-            <span style={{ fontSize: 32, fontWeight: 900, color: 'var(--text-primary)', letterSpacing: '-0.03em' }}>{planPrice(activePlan).main}</span>
-            {planPrice(activePlan).sub && (
-              <span style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 6 }}>{planPrice(activePlan).sub}</span>
-            )}
-          </div>
-          {activePlan === 'standard' && billingCycle === 'yearly' && (
-            <div style={{ fontSize: 12, color: 'var(--campaign-text)', fontWeight: 700, marginBottom: 8 }}>{t('pricing.campaignAppliedYearly')}</div>
+        {/* ─── 価格カード（有料プラン1枚） ─── */}
+        <div style={{
+          background: 'var(--bg-card)', borderRadius: 16, padding: '20px',
+          marginBottom: 12,
+          border: `2px solid color-mix(in srgb, var(--brand) 25%, transparent)`,
+          position: 'relative',
+        }}>
+          {billingCycle === 'yearly' && (
+            <div style={{
+              position: 'absolute', top: -10, left: 16,
+              background: 'var(--brand)', color: 'var(--accent-fg)',
+              fontSize: 11, fontWeight: 800, letterSpacing: '.08em',
+              padding: '3px 10px', borderRadius: 8, textTransform: 'uppercase',
+            }}>
+              {t('pricing.recommended')}
+            </div>
           )}
-          <div style={{ marginTop: 16 }}>
-            {renderPlanCTA(activePlan)}
+          <div style={{ fontSize: 12, fontWeight: 800, color: 'var(--brand)', letterSpacing: '.1em', textTransform: 'uppercase', marginBottom: 6 }}>
+            {t('pricing.planPaid')}
           </div>
+          <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, marginBottom: 14 }}>
+            <span style={{ fontSize: 36, fontWeight: 900, color: 'var(--text-primary)', letterSpacing: '-0.03em', lineHeight: 1 }}>{priceMain}</span>
+            <span style={{ fontSize: 13, color: 'var(--text-muted)', paddingBottom: 4 }}>{priceSub}</span>
+          </div>
+
+          {isCurrentTargetPlan ? (
+            <div style={{ textAlign: 'center', fontSize: 13, color: 'var(--brand)', fontWeight: 700, padding: '14px 0' }}>
+              {t('pricing.currentPlan')}
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={handleUpgrade}
+              disabled={!!loading}
+              style={{
+                width: '100%', padding: '16px', borderRadius: 14,
+                border: 'none', background: 'var(--brand)', color: 'var(--accent-fg)',
+                fontSize: 16, fontWeight: 800, cursor: loading ? 'wait' : 'pointer',
+                opacity: loading ? 0.6 : 1,
+              }}
+            >
+              {loading === targetPlanId ? t('pricing.processing') : t('pricing.startPaid')}
+            </button>
+          )}
         </div>
 
-        {/* 機能比較リスト */}
+        {/* ─── 現状の無料プラン表示 ─── */}
+        {isCurrentFree && (
+          <div style={{ background: 'var(--bg-card)', borderRadius: 12, padding: '12px 16px', marginBottom: 12, fontSize: 13, color: 'var(--text-secondary)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span>{t('pricing.planFree')}</span>
+            <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)' }}>{t('pricing.currentPlan')}</span>
+          </div>
+        )}
+
+        {/* ─── 機能比較リスト（2列: 無料 / 有料） ─── */}
         <div style={{ background: 'var(--bg-card)', borderRadius: 16, overflow: 'hidden' }}>
           {/* ヘッダー行 */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 80px 80px 80px', padding: '12px 16px', borderBottom: `1px solid ${'var(--border)'}` }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 0.8fr 0.8fr', padding: '12px 16px', borderBottom: `1px solid ${'var(--border)'}` }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)' }}>{t('pricing.planFeatureHeader')}</div>
-            {plans.map(plan => (
-              <button type="button" key={plan} onClick={() => setActivePlan(plan)}
-                aria-pressed={activePlan === plan}
-                style={{ textAlign: 'center', fontSize: 11, fontWeight: 800, color: activePlan === plan ? PLAN_META[plan].color : 'var(--text-muted)', cursor: 'pointer', letterSpacing: '.06em', background: 'transparent', border: 'none', padding: 4, font: 'inherit' }}>
-                {PLAN_META[plan].en}
-              </button>
-            ))}
+            <div style={{ textAlign: 'center', fontSize: 11, fontWeight: 800, color: 'var(--text-muted)', letterSpacing: '.06em' }}>
+              {t('pricing.planFree')}
+            </div>
+            <div style={{ textAlign: 'center', fontSize: 11, fontWeight: 800, color: 'var(--brand)', letterSpacing: '.06em' }}>
+              {t('pricing.planPaid')}
+            </div>
           </div>
           {/* 機能行 */}
           {FEATURES.map((row, i) => (
-            <div key={row.label} style={{ display: 'grid', gridTemplateColumns: '1fr 80px 80px 80px', padding: '14px 16px', borderTop: i === 0 ? 'none' : `1px solid ${'var(--border)'}`, background: i % 2 === 0 ? 'transparent' : `color-mix(in srgb, var(--bg-primary) 31%, transparent)`, alignItems: 'center' }}>
+            <div
+              key={row.label}
+              style={{
+                display: 'grid',
+                gridTemplateColumns: '1.4fr 0.8fr 0.8fr',
+                padding: '14px 16px',
+                borderTop: i === 0 ? 'none' : `1px solid ${'var(--border)'}`,
+                background: i % 2 === 0 ? 'transparent' : `color-mix(in srgb, var(--bg-primary) 31%, transparent)`,
+                alignItems: 'center',
+              }}
+            >
               <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>{row.label}</div>
-              {/* FREE */}
-              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', opacity: activePlan === 'free' ? 1 : 0.45 }}>
-                <Cell value={row.free} />
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <Cell value={row.free} dim />
               </div>
-              {/* STD */}
-              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', opacity: activePlan === 'standard' ? 1 : 0.45 }}>
-                <Cell value={row.standard} />
-              </div>
-              {/* PRE */}
-              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', opacity: activePlan === 'premium' ? 1 : 0.45 }}>
-                <Cell value={row.premium} />
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <Cell value={row.paid} />
               </div>
             </div>
           ))}
         </div>
 
-        {/* 注記 */}
+        {/* ─── 注記 ─── */}
         <div style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', lineHeight: 1.8, marginTop: 16 }}>
           {t('pricing.note1')}<br />
           {t('pricing.note2')}

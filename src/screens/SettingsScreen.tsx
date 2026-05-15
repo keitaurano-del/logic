@@ -6,7 +6,7 @@ import {
   loadReminderPref, saveReminderPref, scheduleDailyReminder,
   cancelDailyReminder, requestNotificationPermission, isNative,
 } from '../notifications'
-import { getSubscriptionState, isPremium, daysLeftInTrial } from '../subscription'
+import { getSubscriptionState, isPaid } from '../subscription'
 import { Switch } from '../components/Switch'
 import { confirm as confirmDialog } from '../platform/dialog'
 
@@ -234,11 +234,10 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
         <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
           {(() => {
             const state = getSubscriptionState()
-            const premium = isPremium()
+            const paid = isPaid()
             const planLabel =
-              state.plan === 'trial' ? t('settings.plan.trial', { n: daysLeftInTrial() }) :
-              state.plan === 'monthly' ? t('settings.plan.monthly') :
-              state.plan === 'yearly' ? t('settings.plan.yearly') :
+              state.plan === 'paid_monthly' ? t('settings.plan.paidMonthly') :
+              state.plan === 'paid_yearly' ? t('settings.plan.paidYearly') :
               t('settings.plan.free')
             return (
               <>
@@ -247,13 +246,13 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
                   <span style={{
                     fontSize: 16, fontWeight: 700, padding: '4px 10px',
                     borderRadius: 20,
-                    background: premium ? 'var(--brand-soft)' : 'var(--bg-secondary)',
-                    color: premium ? 'var(--brand)' : 'var(--text-muted)',
+                    background: paid ? 'var(--brand-soft)' : 'var(--bg-secondary)',
+                    color: paid ? 'var(--brand)' : 'var(--text-muted)',
                   }}>
                     {planLabel}
                   </span>
                 </div>
-                {!premium && onOpenPricing && (
+                {!paid && onOpenPricing && (
                   <>
                     <Divider />
                     <SettingsRow

@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { getSituation, buildSetup } from '../situations'
-import { isPremium } from '../subscription'
-import { incrementRoleplayUsage } from '../roleplayUsage'
 import { localeBody, t } from '../i18n'
 import { CheckIcon, ThumbsUpIcon, LightbulbIcon } from '../icons'
 import { Header } from '../components/platform/Header'
@@ -50,7 +48,6 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
   const [score, setScore] = useState<ScoreResult | null>(null)
   const [summary, setSummary] = useState<SummaryResult | null>(null)
   const [scoring, setScoring] = useState(false)
-  const incrementedRef = useRef(false)
   const startedRef = useRef(!!hasScript) // スクリプト駆動は initializer で開始済み
   const scrollRef = useRef<HTMLDivElement>(null)
   const abortRef = useRef<AbortController | null>(null)
@@ -105,13 +102,6 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
       setLoading(false)
     }
   }, [setup])
-
-  useEffect(() => {
-    if (situation && !incrementedRef.current && !isPremium()) {
-      incrementRoleplayUsage()
-      incrementedRef.current = true
-    }
-  }, [situation])
 
   useEffect(() => {
     // API駆動のみ: initializer で未開始の場合にフェッチ

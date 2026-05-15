@@ -10,7 +10,6 @@ import { getCurrentLevel } from './homeHelpers'
 import { haptic } from '../platform/haptics'
 import { getCardStats } from '../flashcardData'
 import { getWrongAnswerStats } from '../wrongAnswerStore'
-import { isPremium } from '../subscription'
 import { t } from '../i18n'
 
 interface LessonCompleteScreenProps {
@@ -77,13 +76,12 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
   const seconds = durationSec % 60
   const timeStr = `${minutes}:${String(seconds).padStart(2, '0')}`
 
-  // Pro加入時のみ「今すぐ復習」CTAを出す。
-  // 直前のレッスンで誤答が出た場合は強調、無くても due/weak カードがあれば軽く誘導。
-  const proUnlocked = isPremium()
+  // 2026-05-15 単一有料プラン化:
+  //   復習・誤答リストは全プラン解放。due / weak カードがあれば誰でも CTA を出す。
   const cardStats = getCardStats()
   const wrongStats = getWrongAnswerStats()
   const reviewBadgeCount = wrongStats.unresolved + cardStats.due
-  const showReviewCta = !!onOpenReview && proUnlocked && reviewBadgeCount > 0
+  const showReviewCta = !!onOpenReview && reviewBadgeCount > 0
 
   const XP_GAIN = 50
   const xpCount = useCountUp(XP_GAIN, 900, 600)

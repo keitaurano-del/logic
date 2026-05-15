@@ -1,6 +1,4 @@
 import { getSituations, type Situation, type SituationCategory } from '../situations'
-import { isPremium } from '../subscription'
-import { getRoleplayRemaining, ROLEPLAY_FREE_LIMIT } from '../roleplayUsage'
 import { ArrowLeftIcon } from '../icons'
 import { IconButton } from '../components/IconButton'
 import { t } from '../i18n'
@@ -8,7 +6,8 @@ import { t } from '../i18n'
 interface RoleplaySelectScreenProps {
   onBack: () => void
   onStart: (situationId: string) => void
-  onUpgrade: () => void
+  /** 旧シグネチャ互換のため受け取るが、ロールプレイは全プラン無制限なので使われない */
+  onUpgrade?: () => void
 }
 
 function getDiffLabel(): Record<string, string> {
@@ -112,17 +111,14 @@ function getCategoryLabels(): Record<SituationCategory, string> {
 
 function SituationCard({
   s,
-  premium,
-  remaining,
   onClick,
 }: {
   s: Situation
-  premium: boolean
-  remaining: number
   onClick: () => void
 }) {
   const DIFF_LABEL = getDiffLabel()
-  const locked = (s.premium && !premium) || (!premium && remaining <= 0 && !s.premium)
+  // 2026-05-15 単一有料プラン化: ロールプレイは全プラン無制限解放
+  const locked = false
   const comingSoon = false // 哲学者シリーズも開放
 
   const image = SCENARIO_IMAGE[s.id]
@@ -217,19 +213,15 @@ function SituationCard({
   )
 }
 
-export function RoleplaySelectScreen({ onBack, onStart, onUpgrade }: RoleplaySelectScreenProps) {
+export function RoleplaySelectScreen({ onBack, onStart, onUpgrade: _onUpgrade }: RoleplaySelectScreenProps) {
   const CATEGORY_LABELS = getCategoryLabels()
-  const premium = isPremium()
-  const remaining = getRoleplayRemaining()
 
   const situations = getSituations()
   const businessSituations = situations.filter((s) => s.category === 'business')
   const philosophySituations = situations.filter((s) => s.category === 'philosophy')
 
   const handleClick = (s: Situation) => {
-    // 2026-04-27: 哲学シリーズも開放済み。タップをフィルタしてた早期 return を削除した。
-    if (s.premium && !premium) { onUpgrade(); return }
-    if (!premium && remaining <= 0) { onUpgrade(); return }
+    // 2026-05-15: ロールプレイは全プラン無制限。premium / quota チェックは廃止
     onStart(s.id)
   }
 
@@ -250,20 +242,6 @@ export function RoleplaySelectScreen({ onBack, onStart, onUpgrade }: RoleplaySel
         </div>
       </div>
 
-      {/* 残り回数バッジ */}
-      {!premium && (
-        <div style={{
-          background: 'var(--bg-card)', borderRadius: 12, padding: '10px 14px',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          marginBottom: 20,
-        }}>
-          <span style={{ fontSize: 14, color: 'var(--md-sys-color-primary)', fontWeight: 600 }}>{t('roleplaySelect.remaining')}</span>
-          <span style={{ fontSize: 16, fontWeight: 800, color: 'var(--md-sys-color-primary)' }}>
-            {remaining} / {ROLEPLAY_FREE_LIMIT}
-          </span>
-        </div>
-      )}
-
       {/* ビジネス思考 */}
       <div style={{ marginBottom: 24 }}>
         <div style={{
@@ -277,8 +255,6 @@ export function RoleplaySelectScreen({ onBack, onStart, onUpgrade }: RoleplaySel
             <SituationCard
               key={s.id}
               s={s}
-              premium={premium}
-              remaining={remaining}
               onClick={() => handleClick(s)}
             />
           ))}
@@ -299,8 +275,6 @@ export function RoleplaySelectScreen({ onBack, onStart, onUpgrade }: RoleplaySel
               <SituationCard
                 key={s.id}
                 s={s}
-                premium={premium}
-                remaining={remaining}
                 onClick={() => handleClick(s)}
               />
             ))}

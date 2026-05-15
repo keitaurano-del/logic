@@ -27,7 +27,7 @@ import { addWrongAnswers } from './wrongAnswerStore'
 import ReportProblem from './ReportProblem'
 import { t, localeBody, getLocale } from './i18n'
 import { getStepAnnotation, hasAnyAnnotation, savePhraseToFlashcards, type Phrase } from './englishLearningData'
-import { isPremium } from './subscription'
+import { isPaid } from './subscription'
 import './Lesson.css'
 
 import { API_BASE } from './apiBase'
@@ -193,7 +193,7 @@ export default function Lesson({ lesson, onBack, onComplete, onNextLesson }: Pro
   // English learning mode: premium users on English locale see translation/phrase helpers
   // when annotations exist for this lesson.
   const englishMode = useMemo(
-    () => getLocale() === 'en' && isPremium() && hasAnyAnnotation(lesson.id),
+    () => getLocale() === 'en' && isPaid() && hasAnyAnnotation(lesson.id),
     [lesson.id],
   )
   const stepAnnotation = englishMode ? getStepAnnotation(lesson.id, currentStep) : undefined

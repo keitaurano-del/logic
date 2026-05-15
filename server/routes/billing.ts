@@ -72,22 +72,21 @@ export function createBillingRouter(deps: BillingDeps): express.Router {
         gpExpiryTimeMillis = expiryTimeMillis
       }
 
-      // productId からプランを特定
-      type PlanType =
-        | 'basic_monthly'
-        | 'basic_yearly'
-        | 'standard_monthly'
-        | 'standard_yearly'
-        | 'premium_monthly'
-        | 'premium_yearly'
+      // productId からプランを特定（2026-05-15 単一有料プラン化）
+      // - 新 ID: logic_paid_monthly / logic_paid_yearly
+      // - legacy ID も後方互換のため受け付け、新型に正規化する
+      type PlanType = 'paid_monthly' | 'paid_yearly'
       const productToPlan: Record<string, PlanType> = {
-        logic_basic_monthly: 'basic_monthly',
-        logic_basic_yearly: 'basic_yearly',
-        logic_standard_monthly: 'standard_monthly',
-        logic_standard_yearly: 'standard_yearly',
-        logic_premium_monthly: 'premium_monthly',
-        logic_premium_yearly: 'premium_yearly',
-        logic_campaign_yearly: 'standard_yearly',
+        logic_paid_monthly: 'paid_monthly',
+        logic_paid_yearly: 'paid_yearly',
+        // ─── legacy product IDs (backward compat) ───
+        logic_basic_monthly: 'paid_monthly',
+        logic_basic_yearly: 'paid_yearly',
+        logic_standard_monthly: 'paid_monthly',
+        logic_standard_yearly: 'paid_yearly',
+        logic_premium_monthly: 'paid_monthly',
+        logic_premium_yearly: 'paid_yearly',
+        logic_campaign_yearly: 'paid_yearly',
       }
       const plan = productToPlan[productId]
       if (!plan) {
@@ -95,7 +94,7 @@ export function createBillingRouter(deps: BillingDeps): express.Router {
       }
 
       // 有効期限算出: APIレスポンスの expiryTimeMillis を優先、なければ固定計算
-      const isYearly = plan.endsWith('_yearly')
+      const isYearly = plan === 'paid_yearly'
       const currentPeriodEnd = gpExpiryTimeMillis
         ? new Date(gpExpiryTimeMillis).toISOString()
         : new Date(Date.now() + (isYearly ? 365 : 30) * 24 * 60 * 60 * 1000).toISOString()

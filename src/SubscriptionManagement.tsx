@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@supabase/supabase-js'
-import { daysLeftInTrial, getSubscriptionState } from './subscription'
-import { isAndroidNative } from './subscription'
+import { getSubscriptionState, isAndroidNative, PLAN_PRICES, normalizeLegacyPlan } from './subscription'
+import type { SubscriptionPlan } from './subscription'
 import './SubscriptionManagement.css'
 
 type SubData = {
@@ -24,7 +24,6 @@ export default function SubscriptionManagement({ userId, onChangePlan }: Props) 
   const [loading, setLoading] = useState(canFetch)
 
   const localState = getSubscriptionState()
-  const trialDays = daysLeftInTrial()
   const isAndroid = isAndroidNative()
 
   useEffect(() => {
@@ -45,7 +44,7 @@ export default function SubscriptionManagement({ userId, onChangePlan }: Props) 
     fetchSub()
   }, [userId, canFetch, supabaseUrl, supabaseAnonKey])
 
-  const plan = subData?.plan || localState.plan
+  const plan: SubscriptionPlan = normalizeLegacyPlan(subData?.plan ?? localState.plan)
   const status = subData?.status || null
   const periodEnd = subData?.current_period_end || localState.expiresAt
 
@@ -59,14 +58,12 @@ export default function SubscriptionManagement({ userId, onChangePlan }: Props) 
   }
 
   const planLabel = () => {
-    if (plan === 'yearly') return '年額プラン (¥3,500/年)'
-    if (plan === 'monthly') return '月額プャン (¥650/月)'
-    if (plan === 'trial') return `7日間トライアル`
+    if (plan === 'paid_yearly') return `年額プラン (¥${PLAN_PRICES.yearly.toLocaleString()}/年)`
+    if (plan === 'paid_monthly') return `月額プラン (¥${PLAN_PRICES.monthly.toLocaleString()}/月)`
     return '無料プラン'
   }
 
-  const isActive = plan === 'monthly' || plan === 'yearly' || plan === 'trial'
-  const isTrial = plan === 'trial' || status === 'trialing'
+  const isActive = plan === 'paid_monthly' || plan === 'paid_yearly'
 
   // Google Play 定期購入管理へのリンク
   const handleOpenPlayStoreManagement = () => {
@@ -98,26 +95,9 @@ export default function SubscriptionManagement({ userId, onChangePlan }: Props) 
           <span className={`sm-plan-badge sm-plan-${plan}`}>{planLabel()}</span>
         </div>
 
-        {isTrial && (
-          <div className="sm-trial-info">
-            <span className="sm-trial-icon">●</span>
-            <span>無料トライアル中</span>
-            {trialDays > 0 && (
-              <strong>あと {trialDays} 日</strong>
-            )}
-          </div>
-        )}
-
-        {periodEnd && !isTrial && isActive && (
+        {periodEnd && isActive && (
           <div className="sm-row sm-row-sub">
             <span className="sm-label">次回更新日</span>
-            <span className="sm-value">{formatDate(periodEnd)}</span>
-          </div>
-        )}
-
-        {periodEnd && isTrial && (
-          <div className="sm-row sm-row-sub">
-            <span className="sm-label">トライアル終了日</span>
             <span className="sm-value">{formatDate(periodEnd)}</span>
           </div>
         )}
@@ -125,7 +105,7 @@ export default function SubscriptionManagement({ userId, onChangePlan }: Props) 
         {!isActive && (
           <div className="sm-row sm-row-sub">
             <span className="sm-label">ステータス</span>
-            <span className="sm-value sm-inactive">未加入</span>
+            <span className="sm-value sm-inactive">{status === 'canceled' ? '解約済み' : '未加入'}</span>
           </div>
         )}
       </div>
