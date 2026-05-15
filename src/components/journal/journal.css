@@ -120,6 +120,12 @@
   border: 1px solid var(--brand);
 }
 
+/* Danger variant — 削除確認等の destructive アクション用 */
+.journal-summarize-btn--danger {
+  background: var(--md-sys-color-error-container);
+  color: var(--md-sys-color-on-error-container);
+}
+
 .journal-summarize-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
@@ -436,16 +442,16 @@
 
 .journal-goal-card__icon-btn {
   flex: 1;
-  padding: 8px 10px;
+  padding: 10px 12px;
   background: transparent;
   border: 1px solid var(--border, rgba(255,255,255,.12));
   border-radius: 10px;
   color: var(--text-secondary);
   font: inherit;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  min-height: 36px;
+  min-height: 44px;
   transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 
@@ -467,7 +473,7 @@
 }
 
 .journal-goal-cat-btn {
-  padding: 8px 14px;
+  padding: 10px 16px;
   background: transparent;
   border: 1px solid var(--border, rgba(255,255,255,.12));
   border-radius: 99px;
@@ -476,7 +482,7 @@
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  min-height: 36px;
+  min-height: 44px;
   transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 
@@ -484,20 +490,35 @@
   border-color: color-mix(in srgb, var(--brand) 40%, transparent);
 }
 
-.journal-goal-cat-btn--active {
-  background: var(--brand);
-  border-color: var(--brand);
+.journal-goal-cat-btn--work.journal-goal-cat-btn--active {
+  background: var(--goal-cat-work);
+  border-color: var(--goal-cat-work);
   color: var(--accent-fg, #fff);
 }
 
-.journal-goal-cat-btn--work.journal-goal-cat-btn--active {
-  background: var(--brand);
-  border-color: var(--brand);
+.journal-goal-cat-btn--private.journal-goal-cat-btn--active {
+  background: var(--goal-cat-private);
+  border-color: var(--goal-cat-private);
+  color: var(--accent-fg, #fff);
 }
 
-.journal-goal-cat-btn--private.journal-goal-cat-btn--active {
-  background: #C2410C; /* warm orange (private = off-work) */
-  border-color: #C2410C;
+/* Clear ボタン（カテゴリ未指定に戻す）— neutral variant でアクティブ状態と区別 */
+.journal-goal-cat-btn--clear {
+  background: var(--bg-tertiary);
+  border-color: var(--border);
+  color: var(--text-muted);
+}
+
+.journal-goal-cat-btn--clear:hover {
+  color: var(--text-primary);
+}
+
+.journal-goal-cat-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  padding: 0 4px;
+  line-height: 1.5;
 }
 
 /* Category chip (on card / header summary) */
@@ -514,15 +535,15 @@
 }
 
 .journal-goal-cat-chip--work {
-  background: color-mix(in srgb, var(--brand) 18%, transparent);
-  color: var(--brand);
-  border: 1px solid color-mix(in srgb, var(--brand) 35%, transparent);
+  background: var(--goal-cat-work-soft);
+  color: var(--goal-cat-work);
+  border: 1px solid color-mix(in srgb, var(--goal-cat-work) 35%, transparent);
 }
 
 .journal-goal-cat-chip--private {
-  background: color-mix(in srgb, #C2410C 18%, transparent);
-  color: #F97316;
-  border: 1px solid color-mix(in srgb, #C2410C 40%, transparent);
+  background: var(--goal-cat-private-soft);
+  color: var(--goal-cat-private);
+  border: 1px solid color-mix(in srgb, var(--goal-cat-private) 40%, transparent);
 }
 
 .journal-goal-cat-chip--compact {
@@ -550,11 +571,9 @@
 }
 
 .journal-goals-header__title {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  color: var(--text-secondary);
 }
 
 .journal-goals-header__link {
@@ -562,11 +581,12 @@
   border: none;
   color: var(--brand);
   font: inherit;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   cursor: pointer;
-  padding: 4px 6px;
-  border-radius: 6px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  min-height: 44px;
 }
 
 .journal-goals-header__link:hover {
@@ -583,7 +603,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 6px;
+  padding: 10px 8px;
   background: transparent;
   border: none;
   border-radius: 8px;
@@ -591,7 +611,7 @@
   font: inherit;
   text-align: left;
   cursor: pointer;
-  min-height: 36px;
+  min-height: 44px;
   transition: background 0.15s;
 }
 
@@ -613,8 +633,18 @@
   min-width: 0;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   overflow: hidden;
+  flex-wrap: wrap;
+  row-gap: 4px;
+}
+
+.journal-goals-header__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .journal-goals-header__title-text {
@@ -629,9 +659,12 @@
 
 .journal-goals-header__more {
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-muted);
   flex-shrink: 0;
+  padding: 2px 6px;
+  background: var(--bg-tertiary);
+  border-radius: 99px;
 }
 
 .journal-goals-header__empty {
@@ -639,14 +672,52 @@
   font-size: 13px;
   font-weight: 500;
   color: var(--text-muted);
-  font-style: italic;
 }
 
 .journal-goals-header__chev {
-  font-size: 18px;
+  display: inline-flex;
+  align-items: center;
   color: var(--text-muted);
   flex-shrink: 0;
-  line-height: 1;
+}
+
+/* ── Confirm sheet (native confirm の代替) ─────────── */
+.journal-confirm-sheet {
+  position: relative;
+  background: var(--bg-card);
+  border-radius: 20px 20px 0 0;
+  width: 100%;
+  max-width: 600px;
+  padding: 16px 20px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: journal-fadeup 0.25s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .journal-confirm-sheet { animation: none; }
+}
+
+.journal-confirm-sheet__title {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.journal-confirm-sheet__desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-align: center;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.journal-confirm-sheet__actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
 }
 
 .journal-goal-input,

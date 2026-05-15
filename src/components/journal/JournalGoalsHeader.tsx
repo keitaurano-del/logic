@@ -3,11 +3,12 @@ import { fetchCurrentGoalsAllPeriods } from './journalDb'
 import { periodKeyFor } from './types'
 import type { Goal, PeriodType } from './types'
 import { CategoryChip } from './JournalGoals'
+import { ChevronRightIcon } from '../../icons'
 import { t } from '../../i18n'
 
 interface JournalGoalsHeaderProps {
   userId: string
-  /** 「すべて見る」を押したときに「目標」サブタブへ遷移するコールバック。階層を渡せる */
+  /** 「目標タブを開く」ボタンや行をタップしたときに「目標」サブタブへ遷移する。階層を渡せる */
   onOpenAll: (period?: PeriodType) => void
   /** 親が編集→Header に戻ったときの再フェッチをトリガーするためのキー */
   reloadKey?: number
@@ -24,6 +25,9 @@ const PERIOD_LABEL_KEY: Record<PeriodType, string> = {
   monthly: 'journal.periodMonthly',
   yearly:  'journal.periodYearly',
 }
+
+// 1 行に並べる目標の最大件数（残りは +N で集約）
+const ROW_VISIBLE_LIMIT = 2
 
 export function JournalGoalsHeader({ userId, onOpenAll, reloadKey }: JournalGoalsHeaderProps) {
   const [byPeriod, setByPeriod] = useState<Record<PeriodType, Goal[]>>({ weekly: [], monthly: [], yearly: [] })
@@ -45,7 +49,6 @@ export function JournalGoalsHeader({ userId, onOpenAll, reloadKey }: JournalGoal
     return () => { cancelled = true }
   }, [userId, reloadKey])
 
-  // 全部空でもプロンプトとして表示する（目標設定を促す）
   if (!loaded) return null
 
   return (
@@ -64,20 +67,26 @@ export function JournalGoalsHeader({ userId, onOpenAll, reloadKey }: JournalGoal
       <div className="journal-goals-header__rows">
         {ROWS.map(({ period, emptyKey }) => {
           const goals = byPeriod[period]
-          const head = goals[0]
-          const more = goals.length > 1 ? goals.length - 1 : 0
+          const visible = goals.slice(0, ROW_VISIBLE_LIMIT)
+          const more = goals.length - visible.length
+          const periodLabel = t(PERIOD_LABEL_KEY[period])
           return (
             <button
               key={period}
               type="button"
               className="journal-goals-header__row"
               onClick={() => onOpenAll(period)}
+              aria-label={t('journal.goalSummaryRowAria', { period: periodLabel })}
             >
-              <span className="journal-goals-header__period">{t(PERIOD_LABEL_KEY[period])}</span>
-              {head ? (
+              <span className="journal-goals-header__period">{periodLabel}</span>
+              {visible.length > 0 ? (
                 <span className="journal-goals-header__content">
-                  {head.category && <CategoryChip category={head.category} compact />}
-                  <span className="journal-goals-header__title-text">{head.title}</span>
+                  {visible.map((g) => (
+                    <span key={g.id} className="journal-goals-header__item">
+                      {g.category && <CategoryChip category={g.category} compact />}
+                      <span className="journal-goals-header__title-text">{g.title}</span>
+                    </span>
+                  ))}
                   {more > 0 && (
                     <span className="journal-goals-header__more">{t('journal.goalSummaryMore', { n: String(more) })}</span>
                   )}
@@ -85,7 +94,9 @@ export function JournalGoalsHeader({ userId, onOpenAll, reloadKey }: JournalGoal
               ) : (
                 <span className="journal-goals-header__empty">{t(emptyKey)}</span>
               )}
-              <span className="journal-goals-header__chev" aria-hidden="true">›</span>
+              <span className="journal-goals-header__chev" aria-hidden="true">
+                <ChevronRightIcon width={16} height={16} />
+              </span>
             </button>
           )
         })}

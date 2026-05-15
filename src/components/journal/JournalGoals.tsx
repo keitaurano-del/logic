@@ -12,6 +12,7 @@ import { goalFeedback } from './journalApi'
 import { dateRangeFor, periodKeyFor, GOAL_CATEGORIES } from './types'
 import type { Goal, GoalCategory, GoalReview, PeriodType } from './types'
 import { SparkleIcon } from './MoodWeatherIcons'
+import { ConfirmSheet } from './ConfirmSheet'
 import { t } from '../../i18n'
 
 interface JournalGoalsProps {
@@ -179,6 +180,7 @@ function GoalCard({ goal, assistantName, periodType, periodKey, userId, onEdit, 
   const [generating, setGenerating] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [elapsedSec, setElapsedSec] = useState(0)
+  const [confirmDelete, setConfirmDelete] = useState(false)
   const elapsedTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   useEffect(() => {
@@ -237,8 +239,8 @@ function GoalCard({ goal, assistantName, periodType, periodKey, userId, onEdit, 
     }
   }
 
-  const handleDeleteClick = async () => {
-    if (!window.confirm(t('journal.deleteGoalConfirm'))) return
+  const handleDeleteConfirmed = async () => {
+    setConfirmDelete(false)
     const { error: delErr } = await deleteGoal(goal.id)
     if (delErr) { setError(t('journal.errorGeneric')); return }
     onDelete()
@@ -285,15 +287,15 @@ function GoalCard({ goal, assistantName, periodType, periodKey, userId, onEdit, 
             type="button"
             className="journal-goal-card__icon-btn"
             onClick={onEdit}
-            aria-label={t('journal.editGoalCta')}
+            aria-label={t('journal.editGoalAria', { title: goal.title })}
           >
             {t('journal.editGoalCta')}
           </button>
           <button
             type="button"
             className="journal-goal-card__icon-btn journal-goal-card__icon-btn--danger"
-            onClick={handleDeleteClick}
-            aria-label={t('journal.deleteGoalCta')}
+            onClick={() => setConfirmDelete(true)}
+            aria-label={t('journal.deleteGoalAria', { title: goal.title })}
           >
             {t('journal.deleteGoalCta')}
           </button>
@@ -301,6 +303,16 @@ function GoalCard({ goal, assistantName, periodType, periodKey, userId, onEdit, 
       </div>
 
       {error && <div className="journal-error">{error}</div>}
+
+      <ConfirmSheet
+        open={confirmDelete}
+        title={t('journal.deleteGoalConfirm')}
+        description={goal.title}
+        confirmLabel={t('journal.deleteGoalCta')}
+        destructive
+        onConfirm={handleDeleteConfirmed}
+        onCancel={() => setConfirmDelete(false)}
+      />
 
       {reviewsLoaded && reviews.length > 0 && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 6 }}>
@@ -371,7 +383,7 @@ function GoalEditor({ userId, periodType, periodKey, existing, onSaved, onCancel
         {existing ? t('journal.currentGoal') : t('journal.setGoalPlaceholder')}
       </div>
 
-      {/* カテゴリ選択（仕事 / プライベート / なし） */}
+      {/* カテゴリ選択（仕事 / プライベート）。「指定なし」は clear ボタン */}
       <div>
         <div className="journal-section__label" style={{ fontSize: 12, marginBottom: 6, color: 'var(--text-muted)' }}>
           {t('journal.goalCategoryLabel')}
@@ -384,21 +396,23 @@ function GoalEditor({ userId, periodType, periodKey, existing, onSaved, onCancel
               role="radio"
               aria-checked={category === c}
               className={`journal-goal-cat-btn journal-goal-cat-btn--${c} ${category === c ? 'journal-goal-cat-btn--active' : ''}`}
-              onClick={() => setCategory(c)}
+              onClick={() => setCategory((cur) => (cur === c ? null : c))}
             >
               {t(CATEGORY_LABEL_KEY[c])}
             </button>
           ))}
-          <button
-            type="button"
-            role="radio"
-            aria-checked={category === null}
-            className={`journal-goal-cat-btn ${category === null ? 'journal-goal-cat-btn--active' : ''}`}
-            onClick={() => setCategory(null)}
-          >
-            {t('journal.goalCategoryNone')}
-          </button>
+          {category !== null && (
+            <button
+              type="button"
+              className="journal-goal-cat-btn journal-goal-cat-btn--clear"
+              onClick={() => setCategory(null)}
+              aria-label={t('journal.goalCategoryNone')}
+            >
+              {t('journal.goalCategoryNone')}
+            </button>
+          )}
         </div>
+        <div className="journal-goal-cat-hint">{t('journal.goalCategoryHint')}</div>
       </div>
 
       <input
