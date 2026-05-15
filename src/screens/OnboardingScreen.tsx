@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { loginWithGoogle, sendEmailOtp, verifyEmailOtp, isSupabaseConfigured } from '../supabase'
 import { startCheckout, PLAN_PRICES } from '../subscription'
 import { MedalIcon } from '../icons'
@@ -755,6 +755,8 @@ function OnboardingPricingView({ onNext, onSelectPaid, onBack }: {
 }
 
 // ── 登録画面（スクショ参考） ──────────────────────────────────
+const REGISTER_RESEND_COOLDOWN_SEC = 30
+
 function RegisterScreen({ onComplete, onSkip, onBack, onNavigateToLogin }: { onComplete: () => void; onSkip: () => void; onBack: () => void; onNavigateToLogin?: () => void }) {
   const [termsChecked, setTermsChecked] = useState(false)
   const [step, setStep] = useState<'email' | 'verify'>('email')
@@ -763,7 +765,19 @@ function RegisterScreen({ onComplete, onSkip, onBack, onNavigateToLogin }: { onC
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [successMsg, setSuccessMsg] = useState('')
+  const [resendCooldown, setResendCooldown] = useState(0)
+  const codeInputRef = useRef<HTMLInputElement>(null)
   const ready = isSupabaseConfigured()
+
+  useEffect(() => {
+    if (step === 'verify') codeInputRef.current?.focus()
+  }, [step])
+
+  useEffect(() => {
+    if (resendCooldown <= 0) return
+    const id = setTimeout(() => setResendCooldown(s => s - 1), 1000)
+    return () => clearTimeout(id)
+  }, [resendCooldown])
 
   const inputStyle: React.CSSProperties = {
     width: '100%',
@@ -802,9 +816,11 @@ function RegisterScreen({ onComplete, onSkip, onBack, onNavigateToLogin }: { onC
     }
     setStep('verify')
     setCode('')
+    setResendCooldown(REGISTER_RESEND_COOLDOWN_SEC)
   }
 
   async function handleVerify(submittedCode?: string) {
+    if (!termsChecked) { setError(t('onboarding.registerErrTerms')); return }
     const c = submittedCode ?? code
     if (c.length !== 6) return
     setError(''); setSuccessMsg(''); setLoading(true)
@@ -814,9 +830,12 @@ function RegisterScreen({ onComplete, onSkip, onBack, onNavigateToLogin }: { onC
     if (result.error === 'auth/invalid-code') setError(t('auth.errInvalidCode'))
     else if (result.error === 'auth/code-expired') setError(t('auth.errCodeExpired'))
     else setError(t('auth.errSendCodeFailed'))
+    setCode('')
+    codeInputRef.current?.focus()
   }
 
   async function handleResend() {
+    if (resendCooldown > 0 || loading) return
     setError(''); setSuccessMsg(''); setLoading(true)
     const result = await sendEmailOtp(email)
     setLoading(false)
@@ -826,6 +845,7 @@ function RegisterScreen({ onComplete, onSkip, onBack, onNavigateToLogin }: { onC
       return
     }
     setSuccessMsg(t('auth.codeResent'))
+    setResendCooldown(REGISTER_RESEND_COOLDOWN_SEC)
   }
 
   return (
@@ -892,12 +912,12 @@ function RegisterScreen({ onComplete, onSkip, onBack, onNavigateToLogin }: { onC
 
         {/* エラー / 成功 */}
         {error && (
-          <div style={{ fontSize: 14, color: C.error, padding: '10px 14px', background: C.errorBg, borderRadius: 10 }}>
+          <div role="alert" aria-live="polite" style={{ fontSize: 14, color: C.error, padding: '10px 14px', background: C.errorBg, borderRadius: 10 }}>
             {error}
           </div>
         )}
         {successMsg && (
-          <div style={{ fontSize: 14, color: '#a7f3d0', padding: '10px 14px', background: 'rgba(34,197,94,0.12)', borderRadius: 10 }}>
+          <div role="status" aria-live="polite" style={{ fontSize: 14, color: '#a7f3d0', padding: '10px 14px', background: 'rgba(34,197,94,0.12)', borderRadius: 10 }}>
             {successMsg}
           </div>
         )}
@@ -952,7 +972,7 @@ function RegisterScreen({ onComplete, onSkip, onBack, onNavigateToLogin }: { onC
                 cursor: loading ? 'not-allowed' : 'pointer',
               }}
             >
-              {loading ? t('pricing.processing') : t('auth.sendCodeBtn')}
+              {loading ? t('auth.processing') : t('auth.sendCodeBtn')}
             </button>
 
             {/* ログインリンク */}
@@ -990,21 +1010,22 @@ function RegisterScreen({ onComplete, onSkip, onBack, onNavigateToLogin }: { onC
               {t('auth.codeSentTo', { email })}
             </p>
             <input
+              ref={codeInputRef}
               type="text"
               inputMode="numeric"
               pattern="[0-9]*"
               maxLength={6}
               aria-label={t('auth.codeLabel')}
-              placeholder="123456"
+              placeholder="––––––"
               value={code}
+              disabled={loading}
               onChange={e => {
                 const next = e.target.value.replace(/\D/g, '').slice(0, 6)
                 setCode(next)
                 if (next.length === 6) handleVerify(next)
               }}
-              style={{ ...inputStyle, letterSpacing: '0.4em', textAlign: 'center', fontSize: 22 }}
+              style={{ ...inputStyle, letterSpacing: '0.4em', textAlign: 'center', fontSize: 22, opacity: loading ? 0.6 : 1 }}
               autoComplete="one-time-code"
-              autoFocus
             />
             <button
               onClick={() => handleVerify()}
@@ -1017,15 +1038,15 @@ function RegisterScreen({ onComplete, onSkip, onBack, onNavigateToLogin }: { onC
                 cursor: loading || code.length !== 6 ? 'not-allowed' : 'pointer',
               }}
             >
-              {loading ? t('pricing.processing') : t('auth.verifyBtn')}
+              {loading ? t('auth.processing') : t('auth.verifyBtn')}
             </button>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center', marginTop: 4 }}>
               <button
                 onClick={handleResend}
-                disabled={loading}
-                style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', fontSize: 13, cursor: loading ? 'not-allowed' : 'pointer', padding: '4px 0' }}
+                disabled={loading || resendCooldown > 0}
+                style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', fontSize: 13, cursor: (loading || resendCooldown > 0) ? 'not-allowed' : 'pointer', padding: '4px 0', opacity: resendCooldown > 0 ? 0.5 : 1 }}
               >
-                {t('auth.codeResend')}
+                {resendCooldown > 0 ? t('auth.codeResendIn', { sec: resendCooldown }) : t('auth.codeResend')}
               </button>
               <button
                 onClick={() => { setStep('email'); setError(''); setSuccessMsg(''); setCode('') }}

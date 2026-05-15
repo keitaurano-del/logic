@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { loginWithGoogle, sendEmailOtp, verifyEmailOtp, isSupabaseConfigured, type User } from '../supabase'
 import { t } from '../i18n'
 
@@ -9,6 +9,8 @@ interface LoginScreenProps {
 
 type Step = 'email' | 'verify'
 
+const RESEND_COOLDOWN_SEC = 30
+
 export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
   const [step, setStep] = useState<Step>('email')
   const [email, setEmail] = useState('')
@@ -16,7 +18,21 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [successMsg, setSuccessMsg] = useState('')
+  const [resendCooldown, setResendCooldown] = useState(0)
+  const codeInputRef = useRef<HTMLInputElement>(null)
   const ready = isSupabaseConfigured()
+
+  // step='verify' に切り替わったらコード入力欄にフォーカス
+  useEffect(() => {
+    if (step === 'verify') codeInputRef.current?.focus()
+  }, [step])
+
+  // Resend クールダウン
+  useEffect(() => {
+    if (resendCooldown <= 0) return
+    const id = setTimeout(() => setResendCooldown(s => s - 1), 1000)
+    return () => clearTimeout(id)
+  }, [resendCooldown])
 
   const BG = 'var(--bg-slate-deep)'
   const CARD = 'transparent'
@@ -61,6 +77,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
     }
     setStep('verify')
     setCode('')
+    setResendCooldown(RESEND_COOLDOWN_SEC)
   }
 
   async function handleVerify(submittedCode?: string) {
@@ -73,9 +90,13 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
     if (result.error === 'auth/invalid-code') setError(t('auth.errInvalidCode'))
     else if (result.error === 'auth/code-expired') setError(t('auth.errCodeExpired'))
     else setError(t('auth.errSendCodeFailed'))
+    // 入力をリセットして再入力しやすく
+    setCode('')
+    codeInputRef.current?.focus()
   }
 
   async function handleResend() {
+    if (resendCooldown > 0 || loading) return
     setError(''); setSuccessMsg(''); setLoading(true)
     const result = await sendEmailOtp(email)
     setLoading(false)
@@ -85,6 +106,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
       return
     }
     setSuccessMsg(t('auth.codeResent'))
+    setResendCooldown(RESEND_COOLDOWN_SEC)
   }
 
   const title = step === 'verify' ? t('auth.codeLabel') : t('auth.loginTitle')
@@ -136,12 +158,12 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
         )}
 
         {error && (
-          <div style={{ fontSize: 14, color: 'var(--md-sys-color-error)', padding: '10px 14px', background: 'rgba(248,113,113,0.1)', borderRadius: 10 }}>
+          <div role="alert" aria-live="polite" style={{ fontSize: 14, color: 'var(--md-sys-color-error)', padding: '10px 14px', background: 'rgba(248,113,113,0.1)', borderRadius: 10 }}>
             {error}
           </div>
         )}
         {successMsg && (
-          <div style={{ fontSize: 14, color: 'var(--success-mid)', padding: '10px 14px', background: 'var(--success-soft)', borderRadius: 10 }}>
+          <div role="status" aria-live="polite" style={{ fontSize: 14, color: 'var(--success-mid)', padding: '10px 14px', background: 'var(--success-soft)', borderRadius: 10 }}>
             {successMsg}
           </div>
         )}
@@ -179,21 +201,22 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
               {t('auth.codeSentTo', { email })}
             </p>
             <input
+              ref={codeInputRef}
               type="text"
               inputMode="numeric"
               pattern="[0-9]*"
               maxLength={6}
               aria-label={t('auth.codeLabel')}
-              placeholder="123456"
+              placeholder="––––––"
               value={code}
+              disabled={loading}
               onChange={e => {
                 const next = e.target.value.replace(/\D/g, '').slice(0, 6)
                 setCode(next)
                 if (next.length === 6) handleVerify(next)
               }}
-              style={{ ...inputStyle, letterSpacing: '0.4em', textAlign: 'center', fontSize: 22 }}
+              style={{ ...inputStyle, letterSpacing: '0.4em', textAlign: 'center', fontSize: 22, opacity: loading ? 0.6 : 1 }}
               autoComplete="one-time-code"
-              autoFocus
             />
             <button
               onClick={() => handleVerify()}
@@ -212,10 +235,10 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center', marginTop: 8 }}>
               <button
                 onClick={handleResend}
-                disabled={loading}
-                style={{ background: 'none', border: 'none', color: TEXT2, fontSize: 14, cursor: loading ? 'not-allowed' : 'pointer', padding: '4px 0' }}
+                disabled={loading || resendCooldown > 0}
+                style={{ background: 'none', border: 'none', color: TEXT2, fontSize: 14, cursor: (loading || resendCooldown > 0) ? 'not-allowed' : 'pointer', padding: '4px 0', opacity: resendCooldown > 0 ? 0.5 : 1 }}
               >
-                {t('auth.codeResend')}
+                {resendCooldown > 0 ? t('auth.codeResendIn', { sec: resendCooldown }) : t('auth.codeResend')}
               </button>
               <button
                 onClick={() => { setStep('email'); setError(''); setSuccessMsg(''); setCode('') }}
