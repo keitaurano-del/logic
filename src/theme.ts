@@ -37,8 +37,8 @@ export type Mode = {
 
 // MODES use getters for name/description so they re-localize on language switch.
 export const MODES: Mode[] = [
-  { id: 'light',      get name() { return t('theme.mode.light.name') },      get description() { return t('theme.mode.light.desc') },      tier: 'free',    preview: { bg: '#F5F1E8', card: '#FFFFFF', text: '#2D2820', accent: '#D4915A' } },
-  { id: 'dark',       get name() { return t('theme.mode.dark.name') },       get description() { return t('theme.mode.dark.desc') },       tier: 'free',    preview: { bg: '#15171C', card: '#1F232B', text: '#E8E8EC', accent: '#D4915A' } },
+  { id: 'light',      get name() { return t('theme.mode.light.name') },      get description() { return t('theme.mode.light.desc') },      tier: 'free',    preview: { bg: '#F8F9FC', card: '#FFFFFF', text: '#0D1220', accent: '#6C8EF5' } },
+  { id: 'dark',       get name() { return t('theme.mode.dark.name') },       get description() { return t('theme.mode.dark.desc') },       tier: 'free',    preview: { bg: '#1A1F2E', card: '#252C40', text: '#E8ECF4', accent: '#6C8EF5' } },
   { id: 'enterprise', get name() { return t('theme.mode.enterprise.name') }, get description() { return t('theme.mode.enterprise.desc') }, tier: 'premium', preview: { bg: '#0F1729', card: '#1A2540', text: '#E2E8F0', accent: '#94A3B8' } },
   { id: 'startup',    get name() { return t('theme.mode.startup.name') },    get description() { return t('theme.mode.startup.desc') },    tier: 'premium', preview: { bg: '#FFFAF0', card: '#FFFFFF', text: '#1A2E22', accent: '#10B981' } },
   { id: 'custom',     get name() { return t('theme.mode.custom.name') },     get description() { return t('theme.mode.custom.desc') },     tier: 'premium', preview: { bg: '#F5F1E8', card: '#FFFFFF', text: '#2D2820', accent: '#D4915A' } },
@@ -71,6 +71,17 @@ export function loadTheme(): ThemeState {
 
 export function saveTheme(s: ThemeState) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(s))
+}
+
+// Lightweight helpers for the Settings light/dark toggle.
+export function getMode(): ModeId {
+  return loadTheme().mode
+}
+
+export function setMode(mode: ModeId): void {
+  const next: ThemeState = { ...loadTheme(), mode }
+  saveTheme(next)
+  applyTheme(next)
 }
 
 function hexToRgba(hex: string, alpha: number): string {
@@ -113,9 +124,18 @@ function pickFg(bg: string): string {
 
 export function applyTheme(s: ThemeState) {
   const root = document.documentElement
-  // Reset previous mode classes
-  for (const m of MODES) root.classList.remove(`mode-${m.id}`)
+  const body = document.body
+  // Reset and apply mode classes on BOTH <html> and <body>.
+  // <body> needs the class because `body.theme-v3.mode-{x}` is the active
+  // selector in tokens.css (used to win specificity over `.mode-{x}` alone).
+  // `document.body` may be null when applyTheme runs from main.tsx before
+  // <body> parses; the null check keeps that path safe.
+  for (const m of MODES) {
+    root.classList.remove(`mode-${m.id}`)
+    if (body) body.classList.remove(`mode-${m.id}`)
+  }
   root.classList.add(`mode-${s.mode}`)
+  if (body) body.classList.add(`mode-${s.mode}`)
 
   // Accent variables
   let accentColor = ''
@@ -137,4 +157,16 @@ export function applyTheme(s: ThemeState) {
   // Auto-pick readable foreground for buttons (white or near-black)
   // This avoids unreadable white-on-yellow / white-on-light-orange situations.
   root.style.setProperty('--accent-fg', pickFg(accentColor))
+
+  // Sync <meta name="theme-color"> with the active mode so the browser's
+  // URL bar / status area matches the page background. Dark UA otherwise
+  // shows a stale light color on cold start.
+  const themeColor = s.mode === 'light' ? '#F8F9FC' : '#1A1F2E'
+  let meta = document.head.querySelector<HTMLMetaElement>('meta[name="theme-color"]')
+  if (!meta) {
+    meta = document.createElement('meta')
+    meta.name = 'theme-color'
+    document.head.appendChild(meta)
+  }
+  meta.content = themeColor
 }

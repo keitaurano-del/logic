@@ -5,9 +5,7 @@ import { MoodSelector, WeatherSelector } from './MoodWeatherSelector'
 import { VoiceTextarea } from './VoiceTextarea'
 import { TagInput } from './TagInput'
 import { JournalActivityList } from './JournalActivityList'
-import { SparkleIcon } from './MoodWeatherIcons'
 import { fetchJournalByDate, upsertJournal } from './journalDb'
-import { summarizeJournal } from './journalApi'
 import { t } from '../../i18n'
 
 interface JournalTodayProps {
@@ -22,16 +20,14 @@ function decideInitialPhase(): Phase {
   return h < 16 ? 'morning' : 'evening'
 }
 
-export function JournalToday({ userId, assistantName }: JournalTodayProps) {
+export function JournalToday({ userId }: JournalTodayProps) {
   const [loaded, setLoaded] = useState(false)
   const [phase, setPhase] = useState<Phase>(decideInitialPhase)
 
-  // 朝セクション（意図・予定・タグ）
+  // 朝セクション（始まり・予定・タグ）
   const [scheduleNotes, setScheduleNotes] = useState('')
   const [tags, setTags] = useState<string[]>([])
-  const [summary, setSummary] = useState('')
-  const [followUp, setFollowUp] = useState('')
-  const [isGenerating, setIsGenerating] = useState(false)
+  const [savingMorning, setSavingMorning] = useState(false)
 
   // 夜セクション（気分・天気・振り返り）
   const [mood, setMood] = useState<Mood | null>(null)
@@ -39,6 +35,7 @@ export function JournalToday({ userId, assistantName }: JournalTodayProps) {
   const [reflection, setReflection] = useState('')
   const [saving, setSaving] = useState(false)
   const [savedToast, setSavedToast] = useState(false)
+  const [celebration, setCelebration] = useState(false)
 
   const [error, setError] = useState<string | null>(null)
 
@@ -57,7 +54,6 @@ export function JournalToday({ userId, assistantName }: JournalTodayProps) {
         if (j.weather) setWeather(j.weather as Weather)
         if (j.schedule_notes) setScheduleNotes(j.schedule_notes)
         if (j.evening_reflection) setReflection(j.evening_reflection)
-        if (j.ai_summary) setSummary(j.ai_summary)
         if (j.tags) setTags(j.tags)
       }
       setLoaded(true)
@@ -65,8 +61,8 @@ export function JournalToday({ userId, assistantName }: JournalTodayProps) {
     return () => { cancelled = true }
   }, [userId])
 
-  // 朝の要約 CTA は schedule_notes / tags があれば有効
-  const canGenerate = !!(scheduleNotes.trim() || tags.length > 0)
+  // 朝の保存 CTA: schedule_notes か tags があれば有効
+  const canSaveMorning = !!(scheduleNotes.trim() || tags.length > 0)
   // 夜の保存 CTA は気分・天気・振り返り のどれかが入ってれば有効
   const canSaveEvening = !!(mood !== null || weather !== null || reflection.trim())
 
@@ -80,56 +76,33 @@ export function JournalToday({ userId, assistantName }: JournalTodayProps) {
       morning_memo: null,
       schedule_notes: scheduleNotes.trim() || null,
       evening_reflection: reflection.trim() || null,
-      ai_summary: summary || null,
+      ai_summary: null,
       tags,
       ...overrides,
     }
     const { error: dbErr } = await upsertJournal(j)
-    if (dbErr) console.warn('JournalToday save:', dbErr)
+    if (dbErr) {
+      console.warn('JournalToday save:', dbErr)
+      setError(t('journal.errorGeneric'))
+    }
   }
 
-  // 朝のサマリー: scheduleNotes + tags を中心に。mood/weather は朝時点で未入力なので渡さない
-  // AI が tags も提案するので、ユーザーが手動で入れたタグとマージする
-  const handleSummarize = async () => {
-    if (!canGenerate || isGenerating) return
+  const handleSaveMorning = async () => {
+    if (!canSaveMorning || savingMorning) return
     setError(null)
-    setIsGenerating(true)
-    try {
-      const { summary: newSummary, followUpQuestion, suggestedTags, error: apiErr } = await summarizeJournal({
-        mood: null,
-        weather: null,
-        scheduleNotes: scheduleNotes.trim() || null,
-        assistantName,
-      })
-      if (apiErr) {
-        setError(t('journal.errorGeneric'))
-        return
-      }
-      const finalSummary = (newSummary || '').trim()
-      const finalFollow = (followUpQuestion || '').trim()
-      // 既存タグ + AI 提案タグ をマージ（重複除去 + 最大 8 個）
-      const merged = [...tags]
-      for (const tag of (suggestedTags ?? [])) {
-        if (!merged.includes(tag) && merged.length < 8) merged.push(tag)
-      }
-      setSummary(finalSummary)
-      setFollowUp(finalFollow)
-      setTags(merged)
-      await saveDb({ ai_summary: finalSummary || null, tags: merged })
-    } catch (e) {
-      console.warn('summarize error:', e)
-      setError(t('journal.errorGeneric'))
-    } finally {
-      setIsGenerating(false)
-    }
+    setSavingMorning(true)
+    await saveDb()
+    setSavingMorning(false)
+    setSavedToast(true)
+    setTimeout(() => setSavedToast(false), 2000)
   }
 
   const handleSaveEvening = async () => {
     setSaving(true)
+    setError(null)
     await saveDb()
     setSaving(false)
-    setSavedToast(true)
-    setTimeout(() => setSavedToast(false), 2000)
+    setCelebration(true)
   }
 
   if (!loaded) return null
@@ -186,10 +159,10 @@ export function JournalToday({ userId, assistantName }: JournalTodayProps) {
             />
           </div>
 
-          <div>
-            <div className="journal-section__label" style={{ marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
+          <div className="journal-tags-compact">
+            <div className="journal-section__label journal-section__label--sm">
               {t('journal.tagsLabel')}
-              <span style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 500 }}>{t('journal.tagsAutoHint')}</span>
+              <span className="journal-section__hint">{t('journal.tagsAutoHint')}</span>
             </div>
             <TagInput
               value={tags}
@@ -200,40 +173,21 @@ export function JournalToday({ userId, assistantName }: JournalTodayProps) {
 
           <button
             type="button"
-            className={`journal-summarize-btn ${isGenerating ? 'journal-summarize-btn--working' : ''}`}
-            disabled={!canGenerate || isGenerating}
-            onClick={handleSummarize}
+            className="journal-summarize-btn"
+            disabled={!canSaveMorning || savingMorning}
+            onClick={handleSaveMorning}
           >
-            {isGenerating ? (
+            {savingMorning ? (
               <>
                 <span className="journal-spinner" aria-hidden="true" />
-                <span>{t('journal.summarizing')}</span>
+                <span>{t('journal.saveMorningRunning')}</span>
               </>
             ) : (
-              <>
-                <SparkleIcon size={18} />
-                <span>{t('journal.summarizeCta', { name: assistantName })}</span>
-              </>
+              <span>{t('journal.saveMorning')}</span>
             )}
           </button>
 
           {error && <div className="journal-error">{error}</div>}
-
-          {summary && (
-            <div className="journal-summary-card" role="region" aria-live="polite">
-              <div className="journal-summary-card__title">
-                <SparkleIcon size={14} />
-                <span>{t('journal.summaryCardTitle', { name: assistantName })}</span>
-              </div>
-              <div className="journal-summary-card__body">{summary}</div>
-              {followUp && (
-                <div className="journal-followup">
-                  <div className="journal-followup__label">{t('journal.followUpLabel')}</div>
-                  <div className="journal-followup__body">{followUp}</div>
-                </div>
-              )}
-            </div>
-          )}
 
           {!userId && (
             <div className="journal-login-hint">{t('journal.loginToSave')}</div>
@@ -241,20 +195,20 @@ export function JournalToday({ userId, assistantName }: JournalTodayProps) {
         </div>
       ) : (
         <div className="journal-today__phase">
-          {/* 朝のリキャップ (任意・存在時のみ) */}
-          {summary && (
+          {/* 朝に書いたメモ (任意・存在時のみ) */}
+          {scheduleNotes.trim() && (
             <div className="journal-summary-card journal-summary-card--compact" role="region">
               <div className="journal-summary-card__title">
-                <SparkleIcon size={14} />
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="4" />
+                  <line x1="12" y1="2" x2="12" y2="5" />
+                  <line x1="12" y1="19" x2="12" y2="22" />
+                  <line x1="2" y1="12" x2="5" y2="12" />
+                  <line x1="19" y1="12" x2="22" y2="12" />
+                </svg>
                 <span>{t('journal.morningRecap')}</span>
               </div>
-              <div className="journal-summary-card__body">{summary}</div>
-              {followUp && (
-                <div className="journal-followup">
-                  <div className="journal-followup__label">{t('journal.followUpLabel')}</div>
-                  <div className="journal-followup__body">{followUp}</div>
-                </div>
-              )}
+              <div className="journal-summary-card__body">{scheduleNotes}</div>
             </div>
           )}
 
@@ -299,6 +253,8 @@ export function JournalToday({ userId, assistantName }: JournalTodayProps) {
             {saving ? t('common.loading') : t('journal.saveEvening')}
           </button>
 
+          {error && <div className="journal-error">{error}</div>}
+
           {!userId && (
             <div className="journal-login-hint">{t('journal.loginToSave')}</div>
           )}
@@ -308,6 +264,38 @@ export function JournalToday({ userId, assistantName }: JournalTodayProps) {
       {savedToast && (
         <div className="journal-toast" role="status">{t('journal.savedToast')}</div>
       )}
+
+      {celebration && (
+        <CelebrationOverlay onClose={() => setCelebration(false)} />
+      )}
+    </div>
+  )
+}
+
+function CelebrationOverlay({ onClose }: { onClose: () => void }) {
+  return (
+    <div className="journal-celebration" role="dialog" aria-modal="true" aria-label={t('journal.eveningCelebrationTitle')}>
+      <div className="journal-celebration__confetti" aria-hidden="true">
+        {Array.from({ length: 24 }).map((_, i) => (
+          <span key={i} className={`journal-celebration__piece journal-celebration__piece--${i % 6}`} />
+        ))}
+      </div>
+      <div className="journal-celebration__card">
+        <div className="journal-celebration__icon" aria-hidden="true">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6L12 2z" fill="currentColor" stroke="none" />
+          </svg>
+        </div>
+        <div className="journal-celebration__title">{t('journal.eveningCelebrationTitle')}</div>
+        <div className="journal-celebration__body">{t('journal.eveningCelebrationBody')}</div>
+        <button
+          type="button"
+          className="journal-summarize-btn"
+          onClick={onClose}
+        >
+          {t('journal.eveningCelebrationClose')}
+        </button>
+      </div>
     </div>
   )
 }

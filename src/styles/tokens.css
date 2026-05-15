@@ -2,12 +2,12 @@
  * Brand-aligned with the Slate Blue logo (#6C8EF5 / #EEF2FE / #9BB3FA — 450nm 帯)
  * Refreshed: richer gradients, vibrant accents, animation tokens
  *
- * NOTE (Phase 4-7 完了時点):
- * 現状の v3 アプリは main.tsx で .mode-dark を強制しつつ、AppV3 ルートで
- * body.classList.add('theme-v3') を付与する。両方が常に効くため、
- * :root のライト系トークンは「将来のライトテーマ予約」であり実行時には
- * 到達しない (body.theme-v3 が最高特異度で勝つ)。
- * 単一情報源は body.theme-v3 ブロック (下方)。
+ * NOTE (Phase 5 ライト/ダーク両対応):
+ * v3 アプリは AppV3 ルートで body.classList.add('theme-v3') を付与し、
+ * applyTheme() が html.mode-light / html.mode-dark を切り替える。
+ * - body.theme-v3.mode-light → :root のライトトークンを使用（白背景 + 青アクセント）
+ * - body.theme-v3.mode-dark  → 下方 body.theme-v3.mode-dark ブロックのダーク値
+ * デフォルト（クラス未指定）はライト想定。
  */
 :root {
   /* Brand (Slate Blue 450nm 帯) */
@@ -247,11 +247,54 @@
   --shimmer-size: 200% auto;
 }
 
-/* v3 design — Slate Blue navy surfaces.
- * Phase 4-7 で tokensV3.ts は完全削除され、tokens.css が単一情報源になった。
- * `body.theme-v3` で .mode-dark より高い特異度にして必ず勝つようにする。
+/* v3 light — Slate Blue accent on clean off-white.
+ * :root のライト値を踏襲しつつ、v3 向けに明示的に固定して
+ * `.mode-dark` セレクタが偶発的に効いた場合の取りこぼしを防ぐ。
  */
-body.theme-v3 {
+body.theme-v3.mode-light {
+  --bg-primary:    #F8F9FC;
+  --bg-secondary:  #F0F2F8;
+  --bg-card:       #FFFFFF;
+  --bg-elevated:   #FFFFFF;
+  --bg-tertiary:   #E5E8F2;
+  --bg-hero:       var(--brand-dark);
+  --bg-app-grad:   linear-gradient(160deg, #F8F9FC 0%, #EEF2FE 100%);
+  --bg-glass:      rgba(255, 255, 255, 0.82);
+  --bg-glass-dark: rgba(248, 249, 252, 0.92);
+
+  --text-primary:   #0D1220;
+  --text-secondary: #4A5068;
+  --text-muted:     #6B7280;
+  --text-tertiary:  #6B7280;
+
+  --border:       #E2E5F0;
+  --border-light: #EEF0F8;
+  --border-brand: rgba(108, 142, 245, 0.25);
+
+  --accent:       var(--brand);
+  --accent-light: var(--brand-light);
+  --accent-soft:  rgba(108, 142, 245, 0.16);
+  --accent-glow:  rgba(108, 142, 245, 0.25);
+  --accent-dark:  var(--brand-hover);
+  --accent-fg:    #FFFFFF;
+
+  /* Light mode WCAG AA fix: #6C8EF5 on white は 3.0:1 で本文色不足。
+   * テキスト用途では --brand-hover (#2E45A8, ratio ~9.5:1) を使うよう、
+   * --brand 自体をテキスト想定なら hover 色に寄せる。
+   * 注意: --brand-grad / --hero-grad は別変数で薄い青の演出を維持。
+   */
+  --brand:        #2E45A8;
+
+  --shadow-card:       0 1px 2px rgba(13, 18, 32, 0.05), 0 4px 12px rgba(13, 18, 32, 0.08);
+  --shadow-card-hover: 0 4px 8px rgba(13, 18, 32, 0.08), 0 12px 28px rgba(13, 18, 32, 0.14);
+  --shadow-elevated:   0 2px 4px rgba(13, 18, 32, 0.06), 0 8px 20px rgba(13, 18, 32, 0.10);
+}
+
+/* v3 dark — Slate Blue navy surfaces.
+ * mode クラス（html.mode-dark）と組み合わせて適用する。
+ * `body.theme-v3.mode-dark` の特異度で `.mode-dark` 単体より優先される。
+ */
+body.theme-v3.mode-dark {
   --bg-primary:    #1A1F2E;
   --bg-secondary:  #1E2438;
   --bg-card:       #252C40;
