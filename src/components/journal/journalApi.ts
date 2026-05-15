@@ -9,7 +9,7 @@ interface SummarizeRequest {
   assistantName: string
 }
 
-export async function summarizeJournal(req: SummarizeRequest): Promise<{ summary?: string; followUpQuestion?: string; error?: string }> {
+export async function summarizeJournal(req: SummarizeRequest): Promise<{ summary?: string; followUpQuestion?: string; suggestedTags?: string[]; error?: string }> {
   try {
     const res = await fetch(`${API_BASE}/api/journal/summarize`, {
       method: 'POST',
@@ -24,6 +24,7 @@ export async function summarizeJournal(req: SummarizeRequest): Promise<{ summary
     return {
       summary: data?.summary ?? '',
       followUpQuestion: data?.follow_up_question ?? '',
+      suggestedTags: Array.isArray(data?.suggested_tags) ? data.suggested_tags as string[] : [],
     }
   } catch (e) {
     return { error: e instanceof Error ? e.message : String(e) }

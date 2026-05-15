@@ -74,7 +74,7 @@ export function createJournalRouter(
 
       const systemPrompt = isEn
         ? `You are "${name}", a personal assistant inside the Logic app for a first-year consultant.
-Summarize the user's morning check-in warmly, concisely, and forward-looking, AND propose one open-ended follow-up question that invites deeper reflection.
+Summarize the user's morning check-in warmly, concisely, and forward-looking, propose one open-ended follow-up question that invites deeper reflection, AND extract up to 4 short tags from the content.
 
 Output STRICTLY in this exact format (no prefix, no extra text):
 
@@ -84,9 +84,12 @@ SUMMARY:
 FOLLOW_UP:
 <one open-ended question, 1 line, that nudges the user to reflect further on their intentions or today's challenge>
 
+TAGS:
+<comma-separated short tags (1-3 words each, total 2-4 tags). Extract themes / actions / context (e.g. "client meeting", "focus", "low energy"). No hashtags, no quotes.>
+
 Stay positive, never judgmental. Don't repeat raw inputs verbatim. The follow-up MUST be a question, not advice.`
         : `あなたは Logic アプリのパーソナルアシスタント「${name}」です。
-コンサルタント1年目のユーザーが入力した今日の情報を温かく・前向きに・簡潔にまとめ、さらに **深掘りを促す問い1つ** を提案してください。
+コンサルタント1年目のユーザーが入力した今日の情報を温かく・前向きに・簡潔にまとめ、深掘りを促す問い1つを提案し、さらに **内容から短いタグを最大 4 つ** 抽出してください。
 
 以下の形式で **厳密に** 出力してください（前置きや余計なテキストは禁止）:
 
@@ -95,6 +98,9 @@ SUMMARY:
 
 FOLLOW_UP:
 <1行・1問。今日の意図や課題をより深く考えるきっかけになる開放的な問い>
+
+TAGS:
+<カンマ区切りの短いタグ（各 1〜10 文字、合計 2〜4 個）。テーマ・行動・状況を抽出（例: "クライアントMTG, 集中, 体調不良"）。ハッシュ記号や引用符は付けない。>
 
 ポジティブに、決めつけずに。入力のコピーは禁止。フォローアップは必ず「問い」の形にすること。`
 
@@ -116,15 +122,24 @@ ${(scheduleNotes || '').toString().trim() || '未入力'}`
       })
       const raw = response.content[0].type === 'text' ? response.content[0].text.trim() : ''
 
-      // SUMMARY: / FOLLOW_UP: セクションをパース。形式違反時は raw 全体を summary に倒す
+      // SUMMARY: / FOLLOW_UP: / TAGS: をパース。形式違反時は raw 全体を summary に倒す
       let summary = raw
       let followUpQuestion = ''
-      const summaryMatch = raw.match(/SUMMARY:\s*([\s\S]*?)(?:\n\s*FOLLOW_UP:|$)/i)
-      const followMatch = raw.match(/FOLLOW_UP:\s*([\s\S]*?)$/i)
+      let suggestedTags: string[] = []
+      const summaryMatch = raw.match(/SUMMARY:\s*([\s\S]*?)(?:\n\s*FOLLOW_UP:|\n\s*TAGS:|$)/i)
+      const followMatch = raw.match(/FOLLOW_UP:\s*([\s\S]*?)(?:\n\s*TAGS:|$)/i)
+      const tagsMatch = raw.match(/TAGS:\s*([\s\S]*?)$/i)
       if (summaryMatch) summary = summaryMatch[1].trim()
       if (followMatch) followUpQuestion = followMatch[1].trim()
+      if (tagsMatch) {
+        suggestedTags = tagsMatch[1]
+          .split(/[,、]/)
+          .map((s) => s.replace(/^#+/, '').replace(/["'`「」『』]/g, '').trim())
+          .filter((s) => s.length > 0 && s.length <= 24)
+          .slice(0, 4)
+      }
 
-      res.json({ summary, follow_up_question: followUpQuestion })
+      res.json({ summary, follow_up_question: followUpQuestion, suggested_tags: suggestedTags })
     } catch (e: unknown) {
       console.error('journal summarize error:', e)
       res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
