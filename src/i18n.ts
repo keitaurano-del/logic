@@ -132,6 +132,12 @@ const STRINGS: Record<Locale, Strings> = {
     'journal.voiceErrUnsupported': 'このブラウザは音声入力に対応してないみたい',
     'journal.voiceErrAborted': '',
     'journal.voiceErrUnknown': '音声入力でエラーが起きたわ。もう一度試して',
+
+    // Text cleanup
+    'journal.cleanupCta': '整理する',
+    'journal.cleanupRunning': '整理中...',
+    'journal.cleanupAria': '入力テキストを整形',
+    'journal.cleanupError': '整理に失敗したわ。もう一度試して',
     'journal.assistantNameDefault': 'パーソナルアシスタント',
     'journal.errorGeneric': 'エラーが発生しました。しばらく待ってからもう一度お試しください。',
     'journal.prevMonth': '前の月',
@@ -1584,6 +1590,12 @@ const STRINGS: Record<Locale, Strings> = {
     'journal.voiceErrUnsupported': "This browser doesn't support voice input.",
     'journal.voiceErrAborted': '',
     'journal.voiceErrUnknown': 'Voice input failed. Please try again.',
+
+    // Text cleanup
+    'journal.cleanupCta': 'Clean up',
+    'journal.cleanupRunning': 'Cleaning...',
+    'journal.cleanupAria': 'Clean up the typed text',
+    'journal.cleanupError': 'Cleanup failed. Please try again.',
     'journal.assistantNameDefault': 'Personal assistant',
     'journal.errorGeneric': 'Something went wrong. Please try again in a moment.',
     'journal.prevMonth': 'Previous month',

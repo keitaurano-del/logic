@@ -1,6 +1,7 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useVoiceInput, type VoiceErrorCode } from '../../hooks/useVoiceInput'
 import { MicIcon } from './MoodWeatherIcons'
+import { cleanupText } from './journalApi'
 import { t } from '../../i18n'
 
 interface VoiceTextareaProps {
@@ -9,6 +10,8 @@ interface VoiceTextareaProps {
   placeholder?: string
   minHeight?: number
   ariaLabel?: string
+  /** 「整理する」ボタンを表示。入力テキストを整形 API でクリーンアップする */
+  enableCleanup?: boolean
 }
 
 const ERROR_KEY: Record<VoiceErrorCode, string> = {
@@ -22,9 +25,11 @@ const ERROR_KEY: Record<VoiceErrorCode, string> = {
   'unknown':           'journal.voiceErrUnknown',
 }
 
-export function VoiceTextarea({ value, onChange, placeholder, minHeight, ariaLabel }: VoiceTextareaProps) {
+export function VoiceTextarea({ value, onChange, placeholder, minHeight, ariaLabel, enableCleanup }: VoiceTextareaProps) {
   // 録音開始時のテキスト末尾位置を覚えて、認識結果を以降に追記する
   const baseRef = useRef<string>(value)
+  const [cleaning, setCleaning] = useState(false)
+  const [cleanupError, setCleanupError] = useState<string | null>(null)
 
   const handleTranscript = (transcript: string) => {
     const sep = baseRef.current && !/[\s\n]$/.test(baseRef.current) ? ' ' : ''
@@ -41,6 +46,26 @@ export function VoiceTextarea({ value, onChange, placeholder, minHeight, ariaLab
   const handleStart = () => {
     if (!isListening) baseRef.current = value
     void toggleListening()
+  }
+
+  const handleCleanup = async () => {
+    if (!value.trim() || cleaning) return
+    setCleanupError(null)
+    setCleaning(true)
+    try {
+      const { cleaned, error: apiErr } = await cleanupText(value)
+      if (apiErr) { setCleanupError(t('journal.cleanupError')); return }
+      const final = (cleaned || '').trim()
+      if (final) {
+        baseRef.current = final
+        onChange(final)
+      }
+    } catch (e) {
+      console.warn('cleanup error:', e)
+      setCleanupError(t('journal.cleanupError'))
+    } finally {
+      setCleaning(false)
+    }
   }
 
   return (
@@ -72,9 +97,37 @@ export function VoiceTextarea({ value, onChange, placeholder, minHeight, ariaLab
           {t('journal.voiceRecording')}
         </span>
       )}
+      {enableCleanup && (
+        <button
+          type="button"
+          className="journal-cleanup-btn"
+          onClick={handleCleanup}
+          disabled={!value.trim() || cleaning}
+          aria-label={t('journal.cleanupAria')}
+        >
+          {cleaning ? (
+            <>
+              <span className="journal-spinner journal-spinner--brand" aria-hidden="true" />
+              <span>{t('journal.cleanupRunning')}</span>
+            </>
+          ) : (
+            <>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M3 6h18M3 12h18M3 18h12" />
+              </svg>
+              <span>{t('journal.cleanupCta')}</span>
+            </>
+          )}
+        </button>
+      )}
       {error && (
         <div className="journal-voice-error" role="alert">
           {t(ERROR_KEY[error])}
+        </div>
+      )}
+      {cleanupError && (
+        <div className="journal-voice-error" role="alert">
+          {cleanupError}
         </div>
       )}
     </div>

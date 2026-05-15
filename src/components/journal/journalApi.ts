@@ -36,6 +36,24 @@ interface GoalFeedbackRequest {
   assistantName: string
 }
 
+export async function cleanupText(text: string): Promise<{ cleaned?: string; error?: string }> {
+  try {
+    const res = await fetch(`${API_BASE}/api/journal/cleanup`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, locale: getLocale() }),
+    })
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      return { error: data?.error || `HTTP ${res.status}` }
+    }
+    const data = await res.json()
+    return { cleaned: data?.cleaned ?? '' }
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : String(e) }
+  }
+}
+
 export async function goalFeedback(req: GoalFeedbackRequest): Promise<{ feedback?: string; error?: string }> {
   try {
     const res = await fetch(`${API_BASE}/api/journal/goal-feedback`, {
