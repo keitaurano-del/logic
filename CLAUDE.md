@@ -135,7 +135,7 @@ src/
   AppV3.tsx          # Root component: Screen union type, tab navigation, URL sync
   screens/           # One file per screen — flat, never nested directories
   components/        # Reusable pieces (AppShell.tsx = sidebar + tabbar layout)
-  icons/index.tsx    # All SVG icons — use these, never emoji
+  icons/index.tsx    # All SVG icons — use these, never emoji (except journal mood/weather/phase/streak — see feedback_journal_emoji)
   styles/            # CSS design system (see below)
   lessons/           # Static lesson content data (*.ts files)
   db/                # localStorage helpers (notebookDb, progressDb, roadmapDb)
@@ -201,7 +201,7 @@ Key tokens:
 2. **`tokens.css` must be first** import in `index.css` — other CSS files depend on its variables
 3. **`src/sentry.ts` and `src/notifications.ts` are stubs** — both `@sentry/react` and `@capacitor/*` are installed (Capacitor is actively used for mobile builds), but these two helper files remain no-op stubs. Do not turn them into real implementations without aligning with the broader observability/notifications strategy.
 4. **i18n** — every new user-facing string needs both `ja` and `en` entries in `src/i18n.ts`
-5. **Icons** — use SVG from `src/icons/index.tsx`, never emoji in UI
+5. **Icons** — use SVG from `src/icons/index.tsx`, never emoji in UI. **Exception:** ジャーナル機能 (`src/components/journal/`) の mood・weather・phase tab・streak の 4 箇所のみ絵文字 OK（feedback_journal_emoji 参照）。他画面の `FlameIcon` 等共有 SVG はそのまま維持。
 6. **Screen union** — forgetting to add a new screen variant to the union in `AppV3.tsx` causes TS errors
 
 ## Deployment
@@ -236,6 +236,39 @@ agent-config の `projects/-root-projects/memory/` から sync。個別ファイ
 - [Figma ログイン](reference_figma_login.md) — Figma は keita.urano@gmail.com の Google アカウントでログイン済み
 - [本番デプロイコマンド](reference_deploy_commands.md) — logic / en-chakai の手動デプロイは `gh workflow run deploy-production.yml -f confirm=yes`
 - [Logic Android 内部配信フロー](project_logic_android_deploy.md) — main push で内部テスターへ自動 rollout。Production 初回公開済み（2026-05-13）
+- [アプリUI文言は中立的な丁寧体](feedback_app_copy_neutral.md) — アプリ内のi18n/ラベル/エラー文言は凛口調NG、「〜です/〜ます」で書く。凛トーンはKeitaとの会話のみ
+
+### feedback_app_copy_neutral.md
+
+---
+name: feedback-app-copy-neutral
+description: アプリ UI の文言は凛の口調を使わず、中立的な丁寧体（〜です/〜ます）にする。凛の口調は Keita との会話のみ。
+metadata:
+  type: feedback
+originSessionId: cb531aab-abab-48c7-9cf2-4c7ad52988e1
+---
+
+アプリ（Logic / 円茶会など）に**表示される UI 文言は凛の口調を使わない**。中立的な丁寧体で書く。
+
+**Why:** 2026-05-15 Keita からの明示指示。「アプリは凛のトーンにしないで。普通の感じにして」。エンドユーザー向けプロダクトは AI アシスタントのキャラクター性を引きずらない方が UX として読みやすく、誰が読んでも違和感のないコピーになるため。
+
+**How to apply:**
+- アプリ内の **i18n 文言・ボタンラベル・エラーメッセージ・ヒント・空状態テキスト** は中立的な丁寧体（「〜です」「〜ます」「〜してください」「〜できます」）で書く
+- 使わない語尾：「〜わ」「〜のよ」「〜かしら」「〜てね」「〜みたい」「〜必要よ」「〜なの」など凛トーン全般
+- 使う例：
+  - ❌「整理に失敗したわ。もう一度試して」 → ✅「整理に失敗しました。もう一度お試しください」
+  - ❌「マイクの許可が必要よ。〜許可して」 → ✅「マイクの許可が必要です。〜許可してください」
+  - ❌「ジャーナルを使うにはログインが必要よ」 → ✅「ジャーナルの利用にはログインが必要です」
+  - ❌「タスクは見つからなかったわ」 → ✅「タスクは見つかりませんでした」
+- **凛トーンを使う場面（変更なし）**: Keita との Claude Code セッション内の会話、コミットメッセージ・PR 説明文・Slack 等の社内テキスト。アプリのエンドユーザーに見えない範囲は今まで通り凛口調で OK
+- en 側はもともとニュートラルなので参照基準にしてよい（凛トーンが入り込んでいたら同様に直す）
+
+**注意点:**
+- 過度な丁寧（「〜くださいませ」「お願い申し上げます」）は不要。ビジネスアプリの一般的な丁寧体レベルで止める
+- カジュアル要素（「OK」「ヒント」など）は凛トーンとは別物なので維持して OK
+- 「〜してください」が連続して堅くなる箇所は「〜できます」など能動表現に置き換えて自然化する
+
+関連 memory: [[feedback-tone]]（凛との会話側の口調ルール、こちらは保持）
 
 ### feedback_assistant_name.md
 
