@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { loginWithGoogle, loginWithEmail, signupWithEmail, resetPasswordForEmail, isSupabaseConfigured, type User } from '../supabase'
+import { useState, useRef, useEffect } from 'react'
+import { loginWithGoogle, sendEmailOtp, verifyEmailOtp, isSupabaseConfigured, type User } from '../supabase'
 import { t } from '../i18n'
 
 interface LoginScreenProps {
@@ -7,24 +7,40 @@ interface LoginScreenProps {
   initialTab?: 'google' | 'email'
 }
 
-// SCRUM-235: シンプルなダークUI。スクショ参考。タブ・二段階認証なし。
+type Step = 'email' | 'verify'
+
+const RESEND_COOLDOWN_SEC = 30
+
 export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
-  const [mode, setMode] = useState<'login' | 'signup' | 'reset'>('login')
+  const [step, setStep] = useState<Step>('email')
   const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [code, setCode] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [successMsg, setSuccessMsg] = useState('')
+  const [resendCooldown, setResendCooldown] = useState(0)
+  const codeInputRef = useRef<HTMLInputElement>(null)
   const ready = isSupabaseConfigured()
 
-  // ── カラー（ダーク前提のヒーロー画面、tokens.css の on-dark 系を参照） ──
-  const BG = 'var(--bg-slate-deep)'                  // Slate Blue 背景
+  // step='verify' に切り替わったらコード入力欄にフォーカス
+  useEffect(() => {
+    if (step === 'verify') codeInputRef.current?.focus()
+  }, [step])
+
+  // Resend クールダウン
+  useEffect(() => {
+    if (resendCooldown <= 0) return
+    const id = setTimeout(() => setResendCooldown(s => s - 1), 1000)
+    return () => clearTimeout(id)
+  }, [resendCooldown])
+
+  const BG = 'var(--bg-slate-deep)'
   const CARD = 'transparent'
   const TEXT = 'var(--text-on-hero)'
   const TEXT2 = 'var(--text-on-hero-muted)'
   const BORDER = 'var(--border-on-dark)'
   const INPUT_BG = 'var(--bg-input-on-dark)'
-  const GOOGLE_BTN_BG = '#4285F4'                    // Google brand color (固有色)
+  const GOOGLE_BTN_BG = '#4285F4'
 
   const inputStyle: React.CSSProperties = {
     width: '100%',
@@ -47,47 +63,53 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
     if (result.error) setError(t('auth.errGoogleFailed'))
   }
 
-  async function handleSubmit() {
-    if (mode === 'reset') {
-      if (!email) { setError(t('auth.errEmailRequired')); return }
-      setError(''); setSuccessMsg(''); setLoading(true)
-      const result = await resetPasswordForEmail(email)
-      setLoading(false)
-      if (result.error) setError(t('auth.errResetFailed'))
-      else setSuccessMsg(t('auth.resetEmailSent'))
+  async function handleSendCode() {
+    if (!email) { setError(t('auth.errEmailRequired')); return }
+    setError(''); setSuccessMsg(''); setLoading(true)
+    const result = await sendEmailOtp(email)
+    setLoading(false)
+    if (result.error) {
+      if (result.error === 'auth/invalid-email') setError(t('auth.invalidEmail'))
+      else if (result.error === 'auth/rate-limited') setError(t('auth.errRateLimited'))
+      else if (result.error === 'auth/not-configured') setError(t('auth.errNotConfigured'))
+      else setError(t('auth.errSendCodeFailed'))
       return
     }
-
-    if (!email || !password) { setError(t('auth.errEmailPasswordRequired')); return }
-    setError(''); setSuccessMsg(''); setLoading(true)
-
-    if (mode === 'login') {
-      const result = await loginWithEmail(email, password)
-      setLoading(false)
-      if (result.user) { onLoginSuccess(result.user); return }
-      setError(t('auth.errInvalidCredentials'))
-    } else {
-      if (password.length < 6) { setLoading(false); setError(t('auth.weakPassword')); return }
-      const result = await signupWithEmail(email, password)
-      setLoading(false)
-      if (result.user) {
-        // 登録完了メール送信（バックグラウンド、失敗しても続行）
-        fetch('/api/send-welcome-email', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email }),
-        }).catch(() => {})
-        onLoginSuccess(result.user)
-        return
-      }
-      if (result.error === 'auth/email-already-in-use') setError(t('auth.errEmailAlreadyRegistered'))
-      else setError(t('auth.errSignupFailed'))
-    }
+    setStep('verify')
+    setCode('')
+    setResendCooldown(RESEND_COOLDOWN_SEC)
   }
 
-  const title = mode === 'reset' ? t('auth.resetTitle') : t('auth.loginTitle')
-  const btnLabel = loading
-    ? t('auth.processing')
-    : mode === 'login' ? t('auth.loginBtn') : mode === 'signup' ? t('auth.signupBtn') : t('auth.sendResetEmail')
+  async function handleVerify(submittedCode?: string) {
+    const c = submittedCode ?? code
+    if (c.length !== 6) return
+    setError(''); setSuccessMsg(''); setLoading(true)
+    const result = await verifyEmailOtp(email, c)
+    setLoading(false)
+    if (result.user) { onLoginSuccess(result.user); return }
+    if (result.error === 'auth/invalid-code') setError(t('auth.errInvalidCode'))
+    else if (result.error === 'auth/code-expired') setError(t('auth.errCodeExpired'))
+    else setError(t('auth.errSendCodeFailed'))
+    // 入力をリセットして再入力しやすく
+    setCode('')
+    codeInputRef.current?.focus()
+  }
+
+  async function handleResend() {
+    if (resendCooldown > 0 || loading) return
+    setError(''); setSuccessMsg(''); setLoading(true)
+    const result = await sendEmailOtp(email)
+    setLoading(false)
+    if (result.error) {
+      if (result.error === 'auth/rate-limited') setError(t('auth.errRateLimited'))
+      else setError(t('auth.errSendCodeFailed'))
+      return
+    }
+    setSuccessMsg(t('auth.codeResent'))
+    setResendCooldown(RESEND_COOLDOWN_SEC)
+  }
+
+  const title = step === 'verify' ? t('auth.codeLabel') : t('auth.loginTitle')
 
   return (
     <div style={{
@@ -100,7 +122,6 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
       background: BG,
       fontFamily: "'Noto Sans JP', sans-serif",
     }}>
-      {/* タイトル */}
       <h1 style={{
         fontSize: 26, fontWeight: 700, color: TEXT,
         margin: '0 0 32px', textAlign: 'center',
@@ -109,113 +130,124 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
 
       <div style={{ width: '100%', maxWidth: 400, display: 'flex', flexDirection: 'column', gap: 12, background: CARD }}>
 
-        {/* Googleボタン */}
-        {mode !== 'reset' && (
-          <button
-            onClick={handleGoogle}
-            disabled={loading || !ready}
-            style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12,
-              width: '100%', padding: '15px 20px',
-              background: GOOGLE_BTN_BG,
-              border: 'none', borderRadius: 12,
-              fontSize: 16, fontWeight: 700, color: 'var(--accent-fg)',
-              cursor: loading ? 'not-allowed' : 'pointer',
-              opacity: loading ? 0.7 : 1,
-            }}
-          >
-            <GoogleIcon />
-            {t('auth.googleBtn')}
-          </button>
+        {step === 'email' && (
+          <>
+            <button
+              onClick={handleGoogle}
+              disabled={loading || !ready}
+              style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12,
+                width: '100%', padding: '15px 20px',
+                background: GOOGLE_BTN_BG,
+                border: 'none', borderRadius: 12,
+                fontSize: 16, fontWeight: 700, color: 'var(--accent-fg)',
+                cursor: loading ? 'not-allowed' : 'pointer',
+                opacity: loading ? 0.7 : 1,
+              }}
+            >
+              <GoogleIcon />
+              {t('auth.googleBtn')}
+            </button>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '4px 0' }}>
+              <div style={{ flex: 1, height: 1, background: BORDER }} />
+              <span style={{ fontSize: 13, color: TEXT2, flexShrink: 0 }}>{t('auth.orDivider')}</span>
+              <div style={{ flex: 1, height: 1, background: BORDER }} />
+            </div>
+          </>
         )}
 
-        {/* OR 区切り */}
-        {mode !== 'reset' && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '4px 0' }}>
-            <div style={{ flex: 1, height: 1, background: BORDER }} />
-            <span style={{ fontSize: 13, color: TEXT2, flexShrink: 0 }}>OR</span>
-            <div style={{ flex: 1, height: 1, background: BORDER }} />
-          </div>
-        )}
-
-        {/* エラー/成功 */}
         {error && (
-          <div style={{ fontSize: 14, color: 'var(--md-sys-color-error)', padding: '10px 14px', background: 'rgba(248,113,113,0.1)', borderRadius: 10 }}>
+          <div role="alert" aria-live="polite" style={{ fontSize: 14, color: 'var(--md-sys-color-error)', padding: '10px 14px', background: 'rgba(248,113,113,0.1)', borderRadius: 10 }}>
             {error}
           </div>
         )}
         {successMsg && (
-          <div style={{ fontSize: 14, color: 'var(--success-mid)', padding: '10px 14px', background: 'var(--success-soft)', borderRadius: 10 }}>
+          <div role="status" aria-live="polite" style={{ fontSize: 14, color: 'var(--success-mid)', padding: '10px 14px', background: 'var(--success-soft)', borderRadius: 10 }}>
             {successMsg}
           </div>
         )}
 
-        {/* メールアドレス入力 */}
-        <input
-          type="email"
-          aria-label={t('auth.emailLabel')}
-          placeholder={t('auth.emailLabel')}
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          style={inputStyle}
-          autoComplete="email"
-        />
-
-        {/* パスワード入力（resetは非表示） */}
-        {mode !== 'reset' && (
-          <input
-            type="password"
-            aria-label={t('auth.passwordLabel')}
-            placeholder={t('auth.passwordLabel')}
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            style={inputStyle}
-            autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
-            onKeyDown={e => { if (e.key === 'Enter') handleSubmit() }}
-          />
-        )}
-
-        {/* メインボタン */}
-        <button
-          onClick={handleSubmit}
-          disabled={loading || !ready}
-          style={{
-            width: '100%', padding: '16px',
-            background: loading ? 'var(--accent-soft)' : 'var(--brand-grad-h)',
-            border: 'none', borderRadius: 12,
-            fontSize: 16, fontWeight: 700, color: 'var(--accent-fg)',
-            cursor: loading ? 'not-allowed' : 'pointer',
-            marginTop: 4,
-          }}
-        >
-          {btnLabel}
-        </button>
-
-        {/* サブリンク */}
-        {mode === 'login' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center', marginTop: 8 }}>
+        {step === 'email' ? (
+          <>
+            <input
+              type="email"
+              aria-label={t('auth.emailLabel')}
+              placeholder={t('auth.emailLabel')}
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              style={inputStyle}
+              autoComplete="email"
+              onKeyDown={e => { if (e.key === 'Enter') handleSendCode() }}
+            />
             <button
-              onClick={() => { setMode('signup'); setError(''); setSuccessMsg('') }}
-              style={{ background: 'none', border: 'none', color: TEXT2, fontSize: 14, cursor: 'pointer', padding: '4px 0' }}
+              onClick={handleSendCode}
+              disabled={loading || !ready}
+              style={{
+                width: '100%', padding: '16px',
+                background: loading ? 'var(--accent-soft)' : 'var(--brand-grad-h)',
+                border: 'none', borderRadius: 12,
+                fontSize: 16, fontWeight: 700, color: 'var(--accent-fg)',
+                cursor: loading ? 'not-allowed' : 'pointer',
+                marginTop: 4,
+              }}
             >
-              {t('auth.signupTab')}
+              {loading ? t('auth.processing') : t('auth.sendCodeBtn')}
             </button>
+          </>
+        ) : (
+          <>
+            <p style={{ fontSize: 14, color: TEXT2, margin: '0 0 8px', textAlign: 'center' }}>
+              {t('auth.codeSentTo', { email })}
+            </p>
+            <input
+              ref={codeInputRef}
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              maxLength={6}
+              aria-label={t('auth.codeLabel')}
+              placeholder="––––––"
+              value={code}
+              disabled={loading}
+              onChange={e => {
+                const next = e.target.value.replace(/\D/g, '').slice(0, 6)
+                setCode(next)
+                if (next.length === 6) handleVerify(next)
+              }}
+              style={{ ...inputStyle, letterSpacing: '0.4em', textAlign: 'center', fontSize: 22, opacity: loading ? 0.6 : 1 }}
+              autoComplete="one-time-code"
+            />
             <button
-              onClick={() => { setMode('reset'); setError(''); setSuccessMsg('') }}
-              style={{ background: 'none', border: 'none', color: TEXT2, fontSize: 14, cursor: 'pointer', padding: '4px 0' }}
+              onClick={() => handleVerify()}
+              disabled={loading || code.length !== 6}
+              style={{
+                width: '100%', padding: '16px',
+                background: loading || code.length !== 6 ? 'var(--accent-soft)' : 'var(--brand-grad-h)',
+                border: 'none', borderRadius: 12,
+                fontSize: 16, fontWeight: 700, color: 'var(--accent-fg)',
+                cursor: loading || code.length !== 6 ? 'not-allowed' : 'pointer',
+                marginTop: 4,
+              }}
             >
-              {t('auth.forgotPassword')}
+              {loading ? t('auth.processing') : t('auth.verifyBtn')}
             </button>
-          </div>
-        )}
-
-        {(mode === 'signup' || mode === 'reset') && (
-          <button
-            onClick={() => { setMode('login'); setError(''); setSuccessMsg('') }}
-            style={{ background: 'none', border: 'none', color: TEXT2, fontSize: 14, cursor: 'pointer', padding: '4px 0', textAlign: 'center', marginTop: 4 }}
-          >
-            {t('auth.backToLogin')}
-          </button>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center', marginTop: 8 }}>
+              <button
+                onClick={handleResend}
+                disabled={loading || resendCooldown > 0}
+                style={{ background: 'none', border: 'none', color: TEXT2, fontSize: 14, cursor: (loading || resendCooldown > 0) ? 'not-allowed' : 'pointer', padding: '4px 0', opacity: resendCooldown > 0 ? 0.5 : 1 }}
+              >
+                {resendCooldown > 0 ? t('auth.codeResendIn', { sec: resendCooldown }) : t('auth.codeResend')}
+              </button>
+              <button
+                onClick={() => { setStep('email'); setError(''); setSuccessMsg(''); setCode('') }}
+                style={{ background: 'none', border: 'none', color: TEXT2, fontSize: 14, cursor: 'pointer', padding: '4px 0' }}
+              >
+                {t('auth.backToLogin')}
+              </button>
+            </div>
+          </>
         )}
       </div>
     </div>

@@ -22,6 +22,7 @@ interface VoiceTextareaProps {
 export function VoiceTextarea({ value, onChange, placeholder, minHeight, ariaLabel, enableCleanup, showVoiceHint }: VoiceTextareaProps) {
   const [cleaning, setCleaning] = useState(false)
   const [cleanupError, setCleanupError] = useState<string | null>(null)
+  const [justCleaned, setJustCleaned] = useState(false)
 
   const handleCleanup = async () => {
     if (!value.trim() || cleaning) return
@@ -31,7 +32,11 @@ export function VoiceTextarea({ value, onChange, placeholder, minHeight, ariaLab
       const { cleaned, error: apiErr } = await cleanupText(value)
       if (apiErr) { setCleanupError(t('journal.cleanupError')); return }
       const final = (cleaned || '').trim()
-      if (final) onChange(final)
+      if (final) {
+        onChange(final)
+        setJustCleaned(true)
+        setTimeout(() => setJustCleaned(false), 1800)
+      }
     } catch (e) {
       console.warn('cleanup error:', e)
       setCleanupError(t('journal.cleanupError'))
@@ -43,7 +48,7 @@ export function VoiceTextarea({ value, onChange, placeholder, minHeight, ariaLab
   return (
     <div className="journal-voice-wrap">
       <textarea
-        className="journal-textarea"
+        className={`journal-textarea ${justCleaned ? 'journal-textarea--just-cleaned' : ''}`}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
@@ -53,7 +58,7 @@ export function VoiceTextarea({ value, onChange, placeholder, minHeight, ariaLab
       {enableCleanup && (
         <button
           type="button"
-          className="journal-cleanup-btn"
+          className={`journal-cleanup-btn journal-cleanup-btn--lg ${cleaning ? 'journal-cleanup-btn--working' : ''} ${justCleaned ? 'journal-cleanup-btn--done' : ''}`}
           onClick={handleCleanup}
           disabled={!value.trim() || cleaning}
           aria-label={t('journal.cleanupAria')}
@@ -63,10 +68,18 @@ export function VoiceTextarea({ value, onChange, placeholder, minHeight, ariaLab
               <span className="journal-spinner journal-spinner--brand" aria-hidden="true" />
               <span>{t('journal.cleanupRunning')}</span>
             </>
+          ) : justCleaned ? (
+            <>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M20 6L9 17l-5-5" />
+              </svg>
+              <span>{t('journal.cleanupDone')}</span>
+            </>
           ) : (
             <>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M3 6h18M3 12h18M3 18h12" />
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8L12 3z" />
+                <path d="M19 14l.9 2.1L22 17l-2.1.9L19 20l-.9-2.1L16 17l2.1-.9L19 14z" />
               </svg>
               <span>{t('journal.cleanupCta')}</span>
             </>
