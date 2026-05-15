@@ -82,7 +82,11 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
   const [reminderEnabled, setReminderEnabled] = useState(pref.enabled)
   const [reminderHour, setReminderHour] = useState(pref.hour)
   const [reminderMinute, setReminderMinute] = useState(pref.minute)
-  const [darkMode, setDarkMode] = useState<boolean>(() => getMode() !== 'light')
+  // 旧 premium モード（enterprise / startup / custom）を選んでいたユーザーは
+  // 「light 以外＝dark トグル ON」として扱う。トグル操作で setMode('dark') を
+  // 呼ぶと premium モード設定が dark で上書きされるため、その挙動を明示。
+  const initialMode = getMode()
+  const [darkMode, setDarkMode] = useState<boolean>(() => initialMode !== 'light')
 
   function handleToggleDarkMode(enabled: boolean) {
     setDarkMode(enabled)
@@ -284,7 +288,13 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
             value={locale === 'ja' ? t('profile.languageJa') : t('profile.languageEn')}
             onPress={onOpenLanguage}
           />
-          <Divider />
+        </div>
+      </div>
+
+      {/* ── 外観 ── */}
+      <div>
+        <SectionHeader label={t('settings.appearance')} />
+        <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
           <div style={{
             display: 'flex', alignItems: 'center',
             padding: '14px 16px', gap: 12,
@@ -293,6 +303,14 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
               {t('settings.darkMode')}
             </span>
             <Toggle value={darkMode} onChange={handleToggleDarkMode} label={t('settings.darkMode')} />
+          </div>
+          <div style={{
+            padding: '0 16px 14px',
+            fontSize: 14,
+            color: 'var(--text-muted)',
+            lineHeight: 1.5,
+          }}>
+            {t('settings.darkModeHint')}
           </div>
         </div>
       </div>
