@@ -6,7 +6,7 @@ import { VoiceTextarea } from './VoiceTextarea'
 import { TagInput } from './TagInput'
 import { JournalActivityList } from './JournalActivityList'
 import { SparkleIcon } from './MoodWeatherIcons'
-import { PencilIcon } from '../../icons'
+import { PencilIcon, XIcon } from '../../icons'
 import { fetchJournalByDate, upsertJournal } from './journalDb'
 import { t } from '../../i18n'
 
@@ -204,17 +204,27 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
         <div className="journal-modal__bar" />
         <div className="journal-modal__header">
           <div className="journal-modal__title">{date}</div>
-          {!editing && !loading && hasContent(journal) && (
+          <div className="journal-modal__header-actions">
+            {!editing && !loading && hasContent(journal) && (
+              <button
+                type="button"
+                className="journal-modal__edit-btn"
+                onClick={handleEnterEdit}
+                aria-label={t('journal.editEntry')}
+              >
+                <PencilIcon width={14} height={14} />
+                <span>{t('common.edit')}</span>
+              </button>
+            )}
             <button
               type="button"
-              className="journal-modal__edit-btn"
-              onClick={handleEnterEdit}
-              aria-label={t('journal.editEntry')}
+              className="journal-modal__close-btn"
+              onClick={onClose}
+              aria-label={t('journal.closeSheet')}
             >
-              <PencilIcon width={14} height={14} />
-              <span>{t('common.edit')}</span>
+              <XIcon width={18} height={18} />
             </button>
-          )}
+          </div>
         </div>
 
         {loading ? (
@@ -299,7 +309,7 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
                 padding: 12, color: 'var(--text-secondary)', fontWeight: 700, fontSize: 14, cursor: 'pointer',
               }}
             >
-              {hasContent(journal) ? t('common.cancel') : t('common.close')}
+              {t('common.cancel')}
             </button>
           </>
         ) : (
@@ -363,17 +373,6 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
               <div className="journal-modal__section-label">{t('journal.activityTitle')}</div>
               <JournalActivityList date={date} />
             </div>
-
-            <button
-              type="button"
-              onClick={onClose}
-              style={{
-                marginTop: 4, width: '100%', background: 'transparent', border: 'none',
-                padding: 12, color: 'var(--text-secondary)', fontWeight: 700, fontSize: 14, cursor: 'pointer',
-              }}
-            >
-              {t('common.close')}
-            </button>
           </>
         )}
 

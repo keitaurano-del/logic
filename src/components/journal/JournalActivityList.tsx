@@ -51,19 +51,20 @@ export function JournalActivityList({ date, limit = 20, hideWhenEmpty }: Journal
 
   return (
     <ul className="journal-activity-list" aria-label={t('journal.activityListAria')}>
-      {entries.map((e, i) => {
+      {entries.map((e) => {
         const Icon = TYPE_ICON[e.type]
         const typeLabel = t(TYPE_LABEL_KEY[e.type])
-        const title = e.title || typeLabel
+        const hasOwnTitle = !!(e.title && e.title !== typeLabel)
+        const title = hasOwnTitle ? e.title : typeLabel
         return (
-          <li key={`${e.ts}-${i}`} className="journal-activity-item">
+          <li key={`${e.ts}-${e.type}-${e.id ?? ''}`} className="journal-activity-item">
             <span className={`journal-activity-item__icon journal-activity-item__icon--${e.type}`} aria-hidden="true">
               <Icon width={16} height={16} />
             </span>
             <div className="journal-activity-item__body">
               <div className="journal-activity-item__title" title={title}>{title}</div>
               <div className="journal-activity-item__meta">
-                <span className="journal-activity-item__type">{typeLabel}</span>
+                {hasOwnTitle && <span className="journal-activity-item__type">{typeLabel}</span>}
                 <span className="journal-activity-item__time">{formatTime(e.ts)}</span>
                 {typeof e.meta?.score === 'number' && (
                   <span className="journal-activity-item__score">{t('journal.activityScore', { n: String(e.meta.score) })}</span>

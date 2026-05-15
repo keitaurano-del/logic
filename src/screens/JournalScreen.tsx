@@ -46,7 +46,7 @@ export function JournalScreen({ userId, assistantName, initialSub, onRequestLogi
       <div className="journal-hero">
         <div>
           <div style={{ fontSize: 22, fontWeight: 900, letterSpacing: '-0.02em' }}>{t('journal.title')}</div>
-          <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 4 }}>{t('journal.subtitle')}</div>
+          <div style={{ fontSize: 13, color: 'var(--text-on-hero-muted)', marginTop: 4 }}>{t('journal.subtitle')}</div>
         </div>
         {userId && (
           <div className="journal-hero__streak">
