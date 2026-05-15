@@ -56,7 +56,7 @@
 .app-tab {
   flex: 1;
   min-height: 44px;
-  min-width: 56px;
+  min-width: 48px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -67,11 +67,11 @@
   cursor: pointer;
   color: var(--md-sys-color-on-surface-variant);
   font-family: var(--font-ui, system-ui);
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 600;
   position: relative;
   -webkit-tap-highlight-color: transparent;
-  padding: 6px 8px;
+  padding: 6px 4px;
 }
 
 .app-tab:focus-visible {
@@ -107,4 +107,15 @@
 
 @media (prefers-reduced-motion: reduce) {
   .app-tabbar { transition: none; }
+}
+
+/* Narrow phones (iPhone SE 1st gen 320px, SE 2nd 375px): shrink label so 5 tabs fit. */
+@media (max-width: 380px) {
+  .app-tab {
+    font-size: 0.7rem;
+    padding: 6px 2px;
+  }
+  .app-tab__label {
+    letter-spacing: -0.02em;
+  }
 }

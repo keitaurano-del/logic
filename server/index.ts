@@ -10,6 +10,7 @@ import { createRoleplayRouter } from './routes/roleplay.js'
 import { createFermiRouter } from './routes/fermi.js'
 import { createBillingRouter } from './routes/billing.js'
 import { createProblemsRouter } from './routes/problems.js'
+import { createJournalRouter } from './routes/journal.js'
 
 // Supabase サーバーサイドクライアント（service role key 使用）
 const supabaseUrl = process.env.SUPABASE_URL || ''
@@ -160,6 +161,13 @@ const flashcardsLimiter = makeLimiter({
   msgEn: 'Too many flashcard generation requests. Please try again later.',
 })
 
+const journalLimiter = makeLimiter({
+  windowMs: 60 * 1000,
+  max: 15,
+  msgJa: 'ジャーナルのリクエストが多すぎます。1 分待ってからお試しください。',
+  msgEn: 'Too many journal requests. Please wait a minute and try again.',
+})
+
 // 管理者エンドポイント用: 1時間10回
 const adminLimiter = makeLimiter({
   windowMs: 60 * 60 * 1000,
@@ -196,6 +204,9 @@ app.use(createProblemsRouter(client, supabase, flashcardsLimiter, generateProble
 
 // フェルミ推定
 app.use('/api/fermi', createFermiRouter(client, supabase, fermiLimiter))
+
+// ジャーナル & 目標
+app.use('/api/journal', createJournalRouter(client, journalLimiter))
 
 
 // 静的ファイル（public/ → dist/）は配信する
