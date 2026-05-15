@@ -444,11 +444,13 @@ input, textarea, select { -webkit-tap-highlight-color: transparent; }
 
 
 /* ==========================================================
- * V3 Default Dark — apply mode-dark to body and override
- * with Awarefy-inspired teal palette
+ * V3 Dark — Slate Blue token set
+ * Phase 5 (light/dark mode toggle): `, body` を外して .mode-dark
+ * 単独条件にすることで、ライトモード時にこれらの値が漏れないようにする。
+ * 背景の !important も .mode-dark 配下に閉じ込める。
  * ========================================================== */
 
-.mode-dark, body {
+.mode-dark {
   /* ── Slate Blue palette (450nm帯・心理学的最適集中色) ── */
   --bg-primary:    #1A1F2E;
   --bg-secondary:  #222840;
@@ -489,13 +491,19 @@ input, textarea, select { -webkit-tap-highlight-color: transparent; }
   --shadow-elevated: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 8px 32px rgba(0, 0, 0, 0.65), 0 2px 8px rgba(0, 0, 0, 0.35);
 }
 
-html, html.mode-light, html.mode-dark {
+/* Dark mode 専用の背景強制（ライトモード時は :root のライト値が出る） */
+html.mode-dark,
+html.mode-dark body {
   background: #1A1F2E !important;
   background-color: #1A1F2E !important;
 }
 
+/* Light mode 時は body 背景を CSS 変数経由で出す */
+html.mode-light body {
+  background: var(--bg-primary);
+}
+
 body {
-  background: #1A1F2E !important;
   color: var(--text-primary);
 }
 
@@ -527,11 +535,24 @@ h1, h2, h3, h4, h5, h6 {
 /* HomeScreen v3 image placeholders fix when inside .card */
 .card img { display: block; }
 
-/* Brand gradient override (Slate Blue) */
-.mode-dark, body {
+/* Brand gradient override (Slate Blue) — dark only.
+ * `, body` を外して .mode-dark 限定にすることで、ライトモード時に
+ * --hero-grad のダーク値（紺ベタ）が漏れて hero が紺で残るのを防ぐ。
+ */
+.mode-dark {
   --brand:           #6C8EF5 !important;
   --brand-grad:      linear-gradient(135deg, #6C8EF5 0%, #9BB3FA 100%) !important;
   --hero-grad:       linear-gradient(135deg, #252C40 0%, #2E3652 60%, #1A1F2E 100%) !important;
+}
+
+/* Light mode 用 hero / brand-grad の上書き
+ * tokens.css の :root デフォルトでは hero-grad が紺ベースで「爽やか」と
+ * 噛み合わないので、ブランドブルーのライトグラデーションに差し替える。
+ */
+.mode-light {
+  --hero-grad:       linear-gradient(135deg, #6C8EF5 0%, #9BB3FA 100%);
+  --hero-grad-alt:   linear-gradient(135deg, #5478E8 0%, #6C8EF5 100%);
+  --hero-grad-dark:  linear-gradient(160deg, #EEF2FE 0%, #DCE5FC 70%, #C9D6F9 100%);
 }
 
 /* ============================================================
