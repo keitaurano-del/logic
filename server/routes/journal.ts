@@ -88,7 +88,7 @@ TAGS:
 <comma-separated short tags (1-3 words each, total 2-4 tags). Extract themes / actions / context (e.g. "client meeting", "focus", "low energy"). No hashtags, no quotes.>
 
 TASKS:
-<one task per line, starting with "- " (dash + space). Up to 6 concrete, actionable tasks extracted from the user's plan. Each task should be a single concrete action (e.g. "- Send the report draft to the manager", "- Prepare slides for 4pm client meeting"). If a time is mentioned, include it (e.g. "- 4pm: Client meeting"). Do NOT invent tasks not implied by the input. If no clear tasks exist, output "TASKS:" with nothing after it.>
+<one task per line, starting with "- " (dash + space). Up to 6 concrete, actionable tasks extracted from the user's plan. Each task should be a single concrete action (e.g. "- Send the report draft to the manager", "- Prepare slides for 4pm client meeting"). If a time is mentioned, include it (e.g. "- 4pm: Client meeting"). Only include tasks the user explicitly states or clearly plans. Do NOT infer, expand, or paraphrase beyond the input. If no clear tasks exist, output "TASKS:" with nothing after it.>
 
 Stay positive, never judgmental. Don't repeat raw inputs verbatim. The follow-up MUST be a question, not advice.`
         : `あなたは Logic アプリのパーソナルアシスタント「${name}」です。

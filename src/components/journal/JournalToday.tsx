@@ -273,6 +273,7 @@ export function JournalToday({ userId, assistantName }: JournalTodayProps) {
               showVoiceHint={!intentLocked}
               locked={intentLocked}
               onUnlock={() => setIntentLocked(false)}
+              lockedTitle={t('journal.intentReadingTitle')}
             />
           </div>
 
@@ -291,65 +292,35 @@ export function JournalToday({ userId, assistantName }: JournalTodayProps) {
           )}
 
           {!intentLocked && (
-            <button
-              type="button"
-              className={`journal-summarize-btn ${isOrganizing ? 'journal-summarize-btn--working' : ''}`}
-              disabled={!canOrganize || isOrganizing}
-              onClick={handleOrganize}
-              aria-label={t('journal.organizeAria')}
-            >
-              {isOrganizing ? (
-                <>
-                  <span className="journal-spinner" aria-hidden="true" />
-                  <span>{t('journal.organizing')}</span>
-                </>
-              ) : (
-                <>
-                  <SparkleIcon size={18} />
-                  <span>{t('journal.organizeCta')}</span>
-                </>
+            <div className="journal-organize-cta-wrap">
+              <button
+                type="button"
+                className={`journal-summarize-btn ${isOrganizing ? 'journal-summarize-btn--working' : ''}`}
+                disabled={!canOrganize || isOrganizing}
+                onClick={handleOrganize}
+                aria-label={t('journal.organizeAria')}
+              >
+                {isOrganizing ? (
+                  <>
+                    <span className="journal-spinner" aria-hidden="true" />
+                    <span>{t('journal.organizing')}</span>
+                  </>
+                ) : (
+                  <>
+                    <SparkleIcon size={18} />
+                    <span>{t('journal.organizeCta')}</span>
+                  </>
+                )}
+              </button>
+              {!isOrganizing && (
+                <div className="journal-organize-cta__hint">{t('journal.organizeHint')}</div>
               )}
-            </button>
+            </div>
           )}
 
           {error && <div className="journal-error">{error}</div>}
 
-          {/* 抽出されたタスク */}
-          {intentLocked && tasks.length > 0 && (
-            <div className="journal-task-card" role="region" aria-label={t('journal.tasksCardTitle')}>
-              <div className="journal-task-card__title">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M9 11l3 3L22 4" />
-                  <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
-                </svg>
-                <span>{t('journal.tasksCardTitle')}</span>
-              </div>
-              <ul className="journal-task-list">
-                {tasks.map((task, idx) => {
-                  const done = !!taskDone[idx]
-                  return (
-                    <li key={idx} className={`journal-task-item ${done ? 'journal-task-item--done' : ''}`}>
-                      <button
-                        type="button"
-                        className="journal-task-check"
-                        onClick={() => toggleTask(idx)}
-                        aria-label={done ? t('journal.taskCompletedAria') : t('journal.taskIncompleteAria')}
-                        aria-pressed={done}
-                      >
-                        {done && (
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                            <path d="M20 6L9 17l-5-5" />
-                          </svg>
-                        )}
-                      </button>
-                      <span className="journal-task-text">{task}</span>
-                    </li>
-                  )
-                })}
-              </ul>
-            </div>
-          )}
-
+          {/* サマリーカード — 編集中も表示し続ける */}
           {summary && (
             <div className="journal-summary-card" role="region" aria-live="polite">
               <div className="journal-summary-card__title">
@@ -363,6 +334,47 @@ export function JournalToday({ userId, assistantName }: JournalTodayProps) {
                   <div className="journal-followup__body">{followUp}</div>
                 </div>
               )}
+            </div>
+          )}
+
+          {/* 抽出されたタスク — 整え済み（summary がある）なら編集中も表示 */}
+          {summary && (
+            <div className="journal-task-card" role="region" aria-label={t('journal.tasksCardTitle')}>
+              <div className="journal-task-card__title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M9 11l3 3L22 4" />
+                  <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                </svg>
+                <span>{t('journal.tasksCardTitle')}</span>
+              </div>
+              {tasks.length > 0 ? (
+                <ul className="journal-task-list">
+                  {tasks.map((task, idx) => {
+                    const done = !!taskDone[idx]
+                    return (
+                      <li key={idx} className={`journal-task-item ${done ? 'journal-task-item--done' : ''}`}>
+                        <button
+                          type="button"
+                          className="journal-task-check"
+                          onClick={() => toggleTask(idx)}
+                          aria-label={done ? t('journal.taskCompletedAria') : t('journal.taskIncompleteAria')}
+                          aria-pressed={done}
+                        >
+                          {done && (
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                              <path d="M20 6L9 17l-5-5" />
+                            </svg>
+                          )}
+                        </button>
+                        <span className="journal-task-text">{task}</span>
+                      </li>
+                    )
+                  })}
+                </ul>
+              ) : (
+                <div className="journal-task-card__empty">{t('journal.tasksEmpty')}</div>
+              )}
+              <div className="journal-task-card__hint">{t('journal.tasksSessionOnlyHint')}</div>
             </div>
           )}
 
@@ -423,6 +435,7 @@ export function JournalToday({ userId, assistantName }: JournalTodayProps) {
               showVoiceHint={!reflectionLocked}
               locked={reflectionLocked}
               onUnlock={() => setReflectionLocked(false)}
+              lockedTitle={t('journal.reflectionReadingTitle')}
             />
           </div>
 

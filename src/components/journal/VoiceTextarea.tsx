@@ -19,6 +19,8 @@ interface VoiceTextareaProps {
   locked?: boolean
   /** ロック解除リクエスト（編集ボタン押下時） */
   onUnlock?: () => void
+  /** ロックカードの見出しラベル。未指定なら `journal.intentReadingTitle` を使う */
+  lockedTitle?: string
 }
 
 /**
@@ -38,6 +40,7 @@ export function VoiceTextarea({
   showVoiceHint,
   locked,
   onUnlock,
+  lockedTitle,
 }: VoiceTextareaProps) {
   const [cleaning, setCleaning] = useState(false)
   const [cleanupError, setCleanupError] = useState<string | null>(null)
@@ -60,14 +63,23 @@ export function VoiceTextarea({
   }
 
   if (locked && value.trim()) {
+    const titleLabel = lockedTitle || t('journal.intentReadingTitle')
     return (
       <div className="journal-voice-wrap journal-voice-wrap--locked">
         <div
           className="journal-locked-card"
           role="region"
-          aria-label={ariaLabel}
+          aria-label={`${titleLabel} (${t('journal.lockedBadge')})`}
         >
-          <div className="journal-locked-card__title">{t('journal.intentReadingTitle')}</div>
+          <div className="journal-locked-card__title">
+            <span className="journal-locked-card__lock-icon" aria-hidden="true">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+            </span>
+            <span>{titleLabel}</span>
+          </div>
           <div className="journal-locked-card__body">{value}</div>
           {onUnlock && (
             <button
