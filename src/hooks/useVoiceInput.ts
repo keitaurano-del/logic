@@ -166,6 +166,8 @@ export function useVoiceInput(onTranscript: (text: string) => void): UseVoiceInp
       }
       recognition.onend = () => { setIsListening(false); recognitionRef.current = null }
       recognition.onerror = (e) => {
+        // Keita デバッグ用にフル詳細を出力
+        console.warn('[useVoiceInput] onerror', { error: e.error, message: e.message, raw: e })
         const code = mapWebError(e)
         // ユーザーが止めた場合（aborted）は無視
         if (code !== 'aborted') setError(code)
@@ -176,8 +178,12 @@ export function useVoiceInput(onTranscript: (text: string) => void): UseVoiceInp
       recognitionRef.current = recognition
       setIsListening(true)
     } catch (e) {
-      console.warn('useVoiceInput web start:', e)
-      setError('unknown')
+      console.warn('[useVoiceInput] web start failed', e)
+      // SecurityError: not HTTPS / not allowed by Permissions Policy
+      const msg = e instanceof Error ? e.message.toLowerCase() : ''
+      if (msg.includes('not allowed') || msg.includes('permission')) setError('permission-denied')
+      else if (msg.includes('not supported')) setError('not-supported')
+      else setError('unknown')
       setIsListening(false)
     }
   }, [])

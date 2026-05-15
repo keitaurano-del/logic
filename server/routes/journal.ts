@@ -215,5 +215,65 @@ ${journalContext}`
     }
   })
 
+  // =============================================
+  // ジャーナル — テキスト整形 (cleanup)
+  //   入力テキストの誤字脱字 / 句読点 / 改行を整えるだけ。
+  //   内容の追加・要約・意見・解釈は禁止。
+  // =============================================
+  router.post('/cleanup', journalLimiter, async (req: Request, res: Response) => {
+    try {
+      const { text, locale } = req.body || {}
+      const isEn = locale === 'en'
+      if (typeof text !== 'string' || !text.trim()) {
+        return res.status(400).json({ error: isEn ? 'text required' : 'text が必要です' })
+      }
+      const trimmed = text.slice(0, 5000) // 暴走防御
+
+      const systemPrompt = isEn
+        ? `You are a text cleanup tool. The user gives you a raw text (often dictated by voice and full of fillers, missing punctuation, or typos). Your ONLY job is to clean it up:
+
+- Fix typos and obvious spelling errors
+- Add appropriate punctuation and paragraph breaks
+- Remove filler words ("um", "uh", "like", "you know", repetitions)
+- Normalize whitespace
+- Keep the EXACT meaning, tone, and information
+
+DO NOT:
+- Summarize or shorten
+- Add new content, opinions, or interpretation
+- Change the writer's voice or style
+- Translate
+
+Output ONLY the cleaned text. No preamble, no explanation, no quotes around it.`
+        : `あなたはテキスト整形ツールです。ユーザーは未整形のテキスト（多くは音声入力で、フィラー・句読点抜け・誤字を含む）を渡してきます。あなたの仕事は **整形のみ**:
+
+- 誤字脱字を直す
+- 適切な句読点と段落分けを入れる
+- フィラー（「えーと」「あの」「まあ」「なんていうか」、繰り返し）を除去
+- 余分な空白・改行を正規化
+- 意味・トーン・情報は **完全に保つ**
+
+禁止事項:
+- 要約・短縮
+- 内容の追加・意見・解釈
+- 書き手の口調・スタイルの変更
+- 翻訳
+
+出力は **整形済みテキストのみ**。前置き・説明・引用符は付けない。`
+
+      const response = await client.messages.create({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 1200,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: trimmed }],
+      })
+      const cleaned = response.content[0].type === 'text' ? response.content[0].text.trim() : ''
+      res.json({ cleaned })
+    } catch (e: unknown) {
+      console.error('journal cleanup error:', e)
+      res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
+    }
+  })
+
   return router
 }

@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import type { DailyJournal, Mood, Weather } from './types'
-import { MoodIcon, WeatherIcon } from './MoodWeatherIcons'
+import { MoodSelector, WeatherSelector } from './MoodWeatherSelector'
 import { VoiceTextarea } from './VoiceTextarea'
+import { TagInput } from './TagInput'
+import { SparkleIcon } from './MoodWeatherIcons'
 import { fetchJournalByDate, upsertJournal } from './journalDb'
 import { t } from '../../i18n'
 
@@ -13,31 +15,38 @@ interface JournalDetailSheetProps {
   onSaved?: (j: DailyJournal) => void
 }
 
-const MOOD_LABEL_KEY: Record<Mood, string> = {
-  1: 'journal.moodVeryBad',
-  2: 'journal.moodBad',
-  3: 'journal.moodNeutral',
-  4: 'journal.moodGood',
-  5: 'journal.moodGreat',
-}
-
-const WEATHER_LABEL_KEY: Record<Weather, string> = {
-  sunny:  'journal.weatherSunny',
-  cloudy: 'journal.weatherCloudy',
-  rainy:  'journal.weatherRainy',
-  snowy:  'journal.weatherSnowy',
+function emptyJournal(userId: string, date: string): DailyJournal {
+  return {
+    user_id: userId,
+    date,
+    mood: null,
+    weather: null,
+    morning_memo: null,
+    schedule_notes: null,
+    evening_reflection: null,
+    ai_summary: null,
+    tags: [],
+  }
 }
 
 export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSaved }: JournalDetailSheetProps) {
-  const [journal, setJournal] = useState<DailyJournal | null>(initialJournal ?? null)
-  const [reflection, setReflection] = useState(initialJournal?.evening_reflection ?? '')
+  // フル編集モード: 開いている間は state にバッファし、保存で確定
+  const [mood, setMood] = useState<Mood | null>((initialJournal?.mood as Mood | null) ?? null)
+  const [weather, setWeather] = useState<Weather | null>((initialJournal?.weather as Weather | null) ?? null)
+  const [scheduleNotes, setScheduleNotes] = useState<string>(initialJournal?.schedule_notes ?? '')
+  const [reflection, setReflection] = useState<string>(initialJournal?.evening_reflection ?? '')
+  const [tags, setTags] = useState<string[]>(initialJournal?.tags ?? [])
+  const [aiSummary] = useState<string>(initialJournal?.ai_summary ?? '') // read-only 表示用
+
+  const [loading, setLoading] = useState(!initialJournal)
   const [saving, setSaving] = useState(false)
   const [savedToast, setSavedToast] = useState(false)
-  const [loading, setLoading] = useState(!initialJournal)
+
   const modalRef = useRef<HTMLDivElement>(null)
   const closeBtnRef = useRef<HTMLButtonElement>(null)
   const previouslyFocusedRef = useRef<HTMLElement | null>(null)
 
+  // 初期データが渡されない場合は fetch
   useEffect(() => {
     if (initialJournal !== undefined && initialJournal !== null) return
     let cancelled = false
@@ -45,14 +54,19 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
       setLoading(true)
       const j = await fetchJournalByDate(userId, date)
       if (cancelled) return
-      setJournal(j)
-      setReflection(j?.evening_reflection ?? '')
+      if (j) {
+        setMood((j.mood as Mood | null) ?? null)
+        setWeather((j.weather as Weather | null) ?? null)
+        setScheduleNotes(j.schedule_notes ?? '')
+        setReflection(j.evening_reflection ?? '')
+        setTags(j.tags ?? [])
+      }
       setLoading(false)
     })()
     return () => { cancelled = true }
   }, [userId, date, initialJournal])
 
-  // モーダルが開いている間: ESC で閉じる、初期 focus を閉じるボタン、body スクロール抑制
+  // モーダル a11y: ESC で閉じる、focus trap、body scroll lock
   useEffect(() => {
     previouslyFocusedRef.current = document.activeElement as HTMLElement | null
     const prevOverflow = document.body.style.overflow
@@ -65,7 +79,6 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
         return
       }
       if (e.key === 'Tab') {
-        // 簡易フォーカストラップ：内部の interactive 要素を巡回
         const root = modalRef.current
         if (!root) return
         const focusables = root.querySelectorAll<HTMLElement>(
@@ -84,7 +97,6 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
       }
     }
     document.addEventListener('keydown', handleKey)
-    // 開いた直後は閉じるボタンに focus
     closeBtnRef.current?.focus()
 
     return () => {
@@ -97,23 +109,20 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
   const handleSave = async () => {
     setSaving(true)
     const updated: DailyJournal = {
-      user_id: userId,
-      date,
-      mood: (journal?.mood as Mood | null) ?? null,
-      weather: (journal?.weather as Weather | null) ?? null,
-      morning_memo: journal?.morning_memo ?? null,
-      schedule_notes: journal?.schedule_notes ?? null,
-      ai_summary: journal?.ai_summary ?? null,
+      ...emptyJournal(userId, date),
+      mood,
+      weather,
+      schedule_notes: scheduleNotes.trim() || null,
       evening_reflection: reflection.trim() || null,
-      tags: journal?.tags ?? [],
+      ai_summary: aiSummary.trim() || null,
+      tags,
     }
     const { error } = await upsertJournal(updated)
     setSaving(false)
     if (!error) {
-      setJournal(updated)
       setSavedToast(true)
       onSaved?.(updated)
-      setTimeout(() => setSavedToast(false), 2000)
+      setTimeout(() => setSavedToast(false), 1500)
     }
   }
 
@@ -128,58 +137,67 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
       />
       <div ref={modalRef} className="journal-modal" style={{ position: 'relative' }}>
         <div className="journal-modal__bar" />
-        <div>
-          <div className="journal-modal__title">{date}</div>
-          {(journal?.mood || journal?.weather) && (
-            <div className="journal-modal__meta" style={{ marginTop: 6 }}>
-              {journal.mood && (
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, color: 'var(--brand)' }}>
-                  <MoodIcon mood={journal.mood as Mood} size={18} />
-                  <span>{t(MOOD_LABEL_KEY[journal.mood as Mood])}</span>
-                </span>
-              )}
-              {journal.weather && (
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, color: 'var(--text-secondary)' }}>
-                  <WeatherIcon weather={journal.weather as Weather} size={18} />
-                  <span>{t(WEATHER_LABEL_KEY[journal.weather as Weather])}</span>
-                </span>
-              )}
-            </div>
-          )}
-        </div>
+        <div className="journal-modal__title">{date}</div>
 
-        {loading && <div className="journal-modal__empty">{t('common.loading')}</div>}
-
-        {!loading && !journal && (
-          <div className="journal-modal__empty">{t('journal.noEntryThisDay')}</div>
-        )}
-
-        {!loading && journal && (
+        {loading ? (
+          <div className="journal-modal__empty">{t('common.loading')}</div>
+        ) : (
           <>
-            {journal.schedule_notes && (
-              <div>
-                <div className="journal-modal__section-label">{t('journal.scheduleLabel')}</div>
-                <div className="journal-modal__body">{journal.schedule_notes}</div>
+            {aiSummary && (
+              <div className="journal-summary-card journal-summary-card--compact" role="region">
+                <div className="journal-summary-card__title">
+                  <SparkleIcon size={14} />
+                  <span>{t('journal.aiSummary')}</span>
+                </div>
+                <div className="journal-summary-card__body">{aiSummary}</div>
               </div>
             )}
 
-            {journal.ai_summary && (
-              <div>
-                <div className="journal-modal__section-label">{t('journal.aiSummary')}</div>
-                <div className="journal-modal__body">{journal.ai_summary}</div>
-              </div>
-            )}
-
+            {/* mood */}
             <div>
-              <div className="journal-modal__section-label">{t('journal.eveningReflection')}</div>
-              <div style={{ marginTop: 6 }}>
-                <VoiceTextarea
-                  value={reflection}
-                  onChange={setReflection}
-                  placeholder={t('journal.eveningPlaceholder')}
-                  ariaLabel={t('journal.eveningReflection')}
-                />
-              </div>
+              <div className="journal-section__label" style={{ marginBottom: 8 }}>{t('journal.moodLabel')}</div>
+              <MoodSelector value={mood} onChange={setMood} disabled={saving} />
+            </div>
+
+            {/* weather */}
+            <div>
+              <div className="journal-section__label" style={{ marginBottom: 8 }}>{t('journal.weatherLabel')}</div>
+              <WeatherSelector value={weather} onChange={setWeather} disabled={saving} />
+            </div>
+
+            {/* schedule_notes (朝の意図) */}
+            <div>
+              <div className="journal-section__label" style={{ marginBottom: 8 }}>{t('journal.intentLabel')}</div>
+              <VoiceTextarea
+                value={scheduleNotes}
+                onChange={setScheduleNotes}
+                placeholder={t('journal.intentPlaceholder')}
+                ariaLabel={t('journal.intentLabel')}
+                enableCleanup
+              />
+            </div>
+
+            {/* tags */}
+            <div>
+              <div className="journal-section__label" style={{ marginBottom: 8 }}>{t('journal.tagsLabel')}</div>
+              <TagInput
+                value={tags}
+                onChange={setTags}
+                placeholder={t('journal.tagsPlaceholder')}
+              />
+            </div>
+
+            {/* evening_reflection */}
+            <div>
+              <div className="journal-section__label" style={{ marginBottom: 8 }}>{t('journal.eveningReflection')}</div>
+              <VoiceTextarea
+                value={reflection}
+                onChange={setReflection}
+                placeholder={t('journal.eveningPlaceholder')}
+                ariaLabel={t('journal.eveningReflection')}
+                minHeight={120}
+                enableCleanup
+              />
             </div>
 
             <button
@@ -187,7 +205,7 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
               className="journal-summarize-btn"
               onClick={handleSave}
               disabled={saving}
-              style={{ marginTop: 8 }}
+              style={{ marginTop: 4 }}
             >
               {saving ? t('common.loading') : t('common.save')}
             </button>

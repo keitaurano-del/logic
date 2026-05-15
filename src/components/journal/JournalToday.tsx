@@ -27,16 +27,16 @@ export function JournalToday({ userId, assistantName }: JournalTodayProps) {
   const [loaded, setLoaded] = useState(false)
   const [phase, setPhase] = useState<Phase>(decideInitialPhase)
 
-  // 朝セクション
-  const [mood, setMood] = useState<Mood | null>(null)
-  const [weather, setWeather] = useState<Weather | null>(null)
+  // 朝セクション（意図・予定・タグ）
   const [scheduleNotes, setScheduleNotes] = useState('')
   const [tags, setTags] = useState<string[]>([])
   const [summary, setSummary] = useState('')
   const [followUp, setFollowUp] = useState('')
   const [isGenerating, setIsGenerating] = useState(false)
 
-  // 夜セクション
+  // 夜セクション（気分・天気・振り返り）
+  const [mood, setMood] = useState<Mood | null>(null)
+  const [weather, setWeather] = useState<Weather | null>(null)
   const [reflection, setReflection] = useState('')
   const [saving, setSaving] = useState(false)
   const [savedToast, setSavedToast] = useState(false)
@@ -76,7 +76,10 @@ export function JournalToday({ userId, assistantName }: JournalTodayProps) {
     return () => { cancelled = true }
   }, [userId])
 
-  const canGenerate = !!(mood !== null || weather !== null || scheduleNotes.trim() || tags.length > 0)
+  // 朝の要約 CTA は schedule_notes / tags があれば有効
+  const canGenerate = !!(scheduleNotes.trim() || tags.length > 0)
+  // 夜の保存 CTA は気分・天気・振り返り のどれかが入ってれば有効
+  const canSaveEvening = !!(mood !== null || weather !== null || reflection.trim())
 
   const refreshAfterSave = async () => {
     if (!userId) return
@@ -107,14 +110,15 @@ export function JournalToday({ userId, assistantName }: JournalTodayProps) {
     await refreshAfterSave()
   }
 
+  // 朝のサマリー: scheduleNotes + tags を中心に。mood/weather は朝時点で未入力なので渡さない
   const handleSummarize = async () => {
     if (!canGenerate || isGenerating) return
     setError(null)
     setIsGenerating(true)
     try {
       const { summary: newSummary, followUpQuestion, error: apiErr } = await summarizeJournal({
-        mood,
-        weather,
+        mood: null,
+        weather: null,
         scheduleNotes: scheduleNotes.trim() || null,
         assistantName,
       })
@@ -192,22 +196,13 @@ export function JournalToday({ userId, assistantName }: JournalTodayProps) {
       {phase === 'morning' ? (
         <div className="journal-today__phase">
           <div>
-            <div className="journal-section__label" style={{ marginBottom: 8 }}>{t('journal.moodLabel')}</div>
-            <MoodSelector value={mood} onChange={setMood} disabled={isGenerating} />
-          </div>
-
-          <div>
-            <div className="journal-section__label" style={{ marginBottom: 8 }}>{t('journal.weatherLabel')}</div>
-            <WeatherSelector value={weather} onChange={setWeather} disabled={isGenerating} />
-          </div>
-
-          <div>
             <div className="journal-section__label" style={{ marginBottom: 8 }}>{t('journal.intentLabel')}</div>
             <VoiceTextarea
               value={scheduleNotes}
               onChange={setScheduleNotes}
               placeholder={t('journal.intentPlaceholder')}
               ariaLabel={t('journal.intentLabel')}
+              enableCleanup
             />
           </div>
 
@@ -263,6 +258,7 @@ export function JournalToday({ userId, assistantName }: JournalTodayProps) {
         </div>
       ) : (
         <div className="journal-today__phase">
+          {/* 朝のリキャップ (任意・存在時のみ) */}
           {summary && (
             <div className="journal-summary-card journal-summary-card--compact" role="region">
               <div className="journal-summary-card__title">
@@ -279,6 +275,19 @@ export function JournalToday({ userId, assistantName }: JournalTodayProps) {
             </div>
           )}
 
+          {/* 今日の気分（1 日を振り返って） */}
+          <div>
+            <div className="journal-section__label" style={{ marginBottom: 8 }}>{t('journal.moodLabel')}</div>
+            <MoodSelector value={mood} onChange={setMood} disabled={saving} />
+          </div>
+
+          {/* 今日の天気 */}
+          <div>
+            <div className="journal-section__label" style={{ marginBottom: 8 }}>{t('journal.weatherLabel')}</div>
+            <WeatherSelector value={weather} onChange={setWeather} disabled={saving} />
+          </div>
+
+          {/* 振り返り */}
           <div>
             <div className="journal-section__label" style={{ marginBottom: 8 }}>{t('journal.eveningReflection')}</div>
             <VoiceTextarea
@@ -287,6 +296,7 @@ export function JournalToday({ userId, assistantName }: JournalTodayProps) {
               placeholder={t('journal.eveningPlaceholder')}
               ariaLabel={t('journal.eveningReflection')}
               minHeight={140}
+              enableCleanup
             />
           </div>
 
@@ -294,7 +304,7 @@ export function JournalToday({ userId, assistantName }: JournalTodayProps) {
             type="button"
             className="journal-summarize-btn"
             onClick={handleSaveEvening}
-            disabled={saving}
+            disabled={!canSaveEvening || saving}
           >
             {saving ? t('common.loading') : t('journal.saveEvening')}
           </button>
