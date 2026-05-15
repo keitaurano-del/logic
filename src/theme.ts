@@ -124,9 +124,18 @@ function pickFg(bg: string): string {
 
 export function applyTheme(s: ThemeState) {
   const root = document.documentElement
-  // Reset previous mode classes
-  for (const m of MODES) root.classList.remove(`mode-${m.id}`)
+  const body = document.body
+  // Reset and apply mode classes on BOTH <html> and <body>.
+  // <body> needs the class because `body.theme-v3.mode-{x}` is the active
+  // selector in tokens.css (used to win specificity over `.mode-{x}` alone).
+  // `document.body` may be null when applyTheme runs from main.tsx before
+  // <body> parses; the null check keeps that path safe.
+  for (const m of MODES) {
+    root.classList.remove(`mode-${m.id}`)
+    if (body) body.classList.remove(`mode-${m.id}`)
+  }
   root.classList.add(`mode-${s.mode}`)
+  if (body) body.classList.add(`mode-${s.mode}`)
 
   // Accent variables
   let accentColor = ''
