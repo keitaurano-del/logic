@@ -1,6 +1,9 @@
 import { useState } from 'react'
-import { startCheckout, getSubscriptionState, daysLeftInTrial } from './subscription'
+import { startCheckout, getSubscriptionState, PLAN_PRICES, isPaid } from './subscription'
 import './Pricing.css'
+
+// Legacy v1 のプラン画面。AppV3 では src/screens/PricingScreen.tsx を使う。
+// CLAUDE.md「v1 は触らない」に従い、価格表示と plan 名のみ整合性を保つ。
 
 type Props = { onBack: () => void }
 
@@ -8,9 +11,9 @@ export default function Pricing({ onBack }: Props) {
   const [loading, setLoading] = useState<string | null>(null)
   const [error, setError] = useState('')
   const state = getSubscriptionState()
-  const trialDays = daysLeftInTrial()
+  const paid = isPaid()
 
-  const handleUpgrade = async (plan: 'monthly' | 'yearly') => {
+  const handleUpgrade = async (plan: 'paid_monthly' | 'paid_yearly') => {
     setLoading(plan)
     setError('')
     try {
@@ -21,6 +24,9 @@ export default function Pricing({ onBack }: Props) {
     }
   }
 
+  const yearlyMonthly = Math.round(PLAN_PRICES.yearly / 12)
+  const yearlySavingsPct = Math.round((1 - PLAN_PRICES.yearly / (PLAN_PRICES.monthly * 12)) * 100)
+
   return (
     <div className="pr-screen">
       <header className="pr-header">
@@ -29,15 +35,9 @@ export default function Pricing({ onBack }: Props) {
       </header>
 
       <div className="pr-body">
-        {state.plan === 'trial' && (
-          <div className="pr-trial-banner">
-            トライアル中: あと {trialDays} 日
-          </div>
-        )}
-
         <div className="pr-intro">
-          <h3>論理的思考力を、<br/>もっと深く鍛える。</h3>
-          <p>プレミアムプランで全機能解放</p>
+          <h3>AI 問題生成を、<br/>あなたの学習に。</h3>
+          <p>有料プランで AI 問題生成が無制限</p>
         </div>
 
         <div className="pr-plans">
@@ -45,44 +45,42 @@ export default function Pricing({ onBack }: Props) {
           <div className="pr-card pr-card-recommended">
             <div className="pr-recommended-badge">おすすめ</div>
             <div className="pr-plan-name">年額プラン</div>
-            <div className="pr-price">¥2,730<span>/年</span></div>
-            <div className="pr-price-monthly">月々 <strong>¥228</strong></div>
-            <div className="pr-price-savings">年額でぐんとお得！ <span className="pr-off-badge">41% OFF</span></div>
-            <div className="pr-trial-note">7日間無料トライアル付き</div>
+            <div className="pr-price">¥{PLAN_PRICES.yearly.toLocaleString()}<span>/年</span></div>
+            <div className="pr-price-monthly">月々 <strong>¥{yearlyMonthly}</strong></div>
+            <div className="pr-price-savings">年額でぐんとお得！ <span className="pr-off-badge">{yearlySavingsPct}% OFF</span></div>
             <ul className="pr-features">
-              <li>AI問題生成 <strong>月300問</strong>まで</li>
-              <li>デイリー問題</li>
-              <li>AI手帳サマリー</li>
-              <li>偏差値分析</li>
-              <li>全機能アクセス</li>
+              <li>AI 問題生成 <strong>無制限</strong></li>
+              <li>レッスン受け放題</li>
+              <li>AI ロールプレイ</li>
+              <li>復習・誤答リスト</li>
+              <li>プレミアムテーマ</li>
             </ul>
             <button
               className="pr-btn pr-btn-primary pr-btn-recommended"
-              onClick={() => handleUpgrade('yearly')}
-              disabled={loading !== null || state.plan === 'yearly'}
+              onClick={() => handleUpgrade('paid_yearly')}
+              disabled={loading !== null || (paid && state.plan === 'paid_yearly')}
             >
-              {state.plan === 'yearly' ? '加入中' : loading === 'yearly' ? '読み込み中...' : '年額プランを始める'}
+              {paid && state.plan === 'paid_yearly' ? '加入中' : loading === 'paid_yearly' ? '読み込み中...' : '年額プランを始める'}
             </button>
           </div>
 
           {/* 月額プラン */}
           <div className="pr-card">
             <div className="pr-plan-name">月額プラン</div>
-            <div className="pr-price">¥390<span>/月</span></div>
-            <div className="pr-trial-note">7日間無料トライアル付き</div>
+            <div className="pr-price">¥{PLAN_PRICES.monthly.toLocaleString()}<span>/月</span></div>
             <ul className="pr-features">
-              <li>AI問題生成 <strong>月300問</strong>まで</li>
-              <li>デイリー問題</li>
-              <li>AI手帳サマリー</li>
-              <li>偏差値分析</li>
-              <li>全機能アクセス</li>
+              <li>AI 問題生成 <strong>無制限</strong></li>
+              <li>レッスン受け放題</li>
+              <li>AI ロールプレイ</li>
+              <li>復習・誤答リスト</li>
+              <li>プレミアムテーマ</li>
             </ul>
             <button
               className="pr-btn pr-btn-secondary"
-              onClick={() => handleUpgrade('monthly')}
-              disabled={loading !== null || state.plan === 'monthly'}
+              onClick={() => handleUpgrade('paid_monthly')}
+              disabled={loading !== null || (paid && state.plan === 'paid_monthly')}
             >
-              {state.plan === 'monthly' ? '加入中' : loading === 'monthly' ? '読み込み中...' : '月額プランにする'}
+              {paid && state.plan === 'paid_monthly' ? '加入中' : loading === 'paid_monthly' ? '読み込み中...' : '月額プランにする'}
             </button>
           </div>
         </div>

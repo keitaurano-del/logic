@@ -7,7 +7,7 @@ import { getCompletedCount, getLessonStreak, getXp, getCompletedLessons, getXpLo
 import { getAllLessonsFlat } from '../lessonData'
 import { getCurrentLevel, getXpProgress } from './homeHelpers'
 import { logout } from '../supabase'
-import { getSubscriptionState, isPremiumPlan, isStandardPlan, daysLeftInTrial } from '../subscription'
+import { getSubscriptionState } from '../subscription'
 import { getStudyDates as _getStudyDatesArr } from '../stats'
 import LessonIcon from '../LessonIcon'
 import { StarIcon } from '../icons'
@@ -15,17 +15,9 @@ import { t, getLocale, localizedHtmlPath } from '../i18n'
 
 function getPlanLabel(): string {
   const state = getSubscriptionState()
-  if (isPremiumPlan()) {
-    if (state.plan === 'trial') {
-      const days = daysLeftInTrial()
-      return days > 0 ? t('profile.planTrialDays', { n: String(days) }) : t('profile.planTrialExpired')
-    }
-    return t('profile.planPremium')
-  }
-  if (isStandardPlan()) {
-    return state.plan.includes('yearly') ? t('profile.planStandardYearly') : t('profile.planStandard')
-  }
-  return t('profile.planFreeCampaign')
+  if (state.plan === 'paid_yearly') return t('profile.planPaidYearly')
+  if (state.plan === 'paid_monthly') return t('profile.planPaidMonthly')
+  return t('profile.planFree')
 }
 
 interface ProfileScreenV3Props {
