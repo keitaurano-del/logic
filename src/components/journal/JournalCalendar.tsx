@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { MoodIcon } from './MoodWeatherIcons'
+import { MoodSparkline } from './MoodSparkline'
 import { JournalDetailSheet } from './JournalDetailSheet'
-import { fetchJournalsBetween } from './journalDb'
+import { fetchJournalsBetween, fetchRecentJournals } from './journalDb'
 import { todayKey } from './types'
 import type { DailyJournal, Mood } from './types'
 import { ArrowLeftIcon, ArrowRightIcon } from '../../icons'
@@ -28,9 +29,20 @@ export function JournalCalendar({ userId }: JournalCalendarProps) {
     return { year: d.getFullYear(), month: d.getMonth() }
   })
   const [journals, setJournals] = useState<Record<string, DailyJournal>>({})
+  const [recent, setRecent] = useState<DailyJournal[]>([])
   const [selected, setSelected] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const today = todayKey()
+
+  // Sparkline 用：直近 30 日（カレンダー範囲とは独立して取得）
+  useEffect(() => {
+    let cancelled = false
+    ;(async () => {
+      const list = await fetchRecentJournals(userId, 30)
+      if (!cancelled) setRecent(list)
+    })()
+    return () => { cancelled = true }
+  }, [userId])
 
   const locale = getLocale()
   const monthLabel = (locale === 'en' ? MONTH_LABEL_EN : MONTH_LABEL_JA)[cursor.month]
@@ -89,6 +101,11 @@ export function JournalCalendar({ userId }: JournalCalendarProps) {
 
   return (
     <div>
+      {/* 直近 30 日の気分の推移（旧 Today タブ上部から移動） */}
+      <div className="journal-cal-sparkline">
+        <MoodSparkline journals={recent} days={30} />
+      </div>
+
       <div className="journal-cal-header">
         <button type="button" className="journal-cal-nav" onClick={handlePrev} aria-label={t('journal.prevMonth')}>
           <ArrowLeftIcon width={20} height={20} />

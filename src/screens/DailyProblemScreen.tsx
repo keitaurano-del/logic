@@ -3,6 +3,7 @@ import { generateTodayProblem, isDailyCompleted, markDailyCompleted } from '../d
 import type { AIProblemSet } from '../aiProblemStore'
 import type { QuizStep } from '../lessonData'
 import { recordCompletion } from '../stats'
+import { recordActivity } from '../activityLog'
 import { ArrowRightIcon, CheckIcon, XIcon } from '../icons'
 import { Button } from '../components/Button'
 import { Header } from '../components/platform/Header'
@@ -116,6 +117,11 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
     if (stepIdx + 1 >= steps.length) {
       markDailyCompleted()
       recordCompletion('daily-problem')
+      recordActivity({
+        type: 'daily-problem',
+        id: new Date().toISOString().slice(0, 10),
+        title: t('dailyProblem.title'),
+      })
       setFinished(true)
     } else {
       setStepIdx((i) => i + 1)

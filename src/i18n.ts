@@ -54,6 +54,8 @@ const STRINGS: Record<Locale, Strings> = {
     'common.loading': '読み込み中...',
     'common.error': 'エラーが発生しました',
     'common.retry': 'もう一度試す',
+    'common.edit': '編集',
+    'common.close': '閉じる',
 
     // Navigation
     'nav.home': 'ホーム',
@@ -99,8 +101,18 @@ const STRINGS: Record<Locale, Strings> = {
     'journal.voiceStop': '音声入力を停止',
     'journal.voiceRecording': '録音中',
     'journal.closeSheet': '閉じる',
+    'journal.editEntry': 'この日のジャーナルを編集',
     'journal.todaySuffix': '（今日）',
     'journal.cellHasEntry': '記録あり',
+    'journal.activityTitle': '今日アプリでやったこと',
+    'journal.activityEmpty': 'まだ今日の学習履歴はないわ。レッスンやフェルミ推定をやると、ここに記録されるのよ。',
+    'journal.activityListAria': '今日のアクティビティ一覧',
+    'journal.activityScore': 'スコア {n}',
+    'journal.activityType.lesson': 'レッスン',
+    'journal.activityType.fermi': 'フェルミ推定',
+    'journal.activityType.roleplay': 'ロールプレイ',
+    'journal.activityType.dailyProblem': '今日の問題',
+    'journal.activityType.aiProblem': 'AI 問題',
     'journal.searchEmptyHint': 'ジャーナルの予定・振り返り・AI まとめ・朝のメモから検索できるわ。気分や天気に関する言葉でも探せる。',
 
     // Journal v2 — Today / Phase / Tags / Streak / Sparkline / FollowUp
@@ -1514,6 +1526,8 @@ const STRINGS: Record<Locale, Strings> = {
     'common.loading': 'Loading...',
     'common.error': 'Something went wrong',
     'common.retry': 'Try again',
+    'common.edit': 'Edit',
+    'common.close': 'Close',
 
     // Navigation
     'nav.home': 'Home',
@@ -1559,8 +1573,18 @@ const STRINGS: Record<Locale, Strings> = {
     'journal.voiceStop': 'Stop voice input',
     'journal.voiceRecording': 'Recording',
     'journal.closeSheet': 'Close',
+    'journal.editEntry': 'Edit this day',
     'journal.todaySuffix': '(today)',
     'journal.cellHasEntry': 'has entry',
+    'journal.activityTitle': "Today's activity",
+    'journal.activityEmpty': 'Nothing logged yet today. Lessons, Fermi, and roleplays will show up here as you complete them.',
+    'journal.activityListAria': "Today's activity",
+    'journal.activityScore': 'Score {n}',
+    'journal.activityType.lesson': 'Lesson',
+    'journal.activityType.fermi': 'Fermi',
+    'journal.activityType.roleplay': 'Roleplay',
+    'journal.activityType.dailyProblem': 'Daily',
+    'journal.activityType.aiProblem': 'AI',
     'journal.searchEmptyHint': "Search across schedule, reflection, AI summary, and morning memo. Mood and weather keywords work too.",
 
     // Journal v2 — Today / Phase / Tags / Streak / Sparkline / FollowUp

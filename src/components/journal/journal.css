@@ -810,3 +810,182 @@
   border-radius: 8px;
   line-height: 1.5;
 }
+
+/* ── Journal Hero (with streak badge top-right) ───────── */
+.journal-hero {
+  padding: calc(env(safe-area-inset-top, 44px) + 14px) 20px 20px;
+  background: var(--hero-grad-dark);
+  color: var(--text-on-hero, #fff);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.journal-hero__streak {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* ── Calendar sparkline (moved from Today) ─────────── */
+.journal-cal-sparkline {
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border, rgba(255,255,255,.06));
+  border-radius: 12px;
+}
+
+/* ── Detail modal: header with edit button ─────────── */
+.journal-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.journal-modal__edit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--accent-soft);
+  color: var(--brand);
+  border: 1px solid color-mix(in srgb, var(--brand) 30%, transparent);
+  border-radius: 99px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  min-height: 32px;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.journal-modal__edit-btn:hover {
+  background: color-mix(in srgb, var(--brand) 18%, transparent);
+}
+
+/* ── View-mode chips & sections ────────────────────── */
+.journal-view-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.journal-view-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--bg-tertiary, rgba(255,255,255,.06));
+  border: 1px solid var(--border, rgba(255,255,255,.06));
+  border-radius: 99px;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.journal-view-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.journal-view-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* ── Activity list (today's activity inside journal) ─── */
+.journal-activity-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.journal-activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border, rgba(255,255,255,.06));
+  border-radius: 12px;
+}
+
+.journal-activity-item__icon {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-soft);
+  color: var(--brand);
+}
+
+.journal-activity-item__icon--lesson { background: color-mix(in srgb, var(--brand) 14%, transparent); color: var(--brand); }
+.journal-activity-item__icon--fermi { background: rgba(124, 92, 255, 0.14); color: #7C5CFF; }
+.journal-activity-item__icon--roleplay { background: rgba(255, 107, 0, 0.14); color: #FF6B00; }
+.journal-activity-item__icon--daily-problem { background: rgba(34, 197, 94, 0.14); color: #22C55E; }
+.journal-activity-item__icon--ai-problem { background: rgba(236, 72, 153, 0.14); color: #EC4899; }
+
+.journal-activity-item__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.journal-activity-item__title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.journal-activity-item__meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.journal-activity-item__type {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.journal-activity-item__time {
+  color: var(--text-muted);
+}
+
+.journal-activity-item__score {
+  margin-left: auto;
+  padding: 2px 8px;
+  background: var(--accent-soft);
+  color: var(--brand);
+  border-radius: 99px;
+  font-weight: 700;
+  font-size: 11px;
+}
+
+.journal-activity-empty {
+  padding: 12px 14px;
+  font-size: 12px;
+  color: var(--text-muted);
+  background: var(--bg-card);
+  border: 1px dashed var(--border, rgba(255,255,255,.08));
+  border-radius: 12px;
+  text-align: center;
+}

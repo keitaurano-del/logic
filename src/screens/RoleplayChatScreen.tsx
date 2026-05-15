@@ -4,6 +4,7 @@ import { localeBody, t } from '../i18n'
 import { CheckIcon, ThumbsUpIcon, LightbulbIcon } from '../icons'
 import { Header } from '../components/platform/Header'
 import { haptic } from '../platform/haptics'
+import { recordActivity } from '../activityLog'
 import { API_BASE } from './apiBase'
 
 interface RoleplayChatScreenProps {
@@ -197,6 +198,19 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
       ])
       if (scoreRes.scores) setScore(scoreRes)
       if (sumRes.summary) setSummary(sumRes)
+      recordActivity({
+        type: 'roleplay',
+        id: situationId,
+        title: situation?.title,
+        meta: typeof scoreRes?.scores?.[0]?.score === 'number'
+          ? {
+              score: scoreRes.scores.reduce(
+                (sum: number, s: ScoreItem) => sum + s.score,
+                0,
+              ),
+            }
+          : undefined,
+      })
     } catch (e) {
       if (e instanceof DOMException && (e as DOMException).name === 'AbortError') return
       console.error(e)
