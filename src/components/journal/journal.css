@@ -810,3 +810,179 @@
   border-radius: 8px;
   line-height: 1.5;
 }
+
+/* ── Locked (read-only) reading card ───────────
+   「整える」を押した後の大きい読みやすい本文表示。
+   編集ボタンを押すまでは textarea には戻らない。 */
+.journal-voice-wrap--locked {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.journal-locked-card {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--border, rgba(255,255,255,.08));
+  border-left: 3px solid var(--brand);
+  border-radius: 14px;
+  padding: 18px 20px 56px;
+  animation: journal-fadeup 0.35s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .journal-locked-card { animation: none; }
+}
+
+.journal-locked-card__title {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--brand);
+  margin-bottom: 10px;
+}
+
+.journal-locked-card__body {
+  font-size: 17px;
+  line-height: 1.85;
+  color: var(--text-primary);
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+}
+
+.journal-locked-card__edit {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 99px;
+  border: 1px solid color-mix(in srgb, var(--brand) 40%, transparent);
+  background: var(--bg-card);
+  color: var(--brand);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  min-height: 32px;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.journal-locked-card__edit:hover {
+  background: var(--accent-soft);
+  border-color: var(--brand);
+}
+
+.journal-locked-card__edit:active {
+  transform: scale(0.97);
+}
+
+.journal-locked-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  padding: 0 4px;
+}
+
+/* ── Task card (整える後に表示されるタスクリスト) ── */
+.journal-task-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border, rgba(255,255,255,.06));
+  border-radius: 14px;
+  padding: 16px 18px;
+  animation: journal-fadeup 0.4s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .journal-task-card { animation: none; }
+}
+
+.journal-task-card__title {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: -0.01em;
+}
+
+.journal-task-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.journal-task-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 4px 0;
+}
+
+.journal-task-check {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 1.5px solid var(--border, rgba(255,255,255,.18));
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--accent-fg, #fff);
+  margin-top: 2px;
+  transition: background 0.15s, border-color 0.15s;
+  padding: 0;
+}
+
+.journal-task-check:hover {
+  border-color: var(--brand);
+}
+
+.journal-task-item--done .journal-task-check {
+  background: var(--brand);
+  border-color: var(--brand);
+}
+
+.journal-task-text {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  word-break: break-word;
+  flex: 1;
+}
+
+.journal-task-item--done .journal-task-text {
+  color: var(--text-muted);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+/* ── Tags shown read-only after lock ── */
+.journal-tag-readonly-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.journal-tag-readonly-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  background: var(--accent-soft);
+  border: 1px solid color-mix(in srgb, var(--brand) 30%, transparent);
+  border-radius: 99px;
+  color: var(--brand);
+  font-size: 12px;
+  font-weight: 600;
+}

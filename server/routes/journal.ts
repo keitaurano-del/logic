@@ -74,7 +74,7 @@ export function createJournalRouter(
 
       const systemPrompt = isEn
         ? `You are "${name}", a personal assistant inside the Logic app for a first-year consultant.
-Summarize the user's morning check-in warmly, concisely, and forward-looking, propose one open-ended follow-up question that invites deeper reflection, AND extract up to 4 short tags from the content.
+Summarize the user's morning check-in warmly, concisely, and forward-looking, propose one open-ended follow-up question that invites deeper reflection, extract up to 4 short tags AND extract concrete TODO tasks from the content.
 
 Output STRICTLY in this exact format (no prefix, no extra text):
 
@@ -87,9 +87,12 @@ FOLLOW_UP:
 TAGS:
 <comma-separated short tags (1-3 words each, total 2-4 tags). Extract themes / actions / context (e.g. "client meeting", "focus", "low energy"). No hashtags, no quotes.>
 
+TASKS:
+<one task per line, starting with "- " (dash + space). Up to 6 concrete, actionable tasks extracted from the user's plan. Each task should be a single concrete action (e.g. "- Send the report draft to the manager", "- Prepare slides for 4pm client meeting"). If a time is mentioned, include it (e.g. "- 4pm: Client meeting"). Do NOT invent tasks not implied by the input. If no clear tasks exist, output "TASKS:" with nothing after it.>
+
 Stay positive, never judgmental. Don't repeat raw inputs verbatim. The follow-up MUST be a question, not advice.`
         : `あなたは Logic アプリのパーソナルアシスタント「${name}」です。
-コンサルタント1年目のユーザーが入力した今日の情報を温かく・前向きに・簡潔にまとめ、深掘りを促す問い1つを提案し、さらに **内容から短いタグを最大 4 つ** 抽出してください。
+コンサルタント1年目のユーザーが入力した今日の情報を温かく・前向きに・簡潔にまとめ、深掘りを促す問い1つを提案し、さらに **内容から短いタグを最大 4 つ** 抽出、そして **具体的な TODO タスク** も抽出してください。
 
 以下の形式で **厳密に** 出力してください（前置きや余計なテキストは禁止）:
 
@@ -101,6 +104,9 @@ FOLLOW_UP:
 
 TAGS:
 <カンマ区切りの短いタグ（各 1〜10 文字、合計 2〜4 個）。テーマ・行動・状況を抽出（例: "クライアントMTG, 集中, 体調不良"）。ハッシュ記号や引用符は付けない。>
+
+TASKS:
+<1行 1 タスク、各行を "- "（ハイフン + 半角スペース）で始める。入力から読み取れる具体的・実行可能なタスクを最大 6 個。各タスクは単一の具体的アクション（例: "- 議事録ドラフトを上司に送る", "- 16時の MTG 用スライドを準備"）。時刻が明記されていれば含める（例: "- 16時: クライアント MTG"）。入力に含まれない内容を勝手に作らない。タスクが読み取れない場合は "TASKS:" の後ろを空にする。>
 
 ポジティブに、決めつけずに。入力のコピーは禁止。フォローアップは必ず「問い」の形にすること。`
 
@@ -122,13 +128,15 @@ ${(scheduleNotes || '').toString().trim() || '未入力'}`
       })
       const raw = response.content[0].type === 'text' ? response.content[0].text.trim() : ''
 
-      // SUMMARY: / FOLLOW_UP: / TAGS: をパース。形式違反時は raw 全体を summary に倒す
+      // SUMMARY: / FOLLOW_UP: / TAGS: / TASKS: をパース。形式違反時は raw 全体を summary に倒す
       let summary = raw
       let followUpQuestion = ''
       let suggestedTags: string[] = []
-      const summaryMatch = raw.match(/SUMMARY:\s*([\s\S]*?)(?:\n\s*FOLLOW_UP:|\n\s*TAGS:|$)/i)
-      const followMatch = raw.match(/FOLLOW_UP:\s*([\s\S]*?)(?:\n\s*TAGS:|$)/i)
-      const tagsMatch = raw.match(/TAGS:\s*([\s\S]*?)$/i)
+      let extractedTasks: string[] = []
+      const summaryMatch = raw.match(/SUMMARY:\s*([\s\S]*?)(?:\n\s*FOLLOW_UP:|\n\s*TAGS:|\n\s*TASKS:|$)/i)
+      const followMatch = raw.match(/FOLLOW_UP:\s*([\s\S]*?)(?:\n\s*TAGS:|\n\s*TASKS:|$)/i)
+      const tagsMatch = raw.match(/TAGS:\s*([\s\S]*?)(?:\n\s*TASKS:|$)/i)
+      const tasksMatch = raw.match(/TASKS:\s*([\s\S]*?)$/i)
       if (summaryMatch) summary = summaryMatch[1].trim()
       if (followMatch) followUpQuestion = followMatch[1].trim()
       if (tagsMatch) {
@@ -138,8 +146,20 @@ ${(scheduleNotes || '').toString().trim() || '未入力'}`
           .filter((s) => s.length > 0 && s.length <= 24)
           .slice(0, 4)
       }
+      if (tasksMatch) {
+        extractedTasks = tasksMatch[1]
+          .split(/\n+/)
+          .map((line) => line.replace(/^\s*[-*・]\s*/, '').replace(/["'`「」『』]/g, '').trim())
+          .filter((s) => s.length > 0 && s.length <= 120)
+          .slice(0, 6)
+      }
 
-      res.json({ summary, follow_up_question: followUpQuestion, suggested_tags: suggestedTags })
+      res.json({
+        summary,
+        follow_up_question: followUpQuestion,
+        suggested_tags: suggestedTags,
+        extracted_tasks: extractedTasks,
+      })
     } catch (e: unknown) {
       console.error('journal summarize error:', e)
       res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
