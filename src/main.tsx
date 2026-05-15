@@ -5,15 +5,15 @@ import './styles/tokens-m3.css'
 import './index.css'
 import { initSentry } from './sentry'
 import { setHtmlPlatformAttr, configureStatusBar, configureKeyboard } from './platform'
+import { loadTheme, applyTheme } from './theme'
 
 initSentry()
 
-// Apply v3 dark theme to both html and body so CSS variables resolve consistently.
-// Without the html class, computed `--bg-primary` on <html> falls back to the
-// :root light value (#FAFAFB) and bleeds through behind the app shell.
-document.documentElement.classList.add('mode-dark')
-document.documentElement.classList.remove('mode-light')
-document.body.classList.add('mode-dark')
+// Apply the user's saved theme (light/dark) before React mounts to avoid FOUC.
+// applyTheme sets html.mode-{light|dark}; tokens.css resolves --bg-primary etc.
+// New users default to 'dark' (see DEFAULT in theme.ts) for continuity with prior
+// builds; existing users keep whatever they previously chose.
+applyTheme(loadTheme())
 
 // Tag <html data-platform="ios|android|web"> so CSS can branch on platform
 // without a runtime JS check.

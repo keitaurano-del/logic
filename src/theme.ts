@@ -37,8 +37,8 @@ export type Mode = {
 
 // MODES use getters for name/description so they re-localize on language switch.
 export const MODES: Mode[] = [
-  { id: 'light',      get name() { return t('theme.mode.light.name') },      get description() { return t('theme.mode.light.desc') },      tier: 'free',    preview: { bg: '#F5F1E8', card: '#FFFFFF', text: '#2D2820', accent: '#D4915A' } },
-  { id: 'dark',       get name() { return t('theme.mode.dark.name') },       get description() { return t('theme.mode.dark.desc') },       tier: 'free',    preview: { bg: '#15171C', card: '#1F232B', text: '#E8E8EC', accent: '#D4915A' } },
+  { id: 'light',      get name() { return t('theme.mode.light.name') },      get description() { return t('theme.mode.light.desc') },      tier: 'free',    preview: { bg: '#F8F9FC', card: '#FFFFFF', text: '#0D1220', accent: '#6C8EF5' } },
+  { id: 'dark',       get name() { return t('theme.mode.dark.name') },       get description() { return t('theme.mode.dark.desc') },       tier: 'free',    preview: { bg: '#1A1F2E', card: '#252C40', text: '#E8ECF4', accent: '#6C8EF5' } },
   { id: 'enterprise', get name() { return t('theme.mode.enterprise.name') }, get description() { return t('theme.mode.enterprise.desc') }, tier: 'premium', preview: { bg: '#0F1729', card: '#1A2540', text: '#E2E8F0', accent: '#94A3B8' } },
   { id: 'startup',    get name() { return t('theme.mode.startup.name') },    get description() { return t('theme.mode.startup.desc') },    tier: 'premium', preview: { bg: '#FFFAF0', card: '#FFFFFF', text: '#1A2E22', accent: '#10B981' } },
   { id: 'custom',     get name() { return t('theme.mode.custom.name') },     get description() { return t('theme.mode.custom.desc') },     tier: 'premium', preview: { bg: '#F5F1E8', card: '#FFFFFF', text: '#2D2820', accent: '#D4915A' } },
@@ -71,6 +71,17 @@ export function loadTheme(): ThemeState {
 
 export function saveTheme(s: ThemeState) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(s))
+}
+
+// Lightweight helpers for the Settings light/dark toggle.
+export function getMode(): ModeId {
+  return loadTheme().mode
+}
+
+export function setMode(mode: ModeId): void {
+  const next: ThemeState = { ...loadTheme(), mode }
+  saveTheme(next)
+  applyTheme(next)
 }
 
 function hexToRgba(hex: string, alpha: number): string {

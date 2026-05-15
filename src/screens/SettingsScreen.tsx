@@ -9,6 +9,7 @@ import {
 import { getSubscriptionState, isPaid } from '../subscription'
 import { Switch } from '../components/Switch'
 import { confirm as confirmDialog } from '../platform/dialog'
+import { getMode, setMode } from '../theme'
 
 interface SettingsScreenProps {
   onBack: () => void
@@ -81,6 +82,12 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
   const [reminderEnabled, setReminderEnabled] = useState(pref.enabled)
   const [reminderHour, setReminderHour] = useState(pref.hour)
   const [reminderMinute, setReminderMinute] = useState(pref.minute)
+  const [darkMode, setDarkMode] = useState<boolean>(() => getMode() !== 'light')
+
+  function handleToggleDarkMode(enabled: boolean) {
+    setDarkMode(enabled)
+    setMode(enabled ? 'dark' : 'light')
+  }
 
   async function handleToggleReminder(enabled: boolean) {
     if (enabled) {
@@ -277,6 +284,16 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
             value={locale === 'ja' ? t('profile.languageJa') : t('profile.languageEn')}
             onPress={onOpenLanguage}
           />
+          <Divider />
+          <div style={{
+            display: 'flex', alignItems: 'center',
+            padding: '14px 16px', gap: 12,
+          }}>
+            <span style={{ flex: 1, fontSize: 18, color: 'var(--text)' }}>
+              {t('settings.darkMode')}
+            </span>
+            <Toggle value={darkMode} onChange={handleToggleDarkMode} label={t('settings.darkMode')} />
+          </div>
         </div>
       </div>
 
