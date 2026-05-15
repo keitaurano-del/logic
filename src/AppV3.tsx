@@ -36,6 +36,7 @@ const LanguageScreen = lazy(() => import('./screens/LanguageScreen').then(m => (
 const RankScreen = lazy(() => import('./screens/RankScreen').then(m => ({ default: m.RankScreen })))
 const LoginScreen = lazy(() => import('./screens/LoginScreen').then(m => ({ default: m.LoginScreen })))
 const DailyProblemScreen = lazy(() => import('./screens/DailyProblemScreen').then(m => ({ default: m.DailyProblemScreen })))
+const JournalScreen = lazy(() => import('./screens/JournalScreen').then(m => ({ default: m.JournalScreen })))
 import { allLessons, getAllLessonsFlat } from './lessonData'
 import { getCurrentLevel } from './screens/homeHelpers'
 
@@ -54,6 +55,7 @@ import { TutorialOverlay, TutorialFAB } from './components/TutorialOverlay'
 import { tutorial } from './tutorial/tutorialStorage'
 import { SparklesIcon, MessageSquareIcon, BookOpenIcon } from './icons'
 import { t } from './i18n'
+import { useAssistantName } from './hooks/useAssistantName'
 
 const ONBOARDED_KEY = 'logic-onboarded'
 const INSTALL_ID_KEY = 'logic-install-id'
@@ -109,6 +111,7 @@ type Screen =
   | { type: 'onboarding' }
   | { type: 'login-gate'; feature: 'ai-gen' | 'roleplay' | 'advanced-lessons' }
   | { type: 'beta-code' }
+  | { type: 'journal'; sub?: 'calendar' | 'goals' | 'search' }
 
 // LESSON_LIST is now managed within RoadmapScreen
 
@@ -125,6 +128,7 @@ function getInitialScreen(user: User | null): Screen {
     if (preview === 'account') return { type: 'account-settings' }
     if (preview === 'notifications') return { type: 'notification-settings' }
     if (preview === 'roleplay-select') return { type: 'roleplay' }
+    if (preview === 'journal') return { type: 'journal' }
   }
   // ログイン済みユーザーはオンボーディングをスキップ
   if (user) return { type: 'home' }
@@ -138,7 +142,7 @@ function getInitialScreen(user: User | null): Screen {
 
 // ── ルート画面かどうか判定 ──
 // 'ranking' タブ ID は Screen.type 'fermi-ranking' に対応する（handleTabChange / popstate 参照）。
-const ROOT_SCREENS = new Set<string>(['home', 'lessons', 'fermi-ranking', 'profile'])
+const ROOT_SCREENS = new Set<string>(['home', 'lessons', 'fermi-ranking', 'journal', 'profile'])
 
 function AppV3() {
   const [tab, setTab] = useState<Tab>('home')
@@ -183,6 +187,8 @@ function AppV3() {
         setScreen(s)
         if (s.type === 'fermi-ranking') {
           setTab('ranking')
+        } else if (s.type === 'journal') {
+          setTab('journal')
         } else if (ROOT_SCREENS.has(s.type)) {
           setTab(s.type as Tab)
         }
@@ -259,6 +265,9 @@ function AppV3() {
   const xp = completed * 100
   const level = Math.floor(xp / 1000) + 1
 
+  // パーソナルアシスタント名（ジャーナル・要約 CTA で使用）
+  const { assistantName, updateAssistantName } = useAssistantName(currentUser?.id ?? null)
+
   const handleSaveName = async () => {
     const name = nameInput.trim()
     if (!name) return
@@ -276,6 +285,8 @@ function AppV3() {
     // rankingタブはフェルミランキング画面へ
     if (next === 'ranking') {
       navigate({ type: 'fermi-ranking' }, true)
+    } else if (next === 'journal') {
+      navigate({ type: 'journal' }, true)
     } else {
       navigate({ type: next }, true)
     }
@@ -292,6 +303,8 @@ function AppV3() {
       window.history.back()
     } else if (tab === 'ranking') {
       navigate({ type: 'fermi-ranking' }, true)
+    } else if (tab === 'journal') {
+      navigate({ type: 'journal' }, true)
     } else {
       navigate({ type: tab }, true)
     }
@@ -309,6 +322,8 @@ function AppV3() {
       navigate({ type: 'lesson-complete', lessonId, durationSec, prevLevel })
     } else if (tab === 'ranking') {
       navigate({ type: 'fermi-ranking' }, true)
+    } else if (tab === 'journal') {
+      navigate({ type: 'journal' }, true)
     } else {
       navigate({ type: tab }, true)
     }
@@ -397,6 +412,8 @@ function AppV3() {
       {screen.type === 'home' && (
         <HomeScreenV3
           userName={userName}
+          userId={currentUser?.id ?? null}
+          assistantName={assistantName}
           onOpenLesson={handleOpenLesson}
           onOpenCategory={(cat) => {
             if (cat === 'fermi') navigate({ type: 'daily-fermi' })
@@ -407,6 +424,7 @@ function AppV3() {
           onOpenRoleplay={() => currentUser ? navigate({ type: 'roleplay' }) : navigate({ type: 'login-gate', feature: 'roleplay' })}
           onOpenAIGen={() => currentUser ? navigate({ type: 'ai-problem-gen' }) : navigate({ type: 'login-gate', feature: 'ai-gen' })}
           onOpenRoadmap={() => { setTab('lessons'); navigate({ type: 'lessons' }, true) }}
+          onOpenJournal={() => { setTab('journal'); navigate({ type: 'journal' }, true) }}
           onNavigateToDailyFermi={() => navigate({ type: 'daily-fermi' })}
           onOpenPlacementTest={() => navigate({ type: 'placement-test' })}
           onOpenReviewHub={() => navigate({ type: 'review-hub' })}
@@ -473,6 +491,15 @@ function AppV3() {
         <FermiRankingScreen />
       )}
 
+      {screen.type === 'journal' && (
+        <JournalScreen
+          userId={currentUser?.id ?? null}
+          assistantName={assistantName}
+          initialSub={screen.sub}
+          onRequestLogin={() => navigate({ type: 'login' })}
+        />
+      )}
+
       {screen.type === 'placement-test' && (
         <PlacementTestScreen
           onBack={handleBack}
@@ -506,6 +533,8 @@ function AppV3() {
       {screen.type === 'profile' && (
         <ProfileScreenV3
           userName={userName}
+          assistantName={assistantName}
+          onUpdateAssistantName={updateAssistantName}
           onOpenSettings={(section) => navigate(section === 'account' ? { type: 'account-settings' } : section === 'notifications' ? { type: 'notification-settings' } : { type: 'settings' })}
           onOpenFeedback={() => navigate({ type: 'feedback' })}
           onOpenPricing={() => navigate({ type: 'pricing' })}

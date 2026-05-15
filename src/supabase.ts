@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
-import type { User } from '@supabase/supabase-js'
+import type { User, SupabaseClient } from '@supabase/supabase-js'
 import { Capacitor } from '@capacitor/core'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || ''
@@ -16,6 +16,12 @@ try {
 }
 
 export function isSupabaseConfigured(): boolean { return !!supabase }
+
+// 型は緩めに（untyped client）。各テーブルの insert/upsert で厳密ジェネリクスを通すと
+// 既存のスキーマ型未定義の状態と相性が悪いため、呼び出し側で any 相当として扱える形で返す。
+export function getSupabaseClient(): SupabaseClient | null {
+  return supabase as unknown as SupabaseClient | null
+}
 
 export async function loginWithGoogle(): Promise<{ user: User | null; error?: string }> {
   if (!supabase) return { user: null, error: 'Supabase が設定されていません' }

@@ -5,7 +5,7 @@ import { isAndroid, isIOS } from '../platform'
 import { haptic } from '../platform/haptics'
 import './AppShell.css'
 
-export type Tab = 'home' | 'lessons' | 'ranking' | 'profile'
+export type Tab = 'home' | 'lessons' | 'ranking' | 'journal' | 'profile'
 
 export interface TabDef {
   id: Tab
@@ -53,6 +53,22 @@ function getTabs(): TabDef[] {
           <path d="M7 17H3v-5h4v5zm7-9h-4v9h4V8zm7-4h-4v13h4V4z" />
         </svg>
       ),
+    },
+    {
+      id: 'journal',
+      label: t('nav.journal'),
+      icon: (active) => {
+        const c = active ? ACTIVE : INACTIVE
+        return (
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={c}
+            strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v18H6.5A2.5 2.5 0 0 1 4 17.5v-13z" />
+            <path d="M4 17.5A2.5 2.5 0 0 1 6.5 15H20" />
+            <line x1="8" y1="7" x2="16" y2="7" />
+            <line x1="8" y1="11" x2="14" y2="11" />
+          </svg>
+        )
+      },
     },
     {
       id: 'profile',

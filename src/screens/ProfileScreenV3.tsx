@@ -2,7 +2,7 @@
  * ProfileScreenV3 - Logic v3 redesign
  * 仕様: docs/DESIGN_V3.md §3.6
  */
-import { useState, useId } from 'react'
+import { useEffect, useState, useId } from 'react'
 import { getCompletedCount, getLessonStreak, getXp, getCompletedLessons, getXpLogThisMonth, XP_EVENT_LABEL } from '../stats'
 import { getAllLessonsFlat } from '../lessonData'
 import { getCurrentLevel, getXpProgress } from './homeHelpers'
@@ -22,6 +22,8 @@ function getPlanLabel(): string {
 
 interface ProfileScreenV3Props {
   userName: string
+  assistantName?: string
+  onUpdateAssistantName?: (name: string) => Promise<void>
   onOpenSettings: (section?: 'account' | 'notifications' | 'plan') => void
   onOpenFeedback?: () => void
   onOpenPricing?: () => void
@@ -33,7 +35,7 @@ interface ProfileScreenV3Props {
 type Sheet = null | 'streak' | 'lessons' | 'xp'
 
 export function ProfileScreenV3(props: ProfileScreenV3Props) {
-  const { userName, onOpenSettings, onOpenFeedback, onOpenPricing, onOpenPlacementTest, onOpenLesson, onOpenLanguage } = props
+  const { userName, assistantName, onUpdateAssistantName, onOpenSettings, onOpenFeedback, onOpenPricing, onOpenPlacementTest, onOpenLesson, onOpenLanguage } = props
   const [sheet, setSheet] = useState<Sheet>(null)
   const streak = getLessonStreak()
   const completed = getCompletedCount()
@@ -151,6 +153,14 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
             </div>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2.5" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
           </button>
+        )}
+
+        {/* アシスタント設定 */}
+        {assistantName !== undefined && onUpdateAssistantName && (
+          <AssistantNameCard
+            currentName={assistantName}
+            onUpdate={onUpdateAssistantName}
+          />
         )}
 
         {/* 設定 */}
@@ -323,6 +333,86 @@ function getStudiedThisWeek(): boolean[] {
     const iso = d.toISOString().slice(0, 10)
     return studyDates.has(iso)
   })
+}
+
+function AssistantNameCard({ currentName, onUpdate }: { currentName: string; onUpdate: (name: string) => Promise<void> }) {
+  const [input, setInput] = useState(currentName)
+  const [saving, setSaving] = useState(false)
+  const [toast, setToast] = useState(false)
+
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { setInput(currentName) }, [currentName])
+
+  const handleSave = async () => {
+    setSaving(true)
+    await onUpdate(input)
+    setSaving(false)
+    setToast(true)
+    setTimeout(() => setToast(false), 2000)
+  }
+
+  const dirty = input.trim() !== currentName.trim() && input.trim().length > 0
+
+  return (
+    <div style={{
+      background: 'var(--bg-card)',
+      borderRadius: 'var(--radius-lg)',
+      padding: 18,
+      boxShadow: 'var(--shadow-v3-card-inset)',
+      border: '1px solid rgba(255,255,255,.06)',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 12,
+    }}>
+      <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>{t('profile.assistantSettings')}</div>
+      <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{t('profile.assistantNameCurrent', { name: currentName })}</div>
+      <input
+        type="text"
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        placeholder={t('journal.assistantNameDefault')}
+        aria-label={t('profile.assistantSettings')}
+        maxLength={30}
+        style={{
+          padding: '10px 12px',
+          background: 'var(--bg-primary)',
+          border: '1px solid var(--border, rgba(255,255,255,.08))',
+          borderRadius: 10,
+          color: 'var(--text-primary)',
+          font: 'inherit',
+          fontSize: 14,
+        }}
+      />
+      <button
+        type="button"
+        onClick={handleSave}
+        disabled={!dirty || saving}
+        style={{
+          padding: '12px',
+          background: 'var(--brand)',
+          color: 'var(--accent-fg, #fff)',
+          border: 'none',
+          borderRadius: 10,
+          font: 'inherit',
+          fontSize: 14,
+          fontWeight: 700,
+          cursor: dirty && !saving ? 'pointer' : 'not-allowed',
+          opacity: dirty && !saving ? 1 : 0.5,
+          minHeight: 44,
+        }}
+      >
+        {saving ? t('common.loading') : t('common.save')}
+      </button>
+      {toast && (
+        <div style={{
+          textAlign: 'center',
+          fontSize: 13,
+          fontWeight: 600,
+          color: 'var(--brand)',
+        }}>{t('profile.assistantSaved')}</div>
+      )}
+    </div>
+  )
 }
 
 function StatCard({ val, label, onClick, highlight }: { val: string; label: string; onClick: () => void; highlight?: boolean }) {
