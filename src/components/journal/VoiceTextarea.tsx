@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { useVoiceInput } from '../../hooks/useVoiceInput'
+import { useVoiceInput, type VoiceErrorCode } from '../../hooks/useVoiceInput'
 import { MicIcon } from './MoodWeatherIcons'
 import { t } from '../../i18n'
 
@@ -11,6 +11,17 @@ interface VoiceTextareaProps {
   ariaLabel?: string
 }
 
+const ERROR_KEY: Record<VoiceErrorCode, string> = {
+  'permission-denied': 'journal.voiceErrPermission',
+  'no-speech':         'journal.voiceErrNoSpeech',
+  'audio-capture':     'journal.voiceErrAudio',
+  'network':           'journal.voiceErrNetwork',
+  'not-allowed':       'journal.voiceErrPermission',
+  'not-supported':     'journal.voiceErrUnsupported',
+  'aborted':           'journal.voiceErrAborted',
+  'unknown':           'journal.voiceErrUnknown',
+}
+
 export function VoiceTextarea({ value, onChange, placeholder, minHeight, ariaLabel }: VoiceTextareaProps) {
   // 録音開始時のテキスト末尾位置を覚えて、認識結果を以降に追記する
   const baseRef = useRef<string>(value)
@@ -20,7 +31,7 @@ export function VoiceTextarea({ value, onChange, placeholder, minHeight, ariaLab
     onChange(`${baseRef.current}${sep}${transcript}`)
   }
 
-  const { isListening, isSupported, toggleListening } = useVoiceInput(handleTranscript)
+  const { isListening, isSupported, error, toggleListening } = useVoiceInput(handleTranscript)
 
   // 録音停止時は現在値をベースとして更新（次の録音で末尾追記できるよう）
   useEffect(() => {
@@ -29,7 +40,7 @@ export function VoiceTextarea({ value, onChange, placeholder, minHeight, ariaLab
 
   const handleStart = () => {
     if (!isListening) baseRef.current = value
-    toggleListening()
+    void toggleListening()
   }
 
   return (
@@ -57,13 +68,14 @@ export function VoiceTextarea({ value, onChange, placeholder, minHeight, ariaLab
         </button>
       )}
       {isListening && (
-        <span
-          role="status"
-          aria-live="polite"
-          className="journal-voice-rec"
-        >
+        <span role="status" aria-live="polite" className="journal-voice-rec">
           {t('journal.voiceRecording')}
         </span>
+      )}
+      {error && (
+        <div className="journal-voice-error" role="alert">
+          {t(ERROR_KEY[error])}
+        </div>
       )}
     </div>
   )

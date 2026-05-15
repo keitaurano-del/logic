@@ -52,9 +52,57 @@ export async function upsertJournal(j: DailyJournal): Promise<{ error?: string }
       schedule_notes: j.schedule_notes,
       evening_reflection: j.evening_reflection,
       ai_summary: j.ai_summary,
+      tags: Array.isArray(j.tags) ? j.tags : [],
     }, { onConflict: 'user_id,date' })
   if (error) return { error: error.message }
   return {}
+}
+
+/**
+ * 過去 N 日分のジャーナルを取得（カレンダー / スパークライン用）
+ */
+export async function fetchRecentJournals(userId: string, days = 30): Promise<DailyJournal[]> {
+  const supabase = getSupabaseClient()
+  if (!supabase) return []
+  const end = new Date()
+  const start = new Date(end.getTime() - (days - 1) * 86400000)
+  const fmt = (d: Date) => d.toISOString().slice(0, 10)
+  return fetchJournalsBetween(userId, fmt(start), fmt(end))
+}
+
+/**
+ * 連続記録日数（streak）を計算。今日（または昨日まで）から遡って「ジャーナルが書かれた連続日数」を返す。
+ * ジャーナルが書かれた = mood / weather / schedule_notes / evening_reflection / tags のどれかが入ってる
+ */
+export async function fetchJournalStreak(userId: string): Promise<number> {
+  const supabase = getSupabaseClient()
+  if (!supabase) return 0
+  const end = new Date()
+  const start = new Date(end.getTime() - 365 * 86400000)
+  const fmt = (d: Date) => d.toISOString().slice(0, 10)
+  const { data, error } = await supabase
+    .from('daily_journals')
+    .select('date, mood, weather, schedule_notes, evening_reflection, tags')
+    .eq('user_id', userId)
+    .gte('date', fmt(start))
+    .lte('date', fmt(end))
+    .order('date', { ascending: false })
+  if (error) { console.warn('fetchJournalStreak:', error.message); return 0 }
+  const rows = (data as Array<{ date: string; mood?: number | null; weather?: string | null; schedule_notes?: string | null; evening_reflection?: string | null; tags?: string[] | null }>) ?? []
+  const dateSet = new Set(
+    rows
+      .filter((r) => r.mood != null || !!r.weather || !!(r.schedule_notes && r.schedule_notes.trim()) || !!(r.evening_reflection && r.evening_reflection.trim()) || (r.tags && r.tags.length > 0))
+      .map((r) => r.date)
+  )
+  let streak = 0
+  let started = false
+  for (let i = 0; i < 365; i++) {
+    const d = new Date(end.getTime() - i * 86400000)
+    if (dateSet.has(fmt(d))) { streak++; started = true }
+    else if (!started && i === 0) { /* 今日未入力でも昨日から数える */ continue }
+    else break
+  }
+  return streak
 }
 
 export async function searchJournals(userId: string, keyword: string): Promise<DailyJournal[]> {

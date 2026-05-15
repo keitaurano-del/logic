@@ -111,7 +111,7 @@ type Screen =
   | { type: 'onboarding' }
   | { type: 'login-gate'; feature: 'ai-gen' | 'roleplay' | 'advanced-lessons' }
   | { type: 'beta-code' }
-  | { type: 'journal'; sub?: 'calendar' | 'goals' | 'search' }
+  | { type: 'journal'; sub?: 'today' | 'calendar' | 'goals' | 'search' }
 
 // LESSON_LIST is now managed within RoadmapScreen
 
@@ -412,8 +412,6 @@ function AppV3() {
       {screen.type === 'home' && (
         <HomeScreenV3
           userName={userName}
-          userId={currentUser?.id ?? null}
-          assistantName={assistantName}
           onOpenLesson={handleOpenLesson}
           onOpenCategory={(cat) => {
             if (cat === 'fermi') navigate({ type: 'daily-fermi' })
@@ -424,7 +422,6 @@ function AppV3() {
           onOpenRoleplay={() => currentUser ? navigate({ type: 'roleplay' }) : navigate({ type: 'login-gate', feature: 'roleplay' })}
           onOpenAIGen={() => currentUser ? navigate({ type: 'ai-problem-gen' }) : navigate({ type: 'login-gate', feature: 'ai-gen' })}
           onOpenRoadmap={() => { setTab('lessons'); navigate({ type: 'lessons' }, true) }}
-          onOpenJournal={() => { setTab('journal'); navigate({ type: 'journal' }, true) }}
           onNavigateToDailyFermi={() => navigate({ type: 'daily-fermi' })}
           onOpenPlacementTest={() => navigate({ type: 'placement-test' })}
           onOpenReviewHub={() => navigate({ type: 'review-hub' })}

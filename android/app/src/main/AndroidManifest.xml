@@ -39,4 +39,6 @@
     <!-- Permissions -->
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 音声入力（ジャーナル）: @capacitor-community/speech-recognition がランタイムで RECORD_AUDIO を要求する -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 </manifest>

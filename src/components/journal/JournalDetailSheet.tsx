@@ -105,6 +105,7 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
       schedule_notes: journal?.schedule_notes ?? null,
       ai_summary: journal?.ai_summary ?? null,
       evening_reflection: reflection.trim() || null,
+      tags: journal?.tags ?? [],
     }
     const { error } = await upsertJournal(updated)
     setSaving(false)
