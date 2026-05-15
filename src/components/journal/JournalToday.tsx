@@ -4,9 +4,8 @@ import { todayKey } from './types'
 import { MoodSelector, WeatherSelector } from './MoodWeatherSelector'
 import { VoiceTextarea } from './VoiceTextarea'
 import { TagInput } from './TagInput'
-import { StreakBadge } from './StreakBadge'
-import { MoodSparkline } from './MoodSparkline'
-import { fetchJournalByDate, upsertJournal, fetchRecentJournals, fetchJournalStreak } from './journalDb'
+import { JournalActivityList } from './JournalActivityList'
+import { fetchJournalByDate, upsertJournal } from './journalDb'
 import { t } from '../../i18n'
 
 interface JournalTodayProps {
@@ -38,10 +37,6 @@ export function JournalToday({ userId }: JournalTodayProps) {
   const [savedToast, setSavedToast] = useState(false)
   const [celebration, setCelebration] = useState(false)
 
-  // streak + recent
-  const [streak, setStreak] = useState(0)
-  const [recent, setRecent] = useState<DailyJournal[]>([])
-
   const [error, setError] = useState<string | null>(null)
 
   // 初期データロード
@@ -52,11 +47,7 @@ export function JournalToday({ userId }: JournalTodayProps) {
     }
     let cancelled = false
     ;(async () => {
-      const [j, r, s] = await Promise.all([
-        fetchJournalByDate(userId, todayKey()),
-        fetchRecentJournals(userId, 30),
-        fetchJournalStreak(userId),
-      ])
+      const j = await fetchJournalByDate(userId, todayKey())
       if (cancelled) return
       if (j) {
         if (j.mood) setMood(j.mood as Mood)
@@ -65,8 +56,6 @@ export function JournalToday({ userId }: JournalTodayProps) {
         if (j.evening_reflection) setReflection(j.evening_reflection)
         if (j.tags) setTags(j.tags)
       }
-      setRecent(r)
-      setStreak(s)
       setLoaded(true)
     })()
     return () => { cancelled = true }
@@ -76,16 +65,6 @@ export function JournalToday({ userId }: JournalTodayProps) {
   const canSaveMorning = !!(scheduleNotes.trim() || tags.length > 0)
   // 夜の保存 CTA は気分・天気・振り返り のどれかが入ってれば有効
   const canSaveEvening = !!(mood !== null || weather !== null || reflection.trim())
-
-  const refreshAfterSave = async () => {
-    if (!userId) return
-    const [r, s] = await Promise.all([
-      fetchRecentJournals(userId, 30),
-      fetchJournalStreak(userId),
-    ])
-    setRecent(r)
-    setStreak(s)
-  }
 
   const saveDb = async (overrides: Partial<DailyJournal> = {}) => {
     if (!userId) return
@@ -106,7 +85,6 @@ export function JournalToday({ userId }: JournalTodayProps) {
       console.warn('JournalToday save:', dbErr)
       setError(t('journal.errorGeneric'))
     }
-    await refreshAfterSave()
   }
 
   const handleSaveMorning = async () => {
@@ -131,12 +109,6 @@ export function JournalToday({ userId }: JournalTodayProps) {
 
   return (
     <div className="journal-today">
-      {/* ストリーク + ミニグラフ */}
-      <div className="journal-today__strip">
-        <StreakBadge streak={streak} size="sm" />
-        <MoodSparkline journals={recent} days={30} />
-      </div>
-
       {/* Phase switcher */}
       <div className="journal-phase-tabs" role="tablist" aria-label={t('journal.phaseTabs')}>
         <button
@@ -238,6 +210,12 @@ export function JournalToday({ userId }: JournalTodayProps) {
           <div>
             <div className="journal-section__label" style={{ marginBottom: 8 }}>{t('journal.weatherLabel')}</div>
             <WeatherSelector value={weather} onChange={setWeather} disabled={saving} />
+          </div>
+
+          {/* 今日アプリでやったこと */}
+          <div>
+            <div className="journal-section__label" style={{ marginBottom: 8 }}>{t('journal.activityTitle')}</div>
+            <JournalActivityList date={todayKey()} />
           </div>
 
           {/* 振り返り */}

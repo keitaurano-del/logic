@@ -1,8 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { JournalToday } from '../components/journal/JournalToday'
 import { JournalCalendar } from '../components/journal/JournalCalendar'
 import { JournalGoals } from '../components/journal/JournalGoals'
 import { JournalSearch } from '../components/journal/JournalSearch'
+import { StreakBadge } from '../components/journal/StreakBadge'
+import { fetchJournalStreak } from '../components/journal/journalDb'
 import { t } from '../i18n'
 import '../components/journal/journal.css'
 
@@ -26,17 +28,31 @@ const SUB_LABEL_KEY: Record<Sub, string> = {
 
 export function JournalScreen({ userId, assistantName, initialSub, onRequestLogin }: JournalScreenProps) {
   const [sub, setSub] = useState<Sub>(initialSub ?? 'today')
+  const [streak, setStreak] = useState(0)
+
+  useEffect(() => {
+    if (!userId) return
+    let cancelled = false
+    ;(async () => {
+      const s = await fetchJournalStreak(userId)
+      if (!cancelled) setStreak(s)
+    })()
+    return () => { cancelled = true }
+  }, [userId])
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', display: 'flex', flexDirection: 'column' }}>
       {/* Hero */}
-      <div style={{
-        padding: 'calc(env(safe-area-inset-top, 44px) + 14px) 20px 20px',
-        background: 'var(--hero-grad-dark)',
-        color: 'var(--text-on-hero, #fff)',
-      }}>
-        <div style={{ fontSize: 22, fontWeight: 900, letterSpacing: '-0.02em' }}>{t('journal.title')}</div>
-        <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 4 }}>{t('journal.subtitle')}</div>
+      <div className="journal-hero">
+        <div>
+          <div style={{ fontSize: 22, fontWeight: 900, letterSpacing: '-0.02em' }}>{t('journal.title')}</div>
+          <div style={{ fontSize: 13, color: 'var(--text-on-hero-muted)', marginTop: 4 }}>{t('journal.subtitle')}</div>
+        </div>
+        {userId && (
+          <div className="journal-hero__streak">
+            <StreakBadge streak={streak} size="sm" />
+          </div>
+        )}
       </div>
 
       <div style={{ flex: 1, padding: '16px 16px 120px', display: 'flex', flexDirection: 'column' }}>

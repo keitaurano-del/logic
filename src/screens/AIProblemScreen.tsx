@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { AIProblemSet } from '../aiProblemStore'
 import type { QuizStep } from '../lessonData'
 import { recordCompletion } from '../stats'
+import { recordActivity } from '../activityLog'
 import { ArrowRightIcon, CheckIcon, XIcon } from '../icons'
 import { Button } from '../components/Button'
 import { haptic } from '../platform/haptics'
@@ -41,6 +42,11 @@ export function AIProblemScreen({ problem, onBack, onReport }: AIProblemScreenPr
   const handleNext = () => {
     if (stepIdx + 1 >= steps.length) {
       recordCompletion(`ai-problem-${problem.id}`)
+      recordActivity({
+        type: 'ai-problem',
+        id: String(problem.id),
+        title: problem.title,
+      })
       setFinished(true)
     } else {
       setStepIdx((i) => i + 1)
