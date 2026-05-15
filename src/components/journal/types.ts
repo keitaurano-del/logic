@@ -9,9 +9,10 @@ export interface DailyJournal {
   mood: Mood | null
   weather: Weather | null
   morning_memo: string | null
-  schedule_notes: string | null
-  evening_reflection: string | null
+  schedule_notes: string | null  // 朝の意図・予定
+  evening_reflection: string | null  // 夜の振り返り
   ai_summary: string | null
+  tags: string[]
   created_at?: string
   updated_at?: string
 }

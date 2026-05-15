@@ -4,8 +4,6 @@
  * モックアップ: lv3-home.html
  */
 import { useRef, useState } from 'react'
-import { TodayJournalForm } from '../components/journal/TodayJournalForm'
-import '../components/journal/journal.css'
 import { FERMI_POOL, getDailyFermiIndex } from '../fermiData'
 import { getCardStats } from '../flashcardData'
 import { getWrongAnswerStats } from '../wrongAnswerStore'
@@ -85,8 +83,6 @@ function getDailyGreeting(): string {
 
 interface HomeScreenV3Props {
   userName: string
-  userId?: string | null
-  assistantName?: string
   onOpenLesson: (lessonId: number) => void
   onOpenCategory?: (cat: string) => void
   onOpenRoadmap?: () => void
@@ -94,7 +90,6 @@ interface HomeScreenV3Props {
   onOpenRoleplay: () => void
   onOpenRank?: () => void
   onOpenStats?: () => void
-  onOpenJournal?: () => void
   onNavigateToDailyFermi?: () => void
   onOpenPlacementTest?: () => void
   onOpenReviewHub?: () => void
@@ -117,7 +112,7 @@ function readStoredFermiIndex(): number {
 }
 
 export function HomeScreenV3(props: HomeScreenV3Props) {
-  const { userName, userId, assistantName, onOpenLesson, onOpenAIGen, onOpenRoleplay, onNavigateToDailyFermi, onOpenPlacementTest, onOpenReviewHub, onOpenJournal, onOpenPricing: _onOpenPricing, onOpenCategory: _onOpenCategory, onOpenRank: _onOpenRank, onOpenStats: _onOpenStats, onOpenRoadmap: _onOpenRoadmap } = props
+  const { userName, onOpenLesson, onOpenAIGen, onOpenRoleplay, onNavigateToDailyFermi, onOpenPlacementTest, onOpenReviewHub, onOpenPricing: _onOpenPricing, onOpenCategory: _onOpenCategory, onOpenRank: _onOpenRank, onOpenStats: _onOpenStats, onOpenRoadmap: _onOpenRoadmap } = props
   const dailyCardRef = useRef<HTMLButtonElement>(null)
   const [showCoachmark, dismissCoachmark] = useShouldShowHomeCoachmark()
   const { width } = useWindowSize()
@@ -168,47 +163,6 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
           <div style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 4, fontWeight: 500 }}>{t('home.userGreeting', { name: userName || t('home.guestName') })}</div>
           <div style={{ fontSize: 20, fontWeight: 700, lineHeight: 1.4, letterSpacing: '-.005em' }}>{getDailyGreeting().split('\n').map((line, i) => i === 0 ? <span key={i}>{line}<br /></span> : <span key={i}>{line}</span>)}</div>
         </div>
-
-        {/* 今日のジャーナル */}
-        <section
-          aria-labelledby="home-journal-heading"
-          style={{
-            background: 'var(--bg-card)',
-            borderRadius: 'var(--radius-lg)',
-            padding: 18,
-            boxShadow: 'var(--shadow-v3-card-inset)',
-            border: '1px solid rgba(255,255,255,.06)',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 16,
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <h2 id="home-journal-heading" style={{ margin: 0, fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
-              {t('home.todayJournalTitle')}
-            </h2>
-            {onOpenJournal && (
-              <button
-                type="button"
-                onClick={onOpenJournal}
-                style={{
-                  background: 'transparent', border: 'none', color: 'var(--brand)',
-                  fontSize: 13, fontWeight: 700, cursor: 'pointer', padding: '8px 12px',
-                  minHeight: 44, display: 'inline-flex', alignItems: 'center', gap: 4,
-                }}
-              >
-                {t('home.todayJournalOpen')}
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <polyline points="9 18 15 12 9 6" />
-                </svg>
-              </button>
-            )}
-          </div>
-          <TodayJournalForm
-            userId={userId ?? null}
-            assistantName={assistantName || t('journal.assistantNameDefault')}
-          />
-        </section>
 
         {/* 今日の1問 (Daily Fermi) */}
         {/* a11y: 外側 div は非インタラクティブ。中の「カード本体」と「別の問題」は兄弟の <button> として配置し、nested-interactive を回避 */}

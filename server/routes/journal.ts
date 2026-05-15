@@ -74,23 +74,29 @@ export function createJournalRouter(
 
       const systemPrompt = isEn
         ? `You are "${name}", a personal assistant inside the Logic app for a first-year consultant.
-Summarize the user's morning check-in warmly, concisely, and forward-looking.
+Summarize the user's morning check-in warmly, concisely, and forward-looking, AND propose one open-ended follow-up question that invites deeper reflection.
 
-Output format (within 200 English words):
-- A one-line read on today's condition
-- 1-2 bullet points on what to focus on today
-- A short, supportive cheer message at the end
+Output STRICTLY in this exact format (no prefix, no extra text):
 
-Stay positive, never judgmental. Don't repeat raw inputs verbatim.`
+SUMMARY:
+<within 200 English words: 1 line on today's condition + 1-2 bullets on today's focus + a short cheer>
+
+FOLLOW_UP:
+<one open-ended question, 1 line, that nudges the user to reflect further on their intentions or today's challenge>
+
+Stay positive, never judgmental. Don't repeat raw inputs verbatim. The follow-up MUST be a question, not advice.`
         : `あなたは Logic アプリのパーソナルアシスタント「${name}」です。
-コンサルタント1年目のユーザーが入力した今日の情報を、温かく・前向きに・簡潔にまとめてください。
+コンサルタント1年目のユーザーが入力した今日の情報を温かく・前向きに・簡潔にまとめ、さらに **深掘りを促す問い1つ** を提案してください。
 
-以下の形式でまとめてください（200字以内）:
-- 今日のコンディション一言
-- 今日意識すべきポイント（箇条書き1〜2点）
-- アシスタントからの一言応援メッセージ
+以下の形式で **厳密に** 出力してください（前置きや余計なテキストは禁止）:
 
-ポジティブに、決めつけずに。入力をそのままコピーしないでください。`
+SUMMARY:
+<200字以内。今日のコンディション一言 + 今日の意識ポイント1〜2点（箇条書き）+ 一言応援メッセージ>
+
+FOLLOW_UP:
+<1行・1問。今日の意図や課題をより深く考えるきっかけになる開放的な問い>
+
+ポジティブに、決めつけずに。入力のコピーは禁止。フォローアップは必ず「問い」の形にすること。`
 
       const userMessage = isEn
         ? `Mood: ${moodLabel}
@@ -104,12 +110,21 @@ ${(scheduleNotes || '').toString().trim() || '未入力'}`
 
       const response = await client.messages.create({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 600,
+        max_tokens: 800,
         system: systemPrompt,
         messages: [{ role: 'user', content: userMessage }],
       })
-      const summary = response.content[0].type === 'text' ? response.content[0].text.trim() : ''
-      res.json({ summary })
+      const raw = response.content[0].type === 'text' ? response.content[0].text.trim() : ''
+
+      // SUMMARY: / FOLLOW_UP: セクションをパース。形式違反時は raw 全体を summary に倒す
+      let summary = raw
+      let followUpQuestion = ''
+      const summaryMatch = raw.match(/SUMMARY:\s*([\s\S]*?)(?:\n\s*FOLLOW_UP:|$)/i)
+      const followMatch = raw.match(/FOLLOW_UP:\s*([\s\S]*?)$/i)
+      if (summaryMatch) summary = summaryMatch[1].trim()
+      if (followMatch) followUpQuestion = followMatch[1].trim()
+
+      res.json({ summary, follow_up_question: followUpQuestion })
     } catch (e: unknown) {
       console.error('journal summarize error:', e)
       res.status(500).json({ error: e instanceof Error ? e.message : String(e) })

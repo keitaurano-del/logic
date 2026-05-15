@@ -1,11 +1,12 @@
 import { useState } from 'react'
+import { JournalToday } from '../components/journal/JournalToday'
 import { JournalCalendar } from '../components/journal/JournalCalendar'
 import { JournalGoals } from '../components/journal/JournalGoals'
 import { JournalSearch } from '../components/journal/JournalSearch'
 import { t } from '../i18n'
 import '../components/journal/journal.css'
 
-type Sub = 'calendar' | 'goals' | 'search'
+type Sub = 'today' | 'calendar' | 'goals' | 'search'
 
 interface JournalScreenProps {
   userId: string | null
@@ -14,14 +15,17 @@ interface JournalScreenProps {
   onRequestLogin?: () => void
 }
 
+const SUB_ORDER: Sub[] = ['today', 'calendar', 'goals', 'search']
+
 const SUB_LABEL_KEY: Record<Sub, string> = {
+  today:    'journal.tabToday',
   calendar: 'journal.tabCalendar',
   goals:    'journal.tabGoals',
   search:   'journal.tabSearch',
 }
 
 export function JournalScreen({ userId, assistantName, initialSub, onRequestLogin }: JournalScreenProps) {
-  const [sub, setSub] = useState<Sub>(initialSub ?? 'calendar')
+  const [sub, setSub] = useState<Sub>(initialSub ?? 'today')
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', display: 'flex', flexDirection: 'column' }}>
@@ -37,18 +41,9 @@ export function JournalScreen({ userId, assistantName, initialSub, onRequestLogi
 
       <div style={{ flex: 1, padding: '16px 16px 120px', display: 'flex', flexDirection: 'column' }}>
         {!userId ? (
-          <div style={{
-            background: 'var(--bg-card)',
-            borderRadius: 14,
-            padding: 24,
-            textAlign: 'center',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 12,
-            alignItems: 'center',
-          }}>
-            <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)' }}>{t('journal.loginRequiredTitle')}</div>
-            <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6 }}>{t('journal.loginRequiredDesc')}</div>
+          <div className="journal-login-card">
+            <div className="journal-login-card__title">{t('journal.loginRequiredTitle')}</div>
+            <div className="journal-login-card__desc">{t('journal.loginRequiredDesc')}</div>
             {onRequestLogin && (
               <button
                 type="button"
@@ -63,7 +58,7 @@ export function JournalScreen({ userId, assistantName, initialSub, onRequestLogi
         ) : (
           <>
             <div className="journal-subtabs" role="tablist" aria-label={t('journal.viewTabs')}>
-              {(['calendar', 'goals', 'search'] as Sub[]).map((s) => (
+              {SUB_ORDER.map((s) => (
                 <button
                   key={s}
                   type="button"
@@ -77,6 +72,7 @@ export function JournalScreen({ userId, assistantName, initialSub, onRequestLogi
               ))}
             </div>
 
+            {sub === 'today'    && <JournalToday    userId={userId} assistantName={assistantName} />}
             {sub === 'calendar' && <JournalCalendar userId={userId} />}
             {sub === 'goals'    && <JournalGoals    userId={userId} assistantName={assistantName} />}
             {sub === 'search'   && <JournalSearch   userId={userId} />}
