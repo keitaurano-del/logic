@@ -173,7 +173,7 @@ export function JournalToday({ userId, assistantName }: JournalTodayProps) {
           className={`journal-phase-tab ${phase === 'morning' ? 'journal-phase-tab--active' : ''}`}
           onClick={() => setPhase('morning')}
         >
-          <span className="journal-phase-tab__emoji" aria-hidden="true">☀️</span>
+          <span className="journal-emoji-icon journal-phase-tab__emoji" aria-hidden="true">☀️</span>
           <span>{t('journal.phaseMorning')}</span>
         </button>
         <button
@@ -183,7 +183,7 @@ export function JournalToday({ userId, assistantName }: JournalTodayProps) {
           className={`journal-phase-tab ${phase === 'evening' ? 'journal-phase-tab--active' : ''}`}
           onClick={() => setPhase('evening')}
         >
-          <span className="journal-phase-tab__emoji" aria-hidden="true">🌙</span>
+          <span className="journal-emoji-icon journal-phase-tab__emoji" aria-hidden="true">🌙</span>
           <span>{t('journal.phaseEvening')}</span>
         </button>
       </div>

@@ -13,7 +13,7 @@ export function StreakBadge({ streak, size = 'sm' }: StreakBadgeProps) {
       className={`journal-streak-badge ${dim ? 'journal-streak-badge--dim' : ''} ${size === 'lg' ? 'journal-streak-badge--lg' : ''}`}
       aria-label={t('journal.streakAria', { n: String(streak) })}
     >
-      <span className="journal-streak-badge__icon" style={{ fontSize }} aria-hidden="true">🔥</span>
+      <span className="journal-emoji-icon journal-streak-badge__icon" style={{ fontSize }} aria-hidden="true">🔥</span>
       <span className="journal-streak-badge__count">{streak}</span>
       <span className="journal-streak-badge__unit">{t('journal.streakDayUnit')}</span>
     </span>

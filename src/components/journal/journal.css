@@ -50,9 +50,10 @@
 
 .journal-mood-btn--active,
 .journal-weather-btn--active {
-  background: var(--brand);
+  background: var(--brand-soft);
   border-color: var(--brand);
-  color: var(--accent-fg, #fff);
+  color: var(--brand);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--brand) 25%, transparent);
 }
 
 .journal-mood-btn__icon,
@@ -333,8 +334,10 @@
 }
 
 .journal-cal-cell__icon {
-  width: 18px;
-  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
 
 .journal-cal-cell__dot {
@@ -561,12 +564,7 @@
 }
 
 .journal-phase-tab__emoji {
-  display: inline-flex;
-  align-items: center;
   font-size: 18px;
-  line-height: 1;
-  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji', sans-serif;
-  font-style: normal;
 }
 
 /* Tags */
@@ -697,15 +695,6 @@
 .journal-streak-badge--lg {
   font-size: 18px;
   padding: 10px 16px;
-}
-
-.journal-streak-badge__icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji', sans-serif;
-  font-style: normal;
 }
 
 .journal-streak-badge--dim .journal-streak-badge__icon {
