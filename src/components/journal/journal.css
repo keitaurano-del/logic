@@ -50,15 +50,36 @@
 
 .journal-mood-btn--active,
 .journal-weather-btn--active {
-  background: var(--brand);
+  background: var(--brand-soft);
   border-color: var(--brand);
-  color: var(--accent-fg, #fff);
+  color: var(--brand);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--brand) 25%, transparent);
 }
 
 .journal-mood-btn__icon,
 .journal-weather-btn__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 28px;
   height: 28px;
+}
+
+/* Mood / Weather などジャーナル内で使う絵文字共通スタイル。
+   font-family を Apple Color Emoji / Segoe UI Emoji にフォールバックすることで
+   OS のカラー絵文字を確実に表示する（一部 Linux で modifier つき絵文字が崩れるのを防ぐ） */
+.journal-emoji-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji', sans-serif;
+  font-style: normal;
+}
+
+.journal-mood-btn--active .journal-emoji-icon,
+.journal-weather-btn--active .journal-emoji-icon {
+  transform: scale(1.08);
 }
 
 .journal-mood-btn__label,
@@ -314,8 +335,10 @@
 }
 
 .journal-cal-cell__icon {
-  width: 18px;
-  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
 
 .journal-cal-cell__dot {
@@ -542,9 +565,7 @@
 }
 
 .journal-phase-tab__emoji {
-  display: inline-flex;
-  align-items: center;
-  color: currentColor;
+  font-size: 18px;
 }
 
 /* Tags */
@@ -696,6 +717,10 @@
 .journal-streak-badge--lg {
   font-size: 18px;
   padding: 10px 16px;
+}
+
+.journal-streak-badge--dim .journal-streak-badge__icon {
+  filter: grayscale(1) opacity(0.55);
 }
 
 .journal-streak-badge__count {
@@ -907,13 +932,13 @@
   line-height: 1.5;
 }
 
-/* ── Calendar mood face (色＆サイズアップ) ──────────────── */
+/* ── Calendar mood face — emoji uses drop-shadow for depth ──────────────── */
 .journal-cal-cell__icon {
-  width: 26px;
-  height: 26px;
   filter: drop-shadow(0 1px 2px rgba(0,0,0,0.25));
 }
 
+/* mood--N の color は絵文字には効かない（絵文字は自前のカラー）。
+   将来 SVG に戻したときのアフォーダンスとして残す。 */
 .journal-cal-cell__mood--1 { color: #E5484D; }   /* 最悪 — red */
 .journal-cal-cell__mood--2 { color: #F76808; }   /* イマイチ — orange */
 .journal-cal-cell__mood--3 { color: #F5A524; }   /* 普通 — yellow */

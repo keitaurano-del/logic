@@ -14,3 +14,4 @@
 - [Figma ログイン](reference_figma_login.md) — Figma は keita.urano@gmail.com の Google アカウントでログイン済み
 - [本番デプロイコマンド](reference_deploy_commands.md) — logic / en-chakai の手動デプロイは `gh workflow run deploy-production.yml -f confirm=yes`
 - [Logic Android 内部配信フロー](project_logic_android_deploy.md) — main push で内部テスターへ自動 rollout。Production 初回公開済み（2026-05-13）
+- [Logic ジャーナルだけ絵文字 OK](feedback_journal_emoji.md) — `never emoji in UI` の例外。mood / weather / phase tab / journal 内 streak の 4 箇所限定（2026-05-15）
