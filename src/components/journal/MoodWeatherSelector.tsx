@@ -44,7 +44,7 @@ export function MoodSelector({ value, onChange, disabled, size = 26 }: MoodSelec
             aria-label={t(MOOD_LABEL_KEY[m])}
           >
             <span className="journal-mood-btn__icon">
-              <MoodIcon mood={m} size={size} color="currentColor" />
+              <MoodIcon mood={m} size={size} />
             </span>
             <span className="journal-mood-btn__label">{t(MOOD_LABEL_KEY[m])}</span>
           </button>
@@ -78,7 +78,7 @@ export function WeatherSelector({ value, onChange, disabled, size = 26 }: Weathe
             aria-label={t(WEATHER_LABEL_KEY[w])}
           >
             <span className="journal-weather-btn__icon">
-              <WeatherIcon weather={w} size={size} color="currentColor" />
+              <WeatherIcon weather={w} size={size} />
             </span>
             <span className="journal-weather-btn__label">{t(WEATHER_LABEL_KEY[w])}</span>
           </button>

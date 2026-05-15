@@ -193,8 +193,8 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
                 onClick={onOpenJournal}
                 style={{
                   background: 'transparent', border: 'none', color: 'var(--brand)',
-                  fontSize: 13, fontWeight: 700, cursor: 'pointer', padding: '4px 6px',
-                  display: 'inline-flex', alignItems: 'center', gap: 2,
+                  fontSize: 13, fontWeight: 700, cursor: 'pointer', padding: '8px 12px',
+                  minHeight: 44, display: 'inline-flex', alignItems: 'center', gap: 4,
                 }}
               >
                 {t('home.todayJournalOpen')}

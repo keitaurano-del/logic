@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { useVoiceInput } from '../../hooks/useVoiceInput'
 import { MicIcon } from './MoodWeatherIcons'
 import { t } from '../../i18n'
@@ -12,25 +12,19 @@ interface VoiceTextareaProps {
 }
 
 export function VoiceTextarea({ value, onChange, placeholder, minHeight, ariaLabel }: VoiceTextareaProps) {
+  // 録音開始時のテキスト末尾位置を覚えて、認識結果を以降に追記する
   const baseRef = useRef<string>(value)
-  const [overlayText, setOverlayText] = useState('')
 
   const handleTranscript = (transcript: string) => {
-    // 元のテキスト末尾に音声テキストを追記する形にする
-    setOverlayText(transcript)
     const sep = baseRef.current && !/[\s\n]$/.test(baseRef.current) ? ' ' : ''
     onChange(`${baseRef.current}${sep}${transcript}`)
   }
 
   const { isListening, isSupported, toggleListening } = useVoiceInput(handleTranscript)
 
+  // 録音停止時は現在値をベースとして更新（次の録音で末尾追記できるよう）
   useEffect(() => {
-    if (!isListening) {
-      // 録音停止時：現在の入力をベースとして更新
-      baseRef.current = value
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setOverlayText('')
-    }
+    if (!isListening) baseRef.current = value
   }, [isListening, value])
 
   const handleStart = () => {
@@ -59,11 +53,17 @@ export function VoiceTextarea({ value, onChange, placeholder, minHeight, ariaLab
           aria-label={isListening ? t('journal.voiceStop') : t('journal.voiceStart')}
           aria-pressed={isListening}
         >
-          <MicIcon size={18} color="currentColor" />
+          <MicIcon size={18} />
         </button>
       )}
-      {isListening && overlayText && (
-        <span style={{ display: 'none' }}>{overlayText}</span>
+      {isListening && (
+        <span
+          role="status"
+          aria-live="polite"
+          className="journal-voice-rec"
+        >
+          {t('journal.voiceRecording')}
+        </span>
       )}
     </div>
   )

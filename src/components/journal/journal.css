@@ -115,14 +115,49 @@
 }
 
 .journal-voice-btn--listening {
-  background: #DC2626;
-  color: #fff;
+  background: var(--md-sys-color-error);
+  color: var(--accent-fg);
   animation: journal-pulse 1s ease-in-out infinite;
 }
 
+.journal-voice-rec {
+  position: absolute;
+  left: 14px;
+  top: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  background: var(--md-sys-color-error);
+  color: var(--accent-fg);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  border-radius: 99px;
+  pointer-events: none;
+}
+
+.journal-voice-rec::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-fg);
+  animation: journal-rec-blink 0.8s linear infinite;
+}
+
+@keyframes journal-rec-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.2; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .journal-voice-rec::before { animation: none; }
+}
+
 @keyframes journal-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.6); }
-  50%       { box-shadow: 0 0 0 6px rgba(220, 38, 38, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--md-sys-color-error) 60%, transparent); }
+  50%       { box-shadow: 0 0 0 6px color-mix(in srgb, var(--md-sys-color-error) 0%, transparent); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -136,7 +171,7 @@
   padding: 14px;
   border-radius: 14px;
   background: var(--brand);
-  color: var(--accent-fg, #fff);
+  color: var(--accent-fg);
   border: none;
   font: inherit;
   font-size: 15px;
@@ -148,6 +183,13 @@
   gap: 8px;
   min-height: 48px;
   transition: opacity 0.15s, transform 0.1s;
+}
+
+/* Secondary variant — outline style for保存系の副 CTA */
+.journal-summarize-btn--secondary {
+  background: transparent;
+  color: var(--brand);
+  border: 1px solid var(--brand);
 }
 
 .journal-summarize-btn:disabled {
@@ -182,9 +224,14 @@
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  border: 2px solid rgba(255,255,255,0.4);
-  border-top-color: #fff;
+  border: 2px solid color-mix(in srgb, var(--accent-fg) 40%, transparent);
+  border-top-color: var(--accent-fg);
   animation: journal-spin 0.8s linear infinite;
+}
+
+.journal-spinner--brand {
+  border-color: color-mix(in srgb, var(--brand) 30%, transparent);
+  border-top-color: var(--brand);
 }
 
 @keyframes journal-spin {

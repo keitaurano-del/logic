@@ -28,7 +28,7 @@ export function JournalScreen({ userId, assistantName, initialSub, onRequestLogi
       {/* Hero */}
       <div style={{
         padding: 'calc(env(safe-area-inset-top, 44px) + 14px) 20px 20px',
-        background: 'linear-gradient(160deg, #1A1F2E 0%, #1E2540 70%, #1A2238 100%)',
+        background: 'var(--hero-grad-dark)',
         color: 'var(--text-on-hero, #fff)',
       }}>
         <div style={{ fontSize: 22, fontWeight: 900, letterSpacing: '-0.02em' }}>{t('journal.title')}</div>

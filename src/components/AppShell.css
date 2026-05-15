@@ -108,3 +108,14 @@
 @media (prefers-reduced-motion: reduce) {
   .app-tabbar { transition: none; }
 }
+
+/* Narrow phones (iPhone SE 1st gen 320px, SE 2nd 375px): shrink label so 5 tabs fit. */
+@media (max-width: 380px) {
+  .app-tab {
+    font-size: 0.7rem;
+    padding: 6px 2px;
+  }
+  .app-tab__label {
+    letter-spacing: -0.02em;
+  }
+}

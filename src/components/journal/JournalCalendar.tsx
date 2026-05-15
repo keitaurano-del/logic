@@ -109,18 +109,21 @@ export function JournalCalendar({ userId }: JournalCalendarProps) {
           const key = dateStr(c.year, c.month, c.day)
           const j = journals[key]
           const isToday = key === today
+          const label = isToday
+            ? `${key} ${t('journal.todaySuffix')}${j ? ` · ${t('journal.cellHasEntry')}` : ''}`
+            : `${key}${j ? ` · ${t('journal.cellHasEntry')}` : ''}`
           return (
             <button
               key={key + (c.inMonth ? '' : '-out')}
               type="button"
               className={`journal-cal-cell ${c.inMonth ? '' : 'journal-cal-cell--outside'} ${isToday ? 'journal-cal-cell--today' : ''}`}
               onClick={() => setSelected(key)}
-              aria-label={key}
+              aria-label={label}
             >
               <span className="journal-cal-cell__day">{c.day}</span>
               {j?.mood && (
                 <span className="journal-cal-cell__icon" style={{ color: 'var(--brand)' }}>
-                  <MoodIcon mood={j.mood as Mood} size={18} color="currentColor" />
+                  <MoodIcon mood={j.mood as Mood} size={18} />
                 </span>
               )}
               {j && !j.mood && (

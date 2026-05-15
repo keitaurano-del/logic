@@ -62,8 +62,17 @@ export async function searchJournals(userId: string, keyword: string): Promise<D
   if (!supabase) return []
   const k = keyword.trim()
   if (!k) return []
-  // LIKE インジェクション対策: % と _ を ＿ にエスケープ
-  const esc = k.replace(/[%_]/g, (m) => `\\${m}`)
+  // LIKE インジェクション + PostgREST or フィルタ構文対策:
+  //   - % _ \ : LIKE のメタ文字
+  //   - , ( ) : PostgREST の or フィルタ区切り（含むと別フィルタとしてパースされる）
+  //   - * : PostgREST のワイルドカード扱い
+  // すべて取り除いて単純な文字列マッチに倒す（最大 100 文字に切り詰め）
+  const esc = k
+    .slice(0, 100)
+    .replace(/[\\%_,()*]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+  if (!esc) return []
   const pat = `%${esc}%`
   const { data, error } = await supabase
     .from('daily_journals')

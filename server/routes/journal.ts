@@ -30,6 +30,17 @@ interface JournalEntry {
   evening_reflection?: string | null
 }
 
+// プロンプトインジェクション対策: assistantName から改行・引用符・記号を除き 30 文字に切り詰める
+function sanitizeAssistantName(raw: unknown, fallback: string): string {
+  if (typeof raw !== 'string') return fallback
+  const cleaned = raw
+    .replace(/[\r\n\t"'`「」『』]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 30)
+  return cleaned || fallback
+}
+
 export function createJournalRouter(
   client: Anthropic,
   journalLimiter: RequestHandler,
@@ -52,9 +63,7 @@ export function createJournalRouter(
         return res.status(400).json({ error: isEn ? 'No input provided' : '入力がありません' })
       }
 
-      const name = (typeof assistantName === 'string' && assistantName.trim())
-        ? assistantName.trim()
-        : (isEn ? 'your assistant' : 'パーソナルアシスタント')
+      const name = sanitizeAssistantName(assistantName, isEn ? 'your assistant' : 'パーソナルアシスタント')
 
       const moodLabel = (typeof mood === 'number' && mood >= 1 && mood <= 5)
         ? (isEn ? MOOD_LABELS_EN[mood] : MOOD_LABELS_JA[mood])
@@ -123,9 +132,7 @@ ${(scheduleNotes || '').toString().trim() || '未入力'}`
         return res.status(400).json({ error: isEn ? 'goal.periodType and goal.title required' : 'goal.periodType と goal.title が必要です' })
       }
 
-      const name = (typeof assistantName === 'string' && assistantName.trim())
-        ? assistantName.trim()
-        : (isEn ? 'your assistant' : 'パーソナルアシスタント')
+      const name = sanitizeAssistantName(assistantName, isEn ? 'your assistant' : 'パーソナルアシスタント')
 
       const periodLabel = isEn
         ? (PERIOD_LABELS_EN[periodType] || periodType)

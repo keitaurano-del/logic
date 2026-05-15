@@ -128,20 +128,20 @@ export function TodayJournalForm({ userId, assistantName }: TodayJournalFormProp
           </>
         ) : (
           <>
-            <SparkleIcon size={18} color="currentColor" />
+            <SparkleIcon size={18} />
             <span>{t('journal.summarizeCta', { name: assistantName })}</span>
           </>
         )}
       </button>
 
       {error && (
-        <div style={{ fontSize: 13, color: 'var(--md-sys-color-error, #DC2626)' }}>{error}</div>
+        <div style={{ fontSize: 13, color: 'var(--md-sys-color-error)' }}>{error}</div>
       )}
 
       {summary && (
         <div className="journal-summary-card" role="region" aria-live="polite">
           <div className="journal-summary-card__title">
-            <SparkleIcon size={14} color="currentColor" />
+            <SparkleIcon size={14} />
             <span>{t('journal.summaryCardTitle', { name: assistantName })}</span>
           </div>
           <div className="journal-summary-card__body">{summary}</div>

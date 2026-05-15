@@ -57,6 +57,20 @@ export function JournalSearch({ userId }: JournalSearchProps) {
         aria-label={t('journal.searchPlaceholder')}
       />
 
+      {!keyword.trim() && (
+        <div style={{
+          background: 'var(--bg-card)',
+          border: '1px solid var(--border, rgba(255,255,255,.06))',
+          borderRadius: 12,
+          padding: 16,
+          fontSize: 13,
+          color: 'var(--text-secondary)',
+          lineHeight: 1.7,
+        }}>
+          {t('journal.searchEmptyHint')}
+        </div>
+      )}
+
       {loading && (
         <div style={{ color: 'var(--text-muted)', fontSize: 13 }}>{t('common.loading')}</div>
       )}

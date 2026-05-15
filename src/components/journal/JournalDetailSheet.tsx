@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { DailyJournal, Mood, Weather } from './types'
 import { MoodIcon, WeatherIcon } from './MoodWeatherIcons'
 import { VoiceTextarea } from './VoiceTextarea'
@@ -34,6 +34,9 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
   const [saving, setSaving] = useState(false)
   const [savedToast, setSavedToast] = useState(false)
   const [loading, setLoading] = useState(!initialJournal)
+  const modalRef = useRef<HTMLDivElement>(null)
+  const closeBtnRef = useRef<HTMLButtonElement>(null)
+  const previouslyFocusedRef = useRef<HTMLElement | null>(null)
 
   useEffect(() => {
     if (initialJournal !== undefined && initialJournal !== null) return
@@ -48,6 +51,48 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
     })()
     return () => { cancelled = true }
   }, [userId, date, initialJournal])
+
+  // モーダルが開いている間: ESC で閉じる、初期 focus を閉じるボタン、body スクロール抑制
+  useEffect(() => {
+    previouslyFocusedRef.current = document.activeElement as HTMLElement | null
+    const prevOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        onClose()
+        return
+      }
+      if (e.key === 'Tab') {
+        // 簡易フォーカストラップ：内部の interactive 要素を巡回
+        const root = modalRef.current
+        if (!root) return
+        const focusables = root.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), [href], input:not([disabled]), select, textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+        if (focusables.length === 0) return
+        const first = focusables[0]
+        const last = focusables[focusables.length - 1]
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault()
+          last.focus()
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault()
+          first.focus()
+        }
+      }
+    }
+    document.addEventListener('keydown', handleKey)
+    // 開いた直後は閉じるボタンに focus
+    closeBtnRef.current?.focus()
+
+    return () => {
+      document.removeEventListener('keydown', handleKey)
+      document.body.style.overflow = prevOverflow
+      previouslyFocusedRef.current?.focus?.()
+    }
+  }, [onClose])
 
   const handleSave = async () => {
     setSaving(true)
@@ -75,11 +120,12 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
     <div className="journal-modal-overlay" role="dialog" aria-modal="true" aria-label={date}>
       <button
         type="button"
-        aria-label={t('common.cancel')}
+        ref={closeBtnRef}
+        aria-label={t('journal.closeSheet')}
         onClick={onClose}
         style={{ position: 'absolute', inset: 0, background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}
       />
-      <div className="journal-modal" style={{ position: 'relative' }}>
+      <div ref={modalRef} className="journal-modal" style={{ position: 'relative' }}>
         <div className="journal-modal__bar" />
         <div>
           <div className="journal-modal__title">{date}</div>
@@ -87,13 +133,13 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
             <div className="journal-modal__meta" style={{ marginTop: 6 }}>
               {journal.mood && (
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, color: 'var(--brand)' }}>
-                  <MoodIcon mood={journal.mood as Mood} size={18} color="currentColor" />
+                  <MoodIcon mood={journal.mood as Mood} size={18} />
                   <span>{t(MOOD_LABEL_KEY[journal.mood as Mood])}</span>
                 </span>
               )}
               {journal.weather && (
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, color: 'var(--text-secondary)' }}>
-                  <WeatherIcon weather={journal.weather as Weather} size={18} color="currentColor" />
+                  <WeatherIcon weather={journal.weather as Weather} size={18} />
                   <span>{t(WEATHER_LABEL_KEY[journal.weather as Weather])}</span>
                 </span>
               )}

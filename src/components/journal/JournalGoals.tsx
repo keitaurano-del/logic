@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { fetchGoal, upsertGoal, fetchGoalReviews, insertGoalReview, fetchJournalsBetween } from './journalDb'
 import { goalFeedback } from './journalApi'
 import { dateRangeFor, periodKeyFor } from './types'
@@ -22,12 +22,8 @@ const PERIOD_LABEL_KEY: Record<PeriodType, string> = {
 
 export function JournalGoals({ userId, assistantName }: JournalGoalsProps) {
   const [periodType, setPeriodType] = useState<PeriodType>('weekly')
-  const [periodKey] = useState<string>(() => periodKeyFor('weekly'))
-  const [activeKey, setActiveKey] = useState<string>(() => periodKeyFor('weekly'))
-
-  useEffect(() => {
-    setActiveKey(periodKeyFor(periodType))  // eslint-disable-line react-hooks/set-state-in-effect
-  }, [periodType])
+  // periodKey は periodType から派生する値なので useState ではなく直接計算する
+  const periodKey = periodKeyFor(periodType)
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -50,8 +46,7 @@ export function JournalGoals({ userId, assistantName }: JournalGoalsProps) {
         userId={userId}
         assistantName={assistantName}
         periodType={periodType}
-        periodKey={activeKey}
-        defaultKey={periodKey}
+        periodKey={periodKey}
       />
     </div>
   )
@@ -62,7 +57,6 @@ interface GoalForPeriodProps {
   assistantName: string
   periodType: PeriodType
   periodKey: string
-  defaultKey: string
 }
 
 function GoalForPeriod({ userId, assistantName, periodType, periodKey }: GoalForPeriodProps) {
@@ -75,6 +69,9 @@ function GoalForPeriod({ userId, assistantName, periodType, periodKey }: GoalFor
   const [savedToast, setSavedToast] = useState(false)
   const [generating, setGenerating] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  // AI フィードバック中の経過秒数（タイムアウト表示用）
+  const [elapsedSec, setElapsedSec] = useState(0)
+  const elapsedTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -96,6 +93,10 @@ function GoalForPeriod({ userId, assistantName, periodType, periodKey }: GoalFor
     })()
     return () => { cancelled = true }
   }, [userId, periodType, periodKey])
+
+  useEffect(() => () => {
+    if (elapsedTimerRef.current) clearInterval(elapsedTimerRef.current)
+  }, [])
 
   const handleSave = async () => {
     if (!title.trim()) return
@@ -119,6 +120,11 @@ function GoalForPeriod({ userId, assistantName, periodType, periodKey }: GoalFor
     if (!goal || generating) return
     setGenerating(true)
     setError(null)
+    setElapsedSec(0)
+    const start0 = Date.now()
+    elapsedTimerRef.current = setInterval(() => {
+      setElapsedSec(Math.floor((Date.now() - start0) / 1000))
+    }, 1000)
     try {
       const { start, end } = dateRangeFor(periodType, periodKey)
       const journals = await fetchJournalsBetween(userId, start, end)
@@ -143,6 +149,10 @@ function GoalForPeriod({ userId, assistantName, periodType, periodKey }: GoalFor
       if (insErr) { setError(t('journal.errorGeneric')); return }
       if (review) setReviews((rs) => [review, ...rs])
     } finally {
+      if (elapsedTimerRef.current) {
+        clearInterval(elapsedTimerRef.current)
+        elapsedTimerRef.current = null
+      }
       setGenerating(false)
     }
   }
@@ -175,38 +185,41 @@ function GoalForPeriod({ userId, assistantName, periodType, periodKey }: GoalFor
         aria-label={t('journal.goalDescription')}
       />
 
-      <button
-        type="button"
-        className="journal-summarize-btn"
-        onClick={handleSave}
-        disabled={!title.trim() || saving}
-      >
-        {saving ? t('common.loading') : t('common.save')}
-      </button>
-
+      {/* AI フィードバックを主 CTA、保存を副 CTA に。ホーム CTA との階層を揃える。 */}
       {goal && (
         <button
           type="button"
           className={`journal-summarize-btn ${generating ? 'journal-summarize-btn--working' : ''}`}
           onClick={handleAiFeedback}
           disabled={generating}
-          style={{ background: 'transparent', color: 'var(--brand)', border: '1px solid var(--brand)' }}
         >
           {generating ? (
             <>
-              <span className="journal-spinner" aria-hidden="true" style={{ borderTopColor: 'var(--brand)' }} />
-              <span>{t('journal.goalFeedbackGenerating')}</span>
+              <span className="journal-spinner" aria-hidden="true" />
+              <span>
+                {t('journal.goalFeedbackGenerating')}
+                {elapsedSec >= 5 ? ` (${elapsedSec}s)` : ''}
+              </span>
             </>
           ) : (
             <>
-              <SparkleIcon size={16} color="currentColor" />
+              <SparkleIcon size={16} />
               <span>{t('journal.goalFeedbackCta', { name: assistantName })}</span>
             </>
           )}
         </button>
       )}
 
-      {error && <div style={{ fontSize: 13, color: 'var(--md-sys-color-error, #DC2626)' }}>{error}</div>}
+      <button
+        type="button"
+        className="journal-summarize-btn journal-summarize-btn--secondary"
+        onClick={handleSave}
+        disabled={!title.trim() || saving}
+      >
+        {saving ? t('common.loading') : t('common.save')}
+      </button>
+
+      {error && <div style={{ fontSize: 13, color: 'var(--md-sys-color-error)' }}>{error}</div>}
 
       {reviews.length > 0 && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 6 }}>
@@ -214,7 +227,7 @@ function GoalForPeriod({ userId, assistantName, periodType, periodKey }: GoalFor
           {reviews.map((r) => (
             <div key={r.id} className="journal-summary-card">
               <div className="journal-summary-card__title">
-                <SparkleIcon size={12} color="currentColor" />
+                <SparkleIcon size={12} />
                 <span>{new Date(r.reviewed_at).toLocaleDateString()}</span>
               </div>
               <div className="journal-summary-card__body">{r.ai_feedback || ''}</div>
