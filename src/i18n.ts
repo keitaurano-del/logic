@@ -122,9 +122,6 @@ const STRINGS: Record<Locale, Strings> = {
     'home.reviewSubAll': '全{total}枚',
     'home.reviewEmptyHeadline': 'まだ復習する内容はありません',
     'home.reviewEmptySub': 'レッスンを完了するとカードと誤答がたまっていきます',
-    'home.reviewLockedHeadline': '復習機能（Pro）',
-    'home.reviewLockedSub': 'フラッシュカードと過去の誤答を見直せます。Proで解放',
-    'home.reviewProBadge': 'PRO',
 
     // Onboarding
     'onboarding.slide1.title': 'ロジカルシンキングを毎日 3 分で',
@@ -223,7 +220,6 @@ const STRINGS: Record<Locale, Strings> = {
     'profile.deleteSuccess': '全データを削除しました。アプリを再読み込みします。',
     'profile.feedback': 'ご要望・フィードバック',
     'profile.planLabel': 'プラン',
-    'profile.planBeta': 'ベータ版 — 全機能無料',
     'profile.reminder': '今日の1問リマインダー',
     'profile.reminderTime': '毎日の通知時刻',
     'profile.reminderWebNote': '(アプリ版でのみ通知が届きます)',
@@ -358,8 +354,8 @@ const STRINGS: Record<Locale, Strings> = {
     'fermi.backButton': '戻る',
     'fermi.recapLabel': 'あなたの分解',
     'fermi.upsellH': 'もっと練習したい?',
-    'fermi.upsellBody': 'プレミアムなら毎日新しい AI 生成問題でこの体験を続けられます (¥700/月)。',
-    'fermi.upsellBtn': 'プレミアムを試す (7 日間無料)',
+    'fermi.upsellBody': 'フェルミ推定をすべて解放するには有料プラン（月¥350／年¥2,450）が必要よ。',
+    'fermi.upsellBtn': '有料プランを見る',
     'fermi.nextAi': '次の AI 生成問題へ',
     'fermi.generating': '生成中...',
     'fermi.tryAnother': '別の問題を試す',
@@ -383,7 +379,7 @@ const STRINGS: Record<Locale, Strings> = {
     'theme.accentContrastNote': 'ボタン上の文字は自動的に読みやすい色に調整されます(WCAG AA 基準)',
     'theme.customDisabled': 'カスタムモード使用中はアクセントカラーは無効です',
     'theme.currentAccent': '現在: {name}',
-    'theme.upgrade': 'プレミアムにアップグレード →',
+    'theme.upgrade': '有料プランにアップグレード →',
     // Mode names + descriptions
     'theme.mode.light.name': 'ライト',
     'theme.mode.light.desc': '明るく落ち着いたクリーム系',
@@ -694,10 +690,6 @@ const STRINGS: Record<Locale, Strings> = {
     'report.aiProblemTitle': 'AI問題',
     'report.fermiTitle': 'フェルミ推定',
     'report.dailyFermiTitle': 'デイリーフェルミ',
-    'report.aiLimitTitle': '月間上限に達しました',
-    'report.aiLimitBody': 'スタンダードプランでは月30問まで生成できます。プレミアムにアップグレードすると無制限になります。',
-    'report.aiLimitUpgrade': 'プレミアムにアップグレード',
-    'report.aiLimitCount': '今月の生成数',
     'report.linkText': '誤りを報告する',
 
     // Onboarding
@@ -712,17 +704,7 @@ const STRINGS: Record<Locale, Strings> = {
     'onboarding.goal.other': 'その他',
     'onboarding.goal.otherDesc': '幅広い論理的思考トレーニング',
     'onboarding.step3.title': '7日間、無料で試せます',
-    'onboarding.trialBadge': '7日間無料トライアル',
-    'onboarding.trialDesc': 'トライアル期間中はすべての機能が使い放題。いつでもキャンセルできます。',
-    'onboarding.standard.f1': '全レッスン・クイズ',
-    'onboarding.standard.f2': 'AI問題生成 月30問',
-    'onboarding.standard.f3': 'フェルミ推定・ロードマップ',
-    'onboarding.premium.f1': 'スタンダードの全機能',
-    'onboarding.premium.f2': 'AI問題生成 無制限',
-    'onboarding.premium.f3': '全ロールプレイシナリオ',
-    'onboarding.premium.f4': 'ケース面接 深掘りモード',
     'onboarding.ctaButton': '今すぐ始める（カード登録へ）',
-    'onboarding.ctaNote': 'トライアル終了後は月額¥650（スタンダード）が自動的に請求されます',
 
     // OnboardingScreen — Slide 1 (LEARN)
     'onboarding.slidesTag1': 'LEARN',
@@ -772,24 +754,15 @@ const STRINGS: Record<Locale, Strings> = {
     // OnboardingScreen — Pricing view
     'onboarding.pricingTitle': 'あなたに合ったプランを\n選んでください',
     'onboarding.pricingSubtitle': 'いつでも変更・キャンセル可能。',
-    'onboarding.pricingCampaignAria': '期間限定キャンペーン: スタンダード年払いが¥1,980 (通常¥2,730)',
-    'onboarding.pricingCampaignTitle': '期間限定キャンペーン中！タップで即購入',
-    'onboarding.pricingCampaignDescPrefix': 'スタンダード年払いが今だけ',
     'onboarding.pricingTblFeature': '機能',
     'onboarding.pricingTblFree': '無料',
     'onboarding.pricingTblPerMonth': '/月',
-    'onboarding.pricingTblYearlyStandard': '年¥2,730',
-    'onboarding.pricingTblYearlyPremium': '年¥5,320',
     'onboarding.pricingTblSavings': '5ヶ月お得',
-    'onboarding.pricingStartStandard': 'スタンダードプランではじめる',
-    'onboarding.pricingStartPremium': 'プレミアムプランではじめる',
     'onboarding.pricingStartFree': '無料で始める',
 
     // OnboardingScreen — Billing view
     'onboarding.billingTitle': '支払いサイクルを\n選んでください',
     'onboarding.billingSubtitle': 'いつでもキャンセル可能',
-    'onboarding.billingPlanStandard': 'スタンダード',
-    'onboarding.billingPlanPremium': 'プレミアム',
     'onboarding.billingSavedMonths': '{n}ヶ月分お得',
     'onboarding.billingYearlyTitle': '年払い（おすすめ）',
     'onboarding.billingYearlyUnit': '/ 年',
@@ -909,7 +882,6 @@ const STRINGS: Record<Locale, Strings> = {
     'roleplaySelect.cat.business': 'ビジネス思考',
     'roleplaySelect.cat.philosophy': '哲学・思考実験',
     'roleplaySelect.comingSoon': '近日公開',
-    'roleplaySelect.proBadge': 'PRO',
     'roleplaySelect.backAria': '戻る',
 
     // Fermi Screen extra
@@ -1503,9 +1475,6 @@ const STRINGS: Record<Locale, Strings> = {
     'home.reviewSubAll': '{total} total',
     'home.reviewEmptyHeadline': 'Nothing to review yet',
     'home.reviewEmptySub': 'Cards and mistakes accumulate as you complete lessons',
-    'home.reviewLockedHeadline': 'Review (Pro)',
-    'home.reviewLockedSub': 'Flashcards & past mistakes — unlock with Pro',
-    'home.reviewProBadge': 'PRO',
 
     // Onboarding
     'onboarding.slide1.title': 'Logical thinking, 3 minutes a day',
@@ -1604,7 +1573,6 @@ const STRINGS: Record<Locale, Strings> = {
     'profile.deleteSuccess': 'All data deleted. Reloading the app.',
     'profile.feedback': 'Send feedback',
     'profile.planLabel': 'Plan',
-    'profile.planBeta': 'Beta — all features free',
     'profile.reminder': 'Daily problem reminder',
     'profile.reminderTime': 'Notification time',
     'profile.reminderWebNote': '(notifications work in the app version only)',
@@ -1739,8 +1707,8 @@ const STRINGS: Record<Locale, Strings> = {
     'fermi.backButton': 'Back',
     'fermi.recapLabel': 'Your decomposition',
     'fermi.upsellH': 'Want more practice?',
-    'fermi.upsellBody': 'Premium gives you fresh AI-generated problems every day ($5/month).',
-    'fermi.upsellBtn': 'Try Premium (7 days free)',
+    'fermi.upsellBody': 'Unlock all Fermi estimation practice with a paid plan (¥350/mo or ¥2,450/yr).',
+    'fermi.upsellBtn': 'See paid plans',
     'fermi.nextAi': 'Next AI-generated problem',
     'fermi.generating': 'Generating...',
     'fermi.tryAnother': 'Try another problem',
@@ -1764,7 +1732,7 @@ const STRINGS: Record<Locale, Strings> = {
     'theme.accentContrastNote': 'Button text is automatically adjusted for readability (WCAG AA).',
     'theme.customDisabled': 'Accent color is disabled while in custom mode',
     'theme.currentAccent': 'Current: {name}',
-    'theme.upgrade': 'Upgrade to Premium →',
+    'theme.upgrade': 'Upgrade to paid plan →',
     // Mode names + descriptions
     'theme.mode.light.name': 'Light',
     'theme.mode.light.desc': 'Bright, calm cream tones',
@@ -2075,10 +2043,6 @@ const STRINGS: Record<Locale, Strings> = {
     'report.aiProblemTitle': 'AI Problem',
     'report.fermiTitle': 'Fermi Estimation',
     'report.dailyFermiTitle': 'Daily Fermi',
-    'report.aiLimitTitle': 'Monthly limit reached',
-    'report.aiLimitBody': 'The Standard plan allows up to 30 AI-generated problems per month. Upgrade to Premium for unlimited access.',
-    'report.aiLimitUpgrade': 'Upgrade to Premium',
-    'report.aiLimitCount': 'Problems generated this month',
     'report.linkText': 'Report an error',
 
     // Onboarding
@@ -2093,17 +2057,7 @@ const STRINGS: Record<Locale, Strings> = {
     'onboarding.goal.other': 'Other',
     'onboarding.goal.otherDesc': 'Broad logical thinking training',
     'onboarding.step3.title': 'Try free for 7 days',
-    'onboarding.trialBadge': '7-Day Free Trial',
-    'onboarding.trialDesc': 'All features unlocked during trial. Cancel anytime.',
-    'onboarding.standard.f1': 'All lessons & quizzes',
-    'onboarding.standard.f2': 'AI problem generation (30/mo)',
-    'onboarding.standard.f3': 'Fermi estimation & roadmap',
-    'onboarding.premium.f1': 'Everything in Standard',
-    'onboarding.premium.f2': 'Unlimited AI problem generation',
-    'onboarding.premium.f3': 'All roleplay scenarios',
-    'onboarding.premium.f4': 'Case interview deep dive mode',
     'onboarding.ctaButton': 'Start now (card registration)',
-    'onboarding.ctaNote': 'After the trial, Standard plan (¥650/mo) will be charged automatically',
 
     // OnboardingScreen — Slide 1 (LEARN)
     'onboarding.slidesTag1': 'LEARN',
@@ -2153,24 +2107,15 @@ const STRINGS: Record<Locale, Strings> = {
     // OnboardingScreen — Pricing view
     'onboarding.pricingTitle': 'Pick the plan\nthat fits you',
     'onboarding.pricingSubtitle': 'Change or cancel anytime.',
-    'onboarding.pricingCampaignAria': 'Limited campaign: Standard yearly for ¥1,980 (regular ¥2,730)',
-    'onboarding.pricingCampaignTitle': 'Limited-time campaign! Tap to buy',
-    'onboarding.pricingCampaignDescPrefix': 'Standard yearly, only now',
     'onboarding.pricingTblFeature': 'Feature',
     'onboarding.pricingTblFree': 'Free',
     'onboarding.pricingTblPerMonth': '/mo',
-    'onboarding.pricingTblYearlyStandard': '¥2,730/yr',
-    'onboarding.pricingTblYearlyPremium': '¥5,320/yr',
     'onboarding.pricingTblSavings': 'Save 5 mo',
-    'onboarding.pricingStartStandard': 'Start with Standard',
-    'onboarding.pricingStartPremium': 'Start with Premium',
     'onboarding.pricingStartFree': 'Start for free',
 
     // OnboardingScreen — Billing view
     'onboarding.billingTitle': 'Choose your\nbilling cycle',
     'onboarding.billingSubtitle': 'Cancel anytime',
-    'onboarding.billingPlanStandard': 'Standard',
-    'onboarding.billingPlanPremium': 'Premium',
     'onboarding.billingSavedMonths': 'Save {n} months',
     'onboarding.billingYearlyTitle': 'Yearly (recommended)',
     'onboarding.billingYearlyUnit': '/ yr',
@@ -2290,7 +2235,6 @@ const STRINGS: Record<Locale, Strings> = {
     'roleplaySelect.cat.business': 'Business thinking',
     'roleplaySelect.cat.philosophy': 'Philosophy & thought experiments',
     'roleplaySelect.comingSoon': 'Coming soon',
-    'roleplaySelect.proBadge': 'PRO',
     'roleplaySelect.backAria': 'Back',
 
     // Fermi Screen extra
