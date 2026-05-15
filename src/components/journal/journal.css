@@ -57,8 +57,28 @@
 
 .journal-mood-btn__icon,
 .journal-weather-btn__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 28px;
   height: 28px;
+}
+
+/* Mood / Weather などジャーナル内で使う絵文字共通スタイル。
+   font-family を Apple Color Emoji / Segoe UI Emoji にフォールバックすることで
+   OS のカラー絵文字を確実に表示する（一部 Linux で modifier つき絵文字が崩れるのを防ぐ） */
+.journal-emoji-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji', sans-serif;
+  font-style: normal;
+}
+
+.journal-mood-btn--active .journal-emoji-icon,
+.journal-weather-btn--active .journal-emoji-icon {
+  transform: scale(1.08);
 }
 
 .journal-mood-btn__label,
@@ -543,7 +563,10 @@
 .journal-phase-tab__emoji {
   display: inline-flex;
   align-items: center;
-  color: currentColor;
+  font-size: 18px;
+  line-height: 1;
+  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji', sans-serif;
+  font-style: normal;
 }
 
 /* Tags */
@@ -674,6 +697,19 @@
 .journal-streak-badge--lg {
   font-size: 18px;
   padding: 10px 16px;
+}
+
+.journal-streak-badge__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji', sans-serif;
+  font-style: normal;
+}
+
+.journal-streak-badge--dim .journal-streak-badge__icon {
+  filter: grayscale(1) opacity(0.55);
 }
 
 .journal-streak-badge__count {
