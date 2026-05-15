@@ -4,19 +4,35 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import type { RateLimitRequestHandler } from 'express-rate-limit'
 
 // =============================================
-// AI_GEN クォータ定数
+// 有料プラン判定（2026-05-15 単一有料プラン化）
 // =============================================
-const AI_GEN_LIMIT_STANDARD = 30   // スタンダードプラン: 月30問
-const AI_GEN_LIMIT_AI_PLAN  = 300  // AI付きプラン: 月300問
+// クライアント側の SubscriptionPlan に対応する DB 値:
+//   - 'paid_monthly' / 'paid_yearly': 有料
+//   - 'free' / その他: 無料
+// legacy ('monthly', 'standard_*', 'premium_*', 'campaign_yearly' 等) は
+// migrations/011 で 'paid_*' に正規化済み。念のためここでも受ける。
+const PAID_PLANS = new Set([
+  'paid_monthly',
+  'paid_yearly',
+  'monthly',
+  'yearly',
+  'basic_monthly',
+  'basic_yearly',
+  'standard_monthly',
+  'standard_yearly',
+  'premium_monthly',
+  'premium_yearly',
+  'campaign_yearly',
+  'beta_campaign',
+])
 
 async function checkAndIncrementAIQuota(
   supabase: SupabaseClient,
   userId: string | undefined,
-  guestId: string | undefined,
+  _guestId: string | undefined,
 ): Promise<{ allowed: boolean; reason?: string }> {
-  // ゲストユーザーは制限あり（日に5問）
-  if (!userId && !guestId) return { allowed: true }
-  if (!userId) return { allowed: true } // ゲスト: レートリミッタのみ
+  // ゲストユーザー（userId なし）はレートリミッタに任せる
+  if (!userId) return { allowed: true }
 
   try {
     const now = new Date()
@@ -29,17 +45,17 @@ async function checkAndIncrementAIQuota(
       .single()
 
     const currentPlan = profile?.plan ?? 'free'
-    const isBetaCampaign = currentPlan === 'beta_campaign' || currentPlan === 'premium_yearly'
-    const isAIPlan = isBetaCampaign || currentPlan === 'premium_monthly'
-    const limit = isAIPlan ? AI_GEN_LIMIT_AI_PLAN : AI_GEN_LIMIT_STANDARD
-
-    const savedMonth = profile?.ai_gen_month ?? ''
-    const count = savedMonth === monthKey ? (profile?.ai_gen_count ?? 0) : 0
-
-    if (count >= limit) {
-      return { allowed: false, reason: `今月のAI問題生成上限（${limit}問）に達しました。来月またはプランをアップグレードしてください。` }
+    if (!PAID_PLANS.has(currentPlan)) {
+      return {
+        allowed: false,
+        reason: 'AI 問題生成は有料プランの機能です。プランをアップグレードしてください。',
+      }
     }
 
+    // 有料プランは無制限（内部キャップは未実装）。
+    // ただし月次カウントは将来のキャップ実装や分析用に記録だけ続ける。
+    const savedMonth = profile?.ai_gen_month ?? ''
+    const count = savedMonth === monthKey ? (profile?.ai_gen_count ?? 0) : 0
     await supabase.from('profiles').upsert(
       { id: userId, ai_gen_count: count + 1, ai_gen_month: monthKey },
       { onConflict: 'id' },
