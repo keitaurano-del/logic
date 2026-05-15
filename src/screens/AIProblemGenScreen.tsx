@@ -203,6 +203,9 @@ function RatingPopup({ onSubmit, onSkip }: RatingPopupProps) {
 
 type Tab = 'create' | 'history'
 
+// プレイ画面遷移を跨いで pending 評価を保持するための sessionStorage キー
+const PENDING_RATING_KEY = 'logic-ai-pending-rating'
+
 export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenScreenProps) {
   const [tab, setTab] = useState<Tab>('create')
   const [prompt, setPrompt] = useState('')
@@ -211,8 +214,23 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
   const [problems, setProblems] = useState<AIProblemSet[]>(() => filterByHistoryDays(loadAIProblems()))
   const weakness = analyzeWeakness()
   const recommendPrompt = buildRecommendPrompt(weakness)
-  const [showRating, setShowRating] = useState(false)
-  const [pendingProblem, setPendingProblem] = useState<AIProblemSet | null>(null)
+  // 問題プレイ画面から戻ってきた時に評価ポップアップを表示する
+  // AIProblemGenScreen は遷移で unmount されるため、handleGenerate で sessionStorage に
+  // pending を保存し、再 mount 時に lazy initializer で読み戻して RatingPopup を起動する
+  const initialPending = (() => {
+    try {
+      const raw = sessionStorage.getItem(PENDING_RATING_KEY)
+      if (!raw) return null
+      const parsed = JSON.parse(raw) as AIProblemSet
+      if (parsed && typeof parsed.id === 'number') return parsed
+      return null
+    } catch {
+      try { sessionStorage.removeItem(PENDING_RATING_KEY) } catch { /* noop */ }
+      return null
+    }
+  })()
+  const [showRating, setShowRating] = useState<boolean>(() => initialPending !== null)
+  const [pendingProblem, setPendingProblem] = useState<AIProblemSet | null>(() => initialPending)
 
   // 2026-05-15 単一有料プラン化: 日次キャップは廃止（内部は無制限）
   const canUse = isPaid()
@@ -235,8 +253,15 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
       setPrompt('')
       // +10 XP（問題作成）
       addXP(10)
-      // 問題解き終わり後に評価ポップアップを出すためにpendingに保存
+      // 問題解き終わり後に評価ポップアップを出すため pending を保存
+      // プレイ画面遷移で本画面は unmount されるので、sessionStorage に永続化して
+      // 戻ってきた時に lazy initializer 経由で復元する
       setPendingProblem(newSet)
+      try {
+        sessionStorage.setItem(PENDING_RATING_KEY, JSON.stringify(newSet))
+      } catch {
+        // sessionStorage が使えない環境では評価収集をスキップ
+      }
       onPlay(newSet)
     } catch (e: unknown) {
       setError((e as Error).message || t('aiGen.errGenerationFailed'))
@@ -258,6 +283,7 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
     }
     setShowRating(false)
     setPendingProblem(null)
+    try { sessionStorage.removeItem(PENDING_RATING_KEY) } catch { /* noop */ }
   }
 
   const handleDelete = (id: number) => {
@@ -433,11 +459,15 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
         )}
       </div>
 
-      {/* 解き終わり後の評価ポップアップ（外部からトリガー可能） */}
+      {/* 解き終わり後の評価ポップアップ（プレイ画面から戻ってきた時に表示） */}
       {showRating && (
         <RatingPopup
           onSubmit={handleRatingSubmit}
-          onSkip={() => { setShowRating(false); setPendingProblem(null) }}
+          onSkip={() => {
+            setShowRating(false)
+            setPendingProblem(null)
+            try { sessionStorage.removeItem(PENDING_RATING_KEY) } catch { /* noop */ }
+          }}
         />
       )}
     </div>
