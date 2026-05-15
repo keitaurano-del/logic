@@ -45,62 +45,38 @@ export async function loginWithGoogle(): Promise<{ user: User | null; error?: st
   }
 }
 
-export async function loginWithEmail(email: string, password: string): Promise<{ user: User | null; error?: string }> {
-  if (!supabase) return { user: null, error: 'Supabase が設定されていません' }
+export async function sendEmailOtp(email: string): Promise<{ error?: string }> {
+  if (!supabase) return { error: 'auth/not-configured' }
   try {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: { shouldCreateUser: true },
+    })
     if (error) {
       const msg = error.message.toLowerCase()
-      if (msg.includes('invalid login credentials') || msg.includes('invalid credential') || msg.includes('wrong password')) {
-        return { user: null, error: 'auth/wrong-password' }
-      }
-      if (msg.includes('user not found') || msg.includes('no user found')) {
-        return { user: null, error: 'auth/user-not-found' }
-      }
-      if (msg.includes('invalid email')) {
-        return { user: null, error: 'auth/invalid-email' }
-      }
+      if (msg.includes('invalid email')) return { error: 'auth/invalid-email' }
+      if (msg.includes('rate') || msg.includes('too many')) return { error: 'auth/rate-limited' }
+      return { error: 'auth/generic' }
+    }
+    return {}
+  } catch {
+    return { error: 'auth/generic' }
+  }
+}
+
+export async function verifyEmailOtp(email: string, token: string): Promise<{ user: User | null; error?: string }> {
+  if (!supabase) return { user: null, error: 'auth/not-configured' }
+  try {
+    const { data, error } = await supabase.auth.verifyOtp({ email, token, type: 'email' })
+    if (error) {
+      const msg = error.message.toLowerCase()
+      if (msg.includes('expired')) return { user: null, error: 'auth/code-expired' }
+      if (msg.includes('invalid') || msg.includes('incorrect')) return { user: null, error: 'auth/invalid-code' }
       return { user: null, error: 'auth/generic' }
     }
     return { user: data.user }
   } catch {
     return { user: null, error: 'auth/generic' }
-  }
-}
-
-export async function signupWithEmail(email: string, password: string): Promise<{ user: User | null; error?: string }> {
-  if (!supabase) return { user: null, error: 'Supabase が設定されていません' }
-  try {
-    const { data, error } = await supabase.auth.signUp({ email, password })
-    if (error) {
-      const msg = error.message.toLowerCase()
-      if (msg.includes('already registered') || msg.includes('already in use') || msg.includes('user already exists')) {
-        return { user: null, error: 'auth/email-already-in-use' }
-      }
-      if (msg.includes('weak password') || msg.includes('password should be')) {
-        return { user: null, error: 'auth/weak-password' }
-      }
-      if (msg.includes('invalid email')) {
-        return { user: null, error: 'auth/invalid-email' }
-      }
-      return { user: null, error: 'auth/generic' }
-    }
-    return { user: data.user ?? null }
-  } catch {
-    return { user: null, error: 'auth/generic' }
-  }
-}
-
-export async function resetPasswordForEmail(email: string): Promise<{ error?: string }> {
-  if (!supabase) return { error: 'Supabase が設定されていません' }
-  try {
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
-    })
-    if (error) return { error: error.message }
-    return {}
-  } catch {
-    return { error: 'auth/generic' }
   }
 }
 
