@@ -3,7 +3,7 @@
  * 仕様: docs/DESIGN_V3.md §3.1
  * モックアップ: lv3-home.html
  */
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { FERMI_POOL, getDailyFermiIndex } from '../fermiData'
 import { getCardStats } from '../flashcardData'
 import { getWrongAnswerStats } from '../wrongAnswerStore'
@@ -306,15 +306,16 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
 // 判定キー: localStorage['logic-plan-upgrade-seen'] = '1'
 // ─────────────────────────────────────────────────────────────────────
 const UPGRADE_SEEN_KEY = 'logic-plan-upgrade-seen'
+function shouldShowUpgradeToast(paid: boolean): boolean {
+  if (!paid) return false
+  try {
+    if (localStorage.getItem(UPGRADE_SEEN_KEY) === '1') return false
+  } catch { /* */ }
+  return true
+}
 function useUpgradeWelcomeToast(paid: boolean): { visible: boolean; dismiss: () => void } {
-  const [visible, setVisible] = useState(false)
-  useEffect(() => {
-    if (!paid) return
-    try {
-      if (localStorage.getItem(UPGRADE_SEEN_KEY) === '1') return
-    } catch { /* */ }
-    setVisible(true)
-  }, [paid])
+  // 初期化時に判定するので、effect で setState する必要がない
+  const [visible, setVisible] = useState(() => shouldShowUpgradeToast(paid))
 
   const dismiss = () => {
     try { localStorage.setItem(UPGRADE_SEEN_KEY, '1') } catch { /* */ }
