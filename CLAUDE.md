@@ -135,7 +135,7 @@ src/
   AppV3.tsx          # Root component: Screen union type, tab navigation, URL sync
   screens/           # One file per screen — flat, never nested directories
   components/        # Reusable pieces (AppShell.tsx = sidebar + tabbar layout)
-  icons/index.tsx    # All SVG icons — use these, never emoji
+  icons/index.tsx    # All SVG icons — use these, never emoji (except journal mood/weather/phase/streak — see feedback_journal_emoji)
   styles/            # CSS design system (see below)
   lessons/           # Static lesson content data (*.ts files)
   db/                # localStorage helpers (notebookDb, progressDb, roadmapDb)
@@ -201,7 +201,7 @@ Key tokens:
 2. **`tokens.css` must be first** import in `index.css` — other CSS files depend on its variables
 3. **`src/sentry.ts` and `src/notifications.ts` are stubs** — both `@sentry/react` and `@capacitor/*` are installed (Capacitor is actively used for mobile builds), but these two helper files remain no-op stubs. Do not turn them into real implementations without aligning with the broader observability/notifications strategy.
 4. **i18n** — every new user-facing string needs both `ja` and `en` entries in `src/i18n.ts`
-5. **Icons** — use SVG from `src/icons/index.tsx`, never emoji in UI
+5. **Icons** — use SVG from `src/icons/index.tsx`, never emoji in UI. **Exception:** ジャーナル機能 (`src/components/journal/`) の mood・weather・phase tab・streak の 4 箇所のみ絵文字 OK（feedback_journal_emoji 参照）。他画面の `FlameIcon` 等共有 SVG はそのまま維持。
 6. **Screen union** — forgetting to add a new screen variant to the union in `AppV3.tsx` causes TS errors
 
 ## Deployment

@@ -45,6 +45,7 @@ import type { AIProblemSet } from './aiProblemStore'
 import { loadTheme, applyTheme } from './theme'
 // import { loadGuestUser } from './guestUser'
 import { getCompletedCount, getXp, getDisplayName, setDisplayName, recordCompletion, addStudyTime } from './stats'
+import { recordActivity } from './activityLog'
 import { updateDisplayName } from './supabase'
 import { isAdmin } from './admin'
 import { onAuthChange, logout, getInitialUser, type User } from './supabase'
@@ -318,6 +319,13 @@ function AppV3() {
       const durationSec = Math.max(60, Math.floor(elapsedMs / 1000))
       const prevLevel = getCurrentLevel(getXp() - 50).level  // before XP add
       recordCompletion(`lesson-${lessonId}`)
+      const lessonTitle = allLessons[lessonId]?.title
+      recordActivity({
+        type: 'lesson',
+        id: String(lessonId),
+        title: lessonTitle,
+        meta: { durationSec },
+      })
       if (elapsedMs > 5000) addStudyTime(elapsedMs)
       navigate({ type: 'lesson-complete', lessonId, durationSec, prevLevel })
     } else if (tab === 'ranking') {

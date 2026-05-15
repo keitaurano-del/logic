@@ -5,15 +5,30 @@ import './styles/tokens-m3.css'
 import './index.css'
 import { initSentry } from './sentry'
 import { setHtmlPlatformAttr, configureStatusBar, configureKeyboard } from './platform'
+import { loadTheme, applyTheme } from './theme'
 
 initSentry()
 
-// Apply v3 dark theme to both html and body so CSS variables resolve consistently.
-// Without the html class, computed `--bg-primary` on <html> falls back to the
-// :root light value (#FAFAFB) and bleeds through behind the app shell.
-document.documentElement.classList.add('mode-dark')
-document.documentElement.classList.remove('mode-light')
-document.body.classList.add('mode-dark')
+// Resolve v3 / v1 routing first so theme bootstrap below knows whether
+// to apply v3-specific body class.
+const params = new URLSearchParams(window.location.search)
+if (params.get('v') === '3') {
+  localStorage.setItem('logic-v3-preview', '1')
+} else if (params.get('v') === '1') {
+  localStorage.setItem('logic-v3-preview', '0')
+}
+const useV3 = localStorage.getItem('logic-v3-preview') !== '0'
+
+// Apply the user's saved theme (light/dark) before React mounts to avoid FOUC.
+// applyTheme sets html.mode-{light|dark} AND body.mode-{light|dark};
+// tokens.css resolves --bg-primary etc. via body.theme-v3.mode-{x}.
+// We add `theme-v3` synchronously here (rather than waiting for AppV3's
+// useEffect to mount) so the first paint already has the correct selector
+// chain — otherwise dark users see a brief light flash on cold start.
+// `body.theme-v3` is also re-added inside AppV3 as a safety net for HMR
+// and is idempotent (classList.add deduplicates).
+if (useV3) document.body.classList.add('theme-v3')
+applyTheme(loadTheme())
 
 // Tag <html data-platform="ios|android|web"> so CSS can branch on platform
 // without a runtime JS check.
@@ -22,16 +37,6 @@ setHtmlPlatformAttr()
 // Slate Blue dark status bar + Android edge-to-edge. Native-only no-op on web.
 void configureStatusBar()
 void configureKeyboard()
-
-// Opt-in v3 preview via ?v=3 query param or localStorage flag.
-// Default route remains the existing App; no regression for existing users.
-const params = new URLSearchParams(window.location.search)
-if (params.get('v') === '3') {
-  localStorage.setItem('logic-v3-preview', '1')
-} else if (params.get('v') === '1') {
-  localStorage.setItem('logic-v3-preview', '0')
-}
-const useV3 = localStorage.getItem('logic-v3-preview') !== '0'
 
 const App = lazy(() => import('./App'))
 const AppV3 = lazy(() => import('./AppV3'))

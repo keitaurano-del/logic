@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { loginWithGoogle, loginWithEmail, signupWithEmail, isSupabaseConfigured } from '../supabase'
+import React, { useState, useEffect, useRef } from 'react'
+import { loginWithGoogle, sendEmailOtp, verifyEmailOtp, isSupabaseConfigured } from '../supabase'
 import { startCheckout, PLAN_PRICES } from '../subscription'
 import { MedalIcon } from '../icons'
 import { t, localizedHtmlPath } from '../i18n'
@@ -755,13 +755,29 @@ function OnboardingPricingView({ onNext, onSelectPaid, onBack }: {
 }
 
 // ── 登録画面（スクショ参考） ──────────────────────────────────
+const REGISTER_RESEND_COOLDOWN_SEC = 30
+
 function RegisterScreen({ onComplete, onSkip, onBack, onNavigateToLogin }: { onComplete: () => void; onSkip: () => void; onBack: () => void; onNavigateToLogin?: () => void }) {
   const [termsChecked, setTermsChecked] = useState(false)
+  const [step, setStep] = useState<'email' | 'verify'>('email')
   const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [code, setCode] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [successMsg, setSuccessMsg] = useState('')
+  const [resendCooldown, setResendCooldown] = useState(0)
+  const codeInputRef = useRef<HTMLInputElement>(null)
   const ready = isSupabaseConfigured()
+
+  useEffect(() => {
+    if (step === 'verify') codeInputRef.current?.focus()
+  }, [step])
+
+  useEffect(() => {
+    if (resendCooldown <= 0) return
+    const id = setTimeout(() => setResendCooldown(s => s - 1), 1000)
+    return () => clearTimeout(id)
+  }, [resendCooldown])
 
   const inputStyle: React.CSSProperties = {
     width: '100%',
@@ -778,25 +794,58 @@ function RegisterScreen({ onComplete, onSkip, onBack, onNavigateToLogin }: { onC
 
   async function handleGoogle() {
     if (!termsChecked) { setError(t('onboarding.registerErrTerms')); return }
-    setError(''); setLoading(true)
+    setError(''); setSuccessMsg(''); setLoading(true)
     const result = await loginWithGoogle()
     setLoading(false)
     if (result.user) { onComplete(); return }
     setError(t('auth.errGoogleFailed'))
   }
 
-  async function handleEmailSignup() {
+  async function handleSendCode() {
     if (!termsChecked) { setError(t('onboarding.registerErrTerms')); return }
-    if (!email || !password) { setError(t('auth.errEmailPasswordRequired')); return }
-    if (password.length < 6) { setError(t('auth.weakPassword')); return }
-    setError(''); setLoading(true)
-    // まずログイン試行、失敗したら新規登録
-    const loginResult = await loginWithEmail(email, password)
-    if (loginResult.user) { setLoading(false); onComplete(); return }
-    const signupResult = await signupWithEmail(email, password)
+    if (!email) { setError(t('auth.errEmailRequired')); return }
+    setError(''); setSuccessMsg(''); setLoading(true)
+    const result = await sendEmailOtp(email)
     setLoading(false)
-    if (signupResult.user) { onComplete(); return }
-    setError(t('onboarding.registerErrSignupFailed'))
+    if (result.error) {
+      if (result.error === 'auth/invalid-email') setError(t('auth.invalidEmail'))
+      else if (result.error === 'auth/rate-limited') setError(t('auth.errRateLimited'))
+      else if (result.error === 'auth/not-configured') setError(t('auth.errNotConfigured'))
+      else setError(t('auth.errSendCodeFailed'))
+      return
+    }
+    setStep('verify')
+    setCode('')
+    setResendCooldown(REGISTER_RESEND_COOLDOWN_SEC)
+  }
+
+  async function handleVerify(submittedCode?: string) {
+    if (!termsChecked) { setError(t('onboarding.registerErrTerms')); return }
+    const c = submittedCode ?? code
+    if (c.length !== 6) return
+    setError(''); setSuccessMsg(''); setLoading(true)
+    const result = await verifyEmailOtp(email, c)
+    setLoading(false)
+    if (result.user) { onComplete(); return }
+    if (result.error === 'auth/invalid-code') setError(t('auth.errInvalidCode'))
+    else if (result.error === 'auth/code-expired') setError(t('auth.errCodeExpired'))
+    else setError(t('auth.errSendCodeFailed'))
+    setCode('')
+    codeInputRef.current?.focus()
+  }
+
+  async function handleResend() {
+    if (resendCooldown > 0 || loading) return
+    setError(''); setSuccessMsg(''); setLoading(true)
+    const result = await sendEmailOtp(email)
+    setLoading(false)
+    if (result.error) {
+      if (result.error === 'auth/rate-limited') setError(t('auth.errRateLimited'))
+      else setError(t('auth.errSendCodeFailed'))
+      return
+    }
+    setSuccessMsg(t('auth.codeResent'))
+    setResendCooldown(REGISTER_RESEND_COOLDOWN_SEC)
   }
 
   return (
@@ -861,103 +910,153 @@ function RegisterScreen({ onComplete, onSkip, onBack, onNavigateToLogin }: { onC
           </span>
         </label>
 
-        {/* エラー */}
+        {/* エラー / 成功 */}
         {error && (
-          <div style={{ fontSize: 14, color: C.error, padding: '10px 14px', background: C.errorBg, borderRadius: 10 }}>
+          <div role="alert" aria-live="polite" style={{ fontSize: 14, color: C.error, padding: '10px 14px', background: C.errorBg, borderRadius: 10 }}>
             {error}
           </div>
         )}
+        {successMsg && (
+          <div role="status" aria-live="polite" style={{ fontSize: 14, color: '#a7f3d0', padding: '10px 14px', background: 'rgba(34,197,94,0.12)', borderRadius: 10 }}>
+            {successMsg}
+          </div>
+        )}
 
-        {/* Googleボタン */}
-        <button
-          onClick={handleGoogle}
-          disabled={loading || !ready}
-          style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12,
-            width: '100%', padding: '16px',
-            background: '#4285F4', border: 'none', borderRadius: 12,
-            fontSize: 16, fontWeight: 700, color: '#fff',
-            cursor: loading ? 'not-allowed' : 'pointer',
-            opacity: loading ? 0.7 : 1,
-          }}
-        >
-          <GoogleIcon />
-          {t('onboarding.registerGoogleBtn')}
-        </button>
+        {step === 'email' ? (
+          <>
+            {/* Googleボタン */}
+            <button
+              onClick={handleGoogle}
+              disabled={loading || !ready}
+              style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12,
+                width: '100%', padding: '16px',
+                background: '#4285F4', border: 'none', borderRadius: 12,
+                fontSize: 16, fontWeight: 700, color: '#fff',
+                cursor: loading ? 'not-allowed' : 'pointer',
+                opacity: loading ? 0.7 : 1,
+              }}
+            >
+              <GoogleIcon />
+              {t('onboarding.registerGoogleBtn')}
+            </button>
 
-        {/* OR */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <div style={{ flex: 1, height: 1, background: C.inputBorder }} />
-          <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)' }}>OR</span>
-          <div style={{ flex: 1, height: 1, background: C.inputBorder }} />
-        </div>
+            {/* OR */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ flex: 1, height: 1, background: C.inputBorder }} />
+              <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)' }}>{t('auth.orDivider')}</span>
+              <div style={{ flex: 1, height: 1, background: C.inputBorder }} />
+            </div>
 
-        {/* メール入力 */}
-        <input
-          type="email"
-          aria-label={t('auth.emailLabel')}
-          placeholder={t('onboarding.registerEmailPlaceholder')}
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          style={inputStyle}
-          autoComplete="email"
-        />
+            {/* メール入力 */}
+            <input
+              type="email"
+              aria-label={t('auth.emailLabel')}
+              placeholder={t('onboarding.registerEmailPlaceholder')}
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              style={inputStyle}
+              autoComplete="email"
+              onKeyDown={e => { if (e.key === 'Enter') handleSendCode() }}
+            />
 
-        {/* パスワード入力 */}
-        <input
-          type="password"
-          aria-label={t('auth.passwordLabel')}
-          placeholder={t('onboarding.registerPasswordPlaceholder')}
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          style={inputStyle}
-          autoComplete="new-password"
-          onKeyDown={e => { if (e.key === 'Enter') handleEmailSignup() }}
-        />
+            {/* コード送信ボタン */}
+            <button
+              onClick={handleSendCode}
+              disabled={loading || !ready}
+              style={{
+                width: '100%', padding: '17px',
+                background: loading ? 'rgba(108,142,245,0.4)' : `linear-gradient(135deg, ${C.teal}, #9BB3FA)`,
+                border: 'none', borderRadius: 12,
+                fontSize: 16, fontWeight: 700, color: C.white,
+                cursor: loading ? 'not-allowed' : 'pointer',
+              }}
+            >
+              {loading ? t('auth.processing') : t('auth.sendCodeBtn')}
+            </button>
 
-        {/* 登録ボタン */}
-        <button
-          onClick={handleEmailSignup}
-          disabled={loading || !ready}
-          style={{
-            width: '100%', padding: '17px',
-            background: loading ? 'rgba(108,142,245,0.4)' : `linear-gradient(135deg, ${C.teal}, #9BB3FA)`,
-            border: 'none', borderRadius: 12,
-            fontSize: 16, fontWeight: 700, color: C.white,
-            cursor: loading ? 'not-allowed' : 'pointer',
-          }}
-        >
-          {loading ? t('pricing.processing') : t('onboarding.registerSubmit')}
-        </button>
+            {/* ログインリンク */}
+            <div style={{ textAlign: 'center', marginTop: 4 }}>
+              <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)' }}>
+                {t('onboarding.registerHaveAccount')}
+              </span>
+              <button
+                onClick={onNavigateToLogin}
+                style={{
+                  background: 'none', border: 'none',
+                  color: C.teal, fontSize: 13, fontWeight: 700,
+                  cursor: 'pointer', display: 'block', margin: '4px auto 0',
+                }}
+              >
+                {t('onboarding.registerLoginLink')}
+              </button>
+            </div>
 
-        {/* ログインリンク */}
-        <div style={{ textAlign: 'center', marginTop: 4 }}>
-          <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)' }}>
-            {t('onboarding.registerHaveAccount')}
-          </span>
-          <button
-            onClick={onNavigateToLogin}
-            style={{
-              background: 'none', border: 'none',
-              color: C.teal, fontSize: 13, fontWeight: 700,
-              cursor: 'pointer', display: 'block', margin: '4px auto 0',
-            }}
-          >
-            {t('onboarding.registerLoginLink')}
-          </button>
-        </div>
-
-        {/* 登録せずに始める */}
-        <button
-          onClick={onSkip}
-          style={{
-            background: 'none', border: 'none',
-            color: 'rgba(255,255,255,0.35)', fontSize: 13,
-            cursor: 'pointer', padding: '8px 0', textAlign: 'center',
-          }}
-        >
-          {t('onboarding.registerSkip')}
-        </button>
+            {/* 登録せずに始める */}
+            <button
+              onClick={onSkip}
+              style={{
+                background: 'none', border: 'none',
+                color: 'rgba(255,255,255,0.35)', fontSize: 13,
+                cursor: 'pointer', padding: '8px 0', textAlign: 'center',
+              }}
+            >
+              {t('onboarding.registerSkip')}
+            </button>
+          </>
+        ) : (
+          <>
+            <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.7)', margin: '0 0 4px', textAlign: 'center', lineHeight: 1.6 }}>
+              {t('auth.codeSentTo', { email })}
+            </p>
+            <input
+              ref={codeInputRef}
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              maxLength={6}
+              aria-label={t('auth.codeLabel')}
+              placeholder="––––––"
+              value={code}
+              disabled={loading}
+              onChange={e => {
+                const next = e.target.value.replace(/\D/g, '').slice(0, 6)
+                setCode(next)
+                if (next.length === 6) handleVerify(next)
+              }}
+              style={{ ...inputStyle, letterSpacing: '0.4em', textAlign: 'center', fontSize: 22, opacity: loading ? 0.6 : 1 }}
+              autoComplete="one-time-code"
+            />
+            <button
+              onClick={() => handleVerify()}
+              disabled={loading || code.length !== 6}
+              style={{
+                width: '100%', padding: '17px',
+                background: loading || code.length !== 6 ? 'rgba(108,142,245,0.4)' : `linear-gradient(135deg, ${C.teal}, #9BB3FA)`,
+                border: 'none', borderRadius: 12,
+                fontSize: 16, fontWeight: 700, color: C.white,
+                cursor: loading || code.length !== 6 ? 'not-allowed' : 'pointer',
+              }}
+            >
+              {loading ? t('auth.processing') : t('auth.verifyBtn')}
+            </button>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center', marginTop: 4 }}>
+              <button
+                onClick={handleResend}
+                disabled={loading || resendCooldown > 0}
+                style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', fontSize: 13, cursor: (loading || resendCooldown > 0) ? 'not-allowed' : 'pointer', padding: '4px 0', opacity: resendCooldown > 0 ? 0.5 : 1 }}
+              >
+                {resendCooldown > 0 ? t('auth.codeResendIn', { sec: resendCooldown }) : t('auth.codeResend')}
+              </button>
+              <button
+                onClick={() => { setStep('email'); setError(''); setSuccessMsg(''); setCode('') }}
+                style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', fontSize: 13, cursor: 'pointer', padding: '4px 0' }}
+              >
+                {t('auth.backToLogin')}
+              </button>
+            </div>
+          </>
+        )}
       </div>
       </div>
     </div>

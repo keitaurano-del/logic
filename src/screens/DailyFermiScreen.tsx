@@ -10,6 +10,7 @@ import { haptic } from '../platform/haptics'
 import { useDailyGuide, GuideStyle } from '../tutorial/dailyGuide'
 import { isPaid } from '../subscription'
 import { getDisplayName, addXp } from '../stats'
+import { recordActivity } from '../activityLog'
 import { markDailyFermiDone } from './dailyFermiState'
 
 // ── プラン別デイリー制限 ──────────────────────────────────────
@@ -549,6 +550,12 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
       setDailyCount(getDailyCount())
       setSubmitPhase('done')
       addXp('fermi')
+      recordActivity({
+        type: 'fermi',
+        id: `daily-${currentPoolIndex}`,
+        title: question,
+        meta: typeof data.score === 'number' ? { score: data.score } : undefined,
+      })
       // スコアをランキングに記録
       if (data.score != null) {
         fetch(`${API_BASE}/api/fermi/record-score`, {

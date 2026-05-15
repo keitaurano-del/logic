@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { recordCompletion, addXp, getDisplayName } from '../stats'
+import { recordActivity } from '../activityLog'
 import { getGuestId } from '../guestId'
 import { ArrowRightIcon, CheckIcon, LightbulbIcon } from '../icons'
 import { Button } from '../components/Button'
@@ -112,6 +113,12 @@ function useFermiState(): FermiState {
       })
       recordCompletion('fermi')
       addXp('fermi')
+      recordActivity({
+        type: 'fermi',
+        id: question.question.slice(0, 80),
+        title: question.question,
+        meta: typeof data.score === 'number' ? { score: data.score } : undefined,
+      })
       // スコアをランキングに記録（fire-and-forget）
       if (typeof data.score === 'number') {
         fetch(`${API_BASE}/api/fermi/record-score`, {

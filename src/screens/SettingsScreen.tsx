@@ -9,6 +9,7 @@ import {
 import { getSubscriptionState, isPaid } from '../subscription'
 import { Switch } from '../components/Switch'
 import { confirm as confirmDialog } from '../platform/dialog'
+import { getMode, setMode } from '../theme'
 
 interface SettingsScreenProps {
   onBack: () => void
@@ -81,6 +82,16 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
   const [reminderEnabled, setReminderEnabled] = useState(pref.enabled)
   const [reminderHour, setReminderHour] = useState(pref.hour)
   const [reminderMinute, setReminderMinute] = useState(pref.minute)
+  // 旧 premium モード（enterprise / startup / custom）を選んでいたユーザーは
+  // 「light 以外＝dark トグル ON」として扱う。トグル操作で setMode('dark') を
+  // 呼ぶと premium モード設定が dark で上書きされるため、その挙動を明示。
+  const initialMode = getMode()
+  const [darkMode, setDarkMode] = useState<boolean>(() => initialMode !== 'light')
+
+  function handleToggleDarkMode(enabled: boolean) {
+    setDarkMode(enabled)
+    setMode(enabled ? 'dark' : 'light')
+  }
 
   async function handleToggleReminder(enabled: boolean) {
     if (enabled) {
@@ -277,6 +288,30 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
             value={locale === 'ja' ? t('profile.languageJa') : t('profile.languageEn')}
             onPress={onOpenLanguage}
           />
+        </div>
+      </div>
+
+      {/* ── 外観 ── */}
+      <div>
+        <SectionHeader label={t('settings.appearance')} />
+        <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+          <div style={{
+            display: 'flex', alignItems: 'center',
+            padding: '14px 16px', gap: 12,
+          }}>
+            <span style={{ flex: 1, fontSize: 18, color: 'var(--text)' }}>
+              {t('settings.darkMode')}
+            </span>
+            <Toggle value={darkMode} onChange={handleToggleDarkMode} label={t('settings.darkMode')} />
+          </div>
+          <div style={{
+            padding: '0 16px 14px',
+            fontSize: 14,
+            color: 'var(--text-muted)',
+            lineHeight: 1.5,
+          }}>
+            {t('settings.darkModeHint')}
+          </div>
         </div>
       </div>
 

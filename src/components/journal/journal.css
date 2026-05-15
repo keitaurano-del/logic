@@ -50,15 +50,36 @@
 
 .journal-mood-btn--active,
 .journal-weather-btn--active {
-  background: var(--brand);
+  background: var(--brand-soft);
   border-color: var(--brand);
-  color: var(--accent-fg, #fff);
+  color: var(--brand);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--brand) 25%, transparent);
 }
 
 .journal-mood-btn__icon,
 .journal-weather-btn__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 28px;
   height: 28px;
+}
+
+/* Mood / Weather などジャーナル内で使う絵文字共通スタイル。
+   font-family を Apple Color Emoji / Segoe UI Emoji にフォールバックすることで
+   OS のカラー絵文字を確実に表示する（一部 Linux で modifier つき絵文字が崩れるのを防ぐ） */
+.journal-emoji-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji', sans-serif;
+  font-style: normal;
+}
+
+.journal-mood-btn--active .journal-emoji-icon,
+.journal-weather-btn--active .journal-emoji-icon {
+  transform: scale(1.08);
 }
 
 .journal-mood-btn__label,
@@ -243,7 +264,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .journal-cal-nav {
@@ -283,18 +304,18 @@
 }
 
 .journal-cal-cell {
-  aspect-ratio: 1 / 1.05;
+  aspect-ratio: 1 / 1.15;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 1px;
   background: var(--bg-card);
   border: 1px solid var(--border, rgba(255,255,255,.04));
   border-radius: 10px;
   color: var(--text-primary);
   cursor: pointer;
-  padding: 4px;
+  padding: 2px;
   font: inherit;
   position: relative;
   transition: border-color 0.15s, background 0.15s;
@@ -313,14 +334,17 @@
 }
 
 .journal-cal-cell__day {
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--text-secondary);
+  line-height: 1;
 }
 
 .journal-cal-cell__icon {
-  width: 18px;
-  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
 
 .journal-cal-cell__dot {
@@ -857,42 +881,61 @@
 }
 
 .journal-phase-tab__emoji {
-  display: inline-flex;
-  align-items: center;
-  color: currentColor;
+  font-size: 18px;
 }
 
 /* Tags */
 .journal-tag-input {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .journal-tag-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  padding: 10px;
+  gap: 4px;
+  padding: 6px 8px;
   background: var(--bg-card);
   border: 1px solid var(--border, rgba(255,255,255,.06));
-  border-radius: 12px;
-  min-height: 48px;
+  border-radius: 10px;
+  min-height: 36px;
   align-items: center;
 }
 
 .journal-tag-chip {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px 4px 4px 10px;
+  gap: 2px;
+  padding: 2px 2px 2px 8px;
   background: var(--accent-soft);
   border: 1px solid color-mix(in srgb, var(--brand) 30%, transparent);
   border-radius: 99px;
   color: var(--brand);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   max-width: 100%;
+}
+
+/* Compact tag section wrapper (朝フェーズで使用) */
+.journal-tags-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.journal-section__label--sm {
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.journal-section__hint {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-weight: 500;
 }
 
 .journal-tag-chip__text {
@@ -905,8 +948,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
   background: transparent;
   border: none;
   border-radius: 50%;
@@ -921,13 +964,13 @@
 
 .journal-tag-input__field {
   flex: 1;
-  min-width: 100px;
-  padding: 6px 8px;
+  min-width: 80px;
+  padding: 4px 6px;
   background: transparent;
   border: none;
   color: var(--text-primary);
   font: inherit;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .journal-tag-input__field:focus {
@@ -990,6 +1033,10 @@
 .journal-streak-badge--lg {
   font-size: 18px;
   padding: 10px 16px;
+}
+
+.journal-streak-badge--dim .journal-streak-badge__icon {
+  filter: grayscale(1) opacity(0.55);
 }
 
 .journal-streak-badge__count {
@@ -1084,7 +1131,7 @@
   line-height: 1.6;
 }
 
-/* Cleanup button (テキスト整形) */
+/* Cleanup button (テキスト整形) — small variant (legacy) */
 .journal-cleanup-btn {
   position: absolute;
   right: 56px;
@@ -1101,7 +1148,7 @@
   font-size: 11px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.1s;
   min-height: 28px;
 }
 
@@ -1116,6 +1163,80 @@
   cursor: not-allowed;
 }
 
+/* Cleanup button — large variant (textarea の下に置く) */
+.journal-cleanup-btn--lg {
+  position: relative;
+  right: auto;
+  bottom: auto;
+  margin-top: 10px;
+  width: 100%;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1.5px solid color-mix(in srgb, var(--brand) 40%, transparent);
+  background: color-mix(in srgb, var(--brand) 8%, var(--bg-card));
+  color: var(--brand);
+  font-size: 14px;
+  font-weight: 700;
+  min-height: 48px;
+  letter-spacing: 0.01em;
+}
+
+.journal-cleanup-btn--lg:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--brand) 14%, var(--bg-card));
+  border-color: var(--brand);
+  transform: translateY(-1px);
+}
+
+.journal-cleanup-btn--lg:not(:disabled):active {
+  transform: translateY(0) scale(0.99);
+}
+
+/* Cleanup running effect — pulsing border + glow */
+.journal-cleanup-btn--working {
+  pointer-events: none;
+  background: color-mix(in srgb, var(--brand) 18%, var(--bg-card));
+  border-color: var(--brand);
+  animation: journal-cleanup-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes journal-cleanup-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--brand) 35%, transparent); }
+  50%      { box-shadow: 0 0 0 8px color-mix(in srgb, var(--brand) 0%, transparent); }
+}
+
+/* Cleanup done — sparkle burst */
+.journal-cleanup-btn--done {
+  background: color-mix(in srgb, var(--brand) 18%, var(--bg-card));
+  border-color: var(--brand);
+  animation: journal-cleanup-flash 0.6s ease-out;
+}
+
+@keyframes journal-cleanup-flash {
+  0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--brand) 70%, transparent); transform: scale(1.02); }
+  60%  { box-shadow: 0 0 0 14px color-mix(in srgb, var(--brand) 0%, transparent); }
+  100% { box-shadow: 0 0 0 0 transparent; transform: scale(1); }
+}
+
+/* Textarea が AI 整形直後に光る演出 */
+.journal-textarea--just-cleaned {
+  animation: journal-textarea-flash 1s ease-out;
+  border-color: var(--brand) !important;
+}
+
+@keyframes journal-textarea-flash {
+  0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--brand) 50%, transparent); }
+  50%  { box-shadow: 0 0 0 6px color-mix(in srgb, var(--brand) 18%, transparent); }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .journal-cleanup-btn--working,
+  .journal-cleanup-btn--done,
+  .journal-textarea--just-cleaned { animation: none; }
+}
+
 /* Voice input hint (OS のキーボード音声入力を案内) */
 .journal-voice-hint {
   margin-top: 6px;
@@ -1125,4 +1246,346 @@
   background: var(--bg-tertiary, rgba(255,255,255,.04));
   border-radius: 8px;
   line-height: 1.5;
+}
+
+/* ── Journal Hero (with streak badge top-right) ───────── */
+.journal-hero {
+  padding: calc(env(safe-area-inset-top, 44px) + 14px) 20px 20px;
+  background: var(--hero-grad-dark);
+  color: var(--text-on-hero, #fff);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.journal-hero__streak {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* ── Calendar sparkline (moved from Today) ─────────── */
+.journal-cal-sparkline {
+  margin-bottom: 16px;
+  padding: 10px 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border, rgba(255,255,255,.06));
+  border-radius: 12px;
+}
+
+/* ── Detail modal: header with edit button ─────────── */
+.journal-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.journal-modal__edit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  background: var(--accent-soft);
+  color: var(--brand);
+  border: 1px solid color-mix(in srgb, var(--brand) 30%, transparent);
+  border-radius: 99px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  min-height: 44px;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.journal-modal__edit-btn:hover {
+  background: color-mix(in srgb, var(--brand) 18%, transparent);
+}
+
+.journal-modal__edit-btn:focus-visible,
+.journal-modal__close-btn:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+.journal-modal__close-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.journal-modal__close-btn:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.journal-modal__header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ── View-mode chips & sections ────────────────────── */
+.journal-view-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.journal-view-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--bg-tertiary, rgba(255,255,255,.06));
+  border: 1px solid var(--border, rgba(255,255,255,.06));
+  border-radius: 99px;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.journal-view-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.journal-view-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* ── Activity list (today's activity inside journal) ─── */
+.journal-activity-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.journal-activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border, rgba(255,255,255,.06));
+  border-radius: 12px;
+}
+
+.journal-activity-item__icon {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-soft);
+  color: var(--brand);
+}
+
+.journal-activity-item__icon--lesson { background: color-mix(in srgb, var(--brand) 14%, transparent); color: var(--brand); }
+.journal-activity-item__icon--fermi { background: var(--cat-boki2-soft); color: var(--cat-boki2); }
+.journal-activity-item__icon--roleplay { background: color-mix(in srgb, var(--streak-flame) 14%, transparent); color: var(--streak-flame); }
+.journal-activity-item__icon--daily-problem { background: var(--success-soft); color: var(--success); }
+.journal-activity-item__icon--ai-problem { background: var(--cat-lateral-soft); color: var(--cat-lateral); }
+
+.journal-activity-item__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.journal-activity-item__title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.journal-activity-item__meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.journal-activity-item__type {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.journal-activity-item__time {
+  color: var(--text-muted);
+}
+
+.journal-activity-item__score {
+  margin-left: auto;
+  padding: 2px 8px;
+  background: var(--accent-soft);
+  color: var(--brand);
+  border-radius: 99px;
+  font-weight: 700;
+  font-size: 11px;
+}
+
+.journal-activity-empty {
+  padding: 12px 14px;
+  font-size: 12px;
+  color: var(--text-muted);
+  background: var(--bg-card);
+  border: 1px dashed var(--border, rgba(255,255,255,.08));
+  border-radius: 12px;
+  text-align: center;
+}
+
+/* ── Calendar mood face — emoji uses drop-shadow for depth ──────────────── */
+.journal-cal-cell__icon {
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.25));
+}
+
+/* mood--N の color は絵文字には効かない（絵文字は自前のカラー）。
+   将来 SVG に戻したときのアフォーダンスとして残す。 */
+.journal-cal-cell__mood--1 { color: #E5484D; }   /* 最悪 — red */
+.journal-cal-cell__mood--2 { color: #F76808; }   /* イマイチ — orange */
+.journal-cal-cell__mood--3 { color: #F5A524; }   /* 普通 — yellow */
+.journal-cal-cell__mood--4 { color: #30A46C; }   /* 良い — green */
+.journal-cal-cell__mood--5 { color: #E93D82; }   /* 最高 — pink */
+
+/* ── Evening celebration overlay ──────────────────────── */
+.journal-celebration {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: journal-fadein 0.25s ease-out;
+  padding: 20px;
+  overflow: hidden;
+}
+
+.journal-celebration__card {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid color-mix(in srgb, var(--brand) 30%, transparent);
+  border-radius: 22px;
+  padding: 28px 24px 24px;
+  width: 100%;
+  max-width: 360px;
+  text-align: center;
+  box-shadow: 0 12px 60px rgba(0,0,0,0.5),
+              0 0 0 4px color-mix(in srgb, var(--brand) 14%, transparent);
+  animation: journal-celebration-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.journal-celebration__icon {
+  color: #F5A524;
+  filter: drop-shadow(0 2px 8px rgba(245,165,36,0.5));
+  animation: journal-celebration-spin 1s ease-out;
+}
+
+.journal-celebration__title {
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.journal-celebration__body {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+.journal-celebration__card .journal-summarize-btn {
+  margin-top: 8px;
+}
+
+@keyframes journal-fadein {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes journal-celebration-pop {
+  0%   { opacity: 0; transform: scale(0.7) translateY(20px); }
+  60%  { opacity: 1; transform: scale(1.04) translateY(-2px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes journal-celebration-spin {
+  0%   { transform: scale(0.4) rotate(-90deg); opacity: 0; }
+  60%  { transform: scale(1.15) rotate(10deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+/* Confetti */
+.journal-celebration__confetti {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.journal-celebration__piece {
+  position: absolute;
+  top: -10%;
+  width: 8px;
+  height: 14px;
+  border-radius: 2px;
+  opacity: 0;
+  animation: journal-confetti-fall 2.6s ease-in forwards;
+}
+
+.journal-celebration__piece--0 { left: 8%;  background: #E5484D; animation-delay: 0.05s; }
+.journal-celebration__piece--1 { left: 22%; background: #F76808; animation-delay: 0.15s; }
+.journal-celebration__piece--2 { left: 36%; background: #F5A524; animation-delay: 0.25s; }
+.journal-celebration__piece--3 { left: 52%; background: #30A46C; animation-delay: 0.0s;  }
+.journal-celebration__piece--4 { left: 68%; background: #3E63DD; animation-delay: 0.2s;  }
+.journal-celebration__piece--5 { left: 84%; background: #E93D82; animation-delay: 0.1s;  }
+
+.journal-celebration__piece:nth-child(7n)  { width: 6px; height: 10px; }
+.journal-celebration__piece:nth-child(5n)  { width: 10px; height: 18px; border-radius: 50%; }
+.journal-celebration__piece:nth-child(3n)  { top: -14%; animation-duration: 3.0s; }
+.journal-celebration__piece:nth-child(2n)  { animation-duration: 2.2s; }
+.journal-celebration__piece:nth-child(11n) { transform: rotate(20deg); }
+
+@keyframes journal-confetti-fall {
+  0%   { opacity: 0;   transform: translateY(0) rotate(0); }
+  10%  { opacity: 1; }
+  100% { opacity: 0.6; transform: translateY(110vh) rotate(720deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .journal-celebration,
+  .journal-celebration__card,
+  .journal-celebration__icon,
+  .journal-celebration__piece { animation: none; }
+  .journal-celebration__piece { display: none; }
 }
