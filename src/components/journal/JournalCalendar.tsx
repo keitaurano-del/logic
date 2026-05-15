@@ -122,8 +122,8 @@ export function JournalCalendar({ userId }: JournalCalendarProps) {
             >
               <span className="journal-cal-cell__day">{c.day}</span>
               {j?.mood && (
-                <span className="journal-cal-cell__icon" style={{ color: 'var(--brand)' }}>
-                  <MoodIcon mood={j.mood as Mood} size={18} />
+                <span className={`journal-cal-cell__icon journal-cal-cell__mood--${j.mood}`}>
+                  <MoodIcon mood={j.mood as Mood} size={26} />
                 </span>
               )}
               {j && !j.mood && (
