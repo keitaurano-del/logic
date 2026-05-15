@@ -1,6 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
-import { useVoiceInput, type VoiceErrorCode } from '../../hooks/useVoiceInput'
-import { MicIcon } from './MoodWeatherIcons'
+import { useState } from 'react'
 import { cleanupText } from './journalApi'
 import { t } from '../../i18n'
 
@@ -12,41 +10,18 @@ interface VoiceTextareaProps {
   ariaLabel?: string
   /** 「整理する」ボタンを表示。入力テキストを整形 API でクリーンアップする */
   enableCleanup?: boolean
+  /** 音声入力ヒントを表示（OS のキーボード音声入力を案内） */
+  showVoiceHint?: boolean
 }
 
-const ERROR_KEY: Record<VoiceErrorCode, string> = {
-  'permission-denied': 'journal.voiceErrPermission',
-  'no-speech':         'journal.voiceErrNoSpeech',
-  'audio-capture':     'journal.voiceErrAudio',
-  'network':           'journal.voiceErrNetwork',
-  'not-allowed':       'journal.voiceErrPermission',
-  'not-supported':     'journal.voiceErrUnsupported',
-  'aborted':           'journal.voiceErrAborted',
-  'unknown':           'journal.voiceErrUnknown',
-}
-
-export function VoiceTextarea({ value, onChange, placeholder, minHeight, ariaLabel, enableCleanup }: VoiceTextareaProps) {
-  // 録音開始時のテキスト末尾位置を覚えて、認識結果を以降に追記する
-  const baseRef = useRef<string>(value)
+/**
+ * テキストエリア + 整理ボタン。
+ * 音声入力は OS のキーボード機能（iOS dictation / Android voice typing）に委ねる方針なので、
+ * showVoiceHint を渡すとヒント文言が出る。
+ */
+export function VoiceTextarea({ value, onChange, placeholder, minHeight, ariaLabel, enableCleanup, showVoiceHint }: VoiceTextareaProps) {
   const [cleaning, setCleaning] = useState(false)
   const [cleanupError, setCleanupError] = useState<string | null>(null)
-
-  const handleTranscript = (transcript: string) => {
-    const sep = baseRef.current && !/[\s\n]$/.test(baseRef.current) ? ' ' : ''
-    onChange(`${baseRef.current}${sep}${transcript}`)
-  }
-
-  const { isListening, isSupported, error, toggleListening } = useVoiceInput(handleTranscript)
-
-  // 録音停止時は現在値をベースとして更新（次の録音で末尾追記できるよう）
-  useEffect(() => {
-    if (!isListening) baseRef.current = value
-  }, [isListening, value])
-
-  const handleStart = () => {
-    if (!isListening) baseRef.current = value
-    void toggleListening()
-  }
 
   const handleCleanup = async () => {
     if (!value.trim() || cleaning) return
@@ -56,10 +31,7 @@ export function VoiceTextarea({ value, onChange, placeholder, minHeight, ariaLab
       const { cleaned, error: apiErr } = await cleanupText(value)
       if (apiErr) { setCleanupError(t('journal.cleanupError')); return }
       const final = (cleaned || '').trim()
-      if (final) {
-        baseRef.current = final
-        onChange(final)
-      }
+      if (final) onChange(final)
     } catch (e) {
       console.warn('cleanup error:', e)
       setCleanupError(t('journal.cleanupError'))
@@ -73,30 +45,11 @@ export function VoiceTextarea({ value, onChange, placeholder, minHeight, ariaLab
       <textarea
         className="journal-textarea"
         value={value}
-        onChange={(e) => {
-          if (!isListening) baseRef.current = e.target.value
-          onChange(e.target.value)
-        }}
+        onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         style={minHeight ? { minHeight } : undefined}
         aria-label={ariaLabel}
       />
-      {isSupported && (
-        <button
-          type="button"
-          className={`journal-voice-btn ${isListening ? 'journal-voice-btn--listening' : ''}`}
-          onClick={handleStart}
-          aria-label={isListening ? t('journal.voiceStop') : t('journal.voiceStart')}
-          aria-pressed={isListening}
-        >
-          <MicIcon size={18} />
-        </button>
-      )}
-      {isListening && (
-        <span role="status" aria-live="polite" className="journal-voice-rec">
-          {t('journal.voiceRecording')}
-        </span>
-      )}
       {enableCleanup && (
         <button
           type="button"
@@ -120,9 +73,9 @@ export function VoiceTextarea({ value, onChange, placeholder, minHeight, ariaLab
           )}
         </button>
       )}
-      {error && (
-        <div className="journal-voice-error" role="alert">
-          {t(ERROR_KEY[error])}
+      {showVoiceHint && (
+        <div className="journal-voice-hint">
+          {t('journal.voiceInputHint')}
         </div>
       )}
       {cleanupError && (

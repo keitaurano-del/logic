@@ -75,7 +75,7 @@
 .journal-textarea {
   width: 100%;
   min-height: 100px;
-  padding: 12px 48px 12px 14px;
+  padding: 12px 14px;
   background: var(--bg-card);
   border: 1px solid var(--border, rgba(255,255,255,.06));
   border-radius: 14px;
@@ -90,78 +90,6 @@
 .journal-textarea:focus {
   outline: none;
   border-color: var(--brand);
-}
-
-.journal-voice-btn {
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: none;
-  background: var(--bg-tertiary, rgba(255,255,255,.08));
-  color: var(--text-secondary);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.15s, color 0.15s;
-}
-
-.journal-voice-btn:hover {
-  background: var(--accent-soft);
-  color: var(--brand);
-}
-
-.journal-voice-btn--listening {
-  background: var(--md-sys-color-error);
-  color: var(--accent-fg);
-  animation: journal-pulse 1s ease-in-out infinite;
-}
-
-.journal-voice-rec {
-  position: absolute;
-  left: 14px;
-  top: 10px;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 2px 8px;
-  background: var(--md-sys-color-error);
-  color: var(--accent-fg);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  border-radius: 99px;
-  pointer-events: none;
-}
-
-.journal-voice-rec::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent-fg);
-  animation: journal-rec-blink 0.8s linear infinite;
-}
-
-@keyframes journal-rec-blink {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.2; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .journal-voice-rec::before { animation: none; }
-}
-
-@keyframes journal-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--md-sys-color-error) 60%, transparent); }
-  50%       { box-shadow: 0 0 0 6px color-mix(in srgb, var(--md-sys-color-error) 0%, transparent); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .journal-voice-btn--listening { animation: none; }
 }
 
 /* ── summarize button + ripple ──────────────── */
@@ -870,4 +798,15 @@
 .journal-cleanup-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+/* Voice input hint (OS のキーボード音声入力を案内) */
+.journal-voice-hint {
+  margin-top: 6px;
+  padding: 6px 10px;
+  font-size: 11px;
+  color: var(--text-muted);
+  background: var(--bg-tertiary, rgba(255,255,255,.04));
+  border-radius: 8px;
+  line-height: 1.5;
 }

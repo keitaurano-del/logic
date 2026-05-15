@@ -174,6 +174,7 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
                 placeholder={t('journal.intentPlaceholder')}
                 ariaLabel={t('journal.intentLabel')}
                 enableCleanup
+                showVoiceHint
               />
             </div>
 
@@ -197,6 +198,7 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
                 ariaLabel={t('journal.eveningReflection')}
                 minHeight={120}
                 enableCleanup
+                showVoiceHint
               />
             </div>
 

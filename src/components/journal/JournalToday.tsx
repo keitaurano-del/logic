@@ -111,12 +111,13 @@ export function JournalToday({ userId, assistantName }: JournalTodayProps) {
   }
 
   // 朝のサマリー: scheduleNotes + tags を中心に。mood/weather は朝時点で未入力なので渡さない
+  // AI が tags も提案するので、ユーザーが手動で入れたタグとマージする
   const handleSummarize = async () => {
     if (!canGenerate || isGenerating) return
     setError(null)
     setIsGenerating(true)
     try {
-      const { summary: newSummary, followUpQuestion, error: apiErr } = await summarizeJournal({
+      const { summary: newSummary, followUpQuestion, suggestedTags, error: apiErr } = await summarizeJournal({
         mood: null,
         weather: null,
         scheduleNotes: scheduleNotes.trim() || null,
@@ -128,9 +129,15 @@ export function JournalToday({ userId, assistantName }: JournalTodayProps) {
       }
       const finalSummary = (newSummary || '').trim()
       const finalFollow = (followUpQuestion || '').trim()
+      // 既存タグ + AI 提案タグ をマージ（重複除去 + 最大 8 個）
+      const merged = [...tags]
+      for (const tag of (suggestedTags ?? [])) {
+        if (!merged.includes(tag) && merged.length < 8) merged.push(tag)
+      }
       setSummary(finalSummary)
       setFollowUp(finalFollow)
-      await saveDb({ ai_summary: finalSummary || null })
+      setTags(merged)
+      await saveDb({ ai_summary: finalSummary || null, tags: merged })
     } catch (e) {
       console.warn('summarize error:', e)
       setError(t('journal.errorGeneric'))
@@ -203,11 +210,15 @@ export function JournalToday({ userId, assistantName }: JournalTodayProps) {
               placeholder={t('journal.intentPlaceholder')}
               ariaLabel={t('journal.intentLabel')}
               enableCleanup
+              showVoiceHint
             />
           </div>
 
           <div>
-            <div className="journal-section__label" style={{ marginBottom: 8 }}>{t('journal.tagsLabel')}</div>
+            <div className="journal-section__label" style={{ marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
+              {t('journal.tagsLabel')}
+              <span style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 500 }}>{t('journal.tagsAutoHint')}</span>
+            </div>
             <TagInput
               value={tags}
               onChange={setTags}
@@ -297,6 +308,7 @@ export function JournalToday({ userId, assistantName }: JournalTodayProps) {
               ariaLabel={t('journal.eveningReflection')}
               minHeight={140}
               enableCleanup
+              showVoiceHint
             />
           </div>
 
