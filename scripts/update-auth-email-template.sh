@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Update the Supabase Auth "Magic Link" email template so that the login email
-# delivers a 6-digit OTP code (rendered from {{ .Token }}) instead of a magic
-# link. The Logic app already calls `verifyOtp({ type: 'email' })`, so the only
-# missing piece is the email body.
+# delivers ONLY the magic link button (no 6-digit OTP). Logic uses the
+# `logic://auth` deep link to bring users back into the app — the app side
+# never asks for a code.
 #
 # Usage:
 #   SUPABASE_ACCESS_TOKEN=sbp_xxx ./scripts/update-auth-email-template.sh
@@ -10,7 +10,7 @@
 # Optional:
 #   SUPABASE_PROJECT_REF   default: yctlelmlwjwlcpcxvmgx (Logic prod)
 #   TEMPLATE_FILE          default: docs/auth-email-template-otp.html
-#   SUBJECT_JA             default: "Logic 認証コード"
+#   SUBJECT_JA             default: "Logic ログインリンク"
 #
 # Issue a Personal Access Token from:
 #   https://supabase.com/dashboard/account/tokens
@@ -22,7 +22,7 @@ set -euo pipefail
 PROJECT_REF="${SUPABASE_PROJECT_REF:-yctlelmlwjwlcpcxvmgx}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TEMPLATE_FILE="${TEMPLATE_FILE:-${SCRIPT_DIR}/../docs/auth-email-template-otp.html}"
-SUBJECT="${SUBJECT_JA:-Logic 認証コード}"
+SUBJECT="${SUBJECT_JA:-Logic ログインリンク}"
 
 if [[ ! -f "$TEMPLATE_FILE" ]]; then
   echo "ERROR: template file not found: $TEMPLATE_FILE" >&2
@@ -42,7 +42,6 @@ PAYLOAD="$(jq -n \
   '{
     mailer_subjects_magic_link: $subject,
     mailer_templates_magic_link_content: $content,
-    mailer_otp_length: 6,
     mailer_otp_exp: 3600
   }')"
 
@@ -63,5 +62,5 @@ if [[ "$HTTP_STATUS" != "200" ]]; then
   exit 1
 fi
 
-echo "OK — Magic Link template now delivers the 6-digit OTP code ({{ .Token }})."
+echo "OK — Magic Link template now delivers the deep link button ({{ .ConfirmationURL }})."
 echo "Verify in: https://supabase.com/dashboard/project/${PROJECT_REF}/auth/templates"

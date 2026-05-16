@@ -14,11 +14,6 @@ const config: CapacitorConfig = {
     backgroundColor: SURFACE,
   },
   plugins: {
-    GoogleAuth: {
-      scopes: ['profile', 'email'],
-      serverClientId: '688213389560-8he0jiu55jvlkkptcnf6p1bglujd9gas.apps.googleusercontent.com',
-      forceCodeForRefreshToken: true,
-    },
     SplashScreen: {
       launchShowDuration: 1500,
       launchAutoHide: false, // hidden manually via src/platform/splash.ts once auth is ready

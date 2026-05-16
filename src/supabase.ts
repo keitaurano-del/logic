@@ -35,29 +35,7 @@ export function getSupabaseClient(): SupabaseClient | null {
   return supabase as unknown as SupabaseClient | null
 }
 
-export async function loginWithGoogle(): Promise<{ user: User | null; error?: string }> {
-  if (!supabase) return { user: null, error: 'Supabase が設定されていません' }
-  try {
-    if (Capacitor.isNativePlatform()) {
-      // Google Auth は一時無効化中（google-services.json未設定）
-      return { user: null, error: 'Googleログインは現在ご利用いただけません' }
-    } else {
-      // Web: 既存のOAuthフロー
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: window.location.origin,
-        },
-      })
-      if (error) return { user: null, error: error.message }
-      return { user: null }
-    }
-  } catch (_error) {
-    return { user: null, error: 'ログインに失敗しました' }
-  }
-}
-
-export async function sendEmailOtp(email: string): Promise<{ error?: string }> {
+export async function sendMagicLink(email: string): Promise<{ error?: string }> {
   if (!supabase) return { error: 'auth/not-configured' }
   try {
     const emailRedirectTo = Capacitor.isNativePlatform()
@@ -104,22 +82,6 @@ export async function handleAuthRedirect(url: string): Promise<{ user: User | nu
       return { user: data.user }
     }
     return { user: null, error: 'auth/no-token-in-url' }
-  } catch {
-    return { user: null, error: 'auth/generic' }
-  }
-}
-
-export async function verifyEmailOtp(email: string, token: string): Promise<{ user: User | null; error?: string }> {
-  if (!supabase) return { user: null, error: 'auth/not-configured' }
-  try {
-    const { data, error } = await supabase.auth.verifyOtp({ email, token, type: 'email' })
-    if (error) {
-      const msg = error.message.toLowerCase()
-      if (msg.includes('expired')) return { user: null, error: 'auth/code-expired' }
-      if (msg.includes('invalid') || msg.includes('incorrect')) return { user: null, error: 'auth/invalid-code' }
-      return { user: null, error: 'auth/generic' }
-    }
-    return { user: data.user }
   } catch {
     return { user: null, error: 'auth/generic' }
   }

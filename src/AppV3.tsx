@@ -106,7 +106,7 @@ type Screen =
   | { type: 'study-time' }
   | { type: 'language' }
   | { type: 'rank' }
-  | { type: 'login'; tab?: 'google' | 'email' }
+  | { type: 'login' }
   | { type: 'report-problem'; context: { lessonId?: number; lessonTitle?: string; question?: string } }
   | { type: 'onboarding' }
   | { type: 'beta-code' }
@@ -550,7 +550,6 @@ function AppV3() {
       )}
       {screen.type === 'login' && (
         <LoginScreen
-          initialTab={screen.tab}
           onLoginSuccess={(user) => {
             setCurrentUser(user)
             // 名前が未設定の場合はポップアップ表示
@@ -565,7 +564,7 @@ function AppV3() {
         <AccountSettingsScreen
           onBack={handleBack}
           currentUser={currentUser ? { email: currentUser.email ?? '' } : null}
-          onOpenLogin={(tab) => navigate({ type: 'login', tab })}
+          onOpenLogin={() => navigate({ type: 'login' })}
           onLogout={() => { setCurrentUser(null); navigate({ type: 'profile' }) }}
         />
       )}
