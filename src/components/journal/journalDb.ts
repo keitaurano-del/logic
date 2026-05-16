@@ -1,5 +1,5 @@
 import { getSupabaseClient } from '../../supabase'
-import type { DailyJournal, Goal, GoalReview, PeriodType } from './types'
+import type { DailyJournal, Goal, GoalCategory, GoalReview, PeriodType } from './types'
 
 export async function fetchJournalByDate(userId: string, date: string): Promise<DailyJournal | null> {
   const supabase = getSupabaseClient()
@@ -141,39 +141,104 @@ export async function searchJournals(userId: string, keyword: string): Promise<D
   return (data as DailyJournal[]) ?? []
 }
 
-export async function fetchGoal(userId: string, periodType: PeriodType, periodKey: string): Promise<Goal | null> {
+/**
+ * 指定期間の目標を全件取得（複数 OK）。created_at 昇順で安定表示。
+ */
+export async function fetchGoals(userId: string, periodType: PeriodType, periodKey: string): Promise<Goal[]> {
   const supabase = getSupabaseClient()
-  if (!supabase) return null
+  if (!supabase) return []
   const { data, error } = await supabase
     .from('goals')
     .select('*')
     .eq('user_id', userId)
     .eq('period_type', periodType)
     .eq('period_key', periodKey)
-    .maybeSingle()
+    .order('created_at', { ascending: true })
   if (error) {
-    console.warn('fetchGoal:', error.message)
-    return null
+    console.warn('fetchGoals:', error.message)
+    return []
   }
-  return data as Goal | null
+  return (data as Goal[]) ?? []
 }
 
-export async function upsertGoal(g: {
+/**
+ * 「今日」のサマリー表示用に、週次/月次/年次の現在期間の目標を一括取得。
+ */
+export async function fetchCurrentGoalsAllPeriods(
+  userId: string,
+  keys: { weekly: string; monthly: string; yearly: string },
+): Promise<{ weekly: Goal[]; monthly: Goal[]; yearly: Goal[] }> {
+  const supabase = getSupabaseClient()
+  if (!supabase) return { weekly: [], monthly: [], yearly: [] }
+  const { data, error } = await supabase
+    .from('goals')
+    .select('*')
+    .eq('user_id', userId)
+    .in('period_type', ['weekly', 'monthly', 'yearly'])
+    .or(
+      [
+        `and(period_type.eq.weekly,period_key.eq.${keys.weekly})`,
+        `and(period_type.eq.monthly,period_key.eq.${keys.monthly})`,
+        `and(period_type.eq.yearly,period_key.eq.${keys.yearly})`,
+      ].join(','),
+    )
+    .order('created_at', { ascending: true })
+  if (error) {
+    console.warn('fetchCurrentGoalsAllPeriods:', error.message)
+    return { weekly: [], monthly: [], yearly: [] }
+  }
+  const all = (data as Goal[]) ?? []
+  return {
+    weekly:  all.filter((g) => g.period_type === 'weekly'  && g.period_key === keys.weekly),
+    monthly: all.filter((g) => g.period_type === 'monthly' && g.period_key === keys.monthly),
+    yearly:  all.filter((g) => g.period_type === 'yearly'  && g.period_key === keys.yearly),
+  }
+}
+
+export async function createGoal(g: {
   user_id: string
   period_type: PeriodType
   period_key: string
   title: string
   description: string | null
+  category: GoalCategory | null
 }): Promise<{ goal?: Goal; error?: string }> {
   const supabase = getSupabaseClient()
   if (!supabase) return { error: 'supabase not configured' }
   const { data, error } = await supabase
     .from('goals')
-    .upsert(g, { onConflict: 'user_id,period_type,period_key' })
+    .insert(g)
     .select('*')
     .maybeSingle()
   if (error) return { error: error.message }
   return { goal: data as Goal }
+}
+
+export async function updateGoal(
+  id: string,
+  patch: { title?: string; description?: string | null; category?: GoalCategory | null; status?: 'active' | 'completed' },
+): Promise<{ goal?: Goal; error?: string }> {
+  const supabase = getSupabaseClient()
+  if (!supabase) return { error: 'supabase not configured' }
+  const { data, error } = await supabase
+    .from('goals')
+    .update(patch)
+    .eq('id', id)
+    .select('*')
+    .maybeSingle()
+  if (error) return { error: error.message }
+  return { goal: data as Goal }
+}
+
+export async function deleteGoal(id: string): Promise<{ error?: string }> {
+  const supabase = getSupabaseClient()
+  if (!supabase) return { error: 'supabase not configured' }
+  const { error } = await supabase
+    .from('goals')
+    .delete()
+    .eq('id', id)
+  if (error) return { error: error.message }
+  return {}
 }
 
 export async function fetchGoalReviews(goalId: string): Promise<GoalReview[]> {

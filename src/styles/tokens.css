@@ -107,6 +107,12 @@
   --cat-lateral-soft: rgba(219, 39, 119, 0.10);
   --cat-lateral-grad: linear-gradient(135deg, #DB2777 0%, #F472B6 100%);
 
+  /* Goal categories (journal) — semantic alias on top of brand / warning */
+  --goal-cat-work:        var(--brand);
+  --goal-cat-work-soft:   var(--accent-soft);
+  --goal-cat-private:     var(--warning-mid);
+  --goal-cat-private-soft: var(--warning-soft);
+
   --cat-review:     #6366F1;
   --cat-review-soft: rgba(99, 102, 241, 0.10);
   --cat-review-grad: linear-gradient(135deg, #6366F1 0%, #A5B4FC 100%);

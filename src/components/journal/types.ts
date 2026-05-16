@@ -1,6 +1,8 @@
 export type Mood = 1 | 2 | 3 | 4 | 5
 export type Weather = 'sunny' | 'cloudy' | 'rainy' | 'snowy'
-export type PeriodType = 'daily' | 'weekly' | 'monthly' | 'yearly'
+export type PeriodType = 'weekly' | 'monthly' | 'yearly'
+export type GoalCategory = 'work' | 'private'
+export const GOAL_CATEGORIES: GoalCategory[] = ['work', 'private']
 
 export interface DailyJournal {
   id?: string
@@ -24,6 +26,7 @@ export interface Goal {
   period_key: string
   title: string
   description: string | null
+  category: GoalCategory | null
   status: 'active' | 'completed'
   created_at?: string
   updated_at?: string
@@ -67,7 +70,6 @@ export function yearKey(d: Date = new Date()): string {
 
 export function periodKeyFor(type: PeriodType, d: Date = new Date()): string {
   switch (type) {
-    case 'daily':   return todayKey(d)
     case 'weekly':  return weekKey(d)
     case 'monthly': return monthKey(d)
     case 'yearly':  return yearKey(d)
@@ -79,9 +81,6 @@ export function dateRangeFor(type: PeriodType, periodKey: string): { start: stri
   // 入力 periodKey を信頼してパース。失敗時は今日を返す
   const today = todayKey()
   try {
-    if (type === 'daily') {
-      return { start: periodKey, end: periodKey }
-    }
     if (type === 'weekly') {
       // 'YYYY-Www' → その週の月曜〜日曜
       const m = periodKey.match(/^(\d{4})-W(\d{2})$/)
