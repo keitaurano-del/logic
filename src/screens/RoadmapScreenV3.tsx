@@ -730,8 +730,8 @@ function CategoryCard({ name, meta, progress, onClick, image }: { name: string; 
       aria-label={`${name}: ${meta}${progress ? ` (${progress})` : ''}`}
       style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', cursor: 'pointer', boxShadow: 'var(--shadow-v3-card-inset)', display: 'flex', flexDirection: 'column', border: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', padding: 0 }}>
       {image && (
-        <div style={{ height: 80, overflow: 'hidden', flexShrink: 0 }}>
-          <img src={image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+        <div style={{ width: '100%', aspectRatio: '2 / 1', overflow: 'hidden', flexShrink: 0, background: 'var(--bg-secondary)' }}>
+          <img src={image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
         </div>
       )}
       <div style={{ padding: '10px 12px 12px', display: 'flex', flexDirection: 'column', gap: 6, flex: 1 }}>
@@ -783,6 +783,12 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
 
           return (
             <div key={course.id} style={{ background: 'var(--bg-card)', borderRadius: 16, overflow: 'hidden', boxShadow: 'var(--shadow-v3-card-inset)' }}>
+              {/* コースヘッダー画像 */}
+              {course.image && (
+                <div style={{ width: '100%', aspectRatio: '2 / 1', overflow: 'hidden', background: 'var(--bg-secondary)' }}>
+                  <img src={course.image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
+                </div>
+              )}
               {/* コースヘッダー */}
               <div style={{ padding: '14px 16px 10px', borderBottom: `1px solid ${'var(--border)'}` }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4, flexWrap: 'wrap' }}>
