@@ -88,7 +88,43 @@ export async function handleAuthRedirect(url: string): Promise<{ user: User | nu
 }
 
 export async function logout() {
+  // 2026-05-16: ログアウト直後に UI 側で残データが見える問題があったため、
+  // ローカルストレージを supabase.signOut() の前に同期クリアして再描画時には
+  // 必ず空の状態になるようにする。`syncOnLogout` (onAuthChange 経由) は
+  // 二度走っても idempotent なのでそのまま残す。
+  clearLocalUserData()
   if (supabase) await supabase.auth.signOut()
+}
+
+// ローカルストレージから個人データを削除する。UI 永続キー（locale, theme,
+// install-id, onboarded など）は残す。syncService.syncOnLogout と挙動を揃える。
+const LOGOUT_KEEP_KEYS = new Set([
+  'logic-locale',
+  'logic-theme',
+  'logic-v3-preview',
+  'logic-install-id',
+  'logic-dev-mode',
+  'logic-admin',
+  'logic-onboarded',
+  'logic-onboarding-done',
+  'logic-tutorial-home-done',
+  'logic-tutorial-daily-done',
+  'logic-tutorial-lesson-done',
+  'logic-tutorial-placement-dismissed',
+  'logic-tutorial-fab-dismissed',
+])
+
+function clearLocalUserData() {
+  try {
+    const keys: string[] = []
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i)
+      if (k && k.startsWith('logic-') && !LOGOUT_KEEP_KEYS.has(k)) keys.push(k)
+    }
+    for (const k of keys) localStorage.removeItem(k)
+  } catch (e) {
+    console.warn('clearLocalUserData failed:', e)
+  }
 }
 
 export async function getInitialUser(): Promise<User | null> {
@@ -119,5 +155,36 @@ export async function updateDisplayName(name: string): Promise<{ error?: string 
     return {}
   } catch {
     return { error: '名前の更新に失敗しました' }
+  }
+}
+
+/**
+ * 登録メールアドレスを変更する。Supabase は新しいアドレスに確認リンクを送信し、
+ * ユーザーがそのリンクをタップして初めて変更が確定する。
+ * - 成功: { ok: true } を返す（リンクが送信された）
+ * - 失敗: { error: '<code>' } を返す
+ */
+export async function updateUserEmail(newEmail: string): Promise<{ ok?: true; error?: string }> {
+  if (!supabase) return { error: 'auth/not-configured' }
+  const trimmed = newEmail.trim()
+  if (!trimmed) return { error: 'auth/invalid-email' }
+  try {
+    const emailRedirectTo = Capacitor.isNativePlatform()
+      ? NATIVE_REDIRECT_URL
+      : `${window.location.origin}/auth/callback`
+    const { error } = await supabase.auth.updateUser(
+      { email: trimmed },
+      { emailRedirectTo },
+    )
+    if (error) {
+      const msg = error.message.toLowerCase()
+      if (msg.includes('invalid email')) return { error: 'auth/invalid-email' }
+      if (msg.includes('rate') || msg.includes('too many')) return { error: 'auth/rate-limited' }
+      if (msg.includes('already') && msg.includes('registered')) return { error: 'auth/email-in-use' }
+      return { error: 'auth/generic' }
+    }
+    return { ok: true }
+  } catch {
+    return { error: 'auth/generic' }
   }
 }

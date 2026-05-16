@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { sendMagicLink, isSupabaseConfigured } from '../supabase'
 import { startCheckout, PLAN_PRICES } from '../subscription'
-import { MedalIcon } from '../icons'
 import { t, localizedHtmlPath } from '../i18n'
 import {
   saveUserProfile,
@@ -34,416 +33,6 @@ const C = {
   errorBg: 'rgba(248,113,113,0.10)',
 }
 
-// ── スライド用ミニ部品 ────────────────────────────────────────
-function PhoneFrame({ children, color }: { children: React.ReactNode; color: string }) {
-  return (
-    <div style={{
-      width: '100%',
-      maxWidth: 280,
-      perspective: '1400px',
-      animation: 'floatFrame 5s ease-in-out infinite',
-    }}>
-      <div style={{
-        position: 'relative',
-        transform: 'rotateY(-8deg) rotateX(5deg)',
-        transformStyle: 'preserve-3d',
-        borderRadius: 28,
-        padding: 3,
-        background: 'linear-gradient(150deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.06) 35%, rgba(255,255,255,0.02) 70%, rgba(255,255,255,0.10) 100%)',
-        boxShadow: `0 50px 90px -25px color-mix(in srgb, ${color} 33%, transparent), 0 25px 50px -15px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(0,0,0,0.25)`,
-      }}>
-        <div style={{
-          position: 'relative',
-          background: 'linear-gradient(180deg, rgba(15,18,32,0.92) 0%, rgba(20,24,42,0.96) 100%)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          borderRadius: 26,
-          padding: 14,
-          border: '1px solid rgba(255,255,255,0.06)',
-          overflow: 'hidden',
-        }}>
-          {/* 内側のソフトグロー */}
-          <div style={{
-            position: 'absolute', top: -40, left: '50%', transform: 'translateX(-50%)',
-            width: 220, height: 90, borderRadius: '50%',
-            background: `radial-gradient(circle, color-mix(in srgb, ${color} 19%, transparent) 0%, transparent 70%)`,
-            pointerEvents: 'none',
-          }} />
-          <div style={{ position: 'relative', zIndex: 1 }}>
-            {children}
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function OptionRow({ color, text, selected }: { color: string; text: string; selected?: boolean }) {
-  return (
-    <div style={{
-      display: 'flex', alignItems: 'center', gap: 8,
-      padding: '8px 10px', borderRadius: 10,
-      background: selected ? `color-mix(in srgb, ${color} 13%, transparent)` : 'rgba(255,255,255,0.03)',
-      border: selected ? `1px solid color-mix(in srgb, ${color} 50%, transparent)` : '1px solid rgba(255,255,255,0.06)',
-    }}>
-      <div style={{
-        width: 14, height: 14, borderRadius: '50%',
-        background: selected ? color : 'transparent',
-        border: selected ? 'none' : '1.5px solid rgba(255,255,255,0.25)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        flexShrink: 0,
-      }}>
-        {selected && (
-          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3.5" strokeLinecap="round" aria-hidden="true">
-            <polyline points="20 6 9 17 4 12"/>
-          </svg>
-        )}
-      </div>
-      <div style={{
-        fontSize: 11, fontWeight: selected ? 700 : 600,
-        color: selected ? '#fff' : 'rgba(255,255,255,0.7)',
-      }}>
-        {text}
-      </div>
-    </div>
-  )
-}
-
-function RankRow({ rank, name, pt, color, highlight }: { rank: number; name: string; pt: number; color: string; highlight?: boolean }) {
-  const medalColor = rank === 1 ? '#F4B86A' : rank === 2 ? '#C0C0C0' : rank === 3 ? '#CD7F32' : null
-  return (
-    <div style={{
-      display: 'flex', alignItems: 'center', gap: 10,
-      padding: '8px 10px', borderRadius: 10,
-      background: highlight ? `color-mix(in srgb, ${color} 13%, transparent)` : 'transparent',
-      border: highlight ? `1px solid color-mix(in srgb, ${color} 31%, transparent)` : '1px solid transparent',
-    }}>
-      <div style={{ width: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', color: medalColor ?? 'rgba(255,255,255,0.6)' }}>
-        {medalColor ? <MedalIcon width={18} height={18} aria-label={t('onboarding.slidesRankUnit', { n: rank })} /> : <span style={{ fontSize: 13, fontWeight: 700 }}>{rank}</span>}
-      </div>
-      <div style={{ flex: 1, fontSize: 13, fontWeight: highlight ? 800 : 600, color: '#fff' }}>{name}</div>
-      <div style={{ fontSize: 13, fontWeight: 800, color: highlight ? color : 'rgba(255,255,255,0.7)' }}>
-        {pt.toLocaleString()}<span style={{ fontSize: 10, fontWeight: 600, opacity: 0.7 }}> pt</span>
-      </div>
-    </div>
-  )
-}
-
-// ── スライドデータ ──
-type Slide = {
-  gradient: string
-  accentColor: string
-  tag: string
-  title: string
-  subtitle: string
-  btnLabel: string
-  preview: (color: string) => React.ReactNode
-}
-
-function getSlides(): Slide[] {
-  return [
-    {
-      gradient: 'linear-gradient(160deg, #0F1220 0%, #1A2340 50%, #0F1A35 100%)',
-      accentColor: '#6C8EF5',
-      tag: t('onboarding.slidesTag1'),
-      title: t('onboarding.slidesTitle1'),
-      subtitle: t('onboarding.slidesSubtitle1'),
-      btnLabel: t('onboarding.slidesBtn1'),
-      preview: (color: string) => (
-        <PhoneFrame color={color}>
-          {/* ヘッダー: 戻る + 進捗バー + 進行度 */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-            <div style={{
-              width: 22, height: 22, borderRadius: 7,
-              background: 'rgba(255,255,255,0.08)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
-            </div>
-            <div style={{ flex: 1, height: 5, borderRadius: 3, background: 'rgba(255,255,255,0.08)', overflow: 'hidden' }}>
-              <div style={{ width: '60%', height: '100%', background: `linear-gradient(90deg, ${color}, #9BB3FA)`, borderRadius: 3 }} />
-            </div>
-            <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.5)', fontWeight: 800, letterSpacing: '0.05em' }}>3/5</div>
-          </div>
-
-          {/* カテゴリーバッジ */}
-          <div style={{
-            display: 'inline-flex', alignItems: 'center', gap: 5,
-            padding: '3px 8px', borderRadius: 99,
-            background: `color-mix(in srgb, ${color} 9%, transparent)`, border: `1px solid color-mix(in srgb, ${color} 25%, transparent)`,
-            marginBottom: 10,
-            fontSize: 9, fontWeight: 800, letterSpacing: '0.12em', color,
-          }}>
-            <div style={{ width: 4, height: 4, borderRadius: 2, background: color }} />
-            MECE
-          </div>
-
-          {/* 質問カード */}
-          <div style={{
-            background: 'rgba(255,255,255,0.04)',
-            border: '1px solid rgba(255,255,255,0.07)',
-            borderRadius: 12, padding: '10px 12px', marginBottom: 10,
-          }}>
-            <div style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.14em', color: 'rgba(255,255,255,0.4)', marginBottom: 4 }}>{t('onboarding.slidesQuestionLabel')}</div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', lineHeight: 1.5 }}>
-              {t('onboarding.slidesQuestion1')}
-            </div>
-          </div>
-
-          {/* 選択肢 */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            <OptionRow color={color} text="Mutually Exclusive" selected />
-            <OptionRow color={color} text="Multi-Element" />
-            <OptionRow color={color} text="Most Effective" />
-          </div>
-        </PhoneFrame>
-      ),
-    },
-    {
-      gradient: 'linear-gradient(160deg, #120F20 0%, #1F1535 50%, #150F28 100%)',
-      accentColor: '#A78BFA',
-      tag: t('onboarding.slidesTag2'),
-      title: t('onboarding.slidesTitle2'),
-      subtitle: t('onboarding.slidesSubtitle2'),
-      btnLabel: t('onboarding.slidesBtn2'),
-      preview: (color: string) => (
-        <PhoneFrame color={color}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-            <span style={{ fontSize: 11, fontWeight: 800, color, letterSpacing: '0.12em' }}>{t('onboarding.slidesWeeklyRanking')}</span>
-            <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>{t('onboarding.slidesDaysLeft', { n: 2 })}</span>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-            <RankRow rank={1} name={t('onboarding.slidesRankName1')} pt={1250} color={color} />
-            <RankRow rank={2} name={t('onboarding.slidesRankName2')} pt={1180} color={color} />
-            <RankRow rank={3} name={t('onboarding.slidesRankNameYou')} pt={1090} color={color} highlight />
-            <RankRow rank={4} name={t('onboarding.slidesRankName4')} pt={980} color={color} />
-          </div>
-          <div style={{
-            marginTop: 10, padding: '6px 10px',
-            background: `color-mix(in srgb, ${color} 8%, transparent)`, borderRadius: 8,
-            border: `1px solid color-mix(in srgb, ${color} 19%, transparent)`,
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            fontSize: 10, color: 'rgba(255,255,255,0.85)',
-          }}>
-            <span style={{ fontWeight: 700 }}>{t('onboarding.slidesPointsToRank', { n: 110, rank: 2 })}</span>
-            <span style={{ color, fontWeight: 800 }}>↑</span>
-          </div>
-        </PhoneFrame>
-      ),
-    },
-    {
-      gradient: 'linear-gradient(160deg, #0F1818 0%, #0F2420 50%, #0A1A18 100%)',
-      accentColor: '#34D399',
-      tag: t('onboarding.slidesTag3'),
-      title: t('onboarding.slidesTitle3'),
-      subtitle: t('onboarding.slidesSubtitle3'),
-      btnLabel: t('onboarding.slidesBtn3'),
-      preview: (color: string) => (
-        <PhoneFrame color={color}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-            <div style={{ width: 28, height: 28, borderRadius: '50%', background: color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <span style={{ fontSize: 10, fontWeight: 900, color: '#0A1A18' }}>AI</span>
-            </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', fontWeight: 700, letterSpacing: '0.08em' }}>{t('onboarding.slidesScoreDone')}</div>
-              <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>{t('onboarding.slidesScoreReply')}</div>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: 2 }}>
-              <span style={{ fontSize: 24, fontWeight: 900, color, letterSpacing: '-0.03em' }}>82</span>
-              <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)' }}>/100</span>
-            </div>
-          </div>
-          <div style={{
-            fontSize: 11, color: 'rgba(255,255,255,0.85)',
-            lineHeight: 1.6,
-            background: 'rgba(255,255,255,0.04)', borderRadius: 8, padding: '9px 11px',
-            borderLeft: `2px solid ${color}`,
-            marginBottom: 8,
-          }}>
-            {t('onboarding.slidesAiComment')}
-          </div>
-          {/* スコア内訳 */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-            {[
-              { label: t('onboarding.slidesScoreStructure'), score: 90 },
-              { label: t('onboarding.slidesScoreLogic'), score: 85 },
-              { label: t('onboarding.slidesScoreConcrete'), score: 70 },
-            ].map((item) => (
-              <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.65)', fontWeight: 700, width: 38 }}>{item.label}</span>
-                <div style={{ flex: 1, height: 4, borderRadius: 2, background: 'rgba(255,255,255,0.06)', overflow: 'hidden' }}>
-                  <div style={{ width: `${item.score}%`, height: '100%', background: color, borderRadius: 2 }} />
-                </div>
-                <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.85)', fontWeight: 700, width: 18, textAlign: 'right' }}>{item.score}</span>
-              </div>
-            ))}
-          </div>
-        </PhoneFrame>
-      ),
-    },
-  ]
-}
-
-// ── ウェルカムスライド ─────────────────────────────────────────
-function WelcomeSlides({ idx, setIdx, onDone }: { idx: number; setIdx: (i: number) => void; onDone: () => void }) {
-  const slides = getSlides()
-  const slide = slides[idx]
-  const isLast = idx === slides.length - 1
-  const isFirst = idx === 0
-
-  const next = () => {
-    if (isLast) onDone()
-    else setIdx(idx + 1)
-  }
-  const back = () => {
-    if (!isFirst) setIdx(idx - 1)
-  }
-
-  return (
-    <div style={{
-      minHeight: '100dvh',
-      display: 'flex',
-      flexDirection: 'column',
-      background: slide.gradient,
-      fontFamily: "'Noto Sans JP', sans-serif",
-      transition: 'background 0.5s ease',
-      position: 'relative',
-      overflow: 'hidden',
-    }}>
-      {/* 背景グロー */}
-      <div style={{
-        position: 'absolute', inset: 0, pointerEvents: 'none',
-        background: `radial-gradient(ellipse at 50% 30%, color-mix(in srgb, ${slide.accentColor} 13%, transparent) 0%, transparent 65%)`,
-        transition: 'background 0.5s ease',
-      }} />
-      <div style={{
-        position: 'absolute', top: -80, right: -80, width: 260, height: 260, borderRadius: '50%',
-        background: `radial-gradient(circle, color-mix(in srgb, ${slide.accentColor} 9%, transparent) 0%, transparent 70%)`,
-        pointerEvents: 'none',
-      }} />
-      <div style={{
-        position: 'absolute', bottom: 120, left: -60, width: 200, height: 200, borderRadius: '50%',
-        background: `radial-gradient(circle, color-mix(in srgb, ${slide.accentColor} 6%, transparent) 0%, transparent 70%)`,
-        pointerEvents: 'none',
-      }} />
-
-      {/* 上部: 戻るボタン + LOGIC */}
-      <div style={{
-        display: 'flex', alignItems: 'center',
-        padding: 'calc(env(safe-area-inset-top, 44px) + 12px) 20px 0',
-        position: 'relative', zIndex: 2,
-      }}>
-        <button
-          onClick={back}
-          aria-label={t('common.back')}
-          style={{
-            width: 36, height: 36, borderRadius: '50%',
-            background: 'rgba(255,255,255,0.08)', border: 'none',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            cursor: isFirst ? 'default' : 'pointer',
-            opacity: isFirst ? 0 : 1,
-            pointerEvents: isFirst ? 'none' : 'auto',
-            transition: 'opacity .2s',
-            flexShrink: 0,
-          }}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-        </button>
-        <div style={{
-          flex: 1, textAlign: 'center',
-          fontSize: 13, fontWeight: 800, letterSpacing: '0.25em',
-          color: `color-mix(in srgb, ${slide.accentColor} 56%, transparent)`, textTransform: 'uppercase',
-          marginRight: 36, /* 戻るボタンの幅ぶん中央寄せを調整 */
-        }}>Logic</div>
-      </div>
-
-      {/* プロダクトプレビュー（ヒーロー） */}
-      <div style={{
-        flex: 1,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        padding: '32px 24px 8px',
-        position: 'relative', zIndex: 1,
-        minHeight: 0,
-      }}>
-        {slide.preview(slide.accentColor)}
-      </div>
-
-      {/* テキスト + ボタン */}
-      <div style={{
-        padding: '0 28px calc(env(safe-area-inset-bottom, 24px) + 24px)',
-        display: 'flex', flexDirection: 'column',
-        position: 'relative', zIndex: 1,
-      }}>
-        {/* ページドット */}
-        <div style={{ display: 'flex', gap: 6, marginBottom: 18, alignSelf: 'flex-start' }}>
-          {slides.map((_, i) => (
-            <button type="button" key={i} onClick={() => setIdx(i)}
-              aria-label={t('onboarding.slidesAriaSlide', { n: i + 1, total: slides.length })}
-              aria-current={i === idx ? 'true' : 'false'}
-              style={{
-                width: i === idx ? 22 : 6,
-                height: 6, borderRadius: 3,
-                background: i === idx ? slide.accentColor : `color-mix(in srgb, ${slide.accentColor} 19%, transparent)`,
-                transition: 'all 0.35s ease',
-                cursor: 'pointer',
-                border: 'none',
-                padding: 0,
-              }} />
-          ))}
-        </div>
-
-        <div style={{
-          display: 'inline-flex', alignItems: 'center', gap: 6,
-          background: `color-mix(in srgb, ${slide.accentColor} 9%, transparent)`,
-          border: `1px solid color-mix(in srgb, ${slide.accentColor} 25%, transparent)`,
-          borderRadius: 99, padding: '4px 12px',
-          marginBottom: 14, alignSelf: 'flex-start',
-        }}>
-          <div style={{ width: 6, height: 6, borderRadius: '50%', background: slide.accentColor }} />
-          <span style={{ fontSize: 11, fontWeight: 700, color: slide.accentColor, letterSpacing: '0.08em' }}>
-            {slide.tag}
-          </span>
-        </div>
-        <h1 style={{
-          fontSize: 30, fontWeight: 800,
-          color: '#FFFFFF', lineHeight: 1.3,
-          whiteSpace: 'pre-line', margin: '0 0 12px',
-          letterSpacing: '-0.025em',
-        }}>
-          {slide.title}
-        </h1>
-        <p style={{
-          fontSize: 14, color: 'rgba(255,255,255,0.62)',
-          lineHeight: 1.7, margin: '0 0 22px',
-          whiteSpace: 'pre-line',
-        }}>
-          {slide.subtitle}
-        </p>
-        <button
-          onClick={next}
-          style={{
-            width: '100%', padding: '18px',
-            background: `linear-gradient(180deg, ${slide.accentColor} 0%, color-mix(in srgb, ${slide.accentColor} 87%, transparent) 100%)`,
-            border: 'none', borderRadius: 16,
-            fontSize: 16, fontWeight: 700, color: '#fff',
-            cursor: 'pointer',
-            boxShadow: `0 12px 32px color-mix(in srgb, ${slide.accentColor} 33%, transparent), inset 0 1px 0 rgba(255,255,255,0.30), inset 0 -1px 0 rgba(0,0,0,0.15)`,
-            letterSpacing: '0.02em',
-          }}
-        >
-          {slide.btnLabel}
-        </button>
-      </div>
-
-      <style>{`
-        @keyframes floatFrame {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-12px); }
-        }
-      `}</style>
-    </div>
-  )
-}
 
 // ── オンボーディング用料金プラン表示（2026-05-15 単一有料プラン化） ──
 type OBFeature = { label: string; free: string | boolean; paid: string | boolean }
@@ -510,7 +99,7 @@ function AttrOption<T extends string>({
   )
 }
 
-function OnboardingAttributeView({ onNext, onBackToSlides }: { onNext: () => void; onBackToSlides: () => void }) {
+function OnboardingAttributeView({ onNext }: { onNext: () => void; onBackToSlides: () => void }) {
   const [step, setStep] = React.useState<AttrStep>('age')
   const [age, setAge] = React.useState<AgeGroup | ''>('')
   const [gender, setGender] = React.useState<Gender | ''>('')
@@ -519,6 +108,7 @@ function OnboardingAttributeView({ onNext, onBackToSlides }: { onNext: () => voi
   const stepIdx = STEP_ORDER.indexOf(step)
   const currentValue = step === 'age' ? age : step === 'gender' ? gender : occupation
   const isLast = stepIdx === STEP_ORDER.length - 1
+  const isFirstStep = stepIdx === 0
 
   const goNext = () => {
     if (!currentValue) return
@@ -536,10 +126,7 @@ function OnboardingAttributeView({ onNext, onBackToSlides }: { onNext: () => voi
   }
 
   const goBack = () => {
-    if (stepIdx === 0) {
-      onBackToSlides()
-      return
-    }
+    if (stepIdx === 0) return
     setStep(STEP_ORDER[stepIdx - 1])
   }
 
@@ -563,16 +150,20 @@ function OnboardingAttributeView({ onNext, onBackToSlides }: { onNext: () => voi
       fontFamily: "'Noto Sans JP', sans-serif",
       padding: 'calc(env(safe-area-inset-top, 44px) + 16px) 24px calc(env(safe-area-inset-bottom, 24px) + 24px)',
     }}>
-      {/* ヘッダー: 戻る + 進捗 */}
+      {/* ヘッダー: 戻る + 進捗（最初の質問では戻るボタン非表示） */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 28 }}>
         <button
           onClick={goBack}
           aria-label={t('common.back')}
+          disabled={isFirstStep}
           style={{
             width: 36, height: 36, borderRadius: '50%',
             background: 'rgba(255,255,255,0.08)', border: 'none',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            cursor: 'pointer', flexShrink: 0,
+            cursor: isFirstStep ? 'default' : 'pointer',
+            opacity: isFirstStep ? 0 : 1,
+            pointerEvents: isFirstStep ? 'none' : 'auto',
+            flexShrink: 0,
           }}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
@@ -969,9 +560,9 @@ function RegisterScreen({ onComplete: _onComplete, onBack, onNavigateToLogin }: 
 }
 
 // ── メインエクスポート ────────────────────────────────────────────
+// 2026-05-16: ウェルカムスライドは廃止し、属性質問画面から始める。
 export function OnboardingScreen({ onComplete, onNavigateToLogin }: OnboardingScreenProps) {
-  const [phase, setPhase] = useState<'slides' | 'attribute' | 'pricing' | 'billing' | 'register'>('slides')
-  const [slideIdx, setSlideIdx] = useState(0)
+  const [phase, setPhase] = useState<'attribute' | 'pricing' | 'billing' | 'register'>('attribute')
 
   const handlePaidSelect = () => {
     setPhase('billing')
@@ -984,23 +575,12 @@ export function OnboardingScreen({ onComplete, onNavigateToLogin }: OnboardingSc
     setPhase('register')
   }
 
-  if (phase === 'slides') {
-    return (
-      <WelcomeSlides
-        idx={slideIdx}
-        setIdx={setSlideIdx}
-        onDone={() => setPhase('attribute')}
-      />
-    )
-  }
-
   if (phase === 'attribute') {
     return (
       <OnboardingAttributeView
         onNext={() => setPhase('pricing')}
         onBackToSlides={() => {
-          setSlideIdx(getSlides().length - 1)
-          setPhase('slides')
+          // スライド廃止のため、何もしない（属性が最初の画面）
         }}
       />
     )

@@ -3,6 +3,7 @@ import { JournalCalendar } from '../components/journal/JournalCalendar'
 import { JournalGoalsHeader } from '../components/journal/JournalGoalsHeader'
 import { JournalSearch } from '../components/journal/JournalSearch'
 import { JournalAssistantSheet } from '../components/journal/JournalAssistantSheet'
+import { JournalRecentList } from '../components/journal/JournalRecentList'
 import { StreakBadge } from '../components/journal/StreakBadge'
 import { fetchJournalStreak } from '../components/journal/journalDb'
 import { SearchIcon, XIcon } from '../icons'
@@ -19,6 +20,8 @@ export function JournalScreen({ userId, assistantName }: JournalScreenProps) {
   const [streak, setStreak] = useState(0)
   const [searchOpen, setSearchOpen] = useState(false)
   const [assistantOpen, setAssistantOpen] = useState(false)
+  // ジャーナル保存のたびにインクリメントして、recent list / streak を再フェッチさせる
+  const [refreshKey, setRefreshKey] = useState(0)
 
   useEffect(() => {
     let cancelled = false
@@ -27,7 +30,9 @@ export function JournalScreen({ userId, assistantName }: JournalScreenProps) {
       if (!cancelled) setStreak(s)
     })()
     return () => { cancelled = true }
-  }, [userId])
+  }, [userId, refreshKey])
+
+  const bumpRefresh = () => setRefreshKey((k) => k + 1)
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', display: 'flex', flexDirection: 'column' }}>
@@ -45,11 +50,10 @@ export function JournalScreen({ userId, assistantName }: JournalScreenProps) {
             aria-label={t('journal.assistantOpenAria', { name: assistantName })}
           >
             <span className="journal-ai-btn__pulse" aria-hidden="true" />
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="journal-ai-btn__sparkle">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="journal-ai-btn__sparkle">
               <path d="M12 2l1.8 5.4L19 9l-5.2 1.6L12 16l-1.8-5.4L5 9l5.2-1.6z" fill="currentColor" />
               <path d="M19 14l.9 2.6L22 17l-2.1.4L19 20l-.9-2.6L16 17l2.1-.4z" fill="currentColor" opacity=".7" />
             </svg>
-            <span className="journal-ai-btn__label">AI</span>
           </button>
           <button
             type="button"
@@ -64,7 +68,8 @@ export function JournalScreen({ userId, assistantName }: JournalScreenProps) {
 
       <div style={{ flex: 1, padding: '16px 16px 120px', display: 'flex', flexDirection: 'column' }}>
         <JournalGoalsHeader userId={userId} />
-        <JournalCalendar userId={userId} assistantName={assistantName} />
+        <JournalCalendar userId={userId} assistantName={assistantName} onSaved={bumpRefresh} />
+        <JournalRecentList userId={userId} refreshKey={refreshKey} limit={5} />
       </div>
 
       {assistantOpen && (
