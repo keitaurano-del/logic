@@ -110,7 +110,7 @@ type Screen =
   | { type: 'report-problem'; context: { lessonId?: number; lessonTitle?: string; question?: string } }
   | { type: 'onboarding' }
   | { type: 'beta-code' }
-  | { type: 'journal'; sub?: 'today' | 'calendar' | 'goals' | 'search' }
+  | { type: 'journal' }
 
 // LESSON_LIST is now managed within RoadmapScreen
 
@@ -485,7 +485,6 @@ function AppV3() {
             userId={currentUser.id}
             assistantName={assistantName}
             onUpdateAssistantName={updateAssistantName}
-            initialSub={screen.sub}
           />
         ) : (
           <JournalLoginPrompt onLogin={() => navigate({ type: 'login' })} />

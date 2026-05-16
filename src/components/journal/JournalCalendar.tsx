@@ -5,18 +5,20 @@ import { JournalDetailSheet } from './JournalDetailSheet'
 import { fetchJournalsBetween, fetchRecentJournals } from './journalDb'
 import { todayKey } from './types'
 import type { DailyJournal, Mood } from './types'
-import { ArrowLeftIcon, ArrowRightIcon } from '../../icons'
+import { ArrowLeftIcon, ArrowRightIcon, PlusIcon } from '../../icons'
 import { t, getLocale } from '../../i18n'
 
 interface JournalCalendarProps {
   userId: string
+  assistantName?: string
 }
 
 const MONTH_LABEL_JA = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
 const MONTH_LABEL_EN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
-const DOW_JA = ['月', '火', '水', '木', '金', '土', '日']
-const DOW_EN = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+// 日曜始まり
+const DOW_JA = ['日', '月', '火', '水', '木', '金', '土']
+const DOW_EN = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
 function pad(n: number): string { return String(n).padStart(2, '0') }
 function dateStr(y: number, m: number, d: number): string {
@@ -34,7 +36,6 @@ export function JournalCalendar({ userId }: JournalCalendarProps) {
   const [loading, setLoading] = useState(false)
   const today = todayKey()
 
-  // Sparkline 用：直近 30 日（カレンダー範囲とは独立して取得）
   useEffect(() => {
     let cancelled = false
     ;(async () => {
@@ -48,10 +49,10 @@ export function JournalCalendar({ userId }: JournalCalendarProps) {
   const monthLabel = (locale === 'en' ? MONTH_LABEL_EN : MONTH_LABEL_JA)[cursor.month]
   const dowLabels = locale === 'en' ? DOW_EN : DOW_JA
 
-  // 月の日付グリッドを計算（前月末・翌月初を含む 6 週ぶん）
+  // 月の日付グリッドを計算（前月末・翌月初を含む 6 週ぶん、日曜=0 始まり）
   const cells = useMemo(() => {
     const firstOfMonth = new Date(cursor.year, cursor.month, 1)
-    const firstDow = (firstOfMonth.getDay() + 6) % 7 // 月曜=0
+    const firstDow = firstOfMonth.getDay() // 日曜=0
     const daysInMonth = new Date(cursor.year, cursor.month + 1, 0).getDate()
     const daysInPrev = new Date(cursor.year, cursor.month, 0).getDate()
     const totalCells = Math.ceil((firstDow + daysInMonth) / 7) * 7
@@ -95,13 +96,16 @@ export function JournalCalendar({ userId }: JournalCalendarProps) {
   }
 
   const handleRefresh = () => {
-    // セルが変わらないと useEffect が再実行されないので、参照を作り直してフェッチ
     setCursor((c) => ({ ...c }))
   }
 
+  const handleAdd = () => {
+    setSelected(selected ?? today)
+  }
+
   return (
-    <div>
-      {/* 直近 30 日の気分の推移（旧 Today タブ上部から移動） */}
+    <div className="journal-cal-root">
+      {/* 直近 30 日の気分の推移 */}
       <div className="journal-cal-sparkline">
         <MoodSparkline journals={recent} days={30} />
       </div>
@@ -119,8 +123,13 @@ export function JournalCalendar({ userId }: JournalCalendarProps) {
       </div>
 
       <div className="journal-cal-grid">
-        {dowLabels.map((d) => (
-          <div key={d} className="journal-cal-dow">{d}</div>
+        {dowLabels.map((d, i) => (
+          <div
+            key={d}
+            className={`journal-cal-dow ${i === 0 ? 'journal-cal-dow--sun' : ''} ${i === 6 ? 'journal-cal-dow--sat' : ''}`}
+          >
+            {d}
+          </div>
         ))}
         {cells.map((c) => {
           const key = dateStr(c.year, c.month, c.day)
@@ -140,7 +149,7 @@ export function JournalCalendar({ userId }: JournalCalendarProps) {
               <span className="journal-cal-cell__day">{c.day}</span>
               {j?.mood && (
                 <span className={`journal-emoji-icon journal-cal-cell__icon journal-cal-cell__mood--${j.mood}`}>
-                  <MoodIcon mood={j.mood as Mood} size={26} />
+                  <MoodIcon mood={j.mood as Mood} size={22} />
                 </span>
               )}
               {j && !j.mood && (
@@ -156,6 +165,15 @@ export function JournalCalendar({ userId }: JournalCalendarProps) {
           {t('common.loading')}
         </div>
       )}
+
+      <button
+        type="button"
+        className="journal-cal-fab"
+        onClick={handleAdd}
+        aria-label={t('journal.fabAddEntry')}
+      >
+        <PlusIcon width={28} height={28} />
+      </button>
 
       {selected && (
         <JournalDetailSheet

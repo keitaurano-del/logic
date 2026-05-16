@@ -289,10 +289,15 @@
   color: var(--text-primary);
 }
 
+.journal-cal-root {
+  position: relative;
+}
+
 .journal-cal-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
+  gap: 6px;
+  justify-items: center;
 }
 
 .journal-cal-dow {
@@ -301,10 +306,21 @@
   font-weight: 700;
   color: var(--text-muted);
   padding: 6px 0;
+  width: 100%;
+}
+
+.journal-cal-dow--sun {
+  color: #E5484D;
+}
+
+.journal-cal-dow--sat {
+  color: #4F86E0;
 }
 
 .journal-cal-cell {
-  aspect-ratio: 1 / 1.15;
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  max-width: 44px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -312,7 +328,7 @@
   gap: 1px;
   background: var(--bg-card);
   border: 1px solid var(--border, rgba(255,255,255,.04));
-  border-radius: 10px;
+  border-radius: 50%;
   color: var(--text-primary);
   cursor: pointer;
   padding: 2px;
@@ -327,6 +343,7 @@
 
 .journal-cal-cell--today {
   border-color: var(--brand);
+  border-width: 2px;
 }
 
 .journal-cal-cell:hover {
@@ -353,6 +370,40 @@
   border-radius: 50%;
   background: var(--brand);
   margin-top: 2px;
+}
+
+.journal-cal-fab {
+  position: fixed;
+  right: 20px;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 88px);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--brand);
+  color: #fff;
+  border: none;
+  box-shadow: 0 6px 20px rgba(61, 95, 196, 0.35);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 40;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.journal-cal-fab:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(61, 95, 196, 0.45);
+}
+
+.journal-cal-fab:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 14px rgba(61, 95, 196, 0.3);
+}
+
+.journal-cal-fab:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 3px;
 }
 
 /* ── Detail modal ──────────────────────────── */
@@ -580,47 +631,93 @@
   background: var(--bg-card);
   border: 1px solid var(--border, rgba(255,255,255,.06));
   border-radius: 14px;
-  padding: 12px 14px;
   margin-bottom: 12px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  overflow: hidden;
 }
 
-.journal-goals-header__head {
+.journal-goals-header--collapsed {
+  padding: 0;
+}
+
+.journal-goals-header--expanded {
+  padding: 0 0 6px;
+}
+
+.journal-goals-header__toggle {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
+  gap: 10px;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  padding: 10px 14px;
+  min-height: 44px;
+  width: 100%;
 }
 
 .journal-goals-header__title {
   font-size: 13px;
   font-weight: 700;
   color: var(--text-secondary);
+  flex-shrink: 0;
 }
 
-.journal-goals-header__link {
-  background: transparent;
-  border: none;
-  color: var(--brand);
-  font: inherit;
+.journal-goals-header__compact {
+  flex: 1;
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+}
+
+.journal-goals-header__compact-period {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.journal-goals-header__compact-title {
   font-size: 13px;
   font-weight: 700;
-  cursor: pointer;
-  padding: 8px 10px;
-  border-radius: 8px;
-  min-height: 44px;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
 }
 
-.journal-goals-header__link:hover {
-  background: var(--accent-soft);
+.journal-goals-header__compact-empty {
+  flex: 1;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.journal-goals-header__chev {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.journal-goals-header__chev.is-open {
+  transform: rotate(180deg);
 }
 
 .journal-goals-header__rows {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  padding: 0 8px 4px;
 }
 
 .journal-goals-header__row {
@@ -696,13 +793,6 @@
   font-size: 13px;
   font-weight: 500;
   color: var(--text-muted);
-}
-
-.journal-goals-header__chev {
-  display: inline-flex;
-  align-items: center;
-  color: var(--text-muted);
-  flex-shrink: 0;
 }
 
 /* ── Confirm sheet (native confirm の代替) ─────────── */
@@ -1241,7 +1331,7 @@
   gap: 8px;
 }
 
-.journal-hero__settings-btn {
+.journal-hero__icon-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1256,17 +1346,71 @@
   padding: 0;
 }
 
-.journal-hero__settings-btn:hover {
+.journal-hero__icon-btn:hover {
   background: rgba(255, 255, 255, 0.18);
 }
 
-.journal-hero__settings-btn:active {
+.journal-hero__icon-btn:active {
   transform: scale(0.95);
 }
 
-.journal-hero__settings-btn:focus-visible {
+.journal-hero__icon-btn:focus-visible {
   outline: 2px solid var(--brand);
   outline-offset: 2px;
+}
+
+/* ── Search / Goals overlay sheet ───────── */
+.journal-search-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 90;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+.journal-search-overlay__sheet {
+  flex: 1;
+  background: var(--bg-primary);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.journal-search-overlay__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(env(safe-area-inset-top, 0px) + 12px) 16px 12px;
+  border-bottom: 1px solid var(--border, rgba(255,255,255,.06));
+}
+
+.journal-search-overlay__title {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.journal-search-overlay__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid var(--border, rgba(255,255,255,.08));
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 0;
+}
+
+.journal-search-overlay__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 24px);
 }
 
 /* ── Calendar sparkline (moved from Today) ─────────── */

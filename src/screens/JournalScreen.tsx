@@ -1,39 +1,24 @@
 import { useEffect, useState } from 'react'
-import { JournalToday } from '../components/journal/JournalToday'
 import { JournalCalendar } from '../components/journal/JournalCalendar'
-import { JournalGoals } from '../components/journal/JournalGoals'
 import { JournalGoalsHeader } from '../components/journal/JournalGoalsHeader'
 import { JournalSearch } from '../components/journal/JournalSearch'
 import { StreakBadge } from '../components/journal/StreakBadge'
 import { AssistantNameSheet } from '../components/journal/AssistantNameSheet'
 import { fetchJournalStreak } from '../components/journal/journalDb'
-import type { PeriodType } from '../components/journal/types'
+import { SearchIcon, XIcon } from '../icons'
 import { t } from '../i18n'
 import '../components/journal/journal.css'
-
-type Sub = 'today' | 'calendar' | 'goals' | 'search'
 
 interface JournalScreenProps {
   userId: string
   assistantName: string
   onUpdateAssistantName: (name: string) => Promise<void>
-  initialSub?: Sub
 }
 
-const SUB_ORDER: Sub[] = ['today', 'calendar', 'goals', 'search']
-
-const SUB_LABEL_KEY: Record<Sub, string> = {
-  today:    'journal.tabToday',
-  calendar: 'journal.tabCalendar',
-  goals:    'journal.tabGoals',
-  search:   'journal.tabSearch',
-}
-
-export function JournalScreen({ userId, assistantName, onUpdateAssistantName, initialSub }: JournalScreenProps) {
-  const [sub, setSub] = useState<Sub>(initialSub ?? 'today')
-  const [goalsInitialPeriod, setGoalsInitialPeriod] = useState<PeriodType | undefined>(undefined)
+export function JournalScreen({ userId, assistantName, onUpdateAssistantName }: JournalScreenProps) {
   const [streak, setStreak] = useState(0)
   const [assistantSheetOpen, setAssistantSheetOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
 
   useEffect(() => {
     let cancelled = false
@@ -43,11 +28,6 @@ export function JournalScreen({ userId, assistantName, onUpdateAssistantName, in
     })()
     return () => { cancelled = true }
   }, [userId])
-
-  const openGoalsTab = (period?: PeriodType) => {
-    setGoalsInitialPeriod(period)
-    setSub('goals')
-  }
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', display: 'flex', flexDirection: 'column' }}>
@@ -61,7 +41,15 @@ export function JournalScreen({ userId, assistantName, onUpdateAssistantName, in
           <StreakBadge streak={streak} size="sm" />
           <button
             type="button"
-            className="journal-hero__settings-btn"
+            className="journal-hero__icon-btn"
+            onClick={() => setSearchOpen(true)}
+            aria-label={t('journal.tabSearch')}
+          >
+            <SearchIcon width={20} height={20} />
+          </button>
+          <button
+            type="button"
+            className="journal-hero__icon-btn"
             onClick={() => setAssistantSheetOpen(true)}
             aria-label={t('profile.assistantSettings')}
           >
@@ -81,37 +69,30 @@ export function JournalScreen({ userId, assistantName, onUpdateAssistantName, in
       />
 
       <div style={{ flex: 1, padding: '16px 16px 120px', display: 'flex', flexDirection: 'column' }}>
-        {/* 「今日」タブのときだけ、年→月→週 の目標サマリーを上部に常時表示 */}
-        {sub === 'today' && (
-          <JournalGoalsHeader
-            userId={userId}
-            onOpenAll={openGoalsTab}
-          />
-        )}
-
-        <div className="journal-subtabs" role="tablist" aria-label={t('journal.viewTabs')}>
-          {SUB_ORDER.map((s) => (
-            <button
-              key={s}
-              type="button"
-              role="tab"
-              aria-selected={sub === s}
-              className={`journal-subtab ${sub === s ? 'journal-subtab--active' : ''}`}
-              onClick={() => {
-                if (s !== 'goals') setGoalsInitialPeriod(undefined)
-                setSub(s)
-              }}
-            >
-              {t(SUB_LABEL_KEY[s])}
-            </button>
-          ))}
-        </div>
-
-        {sub === 'today'    && <JournalToday    userId={userId} assistantName={assistantName} />}
-        {sub === 'calendar' && <JournalCalendar userId={userId} />}
-        {sub === 'goals'    && <JournalGoals    userId={userId} assistantName={assistantName} initialPeriod={goalsInitialPeriod} />}
-        {sub === 'search'   && <JournalSearch   userId={userId} />}
+        <JournalGoalsHeader userId={userId} />
+        <JournalCalendar userId={userId} assistantName={assistantName} />
       </div>
+
+      {searchOpen && (
+        <div className="journal-search-overlay" role="dialog" aria-modal="true" aria-label={t('journal.tabSearch')}>
+          <div className="journal-search-overlay__sheet">
+            <div className="journal-search-overlay__head">
+              <div className="journal-search-overlay__title">{t('journal.tabSearch')}</div>
+              <button
+                type="button"
+                className="journal-search-overlay__close"
+                onClick={() => setSearchOpen(false)}
+                aria-label={t('common.close')}
+              >
+                <XIcon width={20} height={20} />
+              </button>
+            </div>
+            <div className="journal-search-overlay__body">
+              <JournalSearch userId={userId} />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
