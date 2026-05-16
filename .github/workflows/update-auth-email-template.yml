@@ -1,0 +1,50 @@
+name: 📧 Update Auth Email Template (Supabase)
+
+on:
+  # 手動トリガーのみ
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Supabase Auth Magic Link テンプレを上書きしますか？ (yes と入力)'
+        required: true
+        default: 'no'
+      project_ref:
+        description: 'Supabase project ref (空欄なら Logic 本番 yctlelmlwjwlcpcxvmgx)'
+        required: false
+        default: ''
+
+jobs:
+  # ── ガード: "yes" 以外は即終了 ─────────────────────────
+  check-confirm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Confirm input
+        run: |
+          if [ "${{ github.event.inputs.confirm }}" != "yes" ]; then
+            echo "❌ 'yes' と入力されなかったため中止します"
+            exit 1
+          fi
+          echo "✅ 承認確認OK"
+
+  # ── テンプレ反映 ───────────────────────────────────────
+  update-template:
+    needs: check-confirm
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Apply email template via Supabase Management API
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: ${{ github.event.inputs.project_ref }}
+        run: |
+          if [ -z "$SUPABASE_ACCESS_TOKEN" ]; then
+            echo "❌ secrets.SUPABASE_ACCESS_TOKEN が未設定です"
+            echo "https://supabase.com/dashboard/account/tokens でトークンを発行し、"
+            echo "リポジトリ Settings → Secrets and variables → Actions に登録してください"
+            exit 1
+          fi
+          bash scripts/update-auth-email-template.sh
