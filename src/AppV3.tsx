@@ -479,13 +479,17 @@ function AppV3() {
         <FermiRankingScreen />
       )}
 
-      {screen.type === 'journal' && currentUser && (
-        <JournalScreen
-          userId={currentUser.id}
-          assistantName={assistantName}
-          onUpdateAssistantName={updateAssistantName}
-          initialSub={screen.sub}
-        />
+      {screen.type === 'journal' && (
+        currentUser ? (
+          <JournalScreen
+            userId={currentUser.id}
+            assistantName={assistantName}
+            onUpdateAssistantName={updateAssistantName}
+            initialSub={screen.sub}
+          />
+        ) : (
+          <JournalLoginPrompt onLogin={() => navigate({ type: 'login' })} />
+        )
       )}
 
       {screen.type === 'placement-test' && (
@@ -695,6 +699,60 @@ function AppV3() {
       </div>
     )}
     </>
+  )
+}
+
+function JournalLoginPrompt({ onLogin }: { onLogin: () => void }) {
+  return (
+    <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', display: 'flex', flexDirection: 'column' }}>
+      <div className="journal-hero">
+        <div>
+          <div style={{ fontSize: 22, fontWeight: 900, letterSpacing: '-0.02em' }}>{t('journal.title')}</div>
+          <div style={{ fontSize: 13, color: 'var(--text-on-hero-muted)', marginTop: 4 }}>{t('journal.subtitle')}</div>
+        </div>
+      </div>
+      <div style={{ flex: 1, padding: '32px 20px 120px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', gap: 20 }}>
+        <div style={{
+          background: 'var(--bg-card)',
+          borderRadius: 16,
+          padding: 24,
+          maxWidth: 360,
+          width: '100%',
+          textAlign: 'center',
+          boxShadow: 'var(--shadow-v3-card-inset)',
+          border: '1px solid rgba(255,255,255,.06)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 12,
+        }}>
+          <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
+            {t('journal.loginRequiredTitle')}
+          </div>
+          <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+            {t('journal.loginRequiredDesc')}
+          </div>
+          <button
+            type="button"
+            onClick={onLogin}
+            style={{
+              marginTop: 8,
+              padding: '14px 24px',
+              background: 'var(--brand)',
+              color: 'var(--accent-fg, #fff)',
+              border: 'none',
+              borderRadius: 12,
+              font: 'inherit',
+              fontSize: 15,
+              fontWeight: 700,
+              cursor: 'pointer',
+              minHeight: 48,
+            }}
+          >
+            {t('profile.loginCta')}
+          </button>
+        </div>
+      </div>
+    </div>
   )
 }
 

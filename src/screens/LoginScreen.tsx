@@ -82,7 +82,8 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
 
   async function handleVerify(submittedCode?: string) {
     const c = submittedCode ?? code
-    if (c.length !== 6) return
+    // 6 桁または 8 桁を受け付ける（Supabase mailer_otp_length 設定に対応）
+    if (c.length !== 6 && c.length !== 8) return
     setError(''); setSuccessMsg(''); setLoading(true)
     const result = await verifyEmailOtp(email, c)
     setLoading(false)
@@ -90,8 +91,6 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
     if (result.error === 'auth/invalid-code') setError(t('auth.errInvalidCode'))
     else if (result.error === 'auth/code-expired') setError(t('auth.errCodeExpired'))
     else setError(t('auth.errSendCodeFailed'))
-    // 入力をリセットして再入力しやすく
-    setCode('')
     codeInputRef.current?.focus()
   }
 
@@ -205,28 +204,28 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
               type="text"
               inputMode="numeric"
               pattern="[0-9]*"
-              maxLength={6}
+              maxLength={8}
               aria-label={t('auth.codeLabel')}
-              placeholder="––––––"
+              placeholder="––––––––"
               value={code}
               disabled={loading}
               onChange={e => {
-                const next = e.target.value.replace(/\D/g, '').slice(0, 6)
+                const next = e.target.value.replace(/\D/g, '').slice(0, 8)
                 setCode(next)
-                if (next.length === 6) handleVerify(next)
+                if (next.length === 8) handleVerify(next)
               }}
-              style={{ ...inputStyle, letterSpacing: '0.4em', textAlign: 'center', fontSize: 22, opacity: loading ? 0.6 : 1 }}
+              style={{ ...inputStyle, letterSpacing: '0.32em', textAlign: 'center', fontSize: 22, opacity: loading ? 0.6 : 1 }}
               autoComplete="one-time-code"
             />
             <button
               onClick={() => handleVerify()}
-              disabled={loading || code.length !== 6}
+              disabled={loading || (code.length !== 6 && code.length !== 8)}
               style={{
                 width: '100%', padding: '16px',
-                background: loading || code.length !== 6 ? 'var(--accent-soft)' : 'var(--brand-grad-h)',
+                background: loading || (code.length !== 6 && code.length !== 8) ? 'var(--accent-soft)' : 'var(--brand-grad-h)',
                 border: 'none', borderRadius: 12,
                 fontSize: 16, fontWeight: 700, color: 'var(--accent-fg)',
-                cursor: loading || code.length !== 6 ? 'not-allowed' : 'pointer',
+                cursor: loading || (code.length !== 6 && code.length !== 8) ? 'not-allowed' : 'pointer',
                 marginTop: 4,
               }}
             >

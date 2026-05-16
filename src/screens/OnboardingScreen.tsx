@@ -822,7 +822,7 @@ function RegisterScreen({ onComplete, onBack, onNavigateToLogin }: { onComplete:
   async function handleVerify(submittedCode?: string) {
     if (!termsChecked) { setError(t('onboarding.registerErrTerms')); return }
     const c = submittedCode ?? code
-    if (c.length !== 6) return
+    if (c.length !== 6 && c.length !== 8) return
     setError(''); setSuccessMsg(''); setLoading(true)
     const result = await verifyEmailOtp(email, c)
     setLoading(false)
@@ -830,7 +830,6 @@ function RegisterScreen({ onComplete, onBack, onNavigateToLogin }: { onComplete:
     if (result.error === 'auth/invalid-code') setError(t('auth.errInvalidCode'))
     else if (result.error === 'auth/code-expired') setError(t('auth.errCodeExpired'))
     else setError(t('auth.errSendCodeFailed'))
-    setCode('')
     codeInputRef.current?.focus()
   }
 
@@ -1002,28 +1001,28 @@ function RegisterScreen({ onComplete, onBack, onNavigateToLogin }: { onComplete:
               type="text"
               inputMode="numeric"
               pattern="[0-9]*"
-              maxLength={6}
+              maxLength={8}
               aria-label={t('auth.codeLabel')}
-              placeholder="––––––"
+              placeholder="––––––––"
               value={code}
               disabled={loading}
               onChange={e => {
-                const next = e.target.value.replace(/\D/g, '').slice(0, 6)
+                const next = e.target.value.replace(/\D/g, '').slice(0, 8)
                 setCode(next)
-                if (next.length === 6) handleVerify(next)
+                if (next.length === 8) handleVerify(next)
               }}
-              style={{ ...inputStyle, letterSpacing: '0.4em', textAlign: 'center', fontSize: 22, opacity: loading ? 0.6 : 1 }}
+              style={{ ...inputStyle, letterSpacing: '0.32em', textAlign: 'center', fontSize: 22, opacity: loading ? 0.6 : 1 }}
               autoComplete="one-time-code"
             />
             <button
               onClick={() => handleVerify()}
-              disabled={loading || code.length !== 6}
+              disabled={loading || (code.length !== 6 && code.length !== 8)}
               style={{
                 width: '100%', padding: '17px',
-                background: loading || code.length !== 6 ? 'rgba(108,142,245,0.4)' : `linear-gradient(135deg, ${C.teal}, #9BB3FA)`,
+                background: loading || (code.length !== 6 && code.length !== 8) ? 'rgba(108,142,245,0.4)' : `linear-gradient(135deg, ${C.teal}, #9BB3FA)`,
                 border: 'none', borderRadius: 12,
                 fontSize: 16, fontWeight: 700, color: C.white,
-                cursor: loading || code.length !== 6 ? 'not-allowed' : 'pointer',
+                cursor: loading || (code.length !== 6 && code.length !== 8) ? 'not-allowed' : 'pointer',
               }}
             >
               {loading ? t('auth.processing') : t('auth.verifyBtn')}

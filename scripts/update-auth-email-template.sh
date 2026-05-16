@@ -41,7 +41,9 @@ PAYLOAD="$(jq -n \
   --arg content "$CONTENT" \
   '{
     mailer_subjects_magic_link: $subject,
-    mailer_templates_magic_link_content: $content
+    mailer_templates_magic_link_content: $content,
+    mailer_otp_length: 6,
+    mailer_otp_exp: 3600
   }')"
 
 echo "Updating Auth email template for project: ${PROJECT_REF}"

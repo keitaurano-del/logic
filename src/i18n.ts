@@ -73,6 +73,8 @@ const STRINGS: Record<Locale, Strings> = {
     // Journal & Goals
     'journal.title': 'ジャーナル',
     'journal.subtitle': '今日の気分・目標・記録を整理',
+    'journal.loginRequiredTitle': 'ジャーナルを使うにはログインが必要です',
+    'journal.loginRequiredDesc': '気分・目標・日々の記録を端末をまたいで保存します。ログインしてください。',
     'journal.viewTabs': 'ジャーナル表示切り替え',
     'journal.tabCalendar': 'カレンダー',
     'journal.tabGoals': '目標',
@@ -1561,6 +1563,8 @@ const STRINGS: Record<Locale, Strings> = {
     // Journal & Goals
     'journal.title': 'Journal',
     'journal.subtitle': "Capture today's mood, goals, and reflections.",
+    'journal.loginRequiredTitle': 'Sign in to use the Journal',
+    'journal.loginRequiredDesc': 'Your mood, goals, and entries sync across devices once you log in.',
     'journal.viewTabs': 'Journal view tabs',
     'journal.tabCalendar': 'Calendar',
     'journal.tabGoals': 'Goals',
