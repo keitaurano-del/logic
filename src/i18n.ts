@@ -1485,17 +1485,6 @@ const STRINGS: Record<Locale, Strings> = {
     // AppV3
     'app.lessonFallback': 'レッスン',
 
-    // BetaCode
-    'betaCode.errEmpty': '招待コードを入力してください',
-    'betaCode.errInvalid': 'コードが正しくありません',
-    'betaCode.heading': '招待コードを入力',
-    'betaCode.welcome1': 'Logicベータ版へようこそ。',
-    'betaCode.welcome2': '招待コードを入力してアクセスしてください。',
-    'betaCode.label': '招待コード',
-    'betaCode.checking': '確認中...',
-    'betaCode.useCode': 'コードを使用する',
-    'betaCode.skip': '後で入力する',
-
     // Tutorial overlay
     'tutorial.skipAria': 'チュートリアルをスキップ',
     'tutorial.closeAria': '閉じる',
@@ -2977,17 +2966,6 @@ const STRINGS: Record<Locale, Strings> = {
 
     // AppV3
     'app.lessonFallback': 'Lesson',
-
-    // BetaCode
-    'betaCode.errEmpty': 'Please enter your invite code',
-    'betaCode.errInvalid': 'The code is not valid',
-    'betaCode.heading': 'Enter invite code',
-    'betaCode.welcome1': 'Welcome to the Logic beta.',
-    'betaCode.welcome2': 'Enter the invite code to continue.',
-    'betaCode.label': 'Invite code',
-    'betaCode.checking': 'Checking...',
-    'betaCode.useCode': 'Use code',
-    'betaCode.skip': 'Enter later',
 
     // Tutorial overlay
     'tutorial.skipAria': 'Skip tutorial',

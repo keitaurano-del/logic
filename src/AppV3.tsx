@@ -18,7 +18,6 @@ const RoleplaySelectScreen = lazy(() => import('./screens/RoleplaySelectScreen')
 const RoleplayChatScreen = lazy(() => import('./screens/RoleplayChatScreen').then(m => ({ default: m.RoleplayChatScreen })))
 const ReportProblemScreen = lazy(() => import('./screens/ReportProblemScreen').then(m => ({ default: m.ReportProblemScreen })))
 const OnboardingScreen = lazy(() => import('./screens/OnboardingScreen').then(m => ({ default: m.OnboardingScreen })))
-const BetaCodeScreen = lazy(() => import('./screens/BetaCodeScreen').then(m => ({ default: m.BetaCodeScreen })))
 const AIProblemGenScreen = lazy(() => import('./screens/AIProblemGenScreen').then(m => ({ default: m.AIProblemGenScreen })))
 const AIProblemScreen = lazy(() => import('./screens/AIProblemScreen').then(m => ({ default: m.AIProblemScreen })))
 const FeedbackScreen = lazy(() => import('./screens/FeedbackScreen').then(m => ({ default: m.FeedbackScreen })))
@@ -48,6 +47,7 @@ import { recordActivity } from './activityLog'
 import { updateDisplayName } from './supabase'
 import { isAdmin } from './admin'
 import { onAuthChange, logout, getInitialUser, type User } from './supabase'
+import { setUser as setSentryUser } from './sentry'
 import { hideSplash } from './platform'
 import { SnackbarProvider } from './components/Snackbar'
 import { syncOnLogin, syncOnLogout } from './syncService'
@@ -109,7 +109,6 @@ type Screen =
   | { type: 'login' }
   | { type: 'report-problem'; context: { lessonId?: number; lessonTitle?: string; question?: string } }
   | { type: 'onboarding' }
-  | { type: 'beta-code' }
   | { type: 'journal' }
 
 // LESSON_LIST is now managed within RoadmapScreen
@@ -234,6 +233,7 @@ function AppV3() {
     })
     const unsub = onAuthChange(async (user) => {
       setCurrentUser(user)
+      setSentryUser(user ? { id: user.id, email: user.email ?? null } : null)
       if (user) {
         await syncOnLogin(user.id)
         // preview=onboarding 中はホームに戻さない
@@ -371,18 +371,6 @@ function AppV3() {
             // チュートリアルは右下FABから任意で起動
           }}
           onNavigateToLogin={() => navigate({ type: 'login' })}
-        />
-      </Suspense>
-    )
-  }
-
-  // BetaCode: show full-screen, no AppShell
-  if (screen.type === 'beta-code') {
-    return (
-      <Suspense fallback={null}>
-        <BetaCodeScreen
-          onSuccess={() => navigate({ type: 'home' })}
-          onSkip={() => navigate({ type: 'home' })}
         />
       </Suspense>
     )
