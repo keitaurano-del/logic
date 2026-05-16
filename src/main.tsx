@@ -5,6 +5,7 @@ import './styles/tokens-m3.css'
 import './index.css'
 import { initSentry } from './sentry'
 import { setHtmlPlatformAttr, configureStatusBar, configureKeyboard } from './platform'
+import { initAuthDeepLink } from './platform/deepLink'
 import { loadTheme, applyTheme } from './theme'
 
 initSentry()
@@ -37,6 +38,10 @@ setHtmlPlatformAttr()
 // Slate Blue dark status bar + Android edge-to-edge. Native-only no-op on web.
 void configureStatusBar()
 void configureKeyboard()
+
+// Native アプリ起動時に Supabase 認証 deep link を購読
+// 認証成功時は onAuthChange が発火するため、ここでは追加処理は不要
+initAuthDeepLink()
 
 const App = lazy(() => import('./App'))
 const AppV3 = lazy(() => import('./AppV3'))

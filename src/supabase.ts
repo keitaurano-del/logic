@@ -5,11 +5,21 @@ import { Capacitor } from '@capacitor/core'
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || ''
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || ''
 
+const NATIVE_REDIRECT_URL = 'logic://auth'
+
 let supabase: ReturnType<typeof createClient> | null = null
 
 try {
   if (supabaseUrl && supabaseAnonKey) {
-    supabase = createClient(supabaseUrl, supabaseAnonKey)
+    supabase = createClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        flowType: 'pkce',
+        // Native では deep link 経由でセッションを手動交換するため自動検出を無効化
+        detectSessionInUrl: !Capacitor.isNativePlatform(),
+        persistSession: true,
+        autoRefreshToken: true,
+      },
+    })
   }
 } catch (e) {
   console.warn('Supabase initialization skipped:', e)
@@ -48,9 +58,12 @@ export async function loginWithGoogle(): Promise<{ user: User | null; error?: st
 export async function sendEmailOtp(email: string): Promise<{ error?: string }> {
   if (!supabase) return { error: 'auth/not-configured' }
   try {
+    const emailRedirectTo = Capacitor.isNativePlatform()
+      ? NATIVE_REDIRECT_URL
+      : `${window.location.origin}/auth/callback`
     const { error } = await supabase.auth.signInWithOtp({
       email,
-      options: { shouldCreateUser: true },
+      options: { shouldCreateUser: true, emailRedirectTo },
     })
     if (error) {
       const msg = error.message.toLowerCase()
@@ -61,6 +74,36 @@ export async function sendEmailOtp(email: string): Promise<{ error?: string }> {
     return {}
   } catch {
     return { error: 'auth/generic' }
+  }
+}
+
+/**
+ * Deep link / web redirect から受け取った URL を Supabase セッションに交換する。
+ * - PKCE: `?code=xxx` を exchangeCodeForSession に渡す
+ * - Implicit fallback: `#access_token=...&refresh_token=...` を setSession に渡す
+ */
+export async function handleAuthRedirect(url: string): Promise<{ user: User | null; error?: string }> {
+  if (!supabase) return { user: null, error: 'auth/not-configured' }
+  try {
+    const parsed = new URL(url)
+    const code = parsed.searchParams.get('code')
+    if (code) {
+      const { data, error } = await supabase.auth.exchangeCodeForSession(code)
+      if (error) return { user: null, error: error.message }
+      return { user: data.user }
+    }
+    const hash = parsed.hash.startsWith('#') ? parsed.hash.slice(1) : parsed.hash
+    const params = new URLSearchParams(hash)
+    const access_token = params.get('access_token')
+    const refresh_token = params.get('refresh_token')
+    if (access_token && refresh_token) {
+      const { data, error } = await supabase.auth.setSession({ access_token, refresh_token })
+      if (error) return { user: null, error: error.message }
+      return { user: data.user }
+    }
+    return { user: null, error: 'auth/no-token-in-url' }
+  } catch {
+    return { user: null, error: 'auth/generic' }
   }
 }
 
