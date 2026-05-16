@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { searchJournals } from './journalDb'
+import { searchJournals, fetchAllUserTags } from './journalDb'
 import { JournalDetailSheet } from './JournalDetailSheet'
 import type { DailyJournal } from './types'
 import { t } from '../../i18n'
@@ -13,7 +13,17 @@ export function JournalSearch({ userId }: JournalSearchProps) {
   const [results, setResults] = useState<DailyJournal[]>([])
   const [loading, setLoading] = useState(false)
   const [selected, setSelected] = useState<string | null>(null)
+  const [tags, setTags] = useState<string[]>([])
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+    ;(async () => {
+      const list = await fetchAllUserTags(userId)
+      if (!cancelled) setTags(list)
+    })()
+    return () => { cancelled = true }
+  }, [userId])
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current)
@@ -57,7 +67,28 @@ export function JournalSearch({ userId }: JournalSearchProps) {
         aria-label={t('journal.searchPlaceholder')}
       />
 
-      {!keyword.trim() && (
+      {tags.length > 0 && (
+        <div className="journal-search-tags">
+          <div className="journal-search-tags__label">{t('journal.searchTagsLabel')}</div>
+          <div className="journal-search-tags__list">
+            {tags.map((tag) => {
+              const active = keyword.trim() === tag
+              return (
+                <button
+                  key={tag}
+                  type="button"
+                  className={`journal-search-tag-chip ${active ? 'journal-search-tag-chip--active' : ''}`}
+                  onClick={() => setKeyword(active ? '' : tag)}
+                >
+                  #{tag}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
+      {!keyword.trim() && tags.length === 0 && (
         <div style={{
           background: 'var(--bg-card)',
           border: '1px solid var(--border, rgba(255,255,255,.06))',

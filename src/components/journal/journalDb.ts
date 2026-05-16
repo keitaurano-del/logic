@@ -122,23 +122,69 @@ export async function searchJournals(userId: string, keyword: string): Promise<D
     .trim()
   if (!esc) return []
   const pat = `%${esc}%`
+  // PostgREST の cs (contains) 配列フィルタはカンマ区切り内のカンマと衝突するため別クエリで取得して合成
+  const orParts = [
+    `morning_memo.ilike.${pat}`,
+    `schedule_notes.ilike.${pat}`,
+    `ai_summary.ilike.${pat}`,
+    `evening_reflection.ilike.${pat}`,
+  ]
+  const [textRes, tagRes] = await Promise.all([
+    supabase
+      .from('daily_journals')
+      .select('*')
+      .eq('user_id', userId)
+      .or(orParts.join(','))
+      .order('date', { ascending: false })
+      .limit(50),
+    supabase
+      .from('daily_journals')
+      .select('*')
+      .eq('user_id', userId)
+      .contains('tags', [esc])
+      .order('date', { ascending: false })
+      .limit(50),
+  ])
+  if (textRes.error) console.warn('searchJournals(text):', textRes.error.message)
+  if (tagRes.error) console.warn('searchJournals(tags):', tagRes.error.message)
+  const merged = new Map<string, DailyJournal>()
+  for (const r of (textRes.data as DailyJournal[] | null) ?? []) merged.set(r.date, r)
+  for (const r of (tagRes.data as DailyJournal[] | null) ?? []) merged.set(r.date, r)
+  return Array.from(merged.values())
+    .sort((a, b) => (a.date < b.date ? 1 : -1))
+    .slice(0, 50)
+}
+
+/**
+ * ユーザーが過去に登録したタグの一覧（重複排除・出現回数の多い順）
+ */
+export async function fetchAllUserTags(userId: string, limit = 30): Promise<string[]> {
+  const supabase = getSupabaseClient()
+  if (!supabase) return []
   const { data, error } = await supabase
     .from('daily_journals')
-    .select('*')
+    .select('tags')
     .eq('user_id', userId)
-    .or([
-      `morning_memo.ilike.${pat}`,
-      `schedule_notes.ilike.${pat}`,
-      `ai_summary.ilike.${pat}`,
-      `evening_reflection.ilike.${pat}`,
-    ].join(','))
+    .not('tags', 'is', null)
     .order('date', { ascending: false })
-    .limit(50)
+    .limit(365)
   if (error) {
-    console.warn('searchJournals:', error.message)
+    console.warn('fetchAllUserTags:', error.message)
     return []
   }
-  return (data as DailyJournal[]) ?? []
+  const counts = new Map<string, number>()
+  for (const row of (data as Array<{ tags: string[] | null }>) ?? []) {
+    if (!Array.isArray(row.tags)) continue
+    for (const tag of row.tags) {
+      const t = typeof tag === 'string' ? tag.trim() : ''
+      if (!t) continue
+      counts.set(t, (counts.get(t) ?? 0) + 1)
+    }
+  }
+  return Array.from(counts.entries())
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .slice(0, limit)
+    .map(([tag]) => tag)
 }
 
 /**

@@ -123,6 +123,7 @@ const STRINGS: Record<Locale, Strings> = {
     'journal.phaseTabs': '朝・夜の切り替え',
     'journal.phaseMorning': '朝（始まり）',
     'journal.phaseEvening': '夜（振り返り）',
+    'journal.emptyEntryHint': 'まだ記録がありません。編集を開始して追加できます。',
     'journal.intentLabel': '今日の意識ポイント・予定',
     'journal.intentPlaceholder': '例）MECE 意識して議事録を書く、16時にクライアント MTG',
     'journal.tagsLabel': 'タグ（任意）',
@@ -200,8 +201,9 @@ const STRINGS: Record<Locale, Strings> = {
     'journal.goalSummaryEmptyAll': '目標を設定する',
     'journal.goalSummaryMore': '+{n}',
     'journal.goalSummaryRowAria': '{period}の目標を編集',
-    'journal.searchPlaceholder': 'キーワードで検索（予定・振り返り・要約）',
+    'journal.searchPlaceholder': 'キーワードで検索（予定・振り返り・要約・タグ）',
     'journal.searchNoResults': '一致する記録は見つかりませんでした',
+    'journal.searchTagsLabel': '登録しているタグ',
 
     // Profile — Assistant name section
     'profile.assistantSettings': 'アシスタント設定',
@@ -1612,6 +1614,7 @@ const STRINGS: Record<Locale, Strings> = {
     'journal.phaseTabs': 'Morning / evening toggle',
     'journal.phaseMorning': 'Morning start',
     'journal.phaseEvening': 'Evening review',
+    'journal.emptyEntryHint': 'No entry yet. Tap edit to start writing.',
     'journal.intentLabel': "Today's focus / schedule",
     'journal.intentPlaceholder': 'e.g. Write MECE minutes, client meeting at 4pm',
     'journal.tagsLabel': 'Tags (optional)',
@@ -1689,8 +1692,9 @@ const STRINGS: Record<Locale, Strings> = {
     'journal.goalSummaryEmptyAll': 'Set a goal',
     'journal.goalSummaryMore': '+{n}',
     'journal.goalSummaryRowAria': 'Edit {period} goal',
-    'journal.searchPlaceholder': 'Search by keyword (plans, reflections, summaries)',
+    'journal.searchPlaceholder': 'Search by keyword (plans, reflections, summaries, tags)',
     'journal.searchNoResults': 'No matching entries.',
+    'journal.searchTagsLabel': 'Your tags',
 
     // Profile — Assistant name section
     'profile.assistantSettings': 'Assistant settings',

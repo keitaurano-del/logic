@@ -889,6 +889,51 @@
   overflow: hidden;
 }
 
+.journal-search-tags {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.journal-search-tags__label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.journal-search-tags__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.journal-search-tag-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border, rgba(255,255,255,.08));
+  border-radius: 999px;
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.journal-search-tag-chip:hover {
+  border-color: var(--brand);
+}
+
+.journal-search-tag-chip--active {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #fff;
+}
+
 /* ── Snackbar ─────────────────────────────── */
 .journal-toast {
   position: fixed;
@@ -1512,6 +1557,31 @@
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+}
+
+.journal-view-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.journal-view-block {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border, rgba(255,255,255,.06));
+  border-radius: 14px;
+}
+
+.journal-view-block__title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text-primary);
 }
 
 /* ── Activity list (today's activity inside journal) ─── */
