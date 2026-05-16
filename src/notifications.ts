@@ -1,49 +1,18 @@
-// Local notification wrapper — 今日の1問リマインダー
+// Local notification wrapper — 今日の1問リマインダー + ストリーク途切れアラート
 // Native: @capacitor/local-notifications で実際にスケジュール
 // Web: localStorage 保存のみ（no-op）
 
-const PREF_KEY = 'logic-reminder'
-const NOTIF_ID = 1001
+import { t } from './i18n'
+import { getStudyDates } from './stats'
 
-// ── 通知メッセージバリエーション ──
+const REMINDER_PREF_KEY = 'logic-reminder'
+const STREAK_ALERT_PREF_KEY = 'logic-notif-extra'
+const DAILY_NOTIF_ID = 1001
+const STREAK_RISK_NOTIF_ID = 1002
+const STREAK_RISK_HOUR = 21
+const DAILY_MESSAGE_COUNT = 20
 
-const DAILY_MESSAGES: string[] = [
-  '今日の1問に取り組んでみよう。5分でいい。',
-  '考える習慣は、続けることで身につく。',
-  '昨日より少しだけ、論理的に考えてみよう。',
-  '問いを立てるだけでも、思考の練習になる。',
-  '今日はどんな問いと向き合う？',
-  '小さな積み重ねが、長期的な差を生む。',
-  '「なぜ？」を1回多く問う習慣をつけよう。',
-  '論理的思考は才能ではなく、反復で鍛えられる技術。',
-]
-
-const STREAK_MESSAGES: Record<number, string> = {
-  3:  '3日連続。継続の力を感じている。',
-  7:  '7日連続。1週間たった。習慣になってきた。',
-  14: '2週間連続。思考の筋肉がついてきた。',
-  30: '1ヶ月連続。本物の継続力。',
-  50: '50日連続。論理的思考が確かに変わっている。',
-  100: '100日連続。ここまで来た人は少ない。',
-}
-
-const LEVEL_UP_MESSAGES: Record<number, string> = {
-  5:  'Lv.5に到達。思考の土台が整ってきた。',
-  10: 'Lv.10到達。論理の型が身についてきた。',
-  20: 'Lv.20到達。複雑な問題も構造化できるようになった。',
-  50: 'Lv.50到達。思考の深さが変わっている。',
-}
-
-/** 通知本文を生成する。streak・level に応じてメッセージを変える */
-export function buildNotificationBody(streak = 0, level = 1): string {
-  // レベルアップ通知（ちょうど該当レベルの場合）
-  if (LEVEL_UP_MESSAGES[level]) return LEVEL_UP_MESSAGES[level]
-  // ストリーク達成通知
-  if (STREAK_MESSAGES[streak]) return STREAK_MESSAGES[streak]
-  // 曜日ベースでメッセージをローテーション
-  const dayIndex = new Date().getDay() // 0=日〜6=土
-  return DAILY_MESSAGES[dayIndex % DAILY_MESSAGES.length]
-}
+// ── Pref types ─────────────────────────────────────────────────
 
 export type ReminderPref = {
   enabled: boolean
@@ -51,7 +20,14 @@ export type ReminderPref = {
   minute: number  // 0-59
 }
 
-const DEFAULT_PREF: ReminderPref = { enabled: false, hour: 20, minute: 0 }
+export type StreakAlertPref = {
+  streakAlert: boolean
+}
+
+const DEFAULT_REMINDER_PREF: ReminderPref = { enabled: false, hour: 20, minute: 0 }
+const DEFAULT_STREAK_ALERT_PREF: StreakAlertPref = { streakAlert: true }
+
+// ── Helpers ────────────────────────────────────────────────────
 
 export function isNative(): boolean {
   try {
@@ -59,17 +35,55 @@ export function isNative(): boolean {
   } catch { return false }
 }
 
+function todayStr(): string {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
+function studiedToday(): boolean {
+  try {
+    return getStudyDates().includes(todayStr())
+  } catch { return false }
+}
+
+/** 日付ベースで20パターンから決定的に1つ選ぶ。日が変われば異なるメッセージになる */
+function buildDailyBody(): string {
+  const d = new Date()
+  const seed = d.getFullYear() * 400 + d.getMonth() * 31 + d.getDate()
+  const idx = (seed % DAILY_MESSAGE_COUNT) + 1
+  return t(`notif.daily.${idx}`)
+}
+
+// ── Pref load/save ─────────────────────────────────────────────
+
 export function loadReminderPref(): ReminderPref {
   try {
-    const raw = localStorage.getItem(PREF_KEY)
-    if (raw) return { ...DEFAULT_PREF, ...JSON.parse(raw) }
+    const raw = localStorage.getItem(REMINDER_PREF_KEY)
+    if (raw) return { ...DEFAULT_REMINDER_PREF, ...JSON.parse(raw) }
   } catch { /* */ }
-  return { ...DEFAULT_PREF }
+  return { ...DEFAULT_REMINDER_PREF }
 }
 
 export function saveReminderPref(pref: ReminderPref) {
-  localStorage.setItem(PREF_KEY, JSON.stringify(pref))
+  localStorage.setItem(REMINDER_PREF_KEY, JSON.stringify(pref))
 }
+
+export function loadStreakAlertPref(): StreakAlertPref {
+  try {
+    const raw = localStorage.getItem(STREAK_ALERT_PREF_KEY)
+    if (raw) {
+      const parsed = JSON.parse(raw) as Partial<StreakAlertPref>
+      return { streakAlert: parsed.streakAlert !== false }
+    }
+  } catch { /* */ }
+  return { ...DEFAULT_STREAK_ALERT_PREF }
+}
+
+export function saveStreakAlertPref(pref: StreakAlertPref) {
+  localStorage.setItem(STREAK_ALERT_PREF_KEY, JSON.stringify(pref))
+}
+
+// ── Permission ─────────────────────────────────────────────────
 
 export async function requestNotificationPermission(): Promise<boolean> {
   if (!isNative()) return false
@@ -85,17 +99,16 @@ export async function requestNotificationPermission(): Promise<boolean> {
   }
 }
 
+// ── Daily reminder ─────────────────────────────────────────────
+
 export async function scheduleDailyReminder(hour: number, minute: number): Promise<boolean> {
   saveReminderPref({ enabled: true, hour, minute })
-  if (!isNative()) return true // web: 保存のみ
+  if (!isNative()) return true
 
   try {
     const { LocalNotifications } = await import('@capacitor/local-notifications')
+    await LocalNotifications.cancel({ notifications: [{ id: DAILY_NOTIF_ID }] })
 
-    // 既存通知をキャンセル
-    await LocalNotifications.cancel({ notifications: [{ id: NOTIF_ID }] })
-
-    // 次の通知時刻を計算
     const now = new Date()
     const at = new Date()
     at.setHours(hour, minute, 0, 0)
@@ -103,15 +116,16 @@ export async function scheduleDailyReminder(hour: number, minute: number): Promi
 
     await LocalNotifications.schedule({
       notifications: [{
-        id: NOTIF_ID,
+        id: DAILY_NOTIF_ID,
         title: 'Logic',
-        body: buildNotificationBody(),
+        body: buildDailyBody(),
         schedule: { at, repeats: true, every: 'day' },
+        extra: { type: 'daily' },
       }],
     })
     return true
   } catch (e) {
-    console.warn('Schedule notification error:', e)
+    console.warn('Schedule daily reminder error:', e)
     return false
   }
 }
@@ -122,8 +136,80 @@ export async function cancelDailyReminder(): Promise<void> {
 
   try {
     const { LocalNotifications } = await import('@capacitor/local-notifications')
-    await LocalNotifications.cancel({ notifications: [{ id: NOTIF_ID }] })
+    await LocalNotifications.cancel({ notifications: [{ id: DAILY_NOTIF_ID }] })
   } catch (e) {
-    console.warn('Cancel notification error:', e)
+    console.warn('Cancel daily reminder error:', e)
+  }
+}
+
+// ── Streak risk reminder ───────────────────────────────────────
+
+/**
+ * 21:00 にストリーク途切れアラートを毎日スケジュール。
+ * - 今日学習済みなら次回は翌日 21:00 から開始
+ * - 今日まだで 21:00 前なら今日から開始、過ぎてれば翌日から開始
+ * - 一度 schedule すれば repeats=daily で毎日同時刻に届く
+ */
+export async function scheduleStreakRiskReminder(): Promise<boolean> {
+  saveStreakAlertPref({ streakAlert: true })
+  if (!isNative()) return true
+
+  try {
+    const { LocalNotifications } = await import('@capacitor/local-notifications')
+    await LocalNotifications.cancel({ notifications: [{ id: STREAK_RISK_NOTIF_ID }] })
+
+    const now = new Date()
+    const at = new Date()
+    at.setHours(STREAK_RISK_HOUR, 0, 0, 0)
+    // 今日学習済み、または 21:00 を過ぎている → 翌日から開始
+    if (studiedToday() || at <= now) {
+      at.setDate(at.getDate() + 1)
+    }
+
+    await LocalNotifications.schedule({
+      notifications: [{
+        id: STREAK_RISK_NOTIF_ID,
+        title: t('notif.streakRisk.title'),
+        body: t('notif.streakRisk.body'),
+        schedule: { at, repeats: true, every: 'day' },
+        extra: { type: 'streakRisk' },
+      }],
+    })
+    return true
+  } catch (e) {
+    console.warn('Schedule streak risk reminder error:', e)
+    return false
+  }
+}
+
+export async function cancelStreakRiskReminder(): Promise<void> {
+  saveStreakAlertPref({ streakAlert: false })
+  if (!isNative()) return
+
+  try {
+    const { LocalNotifications } = await import('@capacitor/local-notifications')
+    await LocalNotifications.cancel({ notifications: [{ id: STREAK_RISK_NOTIF_ID }] })
+  } catch (e) {
+    console.warn('Cancel streak risk reminder error:', e)
+  }
+}
+
+// ── Deep link listener ─────────────────────────────────────────
+
+/**
+ * 通知タップ時のハンドラを登録。ネイティブのみ実機能。
+ * 返り値の関数で解除可能。
+ */
+export async function addNotificationTapListener(handler: () => void): Promise<() => void> {
+  if (!isNative()) return () => { /* no-op */ }
+  try {
+    const { LocalNotifications } = await import('@capacitor/local-notifications')
+    const listener = await LocalNotifications.addListener('localNotificationActionPerformed', () => {
+      handler()
+    })
+    return () => { void listener.remove() }
+  } catch (e) {
+    console.warn('Add notification tap listener error:', e)
+    return () => { /* no-op */ }
   }
 }
