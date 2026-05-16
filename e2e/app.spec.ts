@@ -14,12 +14,16 @@ async function gotoAdmin(page: Page) {
   await page.addInitScript(() => {
     localStorage.setItem('logic-onboarded', '1')
     localStorage.setItem('logic-install-id', 'test')
+    // ?admin=1 のURL有効化はDEVビルドのみ。テストはpreview build(本番扱い)なので
+    // localStorageに直接フラグを立てる。?admin=0 によるクリアは本番でも動くので
+    // クリア系テストはそのままURLパラメータでよい。
+    localStorage.setItem('logic-admin', '1')
   })
   await page.goto('/?admin=1')
   await page.waitForSelector('.app-shell', { timeout: 10_000 })
 }
 
-// Tab indices: home=0, lessons=1, ranking=2, profile=3
+// Tab indices: home=0, lessons=1, ranking=2, journal=3, profile=4
 function tab(page: Page, n: number) {
   return page.locator('.tabbar .tab').nth(n)
 }
@@ -37,10 +41,10 @@ test.describe('App shell', () => {
     await expect(page.locator('.tabbar')).toBeVisible()
   })
 
-  test('tabbar has 4 tabs', async ({ page }) => {
+  test('tabbar has 5 tabs', async ({ page }) => {
     await goto(page)
     const count = await page.locator('.tabbar .tab').count()
-    expect(count).toBe(4)
+    expect(count).toBe(5)
   })
 })
 
@@ -59,7 +63,7 @@ test.describe('Tab navigation', () => {
 
   test('switching to Profile tab shows Profile screen', async ({ page }) => {
     await goto(page)
-    await tab(page, 3).click()
+    await tab(page, 4).click()
     await expect(page.locator('.profile-hero-name')).toBeVisible()
   })
 
@@ -127,8 +131,10 @@ test.describe('Lessons screen', () => {
     await expect(page.locator('text=スコープ管理')).not.toBeVisible()
   })
 
-  test('フェルミ推定 tile navigates', async ({ page }) => {
-    await page.locator('.cat-tile', { hasText: 'フェルミ推定' }).first().click()
+  test('home daily fermi card navigates to fermi screen', async ({ page }) => {
+    await tab(page, 0).click()
+    const fermiBtn = page.locator('button[aria-label="今日の1問を解く"]').first()
+    await fermiBtn.click()
     await expect(page.locator('.main-inner')).not.toBeEmpty()
   })
 
@@ -163,8 +169,8 @@ test.describe('Lesson screen', () => {
 test.describe('Back navigation', () => {
   test('Fermi back button works', async ({ page }) => {
     await goto(page)
-    await tab(page, 1).click()
-    await page.locator('.cat-tile', { hasText: 'フェルミ推定' }).first().click()
+    await tab(page, 0).click()
+    await page.locator('button[aria-label="今日の1問を解く"]').first().click()
     const back = page.locator('button').filter({ hasText: /back|戻る/i }).first()
     if (await back.isVisible()) {
       await back.click()
@@ -187,7 +193,7 @@ test.describe('Back navigation', () => {
 test.describe('Profile screen', () => {
   test.beforeEach(async ({ page }) => {
     await goto(page)
-    await tab(page, 3).click()
+    await tab(page, 4).click()
   })
 
   test('user name visible', async ({ page }) => {
@@ -274,7 +280,7 @@ test.describe('No emoji as icons', () => {
 
   test('profile avatar visible', async ({ page }) => {
     await goto(page)
-    await tab(page, 3).click()
+    await tab(page, 4).click()
     await expect(page.locator('.profile-avatar')).toBeVisible()
   })
 })
