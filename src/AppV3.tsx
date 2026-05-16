@@ -2,7 +2,6 @@
 import { useEffect, useState, useRef, useCallback, lazy, Suspense } from 'react'
 import { AppShell, type Tab } from './components/AppShell'
 import { HomeScreenV3 } from './screens/HomeScreenV3'
-import { LoginGate } from './components/LoginGate'
 import { RoadmapScreenV3 } from './screens/RoadmapScreenV3'
 import { ProfileScreenV3 } from './screens/ProfileScreenV3'
 import { LessonStoriesScreen } from './screens/LessonStoriesScreen'
@@ -54,7 +53,6 @@ import { SnackbarProvider } from './components/Snackbar'
 import { syncOnLogin, syncOnLogout } from './syncService'
 import { TutorialOverlay, TutorialFAB } from './components/TutorialOverlay'
 import { tutorial } from './tutorial/tutorialStorage'
-import { SparklesIcon, MessageSquareIcon, BookOpenIcon } from './icons'
 import { t } from './i18n'
 import { useAssistantName } from './hooks/useAssistantName'
 
@@ -110,7 +108,6 @@ type Screen =
   | { type: 'login'; tab?: 'google' | 'email' }
   | { type: 'report-problem'; context: { lessonId?: number; lessonTitle?: string; question?: string } }
   | { type: 'onboarding' }
-  | { type: 'login-gate'; feature: 'ai-gen' | 'roleplay' | 'advanced-lessons' }
   | { type: 'beta-code' }
   | { type: 'journal'; sub?: 'today' | 'calendar' | 'goals' | 'search' }
 
@@ -346,37 +343,6 @@ function AppV3() {
     )
   }
 
-  // LoginGate: full-screen, no AppShell
-  if (screen.type === 'login-gate') {
-    const GATE_CONFIG = {
-      'ai-gen': {
-        featureName: t('loginGate.feature.aiGen'),
-        featureIcon: <SparklesIcon width={36} height={36} />,
-        featureDesc: t('loginGate.feature.aiGenDesc'),
-      },
-      'roleplay': {
-        featureName: t('loginGate.feature.roleplay'),
-        featureIcon: <MessageSquareIcon width={36} height={36} />,
-        featureDesc: t('loginGate.feature.roleplayDesc'),
-      },
-      'advanced-lessons': {
-        featureName: t('loginGate.feature.advancedLessons'),
-        featureIcon: <BookOpenIcon width={36} height={36} />,
-        featureDesc: t('loginGate.feature.advancedLessonsDesc'),
-      },
-    } as const
-    const cfg = GATE_CONFIG[screen.feature]
-    return (
-      <LoginGate
-        featureName={cfg.featureName}
-        featureIcon={cfg.featureIcon}
-        featureDesc={cfg.featureDesc}
-        onLogin={() => navigate({ type: 'login' })}
-        onBack={handleBack}
-      />
-    )
-  }
-
   // Onboarding: show full-screen, no AppShell
   if (screen.type === 'onboarding') {
     return (
@@ -427,8 +393,8 @@ function AppV3() {
           }}
           onOpenRank={() => navigate({ type: 'rank' })}
           onOpenStats={() => navigate({ type: 'profile' }, true)}
-          onOpenRoleplay={() => currentUser ? navigate({ type: 'roleplay' }) : navigate({ type: 'login-gate', feature: 'roleplay' })}
-          onOpenAIGen={() => currentUser ? navigate({ type: 'ai-problem-gen' }) : navigate({ type: 'login-gate', feature: 'ai-gen' })}
+          onOpenRoleplay={() => navigate({ type: 'roleplay' })}
+          onOpenAIGen={() => navigate({ type: 'ai-problem-gen' })}
           onOpenRoadmap={() => { setTab('lessons'); navigate({ type: 'lessons' }, true) }}
           onNavigateToDailyFermi={() => navigate({ type: 'daily-fermi' })}
           onOpenPlacementTest={() => navigate({ type: 'placement-test' })}
@@ -496,12 +462,11 @@ function AppV3() {
         <FermiRankingScreen />
       )}
 
-      {screen.type === 'journal' && (
+      {screen.type === 'journal' && currentUser && (
         <JournalScreen
-          userId={currentUser?.id ?? null}
+          userId={currentUser.id}
           assistantName={assistantName}
           initialSub={screen.sub}
-          onRequestLogin={() => navigate({ type: 'login' })}
         />
       )}
 

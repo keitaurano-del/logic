@@ -757,7 +757,7 @@ function OnboardingPricingView({ onNext, onSelectPaid, onBack }: {
 // ── 登録画面（スクショ参考） ──────────────────────────────────
 const REGISTER_RESEND_COOLDOWN_SEC = 30
 
-function RegisterScreen({ onComplete, onSkip, onBack, onNavigateToLogin }: { onComplete: () => void; onSkip: () => void; onBack: () => void; onNavigateToLogin?: () => void }) {
+function RegisterScreen({ onComplete, onBack, onNavigateToLogin }: { onComplete: () => void; onBack: () => void; onNavigateToLogin?: () => void }) {
   const [termsChecked, setTermsChecked] = useState(false)
   const [step, setStep] = useState<'email' | 'verify'>('email')
   const [email, setEmail] = useState('')
@@ -991,18 +991,6 @@ function RegisterScreen({ onComplete, onSkip, onBack, onNavigateToLogin }: { onC
                 {t('onboarding.registerLoginLink')}
               </button>
             </div>
-
-            {/* 登録せずに始める */}
-            <button
-              onClick={onSkip}
-              style={{
-                background: 'none', border: 'none',
-                color: 'rgba(255,255,255,0.35)', fontSize: 13,
-                cursor: 'pointer', padding: '8px 0', textAlign: 'center',
-              }}
-            >
-              {t('onboarding.registerSkip')}
-            </button>
           </>
         ) : (
           <>
@@ -1130,7 +1118,6 @@ export function OnboardingScreen({ onComplete, onNavigateToLogin }: OnboardingSc
   return (
     <RegisterScreen
       onComplete={onComplete}
-      onSkip={onComplete}
       onBack={() => setPhase('pricing')}
       onNavigateToLogin={onNavigateToLogin}
     />

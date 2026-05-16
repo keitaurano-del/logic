@@ -9,7 +9,7 @@ import { fetchJournalByDate, upsertJournal } from './journalDb'
 import { t } from '../../i18n'
 
 interface JournalTodayProps {
-  userId: string | null
+  userId: string
   assistantName: string
 }
 
@@ -41,10 +41,6 @@ export function JournalToday({ userId }: JournalTodayProps) {
 
   // 初期データロード
   useEffect(() => {
-    if (!userId) {
-      setLoaded(true)  // eslint-disable-line react-hooks/set-state-in-effect
-      return
-    }
     let cancelled = false
     ;(async () => {
       const j = await fetchJournalByDate(userId, todayKey())
@@ -67,7 +63,6 @@ export function JournalToday({ userId }: JournalTodayProps) {
   const canSaveEvening = !!(mood !== null || weather !== null || reflection.trim())
 
   const saveDb = async (overrides: Partial<DailyJournal> = {}) => {
-    if (!userId) return
     const j: DailyJournal = {
       user_id: userId,
       date: todayKey(),
@@ -176,10 +171,6 @@ export function JournalToday({ userId }: JournalTodayProps) {
           </button>
 
           {error && <div className="journal-error">{error}</div>}
-
-          {!userId && (
-            <div className="journal-login-hint">{t('journal.loginToSave')}</div>
-          )}
         </div>
       ) : (
         <div className="journal-today__phase">
@@ -242,10 +233,6 @@ export function JournalToday({ userId }: JournalTodayProps) {
           </button>
 
           {error && <div className="journal-error">{error}</div>}
-
-          {!userId && (
-            <div className="journal-login-hint">{t('journal.loginToSave')}</div>
-          )}
         </div>
       )}
 

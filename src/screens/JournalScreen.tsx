@@ -13,10 +13,9 @@ import '../components/journal/journal.css'
 type Sub = 'today' | 'calendar' | 'goals' | 'search'
 
 interface JournalScreenProps {
-  userId: string | null
+  userId: string
   assistantName: string
   initialSub?: Sub
-  onRequestLogin?: () => void
 }
 
 const SUB_ORDER: Sub[] = ['today', 'calendar', 'goals', 'search']
@@ -28,13 +27,12 @@ const SUB_LABEL_KEY: Record<Sub, string> = {
   search:   'journal.tabSearch',
 }
 
-export function JournalScreen({ userId, assistantName, initialSub, onRequestLogin }: JournalScreenProps) {
+export function JournalScreen({ userId, assistantName, initialSub }: JournalScreenProps) {
   const [sub, setSub] = useState<Sub>(initialSub ?? 'today')
   const [goalsInitialPeriod, setGoalsInitialPeriod] = useState<PeriodType | undefined>(undefined)
   const [streak, setStreak] = useState(0)
 
   useEffect(() => {
-    if (!userId) return
     let cancelled = false
     ;(async () => {
       const s = await fetchJournalStreak(userId)
@@ -56,63 +54,42 @@ export function JournalScreen({ userId, assistantName, initialSub, onRequestLogi
           <div style={{ fontSize: 22, fontWeight: 900, letterSpacing: '-0.02em' }}>{t('journal.title')}</div>
           <div style={{ fontSize: 13, color: 'var(--text-on-hero-muted)', marginTop: 4 }}>{t('journal.subtitle')}</div>
         </div>
-        {userId && (
-          <div className="journal-hero__streak">
-            <StreakBadge streak={streak} size="sm" />
-          </div>
-        )}
+        <div className="journal-hero__streak">
+          <StreakBadge streak={streak} size="sm" />
+        </div>
       </div>
 
       <div style={{ flex: 1, padding: '16px 16px 120px', display: 'flex', flexDirection: 'column' }}>
-        {!userId ? (
-          <div className="journal-login-card">
-            <div className="journal-login-card__title">{t('journal.loginRequiredTitle')}</div>
-            <div className="journal-login-card__desc">{t('journal.loginRequiredDesc')}</div>
-            {onRequestLogin && (
-              <button
-                type="button"
-                className="journal-summarize-btn"
-                onClick={onRequestLogin}
-                style={{ maxWidth: 240 }}
-              >
-                {t('profile.loginCta')}
-              </button>
-            )}
-          </div>
-        ) : (
-          <>
-            {/* 「今日」タブのときだけ、年→月→週 の目標サマリーを上部に常時表示 */}
-            {sub === 'today' && (
-              <JournalGoalsHeader
-                userId={userId}
-                onOpenAll={openGoalsTab}
-              />
-            )}
-
-            <div className="journal-subtabs" role="tablist" aria-label={t('journal.viewTabs')}>
-              {SUB_ORDER.map((s) => (
-                <button
-                  key={s}
-                  type="button"
-                  role="tab"
-                  aria-selected={sub === s}
-                  className={`journal-subtab ${sub === s ? 'journal-subtab--active' : ''}`}
-                  onClick={() => {
-                    if (s !== 'goals') setGoalsInitialPeriod(undefined)
-                    setSub(s)
-                  }}
-                >
-                  {t(SUB_LABEL_KEY[s])}
-                </button>
-              ))}
-            </div>
-
-            {sub === 'today'    && <JournalToday    userId={userId} assistantName={assistantName} />}
-            {sub === 'calendar' && <JournalCalendar userId={userId} />}
-            {sub === 'goals'    && <JournalGoals    userId={userId} assistantName={assistantName} initialPeriod={goalsInitialPeriod} />}
-            {sub === 'search'   && <JournalSearch   userId={userId} />}
-          </>
+        {/* 「今日」タブのときだけ、年→月→週 の目標サマリーを上部に常時表示 */}
+        {sub === 'today' && (
+          <JournalGoalsHeader
+            userId={userId}
+            onOpenAll={openGoalsTab}
+          />
         )}
+
+        <div className="journal-subtabs" role="tablist" aria-label={t('journal.viewTabs')}>
+          {SUB_ORDER.map((s) => (
+            <button
+              key={s}
+              type="button"
+              role="tab"
+              aria-selected={sub === s}
+              className={`journal-subtab ${sub === s ? 'journal-subtab--active' : ''}`}
+              onClick={() => {
+                if (s !== 'goals') setGoalsInitialPeriod(undefined)
+                setSub(s)
+              }}
+            >
+              {t(SUB_LABEL_KEY[s])}
+            </button>
+          ))}
+        </div>
+
+        {sub === 'today'    && <JournalToday    userId={userId} assistantName={assistantName} />}
+        {sub === 'calendar' && <JournalCalendar userId={userId} />}
+        {sub === 'goals'    && <JournalGoals    userId={userId} assistantName={assistantName} initialPeriod={goalsInitialPeriod} />}
+        {sub === 'search'   && <JournalSearch   userId={userId} />}
       </div>
     </div>
   )

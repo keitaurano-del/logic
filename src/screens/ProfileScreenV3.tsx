@@ -58,16 +58,8 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
             {(userName || 'G').slice(0, 1).toUpperCase()}
           </div>
           <div style={{ flex: 1 }}>
-            <div className="profile-hero-name" style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, letterSpacing: '-.02em', marginBottom: 2, color: 'var(--text-on-hero)' }}>{userName || t('home.guestName')}</div>
-            <div style={{ fontSize: 14, color: 'var(--text-secondary)', fontWeight: 500 }}>{userName ? t('profile.userTraineeRole') : t('profile.guestPrompt')}</div>
-            {!userName && (
-              <button
-                onClick={() => onOpenSettings('account')}
-                style={{ marginTop: 8, padding: '6px 16px', background: 'var(--brand)', color: 'var(--text-on-hero)', border: 'none', borderRadius: 99, fontSize: 13, fontWeight: 700, cursor: 'pointer' }}
-              >
-                {t('profile.loginCta')}
-              </button>
-            )}
+            <div className="profile-hero-name" style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, letterSpacing: '-.02em', marginBottom: 2, color: 'var(--text-on-hero)' }}>{userName}</div>
+            <div style={{ fontSize: 14, color: 'var(--text-secondary)', fontWeight: 500 }}>{t('profile.userTraineeRole')}</div>
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8, position: 'relative', zIndex: 1 }}>
