@@ -11,6 +11,7 @@
  */
 
 import express from 'express'
+import rateLimit from 'express-rate-limit'
 import { google } from 'googleapis'
 import { GoogleAuth } from 'google-auth-library'
 import type { SupabaseClient } from '@supabase/supabase-js'
@@ -19,6 +20,16 @@ interface BillingDeps {
   supabase: SupabaseClient
 }
 
+// /api/billing/verify 専用 limiter: 1 分あたり 10 回 / IP。
+// 課金検証は購入直後のみ呼ばれる想定なのでブルートフォース耐性を上げる。
+const billingVerifyLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many billing verification requests. Please wait a minute.' },
+})
+
 export function createBillingRouter(deps: BillingDeps): express.Router {
   const { supabase } = deps
   const router = express.Router()
@@ -26,7 +37,7 @@ export function createBillingRouter(deps: BillingDeps): express.Router {
   // ------------------------------------------
   // Google Play Billing 購入検証 (SCRUM-116)
   // ------------------------------------------
-  router.post('/api/billing/verify', async (req, res) => {
+  router.post('/api/billing/verify', billingVerifyLimiter, async (req, res) => {
     try {
       const { purchaseToken, productId, userId } = req.body as {
         purchaseToken: string

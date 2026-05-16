@@ -1,5 +1,6 @@
 import express, { type Request } from 'express'
 import cors from 'cors'
+import { timingSafeEqual } from 'node:crypto'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import Anthropic from '@anthropic-ai/sdk'
@@ -58,6 +59,17 @@ const app = express()
 // Render / proxied environments: trust the first hop so X-Forwarded-For is honored
 // (without this all requests look like they come from the load balancer = no per-IP limiting).
 app.set('trust proxy', 1)
+
+// 定数時間で string を比較する。長さ不一致 / 値不一致のいずれも false。
+// header 由来の値（string | string[] | undefined）は string 限定で受ける。
+function safeEqual(provided: unknown, expected: string | undefined): boolean {
+  if (typeof provided !== 'string') return false
+  if (!expected) return false
+  const a = Buffer.from(provided)
+  const b = Buffer.from(expected)
+  if (a.length !== b.length) return false
+  return timingSafeEqual(a, b)
+}
 
 // CORS オリジン: カンマ区切りで複数指定可能。制御文字・引用符・前後空白は除去。
 // 例: "capacitor://localhost,https://localhost,https://logic-u5wn.onrender.com"
@@ -410,10 +422,13 @@ app.get('/api/placement/ranking', async (req, res) => {
 // Apolloフィードバック通知 — VM上のwebhookサーバーを叫び出し、即座にApolloに分析させる
 async function notifyApollo(payload: { category: string; message: string; jiraKey?: string }): Promise<void> {
   const webhookUrl = process.env.APOLLO_WEBHOOK_URL
-  const webhookSecret = process.env.APOLLO_FEEDBACK_SECRET || 'apollo-logic-2026'
+  const webhookSecret = process.env.APOLLO_FEEDBACK_SECRET
   if (!webhookUrl) {
-    // fallback: 本番環境変数未設定の場合はスキップ
     console.log('[apollo] APOLLO_WEBHOOK_URL not set — skipping real-time notification')
+    return
+  }
+  if (!webhookSecret) {
+    console.error('[apollo] APOLLO_FEEDBACK_SECRET not configured — aborting notification (fail closed)')
     return
   }
   try {
@@ -589,8 +604,7 @@ app.post('/api/report-problem', async (req, res) => {
 })
 
 app.get('/api/reports', async (req, res) => {
-  const adminSecret = process.env.ADMIN_SECRET
-  if (!adminSecret || req.headers['x-admin-secret'] !== adminSecret) {
+  if (!safeEqual(req.headers['x-admin-secret'], process.env.ADMIN_SECRET)) {
     res.status(401).json({ error: 'Unauthorized' }); return
   }
   try {
@@ -621,8 +635,7 @@ app.get('/api/reports', async (req, res) => {
 // 管理者: Premium 付与
 // =============================================
 app.post('/api/admin/grant-premium', adminLimiter, async (req, res) => {
-  const adminSecret = req.headers['x-admin-secret']
-  if (!adminSecret || adminSecret !== process.env.ADMIN_SECRET) {
+  if (!safeEqual(req.headers['x-admin-secret'], process.env.ADMIN_SECRET)) {
     return res.status(403).json({ error: 'Forbidden' })
   }
 
@@ -728,8 +741,8 @@ app.post('/api/jira-create', async (req: Request, res) => {
   if (!process.env.JIRA_WEBHOOK_SECRET) {
     res.status(503).json({ error: 'Not configured' }); return
   }
-  const authHeader = req.headers.authorization || ''
-  if (authHeader !== `Bearer ${process.env.JIRA_WEBHOOK_SECRET}`) {
+  const expected = `Bearer ${process.env.JIRA_WEBHOOK_SECRET}`
+  if (!safeEqual(req.headers.authorization, expected)) {
     return res.status(401).json({ error: 'Unauthorized' })
   }
 
