@@ -483,6 +483,7 @@ function AppV3() {
         <JournalScreen
           userId={currentUser.id}
           assistantName={assistantName}
+          onUpdateAssistantName={updateAssistantName}
           initialSub={screen.sub}
         />
       )}
@@ -520,8 +521,6 @@ function AppV3() {
       {screen.type === 'profile' && (
         <ProfileScreenV3
           userName={userName}
-          assistantName={assistantName}
-          onUpdateAssistantName={updateAssistantName}
           onOpenSettings={(section) => navigate(section === 'account' ? { type: 'account-settings' } : section === 'notifications' ? { type: 'notification-settings' } : { type: 'settings' })}
           onOpenFeedback={() => navigate({ type: 'feedback' })}
           onOpenPricing={() => navigate({ type: 'pricing' })}
