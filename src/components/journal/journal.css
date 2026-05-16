@@ -365,11 +365,116 @@
 }
 
 .journal-cal-cell__dot {
-  width: 4px;
-  height: 4px;
+  /* 2026-05-16: 4px だと保存したかどうかが視認しづらかったので 6px に拡大。 */
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: var(--brand);
-  margin-top: 2px;
+  margin-top: 3px;
+}
+
+/* ── Recent journals list (2026-05-16) ───────────────────────────── */
+.journal-recent {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.journal-recent__title {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 0 4px;
+}
+
+.journal-recent__loading,
+.journal-recent__empty {
+  background: var(--bg-card);
+  border: 1px solid var(--border, rgba(255,255,255,.06));
+  border-radius: 12px;
+  padding: 16px;
+  font-size: 13px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.journal-recent__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.journal-recent__item {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  text-align: left;
+  background: var(--bg-card);
+  border: 1px solid var(--border, rgba(255,255,255,.06));
+  border-radius: 12px;
+  padding: 12px 14px;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  gap: 6px;
+  transition: border-color 0.15s, transform 0.1s;
+}
+
+.journal-recent__item:hover {
+  border-color: color-mix(in srgb, var(--brand) 35%, transparent);
+}
+
+.journal-recent__item:active {
+  transform: scale(0.99);
+}
+
+.journal-recent__item-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.journal-recent__date {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.journal-recent__icons {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.journal-recent__excerpt {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.journal-recent__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.journal-recent__tag {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--brand);
+  background: var(--brand-soft);
+  border-radius: 999px;
+  padding: 2px 8px;
 }
 
 .journal-cal-fab {
@@ -1436,7 +1541,10 @@
 
 /* ── Journal Hero (with streak badge top-right) ───────── */
 .journal-hero {
-  padding: calc(env(safe-area-inset-top, 44px) + 14px) 20px 20px;
+  /* 2026-05-16: Android WebView だと env(safe-area-inset-top) が 0 を返すケースがあり、
+     端末の時計と被るバグがあった。fallback を 56px まで持ち上げ、最低でもステータスバーぶんは
+     余白を確保する。実機の safe-area が大きい iPhone は env() 値が優先される。 */
+  padding: calc(env(safe-area-inset-top, 56px) + 14px) 20px 20px;
   background: var(--hero-grad-dark);
   color: var(--text-on-hero, #fff);
   display: flex;
@@ -1491,17 +1599,15 @@
   position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  height: 32px;
-  padding: 0 12px 0 10px;
-  border-radius: 999px;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
   border: none;
   cursor: pointer;
   color: #fff;
   font: inherit;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.06em;
   background: linear-gradient(135deg, #6C8EF5 0%, #8B5CF6 50%, #06B6D4 100%);
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.18) inset,

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { logout } from '../supabase'
+import { logout, updateUserEmail } from '../supabase'
 import { getDisplayName, setDisplayName } from '../stats'
 import { updateDisplayName } from '../supabase'
 import { CheckIcon } from '../icons'
@@ -34,6 +34,13 @@ export function AccountSettingsScreen({ onBack, currentUser, onOpenLogin, onLogo
   const [nameSaving, setNameSaving] = useState(false)
   const [nameError, setNameError] = useState('')
   const [nameSuccess, setNameSuccess] = useState(false)
+
+  // メールアドレス変更ステート
+  const [editingEmail, setEditingEmail] = useState(false)
+  const [emailInput, setEmailInput] = useState(currentUser?.email ?? '')
+  const [emailSaving, setEmailSaving] = useState(false)
+  const [emailError, setEmailError] = useState('')
+  const [emailSentTo, setEmailSentTo] = useState<string | null>(null)
 
   const handleLogout = async () => {
     const ok = await confirmDialog({
@@ -71,6 +78,29 @@ export function AccountSettingsScreen({ onBack, currentUser, onOpenLogin, onLogo
   }
 
   const todayChanged = !canChangeName()
+
+  const handleSaveEmail = async () => {
+    const next = emailInput.trim()
+    if (!next) { setEmailError(t('auth.errEmailRequired')); return }
+    if (currentUser?.email && next.toLowerCase() === currentUser.email.toLowerCase()) {
+      setEmailError(t('accountSettings.emailSameError'))
+      return
+    }
+    setEmailSaving(true)
+    setEmailError('')
+    const result = await updateUserEmail(next)
+    setEmailSaving(false)
+    if (result.error) {
+      if (result.error === 'auth/invalid-email') setEmailError(t('auth.invalidEmail'))
+      else if (result.error === 'auth/rate-limited') setEmailError(t('auth.errRateLimited'))
+      else if (result.error === 'auth/email-in-use') setEmailError(t('accountSettings.emailInUseError'))
+      else if (result.error === 'auth/not-configured') setEmailError(t('auth.errNotConfigured'))
+      else setEmailError(t('auth.errSendLinkFailed'))
+      return
+    }
+    setEmailSentTo(next)
+    setEditingEmail(false)
+  }
 
   return (
     <div style={{ minHeight: '100dvh', background: 'var(--bg-primary)', color: 'var(--text-primary)', fontFamily: "'Noto Sans JP', sans-serif" }}>
@@ -129,8 +159,55 @@ export function AccountSettingsScreen({ onBack, currentUser, onOpenLogin, onLogo
               )}
             </div>
             <div style={{ padding: '12px 18px' }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '.06em', marginBottom: 4 }}>{t('accountSettings.email')}</div>
-              <div style={{ fontSize: 14, color: 'var(--text-secondary)' }}>{currentUser.email}</div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '.06em', marginBottom: 6 }}>{t('accountSettings.email')}</div>
+              {editingEmail ? (
+                <div>
+                  <input
+                    type="email"
+                    aria-label={t('accountSettings.email')}
+                    value={emailInput}
+                    onChange={e => setEmailInput(e.target.value)}
+                    onKeyDown={e => { if (e.key === 'Enter') handleSaveEmail() }}
+                    autoFocus
+                    autoComplete="email"
+                    style={{
+                      width: '100%', padding: '10px 14px', borderRadius: 10,
+                      background: 'rgba(255,255,255,0.07)', border: `1px solid ${'var(--brand)'}`,
+                      color: 'var(--text-primary)', fontSize: 15, fontFamily: "'Noto Sans JP', sans-serif",
+                      outline: 'none', boxSizing: 'border-box', marginBottom: 8,
+                    }}
+                  />
+                  {emailError && <div role="alert" style={{ fontSize: 12, color: 'var(--md-sys-color-error)', marginBottom: 8 }}>{emailError}</div>}
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <button
+                      onClick={() => { setEditingEmail(false); setEmailError(''); setEmailInput(currentUser.email ?? '') }}
+                      style={{ flex: 1, padding: '10px', background: 'var(--bg-elevated)', border: 'none', borderRadius: 10, color: 'var(--text-secondary)', fontSize: 14, cursor: 'pointer' }}
+                    >{t('accountSettings.cancel')}</button>
+                    <button
+                      onClick={handleSaveEmail}
+                      disabled={emailSaving || !emailInput.trim()}
+                      style={{ flex: 1, padding: '10px', background: emailInput.trim() ? 'var(--brand)' : 'var(--bg-elevated)', border: 'none', borderRadius: 10, color: emailInput.trim() ? '#fff' : 'var(--text-muted)', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}
+                    >{emailSaving ? t('accountSettings.saving') : t('accountSettings.sendLinkBtn')}</button>
+                  </div>
+                  <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 8, lineHeight: 1.6 }}>
+                    {t('accountSettings.emailChangeHint')}
+                  </div>
+                </div>
+              ) : (
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+                  <div style={{ fontSize: 14, color: 'var(--text-secondary)', wordBreak: 'break-all' }}>{currentUser.email}</div>
+                  <button type="button" onClick={() => { setEditingEmail(true); setEmailInput(currentUser.email ?? ''); setEmailError(''); setEmailSentTo(null) }} style={{ fontSize: 13, color: 'var(--brand)', fontWeight: 700, cursor: 'pointer', padding: '4px 8px', background: 'transparent', border: 'none', minHeight: 32, flexShrink: 0 }}>{t('accountSettings.change')}</button>
+                </div>
+              )}
+              {emailSentTo && !editingEmail && (
+                <div role="status" aria-live="polite" style={{
+                  fontSize: 12, color: 'var(--text-primary)',
+                  background: 'var(--brand-soft)', borderRadius: 8,
+                  padding: '8px 10px', marginTop: 10, lineHeight: 1.6,
+                }}>
+                  {t('accountSettings.emailVerifySent', { email: emailSentTo })}
+                </div>
+              )}
             </div>
           </div>
         )}

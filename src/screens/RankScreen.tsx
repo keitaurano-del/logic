@@ -14,9 +14,6 @@ export function RankScreen({ onBack }: RankScreenProps) {
   const completed = getCompletedCount()
   const points = getPoints()
   const xp = completed * 100
-  const level = Math.floor(xp / 1000) + 1
-  const levelXp = xp % 1000
-  const levelPct = (levelXp / 1000) * 100
   const tier = getCurrentTier(xp)
   const isJa = getLocale() === 'ja'
   const title = isJa ? tier.title : tier.titleEn
@@ -25,6 +22,10 @@ export function RankScreen({ onBack }: RankScreenProps) {
 
   const nextTier = RANK_TIERS.find((t) => t.level === tier.level + 1)
   const xpToNext = nextTier ? nextTier.minXp - xp : 0
+  // 進捗バーは「現在のランク → 次のランク」までの距離を表示する。
+  const tierSpan = nextTier ? nextTier.minXp - tier.minXp : 1
+  const tierProgress = xp - tier.minXp
+  const tierPct = nextTier ? Math.max(2, Math.min(100, Math.round((tierProgress / tierSpan) * 100))) : 100
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)', paddingBottom: 40 }}>
@@ -59,11 +60,11 @@ export function RankScreen({ onBack }: RankScreenProps) {
             borderRadius: 28, overflow: 'hidden',
             boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
           }}>
-            <RankIllustration level={level} size={140} />
+            <RankIllustration level={tier.level} size={140} />
           </div>
         </div>
 
-        {/* Level badge */}
+        {/* Rank badge — tier.level (1〜10) */}
         <div style={{ textAlign: 'center', marginBottom: 6 }}>
           <span style={{
             display: 'inline-block', fontSize: 14, fontWeight: 800,
@@ -71,7 +72,7 @@ export function RankScreen({ onBack }: RankScreenProps) {
             color: 'rgba(255,255,255,0.45)', background: 'rgba(255,255,255,0.08)',
             borderRadius: 20, padding: '3px 14px',
           }}>
-            Lv.{level}
+            Rank {tier.level} / {RANK_TIERS.length}
           </span>
         </div>
 
@@ -85,7 +86,7 @@ export function RankScreen({ onBack }: RankScreenProps) {
           {title}
         </div>
 
-        {/* XP Progress */}
+        {/* XP Progress（現ランク → 次ランク） */}
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, padding: '0 2px' }}>
           <span style={{
             fontSize: 13, fontWeight: 700, letterSpacing: '0.12em',
@@ -94,7 +95,7 @@ export function RankScreen({ onBack }: RankScreenProps) {
             {t('home.levelProgress')}
           </span>
           <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.75)', fontWeight: 600 }}>
-            {levelXp.toLocaleString()} / 1,000
+            {nextTier ? `${tierProgress.toLocaleString()} / ${tierSpan.toLocaleString()}` : 'MAX'}
           </span>
         </div>
         <div style={{
@@ -102,7 +103,7 @@ export function RankScreen({ onBack }: RankScreenProps) {
         }}>
           <div style={{
             background: 'linear-gradient(90deg, #6C8EF5, #9BB3FA)',
-            height: '100%', width: `${Math.max(levelPct, 2)}%`, borderRadius: 99,
+            height: '100%', width: `${tierPct}%`, borderRadius: 99,
             transition: 'width 0.6s ease',
           }} />
         </div>
@@ -309,7 +310,7 @@ export function RankScreen({ onBack }: RankScreenProps) {
                   fontSize: 13, fontWeight: 800, letterSpacing: '0.12em',
                   textTransform: 'uppercase', color: 'var(--brand)', marginBottom: 4,
                 }}>
-                  Lv.{selectedTier.level}
+                  Rank {selectedTier.level} / {RANK_TIERS.length}
                 </div>
                 <div style={{
                   fontFamily: "'Inter Tight', 'Inter', sans-serif",

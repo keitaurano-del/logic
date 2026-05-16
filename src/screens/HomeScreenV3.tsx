@@ -461,10 +461,12 @@ function buildReviewSub(due: number, weak: number, total: number, unresolved: nu
 }
 
 function AILargeCard({ image, name, sub, onClick }: { image: string; name: string; sub: string; onClick: () => void }) {
+  // 画像は 16:9 (1600x900) なので、aspectRatio で全体が表示されるようにする。
+  // 高さ固定 (140px) + objectFit:cover だと左上の文字が縦方向に切られていた。
   return (
     <button type="button" onClick={onClick} aria-label={`${name}: ${sub}`} style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', cursor: 'pointer', boxShadow: 'var(--shadow-v3-card-inset)', flexShrink: 0, position: 'relative', border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%', padding: 0 }}>
-      <div style={{ height: 140, overflow: 'hidden' }}>
-        <img src={image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+      <div style={{ width: '100%', aspectRatio: '16 / 9', overflow: 'hidden' }}>
+        <img src={image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top', display: 'block' }} />
       </div>
       <div style={{ padding: '16px 18px 18px' }}>
         <div style={{ fontSize: 17, fontWeight: 700, marginBottom: 4 }}>{name}</div>

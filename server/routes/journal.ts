@@ -215,25 +215,66 @@ ${(scheduleNotes || '').toString().trim() || '未入力'}`
       const streak = typeof lessonStreak === 'number' && lessonStreak >= 0 ? Math.floor(lessonStreak) : 0
       const sDays = typeof studyDays === 'number' && studyDays >= 0 ? Math.floor(studyDays) : 0
 
+      // 2026-05-16: 「コンサル1年目」固定の前提を撤廃。
+      // 実際のアプリ利用状況（連続日数・累計学習日数・レッスン完了総数・フェルミ実施数）
+      // からユーザーのフェーズを推定し、それに合わせて温度感を変える。
+      const totalLessonsCompleted = Object.values(
+        (typeof progressSummary === 'object' && progressSummary !== null)
+          ? (progressSummary as Record<string, { completed?: number }>)
+          : {}
+      ).reduce((sum, p) => sum + (typeof p?.completed === 'number' ? p.completed : 0), 0)
+
+      // 利用状況からおおまかなフェーズを決定:
+      //   beginner: 学習日数 ≤ 7 or レッスン完了 < 10
+      //   growing:  学習日数 8〜30 / 連続記録あり
+      //   committed: 学習日数 31〜90 / レッスン完了 30+
+      //   veteran:  学習日数 90+ / 高い連続記録
+      let phase: 'beginner' | 'growing' | 'committed' | 'veteran'
+      if (sDays >= 90 || totalLessonsCompleted >= 80) phase = 'veteran'
+      else if (sDays >= 31 || totalLessonsCompleted >= 30) phase = 'committed'
+      else if (sDays >= 8 || totalLessonsCompleted >= 10) phase = 'growing'
+      else phase = 'beginner'
+
+      const phaseGuidanceJa: Record<typeof phase, string> = {
+        beginner: 'ユーザーは Logic を使い始めたばかり（学習日数 ' + sDays + '日 / 累計レッスン ' + totalLessonsCompleted + '件）。まずは続けることの価値・小さな勝利を肯定し、無理な高負荷タスクは勧めない。',
+        growing:  'ユーザーは習慣を作っている途中（学習日数 ' + sDays + '日 / 累計レッスン ' + totalLessonsCompleted + '件 / 連続 ' + streak + '日）。ここで何が効いているかを言語化し、再現性のある小さな次の一歩を示す。',
+        committed:'ユーザーはすでにコミットしている（学習日数 ' + sDays + '日 / 累計レッスン ' + totalLessonsCompleted + '件 / 連続 ' + streak + '日）。応援というより、内省を深める問いや弱点領域への挑戦を促す。',
+        veteran:  'ユーザーはベテラン（学習日数 ' + sDays + '日 / 累計レッスン ' + totalLessonsCompleted + '件 / 連続 ' + streak + '日）。称賛より、現在の伸び悩みやマンネリを指摘し、新しい切り口（実務適用・他者への教える等）を提案してよい。',
+      }
+      const phaseGuidanceEn: Record<typeof phase, string> = {
+        beginner: 'User is just starting Logic (' + sDays + ' study days / ' + totalLessonsCompleted + ' lessons done). Affirm the value of just showing up and small wins; do not push heavy tasks yet.',
+        growing:  'User is building the habit (' + sDays + ' study days / ' + totalLessonsCompleted + ' lessons / ' + streak + '-day streak). Name what is working and suggest one small repeatable next step.',
+        committed:'User is committed (' + sDays + ' study days / ' + totalLessonsCompleted + ' lessons / ' + streak + '-day streak). Skip generic praise; ask deeper reflective questions or nudge a weak area.',
+        veteran:  'User is a veteran (' + sDays + ' study days / ' + totalLessonsCompleted + ' lessons / ' + streak + '-day streak). Praise sparingly; point out plateaus and suggest fresh angles (real-world application, teaching others, etc).',
+      }
+
       const systemPrompt = isEn
-        ? `You are "${name}", a personal assistant inside the Logic app for a first-year consultant.
-Look at the user's recent activity holistically — active goals, journal entries, lesson progress, and Fermi-estimation practice — and give grounded, encouraging feedback in 250 English words or less.
+        ? `You are "${name}", a personal assistant inside the Logic app — a thinking-skills training app (logic, case interview, Fermi estimation, philosophy, etc).
+
+Your user context:
+${phaseGuidanceEn[phase]}
+
+Look at the user's recent activity holistically — active goals, journal entries, lesson progress, and Fermi-estimation practice — and give grounded feedback in 250 English words or less. The tone must match the user's phase (see above): a beginner gets warm encouragement, a veteran gets sharper challenge.
 
 Structure:
-- 1-2 lines: read of current momentum
-- 2-3 lines: what's going well across the signals
-- 2-3 lines: one or two concrete next steps that connect goals, journal patterns, and lesson activity
+- 1-2 lines: read of current momentum (calibrated to their phase)
+- 2-3 lines: what's actually working in the data (be specific — cite numbers / dates / patterns)
+- 2-3 lines: one concrete next step that fits their current level
 
-Stay warm and specific. Never lecture. Use the user's evidence, not generic advice.`
-        : `あなたは Logic アプリのパーソナルアシスタント「${name}」です。
-ユーザー（コンサル1年目）の最近の活動 — アクティブな目標・ジャーナル・レッスン進捗・フェルミ推定の実施状況 — を総合的に見て、根拠のある励ましのフィードバックを 300 字以内でしてください。
+Do not assume any specific job, age, or background — use only the evidence from their app usage and journal entries. Never lecture. Never give generic advice.`
+        : `あなたは Logic アプリのパーソナルアシスタント「${name}」です。Logic は思考力を鍛えるアプリ（論理思考、ケース面接、フェルミ推定、哲学など）です。
+
+ユーザーの状況:
+${phaseGuidanceJa[phase]}
+
+ユーザーの最近の活動 — アクティブな目標・ジャーナル・レッスン進捗・フェルミ推定の実施状況 — を総合的に見て、根拠のあるフィードバックを 300 字以内でしてください。トーンはユーザーのフェーズに合わせること（上記参照）。初心者には温かい励まし、ベテランには鋭めの指摘。
 
 構成:
-- 1〜2行：今のモメンタムの読み取り
-- 2〜3行：複数シグナルから見て良い点
-- 2〜3行：目標・ジャーナル・レッスンを結びつけた具体的な次の一歩を1〜2つ
+- 1〜2行：今のモメンタムの読み取り（フェーズに合わせた温度感で）
+- 2〜3行：データから実際に機能していること（具体的に — 数字・日付・パターンを引用）
+- 2〜3行：今のレベルに合う具体的な次の一歩を1つ
 
-温かく具体的に。一般論ではなくユーザー自身のデータを根拠に。説教しない。`
+職業・年齢・バックグラウンドを勝手に仮定しない（「コンサル」「新卒」「学生」等と決めつけない）。アプリ利用状況とジャーナルの内容だけを根拠にする。一般論を言わない。説教しない。`
 
       const userMessage = isEn
         ? `## Active goals
@@ -358,13 +399,19 @@ ${evening || '（なし）'}
       }
       const trimmed = text.slice(0, 5000) // 暴走防御
 
+      // 2026-05-16: 構造化（見出し・箇条書き・段落分け）を許可。意味の追加は引き続き禁止。
       const systemPrompt = isEn
-        ? `You are a text cleanup tool. The user gives you a raw text (often dictated by voice and full of fillers, missing punctuation, or typos). Your ONLY job is to clean it up:
+        ? `You are a text cleanup tool. The user gives you a raw text (often dictated by voice and full of fillers, missing punctuation, or typos). Your job is to clean it up AND organize it visually so it's easier to re-read later:
 
 - Fix typos and obvious spelling errors
 - Add appropriate punctuation and paragraph breaks
 - Remove filler words ("um", "uh", "like", "you know", repetitions)
 - Normalize whitespace
+- Group related sentences into paragraphs
+- Use Markdown when it genuinely helps readability:
+  - "## Heading" for distinct topic sections (only if the text has 2+ topics)
+  - "- " bullet lists when the user is enumerating items
+  - **bold** for emphasis the writer clearly intended
 - Keep the EXACT meaning, tone, and information
 
 DO NOT:
@@ -372,14 +419,20 @@ DO NOT:
 - Add new content, opinions, or interpretation
 - Change the writer's voice or style
 - Translate
+- Force structure on short single-topic text (just clean it up)
 
-Output ONLY the cleaned text. No preamble, no explanation, no quotes around it.`
-        : `あなたはテキスト整形ツールです。ユーザーは未整形のテキスト（多くは音声入力で、フィラー・句読点抜け・誤字を含む）を渡してきます。あなたの仕事は **整形のみ**:
+Output ONLY the cleaned/structured text. No preamble, no explanation, no quotes around it.`
+        : `あなたはテキスト整形ツールです。ユーザーは未整形のテキスト（多くは音声入力で、フィラー・句読点抜け・誤字を含む）を渡してきます。あなたの仕事は **整形 + 後で読みやすくなる構造化**:
 
 - 誤字脱字を直す
 - 適切な句読点と段落分けを入れる
 - フィラー（「えーと」「あの」「まあ」「なんていうか」、繰り返し）を除去
 - 余分な空白・改行を正規化
+- 関連する文をひとつの段落にまとめる
+- 読みやすさに本当に寄与する場合のみ Markdown を使う:
+  - 複数のトピックがあるなら「## 見出し」でセクション分け
+  - 列挙しているなら「- 」の箇条書き
+  - 書き手が明確に強調したい語は **太字**
 - 意味・トーン・情報は **完全に保つ**
 
 禁止事項:
@@ -387,8 +440,9 @@ Output ONLY the cleaned text. No preamble, no explanation, no quotes around it.`
 - 内容の追加・意見・解釈
 - 書き手の口調・スタイルの変更
 - 翻訳
+- 短く単一トピックの文を無理に構造化する（その場合はただ整形するだけ）
 
-出力は **整形済みテキストのみ**。前置き・説明・引用符は付けない。`
+出力は **整形・構造化済みテキストのみ**。前置き・説明・引用符は付けない。`
 
       const response = await client.messages.create({
         model: 'claude-haiku-4-5-20251001',

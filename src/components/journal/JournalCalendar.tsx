@@ -11,6 +11,8 @@ import { t, getLocale } from '../../i18n'
 interface JournalCalendarProps {
   userId: string
   assistantName?: string
+  /** ジャーナルを保存したときに親に通知（recent list の再フェッチ等で使用） */
+  onSaved?: () => void
 }
 
 const MONTH_LABEL_JA = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
@@ -25,7 +27,7 @@ function dateStr(y: number, m: number, d: number): string {
   return `${y}-${pad(m + 1)}-${pad(d)}`
 }
 
-export function JournalCalendar({ userId }: JournalCalendarProps) {
+export function JournalCalendar({ userId, onSaved }: JournalCalendarProps) {
   const [cursor, setCursor] = useState(() => {
     const d = new Date()
     return { year: d.getFullYear(), month: d.getMonth() }
@@ -34,6 +36,7 @@ export function JournalCalendar({ userId }: JournalCalendarProps) {
   const [recent, setRecent] = useState<DailyJournal[]>([])
   const [selected, setSelected] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [refreshTick, setRefreshTick] = useState(0)
   const today = todayKey()
 
   useEffect(() => {
@@ -43,7 +46,7 @@ export function JournalCalendar({ userId }: JournalCalendarProps) {
       if (!cancelled) setRecent(list)
     })()
     return () => { cancelled = true }
-  }, [userId])
+  }, [userId, refreshTick])
 
   const locale = getLocale()
   const monthLabel = (locale === 'en' ? MONTH_LABEL_EN : MONTH_LABEL_JA)[cursor.month]
@@ -97,6 +100,7 @@ export function JournalCalendar({ userId }: JournalCalendarProps) {
 
   const handleRefresh = () => {
     setCursor((c) => ({ ...c }))
+    setRefreshTick((t) => t + 1)
   }
 
   const handleAdd = () => {
@@ -181,7 +185,7 @@ export function JournalCalendar({ userId }: JournalCalendarProps) {
           date={selected}
           initialJournal={journals[selected] ?? null}
           onClose={() => setSelected(null)}
-          onSaved={() => { handleRefresh() }}
+          onSaved={() => { handleRefresh(); onSaved?.() }}
         />
       )}
     </div>

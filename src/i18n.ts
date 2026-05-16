@@ -84,6 +84,9 @@ const STRINGS: Record<Locale, Strings> = {
     'journal.tabCalendar': 'カレンダー',
     'journal.tabGoals': '目標',
     'journal.tabSearch': '検索',
+    'journal.recentTitle': '最近のジャーナル',
+    'journal.recentEmpty': 'まだジャーナルが保存されていません。カレンダーから日付をタップして書いてみてください。',
+    'journal.openEntryAria': 'この日のジャーナルを開く',
     'journal.moodLabel': '今日の気分は？',
     'journal.weatherLabel': '今日の天気は？',
     'journal.scheduleLabel': '今日の意識ポイント・予定',
@@ -1149,6 +1152,11 @@ const STRINGS: Record<Locale, Strings> = {
     'accountSettings.googleLogin': 'Googleでログイン',
     'accountSettings.emailLogin': 'メールアドレスでログイン',
     'accountSettings.changeOncePerDay': '表示名の変更は1日1回まで',
+    'accountSettings.sendLinkBtn': '確認リンクを送る',
+    'accountSettings.emailChangeHint': '入力した新しいメールアドレスに確認リンクを送ります。リンクをタップすると変更が完了します。',
+    'accountSettings.emailVerifySent': '{email} に確認リンクを送りました。メール内のリンクをタップしてください。',
+    'accountSettings.emailSameError': '現在のメールアドレスと同じです。',
+    'accountSettings.emailInUseError': 'このメールアドレスはすでに別のアカウントで使われています。',
 
     // Feedback screen (general feedback)
     'feedback.title': 'フィードバック',
@@ -1592,6 +1600,9 @@ const STRINGS: Record<Locale, Strings> = {
     'journal.tabCalendar': 'Calendar',
     'journal.tabGoals': 'Goals',
     'journal.tabSearch': 'Search',
+    'journal.recentTitle': 'Recent entries',
+    'journal.recentEmpty': 'No journal entries yet. Tap a date in the calendar to write one.',
+    'journal.openEntryAria': 'Open this day’s entry',
     'journal.moodLabel': "How's your mood today?",
     'journal.weatherLabel': "How's the weather today?",
     'journal.scheduleLabel': "Today's focus / schedule",
@@ -2658,6 +2669,11 @@ const STRINGS: Record<Locale, Strings> = {
     'accountSettings.googleLogin': 'Sign in with Google',
     'accountSettings.emailLogin': 'Sign in with email',
     'accountSettings.changeOncePerDay': 'You can change the display name once per day',
+    'accountSettings.sendLinkBtn': 'Send confirmation link',
+    'accountSettings.emailChangeHint': "We'll send a confirmation link to the new address. Tap the link to complete the change.",
+    'accountSettings.emailVerifySent': 'Confirmation link sent to {email}. Tap the link in your inbox to finish.',
+    'accountSettings.emailSameError': 'Same as your current email.',
+    'accountSettings.emailInUseError': 'This email is already used by another account.',
 
     // Feedback screen (general feedback)
     'feedback.title': 'Feedback',
