@@ -1104,7 +1104,6 @@ const STRINGS: Record<Locale, Strings> = {
     'notifSettings.journalHeading': 'ジャーナル',
     'notifSettings.journalReminder': 'ジャーナルリマインダー',
     'notifSettings.journalReminderSub': '指定時刻に今日のジャーナルを書く通知が届きます',
-    'notifSettings.note': '※ 通知はネイティブアプリ（iOS/Android）でのみ機能します。ブラウザ版では届きません。',
     'notifSettings.toggleAria': 'トグル',
 
     // Notification body messages (daily reminder, 20 variations)
@@ -2622,7 +2621,6 @@ const STRINGS: Record<Locale, Strings> = {
     'notifSettings.journalHeading': 'Journal',
     'notifSettings.journalReminder': 'Journal reminder',
     'notifSettings.journalReminderSub': 'Daily nudge to write your journal entry at the chosen time',
-    'notifSettings.note': '* Notifications work only on the native apps (iOS/Android). They are not delivered in the browser.',
     'notifSettings.toggleAria': 'Toggle',
 
     // Notification body messages (daily reminder, 20 variations)

@@ -232,11 +232,6 @@ export function NotificationSettingsScreen({ onBack }: Props) {
             )}
           </div>
         </div>
-
-        {/* note */}
-        <div style={{ fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.7, padding: '0 4px' }}>
-          {t('notifSettings.note')}
-        </div>
       </div>
     </div>
   )
