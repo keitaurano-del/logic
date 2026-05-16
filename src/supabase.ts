@@ -11,13 +11,15 @@ let supabase: ReturnType<typeof createClient> | null = null
 
 try {
   if (supabaseUrl && supabaseAnonKey) {
+    // implicit フロー（デフォルト）を維持。PKCE にすると `signInWithOtp` が
+    // PKCE verifier 紐付きのトークンを発行し、6桁 OTP 検証が即 otp_expired で
+    // 弾かれるため使えない。マジックリンクは implicit の hash フラグメント
+    // (#access_token=...) で返るので、deep link 側の handleAuthRedirect で
+    // setSession にフォールバックすれば成立する。
     supabase = createClient(supabaseUrl, supabaseAnonKey, {
       auth: {
-        flowType: 'pkce',
         // Native では deep link 経由でセッションを手動交換するため自動検出を無効化
         detectSessionInUrl: !Capacitor.isNativePlatform(),
-        persistSession: true,
-        autoRefreshToken: true,
       },
     })
   }
