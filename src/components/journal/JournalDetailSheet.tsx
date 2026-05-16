@@ -8,6 +8,7 @@ import { JournalActivityList } from './JournalActivityList'
 import { SparkleIcon } from './MoodWeatherIcons'
 import { PencilIcon, XIcon } from '../../icons'
 import { fetchJournalByDate, upsertJournal } from './journalDb'
+import { suggestJournalTags } from './journalApi'
 import { t } from '../../i18n'
 
 interface JournalDetailSheetProps {
@@ -82,6 +83,7 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
   const [loading, setLoading] = useState(initialJournal === undefined)
   const [saving, setSaving] = useState(false)
   const [savedToast, setSavedToast] = useState(false)
+  const [aiTagToast, setAiTagToast] = useState<string | null>(null)
 
   const modalRef = useRef<HTMLDivElement>(null)
   const closeBtnRef = useRef<HTMLButtonElement>(null)
@@ -174,23 +176,52 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
 
   const handleSave = async () => {
     setSaving(true)
+    const trimmedSchedule = scheduleNotes.trim()
+    const trimmedReflection = reflection.trim()
     const updated: DailyJournal = {
       ...emptyJournal(userId, date),
       mood,
       weather,
-      schedule_notes: scheduleNotes.trim() || null,
-      evening_reflection: reflection.trim() || null,
+      schedule_notes: trimmedSchedule || null,
+      evening_reflection: trimmedReflection || null,
       ai_summary: aiSummary.trim() || null,
       tags,
     }
     const { error } = await upsertJournal(updated)
     setSaving(false)
-    if (!error) {
-      setJournal(updated)
-      setSavedToast(true)
-      onSaved?.(updated)
-      setEditing(false)
-      setTimeout(() => setSavedToast(false), 1500)
+    if (error) return
+
+    setJournal(updated)
+    setSavedToast(true)
+    onSaved?.(updated)
+    setEditing(false)
+    setTimeout(() => setSavedToast(false), 1500)
+
+    // バックグラウンドで AI タグ提案。既存タグが少なく (<4)、本文がある場合のみ。
+    const hasText = trimmedSchedule.length > 5 || trimmedReflection.length > 5
+    if (hasText && tags.length < 4) {
+      ;(async () => {
+        const { suggestedTags } = await suggestJournalTags({
+          scheduleNotes: trimmedSchedule,
+          eveningReflection: trimmedReflection,
+          existingTags: tags,
+        })
+        if (!suggestedTags || suggestedTags.length === 0) return
+        const lower = new Set(tags.map((t2) => t2.toLowerCase()))
+        const additions = suggestedTags
+          .filter((s) => s && !lower.has(s.toLowerCase()))
+          .slice(0, Math.max(0, 5 - tags.length))
+        if (additions.length === 0) return
+        const merged = [...tags, ...additions]
+        const reupdated: DailyJournal = { ...updated, tags: merged }
+        const { error: e2 } = await upsertJournal(reupdated)
+        if (e2) return
+        setTags(merged)
+        setJournal(reupdated)
+        onSaved?.(reupdated)
+        setAiTagToast(t('journal.aiTagsAdded', { n: String(additions.length) }))
+        setTimeout(() => setAiTagToast(null), 2400)
+      })()
     }
   }
 
@@ -458,6 +489,9 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
 
         {savedToast && (
           <div className="journal-toast" role="status">{t('journal.savedToast')}</div>
+        )}
+        {aiTagToast && (
+          <div className="journal-toast" role="status">{aiTagToast}</div>
         )}
       </div>
     </div>

@@ -55,6 +55,32 @@ export async function cleanupText(text: string): Promise<{ cleaned?: string; err
   }
 }
 
+interface SuggestTagsRequest {
+  scheduleNotes?: string | null
+  eveningReflection?: string | null
+  existingTags?: string[]
+}
+
+export async function suggestJournalTags(req: SuggestTagsRequest): Promise<{ suggestedTags?: string[]; error?: string }> {
+  try {
+    const res = await fetch(`${API_BASE}/api/journal/tags`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...req, locale: getLocale() }),
+    })
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      return { error: data?.error || `HTTP ${res.status}` }
+    }
+    const data = await res.json()
+    return {
+      suggestedTags: Array.isArray(data?.suggested_tags) ? data.suggested_tags as string[] : [],
+    }
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : String(e) }
+  }
+}
+
 export async function goalFeedback(req: GoalFeedbackRequest): Promise<{ feedback?: string; error?: string }> {
   try {
     const res = await fetch(`${API_BASE}/api/journal/goal-feedback`, {

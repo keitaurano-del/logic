@@ -231,6 +231,75 @@ ${journalContext}`
   })
 
   // =============================================
+  // ジャーナル — 自動タグ抽出
+  //   schedule_notes と evening_reflection を入力に
+  //   2〜5 個の短いタグを返す。
+  // =============================================
+  router.post('/tags', journalLimiter, async (req: Request, res: Response) => {
+    try {
+      const { scheduleNotes, eveningReflection, existingTags, locale } = req.body || {}
+      const isEn = locale === 'en'
+
+      const morning = typeof scheduleNotes === 'string' ? scheduleNotes.trim().slice(0, 2000) : ''
+      const evening = typeof eveningReflection === 'string' ? eveningReflection.trim().slice(0, 2000) : ''
+
+      if (!morning && !evening) {
+        return res.status(400).json({ error: isEn ? 'No text input' : 'テキストが入力されていません' })
+      }
+
+      const sanitizedExisting = Array.isArray(existingTags)
+        ? existingTags
+            .filter((s): s is string => typeof s === 'string')
+            .map((s) => s.trim())
+            .filter((s) => s.length > 0 && s.length <= 24)
+            .slice(0, 12)
+        : []
+
+      const systemPrompt = isEn
+        ? `You read a daily journal entry and extract short, reusable tags that capture themes / actions / context.
+
+Output STRICTLY a comma-separated list of 2-5 tags. No prefix, no explanation, no hashtags, no quotes. Each tag is 1-3 words (or 1-10 characters in Japanese). Examples: "client meeting", "deep focus", "low energy", "family dinner". Do not repeat the user's existing tags verbatim — instead, complement them.`
+        : `あなたは日々のジャーナルから、テーマ・行動・状況を表す短いタグを抽出するツールです。
+
+**カンマ区切りのタグのみ** を出力してください（2〜5 個、各 1〜10 文字程度）。前置き・説明・ハッシュ記号・引用符は禁止。例: "クライアントMTG, 集中, 体調不良, 読書". ユーザーが既に登録しているタグはそのまま繰り返さず、補完するタグを返してください。`
+
+      const userMessage = isEn
+        ? `Morning intent / plan:
+${morning || '(none)'}
+
+Evening reflection:
+${evening || '(none)'}
+
+User's existing tags (do not repeat verbatim): ${sanitizedExisting.length ? sanitizedExisting.join(', ') : '(none)'}`
+        : `【朝の予定・意識ポイント】
+${morning || '（なし）'}
+
+【夜の振り返り】
+${evening || '（なし）'}
+
+【ユーザーの既存タグ（そのまま繰り返さない）】 ${sanitizedExisting.length ? sanitizedExisting.join('、') : '（なし）'}`
+
+      const response = await client.messages.create({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 200,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: userMessage }],
+      })
+      const raw = response.content[0].type === 'text' ? response.content[0].text.trim() : ''
+      const suggested = raw
+        .split(/[,、\n]/)
+        .map((s) => s.replace(/^#+/, '').replace(/["'`「」『』]/g, '').trim())
+        .filter((s) => s.length > 0 && s.length <= 24)
+        .slice(0, 5)
+
+      res.json({ suggested_tags: suggested })
+    } catch (e: unknown) {
+      console.error('journal tags error:', e)
+      res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
+    }
+  })
+
+  // =============================================
   // ジャーナル — テキスト整形 (cleanup)
   //   入力テキストの誤字脱字 / 句読点 / 改行を整えるだけ。
   //   内容の追加・要約・意見・解釈は禁止。
