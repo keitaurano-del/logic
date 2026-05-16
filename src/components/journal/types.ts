@@ -15,6 +15,11 @@ export interface DailyJournal {
   evening_reflection: string | null  // 夜の振り返り
   ai_summary: string | null
   tags: string[]
+  // Health Connect / HealthKit snapshot — null when not synced or unavailable.
+  steps_count?: number | null
+  sleep_minutes?: number | null
+  sleep_start?: string | null // ISO 8601
+  sleep_end?: string | null   // ISO 8601
   created_at?: string
   updated_at?: string
 }

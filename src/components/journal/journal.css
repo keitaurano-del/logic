@@ -2082,3 +2082,131 @@
   .journal-celebration__piece { animation: none; }
   .journal-celebration__piece { display: none; }
 }
+
+/* ── Health Connect snapshot card ─────────────────────────────────────── */
+.journal-health-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border, rgba(255,255,255,.06));
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.journal-health-card--muted {
+  align-items: stretch;
+  text-align: center;
+  gap: 12px;
+}
+
+.journal-health-card__msg {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+.journal-health-card__action {
+  align-self: center;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-on-brand, #fff);
+  background: var(--brand);
+  border: none;
+  border-radius: 10px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.journal-health-card__action:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.journal-health-card__link {
+  align-self: center;
+  padding: 4px 8px;
+  font-size: 11px;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.journal-health-card__metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.journal-health-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  background: var(--bg-elevated, rgba(255,255,255,.03));
+  border-radius: 10px;
+  min-width: 0;
+}
+
+.journal-health-metric--steps { color: var(--brand); }
+.journal-health-metric--sleep { color: var(--cat-lateral, #8B7FE3); }
+
+.journal-health-metric__head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.journal-health-metric__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.journal-health-metric__label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 0.02em;
+}
+
+.journal-health-metric__value {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  color: var(--text-primary);
+}
+
+.journal-health-metric__num {
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+.journal-health-metric__unit {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.journal-health-metric__sub {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.journal-health-card__refresh {
+  align-self: flex-end;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid var(--border, rgba(255,255,255,.08));
+  border-radius: 99px;
+  cursor: pointer;
+}
+
+.journal-health-card__refresh:disabled { opacity: 0.5; cursor: not-allowed; }

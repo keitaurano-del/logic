@@ -18,3 +18,11 @@ export { configureKeyboard, useKeyboardHeight } from './keyboard'
 export { presentActionSheet } from './actionSheet'
 export type { SheetOption } from './actionSheet'
 export { usePrefersReducedMotion, prefersReducedMotion } from './motion'
+export {
+  getHealthAvailability,
+  requestHealthAuthorization,
+  checkHealthAuthorization,
+  openHealthSettings,
+  getHealthSnapshot,
+} from './health'
+export type { HealthAvailability, HealthSnapshot } from './health'

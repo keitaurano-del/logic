@@ -5,6 +5,8 @@ import { MoodIcon, WeatherIcon } from './MoodWeatherIcons'
 import { VoiceTextarea } from './VoiceTextarea'
 import { TagInput } from './TagInput'
 import { JournalActivityList } from './JournalActivityList'
+import { JournalHealthCard } from './JournalHealthCard'
+import type { HealthSnapshot } from '../../platform/health'
 import { SparkleIcon } from './MoodWeatherIcons'
 import { PencilIcon, XIcon } from '../../icons'
 import { fetchJournalByDate, upsertJournal } from './journalDb'
@@ -75,6 +77,12 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
   const [scheduleNotes, setScheduleNotes] = useState<string>(initialJournal?.schedule_notes ?? '')
   const [reflection, setReflection] = useState<string>(initialJournal?.evening_reflection ?? '')
   const [tags, setTags] = useState<string[]>(initialJournal?.tags ?? [])
+  const [health, setHealth] = useState<HealthSnapshot>(() => ({
+    steps: initialJournal?.steps_count ?? null,
+    sleepMinutes: initialJournal?.sleep_minutes ?? null,
+    sleepStart: initialJournal?.sleep_start ?? null,
+    sleepEnd: initialJournal?.sleep_end ?? null,
+  }))
   const aiSummary = journal?.ai_summary ?? ''
 
   const [phase, setPhase] = useState<Phase>(() => decideInitialPhase(initialJournal ?? null))
@@ -105,6 +113,12 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
         setScheduleNotes(j.schedule_notes ?? '')
         setReflection(j.evening_reflection ?? '')
         setTags(j.tags ?? [])
+        setHealth({
+          steps: j.steps_count ?? null,
+          sleepMinutes: j.sleep_minutes ?? null,
+          sleepStart: j.sleep_start ?? null,
+          sleepEnd: j.sleep_end ?? null,
+        })
         setPhase(decideInitialPhase(j))
         if (hasContent(j)) setEditing(false)
       } else {
@@ -189,6 +203,10 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
       evening_reflection: trimmedReflection || null,
       ai_summary: aiSummary.trim() || null,
       tags,
+      steps_count: health.steps,
+      sleep_minutes: health.sleepMinutes,
+      sleep_start: health.sleepStart,
+      sleep_end: health.sleepEnd,
     }
     // 保存前: この保存で「初めて朝/夜が埋まる」かを判定（XP は新規完成時のみ）
     const wasMorning = hasMorningContent(journal?.schedule_notes ?? '', journal?.tags ?? [])
@@ -338,6 +356,10 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
         />
       </div>
       <div>
+        <div className="journal-section__label" style={{ marginBottom: 8 }}>{t('journal.healthTitle')}</div>
+        <JournalHealthCard date={date} initial={health} onSnapshot={setHealth} />
+      </div>
+      <div>
         <div className="journal-section__label" style={{ marginBottom: 8 }}>{t('journal.activityTitle')}</div>
         <JournalActivityList date={date} />
       </div>
@@ -399,6 +421,10 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
           <div className="journal-modal__body">{reflection}</div>
         </div>
       )}
+      <div className="journal-view-section">
+        <div className="journal-modal__section-label">{t('journal.healthTitle')}</div>
+        <JournalHealthCard date={date} initial={health} onSnapshot={setHealth} />
+      </div>
       <div className="journal-view-section">
         <div className="journal-modal__section-label">{t('journal.activityTitle')}</div>
         <JournalActivityList date={date} />

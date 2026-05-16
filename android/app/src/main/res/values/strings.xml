@@ -4,4 +4,6 @@
     <string name="title_activity_main">Logic</string>
     <string name="package_name">com.logicalthinking.app</string>
     <string name="custom_url_scheme">com.logicalthinking.app</string>
+    <!-- Health Connect: shown when the user taps "プライバシーポリシー" in the Health Connect permissions sheet. -->
+    <string name="health_connect_privacy_policy_url">file:///android_asset/public/privacy.html</string>
 </resources>
