@@ -248,10 +248,19 @@ export async function syncOnLogin(userId: string): Promise<void> {
 }
 
 export async function syncOnLogout(): Promise<void> {
-  setSyncUser(null)
   // 2026-05-16: ログアウト時はローカルのユーザーデータをクリア。
-  // 残すのは UI / インストール永続キー（locale, theme, v3-preview, install-id, dev-mode, admin）のみ。
+  // 残すのは UI / インストール永続キー（locale, theme, v3-preview, install-id,
+  // dev-mode, admin, onboarded, tutorial）のみ。
   // 個人の進捗・通知設定・ジャーナルXP・サブスク状態などはすべて削除する。
+  //
+  // 注意: Supabase の onAuthChange は最初に INITIAL_SESSION イベントで
+  // null を返してくる（未ログインの場合）。これは「ログアウト」ではなく
+  // 「最初から未ログイン」なので、_currentUserId が null のまま null を
+  // 受け取ったときは何もしない。
+  const wasLoggedIn = _currentUserId !== null
+  setSyncUser(null)
+  if (!wasLoggedIn) return
+
   const KEEP_KEYS = new Set([
     'logic-locale',
     'logic-theme',
@@ -259,6 +268,13 @@ export async function syncOnLogout(): Promise<void> {
     'logic-install-id',
     'logic-dev-mode',
     'logic-admin',
+    'logic-onboarded',
+    'logic-onboarding-done',
+    'logic-tutorial-home-done',
+    'logic-tutorial-daily-done',
+    'logic-tutorial-lesson-done',
+    'logic-tutorial-placement-dismissed',
+    'logic-tutorial-fab-dismissed',
   ])
   try {
     const keys: string[] = []
