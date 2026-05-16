@@ -55,6 +55,7 @@ import { TutorialOverlay, TutorialFAB } from './components/TutorialOverlay'
 import { tutorial } from './tutorial/tutorialStorage'
 import { t } from './i18n'
 import { useAssistantName } from './hooks/useAssistantName'
+import { addNotificationTapListener, loadStreakAlertPref, scheduleStreakRiskReminder } from './notifications'
 
 const ONBOARDED_KEY = 'logic-onboarded'
 const INSTALL_ID_KEY = 'logic-install-id'
@@ -251,6 +252,22 @@ function AppV3() {
       unsub()
     }
   }, [])
+
+  // 通知タップ → ホームへ deep link
+  // streakAlert ON ならアプリ起動時に schedule 再計算（今日の学習状況を反映）
+  useEffect(() => {
+    let cleanup: (() => void) | undefined
+    void (async () => {
+      cleanup = await addNotificationTapListener(() => {
+        setTab('home')
+        navigate({ type: 'home' })
+      })
+      if (loadStreakAlertPref().streakAlert) {
+        void scheduleStreakRiskReminder()
+      }
+    })()
+    return () => { cleanup?.() }
+  }, [navigate])
 
   // 表示名: localStorage優先 → user_metadata → email
   const storedName = getDisplayName()

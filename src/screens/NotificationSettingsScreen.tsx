@@ -1,41 +1,15 @@
 import { useState } from 'react'
 import { Header } from '../components/platform/Header'
 import {
-  loadReminderPref, scheduleDailyReminder,
-  cancelDailyReminder, requestNotificationPermission, isNative,
+  loadReminderPref, scheduleDailyReminder, cancelDailyReminder,
+  loadStreakAlertPref, scheduleStreakRiskReminder, cancelStreakRiskReminder,
+  requestNotificationPermission, isNative,
 } from '../notifications'
 import { Switch } from '../components/Switch'
 import { t } from '../i18n'
 
 interface Props {
   onBack: () => void
-}
-
-// ── 追加通知設定の保存 ────────────────────────────────────────────
-const EXTRA_NOTIF_KEY = 'logic-notif-extra'
-
-interface ExtraNotifPref {
-  newLesson: boolean       // 新レッスン公開
-  rankingUpdate: boolean   // ランキング更新（週次）
-  deviationChange: boolean // 偏差値変動
-  streakAlert: boolean     // 連続学習アラート（途切れそう）
-}
-
-function loadExtraPref(): ExtraNotifPref {
-  try {
-    const raw = localStorage.getItem(EXTRA_NOTIF_KEY)
-    if (raw) return JSON.parse(raw)
-  } catch { /* ignore */ }
-  return {
-    newLesson: true,
-    rankingUpdate: true,
-    deviationChange: false,
-    streakAlert: true,
-  }
-}
-
-function saveExtraPref(pref: ExtraNotifPref) {
-  try { localStorage.setItem(EXTRA_NOTIF_KEY, JSON.stringify(pref)) } catch { /* ignore */ }
 }
 
 // ── UI parts ──────────────────────────────────────────────────────
@@ -52,9 +26,9 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
   )
 }
 
-function NotifRow({ label, sub, value, onChange }: { label: string; sub: string; value: boolean; onChange: (v: boolean) => void }) {
+function NotifRow({ label, sub, value, onChange, last }: { label: string; sub: string; value: boolean; onChange: (v: boolean) => void; last?: boolean }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', padding: '15px 20px', gap: 12, borderBottom: `1px solid ${'var(--border)'}` }}>
+    <div style={{ display: 'flex', alignItems: 'center', padding: '15px 20px', gap: 12, borderBottom: last ? 'none' : `1px solid ${'var(--border)'}` }}>
       <div style={{ flex: 1 }}>
         <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)' }}>{label}</div>
         <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.5 }}>{sub}</div>
@@ -71,7 +45,7 @@ export function NotificationSettingsScreen({ onBack }: Props) {
   const [enabled, setEnabled] = useState(pref.enabled)
   const [hour, setHour] = useState(pref.hour)
   const [minute, setMinute] = useState(pref.minute)
-  const [extra, setExtra] = useState<ExtraNotifPref>(loadExtraPref)
+  const [streakAlert, setStreakAlert] = useState(() => loadStreakAlertPref().streakAlert)
 
   async function handleToggle(v: boolean) {
     if (v) {
@@ -90,10 +64,15 @@ export function NotificationSettingsScreen({ onBack }: Props) {
     if (enabled) await scheduleDailyReminder(h, m)
   }
 
-  function updateExtra(key: keyof ExtraNotifPref, val: boolean) {
-    const next = { ...extra, [key]: val }
-    setExtra(next)
-    saveExtraPref(next)
+  async function handleStreakAlertToggle(v: boolean) {
+    if (v) {
+      const granted = await requestNotificationPermission()
+      if (!granted && isNative()) return
+      await scheduleStreakRiskReminder()
+    } else {
+      await cancelStreakRiskReminder()
+    }
+    setStreakAlert(v)
   }
 
   return (
@@ -111,9 +90,10 @@ export function NotificationSettingsScreen({ onBack }: Props) {
               sub={t('notifSettings.dailyReminderSub')}
               value={enabled}
               onChange={handleToggle}
+              last={!enabled}
             />
             {enabled && (
-              <div style={{ padding: '16px 20px', borderBottom: `1px solid ${'var(--border)'}` }}>
+              <div style={{ padding: '16px 20px' }}>
                 {!isNative() && (
                   <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 12, padding: '8px 12px', background: 'var(--bg-primary)', borderRadius: 8 }}>
                     {t('notifSettings.browserOnly')}
@@ -166,36 +146,10 @@ export function NotificationSettingsScreen({ onBack }: Props) {
             <NotifRow
               label={t('notifSettings.streakAlert')}
               sub={t('notifSettings.streakAlertSub')}
-              value={extra.streakAlert}
-              onChange={(v) => updateExtra('streakAlert', v)}
+              value={streakAlert}
+              onChange={handleStreakAlertToggle}
+              last
             />
-            <NotifRow
-              label={t('notifSettings.rankingUpdate')}
-              sub={t('notifSettings.rankingUpdateSub')}
-              value={extra.rankingUpdate}
-              onChange={(v) => updateExtra('rankingUpdate', v)}
-            />
-            <div style={{ display: 'flex', alignItems: 'center', padding: '15px 20px', gap: 12 }}>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)' }}>{t('notifSettings.deviationChange')}</div>
-                <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.5 }}>{t('notifSettings.deviationChangeSub')}</div>
-              </div>
-              <Toggle value={extra.deviationChange} onChange={(v) => updateExtra('deviationChange', v)} />
-            </div>
-          </div>
-        </div>
-
-        {/* ── コンテンツ ── */}
-        <div>
-          <SectionLabel>{t('notifSettings.contentSection')}</SectionLabel>
-          <div style={{ background: 'var(--bg-card)', borderRadius: 16, overflow: 'hidden', boxShadow: 'var(--shadow-v3-card-inset)' }}>
-            <NotifRow
-              label={t('notifSettings.newLesson')}
-              sub={t('notifSettings.newLessonSub')}
-              value={extra.newLesson}
-              onChange={(v) => updateExtra('newLesson', v)}
-            />
-
           </div>
         </div>
 
