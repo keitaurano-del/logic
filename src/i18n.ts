@@ -1308,7 +1308,6 @@ const STRINGS: Record<Locale, Strings> = {
 
     // Home v3 residuals
     'home.reviewEyebrow': '復習',
-    'home.betaNote': 'ベータ版のため、一部機能は正常に動作しない場合があります',
 
     // Review hub
     'reviewHub.title': '復習',
@@ -2801,7 +2800,6 @@ const STRINGS: Record<Locale, Strings> = {
 
     // Home v3 residuals
     'home.reviewEyebrow': 'REVIEW',
-    'home.betaNote': 'In beta — some features may not work fully.',
 
     // Review hub
     'reviewHub.title': 'Review',
