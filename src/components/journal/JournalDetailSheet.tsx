@@ -9,6 +9,8 @@ import { SparkleIcon } from './MoodWeatherIcons'
 import { PencilIcon, XIcon } from '../../icons'
 import { fetchJournalByDate, upsertJournal } from './journalDb'
 import { suggestJournalTags } from './journalApi'
+import { JournalXpToast } from './JournalXpToast'
+import { awardJournalXp } from '../../stats'
 import { t } from '../../i18n'
 
 interface JournalDetailSheetProps {
@@ -84,6 +86,7 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
   const [saving, setSaving] = useState(false)
   const [savedToast, setSavedToast] = useState(false)
   const [aiTagToast, setAiTagToast] = useState<string | null>(null)
+  const [xpToast, setXpToast] = useState<{ xp: number; label: string } | null>(null)
 
   const modalRef = useRef<HTMLDivElement>(null)
   const closeBtnRef = useRef<HTMLButtonElement>(null)
@@ -187,6 +190,16 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
       ai_summary: aiSummary.trim() || null,
       tags,
     }
+    // 保存前: この保存で「初めて朝/夜が埋まる」かを判定（XP は新規完成時のみ）
+    const wasMorning = hasMorningContent(journal?.schedule_notes ?? '', journal?.tags ?? [])
+    const wasEvening = hasEveningContent(
+      (journal?.mood as Mood | null) ?? null,
+      (journal?.weather as Weather | null) ?? null,
+      journal?.evening_reflection ?? '',
+    )
+    const nowMorning = hasMorningContent(trimmedSchedule, tags)
+    const nowEvening = hasEveningContent(mood, weather, trimmedReflection)
+
     const { error } = await upsertJournal(updated)
     setSaving(false)
     if (error) return
@@ -196,6 +209,16 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
     onSaved?.(updated)
     setEditing(false)
     setTimeout(() => setSavedToast(false), 1500)
+
+    // 初めて朝/夜が完成した瞬間のみ XP 付与 + アニメーション。
+    // awardJournalXp は同日同フェーズで既に付与済みなら 0 を返すので二重付与は起きない。
+    if (!wasMorning && nowMorning) {
+      const gained = awardJournalXp(date, 'morning')
+      if (gained > 0) setXpToast({ xp: gained, label: t('journal.xpMorningLabel') })
+    } else if (!wasEvening && nowEvening) {
+      const gained = awardJournalXp(date, 'evening')
+      if (gained > 0) setXpToast({ xp: gained, label: t('journal.xpEveningLabel') })
+    }
 
     // バックグラウンドで AI タグ提案。既存タグが少なく (<4)、本文がある場合のみ。
     const hasText = trimmedSchedule.length > 5 || trimmedReflection.length > 5
@@ -492,6 +515,13 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
         )}
         {aiTagToast && (
           <div className="journal-toast" role="status">{aiTagToast}</div>
+        )}
+        {xpToast && (
+          <JournalXpToast
+            xp={xpToast.xp}
+            label={xpToast.label}
+            onDone={() => setXpToast(null)}
+          />
         )}
       </div>
     </div>

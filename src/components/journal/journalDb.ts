@@ -1,5 +1,5 @@
 import { getSupabaseClient } from '../../supabase'
-import type { DailyJournal, Goal, GoalCategory, GoalReview, PeriodType } from './types'
+import type { DailyJournal, Goal, GoalCategory, PeriodType } from './types'
 
 export async function fetchJournalByDate(userId: string, date: string): Promise<DailyJournal | null> {
   const supabase = getSupabaseClient()
@@ -287,34 +287,3 @@ export async function deleteGoal(id: string): Promise<{ error?: string }> {
   return {}
 }
 
-export async function fetchGoalReviews(goalId: string): Promise<GoalReview[]> {
-  const supabase = getSupabaseClient()
-  if (!supabase) return []
-  const { data, error } = await supabase
-    .from('goal_reviews')
-    .select('*')
-    .eq('goal_id', goalId)
-    .order('reviewed_at', { ascending: false })
-  if (error) {
-    console.warn('fetchGoalReviews:', error.message)
-    return []
-  }
-  return (data as GoalReview[]) ?? []
-}
-
-export async function insertGoalReview(r: {
-  goal_id: string
-  user_id: string
-  review_text: string | null
-  ai_feedback: string | null
-}): Promise<{ review?: GoalReview; error?: string }> {
-  const supabase = getSupabaseClient()
-  if (!supabase) return { error: 'supabase not configured' }
-  const { data, error } = await supabase
-    .from('goal_reviews')
-    .insert(r)
-    .select('*')
-    .maybeSingle()
-  if (error) return { error: error.message }
-  return { review: data as GoalReview }
-}

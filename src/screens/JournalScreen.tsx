@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react'
 import { JournalCalendar } from '../components/journal/JournalCalendar'
 import { JournalGoalsHeader } from '../components/journal/JournalGoalsHeader'
 import { JournalSearch } from '../components/journal/JournalSearch'
+import { JournalAssistantSheet } from '../components/journal/JournalAssistantSheet'
 import { StreakBadge } from '../components/journal/StreakBadge'
 import { fetchJournalStreak } from '../components/journal/journalDb'
-import { SearchIcon, XIcon } from '../icons'
+import { SearchIcon, SparklesIcon, XIcon } from '../icons'
 import { t } from '../i18n'
 import '../components/journal/journal.css'
 
@@ -17,6 +18,7 @@ interface JournalScreenProps {
 export function JournalScreen({ userId, assistantName }: JournalScreenProps) {
   const [streak, setStreak] = useState(0)
   const [searchOpen, setSearchOpen] = useState(false)
+  const [assistantOpen, setAssistantOpen] = useState(false)
 
   useEffect(() => {
     let cancelled = false
@@ -39,6 +41,14 @@ export function JournalScreen({ userId, assistantName }: JournalScreenProps) {
           <button
             type="button"
             className="journal-hero__icon-btn"
+            onClick={() => setAssistantOpen(true)}
+            aria-label={t('journal.assistantOpenAria', { name: assistantName })}
+          >
+            <SparklesIcon width={18} height={18} />
+          </button>
+          <button
+            type="button"
+            className="journal-hero__icon-btn"
             onClick={() => setSearchOpen(true)}
             aria-label={t('journal.tabSearch')}
           >
@@ -48,9 +58,17 @@ export function JournalScreen({ userId, assistantName }: JournalScreenProps) {
       </div>
 
       <div style={{ flex: 1, padding: '16px 16px 120px', display: 'flex', flexDirection: 'column' }}>
-        <JournalGoalsHeader userId={userId} assistantName={assistantName} />
+        <JournalGoalsHeader userId={userId} />
         <JournalCalendar userId={userId} assistantName={assistantName} />
       </div>
+
+      {assistantOpen && (
+        <JournalAssistantSheet
+          userId={userId}
+          assistantName={assistantName}
+          onClose={() => setAssistantOpen(false)}
+        />
+      )}
 
       {searchOpen && (
         <div className="journal-search-overlay" role="dialog" aria-modal="true" aria-label={t('journal.tabSearch')}>

@@ -8,7 +8,6 @@ import { t } from '../../i18n'
 
 interface JournalGoalsHeaderProps {
   userId: string
-  assistantName?: string
   /** 親が編集→Header に戻ったときの再フェッチをトリガーするためのキー */
   reloadKey?: number
 }
@@ -27,7 +26,7 @@ const PERIOD_LABEL_KEY: Record<PeriodType, string> = {
 
 const ROW_VISIBLE_LIMIT = 2
 
-export function JournalGoalsHeader({ userId, assistantName, reloadKey }: JournalGoalsHeaderProps) {
+export function JournalGoalsHeader({ userId, reloadKey }: JournalGoalsHeaderProps) {
   const [byPeriod, setByPeriod] = useState<Record<PeriodType, Goal[]>>({ weekly: [], monthly: [], yearly: [] })
   const [loaded, setLoaded] = useState(false)
   const [expanded, setExpanded] = useState(false)
@@ -145,7 +144,7 @@ export function JournalGoalsHeader({ userId, assistantName, reloadKey }: Journal
               </button>
             </div>
             <div className="journal-search-overlay__body">
-              <JournalGoals userId={userId} assistantName={assistantName ?? ''} initialPeriod={fullOpen} />
+              <JournalGoals userId={userId} initialPeriod={fullOpen} />
             </div>
           </div>
         </div>

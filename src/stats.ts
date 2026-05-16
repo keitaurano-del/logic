@@ -135,13 +135,15 @@ export function getTotalStudyDays(): number {
 
 const XP_KEY = 'logic-xp'
 
-export type XpEvent = 'lesson' | 'quiz_perfect' | 'streak' | 'fermi'
+export type XpEvent = 'lesson' | 'quiz_perfect' | 'streak' | 'fermi' | 'journal_morning' | 'journal_evening'
 
 export const XP_REWARDS: Record<XpEvent, number> = {
   lesson: 50,
   quiz_perfect: 20,
   streak: 10,
   fermi: 30,
+  journal_morning: 25,
+  journal_evening: 25,
 }
 
 export function getXp(): number {
@@ -199,6 +201,45 @@ export const XP_EVENT_LABEL: Record<XpEvent, string> = {
   quiz_perfect: 'クイズ満点',
   streak: '連続学習ボーナス',
   fermi: 'フェルミ推定',
+  journal_morning: '朝のジャーナル',
+  journal_evening: '夜のジャーナル',
+}
+
+// ─── ジャーナル朝/夜 XP 付与（1日1回ずつ） ───────────────────────
+//   localStorage キー: logic-journal-xp = { 'YYYY-MM-DD': { morning?: true, evening?: true } }
+//   既に付与済みなら no-op で 0 を返す。新規付与なら XP_REWARDS の値を返す。
+const JOURNAL_XP_KEY = 'logic-journal-xp'
+
+type JournalXpMap = Record<string, { morning?: boolean; evening?: boolean }>
+
+function loadJournalXpMap(): JournalXpMap {
+  try {
+    const raw = localStorage.getItem(JOURNAL_XP_KEY)
+    if (!raw) return {}
+    const parsed = JSON.parse(raw)
+    return (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) ? parsed as JournalXpMap : {}
+  } catch { return {} }
+}
+
+function saveJournalXpMap(map: JournalXpMap) {
+  try { localStorage.setItem(JOURNAL_XP_KEY, JSON.stringify(map)) } catch { /* */ }
+}
+
+/**
+ * 指定日のジャーナル朝/夜 XP を 1 回だけ付与する。
+ * 既に同日同フェーズで付与済みなら 0 を返し、その他副作用なし。
+ * 新規付与時は addXp を呼び、付与した XP 量を返す。
+ */
+export function awardJournalXp(date: string, phase: 'morning' | 'evening'): number {
+  const map = loadJournalXpMap()
+  const day = map[date] ?? {}
+  if (day[phase]) return 0
+  day[phase] = true
+  map[date] = day
+  saveJournalXpMap(map)
+  const event: XpEvent = phase === 'morning' ? 'journal_morning' : 'journal_evening'
+  addXp(event)
+  return XP_REWARDS[event]
 }
 
 // ── 連続学習日数（レッスン完了ベース、1日スキップOK） ──

@@ -1,23 +1,17 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   fetchGoals,
   createGoal,
   updateGoal,
   deleteGoal,
-  fetchGoalReviews,
-  insertGoalReview,
-  fetchJournalsBetween,
 } from './journalDb'
-import { goalFeedback } from './journalApi'
-import { dateRangeFor, periodKeyFor, GOAL_CATEGORIES } from './types'
-import type { Goal, GoalCategory, GoalReview, PeriodType } from './types'
-import { SparkleIcon } from './MoodWeatherIcons'
+import { periodKeyFor, GOAL_CATEGORIES } from './types'
+import type { Goal, GoalCategory, PeriodType } from './types'
 import { ConfirmSheet } from './ConfirmSheet'
 import { t } from '../../i18n'
 
 interface JournalGoalsProps {
   userId: string
-  assistantName: string
   initialPeriod?: PeriodType
 }
 
@@ -34,7 +28,7 @@ const CATEGORY_LABEL_KEY: Record<GoalCategory, string> = {
   private: 'journal.goalCategoryPrivate',
 }
 
-export function JournalGoals({ userId, assistantName, initialPeriod }: JournalGoalsProps) {
+export function JournalGoals({ userId, initialPeriod }: JournalGoalsProps) {
   const [periodType, setPeriodType] = useState<PeriodType>(initialPeriod ?? 'weekly')
   // periodKey は periodType から派生する値なので useState ではなく直接計算する
   const periodKey = periodKeyFor(periodType)
@@ -58,7 +52,6 @@ export function JournalGoals({ userId, assistantName, initialPeriod }: JournalGo
 
       <GoalsForPeriod
         userId={userId}
-        assistantName={assistantName}
         periodType={periodType}
         periodKey={periodKey}
       />
@@ -68,12 +61,11 @@ export function JournalGoals({ userId, assistantName, initialPeriod }: JournalGo
 
 interface GoalsForPeriodProps {
   userId: string
-  assistantName: string
   periodType: PeriodType
   periodKey: string
 }
 
-function GoalsForPeriod({ userId, assistantName, periodType, periodKey }: GoalsForPeriodProps) {
+function GoalsForPeriod({ userId, periodType, periodKey }: GoalsForPeriodProps) {
   const [goals, setGoals] = useState<Goal[]>([])
   const [loading, setLoading] = useState(true)
   const [editorMode, setEditorMode] = useState<{ kind: 'create' } | { kind: 'edit'; goal: Goal } | null>(null)
@@ -129,10 +121,6 @@ function GoalsForPeriod({ userId, assistantName, periodType, periodKey }: GoalsF
           <GoalCard
             key={g.id}
             goal={g}
-            assistantName={assistantName}
-            periodType={periodType}
-            periodKey={periodKey}
-            userId={userId}
             onEdit={() => setEditorMode({ kind: 'edit', goal: g })}
             onDelete={() => handleDeleted(g.id)}
           />
@@ -163,81 +151,16 @@ function GoalsForPeriod({ userId, assistantName, periodType, periodKey }: GoalsF
   )
 }
 
-// ─── Goal card with feedback ──────────────────────────────────────
+// ─── Goal card ────────────────────────────────────────────────────
 interface GoalCardProps {
   goal: Goal
-  assistantName: string
-  periodType: PeriodType
-  periodKey: string
-  userId: string
   onEdit: () => void
   onDelete: () => void
 }
 
-function GoalCard({ goal, assistantName, periodType, periodKey, userId, onEdit, onDelete }: GoalCardProps) {
-  const [reviews, setReviews] = useState<GoalReview[]>([])
-  const [reviewsLoaded, setReviewsLoaded] = useState(false)
-  const [generating, setGenerating] = useState(false)
+function GoalCard({ goal, onEdit, onDelete }: GoalCardProps) {
   const [error, setError] = useState<string | null>(null)
-  const [elapsedSec, setElapsedSec] = useState(0)
   const [confirmDelete, setConfirmDelete] = useState(false)
-  const elapsedTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
-
-  useEffect(() => {
-    let cancelled = false
-    ;(async () => {
-      const r = await fetchGoalReviews(goal.id)
-      if (cancelled) return
-      setReviews(r)
-      setReviewsLoaded(true)
-    })()
-    return () => { cancelled = true }
-  }, [goal.id])
-
-  useEffect(() => () => {
-    if (elapsedTimerRef.current) clearInterval(elapsedTimerRef.current)
-  }, [])
-
-  const handleAiFeedback = async () => {
-    if (generating) return
-    setGenerating(true)
-    setError(null)
-    setElapsedSec(0)
-    const start0 = Date.now()
-    elapsedTimerRef.current = setInterval(() => {
-      setElapsedSec(Math.floor((Date.now() - start0) / 1000))
-    }, 1000)
-    try {
-      const { start, end } = dateRangeFor(periodType, periodKey)
-      const journals = await fetchJournalsBetween(userId, start, end)
-      const { feedback, error: apiErr } = await goalFeedback({
-        goal: { periodType, title: goal.title, description: goal.description ?? null },
-        journals: journals.map((j) => ({
-          date: j.date,
-          mood: j.mood,
-          weather: j.weather,
-          schedule_notes: j.schedule_notes,
-          evening_reflection: j.evening_reflection,
-        })),
-        assistantName,
-      })
-      if (apiErr) { setError(t('journal.errorGeneric')); return }
-      const { review, error: insErr } = await insertGoalReview({
-        goal_id: goal.id,
-        user_id: userId,
-        review_text: null,
-        ai_feedback: (feedback || '').trim() || null,
-      })
-      if (insErr) { setError(t('journal.errorGeneric')); return }
-      if (review) setReviews((rs) => [review, ...rs])
-    } finally {
-      if (elapsedTimerRef.current) {
-        clearInterval(elapsedTimerRef.current)
-        elapsedTimerRef.current = null
-      }
-      setGenerating(false)
-    }
-  }
 
   const handleDeleteConfirmed = async () => {
     setConfirmDelete(false)
@@ -259,29 +182,7 @@ function GoalCard({ goal, assistantName, periodType, periodKey, userId, onEdit, 
         <div className="journal-goal-card__desc">{goal.description}</div>
       )}
 
-      <div className="journal-goal-card__actions">
-        <button
-          type="button"
-          className={`journal-summarize-btn ${generating ? 'journal-summarize-btn--working' : ''}`}
-          onClick={handleAiFeedback}
-          disabled={generating}
-        >
-          {generating ? (
-            <>
-              <span className="journal-spinner" aria-hidden="true" />
-              <span>
-                {t('journal.goalFeedbackGenerating')}
-                {elapsedSec >= 5 ? ` (${elapsedSec}s)` : ''}
-              </span>
-            </>
-          ) : (
-            <>
-              <SparkleIcon size={16} />
-              <span>{t('journal.goalFeedbackCta', { name: assistantName })}</span>
-            </>
-          )}
-        </button>
-
+      <div className="journal-goal-card__actions journal-goal-card__actions--end">
         <div style={{ display: 'flex', gap: 8 }}>
           <button
             type="button"
@@ -313,21 +214,6 @@ function GoalCard({ goal, assistantName, periodType, periodKey, userId, onEdit, 
         onConfirm={handleDeleteConfirmed}
         onCancel={() => setConfirmDelete(false)}
       />
-
-      {reviewsLoaded && reviews.length > 0 && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 6 }}>
-          <div className="journal-modal__section-label">{t('journal.feedbackHistory')}</div>
-          {reviews.map((r) => (
-            <div key={r.id} className="journal-summary-card">
-              <div className="journal-summary-card__title">
-                <SparkleIcon size={12} />
-                <span>{new Date(r.reviewed_at).toLocaleDateString()}</span>
-              </div>
-              <div className="journal-summary-card__body">{r.ai_feedback || ''}</div>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   )
 }

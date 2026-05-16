@@ -934,6 +934,88 @@
   color: #fff;
 }
 
+/* ── XP gain toast (journal save) ─────────── */
+.journal-xp-toast {
+  position: fixed;
+  inset: 0;
+  z-index: 320;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  pointer-events: none;
+  animation: journal-xp-toast-fade 0.35s ease-out;
+}
+
+.journal-xp-toast__ring {
+  position: relative;
+  width: 110px;
+  height: 110px;
+  filter: drop-shadow(0 6px 24px rgba(45, 212, 191, 0.35));
+  animation: journal-xp-toast-pop 0.55s cubic-bezier(.2,.8,.2,1);
+}
+
+.journal-xp-toast__center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--brand);
+}
+
+.journal-xp-toast__amount {
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 30px;
+  font-weight: 900;
+  letter-spacing: -.04em;
+  line-height: 1;
+}
+
+.journal-xp-toast__unit {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.journal-xp-toast__label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: .04em;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+  animation: journal-xp-toast-rise 0.55s cubic-bezier(.2,.8,.2,1);
+}
+
+@keyframes journal-xp-toast-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes journal-xp-toast-pop {
+  0%   { opacity: 0; transform: scale(0.6); }
+  60%  { opacity: 1; transform: scale(1.08); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes journal-xp-toast-rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .journal-xp-toast,
+  .journal-xp-toast__ring,
+  .journal-xp-toast__label { animation: none; }
+}
+
 /* ── Snackbar ─────────────────────────────── */
 .journal-toast {
   position: fixed;

@@ -147,30 +147,41 @@ ${(scheduleNotes || '').toString().trim() || '未入力'}`
   })
 
   // =============================================
-  // ジャーナル — 目標振り返りフィードバック
+  // ジャーナル — 総合フィードバック
+  //   目標・直近ジャーナル・レッスン進捗・フェルミ実施状況を統合し、
+  //   今の状態を読み解いた上で次の一歩を提案する。
   // =============================================
-  router.post('/goal-feedback', journalLimiter, async (req: Request, res: Response) => {
+  router.post('/holistic-feedback', journalLimiter, async (req: Request, res: Response) => {
     try {
-      const { goal, journals, assistantName, locale } = req.body || {}
+      const {
+        goals,
+        recentJournals,
+        progressSummary,
+        fermiCount,
+        lessonStreak,
+        studyDays,
+        assistantName,
+        locale,
+      } = req.body || {}
       const isEn = locale === 'en'
-
-      if (!goal || typeof goal !== 'object') {
-        return res.status(400).json({ error: isEn ? 'goal required' : 'goal が必要です' })
-      }
-      const { periodType, title, description } = goal as { periodType?: string; title?: string; description?: string }
-      if (!periodType || !title) {
-        return res.status(400).json({ error: isEn ? 'goal.periodType and goal.title required' : 'goal.periodType と goal.title が必要です' })
-      }
-
       const name = sanitizeAssistantName(assistantName, isEn ? 'your assistant' : 'パーソナルアシスタント')
 
-      const periodLabel = isEn
-        ? (PERIOD_LABELS_EN[periodType] || periodType)
-        : (PERIOD_LABELS_JA[periodType] || periodType)
+      const goalsList: Array<{ periodType?: string; title?: string; description?: string | null }> =
+        Array.isArray(goals) ? goals.slice(0, 30) : []
+      const goalsText = goalsList.length === 0
+        ? (isEn ? 'No active goals.' : 'アクティブな目標なし。')
+        : goalsList.map((g) => {
+            const periodLabel = g.periodType
+              ? (isEn ? PERIOD_LABELS_EN[g.periodType] || g.periodType : PERIOD_LABELS_JA[g.periodType] || g.periodType)
+              : (isEn ? 'goal' : '目標')
+            const title = (g.title || '').toString().trim() || (isEn ? '(untitled)' : '（無題）')
+            const desc = (g.description || '').toString().trim()
+            return desc ? `- [${periodLabel}] ${title}: ${desc}` : `- [${periodLabel}] ${title}`
+          }).join('\n')
 
-      const journalList: JournalEntry[] = Array.isArray(journals) ? journals.slice(0, 60) : []
-      const journalContext = journalList.length === 0
-        ? (isEn ? 'No journal entries during this period.' : '期間中の記録はありません。')
+      const journalList: JournalEntry[] = Array.isArray(recentJournals) ? recentJournals.slice(0, 30) : []
+      const journalText = journalList.length === 0
+        ? (isEn ? 'No recent entries.' : '最近の記録なし。')
         : journalList.map((j) => {
             const date = j.date ?? '?'
             const m = typeof j.mood === 'number' ? `${isEn ? 'mood' : '気分'}${j.mood}/5` : ''
@@ -182,50 +193,84 @@ ${(scheduleNotes || '').toString().trim() || '未入力'}`
             return detail ? `${parts}: ${detail}` : parts
           }).join('\n')
 
+      const progressEntries = (progressSummary && typeof progressSummary === 'object' && !Array.isArray(progressSummary))
+        ? Object.entries(progressSummary as Record<string, unknown>)
+            .map(([k, v]) => {
+              if (v && typeof v === 'object') {
+                const completed = (v as { completed?: number }).completed
+                const total = (v as { total?: number }).total
+                if (typeof completed === 'number' && typeof total === 'number') {
+                  return `- ${k}: ${completed}/${total}`
+                }
+              }
+              return null
+            })
+            .filter((s): s is string => !!s)
+        : []
+      const progressText = progressEntries.length === 0
+        ? (isEn ? 'No lesson data.' : 'レッスンデータなし。')
+        : progressEntries.join('\n')
+
+      const fermi = typeof fermiCount === 'number' && fermiCount >= 0 ? Math.floor(fermiCount) : 0
+      const streak = typeof lessonStreak === 'number' && lessonStreak >= 0 ? Math.floor(lessonStreak) : 0
+      const sDays = typeof studyDays === 'number' && studyDays >= 0 ? Math.floor(studyDays) : 0
+
       const systemPrompt = isEn
         ? `You are "${name}", a personal assistant inside the Logic app for a first-year consultant.
-Given the user's ${periodLabel} goal and their journal entries during that period, provide concrete and constructive feedback.
+Look at the user's recent activity holistically — active goals, journal entries, lesson progress, and Fermi-estimation practice — and give grounded, encouraging feedback in 250 English words or less.
 
-Output (within 300 English words):
-- Achievement read (how close they got)
-- What went well
-- Concrete improvement points for the next period
+Structure:
+- 1-2 lines: read of current momentum
+- 2-3 lines: what's going well across the signals
+- 2-3 lines: one or two concrete next steps that connect goals, journal patterns, and lesson activity
 
-Stay supportive and grounded in the journal evidence.`
+Stay warm and specific. Never lecture. Use the user's evidence, not generic advice.`
         : `あなたは Logic アプリのパーソナルアシスタント「${name}」です。
-コンサルタント1年目のユーザーの ${periodLabel} 目標と期間中のジャーナル記録をもとに、具体的で建設的なフィードバックをしてください。
+ユーザー（コンサル1年目）の最近の活動 — アクティブな目標・ジャーナル・レッスン進捗・フェルミ推定の実施状況 — を総合的に見て、根拠のある励ましのフィードバックを 300 字以内でしてください。
 
-以下の形式でまとめてください（300字以内）:
-- 達成度の評価
-- 良かった点
-- 次期に向けた改善点
+構成:
+- 1〜2行：今のモメンタムの読み取り
+- 2〜3行：複数シグナルから見て良い点
+- 2〜3行：目標・ジャーナル・レッスンを結びつけた具体的な次の一歩を1〜2つ
 
-ジャーナルの記述を根拠に、励ましつつ的確に。`
+温かく具体的に。一般論ではなくユーザー自身のデータを根拠に。説教しない。`
 
       const userMessage = isEn
-        ? `Goal (${periodLabel}):
-${title}
-${(description || '').toString().trim()}
+        ? `## Active goals
+${goalsText}
 
-Journal entries during this period:
-${journalContext}`
-        : `【目標 (${periodLabel})】
-${title}
-${(description || '').toString().trim()}
+## Recent journals (up to last 30 days)
+${journalText}
 
-【期間中のジャーナル記録】
-${journalContext}`
+## Lesson progress by category
+${progressText}
+
+## Fermi sessions this month: ${fermi}
+## Lesson streak: ${streak} days
+## Total study days: ${sDays}`
+        : `## アクティブな目標
+${goalsText}
+
+## 最近のジャーナル（直近 30 日まで）
+${journalText}
+
+## カテゴリ別レッスン進捗
+${progressText}
+
+## 今月のフェルミ実施: ${fermi} 回
+## レッスン連続日数: ${streak} 日
+## 累計学習日数: ${sDays} 日`
 
       const response = await client.messages.create({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 800,
+        max_tokens: 1000,
         system: systemPrompt,
         messages: [{ role: 'user', content: userMessage }],
       })
       const feedback = response.content[0].type === 'text' ? response.content[0].text.trim() : ''
       res.json({ feedback })
     } catch (e: unknown) {
-      console.error('journal goal-feedback error:', e)
+      console.error('journal holistic-feedback error:', e)
       res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
     }
   })

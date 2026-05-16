@@ -32,15 +32,6 @@ export interface Goal {
   updated_at?: string
 }
 
-export interface GoalReview {
-  id: string
-  goal_id: string
-  user_id?: string
-  review_text: string | null
-  ai_feedback: string | null
-  reviewed_at: string
-}
-
 // ─── period_key 命名ヘルパー ─────────────────────────────────────
 export function todayKey(d: Date = new Date()): string {
   const y = d.getFullYear()
@@ -76,46 +67,3 @@ export function periodKeyFor(type: PeriodType, d: Date = new Date()): string {
   }
 }
 
-// 指定期間内の日付一覧を作る（カレンダー集計などに使用）
-export function dateRangeFor(type: PeriodType, periodKey: string): { start: string; end: string } {
-  // 入力 periodKey を信頼してパース。失敗時は今日を返す
-  const today = todayKey()
-  try {
-    if (type === 'weekly') {
-      // 'YYYY-Www' → その週の月曜〜日曜
-      const m = periodKey.match(/^(\d{4})-W(\d{2})$/)
-      if (!m) return { start: today, end: today }
-      const year = Number(m[1])
-      const week = Number(m[2])
-      // ISO 週: 1月4日を含む週が第1週
-      const jan4 = new Date(Date.UTC(year, 0, 4))
-      const jan4Dow = (jan4.getUTCDay() + 6) % 7
-      const week1Monday = new Date(Date.UTC(year, 0, 4 - jan4Dow))
-      const monday = new Date(week1Monday)
-      monday.setUTCDate(week1Monday.getUTCDate() + (week - 1) * 7)
-      const sunday = new Date(monday)
-      sunday.setUTCDate(monday.getUTCDate() + 6)
-      return {
-        start: monday.toISOString().slice(0, 10),
-        end: sunday.toISOString().slice(0, 10),
-      }
-    }
-    if (type === 'monthly') {
-      const m = periodKey.match(/^(\d{4})-(\d{2})$/)
-      if (!m) return { start: today, end: today }
-      const y = Number(m[1])
-      const mm = Number(m[2])
-      const last = new Date(y, mm, 0).getDate()
-      return {
-        start: `${m[1]}-${m[2]}-01`,
-        end: `${m[1]}-${m[2]}-${String(last).padStart(2, '0')}`,
-      }
-    }
-    if (type === 'yearly') {
-      const m = periodKey.match(/^(\d{4})$/)
-      if (!m) return { start: today, end: today }
-      return { start: `${m[1]}-01-01`, end: `${m[1]}-12-31` }
-    }
-  } catch { /* fallthrough */ }
-  return { start: today, end: today }
-}
