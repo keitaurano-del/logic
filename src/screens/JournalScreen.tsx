@@ -5,7 +5,7 @@ import { JournalSearch } from '../components/journal/JournalSearch'
 import { JournalAssistantSheet } from '../components/journal/JournalAssistantSheet'
 import { StreakBadge } from '../components/journal/StreakBadge'
 import { fetchJournalStreak } from '../components/journal/journalDb'
-import { SearchIcon, SparklesIcon, XIcon } from '../icons'
+import { SearchIcon, XIcon } from '../icons'
 import { t } from '../i18n'
 import '../components/journal/journal.css'
 
@@ -40,11 +40,16 @@ export function JournalScreen({ userId, assistantName }: JournalScreenProps) {
           <StreakBadge streak={streak} size="sm" />
           <button
             type="button"
-            className="journal-hero__icon-btn"
+            className="journal-ai-btn"
             onClick={() => setAssistantOpen(true)}
             aria-label={t('journal.assistantOpenAria', { name: assistantName })}
           >
-            <SparklesIcon width={18} height={18} />
+            <span className="journal-ai-btn__pulse" aria-hidden="true" />
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="journal-ai-btn__sparkle">
+              <path d="M12 2l1.8 5.4L19 9l-5.2 1.6L12 16l-1.8-5.4L5 9l5.2-1.6z" fill="currentColor" />
+              <path d="M19 14l.9 2.6L22 17l-2.1.4L19 20l-.9-2.6L16 17l2.1-.4z" fill="currentColor" opacity=".7" />
+            </svg>
+            <span className="journal-ai-btn__label">AI</span>
           </button>
           <button
             type="button"

@@ -52,7 +52,7 @@ export function FeedbackScreen({ onBack }: FeedbackScreenProps) {
     return (
       <div className="stack">
         <Header title={t('feedback.title')} onBack={onBack} />
-        <div style={{ marginTop: 40, textAlign: 'center' }}>
+        <div style={{ marginTop: 40, textAlign: 'center', padding: '0 20px' }}>
           <div style={{
             width: 64, height: 64, borderRadius: '50%',
             background: 'var(--success)',
@@ -79,6 +79,7 @@ export function FeedbackScreen({ onBack }: FeedbackScreenProps) {
     <div className="stack">
       <Header title={t('feedback.title')} onBack={onBack} />
 
+      <div style={{ padding: '0 20px', display: 'flex', flexDirection: 'column', gap: 16 }}>
       <div>
         <div className="eyebrow accent">{t('feedback.eyebrow')}</div>
         <h1 style={{ fontSize: 26, fontWeight: 800, marginTop: 4 }}>{t('feedback.heading')}</h1>
@@ -152,6 +153,7 @@ export function FeedbackScreen({ onBack }: FeedbackScreenProps) {
       >
         {sending ? t('feedback.sending') : t('feedback.send')}
       </Button>
+      </div>
     </div>
   )
 }

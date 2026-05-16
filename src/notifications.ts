@@ -7,8 +7,10 @@ import { getStudyDates } from './stats'
 
 const REMINDER_PREF_KEY = 'logic-reminder'
 const STREAK_ALERT_PREF_KEY = 'logic-notif-extra'
+const JOURNAL_PREF_KEY = 'logic-journal-reminder'
 const DAILY_NOTIF_ID = 1001
 const STREAK_RISK_NOTIF_ID = 1002
+const JOURNAL_NOTIF_ID = 1003
 const STREAK_RISK_HOUR = 21
 const DAILY_MESSAGE_COUNT = 20
 
@@ -24,8 +26,15 @@ export type StreakAlertPref = {
   streakAlert: boolean
 }
 
+export type JournalReminderPref = {
+  enabled: boolean
+  hour: number   // 0-23
+  minute: number // 0-59
+}
+
 const DEFAULT_REMINDER_PREF: ReminderPref = { enabled: false, hour: 20, minute: 0 }
 const DEFAULT_STREAK_ALERT_PREF: StreakAlertPref = { streakAlert: true }
+const DEFAULT_JOURNAL_REMINDER_PREF: JournalReminderPref = { enabled: false, hour: 22, minute: 0 }
 
 // ── Helpers ────────────────────────────────────────────────────
 
@@ -81,6 +90,18 @@ export function loadStreakAlertPref(): StreakAlertPref {
 
 export function saveStreakAlertPref(pref: StreakAlertPref) {
   localStorage.setItem(STREAK_ALERT_PREF_KEY, JSON.stringify(pref))
+}
+
+export function loadJournalReminderPref(): JournalReminderPref {
+  try {
+    const raw = localStorage.getItem(JOURNAL_PREF_KEY)
+    if (raw) return { ...DEFAULT_JOURNAL_REMINDER_PREF, ...JSON.parse(raw) }
+  } catch { /* */ }
+  return { ...DEFAULT_JOURNAL_REMINDER_PREF }
+}
+
+export function saveJournalReminderPref(pref: JournalReminderPref) {
+  localStorage.setItem(JOURNAL_PREF_KEY, JSON.stringify(pref))
 }
 
 // ── Permission ─────────────────────────────────────────────────
@@ -191,6 +212,49 @@ export async function cancelStreakRiskReminder(): Promise<void> {
     await LocalNotifications.cancel({ notifications: [{ id: STREAK_RISK_NOTIF_ID }] })
   } catch (e) {
     console.warn('Cancel streak risk reminder error:', e)
+  }
+}
+
+// ── Journal reminder ───────────────────────────────────────────
+// 指定時刻にジャーナル記入リマインダーを毎日通知。
+export async function scheduleJournalReminder(hour: number, minute: number): Promise<boolean> {
+  saveJournalReminderPref({ enabled: true, hour, minute })
+  if (!isNative()) return true
+
+  try {
+    const { LocalNotifications } = await import('@capacitor/local-notifications')
+    await LocalNotifications.cancel({ notifications: [{ id: JOURNAL_NOTIF_ID }] })
+
+    const now = new Date()
+    const at = new Date()
+    at.setHours(hour, minute, 0, 0)
+    if (at <= now) at.setDate(at.getDate() + 1)
+
+    await LocalNotifications.schedule({
+      notifications: [{
+        id: JOURNAL_NOTIF_ID,
+        title: t('notif.journal.title'),
+        body: t('notif.journal.body'),
+        schedule: { at, repeats: true, every: 'day' },
+        extra: { type: 'journal' },
+      }],
+    })
+    return true
+  } catch (e) {
+    console.warn('Schedule journal reminder error:', e)
+    return false
+  }
+}
+
+export async function cancelJournalReminder(): Promise<void> {
+  saveJournalReminderPref({ ...loadJournalReminderPref(), enabled: false })
+  if (!isNative()) return
+
+  try {
+    const { LocalNotifications } = await import('@capacitor/local-notifications')
+    await LocalNotifications.cancel({ notifications: [{ id: JOURNAL_NOTIF_ID }] })
+  } catch (e) {
+    console.warn('Cancel journal reminder error:', e)
   }
 }
 

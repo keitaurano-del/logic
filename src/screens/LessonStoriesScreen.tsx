@@ -12,6 +12,7 @@ import { addXp } from '../stats'
 import { LessonThumbnail } from '../components/LessonThumbnail'
 import { API_BASE } from './apiBase'
 import { t } from '../i18n'
+import { tutorial } from '../tutorial/tutorialStorage'
 
 interface LessonStoriesScreenProps {
   lessonId: number
@@ -29,6 +30,8 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
   const [reportSent, setReportSent] = useState(false)
   const [reportText, setReportText] = useState('')
   const [reportDetail, setReportDetail] = useState('')
+  // 初回レッスン時のタップヒント（右半分=次/左半分=前）
+  const [showTapHint, setShowTapHint] = useState(() => !tutorial.hasSeenLesson())
 
   // ── タッチガード: スライド遷移後 280ms は全タッチを無視 ──
   const slideEnteredAt = useRef<number>(0)
@@ -226,7 +229,73 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
         </button>
       )}
 
-      {/* Tap hint — モバイル向けヒント（非クイズのみ） */}
+      {/* Tap hint — 初回レッスンのみ表示（右半分=次/左半分=前） */}
+      {showTapHint && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={t('stories.tapHintTitle')}
+          tabIndex={-1}
+          onClick={() => { tutorial.markLesson(); setShowTapHint(false) }}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === 'Escape' || e.key === ' ') { tutorial.markLesson(); setShowTapHint(false) } }}
+          onTouchEnd={(e) => { e.stopPropagation(); tutorial.markLesson(); setShowTapHint(false) }}
+          style={{
+            position: 'absolute', inset: 0, zIndex: 30,
+            background: 'rgba(0,0,0,0.78)',
+            display: 'flex', alignItems: 'stretch',
+            color: '#fff',
+            cursor: 'pointer',
+            animation: 'tapHintFadeIn .25s ease-out',
+          }}
+        >
+          <div style={{
+            flex: 1, display: 'flex', flexDirection: 'column',
+            alignItems: 'center', justifyContent: 'center', gap: 14,
+            borderRight: '1px dashed rgba(255,255,255,0.2)',
+          }}>
+            <div style={{
+              width: 60, height: 60, borderRadius: '50%',
+              background: 'rgba(255,255,255,0.16)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              boxShadow: '0 0 0 8px rgba(255,255,255,0.06)',
+            }}>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+            </div>
+            <div style={{ fontSize: 16, fontWeight: 800, letterSpacing: '.02em' }}>{t('stories.tapHintLeftHeading')}</div>
+            <div style={{ fontSize: 13, opacity: 0.78, textAlign: 'center', padding: '0 24px', lineHeight: 1.55 }}>
+              {t('stories.tapHintLeftBody')}
+            </div>
+          </div>
+          <div style={{
+            flex: 1, display: 'flex', flexDirection: 'column',
+            alignItems: 'center', justifyContent: 'center', gap: 14,
+          }}>
+            <div style={{
+              width: 60, height: 60, borderRadius: '50%',
+              background: 'var(--brand)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              boxShadow: '0 0 0 8px rgba(108,142,245,0.18)',
+            }}>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </div>
+            <div style={{ fontSize: 16, fontWeight: 800, letterSpacing: '.02em' }}>{t('stories.tapHintRightHeading')}</div>
+            <div style={{ fontSize: 13, opacity: 0.78, textAlign: 'center', padding: '0 24px', lineHeight: 1.55 }}>
+              {t('stories.tapHintRightBody')}
+            </div>
+          </div>
+          <div style={{
+            position: 'absolute', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 24px)', left: 0, right: 0,
+            textAlign: 'center', fontSize: 12, opacity: 0.6, fontWeight: 600, letterSpacing: '.05em',
+          }}>
+            {t('stories.tapHintDismiss')}
+          </div>
+          <style>{`@keyframes tapHintFadeIn { from { opacity: 0; } to { opacity: 1; } }`}</style>
+        </div>
+      )}
 
       {/* SCRUM-215: 誤りを報告 — アイコンのみのコンパクト表示（誤タップ防止）、非クイズ時は次へボタンと重ならない位置へ */}
       <button

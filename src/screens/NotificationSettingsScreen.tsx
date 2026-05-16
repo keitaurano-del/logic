@@ -3,6 +3,7 @@ import { Header } from '../components/platform/Header'
 import {
   loadReminderPref, scheduleDailyReminder, cancelDailyReminder,
   loadStreakAlertPref, scheduleStreakRiskReminder, cancelStreakRiskReminder,
+  loadJournalReminderPref, scheduleJournalReminder, cancelJournalReminder,
   requestNotificationPermission, isNative,
 } from '../notifications'
 import { Switch } from '../components/Switch'
@@ -42,10 +43,14 @@ const pad = (n: number) => String(n).padStart(2, '0')
 
 export function NotificationSettingsScreen({ onBack }: Props) {
   const pref = loadReminderPref()
+  const journalPref = loadJournalReminderPref()
   const [enabled, setEnabled] = useState(pref.enabled)
   const [hour, setHour] = useState(pref.hour)
   const [minute, setMinute] = useState(pref.minute)
   const [streakAlert, setStreakAlert] = useState(() => loadStreakAlertPref().streakAlert)
+  const [journalEnabled, setJournalEnabled] = useState(journalPref.enabled)
+  const [journalHour, setJournalHour] = useState(journalPref.hour)
+  const [journalMinute, setJournalMinute] = useState(journalPref.minute)
 
   async function handleToggle(v: boolean) {
     if (v) {
@@ -73,6 +78,23 @@ export function NotificationSettingsScreen({ onBack }: Props) {
       await cancelStreakRiskReminder()
     }
     setStreakAlert(v)
+  }
+
+  async function handleJournalToggle(v: boolean) {
+    if (v) {
+      const granted = await requestNotificationPermission()
+      if (!granted && isNative()) return
+      await scheduleJournalReminder(journalHour, journalMinute)
+    } else {
+      await cancelJournalReminder()
+    }
+    setJournalEnabled(v)
+  }
+
+  async function handleJournalTimeChange(h: number, m: number) {
+    setJournalHour(h)
+    setJournalMinute(m)
+    if (journalEnabled) await scheduleJournalReminder(h, m)
   }
 
   return (
@@ -150,6 +172,64 @@ export function NotificationSettingsScreen({ onBack }: Props) {
               onChange={handleStreakAlertToggle}
               last
             />
+          </div>
+        </div>
+
+        {/* ── ジャーナル ── */}
+        <div>
+          <SectionLabel>{t('notifSettings.journalHeading')}</SectionLabel>
+          <div style={{ background: 'var(--bg-card)', borderRadius: 16, overflow: 'hidden', boxShadow: 'var(--shadow-v3-card-inset)' }}>
+            <NotifRow
+              label={t('notifSettings.journalReminder')}
+              sub={t('notifSettings.journalReminderSub')}
+              value={journalEnabled}
+              onChange={handleJournalToggle}
+              last={!journalEnabled}
+            />
+            {journalEnabled && (
+              <div style={{ padding: '16px 20px' }}>
+                {!isNative() && (
+                  <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 12, padding: '8px 12px', background: 'var(--bg-primary)', borderRadius: 8 }}>
+                    {t('notifSettings.browserOnly')}
+                  </div>
+                )}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <span style={{ fontSize: 14, color: 'var(--text-secondary)' }}>{t('notifSettings.daily')}</span>
+                  <select
+                    aria-label={t('notifSettings.hourAria')}
+                    value={journalHour}
+                    onChange={(e) => handleJournalTimeChange(Number(e.target.value), journalMinute)}
+                    style={{
+                      padding: '8px 12px', borderRadius: 10,
+                      border: `1.5px solid ${'var(--border)'}`, background: 'var(--bg-primary)',
+                      fontSize: 20, fontWeight: 700, color: 'var(--text-primary)',
+                      cursor: 'pointer', outline: 'none',
+                    }}
+                  >
+                    {Array.from({ length: 24 }, (_, i) => (
+                      <option key={i} value={i}>{pad(i)}</option>
+                    ))}
+                  </select>
+                  <span style={{ fontSize: 22, fontWeight: 700 }}>:</span>
+                  <select
+                    aria-label={t('notifSettings.minuteAria')}
+                    value={journalMinute}
+                    onChange={(e) => handleJournalTimeChange(journalHour, Number(e.target.value))}
+                    style={{
+                      padding: '8px 12px', borderRadius: 10,
+                      border: `1.5px solid ${'var(--border)'}`, background: 'var(--bg-primary)',
+                      fontSize: 20, fontWeight: 700, color: 'var(--text-primary)',
+                      cursor: 'pointer', outline: 'none',
+                    }}
+                  >
+                    {[0, 15, 30, 45].map((m) => (
+                      <option key={m} value={m}>{pad(m)}</option>
+                    ))}
+                  </select>
+                  <span style={{ fontSize: 14, color: 'var(--text-secondary)' }}>{t('notifSettings.notifyAt')}</span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
