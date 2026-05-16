@@ -98,8 +98,8 @@ const SCENARIO_IMAGE: Record<string, string> = {
   'pyramid-client': '/images/v3/lesson-23.png',
   'logic-tree-sub': '/images/v3/lesson-21.png',
   'socrates-dialog': '/images/v3/lesson-77.png',
-  'descartes-doubt': '/images/v3/ai-bot.webp',
-  'nietzsche-values': '/images/v3/ai-chat.webp',
+  'descartes-doubt': '/images/v3/lesson-74.png',
+  'nietzsche-values': '/images/v3/lesson-76.png',
 }
 
 function getCategoryLabels(): Record<SituationCategory, string> {

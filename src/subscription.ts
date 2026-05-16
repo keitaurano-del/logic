@@ -95,6 +95,40 @@ export function getSubscriptionState(): SubscriptionState {
 export const BETA_MODE = false
 
 // ──────────────────────────────────────────────────────────────────────────
+// ジャーナル無料お試し（7日間）
+// ──────────────────────────────────────────────────────────────────────────
+// 初回起動時のインストール ID（`install-<ts>-<rand>`）からタイムスタンプを
+// 取り出し、そこから 7 日間は無料利用可とする。BETA_MODE / isPaid() の場合は
+// trial 判定を行わずに true。
+const JOURNAL_TRIAL_DAYS = 7
+
+function getInstallTimestamp(): number | null {
+  try {
+    const raw = localStorage.getItem('logic-install-id') || ''
+    const m = raw.match(/^install-(\d+)-/)
+    if (!m) return null
+    const ts = Number(m[1])
+    return Number.isFinite(ts) && ts > 0 ? ts : null
+  } catch {
+    return null
+  }
+}
+
+export function getJournalTrialDaysLeft(): number {
+  const ts = getInstallTimestamp()
+  if (ts === null) return JOURNAL_TRIAL_DAYS
+  const elapsedMs = Date.now() - ts
+  const remainingMs = JOURNAL_TRIAL_DAYS * 86400000 - elapsedMs
+  if (remainingMs <= 0) return 0
+  return Math.ceil(remainingMs / 86400000)
+}
+
+export function canUseJournal(): boolean {
+  if (isPaid()) return true
+  return getJournalTrialDaysLeft() > 0
+}
+
+// ──────────────────────────────────────────────────────────────────────────
 // プラン判定（単一有料プランに統合）
 // ──────────────────────────────────────────────────────────────────────────
 export function isPaid(): boolean {

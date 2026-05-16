@@ -1,7 +1,7 @@
 // fermiData.ts — フェルミ問題プール（ホーム・DailyFermiScreen共通）
 // ビジネス系 × ちょっと面白い系に厳選
 //
-// 28問の question / hint と対応する FERMI_STATS を ja / en で持つ。
+// 50問の question / hint と対応する FERMI_STATS を ja / en で持つ。
 // 起動時の getLocale() で FERMI_POOL / FERMI_STATS が決まる。
 
 import { getLocale } from './i18n'
@@ -43,6 +43,36 @@ const FERMI_POOL_JA: FermiQuestion[] = [
   { question: '日本のサブスク動画配信（Netflix/Prime Video等）市場の年間規模は何円か？', hint: '世帯数×SVOD加入率×1世帯あたり契約サービス数×月額×12ヶ月で分解。複数併用が一般的な点もポイント。' },
   { question: '日本のドラッグストア業界の年間総売上は何円か？', hint: '全国店舗数×1店舗の1日売上×営業日数で分解。化粧品・食品・医薬品の構成比で1店舗単価をチェック。' },
   { question: '日本のプロ野球（NPB）の年間観客動員数は何人か？', hint: '12球団×1球団のホーム試合数×1試合の平均観客（球場収容人数×稼働率）で分解。' },
+
+  // ── 追加: 業界規模・市場サイズ ──
+  { question: '日本のラーメン店の年間総売上は何円か？', hint: '店舗数×1店舗の1日売上×営業日数で分解。家系・二郎系・ファミリー向けで客単価差が大きい。' },
+  { question: '日本のコンビニ大手3社の1日合計売上は何円か？', hint: '3社の合計店舗数×1店舗の1日売上で分解。立地（駅前・郊外・オフィス街）で売上が大きく異なる。' },
+  { question: '日本のタクシー業界の年間総売上は何円か？', hint: '全国タクシー台数×1台の1日売上×稼働日数で分解。都市部と地方で稼働率・運賃に差。' },
+  { question: '日本のカラオケ市場の年間規模は何円か？', hint: '店舗数×1店舗の1日売上×営業日数で分解。コロナ後の回復度合いも意識。' },
+  { question: '日本の漫画市場（紙＋電子）の年間規模は何円か？', hint: '紙の単行本＋雑誌＋電子書籍ストアでの売上に分解。電子比率が年々上昇している。' },
+  { question: '日本のスマホゲーム業界の年間売上は何円か？', hint: 'アクティブユーザー数×課金率×ARPPU（課金者あたり平均額）×12ヶ月で分解。重課金者の偏りも考慮。' },
+  { question: '日本の保険業界の年間総保険料収入は何円か？', hint: '生保＋損保で分けて、世帯加入率×世帯あたり保険料で分解。生保は加入率が非常に高い。' },
+  { question: '日本の中古車市場の年間流通台数は何台か？', hint: '国内自家用車保有台数×平均買い替え周期で年間取引量を概算。' },
+  { question: '日本の宅配ピザ業界の年間総売上は何円か？', hint: '店舗数×1店舗の1日注文数×客単価×営業日数で分解。週末・イベント日の偏りに注意。' },
+  { question: '日本のスマートフォン年間出荷台数は何台か？', hint: '人口×スマホ保有率÷平均買い替え周期で分解。法人需要も含めよう。' },
+  { question: '日本のレンタカー業界の年間総売上は何円か？', hint: '保有車両台数×1日あたり稼働率×平均単価×365日で分解。観光地は稼働率が高い。' },
+  { question: '日本の自販機の年間総売上は何円か？', hint: '全国自販機台数×1台の1日売上×365日で分解。飲料・たばこ・食品の構成比に注意。' },
+  { question: '日本の通信費（携帯＋固定）の年間総支出は何円か？', hint: '世帯数×世帯あたり通信費×12ヶ月＋法人需要で分解。MNO/MVNOで料金差が大きい。' },
+  { question: '日本の英会話スクール業界の年間総売上は何円か？', hint: '通学＋オンラインに分けて、受講者数×1人あたり年間支出で分解。子供向け・大人向けで単価差。' },
+  { question: '日本のスーパー銭湯・温泉施設の年間総入場者数は何人か？', hint: '施設数×1施設の1日来場者×営業日数で分解。週末・連休の集中も考慮。' },
+  { question: '日本の不動産仲介業界の年間総売上は何円か？', hint: '年間住宅取引件数×平均仲介手数料（売買価格の3%程度）で分解。賃貸仲介の規模も忘れずに。' },
+  { question: '日本の電子書籍市場の年間規模は何円か？', hint: '読者人口×電子書籍利用率×1人あたり年間支出で分解。コミック比率が圧倒的に高い。' },
+  { question: '日本のスマートウォッチの年間出荷台数は何台か？', hint: '20〜50代人口×スマートウォッチ保有率÷平均買い替え周期で分解。Apple Watch のシェアが大きい。' },
+  { question: '日本のホテル業界（ビジネス＋シティ）の年間客室稼働数は何室泊か？', hint: '全国客室数×稼働率×365日で分解。観光需要とビジネス需要の比率に注意。' },
+
+  // ── 追加: ビジネスあるある（面白い系） ──
+  { question: '日本の会社員が1年間にコピー機の前で待つ総時間は何時間か？', hint: 'ホワイトカラー人口×1人/週のコピー回数×1回あたり待ち時間で分解。複合機の前の小さな"行列"も意識。' },
+  { question: '日本の社内メールで1日に書かれる「お世話になっております」の総回数は？', hint: 'ビジネスメール送信者数×1人/日のメール送信数×冒頭挨拶率で分解。' },
+  { question: '全国のオフィス会議室で1日に起きる「先方の都合で時間変更」の件数は？', hint: 'BtoB会議の1日件数×変更発生率で分解。リスケ多発業界（コンサル・営業）の比率も意識。' },
+  { question: '日本のオフィスで1日に印刷される紙の総枚数は？', hint: 'ホワイトカラー人口×1人/日の印刷枚数で分解。ペーパーレス化進行率（業界差）も差し引こう。' },
+  { question: '日本の年賀状の年間発送枚数は何枚か？', hint: '世帯数×世帯あたり発送枚数で分解。年々減少傾向（デジタル化）も考慮。' },
+  { question: '日本の会社員が1年間に押す「Enterキー」の総回数は？', hint: 'PCワーカー人口×1人/日のEnter回数（メール送信＋検索＋コード実行など）×営業日で分解。' },
+  { question: '日本の駅で1日に飲まれる自販機コーヒーの缶・ペットボトル本数は？', hint: '全国駅数×1駅の自販機台数×1台/日の販売本数のうちコーヒーの比率で分解。' },
 ]
 
 const FERMI_POOL_EN: FermiQuestion[] = [
@@ -77,6 +107,36 @@ const FERMI_POOL_EN: FermiQuestion[] = [
   { question: 'What is the annual size of the subscription video market (Netflix, Prime Video, etc.) in Japan (JPY)?', hint: 'Households × SVOD adoption × services subscribed per household × monthly fee × 12 months. Multi-subscription is common.' },
   { question: 'What is the annual total revenue of the drugstore industry in Japan (JPY)?', hint: 'Number of stores × daily sales per store × operating days. Check per-store mix of cosmetics, food, and OTC drugs.' },
   { question: 'What is the annual attendance at Japan\'s professional baseball (NPB) games?', hint: '12 teams × home games per team × average attendance per game (stadium capacity × utilization).' },
+
+  // ── Added: industry / market size ──
+  { question: 'What is the annual total revenue of ramen shops in Japan (JPY)?', hint: 'Number of shops × daily sales per shop × operating days. Spend-per-customer varies a lot (iekei / jiro / family-oriented).' },
+  { question: 'What is the combined daily revenue of the top 3 convenience-store chains in Japan (JPY)?', hint: 'Total stores across the 3 chains × daily sales per store. Sales vary widely by location (station front / suburb / office district).' },
+  { question: 'What is the annual total revenue of the taxi industry in Japan (JPY)?', hint: 'National taxi fleet × daily revenue per cab × operating days. Urban vs rural utilization and fare structures differ.' },
+  { question: 'What is the annual size of the karaoke market in Japan (JPY)?', hint: 'Number of stores × daily sales per store × operating days. Mind the post-COVID recovery curve.' },
+  { question: 'What is the annual size of the manga market (print + digital) in Japan (JPY)?', hint: 'Split into print tankobon + magazines + digital storefront revenue. The digital share is climbing every year.' },
+  { question: 'What is the annual revenue of the mobile-game industry in Japan (JPY)?', hint: 'MAU × paying-user rate × ARPPU (avg. spend per payer) × 12 months. Whales (heavy spenders) skew the distribution.' },
+  { question: 'What is the annual total premium revenue of the insurance industry in Japan (JPY)?', hint: 'Split life + non-life: household enrollment rate × premium per household. Life-insurance penetration is very high.' },
+  { question: 'How many used cars are traded annually in Japan?', hint: 'National privately owned car fleet ÷ average replacement cycle to estimate annual transaction volume.' },
+  { question: 'What is the annual total revenue of the pizza-delivery industry in Japan (JPY)?', hint: 'Number of stores × daily orders per store × spend per customer × operating days. Mind weekend / event-day skews.' },
+  { question: 'How many smartphones are shipped annually in Japan?', hint: 'Population × smartphone ownership rate ÷ average replacement cycle. Include corporate demand too.' },
+  { question: 'What is the annual total revenue of the car-rental industry in Japan (JPY)?', hint: 'Fleet size × daily utilization rate × average daily price × 365. Tourist areas have higher utilization.' },
+  { question: 'What is the annual total revenue from vending machines in Japan (JPY)?', hint: 'National vending-machine count × daily sales per machine × 365. Mind the mix of drinks / tobacco / food.' },
+  { question: 'What is the annual total household telecom spend (mobile + fixed) in Japan (JPY)?', hint: 'Households × telecom spend per household × 12 + business demand. Pricing differs widely between MNOs and MVNOs.' },
+  { question: 'What is the annual total revenue of the English-conversation school industry in Japan (JPY)?', hint: 'Split offline + online: students × annual spend per student. Per-student spend differs between kids and adults.' },
+  { question: 'What is the annual total visitor count at Japan\'s super-sento / onsen facilities?', hint: 'Number of facilities × daily visitors per facility × operating days. Weekends and long holidays concentrate demand.' },
+  { question: 'What is the annual total revenue of the real-estate brokerage industry in Japan (JPY)?', hint: 'Annual housing transactions × average brokerage fee (~3% of price). Don\'t forget rental brokerage too.' },
+  { question: 'What is the annual size of the e-book market in Japan (JPY)?', hint: 'Readers × e-book adoption rate × annual spend per reader. Comics overwhelmingly dominate the mix.' },
+  { question: 'How many smartwatches are shipped annually in Japan?', hint: 'Population aged 20–50 × smartwatch ownership rate ÷ average replacement cycle. Apple Watch has the dominant share.' },
+  { question: 'How many room-nights are sold annually by Japan\'s hotel industry (business + city hotels)?', hint: 'National room count × occupancy rate × 365. Mind the balance between leisure and business demand.' },
+
+  // ── Added: quirky business observations ──
+  { question: 'How many total hours per year do Japanese office workers spend waiting at the copy machine?', hint: 'White-collar workers × prints per person per week × wait time per print. Picture the small queues that form by the multifunction printer.' },
+  { question: 'How many times per day is "osewa ni natte orimasu" written in internal business email in Japan?', hint: 'Business-email senders × emails per person per day × share that open with this greeting.' },
+  { question: 'How many "time-change-from-the-client" requests happen across Japanese offices per day?', hint: 'Daily BtoB meetings × probability of reschedule. Industries with frequent rescheduling (consulting, sales) tilt the average.' },
+  { question: 'How many sheets of paper are printed daily in Japanese offices?', hint: 'White-collar population × pages per person per day. Subtract for the level of paperless adoption (varies by industry).' },
+  { question: 'How many nengajō (New Year cards) are mailed annually in Japan?', hint: 'Households × cards per household. Note the steady decline as digital greetings spread.' },
+  { question: 'How many times per year do Japanese office workers press the Enter key in total?', hint: 'PC workers × Enter presses per person per day (email sends, searches, code runs) × working days.' },
+  { question: 'How many vending-machine cans / bottles of coffee are sold per day at Japanese train stations?', hint: 'National station count × machines per station × daily sales per machine × the coffee share of that mix.' },
 ]
 
 export const FERMI_POOL: FermiQuestion[] = getLocale() === 'en' ? FERMI_POOL_EN : FERMI_POOL_JA
@@ -143,6 +203,58 @@ const FERMI_STATS_JA: FermiStat[][] = [
   [{ label: '日本のドラッグストア店舗数', value: '約2.3万店' }, { label: '1店舗の1日売上（参考）', value: '約80〜120万円' }, { label: '営業日（参考）', value: '約350日' }],
   // 23: プロ野球年間観客動員数
   [{ label: 'NPB球団数', value: '12球団' }, { label: '1球団のホーム試合数（参考）', value: '約70試合' }, { label: '1試合あたり平均観客（参考）', value: '約3万人' }],
+  // 24: ラーメン店年間総売上
+  [{ label: '日本のラーメン店店舗数（参考）', value: '約3.2万店' }, { label: '1店舗の1日売上（参考）', value: '約4〜8万円' }, { label: '営業日（参考）', value: '約330日' }],
+  // 25: コンビニ大手3社1日合計売上
+  [{ label: 'セブン店舗数', value: '約2.1万店' }, { label: 'ファミマ店舗数', value: '約1.6万店' }, { label: 'ローソン店舗数', value: '約1.5万店' }, { label: '1店舗の1日売上（参考）', value: '約55万円' }],
+  // 26: タクシー業界年間総売上
+  [{ label: '全国タクシー台数', value: '約23万台' }, { label: '1台の1日売上（参考）', value: '約3万円' }, { label: '稼働日数（参考）', value: '約280日' }],
+  // 27: カラオケ市場年間規模
+  [{ label: '日本のカラオケ店店舗数', value: '約8,000店' }, { label: '1店舗の1日売上（参考）', value: '約8〜15万円' }, { label: '営業日（参考）', value: '約350日' }],
+  // 28: 漫画市場（紙＋電子）年間規模
+  [{ label: '紙コミック市場（参考）', value: '約2,000億円' }, { label: '電子コミック市場（参考）', value: '約5,000億円' }, { label: 'コミック雑誌市場', value: '約500億円' }],
+  // 29: スマホゲーム業界年間売上
+  [{ label: '国内アクティブユーザー（参考）', value: '約5,000万人' }, { label: '課金率（参考）', value: '約10%' }, { label: 'ARPPU（参考）', value: '約3,000〜5,000円/月' }],
+  // 30: 保険業界年間総保険料収入
+  [{ label: '生保保険料収入（参考）', value: '約30兆円' }, { label: '損保保険料収入（参考）', value: '約9兆円' }, { label: '生保世帯加入率', value: '約90%' }],
+  // 31: 中古車市場年間流通台数
+  [{ label: '国内自家用車保有台数', value: '約6,200万台' }, { label: '平均買い替え周期', value: '約7〜8年' }, { label: '中古車流通比率', value: '新車の約1.5倍' }],
+  // 32: 宅配ピザ業界年間総売上
+  [{ label: '宅配ピザ店舗数（参考）', value: '約2,500店' }, { label: '1店舗/日の注文数（参考）', value: '約30〜50件' }, { label: '客単価（参考）', value: '約3,000円' }],
+  // 33: スマートフォン年間出荷台数
+  [{ label: '日本の人口', value: '約1.24億人' }, { label: 'スマホ保有率（参考）', value: '約85%' }, { label: '買い替え周期（参考）', value: '約3〜4年' }],
+  // 34: レンタカー業界年間総売上
+  [{ label: '国内レンタカー保有台数（参考）', value: '約65万台' }, { label: '稼働率（参考）', value: '約50%' }, { label: '平均単価/日（参考）', value: '約8,000円' }],
+  // 35: 自販機年間総売上
+  [{ label: '全国自販機台数（参考）', value: '約400万台（飲料約240万台）' }, { label: '1台/日の売上（参考）', value: '約1,000〜2,000円' }, { label: '稼働日', value: '365日' }],
+  // 36: 通信費（携帯＋固定）年間総支出
+  [{ label: '日本の世帯数', value: '約5,700万世帯' }, { label: '世帯あたり通信費（参考）', value: '約12,000円/月' }, { label: '法人通信支出（参考）', value: '個人と同規模' }],
+  // 37: 英会話スクール業界年間総売上
+  [{ label: '受講者数（参考）', value: '約400万人' }, { label: '1人あたり年間支出（参考）', value: '約10〜30万円' }, { label: 'オンライン比率', value: '上昇傾向（約30〜40%）' }],
+  // 38: スーパー銭湯・温泉施設年間入場者
+  [{ label: '全国スーパー銭湯/温泉施設数', value: '約7,000施設' }, { label: '1施設/日の来場者（参考）', value: '約300〜800人' }, { label: '営業日', value: '約360日' }],
+  // 39: 不動産仲介業界年間総売上
+  [{ label: '年間住宅取引件数（参考）', value: '約80万件' }, { label: '平均成約価格（参考）', value: '約3,000万円' }, { label: '仲介手数料率', value: '約3%' }],
+  // 40: 電子書籍市場年間規模
+  [{ label: '日本の読者人口（参考）', value: '約7,000万人' }, { label: '電子書籍利用率（参考）', value: '約30〜40%' }, { label: '1人あたり年間支出（参考）', value: '約3,000〜5,000円' }],
+  // 41: スマートウォッチ年間出荷台数
+  [{ label: '20〜50代人口（参考）', value: '約5,000万人' }, { label: '保有率（参考）', value: '約15〜20%' }, { label: '買い替え周期（参考）', value: '約3〜4年' }],
+  // 42: ホテル業界年間客室稼働数
+  [{ label: '全国客室数（参考）', value: '約170万室' }, { label: '稼働率（参考）', value: '約60〜70%' }, { label: '日数', value: '365日' }],
+  // 43: コピー機の前で待つ年間総時間
+  [{ label: 'ホワイトカラー人口', value: '約3,500万人' }, { label: '1人/週のコピー回数（参考）', value: '約10〜20回' }, { label: '1回あたり待ち時間（参考）', value: '約30秒' }],
+  // 44: 「お世話になっております」総回数
+  [{ label: 'ビジネスメール送信者数（参考）', value: '約3,000万人' }, { label: '1人/日のメール送信数（参考）', value: '約20〜40通' }, { label: '冒頭挨拶率（参考）', value: '約30〜50%' }],
+  // 45: 「先方都合の時間変更」件数
+  [{ label: 'BtoB会議の1日件数（参考）', value: '約500万件' }, { label: '時間変更発生率（参考）', value: '約5〜10%' }, { label: 'リスケ多発業界比率', value: 'コンサル・営業で高め' }],
+  // 46: 1日の印刷紙総枚数
+  [{ label: 'ホワイトカラー人口', value: '約3,500万人' }, { label: '1人/日の印刷枚数（参考）', value: '約10〜20枚' }, { label: 'ペーパーレス化率', value: '業界によって30〜70%' }],
+  // 47: 年賀状年間発送枚数
+  [{ label: '日本の世帯数', value: '約5,700万世帯' }, { label: '1世帯あたり発送枚数（参考）', value: '約20〜40枚' }, { label: '減少率（前年比）', value: '約5〜10%/年' }],
+  // 48: Enterキー年間総押下回数
+  [{ label: 'PCワーカー人口（参考）', value: '約3,000万人' }, { label: '1人/日のEnter回数（参考）', value: '約200〜500回' }, { label: '営業日', value: '約240日' }],
+  // 49: 駅の自販機コーヒー1日販売本数
+  [{ label: '全国駅数', value: '約9,500駅' }, { label: '1駅の自販機台数（参考）', value: '約3〜10台' }, { label: '1台/日の販売本数（参考）', value: '約20〜30本' }, { label: 'コーヒー比率（参考）', value: '約20%' }],
 ]
 
 const FERMI_STATS_EN: FermiStat[][] = [
@@ -194,6 +306,58 @@ const FERMI_STATS_EN: FermiStat[][] = [
   [{ label: 'Drugstore count in Japan', value: '~23,000' }, { label: 'Daily sales per store (ref.)', value: '~¥800K–1.2M' }, { label: 'Operating days (ref.)', value: '~350' }],
   // 23: NPB attendance
   [{ label: 'NPB teams', value: '12 teams' }, { label: 'Home games per team (ref.)', value: '~70' }, { label: 'Avg attendance per game (ref.)', value: '~30,000' }],
+  // 24: Ramen shop revenue
+  [{ label: 'Ramen shops in Japan (ref.)', value: '~32,000' }, { label: 'Daily sales per shop (ref.)', value: '~¥40K–80K' }, { label: 'Operating days (ref.)', value: '~330' }],
+  // 25: Top 3 conbini combined daily revenue
+  [{ label: 'Seven-Eleven stores', value: '~21,000' }, { label: 'FamilyMart stores', value: '~16,000' }, { label: 'Lawson stores', value: '~15,000' }, { label: 'Daily sales per store (ref.)', value: '~¥550K' }],
+  // 26: Taxi industry revenue
+  [{ label: 'Taxis nationwide', value: '~230,000' }, { label: 'Daily revenue per cab (ref.)', value: '~¥30K' }, { label: 'Operating days (ref.)', value: '~280' }],
+  // 27: Karaoke market
+  [{ label: 'Karaoke stores in Japan', value: '~8,000' }, { label: 'Daily sales per store (ref.)', value: '~¥80K–150K' }, { label: 'Operating days (ref.)', value: '~350' }],
+  // 28: Manga market
+  [{ label: 'Print comics market (ref.)', value: '~¥200B' }, { label: 'Digital comics market (ref.)', value: '~¥500B' }, { label: 'Comic magazine market', value: '~¥50B' }],
+  // 29: Mobile game market
+  [{ label: 'Domestic active users (ref.)', value: '~50 million' }, { label: 'Paying-user rate (ref.)', value: '~10%' }, { label: 'ARPPU (ref.)', value: '~¥3,000–5,000 / month' }],
+  // 30: Insurance industry
+  [{ label: 'Life insurance premiums (ref.)', value: '~¥30 trillion' }, { label: 'Non-life premiums (ref.)', value: '~¥9 trillion' }, { label: 'Life enrollment rate (households)', value: '~90%' }],
+  // 31: Used car transactions
+  [{ label: 'Privately owned car fleet', value: '~62 million' }, { label: 'Average replacement cycle', value: '~7–8 years' }, { label: 'Used-to-new ratio', value: '~1.5×' }],
+  // 32: Pizza delivery
+  [{ label: 'Pizza delivery stores (ref.)', value: '~2,500' }, { label: 'Orders per store per day (ref.)', value: '~30–50' }, { label: 'Spend per customer (ref.)', value: '~¥3,000' }],
+  // 33: Smartphone shipments
+  [{ label: 'Japan population', value: '~124 million' }, { label: 'Smartphone ownership (ref.)', value: '~85%' }, { label: 'Replacement cycle (ref.)', value: '~3–4 years' }],
+  // 34: Car rental
+  [{ label: 'Rental fleet in Japan (ref.)', value: '~650,000' }, { label: 'Utilization rate (ref.)', value: '~50%' }, { label: 'Avg daily price (ref.)', value: '~¥8,000' }],
+  // 35: Vending machine revenue
+  [{ label: 'Vending machines nationwide (ref.)', value: '~4M (drinks ~2.4M)' }, { label: 'Daily sales per machine (ref.)', value: '~¥1,000–2,000' }, { label: 'Operating days', value: '365' }],
+  // 36: Telecom household spend
+  [{ label: 'Households in Japan', value: '~57 million' }, { label: 'Telecom spend per household (ref.)', value: '~¥12,000 / month' }, { label: 'Corporate telecom (ref.)', value: 'Similar size to consumer' }],
+  // 37: English-conversation schools
+  [{ label: 'Learners (ref.)', value: '~4 million' }, { label: 'Annual spend per learner (ref.)', value: '~¥100K–300K' }, { label: 'Online share', value: 'Rising (~30–40%)' }],
+  // 38: Super-sento / onsen visitors
+  [{ label: 'Sento / onsen facilities', value: '~7,000' }, { label: 'Visitors per facility per day (ref.)', value: '~300–800' }, { label: 'Operating days', value: '~360' }],
+  // 39: Real estate brokerage
+  [{ label: 'Annual housing transactions (ref.)', value: '~800,000' }, { label: 'Avg transaction price (ref.)', value: '~¥30 million' }, { label: 'Brokerage fee rate', value: '~3%' }],
+  // 40: E-book market
+  [{ label: 'Readers in Japan (ref.)', value: '~70 million' }, { label: 'E-book adoption (ref.)', value: '~30–40%' }, { label: 'Annual spend per reader (ref.)', value: '~¥3,000–5,000' }],
+  // 41: Smartwatch shipments
+  [{ label: 'Population aged 20–50 (ref.)', value: '~50 million' }, { label: 'Ownership rate (ref.)', value: '~15–20%' }, { label: 'Replacement cycle (ref.)', value: '~3–4 years' }],
+  // 42: Hotel room-nights
+  [{ label: 'Total room count nationwide (ref.)', value: '~1.7 million' }, { label: 'Occupancy rate (ref.)', value: '~60–70%' }, { label: 'Days', value: '365' }],
+  // 43: Copy-machine wait time
+  [{ label: 'White-collar workers', value: '~35 million' }, { label: 'Prints per person per week (ref.)', value: '~10–20' }, { label: 'Wait per print (ref.)', value: '~30 sec' }],
+  // 44: "Osewa ni natte orimasu" total
+  [{ label: 'Business-email senders (ref.)', value: '~30 million' }, { label: 'Emails per person per day (ref.)', value: '~20–40' }, { label: 'Greeting-opening rate (ref.)', value: '~30–50%' }],
+  // 45: Schedule changes from clients
+  [{ label: 'Daily BtoB meetings (ref.)', value: '~5 million' }, { label: 'Reschedule rate (ref.)', value: '~5–10%' }, { label: 'High-reschedule industries', value: 'Consulting / sales skew higher' }],
+  // 46: Daily printed pages
+  [{ label: 'White-collar workers', value: '~35 million' }, { label: 'Pages per person per day (ref.)', value: '~10–20' }, { label: 'Paperless adoption', value: '30–70% by industry' }],
+  // 47: New Year cards
+  [{ label: 'Households in Japan', value: '~57 million' }, { label: 'Cards per household (ref.)', value: '~20–40' }, { label: 'YoY decline', value: '~5–10% / year' }],
+  // 48: Enter-key presses
+  [{ label: 'PC workers (ref.)', value: '~30 million' }, { label: 'Enter presses per person per day (ref.)', value: '~200–500' }, { label: 'Working days', value: '~240' }],
+  // 49: Station vending coffee
+  [{ label: 'Train stations nationwide', value: '~9,500' }, { label: 'Vending machines per station (ref.)', value: '~3–10' }, { label: 'Daily sales per machine (ref.)', value: '~20–30 cans' }, { label: 'Coffee share (ref.)', value: '~20%' }],
 ]
 
 export const FERMI_STATS: FermiStat[][] = getLocale() === 'en' ? FERMI_STATS_EN : FERMI_STATS_JA

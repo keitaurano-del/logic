@@ -51,6 +51,7 @@ import { setUser as setSentryUser } from './sentry'
 import { hideSplash } from './platform'
 import { SnackbarProvider } from './components/Snackbar'
 import { syncOnLogin, syncOnLogout } from './syncService'
+import { canUseJournal, getJournalTrialDaysLeft } from './subscription'
 import { TutorialOverlay, TutorialFAB } from './components/TutorialOverlay'
 import { tutorial } from './tutorial/tutorialStorage'
 import { t } from './i18n'
@@ -110,6 +111,7 @@ type Screen =
   | { type: 'report-problem'; context: { lessonId?: number; lessonTitle?: string; question?: string } }
   | { type: 'onboarding' }
   | { type: 'journal' }
+  | { type: 'welcome' }
 
 // LESSON_LIST is now managed within RoadmapScreen
 
@@ -239,7 +241,8 @@ function AppV3() {
         // preview=onboarding 中はホームに戻さない
         const isPreview = typeof location !== 'undefined' && new URL(location.href).searchParams.get('preview') === 'onboarding'
         if (!isPreview) {
-          setScreen((s) => s.type === 'onboarding' ? { type: 'home' } : s)
+          // ログイン直後（login / onboarding 画面からの遷移）はウェルカム画面を表示
+          setScreen((s) => (s.type === 'login' || s.type === 'onboarding') ? { type: 'welcome' } : s)
           // チュートリアルは右下FABから任意で起動
         }
       } else {
@@ -376,6 +379,11 @@ function AppV3() {
     )
   }
 
+  // Welcome: 認証直後の歓迎画面（全画面・AppShell なし）
+  if (screen.type === 'welcome') {
+    return <WelcomeScreen userName={userName} onStart={() => navigate({ type: 'home' })} />
+  }
+
   return (
     <>
     <AppShell
@@ -469,11 +477,15 @@ function AppV3() {
 
       {screen.type === 'journal' && (
         currentUser ? (
-          <JournalScreen
-            userId={currentUser.id}
-            assistantName={assistantName}
-            onUpdateAssistantName={updateAssistantName}
-          />
+          canUseJournal() ? (
+            <JournalScreen
+              userId={currentUser.id}
+              assistantName={assistantName}
+              onUpdateAssistantName={updateAssistantName}
+            />
+          ) : (
+            <JournalPaywall onUpgrade={() => navigate({ type: 'pricing' })} />
+          )
         ) : (
           <JournalLoginPrompt onLogin={() => navigate({ type: 'login' })} />
         )
@@ -685,6 +697,131 @@ function AppV3() {
       </div>
     )}
     </>
+  )
+}
+
+function WelcomeScreen({ userName, onStart }: { userName: string; onStart: () => void }) {
+  return (
+    <div style={{
+      minHeight: '100dvh',
+      background: 'var(--hero-grad-dark, linear-gradient(160deg, #0f172a 0%, #1e293b 100%))',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '40px 28px calc(env(safe-area-inset-bottom, 0px) + 40px)',
+      fontFamily: "'Noto Sans JP', sans-serif",
+      color: 'var(--text-on-hero, #fff)',
+      textAlign: 'center',
+      gap: 24,
+    }}>
+      <div style={{
+        width: 96, height: 96, borderRadius: '50%',
+        background: 'linear-gradient(135deg, var(--brand), var(--brand-light, #8B5CF6))',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        fontSize: 44,
+        boxShadow: '0 0 40px rgba(108,142,245,0.55), 0 12px 32px rgba(0,0,0,0.4)',
+      }}>
+        <span aria-hidden="true">🎉</span>
+      </div>
+      <div>
+        <div style={{ fontSize: 14, letterSpacing: '.16em', fontWeight: 700, color: 'rgba(255,255,255,.7)', marginBottom: 10, textTransform: 'uppercase' }}>
+          {t('welcome.eyebrow')}
+        </div>
+        <h1 style={{ fontSize: 28, fontWeight: 900, lineHeight: 1.35, margin: 0, letterSpacing: '-0.01em' }}>
+          {t('welcome.heading', { name: userName })}
+        </h1>
+      </div>
+      <p style={{ fontSize: 15, lineHeight: 1.75, color: 'rgba(255,255,255,.78)', margin: 0, maxWidth: 360 }}>
+        {t('welcome.body')}
+      </p>
+      <button
+        type="button"
+        onClick={onStart}
+        style={{
+          marginTop: 12,
+          padding: '16px 36px',
+          fontSize: 16, fontWeight: 800, letterSpacing: '0.02em',
+          background: 'var(--brand-grad-h, linear-gradient(135deg, #6C8EF5, #8B5CF6))',
+          color: 'var(--accent-fg, #fff)',
+          border: 'none',
+          borderRadius: 999,
+          cursor: 'pointer',
+          boxShadow: '0 8px 24px rgba(108,142,245,0.45)',
+          minWidth: 240,
+          minHeight: 52,
+        }}
+      >
+        {t('welcome.startCta')}
+      </button>
+    </div>
+  )
+}
+
+function JournalPaywall({ onUpgrade }: { onUpgrade: () => void }) {
+  const daysLeft = getJournalTrialDaysLeft()
+  return (
+    <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', display: 'flex', flexDirection: 'column' }}>
+      <div className="journal-hero">
+        <div>
+          <div style={{ fontSize: 22, fontWeight: 900, letterSpacing: '-0.02em' }}>{t('journal.title')}</div>
+          <div style={{ fontSize: 13, color: 'var(--text-on-hero-muted)', marginTop: 4 }}>{t('journal.subtitle')}</div>
+        </div>
+      </div>
+      <div style={{ flex: 1, padding: '32px 20px 120px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', gap: 20 }}>
+        <div style={{
+          background: 'var(--bg-card)',
+          borderRadius: 16,
+          padding: 24,
+          maxWidth: 360,
+          width: '100%',
+          textAlign: 'center',
+          boxShadow: 'var(--shadow-v3-card-inset)',
+          border: '1px solid rgba(255,255,255,.06)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 12,
+        }}>
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            alignSelf: 'center',
+            width: 56, height: 56, borderRadius: '50%',
+            background: 'linear-gradient(135deg, var(--brand), var(--brand-light, #8B5CF6))',
+            fontSize: 28,
+            marginBottom: 4,
+          }}>
+            <span aria-hidden="true">✨</span>
+          </div>
+          <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-primary)' }}>
+            {daysLeft > 0 ? t('journal.trialActiveTitle', { days: String(daysLeft) }) : t('journal.paywallTitle')}
+          </div>
+          <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+            {daysLeft > 0 ? t('journal.trialActiveDesc') : t('journal.paywallDesc')}
+          </div>
+          <button
+            type="button"
+            onClick={onUpgrade}
+            style={{
+              marginTop: 8,
+              padding: '14px 24px',
+              background: 'var(--brand)',
+              color: 'var(--accent-fg, #fff)',
+              border: 'none',
+              borderRadius: 12,
+              font: 'inherit',
+              fontSize: 15,
+              fontWeight: 700,
+              cursor: 'pointer',
+              minHeight: 48,
+            }}
+          >
+            {t('journal.viewPlansCta')}
+          </button>
+        </div>
+      </div>
+    </div>
   )
 }
 

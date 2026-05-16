@@ -2,8 +2,8 @@
  * ProfileScreenV3 - Logic v3 redesign
  * 仕様: docs/DESIGN_V3.md §3.6
  */
-import { useState, useId } from 'react'
-import { getCompletedCount, getLessonStreak, getXp, getCompletedLessons, getXpLogThisMonth, XP_EVENT_LABEL } from '../stats'
+import { useState } from 'react'
+import { getCompletedCount, getLessonStreak, getXp, getCompletedLessons, getXpLogThisMonth, XP_EVENT_LABEL, XP_REWARDS } from '../stats'
 import { getAllLessonsFlat } from '../lessonData'
 import { getCurrentLevel, getXpProgress } from './homeHelpers'
 import { logout } from '../supabase'
@@ -299,6 +299,21 @@ function XpSheet({ totalXp }: { totalXp: number }) {
           })}
         </div>
       )}
+
+      {/* XP獲得ルール一覧 */}
+      <div style={{ marginTop: 24, padding: '14px 16px', background: 'var(--bg-primary)', borderRadius: 14 }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 10 }}>
+          {t('profile.xpRulesHeading')}
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {(Object.keys(XP_REWARDS) as Array<keyof typeof XP_REWARDS>).map((event) => (
+            <div key={event} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 13 }}>
+              <span style={{ color: 'var(--text-primary)' }}>{XP_EVENT_LABEL[event] || event}</span>
+              <span style={{ color: 'var(--brand)', fontWeight: 700 }}>+{XP_REWARDS[event]} XP</span>
+            </div>
+          ))}
+        </div>
+      </div>
     </>
   )
 }
@@ -336,71 +351,20 @@ function StatCard({ val, label, onClick, highlight }: { val: string; label: stri
 }
 
 function FlameIcon({ size = 20, dim = false }: { size?: number; dim?: boolean }) {
-  const uid = useId()
-  const outerId = `pf-flame-out-${uid}`
-  const innerId = `pf-flame-in-${uid}`
-  const coreId = `pf-flame-core-${uid}`
-
-  if (dim) {
-    return (
-      <svg width={size} height={size} viewBox="0 0 32 32" fill="none" aria-hidden="true">
-        <path
-          d="M19 2.5 C17.5 5 18.5 7.5 18 10 C20.5 9 23 11.5 24 15 C26 18.5 25.5 23.5 22.5 26.5 C18.5 30 12 30 8 26 C5 23 4 17.5 6 13.5 C7.5 11 10 10 12 8 C11 5.5 13 3 15.5 2 C15.5 4 16.5 4.5 18 3 C18.5 2 18.5 2 19 2.5 Z"
-          fill="#2E3550"
-          stroke="#3F4760"
-          strokeWidth="1"
-        />
-        <path
-          d="M16.5 12 C14.5 14.5 13 17 13.5 20 C14 23 16.5 23.5 18 22.5 C20.5 21 21 17.5 19 14.5 C18 13 17 12 16.5 12 Z"
-          fill="#3F4760"
-        />
-      </svg>
-    )
-  }
-
+  // 2026-05-16: ジャーナル StreakBadge と統一して 🔥 絵文字に変更
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 32 32"
-      fill="none"
+    <span
       aria-hidden="true"
-      style={{ filter: 'drop-shadow(0 2px 8px rgba(255,107,0,.55))' }}
+      style={{
+        fontSize: size,
+        lineHeight: 1,
+        display: 'inline-block',
+        opacity: dim ? 0.35 : 1,
+        filter: dim ? 'grayscale(1)' : 'none',
+      }}
     >
-      <defs>
-        <linearGradient id={outerId} x1="16" y1="1" x2="16" y2="30" gradientUnits="userSpaceOnUse">
-          <stop offset="0" stopColor="#FFC42E" />
-          <stop offset=".30" stopColor="#FF8A1A" />
-          <stop offset=".70" stopColor="#FF3D00" />
-          <stop offset="1" stopColor="#9F1A0B" />
-        </linearGradient>
-        <linearGradient id={innerId} x1="16" y1="10" x2="16" y2="26" gradientUnits="userSpaceOnUse">
-          <stop offset="0" stopColor="#FFF176" />
-          <stop offset=".5" stopColor="#FFB300" />
-          <stop offset="1" stopColor="#FF6F00" stopOpacity=".7" />
-        </linearGradient>
-        <radialGradient id={coreId} cx="16.5" cy="21" r="3.5" gradientUnits="userSpaceOnUse">
-          <stop offset="0" stopColor="#FFFFFF" />
-          <stop offset=".4" stopColor="#FFF59D" />
-          <stop offset="1" stopColor="#FFEB3B" stopOpacity="0" />
-        </radialGradient>
-      </defs>
-
-      {/* Outer flame: asymmetric tear-drop with curl on the top */}
-      <path
-        d="M19 2.5 C17.5 5 18.5 7.5 18 10 C20.5 9 23 11.5 24 15 C26 18.5 25.5 23.5 22.5 26.5 C18.5 30 12 30 8 26 C5 23 4 17.5 6 13.5 C7.5 11 10 10 12 8 C11 5.5 13 3 15.5 2 C15.5 4 16.5 4.5 18 3 C18.5 2 18.5 2 19 2.5 Z"
-        fill={`url(#${outerId})`}
-      />
-
-      {/* Inner flame: brighter, smaller */}
-      <path
-        d="M16.5 11 C14.5 13.5 12.5 16.5 13 20 C13.5 23 16 24 17.5 23.5 C20.5 22 21 18 19 15 C17.5 13 16.5 12 16.5 11 Z"
-        fill={`url(#${innerId})`}
-      />
-
-      {/* White-hot core */}
-      <ellipse cx="16.8" cy="20.5" rx="1.8" ry="2.6" fill={`url(#${coreId})`} />
-    </svg>
+      🔥
+    </span>
   )
 }
 

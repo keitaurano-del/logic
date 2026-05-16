@@ -134,9 +134,53 @@ function mergeArrays(local: string[], remote: string[]): string[] {
   return [...new Set([...remote, ...local])]
 }
 
+async function syncSubscriptionFromRemote(): Promise<void> {
+  if (!supabase || !_currentUserId) return
+  try {
+    // admin_overrides を最優先（自動付与プラン）
+    const { data: override } = await supabase
+      .from('admin_overrides')
+      .select('plan')
+      .eq('user_id', _currentUserId)
+      .maybeSingle()
+
+    if (override?.plan) {
+      // クライアント型に正規化（admin_overrides.plan が legacy 値の場合も対応）
+      const { normalizeLegacyPlan, setPaidPlan } = await import('./subscription')
+      const normalized = normalizeLegacyPlan(override.plan as string)
+      if (normalized !== 'free') {
+        // 期限は実質無期限（10年後）として保存
+        const expiresAt = new Date(Date.now() + 10 * 365 * 86400000).toISOString()
+        setPaidPlan(normalized, expiresAt)
+        return
+      }
+    }
+
+    // 通常サブスクリプション
+    const { data: sub } = await supabase
+      .from('subscriptions')
+      .select('status, plan, current_period_end')
+      .eq('user_id', _currentUserId)
+      .maybeSingle()
+
+    if (sub && sub.status === 'active' && sub.plan) {
+      const { normalizeLegacyPlan, setPaidPlan } = await import('./subscription')
+      const normalized = normalizeLegacyPlan(sub.plan as string)
+      if (normalized !== 'free' && sub.current_period_end) {
+        setPaidPlan(normalized, sub.current_period_end as string)
+      }
+    }
+  } catch (e) {
+    console.warn('[sync] syncSubscriptionFromRemote failed:', e)
+  }
+}
+
 export async function syncOnLogin(userId: string): Promise<void> {
   setSyncUser(userId)
   if (!supabase) return
+
+  // サブスクリプション状態を同期（admin_overrides 含む）
+  await syncSubscriptionFromRemote()
 
   try {
     // ローカルデータ読み出し
@@ -204,6 +248,42 @@ export async function syncOnLogin(userId: string): Promise<void> {
 }
 
 export async function syncOnLogout(): Promise<void> {
+  // 2026-05-16: ログアウト時はローカルのユーザーデータをクリア。
+  // 残すのは UI / インストール永続キー（locale, theme, v3-preview, install-id,
+  // dev-mode, admin, onboarded, tutorial）のみ。
+  // 個人の進捗・通知設定・ジャーナルXP・サブスク状態などはすべて削除する。
+  //
+  // 注意: Supabase の onAuthChange は最初に INITIAL_SESSION イベントで
+  // null を返してくる（未ログインの場合）。これは「ログアウト」ではなく
+  // 「最初から未ログイン」なので、_currentUserId が null のまま null を
+  // 受け取ったときは何もしない。
+  const wasLoggedIn = _currentUserId !== null
   setSyncUser(null)
-  // ローカルデータは消さない
+  if (!wasLoggedIn) return
+
+  const KEEP_KEYS = new Set([
+    'logic-locale',
+    'logic-theme',
+    'logic-v3-preview',
+    'logic-install-id',
+    'logic-dev-mode',
+    'logic-admin',
+    'logic-onboarded',
+    'logic-onboarding-done',
+    'logic-tutorial-home-done',
+    'logic-tutorial-daily-done',
+    'logic-tutorial-lesson-done',
+    'logic-tutorial-placement-dismissed',
+    'logic-tutorial-fab-dismissed',
+  ])
+  try {
+    const keys: string[] = []
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i)
+      if (k && k.startsWith('logic-') && !KEEP_KEYS.has(k)) keys.push(k)
+    }
+    for (const k of keys) localStorage.removeItem(k)
+  } catch (e) {
+    console.warn('[sync] syncOnLogout clear failed:', e)
+  }
 }
