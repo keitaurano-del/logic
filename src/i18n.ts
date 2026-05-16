@@ -126,6 +126,22 @@ const STRINGS: Record<Locale, Strings> = {
     'journal.activityType.aiProblem': 'AI 問題',
     'journal.searchEmptyHint': 'ジャーナルの予定・振り返り・AI まとめ・朝のメモから検索できます。気分や天気に関する言葉でも探せます。',
 
+    // Journal — Health Connect / HealthKit integration
+    'journal.healthTitle': 'ヘルスデータ',
+    'journal.healthSteps': '歩数',
+    'journal.healthSleep': '睡眠',
+    'journal.healthStepsUnit': '歩',
+    'journal.healthSleepHm': '{h}時間{m}分',
+    'journal.healthRefresh': '更新',
+    'journal.healthConnectCta': 'Health Connect と連携',
+    'journal.healthPermissionPrompt': '歩数・睡眠データを取り込むには Health Connect の許可が必要です。',
+    'journal.healthOpenSettings': 'Health Connect の設定を開く',
+    'journal.healthNotInstalled': 'この端末には Health Connect がインストールされていません。',
+    'journal.healthOpenStore': 'Play ストアで Health Connect を入手',
+    'journal.healthNotSupported': 'この端末では Health Connect を利用できません。',
+    'journal.healthWebUnsupported': 'ヘルスデータの連携はアプリ版でのみ利用できます。',
+    'journal.healthError': 'ヘルスデータの取得に失敗しました。',
+
     // Journal v2 — Today / Phase / Tags / Streak / Sparkline / FollowUp
     'journal.tabToday': '今日',
     'journal.phaseTabs': '朝・夜の切り替え',
@@ -1641,6 +1657,22 @@ const STRINGS: Record<Locale, Strings> = {
     'journal.activityType.dailyProblem': 'Daily',
     'journal.activityType.aiProblem': 'AI',
     'journal.searchEmptyHint': "Search across schedule, reflection, AI summary, and morning memo. Mood and weather keywords work too.",
+
+    // Journal — Health Connect / HealthKit integration
+    'journal.healthTitle': 'Health data',
+    'journal.healthSteps': 'Steps',
+    'journal.healthSleep': 'Sleep',
+    'journal.healthStepsUnit': 'steps',
+    'journal.healthSleepHm': '{h}h {m}m',
+    'journal.healthRefresh': 'Refresh',
+    'journal.healthConnectCta': 'Connect Health Connect',
+    'journal.healthPermissionPrompt': 'Allow Health Connect access to sync steps and sleep.',
+    'journal.healthOpenSettings': 'Open Health Connect settings',
+    'journal.healthNotInstalled': 'Health Connect is not installed on this device.',
+    'journal.healthOpenStore': 'Get Health Connect on Play Store',
+    'journal.healthNotSupported': 'Health Connect is not supported on this device.',
+    'journal.healthWebUnsupported': 'Health data sync is only available in the mobile app.',
+    'journal.healthError': 'Could not load health data.',
 
     // Journal v2 — Today / Phase / Tags / Streak / Sparkline / FollowUp
     'journal.tabToday': 'Today',

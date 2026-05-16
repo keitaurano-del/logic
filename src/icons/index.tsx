@@ -303,6 +303,36 @@ export function MessageSquareIcon(p: IconProps) {
   )
 }
 
+export function FootprintsIcon(p: IconProps) {
+  return (
+    <svg {...base} {...p}>
+      <path d="M4 16v-2.38c0-.5.18-.97.5-1.35l1-1.18A2 2 0 0 1 7 10.4V8a2 2 0 1 1 4 0v3a2 2 0 0 1-.66 1.49l-.84.74A2 2 0 0 0 9 14.7V18" />
+      <path d="M13 18v-2.38c0-.5.18-.97.5-1.35l1-1.18A2 2 0 0 1 16 12.4V10a2 2 0 1 1 4 0v3a2 2 0 0 1-.66 1.49l-.84.74A2 2 0 0 0 18 16.7V20" />
+      <path d="M5 20h4" />
+      <path d="M14 22h4" />
+    </svg>
+  )
+}
+
+export function MoonIcon(p: IconProps) {
+  return (
+    <svg {...base} {...p}>
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+    </svg>
+  )
+}
+
+export function RefreshIcon(p: IconProps) {
+  return (
+    <svg {...base} {...p}>
+      <path d="M21 12a9 9 0 0 1-15.5 6.3L3 16" />
+      <path d="M3 12a9 9 0 0 1 15.5-6.3L21 8" />
+      <path d="M21 3v5h-5" />
+      <path d="M3 21v-5h5" />
+    </svg>
+  )
+}
+
 export function BrandMark(p: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="54 54 92 92" xmlns="http://www.w3.org/2000/svg" {...p}>

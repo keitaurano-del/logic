@@ -53,6 +53,10 @@ export async function upsertJournal(j: DailyJournal): Promise<{ error?: string }
       evening_reflection: j.evening_reflection,
       ai_summary: j.ai_summary,
       tags: Array.isArray(j.tags) ? j.tags : [],
+      steps_count: j.steps_count ?? null,
+      sleep_minutes: j.sleep_minutes ?? null,
+      sleep_start: j.sleep_start ?? null,
+      sleep_end: j.sleep_end ?? null,
     }, { onConflict: 'user_id,date' })
   if (error) return { error: error.message }
   return {}
