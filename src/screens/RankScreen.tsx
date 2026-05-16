@@ -72,7 +72,7 @@ export function RankScreen({ onBack }: RankScreenProps) {
             color: 'rgba(255,255,255,0.45)', background: 'rgba(255,255,255,0.08)',
             borderRadius: 20, padding: '3px 14px',
           }}>
-            Rank {tier.level} / {RANK_TIERS.length}
+            {t('rank.indicator', { current: String(tier.level), total: String(RANK_TIERS.length) })}
           </span>
         </div>
 
@@ -310,7 +310,7 @@ export function RankScreen({ onBack }: RankScreenProps) {
                   fontSize: 13, fontWeight: 800, letterSpacing: '0.12em',
                   textTransform: 'uppercase', color: 'var(--brand)', marginBottom: 4,
                 }}>
-                  Rank {selectedTier.level} / {RANK_TIERS.length}
+                  {t('rank.indicator', { current: String(selectedTier.level), total: String(RANK_TIERS.length) })}
                 </div>
                 <div style={{
                   fontFamily: "'Inter Tight', 'Inter', sans-serif",

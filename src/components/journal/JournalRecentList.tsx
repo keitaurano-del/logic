@@ -43,11 +43,15 @@ export function JournalRecentList({ userId, refreshKey = 0, limit = 5 }: Journal
   useEffect(() => {
     let cancelled = false
     ;(async () => {
-      const list = await fetchRecentJournals(userId, 60)
-      if (cancelled) return
-      const filtered = list.filter(hasContent).slice(0, limit)
-      setItems(filtered)
-      setLoading(false)
+      try {
+        const list = await fetchRecentJournals(userId, 60)
+        if (cancelled) return
+        const filtered = list.filter(hasContent).slice(0, limit)
+        setItems(filtered)
+      } finally {
+        // 例外が出ても loading 状態を必ず解放（無限スピナー防止）。
+        if (!cancelled) setLoading(false)
+      }
     })()
     return () => { cancelled = true }
   }, [userId, refreshKey, limit])

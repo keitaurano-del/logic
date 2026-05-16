@@ -225,24 +225,24 @@ ${(scheduleNotes || '').toString().trim() || '未入力'}`
       ).reduce((sum, p) => sum + (typeof p?.completed === 'number' ? p.completed : 0), 0)
 
       // 利用状況からおおまかなフェーズを決定:
-      //   beginner: 学習日数 ≤ 7 or レッスン完了 < 10
-      //   growing:  学習日数 8〜30 / 連続記録あり
-      //   committed: 学習日数 31〜90 / レッスン完了 30+
-      //   veteran:  学習日数 90+ / 高い連続記録
+      //   beginner:  学習日数 ≤ 13 or レッスン完了 < 10  (まだ習慣化前)
+      //   growing:   学習日数 14〜30 / レッスン完了 10+  (習慣形成中、心理学的な目安 14〜21 日)
+      //   committed: 学習日数 31〜89 / レッスン完了 30+
+      //   veteran:   学習日数 90+ / レッスン完了 80+
       let phase: 'beginner' | 'growing' | 'committed' | 'veteran'
       if (sDays >= 90 || totalLessonsCompleted >= 80) phase = 'veteran'
       else if (sDays >= 31 || totalLessonsCompleted >= 30) phase = 'committed'
-      else if (sDays >= 8 || totalLessonsCompleted >= 10) phase = 'growing'
+      else if (sDays >= 14 || totalLessonsCompleted >= 10) phase = 'growing'
       else phase = 'beginner'
 
       const phaseGuidanceJa: Record<typeof phase, string> = {
-        beginner: 'ユーザーは Logic を使い始めたばかり（学習日数 ' + sDays + '日 / 累計レッスン ' + totalLessonsCompleted + '件）。まずは続けることの価値・小さな勝利を肯定し、無理な高負荷タスクは勧めない。',
+        beginner: 'ユーザーは Logic を使い始めたばかり（学習日数 ' + sDays + '日 / 累計レッスン ' + totalLessonsCompleted + '件 / 連続 ' + streak + '日）。まずは続けることの価値・小さな勝利を肯定し、無理な高負荷タスクは勧めない。',
         growing:  'ユーザーは習慣を作っている途中（学習日数 ' + sDays + '日 / 累計レッスン ' + totalLessonsCompleted + '件 / 連続 ' + streak + '日）。ここで何が効いているかを言語化し、再現性のある小さな次の一歩を示す。',
         committed:'ユーザーはすでにコミットしている（学習日数 ' + sDays + '日 / 累計レッスン ' + totalLessonsCompleted + '件 / 連続 ' + streak + '日）。応援というより、内省を深める問いや弱点領域への挑戦を促す。',
         veteran:  'ユーザーはベテラン（学習日数 ' + sDays + '日 / 累計レッスン ' + totalLessonsCompleted + '件 / 連続 ' + streak + '日）。称賛より、現在の伸び悩みやマンネリを指摘し、新しい切り口（実務適用・他者への教える等）を提案してよい。',
       }
       const phaseGuidanceEn: Record<typeof phase, string> = {
-        beginner: 'User is just starting Logic (' + sDays + ' study days / ' + totalLessonsCompleted + ' lessons done). Affirm the value of just showing up and small wins; do not push heavy tasks yet.',
+        beginner: 'User is just starting Logic (' + sDays + ' study days / ' + totalLessonsCompleted + ' lessons / ' + streak + '-day streak). Affirm the value of just showing up and small wins; do not push heavy tasks yet.',
         growing:  'User is building the habit (' + sDays + ' study days / ' + totalLessonsCompleted + ' lessons / ' + streak + '-day streak). Name what is working and suggest one small repeatable next step.',
         committed:'User is committed (' + sDays + ' study days / ' + totalLessonsCompleted + ' lessons / ' + streak + '-day streak). Skip generic praise; ask deeper reflective questions or nudge a weak area.',
         veteran:  'User is a veteran (' + sDays + ' study days / ' + totalLessonsCompleted + ' lessons / ' + streak + '-day streak). Praise sparingly; point out plateaus and suggest fresh angles (real-world application, teaching others, etc).',

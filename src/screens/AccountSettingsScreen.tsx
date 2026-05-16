@@ -181,12 +181,12 @@ export function AccountSettingsScreen({ onBack, currentUser, onOpenLogin, onLogo
                   <div style={{ display: 'flex', gap: 8 }}>
                     <button
                       onClick={() => { setEditingEmail(false); setEmailError(''); setEmailInput(currentUser.email ?? '') }}
-                      style={{ flex: 1, padding: '10px', background: 'var(--bg-elevated)', border: 'none', borderRadius: 10, color: 'var(--text-secondary)', fontSize: 14, cursor: 'pointer' }}
+                      style={{ flex: 1, padding: '10px', minHeight: 44, background: 'var(--bg-elevated)', border: 'none', borderRadius: 10, color: 'var(--text-secondary)', fontSize: 14, cursor: 'pointer' }}
                     >{t('accountSettings.cancel')}</button>
                     <button
                       onClick={handleSaveEmail}
                       disabled={emailSaving || !emailInput.trim()}
-                      style={{ flex: 1, padding: '10px', background: emailInput.trim() ? 'var(--brand)' : 'var(--bg-elevated)', border: 'none', borderRadius: 10, color: emailInput.trim() ? '#fff' : 'var(--text-muted)', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}
+                      style={{ flex: 1, padding: '10px', minHeight: 44, background: emailInput.trim() ? 'var(--brand)' : 'var(--bg-elevated)', border: 'none', borderRadius: 10, color: emailInput.trim() ? '#fff' : 'var(--text-muted)', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}
                     >{emailSaving ? t('accountSettings.saving') : t('accountSettings.sendLinkBtn')}</button>
                   </div>
                   <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 8, lineHeight: 1.6 }}>

@@ -568,6 +568,7 @@ const STRINGS: Record<Locale, Strings> = {
     'rank.earn.lesson': 'レッスン完了',
     'rank.earn.studyMin': '学習時間',
     'rank.allRanks': '全ランク一覧',
+    'rank.indicator': 'ランク {current} / {total}',
 
     // Language screen
     'language.description': '言語を選択すると即座に切り替わります。',
@@ -2084,6 +2085,7 @@ const STRINGS: Record<Locale, Strings> = {
     'rank.earn.lesson': 'Complete a lesson',
     'rank.earn.studyMin': 'Study time',
     'rank.allRanks': 'All ranks',
+    'rank.indicator': 'Rank {current} / {total}',
 
     // Language screen
     'language.description': 'The app will switch immediately after you select a language.',
