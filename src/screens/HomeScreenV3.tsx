@@ -269,8 +269,8 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
         )}
 
         {/* AI practice cards (large, vertical) */}
-        <AILargeCard image={`${IMG}/home-daily-question.png`} name={t('home.aiGenLargeName')} sub={t('home.aiGenLargeSub')} onClick={onOpenAIGen} beta />
-        <AILargeCard image={`${IMG}/home-roleplay.png`} name={t('home.roleplayLargeName')} sub={t('home.roleplayLargeSub')} onClick={onOpenRoleplay} beta />
+        <AILargeCard image={`${IMG}/home-daily-question.png`} name={t('home.aiGenLargeName')} sub={t('home.aiGenLargeSub')} onClick={onOpenAIGen} />
+        <AILargeCard image={`${IMG}/home-roleplay.png`} name={t('home.roleplayLargeName')} sub={t('home.roleplayLargeSub')} onClick={onOpenRoleplay} />
       </div>
 
 
@@ -465,29 +465,15 @@ function buildReviewSub(due: number, weak: number, total: number, unresolved: nu
   return parts.join(' · ')
 }
 
-function AILargeCard({ image, name, sub, onClick, beta }: { image: string; name: string; sub: string; onClick: () => void; beta?: boolean }) {
+function AILargeCard({ image, name, sub, onClick }: { image: string; name: string; sub: string; onClick: () => void }) {
   return (
     <button type="button" onClick={onClick} aria-label={`${name}: ${sub}`} style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', cursor: 'pointer', boxShadow: 'var(--shadow-v3-card-inset)', flexShrink: 0, position: 'relative', border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%', padding: 0 }}>
       <div style={{ height: 140, overflow: 'hidden' }}>
         <img src={image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
       </div>
-      {beta && (
-        <div style={{
-          position: 'absolute', top: 10, left: 10,
-          background: 'rgba(0,0,0,.55)', backdropFilter: 'blur(4px)',
-          borderRadius: 20, padding: '3px 9px',
-          fontSize: 14, fontWeight: 700, color: 'var(--brand)',
-          letterSpacing: '.08em', textTransform: 'uppercase',
-        }}>BETA</div>
-      )}
       <div style={{ padding: '16px 18px 18px' }}>
         <div style={{ fontSize: 17, fontWeight: 700, marginBottom: 4 }}>{name}</div>
         <div style={{ fontSize: 14, color: 'var(--text-secondary)', fontWeight: 500, lineHeight: 1.5 }}>{sub}</div>
-        {beta && (
-          <div style={{ marginTop: 10, fontSize: 14, color: 'var(--warm)', background: `color-mix(in srgb, var(--warm) 8%, transparent)`, borderRadius: 8, padding: '6px 10px', lineHeight: 1.5 }}>
-            {t('home.betaNote')}
-          </div>
-        )}
       </div>
     </button>
   )
