@@ -1,18 +1,52 @@
+import { useEffect, useState } from 'react'
 import { Header } from '../components/platform/Header'
-import { BookOpenIcon, ClipboardListIcon, SparklesIcon, ChevronRightIcon } from '../icons'
+import { BarChartIcon, BookOpenIcon, ClipboardListIcon, SparklesIcon, ChevronRightIcon } from '../icons'
 import { getCardStats } from '../flashcardData'
 import { getWrongAnswerStats } from '../wrongAnswerStore'
+import { API_BASE } from './apiBase'
+import { getGuestId } from '../guestId'
 import { t } from '../i18n'
 
 interface Props {
   onBack: () => void
   onOpenFlashcards: (mode?: 'due' | 'weak') => void
   onOpenWrongAnswers: () => void
+  onOpenFermiHistory: () => void
 }
 
-export function ReviewHubScreen({ onBack, onOpenFlashcards, onOpenWrongAnswers }: Props) {
+interface FermiStats {
+  total: number
+  avgScore: number
+}
+
+export function ReviewHubScreen({ onBack, onOpenFlashcards, onOpenWrongAnswers, onOpenFermiHistory }: Props) {
   const cardStats = getCardStats()
   const wrongStats = getWrongAnswerStats()
+  const [fermiStats, setFermiStats] = useState<FermiStats | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+    const run = async () => {
+      try {
+        const guestId = getGuestId()
+        const res = await fetch(`${API_BASE}/api/fermi/history?guestId=${encodeURIComponent(guestId)}&limit=100`)
+        if (!res.ok) throw new Error('Network error')
+        const data = await res.json()
+        if (cancelled) return
+        const list = Array.isArray(data.history) ? data.history : []
+        const scored = list.filter((x: { score: number | null }) => typeof x.score === 'number')
+        const avg = scored.length > 0
+          ? Math.round(scored.reduce((s: number, x: { score: number }) => s + x.score, 0) / scored.length)
+          : 0
+        setFermiStats({ total: list.length, avgScore: avg })
+      } catch {
+        if (cancelled) return
+        setFermiStats({ total: 0, avgScore: 0 })
+      }
+    }
+    run()
+    return () => { cancelled = true }
+  }, [])
 
   return (
     <div style={{ minHeight: '100dvh', background: 'var(--bg-primary)', color: 'var(--text-primary)', fontFamily: "'Noto Sans JP', sans-serif" }}>
@@ -93,6 +127,49 @@ export function ReviewHubScreen({ onBack, onOpenFlashcards, onOpenWrongAnswers }
           >
             <span>{wrongStats.total === 0 ? t('reviewHub.wrongAnswersDisabled') : t('reviewHub.openWrongAnswers')}</span>
             {wrongStats.total > 0 && <ChevronRightIcon width={18} height={18} />}
+          </button>
+        </SectionCard>
+
+        {/* Fermi history section */}
+        <SectionCard
+          icon={<BarChartIcon width={22} height={22} />}
+          title={t('reviewHub.fermiTitle')}
+          subtitle={
+            !fermiStats || fermiStats.total === 0
+              ? t('reviewHub.fermiEmpty')
+              : t('reviewHub.fermiSummary', {
+                  total: String(fermiStats.total),
+                  avg: String(fermiStats.avgScore),
+                })
+          }
+        >
+          <button
+            type="button"
+            onClick={onOpenFermiHistory}
+            disabled={!fermiStats || fermiStats.total === 0}
+            style={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '12px 14px',
+              background: !fermiStats || fermiStats.total === 0 ? 'var(--bg-elevated)' : 'var(--brand)',
+              color: !fermiStats || fermiStats.total === 0 ? 'var(--text-muted)' : 'var(--accent-fg)',
+              border: 'none',
+              borderRadius: 'var(--radius-pill)',
+              fontSize: 14,
+              fontWeight: 700,
+              cursor: !fermiStats || fermiStats.total === 0 ? 'default' : 'pointer',
+              fontFamily: "'Noto Sans JP', sans-serif",
+              minHeight: 44,
+            }}
+          >
+            <span>
+              {!fermiStats || fermiStats.total === 0
+                ? t('reviewHub.fermiDisabled')
+                : t('reviewHub.openFermiHistory')}
+            </span>
+            {fermiStats && fermiStats.total > 0 && <ChevronRightIcon width={18} height={18} />}
           </button>
         </SectionCard>
 

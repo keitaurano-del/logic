@@ -454,17 +454,36 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
   const locale = getLocale()
   const { active: guideActive, dismiss: dismissGuide } = useDailyGuide()
 
-  // プラン別制限
+  // 復習からの再挑戦モード（履歴画面で「もう一度解く」が押された場合）
+  // この場合はデイリー制限を消費しない。フラグはマウント時に消費する。
+  const replayMode = (() => {
+    try {
+      const raw = sessionStorage.getItem('fermi-replay-mode')
+      if (raw === '1') {
+        sessionStorage.removeItem('fermi-replay-mode')
+        return true
+      }
+    } catch { /* */ }
+    return false
+  })()
+
+  // プラン別制限（replayMode のときはチェックをスキップ）
   const dailyLimit = getDailyFermiLimit()
   const rerollLimit = getDailyRerollLimit()
   const [dailyCount, setDailyCount] = useState(getDailyCount)
   const [rerollCount, setRerollCount] = useState(getRerollCount)
-  const canAnswer = dailyCount < dailyLimit
-  const canReroll = rerollCount < rerollLimit && canAnswer
+  const canAnswer = replayMode ? true : dailyCount < dailyLimit
+  const canReroll = replayMode ? false : (rerollCount < rerollLimit && canAnswer)
 
-  // ホーム画面で「別の問題」を選ばれている場合はそれを優先
+  // 優先順位: 復習からの再挑戦 → ホームで「別の問題」 → 日次デフォルト
   const initialIndex = (() => {
     try {
+      const replay = sessionStorage.getItem('fermi-replay-index')
+      if (replay != null) {
+        sessionStorage.removeItem('fermi-replay-index')
+        const n = parseInt(replay, 10)
+        if (Number.isFinite(n) && n >= 0 && n < FERMI_POOL.length) return n
+      }
       const raw = sessionStorage.getItem('home-fermi-index')
       if (raw != null) {
         const n = parseInt(raw, 10)
@@ -545,9 +564,11 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
       const data = await res.json()
       if (!res.ok || data.error) throw new Error(data.error || t('common.error'))
       setFeedback(data)
-      markDailyFermiDone()
-      incrementDailyCount()
-      setDailyCount(getDailyCount())
+      if (!replayMode) {
+        markDailyFermiDone()
+        incrementDailyCount()
+        setDailyCount(getDailyCount())
+      }
       setSubmitPhase('done')
       addXp('fermi')
       recordActivity({
