@@ -112,9 +112,6 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
           <div style={{ fontSize: 22, fontWeight: 800, lineHeight: 1.4, marginBottom: 10, color: 'var(--text-primary)', whiteSpace: 'pre-line' }}>
             {t('pricing.heroHeadline')}
           </div>
-          <div style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.7 }}>
-            {t('pricing.heroSub')}
-          </div>
         </div>
 
         {/* ─── 月/年トグル ─── */}
@@ -191,7 +188,11 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
                 opacity: loading ? 0.6 : 1,
               }}
             >
-              {loading === targetPlanId ? t('pricing.processing') : t('pricing.startPaid')}
+              {loading === targetPlanId
+                ? t('pricing.processing')
+                : isCurrentlyPaid
+                  ? (billingCycle === 'monthly' ? t('pricing.switchToMonthly') : t('pricing.switchToYearly'))
+                  : t('pricing.startPaid')}
             </button>
           )}
         </div>
