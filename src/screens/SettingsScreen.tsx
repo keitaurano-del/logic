@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect } from 'react'
+import React, { useState, useLayoutEffect, useRef } from 'react'
 import { ChevronRightIcon, SparklesIcon } from '../icons'
 import { Header } from '../components/platform/Header'
 import { getLocale, t, localizedHtmlPath } from '../i18n'
@@ -18,7 +18,7 @@ interface SettingsScreenProps {
   currentUser: { email: string } | null
   onLogout: () => void
   onOpenPricing?: () => void
-  initialSection?: 'account' | 'notifications' | 'plan'
+  initialSection?: 'account' | 'notifications' | 'plan' | 'appearance'
 }
 
 function SettingsRow({
@@ -67,6 +67,7 @@ function Toggle({ value, onChange, label }: { value: boolean; onChange: (v: bool
 
 export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUser, onLogout, onOpenPricing, initialSection }: SettingsScreenProps) {
   const [highlightSection, setHighlightSection] = useState<string | undefined>(initialSection)
+  const appearanceRef = useRef<HTMLDivElement | null>(null)
 
   // initialSection が変わったらハイライトを即時同期し、1.2秒後に解除
   // useLayoutEffect でペイント前に同期更新する（外部 prop との同期）
@@ -74,6 +75,9 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
     if (!initialSection) return
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setHighlightSection(initialSection)
+    if (initialSection === 'appearance') {
+      appearanceRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
     const t = setTimeout(() => setHighlightSection(undefined), 1200)
     return () => clearTimeout(t)
   }, [initialSection])
@@ -292,7 +296,7 @@ export function SettingsScreen({ onBack, onOpenLanguage, onOpenLogin, currentUse
       </div>
 
       {/* ── 外観 ── */}
-      <div>
+      <div ref={appearanceRef} style={{ transition: 'background 0.3s', borderRadius: 12, background: highlightSection === 'appearance' ? 'rgba(59,91,219,0.08)' : 'transparent' }}>
         <SectionHeader label={t('settings.appearance')} />
         <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
           <div style={{

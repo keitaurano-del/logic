@@ -102,7 +102,7 @@ type Screen =
   | { type: 'personal-course' }
   | { type: 'pricing' }
   | { type: 'streak' }
-  | { type: 'settings'; section?: 'account' | 'notifications' | 'plan' }
+  | { type: 'settings'; section?: 'account' | 'notifications' | 'plan' | 'appearance' }
   | { type: 'account-settings' }
   | { type: 'notification-settings' }
   | { type: 'completed-lessons' }
@@ -539,7 +539,7 @@ function AppV3() {
       {screen.type === 'profile' && (
         <ProfileScreenV3
           userName={userName}
-          onOpenSettings={(section) => navigate(section === 'account' ? { type: 'account-settings' } : section === 'notifications' ? { type: 'notification-settings' } : { type: 'settings' })}
+          onOpenSettings={(section) => navigate(section === 'account' ? { type: 'account-settings' } : section === 'notifications' ? { type: 'notification-settings' } : section === 'appearance' ? { type: 'settings', section: 'appearance' } : { type: 'settings' })}
           onOpenFeedback={() => navigate({ type: 'feedback' })}
           onOpenPricing={() => navigate({ type: 'pricing' })}
           onOpenPlacementTest={() => navigate({ type: 'placement-test' })}
