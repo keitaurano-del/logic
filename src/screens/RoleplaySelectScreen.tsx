@@ -1,6 +1,9 @@
+import { useState } from 'react'
 import { getSituations, type Situation, type SituationCategory } from '../situations'
-import { ArrowLeftIcon } from '../icons'
+import { ArrowLeftIcon, BookmarkIcon, BookmarkFilledIcon } from '../icons'
 import { IconButton } from '../components/IconButton'
+import { isSaved, toggleSaved } from '../savedItemsStore'
+import { haptic } from '../platform/haptics'
 import { t } from '../i18n'
 
 interface RoleplaySelectScreenProps {
@@ -121,6 +124,7 @@ function SituationCard({
   const locked = false
   const comingSoon = false // 哲学者シリーズも開放
 
+  const [saved, setSaved] = useState<boolean>(() => isSaved('roleplay', s.id))
   const image = SCENARIO_IMAGE[s.id]
   return (
     <button
@@ -157,6 +161,53 @@ function SituationCard({
           }}>
             <SituationIcon id={s.id} size={18} />
           </div>
+          {/* 保存ボタン */}
+          <span
+            role="button"
+            tabIndex={0}
+            aria-label={saved ? t('roleplaySelect.unsaveAria') : t('roleplaySelect.saveAria')}
+            aria-pressed={saved}
+            onClick={(e) => {
+              e.stopPropagation()
+              e.preventDefault()
+              haptic.light()
+              const next = toggleSaved({
+                type: 'roleplay',
+                refId: s.id,
+                title: s.title,
+                subtitle: s.partnerRole,
+                image,
+              })
+              setSaved(next)
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.stopPropagation()
+                e.preventDefault()
+                haptic.light()
+                const next = toggleSaved({
+                  type: 'roleplay',
+                  refId: s.id,
+                  title: s.title,
+                  subtitle: s.partnerRole,
+                  image,
+                })
+                setSaved(next)
+              }
+            }}
+            style={{
+              position: 'absolute', top: 8, right: 8,
+              width: 32, height: 32, borderRadius: '50%',
+              background: 'rgba(8,33,33,0.55)',
+              backdropFilter: 'blur(6px)',
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              cursor: 'pointer',
+              color: saved ? 'var(--brand)' : '#fff',
+              WebkitTapHighlightColor: 'transparent',
+            }}
+          >
+            {saved ? <BookmarkFilledIcon width={16} height={16} /> : <BookmarkIcon width={16} height={16} />}
+          </span>
         </div>
       )}
 

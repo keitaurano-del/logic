@@ -4,7 +4,7 @@
  * モックアップ: lv3-lesson.html
  */
 import { useState, useMemo, useRef, useEffect, useCallback } from 'react'
-import { CheckIcon, SparklesIcon, LightbulbIcon, BrainIcon, ClipboardListIcon } from '../icons'
+import { BookmarkIcon, BookmarkFilledIcon, CheckIcon, SparklesIcon, LightbulbIcon, BrainIcon, ClipboardListIcon } from '../icons'
 import type { LessonSlide } from '../lessonSlides'
 import { convertLessonToSlides } from '../lessonSlides'
 import { allLessons } from '../lessonData'
@@ -13,6 +13,18 @@ import { LessonThumbnail } from '../components/LessonThumbnail'
 import { API_BASE } from './apiBase'
 import { t } from '../i18n'
 import { tutorial } from '../tutorial/tutorialStorage'
+import { addWrongAnswers } from '../wrongAnswerStore'
+import { isSaved, toggleSaved } from '../savedItemsStore'
+import { haptic } from '../platform/haptics'
+
+type WrongAnswerCapture = {
+  slideIndex: number
+  question: string
+  correctAnswer: string
+  selectedAnswer: string
+  explanation: string
+  options: { label: string; correct: boolean }[]
+}
 
 interface LessonStoriesScreenProps {
   lessonId: number
@@ -43,6 +55,13 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
   // ===== Swipe 用 touchRef（早期 return より前で確保し Hooks 順を固定） =====
   const touchRef = useRef<{ x: number; y: number; t: number } | null>(null)
 
+  // 誤答キャプチャ：「最初に間違えた瞬間」だけ記録（Stories型UIは再挑戦できるため）
+  const wrongAnswersRef = useRef<WrongAnswerCapture[]>([])
+  const capturedSlideIndicesRef = useRef<Set<number>>(new Set())
+
+  // 保存（ブックマーク）状態
+  const [saved, setSaved] = useState<boolean>(() => isSaved('lesson', lessonId))
+
   const slides: LessonSlide[] = useMemo(() => {
     if (!lesson) return []
     return convertLessonToSlides(lesson)
@@ -70,7 +89,21 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
       setQuizAnswered(null)
       setMultiSelected([])
     } else {
-      // 完了
+      // 完了：誤答リストを永続化（最初に間違えた瞬間に記録済み）
+      if (lesson && wrongAnswersRef.current.length > 0) {
+        addWrongAnswers(
+          wrongAnswersRef.current.map((w) => ({
+            lessonId,
+            lessonTitle: lesson.title,
+            category: lesson.category,
+            question: w.question,
+            correctAnswer: w.correctAnswer,
+            selectedAnswer: w.selectedAnswer,
+            explanation: w.explanation,
+            options: w.options,
+          })),
+        )
+      }
       addXp('lesson')
       onComplete()
     }
@@ -133,15 +166,44 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
             <span style={{ fontSize: 13, fontWeight: 700 }}>{lesson.title}</span>
           </div>
         </div>
-        {/* SCRUM-226: ×ボタン — onClickも追加しzIndexをタップゾーンより上に */}
-        <button
-          onPointerDown={(e) => { e.stopPropagation(); e.preventDefault(); onClose() }}
-          onClick={(e) => { e.stopPropagation(); onClose() }}
-          style={{ width: 44, height: 44, borderRadius: '50%', background: 'var(--bg-card)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', WebkitTapHighlightColor: 'transparent', border: 'none', zIndex: 10, position: 'relative', flexShrink: 0 }}
-          aria-label={t('stories.closeAria')}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <button
+            type="button"
+            onPointerDown={(e) => {
+              e.stopPropagation()
+              haptic.light()
+              const next = toggleSaved({
+                type: 'lesson',
+                refId: lessonId,
+                title: lesson.title,
+                subtitle: lesson.category,
+              })
+              setSaved(next)
+            }}
+            aria-label={saved ? t('stories.unsaveAria') : t('stories.saveAria')}
+            aria-pressed={saved}
+            style={{
+              width: 44, height: 44, borderRadius: '50%',
+              background: 'var(--bg-card)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: 'pointer', WebkitTapHighlightColor: 'transparent',
+              border: 'none', zIndex: 10, position: 'relative',
+              flexShrink: 0,
+              color: saved ? 'var(--brand)' : '#fff',
+            }}
+          >
+            {saved ? <BookmarkFilledIcon width={18} height={18} /> : <BookmarkIcon width={18} height={18} />}
+          </button>
+          {/* SCRUM-226: ×ボタン — onClickも追加しzIndexをタップゾーンより上に */}
+          <button
+            onPointerDown={(e) => { e.stopPropagation(); e.preventDefault(); onClose() }}
+            onClick={(e) => { e.stopPropagation(); onClose() }}
+            style={{ width: 44, height: 44, borderRadius: '50%', background: 'var(--bg-card)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', WebkitTapHighlightColor: 'transparent', border: 'none', zIndex: 10, position: 'relative', flexShrink: 0 }}
+            aria-label={t('stories.closeAria')}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+          </button>
+        </div>
       </div>
 
       {/* Slide content */}
@@ -162,12 +224,34 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
             const correctSet = new Set(slide.correctIndexes ?? [slide.correctIndex])
             const selectedSet = new Set(multiSelected)
             const correct = correctSet.size === selectedSet.size && [...correctSet].every(i => selectedSet.has(i))
+            if (!correct && !capturedSlideIndicesRef.current.has(index)) {
+              capturedSlideIndicesRef.current.add(index)
+              wrongAnswersRef.current.push({
+                slideIndex: index,
+                question: slide.question,
+                correctAnswer: [...correctSet].map(i => slide.choices[i]).join('、'),
+                selectedAnswer: multiSelected.map(i => slide.choices[i]).join('、'),
+                explanation: slide.explain,
+                options: slide.choices.map((label, i) => ({ label, correct: correctSet.has(i) })),
+              })
+            }
             setQuizAnswered({ correct, selected: -1, selectedMulti: multiSelected })
           }}
           onSelectQuiz={(idx) => {
             if (slide.kind !== 'quiz') return
             if (isGuarded()) return
             const correct = idx === slide.correctIndex
+            if (!correct && !capturedSlideIndicesRef.current.has(index)) {
+              capturedSlideIndicesRef.current.add(index)
+              wrongAnswersRef.current.push({
+                slideIndex: index,
+                question: slide.question,
+                correctAnswer: slide.choices[slide.correctIndex] ?? '',
+                selectedAnswer: slide.choices[idx] ?? '',
+                explanation: slide.explain,
+                options: slide.choices.map((label, i) => ({ label, correct: i === slide.correctIndex })),
+              })
+            }
             setQuizAnswered({ correct, selected: idx })
             if (!correct) {
               setTimeout(() => setQuizAnswered(null), 2500)
