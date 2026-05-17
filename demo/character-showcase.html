@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Roleplay Character Showcase</title>
+  <style>
+    /* ──────────────────────────────────────────────────────────
+       Roleplay Character Showcase
+       透過 PNG キャラクター 7 体を魅せるショーケース UI。
+       - Stagger fade-in entrance
+       - Idle breathing (上下フワフワ)
+       - Hover: scale + glow halo
+       - Click: bounce + speech bubble pop
+       ────────────────────────────────────────────────────────── */
+
+    :root {
+      --bg-from: #0e1024;
+      --bg-via: #1c1f44;
+      --bg-to: #2a1f4b;
+      --accent: #6ea9ff;
+      --accent-warm: #f6b86b;
+      --text-primary: #f5f7ff;
+      --text-secondary: #b6c1e0;
+      --card-bg: rgba(255, 255, 255, 0.04);
+      --card-border: rgba(255, 255, 255, 0.10);
+      --shadow-glow: 0 30px 60px -20px rgba(110, 169, 255, 0.45),
+                     0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      min-height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                   "Hiragino Sans", "Yu Gothic UI", "Helvetica Neue",
+                   Arial, sans-serif;
+      color: var(--text-primary);
+      background: radial-gradient(ellipse 80% 60% at 20% 0%,
+                    #2b2161 0%, transparent 55%),
+                  radial-gradient(ellipse 70% 50% at 90% 100%,
+                    #1b3e6b 0%, transparent 55%),
+                  linear-gradient(135deg,
+                    var(--bg-from) 0%,
+                    var(--bg-via) 50%,
+                    var(--bg-to) 100%);
+      background-attachment: fixed;
+      overflow-x: hidden;
+    }
+
+    /* ── 装飾：背景のうっすら光るドット ── */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+      background-size: 28px 28px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 64px 24px 96px;
+    }
+
+    /* ── ヘッダー ── */
+    .header { margin-bottom: 48px; text-align: center; }
+    .eyebrow {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(110, 169, 255, 0.12);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+    .title {
+      font-size: clamp(28px, 5vw, 44px);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 14px;
+      letter-spacing: -0.02em;
+    }
+    .title em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-warm) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 16px;
+      line-height: 1.7;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    /* ── グリッド ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+      margin-top: 56px;
+    }
+
+    /* ── キャラクターカード ── */
+    .card {
+      position: relative;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 20px 20px 22px;
+      cursor: pointer;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: transform 320ms cubic-bezier(.2,.8,.2,1),
+                  border-color 320ms ease,
+                  box-shadow 320ms ease;
+
+      /* Entrance: 下からスライド + フェード（JS で stagger） */
+      opacity: 0;
+      transform: translateY(40px);
+      animation: cardEnter 700ms cubic-bezier(.2,.9,.2,1.05) forwards;
+      animation-delay: calc(var(--enter-delay, 0) * 1ms);
+    }
+
+    @keyframes cardEnter {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* キャラクター画像ラッパー */
+    .character-frame {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: 18px;
+      overflow: visible;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      background: linear-gradient(180deg,
+                    rgba(255, 255, 255, 0.06) 0%,
+                    rgba(110, 169, 255, 0.12) 100%);
+      margin-bottom: 14px;
+    }
+
+    /* グロー halo: hover で表示 */
+    .character-frame::before {
+      content: "";
+      position: absolute;
+      inset: 10% 10% 0 10%;
+      border-radius: 50%;
+      background: radial-gradient(ellipse 60% 80% at 50% 60%,
+                    var(--halo, rgba(110, 169, 255, 0.55)) 0%,
+                    transparent 70%);
+      filter: blur(28px);
+      opacity: 0;
+      transition: opacity 360ms ease, transform 360ms ease;
+      transform: scale(0.85);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .character-img {
+      position: relative;
+      z-index: 1;
+      width: 92%;
+      height: 92%;
+      object-fit: contain;
+      object-position: bottom center;
+      transform-origin: bottom center;
+      /* Idle: 呼吸のようにフワフワ */
+      animation: breathe 4.2s ease-in-out infinite;
+      animation-delay: calc(var(--enter-delay, 0) * 0.5ms);
+      transition: transform 320ms cubic-bezier(.2,.8,.2,1),
+                  filter 320ms ease;
+      will-change: transform, filter;
+      filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.35));
+    }
+
+    @keyframes breathe {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50%      { transform: translateY(-6px) scale(1.005); }
+    }
+
+    /* Hover */
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 255, 255, 0.22);
+      box-shadow: var(--shadow-glow);
+    }
+    .card:hover .character-frame::before {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .card:hover .character-img {
+      transform: scale(1.05);
+      filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.5))
+              drop-shadow(0 0 24px var(--halo, rgba(110, 169, 255, 0.4)));
+    }
+
+    /* Active: クリック時のバウンス */
+    .card.is-talking .character-img {
+      animation: bounce 600ms cubic-bezier(.34,1.56,.64,1);
+    }
+
+    @keyframes bounce {
+      0%   { transform: translateY(0)    scale(1.05); }
+      30%  { transform: translateY(-18px) scale(1.08); }
+      55%  { transform: translateY(-2px)  scale(1.04); }
+      80%  { transform: translateY(-8px)  scale(1.06); }
+      100% { transform: translateY(0)    scale(1.05); }
+    }
+
+    /* テキスト情報 */
+    .name {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      letter-spacing: -0.01em;
+    }
+    .role {
+      font-size: 12px;
+      color: var(--text-secondary);
+      letter-spacing: 0.04em;
+      margin-bottom: 10px;
+    }
+    .tag {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--tag-bg, rgba(110, 169, 255, 0.14));
+      color: var(--tag-fg, var(--accent));
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── 吹き出し（speech bubble） ── */
+    .bubble {
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translate(-50%, -100%) scale(0.7);
+      background: #ffffff;
+      color: #1a1d2c;
+      padding: 12px 16px;
+      border-radius: 16px;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.5;
+      box-shadow: 0 14px 30px -10px rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      pointer-events: none;
+      max-width: 240px;
+      white-space: pre-wrap;
+      transition: opacity 280ms ease, transform 380ms cubic-bezier(.34,1.56,.64,1);
+      z-index: 10;
+    }
+    .bubble::after {
+      content: "";
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 8px solid transparent;
+      border-top-color: #ffffff;
+      border-bottom: 0;
+    }
+    .card.is-talking .bubble {
+      opacity: 1;
+      transform: translate(-50%, -100%) scale(1);
+      pointer-events: auto;
+    }
+
+    /* footer / hint */
+    .hint {
+      margin-top: 56px;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+    .hint kbd {
+      display: inline-block;
+      padding: 2px 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 6px;
+      font-family: ui-monospace, monospace;
+      font-size: 12px;
+    }
+
+    @media (max-width: 480px) {
+      .page { padding: 32px 16px 64px; }
+      .grid { gap: 16px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .card { animation: none; opacity: 1; transform: none; }
+      .character-img { animation: none; }
+      .card.is-talking .character-img { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="header">
+      <span class="eyebrow">Logic · Roleplay</span>
+      <h1 class="title">7 人の対話相手と、<em>ロジカルに話そう</em></h1>
+      <p class="subtitle">
+        ビジネスの現場から古代ギリシャまで。各キャラをクリックすると<br>
+        彼らがあなたに最初のひと言を投げかけます。
+      </p>
+    </header>
+
+    <section class="grid" id="grid" aria-label="キャラクター一覧"></section>
+
+    <p class="hint">
+      <kbd>Hover</kbd> でグロー、 <kbd>Click</kbd> で話しかけられる
+    </p>
+  </main>
+
+  <script>
+    // ── キャラクターデータ ─────────────────────────────────────
+    const CHARACTERS = [
+      {
+        id: 'why-so-report',
+        name: 'David Chen',
+        role: 'Business Unit Director',
+        tag: 'Why So / So What',
+        tagFg: '#7c9bff', tagBg: 'rgba(124,155,255,.16)',
+        halo: 'rgba(124,155,255,.55)',
+        image: './assets/roleplay-char-why-so-report.png',
+        line: 'David だ。今忙しいから3分でまとめてくれ。プロジェクトの状況はどうなってる？',
+      },
+      {
+        id: 'mece-meeting',
+        name: 'Meeting Team',
+        role: 'Cross-functional Team',
+        tag: 'MECE',
+        tagFg: '#6dd4a4', tagBg: 'rgba(109,212,164,.16)',
+        halo: 'rgba(109,212,164,.55)',
+        image: './assets/roleplay-char-mece-meeting.png',
+        line: 'うちの部門はリード数が足りないんです！マーケに何とかしてもらわないと。\n論点を整理してください。',
+      },
+      {
+        id: 'pyramid-client',
+        name: 'Mr. Carter',
+        role: 'Client Executive',
+        tag: 'ピラミッド原則',
+        tagFg: '#b59bff', tagBg: 'rgba(181,155,255,.16)',
+        halo: 'rgba(181,155,255,.55)',
+        image: './assets/roleplay-char-pyramid-client.png',
+        line: '今日の提案、要するに何を意思決定すればよいんですか。結論からどうぞ。',
+      },
+      {
+        id: 'logic-tree-sub',
+        name: 'Alex Kim',
+        role: 'Junior Team Member',
+        tag: 'ロジックツリー',
+        tagFg: '#ffc684', tagBg: 'rgba(255,198,132,.16)',
+        halo: 'rgba(255,198,132,.55)',
+        image: './assets/roleplay-char-logic-tree-sub.png',
+        line: '売上が伸びなくて……何から手をつければいいでしょう？',
+      },
+      {
+        id: 'socrates-dialog',
+        name: 'ソクラテス',
+        role: '古代アテナイの哲学者',
+        tag: '問答法',
+        tagFg: '#f6d56b', tagBg: 'rgba(246,213,107,.16)',
+        halo: 'rgba(246,213,107,.55)',
+        image: './assets/roleplay-char-socrates-dialog.png',
+        line: '友よ、問わせてくれ。「勇気」とは何か、君は答えられるか？',
+      },
+      {
+        id: 'descartes-doubt',
+        name: 'デカルト',
+        role: '近代哲学の父',
+        tag: '方法的懐疑',
+        tagFg: '#9b8eff', tagBg: 'rgba(155,142,255,.16)',
+        halo: 'rgba(155,142,255,.55)',
+        image: './assets/roleplay-char-descartes-doubt.png',
+        line: 'どんな信念も疑うことができる。それでも疑いきれない一つの事実は何か？',
+      },
+      {
+        id: 'nietzsche-values',
+        name: 'ニーチェ',
+        role: 'ドイツの哲学者',
+        tag: '価値の転倒',
+        tagFg: '#ff9d8c', tagBg: 'rgba(255,157,140,.16)',
+        halo: 'rgba(255,157,140,.55)',
+        image: './assets/roleplay-char-nietzsche-values.png',
+        line: 'おまえが今まで信じてきた「良いこと」の基準は、誰が決めたのか？',
+      },
+    ]
+
+    // ── レンダリング ─────────────────────────────────────────
+    const grid = document.getElementById('grid')
+
+    CHARACTERS.forEach((c, idx) => {
+      const card = document.createElement('article')
+      card.className = 'card'
+      // Stagger: index × 110ms
+      card.style.setProperty('--enter-delay', String(idx * 110))
+      card.style.setProperty('--halo', c.halo)
+      card.style.setProperty('--tag-fg', c.tagFg)
+      card.style.setProperty('--tag-bg', c.tagBg)
+      card.setAttribute('role', 'button')
+      card.setAttribute('tabindex', '0')
+      card.setAttribute('aria-label', `${c.name}に話しかける`)
+
+      card.innerHTML = `
+        <div class="bubble" role="status" aria-live="polite">${escapeHtml(c.line)}</div>
+        <div class="character-frame">
+          <img class="character-img" src="${c.image}" alt="${c.name}" loading="lazy" />
+        </div>
+        <div class="name">${escapeHtml(c.name)}</div>
+        <div class="role">${escapeHtml(c.role)}</div>
+        <span class="tag">${escapeHtml(c.tag)}</span>
+      `
+
+      // クリック / Enter / Space で「話しかける」
+      const trigger = () => speak(card)
+      card.addEventListener('click', trigger)
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          trigger()
+        }
+      })
+
+      grid.appendChild(card)
+    })
+
+    // 同じカードを連打しても再アニメするように、is-talking を一旦剥がす
+    let talkingTimer = null
+    function speak (card) {
+      // 他のカードのトーキングは閉じる
+      document.querySelectorAll('.card.is-talking').forEach((el) => {
+        if (el !== card) el.classList.remove('is-talking')
+      })
+      // 再アニメ用に DOM reflow を強制
+      card.classList.remove('is-talking')
+      void card.offsetWidth
+      card.classList.add('is-talking')
+
+      if (talkingTimer) clearTimeout(talkingTimer)
+      talkingTimer = setTimeout(() => {
+        card.classList.remove('is-talking')
+      }, 4200)
+    }
+
+    // 簡易 escape（吹き出しに XSS を入れないため）
+    function escapeHtml (s) {
+      return String(s).replace(/[&<>"']/g, (ch) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+      })[ch])
+    }
+  </script>
+</body>
+</html>
