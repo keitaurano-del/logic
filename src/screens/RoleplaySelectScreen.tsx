@@ -1,6 +1,9 @@
+import { useState } from 'react'
 import { getSituations, type Situation, type SituationCategory } from '../situations'
-import { ArrowLeftIcon } from '../icons'
+import { ArrowLeftIcon, BookmarkIcon, BookmarkFilledIcon } from '../icons'
 import { IconButton } from '../components/IconButton'
+import { isSaved, toggleSaved } from '../savedItemsStore'
+import { haptic } from '../platform/haptics'
 import { t } from '../i18n'
 
 interface RoleplaySelectScreenProps {
@@ -121,8 +124,23 @@ function SituationCard({
   const locked = false
   const comingSoon = false // 哲学者シリーズも開放
 
+  const [saved, setSaved] = useState<boolean>(() => isSaved('roleplay', s.id))
   const image = SCENARIO_IMAGE[s.id]
+
+  const handleToggleSave = () => {
+    haptic.light()
+    const next = toggleSaved({
+      type: 'roleplay',
+      refId: s.id,
+      title: s.title,
+      subtitle: s.partnerRole,
+      image,
+    })
+    setSaved(next)
+  }
+
   return (
+    <div style={{ position: 'relative' }}>
     <button
       onClick={comingSoon ? undefined : onClick}
       disabled={comingSoon}
@@ -210,6 +228,30 @@ function SituationCard({
         )}
       </div>
     </button>
+    {/* 保存ボタン: 親 <button> の外に配置して nested-interactive を回避 */}
+    {image && (
+      <button
+        type="button"
+        onClick={(e) => { e.stopPropagation(); handleToggleSave() }}
+        aria-label={saved ? t('roleplaySelect.unsaveAria') : t('roleplaySelect.saveAria')}
+        aria-pressed={saved}
+        style={{
+          position: 'absolute', top: 8, right: 8,
+          width: 32, height: 32, borderRadius: '50%',
+          background: 'rgba(8,33,33,0.55)',
+          backdropFilter: 'blur(6px)',
+          border: 'none',
+          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+          cursor: 'pointer',
+          color: saved ? 'var(--brand)' : '#fff',
+          WebkitTapHighlightColor: 'transparent',
+          zIndex: 2,
+        }}
+      >
+        {saved ? <BookmarkFilledIcon width={16} height={16} /> : <BookmarkIcon width={16} height={16} />}
+      </button>
+    )}
+    </div>
   )
 }
 

@@ -11,6 +11,7 @@ import { LessonCompleteScreen } from './screens/LessonCompleteScreen'
 const FlashcardsScreen = lazy(() => import('./screens/FlashcardsScreen').then(m => ({ default: m.FlashcardsScreen })))
 const ReviewHubScreen = lazy(() => import('./screens/ReviewHubScreen').then(m => ({ default: m.ReviewHubScreen })))
 const WrongAnswerListScreen = lazy(() => import('./screens/WrongAnswerListScreen').then(m => ({ default: m.WrongAnswerListScreen })))
+const SavedItemsScreen = lazy(() => import('./screens/SavedItemsScreen').then(m => ({ default: m.SavedItemsScreen })))
 const FermiScreen = lazy(() => import('./screens/FermiScreen').then(m => ({ default: m.FermiScreen })))
 const DailyFermiScreen = lazy(() => import('./screens/DailyFermiScreen').then(m => ({ default: m.DailyFermiScreen })))
 const FermiRankingScreen = lazy(() => import('./screens/FermiRankingScreen').then(m => ({ default: m.FermiRankingScreen })))
@@ -88,6 +89,7 @@ type Screen =
   | { type: 'flashcards'; mode?: 'due' | 'weak' }
   | { type: 'review-hub' }
   | { type: 'wrong-answers' }
+  | { type: 'saved-items' }
   | { type: 'fermi' }
   | { type: 'daily-fermi' }
   | { type: 'fermi-ranking' }
@@ -425,6 +427,7 @@ function AppV3() {
           onOpenCategory={(cat) => navigate({ type: 'roadmap', category: cat })}
           onOpenPersonalCourse={() => navigate({ type: 'personal-course' })}
           onOpenPlacementTest={() => navigate({ type: 'placement-test' })}
+          onOpenReviewHub={() => navigate({ type: 'review-hub' })}
         />
       )}
 
@@ -444,6 +447,7 @@ function AppV3() {
           onOpenFlashcards={(mode) => navigate({ type: 'flashcards', mode })}
           onOpenWrongAnswers={() => navigate({ type: 'wrong-answers' })}
           onOpenFermiHistory={() => navigate({ type: 'fermi-history' })}
+          onOpenSavedItems={() => navigate({ type: 'saved-items' })}
         />
       )}
       {screen.type === 'fermi-history' && (
@@ -462,6 +466,14 @@ function AppV3() {
         <WrongAnswerListScreen
           onBack={handleBack}
           onOpenLesson={handleOpenLesson}
+        />
+      )}
+      {screen.type === 'saved-items' && (
+        <SavedItemsScreen
+          onBack={handleBack}
+          onOpenLesson={handleOpenLesson}
+          onOpenCourse={(cat) => navigate({ type: 'roadmap', category: cat })}
+          onOpenRoleplay={(situationId) => navigate({ type: 'roleplay-chat', situationId })}
         />
       )}
       {screen.type === 'fermi' && <FermiScreen onBack={handleBack} onReport={(ctx) => navigate({ type: 'report-problem', context: ctx })} />}

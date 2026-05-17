@@ -31,16 +31,16 @@ function incrementRerollCount() {
   try { const c = getRerollCount(); localStorage.setItem(REROLL_COUNT_KEY, JSON.stringify({ date: TODAY, count: c + 1 })) } catch { /* */ }
 }
 
-// 2026-05-15 単一有料プラン化:
-//   - 有料プラン: 無制限（実装上は 999 = 実質無制限）
+// 2026-05-17 デイリーキャップ仕様:
+//   - 有料プラン: 1日10問（初回 + リロール9回）
 //   - 無料プラン: フェルミ推定は日1問、別問題リロール不可
 function getDailyFermiLimit(): number {
-  return isPaid() ? 999 : 1
+  return isPaid() ? 10 : 1
 }
 function getDailyRerollLimit(): number {
   // SIT環境では無制限
   if (typeof window !== 'undefined' && window.location.hostname.includes('logic-sit')) return 999
-  return isPaid() ? 999 : 0
+  return isPaid() ? 9 : 0
 }
 
 // 基礎統計データ（フェルミ推定時の参考値）
@@ -677,6 +677,13 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
                 {t('dailyFermi.pickAnother')}
               </button>
+            </div>
+          )}
+          {isPaid() && canAnswer && !replayMode && submitPhase === 'idle' && (
+            <div style={{ padding: '0 2px', textAlign: 'right' }}>
+              <span style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 600 }}>
+                {t('dailyFermi.paidCapNote', { count: Math.max(0, dailyLimit - dailyCount) })}
+              </span>
             </div>
           )}
           {!canAnswer && (
