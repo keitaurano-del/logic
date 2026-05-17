@@ -7,7 +7,7 @@ interface StreakBadgeProps {
 
 export function StreakBadge({ streak, size = 'sm' }: StreakBadgeProps) {
   const dim = streak === 0
-  const fontSize = size === 'lg' ? 24 : 16
+  const fontSize = size === 'lg' ? 24 : 13
   return (
     <span
       className={`journal-streak-badge ${dim ? 'journal-streak-badge--dim' : ''} ${size === 'lg' ? 'journal-streak-badge--lg' : ''}`}
