@@ -29,6 +29,7 @@ const StreakScreen = lazy(() => import('./screens/StreakScreen').then(m => ({ de
 const SettingsScreen = lazy(() => import('./screens/SettingsScreen').then(m => ({ default: m.SettingsScreen })))
 const AccountSettingsScreen = lazy(() => import('./screens/AccountSettingsScreen').then(m => ({ default: m.AccountSettingsScreen })))
 const NotificationSettingsScreen = lazy(() => import('./screens/NotificationSettingsScreen').then(m => ({ default: m.NotificationSettingsScreen })))
+const AppearanceSettingsScreen = lazy(() => import('./screens/AppearanceSettingsScreen').then(m => ({ default: m.AppearanceSettingsScreen })))
 const CompletedLessonsScreen = lazy(() => import('./screens/CompletedLessonsScreen').then(m => ({ default: m.CompletedLessonsScreen })))
 const StudyTimeScreen = lazy(() => import('./screens/StudyTimeScreen').then(m => ({ default: m.StudyTimeScreen })))
 const LanguageScreen = lazy(() => import('./screens/LanguageScreen').then(m => ({ default: m.LanguageScreen })))
@@ -102,9 +103,10 @@ type Screen =
   | { type: 'personal-course' }
   | { type: 'pricing' }
   | { type: 'streak' }
-  | { type: 'settings'; section?: 'account' | 'notifications' | 'plan' | 'appearance' }
+  | { type: 'settings'; section?: 'account' | 'notifications' | 'plan' }
   | { type: 'account-settings' }
   | { type: 'notification-settings' }
+  | { type: 'appearance-settings' }
   | { type: 'completed-lessons' }
   | { type: 'study-time' }
   | { type: 'language' }
@@ -539,7 +541,7 @@ function AppV3() {
       {screen.type === 'profile' && (
         <ProfileScreenV3
           userName={userName}
-          onOpenSettings={(section) => navigate(section === 'account' ? { type: 'account-settings' } : section === 'notifications' ? { type: 'notification-settings' } : section === 'appearance' ? { type: 'settings', section: 'appearance' } : { type: 'settings' })}
+          onOpenSettings={(section) => navigate(section === 'account' ? { type: 'account-settings' } : section === 'notifications' ? { type: 'notification-settings' } : section === 'appearance' ? { type: 'appearance-settings' } : { type: 'settings' })}
           onOpenFeedback={() => navigate({ type: 'feedback' })}
           onOpenPricing={() => navigate({ type: 'pricing' })}
           onOpenPlacementTest={() => navigate({ type: 'placement-test' })}
@@ -584,6 +586,9 @@ function AppV3() {
       )}
       {screen.type === 'notification-settings' && (
         <NotificationSettingsScreen onBack={handleBack} />
+      )}
+      {screen.type === 'appearance-settings' && (
+        <AppearanceSettingsScreen onBack={handleBack} />
       )}
 
       {screen.type === 'report-problem' && (

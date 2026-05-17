@@ -258,15 +258,15 @@
  * `.mode-dark` セレクタが偶発的に効いた場合の取りこぼしを防ぐ。
  */
 body.theme-v3.mode-light {
-  --bg-primary:    #F8F9FC;
-  --bg-secondary:  #F0F2F8;
+  --bg-primary:    #EEF1FA;
+  --bg-secondary:  #E5E9F4;
   --bg-card:       #FFFFFF;
   --bg-elevated:   #FFFFFF;
-  --bg-tertiary:   #E5E8F2;
+  --bg-tertiary:   #DDE2EE;
   --bg-hero:       var(--brand-dark);
-  --bg-app-grad:   linear-gradient(160deg, #F8F9FC 0%, #EEF2FE 100%);
-  --bg-glass:      rgba(255, 255, 255, 0.82);
-  --bg-glass-dark: rgba(248, 249, 252, 0.92);
+  --bg-app-grad:   linear-gradient(160deg, #EEF1FA 0%, #DCE5FC 100%);
+  --bg-glass:      rgba(255, 255, 255, 0.85);
+  --bg-glass-dark: rgba(238, 241, 250, 0.92);
 
   --text-primary:   #0D1220;
   --text-secondary: #4A5068;

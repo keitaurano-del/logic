@@ -161,7 +161,7 @@ export function applyTheme(s: ThemeState) {
   // Sync <meta name="theme-color"> with the active mode so the browser's
   // URL bar / status area matches the page background. Dark UA otherwise
   // shows a stale light color on cold start.
-  const themeColor = s.mode === 'light' ? '#F8F9FC' : '#1A1F2E'
+  const themeColor = s.mode === 'light' ? '#EEF1FA' : '#1A1F2E'
   let meta = document.head.querySelector<HTMLMetaElement>('meta[name="theme-color"]')
   if (!meta) {
     meta = document.createElement('meta')
