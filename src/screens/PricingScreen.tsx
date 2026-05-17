@@ -28,7 +28,7 @@ function getFeatures(): FeatureRow[] {
     { label: t('pricing.featLessons'), free: t('pricing.featAllLessons'), paid: t('pricing.featAllLessons') },
     { label: t('pricing.featRoleplay'), free: t('pricing.featUnlimited'), paid: t('pricing.featUnlimited') },
     { label: t('pricing.featReview'), free: true, paid: true },
-    { label: t('pricing.featFermi'), free: t('pricing.featDaily1'), paid: t('pricing.featUnlimited') },
+    { label: t('pricing.featFermi'), free: t('pricing.featDaily1'), paid: t('pricing.featDaily10') },
     { label: t('pricing.featAiGen'), free: t('pricing.featAiGenFree'), paid: t('pricing.featAiGenPaid') },
     { label: t('pricing.featTheme'), free: false, paid: true },
     { label: t('pricing.featEnglishMode'), free: false, paid: true },
