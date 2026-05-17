@@ -9,10 +9,6 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    # コミットメッセージに [skip android] が含まれていればスキップ。
-    # 「Web だけ反映したい」PR のマージコミット用エスケープハッチ。
-    # workflow_dispatch（手動起動）の場合は head_commit が無いので常に実行。
-    if: ${{ github.event_name == 'workflow_dispatch' || !contains(github.event.head_commit.message, '[skip android]') }}
 
     steps:
       # ── 1. チェックアウト ──────────────────────────────────
