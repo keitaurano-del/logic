@@ -4,6 +4,15 @@ export type PeriodType = 'weekly' | 'monthly' | 'yearly'
 export type GoalCategory = 'work' | 'private'
 export const GOAL_CATEGORIES: GoalCategory[] = ['work', 'private']
 
+export const JOURNAL_IMAGE_MAX_COUNT = 10
+
+export interface JournalImage {
+  path: string         // Storage オブジェクトのフルパス: {user_id}/{date}/{uuid}.{ext}
+  uploaded_at: string  // ISO 8601
+  width?: number
+  height?: number
+}
+
 export interface DailyJournal {
   id?: string
   user_id?: string
@@ -20,6 +29,8 @@ export interface DailyJournal {
   sleep_minutes?: number | null
   sleep_start?: string | null // ISO 8601
   sleep_end?: string | null   // ISO 8601
+  // 添付画像（最大 JOURNAL_IMAGE_MAX_COUNT 枚）。Storage 上のパスを保持する。
+  images?: JournalImage[]
   created_at?: string
   updated_at?: string
 }
