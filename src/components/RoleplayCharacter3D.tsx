@@ -1,4 +1,4 @@
-import { Suspense, useMemo } from 'react'
+import { Suspense, useCallback, useMemo, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { ProceduralAvatar, type AvatarSpec, type AvatarState } from './ProceduralAvatar'
 import { BillboardAvatar } from './BillboardAvatar'
@@ -242,6 +242,12 @@ function CameraLookAt({ target }: { target: [number, number, number] }) {
 
 export function RoleplayCharacter3D({ characterId, state, height = 260 }: RoleplayCharacter3DProps) {
   const config = useMemo(() => getCharacterConfig(characterId), [characterId])
+  // 画像が 404 or CORS で取れなかったときに procedural avatar にフォールバックする。
+  // RoleplayChatScreen は situationId 単位で mount/unmount されるので
+  // characterId が変わるたびにこのコンポーネント自体が作り直され、state も自然にリセットされる。
+  const [billboardFailed, setBillboardFailed] = useState(false)
+  const handleBillboardError = useCallback(() => { setBillboardFailed(true) }, [])
+  const useBillboard = Boolean(config.imageUrl) && !billboardFailed
 
   return (
     <div
@@ -281,8 +287,12 @@ export function RoleplayCharacter3D({ characterId, state, height = 260 }: Rolepl
           <meshStandardMaterial color={config.floorColor} roughness={0.95} />
         </mesh>
         <Suspense fallback={null}>
-          {config.imageUrl ? (
-            <BillboardAvatar imageUrl={config.imageUrl} state={state} />
+          {useBillboard ? (
+            <BillboardAvatar
+              imageUrl={config.imageUrl!}
+              state={state}
+              onError={handleBillboardError}
+            />
           ) : (
             <group rotation={config.rootRotation}>
               <ProceduralAvatar spec={config.spec} state={state} />

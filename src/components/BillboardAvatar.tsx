@@ -13,6 +13,8 @@ interface BillboardAvatarProps {
   width?: number
   /** 表示の縦オフセット */
   y?: number
+  /** 画像ロード失敗時のコールバック（親が procedural fallback に切り替える用） */
+  onError?: () => void
 }
 
 /**
@@ -32,6 +34,7 @@ export function BillboardAvatar({
   state,
   width = 2.0,
   y = 0.95,
+  onError,
 }: BillboardAvatarProps) {
   const meshRef = useRef<Mesh>(null)
   // 自前 TextureLoader で colorSpace 等をロード時にセット
@@ -40,14 +43,20 @@ export function BillboardAvatar({
   useEffect(() => {
     let cancelled = false
     const loader = new TextureLoader()
-    loader.load(imageUrl, (tex) => {
-      if (cancelled) return
-      tex.colorSpace = THREE.SRGBColorSpace
-      tex.anisotropy = 4
-      setTexture(tex)
-    })
+    loader.load(
+      imageUrl,
+      (tex) => {
+        if (cancelled) return
+        tex.colorSpace = THREE.SRGBColorSpace
+        tex.anisotropy = 4
+        setTexture(tex)
+      },
+      undefined,
+      // 404 や CORS など、ロード失敗時は親に通知して fallback してもらう
+      () => { if (!cancelled) onError?.() },
+    )
     return () => { cancelled = true }
-  }, [imageUrl])
+  }, [imageUrl, onError])
 
   const img = texture?.image as { width?: number; height?: number } | undefined
   const aspect = img?.width && img.height ? img.width / img.height : 1
