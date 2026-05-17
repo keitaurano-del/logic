@@ -74,6 +74,15 @@ export async function boot(page: Page, opts: BootOptions = {}) {
     localStorage.setItem('logic-install-id', 'e2e-fixed-id')
     if (onboarded) localStorage.setItem('logic-onboarded', '1')
     localStorage.setItem('logic-locale', locale)
+    // チュートリアル系オーバーレイを全部 dismissed 扱いにする。
+    // 残しておくと HomeCoachmark の透明ボタンがタブクリックを intercept して
+    // tab(page, n).click() が timeout する。
+    localStorage.setItem('logic-tutorial-home-done', '1')
+    localStorage.setItem('logic-tutorial-daily-done', '1')
+    localStorage.setItem('logic-tutorial-lesson-done', '1')
+    localStorage.setItem('logic-tutorial-placement-dismissed', '1')
+    localStorage.setItem('logic-tutorial-fab-dismissed', '1')
+    localStorage.setItem('logic-tutorial-done-v2', 'true')
     if (admin) localStorage.setItem('logic-admin', '1')
     if (displayName !== undefined) localStorage.setItem('logic-display-name', displayName)
     if (xp !== undefined) localStorage.setItem('logic-xp', String(xp))
