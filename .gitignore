@@ -16,6 +16,7 @@ dist-ssr
 test-results/
 playwright-report/
 e2e/report/
+e2e/screenshots/
 .env
 .env.*
 !.env.example
