@@ -114,6 +114,61 @@
   --text-secondary: var(--md-sys-color-on-surface-variant);
 }
 
+/* ---- Light mode overrides ------------------------------------------
+ * body.theme-v3.mode-light 時に M3 サーフェスをライトに切り替える。
+ * これがないと AppShell / TabBar / Header の背景がダークのまま残る。
+ * Slate Blue ライトテーマ（white ベースに極微の青み + 強めのカード分離）。
+ */
+body.theme-v3.mode-light {
+  --md-sys-color-primary:                  #2E45A8;
+  --md-sys-color-on-primary:               #FFFFFF;
+  --md-sys-color-primary-container:        #DDE5FF;
+  --md-sys-color-on-primary-container:     #0D1A4A;
+
+  --md-sys-color-secondary:                #4A5068;
+  --md-sys-color-on-secondary:             #FFFFFF;
+  --md-sys-color-secondary-container:      #D8E2F9;
+  --md-sys-color-on-secondary-container:   #26314A;
+
+  --md-sys-color-tertiary:                 #B07442;
+  --md-sys-color-on-tertiary:              #FFFFFF;
+  --md-sys-color-tertiary-container:       #FFDCC4;
+  --md-sys-color-on-tertiary-container:    #4A2510;
+
+  --md-sys-color-error:                    #BA1A1A;
+  --md-sys-color-on-error:                 #FFFFFF;
+  --md-sys-color-error-container:          #FFDAD6;
+  --md-sys-color-on-error-container:       #410002;
+
+  --md-sys-color-surface:                  #EEF1FA;
+  --md-sys-color-on-surface:               #0D1220;
+  --md-sys-color-surface-variant:          #E0E3ED;
+  --md-sys-color-on-surface-variant:       #4A5068;
+
+  --md-sys-color-surface-container-lowest: #FFFFFF;
+  --md-sys-color-surface-container-low:    #F4F6FC;
+  --md-sys-color-surface-container:        #ECEFF7;
+  --md-sys-color-surface-container-high:   #E5E9F4;
+  --md-sys-color-surface-container-highest:#DDE2EE;
+
+  --md-sys-color-outline:                  #6B7280;
+  --md-sys-color-outline-variant:          #D5D9E5;
+
+  --md-sys-color-inverse-surface:          #1A1F2E;
+  --md-sys-color-inverse-on-surface:       #E8ECF4;
+  --md-sys-color-inverse-primary:          #9BB3FA;
+
+  --md-sys-color-scrim:                    rgba(0, 0, 0, 0.40);
+  --md-sys-color-surface-tint:             #2E45A8;
+
+  /* ---- Elevation (light-tuned: softer shadows) ------------------- */
+  --elev-1: 0 1px 2px rgba(13, 18, 32, 0.06);
+  --elev-2: 0 1px 2px rgba(13, 18, 32, 0.06), 0 2px 6px rgba(13, 18, 32, 0.05);
+  --elev-3: 0 1px 3px rgba(13, 18, 32, 0.08), 0 4px 8px rgba(13, 18, 32, 0.06);
+  --elev-4: 0 2px 3px rgba(13, 18, 32, 0.08), 0 6px 10px rgba(13, 18, 32, 0.06);
+  --elev-5: 0 4px 4px rgba(13, 18, 32, 0.10), 0 8px 12px rgba(13, 18, 32, 0.08);
+}
+
 /* ---- Platform-specific overrides ------------------------------------ */
 html[data-platform="ios"] {
   /* iOS: shadows are softer in dark mode per HIG */
