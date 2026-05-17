@@ -132,6 +132,10 @@ function getInitialScreen(user: User | null): Screen {
     if (preview === 'notifications') return { type: 'notification-settings' }
     if (preview === 'appearance') return { type: 'appearance-settings' }
     if (preview === 'roleplay-select') return { type: 'roleplay' }
+    if (preview === 'roleplay-chat') {
+      const id = new URL(location.href).searchParams.get('id') || 'why-so-report'
+      return { type: 'roleplay-chat', situationId: id }
+    }
     if (preview === 'journal') return { type: 'journal' }
   }
   // ログイン済みユーザーはオンボーディングをスキップ

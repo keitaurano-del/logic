@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { getSituation, buildSetup } from '../situations'
 import { localeBody, t } from '../i18n'
 import { CheckIcon, ThumbsUpIcon, LightbulbIcon } from '../icons'
@@ -6,6 +6,11 @@ import { Header } from '../components/platform/Header'
 import { haptic } from '../platform/haptics'
 import { recordActivity } from '../activityLog'
 import { API_BASE } from './apiBase'
+import type { CharacterState } from '../components/RoleplayCharacter3D'
+
+const RoleplayCharacter3D = lazy(() =>
+  import('../components/RoleplayCharacter3D').then((m) => ({ default: m.RoleplayCharacter3D })),
+)
 
 interface RoleplayChatScreenProps {
   situationId: string
@@ -49,14 +54,43 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
   const [score, setScore] = useState<ScoreResult | null>(null)
   const [summary, setSummary] = useState<SummaryResult | null>(null)
   const [scoring, setScoring] = useState(false)
+  const [isTalking, setIsTalking] = useState(false)
   const startedRef = useRef(!!hasScript) // スクリプト駆動は initializer で開始済み
   const scrollRef = useRef<HTMLDivElement>(null)
   const abortRef = useRef<AbortController | null>(null)
+  const talkingTimerRef = useRef<number | null>(null)
 
   // アンマウント時に進行中のfetchをキャンセル
   useEffect(() => {
-    return () => { abortRef.current?.abort() }
+    return () => {
+      abortRef.current?.abort()
+      if (talkingTimerRef.current != null) {
+        window.clearTimeout(talkingTimerRef.current)
+      }
+    }
   }, [])
+
+  // assistant メッセージ追加時に talking 状態を一時的に ON
+  useEffect(() => {
+    const last = messages[messages.length - 1]
+    if (!last || last.role !== 'assistant') return
+    setIsTalking(true)
+    if (talkingTimerRef.current != null) {
+      window.clearTimeout(talkingTimerRef.current)
+    }
+    // セリフ長に応じて 1.6s + 30ms/char、最大 6s
+    const duration = Math.min(6000, 1600 + last.content.length * 30)
+    talkingTimerRef.current = window.setTimeout(() => {
+      setIsTalking(false)
+      talkingTimerRef.current = null
+    }, duration)
+  }, [messages])
+
+  const characterState: CharacterState = loading
+    ? 'thinking'
+    : isTalking
+      ? 'talking'
+      : 'idle'
 
   // setup をメモ化（situation が変わらない限り再生成しない）
   const setup = useMemo(
@@ -248,8 +282,38 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
 
       {!finished && (
         <>
+          {/* 3D キャラクター */}
+          <div style={{ padding: '0 16px' }}>
+            <Suspense
+              fallback={(
+                <div
+                  style={{
+                    width: '100%',
+                    height: 260,
+                    borderRadius: 18,
+                    background: 'linear-gradient(160deg, var(--accent-soft) 0%, #dfe6fd 100%)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'var(--brand)',
+                    fontSize: 13,
+                    fontWeight: 600,
+                  }}
+                >
+                  キャラクターを準備中…
+                </div>
+              )}
+            >
+              <RoleplayCharacter3D characterId={situation.id} state={characterState} height={260} />
+            </Suspense>
+            <div style={{ marginTop: 8, display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 8 }}>
+              <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)' }}>{situation.partnerName}</div>
+              <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{situation.partnerRole}</div>
+            </div>
+          </div>
+
           {/* Context card */}
-          <div style={{ background: 'var(--accent-soft)', borderRadius: 12, padding: '10px 14px', fontSize: 13, color: 'var(--brand)', lineHeight: 1.55 }}>
+          <div style={{ margin: '0 16px', background: 'var(--accent-soft)', borderRadius: 12, padding: '10px 14px', fontSize: 13, color: 'var(--brand)', lineHeight: 1.55 }}>
             <strong style={{ fontWeight: 700 }}>{t('roleplay.scenarioLabel')}</strong>{situation.context}
           </div>
 
