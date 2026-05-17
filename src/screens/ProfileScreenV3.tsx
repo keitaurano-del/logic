@@ -23,7 +23,9 @@ function getPlanLabel(): string {
 
 interface ProfileScreenV3Props {
   userName: string
-  onOpenSettings: (section?: 'account' | 'notifications' | 'plan' | 'appearance') => void
+  onOpenAccount: () => void
+  onOpenNotifications: () => void
+  onOpenAppearance: () => void
   onOpenFeedback?: () => void
   onOpenPricing?: () => void
   onOpenPlacementTest?: () => void
@@ -34,7 +36,7 @@ interface ProfileScreenV3Props {
 type Sheet = null | 'streak' | 'lessons' | 'xp'
 
 export function ProfileScreenV3(props: ProfileScreenV3Props) {
-  const { userName, onOpenSettings, onOpenFeedback, onOpenPricing, onOpenPlacementTest, onOpenLesson, onOpenLanguage } = props
+  const { userName, onOpenAccount, onOpenNotifications, onOpenAppearance, onOpenFeedback, onOpenPricing, onOpenPlacementTest, onOpenLesson, onOpenLanguage } = props
   const [sheet, setSheet] = useState<Sheet>(null)
   const streak = getLessonStreak()
   const completed = getCompletedCount()
@@ -148,10 +150,10 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
 
         {/* 設定 */}
         <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', boxShadow: 'var(--shadow-v3-card-inset)' }}>
-          <SettingRow icon="user" name={t('profile.account')} sub={userName || t('home.guestName')} onClick={() => onOpenSettings('account')} />
-          <SettingRow icon="bell" name={t('profile.notifications')} sub="" onClick={() => onOpenSettings('notifications')} />
+          <SettingRow icon="user" name={t('profile.account')} sub={userName || t('home.guestName')} onClick={onOpenAccount} />
+          <SettingRow icon="bell" name={t('profile.notifications')} sub="" onClick={onOpenNotifications} />
           <SettingRow icon="globe" name={t('profile.languageTitle')} sub={getLocale() === 'ja' ? t('profile.languageJa') : t('profile.languageEn')} onClick={onOpenLanguage} />
-          <SettingRow icon="palette" name={t('profile.theme')} sub={getMode() === 'light' ? t('profile.themeLight') : t('profile.themeDark')} onClick={() => onOpenSettings('appearance')} />
+          <SettingRow icon="palette" name={t('profile.theme')} sub={getMode() === 'light' ? t('profile.themeLight') : t('profile.themeDark')} onClick={onOpenAppearance} />
           <SettingRow icon="card" name={t('profile.plan')} sub={getPlanLabel()} onClick={onOpenPricing} />
           <SettingRow icon="message" name={t('profile.feedbackName')} sub={t('profile.feedbackSub')} onClick={onOpenFeedback} />
           <SettingRow icon="doc" name={t('profile.terms')} sub="" onClick={() => window.open(localizedHtmlPath('terms'), '_blank')} />

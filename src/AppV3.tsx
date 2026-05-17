@@ -26,7 +26,6 @@ const PlacementTestScreen = lazy(() => import('./screens/PlacementTestScreen').t
 const PersonalCourseScreen = lazy(() => import('./screens/PersonalCourseScreen').then(m => ({ default: m.PersonalCourseScreen })))
 const PricingScreen = lazy(() => import('./screens/PricingScreen').then(m => ({ default: m.PricingScreen })))
 const StreakScreen = lazy(() => import('./screens/StreakScreen').then(m => ({ default: m.StreakScreen })))
-const SettingsScreen = lazy(() => import('./screens/SettingsScreen').then(m => ({ default: m.SettingsScreen })))
 const AccountSettingsScreen = lazy(() => import('./screens/AccountSettingsScreen').then(m => ({ default: m.AccountSettingsScreen })))
 const NotificationSettingsScreen = lazy(() => import('./screens/NotificationSettingsScreen').then(m => ({ default: m.NotificationSettingsScreen })))
 const AppearanceSettingsScreen = lazy(() => import('./screens/AppearanceSettingsScreen').then(m => ({ default: m.AppearanceSettingsScreen })))
@@ -48,7 +47,7 @@ import { getCompletedCount, getXp, getDisplayName, setDisplayName, recordComplet
 import { recordActivity } from './activityLog'
 import { updateDisplayName } from './supabase'
 import { isAdmin } from './admin'
-import { onAuthChange, logout, getInitialUser, type User } from './supabase'
+import { onAuthChange, getInitialUser, type User } from './supabase'
 import { setUser as setSentryUser } from './sentry'
 import { hideSplash } from './platform'
 import { SnackbarProvider } from './components/Snackbar'
@@ -103,7 +102,6 @@ type Screen =
   | { type: 'personal-course' }
   | { type: 'pricing' }
   | { type: 'streak' }
-  | { type: 'settings'; section?: 'account' | 'notifications' | 'plan' }
   | { type: 'account-settings' }
   | { type: 'notification-settings' }
   | { type: 'appearance-settings' }
@@ -128,9 +126,9 @@ function getInitialScreen(user: User | null): Screen {
     if (preview === 'profile') return { type: 'profile' }
     if (preview === 'fermi') return { type: 'daily-fermi' }
     if (preview === 'pricing') return { type: 'pricing' }
-    if (preview === 'settings') return { type: 'settings' }
     if (preview === 'account') return { type: 'account-settings' }
     if (preview === 'notifications') return { type: 'notification-settings' }
+    if (preview === 'appearance') return { type: 'appearance-settings' }
     if (preview === 'roleplay-select') return { type: 'roleplay' }
     if (preview === 'journal') return { type: 'journal' }
   }
@@ -541,7 +539,9 @@ function AppV3() {
       {screen.type === 'profile' && (
         <ProfileScreenV3
           userName={userName}
-          onOpenSettings={(section) => navigate(section === 'account' ? { type: 'account-settings' } : section === 'notifications' ? { type: 'notification-settings' } : section === 'appearance' ? { type: 'appearance-settings' } : { type: 'settings' })}
+          onOpenAccount={() => navigate({ type: 'account-settings' })}
+          onOpenNotifications={() => navigate({ type: 'notification-settings' })}
+          onOpenAppearance={() => navigate({ type: 'appearance-settings' })}
           onOpenFeedback={() => navigate({ type: 'feedback' })}
           onOpenPricing={() => navigate({ type: 'pricing' })}
           onOpenPlacementTest={() => navigate({ type: 'placement-test' })}
@@ -553,17 +553,6 @@ function AppV3() {
       {screen.type === 'streak' && <StreakScreen onBack={handleBack} />}
       {screen.type === 'completed-lessons' && <CompletedLessonsScreen onBack={handleBack} />}
       {screen.type === 'study-time' && <StudyTimeScreen onBack={handleBack} />}
-      {screen.type === 'settings' && (
-        <SettingsScreen
-          onBack={handleBack}
-          onOpenLanguage={() => navigate({ type: 'language' })}
-          onOpenLogin={() => navigate({ type: 'login' })}
-          onOpenPricing={() => navigate({ type: 'pricing' })}
-          currentUser={currentUser ? { email: currentUser.email ?? '' } : null}
-          onLogout={async () => { await logout(); setCurrentUser(null) }}
-          initialSection={screen.section}
-        />
-      )}
       {screen.type === 'login' && (
         <LoginScreen
           onLoginSuccess={(user) => {
@@ -575,7 +564,7 @@ function AppV3() {
           }}
         />
       )}
-      {screen.type === 'language' && <LanguageScreen onBack={() => navigate({ type: 'settings' })} />}
+      {screen.type === 'language' && <LanguageScreen onBack={() => navigate({ type: 'profile' })} />}
       {screen.type === 'account-settings' && (
         <AccountSettingsScreen
           onBack={handleBack}
