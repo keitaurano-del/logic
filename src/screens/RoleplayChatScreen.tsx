@@ -70,16 +70,19 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
     }
   }, [])
 
-  // assistant メッセージ追加時に talking 状態を一時的に ON
+  // assistant メッセージ追加時に talking 状態を一時的に ON。
+  // 副作用としての state 更新（time-based の auto-off を含む）なので
+  // set-state-in-effect ルールはここに限り意図的に無効化。
   useEffect(() => {
     const last = messages[messages.length - 1]
     if (!last || last.role !== 'assistant') return
-    setIsTalking(true)
     if (talkingTimerRef.current != null) {
       window.clearTimeout(talkingTimerRef.current)
     }
     // セリフ長に応じて 1.6s + 30ms/char、最大 6s
     const duration = Math.min(6000, 1600 + last.content.length * 30)
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsTalking(true)
     talkingTimerRef.current = window.setTimeout(() => {
       setIsTalking(false)
       talkingTimerRef.current = null

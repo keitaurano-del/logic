@@ -1,6 +1,6 @@
-import { useMemo, useRef } from 'react'
-import { useFrame, useLoader } from '@react-three/fiber'
-import { TextureLoader, type Mesh } from 'three'
+import { useEffect, useRef, useState } from 'react'
+import { useFrame } from '@react-three/fiber'
+import { TextureLoader, type Mesh, type Texture } from 'three'
 import * as THREE from 'three'
 
 export type BillboardState = 'idle' | 'talking' | 'thinking'
@@ -34,23 +34,24 @@ export function BillboardAvatar({
   y = 0.95,
 }: BillboardAvatarProps) {
   const meshRef = useRef<Mesh>(null)
-  const texture = useLoader(TextureLoader, imageUrl)
+  // 自前 TextureLoader で colorSpace 等をロード時にセット
+  // （useLoader 経由のテクスチャは外部 mutate がリンタで禁止されるため）
+  const [texture, setTexture] = useState<Texture | null>(null)
+  useEffect(() => {
+    let cancelled = false
+    const loader = new TextureLoader()
+    loader.load(imageUrl, (tex) => {
+      if (cancelled) return
+      tex.colorSpace = THREE.SRGBColorSpace
+      tex.anisotropy = 4
+      setTexture(tex)
+    })
+    return () => { cancelled = true }
+  }, [imageUrl])
 
-  // 画像のアスペクト比から高さを決める
-  const aspect = useMemo(() => {
-    const img = texture.image as { width?: number; height?: number } | null
-    if (!img || !img.width || !img.height) return 1
-    return img.width / img.height
-  }, [texture])
-
+  const img = texture?.image as { width?: number; height?: number } | undefined
+  const aspect = img?.width && img.height ? img.width / img.height : 1
   const height = width / aspect
-
-  // アルファチャンネル維持 + ピクセル境界をきれいに
-  useMemo(() => {
-    texture.colorSpace = THREE.SRGBColorSpace
-    texture.anisotropy = 4
-    texture.needsUpdate = true
-  }, [texture])
 
   useFrame(({ clock }) => {
     const m = meshRef.current
@@ -78,6 +79,8 @@ export function BillboardAvatar({
       m.scale.set(1, 1, 1)
     }
   })
+
+  if (!texture) return null
 
   return (
     <mesh ref={meshRef} position={[0, y, 0]}>

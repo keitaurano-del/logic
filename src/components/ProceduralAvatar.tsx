@@ -31,6 +31,178 @@ interface ProceduralAvatarProps {
   state: AvatarState
 }
 
+type AvatarMaterials = {
+  skin: THREE.MeshStandardMaterial
+  hair: THREE.MeshStandardMaterial
+  body: THREE.MeshStandardMaterial
+  accent: THREE.MeshStandardMaterial
+  tie: THREE.MeshStandardMaterial
+  glasses: THREE.MeshStandardMaterial
+  lens: THREE.MeshStandardMaterial
+  mouth: THREE.MeshStandardMaterial
+}
+
+// ── ヘルパー：髭（module スコープ、static-components ルール準拠） ──
+function Beard({ kind, hairMat }: { kind: AvatarSpec['beard']; hairMat: THREE.Material }) {
+  if (kind === 'none') return null
+  if (kind === 'mustache') {
+    return (
+      <mesh material={hairMat} position={[0, -0.05, 0.18]}>
+        <boxGeometry args={[0.18, 0.04, 0.05]} />
+      </mesh>
+    )
+  }
+  if (kind === 'short') {
+    return (
+      <mesh material={hairMat} position={[0, -0.12, 0.16]}>
+        <sphereGeometry args={[0.13, 16, 12, 0, Math.PI * 2, 0, Math.PI * 0.55]} />
+      </mesh>
+    )
+  }
+  if (kind === 'long') {
+    return (
+      <group position={[0, -0.18, 0.14]}>
+        <mesh material={hairMat}>
+          <coneGeometry args={[0.18, 0.5, 18]} />
+        </mesh>
+      </group>
+    )
+  }
+  // bushy
+  return (
+    <group position={[0, -0.13, 0.13]}>
+      <mesh material={hairMat} position={[0, 0, 0]}>
+        <sphereGeometry args={[0.18, 18, 14, 0, Math.PI * 2, 0, Math.PI * 0.62]} />
+      </mesh>
+      <mesh material={hairMat} position={[-0.09, 0.04, 0.04]}>
+        <sphereGeometry args={[0.07, 12, 10]} />
+      </mesh>
+      <mesh material={hairMat} position={[0.09, 0.04, 0.04]}>
+        <sphereGeometry args={[0.07, 12, 10]} />
+      </mesh>
+    </group>
+  )
+}
+
+// ── ヘルパー：髪 ──
+function Hair({ kind, hairMat }: { kind: AvatarSpec['hairStyle']; hairMat: THREE.Material }) {
+  if (kind === 'bald') return null
+  if (kind === 'short') {
+    return (
+      <mesh material={hairMat} position={[0, 0.12, 0]}>
+        <sphereGeometry args={[0.27, 20, 16, 0, Math.PI * 2, 0, Math.PI * 0.58]} />
+      </mesh>
+    )
+  }
+  if (kind === 'slicked') {
+    return (
+      <mesh material={hairMat} position={[0, 0.13, -0.02]}>
+        <sphereGeometry args={[0.275, 20, 16, 0, Math.PI * 2, 0, Math.PI * 0.45]} />
+      </mesh>
+    )
+  }
+  // tousled
+  return (
+    <group position={[0, 0.13, 0]}>
+      <mesh material={hairMat}>
+        <sphereGeometry args={[0.28, 20, 16, 0, Math.PI * 2, 0, Math.PI * 0.65]} />
+      </mesh>
+      <mesh material={hairMat} position={[0.13, 0.05, 0]}>
+        <sphereGeometry args={[0.09, 12, 10]} />
+      </mesh>
+      <mesh material={hairMat} position={[-0.12, 0.06, 0.03]}>
+        <sphereGeometry args={[0.08, 12, 10]} />
+      </mesh>
+      <mesh material={hairMat} position={[0.03, 0.09, 0.08]}>
+        <sphereGeometry args={[0.075, 12, 10]} />
+      </mesh>
+    </group>
+  )
+}
+
+// ── ヘルパー：衣装 ──
+function Outfit({ kind, mats }: { kind: AvatarSpec['outfit']; mats: AvatarMaterials }) {
+  if (kind === 'toga') {
+    return (
+      <group>
+        <mesh material={mats.body} position={[0, -0.05, 0]}>
+          <cylinderGeometry args={[0.42, 0.55, 1.0, 18]} />
+        </mesh>
+        <mesh material={mats.accent} position={[0.05, 0.18, 0.05]} rotation={[0, 0, -0.4]}>
+          <boxGeometry args={[0.65, 0.18, 0.36]} />
+        </mesh>
+        <mesh material={mats.body} position={[0, -0.6, 0]}>
+          <coneGeometry args={[0.62, 0.4, 18]} />
+        </mesh>
+      </group>
+    )
+  }
+  if (kind === 'cloak') {
+    return (
+      <group>
+        <mesh material={mats.body} position={[0, 0, 0]}>
+          <cylinderGeometry args={[0.46, 0.6, 1.1, 18]} />
+        </mesh>
+        <mesh material={mats.accent} position={[0, 0.4, -0.05]}>
+          <torusGeometry args={[0.3, 0.09, 10, 18, Math.PI]} />
+        </mesh>
+        <mesh material={mats.body} position={[0, -0.6, 0]}>
+          <coneGeometry args={[0.7, 0.5, 18]} />
+        </mesh>
+      </group>
+    )
+  }
+  if (kind === 'frock') {
+    return (
+      <group>
+        <mesh material={mats.body} position={[0, -0.05, 0]}>
+          <boxGeometry args={[0.7, 1.05, 0.42]} />
+        </mesh>
+        <mesh material={mats.accent} position={[0, -0.05, 0.215]}>
+          <boxGeometry args={[0.3, 0.95, 0.02]} />
+        </mesh>
+        {[0.18, 0.02, -0.14].map((y, i) => (
+          <mesh key={i} material={mats.hair} position={[0, y, 0.23]}>
+            <sphereGeometry args={[0.025, 8, 6]} />
+          </mesh>
+        ))}
+      </group>
+    )
+  }
+  if (kind === 'casual') {
+    return (
+      <group>
+        <mesh material={mats.body} position={[0, 0.05, 0]}>
+          <boxGeometry args={[0.72, 0.65, 0.44]} />
+        </mesh>
+        <mesh material={mats.accent} position={[0, -0.55, 0]}>
+          <boxGeometry args={[0.7, 0.55, 0.42]} />
+        </mesh>
+      </group>
+    )
+  }
+  // suit
+  return (
+    <group>
+      <mesh material={mats.body} position={[0, 0.05, 0]}>
+        <boxGeometry args={[0.74, 0.7, 0.44]} />
+      </mesh>
+      <mesh material={mats.skin} position={[0, 0.18, 0.221]}>
+        <boxGeometry args={[0.2, 0.42, 0.02]} />
+      </mesh>
+      <mesh material={mats.tie} position={[0, 0.05, 0.232]}>
+        <boxGeometry args={[0.08, 0.45, 0.02]} />
+      </mesh>
+      <mesh material={mats.tie} position={[0, -0.2, 0.232]} rotation={[0, 0, Math.PI / 4]}>
+        <boxGeometry args={[0.13, 0.13, 0.02]} />
+      </mesh>
+      <mesh material={mats.accent} position={[0, -0.55, 0]}>
+        <boxGeometry args={[0.7, 0.55, 0.42]} />
+      </mesh>
+    </group>
+  )
+}
+
 /**
  * Three.js プリミティブだけで作る低ポリ procedural 人型アバター。
  * GLB モデル不要 — 各キャラの個性は spec で表現する。
@@ -139,183 +311,6 @@ export function ProceduralAvatar({ spec, state }: ProceduralAvatarProps) {
     }
   })
 
-  // ── ヘルパー：髭 ──
-  const Beard = () => {
-    if (spec.beard === 'none') return null
-    if (spec.beard === 'mustache') {
-      return (
-        <mesh material={mats.hair} position={[0, -0.05, 0.18]}>
-          <boxGeometry args={[0.18, 0.04, 0.05]} />
-        </mesh>
-      )
-    }
-    if (spec.beard === 'short') {
-      return (
-        <mesh material={mats.hair} position={[0, -0.12, 0.16]}>
-          <sphereGeometry args={[0.13, 16, 12, 0, Math.PI * 2, 0, Math.PI * 0.55]} />
-        </mesh>
-      )
-    }
-    if (spec.beard === 'long') {
-      return (
-        <group position={[0, -0.18, 0.14]}>
-          <mesh material={mats.hair}>
-            <coneGeometry args={[0.18, 0.5, 18]} />
-          </mesh>
-        </group>
-      )
-    }
-    // bushy: ふさふさ
-    return (
-      <group position={[0, -0.13, 0.13]}>
-        <mesh material={mats.hair} position={[0, 0, 0]}>
-          <sphereGeometry args={[0.18, 18, 14, 0, Math.PI * 2, 0, Math.PI * 0.62]} />
-        </mesh>
-        <mesh material={mats.hair} position={[-0.09, 0.04, 0.04]}>
-          <sphereGeometry args={[0.07, 12, 10]} />
-        </mesh>
-        <mesh material={mats.hair} position={[0.09, 0.04, 0.04]}>
-          <sphereGeometry args={[0.07, 12, 10]} />
-        </mesh>
-      </group>
-    )
-  }
-
-  // ── ヘルパー：髪 ──
-  const Hair = () => {
-    if (spec.hairStyle === 'bald') return null
-    if (spec.hairStyle === 'short') {
-      return (
-        <mesh material={mats.hair} position={[0, 0.12, 0]}>
-          <sphereGeometry args={[0.27, 20, 16, 0, Math.PI * 2, 0, Math.PI * 0.58]} />
-        </mesh>
-      )
-    }
-    if (spec.hairStyle === 'slicked') {
-      return (
-        <mesh material={mats.hair} position={[0, 0.13, -0.02]}>
-          <sphereGeometry args={[0.275, 20, 16, 0, Math.PI * 2, 0, Math.PI * 0.45]} />
-        </mesh>
-      )
-    }
-    // tousled: ぼさぼさ
-    return (
-      <group position={[0, 0.13, 0]}>
-        <mesh material={mats.hair}>
-          <sphereGeometry args={[0.28, 20, 16, 0, Math.PI * 2, 0, Math.PI * 0.65]} />
-        </mesh>
-        <mesh material={mats.hair} position={[0.13, 0.05, 0]}>
-          <sphereGeometry args={[0.09, 12, 10]} />
-        </mesh>
-        <mesh material={mats.hair} position={[-0.12, 0.06, 0.03]}>
-          <sphereGeometry args={[0.08, 12, 10]} />
-        </mesh>
-        <mesh material={mats.hair} position={[0.03, 0.09, 0.08]}>
-          <sphereGeometry args={[0.075, 12, 10]} />
-        </mesh>
-      </group>
-    )
-  }
-
-  // ── 衣装の本体 ──
-  const Outfit = () => {
-    if (spec.outfit === 'toga') {
-      // 古代風トーガ：肩から斜めに垂れるドレープ
-      return (
-        <group>
-          {/* メインの胴体（ふくらみのあるローブ） */}
-          <mesh material={mats.body} position={[0, -0.05, 0]}>
-            <cylinderGeometry args={[0.42, 0.55, 1.0, 18]} />
-          </mesh>
-          {/* 肩のドレープ（斜めがけ） */}
-          <mesh material={mats.accent} position={[0.05, 0.18, 0.05]} rotation={[0, 0, -0.4]}>
-            <boxGeometry args={[0.65, 0.18, 0.36]} />
-          </mesh>
-          {/* 裾 */}
-          <mesh material={mats.body} position={[0, -0.6, 0]}>
-            <coneGeometry args={[0.62, 0.4, 18]} />
-          </mesh>
-        </group>
-      )
-    }
-    if (spec.outfit === 'cloak') {
-      // ローブ：もっと量感、フード風の襟
-      return (
-        <group>
-          <mesh material={mats.body} position={[0, 0, 0]}>
-            <cylinderGeometry args={[0.46, 0.6, 1.1, 18]} />
-          </mesh>
-          {/* 襟・フード風 */}
-          <mesh material={mats.accent} position={[0, 0.4, -0.05]}>
-            <torusGeometry args={[0.3, 0.09, 10, 18, Math.PI]} />
-          </mesh>
-          {/* 裾広がり */}
-          <mesh material={mats.body} position={[0, -0.6, 0]}>
-            <coneGeometry args={[0.7, 0.5, 18]} />
-          </mesh>
-        </group>
-      )
-    }
-    if (spec.outfit === 'frock') {
-      // フロックコート：細身で長め、ボタン
-      return (
-        <group>
-          <mesh material={mats.body} position={[0, -0.05, 0]}>
-            <boxGeometry args={[0.7, 1.05, 0.42]} />
-          </mesh>
-          {/* 内側のベスト */}
-          <mesh material={mats.accent} position={[0, -0.05, 0.215]}>
-            <boxGeometry args={[0.3, 0.95, 0.02]} />
-          </mesh>
-          {/* ボタン x3 */}
-          {[0.18, 0.02, -0.14].map((y, i) => (
-            <mesh key={i} material={mats.hair} position={[0, y, 0.23]}>
-              <sphereGeometry args={[0.025, 8, 6]} />
-            </mesh>
-          ))}
-        </group>
-      )
-    }
-    if (spec.outfit === 'casual') {
-      // カジュアル：T-shirt 風
-      return (
-        <group>
-          <mesh material={mats.body} position={[0, 0.05, 0]}>
-            <boxGeometry args={[0.72, 0.65, 0.44]} />
-          </mesh>
-          {/* パンツ */}
-          <mesh material={mats.accent} position={[0, -0.55, 0]}>
-            <boxGeometry args={[0.7, 0.55, 0.42]} />
-          </mesh>
-        </group>
-      )
-    }
-    // suit: スーツ
-    return (
-      <group>
-        {/* ジャケット */}
-        <mesh material={mats.body} position={[0, 0.05, 0]}>
-          <boxGeometry args={[0.74, 0.7, 0.44]} />
-        </mesh>
-        {/* シャツ（白いV字部分） */}
-        <mesh material={mats.skin} position={[0, 0.18, 0.221]}>
-          <boxGeometry args={[0.2, 0.42, 0.02]} />
-        </mesh>
-        {/* ネクタイ */}
-        <mesh material={mats.tie} position={[0, 0.05, 0.232]}>
-          <boxGeometry args={[0.08, 0.45, 0.02]} />
-        </mesh>
-        <mesh material={mats.tie} position={[0, -0.2, 0.232]} rotation={[0, 0, Math.PI / 4]}>
-          <boxGeometry args={[0.13, 0.13, 0.02]} />
-        </mesh>
-        {/* パンツ */}
-        <mesh material={mats.accent} position={[0, -0.55, 0]}>
-          <boxGeometry args={[0.7, 0.55, 0.42]} />
-        </mesh>
-      </group>
-    )
-  }
-
   // 衣装ごとに腕の起点を変える
   const armOffsetX = spec.outfit === 'toga' || spec.outfit === 'cloak' ? 0.48 : 0.42
   const armOffsetY = 0.25
@@ -324,7 +319,7 @@ export function ProceduralAvatar({ spec, state }: ProceduralAvatarProps) {
     <group ref={rootRef}>
       {/* 胴体 */}
       <group ref={torsoRef} position={[0, 0.78, 0]}>
-        <Outfit />
+        <Outfit kind={spec.outfit} mats={mats} />
 
         {/* 左腕 */}
         <group ref={leftArmRef} position={[-armOffsetX, armOffsetY, 0]}>
@@ -353,8 +348,8 @@ export function ProceduralAvatar({ spec, state }: ProceduralAvatarProps) {
           <mesh material={mats.skin}>
             <sphereGeometry args={[0.27, 24, 20]} />
           </mesh>
-          <Hair />
-          <Beard />
+          <Hair kind={spec.hairStyle} hairMat={mats.hair} />
+          <Beard kind={spec.beard} hairMat={mats.hair} />
 
           {/* 目（白＋黒目） */}
           <group position={[0, 0.06, 0.22]}>
