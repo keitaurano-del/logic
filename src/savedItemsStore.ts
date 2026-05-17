@@ -1,24 +1,35 @@
 /**
  * 保存（ブックマーク）レイヤー
  *
- * レッスン・コース・ロールプレイを横断して保存し、後から復習画面で
+ * レッスン・コース・ロールプレイ・レッスンステップ（画面ごと）・
+ * AI 生成問題・フェルミ問題を横断して保存し、後から復習画面で
  * 一覧できるようにする。誤答ストアと同じく localStorage で完結。
  */
 const STORAGE_KEY = 'logic-saved-items'
 
-export type SavedItemType = 'lesson' | 'course' | 'roleplay'
+export type SavedItemType =
+  | 'lesson'
+  | 'course'
+  | 'roleplay'
+  | 'lesson-step'
+  | 'ai-problem'
+  | 'fermi'
 
 export type SavedItem = {
   /** type-refId の複合キーをそのまま使ってもいいが、内部 ID も別途持つ */
   id: string
   type: SavedItemType
-  /** lessonId は number、course / roleplay は文字列 ID */
+  /** lessonId は number、course / roleplay は文字列 ID。lesson-step は `${lessonId}:${stepIndex}` */
   refId: string
   title: string
   subtitle?: string
   /** Hero / サムネ画像（任意）。一覧表示で使用 */
   image?: string
   savedAt: string
+  /** lesson-step: 何ステップ目か（0-indexed） */
+  stepIndex?: number
+  /** lesson-step: 親レッスンID（一覧から開くとき必要） */
+  parentLessonId?: number
 }
 
 function makeId(type: SavedItemType, refId: string): string {
@@ -47,6 +58,8 @@ export type SaveItemInput = {
   title: string
   subtitle?: string
   image?: string
+  stepIndex?: number
+  parentLessonId?: number
 }
 
 /** 既に保存済みなら何もしない（idempotent）。新規ならリスト先頭に追加 */
@@ -63,6 +76,8 @@ export function saveItem(input: SaveItemInput): SavedItem {
     subtitle: input.subtitle,
     image: input.image,
     savedAt: new Date().toISOString(),
+    stepIndex: input.stepIndex,
+    parentLessonId: input.parentLessonId,
   }
   items.unshift(fresh)
   persist(items)
@@ -96,7 +111,14 @@ export type SavedItemStats = {
 
 export function getSavedItemStats(): SavedItemStats {
   const items = loadSavedItems()
-  const byType: Record<SavedItemType, number> = { lesson: 0, course: 0, roleplay: 0 }
+  const byType: Record<SavedItemType, number> = {
+    lesson: 0,
+    course: 0,
+    roleplay: 0,
+    'lesson-step': 0,
+    'ai-problem': 0,
+    fermi: 0,
+  }
   for (const it of items) byType[it.type] += 1
   return { total: items.length, byType }
 }

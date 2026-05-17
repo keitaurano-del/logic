@@ -28,14 +28,15 @@ type WrongAnswerCapture = {
 
 interface LessonStoriesScreenProps {
   lessonId: number
+  startStep?: number
   onComplete: () => void
   onClose: () => void
 }
 
 export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
-  const { lessonId, onComplete, onClose } = props
+  const { lessonId, startStep, onComplete, onClose } = props
   const lesson = allLessons[lessonId]
-  const [index, setIndex] = useState(0)
+  const [index, setIndex] = useState(startStep ?? 0)
   const [quizAnswered, setQuizAnswered] = useState<{ correct: boolean; selected: number; selectedMulti?: number[] } | null>(null)
   const [multiSelected, setMultiSelected] = useState<number[]>([])
   const [reportOpen, setReportOpen] = useState(false)
@@ -59,8 +60,12 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
   const wrongAnswersRef = useRef<WrongAnswerCapture[]>([])
   const capturedSlideIndicesRef = useRef<Set<number>>(new Set())
 
-  // 保存（ブックマーク）状態
+  // 保存（ブックマーク）状態 — レッスン全体
   const [saved, setSaved] = useState<boolean>(() => isSaved('lesson', lessonId))
+  // 保存（ブックマーク）状態 — 現在のページ。state ではなく毎レンダー算出
+  const [, bumpSaved] = useState(0)
+  const bumpPageSaved = () => bumpSaved((v) => v + 1)
+  const pageSaved = isSaved('lesson-step', `${lessonId}:${index}`)
 
   const slides: LessonSlide[] = useMemo(() => {
     if (!lesson) return []
@@ -208,7 +213,37 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
 
       {/* Slide content */}
       <div style={{ flex: 1, padding: '8px 24px 100px', position: 'relative', overflow: 'auto' }}>
-        <div style={{ position: 'absolute', top: 8, right: 24, fontFamily: "'Inter Tight', sans-serif", fontSize: 13, fontWeight: 700, color: 'var(--text-muted)' }}>{index + 1} / {total}</div>
+        <div style={{ position: 'absolute', top: 8, right: 24, display: 'flex', alignItems: 'center', gap: 8, zIndex: 6 }}>
+          <button
+            type="button"
+            onPointerDown={(e) => {
+              e.stopPropagation()
+              haptic.light()
+              toggleSaved({
+                type: 'lesson-step',
+                refId: `${lessonId}:${index}`,
+                title: lesson.title,
+                subtitle: `${lesson.category} · ${index + 1}/${total}`,
+                stepIndex: index,
+                parentLessonId: lessonId,
+              })
+              bumpPageSaved()
+            }}
+            aria-label={pageSaved ? t('savedItems.unsavePageAria') : t('savedItems.savePageAria')}
+            aria-pressed={pageSaved}
+            style={{
+              width: 28, height: 28, borderRadius: '50%',
+              background: pageSaved ? `color-mix(in srgb, var(--brand) 18%, transparent)` : 'rgba(255,255,255,0.08)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: 'pointer', WebkitTapHighlightColor: 'transparent',
+              border: 'none', padding: 0,
+              color: pageSaved ? 'var(--brand)' : 'var(--text-muted)',
+            }}
+          >
+            {pageSaved ? <BookmarkFilledIcon width={14} height={14} /> : <BookmarkIcon width={14} height={14} />}
+          </button>
+          <span style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 13, fontWeight: 700, color: 'var(--text-muted)' }}>{index + 1} / {total}</span>
+        </div>
 
         <SlideContent
           slide={slide}

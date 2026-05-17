@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { sendMagicLink, isSupabaseConfigured } from '../supabase'
 import { startCheckout, PLAN_PRICES } from '../subscription'
 import { t, localizedHtmlPath } from '../i18n'
@@ -346,7 +346,6 @@ function OnboardingPricingView({ onNext, onSelectPaid, onBack }: {
 }
 
 // ── 登録画面（スクショ参考） ──────────────────────────────────
-const REGISTER_RESEND_COOLDOWN_SEC = 30
 
 function RegisterScreen({ onComplete: _onComplete, onBack, onNavigateToLogin }: { onComplete: () => void; onBack: () => void; onNavigateToLogin?: () => void }) {
   const [termsChecked, setTermsChecked] = useState(false)
@@ -355,14 +354,7 @@ function RegisterScreen({ onComplete: _onComplete, onBack, onNavigateToLogin }: 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [successMsg, setSuccessMsg] = useState('')
-  const [resendCooldown, setResendCooldown] = useState(0)
   const ready = isSupabaseConfigured()
-
-  useEffect(() => {
-    if (resendCooldown <= 0) return
-    const id = setTimeout(() => setResendCooldown(s => s - 1), 1000)
-    return () => clearTimeout(id)
-  }, [resendCooldown])
 
   const inputStyle: React.CSSProperties = {
     width: '100%',
@@ -391,11 +383,10 @@ function RegisterScreen({ onComplete: _onComplete, onBack, onNavigateToLogin }: 
       return
     }
     setStep('sent')
-    setResendCooldown(REGISTER_RESEND_COOLDOWN_SEC)
   }
 
   async function handleResend() {
-    if (resendCooldown > 0 || loading) return
+    if (loading) return
     setError(''); setSuccessMsg(''); setLoading(true)
     const result = await sendMagicLink(email)
     setLoading(false)
@@ -405,7 +396,6 @@ function RegisterScreen({ onComplete: _onComplete, onBack, onNavigateToLogin }: 
       return
     }
     setSuccessMsg(t('auth.linkResent'))
-    setResendCooldown(REGISTER_RESEND_COOLDOWN_SEC)
   }
 
   return (
@@ -539,10 +529,10 @@ function RegisterScreen({ onComplete: _onComplete, onBack, onNavigateToLogin }: 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center', marginTop: 16 }}>
               <button
                 onClick={handleResend}
-                disabled={loading || resendCooldown > 0}
-                style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', fontSize: 13, cursor: (loading || resendCooldown > 0) ? 'not-allowed' : 'pointer', padding: '8px 0', opacity: resendCooldown > 0 ? 0.5 : 1 }}
+                disabled={loading}
+                style={{ background: 'none', border: 'none', color: C.teal, fontSize: 14, fontWeight: 600, cursor: loading ? 'not-allowed' : 'pointer', padding: '10px 0', opacity: loading ? 0.5 : 1 }}
               >
-                {resendCooldown > 0 ? t('auth.linkResendIn', { sec: resendCooldown }) : t('auth.linkResend')}
+                {t('auth.linkResend')}
               </button>
               <button
                 onClick={() => { setStep('email'); setError(''); setSuccessMsg('') }}

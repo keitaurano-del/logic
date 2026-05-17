@@ -84,7 +84,7 @@ type Screen =
   | { type: 'lessons' }
   | { type: 'roadmap'; category?: string }
   | { type: 'profile' }
-  | { type: 'lesson'; lessonId: number }
+  | { type: 'lesson'; lessonId: number; startStep?: number }
   | { type: 'lesson-complete'; lessonId: number; durationSec: number; prevLevel: number }
   | { type: 'flashcards'; mode?: 'due' | 'weak' }
   | { type: 'review-hub' }
@@ -474,6 +474,20 @@ function AppV3() {
           onOpenLesson={handleOpenLesson}
           onOpenCourse={(cat) => navigate({ type: 'roadmap', category: cat })}
           onOpenRoleplay={(situationId) => navigate({ type: 'roleplay-chat', situationId })}
+          onOpenLessonStep={(lessonId, stepIndex) => navigate({ type: 'lesson', lessonId, startStep: stepIndex })}
+          onOpenAiProblem={(problemId) => {
+            try {
+              // 保存した AI 問題を loadAIProblems から探して開く
+              import('./aiProblemStore').then(({ loadAIProblems }) => {
+                const found = loadAIProblems().find((p) => String(p.id) === problemId)
+                if (found) navigate({ type: 'ai-problem', problem: found })
+                else navigate({ type: 'ai-problem-gen' })
+              })
+            } catch {
+              navigate({ type: 'ai-problem-gen' })
+            }
+          }}
+          onOpenFermi={() => navigate({ type: 'daily-fermi' })}
         />
       )}
       {screen.type === 'fermi' && <FermiScreen onBack={handleBack} onReport={(ctx) => navigate({ type: 'report-problem', context: ctx })} />}
@@ -602,6 +616,7 @@ function AppV3() {
       {screen.type === 'lesson' && (
         <LessonStoriesScreen
           lessonId={screen.lessonId}
+          startStep={screen.startStep}
           onComplete={handleComplete}
           onClose={handleBack}
         />
