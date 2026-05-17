@@ -91,7 +91,11 @@ export function JournalImageGrid({ userId, date, images, editing, onChange, disa
       } else if (e) {
         if (e.code === 'invalid-type') failedMsgs.push(t('journal.imagesErrorType'))
         else if (e.code === 'too-large') failedMsgs.push(t('journal.imagesErrorSize'))
-        else failedMsgs.push(t('journal.imagesErrorUpload'))
+        else {
+          // upload-failed / compress-failed / no-auth は原因が画面で分からないと
+          // 詰むので、コード + メッセージを表示する。
+          failedMsgs.push(`${t('journal.imagesErrorUpload')}（${e.code}: ${e.message}）`)
+        }
       }
     }
     if (successful.length > 0) {
@@ -218,7 +222,9 @@ export function JournalImageGrid({ userId, date, images, editing, onChange, disa
         <input
           ref={fileInputRef}
           type="file"
-          accept="image/jpeg,image/png,image/webp,image/heic,image/heif"
+          // HEIC/HEIF を accept に入れない（iOS が JPEG に自動変換するように）。
+          // Capacitor / Safari の WebView では HEIC を Canvas でデコードできないため。
+          accept="image/jpeg,image/png,image/webp"
           multiple
           onChange={(e) => {
             handleFilesPicked(e.target.files)

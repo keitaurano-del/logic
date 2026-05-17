@@ -5,7 +5,11 @@ const BUCKET = 'journal-images'
 const SIGNED_URL_TTL_SEC = 3600
 const MAX_DIMENSION = 1920
 const COMPRESS_QUALITY = 0.85
-const ALLOWED_MIME = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'])
+// iOS は HEIC/HEIF を accept に含めると変換せずそのまま返すが、HEIC は Canvas で
+// decode できないため compress で失敗する。accept には JPEG/PNG/WebP のみ並べ、
+// 受け取り側で空 type の許可（iOS は HEIC→JPEG 変換後に type が空になることがある）
+// と合わせて緩めに判定する。
+const ALLOWED_MIME = new Set(['image/jpeg', 'image/jpg', 'image/png', 'image/webp'])
 
 export class ImageUploadError extends Error {
   code: 'invalid-type' | 'too-large' | 'compress-failed' | 'upload-failed' | 'no-auth'
@@ -71,10 +75,11 @@ export async function uploadJournalImage(
   date: string,
   file: File,
 ): Promise<{ image?: JournalImage; error?: ImageUploadError }> {
-  if (!ALLOWED_MIME.has(file.type)) {
+  // iOS の写真ピッカー由来だと file.type が空文字で来ることがある（HEIC→JPEG 変換時など）。
+  // 空 type は許容、それ以外は許可リストでチェック。
+  if (file.type && !ALLOWED_MIME.has(file.type)) {
     return { error: new ImageUploadError('invalid-type', `unsupported mime: ${file.type}`) }
   }
-  // 10MB を超える元ファイルは弾く（圧縮後は小さくなるが、巨大ファイルのデコードでメモリ圧迫を避ける）
   if (file.size > 20 * 1024 * 1024) {
     return { error: new ImageUploadError('too-large', `file too large: ${file.size} bytes`) }
   }
@@ -86,7 +91,9 @@ export async function uploadJournalImage(
   try {
     compressed = await compressToJpeg(file)
   } catch (e) {
-    return { error: e instanceof ImageUploadError ? e : new ImageUploadError('compress-failed', String(e)) }
+    const err = e instanceof ImageUploadError ? e : new ImageUploadError('compress-failed', String(e))
+    console.warn('[journal-image] compress failed:', err.code, err.message, 'file:', { name: file.name, type: file.type, size: file.size })
+    return { error: err }
   }
 
   const path = makeObjectPath(userId, date)
@@ -94,6 +101,7 @@ export async function uploadJournalImage(
     .from(BUCKET)
     .upload(path, compressed.blob, { contentType: 'image/jpeg', upsert: false })
   if (error) {
+    console.warn('[journal-image] storage upload failed:', error.message, 'path:', path)
     return { error: new ImageUploadError('upload-failed', error.message) }
   }
 
