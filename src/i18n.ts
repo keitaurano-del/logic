@@ -392,6 +392,7 @@ const STRINGS: Record<Locale, Strings> = {
     'profile.themeLight': 'ライト',
     'appearanceSettings.title': 'テーマ',
     'appearanceSettings.modeHeading': '表示モード',
+    'appearanceSettings.modeHint': 'アプリ全体の見た目を切り替えます。',
     'profile.ranking': '偏差値ランキング',
     'profile.privacy': 'プライバシーポリシー',
     'profile.terms': '利用規約',
@@ -563,7 +564,7 @@ const STRINGS: Record<Locale, Strings> = {
     'theme.upgrade': '有料プランにアップグレード →',
     // Mode names + descriptions
     'theme.mode.light.name': 'ライト',
-    'theme.mode.light.desc': '明るく落ち着いたクリーム系',
+    'theme.mode.light.desc': '青みを帯びた明るいトーン',
     'theme.mode.dark.name': 'ダーク',
     'theme.mode.dark.desc': '目に優しい暗色背景',
     'theme.mode.enterprise.name': 'エンタープライズ',
@@ -1949,6 +1950,7 @@ const STRINGS: Record<Locale, Strings> = {
     'profile.themeLight': 'Light',
     'appearanceSettings.title': 'Theme',
     'appearanceSettings.modeHeading': 'Display mode',
+    'appearanceSettings.modeHint': 'Changes the overall appearance of the app.',
     'profile.ranking': 'Ranking',
     'profile.privacy': 'Privacy Policy',
     'profile.terms': 'Terms of Service',
@@ -2120,7 +2122,7 @@ const STRINGS: Record<Locale, Strings> = {
     'theme.upgrade': 'Upgrade to paid plan →',
     // Mode names + descriptions
     'theme.mode.light.name': 'Light',
-    'theme.mode.light.desc': 'Bright, calm cream tones',
+    'theme.mode.light.desc': 'Bright with cool blue undertones',
     'theme.mode.dark.name': 'Dark',
     'theme.mode.dark.desc': 'Easy on the eyes',
     'theme.mode.enterprise.name': 'Enterprise',
