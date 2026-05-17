@@ -31,16 +31,16 @@ function incrementRerollCount() {
   try { const c = getRerollCount(); localStorage.setItem(REROLL_COUNT_KEY, JSON.stringify({ date: TODAY, count: c + 1 })) } catch { /* */ }
 }
 
-// 2026-05-15 単一有料プラン化:
-//   - 有料プラン: 無制限（実装上は 999 = 実質無制限）
+// 2026-05-17 デイリーキャップ仕様:
+//   - 有料プラン: 1日10問（初回 + リロール9回）
 //   - 無料プラン: フェルミ推定は日1問、別問題リロール不可
 function getDailyFermiLimit(): number {
-  return isPaid() ? 999 : 1
+  return isPaid() ? 10 : 1
 }
 function getDailyRerollLimit(): number {
   // SIT環境では無制限
   if (typeof window !== 'undefined' && window.location.hostname.includes('logic-sit')) return 999
-  return isPaid() ? 999 : 0
+  return isPaid() ? 9 : 0
 }
 
 // 基礎統計データ（フェルミ推定時の参考値）
