@@ -97,6 +97,7 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
   const [loading, setLoading] = useState(initialJournal === undefined)
   const [saving, setSaving] = useState(false)
   const [savedToast, setSavedToast] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
   const [aiTagToast, setAiTagToast] = useState<string | null>(null)
   const [xpToast, setXpToast] = useState<{ xp: number; label: string } | null>(null)
 
@@ -198,6 +199,7 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
 
   const handleSave = async () => {
     setSaving(true)
+    setSaveError(null)
     const trimmedSchedule = scheduleNotes.trim()
     const trimmedReflection = reflection.trim()
     const updated: DailyJournal = {
@@ -226,7 +228,11 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
 
     const { error } = await upsertJournal(updated)
     setSaving(false)
-    if (error) return
+    if (error) {
+      console.error('[journal] upsertJournal failed:', error)
+      setSaveError(error)
+      return
+    }
 
     setJournal(updated)
     setSavedToast(true)
@@ -528,6 +534,28 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
             <div className="journal-today__phase">
               {phase === 'morning' ? renderMorningEdit() : renderEveningEdit()}
             </div>
+
+            {saveError && (
+              <div
+                role="alert"
+                className="journal-save-error"
+                style={{
+                  marginTop: 8,
+                  padding: '10px 12px',
+                  borderRadius: 8,
+                  background: 'var(--danger-soft, #FEECEC)',
+                  color: 'var(--danger, #C0392B)',
+                  fontSize: 13,
+                  lineHeight: 1.5,
+                }}
+              >
+                <div style={{ fontWeight: 700, marginBottom: 2 }}>{t('journal.saveErrorTitle')}</div>
+                <div>{t('journal.saveErrorRetry')}</div>
+                <div style={{ marginTop: 6, fontSize: 11, opacity: 0.75, wordBreak: 'break-word' }}>
+                  {saveError}
+                </div>
+              </div>
+            )}
 
             <button
               type="button"
