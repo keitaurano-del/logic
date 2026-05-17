@@ -39,20 +39,21 @@ async function main() {
     return route.fulfill({ status: 200, contentType: 'application/json', body: '{}' })
   })
 
-  await page.goto('http://localhost:5173/?preview=roleplay-chat&id=why-so-report', { waitUntil: 'networkidle' })
-  // 3D モデルのロード + 初期アニメ
-  await page.waitForTimeout(5500)
-
-  await page.screenshot({ path: '/tmp/roleplay-3d-idle.png', fullPage: false })
-  console.log('Saved idle: /tmp/roleplay-3d-idle.png')
-
-  // 選択肢を1つクリックして talking state を観察
-  const choice = page.locator('button').filter({ hasText: '結論からお伝え' }).first()
-  if (await choice.count()) {
-    await choice.click()
-    await page.waitForTimeout(2200)
-    await page.screenshot({ path: '/tmp/roleplay-3d-talking.png', fullPage: false })
-    console.log('Saved talking: /tmp/roleplay-3d-talking.png')
+  const variants = [
+    { id: 'why-so-report', label: 'david' },
+    { id: 'pyramid-client', label: 'carter' },
+    { id: 'logic-tree-sub', label: 'alex' },
+    { id: 'mece-meeting', label: 'team' },
+    { id: 'socrates-dialog', label: 'socrates' },
+    { id: 'descartes-doubt', label: 'descartes' },
+    { id: 'nietzsche-values', label: 'nietzsche' },
+  ]
+  for (const v of variants) {
+    await page.goto(`http://localhost:5173/?preview=roleplay-chat&id=${v.id}`, { waitUntil: 'networkidle' })
+    await page.waitForTimeout(5500)
+    const out = `/tmp/roleplay-3d-${v.label}.png`
+    await page.screenshot({ path: out, fullPage: false })
+    console.log(`Saved ${v.label}: ${out}`)
   }
 
   await browser.close()

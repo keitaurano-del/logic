@@ -1,11 +1,8 @@
-import { Suspense, useEffect, useMemo, useRef } from 'react'
+import { Suspense, useMemo } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { useAnimations, useGLTF } from '@react-three/drei'
-import type { AnimationAction, Group } from 'three'
-import * as THREE from 'three'
-import { SkeletonUtils } from 'three-stdlib'
+import { ProceduralAvatar, type AvatarSpec, type AvatarState } from './ProceduralAvatar'
 
-export type CharacterState = 'idle' | 'talking' | 'thinking'
+export type CharacterState = AvatarState
 
 interface RoleplayCharacter3DProps {
   characterId: string
@@ -14,192 +11,170 @@ interface RoleplayCharacter3DProps {
 }
 
 type CharacterConfig = {
-  modelUrl: string
+  spec: AvatarSpec
   cameraPosition: [number, number, number]
   cameraTarget: [number, number, number]
-  modelPosition: [number, number, number]
-  modelRotation: [number, number, number]
-  modelScale: number
+  rootRotation: [number, number, number]
   /** key tone for ambient/key light */
   toneColor: string
+  /** rim/back light color */
+  rimColor: string
   /** background gradient stops */
   bgFrom: string
   bgTo: string
+  /** floor disc color */
+  floorColor: string
 }
 
-const FALLBACK_MODEL = '/models/sample-character.glb'
-
 const CHARACTERS: Record<string, CharacterConfig> = {
+  // ── David Chen 部長（紺スーツ、短髪、鋭い目つき） ──
   'why-so-report': {
-    modelUrl: FALLBACK_MODEL,
-    cameraPosition: [0, 1.5, 2.4],
-    cameraTarget: [0, 1.35, 0],
-    modelPosition: [0, -0.1, 0],
-    modelRotation: [0, -0.15, 0],
-    modelScale: 1,
-    toneColor: '#c8d4ff',
+    spec: {
+      skin: '#e8c19a',
+      hair: '#1a1410',
+      body: '#1f2a52',
+      accent: '#0e1730',
+      outfit: 'suit',
+      beard: 'none',
+      hairStyle: 'slicked',
+      tie: '#bd2030',
+    },
+    cameraPosition: [0, 1.45, 2.5],
+    cameraTarget: [0, 1.25, 0],
+    rootRotation: [0, -0.12, 0],
+    toneColor: '#dee3f5',
+    rimColor: '#7c9bff',
     bgFrom: '#EEF2FE',
-    bgTo: '#dfe6fd',
+    bgTo: '#cbd6f5',
+    floorColor: '#bfc8e8',
   },
+  // ── Meeting Team（モスグリーンジャケット、髭少し） ──
   'mece-meeting': {
-    modelUrl: FALLBACK_MODEL,
-    cameraPosition: [0, 1.5, 2.4],
-    cameraTarget: [0, 1.35, 0],
-    modelPosition: [0, -0.1, 0],
-    modelRotation: [0, 0.1, 0],
-    modelScale: 1,
-    toneColor: '#c9f1e2',
+    spec: {
+      skin: '#f0c9a4',
+      hair: '#2d2410',
+      body: '#1f5e48',
+      accent: '#103225',
+      outfit: 'suit',
+      beard: 'short',
+      hairStyle: 'short',
+      tie: '#e8d088',
+    },
+    cameraPosition: [0, 1.45, 2.5],
+    cameraTarget: [0, 1.25, 0],
+    rootRotation: [0, 0.1, 0],
+    toneColor: '#d6f0e1',
+    rimColor: '#6dd4a4',
     bgFrom: '#ecfdf5',
-    bgTo: '#d5f5e8',
+    bgTo: '#cae8d6',
+    floorColor: '#b8d8c6',
   },
+  // ── Mr. Carter クライアント役員（ダークグレースーツ、メガネ、白髪混じり） ──
   'pyramid-client': {
-    modelUrl: FALLBACK_MODEL,
-    cameraPosition: [0, 1.5, 2.4],
-    cameraTarget: [0, 1.35, 0],
-    modelPosition: [0, -0.1, 0],
-    modelRotation: [0, 0.05, 0],
-    modelScale: 1,
-    toneColor: '#e0d4ff',
+    spec: {
+      skin: '#e3b88f',
+      hair: '#6a5848',
+      body: '#3a3548',
+      accent: '#1c1925',
+      outfit: 'suit',
+      beard: 'none',
+      hairStyle: 'slicked',
+      glasses: true,
+      tie: '#1f3a8a',
+    },
+    cameraPosition: [0, 1.45, 2.5],
+    cameraTarget: [0, 1.25, 0],
+    rootRotation: [0, 0.05, 0],
+    toneColor: '#e2d9f5',
+    rimColor: '#b59bff',
     bgFrom: '#f3efff',
-    bgTo: '#e5dcfb',
+    bgTo: '#d6cce8',
+    floorColor: '#c6bcd8',
   },
+  // ── Alex Kim 後輩（カジュアル、若い、Tシャツ） ──
   'logic-tree-sub': {
-    modelUrl: FALLBACK_MODEL,
-    cameraPosition: [0, 1.5, 2.4],
-    cameraTarget: [0, 1.35, 0],
-    modelPosition: [0, -0.1, 0],
-    modelRotation: [0, -0.2, 0],
-    modelScale: 1,
+    spec: {
+      skin: '#f0c9a4',
+      hair: '#1a1410',
+      body: '#c79a64',
+      accent: '#5a3c20',
+      outfit: 'casual',
+      beard: 'none',
+      hairStyle: 'tousled',
+    },
+    cameraPosition: [0, 1.45, 2.5],
+    cameraTarget: [0, 1.25, 0],
+    rootRotation: [0, -0.18, 0],
     toneColor: '#fde0b8',
+    rimColor: '#ffc684',
     bgFrom: '#fff7ed',
-    bgTo: '#fde6cc',
+    bgTo: '#f2d9b4',
+    floorColor: '#e0c8a0',
   },
+  // ── ソクラテス（白いトーガ、長い白髭、禿頭、古代ギリシャ） ──
   'socrates-dialog': {
-    modelUrl: FALLBACK_MODEL,
-    cameraPosition: [0, 1.5, 2.4],
-    cameraTarget: [0, 1.35, 0],
-    modelPosition: [0, -0.1, 0],
-    modelRotation: [0, 0.15, 0],
-    modelScale: 1,
-    toneColor: '#dccfff',
-    bgFrom: '#f5f0ff',
-    bgTo: '#e6d9fa',
+    spec: {
+      skin: '#d9b58a',
+      hair: '#ece4d4',     // 銀髪・白髭
+      body: '#f5ecd9',     // アイボリーのトーガ
+      accent: '#c7a87a',
+      outfit: 'toga',
+      beard: 'bushy',
+      hairStyle: 'bald',
+    },
+    cameraPosition: [0, 1.45, 2.4],
+    cameraTarget: [0, 1.25, 0],
+    rootRotation: [0, 0.12, 0],
+    toneColor: '#fff3d4',
+    rimColor: '#fff4c2',
+    bgFrom: '#fcf3d6',
+    bgTo: '#e8d8a8',
+    floorColor: '#cdb685',
   },
+  // ── デカルト（黒髪に肩までのウィッグ、紫ローブ、整った顎髭、17世紀） ──
   'descartes-doubt': {
-    modelUrl: FALLBACK_MODEL,
-    cameraPosition: [0, 1.5, 2.4],
-    cameraTarget: [0, 1.35, 0],
-    modelPosition: [0, -0.1, 0],
-    modelRotation: [0, -0.1, 0],
-    modelScale: 1,
-    toneColor: '#cfd9ff',
-    bgFrom: '#eef2ff',
-    bgTo: '#dde4fb',
+    spec: {
+      skin: '#e8c9a8',
+      hair: '#1a1410',
+      body: '#3a2f4f',     // 深い紫のローブ
+      accent: '#1a1428',
+      outfit: 'cloak',
+      beard: 'short',
+      hairStyle: 'tousled',
+    },
+    cameraPosition: [0, 1.45, 2.4],
+    cameraTarget: [0, 1.25, 0],
+    rootRotation: [0, -0.1, 0],
+    toneColor: '#d8d2f0',
+    rimColor: '#9b8eff',
+    bgFrom: '#eef0ff',
+    bgTo: '#c8c0e8',
+    floorColor: '#b8b0d8',
   },
+  // ── ニーチェ（黒のフロックコート、太い茶髭、19世紀） ──
   'nietzsche-values': {
-    modelUrl: FALLBACK_MODEL,
-    cameraPosition: [0, 1.5, 2.4],
-    cameraTarget: [0, 1.35, 0],
-    modelPosition: [0, -0.1, 0],
-    modelRotation: [0, 0.05, 0],
-    modelScale: 1,
+    spec: {
+      skin: '#e8c9a8',
+      hair: '#5a3520',     // 茶色の髪・髭
+      body: '#161616',     // 黒のフロックコート
+      accent: '#0a0a0a',
+      outfit: 'frock',
+      beard: 'mustache',
+      hairStyle: 'tousled',
+    },
+    cameraPosition: [0, 1.45, 2.4],
+    cameraTarget: [0, 1.25, 0],
+    rootRotation: [0, 0.05, 0],
     toneColor: '#fcd5d2',
+    rimColor: '#ff9d8c',
     bgFrom: '#fff1f0',
-    bgTo: '#fbd9d6',
+    bgTo: '#f0c6c2',
+    floorColor: '#dab0ac',
   },
 }
 
 function getCharacterConfig(id: string): CharacterConfig {
   return CHARACTERS[id] ?? CHARACTERS['why-so-report']
-}
-
-interface AvatarProps {
-  config: CharacterConfig
-  state: CharacterState
-}
-
-function Avatar({ config, state }: AvatarProps) {
-  const groupRef = useRef<Group>(null)
-  const headTargetRef = useRef(new THREE.Vector3(0, 0, 1))
-  const { scene, animations } = useGLTF(config.modelUrl)
-
-  // SkeletonUtils.clone は SkinnedMesh + bone を正しく複製する
-  const clonedScene = useMemo(() => {
-    const clone = SkeletonUtils.clone(scene)
-    clone.traverse((obj) => {
-      if ((obj as THREE.Mesh).isMesh) {
-        const mesh = obj as THREE.Mesh
-        mesh.castShadow = true
-        mesh.receiveShadow = true
-      }
-    })
-    return clone
-  }, [scene])
-
-  // useAnimations の対象は clone した scene 自体に当てる
-  const { actions, names } = useAnimations(animations, clonedScene)
-
-  // Soldier.glb has: "Idle", "Walk", "Run", "TPose"
-  const idleName = useMemo(() => {
-    const lower = names.map((n) => n.toLowerCase())
-    const idleIdx = lower.findIndex((n) => n.includes('idle'))
-    if (idleIdx >= 0) return names[idleIdx]
-    return names[0]
-  }, [names])
-
-  useEffect(() => {
-    if (!idleName) return
-    const action: AnimationAction | null = actions[idleName] ?? null
-    if (!action) return
-    action.reset().fadeIn(0.4).play()
-    return () => {
-      action.fadeOut(0.4)
-    }
-  }, [actions, idleName])
-
-  // State-driven motion overlay
-  useFrame(({ clock }) => {
-    const g = groupRef.current
-    if (!g) return
-    const t = clock.getElapsedTime()
-
-    // Subtle breathing always
-    const breathe = Math.sin(t * 1.6) * 0.012
-
-    // State overlays
-    let bobY = 0
-    let nodX = 0
-    let swayY = 0
-    if (state === 'talking') {
-      bobY = Math.sin(t * 6.2) * 0.018
-      nodX = Math.sin(t * 4.4) * 0.05
-      swayY = Math.sin(t * 1.9) * 0.08
-    } else if (state === 'thinking') {
-      // tilt + slow look-away
-      nodX = -0.08 + Math.sin(t * 0.9) * 0.02
-      swayY = Math.sin(t * 0.7) * 0.18 - 0.08
-    } else {
-      swayY = Math.sin(t * 0.5) * 0.05
-      nodX = Math.sin(t * 0.4) * 0.015
-    }
-
-    g.position.y = config.modelPosition[1] + breathe + bobY
-    g.rotation.x = config.modelRotation[0] + nodX
-    g.rotation.y = config.modelRotation[1] + swayY
-
-    headTargetRef.current.set(swayY, 0, 1)
-  })
-
-  return (
-    <group
-      ref={groupRef}
-      position={config.modelPosition}
-      rotation={config.modelRotation}
-      scale={config.modelScale}
-    >
-      <primitive object={clonedScene} />
-    </group>
-  )
 }
 
 function StateBubble({ state }: { state: CharacterState }) {
@@ -244,6 +219,13 @@ function StateBubble({ state }: { state: CharacterState }) {
   )
 }
 
+function CameraLookAt({ target }: { target: [number, number, number] }) {
+  useFrame(({ camera }) => {
+    camera.lookAt(target[0], target[1], target[2])
+  })
+  return null
+}
+
 export function RoleplayCharacter3D({ characterId, state, height = 260 }: RoleplayCharacter3DProps) {
   const config = useMemo(() => getCharacterConfig(characterId), [characterId])
 
@@ -266,38 +248,31 @@ export function RoleplayCharacter3D({ characterId, state, height = 260 }: Rolepl
         }
       `}</style>
       <Canvas
-        camera={{ position: config.cameraPosition, fov: 32, near: 0.1, far: 50 }}
+        camera={{ position: config.cameraPosition, fov: 34, near: 0.1, far: 50 }}
         dpr={[1, 1.6]}
         gl={{ antialias: true, alpha: true, preserveDrawingBuffer: false }}
         style={{ width: '100%', height: '100%' }}
       >
         <CameraLookAt target={config.cameraTarget} />
-        <ambientLight intensity={0.85} color={config.toneColor} />
-        <directionalLight
-          position={[2.5, 4, 3]}
-          intensity={1.05}
-          color="#ffffff"
-        />
-        <directionalLight
-          position={[-2, 2, 2]}
-          intensity={0.45}
-          color={config.toneColor}
-        />
+        <ambientLight intensity={0.55} color={config.toneColor} />
+        {/* key light（前方右上） */}
+        <directionalLight position={[2.5, 3.5, 3]} intensity={1.05} color="#ffffff" />
+        {/* fill light（前方左下、暗部のディテール） */}
+        <directionalLight position={[-2, 1.5, 2]} intensity={0.35} color={config.toneColor} />
+        {/* rim light（背後から、シルエットを際立たせる） */}
+        <directionalLight position={[-1.5, 3, -3]} intensity={1.0} color={config.rimColor} />
+        {/* 床ディスク */}
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
+          <circleGeometry args={[1.0, 48]} />
+          <meshStandardMaterial color={config.floorColor} roughness={0.95} />
+        </mesh>
         <Suspense fallback={null}>
-          <Avatar config={config} state={state} />
+          <group rotation={config.rootRotation}>
+            <ProceduralAvatar spec={config.spec} state={state} />
+          </group>
         </Suspense>
       </Canvas>
       <StateBubble state={state} />
     </div>
   )
 }
-
-function CameraLookAt({ target }: { target: [number, number, number] }) {
-  useFrame(({ camera }) => {
-    camera.lookAt(target[0], target[1], target[2])
-  })
-  return null
-}
-
-// Preload sample model so first interaction is fast
-useGLTF.preload(FALLBACK_MODEL)
