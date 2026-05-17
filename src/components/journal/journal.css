@@ -1337,12 +1337,12 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 8px 12px;
+  padding: 6px 10px;
   background: linear-gradient(160deg, rgba(255,140,0,.18) 0%, rgba(255,61,0,.10) 100%);
   border: 1px solid color-mix(in srgb, var(--streak-flame, #FF6B00) 40%, transparent);
   border-radius: 99px;
   color: var(--streak-flame, #FF6B00);
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: -0.01em;
   flex-shrink: 0;
@@ -1365,7 +1365,7 @@
 
 .journal-streak-badge__count {
   font-family: 'Inter Tight', sans-serif;
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 900;
 }
 
@@ -1602,9 +1602,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  /* 2026-05-16: HIG 推奨の 44px tap target を確保（外周）。SVG は 18px。 */
-  width: 44px;
-  height: 44px;
+  /* 2026-05-17: 検索ボタンと同サイズに統一（40px）。SVG は 18px のまま。 */
+  width: 40px;
+  height: 40px;
   padding: 0;
   border-radius: 50%;
   border: none;
