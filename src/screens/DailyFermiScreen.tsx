@@ -679,6 +679,13 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
               </button>
             </div>
           )}
+          {isPaid() && canAnswer && !replayMode && submitPhase === 'idle' && (
+            <div style={{ padding: '0 2px', textAlign: 'right' }}>
+              <span style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 600 }}>
+                {t('dailyFermi.paidCapNote', { count: Math.max(0, dailyLimit - dailyCount) })}
+              </span>
+            </div>
+          )}
           {!canAnswer && (
             <div style={{ padding: '0 2px', textAlign: 'right' }}>
               <span style={{ fontSize: 12, color: 'var(--danger)', fontWeight: 700 }}>
