@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Header } from '../components/platform/Header'
-import { BarChartIcon, BookOpenIcon, ClipboardListIcon, SparklesIcon, ChevronRightIcon } from '../icons'
+import { BarChartIcon, BookmarkIcon, BookOpenIcon, ClipboardListIcon, SparklesIcon, ChevronRightIcon } from '../icons'
 import { getCardStats } from '../flashcardData'
 import { getWrongAnswerStats } from '../wrongAnswerStore'
+import { getSavedItemStats } from '../savedItemsStore'
 import { API_BASE } from './apiBase'
 import { getGuestId } from '../guestId'
 import { t } from '../i18n'
@@ -12,6 +13,7 @@ interface Props {
   onOpenFlashcards: (mode?: 'due' | 'weak') => void
   onOpenWrongAnswers: () => void
   onOpenFermiHistory: () => void
+  onOpenSavedItems: () => void
 }
 
 interface FermiStats {
@@ -19,9 +21,10 @@ interface FermiStats {
   avgScore: number
 }
 
-export function ReviewHubScreen({ onBack, onOpenFlashcards, onOpenWrongAnswers, onOpenFermiHistory }: Props) {
+export function ReviewHubScreen({ onBack, onOpenFlashcards, onOpenWrongAnswers, onOpenFermiHistory, onOpenSavedItems }: Props) {
   const cardStats = getCardStats()
   const wrongStats = getWrongAnswerStats()
+  const savedStats = getSavedItemStats()
   const [fermiStats, setFermiStats] = useState<FermiStats | null>(null)
 
   useEffect(() => {
@@ -89,6 +92,47 @@ export function ReviewHubScreen({ onBack, onOpenFlashcards, onOpenWrongAnswers, 
               )}
             </div>
           )}
+        </SectionCard>
+
+        {/* Saved items section */}
+        <SectionCard
+          icon={<BookmarkIcon width={22} height={22} />}
+          title={t('reviewHub.savedTitle')}
+          subtitle={
+            savedStats.total === 0
+              ? t('reviewHub.savedEmpty')
+              : t('reviewHub.savedSummary', {
+                  total: String(savedStats.total),
+                  lesson: String(savedStats.byType.lesson),
+                  course: String(savedStats.byType.course),
+                  roleplay: String(savedStats.byType.roleplay),
+                })
+          }
+        >
+          <button
+            type="button"
+            onClick={onOpenSavedItems}
+            disabled={savedStats.total === 0}
+            style={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '12px 14px',
+              background: savedStats.total === 0 ? 'var(--bg-elevated)' : 'var(--brand)',
+              color: savedStats.total === 0 ? 'var(--text-muted)' : 'var(--accent-fg)',
+              border: 'none',
+              borderRadius: 'var(--radius-pill)',
+              fontSize: 14,
+              fontWeight: 700,
+              cursor: savedStats.total === 0 ? 'default' : 'pointer',
+              fontFamily: "'Noto Sans JP', sans-serif",
+              minHeight: 44,
+            }}
+          >
+            <span>{savedStats.total === 0 ? t('reviewHub.savedDisabled') : t('reviewHub.openSaved')}</span>
+            {savedStats.total > 0 && <ChevronRightIcon width={18} height={18} />}
+          </button>
         </SectionCard>
 
         {/* Wrong-answer section */}

@@ -24,11 +24,13 @@ function LessonImage({ lessonId, size }: { lessonId: number; size: number }) {
   )
 }
 import LessonIcon from '../LessonIcon'
+import { BookmarkIcon, BookmarkFilledIcon } from '../icons'
 import { getAllLessonsFlat } from '../lessonData'
 import type { LessonData } from '../lessonData'
 import { getCompletedLessons } from '../stats'
 import { getCoursesByCategory, getCoursesByGroup, COURSES, COURSE_GROUPS, type Course } from '../courseData'
 import { loadPersonalCourse, axisLabel } from '../placementData'
+import { isSaved, toggleSaved } from '../savedItemsStore'
 import { t, getLocale } from '../i18n'
 
 // レベル文字列（データ値）→ 表示用の翻訳キー
@@ -256,6 +258,7 @@ interface RoadmapScreenV3Props {
   onOpenCategory: (cat: string) => void
   onOpenPersonalCourse?: () => void
   onOpenPlacementTest?: () => void
+  onOpenReviewHub?: () => void
   initialCategory?: string
   onBack?: () => void
 }
@@ -278,6 +281,31 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
     <div style={{ background: 'var(--bg-primary)', minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: 'var(--text-primary)' }}>
       <div style={{ padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ fontSize: 24, fontWeight: 700, letterSpacing: '-.005em' }}>{t('roadmap.heading')}</div>
+        {props.onOpenReviewHub && (
+          <button
+            type="button"
+            onClick={props.onOpenReviewHub}
+            aria-label={t('roadmap.openReviewAria')}
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 6,
+              background: 'var(--accent-soft)',
+              color: 'var(--brand)',
+              border: 'none',
+              borderRadius: 'var(--radius-pill)',
+              padding: '8px 14px',
+              fontSize: 13, fontWeight: 700,
+              cursor: 'pointer',
+              fontFamily: "'Noto Sans JP', sans-serif",
+              minHeight: 36,
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
+              <path d="M3 12a9 9 0 1 0 3-6.7" />
+              <polyline points="3 4 3 10 9 10" />
+            </svg>
+            {t('roadmap.openReview')}
+          </button>
+        )}
       </div>
       {/* 検索ボックス */}
       <div style={{ padding: '0 16px 8px' }}>
@@ -360,13 +388,20 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                 {groupCourses.map(course => {
                   const v = CATEGORY_VISUAL[course.category] || DEFAULT_VISUAL
+                  const cardImage = course.image || v.image
                   return (
                     <CategoryCard
                       key={course.id}
                       name={course.title}
                       meta={t('roadmap.lessonCountAndLevel', { count: course.lessonIds.length, level: levelLabel(course.level) })}
-                      image={course.image || v.image}
+                      image={cardImage}
                       onClick={() => props.onOpenCategory(v.routeKey)}
+                      saveTarget={{
+                        refId: v.routeKey,
+                        title: course.title,
+                        subtitle: course.category,
+                        image: cardImage,
+                      }}
                     />
                   )
                 })}
@@ -752,24 +787,66 @@ function categoryLabel(category: string): string {
 }
 
 
-function CategoryCard({ name, meta, progress, onClick, image }: { name: string; meta: string; progress?: string; onClick: () => void; image?: string }) {
+function CategoryCard({ name, meta, progress, onClick, image, saveTarget }: {
+  name: string
+  meta: string
+  progress?: string
+  onClick: () => void
+  image?: string
+  saveTarget?: { refId: string; title: string; subtitle?: string; image?: string }
+}) {
+  const [saved, setSaved] = useState<boolean>(() => saveTarget ? isSaved('course', saveTarget.refId) : false)
   return (
-    <button type="button" className="cat-tile" onClick={onClick}
-      aria-label={`${name}: ${meta}${progress ? ` (${progress})` : ''}`}
-      style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', cursor: 'pointer', boxShadow: 'var(--shadow-v3-card-inset)', display: 'flex', flexDirection: 'column', border: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', padding: 0 }}>
-      {image && (
-        <div style={{ width: '100%', aspectRatio: '2 / 1', overflow: 'hidden', flexShrink: 0, background: 'var(--bg-secondary)' }}>
-          <img src={image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
+    <div style={{ position: 'relative' }}>
+      <button type="button" className="cat-tile" onClick={onClick}
+        aria-label={`${name}: ${meta}${progress ? ` (${progress})` : ''}`}
+        style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', cursor: 'pointer', boxShadow: 'var(--shadow-v3-card-inset)', display: 'flex', flexDirection: 'column', border: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', padding: 0, width: '100%' }}>
+        {image && (
+          <div style={{ width: '100%', aspectRatio: '2 / 1', overflow: 'hidden', flexShrink: 0, background: 'var(--bg-secondary)' }}>
+            <img src={image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
+          </div>
+        )}
+        <div style={{ padding: '10px 12px 12px', display: 'flex', flexDirection: 'column', gap: 6, flex: 1 }}>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 2, lineHeight: 1.3 }}>{name}</div>
+            <div style={{ fontSize: 11, color: 'var(--text-secondary)', fontWeight: 500 }}>{meta}</div>
+          </div>
+          <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 12, fontWeight: 700, color: 'var(--brand)' }}>{progress}</div>
         </div>
+      </button>
+      {saveTarget && (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation()
+            const next = toggleSaved({
+              type: 'course',
+              refId: saveTarget.refId,
+              title: saveTarget.title,
+              subtitle: saveTarget.subtitle,
+              image: saveTarget.image,
+            })
+            setSaved(next)
+          }}
+          aria-label={saved ? t('roadmap.unsaveCourseAria') : t('roadmap.saveCourseAria')}
+          aria-pressed={saved}
+          style={{
+            position: 'absolute', top: 6, right: 6,
+            width: 30, height: 30, borderRadius: '50%',
+            background: 'rgba(8,33,33,0.55)',
+            backdropFilter: 'blur(6px)',
+            border: 'none',
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer',
+            color: saved ? 'var(--brand)' : '#fff',
+            WebkitTapHighlightColor: 'transparent',
+            zIndex: 2,
+          }}
+        >
+          {saved ? <BookmarkFilledIcon width={14} height={14} /> : <BookmarkIcon width={14} height={14} />}
+        </button>
       )}
-      <div style={{ padding: '10px 12px 12px', display: 'flex', flexDirection: 'column', gap: 6, flex: 1 }}>
-        <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 2, lineHeight: 1.3 }}>{name}</div>
-          <div style={{ fontSize: 11, color: 'var(--text-secondary)', fontWeight: 500 }}>{meta}</div>
-        </div>
-        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 12, fontWeight: 700, color: 'var(--brand)' }}>{progress}</div>
-      </div>
-    </button>
+    </div>
   )
 }
 
