@@ -1,6 +1,7 @@
 import { Suspense, useMemo } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { ProceduralAvatar, type AvatarSpec, type AvatarState } from './ProceduralAvatar'
+import { BillboardAvatar } from './BillboardAvatar'
 
 export type CharacterState = AvatarState
 
@@ -24,6 +25,12 @@ type CharacterConfig = {
   bgTo: string
   /** floor disc color */
   floorColor: string
+  /**
+   * 高クオリティ AI 生成キャラ画像（透過 PNG）の URL。
+   * 指定されていれば 2D billboard モードでこの画像が使われ、
+   * 未指定なら ProceduralAvatar にフォールバック。
+   */
+  imageUrl?: string
 }
 
 const CHARACTERS: Record<string, CharacterConfig> = {
@@ -267,9 +274,13 @@ export function RoleplayCharacter3D({ characterId, state, height = 260 }: Rolepl
           <meshStandardMaterial color={config.floorColor} roughness={0.95} />
         </mesh>
         <Suspense fallback={null}>
-          <group rotation={config.rootRotation}>
-            <ProceduralAvatar spec={config.spec} state={state} />
-          </group>
+          {config.imageUrl ? (
+            <BillboardAvatar imageUrl={config.imageUrl} state={state} />
+          ) : (
+            <group rotation={config.rootRotation}>
+              <ProceduralAvatar spec={config.spec} state={state} />
+            </group>
+          )}
         </Suspense>
       </Canvas>
       <StateBubble state={state} />
