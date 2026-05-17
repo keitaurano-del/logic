@@ -60,7 +60,7 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Run axe-core a11y tests
-        run: npx playwright test e2e/a11y.spec.ts --project=chromium
+        run: npx playwright test e2e/a11y/ --project=chromium
         env:
           VITE_API_BASE: 'https://example.com'
 
