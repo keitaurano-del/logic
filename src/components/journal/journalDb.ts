@@ -41,25 +41,38 @@ export async function fetchJournalsBetween(
 export async function upsertJournal(j: DailyJournal): Promise<{ error?: string }> {
   const supabase = getSupabaseClient()
   if (!supabase) return { error: 'supabase not configured' }
+  const payload = {
+    user_id: j.user_id,
+    date: j.date,
+    mood: j.mood,
+    weather: j.weather,
+    morning_memo: j.morning_memo,
+    schedule_notes: j.schedule_notes,
+    evening_reflection: j.evening_reflection,
+    ai_summary: j.ai_summary,
+    tags: Array.isArray(j.tags) ? j.tags : [],
+    steps_count: j.steps_count ?? null,
+    sleep_minutes: j.sleep_minutes ?? null,
+    sleep_start: j.sleep_start ?? null,
+    sleep_end: j.sleep_end ?? null,
+    images: Array.isArray(j.images) ? j.images : [],
+  }
   const { error } = await supabase
     .from('daily_journals')
-    .upsert({
-      user_id: j.user_id,
-      date: j.date,
-      mood: j.mood,
-      weather: j.weather,
-      morning_memo: j.morning_memo,
-      schedule_notes: j.schedule_notes,
-      evening_reflection: j.evening_reflection,
-      ai_summary: j.ai_summary,
-      tags: Array.isArray(j.tags) ? j.tags : [],
-      steps_count: j.steps_count ?? null,
-      sleep_minutes: j.sleep_minutes ?? null,
-      sleep_start: j.sleep_start ?? null,
-      sleep_end: j.sleep_end ?? null,
-      images: Array.isArray(j.images) ? j.images : [],
-    }, { onConflict: 'user_id,date' })
-  if (error) return { error: error.message }
+    .upsert(payload, { onConflict: 'user_id,date' })
+  if (error) {
+    // Supabase の PostgrestError は code/details/hint も含む。
+    // 「column does not exist」「RLS denied」等の特定に必須なので全部出す。
+    console.error('upsertJournal failed:', {
+      message: error.message,
+      code: (error as { code?: string }).code,
+      details: (error as { details?: string }).details,
+      hint: (error as { hint?: string }).hint,
+    })
+    // ユーザー向けには message と code（あれば）を返す
+    const code = (error as { code?: string }).code
+    return { error: code ? `${error.message} [${code}]` : error.message }
+  }
   return {}
 }
 
