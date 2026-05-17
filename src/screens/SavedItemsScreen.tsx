@@ -15,11 +15,24 @@ interface Props {
   onOpenLesson: (lessonId: number) => void
   onOpenCourse: (categoryRouteKey: string) => void
   onOpenRoleplay: (situationId: string) => void
+  onOpenLessonStep: (lessonId: number, stepIndex: number) => void
+  onOpenAiProblem: (problemId: string) => void
+  onOpenFermi: (fermiIndex: string) => void
 }
 
 type Filter = 'all' | SavedItemType
 
-export function SavedItemsScreen({ onBack, onOpenLesson, onOpenCourse, onOpenRoleplay }: Props) {
+const FILTERS: Filter[] = ['all', 'lesson', 'lesson-step', 'course', 'ai-problem', 'fermi', 'roleplay']
+
+export function SavedItemsScreen({
+  onBack,
+  onOpenLesson,
+  onOpenCourse,
+  onOpenRoleplay,
+  onOpenLessonStep,
+  onOpenAiProblem,
+  onOpenFermi,
+}: Props) {
   const [filter, setFilter] = useState<Filter>('all')
   const [, force] = useState(0)
   const bump = () => force((v) => v + 1)
@@ -31,8 +44,16 @@ export function SavedItemsScreen({ onBack, onOpenLesson, onOpenCourse, onOpenRol
     if (item.type === 'lesson') {
       const lessonId = Number(item.refId)
       if (Number.isFinite(lessonId)) onOpenLesson(lessonId)
+    } else if (item.type === 'lesson-step') {
+      const lessonId = item.parentLessonId ?? Number(item.refId.split(':')[0])
+      const stepIndex = item.stepIndex ?? Number(item.refId.split(':')[1] ?? 0)
+      if (Number.isFinite(lessonId)) onOpenLessonStep(lessonId, stepIndex)
     } else if (item.type === 'course') {
       onOpenCourse(item.refId)
+    } else if (item.type === 'ai-problem') {
+      onOpenAiProblem(item.refId)
+    } else if (item.type === 'fermi') {
+      onOpenFermi(item.refId)
     } else {
       onOpenRoleplay(item.refId)
     }
@@ -44,11 +65,39 @@ export function SavedItemsScreen({ onBack, onOpenLesson, onOpenCourse, onOpenRol
     bump()
   }
 
-  const counts = {
+  const counts: Record<Filter, number> = {
     all: all.length,
     lesson: all.filter((i) => i.type === 'lesson').length,
+    'lesson-step': all.filter((i) => i.type === 'lesson-step').length,
     course: all.filter((i) => i.type === 'course').length,
+    'ai-problem': all.filter((i) => i.type === 'ai-problem').length,
+    fermi: all.filter((i) => i.type === 'fermi').length,
     roleplay: all.filter((i) => i.type === 'roleplay').length,
+  }
+
+  const filterLabel = (f: Filter): string => {
+    const n = String(counts[f])
+    switch (f) {
+      case 'all': return t('savedItems.filterAll', { n })
+      case 'lesson': return t('savedItems.filterLessons', { n })
+      case 'lesson-step': return t('savedItems.filterLessonStep', { n })
+      case 'course': return t('savedItems.filterCourses', { n })
+      case 'ai-problem': return t('savedItems.filterAiProblem', { n })
+      case 'fermi': return t('savedItems.filterFermi', { n })
+      case 'roleplay': return t('savedItems.filterRoleplay', { n })
+    }
+  }
+
+  const emptyMessage = (f: Filter): string => {
+    switch (f) {
+      case 'all': return t('savedItems.emptyAll')
+      case 'lesson': return t('savedItems.emptyLessons')
+      case 'lesson-step': return t('savedItems.emptyLessonStep')
+      case 'course': return t('savedItems.emptyCourses')
+      case 'ai-problem': return t('savedItems.emptyAiProblem')
+      case 'fermi': return t('savedItems.emptyFermi')
+      case 'roleplay': return t('savedItems.emptyRoleplay')
+    }
   }
 
   return (
@@ -56,15 +105,20 @@ export function SavedItemsScreen({ onBack, onOpenLesson, onOpenCourse, onOpenRol
       <Header title={t('savedItems.title')} onBack={onBack} />
 
       <div style={{ padding: '8px 20px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
-        {/* タブ */}
-        <div role="tablist" style={{ display: 'flex', background: 'var(--bg-elevated)', borderRadius: 'var(--radius-pill)', padding: 4, gap: 2 }}>
-          {(['all', 'lesson', 'course', 'roleplay'] as Filter[]).map((f) => {
+        {/* タブ（横スクロール） */}
+        <div
+          role="tablist"
+          style={{
+            display: 'flex',
+            gap: 6,
+            overflowX: 'auto',
+            paddingBottom: 4,
+            scrollbarWidth: 'none',
+            WebkitOverflowScrolling: 'touch',
+          }}
+        >
+          {FILTERS.map((f) => {
             const active = filter === f
-            const label =
-              f === 'all' ? t('savedItems.filterAll', { n: String(counts.all) }) :
-              f === 'lesson' ? t('savedItems.filterLessons', { n: String(counts.lesson) }) :
-              f === 'course' ? t('savedItems.filterCourses', { n: String(counts.course) }) :
-                               t('savedItems.filterRoleplay', { n: String(counts.roleplay) })
             return (
               <button
                 key={f}
@@ -73,21 +127,21 @@ export function SavedItemsScreen({ onBack, onOpenLesson, onOpenCourse, onOpenRol
                 aria-selected={active}
                 onClick={() => { haptic.selection(); setFilter(f) }}
                 style={{
-                  flex: 1,
-                  padding: '8px 10px',
-                  background: active ? 'var(--bg-card)' : 'transparent',
-                  color: active ? 'var(--text-primary)' : 'var(--text-secondary)',
+                  padding: '8px 14px',
+                  background: active ? 'var(--brand)' : 'var(--bg-card)',
+                  color: active ? 'var(--accent-fg)' : 'var(--text-secondary)',
                   border: 'none',
                   borderRadius: 'var(--radius-pill)',
                   fontSize: 12,
                   fontWeight: 700,
                   cursor: 'pointer',
                   fontFamily: "'Noto Sans JP', sans-serif",
-                  boxShadow: active ? 'var(--shadow-v3-card-inset)' : 'none',
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0,
                   minHeight: 36,
                 }}
               >
-                {label}
+                {filterLabel(f)}
               </button>
             )
           })}
@@ -99,10 +153,7 @@ export function SavedItemsScreen({ onBack, onOpenLesson, onOpenCourse, onOpenRol
               <BookmarkIcon width={28} height={28} />
             </div>
             <div style={{ fontSize: 15, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-              {filter === 'all' ? t('savedItems.emptyAll') :
-               filter === 'lesson' ? t('savedItems.emptyLessons') :
-               filter === 'course' ? t('savedItems.emptyCourses') :
-                                      t('savedItems.emptyRoleplay')}
+              {emptyMessage(filter)}
             </div>
           </div>
         ) : (
@@ -123,10 +174,19 @@ export function SavedItemsScreen({ onBack, onOpenLesson, onOpenCourse, onOpenRol
 }
 
 function SavedRow({ item, onOpen, onUnsave }: { item: SavedItem; onOpen: () => void; onUnsave: () => void }) {
-  const typeLabel =
-    item.type === 'lesson' ? t('savedItems.typeLesson') :
-    item.type === 'course' ? t('savedItems.typeCourse') :
-                             t('savedItems.typeRoleplay')
+  const typeLabel = (() => {
+    switch (item.type) {
+      case 'lesson': return t('savedItems.typeLesson')
+      case 'course': return t('savedItems.typeCourse')
+      case 'roleplay': return t('savedItems.typeRoleplay')
+      case 'lesson-step': return t('savedItems.typeLessonStep')
+      case 'ai-problem': return t('savedItems.typeAiProblem')
+      case 'fermi': return t('savedItems.typeFermi')
+    }
+  })()
+  const stepBadge = item.type === 'lesson-step' && typeof item.stepIndex === 'number'
+    ? t('savedItems.stepLabel', { n: String(item.stepIndex + 1) })
+    : null
   return (
     <div
       style={{
@@ -163,7 +223,10 @@ function SavedRow({ item, onOpen, onUnsave }: { item: SavedItem; onOpen: () => v
           </div>
         )}
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--brand)', letterSpacing: '.06em', textTransform: 'uppercase' }}>{typeLabel}</div>
+          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--brand)', letterSpacing: '.06em', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span>{typeLabel}</span>
+            {stepBadge && <span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>· {stepBadge}</span>}
+          </div>
           <div style={{ fontSize: 14, fontWeight: 700, lineHeight: 1.35, color: 'var(--text-primary)', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.title}</div>
           {item.subtitle && (
             <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.subtitle}</div>

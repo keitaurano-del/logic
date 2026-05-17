@@ -26,13 +26,11 @@ type FeatureRow = {
 function getFeatures(): FeatureRow[] {
   return [
     { label: t('pricing.featLessons'), free: t('pricing.featAllLessons'), paid: t('pricing.featAllLessons') },
-    { label: t('pricing.featRoleplay'), free: t('pricing.featUnlimited'), paid: t('pricing.featUnlimited') },
-    { label: t('pricing.featReview'), free: true, paid: true },
     { label: t('pricing.featFermi'), free: t('pricing.featDaily1'), paid: t('pricing.featDaily10') },
+    { label: t('pricing.featReview'), free: true, paid: true },
     { label: t('pricing.featAiGen'), free: t('pricing.featAiGenFree'), paid: t('pricing.featAiGenPaid') },
-    { label: t('pricing.featTheme'), free: false, paid: true },
-    { label: t('pricing.featEnglishMode'), free: false, paid: true },
-    { label: t('pricing.featRecord'), free: true, paid: true },
+    { label: t('pricing.featRoleplay'), free: t('pricing.featUnlimited'), paid: t('pricing.featUnlimited') },
+    { label: t('pricing.featJournal'), free: false, paid: true },
   ]
 }
 
@@ -70,7 +68,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
   const monthlyPrice = PLAN_PRICES.monthly
   const yearlyPrice = PLAN_PRICES.yearly
   const yearlyMonthlyEquiv = Math.round(yearlyPrice / 12)
-  const yearlySavingsPercent = Math.round((1 - yearlyPrice / (monthlyPrice * 12)) * 100)
+  const yearlySavingsMonths = Math.round((monthlyPrice * 12 - yearlyPrice) / monthlyPrice)
 
   const targetPlanId: PaidPlanId = billingCycle === 'yearly' ? 'paid_yearly' : 'paid_monthly'
   const isCurrentTargetPlan = state.plan === targetPlanId
@@ -142,7 +140,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
                     color: billingCycle === 'yearly' ? 'var(--text-on-hero)' : 'var(--warm)',
                     borderRadius: 6, padding: '2px 6px', fontWeight: 800,
                   }}>
-                    {t('pricing.yearlySavings', { percent: String(yearlySavingsPercent) })}
+                    {t('pricing.yearlySavings', { months: String(yearlySavingsMonths) })}
                   </span>
                 </span>
               )}
@@ -176,7 +174,17 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
           </div>
 
           {isCurrentTargetPlan ? (
-            <div style={{ textAlign: 'center', fontSize: 13, color: 'var(--brand)', fontWeight: 700, padding: '14px 0' }}>
+            <div style={{
+              textAlign: 'center',
+              fontSize: 20,
+              color: 'var(--brand)',
+              fontWeight: 900,
+              padding: '18px 0',
+              letterSpacing: '0.02em',
+              background: `color-mix(in srgb, var(--brand) 10%, transparent)`,
+              borderRadius: 12,
+              border: `1.5px solid color-mix(in srgb, var(--brand) 30%, transparent)`,
+            }}>
               {t('pricing.currentPlan')}
             </div>
           ) : (

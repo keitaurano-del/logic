@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { LightbulbIcon, BarChartIcon, MicIcon } from '../icons'
+import { LightbulbIcon, BarChartIcon, MicIcon, BookmarkIcon, BookmarkFilledIcon } from '../icons'
 import { Header } from '../components/platform/Header'
 import { Button } from '../components/Button'
 import { API_BASE } from './apiBase'
@@ -12,6 +12,7 @@ import { isPaid } from '../subscription'
 import { getDisplayName, addXp } from '../stats'
 import { recordActivity } from '../activityLog'
 import { markDailyFermiDone } from './dailyFermiState'
+import { isSaved, toggleSaved } from '../savedItemsStore'
 
 // ── プラン別デイリー制限 ──────────────────────────────────────
 const TODAY = new Date().toISOString().slice(0, 10)
@@ -524,6 +525,10 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
   const [excludedIndexes, setExcludedIndexes] = useState<number[]>([initialIndex])
   const [currentPoolIndex, setCurrentPoolIndex] = useState<number>(initialIndex)
 
+  // 保存（ブックマーク）状態 — 現在のフェルミ問題。毎レンダー算出。
+  const [, bumpFermiSaved] = useState(0)
+  const fermiSaved = isSaved('fermi', String(currentPoolIndex))
+
   const handleReroll = () => {
     if (!canReroll) return
     incrementRerollCount()
@@ -647,13 +652,41 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
                     {t('fermi.questionTag')}
                   </span>
                 </div>
-                {/* タイマー */}
-                {submitPhase === 'idle' && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 14, fontWeight: 700, color: elapsedSec >= 120 ? 'var(--danger)' : 'var(--text-muted)', fontFamily: "'Inter Tight', monospace" }}>
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    {String(Math.floor(elapsedSec / 60)).padStart(2,'0')}:{String(elapsedSec % 60).padStart(2,'0')}
-                  </div>
-                )}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  {/* タイマー */}
+                  {submitPhase === 'idle' && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 14, fontWeight: 700, color: elapsedSec >= 120 ? 'var(--danger)' : 'var(--text-muted)', fontFamily: "'Inter Tight', monospace" }}>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                      {String(Math.floor(elapsedSec / 60)).padStart(2,'0')}:{String(elapsedSec % 60).padStart(2,'0')}
+                    </div>
+                  )}
+                  {/* 保存ボタン */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      haptic.light()
+                      toggleSaved({
+                        type: 'fermi',
+                        refId: String(currentPoolIndex),
+                        title: question,
+                        subtitle: t('savedItems.typeFermi'),
+                      })
+                      bumpFermiSaved((v) => v + 1)
+                    }}
+                    aria-label={fermiSaved ? t('savedItems.unsaveProblemAria') : t('savedItems.saveProblemAria')}
+                    aria-pressed={fermiSaved}
+                    style={{
+                      width: 32, height: 32, borderRadius: '50%',
+                      background: fermiSaved ? `color-mix(in srgb, var(--brand) 18%, transparent)` : 'transparent',
+                      border: 'none', padding: 0,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      cursor: 'pointer', WebkitTapHighlightColor: 'transparent',
+                      color: fermiSaved ? 'var(--brand)' : 'var(--text-muted)',
+                    }}
+                  >
+                    {fermiSaved ? <BookmarkFilledIcon width={16} height={16} /> : <BookmarkIcon width={16} height={16} />}
+                  </button>
+                </div>
               </div>
               <p style={{ fontSize: 20, fontWeight: 600, lineHeight: 1.55, letterSpacing: '-0.01em' }}>
                 {question}

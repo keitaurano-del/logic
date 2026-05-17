@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { sendMagicLink, isSupabaseConfigured, type User } from '../supabase'
 import { t } from '../i18n'
 
@@ -8,23 +8,13 @@ interface LoginScreenProps {
 
 type Step = 'email' | 'sent'
 
-const RESEND_COOLDOWN_SEC = 30
-
 export function LoginScreen({ onLoginSuccess: _onLoginSuccess }: LoginScreenProps) {
   const [step, setStep] = useState<Step>('email')
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [successMsg, setSuccessMsg] = useState('')
-  const [resendCooldown, setResendCooldown] = useState(0)
   const ready = isSupabaseConfigured()
-
-  // Resend クールダウン
-  useEffect(() => {
-    if (resendCooldown <= 0) return
-    const id = setTimeout(() => setResendCooldown(s => s - 1), 1000)
-    return () => clearTimeout(id)
-  }, [resendCooldown])
 
   const BG = 'var(--bg-slate-deep)'
   const TEXT = 'var(--text-on-hero)'
@@ -58,11 +48,10 @@ export function LoginScreen({ onLoginSuccess: _onLoginSuccess }: LoginScreenProp
       return
     }
     setStep('sent')
-    setResendCooldown(RESEND_COOLDOWN_SEC)
   }
 
   async function handleResend() {
-    if (resendCooldown > 0 || loading) return
+    if (loading) return
     setError(''); setSuccessMsg(''); setLoading(true)
     const result = await sendMagicLink(email)
     setLoading(false)
@@ -72,7 +61,6 @@ export function LoginScreen({ onLoginSuccess: _onLoginSuccess }: LoginScreenProp
       return
     }
     setSuccessMsg(t('auth.linkResent'))
-    setResendCooldown(RESEND_COOLDOWN_SEC)
   }
 
   const title = step === 'sent' ? t('auth.linkSentTitle') : t('auth.loginTitle')
@@ -142,10 +130,10 @@ export function LoginScreen({ onLoginSuccess: _onLoginSuccess }: LoginScreenProp
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center', marginTop: 16 }}>
               <button
                 onClick={handleResend}
-                disabled={loading || resendCooldown > 0}
-                style={{ background: 'none', border: 'none', color: TEXT2, fontSize: 14, cursor: (loading || resendCooldown > 0) ? 'not-allowed' : 'pointer', padding: '8px 0', opacity: resendCooldown > 0 ? 0.5 : 1 }}
+                disabled={loading}
+                style={{ background: 'none', border: 'none', color: 'var(--brand)', fontSize: 14, fontWeight: 600, cursor: loading ? 'not-allowed' : 'pointer', padding: '10px 0', opacity: loading ? 0.5 : 1 }}
               >
-                {resendCooldown > 0 ? t('auth.linkResendIn', { sec: resendCooldown }) : t('auth.linkResend')}
+                {t('auth.linkResend')}
               </button>
               <button
                 onClick={() => { setStep('email'); setError(''); setSuccessMsg('') }}

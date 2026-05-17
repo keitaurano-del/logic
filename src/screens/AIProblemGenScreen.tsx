@@ -7,6 +7,9 @@ import { Header } from '../components/platform/Header'
 import { isPaid } from '../subscription'
 import { addXP } from '../stats'
 import { t, getLocale } from '../i18n'
+import { isSaved, toggleSaved } from '../savedItemsStore'
+import { BookmarkIcon, BookmarkFilledIcon } from '../icons'
+import { haptic } from '../platform/haptics'
 
 interface AIProblemGenScreenProps {
   onBack: () => void
@@ -78,6 +81,56 @@ function getThemePresets(): ThemePreset[] {
       id: 'mece', label: t('aiGen.theme.mece'),
       icon: mkIcon(<><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></>),
       prompt: t('aiGen.theme.mecePrompt'),
+    },
+    {
+      id: 'issue', label: t('aiGen.theme.issue'),
+      icon: mkIcon(<><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></>),
+      prompt: t('aiGen.theme.issuePrompt'),
+    },
+    {
+      id: 'point', label: t('aiGen.theme.point'),
+      icon: mkIcon(<><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></>),
+      prompt: t('aiGen.theme.pointPrompt'),
+    },
+    {
+      id: 'lateral', label: t('aiGen.theme.lateral'),
+      icon: mkIcon(<><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></>),
+      prompt: t('aiGen.theme.lateralPrompt'),
+    },
+    {
+      id: 'analogy', label: t('aiGen.theme.analogy'),
+      icon: mkIcon(<><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></>),
+      prompt: t('aiGen.theme.analogyPrompt'),
+    },
+    {
+      id: 'systems', label: t('aiGen.theme.systems'),
+      icon: mkIcon(<><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></>),
+      prompt: t('aiGen.theme.systemsPrompt'),
+    },
+    {
+      id: 'design', label: t('aiGen.theme.design'),
+      icon: mkIcon(<><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></>),
+      prompt: t('aiGen.theme.designPrompt'),
+    },
+    {
+      id: 'strategy', label: t('aiGen.theme.strategy'),
+      icon: mkIcon(<><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></>),
+      prompt: t('aiGen.theme.strategyPrompt'),
+    },
+    {
+      id: 'proposal', label: t('aiGen.theme.proposal'),
+      icon: mkIcon(<><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></>),
+      prompt: t('aiGen.theme.proposalPrompt'),
+    },
+    {
+      id: 'framework', label: t('aiGen.theme.framework'),
+      icon: mkIcon(<><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="12" y1="3" x2="12" y2="21"/></>),
+      prompt: t('aiGen.theme.frameworkPrompt'),
+    },
+    {
+      id: 'data', label: t('aiGen.theme.data'),
+      icon: mkIcon(<><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></>),
+      prompt: t('aiGen.theme.dataPrompt'),
     },
   ]
 }
@@ -443,16 +496,12 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
               </div>
             ) : (
               problems.map(p => (
-                <div key={p.id} style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.title}</div>
-                    <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{t('aiGen.history.questionCount', { count: p.steps?.length ?? 0, date: new Date(p.createdAt).toLocaleDateString(getLocale() === 'ja' ? 'ja-JP' : 'en-US') })}</div>
-                  </div>
-                  <button onClick={() => onPlay(p)} style={{ background: 'var(--brand)', color: 'var(--accent-fg)', border: 'none', borderRadius: 10, padding: '8px 14px', fontSize: 13, fontWeight: 700, cursor: 'pointer', flexShrink: 0 }}>{t('aiGen.history.replay')}</button>
-                  <button onClick={() => handleDelete(p.id)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 4, flexShrink: 0 }}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F87171" strokeWidth="2" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
-                  </button>
-                </div>
+                <AiProblemRow
+                  key={p.id}
+                  problem={p}
+                  onPlay={() => onPlay(p)}
+                  onDelete={() => handleDelete(p.id)}
+                />
               ))
             )}
           </>
@@ -470,6 +519,48 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
           }}
         />
       )}
+    </div>
+  )
+}
+
+function AiProblemRow({ problem, onPlay, onDelete }: { problem: AIProblemSet; onPlay: () => void; onDelete: () => void }) {
+  const [saved, setSaved] = useState<boolean>(() => isSaved('ai-problem', String(problem.id)))
+  const handleToggleSave = () => {
+    haptic.light()
+    const next = toggleSaved({
+      type: 'ai-problem',
+      refId: String(problem.id),
+      title: problem.title,
+      subtitle: t('savedItems.typeAiProblem'),
+    })
+    setSaved(next)
+  }
+  return (
+    <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{problem.title}</div>
+        <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{t('aiGen.history.questionCount', { count: problem.steps?.length ?? 0, date: new Date(problem.createdAt).toLocaleDateString(getLocale() === 'ja' ? 'ja-JP' : 'en-US') })}</div>
+      </div>
+      <button
+        type="button"
+        onClick={handleToggleSave}
+        aria-label={saved ? t('savedItems.unsaveProblemAria') : t('savedItems.saveProblemAria')}
+        aria-pressed={saved}
+        style={{
+          width: 32, height: 32, borderRadius: '50%',
+          background: saved ? `color-mix(in srgb, var(--brand) 18%, transparent)` : 'transparent',
+          border: 'none', padding: 0, flexShrink: 0,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          cursor: 'pointer', WebkitTapHighlightColor: 'transparent',
+          color: saved ? 'var(--brand)' : 'var(--text-muted)',
+        }}
+      >
+        {saved ? <BookmarkFilledIcon width={16} height={16} /> : <BookmarkIcon width={16} height={16} />}
+      </button>
+      <button onClick={onPlay} style={{ background: 'var(--brand)', color: 'var(--accent-fg)', border: 'none', borderRadius: 10, padding: '8px 14px', fontSize: 13, fontWeight: 700, cursor: 'pointer', flexShrink: 0 }}>{t('aiGen.history.replay')}</button>
+      <button onClick={onDelete} style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 4, flexShrink: 0 }} aria-label={t('aiGen.history.deleteConfirm')}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F87171" strokeWidth="2" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+      </button>
     </div>
   )
 }
