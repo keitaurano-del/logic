@@ -91,15 +91,15 @@ const ICON_BG: Record<string, string> = {
   'nietzsche-values': 'rgba(196,181,253,.14)',
 }
 
-// シナリオごとの表現画像（題材レッスンに対応する個別画像で重複を回避）
+// シナリオごとの表現画像（ロールプレイ専用サムネ：Caveat Bold + オレンジ下線で統一）
 const SCENARIO_IMAGE: Record<string, string> = {
-  'why-so-report': '/images/v3/lesson-22.png',
-  'mece-meeting': '/images/v3/lesson-20.png',
-  'pyramid-client': '/images/v3/lesson-23.png',
-  'logic-tree-sub': '/images/v3/lesson-21.png',
-  'socrates-dialog': '/images/v3/lesson-77.png',
-  'descartes-doubt': '/images/v3/lesson-74.png',
-  'nietzsche-values': '/images/v3/lesson-76.png',
+  'why-so-report': '/images/v3/roleplay-why-so-report.png',
+  'mece-meeting': '/images/v3/roleplay-mece-meeting.png',
+  'pyramid-client': '/images/v3/roleplay-pyramid-client.png',
+  'logic-tree-sub': '/images/v3/roleplay-logic-tree-sub.png',
+  'socrates-dialog': '/images/v3/roleplay-socrates-dialog.png',
+  'descartes-doubt': '/images/v3/roleplay-descartes-doubt.png',
+  'nietzsche-values': '/images/v3/roleplay-nietzsche-values.png',
 }
 
 function getCategoryLabels(): Record<SituationCategory, string> {
