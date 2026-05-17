@@ -141,6 +141,17 @@ const FERMI_POOL_EN: FermiQuestion[] = [
 
 export const FERMI_POOL: FermiQuestion[] = getLocale() === 'en' ? FERMI_POOL_EN : FERMI_POOL_JA
 
+/**
+ * 問題文（question_text）から pool index を逆引きする。
+ * 履歴 → 再挑戦の導線で使う。マッチしなければ -1。
+ * 現ロケールのプール内で先頭一致を厳密比較（trim 比較）。
+ */
+export function findFermiPoolIndex(questionText: string): number {
+  if (!questionText) return -1
+  const needle = questionText.trim()
+  return FERMI_POOL.findIndex(q => q.question.trim() === needle)
+}
+
 /** 今日の問題インデックス（日付ベース・全画面共通） */
 export function getDailyFermiIndex(): number {
   return Math.floor(Date.now() / 86400000) % FERMI_POOL.length

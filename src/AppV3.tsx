@@ -14,6 +14,7 @@ const WrongAnswerListScreen = lazy(() => import('./screens/WrongAnswerListScreen
 const FermiScreen = lazy(() => import('./screens/FermiScreen').then(m => ({ default: m.FermiScreen })))
 const DailyFermiScreen = lazy(() => import('./screens/DailyFermiScreen').then(m => ({ default: m.DailyFermiScreen })))
 const FermiRankingScreen = lazy(() => import('./screens/FermiRankingScreen').then(m => ({ default: m.FermiRankingScreen })))
+const FermiHistoryScreen = lazy(() => import('./screens/FermiHistoryScreen').then(m => ({ default: m.FermiHistoryScreen })))
 const RoleplaySelectScreen = lazy(() => import('./screens/RoleplaySelectScreen').then(m => ({ default: m.RoleplaySelectScreen })))
 const RoleplayChatScreen = lazy(() => import('./screens/RoleplayChatScreen').then(m => ({ default: m.RoleplayChatScreen })))
 const ReportProblemScreen = lazy(() => import('./screens/ReportProblemScreen').then(m => ({ default: m.ReportProblemScreen })))
@@ -90,6 +91,7 @@ type Screen =
   | { type: 'fermi' }
   | { type: 'daily-fermi' }
   | { type: 'fermi-ranking' }
+  | { type: 'fermi-history' }
   | { type: 'roleplay' }
   | { type: 'roleplay-chat'; situationId: string }
   | { type: 'daily-problem' }
@@ -441,6 +443,19 @@ function AppV3() {
           onBack={handleBack}
           onOpenFlashcards={(mode) => navigate({ type: 'flashcards', mode })}
           onOpenWrongAnswers={() => navigate({ type: 'wrong-answers' })}
+          onOpenFermiHistory={() => navigate({ type: 'fermi-history' })}
+        />
+      )}
+      {screen.type === 'fermi-history' && (
+        <FermiHistoryScreen
+          onBack={handleBack}
+          onRetry={(poolIndex) => {
+            try {
+              sessionStorage.setItem('fermi-replay-index', String(poolIndex))
+              sessionStorage.setItem('fermi-replay-mode', '1')
+            } catch { /* */ }
+            navigate({ type: 'daily-fermi' })
+          }}
         />
       )}
       {screen.type === 'wrong-answers' && (

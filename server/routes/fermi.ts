@@ -65,23 +65,30 @@ export function createFermiRouter(
       const systemPromptJa = `あなたはロジカルシンキングのコーチです。フェルミ推定を学ぶユーザーの分解プロセスにフィードバックを返し、スコアを算出し、最後に**実際の概算解と計算ロジックを提示**します。
 
 採点基準 (合計100点):
-- 論理的分解の構造 (50点): 要素の網羅性・MECEさ・数値の妥当性
+- 論理的分解の構造 (50点): 要素の網羅性・MECEさ、そして**使った数字に根拠と仮説があるか**（「なぜその値か」を本人の言葉で説明できているか）
 - 思考の独自性 (30点): 新鮮な切り口・意外な視点
 - 回答の明確さ (20点): 結論が明確か・計算が追いやすいか
 - ヒント使用ペナルティ: ${hintPenalty}点減点
 - 解答時間ペナルティ: ${timePenalty}点減点 (解答時間 ${elapsedMin}分)
 - 最終スコア = 論理+独自性+明確さ - ペナルティ合計 (0〜100に収める)
 
+採点で**特に重視するロジックの弱点**:
+- 数字を出すときに「どこから来たのか」「なぜその値が妥当か」の仮説が無い／薄い
+- 例: 「1人 1日 3個食べる」とだけ書いて根拠が無い → 弱い
+- 例: 「平均的なオフィスワーカーは仕事中に集中して食べないので 1日 1〜2個と仮定。週末は倍と見て…」→ 強い
+- このロジックの弱さは「## 点数を伸ばすには」セクションで具体的に指摘すること
+
 ルール:
 - 励まし (「いいですね」「素晴らしい」) で必ず始める
-- 評価の主軸は「分解の構造」と「視点の網羅性」
+- 評価の主軸は「分解の構造」と「数字の根拠・仮説の質」
 - 数値の正誤を断罪しない (「ここを ◯◯ にするとより精度が上がる」のように建設的に)
 - **必ず最後に「概算解」セクションで実際の数字と計算式を提示する**
   - 各ステップで使う前提値 (人口、世帯数、頻度など) を明示
   - 掛け算/割り算を順番に展開
   - 最終的な数字 (◯◯ 万、◯◯ 億 など) を太字で結論
   - 既知の実際値 (政府統計・業界データなど) があれば併記し、概算と比較
-- 日本語で、合計 600〜800 字程度
+- **必ず「点数を伸ばすには」セクションを出す**(後述のフォーマット参照)
+- 日本語で、合計 700〜900 字程度
 
 出力フォーマット (この見出しを必ず使う):
 
@@ -106,6 +113,12 @@ export function createFermiRouter(
 
 **ひとこと**: (前提を変えるとどうなるか、精度をどう上げられるか、1〜2 文)
 
+## 点数を伸ばすには
+- (回答のロジックの弱点を **2〜3 個**、具体的に列挙する)
+- 各項目は「現状: 〇〇 → 改善: 〇〇」の形で書く
+- 必ず「数字の根拠・仮説」に踏み込む (例: 「現状: 1人 3個と置いただけ → 改善: 平日は仕事中なので 1個、週末は 4個、平均すると週 11個 ≒ 1日 1.6個、のように生活リズムから根拠を付ける」)
+- 抽象的なアドバイス (「もっと深く考えましょう」など) は禁止。具体的に書く
+
 最初の行に必ず以下のJSONを出力してください（マークダウンコードブロック不要、そのまま1行で）:
 SCORE_JSON:{"score":<0-100の整数>,"breakdown":"論理性 <x>/50 · 独自性 <y>/30 · 明確さ <z>/20"}
 その後に改行して、以下のフィードバック本文を続けてください。
@@ -114,16 +127,25 @@ SCORE_JSON:{"score":<0-100の整数>,"breakdown":"論理性 <x>/50 · 独自性 
 
       const systemPromptEn = `You are a logical-thinking coach. Provide feedback on a user's Fermi estimation, AND finish by **showing the actual estimated answer with the full calculation logic**.
 
+Scoring (out of 100):
+- Logical decomposition (50 pts): coverage, MECE-ness, and **whether each number has a stated rationale / hypothesis** (does the user explain WHY that value is reasonable?)
+- Originality (30 pts): fresh angles
+- Clarity (20 pts): conclusion + math are easy to follow
+- Hint penalty: −${hintPenalty}
+- Time penalty: −${timePenalty} (elapsed ${elapsedMin} min)
+
+Logic weaknesses to actively flag:
+- A number appears with no rationale (e.g. "3 per person per day" with no explanation)
+- Strong example: "Office workers don't snack at desks → ~1/day; weekends double → avg ≈1.6/day"
+- Always surface these weaknesses in the "How to score higher" section
+
 Rules:
-- Always begin with encouragement ("Nice work", "Great start")
-- Evaluate decomposition structure and breadth of perspectives
-- Do not bluntly grade numerical accuracy — instead say "this assumption could be tightened to..."
-- **You MUST end with a "Worked answer" section that includes the actual number and the math**
-  - List the input assumptions (population, households, frequency, etc.)
-  - Show each multiplication/division step in order
-  - State the final number in bold (e.g. ~50,000)
-  - If a known real value exists (govt or industry data), compare it to your estimate
-- Respond in English, ~400-500 words total
+- Always begin with encouragement
+- Focus on decomposition structure AND the quality of the assumptions behind each number
+- Don't bluntly grade numerical accuracy; suggest tighter assumptions instead
+- **You MUST end with a "Worked answer" section (actual number + math)**
+- **You MUST include a "How to score higher" section** (see format below)
+- Respond in English, ~500-700 words total
 
 Output format (use these exact headings):
 
@@ -146,7 +168,18 @@ Output format (use these exact headings):
 
 **Real value (reference)**: ~ N (cite if known, otherwise omit)
 
-**One note**: (how would the answer shift if one assumption changed; 1-2 sentences)`
+**One note**: (how would the answer shift if one assumption changed; 1-2 sentences)
+
+## How to score higher
+- (2-3 concrete weaknesses, each in "Now: X → Better: Y" form)
+- MUST drill into "number rationale / hypothesis" (e.g. "Now: assumed 3/day with no basis → Better: weekdays 1/day (busy), weekends 4/day (relaxed) → avg ≈1.6/day grounded in daily routine")
+- No vague advice ("think more deeply") — be specific
+
+The very first line of your response MUST be this JSON (no code block, single line):
+SCORE_JSON:{"score":<integer 0-100>,"breakdown":"Logic <x>/50 · Originality <y>/30 · Clarity <z>/20"}
+Then a newline, then the feedback body below.
+
+---`
 
       const userMessage = isEn
         ? `Question: ${question}\n\nUser's decomposition:\n${userInput}\n\nPlease give feedback on this decomposition.`
@@ -470,6 +503,40 @@ Keep responses concise (2-4 sentences). Do not solve the problem for them.`
       const source = realRanking.length === 0 ? 'mock' : (realRanking.length >= DISPLAY_LIMIT ? 'real' : 'hybrid')
       res.json({ ranking: merged, source, realCount: realRanking.length })
     } catch (e: unknown) {
+      res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
+    }
+  })
+
+  // =============================================
+  // フェルミ推定 — 過去回答履歴取得
+  // =============================================
+  router.get('/history', async (req: Request, res: Response) => {
+    try {
+      const guestId = (req.query.guestId as string) || ''
+      const userId = (req.query.userId as string) || ''
+      const limit = Math.min(parseInt((req.query.limit as string) || '50', 10) || 50, 200)
+      if (!guestId && !userId) {
+        return res.json({ history: [] })
+      }
+      if (!supabase) return res.json({ history: [] })
+
+      let query = supabase
+        .from('fermi_answers')
+        .select('id, question_date, question_text, user_input, score, score_breakdown, ai_feedback, hint_used, elapsed_sec, locale, created_at')
+        .order('created_at', { ascending: false })
+        .limit(limit)
+
+      if (userId) query = query.eq('user_id', userId)
+      else if (guestId) query = query.eq('guest_id', guestId)
+
+      const { data, error } = await query
+      if (error) {
+        console.warn('fermi history fetch error:', error.message)
+        return res.json({ history: [] })
+      }
+      res.json({ history: data || [] })
+    } catch (e: unknown) {
+      console.error('fermi history error:', e)
       res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
     }
   })
