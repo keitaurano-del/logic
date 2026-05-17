@@ -126,7 +126,21 @@ function SituationCard({
 
   const [saved, setSaved] = useState<boolean>(() => isSaved('roleplay', s.id))
   const image = SCENARIO_IMAGE[s.id]
+
+  const handleToggleSave = () => {
+    haptic.light()
+    const next = toggleSaved({
+      type: 'roleplay',
+      refId: s.id,
+      title: s.title,
+      subtitle: s.partnerRole,
+      image,
+    })
+    setSaved(next)
+  }
+
   return (
+    <div style={{ position: 'relative' }}>
     <button
       onClick={comingSoon ? undefined : onClick}
       disabled={comingSoon}
@@ -161,53 +175,6 @@ function SituationCard({
           }}>
             <SituationIcon id={s.id} size={18} />
           </div>
-          {/* 保存ボタン */}
-          <span
-            role="button"
-            tabIndex={0}
-            aria-label={saved ? t('roleplaySelect.unsaveAria') : t('roleplaySelect.saveAria')}
-            aria-pressed={saved}
-            onClick={(e) => {
-              e.stopPropagation()
-              e.preventDefault()
-              haptic.light()
-              const next = toggleSaved({
-                type: 'roleplay',
-                refId: s.id,
-                title: s.title,
-                subtitle: s.partnerRole,
-                image,
-              })
-              setSaved(next)
-            }}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.stopPropagation()
-                e.preventDefault()
-                haptic.light()
-                const next = toggleSaved({
-                  type: 'roleplay',
-                  refId: s.id,
-                  title: s.title,
-                  subtitle: s.partnerRole,
-                  image,
-                })
-                setSaved(next)
-              }
-            }}
-            style={{
-              position: 'absolute', top: 8, right: 8,
-              width: 32, height: 32, borderRadius: '50%',
-              background: 'rgba(8,33,33,0.55)',
-              backdropFilter: 'blur(6px)',
-              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-              cursor: 'pointer',
-              color: saved ? 'var(--brand)' : '#fff',
-              WebkitTapHighlightColor: 'transparent',
-            }}
-          >
-            {saved ? <BookmarkFilledIcon width={16} height={16} /> : <BookmarkIcon width={16} height={16} />}
-          </span>
         </div>
       )}
 
@@ -261,6 +228,30 @@ function SituationCard({
         )}
       </div>
     </button>
+    {/* 保存ボタン: 親 <button> の外に配置して nested-interactive を回避 */}
+    {image && (
+      <button
+        type="button"
+        onClick={(e) => { e.stopPropagation(); handleToggleSave() }}
+        aria-label={saved ? t('roleplaySelect.unsaveAria') : t('roleplaySelect.saveAria')}
+        aria-pressed={saved}
+        style={{
+          position: 'absolute', top: 8, right: 8,
+          width: 32, height: 32, borderRadius: '50%',
+          background: 'rgba(8,33,33,0.55)',
+          backdropFilter: 'blur(6px)',
+          border: 'none',
+          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+          cursor: 'pointer',
+          color: saved ? 'var(--brand)' : '#fff',
+          WebkitTapHighlightColor: 'transparent',
+          zIndex: 2,
+        }}
+      >
+        {saved ? <BookmarkFilledIcon width={16} height={16} /> : <BookmarkIcon width={16} height={16} />}
+      </button>
+    )}
+    </div>
   )
 }
 
