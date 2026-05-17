@@ -57,6 +57,7 @@ export async function upsertJournal(j: DailyJournal): Promise<{ error?: string }
       sleep_minutes: j.sleep_minutes ?? null,
       sleep_start: j.sleep_start ?? null,
       sleep_end: j.sleep_end ?? null,
+      images: Array.isArray(j.images) ? j.images : [],
     }, { onConflict: 'user_id,date' })
   if (error) return { error: error.message }
   return {}
@@ -86,16 +87,16 @@ export async function fetchJournalStreak(userId: string): Promise<number> {
   const fmt = (d: Date) => d.toISOString().slice(0, 10)
   const { data, error } = await supabase
     .from('daily_journals')
-    .select('date, mood, weather, schedule_notes, evening_reflection, tags')
+    .select('date, mood, weather, schedule_notes, evening_reflection, tags, images')
     .eq('user_id', userId)
     .gte('date', fmt(start))
     .lte('date', fmt(end))
     .order('date', { ascending: false })
   if (error) { console.warn('fetchJournalStreak:', error.message); return 0 }
-  const rows = (data as Array<{ date: string; mood?: number | null; weather?: string | null; schedule_notes?: string | null; evening_reflection?: string | null; tags?: string[] | null }>) ?? []
+  const rows = (data as Array<{ date: string; mood?: number | null; weather?: string | null; schedule_notes?: string | null; evening_reflection?: string | null; tags?: string[] | null; images?: unknown[] | null }>) ?? []
   const dateSet = new Set(
     rows
-      .filter((r) => r.mood != null || !!r.weather || !!(r.schedule_notes && r.schedule_notes.trim()) || !!(r.evening_reflection && r.evening_reflection.trim()) || (r.tags && r.tags.length > 0))
+      .filter((r) => r.mood != null || !!r.weather || !!(r.schedule_notes && r.schedule_notes.trim()) || !!(r.evening_reflection && r.evening_reflection.trim()) || (r.tags && r.tags.length > 0) || (Array.isArray(r.images) && r.images.length > 0))
       .map((r) => r.date)
   )
   let streak = 0

@@ -19,7 +19,8 @@ function hasContent(j: DailyJournal): boolean {
     j.weather ||
     (j.schedule_notes && j.schedule_notes.trim()) ||
     (j.evening_reflection && j.evening_reflection.trim()) ||
-    (j.tags && j.tags.length > 0)
+    (j.tags && j.tags.length > 0) ||
+    (j.images && j.images.length > 0)
   )
 }
 

@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import type { DailyJournal, Mood, Weather } from './types'
+import type { DailyJournal, JournalImage, Mood, Weather } from './types'
 import { MoodSelector, WeatherSelector } from './MoodWeatherSelector'
 import { MoodIcon, WeatherIcon } from './MoodWeatherIcons'
 import { VoiceTextarea } from './VoiceTextarea'
 import { TagInput } from './TagInput'
 import { JournalActivityList } from './JournalActivityList'
 import { JournalHealthCard } from './JournalHealthCard'
+import { JournalImageGrid } from './JournalImageGrid'
 import type { HealthSnapshot } from '../../platform/health'
 import { SparkleIcon } from './MoodWeatherIcons'
 import { PencilIcon, XIcon } from '../../icons'
@@ -36,6 +37,7 @@ function emptyJournal(userId: string, date: string): DailyJournal {
     evening_reflection: null,
     ai_summary: null,
     tags: [],
+    images: [],
   }
 }
 
@@ -55,7 +57,8 @@ function hasContent(j: DailyJournal | null | undefined): boolean {
     (j.schedule_notes && j.schedule_notes.trim()) ||
     (j.evening_reflection && j.evening_reflection.trim()) ||
     (j.ai_summary && j.ai_summary.trim()) ||
-    (j.tags && j.tags.length > 0)
+    (j.tags && j.tags.length > 0) ||
+    (j.images && j.images.length > 0)
   )
 }
 
@@ -83,6 +86,7 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
     sleepStart: initialJournal?.sleep_start ?? null,
     sleepEnd: initialJournal?.sleep_end ?? null,
   }))
+  const [images, setImages] = useState<JournalImage[]>(initialJournal?.images ?? [])
   const aiSummary = journal?.ai_summary ?? ''
 
   const [phase, setPhase] = useState<Phase>(() => decideInitialPhase(initialJournal ?? null))
@@ -119,6 +123,7 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
           sleepStart: j.sleep_start ?? null,
           sleepEnd: j.sleep_end ?? null,
         })
+        setImages(j.images ?? [])
         setPhase(decideInitialPhase(j))
         if (hasContent(j)) setEditing(false)
       } else {
@@ -207,6 +212,7 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
       sleep_minutes: health.sleepMinutes,
       sleep_start: health.sleepStart,
       sleep_end: health.sleepEnd,
+      images,
     }
     // 保存前: この保存で「初めて朝/夜が埋まる」かを判定（XP は新規完成時のみ）
     const wasMorning = hasMorningContent(journal?.schedule_notes ?? '', journal?.tags ?? [])
@@ -275,14 +281,47 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
       setScheduleNotes(journal.schedule_notes ?? '')
       setReflection(journal.evening_reflection ?? '')
       setTags(journal.tags ?? [])
+      // images は即保存方式（Storage に upload 済み）なのでキャンセル時もそのまま残す
       setEditing(false)
     } else {
       onClose()
     }
   }
 
+  // 画像の追加・削除は Storage への upload/delete が即時走るため、DB の images カラムも
+  // ここで即時 upsert して整合を取る（編集モードのキャンセルでは画像変更は巻き戻さない）。
+  const handleImagesChange = async (next: JournalImage[]) => {
+    setImages(next)
+    const base = journal ?? emptyJournal(userId, date)
+    const updated: DailyJournal = {
+      ...base,
+      user_id: userId,
+      date,
+      images: next,
+    }
+    const { error } = await upsertJournal(updated)
+    if (error) return
+    setJournal(updated)
+    onSaved?.(updated)
+  }
+
   const morningWritten = hasMorningContent(scheduleNotes, tags)
   const eveningWritten = hasEveningContent(mood, weather, reflection)
+  const hasImages = images.length > 0
+
+  const renderImagesSection = (mode: 'edit' | 'view') => (
+    <div className="journal-view-section">
+      <div className="journal-modal__section-label">{t('journal.imagesLabel')}</div>
+      <JournalImageGrid
+        userId={userId}
+        date={date}
+        images={images}
+        editing={mode === 'edit'}
+        onChange={handleImagesChange}
+        disabled={saving}
+      />
+    </div>
+  )
 
   const renderPhaseTabs = () => (
     <div className="journal-phase-tabs" role="tablist" aria-label={t('journal.phaseTabs')}>
@@ -482,6 +521,8 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
               </div>
             )}
 
+            {renderImagesSection('edit')}
+
             {renderPhaseTabs()}
 
             <div className="journal-today__phase">
@@ -521,6 +562,8 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
               </div>
             )}
 
+            {hasImages && renderImagesSection('view')}
+
             {morningWritten && eveningWritten ? (
               <div className="journal-view-stack">
                 {renderMorningView()}
@@ -530,9 +573,9 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
               renderMorningView()
             ) : eveningWritten ? (
               renderEveningView()
-            ) : (
+            ) : !hasImages ? (
               <div className="journal-modal__empty">{t('journal.emptyEntryHint')}</div>
-            )}
+            ) : null}
           </>
         )}
 
