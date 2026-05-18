@@ -527,13 +527,13 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
               </div>
             )}
 
-            {renderImagesSection('edit')}
-
             {renderPhaseTabs()}
 
             <div className="journal-today__phase">
               {phase === 'morning' ? renderMorningEdit() : renderEveningEdit()}
             </div>
+
+            {renderImagesSection('edit')}
 
             {saveError && (
               <div
@@ -590,8 +590,6 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
               </div>
             )}
 
-            {hasImages && renderImagesSection('view')}
-
             {morningWritten && eveningWritten ? (
               <div className="journal-view-stack">
                 {renderMorningView()}
@@ -604,6 +602,8 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
             ) : !hasImages ? (
               <div className="journal-modal__empty">{t('journal.emptyEntryHint')}</div>
             ) : null}
+
+            {hasImages && renderImagesSection('view')}
           </>
         )}
 
