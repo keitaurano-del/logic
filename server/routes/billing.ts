@@ -81,6 +81,22 @@ export function createBillingRouter(deps: BillingDeps): express.Router {
           })
         }
         gpExpiryTimeMillis = expiryTimeMillis
+
+        // Acknowledgement — Play Billing 必須要件。3 日以内に ack しないと自動返金される。
+        // acknowledgementState: 0=未ack, 1=ack済。冪等性のため未ackのみ呼ぶ。
+        if (sub.acknowledgementState === 0) {
+          try {
+            await androidpublisher.purchases.subscriptions.acknowledge({
+              packageName: gpPackageName,
+              subscriptionId: productId,
+              token: purchaseToken,
+              requestBody: { developerPayload: '' },
+            })
+          } catch (ackErr) {
+            console.error('billing/verify acknowledge failed:', ackErr)
+            // ack 失敗は verify 自体は通すが、ログには残す。3日以内に再 ack できる余地を残す。
+          }
+        }
       }
 
       // productId からプランを特定（2026-05-15 単一有料プラン化）
