@@ -1575,8 +1575,8 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.10);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: var(--bg-input-on-dark);
+  border: 1px solid var(--border-on-dark);
   color: var(--text-on-hero, #fff);
   cursor: pointer;
   transition: background 0.15s, transform 0.1s;
@@ -1584,7 +1584,7 @@
 }
 
 .journal-hero__icon-btn:hover {
-  background: rgba(255, 255, 255, 0.18);
+  background: color-mix(in srgb, var(--bg-input-on-dark) 60%, var(--text-on-hero) 12%);
 }
 
 .journal-hero__icon-btn:active {

@@ -761,14 +761,14 @@ function WelcomeScreen({ userName, onStart }: { userName: string; onStart: () =>
         <span aria-hidden="true">🎉</span>
       </div>
       <div>
-        <div style={{ fontSize: 14, letterSpacing: '.16em', fontWeight: 700, color: 'rgba(255,255,255,.7)', marginBottom: 10, textTransform: 'uppercase' }}>
+        <div style={{ fontSize: 14, letterSpacing: '.16em', fontWeight: 700, color: 'var(--text-on-hero-muted)', marginBottom: 10, textTransform: 'uppercase' }}>
           {t('welcome.eyebrow')}
         </div>
         <h1 style={{ fontSize: 28, fontWeight: 900, lineHeight: 1.35, margin: 0, letterSpacing: '-0.01em' }}>
           {t('welcome.heading', { name: userName })}
         </h1>
       </div>
-      <p style={{ fontSize: 15, lineHeight: 1.75, color: 'rgba(255,255,255,.78)', margin: 0, maxWidth: 360 }}>
+      <p style={{ fontSize: 15, lineHeight: 1.75, color: 'var(--text-on-hero-muted)', margin: 0, maxWidth: 360 }}>
         {t('welcome.body')}
       </p>
       <button

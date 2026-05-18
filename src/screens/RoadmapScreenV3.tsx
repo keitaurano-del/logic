@@ -1063,7 +1063,7 @@ function PersonalCourseBanner({
         padding: '16px 18px',
         boxShadow: 'var(--shadow-v3-card-inset)',
         cursor: 'pointer',
-        color: 'var(--text-on-hero)',
+        color: 'var(--accent-fg)',
         position: 'relative',
         overflow: 'hidden',
         border: 'none',
@@ -1084,7 +1084,7 @@ function PersonalCourseBanner({
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
         <div style={{ flex: 1, height: 4, background: 'rgba(10,31,77,0.20)', borderRadius: 2, overflow: 'hidden' }}>
-          <div style={{ height: '100%', width: `${(completedCount / Math.max(1, total)) * 100}%`, background: 'var(--text-on-hero)', borderRadius: 2, transition: 'width .3s' }} />
+          <div style={{ height: '100%', width: `${(completedCount / Math.max(1, total)) * 100}%`, background: 'var(--accent-fg)', borderRadius: 2, transition: 'width .3s' }} />
         </div>
         <div style={{ fontSize: 12, fontWeight: 700 }}>{completedCount}/{total}</div>
       </div>

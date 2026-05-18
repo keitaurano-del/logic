@@ -67,7 +67,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
           <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '.12em', textTransform: 'uppercase' }}>{t('profile.level')}</span>
           <span style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 900, letterSpacing: '-.02em', color: 'var(--text-on-hero)' }}>Lv.{lv.level}</span>
         </div>
-        <div style={{ height: 12, background: 'rgba(255,255,255,.1)', borderRadius: 99, overflow: 'hidden', marginBottom: 8, position: 'relative', zIndex: 1 }}>
+        <div style={{ height: 12, background: 'var(--border-on-dark)', borderRadius: 99, overflow: 'hidden', marginBottom: 8, position: 'relative', zIndex: 1 }}>
           <div style={{ height: '100%', width: `${levelPct}%`, background: 'var(--brand)', borderRadius: 99, boxShadow: '0 0 12px rgba(108,142,245,0.5)' }}></div>
         </div>
         <div style={{ fontSize: 14, color: 'var(--text-secondary)', fontWeight: 500, textAlign: 'right', position: 'relative', zIndex: 1 }}>{t('profile.toNextLevel', { xp: String(Math.max(0, needed - levelXp)) })}</div>
@@ -117,7 +117,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
                           <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--text-muted)', opacity: .5 }} />
                         )}
                       </div>
-                      <span style={{ fontSize: 12, color: studied ? 'var(--text-on-hero)' : 'var(--text-muted)', fontWeight: studied ? 700 : 500 }}>{d}</span>
+                      <span style={{ fontSize: 12, color: studied ? 'var(--text-primary)' : 'var(--text-muted)', fontWeight: studied ? 700 : 500 }}>{d}</span>
                     </div>
                   )
                 })}
