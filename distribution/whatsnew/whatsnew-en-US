@@ -1,10 +1,13 @@
-Logic v1.5.x Beta
+Logic — official release.
 
-What's inside:
-- Daily Fermi estimation problems with AI feedback
-- 30+ lessons on logical thinking frameworks
-- Skill assessment + national ranking
-- AI roleplay (case interview, business dialogue)
-- Spaced repetition + learning streaks
+What's new:
+- Journal upgrade: photos, AI auto-tagging, morning/evening tabs, AI assistant
+- Health Connect: steps and sleep auto-imported
+- Light mode (Profile → Theme)
+- Fermi feedback now scores numeric reasoning and suggests improvements
+- Review past Fermi problems
+- Save and revisit incorrect lesson answers
+- Magic-link sign-in only
+- Refreshed plan selection UX
 
 Feedback: support@logic-m.com

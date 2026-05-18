@@ -1,0 +1,141 @@
+name: 🚀 Android Deploy → Play Console (Production)
+
+on:
+  # 手動トリガーのみ — Internal Test track は android-deploy.yml が自動で扱う
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: '本番リリースを実行しますか？ (yes と入力)'
+        required: true
+        default: 'no'
+      version_name:
+        description: 'Production の versionName (例: 1.0.0)'
+        required: true
+        default: '1.0.0'
+
+jobs:
+  # ── ガード: "yes" 以外は即終了 ─────────────────────────
+  check-confirm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Confirm input
+        run: |
+          if [ "${{ github.event.inputs.confirm }}" != "yes" ]; then
+            echo "❌ 'yes' と入力されなかったためリリースを中止します"
+            exit 1
+          fi
+          echo "✅ 承認確認OK / versionName=${{ github.event.inputs.version_name }}"
+
+  # ── Production track への配信 ─────────────────────────
+  build-and-deploy:
+    needs: check-confirm
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    environment:
+      name: production
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Setup JDK 21
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v4
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build web (Vite)
+        run: npm run build
+        env:
+          VITE_API_BASE: ${{ secrets.VITE_API_BASE }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+
+      - name: Add Android platform (if not exists)
+        run: |
+          if [ ! -d "android" ]; then
+            npx cap add android
+          fi
+
+      - name: Capacitor sync
+        run: npx cap sync android
+
+      # ── versionCode/Name 採番 ──────────────────────────
+      # Production 用は internal の RUN_NUMBER + 1000 と被らないよう
+      # 100000 オフセットで分離する。
+      # versionName は workflow input から指定（Keita が手動で 1.0.0 → 1.0.1 → 2.0.0 と運用）
+      - name: Set Android versionCode and versionName
+        run: |
+          GRADLE=android/app/build.gradle
+          VERSION_CODE=$(( ${{ github.run_number }} + 100000 ))
+          sed -i "s/versionCode [0-9]*/versionCode ${VERSION_CODE}/" "$GRADLE"
+          VERSION_NAME="${{ github.event.inputs.version_name }}"
+          sed -i "s/versionName \"[^\"]*\"/versionName \"${VERSION_NAME}\"/" "$GRADLE"
+          echo "✓ versionCode=${VERSION_CODE}, versionName=${VERSION_NAME}"
+          grep -E "versionCode|versionName" "$GRADLE"
+
+      - name: Cache Gradle
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: gradle-
+
+      - name: Restore keystore and write key.properties
+        run: |
+          mkdir -p keystores
+          KEYSTORE_PATH=keystores/logicalthinking-release.keystore
+          ALIAS=logicalthinking
+          PASSWORD=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          B64="${{ secrets.ANDROID_KEYSTORE_BASE64 }}"
+          if [ -n "$B64" ]; then
+            echo "$B64" | base64 -d > "$KEYSTORE_PATH"
+            echo "✓ Keystore restored from secret ($( wc -c < $KEYSTORE_PATH ) bytes)"
+          else
+            echo "::error::ANDROID_KEYSTORE_BASE64 secret が未設定です"
+            exit 1
+          fi
+          keytool -list -keystore "$KEYSTORE_PATH" -storepass "$PASSWORD" -alias "$ALIAS" > /dev/null \
+            && echo "✓ Keystore verified" \
+            || { echo "::error::キーストアの検証失敗（パスワードまたはエイリアスが不正）"; exit 1; }
+          printf 'LOGIC_KEYSTORE_FILE=../../keystores/logicalthinking-release.keystore\nLOGIC_KEYSTORE_PASSWORD=%s\nLOGIC_KEY_ALIAS=%s\nLOGIC_KEY_PASSWORD=%s\n' "$PASSWORD" "$ALIAS" "$PASSWORD" > android/key.properties
+          echo "✓ key.properties written"
+
+      - name: Build release AAB
+        working-directory: android
+        run: ./gradlew bundleRelease --stacktrace
+
+      - name: Upload AAB artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: app-release-aab-production
+          path: android/app/build/outputs/bundle/release/app-release.aab
+          retention-days: 90
+
+      # ── Play Console Production track に配信 ──────────────
+      # status: completed = 即時 100% rollout（段階配信したい場合は inProgress + userFraction）
+      - name: Deploy to Play Console (Production)
+        uses: r0adkll/upload-google-play@v1.1.5
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}
+          packageName: com.logicalthinking.app
+          releaseFiles: android/app/build/outputs/bundle/release/app-release.aab
+          tracks: production
+          status: completed
+          whatsNewDirectory: distribution/whatsnew
+          inAppUpdatePriority: 2
