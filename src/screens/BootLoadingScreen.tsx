@@ -21,12 +21,11 @@ export function BootLoadingScreen() {
       }}
     >
       <img
-        src="/app-icon.svg"
+        src="/launcher-icon.png"
         alt="Logic"
         width={120}
         height={120}
         style={{
-          borderRadius: 28,
           boxShadow: '0 12px 32px rgba(0,0,0,0.32)',
           animation: 'logicBootPulse 1.8s ease-in-out infinite',
         }}

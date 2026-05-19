@@ -13,7 +13,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const REPO = path.resolve(__dirname, '..')
 
 const BG = '#1A1F2E' // capacitor.config.ts の SURFACE と同じ
-const LOGO_SVG_PATH = path.join(REPO, 'public/app-icon.svg')
+// ランチャーアイコン（ホーム画面のアイコン）と同じ画像を使うことで、ホーム → 起動 → ロード画面の見た目が一貫する
+const LOGO_PATH = path.join(REPO, 'android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png')
 
 // Capacitor Android の標準 splash サイズ
 const SIZES = [
@@ -33,13 +34,13 @@ const SIZES = [
 const RES_BASE = path.join(REPO, 'android/app/src/main/res')
 
 async function main() {
-  const logoSvg = await fs.readFile(LOGO_SVG_PATH)
+  const logoBuf = await fs.readFile(LOGO_PATH)
 
   for (const { dir, w, h } of SIZES) {
     const short = Math.min(w, h)
     // ロゴはキャンバスの短辺の 28% 程度（BootLoadingScreen の 120px ≒ ビューポート短辺の 30% 弱と整合）
     const logoSize = Math.round(short * 0.28)
-    const logoPng = await sharp(logoSvg, { density: 384 })
+    const logoPng = await sharp(logoBuf)
       .resize(logoSize, logoSize, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
       .png()
       .toBuffer()
