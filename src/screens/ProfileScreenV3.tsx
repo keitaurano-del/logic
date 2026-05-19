@@ -104,7 +104,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
                       <div style={{
                         width: '100%',
                         aspectRatio: '1 / 1',
-                        borderRadius: 12,
+                        borderRadius: '50%',
                         background: studied ? 'linear-gradient(160deg, rgba(255,140,0,.18) 0%, rgba(255,61,0,.10) 100%)' : 'var(--bg-tertiary)',
                         border: isToday ? `1.5px solid ${'var(--brand)'}` : '1px solid rgba(255,255,255,.04)',
                         display: 'flex',
