@@ -432,7 +432,7 @@ const STRINGS: Record<Locale, Strings> = {
     // Pricing
     'pricing.title': '料金プラン',
     'pricing.heroHeadline': '面接塾やビジネス書で何万円もかける前に、\n月 ¥350 で AI が毎日あなた専用の問題を作る。',
-    'pricing.heroSub': '無料プランでもレッスン・ロールプレイは使い放題、今日の一問も毎日 1 問解けます。',
+    'pricing.heroSub': '無料プランでもレッスンは使い放題、今日の一問も毎日 1 問解けます。',
     'pricing.featLessons': 'レッスン',
     'pricing.featRoleplay': 'AI ロールプレイ',
     'pricing.featReview': '復習',
@@ -544,6 +544,9 @@ const STRINGS: Record<Locale, Strings> = {
     'roleplay.live2dNote': '※キャラクターアニメーションは今後 Live2D に進化予定です',
     'roleplay.beta': 'BETA',
     'roleplay.backToOther': '別のシナリオに戻る',
+    'roleplay.paywallTitle': 'AI ロールプレイは有料プラン機能です',
+    'roleplay.paywallDesc': '哲学者キャラクター達と論理思考を実践できる AI ロールプレイは、有料プランで利用できます。',
+    'roleplay.viewPlansCta': 'プランを見る',
 
     // Coffee Break
     'coffeebreak.title': 'コーヒーブレイク',
@@ -2060,7 +2063,7 @@ const STRINGS: Record<Locale, Strings> = {
     // Pricing
     'pricing.title': 'Pricing',
     'pricing.heroHeadline': 'Before you spend tens of thousands of yen on interview prep or business books,\nlet AI craft your own practice problems for ¥350/month.',
-    'pricing.heroSub': 'Lessons and roleplay are free and unlimited, plus one daily problem every day.',
+    'pricing.heroSub': 'Lessons are free and unlimited, plus one daily problem every day.',
     'pricing.featLessons': 'Lessons',
     'pricing.featRoleplay': 'AI roleplay',
     'pricing.featReview': 'Review',
@@ -2172,6 +2175,9 @@ const STRINGS: Record<Locale, Strings> = {
     'roleplay.live2dNote': '* Character animation will evolve to Live2D in a future update.',
     'roleplay.beta': 'BETA',
     'roleplay.backToOther': 'Back to another scenario',
+    'roleplay.paywallTitle': 'AI roleplay is a paid feature',
+    'roleplay.paywallDesc': 'Practice logical thinking with philosopher characters. AI roleplay is available on the paid plan.',
+    'roleplay.viewPlansCta': 'View plans',
 
     // Coffee Break
     'coffeebreak.title': 'Coffee Break',

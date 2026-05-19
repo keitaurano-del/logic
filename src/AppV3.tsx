@@ -583,18 +583,32 @@ function AppV3() {
       )}
 
       {screen.type === 'roleplay' && (
-        <RoleplaySelectScreen
-          onBack={() => navigate({ type: 'lessons' }, true)}
-          onStart={(characterId) => navigate({ type: 'roleplay-chat', characterId })}
-          onUpgrade={() => navigate({ type: 'pricing' })}
-        />
+        isPaid() ? (
+          <RoleplaySelectScreen
+            onBack={() => navigate({ type: 'lessons' }, true)}
+            onStart={(characterId) => navigate({ type: 'roleplay-chat', characterId })}
+            onUpgrade={() => navigate({ type: 'pricing' })}
+          />
+        ) : (
+          <RoleplayPaywall
+            onBack={() => navigate({ type: 'lessons' }, true)}
+            onUpgrade={() => navigate({ type: 'pricing' })}
+          />
+        )
       )}
 
       {screen.type === 'roleplay-chat' && (
-        <RoleplayChatScreen
-          characterId={screen.characterId}
-          onBack={() => navigate({ type: 'roleplay' })}
-        />
+        isPaid() ? (
+          <RoleplayChatScreen
+            characterId={screen.characterId}
+            onBack={() => navigate({ type: 'roleplay' })}
+          />
+        ) : (
+          <RoleplayPaywall
+            onBack={() => navigate({ type: 'lessons' }, true)}
+            onUpgrade={() => navigate({ type: 'pricing' })}
+          />
+        )
       )}
 
       {screen.type === 'profile' && (
@@ -969,6 +983,67 @@ function ReviewPaywall({ onBack, onUpgrade }: { onBack: () => void; onUpgrade: (
             }}
           >
             {t('reviewHub.viewPlansCta')}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function RoleplayPaywall({ onBack, onUpgrade }: { onBack: () => void; onUpgrade: () => void }) {
+  return (
+    <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', display: 'flex', flexDirection: 'column' }}>
+      <Header title={t('roleplay.title')} onBack={onBack} />
+      <div style={{ flex: 1, padding: '32px 20px 120px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', gap: 20 }}>
+        <div style={{
+          background: 'var(--bg-card)',
+          borderRadius: 16,
+          padding: 24,
+          maxWidth: 380,
+          width: '100%',
+          textAlign: 'center',
+          boxShadow: 'var(--shadow-v3-card-inset)',
+          border: '1px solid rgba(255,255,255,.06)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 14,
+        }}>
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            alignSelf: 'center',
+            width: 56, height: 56, borderRadius: '50%',
+            background: 'linear-gradient(135deg, var(--brand), var(--brand-light, #8B5CF6))',
+            fontSize: 28,
+            marginBottom: 4,
+          }}>
+            <span aria-hidden="true">💬</span>
+          </div>
+          <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-primary)' }}>
+            {t('roleplay.paywallTitle')}
+          </div>
+          <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+            {t('roleplay.paywallDesc')}
+          </div>
+          <button
+            type="button"
+            onClick={onUpgrade}
+            style={{
+              marginTop: 8,
+              padding: '14px 24px',
+              background: 'var(--brand)',
+              color: 'var(--accent-fg, #fff)',
+              border: 'none',
+              borderRadius: 12,
+              font: 'inherit',
+              fontSize: 15,
+              fontWeight: 700,
+              cursor: 'pointer',
+              minHeight: 48,
+            }}
+          >
+            {t('roleplay.viewPlansCta')}
           </button>
         </div>
       </div>
