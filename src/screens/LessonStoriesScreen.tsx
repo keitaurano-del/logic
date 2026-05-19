@@ -515,7 +515,7 @@ function HeroImage({ image, lessonId }: { image: string; lessonId?: number }) {
   const [failed, setFailed] = useState(false)
   const handleError = useCallback(() => setFailed(true), [])
   if (failed && lessonId != null) {
-    return <LessonThumbnail lessonId={lessonId} style={{ width: '100%', height: 200 }} />
+    return <LessonThumbnail lessonId={lessonId} style={{ width: '100%', aspectRatio: '1 / 1' }} />
   }
   return (
     <img
@@ -523,7 +523,7 @@ function HeroImage({ image, lessonId }: { image: string; lessonId?: number }) {
       alt=""
       loading="lazy"
       onError={handleError}
-      style={{ width: '100%', height: 200, objectFit: 'cover', display: 'block' }}
+      style={{ width: '100%', aspectRatio: '1 / 1', objectFit: 'cover', display: 'block' }}
     />
   )
 }

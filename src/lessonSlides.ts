@@ -128,6 +128,46 @@ const LESSON_IMAGES: Record<number, string> = {
   76: '/images/v3/lesson-76.png',  // 反論を先読み
   // 哲学
   77: '/images/v3/lesson-77.png',  // ソクラテス
+  // キャリア — 履歴書
+  600: '/images/v3/lesson-600.png',  // 採用担当者の頭の中
+  601: '/images/v3/lesson-601.png',  // STAR法
+  602: '/images/v3/lesson-602.png',  // 数字で語る
+  603: '/images/v3/lesson-603.png',  // 自己PR
+  604: '/images/v3/lesson-604.png',  // 志望動機の3層
+  605: '/images/v3/lesson-605.png',  // ATS対応
+  606: '/images/v3/lesson-606.png',  // ケース演習
+  // キャリア — SPI
+  610: '/images/v3/lesson-610.png',  // SPI全体像
+  611: '/images/v3/lesson-611.png',  // 非言語①
+  612: '/images/v3/lesson-612.png',  // 非言語②
+  613: '/images/v3/lesson-613.png',  // 非言語③
+  614: '/images/v3/lesson-614.png',  // 非言語④推論
+  615: '/images/v3/lesson-615.png',  // 言語
+  616: '/images/v3/lesson-616.png',  // 性格検査・時間配分
+  // キャリア — 玉手箱
+  620: '/images/v3/lesson-620.png',  // 玉手箱とは
+  621: '/images/v3/lesson-621.png',  // 四則逆算
+  622: '/images/v3/lesson-622.png',  // 図表の読み取り
+  623: '/images/v3/lesson-623.png',  // 表の空欄推測
+  624: '/images/v3/lesson-624.png',  // 論理的読解
+  625: '/images/v3/lesson-625.png',  // 英語
+  // キャリア — 面接
+  630: '/images/v3/lesson-630.png',  // 構造化面接とは
+  631: '/images/v3/lesson-631.png',  // 自己紹介・職務要約
+  632: '/images/v3/lesson-632.png',  // 退職理由
+  633: '/images/v3/lesson-633.png',  // 志望動機の語り方
+  634: '/images/v3/lesson-634.png',  // 行動質問にSTAR
+  635: '/images/v3/lesson-635.png',  // 弱み・失敗の語り方
+  636: '/images/v3/lesson-636.png',  // 逆質問
+  637: '/images/v3/lesson-637.png',  // 最終面接
+  // キャリア — 給与・転職交渉
+  640: '/images/v3/lesson-640.png',  // 市場価値を測る
+  641: '/images/v3/lesson-641.png',  // オファー面談
+  642: '/images/v3/lesson-642.png',  // 給与交渉
+  643: '/images/v3/lesson-643.png',  // 内定承諾・辞退
+  644: '/images/v3/lesson-644.png',  // 退職交渉
+  645: '/images/v3/lesson-645.png',  // 引き止め対応
+  646: '/images/v3/lesson-646.png',  // 入社前後
 }
 
 function getHeroImage(category: string, lessonId?: number): string {
