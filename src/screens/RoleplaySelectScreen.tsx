@@ -9,33 +9,13 @@ import { isSaved, toggleSaved } from '../savedItemsStore'
 import { haptic } from '../platform/haptics'
 import { t } from '../i18n'
 import { CHARACTERS, localized, type Character } from '../roleplayCharacters'
+import { CharacterPortrait } from '../components/CharacterPortrait'
 
 interface RoleplaySelectScreenProps {
   onBack: () => void
   onStart: (characterId: string) => void
   /** 旧シグネチャ互換用。ロールプレイは全プラン無制限。 */
   onUpgrade?: () => void
-}
-
-// 画像が無いときの placeholder。アクセントカラーのグラデ + 大きなイニシャル文字。
-function CharacterPortraitPlaceholder({ character, size = 96 }: { character: Character; size?: number }) {
-  return (
-    <div style={{
-      width: size, height: size, borderRadius: '50%',
-      flexShrink: 0,
-      background: `radial-gradient(circle at 30% 30%, color-mix(in srgb, ${character.accentColor} 65%, white) 0%, ${character.accentColor} 100%)`,
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      fontFamily: 'Caveat, "Noto Serif JP", serif',
-      fontSize: size * 0.5,
-      fontWeight: 700,
-      color: 'rgba(255,255,255,0.9)',
-      boxShadow: `0 6px 18px color-mix(in srgb, ${character.accentColor} 35%, transparent)`,
-      letterSpacing: '0.02em',
-      userSelect: 'none',
-    }} aria-hidden="true">
-      {character.initial}
-    </div>
-  )
 }
 
 function CharacterCard({
@@ -79,7 +59,7 @@ function CharacterCard({
       >
         {/* ヘッダー：立ち絵 + 名前 / 役柄 / 時代 */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-          <CharacterPortraitPlaceholder character={character} size={84} />
+          <CharacterPortrait character={character} size={84} expression="neutral" />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-.01em', lineHeight: 1.2 }}>
               {localized(character.name)}

@@ -9,7 +9,8 @@ import { Header } from '../components/platform/Header'
 import { haptic } from '../platform/haptics'
 import { recordActivity } from '../activityLog'
 import { API_BASE } from './apiBase'
-import { getCharacter, buildCharacterSetup, localized, type Character } from '../roleplayCharacters'
+import { getCharacter, buildCharacterSetup, localized } from '../roleplayCharacters'
+import { CharacterPortrait } from '../components/CharacterPortrait'
 
 interface RoleplayChatScreenProps {
   characterId: string
@@ -27,50 +28,6 @@ type SummaryResult = {
 }
 
 const MAX_TURNS = 5
-
-// キャラ立ち絵 placeholder（画像が無い間表示）— 画像が出来たら img タグに差し替え
-function CharacterPortrait({ character, bouncing }: { character: Character; bouncing: boolean }) {
-  const [blink, setBlink] = useState(false)
-  useEffect(() => {
-    let cancelled = false
-    const loop = () => {
-      if (cancelled) return
-      // 4〜6 秒間隔のまばたき
-      const delay = 4000 + Math.random() * 2000
-      setTimeout(() => {
-        if (cancelled) return
-        setBlink(true)
-        setTimeout(() => {
-          if (cancelled) return
-          setBlink(false)
-          loop()
-        }, 120)
-      }, delay)
-    }
-    loop()
-    return () => { cancelled = true }
-  }, [])
-
-  return (
-    <div style={{
-      width: 120, height: 120, borderRadius: '50%',
-      background: `radial-gradient(circle at 30% 30%, color-mix(in srgb, ${character.accentColor} 65%, white) 0%, ${character.accentColor} 100%)`,
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      fontFamily: 'Caveat, "Noto Serif JP", serif',
-      fontSize: 64,
-      fontWeight: 700,
-      color: 'rgba(255,255,255,0.92)',
-      boxShadow: `0 10px 26px color-mix(in srgb, ${character.accentColor} 35%, transparent)`,
-      letterSpacing: '0.02em',
-      userSelect: 'none',
-      transform: bouncing ? 'translateY(-4px)' : 'translateY(0)',
-      transition: 'transform 180ms ease, opacity 100ms ease',
-      opacity: blink ? 0.3 : 1,
-    }} aria-hidden="true">
-      {character.initial}
-    </div>
-  )
-}
 
 export function RoleplayChatScreen({ characterId, onBack }: RoleplayChatScreenProps) {
   const character = getCharacter(characterId)
@@ -256,7 +213,13 @@ export function RoleplayChatScreen({ characterId, onBack }: RoleplayChatScreenPr
             display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
             padding: '8px 16px 4px',
           }}>
-            <CharacterPortrait character={character} bouncing={bouncing} />
+            <CharacterPortrait
+              character={character}
+              size={120}
+              expression={loading ? 'troubled' : finished ? 'smile' : 'neutral'}
+              blinking
+              bouncing={bouncing}
+            />
             <div style={{ fontSize: 13, fontWeight: 700, color: character.accentColor, marginTop: 4 }}>
               {localized(character.role)}
             </div>
