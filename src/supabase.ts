@@ -97,7 +97,9 @@ export async function logout() {
 }
 
 // ローカルストレージから個人データを削除する。UI 永続キー（locale, theme,
-// install-id, onboarded など）は残す。syncService.syncOnLogout と挙動を揃える。
+// install-id, onboarded など）は残す。syncService.syncOnLogout の KEEP_KEYS と
+// 必ず一致させること（過去にこの2つがズレてフラッシュカード・保存コンテンツ・
+// 誤答リスト・guestId・display-name が全部消える事故あり）。
 const LOGOUT_KEEP_KEYS = new Set([
   'logic-locale',
   'logic-theme',
@@ -112,6 +114,13 @@ const LOGOUT_KEEP_KEYS = new Set([
   'logic-tutorial-lesson-done',
   'logic-tutorial-placement-dismissed',
   'logic-tutorial-fab-dismissed',
+  // 次回ログイン時の再構築コストが高いユーザーコンテンツ。
+  // Supabase 同期未整備のうちは消すと完全に失われるので残す。
+  'logic-saved-items',
+  'logic-display-name',
+  'logic-guest-id',
+  'logic-flashcards',
+  'logic-wrong-answers',
 ])
 
 function clearLocalUserData() {
