@@ -14,6 +14,7 @@ export type CourseGroupId =
   | 'creative'       // 発想・創造
   | 'communication'  // 伝える・提案する
   | 'business'       // ビジネス実践
+  | 'career'         // 就職・転職
 
 export type Course = {
   id: string
@@ -38,6 +39,7 @@ const COURSE_GROUPS_JA: CourseGroup[] = [
   { id: 'creative',        label: '発想を広げる',    description: '常識を超えて、新しい切り口を生む' },
   { id: 'communication',   label: '相手を動かす',    description: '提案・面接・ヒアリングで論理を届ける' },
   { id: 'business',        label: '現場で実践する',  description: '戦略・数字・クライアント実務に活かす' },
+  { id: 'career',          label: 'キャリアを築く',  description: '履歴書・適性検査・面接・給与交渉で内定を勝ち取る' },
 ]
 
 const COURSE_GROUPS_EN: CourseGroup[] = [
@@ -46,6 +48,7 @@ const COURSE_GROUPS_EN: CourseGroup[] = [
   { id: 'creative',        label: 'Expand Your Thinking',  description: 'Go beyond convention to create new angles' },
   { id: 'communication',   label: 'Move People',           description: 'Deliver logic through proposals, interviews, and listening' },
   { id: 'business',        label: 'Apply in Practice',     description: 'Strategy, numbers, and client work in the real world' },
+  { id: 'career',          label: 'Build Your Career',     description: 'Resumes, aptitude tests, interviews, and salary negotiation — land the offer' },
 ]
 
 const COURSES_JA: Course[] = [
@@ -358,6 +361,66 @@ const COURSES_JA: Course[] = [
     description: 'クロノタイプ・睡眠・運動・集中の波・自己計測の5レッスンで、自分の体に合った最高の働き方を設計する。',
     image: '/images/v3/course-peak-performance-01.png',
   },
+
+  // ── 履歴書・職務経歴書 ──────────────────────────────
+  {
+    id: 'career-resume-01',
+    title: '通る職務経歴書を書く',
+    category: '履歴書・職務経歴書',
+    group: 'career',
+    lessonIds: [600, 601, 602, 603, 604, 605, 606],
+    level: '初級',
+    description: '採用担当の頭の中・STAR法・定量化・志望動機の3層構造・ATS通過まで、書類選考を突破する実践技術を学ぶ。',
+    image: '/images/v3/course-career-resume-01.png',
+  },
+
+  // ── SPI対策 ─────────────────────────────────────────
+  {
+    id: 'career-spi-01',
+    title: 'SPIを最短で攻略する',
+    category: 'SPI対策',
+    group: 'career',
+    lessonIds: [610, 611, 612, 613, 614, 615, 616],
+    level: '中級',
+    description: '言語・非言語の出題パターンを型で押さえ、損益算・推論・順列組合せまで頻出問題を体系的に攻略する。',
+    image: '/images/v3/course-career-spi-01.png',
+  },
+
+  // ── 玉手箱対策 ──────────────────────────────────────
+  {
+    id: 'career-tamatebako-01',
+    title: '玉手箱を時間内に解き切る',
+    category: '玉手箱対策',
+    group: 'career',
+    lessonIds: [620, 621, 622, 623, 624, 625],
+    level: '中級',
+    description: '四則逆算・図表読み取り・表の空欄推測など、玉手箱特有の出題形式と電卓スピードの作り方を学ぶ。',
+    image: '/images/v3/course-career-tamatebako-01.png',
+  },
+
+  // ── 面接対策 ────────────────────────────────────────
+  {
+    id: 'career-interview-01',
+    title: '面接で内定を引き寄せる',
+    category: '面接対策',
+    group: 'career',
+    lessonIds: [630, 631, 632, 633, 634, 635, 636, 637],
+    level: '中級',
+    description: '構造化面接の評価軸・退職理由・志望動機・逆質問まで、面接官の視点から見た「通る回答」を組み立てる。',
+    image: '/images/v3/course-career-interview-01.png',
+  },
+
+  // ── 給与交渉・退職実務 ──────────────────────────────
+  {
+    id: 'career-salary-01',
+    title: '給与交渉と円満退社を両立する',
+    category: '給与交渉・退職実務',
+    group: 'career',
+    lessonIds: [640, 641, 642, 643, 644, 645, 646],
+    level: '上級',
+    description: '市場価値の測り方・オファー面談・給与交渉・退職手続きまで、内定後から入社までの実務を抜け漏れなく押さえる。',
+    image: '/images/v3/course-career-salary-01.png',
+  },
 ]
 
 // 英訳: id / category / group / lessonIds / level / image は ja と完全に同じ。
@@ -470,6 +533,26 @@ const COURSE_EN_OVERRIDES: Record<string, { title: string; description: string }
   'peak-performance-01': {
     title: 'Work at Your Peak Performance',
     description: 'Five lessons on chronotype, sleep, exercise, focus rhythms, and self-tracking — design your best-fit way of working.',
+  },
+  'career-resume-01': {
+    title: 'Write a Resume That Gets Through',
+    description: 'Master the recruiter mindset, STAR method, quantification, three-layer motivation, and ATS — pass the document screen.',
+  },
+  'career-spi-01': {
+    title: 'Crack the SPI Aptitude Test',
+    description: 'Lock in verbal and non-verbal patterns — profit-loss, inference, permutations, and combinations — by mastering the templates.',
+  },
+  'career-tamatebako-01': {
+    title: 'Finish the Tamatebako in Time',
+    description: 'Learn the four-arithmetic reverse, chart reading, and missing-cell inference unique to Tamatebako — plus how to build calculator speed.',
+  },
+  'career-interview-01': {
+    title: 'Win the Interview',
+    description: 'From structured-interview rubrics to exit reasons, motivation, and reverse questions — craft answers from the interviewer\'s point of view.',
+  },
+  'career-salary-01': {
+    title: 'Negotiate Salary and Exit Gracefully',
+    description: 'Market value, offer meetings, salary negotiation, and resignation — cover the practical work from offer to start date.',
   },
 }
 

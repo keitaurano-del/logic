@@ -19,6 +19,11 @@ const CATEGORY_LABEL_KEY: Record<string, string> = {
   'アナロジー思考': 'category.analogy',
   'システムシンキング': 'category.systems',
   'フェルミ推定': 'category.fermi',
+  '履歴書・職務経歴書': 'category.careerResume',
+  'SPI対策': 'category.careerSpi',
+  '玉手箱対策': 'category.careerTamatebako',
+  '面接対策': 'category.careerInterview',
+  '給与交渉・退職実務': 'category.careerSalary',
   'AI練習': 'completed.cat.aiPractice',
   'デイリー': 'completed.cat.daily',
   '復習': 'completed.cat.review',
@@ -108,7 +113,7 @@ const LESSON_MAP: Record<string, LessonMeta> = {
   'placement-test': { name: '実力診断テスト', category: 'テスト' },
 }
 
-const CAT_ORDER = ['ロジカルシンキング', 'ケース面接', 'クリティカルシンキング', '仮説思考', '課題設定', '論点設定', 'デザインシンキング', 'ラテラルシンキング', 'アナロジー思考', 'システムシンキング', 'AI練習', 'デイリー', '復習', 'テスト']
+const CAT_ORDER = ['ロジカルシンキング', 'ケース面接', 'クリティカルシンキング', '仮説思考', '課題設定', '論点設定', 'デザインシンキング', 'ラテラルシンキング', 'アナロジー思考', 'システムシンキング', '履歴書・職務経歴書', 'SPI対策', '玉手箱対策', '面接対策', '給与交渉・退職実務', 'AI練習', 'デイリー', '復習', 'テスト']
 
 function catColor(cat: string): string {
   const map: Record<string, string> = {
@@ -123,6 +128,11 @@ function catColor(cat: string): string {
     'ラテラルシンキング':     'var(--cat-lateral)',
     'アナロジー思考':         'var(--warning)',
     'システムシンキング':     'var(--cat-logic)',
+    '履歴書・職務経歴書':     'var(--brand)',
+    'SPI対策':                'var(--cat-boki2)',
+    '玉手箱対策':             'var(--cat-boki2)',
+    '面接対策':               'var(--cat-practice)',
+    '給与交渉・退職実務':     'var(--cat-pm)',
     'AI練習':                'var(--warning)',
     'デイリー':              'var(--md-sys-color-error)',
     '復習':                  'var(--cat-review)',

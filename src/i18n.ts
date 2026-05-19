@@ -487,6 +487,11 @@ const STRINGS: Record<Locale, Strings> = {
     'category.clientWork': 'クライアントワーク',
     'category.fermi': 'フェルミ推定',
     'category.strategy': '経営戦略',
+    'category.careerResume': '履歴書・職務経歴書',
+    'category.careerSpi': 'SPI対策',
+    'category.careerTamatebako': '玉手箱対策',
+    'category.careerInterview': '面接対策',
+    'category.careerSalary': '給与交渉・退職実務',
 
     // Lesson UI
     'lesson.completedH1': 'レッスン完了！',
@@ -2084,6 +2089,11 @@ const STRINGS: Record<Locale, Strings> = {
     'category.clientWork': 'Client Work',
     'category.fermi': 'Fermi Estimation',
     'category.strategy': 'Business Strategy',
+    'category.careerResume': 'Resume & Career Document',
+    'category.careerSpi': 'SPI Aptitude Test',
+    'category.careerTamatebako': 'Tamatebako Web Test',
+    'category.careerInterview': 'Interview Preparation',
+    'category.careerSalary': 'Salary & Exit',
 
     // Lesson UI
     'lesson.completedH1': 'Lesson complete!',
