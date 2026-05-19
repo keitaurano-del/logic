@@ -106,17 +106,17 @@ function OnboardingAttributeView({ onNext }: { onNext: () => void; onBackToSlide
   const [occupation, setOccupation] = React.useState<Occupation | ''>('')
 
   const stepIdx = STEP_ORDER.indexOf(step)
-  const currentValue = step === 'age' ? age : step === 'gender' ? gender : occupation
-  const isLast = stepIdx === STEP_ORDER.length - 1
   const isFirstStep = stepIdx === 0
 
-  const goNext = () => {
-    if (!currentValue) return
+  // タップで即次の質問へ自動遷移する
+  const handleSelect = <T extends string>(setter: (v: T) => void, nextAge: AgeGroup | '', nextGender: Gender | '', nextOccupation: Occupation | '') => (v: T) => {
+    setter(v)
+    const isLast = stepIdx === STEP_ORDER.length - 1
     if (isLast) {
       saveUserProfile({
-        age: age || undefined,
-        gender: gender || undefined,
-        occupation: occupation || undefined,
+        age: nextAge || undefined,
+        gender: nextGender || undefined,
+        occupation: nextOccupation || undefined,
         completedAt: new Date().toISOString(),
       })
       onNext()
@@ -124,6 +124,10 @@ function OnboardingAttributeView({ onNext }: { onNext: () => void; onBackToSlide
     }
     setStep(STEP_ORDER[stepIdx + 1])
   }
+
+  const onSelectAge = (v: AgeGroup) => handleSelect<AgeGroup>(setAge, v, gender, occupation)(v)
+  const onSelectGender = (v: Gender) => handleSelect<Gender>(setGender, age, v, occupation)(v)
+  const onSelectOccupation = (v: Occupation) => handleSelect<Occupation>(setOccupation, age, gender, v)(v)
 
   const goBack = () => {
     if (stepIdx === 0) return
@@ -150,23 +154,24 @@ function OnboardingAttributeView({ onNext }: { onNext: () => void; onBackToSlide
       fontFamily: "'Noto Sans JP', sans-serif",
       padding: 'calc(env(safe-area-inset-top, 44px) + 16px) 24px calc(env(safe-area-inset-bottom, 24px) + 24px)',
     }}>
-      {/* ヘッダー: 戻る + 進捗（最初の質問では戻るボタン非表示） */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 28 }}>
+      {/* ヘッダー: 戻る（小） + 進捗（最初の質問では非表示） */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 28 }}>
         <button
           onClick={goBack}
           aria-label={t('common.back')}
           disabled={isFirstStep}
           style={{
-            width: 36, height: 36, borderRadius: '50%',
-            background: 'rgba(255,255,255,0.08)', border: 'none',
+            width: 28, height: 28, borderRadius: '50%',
+            background: 'rgba(255,255,255,0.06)', border: 'none',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             cursor: isFirstStep ? 'default' : 'pointer',
-            opacity: isFirstStep ? 0 : 1,
+            opacity: isFirstStep ? 0 : 0.85,
             pointerEvents: isFirstStep ? 'none' : 'auto',
             flexShrink: 0,
+            padding: 0,
           }}
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
         <div style={{ flex: 1, display: 'flex', gap: 6 }}>
           {STEP_ORDER.map((_, i) => (
@@ -192,33 +197,16 @@ function OnboardingAttributeView({ onNext }: { onNext: () => void; onBackToSlide
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {step === 'age' && AGE_ORDER.map(v => (
-            <AttrOption key={v} value={v} label={AGE_LABELS[v]} selected={age === v} onSelect={setAge} />
+            <AttrOption key={v} value={v} label={AGE_LABELS[v]} selected={age === v} onSelect={onSelectAge} />
           ))}
           {step === 'gender' && GENDER_ORDER.map(v => (
-            <AttrOption key={v} value={v} label={GENDER_LABELS[v]} selected={gender === v} onSelect={setGender} />
+            <AttrOption key={v} value={v} label={GENDER_LABELS[v]} selected={gender === v} onSelect={onSelectGender} />
           ))}
           {step === 'occupation' && OCCUPATION_ORDER.map(v => (
-            <AttrOption key={v} value={v} label={OCCUPATION_LABELS[v]} selected={occupation === v} onSelect={setOccupation} />
+            <AttrOption key={v} value={v} label={OCCUPATION_LABELS[v]} selected={occupation === v} onSelect={onSelectOccupation} />
           ))}
         </div>
       </div>
-
-      <button
-        onClick={goNext}
-        disabled={!currentValue}
-        style={{
-          width: '100%', padding: '17px', borderRadius: 16, border: 'none',
-          background: currentValue ? ACCENT : 'rgba(255,255,255,0.1)',
-          color: currentValue ? '#fff' : 'rgba(255,255,255,0.3)',
-          fontSize: 16, fontWeight: 800,
-          cursor: currentValue ? 'pointer' : 'not-allowed',
-          marginTop: 24,
-          boxShadow: currentValue ? `0 8px 24px color-mix(in srgb, ${ACCENT} 31%, transparent)` : 'none',
-          transition: 'all .2s',
-        }}
-      >
-        {isLast ? t('onboarding.attrNextLast') : t('onboarding.attrNext')}
-      </button>
     </div>
   )
 }

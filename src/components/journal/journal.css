@@ -1701,39 +1701,31 @@
   outline-offset: 2px;
 }
 
-/* ── AI assistant button — gradient pill with glow + animated sparkle ── */
+/* ── AI assistant button — 検索ボタンに近い控えめなトーン。微かに brand 寄りで識別性だけ残す ── */
 .journal-ai-btn {
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  /* 2026-05-17: 検索ボタンと同サイズに統一（40px）。SVG は 18px のまま。 */
   width: 40px;
   height: 40px;
   padding: 0;
   border-radius: 50%;
-  border: none;
+  border: 1px solid var(--border-on-dark);
   cursor: pointer;
-  color: #fff;
+  color: color-mix(in srgb, var(--text-on-hero, #fff) 88%, transparent);
   font: inherit;
-  background: linear-gradient(135deg, #6C8EF5 0%, #8B5CF6 50%, #06B6D4 100%);
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.18) inset,
-    0 4px 14px rgba(108, 142, 245, 0.45),
-    0 0 18px rgba(139, 92, 246, 0.35);
+  background: var(--bg-input-on-dark);
   overflow: hidden;
-  transition: transform 0.12s, box-shadow 0.2s;
+  transition: background 0.15s, transform 0.1s;
 }
 
 .journal-ai-btn:hover {
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.28) inset,
-    0 6px 20px rgba(108, 142, 245, 0.6),
-    0 0 24px rgba(139, 92, 246, 0.5);
+  background: color-mix(in srgb, var(--bg-input-on-dark) 60%, var(--text-on-hero) 12%);
 }
 
 .journal-ai-btn:active {
-  transform: scale(0.96);
+  transform: scale(0.95);
 }
 
 .journal-ai-btn:focus-visible {
@@ -1744,43 +1736,16 @@
 .journal-ai-btn__sparkle {
   position: relative;
   z-index: 1;
-  animation: journal-ai-sparkle 2.4s ease-in-out infinite;
-  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.7));
 }
 
 .journal-ai-btn__label {
   position: relative;
   z-index: 1;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
 }
 
+/* pulse 要素は残るが視覚的には無効化（DOM 構造を保ったまま静止） */
 .journal-ai-btn__pulse {
-  position: absolute;
-  inset: -2px;
-  border-radius: inherit;
-  background: linear-gradient(135deg, rgba(108, 142, 245, 0.6), rgba(139, 92, 246, 0.6), rgba(6, 182, 212, 0.6));
-  filter: blur(8px);
-  opacity: 0.6;
-  z-index: 0;
-  animation: journal-ai-pulse 2.6s ease-in-out infinite;
-}
-
-@keyframes journal-ai-sparkle {
-  0%, 100% { transform: rotate(0deg) scale(1); opacity: 1; }
-  45% { transform: rotate(8deg) scale(1.12); opacity: 0.92; }
-  70% { transform: rotate(-4deg) scale(1.04); opacity: 1; }
-}
-
-@keyframes journal-ai-pulse {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 0.85; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .journal-ai-btn__sparkle,
-  .journal-ai-btn__pulse {
-    animation: none;
-  }
+  display: none;
 }
 
 /* ── Search / Goals overlay sheet ───────── */

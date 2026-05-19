@@ -1601,6 +1601,7 @@ const STRINGS: Record<Locale, Strings> = {
 
     // LoadingIndicator
     'loadingIndicator.aria': '読み込み中',
+    'boot.loading': '読み込んでいます…',
 
     // FermiLesson
     'fermiLesson.q1': '日本のコンビニは何店舗あるか?',
@@ -3215,6 +3216,7 @@ const STRINGS: Record<Locale, Strings> = {
 
     // LoadingIndicator
     'loadingIndicator.aria': 'Loading',
+    'boot.loading': 'Loading…',
 
     // FermiLesson
     'fermiLesson.q1': 'How many convenience stores are in Japan?',

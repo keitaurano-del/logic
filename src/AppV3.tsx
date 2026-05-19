@@ -6,6 +6,7 @@ import { RoadmapScreenV3 } from './screens/RoadmapScreenV3'
 import { ProfileScreenV3 } from './screens/ProfileScreenV3'
 import { LessonStoriesScreen } from './screens/LessonStoriesScreen'
 import { LessonCompleteScreen } from './screens/LessonCompleteScreen'
+import { BootLoadingScreen } from './screens/BootLoadingScreen'
 
 // Lazy-load lower-frequency screens to keep initial bundle small.
 const FlashcardsScreen = lazy(() => import('./screens/FlashcardsScreen').then(m => ({ default: m.FlashcardsScreen })))
@@ -360,13 +361,9 @@ function AppV3() {
     }
   }
 
-  // 認証完了前はスプラッシュ表示
+  // 認証完了前はロゴ + 「読み込んでいます…」のロード画面を表示
   if (!authReady) {
-    return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100dvh', background: 'var(--bg-base)' }}>
-        <div style={{ fontSize: 13, color: 'var(--text-muted)', letterSpacing: '0.05em' }}>LOGIC</div>
-      </div>
-    )
+    return <BootLoadingScreen />
   }
 
   // Onboarding: show full-screen, no AppShell
