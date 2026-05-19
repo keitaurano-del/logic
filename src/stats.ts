@@ -1,4 +1,4 @@
-import { pushProgress, getSyncUser } from './syncService'
+import { pushProgress, pushDisplayName, getSyncUser } from './syncService'
 
 const STORAGE_KEY = 'logic-stats'
 
@@ -280,4 +280,7 @@ export function getDisplayName(): string {
 }
 export function setDisplayName(name: string) {
   localStorage.setItem(DISPLAY_NAME_KEY, name)
+  if (getSyncUser()) {
+    pushDisplayName(name).catch(() => { /* fire and forget */ })
+  }
 }

@@ -89,6 +89,36 @@ export async function pullProgress(): Promise<LocalStats | null> {
   }
 }
 
+// ---- 表示名 (profiles.nickname) 同期 ----
+
+export async function pushDisplayName(name: string): Promise<void> {
+  if (!isReady()) return
+  try {
+    await supabase!.from('profiles').upsert({
+      id: _currentUserId,
+      nickname: name,
+      updated_at: new Date().toISOString(),
+    }, { onConflict: 'id' })
+  } catch (e) {
+    console.warn('[sync] pushDisplayName failed:', e)
+  }
+}
+
+export async function pullDisplayName(): Promise<string | null> {
+  if (!isReady()) return null
+  try {
+    const { data, error } = await supabase!
+      .from('profiles')
+      .select('nickname')
+      .eq('id', _currentUserId)
+      .maybeSingle()
+    if (error || !data) return null
+    return (data.nickname as string | null) ?? null
+  } catch {
+    return null
+  }
+}
+
 // ---- Placement 同期 ----
 
 export async function pushPlacement(p: LocalPlacement): Promise<void> {
@@ -207,6 +237,15 @@ export async function syncOnLogin(userId: string): Promise<void> {
     // リモートにpush
     await pushProgress(merged)
 
+    // 表示名: リモート優先で同期（リモートあればローカルに反映、なければローカル送信）
+    const remoteDisplayName = await pullDisplayName()
+    const localDisplayName = localStorage.getItem('logic-display-name') || ''
+    if (remoteDisplayName && remoteDisplayName !== localDisplayName) {
+      localStorage.setItem('logic-display-name', remoteDisplayName)
+    } else if (!remoteDisplayName && localDisplayName) {
+      await pushDisplayName(localDisplayName)
+    }
+
     // Placement も同様
     const localPlacementRaw = localStorage.getItem('logic-placement')
     const localPlacement: LocalPlacement | null = localPlacementRaw
@@ -275,6 +314,13 @@ export async function syncOnLogout(): Promise<void> {
     'logic-tutorial-lesson-done',
     'logic-tutorial-placement-dismissed',
     'logic-tutorial-fab-dismissed',
+    // 次回ログイン時の再構築コストが高いユーザーコンテンツも保持。
+    // Supabase 同期未整備のうちは消すと完全に失われる。
+    'logic-saved-items',
+    'logic-display-name',
+    'logic-guest-id',
+    'logic-flashcards',
+    'logic-wrong-answers',
   ])
   try {
     const keys: string[] = []
