@@ -1,272 +1,154 @@
+// ロールプレイ画面：キャラ（哲学者）一覧
+// 2026-05-19 シチュエーション軸 → キャラ軸に全面リプレース。
+// 画像が無い間は CSS placeholder（アクセントカラーのグラデ + イニシャル）で表示する。
+
 import { useState } from 'react'
-import { getSituations, type Situation, type SituationCategory } from '../situations'
 import { ArrowLeftIcon, BookmarkIcon, BookmarkFilledIcon } from '../icons'
 import { IconButton } from '../components/IconButton'
 import { isSaved, toggleSaved } from '../savedItemsStore'
 import { haptic } from '../platform/haptics'
 import { t } from '../i18n'
+import { CHARACTERS, localized, type Character } from '../roleplayCharacters'
 
 interface RoleplaySelectScreenProps {
   onBack: () => void
-  onStart: (situationId: string) => void
-  /** 旧シグネチャ互換のため受け取るが、ロールプレイは全プラン無制限なので使われない */
+  onStart: (characterId: string) => void
+  /** 旧シグネチャ互換用。ロールプレイは全プラン無制限。 */
   onUpgrade?: () => void
 }
 
-function getDiffLabel(): Record<string, string> {
-  return {
-    beginner: t('roleplaySelect.diff.beginner'),
-    intermediate: t('roleplaySelect.diff.intermediate'),
-    advanced: t('roleplaySelect.diff.advanced'),
-  }
-}
-
-const DIFF_COLOR: Record<string, string> = {
-  beginner: '#34D399',
-  intermediate: '#D97706',
-  advanced: 'var(--md-sys-color-error)',
-}
-
-// カテゴリ別SVGアイコン（絵文字なし）
-function SituationIcon({ id, size = 22 }: { id: string; size?: number }) {
-  const s = `${size}`
-  if (id === 'why-so-report') return (
-    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="var(--md-sys-color-primary)" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-      <rect x="2" y="3" width="20" height="14" rx="2"/>
-      <line x1="8" y1="21" x2="16" y2="21"/>
-      <line x1="12" y1="17" x2="12" y2="21"/>
-    </svg>
-  )
-  if (id === 'mece-meeting') return (
-    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-      <circle cx="9" cy="7" r="4"/>
-      <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-      <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-    </svg>
-  )
-  if (id === 'pyramid-client') return (
-    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="#7C3AED" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-      <path d="M21.21 15.89A10 10 0 1 1 8 2.83"/>
-      <path d="M22 12A10 10 0 0 0 12 2v10z"/>
-    </svg>
-  )
-  if (id === 'logic-tree-sub') return (
-    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="#D97706" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-      <line x1="12" y1="2" x2="12" y2="8"/>
-      <path d="M12 8C9 8 6 10 6 13v1M12 8c3 0 6 2 6 5v1"/>
-      <circle cx="6" cy="17" r="2"/>
-      <circle cx="18" cy="17" r="2"/>
-      <circle cx="12" cy="2" r="2"/>
-    </svg>
-  )
-  if (id === 'socrates-dialog') return (
-    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="var(--md-sys-color-primary)" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-    </svg>
-  )
-  if (id === 'descartes-doubt') return (
-    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="#7C3AED" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-      <circle cx="12" cy="12" r="10"/>
-      <path d="M12 8v4M12 16h.01"/>
-    </svg>
-  )
-  if (id === 'nietzsche-values') return (
-    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-      <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-    </svg>
-  )
-  // default
+// 画像が無いときの placeholder。アクセントカラーのグラデ + 大きなイニシャル文字。
+function CharacterPortraitPlaceholder({ character, size = 96 }: { character: Character; size?: number }) {
   return (
-    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="var(--md-sys-color-primary)" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-    </svg>
+    <div style={{
+      width: size, height: size, borderRadius: '50%',
+      flexShrink: 0,
+      background: `radial-gradient(circle at 30% 30%, color-mix(in srgb, ${character.accentColor} 65%, white) 0%, ${character.accentColor} 100%)`,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      fontFamily: 'Caveat, "Noto Serif JP", serif',
+      fontSize: size * 0.5,
+      fontWeight: 700,
+      color: 'rgba(255,255,255,0.9)',
+      boxShadow: `0 6px 18px color-mix(in srgb, ${character.accentColor} 35%, transparent)`,
+      letterSpacing: '0.02em',
+      userSelect: 'none',
+    }} aria-hidden="true">
+      {character.initial}
+    </div>
   )
 }
 
-const ICON_BG: Record<string, string> = {
-  'why-so-report': 'rgba(112,216,189,.14)',
-  'mece-meeting': 'rgba(112,216,189,.14)',
-  'pyramid-client': 'rgba(165,180,252,.14)',
-  'logic-tree-sub': 'rgba(244,162,97,.14)',
-  'socrates-dialog': 'rgba(196,181,253,.14)',
-  'descartes-doubt': 'rgba(196,181,253,.14)',
-  'nietzsche-values': 'rgba(196,181,253,.14)',
-}
-
-// シナリオごとの表現画像（ロールプレイ専用サムネ：Caveat Bold + オレンジ下線で統一）
-const SCENARIO_IMAGE: Record<string, string> = {
-  'why-so-report': '/images/v3/roleplay-why-so-report.png',
-  'mece-meeting': '/images/v3/roleplay-mece-meeting.png',
-  'pyramid-client': '/images/v3/roleplay-pyramid-client.png',
-  'logic-tree-sub': '/images/v3/roleplay-logic-tree-sub.png',
-  'socrates-dialog': '/images/v3/roleplay-socrates-dialog.png',
-  'descartes-doubt': '/images/v3/roleplay-descartes-doubt.png',
-  'nietzsche-values': '/images/v3/roleplay-nietzsche-values.png',
-}
-
-function getCategoryLabels(): Record<SituationCategory, string> {
-  return {
-    business: t('roleplaySelect.cat.business'),
-    philosophy: t('roleplaySelect.cat.philosophy'),
-  }
-}
-
-function SituationCard({
-  s,
+function CharacterCard({
+  character,
   onClick,
 }: {
-  s: Situation
+  character: Character
   onClick: () => void
 }) {
-  const DIFF_LABEL = getDiffLabel()
-  // 2026-05-15 単一有料プラン化: ロールプレイは全プラン無制限解放
-  const locked = false
-  const comingSoon = false // 哲学者シリーズも開放
-
-  const [saved, setSaved] = useState<boolean>(() => isSaved('roleplay', s.id))
-  const image = SCENARIO_IMAGE[s.id]
+  const [saved, setSaved] = useState<boolean>(() => isSaved('roleplay', character.id))
 
   const handleToggleSave = () => {
     haptic.light()
     const next = toggleSaved({
       type: 'roleplay',
-      refId: s.id,
-      title: s.title,
-      subtitle: s.partnerRole,
-      image,
+      refId: character.id,
+      title: localized(character.name),
+      subtitle: localized(character.role),
     })
     setSaved(next)
   }
 
   return (
     <div style={{ position: 'relative' }}>
-    <button
-      onClick={comingSoon ? undefined : onClick}
-      disabled={comingSoon}
-      style={{
-        background: 'var(--bg-card)',
-        border: `1.5px solid ${comingSoon ? `color-mix(in srgb, var(--brand) 7%, transparent)` : `color-mix(in srgb, var(--brand) 9%, transparent)`}`,
-        borderRadius: 16,
-        padding: 0,
-        cursor: comingSoon ? 'default' : 'pointer',
-        textAlign: 'left',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 0,
-        opacity: comingSoon ? 0.55 : 1,
-        width: '100%',
-        overflow: 'hidden',
-        transition: 'border-color .15s, transform .12s',
-      }}
-    >
-      {/* 表現画像 */}
-      {image && (
-        <div style={{ width: '100%', height: 96, overflow: 'hidden', position: 'relative' }}>
-          <img src={image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(8,33,33,0) 50%, rgba(8,33,33,.55) 100%)' }} />
-          {/* アイコンを画像上に重ねる */}
-          <div style={{
-            position: 'absolute', bottom: 8, left: 12,
-            width: 36, height: 36, borderRadius: 10, flexShrink: 0,
-            background: ICON_BG[s.id] ?? 'rgba(112,216,189,.18)',
-            backdropFilter: 'blur(6px)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            <SituationIcon id={s.id} size={18} />
-          </div>
-        </div>
-      )}
-
-      {/* テキスト部 SCRUM-179: 文字サイズ改善・重複整理 */}
-      <div style={{ padding: '14px 16px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
-            <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--brand)', letterSpacing: '.04em' }}>
-              {s.partnerRole}
-            </span>
-            <span style={{
-              fontSize: 14, fontWeight: 700, padding: '2px 7px', borderRadius: 99,
-              background: `color-mix(in srgb, var(--brand) 9%, transparent)`, color: DIFF_COLOR[s.difficulty] ?? 'var(--text-secondary)',
-            }}>
-              {DIFF_LABEL[s.difficulty] ?? s.difficulty}
-            </span>
-          </div>
-          <div style={{ fontSize: 17, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 6, lineHeight: 1.35 }}>
-            {s.title}
-          </div>
-          <div style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: 8 }}>
-            {s.goal}
-          </div>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: `color-mix(in srgb, var(--brand) 8%, transparent)`, borderRadius: 8, padding: '4px 10px' }}>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={'var(--brand)'} strokeWidth="2" aria-hidden="true"><path d="M9 11l3 3L22 4"/></svg>
-            <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--brand)' }}>{s.frameworkLabel}</span>
-          </div>
-        </div>
-
-        {/* 右端のバッジ / 矢印 */}
-        {comingSoon ? (
-          <span style={{
-            flexShrink: 0, fontSize: 14, fontWeight: 700, padding: '3px 8px',
-            borderRadius: 99, background: `color-mix(in srgb, var(--brand) 7%, transparent)`, color: 'var(--text-muted)',
-            alignSelf: 'flex-start', whiteSpace: 'nowrap',
-          }}>
-            {t('roleplaySelect.comingSoon')}
-          </span>
-        ) : locked ? (
-          <span style={{
-            flexShrink: 0, fontSize: 14, fontWeight: 700, padding: '3px 8px',
-            borderRadius: 99, background: `color-mix(in srgb, var(--brand) 16%, transparent)`, color: 'var(--brand)',
-            alignSelf: 'flex-start', whiteSpace: 'nowrap',
-          }}>
-            {t('roleplaySelect.proBadge')}
-          </span>
-        ) : (
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2.5" strokeLinecap="round" style={{ flexShrink: 0, alignSelf: 'center' }} aria-hidden="true">
-            <polyline points="9 18 15 12 9 6"/>
-          </svg>
-        )}
-      </div>
-    </button>
-    {/* 保存ボタン: 親 <button> の外に配置して nested-interactive を回避 */}
-    {image && (
       <button
         type="button"
-        onClick={(e) => { e.stopPropagation(); handleToggleSave() }}
+        onClick={onClick}
+        style={{
+          width: '100%',
+          background: 'var(--bg-card)',
+          border: `1.5px solid color-mix(in srgb, ${character.accentColor} 20%, transparent)`,
+          borderRadius: 18,
+          padding: '16px 16px 18px',
+          cursor: 'pointer',
+          textAlign: 'left',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 14,
+          transition: 'border-color .15s, transform .12s',
+        }}
+      >
+        {/* ヘッダー：立ち絵 + 名前 / 役柄 / 時代 */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+          <CharacterPortraitPlaceholder character={character} size={84} />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-.01em', lineHeight: 1.2 }}>
+              {localized(character.name)}
+            </div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: character.accentColor, marginTop: 4 }}>
+              {localized(character.role)}
+            </div>
+            <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
+              {localized(character.era)}
+            </div>
+          </div>
+        </div>
+
+        {/* 紹介文 */}
+        <div style={{
+          fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6,
+          paddingLeft: 12,
+          borderLeft: `2px solid color-mix(in srgb, ${character.accentColor} 35%, transparent)`,
+        }}>
+          {localized(character.intro)}
+        </div>
+
+        {/* 口グセ */}
+        <div style={{
+          fontSize: 14, fontStyle: 'italic',
+          color: 'var(--text-primary)',
+          background: `color-mix(in srgb, ${character.accentColor} 8%, transparent)`,
+          padding: '8px 12px', borderRadius: 10,
+          fontFamily: '"Noto Serif JP", serif',
+        }}>
+          &ldquo;{localized(character.catchphrase)}&rdquo;
+        </div>
+
+        {/* CTA */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 2 }}>
+          <span style={{ fontSize: 13, fontWeight: 700, color: character.accentColor }}>
+            {t('roleplaySelect.start')}
+          </span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={character.accentColor} strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </div>
+      </button>
+
+      {/* 保存ボタン（親 button の外に置いて nested-interactive 回避） */}
+      <button
+        type="button"
+        onClick={handleToggleSave}
         aria-label={saved ? t('roleplaySelect.unsaveAria') : t('roleplaySelect.saveAria')}
         aria-pressed={saved}
         style={{
-          position: 'absolute', top: 8, right: 8,
+          position: 'absolute', top: 12, right: 12,
           width: 32, height: 32, borderRadius: '50%',
-          background: 'rgba(8,33,33,0.55)',
-          backdropFilter: 'blur(6px)',
+          background: saved ? `color-mix(in srgb, ${character.accentColor} 18%, transparent)` : 'transparent',
           border: 'none',
           display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
           cursor: 'pointer',
-          color: saved ? 'var(--brand)' : '#fff',
+          color: saved ? character.accentColor : 'var(--text-muted)',
           WebkitTapHighlightColor: 'transparent',
           zIndex: 2,
         }}
       >
         {saved ? <BookmarkFilledIcon width={16} height={16} /> : <BookmarkIcon width={16} height={16} />}
       </button>
-    )}
     </div>
   )
 }
 
 export function RoleplaySelectScreen({ onBack, onStart, onUpgrade: _onUpgrade }: RoleplaySelectScreenProps) {
-  const CATEGORY_LABELS = getCategoryLabels()
-
-  const situations = getSituations()
-  const businessSituations = situations.filter((s) => s.category === 'business')
-  const philosophySituations = situations.filter((s) => s.category === 'philosophy')
-
-  const handleClick = (s: Situation) => {
-    // 2026-05-15: ロールプレイは全プラン無制限。premium / quota チェックは廃止
-    onStart(s.id)
-  }
-
   return (
     <div style={{ display: 'flex', flexDirection: 'column', padding: '16px 16px 40px', background: 'var(--bg-primary)', minHeight: '100vh', color: 'var(--text-primary)', fontFamily: "'Noto Sans JP', sans-serif" }}>
       {/* ヘッダー */}
@@ -275,54 +157,49 @@ export function RoleplaySelectScreen({ onBack, onStart, onUpgrade: _onUpgrade }:
           <ArrowLeftIcon />
         </IconButton>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-.02em' }}>
-            {t('roleplaySelect.title')}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-.02em' }}>
+              {t('roleplaySelect.title')}
+            </div>
+            <span style={{
+              background: 'color-mix(in srgb, var(--brand) 15%, transparent)',
+              color: 'var(--brand)',
+              borderRadius: 99, padding: '2px 8px',
+              fontSize: 10, fontWeight: 800, letterSpacing: '0.06em',
+            }}>{t('roleplay.beta')}</span>
           </div>
-          <div style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 1 }}>
+          <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 2 }}>
             {t('roleplaySelect.subtitle')}
           </div>
         </div>
       </div>
 
-      {/* ビジネス思考 */}
-      <div style={{ marginBottom: 24 }}>
+      {/* 哲学者カード一覧 */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 24 }}>
         <div style={{
-          fontSize: 14, fontWeight: 800, letterSpacing: '.1em', textTransform: 'uppercase',
-          color: 'var(--text-muted)', marginBottom: 12,
+          fontSize: 12, fontWeight: 800, letterSpacing: '.1em', textTransform: 'uppercase',
+          color: 'var(--text-muted)',
         }}>
-          {CATEGORY_LABELS.business}
+          {t('roleplaySelect.heading')}
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {businessSituations.map((s) => (
-            <SituationCard
-              key={s.id}
-              s={s}
-              onClick={() => handleClick(s)}
-            />
-          ))}
-        </div>
+        {CHARACTERS.map((c) => (
+          <CharacterCard
+            key={c.id}
+            character={c}
+            onClick={() => onStart(c.id)}
+          />
+        ))}
       </div>
 
-      {/* 哲学・思考実験（coming soon） */}
-      {philosophySituations.length > 0 && (
-        <div>
-          <div style={{
-            fontSize: 14, fontWeight: 800, letterSpacing: '.1em', textTransform: 'uppercase',
-            color: 'var(--text-muted)', marginBottom: 12,
-          }}>
-            {CATEGORY_LABELS.philosophy}
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            {philosophySituations.map((s) => (
-              <SituationCard
-                key={s.id}
-                s={s}
-                onClick={() => handleClick(s)}
-              />
-            ))}
-          </div>
-        </div>
-      )}
+      {/* Live2D 注釈 */}
+      <div style={{
+        fontSize: 11, color: 'var(--text-muted)', textAlign: 'center',
+        padding: '12px 16px', borderRadius: 10,
+        background: `color-mix(in srgb, var(--brand) 4%, transparent)`,
+        lineHeight: 1.6,
+      }}>
+        {t('roleplay.live2dNote')}
+      </div>
     </div>
   )
 }

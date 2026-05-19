@@ -542,6 +542,8 @@ const STRINGS: Record<Locale, Strings> = {
     'roleplay.scoringDesc': 'AIがあなたの対話を評価しています',
     'roleplay.scoreComplete': '採点完了',
     'roleplay.improvementsLabel': '改善点',
+    'roleplay.live2dNote': '※キャラクターアニメーションは今後 Live2D に進化予定です',
+    'roleplay.beta': 'BETA',
     'roleplay.backToOther': '別のシナリオに戻る',
 
     // Coffee Break
@@ -1068,7 +1070,11 @@ const STRINGS: Record<Locale, Strings> = {
 
     // RoleplaySelect
     'roleplaySelect.title': 'ロールプレイ',
-    'roleplaySelect.subtitle': '実践的な思考力を鍛える',
+    'roleplaySelect.subtitle': '哲学者と対話して、自分の思考を問い直す',
+    'roleplaySelect.heading': '哲学者を選ぶ',
+    'roleplaySelect.start': 'この哲学者と対話する',
+    'roleplaySelect.intro': '紹介',
+    'roleplaySelect.catchphrase': '口グセ',
     'roleplaySelect.remaining': '今月の残り回数',
     'roleplaySelect.diff.beginner': '初級',
     'roleplaySelect.diff.intermediate': '中級',
@@ -2165,6 +2171,8 @@ const STRINGS: Record<Locale, Strings> = {
     'roleplay.scoringDesc': 'AI is evaluating your conversation',
     'roleplay.scoreComplete': 'Scoring complete',
     'roleplay.improvementsLabel': 'Improvements',
+    'roleplay.live2dNote': '* Character animation will evolve to Live2D in a future update.',
+    'roleplay.beta': 'BETA',
     'roleplay.backToOther': 'Back to another scenario',
 
     // Coffee Break
@@ -2691,7 +2699,11 @@ const STRINGS: Record<Locale, Strings> = {
 
     // RoleplaySelect
     'roleplaySelect.title': 'Roleplay',
-    'roleplaySelect.subtitle': 'Train practical thinking skills',
+    'roleplaySelect.subtitle': 'Talk with a philosopher and question your own thinking',
+    'roleplaySelect.heading': 'Pick a philosopher',
+    'roleplaySelect.start': 'Talk with this philosopher',
+    'roleplaySelect.intro': 'About',
+    'roleplaySelect.catchphrase': 'Signature line',
     'roleplaySelect.remaining': 'Remaining this month',
     'roleplaySelect.diff.beginner': 'Beginner',
     'roleplaySelect.diff.intermediate': 'Intermediate',
