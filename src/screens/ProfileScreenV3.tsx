@@ -5,7 +5,8 @@
 import { useState } from 'react'
 import { getCompletedCount, getLessonStreak, getXp, getCompletedLessons, getXpLogThisMonth, XP_EVENT_LABEL, XP_REWARDS } from '../stats'
 import { getAllLessonsFlat } from '../lessonData'
-import { getCurrentLevel, getXpProgress, getTitleKeyForLevel, MAX_LEVEL } from './homeHelpers'
+import { getCurrentLevel, getXpProgress, getTitleKeyForLevel, getTitleI18nKey, getBadgeImagePath, MAX_LEVEL } from './homeHelpers'
+import { TitleBadgeSheet } from '../components/TitleBadgeSheet'
 import { logout } from '../supabase'
 import { getSubscriptionState } from '../subscription'
 import { getStudyDates as _getStudyDatesArr } from '../stats'
@@ -38,11 +39,13 @@ type Sheet = null | 'streak' | 'lessons' | 'xp'
 export function ProfileScreenV3(props: ProfileScreenV3Props) {
   const { userName, onOpenAccount, onOpenNotifications, onOpenAppearance, onOpenFeedback, onOpenPricing, onOpenPlacementTest, onOpenLesson, onOpenLanguage } = props
   const [sheet, setSheet] = useState<Sheet>(null)
+  const [titleSheetOpen, setTitleSheetOpen] = useState(false)
   const streak = getLessonStreak()
   const completed = getCompletedCount()
   const xp = getXp()
   const lv = getCurrentLevel(xp)
   const { pct: levelPct, current: levelXp, needed } = getXpProgress(xp)
+  const currentTitleKey = getTitleKeyForLevel(lv.level)
 
   const handleLogout = async () => {
     await logout()
@@ -55,41 +58,79 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
       <div style={{ background: 'var(--hero-grad-dark)', padding: 'calc(env(safe-area-inset-top, 44px) + 14px) 20px 56px', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', right: -50, top: -50, width: 200, height: 200, borderRadius: '50%', background: 'rgba(108,142,245,0.10)', filter: 'blur(40px)', pointerEvents: 'none' }}></div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 18, position: 'relative', zIndex: 1 }}>
-          <div className="profile-avatar" style={{ width: 64, height: 64, borderRadius: '50%', background: `linear-gradient(135deg, var(--brand), var(--brand-light))`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Inter Tight', sans-serif", fontSize: 26, fontWeight: 900, color: 'var(--text-on-hero)', boxShadow: `0 0 24px rgba(108,142,245,0.4)` }}>
-            {(userName || 'G').slice(0, 1).toUpperCase()}
-          </div>
+          <button
+            type="button"
+            aria-label={t('profile.titleSheet.heading')}
+            onClick={() => setTitleSheetOpen(true)}
+            style={{
+              width: 72, height: 72,
+              padding: 0,
+              border: 'none',
+              background: 'transparent',
+              cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              flexShrink: 0,
+            }}
+          >
+            <img
+              src={getBadgeImagePath(currentTitleKey)}
+              alt={t(getTitleI18nKey(currentTitleKey))}
+              style={{ width: 68, height: 68, objectFit: 'contain', filter: `drop-shadow(0 3px 10px ${lv.color}80)` }}
+            />
+          </button>
           <div style={{ flex: 1 }}>
             <div className="profile-hero-name" style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, letterSpacing: '-.02em', marginBottom: 2, color: 'var(--text-on-hero)' }}>{userName}</div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+            <button
+              type="button"
+              onClick={() => setTitleSheetOpen(true)}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap',
+                background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+                fontFamily: 'inherit', textAlign: 'left',
+              }}
+            >
               <span style={{ fontSize: 14, color: lv.color, fontWeight: 700, letterSpacing: '.01em' }}>
-                {t(`profile.title.${getTitleKeyForLevel(lv.level)}`)}
+                {t(getTitleI18nKey(currentTitleKey))}
               </span>
               {lv.level === MAX_LEVEL && (
                 <span aria-hidden="true" style={{ fontSize: 13 }}>★</span>
               )}
-            </div>
+            </button>
           </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8, position: 'relative', zIndex: 1 }}>
-          <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '.12em', textTransform: 'uppercase' }}>{t('profile.level')}</span>
-          <span style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 900, letterSpacing: '-.02em', color: 'var(--text-on-hero)' }}>Lv.{lv.level} / {MAX_LEVEL}</span>
-        </div>
-        <div style={{ height: 12, background: 'var(--border-on-dark)', borderRadius: 99, overflow: 'hidden', marginBottom: 8, position: 'relative', zIndex: 1 }}>
-          <div style={{ height: '100%', width: `${levelPct}%`, background: lv.color, borderRadius: 99, boxShadow: `0 0 12px ${lv.color}88` }}></div>
-        </div>
-        <div style={{ fontSize: 14, color: 'var(--text-secondary)', fontWeight: 500, textAlign: 'right', position: 'relative', zIndex: 1 }}>
-          {lv.level === MAX_LEVEL
-            ? t('profile.maxLevelReached')
-            : t('profile.toNextLevel', { xp: String(Math.max(0, needed - levelXp)) })}
-        </div>
+        <button
+          type="button"
+          aria-label={t('profile.titleSheet.heading')}
+          onClick={() => setTitleSheetOpen(true)}
+          style={{
+            display: 'block', width: '100%',
+            padding: 0, border: 'none', background: 'transparent', cursor: 'pointer',
+            fontFamily: 'inherit', textAlign: 'left',
+            position: 'relative', zIndex: 1,
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginBottom: 8 }}>
+            <span style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 900, letterSpacing: '-.02em', color: 'var(--text-on-hero)' }}>Lv.{lv.level}</span>
+          </div>
+          <div style={{ height: 12, background: 'var(--border-on-dark)', borderRadius: 99, overflow: 'hidden', marginBottom: 8 }}>
+            <div style={{ height: '100%', width: `${levelPct}%`, background: lv.color, borderRadius: 99, boxShadow: `0 0 12px ${lv.color}88` }}></div>
+          </div>
+          <div style={{ fontSize: 14, color: 'var(--text-secondary)', fontWeight: 500, textAlign: 'right' }}>
+            {lv.level === MAX_LEVEL
+              ? t('profile.maxLevelReached')
+              : t('profile.toNextLevel', { xp: String(Math.max(0, needed - levelXp)) })}
+          </div>
+        </button>
       </div>
 
       {/* Stats grid — タップで詳細シート */}
       <div className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8, marginTop: -28, position: 'relative', zIndex: 2, padding: '0 20px' }}>
         <StatCard val={String(streak)} label={t('profile.statStreakDays')} highlight={streak > 0} onClick={() => setSheet('streak')} />
         <StatCard val={String(completed)} label={t('profile.statCompleted')} onClick={() => setSheet('lessons')} />
-        <StatCard val={xp.toLocaleString()} label={t('profile.totalXp')} onClick={() => setSheet('xp')} />
+        <StatCard val={xp.toLocaleString()} label={t('profile.totalXp')} onClick={() => setTitleSheetOpen(true)} />
       </div>
+
+      {titleSheetOpen && <TitleBadgeSheet xp={xp} onClose={() => setTitleSheetOpen(false)} />}
 
       <div style={{ flex: 1, padding: '16px 16px 100px', display: 'flex', flexDirection: 'column', gap: 14 }}>
         {/* 今週の学習サマリー */}

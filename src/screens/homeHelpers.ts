@@ -260,32 +260,49 @@ export function getXpProgress(xp: number): { pct: number; current: number; neede
 }
 
 // ============================================================
-// 称号システム — レベル帯ごとに RPG 調の肩書きを返す
-// プロフィール表示などで使用。i18n の profile.title.* キー側を併用する。
+// 称号システム — 16 段階（5 帯×3 サブランク + 頂）
+// バッジ画像は public/images/v3/badges/badge-<key>.png
+// 称号文言は i18n の profile.title.<key> （key の "-" は "_" に置換）
 // ============================================================
 export type TitleKey =
-  | 'novice'      // Lv 1-9
-  | 'apprentice'  // Lv 10-19
-  | 'logician'    // Lv 20-29
-  | 'adept'       // Lv 30-39
-  | 'knight'      // Lv 40-49
-  | 'master'      // Lv 50-59
-  | 'mage'        // Lv 60-69
-  | 'sageInit'    // Lv 70-79
-  | 'sage'        // Lv 80-89
-  | 'sovereign'   // Lv 90-99
-  | 'apex'        // Lv 100
+  | 'novice-1' | 'novice-2' | 'novice-3'         // Lv  1-19  銅/ブロンズ帯
+  | 'logician-1' | 'logician-2' | 'logician-3'    // Lv 20-39  銀帯
+  | 'knight-1' | 'knight-2' | 'knight-3'          // Lv 40-59  磨銀+淡金帯
+  | 'mage-1' | 'mage-2' | 'mage-3'                // Lv 60-79  金+翼帯
+  | 'sage-1' | 'sage-2' | 'sage-3'                // Lv 80-99  プラチナ+宝石帯
+  | 'apex'                                         // Lv 100    頂
+
+export const TITLE_TIERS: ReadonlyArray<{ key: TitleKey; min: number; max: number }> = [
+  { key: 'novice-1',   min:   1, max:   6 },
+  { key: 'novice-2',   min:   7, max:  13 },
+  { key: 'novice-3',   min:  14, max:  19 },
+  { key: 'logician-1', min:  20, max:  26 },
+  { key: 'logician-2', min:  27, max:  33 },
+  { key: 'logician-3', min:  34, max:  39 },
+  { key: 'knight-1',   min:  40, max:  46 },
+  { key: 'knight-2',   min:  47, max:  53 },
+  { key: 'knight-3',   min:  54, max:  59 },
+  { key: 'mage-1',     min:  60, max:  66 },
+  { key: 'mage-2',     min:  67, max:  73 },
+  { key: 'mage-3',     min:  74, max:  79 },
+  { key: 'sage-1',     min:  80, max:  86 },
+  { key: 'sage-2',     min:  87, max:  93 },
+  { key: 'sage-3',     min:  94, max:  99 },
+  { key: 'apex',       min: 100, max: 100 },
+]
 
 export function getTitleKeyForLevel(level: number): TitleKey {
-  if (level >= MAX_LEVEL) return 'apex'
-  if (level >= 90) return 'sovereign'
-  if (level >= 80) return 'sage'
-  if (level >= 70) return 'sageInit'
-  if (level >= 60) return 'mage'
-  if (level >= 50) return 'master'
-  if (level >= 40) return 'knight'
-  if (level >= 30) return 'adept'
-  if (level >= 20) return 'logician'
-  if (level >= 10) return 'apprentice'
-  return 'novice'
+  for (const t of TITLE_TIERS) {
+    if (level >= t.min && level <= t.max) return t.key
+  }
+  return level >= MAX_LEVEL ? 'apex' : 'novice-1'
+}
+
+export function getBadgeImagePath(key: TitleKey): string {
+  return `/images/v3/badges/badge-${key}.png`
+}
+
+/** i18n キー名は kebab → underscore（例: 'novice-1' → 'profile.title.novice_1'） */
+export function getTitleI18nKey(key: TitleKey): string {
+  return `profile.title.${key.replace(/-/g, '_')}`
 }
