@@ -513,25 +513,49 @@
 
 .journal-cal-fab-sub {
   position: absolute;
-  right: 4px;
-  bottom: 4px;
-  width: 48px;
-  height: 48px;
+  right: 0;
+  bottom: 0;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
-  background: var(--bg-card, #fff);
-  border: 1px solid var(--border, rgba(0,0,0,.1));
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  background: #fff;
+  border: 2px solid var(--brand);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.32), 0 2px 6px rgba(0, 0, 0, 0.18);
+  color: var(--brand);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   padding: 0;
-  font-size: 22px;
+  font-size: 26px;
+  line-height: 1;
   z-index: 1;
   opacity: 0;
   transform: translateY(0) scale(0.6);
   pointer-events: none;
   transition: opacity 0.18s ease, transform 0.22s cubic-bezier(0.2, 0.8, 0.3, 1.2);
+}
+
+/* 展開時にラベルを左側に出す */
+.journal-cal-fab-sub::before {
+  content: attr(data-label);
+  position: absolute;
+  right: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(20, 20, 30, 0.92);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.16s ease 0.04s;
+}
+.journal-cal-fab-stack--open .journal-cal-fab-sub::before {
+  opacity: 1;
 }
 
 .journal-cal-fab-stack--open .journal-cal-fab-sub {
@@ -540,27 +564,43 @@
 }
 
 .journal-cal-fab-sub--morning {
-  /* 上に出る（朝が一番上） */
   transform: translateY(0) scale(0.6);
 }
 .journal-cal-fab-stack--open .journal-cal-fab-sub--morning {
-  transform: translateY(-140px) scale(1);
+  transform: translateY(-150px) scale(1);
 }
 
 .journal-cal-fab-sub--evening {
   transform: translateY(0) scale(0.6);
 }
 .journal-cal-fab-stack--open .journal-cal-fab-sub--evening {
-  transform: translateY(-72px) scale(1);
+  transform: translateY(-74px) scale(1);
 }
 
 .journal-cal-fab-sub:focus-visible {
   outline: 2px solid var(--brand);
-  outline-offset: 2px;
+  outline-offset: 3px;
 }
 
 .journal-cal-fab-sub:active {
   filter: brightness(0.95);
+  transform-origin: center;
+}
+
+/* 開いている間、背後を薄暗くしてサブボタンを浮き上がらせる */
+.journal-cal-fab-stack--open::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+  z-index: -1;
+  pointer-events: none;
+  animation: journal-fab-scrim-in 0.18s ease both;
+}
+
+@keyframes journal-fab-scrim-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .journal-cal-fab:hover {

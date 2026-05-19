@@ -117,7 +117,8 @@ export function JournalDetailSheet({ userId, date, initialJournal, initialPhase,
 
   const [phase, setPhase] = useState<Phase>(() => initialPhase ?? decideInitialPhase(initialJournal ?? null))
 
-  const startsEditing = !hasContent(initialJournal)
+  // initialPhase 指定（FAB 経由）の場合は最初から編集モードで開く
+  const startsEditing = !!initialPhase || !hasContent(initialJournal)
   const [editing, setEditing] = useState(startsEditing)
 
   const [loading, setLoading] = useState(initialJournal === undefined)
@@ -154,7 +155,8 @@ export function JournalDetailSheet({ userId, date, initialJournal, initialPhase,
         })
         setImages(j.images ?? [])
         if (!initialPhase) setPhase(decideInitialPhase(j))
-        if (hasContent(j)) setEditing(false)
+        // FAB から開いた場合（initialPhase 指定）は既存データがあっても編集モードのまま
+        if (!initialPhase && hasContent(j)) setEditing(false)
       } else {
         setEditing(true)
       }
