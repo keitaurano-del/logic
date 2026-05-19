@@ -1392,6 +1392,13 @@ const STRINGS: Record<Locale, Strings> = {
     'reviewHub.savedEmpty': '保存したレッスン・コース・ロールプレイがここに並びます',
     'reviewHub.openSaved': '保存したコンテンツを見る',
     'reviewHub.savedDisabled': '保存するとここから振り返れます',
+    'reviewHub.paywallTitle': '復習機能は有料プランで利用できます',
+    'reviewHub.paywallDesc': '学んだことを記憶に定着させる4つの復習ツールが、有料プランで使えるようになります。',
+    'reviewHub.paywallFeat1': 'フラッシュカード（弱点・今日の復習）',
+    'reviewHub.paywallFeat2': '間違えた問題リストでの再挑戦',
+    'reviewHub.paywallFeat3': 'お気に入りレッスン・ロールプレイの保存',
+    'reviewHub.paywallFeat4': '解いたフェルミ推定の振り返り',
+    'reviewHub.viewPlansCta': '有料プランを見る',
 
     // Saved items
     'savedItems.title': '保存したコンテンツ',
@@ -2994,6 +3001,13 @@ const STRINGS: Record<Locale, Strings> = {
     'reviewHub.savedEmpty': 'Lessons, courses and roleplays you bookmark will show up here',
     'reviewHub.openSaved': 'Open saved content',
     'reviewHub.savedDisabled': 'Bookmark something to revisit it later',
+    'reviewHub.paywallTitle': 'Review tools are available on the paid plan',
+    'reviewHub.paywallDesc': 'Unlock four review tools that help everything you learn actually stick.',
+    'reviewHub.paywallFeat1': 'Flashcards (weak points & daily review)',
+    'reviewHub.paywallFeat2': 'Retry list of past mistakes',
+    'reviewHub.paywallFeat3': 'Saved lessons, courses and roleplays',
+    'reviewHub.paywallFeat4': 'Past Fermi problems with scores',
+    'reviewHub.viewPlansCta': 'See paid plan',
 
     // Saved items
     'savedItems.title': 'Saved content',

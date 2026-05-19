@@ -53,7 +53,9 @@ import { setUser as setSentryUser } from './sentry'
 import { hideSplash } from './platform'
 import { SnackbarProvider } from './components/Snackbar'
 import { syncOnLogin, syncOnLogout } from './syncService'
-import { canUseJournal, getJournalTrialDaysLeft } from './subscription'
+import { canUseJournal, getJournalTrialDaysLeft, isPaid } from './subscription'
+import { Header } from './components/platform/Header'
+import { BookOpenIcon, CheckCircleIcon } from './icons'
 import { TutorialOverlay, TutorialFAB } from './components/TutorialOverlay'
 import { tutorial } from './tutorial/tutorialStorage'
 import { t } from './i18n'
@@ -440,41 +442,58 @@ function AppV3() {
         />
       )}
 
-      {screen.type === 'flashcards' && <FlashcardsScreen onBack={handleBack} mode={screen.mode} />}
+      {screen.type === 'flashcards' && (
+        isPaid()
+          ? <FlashcardsScreen onBack={handleBack} mode={screen.mode} />
+          : <ReviewPaywall onBack={handleBack} onUpgrade={() => navigate({ type: 'pricing' })} />
+      )}
       {screen.type === 'review-hub' && (
-        <ReviewHubScreen
-          onBack={handleBack}
-          onOpenFlashcards={(mode) => navigate({ type: 'flashcards', mode })}
-          onOpenWrongAnswers={() => navigate({ type: 'wrong-answers' })}
-          onOpenFermiHistory={() => navigate({ type: 'fermi-history' })}
-          onOpenSavedItems={() => navigate({ type: 'saved-items' })}
-        />
+        isPaid() ? (
+          <ReviewHubScreen
+            onBack={handleBack}
+            onOpenFlashcards={(mode) => navigate({ type: 'flashcards', mode })}
+            onOpenWrongAnswers={() => navigate({ type: 'wrong-answers' })}
+            onOpenFermiHistory={() => navigate({ type: 'fermi-history' })}
+            onOpenSavedItems={() => navigate({ type: 'saved-items' })}
+          />
+        ) : (
+          <ReviewPaywall onBack={handleBack} onUpgrade={() => navigate({ type: 'pricing' })} />
+        )
       )}
       {screen.type === 'fermi-history' && (
-        <FermiHistoryScreen
-          onBack={handleBack}
-          onRetry={(poolIndex) => {
-            try {
-              sessionStorage.setItem('fermi-replay-index', String(poolIndex))
-              sessionStorage.setItem('fermi-replay-mode', '1')
-            } catch { /* */ }
-            navigate({ type: 'daily-fermi' })
-          }}
-        />
+        isPaid() ? (
+          <FermiHistoryScreen
+            onBack={handleBack}
+            onRetry={(poolIndex) => {
+              try {
+                sessionStorage.setItem('fermi-replay-index', String(poolIndex))
+                sessionStorage.setItem('fermi-replay-mode', '1')
+              } catch { /* */ }
+              navigate({ type: 'daily-fermi' })
+            }}
+          />
+        ) : (
+          <ReviewPaywall onBack={handleBack} onUpgrade={() => navigate({ type: 'pricing' })} />
+        )
       )}
       {screen.type === 'wrong-answers' && (
-        <WrongAnswerListScreen
-          onBack={handleBack}
-          onOpenLesson={handleOpenLesson}
-        />
+        isPaid() ? (
+          <WrongAnswerListScreen
+            onBack={handleBack}
+            onOpenLesson={handleOpenLesson}
+          />
+        ) : (
+          <ReviewPaywall onBack={handleBack} onUpgrade={() => navigate({ type: 'pricing' })} />
+        )
       )}
       {screen.type === 'saved-items' && (
-        <SavedItemsScreen
-          onBack={handleBack}
-          onOpenLesson={handleOpenLesson}
-          onOpenCourse={(cat) => navigate({ type: 'roadmap', category: cat })}
-          onOpenRoleplay={(situationId) => navigate({ type: 'roleplay-chat', situationId })}
-          onOpenLessonStep={(lessonId, stepIndex) => navigate({ type: 'lesson', lessonId, startStep: stepIndex })}
+        isPaid() ? (
+          <SavedItemsScreen
+            onBack={handleBack}
+            onOpenLesson={handleOpenLesson}
+            onOpenCourse={(cat) => navigate({ type: 'roadmap', category: cat })}
+            onOpenRoleplay={(situationId) => navigate({ type: 'roleplay-chat', situationId })}
+            onOpenLessonStep={(lessonId, stepIndex) => navigate({ type: 'lesson', lessonId, startStep: stepIndex })}
           onOpenAiProblem={(problemId) => {
             try {
               // 保存した AI 問題を loadAIProblems から探して開く
@@ -489,6 +508,9 @@ function AppV3() {
           }}
           onOpenFermi={() => navigate({ type: 'daily-fermi' })}
         />
+        ) : (
+          <ReviewPaywall onBack={handleBack} onUpgrade={() => navigate({ type: 'pricing' })} />
+        )
       )}
       {screen.type === 'fermi' && <FermiScreen onBack={handleBack} onReport={(ctx) => navigate({ type: 'report-problem', context: ctx })} />}
       {screen.type === 'daily-fermi' && <DailyFermiScreen onBack={handleBack} onReport={(ctx) => navigate({ type: 'report-problem', context: ctx })} onOpenRanking={() => navigate({ type: 'fermi-ranking' })} />}
@@ -854,6 +876,86 @@ function JournalPaywall({ onUpgrade }: { onUpgrade: () => void }) {
             }}
           >
             {t('journal.viewPlansCta')}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function ReviewPaywall({ onBack, onUpgrade }: { onBack: () => void; onUpgrade: () => void }) {
+  const features = [
+    t('reviewHub.paywallFeat1'),
+    t('reviewHub.paywallFeat2'),
+    t('reviewHub.paywallFeat3'),
+    t('reviewHub.paywallFeat4'),
+  ]
+  return (
+    <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', display: 'flex', flexDirection: 'column' }}>
+      <Header title={t('reviewHub.title')} onBack={onBack} />
+      <div style={{ flex: 1, padding: '32px 20px 120px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', gap: 20 }}>
+        <div style={{
+          background: 'var(--bg-card)',
+          borderRadius: 16,
+          padding: 24,
+          maxWidth: 380,
+          width: '100%',
+          textAlign: 'center',
+          boxShadow: 'var(--shadow-v3-card-inset)',
+          border: '1px solid rgba(255,255,255,.06)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 14,
+        }}>
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            alignSelf: 'center',
+            width: 56, height: 56, borderRadius: '50%',
+            background: 'linear-gradient(135deg, var(--brand), var(--brand-light, #8B5CF6))',
+            color: 'var(--accent-fg, #fff)',
+            marginBottom: 4,
+          }}>
+            <BookOpenIcon width={28} height={28} />
+          </div>
+          <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-primary)' }}>
+            {t('reviewHub.paywallTitle')}
+          </div>
+          <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+            {t('reviewHub.paywallDesc')}
+          </div>
+          <ul style={{
+            listStyle: 'none', padding: 0, margin: '4px 0 0',
+            display: 'flex', flexDirection: 'column', gap: 8, textAlign: 'left',
+          }}>
+            {features.map((f) => (
+              <li key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 13, color: 'var(--text-primary)', lineHeight: 1.5 }}>
+                <span style={{ color: 'var(--brand)', flexShrink: 0, marginTop: 2 }}>
+                  <CheckCircleIcon width={16} height={16} />
+                </span>
+                <span>{f}</span>
+              </li>
+            ))}
+          </ul>
+          <button
+            type="button"
+            onClick={onUpgrade}
+            style={{
+              marginTop: 8,
+              padding: '14px 24px',
+              background: 'var(--brand)',
+              color: 'var(--accent-fg, #fff)',
+              border: 'none',
+              borderRadius: 12,
+              font: 'inherit',
+              fontSize: 15,
+              fontWeight: 700,
+              cursor: 'pointer',
+              minHeight: 48,
+            }}
+          >
+            {t('reviewHub.viewPlansCta')}
           </button>
         </div>
       </div>
