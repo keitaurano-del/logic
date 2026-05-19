@@ -24,6 +24,10 @@ e2e/screenshots/
 # Local-only working directory for ad-hoc scripts (lesson regeneration etc.)
 tmp/
 
+# Lesson visualize samples sandbox (independent sub-package)
+docs/samples-src/node_modules/
+docs/samples-src/dist/
+
 # Claude Code
 .claude/*
 !.claude/agents/

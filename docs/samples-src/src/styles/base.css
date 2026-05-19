@@ -1,0 +1,301 @@
+:root {
+  /* paper palette (handdrawn style guide) */
+  --paper: #FDF8E9;
+  --paper-shadow: rgba(140, 115, 82, 0.18);
+  --rule: #D9CDB0;
+  --rule-margin: #C8634B;
+  --ink: #1F2A44;
+  --ink-soft: #5B5340;
+  --brand: #3D5FC4;
+  --brand-soft: #EEF2FE;
+  --accent: #C8634B;
+  --hl: #F4B942;
+  --sticky: #FFE383;
+  --sticky-shadow: #B89421;
+  --pencil: #5B5340;
+  --aux: #C9BFA7;
+
+  /* page shell */
+  --bg: #EFE7D2;
+  --shell-radius: 36px;
+
+  /* fonts */
+  --font-jp: "Yusei Magic", "Kaisei Decol", "Hiragino Maru Gothic ProN", system-ui, sans-serif;
+  --font-en: "Caveat", "Patrick Hand", cursive;
+  --font-body: "Yusei Magic", system-ui, -apple-system, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+a {
+  color: var(--brand);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ===== page layout ===== */
+.page {
+  min-height: 100vh;
+  padding: 32px 16px 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.page-title {
+  font-family: var(--font-en);
+  font-size: 36px;
+  margin: 12px 0 4px;
+  color: var(--ink);
+  letter-spacing: 0.02em;
+}
+
+.page-subtitle {
+  font-family: var(--font-jp);
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.back-link {
+  align-self: flex-start;
+  font-family: var(--font-jp);
+  font-size: 13px;
+  color: var(--brand);
+  margin-bottom: 12px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(61, 95, 196, 0.08);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.back-link:hover {
+  text-decoration: none;
+  background: rgba(61, 95, 196, 0.16);
+}
+
+/* ===== phone mock ===== */
+.phone {
+  width: 100%;
+  max-width: 380px;
+  background: var(--paper);
+  border-radius: var(--shell-radius);
+  box-shadow:
+    0 30px 60px -20px rgba(31, 42, 68, 0.35),
+    0 0 0 10px #1F2A44,
+    0 0 0 12px #3a3a3a;
+  overflow: hidden;
+  position: relative;
+  min-height: 720px;
+}
+
+.phone-notch {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 110px;
+  height: 26px;
+  background: #1F2A44;
+  border-radius: 16px;
+  z-index: 10;
+}
+
+.phone-body {
+  padding: 48px 18px 24px;
+  min-height: 720px;
+  position: relative;
+  /* paper texture: faint ruled lines */
+  background-image:
+    linear-gradient(to bottom, transparent 0, transparent calc(100% - 1px), var(--rule) calc(100% - 1px), var(--rule) 100%);
+  background-size: 100% 26px;
+}
+
+/* ===== shared card styles ===== */
+.lesson-step {
+  background: var(--paper);
+  border-radius: 18px;
+  padding: 18px;
+  position: relative;
+}
+
+.step-title {
+  font-family: var(--font-jp);
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--ink);
+  margin: 0 0 10px;
+  line-height: 1.4;
+}
+
+.step-body {
+  font-family: var(--font-jp);
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink);
+}
+
+.btn-primary {
+  background: var(--brand);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 12px 18px;
+  font-family: var(--font-jp);
+  font-weight: 700;
+  font-size: 15px;
+  transition: transform 0.1s;
+}
+
+.btn-primary:active {
+  transform: scale(0.97);
+}
+
+.btn-secondary {
+  background: var(--brand-soft);
+  color: var(--brand);
+  border: 1.5px solid var(--brand);
+  border-radius: 14px;
+  padding: 10px 16px;
+  font-family: var(--font-jp);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+/* sketchy borders helper */
+.sketch-border {
+  border: 1.5px solid var(--ink);
+  border-radius: 14px;
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+/* ====== Index page ====== */
+.index-shell {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 48px 20px 96px;
+}
+
+.index-hero {
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.index-hero h1 {
+  font-family: var(--font-en);
+  font-size: 56px;
+  margin: 0;
+  color: var(--ink);
+  line-height: 1.05;
+}
+
+.index-hero .jp {
+  font-family: var(--font-jp);
+  font-size: 18px;
+  color: var(--ink-soft);
+  margin-top: 8px;
+}
+
+.index-hero .note {
+  display: inline-block;
+  margin-top: 18px;
+  background: var(--sticky);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: var(--font-jp);
+  font-size: 13px;
+  box-shadow: 2px 3px 0 var(--sticky-shadow);
+  transform: rotate(-1deg);
+  color: var(--ink);
+}
+
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 22px;
+}
+
+.category-card {
+  background: var(--paper);
+  border-radius: 22px;
+  padding: 22px 22px 18px;
+  position: relative;
+  box-shadow: 0 10px 30px -12px rgba(31, 42, 68, 0.25), 0 0 0 1px var(--rule);
+}
+
+.category-card h2 {
+  font-family: var(--font-jp);
+  font-weight: 700;
+  font-size: 20px;
+  margin: 0 0 4px;
+  color: var(--ink);
+}
+
+.category-card .num {
+  font-family: var(--font-en);
+  font-size: 44px;
+  line-height: 1;
+  color: var(--brand);
+  margin-bottom: 6px;
+}
+
+.category-card .desc {
+  font-family: var(--font-jp);
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin: 0 0 14px;
+  line-height: 1.6;
+}
+
+.variant-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.variant-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--brand-soft);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-family: var(--font-jp);
+  font-size: 13px;
+  color: var(--brand);
+  font-weight: 700;
+  transition: background 0.15s;
+}
+
+.variant-link:hover {
+  background: #DDE5FB;
+  text-decoration: none;
+}
+
+.variant-link .arrow {
+  font-family: var(--font-en);
+  font-size: 18px;
+}
