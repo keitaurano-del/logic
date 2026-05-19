@@ -4,7 +4,7 @@ import { JournalDetailSheet } from './JournalDetailSheet'
 import { MoodIcon, WeatherIcon } from './MoodWeatherIcons'
 import { displayMood, displayWeather } from './types'
 import type { DailyJournal } from './types'
-import { t } from '../../i18n'
+import { t, getLocale } from '../../i18n'
 
 interface JournalRecentListProps {
   userId: string
@@ -25,10 +25,18 @@ function hasContent(j: DailyJournal): boolean {
   )
 }
 
+const JA_WEEKDAYS = ['日', '月', '火', '水', '木', '金', '土'] as const
+
 function formatDate(iso: string): string {
   // iso = YYYY-MM-DD
-  const [, m, d] = iso.split('-')
-  return `${Number(m)}/${Number(d)}`
+  const [y, m, d] = iso.split('-').map(Number)
+  const date = new Date(y, m - 1, d)
+  if (getLocale() === 'ja') {
+    return `${m}月${d}日(${JA_WEEKDAYS[date.getDay()]})`
+  }
+  const monthName = date.toLocaleDateString('en-US', { month: 'short' })
+  const weekday = date.toLocaleDateString('en-US', { weekday: 'short' })
+  return `${monthName} ${d} (${weekday})`
 }
 
 function excerpt(j: DailyJournal): string {

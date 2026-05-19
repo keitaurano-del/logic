@@ -207,20 +207,20 @@ export function JournalCalendar({ userId, onSaved }: JournalCalendarProps) {
           className="journal-cal-fab-sub journal-cal-fab-sub--morning"
           onClick={() => handlePickPhase('morning')}
           aria-label={t('journal.fabAddMorning')}
-          data-label={t('journal.fabLabelMorning')}
           tabIndex={fabOpen ? 0 : -1}
         >
-          <span className="journal-emoji-icon" aria-hidden="true">☀️</span>
+          <span className="journal-cal-fab-sub__emoji" aria-hidden="true">☀️</span>
+          <span className="journal-cal-fab-sub__label">{t('journal.fabLabelMorning')}</span>
         </button>
         <button
           type="button"
           className="journal-cal-fab-sub journal-cal-fab-sub--evening"
           onClick={() => handlePickPhase('evening')}
           aria-label={t('journal.fabAddEvening')}
-          data-label={t('journal.fabLabelEvening')}
           tabIndex={fabOpen ? 0 : -1}
         >
-          <span className="journal-emoji-icon" aria-hidden="true">🌙</span>
+          <span className="journal-cal-fab-sub__emoji" aria-hidden="true">🌙</span>
+          <span className="journal-cal-fab-sub__label">{t('journal.fabLabelEvening')}</span>
         </button>
         <button
           type="button"

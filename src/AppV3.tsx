@@ -222,20 +222,31 @@ function AppV3() {
 
   useEffect(() => {
     applyTheme(loadTheme())
-    // SplashScreen は launchAutoHide:false 設定。auth 解決後または 1500ms タイムアウトで必ず消す。
+    // BootLoadingScreen は最低 2 秒は出す（ユーザーがブランドを認識する余白 + 裏でリモート同期を確実に走らせる）
+    const bootStart = Date.now()
+    const MIN_BOOT_MS = 2000
+    const ensureMinBoot = async () => {
+      const elapsed = Date.now() - bootStart
+      if (elapsed < MIN_BOOT_MS) {
+        await new Promise<void>((resolve) => setTimeout(resolve, MIN_BOOT_MS - elapsed))
+      }
+    }
+    // ネイティブ SplashScreen は 1500ms 後に隠す → React の BootLoadingScreen が引き継ぐ
     const splashTimer = setTimeout(() => { void hideSplash() }, 1500)
-    // 初回起動時にセッションを取得し、ログイン済ならホームへ
+    // 初回起動時にセッションを取得し、ログイン済ならホームへ。同時にリモートと同期して最新化。
     getInitialUser().then(async (user) => {
       setCurrentUser(user)
       if (user) await syncOnLogin(user.id)
       const initial = getInitialScreen(user)
       setScreen(initial)
       window.history.replaceState({ screen: initial }, '')
+      await ensureMinBoot()
       setAuthReady(true)
       clearTimeout(splashTimer)
       void hideSplash()
-    }).catch(() => {
+    }).catch(async () => {
       // ネットワークエラー等でも必ずSplashを閉じてホームへ遷移させる
+      await ensureMinBoot()
       clearTimeout(splashTimer)
       setAuthReady(true)
       void hideSplash()
