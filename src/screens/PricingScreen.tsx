@@ -159,9 +159,6 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
               {t('pricing.recommended')}
             </div>
           )}
-          <div style={{ fontSize: 12, fontWeight: 800, color: 'var(--brand)', letterSpacing: '.1em', textTransform: 'uppercase', marginBottom: 6 }}>
-            {t('pricing.planPaid')}
-          </div>
           <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, marginBottom: 14 }}>
             <span style={{ fontSize: 36, fontWeight: 900, color: 'var(--text-primary)', letterSpacing: '-0.03em', lineHeight: 1 }}>{priceMain}</span>
             <span style={{ fontSize: 13, color: 'var(--text-muted)', paddingBottom: 4 }}>{priceSub}</span>
