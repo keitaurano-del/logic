@@ -99,6 +99,11 @@ import { peakPerformanceLessonMap } from './peakPerformanceLessons'
 import { peakPerformanceLessonMapEn } from './peakPerformanceLessonsEn'
 import { whyWhyLessonMap } from './whyWhyLessons'
 import { whyWhyLessonMapEn } from './whyWhyLessonsEn'
+import { careerResumeLessonMap } from './careerResumeLessons'
+import { careerSpiLessonMap } from './careerSpiLessons'
+import { careerTamatebakoLessonMap } from './careerTamatebakoLessons'
+import { careerInterviewLessonMap } from './careerInterviewLessons'
+import { careerSalaryLessonMap } from './careerSalaryLessons'
 
 // 全レッスンマップを locale で切り替える。en 版が存在するカテゴリは
 // 英訳済みマップを、それ以外は ja 版にフォールバック (transitional)。
@@ -135,6 +140,12 @@ function _getMergedLessons(): Record<number, LessonData> {
     ..._pickByLocale(numeracyLessonMap, numeracyLessonMapEn),
     ..._pickByLocale(peakPerformanceLessonMap, peakPerformanceLessonMapEn),
     ..._pickByLocale(whyWhyLessonMap, whyWhyLessonMapEn),
+    // 就職・転職コース群（ja 版のみ、en は同じ ja を一時的に使用）
+    ..._pickByLocale(careerResumeLessonMap, careerResumeLessonMap),
+    ..._pickByLocale(careerSpiLessonMap, careerSpiLessonMap),
+    ..._pickByLocale(careerTamatebakoLessonMap, careerTamatebakoLessonMap),
+    ..._pickByLocale(careerInterviewLessonMap, careerInterviewLessonMap),
+    ..._pickByLocale(careerSalaryLessonMap, careerSalaryLessonMap),
   }
   _cachedLocale = locale
   return _cachedMerged
