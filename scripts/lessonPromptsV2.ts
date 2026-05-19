@@ -126,8 +126,9 @@ export const LESSON_PROMPTS: LessonPromptEntry[] = [
   {
     slug: 'lesson-20',
     title: 'MECE',
-    subtitle: 'Mutually Exclusive, Collectively Exhaustive',
-    diagram: `a hand-drawn 2x2 grid (about 55% of canvas width) with four labeled cells — top-left "A", top-right "B", bottom-left "C", bottom-right "D" — drawn with thick black marker borders, each cell label a single large hand-lettered marker letter centered in its cell. Above the grid: a short down-arrow with handwritten annotation "no overlaps" (cursive). Below the grid: a short up-arrow with handwritten annotation "no gaps either" (cursive).`,
+    subtitle: 'No overlaps, no gaps',
+    diagram: `a hand-drawn 2x2 grid (about 55% of canvas width) with four labeled cells — top-left "A", top-right "B", bottom-left "C", bottom-right "D" — drawn with thick black marker borders, each cell label a single large hand-lettered marker letter centered in its cell. Above the grid: a short down-arrow with handwritten annotation "no overlaps" (cursive). Below the grid: a short up-arrow with handwritten annotation "no gaps" (cursive).`,
+    spell: ['MECE', 'No overlaps, no gaps', 'A', 'B', 'C', 'D', 'no overlaps', 'no gaps'],
   },
   {
     slug: 'lesson-21',
@@ -144,8 +145,9 @@ export const LESSON_PROMPTS: LessonPromptEntry[] = [
   {
     slug: 'lesson-23',
     title: 'PYRAMID',
-    subtitle: 'Conclusion on top, reasons below',
-    diagram: `a hand-drawn three-tier pyramid built from rectangular boxes: a single wide box at the top labeled "Main Idea", three medium boxes in the middle row labeled "Reason 1", "Reason 2", "Reason 3", and five small boxes at the bottom labeled "Fact". Thick marker borders, light cream interior. To the side: handwritten annotation "top-down" (cursive).`,
+    subtitle: 'Top first, then reasons',
+    diagram: `a hand-drawn three-tier pyramid built from rectangular boxes: a single wide box at the top labeled "Main", three medium boxes in the middle row labeled "Reason 1", "Reason 2", "Reason 3", and five small boxes at the bottom labeled "Fact". Thick marker borders, light cream interior. A coral down-arrow runs along the right side from Main to the Facts row labeled "from top".`,
+    spell: ['PYRAMID', 'Top first, then reasons', 'Main', 'Reason 1', 'Reason 2', 'Reason 3', 'Fact', 'from top'],
   },
   {
     slug: 'lesson-24',
@@ -169,7 +171,8 @@ export const LESSON_PROMPTS: LessonPromptEntry[] = [
     slug: 'lesson-27',
     title: 'FORMAL LOGIC',
     subtitle: 'If P then Q',
-    diagram: `a hand-drawn truth table with three columns and four rows. Column headers: "P", "Q", "P → Q". Row entries: T/T/T, T/F/F, F/T/T, F/F/T. Drawn with thick black marker grid lines, each T or F is a single hand-lettered marker letter. Below the table: cursive annotation "valid implication".`,
+    diagram: `a hand-drawn implication chain on cream notebook paper: two stacked rectangular boxes connected vertically by a coral downward arrow. The top box is labeled "P" (a single large hand-lettered marker letter centered in the box). The bottom box is labeled "Q" (a single large hand-lettered marker letter centered in the box). The coral arrow between them is labeled with the cursive annotation "implies" alongside it. To the right of the boxes: the cursive note "P → Q". Below the chain: the cursive annotation "if P, then Q".`,
+    spell: ['FORMAL LOGIC', 'If P then Q', 'P', 'Q', 'implies', 'P → Q', 'if P, then Q'],
   },
   {
     slug: 'lesson-68',
@@ -215,7 +218,10 @@ export const LESSON_PROMPTS: LessonPromptEntry[] = [
     slug: 'lesson-41',
     title: 'LOGICAL FALLACIES',
     subtitle: 'Spot the broken arguments',
-    diagram: `a hand-drawn vertical list of three rows. Each row contains a short fallacy name in cursive (hand-lettered) marked with a coral red ✗ on the left: "ad hominem", "straw man", "false cause". Below the list: a single row with a green ✓ marking and the cursive label "valid argument". All hand-drawn with thick marker.`,
+    diagram: `a hand-drawn vertical list of four rows. Each of the top three rows starts with a coral red "X" mark on the left, then a short fallacy name in cursive marker: row 1 "X attack person", row 2 "X straw man", row 3 "X bad cause". The bottom (fourth) row starts with a green check "V" mark and the cursive label "good logic". All hand-drawn with thick marker.
+
+CRITICAL — the three fallacies (rows 1, 2, 3) MUST all have the red X mark (they are wrong). Only the bottom "good logic" row has the green check. Never put a green check next to a fallacy.`,
+    spell: ['LOGICAL FALLACIES', 'Spot the broken arguments', 'attack person', 'straw man', 'bad cause', 'good logic'],
   },
   {
     slug: 'lesson-42',
@@ -256,10 +262,10 @@ CRITICAL — the title at top-left must be exactly the four English words: LINK 
   },
   {
     slug: 'lesson-51',
-    title: 'DRAFT GUESSES',
+    title: 'IDEAS FIRST',
     subtitle: 'List candidates, then pick',
-    diagram: `three thought bubbles drawn side by side, each containing a short cursive label "Guess 1", "Guess 2", "Guess 3". A coral red circle is drawn around "Guess 2" with a cursive annotation "best one" pointing to it. Hand-drawn with thick marker.`,
-    spell: ['DRAFT GUESSES', 'List candidates, then pick', 'Guess 1', 'Guess 2', 'Guess 3', 'best one'],
+    diagram: `three thought bubbles drawn side by side, each containing a short cursive label "Idea 1", "Idea 2", "Idea 3". A coral red circle is drawn around "Idea 2" with a cursive annotation "best one" pointing to it. Hand-drawn with thick marker.`,
+    spell: ['IDEAS FIRST', 'List candidates, then pick', 'Idea 1', 'Idea 2', 'Idea 3', 'best one'],
   },
   {
     slug: 'lesson-52',
@@ -300,9 +306,10 @@ CRITICAL — the title at top-left must be exactly the four English words: LINK 
   // ── デザインシンキング ──────────────────────────────────────────
   {
     slug: 'lesson-56',
-    title: 'DESIGN THINKING',
+    title: 'DESIGN',
     subtitle: 'A five-stage cycle',
-    diagram: `a hand-drawn circular flow of five connected rectangular boxes arranged in a pentagon-like loop, each labeled in cursive: "Empathize", "Define", "Ideate", "Prototype", "Test". Curved arrows connect them clockwise. Thick black marker outlines.`,
+    diagram: `a hand-drawn circular flow of five small connected circles arranged in a pentagon, each labeled in cursive with ONE short word only: top "Feel", upper-right "Frame", lower-right "Ideas", lower-left "Make", upper-left "Test". Curved clockwise arrows connect them. Thick black marker outlines.\n\nUse only these 5 short words (Feel, Frame, Ideas, Make, Test) — do NOT write "Empathize", "Define", "Ideate", or "Prototype" anywhere.`,
+    spell: ['DESIGN', 'A five-stage cycle', 'Feel', 'Frame', 'Ideas', 'Make', 'Test'],
   },
   {
     slug: 'lesson-57',
@@ -313,9 +320,10 @@ CRITICAL — the title at top-left must be exactly the four English words: LINK 
   },
   {
     slug: 'lesson-58',
-    title: 'PROTOTYPE & TEST',
-    subtitle: 'Build it small, test it fast',
-    diagram: `a hand-drawn paper prototype (a small rectangle with two interface lines on it) being shown to a simple stick figure on the right. A speech bubble from the figure contains a cursive "feedback". Cursive annotation below: "iterate fast".`,
+    title: 'BUILD & TEST',
+    subtitle: 'Make small, test fast',
+    diagram: `a hand-drawn paper mockup (a small rectangle with two interface lines on it) being shown to a simple stick figure on the right. A speech bubble from the figure contains a cursive "feedback". Cursive annotation below: "loop it".`,
+    spell: ['BUILD & TEST', 'Make small, test fast', 'feedback', 'loop it'],
   },
 
   // ── ラテラルシンキング ─────────────────────────────────────────
@@ -383,9 +391,10 @@ CRITICAL — the title at top-left must be exactly the four English words: LINK 
   // ── 提案・伝える技術 ──────────────────────────────────────────
   {
     slug: 'lesson-72',
-    title: 'PROPOSAL PURPOSE',
-    subtitle: 'Define what the reader does',
-    diagram: `a hand-drawn rectangular bound proposal document on the left, with an arrow pointing right to a small target circle labeled "action". Cursive annotation: "what do they DO?".`,
+    title: 'ASK FOR ACTION',
+    subtitle: 'Decide what the reader does',
+    diagram: `a hand-drawn rectangular document on the left, with a thick coral arrow pointing right to a small bullseye labeled "do this". Cursive annotation below the document: "make it clear".`,
+    spell: ['ASK FOR ACTION', 'Decide what the reader does', 'do this', 'make it clear'],
   },
   {
     slug: 'lesson-73',

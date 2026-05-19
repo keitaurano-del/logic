@@ -332,10 +332,10 @@ export const CAREER_LESSON_PROMPTS: LessonPromptEntry[] = [
   },
   {
     slug: 'lesson-642',
-    title: 'NEGOTIATE',
-    subtitle: 'Ask with grace',
-    diagram: `a hand-drawn balance scale in the center. Left pan labeled "offer", right pan labeled "your value". A coral arrow points to the small space between the pans labeled "gap". Cursive annotation below the scale: "close with grace".`,
-    spell: ['NEGOTIATE', 'Ask with grace', 'offer', 'your value', 'gap', 'close with grace'],
+    title: 'ASK FOR MORE',
+    subtitle: 'Bridge the offer gap',
+    diagram: `a hand-drawn balance scale in the center. Left pan labeled "offer", right pan labeled "your value". A coral arrow points to the small space between the pans labeled "gap". Cursive annotation below the scale: "bridge it".`,
+    spell: ['ASK FOR MORE', 'Bridge the offer gap', 'offer', 'your value', 'gap', 'bridge it'],
   },
   {
     slug: 'lesson-643',
