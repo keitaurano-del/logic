@@ -21,6 +21,9 @@ e2e/screenshots/
 .env.*
 !.env.example
 
+# Local-only working directory for ad-hoc scripts (lesson regeneration etc.)
+tmp/
+
 # Claude Code
 .claude/*
 !.claude/agents/
