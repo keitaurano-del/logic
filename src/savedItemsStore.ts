@@ -122,3 +122,18 @@ export function getSavedItemStats(): SavedItemStats {
   for (const it of items) byType[it.type] += 1
   return { total: items.length, byType }
 }
+
+/**
+ * ロールプレイがシチュエーション軸 → キャラ軸（哲学者3体）に置き換わったため、
+ * 旧シチュエーション ID で保存されている roleplay 項目を起動時に一掃する。
+ * 2026-05-19 マイグレーション。
+ */
+const VALID_ROLEPLAY_CHARACTER_IDS = new Set(['socrates', 'descartes', 'nietzsche'])
+
+export function cleanupLegacyRoleplaySaves(): void {
+  const items = loadSavedItems()
+  const cleaned = items.filter((it) => it.type !== 'roleplay' || VALID_ROLEPLAY_CHARACTER_IDS.has(it.refId))
+  if (cleaned.length !== items.length) {
+    persist(cleaned)
+  }
+}

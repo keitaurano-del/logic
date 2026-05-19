@@ -1,14 +1,18 @@
+// ロールプレイ会話画面（キャラ軸版）
+// 2026-05-19 シチュエーション軸 → キャラ軸に全面リプレース。
+// 画面上半分にキャラ立ち絵 + まばたき + 送信時バウンド、下半分にチャット UI。
+
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { getSituation, buildSetup } from '../situations'
 import { localeBody, t } from '../i18n'
 import { CheckIcon, ThumbsUpIcon, LightbulbIcon } from '../icons'
 import { Header } from '../components/platform/Header'
 import { haptic } from '../platform/haptics'
 import { recordActivity } from '../activityLog'
 import { API_BASE } from './apiBase'
+import { getCharacter, buildCharacterSetup, localized, type Character } from '../roleplayCharacters'
 
 interface RoleplayChatScreenProps {
-  situationId: string
+  characterId: string
   onBack: () => void
 }
 
@@ -24,50 +28,78 @@ type SummaryResult = {
 
 const MAX_TURNS = 5
 
-export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenProps) {
-  const situation = getSituation(situationId)
-
-  // スクリプト駆動か否か
-  const hasScript = !!(situation?.script && situation.script.length > 0)
-
-  // スクリプト駆動の場合は初期メッセージ・選択肢を useState の initializer で設定（useEffect の同期 setState を避ける）
-  const [messages, setMessages] = useState<Msg[]>(() => {
-    if (situation?.script && situation.script.length > 0) {
-      return [{ role: 'assistant', content: situation.script[0].partnerLine }]
+// キャラ立ち絵 placeholder（画像が無い間表示）— 画像が出来たら img タグに差し替え
+function CharacterPortrait({ character, bouncing }: { character: Character; bouncing: boolean }) {
+  const [blink, setBlink] = useState(false)
+  useEffect(() => {
+    let cancelled = false
+    const loop = () => {
+      if (cancelled) return
+      // 4〜6 秒間隔のまばたき
+      const delay = 4000 + Math.random() * 2000
+      setTimeout(() => {
+        if (cancelled) return
+        setBlink(true)
+        setTimeout(() => {
+          if (cancelled) return
+          setBlink(false)
+          loop()
+        }, 120)
+      }, delay)
     }
-    return []
-  })
-  const [choices, setChoices] = useState<string[]>(() => {
-    if (situation?.script && situation.script.length > 0) {
-      return situation.script[0].choices
-    }
-    return []
-  })
+    loop()
+    return () => { cancelled = true }
+  }, [])
+
+  return (
+    <div style={{
+      width: 120, height: 120, borderRadius: '50%',
+      background: `radial-gradient(circle at 30% 30%, color-mix(in srgb, ${character.accentColor} 65%, white) 0%, ${character.accentColor} 100%)`,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      fontFamily: 'Caveat, "Noto Serif JP", serif',
+      fontSize: 64,
+      fontWeight: 700,
+      color: 'rgba(255,255,255,0.92)',
+      boxShadow: `0 10px 26px color-mix(in srgb, ${character.accentColor} 35%, transparent)`,
+      letterSpacing: '0.02em',
+      userSelect: 'none',
+      transform: bouncing ? 'translateY(-4px)' : 'translateY(0)',
+      transition: 'transform 180ms ease, opacity 100ms ease',
+      opacity: blink ? 0.3 : 1,
+    }} aria-hidden="true">
+      {character.initial}
+    </div>
+  )
+}
+
+export function RoleplayChatScreen({ characterId, onBack }: RoleplayChatScreenProps) {
+  const character = getCharacter(characterId)
+
+  const [messages, setMessages] = useState<Msg[]>([])
+  const [choices, setChoices] = useState<string[]>([])
   const [turnNumber, setTurnNumber] = useState(1)
   const [loading, setLoading] = useState(false)
   const [finished, setFinished] = useState(false)
   const [score, setScore] = useState<ScoreResult | null>(null)
   const [summary, setSummary] = useState<SummaryResult | null>(null)
   const [scoring, setScoring] = useState(false)
-  const startedRef = useRef(!!hasScript) // スクリプト駆動は initializer で開始済み
+  const [bouncing, setBouncing] = useState(false)
+  const startedRef = useRef(false)
   const scrollRef = useRef<HTMLDivElement>(null)
   const abortRef = useRef<AbortController | null>(null)
 
-  // アンマウント時に進行中のfetchをキャンセル
   useEffect(() => {
     return () => { abortRef.current?.abort() }
   }, [])
 
-  // setup をメモ化（situation が変わらない限り再生成しない）
+  // setup をメモ化
   const setup = useMemo(
-    () => (situation ? buildSetup(situation) : null),
-    [situation],
+    () => (character ? buildCharacterSetup(character) : null),
+    [character],
   )
 
-  // API駆動: ターン取得（useCallback で安定した参照を保つ）
   const fetchTurn = useCallback(async (history: Msg[], turn: number) => {
     if (!setup) return
-    // 前のリクエストをキャンセルして新しいコントローラを作成
     abortRef.current?.abort()
     abortRef.current = new AbortController()
     const signal = abortRef.current.signal
@@ -93,7 +125,7 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
         setChoices(Array.isArray(data.choices) ? data.choices : [])
       }
     } catch (e) {
-      if (e instanceof DOMException && e.name === 'AbortError') return // アンマウント後のキャンセルは無視
+      if (e instanceof DOMException && e.name === 'AbortError') return
       console.error(e)
       setMessages([
         ...history,
@@ -105,12 +137,11 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
   }, [setup])
 
   useEffect(() => {
-    // API駆動のみ: initializer で未開始の場合にフェッチ
-    if (situation && !startedRef.current) {
+    if (character && !startedRef.current) {
       startedRef.current = true
       fetchTurn([], 1)
     }
-  }, [situation, fetchTurn])
+  }, [character, fetchTurn])
 
   useEffect(() => {
     scrollRef.current?.scrollTo({
@@ -119,7 +150,7 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
     })
   }, [messages, loading, choices])
 
-  if (!situation) {
+  if (!character) {
     return (
       <div className="stack">
         <Header onBack={onBack} />
@@ -128,39 +159,12 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
     )
   }
 
-  const maxTurns = hasScript ? situation.script!.length : MAX_TURNS
-
-  // スクリプト駆動: ユーザーが選択肢を選んだとき
-  const pickScriptChoice = (choice: string) => {
-    haptic.light()
-    const next: Msg[] = [...messages, { role: 'user', content: choice }]
-    setMessages(next)
-    setChoices([])
-
-    const nextTurn = turnNumber + 1
-    setTurnNumber(nextTurn)
-
-    if (nextTurn > maxTurns) {
-      // スクリプト終了 → 採点へ
-      finish(next)
-    } else {
-      // 次のスクリプトターン
-      const nextScript = situation.script![nextTurn - 1]
-      if (nextScript) {
-        setTimeout(() => {
-          setMessages([...next, { role: 'assistant', content: nextScript.partnerLine }])
-          setChoices(nextScript.choices)
-        }, 400) // 少し間を置いて自然に
-      } else {
-        finish(next)
-      }
-    }
-  }
-
-  // API駆動: 選択肢タップ
-  const pickApiChoice = (choice: string) => {
+  const pickChoice = (choice: string) => {
     if (loading) return
     haptic.light()
+    // 送信時バウンド
+    setBouncing(true)
+    setTimeout(() => setBouncing(false), 220)
     const next: Msg[] = [...messages, { role: 'user', content: choice }]
     setMessages(next)
     setChoices([])
@@ -172,8 +176,6 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
       fetchTurn(next, nextTurn)
     }
   }
-
-  const pickChoice = hasScript ? pickScriptChoice : pickApiChoice
 
   const finish = async (finalMessages: Msg[]) => {
     abortRef.current?.abort()
@@ -200,8 +202,8 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
       if (sumRes.summary) setSummary(sumRes)
       recordActivity({
         type: 'roleplay',
-        id: situationId,
-        title: situation?.title,
+        id: characterId,
+        title: localized(character.name),
         meta: typeof scoreRes?.scores?.[0]?.score === 'number'
           ? {
               score: scoreRes.scores.reduce(
@@ -230,31 +232,67 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14, padding: '0 0 32px' }}>
       <Header
-        title={situation.partnerName}
+        title={localized(character.name)}
         onBack={onBack}
         trailing={(
-          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-secondary)', paddingRight: 8 }}>
-            {t('roleplay.remainingTurns', { n: String(maxTurns - Math.min(turnNumber - 1, maxTurns)) })}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, paddingRight: 8 }}>
+            <span style={{
+              background: 'color-mix(in srgb, var(--brand) 15%, transparent)',
+              color: 'var(--brand)',
+              borderRadius: 99, padding: '2px 8px',
+              fontSize: 10, fontWeight: 800, letterSpacing: '0.06em',
+            }}>{t('roleplay.beta')}</span>
+            <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-secondary)' }}>
+              {t('roleplay.remainingTurns', { n: String(MAX_TURNS - Math.min(turnNumber - 1, MAX_TURNS)) })}
+            </div>
           </div>
         )}
       />
-      <div style={{ padding: '0 16px' }}>
-        <div style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 10 }}>{situation.frameworkLabel}</div>
-        {/* Progress bar */}
-        <div style={{ height: 3, background: 'var(--accent-soft)', borderRadius: 99, overflow: 'hidden' }}>
-          <div style={{ height: '100%', width: `${(Math.min(turnNumber, maxTurns) / maxTurns) * 100}%`, background: 'var(--brand)', borderRadius: 99, transition: 'width 300ms ease' }} />
-        </div>
-      </div>
 
       {!finished && (
         <>
-          {/* Context card */}
-          <div style={{ background: 'var(--accent-soft)', borderRadius: 12, padding: '10px 14px', fontSize: 13, color: 'var(--brand)', lineHeight: 1.55 }}>
-            <strong style={{ fontWeight: 700 }}>{t('roleplay.scenarioLabel')}</strong>{situation.context}
+          {/* キャラ立ち絵エリア（画面上半分） */}
+          <div style={{
+            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
+            padding: '8px 16px 4px',
+          }}>
+            <CharacterPortrait character={character} bouncing={bouncing} />
+            <div style={{ fontSize: 13, fontWeight: 700, color: character.accentColor, marginTop: 4 }}>
+              {localized(character.role)}
+            </div>
+            {/* AI 応答中インジケータ */}
+            {loading && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--text-secondary)', marginTop: 4 }}>
+                <div style={{ display: 'flex', gap: 4 }}>
+                  {[0, 1, 2].map((i) => (
+                    <div key={i} style={{
+                      width: 6, height: 6, borderRadius: '50%',
+                      background: character.accentColor,
+                      opacity: 0.4,
+                      animation: `rp-blink 1.2s ${i * 0.15}s infinite`,
+                    }} />
+                  ))}
+                </div>
+                <span>{t('roleplay.thinking')}</span>
+              </div>
+            )}
           </div>
 
-          {/* Chat messages */}
-          <div ref={scrollRef} style={{ display: 'flex', flexDirection: 'column', gap: 10, maxHeight: 360, overflowY: 'auto' }}>
+          <style>{`@keyframes rp-blink { 0%, 80%, 100% { opacity: 0.25; } 40% { opacity: 1; } }`}</style>
+
+          {/* ターン進捗 */}
+          <div style={{ padding: '0 16px' }}>
+            <div style={{ height: 3, background: 'var(--accent-soft)', borderRadius: 99, overflow: 'hidden' }}>
+              <div style={{ height: '100%', width: `${(Math.min(turnNumber, MAX_TURNS) / MAX_TURNS) * 100}%`, background: 'var(--brand)', borderRadius: 99, transition: 'width 300ms ease' }} />
+            </div>
+          </div>
+
+          {/* チャット履歴 */}
+          <div ref={scrollRef} style={{
+            display: 'flex', flexDirection: 'column', gap: 10,
+            maxHeight: 320, overflowY: 'auto',
+            padding: '0 16px',
+          }}>
             {messages.map((m, i) => (
               <div key={i} style={{
                 maxWidth: '85%',
@@ -262,7 +300,7 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
                 borderRadius: m.role === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
                 background: m.role === 'user' ? 'var(--brand)' : 'var(--bg-card)',
                 color: m.role === 'user' ? '#fff' : 'var(--text-primary)',
-                fontSize: 16,
+                fontSize: 15,
                 lineHeight: 1.65,
                 border: m.role === 'user' ? 'none' : `1px solid ${'var(--border)'}`,
                 alignSelf: m.role === 'user' ? 'flex-end' : 'flex-start',
@@ -272,21 +310,11 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
                 {m.content}
               </div>
             ))}
-            {loading && (
-              <div style={{ maxWidth: '80%', padding: '12px 16px', borderRadius: '16px 16px 16px 4px', background: 'var(--bg-card)', border: `1px solid ${'var(--border)'}`, alignSelf: 'flex-start', display: 'flex', alignItems: 'center', gap: 8 }}>
-                <div style={{ display: 'flex', gap: 4 }}>
-                  {[0,1,2].map(i => (
-                    <div key={i} style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--brand)', opacity: 0.5 + i * 0.15 }} />
-                  ))}
-                </div>
-                <span style={{ fontSize: 14, color: 'var(--text-secondary)' }}>{t('roleplay.generating')}</span>
-              </div>
-            )}
           </div>
 
           {/* 選択肢 */}
           {choices.length > 0 && !loading && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, padding: '0 16px' }}>
               <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '.04em', padding: '2px 2px 4px' }}>
                 {t('roleplay.howRespond')}
               </div>
@@ -304,7 +332,7 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
                     display: 'flex', alignItems: 'flex-start', gap: 10,
                   }}
                 >
-                  <span style={{ fontSize: 13, fontWeight: 800, color: 'var(--brand)', flexShrink: 0, minWidth: 18, paddingTop: 1 }}>
+                  <span style={{ fontSize: 13, fontWeight: 800, color: character.accentColor, flexShrink: 0, minWidth: 18, paddingTop: 1 }}>
                     {i + 1}
                   </span>
                   <span>{c}</span>
@@ -316,16 +344,24 @@ export function RoleplayChatScreen({ situationId, onBack }: RoleplayChatScreenPr
           {messages.length >= 2 && choices.length > 0 && (
             <button
               onClick={endEarly}
-              style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', fontSize: 15, fontWeight: 600, cursor: 'pointer', padding: '4px 0', textAlign: 'center' }}
+              style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', fontSize: 14, fontWeight: 600, cursor: 'pointer', padding: '4px 0', textAlign: 'center' }}
             >
               {t('roleplay.endAndScore')}
             </button>
           )}
+
+          {/* Live2D 注釈 */}
+          <div style={{
+            fontSize: 10, color: 'var(--text-muted)', textAlign: 'center',
+            padding: '4px 16px',
+          }}>
+            {t('roleplay.live2dNote')}
+          </div>
         </>
       )}
 
       {finished && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14, padding: '0 16px' }}>
           {scoring && (
             <div style={{ background: 'var(--bg-card)', border: `1px solid ${'var(--border)'}`, borderRadius: 14, padding: '24px 16px', textAlign: 'center', boxShadow: '0 1px 2px rgba(15,21,35,.06)' }}>
               <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 8 }}>{t('roleplay.scoring')}</div>

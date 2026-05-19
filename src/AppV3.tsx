@@ -62,6 +62,7 @@ import { tutorial } from './tutorial/tutorialStorage'
 import { t } from './i18n'
 import { useAssistantName } from './hooks/useAssistantName'
 import { addNotificationTapListener, loadStreakAlertPref, scheduleStreakRiskReminder } from './notifications'
+import { cleanupLegacyRoleplaySaves } from './savedItemsStore'
 
 const ONBOARDED_KEY = 'logic-onboarded'
 const INSTALL_ID_KEY = 'logic-install-id'
@@ -98,7 +99,7 @@ type Screen =
   | { type: 'fermi-ranking' }
   | { type: 'fermi-history' }
   | { type: 'roleplay' }
-  | { type: 'roleplay-chat'; situationId: string }
+  | { type: 'roleplay-chat'; characterId: string }
   | { type: 'daily-problem' }
   | { type: 'ai-problem-gen' }
   | { type: 'ai-problem'; problem: AIProblemSet }
@@ -169,7 +170,11 @@ function AppV3() {
 
   // SCRUM-200: 新規インストール時にlocalStorageリセット（アンインストール後のデータ残留対策）
   // useEffect に移すことで React Strict Mode の二重レンダリングでの意図しない複数回実行を防ぐ
-  useEffect(() => { checkAndInitInstall() }, [])
+  useEffect(() => {
+    checkAndInitInstall()
+    // 2026-05-19 ロールプレイがキャラ軸に移行したため旧シチュエーション ID の保存項目をクリーンアップ
+    cleanupLegacyRoleplaySaves()
+  }, [])
 
   // screenRef を常に最新の screen と同期させる（コンカレントレンダリング対策）
   useEffect(() => { screenRef.current = screen }, [screen])
@@ -500,7 +505,7 @@ function AppV3() {
             onBack={handleBack}
             onOpenLesson={handleOpenLesson}
             onOpenCourse={(cat) => navigate({ type: 'roadmap', category: cat })}
-            onOpenRoleplay={(situationId) => navigate({ type: 'roleplay-chat', situationId })}
+            onOpenRoleplay={(characterId) => navigate({ type: 'roleplay-chat', characterId })}
             onOpenLessonStep={(lessonId, stepIndex) => navigate({ type: 'lesson', lessonId, startStep: stepIndex })}
           onOpenAiProblem={(problemId) => {
             try {
@@ -580,14 +585,14 @@ function AppV3() {
       {screen.type === 'roleplay' && (
         <RoleplaySelectScreen
           onBack={() => navigate({ type: 'lessons' }, true)}
-          onStart={(situationId) => navigate({ type: 'roleplay-chat', situationId })}
+          onStart={(characterId) => navigate({ type: 'roleplay-chat', characterId })}
           onUpgrade={() => navigate({ type: 'pricing' })}
         />
       )}
 
       {screen.type === 'roleplay-chat' && (
         <RoleplayChatScreen
-          situationId={screen.situationId}
+          characterId={screen.characterId}
           onBack={() => navigate({ type: 'roleplay' })}
         />
       )}
