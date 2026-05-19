@@ -76,7 +76,7 @@ export function titleCase(s: string): string {
     .map((token) => {
       const trimmed = token.trim()
       if (!trimmed) return token
-      if (/^[\s\/≠=]+$/.test(token)) return token
+      if (/^[\s/≠=]+$/.test(token)) return token
       if (ACRONYM_WHITELIST.has(trimmed)) return token
       if (/[a-z]/.test(trimmed)) return token
       if (/^[A-Z]+(-[A-Z]+)*$/.test(trimmed)) {

@@ -10,6 +10,7 @@ import { t, getLocale } from '../i18n'
 import { isSaved, toggleSaved } from '../savedItemsStore'
 import { BookmarkIcon, BookmarkFilledIcon } from '../icons'
 import { haptic } from '../platform/haptics'
+import { SAMPLE_PROBLEMS, type SampleDifficulty } from '../aiProblemSamples'
 
 interface AIProblemGenScreenProps {
   onBack: () => void
@@ -265,6 +266,8 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
   const [generating, setGenerating] = useState(false)
   const [error, setError] = useState('')
   const [problems, setProblems] = useState<AIProblemSet[]>(() => filterByHistoryDays(loadAIProblems()))
+  // テーマプリセット押下時のワンクッション（サンプル問題リスト）用 state
+  const [selectedTheme, setSelectedTheme] = useState<ThemePreset | null>(null)
   const weakness = analyzeWeakness()
   const recommendPrompt = buildRecommendPrompt(weakness)
   // 問題プレイ画面から戻ってきた時に評価ポップアップを表示する
@@ -357,16 +360,26 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
     }}>
       <Header
         title={t('aiGen.title')}
-        onBack={onBack}
-        trailing={canUse ? (
-          <div style={{ background: 'var(--bg-card)', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700, color: 'var(--brand)' }}>
-            {t('aiGen.unlimited')}
+        onBack={selectedTheme ? () => setSelectedTheme(null) : onBack}
+        trailing={
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{
+              background: 'color-mix(in srgb, var(--brand) 15%, transparent)',
+              color: 'var(--brand)',
+              borderRadius: 99, padding: '2px 8px',
+              fontSize: 11, fontWeight: 800, letterSpacing: '0.06em',
+            }}>{t('aiGen.beta')}</span>
+            {canUse ? (
+              <div style={{ background: 'var(--bg-card)', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700, color: 'var(--brand)' }}>
+                {t('aiGen.unlimited')}
+              </div>
+            ) : (
+              <div style={{ background: 'rgba(248,113,113,0.15)', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700, color: 'var(--md-sys-color-error)' }}>
+                {t('aiGen.upgradeRequired')}
+              </div>
+            )}
           </div>
-        ) : (
-          <div style={{ background: 'rgba(248,113,113,0.15)', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700, color: 'var(--md-sys-color-error)' }}>
-            {t('aiGen.upgradeRequired')}
-          </div>
-        )}
+        }
       />
       <div style={{ padding: '0 20px 4px', fontSize: 12, color: 'var(--text-secondary)' }}>{t('aiGen.subtitle')}</div>
 
@@ -384,8 +397,20 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
 
       <div style={{ flex: 1, padding: '16px 20px 100px', display: 'flex', flexDirection: 'column', gap: 14, overflowY: 'auto' }}>
 
-        {/* ===== 問題を作るタブ ===== */}
-        {tab === 'create' && (
+        {/* ===== 問題を作るタブ：サンプル問題リスト（テーマプリセット押下後） ===== */}
+        {tab === 'create' && selectedTheme && (
+          <SampleProblemList
+            theme={selectedTheme}
+            onPickSample={(seedPrompt) => handleGenerate(seedPrompt)}
+            onAiGenerate={() => handleGenerate(selectedTheme.prompt)}
+            disabled={generating || isAtLimit || !canUse}
+            generating={generating}
+            error={error}
+          />
+        )}
+
+        {/* ===== 問題を作るタブ：通常表示 ===== */}
+        {tab === 'create' && !selectedTheme && (
           <>
             {/* あなたにあった問題を自動生成（弱点ベース・ワンタップ） */}
             <button
@@ -434,7 +459,7 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
               <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '.06em', marginBottom: 10 }}>{t('aiGen.categoryHeading')}</div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                 {THEME_PRESETS.map(p => (
-                  <button key={p.id} onClick={() => handleGenerate(p.prompt)} disabled={generating || isAtLimit || !canUse}
+                  <button key={p.id} onClick={() => setSelectedTheme(p)} disabled={generating || isAtLimit || !canUse}
                     style={{ background: 'var(--bg-card)', border: `1px solid ${'var(--border)'}`, borderRadius: 14, padding: '14px 12px', cursor: generating || isAtLimit || !canUse ? 'not-allowed' : 'pointer', textAlign: 'left', opacity: generating || !canUse ? 0.6 : 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
                     <div style={{ width: 36, height: 36, borderRadius: 10, background: `color-mix(in srgb, var(--brand) 8%, transparent)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       {p.icon}
@@ -520,6 +545,120 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
         />
       )}
     </div>
+  )
+}
+
+// 難易度ラベル / バッジ色を解決
+function diffLabel(d: SampleDifficulty): string {
+  if (d === 'beginner') return t('aiGen.sample.diff.beginner')
+  if (d === 'intermediate') return t('aiGen.sample.diff.intermediate')
+  return t('aiGen.sample.diff.advanced')
+}
+const SAMPLE_DIFF_COLOR: Record<SampleDifficulty, string> = {
+  beginner: '#34D399',
+  intermediate: '#D97706',
+  advanced: 'var(--md-sys-color-error)',
+}
+
+// テーマ別サンプル問題リスト（ワンクッション画面）
+function SampleProblemList({
+  theme,
+  onPickSample,
+  onAiGenerate,
+  disabled,
+  generating,
+  error,
+}: {
+  theme: ThemePreset
+  onPickSample: (seedPrompt: string) => void
+  onAiGenerate: () => void
+  disabled: boolean
+  generating: boolean
+  error: string
+}) {
+  const samples = SAMPLE_PROBLEMS[theme.id] ?? []
+  const locale = getLocale()
+  return (
+    <>
+      {/* テーマ見出し */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '4px 0' }}>
+        <div style={{ width: 44, height: 44, borderRadius: 12, background: `color-mix(in srgb, var(--brand) 8%, transparent)`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          {theme.icon}
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.3 }}>{theme.label}</div>
+          <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2 }}>{t('aiGen.sample.subtitle')}</div>
+        </div>
+      </div>
+
+      {/* AI におまかせ生成（従来の即生成挙動） */}
+      <button
+        onClick={onAiGenerate}
+        disabled={disabled}
+        style={{
+          width: '100%',
+          background: disabled ? 'var(--bg-card)' : `linear-gradient(135deg, var(--brand) 0%, var(--brand-light) 100%)`,
+          color: disabled ? 'var(--text-muted)' : 'var(--accent-fg)',
+          border: 'none', borderRadius: 14, padding: '14px 18px',
+          cursor: disabled ? 'not-allowed' : 'pointer',
+          display: 'flex', alignItems: 'center', gap: 12,
+          boxShadow: disabled ? 'none' : 'var(--shadow-v3-hero)',
+        }}>
+        <div style={{ width: 32, height: 32, borderRadius: 10, background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+        </div>
+        <div style={{ flex: 1, textAlign: 'left' }}>
+          <div style={{ fontSize: 14, fontWeight: 800 }}>{generating ? t('aiGen.generating') : t('aiGen.sample.aiGenerate')}</div>
+          <div style={{ fontSize: 11, opacity: 0.85, marginTop: 2 }}>{t('aiGen.sample.aiGenerateDesc')}</div>
+        </div>
+      </button>
+
+      {error && <div style={{ fontSize: 13, color: 'var(--md-sys-color-error)', textAlign: 'center' }}>{error}</div>}
+
+      {/* サンプル問題一覧 */}
+      <div>
+        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '.06em', marginBottom: 10 }}>
+          {t('aiGen.sample.heading')}
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {samples.map((sample) => (
+            <button
+              key={sample.id}
+              onClick={() => onPickSample(sample.seedPrompt)}
+              disabled={disabled}
+              style={{
+                width: '100%',
+                background: 'var(--bg-card)',
+                border: `1px solid var(--border)`,
+                borderRadius: 12, padding: '12px 14px',
+                cursor: disabled ? 'not-allowed' : 'pointer',
+                textAlign: 'left',
+                opacity: disabled ? 0.6 : 1,
+                display: 'flex', alignItems: 'center', gap: 10,
+              }}>
+              <span style={{
+                flexShrink: 0,
+                fontSize: 10, fontWeight: 800,
+                padding: '3px 8px',
+                borderRadius: 99,
+                background: `color-mix(in srgb, ${SAMPLE_DIFF_COLOR[sample.difficulty]} 14%, transparent)`,
+                color: SAMPLE_DIFF_COLOR[sample.difficulty],
+                letterSpacing: '.04em',
+              }}>{diffLabel(sample.difficulty)}</span>
+              <span style={{ flex: 1, minWidth: 0, fontSize: 14, fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.4 }}>
+                {locale === 'ja' ? sample.title.ja : sample.title.en}
+              </span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true" style={{ flexShrink: 0 }}>
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </button>
+          ))}
+        </div>
+      </div>
+    </>
   )
 }
 
