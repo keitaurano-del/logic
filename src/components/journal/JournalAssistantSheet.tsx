@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { fetchCurrentGoalsAllPeriods, fetchRecentJournals } from './journalDb'
 import { holisticFeedback } from './journalApi'
-import { periodKeyFor } from './types'
+import { displayMood, displayWeather, periodKeyFor } from './types'
 import type { PeriodType } from './types'
 import { SparkleIcon } from './MoodWeatherIcons'
 import { XIcon } from '../../icons'
@@ -74,8 +74,8 @@ export function JournalAssistantSheet({ userId, assistantName, onClose }: Journa
           goals,
           recentJournals: recentJournals.map((j) => ({
             date: j.date,
-            mood: j.mood,
-            weather: j.weather,
+            mood: displayMood(j),
+            weather: displayWeather(j),
             schedule_notes: j.schedule_notes,
             evening_reflection: j.evening_reflection,
           })),

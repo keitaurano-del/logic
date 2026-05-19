@@ -20,6 +20,8 @@ interface JournalDetailSheetProps {
   userId: string
   date: string // YYYY-MM-DD
   initialJournal?: DailyJournal | null
+  /** 開いた時点で固定したいフェーズ。指定がなければ既存ロジックで自動判定 */
+  initialPhase?: Phase
   onClose: () => void
   onSaved?: (j: DailyJournal) => void
 }
@@ -32,6 +34,10 @@ function emptyJournal(userId: string, date: string): DailyJournal {
     date,
     mood: null,
     weather: null,
+    morning_mood: null,
+    morning_weather: null,
+    evening_mood: null,
+    evening_weather: null,
     morning_memo: null,
     schedule_notes: null,
     evening_reflection: null,
@@ -41,8 +47,13 @@ function emptyJournal(userId: string, date: string): DailyJournal {
   }
 }
 
-function hasMorningContent(scheduleNotes: string, tags: string[]): boolean {
-  return !!(scheduleNotes.trim() || tags.length > 0)
+function hasMorningContent(
+  scheduleNotes: string,
+  tags: string[],
+  morningMood: Mood | null,
+  morningWeather: Weather | null,
+): boolean {
+  return !!(scheduleNotes.trim() || tags.length > 0 || morningMood !== null || morningWeather)
 }
 
 function hasEveningContent(mood: Mood | null, weather: Weather | null, reflection: string): boolean {
@@ -52,8 +63,12 @@ function hasEveningContent(mood: Mood | null, weather: Weather | null, reflectio
 function hasContent(j: DailyJournal | null | undefined): boolean {
   if (!j) return false
   return !!(
-    j.mood !== null && j.mood !== undefined ||
+    (j.mood != null) ||
     j.weather ||
+    (j.morning_mood != null) ||
+    j.morning_weather ||
+    (j.evening_mood != null) ||
+    j.evening_weather ||
     (j.schedule_notes && j.schedule_notes.trim()) ||
     (j.evening_reflection && j.evening_reflection.trim()) ||
     (j.ai_summary && j.ai_summary.trim()) ||
@@ -64,8 +79,12 @@ function hasContent(j: DailyJournal | null | undefined): boolean {
 
 function decideInitialPhase(j: DailyJournal | null): Phase {
   if (j) {
-    const m = hasMorningContent(j.schedule_notes ?? '', j.tags ?? [])
-    const e = hasEveningContent((j.mood as Mood | null) ?? null, (j.weather as Weather | null) ?? null, j.evening_reflection ?? '')
+    const mMood = (j.morning_mood as Mood | null) ?? null
+    const mWeather = (j.morning_weather as Weather | null) ?? null
+    const eMood = (j.evening_mood as Mood | null) ?? (j.mood as Mood | null) ?? null
+    const eWeather = (j.evening_weather as Weather | null) ?? (j.weather as Weather | null) ?? null
+    const m = hasMorningContent(j.schedule_notes ?? '', j.tags ?? [], mMood, mWeather)
+    const e = hasEveningContent(eMood, eWeather, j.evening_reflection ?? '')
     if (m && !e) return 'morning'
     if (e && !m) return 'evening'
   }
@@ -73,10 +92,17 @@ function decideInitialPhase(j: DailyJournal | null): Phase {
   return h < 16 ? 'morning' : 'evening'
 }
 
-export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSaved }: JournalDetailSheetProps) {
+export function JournalDetailSheet({ userId, date, initialJournal, initialPhase, onClose, onSaved }: JournalDetailSheetProps) {
   const [journal, setJournal] = useState<DailyJournal | null>(initialJournal ?? null)
-  const [mood, setMood] = useState<Mood | null>((initialJournal?.mood as Mood | null) ?? null)
-  const [weather, setWeather] = useState<Weather | null>((initialJournal?.weather as Weather | null) ?? null)
+  const [morningMood, setMorningMood] = useState<Mood | null>((initialJournal?.morning_mood as Mood | null) ?? null)
+  const [morningWeather, setMorningWeather] = useState<Weather | null>((initialJournal?.morning_weather as Weather | null) ?? null)
+  // 夜は legacy mood/weather もフォールバックとして取り込む（旧データ互換）
+  const [eveningMood, setEveningMood] = useState<Mood | null>(
+    (initialJournal?.evening_mood as Mood | null) ?? (initialJournal?.mood as Mood | null) ?? null,
+  )
+  const [eveningWeather, setEveningWeather] = useState<Weather | null>(
+    (initialJournal?.evening_weather as Weather | null) ?? (initialJournal?.weather as Weather | null) ?? null,
+  )
   const [scheduleNotes, setScheduleNotes] = useState<string>(initialJournal?.schedule_notes ?? '')
   const [reflection, setReflection] = useState<string>(initialJournal?.evening_reflection ?? '')
   const [tags, setTags] = useState<string[]>(initialJournal?.tags ?? [])
@@ -89,7 +115,7 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
   const [images, setImages] = useState<JournalImage[]>(initialJournal?.images ?? [])
   const aiSummary = journal?.ai_summary ?? ''
 
-  const [phase, setPhase] = useState<Phase>(() => decideInitialPhase(initialJournal ?? null))
+  const [phase, setPhase] = useState<Phase>(() => initialPhase ?? decideInitialPhase(initialJournal ?? null))
 
   const startsEditing = !hasContent(initialJournal)
   const [editing, setEditing] = useState(startsEditing)
@@ -113,8 +139,10 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
       if (cancelled) return
       if (j) {
         setJournal(j)
-        setMood((j.mood as Mood | null) ?? null)
-        setWeather((j.weather as Weather | null) ?? null)
+        setMorningMood((j.morning_mood as Mood | null) ?? null)
+        setMorningWeather((j.morning_weather as Weather | null) ?? null)
+        setEveningMood((j.evening_mood as Mood | null) ?? (j.mood as Mood | null) ?? null)
+        setEveningWeather((j.evening_weather as Weather | null) ?? (j.weather as Weather | null) ?? null)
         setScheduleNotes(j.schedule_notes ?? '')
         setReflection(j.evening_reflection ?? '')
         setTags(j.tags ?? [])
@@ -125,7 +153,7 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
           sleepEnd: j.sleep_end ?? null,
         })
         setImages(j.images ?? [])
-        setPhase(decideInitialPhase(j))
+        if (!initialPhase) setPhase(decideInitialPhase(j))
         if (hasContent(j)) setEditing(false)
       } else {
         setEditing(true)
@@ -133,6 +161,8 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
       setLoading(false)
     })()
     return () => { cancelled = true }
+    // initialPhase は初回 mount 時にのみ参照（後から変えてフェーズを上書きしたくない）
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, date, initialJournal])
 
   useEffect(() => {
@@ -174,28 +204,31 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
     }
   }, [onClose])
 
-  const moodLabel = useMemo(() => {
-    if (mood === null) return null
+  const moodLabelOf = (m: Mood | null): string | null => {
+    if (m === null) return null
     const key = ({
       1: 'journal.moodVeryBad',
       2: 'journal.moodBad',
       3: 'journal.moodNeutral',
       4: 'journal.moodGood',
       5: 'journal.moodGreat',
-    } as Record<number, string>)[mood]
+    } as Record<number, string>)[m]
     return key ? t(key) : null
-  }, [mood])
-
-  const weatherLabel = useMemo(() => {
-    if (!weather) return null
+  }
+  const weatherLabelOf = (w: Weather | null): string | null => {
+    if (!w) return null
     const key = ({
       sunny: 'journal.weatherSunny',
       cloudy: 'journal.weatherCloudy',
       rainy: 'journal.weatherRainy',
       snowy: 'journal.weatherSnowy',
-    } as Record<string, string>)[weather]
+    } as Record<string, string>)[w]
     return key ? t(key) : null
-  }, [weather])
+  }
+  const morningMoodLabel = useMemo(() => moodLabelOf(morningMood), [morningMood])
+  const morningWeatherLabel = useMemo(() => weatherLabelOf(morningWeather), [morningWeather])
+  const eveningMoodLabel = useMemo(() => moodLabelOf(eveningMood), [eveningMood])
+  const eveningWeatherLabel = useMemo(() => weatherLabelOf(eveningWeather), [eveningWeather])
 
   const handleSave = async () => {
     setSaving(true)
@@ -204,8 +237,13 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
     const trimmedReflection = reflection.trim()
     const updated: DailyJournal = {
       ...emptyJournal(userId, date),
-      mood,
-      weather,
+      // legacy mood/weather は upsertJournal 内で evening_* に揃える
+      mood: eveningMood,
+      weather: eveningWeather,
+      morning_mood: morningMood,
+      morning_weather: morningWeather,
+      evening_mood: eveningMood,
+      evening_weather: eveningWeather,
       schedule_notes: trimmedSchedule || null,
       evening_reflection: trimmedReflection || null,
       ai_summary: aiSummary.trim() || null,
@@ -217,14 +255,14 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
       images,
     }
     // 保存前: この保存で「初めて朝/夜が埋まる」かを判定（XP は新規完成時のみ）
-    const wasMorning = hasMorningContent(journal?.schedule_notes ?? '', journal?.tags ?? [])
-    const wasEvening = hasEveningContent(
-      (journal?.mood as Mood | null) ?? null,
-      (journal?.weather as Weather | null) ?? null,
-      journal?.evening_reflection ?? '',
-    )
-    const nowMorning = hasMorningContent(trimmedSchedule, tags)
-    const nowEvening = hasEveningContent(mood, weather, trimmedReflection)
+    const prevMorningMood = (journal?.morning_mood as Mood | null) ?? null
+    const prevMorningWeather = (journal?.morning_weather as Weather | null) ?? null
+    const prevEveningMood = (journal?.evening_mood as Mood | null) ?? (journal?.mood as Mood | null) ?? null
+    const prevEveningWeather = (journal?.evening_weather as Weather | null) ?? (journal?.weather as Weather | null) ?? null
+    const wasMorning = hasMorningContent(journal?.schedule_notes ?? '', journal?.tags ?? [], prevMorningMood, prevMorningWeather)
+    const wasEvening = hasEveningContent(prevEveningMood, prevEveningWeather, journal?.evening_reflection ?? '')
+    const nowMorning = hasMorningContent(trimmedSchedule, tags, morningMood, morningWeather)
+    const nowEvening = hasEveningContent(eveningMood, eveningWeather, trimmedReflection)
 
     const { error } = await upsertJournal(updated)
     setSaving(false)
@@ -282,8 +320,10 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
 
   const handleCancelEdit = () => {
     if (journal) {
-      setMood((journal.mood as Mood | null) ?? null)
-      setWeather((journal.weather as Weather | null) ?? null)
+      setMorningMood((journal.morning_mood as Mood | null) ?? null)
+      setMorningWeather((journal.morning_weather as Weather | null) ?? null)
+      setEveningMood((journal.evening_mood as Mood | null) ?? (journal.mood as Mood | null) ?? null)
+      setEveningWeather((journal.evening_weather as Weather | null) ?? (journal.weather as Weather | null) ?? null)
       setScheduleNotes(journal.schedule_notes ?? '')
       setReflection(journal.evening_reflection ?? '')
       setTags(journal.tags ?? [])
@@ -311,8 +351,8 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
     onSaved?.(updated)
   }
 
-  const morningWritten = hasMorningContent(scheduleNotes, tags)
-  const eveningWritten = hasEveningContent(mood, weather, reflection)
+  const morningWritten = hasMorningContent(scheduleNotes, tags, morningMood, morningWeather)
+  const eveningWritten = hasEveningContent(eveningMood, eveningWeather, reflection)
   const hasImages = images.length > 0
 
   const renderImagesSection = (mode: 'edit' | 'view') => (
@@ -357,6 +397,14 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
   const renderMorningEdit = () => (
     <>
       <div>
+        <div className="journal-section__label" style={{ marginBottom: 8 }}>{t('journal.moodLabel')}</div>
+        <MoodSelector value={morningMood} onChange={setMorningMood} disabled={saving} />
+      </div>
+      <div>
+        <div className="journal-section__label" style={{ marginBottom: 8 }}>{t('journal.weatherLabel')}</div>
+        <WeatherSelector value={morningWeather} onChange={setMorningWeather} disabled={saving} />
+      </div>
+      <div>
         <div className="journal-section__label" style={{ marginBottom: 8 }}>{t('journal.intentLabel')}</div>
         <VoiceTextarea
           value={scheduleNotes}
@@ -382,11 +430,11 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
     <>
       <div>
         <div className="journal-section__label" style={{ marginBottom: 8 }}>{t('journal.moodLabel')}</div>
-        <MoodSelector value={mood} onChange={setMood} disabled={saving} />
+        <MoodSelector value={eveningMood} onChange={setEveningMood} disabled={saving} />
       </div>
       <div>
         <div className="journal-section__label" style={{ marginBottom: 8 }}>{t('journal.weatherLabel')}</div>
-        <WeatherSelector value={weather} onChange={setWeather} disabled={saving} />
+        <WeatherSelector value={eveningWeather} onChange={setEveningWeather} disabled={saving} />
       </div>
       <div>
         <div className="journal-section__label" style={{ marginBottom: 8 }}>{t('journal.eveningReflection')}</div>
@@ -417,6 +465,22 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
         <span className="journal-emoji-icon" aria-hidden="true">☀️</span>
         <span>{t('journal.phaseMorning')}</span>
       </div>
+      {(morningMoodLabel || morningWeatherLabel) && (
+        <div className="journal-view-row">
+          {morningMoodLabel && (
+            <div className="journal-view-chip">
+              <MoodIcon mood={morningMood as Mood} size={18} />
+              <span>{morningMoodLabel}</span>
+            </div>
+          )}
+          {morningWeatherLabel && (
+            <div className="journal-view-chip">
+              <WeatherIcon weather={morningWeather as Weather} size={18} />
+              <span>{morningWeatherLabel}</span>
+            </div>
+          )}
+        </div>
+      )}
       {scheduleNotes.trim() && (
         <div className="journal-view-section">
           <div className="journal-modal__section-label">{t('journal.intentLabel')}</div>
@@ -444,18 +508,18 @@ export function JournalDetailSheet({ userId, date, initialJournal, onClose, onSa
         <span className="journal-emoji-icon" aria-hidden="true">🌙</span>
         <span>{t('journal.phaseEvening')}</span>
       </div>
-      {(moodLabel || weatherLabel) && (
+      {(eveningMoodLabel || eveningWeatherLabel) && (
         <div className="journal-view-row">
-          {moodLabel && (
+          {eveningMoodLabel && (
             <div className="journal-view-chip">
-              <MoodIcon mood={mood as Mood} size={18} />
-              <span>{moodLabel}</span>
+              <MoodIcon mood={eveningMood as Mood} size={18} />
+              <span>{eveningMoodLabel}</span>
             </div>
           )}
-          {weatherLabel && (
+          {eveningWeatherLabel && (
             <div className="journal-view-chip">
-              <WeatherIcon weather={weather as Weather} size={18} />
-              <span>{weatherLabel}</span>
+              <WeatherIcon weather={eveningWeather as Weather} size={18} />
+              <span>{eveningWeatherLabel}</span>
             </div>
           )}
         </div>

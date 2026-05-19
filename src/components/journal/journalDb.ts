@@ -41,11 +41,19 @@ export async function fetchJournalsBetween(
 export async function upsertJournal(j: DailyJournal): Promise<{ error?: string }> {
   const supabase = getSupabaseClient()
   if (!supabase) return { error: 'supabase not configured' }
+  // 互換: 旧 mood/weather カラムにも evening_* と同じ値を書いておく
+  // （旧クライアント or sparkline 等のフォールバック先のため）
+  const eveningMood = j.evening_mood ?? null
+  const eveningWeather = j.evening_weather ?? null
   const payload = {
     user_id: j.user_id,
     date: j.date,
-    mood: j.mood,
-    weather: j.weather,
+    mood: eveningMood ?? j.mood ?? null,
+    weather: eveningWeather ?? j.weather ?? null,
+    morning_mood: j.morning_mood ?? null,
+    morning_weather: j.morning_weather ?? null,
+    evening_mood: eveningMood,
+    evening_weather: eveningWeather,
     morning_memo: j.morning_memo,
     schedule_notes: j.schedule_notes,
     evening_reflection: j.evening_reflection,
@@ -100,16 +108,36 @@ export async function fetchJournalStreak(userId: string): Promise<number> {
   const fmt = (d: Date) => d.toISOString().slice(0, 10)
   const { data, error } = await supabase
     .from('daily_journals')
-    .select('date, mood, weather, schedule_notes, evening_reflection, tags, images')
+    .select('date, mood, weather, morning_mood, morning_weather, evening_mood, evening_weather, schedule_notes, evening_reflection, tags, images')
     .eq('user_id', userId)
     .gte('date', fmt(start))
     .lte('date', fmt(end))
     .order('date', { ascending: false })
   if (error) { console.warn('fetchJournalStreak:', error.message); return 0 }
-  const rows = (data as Array<{ date: string; mood?: number | null; weather?: string | null; schedule_notes?: string | null; evening_reflection?: string | null; tags?: string[] | null; images?: unknown[] | null }>) ?? []
+  const rows = (data as Array<{
+    date: string
+    mood?: number | null
+    weather?: string | null
+    morning_mood?: number | null
+    morning_weather?: string | null
+    evening_mood?: number | null
+    evening_weather?: string | null
+    schedule_notes?: string | null
+    evening_reflection?: string | null
+    tags?: string[] | null
+    images?: unknown[] | null
+  }>) ?? []
   const dateSet = new Set(
     rows
-      .filter((r) => r.mood != null || !!r.weather || !!(r.schedule_notes && r.schedule_notes.trim()) || !!(r.evening_reflection && r.evening_reflection.trim()) || (r.tags && r.tags.length > 0) || (Array.isArray(r.images) && r.images.length > 0))
+      .filter((r) =>
+        r.mood != null || !!r.weather
+        || r.morning_mood != null || !!r.morning_weather
+        || r.evening_mood != null || !!r.evening_weather
+        || !!(r.schedule_notes && r.schedule_notes.trim())
+        || !!(r.evening_reflection && r.evening_reflection.trim())
+        || (r.tags && r.tags.length > 0)
+        || (Array.isArray(r.images) && r.images.length > 0)
+      )
       .map((r) => r.date)
   )
   let streak = 0

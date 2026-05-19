@@ -17,8 +17,14 @@ export interface DailyJournal {
   id?: string
   user_id?: string
   date: string // YYYY-MM-DD
+  /** @deprecated 互換のため残置。新規書き込みは evening_mood を使う */
   mood: Mood | null
+  /** @deprecated 互換のため残置。新規書き込みは evening_weather を使う */
   weather: Weather | null
+  morning_mood?: Mood | null
+  morning_weather?: Weather | null
+  evening_mood?: Mood | null
+  evening_weather?: Weather | null
   morning_memo: string | null
   schedule_notes: string | null  // 朝の意図・予定
   evening_reflection: string | null  // 夜の振り返り
@@ -81,5 +87,28 @@ export function periodKeyFor(type: PeriodType, d: Date = new Date()): string {
     case 'monthly': return monthKey(d)
     case 'yearly':  return yearKey(d)
   }
+}
+
+/**
+ * 表示用 mood を返す。優先順: evening_mood → morning_mood → legacy mood。
+ * カレンダー / 一覧 / グラフはすべてこの関数経由で取り出す。
+ */
+export function displayMood(j: Pick<DailyJournal, 'mood' | 'morning_mood' | 'evening_mood'> | null | undefined): Mood | null {
+  if (!j) return null
+  if (j.evening_mood != null) return j.evening_mood as Mood
+  if (j.morning_mood != null) return j.morning_mood as Mood
+  if (j.mood != null) return j.mood as Mood
+  return null
+}
+
+/**
+ * 表示用 weather を返す。優先順: evening_weather → morning_weather → legacy weather。
+ */
+export function displayWeather(j: Pick<DailyJournal, 'weather' | 'morning_weather' | 'evening_weather'> | null | undefined): Weather | null {
+  if (!j) return null
+  if (j.evening_weather) return j.evening_weather as Weather
+  if (j.morning_weather) return j.morning_weather as Weather
+  if (j.weather) return j.weather as Weather
+  return null
 }
 

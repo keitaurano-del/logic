@@ -32,6 +32,8 @@ export function JournalImageGrid({ userId, date, images, editing, onChange, disa
   const fileInputRef = useRef<HTMLInputElement>(null)
   // pending preview の objectURL は unmount 時にクリーンアップする
   const pendingUrlsRef = useRef<Set<string>>(new Set())
+  // ライトボックスのスワイプ判定用（タップ開始座標）
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null)
 
   // images が変わったら signed URL を再フェッチ
   useEffect(() => {
@@ -256,12 +258,35 @@ export function JournalImageGrid({ userId, date, images, editing, onChange, disa
               <ArrowLeftIcon width={24} height={24} />
             </button>
           )}
-          <div className="journal-image-lightbox__stage">
+          <div
+            className="journal-image-lightbox__stage"
+            onTouchStart={(e) => {
+              const t0 = e.touches[0]
+              if (t0) {
+                touchStartRef.current = { x: t0.clientX, y: t0.clientY }
+              }
+            }}
+            onTouchEnd={(e) => {
+              const start = touchStartRef.current
+              touchStartRef.current = null
+              if (!start || images.length <= 1) return
+              const t1 = e.changedTouches[0]
+              if (!t1) return
+              const dx = t1.clientX - start.x
+              const dy = t1.clientY - start.y
+              // 横スワイプ判定: 横移動が縦より大きく、しきい値超え
+              if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+                if (dx < 0) lightboxNext()
+                else lightboxPrev()
+              }
+            }}
+          >
             {urls[images[lightboxIdx].path] ? (
               <img
                 src={urls[images[lightboxIdx].path] ?? ''}
                 alt=""
                 className="journal-image-lightbox__img"
+                draggable={false}
               />
             ) : (
               <div className="journal-image-lightbox__loading">{t('common.loading')}</div>

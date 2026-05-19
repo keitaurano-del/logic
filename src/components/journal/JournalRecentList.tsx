@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 import { fetchRecentJournals } from './journalDb'
 import { JournalDetailSheet } from './JournalDetailSheet'
 import { MoodIcon, WeatherIcon } from './MoodWeatherIcons'
-import type { DailyJournal, Mood, Weather } from './types'
+import { displayMood, displayWeather } from './types'
+import type { DailyJournal } from './types'
 import { t } from '../../i18n'
 
 interface JournalRecentListProps {
@@ -15,8 +16,8 @@ interface JournalRecentListProps {
 
 function hasContent(j: DailyJournal): boolean {
   return !!(
-    (j.mood !== null && j.mood !== undefined) ||
-    j.weather ||
+    displayMood(j) !== null ||
+    displayWeather(j) ||
     (j.schedule_notes && j.schedule_notes.trim()) ||
     (j.evening_reflection && j.evening_reflection.trim()) ||
     (j.tags && j.tags.length > 0) ||
@@ -81,6 +82,8 @@ export function JournalRecentList({ userId, refreshKey = 0, limit = 5 }: Journal
       <ul className="journal-recent__list">
         {items.map((j) => {
           const tags = Array.isArray(j.tags) ? j.tags.slice(0, 3) : []
+          const m = displayMood(j)
+          const w = displayWeather(j)
           return (
             <li key={j.date}>
               <button
@@ -92,14 +95,14 @@ export function JournalRecentList({ userId, refreshKey = 0, limit = 5 }: Journal
                 <div className="journal-recent__item-head">
                   <span className="journal-recent__date">{formatDate(j.date)}</span>
                   <div className="journal-recent__icons">
-                    {j.mood != null && (
-                      <span className={`journal-emoji-icon journal-cal-cell__mood--${j.mood}`}>
-                        <MoodIcon mood={j.mood as Mood} size={18} />
+                    {m != null && (
+                      <span className={`journal-emoji-icon journal-cal-cell__mood--${m}`}>
+                        <MoodIcon mood={m} size={18} />
                       </span>
                     )}
-                    {j.weather && (
+                    {w && (
                       <span className="journal-emoji-icon">
-                        <WeatherIcon weather={j.weather as Weather} size={18} />
+                        <WeatherIcon weather={w} size={18} />
                       </span>
                     )}
                   </div>

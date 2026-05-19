@@ -479,10 +479,19 @@
   padding: 2px 8px;
 }
 
-.journal-cal-fab {
+.journal-cal-fab-stack {
   position: fixed;
   right: 20px;
   bottom: calc(env(safe-area-inset-bottom, 0px) + 88px);
+  width: 56px;
+  height: 56px;
+  z-index: 40;
+}
+
+.journal-cal-fab {
+  position: absolute;
+  right: 0;
+  bottom: 0;
   width: 56px;
   height: 56px;
   border-radius: 50%;
@@ -494,8 +503,64 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 40;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition: transform 0.2s ease, box-shadow 0.15s ease;
+  z-index: 2;
+}
+
+.journal-cal-fab--open {
+  transform: rotate(45deg);
+}
+
+.journal-cal-fab-sub {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--bg-card, #fff);
+  border: 1px solid var(--border, rgba(0,0,0,.1));
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  font-size: 22px;
+  z-index: 1;
+  opacity: 0;
+  transform: translateY(0) scale(0.6);
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.22s cubic-bezier(0.2, 0.8, 0.3, 1.2);
+}
+
+.journal-cal-fab-stack--open .journal-cal-fab-sub {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.journal-cal-fab-sub--morning {
+  /* 上に出る（朝が一番上） */
+  transform: translateY(0) scale(0.6);
+}
+.journal-cal-fab-stack--open .journal-cal-fab-sub--morning {
+  transform: translateY(-140px) scale(1);
+}
+
+.journal-cal-fab-sub--evening {
+  transform: translateY(0) scale(0.6);
+}
+.journal-cal-fab-stack--open .journal-cal-fab-sub--evening {
+  transform: translateY(-72px) scale(1);
+}
+
+.journal-cal-fab-sub:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+.journal-cal-fab-sub:active {
+  filter: brightness(0.95);
 }
 
 .journal-cal-fab:hover {

@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { displayMood } from './types'
 import type { DailyJournal, Mood } from './types'
 import { t } from '../../i18n'
 
@@ -19,7 +20,7 @@ export function MoodSparkline({ journals, days = 30 }: MoodSparklineProps) {
       const d = new Date(today.getTime() - i * 86400000)
       const iso = d.toISOString().slice(0, 10)
       const j = journals.find((x) => x.date === iso)
-      arr.push({ date: iso, mood: (j?.mood as Mood | null) ?? null })
+      arr.push({ date: iso, mood: displayMood(j) })
     }
     return arr
   }, [journals, days])

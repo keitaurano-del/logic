@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { MoodIcon } from './MoodWeatherIcons'
 import { MoodSparkline } from './MoodSparkline'
 import { JournalDetailSheet } from './JournalDetailSheet'
 import { fetchJournalsBetween, fetchRecentJournals } from './journalDb'
-import { todayKey } from './types'
-import type { DailyJournal, Mood } from './types'
+import { displayMood, todayKey } from './types'
+import type { DailyJournal } from './types'
 import { ArrowLeftIcon, ArrowRightIcon, PlusIcon } from '../../icons'
 import { t, getLocale } from '../../i18n'
 
@@ -35,8 +35,11 @@ export function JournalCalendar({ userId, onSaved }: JournalCalendarProps) {
   const [journals, setJournals] = useState<Record<string, DailyJournal>>({})
   const [recent, setRecent] = useState<DailyJournal[]>([])
   const [selected, setSelected] = useState<string | null>(null)
+  const [initialPhase, setInitialPhase] = useState<'morning' | 'evening' | null>(null)
+  const [fabOpen, setFabOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [refreshTick, setRefreshTick] = useState(0)
+  const fabContainerRef = useRef<HTMLDivElement>(null)
   const today = todayKey()
 
   useEffect(() => {
@@ -104,8 +107,32 @@ export function JournalCalendar({ userId, onSaved }: JournalCalendarProps) {
   }
 
   const handleAdd = () => {
-    setSelected(selected ?? today)
+    setFabOpen((v) => !v)
   }
+
+  const handlePickPhase = (phase: 'morning' | 'evening') => {
+    setInitialPhase(phase)
+    setSelected(selected ?? today)
+    setFabOpen(false)
+  }
+
+  // 外側タップで FAB を閉じる
+  useEffect(() => {
+    if (!fabOpen) return
+    const onDown = (e: MouseEvent | TouchEvent) => {
+      const root = fabContainerRef.current
+      if (!root) return
+      if (e.target instanceof Node && !root.contains(e.target)) {
+        setFabOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', onDown)
+    document.addEventListener('touchstart', onDown, { passive: true })
+    return () => {
+      document.removeEventListener('mousedown', onDown)
+      document.removeEventListener('touchstart', onDown)
+    }
+  }, [fabOpen])
 
   return (
     <div className="journal-cal-root">
@@ -138,6 +165,7 @@ export function JournalCalendar({ userId, onSaved }: JournalCalendarProps) {
         {cells.map((c) => {
           const key = dateStr(c.year, c.month, c.day)
           const j = journals[key]
+          const m = displayMood(j)
           const isToday = key === today
           const label = isToday
             ? `${key} ${t('journal.todaySuffix')}${j ? ` · ${t('journal.cellHasEntry')}` : ''}`
@@ -147,16 +175,16 @@ export function JournalCalendar({ userId, onSaved }: JournalCalendarProps) {
               key={key + (c.inMonth ? '' : '-out')}
               type="button"
               className={`journal-cal-cell ${c.inMonth ? '' : 'journal-cal-cell--outside'} ${isToday ? 'journal-cal-cell--today' : ''}`}
-              onClick={() => setSelected(key)}
+              onClick={() => { setInitialPhase(null); setSelected(key) }}
               aria-label={label}
             >
               <span className="journal-cal-cell__day">{c.day}</span>
-              {j?.mood && (
-                <span className={`journal-emoji-icon journal-cal-cell__icon journal-cal-cell__mood--${j.mood}`}>
-                  <MoodIcon mood={j.mood as Mood} size={22} />
+              {m && (
+                <span className={`journal-emoji-icon journal-cal-cell__icon journal-cal-cell__mood--${m}`}>
+                  <MoodIcon mood={m} size={22} />
                 </span>
               )}
-              {j && !j.mood && (
+              {j && !m && (
                 <span className="journal-cal-cell__dot" />
               )}
             </button>
@@ -170,21 +198,46 @@ export function JournalCalendar({ userId, onSaved }: JournalCalendarProps) {
         </div>
       )}
 
-      <button
-        type="button"
-        className="journal-cal-fab"
-        onClick={handleAdd}
-        aria-label={t('journal.fabAddEntry')}
+      <div
+        ref={fabContainerRef}
+        className={`journal-cal-fab-stack ${fabOpen ? 'journal-cal-fab-stack--open' : ''}`}
       >
-        <PlusIcon width={28} height={28} />
-      </button>
+        <button
+          type="button"
+          className="journal-cal-fab-sub journal-cal-fab-sub--morning"
+          onClick={() => handlePickPhase('morning')}
+          aria-label={t('journal.fabAddMorning')}
+          tabIndex={fabOpen ? 0 : -1}
+        >
+          <span className="journal-emoji-icon" aria-hidden="true">☀️</span>
+        </button>
+        <button
+          type="button"
+          className="journal-cal-fab-sub journal-cal-fab-sub--evening"
+          onClick={() => handlePickPhase('evening')}
+          aria-label={t('journal.fabAddEvening')}
+          tabIndex={fabOpen ? 0 : -1}
+        >
+          <span className="journal-emoji-icon" aria-hidden="true">🌙</span>
+        </button>
+        <button
+          type="button"
+          className={`journal-cal-fab ${fabOpen ? 'journal-cal-fab--open' : ''}`}
+          onClick={handleAdd}
+          aria-label={t('journal.fabAddEntry')}
+          aria-expanded={fabOpen}
+        >
+          <PlusIcon width={28} height={28} />
+        </button>
+      </div>
 
       {selected && (
         <JournalDetailSheet
           userId={userId}
           date={selected}
           initialJournal={journals[selected] ?? null}
-          onClose={() => setSelected(null)}
+          initialPhase={initialPhase ?? undefined}
+          onClose={() => { setSelected(null); setInitialPhase(null) }}
           onSaved={() => { handleRefresh(); onSaved?.() }}
         />
       )}
