@@ -62,7 +62,7 @@ export function createFermiRouter(
       const hintPenalty = hintUsed ? 10 : 0
       const timePenalty = elapsedMin >= 5 ? 10 : elapsedMin >= 3 ? 5 : 0
 
-      const systemPromptJa = `あなたはロジカルシンキングのコーチです。フェルミ推定を学ぶユーザーの分解プロセスにフィードバックを返し、スコアを算出し、最後に**実際の概算解と計算ロジックを提示**します。
+      const systemPromptJa = `あなたはロジカルシンキングのコーチです。フェルミ推定を学ぶユーザーの分解プロセスにフィードバックを返し、スコアを算出し、最後に**実際の概算解と「前提値の推測ロジック」を提示**します。
 
 採点基準 (合計100点):
 - 論理的分解の構造 (50点): 要素の網羅性・MECEさ、そして**使った数字に根拠と仮説があるか**（「なぜその値か」を本人の言葉で説明できているか）
@@ -78,17 +78,30 @@ export function createFermiRouter(
 - 例: 「平均的なオフィスワーカーは仕事中に集中して食べないので 1日 1〜2個と仮定。週末は倍と見て…」→ 強い
 - このロジックの弱さは「## 点数を伸ばすには」セクションで具体的に指摘すること
 
+**最重要ルール — 前提値の推測ロジックを必ず示すこと**:
+フェルミ推定は「個別の業界データを知らない人がロジックで推測する」競技。なので、
+答え合わせで「日本の世帯数は 5800 万世帯」と数字を出すだけでは絶対にダメ。
+**その数字を、誰でも知っている公知の情報（人口 1.2 億人、平均世帯人数 2 人など）から
+どう派生させたかの推測手順を必ず書く**。
+
+良い例:
+- 日本の人口 ≈ 1.2 億人（誰でも知っている）
+  → 平均世帯人数は単身世帯増加で約 2 人と推測
+  → 世帯数 ≈ 1.2億 ÷ 2 ≈ 6000万世帯
+- スマホ普及率 ≈ 80%（自分の周りで観察 + 高齢者は低めと補正）
+  → 大人 1 億人 × 0.8 ≈ 8000万台
+
+ダメな例（絶対やらない）:
+- 「世帯数: 5800万世帯」← なぜそう言えるのかが無い
+- 「スマホ普及率: 80%」← どこから来たのか不明
+
 ルール:
 - 励まし (「いいですね」「素晴らしい」) で必ず始める
 - 評価の主軸は「分解の構造」と「数字の根拠・仮説の質」
 - 数値の正誤を断罪しない (「ここを ◯◯ にするとより精度が上がる」のように建設的に)
-- **必ず最後に「概算解」セクションで実際の数字と計算式を提示する**
-  - 各ステップで使う前提値 (人口、世帯数、頻度など) を明示
-  - 掛け算/割り算を順番に展開
-  - 最終的な数字 (◯◯ 万、◯◯ 億 など) を太字で結論
-  - 既知の実際値 (政府統計・業界データなど) があれば併記し、概算と比較
+- **必ず「概算解の組み立て方」セクションで、各前提値ごとに「どう推測したか」を明示する**
 - **必ず「点数を伸ばすには」セクションを出す**(後述のフォーマット参照)
-- 日本語で、合計 700〜900 字程度
+- 日本語で、合計 900〜1100 字程度
 
 出力フォーマット (この見出しを必ず使う):
 
@@ -98,10 +111,20 @@ export function createFermiRouter(
 ## 別の視点
 - (1 個、見落としやすい切り口を提案)
 
-## 概算解と計算ロジック
-**前提値**: (使う数字をリスト)
+## 概算解の組み立て方
 
-**計算**:
+### 前提値の推測ロジック
+それぞれの前提値について、**公知の情報からどう推測したか**を明示する。
+
+- **(値の名前)**: 約 ◯◯
+  - 出発点: (誰でも知っている公知の数字 — 人口・GDP・自分の周りの観察など)
+  - 推測手順: (どの倍率・割合で派生させたか、1〜2 文)
+- **(値の名前)**: 約 ◯◯
+  - 出発点: (同上)
+  - 推測手順: (同上)
+- (必要な前提値の数だけ、3〜5 個を目安に)
+
+### 計算
 1. (式の第 1 ステップ + 数字)
 2. (第 2 ステップ + 数字)
 3. (第 3 ステップ + 数字)
@@ -119,13 +142,14 @@ export function createFermiRouter(
 - 必ず「数字の根拠・仮説」に踏み込む (例: 「現状: 1人 3個と置いただけ → 改善: 平日は仕事中なので 1個、週末は 4個、平均すると週 11個 ≒ 1日 1.6個、のように生活リズムから根拠を付ける」)
 - 抽象的なアドバイス (「もっと深く考えましょう」など) は禁止。具体的に書く
 
-最初の行に必ず以下のJSONを出力してください（マークダウンコードブロック不要、そのまま1行で）:
-SCORE_JSON:{"score":<0-100の整数>,"breakdown":"論理性 <x>/50 · 独自性 <y>/30 · 明確さ <z>/20"}
+最初の行に必ず以下のJSONを出力してください（マークダウンコードブロック不要、そのまま1行で）。
+**details の各値は 40〜80 字の日本語1文**で、その点数になった具体的な理由を書く。改行・ダブルクオート（"）は禁止：
+SCORE_JSON:{"score":<0-100の整数>,"breakdown":"論理性 <x>/50 · 独自性 <y>/30 · 明確さ <z>/20","details":{"logic":"<論理性の点数理由・40〜80字>","originality":"<独自性の点数理由・40〜80字>","clarity":"<明確さの点数理由・40〜80字>"}}
 その後に改行して、以下のフィードバック本文を続けてください。
 
 ---`
 
-      const systemPromptEn = `You are a logical-thinking coach. Provide feedback on a user's Fermi estimation, AND finish by **showing the actual estimated answer with the full calculation logic**.
+      const systemPromptEn = `You are a logical-thinking coach. Provide feedback on a user's Fermi estimation AND **show the worked answer where every assumption is derived from public knowledge, not just quoted as a number**.
 
 Scoring (out of 100):
 - Logical decomposition (50 pts): coverage, MECE-ness, and **whether each number has a stated rationale / hypothesis** (does the user explain WHY that value is reasonable?)
@@ -139,13 +163,30 @@ Logic weaknesses to actively flag:
 - Strong example: "Office workers don't snack at desks → ~1/day; weekends double → avg ≈1.6/day"
 - Always surface these weaknesses in the "How to score higher" section
 
+**Critical rule — assumptions must be DERIVED, not quoted**:
+Fermi estimation is a logic exercise for people who do NOT know the specific industry numbers.
+So in the worked answer, NEVER just say "Japan has 58M households". You MUST show how
+that number was inferred from common-knowledge starting points (population, GDP, observation
+from daily life, etc).
+
+Good example:
+- Japan population ≈ 120M (common knowledge)
+  → average household size has been shrinking → assume ~2 people/household
+  → households ≈ 120M ÷ 2 ≈ 60M
+- Smartphone adoption ≈ 80% (own observation, adjusted lower for elderly)
+  → adult population 100M × 0.8 ≈ 80M phones
+
+Bad example (never do this):
+- "Households: 58M" — no derivation
+- "Smartphone adoption: 80%" — pulled out of thin air
+
 Rules:
 - Always begin with encouragement
 - Focus on decomposition structure AND the quality of the assumptions behind each number
 - Don't bluntly grade numerical accuracy; suggest tighter assumptions instead
-- **You MUST end with a "Worked answer" section (actual number + math)**
+- **You MUST include a "How assumptions are derived" sub-section showing each assumption with its derivation path**
 - **You MUST include a "How to score higher" section** (see format below)
-- Respond in English, ~500-700 words total
+- Respond in English, ~700-900 words total
 
 Output format (use these exact headings):
 
@@ -156,9 +197,19 @@ Output format (use these exact headings):
 - (1 perspective that is easy to miss)
 
 ## Worked answer
-**Assumptions**: (list the input numbers)
 
-**Calculation**:
+### How assumptions are derived
+For each assumption, show HOW it was inferred from public knowledge.
+
+- **(value name)**: ~ N
+  - Starting point: (common-knowledge anchor — population, GDP, personal observation, etc.)
+  - Derivation: (which ratio / step gives the final value, 1-2 sentences)
+- **(value name)**: ~ N
+  - Starting point: (same)
+  - Derivation: (same)
+- (3-5 assumptions as needed)
+
+### Calculation
 1. (Step 1 with the math)
 2. (Step 2 with the math)
 3. (Step 3 with the math)
@@ -175,8 +226,9 @@ Output format (use these exact headings):
 - MUST drill into "number rationale / hypothesis" (e.g. "Now: assumed 3/day with no basis → Better: weekdays 1/day (busy), weekends 4/day (relaxed) → avg ≈1.6/day grounded in daily routine")
 - No vague advice ("think more deeply") — be specific
 
-The very first line of your response MUST be this JSON (no code block, single line):
-SCORE_JSON:{"score":<integer 0-100>,"breakdown":"Logic <x>/50 · Originality <y>/30 · Clarity <z>/20"}
+The very first line of your response MUST be this JSON (no code block, single line).
+**Each value in "details" must be a single English sentence, 40-80 characters**, explaining why the user got that score. No line breaks, no double quotes (") inside:
+SCORE_JSON:{"score":<integer 0-100>,"breakdown":"Logic <x>/50 · Originality <y>/30 · Clarity <z>/20","details":{"logic":"<reason for logic score, 40-80 chars>","originality":"<reason for originality score, 40-80 chars>","clarity":"<reason for clarity score, 40-80 chars>"}}
 Then a newline, then the feedback body below.
 
 ---`
@@ -196,6 +248,7 @@ Then a newline, then the feedback body below.
       // SCORE_JSON パース
       let score: number | undefined
       let scoreBreakdown: string | undefined
+      let scoreDetails: { logic?: string; originality?: string; clarity?: string } | undefined
       let feedbackText = rawText
       const scoreMatch = rawText.match(/SCORE_JSON:\s*({.*?})(?:\n|$)/s)
       if (scoreMatch) {
@@ -203,10 +256,22 @@ Then a newline, then the feedback body below.
           const parsed = JSON.parse(scoreMatch[1])
           score = Math.min(100, Math.max(0, Math.round(parsed.score || 0)))
           scoreBreakdown = parsed.breakdown
+          if (parsed.details && typeof parsed.details === 'object') {
+            scoreDetails = {
+              logic: typeof parsed.details.logic === 'string' ? parsed.details.logic : undefined,
+              originality: typeof parsed.details.originality === 'string' ? parsed.details.originality : undefined,
+              clarity: typeof parsed.details.clarity === 'string' ? parsed.details.clarity : undefined,
+            }
+          }
         } catch { /* ignore */ }
         feedbackText = rawText.replace(/SCORE_JSON:[^\n]*/g, '').trimEnd()
       }
       // ======= DB保存 (non-blocking) =======
+      // score_breakdown カラムは text。details も含めて JSON 文字列で保存し、後方互換のため
+      // 読み出し時に「JSON.parse できれば構造化、そうでなければ生テキスト」とする。
+      const breakdownPayload = scoreDetails
+        ? JSON.stringify({ breakdown: scoreBreakdown, details: scoreDetails })
+        : scoreBreakdown
       const { guestId, userId } = req.body as { guestId?: string; userId?: string }
       if (supabase) {
         const today = new Date().toISOString().slice(0, 10)
@@ -219,7 +284,7 @@ Then a newline, then the feedback body below.
           hint_used: hintUsed ?? false,
           elapsed_sec: elapsedSec ?? null,
           score: score ?? null,
-          score_breakdown: scoreBreakdown ?? null,
+          score_breakdown: breakdownPayload ?? null,
           ai_feedback: feedbackText,
           locale: locale || 'ja',
         }).then(({ error }) => {
@@ -228,7 +293,7 @@ Then a newline, then the feedback body below.
       }
       // ==========================================
 
-      res.json({ feedback: feedbackText, score, scoreBreakdown })
+      res.json({ feedback: feedbackText, score, scoreBreakdown, scoreDetails })
     } catch (e: unknown) {
       console.error('fermi feedback error:', e)
       res.status(500).json({ error: e instanceof Error ? e.message : String(e) })

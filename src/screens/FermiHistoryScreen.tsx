@@ -218,11 +218,42 @@ export function FermiHistoryScreen({ onBack, onRetry }: FermiHistoryScreenProps)
               {/* Expanded details */}
               {expanded && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12, paddingTop: 8, borderTop: '1px solid var(--border)' }}>
-                  {item.score_breakdown && (
-                    <div style={{ fontSize: 12, color: 'var(--text-secondary)', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-sm)', padding: '8px 12px' }}>
-                      {item.score_breakdown}
-                    </div>
-                  )}
+                  {item.score_breakdown && (() => {
+                    // 後方互換: 2026-05-19 以降は { breakdown, details } の JSON 文字列、
+                    // それ以前は生テキスト。両方を受け付ける。
+                    let breakdown: string | null = item.score_breakdown
+                    let details: { logic?: string; originality?: string; clarity?: string } | null = null
+                    try {
+                      const parsed = JSON.parse(item.score_breakdown)
+                      if (parsed && typeof parsed === 'object' && parsed.breakdown) {
+                        breakdown = parsed.breakdown
+                        details = parsed.details || null
+                      }
+                    } catch { /* 生テキストとして扱う */ }
+                    return (
+                      <div style={{ background: 'var(--bg-secondary)', borderRadius: 'var(--radius-sm)', padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: 6 }}>
+                        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-secondary)' }}>{breakdown}</div>
+                        {details && (
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginTop: 4 }}>
+                            {[
+                              { key: 'logic' as const, label: t('dailyFermi.scoreLogic') },
+                              { key: 'originality' as const, label: t('dailyFermi.scoreOriginality') },
+                              { key: 'clarity' as const, label: t('dailyFermi.scoreClarity') },
+                            ].map(({ key, label }) => {
+                              const reason = details?.[key]
+                              if (!reason) return null
+                              return (
+                                <div key={key} style={{ display: 'flex', gap: 8, fontSize: 12, lineHeight: 1.55 }}>
+                                  <span style={{ fontWeight: 700, color: 'var(--text-muted)', minWidth: 48 }}>{label}</span>
+                                  <span style={{ color: 'var(--text-primary)', flex: 1 }}>{reason}</span>
+                                </div>
+                              )
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })()}
 
                   <div>
                     <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 6 }}>

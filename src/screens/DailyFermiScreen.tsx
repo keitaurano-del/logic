@@ -442,10 +442,17 @@ function getScoreTone(score: number): { color: string; label: string } {
   return { color: 'var(--score-retry)', label: 'Try again' }
 }
 
+interface ScoreDetails {
+  logic?: string
+  originality?: string
+  clarity?: string
+}
+
 interface FermiFeedback {
   feedback: string
   score?: number
   scoreBreakdown?: string
+  scoreDetails?: ScoreDetails
 }
 
 // 提出フロー状態
@@ -727,95 +734,95 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
             </div>
           )}
 
-          {/* ヒント */}
-          {hint && submitPhase === 'idle' && (
-            <div style={{ marginBottom: guideActive && !showHint ? 28 : 0 }}>
-              {!showHint ? (
-                <div style={{ position: 'relative', display: 'inline-block' }}>
-                  <button
-                    id="dailyFermi-hint-btn"
-                    onClick={() => { setShowHint(true); setHintUsed(true) }}
-                    style={{
-                      display: 'flex', alignItems: 'center', gap: 6,
-                      background: 'none', border: 'none', cursor: 'pointer',
-                      color: 'var(--brand)', fontSize: 16, fontWeight: 600, padding: 0,
-                      animation: guideActive ? 'tut-pulse 1.2s ease 2' : 'none',
-                    }}
-                  >
-                    <LightbulbIcon width={15} height={15} />
-                    {t('dailyFermi.showHint')}
-                  </button>
-                </div>
-              ) : (
-                <div style={{
-                  borderRadius: 16,
-                  border: '1.5px solid rgba(108,142,245,0.4)',
-                  background: 'rgba(108,142,245,0.08)',
-                  padding: '16px',
-                  fontSize: 16,
-                  lineHeight: 1.6,
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
-                    <LightbulbIcon width={14} height={14} style={{ color: 'var(--brand)' }} />
-                    <span style={{ fontWeight: 700, color: 'var(--brand)', fontSize: 13, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                      {t('dailyFermi.hintLabel')}
-                    </span>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, marginBottom: 14 }}>
-                    <p style={{ color: 'var(--text-primary)', margin: 0, fontWeight: 500, fontSize: 15, lineHeight: 1.7, flex: 1 }}>{hint}</p>
-                    <button
-                      onClick={() => setShowHint(false)}
-                      style={{
-                        background: 'none', border: 'none', cursor: 'pointer',
-                        color: 'var(--text-muted)', fontSize: 16, padding: 0,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        minWidth: 24, minHeight: 24,
-                      }}
-                      title={t('dailyFermi.hintCloseTitle')}
-                    >
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
-                    </button>
-                  </div>
-                  {/* 基礎統計データ */}
-                  <div style={{ paddingTop: 12, borderTop: '1px solid rgba(108,142,245,0.2)' }}>
-                    <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', color: 'var(--text-muted)', marginBottom: 10, textTransform: 'uppercase' }}>{t('dailyFermi.refData')}</div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                      {getFermiStatsByIndex(currentPoolIndex).map((s) => (
-                        <div key={s.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 13 }}>
-                          <span style={{ color: 'var(--text-secondary)' }}>{s.label}</span>
-                          <span style={{ fontWeight: 700, color: 'var(--text-primary)', marginLeft: 12 }}>{s.value}</span>
-                        </div>
-                      ))}
+          {/* ヒント・参考データの展開パネル（ボタンは下の電卓と同じ行へ移動） */}
+          {hint && submitPhase === 'idle' && showHint && (
+            <div style={{
+              borderRadius: 16,
+              border: '1.5px solid rgba(108,142,245,0.4)',
+              background: 'rgba(108,142,245,0.08)',
+              padding: '16px',
+              fontSize: 16,
+              lineHeight: 1.6,
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
+                <LightbulbIcon width={14} height={14} style={{ color: 'var(--brand)' }} />
+                <span style={{ fontWeight: 700, color: 'var(--brand)', fontSize: 13, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                  {t('dailyFermi.hintLabel')}
+                </span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, marginBottom: 14 }}>
+                <p style={{ color: 'var(--text-primary)', margin: 0, fontWeight: 500, fontSize: 15, lineHeight: 1.7, flex: 1 }}>{hint}</p>
+                <button
+                  onClick={() => setShowHint(false)}
+                  style={{
+                    background: 'none', border: 'none', cursor: 'pointer',
+                    color: 'var(--text-muted)', fontSize: 16, padding: 0,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    minWidth: 24, minHeight: 24,
+                  }}
+                  title={t('dailyFermi.hintCloseTitle')}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+                </button>
+              </div>
+              {/* 基礎統計データ */}
+              <div style={{ paddingTop: 12, borderTop: '1px solid rgba(108,142,245,0.2)' }}>
+                <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', color: 'var(--text-muted)', marginBottom: 10, textTransform: 'uppercase' }}>{t('dailyFermi.refData')}</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  {getFermiStatsByIndex(currentPoolIndex).map((s) => (
+                    <div key={s.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 13 }}>
+                      <span style={{ color: 'var(--text-secondary)' }}>{s.label}</span>
+                      <span style={{ fontWeight: 700, color: 'var(--text-primary)', marginLeft: 12 }}>{s.value}</span>
                     </div>
-                  </div>
+                  ))}
                 </div>
-              )}
+              </div>
             </div>
           )}
 
           {/* 回答入力エリア */}
           {submitPhase === 'idle' && (
             <div className="stack-sm">
-              {/* 電卓トグル: テキストエリア右上 */}
-              <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '0 2px' }}>
+              {/* 参考データ（左・控えめ） + 電卓（右・強調）を同じ行に */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, padding: '0 2px' }}>
+                {hint && !showHint ? (
+                  <button
+                    id="dailyFermi-hint-btn"
+                    type="button"
+                    onClick={() => { setShowHint(true); setHintUsed(true) }}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: 4,
+                      background: 'none', border: 'none', cursor: 'pointer',
+                      color: 'var(--brand)', fontSize: 13, fontWeight: 600, padding: 0,
+                      fontFamily: 'inherit',
+                      animation: guideActive ? 'tut-pulse 1.2s ease 2' : 'none',
+                    }}
+                  >
+                    <LightbulbIcon width={13} height={13} />
+                    {t('dailyFermi.showHint')}
+                  </button>
+                ) : <span aria-hidden="true" />}
                 <button
                   id="dailyFermi-calc-btn"
                   type="button"
                   onClick={() => setShowCalculator(s => !s)}
                   aria-expanded={showCalculator}
                   style={{
-                    display: 'flex', alignItems: 'center', gap: 6,
-                    background: showCalculator ? 'rgba(112,216,189,0.12)' : 'rgba(255,255,255,0.04)',
-                    border: `1px solid ${showCalculator ? 'var(--score-excellent)' : 'var(--border)'}`,
-                    borderRadius: 6, padding: '6px 12px',
-                    color: showCalculator ? 'var(--score-excellent)' : 'var(--text-secondary)',
-                    fontSize: 13, fontWeight: 700,
+                    display: 'flex', alignItems: 'center', gap: 8,
+                    background: showCalculator ? 'var(--score-excellent)' : 'var(--brand)',
+                    border: 'none',
+                    borderRadius: 999, padding: '10px 18px',
+                    color: '#FFFFFF',
+                    fontSize: 15, fontWeight: 800,
                     cursor: 'pointer',
                     fontFamily: 'inherit',
-                    transition: 'background 0.15s ease, color 0.15s ease, border-color 0.15s ease',
+                    boxShadow: showCalculator
+                      ? '0 3px 12px color-mix(in srgb, var(--score-excellent) 28%, transparent)'
+                      : '0 3px 12px color-mix(in srgb, var(--brand) 28%, transparent)',
+                    transition: 'background 0.15s ease, box-shadow 0.15s ease',
                   }}
                 >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     <rect x="4" y="3" width="16" height="18" rx="2" />
                     <line x1="8" y1="7" x2="16" y2="7" />
                     <line x1="8" y1="12" x2="9" y2="12" />
@@ -1005,8 +1012,28 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
 
                 {/* 内訳 */}
                 {feedback.scoreBreakdown && (
-                  <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.75)', background: 'rgba(255,255,255,0.08)', borderRadius: 10, padding: '10px 16px', marginBottom: 14, lineHeight: 1.7 }}>
-                    {feedback.scoreBreakdown}
+                  <div style={{ background: 'rgba(255,255,255,0.08)', borderRadius: 12, padding: '12px 14px', marginBottom: 14 }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.9)', marginBottom: feedback.scoreDetails ? 10 : 0, textAlign: 'center', lineHeight: 1.5 }}>
+                      {feedback.scoreBreakdown}
+                    </div>
+                    {feedback.scoreDetails && (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 4 }}>
+                        {[
+                          { key: 'logic' as const, label: t('dailyFermi.scoreLogic') },
+                          { key: 'originality' as const, label: t('dailyFermi.scoreOriginality') },
+                          { key: 'clarity' as const, label: t('dailyFermi.scoreClarity') },
+                        ].map(({ key, label }) => {
+                          const reason = feedback.scoreDetails?.[key]
+                          if (!reason) return null
+                          return (
+                            <div key={key} style={{ display: 'flex', gap: 10, alignItems: 'flex-start', textAlign: 'left' }}>
+                              <span style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.55)', minWidth: 56, paddingTop: 2, letterSpacing: '0.04em' }}>{label}</span>
+                              <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.85)', lineHeight: 1.6, flex: 1 }}>{reason}</span>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    )}
                   </div>
                 )}
 
