@@ -60,7 +60,7 @@ export type LessonPromptEntry = {
  */
 const ACRONYM_WHITELIST = new Set([
   'MECE', 'STAR', 'ATS', 'SPI', 'GAB', 'WFH', 'PTO', 'IMAGES', 'M&A',
-  'EN', 'PRE-EMPT', 'JP', 'NOT', 'AND', 'OR', 'WHY', 'SO',
+  'EN', 'PRE-EMPT', 'JP', 'NOT', 'AND', 'OR', 'WHY', 'SO', 'AI',
   'A', 'B', 'C', 'D', 'P', 'Q', 'R', 'S', 'T',
 ])
 
