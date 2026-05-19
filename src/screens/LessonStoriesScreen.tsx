@@ -14,6 +14,7 @@ import { API_BASE } from './apiBase'
 import { t } from '../i18n'
 import { tutorial } from '../tutorial/tutorialStorage'
 import { addWrongAnswers } from '../wrongAnswerStore'
+import { generateFromLesson } from '../flashcardData'
 import { isSaved, toggleSaved } from '../savedItemsStore'
 import { haptic } from '../platform/haptics'
 
@@ -108,6 +109,27 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
             options: w.options,
           })),
         )
+      }
+      // 完了：フラッシュカードを生成（誤答 + concept/summary/think スライドから自動でカード化）
+      if (lesson) {
+        const explainSteps: { title: string; content: string }[] = []
+        for (const s of slides) {
+          if (s.kind === 'concept' || s.kind === 'intro') {
+            explainSteps.push({ title: s.title, content: s.body })
+          } else if (s.kind === 'summary') {
+            explainSteps.push({ title: s.title, content: s.points.join('\n') })
+          } else if (s.kind === 'think') {
+            explainSteps.push({ title: s.question, content: s.points.join('\n') })
+          }
+        }
+        const wrongs = wrongAnswersRef.current.map((w) => ({
+          question: w.question,
+          correctAnswer: w.correctAnswer,
+          explanation: w.explanation,
+        }))
+        if (wrongs.length > 0 || explainSteps.length > 0) {
+          generateFromLesson(lessonId, lesson.title, wrongs, explainSteps)
+        }
       }
       addXp('lesson')
       onComplete()
