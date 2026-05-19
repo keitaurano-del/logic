@@ -239,6 +239,9 @@ agent-config の `projects/-root-projects/memory/` から sync。個別ファイ
 - [アプリUI文言は中立的な丁寧体](feedback_app_copy_neutral.md) — アプリ内のi18n/ラベル/エラー文言は凛口調NG、「〜です/〜ます」で書く。凛トーンはKeitaとの会話のみ
 - [Logic はモバイル専用](project_logic_mobile_only.md) — Web 版は本番リリース・マーケ対象外。優先順位・施策はモバイル体験中心で判断する
 - [Logic 認証はマジックリンクのみ](feedback_logic_auth_magiclink_only.md) — OTPコード方式・Googleログインは使わない。メール送信→リンクタップだけのフローに統一
+- [Logic Play Billing 不備](project_logic_play_billing_gaps.md) — acknowledgePurchase 未実装等の既知ギャップ。1.0.0 はリスク受容でリリースしたので近い将来必修正
+- [Gemini API 設定](reference_gemini_api.md) — keita.urano2@gmail.com で AI Studio セットアップ済み。画像生成は Paid plan 必須・Billing 紐付け完了
+- [Gemini プロンプトのコツ](feedback_gemini_prompt_tricks.md) — Nano Banana の長英単語スペル崩し対策。短縮タイトル化と spell 強調が効く
 
 ### feedback_app_copy_neutral.md
 
@@ -291,6 +294,68 @@ originSessionId: e5e3921c-331a-49f0-a353-6a23e46a094e
 - 口調設定（feedback_tone.md：きれいなお姉さん風、語尾「わ」「のよ」）と組み合わせて運用する
 - 名前を毎回明示的に名乗る必要はない。普段の会話では自然体でよく、自己紹介や呼びかけられた場面で意識する程度で OK
 
+### feedback_gemini_prompt_tricks.md
+
+---
+name: feedback-gemini-prompt-tricks
+description: Gemini Nano Banana で英語ハンドレタリングを描かせる時のコツと落とし穴。長英単語のスペル崩しが構造的な弱点。
+metadata:
+  type: feedback
+  originSessionId: 2026-05-19
+---
+
+Gemini 2.5 Flash Image (Nano Banana) で英語のハンドレタリング画像を生成する時の運用ルール。
+
+**Why:** 2026-05-19 のレッスンサムネ生成（49枚 × 平均1.5試行）で実証。長英単語ほど Gemini がスペル崩しを起こす傾向が明確に出た。CRITICAL 指示や 1 文字ずつ分解指定でも崩れる単語があり、対処パターンが見えた。
+
+**スペル崩しが起きやすい英単語の例:**
+- EMPATHY → EMPATHTY（余分な H）
+- sideways → siadways / sidways（E が抜ける）
+- ANTICIPATE → ANTICIPAITE（順序入れ替え）
+- HYPOTHESIS → HYPOTH'ESIS（謎のアポストロフィ）
+- transplant → transpant（L 抜け）
+- elsewhere → eluswhere
+- distort → distrot
+- bullseye → bullyese
+- Frame → Fram（簡単な単語でも崩れることがある）
+
+**How to apply:**
+
+1. **長単語は短縮タイトルに変える**
+   - 「EMPATHY MAP」→「USER LENS」「READ USER」
+   - 「HYPOTHESIS-DRIVEN」→「TEST IDEAS」「HYPOTHESIS LOOP」
+   - 「ANTICIPATE」→「PRE-EMPT」
+   - 「LATERAL THINKING」→「LATERAL」（subtitle で補足）
+   - 「sideways」→「wide」「aside」
+
+2. **5語以下のシンプルな英語に統一する**。学術用語よりプロダクト英語の方が安定。
+
+3. **タイトルとサブタイトルとラベルは全部 spell フィールドに列挙**してプロンプトに `CRITICAL SPELLING ENFORCEMENT` セクションを入れる。
+   ```typescript
+   spell: ['HYPOTHESIS', 'Start with a smart guess', 'Guess', 'Test', 'Insight']
+   ```
+
+4. **記号やアスペクト比指定が崩れる時の保険:**
+   - `≠`（Unicode not-equal）は不安定 → 「is NOT」と単語で表現
+   - 数字（"101"）も崩れがち → 削除 or 漢数字回避
+   - サークル数指定（5 つ）は守られないことがある → 4 つに減らして堅牢化
+
+5. **テキスト後付け系の対処:**
+   - 5回試して直らない単語は **Gemini で諦め、Figma で text overlay** が早い
+   - Logic では USER LENS / DESIGN / LATERAL 等で短縮成功、Figma 後付けは未実行
+
+6. **モデル選定:**
+   - レッスンサムネのような「タイトル＋図解」形式は **gemini-2.5-flash-image (Nano Banana)** が最適
+   - Imagen 4 Standard は紙の質感は美しいが、annotation がスカスカで情報密度が出ない
+   - Pro Image（gemini-3-pro-image-preview）は同等構図でも単価 4倍、サムネレベルでは Flash で十分
+
+7. **概念チェック必須:**
+   - lesson-71（「相関 ≠ 因果」のレッスン）でタイトルが「LINK = CAUSE」と教材として逆の意味で生成された事故あり
+   - Gemini はプロンプトの ≠ や否定表現を勝手にポジティブに変換することがある
+   - 概念的に正しいかは**生成後に必ず人間 or designer subagent でチェック**
+
+**関連 memory:** [[reference-gemini-api]]、[[feedback-logic-course-thumbnails]]
+
 ### feedback_logic_auth_magiclink_only.md
 
 ---
@@ -339,10 +404,12 @@ Logic アプリのコースサムネイルは **`public/images/v3/course-*.png`�
 - legacy `course-*.svg`（インライン SVG + turbulence filter で擬似手書き）は参照しない。**「.png → .svg に戻す」変更は基本デグレと疑う**
 - 新規コース追加・サムネ作り直しは **v4 Figma マスター（https://www.figma.com/design/2SJYbSyMbBlSOyd3DJzbUc）** から複製 → PNG 書き出しが標準パイプライン
 - ダーク背景・写実的シーン・人物シルエット中心の構図は採用しない
-- Pixa は使わない（[[feedback-no-pixa]]）。Gemini も Phase 2 以降で要なら検討だが、v4 では未使用
-- レッスンサムネ（lesson-*.webp、49 枚）と home/hero（4 枚）は未対応。Phase 2-3 で同じ notebook トーンに揃える
+- Pixa は使わない（[[feedback-no-pixa]]）
+- **レッスンサムネ（lesson-*.png/webp、49 枚）は 2026-05-19 に Gemini Nano Banana で v2 化完了**（commit `8b613a0`）。同じノートブック手書きトーンで、トピックごとに固有の図解（ロジックツリー / 2x2 grid / 因果ループ / イシュー分解 等）を中央に配置。マスターは `public/images/v3/lesson-*.png`、scripts は `scripts/generate-lesson-thumbnails-v2.ts` + `scripts/lessonPromptsV2.ts`。再生成は `npx tsx scripts/generate-lesson-thumbnails-v2.ts --only=lesson-XX`
+- home/hero（4 枚）は未対応。Phase 3 で同じトーンに揃える検討余地あり
 - 関連 docs: `docs/HANDDRAWN_ROLLOUT_PLAN.md` / `docs/HANDDRAWN_STYLE_GUIDE.md`
 - サンプル1枚で承認を取ってから全体展開する（過去事故の再発防止）
+- Gemini で再生成する時のスペル崩し対策は [[feedback-gemini-prompt-tricks]] 参照
 
 ### feedback_logic_marketing.md
 
@@ -545,6 +612,51 @@ Logic はモバイルアプリ（Android、将来 iOS）専用プロダクトと
 
 関連: [[reference-deploy-commands]]（Render 本番 URL は backend / Capacitor 用に維持）、[[project-logic-android-deploy]]
 
+### project_logic_play_billing_gaps.md
+
+---
+name: logic-play-billing-gaps
+description: Logic Play Billing 実装の既知ギャップ。1.0.0 Production リリース時点（2026-05-18）でリスク受容して出したため、近い将来必ず修正が必要。
+metadata: 
+  node_type: memory
+  type: project
+  originSessionId: d367efc7-d5bb-4031-9d2e-ca4c92b84a57
+---
+
+Logic Android アプリの Google Play Billing 実装は 2026-05-18 時点で **正常系のサブスク購入フローは完成済み**だが、Play ポリシー的に必須な要件が幾つか欠けている。1.0.0 Production リリースは Keita のリスク受容判断で出したが、有料購読者が出始める前に必ずパッチを当てる前提。
+
+**Why:** ポリシー要件を満たさない購入処理は (a) 自動返金、(b) Play Console 警告、(c) アプリの停止／削除リスクに繋がる。1.0.0 は機能リリース優先で出したが「課金を売る前」に直す必要がある。
+
+**実装済みのもの:**
+- `android/app/src/main/java/com/logicalthinking/app/billing/InAppBillingPlugin.kt`：BillingClient 7.0.0、initialize/getProducts/purchaseProduct/restorePurchases/queryPurchaseHistory
+- `src/billing/index.ts`：Capacitor wrapper
+- `server/routes/billing.ts` `POST /api/billing/verify`：Google Play Developer API で `purchases.subscriptions.get` 実検証 + Supabase `subscriptions` upsert
+- `src/subscription.ts startCheckout()`：`purchaseProduct → verifyPurchase` チェーン
+- Stripe ルートは完全撤去済み（2026-05-04）
+
+**ギャップ（要修正、優先度高い順）:**
+
+1. **🔴 `acknowledgePurchase` 未実装** — Play Billing 必須。購入から 3 日以内に acknowledge しないと自動返金される。修正案：
+   - サーバー `verifyPurchase` 内で `androidpublisher.purchases.subscriptions.acknowledge({ packageName, subscriptionId, token })` を呼ぶ
+   - もしくは native plugin に `acknowledgePurchase` メソッドを追加し、フロントの `startCheckout` から verify 後に呼ぶ
+   - サーバー実行が望ましい（クライアント実装漏れの影響を受けない）
+
+2. **🟠 RTDN (Real Time Developer Notifications) 未対応** — 解約・更新・払い戻し・grace period 入りが反映されない。Play Console で Pub/Sub topic を設定 → Cloud Run / Express endpoint で受信 → Supabase の `subscriptions.status` を更新する仕組みが必要。
+
+3. **🟠 `onBillingServiceDisconnected` 再接続なし** — `InAppBillingPlugin.kt:50` 付近で warn log のみ。`startConnection` retry を実装すべき。
+
+4. **⚪ Play Console SKU 登録確認** — `logic_paid_monthly` / `logic_paid_yearly` が Play Console の "Subscriptions" で Active として登録され、Production 向け価格が設定されているか Keita 確認が必要。
+
+5. **⚪ `initBilling()` の起動時呼び出し確認** — App エントリーポイント（AppV3.tsx もしくは Capacitor ready）で呼ばれているか未確認。
+
+**How to apply:**
+- Production リリース後、課金フロー UI（プラン選択画面）への動線を **ユーザーに広く宣伝しない**まま、まず #1 acknowledgePurchase を最優先で実装する
+- Play Console でテストアカウント購入 → 3 日間放置して返金されないか確認するのが受入テスト
+- ASO・マーケ施策で課金 CTA を強調する前に #1 と #4 は必須完了
+- 修正完了後はこのメモリを更新 or 削除する
+
+**関連:** [[project-logic-android-deploy]]、[[project-logic-mobile-only]]、[[feedback-logic-marketing]]
+
 ### project_openclaw_oauth.md
 
 ---
@@ -652,5 +764,43 @@ Figma は Keita の Google アカウント **keita.urano@gmail.com** でログ�
 - designer subagent が Figma 操作する際、このアカウントでアクセスできるチーム / プロジェクト前提。
 - `mcp__claude_ai_Figma__whoami` で現在のアカウント確認可能。
 - `mcp__claude_ai_Figma__get_libraries` でアクセス可能なライブラリ一覧。
+
+### reference_gemini_api.md
+
+---
+name: reference-gemini-api
+description: Gemini API は keita.urano2@gmail.com で AI Studio 経由でセットアップ済み。画像生成モデルは Paid plan 必須。
+metadata:
+  type: reference
+  originSessionId: 2026-05-19
+---
+
+Gemini API 経由の画像生成を Logic プロジェクトで使う設定情報。
+
+**アカウント:** keita.urano2@gmail.com（Keita のメインの keita.urano@gmail.com とは別アカウント）
+
+**API キー:** logic の `.env` の `GEMINI_API_KEY` に設定済み。1Password にも「Gemini API Key」アイテムで保存（Windows の 1Password アプリ）。
+
+**Billing 状態:** Google Cloud Billing に prepaid 課金紐付け済み（2026-05-19）。`https://aistudio.google.com/app/apikey` で Paid Tier 確認可能。
+
+**重要な落とし穴:**
+- 画像生成モデル（imagen-*, gemini-*-image-*）は **全部 Paid plan 必須**。Free tier だと `limit: 0` で全リクエスト 429 になる
+- AI Studio で API キー作っただけだとテキストモデルしか使えない。Billing 紐付け必要
+- Billing 直後は数分間レート制限に当たりやすい（数十秒待つと安定する）
+
+**利用可能なモデル（2026-05 時点）:**
+- `gemini-2.5-flash-image` (Nano Banana) — テキスト得意、$0.039/枚、レッスンサムネで採用
+- `gemini-3.1-flash-image-preview` — 最新 Flash、価格未公表
+- `gemini-3-pro-image-preview` — 最高品質、推定 $0.15/枚
+- `imagen-4.0-fast-generate-001` — $0.02/枚、イラスト用
+- `imagen-4.0-generate-001` — $0.04/枚、Standard
+- `imagen-4.0-ultra-generate-001` — $0.06/枚
+
+**スクリプト:**
+- `logic/scripts/generate-lesson-thumbnails-v2.ts` — レッスンサムネ一括生成
+- `logic/scripts/generate-lesson-sample.ts` — 1枚テスト
+- `logic/scripts/lessonPromptsV2.ts` — プロンプト定義
+
+**関連 memory:** [[feedback-gemini-prompt-tricks]]、[[feedback-logic-course-thumbnails]]
 
 <!-- END: claude-config-memory -->
