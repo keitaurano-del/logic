@@ -5,7 +5,7 @@
 import { useState } from 'react'
 import { getCompletedCount, getLessonStreak, getXp, getCompletedLessons, getXpLogThisMonth, XP_EVENT_LABEL, XP_REWARDS } from '../stats'
 import { getAllLessonsFlat } from '../lessonData'
-import { getCurrentLevel, getXpProgress } from './homeHelpers'
+import { getCurrentLevel, getXpProgress, getTitleKeyForLevel, MAX_LEVEL } from './homeHelpers'
 import { logout } from '../supabase'
 import { getSubscriptionState } from '../subscription'
 import { getStudyDates as _getStudyDatesArr } from '../stats'
@@ -60,17 +60,28 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
           </div>
           <div style={{ flex: 1 }}>
             <div className="profile-hero-name" style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, letterSpacing: '-.02em', marginBottom: 2, color: 'var(--text-on-hero)' }}>{userName}</div>
-            <div style={{ fontSize: 14, color: 'var(--text-secondary)', fontWeight: 500 }}>{t('profile.userTraineeRole')}</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+              <span style={{ fontSize: 14, color: lv.color, fontWeight: 700, letterSpacing: '.01em' }}>
+                {t(`profile.title.${getTitleKeyForLevel(lv.level)}`)}
+              </span>
+              {lv.level === MAX_LEVEL && (
+                <span aria-hidden="true" style={{ fontSize: 13 }}>★</span>
+              )}
+            </div>
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8, position: 'relative', zIndex: 1 }}>
           <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '.12em', textTransform: 'uppercase' }}>{t('profile.level')}</span>
-          <span style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 900, letterSpacing: '-.02em', color: 'var(--text-on-hero)' }}>Lv.{lv.level}</span>
+          <span style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 900, letterSpacing: '-.02em', color: 'var(--text-on-hero)' }}>Lv.{lv.level} / {MAX_LEVEL}</span>
         </div>
         <div style={{ height: 12, background: 'var(--border-on-dark)', borderRadius: 99, overflow: 'hidden', marginBottom: 8, position: 'relative', zIndex: 1 }}>
-          <div style={{ height: '100%', width: `${levelPct}%`, background: 'var(--brand)', borderRadius: 99, boxShadow: '0 0 12px rgba(108,142,245,0.5)' }}></div>
+          <div style={{ height: '100%', width: `${levelPct}%`, background: lv.color, borderRadius: 99, boxShadow: `0 0 12px ${lv.color}88` }}></div>
         </div>
-        <div style={{ fontSize: 14, color: 'var(--text-secondary)', fontWeight: 500, textAlign: 'right', position: 'relative', zIndex: 1 }}>{t('profile.toNextLevel', { xp: String(Math.max(0, needed - levelXp)) })}</div>
+        <div style={{ fontSize: 14, color: 'var(--text-secondary)', fontWeight: 500, textAlign: 'right', position: 'relative', zIndex: 1 }}>
+          {lv.level === MAX_LEVEL
+            ? t('profile.maxLevelReached')
+            : t('profile.toNextLevel', { xp: String(Math.max(0, needed - levelXp)) })}
+        </div>
       </div>
 
       {/* Stats grid — タップで詳細シート */}

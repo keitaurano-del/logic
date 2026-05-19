@@ -134,6 +134,9 @@ export function getTotalStudyDays(): number {
 
 
 const XP_KEY = 'logic-xp'
+const XP_MIGRATION_KEY = 'logic-xp-scale-v2'
+/** MAX XP — homeHelpers.MAX_XP と一致させる。循環依存を避けるため stats 側にも定数を置く */
+const STATS_MAX_XP = 9999
 
 export type XpEvent = 'lesson' | 'quiz_perfect' | 'streak' | 'fermi' | 'journal_morning' | 'journal_evening'
 
@@ -146,15 +149,35 @@ export const XP_REWARDS: Record<XpEvent, number> = {
   journal_evening: 25,
 }
 
+/**
+ * 旧 XP スケール（MAX 242,550）→ 新スケール（MAX 9,999）への変換。
+ * 旧仕様で長く使ってきたユーザーは Lv99 で 242k XP まで貯まっている可能性があるため、
+ * 9999 を超えていたら 9999 にクランプする（実質 Lv100 に張り付き）。
+ * 既存の進捗・解放状況は維持しつつ、表示上のレベルだけ新仕様に揃える。
+ * 一度走ったらフラグを立てて再実行しない（追加 XP を間違ってクランプしないため）。
+ */
+function migrateLegacyXp(): void {
+  try {
+    if (localStorage.getItem(XP_MIGRATION_KEY) === '1') return
+    const raw = parseInt(localStorage.getItem(XP_KEY) ?? '0', 10) || 0
+    if (raw > STATS_MAX_XP) {
+      localStorage.setItem(XP_KEY, String(STATS_MAX_XP))
+    }
+    localStorage.setItem(XP_MIGRATION_KEY, '1')
+  } catch { /* localStorage 不可なら諦める */ }
+}
+
 export function getXp(): number {
   try {
-    return parseInt(localStorage.getItem(XP_KEY) ?? '0', 10) || 0
+    migrateLegacyXp()
+    const raw = parseInt(localStorage.getItem(XP_KEY) ?? '0', 10) || 0
+    return Math.min(raw, STATS_MAX_XP)
   } catch { return 0 }
 }
 
 export function addXp(event: XpEvent): number {
   const gained = XP_REWARDS[event]
-  const newXp = getXp() + gained
+  const newXp = Math.min(getXp() + gained, STATS_MAX_XP)
   localStorage.setItem(XP_KEY, String(newXp))
   appendXpLog(event, gained)
   return newXp
@@ -162,7 +185,7 @@ export function addXp(event: XpEvent): number {
 
 /** 任意のXP量を直接加算（AI問題生成・解答完了などのカスタムXP用） */
 export function addXP(amount: number): number {
-  const newXp = getXp() + amount
+  const newXp = Math.min(getXp() + amount, STATS_MAX_XP)
   localStorage.setItem(XP_KEY, String(newXp))
   try {
     const log: XpLogEntry[] = JSON.parse(localStorage.getItem(XP_LOG_KEY) || '[]')
