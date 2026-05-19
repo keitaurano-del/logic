@@ -431,7 +431,6 @@ const STRINGS: Record<Locale, Strings> = {
 
     // Pricing
     'pricing.title': '料金プラン',
-    'pricing.heroEyebrow': 'AI 問題生成を解放しよう',
     'pricing.heroHeadline': '面接塾やビジネス書で何万円もかける前に、\n月 ¥350 で AI が毎日あなた専用の問題を作る。',
     'pricing.heroSub': '無料プランでもレッスン・ロールプレイは使い放題、今日の一問も毎日 1 問解けます。',
     'pricing.featLessons': 'レッスン',
@@ -2060,7 +2059,6 @@ const STRINGS: Record<Locale, Strings> = {
 
     // Pricing
     'pricing.title': 'Pricing',
-    'pricing.heroEyebrow': 'Unlock AI problem generation',
     'pricing.heroHeadline': 'Before you spend tens of thousands of yen on interview prep or business books,\nlet AI craft your own practice problems for ¥350/month.',
     'pricing.heroSub': 'Lessons and roleplay are free and unlimited, plus one daily problem every day.',
     'pricing.featLessons': 'Lessons',

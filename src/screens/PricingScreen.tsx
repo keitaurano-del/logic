@@ -104,9 +104,6 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
       <div style={{ flex: 1, padding: '0 16px 100px', overflowY: 'auto' }}>
         {/* ─── Hero copy ─── */}
         <div style={{ padding: '12px 4px 16px' }}>
-          <div style={{ fontSize: 12, fontWeight: 800, color: 'var(--brand)', letterSpacing: '.12em', textTransform: 'uppercase', marginBottom: 6 }}>
-            {t('pricing.heroEyebrow')}
-          </div>
           <div style={{ fontSize: 22, fontWeight: 800, lineHeight: 1.4, marginBottom: 10, color: 'var(--text-primary)', whiteSpace: 'pre-line' }}>
             {t('pricing.heroHeadline')}
           </div>

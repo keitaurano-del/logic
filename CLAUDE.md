@@ -405,7 +405,14 @@ Logic アプリのコースサムネイルは **`public/images/v3/course-*.png`�
 - 新規コース追加・サムネ作り直しは **v4 Figma マスター（https://www.figma.com/design/2SJYbSyMbBlSOyd3DJzbUc）** から複製 → PNG 書き出しが標準パイプライン
 - ダーク背景・写実的シーン・人物シルエット中心の構図は採用しない
 - Pixa は使わない（[[feedback-no-pixa]]）
-- **レッスンサムネ（lesson-*.png/webp、49 枚）は 2026-05-19 に Gemini Nano Banana で v2 化完了**（commit `8b613a0`）。同じノートブック手書きトーンで、トピックごとに固有の図解（ロジックツリー / 2x2 grid / 因果ループ / イシュー分解 等）を中央に配置。マスターは `public/images/v3/lesson-*.png`、scripts は `scripts/generate-lesson-thumbnails-v2.ts` + `scripts/lessonPromptsV2.ts`。再生成は `npx tsx scripts/generate-lesson-thumbnails-v2.ts --only=lesson-XX`
+- **2026-05-19 に全 116 枚（27 コース + 89 レッスン）を Gemini Nano Banana で Caveat 風 v3 に統一**（commit `376f008`）。STYLE は「クリーム notebook + Caveat-style chunky Title Case marker title + flowing coral underline + 図解」。マスターは `public/images/v3/{course,lesson}-*.png`。再生成系スクリプト:
+  - `scripts/generate-course-thumbnails-v2.ts` — コース 27枚（16:9）
+  - `scripts/generate-lesson-thumbnails-v2.ts` — 既存レッスン 49枚（1:1）
+  - `scripts/generate-career-thumbnails.ts` — キャリア 5+35枚
+  - `scripts/{course,lesson,career}PromptsV2.ts` — 各 entry 定義
+  - `lessonPromptsV2.ts` の `titleCase()` ヘルパーで all-caps エントリを自動 Title Case 化（略語 whitelist 例外あり）
+  - 個別再生成: `npx tsx scripts/generate-lesson-thumbnails-v2.ts --only=lesson-XX`
+  - 旧 imagePrompts.ts (3D iso ダーク背景版、未使用) は方針外、参照しないこと
 - home/hero（4 枚）は未対応。Phase 3 で同じトーンに揃える検討余地あり
 - 関連 docs: `docs/HANDDRAWN_ROLLOUT_PLAN.md` / `docs/HANDDRAWN_STYLE_GUIDE.md`
 - サンプル1枚で承認を取ってから全体展開する（過去事故の再発防止）
