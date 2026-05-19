@@ -11,7 +11,13 @@ export const STYLE = `
 Hand-drawn 2D illustration on cream-colored ruled notebook paper.
 Background: warm beige cream paper, with thin light coral pink horizontal ruled lines spaced evenly across, three small round binder holes on the left margin, very subtle paper texture.
 
-Aesthetic: a thoughtful student's clean study notebook page. Drawn entirely with a black marker pen — clean confident line work with slight natural ink variation. Title hand-lettered in marker (NOT a typeface, NOT printed letters — every letter must look hand-drawn with a marker, including all uppercase letters), with a bold coral red underline swoosh below. Body annotations in casual cursive handwriting.
+Aesthetic: a thoughtful student's clean study notebook page. Drawn entirely with a black marker pen — clean confident line work with slight natural ink variation. Body annotations in casual cursive handwriting.
+
+TITLE STYLE — most important rule:
+The main title at top-left must be hand-lettered in a chunky relaxed marker handwriting like the Google font "Caveat" — friendly, semi-bold, slightly playful, with naturally flowing strokes. Use Title Case (mixed upper and lower case letters, e.g. "Logic Tree" or "Ramp Up Fast"), NOT all uppercase block letters. The letters lean slightly to the right with a casual rhythm, the strokes have slight thickness variation as a marker would produce, and consecutive letters may touch or nearly touch without being a full cursive joined script. It should feel like a quick, confident hand-lettering — not a typed font, not block capital letters, not formal calligraphy.
+
+UNDERLINE STYLE — second most important rule:
+Below the title, draw a single hand-drawn coral red underline as one flowing marker swipe. It must look like a quick brush gesture: slightly tapered at one or both ends, with natural ink variation in thickness along the length, never a perfectly straight ruler-drawn line. The underline can curve very subtly or swoosh upward at the tail. It is one continuous stroke, not multiple lines.
 
 Color palette (use as accents only, not as labels):
 - Warm cream beige paper base
@@ -27,7 +33,7 @@ NO decorative elements: NO stars, NO sparkles, NO scattered ink dots, NO floatin
 
 Do NOT include: photorealism, 3D rendering, isometric perspective, dark backgrounds, gradients, cinematic lighting, busy textures, glow effects, computer-graphics polish, decorative borders.
 
-Text rules: every visible text — including the title — must be hand-lettered with a marker, drawn letter-by-letter. No printed/typeset/computer fonts whatsoever. Spelling must be perfectly correct (re-check every word). Maximum 3-4 short handwritten annotations near the diagram (max 5 English words each).
+Text rules: every visible text — including the title — must be hand-lettered with a marker, drawn letter-by-letter. No printed/typeset/computer fonts whatsoever. Spelling must be perfectly correct (re-check every word). Maximum 3-4 short handwritten annotations near the diagram (max 5 English words each). All titles use Title Case (e.g. "Logic Tree", "Ramp Up Fast"), not ALL CAPS.
 `.trim()
 
 export type LessonPromptEntry = {
@@ -48,7 +54,48 @@ export type LessonPromptEntry = {
   spell?: string[]
 }
 
+/**
+ * Acronyms that must stay in ALL CAPS even when the surrounding title is
+ * rendered as Title Case. Add to this set whenever a new acronym appears.
+ */
+const ACRONYM_WHITELIST = new Set([
+  'MECE', 'STAR', 'ATS', 'SPI', 'GAB', 'WFH', 'PTO', 'IMAGES', 'M&A',
+  'EN', 'PRE-EMPT', 'JP', 'NOT', 'AND', 'OR', 'WHY', 'SO',
+  'A', 'B', 'C', 'D', 'P', 'Q', 'R', 'S', 'T',
+])
+
+/**
+ * Convert an ALL CAPS title (e.g. "LOGIC TREE") into Title Case
+ * (e.g. "Logic Tree"), while preserving acronyms (MECE, STAR, etc.)
+ * and mixed-case titles. Used to coax Gemini into Caveat-style
+ * Title Case rendering without rewriting every entry.
+ */
+export function titleCase(s: string): string {
+  return s
+    .split(/(\s+|\/|≠|=)/)
+    .map((token) => {
+      const trimmed = token.trim()
+      if (!trimmed) return token
+      if (/^[\s\/≠=]+$/.test(token)) return token
+      if (ACRONYM_WHITELIST.has(trimmed)) return token
+      if (/[a-z]/.test(trimmed)) return token
+      if (/^[A-Z]+(-[A-Z]+)*$/.test(trimmed)) {
+        return trimmed
+          .split('-')
+          .map((part) =>
+            ACRONYM_WHITELIST.has(part)
+              ? part
+              : part.charAt(0) + part.slice(1).toLowerCase(),
+          )
+          .join('-')
+      }
+      return token
+    })
+    .join('')
+}
+
 export function buildPrompt(entry: LessonPromptEntry): string {
+  const displayTitle = titleCase(entry.title)
   const spellSection = entry.spell?.length
     ? `
 
@@ -62,9 +109,9 @@ If you cannot draw a word with perfect spelling, leave it out rather than misspe
 
 ---
 
-Topic: ${entry.title} — a hand-drawn notebook thumbnail.
+Topic: ${displayTitle} — a hand-drawn notebook thumbnail.
 
-Top-left of the page: hand-lettered title "${entry.title}" — every letter individually drawn with a thick black marker (NOT a typeface, NOT printed letters), with a thick coral red underline swoosh below.
+Top-left of the page: hand-lettered title "${displayTitle}" rendered in Caveat-style chunky marker handwriting (Title Case with mixed upper and lower case letters — e.g. "Logic Tree" or "Ramp Up Fast" — NOT all uppercase block letters). The strokes are semi-bold marker with slight playful rightward slant. Below the title: a single flowing hand-drawn coral red underline marker swipe with slightly tapered ends and natural ink variation (NOT a perfectly straight ruler line).
 
 Below the title in smaller hand-lettered cursive: "${entry.subtitle}" (spelling must be perfect).
 
@@ -84,7 +131,7 @@ export const LESSON_PROMPTS: LessonPromptEntry[] = [
   },
   {
     slug: 'lesson-21',
-    title: 'LOGIC TREE',
+    title: 'Logic Tree',
     subtitle: 'Break it down into pieces',
     diagram: `a hand-drawn tree diagram with a single rectangular root box at the top labeled "Issue", branching down with thick black lines to three middle boxes labeled "Why A", "Why B", "Why C", then each branching further down to two small leaf boxes labeled "a1 / a2", "b1 / b2", "c1 / c2". To the right of the root: handwritten annotation "break it down" (cursive). All boxes hand-drawn with thick marker borders.`,
   },

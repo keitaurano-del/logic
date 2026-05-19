@@ -129,7 +129,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [500, 501, 502, 503, 504, 505, 506],
     level: '中級',
     description: '経験のないテーマでも、論点を網羅的に洗い出し、構造化し、数字と論理で裏取りしながら、解釈を積み上げて本質に到達する思考プロセスを身につける。',
-    image: '/images/v3/course-issue-01.svg',
+    image: '/images/v3/course-issue-01.png',
   },
 
   // ── デザインシンキング ──────────────────────────────

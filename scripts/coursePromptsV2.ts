@@ -1,0 +1,206 @@
+/**
+ * Course thumbnail prompts (v2 — Caveat-style hand-drawn notebook).
+ *
+ * 26 existing courses + 1 new issue-01 = 27 total, 16:9 landscape.
+ * Used by scripts/generate-course-thumbnails-v2.ts and shares the
+ * `buildCoursePrompt` helper from careerPromptsV2.ts.
+ *
+ * Style requirements come from feedback_logic_course_thumbnails.md
+ * and feedback_gemini_prompt_tricks.md.
+ */
+
+import type { LessonPromptEntry } from './lessonPromptsV2.ts'
+
+export const COURSE_PROMPTS_V2: LessonPromptEntry[] = [
+  {
+    slug: 'course-logic-01',
+    title: 'MECE & Logic Tree',
+    subtitle: 'Logical thinking, organized',
+    diagram: 'a hand-drawn 3-level logic tree on cream notebook paper: a top "Issue" box branches into 3 boxes "Why A", "Why B", "Why C", each branching into 2 small oval leaves (a1, a2, b1, b2, c1, c2). Connecting lines in thin black marker. Coral-red handwritten annotation "break it down" to the right of the top node.',
+    spell: ['MECE & Logic Tree', 'Issue', 'Why A', 'Why B', 'Why C', 'break it down'],
+  },
+  {
+    slug: 'course-logic-02',
+    title: 'Pyramid Principle',
+    subtitle: 'Build logic, move people',
+    diagram: 'a hand-drawn pyramid-principle tree on cream notebook paper: top box "Main" branches down to two mid-level boxes "Key A" and "Key B", each branching into two supporting leaf boxes. Black marker boxes connected by thin lines. Coral-red handwritten annotation "so what?" to the upper-right.',
+    spell: ['Pyramid Principle', 'Main', 'Key A', 'Key B', 'so what'],
+  },
+  {
+    slug: 'course-critical-01',
+    title: 'Critical Thinking',
+    subtitle: 'Doubt assumptions, judge well',
+    diagram: 'a hand-drawn scatter of large coral-red question marks ("?") floating across the right half of cream notebook paper at varied sizes and angles. Coral-red handwritten annotation "really?" in the upper-right.',
+    spell: ['Critical Thinking', 'really'],
+  },
+  {
+    slug: 'course-critical-02',
+    title: 'Cognitive Biases',
+    subtitle: 'Strip bias, see clearly',
+    diagram: 'three overlapping translucent circles on cream notebook paper Venn-style: left coral-pink circle labeled "confirm", right coral-pink circle labeled "frame", center gray circle labeled "anchor". Below the center: a small pair of black eyeglasses. Coral-red handwritten annotation "watch out" upper-right.',
+    spell: ['Cognitive Biases', 'confirm', 'frame', 'anchor', 'watch out'],
+  },
+  {
+    slug: 'course-hypothesis-01',
+    title: 'Hypothesis First',
+    subtitle: 'Guess first, then look',
+    diagram: 'a hand-drawn triangular loop on cream notebook paper: three rounded rectangle boxes — "Guess" at top, "Learn" at bottom-left, "Test" at bottom-right — connected by coral-red arrowed lines forming a cycle. The word "loop" in coral handwriting in the middle.',
+    spell: ['Hypothesis First', 'Guess', 'Learn', 'Test', 'loop'],
+  },
+  {
+    slug: 'course-problem-01',
+    title: 'Define the Problem',
+    subtitle: 'Find the real question',
+    diagram: 'a hand-drawn iceberg vertical stack on cream notebook paper with a dashed horizontal "surface" line near the top. Above the surface: a small box "Symptom". Below: three progressively wider boxes stacked downward labeled "Root", "Belief", "System". Coral-red annotation "real issue" upper-right.',
+    spell: ['Define the Problem', 'Symptom', 'surface', 'Root', 'Belief', 'System', 'real issue'],
+  },
+  {
+    slug: 'course-proposal-01',
+    title: 'Persuasive Proposal',
+    subtitle: 'Build proposals that move',
+    diagram: 'a hand-drawn horizontal flow on cream notebook paper: a "Criteria" box on the left, a coral arrow pointing right to a "Proposal" box, then another coral arrow to a circled black check mark. Coral-red annotation "yes!" above the check.',
+    spell: ['Persuasive Proposal', 'Criteria', 'Proposal', 'yes'],
+  },
+  {
+    slug: 'course-proposal-course-01',
+    title: 'Proposal Mastery',
+    subtitle: 'Hypothesis-driven proposals',
+    diagram: 'a hand-drawn document mockup on cream notebook paper: a rectangular page with folded top-right corner, titled "Proposal" with horizontal text lines below. Three coral checkmarks down the left margin. A coral handwritten "done" stamp in the lower-right.',
+    spell: ['Proposal Mastery', 'Proposal', 'done'],
+  },
+  {
+    slug: 'course-client-01',
+    title: 'Number Sense',
+    subtitle: 'Read situations through numbers',
+    diagram: 'a hand-drawn approximation equation on cream notebook paper: large handwritten "≈ 120B" in the center with small "ballpark" label below. To the right: a small coral bar chart of 5 ascending bars. Coral-red annotation "feel figures" upper-right.',
+    spell: ['Number Sense', 'ballpark', 'feel figures'],
+  },
+  {
+    slug: 'course-client-02',
+    title: 'Deep Listening',
+    subtitle: 'Define issues, draw them out',
+    diagram: 'a hand-drawn inverted trapezoid funnel on cream notebook paper with four labels stacked inside, narrowing downward: "open" (top, bold), "topics", "details", "decide" (bottom, coral). A small coral arrow drops out the bottom. Coral-red annotation "wide to deep" upper-right.',
+    spell: ['Deep Listening', 'open', 'topics', 'details', 'decide', 'wide to deep'],
+  },
+  {
+    slug: 'course-client-03',
+    title: 'Ramp Up Fast',
+    subtitle: 'Get up to speed in a new field',
+    diagram: 'a hand-drawn learning curve on cream notebook paper: a coral-red S-curve rising from "Day 1" on the lower-left x-axis to "Day 30" on the right, plateauing at a filled coral dot labeled "expert". Black x and y axes drawn freehand. Coral-red annotation "expert mode" above the endpoint.',
+    spell: ['Ramp Up Fast', 'Day 1', 'Day 30', 'expert', 'expert mode'],
+  },
+  {
+    slug: 'course-client-04',
+    title: 'Feedback Loop',
+    subtitle: 'Turn feedback into next steps',
+    diagram: 'a hand-drawn triangular loop on cream notebook paper: three boxes — "Insight" at top, "Feedback" at bottom-left, "Action" at bottom-right — connected by coral arrows. Coral-red annotation "level up" upper-right.',
+    spell: ['Feedback Loop', 'Insight', 'Feedback', 'Action', 'level up'],
+  },
+  {
+    slug: 'course-case-01',
+    title: 'Case Interview',
+    subtitle: 'Prove logical thinking in case interviews',
+    diagram: 'a hand-drawn profit tree on cream notebook paper: top box "Profit" branches into "Revenue" and "Cost"; Revenue splits into "Vol" and "Price"; Cost splits into "Fix" and "Var". Coral-red annotation "structure first" upper-right.',
+    spell: ['Case Interview', 'Profit', 'Revenue', 'Cost', 'Vol', 'Price', 'Fix', 'Var', 'structure first'],
+  },
+  {
+    slug: 'course-strategy-01',
+    title: 'Strategy Classics',
+    subtitle: 'Origins of strategy and competition',
+    diagram: 'a hand-drawn five-forces diagram on cream notebook paper: a central box "Rivalry" with four boxes around it — "Buyers" above, "Suppliers" below, "Entrants" left, "Subs" right — each connected to Rivalry by a coral line. Coral-red label "five forces" sits to the left of Entrants.',
+    spell: ['Strategy Classics', 'Buyers', 'Suppliers', 'Entrants', 'Subs', 'Rivalry', 'five forces'],
+  },
+  {
+    slug: 'course-strategy-02',
+    title: 'Modern Strategy',
+    subtitle: 'Resources, capability, co-evolution',
+    diagram: 'a hand-drawn hub-and-spoke network on cream notebook paper: a central coral oval labeled "Platform" with six small black ovals radiating outward, connected by thin coral lines. Coral-red annotation "co-evolve" upper-right.',
+    spell: ['Modern Strategy', 'Platform', 'co-evolve'],
+  },
+  {
+    slug: 'course-fermi-01',
+    title: 'Fermi Estimation',
+    subtitle: 'Grasp scale with quick estimates',
+    diagram: 'a hand-drawn estimation equation on cream notebook paper: "100M × 0.4 × 300 ≈ 12B" in large handwritten figures, with small labels under each number: "people", "freq", "yen", "per year". A coral underline runs beneath the equation. Coral-red annotation "roughly right" upper-right.',
+    spell: ['Fermi Estimation', 'people', 'freq', 'yen', 'per year', 'roughly right'],
+  },
+  {
+    slug: 'course-numeracy-01',
+    title: 'Numeracy',
+    subtitle: 'Get strong with numbers',
+    diagram: 'a hand-drawn bar chart on cream notebook paper: 5 coral bars labeled Q1 through Q5 along the x-axis, with Q5 the tallest. A dashed coral horizontal line crosses the middle labeled "avg". A small coral "+38%" label sits above Q5. Coral-red annotation "feel the math" upper-right.',
+    spell: ['Numeracy', 'Q1', 'Q5', 'avg', 'feel the math'],
+  },
+  {
+    slug: 'course-peak-performance-01',
+    title: 'Peak Performance',
+    subtitle: 'Work at your personal best',
+    diagram: 'a hand-drawn sinusoidal energy wave on cream notebook paper running left to right between "morning" and "night" labels on the x-axis. Two filled coral dots at the wave\'s two crests labeled "peak". Coral-red annotation "ride the wave" upper-right.',
+    spell: ['Peak Performance', 'morning', 'night', 'peak', 'ride the wave'],
+  },
+  {
+    slug: 'course-eastern-01',
+    title: 'Eastern Wisdom I',
+    subtitle: 'Ancient Chinese thought on people',
+    diagram: 'a hand-drawn 2x2 grid of four boxes on cream notebook paper, each box showing an English name (top) and Chinese characters (bottom): "Confucius / 孔子", "Mencius / 孟子", "Xunzi / 荀子", "Mozi / 墨子". Light dashed connectors link the boxes. Coral-red annotation "relations" upper-right.',
+    spell: ['Eastern Wisdom I', 'Confucius', 'Mencius', 'Xunzi', 'Mozi', 'relations'],
+  },
+  {
+    slug: 'course-eastern-02',
+    title: 'Eastern Wisdom II',
+    subtitle: 'Ancient Chinese thought on strategy',
+    diagram: 'a hand-drawn 2x2 grid of four boxes on cream notebook paper, each with an English name (top) and Chinese characters (bottom): "Laozi / 老子", "Zhuangzi / 荘子", "Han Fei / 韓非子", "Sun Tzu / 孫子". Light dashed connectors link the boxes. Coral-red annotation "win without war" upper-right.',
+    spell: ['Eastern Wisdom II', 'Laozi', 'Zhuangzi', 'Han Fei', 'Sun Tzu', 'win without war'],
+  },
+  {
+    slug: 'course-philosophy-01',
+    title: 'Philosophy',
+    subtitle: 'Deepen thought with old questions',
+    diagram: 'a hand-drawn dialectic triangle on cream notebook paper: a "Thesis" box upper-left connected by a dashed line labeled "vs" to an "Antithesis" box upper-right; both converge with coral lines down to a "Synthesis" box at the bottom-center. Coral-red annotation "what is truth?" upper-right.',
+    spell: ['Philosophy', 'Thesis', 'Antithesis', 'Synthesis', 'vs', 'what is truth'],
+  },
+  {
+    slug: 'course-design-01',
+    title: 'Design Thinking',
+    subtitle: 'Dig into users, then solve',
+    diagram: 'a hand-drawn horizontal sequence of five rounded pill boxes on cream notebook paper: "Feel" → "Frame" → "Ideas" → "Make" → "Test". A coral bracket arches over the row labeled "iterate". Coral-red annotation "empathy" at the right end of the bracket.',
+    spell: ['Design Thinking', 'Feel', 'Frame', 'Ideas', 'Make', 'Test', 'iterate', 'empathy'],
+  },
+  {
+    slug: 'course-lateral-01',
+    title: 'Lateral Thinking',
+    subtitle: 'Doubt convention, find the gap',
+    diagram: 'a hand-drawn detour path on cream notebook paper: a small "obvious" box on the left connected by a dashed horizontal line straight across to a "solution" box on the right. A coral solid line dips down from the obvious box, runs along the bottom, then sharply rises up to the solution box. Coral-red annotation "flip it" above the right peak.',
+    spell: ['Lateral Thinking', 'obvious', 'solution', 'flip it'],
+  },
+  {
+    slug: 'course-analogy-01',
+    title: 'Analogy Thinking',
+    subtitle: 'Borrow wisdom from other fields',
+    diagram: 'a hand-drawn two-box mapping on cream notebook paper: left box "Nature" with subtitle "bird wing", coral arrow pointing right labeled "borrow", right box "Business" with subtitle "airplane wing". Coral-red annotation "like that" upper-right.',
+    spell: ['Analogy Thinking', 'Nature', 'bird wing', 'Business', 'airplane wing', 'borrow', 'like that'],
+  },
+  {
+    slug: 'course-systems-01',
+    title: 'Systems Thinking',
+    subtitle: 'See the whole, change the root',
+    diagram: 'a hand-drawn causal loop on cream notebook paper: two ovals labeled "cause" left and "effect" right connected by two coral arrows forming a feedback loop — top arrow points right with a "+" label, bottom arrow points left with a "+" label. Below: a short dashed coral segment labeled "lever". Coral-red annotation "see the whole" upper-right.',
+    spell: ['Systems Thinking', 'cause', 'effect', 'lever', 'see the whole'],
+  },
+  {
+    slug: 'course-whywhy-01',
+    title: '5 Whys',
+    subtitle: 'Reach the root by asking why',
+    diagram: 'a hand-drawn vertical ladder of five stacked boxes on cream notebook paper: top "Problem", then "Why 1", "Why 2", "Why 3", and bottom "Root" in coral. Coral handwritten "why?" labels between each pair of boxes. Coral-red annotation "dig deeper" upper-right.',
+    spell: ['5 Whys', 'Problem', 'Why 1', 'Why 2', 'Why 3', 'Root', 'why', 'dig deeper'],
+  },
+
+  // ── 新規追加: issue-01 「論点を洗い出し、論理で答えに迫る」 ──
+  {
+    slug: 'course-issue-01',
+    title: 'Issue Analysis',
+    subtitle: 'Find the right questions to answer',
+    diagram: 'a hand-drawn issue tree on cream notebook paper: a top box "Main Issue" branches down into three middle boxes "Sub A", "Sub B", "Sub C", each splitting further into two small leaf boxes labeled "fact". Coral underlines run beneath the bottom row of facts. Coral-red annotation "structure it" upper-right.',
+    spell: ['Issue Analysis', 'Main Issue', 'Sub A', 'Sub B', 'Sub C', 'fact', 'structure it'],
+  },
+]

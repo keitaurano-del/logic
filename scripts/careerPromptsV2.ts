@@ -8,7 +8,7 @@
  * — cream paper, black marker line work, coral underlines, no decorations.
  */
 
-import type { LessonPromptEntry } from './lessonPromptsV2.ts'
+import { titleCase, type LessonPromptEntry } from './lessonPromptsV2.ts'
 
 // ────────────────────────────────────────────────────────────────────────────
 // Landscape (16:9) style for course thumbnails — title-left, diagram-right
@@ -17,7 +17,13 @@ const STYLE_COURSE = `
 Hand-drawn 2D illustration on cream-colored ruled notebook paper.
 Background: warm beige cream paper, with thin light coral pink horizontal ruled lines spaced evenly across, three small round binder holes on the left margin, very subtle paper texture.
 
-Aesthetic: a thoughtful student's clean study notebook page. Drawn entirely with a black marker pen — clean confident line work with slight natural ink variation. Title hand-lettered in marker (NOT a typeface, NOT printed letters — every letter must look hand-drawn with a marker, including all uppercase letters), with a bold coral red underline swoosh below. Body annotations in casual cursive handwriting.
+Aesthetic: a thoughtful student's clean study notebook page. Drawn entirely with a black marker pen — clean confident line work with slight natural ink variation. Body annotations in casual cursive handwriting.
+
+TITLE STYLE — most important rule:
+The main title at top-left must be hand-lettered in a chunky relaxed marker handwriting like the Google font "Caveat" — friendly, semi-bold, slightly playful, with naturally flowing strokes. Use Title Case (mixed upper and lower case letters, e.g. "Logic Tree" or "Ramp Up Fast"), NOT all uppercase block letters. The letters lean slightly to the right with a casual rhythm, the strokes have slight thickness variation as a marker would produce. Quick confident hand-lettering — not a typed font, not block capital letters, not formal calligraphy.
+
+UNDERLINE STYLE — second most important rule:
+Below the title, draw a single hand-drawn coral red underline as one flowing marker swipe. It must look like a quick brush gesture: slightly tapered at one or both ends, with natural ink variation in thickness, never a perfectly straight ruler-drawn line. The underline can curve very subtly or swoosh upward at the tail. One continuous stroke, not multiple lines.
 
 Color palette (use as accents only, not as labels):
 - Warm cream beige paper base
@@ -37,6 +43,7 @@ Text rules: every visible text — including the title — must be hand-lettered
 `.trim()
 
 export function buildCoursePrompt(entry: LessonPromptEntry): string {
+  const displayTitle = titleCase(entry.title)
   const spellSection = entry.spell?.length
     ? `
 
@@ -49,9 +56,9 @@ If you cannot draw a word with perfect spelling, leave it out rather than misspe
 
 ---
 
-Topic: ${entry.title} — a hand-drawn notebook COURSE thumbnail (16:9 landscape).
+Topic: ${displayTitle} — a hand-drawn notebook COURSE thumbnail (16:9 landscape).
 
-Left third of the page: hand-lettered title "${entry.title}" stacked over two lines if needed, with a thick coral red underline swoosh below. Just below the title, the smaller hand-lettered cursive subtitle: "${entry.subtitle}".
+Left third of the page: hand-lettered title "${displayTitle}" rendered in Caveat-style chunky marker handwriting (Title Case with mixed upper and lower case letters — e.g. "Logic Tree" or "Ramp Up Fast" — NOT all uppercase block letters). Stack over two lines if needed. Semi-bold marker strokes with slight playful rightward slant. Below the title: a single flowing hand-drawn coral red underline marker swipe with slightly tapered ends and natural ink variation. Just below the underline, the smaller hand-lettered cursive subtitle: "${entry.subtitle}".
 
 Right two-thirds of the page: ${entry.diagram}
 
