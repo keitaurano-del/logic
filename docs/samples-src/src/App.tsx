@@ -15,12 +15,21 @@ import { LeftIcon } from './pages/icon/LeftIcon'
 import { HeaderIcon } from './pages/icon/HeaderIcon'
 import { ChipQuote } from './pages/icon/ChipQuote'
 
+// v2: 本体トーン × 上級レッスン図解
+import { DeductionInduction } from './pages/v2/DeductionInduction'
+import { CorrelationCausation } from './pages/v2/CorrelationCausation'
+import { AbstractionLadder } from './pages/v2/AbstractionLadder'
+import { PyramidPrinciple } from './pages/v2/PyramidPrinciple'
+import { BayesUpdate } from './pages/v2/BayesUpdate'
+import { SystemsFeedbackLoop } from './pages/v2/SystemsFeedbackLoop'
+
 export function App() {
   return (
     <HashRouter>
       <Routes>
         <Route path="/" element={<IndexPage />} />
 
+        {/* v1 — 手書きノート風 14 案 */}
         <Route path="/tree/profit" element={<ProfitTree />} />
         <Route path="/tree/3c" element={<ThreeCFrame />} />
         <Route path="/tree/whywhy" element={<WhyWhyTree />} />
@@ -40,6 +49,14 @@ export function App() {
         <Route path="/icon/left" element={<LeftIcon />} />
         <Route path="/icon/header" element={<HeaderIcon />} />
         <Route path="/icon/chip" element={<ChipQuote />} />
+
+        {/* v2 — 本体トーン上級レッスン 6 案 */}
+        <Route path="/v2/deduction-induction" element={<DeductionInduction />} />
+        <Route path="/v2/correlation-causation" element={<CorrelationCausation />} />
+        <Route path="/v2/abstraction-ladder" element={<AbstractionLadder />} />
+        <Route path="/v2/pyramid-principle" element={<PyramidPrinciple />} />
+        <Route path="/v2/bayes-update" element={<BayesUpdate />} />
+        <Route path="/v2/systems-feedback-loop" element={<SystemsFeedbackLoop />} />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
