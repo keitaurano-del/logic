@@ -17,6 +17,9 @@ import { addWrongAnswers } from '../wrongAnswerStore'
 import { generateFromLesson } from '../flashcardData'
 import { isSaved, toggleSaved } from '../savedItemsStore'
 import { haptic } from '../platform/haptics'
+import { VisualSlide } from '../visuals/VisualSlide'
+import { renderVisual } from '../visuals'
+import '../visuals/visuals.css'
 
 type WrongAnswerCapture = {
   slideIndex: number
@@ -760,6 +763,16 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
         <div style={{ fontSize: 22, fontWeight: 600, lineHeight: 1.6, marginBottom: 24 }}>{slide.quote}</div>
         <div style={{ fontSize: 14, color: 'var(--text-secondary)' }}>— {slide.author}</div>
       </div>
+    )
+  }
+
+  if (slide.kind === 'visual') {
+    const element = renderVisual(slide.visualId)
+    if (!element) return null
+    return (
+      <VisualSlide title={slide.title} caption={slide.caption}>
+        {element}
+      </VisualSlide>
     )
   }
 

@@ -15,6 +15,8 @@ export type LessonSlide =
   // SCRUM-新: 思考系スライド
   | { kind: 'think'; question: string; hint?: string; modelAnswer: string; points: string[] }
   | { kind: 'case'; title: string; situation: string; phases: { info: string; question: string; options: { label: string; correct: boolean; feedback: string }[] }[]; conclusion: string }
+  // v2: コンセプト図解スライド（visualId で registry から動的にコンポーネント取得）
+  | { kind: 'visual'; visualId: string; title?: string; caption?: string }
 
 export interface LessonV3 {
   id: number
@@ -237,6 +239,15 @@ export function convertLessonToSlides(lesson: any): LessonSlide[] {
           body: formatBody(chunk),
         })
       })
+      // 旧 step.visual があれば、説明スライドの直後に visual スライドを挿入
+      if (step.visual && typeof step.visual === 'string') {
+        slides.push({
+          kind: 'visual',
+          visualId: step.visual,
+          title: step.visualTitle || undefined,
+          caption: step.visualCaption || undefined,
+        })
+      }
     } else if (stepType === 'quiz') {
       // Convert legacy options format to choices/correctIndex
       let choices: string[] = []

@@ -1,0 +1,735 @@
+/* ============================================================
+ * Logic v3 — Concept Visuals
+ * 図解スライド専用のスタイル（Slate Blue + Inter ベース、本体 tokens 準拠）
+ *
+ * 全 visual の共通: .vz-* prefix
+ * CSS 変数は src/styles/tokens.css の本体トークンを直接参照
+ * ============================================================ */
+
+/* ===== 共通：fade-in 入場アニメ ===== */
+@keyframes vz-fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes vz-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes vz-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.7; transform: scale(0.96); }
+}
+
+@keyframes vz-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes vz-grow-bar {
+  from { width: 0; }
+}
+
+.vz-stagger > * {
+  animation: vz-fade-up 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.vz-stagger > *:nth-child(1) { animation-delay: 0.00s; }
+.vz-stagger > *:nth-child(2) { animation-delay: 0.08s; }
+.vz-stagger > *:nth-child(3) { animation-delay: 0.16s; }
+.vz-stagger > *:nth-child(4) { animation-delay: 0.24s; }
+.vz-stagger > *:nth-child(5) { animation-delay: 0.32s; }
+.vz-stagger > *:nth-child(6) { animation-delay: 0.40s; }
+.vz-stagger > *:nth-child(7) { animation-delay: 0.48s; }
+.vz-stagger > *:nth-child(8) { animation-delay: 0.56s; }
+
+/* ===== Label / tag共通 ===== */
+.vz-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border-radius: 999px;
+  background: var(--brand-soft);
+  color: var(--brand);
+}
+
+.vz-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+/* ===== MECE 4パターン ===== */
+.vz-mece-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.vz-mece-card {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  padding: 12px 10px;
+  border: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.vz-mece-card-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--brand);
+  letter-spacing: 0.04em;
+}
+
+.vz-mece-mini-tree {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  gap: 4px;
+}
+
+.vz-mece-mini-tree .root {
+  background: linear-gradient(135deg, #6C8EF5 0%, #2E45A8 100%);
+  color: #fff;
+  border-radius: 8px;
+  padding: 4px 10px;
+}
+
+.vz-mece-mini-tree .children {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.vz-mece-mini-tree .children span {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 2px 6px;
+}
+
+.vz-mece-mini-tree .mul {
+  color: var(--brand);
+  font-weight: 700;
+}
+
+.vz-mece-stages {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.vz-mece-stage {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 3px 8px;
+  color: var(--text-primary);
+}
+
+.vz-mece-arrow {
+  color: var(--brand);
+  font-weight: 700;
+}
+
+.vz-mece-pair {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.vz-mece-pair .pair-a, .vz-mece-pair .pair-b {
+  background: var(--bg-card);
+  border: 1.5px solid var(--brand);
+  color: var(--brand);
+  border-radius: 6px;
+  padding: 3px 10px;
+}
+
+.vz-mece-pair .pair-b {
+  border-color: #DB2777;
+  color: #DB2777;
+}
+
+.vz-mece-3c {
+  position: relative;
+  height: 60px;
+}
+
+.vz-mece-3c-circle {
+  position: absolute;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  border: 2px solid;
+  background: var(--bg-card);
+}
+
+.vz-mece-3c-circle.customer  { left: 6px;  top: 4px;  border-color: #6C8EF5; color: #2E45A8; }
+.vz-mece-3c-circle.competitor { right: 6px; top: 4px;  border-color: #DB2777; color: #DB2777; }
+.vz-mece-3c-circle.company   { left: 50%; bottom: 0; transform: translateX(-50%); border-color: #059669; color: #059669; }
+
+/* ===== Logic Tree ===== */
+.vz-tree-root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.vz-tree-node {
+  background: linear-gradient(135deg, #6C8EF5 0%, #2E45A8 100%);
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(108, 142, 245, 0.28);
+  text-align: center;
+}
+
+.vz-tree-children {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+  width: 100%;
+}
+
+.vz-tree-leaf {
+  background: var(--bg-card);
+  border: 1.5px solid var(--brand);
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 12px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  text-align: center;
+  line-height: 1.35;
+}
+
+.vz-tree-leaves {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 2px;
+}
+
+.vz-tree-leaves > div {
+  background: var(--bg-secondary);
+  border-radius: 6px;
+  padding: 4px 6px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* ===== So What / Why So ===== */
+.vz-sowhat {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  padding: 0 6px;
+}
+
+.vz-sowhat-block {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.vz-sowhat-block.conclusion {
+  background: linear-gradient(135deg, #6C8EF5 0%, #2E45A8 100%);
+  color: #fff;
+  border: none;
+  box-shadow: 0 6px 20px rgba(108, 142, 245, 0.30);
+}
+
+.vz-sowhat-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  opacity: 0.7;
+  text-transform: uppercase;
+}
+
+.vz-sowhat-block.conclusion .vz-sowhat-label {
+  opacity: 0.85;
+}
+
+.vz-sowhat-arrows {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin: 4px 0;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.vz-sowhat-arrows .up   { color: #059669; }
+.vz-sowhat-arrows .down { color: #DB2777; }
+
+/* ===== Pyramid ===== */
+.vz-pyramid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.vz-pyramid-row {
+  display: grid;
+  gap: 6px;
+  width: 100%;
+}
+
+.vz-pyramid-row.r1 { grid-template-columns: 1fr; max-width: 70%; margin: 0 auto; }
+.vz-pyramid-row.r2 { grid-template-columns: repeat(3, 1fr); }
+.vz-pyramid-row.r3 { grid-template-columns: repeat(3, 1fr); }
+
+.vz-pyramid-cell {
+  border-radius: 10px;
+  padding: 8px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.35;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vz-pyramid-cell.top {
+  background: linear-gradient(135deg, #6C8EF5 0%, #2E45A8 100%);
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  box-shadow: 0 6px 20px rgba(108, 142, 245, 0.30);
+}
+
+.vz-pyramid-cell.mid {
+  background: var(--bg-card);
+  border: 1.5px solid #5478E8;
+  color: var(--text-primary);
+}
+
+.vz-pyramid-cell.bottom {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-size: 10px;
+}
+
+.vz-pyramid-cell-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  opacity: 0.7;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.vz-pyramid-cell.top .vz-pyramid-cell-label { color: #fff; opacity: 0.85; }
+.vz-pyramid-cell.mid .vz-pyramid-cell-label { color: #5478E8; }
+
+/* ===== PREP / Case Study / Phase panels ===== */
+.vz-prep-row {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+  margin-bottom: 8px;
+}
+
+.vz-prep-letter {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #6C8EF5 0%, #2E45A8 100%);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  font-family: 'Inter Tight', Inter, sans-serif;
+  flex-shrink: 0;
+}
+
+.vz-prep-meaning {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.vz-prep-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.vz-prep-desc {
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* ===== Deduction / Induction ===== */
+.vz-syllogism {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.vz-premise-card {
+  width: 100%;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.vz-premise-card .label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.vz-premise-card .text {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.vz-premise-card.conclusion {
+  background: linear-gradient(135deg, #6C8EF5 0%, #2E45A8 100%);
+  border: none;
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(108, 142, 245, 0.30);
+}
+
+.vz-premise-card.conclusion .label { color: rgba(255,255,255,0.85); }
+.vz-premise-card.conclusion .text  { color: #fff; }
+
+.vz-arrow-down, .vz-arrow-up {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--brand);
+  line-height: 1;
+}
+
+.vz-induction-samples {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+  width: 100%;
+}
+
+.vz-induction-sample {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vz-induction-sample .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #0D1220;
+  flex-shrink: 0;
+}
+
+.vz-induction-warn {
+  font-size: 11px;
+  color: var(--warning);
+  background: rgba(217, 119, 6, 0.10);
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+  margin-top: 8px;
+  text-align: center;
+}
+
+/* ===== Contrapositive 真理値表 ===== */
+.vz-truth-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.vz-truth-table th {
+  background: var(--brand-soft);
+  color: var(--brand);
+  padding: 6px 4px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+.vz-truth-table td {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 4px;
+  text-align: center;
+  color: var(--text-primary);
+}
+
+.vz-truth-table td.T { color: #059669; font-weight: 700; }
+.vz-truth-table td.F { color: #DC2626; font-weight: 700; }
+
+.vz-contra-flow {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.vz-contra-block {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+.vz-contra-block.equivalent {
+  border-color: #059669;
+  background: rgba(5, 150, 105, 0.06);
+}
+
+.vz-contra-arrow {
+  color: var(--brand);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* ===== Abstraction Ladder ===== */
+.vz-ladder {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.vz-ladder-meter {
+  width: 18px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #6C8EF5 0%, #DDE2EE 100%);
+  position: relative;
+  min-height: 240px;
+}
+
+.vz-ladder-pin {
+  position: absolute;
+  left: -6px;
+  width: 30px;
+  height: 24px;
+  margin-top: -12px;
+  background: #fff;
+  border: 2px solid var(--brand);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--brand);
+  box-shadow: var(--shadow-card);
+  transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.vz-ladder-rungs {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.vz-ladder-rung {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+
+.vz-ladder-rung.active {
+  background: linear-gradient(135deg, #6C8EF5 0%, #2E45A8 100%);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 6px 16px rgba(108, 142, 245, 0.32);
+}
+
+.vz-ladder-rung .ex {
+  font-size: 10px;
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+.vz-ladder-direction {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  text-align: left;
+}
+
+.vz-ladder-note {
+  margin-top: 12px;
+  background: var(--brand-soft);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.vz-ladder-note .label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--brand);
+  letter-spacing: 0.06em;
+  margin-bottom: 2px;
+}
+
+.vz-ladder-note .text {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.vz-ladder-controls {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.vz-ladder-btn {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  border: 1.5px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-primary);
+}
+
+.vz-ladder-btn.primary {
+  background: linear-gradient(135deg, #5478E8 0%, #6C8EF5 100%);
+  color: #fff;
+  border: none;
+  box-shadow: var(--shadow-cta);
+}
+
+.vz-ladder-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ===== Case Study Phase panels ===== */
+.vz-phase-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.vz-phase {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--brand);
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.vz-phase-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--brand);
+}
+
+.vz-phase-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.vz-phase-body {
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.vz-phase-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 700;
+}
