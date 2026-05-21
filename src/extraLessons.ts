@@ -115,7 +115,7 @@ const designHMW: LessonData = {
   title: '「どうすれば〜できるか？」で問いを立てる',
   category: 'デザインシンキング',
   steps: [
-    { type: 'explain', title: 'HMW（How Might We）とは', content: '「どうすれば〜できるか？（How Might We）」という問いの型で、課題を解決可能な問いに変換する。「〜できない」という制約表現を、可能性を広げる問いに変える。' },
+    { type: 'explain', title: 'HMW（How Might We）とは', content: '「どうすれば〜できるか？（How Might We）」という問いの型で、課題を解決可能な問いに変換する。「〜できない」という制約表現を、可能性を広げる問いに変える。', visual: 'ThreePillarsDiagram' },
     { type: 'quiz', question: '「ユーザーがアプリを継続しない」という課題をHMWで問い直した場合、最も適切なものはどれか？', options: [
       { label: '「なぜユーザーは継続しないのか？」', correct: false },
       { label: '「どうすればユーザーが毎日使いたくなるか？」', correct: true },
@@ -130,7 +130,7 @@ const designTest: LessonData = {
   title: '素早く試して、速く学ぶ',
   category: 'デザインシンキング',
   steps: [
-    { type: 'explain', title: 'テストと反復（Iterate）の重要性', content: 'デザインシンキングの核心は「完璧なものを作ってから試す」ではなく「粗くても試してから磨く」こと。失敗は学習。低コストで素早く試すほど、本質的な答えに早く近づく。' },
+    { type: 'explain', title: 'テストと反復（Iterate）の重要性', content: 'デザインシンキングの核心は「完璧なものを作ってから試す」ではなく「粗くても試してから磨く」こと。失敗は学習。低コストで素早く試すほど、本質的な答えに早く近づく。', visual: 'DesignThinkingCycleDiagram' },
     { type: 'quiz', question: '新機能のアイデアを検証する最もデザインシンキング的なアプローチはどれか？', options: [
       { label: '完全に開発してからユーザーテストする', correct: false },
       { label: '紙とペンで画面を描いてユーザーに見せる', correct: true },
@@ -146,7 +146,7 @@ const lateralPMI: LessonData = {
   title: 'PMI法で視点を意図的に広げる',
   category: 'ラテラルシンキング',
   steps: [
-    { type: 'explain', title: 'PMI法とは', content: 'Plus（良い点）・Minus（悪い点）・Interesting（面白い点）の3視点でアイデアを評価する手法。エドワード・デ・ボノが提唱。「面白い点」を加えることで、固定的な二項対立を超えた思考が生まれる。' },
+    { type: 'explain', title: 'PMI法とは', content: 'Plus（良い点）・Minus（悪い点）・Interesting（面白い点）の3視点でアイデアを評価する手法。エドワード・デ・ボノが提唱。「面白い点」を加えることで、固定的な二項対立を超えた思考が生まれる。', visual: 'ThreePillarsDiagram' },
     { type: 'quiz', question: '「全社員を週3日テレワークにする」というアイデアにPMI法を適用する。Interesting（面白い点）として最も適切なものはどれか？', options: [
       { label: '通勤コストが減る（コスト削減）', correct: false },
       { label: 'コミュニケーションが減るかもしれない（リスク）', correct: false },
@@ -177,7 +177,7 @@ const analogyMapping: LessonData = {
   title: '構造をマッピングして解を借りる',
   category: 'アナロジー思考',
   steps: [
-    { type: 'explain', title: '構造マッピングとは', content: 'アナロジーの核心は「表面的な類似」ではなく「構造的な類似」を見つけること。「軍の補給システム」と「サプライチェーン管理」は分野は違っても同じ構造を持つ。構造を明示的にマッピングすることでアナロジーが使える。' },
+    { type: 'explain', title: '構造マッピングとは', content: 'アナロジーの核心は「表面的な類似」ではなく「構造的な類似」を見つけること。「軍の補給システム」と「サプライチェーン管理」は分野は違っても同じ構造を持つ。構造を明示的にマッピングすることでアナロジーが使える。', visual: 'WhereWhyHowDiagram' },
     { type: 'quiz', question: '「免疫システム（体の防衛機構）」を組織のセキュリティ対策にアナロジーで応用する。最も構造的に対応するものはどれか？', options: [
       { label: '白血球 → 社員全員', correct: false },
       { label: '免疫記憶 → 過去のインシデント記録と対応マニュアル', correct: true },
@@ -208,7 +208,7 @@ const systemsArchetype: LessonData = {
   title: 'システム原型で「よくある罠」を見抜く',
   category: 'システムシンキング',
   steps: [
-    { type: 'explain', title: 'システム原型とは', content: '組織や社会で繰り返し現れる典型的な構造パターンを「システム原型」という。「成長の限界」「応急処置の失敗（Fixes that Fail）」「責任の転嫁（Shifting the Burden）」「共有地の悲劇」などがある。原型を知ることで、複雑な問題の本質をすばやく見抜ける。' },
+    { type: 'explain', title: 'システム原型とは', content: '組織や社会で繰り返し現れる典型的な構造パターンを「システム原型」という。「成長の限界」「応急処置の失敗（Fixes that Fail）」「責任の転嫁（Shifting the Burden）」「共有地の悲劇」などがある。原型を知ることで、複雑な問題の本質をすばやく見抜ける。', visual: 'SystemArchetypeDiagram' },
     { type: 'quiz', question: '「対症療法を行うと、その処置自体が新たな副作用を生み、結果として元の問題までもが悪化していく」というパターンはどのシステム原型か？', options: [
       { label: '成長の限界', correct: false },
       { label: '応急処置の失敗（Fixes that Fail）', correct: true },
@@ -223,7 +223,7 @@ const systemsLeverage: LessonData = {
   title: 'レバレッジポイントを探して変化を起こす',
   category: 'システムシンキング',
   steps: [
-    { type: 'explain', title: 'レバレッジポイントとは', content: 'システムの中で「小さな変化が大きな影響を生む」場所をレバレッジポイントという。ドネラ・メドウズが提唱。目標・ルール・情報の流れ・フィードバック構造などが高いレバレッジを持つ。表面的な数値変更より、システムの目的や構造を変えることの方が効果が大きい。' },
+    { type: 'explain', title: 'レバレッジポイントとは', content: 'システムの中で「小さな変化が大きな影響を生む」場所をレバレッジポイントという。ドネラ・メドウズが提唱。目標・ルール・情報の流れ・フィードバック構造などが高いレバレッジを持つ。表面的な数値変更より、システムの目的や構造を変えることの方が効果が大きい。', visual: 'LeveragePointsDiagram' },
     { type: 'quiz', question: '業績不振の組織を変えるためのレバレッジポイントとして最も高い効果が期待できるものはどれか？', options: [
       { label: '全員の給料を10%上げる', correct: false },
       { label: '評価指標（KPI）を売上から顧客満足度に変更する', correct: true },
@@ -255,7 +255,7 @@ const caseSynthesis: LessonData = {
   title: '分析を統合して提言を出す',
   category: 'ケース面接',
   steps: [
-    { type: 'explain', title: 'ケース面接の最終ステップ：統合と提言', content: 'ケース面接の評価ポイントは分析力だけでない。「分析結果を統合して明確な提言を出せるか」が最重要。「したがって…すべきです。理由は3点：①②③」という構造で締めくくる力が求められる。' },
+    { type: 'explain', title: 'ケース面接の最終ステップ：統合と提言', content: 'ケース面接の評価ポイントは分析力だけでない。「分析結果を統合して明確な提言を出せるか」が最重要。「したがって…すべきです。理由は3点：①②③」という構造で締めくくる力が求められる。', visual: 'WhereWhyHowDiagram' },
     { type: 'quiz', question: '市場参入ケースの最後に「参入すべきか否か」を問われた。最も適切な締め方はどれか？', options: [
       { label: 'メリットとデメリットをバランスよく述べ、最終判断は御社次第と伝える', correct: false },
       { label: '「参入を推奨します。理由は市場規模・競合優位性・実行可能性の3点です」と明言する', correct: true },

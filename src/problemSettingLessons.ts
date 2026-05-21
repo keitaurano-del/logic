@@ -50,6 +50,7 @@ const problemSettingIntro: LessonData = {
       title: 'Where → Why → Howのフレームワーク',
       content:
         '課題設定には「Where → Why → How」の順番が効果的です。\n\n【Where】どこに問題があるのか？\n売上 = 客数 × 客単価 × 購買頻度\n→ 「客数」が減っている（問題の所在を特定）\n\n【Why】なぜその問題が起きているのか？\n→ 新規客は増えているが、既存客のリピートが減っている\n→ リピート低下の原因は、配送遅延による不満\n\n【How】どうすれば解決できるか？\n→ 配送パートナーの見直し\n→ 配送状況のリアルタイム通知\n→ 遅延時の自動クーポン発行\n\nWhere/Whyを飛ばしてHowに行くと、\n的外れな解決策に時間とお金を使うことになる。',
+      visual: 'WhereWhyHowDiagram',
     },
     {
       type: 'quiz',
@@ -94,6 +95,7 @@ const problemSettingFramework: LessonData = {
       title: '課題の優先順位をつける — 2×2マトリクス',
       content:
         '複数の課題がある時、全てに取り組むのは非効率。\n優先順位をつけるための2×2マトリクス：\n\n　　　　　インパクト大\n　　　　┌─────┬─────┐\n実行容易│ Quick │  最優先  │\n　　　　│ Win  │   │\n　　　　├─────┼─────┤\n実行困難│ 後回し │  戦略的  │\n　　　　│   │  計画  │\n　　　　└─────┴─────┘\n　　　　　インパクト小\n\n①最優先（インパクト大 × 実行容易）→ 今すぐやる\n②Quick Win（インパクト小 × 実行容易）→ 余裕があれば\n③戦略的計画（インパクト大 × 実行困難）→ 中長期で取り組む\n④後回し（インパクト小 × 実行困難）→ やらない',
+      visual: 'Two2MatrixDiagram',
     },
     {
       type: 'quiz',

@@ -10,6 +10,50 @@ import { DeductionVisual } from './DeductionVisual'
 import { InductionVisual } from './InductionVisual'
 import { ContrapositiveVisual } from './ContrapositiveVisual'
 import { AbstractionLadderVisual } from './AbstractionLadderVisual'
+import { IcebergModelVisual } from './IcebergModelVisual'
+import { SystemArchetypeVisual } from './SystemArchetypeVisual'
+import { CausalLoopDiagramVisual } from './CausalLoopDiagramVisual'
+import { EmpathyMapVisual } from './EmpathyMapVisual'
+import { JtbdVisual } from './JtbdVisual'
+import { DesignThinkingCycleVisual } from './DesignThinkingCycleVisual'
+import { HypothesisFlowVisual } from './HypothesisFlowVisual'
+import { MvpTestDesignVisual } from './MvpTestDesignVisual'
+// Phase 1: whyWhy 系 v3 移植
+import { WhyWhySymptomVsRootVisual } from './WhyWhySymptomVsRootVisual'
+import { WhyWhyChainVisual } from './WhyWhyChainVisual'
+import { WhyWhyVsLogicTreeVisual } from './WhyWhyVsLogicTreeVisual'
+import { WhyWhyToyotaVisual } from './WhyWhyToyotaVisual'
+import { WhyWhyStopRuleVisual } from './WhyWhyStopRuleVisual'
+import { WhyWhyPitfallsVisual } from './WhyWhyPitfallsVisual'
+import { WhyWhyParallelVisual } from './WhyWhyParallelVisual'
+import { WhyWhyEvidenceVisual } from './WhyWhyEvidenceVisual'
+// Phase 2: 超高優先 6 種
+import { Two2MatrixVisual } from './Two2MatrixVisual'
+import { FeedbackLoopVisual } from './FeedbackLoopVisual'
+import { FermiFormulaVisual } from './FermiFormulaVisual'
+import { MeceVennDiagram } from './MeceVennDiagram'
+import { ThreePillarsVisual } from './ThreePillarsVisual'
+import { GraphPitfallsVisual } from './GraphPitfallsVisual'
+// Phase 3-B: 提案 / ラテラル / 戦略
+import { ScrStructureVisual } from './ScrStructureVisual'
+import { WhereWhyHowVisual } from './WhereWhyHowVisual'
+import { ClaimReasonAssumptionVisual } from './ClaimReasonAssumptionVisual'
+import { SixHatsVisual } from './SixHatsVisual'
+import { ScamperVisual } from './ScamperVisual'
+import { VerticalVsLateralVisual } from './VerticalVsLateralVisual'
+import { TriadVisual } from './TriadVisual'
+import { FiveForcesVisual } from './FiveForcesVisual'
+import { VrioVisual } from './VrioVisual'
+import { LeveragePointsVisual } from './LeveragePointsVisual'
+// Phase 3-C: 数字 / フェルミ / その他
+import { FermiStepsVisual } from './FermiStepsVisual'
+import { MentalMathDecisionTreeVisual } from './MentalMathDecisionTreeVisual'
+import { DistributionShapeVisual } from './DistributionShapeVisual'
+import { ExponentialCurveVisual } from './ExponentialCurveVisual'
+import { AbsoluteVsRelativeVisual } from './AbsoluteVsRelativeVisual'
+import { TrolleyProblemVisual } from './TrolleyProblemVisual'
+import { FallacyGridVisual } from './FallacyGridVisual'
+import { CorrelationCausationVisual } from './CorrelationCausationVisual'
 
 /**
  * visualId → Visual component の registry
@@ -27,6 +71,50 @@ export const visualRegistry: Record<string, ComponentType> = {
   InductionDiagram: InductionVisual,
   ContrapositiveDiagram: ContrapositiveVisual,
   AbstractionLadderDiagram: AbstractionLadderVisual,
+  IcebergModelDiagram: IcebergModelVisual,
+  SystemArchetypeDiagram: SystemArchetypeVisual,
+  CausalLoopDiagram: CausalLoopDiagramVisual,
+  EmpathyMapDiagram: EmpathyMapVisual,
+  JtbdDiagram: JtbdVisual,
+  DesignThinkingCycleDiagram: DesignThinkingCycleVisual,
+  HypothesisFlowDiagram: HypothesisFlowVisual,
+  MvpTestDesignDiagram: MvpTestDesignVisual,
+  // Phase 1: whyWhy 系
+  WhyWhySymptomVsRootDiagram: WhyWhySymptomVsRootVisual,
+  WhyWhyChainDiagram: WhyWhyChainVisual,
+  WhyWhyVsLogicTreeDiagram: WhyWhyVsLogicTreeVisual,
+  WhyWhyToyotaDiagram: WhyWhyToyotaVisual,
+  WhyWhyStopRuleDiagram: WhyWhyStopRuleVisual,
+  WhyWhyPitfallsDiagram: WhyWhyPitfallsVisual,
+  WhyWhyParallelDiagram: WhyWhyParallelVisual,
+  WhyWhyEvidenceDiagram: WhyWhyEvidenceVisual,
+  // Phase 2: 超高優先
+  Two2MatrixDiagram: Two2MatrixVisual,
+  FeedbackLoopDiagram: FeedbackLoopVisual,
+  FermiFormulaDiagram: FermiFormulaVisual,
+  MeceVennDiagram: MeceVennDiagram,
+  ThreePillarsDiagram: ThreePillarsVisual,
+  GraphPitfallsDiagram: GraphPitfallsVisual,
+  // Phase 3-B
+  ScrStructureDiagram: ScrStructureVisual,
+  WhereWhyHowDiagram: WhereWhyHowVisual,
+  ClaimReasonAssumptionDiagram: ClaimReasonAssumptionVisual,
+  SixHatsDiagram: SixHatsVisual,
+  ScamperDiagram: ScamperVisual,
+  VerticalVsLateralDiagram: VerticalVsLateralVisual,
+  TriadDiagram: TriadVisual,
+  FiveForcesDiagram: FiveForcesVisual,
+  VrioDiagram: VrioVisual,
+  LeveragePointsDiagram: LeveragePointsVisual,
+  // Phase 3-C
+  FermiStepsDiagram: FermiStepsVisual,
+  MentalMathDecisionTreeDiagram: MentalMathDecisionTreeVisual,
+  DistributionShapeDiagram: DistributionShapeVisual,
+  ExponentialCurveDiagram: ExponentialCurveVisual,
+  AbsoluteVsRelativeDiagram: AbsoluteVsRelativeVisual,
+  TrolleyProblemDiagram: TrolleyProblemVisual,
+  FallacyGridDiagram: FallacyGridVisual,
+  CorrelationCausationDiagram: CorrelationCausationVisual,
 }
 
 export function getVisualComponent(id: string): ComponentType | null {

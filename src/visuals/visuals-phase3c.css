@@ -1,0 +1,572 @@
+/* ============================================================
+ * Logic v3 — Concept Visuals (Phase 3-C)
+ * 数字 + フェルミ + 哲学 + クリティカル系 8 種の図解専用スタイル。
+ *
+ * Phase 1 (visuals.css) / Phase 2 (visuals-phase2.css) の `.vz-*` 規約を踏襲。
+ * CSS 変数は tokens.css の本体トークンを直接参照（ハードコード hex 禁止）。
+ * 追加クラス prefix:
+ *   .vz-fs-   FermiStepsVisual
+ *   .vz-mmd-  MentalMathDecisionTreeVisual
+ *   .vz-ds-   DistributionShapeVisual
+ *   .vz-ec-   ExponentialCurveVisual
+ *   .vz-avr-  AbsoluteVsRelativeVisual
+ *   .vz-tp-   TrolleyProblemVisual
+ *   .vz-fg-   FallacyGridVisual
+ *   .vz-cc-   CorrelationCausationVisual
+ * ============================================================ */
+
+/* ===== FermiStepsVisual (フェルミ 4 ステップ縦フロー) ===== */
+.vz-fs-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.vz-fs-step {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: 10px;
+  align-items: stretch;
+  background: var(--bg-card);
+  border: 1.5px solid var(--brand);
+  border-radius: 12px;
+  padding: 10px 12px;
+  box-shadow: var(--shadow-sm);
+}
+
+.vz-fs-step.final {
+  background: var(--brand-cta-grad);
+  border: none;
+  color: #fff;
+  box-shadow: var(--brand-cta-shadow);
+}
+
+.vz-fs-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+}
+
+.vz-fs-step.final .vz-fs-num {
+  background: rgba(255, 255, 255, 0.22);  /* on-gradient overlay, keep literal rgba */
+  color: #fff;
+}
+
+.vz-fs-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.vz-fs-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--brand);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.vz-fs-step.final .vz-fs-label {
+  color: #fff;
+  opacity: 0.85;
+}
+
+.vz-fs-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.vz-fs-step.final .vz-fs-title { color: #fff; }
+
+.vz-fs-desc {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  margin-top: 2px;
+}
+
+.vz-fs-step.final .vz-fs-desc { color: #fff; opacity: 0.92; }
+
+.vz-fs-arrow {
+  text-align: center;
+  font-size: 14px;
+  color: var(--brand);
+  font-weight: 700;
+  line-height: 1;
+  margin: -2px 0;
+}
+
+/* ===== MentalMathDecisionTreeVisual (暗算ワザ早見表 / フローチャート) ===== */
+.vz-mmd-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.vz-mmd-root {
+  background: var(--brand-cta-grad);
+  color: #fff;
+  border-radius: 12px;
+  padding: 10px 12px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: var(--brand-cta-shadow);
+}
+
+.vz-mmd-branch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.vz-mmd-branch.three {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.vz-mmd-node {
+  background: var(--bg-card);
+  border: 1.5px solid var(--brand);
+  border-radius: 10px;
+  padding: 8px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: center;
+  min-height: 90px;
+}
+
+.vz-mmd-cond {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--brand);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.vz-mmd-tech {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.vz-mmd-ex {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  background: var(--bg-secondary);
+  padding: 4px 6px;
+  border-radius: 6px;
+}
+
+.vz-mmd-row-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-align: center;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ===== DistributionShapeVisual (正規分布 vs 歪み分布) ===== */
+.vz-ds-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.vz-ds-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vz-ds-card-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--brand);
+  text-align: center;
+  letter-spacing: 0.04em;
+}
+
+.vz-ds-card.skewed .vz-ds-card-title { color: var(--warning); }
+
+.vz-ds-svg {
+  width: 100%;
+  height: 90px;
+  display: block;
+}
+
+.vz-ds-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.vz-ds-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-secondary);
+}
+
+.vz-ds-swatch {
+  display: inline-block;
+  width: 12px;
+  height: 3px;
+  border-radius: 2px;
+}
+
+.vz-ds-swatch.mean { background: var(--brand); }
+.vz-ds-swatch.median { background: var(--success); }
+
+/* ===== ExponentialCurveVisual (指数 vs 直線) ===== */
+.vz-ec-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.vz-ec-svg-frame {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  padding: 10px;
+  border: 1px solid var(--border-light);
+}
+
+.vz-ec-svg {
+  width: 100%;
+  height: 180px;
+  display: block;
+}
+
+.vz-ec-legend {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.vz-ec-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.vz-ec-line-swatch {
+  display: inline-block;
+  width: 18px;
+  height: 3px;
+  border-radius: 2px;
+}
+
+.vz-ec-line-swatch.linear { background: var(--text-muted); }
+.vz-ec-line-swatch.exp { background: var(--brand); }
+
+.vz-ec-points {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.vz-ec-point {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 6px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.vz-ec-point .yr {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.vz-ec-point .val {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--brand);
+  line-height: 1.1;
+}
+
+.vz-ec-point .vs {
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--text-muted);
+  line-height: 1.2;
+}
+
+/* ===== AbsoluteVsRelativeVisual (絶対値 vs 相対値) ===== */
+.vz-avr-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.vz-avr-fact {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  padding: 10px 12px;
+  text-align: center;
+}
+
+.vz-avr-fact-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.vz-avr-fact-text {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-top: 2px;
+  line-height: 1.3;
+}
+
+.vz-avr-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.vz-avr-card {
+  background: var(--bg-card);
+  border: 1.5px solid var(--brand);
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: center;
+}
+
+.vz-avr-card.relative {
+  border-color: var(--rose);
+}
+
+.vz-avr-card-tag {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--brand);
+  align-self: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--brand-soft);
+}
+
+.vz-avr-card.relative .vz-avr-card-tag {
+  color: var(--rose);
+  background: var(--rose-soft);
+}
+
+.vz-avr-card-number {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+
+.vz-avr-card.relative .vz-avr-card-number { color: var(--rose); }
+
+.vz-avr-card-impression {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* ===== TrolleyProblemVisual (トロッコ問題 / 線路 + 5人 + 1人 + レバー) ===== */
+.vz-tp-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.vz-tp-svg-frame {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  padding: 12px;
+  border: 1px solid var(--border-light);
+}
+
+.vz-tp-svg {
+  width: 100%;
+  height: 180px;
+  display: block;
+}
+
+.vz-tp-choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.vz-tp-choice {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: center;
+}
+
+.vz-tp-choice.a { border-color: var(--warning); }
+.vz-tp-choice.b { border-color: var(--brand); }
+
+.vz-tp-choice-tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.vz-tp-choice.a .vz-tp-choice-tag { color: var(--warning); }
+.vz-tp-choice.b .vz-tp-choice-tag { color: var(--brand); }
+
+.vz-tp-choice-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.vz-tp-choice-school {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* ===== FallacyGridVisual (5 つの誤謬グリッド) ===== */
+.vz-fg-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.vz-fg-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: 10px;
+  align-items: center;
+}
+
+.vz-fg-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--rose-soft);
+  color: var(--rose);
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vz-fg-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.vz-fg-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.25;
+}
+
+.vz-fg-desc {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+/* ===== CorrelationCausationVisual (相関 ≠ 因果 / 第三変数) ===== */
+.vz-cc-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.vz-cc-svg-frame {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 14px 10px;
+}
+
+.vz-cc-svg {
+  width: 100%;
+  height: 200px;
+  display: block;
+}
+
+.vz-cc-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.vz-cc-legend-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vz-cc-arrow-sample {
+  font-size: 13px;
+  font-weight: 700;
+  width: 22px;
+  text-align: center;
+}
+
+.vz-cc-arrow-sample.cause { color: var(--brand); }
+.vz-cc-arrow-sample.fake { color: var(--danger); }

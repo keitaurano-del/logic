@@ -20,6 +20,7 @@ import { haptic } from '../platform/haptics'
 import { VisualSlide } from '../visuals/VisualSlide'
 import { renderVisual } from '../visuals'
 import '../visuals/visuals.css'
+import '../visuals/visuals-phase3a.css'
 
 type WrongAnswerCapture = {
   slideIndex: number

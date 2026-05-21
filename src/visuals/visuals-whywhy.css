@@ -1,0 +1,634 @@
+/* ============================================================
+ * Logic v3 — WhyWhy Concept Visuals
+ * なぜなぜ分析コース（lesson-340〜345）専用の図解スタイル
+ *
+ * prefix: .vz-ww-*
+ * CSS 変数は src/styles/tokens.css の本体トークンを直接参照
+ * 旧 LessonDiagrams.css の `ww-*` 系は使わず、v3 規約に統一して再実装
+ * ============================================================ */
+
+/* ===== 共通：レイヤー強度トーン（chain / evidence 等で使用） ===== */
+.vz-ww-tone-shallow {
+  border-left-color: var(--brand-light);
+}
+.vz-ww-tone-mid {
+  border-left-color: var(--brand-mid);
+}
+.vz-ww-tone-deep {
+  border-left-color: var(--brand-hover);
+}
+
+/* ============================================================
+ * WhyWhySymptomVsRoot — 対症療法 vs 根本治療
+ * ============================================================ */
+.vz-ww-sr {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.vz-ww-sr-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.vz-ww-sr-tag {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.vz-ww-sr-tag-bad {
+  background: rgba(220, 38, 38, 0.10);
+  color: var(--danger);
+}
+.vz-ww-sr-tag-good {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.vz-ww-sr-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.vz-ww-sr-card.bad {
+  border-color: rgba(220, 38, 38, 0.30);
+}
+.vz-ww-sr-card.good {
+  border-color: rgba(5, 150, 105, 0.30);
+}
+
+.vz-ww-sr-icon {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.vz-ww-sr-card.bad .vz-ww-sr-icon { color: var(--danger); }
+.vz-ww-sr-card.good .vz-ww-sr-icon { color: var(--success); }
+
+.vz-ww-sr-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.vz-ww-sr-text strong {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.vz-ww-sr-text span {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.vz-ww-sr-result {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 6px 10px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.vz-ww-sr-result.bad {
+  background: rgba(220, 38, 38, 0.08);
+  color: var(--danger);
+}
+
+.vz-ww-sr-result.good {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+/* ============================================================
+ * WhyWhyChain — 5 階層の深さ
+ * ============================================================ */
+.vz-ww-chain {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vz-ww-chain-row {
+  display: grid;
+  grid-template-columns: 56px 4px 1fr;
+  gap: 8px;
+  align-items: stretch;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--brand-light);
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+
+.vz-ww-chain-row.mid  { border-left-color: var(--brand-mid); }
+.vz-ww-chain-row.deep { border-left-color: var(--brand-hover); background: var(--brand-soft); }
+
+.vz-ww-chain-num {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--brand);
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.04em;
+}
+
+.vz-ww-chain-bar {
+  width: 2px;
+  background: var(--border);
+  border-radius: 999px;
+}
+
+.vz-ww-chain-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.vz-ww-chain-tag {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.vz-ww-chain-row.deep .vz-ww-chain-tag {
+  color: var(--brand);
+}
+
+.vz-ww-chain-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* ============================================================
+ * WhyWhyVsLogicTree — 縦に深く vs 横に広く
+ * ============================================================ */
+.vz-ww-vs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.vz-ww-vs-col {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  padding: 10px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+}
+
+.vz-ww-vs-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.vz-ww-vs-title.primary  { color: var(--brand); }
+.vz-ww-vs-title.alt      { color: var(--brand-pop); }
+
+.vz-ww-vs-sub {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* 縦バージョン (なぜなぜ) */
+.vz-ww-vs-vertical {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: 100%;
+}
+
+.vz-ww-vs-vbox {
+  background: var(--bg-card);
+  border: 1.5px solid var(--brand);
+  color: var(--brand);
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 80px;
+  text-align: center;
+}
+
+.vz-ww-vs-vbox.start {
+  background: var(--brand-soft);
+}
+
+.vz-ww-vs-vbox.root {
+  background: var(--brand-cta-grad);
+  color: #fff;
+  border: none;
+  box-shadow: 0 4px 12px rgba(108, 142, 245, 0.28);
+}
+
+.vz-ww-vs-arrow {
+  color: var(--brand);
+  font-size: 14px;
+  line-height: 1;
+}
+
+/* 横バージョン (Whyツリー) */
+.vz-ww-vs-horizontal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 4px;
+}
+
+.vz-ww-vs-hroot {
+  background: var(--brand-grad-pop);
+  color: #fff;
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+}
+
+.vz-ww-vs-hlines {
+  width: 100%;
+  height: 16px;
+  color: var(--brand-pop);
+}
+
+.vz-ww-vs-hbranches {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  width: 100%;
+}
+
+.vz-ww-vs-hleaf {
+  background: var(--bg-card);
+  border: 1.5px solid var(--brand-pop);
+  color: var(--brand-pop);
+  border-radius: 6px;
+  padding: 3px 4px;
+  font-size: 10px;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* ============================================================
+ * WhyWhyToyota — 6 段の Q&A
+ * ============================================================ */
+.vz-ww-toyota {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vz-ww-toyota-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 8px;
+  align-items: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.vz-ww-toyota-row.root {
+  background: var(--brand-cta-grad);
+  border: none;
+  box-shadow: var(--brand-cta-shadow);
+}
+
+.vz-ww-toyota-q {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.vz-ww-toyota-row.root .vz-ww-toyota-q {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.vz-ww-toyota-arrow {
+  color: var(--brand);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.vz-ww-toyota-row.root .vz-ww-toyota-arrow {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.vz-ww-toyota-a {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: right;
+}
+
+.vz-ww-toyota-row.root .vz-ww-toyota-a {
+  color: #fff;
+  font-weight: 700;
+}
+
+/* ============================================================
+ * WhyWhyStopRule — 浅すぎ / 適切 / 深すぎ の 3 ゾーン
+ * ============================================================ */
+.vz-ww-stop {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.vz-ww-stop-zone {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  align-items: center;
+}
+
+.vz-ww-stop-zone.bad  { border-color: color-mix(in srgb, var(--danger) 30%, transparent); background: color-mix(in srgb, var(--danger) 4%, transparent); }
+.vz-ww-stop-zone.ok   { border-color: color-mix(in srgb, var(--success) 30%, transparent); background: var(--success-soft); }
+.vz-ww-stop-zone.deep { border-color: color-mix(in srgb, var(--warning) 30%, transparent); background: var(--warning-soft); }
+
+.vz-ww-stop-tag {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  min-width: 60px;
+}
+
+.vz-ww-stop-zone.bad  .vz-ww-stop-tag { color: var(--danger); }
+.vz-ww-stop-zone.ok   .vz-ww-stop-tag { color: var(--success); }
+.vz-ww-stop-zone.deep .vz-ww-stop-tag { color: var(--warning); }
+
+.vz-ww-stop-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.vz-ww-stop-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.vz-ww-stop-ex {
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-style: normal;
+}
+
+.vz-ww-stop-result {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin-top: 2px;
+}
+
+.vz-ww-stop-zone.bad  .vz-ww-stop-result { color: var(--danger); }
+.vz-ww-stop-zone.ok   .vz-ww-stop-result { color: var(--success); }
+.vz-ww-stop-zone.deep .vz-ww-stop-result { color: var(--warning); }
+
+/* ============================================================
+ * WhyWhyPitfalls — 3 つの落とし穴
+ * ============================================================ */
+.vz-ww-pitfalls {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.vz-ww-pitfall {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vz-ww-pitfall-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.vz-ww-pitfall-icon {
+  color: var(--brand);
+}
+
+.vz-ww-pitfall-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.vz-ww-pitfall-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.vz-ww-pitfall-row.bad  { color: var(--danger); }
+.vz-ww-pitfall-row.good { color: var(--success); }
+
+.vz-ww-pitfall-tag {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.vz-ww-pitfall-row.bad  .vz-ww-pitfall-tag { background: color-mix(in srgb, var(--danger) 12%, transparent); color: var(--danger); }
+.vz-ww-pitfall-row.good .vz-ww-pitfall-tag { background: var(--success-soft); color: var(--success); }
+
+/* ============================================================
+ * WhyWhyParallel — 並行ループ（1 ルート → 4 枝）
+ * ============================================================ */
+.vz-ww-parallel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.vz-ww-parallel-root {
+  background: var(--brand-cta-grad);
+  color: #fff;
+  font-weight: 700;
+  font-size: 12px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(108, 142, 245, 0.28);
+  text-align: center;
+}
+
+.vz-ww-parallel-lines {
+  width: 100%;
+  height: 24px;
+}
+
+.vz-ww-parallel-svg {
+  width: 100%;
+  height: 24px;
+  display: block;
+}
+
+.vz-ww-parallel-branches {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  width: 100%;
+}
+
+.vz-ww-parallel-branch {
+  background: var(--bg-card);
+  border: 1.5px solid var(--brand);
+  border-radius: 8px;
+  padding: 6px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+/* D-2: 4 ブランチは brand 単色で統一（並列・等価を表現）。
+ * 個別性は番号バッジ (1, 2, 3, 4) で出す。
+ * 旧 tone-a/b/c/d クラスはレガシー互換のため定義は残すが全部 brand に揃える。 */
+.vz-ww-parallel-branch.tone-a,
+.vz-ww-parallel-branch.tone-b,
+.vz-ww-parallel-branch.tone-c,
+.vz-ww-parallel-branch.tone-d { border-color: var(--brand); }
+
+.vz-ww-parallel-branch-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.3;
+}
+
+.vz-ww-parallel-branch.tone-a .vz-ww-parallel-branch-label,
+.vz-ww-parallel-branch.tone-b .vz-ww-parallel-branch-label,
+.vz-ww-parallel-branch.tone-c .vz-ww-parallel-branch-label,
+.vz-ww-parallel-branch.tone-d .vz-ww-parallel-branch-label { color: var(--brand); }
+
+.vz-ww-parallel-branch-sub {
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+.vz-ww-parallel-branch-deeper {
+  background: var(--bg-secondary);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* ============================================================
+ * WhyWhyEvidence — 5 層 ↔ 検証手段
+ * ============================================================ */
+.vz-ww-evidence {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vz-ww-evidence-row {
+  display: grid;
+  grid-template-columns: minmax(80px, 1fr) auto minmax(120px, 1.4fr);
+  gap: 8px;
+  align-items: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+
+.vz-ww-evidence-layer {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1.5px solid var(--brand);
+  color: var(--brand);
+  background: var(--bg-card);
+  text-align: center;
+}
+
+/* D-1: 5 層を brand 系 3 段グラデ (brand-light → brand → brand-hover) に統一。
+ * Why の深さは色の濃淡で表現し、warning/success/brand-pop は混ぜない。
+ * - t-1, t-2: 浅い層 (brand-light)
+ * - t-3:     中間層  (brand)
+ * - t-4, t-5: 深い層 (brand-hover) */
+.vz-ww-evidence-row.t-1 .vz-ww-evidence-layer { border-color: var(--brand-light); color: var(--brand); }
+.vz-ww-evidence-row.t-2 .vz-ww-evidence-layer { border-color: var(--brand-light); color: var(--brand); }
+.vz-ww-evidence-row.t-3 .vz-ww-evidence-layer { border-color: var(--brand);       color: var(--brand); }
+.vz-ww-evidence-row.t-4 .vz-ww-evidence-layer { border-color: var(--brand-hover); color: var(--brand-hover); }
+.vz-ww-evidence-row.t-5 .vz-ww-evidence-layer { border-color: var(--brand-hover); color: var(--brand-hover); }
+
+.vz-ww-evidence-arrow {
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.vz-ww-evidence-method {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.vz-ww-evidence-method-tag {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.vz-ww-evidence-method-text {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+}

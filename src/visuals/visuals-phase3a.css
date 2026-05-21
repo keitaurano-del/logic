@@ -1,0 +1,665 @@
+/* ============================================================
+ * Logic v3 — Concept Visuals (Phase 3-A)
+ * システムシンキング + デザインシンキング + 仮説思考系
+ *
+ * 全 visual の共通: .vz-* prefix
+ * CSS 変数は src/styles/tokens.css の本体トークンを直接参照
+ * ============================================================ */
+
+/* ===== 1. Iceberg Model ===== */
+.vz-iceberg {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+}
+
+.vz-iceberg-water-line {
+  position: relative;
+  height: 18px;
+  margin: 2px 0 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--brand);
+  text-transform: uppercase;
+}
+
+.vz-iceberg-water-line::before,
+.vz-iceberg-water-line::after {
+  content: '';
+  flex: 1;
+  height: 2px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--brand) 0,
+    var(--brand) 6px,
+    transparent 6px,
+    transparent 12px
+  );
+  opacity: 0.55;
+}
+
+.vz-iceberg-water-line span {
+  padding: 0 8px;
+}
+
+.vz-iceberg-layer {
+  position: relative;
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.vz-iceberg-layer .label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.vz-iceberg-layer .title {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.vz-iceberg-layer .body {
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.45;
+  opacity: 0.85;
+}
+
+.vz-iceberg-layer.top {
+  width: 55%;
+  background: var(--brand-cta-grad);
+  color: #fff;
+  box-shadow: var(--brand-cta-shadow);
+}
+
+.vz-iceberg-layer.upper-mid {
+  width: 72%;
+  background: var(--bg-card);
+  border: 1.5px solid var(--brand);
+  color: var(--text-primary);
+}
+
+.vz-iceberg-layer.lower-mid {
+  width: 88%;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+}
+
+.vz-iceberg-layer.bottom {
+  width: 100%;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+
+/* ===== 2. System Archetype ===== */
+.vz-archetype {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.vz-archetype-tabs {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  padding: 4px;
+  background: var(--bg-secondary);
+  border-radius: 10px;
+}
+
+.vz-archetype-tab {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 8px 10px;
+  border-radius: 7px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  transition: all 0.15s;
+}
+
+.vz-archetype-tab.active {
+  background: var(--bg-card);
+  color: var(--brand);
+  box-shadow: var(--shadow-card);
+}
+
+.vz-archetype-summary {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  padding: 0 2px;
+}
+
+.vz-archetype-loop {
+  position: relative;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vz-archetype-node {
+  background: var(--bg-card);
+  border: 1.5px solid var(--brand);
+  color: var(--text-primary);
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.35;
+}
+
+.vz-archetype-node.problem {
+  border-color: var(--rose);
+  color: var(--rose);
+}
+
+.vz-archetype-node.fix {
+  background: var(--brand-cta-grad);
+  border: none;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(108, 142, 245, 0.28);
+}
+
+.vz-archetype-node.side {
+  border-color: var(--warning);
+  color: var(--warning);
+  background: var(--warning-soft);
+}
+
+.vz-archetype-arrow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--brand);
+}
+
+.vz-archetype-arrow .sign {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  background: var(--brand-soft);
+  color: var(--brand);
+}
+
+.vz-archetype-arrow .sign.minus {
+  background: var(--rose-soft);
+  color: var(--rose);
+}
+
+/* ===== 3. Causal Loop Diagram ===== */
+/* F: aspect-ratio を 1.1 → 1.4 で横長化し、矢印 svg と node ラベルの可読性を確保。 */
+.vz-cld {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1.4 / 1;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.vz-cld svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.vz-cld-node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  background: var(--bg-card);
+  border: 1.5px solid var(--brand);
+  color: var(--text-primary);
+  border-radius: 10px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.3;
+  max-width: 38%;
+  box-shadow: var(--shadow-card);
+}
+
+.vz-cld-sign {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--bg-card);
+  border: 1.5px solid var(--brand);
+  color: var(--brand);
+  box-shadow: var(--shadow-card);
+}
+
+.vz-cld-sign.minus {
+  border-color: var(--rose);
+  color: var(--rose);
+}
+
+.vz-cld-loop-label {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  background: var(--brand-cta-grad);
+  color: #fff;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+/* ===== 4. Empathy Map ===== */
+.vz-empathy {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 6px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 6px;
+  aspect-ratio: 1 / 1.05;
+}
+
+.vz-empathy-cell {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.vz-empathy-cell .label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--brand);
+  text-transform: uppercase;
+}
+
+.vz-empathy-cell .title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.vz-empathy-cell .body {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.vz-empathy-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  background: var(--brand-cta-grad);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  box-shadow: 0 6px 18px rgba(108, 142, 245, 0.40);
+  z-index: 2;
+  text-align: center;
+  line-height: 1.15;
+  padding: 4px;
+}
+
+/* ===== 5. JTBD Triad ===== */
+.vz-jtbd {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1.1 / 1;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+/* G: mix-blend-mode: multiply を除去（ダーク破綻リスク + 中央バッジ色相関の崩れ対策）。
+ * 重なりは rgba 0.18 ベースの半透明 background で表現し、token 経由の色のみ使用。 */
+.vz-jtbd-circle {
+  position: absolute;
+  width: 58%;
+  aspect-ratio: 1 / 1;
+  border-radius: 999px;
+  border: 2px solid;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 14px;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.vz-jtbd-circle.situation {
+  top: 2%;
+  left: 2%;
+  background: color-mix(in srgb, var(--brand) 18%, transparent);
+  border-color: var(--brand);
+  color: var(--brand-hover);
+}
+
+.vz-jtbd-circle.motivation {
+  top: 2%;
+  right: 2%;
+  background: color-mix(in srgb, var(--rose) 18%, transparent);
+  border-color: var(--rose);
+  color: var(--rose);
+}
+
+.vz-jtbd-circle.job {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background: color-mix(in srgb, var(--success) 18%, transparent);
+  border-color: var(--success);
+  color: var(--success-deep);
+}
+
+.vz-jtbd-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--brand-cta-grad);
+  color: #fff;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  box-shadow: 0 4px 14px rgba(108, 142, 245, 0.40);
+  z-index: 2;
+  white-space: nowrap;
+}
+
+/* ===== 6. Design Thinking Cycle ===== */
+.vz-dt-cycle {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.vz-dt-cycle svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.vz-dt-step {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 72px;
+}
+
+.vz-dt-step-badge {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: var(--brand-cta-grad);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: 'Inter Tight', Inter, sans-serif;
+  box-shadow: 0 4px 14px rgba(108, 142, 245, 0.32);
+  border: 3px solid var(--bg-card);
+}
+
+.vz-dt-step-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-align: center;
+  line-height: 1.2;
+}
+
+.vz-dt-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  background: var(--bg-card);
+  border: 1.5px solid var(--brand);
+  border-radius: 999px;
+  padding: 10px 14px;
+  box-shadow: var(--shadow-card);
+}
+
+.vz-dt-center .label {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.vz-dt-center .title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--brand);
+}
+
+/* ===== 7. Hypothesis Flow (Bottom-up vs Hypothesis-driven) ===== */
+.vz-hypo-flow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.vz-hypo-col {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vz-hypo-col .col-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.vz-hypo-col .col-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-align: center;
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.vz-hypo-col.recommended {
+  background: var(--brand-soft);
+  border-color: var(--brand);
+}
+
+.vz-hypo-col.recommended .col-title {
+  color: var(--brand);
+}
+
+.vz-hypo-node {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: center;
+  line-height: 1.3;
+}
+
+.vz-hypo-node.start {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+/* E: 共通の .vz-step-stack-final と統合 — gradient/box-shadow は visuals.css 側で一括定義。
+ * ここでは HypothesisFlow 固有の font-weight 強調のみ残す。 */
+.vz-hypo-node.end {
+  font-weight: 700;
+}
+
+.vz-hypo-arrow {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--brand);
+  line-height: 1;
+}
+
+.vz-hypo-arrow.up {
+  color: var(--text-muted);
+}
+
+/* ===== 8. MVP Test Design (4 steps) ===== */
+.vz-mvp {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vz-mvp-step {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.vz-mvp-step-num {
+  background: var(--brand-cta-grad);
+  color: #fff;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: 'Inter Tight', Inter, sans-serif;
+  box-shadow: 0 3px 8px rgba(108, 142, 245, 0.25);
+}
+
+.vz-mvp-step-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--brand);
+  border-radius: 10px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.vz-mvp-step-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--brand);
+  text-transform: uppercase;
+}
+
+.vz-mvp-step-title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.vz-mvp-step-body {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.vz-mvp-arrow {
+  grid-column: 2 / 3;
+  margin-left: -2px;
+  padding: 0 4px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--brand);
+  line-height: 1;
+}

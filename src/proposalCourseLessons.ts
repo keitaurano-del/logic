@@ -82,6 +82,7 @@ const proposalHypothesis: LessonData = {
       type: 'explain',
       title: '課題・原因・打ち手の切り分け',
       content: '混同しがちな3つを整理する。\n\n**課題**：解決すべき問題（例：売上30%減）\n**原因**：課題が起きている理由（例：リピーター離脱）\n**打ち手**：原因を解消する施策（例：ロイヤルティプログラム導入）\n\n課題→原因→打ち手の順で考えないと、的外れな施策になりやすい。',
+      visual: 'ThreePillarsDiagram',
     },
     {
       type: 'quiz',
@@ -153,6 +154,7 @@ const proposalVerification: LessonData = {
       type: 'explain',
       title: '仮説は「変えていい」ものだ',
       content: '多くの人が「仮説を変えると負け」と思っているが、逆だ。\n\n調査の結果を踏まえて仮説を修正・更新することが**仮説思考の本質**。\n\n仮説の更新パターン：\n仮説支持 → そのまま深掘り\n一部修正 → 修正した仮説で再検証\n仮説棄却 → 別の仮説に切り替え',
+      visual: 'ThreePillarsDiagram',
     },
     {
       type: 'quiz',
@@ -199,6 +201,7 @@ const proposalStructure: LessonData = {
       type: 'explain',
       title: '課題をツリー構造で整理する',
       content: '複数の課題が絡み合うとき、ロジックツリーで整理する。\n\n**課題ツリー例：**\n売上低下\n├── 新規顧客の減少\n│   ├── 認知度の低下\n│   └── 競合への流出\n└── リピーターの減少\n    ├── 品質への不満\n    └── 価格競争力の低下\n\nツリーで整理すると、「どこを解決すれば最も効果的か」が見える。',
+      visual: 'LogicTreeDiagram',
     },
     {
       type: 'quiz',
@@ -231,6 +234,7 @@ const proposalStructure: LessonData = {
       type: 'explain',
       title: '打ち手の実現可能性と効果を評価する',
       content: '複数の打ち手が出たら、2軸で評価する。\n\n**効果（インパクト）**: 課題解決にどれくらい寄与するか\n**実現可能性**: コスト・時間・リソースの観点で実行できるか\n\n4象限で分類すると優先度がクリアになる：\n- 効果高×実現容易 → 即実行（Quick Win）\n- 効果高×実現困難 → 中長期で取り組む\n- 効果低×実現容易 → 余裕があれば\n- 効果低×実現困難 → 見送り',
+      visual: 'Two2MatrixDiagram',
     },
   ],
 }
@@ -245,6 +249,7 @@ const proposalOutline: LessonData = {
       type: 'explain',
       title: 'ストーリーラインを設計する',
       content: '提案書は「論理の流れ（ストーリーライン）」が命。\n\n基本構造：\n1. 現状と課題（As-Is）\n2. 課題の原因（Why）\n3. あるべき姿（To-Be）\n4. 打ち手の提案（How）\n5. 期待される効果（So What）\n\nこの流れで読み手を「理解 → 納得 → 行動」へ導く。',
+      visual: 'WhereWhyHowDiagram',
     },
     {
       type: 'quiz',

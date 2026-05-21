@@ -99,7 +99,7 @@
 }
 
 .vz-mece-mini-tree .root {
-  background: linear-gradient(135deg, #6C8EF5 0%, #2E45A8 100%);
+  background: var(--brand-cta-grad);
   color: #fff;
   border-radius: 8px;
   padding: 4px 10px;
@@ -165,8 +165,8 @@
 }
 
 .vz-mece-pair .pair-b {
-  border-color: #DB2777;
-  color: #DB2777;
+  border-color: var(--rose);
+  color: var(--rose);
 }
 
 .vz-mece-3c {
@@ -188,9 +188,9 @@
   background: var(--bg-card);
 }
 
-.vz-mece-3c-circle.customer  { left: 6px;  top: 4px;  border-color: #6C8EF5; color: #2E45A8; }
-.vz-mece-3c-circle.competitor { right: 6px; top: 4px;  border-color: #DB2777; color: #DB2777; }
-.vz-mece-3c-circle.company   { left: 50%; bottom: 0; transform: translateX(-50%); border-color: #059669; color: #059669; }
+.vz-mece-3c-circle.customer  { left: 6px;  top: 4px;  border-color: var(--brand); color: var(--brand-hover); }
+.vz-mece-3c-circle.competitor { right: 6px; top: 4px;  border-color: var(--rose); color: var(--rose); }
+.vz-mece-3c-circle.company   { left: 50%; bottom: 0; transform: translateX(-50%); border-color: var(--success); color: var(--success); }
 
 /* ===== Logic Tree ===== */
 .vz-tree-root {
@@ -201,7 +201,7 @@
 }
 
 .vz-tree-node {
-  background: linear-gradient(135deg, #6C8EF5 0%, #2E45A8 100%);
+  background: var(--brand-cta-grad);
   color: #fff;
   font-weight: 700;
   font-size: 13px;
@@ -266,10 +266,10 @@
 }
 
 .vz-sowhat-block.conclusion {
-  background: linear-gradient(135deg, #6C8EF5 0%, #2E45A8 100%);
+  background: var(--brand-cta-grad);
   color: #fff;
   border: none;
-  box-shadow: 0 6px 20px rgba(108, 142, 245, 0.30);
+  box-shadow: var(--brand-cta-shadow);
 }
 
 .vz-sowhat-label {
@@ -293,8 +293,8 @@
   font-weight: 700;
 }
 
-.vz-sowhat-arrows .up   { color: #059669; }
-.vz-sowhat-arrows .down { color: #DB2777; }
+.vz-sowhat-arrows .up   { color: var(--success); }
+.vz-sowhat-arrows .down { color: var(--rose); }
 
 /* ===== Pyramid ===== */
 .vz-pyramid {
@@ -328,16 +328,16 @@
 }
 
 .vz-pyramid-cell.top {
-  background: linear-gradient(135deg, #6C8EF5 0%, #2E45A8 100%);
+  background: var(--brand-cta-grad);
   color: #fff;
   font-weight: 700;
   font-size: 13px;
-  box-shadow: 0 6px 20px rgba(108, 142, 245, 0.30);
+  box-shadow: var(--brand-cta-shadow);
 }
 
 .vz-pyramid-cell.mid {
   background: var(--bg-card);
-  border: 1.5px solid #5478E8;
+  border: 1.5px solid var(--brand-mid);
   color: var(--text-primary);
 }
 
@@ -358,7 +358,7 @@
 }
 
 .vz-pyramid-cell.top .vz-pyramid-cell-label { color: #fff; opacity: 0.85; }
-.vz-pyramid-cell.mid .vz-pyramid-cell-label { color: #5478E8; }
+.vz-pyramid-cell.mid .vz-pyramid-cell-label { color: var(--brand-mid); }
 
 /* ===== PREP / Case Study / Phase panels ===== */
 .vz-prep-row {
@@ -372,7 +372,7 @@
   width: 36px;
   height: 36px;
   border-radius: 8px;
-  background: linear-gradient(135deg, #6C8EF5 0%, #2E45A8 100%);
+  background: var(--brand-cta-grad);
   color: #fff;
   display: flex;
   align-items: center;
@@ -435,10 +435,10 @@
 }
 
 .vz-premise-card.conclusion {
-  background: linear-gradient(135deg, #6C8EF5 0%, #2E45A8 100%);
+  background: var(--brand-cta-grad);
   border: none;
   color: #fff;
-  box-shadow: 0 6px 20px rgba(108, 142, 245, 0.30);
+  box-shadow: var(--brand-cta-shadow);
 }
 
 .vz-premise-card.conclusion .label { color: rgba(255,255,255,0.85); }
@@ -475,14 +475,14 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #0D1220;
+  background: var(--text-primary);
   flex-shrink: 0;
 }
 
 .vz-induction-warn {
   font-size: 11px;
   color: var(--warning);
-  background: rgba(217, 119, 6, 0.10);
+  background: var(--warning-soft);
   padding: 6px 10px;
   border-radius: 999px;
   font-weight: 600;
@@ -518,8 +518,8 @@
   color: var(--text-primary);
 }
 
-.vz-truth-table td.T { color: #059669; font-weight: 700; }
-.vz-truth-table td.F { color: #DC2626; font-weight: 700; }
+.vz-truth-table td.T { color: var(--success); font-weight: 700; }
+.vz-truth-table td.F { color: var(--danger); font-weight: 700; }
 
 .vz-contra-flow {
   display: grid;
@@ -542,8 +542,8 @@
 }
 
 .vz-contra-block.equivalent {
-  border-color: #059669;
-  background: rgba(5, 150, 105, 0.06);
+  border-color: var(--success);
+  background: var(--success-soft);
 }
 
 .vz-contra-arrow {
@@ -562,7 +562,7 @@
 .vz-ladder-meter {
   width: 18px;
   border-radius: 999px;
-  background: linear-gradient(180deg, #6C8EF5 0%, #DDE2EE 100%);
+  background: linear-gradient(180deg, var(--brand) 0%, var(--bg-tertiary) 100%);
   position: relative;
   min-height: 240px;
 }
@@ -573,7 +573,7 @@
   width: 30px;
   height: 24px;
   margin-top: -12px;
-  background: #fff;
+  background: var(--bg-card);
   border: 2px solid var(--brand);
   border-radius: 6px;
   display: flex;
@@ -611,7 +611,7 @@
 }
 
 .vz-ladder-rung.active {
-  background: linear-gradient(135deg, #6C8EF5 0%, #2E45A8 100%);
+  background: var(--brand-cta-grad);
   color: #fff;
   border-color: transparent;
   box-shadow: 0 6px 16px rgba(108, 142, 245, 0.32);
@@ -673,7 +673,7 @@
 }
 
 .vz-ladder-btn.primary {
-  background: linear-gradient(135deg, #5478E8 0%, #6C8EF5 100%);
+  background: linear-gradient(135deg, var(--brand-mid) 0%, var(--brand) 100%);
   color: #fff;
   border: none;
   box-shadow: var(--shadow-cta);
@@ -682,6 +682,50 @@
 .vz-ladder-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+/* ===== 共通: 3 ステップ縦スタック + ↓ 矢印 + 最終ブロック結論色 =====
+ * SCR / WhereWhyHow / HypothesisFlow（右列のみ）で共通利用。
+ * 既存の `.vz-scr`, `.vz-www`, `.vz-hypo-col` 配下のステップ定義はこのベースを共有する。
+ * - .vz-step-stack          : 縦並びコンテナ
+ * - .vz-step-stack-card     : 各ステップカードのベーススタイル
+ * - .vz-step-stack-arrow    : ステップ間の ↓ 矢印
+ * - .vz-step-stack-final    : 最終ステップ（gradient + 白文字）
+ */
+.vz-step-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vz-step-stack-card,
+.vz-scr-step,
+.vz-www-step {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.vz-step-stack-arrow,
+.vz-scr-arrow {
+  align-self: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--brand);
+  line-height: 1;
+}
+
+.vz-step-stack-final,
+.vz-scr-step.resolution,
+.vz-hypo-node.end {
+  background: var(--brand-cta-grad);
+  border: none;
+  color: #fff;
+  box-shadow: var(--brand-cta-shadow);
 }
 
 /* ===== Case Study Phase panels ===== */

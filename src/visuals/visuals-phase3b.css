@@ -1,0 +1,750 @@
+/* ============================================================
+ * Logic v3 — Concept Visuals (Phase 3-B)
+ * 提案 / ラテラル / 戦略系 visuals
+ *
+ * 全 visual 共通: .vz-* prefix
+ * CSS 変数は src/styles/tokens.css の本体トークンを直接参照
+ * Phase 2 / 3-A の visuals.css に存在しない構図プリミティブのみ追加
+ * ============================================================ */
+
+/* ===== SCR Structure (Situation / Complication / Resolution) =====
+ * E: ステップカードの共通ベースは visuals.css `.vz-step-stack-*` に集約済み。
+ * ここでは SCR 固有の差分（border-color、title、body 文字色、resolution gradient）のみ定義。 */
+.vz-scr {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* SCR 固有: situation/complication は brand/rose で枠線強調（resolution は共通の final 色） */
+.vz-scr-step {
+  border-width: 1.5px;
+  border-style: solid;
+  border-color: var(--brand);
+  padding: 12px 14px;
+}
+
+.vz-scr-step.complication {
+  border-color: var(--rose);
+}
+
+.vz-scr-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--brand);
+}
+
+.vz-scr-step.complication .vz-scr-label {
+  color: var(--rose);
+}
+
+.vz-scr-step.resolution .vz-scr-label {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.vz-scr-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.vz-scr-step.resolution .vz-scr-title {
+  color: #fff;
+}
+
+.vz-scr-body {
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.vz-scr-step.resolution .vz-scr-body {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* ===== Where / Why / How 3 段フロー =====
+ * E: 共通ステップカード基盤は visuals.css に集約。WWW 固有の grid レイアウト + 左 4px ボーダーのみ定義。 */
+.vz-www {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vz-www-step {
+  /* grid 表示は WWW 固有なので flex から override */
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.vz-www-step.where  { border-left: 4px solid var(--brand); }
+.vz-www-step.why    { border-left: 4px solid var(--warning); }
+.vz-www-step.how    { border-left: 4px solid var(--success); }
+
+.vz-www-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  border-radius: 8px;
+  padding: 6px 4px;
+  text-align: center;
+}
+
+.vz-www-step.where .vz-www-icon {
+  background: var(--brand-soft);
+  color: var(--brand);
+}
+
+.vz-www-step.why .vz-www-icon {
+  background: color-mix(in srgb, var(--warning) 12%, transparent);
+  color: var(--warning);
+}
+
+.vz-www-step.how .vz-www-icon {
+  background: color-mix(in srgb, var(--success) 12%, transparent);
+  color: var(--success);
+}
+
+.vz-www-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.vz-www-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.vz-www-desc {
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.vz-www-arrow {
+  align-self: center;
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1;
+}
+
+/* ===== Claim / Reason / Assumption 氷山 ===== */
+.vz-cra {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  position: relative;
+}
+
+.vz-cra-iceberg {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+}
+
+.vz-cra-block {
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: relative;
+}
+
+.vz-cra-block.claim {
+  background: var(--brand-cta-grad);
+  color: #fff;
+  box-shadow: var(--brand-cta-shadow);
+}
+
+.vz-cra-block.reason {
+  background: var(--bg-card);
+  border: 1.5px solid var(--brand);
+  color: var(--text-primary);
+}
+
+.vz-cra-block.assumption {
+  background: var(--bg-secondary);
+  border: 1px dashed var(--text-muted);
+  color: var(--text-secondary);
+}
+
+.vz-cra-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.vz-cra-block.claim .vz-cra-label  { color: rgba(255, 255, 255, 0.85); }
+.vz-cra-block.reason .vz-cra-label { color: var(--brand); }
+.vz-cra-block.assumption .vz-cra-label { color: var(--text-muted); }
+
+.vz-cra-text {
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.vz-cra-block.assumption .vz-cra-text {
+  font-weight: 600;
+}
+
+.vz-cra-waterline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.vz-cra-waterline::before,
+.vz-cra-waterline::after {
+  content: '';
+  flex: 1;
+  border-top: 1.5px dashed var(--border);
+}
+
+/* ===== Six Hats ===== */
+.vz-six-hats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.vz-hat {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.vz-hat-icon {
+  width: 38px;
+  height: 28px;
+  border-radius: 18px 18px 6px 6px;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.08);
+}
+
+.vz-hat-icon::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: -6px;
+  right: -6px;
+  height: 6px;
+  border-radius: 4px;
+  background: inherit;
+  opacity: 0.85;
+}
+
+.vz-hat-name {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 0.02em;
+}
+
+.vz-hat-desc {
+  font-size: 10px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* hat colors — Six Thinking Hats のフレームワーク固有色（6 色）。
+ * §2.3 / §8 の例外条項「概念固有色を持つフレームワーク（Six Hats, 信号機等）」に該当。
+ * 白帽は概念上純白を保持、それ以外は status / brand 系 token に寄せて darkmode 整合性を確保。
+ * 黒帽だけは tokens に直接の対応が無いため Slate Gray の hex を残置（コメント参照）。 */
+.vz-hat-icon.white  { background: #FFFFFF; border: 1.5px solid var(--border); } /* concept-fixed: White Hat */
+.vz-hat-icon.red    { background: var(--danger); }
+.vz-hat-icon.black  { background: #1F2937; } /* concept-fixed: Black Hat (Slate Gray) */
+.vz-hat-icon.yellow { background: var(--warning-mid); }
+.vz-hat-icon.green  { background: var(--success); }
+.vz-hat-icon.blue   { background: var(--brand-hover); }
+
+/* ===== SCAMPER ===== */
+.vz-scamper {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vz-scamper-row {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: 8px;
+  align-items: stretch;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+
+.vz-scamper-letter {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 16px;
+  font-family: 'Inter Tight', Inter, sans-serif;
+  flex-shrink: 0;
+}
+
+.vz-scamper-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  min-width: 0;
+}
+
+.vz-scamper-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.vz-scamper-desc {
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+/* ===== Vertical vs Lateral ===== */
+.vz-vvl {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.vz-vvl-col {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.vz-vvl-col.vertical {
+  border: 1.5px solid var(--brand);
+}
+
+.vz-vvl-col.lateral {
+  border: 1.5px solid var(--brand-pop);
+}
+
+.vz-vvl-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 0.02em;
+}
+
+.vz-vvl-col.vertical .vz-vvl-name { color: var(--brand); }
+.vz-vvl-col.lateral .vz-vvl-name  { color: var(--brand-pop); }
+
+.vz-vvl-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin: 4px 0;
+}
+
+.vz-vvl-stack-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.vz-vvl-pill {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.vz-vvl-pill.top {
+  background: var(--brand-cta-grad);
+  color: #fff;
+  border: none;
+}
+
+.vz-vvl-pill.alt {
+  background: var(--bg-card);
+  border: 1.5px solid var(--brand-pop);
+  color: var(--brand-pop);
+}
+
+.vz-vvl-arrow {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--brand);
+  line-height: 1;
+}
+
+.vz-vvl-col.lateral .vz-vvl-arrow {
+  color: var(--brand-pop);
+}
+
+.vz-vvl-tag {
+  margin-top: auto;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ===== Triad (3 要素三角形) ===== */
+.vz-triad {
+  position: relative;
+  width: 100%;
+  max-width: 280px;
+  margin: 0 auto;
+  aspect-ratio: 1.15 / 1;
+}
+
+.vz-triad-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.vz-triad-line {
+  stroke: var(--brand);
+  stroke-width: 1.5;
+  opacity: 0.5;
+}
+
+.vz-triad-node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  background: var(--bg-card);
+  border: 1.5px solid var(--brand);
+  border-radius: 10px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 84px;
+  text-align: center;
+  box-shadow: var(--shadow-card, 0 2px 8px rgba(13, 18, 32, 0.06));
+}
+
+.vz-triad-node.primary {
+  background: var(--brand-cta-grad);
+  color: #fff;
+  border: none;
+  box-shadow: var(--brand-cta-shadow);
+}
+
+.vz-triad-node.top    { left: 50%; top: 14%; }
+.vz-triad-node.left   { left: 18%; top: 80%; }
+.vz-triad-node.right  { left: 82%; top: 80%; }
+
+.vz-triad-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.vz-triad-node.primary .vz-triad-label {
+  color: rgba(255, 255, 255, 0.85);
+  opacity: 1;
+}
+
+.vz-triad-node:not(.primary) .vz-triad-label {
+  color: var(--brand);
+}
+
+.vz-triad-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: inherit;
+  line-height: 1.25;
+}
+
+/* ===== Five Forces ===== */
+.vz-5f {
+  position: relative;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: auto auto auto;
+  gap: 8px;
+  align-items: center;
+  justify-items: center;
+}
+
+.vz-5f-cell {
+  background: var(--bg-card);
+  border: 1.5px solid var(--brand);
+  border-radius: 10px;
+  padding: 8px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-align: center;
+  width: 100%;
+  min-height: 56px;
+  justify-content: center;
+}
+
+.vz-5f-cell.center {
+  background: var(--brand-cta-grad);
+  color: #fff;
+  border: none;
+  box-shadow: var(--brand-cta-shadow);
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.vz-5f-cell.top    { grid-column: 2; grid-row: 1; }
+.vz-5f-cell.bottom { grid-column: 2; grid-row: 3; }
+.vz-5f-cell.left   { grid-column: 1; grid-row: 2; }
+.vz-5f-cell.right  { grid-column: 3; grid-row: 2; }
+
+.vz-5f-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--brand);
+  opacity: 0.9;
+}
+
+.vz-5f-cell.center .vz-5f-label {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.vz-5f-name {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.vz-5f-cell.center .vz-5f-name {
+  color: #fff;
+  font-size: 12px;
+}
+
+/* ===== VRIO ===== */
+.vz-vrio {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vz-vrio-row {
+  display: grid;
+  grid-template-columns: 40px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.vz-vrio-letter {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 18px;
+  font-family: 'Inter Tight', Inter, sans-serif;
+}
+
+.vz-vrio-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.vz-vrio-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.vz-vrio-q {
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.vz-vrio-check {
+  font-size: 12px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+}
+
+.vz-vrio-check.yes {
+  background: color-mix(in srgb, var(--success) 12%, transparent);
+  color: var(--success-deep);
+}
+
+.vz-vrio-check.no {
+  background: color-mix(in srgb, var(--danger) 10%, transparent);
+  color: var(--danger-deep);
+}
+
+.vz-vrio-verdict {
+  margin-top: 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-align: center;
+  background: var(--brand-cta-grad);
+  color: #fff;
+  box-shadow: var(--brand-cta-shadow);
+}
+
+/* ===== Leverage Points ピラミッド ===== */
+.vz-leverage {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+}
+
+.vz-leverage-tier {
+  border-radius: 10px;
+  padding: 10px 12px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.vz-leverage-tier.t1 {
+  width: 100%;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+
+.vz-leverage-tier.t2 {
+  width: 82%;
+  background: var(--bg-card);
+  border: 1.5px solid var(--brand);
+  color: var(--text-primary);
+}
+
+.vz-leverage-tier.t3 {
+  width: 64%;
+  background: var(--brand-soft);
+  border: 1.5px solid var(--brand);
+  color: var(--brand);
+}
+
+.vz-leverage-tier.t4 {
+  width: 46%;
+  background: var(--brand-cta-grad);
+  color: #fff;
+  box-shadow: var(--brand-cta-shadow);
+}
+
+.vz-leverage-tier-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.vz-leverage-tier.t4 .vz-leverage-tier-label {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.vz-leverage-tier.t3 .vz-leverage-tier-label {
+  color: var(--brand);
+  opacity: 1;
+}
+
+.vz-leverage-tier-name {
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.vz-leverage-tier-desc {
+  font-size: 10.5px;
+  font-weight: 500;
+  opacity: 0.85;
+  line-height: 1.4;
+}
+
+.vz-leverage-scale {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+/* ===== 共通: hint / warn box (Phase 3-B 専用は visuals.css に既存のものを使うが、
+ *           color トーンのバリエーションが欲しいので追加分のみ定義) =====
+ * → 既存 visuals.css の hint パターンをそのまま inline で使うため追加なし
+ */

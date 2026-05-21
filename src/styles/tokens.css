@@ -69,14 +69,31 @@
   --success:       #059669;
   --success-mid:   #10B981;
   --success-soft:  rgba(5, 150, 105, 0.10);
+  --success-deep:  #065F46;  /* deeper green for body text on success-soft bg (WCAG AA) */
   --success-grad:  linear-gradient(135deg, #059669 0%, #10B981 100%);
   --warning:       #D97706;
   --warning-mid:   #F59E0B;
   --warning-soft:  rgba(217, 119, 6, 0.10);
+  --warning-deep:  #92400E;  /* deeper amber for body text on warning-soft bg */
+  --warning-dark:  var(--warning-deep);  /* alias */
   --warning-grad:  linear-gradient(135deg, #D97706 0%, #F59E0B 100%);
   --danger:        #DC2626;
+  --danger-deep:   #B91C1C;  /* deeper red for body text on danger backgrounds */
   --streak:        #F59E0B;
   --streak-grad:   linear-gradient(135deg, #F97316 0%, #F59E0B 100%);
+
+  /* Visual concept-diagram tokens (rose for opposition/refutation) */
+  --rose:          #DB2777;
+  --rose-soft:     rgba(219, 39, 119, 0.10);
+  --rose-deep:     #9D174D;
+
+  /* CTA-strength brand gradient used by visual concept blocks (conclusion, gradient cards).
+   * 注: 既存 --brand-grad は #6C8EF5 → #9BB3FA（light end）で App.css 等の hero/CTA 14 箇所で
+   * 使われており値を変えると既存 UI が破綻するため、より濃い navy で締めるグラデは
+   * --brand-cta-grad として別名で導入する。 */
+  --brand-cta-grad:     linear-gradient(135deg, #6C8EF5 0%, #2E45A8 100%);
+  --brand-cta-shadow:   0 6px 20px rgba(108, 142, 245, 0.30);
+  --brand-grad-pop:     linear-gradient(135deg, #7C3AED 0%, #4C1D95 100%);
 
   /* Categories — distinct colors per category (more vibrant) */
   --cat-boki3:      var(--md-sys-color-primary);
