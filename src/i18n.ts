@@ -495,6 +495,7 @@ const STRINGS: Record<Locale, Strings> = {
     'category.careerTamatebako': '玉手箱対策',
     'category.careerInterview': '面接対策',
     'category.careerSalary': '給与交渉・退職実務',
+    'category.cognitive': '認知科学',
 
     // Lesson UI
     'lesson.completedH1': 'レッスン完了！',
@@ -747,6 +748,7 @@ const STRINGS: Record<Locale, Strings> = {
     'home.category.fermi': 'フェルミ推定',
     'home.category.logic': 'ロジカルシンキング',
     'home.category.case': 'ケース面接',
+    'home.category.cognitive': '認知科学',
     'roadmap.title': '学習パス',
     'roadmap.subtitle': '順番に進めると体系的に身につきます',
     'roadmap.heading': 'トレーニング',
@@ -2153,6 +2155,7 @@ const STRINGS: Record<Locale, Strings> = {
     'category.careerTamatebako': 'Tamatebako Web Test',
     'category.careerInterview': 'Interview Preparation',
     'category.careerSalary': 'Salary & Exit',
+    'category.cognitive': 'Cognitive Science',
 
     // Lesson UI
     'lesson.completedH1': 'Lesson complete!',
@@ -2405,6 +2408,7 @@ const STRINGS: Record<Locale, Strings> = {
     'home.category.fermi': 'Fermi Estimation',
     'home.category.logic': 'Logical Thinking',
     'home.category.case': 'Case Interview',
+    'home.category.cognitive': 'Cognitive Science',
     'roadmap.title': 'Learning Path',
     'roadmap.subtitle': 'Follow the path to build skills step by step',
     'roadmap.heading': 'Training',

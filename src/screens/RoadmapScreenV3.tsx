@@ -767,6 +767,7 @@ const CATEGORY_ID_TO_NAMES: Record<string, string[]> = {
   'クライアントワーク': ['クライアントワーク'],
   'フェルミ推定': ['フェルミ推定'],
   '経営戦略': ['経営戦略', 'strategy'],
+  cognitive: ['認知科学', 'Cognitive Science'],
 }
 
 // カテゴリID（ルートキー）→ 表示用ラベルを翻訳キー経由で解決
@@ -793,6 +794,7 @@ const CATEGORY_LABEL_KEY: Record<string, string> = {
   '玉手箱対策': 'category.careerTamatebako',
   '面接対策': 'category.careerInterview',
   '給与交渉・退職実務': 'category.careerSalary',
+  cognitive: 'category.cognitive',
 }
 
 // カテゴリID → courseData が保持する日本語データ値（検索キー用）
@@ -814,6 +816,7 @@ const CATEGORY_DATA_LABEL: Record<string, string> = {
   'クライアントワーク': 'クライアントワーク',
   'フェルミ推定': 'フェルミ推定',
   '経営戦略': '経営戦略',
+  cognitive: '認知科学',
 }
 
 function categoryLabel(category: string): string {

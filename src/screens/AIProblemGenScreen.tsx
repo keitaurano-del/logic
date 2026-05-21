@@ -37,6 +37,7 @@ const CATEGORY_LABEL_KEY: Record<string, string> = {
   'クライアントワーク': 'category.clientWork',
   'フェルミ推定': 'category.fermi',
   '経営戦略': 'category.strategy',
+  '認知科学': 'category.cognitive',
 }
 function categoryLabel(cat: string): string {
   const key = CATEGORY_LABEL_KEY[cat]

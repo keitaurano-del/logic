@@ -24,6 +24,7 @@ const CATEGORY_LABEL_KEY: Record<string, string> = {
   '玉手箱対策': 'category.careerTamatebako',
   '面接対策': 'category.careerInterview',
   '給与交渉・退職実務': 'category.careerSalary',
+  '認知科学': 'category.cognitive',
   'AI練習': 'completed.cat.aiPractice',
   'デイリー': 'completed.cat.daily',
   '復習': 'completed.cat.review',

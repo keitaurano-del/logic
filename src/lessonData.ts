@@ -104,6 +104,8 @@ import { careerSpiLessonMap } from './careerSpiLessons'
 import { careerTamatebakoLessonMap } from './careerTamatebakoLessons'
 import { careerInterviewLessonMap } from './careerInterviewLessons'
 import { careerSalaryLessonMap } from './careerSalaryLessons'
+import { cognitiveLessonMap } from './cognitiveLessons'
+import { cognitiveLessonMapEn } from './cognitiveLessonsEn'
 
 // 全レッスンマップを locale で切り替える。en 版が存在するカテゴリは
 // 英訳済みマップを、それ以外は ja 版にフォールバック (transitional)。
@@ -146,6 +148,8 @@ function _getMergedLessons(): Record<number, LessonData> {
     ..._pickByLocale(careerTamatebakoLessonMap, careerTamatebakoLessonMap),
     ..._pickByLocale(careerInterviewLessonMap, careerInterviewLessonMap),
     ..._pickByLocale(careerSalaryLessonMap, careerSalaryLessonMap),
+    // 認知科学コース群
+    ..._pickByLocale(cognitiveLessonMap, cognitiveLessonMapEn),
   }
   _cachedLocale = locale
   return _cachedMerged

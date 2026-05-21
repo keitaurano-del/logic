@@ -421,6 +421,28 @@ const COURSES_JA: Course[] = [
     description: '市場価値の測り方・オファー面談・給与交渉・退職手続きまで、内定後から入社までの実務を抜け漏れなく押さえる。',
     image: '/images/v3/course-career-salary-01.png',
   },
+
+  // ── 認知科学 ────────────────────────────────────────
+  {
+    id: 'cognitive-01',
+    title: 'ワーキングメモリを使いこなす',
+    category: '認知科学',
+    group: 'foundations',
+    lessonIds: [700, 701, 702, 703, 704],
+    level: '中級',
+    description: '脳の作業机に乗る情報量の限界を知り、チャンキング・認知負荷・外部記憶・マルチタスクを科学的に整理する。',
+    image: '/images/v3/course-cognitive-01.png',
+  },
+  {
+    id: 'cognitive-02',
+    title: '認知バイアスを実務で乗りこなす',
+    category: '認知科学',
+    group: 'foundations',
+    lessonIds: [710, 711, 712, 713, 714],
+    level: '中級',
+    description: '利用可能性・ハロー・後知恵・ダニング/クルーガー・結果バイアスの 5 大バイアスを使いこなして判断の精度を上げる。',
+    image: '/images/v3/course-cognitive-02.png',
+  },
 ]
 
 // 英訳: id / category / group / lessonIds / level / image は ja と完全に同じ。
@@ -553,6 +575,14 @@ const COURSE_EN_OVERRIDES: Record<string, { title: string; description: string }
   'career-salary-01': {
     title: 'Negotiate Salary and Exit Gracefully',
     description: 'Market value, offer meetings, salary negotiation, and resignation — cover the practical work from offer to start date.',
+  },
+  'cognitive-01': {
+    title: 'Master Your Working Memory',
+    description: 'Learn the brain\'s working desk limits and apply chunking, cognitive load, external memory, and the multitasking myth scientifically.',
+  },
+  'cognitive-02': {
+    title: 'Wield Cognitive Biases at Work',
+    description: 'Use the five workplace biases — availability, halo, hindsight, Dunning-Kruger, and outcome — to sharpen your decision quality.',
   },
 }
 
