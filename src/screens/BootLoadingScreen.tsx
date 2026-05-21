@@ -31,17 +31,35 @@ export function BootLoadingScreen() {
         }}
       />
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
-        <div
+        <svg
           aria-hidden="true"
-          style={{
-            width: 28,
-            height: 28,
-            border: '3px solid rgba(255,255,255,0.18)',
-            borderTopColor: 'rgba(255,255,255,0.85)',
-            borderRadius: '50%',
-            animation: 'logicBootSpin 0.9s linear infinite',
-          }}
-        />
+          width="32"
+          height="32"
+          viewBox="0 0 32 32"
+          style={{ animation: 'logicBootSpin 1.2s linear infinite' }}
+        >
+          {/* Full thin track so the shape always reads as a circle */}
+          <circle
+            cx="16"
+            cy="16"
+            r="13"
+            fill="none"
+            stroke="rgba(255,255,255,0.22)"
+            strokeWidth="3"
+          />
+          {/* Highlighted arc that rotates around the circle */}
+          <circle
+            cx="16"
+            cy="16"
+            r="13"
+            fill="none"
+            stroke="rgba(255,255,255,0.92)"
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeDasharray="22 60"
+            transform="rotate(-90 16 16)"
+          />
+        </svg>
         <p
           style={{
             margin: 0,
