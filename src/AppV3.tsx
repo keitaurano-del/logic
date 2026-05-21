@@ -55,6 +55,7 @@ import { hideSplash } from './platform'
 import { SnackbarProvider } from './components/Snackbar'
 import { syncOnLogin, syncOnLogout } from './syncService'
 import { canUseJournal, getJournalTrialDaysLeft, isPaid } from './subscription'
+import { initBilling } from './billing'
 import { Header } from './components/platform/Header'
 import { BookOpenIcon, CheckCircleIcon } from './icons'
 import { TutorialOverlay, TutorialFAB } from './components/TutorialOverlay'
@@ -174,6 +175,8 @@ function AppV3() {
     checkAndInitInstall()
     // 2026-05-19 ロールプレイがキャラ軸に移行したため旧シチュエーション ID の保存項目をクリーンアップ
     cleanupLegacyRoleplaySaves()
+    // Play Billing 初期化（Android native のみ、Web では no-op）
+    void initBilling()
   }, [])
 
   // screenRef を常に最新の screen と同期させる（コンカレントレンダリング対策）

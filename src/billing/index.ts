@@ -73,8 +73,15 @@ const plugin = registerPlugin<InAppBillingPlugin>('InAppBillingPlugin', {
 /**
  * Initialize the billing client.
  * Must be called once during app startup.
+ * No-op on non-Android-native (Web / iOS) — silently returns.
  */
 export async function initBilling(): Promise<void> {
+  if (!isAndroidNative()) {
+    if (import.meta.env.DEV) {
+      console.debug('[billing] initBilling() stub — not Android native')
+    }
+    return
+  }
   try {
     const result = await plugin.initialize()
     if (result.success) {
