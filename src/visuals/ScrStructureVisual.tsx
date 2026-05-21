@@ -1,9 +1,13 @@
 import './visuals-phase3b.css'
+import { StepStack } from './StepStack'
 
 /**
  * SCR Structure — Situation / Complication / Resolution
  * 提案ストーリーの 3 段構造
  * lesson-74 step.0 等で利用
+ *
+ * 構造は <StepStack> 共通コンポーネントを使って組む。SCR 固有の差分（label/title/body
+ * の文字スタイル、各 step の border-color、resolution の gradient 背景）は visuals.css / visuals-phase3b.css 側。
  */
 
 export type ScrStep = {
@@ -38,6 +42,16 @@ const defaultResolution: ScrStep = {
   body: '相手の疑問に対する明確な解。次のアクションへつなぐ。',
 }
 
+function ScrCard({ variant, prefix, step }: { variant: 'situation' | 'complication' | 'resolution'; prefix: string; step: ScrStep }) {
+  return (
+    <div className={`vz-scr-step ${variant}`}>
+      <span className="vz-scr-label">{prefix} — {step.label}</span>
+      <span className="vz-scr-title">{step.title}</span>
+      <span className="vz-scr-body">{step.body}</span>
+    </div>
+  )
+}
+
 export function ScrStructureVisual({
   sectionLabel = 'SCR ストーリー構造',
   situation = defaultSituation,
@@ -51,25 +65,15 @@ export function ScrStructureVisual({
         {sectionLabel}
       </div>
 
-      <div className="vz-scr">
-        <div className="vz-scr-step situation">
-          <span className="vz-scr-label">S — {situation.label}</span>
-          <span className="vz-scr-title">{situation.title}</span>
-          <span className="vz-scr-body">{situation.body}</span>
-        </div>
-        <span className="vz-scr-arrow">↓</span>
-        <div className="vz-scr-step complication">
-          <span className="vz-scr-label">C — {complication.label}</span>
-          <span className="vz-scr-title">{complication.title}</span>
-          <span className="vz-scr-body">{complication.body}</span>
-        </div>
-        <span className="vz-scr-arrow">↓</span>
-        <div className="vz-scr-step resolution">
-          <span className="vz-scr-label">R — {resolution.label}</span>
-          <span className="vz-scr-title">{resolution.title}</span>
-          <span className="vz-scr-body">{resolution.body}</span>
-        </div>
-      </div>
+      <StepStack
+        containerClassName="vz-scr"
+        arrowClassName="vz-scr-arrow"
+        items={[
+          <ScrCard key="s" variant="situation" prefix="S" step={situation} />,
+          <ScrCard key="c" variant="complication" prefix="C" step={complication} />,
+        ]}
+        final={<ScrCard variant="resolution" prefix="R" step={resolution} />}
+      />
 
       <div
         style={{

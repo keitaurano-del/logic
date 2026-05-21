@@ -66,7 +66,7 @@ export function VerticalVsLateralVisual({
               ))}
             </div>
             <span className="vz-vvl-arrow">→</span>
-            <span className="vz-vvl-pill top" style={{ background: 'linear-gradient(135deg, #7C3AED 0%, #4C1D95 100%)' }}>
+            <span className="vz-vvl-pill top" style={{ background: 'var(--brand-grad-pop)' }}>
               選択肢が広がる
             </span>
           </div>

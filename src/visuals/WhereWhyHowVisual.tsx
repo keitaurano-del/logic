@@ -1,9 +1,13 @@
 import './visuals-phase3b.css'
+import { StepStack } from './StepStack'
 
 /**
  * Where → Why → How — 問題解決 3 段フロー
  * 起点（どこで起きてる？）→ 原因（なぜ？）→ 打ち手（どう解く？）
  * lesson-53 step.3 / lesson-95 step.0 等で利用
+ *
+ * 構造は <StepStack> 共通コンポーネントを使う。WWW 固有の差分（icon ピル + name + desc の
+ * grid レイアウト、各 step の左 4px ボーダー色）は visuals-phase3b.css 側。
  */
 
 export type WwwStep = {
@@ -34,6 +38,18 @@ const defaultHow: WwwStep = {
   desc: '打ち手を設計する。実行可能性とインパクトで優先順位をつける。',
 }
 
+function WwwCard({ variant, icon, step }: { variant: 'where' | 'why' | 'how'; icon: string; step: WwwStep }) {
+  return (
+    <div className={`vz-www-step ${variant}`}>
+      <div className="vz-www-icon">{icon}</div>
+      <div className="vz-www-body">
+        <span className="vz-www-name">{step.name}</span>
+        <span className="vz-www-desc">{step.desc}</span>
+      </div>
+    </div>
+  )
+}
+
 export function WhereWhyHowVisual({
   sectionLabel = '問題解決の 3 段フロー',
   where = defaultWhere,
@@ -47,31 +63,15 @@ export function WhereWhyHowVisual({
         {sectionLabel}
       </div>
 
-      <div className="vz-www">
-        <div className="vz-www-step where">
-          <div className="vz-www-icon">Where</div>
-          <div className="vz-www-body">
-            <span className="vz-www-name">{where.name}</span>
-            <span className="vz-www-desc">{where.desc}</span>
-          </div>
-        </div>
-        <span className="vz-www-arrow">↓</span>
-        <div className="vz-www-step why">
-          <div className="vz-www-icon">Why</div>
-          <div className="vz-www-body">
-            <span className="vz-www-name">{why.name}</span>
-            <span className="vz-www-desc">{why.desc}</span>
-          </div>
-        </div>
-        <span className="vz-www-arrow">↓</span>
-        <div className="vz-www-step how">
-          <div className="vz-www-icon">How</div>
-          <div className="vz-www-body">
-            <span className="vz-www-name">{how.name}</span>
-            <span className="vz-www-desc">{how.desc}</span>
-          </div>
-        </div>
-      </div>
+      <StepStack
+        containerClassName="vz-www"
+        arrowClassName="vz-www-arrow"
+        items={[
+          <WwwCard key="where" variant="where" icon="Where" step={where} />,
+          <WwwCard key="why" variant="why" icon="Why" step={why} />,
+        ]}
+        final={<WwwCard variant="how" icon="How" step={how} />}
+      />
 
       <div
         style={{

@@ -116,7 +116,7 @@ export function CausalLoopDiagramVisual({
                 key={i}
                 d={`M ${x1} ${y1} Q ${mx} ${my} ${x2} ${y2}`}
                 stroke={stroke}
-                strokeWidth="1.2"
+                strokeWidth="1.6"
                 fill="none"
                 markerEnd={marker}
                 opacity="0.85"

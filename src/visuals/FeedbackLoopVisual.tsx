@@ -162,7 +162,7 @@ export function FeedbackLoopVisual(props: FeedbackLoopProps = {}) {
             fontWeight="700"
             fill={loopType === 'R' ? 'var(--success)' : 'var(--warning)'}
             opacity="0.18"
-            style={{ fontFamily: 'var(--serif)' }}
+            style={{ fontFamily: "'Inter Tight', Inter, sans-serif" }}
           >
             {loopType === 'R' ? '↻' : '⇌'}
           </text>
