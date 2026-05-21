@@ -1,4 +1,5 @@
 import './visuals-phase3b.css'
+import { useStepReveal } from './hooks/useStepReveal'
 
 /**
  * Claim / Reason / Assumption — 主張・根拠・前提の 3 層
@@ -17,6 +18,8 @@ type Props = {
   reason?: Block
   assumption?: Block
   hint?: string
+  /** 'interactive'（default）= ボタンで段階表示 / 'static' = 全部表示 */
+  revealMode?: 'interactive' | 'static'
 }
 
 const defaultClaim: Block = {
@@ -40,7 +43,10 @@ export function ClaimReasonAssumptionVisual({
   reason = defaultReason,
   assumption = defaultAssumption,
   hint = '💡 議論が噛み合わない時は、たいてい水面下の「前提」がズレている',
-}: Props) {
+  revealMode = 'interactive',
+}: Props = {}) {
+  const { step, controls } = useStepReveal({ totalSteps: 3, mode: revealMode })
+
   return (
     <div className="vz-stagger">
       <div className="vz-section-label" style={{ marginBottom: 10 }}>
@@ -53,17 +59,23 @@ export function ClaimReasonAssumptionVisual({
             <span className="vz-cra-label">{claim.label}</span>
             <span className="vz-cra-text">{claim.text}</span>
           </div>
-          <div className="vz-cra-block reason">
-            <span className="vz-cra-label">{reason.label}</span>
-            <span className="vz-cra-text">{reason.text}</span>
-          </div>
-          <div className="vz-cra-waterline">水面 — Waterline</div>
-          <div className="vz-cra-block assumption">
-            <span className="vz-cra-label">{assumption.label}</span>
-            <span className="vz-cra-text">{assumption.text}</span>
-          </div>
+          {step >= 2 && (
+            <div className="vz-cra-block reason">
+              <span className="vz-cra-label">{reason.label}</span>
+              <span className="vz-cra-text">{reason.text}</span>
+            </div>
+          )}
+          {step >= 3 && <div className="vz-cra-waterline">水面 — Waterline</div>}
+          {step >= 3 && (
+            <div className="vz-cra-block assumption">
+              <span className="vz-cra-label">{assumption.label}</span>
+              <span className="vz-cra-text">{assumption.text}</span>
+            </div>
+          )}
         </div>
       </div>
+
+      {controls}
 
       <div
         style={{

@@ -21,6 +21,8 @@ type Props = {
   why?: WwwStep
   how?: WwwStep
   hint?: string
+  /** 'interactive'（default）= ボタンで段階表示 / 'static' = 全部表示 */
+  revealMode?: 'interactive' | 'static'
 }
 
 const defaultWhere: WwwStep = {
@@ -56,7 +58,8 @@ export function WhereWhyHowVisual({
   why = defaultWhy,
   how = defaultHow,
   hint = '💡 Where を飛ばすと Why が広がりすぎ、Why を飛ばすと How が的外れになる',
-}: Props) {
+  revealMode = 'interactive',
+}: Props = {}) {
   return (
     <div className="vz-stagger">
       <div className="vz-section-label" style={{ marginBottom: 10 }}>
@@ -66,6 +69,7 @@ export function WhereWhyHowVisual({
       <StepStack
         containerClassName="vz-www"
         arrowClassName="vz-www-arrow"
+        revealMode={revealMode}
         items={[
           <WwwCard key="where" variant="where" icon="Where" step={where} />,
           <WwwCard key="why" variant="why" icon="Why" step={why} />,

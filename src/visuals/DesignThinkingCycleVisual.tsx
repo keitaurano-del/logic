@@ -1,7 +1,12 @@
+import { useStepReveal } from './hooks/useStepReveal'
+
 /**
  * デザイン思考 5 ステップ円環 — 共感→定義→発想→試作→検証
  * 中央に「人間中心」のラベル、時計回りの矢印
  * lesson-56 step.0 step.visual='DesignThinkingCycleDiagram'
+ *
+ * 5 段階で開示:
+ *   Step 1..5 — ステップを 1 つずつ追加（矢印は 2 番目以降に表示）
  */
 
 type Step = { num: number; label: string; en: string }
@@ -14,11 +19,18 @@ const steps: Step[] = [
   { num: 5, label: '検証', en: 'Test' },
 ]
 
-export function DesignThinkingCycleVisual() {
+type Props = {
+  /** 'interactive'（default）= ボタンで段階表示 / 'static' = 全部表示 */
+  revealMode?: 'interactive' | 'static'
+}
+
+export function DesignThinkingCycleVisual({ revealMode = 'interactive' }: Props = {}) {
   // 円周上に 5 点配置（12 時方向スタート、時計回り）
   const radius = 36 // % of cycle box
   const cx = 50
   const cy = 50
+
+  const { step, isLast, controls } = useStepReveal({ totalSteps: steps.length, mode: revealMode })
 
   const positions = steps.map((_, i) => {
     const angle = -Math.PI / 2 + (i * 2 * Math.PI) / steps.length
@@ -47,11 +59,16 @@ export function DesignThinkingCycleVisual() {
               markerHeight="5"
               orient="auto-start-reverse"
             >
-              <path d="M 0 0 L 10 5 L 0 10 z" fill="#6C8EF5" />
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)" />
             </marker>
           </defs>
 
           {positions.map((p, i) => {
+            // 矢印は (i)→(i+1)。step >= i+2 のときに表示（最後の矢印は step === steps.length で「ループ閉じる」）
+            const isLoopBack = i === positions.length - 1
+            const visibleArrow = isLoopBack ? isLast : step >= i + 2
+            if (!visibleArrow) return null
+
             const next = positions[(i + 1) % positions.length]
             // ノード半径を考慮して縮める
             const dx = next.x - p.x
@@ -73,7 +90,7 @@ export function DesignThinkingCycleVisual() {
               <path
                 key={i}
                 d={`M ${x1} ${y1} Q ${outX} ${outY} ${x2} ${y2}`}
-                stroke="#6C8EF5"
+                stroke="var(--brand)"
                 strokeWidth="1.2"
                 fill="none"
                 opacity="0.8"
@@ -83,22 +100,32 @@ export function DesignThinkingCycleVisual() {
           })}
         </svg>
 
-        {/* ステップ */}
-        {steps.map((s, i) => (
-          <div
-            key={s.num}
-            className="vz-dt-step"
-            style={{ left: `${positions[i].x}%`, top: `${positions[i].y}%` }}
-          >
-            <div className="vz-dt-step-badge">{s.num}</div>
-            <div className="vz-dt-step-label">
-              {s.label}
-              <div style={{ fontSize: 8, fontWeight: 600, color: 'var(--text-muted)', letterSpacing: '0.04em' }}>
-                {s.en}
+        {/* ステップ — step 数だけ表示 */}
+        {steps.map(
+          (s, i) =>
+            i < step && (
+              <div
+                key={s.num}
+                className="vz-dt-step"
+                style={{ left: `${positions[i].x}%`, top: `${positions[i].y}%` }}
+              >
+                <div className="vz-dt-step-badge">{s.num}</div>
+                <div className="vz-dt-step-label">
+                  {s.label}
+                  <div
+                    style={{
+                      fontSize: 8,
+                      fontWeight: 600,
+                      color: 'var(--text-muted)',
+                      letterSpacing: '0.04em',
+                    }}
+                  >
+                    {s.en}
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        ))}
+            )
+        )}
 
         {/* 中央：人間中心 */}
         <div className="vz-dt-center">
@@ -107,18 +134,24 @@ export function DesignThinkingCycleVisual() {
         </div>
       </div>
 
-      <div style={{
-        marginTop: 12,
-        padding: '8px 10px',
-        background: 'var(--brand-soft)',
-        borderRadius: 8,
-        fontSize: 11,
-        fontWeight: 600,
-        color: 'var(--brand)',
-        textAlign: 'center',
-      }}>
-        一回で正解にしない。検証から共感に戻り、何度も回すのが前提
-      </div>
+      {controls}
+
+      {isLast && (
+        <div
+          style={{
+            marginTop: 12,
+            padding: '8px 10px',
+            background: 'var(--brand-soft)',
+            borderRadius: 8,
+            fontSize: 11,
+            fontWeight: 600,
+            color: 'var(--brand)',
+            textAlign: 'center',
+          }}
+        >
+          一回で正解にしない。検証から共感に戻り、何度も回すのが前提
+        </div>
+      )}
     </div>
   )
 }

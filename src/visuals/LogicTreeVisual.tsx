@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useStepReveal } from './hooks/useStepReveal'
 
 export type LogicTreeNode = {
   label: string
@@ -36,6 +36,8 @@ type Props = {
   maxDepth?: number
   /** ヒントブロックのトーン（warning = 黄、brand = 青） */
   hintTone?: 'warning' | 'brand'
+  /** 'interactive'（default）= ボタンで段階展開 / 'static' = 最初から全層表示 */
+  revealMode?: 'interactive' | 'static'
 }
 
 /** ツリーの実深さを再帰計算 */
@@ -48,6 +50,8 @@ function computeTreeDepth(node: LogicTreeNode): number {
  * ロジックツリー — タップで段階展開
  * lesson-21 step.visual='LogicTreeDiagram'
  * 任意の {label, children} ツリーを props で渡せる。default は「朝起きられない」例。
+ *
+ * useStepReveal ベースで Phase 3 の他 Visual と同じ操作感に統一。
  */
 export function LogicTreeVisual({
   data = defaultTree,
@@ -55,10 +59,18 @@ export function LogicTreeVisual({
   hint = '💡 Why（なぜ？）と How（どうすれば？）は混ぜない',
   maxDepth,
   hintTone = 'warning',
+  revealMode = 'interactive',
 }: Props = {}) {
   const actualDepth = computeTreeDepth(data)
   const effectiveMax = Math.min(actualDepth, maxDepth ?? 3)
-  const [depth, setDepth] = useState(1)
+
+  const { step: depth, controls } = useStepReveal({
+    totalSteps: effectiveMax,
+    mode: revealMode,
+    prevLabel: '← 戻す',
+    nextLabel: '次の層を開く →',
+    doneLabel: '完了',
+  })
 
   const labelText = sectionLabel.replace('{depth}', String(depth))
 
@@ -113,24 +125,7 @@ export function LogicTreeVisual({
         )}
       </div>
 
-      {effectiveMax > 1 && (
-        <div style={{ display: 'flex', gap: 6, marginTop: 14 }}>
-          <button
-            className="vz-ladder-btn"
-            onClick={() => setDepth(Math.max(1, depth - 1))}
-            disabled={depth === 1}
-          >
-            ← 戻す
-          </button>
-          <button
-            className="vz-ladder-btn primary"
-            onClick={() => setDepth(Math.min(effectiveMax, depth + 1))}
-            disabled={depth === effectiveMax}
-          >
-            {depth < effectiveMax ? '次の層を開く →' : '完了'}
-          </button>
-        </div>
-      )}
+      {controls}
 
       {hint && (
         <div

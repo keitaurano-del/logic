@@ -1,6 +1,10 @@
+import { useStepReveal } from './hooks/useStepReveal'
+
 /**
  * MVP 検証 4 ステップ — Key Assumption → KPI → 最小テスト → 判定基準
  * lesson-70 step.1 step.visual='MvpTestDesignDiagram'
+ *
+ * 4 段階で開示
  */
 
 type Step = {
@@ -37,7 +41,14 @@ const steps: Step[] = [
   },
 ]
 
-export function MvpTestDesignVisual() {
+type Props = {
+  /** 'interactive'（default）= ボタンで段階表示 / 'static' = 全部表示 */
+  revealMode?: 'interactive' | 'static'
+}
+
+export function MvpTestDesignVisual({ revealMode = 'interactive' }: Props = {}) {
+  const { step, isLast, controls } = useStepReveal({ totalSteps: steps.length, mode: revealMode })
+
   return (
     <div>
       <div className="vz-section-label" style={{ marginBottom: 10, textAlign: 'center' }}>
@@ -45,7 +56,7 @@ export function MvpTestDesignVisual() {
       </div>
 
       <div className="vz-mvp vz-stagger">
-        {steps.map((s, i) => (
+        {steps.slice(0, step).map((s, i) => (
           <div key={s.num}>
             <div className="vz-mvp-step">
               <div className="vz-mvp-step-num">{s.num}</div>
@@ -55,7 +66,7 @@ export function MvpTestDesignVisual() {
                 <span className="vz-mvp-step-body">{s.body}</span>
               </div>
             </div>
-            {i < steps.length - 1 && (
+            {i < step - 1 && (
               <div className="vz-mvp-step">
                 <div />
                 <div className="vz-mvp-arrow">↓</div>
@@ -65,18 +76,24 @@ export function MvpTestDesignVisual() {
         ))}
       </div>
 
-      <div style={{
-        marginTop: 12,
-        padding: '8px 10px',
-        background: 'var(--brand-soft)',
-        borderRadius: 8,
-        fontSize: 11,
-        fontWeight: 600,
-        color: 'var(--brand)',
-        textAlign: 'center',
-      }}>
-        判定基準を後決めにすると「もう少し続ければ…」で撤退できなくなる
-      </div>
+      {controls}
+
+      {isLast && (
+        <div
+          style={{
+            marginTop: 12,
+            padding: '8px 10px',
+            background: 'var(--brand-soft)',
+            borderRadius: 8,
+            fontSize: 11,
+            fontWeight: 600,
+            color: 'var(--brand)',
+            textAlign: 'center',
+          }}
+        >
+          判定基準を後決めにすると「もう少し続ければ…」で撤退できなくなる
+        </div>
+      )}
     </div>
   )
 }

@@ -68,7 +68,7 @@
 }
 
 .vz-fs-label {
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
   color: var(--brand);
   letter-spacing: 0.08em;
@@ -81,7 +81,7 @@
 }
 
 .vz-fs-title {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--text-primary);
   line-height: 1.3;
@@ -90,7 +90,7 @@
 .vz-fs-step.final .vz-fs-title { color: #fff; }
 
 .vz-fs-desc {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.45;
@@ -121,7 +121,7 @@
   border-radius: 12px;
   padding: 10px 12px;
   text-align: center;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   box-shadow: var(--brand-cta-shadow);
 }
@@ -149,7 +149,7 @@
 }
 
 .vz-mmd-cond {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--brand);
   letter-spacing: 0.04em;
@@ -157,14 +157,14 @@
 }
 
 .vz-mmd-tech {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--text-primary);
   line-height: 1.3;
 }
 
 .vz-mmd-ex {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text-secondary);
   line-height: 1.4;
@@ -174,7 +174,7 @@
 }
 
 .vz-mmd-row-label {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--text-muted);
   text-align: center;
@@ -200,7 +200,7 @@
 }
 
 .vz-ds-card-title {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--brand);
   text-align: center;
@@ -219,7 +219,7 @@
   display: flex;
   flex-direction: column;
   gap: 3px;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -271,7 +271,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--text-primary);
 }
@@ -304,7 +304,7 @@
 }
 
 .vz-ec-point .yr {
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
   color: var(--text-muted);
   letter-spacing: 0.06em;
@@ -312,14 +312,14 @@
 }
 
 .vz-ec-point .val {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--brand);
   line-height: 1.1;
 }
 
 .vz-ec-point .vs {
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--text-muted);
   line-height: 1.2;
@@ -341,7 +341,7 @@
 }
 
 .vz-avr-fact-label {
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
   color: var(--text-muted);
   letter-spacing: 0.08em;
@@ -349,7 +349,7 @@
 }
 
 .vz-avr-fact-text {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--text-primary);
   margin-top: 2px;
@@ -378,7 +378,7 @@
 }
 
 .vz-avr-card-tag {
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -404,7 +404,7 @@
 .vz-avr-card.relative .vz-avr-card-number { color: var(--rose); }
 
 .vz-avr-card-impression {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-secondary);
   line-height: 1.4;
@@ -451,7 +451,7 @@
 .vz-tp-choice.b { border-color: var(--brand); }
 
 .vz-tp-choice-tag {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -461,14 +461,14 @@
 .vz-tp-choice.b .vz-tp-choice-tag { color: var(--brand); }
 
 .vz-tp-choice-title {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--text-primary);
   line-height: 1.3;
 }
 
 .vz-tp-choice-school {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text-secondary);
   line-height: 1.4;
@@ -513,14 +513,14 @@
 }
 
 .vz-fg-name {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--text-primary);
   line-height: 1.25;
 }
 
 .vz-fg-desc {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.45;
@@ -550,7 +550,7 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-secondary);
 }
@@ -562,7 +562,7 @@
 }
 
 .vz-cc-arrow-sample {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   width: 22px;
   text-align: center;

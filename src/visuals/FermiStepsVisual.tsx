@@ -1,10 +1,12 @@
 import './visuals-phase3c.css'
+import { useStepReveal } from './hooks/useStepReveal'
 
 /**
  * フェルミ推定の 4 ステップ — 問い定義 → 分解 → 推定 → 統合検算
  * lesson-200 step.visual='FermiStepsDiagram'
  *
  * 構図: Stack（順序フロー）4 段、最終ステップ（統合検算）を結論カラーで強調
+ * 段階開示: Step 1..4 — ステップを 1 つずつ表示
  */
 
 type Step = {
@@ -36,7 +38,14 @@ const steps: Step[] = [
   },
 ]
 
-export function FermiStepsVisual() {
+type Props = {
+  /** 'interactive'（default）= ボタンで段階表示 / 'static' = 全部表示 */
+  revealMode?: 'interactive' | 'static'
+}
+
+export function FermiStepsVisual({ revealMode = 'interactive' }: Props = {}) {
+  const { step, isLast, controls } = useStepReveal({ totalSteps: steps.length, mode: revealMode })
+
   return (
     <div className="vz-stagger">
       <div className="vz-section-label" style={{ marginBottom: 10 }}>
@@ -44,7 +53,7 @@ export function FermiStepsVisual() {
       </div>
 
       <div className="vz-fs-stack">
-        {steps.map((s, i) => {
+        {steps.slice(0, step).map((s, i) => {
           const isFinal = i === steps.length - 1
           return (
             <div key={s.label}>
@@ -56,26 +65,30 @@ export function FermiStepsVisual() {
                   <div className="vz-fs-desc">{s.desc}</div>
                 </div>
               </div>
-              {i < steps.length - 1 ? (
-                <div className="vz-fs-arrow">↓</div>
-              ) : null}
+              {i < step - 1 ? <div className="vz-fs-arrow">↓</div> : null}
             </div>
           )
         })}
       </div>
 
-      <div style={{
-        marginTop: 12,
-        padding: '8px 10px',
-        background: 'var(--brand-soft)',
-        borderRadius: 8,
-        fontSize: 11,
-        fontWeight: 600,
-        color: 'var(--brand)',
-        textAlign: 'center',
-      }}>
-        💡 STEP 4 の検算がフェルミ推定の質を決める。一発回答で終わらせない。
-      </div>
+      {controls}
+
+      {isLast && (
+        <div
+          style={{
+            marginTop: 12,
+            padding: '8px 10px',
+            background: 'var(--brand-soft)',
+            borderRadius: 8,
+            fontSize: 11,
+            fontWeight: 600,
+            color: 'var(--brand)',
+            textAlign: 'center',
+          }}
+        >
+          💡 STEP 4 の検算がフェルミ推定の質を決める。一発回答で終わらせない。
+        </div>
+      )}
     </div>
   )
 }

@@ -1,4 +1,5 @@
 import './visuals-phase3b.css'
+import { useStepReveal } from './hooks/useStepReveal'
 
 /**
  * SCAMPER — 既存のものを変換する 7 視点のチェックリスト
@@ -16,6 +17,8 @@ type Props = {
   sectionLabel?: string
   items?: ScamperItem[]
   hint?: string
+  /** 'interactive'（default）= ボタンで段階表示 / 'static' = 全部表示 */
+  revealMode?: 'interactive' | 'static'
 }
 
 const defaultItems: ScamperItem[] = [
@@ -32,7 +35,10 @@ export function ScamperVisual({
   sectionLabel = 'SCAMPER — 発想の 7 視点',
   items = defaultItems,
   hint = '💡 1 個ずつ機械的に当てはめると、視点漏れがなくなる',
-}: Props) {
+  revealMode = 'interactive',
+}: Props = {}) {
+  const { step, controls } = useStepReveal({ totalSteps: items.length, mode: revealMode })
+
   return (
     <div className="vz-stagger">
       <div className="vz-section-label" style={{ marginBottom: 10 }}>
@@ -40,7 +46,7 @@ export function ScamperVisual({
       </div>
 
       <div className="vz-scamper">
-        {items.map((item) => (
+        {items.slice(0, step).map((item) => (
           <div key={item.letter} className="vz-scamper-row">
             <div className="vz-scamper-letter">{item.letter}</div>
             <div className="vz-scamper-body">
@@ -50,6 +56,8 @@ export function ScamperVisual({
           </div>
         ))}
       </div>
+
+      {controls}
 
       <div
         style={{

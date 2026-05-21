@@ -1,4 +1,5 @@
 import './visuals-phase3b.css'
+import { useStepReveal } from './hooks/useStepReveal'
 
 /**
  * Leverage Points — システム介入の階層（Donella Meadows）
@@ -17,6 +18,8 @@ type Props = {
   sectionLabel?: string
   tiers?: [Tier, Tier, Tier, Tier]
   hint?: string
+  /** 'interactive'（default）= ボタンで段階表示 / 'static' = 全部表示 */
+  revealMode?: 'interactive' | 'static'
 }
 
 const defaultTiers: [Tier, Tier, Tier, Tier] = [
@@ -30,7 +33,10 @@ export function LeveragePointsVisual({
   sectionLabel = '介入階層 — どこを変えるか',
   tiers = defaultTiers,
   hint = '💡 上に行くほど変えにくいが、変えた時のインパクトは桁違いに大きい',
-}: Props) {
+  revealMode = 'interactive',
+}: Props = {}) {
+  const { step, controls } = useStepReveal({ totalSteps: tiers.length, mode: revealMode })
+
   return (
     <div className="vz-stagger">
       <div className="vz-section-label" style={{ marginBottom: 10 }}>
@@ -43,7 +49,7 @@ export function LeveragePointsVisual({
       </div>
 
       <div className="vz-leverage">
-        {tiers.map((t, i) => (
+        {tiers.slice(0, step).map((t, i) => (
           <div key={i} className={`vz-leverage-tier t${i + 1}`}>
             <span className="vz-leverage-tier-label">{t.label}</span>
             <span className="vz-leverage-tier-name">{t.name}</span>
@@ -51,6 +57,8 @@ export function LeveragePointsVisual({
           </div>
         ))}
       </div>
+
+      {controls}
 
       <div
         style={{

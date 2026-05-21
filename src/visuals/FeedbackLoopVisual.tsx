@@ -1,4 +1,5 @@
 import './visuals-phase2.css'
+import { useStepReveal } from './hooks/useStepReveal'
 
 /**
  * フィードバックループ図解（強化ループ R / バランスループ B）
@@ -6,6 +7,10 @@ import './visuals-phase2.css'
  * 想定 visualId: 'FeedbackLoopDiagram'
  *
  * default: lesson-65 step.1「貯金が貯金を呼ぶ強化ループ」
+ *
+ * interactive モード: ノードを表示した状態で、矢印を 1 本ずつ追加する。
+ *   Step 1..N — 矢印を 1 本ずつ追加（最後は中央サイクル記号 ↻ / ⇌ を点灯）
+ * static モード: 最初から全矢印 + ループバッジ。
  */
 
 export type LoopNode = {
@@ -33,9 +38,11 @@ export type FeedbackLoopProps = {
   /** 省略時は隣接ノード間を順方向で接続。各 polarity も指定可 */
   arrows?: LoopArrow[]
   hint?: string
+  /** 'interactive'（default）= 矢印を 1 本ずつ表示 / 'static' = 全表示 */
+  revealMode?: 'interactive' | 'static'
 }
 
-const DEFAULT_PROPS: Required<FeedbackLoopProps> = {
+const DEFAULT_PROPS: Required<Omit<FeedbackLoopProps, 'revealMode'>> = {
   sectionLabel: 'フィードバックループ',
   loopType: 'R',
   loopName: '貯金が貯金を呼ぶ',
@@ -58,7 +65,8 @@ function pointOnCircle(cx: number, cy: number, r: number, angleRad: number) {
 }
 
 export function FeedbackLoopVisual(props: FeedbackLoopProps = {}) {
-  const { sectionLabel, loopType, loopName, nodes, arrows, hint } = { ...DEFAULT_PROPS, ...props }
+  const { revealMode = 'interactive', ...rest } = props
+  const { sectionLabel, loopType, loopName, nodes, arrows, hint } = { ...DEFAULT_PROPS, ...rest }
 
   const W = 320
   const H = 240
@@ -66,6 +74,12 @@ export function FeedbackLoopVisual(props: FeedbackLoopProps = {}) {
   const cy = H / 2
   const radius = 80
   const N = nodes.length
+
+  // 矢印は 1 本ずつ + ループ完成（中央記号 + バッジテキスト点灯）= arrows.length + 1
+  const totalSteps = arrows.length + 1
+  const { step, isLast, controls } = useStepReveal({ totalSteps, mode: revealMode })
+  const visibleArrowsCount = Math.min(step, arrows.length)
+  const loopComplete = isLast
 
   // 円周上のノード位置（12 時方向から時計回り）
   const positions = nodes.map((_, i) => {
@@ -122,7 +136,13 @@ export function FeedbackLoopVisual(props: FeedbackLoopProps = {}) {
       <div className="vz-section-label" style={{ marginBottom: 10 }}>{sectionLabel}</div>
 
       <div className="vz-fbl-wrap">
-        <div className={`vz-fbl-badge ${loopType}`}>
+        <div
+          className={`vz-fbl-badge ${loopType}`}
+          style={{
+            opacity: loopComplete ? 1 : 0.55,
+            transition: 'opacity 0.3s',
+          }}
+        >
           <span className="glyph">{loopType}</span>
           {loopType === 'R' ? '強化ループ' : 'バランスループ'}：{loopName}
         </div>
@@ -153,7 +173,7 @@ export function FeedbackLoopVisual(props: FeedbackLoopProps = {}) {
             </marker>
           </defs>
 
-          {/* 中央ラベル */}
+          {/* 中央ラベル — ループ完成時のみ濃く */}
           <text
             x={cx}
             y={cy + 6}
@@ -161,14 +181,14 @@ export function FeedbackLoopVisual(props: FeedbackLoopProps = {}) {
             fontSize="28"
             fontWeight="700"
             fill={loopType === 'R' ? 'var(--success)' : 'var(--warning)'}
-            opacity="0.18"
-            style={{ fontFamily: "'Inter Tight', Inter, sans-serif" }}
+            opacity={loopComplete ? 0.35 : 0.1}
+            style={{ fontFamily: "'Inter Tight', Inter, sans-serif", transition: 'opacity 0.3s' }}
           >
             {loopType === 'R' ? '↻' : '⇌'}
           </text>
 
-          {/* 矢印 */}
-          {arrowPaths.map((a) => a && (
+          {/* 矢印（step 数だけ表示） */}
+          {arrowPaths.slice(0, visibleArrowsCount).map((a) => a && (
             <g key={a.key}>
               <path
                 d={a.d}
@@ -198,7 +218,7 @@ export function FeedbackLoopVisual(props: FeedbackLoopProps = {}) {
             </g>
           ))}
 
-          {/* ノード */}
+          {/* ノード — ステップに関わらず常時表示 */}
           {positions.map((p, i) => (
             <g key={i}>
               <circle
@@ -226,30 +246,38 @@ export function FeedbackLoopVisual(props: FeedbackLoopProps = {}) {
         </svg>
 
         {/* ノードラベル凡例 (省略表記の補足) */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: `repeat(${Math.min(N, 3)}, 1fr)`,
-          gap: 6,
-          width: '100%',
-          marginTop: 4,
-        }}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: `repeat(${Math.min(N, 3)}, 1fr)`,
+            gap: 6,
+            width: '100%',
+            marginTop: 4,
+          }}
+        >
           {nodes.map((n, i) => (
-            <div key={i} className="vz-fbl-node">{i + 1}. {n.label}</div>
+            <div key={i} className="vz-fbl-node">
+              {i + 1}. {n.label}
+            </div>
           ))}
         </div>
       </div>
 
+      {controls}
+
       {hint ? (
-        <div style={{
-          marginTop: 12,
-          padding: '8px 10px',
-          background: 'var(--brand-soft)',
-          borderRadius: 8,
-          fontSize: 11,
-          fontWeight: 600,
-          color: 'var(--brand)',
-          textAlign: 'center',
-        }}>
+        <div
+          style={{
+            marginTop: 12,
+            padding: '8px 10px',
+            background: 'var(--brand-soft)',
+            borderRadius: 8,
+            fontSize: 11,
+            fontWeight: 600,
+            color: 'var(--brand)',
+            textAlign: 'center',
+          }}
+        >
           💡 {hint}
         </div>
       ) : null}

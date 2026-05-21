@@ -48,7 +48,7 @@
   align-items: center;
   gap: 6px;
   padding: 4px 10px;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.04em;
   border-radius: 999px;
@@ -57,7 +57,7 @@
 }
 
 .vz-section-label {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.08em;
   color: var(--text-muted);
@@ -82,7 +82,7 @@
 }
 
 .vz-mece-card-title {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--brand);
   letter-spacing: 0.04em;
@@ -92,7 +92,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-primary);
   gap: 4px;
@@ -109,7 +109,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 11px;
+  font-size: 13px;
   color: var(--text-secondary);
 }
 
@@ -130,7 +130,7 @@
   align-items: center;
   gap: 4px;
   flex-wrap: wrap;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
 }
 
@@ -152,7 +152,7 @@
   align-items: center;
   gap: 8px;
   justify-content: center;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
 }
 
@@ -182,7 +182,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   border: 2px solid;
   background: var(--bg-card);
@@ -204,7 +204,7 @@
   background: var(--brand-cta-grad);
   color: #fff;
   font-weight: 700;
-  font-size: 13px;
+  font-size: 15px;
   padding: 8px 14px;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(108, 142, 245, 0.28);
@@ -223,7 +223,7 @@
   border: 1.5px solid var(--brand);
   color: var(--text-primary);
   font-weight: 600;
-  font-size: 12px;
+  font-size: 14px;
   padding: 6px 8px;
   border-radius: 8px;
   text-align: center;
@@ -241,7 +241,7 @@
   background: var(--bg-secondary);
   border-radius: 6px;
   padding: 4px 6px;
-  font-size: 11px;
+  font-size: 13px;
   color: var(--text-secondary);
   font-weight: 500;
 }
@@ -273,7 +273,7 @@
 }
 
 .vz-sowhat-label {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.08em;
   opacity: 0.7;
@@ -289,7 +289,7 @@
   justify-content: center;
   gap: 24px;
   margin: 4px 0;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
 }
 
@@ -317,7 +317,7 @@
 .vz-pyramid-cell {
   border-radius: 10px;
   padding: 8px 8px;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   text-align: center;
   line-height: 1.35;
@@ -331,7 +331,7 @@
   background: var(--brand-cta-grad);
   color: #fff;
   font-weight: 700;
-  font-size: 13px;
+  font-size: 15px;
   box-shadow: var(--brand-cta-shadow);
 }
 
@@ -345,11 +345,11 @@
   background: var(--bg-secondary);
   border: 1px solid var(--border);
   color: var(--text-secondary);
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .vz-pyramid-cell-label {
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.06em;
   opacity: 0.7;
@@ -391,13 +391,13 @@
 }
 
 .vz-prep-name {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--text-primary);
 }
 
 .vz-prep-desc {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--text-secondary);
   line-height: 1.5;
 }
@@ -422,14 +422,14 @@
 }
 
 .vz-premise-card .label {
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.08em;
   color: var(--text-muted);
 }
 
 .vz-premise-card .text {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--text-primary);
 }
@@ -463,7 +463,7 @@
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 6px 8px;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-primary);
   display: flex;
@@ -480,7 +480,7 @@
 }
 
 .vz-induction-warn {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--warning);
   background: var(--warning-soft);
   padding: 6px 10px;
@@ -495,7 +495,7 @@
   width: 100%;
   border-collapse: separate;
   border-spacing: 4px;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
 }
 
@@ -505,7 +505,7 @@
   padding: 6px 4px;
   border-radius: 6px;
   font-weight: 700;
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 0.04em;
 }
 
@@ -534,7 +534,7 @@
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 8px;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   text-align: center;
   line-height: 1.4;
@@ -579,7 +579,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
   color: var(--brand);
   box-shadow: var(--shadow-card);
@@ -598,7 +598,7 @@
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 6px 8px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-primary);
   display: flex;
@@ -618,13 +618,13 @@
 }
 
 .vz-ladder-rung .ex {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
   opacity: 0.7;
 }
 
 .vz-ladder-direction {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--text-muted);
   letter-spacing: 0.06em;
@@ -639,7 +639,7 @@
 }
 
 .vz-ladder-note .label {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--brand);
   letter-spacing: 0.06em;
@@ -647,7 +647,7 @@
 }
 
 .vz-ladder-note .text {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-primary);
   line-height: 1.5;
@@ -663,7 +663,7 @@
   flex: 1;
   padding: 8px 10px;
   border-radius: 10px;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   cursor: pointer;
   font-family: inherit;
@@ -682,6 +682,32 @@
 .vz-ladder-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+/* ===== useStepReveal 用コントロール =====
+ * 段階開示フックの「戻る／進む」ペア + 中央の進捗表示。
+ * vz-ladder-btn のスタイルを継承するので、追加で必要なのはレイアウトのみ。
+ */
+.vz-reveal-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.vz-reveal-controls .vz-ladder-btn {
+  flex: 1;
+}
+
+.vz-reveal-progress {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  padding: 0 6px;
+  min-width: 38px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
 }
 
 /* ===== 共通: 3 ステップ縦スタック + ↓ 矢印 + 最終ブロック結論色 =====
@@ -747,20 +773,20 @@
 }
 
 .vz-phase-label {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.06em;
   color: var(--brand);
 }
 
 .vz-phase-title {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--text-primary);
 }
 
 .vz-phase-body {
-  font-size: 11.5px;
+  font-size: 13.5px;
   color: var(--text-secondary);
   line-height: 1.5;
 }
@@ -774,6 +800,29 @@
   background: var(--brand-soft);
   color: var(--brand);
   border-radius: 6px;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
+}
+
+/* ============================================================
+ * Mobile single-column adjustments (≤ 640px)
+ * 横並びでも構造的意味を保てるカード系 grid を 1 列化する。
+ * Pyramid (r2/r3) / 3C 円配置 / 対偶 contra-flow / 真理値表 / 2x2 マトリックス は
+ * 構造的に横並びが意味を持つので除外。
+ * ============================================================ */
+@media (max-width: 640px) {
+  /* Logic Tree の枝（2 列 → 1 列） */
+  .vz-tree-children {
+    grid-template-columns: 1fr;
+  }
+
+  /* 帰納サンプル（2 列 → 1 列） */
+  .vz-induction-samples {
+    grid-template-columns: 1fr;
+  }
+
+  /* MECE 4 パターンカード（2x2 → 縦並び。カード自体が小さく読みづらいので 1 列化） */
+  .vz-mece-grid {
+    grid-template-columns: 1fr;
+  }
 }

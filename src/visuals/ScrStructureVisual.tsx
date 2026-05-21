@@ -22,6 +22,8 @@ type Props = {
   complication?: ScrStep
   resolution?: ScrStep
   hint?: string
+  /** 'interactive'（default）= ボタンで段階表示 / 'static' = 全部表示 */
+  revealMode?: 'interactive' | 'static'
 }
 
 const defaultSituation: ScrStep = {
@@ -58,7 +60,8 @@ export function ScrStructureVisual({
   complication = defaultComplication,
   resolution = defaultResolution,
   hint = '💡 相手の頭の中に「で、どうすればいい？」を作ってから答える',
-}: Props) {
+  revealMode = 'interactive',
+}: Props = {}) {
   return (
     <div className="vz-stagger">
       <div className="vz-section-label" style={{ marginBottom: 10 }}>
@@ -68,6 +71,7 @@ export function ScrStructureVisual({
       <StepStack
         containerClassName="vz-scr"
         arrowClassName="vz-scr-arrow"
+        revealMode={revealMode}
         items={[
           <ScrCard key="s" variant="situation" prefix="S" step={situation} />,
           <ScrCard key="c" variant="complication" prefix="C" step={complication} />,

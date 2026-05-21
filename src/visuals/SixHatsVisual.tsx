@@ -1,4 +1,5 @@
 import './visuals-phase3b.css'
+import { useStepReveal } from './hooks/useStepReveal'
 
 /**
  * Six Thinking Hats — Edward de Bono の 6 つの思考帽子
@@ -16,6 +17,8 @@ type Props = {
   sectionLabel?: string
   hats?: Hat[]
   hint?: string
+  /** 'interactive'（default）= ボタンで段階表示 / 'static' = 全部表示 */
+  revealMode?: 'interactive' | 'static'
 }
 
 const defaultHats: Hat[] = [
@@ -31,7 +34,10 @@ export function SixHatsVisual({
   sectionLabel = '6 つの思考帽子',
   hats = defaultHats,
   hint = '💡 帽子を意識的に「かぶり替える」と、議論の重複や偏りを避けられる',
-}: Props) {
+  revealMode = 'interactive',
+}: Props = {}) {
+  const { step, controls } = useStepReveal({ totalSteps: hats.length, mode: revealMode })
+
   return (
     <div className="vz-stagger">
       <div className="vz-section-label" style={{ marginBottom: 10 }}>
@@ -39,7 +45,7 @@ export function SixHatsVisual({
       </div>
 
       <div className="vz-six-hats">
-        {hats.map((h) => (
+        {hats.slice(0, step).map((h) => (
           <div key={h.color} className="vz-hat">
             <div className={`vz-hat-icon ${h.color}`} aria-hidden="true" />
             <div className="vz-hat-name">{h.name}</div>
@@ -47,6 +53,8 @@ export function SixHatsVisual({
           </div>
         ))}
       </div>
+
+      {controls}
 
       <div
         style={{

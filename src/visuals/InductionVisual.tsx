@@ -1,6 +1,17 @@
+import { useStepReveal } from './hooks/useStepReveal'
+
+type Props = {
+  /** 'interactive'（default）= step ボタンで段階開示 / 'static' = 最初から全層表示 */
+  revealMode?: 'interactive' | 'static'
+}
+
 /**
  * 帰納法 — 観察・サンプル → 一般則
  * lesson-26 step.visual='InductionDiagram'
+ *
+ * 段階開示:
+ *   Step 1..4 — サンプルを 1 個ずつ追加（A→B→C→D）
+ *   Step 5    — 仮の法則を導出
  */
 const samples = [
   'カラス A は黒い',
@@ -9,7 +20,9 @@ const samples = [
   'カラス D は黒い',
 ]
 
-export function InductionVisual() {
+export function InductionVisual({ revealMode = 'interactive' }: Props = {}) {
+  const { step, isLast, controls } = useStepReveal({ totalSteps: 5, mode: revealMode })
+
   return (
     <div>
       <div className="vz-section-label" style={{ marginBottom: 10, textAlign: 'center' }}>
@@ -18,23 +31,36 @@ export function InductionVisual() {
 
       <div className="vz-syllogism" style={{ flexDirection: 'column-reverse' }}>
         <div className="vz-induction-samples vz-stagger">
-          {samples.map((s, i) => (
-            <div key={i} className="vz-induction-sample">
-              <span className="dot" />
-              {s}
+          {samples.map((s, i) => {
+            // step 1 -> show samples[0], step 2 -> samples[0..1], etc.
+            if (step <= i) return null
+            return (
+              <div key={i} className="vz-induction-sample">
+                <span className="dot" />
+                {s}
+              </div>
+            )
+          })}
+        </div>
+
+        {step >= 5 && (
+          <>
+            <span className="vz-arrow-up" style={{ margin: '8px 0' }}>
+              ↑
+            </span>
+            <div className="vz-premise-card conclusion">
+              <span className="label">仮の法則</span>
+              <span className="text">∴ カラスはみんな黒い（だろう）</span>
             </div>
-          ))}
-        </div>
-        <span className="vz-arrow-up" style={{ margin: '8px 0' }}>↑</span>
-        <div className="vz-premise-card conclusion">
-          <span className="label">仮の法則</span>
-          <span className="text">∴ カラスはみんな黒い（だろう）</span>
-        </div>
+          </>
+        )}
       </div>
 
-      <div className="vz-induction-warn">
-        ⚠ 反例 1 つ（白いカラス）で覆る — 帰納の限界
-      </div>
+      {controls}
+
+      {isLast && (
+        <div className="vz-induction-warn">⚠ 反例 1 つ（白いカラス）で覆る — 帰納の限界</div>
+      )}
     </div>
   )
 }
