@@ -770,8 +770,10 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
   if (slide.kind === 'visual') {
     const element = renderVisual(slide.visualId)
     if (!element) return null
+    // Pyramid はスマホ全画面最適化プロトタイプとして fullBleed モードで表示
+    const fullBleed = slide.visualId === 'PyramidDiagram'
     return (
-      <VisualSlide title={slide.title} caption={slide.caption}>
+      <VisualSlide title={slide.title} caption={slide.caption} fullBleed={fullBleed}>
         {element}
       </VisualSlide>
     )

@@ -360,6 +360,149 @@
 .vz-pyramid-cell.top .vz-pyramid-cell-label { color: #fff; opacity: 0.85; }
 .vz-pyramid-cell.mid .vz-pyramid-cell-label { color: var(--brand-mid); }
 
+/* ============================================================
+ * Pyramid — Full-bleed mobile prototype (2026-05-21)
+ * ─────────────────────────────────────────────
+ * スマホで「画面いっぱい」を実現するための上書きスタイル。
+ * .vz-pyramid-fb class は PyramidVisual が常に付与する。
+ * 親 (VisualSlide fullBleed=true) は外側 padding を打ち消すため
+ * negative margin で画面端まで広がっている前提。
+ * - カード min-height: 80-110px（タップしやすさ確保）
+ * - 本文 17-18px、ラベル 14-15px、結論タイトル 20-22px
+ * - 内部 gap は --s-3 (12px) 以上でゆとり持たせる
+ * ============================================================ */
+.vz-pyramid.vz-pyramid-fb {
+  gap: var(--s-3); /* 12px */
+  padding: var(--s-3) var(--s-3) var(--s-4); /* 12 12 16 */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 結論行 — 画面幅 95%+ を使う、max-width 制約を外す */
+.vz-pyramid-fb .vz-pyramid-row {
+  gap: var(--s-3); /* 12px */
+}
+.vz-pyramid-fb .vz-pyramid-row.r1 {
+  max-width: 100%;
+  margin: 0;
+}
+
+/* 主張行・根拠行は 3 列維持（構造的意味があるため）。
+   スマホで横の余白がギリギリにならないよう gap を 8px に縮める。 */
+.vz-pyramid-fb .vz-pyramid-row.r2,
+.vz-pyramid-fb .vz-pyramid-row.r3 {
+  gap: 8px;
+}
+
+/* セル本体 — 大きく */
+.vz-pyramid-fb .vz-pyramid-cell {
+  border-radius: 14px;
+  padding: 14px 12px;
+  min-height: 80px;
+  flex-direction: column;
+  gap: 4px;
+  line-height: 1.45;
+}
+
+.vz-pyramid-fb .vz-pyramid-cell.top {
+  font-size: 21px;
+  font-weight: 800;
+  min-height: 110px;
+  padding: 18px 16px;
+  letter-spacing: -0.005em;
+  border-radius: 18px;
+}
+
+.vz-pyramid-fb .vz-pyramid-cell.mid {
+  font-size: 15px;
+  font-weight: 700;
+  min-height: 88px;
+  padding: 12px 8px;
+  border-width: 2px;
+}
+
+.vz-pyramid-fb .vz-pyramid-cell.bottom {
+  font-size: 13px;
+  font-weight: 600;
+  min-height: 56px;
+  padding: 10px 6px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+/* ラベル — 大きく、明確に */
+.vz-pyramid-fb .vz-pyramid-cell-label {
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  margin-bottom: 0;
+  text-transform: uppercase;
+}
+.vz-pyramid-fb .vz-pyramid-cell.top .vz-pyramid-cell-label {
+  font-size: 14px;
+}
+.vz-pyramid-fb .vz-pyramid-cell.mid .vz-pyramid-cell-label {
+  font-size: 12px;
+}
+
+/* 本文 wrapper */
+.vz-pyramid-fb .vz-pyramid-cell-body {
+  display: block;
+}
+
+/* 根拠列 — 縦並び gap を大きく */
+.vz-pyramid-bottom-col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* ヒント帯 — 全画面幅でフッター的に表示 */
+.vz-pyramid-hint {
+  margin-top: var(--s-4); /* 16px */
+  padding: 12px 14px;
+  background: var(--accent-soft);
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--brand);
+  text-align: center;
+  line-height: 1.5;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* fb モードの段階開示ボタン — 大きく */
+.vz-pyramid-fb .vz-reveal-controls {
+  margin-top: var(--s-4); /* 16px */
+  gap: 10px;
+  width: 100%;
+}
+.vz-pyramid-fb .vz-reveal-controls .vz-ladder-btn {
+  padding: 14px 12px;
+  font-size: 15px;
+  min-height: 48px;
+  border-radius: 12px;
+}
+.vz-pyramid-fb .vz-reveal-progress {
+  font-size: 13px;
+  min-width: 48px;
+}
+
+/* スマホ幅でのさらなる調整（≤ 480px の極小端末対応）*/
+@media (max-width: 480px) {
+  .vz-pyramid-fb .vz-pyramid-cell.top {
+    font-size: 19px;
+    min-height: 100px;
+  }
+  .vz-pyramid-fb .vz-pyramid-cell.mid {
+    font-size: 14px;
+    min-height: 80px;
+  }
+  .vz-pyramid-fb .vz-pyramid-cell.bottom {
+    font-size: 12px;
+  }
+}
+
 /* ===== PREP / Case Study / Phase panels ===== */
 .vz-prep-row {
   display: flex;
