@@ -38,6 +38,7 @@ const caseIntro: LessonData = {
       title: 'フレームワークの選び方',
       content:
         '代表的なフレームワーク:\n\n• 利益問題 → 売上・コスト分解\n• 市場参入 → 3C（顧客・競合・自社）\n• 戦略立案 → SWOT / ポーターの5力\n\nただし「フレームワークを当てはめる」のが目的ではありません。\n問題の本質を見極め、適切な切り口を自分で選ぶ力が求められます。',
+      visual: 'CaseStudyDiagram',
     },
     {
       type: 'quiz',

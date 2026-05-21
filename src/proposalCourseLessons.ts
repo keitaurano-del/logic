@@ -266,6 +266,7 @@ const proposalOutline: LessonData = {
       type: 'explain',
       title: 'ピラミッド原則を活用する',
       content: '「結論から話す」ピラミッド原則は提案書の基本。\n\n**Top-Down（結論先行型）**: 結論→根拠1・根拠2・根拠3\n→ ビジネス提案で最も使われる\n\n**Bottom-Up（根拠積み上げ型）**: 根拠1・根拠2・根拠3→結論\n→ データ分析レポートに向く\n\n提案書は「先に結論」で読み手の時間を尊重する。',
+      visual: 'PyramidDiagram',
     },
     {
       type: 'quiz',
