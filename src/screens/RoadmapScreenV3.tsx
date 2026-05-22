@@ -196,6 +196,12 @@ const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
     image: `${IMG}/course-strategy.svg`,
     routeKey: '給与交渉・退職実務',
   },
+  '認知科学': {
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2z"/><path d="M14.5 2a2.5 2.5 0 0 0-2.5 2.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2z"/></svg>,
+    iconBg: 'rgba(167,139,250,.14)',
+    image: `${IMG}/course-cognitive-01.png`,
+    routeKey: 'cognitive',
+  },
 }
 
 const DEFAULT_VISUAL: CategoryVisual = {
