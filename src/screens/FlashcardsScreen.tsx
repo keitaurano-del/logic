@@ -5,6 +5,7 @@ import { Button } from '../components/Button'
 import { Header } from '../components/platform/Header'
 import { haptic } from '../platform/haptics'
 import { t } from '../i18n'
+import './FlashcardsScreen.css'
 
 interface FlashcardsScreenProps {
   onBack: () => void
@@ -21,6 +22,11 @@ export function FlashcardsScreen({ onBack, mode = 'due' }: FlashcardsScreenProps
 
   const card = queue[idx]
   const done = idx >= queue.length
+
+  const handleFlip = () => {
+    haptic.selection()
+    setFlipped((f) => !f)
+  }
 
   const handleReview = (quality: 'again' | 'good' | 'easy') => {
     if (!card) return
@@ -46,7 +52,7 @@ export function FlashcardsScreen({ onBack, mode = 'due' }: FlashcardsScreenProps
 
       {total === 0 ? (
         <div className="card empty" style={{ padding: 'var(--s-7)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 'var(--s-3)', color: 'var(--accent)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 'var(--s-3)', color: 'var(--brand)' }}>
             <SparklesIcon width={36} height={36} />
           </div>
           <h3 style={{ fontSize: 20, marginBottom: 'var(--s-2)' }}>
@@ -82,60 +88,36 @@ export function FlashcardsScreen({ onBack, mode = 'due' }: FlashcardsScreenProps
         </div>
       ) : (
         <>
-          <div className="eyebrow accent" style={{ marginBottom: 'var(--s-3)' }}>
+          <div className="fc3-eyebrow">
             FLASHCARD · {card.category.toUpperCase()}
           </div>
-          <button
-            type="button"
-            onClick={() => setFlipped((f) => !f)}
-            className="card"
-            style={{
-              minHeight: 280,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: 'var(--s-6) var(--s-5)',
-              cursor: 'pointer',
-              textAlign: 'center',
-              border: '1.5px solid var(--border)',
-              background: 'var(--bg-card)',
-              transition: 'border-color 120ms ease',
-            }}
-          >
-            <div>
-              <div
-                className="eyebrow"
-                style={{ marginBottom: 'var(--s-3)', color: 'var(--text-muted)' }}
-              >
-                {flipped ? t('label.answer') : t('label.question')}
-              </div>
-              <div
-                className="display"
-                style={{
-                  fontSize: 26,
-                  lineHeight: 1.5,
-                  whiteSpace: 'pre-wrap',
-                }}
-              >
-                {flipped ? card.back : card.front}
-              </div>
-              {!flipped && (
-                <div
-                  className="muted"
-                  style={{ marginTop: 'var(--s-4)', fontSize: 14 }}
-                >
-                  {t('flashcards.flipHint')}
+
+          {/* key={idx} forces remount → re-plays the enter animation per card */}
+          <div className="fc3-stage" key={idx}>
+            <button
+              type="button"
+              onClick={handleFlip}
+              className={`fc3-card is-entering${flipped ? ' is-flipped' : ''}`}
+              aria-pressed={flipped}
+              aria-label={flipped ? t('label.answer') : t('label.question')}
+            >
+              <div className="fc3-card-inner">
+                <div className="fc3-face fc3-face-front">
+                  <div className="fc3-face-eyebrow">{t('label.question')}</div>
+                  <div className="fc3-face-text">{card.front}</div>
+                  <div className="fc3-flip-hint">{t('flashcards.flipHint')}</div>
                 </div>
-              )}
-            </div>
-          </button>
+                <div className="fc3-face fc3-face-back">
+                  <div className="fc3-face-eyebrow">{t('label.answer')}</div>
+                  <div className="fc3-face-text fc3-back-text">{card.back}</div>
+                </div>
+              </div>
+            </button>
+          </div>
 
           {flipped && (
-            <div
-              className="stack"
-              style={{ marginTop: 'var(--s-5)', gap: 'var(--s-2)' }}
-            >
-              <div className="row" style={{ gap: 'var(--s-2)' }}>
+            <div className="fc3-actions">
+              <div className="fc3-actions-row">
                 <Button
                   variant="danger"
                   size="lg"
@@ -161,10 +143,7 @@ export function FlashcardsScreen({ onBack, mode = 'due' }: FlashcardsScreenProps
                   {t('flashcards.easy')}
                 </Button>
               </div>
-              <div
-                className="muted"
-                style={{ fontSize: 14, textAlign: 'center', marginTop: 'var(--s-2)' }}
-              >
+              <div className="fc3-meta">
                 {t('flashcards.intervalEase', { interval: card.interval, ease: card.ease.toFixed(1) })}
               </div>
             </div>
