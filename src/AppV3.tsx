@@ -239,11 +239,8 @@ function AppV3() {
         await new Promise<void>((resolve) => setTimeout(resolve, MIN_BOOT_MS - elapsed))
       }
     }
-    // ネイティブ Splash は capacitor.config.ts で launchAutoHide:true / launchShowDuration:0 に
-    // しているため即座に消える想定だが、念のためアプリ起動直後に明示的に hide() を呼ぶ。
-    // BootLoadingScreen が React 側で起動中の見た目を担うので、ネイティブ Splash は最短で消す。
-    void hideSplash()
-    const splashTimer = setTimeout(() => { void hideSplash() }, 0)
+    // ネイティブ SplashScreen は 1500ms 後に隠す → React の BootLoadingScreen が引き継ぐ
+    const splashTimer = setTimeout(() => { void hideSplash() }, 1500)
     // 初回起動時にセッションを取得し、ログイン済ならホームへ。同時にリモートと同期して最新化。
     getInitialUser().then(async (user) => {
       setCurrentUser(user)

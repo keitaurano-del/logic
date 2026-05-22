@@ -15,11 +15,8 @@ const config: CapacitorConfig = {
   },
   plugins: {
     SplashScreen: {
-      // ネイティブ Splash 画面はスキップしてすぐ BootLoadingScreen を表示する。
-      // OS の起動アクティビティ表示は避けられないので、単色 PNG (drawable/splash.png)
-      // と backgroundColor で「ロゴ無しの #1A1F2E 一色」が一瞬出るだけにする。
-      launchShowDuration: 0,
-      launchAutoHide: true,
+      launchShowDuration: 1500,
+      launchAutoHide: false, // hidden manually via src/platform/splash.ts once auth is ready
       backgroundColor: SURFACE,
       androidScaleType: 'CENTER_CROP',
       showSpinner: false,

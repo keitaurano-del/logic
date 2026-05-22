@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- Splash background — Slate Blue dark surface (matches capacitor.config.ts SURFACE = #1A1F2E) -->
-    <color name="splash_background">#1A1F2E</color>
-</resources>
