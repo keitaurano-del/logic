@@ -19,13 +19,13 @@ const problemSettingIntro: LessonData = {
       type: 'quiz',
       question: 'For the issue "employees work too much overtime," what is the best way to set the problem?',
       options: [
-        { label: 'Decide whether to ban overtime by policy', correct: false },
-        { label: 'Identify the root cause of the overtime (workload? skill? process?)', correct: true },
-        { label: 'Calculate the cost of overtime pay', correct: false },
-        { label: 'Research how other companies cut overtime', correct: false },
+        { label: 'Decide whether to ban overtime by policy and enforce it', correct: false },
+        { label: 'Identify the root cause of overtime (workload, skill, process)', correct: true },
+        { label: 'Calculate the current cost of overtime pay company-wide', correct: false },
+        { label: 'Research how other companies have cut overtime and copy them', correct: false },
       ],
       explanation:
-        'Before jumping to "how do we cut overtime?", problem-setting means identifying "why is there so much overtime?". The fix changes completely — more headcount if it is workload, training if it is skill, automation if it is process.',
+        'Before "how do we cut overtime?" comes "why is there so much?" Option 1 jumps to one specific solution and narrows your options; option 3 is cost accounting that doesn\'t reveal causes; option 4 borrows external playbooks without diagnosing the local cause. The fix changes completely depending on the root cause — workload, skill, or process.',
     },
     {
       type: 'explain',
@@ -37,13 +37,13 @@ const problemSettingIntro: LessonData = {
       type: 'quiz',
       question: 'Problem: "E-commerce revenue is down 20% YoY." Which is the best-formulated issue?',
       options: [
-        { label: 'Should we increase ad spend?', correct: false },
-        { label: 'Should we redesign the site?', correct: false },
-        { label: 'Identify the drivers of the revenue drop and act on the highest-impact one', correct: true },
-        { label: 'Should we study competitor e-commerce sites?', correct: false },
+        { label: 'Should we increase ad spend to drive more traffic?', correct: false },
+        { label: 'Should we redesign the site to refresh the experience?', correct: false },
+        { label: 'Identify revenue-drop drivers and act on the highest-impact one', correct: true },
+        { label: 'Should we benchmark and study competitor e-commerce sites?', correct: false },
       ],
       explanation:
-        '"Increase ad spend" or "redesign the site" are solutions, not issue-setting. Proper issue-setting starts with "what is the largest driver of the revenue drop?" Once the driver is known, the right fix follows naturally.',
+        'Options 1 and 2 leap to specific solutions before knowing the cause; option 4 burns time on external benchmarking that won\'t reveal which internal lever to pull. Proper issue-setting starts with "what is the largest driver?" — once known, the fix follows.',
     },
     {
       type: 'explain',
@@ -55,13 +55,13 @@ const problemSettingIntro: LessonData = {
       type: 'quiz',
       question: 'For the problem "DAU (daily active users) of our app is low," in a Where -> Why -> How analysis, what should you check at the Where stage?',
       options: [
-        { label: 'Interview users about why they don\'t use it', correct: false },
-        { label: 'Send more push notifications to drive usage', correct: false },
-        { label: 'Decompose: are new users dropping off on day one, or are existing users using it less often?', correct: true },
-        { label: 'Compare DAU to a competitor app', correct: false },
+        { label: 'Interview users to understand why they don\'t use the app', correct: false },
+        { label: 'Send more push notifications immediately to drive usage', correct: false },
+        { label: 'Decompose: day-one new-user drop-off vs lower existing-user frequency', correct: true },
+        { label: 'Compare your DAU to a leading competitor app and benchmark', correct: false },
       ],
       explanation:
-        'Where is "locate the problem." Whether the cause of low DAU is "new-user day-one drop-off" or "lower frequency among existing users" completely changes which Why to dig into and which How to apply.',
+        'Where is for locating the problem. Option 1 is Why (reason-finding) — premature; option 2 jumps straight to How (action) — even worse; option 4 looks outward when the problem could be located inside. Internal decomposition is the essence of Where.',
     },
   ],
 }
@@ -81,13 +81,13 @@ const problemSettingFramework: LessonData = {
       type: 'quiz',
       question: 'A new-business planning meeting raises four discussion points. Which has the highest issue priority (must be answered immediately)?',
       options: [
-        { label: 'How to lay out the office', correct: false },
-        { label: 'Who is the target customer for this business', correct: true },
-        { label: 'What the market size will be 5 years out', correct: false },
-        { label: 'How to design the logo', correct: false },
+        { label: 'How to design and lay out the new business\'s office space', correct: false },
+        { label: 'Who exactly is the target customer for this business', correct: true },
+        { label: 'What the market size will look like 5 years from now', correct: false },
+        { label: 'How to design the brand logo and visual identity', correct: false },
       ],
       explanation:
-        'Until you know the target customer, you cannot decide product, price, or distribution. The other items should be discussed only after the target is set. Issue priority is judged by "what blocks all downstream decisions until it is settled."',
+        'Until you know the target customer, you cannot decide product, price, distribution, or marketing. Options 1 and 4 can wait until after launch; option 3 matters but cannot be accurately forecast now and doesn\'t block the decision. "What blocks every downstream decision" is the issue-priority test.',
     },
     {
       type: 'explain',
@@ -143,13 +143,13 @@ const problemSettingPractice: LessonData = {
       type: 'quiz',
       question: 'Which of the following is a properly set "problem"?',
       options: [
-        { label: 'Adopt Slack to improve internal communication', correct: false },
-        { label: 'Cross-team information sharing is slow; on average it takes 5 days to make a decision', correct: true },
-        { label: 'The whole industry is in a downturn', correct: false },
-        { label: 'Increase revenue', correct: false },
+        { label: 'Adopt Slack to improve internal communication speed', correct: false },
+        { label: 'Cross-team info sharing is slow; decisions take 5 days on average', correct: true },
+        { label: 'The entire industry is in a deep economic downturn this year', correct: false },
+        { label: 'Significantly increase revenue across the company this quarter', correct: false },
       ],
       explanation:
-        '"Adopt Slack" is a solution; "industry downturn" is uncontrollable; "increase revenue" is too vague. "5-day decision-making delay due to slow info sharing" is concrete and quantified — you can move from there to designing fixes.',
+        'Option 1 leaps to "Slack" — a specific solution; option 3 names an uncontrollable external factor; option 4 is a vague goal with no quantification. Only option 2 is concrete, quantified, and actionable — the prerequisites for a usable problem statement.',
     },
     {
       type: 'explain',
@@ -162,12 +162,12 @@ const problemSettingPractice: LessonData = {
       question: 'For the online English-conversation service above, what should be the top-priority issue?',
       options: [
         { label: 'Double the marketing budget to push new sign-ups even higher', correct: false },
-        { label: 'Improve the trial-to-paid experience and lift conversion toward the industry average of 15%', correct: true },
-        { label: 'Raise instructor wages to improve lesson quality', correct: false },
-        { label: 'Survey competitor pricing and cut prices', correct: false },
+        { label: 'Improve trial-to-paid experience design, targeting 15% industry-average conversion', correct: true },
+        { label: 'Raise instructor wages to improve overall lesson quality and NPS', correct: false },
+        { label: 'Survey competitor pricing and cut prices aggressively to compete', correct: false },
       ],
       explanation:
-        'New sign-ups are strong (+30%), but trial-to-paid conversion is half the industry average (8% vs 15%). That is the bottleneck. Investing more in acquisition is lower ROI than "converting 8% of those 5,000 visitors to 15%." Plug the leak before pouring more water in.',
+        'Sign-ups are healthy (+30%) but trial-to-paid is half the industry average (8% vs 15%) — that\'s the bottleneck. Option 1 pours more water into a leaking bucket; option 3 adds cost without directly fixing conversion; option 4 simply erodes margin. Plugging the conversion leak first delivers the best ROI.',
     },
     {
       type: 'explain',
@@ -179,13 +179,13 @@ const problemSettingPractice: LessonData = {
       type: 'quiz',
       question: 'Which is correct about problem setting?',
       options: [
-        { label: 'The quality of the solution matters more than the problem setting', correct: false },
-        { label: 'The problem does not need to be quantified', correct: false },
+        { label: 'Solution quality matters more than problem-setting quality', correct: false },
+        { label: 'A problem can be qualitative and does not need to be quantified', correct: false },
         { label: 'When you set the right problem, the solution becomes obvious', correct: true },
-        { label: 'Spending too much time on problem setting is inefficient', correct: false },
+        { label: 'Spending much time on problem setting is inefficient — move fast', correct: false },
       ],
       explanation:
-        'As Einstein said, most of problem solving rests on "setting the right question." If the problem is set wrong, even an excellent solution misses the target.',
+        'Einstein: "55 of every 60 minutes goes to defining the problem." Option 1 is the typical solution-worship error; option 2 ditches measurability and gives up verification; option 4 mistakes speed for value and produces rework. A well-set problem makes the solution self-evident.',
     },
   ],
 }
