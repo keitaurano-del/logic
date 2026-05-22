@@ -25,12 +25,13 @@ test.describe('JA ロケール — 全 root 画面で日本語', () => {
     await expect(page.locator('text=Think Logically')).toHaveCount(0)
   })
 
-  test('profile: "レベル"/"連続学習日数" の日本語が出る', async ({ page }) => {
+  test('profile: "Lv."/"連続学習日数" の日本語が出る', async ({ page }) => {
+    // 2026-05 RPG調称号システム: "レベル" 単語は UI に登場せず "Lv.{n}" 表記のみ。
+    // 日本語ロケールであることは "連続学習日数" ラベルと、英語版 "Day Streak" が出ないことで担保する。
     await boot(page, { locale: 'ja', displayName: 'ja' })
     await tab(page, 4).click()
-    await expect(page.locator('text=レベル').first()).toBeVisible()
+    await expect(page.locator('text=Lv.1').first()).toBeVisible()
     await expect(page.locator('text=連続学習日数').first()).toBeVisible()
-    await expect(page.locator('text=LEVEL')).toHaveCount(0)
     await expect(page.locator('text=Day Streak')).toHaveCount(0)
   })
 })
