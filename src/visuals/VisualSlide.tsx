@@ -59,13 +59,19 @@ export function VisualSlide({ title, caption, children, fullBleed = false }: Pro
           background: 'var(--bg-card)',
           border: fullBleed ? 'none' : '1px solid var(--border-light)',
           borderRadius: fullBleed ? 0 : 16,
-          padding: fullBleed ? '12px 8px' : 16,
+          // 縦は最低限のゆとり、横はギリギリまで詰めて画面幅を使い切る
+          padding: fullBleed ? '14px 4px' : 16,
           boxShadow: fullBleed ? 'none' : 'var(--shadow-card)',
           // LessonStoriesScreen の左右 padding (24px) を打ち消して画面いっぱいに
+          // width: calc(100% + 48px) で親の padding 分も含めて画面端まで広がる
+          width: fullBleed ? 'calc(100% + 48px)' : undefined,
           marginLeft: fullBleed ? -24 : 0,
           marginRight: fullBleed ? -24 : 0,
           // 段階開示コントロールの z-index / 中央配置基盤
           position: fullBleed ? 'relative' : undefined,
+          // 画面端まで広げた時に内部要素がはみ出さないよう抑える
+          overflow: fullBleed ? 'hidden' : undefined,
+          boxSizing: 'border-box',
         }}
       >
         {children}

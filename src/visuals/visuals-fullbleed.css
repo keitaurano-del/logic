@@ -9,10 +9,10 @@
  * 個別 Visual で特殊な構造調整が必要な場合は、`.vz-pyramid-fb` のように
  * 各 visual.css 側で .vz-<visual>-fb クラスを追加して上書きする。
  *
- * 共通設計目標:
- *   - 本文 17-18px / 副題 14-15px / ラベル 12-13px
- *   - カード min-height 64-80px（タップしやすさ）
- *   - 横幅 100% を使い切る
+ * 共通設計目標 (Phase 2 — 実機指摘反映):
+ *   - 本文 17-18px / タイトル 22-24px / ラベル 14-16px
+ *   - カード min-height 80px 以上（タップしやすさ + 視認性）
+ *   - 横幅 100% を使い切る（親 padding 打ち消し済 width: calc(100% + 48px)）
  *   - 段階開示コントロールは中央下端に新ドット UI で配置
  * ============================================================ */
 
@@ -41,30 +41,31 @@
 [data-fullbleed='true'] .vz-cra-card,
 [data-fullbleed='true'] .vz-prep-card,
 [data-fullbleed='true'] .vz-sowhat-block {
-  padding: 14px 16px;
-  min-height: 72px;
+  padding: 16px 18px;
+  min-height: 84px;
   border-radius: 14px;
 }
 
 [data-fullbleed='true'] .vz-step-stack-card,
 [data-fullbleed='true'] .vz-scr-step,
 [data-fullbleed='true'] .vz-www-step {
-  gap: 6px;
+  gap: 8px;
 }
 
 [data-fullbleed='true'] .vz-phase-title,
 [data-fullbleed='true'] .vz-step-stack-card .vz-step-title,
 [data-fullbleed='true'] .vz-scr-step .vz-step-title,
 [data-fullbleed='true'] .vz-www-step .vz-step-title {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
+  line-height: 1.4;
 }
 
 [data-fullbleed='true'] .vz-phase-body,
 [data-fullbleed='true'] .vz-step-stack-card .vz-step-body,
 [data-fullbleed='true'] .vz-scr-step .vz-step-body,
 [data-fullbleed='true'] .vz-www-step .vz-step-body {
-  font-size: 14px;
+  font-size: 17px;
   line-height: 1.6;
 }
 
@@ -76,8 +77,9 @@
 [data-fullbleed='true'] .vz-step-stack-card .vz-step-label,
 [data-fullbleed='true'] .vz-scr-step .vz-step-label,
 [data-fullbleed='true'] .vz-www-step .vz-step-label {
-  font-size: 12px;
+  font-size: 14px;
   letter-spacing: 0.06em;
+  font-weight: 700;
 }
 
 /* ============================================================
@@ -85,122 +87,187 @@
  * ============================================================ */
 [data-fullbleed='true'] .vz-step-stack-arrow,
 [data-fullbleed='true'] .vz-scr-arrow {
-  font-size: 18px;
-  margin: 4px 0;
+  font-size: 22px;
+  margin: 6px 0;
 }
 
 /* ============================================================
- * 各 Visual の特殊調整
+ * 各 Visual の特殊調整 — 詳細度強化版（実機ズレ対応）
  * ============================================================ */
 
 /* MECE Patterns — 4 cards, 1 列化で大きく */
 [data-fullbleed='true'] .vz-mece {
-  gap: 12px;
+  gap: 14px;
 }
 [data-fullbleed='true'] .vz-mece-grid {
   grid-template-columns: 1fr;
-  gap: 12px;
+  gap: 14px;
 }
 [data-fullbleed='true'] .vz-mece-card {
-  padding: 16px;
-  min-height: 80px;
+  padding: 18px;
+  min-height: 96px;
   border-radius: 14px;
 }
 [data-fullbleed='true'] .vz-mece-card-title,
 [data-fullbleed='true'] .vz-mece-title {
-  font-size: 16px;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.4;
 }
 [data-fullbleed='true'] .vz-mece-card-body,
 [data-fullbleed='true'] .vz-mece-body {
-  font-size: 14px;
+  font-size: 17px;
   line-height: 1.6;
+}
+[data-fullbleed='true'] .vz-mece-card-label,
+[data-fullbleed='true'] .vz-mece-label {
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  font-weight: 700;
 }
 
 /* Logic Tree — ノードを大きく */
+[data-fullbleed='true'] .vz-tree {
+  gap: 12px;
+}
 [data-fullbleed='true'] .vz-tree-node {
-  padding: 14px 16px;
-  font-size: 15px;
+  padding: 16px 18px;
+  font-size: 17px;
+  line-height: 1.5;
   border-radius: 12px;
-  min-height: 56px;
+  min-height: 72px;
 }
 [data-fullbleed='true'] .vz-tree-root {
-  font-size: 17px;
+  font-size: 20px;
   font-weight: 800;
-  padding: 16px 18px;
+  padding: 18px 20px;
+  min-height: 80px;
 }
 [data-fullbleed='true'] .vz-tree-children {
-  gap: 10px;
+  gap: 12px;
+}
+[data-fullbleed='true'] .vz-tree-label,
+[data-fullbleed='true'] .vz-tree-node-label {
+  font-size: 14px;
+  font-weight: 700;
 }
 
 /* SoWhat / Why So 矢印スタック */
+[data-fullbleed='true'] .vz-sowhat {
+  gap: 12px;
+}
 [data-fullbleed='true'] .vz-sowhat-block {
-  padding: 16px 18px;
-  min-height: 80px;
+  padding: 18px 20px;
+  min-height: 96px;
 }
 [data-fullbleed='true'] .vz-sowhat-label {
-  font-size: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
 }
-[data-fullbleed='true'] .vz-sowhat-block .vz-sowhat-body {
-  font-size: 16px;
+[data-fullbleed='true'] .vz-sowhat-block .vz-sowhat-body,
+[data-fullbleed='true'] .vz-sowhat-body {
+  font-size: 18px;
   font-weight: 700;
   line-height: 1.5;
+}
+[data-fullbleed='true'] .vz-sowhat-arrow {
+  font-size: 22px;
+  margin: 4px 0;
 }
 
 /* Deduction / Induction */
 [data-fullbleed='true'] .vz-deduction,
 [data-fullbleed='true'] .vz-induction {
-  gap: 10px;
+  gap: 12px;
 }
 [data-fullbleed='true'] .vz-induction-samples {
   grid-template-columns: 1fr;
-  gap: 10px;
+  gap: 12px;
 }
 [data-fullbleed='true'] .vz-deduction-premise,
 [data-fullbleed='true'] .vz-deduction-conclusion,
 [data-fullbleed='true'] .vz-induction-sample,
 [data-fullbleed='true'] .vz-induction-pattern,
 [data-fullbleed='true'] .vz-induction-conclusion {
-  padding: 14px 16px;
-  font-size: 15px;
-  min-height: 64px;
+  padding: 16px 18px;
+  font-size: 17px;
+  line-height: 1.55;
+  min-height: 80px;
   border-radius: 12px;
+}
+[data-fullbleed='true'] .vz-deduction-label,
+[data-fullbleed='true'] .vz-induction-label {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+[data-fullbleed='true'] .vz-deduction-arrow,
+[data-fullbleed='true'] .vz-induction-arrow {
+  font-size: 22px;
+  margin: 6px 0;
 }
 
 /* Feedback Loop */
+[data-fullbleed='true'] .vz-feedback,
+[data-fullbleed='true'] .vz-feedback-loop {
+  gap: 12px;
+}
 [data-fullbleed='true'] .vz-feedback-node,
 [data-fullbleed='true'] .vz-feedback-cell {
-  padding: 14px 16px;
-  font-size: 15px;
-  min-height: 64px;
+  padding: 16px 18px;
+  font-size: 17px;
+  line-height: 1.55;
+  min-height: 80px;
+  border-radius: 12px;
+}
+[data-fullbleed='true'] .vz-feedback-arrow,
+[data-fullbleed='true'] .vz-feedback-loop-arrow {
+  font-size: 22px;
+}
+[data-fullbleed='true'] .vz-feedback-label {
+  font-size: 14px;
+  font-weight: 700;
 }
 
 /* ClaimReasonAssumption */
 [data-fullbleed='true'] .vz-cra {
-  gap: 12px;
+  gap: 14px;
 }
 [data-fullbleed='true'] .vz-cra-card {
-  font-size: 15px;
-  line-height: 1.55;
+  font-size: 17px;
+  line-height: 1.6;
+  padding: 18px 20px;
+  min-height: 88px;
 }
 [data-fullbleed='true'] .vz-cra-card .vz-cra-label,
 [data-fullbleed='true'] .vz-cra-label {
-  font-size: 12px;
+  font-size: 14px;
   letter-spacing: 0.08em;
+  font-weight: 700;
 }
 
 /* PREP */
 [data-fullbleed='true'] .vz-prep {
-  gap: 10px;
+  gap: 12px;
 }
 [data-fullbleed='true'] .vz-prep-card,
 [data-fullbleed='true'] .vz-prep-row {
-  padding: 14px 16px;
-  font-size: 15px;
-  min-height: 64px;
+  padding: 16px 18px;
+  font-size: 17px;
+  line-height: 1.55;
+  min-height: 80px;
   border-radius: 12px;
 }
 [data-fullbleed='true'] .vz-prep-label {
-  font-size: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+[data-fullbleed='true'] .vz-prep-step,
+[data-fullbleed='true'] .vz-prep-row-label {
+  font-size: 14px;
+  font-weight: 700;
 }
 
 /* ThreePillars — 3 列維持 */
@@ -210,159 +277,317 @@
 }
 [data-fullbleed='true'] .vz-pillar,
 [data-fullbleed='true'] .vz-pillars-col {
-  padding: 14px 12px;
-  min-height: 100px;
+  padding: 16px 12px;
+  min-height: 132px;
   border-radius: 12px;
 }
 [data-fullbleed='true'] .vz-pillar-title,
 [data-fullbleed='true'] .vz-pillars-title {
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 700;
+  line-height: 1.4;
 }
 [data-fullbleed='true'] .vz-pillar-body,
 [data-fullbleed='true'] .vz-pillars-body {
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.55;
+}
+[data-fullbleed='true'] .vz-pillar-label {
+  font-size: 13px;
+  font-weight: 700;
 }
 
 /* DesignThinkingCycle */
+[data-fullbleed='true'] .vz-dtcycle,
+[data-fullbleed='true'] .vz-design-thinking {
+  gap: 12px;
+}
 [data-fullbleed='true'] .vz-dtcycle-step,
-[data-fullbleed='true'] .vz-dtcycle-card {
-  padding: 14px 16px;
-  font-size: 15px;
-  min-height: 64px;
+[data-fullbleed='true'] .vz-dtcycle-card,
+[data-fullbleed='true'] .vz-design-thinking-phase {
+  padding: 16px 18px;
+  font-size: 17px;
+  line-height: 1.55;
+  min-height: 80px;
   border-radius: 12px;
+}
+[data-fullbleed='true'] .vz-dtcycle-label,
+[data-fullbleed='true'] .vz-design-thinking-phase-label {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+[data-fullbleed='true'] .vz-dtcycle-title,
+[data-fullbleed='true'] .vz-design-thinking-phase-title {
+  font-size: 18px;
+  font-weight: 700;
 }
 
 /* Fermi Formula / Steps */
+[data-fullbleed='true'] .vz-fermi {
+  gap: 12px;
+}
 [data-fullbleed='true'] .vz-fermi-row,
 [data-fullbleed='true'] .vz-fermi-step,
 [data-fullbleed='true'] .vz-fermi-card,
-[data-fullbleed='true'] .vz-fermi-steps-card {
-  padding: 14px 16px;
-  font-size: 15px;
-  min-height: 64px;
+[data-fullbleed='true'] .vz-fermi-steps-card,
+[data-fullbleed='true'] .vz-fermi-formula {
+  padding: 16px 18px;
+  font-size: 17px;
+  line-height: 1.55;
+  min-height: 80px;
   border-radius: 12px;
+}
+[data-fullbleed='true'] .vz-fermi-formula-text,
+[data-fullbleed='true'] .vz-fermi-formula .vz-formula {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+[data-fullbleed='true'] .vz-fermi-label {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
 }
 
 /* WhyWhy 系（chain / toyota / evidence） */
+[data-fullbleed='true'] .vz-whywhy,
+[data-fullbleed='true'] .vz-whywhy-chain,
+[data-fullbleed='true'] .vz-whywhy-toyota,
+[data-fullbleed='true'] .vz-whywhy-evidence {
+  gap: 12px;
+}
 [data-fullbleed='true'] .vz-whywhy-row,
 [data-fullbleed='true'] .vz-whywhy-step,
 [data-fullbleed='true'] .vz-whywhy-cell,
 [data-fullbleed='true'] .vz-whywhy-toyota-cell,
 [data-fullbleed='true'] .vz-whywhy-evidence-cell {
-  padding: 14px 16px;
-  font-size: 15px;
-  min-height: 60px;
+  padding: 16px 18px;
+  font-size: 17px;
+  line-height: 1.55;
+  min-height: 80px;
   border-radius: 12px;
+}
+[data-fullbleed='true'] .vz-whywhy-label,
+[data-fullbleed='true'] .vz-whywhy-step-label {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+[data-fullbleed='true'] .vz-whywhy-arrow {
+  font-size: 22px;
+  margin: 4px 0;
 }
 
 /* Iceberg */
 [data-fullbleed='true'] .vz-iceberg {
-  gap: 10px;
+  gap: 12px;
 }
 [data-fullbleed='true'] .vz-iceberg-layer,
 [data-fullbleed='true'] .vz-iceberg-band {
-  padding: 14px 16px;
-  font-size: 15px;
-  min-height: 64px;
+  padding: 18px 20px;
+  font-size: 17px;
+  line-height: 1.55;
+  min-height: 92px;
   border-radius: 12px;
+}
+[data-fullbleed='true'] .vz-iceberg-label,
+[data-fullbleed='true'] .vz-iceberg-layer-label {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+[data-fullbleed='true'] .vz-iceberg-title,
+[data-fullbleed='true'] .vz-iceberg-layer-title {
+  font-size: 18px;
+  font-weight: 700;
 }
 
 /* Leverage Points */
+[data-fullbleed='true'] .vz-leverage {
+  gap: 12px;
+}
 [data-fullbleed='true'] .vz-leverage-row,
 [data-fullbleed='true'] .vz-leverage-card,
-[data-fullbleed='true'] .vz-leverage-item {
-  padding: 14px 16px;
-  font-size: 15px;
-  min-height: 60px;
+[data-fullbleed='true'] .vz-leverage-item,
+[data-fullbleed='true'] .vz-leverage-point {
+  padding: 16px 18px;
+  font-size: 17px;
+  line-height: 1.55;
+  min-height: 80px;
   border-radius: 12px;
+}
+[data-fullbleed='true'] .vz-leverage-label,
+[data-fullbleed='true'] .vz-leverage-rank {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
 }
 
 /* CaseStudy */
+[data-fullbleed='true'] .vz-case {
+  gap: 12px;
+}
 [data-fullbleed='true'] .vz-case-card,
 [data-fullbleed='true'] .vz-case-phase {
-  padding: 14px 16px;
-  font-size: 15px;
-  min-height: 64px;
+  padding: 16px 18px;
+  font-size: 17px;
+  line-height: 1.55;
+  min-height: 80px;
   border-radius: 12px;
+}
+[data-fullbleed='true'] .vz-case-label,
+[data-fullbleed='true'] .vz-case-title {
+  font-size: 14px;
+  font-weight: 700;
+}
+[data-fullbleed='true'] .vz-case-phase-title {
+  font-size: 18px;
+  font-weight: 700;
 }
 
 /* MvpTestDesign */
+[data-fullbleed='true'] .vz-mvp {
+  gap: 12px;
+}
 [data-fullbleed='true'] .vz-mvp-row,
-[data-fullbleed='true'] .vz-mvp-card {
-  padding: 14px 16px;
-  font-size: 15px;
-  min-height: 64px;
+[data-fullbleed='true'] .vz-mvp-card,
+[data-fullbleed='true'] .vz-mvp-test {
+  padding: 16px 18px;
+  font-size: 17px;
+  line-height: 1.55;
+  min-height: 80px;
   border-radius: 12px;
+}
+[data-fullbleed='true'] .vz-mvp-label {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
 }
 
 /* Scamper / SixHats */
+[data-fullbleed='true'] .vz-scamper,
+[data-fullbleed='true'] .vz-sixhats,
+[data-fullbleed='true'] .vz-six-hat {
+  gap: 12px;
+}
 [data-fullbleed='true'] .vz-scamper-card,
 [data-fullbleed='true'] .vz-scamper-row,
 [data-fullbleed='true'] .vz-sixhats-card,
 [data-fullbleed='true'] .vz-hat {
-  padding: 14px 16px;
-  font-size: 15px;
-  min-height: 64px;
+  padding: 16px 18px;
+  font-size: 17px;
+  line-height: 1.55;
+  min-height: 84px;
   border-radius: 12px;
+}
+[data-fullbleed='true'] .vz-scamper-label,
+[data-fullbleed='true'] .vz-hat-label,
+[data-fullbleed='true'] .vz-six-hat-label {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+[data-fullbleed='true'] .vz-scamper-title,
+[data-fullbleed='true'] .vz-hat-title {
+  font-size: 18px;
+  font-weight: 700;
 }
 
 /* EmpathyMap — quadrant 2x2 */
 [data-fullbleed='true'] .vz-empathy {
-  gap: 10px;
+  gap: 12px;
 }
 [data-fullbleed='true'] .vz-empathy-grid {
-  gap: 10px;
+  gap: 12px;
 }
 [data-fullbleed='true'] .vz-empathy-cell,
 [data-fullbleed='true'] .vz-empathy-quadrant {
-  padding: 14px 16px;
-  min-height: 88px;
+  padding: 16px 18px;
+  min-height: 108px;
   border-radius: 12px;
 }
 [data-fullbleed='true'] .vz-empathy-cell-label,
 [data-fullbleed='true'] .vz-empathy-quadrant-title {
-  font-size: 13px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }
 [data-fullbleed='true'] .vz-empathy-cell-body,
 [data-fullbleed='true'] .vz-empathy-quadrant-body {
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.55;
 }
 
 /* StepStack（共有コンポーネント） */
 [data-fullbleed='true'] .vz-step-stack {
-  gap: 8px;
+  gap: 10px;
 }
 [data-fullbleed='true'] .vz-step-stack-card {
-  padding: 14px 16px;
-  min-height: 72px;
+  padding: 16px 18px;
+  min-height: 88px;
 }
 [data-fullbleed='true'] .vz-step-stack-final {
-  min-height: 80px;
+  min-height: 96px;
 }
 
 /* SCR / WhereWhyHow（vz-step-stack を共有しているが個別調整） */
 [data-fullbleed='true'] .vz-scr,
-[data-fullbleed='true'] .vz-www {
-  gap: 8px;
+[data-fullbleed='true'] .vz-www,
+[data-fullbleed='true'] .vz-where-why-how {
+  gap: 10px;
+}
+[data-fullbleed='true'] .vz-scr-block,
+[data-fullbleed='true'] .vz-where-why-how-step {
+  padding: 16px 18px;
+  font-size: 17px;
+  line-height: 1.55;
+  min-height: 84px;
+  border-radius: 12px;
+}
+
+/* ClaimReason / Induction sample 系の補強 */
+[data-fullbleed='true'] .vz-claim-reason {
+  gap: 12px;
+}
+[data-fullbleed='true'] .vz-claim,
+[data-fullbleed='true'] .vz-reason {
+  padding: 16px 18px;
+  font-size: 17px;
+  line-height: 1.55;
+  min-height: 80px;
+  border-radius: 12px;
+}
+
+/* Pyramid 全画面化プロト（既存 .vz-pyramid-fb を維持しつつ底上げ） */
+[data-fullbleed='true'] .vz-pyramid-cell {
+  padding: 14px 16px;
+  font-size: 17px;
+  line-height: 1.5;
+  min-height: 76px;
+  border-radius: 12px;
+}
+[data-fullbleed='true'] .vz-pyramid-cell-label {
+  font-size: 13px;
+  font-weight: 700;
 }
 
 /* タイトル/見出しテキストの底上げ（Visual 内に h2/h3 を持つ Visual 向け） */
 [data-fullbleed='true'] .vz-title {
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 800;
   letter-spacing: -0.005em;
+  line-height: 1.35;
 }
 [data-fullbleed='true'] .vz-subtitle {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--text-secondary);
+  line-height: 1.55;
 }
 
 /* 全画面化したコンテナの内側スペーシング */
 [data-fullbleed='true'] {
-  gap: 12px;
+  gap: 14px;
 }
 
 /* 段階開示コントロールの中央寄せ補助 */
@@ -376,13 +601,73 @@
 @media (max-width: 380px) {
   [data-fullbleed='true'] .vz-pillar,
   [data-fullbleed='true'] .vz-pillars-col {
-    min-height: 90px;
+    min-height: 120px;
+    padding: 14px 10px;
+  }
+  [data-fullbleed='true'] .vz-pillar-title,
+  [data-fullbleed='true'] .vz-pillars-title {
+    font-size: 16px;
+  }
+  [data-fullbleed='true'] .vz-pillar-body,
+  [data-fullbleed='true'] .vz-pillars-body {
+    font-size: 14px;
   }
   [data-fullbleed='true'] .vz-empathy-cell,
   [data-fullbleed='true'] .vz-empathy-quadrant {
-    min-height: 80px;
+    min-height: 96px;
+    padding: 14px 14px;
+  }
+  [data-fullbleed='true'] .vz-empathy-cell-body,
+  [data-fullbleed='true'] .vz-empathy-quadrant-body {
+    font-size: 15px;
   }
   [data-fullbleed='true'] .vz-step-stack-card {
-    padding: 12px 14px;
+    padding: 14px 14px;
+    min-height: 80px;
+  }
+  [data-fullbleed='true'] .vz-mece-card {
+    min-height: 84px;
+    padding: 16px;
+  }
+  [data-fullbleed='true'] .vz-tree-node {
+    font-size: 16px;
+    padding: 14px 14px;
+    min-height: 64px;
+  }
+  [data-fullbleed='true'] .vz-tree-root {
+    font-size: 18px;
+    padding: 16px;
+  }
+}
+
+/* ============================================================
+ * 大型端末（≥ 414px）— iPhone Pro Max / Android XL の余白活用
+ * ============================================================ */
+@media (min-width: 414px) {
+  [data-fullbleed='true'] .vz-mece-card,
+  [data-fullbleed='true'] .vz-tree-node,
+  [data-fullbleed='true'] .vz-sowhat-block,
+  [data-fullbleed='true'] .vz-deduction-premise,
+  [data-fullbleed='true'] .vz-deduction-conclusion,
+  [data-fullbleed='true'] .vz-induction-sample,
+  [data-fullbleed='true'] .vz-induction-pattern,
+  [data-fullbleed='true'] .vz-induction-conclusion,
+  [data-fullbleed='true'] .vz-feedback-node,
+  [data-fullbleed='true'] .vz-cra-card,
+  [data-fullbleed='true'] .vz-prep-card,
+  [data-fullbleed='true'] .vz-iceberg-layer,
+  [data-fullbleed='true'] .vz-leverage-card,
+  [data-fullbleed='true'] .vz-case-card,
+  [data-fullbleed='true'] .vz-mvp-card,
+  [data-fullbleed='true'] .vz-scamper-card,
+  [data-fullbleed='true'] .vz-hat,
+  [data-fullbleed='true'] .vz-empathy-cell,
+  [data-fullbleed='true'] .vz-empathy-quadrant,
+  [data-fullbleed='true'] .vz-dtcycle-step,
+  [data-fullbleed='true'] .vz-whywhy-row,
+  [data-fullbleed='true'] .vz-fermi-row,
+  [data-fullbleed='true'] .vz-step-stack-card {
+    padding-left: 20px;
+    padding-right: 20px;
   }
 }
