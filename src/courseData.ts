@@ -329,12 +329,12 @@ const COURSES_JA: Course[] = [
   // ── フェルミ推定 ────────────────────────────────────
   {
     id: 'fermi-01',
-    title: '概算で、世界の規模を掴む',
+    title: 'フェルミ推定の 4 ステップと許容誤差',
     category: 'フェルミ推定',
     group: 'business',
-    lessonIds: [200, 201, 202, 203, 204],
+    lessonIds: [200, 201, 205, 202, 203, 204],
     level: '中級',
-    description: '数式を立てて分解し、正確さより「だいたい正しい」答えを素早く出す力を鍛える。',
+    description: '4 ステップ・分解の技術・前提データ・実践例・罠と対策まで段階的に学ぶ。',
     image: '/images/v3/course-fermi-01.png',
   },
 
@@ -557,8 +557,8 @@ const COURSE_EN_OVERRIDES: Record<string, { title: string; description: string }
     description: 'From RBV and core competencies to Blue Ocean, dynamic capabilities, and platform strategy — learn modern strategy evolution.',
   },
   'fermi-01': {
-    title: "Grasp the World's Scale with Estimation",
-    description: 'Build equations, decompose, and produce "roughly right" answers quickly — accuracy comes second.',
+    title: 'The Four Fermi Steps and Acceptable Error',
+    description: 'Step-by-step through the 4 steps, decomposition, base facts, worked examples, and common traps.',
   },
   'numeracy-01': {
     title: 'Get Strong with Numbers',

@@ -60,6 +60,13 @@ import { LayoutVisual } from './LayoutVisual'
 import { TypographyVisual } from './TypographyVisual'
 import { ColorPaletteVisual } from './ColorPaletteVisual'
 import { ChartTypeGuideVisual } from './ChartTypeGuideVisual'
+// Fermi expansion (Phase A): lesson 205 / 210 / 212 / 214 / 215 / 216
+import { FermiBaseDataVisual } from './FermiBaseDataVisual'
+import { FermiPatternMatrixVisual } from './FermiPatternMatrixVisual'
+import { FermiAreaApproachVisual } from './FermiAreaApproachVisual'
+import { FermiMacroMicroSplitVisual } from './FermiMacroMicroSplitVisual'
+import { FermiDemandDivSupplyVisual } from './FermiDemandDivSupplyVisual'
+import { FermiCrossCheckVisual } from './FermiCrossCheckVisual'
 
 /**
  * visualId → Visual component の registry
@@ -127,6 +134,13 @@ export const visualRegistry: Record<string, ComponentType> = {
   TypographyDiagram: TypographyVisual,
   ColorPaletteDiagram: ColorPaletteVisual,
   ChartTypeGuideDiagram: ChartTypeGuideVisual,
+  // Fermi expansion (Phase A)
+  FermiBaseDataDiagram: FermiBaseDataVisual,
+  FermiPatternMatrixDiagram: FermiPatternMatrixVisual,
+  FermiAreaApproachDiagram: FermiAreaApproachVisual,
+  FermiMacroMicroSplitDiagram: FermiMacroMicroSplitVisual,
+  FermiDemandDivSupplyDiagram: FermiDemandDivSupplyVisual,
+  FermiCrossCheckDiagram: FermiCrossCheckVisual,
 }
 
 export function getVisualComponent(id: string): ComponentType | null {

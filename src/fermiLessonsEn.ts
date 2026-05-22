@@ -18,8 +18,14 @@ const fermiLesson200: LessonData = {
     },
     {
       type: 'explain',
+      title: 'Three business scenarios where Fermi shines',
+      content: 'Fermi estimation is not a number game — it is a practical tool you can use on the job.\n\n**Scenario 1: Sizing a new customer base or market**\nQuickly estimate the universe of prospects. "How many decision-makers are there in this industry nationwide?" — getting a 5-minute answer lets you decide instantly on list purchase budgets and trade-show investments.\n\n**Scenario 2: Market entry / exit decisions**\nRoughly size whether a country or business model is worth entering before commissioning expensive research. A ¥1-trillion market and a ¥10-billion market call for completely different strategies, so grabbing the order of magnitude fast matters most.\n\n**Scenario 3: ROI and payback gut-checks**\nAt the planning stage, multiply expected gross profit against initiative costs (headcount, ad spend) to see the payback multiple. If "ROI is below 1x before we even start" comes out, you save both the proposal time and the meeting time.',
+    },
+    {
+      type: 'explain',
       title: 'Memorize the four basic steps',
       content: '**Step 1: Define the question**\nClarify what you are estimating. Lock down the scope: "Japan", "per year", "units", etc.\n\n**Step 2: Decompose**\nBreak the big number into understandable components (MECE thinking).\nExample: Market size = target population × usage rate × unit price\n\n**Step 3: Estimate each component**\nUse common sense, statistical knowledge, and analogies to estimate each value.\n\n**Step 4: Combine and sanity-check**\nMultiply through, get an answer, and ask "is this plausible?".',
+      visual: 'FermiStepsDiagram',
     },
     {
       type: 'quiz',
@@ -36,6 +42,17 @@ const fermiLesson200: LessonData = {
       type: 'explain',
       title: 'Understand the acceptable margin of error',
       content: 'For Fermi estimation, **1-2 orders of magnitude (10x to 100x) is enough precision**.\n\n"How many cars are owned in Japan?"\n- Actual: about 78 million\n- Acceptable Fermi range: somewhere between 10 million and 1 billion\n\nIn business decision-making, you usually only need to know "is this market on the order of ¥100M, ¥1B, or ¥10B?".\n\n**The logical chain matters more than precision.**',
+    },
+    {
+      type: 'quiz',
+      explanation: 'What you need from Fermi estimation is the "right order of magnitude." Knowing whether a market is ¥1T-scale or ¥10B-scale is enough for strategy calls. Option 1 falls into perfectionism and delays decisions, option 3 over-engineers precision, option 4 spreads the range so wide that no conclusion can be drawn.',
+      question: 'What precision should you realistically aim for in a Fermi estimate used for a business decision?',
+      options: [
+        { label: 'Within 1% of the actual number', correct: false },
+        { label: 'Within the same order of magnitude (within 10x)', correct: true },
+        { label: 'Within roughly +/- 20%', correct: false },
+        { label: 'Anywhere within 1/1000x to 1000x of the actual', correct: false },
+      ],
     },
     {
       type: 'quiz',
@@ -66,6 +83,12 @@ const fermiLesson201: LessonData = {
       type: 'explain',
       title: 'Memorize three decomposition patterns',
       content: '**Pattern (1): Stock type (total at a point in time)**\nExample: number of traffic signals in Japan\n= number of intersections × signals per intersection\n\n**Pattern (2): Flow type (volume over a period)**\nExample: annual Starbucks revenue\n= number of stores × daily revenue per store × 365 days\n\n**Pattern (3): Population-based (most generic)**\nExample: number of weddings per year\n= population × marriage rate × share that hold a ceremony',
+    },
+    {
+      type: 'explain',
+      title: 'Practice: build the equation for "annual cafe market in Japan"',
+      content: 'Let us walk through a full population-based decomposition (Pattern 3).\n\n**Question: what is the annual cafe market (chains + independents) in Japan?**\n\n**Step 1: list the factors**\n```\nmarket size = users × visits per user × spend per visit\n```\n\n**Step 2: break each factor down**\n- Users = population × share that uses cafes\n  = 120M × 0.5 = 60M\n- Visits = once a week × 52 weeks = 52 per year\n- Spend per visit = average ¥500\n\n**Step 3: combine**\n```\n60M × 52 × ¥500\n= 6 × 10^7 × 52 × 5 × 10^2\n≈ 1.56 × 10^12 yen\n= about ¥1.5 trillion\n```\n\n**Actual: about ¥1.3 trillion** (Food Service Association, pre-COVID baseline)\n-> roughly 15% off — plenty good for a Fermi answer.\n\n**Tip:** For multi-digit calculations, switching to **exponent notation (10^X)** is the cleanest way to prevent order-of-magnitude slips.',
+      visual: 'FermiFormulaDiagram',
     },
     {
       type: 'quiz',
@@ -182,8 +205,14 @@ const fermiLesson204: LessonData = {
   steps: [
     {
       type: 'explain',
-      title: 'Learn the most common mistakes',
-      content: '**Trap (1): Overestimating by assuming "everyone uses it"**\n× Smartphone market = total population × smartphone unit price\n○ Smartphone market = buyer cohort × replacement rate × average unit price\n\n**Trap (2): Mixing units**\n× Conflating monthly and annual numbers\n○ Always make explicit "per year," "per month," or "per day" in the calculation\n\n**Trap (3): Double-counting**\n× Adding B2B + B2C and double-counting intermediate distribution\n○ Standardize on end-consumption (downstream), or diagram the flow to keep it clean\n\n**Trap (4): Order-of-magnitude errors**\n× Mixing "10,000s" and "100 millions" mid-calculation\n○ Use exponent notation (10^4, 10^8)',
+      title: 'Learn the most common mistakes (first three)',
+      content: '**Trap (1): Overestimating by assuming "everyone uses it"**\n× Smartphone market = total population × smartphone unit price\n○ Smartphone market = buyer cohort × replacement rate × average unit price\n\n-> There are always non-users by age, region, and income. **The "everyone" assumption is the single biggest source of overestimation.** Keep age-cohort usage rates in mind (teens / 60+ tend to be lower).\n\n**Trap (2): Mixing units**\n× Conflating monthly and annual numbers\n○ Always make explicit "per year," "per month," or "per day" in the calculation\n\n-> Writing "once a week" but treating it as "once a year" throws your answer off by 52x. **Annotate the unit on every factor**, and standardize to annual at the very end.\n\n**Trap (3): Double-counting**\n× Adding B2B + B2C and double-counting intermediate distribution\n○ Standardize on end-consumption (downstream), or diagram the flow to keep it clean',
+      visual: 'ThreePillarsDiagram',
+    },
+    {
+      type: 'explain',
+      title: 'Learn the most common mistakes (last three)',
+      content: '**Trap (4): Order-of-magnitude errors**\n× Mixing "10,000s" and "100 millions" mid-calculation\n○ Use exponent notation (10^4, 10^8)\n\n-> 1 trillion = 10^12, 100 million = 10^8, 10,000 = 10^4. **Adding the exponents** alone gives you the order of magnitude, which makes mental math dramatically easier.\n\n**Trap (5): Using too many factors**\n× Multiplying 6 or 7 factors together to "improve precision"\n○ **Keep it to 3-4 factors.** Each factor\'s error compounds — adding more factors *worsens* accuracy.\n\n-> Example: population × usage × frequency × price × seasonality × regional adjustment × ... With ±30% error per factor, the final error can balloon several-fold. "Three core factors plus one coefficient" is the sweet spot.\n\n**Trap (6): Abandoning common sense**\n× Not noticing that your answer is "2x Japan\'s GDP"\n○ **Always perform an order-of-magnitude check at the end.** Compare against benchmarks like ¥600T GDP, ¥110T national budget, ¥155T retail market.\n\n-> If "convenience-store coffee market = ¥100 trillion" comes out, immediately flag it: "that\'s 16% of Japan\'s GDP — impossible." Build that gut reflex.',
     },
     {
       type: 'quiz',
@@ -215,10 +244,75 @@ const fermiLesson204: LessonData = {
   ],
 }
 
+// -- Lesson 205: Know These by Heart: 30 Base Facts ------------------
+const fermiLesson205: LessonData = {
+  id: 205,
+  title: 'Know These by Heart: 30 Base Facts',
+  category: 'Fermi Estimation',
+  steps: [
+    {
+      type: 'explain',
+      title: 'Why "base facts" determine your accuracy',
+      content: 'Fermi estimation builds a multiplication equation to reach an answer — but **where do the numbers for each factor come from?**\n\nThe only honest answer is: **from the base facts in your head.**\n\n**Symptoms of someone without base facts:**\n- "Japan\'s population is, what, 50 million? Or 300 million?" — they miss the order of magnitude\n- "I don\'t know household count, so I\'ll just use population" — sloppy substitutions\n- The final answer is off by 1-2 orders of magnitude\n\n**Symptoms of someone with base facts:**\n- They can rattle off "Japan 124M, households 57M, GDP ¥600T" without thinking\n- They drop the right-order-of-magnitude number into each factor instantly\n- They reach a defensible answer in 5 minutes\n\nIn other words, Fermi estimation is **"80% logic + 20% memorization."** No matter how strong your logic is, an empty base-fact tank means your reasoning rests on sand.\n\nThis lesson focuses on **6 categories × 5 facts = 30 numbers**. Mastering these will carry you through ~90% of business-flavored Fermi problems.',
+      visual: 'FermiBaseDataDiagram',
+    },
+    {
+      type: 'explain',
+      title: 'The 30 base facts, organized into 6 categories',
+      content: '**1. Population (5)**\n- Japan population: 124M\n- Tokyo (prefecture): 14M\n- World population: 8B\n- Annual births: 700K\n- Annual deaths: 1.6M (net negative due to aging society)\n\n**2. Households (5)**\n- Number of households: 57M\n- Average household size: 2.17 people\n- Share of single-person households: 38%\n- Share of couple-only households: 24%\n- Share of households with children: 27%\n\n**3. Labor (5)**\n- Labor force: 69M\n- White-collar workers: 35M\n- Average annual income: ¥4.6M\n- Effective job-opening ratio: 1.3\n- Unemployment rate: 2.5%\n\n**4. Economy (5)**\n- Nominal GDP: ¥600 trillion\n- National budget (general account): ¥110 trillion\n- Household consumption: ¥300 trillion\n- Total ad spend: ¥7 trillion\n- Trade volume (imports + exports): ¥200 trillion\n\n**5. Infrastructure (5)**\n- Land area: 380,000 km²\n- Flatland ratio: 30% (70% is mountainous)\n- Number of municipalities: 1,700\n- Number of rail stations: 9,500\n- Vending machines: 4M units\n\n**6. Industries (5)**\n- Automotive industry: ¥60 trillion\n- Retail: ¥155 trillion\n- Food service: ¥25 trillion\n- E-commerce market: ¥25 trillion\n- Convenience-store market: ¥12 trillion',
+      visual: 'FermiBaseDataDiagram',
+    },
+    {
+      type: 'explain',
+      title: 'Four memorization tricks (without rote)',
+      content: 'Trying to memorize 30 numbers cold-turkey leads to failure. Use **associations** instead.\n\n**Trick 1: Memorize the order of magnitude first**\nThe exact figure matters less than whether it lives in "trillions," "hundreds of millions," or "tens of thousands."\n- GDP is on the order of trillions -> ¥100T? ¥600T? ¥6,000T? -> ¥600T\n- Households are tens of millions -> 57M\n\n**Trick 2: Memorize as ratios**\nA number sticks better as "X% of Y" than as a standalone figure.\n- Labor force 69M ≈ **55%** of population\n- White-collar 35M ≈ **50%** of labor force\n- Flatland 30% ≈ 1/3 of national territory\n\n**Trick 3: Divide to "per person / per household"**\nDivision converts macro figures into a tangible feel.\n- GDP ¥600T ÷ population 124M ≈ **¥5M per person**\n- Household consumption ¥300T ÷ 57M households ≈ **¥5.3M per household per year**\n- Ad spend ¥7T ÷ 124M ≈ **¥56K per person per year**\n\n**Trick 4: Anchor to international or familiar comparisons**\n- Tokyo 14M ≈ Los Angeles metro area\n- Japan GDP ¥600T ≈ 1.5x Germany\n- Convenience-store market ¥12T ≈ about 1/10 of the national budget\n\n**Power move:** Every time you see a number in the news, mentally convert it: "How many trillion is this? What % of the population?" — this builds intuition over time without forced memorization.',
+    },
+    {
+      type: 'explain',
+      title: 'Use base facts in the sanity-check phase',
+      content: 'The real payoff of base facts comes **at the end of an estimate, during sanity-checking.**\n\n**Example: estimate the "annual customer visits to hair salons in Japan"**\n\nSupply-side estimate:\n- 250K salons × 5 customers/day × 25 business days/month × 12 months\n- = 250K × 1,500 = **about 375 million customer-visits / year**\n\nIs 375M reasonable? Sanity-check against base facts:\n- Per-person visits = 375M ÷ population 124M ≈ **3 visits / year**\n- Does "once every 4 months" feel right? -> Roughly yes (women: 4-6 visits/year, men: 4-10 visits/year, average 3-5)\n\nIf the sanity-check came out at "30 visits/person/year," that\'s 2.5 per month — clearly impossible. **You caught a calculation error.**\n\n**Three sanity-check patterns:**\n1. **Divide by population (124M)** -> per-person scale\n2. **Divide by household count (57M)** -> per-household scale\n3. **Compare to GDP (¥600T)** -> share of the whole economy (e.g., convenience-store market ¥12T ÷ GDP ¥600T = 2%, plausible)\n\n**Bottom line:** Adding even one "what is this per person?" check at the end of every estimate catches 90% of order-of-magnitude and logic errors.',
+    },
+    {
+      type: 'quiz',
+      explanation: 'Japan has about 57M households (as of 2025). Population 124M divided by average household size 2.17 lands here exactly. Option 1 understates by half, option 3 overstates, option 4 confuses households with population (124M is population). Remember: "households ≈ a bit under half of the population."',
+      question: 'Which is closest to the number of households in Japan?',
+      options: [
+        { label: 'About 30 million', correct: false },
+        { label: 'About 57 million', correct: true },
+        { label: 'About 80 million', correct: false },
+        { label: 'About 120 million', correct: false },
+      ],
+    },
+    {
+      type: 'quiz',
+      explanation: '124M ÷ 57M ≈ 2.17 people per household. Option 1 only weights single-person households (38%) and undershoots, option 3 over-applies a child-rearing household model to the whole, option 4 confuses with the 1950s-era average (around 4 people). Aging and singularization keep pushing this number down year over year.',
+      question: 'Using Japan\'s population of 124M and 57M households, what is the average household size?',
+      options: [
+        { label: 'About 1.5 people', correct: false },
+        { label: 'About 2.2 people', correct: true },
+        { label: 'About 3.0 people', correct: false },
+        { label: 'About 4.0 people', correct: false },
+      ],
+    },
+    {
+      type: 'quiz',
+      explanation: '¥600T GDP ÷ 124M population ≈ ¥4.84M/person ≈ about ¥5M. Option 1 vastly overestimates population (would imply ~600M), option 2 confuses GDP with tax revenue (¥70T ÷ 124M ≈ ¥565K), option 4 confuses with household income (¥5M × 2.17 average household ≈ over ¥10M). Memorize the pair: "GDP ≈ ¥5M per capita."',
+      question: 'Given Japan\'s GDP of about ¥600 trillion, what is GDP per capita?',
+      options: [
+        { label: 'About ¥1 million', correct: false },
+        { label: 'About ¥3 million', correct: false },
+        { label: 'About ¥5 million', correct: true },
+        { label: 'About ¥10 million', correct: false },
+      ],
+    },
+  ],
+}
+
 export const fermiLessonMapEn: Record<number, LessonData> = {
   200: fermiLesson200,
   201: fermiLesson201,
   202: fermiLesson202,
   203: fermiLesson203,
   204: fermiLesson204,
+  205: fermiLesson205,
 }

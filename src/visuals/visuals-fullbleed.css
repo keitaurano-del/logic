@@ -671,3 +671,29 @@
     padding-right: 20px;
   }
 }
+
+/* ============================================================
+ * Fermi expansion (Phase A) — lesson 205 / 210 / 212 / 214 / 215 / 216
+ *
+ * 個別の `[data-fullbleed='true']` ルールは visuals-fermi.css 側で
+ * Visual ごとに記述済み。ここでは余白・gap の共通底上げのみ。
+ * ============================================================ */
+[data-fullbleed='true'] .vz-fermi-bd,
+[data-fullbleed='true'] .vz-fermi-pm,
+[data-fullbleed='true'] .vz-fermi-area,
+[data-fullbleed='true'] .vz-fermi-mm,
+[data-fullbleed='true'] .vz-fermi-ds,
+[data-fullbleed='true'] .vz-fermi-cc {
+  gap: 14px;
+}
+
+@media (max-width: 380px) {
+  [data-fullbleed='true'] .vz-fermi-bd,
+  [data-fullbleed='true'] .vz-fermi-pm,
+  [data-fullbleed='true'] .vz-fermi-area,
+  [data-fullbleed='true'] .vz-fermi-mm,
+  [data-fullbleed='true'] .vz-fermi-ds,
+  [data-fullbleed='true'] .vz-fermi-cc {
+    gap: 10px;
+  }
+}
