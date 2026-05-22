@@ -429,6 +429,22 @@ CRITICAL — the title at top-left must be exactly the four English words: LINK 
     subtitle: 'Ask, do not tell',
     diagram: `a hand-drawn ancient Greek stone column on the left side. Above the column: three rising question marks "?" of increasing size. To the right of the column: cursive annotation "I know that I know nothing".`,
   },
+  {
+    slug: 'lesson-78',
+    title: 'TEST IT',
+    subtitle: 'A claim you can prove wrong',
+    diagram: `a hand-drawn rectangular card in the upper-left labeled in cursive "Claim", with a short squiggle line of text inside. From the card, a thick coral arrow points right to a small hand-drawn beaker / test tube on the right side. Below the beaker: two small outcome marks side by side — a coral check mark and a coral X mark. Cursive annotation along the bottom: "could it fail?". Hand-drawn with thick marker, simple and clean.`,
+    spell: ['TEST IT', 'A claim you can prove wrong', 'Claim', 'could it fail?'],
+  },
+
+  // ── 数字感覚・クライアントワーク ─────────────────────────────
+  {
+    slug: 'lesson-89',
+    title: 'DIGIT SENSE',
+    subtitle: 'Read the size of a number',
+    diagram: `a hand-drawn horizontal number line across the middle of the page. Four evenly spaced tick marks labeled in cursive from left to right: "10K", "1M", "100M", "1B". Above each tick, a small upward arrow. Below the leftmost tick a tiny person icon, below the rightmost tick a tiny globe icon, suggesting scale grows from small to huge. Cursive annotation at bottom: "count the zeros". Hand-drawn with thick marker, simple and clean.`,
+    spell: ['DIGIT SENSE', 'Read the size of a number', '10K', '1M', '100M', '1B', 'count the zeros'],
+  },
 
   // ── フォールバック（カテゴリ別の代表画像） ──────────────────────
   {
