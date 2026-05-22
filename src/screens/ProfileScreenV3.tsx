@@ -14,6 +14,7 @@ import LessonIcon from '../LessonIcon'
 import { StarIcon } from '../icons'
 import { t, getLocale, localizedHtmlPath } from '../i18n'
 import { getMode } from '../theme'
+import '../components/levelup.css'
 
 function getPlanLabel(): string {
   const state = getSubscriptionState()
@@ -63,6 +64,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
             type="button"
             aria-label={t('profile.titleSheet.heading')}
             onClick={() => setTitleSheetOpen(true)}
+            className="lvup-badge-glow"
             style={{
               width: 72, height: 72,
               padding: 0,

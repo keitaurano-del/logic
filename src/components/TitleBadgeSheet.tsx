@@ -17,6 +17,7 @@ import {
 } from '../screens/homeHelpers'
 import { t } from '../i18n'
 import { XIcon } from '../icons'
+import './levelup.css'
 
 interface TitleBadgeSheetProps {
   xp: number
@@ -129,12 +130,15 @@ export function TitleBadgeSheet({ xp, onClose }: TitleBadgeSheetProps) {
           display: 'flex', flexDirection: 'column', alignItems: 'center',
           padding: '8px 16px 20px',
         }}>
-          <div style={{
-            width: 156, height: 156,
-            background: `radial-gradient(circle, ${lv.color}22 0%, transparent 70%)`,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            marginBottom: 12,
-          }}>
+          <div
+            className="lvup-badge-glow"
+            style={{
+              width: 156, height: 156,
+              background: `radial-gradient(circle, ${lv.color}22 0%, transparent 70%)`,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              marginBottom: 12,
+            }}
+          >
             <img
               src={getBadgeImagePath(currentKey)}
               alt={t(getTitleI18nKey(currentKey))}

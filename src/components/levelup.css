@@ -1,0 +1,117 @@
+/* ============================================================
+ * Level Up / Rank Up 演出 — Phase 1〜4 共通の keyframes と class
+ *
+ * 使用箇所:
+ *   - LevelUpModal.tsx    Phase 1 (基本)
+ *   - RankUpModal.tsx     Phase 2 (称号獲得・豪華版)
+ *   - LevelUpToast.tsx    Phase 4 (ホーム画面下りバナー)
+ *   - ProfileScreenV3 のバッジ glow (Phase 3)
+ * ============================================================ */
+
+/* ── 共通: モーダル背景フェードイン ────────────────────── */
+@keyframes lvup-overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Phase 1: モーダル本体 zoom + fade ───────────────────── */
+@keyframes lvup-card-in {
+  0%   { opacity: 0; transform: scale(.6) translateY(20px); }
+  60%  { opacity: 1; transform: scale(1.05) translateY(0); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ── Phase 1: タイトルの軽い跳ね ────────────────────────── */
+@keyframes lvup-title-pop {
+  0%   { opacity: 0; transform: translateY(12px) scale(.95); }
+  60%  { opacity: 1; transform: translateY(0)   scale(1.04); }
+  100% { opacity: 1; transform: translateY(0)   scale(1); }
+}
+
+/* ── Phase 2: 称号バッジが回りながら降りてくる ─────────── */
+@keyframes lvup-badge-drop {
+  0%   { opacity: 0; transform: scale(.2) rotate(-360deg) translateY(-60px); }
+  60%  { opacity: 1; transform: scale(1.1) rotate(10deg) translateY(0); }
+  80%  { transform: scale(.96) rotate(-3deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+/* ── Phase 2 / Phase 3: 放射状スパークル光線 ───────────── */
+@keyframes lvup-sparkle-rotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes lvup-sparkle-pulse {
+  0%, 100% { opacity: .35; transform: scale(.9); }
+  50%      { opacity: .85; transform: scale(1.05); }
+}
+
+/* ── Phase 3: プロフィール画面の glow pulse ─────────────── */
+@keyframes lvup-badge-glow {
+  0%, 100% { box-shadow: 0 0 8px color-mix(in srgb, var(--brand) 45%, transparent), 0 0 16px color-mix(in srgb, var(--brand) 25%, transparent); }
+  50%      { box-shadow: 0 0 16px color-mix(in srgb, var(--brand) 75%, transparent), 0 0 28px color-mix(in srgb, var(--brand) 45%, transparent); }
+}
+
+/* ── Phase 4: ホーム画面のバナーが上から降りる ─────────── */
+@keyframes lvup-toast-slide-in {
+  from { opacity: 0; transform: translateY(-120%); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes lvup-toast-slide-out {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-120%); }
+}
+
+/* ── reduced motion: アニメ縮退 ───────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .lvup-overlay,
+  .lvup-card,
+  .lvup-title,
+  .lvup-badge-drop,
+  .lvup-sparkle-rotate,
+  .lvup-toast {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ── 適用クラス ────────────────────────────────────────── */
+.lvup-overlay {
+  animation: lvup-overlay-in .25s ease-out forwards;
+}
+
+.lvup-card {
+  animation: lvup-card-in .55s cubic-bezier(.18, 1.18, .4, 1.1) forwards;
+}
+
+.lvup-title {
+  animation: lvup-title-pop .55s cubic-bezier(.18, 1.18, .4, 1.1) .15s forwards;
+  opacity: 0;
+}
+
+.lvup-badge-drop {
+  animation: lvup-badge-drop 1.05s cubic-bezier(.2, 1.1, .35, 1.05) forwards;
+}
+
+.lvup-sparkle-rotate {
+  animation: lvup-sparkle-rotate 6s linear infinite;
+}
+
+.lvup-sparkle-pulse {
+  animation: lvup-sparkle-pulse 2.2s ease-in-out infinite;
+}
+
+.lvup-badge-glow {
+  animation: lvup-badge-glow 2.6s ease-in-out infinite;
+  border-radius: 50%;
+}
+
+.lvup-toast {
+  animation: lvup-toast-slide-in .42s cubic-bezier(.2, 1.1, .35, 1) forwards;
+}
+
+.lvup-toast-out {
+  animation: lvup-toast-slide-out .35s ease-in forwards;
+}

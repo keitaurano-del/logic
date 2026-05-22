@@ -1361,6 +1361,17 @@ const STRINGS: Record<Locale, Strings> = {
     'lessonComplete.reviewNow': '今すぐ復習する（{n}件）',
     'lessonComplete.home': 'ホームに戻る',
 
+    // Level up / Rank up モーダル・トースト演出
+    'levelup.heading': 'LEVEL UP!',
+    'levelup.message': '思考の鍛錬を続けてください。次の階層が待っています。',
+    'levelup.next': '続ける',
+    'levelup.toastEyebrow': 'LEVEL UP',
+    'levelup.toastBody': 'Lv.{prev} → Lv.{next} に到達しました。',
+    'levelup.toastView': '見る',
+    'rankup.heading': '新しい称号を獲得！',
+    'rankup.message': 'Lv.{level} 到達で新しい称号を獲得しました。',
+    'rankup.next': '受け取る',
+
     // Study time
     'studytime.dayMon': '月',
     'studytime.dayTue': '火',
@@ -3024,6 +3035,17 @@ const STRINGS: Record<Locale, Strings> = {
     'lessonComplete.next': 'Next lesson →',
     'lessonComplete.reviewNow': 'Review now ({n})',
     'lessonComplete.home': 'Back to home',
+
+    // Level up / Rank up modal & toast
+    'levelup.heading': 'LEVEL UP!',
+    'levelup.message': 'Keep training your thinking. The next tier awaits.',
+    'levelup.next': 'Continue',
+    'levelup.toastEyebrow': 'LEVEL UP',
+    'levelup.toastBody': 'Reached Lv.{prev} → Lv.{next}.',
+    'levelup.toastView': 'View',
+    'rankup.heading': 'NEW TITLE UNLOCKED!',
+    'rankup.message': 'You unlocked a new title by reaching Lv.{level}.',
+    'rankup.next': 'Claim',
 
     // Study time
     'studytime.dayMon': 'Mon',

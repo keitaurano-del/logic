@@ -40,12 +40,27 @@ const DailyProblemScreen = lazy(() => import('./screens/DailyProblemScreen').the
 const JournalScreen = lazy(() => import('./screens/JournalScreen').then(m => ({ default: m.JournalScreen })))
 import { allLessons, getAllLessonsFlat } from './lessonData'
 import { getCurrentLevel } from './screens/homeHelpers'
+import { LevelUpModal } from './components/LevelUpModal'
+import { RankUpModal } from './components/RankUpModal'
+import { LevelUpToast } from './components/LevelUpToast'
+import {
+  consumeLevelUpEvent,
+  consumeRankUpEvent,
+  consumeLevelUpToast,
+  peekLevelUpEvent,
+  peekRankUpEvent,
+  peekLevelUpToast,
+  recordLessonCompleteEvent,
+  type LevelUpEvent,
+  type RankUpEvent,
+  type LevelUpToastEvent,
+} from './levelUpStore'
 
 
 import type { AIProblemSet } from './aiProblemStore'
 import { loadTheme, applyTheme } from './theme'
 // import { loadGuestUser } from './guestUser'
-import { getCompletedCount, getXp, getDisplayName, setDisplayName, recordCompletion } from './stats'
+import { getCompletedCount, getXp, getDisplayName, setDisplayName, recordCompletion, XP_REWARDS } from './stats'
 import { recordActivity } from './activityLog'
 import { updateDisplayName } from './supabase'
 import { isAdmin } from './admin'
@@ -163,6 +178,10 @@ function AppV3() {
   const [showNamePopup, setShowNamePopup] = useState(false)
   const [nameInput, setNameInput] = useState('')
   const [nameSaving, setNameSaving] = useState(false)
+  // レベルアップ / ランクアップ演出 (Phase 1〜4)
+  const [levelUpEvt, setLevelUpEvt] = useState<LevelUpEvent | null>(null)
+  const [rankUpEvt, setRankUpEvt] = useState<RankUpEvent | null>(null)
+  const [toastEvt, setToastEvt] = useState<LevelUpToastEvent | null>(null)
   // popstate ハンドラ内でscreen stateを参照するための ref
   const screenRef = useRef<Screen>(screen)
   // popstate による遷移かどうかのフラグ（push 抑制用）
@@ -181,6 +200,33 @@ function AppV3() {
 
   // screenRef を常に最新の screen と同期させる（コンカレントレンダリング対策）
   useEffect(() => { screenRef.current = screen }, [screen])
+
+  // レベルアップ / ランクアップ演出の pending イベント監視
+  //   - lesson-complete 画面に入ったら LevelUpModal / RankUpModal を表示
+  //   - home 画面に入ったら LevelUpToast を表示 (lesson-complete を経由しなかった場合の補完)
+  // setState は次の tick に defer して cascading render を避ける (react-hooks/set-state-in-effect)
+  useEffect(() => {
+    let cancelled = false
+    const id = setTimeout(() => {
+      if (cancelled) return
+      if (screen.type === 'lesson-complete') {
+        const rank = peekRankUpEvent()
+        const level = peekLevelUpEvent()
+        if (rank) {
+          setRankUpEvt(rank)
+        } else if (level) {
+          setLevelUpEvt(level)
+        }
+      } else if (screen.type === 'home') {
+        const toast = peekLevelUpToast()
+        if (toast) setToastEvt(toast)
+      }
+    }, 0)
+    return () => {
+      cancelled = true
+      clearTimeout(id)
+    }
+  }, [screen.type])
 
   // ── History 連動の setScreen ラッパー ──
   const navigate = useCallback((next: Screen, replace = false) => {
@@ -365,8 +411,15 @@ function AppV3() {
       const validElapsedMs = rawElapsedMs > 0 && rawElapsedMs < THREE_HOURS_MS ? rawElapsedMs : 0
       // durationSec は LessonComplete 画面の表示用。最低 60 秒で表示する。
       const durationSec = Math.max(60, Math.floor(validElapsedMs / 1000))
-      const prevLevel = getCurrentLevel(getXp() - 50).level  // before XP add
+      // XP 加算は LessonStoriesScreen 側で addXp('lesson') が走った後に onComplete が呼ばれる。
+      // つまりここでの getXp() は既に加算後。prevXp は XP_REWARDS.lesson を引いて算出する。
+      const newXp = getXp()
+      const prevXp = Math.max(0, newXp - XP_REWARDS.lesson)
+      const prevLevel = getCurrentLevel(prevXp).level
       recordCompletion(`lesson-${lessonId}`)
+      // レベル / ランクアップ判定 → sessionStorage に pending イベントを積む
+      // (LevelUpModal / RankUpModal / LevelUpToast がそれぞれ消費する)
+      recordLessonCompleteEvent(prevXp, newXp)
       const lessonTitle = allLessons[lessonId]?.title
       recordActivity({
         type: 'lesson',
@@ -722,6 +775,54 @@ function AppV3() {
       </div>
       </Suspense>
     </AppShell>
+
+    {/* レベルアップ / ランクアップ演出 (Phase 1〜4) */}
+    {rankUpEvt && (
+      <RankUpModal
+        prevTitleKey={rankUpEvt.prevTitleKey}
+        newTitleKey={rankUpEvt.newTitleKey}
+        newLevel={rankUpEvt.newLevel}
+        onClose={() => {
+          consumeRankUpEvent()
+          setRankUpEvt(null)
+          // ランクアップは大体レベルアップも伴うので、続けて Level モーダルを開く
+          const lvEvt = peekLevelUpEvent()
+          if (lvEvt) setLevelUpEvt(lvEvt)
+        }}
+      />
+    )}
+    {!rankUpEvt && levelUpEvt && (
+      <LevelUpModal
+        prevLevel={levelUpEvt.prevLevel}
+        newLevel={levelUpEvt.newLevel}
+        onClose={() => {
+          consumeLevelUpEvent()
+          // モーダル経由で見たので toast キーは消費しておく (ホームで二重表示しない)
+          consumeLevelUpToast()
+          setLevelUpEvt(null)
+        }}
+      />
+    )}
+    {toastEvt && !rankUpEvt && !levelUpEvt && (
+      <LevelUpToast
+        prevLevel={toastEvt.prevLevel}
+        newLevel={toastEvt.newLevel}
+        onTap={() => {
+          // toast タップで Phase 1 モーダル再表示
+          consumeLevelUpToast()
+          setToastEvt(null)
+          setLevelUpEvt({
+            prevLevel: toastEvt.prevLevel,
+            newLevel: toastEvt.newLevel,
+            newXp: 0,
+          })
+        }}
+        onDismiss={() => {
+          consumeLevelUpToast()
+          setToastEvt(null)
+        }}
+      />
+    )}
 
     {/* SCRUM-195: チュートリアルオーバーレイ */}
     {/* チュートリアルFAB（右下固定ボタン） — Daily Fermi 画面でも常駐 */}
