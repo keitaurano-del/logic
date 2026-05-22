@@ -202,6 +202,12 @@ const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
     image: `${IMG}/course-cognitive-01.png`,
     routeKey: 'cognitive',
   },
+  'ドキュメンテーション': {
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="7" y1="8" x2="17" y2="8"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="7" y1="16" x2="13" y2="16"/></svg>,
+    iconBg: 'rgba(96,165,250,.14)',
+    image: `${IMG}/course-documentation-01.png`,
+    routeKey: 'documentation',
+  },
 }
 
 const DEFAULT_VISUAL: CategoryVisual = {
@@ -774,6 +780,7 @@ const CATEGORY_ID_TO_NAMES: Record<string, string[]> = {
   'フェルミ推定': ['フェルミ推定'],
   '経営戦略': ['経営戦略', 'strategy'],
   cognitive: ['認知科学', 'Cognitive Science'],
+  documentation: ['ドキュメンテーション', 'Documentation'],
 }
 
 // カテゴリID（ルートキー）→ 表示用ラベルを翻訳キー経由で解決
@@ -801,6 +808,7 @@ const CATEGORY_LABEL_KEY: Record<string, string> = {
   '面接対策': 'category.careerInterview',
   '給与交渉・退職実務': 'category.careerSalary',
   cognitive: 'category.cognitive',
+  documentation: 'category.documentation',
 }
 
 // カテゴリID → courseData が保持する日本語データ値（検索キー用）
@@ -823,6 +831,7 @@ const CATEGORY_DATA_LABEL: Record<string, string> = {
   'フェルミ推定': 'フェルミ推定',
   '経営戦略': '経営戦略',
   cognitive: '認知科学',
+  documentation: 'ドキュメンテーション',
 }
 
 function categoryLabel(category: string): string {

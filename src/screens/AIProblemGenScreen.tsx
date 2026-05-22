@@ -11,6 +11,7 @@ import { isSaved, toggleSaved } from '../savedItemsStore'
 import { BookmarkIcon, BookmarkFilledIcon } from '../icons'
 import { haptic } from '../platform/haptics'
 import { SAMPLE_PROBLEMS, type SampleDifficulty } from '../aiProblemSamples'
+import { useStudyTimer } from '../hooks/useStudyTimer'
 
 interface AIProblemGenScreenProps {
   onBack: () => void
@@ -38,6 +39,7 @@ const CATEGORY_LABEL_KEY: Record<string, string> = {
   'フェルミ推定': 'category.fermi',
   '経営戦略': 'category.strategy',
   '認知科学': 'category.cognitive',
+  'ドキュメンテーション': 'category.documentation',
 }
 function categoryLabel(cat: string): string {
   const key = CATEGORY_LABEL_KEY[cat]
@@ -262,6 +264,8 @@ type Tab = 'create' | 'history'
 const PENDING_RATING_KEY = 'logic-ai-pending-rating'
 
 export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenScreenProps) {
+  // 学習時間計測 — AI 問題生成画面の滞在時間を study_sessions に記録
+  useStudyTimer({ type: 'ai_problem', id: 'generator' })
   const [tab, setTab] = useState<Tab>('create')
   const [prompt, setPrompt] = useState('')
   const [generating, setGenerating] = useState(false)

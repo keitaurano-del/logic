@@ -443,6 +443,18 @@ const COURSES_JA: Course[] = [
     description: '利用可能性・ハロー・後知恵・ダニング/クルーガー・結果バイアスの 5 大バイアスを使いこなして判断の精度を上げる。',
     image: '/images/v3/course-cognitive-02.png',
   },
+
+  // ── ドキュメンテーション ────────────────────────────
+  {
+    id: 'documentation-01',
+    title: '伝わるドキュメンテーション',
+    category: 'ドキュメンテーション',
+    group: 'communication',
+    lessonIds: [720, 721, 722, 723, 724, 725, 726],
+    level: '中級',
+    description: 'パワポ資料の構成設計から、1スライド1メッセージ・図解の型・レイアウト・タイポグラフィ・配色・チャート設計まで、伝わる資料の作り方を体系的に学ぶ。',
+    image: '/images/v3/course-documentation-01.png',
+  },
 ]
 
 // 英訳: id / category / group / lessonIds / level / image は ja と完全に同じ。
@@ -583,6 +595,10 @@ const COURSE_EN_OVERRIDES: Record<string, { title: string; description: string }
   'cognitive-02': {
     title: 'Wield Cognitive Biases at Work',
     description: 'Use the five workplace biases — availability, halo, hindsight, Dunning-Kruger, and outcome — to sharpen your decision quality.',
+  },
+  'documentation-01': {
+    title: 'Documents That Communicate',
+    description: 'A systematic course covering structure, one-message-per-slide, diagram types, layout, typography, color, and chart design — the craft of slides that land.',
   },
 }
 
