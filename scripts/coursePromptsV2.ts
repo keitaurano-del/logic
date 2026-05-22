@@ -221,4 +221,13 @@ export const COURSE_PROMPTS_V2: LessonPromptEntry[] = [
     diagram: 'a hand-drawn 2x3 grid of six small boxes on cream notebook paper, but only five are filled — each filled box contains one short label in marker handwriting: top-left "Avail", top-middle "Halo", top-right "Hind", bottom-left "D-K", bottom-middle "Outcome". The sixth box (bottom-right) is empty and faintly outlined. Above the grid: a small pair of hand-drawn coral eyeglasses labeled "lens". Coral-red annotation "spot bias" upper-right.\n\nUse ONLY these short safe labels: "Avail", "Halo", "Hind", "D-K", "Outcome", "lens", "spot bias". Do NOT attempt to write "availability", "hindsight", "Dunning-Kruger", "outcome bias", or "cognitive bias" (Gemini consistently misspells long words).',
     spell: ['5 Biases', 'Spot 5, decide better', 'Avail', 'Halo', 'Hind', 'D-K', 'Outcome', 'lens', 'spot bias'],
   },
+
+  // ── 新規追加: documentation-01 「伝わるドキュメンテーション」 ──
+  {
+    slug: 'course-documentation-01',
+    title: 'Slide Craft',
+    subtitle: 'Make decks that land',
+    diagram: 'a hand-drawn slide deck mockup on cream notebook paper: three rectangular slide frames arranged in a horizontal row, slightly overlapping like a deck. The left slide shows a big bold "Title" line on top and three short text lines below. The middle slide shows a simple bar chart with three coral bars. The right slide shows a 2x2 grid with one cell filled coral. Each slide has a small page number ("1", "2", "3") in the bottom-right corner. Above the deck a coral handwritten label "1 idea / slide". Coral-red annotation "make it land" upper-right.\n\nUse ONLY these short safe labels: "Title", "1 idea / slide", "make it land", "1", "2", "3". Do NOT attempt to write "DOCUMENTATION", "PRESENTATION", "typography", "layout", or any long word (Gemini consistently misspells long words).',
+    spell: ['Slide Craft', 'Make decks that land', 'Title', '1 idea / slide', 'make it land', '1', '2', '3'],
+  },
 ]
