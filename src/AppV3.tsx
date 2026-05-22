@@ -561,7 +561,10 @@ function AppV3() {
             onBack={handleBack}
             onOpenLesson={handleOpenLesson}
             onOpenCourse={(cat) => navigate({ type: 'roadmap', category: cat })}
-            onOpenLessonStep={(lessonId, stepIndex) => navigate({ type: 'lesson', lessonId, startStep: stepIndex })}
+            onOpenLessonStep={(lessonId, stepIndex) => {
+              lessonStartTimeRef.current = Date.now()
+              navigate({ type: 'lesson', lessonId, startStep: stepIndex })
+            }}
           onOpenAiProblem={(problemId) => {
             try {
               // 保存した AI 問題を loadAIProblems から探して開く
@@ -646,7 +649,7 @@ function AppV3() {
           onOpenFeedback={() => navigate({ type: 'feedback' })}
           onOpenPricing={() => navigate({ type: 'pricing' })}
           onOpenPlacementTest={() => navigate({ type: 'placement-test' })}
-          onOpenLesson={(id) => navigate({ type: 'lesson', lessonId: id })}
+          onOpenLesson={(id) => handleOpenLesson(id)}
           onOpenLanguage={() => navigate({ type: 'language' })}
           onOpenStudyTime={() => navigate({ type: 'study-time' })}
         />
@@ -722,7 +725,7 @@ function AppV3() {
               const idx = sameCategory.findIndex(l => l.id === screen.lessonId)
               const nextLesson = sameCategory[idx + 1]
               if (nextLesson) {
-                navigate({ type: 'lesson', lessonId: nextLesson.id })
+                handleOpenLesson(nextLesson.id)
                 return
               }
             }
