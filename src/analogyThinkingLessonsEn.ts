@@ -19,13 +19,13 @@ const analogyIntro: LessonData = {
       type: 'quiz',
       question: 'Applying the "ecosystem" analogy to business, which interpretation fits best?',
       options: [
-        { label: 'Strong companies acquire weak ones', correct: false },
-        { label: 'A "business ecosystem" where multiple companies are interdependent and create value together', correct: true },
-        { label: 'Companies pursuing eco-friendly initiatives', correct: false },
-        { label: 'Corporate CSR activities to protect the natural environment', correct: false },
+        { label: 'A survival-of-the-fittest dynamic where strong companies absorb the weak', correct: false },
+        { label: 'A network of companies, developers, and users circulating value through interdependence', correct: true },
+        { label: 'Companies pursuing environmentally friendly business activities (sustainability)', correct: false },
+        { label: 'Corporate CSR programs aimed at protecting the natural environment', correct: false },
       ],
       explanation:
-        'In an ecosystem, diverse organisms are interdependent and the whole functions because of those relationships. Translating that to business gives you the "platform + developers + users" ecosystem concept (Apple, Amazon, etc.) where everyone provides value to everyone else.',
+        'The essence of an ecosystem is "many actors making the whole work through interdependence" — that translates to Apple/Amazon-style business ecosystems. "Survival of the fittest" cherry-picks predation; sustainability and CSR are different connotations of the word "eco-" with no structural mapping to the analogy. Confusing word associations with the structural transfer is the typical mistake.',
     },
     {
       type: 'explain',
@@ -37,13 +37,13 @@ const analogyIntro: LessonData = {
       type: 'quiz',
       question: 'Which of these is the strongest structural analogy?',
       options: [
-        { label: '"A company" and "a ship" — both are large organizations', correct: false },
-        { label: '"Traffic congestion" and "network congestion" — both involve nodes overloaded so flow stalls', correct: true },
-        { label: '"The sun" and "the CEO" — both are at the center of their world', correct: false },
-        { label: '"Coffee" and "a meeting" — both happen in the office', correct: false },
+        { label: '"A company" and "a ship" — large organizations where a captain steers', correct: false },
+        { label: '"Traffic congestion" and "network congestion" — nodes overload past capacity and flow stalls', correct: true },
+        { label: '"The sun" and "the CEO" — others are drawn toward a central figure', correct: false },
+        { label: '"Coffee" and "a meeting" — both consumed together inside an office', correct: false },
       ],
       explanation:
-        'Traffic and network congestion look totally different on the surface (cars vs. data packets), but the mechanism is identical: "throughput concentrates at a node, exceeds capacity, the whole system stalls." That is why traffic engineering insights can inform network design.',
+        'The correct option has identical mechanisms (throughput concentrates → capacity exceeded → whole system stalls) across very different surface domains (cars vs packets). The others rely on superficial word associations (size, centrality, co-location) without engaging the underlying relationships. Word-level similarity and structural isomorphism are the line to draw.',
     },
     {
       type: 'explain',
@@ -55,13 +55,13 @@ const analogyIntro: LessonData = {
       type: 'quiz',
       question: 'For "increase repeat visits to a restaurant," which is the most useful analogy source?',
       options: [
-        { label: 'Other restaurants\' success cases (same industry)', correct: false },
-        { label: 'Retention tactics from gaming apps (visible progress, reward loops)', correct: true },
-        { label: 'Luxury brand marketing strategies', correct: false },
-        { label: 'Government campaigns to encourage public-service usage', correct: false },
+        { label: 'Other restaurants\' repeat-visit tactics (near analogy)', correct: false },
+        { label: 'Mobile game retention mechanics — progress bars, reward loops, achievements', correct: true },
+        { label: 'Luxury brand scarcity marketing strategy', correct: false },
+        { label: 'Government public-service usage campaigns', correct: false },
       ],
       explanation:
-        'Gaming apps have highly refined retention mechanics — progress bars, daily bonuses, achievements. Restaurant stamp cards and regular-customer perks share the same structure. Borrowing from a different industry usually produces more original moves than copying neighbors.',
+        'Mobile games are the most refined field for engineering repeated engagement — their structure (visible progress + reward loops + achievements) is the ancestral form of stamp cards and loyalty programs. Same-industry tactics rarely differentiate; luxury scarcity and public-service campaigns operate on different retention structures. Aim for "far field, same structure" — that\'s where analogies pay off.',
     },
   ],
 }
@@ -81,13 +81,13 @@ const analogyDeepDive: LessonData = {
       type: 'quiz',
       question: 'Which is the example of innovation from the "farthest" analogy?',
       options: [
-        { label: 'Starbucks bringing Italian café culture to the U.S.', correct: false },
-        { label: 'The shape of the Shinkansen 500 series nose, designed after a kingfisher\'s beak (biomimicry)', correct: true },
-        { label: 'Toyota refining Ford\'s mass-production system', correct: false },
-        { label: 'LINE drawing on WhatsApp\'s messaging features', correct: false },
+        { label: 'Starbucks importing Italian café culture into the U.S. (within food service)', correct: false },
+        { label: 'Shinkansen 500 nose designed after a kingfisher\'s beak — biology to railway engineering', correct: true },
+        { label: 'Toyota refining Ford\'s mass-production system (within manufacturing)', correct: false },
+        { label: 'LINE referencing WhatsApp\'s messaging features (within messaging apps)', correct: false },
       ],
       explanation:
-        'The Shinkansen 500 series adopted the kingfisher\'s beak shape (biomimicry). A bird shape → a railway car is an extremely far-field analogy, and it solved the tunnel-boom noise problem. A near analogy could never have produced that solution.',
+        'The correct option is the canonical biomimicry case — biology to railway engineering crosses a huge field gap and solved the tunnel-boom noise problem. The others are near-field references inside the same or adjacent industries. "Distance" of an analogy is measured by field separation, not novelty of the move itself.',
     },
     {
       type: 'explain',
@@ -99,13 +99,13 @@ const analogyDeepDive: LessonData = {
       type: 'quiz',
       question: 'Abstracting "Amazon 1-Click" gives you "minimize friction to drive action." Instantiating that in "health management" produces what?',
       options: [
-        { label: 'Letting people buy supplements on Amazon', correct: false },
-        { label: 'A one-tap mechanism to log and share today\'s health data', correct: true },
-        { label: 'Reading books about health', correct: false },
-        { label: 'Building a hospital appointment system', correct: false },
+        { label: 'Let people buy supplements on Amazon (distribution expansion)', correct: false },
+        { label: 'A one-tap mechanism to log and share today\'s health data (friction minimization)', correct: true },
+        { label: 'Read books about health to raise literacy (knowledge acquisition)', correct: false },
+        { label: 'Digitize hospital appointment scheduling (existing-workflow digitization)', correct: false },
       ],
       explanation:
-        'Applying "minimize friction to drive action" to health management gives you designs that lower the bar for the action, like one-tap logging. Amazon 1-Click → one-tap health logging — same structure, different domain.',
+        'Translating the abstract "minimize friction" to health management gives you one-tap logging. The distractors lean on surface-word associations ("Amazon," "health") rather than the abstract structure. The discriminator is whether the answer is structurally the same as Amazon 1-Click — only one-tap logging is.',
     },
     {
       type: 'explain',
@@ -117,13 +117,13 @@ const analogyDeepDive: LessonData = {
       type: 'quiz',
       question: 'If you cast a startup\'s growth as a "rocket," what corresponds best to "rocket fuel"?',
       options: [
-        { label: 'Office equipment', correct: false },
-        { label: 'Capital (investment, revenue)', correct: true },
-        { label: 'The mission statement', correct: false },
-        { label: 'Competitive analysis reports', correct: false },
+        { label: 'Office and IT infrastructure — the propulsion body itself', correct: false },
+        { label: 'Capital from funding and revenue — consumed to generate thrust', correct: true },
+        { label: 'The mission statement — the compass that points the direction', correct: false },
+        { label: 'Competitive analysis reports — the map for choosing the flight path', correct: false },
       ],
       explanation:
-        'In the rocket metaphor, fuel = thrust. For a startup, capital (cash) is the thrust. Run out of fuel and the rocket falls — run out of capital and the company collapses. The metaphor makes "burn rate" intuitively important.',
+        'Fuel is "consumed to produce thrust," which maps to cash. Infrastructure is the airframe, the mission is the heading, and competitive analysis is navigation — each maps to a different rocket part. The "run out of fuel and the rocket falls = run out of cash and the company dies" intuition makes burn rate viscerally clear.',
     },
   ],
 }
@@ -143,13 +143,13 @@ const analogyPractice: LessonData = {
       type: 'quiz',
       question: 'To improve online-learning completion, which is the most faithful analogical translation of a TV cliffhanger?',
       options: [
-        { label: 'Add a quiz at the end of each lesson', correct: false },
-        { label: 'End each lesson with a peek of the next lesson and an unresolved question', correct: true },
-        { label: 'Tell the lesson content as a TV-drama-style story', correct: false },
-        { label: 'Award a badge for completing the lesson', correct: false },
+        { label: 'Add an end-of-lesson quiz to check comprehension (assessment)', correct: false },
+        { label: 'End each lesson with a "next-time" teaser and an unresolved question', correct: true },
+        { label: 'Frame the entire lesson as a TV-drama-style story (surface mimicry)', correct: false },
+        { label: 'Award a completion badge after each lesson (reward design)', correct: false },
       ],
       explanation:
-        'A cliffhanger\'s structure is "leave unresolved tension that pulls you to the next." Ending a lesson with "the answer is in the next lesson" creates the same forward pull. The point is to translate the structure, not to copy the surface drama style.',
+        'The cliffhanger structure is "unresolved tension that creates pull toward the next." Next-lesson teaser + unresolved question is the precise translation. Drama framing mimics the surface, quizzes are assessment, and badges are reward design — all valid mechanisms, but not the same structure as cliffhangers. Distinguishing structural translation from surface mimicry is the core skill.',
     },
     {
       type: 'explain',
@@ -161,13 +161,13 @@ const analogyPractice: LessonData = {
       type: 'quiz',
       question: 'Which is the most dangerous trap in analogical reasoning?',
       options: [
-        { label: 'Using analogies from far-off fields', correct: false },
-        { label: 'Considering several analogies in parallel', correct: false },
-        { label: 'Applying an analogy based only on surface similarity, ignoring the structural differences', correct: true },
-        { label: 'Verifying hypotheses generated by analogy', correct: false },
+        { label: 'Pulling analogies from distant fields (a source of innovation)', correct: false },
+        { label: 'Considering multiple analogies in parallel and picking the best (recommended practice)', correct: false },
+        { label: 'Applying an analogy by surface similarity, ignoring structural differences', correct: true },
+        { label: 'Verifying analogy-generated hypotheses with real data (mandatory step)', correct: false },
       ],
       explanation:
-        'The most dangerous trap is being fooled by surface similarity. Example: "Social media succeeded with likes, so add a Like button to our B2B tool and engagement will follow." The surface looks similar, but the underlying usage structures of B2B differ — and the analogy fails.',
+        'The deadliest trap is acting on surface similarity without checking structure. Classic case: "social media likes worked → add likes to our B2B tool" copies the surface and ignores that B2B usage structures differ. The other options are actually recommended practices, easily confused as risks by people who hear the word "danger" near them.',
     },
     {
       type: 'explain',
@@ -179,13 +179,13 @@ const analogyPractice: LessonData = {
       type: 'quiz',
       question: 'When does analogical reasoning shine the most?',
       options: [
-        { label: 'Streamlining routine work', correct: false },
-        { label: 'Forming hypotheses for unprecedented problems', correct: true },
-        { label: 'Documenting existing procedures into a manual', correct: false },
-        { label: 'Analyzing numerical data', correct: false },
+        { label: 'Streamlining routine, repeatable work (existing-process optimization)', correct: false },
+        { label: 'Forming the first hypothesis for an unprecedented problem (hypothesis generation)', correct: true },
+        { label: 'Documenting existing procedures into a manual (tacit-to-explicit knowledge)', correct: false },
+        { label: 'Statistical analysis of accumulated numeric data (quantitative validation)', correct: false },
       ],
       explanation:
-        'Analogy shines on "unprecedented" problems. When neither data nor prior cases exist, structural similarity from another field gives you a starting hypothesis. It is the perfect tool for new ventures, novel problems, and innovation.',
+        'Analogy is built for "no data, no precedent" situations where you need to plant an initial hypothesis from another field. Streamlining, manualizing, and statistics each have their own dedicated tools (standardization, knowledge management, statistics) that handle their cases better. "First hypothesis for unprecedented problems" is where analogy uniquely wins.',
     },
   ],
 }

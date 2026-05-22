@@ -19,13 +19,13 @@ const systemsIntro: LessonData = {
       type: 'quiz',
       question: 'What perspective does systems thinking surface in hiring?',
       options: [
-        { label: 'Hire one excellent person and the problem is solved', correct: false },
-        { label: 'Mass hiring will strengthen the organization', correct: false },
-        { label: 'Aggressive hiring can trigger a vicious cycle: training cost goes up → existing staff are overloaded → existing staff leave → more hiring needed', correct: true },
-        { label: 'Hiring is HR\'s problem; other teams are not involved', correct: false },
+        { label: 'One outstanding hire would resolve the org-level problem', correct: false },
+        { label: 'Aggressive mass hiring strengthens the organization by sheer headcount', correct: false },
+        { label: 'Rapid hiring triggers a loop: training load up → existing staff burnout → attrition → more hiring needed', correct: true },
+        { label: 'Hiring is HR\'s job and other departments have little role to play', correct: false },
       ],
       explanation:
-        'Systems thinking exposes the feedback loop "hire → training burden → existing staff burn out → attrition → more hiring." It is the textbook case where local optimization (mass hiring) makes the whole system worse.',
+        'Systems thinking watches for loops, not individual moves. The hire → training → burnout → attrition → re-hire feedback is the key insight. "One hire solves it," "headcount equals strength," and "not our problem" all treat hiring as discrete decisions and miss the recurring dynamics that make local optimization globally damaging.',
     },
     {
       type: 'explain',
@@ -37,13 +37,13 @@ const systemsIntro: LessonData = {
       type: 'quiz',
       question: 'Which of the following is a reinforcing loop (virtuous cycle)?',
       options: [
-        { label: 'Cut prices → sales rise → margins fall → no more room to cut', correct: false },
-        { label: 'More users → more content → even more users (network effect)', correct: true },
-        { label: 'More inventory → more storage cost → discount sales → less inventory', correct: false },
-        { label: 'More overtime → fatigue → lower productivity → even more overtime', correct: false },
+        { label: 'Cut prices → sales rise → margins fall → no more room to cut (balancing)', correct: false },
+        { label: 'More users → more content → even more users (reinforcing / virtuous)', correct: true },
+        { label: 'More inventory → higher storage cost → markdown sales → less inventory (balancing)', correct: false },
+        { label: 'More overtime → fatigue → lower productivity → even more overtime (reinforcing / vicious)', correct: false },
       ],
       explanation:
-        'Network effects are the prototypical reinforcing loop: more users beget more content, which beget more users. Facebook, YouTube, and marketplace apps are all powered by this engine. (The last option is also a reinforcing loop, but a vicious one.)',
+        'The correct option is the network-effect virtuous cycle that powers Facebook / YouTube / marketplaces. The overtime example is also a reinforcing loop but vicious side, so it does not count as "virtuous." Price and inventory examples are balancing loops moving toward equilibrium. "Reinforcing" and "virtuous" are not synonyms — reinforcing loops can go either way.',
     },
     {
       type: 'explain',
@@ -55,13 +55,13 @@ const systemsIntro: LessonData = {
       type: 'quiz',
       question: 'You\'re analyzing "every month, work piles up against the end-of-month deadline" with the iceberg model. What belongs at the "structure" level?',
       options: [
-        { label: 'The number of overdue projects this month', correct: false },
-        { label: 'The pattern of monthly end-of-month crunches', correct: false },
-        { label: 'The sales process that commits tight schedules at deal time, plus the internal effort-estimation system', correct: true },
-        { label: 'Employees\' time-management skills', correct: false },
+        { label: 'The number of overdue items and the assignee list this month (Event)', correct: false },
+        { label: 'The repeated pattern of end-of-month crunches over many months (Pattern)', correct: false },
+        { label: 'The sales process that commits unrealistic schedules + the effort-estimation system (Structure)', correct: true },
+        { label: 'Individual employees\' time-management skill gaps (Individual factor)', correct: false },
       ],
       explanation:
-        'At the "structure" level, you look at the mechanisms, policies, and processes producing the issue. The root cause of end-of-month crunches likely lies in a sales process that commits to unrealistic schedules and internal systems that cannot estimate effort accurately.',
+        'Structure-level analysis targets the mechanisms, policies, and processes producing the issue. The overdue list is an event, the recurring pattern is a pattern, and individual skill is an individual factor. Misplacing the analysis at the wrong layer is exactly what makes "fixes" stop working at the events layer while structure quietly reproduces the problem.',
     },
   ],
 }
@@ -81,13 +81,13 @@ const systemsLoops: LessonData = {
       type: 'quiz',
       question: 'Which best matches the "Fixes that Fail" pattern?',
       options: [
-        { label: 'Establishing a new strategy for long-term improvement', correct: false },
-        { label: 'Restarting the server every time the system has issues, without ever fixing the underlying bug', correct: true },
-        { label: 'Putting preventive measures in place before problems happen', correct: false },
-        { label: 'Analyzing the root cause as a team', correct: false },
+        { label: 'Set a new strategy and pursue long-term improvement (root-cause work)', correct: false },
+        { label: 'Restart the server each outage without ever fixing the underlying bug', correct: true },
+        { label: 'Put preventive measures in place before problems happen (proactive)', correct: false },
+        { label: 'Analyze the root cause structurally as a team (root-cause analysis)', correct: false },
       ],
       explanation:
-        'Restarting the server is the textbook "fix." It works briefly, but the bug remains and the issue recurs. Each restart costs handling time, and there is a real risk of escalating into a critical outage.',
+        'Server restarts are the textbook "fix that fails": they work briefly but leave the root bug in place, accumulating handling cost and risking a major outage later. Long-term strategy, prevention, and root-cause analysis all sit on the opposite side of the spectrum. Distinguishing symptomatic vs structural responses is the discriminating skill.',
     },
     {
       type: 'explain',
@@ -99,13 +99,13 @@ const systemsLoops: LessonData = {
       type: 'quiz',
       question: '"Quality standards on each project keep drifting down a little at a time" — which archetype is this?',
       options: [
-        { label: 'Fixes that Fail', correct: false },
-        { label: 'Limits to Growth', correct: false },
-        { label: 'Eroding Goals', correct: true },
-        { label: 'Tragedy of the Commons', correct: false },
+        { label: 'Fixes that Fail — symptomatic relief that defers problems', correct: false },
+        { label: 'Limits to Growth — growth stalls at a hard constraint', correct: false },
+        { label: 'Eroding Goals — the goal itself drifts downward to match shortfalls', correct: true },
+        { label: 'Tragedy of the Commons — shared resources individually overconsumed', correct: false },
       ],
       explanation:
-        'Eroding Goals is the vicious cycle of revising goals downward to match the reality of missing them. Compromising on quality every time normalizes "this is fine" until a major quality incident eventually surfaces.',
+        'Eroding Goals is "lower the goal to match the shortfall" — exactly what stepwise quality compromise produces. The other three archetypes describe different loops (symptomatic relief, constraint binding, resource depletion) that do not involve the goal itself sliding. Naming "what is looping" makes archetype diagnosis immediate.',
     },
     {
       type: 'explain',
@@ -117,13 +117,13 @@ const systemsLoops: LessonData = {
       type: 'quiz',
       question: 'To "increase conversion on an e-commerce site," which intervention has the highest leverage?',
       options: [
-        { label: 'A/B testing button colors', correct: false },
-        { label: 'Running a free-shipping campaign', correct: false },
-        { label: 'Building a system that analyzes purchase behavior in real time and automatically delivers a personalized experience to each user', correct: true },
-        { label: 'Increasing the resolution of product photos', correct: false },
+        { label: 'A/B test button colors and copy to optimize CTAs (parameter)', correct: false },
+        { label: 'Run a time-limited free-shipping campaign (parameter)', correct: false },
+        { label: 'Build a personalization engine that auto-delivers individualized experiences (structure)', correct: true },
+        { label: 'Increase product photo resolution to improve perceived quality (parameter)', correct: false },
       ],
       explanation:
-        'Button color and free shipping are "parameter changes." A personalization engine is a "rule/structure change." Once built, it keeps producing effect and lifts the entire site\'s conversion. That is what high leverage looks like.',
+        'Parameter tweaks (color, campaign, photo) yield local, time-bound effects. A personalization engine alters the rules of engagement for every user continuously — a structural change with much higher leverage. Holding the hierarchy (parameter < rule < goal < paradigm) in mind helps direct effort to where it compounds.',
     },
   ],
 }
@@ -143,13 +143,13 @@ const systemsPractice: LessonData = {
       type: 'quiz',
       question: 'For the chain "more ad spend → more new customers → more revenue → more budget for ads," what kind of loop is this?',
       options: [
-        { label: 'Balancing loop (heading toward equilibrium)', correct: false },
-        { label: 'Reinforcing loop (snowballs)', correct: true },
-        { label: 'Not a causal relationship (just correlation)', correct: false },
-        { label: 'Reverse causation (revenue drives ad spend)', correct: false },
+        { label: 'Balancing loop — outputs suppress inputs and the system heads to equilibrium', correct: false },
+        { label: 'Reinforcing loop — outputs amplify inputs and the system snowballs', correct: true },
+        { label: 'Not a causal structure — only a coincidental correlation', correct: false },
+        { label: 'Reverse causation — revenue actually drives ad spend rather than the other way', correct: false },
       ],
       explanation:
-        'Ad spend → customers → revenue → ad spend → ... and each variable increases the next (all "+" arrows). That is a reinforcing loop, accelerating as long as the virtuous cycle keeps spinning. (It does not last forever — market saturation, a balancing loop, eventually kicks in.)',
+        'Each variable pushes the next in the positive direction (+), which is the reinforcing virtuous pattern. Balancing is suppression, correlation denial rejects the structure entirely, and reverse causation reinterprets the order — none of which fit this chain. In reality a balancing loop (market saturation) eventually kicks in, but the immediate structure is reinforcing.',
     },
     {
       type: 'explain',
@@ -161,13 +161,13 @@ const systemsPractice: LessonData = {
       type: 'quiz',
       question: 'For an organization where DX is stuck, which intervention has the highest leverage?',
       options: [
-        { label: 'Establish a new DX promotion department', correct: false },
-        { label: 'Adopt the latest AI / cloud technology', correct: false },
-        { label: 'Have executives experience successful DX cases firsthand and shift the mental model from "IT is a cost" to "IT is an investment"', correct: true },
-        { label: 'Run DX training for all employees', correct: false },
+        { label: 'Stand up a dedicated DX promotion department to lead (rule change)', correct: false },
+        { label: 'Adopt the latest AI / cloud tech first, figure out usage later (parameter)', correct: false },
+        { label: 'Have executives live through success cases and rewire "IT is cost" into "IT is investment" (paradigm)', correct: true },
+        { label: 'Run company-wide DX literacy training (rule change)', correct: false },
       ],
       explanation:
-        'Changing the mental model ("IT is a cost center") has the highest leverage. When executive perception shifts, budgeting, organizational structure, and evaluation systems shift, and that shifts behavior on the ground. Creating a new department or running training are parameter/rule-level interventions.',
+        'Paradigm shift (mental model) has the highest leverage: the "IT = investment" reframe ripples through budgeting, structure, and evaluation. New departments and training are rule changes; tech adoption is parameter level — all valid moves but lower-leverage. "Higher-layer interventions drive lower layers" is the key sequencing rule.',
     },
     {
       type: 'explain',
@@ -179,13 +179,13 @@ const systemsPractice: LessonData = {
       type: 'quiz',
       question: 'Which is the most accurate description of systems thinking\'s essence?',
       options: [
-        { label: 'Collecting and analyzing as much data as possible', correct: false },
-        { label: 'Understanding the relationships between elements and the feedback structure, not just the individual elements', correct: true },
-        { label: 'Solving every problem with a mathematical model', correct: false },
-        { label: 'Breaking problems down and solving each piece individually', correct: false },
+        { label: 'A method for collecting and statistically analyzing as much data as possible', correct: false },
+        { label: 'A mode of thought that targets relationships between elements and feedback structure, not isolated parts', correct: true },
+        { label: 'A methodology for quantifying every problem in mathematical models', correct: false },
+        { label: 'An analytical approach that breaks problems into components and solves each separately', correct: false },
       ],
       explanation:
-        'The essence of systems thinking is "see relationships and feedback structures." Analytical thinking, which focuses on individual elements, is also important — but on its own it cannot tell you what is happening at the level of the whole. The two complement each other.',
+        'The essence is the relationships-and-feedback view, complementary to analytical thinking. Statistical scale, mathematical modeling, and decomposition are other methodologies (statistics, mathematical science, analytical thinking) that get confused with systems thinking. The distinguishing question is "what does the whole do?"',
     },
   ],
 }

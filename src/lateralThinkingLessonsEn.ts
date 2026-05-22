@@ -19,13 +19,13 @@ const lateralIntro: LessonData = {
       type: 'quiz',
       question: 'For the question "How can we shorten pizza delivery times?" which answer is lateral thinking?',
       options: [
-        { label: 'Hire more delivery riders', correct: false },
-        { label: 'Switch to faster motorbikes', correct: false },
-        { label: 'Reduce cooking time', correct: false },
-        { label: 'Stop delivering. Show the kitchen on a live camera so customers come to pick up a fresh-from-the-oven pizza', correct: true },
+        { label: 'Hire more delivery riders to increase simultaneous capacity', correct: false },
+        { label: 'Switch to faster motorbikes or e-vehicles to speed transit', correct: false },
+        { label: 'Streamline cooking workflow to cut kitchen-side wait time', correct: false },
+        { label: 'Drop the "delivery" premise — make fresh in-store pickup the experience itself', correct: true },
       ],
       explanation:
-        'The first three options improve "delivery" within the existing premise (vertical thinking). The last option questions the premise of "delivering" itself. That is the heart of lateral thinking — change the frame of the problem.',
+        'The first three improve "delivery" within the existing premise (vertical thinking). Only the last option drops the premise of "delivering" itself, which is the heart of lateral thinking. The distinction between "optimizing inside the frame" and "rewriting the frame" is what to look for.',
     },
     {
       type: 'explain',
@@ -37,13 +37,13 @@ const lateralIntro: LessonData = {
       type: 'quiz',
       question: 'Which is the best reframe of "rural depopulation is killing the local shopping street"?',
       options: [
-        { label: 'Attract a large shopping mall', correct: false },
-        { label: 'Use subsidies to keep existing shops alive', correct: false },
-        { label: 'Sell "few people = quiet and pleasant" as a strength and turn the area into a workation hub for remote workers', correct: true },
-        { label: 'Run a campaign to encourage young people to move back', correct: false },
+        { label: 'Attract a large shopping mall to recreate a draw', correct: false },
+        { label: 'Use subsidies to keep existing shops alive longer', correct: false },
+        { label: 'Recast "few people = quiet" as a strength and pitch the area as a remote-work hub', correct: true },
+        { label: 'Run a campaign encouraging young people to move back home', correct: false },
       ],
       explanation:
-        'The other options stay inside the "depopulation is bad" frame. The reframe takes "few people" — a weakness — and recasts it as a strength (peace and quiet) tied to a different demand (remote workers).',
+        'The other three stay inside the "depopulation = bad" frame and look for fixes. The reframe takes "few people" — a stated weakness — and recasts it as a strength (low density, quiet) tied to a different demand pool. Reframing changes the frame, not the actions inside the frame.',
     },
     {
       type: 'explain',
@@ -55,13 +55,13 @@ const lateralIntro: LessonData = {
       type: 'quiz',
       question: 'Reversing "hotels should own their own rooms" gave rise to which business model?',
       options: [
-        { label: 'Capsule hotels', correct: false },
-        { label: 'Airbnb (renting individuals\' spare rooms as accommodation)', correct: true },
-        { label: 'Business-hotel chains', correct: false },
-        { label: 'Luxury resort hotels', correct: false },
+        { label: 'Capsule hotels — minimizing per-room size for high turnover', correct: false },
+        { label: 'Airbnb — turning individually-owned rooms into a platformized inventory', correct: true },
+        { label: 'Business-hotel chains — standardize and scale for operating efficiency', correct: false },
+        { label: 'Luxury resort hotels — limit room count and earn through premium pricing', correct: false },
       ],
       explanation:
-        'Airbnb reversed "hotels should own rooms" into "individuals can rent out their spare rooms," and disrupted the hospitality industry. It is a textbook case of reversal producing a new business model.',
+        'Airbnb reversed the "operator owns the rooms" premise — distributing ownership and centralizing it in a platform layer. The others all preserve the "operator owns rooms" frame and optimize operations on top of it. Reversal of premise vs operational optimization is what to listen for.',
     },
   ],
 }
@@ -81,13 +81,13 @@ const lateralTechniques: LessonData = {
       type: 'quiz',
       question: 'Problem: "A new convenience-store service" x random word: "library." Which combination is the most interesting?',
       options: [
-        { label: 'Sell books at the convenience store', correct: false },
-        { label: 'Install "15-minute focus booths" inside convenience stores', correct: true },
-        { label: 'Add barcode-scannable book-review links on products', correct: false },
-        { label: 'Play soft background music in the store', correct: false },
+        { label: 'Sell books inside the convenience store (surface "book" association)', correct: false },
+        { label: 'Install "15-minute focus booths" — extract the essence of focus space', correct: true },
+        { label: 'Add barcode-scannable book-review links on products (indirect link to books)', correct: false },
+        { label: 'Play soft background music to mimic the library atmosphere', correct: false },
       ],
       explanation:
-        'The essence of a library is not "books" but "a space for focus." Convenience-store accessibility x library focus space yields the "15-minute focus booth" — a fresh service for remote workers and busy professionals.',
+        'Reading "library" as "books" leads to surface-merchandise answers. Abstracting it as "a space for focus" lets you combine it with convenience-store accessibility to create a real new offering. The skill in random stimulation is separating surface associations from essential abstractions.',
     },
     {
       type: 'explain',
@@ -99,13 +99,13 @@ const lateralTechniques: LessonData = {
       type: 'quiz',
       question: 'Apply E (Eliminate) of SCAMPER to "traditional business-card exchange." Which result fits?',
       options: [
-        { label: 'Make the card design more elaborate', correct: false },
-        { label: 'Add a QR code to the card', correct: false },
-        { label: 'Eliminate the card entirely; share profiles instantly by tapping phones together', correct: true },
-        { label: 'Make the card bigger so it stands out', correct: false },
+        { label: 'Refine the card design with elaborate visuals (Modify)', correct: false },
+        { label: 'Add a QR code on top of the paper card (Combine)', correct: false },
+        { label: 'Eliminate the paper card entirely — share profiles instantly via NFC/QR (Eliminate)', correct: true },
+        { label: 'Enlarge the card to make it stand out (Modify)', correct: false },
       ],
       explanation:
-        'Eliminate asks "what if this element disappeared?" Removing the paper card and sharing profiles instantly via NFC/QR keeps only the essential function — exchanging information — and represents a real innovation.',
+        'Eliminate removes the element entirely, retaining only the underlying function. Adding a QR is Combine, design upgrades and size changes are Modify — distinct SCAMPER moves that look like Eliminate but are not. Naming which SCAMPER lens applies to each option is the discrimination skill.',
     },
     {
       type: 'explain',
@@ -117,13 +117,13 @@ const lateralTechniques: LessonData = {
       type: 'quiz',
       question: 'In a planning meeting for a new service, an idea comes up: "Interesting, but the risk feels big." Using Six Thinking Hats, which hat should you put on next?',
       options: [
-        { label: 'Red hat (emotion) — survey the team\'s gut reactions', correct: false },
-        { label: 'Black hat (caution) — list the risks concretely', correct: true },
-        { label: 'Green hat (creativity) — brainstorm more ideas', correct: false },
-        { label: 'White hat (facts) — research the success rate of similar past projects', correct: false },
+        { label: 'Red hat (emotion) — surface the team\'s gut reactions to the idea', correct: false },
+        { label: 'Black hat (caution) — list the risks concretely and quantify them', correct: true },
+        { label: 'Green hat (creativity) — generate alternative ideas to compare', correct: false },
+        { label: 'White hat (facts) — research success rates of similar past projects', correct: false },
       ],
       explanation:
-        'The vague concern "the risk feels big" calls for the black hat: spell out and quantify the risks concretely. Once you know "what is risky and how," you can move to the yellow and green hats to find ways to mitigate.',
+        '"The risk feels big" is a vague concern; the black hat\'s job is to make it concrete. Emotion-sharing keeps the concern vague, generating alternatives skips assessing the current one, and fact research is a support tool for the black hat — useful, but downstream of the diagnosis itself.',
     },
   ],
 }
@@ -143,13 +143,13 @@ const lateralPractice: LessonData = {
       type: 'quiz',
       question: 'Applying lateral thinking to "disrupt the taxi industry," which approach is the most lateral?',
       options: [
-        { label: 'Make taxi interiors more luxurious', correct: false },
-        { label: 'Cut wait times with a dispatch app', correct: false },
-        { label: 'Drop the assumption that "taxi companies own the cars and the drivers" and let everyday people drive their own cars to give rides', correct: true },
-        { label: 'Cut taxi fares', correct: false },
+        { label: 'Upgrade taxi interiors to a premium tier (premiumization)', correct: false },
+        { label: 'Cut wait times with a dispatch app (operational improvement)', correct: false },
+        { label: 'Drop the "company owns vehicles and drivers" premise — match private drivers to riders directly', correct: true },
+        { label: 'Cut fares uniformly to lower the barrier to use (price strategy)', correct: false },
       ],
       explanation:
-        'That is exactly the Uber/Lyft idea. They overturned the industry-defining assumption that "a taxi company owns vehicles and employs professional drivers." Lateral thinking does not improve the game — it changes the rules of the game.',
+        'The correct option is the Uber/Lyft move — overturning the industry-defining premise that operators own the vehicles and employ professional drivers. The other three are improvements within the existing premise. Distinguishing improvement from game-rule-rewriting is the key habit.',
     },
     {
       type: 'explain',
@@ -161,13 +161,13 @@ const lateralPractice: LessonData = {
       type: 'quiz',
       question: 'Truism: "A supermarket should have a wide assortment." Which success story reverses this through lateral thinking?',
       options: [
-        { label: 'Don Quijote (massive assortment plus a treasure-hunt feel)', correct: false },
-        { label: 'Costco (limited SKUs, bulk buying, low prices)', correct: true },
-        { label: 'Convenience stores (limited selection but 24-hour operation)', correct: false },
-        { label: 'Online grocery (no store, unlimited assortment)', correct: false },
+        { label: 'Don Quijote — maximize variety and lean into a treasure-hunt experience', correct: false },
+        { label: 'Costco — curate ~4,000 SKUs, buy in bulk, price aggressively', correct: true },
+        { label: 'Convenience stores — narrow selection but win on access and 24-hour ops', correct: false },
+        { label: 'Online grocery — no physical store, theoretically unlimited assortment', correct: false },
       ],
       explanation:
-        'Costco flips "more variety = better." It curates around 4,000 SKUs (about a tenth of a typical supermarket) and uses bulk buying to drive down prices, securing margin through a membership model.',
+        'Costco flips "more variety = better" by curating ~10% of a typical supermarket\'s SKU count, then leveraging bulk buying and a membership model. Don Quijote and online grocery preserve or amplify the variety premise; convenience stores narrow assortment via a different lens (access/time). Only Costco performs the actual reversal.',
     },
     {
       type: 'explain',
@@ -179,13 +179,13 @@ const lateralPractice: LessonData = {
       type: 'quiz',
       question: 'Which statement about logical and lateral thinking is correct?',
       options: [
-        { label: 'If you have lateral thinking, you do not need logical thinking', correct: false },
-        { label: 'Logical thinking matters more in business', correct: false },
-        { label: 'They complement each other; lateral discovers the question, logical solves it', correct: true },
-        { label: 'They are opposing modes and cannot be used at the same time', correct: false },
+        { label: 'Lateral thinking alone is enough — logical thinking becomes optional', correct: false },
+        { label: 'Logical thinking is more reproducible, so it should take priority in business', correct: false },
+        { label: 'They complement each other — lateral finds the right question, logical solves it', correct: true },
+        { label: 'They are opposing modes and cannot be used in the same project', correct: false },
       ],
       explanation:
-        'Use lateral thinking to find "the right question to solve," then use logical thinking to "solve that question correctly." Knowing when to switch modes leads to the most effective problem solving.',
+        'They have different goals and combine well: lateral finds the right question, logical solves it correctly. "Lateral is enough," "logical wins," and "they cannot coexist" all force a false binary that downgrades one of the two — a common trap when learning either one in isolation.',
     },
   ],
 }

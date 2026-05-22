@@ -19,13 +19,13 @@ const designThinkingIntro: LessonData = {
       type: 'quiz',
       question: 'What is the first step of Design Thinking?',
       options: [
-        { label: 'Brainstorming solutions', correct: false },
-        { label: 'Empathizing with and understanding the user', correct: true },
-        { label: 'Market research and data analysis', correct: false },
-        { label: 'Creating a prototype', correct: false },
+        { label: 'Brainstorm a wide range of possible solutions', correct: false },
+        { label: 'Empathize with users through observation, interview, and immersion', correct: true },
+        { label: 'Run market research and quantitative data analysis', correct: false },
+        { label: 'Build a prototype quickly to test reactions', correct: false },
       ],
       explanation:
-        'Design Thinking starts with Empathize. You first deeply understand a user\'s behavior, emotions, and context, and only then identify the real problem. It values "how people feel," which data analysis alone cannot reveal.',
+        'Design Thinking opens with Empathize. Brainstorming is Ideate, market research is the business-check side, and prototyping is the Prototype phase — all of which come after empathy. The first move is to immerse yourself in user behavior and context before reaching for solutions.',
     },
     {
       type: 'explain',
@@ -37,13 +37,13 @@ const designThinkingIntro: LessonData = {
       type: 'quiz',
       question: 'In a user interview, someone says "this app\'s search is hard to use." What is the most appropriate Design Thinking response?',
       options: [
-        { label: 'Improve the search UI', correct: false },
-        { label: 'Dig into the context: "In what situations do you use search?"', correct: true },
-        { label: 'Replace search with a category list', correct: false },
-        { label: 'Benchmark search in competing apps', correct: false },
+        { label: 'Immediately redesign the search UI (jump straight to solution)', correct: false },
+        { label: 'Dig into context and behavior: "In what situations do you search, and how?"', correct: true },
+        { label: 'Replace search with a category list (another solution)', correct: false },
+        { label: 'Benchmark search behavior in competing apps (external reference)', correct: false },
       ],
       explanation:
-        'When a user says "search is hard," the real problem may not be the search UI at all. The real issue might be "I can\'t find the product I want," and the answer might be recommendations, not search. Digging into the context is the heart of empathize.',
+        'Jumping straight to the literal words is the classic failure mode. "Search is hard" is a symptom; the real job might be "I can\'t reach the product I want" and the right fix could be recommendations or refined filters. Design Thinking digs into context and behavior, not the literal complaint, to surface the actual job.',
     },
     {
       type: 'explain',
@@ -55,13 +55,13 @@ const designThinkingIntro: LessonData = {
       type: 'quiz',
       question: 'What is the most important thing in a prototype user test?',
       options: [
-        { label: 'Making the prototype as polished as possible', correct: false },
-        { label: 'Testing with as many people as possible', correct: false },
-        { label: 'Finding the points where users get stuck', correct: true },
-        { label: 'Getting users to say "this is easy to use"', correct: false },
+        { label: 'Polish the prototype to feel close to the final product', correct: false },
+        { label: 'Run the test with as many people as possible for statistical confidence', correct: false },
+        { label: 'Find the moments where users get stuck, hesitate, or behave unexpectedly', correct: true },
+        { label: 'Collect "this is easy to use" praise to validate the team\'s direction', correct: false },
       ],
       explanation:
-        'The point of a prototype is not to be praised — it\'s to discover problems. The places where users stumble, hesitate, or behave unexpectedly are where the most valuable insights live.',
+        'The goal is problem discovery, not polish or praise. The Nielsen/Landauer rule of thumb says ~75-85% of usability problems surface with just 5 users — so early testing rarely needs large samples. The stumbles are the gold.',
     },
   ],
 }
@@ -81,13 +81,13 @@ const designThinkingEmpathy: LessonData = {
       type: 'quiz',
       question: 'You are building an empathy map for a job-search site. The user says "I still want to give it my all at my current company" (Say) but checks the job site every night (Do). What insight does this gap suggest?',
       options: [
-        { label: 'The user is just killing time on the site', correct: false },
-        { label: 'The user has no interest in changing jobs', correct: false },
-        { label: 'The user wants to switch jobs but is anxious about taking the leap and worried about how others will see it', correct: true },
-        { label: 'The site\'s UX is so good they\'re addicted', correct: false },
+        { label: 'The user is just killing time on the site (downplays the behavior)', correct: false },
+        { label: 'The Say reflects the truth and the user is not interested in switching (downplays the Do)', correct: false },
+        { label: 'There is real switching intent, but psychological barriers prevent action (integrates the gap)', correct: true },
+        { label: 'The site\'s UX is so engaging it is addictive (externalizes the cause)', correct: false },
       ],
       explanation:
-        'The gap between Say and Do is the key insight. "I want to give it my all" while checking every night = there is latent intent to switch, but psychological barriers stand in the way. A service that meets users at that emotional spot creates real value.',
+        'The Say-Do gap is the most valuable signal in an empathy map. "Want to stay" + "checks nightly" = latent intent blocked by psychological barriers. Dismissing the behavior, ignoring it, or attributing it to UX all rely on only one side of the information rather than integrating the contradiction.',
     },
     {
       type: 'explain',
@@ -99,13 +99,13 @@ const designThinkingEmpathy: LessonData = {
       type: 'quiz',
       question: 'Which statement about persona design is correct?',
       options: [
-        { label: 'Make as many personas as possible to cover every user segment', correct: false },
-        { label: 'Personas should be built from real user interviews and limited to 1-3 people', correct: true },
-        { label: 'Developers can imagine personas on their own — that\'s good enough', correct: false },
-        { label: 'Demographic info (age, gender) is the most important part of a persona', correct: false },
+        { label: 'Create as many personas as possible to cover every user segment', correct: false },
+        { label: 'Base personas on real user interviews/observation and keep them to 1-3 people', correct: true },
+        { label: 'Developers can imagine personas internally — that is good enough', correct: false },
+        { label: 'Demographic info (age, gender) is the most important element of a persona', correct: false },
       ],
       explanation:
-        'Personas come from real user interviews and observations. Limiting the number of personas creates focus — "we are building for this person" — and prevents a sprawl of half-baked features.',
+        'Personas live or die on grounding in real users, with a tight focus of 1-3 to keep "we are building for this person" honest. Many personas dilute focus ("for everyone = for no one"), imagined personas codify assumptions, and demographic emphasis misses behavior and motivation — the parts that actually drive design choices.',
     },
     {
       type: 'explain',
@@ -117,13 +117,13 @@ const designThinkingEmpathy: LessonData = {
       type: 'quiz',
       question: 'From a Jobs to be Done perspective, what is the most essential "job" of someone who joins a fitness gym?',
       options: [
-        { label: 'Using the weight machines', correct: false },
-        { label: 'Paying a monthly fee to use the facility', correct: false },
-        { label: 'Getting the job of "becoming a healthy, confident version of myself" done', correct: true },
-        { label: 'Going to the same gym as a friend', correct: false },
+        { label: 'Use the weight machines and complete a workout (the action itself)', correct: false },
+        { label: 'Pay a monthly membership fee and access the facility (the transaction)', correct: false },
+        { label: 'Become a healthy, confident version of myself (the underlying job)', correct: true },
+        { label: 'Spend time with a friend at the same gym (a social side-effect)', correct: false },
       ],
       explanation:
-        'A gym\'s "job" is not "use the machines" — it\'s "become a healthy, confident me." That is why online fitness apps and personal-trainer apps can become real competitors. Once you understand the job, you can see the real competition and the true points of differentiation.',
+        'The essential JTBD is the desired end-state, not the action or transaction. Identifying "become healthy and confident" as the job clarifies that online fitness apps and trainer apps are real competitors, even though their actions and transactions look very different. Stopping at the action level hides the actual competitive map.',
     },
   ],
 }
@@ -143,13 +143,13 @@ const designThinkingPractice: LessonData = {
       type: 'quiz',
       question: 'For the problem "older adults can\'t use online banking," which is the best HMW question?',
       options: [
-        { label: 'How might we teach older adults to use smartphones?', correct: false },
-        { label: 'How might we let people who are unfamiliar with digital tools handle financial transactions with confidence?', correct: true },
-        { label: 'How might we increase the UI font size?', correct: false },
-        { label: 'How might we get older adults to come into bank branches?', correct: false },
+        { label: 'How might we efficiently teach older adults to use smartphones? (too solution-specific)', correct: false },
+        { label: 'How might we let digitally unfamiliar people handle financial transactions with confidence? (right breadth)', correct: true },
+        { label: 'How might we maximize the UI font size? (too tactic-specific)', correct: false },
+        { label: 'How might we bring older adults back to bank branches? (sidesteps the problem)', correct: false },
       ],
       explanation:
-        '"Teach smartphones" and "increase font size" are too close to specific solutions. "Come into branches" sidesteps the problem. "Let digitally unfamiliar people handle transactions with confidence" is wide enough to spark a range of solutions (voice UI, family connections, simplified app, etc.).',
+        'A good HMW question is broad enough to permit 3-5 distinct solution directions. Smartphone teaching and font sizing collapse to single tactics; "back to branches" retreats from the problem entirely. "Handle transactions with confidence" leaves room for voice UI, family pairing, simplified apps, and more — the right level of abstraction.',
     },
     {
       type: 'explain',
@@ -161,13 +161,13 @@ const designThinkingPractice: LessonData = {
       type: 'quiz',
       question: 'In a brainstorm, a colleague says "let\'s build a $1 billion theme park." What is the right response?',
       options: [
-        { label: 'Reject it as unrealistic', correct: false },
-        { label: '"Interesting! Can we capture the essence of that experience inside an app?" — and build on it', correct: true },
-        { label: 'Ignore it and move to the next idea', correct: false },
-        { label: 'Explain the budget constraints', correct: false },
+        { label: 'Reject it as unrealistic to save discussion time', correct: false },
+        { label: '"Interesting! Can we capture the essence of that experience inside an app?" — build on it', correct: true },
+        { label: 'Stay silent and move on to the next idea suggestion', correct: false },
+        { label: 'Explain the actual budget constraints before continuing', correct: false },
       ],
       explanation:
-        'In brainstorming, the rules are "defer judgment" and "build on others\' ideas." A wild-sounding idea often contains an essence that, when extracted, leads to a realistic and innovative solution.',
+        'Brainstorm rules from IDEO: defer judgment, build on others\' ideas. Pull the essence out of the wild idea and translate it into something realistic. Rejection, silence, and constraint explanations are all forms of judgment that belong to the converge phase, not the diverge phase. Separating diverge from converge is the skill.',
     },
     {
       type: 'explain',
@@ -179,13 +179,13 @@ const designThinkingPractice: LessonData = {
       type: 'quiz',
       question: 'Which statement about Design Thinking is correct?',
       options: [
-        { label: 'It is a skill only designers use', correct: false },
-        { label: 'It rejects data analysis and relies on intuition', correct: false },
-        { label: 'Its core is the iteration of observing user behavior and rapid prototyping/testing', correct: true },
-        { label: 'It aims to deliver the perfect answer on the first try', correct: false },
+        { label: 'It is a specialized skill that only professional designers use', correct: false },
+        { label: 'It rejects data analysis and runs purely on intuition and taste', correct: false },
+        { label: 'Its core is the iterative loop of observing users and rapidly prototyping/testing', correct: true },
+        { label: 'It is a rigorous methodology aimed at producing the perfect answer on the first attempt', correct: false },
       ],
       explanation:
-        'The core of Design Thinking is the loop of "observing user behavior (empathize), building prototypes fast (prototype), testing with users and improving (test)." You don\'t aim for perfect on day one — you converge through learning.',
+        'The core is observe → prototype → test, repeated, available to anyone — not just designers. Data analysis is a complement, not the opposite; intuition-only is a strawman. "Perfect on first try" inverts the iterative learning premise. Each wrong option captures the discipline one-sidedly while missing the loop.',
     },
   ],
 }
