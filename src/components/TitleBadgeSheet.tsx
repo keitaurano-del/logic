@@ -16,6 +16,7 @@ import {
   type TitleKey,
 } from '../screens/homeHelpers'
 import { t } from '../i18n'
+import { XIcon } from '../icons'
 
 interface TitleBadgeSheetProps {
   xp: number
@@ -61,27 +62,67 @@ export function TitleBadgeSheet({ xp, onClose }: TitleBadgeSheetProps) {
         onClick={(e) => e.stopPropagation()}
         style={{
           width: '100%', maxWidth: 560,
-          maxHeight: '92vh',
+          maxHeight: '92dvh',
           background: 'var(--bg-primary)',
           color: 'var(--text-primary)',
           borderRadius: '20px 20px 0 0',
           boxShadow: '0 -8px 32px rgba(0,0,0,0.4)',
-          overflowY: 'auto',
-          padding: 'calc(env(safe-area-inset-top, 0) + 16px) 18px calc(env(safe-area-inset-bottom, 0) + 32px)',
+          display: 'flex', flexDirection: 'column',
           fontFamily: "'Noto Sans JP', sans-serif",
+          overflow: 'hidden',
         }}
       >
-        {/* グリップ */}
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
-          <div style={{ width: 36, height: 4, borderRadius: 99, background: 'var(--border)' }} />
+        {/* Sticky header: グリップ + 見出し + 閉じるボタン */}
+        <div style={{
+          position: 'relative',
+          flexShrink: 0,
+          padding: 'calc(env(safe-area-inset-top, 0px) + 10px) 18px 10px',
+          background: 'var(--bg-primary)',
+          borderBottom: '1px solid var(--border)',
+        }}>
+          {/* グリップ */}
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 10 }}>
+            <div style={{ width: 36, height: 4, borderRadius: 99, background: 'var(--border)' }} />
+          </div>
+
+          <div style={{
+            fontSize: 11, fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase',
+            color: 'var(--text-muted)', textAlign: 'center',
+            paddingRight: 36, paddingLeft: 36,
+          }}>
+            {t('profile.titleSheet.heading')}
+          </div>
+
+          {/* 閉じるボタン（右上、44x44 タップエリア） */}
+          <button
+            type="button"
+            aria-label={t('common.close')}
+            onClick={onClose}
+            style={{
+              position: 'absolute',
+              top: 'calc(env(safe-area-inset-top, 0px) + 6px)',
+              right: 8,
+              width: 44, height: 44,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              background: 'transparent',
+              border: 'none',
+              borderRadius: 12,
+              cursor: 'pointer',
+              color: 'var(--text-secondary)',
+              padding: 0,
+            }}
+          >
+            <XIcon width={22} height={22} />
+          </button>
         </div>
 
+        {/* スクロール可能なコンテンツ */}
         <div style={{
-          fontSize: 11, fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase',
-          color: 'var(--text-muted)', textAlign: 'center', marginBottom: 14,
+          flex: 1,
+          overflowY: 'auto',
+          WebkitOverflowScrolling: 'touch',
+          padding: '16px 18px calc(env(safe-area-inset-bottom, 0px) + 24px)',
         }}>
-          {t('profile.titleSheet.heading')}
-        </div>
 
         {/* 現在称号 ヒーロー */}
         <div style={{
@@ -166,6 +207,7 @@ export function TitleBadgeSheet({ xp, onClose }: TitleBadgeSheetProps) {
               />
             )
           })}
+        </div>
         </div>
       </div>
     </div>
