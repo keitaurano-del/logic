@@ -15,49 +15,49 @@ test.describe('Profile — 表示名', () => {
     await expect(page.locator('.profile-hero-name')).toHaveText('けいた')
   })
 
-  test('avatar には displayName の頭文字（大文字）が出る', async ({ page }) => {
-    await boot(page, { displayName: 'taro' })
+  test('hero 横にレベル称号バッジ（img alt = 称号名）が表示される', async ({ page }) => {
+    // 2026-05 リブランド: avatar アイコンはイニシャル文字ではなく、
+    // 16段階の称号バッジ画像 (e.g. ロジック見習い) になった。
+    // alt 属性で初期称号が描画されていることを確認する。
+    await boot(page, { locale: 'ja', displayName: 'taro', xp: 0 })
     await tab(page, 4).click()
-    await expect(page.locator('.profile-avatar')).toContainText('T')
+    await expect(page.locator('img[alt="ロジック見習い"]').first()).toBeVisible()
   })
 
   test('表示名未設定 (JA) だと hero name に "ゲスト" が出る', async ({ page }) => {
     await boot(page, { locale: 'ja', displayName: '' })
     await tab(page, 4).click()
     await expect(page.locator('.profile-hero-name')).toHaveText('ゲスト')
-    // avatar 頭文字
-    await expect(page.locator('.profile-avatar')).toContainText('ゲ')
   })
 
   test('表示名未設定 (EN) だと hero name に "Guest" が出る', async ({ page }) => {
     await boot(page, { locale: 'en', displayName: '' })
     await tab(page, 4).click()
     await expect(page.locator('.profile-hero-name')).toHaveText('Guest')
-    await expect(page.locator('.profile-avatar')).toContainText('G')
   })
 })
 
-test.describe('Profile — レベル表示（LEVEL_TABLE 仕様: 0=Lv1, 50=Lv2, 150=Lv3, 300=Lv4...）', () => {
+test.describe('Profile — レベル表示（LEVEL_TABLE 仕様: 101 XP / level、MAX Lv.100 で 9999 XP）', () => {
   test('xp=0 → Lv.1', async ({ page }) => {
     await boot(page, { displayName: 'lv1', xp: 0 })
     await tab(page, 4).click()
     await expect(page.locator('text=Lv.1').first()).toBeVisible()
   })
 
-  test('xp=49 → 依然として Lv.1', async ({ page }) => {
-    await boot(page, { displayName: 'lv1', xp: 49 })
+  test('xp=100 → 依然として Lv.1（次の閾値は 101 XP）', async ({ page }) => {
+    await boot(page, { displayName: 'lv1', xp: 100 })
     await tab(page, 4).click()
     await expect(page.locator('text=Lv.1').first()).toBeVisible()
   })
 
-  test('xp=50 → Lv.2 になる', async ({ page }) => {
-    await boot(page, { displayName: 'lv2', xp: 50 })
+  test('xp=101 → Lv.2 に上がる', async ({ page }) => {
+    await boot(page, { displayName: 'lv2', xp: 101 })
     await tab(page, 4).click()
     await expect(page.locator('text=Lv.2').first()).toBeVisible()
   })
 
-  test('xp=150 → Lv.3', async ({ page }) => {
-    await boot(page, { displayName: 'lv3', xp: 150 })
+  test('xp=202 → Lv.3', async ({ page }) => {
+    await boot(page, { displayName: 'lv3', xp: 202 })
     await tab(page, 4).click()
     await expect(page.locator('text=Lv.3').first()).toBeVisible()
   })
@@ -109,10 +109,12 @@ test.describe('Profile — stats grid 実値', () => {
 })
 
 test.describe('Profile — ラベル翻訳', () => {
-  test('JA: "レベル" 文字列が含まれる', async ({ page }) => {
+  test('JA: "Lv." 表記がレベルとして表示される', async ({ page }) => {
+    // 2026-05 リブランド: hero の表記は "Lv.{n}" (例: Lv.1)。
+    // "レベル" 単語は SettingRow 等を含めても表示されないので、Lv. を期待する。
     await boot(page, { locale: 'ja', displayName: 'ja-user' })
     await tab(page, 4).click()
-    await expect(page.locator('text=レベル').first()).toBeVisible()
+    await expect(page.locator('text=Lv.1').first()).toBeVisible()
   })
 
   test('JA: 連続学習日数 / 完了レッスン / 総XP の 3 ラベル', async ({ page }) => {
