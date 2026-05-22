@@ -230,4 +230,22 @@ export const COURSE_PROMPTS_V2: LessonPromptEntry[] = [
     diagram: 'a hand-drawn slide deck mockup on cream notebook paper: three rectangular slide frames arranged in a horizontal row, slightly overlapping like a deck. The left slide shows a big bold "Title" line on top and three short text lines below. The middle slide shows a simple bar chart with three coral bars. The right slide shows a 2x2 grid with one cell filled coral. Each slide has a small page number ("1", "2", "3") in the bottom-right corner. Above the deck a coral handwritten label "1 idea / slide". Coral-red annotation "make it land" upper-right.\n\nUse ONLY these short safe labels: "Title", "1 idea / slide", "make it land", "1", "2", "3". Do NOT attempt to write "DOCUMENTATION", "PRESENTATION", "typography", "layout", or any long word (Gemini consistently misspells long words).',
     spell: ['Slide Craft', 'Make decks that land', 'Title', '1 idea / slide', 'make it land', '1', '2', '3'],
   },
+
+  // ── 新規追加: fermi-02 「フェルミ推定の 6 つの分解パターン」 ──
+  {
+    slug: 'course-fermi-02',
+    title: '6 Patterns',
+    subtitle: 'Pick the right pattern',
+    diagram: 'a hand-drawn 2x3 grid of six small square boxes on cream notebook paper, each containing one simple icon and one short label in marker handwriting below the icon. Top-left: a small stick-figure person with label "people". Top-middle: a tall narrow building with label "biz". Top-right: a small grid mesh square with label "area". Bottom-left: a small "x" multiplication symbol with label "unit". Bottom-middle: an upward arrow with label "macro". Bottom-right: a small magnifying glass with label "micro". Above the grid: a coral handwritten label "decode". Coral-red annotation "pick one" upper-right.\n\nUse ONLY these short safe labels: "people", "biz", "area", "unit", "macro", "micro", "decode", "pick one". Do NOT attempt to write "DECOMPOSITION", "ESTIMATION", "toolkit", "household", "corporate", "cross-check", or any long word (Gemini consistently misspells long words).',
+    spell: ['6 Patterns', 'Pick the right pattern', 'Pick', 'right', 'pattern', 'people', 'biz', 'area', 'unit', 'macro', 'micro', 'decode', 'pick one'],
+  },
+
+  // ── 新規追加: fermi-03 「実践編：超易〜コンサル級フェルミ」 ──
+  {
+    slug: 'course-fermi-03',
+    title: 'Easy → Hard',
+    subtitle: 'Practice sets for Fermi',
+    diagram: 'a hand-drawn ascending staircase of five rectangular steps on cream notebook paper, rising from lower-left to upper-right. Each step has a small icon centered on it and a short label in marker handwriting just below the step. Step 1 (lowest, left): a small classroom desk icon, label "L1 class". Step 2: a coffee cup icon, label "L2 cafe". Step 3 (middle): a small bar chart icon, label "L3 biz". Step 4: a briefcase icon, label "L4 firm". Step 5 (highest, upper-right): a small question mark icon, label "L5 idea". A coral arrow runs diagonally up alongside the staircase from lower-left to upper-right, labeled "level up". Coral-red annotation "easy to hard" upper-right.\n\nUse ONLY these short safe labels: "L1 class", "L2 cafe", "L3 biz", "L4 firm", "L5 idea", "level up", "easy to hard". Do NOT attempt to write "PRACTICE", "CONSULTING", "industry", "abstract", or any long word (Gemini consistently misspells long words).',
+    spell: ['Easy → Hard', 'Practice sets for Fermi', 'L1 class', 'L2 cafe', 'L3 biz', 'L4 firm', 'L5 idea', 'level up', 'easy to hard'],
+  },
 ]

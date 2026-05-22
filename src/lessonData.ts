@@ -89,6 +89,10 @@ import { catchupLessonMap } from './catchupLessons'
 import { catchupLessonMapEn } from './catchupLessonsEn'
 import { fermiLessonMap } from './fermiLessons'
 import { fermiLessonMapEn } from './fermiLessonsEn'
+import { fermiLessonMapPattern } from './fermiLessonsPattern'
+import { fermiLessonMapPatternEn } from './fermiLessonsPatternEn'
+import { fermiLessonMapPractice } from './fermiLessonsPractice'
+import { fermiLessonMapPracticeEn } from './fermiLessonsPracticeEn'
 import { extraLessonMap } from './extraLessons'
 import { extraLessonMapEn } from './extraLessonsEn'
 import { strategyLessonMap } from './strategyLessons'
@@ -139,6 +143,8 @@ function _getMergedLessons(): Record<number, LessonData> {
     ..._pickByLocale(feedbackCaseLessonMap, feedbackCaseLessonMapEn),
     ..._pickByLocale(catchupLessonMap, catchupLessonMapEn),
     ..._pickByLocale(fermiLessonMap, fermiLessonMapEn),
+    ..._pickByLocale(fermiLessonMapPattern, fermiLessonMapPatternEn),
+    ..._pickByLocale(fermiLessonMapPractice, fermiLessonMapPracticeEn),
     ..._pickByLocale(extraLessonMap, extraLessonMapEn),
     ..._pickByLocale(strategyLessonMap, strategyLessonMapEn),
     ..._pickByLocale(numeracyLessonMap, numeracyLessonMapEn),

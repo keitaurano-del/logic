@@ -337,6 +337,26 @@ const COURSES_JA: Course[] = [
     description: '4 ステップ・分解の技術・前提データ・実践例・罠と対策まで段階的に学ぶ。',
     image: '/images/v3/course-fermi-01.png',
   },
+  {
+    id: 'fermi-02',
+    title: 'フェルミ推定の 6 つの分解パターン',
+    category: 'フェルミ推定',
+    group: 'business',
+    lessonIds: [210, 211, 212, 213, 214, 215, 216],
+    level: '中級',
+    description: '個人世帯ベース、法人ベース、面積ベース、ユニットベース、マクロ売上、ミクロ売上、クロスチェックを 1 本 1 パターンで深掘り。',
+    image: '/images/v3/course-fermi-02.png',
+  },
+  {
+    id: 'fermi-03',
+    title: '実践編：超易〜コンサル級フェルミ',
+    category: 'フェルミ推定',
+    group: 'business',
+    lessonIds: [220, 221, 222, 223, 224, 225, 226],
+    level: '上級',
+    description: '日常的な事象から MBB コンサル面接級まで、難易度の階段を上る実践演習。',
+    image: '/images/v3/course-fermi-03.png',
+  },
 
   // ── 数字に強くなる ──────────────────────────────────
   {
@@ -559,6 +579,14 @@ const COURSE_EN_OVERRIDES: Record<string, { title: string; description: string }
   'fermi-01': {
     title: 'The Four Fermi Steps and Acceptable Error',
     description: 'Step-by-step through the 4 steps, decomposition, base facts, worked examples, and common traps.',
+  },
+  'fermi-02': {
+    title: 'Six Patterns of Fermi Decomposition',
+    description: 'One pattern per lesson — individual/household, corporate, area, unit, macro/micro revenue, demand ÷ supply, and cross-check.',
+  },
+  'fermi-03': {
+    title: 'Practice: From Daily to MBB Level',
+    description: 'A difficulty ladder from everyday estimates up to MBB consulting case-interview problems.',
   },
   'numeracy-01': {
     title: 'Get Strong with Numbers',
