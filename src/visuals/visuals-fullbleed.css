@@ -1,0 +1,388 @@
+/* ============================================================
+ * Logic v3 — Concept Visuals : Full-bleed mobile mode (2026-05-22)
+ * ─────────────────────────────────────────────
+ * 全 24 Visual をスマホ画面いっぱいに広げる時の共通底上げスタイル。
+ * VisualSlide が `fullBleed` のとき外側コンテナに `data-fullbleed="true"`
+ * を付与する。その配下にあるすべての Visual ルート (.vz-*) に対して、
+ * 余白・フォントサイズ・カード min-height を一段引き上げる。
+ *
+ * 個別 Visual で特殊な構造調整が必要な場合は、`.vz-pyramid-fb` のように
+ * 各 visual.css 側で .vz-<visual>-fb クラスを追加して上書きする。
+ *
+ * 共通設計目標:
+ *   - 本文 17-18px / 副題 14-15px / ラベル 12-13px
+ *   - カード min-height 64-80px（タップしやすさ）
+ *   - 横幅 100% を使い切る
+ *   - 段階開示コントロールは中央下端に新ドット UI で配置
+ * ============================================================ */
+
+.vz-fullbleed-container {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 子の Visual ルートを画面いっぱいに広げる。
+   どの Visual もルート要素は `.vz-*` プレフィックスを持っているので、
+   コンテナ直下の `[class*="vz-"]` 一括で width: 100% を当てる。 */
+.vz-fullbleed-container > [class*='vz-'] {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ============================================================
+ * 共通底上げ: カード本体のフォント＆ padding
+ * 既存 Visual の本文セレクタを横断的に上書き。各 Visual 側のサイズが
+ * 競合する場合は個別 .vz-<x>-fb / [data-fullbleed] セレクタで再上書き。
+ * ============================================================ */
+[data-fullbleed='true'] .vz-step-stack-card,
+[data-fullbleed='true'] .vz-scr-step,
+[data-fullbleed='true'] .vz-www-step,
+[data-fullbleed='true'] .vz-phase,
+[data-fullbleed='true'] .vz-cra-card,
+[data-fullbleed='true'] .vz-prep-card,
+[data-fullbleed='true'] .vz-sowhat-block {
+  padding: 14px 16px;
+  min-height: 72px;
+  border-radius: 14px;
+}
+
+[data-fullbleed='true'] .vz-step-stack-card,
+[data-fullbleed='true'] .vz-scr-step,
+[data-fullbleed='true'] .vz-www-step {
+  gap: 6px;
+}
+
+[data-fullbleed='true'] .vz-phase-title,
+[data-fullbleed='true'] .vz-step-stack-card .vz-step-title,
+[data-fullbleed='true'] .vz-scr-step .vz-step-title,
+[data-fullbleed='true'] .vz-www-step .vz-step-title {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+[data-fullbleed='true'] .vz-phase-body,
+[data-fullbleed='true'] .vz-step-stack-card .vz-step-body,
+[data-fullbleed='true'] .vz-scr-step .vz-step-body,
+[data-fullbleed='true'] .vz-www-step .vz-step-body {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ============================================================
+ * ラベル類のサイズ底上げ
+ * ============================================================ */
+[data-fullbleed='true'] .vz-phase-label,
+[data-fullbleed='true'] .vz-tag,
+[data-fullbleed='true'] .vz-step-stack-card .vz-step-label,
+[data-fullbleed='true'] .vz-scr-step .vz-step-label,
+[data-fullbleed='true'] .vz-www-step .vz-step-label {
+  font-size: 12px;
+  letter-spacing: 0.06em;
+}
+
+/* ============================================================
+ * 矢印の調整: 中央寄せ ↓ などをフルブリードでも見やすく
+ * ============================================================ */
+[data-fullbleed='true'] .vz-step-stack-arrow,
+[data-fullbleed='true'] .vz-scr-arrow {
+  font-size: 18px;
+  margin: 4px 0;
+}
+
+/* ============================================================
+ * 各 Visual の特殊調整
+ * ============================================================ */
+
+/* MECE Patterns — 4 cards, 1 列化で大きく */
+[data-fullbleed='true'] .vz-mece {
+  gap: 12px;
+}
+[data-fullbleed='true'] .vz-mece-grid {
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+[data-fullbleed='true'] .vz-mece-card {
+  padding: 16px;
+  min-height: 80px;
+  border-radius: 14px;
+}
+[data-fullbleed='true'] .vz-mece-card-title,
+[data-fullbleed='true'] .vz-mece-title {
+  font-size: 16px;
+}
+[data-fullbleed='true'] .vz-mece-card-body,
+[data-fullbleed='true'] .vz-mece-body {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Logic Tree — ノードを大きく */
+[data-fullbleed='true'] .vz-tree-node {
+  padding: 14px 16px;
+  font-size: 15px;
+  border-radius: 12px;
+  min-height: 56px;
+}
+[data-fullbleed='true'] .vz-tree-root {
+  font-size: 17px;
+  font-weight: 800;
+  padding: 16px 18px;
+}
+[data-fullbleed='true'] .vz-tree-children {
+  gap: 10px;
+}
+
+/* SoWhat / Why So 矢印スタック */
+[data-fullbleed='true'] .vz-sowhat-block {
+  padding: 16px 18px;
+  min-height: 80px;
+}
+[data-fullbleed='true'] .vz-sowhat-label {
+  font-size: 12px;
+}
+[data-fullbleed='true'] .vz-sowhat-block .vz-sowhat-body {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+/* Deduction / Induction */
+[data-fullbleed='true'] .vz-deduction,
+[data-fullbleed='true'] .vz-induction {
+  gap: 10px;
+}
+[data-fullbleed='true'] .vz-induction-samples {
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+[data-fullbleed='true'] .vz-deduction-premise,
+[data-fullbleed='true'] .vz-deduction-conclusion,
+[data-fullbleed='true'] .vz-induction-sample,
+[data-fullbleed='true'] .vz-induction-pattern,
+[data-fullbleed='true'] .vz-induction-conclusion {
+  padding: 14px 16px;
+  font-size: 15px;
+  min-height: 64px;
+  border-radius: 12px;
+}
+
+/* Feedback Loop */
+[data-fullbleed='true'] .vz-feedback-node,
+[data-fullbleed='true'] .vz-feedback-cell {
+  padding: 14px 16px;
+  font-size: 15px;
+  min-height: 64px;
+}
+
+/* ClaimReasonAssumption */
+[data-fullbleed='true'] .vz-cra {
+  gap: 12px;
+}
+[data-fullbleed='true'] .vz-cra-card {
+  font-size: 15px;
+  line-height: 1.55;
+}
+[data-fullbleed='true'] .vz-cra-card .vz-cra-label,
+[data-fullbleed='true'] .vz-cra-label {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+}
+
+/* PREP */
+[data-fullbleed='true'] .vz-prep {
+  gap: 10px;
+}
+[data-fullbleed='true'] .vz-prep-card,
+[data-fullbleed='true'] .vz-prep-row {
+  padding: 14px 16px;
+  font-size: 15px;
+  min-height: 64px;
+  border-radius: 12px;
+}
+[data-fullbleed='true'] .vz-prep-label {
+  font-size: 12px;
+}
+
+/* ThreePillars — 3 列維持 */
+[data-fullbleed='true'] .vz-pillars-grid,
+[data-fullbleed='true'] .vz-pillars {
+  gap: 10px;
+}
+[data-fullbleed='true'] .vz-pillar,
+[data-fullbleed='true'] .vz-pillars-col {
+  padding: 14px 12px;
+  min-height: 100px;
+  border-radius: 12px;
+}
+[data-fullbleed='true'] .vz-pillar-title,
+[data-fullbleed='true'] .vz-pillars-title {
+  font-size: 15px;
+  font-weight: 700;
+}
+[data-fullbleed='true'] .vz-pillar-body,
+[data-fullbleed='true'] .vz-pillars-body {
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+/* DesignThinkingCycle */
+[data-fullbleed='true'] .vz-dtcycle-step,
+[data-fullbleed='true'] .vz-dtcycle-card {
+  padding: 14px 16px;
+  font-size: 15px;
+  min-height: 64px;
+  border-radius: 12px;
+}
+
+/* Fermi Formula / Steps */
+[data-fullbleed='true'] .vz-fermi-row,
+[data-fullbleed='true'] .vz-fermi-step,
+[data-fullbleed='true'] .vz-fermi-card,
+[data-fullbleed='true'] .vz-fermi-steps-card {
+  padding: 14px 16px;
+  font-size: 15px;
+  min-height: 64px;
+  border-radius: 12px;
+}
+
+/* WhyWhy 系（chain / toyota / evidence） */
+[data-fullbleed='true'] .vz-whywhy-row,
+[data-fullbleed='true'] .vz-whywhy-step,
+[data-fullbleed='true'] .vz-whywhy-cell,
+[data-fullbleed='true'] .vz-whywhy-toyota-cell,
+[data-fullbleed='true'] .vz-whywhy-evidence-cell {
+  padding: 14px 16px;
+  font-size: 15px;
+  min-height: 60px;
+  border-radius: 12px;
+}
+
+/* Iceberg */
+[data-fullbleed='true'] .vz-iceberg {
+  gap: 10px;
+}
+[data-fullbleed='true'] .vz-iceberg-layer,
+[data-fullbleed='true'] .vz-iceberg-band {
+  padding: 14px 16px;
+  font-size: 15px;
+  min-height: 64px;
+  border-radius: 12px;
+}
+
+/* Leverage Points */
+[data-fullbleed='true'] .vz-leverage-row,
+[data-fullbleed='true'] .vz-leverage-card,
+[data-fullbleed='true'] .vz-leverage-item {
+  padding: 14px 16px;
+  font-size: 15px;
+  min-height: 60px;
+  border-radius: 12px;
+}
+
+/* CaseStudy */
+[data-fullbleed='true'] .vz-case-card,
+[data-fullbleed='true'] .vz-case-phase {
+  padding: 14px 16px;
+  font-size: 15px;
+  min-height: 64px;
+  border-radius: 12px;
+}
+
+/* MvpTestDesign */
+[data-fullbleed='true'] .vz-mvp-row,
+[data-fullbleed='true'] .vz-mvp-card {
+  padding: 14px 16px;
+  font-size: 15px;
+  min-height: 64px;
+  border-radius: 12px;
+}
+
+/* Scamper / SixHats */
+[data-fullbleed='true'] .vz-scamper-card,
+[data-fullbleed='true'] .vz-scamper-row,
+[data-fullbleed='true'] .vz-sixhats-card,
+[data-fullbleed='true'] .vz-hat {
+  padding: 14px 16px;
+  font-size: 15px;
+  min-height: 64px;
+  border-radius: 12px;
+}
+
+/* EmpathyMap — quadrant 2x2 */
+[data-fullbleed='true'] .vz-empathy {
+  gap: 10px;
+}
+[data-fullbleed='true'] .vz-empathy-grid {
+  gap: 10px;
+}
+[data-fullbleed='true'] .vz-empathy-cell,
+[data-fullbleed='true'] .vz-empathy-quadrant {
+  padding: 14px 16px;
+  min-height: 88px;
+  border-radius: 12px;
+}
+[data-fullbleed='true'] .vz-empathy-cell-label,
+[data-fullbleed='true'] .vz-empathy-quadrant-title {
+  font-size: 13px;
+}
+[data-fullbleed='true'] .vz-empathy-cell-body,
+[data-fullbleed='true'] .vz-empathy-quadrant-body {
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+/* StepStack（共有コンポーネント） */
+[data-fullbleed='true'] .vz-step-stack {
+  gap: 8px;
+}
+[data-fullbleed='true'] .vz-step-stack-card {
+  padding: 14px 16px;
+  min-height: 72px;
+}
+[data-fullbleed='true'] .vz-step-stack-final {
+  min-height: 80px;
+}
+
+/* SCR / WhereWhyHow（vz-step-stack を共有しているが個別調整） */
+[data-fullbleed='true'] .vz-scr,
+[data-fullbleed='true'] .vz-www {
+  gap: 8px;
+}
+
+/* タイトル/見出しテキストの底上げ（Visual 内に h2/h3 を持つ Visual 向け） */
+[data-fullbleed='true'] .vz-title {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.005em;
+}
+[data-fullbleed='true'] .vz-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+/* 全画面化したコンテナの内側スペーシング */
+[data-fullbleed='true'] {
+  gap: 12px;
+}
+
+/* 段階開示コントロールの中央寄せ補助 */
+[data-fullbleed='true'] .vz-reveal-controls {
+  align-self: center;
+}
+
+/* ============================================================
+ * 極小端末（≤ 380px）追加調整
+ * ============================================================ */
+@media (max-width: 380px) {
+  [data-fullbleed='true'] .vz-pillar,
+  [data-fullbleed='true'] .vz-pillars-col {
+    min-height: 90px;
+  }
+  [data-fullbleed='true'] .vz-empathy-cell,
+  [data-fullbleed='true'] .vz-empathy-quadrant {
+    min-height: 80px;
+  }
+  [data-fullbleed='true'] .vz-step-stack-card {
+    padding: 12px 14px;
+  }
+}

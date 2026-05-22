@@ -471,21 +471,9 @@
   box-sizing: border-box;
 }
 
-/* fb モードの段階開示ボタン — 大きく */
+/* fb モードの段階開示コントロール — 新ドット型 UI を中央配置 */
 .vz-pyramid-fb .vz-reveal-controls {
   margin-top: var(--s-4); /* 16px */
-  gap: 10px;
-  width: 100%;
-}
-.vz-pyramid-fb .vz-reveal-controls .vz-ladder-btn {
-  padding: 14px 12px;
-  font-size: 15px;
-  min-height: 48px;
-  border-radius: 12px;
-}
-.vz-pyramid-fb .vz-reveal-progress {
-  font-size: 13px;
-  min-width: 48px;
 }
 
 /* スマホ幅でのさらなる調整（≤ 480px の極小端末対応）*/
@@ -827,36 +815,109 @@
   cursor: not-allowed;
 }
 
-/* ===== useStepReveal 用コントロール =====
- * 段階開示フックの「戻る／進む」ペア + 中央の進捗表示。
- * vz-ladder-btn のスタイルを継承するので、追加で必要なのはレイアウトのみ。
+/* ===== useStepReveal 用コントロール（2026-05-22 リニューアル） =====
+ * 旧仕様: 「← 戻す / 1 / 3 / 次へ →」のフル幅 2 ボタン → スライド送り左右タップ
+ *         ゾーンとの役割衝突で「ボタン 2 セット並ぶ」問題があった。
+ * 新仕様: 矢印アイコン円形ボタン（36×36） + 中央ドットインジケーター（8×8）。
+ *         小型化 + コンテナ中央下端配置で、Visual 内のステップ送りである
+ *         ことを視覚的に明示。スライド送りとの違いを直感的に伝える。
  *
  * z-index: LessonStoriesScreen の左右タップゾーン (zIndex:5) より上に出す。
- * これがないと「戻る」ボタンの上に透明な前スライド用 button が乗っていて
- * タップが goPrev() に吸われてしまう。
  */
 .vz-reveal-controls {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 14px;
+  justify-content: center;
+  gap: 14px;
+  margin: 16px auto 0;
+  padding: 6px 12px;
+  background: color-mix(in srgb, var(--bg-card) 90%, transparent);
+  border: 1px solid color-mix(in srgb, var(--brand) 18%, transparent);
+  border-radius: 999px;
   position: relative;
   z-index: 6;
+  align-self: center;
+  width: fit-content;
+  max-width: 100%;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 2px 10px color-mix(in srgb, var(--brand) 10%, transparent);
 }
 
-.vz-reveal-controls .vz-ladder-btn {
-  flex: 1;
+/* 矢印円形ボタン */
+.vz-reveal-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--brand) 9%, transparent);
+  border: 1px solid color-mix(in srgb, var(--brand) 22%, transparent);
+  color: var(--brand);
+  cursor: pointer;
+  padding: 0;
+  font: inherit;
+  flex-shrink: 0;
+  transition: background-color 0.15s ease, color 0.15s ease, transform 0.12s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
+.vz-reveal-btn:hover:not(:disabled),
+.vz-reveal-btn:active:not(:disabled) {
+  background: color-mix(in srgb, var(--brand) 18%, transparent);
+}
+
+.vz-reveal-btn:active:not(:disabled) {
+  transform: scale(0.92);
+}
+
+.vz-reveal-btn.primary {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #fff;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--brand) 32%, transparent);
+}
+
+.vz-reveal-btn.primary:hover:not(:disabled),
+.vz-reveal-btn.primary:active:not(:disabled) {
+  background: color-mix(in srgb, var(--brand) 88%, #000);
+}
+
+.vz-reveal-btn:disabled {
+  opacity: 0.32;
+  cursor: not-allowed;
+}
+
+/* ドットインジケーター */
+.vz-reveal-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vz-reveal-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--text-muted) 38%, transparent);
+  transition: background-color 0.2s ease, transform 0.2s ease, width 0.2s ease;
+}
+
+.vz-reveal-dot.is-past {
+  background: color-mix(in srgb, var(--brand) 55%, transparent);
+}
+
+.vz-reveal-dot.is-active {
+  background: var(--brand);
+  width: 22px;
+  border-radius: 999px;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 18%, transparent);
+}
+
+/* 後方互換: 旧 .vz-reveal-progress が DOM に残っていたとしても破綻しないよう no-op で残す */
 .vz-reveal-progress {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--text-secondary);
-  padding: 0 6px;
-  min-width: 38px;
-  text-align: center;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.02em;
+  display: none;
 }
 
 /* ===== 共通: 3 ステップ縦スタック + ↓ 矢印 + 最終ブロック結論色 =====

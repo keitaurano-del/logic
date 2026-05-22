@@ -54,6 +54,7 @@ export function VisualSlide({ title, caption, children, fullBleed = false }: Pro
 
       <div
         data-fullbleed={fullBleed || undefined}
+        className={fullBleed ? 'vz-fullbleed-container' : undefined}
         style={{
           background: 'var(--bg-card)',
           border: fullBleed ? 'none' : '1px solid var(--border-light)',
@@ -63,6 +64,8 @@ export function VisualSlide({ title, caption, children, fullBleed = false }: Pro
           // LessonStoriesScreen の左右 padding (24px) を打ち消して画面いっぱいに
           marginLeft: fullBleed ? -24 : 0,
           marginRight: fullBleed ? -24 : 0,
+          // 段階開示コントロールの z-index / 中央配置基盤
+          position: fullBleed ? 'relative' : undefined,
         }}
       >
         {children}

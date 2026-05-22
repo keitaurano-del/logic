@@ -21,6 +21,7 @@ import { VisualSlide } from '../visuals/VisualSlide'
 import { renderVisual } from '../visuals'
 import '../visuals/visuals.css'
 import '../visuals/visuals-phase3a.css'
+import '../visuals/visuals-fullbleed.css'
 
 type WrongAnswerCapture = {
   slideIndex: number
@@ -770,10 +771,11 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
   if (slide.kind === 'visual') {
     const element = renderVisual(slide.visualId)
     if (!element) return null
-    // Pyramid はスマホ全画面最適化プロトタイプとして fullBleed モードで表示
-    const fullBleed = slide.visualId === 'PyramidDiagram'
+    // 2026-05-22 — 全 Visual を fullBleed 表示に統一（旧: Pyramid のみ）。
+    // 画面端まで広げ、コンテナ側の汎用 `[data-fullbleed="true"]` 底上げ CSS で
+    // フォント・spacing をスマホ向けに揃える。
     return (
-      <VisualSlide title={slide.title} caption={slide.caption} fullBleed={fullBleed}>
+      <VisualSlide title={slide.title} caption={slide.caption} fullBleed>
         {element}
       </VisualSlide>
     )

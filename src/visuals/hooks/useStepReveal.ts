@@ -9,11 +9,19 @@ import type { SyntheticEvent } from 'react'
  * - `revealMode = 'static'` の場合は最初から最終ステップを表示する（リハーサル/プレビュー用）。
  * - `revealMode = 'interactive'`（default）の場合は step 1 から開始してユーザー操作で進める。
  *
+ * 2026-05-22 — UI 刷新:
+ *   従来の「← 戻す / 1 / 3 / 次へ →」フルラベルボタンは、LessonStoriesScreen 側の
+ *   左右タップゾーン（スライド送り）と視覚的に被って "2セット並ぶ" 問題があった。
+ *   - ボタンを矢印アイコンのみの 36×36 円形に縮小
+ *   - 中央は「• ○ ○」型のドットインジケーター
+ *   - Visual コンテナ内のフロー配置（margin: auto で水平中央寄せ）
+ *   ことで、スライド送りボタンとは明確に役割が分離されるデザインに変更。
+ *
  * 使い方の例：
  * ```
  * const { step, isLast, next, prev, controls } = useStepReveal(3)
  * return (
- *   <div>
+ *   <div style={{ position: 'relative' }}>
  *     <Layer1 />
  *     {step >= 2 && <Layer2 />}
  *     {step >= 3 && <Layer3 />}
@@ -29,11 +37,11 @@ export type UseStepRevealOptions = {
   totalSteps: number
   /** 初期表示モード。デフォルト 'interactive'（step 1 から） */
   mode?: RevealMode
-  /** prev ボタンのラベル。デフォルト '← 戻す' */
+  /** prev ボタンの aria-label。デフォルト '前のステップ' */
   prevLabel?: string
-  /** next ボタンのラベル。デフォルト '次へ →' */
+  /** next ボタンの aria-label。デフォルト '次のステップ' */
   nextLabel?: string
-  /** 完了状態のラベル。デフォルト '完了' */
+  /** 完了状態の aria-label。デフォルト '完了しました' */
   doneLabel?: string
 }
 
@@ -56,16 +64,16 @@ export type UseStepRevealResult = {
   controls: React.ReactNode
 }
 
-import { createElement } from 'react'
+import { createElement, Fragment } from 'react'
 
 export function useStepReveal(opts: UseStepRevealOptions | number): UseStepRevealResult {
   const options: UseStepRevealOptions = typeof opts === 'number' ? { totalSteps: opts } : opts
   const {
     totalSteps,
     mode = 'interactive',
-    prevLabel = '← 戻す',
-    nextLabel = '次へ →',
-    doneLabel = '完了',
+    prevLabel = '前のステップ',
+    nextLabel = '次のステップ',
+    doneLabel = '完了しました',
   } = options
 
   // static モードは最終ステップを表示
@@ -114,6 +122,50 @@ export function useStepReveal(opts: UseStepRevealOptions | number): UseStepRevea
     [next]
   )
 
+  // 矢印 SVG（左 / 右）
+  const arrowLeft = createElement(
+    'svg',
+    {
+      width: 16,
+      height: 16,
+      viewBox: '0 0 24 24',
+      fill: 'none',
+      stroke: 'currentColor',
+      strokeWidth: 2.5,
+      strokeLinecap: 'round',
+      strokeLinejoin: 'round',
+      'aria-hidden': true,
+    },
+    createElement('polyline', { points: '15 18 9 12 15 6' })
+  )
+  const arrowRight = createElement(
+    'svg',
+    {
+      width: 16,
+      height: 16,
+      viewBox: '0 0 24 24',
+      fill: 'none',
+      stroke: 'currentColor',
+      strokeWidth: 2.5,
+      strokeLinecap: 'round',
+      strokeLinejoin: 'round',
+      'aria-hidden': true,
+    },
+    createElement('polyline', { points: '9 18 15 12 9 6' })
+  )
+
+  // ドット
+  const dots = Array.from({ length: totalSteps }, (_, i) => {
+    const n = i + 1
+    const active = n === step
+    const past = n < step
+    return createElement('span', {
+      key: `dot-${n}`,
+      className: `vz-reveal-dot${active ? ' is-active' : ''}${past ? ' is-past' : ''}`,
+      'aria-hidden': true,
+    })
+  })
+
   // static モードや単一ステップの場合は controls を出さない
   const controls =
     mode === 'static' || totalSteps <= 1
@@ -122,6 +174,8 @@ export function useStepReveal(opts: UseStepRevealOptions | number): UseStepRevea
           'div',
           {
             className: 'vz-reveal-controls',
+            role: 'group',
+            'aria-label': '段階開示コントロール',
             // 親の swipe ハンドラ・タップゾーンより上に出して、touch も pointer も止める
             onTouchStart: stopAll,
             onTouchMove: stopAll,
@@ -134,7 +188,7 @@ export function useStepReveal(opts: UseStepRevealOptions | number): UseStepRevea
             'button',
             {
               type: 'button',
-              className: 'vz-ladder-btn',
+              className: 'vz-reveal-btn',
               onClick: handlePrev,
               onPointerDown: stopAll,
               onTouchStart: stopAll,
@@ -142,18 +196,25 @@ export function useStepReveal(opts: UseStepRevealOptions | number): UseStepRevea
               disabled: step === 1,
               'aria-label': prevLabel,
             },
-            prevLabel
+            arrowLeft
           ),
           createElement(
-            'span',
-            { className: 'vz-reveal-progress', 'aria-live': 'polite' },
-            `${step} / ${totalSteps}`
+            'div',
+            {
+              className: 'vz-reveal-dots',
+              role: 'progressbar',
+              'aria-valuenow': step,
+              'aria-valuemin': 1,
+              'aria-valuemax': totalSteps,
+              'aria-valuetext': `${step} / ${totalSteps}`,
+            },
+            createElement(Fragment, null, ...dots)
           ),
           createElement(
             'button',
             {
               type: 'button',
-              className: 'vz-ladder-btn primary',
+              className: 'vz-reveal-btn primary',
               onClick: handleNext,
               onPointerDown: stopAll,
               onTouchStart: stopAll,
@@ -161,7 +222,7 @@ export function useStepReveal(opts: UseStepRevealOptions | number): UseStepRevea
               disabled: isLast,
               'aria-label': isLast ? doneLabel : nextLabel,
             },
-            isLast ? doneLabel : nextLabel
+            arrowRight
           )
         )
 
