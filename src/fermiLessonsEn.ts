@@ -23,13 +23,13 @@ const fermiLesson200: LessonData = {
     },
     {
       type: 'quiz',
-      explanation: 'The value of Fermi estimation is not "the exactly right answer" but demonstrating a logical thought process. The target is to be within 1-2 orders of magnitude.',
+      explanation: 'Fermi estimation\'s value lies in demonstrating a logical thought process, not hitting an exact number. Within 1-2 orders of magnitude is the bar. Option 1 chases perfectionism, option 3 worships rote memorization, option 4 mistakes technique for thinking.',
       question: 'What is most important in Fermi estimation?',
       options: [
-        { label: 'Producing an exact answer', correct: false },
-        { label: 'A logical decomposition process', correct: true },
-        { label: 'Memorized statistics', correct: false },
-        { label: 'Calculation speed', correct: false },
+        { label: 'Hitting an exactly correct answer', correct: false },
+        { label: 'A logical decomposition and verification process', correct: true },
+        { label: 'A deep stock of memorized statistical figures', correct: false },
+        { label: 'Calculator-grade calculation speed and accuracy', correct: false },
       ],
     },
     {
@@ -69,13 +69,13 @@ const fermiLesson201: LessonData = {
     },
     {
       type: 'quiz',
-      explanation: '"Number of taxis in Japan" can be estimated population-based. Density differs sharply between major cities and rural areas, so splitting by region improves accuracy.',
+      explanation: 'Taxis are best sized population-based (demand side). Option 1 requires supply data you likely don\'t have, option 3 uses a denominator far too large to estimate taxi share against, option 4 relies on memory with no logical chain. Demand-side estimation is the most universal pattern.',
       question: 'When estimating the "number of taxis in Japan," what is the most natural starting point?',
       options: [
-        { label: 'Build up from the number of taxi companies', correct: false },
+        { label: 'Build up from the number of taxi companies × cars per company', correct: false },
         { label: 'Calculate from the population that uses taxis × usage frequency', correct: true },
-        { label: 'Calculate from the share of cars on the road in a day', correct: false },
-        { label: 'Estimate from past news articles', correct: false },
+        { label: 'Calculate from the share of taxis among all cars on the road', correct: false },
+        { label: 'Estimate from past news articles you happen to remember', correct: false },
       ],
     },
     {
@@ -187,13 +187,13 @@ const fermiLesson204: LessonData = {
     },
     {
       type: 'quiz',
-      explanation: '"All citizens use it daily" is a textbook overestimation. Real usage varies hugely by age, region, and habit. Always set a "usage rate."',
+      explanation: '"Everyone uses it daily" is the classic overestimation. Real usage varies by age, region, habit — always set a usage rate. Option 1 assumes universal use, option 3 attacks from the supply side without showing demand, option 4 is circular reasoning (you\'d need to know the target answer to derive it).',
       question: 'When estimating "annual Uber Eats orders in Japan," which approach is best?',
       options: [
-        { label: 'population × 365 days (assuming everyone uses it daily)', correct: false },
-        { label: 'users × average orders per month × 12 months', correct: true },
-        { label: 'derive from the number of restaurants that can deliver', correct: false },
-        { label: 'revenue divided by average order value', correct: false },
+        { label: 'Population × 365 days (assumes everyone uses it daily)', correct: false },
+        { label: 'Users × average orders per month × 12 months', correct: true },
+        { label: 'Derive from the number of delivery-capable restaurants × orders/store', correct: false },
+        { label: 'Market revenue divided by average order value (circular)', correct: false },
       ],
     },
     {
@@ -203,13 +203,13 @@ const fermiLesson204: LessonData = {
     },
     {
       type: 'quiz',
-      explanation: 'Estimating both supply-side (stores × ticket) and demand-side (population × usage rate × spend) and getting close numbers gives you confidence. This is what "cross-checking" means.',
+      explanation: 'Cross-checking means estimating from a different angle (supply-side vs demand-side) and confirming consistency. Option 1 just repeats the same logic, option 3 looks up the answer (defeats the purpose), option 4 adds precision without changing the source of error — a classic misunderstanding.',
       question: 'Which is the most appropriate "cross-check" in Fermi estimation?',
       options: [
-        { label: 'Redo the mental arithmetic', correct: false },
-        { label: 'Estimate the same quantity from another angle (supply-side <-> demand-side)', correct: true },
-        { label: 'Look up the right answer on the internet', correct: false },
-        { label: 'Increase significant figures and calculate more precisely', correct: false },
+        { label: 'Redo the mental arithmetic of the same equation', correct: false },
+        { label: 'Estimate the same quantity from another angle (supply ↔ demand)', correct: true },
+        { label: 'Look up the correct answer on the internet for confirmation', correct: false },
+        { label: 'Increase significant figures and recalculate more precisely', correct: false },
       ],
     },
   ],

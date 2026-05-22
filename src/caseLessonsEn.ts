@@ -24,13 +24,13 @@ const caseIntro: LessonData = {
       type: 'quiz',
       question: 'What is most highly valued in a case interview?',
       options: [
-        { label: 'Memorizing exact figures', correct: false },
-        { label: 'Logical thought process and hypothesis-building', correct: true },
-        { label: 'Depth of industry knowledge', correct: false },
-        { label: 'Calculation speed', correct: false },
+        { label: 'Memorizing exact industry figures and benchmarks', correct: false },
+        { label: 'Logical thought process and hypothesis-building skill', correct: true },
+        { label: 'Depth of industry knowledge and domain expertise', correct: false },
+        { label: 'Sheer mental calculation speed and accuracy', correct: false },
       ],
       explanation:
-        'In case interviews, "how you thought about it" is what matters. Beyond knowledge, evaluators look for the ability to drive the discussion with structured thinking and hypotheses.',
+        'In case interviews, "how you thought" is what matters. Option 1 (memorization) and option 3 (knowledge) overweight raw recall; option 4 (speed) is a technique that without structure leads nowhere. The decisive skill is structured thinking + hypothesis to steer the conversation.',
     },
     {
       type: 'explain',
@@ -42,13 +42,13 @@ const caseIntro: LessonData = {
       type: 'quiz',
       question: 'In an "improve the client\'s profit" case, what should you do first?',
       options: [
-        { label: 'Immediately propose initiatives', correct: false },
-        { label: 'Decompose into Profit = Revenue - Cost and locate where the problem is', correct: true },
-        { label: 'Gather information about competitors', correct: false },
-        { label: 'Research overall industry trends', correct: false },
+        { label: 'Immediately propose several initiatives and gauge reactions', correct: false },
+        { label: 'Decompose Profit = Revenue − Cost and locate the broken branch', correct: true },
+        { label: 'Gather a comprehensive sweep of competitor financials', correct: false },
+        { label: 'Survey overall industry trends and macro economics first', correct: false },
       ],
       explanation:
-        'First, decompose profit into "Revenue" and "Cost" and identify which side has the issue. From there, decompose further to approach the true root cause.',
+        'First decompose profit into Revenue vs Cost to find which side broke. Option 1 leaps to actions without diagnosis, option 3 retreats into external research, option 4 starts high and never lands on the specific problem.',
     },
   ],
 }
@@ -125,13 +125,13 @@ const caseMarketEntry: LessonData = {
       type: 'quiz',
       question: 'Which case argues for skipping entry even when market growth is high?',
       options: [
-        { label: 'When competition is still light', correct: false },
-        { label: 'When we lack a competitive advantage and large incumbents are already in', correct: true },
-        { label: 'Only when the market is small', correct: false },
-        { label: 'When entry costs are low', correct: false },
+        { label: 'When competition is light and the field looks open', correct: false },
+        { label: 'When we lack advantage and large incumbents are already entrenched', correct: true },
+        { label: 'When the market is small with limited upside ceiling', correct: false },
+        { label: 'When entry costs are low and exit would be easy', correct: false },
       ],
       explanation:
-        'A growing market does not guarantee a win. If you have no edge and large players already hold strong positions, you will not win. Always ask "Can we win?".',
+        'A growing market doesn\'t guarantee a win — without competitive edge against entrenched giants, you lose. Options 1 and 4 are actually pro-entry signals, option 3 contradicts the premise (high growth). Always ask "Can we win?" before "Should we enter?"',
     },
     {
       type: 'explain',
@@ -143,13 +143,13 @@ const caseMarketEntry: LessonData = {
       type: 'quiz',
       question: 'A Japanese company entering Indonesia for the first time faces complex regulation and unfamiliar business norms. Which entry mode is most realistic?',
       options: [
-        { label: 'Full greenfield build', correct: false },
-        { label: 'Joint venture with a local company', correct: true },
-        { label: 'Whole-market acquisition', correct: false },
-        { label: 'Licensing only', correct: false },
+        { label: 'Full greenfield build from scratch with own resources', correct: false },
+        { label: 'Joint venture with a local company to share risk and knowledge', correct: true },
+        { label: 'Whole-market acquisition to gain instant scale and share', correct: false },
+        { label: 'Licensing only — provide rights without operational presence', correct: false },
       ],
       explanation:
-        'In emerging markets with complex regulation and different business norms, a JV with a local partner spreads risk while leveraging the partner\'s network and knowledge. Many Japanese firms have used this strategy for Southeast Asian expansion.',
+        'In emerging markets with complex regulation, a JV with a local partner shares risk while leveraging local network and knowledge. Option 1 demands huge upfront learning, option 3 often blocked by foreign ownership caps, option 4 returns too little to build advantage. JV is the standard playbook for Japanese firms in Southeast Asia.',
     },
   ],
 }
@@ -172,13 +172,13 @@ const caseMnA: LessonData = {
       type: 'quiz',
       question: 'What is the most accurate description of the danger of overestimating "synergy" in M&A?',
       options: [
-        { label: 'Revenue ends up higher than forecast', correct: false },
-        { label: 'You underweight integration cost and organizational friction, and the expected synergy never materializes', correct: true },
-        { label: 'Shareholders are more likely to oppose it', correct: false },
-        { label: 'Regulatory review becomes stricter', correct: false },
+        { label: 'Revenue ends up higher than forecast, disrupting plans', correct: false },
+        { label: 'Integration costs and org friction are underweighted; synergy never materializes', correct: true },
+        { label: 'Shareholders are more likely to oppose, delaying the deal', correct: false },
+        { label: 'Regulatory review becomes stricter and approval is slowed', correct: false },
       ],
       explanation:
-        'Most M&A failures stem from "synergy overestimation." Cultural mismatch, system integration cost, talent attrition — costs not in the model pile up.',
+        'Most M&A failures stem from synergy overestimation. Hidden costs (culture clash, system integration, attrition) pile up. Option 1 is upside (the opposite problem); options 3 and 4 are deal-stage process risks unrelated to the core "synergy doesn\'t materialize" thesis.',
     },
     {
       type: 'explain',
@@ -190,13 +190,13 @@ const caseMnA: LessonData = {
       type: 'quiz',
       question: 'Company A (food) is acquiring Company B (logistics). Which is the most compelling strategic rationale?',
       options: [
-        { label: 'A personal relationship with B\'s founder', correct: false },
-        { label: 'Bringing B in-house cuts shipping cost and strengthens the price competitiveness of A\'s products', correct: true },
-        { label: 'B has many employees, so we can scale headcount', correct: false },
-        { label: 'Other peers are doing similar deals', correct: false },
+        { label: 'A personal relationship between A\'s leadership and B\'s founder', correct: false },
+        { label: 'In-housing B cuts shipping cost, strengthening A\'s product price competitiveness', correct: true },
+        { label: 'B has many employees, allowing the group to scale headcount', correct: false },
+        { label: 'Other peers are doing similar deals, so we should match them', correct: false },
       ],
       explanation:
-        'An acquisition with concrete value creation (here, cost synergy) has strategic logic. "Peers are doing it" or "we get more headcount" are not strategic rationales.',
+        'A clear value-creation logic (cost synergy here) makes the rationale strategic. Option 1 (personal relationships) is governance-risky, option 3 conflates size with value, option 4 is the "follow the herd" trap — common but never a strategic rationale.',
     },
   ],
 }

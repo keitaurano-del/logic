@@ -21,13 +21,13 @@ const proposalPurpose: LessonData = {
       type: 'quiz',
       question: 'For a proposal seeking approval of a new business initiative, what should be the top priority content?',
       options: [
-        { label: 'Every possible market data point and a detailed competitor list', correct: false },
-        { label: 'The evidence and risk mitigations the decision-maker needs to approve', correct: true },
-        { label: 'Team member backgrounds and accomplishments', correct: false },
-        { label: 'A comprehensive analysis of industry trends and future forecasts', correct: false },
+        { label: 'Every market data point plus a detailed competitor list', correct: false },
+        { label: 'Evidence and risk mitigations the decision-maker needs', correct: true },
+        { label: 'Team member backgrounds and past project accomplishments', correct: false },
+        { label: 'A comprehensive sweep of industry trends and forecasts', correct: false },
       ],
       explanation:
-        'When the goal is "approval," center the document on what the decision-maker needs to judge "why do this," "what are the risks," and "how will we handle them." Comprehensive information makes the decision harder and pushes approval further away.',
+        'When the goal is approval, center on "why do this," "what are the risks," and "how will we handle them." Comprehensive data makes decisions harder and pushes approval further away. Team intros and trend sweeps can support but should not lead.',
     },
     {
       type: 'explain',
@@ -39,13 +39,13 @@ const proposalPurpose: LessonData = {
       type: 'quiz',
       question: 'When pitching a cost-cutting initiative to executives, what should appear first?',
       options: [
-        { label: 'A detailed execution plan and list of owners', correct: false },
-        { label: 'The current cost-structure problem and the business impact of inaction', correct: true },
-        { label: 'Case studies from other companies and industry benchmarks', correct: false },
-        { label: 'A line-item table of the costs to be cut', correct: false },
+        { label: 'A detailed execution plan with task-by-task owners', correct: false },
+        { label: 'Current cost-structure problem plus the impact of inaction', correct: true },
+        { label: 'Peer-company case studies and industry benchmark comparisons', correct: false },
+        { label: 'A line-item table listing every cost to be cut', correct: false },
       ],
       explanation:
-        'Executives won\'t move without conviction that "this needs to happen now." First make the current issue visible, show the risk of inaction, and build shared understanding that "we have to do this." Execution steps come later.',
+        'Executives need conviction that "this must happen now" before they engage with execution. Lead with the current issue and the cost of inaction, then move to the plan. Execution detail feels concrete to the writer but reads as "already decided" to the audience, breaking the order of persuasion.',
     },
   ],
 }
@@ -68,11 +68,11 @@ const proposalStakeholder: LessonData = {
       options: [
         { label: 'CFO: feature details / Ops manager: ROI calculation', correct: false },
         { label: 'CFO: ROI and payback / Ops manager: workload and migration plan', correct: true },
-        { label: 'CFO: competitive comparison / Ops manager: market trends', correct: false },
-        { label: 'CFO and Ops manager: same materials work fine', correct: false },
+        { label: 'CFO: competitor comparison / Ops manager: market trend analysis', correct: false },
+        { label: 'Both readers get the same materials — content does not change', correct: false },
       ],
       explanation:
-        'The CFO cares about cost and recovery; the operations manager cares about real-world impact and the burden of migration. Adjusting emphasis to the reader dramatically changes approval odds.',
+        'The CFO cares about cost and recovery; the ops manager cares about real-world impact and migration burden. Option 1 swaps the two axes (a classic mistake); option 3 gives both readers secondary topics; option 4 is the "one-size-fits-all" trap that flattens persuasion.',
     },
     {
       type: 'explain',
@@ -84,13 +84,13 @@ const proposalStakeholder: LessonData = {
       type: 'quiz',
       question: 'What\'s the most effective way to handle the objection "we don\'t have budget"?',
       options: [
-        { label: 'Explain that "we kept costs down"', correct: false },
+        { label: 'Emphasize that "we kept costs as low as possible"', correct: false },
         { label: 'Note that "other companies are making similar investments"', correct: false },
-        { label: 'Quantify the opportunity cost and risk of NOT doing this', correct: true },
-        { label: 'Promise that "we can find the budget later"', correct: false },
+        { label: 'Quantify the opportunity cost and risk of NOT acting', correct: true },
+        { label: 'Promise that "we can secure the budget later"', correct: false },
       ],
       explanation:
-        'For budget objections, contrast "the cost of investing" against "the cost of NOT investing" (opportunity cost, risk). When the decision-maker feels "not doing it costs more," budget priority moves up.',
+        'Budget objections crumble when you contrast "the cost of investing" with "the cost of NOT investing." Option 1 invites endless haggling on price, option 2 leans on social proof without creating ownership, and option 4 defers responsibility (a dangerous IOU).',
     },
   ],
 }
@@ -111,13 +111,13 @@ const proposalStoryline: LessonData = {
       type: 'quiz',
       question: 'Which corresponds to the Complication in SCR?',
       options: [
-        { label: 'A SWOT analysis: "Our strengths are XXX, weaknesses YYY, opportunities ZZZ..."', correct: false },
-        { label: 'The solution: "This proposal will reduce costs by 20%"', correct: false },
-        { label: 'Problem framing: "Left alone, we risk losing 5% market share next quarter"', correct: true },
-        { label: 'Table of contents: "Today\'s agenda is as follows"', correct: false },
+        { label: 'A SWOT table laying out strengths / weaknesses / opportunities / threats', correct: false },
+        { label: '"This proposal will reduce costs by 20%" — the solution statement', correct: false },
+        { label: '"Left alone, we risk losing 5% market share next quarter" — problem framing', correct: true },
+        { label: '"Today\'s agenda is as follows" — table-of-contents slide', correct: false },
       ],
       explanation:
-        'Complication is the part that says "what is wrong as things stand, why we must act now." Building urgency and problem awareness sets up acceptance of the Resolution.',
+        'Complication answers "what is wrong, and why must we act now." Option 1 belongs to Situation framing (current-state analysis), option 2 is Resolution, and option 4 is structural meta-content. Only option 3 builds the urgency that primes the reader to accept Resolution.',
     },
     {
       type: 'explain',
@@ -129,13 +129,13 @@ const proposalStoryline: LessonData = {
       type: 'quiz',
       question: 'Which one-sentence proposal is the most logically structured?',
       options: [
-        { label: '"Digitalization is important. Because the market is changing. We should respond too."', correct: false },
+        { label: '"Digitalization matters. The market is changing. We should respond too."', correct: false },
         { label: '"Competitor A grew sales 30%. We should do something similar."', correct: false },
-        { label: '"Our online sales ratio is 20 points below industry average, costing us revenue, so we propose rebuilding our e-commerce site. This is expected to add 200 million yen in annual sales."', correct: true },
+        { label: '"Online sales are 20pt below industry avg, leaking revenue — rebuild EC for +¥200M/yr"', correct: true },
         { label: '"This initiative has benefits across cost, quality, and speed."', correct: false },
       ],
       explanation:
-        'A great one-sentence pitch chains situation → problem → solution → expected effect. "Digitalization is important" lacks evidence; "Competitor A grew" lacks our specific issue. Only option three has the problem → proposal → effect structure.',
+        'A strong one-sentence pitch chains situation → problem → solution → effect. Option 1 is claim-only with no evidence or expected effect, option 2 leans on competitors but never surfaces our own problem, and option 4 hides behind a generic "all benefits" platitude. Only option 3 carries the full structure.',
     },
   ],
 }
@@ -156,13 +156,13 @@ const proposalMessage: LessonData = {
       type: 'quiz',
       question: 'Convert the topic title "Sales data (2020-2024)" to a message title. Which is best?',
       options: [
-        { label: '"Detailed analysis of sales data"', correct: false },
-        { label: '"Since 2022, sales have grown 15% annually and the momentum continues"', correct: true },
+        { label: '"A detailed analysis of sales data"', correct: false },
+        { label: '"Since 2022, sales have grown 15% annually and momentum continues"', correct: true },
         { label: '"Sales data overview and future direction"', correct: false },
-        { label: '"Sales trend and issues"', correct: false },
+        { label: '"Sales trend and remaining issues going forward"', correct: false },
       ],
       explanation:
-        'A message title says "what we are claiming" in a complete sentence. "Detailed analysis" or "overview and direction" don\'t state any claim. Only option 2 makes the concrete claims "growing" and "continuing."',
+        'A message title states "what we are claiming" in one complete sentence. Options 1, 3, and 4 only tell you the slide\'s topic without taking any position. Only option 2 makes concrete claims ("growing 15%" and "momentum continues"). Phrasing like "analysis of," "overview," or "trends and issues" is a telltale sign of a topic title.',
     },
     {
       type: 'explain',
@@ -174,13 +174,13 @@ const proposalMessage: LessonData = {
       type: 'quiz',
       question: 'For the data point "customer survey average satisfaction was 3.8 / 5," what\'s the best So What?',
       options: [
-        { label: '"Customer satisfaction was 3.8 points." (just restating data)', correct: false },
-        { label: '"Customer satisfaction details — see appendix."', correct: false },
-        { label: '"Below the industry average of 4.2, indicating room to improve customer experience versus competitors."', correct: true },
-        { label: '"Some initiative may be needed to improve satisfaction."', correct: false },
+        { label: '"Customer satisfaction was 3.8 points." — restating the data', correct: false },
+        { label: '"Customer satisfaction details — see appendix." — deferring', correct: false },
+        { label: '"3.8 is below the industry average of 4.2, indicating room to improve CX vs. peers."', correct: true },
+        { label: '"Some initiative may be needed to improve satisfaction." — vague', correct: false },
       ],
       explanation:
-        'A So What clearly states what the data MEANS. The number 3.8 alone is meaningless. Adding context (industry average comparison) produces the implication "improvement is needed," which leads to the next action.',
+        'So What states what the data MEANS. 3.8 alone is meaningless. Option 1 just repeats the number, option 2 punts to an appendix, and option 4 hides behind "may be needed" — a classic spineless message. Option 3 anchors the data to a benchmark and produces a clear implication.',
     },
   ],
 }
@@ -201,13 +201,13 @@ const proposalQA: LessonData = {
       type: 'quiz',
       question: 'Which best describes the effect of adding a "Risks and Mitigations" slide to a proposal?',
       options: [
-        { label: 'Acknowledging risk exposes weaknesses and makes approval harder', correct: false },
-        { label: 'Showing risks first dissolves concerns before the meeting and lowers the approval bar', correct: true },
-        { label: 'Adds page count, making the proposal look more substantial', correct: false },
-        { label: 'Risks can be covered verbally; no need to put them on a slide', correct: false },
+        { label: 'Naming risks exposes weaknesses and makes approval harder', correct: false },
+        { label: 'Surfacing risks early dissolves concerns and lowers the approval bar', correct: true },
+        { label: 'Page count goes up, making the proposal look more substantial', correct: false },
+        { label: 'Risks can be covered verbally; they do not need to be on a slide', correct: false },
       ],
       explanation:
-        'Hiding risks creates suspicion ("did they think about risk?"). Showing risks and mitigations preemptively creates the trust of "they\'ve thought enough about this," producing an environment where dissent is less likely.',
+        'Hiding risks creates suspicion ("did they think about risk?"). Showing risks plus mitigations preemptively earns the "they\'ve thought it through" trust signal. Option 1 is the intuitive but wrong "never show weakness" belief, option 3 confuses thickness with quality, and option 4 invites surprise objections after the meeting because nothing is on the record.',
     },
     {
       type: 'explain',
@@ -219,13 +219,13 @@ const proposalQA: LessonData = {
       type: 'quiz',
       question: 'What\'s the biggest benefit of including a "why now" in a proposal?',
       options: [
-        { label: 'Adds pages, making the proposal look more substantial', correct: false },
-        { label: 'Blocks the decision-maker\'s "defer it" instinct, raising in-quarter approval probability', correct: true },
-        { label: 'Showing competitor information conveys our advantage', correct: false },
-        { label: 'Proves the content of the proposal is accurate', correct: false },
+        { label: 'Adds page count, making the proposal look more substantial', correct: false },
+        { label: 'Blocks the "let\'s defer this" instinct, raising in-quarter approval odds', correct: true },
+        { label: 'Including competitor info conveys our competitive advantage', correct: false },
+        { label: 'Provides evidence that the proposal content is accurate', correct: false },
       ],
       explanation:
-        'The "doesn\'t have to be now" deferral pattern is more common than outright rejection. Showing timing rationale (market, cost, internal cycle, regulation) raises in-period approval rates substantially.',
+        '"Doesn\'t have to be now" is a more common loss than outright rejection. Timing rationale (market, cost, internal cycle, regulation) closes that escape hatch. Options 3 and 4 are about content quality — useful, but a different axis from timing.',
     },
   ],
 }

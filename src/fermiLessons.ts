@@ -24,13 +24,13 @@ const fermiLesson200: LessonData = {
     },
     {
       type: 'quiz',
-      explanation: 'フェルミ推定の価値は「ぴったり正確な答え」ではなく、論理的な思考プロセスを示すことにある。ズレても1〜2桁以内が目標。',
+      explanation: 'フェルミ推定の価値は「ぴったり正確な答え」ではなく論理的な思考プロセスを示すこと。ズレても 1〜2 桁以内が目標です。1 番（正確性）は完璧主義の罠、3 番（統計暗記）は知識量信仰、4 番（計算速度）はテクニック信仰。いずれも本質を外しています。',
       question: 'フェルミ推定で最も重要なのはどれですか？',
       options: [
-        { label: '正確な答えを出すこと', correct: false },
-        { label: '論理的な分解プロセス', correct: true },
-        { label: '暗記した統計データ', correct: false },
-        { label: '計算スピード', correct: false },
+        { label: 'ぴったり正確な答えを出して当てること', correct: false },
+        { label: '論理的に分解し検証する思考プロセス', correct: true },
+        { label: '統計データを多く暗記しておくこと', correct: false },
+        { label: '電卓レベルの計算スピードと正確さ', correct: false },
       ],
     },
     {
@@ -71,13 +71,13 @@ const fermiLesson201: LessonData = {
     },
     {
       type: 'quiz',
-      explanation: '「日本のタクシー台数」は人口ベース型で推定できる。大都市と地方で密度が異なるので、地域別に分けるとより精度が上がる。',
+      explanation: '「日本のタクシー台数」は人口ベース型で需要から積み上げると感覚値で推定しやすいです。1 番は供給データを直接知らないと積めず、3 番は分母が大きすぎてタクシー比率の推定が困難、4 番は記憶頼りで論理プロセスがない。需要側からの推定が最も汎用的で再現性があります。',
       question: '「日本のタクシー台数」を推定する場合、最も自然な出発点はどれですか？',
       options: [
-        { label: 'タクシー会社の数から積み上げる', correct: false },
-        { label: 'タクシーを使う人口と利用頻度から計算', correct: true },
-        { label: '一日の道路を走る車の割合から計算', correct: false },
-        { label: '過去のニュース記事から推測', correct: false },
+        { label: '全国のタクシー会社の数から1社あたり台数で積み上げ', correct: false },
+        { label: 'タクシー利用人口と利用頻度から需要側で計算', correct: true },
+        { label: '一日の道路を走る全車のうちタクシー比率で計算', correct: false },
+        { label: '過去のニュースで見た数字を記憶から推測', correct: false },
       ],
     },
     {
@@ -192,13 +192,13 @@ const fermiLesson204: LessonData = {
     },
     {
       type: 'quiz',
-      explanation: '「全国民が毎日使う」は過大推定の典型。実際には年齢・地域・習慣によって大きく異なる。常に「利用率」を設定しよう。',
+      explanation: '「全国民が毎日使う」は過大推定の典型。実態は年齢・地域・習慣で大きく異なるため、必ず利用率を設定します。1 番は全員仮定の罠、3 番は供給側で利用実態が見えない、4 番は知るべき売上高を前提にしており循環論法です。需要側で利用者・頻度・期間を組む 2 番が正解。',
       question: '「日本のウーバーイーツの年間注文数」を推定する際、最も適切なアプローチはどれですか？',
       options: [
-        { label: '人口×365日で計算（全員が毎日使う前提）', correct: false },
-        { label: '利用者数×月の平均注文数×12ヶ月で計算', correct: true },
-        { label: 'デリバリー可能な飲食店数から計算', correct: false },
-        { label: '売上高÷平均単価で逆算', correct: false },
+        { label: '人口 × 365 日で計算（全員が毎日使う前提）', correct: false },
+        { label: '利用者数 × 月の平均注文数 × 12 ヶ月で計算', correct: true },
+        { label: 'デリバリー可能な飲食店数 × 1 店舗の注文数で計算', correct: false },
+        { label: '市場売上高 ÷ 平均注文単価で逆算', correct: false },
       ],
     },
     {
@@ -208,13 +208,13 @@ const fermiLesson204: LessonData = {
     },
     {
       type: 'quiz',
-      explanation: '供給サイド（店舗数×客単価）と需要サイド（人口×利用率×支出）の両方で推定して近い数字が出れば信頼度が高い。これを「検算」と呼ぶ。',
+      explanation: '供給サイド（店舗数 × 客単価）と需要サイド（人口 × 利用率 × 支出）の両方で推定し近い数字が出れば信頼度が上がります。これが「検算」。1 番は同じロジックを繰り返すだけ、3 番は検索で正解を得るのは推定の趣旨を逸脱、4 番は誤差源を変えず精度だけ上げる典型的勘違いです。',
       question: 'フェルミ推定の「検算」として最も適切なのはどれですか？',
       options: [
-        { label: '暗算をもう一度やり直す', correct: false },
-        { label: '別の切り口（供給サイド↔需要サイド）で同じ量を推定する', correct: true },
-        { label: 'インターネットで正解を検索する', correct: false },
-        { label: '有効数字を増やして精密に計算する', correct: false },
+        { label: '同じ計算を頭の中でもう一度やり直す', correct: false },
+        { label: '別の切り口（供給サイド↔需要サイド）で同量を推定', correct: true },
+        { label: 'インターネット検索で実際の正解値を確認する', correct: false },
+        { label: '有効数字を増やして元の式をより精密に計算する', correct: false },
       ],
     },
   ],
