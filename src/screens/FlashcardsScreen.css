@@ -1,23 +1,59 @@
 /* ==========================================================
- * Flashcards (v3) — 3D flip card UI
+ * Flashcards (v3) — Modern flip card UI
  *
- * Physical card with perspective-based rotateY flip animation.
+ * Inspired by Anki / Quizlet / Duolingo. Side gutter, deep
+ * layered shadow, 3D rotateY flip with proper backface hiding.
  * Scoped under .fc3 prefix to avoid collisions with the legacy
  * .fc-* classes in src/Flashcards.css.
  * ========================================================== */
 
-.fc3-stage {
-  width: 100%;
-  perspective: 1400px;
-  perspective-origin: 50% 40%;
-  margin: var(--s-3) 0 var(--s-4);
+/* Outer page padding — gives the card breathing room on the sides */
+.fc3-page {
+  padding: 0 var(--s-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
 }
 
+.fc3-progress {
+  height: 6px;
+  background: var(--brand-soft);
+  border-radius: var(--radius-full, 999px);
+  overflow: hidden;
+}
+
+.fc3-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--brand-mid) 0%, var(--brand) 100%);
+  border-radius: inherit;
+  transition: width 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Eyebrow label above the card */
+.fc3-eyebrow {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--brand);
+  text-align: center;
+  margin-top: var(--s-2);
+}
+
+/* Stage holds the perspective, NOT the card itself */
+.fc3-stage {
+  width: 100%;
+  perspective: 1600px;
+  perspective-origin: 50% 50%;
+}
+
+/* The card is a button so taps work everywhere reliably */
 .fc3-card {
   position: relative;
+  display: block;
   width: 100%;
   aspect-ratio: 3 / 4;
-  max-height: 460px;
+  max-height: 520px;
   margin: 0 auto;
   background: transparent;
   border: none;
@@ -26,6 +62,9 @@
   font-family: inherit;
   color: inherit;
   -webkit-tap-highlight-color: transparent;
+  /* Disable text selection so tap-to-flip never gets hijacked */
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .fc3-card:focus-visible {
@@ -34,12 +73,14 @@
   border-radius: 22px;
 }
 
+/* Card inner is the 3D plane that rotates */
 .fc3-card-inner {
   position: relative;
   width: 100%;
   height: 100%;
   transform-style: preserve-3d;
-  transition: transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
+  -webkit-transform-style: preserve-3d;
+  transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
 }
 
@@ -47,12 +88,18 @@
   transform: rotateY(180deg);
 }
 
-/* Press feedback — slight tilt + lift before flip starts. */
+/* Press feedback — quick scale-down, no transform conflict with flip */
+.fc3-card:active .fc3-card-inner {
+  transition-duration: 140ms;
+}
 .fc3-card:active:not(.is-flipped) .fc3-card-inner {
-  transform: translateY(-2px) rotateX(3deg) scale(0.99);
-  transition-duration: 180ms;
+  transform: scale(0.985);
+}
+.fc3-card:active.is-flipped .fc3-card-inner {
+  transform: rotateY(180deg) scale(0.985);
 }
 
+/* Each face fills the 3D plane */
 .fc3-face {
   position: absolute;
   inset: 0;
@@ -61,91 +108,78 @@
   align-items: center;
   justify-content: center;
   padding: var(--s-6) var(--s-5);
-  border-radius: 22px;
+  border-radius: 20px;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   overflow: hidden;
-  /* Layered shadow: paper rim + ambient + cast shadow */
+  text-align: center;
+  /* Layered shadow — Anki/Quizlet-style depth */
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.7),
-    inset 0 -1px 0 rgba(15, 20, 36, 0.05),
-    0 1px 2px rgba(15, 20, 36, 0.08),
-    0 10px 22px rgba(15, 20, 36, 0.10),
-    0 28px 48px rgba(15, 20, 36, 0.08);
+    0 1px 2px rgba(15, 20, 36, 0.06),
+    0 4px 12px rgba(15, 20, 36, 0.08),
+    0 16px 32px rgba(15, 20, 36, 0.10),
+    0 32px 64px rgba(15, 20, 36, 0.06);
 }
 
-/* Front face — subtle paper gradient + corner fold */
+/* Front face — clean white with a hairline brand accent strip on top */
 .fc3-face-front {
-  background:
-    radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.65) 0%, transparent 40%),
-    linear-gradient(160deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
+  background: var(--bg-card);
   border: 1px solid var(--border);
   color: var(--text-primary);
 }
 
-/* Subtle noise / paper-grain texture overlay */
 .fc3-face-front::before {
   content: '';
   position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.04;
-  mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-/* Folded corner detail (top-right) */
-.fc3-face-front::after {
-  content: '';
-  position: absolute;
   top: 0;
+  left: 0;
   right: 0;
-  width: 26px;
-  height: 26px;
-  background: linear-gradient(225deg,
-    rgba(15, 20, 36, 0.10) 0%,
-    rgba(15, 20, 36, 0.10) 48%,
-    transparent 50%);
-  border-bottom-left-radius: 8px;
-  pointer-events: none;
+  height: 4px;
+  background: linear-gradient(90deg, var(--brand-mid) 0%, var(--brand) 100%);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
 }
 
-/* Back face — brand-tinted, rotated 180deg so it's hidden initially */
+/* Back face — brand-tinted to communicate "flipped" */
 .fc3-face-back {
   transform: rotateY(180deg);
-  background:
-    radial-gradient(circle at 80% 90%, rgba(108, 142, 245, 0.10) 0%, transparent 55%),
-    linear-gradient(160deg, var(--bg-card) 0%, var(--brand-soft) 100%);
-  border: 1px solid var(--border);
+  background: linear-gradient(160deg, var(--bg-card) 0%, var(--brand-soft) 100%);
+  border: 1px solid var(--border-brand);
   color: var(--text-primary);
 }
 
 .fc3-face-back::before {
   content: '';
   position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.04;
-  mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--brand);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
 }
 
-/* Inner content layout */
+/* Eyebrow inside each face (Q / A) */
 .fc3-face-eyebrow {
-  font-size: 0.7333rem;
+  font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--brand);
   margin-bottom: var(--s-4);
 }
 
+.fc3-face-back .fc3-face-eyebrow {
+  color: var(--brand-hover);
+}
+
+/* Main text — sans, generous line-height, readable on mobile */
 .fc3-face-text {
-  font-family: var(--serif);
   font-weight: 600;
-  font-size: clamp(20px, 5.5vw, 28px);
+  font-size: clamp(20px, 5.4vw, 28px);
   line-height: 1.5;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.005em;
   text-align: center;
   white-space: pre-wrap;
   color: var(--text-primary);
@@ -156,32 +190,30 @@
   font-size: clamp(18px, 4.8vw, 24px);
   font-weight: 500;
   line-height: 1.6;
-  color: var(--text-primary);
 }
 
+/* Tap hint on the front face */
 .fc3-flip-hint {
   position: absolute;
   bottom: var(--s-4);
   left: 0;
   right: 0;
-  text-align: center;
-  font-size: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.78rem;
   font-weight: 600;
   color: var(--text-muted);
-  opacity: 0.7;
   letter-spacing: 0.02em;
 }
 
-/* Subtle glow ring that pulses gently to invite the first tap */
-.fc3-face-front .fc3-flip-hint::before {
+.fc3-flip-hint::before {
   content: '';
-  display: inline-block;
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: var(--brand);
-  margin-right: 6px;
-  vertical-align: middle;
   animation: fc3-tap-pulse 1.6s ease-in-out infinite;
 }
 
@@ -190,33 +222,26 @@
   50%      { opacity: 1;    transform: scale(1.15); }
 }
 
-/* Enter motion — when a new card slides in (card index changes) */
-.fc3-card.is-entering .fc3-card-inner {
+/* ----------------------------------------------------------------
+ * Enter motion — wrap the stage so it doesn't fight with the flip
+ * transform inside .fc3-card-inner. This is the critical fix:
+ * we animate the OUTER container, not the rotating inner.
+ * ---------------------------------------------------------------- */
+.fc3-stage.is-entering {
   animation: fc3-enter 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @keyframes fc3-enter {
-  0%   { opacity: 0; transform: translateY(18px) rotateX(-6deg) scale(0.97); }
-  100% { opacity: 1; transform: translateY(0)    rotateX(0)     scale(1); }
+  0%   { opacity: 0; transform: translateY(14px) scale(0.98); }
+  100% { opacity: 1; transform: translateY(0)    scale(1); }
 }
 
-/* Eyebrow label above the card */
-.fc3-eyebrow {
-  font-size: 0.7333rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--brand-hover);
-  margin-bottom: var(--s-3);
-}
-
-/* Action button row underneath the card */
+/* Action button row below the card */
 .fc3-actions {
   display: flex;
   flex-direction: column;
   gap: var(--s-2);
-  margin-top: var(--s-4);
-  animation: fc3-actions-in 320ms ease-out both;
+  animation: fc3-actions-in 280ms ease-out both;
 }
 
 @keyframes fc3-actions-in {
@@ -230,21 +255,24 @@
 }
 
 .fc3-meta {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: var(--text-muted);
   text-align: center;
-  margin-top: var(--s-2);
+  margin-top: var(--s-1);
 }
 
-/* Reduced motion — collapse flip into instant swap */
+/* Reduced motion — collapse the flip into an instant swap */
 @media (prefers-reduced-motion: reduce) {
   .fc3-card-inner,
   .fc3-card.is-flipped .fc3-card-inner,
   .fc3-card:active .fc3-card-inner {
     transition-duration: 0.01ms !important;
+  }
+  .fc3-stage.is-entering,
+  .fc3-actions {
     animation: none !important;
   }
-  .fc3-face-front .fc3-flip-hint::before {
+  .fc3-flip-hint::before {
     animation: none !important;
   }
 }

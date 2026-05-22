@@ -5,6 +5,7 @@ import { Button } from '../components/Button'
 import { Header } from '../components/platform/Header'
 import { haptic } from '../platform/haptics'
 import { t } from '../i18n'
+import { useStudyTimer } from '../hooks/useStudyTimer'
 import './FlashcardsScreen.css'
 
 interface FlashcardsScreenProps {
@@ -13,6 +14,8 @@ interface FlashcardsScreenProps {
 }
 
 export function FlashcardsScreen({ onBack, mode = 'due' }: FlashcardsScreenProps) {
+  // 学習時間計測 — フラッシュカード画面の滞在時間を study_sessions に記録
+  useStudyTimer({ type: 'flashcard', id: mode })
   const [queue] = useState<Flashcard[]>(() =>
     mode === 'weak' ? getWeakCards() : getDueCards(),
   )
@@ -41,115 +44,121 @@ export function FlashcardsScreen({ onBack, mode = 'due' }: FlashcardsScreenProps
     <div className="stack">
       <Header title={done ? t('flashcards.headerDone') : `${Math.min(idx + 1, total)} / ${total}`} onBack={onBack} />
 
-      {total > 0 && !done && (
-        <div className="progress" style={{ marginBottom: 'var(--s-5)' }}>
-          <div
-            className="progress-fill"
-            style={{ width: `${((idx + 1) / total) * 100}%` }}
-          />
-        </div>
-      )}
-
-      {total === 0 ? (
-        <div className="card empty" style={{ padding: 'var(--s-7)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 'var(--s-3)', color: 'var(--brand)' }}>
-            <SparklesIcon width={36} height={36} />
+      <div className="fc3-page">
+        {total > 0 && !done && (
+          <div className="fc3-progress" role="progressbar" aria-valuenow={idx + 1} aria-valuemin={0} aria-valuemax={total}>
+            <div
+              className="fc3-progress-fill"
+              style={{ width: `${((idx + 1) / total) * 100}%` }}
+            />
           </div>
-          <h3 style={{ fontSize: 20, marginBottom: 'var(--s-2)' }}>
-            {mode === 'weak'
-              ? t('flashcards.emptyWeak')
-              : t('flashcards.emptyDue')}
-          </h3>
-          <p className="muted" style={{ fontSize: 16 }}>
-            {mode === 'weak'
-              ? t('flashcards.emptyWeakDesc')
-              : t('flashcards.emptyDueDesc')}
-          </p>
-        </div>
-      ) : done ? (
-        <div className="feedback-card" style={{ textAlign: 'center' }}>
-          <div className="feedback-head" style={{ justifyContent: 'center' }}>
-            <div className="feedback-check">
-              <CheckIcon />
+        )}
+
+        {total === 0 ? (
+          <div className="card empty" style={{ padding: 'var(--s-7)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 'var(--s-3)', color: 'var(--brand)' }}>
+              <SparklesIcon width={36} height={36} />
             </div>
-            <div className="feedback-title">{t('flashcards.allDone')}</div>
+            <h3 style={{ fontSize: 20, marginBottom: 'var(--s-2)' }}>
+              {mode === 'weak'
+                ? t('flashcards.emptyWeak')
+                : t('flashcards.emptyDue')}
+            </h3>
+            <p className="muted" style={{ fontSize: 16 }}>
+              {mode === 'weak'
+                ? t('flashcards.emptyWeakDesc')
+                : t('flashcards.emptyDueDesc')}
+            </p>
           </div>
-          <div className="feedback-text" style={{ marginTop: 'var(--s-2)' }}>
-            {t('flashcards.allDoneDesc', { total })}
-          </div>
-          <Button
-            variant="primary"
-            size="lg"
-            onClick={onBack}
-            style={{ marginTop: 'var(--s-4)' }}
-          >
-            {t('flashcards.back')}
-          </Button>
-        </div>
-      ) : (
-        <>
-          <div className="fc3-eyebrow">
-            FLASHCARD · {card.category.toUpperCase()}
-          </div>
-
-          {/* key={idx} forces remount → re-plays the enter animation per card */}
-          <div className="fc3-stage" key={idx}>
-            <button
-              type="button"
-              onClick={handleFlip}
-              className={`fc3-card is-entering${flipped ? ' is-flipped' : ''}`}
-              aria-pressed={flipped}
-              aria-label={flipped ? t('label.answer') : t('label.question')}
+        ) : done ? (
+          <div className="feedback-card" style={{ textAlign: 'center' }}>
+            <div className="feedback-head" style={{ justifyContent: 'center' }}>
+              <div className="feedback-check">
+                <CheckIcon />
+              </div>
+              <div className="feedback-title">{t('flashcards.allDone')}</div>
+            </div>
+            <div className="feedback-text" style={{ marginTop: 'var(--s-2)' }}>
+              {t('flashcards.allDoneDesc', { total })}
+            </div>
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={onBack}
+              style={{ marginTop: 'var(--s-4)' }}
             >
-              <div className="fc3-card-inner">
-                <div className="fc3-face fc3-face-front">
-                  <div className="fc3-face-eyebrow">{t('label.question')}</div>
-                  <div className="fc3-face-text">{card.front}</div>
-                  <div className="fc3-flip-hint">{t('flashcards.flipHint')}</div>
-                </div>
-                <div className="fc3-face fc3-face-back">
-                  <div className="fc3-face-eyebrow">{t('label.answer')}</div>
-                  <div className="fc3-face-text fc3-back-text">{card.back}</div>
-                </div>
-              </div>
-            </button>
+              {t('flashcards.back')}
+            </Button>
           </div>
-
-          {flipped && (
-            <div className="fc3-actions">
-              <div className="fc3-actions-row">
-                <Button
-                  variant="danger"
-                  size="lg"
-                  block
-                  onClick={() => handleReview('again')}
-                >
-                  {t('flashcards.again')}
-                </Button>
-                <Button
-                  variant="default"
-                  size="lg"
-                  block
-                  onClick={() => handleReview('good')}
-                >
-                  {t('flashcards.good')}
-                </Button>
-                <Button
-                  variant="primary"
-                  size="lg"
-                  block
-                  onClick={() => handleReview('easy')}
-                >
-                  {t('flashcards.easy')}
-                </Button>
-              </div>
-              <div className="fc3-meta">
-                {t('flashcards.intervalEase', { interval: card.interval, ease: card.ease.toFixed(1) })}
-              </div>
+        ) : (
+          <>
+            <div className="fc3-eyebrow">
+              FLASHCARD · {card.category.toUpperCase()}
             </div>
-          )}
-        </>
-      )}
+
+            {/*
+              key={idx} forces remount so the enter animation re-plays per card.
+              The enter animation lives on .fc3-stage (the OUTER container),
+              never on .fc3-card-inner, so it never fights the flip transform.
+            */}
+            <div className="fc3-stage is-entering" key={idx}>
+              <button
+                type="button"
+                onClick={handleFlip}
+                className={`fc3-card${flipped ? ' is-flipped' : ''}`}
+                aria-pressed={flipped}
+                aria-label={flipped ? t('label.answer') : t('label.question')}
+              >
+                <div className="fc3-card-inner">
+                  <div className="fc3-face fc3-face-front">
+                    <div className="fc3-face-eyebrow">{t('label.question')}</div>
+                    <div className="fc3-face-text">{card.front}</div>
+                    <div className="fc3-flip-hint">{t('flashcards.flipHint')}</div>
+                  </div>
+                  <div className="fc3-face fc3-face-back">
+                    <div className="fc3-face-eyebrow">{t('label.answer')}</div>
+                    <div className="fc3-face-text fc3-back-text">{card.back}</div>
+                  </div>
+                </div>
+              </button>
+            </div>
+
+            {flipped && (
+              <div className="fc3-actions">
+                <div className="fc3-actions-row">
+                  <Button
+                    variant="danger"
+                    size="lg"
+                    block
+                    onClick={() => handleReview('again')}
+                  >
+                    {t('flashcards.again')}
+                  </Button>
+                  <Button
+                    variant="default"
+                    size="lg"
+                    block
+                    onClick={() => handleReview('good')}
+                  >
+                    {t('flashcards.good')}
+                  </Button>
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    block
+                    onClick={() => handleReview('easy')}
+                  >
+                    {t('flashcards.easy')}
+                  </Button>
+                </div>
+                <div className="fc3-meta">
+                  {t('flashcards.intervalEase', { interval: card.interval, ease: card.ease.toFixed(1) })}
+                </div>
+              </div>
+            )}
+          </>
+        )}
+      </div>
     </div>
   )
 }
