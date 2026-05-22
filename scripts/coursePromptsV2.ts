@@ -203,4 +203,22 @@ export const COURSE_PROMPTS_V2: LessonPromptEntry[] = [
     diagram: 'a hand-drawn issue tree on cream notebook paper: a top box "Main Issue" branches down into three middle boxes "Sub A", "Sub B", "Sub C", each splitting further into two small leaf boxes labeled "fact". Coral underlines run beneath the bottom row of facts. Coral-red annotation "structure it" upper-right.',
     spell: ['Issue Analysis', 'Main Issue', 'Sub A', 'Sub B', 'Sub C', 'fact', 'structure it'],
   },
+
+  // ── 新規追加: cognitive-01 「ワーキングメモリを使いこなす」 ──
+  {
+    slug: 'course-cognitive-01',
+    title: 'Working Memory',
+    subtitle: 'Hold less, think more',
+    diagram: 'a hand-drawn brain-desk diagram on cream notebook paper: a large rounded rectangle in the center labeled "Brain Desk" (the working desk of the mind), with seven small square slots arranged in a row inside it, each containing a tiny coral dot. Above the row floats a coral handwritten label "7 ± 2". To the right of the box, a stack of three folder-like rectangles labeled "Notes", "Files", "Apps" with a coral arrow pointing from them into the brain-desk, marked "offload". Coral-red annotation "limit your load" upper-right.\n\nUse the simple short labels "Brain Desk", "Notes", "Files", "Apps", "7 ± 2", "offload", "limit your load" only — do NOT attempt to write "working memory capacity", "chunking", "cognitive load", or "external memory" anywhere in the image (Gemini tends to misspell long words).',
+    spell: ['Working Memory', 'Hold less, think more', 'Brain Desk', 'Notes', 'Files', 'Apps', '7 ± 2', 'offload', 'limit your load'],
+  },
+
+  // ── 新規追加: cognitive-02 「認知バイアスを実務で乗りこなす」 ──
+  {
+    slug: 'course-cognitive-02',
+    title: '5 Biases',
+    subtitle: 'Spot 5, decide better',
+    diagram: 'a hand-drawn 2x3 grid of six small boxes on cream notebook paper, but only five are filled — each filled box contains one short label in marker handwriting: top-left "Avail", top-middle "Halo", top-right "Hind", bottom-left "D-K", bottom-middle "Outcome". The sixth box (bottom-right) is empty and faintly outlined. Above the grid: a small pair of hand-drawn coral eyeglasses labeled "lens". Coral-red annotation "spot bias" upper-right.\n\nUse ONLY these short safe labels: "Avail", "Halo", "Hind", "D-K", "Outcome", "lens", "spot bias". Do NOT attempt to write "availability", "hindsight", "Dunning-Kruger", "outcome bias", or "cognitive bias" (Gemini consistently misspells long words).',
+    spell: ['5 Biases', 'Spot 5, decide better', 'Avail', 'Halo', 'Hind', 'D-K', 'Outcome', 'lens', 'spot bias'],
+  },
 ]
