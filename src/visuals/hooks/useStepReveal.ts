@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react'
+import type { SyntheticEvent } from 'react'
 
 /**
  * 段階開示用の共通フック。
@@ -92,19 +93,52 @@ export function useStepReveal(opts: UseStepRevealOptions | number): UseStepRevea
 
   const isLast = step >= totalSteps
 
+  // 親コンテナ（LessonStoriesScreen 等）の swipe / tap zone に
+  // ボタンタップが伝播してスライド遷移が起きないよう、touch / pointer を全部止める。
+  const stopAll = useCallback((e: { stopPropagation: () => void }) => {
+    e.stopPropagation()
+  }, [])
+
+  const handlePrev = useCallback(
+    (e: SyntheticEvent) => {
+      e.stopPropagation()
+      prev()
+    },
+    [prev]
+  )
+  const handleNext = useCallback(
+    (e: SyntheticEvent) => {
+      e.stopPropagation()
+      next()
+    },
+    [next]
+  )
+
   // static モードや単一ステップの場合は controls を出さない
   const controls =
     mode === 'static' || totalSteps <= 1
       ? null
       : createElement(
           'div',
-          { className: 'vz-reveal-controls' },
+          {
+            className: 'vz-reveal-controls',
+            // 親の swipe ハンドラ・タップゾーンより上に出して、touch も pointer も止める
+            onTouchStart: stopAll,
+            onTouchMove: stopAll,
+            onTouchEnd: stopAll,
+            onPointerDown: stopAll,
+            onPointerUp: stopAll,
+            onClick: stopAll,
+          },
           createElement(
             'button',
             {
               type: 'button',
               className: 'vz-ladder-btn',
-              onClick: prev,
+              onClick: handlePrev,
+              onPointerDown: stopAll,
+              onTouchStart: stopAll,
+              onTouchEnd: stopAll,
               disabled: step === 1,
               'aria-label': prevLabel,
             },
@@ -120,7 +154,10 @@ export function useStepReveal(opts: UseStepRevealOptions | number): UseStepRevea
             {
               type: 'button',
               className: 'vz-ladder-btn primary',
-              onClick: next,
+              onClick: handleNext,
+              onPointerDown: stopAll,
+              onTouchStart: stopAll,
+              onTouchEnd: stopAll,
               disabled: isLast,
               'aria-label': isLast ? doneLabel : nextLabel,
             },

@@ -830,12 +830,18 @@
 /* ===== useStepReveal 用コントロール =====
  * 段階開示フックの「戻る／進む」ペア + 中央の進捗表示。
  * vz-ladder-btn のスタイルを継承するので、追加で必要なのはレイアウトのみ。
+ *
+ * z-index: LessonStoriesScreen の左右タップゾーン (zIndex:5) より上に出す。
+ * これがないと「戻る」ボタンの上に透明な前スライド用 button が乗っていて
+ * タップが goPrev() に吸われてしまう。
  */
 .vz-reveal-controls {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-top: 14px;
+  position: relative;
+  z-index: 6;
 }
 
 .vz-reveal-controls .vz-ladder-btn {

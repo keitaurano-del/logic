@@ -22,8 +22,18 @@ type Props = {
 export function PyramidVisual({ revealMode = 'interactive' }: Props = {}) {
   const { step, controls } = useStepReveal({ totalSteps: 3, mode: revealMode })
 
+  // LessonStoriesScreen の swipe / tap-zone への伝播を全部止める。
+  // 段階開示中の「戻る」ボタンが親スクリーンの前スライドに遷移してしまう問題を防ぐ。
+  const stop = (e: React.SyntheticEvent) => e.stopPropagation()
+
   return (
-    <div className="vz-pyramid vz-pyramid-fb vz-stagger">
+    <div
+      className="vz-pyramid vz-pyramid-fb vz-stagger"
+      onTouchStart={stop}
+      onTouchMove={stop}
+      onTouchEnd={stop}
+      onPointerDown={stop}
+    >
       {/* 頂点：結論 (step >= 1) */}
       <div className="vz-pyramid-row r1">
         <div className="vz-pyramid-cell top">
