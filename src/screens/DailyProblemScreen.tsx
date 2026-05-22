@@ -9,6 +9,7 @@ import { Button } from '../components/Button'
 import { Header } from '../components/platform/Header'
 import { haptic } from '../platform/haptics'
 import { t } from '../i18n'
+import { useStudyTimer } from '../hooks/useStudyTimer'
 
 interface DailyProblemScreenProps {
   onBack: () => void
@@ -17,6 +18,8 @@ interface DailyProblemScreenProps {
 type State = 'loading' | 'ready' | 'done' | 'error'
 
 export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
+  // 学習時間計測 — デイリー問題画面の滞在時間を study_sessions に記録
+  useStudyTimer({ type: 'daily_problem' })
   const [state, setState] = useState<State>(() => isDailyCompleted() ? 'done' : 'loading')
   const [problem, setProblem] = useState<AIProblemSet | null>(null)
   const [error, setError] = useState('')

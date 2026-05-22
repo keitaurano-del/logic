@@ -19,6 +19,7 @@ import { isSaved, toggleSaved } from '../savedItemsStore'
 import { haptic } from '../platform/haptics'
 import { VisualSlide } from '../visuals/VisualSlide'
 import { renderVisual } from '../visuals'
+import { useStudyTimer } from '../hooks/useStudyTimer'
 import '../visuals/visuals.css'
 import '../visuals/visuals-phase3a.css'
 import '../visuals/visuals-fullbleed.css'
@@ -42,6 +43,10 @@ interface LessonStoriesScreenProps {
 export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
   const { lessonId, startStep, onComplete, onClose } = props
   const lesson = allLessons[lessonId]
+  // 学習時間計測 — アンマウント時 / visibilitychange で flush。
+  // study_sessions テーブル + localStorage `logic-stats.studyTimeMs` 両方を更新する。
+  // AppV3 側 handleComplete では addStudyTime を呼ばないため、ここが唯一の経路。
+  useStudyTimer({ type: 'lesson', id: `lesson-${lessonId}` })
   const [index, setIndex] = useState(startStep ?? 0)
   const [quizAnswered, setQuizAnswered] = useState<{ correct: boolean; selected: number; selectedMulti?: number[] } | null>(null)
   const [multiSelected, setMultiSelected] = useState<number[]>([])

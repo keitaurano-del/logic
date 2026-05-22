@@ -25,7 +25,9 @@ function load(): Stats {
 }
 
 function save(stats: Stats) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(stats))
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(stats))
+  } catch { /* localStorage 不可（プライベートモード / cross-origin frame など）は無視 */ }
 }
 
 function today(): string {

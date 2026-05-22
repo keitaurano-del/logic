@@ -8,6 +8,7 @@ import { Button } from '../components/Button'
 import { haptic } from '../platform/haptics'
 import { Header } from '../components/platform/Header'
 import { t } from '../i18n'
+import { useStudyTimer } from '../hooks/useStudyTimer'
 
 interface AIProblemScreenProps {
   problem: AIProblemSet
@@ -16,6 +17,8 @@ interface AIProblemScreenProps {
 }
 
 export function AIProblemScreen({ problem, onBack, onReport }: AIProblemScreenProps) {
+  // 学習時間計測 — AI 問題画面の滞在時間を study_sessions に記録
+  useStudyTimer({ type: 'ai_problem', id: String(problem.id) })
   const [stepIdx, setStepIdx] = useState(0)
   const [selected, setSelected] = useState<number | null>(null)
   const [correctCount, setCorrectCount] = useState(0)

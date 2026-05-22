@@ -13,6 +13,7 @@ import { getDisplayName, addXp } from '../stats'
 import { recordActivity } from '../activityLog'
 import { markDailyFermiDone } from './dailyFermiState'
 import { isSaved, toggleSaved } from '../savedItemsStore'
+import { useStudyTimer } from '../hooks/useStudyTimer'
 
 // ── プラン別デイリー制限 ──────────────────────────────────────
 const TODAY = new Date().toISOString().slice(0, 10)
@@ -461,6 +462,8 @@ type SubmitPhase = 'idle' | 'scoring' | 'done' | 'result'
 export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermiScreenProps) {
   const locale = getLocale()
   const { active: guideActive, dismiss: dismissGuide } = useDailyGuide()
+  // 学習時間計測 — フェルミ推定画面の滞在時間を study_sessions に記録
+  useStudyTimer({ type: 'fermi' })
 
   // 復習からの再挑戦モード（履歴画面で「もう一度解く」が押された場合）
   // この場合はデイリー制限を消費しない。フラグはマウント時に消費する。

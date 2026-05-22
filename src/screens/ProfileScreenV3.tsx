@@ -32,12 +32,13 @@ interface ProfileScreenV3Props {
   onOpenPlacementTest?: () => void
   onOpenLesson?: (lessonId: number) => void
   onOpenLanguage?: () => void
+  onOpenStudyTime?: () => void
 }
 
 type Sheet = null | 'streak' | 'lessons' | 'xp'
 
 export function ProfileScreenV3(props: ProfileScreenV3Props) {
-  const { userName, onOpenAccount, onOpenNotifications, onOpenAppearance, onOpenFeedback, onOpenPricing, onOpenPlacementTest, onOpenLesson, onOpenLanguage } = props
+  const { userName, onOpenAccount, onOpenNotifications, onOpenAppearance, onOpenFeedback, onOpenPricing, onOpenPlacementTest, onOpenLesson, onOpenLanguage, onOpenStudyTime } = props
   const [sheet, setSheet] = useState<Sheet>(null)
   const [titleSheetOpen, setTitleSheetOpen] = useState(false)
   const streak = getLessonStreak()
@@ -133,13 +134,23 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
       {titleSheetOpen && <TitleBadgeSheet xp={xp} onClose={() => setTitleSheetOpen(false)} />}
 
       <div style={{ flex: 1, padding: '16px 16px 100px', display: 'flex', flexDirection: 'column', gap: 14 }}>
-        {/* 今週の学習サマリー */}
+        {/* 今週の学習サマリー — タップで StudyTimeScreen */}
         {(() => {
           const week = getStudiedThisWeek()
           const studiedCount = week.filter(Boolean).length
           const todayDow = (new Date().getDay() + 6) % 7
           return (
-            <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', padding: 18, boxShadow: 'var(--shadow-v3-card-inset)', border: '1px solid rgba(255,255,255,.06)' }}>
+            <button
+              type="button"
+              onClick={onOpenStudyTime}
+              disabled={!onOpenStudyTime}
+              aria-label={onOpenStudyTime ? t('profile.openStudyTime') : undefined}
+              style={{
+                background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', padding: 18,
+                boxShadow: 'var(--shadow-v3-card-inset)', border: '1px solid rgba(255,255,255,.06)',
+                width: '100%', textAlign: 'left', cursor: onOpenStudyTime ? 'pointer' : 'default',
+                color: 'inherit', font: 'inherit',
+              }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
                 <div style={{ fontSize: 14, color: 'var(--text-primary)', fontWeight: 700 }}>{t('profile.weekSummary')}</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, fontWeight: 800, color: studiedCount > 0 ? 'var(--streak-flame)' : 'var(--text-muted)' }}>
@@ -174,7 +185,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
                   )
                 })}
               </div>
-            </div>
+            </button>
           )
         })()}
 

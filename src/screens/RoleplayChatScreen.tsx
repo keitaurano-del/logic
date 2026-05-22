@@ -11,6 +11,7 @@ import { recordActivity } from '../activityLog'
 import { API_BASE } from './apiBase'
 import { getCharacter, buildCharacterSetup, localized } from '../roleplayCharacters'
 import { CharacterPortrait } from '../components/CharacterPortrait'
+import { useStudyTimer } from '../hooks/useStudyTimer'
 
 interface RoleplayChatScreenProps {
   characterId: string
@@ -31,6 +32,8 @@ const MAX_TURNS = 5
 
 export function RoleplayChatScreen({ characterId, onBack }: RoleplayChatScreenProps) {
   const character = getCharacter(characterId)
+  // 学習時間計測 — チャット画面の滞在時間を study_sessions に記録
+  useStudyTimer({ type: 'roleplay', id: characterId })
 
   const [messages, setMessages] = useState<Msg[]>([])
   const [choices, setChoices] = useState<string[]>([])

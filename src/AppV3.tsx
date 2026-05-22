@@ -45,7 +45,7 @@ import { getCurrentLevel } from './screens/homeHelpers'
 import type { AIProblemSet } from './aiProblemStore'
 import { loadTheme, applyTheme } from './theme'
 // import { loadGuestUser } from './guestUser'
-import { getCompletedCount, getXp, getDisplayName, setDisplayName, recordCompletion, addStudyTime } from './stats'
+import { getCompletedCount, getXp, getDisplayName, setDisplayName, recordCompletion } from './stats'
 import { recordActivity } from './activityLog'
 import { updateDisplayName } from './supabase'
 import { isAdmin } from './admin'
@@ -358,8 +358,13 @@ function AppV3() {
   const handleComplete = () => {
     if (screen.type === 'lesson') {
       const lessonId = screen.lessonId
-      const elapsedMs = Date.now() - lessonStartTimeRef.current
-      const durationSec = Math.max(60, Math.floor(elapsedMs / 1000))
+      const startedAt = lessonStartTimeRef.current
+      // 開始時刻が未設定（直接遷移 / deep link）の場合は計測対象外
+      const rawElapsedMs = startedAt > 0 ? Date.now() - startedAt : 0
+      const THREE_HOURS_MS = 3 * 60 * 60 * 1000
+      const validElapsedMs = rawElapsedMs > 0 && rawElapsedMs < THREE_HOURS_MS ? rawElapsedMs : 0
+      // durationSec は LessonComplete 画面の表示用。最低 60 秒で表示する。
+      const durationSec = Math.max(60, Math.floor(validElapsedMs / 1000))
       const prevLevel = getCurrentLevel(getXp() - 50).level  // before XP add
       recordCompletion(`lesson-${lessonId}`)
       const lessonTitle = allLessons[lessonId]?.title
@@ -369,7 +374,11 @@ function AppV3() {
         title: lessonTitle,
         meta: { durationSec },
       })
-      if (elapsedMs > 5000) addStudyTime(elapsedMs)
+      // 注: 学習時間の累計加算（addStudyTime）と study_sessions への記録は
+      // LessonStoriesScreen の useStudyTimer hook が onComplete 後のアンマウント時に
+      // まとめて実施する。ここでは加算しない（二重計上を避けるため）。
+      // 次のレッスンに備えて ref をリセット
+      lessonStartTimeRef.current = 0
       navigate({ type: 'lesson-complete', lessonId, durationSec, prevLevel })
     } else if (tab === 'ranking') {
       navigate({ type: 'fermi-ranking' }, true)
@@ -625,6 +634,7 @@ function AppV3() {
           onOpenPlacementTest={() => navigate({ type: 'placement-test' })}
           onOpenLesson={(id) => navigate({ type: 'lesson', lessonId: id })}
           onOpenLanguage={() => navigate({ type: 'language' })}
+          onOpenStudyTime={() => navigate({ type: 'study-time' })}
         />
       )}
       {screen.type === 'rank' && <RankScreen onBack={handleBack} />}

@@ -8,6 +8,7 @@ import { StreakBadge } from '../components/journal/StreakBadge'
 import { fetchJournalStreak } from '../components/journal/journalDb'
 import { SearchIcon, XIcon } from '../icons'
 import { t } from '../i18n'
+import { useStudyTimer } from '../hooks/useStudyTimer'
 import '../components/journal/journal.css'
 
 interface JournalScreenProps {
@@ -17,6 +18,8 @@ interface JournalScreenProps {
 }
 
 export function JournalScreen({ userId, assistantName }: JournalScreenProps) {
+  // 学習時間計測 — ジャーナル画面の滞在時間を study_sessions に記録
+  useStudyTimer({ type: 'journal' })
   const [streak, setStreak] = useState(0)
   const [searchOpen, setSearchOpen] = useState(false)
   const [assistantOpen, setAssistantOpen] = useState(false)

@@ -496,6 +496,7 @@ const STRINGS: Record<Locale, Strings> = {
     'category.careerInterview': '面接対策',
     'category.careerSalary': '給与交渉・退職実務',
     'category.cognitive': '認知科学',
+    'category.documentation': 'ドキュメンテーション',
 
     // Lesson UI
     'lesson.completedH1': 'レッスン完了！',
@@ -749,6 +750,7 @@ const STRINGS: Record<Locale, Strings> = {
     'home.category.logic': 'ロジカルシンキング',
     'home.category.case': 'ケース面接',
     'home.category.cognitive': '認知科学',
+    'home.category.documentation': 'ドキュメンテーション',
     'roadmap.title': '学習パス',
     'roadmap.subtitle': '順番に進めると体系的に身につきます',
     'roadmap.heading': 'トレーニング',
@@ -814,6 +816,7 @@ const STRINGS: Record<Locale, Strings> = {
     'profile.categoryProgress': 'カテゴリ進捗',
     'profile.statStreakDays': '連続学習日数',
     'profile.statTotalStudyTime': '総学習時間',
+    'profile.openStudyTime': '学習時間の詳細を見る',
     'profile.userTraineeRole': 'ロジカルシンカー トレーニー',
     'profile.title.novice_1': 'ロジック見習い',
     'profile.title.novice_2': '探究者',
@@ -2156,6 +2159,7 @@ const STRINGS: Record<Locale, Strings> = {
     'category.careerInterview': 'Interview Preparation',
     'category.careerSalary': 'Salary & Exit',
     'category.cognitive': 'Cognitive Science',
+    'category.documentation': 'Documentation',
 
     // Lesson UI
     'lesson.completedH1': 'Lesson complete!',
@@ -2409,6 +2413,7 @@ const STRINGS: Record<Locale, Strings> = {
     'home.category.logic': 'Logical Thinking',
     'home.category.case': 'Case Interview',
     'home.category.cognitive': 'Cognitive Science',
+    'home.category.documentation': 'Documentation',
     'roadmap.title': 'Learning Path',
     'roadmap.subtitle': 'Follow the path to build skills step by step',
     'roadmap.heading': 'Training',
@@ -2474,6 +2479,7 @@ const STRINGS: Record<Locale, Strings> = {
     'profile.categoryProgress': 'Category Progress',
     'profile.statStreakDays': 'Day Streak',
     'profile.statTotalStudyTime': 'Study Time',
+    'profile.openStudyTime': 'See study time details',
     'profile.userTraineeRole': 'Logical Thinker · Trainee',
     'profile.title.novice_1': 'Logic Novice',
     'profile.title.novice_2': 'Seeker',
