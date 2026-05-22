@@ -28,13 +28,13 @@ const logicMeceEn: LessonData = {
       type: 'quiz',
       question: 'What does the "Mutually Exclusive" half of MECE mean?',
       options: [
-        { label: 'Everything is covered with no gaps', correct: false },
-        { label: 'Categories do not overlap', correct: true },
-        { label: 'The structure is hierarchical', correct: false },
-        { label: 'Items are sorted in time order', correct: false },
+        { label: 'Everything is covered with no gaps in the structure', correct: false },
+        { label: 'Categories do not overlap — no item lives in two buckets', correct: true },
+        { label: 'The structure is hierarchical and tree-shaped', correct: false },
+        { label: 'Items are arranged in chronological order', correct: false },
       ],
       explanation:
-        '"Mutually Exclusive" means categories do not overlap — the same item never lives in two buckets. The "everything is covered" part is "Collectively Exhaustive," the other half of MECE.',
+        '"Mutually Exclusive" specifically means no overlap. The "no gaps" property is "Collectively Exhaustive," the other half of MECE and a common mix-up. Hierarchy and ordering are properties of trees but unrelated to whether categories overlap.',
     },
 
     {
@@ -48,13 +48,13 @@ const logicMeceEn: LessonData = {
       type: 'quiz',
       question: 'When applying 3C MECE to a sales decline, which bucket fits "competitor lowered prices, so customers left us"?',
       options: [
-        { label: 'Customer', correct: false },
-        { label: 'Competitor', correct: true },
-        { label: 'Company', correct: false },
-        { label: 'All three at once', correct: false },
+        { label: 'Customer — because the visible effect is customer churn', correct: false },
+        { label: 'Competitor — because the trigger is the competitor\'s pricing move', correct: true },
+        { label: 'Company — because we failed to retain price-sensitive buyers', correct: false },
+        { label: 'All three — every story touches customer, competitor, and us', correct: false },
       ],
       explanation:
-        'Classify by the root cause, not the visible effect. The trigger here is the competitor\'s pricing move, so it goes in Competitor. Putting it in all three buckets violates the "Mutually Exclusive" rule.',
+        'Classify by the root cause, not by the visible effect or by self-blame. The triggering event is the competitor\'s pricing move, so it goes in Competitor. Putting one cause into all three buckets is the most common MECE violation — it makes analysis impossible because every event ends up everywhere.',
     },
 
     {
@@ -69,11 +69,11 @@ const logicMeceEn: LessonData = {
       options: [
         { label: 'Component breakdown → Time sequence', correct: false },
         { label: 'Opposing concepts → Opposing concepts', correct: true },
-        { label: 'Established framework → Component breakdown', correct: false },
+        { label: 'Established framework (3C/4P) → Component breakdown', correct: false },
         { label: 'Time sequence → Established framework', correct: false },
       ],
       explanation:
-        'Both Online/Offline and Inbound/Outbound are binary, opposing-concept cuts. Component breakdown would be more like Revenue = Price × Quantity.',
+        'Both cuts are binary opposites (Online vs Offline, Inbound vs Outbound), which is the "Opposing concepts" pattern. Component breakdown is mathematical (Revenue = Price × Quantity); time sequence is a chronological flow; established frameworks (3C/4P) come from named models. Confusing "any binary cut" with the latter is a common mix-up.',
     },
 
     {
@@ -86,49 +86,49 @@ const logicMeceEn: LessonData = {
       type: 'quiz',
       question: 'Splitting revenue into "Customers × Average ticket" — which MECE pattern is this?',
       options: [
-        { label: 'Time sequence', correct: false },
-        { label: 'Opposing concepts', correct: false },
-        { label: 'Component breakdown', correct: true },
-        { label: 'Established framework', correct: false },
+        { label: 'Time sequence — visits happen before the average ticket settles', correct: false },
+        { label: 'Opposing concepts — customers vs ticket are two opposing factors', correct: false },
+        { label: 'Component breakdown — a whole split into mathematical parts', correct: true },
+        { label: 'Established framework — a named model from textbooks', correct: false },
       ],
       explanation:
-        'Splitting a whole into mathematical components like A × B or A + B is component breakdown.',
+        'Splitting a whole using a mathematical identity (A × B or A + B) is component breakdown. Time sequence requires a temporal flow, opposing concepts requires binary contrasts, and established frameworks come from named models like 3C/4P. The classic trap is calling any two-part split "opposing concepts" — the test is whether the parts multiply or add up to the whole.',
     },
     {
       type: 'quiz',
       question: 'Which of the following is NOT MECE?',
       options: [
-        { label: 'Gender: male / female / other', correct: false },
-        { label: 'Age: 10s / 20s / 30s / 40s / 50+', correct: false },
-        { label: 'Region: North / South / East / urban / rural', correct: true },
-        { label: 'Purchase frequency: first-time / 2nd / 3+', correct: false },
+        { label: 'Gender: male / female / other (other absorbs everything else)', correct: false },
+        { label: 'Age: 10s / 20s / 30s / 40s / 50+ (contiguous numeric ranges)', correct: false },
+        { label: 'Region: North / South / East / urban / rural (mixed cuts)', correct: true },
+        { label: 'Purchase frequency: first-time / 2nd / 3+ (contiguous counts)', correct: false },
       ],
       explanation:
-        'The region answer mixes two different cuts: geographic (North/South/East) and population density (urban/rural). North can be either urban or rural, so the categories overlap.',
+        'The region answer mixes two unrelated cuts — geographic direction (North/South/East) and population density (urban/rural). The same area can be "North" AND "rural," so the buckets overlap. The other three keep a single cut and stay MECE. Mixing cuts at the same level is the most common MECE failure in real analyses.',
     },
     {
       type: 'quiz',
       question: 'A company classifies employees as "Full-time / Contract / Part-time." Temporary and freelance workers are missing. What MECE problem is this?',
       options: [
-        { label: 'Overlapping categories', correct: false },
-        { label: 'Missing categories', correct: true },
-        { label: 'Both overlap and gaps', correct: false },
-        { label: 'No problem', correct: false },
+        { label: 'Overlap — full-time and contract include the same people', correct: false },
+        { label: 'Gap — temps and freelancers fit in none of the buckets', correct: true },
+        { label: 'Both — overlap between contract/part-time AND gaps elsewhere', correct: false },
+        { label: 'No issue — the three buckets cover the standard workforce', correct: false },
       ],
       explanation:
-        'There is a gap: temps and freelancers are not included. The taxonomy fails the "Collectively Exhaustive" half of MECE.',
+        'The categories themselves do not overlap, but they fail the "Collectively Exhaustive" rule because temps and freelancers fit nowhere. "No issue" is the most common workplace error — assuming the conventional three categories cover everyone simply because they are familiar.',
     },
     {
       type: 'quiz',
       question: 'What is the most effective approach to producing a MECE breakdown?',
       options: [
-        { label: 'List items as they come to mind', correct: false },
+        { label: 'Brainstorm items freely, then sort them into buckets afterwards', correct: false },
         { label: 'Pick a top-level cut first, then progressively subdivide', correct: true },
-        { label: 'Copy a competitor\'s analysis', correct: false },
-        { label: 'Maximize the number of items listed', correct: false },
+        { label: 'Copy the analysis structure from a leading competitor', correct: false },
+        { label: 'List as many items as possible to ensure exhaustiveness', correct: false },
       ],
       explanation:
-        'MECE works top-down: choose the high-level cut first, then subdivide. This makes both gaps and overlaps easy to spot.',
+        'MECE is engineered top-down: choose the high-level cut, then subdivide. Bottom-up brainstorming feels productive but often produces overlapping buckets that need rework. Copying competitors imports their blind spots, and maximizing item count optimizes for volume rather than the no-overlap / no-gap discipline.',
     },
   ],
 }
@@ -162,13 +162,13 @@ const logicTreeEn: LessonData = {
       type: 'quiz',
       question: 'What is the most important rule when building a Why tree?',
       options: [
-        { label: 'Generate as many causes as possible', correct: false },
-        { label: 'Keep every level MECE', correct: true },
-        { label: 'Stay within 3 levels deep', correct: false },
-        { label: 'Use only quantitative data', correct: false },
+        { label: 'Generate as many causes as possible to widen the search', correct: false },
+        { label: 'Keep every level MECE — no overlap, no gaps', correct: true },
+        { label: 'Stay within 3 levels deep to keep the tree readable', correct: false },
+        { label: 'Use only quantitative data to keep branches objective', correct: false },
       ],
       explanation:
-        'Logic trees succeed or fail at every level on MECE. Exhaustiveness without overlap matters more than count.',
+        'A logic tree lives or dies on MECE at every level — overlap inflates causes and gaps hide them. Volume of causes is a vanity metric, depth limits are guidelines not rules, and qualitative data is essential when quantitative data is missing. Confusing "more branches" with "better tree" is the most common mistake.',
     },
 
     {
@@ -181,50 +181,50 @@ const logicTreeEn: LessonData = {
       type: 'quiz',
       question: 'After listing all possible cost-cutting actions in a How tree, what should you do FIRST?',
       options: [
-        { label: 'Execute every action simultaneously', correct: false },
-        { label: 'Start with the cheapest action', correct: false },
-        { label: 'Prioritize by impact and feasibility', correct: true },
-        { label: 'Pick whichever your boss prefers', correct: false },
+        { label: 'Execute every action simultaneously for maximum total effect', correct: false },
+        { label: 'Start with the cheapest, easiest action to build momentum', correct: false },
+        { label: 'Score each action by impact and feasibility, then sequence', correct: true },
+        { label: 'Defer to your boss\'s preference to ensure buy-in', correct: false },
       ],
       explanation:
-        'Always score actions on impact (size of effect) AND feasibility (cost, time, difficulty). Then attack high-impact, high-feasibility first.',
+        'The right move is to score on impact (size of effect) AND feasibility (cost, time, difficulty), then attack high-impact + high-feasibility first. Doing everything overloads the org and obscures which lever actually worked. "Easiest first" feels productive but optimizes for momentum over results, and deferring to the boss skips the analysis entirely.',
     },
 
     {
       type: 'quiz',
       question: 'When is a Why tree the right tool, vs a How tree?',
       options: [
-        { label: 'Why tree for quantitative work, How tree for qualitative', correct: false },
+        { label: 'Why tree for quantitative analysis, How tree for qualitative ideation', correct: false },
         { label: 'Why tree for finding causes, How tree for designing solutions', correct: true },
-        { label: 'Why tree for short-term issues, How tree for long-term', correct: false },
-        { label: 'Why tree for individuals, How tree for teams', correct: false },
+        { label: 'Why tree for short-term incidents, How tree for long-term strategy', correct: false },
+        { label: 'Why tree for individual coaching, How tree for team workshops', correct: false },
       ],
       explanation:
-        'Why tree = "why is this happening?" (root causes). How tree = "how can we fix it?" (solutions). The normal flow is Why tree first → understand the cause → How tree to design the response.',
+        'The split is by question type: Why ("what causes this?") vs How ("how do we fix it?"). The normal flow is Why first to understand cause, then How to design the response. The other distinctions confuse the tool\'s shape (cause vs solution) with surface attributes like data type, time horizon, or audience.',
     },
     {
       type: 'quiz',
       question: 'How many children per node is a good default for a logic tree?',
       options: [
-        { label: 'Always 2', correct: false },
-        { label: '3 to 5', correct: true },
-        { label: '7 or more', correct: false },
-        { label: 'No limit', correct: false },
+        { label: 'Always 2 — binary cuts keep things simple', correct: false },
+        { label: '3 to 5 — MECE-friendly and still readable', correct: true },
+        { label: '7 or more — matches the Magical Number 7±2 limit', correct: false },
+        { label: 'No fixed limit — let the topic dictate the count', correct: false },
       ],
       explanation:
-        'Two is usually too coarse, seven is too noisy. 3-5 children per node hits the sweet spot of being MECE while staying readable.',
+        '3–5 children hits the sweet spot of being MECE while staying within modern working-memory limits (4±1). "7±2" is the outdated Miller figure that overestimates capacity in real conditions. Binary cuts under-segment most topics, and "no limit" abandons the discipline the tree exists to provide.',
     },
     {
       type: 'quiz',
       question: 'Mid-build, you notice two branches overlap. What is the correct fix?',
       options: [
-        { label: 'Leave it; small overlaps are fine', correct: false },
-        { label: 'Delete one of the overlapping branches', correct: false },
-        { label: 'Reconsider the cut so the overlap disappears', correct: true },
-        { label: 'Create a new branch for the overlap', correct: false },
+        { label: 'Leave it — small overlaps rarely affect conclusions', correct: false },
+        { label: 'Delete the smaller of the overlapping branches', correct: false },
+        { label: 'Reconsider the parent cut so the overlap disappears at the source', correct: true },
+        { label: 'Add a new branch labeled "shared" for the overlapping portion', correct: false },
       ],
       explanation:
-        'Overlap is a signal that the cut itself is wrong. Don\'t paper over it — pick a new cut.',
+        'Overlap is a signal that the parent cut itself is wrong. Fixing it at the source is the only durable solution. Deleting a branch loses information, leaving overlap quietly inflates causes during analysis, and a "shared" branch is the worst option because it institutionalizes the non-MECE structure.',
     },
   ],
 }
@@ -257,13 +257,13 @@ const logicSoWhatEn: LessonData = {
       type: 'quiz',
       question: '"Our e-commerce revenue grew 120% YoY." Your VP asks "So what?" — pick the best response.',
       options: [
-        { label: 'E-commerce revenue is now $12M', correct: false },
-        { label: 'Last year it was $10M', correct: false },
-        { label: 'Digital is accelerating; we should grow the e-commerce team and rethink our retail strategy', correct: true },
-        { label: 'Industry average growth is 115%', correct: false },
+        { label: 'E-commerce revenue this year totaled $12M', correct: false },
+        { label: 'Last year e-commerce stood at $10M for comparison', correct: false },
+        { label: 'Digital is accelerating — grow the e-commerce team and rethink retail', correct: true },
+        { label: 'Industry average e-commerce growth landed at 115% YoY', correct: false },
       ],
       explanation:
-        'So What turns facts into recommendations. Connecting the e-commerce growth to a concrete organizational and strategic implication is the strongest answer.',
+        'So What turns a fact into an action. Connecting growth to an organizational change and a strategic shift is the only option that answers "so what should we do?" The other three restate or contextualize the number without prescribing a move — a common pattern that feels like analysis but provides zero decision value.',
     },
 
     {
@@ -276,13 +276,13 @@ const logicSoWhatEn: LessonData = {
       type: 'quiz',
       question: '"Next year, our new business will reach $10M revenue." Apply Why So? — what is the most important thing to verify?',
       options: [
-        { label: 'Whether the CEO believes it', correct: false },
-        { label: 'A bottom-up build of market size, share, ASP, and customer count', correct: true },
-        { label: 'Whether peers have hit similar numbers', correct: false },
-        { label: 'Internal motivation', correct: false },
+        { label: 'Whether the CEO has personally endorsed the number', correct: false },
+        { label: 'A bottom-up build: market size × share × ASP × customer count', correct: true },
+        { label: 'Whether peer companies have hit similar growth numbers', correct: false },
+        { label: 'Whether the team is motivated enough to deliver the target', correct: false },
       ],
       explanation:
-        'Why So? at its strongest demands a numerical chain: market size → captured share → customer count → average price. Authority and analogies do not substitute for that build.',
+        'Why So? at its strongest demands a numerical chain that decomposes the headline into checkable parts. CEO endorsement is authority not evidence, peer analogies are pattern-matching without verification, and team motivation is execution risk not target validity. The classic trap is accepting a number because someone important said it.',
     },
 
     {
@@ -295,49 +295,49 @@ const logicSoWhatEn: LessonData = {
       type: 'quiz',
       question: 'How are So What and Why So related?',
       options: [
-        { label: 'So What is induction, Why So is deduction', correct: false },
-        { label: 'So What goes from facts to conclusions; Why So goes from conclusions back to evidence', correct: true },
-        { label: 'So What is for managers, Why So is for ICs', correct: false },
-        { label: 'So What is for qualitative work, Why So for quantitative', correct: false },
+        { label: 'So What is induction; Why So is deduction in formal logic terms', correct: false },
+        { label: 'So What runs facts → conclusion; Why So runs conclusion → evidence', correct: true },
+        { label: 'So What is for managers and execs; Why So is for individual contributors', correct: false },
+        { label: 'So What is for qualitative analysis; Why So is for quantitative analysis', correct: false },
       ],
       explanation:
-        'So What is bottom-up (facts → conclusion). Why So is top-down (claim → evidence). The two together form a feedback loop that strengthens reasoning.',
+        'The two are mirror operations on the same reasoning chain — one goes up (facts to claim), one goes down (claim to evidence). The induction/deduction framing borrows formal-logic terms incorrectly, and the role-based or data-type splits invent boundaries that do not exist in either method.',
     },
     {
       type: 'quiz',
       question: '"Sales fell 10% this quarter, so we need a major layoff." What is wrong with this argument?',
       options: [
-        { label: 'Missing a So What', correct: false },
-        { label: 'A logical leap — Why So? is not satisfied', correct: true },
-        { label: 'The data is stale', correct: false },
-        { label: 'It is not MECE', correct: false },
+        { label: 'It is missing a So What — the fact has no implication attached', correct: false },
+        { label: 'A logical leap — Why So? for "therefore layoffs" is unsatisfied', correct: true },
+        { label: 'The data is stale and the quarter is already over', correct: false },
+        { label: 'The argument is not MECE across possible responses', correct: false },
       ],
       explanation:
-        'Why So? exposes the leap. Why does a 10% drop necessitate layoffs specifically? What other responses were considered? Has the cost structure even been analyzed? The chain is missing.',
+        'The argument has a So What (the proposed action), but the Why So chain from "10% drop" to "major layoff specifically" is missing — no exploration of alternative responses, cost-structure analysis, or scenario testing. Data staleness and MECE are real concerns but address different failures and miss the central logical leap here.',
     },
     {
       type: 'quiz',
       question: 'What is the best way to use So What in a business report?',
       options: [
-        { label: 'List every fact in bullets', correct: false },
-        { label: 'State only the conclusion', correct: false },
-        { label: 'Structure as facts → observational So What → action So What', correct: true },
-        { label: 'Pick the conclusion first, then back into facts', correct: false },
+        { label: 'List every relevant fact as bullet points for the reader to interpret', correct: false },
+        { label: 'State only the final conclusion to avoid overloading the reader', correct: false },
+        { label: 'Layer it: facts → observational So What → action So What', correct: true },
+        { label: 'Pick the conclusion first, then collect facts that support it', correct: false },
       ],
       explanation:
-        'The 3-layer structure (data → observation → action) lets the reader follow your reasoning without effort.',
+        'The 3-layer structure (data → observation → recommendation) lets the reader follow your reasoning explicitly. "Facts only" forces the reader to interpret without help; "conclusion only" hides the basis; "conclusion first then back-fill" is confirmation bias by design — selecting facts to fit an already-chosen answer.',
     },
     {
       type: 'quiz',
       question: 'Which of the following needs Why So? scrutiny the most?',
       options: [
-        { label: '"This month\'s revenue was $1M" (fact report)', correct: false },
-        { label: '"We should enter the AI market" (strategy proposal)', correct: true },
-        { label: '"Here is the meeting room schedule" (info share)', correct: false },
-        { label: '"Next week\'s schedule" (calendar)', correct: false },
+        { label: '"This month\'s revenue was $1M" — a factual report', correct: false },
+        { label: '"We should enter the AI market" — a strategic proposal', correct: true },
+        { label: '"Here is the meeting room schedule" — an information share', correct: false },
+        { label: '"Next week\'s team schedule is attached" — a calendar update', correct: false },
       ],
       explanation:
-        'Strategy proposals demand rigorous Why So? — why this market, what odds, what risks, what alternatives. Pure information sharing does not need scrutiny.',
+        'Strategy proposals demand rigorous Why So? — why this market, what evidence supports the bet, what alternatives exist, what could go wrong. Facts, schedules, and shared info do not assert a position that requires defending. Confusing "important-sounding statement" with "claim that needs evidence" is what lets shaky strategies sail through.',
     },
   ],
 }
@@ -378,13 +378,13 @@ const logicPyramidEn: LessonData = {
       type: 'quiz',
       question: 'Why does the Pyramid Principle put the conclusion first?',
       options: [
-        { label: 'Otherwise people forget it', correct: false },
-        { label: 'A known conclusion gives the audience a frame for understanding the reasons', correct: true },
-        { label: 'Bosses demand it', correct: false },
-        { label: 'In case time runs out', correct: false },
+        { label: 'Otherwise the audience forgets the conclusion by the end', correct: false },
+        { label: 'A known conclusion gives the audience a frame to interpret the reasons', correct: true },
+        { label: 'Senior leaders culturally demand conclusion-first communication', correct: false },
+        { label: 'It is a fallback in case the speaker runs out of time', correct: false },
       ],
       explanation:
-        'Cognitive science: people understand details better when they have a "headline" first. Each piece of evidence is interpreted in the context of the conclusion.',
+        'The real reason is cognitive: with a conclusion in hand, the audience interprets each supporting reason in its context. Memory, cultural preference, and time-buffer are downstream effects, not the underlying principle. Confusing a side-benefit with the core mechanism is the typical misunderstanding.',
     },
 
     {
@@ -397,13 +397,13 @@ const logicPyramidEn: LessonData = {
       type: 'quiz',
       question: 'What is the role of the "E" in PREP?',
       options: [
-        { label: 'A funny anecdote', correct: false },
-        { label: 'A concrete example or data point that backs the reason', correct: true },
-        { label: 'A personal experience story', correct: false },
-        { label: 'A competitor case study', correct: false },
+        { label: 'An attention-grabbing anecdote to warm up the audience', correct: false },
+        { label: 'A concrete example or data point that backs the stated reason', correct: true },
+        { label: 'A personal experience story to add credibility', correct: false },
+        { label: 'A competitor case study to position your argument', correct: false },
       ],
       explanation:
-        '"Example" provides concrete evidence for the reason. Without it, reasons stay abstract and unconvincing.',
+        'Example exists to anchor the abstract Reason in something verifiable. Anecdotes, personal stories, and competitor cases can all serve as Examples but defining E by any one form is too narrow — the test is whether the content provides evidence, not whether it follows a particular style.',
     },
 
     {
@@ -416,49 +416,49 @@ const logicPyramidEn: LessonData = {
       type: 'quiz',
       question: 'What does "C" (Complication) do in SCR?',
       options: [
-        { label: 'Reports project progress', correct: false },
-        { label: 'Presents the proposed solution', correct: false },
-        { label: 'Articulates the problem against the established context', correct: true },
-        { label: 'Introduces team members', correct: false },
+        { label: 'Reports recent project progress against the original plan', correct: false },
+        { label: 'Presents the proposed solution and asks for approval', correct: false },
+        { label: 'Names the problem that disrupts the established context', correct: true },
+        { label: 'Introduces team members and assigns ownership', correct: false },
       ],
       explanation:
-        'After Situation establishes shared context, Complication says "but here is the problem." It is the hinge between known context and the new bad news.',
+        'After Situation sets shared context, Complication is the hinge that introduces what is wrong — without it the audience has no reason to engage with the Resolution. Progress reporting and team intros belong to status updates, and presenting the solution is Resolution\'s job. Skipping the C is what makes bad-news messages land badly.',
     },
     {
       type: 'quiz',
       question: 'A: speaking up in a team meeting. B: reporting a customer issue and proposed fix. Best framework combo?',
       options: [
-        { label: 'A: SCR, B: PREP', correct: false },
-        { label: 'A: PREP, B: SCR', correct: true },
-        { label: 'A: SDS, B: PREP', correct: false },
-        { label: 'A: SCR, B: SDS', correct: false },
+        { label: 'A: SCR (problem framing) / B: PREP (opinion statement)', correct: false },
+        { label: 'A: PREP (opinion statement) / B: SCR (problem + fix)', correct: true },
+        { label: 'A: SDS (long-form structure) / B: PREP (opinion statement)', correct: false },
+        { label: 'A: SCR (problem framing) / B: SDS (long-form structure)', correct: false },
       ],
       explanation:
-        'Stating your opinion → PREP. Reporting a problem with a proposed solution → SCR.',
+        'Stating your opinion → PREP. Reporting a problem with proposed solution → SCR. SDS is for long-form content like training materials, not quick meeting input. The most common mix-up is reaching for SCR when you only need to state an opinion, which adds unnecessary scaffolding.',
     },
     {
       type: 'quiz',
       question: 'How many key lines (top-level supporting points) work best in a pyramid?',
       options: [
-        { label: '1 (simplicity)', correct: false },
-        { label: '2-4 (not too few, not too many)', correct: true },
-        { label: '5-7 (comprehensiveness)', correct: false },
-        { label: 'No limit', correct: false },
+        { label: '1 — simplicity beats structure', correct: false },
+        { label: '2–4 — balances coverage and cognitive load', correct: true },
+        { label: '5–7 — comprehensive, matches the Magical Number 7±2', correct: false },
+        { label: 'No fixed limit — let the topic dictate the count', correct: false },
       ],
       explanation:
-        '2-4 hits the sweet spot. Three is the magical number for memorability.',
+        '2–4 hits the sweet spot, with 3 being the most memorable. "7±2" is the outdated figure that current working-memory research (4±1) has displaced — applying it here overstates real audience capacity. One point lacks support; "no limit" abandons the discipline that makes pyramids work.',
     },
     {
       type: 'quiz',
       question: 'Which presentation outline best follows the Pyramid Principle?',
       options: [
-        { label: 'Background → analysis → discussion → conclusion', correct: false },
+        { label: 'Background → analysis → discussion → conclusion (chronological)', correct: false },
         { label: 'Conclusion → reason A → reason B → reason C → wrap', correct: true },
-        { label: 'Problem → cases → reflection → proposal', correct: false },
-        { label: 'Self-intro → history → details → conclusion', correct: false },
+        { label: 'Problem → cases → reflection → proposal (storytelling)', correct: false },
+        { label: 'Self-intro → company history → product details → conclusion', correct: false },
       ],
       explanation:
-        'Conclusion-first, then supporting reasons, then close. Anything starting with background is the opposite of Pyramid.',
+        'Pyramid is conclusion-first then supporting reasons. Any outline that buries the conclusion at the end — chronological, storytelling, or context-heavy — is the opposite pattern. The storytelling option feels engaging but forces the audience to wait for the headline, which is exactly what Pyramid is designed to prevent.',
     },
   ],
 }
@@ -484,13 +484,13 @@ const logicCaseStudiesEn: LessonData = {
       type: 'quiz',
       question: 'In the entry case above, the team picked Thailand as the first market. Apply Why So? — what is the most important thing to verify?',
       options: [
-        { label: 'Thailand\'s land area', correct: false },
-        { label: 'Real data on Thailand\'s mid-/high-end smartphone market size and competition', correct: true },
-        { label: 'Number of foreign tourists in Thailand', correct: false },
-        { label: 'Thailand\'s political stability', correct: false },
+        { label: 'Thailand\'s land area and population density for distribution coverage', correct: false },
+        { label: 'Hard data on Thailand\'s mid-/high-end smartphone segment size and competitors', correct: true },
+        { label: 'Number of inbound tourists from your home country (brand familiarity proxy)', correct: false },
+        { label: 'Thailand\'s political stability and country-risk profile', correct: false },
       ],
       explanation:
-        'The conclusion claims Thailand suits a mid-/high-end strategy. The hard evidence required is the actual mid-/high-end market data and competitive landscape — not background facts.',
+        'The conclusion rests on "mid-/high-end strategy fits Thailand," so the load-bearing evidence is segment-level market data. Land area is barely relevant to smartphone go-to-market, tourist counts proxy brand familiarity but not segment fit, and political stability is a precondition rather than a decision driver. Why So? targets the assumption the conclusion most directly stands on.',
     },
 
     {
@@ -503,13 +503,13 @@ const logicCaseStudiesEn: LessonData = {
       type: 'quiz',
       question: 'What is the most logical approach to lifting margin from 1% to 3% in this case?',
       options: [
-        { label: 'Cut every line item by 2%', correct: false },
-        { label: 'Prioritize the largest cost pools first', correct: true },
-        { label: 'Start with whichever cuts are easiest', correct: false },
-        { label: 'Focus only on labor', correct: false },
+        { label: 'Cut every line item by 2% for organizational fairness', correct: false },
+        { label: 'Prioritize the largest cost pools to maximize absolute impact', correct: true },
+        { label: 'Start with the easiest cuts to build early wins and momentum', correct: false },
+        { label: 'Concentrate on labor for the fastest visible reduction', correct: false },
       ],
       explanation:
-        'Bigger pools have bigger absolute impact. A 1% improvement on $1.3B COGS is $13M; a 10% improvement on a $25M line is $2.5M. Start with the biggest pools.',
+        'A 1% cut on $1.3B COGS yields $13M; a 10% cut on $25M of other opex yields $2.5M. Same effort, very different impact — so prioritize by pool size. Uniform cuts trade impact for the appearance of fairness, "easy first" optimizes for momentum over results, and labor-only concentrates organizational risk in one place.',
     },
 
     {
@@ -522,38 +522,38 @@ const logicCaseStudiesEn: LessonData = {
       type: 'quiz',
       question: 'You used "market growth × competitive advantage × profitability" to evaluate the three products. To strengthen the MECE-ness, which axis should you ADD?',
       options: [
-        { label: 'CEO\'s personal preference', correct: false },
-        { label: 'Feasibility (development difficulty, schedule, required resources)', correct: true },
-        { label: 'How cool the product name is', correct: false },
-        { label: 'Number of similar overseas products', correct: false },
+        { label: 'CEO\'s personal preference among the three product candidates', correct: false },
+        { label: 'Feasibility — development difficulty, schedule, required resources', correct: true },
+        { label: 'How memorable or marketable the product name sounds', correct: false },
+        { label: 'Number of similar overseas products already in market', correct: false },
       ],
       explanation:
-        'You evaluated market attractiveness and our strengths but not feasibility. Even an attractive opportunity is worthless if you cannot execute it on time and budget.',
+        'The original three axes measure attractiveness and competitive positioning but skip execution. Feasibility closes the gap by asking "can we actually ship this?" Personal preference is not an evaluation axis, name appeal is a marketing tactic not a strategic filter, and overseas competitor count is one input to competitive advantage rather than a new dimension.',
     },
 
     {
       type: 'quiz',
-      question: 'For a problem like "sales suddenly fell 30%, present root cause to the executive team," what is the right framework sequence?',
+      question: 'For "sales fell 30% suddenly — present root cause to the exec team," what framework sequence works best?',
       options: [
-        { label: 'PREP first → logic tree to analyze', correct: false },
-        { label: 'Why tree to find causes → So What for insights → SCR to report', correct: true },
-        { label: 'MECE to classify → PREP to report', correct: false },
-        { label: 'Pyramid first to set the conclusion → then collect data', correct: false },
+        { label: 'PREP first to frame the recommendation, then logic tree for analysis', correct: false },
+        { label: 'Why tree for causes → So What for insight → SCR to report', correct: true },
+        { label: 'MECE to classify the symptoms → PREP to deliver the report', correct: false },
+        { label: 'Pyramid first to commit to the conclusion → then collect supporting data', correct: false },
       ],
       explanation:
-        'The right order is analyze → conclude → communicate. Why tree finds the cause; So What turns it into an action; SCR communicates context-problem-solution.',
+        'The right flow is analyze → conclude → communicate. Why tree finds causes, So What converts them to actions, SCR delivers context-problem-solution. Starting with PREP or Pyramid commits to a conclusion before analysis (confirmation bias by structure), and MECE-only stops at categorization without producing an insight.',
     },
     {
       type: 'quiz',
       question: 'What is the most important mindset when applying these frameworks at work?',
       options: [
-        { label: 'Always use one framework all the way through', correct: false },
-        { label: 'Frameworks are tools, not the goal — use them in service of better decisions', correct: true },
-        { label: 'Memorize the framework names accurately', correct: false },
-        { label: 'Always combine all frameworks at once', correct: false },
+        { label: 'Pick one framework and apply it all the way through for consistency', correct: false },
+        { label: 'Frameworks are tools — choose what fits, drop what does not', correct: true },
+        { label: 'Master the official names and steps so you can reference them precisely', correct: false },
+        { label: 'Combine every framework you know to make the analysis comprehensive', correct: false },
       ],
       explanation:
-        'Frameworks are scaffolding for thought. The point is the decision quality, not framework purity. Pick what fits the situation, combine when useful, and never let the tool become the goal.',
+        'Frameworks are scaffolding for thought. Decision quality is the goal, framework purity is not. Sticking to one framework forces a square peg into a round hole, memorizing names confuses fluency with thinking, and combining everything produces unreadable analyses that obscure rather than clarify.',
     },
   ],
 }
@@ -575,12 +575,12 @@ const logicDeductionEn: LessonData = {
       question: 'Which of the following syllogisms is BOTH valid in form AND has true premises (a "sound" argument)?',
       options: [
         { label: 'Major: Birds fly / Minor: Penguins are birds / Conclusion: Penguins fly', correct: false },
-        { label: 'Major: All mammals breathe air with lungs / Minor: Whales are mammals / Conclusion: Whales breathe air with lungs', correct: true },
+        { label: 'Major: All mammals breathe with lungs / Minor: Whales are mammals / Conclusion: Whales breathe with lungs', correct: true },
         { label: 'Major: Some fish live in fresh water / Minor: Tuna are fish / Conclusion: Tuna live in fresh water', correct: false },
         { label: 'Major: Company A is profitable / Minor: Company B is also a company / Conclusion: Company B is profitable', correct: false },
       ],
       explanation:
-        'The whales option is sound: the major premise is actually true and the form (Barbara: All A are B / X is A / X is B) is valid.\n\nThe birds option is valid in form but has a false major premise (penguins exist).\nThe tuna option is invalid because "some" does not let you deduce about a specific case.\nThe last option is invalid because being "a company" does not put B inside the set "Company A".',
+        'The whales argument is sound: the major premise is true and the form (Barbara: All A are B / X is A / X is B) is valid. The birds argument is valid in form but has a false major (penguins exist), so it is unsound. The tuna argument fails because "some" cannot be lifted to apply to a specific case. The last argument swaps the middle term — being "a company" does not put B inside the set "Company A," so the form itself breaks.',
     },
     {
       type: 'explain',
@@ -592,25 +592,25 @@ const logicDeductionEn: LessonData = {
       type: 'quiz',
       question: 'What is the biggest single source of wrong conclusions in deductive reasoning?',
       options: [
-        { label: 'Combining multiple minor premises', correct: false },
-        { label: 'A premise that is wrong or has unhandled exceptions', correct: true },
-        { label: 'Conclusions that are too long', correct: false },
-        { label: 'Not using numbers', correct: false },
+        { label: 'Combining multiple minor premises that complicate the chain', correct: false },
+        { label: 'A premise that is false or has unhandled exceptions', correct: true },
+        { label: 'Middle terms not matching their Latin formal-logic names', correct: false },
+        { label: 'Expressing the argument in words instead of numbers', correct: false },
       ],
       explanation:
-        'Deduction guarantees true conclusions IF the premises are true. So almost every wrong deduction is wrong because a premise was wrong, fragile, or had hidden exceptions.',
+        'Deduction guarantees a true conclusion IF the premises are true — so almost every wrong deduction traces back to a bad premise or a missed exception. Premise complexity, terminology, and verbal vs numeric expression are surface attributes that have nothing to do with whether the argument holds, but they look plausible because formal logic feels intimidating.',
     },
     {
       type: 'quiz',
       question: 'What is the biggest practical advantage of deduction in business?',
       options: [
-        { label: 'You discover new facts', correct: false },
-        { label: 'You can apply policies and rules to specific cases quickly', correct: true },
-        { label: 'It guarantees agreement and ends debate', correct: false },
-        { label: 'It needs little data', correct: false },
+        { label: 'It surfaces new patterns and hypotheses from raw data', correct: false },
+        { label: 'It applies policies and rules to specific cases at speed', correct: true },
+        { label: 'It guarantees agreement and removes the need for debate', correct: false },
+        { label: 'It produces reliable generalizations from very little data', correct: false },
       ],
       explanation:
-        'Deduction is for "given a rule, what does it say about this specific case?" If your company has a rule like "exit any business with margin under 5%," you can apply it to each business in seconds. New discoveries come from induction, not deduction.',
+        'Deduction shines when the rule is set and you need to classify cases fast. Generating new patterns and generalizing from few data points are both jobs of induction — confusing the two reasoning directions is the most common mistake. "Ends debate" is the opposite of true: rigorous deduction sparks debate about whether the premises hold.',
     },
   ],
 }
@@ -632,12 +632,12 @@ const logicInductionEn: LessonData = {
       question: 'Which of the following is induction?',
       options: [
         { label: '"All employees must take vacation. Tanaka is an employee, so Tanaka must take vacation."', correct: false },
-        { label: '"December has been our peak month for the last 5 years. December will probably peak this year too."', correct: true },
-        { label: '"Anyone who breaks the work rules is disciplined. Sato broke the rules, so Sato will be disciplined."', correct: false },
-        { label: '"Projects over budget are cancelled. This one is over budget, so it will be cancelled."', correct: false },
+        { label: '"December has been peak for 5 straight years — December will likely peak again."', correct: true },
+        { label: '"Anyone who violates work rules is disciplined. Sato violated rules, so Sato is disciplined."', correct: false },
+        { label: '"Over-budget projects get cancelled. This one is over budget, so it will be cancelled."', correct: false },
       ],
       explanation:
-        'The December answer reasons from multiple specific years to a general pattern — induction. The others all run from a stated rule down to a specific case — deduction.',
+        'The December example moves from multiple specific years up to a general pattern — that is induction. The others all start from a stated rule and apply it down to a specific case — that is deduction. The direction of travel (case → rule vs rule → case) is the only reliable test.',
     },
     {
       type: 'explain',
@@ -649,25 +649,25 @@ const logicInductionEn: LessonData = {
       type: 'quiz',
       question: 'A marketer surveyed 5 women in their 20s, found they all liked Brand X, and concluded "Women in their 20s love Brand X." What is the biggest problem?',
       options: [
-        { label: 'Sample size is far too small to generalize', correct: true },
-        { label: 'No data on men in their 20s', correct: false },
-        { label: 'Should have been a survey, not interview', correct: false },
-        { label: 'Definition of Brand X is unclear', correct: false },
+        { label: 'Sample size is far too small to represent the target population', correct: true },
+        { label: 'Missing comparison data from men in their 20s for gender split', correct: false },
+        { label: 'Should have used a quantitative survey instead of qualitative interviews', correct: false },
+        { label: 'The definition of "liking" Brand X has not been precisely measured', correct: false },
       ],
       explanation:
-        '5 people cannot represent "women in their 20s." On top of that, the selection (probably friends or a single context) is likely biased. Induction lives or dies on sample size and representativeness.',
+        'Inductive reliability comes from sample size and representativeness — 5 people cannot absorb variance or selection bias. Gender comparison is a different question and not the central issue. Method choice (interview vs survey) is secondary to sample size, and the definition concern is moot when all 5 unanimously said they liked it.',
     },
     {
       type: 'quiz',
       question: 'When using induction, what mindset matters most?',
       options: [
-        { label: 'Reach a conclusion as fast as possible', correct: false },
-        { label: 'Treat the conclusion as a hypothesis that could be overturned by counter-evidence', correct: true },
-        { label: 'More premises always make the conclusion certain', correct: false },
-        { label: 'Trust your intuition', correct: false },
+        { label: 'Commit to a conclusion fast, then look for counter-evidence to test it', correct: false },
+        { label: 'Treat the conclusion as a hypothesis open to revision by counter-evidence', correct: true },
+        { label: 'Adding more supporting cases eventually makes the conclusion certain', correct: false },
+        { label: 'Trust pattern-recognition intuition and assert the generalization directly', correct: false },
       ],
       explanation:
-        'The honest stance toward induction: "based on what I have observed so far, X seems likely." Use language like "tends to" or "is likely" instead of definitives, and stay open to disconfirming data.',
+        'Inductive conclusions are "likely so far" — a single counter-example can overturn them (the Black Swan problem). "More cases = certainty" confuses induction with formal proof. "Commit fast then test" looks rigorous but front-loads confirmation bias. Intuition without verification is the exact failure mode induction is meant to discipline.',
     },
   ],
 }
@@ -687,13 +687,13 @@ const logicFormalEn: LessonData = {
       type: 'quiz',
       question: '"If you take this medicine, your fever will drop (A → B)" is true. What can you conclude with certainty?',
       options: [
-        { label: 'If your fever dropped, you took the medicine', correct: false },
-        { label: 'If you took the medicine and your fever did NOT drop, the original claim is false', correct: true },
-        { label: 'If you do not take the medicine, your fever will not drop', correct: false },
+        { label: 'If your fever dropped, you took the medicine (converse: B → A)', correct: false },
+        { label: 'If you took the medicine and fever did NOT drop, the claim is false', correct: true },
+        { label: 'If you did not take the medicine, your fever will not drop (inverse: ¬A → ¬B)', correct: false },
         { label: 'Your fever did not drop because you did not take the medicine', correct: false },
       ],
       explanation:
-        '"A → B" is false only when A is true but B is false. So observing "took medicine but fever still up" disproves the claim. The other options confuse the converse and inverse for the original.',
+        'A → B is false only in the single case where A is true and B is false — observing "took medicine but fever stayed up" disproves it. The other three are the classic confusions: converse, inverse, and post-hoc causal narration. Only the contrapositive (¬B → ¬A) is logically equivalent to the original.',
     },
     {
       type: 'explain',
@@ -706,13 +706,13 @@ const logicFormalEn: LessonData = {
       type: 'quiz',
       question: 'What is the contrapositive of "Excellent salespeople are strong with numbers"?',
       options: [
-        { label: 'People strong with numbers are excellent salespeople', correct: false },
-        { label: 'Salespeople who are not excellent are not strong with numbers', correct: false },
-        { label: 'People who are not strong with numbers are not excellent salespeople', correct: true },
+        { label: 'People strong with numbers are excellent salespeople (converse: B → A)', correct: false },
+        { label: 'Salespeople who are not excellent are not strong with numbers (inverse: ¬A → ¬B)', correct: false },
+        { label: 'People who are not strong with numbers are not excellent salespeople (contrapositive: ¬B → ¬A)', correct: true },
         { label: 'If you are not an excellent salesperson, you are not strong with numbers', correct: false },
       ],
       explanation:
-        'Original: A=excellent salesperson → B=strong with numbers. Contrapositive: ¬B → ¬A, "not strong with numbers → not excellent salesperson." The other options are converse, inverse, or converse-inverse — none equivalent to the original.',
+        'Only the contrapositive ¬B → ¬A is logically equivalent to the original. The converse and inverse share words but have different truth values. The last option is the inverse stated in different phrasing — a tempting trap when the contrapositive and inverse swap subject and object without the negation discipline.',
     },
     {
       type: 'explain',
@@ -727,22 +727,22 @@ const logicFormalEn: LessonData = {
         { label: '"If she passes, we throw a party. We threw a party. Therefore she passed."', correct: false },
         { label: '"Excellent people leave work early. He left early. Therefore he is excellent."', correct: false },
         { label: '"If the server goes down, the alert fires. The alert is not firing. Therefore the server is not down."', correct: true },
-        { label: '"If it rains, more people carry umbrellas. It is not raining. Therefore no one carries umbrellas."', correct: false },
+        { label: '"If it rains, umbrella use rises. It is not raining. Therefore no one is using umbrellas."', correct: false },
       ],
       explanation:
-        'Option 3 is modus tollens (A → B, ¬B, therefore ¬A). Options 1 and 2 affirm the consequent (the classic fallacy). Option 4 confuses the inverse with the original. The combination of contrapositive and modus tollens is one of the strongest tools for ruling out causes in technical and business investigations.',
+        'The server inference is modus tollens (A → B, ¬B, therefore ¬A) — valid. The first two affirm the consequent: B being true does not prove A. The umbrella inference treats the inverse as if it were the original, ignoring all the other reasons people carry umbrellas. The combination of contrapositive + modus tollens is one of the sharpest tools for ruling out causes in technical and business investigations.',
     },
     {
       type: 'quiz',
       question: 'What is the practical benefit of using the contrapositive?',
       options: [
-        { label: 'You can flip the conclusion to win an argument', correct: false },
-        { label: 'When the original statement is hard to prove, you can prove its logically equivalent contrapositive instead', correct: true },
-        { label: 'You discover new facts without new premises', correct: false },
-        { label: 'You silence opponents', correct: false },
+        { label: 'You can flip the conclusion to win an argument by surprise', correct: false },
+        { label: 'When the original is hard to prove, prove its equivalent contrapositive instead', correct: true },
+        { label: 'You discover new facts without needing any new premises', correct: false },
+        { label: 'You silence opponents who cannot follow the formal manipulation', correct: false },
       ],
       explanation:
-        'Because the contrapositive is logically equivalent to the original, you can prove either one. In math (proof by contradiction) and in business (root-cause investigation), this trick is invaluable.',
+        'The contrapositive is logically equivalent to the original, so proving either proves both — a routine move in math (proof by contradiction) and in root-cause investigation. Rhetorical wins or silencing opponents are misuses, and no new facts emerge because deduction extracts only what the premises already contain.',
     },
   ],
 }
@@ -762,13 +762,13 @@ const logicConcreteAbstractEn: LessonData = {
       type: 'quiz',
       question: '"Our team has bad communication" — is this concrete or abstract?',
       options: [
-        { label: 'Concrete', correct: false },
-        { label: 'Abstract', correct: true },
-        { label: 'Neither', correct: false },
-        { label: 'Both', correct: false },
+        { label: 'Concrete — naming a specific team makes it a concrete observation', correct: false },
+        { label: 'Abstract — a judgment label without observable evidence', correct: true },
+        { label: 'Neither — it is a personal complaint, not a thinking statement', correct: false },
+        { label: 'Both — it mixes team identity with a broader principle', correct: false },
       ],
       explanation:
-        '"Bad communication" is abstract. To make it concrete, you\'d say something like "Weekly reports are written in a way that causes misunderstandings" or "Chat replies take over 24 hours."',
+        '"Bad communication" is an abstract evaluation label. The "specific team" framing tempts the mistake that a proper noun automatically makes something concrete. Concrete requires observable detail like "weekly reports cause misunderstandings" or "chat replies take 24+ hours." Naming a team is not enough.',
     },
     {
       type: 'explain',
@@ -780,13 +780,13 @@ const logicConcreteAbstractEn: LessonData = {
       type: 'quiz',
       question: 'Given these 3 facts, what is the best abstraction?\n• New product awareness is 15%\n• Shelf placement rate is 30%\n• Promotions are at an all-time low',
       options: [
-        { label: 'Product quality is poor', correct: false },
-        { label: 'Market launch is insufficient', correct: true },
-        { label: 'Competition is too strong', correct: false },
-        { label: 'Price is too high', correct: false },
+        { label: 'Product quality is below market expectations', correct: false },
+        { label: 'Market launch (exposure, distribution, promotion) is insufficient', correct: true },
+        { label: 'Competition has intensified and is taking share', correct: false },
+        { label: 'Pricing has exceeded customer willingness-to-pay', correct: false },
       ],
       explanation:
-        'Awareness, shelf placement, and promotions all relate to "bringing the product to market." Abstracting these gives us "market launch is insufficient." Quality and price can\'t be inferred from these facts.',
+        'Awareness, shelf placement, and promotions all measure "go-to-market execution," so their common abstraction is launch insufficiency. Quality, competition, and pricing would each require different evidence (trial rates, share movement, demand curves) that the given facts do not provide. Jumping to a familiar narrative beyond the data is the typical abstraction error.',
     },
     {
       type: 'explain',
@@ -798,13 +798,13 @@ const logicConcreteAbstractEn: LessonData = {
       type: 'quiz',
       question: 'Which is the best concrete version of "improve productivity"?',
       options: [
-        { label: 'Work more efficiently', correct: false },
-        { label: 'Everyone should change their mindset', correct: false },
-        { label: 'Cut weekly meetings from 45 min to 25 min and automate meeting notes', correct: true },
-        { label: 'Pursue digital transformation', correct: false },
+        { label: 'Have everyone work more efficiently across all tasks', correct: false },
+        { label: 'Build a productivity-first mindset across the whole team', correct: false },
+        { label: 'Cut weekly meetings from 45 to 25 minutes and auto-generate the notes', correct: true },
+        { label: 'Pursue digital transformation across all business processes', correct: false },
       ],
       explanation:
-        '"Work efficiently," "change mindset," and "DX" are still abstract. "45 min → 25 min" and "automate notes" contain specific numbers and actions — that\'s truly concrete.',
+        'The correct option specifies both a number and an actionable change. The other three are longer and sound substantive but lack any measurable variable or named action — they are abstract dressed in business language. Sentence length is not the test of concreteness; the test is whether numbers, subjects, and verbs are all pinned down.',
     },
     {
       type: 'explain',
@@ -816,25 +816,25 @@ const logicConcreteAbstractEn: LessonData = {
       type: 'quiz',
       question: 'For reporting to the CEO vs. giving instructions to your team, which is correct?',
       options: [
-        { label: 'Be concrete with both', correct: false },
-        { label: 'Be abstract with both', correct: false },
-        { label: 'More abstract for the CEO, more concrete for the team', correct: true },
-        { label: 'It depends, so you can\'t generalize', correct: false },
+        { label: 'Be concrete with both — detail builds trust across all audiences', correct: false },
+        { label: 'Be abstract with both — high-level framing scales to any audience', correct: false },
+        { label: 'Higher abstraction for the CEO, more concrete for the team', correct: true },
+        { label: 'It depends on context, so no general rule can be stated', correct: false },
       ],
       explanation:
-        'The CEO wants the big picture and direction (abstract). Team members need to know what to do (concrete). Adjusting abstraction level to your audience is a core professional skill.',
+        'The CEO needs direction and trade-offs (abstract), the team needs tomorrow\'s actions (concrete). "It depends" feels safe but abdicates the principle that the ladder position should match the audience\'s decision-making scope. Uniform abstraction either drowns execs in detail or leaves the team without instructions.',
     },
     {
       type: 'quiz',
       question: 'Which demonstrates concrete → abstract → concrete thinking?',
       options: [
-        { label: '"Store A sales dropped, so let\'s fix Store A"', correct: false },
-        { label: '"Productivity is low, so let\'s do DX"', correct: false },
-        { label: '"Stores A and B both have declining average transaction values. So upselling is weak. Let\'s implement a checkout suggestion script at each store"', correct: true },
-        { label: '"Competition is tough, so let\'s differentiate"', correct: false },
+        { label: '"Store A sales dropped, so let\'s fix Store A" (concrete only)', correct: false },
+        { label: '"Productivity is low, so let\'s pursue DX" (abstract only)', correct: false },
+        { label: '"Stores A and B both show falling tickets → upselling is weak → introduce a checkout suggestion script"', correct: true },
+        { label: '"Competition is tough, so let\'s differentiate" (abstract only)', correct: false },
       ],
       explanation:
-        'Concrete (declining transaction values at A and B) → Abstract (upselling is weak) → Concrete (checkout suggestion script). The other options stay at one level only.',
+        'The correct answer moves through three levels: concrete (multi-store ticket data) → abstract (upselling weakness) → concrete (checkout script). The other options stay flat at one ladder rung — diagnosing without lifting up to the pattern, or asserting a pattern without grounding it back down.',
     },
   ],
 }

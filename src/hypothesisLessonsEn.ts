@@ -19,13 +19,13 @@ const hypothesisIntro: LessonData = {
       type: 'quiz',
       question: 'Which describes the hypothesis-driven approach correctly?',
       options: [
-        { label: 'Gather all the data, then form a conclusion', correct: false },
-        { label: 'State a tentative answer first, then gather information to verify it', correct: true },
-        { label: 'Decide by intuition without verifying', correct: false },
-        { label: 'Listen to your manager\'s opinion first, then gather data', correct: false },
+        { label: 'Collect all relevant data exhaustively, then derive a conclusion', correct: false },
+        { label: 'State a tentative answer first, then gather only the information needed to verify it', correct: true },
+        { label: 'Trust your intuition, decide quickly, and skip the verification step', correct: false },
+        { label: 'Listen to your manager or senior leaders first, then align the data to their view', correct: false },
       ],
       explanation:
-        'The hypothesis-driven approach is "form a tentative answer (hypothesis) first, then efficiently gather only the information you need to verify it." Pure intuition is not enough — the verification process is essential.',
+        'The approach is "tentative answer → targeted verification → revise." Exhaustive data gathering drowns you in information; intuition without verification skips the engine of the method; and starting with authority\'s view replaces your hypothesis with someone else\'s. The defining mark is that the hypothesis is testable — intuition alone is not.',
     },
     {
       type: 'explain',
@@ -37,13 +37,13 @@ const hypothesisIntro: LessonData = {
       type: 'quiz',
       question: 'Which of the following best satisfies the conditions for a "good hypothesis"?',
       options: [
-        { label: 'Performance is bad because the economy is bad', correct: false },
-        { label: 'If we just try harder, revenue should rise', correct: false },
-        { label: 'The driver of high enterprise-customer churn is weak onboarding; assigning a dedicated success manager will reduce churn from 30% to 15%', correct: true },
-        { label: 'Our company has many problems', correct: false },
+        { label: 'Performance is bad because the economy is bad — nothing we can do', correct: false },
+        { label: 'If we just try harder, revenue should rise — continue current efforts', correct: false },
+        { label: 'Enterprise churn is driven by weak onboarding; a dedicated success manager will move churn from 30% to 15%', correct: true },
+        { label: 'Our company has many problems and we need to fix them somehow', correct: false },
       ],
       explanation:
-        'A good hypothesis is specific, verifiable, and actionable. The "enterprise-customer churn..." statement contains a cause, an intervention, and a numeric target — you can move directly to verification.',
+        'The correct option bundles cause, intervention, and a numeric target — verifiable and immediately actionable. The economy excuse blocks both verification and intervention; "try harder" lacks any measurable variable; "many problems" is too vague to start anywhere. Watch for plausible-sounding options that match the length of the right answer but are empty inside.',
     },
     {
       type: 'explain',
@@ -55,13 +55,13 @@ const hypothesisIntro: LessonData = {
       type: 'quiz',
       question: 'You verified your hypothesis and it turned out to be wrong. What should you do next?',
       options: [
-        { label: 'Start over from scratch because the hypothesis was wrong', correct: false },
-        { label: 'Assume the data is wrong and look for friendlier data', correct: false },
-        { label: 'Analyze why the hypothesis was wrong, form a new one, and continue verifying', correct: true },
-        { label: 'Conclude that hypothesis-driven thinking does not work and switch to bottom-up research', correct: false },
+        { label: 'Start over from the original problem definition because everything is suspect', correct: false },
+        { label: 'Assume the data collection was flawed and search for friendlier datasets', correct: false },
+        { label: 'Analyze why it was wrong, fold the learning into a new hypothesis, and continue verifying', correct: true },
+        { label: 'Conclude that hypothesis-driven thinking failed and pivot to bottom-up research', correct: false },
       ],
       explanation:
-        'Even when a hypothesis is wrong, analyzing "why was it wrong?" is a major source of learning. You then refine the hypothesis and run the next cycle. Hypothesis-driven thinking is "hypothesis -> verify -> refine," repeated.',
+        'A failed hypothesis is information. Restarting from zero discards the learning, searching for nicer data is confirmation bias in disguise, and abandoning the method misunderstands that "hypothesis → verify → refine" is the core cycle. The cycle assumes you will be wrong sometimes — and uses those moments to sharpen the next hypothesis.',
     },
   ],
 }
@@ -81,13 +81,13 @@ const hypothesisBuilding: LessonData = {
       type: 'quiz',
       question: 'An e-commerce site\'s revenue dropped 15% MoM. What should you do FIRST under the structured-decomposition method?',
       options: [
-        { label: 'Immediately analyze all of Google Analytics', correct: false },
-        { label: 'Decompose revenue into Visits x Conversion Rate x Average Ticket and form hypotheses about which dropped', correct: true },
-        { label: 'Check competitor pricing', correct: false },
-        { label: 'Increase ad spend and see what happens', correct: false },
+        { label: 'Analyze all Google Analytics dimensions exhaustively to find anomalies', correct: false },
+        { label: 'Decompose Revenue = Visits × CVR × Average Ticket and hypothesize which component dropped', correct: true },
+        { label: 'Survey competitor pricing and promotions to find external explanations', correct: false },
+        { label: 'Increase ad spend temporarily and observe whether revenue recovers', correct: false },
       ],
       explanation:
-        'In the structured-decomposition method, first split revenue into its components. With "Revenue = Visits x CVR x Average Ticket," you can form specific hypotheses like "Did visits fall?" or "Did CVR fall?".',
+        'The structured-decomposition method centers on splitting the whole into components — the 3-variable identity lets you narrow the search instantly. Exhaustive GA analysis is the information-overload trap, competitor research can suggest hypotheses but doesn\'t locate your drop, and "spend money to learn" inverts the discipline of testing before investing.',
     },
     {
       type: 'explain',
@@ -99,13 +99,13 @@ const hypothesisBuilding: LessonData = {
       type: 'quiz',
       question: 'What is the most important thing in verification design?',
       options: [
-        { label: 'Gathering as much data as possible', correct: false },
-        { label: 'Selecting only data that proves the hypothesis correct', correct: false },
-        { label: 'Setting the decision criteria before looking at the data', correct: true },
-        { label: 'Asking experts for their opinions', correct: false },
+        { label: 'Gather as much data as possible to increase conclusion precision', correct: false },
+        { label: 'Preferentially select data that demonstrates the hypothesis is true', correct: false },
+        { label: 'Set the support/reject decision criteria BEFORE looking at any data', correct: true },
+        { label: 'Consult experts to anchor the direction of the analysis', correct: false },
       ],
       explanation:
-        'Setting the criteria in advance prevents confirmation bias (the tendency to only collect data that flatters your hypothesis). It is the same principle as scientific experimental design.',
+        'Pre-committing the criteria is the structural antidote to confirmation bias — the same logic as scientific experimental design. Gathering more data without criteria expands the confirming material; selecting only supporting data IS the bias; expert consultation outsources the verification entirely. "Decide what you would accept as evidence before you see it" is the bright-line rule.',
     },
     {
       type: 'explain',
@@ -117,13 +117,13 @@ const hypothesisBuilding: LessonData = {
       type: 'quiz',
       question: 'A restaurant\'s monthly revenue dropped 30%. In the issue tree below, what is the best hypothesis for the "?":\n\nRevenue drop\n├── Decline in customer count?\n│   ├── New competitor opened nearby?\n│   └── ?\n└── Decline in average ticket?',
       options: [
-        { label: 'The food got worse', correct: false },
+        { label: 'The food quality has dropped — repeat-customer driver', correct: false },
         { label: 'Google Maps rating dropped, reducing web-driven new customers', correct: true },
-        { label: 'The economy is bad', correct: false },
-        { label: 'Employee morale is low', correct: false },
+        { label: 'The economy is bad — sector-wide demand contraction', correct: false },
+        { label: 'Employee morale is low — service quality impact', correct: false },
       ],
       explanation:
-        'A sub-hypothesis under "decline in customer count" should be a specific, verifiable hypothesis about new-customer inflow channels. "Google Maps rating drop -> fewer new customers" can be verified with actual review scores and visit trends.',
+        'Under "decline in customer count" you need a specific, verifiable hypothesis about new-customer channels — Google Maps rating fits perfectly and is testable from review scores and visit trends. Food quality is a repeat-customer driver (wrong tree branch), the economy is a sector-wide story that does not explain this specific outlet, and morale is an abstract internal factor without channel specificity.',
     },
   ],
 }
@@ -143,13 +143,13 @@ const hypothesisProblemSolving: LessonData = {
       type: 'quiz',
       question: 'Food delivery orders fell 20%. Of Hypothesis A (competitor switch), B (delivery delays), and C (promo ended), which should you verify first?',
       options: [
-        { label: 'A: Competitor analysis takes time but the impact is large', correct: false },
-        { label: 'C: You can verify by simply matching the promo end date against the order-decline start date', correct: true },
-        { label: 'B: Delivery time data exists internally, but the impact is unclear', correct: false },
-        { label: 'Verify all three simultaneously', correct: false },
+        { label: 'A — competitor analysis takes time but has the largest potential impact', correct: false },
+        { label: 'C — matching the promo end date with the order-decline start date verifies it instantly', correct: true },
+        { label: 'B — delivery time data exists internally but the impact is unclear', correct: false },
+        { label: 'Verify all three in parallel to ensure comprehensive coverage', correct: false },
       ],
       explanation:
-        'Hypothesis C can be initially verified just by matching the "promo end date" with the "start date of the order decline," and the data is already in-house. The rule is to start with hypotheses that are cheap to verify and easy to causally test.',
+        'C is the ideal first target: lowest verification cost (date matching with in-house data) and easiest causal inference. A depends on external data and takes time; B has data but no impact estimate makes deep-dive risky; parallel verification scatters resources. The Quick & Dirty discipline is to knock down the most-likely + cheapest-to-test hypothesis first.',
     },
     {
       type: 'explain',
@@ -161,13 +161,13 @@ const hypothesisProblemSolving: LessonData = {
       type: 'quiz',
       question: 'Which best describes the "Quick & Dirty verification" mindset?',
       options: [
-        { label: 'Data accuracy doesn\'t matter, just throw out a conclusion', correct: false },
-        { label: 'Without waiting for perfect data, quickly form a directional view from limited information', correct: true },
-        { label: 'Speed matters, so skip verification altogether', correct: false },
-        { label: 'Ask your boss to reach a quick conclusion', correct: false },
+        { label: 'Data accuracy does not matter — just throw out a conclusion fast', correct: false },
+        { label: 'Without waiting for perfect data, form a directional view from limited information', correct: true },
+        { label: 'Speed matters, so skip the verification step entirely', correct: false },
+        { label: 'Ask your boss or an expert to produce a quick conclusion for you', correct: false },
       ],
       explanation:
-        '"Quick & Dirty" is not "sloppy" — it is "efficiently directional with limited data." By using initial verification to confirm direction and then deepening only the promising hypotheses, you raise overall efficiency.',
+        '"Quick & Dirty" trades depth for speed but never trades away verification itself — it is "efficiently directional," not "sloppy." Skipping verification ("just decide") and outsourcing to authority ("ask the boss") are common misunderstandings that strip the discipline out of the method.',
     },
     {
       type: 'explain',
@@ -179,13 +179,13 @@ const hypothesisProblemSolving: LessonData = {
       type: 'quiz',
       question: 'Which is correct about the Day 1 Answer?',
       options: [
-        { label: 'Whatever you say on day 1 should be the final conclusion', correct: false },
-        { label: 'You should not produce an answer until you have done thorough research', correct: false },
-        { label: 'Produce a tentative answer from limited information and refine it as you verify', correct: true },
-        { label: 'Tell the client nothing until verification is complete', correct: false },
+        { label: 'The day-1 answer should be locked in as the team\'s committed position', correct: false },
+        { label: 'You should not produce any answer until thorough research is complete', correct: false },
+        { label: 'Produce a tentative answer from limited information and refine it as evidence comes in', correct: true },
+        { label: 'Tell the client nothing about the answer until verification is fully complete', correct: false },
       ],
       explanation:
-        'The Day 1 Answer is by definition tentative and is expected to be revised as you verify. The point is to have a hypothesis early so that investigation efficiency and decision speed both go up.',
+        'A Day 1 Answer is "tentative → verify → refine" by design — never final, never delayed until you have perfect data. Hiding it from the client defeats the whole point (early alignment). "Produce an answer early" and "lock in an answer early" are different things and the common confusion is collapsing them.',
     },
     {
       type: 'think',
@@ -220,13 +220,13 @@ const hypothesisValidation: LessonData = {
       type: 'quiz',
       question: 'What is wrong with the hypothesis "our product seems to be providing value to users"?',
       options: [
-        { label: 'The subject "we" is unclear', correct: false },
-        { label: 'It is not falsifiable, has no numeric criteria, and does not lead to action — so it cannot be verified', correct: true },
-        { label: 'You can find out just by asking users directly', correct: false },
-        { label: 'The vague phrasing "seems to be"', correct: false },
+        { label: 'The first-person subject "our" reduces neutrality', correct: false },
+        { label: 'It lacks falsifiability, numeric criteria, AND action linkage — verification is impossible', correct: true },
+        { label: 'Asking users directly would yield the same information for cheaper', correct: false },
+        { label: 'The hedge word "seems to be" makes the statement vague', correct: false },
       ],
       explanation:
-        '"Seems to be providing value" gives you no way to know what counts as right or wrong — it is unfalsifiable. Only when you make it numeric (e.g., "more than 40% of all users use the app at least once a week") can you verify it.',
+        'The statement fails all three good-hypothesis tests: falsifiable, specific, actionable. Subject choice and hedge-word style are surface critiques that miss the structural problem. "Just ask users" is a method suggestion, not a hypothesis critique. Making it numeric ("more than 40% of users open the app weekly") is what unlocks verification.',
     },
     {
       type: 'explain',
@@ -238,13 +238,13 @@ const hypothesisValidation: LessonData = {
       type: 'quiz',
       question: 'Which is the lowest-cost way to verify "a 10% price cut raises conversion by 20%"?',
       options: [
-        { label: 'Cut prices 10% on all products and compare monthly revenue', correct: false },
-        { label: 'Cut prices 10% only on a subset of categories, and during the same period compare conversion against the other categories', correct: true },
-        { label: 'Compute the historical correlation between price and conversion rate', correct: false },
-        { label: 'Ask users in a survey, "would you buy if it were 10% cheaper?"', correct: false },
+        { label: 'Cut prices 10% across all products and compare monthly revenue before/after', correct: false },
+        { label: 'Cut prices 10% on a subset of categories only, and compare same-period conversion vs other categories', correct: true },
+        { label: 'Compute the historical correlation between price changes and conversion rate', correct: false },
+        { label: 'Ask users via survey: "would you buy if the price were 10% lower?"', correct: false },
       ],
       explanation:
-        'Cutting prices in only some categories and comparing same-period conversion against the other categories gives you a near-causal conclusion at minimal cost. Cutting all prices at once mixes in too many other factors, historical correlation cannot establish causation, and "would you buy?" surveys diverge from actual purchase behavior.',
+        'Cutting only some categories with same-period comparison is essentially an A/B test — near-causal evidence at minimal cost. Cutting everything at once mixes in confounders; historical correlation cannot establish causation; survey intent diverges from actual purchase behavior (the classic "say-do gap"). The discipline is to design for behavior data, not declared intent.',
     },
   ],
 }

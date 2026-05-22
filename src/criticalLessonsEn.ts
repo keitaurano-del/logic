@@ -20,13 +20,13 @@ const criticalIntro: LessonData = {
       type: 'quiz',
       question: 'Which best describes the essence of critical thinking?',
       options: [
-        { label: 'Argue against every opinion you hear', correct: false },
-        { label: 'Reach your own judgment based on evidence and reasoning', correct: true },
-        { label: 'Always defer to famous people', correct: false },
-        { label: 'Treat any conclusion supported by lots of data as correct', correct: false },
+        { label: 'Argue against every opinion you hear to keep the debate sharp', correct: false },
+        { label: 'Reach your own judgment by checking evidence, logic, and proof', correct: true },
+        { label: 'Defer to recognized experts and famous voices as a starting point', correct: false },
+        { label: 'Trust any conclusion that is supported by a large enough dataset', correct: false },
       ],
       explanation:
-        'Critical thinking is not "criticizing." It is the ability to think and decide for yourself, anchored in evidence, logic, and proof. The point is not winning the argument — it is making a better decision.',
+        'Critical thinking is judgment grounded in evidence and reasoning — not contrarianism, not authority deference, not data-volume worship. "Argue against everything" mistakes friction for thinking; expert deference outsources judgment; data volume without quality is a quantity-over-quality trap. The goal is better decisions, not winning arguments.',
     },
     {
       type: 'explain',
@@ -38,13 +38,13 @@ const criticalIntro: LessonData = {
       type: 'quiz',
       question: 'When critically examining the claim "we ran a new marketing campaign, so revenue went up," which assumption should you check first?',
       options: [
-        { label: 'How experienced the marketing team is', correct: false },
-        { label: 'Whether the revenue rise and the campaign are causally linked', correct: true },
-        { label: 'How much the campaign cost', correct: false },
-        { label: 'What competitors are doing', correct: false },
+        { label: 'How experienced the marketing team is and their track record', correct: false },
+        { label: 'Whether the campaign actually caused the revenue rise (causation)', correct: true },
+        { label: 'The campaign cost and ROI calculation', correct: false },
+        { label: 'What competitors and the broader market were doing in the same period', correct: false },
       ],
       explanation:
-        '"We ran a campaign and revenue rose" is just correlation. Without checking causation, you cannot judge correctly. Seasonal effects and changes in the external environment are also possible explanations.',
+        'The whole claim hinges on the "campaign → revenue" causal link. If that link is just correlation, the team\'s skill and the ROI math become moot. Competitor activity is one input to confirming causation, but checking it before challenging the causal claim itself means analyzing under a foregone conclusion — the wrong order.',
     },
   ],
 }
@@ -65,13 +65,13 @@ const criticalFallacy: LessonData = {
       type: 'quiz',
       question: 'In a meeting someone says "this proposal matches what was in a major consulting firm\'s report." Which fallacy might this be?',
       options: [
-        { label: 'Ad hominem', correct: false },
-        { label: 'Appeal to authority', correct: true },
-        { label: 'Strawman', correct: false },
-        { label: 'Causal fallacy', correct: false },
+        { label: 'Ad hominem — attacking the speaker to dismiss the claim', correct: false },
+        { label: 'Appeal to authority — using the source\'s prestige as proof', correct: true },
+        { label: 'Strawman — distorting an opponent\'s argument to attack a weaker version', correct: false },
+        { label: 'Causal fallacy — confusing temporal order with cause and effect', correct: false },
       ],
       explanation:
-        '"A famous consulting firm said it" is an appeal to authority. Even consulting reports get things wrong, and it still has to be checked whether the recommendation fits your specific situation. Judge by content and evidence, not by who said it.',
+        '"A famous firm said it" leans on prestige as evidence — the textbook appeal to authority. The report still needs its content and fit-to-context validated. Ad hominem points the other way (attacking the speaker), strawman distorts the argument, and causal fallacy is about time-order mistakes — none of which describe this case.',
     },
     {
       type: 'explain',
@@ -83,13 +83,13 @@ const criticalFallacy: LessonData = {
       type: 'quiz',
       question: 'What is the most effective countermeasure against confirmation bias?',
       options: [
-        { label: 'Gather more data', correct: false },
-        { label: 'Deliberately seek out disconfirming evidence', correct: true },
-        { label: 'Defer to expert opinion', correct: false },
-        { label: 'Take a vote', correct: false },
+        { label: 'Gather as much data as possible to build a complete picture', correct: false },
+        { label: 'Deliberately ask "what if I am wrong?" and hunt for disconfirming evidence', correct: true },
+        { label: 'Defer to expert opinion to anchor your conclusion firmly', correct: false },
+        { label: 'Vote within the team to make the decision objective', correct: false },
       ],
       explanation:
-        'Just gathering more data risks gathering only data that already favors your view. Deliberately asking "what if my hypothesis is wrong?" and looking for counterexamples is the most effective antidote to confirmation bias.',
+        'Confirmation bias is "absorb only friendly data," so gathering more data alone just expands the friendly subset. Deliberately seeking counter-evidence is the actual antidote. Expert deference and voting abdicate the personal-judgment goal of critical thinking — they avoid the bias rather than counter it.',
     },
   ],
 }
@@ -110,13 +110,13 @@ const criticalData: LessonData = {
       type: 'quiz',
       question: 'Data shows "people who drink more coffee perform better at work." What can you legitimately conclude?',
       options: [
-        { label: 'Drinking coffee improves performance', correct: false },
+        { label: 'Drinking coffee improves performance (a causal claim)', correct: false },
         { label: 'There may be a correlation between coffee intake and performance', correct: true },
-        { label: 'High performers personally enjoy coffee', correct: false },
-        { label: 'Forcing employees to drink coffee will improve performance', correct: false },
+        { label: 'High performers share a personality trait that includes liking coffee', correct: false },
+        { label: 'Distributing coffee to all employees will raise overall performance', correct: false },
       ],
       explanation:
-        '"Heavier drinkers also perform better" is correlation only. It is possible that "people working long hours drink more coffee" or "highly motivated people do both." A separate factor may drive both. You cannot leap from correlation to causation.',
+        'Data only shows co-occurrence; jumping to causation, personality theory, or intervention effect all overreach the evidence. A third variable (long hours, high motivation) could drive both. Correlation-to-causation leaps are the most common business analytics mistake, and they especially hurt when they fund expensive "let\'s do it" interventions.',
     },
     {
       type: 'explain',
@@ -128,13 +128,13 @@ const criticalData: LessonData = {
       type: 'quiz',
       question: 'An ad claims "80% of users said they were satisfied with our product." When evaluating this critically, what should you check first?',
       options: [
-        { label: 'Competitor product satisfaction', correct: false },
-        { label: 'The number of respondents and any sample bias', correct: true },
-        { label: 'The product\'s price range', correct: false },
-        { label: 'The product\'s release date', correct: false },
+        { label: 'Competitor satisfaction scores for a relative benchmark', correct: false },
+        { label: 'The number of respondents and any sample bias (who actually answered)', correct: true },
+        { label: 'The product price range and price-to-satisfaction match', correct: false },
+        { label: 'The product release date and market maturity stage', correct: false },
       ],
       explanation:
-        'Sample quality first. "80 of 100" and "8 of 10" have very different reliability. Also consider survivorship bias — unsatisfied users may have already left and never responded.',
+        '80% is meaningless without knowing the denominator and the composition of respondents. "8 of 10" and "8,000 of 10,000" carry very different signal; and if unhappy users already churned, you have classic survivorship bias. Price, release date, and competitor scores are secondary — sample quality comes first.',
     },
   ],
 }
@@ -155,13 +155,13 @@ const criticalQuestion: LessonData = {
       type: 'quiz',
       question: 'Your boss says "sales are low — how do we fix it?" From a critical-thinking perspective, what should you do first?',
       options: [
-        { label: 'Propose three improvement ideas', correct: false },
-        { label: 'Clarify "which part of sales, since when, and why is it low"', correct: true },
-        { label: 'Research what competitors are doing', correct: false },
-        { label: 'Propose cost cuts', correct: false },
+        { label: 'Quickly draft three improvement ideas to show initiative', correct: false },
+        { label: 'Clarify which sales, since when, and why — redefine the question first', correct: true },
+        { label: 'Research what competitors are doing to find quick wins', correct: false },
+        { label: 'Propose cost cuts because sales are unlikely to recover fast', correct: false },
       ],
       explanation:
-        'Producing solutions before the problem is clear is premature. By first nailing down "which sales (new/existing/by product), since when (recent or long-standing), and why (initial cause hypothesis)," you avoid wasted answers to the wrong question.',
+        'Solutions before problem definition lead to a flood of off-target ideas. Splitting "which sales, since when, why" produces a sharper question and far better hypotheses. Competitor research and cost cuts can be valid downstream moves, but jumping there before defining the problem is exactly what critical thinking warns against.',
     },
     {
       type: 'explain',
@@ -173,13 +173,13 @@ const criticalQuestion: LessonData = {
       type: 'quiz',
       question: 'In a customer interview aimed at "understanding what to improve about our service," which question is more useful?',
       options: [
-        { label: '"Is our service easy to use?"', correct: false },
-        { label: '"The last time you used it, was there anything that gave you trouble?"', correct: true },
-        { label: '"On a scale of 5, how would you rate our service?"', correct: false },
-        { label: '"Are there features you would like us to improve?"', correct: false },
+        { label: '"Is our service easy to use?" — direct usability check', correct: false },
+        { label: '"Last time you used it, was there anything that gave you trouble?" — concrete experience probe', correct: true },
+        { label: '"On a 5-point scale, how would you rate our service?" — quantified rating', correct: false },
+        { label: '"Are there features you\'d like us to improve?" — direct feature wishlist', correct: false },
       ],
       explanation:
-        '"What gave you trouble last time you used it?" pulls out concrete experiences in an open way. "Is it easy to use?" tends to end with yes/no, the 5-point scale gives only a number, and "what would you like improved?" is leading and may miss issues the user has not consciously identified.',
+        'Open questions about a specific recent experience surface the most insight. Yes/no usability checks and rating scales collapse to a single signal with no follow-up. "What features would you improve?" sounds open but frames the answer to feature requests, missing experience-level issues users haven\'t named — a leading-question trap.',
     },
   ],
 }
@@ -202,13 +202,13 @@ const criticalBias: LessonData = {
       type: 'quiz',
       question: 'For a market study on a new product, you only interviewed users who already favor your company and concluded "there is demand." Which bias is this?',
       options: [
-        { label: 'Anchoring', correct: false },
-        { label: 'Confirmation bias', correct: true },
-        { label: 'Sunk cost', correct: false },
-        { label: 'Normalcy bias', correct: false },
+        { label: 'Anchoring — judgment dragged by the first number or impression', correct: false },
+        { label: 'Confirmation bias — gathering only data that supports the hypothesis', correct: true },
+        { label: 'Sunk cost — past spending prevents rational exit', correct: false },
+        { label: 'Normalcy bias — treating abnormal events as if they were routine', correct: false },
       ],
       explanation:
-        'Gathering only data that flatters your conclusion is confirmation bias. Without also interviewing users who are skeptical or negative, you cannot see real market demand.',
+        'Filtering for friendly users to validate a thesis is the textbook confirmation bias. Anchoring is about numeric judgment, sunk cost is about past investments, and normalcy bias is about crisis response — different structures even though the names sound similar. Matching the bias to its trigger pattern is the key skill.',
     },
     {
       type: 'explain',
@@ -220,13 +220,13 @@ const criticalBias: LessonData = {
       type: 'quiz',
       question: 'For which bias is the question "would I make the same choice if I were starting from zero today?" most effective?',
       options: [
-        { label: 'Confirmation bias', correct: false },
-        { label: 'Anchoring', correct: false },
-        { label: 'Sunk cost', correct: true },
-        { label: 'Optimism bias', correct: false },
+        { label: 'Confirmation bias — gathering only supporting evidence', correct: false },
+        { label: 'Anchoring — judgment fixed by the first number seen', correct: false },
+        { label: 'Sunk cost — past investments preventing rational exit', correct: true },
+        { label: 'Optimism bias — assuming bad outcomes will not happen to you', correct: false },
       ],
       explanation:
-        'Sunk-cost bias is the trap where you cannot make a rational decision to walk away because of past costs (time, money). Asking "if I were starting from zero today?" lets you reset the past investment and judge the current decision objectively.',
+        'The "from zero today" frame deliberately strips past investment from the decision — a precision tool for sunk cost. Confirmation bias responds to counter-evidence searches, anchoring to pre-commitment estimates, and optimism bias to pre-mortems. Question form and target bias should be learned as paired sets.',
     },
   ],
 }
@@ -249,13 +249,13 @@ const criticalCorrelation: LessonData = {
       type: 'quiz',
       question: 'A company finds that "employees who drink coffee perform better" and decides to give everyone free coffee. What is wrong with this reasoning?',
       options: [
-        { label: 'The data on coffee and performance was collected incorrectly', correct: false },
-        { label: 'Correlation is being mistaken for causation; a third variable (e.g., motivation) is being ignored', correct: true },
-        { label: 'It underestimates the effect of coffee', correct: false },
-        { label: 'The definition of "performance" is fuzzy, so the analysis is meaningless', correct: false },
+        { label: 'Coffee consumption was not measured with a standardized method', correct: false },
+        { label: 'Correlation is treated as causation; possible third variables are ignored', correct: true },
+        { label: 'It underestimates the pharmacological effect of caffeine', correct: false },
+        { label: 'Performance is defined too loosely to support any analysis', correct: false },
       ],
       explanation:
-        'Even if "coffee intake" and "performance" correlate, a third variable like "motivated employees both drink more coffee and perform better" is plausible. Coffee may not directly improve performance, so handing out coffee to everyone may have no effect.',
+        'The core error is the leap from correlation to causation while ignoring third variables (motivation, hours worked) that could drive both. Measurement issues and effect-size debates miss the structural problem; calling the analysis impossible because of fuzzy definitions overstates the case. "Correlation → causation → intervention" is the trap to name explicitly.',
     },
     {
       type: 'explain',
@@ -267,13 +267,13 @@ const criticalCorrelation: LessonData = {
       type: 'quiz',
       question: 'You launched a new feature, and DAU (daily active users) rose 15% the following week. What is missing before you can conclude "the new feature drove DAU up"?',
       options: [
-        { label: 'The DAU increase is too small', correct: false },
-        { label: 'The new feature was released too late', correct: false },
-        { label: 'A control group that did not get the new feature for comparison', correct: true },
-        { label: 'One week of data is too short', correct: false },
+        { label: 'The 15% lift is too small to count as a meaningful effect', correct: false },
+        { label: 'The release timing was too late relative to the market opportunity', correct: false },
+        { label: 'A control group that did not receive the new feature for comparison', correct: true },
+        { label: 'One week of data is too short to be statistically reliable', correct: false },
       ],
       explanation:
-        'Even with a one-week DAU lift, other factors during that week (push notifications, seasonality, social buzz) could be at play. Without an A/B test or difference-in-differences comparing groups with and without the feature, you cannot claim causation.',
+        'Without a control group, you cannot separate the feature\'s impact from other things happening in the same week (push, seasonality, social buzz). Sample size and effect magnitude are secondary; the structural missing piece is a comparison baseline. A/B testing or difference-in-differences is the standard fix.',
     },
     {
       type: 'think',
