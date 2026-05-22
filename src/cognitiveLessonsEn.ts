@@ -24,13 +24,13 @@ const workingMemoryLimit: LessonData = {
       type: 'quiz',
       question: 'What does the 7±2 rule refer to?',
       options: [
-        { label: 'The number of characters you can memorize at once', correct: false },
+        { label: 'The total number of characters or digits you can hold', correct: false },
         { label: 'The number of meaningful chunks you can hold at once', correct: true },
-        { label: 'The number of new facts you can learn per day', correct: false },
-        { label: 'The maximum number of participants in a meeting', correct: false },
+        { label: 'The minutes for short-term to transfer to long-term', correct: false },
+        { label: 'The number of visual elements you can attend to simultaneously', correct: false },
       ],
       explanation:
-        "Miller's limit is about chunk count, not raw digits or characters. The same 11-digit number is hard to remember as '09012345678' but easy as '090-1234-5678' because it fits into 3 chunks.",
+        "Miller's limit is about chunk count, not raw digits or characters. The same 11-digit number is hard as '09012345678' but easy as '090-1234-5678' because the 3 chunks fit in capacity. Option 1 (counting raw data before chunking) is the most common misreading.",
     },
     {
       type: 'explain',
@@ -40,15 +40,15 @@ const workingMemoryLimit: LessonData = {
     },
     {
       type: 'quiz',
-      question: 'For a presentation, what is the most memorable number of main points?',
+      question: 'For a presentation, what number of main points lands best with the audience?',
       options: [
-        { label: '1–2', correct: false },
-        { label: 'Around 3', correct: true },
-        { label: 'Around 7', correct: false },
-        { label: '10 or more', correct: false },
+        { label: 'About 2 — minimize content and sharpen contrast', correct: false },
+        { label: 'About 3 — fits within pure working memory capacity', correct: true },
+        { label: 'About 7 — follow the older 7±2 theory baseline', correct: false },
+        { label: 'About 10 — prioritize comprehensive coverage', correct: false },
       ],
       explanation:
-        'Pure working memory capacity is around 4±1. In a talk where listeners cannot rehearse, three points is optimal. The classic "3 reasons" / "3 points" format has solid cognitive science backing.',
+        'Pure working memory is around 4±1. Without listener rehearsal, three points is optimal. Option 3 is the trap of using the older Miller framing without updating; option 1 sharpens contrast but sacrifices coverage; option 4 ignores capacity entirely.',
     },
     {
       type: 'explain',
@@ -58,15 +58,15 @@ const workingMemoryLimit: LessonData = {
     },
     {
       type: 'quiz',
-      question: 'Which is NOT a symptom of exceeded working memory capacity?',
+      question: 'Which is NOT a real symptom of exceeded working memory capacity?',
       options: [
-        { label: 'Older items get pushed out', correct: false },
-        { label: 'Processing speed drops', correct: false },
-        { label: 'Long-term memory is also erased', correct: true },
-        { label: 'Error rates increase', correct: false },
+        { label: 'Older items get pushed out in FIFO fashion', correct: false },
+        { label: 'Processing speed drops and judgment slows', correct: false },
+        { label: 'Established long-term memories also get erased', correct: true },
+        { label: 'Attention-switching cost rises and errors increase', correct: false },
       ],
       explanation:
-        'Working memory (temporary holding) and long-term memory are separate systems. Overflow only loses the currently held items; established long-term memories are untouched.',
+        'Working memory (temporary) and long-term memory are separate systems. Overflow only loses currently held items; established long-term memories are unaffected. The "brain shuts down entirely" intuition creates the false impression of long-term erasure.',
     },
   ],
 }
@@ -86,13 +86,13 @@ const chunking: LessonData = {
       type: 'quiz',
       question: 'Which is the most effective use of chunking?',
       options: [
-        { label: 'Memorize an 11-digit phone number as one block', correct: false },
-        { label: 'Split the number into "090-1234-5678" and use the rhythm', correct: true },
-        { label: 'Translate digits into characters and memorize them', correct: false },
-        { label: 'Repeat the number 100 times', correct: false },
+        { label: 'Read 11 digits one at a time at even pace', correct: false },
+        { label: 'Split 11 digits into 3 blocks with meaningful rhythm', correct: true },
+        { label: 'Repeat the full 11-digit number aloud over and over', correct: false },
+        { label: 'Convert all 11 digits into one elaborate story', correct: false },
       ],
       explanation:
-        '11 digits split into 3 blocks compresses chunk count from 11 to 3, fitting working memory capacity. This is the canonical example of chunking.',
+        'Splitting 11 digits into 3 blocks compresses chunk count from 11 to 3, fitting in capacity. Option 3 (rehearsal) holds temporarily but doesn\'t reduce load. Option 4 (mnemonic story) works as an advanced technique but isn\'t the pure "chunking" definition here.',
     },
     {
       type: 'explain',
@@ -105,13 +105,13 @@ const chunking: LessonData = {
       type: 'quiz',
       question: 'Organizing 20 ideas into "Acquisition 5 / Retention 6 / Monetization 9" — which chunking type?',
       options: [
-        { label: 'Grouping (same-nature buckets)', correct: true },
-        { label: 'Hierarchy (vertical tree)', correct: false },
-        { label: 'Pattern matching (existing concept)', correct: false },
-        { label: 'Not chunking', correct: false },
+        { label: 'Grouping — same-nature items collected in one bucket', correct: true },
+        { label: 'Hierarchy — break the whole into nested sub-categories', correct: false },
+        { label: 'Pattern matching — map onto an existing framework', correct: false },
+        { label: 'Abstraction — replace specifics with higher-order concepts', correct: false },
       ],
       explanation:
-        "Items of the same nature placed into single buckets — that's grouping. Subdividing each bucket would add hierarchy; mapping the 3 buckets to a framework like AARRR would add pattern matching.",
+        "Same-nature items collected into a bucket = grouping. Hierarchy would subdivide each bucket; pattern matching would map the 3 buckets to a framework like AARRR; abstraction replaces specifics with broader categories — none of those have happened here.",
     },
     {
       type: 'explain',
@@ -121,15 +121,15 @@ const chunking: LessonData = {
     },
     {
       type: 'quiz',
-      question: 'Which is the LEAST effective chunking practice?',
+      question: 'Which is the LEAST effective practice for building chunking skill?',
       options: [
-        { label: 'Memorize 10 frameworks to expand your repertoire', correct: false },
-        { label: 'Group brainstorm items every time', correct: false },
+        { label: 'Catalog every idea you have into a comprehensive log', correct: true },
+        { label: 'Deliberately expand your library of frameworks', correct: false },
+        { label: 'Always group brainstorm outputs into clusters', correct: false },
         { label: 'Cycle between concrete examples and abstract concepts', correct: false },
-        { label: 'List every idea as-is without grouping', correct: true },
       ],
       explanation:
-        'The whole point of chunking is to compress. Listing items without grouping forms no chunks at all and does not raise effective capacity. Always add a grouping / hierarchical / conceptual move.',
+        'The essence of chunking is "compress." Listing items exhaustively forms no chunks and doesn\'t raise effective capacity. "Just write everything down" is useful as external memory but does not train chunking — you must add a grouping / hierarchy / conceptual move.',
     },
   ],
 }
@@ -150,13 +150,13 @@ const cognitiveLoad: LessonData = {
       type: 'quiz',
       question: '"This slide deck has inconsistent fonts and is hard to read." Which load is that?',
       options: [
-        { label: 'Intrinsic', correct: false },
-        { label: 'Extraneous', correct: true },
-        { label: 'Germane', correct: false },
-        { label: 'None of the above', correct: false },
+        { label: 'Intrinsic — load from the inherent difficulty of the task', correct: false },
+        { label: 'Extraneous — wasted load from poor presentation or design', correct: true },
+        { label: 'Germane — good load that supports learning and retention', correct: false },
+        { label: 'Sensory — fatigue load from raw visual stimulation', correct: false },
       ],
       explanation:
-        'Font, layout, and typo problems are presentation-side issues = extraneous load. They consume cognitive resources without relating to the content itself, so they should be cut first.',
+        'Font/layout/typo are presentation-side issues = extraneous load. They eat resources without serving content and should be cut first. Option 4 "sensory load" doesn\'t exist in CLT — it\'s a distractor that confuses appearance issues with fatigue.',
     },
     {
       type: 'explain',
@@ -166,15 +166,15 @@ const cognitiveLoad: LessonData = {
     },
     {
       type: 'quiz',
-      question: 'Which approach increases extraneous load the MOST?',
+      question: 'Which slide-making habit increases extraneous load the MOST?',
       options: [
-        { label: 'One message per slide', correct: false },
-        { label: 'Same information always in the same place', correct: false },
-        { label: 'Using 7+ colors to highlight each item', correct: true },
-        { label: 'Lead with the conclusion', correct: false },
+        { label: 'Highlight only key points with a single accent color', correct: false },
+        { label: 'Assign a different color to every item across the deck', correct: true },
+        { label: 'Lead with the conclusion, place evidence afterward', correct: false },
+        { label: 'Keep heading position consistent across all slides', correct: false },
       ],
       explanation:
-        'Heavy color use scatters attention and starves essential processing. Limit to 3 colors (main / accent / suppression) for low extraneous load.',
+        'Heavy color use scatters attention and starves essential processing. "Color-coding every item" looks careful but is a textbook extraneous-load trap. Cap colors at 3 (main / accent / suppression) for clean cognitive flow.',
     },
     {
       type: 'explain',
@@ -184,15 +184,15 @@ const cognitiveLoad: LessonData = {
     },
     {
       type: 'quiz',
-      question: 'Which training sequence is most aligned with cognitive load theory?',
+      question: 'Which training-design sequence aligns best with cognitive load theory?',
       options: [
-        { label: 'Start with hard applied problems to stretch trainees', correct: false },
-        { label: 'First clean up materials, then add exercises and summaries', correct: true },
-        { label: 'Pack in maximum information to raise germane load', correct: false },
-        { label: 'Simplify content to reduce intrinsic load', correct: false },
+        { label: 'Open with hard applied problems to force concentration', correct: false },
+        { label: 'Cut extraneous load first, then add germane load via exercises', correct: true },
+        { label: 'Pack in maximum information to maximize germane load', correct: false },
+        { label: 'Simplify the task itself to minimize intrinsic load', correct: false },
       ],
       explanation:
-        'Cut extraneous load first, then layer in germane load. Intrinsic load is the essence of the task and should not be reduced; germane load is the deliberate "good load" added on top.',
+        'Cut extraneous → add germane is the canonical order. Option 3 confuses "information volume" with germane load (which is about processing depth — summarizing, applying). Option 4 incorrectly tries to reduce intrinsic load, which is the essence of the task.',
     },
   ],
 }
@@ -212,13 +212,13 @@ const externalMemory: LessonData = {
       type: 'quiz',
       question: 'What is the biggest benefit of external memory?',
       options: [
-        { label: 'It grows working memory capacity itself', correct: false },
-        { label: 'It frees up working memory so you can spend it on judgment and reasoning', correct: true },
-        { label: 'It lets you recall everything at once', correct: false },
-        { label: 'It accelerates transfer to long-term memory', correct: false },
+        { label: 'It expands the biological capacity of working memory itself', correct: false },
+        { label: 'It offloads storage so working memory can spend on judgment and reasoning', correct: true },
+        { label: 'It lets you recall every stored item simultaneously and instantly', correct: false },
+        { label: 'It automatically transfers stored info into long-term memory', correct: false },
       ],
       explanation:
-        'External memory does not increase brain capacity. By moving stored information outside, it frees working memory so processing capacity (judgment, reasoning, creativity) is available.',
+        'External memory doesn\'t expand brain capacity. By moving storage outside, it frees working memory for processing (judgment, reasoning, creativity). Option 4 is a common myth — writing things down doesn\'t auto-encode them into long-term memory; that requires deliberate review and elaboration.',
     },
     {
       type: 'explain',
@@ -230,13 +230,13 @@ const externalMemory: LessonData = {
       type: 'quiz',
       question: 'Which is the FIRST step of GTD?',
       options: [
-        { label: 'Clarify — decide the next action', correct: false },
-        { label: 'Capture — write every concern into one place', correct: true },
-        { label: 'Organize — sort into lists', correct: false },
-        { label: 'Engage — start working', correct: false },
+        { label: 'Capture — dump every concern from your head into one place', correct: true },
+        { label: 'Clarify — decide whether each item requires action', correct: false },
+        { label: 'Organize — sort items into category lists', correct: false },
+        { label: 'Prioritize — rank items by urgency and importance', correct: false },
       ],
       explanation:
-        'GTD starts with Capture: dump everything from your head into one place. This single move drops cognitive load and unlocks the later steps.',
+        'GTD starts with Capture: get everything out of your head into one place to free cognitive load. Option 4 ("Prioritize") isn\'t in GTD\'s standard steps — GTD emphasizes "next-action clarity" over priority ranking.',
     },
     {
       type: 'explain',
@@ -247,15 +247,15 @@ const externalMemory: LessonData = {
     },
     {
       type: 'quiz',
-      question: 'In a meeting with 5 unresolved topics swirling, which action lowers cognitive load the most?',
+      question: 'In a meeting with 5 unresolved topics swirling, which action lowers cognitive load most?',
       options: [
-        { label: 'Poll everyone again', correct: false },
-        { label: 'Take a break', correct: false },
-        { label: 'Draw all 5 topics with their relationships on the whiteboard', correct: true },
-        { label: 'Vote', correct: false },
+        { label: 'Re-poll every attendee\'s opinion verbally', correct: false },
+        { label: 'Take a longer break and reconvene afterward', correct: false },
+        { label: 'Sketch all 5 topics with their relationships on the whiteboard', correct: true },
+        { label: 'Hold an immediate vote to force a decision', correct: false },
       ],
       explanation:
-        "Holding 5 topics purely in working memory breaks down. Externalizing them visually lowers everyone's load and surfaces relationships and gaps. Drawing alone transforms discussion quality.",
+        "Holding 5 topics purely in working memory breaks down. Externalizing visually lowers everyone's load and surfaces relationships and gaps. Option 1 adds more verbal input (more load), option 2 just defers the problem, option 4 short-circuits the unresolved structure.",
     },
   ],
 }
@@ -275,13 +275,13 @@ const multitaskingMyth: LessonData = {
       type: 'quiz',
       question: 'Which best explains what really happens when you "multitask"?',
       options: [
-        { label: 'The brain processes tasks in parallel, reducing fatigue', correct: false },
-        { label: 'Rapid task switching, with a cost on each switch', correct: true },
-        { label: 'Training can unlock true parallel processing', correct: false },
+        { label: 'The brain processes multiple tasks in true parallel, reducing fatigue', correct: false },
+        { label: 'Rapid task switching, with a cost paid on every switch', correct: true },
+        { label: 'With training the brain can unlock genuine parallel processing', correct: false },
         { label: 'Younger people are structurally better at multitasking', correct: false },
       ],
       explanation:
-        "The brain cannot execute multiple cognitive tasks simultaneously. It's rapid switching, and each switch costs ~23 minutes of refocus. Age and training don't change this structure.",
+        "The brain can't run multiple cognitive tasks in parallel — it switches, paying ~23 minutes of refocus cost each time. Options 1 and 3 reflect the wishful belief in true parallelism; option 4 is the digital-native myth (no neurological evidence).",
     },
     {
       type: 'explain',
@@ -293,13 +293,13 @@ const multitaskingMyth: LessonData = {
       type: 'quiz',
       question: 'Which action maximizes focus the most?',
       options: [
-        { label: 'Check email every 5 minutes for efficiency', correct: false },
+        { label: 'Check email every 5 minutes to keep things moving efficiently', correct: false },
         { label: 'Turn off notifications and protect 25–90-minute single-task blocks', correct: true },
-        { label: 'Do other PC work in meetings to stay alert', correct: false },
-        { label: 'Run 3 tasks at once to save time', correct: false },
+        { label: 'Do other PC work during meetings to stay alert and productive', correct: false },
+        { label: 'Run 3 tasks simultaneously to compress total elapsed time', correct: false },
       ],
       explanation:
-        'Each switch costs ~23 minutes of refocus. Protect uninterrupted 25–90-minute single-task windows to reach deep work (flow). That is the highest-leverage focus strategy in knowledge work.',
+        'Each switch costs ~23 minutes of refocus. Protected single-task windows of 25–90 minutes are the highest-leverage focus strategy in knowledge work. Options 1, 3, and 4 all add switching cost while feeling productive — the classic illusion.',
     },
     {
       type: 'explain',
@@ -309,15 +309,15 @@ const multitaskingMyth: LessonData = {
     },
     {
       type: 'quiz',
-      question: 'Which combination CAN actually run in parallel from a cognitive-science perspective?',
+      question: 'Which combination can actually run in parallel from a cognitive-science view?',
       options: [
-        { label: 'Coding + Slack monitoring', correct: false },
+        { label: 'Coding + monitoring Slack for instant replies', correct: false },
         { label: 'Listening to an online meeting + replying to email', correct: false },
-        { label: 'Walking + brainstorming ideas', correct: true },
-        { label: 'Writing a deck + phone call', correct: false },
+        { label: 'Walking + brainstorming new ideas in your head', correct: true },
+        { label: 'Writing a presentation + holding a phone call', correct: false },
       ],
       explanation:
-        "Walking is automated by the motor cortex; thinking uses the prefrontal cortex — different regions, no resource conflict. The classic 'good ideas come while walking' has cognitive-science backing. The other three all share language/logic resources, so both halves suffer.",
+        "Walking is automated by the motor cortex; thinking uses the prefrontal cortex — different regions, no resource conflict. The classic 'good ideas come while walking' has cognitive-science backing. Options 1, 2, 4 all share language/logic resources, so both halves degrade.",
     },
   ],
 }
@@ -339,13 +339,13 @@ const availabilityHeuristic: LessonData = {
       type: 'quiz',
       question: 'Which is the clearest example of the availability heuristic?',
       options: [
-        { label: 'Calmly analyzing statistical data', correct: false },
-        { label: 'A dramatic recent incident makes you treat the whole category as dangerous', correct: true },
-        { label: 'Interviewing experts over time', correct: false },
-        { label: 'Deciding based on long-term data', correct: false },
+        { label: 'Calmly analyzing long-term statistical data sets', correct: false },
+        { label: 'A vivid recent incident makes the whole category feel dangerous', correct: true },
+        { label: 'Interviewing multiple subject-matter experts over time', correct: false },
+        { label: 'Reaching a decision based on multi-year base-rate data', correct: false },
       ],
       explanation:
-        'Vivid recent events are easy to recall, so the brain inflates their frequency. That is exactly the availability heuristic.',
+        'Vivid recent events are easy to recall, so the brain inflates their frequency. That is exactly the availability heuristic. The other three are deliberate, data-driven approaches that bypass the bias.',
     },
     {
       type: 'explain',
@@ -355,15 +355,15 @@ const availabilityHeuristic: LessonData = {
     },
     {
       type: 'quiz',
-      question: '"A recent striking complaint — let\'s rebuild the whole UI." What\'s the most appropriate response?',
+      question: '"A striking recent complaint — let\'s rebuild the whole UI." Best response?',
       options: [
-        { label: 'Start work immediately', correct: false },
-        { label: 'Check overall occurrence rate first', correct: true },
+        { label: 'Begin rebuild work immediately to show responsiveness', correct: false },
+        { label: 'First check overall occurrence rate before deciding scope', correct: true },
         { label: 'Hunt for more similar complaints to confirm the impression', correct: false },
-        { label: 'Prioritize the complaint above everything else', correct: false },
+        { label: 'Treat this complaint as the absolute top priority above all', correct: false },
       ],
       explanation:
-        "However vivid the case, without checking overall frequency you cannot judge fairly. Reacting to one complaint with a large change often introduces new problems elsewhere.",
+        "However vivid the case, without checking overall frequency you can't judge fairly. Option 3 is the trap of confirmation bias on top of availability bias — actively hunting for supporting cases doesn't reveal base rates.",
     },
     {
       type: 'explain',
@@ -375,13 +375,13 @@ const availabilityHeuristic: LessonData = {
       type: 'quiz',
       question: 'What is the smartest way to live with the availability heuristic?',
       options: [
-        { label: 'Eliminate all heuristics entirely', correct: false },
-        { label: 'Doubt it in your own decisions, but use vivid cases to move others', correct: true },
-        { label: 'Always rely only on statistics', correct: false },
-        { label: 'Prioritize whatever comes to mind first', correct: false },
+        { label: 'Eliminate all cognitive heuristics from your thinking entirely', correct: false },
+        { label: 'Doubt it in your own decisions, but use vivid cases to persuade others', correct: true },
+        { label: 'Always rely on statistics alone and ignore vivid anecdotes', correct: false },
+        { label: 'Trust whatever comes to mind first as the most important signal', correct: false },
       ],
       explanation:
-        "Heuristics are a brain energy-saver — you can't fully eliminate them. The mature stance is to suspect them when you decide, and deploy them when you communicate.",
+        "Heuristics are an unavoidable brain energy-saver. The mature stance is asymmetric: suspect them when you decide, deploy them when you communicate. Option 1 is unrealistic, option 3 ignores how human persuasion works, option 4 surrenders to the bias.",
     },
   ],
 }
@@ -401,13 +401,13 @@ const haloEffect: LessonData = {
       type: 'quiz',
       question: 'Which is the clearest example of the halo effect?',
       options: [
-        { label: 'Evaluating achievements and ability separately', correct: false },
-        { label: 'Judging someone\'s personality based on their looks', correct: true },
-        { label: 'Making decisions from data', correct: false },
-        { label: 'Combining multiple metrics for evaluation', correct: false },
+        { label: 'Evaluating each axis (achievements, ability) separately', correct: false },
+        { label: 'Judging someone\'s personality based solely on their looks', correct: true },
+        { label: 'Making decisions strictly from quantitative data', correct: false },
+        { label: 'Combining multiple metrics for a multi-axis evaluation', correct: false },
       ],
       explanation:
-        "One prominent trait (appearance) inflates evaluation in an unrelated domain (personality). Classic halo effect.",
+        "One prominent trait (appearance) inflates an unrelated dimension (personality). Classic halo effect. The other three options describe deliberate de-biasing approaches that explicitly counter halo.",
     },
     {
       type: 'explain',
@@ -417,15 +417,15 @@ const haloEffect: LessonData = {
     },
     {
       type: 'quiz',
-      question: 'Which hiring practice most reduces halo effect?',
+      question: 'Which hiring practice most effectively reduces halo effect?',
       options: [
-        { label: 'Free-form interviewer questions', correct: false },
-        { label: 'Score each axis separately, with interviewers scoring independently before discussion', correct: true },
-        { label: 'Prioritize first impressions', correct: false },
-        { label: 'Judge mainly on credentials', correct: false },
+        { label: 'Let each interviewer ask freely chosen questions in their own style', correct: false },
+        { label: 'Score each axis separately, with independent scores before discussion', correct: true },
+        { label: 'Weight first impressions heavily — they\'re usually accurate', correct: false },
+        { label: 'Judge mainly on academic and career credentials at this stage', correct: false },
       ],
       explanation:
-        'Separated rubric + independent scores best decouple traits, so a single impression cannot inflate the whole. Leadership, expertise, and culture fit each get judged on their own merits.',
+        'Separated rubric + independent scores decouple traits so a single impression can\'t inflate the whole. Options 1, 3, 4 actively amplify halo (free-form invites bias, first-impression worship is the bias itself, credentials are the classic halo trigger).',
     },
     {
       type: 'explain',
@@ -437,13 +437,13 @@ const haloEffect: LessonData = {
       type: 'quiz',
       question: 'Which is the clearest example of the horn effect?',
       options: [
-        { label: 'A beautiful deck makes the content seem credible', correct: false },
-        { label: 'Typos in a deck make the conclusion feel suspect', correct: true },
-        { label: 'Scoring axes separately', correct: false },
-        { label: 'Separating credentials from ability', correct: false },
+        { label: 'A beautifully designed deck makes the content seem credible', correct: false },
+        { label: 'Typos throughout a deck make the conclusion itself feel suspect', correct: true },
+        { label: 'Scoring multiple evaluation axes independently of each other', correct: false },
+        { label: 'Separating academic credentials from demonstrated ability', correct: false },
       ],
       explanation:
-        "One negative trait (typos) drags down an unrelated dimension (conclusion validity). Classic horn effect — same mechanism as halo, just inverted.",
+        "One negative trait (typos) drags down an unrelated dimension (conclusion validity). Classic horn effect — same mechanism as halo, inverted. Option 1 is the positive halo direction; options 3 and 4 are de-biasing techniques.",
     },
   ],
 }
@@ -463,13 +463,13 @@ const hindsightBias: LessonData = {
       type: 'quiz',
       question: 'Which best captures hindsight bias?',
       options: [
-        { label: 'It activates more in people good at forecasting', correct: false },
-        { label: 'Once you know the outcome, you feel it was predictable', correct: true },
-        { label: 'People with better memory are immune', correct: false },
-        { label: 'It only affects young people', correct: false },
+        { label: 'It activates more strongly in people skilled at forecasting', correct: false },
+        { label: 'Once you know the outcome, you feel it was always predictable', correct: true },
+        { label: 'People with better long-term memory are largely immune to it', correct: false },
+        { label: 'It tends to affect young people more strongly than older ones', correct: false },
       ],
       explanation:
-        'Hindsight bias unconsciously rewrites past judgments after the outcome is known. It hits virtually everyone regardless of age or memory quality.',
+        'Hindsight bias unconsciously rewrites past judgments after outcomes are known. Options 1, 3, 4 all suggest some group is immune — none are. The bias is near-universal regardless of skill, memory, or age.',
     },
     {
       type: 'explain',
@@ -481,13 +481,13 @@ const hindsightBias: LessonData = {
       type: 'quiz',
       question: 'Which retrospective question best avoids hindsight bias?',
       options: [
-        { label: 'Whose decision was wrong?', correct: false },
-        { label: 'Given only the information at the time, what other options were reasonable?', correct: true },
-        { label: 'In hindsight, what would have been the best plan?', correct: false },
-        { label: 'Who should take responsibility for the outcome?', correct: false },
+        { label: 'Whose specific decision was the one that went wrong?', correct: false },
+        { label: 'Given only the info available then, what other options were reasonable?', correct: true },
+        { label: 'Knowing what we know now, what would have been the optimal plan?', correct: false },
+        { label: 'Who in the organization should take responsibility for this outcome?', correct: false },
       ],
       explanation:
-        '"Only with the information at the time" constraint decouples hindsight bias. Judging decisions in their actual context lets you evaluate fairly.',
+        '"Only with the info at the time" decouples hindsight bias. Options 1 and 4 head straight into blame; option 3 explicitly invites hindsight reasoning ("knowing what we know now") — the very thing we want to avoid.',
     },
     {
       type: 'explain',
@@ -499,13 +499,13 @@ const hindsightBias: LessonData = {
       type: 'quiz',
       question: "What is the essential function of a pre-mortem?",
       options: [
-        { label: 'Identify who is responsible after a failure', correct: false },
-        { label: 'Before kickoff, imagine a future failure to surface risks', correct: true },
-        { label: 'Blame past misjudgments', correct: false },
-        { label: 'Collect data after results are in', correct: false },
+        { label: 'After failure, identify which individuals are responsible', correct: false },
+        { label: 'Before kickoff, imagine a future failure to surface hidden risks', correct: true },
+        { label: 'Audit past misjudgments and assign accountability for them', correct: false },
+        { label: 'Collect outcome data after the project finishes to learn', correct: false },
       ],
       explanation:
-        "Pre-mortem repurposes hindsight bias before kickoff — assume a future failure and let the mechanism surface risks you'd otherwise miss.",
+        "Pre-mortem repurposes hindsight bias BEFORE kickoff — assume a future failure and let the mechanism surface risks you'd otherwise miss. Options 1, 3, 4 all happen AFTER outcomes — pre-mortem is uniquely forward-looking.",
     },
   ],
 }
@@ -525,13 +525,13 @@ const dunningKruger: LessonData = {
       type: 'quiz',
       question: 'Which best describes the Dunning-Kruger effect?',
       options: [
-        { label: 'Beginners underestimate their own knowledge', correct: false },
-        { label: 'Beginners are overconfident; masters are cautious', correct: true },
-        { label: 'Veterans become overconfident', correct: false },
-        { label: 'Knowledge and confidence are perfectly proportional', correct: false },
+        { label: 'Beginners systematically underestimate their own knowledge level', correct: false },
+        { label: 'Beginners are overconfident while masters are humble and cautious', correct: true },
+        { label: 'Veterans become increasingly overconfident with more experience', correct: false },
+        { label: 'Knowledge and self-confidence rise perfectly in proportion to each other', correct: false },
       ],
       explanation:
-        "The paradox at the core: 'recognizing your own ignorance' itself requires some knowledge. So beginners feel confident and experts feel humble — a counter-intuitive reality.",
+        "The core paradox: 'recognizing your own ignorance' itself requires some knowledge. Options 1 and 3 reverse the effect; option 4 ignores the bias entirely with a tidy-but-wrong linear model.",
     },
     {
       type: 'explain',
@@ -543,13 +543,13 @@ const dunningKruger: LessonData = {
       type: 'quiz',
       question: 'At the "known unknowns" stage, what should you absolutely NOT do?',
       options: [
-        { label: 'Ask experts', correct: false },
-        { label: 'Stack small wins', correct: false },
-        { label: 'Give up, saying "I\'m not cut out for this"', correct: true },
-        { label: 'Surface your weak points', correct: false },
+        { label: 'Ask experts in the field for guidance and feedback', correct: false },
+        { label: 'Stack small wins gradually to rebuild confidence', correct: false },
+        { label: 'Give up entirely with "I\'m not cut out for this field"', correct: true },
+        { label: 'Surface your weak points and target them deliberately', correct: false },
       ],
       explanation:
-        "The 'known unknowns' stage is the 'valley of despair' where most learners give up. Quitting here keeps you stuck in Dunning-Kruger. Stacking small wins through this stage is the way out.",
+        "The 'known unknowns' stage is the 'valley of despair' where most learners give up — and quitting here freezes you in Dunning-Kruger. Pushing through with small wins (option 2), expert help (option 1), and targeted practice (option 4) is the exit route.",
     },
     {
       type: 'explain',
@@ -561,13 +561,13 @@ const dunningKruger: LessonData = {
       type: 'quiz',
       question: 'What is the most effective response to the Dunning-Kruger effect?',
       options: [
-        { label: 'Maintain a list of your unknowns and ask experts without hesitation', correct: true },
-        { label: 'Always speak with full confidence', correct: false },
-        { label: 'Never question your own knowledge', correct: false },
-        { label: 'Treat asking questions as embarrassing', correct: false },
+        { label: 'Maintain a list of what you don\'t know and ask experts without hesitation', correct: true },
+        { label: 'Always project full confidence in every domain to look competent', correct: false },
+        { label: 'Never question your existing knowledge — second-guessing wastes time', correct: false },
+        { label: 'Treat asking basic questions as embarrassing to your professional image', correct: false },
       ],
       explanation:
-        "Meta-cognition — explicitly knowing what you don't know — is the root cure. Surface your unknowns and consult experts: that is the fastest way out of overconfidence.",
+        "Meta-cognition — knowing what you don't know — is the root cure. Options 2, 3, 4 each lock you deeper into Dunning-Kruger: false confidence, blocked self-questioning, and silencing of clarifying questions all prevent the unknowns from surfacing.",
     },
   ],
 }
@@ -585,15 +585,15 @@ const outcomeVsProcessBias: LessonData = {
     },
     {
       type: 'quiz',
-      question: 'Which most accurately captures outcome bias?',
+      question: 'Which most accurately describes the truth about outcome bias?',
       options: [
-        { label: 'A bad outcome does not necessarily mean a bad decision', correct: true },
-        { label: 'A good outcome means a correct decision', correct: false },
-        { label: 'Outcomes and decision quality always align', correct: false },
-        { label: 'Decisions should always be judged by outcome', correct: false },
+        { label: 'A bad outcome does not necessarily mean a bad decision was made', correct: true },
+        { label: 'A good outcome inherently means the underlying decision was correct', correct: false },
+        { label: 'Outcomes and decision quality always align in the long run anyway', correct: false },
+        { label: 'Decisions should always be judged primarily by their outcomes', correct: false },
       ],
       explanation:
-        'Outcomes and decision quality are different. Good decisions can have unlucky outcomes; bad decisions can have lucky outcomes. To avoid outcome bias, evaluate them separately.',
+        'Outcomes and decision quality are independent dimensions — good decisions can yield bad luck, bad decisions can yield good luck. Options 2, 3, 4 are all versions of outcome-bias thinking ("outcome IS decision quality"), which is exactly the trap.',
     },
     {
       type: 'explain',
@@ -604,15 +604,15 @@ const outcomeVsProcessBias: LessonData = {
     },
     {
       type: 'quiz',
-      question: "Outcome is poor but the decision process was sound. What's the healthiest organizational response?",
+      question: "Outcome is poor but the decision process was sound. Healthiest organizational response?",
       options: [
-        { label: 'Assign blame because the outcome failed', correct: false },
-        { label: 'Evaluate the process and enable the same decision pattern to continue', correct: true },
-        { label: 'Replace the lead', correct: false },
-        { label: 'Ignore the process and judge only by result', correct: false },
+        { label: 'Assign blame to someone because the outcome ultimately failed', correct: false },
+        { label: 'Evaluate the process positively and allow the same decision pattern', correct: true },
+        { label: 'Replace the project lead to send a message about accountability', correct: false },
+        { label: 'Ignore the process entirely and judge purely by the bad result', correct: false },
       ],
       explanation:
-        'Punishing good call + bad outcome (unluck) suppresses risk-taking and lowers organizational decision quality over time. Recognize the process and let the same decision style continue — that is what builds long-term reproducibility.',
+        'Punishing "good call + bad outcome" (bad luck) suppresses risk-taking and erodes decision quality over time. Options 1, 3, 4 all punish unluck, which trains the organization to play it safe — exactly the wrong long-term incentive.',
     },
     {
       type: 'explain',
@@ -624,13 +624,13 @@ const outcomeVsProcessBias: LessonData = {
       type: 'quiz',
       question: 'Which evaluation design best corrects outcome bias?',
       options: [
-        { label: 'Outcome only', correct: false },
-        { label: 'Process only', correct: false },
-        { label: 'Evaluate both, plus a separate axis for situational difficulty', correct: true },
-        { label: 'Stop evaluating', correct: false },
+        { label: 'Outcome only — judge purely by KPI achievement and bottom-line', correct: false },
+        { label: 'Process only — measure effort and decision quality, ignore results', correct: false },
+        { label: 'Hybrid — evaluate both, plus a separate axis for situational difficulty', correct: true },
+        { label: 'Stop formal evaluation entirely and rely on managerial intuition', correct: false },
       ],
       explanation:
-        'Outcome-only is luck-driven; process-only loses intensity. Combine both, and add a separate axis for "situational difficulty" and "learning posture" — that yields reproducible team performance.',
+        'Outcome-only is luck-driven; process-only loses intensity; no-evaluation surrenders fairness entirely. The hybrid plus a difficulty/learning axis yields reproducible team performance by separating skill from luck.',
     },
   ],
 }
