@@ -42,6 +42,13 @@ const RECOMMENDED_LESSON_META: RecommendedLessonMeta[] = [
   { id: 41, level: '中級', image: '/images/v3/lesson-41.png' },
   { id: 53, level: '中級', image: '/images/v3/lesson-53.png' },
   { id: 23, level: '初級', image: '/images/v3/lesson-23.png' },
+  // 認知科学（cognitive-01 / cognitive-02）— ホームのおすすめにも露出させる
+  { id: 700, level: '中級', image: '/images/v3/course-cognitive-01.png' },
+  { id: 701, level: '中級', image: '/images/v3/course-cognitive-01.png' },
+  { id: 702, level: '中級', image: '/images/v3/course-cognitive-01.png' },
+  { id: 710, level: '中級', image: '/images/v3/course-cognitive-02.png' },
+  { id: 711, level: '中級', image: '/images/v3/course-cognitive-02.png' },
+  { id: 712, level: '中級', image: '/images/v3/course-cognitive-02.png' },
 ]
 
 const LEVEL_KEY: Record<string, string> = {

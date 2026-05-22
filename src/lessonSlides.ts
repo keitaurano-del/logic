@@ -170,6 +170,18 @@ const LESSON_IMAGES: Record<number, string> = {
   644: '/images/v3/lesson-644.png',  // 退職交渉
   645: '/images/v3/lesson-645.png',  // 引き止め対応
   646: '/images/v3/lesson-646.png',  // 入社前後
+  // 認知科学 — cognitive-01 / cognitive-02 のレッスン個別画像は未制作。
+  // 当面はコース画像を流用してフォールバック画像（hero-deduction）を避ける。
+  700: '/images/v3/course-cognitive-01.png',  // ワーキングメモリの上限 7±2
+  701: '/images/v3/course-cognitive-01.png',  // チャンキング
+  702: '/images/v3/course-cognitive-01.png',  // 認知負荷理論
+  703: '/images/v3/course-cognitive-01.png',  // 外部記憶
+  704: '/images/v3/course-cognitive-01.png',  // マルチタスクの幻想
+  710: '/images/v3/course-cognitive-02.png',  // 利用可能性ヒューリスティック
+  711: '/images/v3/course-cognitive-02.png',  // ハロー効果
+  712: '/images/v3/course-cognitive-02.png',  // 後知恵バイアス
+  713: '/images/v3/course-cognitive-02.png',  // ダニング・クルーガー効果
+  714: '/images/v3/course-cognitive-02.png',  // 結果 vs プロセス
 }
 
 function getHeroImage(category: string, lessonId?: number): string {
@@ -195,6 +207,7 @@ function getHeroImage(category: string, lessonId?: number): string {
   if (c.includes('なぜなぜ') || c.includes('why-why') || c.includes('why why')) return '/images/v3/course-whywhy-01.svg'
   if (c.includes('クライアント')) return '/images/v3/course-client-01.svg'
   if (c.includes('経営戦略') || c === 'strategy') return '/images/v3/course-strategy.svg'
+  if (c.includes('認知科学') || c.includes('cognitive')) return '/images/v3/course-cognitive-01.png'
   if (c.includes('思考法') || c.includes('thinking')) return '/images/v3/course-thinking.webp'
   if (c.includes('coffee') || c.includes('コーヒー')) return '/images/v3/home-daily-question.png'
   return '/images/v3/hero-deduction.png'
