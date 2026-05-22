@@ -21,7 +21,6 @@ type SupabaseLike = SupabaseClient | null
 const ACTIVITY_TYPES = new Set([
   'lesson',
   'fermi',
-  'roleplay',
   'journal',
   'flashcard',
   'ai_problem',

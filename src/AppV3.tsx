@@ -17,8 +17,6 @@ const FermiScreen = lazy(() => import('./screens/FermiScreen').then(m => ({ defa
 const DailyFermiScreen = lazy(() => import('./screens/DailyFermiScreen').then(m => ({ default: m.DailyFermiScreen })))
 const FermiRankingScreen = lazy(() => import('./screens/FermiRankingScreen').then(m => ({ default: m.FermiRankingScreen })))
 const FermiHistoryScreen = lazy(() => import('./screens/FermiHistoryScreen').then(m => ({ default: m.FermiHistoryScreen })))
-const RoleplaySelectScreen = lazy(() => import('./screens/RoleplaySelectScreen').then(m => ({ default: m.RoleplaySelectScreen })))
-const RoleplayChatScreen = lazy(() => import('./screens/RoleplayChatScreen').then(m => ({ default: m.RoleplayChatScreen })))
 const ReportProblemScreen = lazy(() => import('./screens/ReportProblemScreen').then(m => ({ default: m.ReportProblemScreen })))
 const OnboardingScreen = lazy(() => import('./screens/OnboardingScreen').then(m => ({ default: m.OnboardingScreen })))
 const AIProblemGenScreen = lazy(() => import('./screens/AIProblemGenScreen').then(m => ({ default: m.AIProblemGenScreen })))
@@ -78,7 +76,6 @@ import { tutorial } from './tutorial/tutorialStorage'
 import { t } from './i18n'
 import { useAssistantName } from './hooks/useAssistantName'
 import { addNotificationTapListener, loadStreakAlertPref, scheduleStreakRiskReminder } from './notifications'
-import { cleanupLegacyRoleplaySaves } from './savedItemsStore'
 
 const ONBOARDED_KEY = 'logic-onboarded'
 const INSTALL_ID_KEY = 'logic-install-id'
@@ -114,8 +111,6 @@ type Screen =
   | { type: 'daily-fermi' }
   | { type: 'fermi-ranking' }
   | { type: 'fermi-history' }
-  | { type: 'roleplay' }
-  | { type: 'roleplay-chat'; characterId: string }
   | { type: 'daily-problem' }
   | { type: 'ai-problem-gen' }
   | { type: 'ai-problem'; problem: AIProblemSet }
@@ -151,7 +146,6 @@ function getInitialScreen(user: User | null): Screen {
     if (preview === 'account') return { type: 'account-settings' }
     if (preview === 'notifications') return { type: 'notification-settings' }
     if (preview === 'appearance') return { type: 'appearance-settings' }
-    if (preview === 'roleplay-select') return { type: 'roleplay' }
     if (preview === 'journal') return { type: 'journal' }
   }
   // ログイン済みユーザーはオンボーディングをスキップ
@@ -192,8 +186,6 @@ function AppV3() {
   // useEffect に移すことで React Strict Mode の二重レンダリングでの意図しない複数回実行を防ぐ
   useEffect(() => {
     checkAndInitInstall()
-    // 2026-05-19 ロールプレイがキャラ軸に移行したため旧シチュエーション ID の保存項目をクリーンアップ
-    cleanupLegacyRoleplaySaves()
     // Play Billing 初期化（Android native のみ、Web では no-op）
     void initBilling()
   }, [])
@@ -490,7 +482,6 @@ function AppV3() {
           }}
           onOpenRank={() => navigate({ type: 'rank' })}
           onOpenStats={() => navigate({ type: 'profile' }, true)}
-          onOpenRoleplay={() => navigate({ type: 'roleplay' })}
           onOpenAIGen={() => navigate({ type: 'ai-problem-gen' })}
           onOpenRoadmap={() => { setTab('lessons'); navigate({ type: 'lessons' }, true) }}
           onNavigateToDailyFermi={() => navigate({ type: 'daily-fermi' })}
@@ -570,7 +561,6 @@ function AppV3() {
             onBack={handleBack}
             onOpenLesson={handleOpenLesson}
             onOpenCourse={(cat) => navigate({ type: 'roadmap', category: cat })}
-            onOpenRoleplay={(characterId) => navigate({ type: 'roleplay-chat', characterId })}
             onOpenLessonStep={(lessonId, stepIndex) => navigate({ type: 'lesson', lessonId, startStep: stepIndex })}
           onOpenAiProblem={(problemId) => {
             try {
@@ -645,35 +635,6 @@ function AppV3() {
           onExit={() => { setTab('home'); navigate({ type: 'home' }, true) }}
           onBack={handleBack}
         />
-      )}
-
-      {screen.type === 'roleplay' && (
-        isPaid() ? (
-          <RoleplaySelectScreen
-            onBack={() => navigate({ type: 'lessons' }, true)}
-            onStart={(characterId) => navigate({ type: 'roleplay-chat', characterId })}
-            onUpgrade={() => navigate({ type: 'pricing' })}
-          />
-        ) : (
-          <RoleplayPaywall
-            onBack={() => navigate({ type: 'lessons' }, true)}
-            onUpgrade={() => navigate({ type: 'pricing' })}
-          />
-        )
-      )}
-
-      {screen.type === 'roleplay-chat' && (
-        isPaid() ? (
-          <RoleplayChatScreen
-            characterId={screen.characterId}
-            onBack={() => navigate({ type: 'roleplay' })}
-          />
-        ) : (
-          <RoleplayPaywall
-            onBack={() => navigate({ type: 'lessons' }, true)}
-            onUpgrade={() => navigate({ type: 'pricing' })}
-          />
-        )
       )}
 
       {screen.type === 'profile' && (
@@ -1097,67 +1058,6 @@ function ReviewPaywall({ onBack, onUpgrade }: { onBack: () => void; onUpgrade: (
             }}
           >
             {t('reviewHub.viewPlansCta')}
-          </button>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function RoleplayPaywall({ onBack, onUpgrade }: { onBack: () => void; onUpgrade: () => void }) {
-  return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', display: 'flex', flexDirection: 'column' }}>
-      <Header title={t('roleplay.title')} onBack={onBack} />
-      <div style={{ flex: 1, padding: '32px 20px 120px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', gap: 20 }}>
-        <div style={{
-          background: 'var(--bg-card)',
-          borderRadius: 16,
-          padding: 24,
-          maxWidth: 380,
-          width: '100%',
-          textAlign: 'center',
-          boxShadow: 'var(--shadow-v3-card-inset)',
-          border: '1px solid rgba(255,255,255,.06)',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 14,
-        }}>
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            alignSelf: 'center',
-            width: 56, height: 56, borderRadius: '50%',
-            background: 'linear-gradient(135deg, var(--brand), var(--brand-light, #8B5CF6))',
-            fontSize: 28,
-            marginBottom: 4,
-          }}>
-            <span aria-hidden="true">💬</span>
-          </div>
-          <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-primary)' }}>
-            {t('roleplay.paywallTitle')}
-          </div>
-          <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.7 }}>
-            {t('roleplay.paywallDesc')}
-          </div>
-          <button
-            type="button"
-            onClick={onUpgrade}
-            style={{
-              marginTop: 8,
-              padding: '14px 24px',
-              background: 'var(--brand)',
-              color: 'var(--accent-fg, #fff)',
-              border: 'none',
-              borderRadius: 12,
-              font: 'inherit',
-              fontSize: 15,
-              fontWeight: 700,
-              cursor: 'pointer',
-              minHeight: 48,
-            }}
-          >
-            {t('roleplay.viewPlansCta')}
           </button>
         </div>
       </div>

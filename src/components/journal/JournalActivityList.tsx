@@ -1,6 +1,6 @@
 import { useMemo, type ComponentType, type SVGProps } from 'react'
 import { getActivitiesByDate, type ActivityType, type ActivityEntry } from '../../activityLog'
-import { BookOpenIcon, BarChartIcon, MessageSquareIcon, LightbulbIcon, SparklesIcon } from '../../icons'
+import { BookOpenIcon, BarChartIcon, LightbulbIcon, SparklesIcon } from '../../icons'
 import { t } from '../../i18n'
 
 interface JournalActivityListProps {
@@ -16,7 +16,6 @@ type IconComponent = ComponentType<SVGProps<SVGSVGElement>>
 const TYPE_ICON: Record<ActivityType, IconComponent> = {
   lesson: BookOpenIcon,
   fermi: BarChartIcon,
-  roleplay: MessageSquareIcon,
   'daily-problem': LightbulbIcon,
   'ai-problem': SparklesIcon,
 }
@@ -24,7 +23,6 @@ const TYPE_ICON: Record<ActivityType, IconComponent> = {
 const TYPE_LABEL_KEY: Record<ActivityType, string> = {
   lesson: 'journal.activityType.lesson',
   fermi: 'journal.activityType.fermi',
-  roleplay: 'journal.activityType.roleplay',
   'daily-problem': 'journal.activityType.dailyProblem',
   'ai-problem': 'journal.activityType.aiProblem',
 }

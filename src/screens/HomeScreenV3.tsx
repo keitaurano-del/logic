@@ -94,7 +94,6 @@ interface HomeScreenV3Props {
   onOpenCategory?: (cat: string) => void
   onOpenRoadmap?: () => void
   onOpenAIGen: () => void
-  onOpenRoleplay: () => void
   onOpenRank?: () => void
   onOpenStats?: () => void
   onNavigateToDailyFermi?: () => void
@@ -119,7 +118,7 @@ function readStoredFermiIndex(): number {
 }
 
 export function HomeScreenV3(props: HomeScreenV3Props) {
-  const { userName, onOpenLesson, onOpenAIGen, onOpenRoleplay, onNavigateToDailyFermi, onOpenPlacementTest, onOpenReviewHub, onOpenPricing: _onOpenPricing, onOpenCategory: _onOpenCategory, onOpenRank: _onOpenRank, onOpenStats: _onOpenStats, onOpenRoadmap: _onOpenRoadmap } = props
+  const { userName, onOpenLesson, onOpenAIGen, onNavigateToDailyFermi, onOpenPlacementTest, onOpenReviewHub, onOpenPricing: _onOpenPricing, onOpenCategory: _onOpenCategory, onOpenRank: _onOpenRank, onOpenStats: _onOpenStats, onOpenRoadmap: _onOpenRoadmap } = props
   const dailyCardRef = useRef<HTMLButtonElement>(null)
   const [showCoachmark, dismissCoachmark] = useShouldShowHomeCoachmark()
   const { width } = useWindowSize()
@@ -272,7 +271,6 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
 
         {/* AI practice cards (large, vertical) */}
         <AILargeCard image={`${IMG}/home-daily-question.png`} name={t('home.aiGenLargeName')} sub={t('home.aiGenLargeSub')} onClick={onOpenAIGen} />
-        <AILargeCard image={`${IMG}/home-roleplay.png`} name={t('home.roleplayLargeName')} sub={t('home.roleplayLargeSub')} onClick={onOpenRoleplay} />
       </div>
 
 

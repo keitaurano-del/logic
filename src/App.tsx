@@ -11,8 +11,6 @@ import Feedback from './Feedback'
 import AIProblemGen from './AIProblemGen'
 import Pricing from './Pricing'
 import DeviationScore from './DeviationScore'
-import Roleplay from './Roleplay'
-import RoleplayChat from './RoleplayChat'
 import CoffeeBreak from './CoffeeBreak'
 import ThemeSettings from './ThemeSettings'
 import PlacementTest from './PlacementTest'
@@ -165,8 +163,6 @@ type Screen =
   | { type: 'pricing' }
   | { type: 'deviation' }
   | { type: 'daily-problem' }
-  | { type: 'roleplay' }
-  | { type: 'roleplay-chat'; situationId: string }
   | { type: 'coffee-break' }
   | { type: 'theme' }
   | { type: 'ranking' }
@@ -325,21 +321,6 @@ function App() {
 
   if (screen.type === 'deviation') {
     return <DeviationScore onBack={goHome} />
-  }
-
-  if (screen.type === 'roleplay') {
-    return <Roleplay
-      onBack={goHome}
-      onStart={(situationId) => navigateTo({ type: 'roleplay-chat', situationId })}
-      onUpgrade={() => navigateTo({ type: 'pricing' })}
-    />
-  }
-
-  if (screen.type === 'roleplay-chat') {
-    return <RoleplayChat
-      situationId={screen.situationId}
-      onBack={() => navigateBack({ type: 'roleplay' })}
-    />
   }
 
   if (screen.type === 'coffee-break') {
@@ -596,16 +577,6 @@ function App() {
             <div className="ai-gen-text">
               <strong>{t('home.aiGenTitle')}</strong>
               <span>{t('home.aiGenDesc')}</span>
-            </div>
-            <span className="ai-gen-arrow">›</span>
-          </div>
-
-          {/* Roleplay entry */}
-          <div className="ai-gen-card" onClick={() => navigateTo({ type: 'roleplay' })}>
-            <div className="ai-gen-icon"></div>
-            <div className="ai-gen-text">
-              <strong>{t('home.roleplayTitle')}</strong>
-              <span>{t('home.roleplayDesc')} <span className="ai-gen-badge">{t('home.badgeNew')}</span></span>
             </div>
             <span className="ai-gen-arrow">›</span>
           </div>

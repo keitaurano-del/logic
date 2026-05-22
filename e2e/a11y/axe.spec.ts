@@ -39,7 +39,6 @@ const PREVIEW_SCREENS = [
   { path: '/?preview=settings', name: 'settings' },
   { path: '/?preview=account', name: 'account-settings' },
   { path: '/?preview=notifications', name: 'notification-settings' },
-  { path: '/?preview=roleplay-select', name: 'roleplay-select' },
 ]
 
 for (const { path, name } of PREVIEW_SCREENS) {

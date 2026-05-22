@@ -1,24 +1,14 @@
 type Props = {
   id: number
-  action: string
+  /** legacy: 互換のため受け取るが現状未使用 */
+  action?: string
   size?: number
 }
 
-export default function LessonIcon({ id, action, size = 24 }: Props) {
+export default function LessonIcon({ id, action: _action, size = 24 }: Props) {
   const s = size
   const sw = 1.8
   const props = { width: s, height: s, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: sw, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const }
-
-  // ロールプレイ (id:3): 会話バブル
-  if (action === 'roleplay') {
-    return (
-      <svg {...props}>
-        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-        <path d="M8 9h8" />
-        <path d="M8 13h5" />
-      </svg>
-    )
-  }
 
   // MECE (id:20): グリッド・分類
   if (id === 20) {

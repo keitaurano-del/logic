@@ -14,7 +14,6 @@ interface Props {
   onBack: () => void
   onOpenLesson: (lessonId: number) => void
   onOpenCourse: (categoryRouteKey: string) => void
-  onOpenRoleplay: (situationId: string) => void
   onOpenLessonStep: (lessonId: number, stepIndex: number) => void
   onOpenAiProblem: (problemId: string) => void
   onOpenFermi: (fermiIndex: string) => void
@@ -22,13 +21,12 @@ interface Props {
 
 type Filter = 'all' | SavedItemType
 
-const FILTERS: Filter[] = ['all', 'lesson', 'lesson-step', 'course', 'ai-problem', 'fermi', 'roleplay']
+const FILTERS: Filter[] = ['all', 'lesson', 'lesson-step', 'course', 'ai-problem', 'fermi']
 
 export function SavedItemsScreen({
   onBack,
   onOpenLesson,
   onOpenCourse,
-  onOpenRoleplay,
   onOpenLessonStep,
   onOpenAiProblem,
   onOpenFermi,
@@ -54,8 +52,6 @@ export function SavedItemsScreen({
       onOpenAiProblem(item.refId)
     } else if (item.type === 'fermi') {
       onOpenFermi(item.refId)
-    } else {
-      onOpenRoleplay(item.refId)
     }
   }
 
@@ -72,7 +68,6 @@ export function SavedItemsScreen({
     course: all.filter((i) => i.type === 'course').length,
     'ai-problem': all.filter((i) => i.type === 'ai-problem').length,
     fermi: all.filter((i) => i.type === 'fermi').length,
-    roleplay: all.filter((i) => i.type === 'roleplay').length,
   }
 
   const filterLabel = (f: Filter): string => {
@@ -84,7 +79,6 @@ export function SavedItemsScreen({
       case 'course': return t('savedItems.filterCourses', { n })
       case 'ai-problem': return t('savedItems.filterAiProblem', { n })
       case 'fermi': return t('savedItems.filterFermi', { n })
-      case 'roleplay': return t('savedItems.filterRoleplay', { n })
     }
   }
 
@@ -96,7 +90,6 @@ export function SavedItemsScreen({
       case 'course': return t('savedItems.emptyCourses')
       case 'ai-problem': return t('savedItems.emptyAiProblem')
       case 'fermi': return t('savedItems.emptyFermi')
-      case 'roleplay': return t('savedItems.emptyRoleplay')
     }
   }
 
@@ -178,7 +171,6 @@ function SavedRow({ item, onOpen, onUnsave }: { item: SavedItem; onOpen: () => v
     switch (item.type) {
       case 'lesson': return t('savedItems.typeLesson')
       case 'course': return t('savedItems.typeCourse')
-      case 'roleplay': return t('savedItems.typeRoleplay')
       case 'lesson-step': return t('savedItems.typeLessonStep')
       case 'ai-problem': return t('savedItems.typeAiProblem')
       case 'fermi': return t('savedItems.typeFermi')

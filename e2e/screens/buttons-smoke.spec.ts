@@ -174,13 +174,6 @@ test.describe('全ボタンスモーク — preview 単独画面', () => {
     )
   })
 
-  test('?preview=roleplay-select の全ボタンをクリックしてエラー無し', async ({ page }) => {
-    await clickEveryButton(
-      page,
-      async () => { await boot(page, { path: '/?preview=roleplay-select' }) },
-      'roleplay-select',
-    )
-  })
 })
 
 test.describe('Onboarding 画面の全ボタンスモーク', () => {

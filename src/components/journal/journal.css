@@ -1954,7 +1954,6 @@
 
 .journal-activity-item__icon--lesson { background: color-mix(in srgb, var(--brand) 14%, transparent); color: var(--brand); }
 .journal-activity-item__icon--fermi { background: var(--cat-boki2-soft); color: var(--cat-boki2); }
-.journal-activity-item__icon--roleplay { background: color-mix(in srgb, var(--streak-flame) 14%, transparent); color: var(--streak-flame); }
 .journal-activity-item__icon--daily-problem { background: var(--success-soft); color: var(--success); }
 .journal-activity-item__icon--ai-problem { background: var(--cat-lateral-soft); color: var(--cat-lateral); }
 

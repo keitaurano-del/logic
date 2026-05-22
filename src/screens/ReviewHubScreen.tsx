@@ -105,7 +105,6 @@ export function ReviewHubScreen({ onBack, onOpenFlashcards, onOpenWrongAnswers, 
                   total: String(savedStats.total),
                   lesson: String(savedStats.byType.lesson),
                   course: String(savedStats.byType.course),
-                  roleplay: String(savedStats.byType.roleplay),
                 })
           }
         >

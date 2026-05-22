@@ -26,7 +26,6 @@ import { API_BASE } from '../screens/apiBase'
 export type ActivityType =
   | 'lesson'
   | 'fermi'
-  | 'roleplay'
   | 'journal'
   | 'flashcard'
   | 'ai_problem'

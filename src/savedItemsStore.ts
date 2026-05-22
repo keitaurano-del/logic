@@ -1,7 +1,7 @@
 /**
  * 保存（ブックマーク）レイヤー
  *
- * レッスン・コース・ロールプレイ・レッスンステップ（画面ごと）・
+ * レッスン・コース・レッスンステップ（画面ごと）・
  * AI 生成問題・フェルミ問題を横断して保存し、後から復習画面で
  * 一覧できるようにする。誤答ストアと同じく localStorage で完結。
  */
@@ -10,7 +10,6 @@ const STORAGE_KEY = 'logic-saved-items'
 export type SavedItemType =
   | 'lesson'
   | 'course'
-  | 'roleplay'
   | 'lesson-step'
   | 'ai-problem'
   | 'fermi'
@@ -19,7 +18,7 @@ export type SavedItem = {
   /** type-refId の複合キーをそのまま使ってもいいが、内部 ID も別途持つ */
   id: string
   type: SavedItemType
-  /** lessonId は number、course / roleplay は文字列 ID。lesson-step は `${lessonId}:${stepIndex}` */
+  /** lessonId は number、course は文字列 ID。lesson-step は `${lessonId}:${stepIndex}` */
   refId: string
   title: string
   subtitle?: string
@@ -36,10 +35,21 @@ function makeId(type: SavedItemType, refId: string): string {
   return `${type}:${refId}`
 }
 
+/**
+ * localStorage に残った旧 roleplay 項目（廃止済み機能）を読み込み時にフィルタする。
+ * 2026-05-22 ロールプレイ機能廃止に伴う互換処理。
+ */
+function isLegacyType(type: string): boolean {
+  return type === 'roleplay'
+}
+
 export function loadSavedItems(): SavedItem[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    return raw ? JSON.parse(raw) : []
+    if (!raw) return []
+    const parsed = JSON.parse(raw) as SavedItem[]
+    // 旧 roleplay 項目を取り除く（廃止済み）
+    return parsed.filter((i) => !isLegacyType(i.type))
   } catch { return [] }
 }
 
@@ -114,26 +124,10 @@ export function getSavedItemStats(): SavedItemStats {
   const byType: Record<SavedItemType, number> = {
     lesson: 0,
     course: 0,
-    roleplay: 0,
     'lesson-step': 0,
     'ai-problem': 0,
     fermi: 0,
   }
   for (const it of items) byType[it.type] += 1
   return { total: items.length, byType }
-}
-
-/**
- * ロールプレイがシチュエーション軸 → キャラ軸（哲学者3体）に置き換わったため、
- * 旧シチュエーション ID で保存されている roleplay 項目を起動時に一掃する。
- * 2026-05-19 マイグレーション。
- */
-const VALID_ROLEPLAY_CHARACTER_IDS = new Set(['socrates', 'descartes', 'nietzsche'])
-
-export function cleanupLegacyRoleplaySaves(): void {
-  const items = loadSavedItems()
-  const cleaned = items.filter((it) => it.type !== 'roleplay' || VALID_ROLEPLAY_CHARACTER_IDS.has(it.refId))
-  if (cleaned.length !== items.length) {
-    persist(cleaned)
-  }
 }

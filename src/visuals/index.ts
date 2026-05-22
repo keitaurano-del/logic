@@ -54,6 +54,12 @@ import { AbsoluteVsRelativeVisual } from './AbsoluteVsRelativeVisual'
 import { TrolleyProblemVisual } from './TrolleyProblemVisual'
 import { FallacyGridVisual } from './FallacyGridVisual'
 import { CorrelationCausationVisual } from './CorrelationCausationVisual'
+// Documentation course (lesson 721-726): 専用 Visual 5 種
+import { GoodBadSlideVisual } from './GoodBadSlideVisual'
+import { LayoutVisual } from './LayoutVisual'
+import { TypographyVisual } from './TypographyVisual'
+import { ColorPaletteVisual } from './ColorPaletteVisual'
+import { ChartTypeGuideVisual } from './ChartTypeGuideVisual'
 
 /**
  * visualId → Visual component の registry
@@ -115,6 +121,12 @@ export const visualRegistry: Record<string, ComponentType> = {
   TrolleyProblemDiagram: TrolleyProblemVisual,
   FallacyGridDiagram: FallacyGridVisual,
   CorrelationCausationDiagram: CorrelationCausationVisual,
+  // Documentation course
+  GoodBadSlideDiagram: GoodBadSlideVisual,
+  LayoutDiagram: LayoutVisual,
+  TypographyDiagram: TypographyVisual,
+  ColorPaletteDiagram: ColorPaletteVisual,
+  ChartTypeGuideDiagram: ChartTypeGuideVisual,
 }
 
 export function getVisualComponent(id: string): ComponentType | null {

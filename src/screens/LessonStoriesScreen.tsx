@@ -347,24 +347,25 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
       )}
 
       {/* SCRUM-214: デスクトップ向け明示的な次へ/前へボタン（非クイズ・非最初のスライド） */}
+      {/* 2026-05-22: タップしやすさ向上のためサイズアップ（HIG 推奨 56px+） */}
       {!isQuiz && (
         <>
           {index > 0 && (
             <button
               onClick={() => { if (!isGuarded()) goPrev() }}
-              style={{ position: 'absolute', left: 12, bottom: 'calc(env(safe-area-inset-bottom, 0px) + 16px)', zIndex: 8, background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.18)', borderRadius: '50%', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', WebkitTapHighlightColor: 'transparent' }}
+              style={{ position: 'absolute', left: 16, bottom: 'calc(env(safe-area-inset-bottom, 0px) + 20px)', zIndex: 8, background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.18)', borderRadius: '50%', width: 56, height: 56, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', WebkitTapHighlightColor: 'transparent' }}
               aria-label={t('stories.prevAria')}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="15 18 9 12 15 6" /></svg>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="15 18 9 12 15 6" /></svg>
             </button>
           )}
           <button
             onClick={() => { if (!isGuarded()) goNext() }}
-            style={{ position: 'absolute', right: 12, bottom: 'calc(env(safe-area-inset-bottom, 0px) + 16px)', zIndex: 8, background: 'var(--brand)', border: 'none', borderRadius: 99, height: 44, padding: '0 20px', display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', boxShadow: `0 4px 16px color-mix(in srgb, var(--brand) 38%, transparent)`, WebkitTapHighlightColor: 'transparent', fontSize: 14, fontWeight: 700, color: '#FFFFFF' }}
+            style={{ position: 'absolute', right: 16, bottom: 'calc(env(safe-area-inset-bottom, 0px) + 20px)', zIndex: 8, background: 'var(--brand)', border: 'none', borderRadius: 99, minHeight: 56, minWidth: 140, padding: '16px 28px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, cursor: 'pointer', boxShadow: `0 6px 20px color-mix(in srgb, var(--brand) 42%, transparent)`, WebkitTapHighlightColor: 'transparent', fontSize: 17, fontWeight: 700, color: '#FFFFFF', letterSpacing: '0.01em' }}
             aria-label={t('stories.nextAria')}
           >
             {t('stories.next')}
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
           </button>
         </>
       )}

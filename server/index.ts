@@ -7,7 +7,6 @@ import Anthropic from '@anthropic-ai/sdk'
 import rateLimit from 'express-rate-limit'
 import { createClient } from '@supabase/supabase-js'
 import nodemailer from 'nodemailer'
-import { createRoleplayRouter } from './routes/roleplay.js'
 import { createFermiRouter } from './routes/fermi.js'
 import { createBillingRouter } from './routes/billing.js'
 import { createProblemsRouter } from './routes/problems.js'
@@ -138,13 +137,6 @@ const globalApiLimiter = makeLimiter({
 })
 
 // 重い AI エンドポイント用
-const roleplayTurnLimiter = makeLimiter({
-  windowMs: 60 * 1000,
-  max: 20,
-  msgJa: 'ロールプレイのリクエストが多すぎます。1 分待ってからお試しください。',
-  msgEn: 'Too many roleplay requests. Please wait a minute and try again.',
-})
-
 const fermiLimiter = makeLimiter({
   windowMs: 60 * 1000,
   max: 15,
@@ -205,11 +197,6 @@ app.use((req, res, next) => {
 
 
 app.get('/api/health', (_req, res) => { res.json({ ok: true }) })
-
-// ロールプレイ
-app.use('/api/roleplay', createRoleplayRouter(client, supabase, roleplayTurnLimiter))
-
-
 
 // Problems (flashcards/journal/generate-problems/user-problems/daily-problem)
 app.use(createProblemsRouter(client, supabase, flashcardsLimiter, generateProblemsLimiter, dailyProblemLimiter))

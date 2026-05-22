@@ -11,7 +11,7 @@
 const STORAGE_KEY = 'logic-activity-log'
 const MAX_ENTRIES = 1000
 
-export type ActivityType = 'lesson' | 'fermi' | 'roleplay' | 'daily-problem' | 'ai-problem'
+export type ActivityType = 'lesson' | 'fermi' | 'daily-problem' | 'ai-problem'
 
 export interface ActivityEntry {
   ts: number              // unix ms

@@ -86,7 +86,7 @@ const oneSlideOneMessage: LessonData = {
       title: 'A slide carries one message only',
       content:
         "The cardinal rule of slide design: **one slide, one message**.\n\nStuffing two or more claims into one slide overruns working memory capacity, and neither claim sticks.\n\nThe test:\nCan you write the slide title (= the slide's key message) as one complete sentence?\n\n• ✓ 'New business A's market grows 1.5× over 3 years'\n• ✗ 'Market trends and competitive analysis' (no claim, just a topic list)\n\nIf your title ends in a noun like 'trends,' 'analysis,' or 'overview,' it is a warning sign. That is not a slide that says something; it is a 'place to put information.'\n\nHow to write a title-as-message:\n• Include a subject and a verb (X is Y)\n• Make a definitive claim (avoid hedging)\n• Include numbers or proper nouns (be specific)\n\nRewriting just the title dramatically improves a slide's communication power.",
-      visual: 'ClaimReasonAssumptionDiagram',
+      visual: 'GoodBadSlideDiagram',
     },
     {
       type: 'quiz',
@@ -220,7 +220,7 @@ const layoutAndSpace: LessonData = {
       title: 'Whitespace is the strongest design tool',
       content:
         'Beginners want to fill space; professionals protect it.\n\nWhat whitespace does:\n\n[1] Highlights important elements\nAn element surrounded by emptiness commands attention automatically.\n\n[2] Signals grouping\nElements separated by whitespace are perceived as different groups.\n→ Keep related items close, separate unrelated ones (Law of Proximity).\n\n[3] Lets the reader breathe\nDense slides are mentally tiring. Whitespace creates thinking space.\n\n[4] Conveys class\nLuxury brand ads use vast whitespace. Less information signals confidence.\n\nMinimum standards:\n• Slide margin: 5% (e.g. 50px on a 1000px stage)\n• Inter-element gap: at least 25% of element height\n• Text leading (line-height): 1.5–1.7× font size\n\nFight the urge to fill. Whitespace is not "unfinished" — it is the mark of completion.',
-      visual: 'ThreePillarsDiagram',
+      visual: 'LayoutDiagram',
     },
     {
       type: 'quiz',
@@ -239,7 +239,7 @@ const layoutAndSpace: LessonData = {
       title: 'Z-pattern vs F-pattern',
       content:
         'The eye does not move randomly. Two common reading patterns are worth designing around.\n\n[Z-pattern] (slide-oriented)\nTop-left → top-right → bottom-left → bottom-right.\n• Good for overview-style layouts\n• Standard for presentation slides\n• Place key info top-left; conclusion/action bottom-right\n\n[F-pattern] (text-oriented)\nThe eye reads the top horizontally, then biases leftward going down.\n• Good for text-heavy documents and web pages\n• Each paragraph is judged "skim or read" from the top\n• Place important info at the top and along the left\n\nDesign guideline:\n• Slide decks → think Z (title top-left, conclusion bottom-right)\n• Reports / white papers → think F (left-aligned headings)\n• Do not force a reader to read in two directions on the same slide\n\nLayouts that fight the natural eye path silently waste communication efficiency.',
-      visual: 'Two2MatrixDiagram',
+      visual: 'LayoutDiagram',
     },
     {
       type: 'quiz',
@@ -287,7 +287,7 @@ const typography: LessonData = {
       title: 'Principles for choosing a font',
       content:
         'Font selection is not about "expressing personality"; the priority is "not sacrificing legibility."\n\nFonts to use in business documents:\n\n[Latin]\n• Helvetica / Arial / Segoe UI / Inter / Noto Sans\n• Body: Regular / Medium\n• Headings: Bold / Black\n\n[Japanese / CJK]\n• Yu Gothic / Meiryo / Noto Sans JP / Noto Sans CJK\n• Match weight pairings between Latin and CJK versions\n\nFonts to avoid:\n• Decorative fonts (Comic Sans, script) → undermine credibility\n• Pixel/bitmap fonts → break on mobile\n• Hairline weights → invisible when projected\n\nThe iron rule of font count:\n**At most two families per document.** A heading face and a body face.\n• Safest: use weight variants from a single family\n• Express hierarchy with "jump ratio" (size gap between headings and body)\n\nThree or more font families distract from the content and reduce communication efficiency.',
-      visual: 'TriadDiagram',
+      visual: 'TypographyDiagram',
     },
     {
       type: 'quiz',
@@ -306,7 +306,7 @@ const typography: LessonData = {
       title: 'Sizes and jump ratio',
       content:
         'Font size is the visual representation of information hierarchy.\n\nRecommended sizes (16:9 slide, 1080p):\n• Title: 40–48 pt\n• Major heading: 28–32 pt\n• Body: 18–24 pt\n• Footnote: 14–16 pt\n\nLower bounds for legibility:\n• Projection: ≥ 18 pt (people in the back row should still read it)\n• Printed / PDF reading: ≥ 10 pt\n• Mobile reading: ≥ 14 pt\n\n[Jump ratio]\nJump ratio = heading size ÷ body size.\n\n• Low jump (~1.2×): refined, calm, sophisticated\n  → Reports, financial docs, consulting decks\n\n• High jump (≥ 2×): bold, easy to read, casual\n  → Presentations, ads, web landing pages\n\nDesign jump ratio deliberately to match the document\'s personality.\n\nWhat NOT to do:\n• Everything at 18 pt (jump ratio 1) → no visible hierarchy\n• Everything at 36 pt (jump ratio 1) → everything is shouting\n• Title at 20 pt next to body at 18 pt → too small a gap to register as hierarchy',
-      visual: 'PyramidDiagram',
+      visual: 'TypographyDiagram',
     },
     {
       type: 'quiz',
@@ -354,7 +354,7 @@ const colorPalette: LessonData = {
       title: 'Base, Main, Accent — 70:25:5',
       content:
         "The golden ratio for color is **70:25:5**.\n\n[Base 70%]\n• Used for backgrounds and large surfaces\n• Usually white (#FFFFFF) or very light gray\n• Its job is to NOT compete\n\n[Main 25%]\n• Sets the document's overall impression\n• Usually a brand color, navy, or dark blue\n• Used for headings, key sections, and primary chart fills\n\n[Accent 5%]\n• Highlights the single most important point in red, orange, or green\n• Functions as a visual finger pointing to 'look here'\n• Loses its power if it exceeds 5%\n\nFollow this and your color use will look professional automatically.\n\nWhat NOT to do:\n• 7-color rainbow gradient → categorization becomes the goal itself\n• Neon-heavy palettes → painful and untrustworthy\n• Different color schemes per slide → zero consistency\n\nGreater communication power comes not from more colors, but from giving each color a fixed role.",
-      visual: 'ThreePillarsDiagram',
+      visual: 'ColorPaletteDiagram',
     },
     {
       type: 'quiz',
@@ -373,7 +373,7 @@ const colorPalette: LessonData = {
       title: 'How to handle brand colors',
       content:
         'If a brand color exists, use it as the main color (25%).\n\n[Rules]\n\n① Always look up the official color code\n• "Roughly this blue" is not good enough\n• Use the exact HEX (e.g. #1A4FA0)\n• Follow the brand guideline\n\n② Prepare 3–5 tonal variations\n• Darker brand color (header bars, strong emphasis)\n• Standard brand color (headings, primary)\n• Lighter brand (subtle emphasis, accents)\n• Complementary color for contrast highlights\n\n③ You do not have to use every color\n• Even if the brand has 5 colors, use only 1–2 on a single slide\n• Trying to "cover the full palette" breaks color harmony\n\n[Accent and discipline]\nFor the 5% accent:\n• "Dramatic number change" → red on a single number\n• "Conclusion line" → one bold red sentence\n• "Next action" → one note bottom-right\n\nIf you place the accent in two spots, neither captures attention. **One accent per slide** is the rule.',
-      visual: 'PyramidDiagram',
+      visual: 'ColorPaletteDiagram',
     },
     {
       type: 'quiz',
@@ -421,7 +421,7 @@ const chartDesign: LessonData = {
       title: 'How to pick a chart',
       content:
         'A chart visualizes numbers so they become intuitive. Pick the wrong type and the data starts to lie.\n\n[By purpose]\n\n① Time-series change → Line chart\n• Sales trend, stock price, user-count history\n• Time on x-axis, value on y-axis\n\n② Category comparison → Bar chart\n• Sales by department, units by product\n• Vertical bars for few categories; horizontal bars for many or long labels\n\n③ Composition → Pie chart or 100% stacked bar\n• Revenue mix by segment\n• Use pies for ≤ 5 categories; stacked bar for 6+\n\n④ Correlation → Scatter plot\n• "Ad spend vs sales," "temperature vs ice cream sales"\n\n⑤ Multi-dimensional comparison → Radar chart\n• Comparing 5 or fewer evaluation metrics\n• Too many categories and the shape becomes unreadable\n\nClassic mismatches:\n• Composition shown as a line (mistaken for trend)\n• Time series shown as a pie (change is invisible)\n• Category comparison as a 3D pie (numbers get distorted)',
-      visual: 'LogicTreeDiagram',
+      visual: 'ChartTypeGuideDiagram',
     },
     {
       type: 'quiz',

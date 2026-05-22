@@ -556,21 +556,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ============================================================
-   SCRUM: ロールプレイ accent-dark を白系に強制上書き
-   index.css のライトモード変数（#2E4BA8）が Roleplay.css に
-   漏れないよう、v3 背景上では accent-dark 相当を明色に
-   ============================================================ */
-.rp-chat-context strong,
-.rp-card-framework,
-.rp-quota,
-.rp-turn-indicator,
-.rp-score-card h4,
-.rp-summary-card h4,
-.rp-chat-empty-hint {
-  color: #9BB3FA !important;
-}
-
-/* ============================================================
    SCRUM-233: 画面遷移アニメーション
    ============================================================ */
 @keyframes slideInRight {

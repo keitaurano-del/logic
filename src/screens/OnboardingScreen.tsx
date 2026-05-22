@@ -40,7 +40,6 @@ type OBFeature = { label: string; free: string | boolean; paid: string | boolean
 function getOBFeatures(): OBFeature[] {
   return [
     { label: t('pricing.featLessons'),    free: t('pricing.featAllLessons'), paid: t('pricing.featAllLessons') },
-    { label: t('pricing.featRoleplay'),   free: false,                        paid: true },
     { label: t('pricing.featReview'),     free: false,                        paid: true },
     { label: t('pricing.featFermi'),      free: t('pricing.featDaily1'),     paid: t('pricing.featDaily10') },
     { label: t('pricing.featAiGen'),      free: false,                        paid: true },

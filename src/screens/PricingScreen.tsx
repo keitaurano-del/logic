@@ -29,7 +29,6 @@ function getFeatures(): FeatureRow[] {
     { label: t('pricing.featFermi'), free: t('pricing.featDaily1'), paid: t('pricing.featDaily10') },
     { label: t('pricing.featReview'), free: false, paid: true },
     { label: t('pricing.featAiGen'), free: false, paid: true },
-    { label: t('pricing.featRoleplay'), free: false, paid: true },
     { label: t('pricing.featJournal'), free: false, paid: true },
   ]
 }
