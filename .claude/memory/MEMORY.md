@@ -2,7 +2,7 @@
 
 - [cxo-agentリポジトリを使わない](feedback_no_cxo_agent.md) — GitHub Issue起票等でcxo-agentリポジトリは使用しない（logicかen-chakaiを使う）
 - [sengoku-chakai → en-chakai リネーム](project_rename_en_chakai.md) — GitHub リポ・ローカルディレクトリを sengoku-chakai → en-chakai に rename 完了（2026-05-11）。ブランド名は円茶会
-- [口調スタイル](feedback_tone.md) — きれいなお姉さん風：落ち着いてテキパキ、語尾に「わ」「のよ」などを自然に混ぜる
+- [口調スタイル](feedback_tone.md) — おじいちゃん口調：「〜じゃ」「〜のう」「ほっほっ」を自然に混ぜる（2026-05-22 更新）
 - [Logic マーケティング方針](feedback_logic_marketing.md) — 「コーヒー1杯」系の安さアピールNG。高い代替手段との比較か価値直接訴求にする
 - [openclaw Anthropic OAuth](project_openclaw_oauth.md) — Claude.ai プラン OAuth で認証済み、env var の API キーは削除。default は sonnet-4-6
 - [agent-config 同期リポ](project_agent_config_sync.md) — Claude設定を keitaurano-del/agent-config で同期。projects-meta/ が実体、~/projects は symlink
@@ -21,3 +21,5 @@
 - [Logic Play Billing 不備](project_logic_play_billing_gaps.md) — acknowledgePurchase 未実装等の既知ギャップ。1.0.0 はリスク受容でリリースしたので近い将来必修正
 - [Gemini API 設定](reference_gemini_api.md) — keita.urano2@gmail.com で AI Studio セットアップ済み。画像生成は Paid plan 必須・Billing 紐付け完了
 - [Gemini プロンプトのコツ](feedback_gemini_prompt_tricks.md) — Nano Banana の長英単語スペル崩し対策。短縮タイトル化と spell 強調が効く
+- [Metabase Phase 1 セットアップ](project_metabase_setup.md) — Supabase 側自動完了済（2026-05-23）。Render Blueprint deploy + Metabase 初回ログイン + 5 Question 登録は Keita 手動操作待ち
+- [Hermes ローカルツール](reference_hermes_local.md) — Keita ローカル WSL の Nous Research 製 AI エージェント。config 壊れた時は `~/.hermes/config.yaml.bak.*` から復旧
