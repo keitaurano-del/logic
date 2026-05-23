@@ -40,17 +40,18 @@ const RECOMMENDED_LESSON_META: RecommendedLessonMeta[] = [
   { id: 77, level: '上級', image: '/images/v3/lesson-77.png' },
   { id: 78, level: '上級', image: '/images/v3/lesson-78.png' },
   { id: 89, level: '中級', image: '/images/v3/lesson-89.png' },
-  { id: 200, level: '中級', image: '/images/v3/fermi-card.png' },
+  { id: 200, level: '中級', image: '/images/v3/lesson-200.png' },
   { id: 41, level: '中級', image: '/images/v3/lesson-41.png' },
   { id: 53, level: '中級', image: '/images/v3/lesson-53.png' },
   { id: 23, level: '初級', image: '/images/v3/lesson-23.png' },
   // 認知科学（cognitive-01 / cognitive-02）— ホームのおすすめにも露出させる
-  { id: 700, level: '中級', image: '/images/v3/course-cognitive-01.png' },
-  { id: 701, level: '中級', image: '/images/v3/course-cognitive-01.png' },
-  { id: 702, level: '中級', image: '/images/v3/course-cognitive-01.png' },
-  { id: 710, level: '中級', image: '/images/v3/course-cognitive-02.png' },
-  { id: 711, level: '中級', image: '/images/v3/course-cognitive-02.png' },
-  { id: 712, level: '中級', image: '/images/v3/course-cognitive-02.png' },
+  // Hero Recommend は 1:1 表示なので、1024×1024 の lesson PNG を使う（course-*.png は 16:9）
+  { id: 700, level: '中級', image: '/images/v3/lesson-700.png' },
+  { id: 701, level: '中級', image: '/images/v3/lesson-701.png' },
+  { id: 702, level: '中級', image: '/images/v3/lesson-702.png' },
+  { id: 710, level: '中級', image: '/images/v3/lesson-710.png' },
+  { id: 711, level: '中級', image: '/images/v3/lesson-711.png' },
+  { id: 712, level: '中級', image: '/images/v3/lesson-712.png' },
 ]
 
 const LEVEL_KEY: Record<string, string> = {
@@ -241,8 +242,10 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
           aria-label={`${recommendedLesson.category} ${recommendedLesson.level}: ${recommendedLesson.title}`}
           style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', cursor: 'pointer', boxShadow: 'var(--shadow-v3-card-inset)', flexShrink: 0, border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%' }}
         >
-          <div style={{ height: 160, position: 'relative', overflow: 'hidden' }}>
-            <img src={recommendedLesson.image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+          {/* 1:1 PNG (1024×1024) を切らずに表示するため aspectRatio:1/1 + objectFit:contain。
+              背景は bg-card に揃えて letterbox 表示を自然に見せる。 */}
+          <div style={{ aspectRatio: '1 / 1', position: 'relative', overflow: 'hidden', background: 'var(--bg-card)' }}>
+            <img src={recommendedLesson.image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
           </div>
           <div style={{ padding: '18px 20px 20px' }}>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: 'var(--accent-soft)', borderRadius: 'var(--radius-pill)', padding: '4px 11px', fontSize: 14, fontWeight: 600, color: 'var(--brand)', marginBottom: 10 }}>{recommendedLesson.category} · {recommendedLesson.level}</span>

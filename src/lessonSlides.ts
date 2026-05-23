@@ -223,10 +223,10 @@ function getHeroImage(category: string, lessonId?: number): string {
   }
   // フォールバック: カテゴリ別
   const c = (category || '').toLowerCase()
-  if (c.includes('ロジカル') || c.includes('logical')) return '/images/v3/course-logic-01.svg'
-  if (c.includes('ケース面接') || c === 'business') return '/images/v3/course-case-01.svg'
-  if (c.includes('哲学') || c === 'philosophy') return '/images/v3/course-philosophy-01.svg'
-  if (c.includes('東洋思想')) return '/images/v3/course-eastern-01.svg'
+  if (c.includes('ロジカル') || c.includes('logical')) return '/images/v3/course-logic-01.png'
+  if (c.includes('ケース面接') || c === 'business') return '/images/v3/course-case-01.png'
+  if (c.includes('哲学') || c === 'philosophy') return '/images/v3/course-philosophy-01.png'
+  if (c.includes('東洋思想')) return '/images/v3/course-eastern-01.png'
   if (c.includes('提案') || c.includes('伝える')) return '/images/v3/lesson-proposal.png'
   if (c.includes('フェルミ') || c.includes('fermi')) return '/images/v3/home-daily-fermi.png'
   if (c.includes('クリティカル')) return '/images/v3/lesson-critical-thinking.png'
@@ -236,9 +236,9 @@ function getHeroImage(category: string, lessonId?: number): string {
   if (c.includes('ラテラル')) return '/images/v3/lesson-lateral-thinking.png'
   if (c.includes('アナロジー') || c.includes('analogy')) return '/images/v3/lesson-analogy.png'
   if (c.includes('システム')) return '/images/v3/lesson-systems-thinking.png'
-  if (c.includes('なぜなぜ') || c.includes('why-why') || c.includes('why why')) return '/images/v3/course-whywhy-01.svg'
-  if (c.includes('クライアント')) return '/images/v3/course-client-01.svg'
-  if (c.includes('経営戦略') || c === 'strategy') return '/images/v3/course-strategy.svg'
+  if (c.includes('なぜなぜ') || c.includes('why-why') || c.includes('why why')) return '/images/v3/course-whywhy-01.png'
+  if (c.includes('クライアント')) return '/images/v3/course-client-01.png'
+  if (c.includes('経営戦略') || c === 'strategy') return '/images/v3/course-strategy-01.png'
   if (c.includes('認知科学') || c.includes('cognitive')) return '/images/v3/course-cognitive-01.png'
   if (c.includes('思考法') || c.includes('thinking')) return '/images/v3/course-thinking.webp'
   if (c.includes('coffee') || c.includes('コーヒー')) return '/images/v3/home-daily-question.png'

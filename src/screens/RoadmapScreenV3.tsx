@@ -55,7 +55,7 @@ const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
   'ロジカルシンキング': {
     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={'var(--brand)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/></svg>,
     iconBg: 'rgba(108,142,245,.14)',
-    image: `${IMG}/course-logic-01.svg`,
+    image: `${IMG}/course-logic-01.png`,
     routeKey: 'logic',
   },
   'クリティカルシンキング': {
@@ -79,7 +79,7 @@ const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
   '論点設定': {
     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#34D399" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="11" y1="7" x2="11" y2="11"/><line x1="11" y1="11" x2="15" y2="11"/><line x1="16" y1="16" x2="21" y2="21"/></svg>,
     iconBg: 'rgba(52,211,153,.14)',
-    image: `${IMG}/course-issue-01.svg`,
+    image: `${IMG}/course-issue-01.png`,
     routeKey: 'issue-setting',
   },
   'デザインシンキング': {
@@ -115,37 +115,37 @@ const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
   '提案書作成': {
     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FB923C" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,
     iconBg: 'rgba(251,146,60,.14)',
-    image: `${IMG}/course-proposal-writing.svg`,
+    image: `${IMG}/course-proposal-01.png`,
     routeKey: '提案書作成',
   },
   '哲学・思考の原理': {
     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C4B5FD" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="10" strokeDasharray="4 3"/></svg>,
     iconBg: 'rgba(196,181,253,.14)',
-    image: `${IMG}/course-philosophy-01.svg`,
+    image: `${IMG}/course-philosophy-01.png`,
     routeKey: 'philosophy',
   },
   '東洋思想': {
     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFD566" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 5 5 0 0 1 0-10 5 5 0 0 0 0-10z"/><circle cx="12" cy="7" r="1" fill="#FFD566"/><circle cx="12" cy="17" r="1" fill="#FFD566"/></svg>,
     iconBg: 'rgba(255,213,102,.14)',
-    image: `${IMG}/course-eastern-01.svg`,
+    image: `${IMG}/course-eastern-01.png`,
     routeKey: '東洋思想',
   },
   'クライアントワーク': {
     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C49A3C" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
     iconBg: 'rgba(196,154,60,.14)',
-    image: `${IMG}/course-client-01.svg`,
+    image: `${IMG}/course-client-01.png`,
     routeKey: 'クライアントワーク',
   },
   'ケース面接': {
     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={'var(--warm)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>,
     iconBg: 'rgba(244,162,97,.14)',
-    image: `${IMG}/course-case-01.svg`,
+    image: `${IMG}/course-case-01.png`,
     routeKey: 'case',
   },
   '経営戦略': {
     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7AAEFF" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M3 21V10l5 3V10l5 3V10l5 3v8z"/><line x1="3" y1="21" x2="21" y2="21"/></svg>,
     iconBg: 'rgba(122,174,255,.14)',
-    image: `${IMG}/course-strategy.svg`,
+    image: `${IMG}/course-strategy-01.png`,
     routeKey: '経営戦略',
   },
   'フェルミ推定': {
@@ -157,7 +157,7 @@ const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
   '数字に強くなる': {
     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7AAEFF" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg>,
     iconBg: 'rgba(122,174,255,.14)',
-    image: `${IMG}/course-numeracy.svg`,
+    image: `${IMG}/course-numeracy-01.png`,
     routeKey: '数字に強くなる',
   },
   'ピークパフォーマンス習慣': {
@@ -169,31 +169,31 @@ const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
   '履歴書・職務経歴書': {
     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={'var(--brand)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>,
     iconBg: 'rgba(108,142,245,.14)',
-    image: `${IMG}/course-proposal-writing.svg`,
+    image: `${IMG}/course-proposal-01.png`,
     routeKey: '履歴書・職務経歴書',
   },
   'SPI対策': {
     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7AAEFF" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="17" x2="12" y2="17"/></svg>,
     iconBg: 'rgba(122,174,255,.14)',
-    image: `${IMG}/course-numeracy.svg`,
+    image: `${IMG}/course-numeracy-01.png`,
     routeKey: 'SPI対策',
   },
   '玉手箱対策': {
     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FBBF24" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M8 8V5a4 4 0 0 1 8 0v3"/><line x1="12" y1="13" x2="12" y2="17"/></svg>,
     iconBg: 'rgba(251,191,36,.14)',
-    image: `${IMG}/course-numeracy.svg`,
+    image: `${IMG}/course-numeracy-01.png`,
     routeKey: '玉手箱対策',
   },
   '面接対策': {
     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={'var(--warm)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>,
     iconBg: 'rgba(244,162,97,.14)',
-    image: `${IMG}/course-case-01.svg`,
+    image: `${IMG}/course-case-01.png`,
     routeKey: '面接対策',
   },
   '給与交渉・退職実務': {
     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C49A3C" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>,
     iconBg: 'rgba(196,154,60,.14)',
-    image: `${IMG}/course-strategy.svg`,
+    image: `${IMG}/course-strategy-01.png`,
     routeKey: '給与交渉・退職実務',
   },
   '認知科学': {
@@ -225,7 +225,7 @@ const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
 const DEFAULT_VISUAL: CategoryVisual = {
   icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={'var(--brand)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
   iconBg: 'rgba(108,142,245,.14)',
-  image: `${IMG}/course-logic-01.svg`,
+  image: `${IMG}/course-logic-01.png`,
   routeKey: '',
 }
 
