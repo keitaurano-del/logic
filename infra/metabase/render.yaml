@@ -1,0 +1,42 @@
+# Render Blueprint for Metabase
+#
+# 使い方:
+#   1. Render Dashboard > New > Blueprint
+#   2. リポジトリ keitaurano-del/logic を選択
+#   3. Blueprint パスとして `infra/metabase/render.yaml` を指定
+#   4. 環境変数 (sync: false のもの) を Render UI で個別入力
+#
+# ※ Logic 本体の Render service (`logic`) とは独立した service として動かす。
+#   Logic の render.yaml と merge せず、本ファイルを Blueprint 指定で分離する。
+
+services:
+  - type: web
+    name: logic-metabase
+    runtime: docker
+    plan: starter            # free でも動くがアイドル sleep のため starter 推奨
+    region: singapore        # Supabase と同 region (要確認、ap-northeast-1 系)
+    autoDeploy: false        # ダッシュボードはアプリと別ライフサイクル
+    dockerfilePath: ./infra/metabase/Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    envVars:
+      - key: MB_DB_TYPE
+        value: postgres
+      - key: MB_DB_HOST
+        sync: false          # Supabase pooler host (aws-0-ap-northeast-1.pooler.supabase.com 等)
+      - key: MB_DB_PORT
+        value: "6543"
+      - key: MB_DB_DBNAME
+        value: postgres
+      - key: MB_DB_USER
+        sync: false          # 別途作成する metabase_app role (read-only ではない、書込必要)
+      - key: MB_DB_PASS
+        sync: false
+      - key: MB_SITE_URL
+        sync: false          # https://logic-metabase.onrender.com
+      - key: MB_ENCRYPTION_SECRET_KEY
+        generateValue: true  # 初回のみ自動生成、以降変更不可
+      - key: JAVA_TIMEZONE
+        value: Asia/Tokyo
+      - key: MB_ANON_TRACKING_ENABLED
+        value: "false"
