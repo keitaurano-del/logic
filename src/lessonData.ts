@@ -15,6 +15,13 @@ export type ExplainStep = {
   title: string
   content: string
   visual?: string
+  /**
+   * visual の直後に挿入される「まとめ／応用」テキスト（80-150 字目安）。
+   * visual で得たイメージを言語化して定着させる役割。
+   * step.visual が設定されていない場合は無視される。
+   * lessonSlides.ts の convertLessonToSlides で `concept` スライド（tag: 'まとめ'）として展開される。
+   */
+  outro?: string
 }
 
 // SCRUM-新: 思考系ステップタイプ

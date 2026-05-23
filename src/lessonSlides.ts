@@ -292,6 +292,16 @@ export function convertLessonToSlides(lesson: any): LessonSlide[] {
           title: step.visualTitle || undefined,
           caption: step.visualCaption || undefined,
         })
+        // step.outro があれば、visual の直後に「まとめ」concept スライドを挿入
+        // visual で得たイメージを言語化して定着させる、80-150 字目安のテキスト
+        if (step.outro && typeof step.outro === 'string') {
+          slides.push({
+            kind: 'concept',
+            tag: 'まとめ',
+            title: '',
+            body: formatBody(step.outro),
+          })
+        }
       }
     } else if (stepType === 'quiz') {
       // Convert legacy options format to choices/correctIndex
