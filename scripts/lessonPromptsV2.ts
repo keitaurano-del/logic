@@ -60,7 +60,8 @@ export type LessonPromptEntry = {
  */
 const ACRONYM_WHITELIST = new Set([
   'MECE', 'STAR', 'ATS', 'SPI', 'GAB', 'WFH', 'PTO', 'IMAGES', 'M&A',
-  'EN', 'PRE-EMPT', 'JP', 'NOT', 'AND', 'OR', 'WHY', 'SO', 'AI',
+  'EN', 'PRE-EMPT', 'JP', 'NOT', 'AND', 'OR', 'WHY', 'SO', 'AI', 'GDP',
+  'ADHD',
   'A', 'B', 'C', 'D', 'P', 'Q', 'R', 'S', 'T',
 ])
 
@@ -478,5 +479,289 @@ CRITICAL — the title at top-left must be exactly the four English words: LINK 
     title: 'SYSTEMS',
     subtitle: 'Everything connects back',
     diagram: `a hand-drawn closed feedback loop with three labeled node circles arranged in a triangle: top "A", bottom-right "B", bottom-left "C". Curved arrows clockwise. Cursive annotation: "loop".`,
+  },
+
+  // ── 認知科学 / cognitive-01 ──────────────────────────
+  {
+    slug: 'lesson-700',
+    title: 'WORKING MEMORY',
+    subtitle: 'The 7 plus or minus 2 rule',
+    diagram: `a hand-drawn human head outline in profile facing right, with the brain area exposed showing a small horizontal "tray" or "desk" inside the head. On the desk: seven small circle tokens lined up in a row, each unlabeled. Above the tokens: a small cursive annotation "7 ± 2". Below the head: cursive annotation "chunks, not digits". Hand-drawn with thick black marker, clean and simple.`,
+    spell: ['WORKING MEMORY', 'The 7 plus or minus 2 rule', '7 ± 2', 'chunks, not digits'],
+  },
+  {
+    slug: 'lesson-701',
+    title: 'CHUNKING',
+    subtitle: 'Group items into meaningful sets',
+    diagram: `two horizontal rows centered on the page. Top row: nine small unlabeled circle tokens in a single straight line, evenly spaced, all drawn as plain marker circles with no numbers or letters inside. A single coral downward arrow centered between the two rows, with the cursive label "group" written next to the arrow. Bottom row: three larger rectangular boxes drawn side by side, each box enclosing three of the same plain circle tokens. Each rectangular box has a small cursive label "set" written directly underneath it. Hand-drawn with thick black marker.
+
+CRITICAL — do NOT write any numbers (no "3", no "4", no "330") inside the circles or boxes. The only handwritten text on the diagram itself is the word "group" near the arrow and the three labels "set" under the bottom rectangles.`,
+    spell: ['CHUNKING', 'Group items into meaningful sets', 'group', 'set'],
+  },
+  {
+    slug: 'lesson-702',
+    title: 'COGNITIVE LOAD',
+    subtitle: 'Three kinds of mental load',
+    diagram: `three horizontal stacked rectangular bars drawn with thick black marker, labeled in cursive from top to bottom: top bar "Task", middle bar "Noise", bottom bar "Build". A coral down-arrow on the right side labeled "load". Below the stack: cursive annotation "cut the noise".`,
+    spell: ['COGNITIVE LOAD', 'Three kinds of mental load', 'Task', 'Noise', 'Build', 'load', 'cut the noise'],
+  },
+  {
+    slug: 'lesson-703',
+    title: 'EXTERNAL MEMORY',
+    subtitle: 'Offload to paper and tools',
+    diagram: `on the left: a hand-drawn human head outline in profile facing right. From the head, a coral arrow flows outward to the right toward two small icons drawn side by side: a small open notebook page and a small rectangular laptop screen. Cursive annotation above the arrow: "offload". Cursive annotation below the icons: "free the desk".`,
+    spell: ['EXTERNAL MEMORY', 'Offload to paper and tools', 'offload', 'free the desk'],
+  },
+  {
+    slug: 'lesson-704',
+    title: 'TASK SWITCH',
+    subtitle: 'Multitasking is an illusion',
+    diagram: `two hand-drawn square boxes side by side. Left box labeled "A" with a single large hand-lettered marker letter centered inside. Right box labeled "B" with a single large hand-lettered marker letter centered inside. Between the boxes: a curved double-headed arrow swinging back and forth between A and B. Above the arrow: cursive annotation "switch cost". Below the boxes: cursive annotation "not parallel".`,
+    spell: ['TASK SWITCH', 'Multitasking is an illusion', 'A', 'B', 'switch cost', 'not parallel'],
+  },
+
+  // ── 認知科学 / cognitive-02 ──────────────────────────
+  {
+    slug: 'lesson-710',
+    title: 'RECALL BIAS',
+    subtitle: 'Easy to recall feels frequent',
+    diagram: `a hand-drawn human head outline in profile facing right, with the brain area showing one bright bold marker icon (a small lightbulb) labeled in cursive "vivid". Behind the bulb, three faint dotted-line bulb shapes labeled "faded". A coral arrow points from the bright bulb outward to the right labeled "feels common". Below the head: cursive annotation "not really true".
+
+CRITICAL — the small annotation below the head must read exactly the three English words "not really true". Do NOT write "memory = truth" or any equals-sign phrase, since this lesson teaches that recall does NOT equal truth. Spell the three words as: n-o-t, r-e-a-l-l-y, t-r-u-e.`,
+    spell: ['RECALL BIAS', 'Easy to recall feels frequent', 'vivid', 'faded', 'feels common', 'not really true'],
+  },
+  {
+    slug: 'lesson-711',
+    title: 'HALO EFFECT',
+    subtitle: 'One trait paints the whole',
+    diagram: `a hand-drawn simple stick-figure person in the center. Above the head: a small five-point star labeled in cursive "smart". From the star, three coral arrows fan outward to three small cursive labels around the figure: "kind?", "honest?", "skilled?". Below the figure: cursive annotation "one trait spreads".`,
+    spell: ['HALO EFFECT', 'One trait paints the whole', 'smart', 'kind?', 'honest?', 'skilled?', 'one trait spreads'],
+  },
+  {
+    slug: 'lesson-712',
+    title: 'KNEW IT BIAS',
+    subtitle: 'Looks obvious after the fact',
+    diagram: `a hand-drawn horizontal timeline with three tick marks labeled in cursive left to right: "before", "event", "after". Above the "after" tick: a thought bubble containing the short cursive text "I knew it". A coral curved arrow loops back from "after" to "before" labeled in cursive "rewrite". Hand-drawn with thick marker.`,
+    spell: ['KNEW IT BIAS', 'Looks obvious after the fact', 'before', 'event', 'after', 'I knew it', 'rewrite'],
+  },
+  {
+    slug: 'lesson-713',
+    title: 'DUNNING KRUGER',
+    subtitle: 'Low skill, high confidence',
+    diagram: `a hand-drawn line graph with a horizontal axis labeled "skill" in cursive and a vertical axis labeled "confidence" in cursive. The curve rises sharply at the far left to a peak labeled "peak of fool", drops down to a valley labeled "valley", then slowly rises to the right ending at a plateau labeled "expert". Hand-drawn with thick marker.`,
+    spell: ['DUNNING KRUGER', 'Low skill, high confidence', 'skill', 'confidence', 'peak of fool', 'valley', 'expert'],
+  },
+  {
+    slug: 'lesson-714',
+    title: 'RESULT vs PROCESS',
+    subtitle: 'Judge the path, not just the end',
+    diagram: `two horizontal arrow paths drawn one above the other across the canvas. Top path labeled in cursive "good path" with a coral check mark at the end. Bottom path labeled "lucky path" with a coral X mark at the end, even though it also reaches a small flag labeled "win". Cursive annotation below: "look at the path".`,
+    spell: ['RESULT vs PROCESS', 'Judge the path, not just the end', 'good path', 'lucky path', 'win', 'look at the path'],
+  },
+
+  // ── ドキュメンテーション ──────────────────────────
+  {
+    slug: 'lesson-720',
+    title: 'STRUCTURE FIRST',
+    subtitle: 'Outline wins before design',
+    diagram: `a hand-drawn document outline drawn as a large rectangle divided into three labeled rows from top to bottom: top row "Why" (in cursive), middle row "Who", bottom row "Key Msg". To the left of the document: cursive annotation "before design". Thick marker borders.`,
+    spell: ['STRUCTURE FIRST', 'Outline wins before design', 'Why', 'Who', 'Key Msg', 'before design'],
+  },
+  {
+    slug: 'lesson-721',
+    title: 'ONE MESSAGE',
+    subtitle: 'One slide, one idea',
+    diagram: `a hand-drawn rectangular slide frame in the center of the canvas. Inside the slide at the top: a single short cursive sentence "main idea here". Below it: a small simple diagram of two connected boxes. To the right of the slide: a coral X mark next to a smaller cluster of three messy lines labeled in cursive "too much". Below: cursive annotation "one idea".`,
+    spell: ['ONE MESSAGE', 'One slide, one idea', 'main idea here', 'too much', 'one idea'],
+  },
+  {
+    slug: 'lesson-722',
+    title: 'TEXT TO VISUAL',
+    subtitle: 'When to use a diagram',
+    diagram: `on the left: a hand-drawn rectangular block of three short squiggle text lines labeled in cursive "text". A coral right-arrow points across the canvas to the right. On the right: a small hand-drawn diagram of three connected boxes in a tree shape labeled in cursive "visual". Below the arrow: cursive annotation "when relations matter".`,
+    spell: ['TEXT TO VISUAL', 'When to use a diagram', 'text', 'visual', 'when relations matter'],
+  },
+  {
+    slug: 'lesson-723',
+    title: 'WHITE SPACE',
+    subtitle: 'Margins guide the eye',
+    diagram: `a hand-drawn large rectangular page frame taking up most of the canvas, with thick marker border. Inside the page, only a single small rectangle in the upper-left corner labeled in cursive "focus". The rest of the page is intentionally empty (white). Dashed line arrows around the edges show the wide margins. Below the page: cursive annotation "less is more".`,
+    spell: ['WHITE SPACE', 'Margins guide the eye', 'focus', 'less is more'],
+  },
+  {
+    slug: 'lesson-724',
+    title: 'TYPE BASICS',
+    subtitle: 'Readable beats fancy',
+    diagram: `three lines of hand-lettered marker text stacked vertically, each line at a different size from large to small: top line "TITLE" in large bold marker capitals, middle line "Subtitle" in medium marker, bottom line "body text" in small marker. To the right: a small ruler-like vertical scale with cursive annotations "big", "mid", "small". Below: cursive annotation "size = rank".`,
+    spell: ['TYPE BASICS', 'Readable beats fancy', 'TITLE', 'Subtitle', 'body text', 'big', 'mid', 'small', 'size = rank'],
+  },
+  {
+    slug: 'lesson-725',
+    title: 'THREE COLORS',
+    subtitle: 'The 70 25 5 rule',
+    diagram: `three hand-drawn rectangular swatches lined up horizontally side by side, each labeled with a percentage and a cursive role: leftmost large swatch "70% base", middle medium swatch "25% main", rightmost small swatch "5% accent". The leftmost swatch is outlined only (empty inside), the middle swatch is lightly filled with sage green, the rightmost is lightly filled with coral. Below: cursive annotation "limit to three".`,
+    spell: ['THREE COLORS', 'The 70 25 5 rule', '70% base', '25% main', '5% accent', 'limit to three'],
+  },
+  {
+    slug: 'lesson-726',
+    title: 'CHART CHOICE',
+    subtitle: 'Pick the right shape',
+    diagram: `a hand-drawn 2x2 grid (about 60% of canvas) with four small marker sketches inside the cells: top-left a simple line graph labeled in cursive "trend", top-right a vertical bar chart labeled "compare", bottom-left a pie chart with one wedge highlighted labeled "share", bottom-right a scatter of three dots labeled "spread". Hand-drawn with thick marker.`,
+    spell: ['CHART CHOICE', 'Pick the right shape', 'trend', 'compare', 'share', 'spread'],
+  },
+
+  // ── フェルミ推定 ──────────────────────────
+  {
+    slug: 'lesson-200',
+    title: 'FERMI',
+    subtitle: 'Estimate without exact data',
+    diagram: `a hand-drawn human head outline in profile facing right. From the head, a coral arrow flows out to a small handwritten cursive equation "≈ 1.4 trillion ¥" on the right side of the canvas. Above the head: cursive annotation "no data". Below: cursive annotation "use logic, not guess".`,
+    spell: ['FERMI', 'Estimate without exact data', 'no data', 'use logic, not guess'],
+  },
+  {
+    slug: 'lesson-201',
+    title: 'BREAK DOWN',
+    subtitle: 'Turn the goal into a product',
+    diagram: `a hand-drawn equation centered on the page, flowing left to right: a large rectangular box on the left labeled in cursive "Goal", followed by an equals sign "=", followed by four small rectangular boxes in a row, each connected by a multiplication sign "×". The four small boxes are labeled in cursive, one short word per box: "users", "rate", "buys", "yen". Hand-drawn with thick black marker.`,
+    spell: ['BREAK DOWN', 'Turn the goal into a product', 'Goal', 'users', 'rate', 'buys', 'yen'],
+  },
+  {
+    slug: 'lesson-202',
+    title: 'CITY SCALE',
+    subtitle: 'Use lines and grids you know',
+    diagram: `a hand-drawn simple subway map: three roughly drawn curved lines crossing on the canvas (one horizontal, one diagonal, one vertical), with five small dot stations along each. Above the map: a cursive annotation "≈ 300 km". Below: cursive annotation "rough is fine".`,
+    spell: ['CITY SCALE', 'Use lines and grids you know', '≈ 300 km', 'rough is fine'],
+  },
+  {
+    slug: 'lesson-203',
+    title: 'MARKET SIZE',
+    subtitle: 'Estimate a business at scale',
+    diagram: `a hand-drawn vertical equation stack centered on the canvas. Four short rows stacked top to bottom, each row a rectangular box with a cursive label: "users", "× spend", "× months", "= market". Each row connected to the next by a short downward marker line. Hand-drawn with thick black marker.`,
+    spell: ['MARKET SIZE', 'Estimate a business at scale', 'users', '× spend', '× months', '= market'],
+  },
+  {
+    slug: 'lesson-204',
+    title: 'FERMI TRAPS',
+    subtitle: 'Spot the common mistakes',
+    diagram: `a hand-drawn vertical list of three rows on the left side, each row starting with a coral red "X" mark followed by a short cursive marker label: row 1 "X everyone uses it", row 2 "X mixed units", row 3 "X round too fast". On the right side of the canvas: a single row with a green check "V" and the cursive label "good check". Hand-drawn with thick marker.
+
+CRITICAL — the three trap rows on the left must all have the red X mark. Only the "good check" row on the right has the green V check. Never put a green check next to a trap.`,
+    spell: ['FERMI TRAPS', 'Spot the common mistakes', 'everyone uses it', 'mixed units', 'round too fast', 'good check'],
+  },
+  {
+    slug: 'lesson-205',
+    title: 'BASE DATA',
+    subtitle: 'Numbers to keep in your head',
+    diagram: `a hand-drawn human head outline in profile facing right, with the brain area exposed showing a small grid of three rows by three columns of tiny rectangular tiles inside the head. Each tile has a short cursive label such as "pop", "GDP", "house". A coral arrow points outward labeled in cursive "ready to use". Below the head: cursive annotation "know the base".`,
+    spell: ['BASE DATA', 'Numbers to keep in your head', 'pop', 'GDP', 'house', 'ready to use', 'know the base'],
+  },
+
+  // ── 構造化リスニング (listening-01) ──────────────────────────
+  {
+    slug: 'lesson-730',
+    title: 'STRUCTURED LISTENING',
+    subtitle: 'Beyond passive hearing',
+    diagram: `on the left side: a small hand-drawn human head outline in profile facing right, with the brain area exposed showing only one wavy line inside (passive). On the right side: another small head outline facing right, with the brain area showing three short horizontal layers stacked inside, labeled in tiny cursive "fact", "feel", "view". Between the two heads: a coral right-arrow with the cursive annotation "structure" above it. Below both heads: cursive annotation "decode, not just hear".`,
+    spell: ['STRUCTURED LISTENING', 'Beyond passive hearing', 'fact', 'feel', 'view', 'structure', 'decode, not just hear'],
+  },
+  {
+    slug: 'lesson-731',
+    title: 'FACT FEEL VIEW',
+    subtitle: 'Split what they really said',
+    diagram: `a hand-drawn thought bubble at the top of the canvas containing a single short squiggle line (representing a person's mixed speech). Below the bubble: three downward arrows fan out to three separate rectangular boxes lined up in a row. Each box has a short cursive label inside: leftmost "fact" (with a small underline icon), middle "feel" (with a small heart-outline icon), rightmost "view" (with a small eye-outline icon). Cursive annotation below: "split it".`,
+    spell: ['FACT FEEL VIEW', 'Split what they really said', 'fact', 'feel', 'view', 'split it'],
+  },
+  {
+    slug: 'lesson-732',
+    title: 'PARAPHRASE',
+    subtitle: 'Echo back what you heard',
+    diagram: `two hand-drawn simple stick figures facing each other. The left figure has a speech bubble with several squiggle lines (a long message). The right figure has a smaller speech bubble with just three short squiggle lines (a tight summary). Between them: a coral right-arrow labeled "echo" and a coral return-arrow labeled "check". Cursive annotation below: "shorter, cleaner".`,
+    spell: ['PARAPHRASE', 'Echo back what you heard', 'echo', 'check', 'shorter, cleaner'],
+  },
+  {
+    slug: 'lesson-733',
+    title: 'OPEN vs CLOSED',
+    subtitle: 'Question shapes the answer',
+    diagram: `a hand-drawn 2x2 grid on cream notebook paper. Top row labels: "open" (left), "closed" (right). Left column labels: "fact" (top), "feel" (bottom). Inside the four cells, a short cursive sample question each: top-left "what happened?", top-right "did it?", bottom-left "how do you feel?", bottom-right "are you ok?". Thick marker borders. Cursive annotation below: "mix them right".`,
+    spell: ['OPEN vs CLOSED', 'Question shapes the answer', 'open', 'closed', 'fact', 'feel', 'what happened', 'did it', 'how do you feel', 'are you ok', 'mix them right'],
+  },
+  {
+    slug: 'lesson-734',
+    title: 'SILENCE',
+    subtitle: 'Wait, do not fill it',
+    diagram: `a hand-drawn horizontal timeline arrow running left to right with three tick marks. Above the left tick: cursive label "ask". Above the middle tick (the gap between two ticks): the large hand-drawn dots "·  ·  ·" with the cursive label "wait" beneath. Above the right tick: cursive label "real answer". Below the timeline: cursive annotation "5 seconds gold".`,
+    spell: ['SILENCE', 'Wait, do not fill it', 'ask', 'wait', 'real answer', '5 seconds gold'],
+  },
+  {
+    slug: 'lesson-735',
+    title: 'ONE ON ONE',
+    subtitle: 'Coach by listening',
+    diagram: `a hand-drawn upward staircase of four steps on cream notebook paper, rising from lower-left to upper-right. A small stick figure stands on the bottom step. Each step has a short cursive label written above it: step 1 "fact", step 2 "feel", step 3 "view", step 4 "want" (with a coral filled dot on step 4). Cursive annotation upper-right: "climb slowly".`,
+    spell: ['ONE ON ONE', 'Coach by listening', 'fact', 'feel', 'view', 'want', 'climb slowly'],
+  },
+  {
+    slug: 'lesson-736',
+    title: 'SALES LISTEN',
+    subtitle: 'Find the real budget',
+    diagram: `a hand-drawn inverted funnel on cream notebook paper. Top wide opening labeled in cursive "what they say". Funnel narrows downward through three rings labeled "S P I N" (four small letters stacked vertically along the inside of the funnel). Bottom narrow tip drips into a small box labeled "BANT". Cursive annotation upper-right: "deeper layers".`,
+    spell: ['SALES LISTEN', 'Find the real budget', 'what they say', 'S', 'P', 'I', 'N', 'BANT', 'deeper layers'],
+  },
+
+  // ── ADHD レバレッジ (adhd-leverage-01) ──────────────────────────
+  {
+    slug: 'lesson-800',
+    title: 'REFRAME',
+    subtitle: 'Trait, not disorder',
+    diagram: `a hand-drawn 2x2 grid of four boxes on cream notebook paper. Each box contains one short cursive label in marker handwriting, with a small coral icon above the label. Top-left: a small flame icon, label "focus". Top-right: a small starburst icon, label "ideas". Bottom-left: a small lightning-bolt icon, label "speed". Bottom-right: a small compass icon, label "new". Above the grid: cursive annotation "four assets". Below the grid: cursive annotation "use them well".`,
+    spell: ['REFRAME', 'Trait, not disorder', 'focus', 'ideas', 'speed', 'new', 'four assets', 'use them well'],
+  },
+  {
+    slug: 'lesson-801',
+    title: 'IGNITION MAP',
+    subtitle: 'Log your focus zones',
+    diagram: `a hand-drawn 3x4 grid on cream notebook paper. Top header row has four cursive labels for time slots: "morn", "noon", "eve", "night". Left header column has three cursive labels for environment variables stacked vertically: "place", "sound", "task". Inside the 12 cells: a few cells are lightly shaded coral (filled), a few have a small "X" mark, and the rest are empty. Cursive annotation upper-right: "2 weeks". Below: cursive annotation "find your zone".`,
+    spell: ['IGNITION MAP', 'Log your focus zones', 'morn', 'noon', 'eve', 'night', 'place', 'sound', 'task', '2 weeks', 'find your zone'],
+  },
+  {
+    slug: 'lesson-802',
+    title: 'DESK SETUP',
+    subtitle: 'Let the room hold your focus',
+    diagram: `a hand-drawn top-down view of a clean rectangular desk on cream notebook paper. On the desk: a single laptop in the center labeled in cursive "task". To the left of the desk, outside its border: a small phone icon with a coral X mark on it labeled "phone". Above the desk: a small clock icon labeled "block". To the right: a small bell icon with a coral X mark labeled "off". Cursive annotation upper-right: "no noise".`,
+    spell: ['DESK SETUP', 'Let the room hold your focus', 'task', 'phone', 'block', 'off', 'no noise'],
+  },
+  {
+    slug: 'lesson-803',
+    title: 'TASK SHAPE',
+    subtitle: 'Cut the friction to start',
+    diagram: `on the left: a large hand-drawn rectangular box labeled in cursive "big task" with a small coral X mark next to it. A coral right-arrow points across to the right side, where five small connected rectangular sub-boxes are drawn in a horizontal chain, each labeled with a tiny cursive number "1", "2", "3", "4", "5". Above the chain: cursive annotation "5 min start". Below: cursive annotation "tiny first step".`,
+    spell: ['TASK SHAPE', 'Cut the friction to start', 'big task', '1', '2', '3', '4', '5', '5 min start', 'tiny first step'],
+  },
+  {
+    slug: 'lesson-804',
+    title: 'ROLE FIT',
+    subtitle: 'Pick where you shine',
+    diagram: `a hand-drawn 2x2 grid on cream notebook paper. X-axis label below: "your fit" with "low" left and "high" right. Y-axis label rotated on left: "energy" with "low" bottom and "high" top. Each cell has a short cursive label: top-left "drain" with coral X, top-right "shine" with coral star, bottom-left "avoid" with coral X, bottom-right "ok" with cursive check. Cursive annotation upper-right: "match it".`,
+    spell: ['ROLE FIT', 'Pick where you shine', 'your fit', 'energy', 'low', 'high', 'drain', 'shine', 'avoid', 'ok', 'match it'],
+  },
+  {
+    slug: 'lesson-805',
+    title: 'PARTNER UP',
+    subtitle: 'Borrow what you lack',
+    diagram: `two hand-drawn puzzle-piece shapes on cream notebook paper, side by side, interlocking in the middle. Left piece labeled in cursive "you" with a coral starburst icon above. Right piece labeled "ally" with a small gear icon above. Below the joined pieces: a single rectangular bar labeled "team" stretching the full width. Cursive annotation upper-right: "fill the gap".`,
+    spell: ['PARTNER UP', 'Borrow what you lack', 'you', 'ally', 'team', 'fill the gap'],
+  },
+  {
+    slug: 'lesson-806',
+    title: 'BURN PROOF',
+    subtitle: 'Protect the next sprint',
+    diagram: `a hand-drawn horizontal sine wave on cream notebook paper, with two clear peaks and two clear valleys. Above each peak: a small flame icon with the cursive label "peak". Below each valley: a small bed icon with the cursive label "rest". Below the wave: cursive annotation "ride, then rest".`,
+    spell: ['BURN PROOF', 'Protect the next sprint', 'peak', 'rest', 'ride, then rest'],
+  },
+  {
+    slug: 'lesson-807',
+    title: 'ROLE MODELS',
+    subtitle: 'Steal their playbook',
+    diagram: `a hand-drawn open book in the center of the canvas on cream notebook paper. The left page has three short cursive labels stacked vertically: "trait", "env", "team". The right page shows a small arrow path pointing into a coral star labeled "lesson". A small magnifying glass hovers over the right page. Cursive annotation upper-right: "what works?".`,
+    spell: ['ROLE MODELS', 'Steal their playbook', 'trait', 'env', 'team', 'lesson', 'what works'],
   },
 ]

@@ -3,7 +3,7 @@
  * 仕様: docs/DESIGN_V3.md §3.6
  */
 import { useState } from 'react'
-import { getCompletedCount, getLessonStreak, getXp, getCompletedLessons, getXpLogThisMonth, XP_EVENT_LABEL, XP_REWARDS } from '../stats'
+import { getCompletedCount, getLessonStreak, getXp, getCompletedLessons, getXpLogThisMonth, XP_EVENT_LABEL, XP_REWARDS, localDateStr } from '../stats'
 import { getAllLessonsFlat } from '../lessonData'
 import { getCurrentLevel, getXpProgress, getTitleKeyForLevel, getTitleI18nKey, getBadgeImagePath, MAX_LEVEL } from './homeHelpers'
 import { TitleBadgeSheet } from '../components/TitleBadgeSheet'
@@ -187,6 +187,20 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
                   )
                 })}
               </div>
+              {onOpenStudyTime && (
+                <div style={{
+                  marginTop: 14,
+                  paddingTop: 12,
+                  borderTop: '1px solid rgba(255,255,255,.06)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  gap: 6,
+                }}>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)' }}>
+                    {t('profile.weekSummarySub')}
+                  </span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2.5" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
+                </div>
+              )}
             </button>
           )
         })()}
@@ -396,7 +410,8 @@ function getStudiedThisWeek(): boolean[] {
   return Array.from({ length: 7 }).map((_, i) => {
     const d = new Date(monday)
     d.setDate(monday.getDate() + i)
-    const iso = d.toISOString().slice(0, 10)
+    // ローカル日付（YYYY-MM-DD）で比較。toISOString は UTC 基準で JST 朝にズレるため使わない。
+    const iso = localDateStr(d)
     return studyDates.has(iso)
   })
 }

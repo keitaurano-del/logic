@@ -112,6 +112,9 @@ import { cognitiveLessonMap } from './cognitiveLessons'
 import { cognitiveLessonMapEn } from './cognitiveLessonsEn'
 import { documentationLessonMap } from './documentationLessons'
 import { documentationLessonMapEn } from './documentationLessonsEn'
+import { listeningLessonMap } from './listeningLessons'
+import { adhdLeverageLessonMap } from './adhdLeverageLessons'
+import { adhdLeverageLessonMapEn } from './adhdLeverageLessonsEn'
 
 // 全レッスンマップを locale で切り替える。en 版が存在するカテゴリは
 // 英訳済みマップを、それ以外は ja 版にフォールバック (transitional)。
@@ -160,6 +163,10 @@ function _getMergedLessons(): Record<number, LessonData> {
     ..._pickByLocale(cognitiveLessonMap, cognitiveLessonMapEn),
     // ドキュメンテーションコース
     ..._pickByLocale(documentationLessonMap, documentationLessonMapEn),
+    // 構造化リスニングコース（ja のみ、en は ja を一時的に使用）
+    ..._pickByLocale(listeningLessonMap, listeningLessonMap),
+    // ADHD レバレッジコース（en は ja にフォールバック、本格的な英訳は後日）
+    ..._pickByLocale(adhdLeverageLessonMap, adhdLeverageLessonMapEn),
   }
   _cachedLocale = locale
   return _cachedMerged

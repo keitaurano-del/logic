@@ -1,5 +1,5 @@
 // Helpers for v3 HomeScreen: streak recovery, points calculation, ranking percentile
-import { getStreak, getStudyDates, getCompletedCount, getStudyTimeMs } from '../stats'
+import { getStreak, getStudyDates, getCompletedCount, getStudyTimeMs, localDateStr } from '../stats'
 
 /** Returns streak state: 'none' | 'active' | 'at-risk' */
 export function getStreakState(): 'none' | 'active' | 'at-risk' {
@@ -8,7 +8,8 @@ export function getStreakState(): 'none' | 'active' | 'at-risk' {
   const dates = getStudyDates().sort()
   if (dates.length === 0) return 'none'
   const last = dates[dates.length - 1]
-  const todayStr = new Date().toISOString().slice(0, 10)
+  // ローカル日付で比較。toISOString は UTC 基準で JST 朝にズレるため使わない。
+  const todayStr = localDateStr()
   return last === todayStr ? 'active' : 'at-risk'
 }
 
@@ -63,7 +64,8 @@ export function buildActivityGrid(dates: string[]): number[] {
   for (let i = 83; i >= 0; i--) {
     const d = new Date(today)
     d.setDate(d.getDate() - i)
-    const iso = d.toISOString().slice(0, 10)
+    // ローカル日付で比較。toISOString は UTC 基準で JST 朝にズレるため使わない。
+    const iso = localDateStr(d)
     grid.push(set.has(iso) ? 4 : 0) // binary for now; 1-4 levels if study time available per day
   }
   return grid

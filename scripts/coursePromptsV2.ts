@@ -248,4 +248,23 @@ export const COURSE_PROMPTS_V2: LessonPromptEntry[] = [
     diagram: 'a hand-drawn ascending staircase of five rectangular steps on cream notebook paper, rising from lower-left to upper-right. Each step has a small icon centered on it and a short label in marker handwriting just below the step. Step 1 (lowest, left): a small classroom desk icon, label "L1 class". Step 2: a coffee cup icon, label "L2 cafe". Step 3 (middle): a small bar chart icon, label "L3 biz". Step 4: a briefcase icon, label "L4 firm". Step 5 (highest, upper-right): a small question mark icon, label "L5 idea". A coral arrow runs diagonally up alongside the staircase from lower-left to upper-right, labeled "level up". Coral-red annotation "easy to hard" upper-right.\n\nUse ONLY these short safe labels: "L1 class", "L2 cafe", "L3 biz", "L4 firm", "L5 idea", "level up", "easy to hard". Do NOT attempt to write "PRACTICE", "CONSULTING", "industry", "abstract", or any long word (Gemini consistently misspells long words).',
     spell: ['Easy → Hard', 'Practice sets for Fermi', 'L1 class', 'L2 cafe', 'L3 biz', 'L4 firm', 'L5 idea', 'level up', 'easy to hard'],
   },
+
+  // ── 新規追加: listening-01 「構造化リスニングで本音を引き出す」 ──
+  {
+    slug: 'course-listening-01',
+    title: 'Deep Listen',
+    subtitle: 'Beyond passive hearing',
+    diagram: 'a hand-drawn diagram on cream notebook paper combining a large ear shape and a three-layer decoder on the right two-thirds. On the left of the right portion: a clearly hand-drawn human ear outline in thick black marker, roughly fist-sized. A coral arrow flows out of the ear to the right toward a small vertical stack of three horizontal labeled rectangles, stacked top to bottom: top "fact", middle "feel", bottom "view" (the "view" box has a slightly thicker coral underline). Above the stack: a small cursive label "decode". Below the stack: cursive annotation "three layers".\n\nUse ONLY these short safe labels: "fact", "feel", "view", "decode", "three layers". Do NOT attempt to write "STRUCTURED LISTENING", "interpretation", "emotion", "paraphrase", or any long word (Gemini consistently misspells long words).',
+    spell: ['Deep Listen', 'Beyond passive hearing', 'fact', 'feel', 'view', 'decode', 'three layers'],
+  },
+
+  // ── 新規追加: adhd-leverage-01 「ADHD レバレッジ — 特性を資源として活かす」 ──
+  // 注: 矯正・治療ニュアンス NG。「凸凹を肯定的に描く」トーン厳守。
+  {
+    slug: 'course-adhd-leverage-01',
+    title: 'ADHD Leverage',
+    subtitle: 'Traits as assets',
+    diagram: 'a hand-drawn diagram on cream notebook paper showing two interlocking jigsaw puzzle pieces with bumpy edges in the right two-thirds of the page. The left piece is a slightly larger irregular puzzle piece labeled in cursive "you" with four small coral icons arranged inside it: a flame (focus), a starburst (ideas), a lightning bolt (speed), and a compass (new). The right piece is a smaller mirrored puzzle piece labeled in cursive "fit" — representing the right environment that matches the unique shape. The two pieces interlock tightly in the middle. Above the joined pieces: a small cursive label "match". Below: cursive annotation "shape fits shape".\n\nIMPORTANT: the puzzle pieces should look celebratory and clean, NEVER broken or jagged in a negative way. The four icons on the "you" piece must feel like assets / strengths, not symptoms. Avoid any imagery suggesting "fixing", "disorder", or "treatment".\n\nUse ONLY these short safe labels: "you", "fit", "match", "shape fits shape". Do NOT attempt to write "ADHD", "leverage", "neurodiversity", "hyperfocus", or any long word (Gemini consistently misspells long words).',
+    spell: ['ADHD Leverage', 'Traits as assets', 'you', 'fit', 'match', 'shape fits shape'],
+  },
 ]

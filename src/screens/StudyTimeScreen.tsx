@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { getStudyTimeMs, getStudyDates, getTotalStudyDays } from '../stats'
+import { getStudyTimeMs, getStudyDates, getTotalStudyDays, localDateStr } from '../stats'
 import { ClockIcon } from '../icons'
 import { Header } from '../components/platform/Header'
 import { t } from '../i18n'
@@ -32,7 +32,8 @@ export function StudyTimeScreen({ onBack }: StudyTimeScreenProps) {
     return Array.from({ length: 30 }, (_, i) => {
       const d = new Date(today)
       d.setDate(d.getDate() - (29 - i))
-      const ds = d.toISOString().slice(0, 10)
+      // ローカル日付で比較。toISOString は UTC 基準で JST 朝にズレるため使わない。
+      const ds = localDateStr(d)
       return { ds, active: studySet.has(ds) }
     })
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -43,7 +44,8 @@ export function StudyTimeScreen({ onBack }: StudyTimeScreenProps) {
     return Array.from({ length: 7 }, (_, i) => {
       const d = new Date(today)
       d.setDate(d.getDate() - i)
-      const ds = d.toISOString().slice(0, 10)
+      // ローカル日付で比較。toISOString は UTC 基準で JST 朝にズレるため使わない。
+      const ds = localDateStr(d)
       return { ds, active: studySet.has(ds) }
     })
   // eslint-disable-next-line react-hooks/exhaustive-deps

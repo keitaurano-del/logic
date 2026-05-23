@@ -208,6 +208,18 @@ const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
     image: `${IMG}/course-documentation-01.png`,
     routeKey: 'documentation',
   },
+  '構造化リスニング': {
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#22B8CF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
+    iconBg: 'rgba(34,184,207,.14)',
+    image: `${IMG}/course-listening-01.png`,
+    routeKey: '構造化リスニング',
+  },
+  'ADHDレバレッジ': {
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E879F9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>,
+    iconBg: 'rgba(232,121,249,.14)',
+    image: `${IMG}/course-adhd-leverage-01.png`,
+    routeKey: 'ADHDレバレッジ',
+  },
 }
 
 const DEFAULT_VISUAL: CategoryVisual = {
@@ -781,6 +793,8 @@ const CATEGORY_ID_TO_NAMES: Record<string, string[]> = {
   '経営戦略': ['経営戦略', 'strategy'],
   cognitive: ['認知科学', 'Cognitive Science'],
   documentation: ['ドキュメンテーション', 'Documentation'],
+  '構造化リスニング': ['構造化リスニング'],
+  'ADHDレバレッジ': ['ADHDレバレッジ'],
 }
 
 // カテゴリID（ルートキー）→ 表示用ラベルを翻訳キー経由で解決
@@ -809,6 +823,8 @@ const CATEGORY_LABEL_KEY: Record<string, string> = {
   '給与交渉・退職実務': 'category.careerSalary',
   cognitive: 'category.cognitive',
   documentation: 'category.documentation',
+  '構造化リスニング': 'category.listening',
+  'ADHDレバレッジ': 'category.adhdLeverage',
 }
 
 // カテゴリID → courseData が保持する日本語データ値（検索キー用）
@@ -832,6 +848,8 @@ const CATEGORY_DATA_LABEL: Record<string, string> = {
   '経営戦略': '経営戦略',
   cognitive: '認知科学',
   documentation: 'ドキュメンテーション',
+  '構造化リスニング': '構造化リスニング',
+  'ADHDレバレッジ': 'ADHDレバレッジ',
 }
 
 function categoryLabel(category: string): string {

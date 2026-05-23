@@ -475,6 +475,33 @@ const COURSES_JA: Course[] = [
     description: 'パワポ資料の構成設計から、1スライド1メッセージ・図解の型・レイアウト・タイポグラフィ・配色・チャート設計まで、伝わる資料の作り方を体系的に学ぶ。',
     image: '/images/v3/course-documentation-01.png',
   },
+
+  // ── 構造化リスニング ────────────────────────────────
+  {
+    id: 'listening-01',
+    title: '構造化リスニングで本音を引き出す',
+    category: '構造化リスニング',
+    group: 'communication',
+    lessonIds: [730, 731, 732, 733, 734, 735, 736],
+    level: '中級',
+    description: '受動的傾聴を超えて、事実・感情・解釈の3層分解と質問・要約・沈黙の技術で、1on1と営業ヒアリングで本音を引き出す聴き方を学ぶ。',
+    image: '/images/v3/course-listening-01.png',
+  },
+
+  // ── ADHD レバレッジ ─────────────────────────────────
+  // 注：医学的アドバイスではない。ADHD 特性を経営資源として活かす視点での実用コース。
+  // 詳細な免責は Lesson 800 冒頭の explain step に明記。
+  {
+    id: 'adhd-leverage-01',
+    title: 'ADHD特性を経営資源に変える',
+    category: 'ADHDレバレッジ',
+    group: 'business',
+    lessonIds: [800, 801, 802, 803, 804, 805, 806, 807],
+    level: '中級',
+    description:
+      '過集中・発散思考・即興性・新奇探索性をビジネスでの強みとして再配置。環境設計・役割選択・補完型コラボで、ADHD特性をレバレッジに変える実践コース。※医学的助言ではありません。',
+    image: '/images/v3/course-adhd-leverage-01.png',
+  },
 ]
 
 // 英訳: id / category / group / lessonIds / level / image は ja と完全に同じ。
@@ -627,6 +654,14 @@ const COURSE_EN_OVERRIDES: Record<string, { title: string; description: string }
   'documentation-01': {
     title: 'Documents That Communicate',
     description: 'A systematic course covering structure, one-message-per-slide, diagram types, layout, typography, color, and chart design — the craft of slides that land.',
+  },
+  'listening-01': {
+    title: 'Structured Listening for Real Conversations',
+    description: 'Move beyond passive listening: separate facts, emotions, and interpretations, then use questioning, paraphrasing, and silence to surface real intent in 1-on-1s and sales discovery.',
+  },
+  'adhd-leverage-01': {
+    title: 'Turn ADHD Traits into Business Leverage',
+    description: 'Reframe hyperfocus, divergent thinking, agility, and novelty-seeking as business assets. Through environment design, role selection, and complementary collaboration, turn ADHD traits into leverage. Not medical advice.',
   },
 }
 

@@ -170,18 +170,50 @@ const LESSON_IMAGES: Record<number, string> = {
   644: '/images/v3/lesson-644.png',  // 退職交渉
   645: '/images/v3/lesson-645.png',  // 引き止め対応
   646: '/images/v3/lesson-646.png',  // 入社前後
-  // 認知科学 — cognitive-01 / cognitive-02 のレッスン個別画像は未制作。
-  // 当面はコース画像を流用してフォールバック画像（hero-deduction）を避ける。
-  700: '/images/v3/course-cognitive-01.png',  // ワーキングメモリの上限 7±2
-  701: '/images/v3/course-cognitive-01.png',  // チャンキング
-  702: '/images/v3/course-cognitive-01.png',  // 認知負荷理論
-  703: '/images/v3/course-cognitive-01.png',  // 外部記憶
-  704: '/images/v3/course-cognitive-01.png',  // マルチタスクの幻想
-  710: '/images/v3/course-cognitive-02.png',  // 利用可能性ヒューリスティック
-  711: '/images/v3/course-cognitive-02.png',  // ハロー効果
-  712: '/images/v3/course-cognitive-02.png',  // 後知恵バイアス
-  713: '/images/v3/course-cognitive-02.png',  // ダニング・クルーガー効果
-  714: '/images/v3/course-cognitive-02.png',  // 結果 vs プロセス
+  // 認知科学 — cognitive-01（ワーキングメモリ系）
+  700: '/images/v3/lesson-700.png',  // ワーキングメモリの上限 7±2
+  701: '/images/v3/lesson-701.png',  // チャンキング
+  702: '/images/v3/lesson-702.png',  // 認知負荷理論
+  703: '/images/v3/lesson-703.png',  // 外部記憶
+  704: '/images/v3/lesson-704.png',  // マルチタスクの幻想
+  // 認知科学 — cognitive-02（認知バイアス応用編）
+  710: '/images/v3/lesson-710.png',  // 利用可能性ヒューリスティック
+  711: '/images/v3/lesson-711.png',  // ハロー効果
+  712: '/images/v3/lesson-712.png',  // 後知恵バイアス
+  713: '/images/v3/lesson-713.png',  // ダニング・クルーガー効果
+  714: '/images/v3/lesson-714.png',  // 結果 vs プロセス
+  // ドキュメンテーション
+  720: '/images/v3/lesson-720.png',  // 資料は構成が9割
+  721: '/images/v3/lesson-721.png',  // 1スライド1メッセージ
+  722: '/images/v3/lesson-722.png',  // 文字を図解に変える基準
+  723: '/images/v3/lesson-723.png',  // レイアウトと余白
+  724: '/images/v3/lesson-724.png',  // タイポグラフィ
+  725: '/images/v3/lesson-725.png',  // 配色の3色ルール
+  726: '/images/v3/lesson-726.png',  // チャート設計
+  // フェルミ推定（200-205、ID 206 は除外）
+  200: '/images/v3/lesson-200.png',  // フェルミ推定とは何か
+  201: '/images/v3/lesson-201.png',  // 分解の技術
+  202: '/images/v3/lesson-202.png',  // 都市・インフラ系
+  203: '/images/v3/lesson-203.png',  // ビジネス規模
+  204: '/images/v3/lesson-204.png',  // よくある罠と対策
+  205: '/images/v3/lesson-205.png',  // 前提データ 30
+  // 構造化リスニング — listening-01
+  730: '/images/v3/lesson-730.png',  // 構造化リスニング入門
+  731: '/images/v3/lesson-731.png',  // 事実・感情・解釈の三層
+  732: '/images/v3/lesson-732.png',  // パラフレーズ
+  733: '/images/v3/lesson-733.png',  // オープン vs クローズド質問
+  734: '/images/v3/lesson-734.png',  // 沈黙の活用
+  735: '/images/v3/lesson-735.png',  // 1on1 でのコーチング
+  736: '/images/v3/lesson-736.png',  // セールスリスニング
+  // ADHD レバレッジ — adhd-leverage-01
+  800: '/images/v3/lesson-800.png',  // 特性をリフレームする
+  801: '/images/v3/lesson-801.png',  // 集中ゾーンの記録
+  802: '/images/v3/lesson-802.png',  // デスクセットアップ
+  803: '/images/v3/lesson-803.png',  // タスクの粒度を下げる
+  804: '/images/v3/lesson-804.png',  // 自分が光る役割
+  805: '/images/v3/lesson-805.png',  // パートナーで補う
+  806: '/images/v3/lesson-806.png',  // 燃え尽き予防
+  807: '/images/v3/lesson-807.png',  // ロールモデルから学ぶ
 }
 
 function getHeroImage(category: string, lessonId?: number): string {

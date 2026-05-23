@@ -32,19 +32,19 @@ function save(stats: Stats) {
 
 function today(): string {
   // UTC基準ではなくローカル時刻（日本時間）で日付を取得
-  const d = new Date()
-  const year = d.getFullYear()
-  const month = String(d.getMonth() + 1).padStart(2, '0')
-  const day = String(d.getDate()).padStart(2, '0')
-  return `${year}-${month}-${day}`
+  return localDateStr()
 }
 
-/** 任意のUnixミリ秒をローカル日付文字列（YYYY-MM-DD）に変換 */
-function localDateStr(ms: number): string {
-  const d = new Date(ms)
-  const year = d.getFullYear()
-  const month = String(d.getMonth() + 1).padStart(2, '0')
-  const day = String(d.getDate()).padStart(2, '0')
+/**
+ * 任意のUnixミリ秒またはDateをローカル日付文字列（YYYY-MM-DD）に変換。
+ * `toISOString().slice(0, 10)` を使うと UTC 基準で日付がズレる
+ * （JST 朝 9:00 前は前日扱いになる）ため、学習日・週次サマリー等は必ずこちらを使うこと。
+ */
+export function localDateStr(d?: Date | number): string {
+  const date = d === undefined ? new Date() : (d instanceof Date ? d : new Date(d))
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
   return `${year}-${month}-${day}`
 }
 
@@ -53,6 +53,9 @@ export function recordCompletion(lessonKey: string) {
   if (!stats.completedLessons.includes(lessonKey)) {
     stats.completedLessons.push(lessonKey)
   }
+  // レッスン完了時はローカル日付で必ず studyDates を更新する。
+  // addStudyTime() の MIN_DURATION_MS 未満（5秒未満）の短時間レッスンでも
+  // 「学習した日」として今週カードや 30 日チャートに反映させるための念押し。
   const d = today()
   if (!stats.studyDates.includes(d)) {
     stats.studyDates.push(d)
@@ -82,13 +85,7 @@ export function getStreak(): number {
   if (dates.length === 0) return 0
 
   const todayStr = today()
-  const yesterdayStr = (() => {
-    const d = new Date(Date.now() - 86400000)
-    const year = d.getFullYear()
-    const month = String(d.getMonth() + 1).padStart(2, '0')
-    const day = String(d.getDate()).padStart(2, '0')
-    return `${year}-${month}-${day}`
-  })()
+  const yesterdayStr = localDateStr(Date.now() - 86400000)
 
   // streak must include today or yesterday
   const last = dates[dates.length - 1]

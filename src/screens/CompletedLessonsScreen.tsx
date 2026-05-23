@@ -18,6 +18,8 @@ const CATEGORY_LABEL_KEY: Record<string, string> = {
   'ラテラルシンキング': 'category.lateral',
   'アナロジー思考': 'category.analogy',
   'システムシンキング': 'category.systems',
+  '構造化リスニング': 'category.listening',
+  'ADHDレバレッジ': 'category.adhdLeverage',
   'フェルミ推定': 'category.fermi',
   '履歴書・職務経歴書': 'category.careerResume',
   'SPI対策': 'category.careerSpi',

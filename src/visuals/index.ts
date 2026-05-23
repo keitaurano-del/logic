@@ -67,6 +67,9 @@ import { FermiAreaApproachVisual } from './FermiAreaApproachVisual'
 import { FermiMacroMicroSplitVisual } from './FermiMacroMicroSplitVisual'
 import { FermiDemandDivSupplyVisual } from './FermiDemandDivSupplyVisual'
 import { FermiCrossCheckVisual } from './FermiCrossCheckVisual'
+// ADHD leverage course (lesson 801 / 804): 2 種類のマトリクス系図解
+import { IgnitionMapVisual } from './IgnitionMapVisual'
+import { TraitEnvironmentMatrixVisual } from './TraitEnvironmentMatrixVisual'
 
 /**
  * visualId → Visual component の registry
@@ -141,6 +144,9 @@ export const visualRegistry: Record<string, ComponentType> = {
   FermiMacroMicroSplitDiagram: FermiMacroMicroSplitVisual,
   FermiDemandDivSupplyDiagram: FermiDemandDivSupplyVisual,
   FermiCrossCheckDiagram: FermiCrossCheckVisual,
+  // ADHD leverage course
+  IgnitionMapDiagram: IgnitionMapVisual,
+  TraitEnvironmentMatrixDiagram: TraitEnvironmentMatrixVisual,
 }
 
 export function getVisualComponent(id: string): ComponentType | null {

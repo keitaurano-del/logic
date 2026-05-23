@@ -13,6 +13,8 @@ import { PlacementCard } from '../tutorial/placementCard'
 import { hasCompletedPlacement } from '../placementData'
 import { useWindowSize, BREAKPOINTS } from '../hooks/useResponsive'
 import { allLessons } from '../lessonData'
+import { getStudyTimeMs, getStudyDates, localDateStr } from '../stats'
+import { ClockIcon } from '../icons'
 import { t } from '../i18n'
 
 // フェルミ問題は fermiData.ts の FERMI_POOL を使用（日付ベース共通）
@@ -100,6 +102,7 @@ interface HomeScreenV3Props {
   onOpenPlacementTest?: () => void
   onOpenReviewHub?: () => void
   onOpenPricing?: () => void
+  onOpenStudyTime?: () => void
 }
 
 const IMG = '/images/v3'
@@ -118,7 +121,7 @@ function readStoredFermiIndex(): number {
 }
 
 export function HomeScreenV3(props: HomeScreenV3Props) {
-  const { userName, onOpenLesson, onOpenAIGen, onNavigateToDailyFermi, onOpenPlacementTest, onOpenReviewHub, onOpenPricing: _onOpenPricing, onOpenCategory: _onOpenCategory, onOpenRank: _onOpenRank, onOpenStats: _onOpenStats, onOpenRoadmap: _onOpenRoadmap } = props
+  const { userName, onOpenLesson, onOpenAIGen, onNavigateToDailyFermi, onOpenPlacementTest, onOpenReviewHub, onOpenStudyTime, onOpenPricing: _onOpenPricing, onOpenCategory: _onOpenCategory, onOpenRank: _onOpenRank, onOpenStats: _onOpenStats, onOpenRoadmap: _onOpenRoadmap } = props
   const dailyCardRef = useRef<HTMLButtonElement>(null)
   const [showCoachmark, dismissCoachmark] = useShouldShowHomeCoachmark()
   const { width } = useWindowSize()
@@ -267,6 +270,11 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
             unresolved={wrongStats.unresolved}
             onOpen={() => onOpenReviewHub?.()}
           />
+        )}
+
+        {/* 学習時間ミニカード — 今日の学習有無 + 累計学習時間を表示。タップで StudyTimeScreen へ */}
+        {onOpenStudyTime && (
+          <StudyTimeCard onOpen={onOpenStudyTime} />
         )}
 
         {/* AI practice cards (large, vertical) */}
@@ -454,6 +462,83 @@ function ReviewCard({ due, weak, total, unresolved, onOpen }: {
       </div>
     </div>
   )
+}
+
+// 学習時間ミニカード
+// - 今日学習している場合: 「今日 N分 学習しました」 + 累計
+// - 未学習の場合: 「今日まだ学習していません」 + 累計（累計が0なら「レッスンを開いて始めましょう」）
+// データソース: getStudyTimeMs() (累計), getStudyDates() (今日学習したかの判定)
+// タップで StudyTimeScreen に遷移する。デザインは ReviewCard と同じトーン（accent-soft アイコン + 矢印）。
+function StudyTimeCard({ onOpen }: { onOpen: () => void }) {
+  const totalMs = getStudyTimeMs()
+  const dates = getStudyDates()
+  const todayStr = localDateStr()
+  const studiedToday = dates.includes(todayStr)
+  const hasAnyStudy = totalMs > 0
+
+  const totalLabel = formatStudyMs(totalMs)
+  const headline = studiedToday
+    ? t('home.studyTimeTodayHeadline', { time: totalLabel })
+    : t('home.studyTimeStartHeadline')
+  const sub = hasAnyStudy
+    ? t('home.studyTimeTotalSub', { time: totalLabel })
+    : t('home.studyTimeStartSub')
+
+  return (
+    <div
+      role="button"
+      tabIndex={0}
+      aria-label={t('home.studyTimeCardAria')}
+      onClick={onOpen}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpen() } }}
+      style={{
+        background: 'var(--bg-card)',
+        borderRadius: 'var(--radius-lg)',
+        padding: '18px 20px',
+        cursor: 'pointer',
+        boxShadow: 'var(--shadow-v3-card-inset)',
+        flexShrink: 0,
+        position: 'relative',
+        overflow: 'hidden',
+        border: '1px solid transparent',
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+        <div style={{
+          width: 44, height: 44, flexShrink: 0,
+          borderRadius: 12,
+          background: 'var(--accent-soft)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          color: 'var(--brand)',
+        }}>
+          <ClockIcon width={22} height={22} />
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--brand)' }}>
+              {t('home.studyTimeEyebrow')}
+            </span>
+          </div>
+          <div style={{ fontSize: 16, fontWeight: 700, lineHeight: 1.35, marginBottom: 2 }}>{headline}</div>
+          <div style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 500, lineHeight: 1.4 }}>{sub}</div>
+        </div>
+        <div style={{ color: 'var(--text-muted)', fontSize: 22, fontWeight: 400, lineHeight: 1, paddingLeft: 4 }}>›</div>
+      </div>
+    </div>
+  )
+}
+
+// 学習時間 ms を翻訳済み文字列に整形（ja/en の数値表記差を i18n キーで吸収）
+function formatStudyMs(ms: number): string {
+  if (ms < 3600000) {
+    const min = Math.max(0, Math.round(ms / 60000))
+    return t('home.studyTimeFmtMin', { n: min })
+  }
+  const h = Math.floor(ms / 3600000)
+  const m = Math.round((ms % 3600000) / 60000)
+  return m > 0
+    ? t('home.studyTimeFmtHourMin', { h, m })
+    : t('home.studyTimeFmtHour', { h })
 }
 
 function buildReviewSub(due: number, weak: number, total: number, unresolved: number): string {

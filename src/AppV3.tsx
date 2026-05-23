@@ -488,6 +488,7 @@ function AppV3() {
           onOpenPlacementTest={() => navigate({ type: 'placement-test' })}
           onOpenReviewHub={() => navigate({ type: 'review-hub' })}
           onOpenPricing={() => navigate({ type: 'pricing' })}
+          onOpenStudyTime={() => navigate({ type: 'study-time' })}
         />
       )}
 
