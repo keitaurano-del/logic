@@ -449,10 +449,11 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
         </div>
       )}
 
-      {/* SCRUM-215: 誤りを報告 — アイコンのみのコンパクト表示（誤タップ防止）、非クイズ時は次へボタンと重ならない位置へ */}
+      {/* SCRUM-215: 誤りを報告 — アイコンのみのコンパクト表示（誤タップ防止）、非クイズ時は次へボタン・前へボタンと重ならない位置へ */}
+      {/* 2026-05-23: 「前へ」ボタン(left:16, bottom:safe+20px, 56×56)と縦並びで重なっていたため bottom を safe+88px に引き上げ */}
       <button
         onPointerDown={(e) => { e.stopPropagation(); setReportOpen(true) }}
-        style={{ position: 'absolute', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 68px)', left: 16, fontSize: 12, color: 'var(--text-secondary)', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 99, cursor: 'pointer', zIndex: 7, padding: '5px 10px', display: slide.kind === 'summary' ? 'none' : 'flex', alignItems: 'center', gap: 5, opacity: 0.9 }}
+        style={{ position: 'absolute', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 88px)', left: 16, fontSize: 12, color: 'var(--text-secondary)', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 99, cursor: 'pointer', zIndex: 7, padding: '5px 10px', display: slide.kind === 'summary' ? 'none' : 'flex', alignItems: 'center', gap: 5, opacity: 0.9 }}
         title={t('stories.reportTitle')}
       >
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg>{t('stories.reportLink')}
