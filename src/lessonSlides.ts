@@ -16,7 +16,8 @@ export type LessonSlide =
   | { kind: 'think'; question: string; hint?: string; modelAnswer: string; points: string[] }
   | { kind: 'case'; title: string; situation: string; phases: { info: string; question: string; options: { label: string; correct: boolean; feedback: string }[] }[]; conclusion: string }
   // v2: コンセプト図解スライド（visualId で registry から動的にコンポーネント取得）
-  | { kind: 'visual'; visualId: string; title?: string; caption?: string }
+  // visualProps を渡すと Visual の default 内容を差し替えできる（multi-lesson 共有用）
+  | { kind: 'visual'; visualId: string; title?: string; caption?: string; visualProps?: Record<string, unknown> }
 
 export interface LessonV3 {
   id: number
@@ -291,6 +292,9 @@ export function convertLessonToSlides(lesson: any): LessonSlide[] {
           visualId: step.visual,
           title: step.visualTitle || undefined,
           caption: step.visualCaption || undefined,
+          // step.visualProps が指定されていれば Visual の default 内容を差し替える
+          // 未指定の場合は Visual 側の default が使われる（後方互換）
+          visualProps: step.visualProps && typeof step.visualProps === 'object' ? step.visualProps : undefined,
         })
         // step.outro があれば、visual の直後に「まとめ」concept スライドを挿入
         // visual で得たイメージを言語化して定着させる、80-150 字目安のテキスト

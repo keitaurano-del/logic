@@ -8,6 +8,16 @@ import { useStepReveal } from './hooks/useStepReveal'
  *
  * default: lesson-28 step.1「ケース面接で問われる 3 つの思考の柱」
  *
+ * Props で内容差し替え可能（lesson データ側 `step.visualProps` で指定）:
+ *   sectionLabel?: string         — 上部の見出し
+ *   pillars?: [Pillar, Pillar, Pillar]
+ *                                 — 3 本の柱（title / body / icon?）
+ *   hint?: string                 — 完了時に表示するヒント（💡 マーク付き）
+ *   revealMode?: 'interactive' | 'static'
+ *                                 — interactive (default) は段階開示、static は全表示
+ *
+ * 未指定フィールドは default 値（ケース面接 3 つの柱）が使われ、後方互換が保たれる。
+ *
  * 3 段階で開示:
  *   Step 1 — 柱 1
  *   Step 2 — 柱 1+2

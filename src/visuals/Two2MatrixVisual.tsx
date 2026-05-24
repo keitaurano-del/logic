@@ -6,6 +6,16 @@ import './visuals-phase2.css'
  * 想定 visualId: 'Two2MatrixDiagram'
  *
  * default: lesson-54 step.1「インパクト × 実行容易性」
+ *
+ * Props で内容差し替え可能（lesson データ側 `step.visualProps` で指定）:
+ *   sectionLabel?: string         — 上部の見出し
+ *   xAxis?: { low, high, label? } — 横軸 (low=左, high=右)
+ *   yAxis?: { low, high, label? } — 縦軸 (low=下, high=上)
+ *   cells?: [tl, tr, bl, br]      — 4 セル (top-left → top-right → bottom-left → bottom-right)
+ *                                   各 cell は { title, items? }
+ *   hint?: string                 — 完了時に表示するヒント（💡 マーク付き）
+ *
+ * 未指定フィールドは default 値（インパクト × 実行容易性）が使われ、後方互換が保たれる。
  */
 
 export type Two2MatrixCell = {

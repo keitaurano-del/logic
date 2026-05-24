@@ -338,3 +338,39 @@ MeceVennDiagram, ContrapositiveDiagram, JtbdDiagram, MvpTestDesignDiagram, Hypot
 - 修正実施は別タスク（content-creator は読み取り+ docs 書き出しのみ完了）
 - 詳細データ: `/tmp/audit.json`（184 件の判定結果）
 - 抽出スクリプト: `/tmp/extract_v2.mjs` / `/tmp/audit.mjs`
+
+---
+
+## props 化 TODO（2026-05-24 dev-logic）
+
+### 完了済（このコミットで対応）
+
+`renderVisual()` が `createElement(Comp)` で props 無し呼び出しになっていた構造的バグを根本解決：
+
+- `src/lessonData.ts` の `ExplainStep` に `visualProps?: Record<string, unknown>` を追加
+- `src/visuals/index.ts` の `renderVisual(id, props?)` を props 受け取り対応に拡張
+- `src/lessonSlides.ts` の `convertLessonToSlides` で `step.visualProps` を slide に伝搬
+- `src/screens/LessonStoriesScreen.tsx` の `renderVisual(slide.visualId, slide.visualProps)` 化
+- **Top 5 Visual の props 受け取り対応**:
+  - ThreePillarsDiagram — 既に props 対応済、JSDoc に props スキーマ明記
+  - FermiFormulaDiagram — 既に props 対応済、JSDoc に props スキーマ明記
+  - Two2MatrixDiagram — 既に props 対応済、JSDoc に props スキーマ明記
+  - LogicTreeDiagram — 既に props 対応済、JSDoc に props スキーマ明記
+  - PyramidDiagram — **新規 props 対応**（conclusion / claims / evidence / hint）
+
+これで lesson データ側で `step.visualProps` を埋めれば multi-lesson 共有が正しく動く状態になった。
+
+### 残作業（content-creator 担当領域）
+
+- **致命 24 件 + 高 38 件**の lesson データ側 `visualProps` 定義（`*Lessons.ts`）
+  - listening 系 12 件は `Visual 削除` か新規 Visual 増設なので props 化対象外
+  - その他の流用前提 lesson は `visualProps` を埋めれば即解消
+
+### 残作業（dev-logic 担当領域）
+
+- 残り **50 種 Visual** の props 化（現状 default のみで multi-lesson 共有不可）
+  - 優先度高: WhereWhyHowDiagram (8 lesson 中 4 件ズレ), TriadDiagram (4 中 3 件), LeveragePointsDiagram (4 中 3 件)
+  - 単独使用 36 種は props 化不要（流用予定なし）
+  - 各 Visual の Props 型は `src/visuals/<Name>Visual.tsx` で個別定義する設計を踏襲
+- 新規 Visual 5 種（listening course 想定）
+  - FactEmotionInterpretationDiagram / SilenceTypesDiagram / SPINStructureDiagram / BANTGridDiagram / OneOnOneFlowDiagram

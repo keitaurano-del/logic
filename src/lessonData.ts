@@ -16,6 +16,28 @@ export type ExplainStep = {
   content: string
   visual?: string
   /**
+   * visual に渡す props（任意）。
+   *
+   * Visual コンポーネントは default 値を持っており、`visualProps` が未指定なら
+   * default 表示のままになる。レッスンごとに内容を切り替えて Visual を multi-lesson
+   * 共有したい場合は、対象 Visual の Props 型に合わせて key/value を埋める。
+   *
+   * 例:
+   *   visual: 'ThreePillarsDiagram',
+   *   visualProps: {
+   *     sectionLabel: 'ソクラテスの問答法 — 3 つのステップ',
+   *     pillars: [
+   *       { title: '主張を聞く', body: '相手の前提を引き出す' },
+   *       { title: '反例を挙げる', body: '矛盾を提示する' },
+   *       { title: '再定義する', body: 'より正しい答えに迫る' },
+   *     ],
+   *   }
+   *
+   * 各 Visual の Props スキーマは `src/visuals/<Name>Visual.tsx` の JSDoc 参照。
+   * `visualProps` を渡しても、Visual 側が未対応のフィールドは無視される。
+   */
+  visualProps?: Record<string, unknown>
+  /**
    * visual の直後に挿入される「まとめ／応用」テキスト（80-150 字目安）。
    * visual で得たイメージを言語化して定着させる役割。
    * step.visual が設定されていない場合は無視される。

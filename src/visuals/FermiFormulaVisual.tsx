@@ -9,6 +9,16 @@ import { useStepReveal } from './hooks/useStepReveal'
  *
  * default: lesson-201 step.0「ファミレス市場規模」
  *
+ * Props で内容差し替え可能（lesson データ側 `step.visualProps` で指定）:
+ *   sectionLabel?: string        — 上部の見出し
+ *   factors?: FermiFactor[]      — 掛け算する要素 (label / value / unit?)
+ *   result?: FermiResult         — 最終結果 (label / value / unit?)
+ *   hint?: string                — 完了時に表示するヒント（💡 マーク付き）
+ *   revealMode?: 'interactive' | 'static'
+ *                                 — interactive (default) は段階開示、static は全表示
+ *
+ * 未指定フィールドは default 値（ファミレス市場規模）が使われ、後方互換が保たれる。
+ *
  * 段階開示:
  *   Step 1..N — factors を 1 つずつ追加
  *   Step N+1 — = result を出す

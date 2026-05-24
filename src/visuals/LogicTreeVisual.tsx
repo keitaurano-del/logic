@@ -48,8 +48,19 @@ function computeTreeDepth(node: LogicTreeNode): number {
 
 /**
  * ロジックツリー — タップで段階展開
- * lesson-21 step.visual='LogicTreeDiagram'
- * 任意の {label, children} ツリーを props で渡せる。default は「朝起きられない」例。
+ * lesson-21 step.visual='LogicTreeDiagram'（default）
+ * lesson-22, lesson-25, lesson-323 など複数レッスンで流用可能
+ *
+ * Props で内容差し替え可能（lesson データ側 `step.visualProps` で指定）:
+ *   data?: LogicTreeNode          — 任意の {label, children} 再帰ツリー
+ *   sectionLabel?: string         — 上部見出し。`{depth}` プレースホルダで現在深さを埋め込み
+ *   hint?: string | null          — ヒント文。null で非表示
+ *   maxDepth?: number             — 最大展開深さ（default 3）
+ *   hintTone?: 'warning' | 'brand' — ヒント色（warning=黄, brand=青）
+ *   revealMode?: 'interactive' | 'static'
+ *                                 — interactive (default) は段階展開、static は最初から全表示
+ *
+ * 未指定フィールドは default 値（「朝起きられない」Why ツリー）が使われ、後方互換が保たれる。
  *
  * useStepReveal ベースで Phase 3 の他 Visual と同じ操作感に統一。
  */

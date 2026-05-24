@@ -787,7 +787,7 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
   }
 
   if (slide.kind === 'visual') {
-    const element = renderVisual(slide.visualId)
+    const element = renderVisual(slide.visualId, slide.visualProps)
     if (!element) return null
     // 2026-05-22 — 全 Visual を fullBleed 表示に統一（旧: Pyramid のみ）。
     // 画面端まで広げ、コンテナ側の汎用 `[data-fullbleed="true"]` 底上げ CSS で
