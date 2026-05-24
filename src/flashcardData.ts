@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { getSupabaseClient } from './db/index'
+
 const STORAGE_KEY = 'logic-flashcards'
 
 export type Flashcard = {
@@ -102,6 +105,184 @@ export function getCardStats() {
   const weak = cards.filter((c) => c.wrongCount > 0).length
   const mastered = cards.filter((c) => c.correctCount >= 3 && c.interval >= 7).length
   return { total: cards.length, due, weak, mastered }
+}
+
+// =============================================
+// Supabase 同期 (Phase 1: Device Sync)
+// =============================================
+
+type FlashcardRow = {
+  card_key: string
+  source: string
+  category: string
+  front: string
+  back: string
+  interval_days: number
+  ease: number
+  next_review: string
+  correct_count: number
+  wrong_count: number
+  created_at: string
+  updated_at: string
+}
+
+function rowToCard(row: FlashcardRow): Flashcard {
+  return {
+    id: row.card_key,
+    front: row.front,
+    back: row.back,
+    category: row.category,
+    source: row.source,
+    createdAt: row.created_at ? row.created_at.slice(0, 10) : new Date().toISOString().slice(0, 10),
+    interval: row.interval_days ?? 0,
+    ease: row.ease ?? 2.5,
+    nextReview: row.next_review,
+    correctCount: row.correct_count ?? 0,
+    wrongCount: row.wrong_count ?? 0,
+  }
+}
+
+function cardToRow(userId: string, card: Flashcard, updatedAt?: string): Record<string, unknown> {
+  return {
+    user_id: userId,
+    card_key: card.id,
+    source: card.source,
+    category: card.category,
+    front: card.front,
+    back: card.back,
+    interval_days: card.interval,
+    ease: card.ease,
+    next_review: card.nextReview,
+    correct_count: card.correctCount,
+    wrong_count: card.wrongCount,
+    updated_at: updatedAt ?? new Date().toISOString(),
+  }
+}
+
+async function fetchCardsFromDB(userId: string): Promise<Flashcard[] | null> {
+  const db = getSupabaseClient()
+  if (!db) return null
+  try {
+    const { data, error } = await (db as any)
+      .from('user_flashcards')
+      .select('card_key, source, category, front, back, interval_days, ease, next_review, correct_count, wrong_count, created_at, updated_at')
+      .eq('user_id', userId)
+    if (error) {
+      console.warn('[flashcardData] fetchCardsFromDB error:', error.message)
+      return null
+    }
+    return (data || []).map((r: FlashcardRow) => rowToCard(r))
+  } catch (e) {
+    console.warn('[flashcardData] fetchCardsFromDB exception:', e)
+    return null
+  }
+}
+
+/** 1 枚を DB に upsert (書き込みフック用) */
+export async function pushCardToDB(userId: string, card: Flashcard): Promise<void> {
+  const db = getSupabaseClient()
+  if (!db) return
+  try {
+    const { error } = await (db as any)
+      .from('user_flashcards')
+      .upsert([cardToRow(userId, card)], { onConflict: 'user_id,card_key' })
+    if (error) console.warn('[flashcardData] pushCardToDB error:', error.message)
+  } catch (e) {
+    console.warn('[flashcardData] pushCardToDB exception:', e)
+  }
+}
+
+async function pushCardsToDB(userId: string, cards: Flashcard[]): Promise<void> {
+  if (cards.length === 0) return
+  const db = getSupabaseClient()
+  if (!db) return
+  try {
+    const now = new Date().toISOString()
+    const rows = cards.map((c) => cardToRow(userId, c, now))
+    const CHUNK = 500
+    for (let i = 0; i < rows.length; i += CHUNK) {
+      const chunk = rows.slice(i, i + CHUNK)
+      const { error } = await (db as any)
+        .from('user_flashcards')
+        .upsert(chunk, { onConflict: 'user_id,card_key' })
+      if (error) {
+        console.warn('[flashcardData] pushCardsToDB error:', error.message)
+        return
+      }
+    }
+  } catch (e) {
+    console.warn('[flashcardData] pushCardsToDB exception:', e)
+  }
+}
+
+/** ローカル削除 + DB 削除 */
+export async function deleteCardForUser(userId: string, cardKey: string): Promise<void> {
+  const cards = loadCards().filter((c) => c.id !== cardKey)
+  saveCards(cards)
+  const db = getSupabaseClient()
+  if (!db) return
+  try {
+    const { error } = await (db as any)
+      .from('user_flashcards')
+      .delete()
+      .eq('user_id', userId)
+      .eq('card_key', cardKey)
+    if (error) console.warn('[flashcardData] deleteCardForUser error:', error.message)
+  } catch (e) {
+    console.warn('[flashcardData] deleteCardForUser exception:', e)
+  }
+}
+
+/**
+ * ログイン時の同期。
+ * 戦略: Last-write-wins by 進捗指標 (correctCount + interval)。
+ * - 両方にある場合: 進捗が大きい方を採用 (SRS の古い値で復習結果を上書きしない)
+ * - 片方だけ: そのまま使う
+ */
+export async function syncFlashcards(userId: string): Promise<void> {
+  const db = getSupabaseClient()
+  if (!db) return
+  try {
+    const remote = await fetchCardsFromDB(userId)
+    if (remote == null) return
+    const local = loadCards()
+
+    const remoteByKey = new Map(remote.map((r) => [r.id, r]))
+    const merged = new Map<string, Flashcard>()
+    for (const r of remote) merged.set(r.id, r)
+
+    const toPush: Flashcard[] = []
+    for (const l of local) {
+      const r = remoteByKey.get(l.id)
+      if (!r) {
+        merged.set(l.id, l)
+        toPush.push(l)
+        continue
+      }
+      const localProgress = l.correctCount + l.interval
+      const remoteProgress = r.correctCount + r.interval
+      if (localProgress > remoteProgress) {
+        merged.set(l.id, l)
+        toPush.push(l)
+      }
+    }
+
+    const mergedArr = [...merged.values()]
+    saveCards(mergedArr)
+    await pushCardsToDB(userId, toPush)
+
+    if (import.meta.env.DEV) {
+      console.log(
+        '[flashcardData] syncFlashcards complete:',
+        `remote=${remote.length}`,
+        `local=${local.length}`,
+        `merged=${mergedArr.length}`,
+        `pushed=${toPush.length}`,
+      )
+    }
+  } catch (e) {
+    console.warn('[flashcardData] syncFlashcards failed:', e)
+  }
 }
 
 // Generate flashcards from lesson quiz results
