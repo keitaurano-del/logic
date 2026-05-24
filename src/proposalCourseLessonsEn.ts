@@ -82,6 +82,9 @@ const proposalHypothesis: LessonData = {
       type: 'explain',
       title: 'Separating issue, cause, and action',
       content: 'Three things that often get confused:\n\nIssue: the problem to solve (e.g., 30% sales drop)\nCause: why the issue is happening (e.g., repeat customer churn)\nAction: a measure that resolves the cause (e.g., launch a loyalty program)\n\nThinking in this order — issue → cause → action — keeps you from picking off-target actions.',
+      visual: 'ThreePillarsDiagram',
+      outro:
+        'Issue, cause, and action are three different things. Skip the order and you end up racing toward an action while the issue is still fuzzy — a classic way to burn time on off-target work. Write each of the three down separately and check them for fit before you ever open the proposal deck.',
     },
     {
       type: 'quiz',
@@ -153,6 +156,9 @@ const proposalVerification: LessonData = {
       type: 'explain',
       title: 'Hypotheses are meant to be changed',
       content: 'Many people think "changing your hypothesis = losing." It\'s the opposite.\n\nRevising and updating hypotheses based on research findings IS the essence of hypothesis thinking.\n\nUpdate patterns:\nSupported → dig deeper as-is\nPartially modified → re-test the modified hypothesis\nRejected → switch to a different hypothesis',
+      visual: 'ThreePillarsDiagram',
+      outro:
+        'Anticipating all three outcomes — supported, partially modified, rejected — from the start stops you from being thrown by research findings. Changing a hypothesis is not losing; it is proof your verification actually worked. Updating quickly to match the facts is what raises the precision of your proposal.',
     },
     {
       type: 'quiz',
@@ -199,6 +205,9 @@ const proposalStructure: LessonData = {
       type: 'explain',
       title: 'Organize issues with a tree structure',
       content: 'When multiple issues are tangled, organize with a logic tree.\n\nIssue tree example:\nSales decline\n├── Decline in new customers\n│   ├── Lower brand awareness\n│   └── Switching to competitors\n└── Decline in repeat customers\n    ├── Quality dissatisfaction\n    └── Loss of price competitiveness\n\nA tree shows "where the highest-leverage solve point is."',
+      visual: 'LogicTreeDiagram',
+      outro:
+        'An issue tree is the map that shows "which branch your action will actually move." Solving every branch evenly is not realistic, so use the tree to survey the whole and then zero in on the branch with the biggest leverage. That is how seasoned teams build proposals.',
     },
     {
       type: 'quiz',
@@ -231,6 +240,9 @@ const proposalStructure: LessonData = {
       type: 'explain',
       title: 'Evaluate actions on feasibility and impact',
       content: 'When multiple actions emerge, evaluate them on two axes.\n\nImpact: how much it contributes to solving the issue\nFeasibility: can it be done given cost, time, and resources\n\nClassify on a 2×2 grid for clear priority:\n- High impact × Easy → execute immediately (Quick Win)\n- High impact × Hard → tackle medium-to-long term\n- Low impact × Easy → do if time permits\n- Low impact × Hard → drop',
+      visual: 'Two2MatrixDiagram',
+      outro:
+        'The impact × feasibility 2×2 makes it obvious to start from the Quick Win quadrant. "Do everything" usually collapses into "do nothing" in practice. When you can articulate the priority logic on a proposal page, the conviction it creates in decision-makers changes dramatically.',
     },
   ],
 }
@@ -245,6 +257,9 @@ const proposalOutline: LessonData = {
       type: 'explain',
       title: 'Design the storyline',
       content: 'In a proposal, the logical flow (storyline) is everything.\n\nBasic structure:\n1. Current state and issue (As-Is)\n2. Cause of the issue (Why)\n3. Target state (To-Be)\n4. Proposed action (How)\n5. Expected impact (So What)\n\nThis flow leads the reader through "understanding → conviction → action."',
+      visual: 'WhereWhyHowDiagram',
+      outro:
+        'As-Is → Why → To-Be → How → So What is the royal road of proposal storylines. Reorder these and the logic collapses, leaving the reader with a "conclusion-first manipulation" feeling. Build your skeleton in this order before you add any decoration — it is the safest sequence.',
     },
     {
       type: 'quiz',
@@ -261,6 +276,9 @@ const proposalOutline: LessonData = {
       type: 'explain',
       title: 'Apply the Pyramid Principle',
       content: 'The "lead with the conclusion" Pyramid Principle is the foundation of proposals.\n\nTop-Down (conclusion first): conclusion → reason 1, reason 2, reason 3\n→ Used in most business proposals\n\nBottom-Up (reasons first): reason 1, reason 2, reason 3 → conclusion\n→ Suited for data analysis reports\n\nProposals respect the reader\'s time by leading with the conclusion.',
+      visual: 'PyramidDiagram',
+      outro:
+        'A proposal is decided by its opening conclusion. Senior readers have the least time, so Top-Down conclusion-first is the principle. Bottom-Up is fine for analysis reports but should be avoided in proposals as a rule.',
     },
     {
       type: 'quiz',

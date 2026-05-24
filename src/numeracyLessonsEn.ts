@@ -60,6 +60,9 @@ const numeracyLesson400: LessonData = {
       type: 'explain',
       title: 'A pattern-selection cheat sheet to remove hesitation',
       content: 'Order of checks for selecting techniques live.\n\nA. 2-digit × 2-digit multiplication (check from the top):\n1. Same tens + ones summing to 10? → Trick — instant\n2. Symmetric around a clean number? → Difference of squares\n3. One side near a clean number? → Round and adjust\n4. Otherwise → Distribution / cross multiplication\n\nB. Multiplication by special numbers:\n- ×11 → Add the digits, place between\n- ×25 → ×100 ÷ 4\n- ×50 → ×100 ÷ 2\n- ×125 → ×1,000 ÷ 8\n- ×9 → ×10 − ×1\n- ×5 → ×10 ÷ 2\n\nC. Percentages:\n- Combine anchors of 10%, 25%, 50%, 1%\n- "Almost ×1" cases like ×0.99 → use subtraction\n\nTip: No need to memorize every rule. Aim for the state where "something fires the moment you see the numbers." Decision time will start at slow and tighten to half a second with practice.',
+      visual: 'MentalMathDecisionTreeDiagram',
+      outro:
+        'The endgame for mental math is "first move fires the moment you see the numbers." Keep three decision tracks ready — multiplication, percentages, special numbers — and hesitation drops away while speed climbs.',
     },
     {
       type: 'quiz',
@@ -128,6 +131,9 @@ const numeracyLesson401: LessonData = {
       type: 'explain',
       title: 'Use absolute and relative values appropriately',
       content: 'For the same fact, the impression varies dramatically depending on whether you state an absolute value or a ratio.\n\nExample 1: $30 discount\n- $100 product → "30% off" lands hard\n- $10,000 product → "$30 off" feels weak; "$10,000 → $9,970" is unmoving\n\nExample 2: Sales up by $1B\n- Base of $10B → "10% growth" feels meaningful\n- Base of $1T → must say "+$1B" (0.1% doesn\'t communicate)\n\nPrinciples for choosing:\n- Small base × big change → use ratios (high impact)\n- Large base × small change → use absolute (concrete)\n- State both → most honest (lets the reader judge)\n\nCaution: Phrases like "Click-through rate up 200%!" need a closer look. 0.1% → 0.3% is also "up 200%." A textbook case where pure ratio overstates the picture.',
+      visual: 'AbsoluteVsRelativeDiagram',
+      outro:
+        'Ratios deliver impact, absolutes deliver concreteness. Pick by the size of the base and the size of the change, and when in doubt list both. Leaving the judgement material in the audience\'s hands is the most honest framing.',
     },
     {
       type: 'explain',
@@ -204,6 +210,9 @@ const numeracyLesson402: LessonData = {
       type: 'explain',
       title: 'Chained percent changes — multiply, do not add',
       content: 'When percent changes occur in sequence, multiply the multipliers — don\'t add them.\n\nExample 1: 20% up, then 10% down\n- 1.20 × 0.90 = 1.08 → 8% up\n- ❌ Not "20% − 10% = 10% up"\n\nExample 2: 30% up, then 30% down\n- 1.30 × 0.70 = 0.91 → 9% down\n- ❌ Not "back to ±0%"\n\nExample 3: 10% growth for 3 years in a row\n- 1.10 × 1.10 × 1.10 = 1.331 → 33.1% up by year 4\n- ❌ Not "30% up"\n\nPoint: When dealing with percent changes, the rule is "don\'t add." Chain them as multiplications.',
+      visual: 'ExponentialCurveDiagram',
+      outro:
+        'Chained percent changes call for multiplication, not addition. Three years of 10% growth lands at 33%, never at 30%. Carrying a compounding mindset is enough to lift the accuracy of long-horizon estimates by a full level.',
     },
     {
       type: 'explain',
@@ -358,6 +367,9 @@ const numeracyLesson404: LessonData = {
       type: 'explain',
       title: 'Exponential growth violates intuition',
       content: 'The human brain handles linear growth fine but consistently underestimates exponential growth.\n\nFamous example: how much after 30 days?\n- A: "Get 1M yen each day" → 30 × 1M = 30M yen\n- B: "Start with 1 yen, double each day" → 1, 2, 4, 8, … day 30 = 2^29 ≈ 540M yen\n- Intuition says A wins; in fact B is 10×+ larger\n\nDoubling power:\n- Infections double every 3 days → 30 days = 2^10 = 1,024×\n- Linear thinking gets blindsided just before it\'s too late\n\nSpotting exponential growth:\n- Phenomena that "double on a regular schedule" are exponential\n- A graph with a log Y-axis indicates exponential growth\n- "Suddenly grew a lot recently" = late-stage exponential\n\nBusiness application:\n- Exponential user growth captures markets terrifyingly fast (network-effect startups)\n- Conversely, exponential cost growth (credit-card interest, subscription stacking) follows the same mechanic\n- "Compounding things" can be ally or enemy\n\nPoint: The essence of exponential growth is "current value × multiplier" determines next. Step one is leaving linear thinking behind.',
+      visual: 'ExponentialCurveDiagram',
+      outro:
+        'Human intuition is strong on linear curves and weak on exponential ones. When you see something "doubling on a regular cadence," resist being lulled by the small early numbers — work backwards from the late-stage surge to size it instead.',
     },
     {
       type: 'explain',
@@ -435,6 +447,9 @@ const numeracyLesson405: LessonData = {
       type: 'explain',
       title: 'For skewed distributions, the median rules',
       content: 'Real-world data is often not normal. With skew, the mean misleads.\n\nRight-skewed (long right tail):\n- Examples: income, stock returns, social-media follower counts\n- A small number of high values lifts the mean\n- Mean > median\n- → Use the median for reality\n\nLeft-skewed (long left tail):\n- Examples: lifespan, exam scores when most are near full marks\n- A small number of low values pulls the mean down\n- Mean < median\n- → Use the median for reality\n\nPower law (Pareto):\n- Extreme skew where the top 20% accounts for 80%\n- Examples: book sales (a few bestsellers dominate), website traffic\n- The mean is meaningless; describe with "top X%," "median," or "Gini coefficient"\n\nHow to detect:\n- Compare mean vs. median\n- Plot a histogram (symmetric or one-sided?)\n- A mean-to-median ratio of 1.5× or more suggests heavy skew\n\nCommon mistake in practice:\n- Reading "mean income 5M" and expecting "I should also be at 5M"\n- Reality: median is 4M, mean inflated by upper layer\n- Same data, different impression based on which measure you choose\n\nPoint: Receiving "the mean" without inspecting the distribution gives a sense of reality at odds with reality.',
+      visual: 'DistributionShapeDiagram',
+      outro:
+        'Most real-world data — income, stock returns, follower counts — is heavily skewed. Trusting only the mean warps your sense of reality, so always check the median alongside. The gap between mean and median is itself a story about how skewed the data is.',
     },
     {
       type: 'quiz',
@@ -512,6 +527,9 @@ const numeracyLesson406: LessonData = {
       type: 'explain',
       title: 'Maintain a "doubt list" for incoming numbers',
       content: 'When numbers arrive, mechanically check the following.\n\nSampling traps:\n- Are failures and dropouts included? (survivorship bias)\n- Is the sample skewed? (selection bias)\n- Is the time/region/segment cherry-picked?\n\nAggregation traps:\n- Do the whole and parts agree? (Simpson)\n- Same trend at the subgroup level?\n\nCausation traps:\n- Are you mistaking correlation for causation?\n- Any third factor (confounder)?\n- Is the direction of causation reversed?\n\nDenominator traps:\n- For "X×" or "X%," what is the base rate?\n- What is the sample size (n)?\n- Have you seen both ratios and counts?\n\nProbability traps:\n- For "X% accuracy," what is the base rate?\n- Have you considered the absolute numbers of false positives/negatives?\n\nMeta-questions:\n- What does the presenter want to claim?\n- Have you also looked for data that argues the opposite conclusion?\n\nPoint: Beyond "don\'t swallow whole," carry a checklist of "what to doubt" — that\'s how you read numbers critically.',
+      visual: 'GraphPitfallsDiagram',
+      outro:
+        'Sampling, aggregation, causation, denominator, and probability are the five main families of number traps. Keep a checklist of "what to doubt" in your back pocket and you stop swallowing numbers whole, reading them structurally instead.',
     },
     {
       type: 'quiz',

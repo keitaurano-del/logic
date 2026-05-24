@@ -58,6 +58,9 @@ const clientLesson89: LessonData = {
       type: 'explain',
       title: 'Estimate market size',
       content: 'Market size estimates like "5 million people × 3,000 yen = ?" come up constantly.\n\nCalculation:\n1. 5 million × 3,000\n2. = 5 million × 0.3 × 10K\n3. = 5M × 0.3 × 10K\n4. = 0.3 × 5M × 10K\n5. = 0.3 × 50 billion\n6. = 15 billion yen\n\nTip: Memorizing "10K × 10K = 100M" makes calculations fast.\n\nExample: Japan\'s coffee market\n- Coffee drinkers: ~60 million people\n- Annual spend: ~5,000 yen / person\n- Market size: 60M × 5,000 yen\n\nCalculation:\n1. 60M × 5,000\n2. = 60M × 0.5 × 10K\n3. = 30M × 10K\n4. = 300 billion yen\n5. ≈ 300 billion yen',
+      visual: 'FermiFormulaDiagram',
+      outro:
+        'Market size sizing is fundamentally "headcount × spend" — a single multiplication that frames the whole picture. Burn unit-conversion anchors like "10K × 10K = 100M" into muscle memory and digit-sanity checks become instant, so you can put numbers on the table with confidence.',
     },
     {
       type: 'quiz',
@@ -88,6 +91,9 @@ const clientLesson90: LessonData = {
       type: 'explain',
       title: 'Use So what? / Why so? to dig deep',
       content: 'To frame the issue correctly, use two questions.\n\nSo what? (so therefore?)\n→ Extract implications from facts\nExample: "Sales fell 10%" → So what? → "At this rate we hit losses in 3 months"\n\nWhy so? (why is that?)\n→ Drill into the cause of facts\nExample: "Sales fell 10%" → Why so? → "New customer acquisition is flat, but churn of existing customers has increased"\n\nRepeating these two takes you from surface symptom to essential issue.',
+      visual: 'SoWhatDiagram',
+      outro:
+        'So what? pulls out implications, Why so? pulls out causes. A report that just lists facts tends to invite "so what?" from your audience, so alternate these two questions like a pair of tools and ride them down to the real issue. That alternation is the move that separates analysts from list-makers.',
     },
     {
       type: 'quiz',
@@ -180,6 +186,9 @@ const clientLesson92: LessonData = {
       type: 'explain',
       title: 'Read by separating claim, reason, and example',
       content: 'When organizing information, splitting it into three elements clears the head.\n\nClaim: what the author wants to convey\nExample: "This service has high implementation impact"\n\nReason: why the claim holds\nExample: "90% of adopting companies cut work hours by 20%"\n\nExample: evidence backing the reason\nExample: "Company A achieved 40 hours/month of effort reduction"\n\nReading split this way also surfaces problems like "claim with no reason" or "weak reason."',
+      visual: 'ClaimReasonAssumptionDiagram',
+      outro:
+        'Splitting writing into claim, reason, and example makes "claims without reasons" and "examples without claims" obvious at a glance. Use the same three-layer lens whether you are reading or writing, and the quality of your arguments climbs a clear notch.',
     },
     {
       type: 'quiz',
@@ -267,6 +276,9 @@ const clientLesson94: LessonData = {
       type: 'explain',
       title: 'Lead with the conclusion',
       content: 'In business writing, "conclusion first" is the foundation.\n\nPREP method:\n- P (Point): conclusion / claim\n- R (Reason): rationale\n- E (Example): specific examples / data\n- P (Point): restate the conclusion\n\nBad:\n"We did market research. Competitor A lowered prices. Competitor B added new features. Customer feedback shows price dissatisfaction. Therefore, a pricing strategy review is needed."\n\nGood:\n"We propose a pricing strategy review. Three reasons: (1) competitors cut prices, (2) customer satisfaction surveys show price dissatisfaction, (3) at this rate, next quarter\'s revenue target is at risk."',
+      visual: 'PrepDiagram',
+      outro:
+        'PREP is Point → Reason → Example → Point — a four-beat rhythm. Wrapping the conclusion at the start and end minimizes load on a busy reader. The same pattern works for the opening line of an email, a chat reply, or a one-minute briefing, making it one of the most reusable templates you can carry.',
     },
     {
       type: 'explain',
@@ -334,6 +346,9 @@ const clientLesson95: LessonData = {
       type: 'explain',
       title: 'Use the pyramid structure',
       content: 'A tool to organize storyline visually is the pyramid structure.\n\n```\n       [Conclusion / claim]\n      /        |        \\\n [Reason 1] [Reason 2] [Reason 3]\n   |          |           |\n[Fact]      [Fact]      [Fact]\n```\n\nUsage:\n- Top: the conclusion you want to convey (just one)\n- Middle: reasons supporting the conclusion (2-4)\n- Bottom: facts and data backing each reason\n\nOrganizing this way before slide-making naturally surfaces logical leaps and gaps.',
+      visual: 'PyramidDiagram',
+      outro:
+        'A conclusion at the top, supported by two to four reasons, each backed by facts — this three-tier pyramid is the standard shape of an argument. Sketch it on paper before opening a slide tool, and you catch composition wobble and lopsided reasoning early, while editing is still cheap.',
     },
     {
       type: 'quiz',
@@ -359,6 +374,9 @@ const clientLesson96: LessonData = {
       type: 'explain',
       title: 'Hold to the three elements of a report',
       content: 'Effective reports need three elements.\n\n(1) Fact: what happened\nExample: "New inquiries this month dropped 30% MoM"\n\n(2) Insight: what it means\nExample: "Not seasonal; we estimate the impact comes from last month\'s ad pause"\n\n(3) Next Action: what to do, by when\nExample: "We\'ll restart ads next week and check next month\'s numbers for impact"\n\nReports without all three trigger "so what should I do?" responses.',
+      visual: 'ThreePillarsDiagram',
+      outro:
+        'A report that carries fact, insight, and next action as a complete set never invites "so what now?" Spending an extra moment to self-check "are all three present?" before you send is the small habit that compounds into real trust over time.',
     },
     {
       type: 'explain',

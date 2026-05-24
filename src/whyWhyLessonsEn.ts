@@ -17,6 +17,8 @@ const whyWhyIntro: LessonData = {
       content:
         'You have a recurring headache. Two options:\n\nSymptom relief: take a painkiller (silence the pain temporarily)\nRoot-cause cure: find why the headache keeps coming back and remove the cause (sleep? posture? eyesight?)\n\nBusiness works the same way.\nJump on surface symptoms and they keep returning.\nReach the root cause and you can stop the recurrence.\n\n5 Whys is the most fundamental technique for getting from a surface symptom to its true cause.',
       visual: 'WhyWhySymptomVsRootDiagram',
+      outro:
+        'Telling symptoms apart from root causes is where 5 Whys begins. Every time a problem lands on your desk, pause and ask yourself: is this a painkiller or an actual cure? That single habit alone keeps a surprising share of recurring issues from coming back.',
     },
     {
       type: 'quiz',
@@ -36,6 +38,8 @@ const whyWhyIntro: LessonData = {
       content:
         '5 Whys uses "five" as a rough target, not a magic number. It is a heuristic.\n\n• 1–2 whys: you usually only restate the symptom\n• 3 whys: you reach the immediate cause\n• 4–5 whys: you reach the structural / system level\n• 6+ whys: often beyond your team\'s control (economy, society)\n\n"5" is a rough indicator that you have reached a layer where you can actually act.\nThe goal is not to hit five mechanically — it is to stop where your team has the authority to fix the structure.',
       visual: 'WhyWhyChainDiagram',
+      outro:
+        'Five is a signal that you have reached the structural layer, not a quota. If a real fix appears at the third why, stop there. If the sixth why drops you into external forces, step back up one. Judge by the quality of the layer, not the count.',
     },
     {
       type: 'quiz',
@@ -55,6 +59,8 @@ const whyWhyIntro: LessonData = {
       content:
         'They look similar but serve different goals.\n\n【5 Whys】\nDrill down a single phenomenon vertically.\nWhy → Why → Why in a single chain.\nGoal: pin down one root cause.\n\n【Why-tree (logic tree)】\nFan out a single phenomenon horizontally.\nList possible causes MECE-style.\nGoal: enumerate candidate causes and prioritize.\n\nIn practice you combine the two.\nFirst expand the Why-tree to surface candidates, then drill the most likely one with 5 Whys.',
       visual: 'WhyWhyVsLogicTreeDiagram',
+      outro:
+        '5 Whys digs vertically, the Why-tree spreads horizontally. Fan out the candidates first, then drill only the most likely branch. Skip the fan-out step and your deep dive can easily end up on the wrong cause entirely.',
     },
     {
       type: 'quiz',
@@ -89,6 +95,8 @@ const whyWhyToyota: LessonData = {
       content:
         'Ohno\'s most famous example:\n\nQ1: Why did the machine stop?\nA1: A fuse blew because of an overload.\n\nQ2: Why was there an overload?\nA2: The bearing was not lubricated enough.\n\nQ3: Why wasn\'t it lubricated enough?\nA3: The lubrication pump wasn\'t pumping enough oil.\n\nQ4: Why wasn\'t the pump pumping enough?\nA4: The pump shaft was worn and rattling.\n\nQ5: Why was the shaft worn?\nA5: There was no strainer attached, so metal scraps got in.\n\n→ Real fix: install a strainer.',
       visual: 'WhyWhyToyotaDiagram',
+      outro:
+        'Stopping at Q1 and replacing the fuse means the same failure returns within a week. Only when you reach Q5 — the missing strainer — does the recurrence end. Make "would the same failure happen again?" the acceptance test for your fix and you naturally stop at the right depth.',
     },
     {
       type: 'quiz',
@@ -171,6 +179,8 @@ const whyWhyBasicSteps: LessonData = {
       content:
         'Drilling too deep or too shallow both fail.\n\nStopping rule:\n• Have we reached a layer where our team has authority to act?\n• Are we hitting external factors ("the economy is bad," "population is shrinking")? — too deep\n\nExample: "Repeat rate dropped"\n→ Our product lost appeal (✓ actionable)\n→ Customers\' disposable income shrank (✗ external)\n\nWhen you hit external factors, accept them as a precondition and step back to the actionable layer.\n\nToo shallow:\n"Mr. A made a mistake" → unless you ask "why was there no system to catch it," it recurs.',
       visual: 'WhyWhyStopRuleDiagram',
+      outro:
+        'Stopping at a person blocks any real fix, while drilling into external forces is equally unactionable. The "system layer" your team can change is the right place to land. Keep that single rule in mind and depth questions usually answer themselves.',
     },
     {
       type: 'quiz',
@@ -199,6 +209,8 @@ const whyWhyPitfalls: LessonData = {
       content:
         'The most common failure: ending at "Mr. A was careless" or "the operator missed a check."\n\nWhen people are the cause:\n• It becomes blame, not prevention\n• Replace the person → the same issue returns\n• Future abnormalities go unreported because reporters get blamed\n\nFix: translate "a person did it" into "the system was missing X."\n\n× "Operator B mistyped a value"\n○ "There was no auto-validation on the input field"\n○ "There was no double-check process"\n○ "The manual was outdated and never updated"\n\nAsk the system, not the person. This is the iron rule of 5 Whys.',
       visual: 'WhyWhyPitfallsDiagram',
+      outro:
+        'Blaming a person, jumping a step, and abstracting too far are the three traps that gut a 5 Whys analysis. Once you have written an answer, take a moment to check which of the three you might have fallen into. That single self-check is what turns analysis into something that actually prevents recurrence.',
     },
     {
       type: 'quiz',
@@ -269,6 +281,8 @@ const whyWhyParallel: LessonData = {
       content:
         'At Why1, list candidate causes in parallel.\n\nRepeat rate ↓\n├ Product appeal ↓\n├ Delivery delays\n├ Support quality ↓\n└ Competitor pricing\n\nDrill each branch independently.\n\nHow to focus:\n• Rank branches by impact × feasibility\n• Factor in verification difficulty (how fast can you get evidence?)\n• You do not have to drill all branches 5 layers deep — start with the strongest\n\n5 Whys is a tree, not a line.',
       visual: 'WhyWhyParallelDiagram',
+      outro:
+        '5 Whys is a tree, not a straight line. List several candidates in parallel at Why 1, then pick the branch worth drilling based on impact and how easy it is to verify. Insist on a single chain and the true cause can quietly hide on a branch you never looked at.',
     },
     {
       type: 'quiz',
@@ -327,6 +341,8 @@ const whyWhyEvidence: LessonData = {
       content:
         'Even if Q→A repeats logically 5 times, every step might still be conjecture.\n\nExample: "Because the bearing was not lubricated enough."\n→ Did anyone actually verify the lubrication state? With what?\n\nEach layer is a hypothesis, not a fact.\nActing on unverified hypotheses risks burning time and money on the wrong fix.\n\nThe work of "backing each layer with evidence" is verification.\n5 Whys and hypothesis verification come as a pair.',
       visual: 'WhyWhyEvidenceDiagram',
+      outro:
+        'Without evidence, each layer is just an "elegant hypothesis." Refuse to commit a fix on any layer whose evidence column is still blank. Noting the source — data, observation, or interview — beside every answer is the simplest way to keep your countermeasures from missing the mark.',
     },
     {
       type: 'quiz',
