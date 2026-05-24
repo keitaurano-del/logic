@@ -112,6 +112,38 @@ const hypothesisBuilding: LessonData = {
       title: 'Use issue trees to structure hypotheses',
       content:
         'For complex problems, structuring hypotheses with an issue tree is effective.\n\nExample: "Why isn\'t our new service growing its user base?"\n\n├── Awareness problem?\n│   ├── Are we not reaching the target segment?\n│   └── Is the message not landing?\n├── Acquisition problem?\n│   ├── Is the landing-page CVR low?\n│   └── Is the price too high?\n└── Retention problem?\n    ├── Is the first-use experience bad?\n    └── Is there no reason to come back?\n\nEach leaf becomes a "verifiable hypothesis."\nPrioritize from the top — verify the highest-impact hypotheses first.',
+      visual: 'LogicTreeDiagram',
+      visualProps: {
+        sectionLabel: 'Issue tree — break "user base not growing" into {depth} layers',
+        data: {
+          label: 'New service: users not growing',
+          children: [
+            {
+              label: 'Awareness?',
+              children: [
+                { label: 'Not reaching target' },
+                { label: 'Message not landing' },
+              ],
+            },
+            {
+              label: 'Acquisition?',
+              children: [
+                { label: 'Landing-page CVR low' },
+                { label: 'Price too high' },
+              ],
+            },
+            {
+              label: 'Retention?',
+              children: [
+                { label: 'First-use experience bad' },
+                { label: 'No reason to return' },
+              ],
+            },
+          ],
+        },
+        hint: 'Only at the leaf does "what to check tomorrow" become concrete',
+        hintTone: 'brand',
+      },
     },
     {
       type: 'quiz',

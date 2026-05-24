@@ -139,6 +139,18 @@ export const strategyLessonMapEn: Record<number, LessonData> = {
         outro:
           'PPM is the device that makes the cash flow across your whole portfolio visible. How much of the cash cow\'s profit should be routed into the up-and-coming question marks? Once you can argue the rationale through these four quadrants, board-room debates change in tone.',
         visual: 'Two2MatrixDiagram',
+        visualProps: {
+          sectionLabel: 'PPM — 4 businesses by growth × relative share',
+          xAxis: { low: 'Low share', high: 'High share', label: 'Relative market share' },
+          yAxis: { low: 'Low growth', high: 'High growth', label: 'Market growth' },
+          cells: [
+            { title: 'Question mark', items: ['Grow share → becomes Star', 'Cut or commit'] },
+            { title: 'Star ★', items: ['Invest to maintain growth', 'Future cash cow'] },
+            { title: 'Dog', items: ['Consider exit', 'Drains cash'] },
+            { title: 'Cash cow', items: ['Profits with little investment', 'Harvest and redeploy'] },
+          ],
+          hint: 'Build the cash cycle: cow → question mark → star → cow',
+        },
       },
       {
         type: 'quiz',
@@ -227,6 +239,14 @@ export const strategyLessonMapEn: Record<number, LessonData> = {
         outro:
           'Cost, differentiation, and focus are an either-or choice — mixing them half-heartedly lands you in the "stuck in the middle" zone where none of them wins. A clear call about which axis you will win on, grounded in your own strengths and the structure of the market, is the decisive move.',
         visual: 'TriadDiagram',
+        visualProps: {
+          sectionLabel: 'Porter\'s 3 generic strategies — pick where you win',
+          top: { label: '①', name: 'Cost leadership' },
+          left: { label: '②', name: 'Differentiation' },
+          right: { label: '③', name: 'Focus' },
+          primary: 'top',
+          hint: 'Half-mix the three and you fall into "stuck in the middle." Pick one.',
+        },
       },
       {
         type: 'explain',

@@ -249,6 +249,9 @@ const layoutAndSpace: LessonData = {
       content:
         'Beginners want to fill space; professionals protect it.\n\nWhat whitespace does:\n\n[1] Highlights important elements\nAn element surrounded by emptiness commands attention automatically.\n\n[2] Signals grouping\nElements separated by whitespace are perceived as different groups.\n→ Keep related items close, separate unrelated ones (Law of Proximity).\n\n[3] Lets the reader breathe\nDense slides are mentally tiring. Whitespace creates thinking space.\n\n[4] Conveys class\nLuxury brand ads use vast whitespace. Less information signals confidence.\n\nMinimum standards:\n• Slide margin: 5% (e.g. 50px on a 1000px stage)\n• Inter-element gap: at least 25% of element height\n• Text leading (line-height): 1.5–1.7× font size\n\nFight the urge to fill. Whitespace is not "unfinished" — it is the mark of completion.',
       visual: 'LayoutDiagram',
+      visualProps: {
+        sectionLabel: 'Whitespace creates grouping and guides the eye',
+      },
     },
     {
       type: 'quiz',
@@ -286,7 +289,10 @@ const layoutAndSpace: LessonData = {
       title: 'Align and repeat',
       content:
         'The two pillars of beautiful layouts are alignment and repetition.\n\n[Alignment]\nLine up edges.\n• Do not mix left/center/right alignment\n• Be aware of invisible vertical guides\n• "Roughly aligned" is not aligned. Snap to pixels.\n\nBad examples:\n• Title left-aligned on page 1, center-aligned on page 2 → feels chaotic\n• Bullet markers slightly off → looks sloppy\n\n[Repetition]\nRepeat the same pattern.\n• Keep title position, size, and color consistent across slides\n• Define a rule like "key messages in blue, supporting text in gray" and obey it\n• Maintain consistent logo, page numbers, and color use\n\nRepetition lets the reader internalize the document\'s pattern and stop spending energy on structure decoding.\n\nWhen alignment and repetition break, even good content reads as "a sloppy deck." Apply them rigorously and even ordinary content reads as "a professional deck."',
-      visual: 'MeceVennDiagram',
+      visual: 'LayoutDiagram',
+      visualProps: {
+        sectionLabel: 'Alignment and repetition — the way you align is the message',
+      },
     },
     {
       type: 'quiz',
@@ -316,6 +322,9 @@ const typography: LessonData = {
       content:
         'Font selection is not about "expressing personality"; the priority is "not sacrificing legibility."\n\nFonts to use in business documents:\n\n[Latin]\n• Helvetica / Arial / Segoe UI / Inter / Noto Sans\n• Body: Regular / Medium\n• Headings: Bold / Black\n\n[Japanese / CJK]\n• Yu Gothic / Meiryo / Noto Sans JP / Noto Sans CJK\n• Match weight pairings between Latin and CJK versions\n\nFonts to avoid:\n• Decorative fonts (Comic Sans, script) → undermine credibility\n• Pixel/bitmap fonts → break on mobile\n• Hairline weights → invisible when projected\n\nThe iron rule of font count:\nAt most two families per document. A heading face and a body face.\n• Safest: use weight variants from a single family\n• Express hierarchy with "jump ratio" (size gap between headings and body)\n\nThree or more font families distract from the content and reduce communication efficiency.',
       visual: 'TypographyDiagram',
+      visualProps: {
+        sectionLabel: 'Font selection — hierarchy × contrast × leading',
+      },
     },
     {
       type: 'quiz',

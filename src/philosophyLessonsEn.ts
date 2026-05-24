@@ -20,6 +20,15 @@ export const philosophyLessonMapEn: Record<number, LessonData> = {
         outro:
           'The three-step rhythm of definition, counterexample, and redefinition still drives modern strategy debates and hypothesis testing. Simply persisting with "is that really so?" and "is there a counterexample?" is enough to polish vague claims into precise definitions.',
         visual: 'ThreePillarsDiagram',
+        visualProps: {
+          sectionLabel: 'Elenchus in 3 steps — Define → Counterexample → Redefine',
+          pillars: [
+            { icon: '1', title: 'Ask for a definition', body: 'Get them to state "What is X?" Draw out the initial outline' },
+            { icon: '2', title: 'Hunt counterexamples', body: '"How do you explain this case?" Shake the definition, find holes' },
+            { icon: '3', title: 'Force redefinition', body: 'Lead to a sharper definition. Re-run the loop on the new outline' },
+          ],
+          hint: 'Just keep asking "is that really so?" and "is there a counterexample?" — thought deepens by itself',
+        },
       },
       {
         type: 'quiz',
@@ -131,6 +140,16 @@ export const philosophyLessonMapEn: Record<number, LessonData> = {
         title: 'The three conditions for knowledge — Justified True Belief',
         content:
           'In the classical definition, "knowledge" must satisfy three conditions:\n\n1. True: it actually corresponds to fact.\n2. Belief: the person believes it to be the case.\n3. Justified: there are grounds for believing it.\n\nExample: "It will rain tomorrow."\n- Just a hunch → no justification = not knowledge.\n- Confirmed via the weather forecast → justified. But if the forecast is wrong, it was not "true."\n\nAside — the Gettier problem (1963):\nPhilosopher Edmund Gettier presented counterexamples that satisfy all three JTB conditions yet still do not seem to count as knowledge, showing the definition is insufficient. For instance, a guess that happens to be correct can satisfy the three conditions. Modern epistemology continues to search for a "fourth condition" in response.\n\nApplication in business: distinguishing "knowing" from "assuming" determines the precision of strategy.',
+        visual: 'ThreePillarsDiagram',
+        visualProps: {
+          sectionLabel: 'The 3 conditions of knowledge — Justified True Belief',
+          pillars: [
+            { icon: 'T', title: 'True', body: 'The proposition actually corresponds to fact in the world' },
+            { icon: 'B', title: 'Belief', body: 'The person holds it as true — there is inner conviction' },
+            { icon: 'J', title: 'Justified', body: 'Grounds for believing it exist — you can show why you think so' },
+          ],
+          hint: 'All three together = "knowing." The line that separates it from mere assumption is the third one.',
+        },
       },
       {
         type: 'quiz',

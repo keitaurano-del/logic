@@ -138,6 +138,18 @@ export const strategyLessonMap: Record<number, LessonData> = {
         outro:
           'PPM は「事業ポートフォリオ全体のキャッシュフロー」を見える化する装置です。金のなる木の利益を、伸び盛りの問題児にどう配分するか—その意思決定の根拠を 4 象限で語れるようになります。',
         visual: 'Two2MatrixDiagram',
+        visualProps: {
+          sectionLabel: 'PPM — 成長率 × 相対シェアで 4 事業を分類',
+          xAxis: { low: '低シェア', high: '高シェア', label: '相対市場シェア' },
+          yAxis: { low: '低成長', high: '高成長', label: '市場成長率' },
+          cells: [
+            { title: '問題児', items: ['シェアを取れば花形へ', '勝負 or 撤退の判断対象'] },
+            { title: '花形 ★', items: ['成長維持に投資が必要', '将来の金のなる木候補'] },
+            { title: '負け犬', items: ['撤退を検討', 'キャッシュを吸う'] },
+            { title: '金のなる木', items: ['投資不要で儲かる', '回収して再投資へ'] },
+          ],
+          hint: '金のなる木 → 問題児 → 花形 → 金のなる木のキャッシュ循環を作る',
+        },
       },
       {
         type: 'quiz',
@@ -226,6 +238,14 @@ export const strategyLessonMap: Record<number, LessonData> = {
         outro:
           'コスト・差別化・集中の 3 つはどれを選ぶかが勝負で、中途半端に混ぜるとどれにも勝てない「スタック・イン・ザ・ミドル」に陥ります。自社の強みと市場の構造から、どの軸で勝つかを明確に決める意思決定が要となります。',
         visual: 'TriadDiagram',
+        visualProps: {
+          sectionLabel: 'ポーターの 3 つの基本戦略 — どこで勝つか',
+          top: { label: '①', name: 'コストリーダーシップ' },
+          left: { label: '②', name: '差別化' },
+          right: { label: '③', name: '集中' },
+          primary: 'top',
+          hint: '中途半端に混ぜると「スタック・イン・ザ・ミドル」に陥る。1 つを選ぶ',
+        },
       },
       {
         type: 'explain',

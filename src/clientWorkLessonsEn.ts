@@ -59,6 +59,15 @@ const clientLesson89: LessonData = {
       title: 'Estimate market size',
       content: 'Market size estimates like "5 million people × 3,000 yen = ?" come up constantly.\n\nCalculation:\n1. 5 million × 3,000\n2. = 5 million × 0.3 × 10K\n3. = 5M × 0.3 × 10K\n4. = 0.3 × 5M × 10K\n5. = 0.3 × 50 billion\n6. = 15 billion yen\n\nTip: Memorizing "10K × 10K = 100M" makes calculations fast.\n\nExample: Japan\'s coffee market\n- Coffee drinkers: ~60 million people\n- Annual spend: ~5,000 yen / person\n- Market size: 60M × 5,000 yen\n\nCalculation:\n1. 60M × 5,000\n2. = 60M × 0.5 × 10K\n3. = 30M × 10K\n4. = 300 billion yen\n5. ≈ 300 billion yen',
       visual: 'FermiFormulaDiagram',
+      visualProps: {
+        sectionLabel: 'Market sizing — Japan coffee market',
+        factors: [
+          { label: 'Drinkers', value: '60M', unit: 'people' },
+          { label: 'Annual spend', value: '5,000', unit: 'yen / person' },
+        ],
+        result: { label: 'Market size', value: '300', unit: 'billion yen / yr' },
+        hint: 'Burn "10K × 10K = 100M" into muscle memory and digit checks become instant',
+      },
       outro:
         'Market size sizing is fundamentally "headcount × spend" — a single multiplication that frames the whole picture. Burn unit-conversion anchors like "10K × 10K = 100M" into muscle memory and digit-sanity checks become instant, so you can put numbers on the table with confidence.',
     },
@@ -235,6 +244,16 @@ const clientLesson93: LessonData = {
       type: 'explain',
       title: 'Distinguish causation from parallel relationships',
       content: 'In structuring, the most important thing is identifying relationships.\n\nParallel (A, B, C are equal-rank):\n→ "The issues are (1) rising costs, (2) declining sales, (3) labor shortage"\n\nCausal (A leads to B):\n→ "Labor shortage (cause) → slower response (effect) → customer churn (effect)"\n\nMatch the granularity:\n- Bad: "(1) rising costs, (2) staffing in division A, (3) global market changes" (mixed abstraction)\n- Good: "(1) cost structure, (2) staffing, (3) market environment" (same level)',
+      visual: 'ThreePillarsDiagram',
+      visualProps: {
+        sectionLabel: 'Three relationship types to check when structuring',
+        pillars: [
+          { icon: 'Par', title: 'Parallel', body: '"A, B, and C" sit at equal rank. AND relation. Order matters less' },
+          { icon: 'Cau', title: 'Causal', body: '"A leads to B." Cause → effect arrow. Reverse the order and the logic breaks' },
+          { icon: 'Gra', title: 'Granularity', body: 'Match the abstraction level. "Market environment" next to "button color" feels off' },
+        ],
+        hint: 'Structuring = re-sort items by these three lenses: parallel / causal / granularity',
+      },
     },
     {
       type: 'quiz',
@@ -444,6 +463,25 @@ const clientLesson97: LessonData = {
       type: 'explain',
       title: 'Turn feedback into an improvement loop',
       content: 'Just receiving feedback and stopping leads to repeating the same mistakes.\n\nFour steps to use feedback:\n\n1. Record: save what was said in notes\n2. Find patterns: if the same point comes up 3+ times, it\'s your issue\n3. Analyze cause: why did the mistake happen (skill? time? perception gap?)\n4. Change next time\'s behavior: decide concretely what changes\n\nCommon trap: ending with "I\'ll be careful"\n→ Convert to a concrete action: "Before submission next time, I\'ll check XX."',
+      visual: 'FeedbackLoopDiagram',
+      visualProps: {
+        sectionLabel: 'Feedback improvement loop — 4 steps',
+        loopType: 'R',
+        loopName: 'Turn critique into growth',
+        nodes: [
+          { label: 'Record' },
+          { label: 'Find pattern' },
+          { label: 'Analyze cause' },
+          { label: 'Change behavior' },
+        ],
+        arrows: [
+          { from: 0, to: 1, polarity: '+' },
+          { from: 1, to: 2, polarity: '+' },
+          { from: 2, to: 3, polarity: '+' },
+          { from: 3, to: 0, polarity: '+' },
+        ],
+        hint: 'Skip "I\'ll be careful." Convert it to a concrete check action — that closes the loop.',
+      },
     },
     {
       type: 'quiz',

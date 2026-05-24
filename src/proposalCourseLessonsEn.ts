@@ -83,6 +83,15 @@ const proposalHypothesis: LessonData = {
       title: 'Separating issue, cause, and action',
       content: 'Three things that often get confused:\n\nIssue: the problem to solve (e.g., 30% sales drop)\nCause: why the issue is happening (e.g., repeat customer churn)\nAction: a measure that resolves the cause (e.g., launch a loyalty program)\n\nThinking in this order — issue → cause → action — keeps you from picking off-target actions.',
       visual: 'ThreePillarsDiagram',
+      visualProps: {
+        sectionLabel: 'Issue → Cause → Action — do not skip the order',
+        pillars: [
+          { icon: 'I', title: 'Issue', body: 'The problem itself. e.g., sales down 30% YoY' },
+          { icon: 'C', title: 'Cause', body: 'Why the issue is happening. e.g., key-account repeat churn' },
+          { icon: 'A', title: 'Action', body: 'A measure that resolves the cause. e.g., loyalty program' },
+        ],
+        hint: 'Skip cause and jump to action and time melts into off-target initiatives',
+      },
       outro:
         'Issue, cause, and action are three different things. Skip the order and you end up racing toward an action while the issue is still fuzzy — a classic way to burn time on off-target work. Write each of the three down separately and check them for fit before you ever open the proposal deck.',
     },
@@ -157,6 +166,15 @@ const proposalVerification: LessonData = {
       title: 'Hypotheses are meant to be changed',
       content: 'Many people think "changing your hypothesis = losing." It\'s the opposite.\n\nRevising and updating hypotheses based on research findings IS the essence of hypothesis thinking.\n\nUpdate patterns:\nSupported → dig deeper as-is\nPartially modified → re-test the modified hypothesis\nRejected → switch to a different hypothesis',
       visual: 'ThreePillarsDiagram',
+      visualProps: {
+        sectionLabel: 'Three update patterns — let the evidence move you',
+        pillars: [
+          { icon: '✓', title: 'Supported', body: 'Hypothesis held. Dig deeper as-is and move to action' },
+          { icon: '~', title: 'Partial', body: 'Partial mismatch. Modify the hypothesis and re-test' },
+          { icon: '✗', title: 'Rejected', body: 'Hypothesis failed. Switch to a different hypothesis' },
+        ],
+        hint: 'Changing a hypothesis is not losing — it proves the test worked',
+      },
       outro:
         'Anticipating all three outcomes — supported, partially modified, rejected — from the start stops you from being thrown by research findings. Changing a hypothesis is not losing; it is proof your verification actually worked. Updating quickly to match the facts is what raises the precision of your proposal.',
     },

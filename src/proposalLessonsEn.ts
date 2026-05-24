@@ -17,6 +17,15 @@ const proposalPurpose: LessonData = {
       content:
         'Before you start writing a proposal, answer one question.\n\n"What do I want the reader to decide after reading this?"\n\nIf this is fuzzy when you start writing, you end up with a proposal that has lots of information but leaves the reader thinking "so what are you actually saying?"\n\nProposal purposes fall into three buckets:\n\n(1) Approval\n"Approve this budget" / "Give us permission to execute this initiative"\n→ Build around the information needed for the decision and the risk mitigations.\n\n(2) Alignment / Understanding\n"Get on the same page about the current state" / "Share a sense of urgency"\n→ Use data and examples to make the situation visible and create shared concern or empathy.\n\n(3) Action\n"Start moving today" / "Decide the next step"\n→ Clearly specify next actions, owners, and deadlines.\n\nOnce you pick one purpose, treat everything else as supporting context. This single decision changes the density of your proposal.',
       visual: 'ThreePillarsDiagram',
+      visualProps: {
+        sectionLabel: 'The 3 purposes of a proposal — pick one first',
+        pillars: [
+          { icon: 'App', title: 'Approval', body: 'Center on the decision and risk mitigations. "Approve the budget" / "Permit execution"' },
+          { icon: 'Align', title: 'Alignment', body: 'Use data and cases to share urgency. "Align on the current state" / "Share the issue"' },
+          { icon: 'Act', title: 'Action', body: 'Specify next steps, owners, and deadlines. "Start moving today"' },
+        ],
+        hint: 'Pick one purpose and everything else becomes supporting context. Density changes instantly.',
+      },
       outro:
         'Approval, alignment, and action are the three proposal purposes — picking just one is where every proposal should start. Once the purpose is settled, the center of gravity of the structure falls into place on its own. The courage to drop "I want it all in there" is what produces a high-density proposal.',
     },
@@ -65,6 +74,15 @@ const proposalStakeholder: LessonData = {
       content:
         'A great proposal answers the question already in the reader\'s head — before they ask.\n\nStakeholder analysis basics:\n\n(1) Who reads it (decision-makers, influencers, hands-on operators)\n(2) What they care about (cost, quality, speed, risk, reputation)\n(3) What worries them (resistance to change, scope of responsibility, past failures)\n\nTypical reader concerns:\n\n[Finance / CFO]\n"What\'s the ROI? What\'s the payback period?"\n\n[Operations / front-line]\n"What\'s the actual workload? Impact on existing work? Who will do it?"\n\n[Marketing / business]\n"What\'s our competitive advantage? How will customers perceive it? What\'s the growth potential?"\n\nPeople interpret the same information through their own lens. Adjusting emphasis based on who you\'re showing the same proposal to is the mark of a pro.',
       visual: 'ThreePillarsDiagram',
+      visualProps: {
+        sectionLabel: 'Reader analysis — Who × What × Worry',
+        pillars: [
+          { icon: 'Who', title: 'Who reads it', body: 'Decision-maker / influencer / hands-on operator. Each judges on a different axis' },
+          { icon: 'What', title: 'What they care about', body: 'Cost, quality, speed, risk, reputation. Priorities shift by role' },
+          { icon: 'Risk', title: 'What worries them', body: 'Change resistance, responsibility scope, past failures. Disarm them up-front' },
+        ],
+        hint: 'Same proposal, different emphasis per reader — the mark of a pro.',
+      },
       outro:
         'Finance, operations, and business roles each carry a different center of gravity, so the move of swapping emphasis on the same proposal is the mark of a pro. Picture your reader as a person and answer the question they will silently ask first — that is what makes a proposal land.',
     },

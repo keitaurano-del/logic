@@ -20,6 +20,15 @@ export const philosophyLessonMap: Record<number, LessonData> = {
         outro:
           '定義 → 反例 → 再定義の 3 ステップは、現代の戦略議論や仮説検証にも生きています。「本当にそうか？」「反例はないか？」と問い続けるだけで、漠然とした主張が精確な定義に磨かれていきます。',
         visual: 'ThreePillarsDiagram',
+        visualProps: {
+          sectionLabel: '問答法の 3 ステップ — 定義 → 反例 → 再定義',
+          pillars: [
+            { icon: '1', title: '定義を求める', body: '「○○とは何か？」と相手に言わせる。最初の輪郭を引き出す' },
+            { icon: '2', title: '反例を探す', body: '「こういうケースはどう説明するか？」と揺さぶり、穴を見つける' },
+            { icon: '3', title: '再定義させる', body: 'より精確な定義へ。新しい輪郭で同じ問答を繰り返す' },
+          ],
+          hint: '「本当にそうか？」「反例はないか？」を繰り返すだけで思考は深まる',
+        },
       },
       {
         type: 'quiz',
@@ -131,6 +140,16 @@ export const philosophyLessonMap: Record<number, LessonData> = {
         title: '知識の3条件 — 正当化された真の信念',
         content:
           '古典的な定義では、「知識」は次の3条件を満たす必要がある。\n\n1. 真である（True）: 実際に事実であること\n2. 信じている（Belief）: 本人が正しいと思っていること\n3. 正当化されている（Justified）: 信じる根拠がある\n\n例: 「明日は雨だ」\n- 感で思っているだけ → 正当化なし = 知識ではない\n- 天気予報で確認 → 正当化あり。ただし予報が外れれば「真」ではなかったことに\n\n補足 — ゲティア問題（1963）:\n哲学者エドマンド・ゲティアは、JTBの3条件を満たしながら「知識とは言えない」反例を示し、この定義が十分でないことを証明した。例：偶然正しかった推測でも3条件を満たすケースがある。現代認識論ではこの問題への応答として「第4条件」の探索が続いている。\n\nビジネスでの応用: 「知っている」と「思い込んでいる」の区別が戦略の精度を左右する。',
+        visual: 'ThreePillarsDiagram',
+        visualProps: {
+          sectionLabel: '知識の 3 条件 — Justified True Belief',
+          pillars: [
+            { icon: 'T', title: '真である', body: 'True — 実際に事実であること。世界の側でそうなっている' },
+            { icon: 'B', title: '信じている', body: 'Belief — 本人が正しいと思っている。内側の確信が存在する' },
+            { icon: 'J', title: '正当化されている', body: 'Justified — 信じる根拠がある。なぜそう思うかを示せる' },
+          ],
+          hint: '3 つ揃って初めて「知っている」。「思い込み」との分かれ目はこの 3 点目',
+        },
       },
       {
         type: 'quiz',
