@@ -161,6 +161,9 @@ export const easternPhilosophyLessonMapEn: Record<number, LessonData> = {
         title: 'Innate goodness vs. innate self-interest — which to adopt',
         content:
           'In management, the question is not "which is correct" but "which to adopt in which situation."\n\n- Areas demanding creativity and self-direction → innate goodness (trust-based, broad autonomy)\n- Areas with large or irreversible risk → innate self-interest (system-based, verification-heavy)\n\nExample: an engineer\'s coding can run on innate goodness, but production deployment runs on innate self-interest with an approval flow. This is the modern division.\n\nFor 2,300 years, Mencius and Xunzi have left us the foundational question: "what assumption do you make about human nature?"',
+        outro:
+          'Innate goodness and innate self-interest are not opposing ideologies but tools to deploy by domain. Lean on innate goodness where creativity is needed and on innate self-interest where risk is high — this is the modern answer that protects an organization from going rigid.',
+        visual: 'Two2MatrixDiagram',
       },
       {
         type: 'quiz',
@@ -211,6 +214,9 @@ export const easternPhilosophyLessonMapEn: Record<number, LessonData> = {
         title: 'Connection to modern stakeholder thinking',
         content:
           'Universal love connects to modern "stakeholder thinking" and "ESG management."\n\n- Caring only about your own company\'s profit → short-term wins but long-term backlash from society.\n- Considering the interests of customers, partners, employees, and society as a whole "inclusively" → builds durable trust.\n\nExamples: thinking about labor conditions across the supply chain, accounting for environmental impact, cooperating with competitors on standards — these are modern echoes of "universal love."\n\nMohism is less mainstream than Confucianism or Daoism, but in the modern era it has been re-evaluated as a "rational, egalitarian, pragmatic" school of thought.',
+        outro:
+          'Twenty-four hundred years later, the impulse behind universal love is being re-evaluated as stakeholder capitalism and ESG management. The shift from short-term self-interest to long-term optimization that also weighs customers, partners, and society is one of the places where ancient thought still lives at the heart of modern management.',
+        visual: 'ThreePillarsDiagram',
       },
       {
         type: 'quiz',
@@ -405,6 +411,9 @@ export const easternPhilosophyLessonMapEn: Record<number, LessonData> = {
         title: 'The three elements of governance — law, technique, position',
         content:
           'Han Feizi organized governance into three elements:\n\nLaw (法) — published, clear rules\nA standard anyone can see; rewards and punishments must be predictable.\n→ In modern terms: HR systems, compliance, KPI design.\n\nTechnique (術) — the ruler\'s arts of personnel and operation\nThe craft of seeing through people, placing them in the right roles, and quietly supervising.\n→ In modern terms: management techniques, organizational design.\n\nPosition (勢) — the authority and power that come with one\'s rank\nNot personal popularity, but the power that attaches to a position.\n→ In modern terms: delegation of authority and the dynamics of organizational structure.\n\nOnly when all three are present does an organization function stably.',
+        outro:
+          'Law, technique, and position map straight onto modern HR systems, management, and authority design. As a principle for running an organization without relying on personal charisma, codifying evaluation standards and structuring authority remain the two pillars even today.',
+        visual: 'TriadDiagram',
       },
       {
         type: 'explain',

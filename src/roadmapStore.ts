@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getRoadmap } from './roadmapData'
 import {
   getRoadmapProgress,
@@ -5,6 +6,7 @@ import {
   saveAllRoadmapGoals,
   deleteRoadmapGoal,
 } from './db/roadmapDb'
+import { getSupabaseClient } from './db/index'
 
 const STORAGE_KEY = 'logic-roadmap'
 
@@ -259,6 +261,183 @@ export async function setDailyMinutesForUser(
     }
   }
   return state
+}
+
+// =============================================
+// Supabase 同期 (Phase 1: Device Sync — user_roadmap_goals テーブル)
+// =============================================
+//
+// 旧 roadmap_progress テーブル (node_id + status) は実装と不整合のため、
+// 新テーブル user_roadmap_goals (026_user_roadmap_goals.sql) に向き直す。
+
+type RoadmapGoalRow = {
+  goal_id: string
+  target_date: string | null
+  daily_minutes: number
+  completed_steps: number[]
+  setup_done: boolean
+  created_at: string
+}
+
+function rowToGoalEntryV2(row: RoadmapGoalRow): GoalEntry {
+  return {
+    goalId: row.goal_id,
+    targetDate: row.target_date,
+    dailyMinutes: row.daily_minutes ?? 15,
+    completedSteps: row.completed_steps ?? [],
+    createdAt: row.created_at || new Date().toISOString(),
+  }
+}
+
+async function fetchRoadmapGoalsV2(userId: string): Promise<RoadmapState | null> {
+  const db = getSupabaseClient()
+  if (!db) return null
+  try {
+    const { data, error } = await (db as any)
+      .from('user_roadmap_goals')
+      .select('goal_id, target_date, daily_minutes, completed_steps, setup_done, created_at')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: true })
+
+    if (error) {
+      console.warn('[roadmapStore] fetchRoadmapGoalsV2 error:', error.message)
+      return null
+    }
+    if (!data || data.length === 0) return null
+    const goals = (data as RoadmapGoalRow[]).map(rowToGoalEntryV2)
+    const setupDone = (data[0] as RoadmapGoalRow).setup_done ?? true
+    return { goals, setupDone }
+  } catch (e) {
+    console.warn('[roadmapStore] fetchRoadmapGoalsV2 exception:', e)
+    return null
+  }
+}
+
+async function pushRoadmapGoalsV2(userId: string, state: RoadmapState): Promise<void> {
+  if (state.goals.length === 0) return
+  const db = getSupabaseClient()
+  if (!db) return
+  try {
+    const rows = state.goals.map((g) => ({
+      user_id: userId,
+      goal_id: g.goalId,
+      target_date: g.targetDate,
+      daily_minutes: g.dailyMinutes,
+      completed_steps: g.completedSteps,
+      setup_done: state.setupDone,
+      updated_at: new Date().toISOString(),
+    }))
+    const { error } = await (db as any)
+      .from('user_roadmap_goals')
+      .upsert(rows, { onConflict: 'user_id,goal_id' })
+    if (error) console.warn('[roadmapStore] pushRoadmapGoalsV2 error:', error.message)
+  } catch (e) {
+    console.warn('[roadmapStore] pushRoadmapGoalsV2 exception:', e)
+  }
+}
+
+/** 1 ゴールを v2 テーブルに upsert (書き込みフック用) */
+export async function pushRoadmapGoalForUserV2(
+  userId: string,
+  goal: GoalEntry,
+  setupDone: boolean,
+): Promise<void> {
+  await pushRoadmapGoalsV2(userId, { goals: [goal], setupDone })
+}
+
+/** v2 テーブルから 1 ゴール削除 */
+export async function deleteRoadmapGoalForUserV2(userId: string, goalId: string): Promise<void> {
+  const db = getSupabaseClient()
+  if (!db) return
+  try {
+    const { error } = await (db as any)
+      .from('user_roadmap_goals')
+      .delete()
+      .eq('user_id', userId)
+      .eq('goal_id', goalId)
+    if (error) console.warn('[roadmapStore] deleteRoadmapGoalForUserV2 error:', error.message)
+  } catch (e) {
+    console.warn('[roadmapStore] deleteRoadmapGoalForUserV2 exception:', e)
+  }
+}
+
+/**
+ * ログイン時の同期 (Phase 1)。
+ * 戦略: Union of completedSteps + last-write for metadata
+ * - goal_id 単位でマージ
+ * - completedSteps は union (両端の進捗を合算)
+ * - targetDate / dailyMinutes は createdAt が新しい方を採用
+ */
+export async function syncRoadmap(userId: string): Promise<void> {
+  const db = getSupabaseClient()
+  if (!db) return
+  try {
+    const remote = await fetchRoadmapGoalsV2(userId)
+    const local = load()
+
+    if (!remote && local.goals.length === 0) return
+
+    const remoteGoals = remote?.goals ?? []
+    const localGoals = local.goals
+    const remoteByGoal = new Map(remoteGoals.map((g) => [g.goalId, g]))
+    const merged: GoalEntry[] = []
+    const toPushIds = new Set<string>()
+
+    for (const r of remoteGoals) {
+      const l = localGoals.find((lg) => lg.goalId === r.goalId)
+      if (!l) {
+        merged.push(r)
+        continue
+      }
+      const completedSteps = Array.from(new Set([...r.completedSteps, ...l.completedSteps]))
+      const newer = l.createdAt > r.createdAt ? l : r
+      const mergedEntry: GoalEntry = {
+        goalId: r.goalId,
+        targetDate: newer.targetDate ?? r.targetDate ?? l.targetDate,
+        dailyMinutes: newer.dailyMinutes ?? r.dailyMinutes,
+        completedSteps,
+        createdAt: r.createdAt < l.createdAt ? r.createdAt : l.createdAt,
+      }
+      merged.push(mergedEntry)
+      if (
+        completedSteps.length !== r.completedSteps.length ||
+        mergedEntry.targetDate !== r.targetDate ||
+        mergedEntry.dailyMinutes !== r.dailyMinutes
+      ) {
+        toPushIds.add(r.goalId)
+      }
+    }
+
+    for (const l of localGoals) {
+      if (!remoteByGoal.has(l.goalId)) {
+        merged.push(l)
+        toPushIds.add(l.goalId)
+      }
+    }
+
+    const mergedState: RoadmapState = {
+      goals: merged,
+      setupDone: (remote?.setupDone ?? false) || local.setupDone || merged.length > 0,
+    }
+    save(mergedState)
+
+    const goalsToPush = merged.filter((g) => toPushIds.has(g.goalId))
+    if (goalsToPush.length > 0) {
+      await pushRoadmapGoalsV2(userId, { goals: goalsToPush, setupDone: mergedState.setupDone })
+    }
+
+    if (import.meta.env.DEV) {
+      console.log(
+        '[roadmapStore] syncRoadmap complete:',
+        `remote=${remoteGoals.length}`,
+        `local=${localGoals.length}`,
+        `merged=${merged.length}`,
+        `pushed=${goalsToPush.length}`,
+      )
+    }
+  } catch (e) {
+    console.warn('[roadmapStore] syncRoadmap failed:', e)
+  }
 }
 
 /**

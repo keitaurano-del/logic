@@ -5,6 +5,12 @@ import './visuals-phase3c.css'
  * lesson-41 step.visual='FallacyGridDiagram'
  *
  * 構図: 縦並びカード 5 枚、各カードに記号アイコン + 名称 + 1 行説明
+ *
+ * A 案 Phase 3 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - inline hint 11→13, padding/lineHeight 拡大、warning-deep token 化
+ *   - CSS: fg-name 14px / fg-desc 13px は既に底上げ済 (調整不要)
+ *   - warm accent: hint ボックスを terracotta soft 背景に
+ *     (5 カード全部 rose 系で警告色統一、注意喚起 1 箇所のみ温度感色)
  */
 
 type Fallacy = {
@@ -61,14 +67,15 @@ export function FallacyGridVisual() {
       </div>
 
       <div style={{
-        marginTop: 12,
-        padding: '8px 10px',
-        background: 'var(--warning-soft)',
+        marginTop: 14,
+        padding: '10px 12px',
+        background: 'var(--visual-warm-primary-soft)',
         borderRadius: 8,
-        fontSize: 11,
+        fontSize: 13,
         fontWeight: 600,
-        color: '#92400E',
+        color: 'var(--visual-warm-primary-deep)',
         textAlign: 'center',
+        lineHeight: 1.45,
       }}>
         ⚠ 自分が使ってしまっていないかも合わせて点検する
       </div>

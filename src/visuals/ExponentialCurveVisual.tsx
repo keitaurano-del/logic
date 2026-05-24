@@ -6,6 +6,12 @@ import './visuals-phase3c.css'
  *
  * 構図: 折れ線グラフ (時間軸 / Y軸) で線形 vs 指数(年率10%複利) を重ねる
  * 下に 3 つのスポット (Year 5 / 10 / 20) で差を数値で示す
+ *
+ * A 案 Phase 3 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - inline hint 11→13, padding/lineHeight 拡大
+ *   - CSS: ec-point .yr 11→12, .val 15→16, .vs 11→12
+ *   - warm accent: SVG 内 "×6.7倍" ラベルを terracotta に
+ *     (指数増加の最終インパクト = 「複利が爆発する」動きの主役 = 1 visual 内 1 箇所)
  */
 
 export function ExponentialCurveVisual() {
@@ -70,7 +76,9 @@ export function ExponentialCurveVisual() {
 
             {/* ラベル */}
             <text x={sx(20) - 4} y={sy(100 + 20 * 10) + 12} fontSize="7" fill="var(--text-muted)" textAnchor="end" fontWeight="700">+300</text>
-            <text x={sx(20) - 4} y={sy(100 * Math.pow(1.1, 20)) - 4} fontSize="8" fill="var(--brand)" textAnchor="end" fontWeight="700">×6.7倍</text>
+            {/* warm accent (A 案 Phase 3): 指数の最終インパクト ×6.7 倍を terracotta
+             * (複利が爆発する瞬間 = 1 visual 内 1 箇所) */}
+            <text x={sx(20) - 4} y={sy(100 * Math.pow(1.1, 20)) - 4} fontSize="9" fill="var(--visual-warm-primary)" textAnchor="end" fontWeight="700">×6.7倍</text>
           </svg>
         </div>
 
@@ -95,14 +103,15 @@ export function ExponentialCurveVisual() {
       </div>
 
       <div style={{
-        marginTop: 12,
-        padding: '8px 10px',
+        marginTop: 14,
+        padding: '10px 12px',
         background: 'var(--brand-soft)',
         borderRadius: 8,
-        fontSize: 11,
+        fontSize: 13,
         fontWeight: 600,
         color: 'var(--brand)',
         textAlign: 'center',
+        lineHeight: 1.45,
       }}>
         💡 序盤は差がなくても、時間が複利の効果を爆発させる
       </div>

@@ -84,6 +84,9 @@ const issueExhaustive: LessonData = {
       title: 'MECE: no gaps, no overlaps',
       content:
         'The first rule when surfacing issues is MECE — Mutually Exclusive, Collectively Exhaustive.\n\nExample: "E-commerce revenue is dropping."\n\n[By revenue structure]\nRevenue = Visits × Conversion × Average ticket\n-> Issues on visits / conversion / average ticket.\n\n[By customer phase]\nNew / Repeat / Reactivated\n-> Which phase is dropping?\n\n[By product category]\nFlagship A / Adjacent B / Long tail\n-> Where is the impact concentrated?\n\nWhat matters is checking that any single cut is MECE on its own dimension. Mixing three dimensions in the same list silently creates both gaps and overlaps.',
+      visual: 'MeceVennDiagram',
+      outro:
+        'The iron rule of MECE is "stay inside one cut." Mix three dimensions and you create gaps and overlaps simultaneously. Taking a moment to ask "what dimension am I cutting on right now?" before listing issues is exactly the small habit that lifts the quality of your thinking.',
     },
     {
       type: 'quiz',
@@ -155,6 +158,9 @@ const issueStructure: LessonData = {
       title: 'Layer issues into main and sub-issues',
       content:
         'A flat list of 10-20 issues still signals shallow thinking.\nReorganizing them into main issues -> sub-issues -> validation questions makes the logic legible.\n\nExample: Risk of missing next year\'s profit target (top question)\n+- Main A: Could revenue come in below plan?\n|  +- Sub A1: Will repeat rates among existing customers drop?\n|  +- Sub A2: Will new acquisition slow?\n|  +- Sub A3: Will the price change cool demand?\n+- Main B: Could the cost base balloon?\n   +- Sub B1: Wage inflation?\n   +- Sub B2: Material and logistics cost increases?\n\nThis is an "issue tree."\nIf parent-child relationships can be explained both ways via "Why so / How so," the structure is sound.',
+      visual: 'LogicTreeDiagram',
+      outro:
+        'The quality test for an issue tree is whether each parent-child link survives both "Why so" and "How so." Simply layering a flat list into main, sub, and validation issues automatically settles your priority order and the sequence in which you should verify them.',
     },
     {
       type: 'quiz',
@@ -262,6 +268,9 @@ const issueHypothesis: LessonData = {
       title: 'Use "So What" in three layers to reach the essence',
       content:
         'Data alone is not yet an answer.\nApply "So what?" three times to ladder from surface to essence — this is the heart of the course.\n\nExample: "New signups +30% last month, free-to-paid conversion 7%."\n\nSo What level 1 (surface):\n-> New is strong, but the conversion bottleneck is large.\n\nSo What level 2 (middle):\n-> Closing the gap to industry average (15%) would roughly double paid members from the same acquisition.\n\nSo What level 3 (essence):\n-> Investment priority shifts from "more acquisition" to "better free-to-paid experience design."\n-> Competitive advantage concentrates in the first 14 days of onboarding.\n\nOnly with three layers does an issue turn into a "decision in motion."\nThe gap between people who stop at level 1 and those who push to level 3 is exactly what "depth of thinking" means.',
+      visual: 'SoWhatDiagram',
+      outro:
+        'Stack three layers of "So What" and data transforms into a "decision in motion." The gap between people who stop at the surface and people who push to essence is what "depth of thinking" really means. Getting in the habit of asking "so what?" three times in a row every time you look at data is the first step.',
     },
     {
       type: 'quiz',

@@ -32,6 +32,9 @@ const systemsIntro: LessonData = {
       title: 'Feedback loops — Cycles of cause and effect',
       content:
         'The heart of a system is the feedback loop.\n\n[Reinforcing loop]\nThe output amplifies the input → snowballs.\n\nVirtuous example:\nGreat product → more word of mouth → more sales → more R&D investment → even better product.\n\nVicious example:\nQuality drops → more complaints → more handling cost → less R&D capacity → quality drops further.\n\n[Balancing loop]\nThe output suppresses the input → moves toward equilibrium.\n\nExamples:\nBody temperature rises → sweat → temperature drops.\nService gains popularity → crowds → wait times rise → popularity drops → it empties out.\n\nIn business:\nWhen you find a virtuous loop, push it as hard as you can.\nWhen you find a vicious loop, break the chain.',
+      visual: 'FeedbackLoopDiagram',
+      outro:
+        'Reinforcing loops amplify, balancing loops settle toward equilibrium. Push a virtuous loop with everything you have, and cut a vicious loop before it gathers momentum — just being able to tell the two apart changes how much your interventions move the system.',
     },
     {
       type: 'quiz',
@@ -50,6 +53,9 @@ const systemsIntro: LessonData = {
       title: 'The Iceberg Model — Look beneath the surface',
       content:
         'A core systems-thinking tool, the Iceberg Model:\n\nAbove water — Events\n"Sales dropped 10% last month."\n→ Reactive: "Pressure the sales team."\n\nJust below — Patterns\n"Sales drop every Q3."\n→ Adaptive: "Plan ahead for Q3."\n\nDeeper — Structures\n"Sales incentives are skewed toward Q4, so Q3 activity dies."\n→ Generative: "Redesign the incentive scheme to be even across quarters."\n\nDeepest — Mental Models\n"We can always make it up in Q4." (an organizational belief)\n→ Transformative: "Shift the culture toward steady year-round revenue."\n\nReacting only to events does not solve the problem at the root.\nUnless you change structure and mental models, the same issue keeps recurring.',
+      visual: 'IcebergModelDiagram',
+      outro:
+        'The four layers of the Iceberg Model — events, patterns, structures, mental models — gain leverage as you go deeper. Reacting only at the surface guarantees the issue returns, so the perspective that descends all the way to structure and mental models is what cracks recurring problems open.',
     },
     {
       type: 'quiz',
@@ -76,6 +82,9 @@ const systemsLoops: LessonData = {
       title: 'System archetypes',
       content:
         'Knowing the recurring system archetypes lets you diagnose business problems quickly.\n\n[Archetype 1: Fixes that Fail]\nTreat the symptom → improve briefly → side effects → problem worsens.\n\nExample:\nUse overtime to clear a project delay.\n→ Hit the deadline short term.\n→ Staff burn out, attrition rises.\n→ Next project is even more delayed by understaffing.\n\nLesson: A fix only postpones the problem. Address the root cause.\n\n[Archetype 2: Success to the Successful]\nThe successful unit gets more resources → succeeds even more → other units decline.\n\nExample:\nBudget increases for high-performing division A → A grows further.\nB\'s budget shrinks → B underperforms → "B has weak capabilities."\n→ But it is really resource allocation, not capability.',
+      visual: 'SystemArchetypeDiagram',
+      outro:
+        'Problems that recur inside organizations almost always map to a known archetype. Carrying patterns like "Fixes that Fail" and "Success to the Successful" in your toolkit lets you diagnose the structure quickly and side-step common traps before they bite.',
     },
     {
       type: 'quiz',
@@ -138,6 +147,9 @@ const systemsPractice: LessonData = {
       title: 'Drawing causal loop diagrams',
       content:
         'A causal loop diagram is a practical systems-thinking tool.\n\nHow to draw one:\n1. List the variables (use nouns whose levels can rise or fall).\n2. Connect them with arrows showing causation.\n3. Mark each arrow with "+" (same direction) or "-" (opposite direction).\n4. Find loops and label them R (reinforcing) or B (balancing).\n\nExample: software development quality\n\n[Dev speed] -→(-) [Test time]\n[Test time] -→(+) [Quality]\n[Quality] -→(-) [Bug-fix time]\n[Bug-fix time] -→(-) [Dev speed]\n\n→ A vicious cycle emerges: "Dev speed up → less test time → quality drops → more bugs → dev speed drops."\n\nCountermeasure: How can we keep test time while raising dev speed?\n→ Automated tests, CI/CD, better code review.',
+      visual: 'CausalLoopDiagram',
+      outro:
+        'A causal loop diagram is the device that pulls the fuzzy web of relationships out of your head and onto a shared screen. Listing variables, marking each arrow with plus or minus, and surfacing the loops — that act itself is what reveals the vicious cycles and points to the countermeasures.',
     },
     {
       type: 'quiz',

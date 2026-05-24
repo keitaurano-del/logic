@@ -17,6 +17,9 @@ export const philosophyLessonMapEn: Record<number, LessonData> = {
         title: 'The structure of the elenchus',
         content:
           'The Socratic method runs in three steps.\n\n1. Ask for a definition: get them to state "What is X?"\n2. Hunt for counterexamples: shake the definition with "How do you explain this case?"\n3. Force a redefinition: lead them to a more precise definition.\n\nExample: "Courage is feeling no fear."\n→ "So someone who acts despite feeling fear has no courage?"\n→ "Then is courage perhaps the power to control fear?"\n\nThis cycle of refinement deepens thought.',
+        outro:
+          'The three-step rhythm of definition, counterexample, and redefinition still drives modern strategy debates and hypothesis testing. Simply persisting with "is that really so?" and "is there a counterexample?" is enough to polish vague claims into precise definitions.',
+        visual: 'ThreePillarsDiagram',
       },
       {
         type: 'quiz',
@@ -93,6 +96,9 @@ export const philosophyLessonMapEn: Record<number, LessonData> = {
         title: 'Thinking through the trolley problem',
         content:
           'The "trolley problem" sharpens the contrast between the two views.\n\nA runaway trolley with broken brakes is heading toward five people. Pulling a lever switches it to a side track where one person stands; the five are saved, but the one is killed. Should you pull?\n\nUtilitarian answer: Pull. 5 > 1. Maximizing the outcome is right.\nDeontological answer: (Possibly) do not pull. Using the one person as a means violates that person\'s rights.\n\nBoth are logical. What matters is being aware of which value system you are judging from.',
+        outro:
+          'Utilitarianism and deontology are both logically sound, which tells us the root of disagreement lives in values. When a decision splits the room, just naming which side — outcomes-first or rules-first — you and the other person are standing on turns the argument into a constructive one.',
+        visual: 'TrolleyProblemDiagram',
       },
       {
         type: 'quiz',

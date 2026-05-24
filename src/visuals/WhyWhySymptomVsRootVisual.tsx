@@ -4,6 +4,12 @@ import { BandageIcon, SearchIcon } from '../icons'
 /**
  * 対症療法 vs 根本治療 — なぜなぜ分析の対立軸
  * lesson-340 step.visual='WhyWhySymptomVsRootDiagram'
+ *
+ * A 案 Phase 3 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - inline hint 11→13, padding/lineHeight 拡大
+ *   - CSS: sr-text strong 14px / sr-text span 13px / sr-result 13px は既に底上げ済
+ *   - warm accent: hint ボックスを terracotta soft 背景に
+ *     (bad/good の danger/success 意味色は §2.3 例外として維持)
  */
 export function WhyWhySymptomVsRootVisual() {
   return (
@@ -42,14 +48,15 @@ export function WhyWhySymptomVsRootVisual() {
 
       <div
         style={{
-          marginTop: 12,
-          padding: '8px 10px',
-          background: 'var(--brand-soft)',
+          marginTop: 14,
+          padding: '10px 12px',
+          background: 'var(--visual-warm-primary-soft)',
           borderRadius: 8,
-          fontSize: 11,
+          fontSize: 13,
           fontWeight: 600,
-          color: 'var(--brand)',
+          color: 'var(--visual-warm-primary-deep)',
           textAlign: 'center',
+          lineHeight: 1.45,
         }}
       >
         💡 「なぜ？」を重ねて根本原因まで降りる

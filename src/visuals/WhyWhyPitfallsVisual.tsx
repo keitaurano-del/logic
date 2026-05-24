@@ -35,6 +35,12 @@ const pitfalls: Pitfall[] = [
 /**
  * なぜなぜ分析の3つの落とし穴
  * lesson-343 step.visual='WhyWhyPitfallsDiagram'
+ *
+ * A 案 Phase 3 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - inline hint 11→13, padding/lineHeight 拡大
+ *   - CSS: pitfall は既に 13/14px で底上げ済、調整なし
+ *   - warm accent: vz-ww-pitfall-icon (head アイコン) を terracotta に
+ *     (落とし穴の象徴アイコン = 注意喚起の動き起点 = 1 visual 内 1 箇所)
  */
 export function WhyWhyPitfallsVisual() {
   return (
@@ -68,14 +74,15 @@ export function WhyWhyPitfallsVisual() {
 
       <div
         style={{
-          marginTop: 12,
-          padding: '8px 10px',
+          marginTop: 14,
+          padding: '10px 12px',
           background: 'var(--brand-soft)',
           borderRadius: 8,
-          fontSize: 11,
+          fontSize: 13,
           fontWeight: 600,
           color: 'var(--brand)',
           textAlign: 'center',
+          lineHeight: 1.45,
         }}
       >
         💡 人ではなく仕組み、飛躍させず1段ずつ、具体的に

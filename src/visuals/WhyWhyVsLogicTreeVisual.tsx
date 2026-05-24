@@ -3,6 +3,12 @@ import './visuals-whywhy.css'
 /**
  * なぜなぜ（縦に深く）vs Why ツリー（横に広く）
  * lesson-340 step.visual='WhyWhyVsLogicTreeDiagram'
+ *
+ * A 案 Phase 3 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - inline hint 11→13, padding/lineHeight 拡大
+ *   - CSS: vbox 13→14, hroot 13→14, hleaf 12→13
+ *   - warm accent: vbox.root (左カラム = 根本原因 = なぜなぜの到達点) を terracotta gradient
+ *     (縦深掘りの到達ゴールを 1 visual 内 1 箇所だけ温度感色で示す)
  */
 export function WhyWhyVsLogicTreeVisual() {
   return (
@@ -54,14 +60,15 @@ export function WhyWhyVsLogicTreeVisual() {
 
       <div
         style={{
-          marginTop: 12,
-          padding: '8px 10px',
+          marginTop: 14,
+          padding: '10px 12px',
           background: 'var(--brand-soft)',
           borderRadius: 8,
-          fontSize: 11,
+          fontSize: 13,
           fontWeight: 600,
           color: 'var(--brand)',
           textAlign: 'center',
+          lineHeight: 1.45,
         }}
       >
         💡 深掘りは「なぜなぜ」、網羅は「Why ツリー」

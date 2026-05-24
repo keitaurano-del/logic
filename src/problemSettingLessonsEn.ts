@@ -50,6 +50,9 @@ const problemSettingIntro: LessonData = {
       title: 'The Where -> Why -> How framework',
       content:
         'For problem setting, the order "Where -> Why -> How" works well.\n\n[Where] Where is the problem?\nRevenue = Customers x Average ticket x Purchase frequency\n-> "Customers" are dropping (locate the problem)\n\n[Why] Why is that problem happening?\n-> New customers are growing, but existing customers are repeating less\n-> Repeat decline is caused by dissatisfaction with delivery delays\n\n[How] How do we fix it?\n-> Re-evaluate delivery partners\n-> Real-time delivery status notifications\n-> Auto-issue coupons on delays\n\nIf you skip Where/Why and jump to How,\nyou waste time and money on solutions that miss the target.',
+      visual: 'WhereWhyHowDiagram',
+      outro:
+        'Holding to Where -> Why -> How in that order is the iron rule of problem setting. Skip the Where and rush to the How, and you watch time and budget melt into solutions that miss the mark. Pinning down where the problem actually lives before designing actions is what makes the whole exercise efficient.',
     },
     {
       type: 'quiz',
@@ -94,6 +97,9 @@ const problemSettingFramework: LessonData = {
       title: 'Prioritizing issues — a 2x2 matrix',
       content:
         'When there are many issues, working on all of them is inefficient.\nA 2x2 matrix to set priorities:\n\n           High Impact\n        ┌────────┬────────┐\n  Easy  │ Quick  │  Top   │\n        │  Win   │ Priority│\n        ├────────┼────────┤\n  Hard  │ Defer  │ Strategic│\n        │        │  Plan  │\n        └────────┴────────┘\n           Low Impact\n\n(1) Top priority (high impact x easy) -> do immediately\n(2) Quick win (low impact x easy) -> do if you have spare cycles\n(3) Strategic plan (high impact x hard) -> work on over the medium/long term\n(4) Defer (low impact x hard) -> don\'t do',
+      visual: 'Two2MatrixDiagram',
+      outro:
+        'An impact × feasibility 2×2 sorts issues into top priority, quick wins, strategic plan, and defer at a glance. "Do everything" amounts to "do nothing" in practice. Make the priority visible and concentrate resources on the quadrant with the highest payoff.',
     },
     {
       type: 'quiz',

@@ -59,6 +59,33 @@ export const strategyLessonMapEn: Record<number, LessonData> = {
         title: 'The first to systematize "strategy"',
         content:
           'In 1965, Igor Ansoff in "Corporate Strategy" presented strategy as a systematic framework for the first time. He defined strategy as "the decision about which direction the company will grow."\n\nFamous above all is the "Ansoff Matrix." With "products (existing / new)" on one axis and "markets (existing / new)" on the other, growth options are organized into four quadrants.\n\nThis simple 2×2 turned a vague "we want to grow" into the concrete question "in which direction?"',
+        outro:
+          'Translating "we want to grow" into "which of these four quadrants are we betting on" instantly makes the discussion concrete. Whether you choose market penetration, new product, new market, or diversification comes down to each company\'s resources and tolerance for risk.',
+        visual: 'Two2MatrixDiagram',
+        visualProps: {
+          sectionLabel: 'Ansoff Matrix — Product × Market',
+          xAxis: { low: 'Existing market', high: 'New market', label: 'Market' },
+          yAxis: { low: 'Existing product', high: 'New product', label: 'Product' },
+          cells: [
+            {
+              title: '② New product development',
+              items: ['New product to same customers', 'Leverage existing brand'],
+            },
+            {
+              title: '④ Diversification (high risk)',
+              items: ['Enter wholly new domains', 'Synergy design is the key'],
+            },
+            {
+              title: '① Market penetration (safest)',
+              items: ['Grow share', 'Promotion, pricing, LTV gains'],
+            },
+            {
+              title: '③ New market development',
+              items: ['Overseas or new segment', 'Channel build-out required'],
+            },
+          ],
+          hint: 'The further top-right you go, the more unknowns and risk pile up. Diversification lives or dies on whether the "2 + 2 = 5" synergy actually shows up.',
+        },
       },
       {
         type: 'explain',
@@ -109,6 +136,9 @@ export const strategyLessonMapEn: Record<number, LessonData> = {
         title: 'Meaning of the four quadrants and resource allocation',
         content:
           'Cash cow (high share × low growth): generates cash. Profitable without further investment.\nStar (high share × high growth): needs investment to maintain growth. The future cash cow.\nQuestion mark (low share × high growth): with share gain, becomes a star. Cut or commit.\nDog (low share × low growth): consider exit.\n\nThe basic logic: "earn from cash cows, invest in question marks to grow them into stars, and eventually turn them into cash cows." It is a tool to make the "money flow across businesses" visible.',
+        outro:
+          'PPM is the device that makes the cash flow across your whole portfolio visible. How much of the cash cow\'s profit should be routed into the up-and-coming question marks? Once you can argue the rationale through these four quadrants, board-room debates change in tone.',
+        visual: 'Two2MatrixDiagram',
       },
       {
         type: 'quiz',
@@ -147,6 +177,9 @@ export const strategyLessonMapEn: Record<number, LessonData> = {
         title: 'The structure that splits "profitable industries from unprofitable ones"',
         content:
           'In 1980, Michael Porter in "Competitive Strategy" argued that "industry profitability is determined by five forces." This is Five Forces analysis.\n\n① Rivalry within the industry — how fierce the price wars are among competitors.\n② Threat of new entrants — low entry barriers thin out profits.\n③ Threat of substitutes — products in adjacent categories that can satisfy customers instead.\n④ Bargaining power of buyers — strong customers can force price cuts.\n⑤ Bargaining power of suppliers — strong suppliers raise costs.\n\nThe essence of Five Forces is a lens that diagnoses "whether an industry is structurally profitable."',
+        outro:
+          'Five Forces is the lens that decides "is this an industry where effort can earn a profit, or one that is structurally unprofitable?" The same effort produces wildly different results depending on the industry, so it is the analysis you should run once both before entry and at any exit decision.',
+        visual: 'FiveForcesDiagram',
       },
       {
         type: 'explain',
@@ -191,6 +224,9 @@ export const strategyLessonMapEn: Record<number, LessonData> = {
         title: 'There are only three ways to win',
         content:
           'In a follow-up, Porter argued that "within an industry, only three generic strategies can win." ① Cost leadership, ② Differentiation, ③ Focus.\n\n① Cost leadership: produce at the lowest cost in the industry. You can sell the same product cheaper, or earn more on the same price. Scale, the experience curve, and efficient operations are the weapons.\n② Differentiation: provide unique value that customers will pay extra for. Build difference through brand, quality, technology, or experience.\n③ Focus: specialize in a particular segment and play either ① or ② within that narrow market.',
+        outro:
+          'Cost, differentiation, and focus are an either-or choice — mixing them half-heartedly lands you in the "stuck in the middle" zone where none of them wins. A clear call about which axis you will win on, grounded in your own strengths and the structure of the market, is the decisive move.',
+        visual: 'TriadDiagram',
       },
       {
         type: 'explain',
@@ -241,6 +277,9 @@ export const strategyLessonMapEn: Record<number, LessonData> = {
         title: 'VRIO — diagnosing resources with four questions',
         content:
           'Barney\'s framework checks whether a resource generates competitive advantage with four questions. This is VRIO.\n\nV (Valuable) — does the resource create customer value?\nR (Rare) — is it rare among competitors?\nI (Inimitable) — is it hard to imitate? (historical paths, social complexity, causal ambiguity)\nO (Organized) — is the organization set up to leverage it?\n\nIf all four are "yes," the resource yields "sustained competitive advantage." Miss even one, and the value won\'t last.\n\nExample: Starbucks\' barista service know-how is valuable, scarce among other chains, embedded in culture and hard to imitate, and organized around store operations → sustained advantage.',
+        outro:
+          'The four VRIO questions act as filters that get progressively stricter. V alone is something anyone can hold, R adds rarity, I means imitation is hard, and only when O is also satisfied do you have sustained advantage. Running your strengths through the four-step sieve is what surfaces the resources that actually win.',
+        visual: 'VrioDiagram',
       },
       {
         type: 'think',

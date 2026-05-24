@@ -127,7 +127,7 @@
   letter-spacing: 0.03em;
 }
 .vz-fermi-bd-cat-summary {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text-muted);
   letter-spacing: 0.02em;
@@ -163,32 +163,34 @@
   letter-spacing: -0.01em;
 }
 .vz-fermi-bd-unit {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--vz-tone);
   opacity: 0.85;
 }
 .vz-fermi-bd-label {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--text-primary);
   line-height: 1.35;
 }
 .vz-fermi-bd-note {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
   color: var(--text-muted);
   line-height: 1.35;
 }
 
+/* warm accent (A 案 Phase 3): hint ボックスを terracotta soft 背景に。
+ * 6 カテゴリは tone color-coded で意味色を維持、暗記の動機付け 1 箇所のみ温度感色 */
 .vz-fermi-bd-hint {
   margin-top: 4px;
-  padding: 8px 10px;
-  background: var(--brand-soft);
+  padding: 10px 12px;
+  background: var(--visual-warm-primary-soft);
   border-radius: 8px;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
-  color: var(--brand);
+  color: var(--visual-warm-primary-deep);
   text-align: center;
   line-height: 1.45;
 }
