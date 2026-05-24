@@ -9,12 +9,15 @@ type Props = {
  * MECE の便利な4切り口を本体トーンで図解
  * lesson-20 step.visual='MecePatternsDiagram'
  *
- * interactive モード: 4 パターンのうち選択中のものだけハイライト、それ以外はミュート。
- * static モード: 全パターン同等表示。
+ * interactive モード: 4 パターンを全て同等に初期表示し、タップした 1 つだけハイライト。
+ *   - 以前は初期 active=0 だったため、初回表示時に ②③④ が opacity:0.35 で
+ *     ほぼ見えなくなる問題があった（SCRUM 報告 2026-05-24）。
+ *   - 初期 active=null に変更し、タップ前は 4 つすべて通常表示する。
+ * static モード: 全パターン同等表示（active 操作なし）。
  */
 export function MecePatternsVisual({ revealMode = 'interactive' }: Props = {}) {
-  // null = 何も選択されていない（全部通常表示）
-  const [active, setActive] = useState<number | null>(revealMode === 'static' ? null : 0)
+  // null = 何も選択されていない（全部通常表示） — interactive でも初期は null
+  const [active, setActive] = useState<number | null>(null)
   const isInteractive = revealMode !== 'static'
 
   const cardStyle = (idx: number): React.CSSProperties => {
