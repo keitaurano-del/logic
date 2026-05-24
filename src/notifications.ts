@@ -13,6 +13,7 @@ const STREAK_RISK_NOTIF_ID = 1002
 const JOURNAL_NOTIF_ID = 1003
 const STREAK_RISK_HOUR = 21
 const DAILY_MESSAGE_COUNT = 20
+const ALL_NOTIF_IDS = [DAILY_NOTIF_ID, STREAK_RISK_NOTIF_ID, JOURNAL_NOTIF_ID]
 
 // ── Pref types ─────────────────────────────────────────────────
 
@@ -255,6 +256,95 @@ export async function cancelJournalReminder(): Promise<void> {
     await LocalNotifications.cancel({ notifications: [{ id: JOURNAL_NOTIF_ID }] })
   } catch (e) {
     console.warn('Cancel journal reminder error:', e)
+  }
+}
+
+// ── Cancel / Reschedule all ────────────────────────────────────
+
+/**
+ * Logic がスケジュールした全リマインダー (daily / streakRisk / journal) を一括 cancel。
+ * 設定 (pref) は変更しない — 重複・古いスケジュール残存対策のための物理的な掃除のみ。
+ */
+export async function cancelAllReminders(): Promise<void> {
+  if (!isNative()) return
+  try {
+    const { LocalNotifications } = await import('@capacitor/local-notifications')
+    await LocalNotifications.cancel({ notifications: ALL_NOTIF_IDS.map((id) => ({ id })) })
+  } catch (e) {
+    console.warn('Cancel all reminders error:', e)
+  }
+}
+
+/**
+ * 起動時 bootstrap 用: 既存スケジュールを全 cancel してから、各 pref が enabled のものだけ再 schedule。
+ * 古いスケジュール残存 / 重複発火対策のために毎回呼ぶ前提。
+ */
+export async function rescheduleAllReminders(): Promise<void> {
+  if (!isNative()) return
+  await cancelAllReminders()
+
+  const reminder = loadReminderPref()
+  if (reminder.enabled) {
+    await scheduleDailyReminder(reminder.hour, reminder.minute)
+  }
+
+  const streakAlert = loadStreakAlertPref()
+  if (streakAlert.streakAlert) {
+    await scheduleStreakRiskReminder()
+  }
+
+  const journal = loadJournalReminderPref()
+  if (journal.enabled) {
+    await scheduleJournalReminder(journal.hour, journal.minute)
+  }
+}
+
+// ── Debug: getPending ──────────────────────────────────────────
+
+export type PendingNotificationInfo = {
+  id: number
+  title: string | null
+  body: string | null
+  scheduledAt: string | null // ISO string、unknown なら null
+  every: string | null       // 'day' など、unknown なら null
+}
+
+/**
+ * 端末で実際に pending 状態の通知一覧を取得 (デバッグ用)。
+ * Web 環境では空配列を返す。
+ * 戻り値は schedule.at 昇順でソート済み。
+ */
+export async function getPendingNotifications(): Promise<PendingNotificationInfo[]> {
+  if (!isNative()) return []
+  try {
+    const { LocalNotifications } = await import('@capacitor/local-notifications')
+    const result = await LocalNotifications.getPending()
+    const list: PendingNotificationInfo[] = (result.notifications ?? []).map((n) => {
+      const schedule = (n as { schedule?: { at?: Date | string; every?: string } }).schedule
+      let scheduledAt: string | null = null
+      if (schedule?.at) {
+        const d = schedule.at instanceof Date ? schedule.at : new Date(schedule.at)
+        scheduledAt = isNaN(d.getTime()) ? null : d.toISOString()
+      }
+      return {
+        id: n.id,
+        title: n.title ?? null,
+        body: n.body ?? null,
+        scheduledAt,
+        every: schedule?.every ?? null,
+      }
+    })
+    // 次回発火時刻が早い順に並べる (null は末尾)
+    list.sort((a, b) => {
+      if (a.scheduledAt && b.scheduledAt) return a.scheduledAt.localeCompare(b.scheduledAt)
+      if (a.scheduledAt) return -1
+      if (b.scheduledAt) return 1
+      return a.id - b.id
+    })
+    return list
+  } catch (e) {
+    console.warn('getPendingNotifications error:', e)
+    return []
   }
 }
 

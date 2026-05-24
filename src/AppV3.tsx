@@ -75,7 +75,7 @@ import { TutorialOverlay, TutorialFAB } from './components/TutorialOverlay'
 import { tutorial } from './tutorial/tutorialStorage'
 import { t } from './i18n'
 import { useAssistantName } from './hooks/useAssistantName'
-import { addNotificationTapListener, loadStreakAlertPref, scheduleStreakRiskReminder } from './notifications'
+import { addNotificationTapListener, rescheduleAllReminders } from './notifications'
 
 const ONBOARDED_KEY = 'logic-onboarded'
 const INSTALL_ID_KEY = 'logic-install-id'
@@ -321,7 +321,8 @@ function AppV3() {
   }, [])
 
   // 通知タップ → ホームへ deep link
-  // streakAlert ON ならアプリ起動時に schedule 再計算（今日の学習状況を反映）
+  // 起動時に全リマインダーを一旦 cancel → 各 pref が enabled なものだけ再 schedule。
+  // これで「設定変更で残った古いスケジュール」「重複発火」を防ぐ。
   useEffect(() => {
     let cleanup: (() => void) | undefined
     void (async () => {
@@ -329,9 +330,7 @@ function AppV3() {
         setTab('home')
         navigate({ type: 'home' })
       })
-      if (loadStreakAlertPref().streakAlert) {
-        void scheduleStreakRiskReminder()
-      }
+      await rescheduleAllReminders()
     })()
     return () => { cleanup?.() }
   }, [navigate])

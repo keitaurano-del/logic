@@ -1,13 +1,16 @@
-import { useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { Header } from '../components/platform/Header'
 import {
   loadReminderPref, scheduleDailyReminder, cancelDailyReminder,
   loadStreakAlertPref, scheduleStreakRiskReminder, cancelStreakRiskReminder,
   loadJournalReminderPref, scheduleJournalReminder, cancelJournalReminder,
   requestNotificationPermission, isNative,
+  getPendingNotifications, rescheduleAllReminders,
+  type PendingNotificationInfo,
 } from '../notifications'
 import { Switch } from '../components/Switch'
 import { t } from '../i18n'
+import { isAdmin } from '../admin'
 
 interface Props {
   onBack: () => void
@@ -41,6 +44,34 @@ function NotifRow({ label, sub, value, onChange, last }: { label: string; sub: s
 
 const pad = (n: number) => String(n).padStart(2, '0')
 
+function showDebug(): boolean {
+  if (isAdmin()) return true
+  try {
+    return new URLSearchParams(window.location.search).get('debug') === '1'
+  } catch {
+    return false
+  }
+}
+
+function formatScheduledAt(iso: string | null): string {
+  if (!iso) return '—'
+  const d = new Date(iso)
+  if (isNaN(d.getTime())) return '—'
+  const yyyy = d.getFullYear()
+  const mm = pad(d.getMonth() + 1)
+  const dd = pad(d.getDate())
+  const hh = pad(d.getHours())
+  const mi = pad(d.getMinutes())
+  return `${yyyy}-${mm}-${dd} ${hh}:${mi}`
+}
+
+function NotifIdLabel({ id }: { id: number }) {
+  if (id === 1001) return <>1001 / {t('notifSettings.debug.idDaily')}</>
+  if (id === 1002) return <>1002 / {t('notifSettings.debug.idStreakRisk')}</>
+  if (id === 1003) return <>1003 / {t('notifSettings.debug.idJournal')}</>
+  return <>{id}</>
+}
+
 export function NotificationSettingsScreen({ onBack }: Props) {
   const pref = loadReminderPref()
   const journalPref = loadJournalReminderPref()
@@ -51,6 +82,36 @@ export function NotificationSettingsScreen({ onBack }: Props) {
   const [journalEnabled, setJournalEnabled] = useState(journalPref.enabled)
   const [journalHour, setJournalHour] = useState(journalPref.hour)
   const [journalMinute, setJournalMinute] = useState(journalPref.minute)
+
+  // Debug: pending notifications
+  const debug = showDebug()
+  const [pending, setPending] = useState<PendingNotificationInfo[]>([])
+  const [pendingFetchedAt, setPendingFetchedAt] = useState<Date | null>(null)
+  const [pendingLoading, setPendingLoading] = useState(false)
+
+  const refreshPending = useCallback(async () => {
+    setPendingLoading(true)
+    try {
+      const list = await getPendingNotifications()
+      setPending(list)
+      setPendingFetchedAt(new Date())
+    } finally {
+      setPendingLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!debug) return
+    // Defer to next microtask so setState inside refreshPending doesn't fire
+    // synchronously within the effect body (react-hooks/set-state-in-effect).
+    const id = setTimeout(() => { void refreshPending() }, 0)
+    return () => clearTimeout(id)
+  }, [debug, refreshPending])
+
+  async function handleForceReschedule() {
+    await rescheduleAllReminders()
+    await refreshPending()
+  }
 
   async function handleToggle(v: boolean) {
     if (v) {
@@ -232,6 +293,90 @@ export function NotificationSettingsScreen({ onBack }: Props) {
             )}
           </div>
         </div>
+
+        {debug && (
+          <div>
+            <SectionLabel>{t('notifSettings.debug.heading')}</SectionLabel>
+            <div style={{ background: 'var(--bg-card)', borderRadius: 16, overflow: 'hidden', boxShadow: 'var(--shadow-v3-card-inset)' }}>
+              <div style={{ padding: '14px 20px', display: 'flex', alignItems: 'center', gap: 12, borderBottom: `1px solid ${'var(--border)'}` }}>
+                <div style={{ flex: 1, fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                  {t('notifSettings.debug.intro')}
+                  {pendingFetchedAt && (
+                    <div style={{ marginTop: 4, color: 'var(--text-muted)' }}>
+                      {t('notifSettings.debug.fetchedAt')}: {formatScheduledAt(pendingFetchedAt.toISOString())}
+                    </div>
+                  )}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => { void refreshPending() }}
+                  disabled={pendingLoading}
+                  style={{
+                    padding: '6px 12px', borderRadius: 8,
+                    border: `1.5px solid ${'var(--border)'}`,
+                    background: 'var(--bg-primary)', color: 'var(--text-primary)',
+                    fontSize: 12, fontWeight: 600, cursor: 'pointer',
+                  }}
+                >
+                  {t('notifSettings.debug.refresh')}
+                </button>
+              </div>
+
+              <div style={{ padding: '14px 20px', borderBottom: `1px solid ${'var(--border)'}` }}>
+                <button
+                  type="button"
+                  onClick={() => { void handleForceReschedule() }}
+                  style={{
+                    padding: '8px 14px', borderRadius: 8,
+                    border: `1.5px solid ${'var(--border)'}`,
+                    background: 'var(--bg-primary)', color: 'var(--text-primary)',
+                    fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                  }}
+                >
+                  {t('notifSettings.debug.forceReschedule')}
+                </button>
+                <div style={{ marginTop: 6, fontSize: 11, color: 'var(--text-muted)' }}>
+                  {t('notifSettings.debug.forceRescheduleHint')}
+                </div>
+              </div>
+
+              <div style={{ padding: '14px 20px' }}>
+                {!isNative() ? (
+                  <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>
+                    {t('notifSettings.debug.webNoop')}
+                  </div>
+                ) : pending.length === 0 ? (
+                  <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>
+                    {pendingLoading ? t('notifSettings.debug.loading') : t('notifSettings.debug.empty')}
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    {pending.map((n) => (
+                      <div
+                        key={n.id}
+                        style={{
+                          padding: 10, borderRadius: 10,
+                          background: 'var(--bg-primary)',
+                          border: `1px solid ${'var(--border)'}`,
+                          fontSize: 12, lineHeight: 1.55,
+                          color: 'var(--text-primary)',
+                          fontFamily: 'ui-monospace, SFMono-Regular, monospace',
+                        }}
+                      >
+                        <div style={{ fontWeight: 700, marginBottom: 4 }}>
+                          <NotifIdLabel id={n.id} />
+                        </div>
+                        <div>{t('notifSettings.debug.fieldTitle')}: {n.title ?? '—'}</div>
+                        <div>{t('notifSettings.debug.fieldNextAt')}: {formatScheduledAt(n.scheduledAt)}</div>
+                        <div>{t('notifSettings.debug.fieldEvery')}: {n.every ?? '—'}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
