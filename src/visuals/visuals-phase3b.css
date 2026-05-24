@@ -197,11 +197,13 @@
 .vz-cra-block.assumption {
   background: var(--bg-secondary);
   border: 1px dashed var(--text-muted);
+  /* warm accent (A 案 Phase 2): 水面下の隠れた前提 = 議論が噛み合わない動きの起点 */
+  border-left: 4px solid var(--visual-warm-primary);
   color: var(--text-secondary);
 }
 
 .vz-cra-label {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -227,7 +229,7 @@
   align-items: center;
   gap: 8px;
   margin: 4px 0;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;

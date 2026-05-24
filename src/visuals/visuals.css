@@ -303,7 +303,9 @@
   font-weight: 700;
 }
 
-.vz-sowhat-arrows .up   { color: var(--success); }
+/* warm accent (A 案 Phase 2): ↑ So What? (動きの起点 = で何が言える？) を terracotta、
+ * ↓ Why So? (rose / 演繹側) は元色を維持 = 1 visual 内 1 箇所 */
+.vz-sowhat-arrows .up   { color: var(--visual-warm-primary); }
 .vz-sowhat-arrows .down { color: var(--rose); }
 
 /* ===== Pyramid ===== */
@@ -531,6 +533,13 @@
   flex-shrink: 0;
 }
 
+/* warm accent (A 案 Phase 2): 最後の P (結論の re-stating) を terracotta gradient で締める
+ * 1 visual 内 1 箇所、最初の P の brand-cta は維持 */
+.vz-prep-letter.final {
+  background: linear-gradient(135deg, var(--visual-warm-primary) 0%, var(--visual-warm-primary-deep) 100%);
+  box-shadow: 0 4px 12px rgba(196, 117, 58, 0.28);
+}
+
 .vz-prep-meaning {
   flex: 1;
   display: flex;
@@ -570,16 +579,17 @@
 }
 
 .vz-premise-card .label {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.08em;
   color: var(--text-muted);
 }
 
 .vz-premise-card .text {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--text-primary);
+  line-height: 1.45;
 }
 
 .vz-premise-card.conclusion {
@@ -592,11 +602,13 @@
 .vz-premise-card.conclusion .label { color: rgba(255,255,255,0.85); }
 .vz-premise-card.conclusion .text  { color: #fff; }
 
+/* warm accent (A 案 Phase 2): ↓ (演繹) ↑ (帰納) どちらも論証の「動きの起点」= terracotta
+ * Deduction / Induction Visual のいずれにも 1 箇所だけ表れる arrow なので両方 warm にする */
 .vz-arrow-down, .vz-arrow-up {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
-  color: var(--brand);
   line-height: 1;
+  color: var(--visual-warm-primary);
 }
 
 .vz-induction-samples {
@@ -610,8 +622,8 @@
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 6px 8px;
-  font-size: 13px;
+  padding: 8px 10px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-primary);
   display: flex;
@@ -681,11 +693,11 @@
   background: var(--bg-secondary);
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 8px;
-  font-size: 13px;
+  padding: 10px;
+  font-size: 14px;
   font-weight: 600;
   text-align: center;
-  line-height: 1.4;
+  line-height: 1.45;
   color: var(--text-primary);
 }
 
@@ -694,9 +706,10 @@
   background: var(--success-soft);
 }
 
+/* warm accent (A 案 Phase 2): ⇔ 等価記号 = 命題と対偶を結ぶ動きの中心 = 1 visual 内 1 箇所 */
 .vz-contra-arrow {
-  color: var(--brand);
-  font-size: 18px;
+  color: var(--visual-warm-primary);
+  font-size: 20px;
   font-weight: 700;
 }
 
@@ -722,14 +735,15 @@
   height: 24px;
   margin-top: -12px;
   background: var(--bg-card);
-  border: 2px solid var(--brand);
+  /* warm accent (A 案 Phase 2): pin = メーター上の移動マーカー = 1 visual 内 1 箇所の暖色強調 */
+  border: 2px solid var(--visual-warm-primary);
   border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
-  color: var(--brand);
+  color: var(--visual-warm-primary-deep);
   box-shadow: var(--shadow-card);
   transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }

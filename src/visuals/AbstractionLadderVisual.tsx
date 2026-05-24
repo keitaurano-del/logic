@@ -37,6 +37,12 @@ type Props = {
  * 抽象ラダー — 具体↔抽象を上下移動
  * lesson-68 step.visual='AbstractionLadderDiagram'
  * rungs を props で渡せば任意のスケール（抽象度、難易度、習熟度）でも使い回せる。
+ *
+ * A 案 Phase 2 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - vz-ladder-pin / direction / btn ラベル 11→12px に底上げ
+ *   - vz-ladder-rung font 14, .ex 12, note 14 維持（既に新基準）
+ *   - warm accent: ピンの border と文字色を terracotta に格上げ
+ *     （メーター上を上下する「動きの起点」= 1 visual 内 1 箇所）
  */
 export function AbstractionLadderVisual({
   rungs = defaultRungs,

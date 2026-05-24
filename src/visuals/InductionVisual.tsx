@@ -9,6 +9,11 @@ type Props = {
  * 帰納法 — 観察・サンプル → 一般則
  * lesson-26 step.visual='InductionDiagram'
  *
+ * A 案 Phase 2 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - CSS 側 sample 13→14, warn 13→13 (already), arrow-up 18→20
+ *   - warm accent: vz-arrow-up (↑ 観察 → 法則化の動き) を terracotta に
+ *     （帰納の本質 = 下から上へ吸い上げる動きそのもの = 1 visual 内 1 箇所）
+ *
  * 段階開示:
  *   Step 1..4 — サンプルを 1 個ずつ追加（A→B→C→D）
  *   Step 5    — 仮の法則を導出

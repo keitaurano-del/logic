@@ -4,6 +4,12 @@ import { useStepReveal } from './hooks/useStepReveal'
  * So What? / Why So? — 結論↔根拠の双方向
  * lesson-22 step.visual='SoWhatDiagram'
  *
+ * A 案 Phase 2 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - conclusion inline 13→16 (本文 weight 700)、根拠 inline 12→14
+ *   - inline hint 11→13, padding/lineHeight 拡大
+ *   - warm accent: vz-sowhat-arrows .up (↑ So What?) を terracotta に格上げ
+ *     （根拠 → 結論 への「で何が言えるのか？」=動きの起点、conclusion brand-cta は維持）
+ *
  * 3 段階で開示:
  *   Step 1 — 結論
  *   Step 2 — 結論 + 根拠（↓ Why So 矢印付き）
@@ -22,7 +28,7 @@ export function SoWhatVisual({ revealMode = 'interactive' }: Props = {}) {
     <div className="vz-sowhat vz-stagger">
       <div className="vz-sowhat-block conclusion">
         <span className="vz-sowhat-label">結論 / メッセージ</span>
-        <span style={{ fontSize: 13, fontWeight: 700 }}>
+        <span style={{ fontSize: 16, fontWeight: 700, lineHeight: 1.45 }}>
           このプロジェクトは予算を増やすべき
         </span>
       </div>
@@ -42,7 +48,7 @@ export function SoWhatVisual({ revealMode = 'interactive' }: Props = {}) {
       {step >= 2 && (
         <div className="vz-sowhat-block">
           <span className="vz-sowhat-label">根拠 / データ</span>
-          <span style={{ fontSize: 12, color: 'var(--text-primary)', lineHeight: 1.6, fontWeight: 500 }}>
+          <span style={{ fontSize: 14, color: 'var(--text-primary)', lineHeight: 1.6, fontWeight: 500 }}>
             • ユーザー数が前年比 +180%<br />
             • 競合は同領域で投資を 2 倍化<br />
             • 既存リソースでは対応しきれない
@@ -55,14 +61,15 @@ export function SoWhatVisual({ revealMode = 'interactive' }: Props = {}) {
       {isLast && (
         <div
           style={{
-            marginTop: 6,
-            padding: '8px 10px',
+            marginTop: 12,
+            padding: '10px 12px',
             background: 'var(--brand-soft)',
             borderRadius: 8,
-            fontSize: 11,
+            fontSize: 13,
             fontWeight: 600,
             color: 'var(--brand)',
             textAlign: 'center',
+            lineHeight: 1.45,
           }}
         >
           上下に往復できるか？が論理の強さの指標

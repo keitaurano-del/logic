@@ -4,6 +4,12 @@ import { useStepReveal } from './hooks/useStepReveal'
  * PREP 法 — Point / Reason / Example / Point
  * lesson-23 step.visual='PrepDiagram'
  *
+ * A 案 Phase 2 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - inline hint 11→13, padding/lineHeight 拡大
+ *   - vz-prep-name 14 / vz-prep-desc 13 維持（新基準内）
+ *   - warm accent: 最後の P (4 番目 = 結論の re-stating) の letter ボックスを terracotta gradient
+ *     （話の閉じ = 1 visual 内 1 箇所、最初の P の brand-cta は維持）
+ *
  * 4 段階で開示:
  *   Step 1..4 — P, R, E, P を 1 つずつ追加
  */
@@ -29,7 +35,7 @@ export function PrepVisual({ revealMode = 'interactive' }: Props = {}) {
       </div>
       {items.slice(0, step).map((item, i) => (
         <div key={i} className="vz-prep-row">
-          <div className="vz-prep-letter">{item.letter}</div>
+          <div className={`vz-prep-letter${i === items.length - 1 ? ' final' : ''}`}>{item.letter}</div>
           <div className="vz-prep-meaning">
             <span className="vz-prep-name">{item.name}</span>
             <span className="vz-prep-desc">{item.desc}</span>
@@ -42,14 +48,15 @@ export function PrepVisual({ revealMode = 'interactive' }: Props = {}) {
       {isLast && (
         <div
           style={{
-            marginTop: 8,
-            padding: '8px 10px',
+            marginTop: 14,
+            padding: '10px 12px',
             background: 'var(--brand-soft)',
             borderRadius: 8,
-            fontSize: 11,
+            fontSize: 13,
             fontWeight: 600,
             color: 'var(--brand)',
             textAlign: 'center',
+            lineHeight: 1.45,
           }}
         >
           結論で始まり、結論で締める — 30秒で要点が伝わる構造

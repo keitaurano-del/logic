@@ -9,10 +9,11 @@ type Props = {
  * 演繹法 — 大前提・小前提・結論
  * lesson-25 step.visual='DeductionDiagram'
  *
- * 3 段階で開示:
- *   Step 1 — 大前提
- *   Step 2 — 大前提 + 小前提
- *   Step 3 — 全て（大前提・小前提・結論）
+ * A 案 Phase 2 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - inline hint fontSize 11→13, padding/lineHeight 拡大
+ *   - CSS 側 vz-premise-card .label 11→12, .text 15→16
+ *   - warm accent: vz-arrow-down (↓ 演繹の動き) を terracotta に
+ *     （一般則 → 結論 への落とし込みフロー = 1 visual 内 1 箇所、結論ブロックの brand-cta は維持）
  */
 export function DeductionVisual({ revealMode = 'interactive' }: Props = {}) {
   const { step, isLast, controls } = useStepReveal({ totalSteps: 3, mode: revealMode })
@@ -57,13 +58,14 @@ export function DeductionVisual({ revealMode = 'interactive' }: Props = {}) {
         <div
           style={{
             marginTop: 14,
-            padding: '8px 10px',
-            background: 'rgba(5, 150, 105, 0.10)',
+            padding: '10px 12px',
+            background: 'var(--success-soft)',
             borderRadius: 8,
-            fontSize: 11,
+            fontSize: 13,
             fontWeight: 600,
-            color: '#065F46',
+            color: 'var(--success-deep)',
             textAlign: 'center',
+            lineHeight: 1.45,
           }}
         >
           ✓ 前提が真なら結論も必ず真。論理が破綻する余地がない
