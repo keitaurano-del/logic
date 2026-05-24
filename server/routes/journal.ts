@@ -36,6 +36,14 @@ interface LessonCatalogEntry {
   category?: string
 }
 
+interface CourseCatalogEntry {
+  id?: string
+  title?: string
+  category?: string
+  description?: string
+  lessonCount?: number
+}
+
 // レッスンカタログを prompt 用テキストに整形する。最大件数で切り詰めて
 // トークン消費を抑えつつ、AI が id を引けるよう "id|category|title" 形式で渡す。
 function buildLessonCatalogText(
@@ -82,6 +90,65 @@ function parseRecommendedLessons(
     .filter((n) => Number.isFinite(n) && n > 0)
   const seen = new Set<number>()
   const ids: number[] = []
+  for (const id of list) {
+    if (seen.has(id)) continue
+    if (validIds.size > 0 && !validIds.has(id)) continue
+    seen.add(id)
+    ids.push(id)
+    if (ids.length >= maxResults) break
+  }
+  const body = raw.slice(0, match.index).trim()
+  return { body, ids }
+}
+
+// コースカタログを prompt 用テキストに整形する。"id|category|title|description" 形式で渡す。
+function buildCourseCatalogText(
+  catalog: unknown,
+  isEn: boolean,
+  maxEntries = 60,
+): { text: string; validIds: Set<string> } {
+  const validIds = new Set<string>()
+  if (!Array.isArray(catalog) || catalog.length === 0) {
+    return { text: isEn ? '(no courses available)' : '（コースデータなし）', validIds }
+  }
+  const lines: string[] = []
+  for (const entry of catalog as CourseCatalogEntry[]) {
+    if (lines.length >= maxEntries) break
+    if (!entry || typeof entry !== 'object') continue
+    const id = typeof entry.id === 'string' ? entry.id.trim() : ''
+    const title = typeof entry.title === 'string' ? entry.title.trim() : ''
+    const category = typeof entry.category === 'string' ? entry.category.trim() : ''
+    const desc = typeof entry.description === 'string' ? entry.description.trim() : ''
+    if (!id || !title) continue
+    // id は英数字とハイフン/アンダースコアに制限（インジェクション対策）
+    if (!/^[a-zA-Z0-9_-]{1,40}$/.test(id)) continue
+    validIds.add(id)
+    const safeTitle = title.replace(/[|\r\n]/g, ' ').slice(0, 80)
+    const safeCat = category.replace(/[|\r\n]/g, ' ').slice(0, 40)
+    const safeDesc = desc.replace(/[|\r\n]/g, ' ').slice(0, 100)
+    lines.push(`${id}|${safeCat}|${safeTitle}|${safeDesc}`)
+  }
+  if (lines.length === 0) {
+    return { text: isEn ? '(no courses available)' : '（コースデータなし）', validIds }
+  }
+  return { text: lines.join('\n'), validIds }
+}
+
+// AI 出力末尾の "RECOMMENDED_COURSES: logic-01" を抽出し、本文からそのセクションを除去する。
+// RECOMMENDED_LESSONS の解析より先に走らせる必要がある（末尾マッチを段階的に剥がすため）。
+function parseRecommendedCourses(
+  raw: string,
+  validIds: Set<string>,
+  maxResults = 1,
+): { body: string; ids: string[] } {
+  const match = raw.match(/RECOMMENDED_COURSES:\s*([a-zA-Z0-9_,\-\s]*)\s*$/i)
+  if (!match) return { body: raw.trim(), ids: [] }
+  const list = match[1]
+    .split(/[,、\s]+/)
+    .map((s) => s.trim())
+    .filter((s) => s.length > 0)
+  const seen = new Set<string>()
+  const ids: string[] = []
   for (const id of list) {
     if (seen.has(id)) continue
     if (validIds.size > 0 && !validIds.has(id)) continue
@@ -226,10 +293,12 @@ ${(scheduleNotes || '').toString().trim() || '未入力'}`
         assistantName,
         locale,
         lessonCatalog,
+        courseCatalog,
       } = req.body || {}
       const isEn = locale === 'en'
       const name = sanitizeAssistantName(assistantName, isEn ? 'your assistant' : 'パーソナルアシスタント')
       const { text: lessonCatalogText, validIds: validLessonIds } = buildLessonCatalogText(lessonCatalog, isEn)
+      const { text: courseCatalogText, validIds: validCourseIds } = buildCourseCatalogText(courseCatalog, isEn)
 
       const goalsList: Array<{ periodType?: string; title?: string; description?: string | null }> =
         Array.isArray(goals) ? goals.slice(0, 30) : []
@@ -328,14 +397,17 @@ Structure:
 
 Do not assume any specific job, age, or background — use only the evidence from their app usage and journal entries. Never lecture. Never give generic advice.
 
-A catalog of available Logic lessons is provided in the user message as "id|category|title" lines. After your feedback, you MUST recommend 1 or 2 lessons that match what the user wrote or what would help them most right now.
+A catalog of available Logic lessons AND courses (each course is a curated set of 5-7 related lessons) is provided in the user message. Lessons are listed as "id|category|title" lines. Courses are listed as "id|category|title|description" lines. After your feedback, you MUST recommend BOTH:
+1. 1 or 2 individual lessons that match what the user wrote or what would help them most right now.
+2. 1 course that fits the broader theme or longer-term direction the user seems to need.
 
 Output format (STRICT):
 <feedback body as described above>
 
-RECOMMENDED_LESSONS: <comma-separated lesson IDs, 1-2 items, from the catalog only>
+RECOMMENDED_LESSONS: <comma-separated lesson IDs, 1-2 items, from the lesson catalog only>
+RECOMMENDED_COURSES: <single course ID from the course catalog only>
 
-The "RECOMMENDED_LESSONS:" line MUST be the very last line, on its own line. Use only numeric IDs from the catalog. If nothing in the catalog fits well, still pick the closest 1 lesson — do not skip the line.`
+These two lines MUST be the very last lines, on their own lines, in this exact order. Use only IDs that appear in the provided catalogs. If nothing fits perfectly, still pick the closest 1 lesson and 1 course — do not skip either line.`
         : `あなたは Logic アプリのパーソナルアシスタント「${name}」です。Logic は思考力を鍛えるアプリ（論理思考、ケース面接、フェルミ推定、哲学など）です。
 
 ユーザーの状況:
@@ -350,14 +422,17 @@ ${phaseGuidanceJa[phase]}
 
 職業・年齢・バックグラウンドを勝手に仮定しない（「コンサル」「新卒」「学生」等と決めつけない）。アプリ利用状況とジャーナルの内容だけを根拠にする。一般論を言わない。説教しない。
 
-利用可能な Logic レッスンの一覧が user message に「id|category|title」形式で含まれます。フィードバック本文の **直後に、必ず** ユーザーの記述内容や状況に最も合うレッスンを 1〜2 件選んで推薦してください。
+利用可能な Logic のレッスン一覧 **と** コース一覧（コースは関連する 5〜7 レッスンをまとめたカリキュラム）が user message に含まれます。レッスンは「id|category|title」形式、コースは「id|category|title|description」形式です。フィードバック本文の **直後に、必ず両方** 推薦してください:
+1. ユーザーの記述内容や直近の状況に最も合うレッスンを 1〜2 件
+2. もう少し広いテーマ・中長期の方向性として合うコースを 1 件
 
 出力フォーマット（厳守）:
 <上記構成のフィードバック本文>
 
-RECOMMENDED_LESSONS: <カタログ内の lesson ID をカンマ区切りで 1〜2 件>
+RECOMMENDED_LESSONS: <レッスンカタログ内の lesson ID をカンマ区切りで 1〜2 件>
+RECOMMENDED_COURSES: <コースカタログ内の course ID を 1 件>
 
-"RECOMMENDED_LESSONS:" 行は **必ず最後の行** に単独で配置。カタログに存在する数値 ID のみ使用。完全に合うものがなくても、最も近いものを 1 件は必ず選ぶこと（この行をスキップしてはいけない）。`
+この 2 行は **必ず最後の行** に、この順番で単独配置。カタログに存在する ID のみ使用。完全に合うものがなくても、最も近いものをそれぞれ 1 件は必ず選ぶこと（どちらの行もスキップしてはいけない）。`
 
       const userMessage = isEn
         ? `## Active goals
@@ -374,7 +449,10 @@ ${progressText}
 ## Total study days: ${sDays}
 
 ## Lesson catalog (format: id|category|title)
-${lessonCatalogText}`
+${lessonCatalogText}
+
+## Course catalog (format: id|category|title|description)
+${courseCatalogText}`
         : `## アクティブな目標
 ${goalsText}
 
@@ -389,7 +467,10 @@ ${progressText}
 ## 累計学習日数: ${sDays} 日
 
 ## レッスンカタログ（形式: id|category|title）
-${lessonCatalogText}`
+${lessonCatalogText}
+
+## コースカタログ（形式: id|category|title|description）
+${courseCatalogText}`
 
       const response = await client.messages.create({
         model: 'claude-haiku-4-5-20251001',
@@ -398,8 +479,14 @@ ${lessonCatalogText}`
         messages: [{ role: 'user', content: userMessage }],
       })
       const rawText = response.content[0].type === 'text' ? response.content[0].text.trim() : ''
-      const { body, ids } = parseRecommendedLessons(rawText, validLessonIds)
-      res.json({ feedback: body, recommended_lesson_ids: ids })
+      // 末尾から順に剥がす: 先に RECOMMENDED_COURSES → 次に RECOMMENDED_LESSONS
+      const { body: bodyAfterCourses, ids: courseIds } = parseRecommendedCourses(rawText, validCourseIds)
+      const { body, ids: lessonIds } = parseRecommendedLessons(bodyAfterCourses, validLessonIds)
+      res.json({
+        feedback: body,
+        recommended_lesson_ids: lessonIds,
+        recommended_course_ids: courseIds,
+      })
     } catch (e: unknown) {
       console.error('journal holistic-feedback error:', e)
       res.status(500).json({ error: e instanceof Error ? e.message : String(e) })

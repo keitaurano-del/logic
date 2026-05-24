@@ -8,6 +8,8 @@ import { XIcon } from '../../icons'
 import { loadProgress } from '../../progressStore'
 import { getLessonStreak, getTotalStudyDays, getXpLogThisMonth } from '../../stats'
 import { getAllLessonsFlat } from '../../lessonData'
+import { COURSES, getCourseById } from '../../courseData'
+import type { Course } from '../../courseData'
 import { t } from '../../i18n'
 
 interface JournalAssistantSheetProps {
@@ -16,12 +18,22 @@ interface JournalAssistantSheetProps {
   onClose: () => void
   /** AI 推薦レッスンタップで呼び出される。未指定なら推薦カードを描画しない */
   onOpenLesson?: (lessonId: number) => void
+  /** AI 推薦コースタップで呼び出される。未指定なら推薦カードを描画しない */
+  onOpenCourse?: (category: string) => void
 }
 
 interface RecommendedLesson {
   id: number
   title: string
   category: string
+}
+
+interface RecommendedCourse {
+  id: string
+  title: string
+  category: string
+  image?: string
+  lessonCount: number
 }
 
 // 全レッスンから AI に渡すための軽量カタログを作成する。
@@ -41,9 +53,26 @@ function buildLessonCatalog(): Array<{ id: number; title: string; category: stri
   return out
 }
 
-export function JournalAssistantSheet({ userId, assistantName, onClose, onOpenLesson }: JournalAssistantSheetProps) {
+// コース一覧を AI に渡すためのカタログを作成する。
+function buildCourseCatalog(): Array<{ id: string; title: string; category: string; description: string; lessonCount: number }> {
+  const out: Array<{ id: string; title: string; category: string; description: string; lessonCount: number }> = []
+  for (const c of COURSES as Course[]) {
+    if (!c?.id || !c?.title) continue
+    out.push({
+      id: c.id,
+      title: (c.title || '').trim(),
+      category: (c.category || '').trim(),
+      description: (c.description || '').trim(),
+      lessonCount: Array.isArray(c.lessonIds) ? c.lessonIds.length : 0,
+    })
+  }
+  return out
+}
+
+export function JournalAssistantSheet({ userId, assistantName, onClose, onOpenLesson, onOpenCourse }: JournalAssistantSheetProps) {
   const [feedback, setFeedback] = useState<string>('')
   const [recommended, setRecommended] = useState<RecommendedLesson[]>([])
+  const [recommendedCourses, setRecommendedCourses] = useState<RecommendedCourse[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [elapsedSec, setElapsedSec] = useState(0)
@@ -97,8 +126,9 @@ export function JournalAssistantSheet({ userId, assistantName, onClose, onOpenLe
         const lessonStreak = getLessonStreak()
         const studyDays = getTotalStudyDays()
         const lessonCatalog = buildLessonCatalog()
+        const courseCatalog = buildCourseCatalog()
 
-        const { feedback: fb, recommendedLessonIds, error: apiErr } = await holisticFeedback({
+        const { feedback: fb, recommendedLessonIds, recommendedCourseIds, error: apiErr } = await holisticFeedback({
           goals,
           recentJournals: recentJournals.map((j) => ({
             date: j.date,
@@ -113,6 +143,7 @@ export function JournalAssistantSheet({ userId, assistantName, onClose, onOpenLe
           studyDays,
           assistantName,
           lessonCatalog,
+          courseCatalog,
         })
 
         if (cancelled) return
@@ -132,6 +163,22 @@ export function JournalAssistantSheet({ userId, assistantName, onClose, onOpenLe
           if (resolved.length >= 2) break
         }
         setRecommended(resolved)
+
+        // 推薦コース: ID → 表示用オブジェクトに解決。存在しないものはスキップ。
+        const resolvedCourses: RecommendedCourse[] = []
+        for (const courseId of recommendedCourseIds ?? []) {
+          const course = getCourseById(courseId)
+          if (!course) continue
+          resolvedCourses.push({
+            id: course.id,
+            title: course.title,
+            category: course.category,
+            image: course.image,
+            lessonCount: Array.isArray(course.lessonIds) ? course.lessonIds.length : 0,
+          })
+          if (resolvedCourses.length >= 1) break
+        }
+        setRecommendedCourses(resolvedCourses)
       } catch (e) {
         console.warn('holistic feedback error:', e)
         if (!cancelled) setError(t('journal.assistantError'))
@@ -213,6 +260,45 @@ export function JournalAssistantSheet({ userId, assistantName, onClose, onOpenLe
                       <div className="journal-recommended-lesson-card__category">{lesson.category}</div>
                     )}
                     <div className="journal-recommended-lesson-card__title">{lesson.title}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {!loading && !error && feedback && recommendedCourses.length > 0 && onOpenCourse && (
+            <div className="journal-recommended-courses">
+              <div className="journal-recommended-courses__title">
+                {t('journal.assistantRecommendedCourses')}
+              </div>
+              <div className="journal-recommended-courses__list">
+                {recommendedCourses.map((course) => (
+                  <button
+                    key={course.id}
+                    type="button"
+                    className="journal-recommended-course-card"
+                    onClick={() => {
+                      onOpenCourse(course.category)
+                      onClose()
+                    }}
+                    aria-label={t('journal.assistantOpenCourseAria', { title: course.title })}
+                  >
+                    {course.image && (
+                      <div className="journal-recommended-course-card__thumb">
+                        <img src={course.image} alt="" loading="lazy" />
+                      </div>
+                    )}
+                    <div className="journal-recommended-course-card__body">
+                      {course.category && (
+                        <div className="journal-recommended-course-card__category">{course.category}</div>
+                      )}
+                      <div className="journal-recommended-course-card__title">{course.title}</div>
+                      {course.lessonCount > 0 && (
+                        <div className="journal-recommended-course-card__meta">
+                          {t('journal.assistantCourseLessonCount', { count: course.lessonCount })}
+                        </div>
+                      )}
+                    </div>
                   </button>
                 ))}
               </div>

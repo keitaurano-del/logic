@@ -40,9 +40,10 @@ interface HolisticFeedbackRequest {
   studyDays: number
   assistantName: string
   lessonCatalog?: Array<{ id: number; title: string; category: string }>
+  courseCatalog?: Array<{ id: string; title: string; category: string; description?: string; lessonCount?: number }>
 }
 
-export async function holisticFeedback(req: HolisticFeedbackRequest): Promise<{ feedback?: string; recommendedLessonIds?: number[]; error?: string }> {
+export async function holisticFeedback(req: HolisticFeedbackRequest): Promise<{ feedback?: string; recommendedLessonIds?: number[]; recommendedCourseIds?: string[]; error?: string }> {
   try {
     const res = await fetch(`${API_BASE}/api/journal/holistic-feedback`, {
       method: 'POST',
@@ -54,11 +55,14 @@ export async function holisticFeedback(req: HolisticFeedbackRequest): Promise<{ 
       return { error: data?.error || `HTTP ${res.status}` }
     }
     const data = await res.json()
-    const rawIds = Array.isArray(data?.recommended_lesson_ids) ? data.recommended_lesson_ids : []
-    const recommendedLessonIds = rawIds
+    const rawLessonIds = Array.isArray(data?.recommended_lesson_ids) ? data.recommended_lesson_ids : []
+    const recommendedLessonIds = rawLessonIds
       .map((n: unknown) => (typeof n === 'number' ? n : Number(n)))
       .filter((n: number) => Number.isFinite(n) && n > 0)
-    return { feedback: data?.feedback ?? '', recommendedLessonIds }
+    const rawCourseIds = Array.isArray(data?.recommended_course_ids) ? data.recommended_course_ids : []
+    const recommendedCourseIds = rawCourseIds
+      .filter((s: unknown): s is string => typeof s === 'string' && s.length > 0 && s.length <= 40)
+    return { feedback: data?.feedback ?? '', recommendedLessonIds, recommendedCourseIds }
   } catch (e) {
     return { error: e instanceof Error ? e.message : String(e) }
   }

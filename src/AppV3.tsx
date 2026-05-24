@@ -27,6 +27,7 @@ const PersonalCourseScreen = lazy(() => import('./screens/PersonalCourseScreen')
 const PricingScreen = lazy(() => import('./screens/PricingScreen').then(m => ({ default: m.PricingScreen })))
 const StreakScreen = lazy(() => import('./screens/StreakScreen').then(m => ({ default: m.StreakScreen })))
 const AccountSettingsScreen = lazy(() => import('./screens/AccountSettingsScreen').then(m => ({ default: m.AccountSettingsScreen })))
+const ProfileEditScreen = lazy(() => import('./screens/ProfileEditScreen').then(m => ({ default: m.ProfileEditScreen })))
 const NotificationSettingsScreen = lazy(() => import('./screens/NotificationSettingsScreen').then(m => ({ default: m.NotificationSettingsScreen })))
 const AppearanceSettingsScreen = lazy(() => import('./screens/AppearanceSettingsScreen').then(m => ({ default: m.AppearanceSettingsScreen })))
 const CompletedLessonsScreen = lazy(() => import('./screens/CompletedLessonsScreen').then(m => ({ default: m.CompletedLessonsScreen })))
@@ -120,6 +121,7 @@ type Screen =
   | { type: 'pricing' }
   | { type: 'streak' }
   | { type: 'account-settings' }
+  | { type: 'profile-edit' }
   | { type: 'notification-settings' }
   | { type: 'appearance-settings' }
   | { type: 'completed-lessons' }
@@ -144,6 +146,7 @@ function getInitialScreen(user: User | null): Screen {
     if (preview === 'fermi') return { type: 'daily-fermi' }
     if (preview === 'pricing') return { type: 'pricing' }
     if (preview === 'account') return { type: 'account-settings' }
+    if (preview === 'profile-edit') return { type: 'profile-edit' }
     if (preview === 'notifications') return { type: 'notification-settings' }
     if (preview === 'appearance') return { type: 'appearance-settings' }
     if (preview === 'journal') return { type: 'journal' }
@@ -617,6 +620,7 @@ function AppV3() {
               assistantName={assistantName}
               onUpdateAssistantName={updateAssistantName}
               onOpenLesson={handleOpenLesson}
+              onOpenCourse={(cat) => navigate({ type: 'roadmap', category: cat })}
             />
           ) : (
             <JournalPaywall onUpgrade={() => navigate({ type: 'pricing' })} />
@@ -645,6 +649,7 @@ function AppV3() {
         <ProfileScreenV3
           userName={userName}
           onOpenAccount={() => navigate({ type: 'account-settings' })}
+          onOpenProfileEdit={() => navigate({ type: 'profile-edit' })}
           onOpenNotifications={() => navigate({ type: 'notification-settings' })}
           onOpenAppearance={() => navigate({ type: 'appearance-settings' })}
           onOpenFeedback={() => navigate({ type: 'feedback' })}
@@ -678,6 +683,9 @@ function AppV3() {
           onOpenLogin={() => navigate({ type: 'login' })}
           onLogout={() => { setCurrentUser(null); navigate({ type: 'profile' }) }}
         />
+      )}
+      {screen.type === 'profile-edit' && (
+        <ProfileEditScreen onBack={handleBack} />
       )}
       {screen.type === 'notification-settings' && (
         <NotificationSettingsScreen onBack={handleBack} />
