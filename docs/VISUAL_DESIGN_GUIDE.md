@@ -817,7 +817,36 @@ Phase 4: HANDDRAWN_ROLLOUT_PLAN.md との整合性レビュー（サムネ系と
     - `FeedbackLoopVisual` — warm accent: hint ボックス terracotta soft (R/B 意味色は §2.3 例外維持)
     - `WhyWhyChainVisual` — warm accent: 最深層 last-child (Why 5) 左ボーダー (terracotta)
     - `WhyWhyToyotaVisual` — warm accent: hint ボックス terracotta soft (root brand-cta 維持)
-- Phase 3: 承認後に追記
+- **Phase 3 (2026-05-24):** Group C 個別概念 22 件適用済
+  - Phase 3-A (WhyWhy 系 6 件):
+    - `WhyWhyEvidenceVisual` — warm accent: vz-ww-evidence-arrow ↔ (terracotta)
+    - `WhyWhyParallelVisual` — warm accent: 分岐ライン SVG 4 本 (terracotta)
+    - `WhyWhyPitfallsVisual` — warm accent: vz-ww-pitfall-icon head (terracotta)
+    - `WhyWhyStopRuleVisual` — warm accent: hint ボックス terracotta soft (3 ゾーンの danger/success/warning は §2.3 維持)
+    - `WhyWhySymptomVsRootVisual` — warm accent: hint ボックス terracotta soft (bad/good の danger/success は §2.3 維持)
+    - `WhyWhyVsLogicTreeVisual` — warm accent: vbox.root (根本原因) terracotta gradient (右 hroot brand-pop 維持)
+  - Phase 3-B (フェルミ/数値/分布 系 7 件):
+    - `FermiBaseDataVisual` — warm accent: vz-fermi-bd-hint terracotta soft (6 tone は color-coded 維持)
+    - `FermiStepsVisual` — warm accent: vz-fs-arrow ↓ (terracotta、.final brand-cta-grad 維持)
+    - `DistributionShapeVisual` — warm accent: hint ボックス terracotta soft (skewed の warning は §2.3 維持)
+    - `ExponentialCurveVisual` — warm accent: SVG ×6.7 倍 ラベル (terracotta)
+    - `MentalMathDecisionTreeVisual` — warm accent: vz-mmd-row-label ↓ (terracotta deep)
+    - `AbsoluteVsRelativeVisual` — warm accent: hint ボックス terracotta soft (relative の rose は §2.3 維持)
+    - `FallacyGridVisual` — warm accent: hint ボックス terracotta soft (5 カード rose 系統一維持)
+  - Phase 3-C (その他 9 件):
+    - `ColorPaletteVisual` — warm accent: palette-bar-seg.accent (terracotta) — 5% accent = 配色教材の主役
+    - `GoodBadSlideVisual` — warm accent: vz-gbs-key (good 側キーメッセージ) terracotta soft (good/bad の意味色は §2.3 維持)
+    - `IgnitionMapVisual` — warm accent: hint ボックス terracotta soft (hot/cold の brand/accent は §2.3 維持)
+    - `LayoutVisual` — warm accent: vz-layout-arrow stroke (terracotta) — 視線パス矢印 (cramped/airy の rose/success は §2.3 維持)
+    - `MeceVennDiagram` — warm accent: hint ボックス terracotta soft (good/bad の success/rose は §2.3 維持)
+    - `MvpTestDesignVisual` — warm accent: vz-mvp-arrow ↓ (terracotta、step-num brand-cta-grad 維持)
+    - `TraitEnvironmentMatrixVisual` — warm accent: hint ボックス terracotta soft (strength/drain の brand/accent は §2.3 維持)
+    - `TrolleyProblemVisual` — warm accent: SVG レバー circle+line+text (terracotta) — 決断行為の主役
+    - `TypographyVisual` — warm accent: vz-typo-section-title 「ジャンプ率」 (terracotta deep)
+    - `VerticalVsLateralVisual` — warm accent: lateral カラムの → 矢印 (terracotta、vertical 側 brand は維持)
+
+A 案 全 63 件完了 (Phase 0: 1 + Phase 1: 15 + Phase 2: 25 + Phase 3: 22 = 63)。
+全 visual で §3.1 (フォント底上げ、11px 以下禁止) と §2.4 (warm accent 1 visual 内 1 箇所) を厳守。
 
 ---
 
