@@ -1,6 +1,6 @@
 # Logic Visual Design Guide — レッスン内図解の全コース横断指針
 
-**最終更新:** 2026-05-24
+**最終更新:** 2026-05-24 (Phase 2 完了)
 **担当:** designer (凜)
 **対象:** `src/visuals/*.tsx` で作るレッスン内「概念図解（concept visual）」
 **目的:** 150+ レッスン全体に図解を展開するためのビジュアル言語を統一する
@@ -788,7 +788,36 @@ Phase 4: HANDDRAWN_ROLLOUT_PLAN.md との整合性レビュー（サムネ系と
   - Group C (その他 2 件):
     - `GraphPitfallsVisual` — warm accent: hint ボックス (terracotta soft 背景)
     - `ScrStructureVisual` — warm accent: Complication step left-border 4px (terracotta)
-- Phase 2 / 3: 承認後に追記
+- **Phase 2 (2026-05-24):** カテゴリ代表 25 件適用済
+  - Phase 2-A (思考系 7 件):
+    - `AbstractionLadderVisual` — warm accent: メーター pin border + 文字色 (terracotta)
+    - `ClaimReasonAssumptionVisual` — warm accent: assumption block left-border 4px (terracotta)
+    - `ContrapositiveVisual` — warm accent: vz-contra-arrow ⇔ (terracotta)
+    - `DeductionVisual` — warm accent: vz-arrow-down ↓ (terracotta)
+    - `InductionVisual` — warm accent: vz-arrow-up ↑ (terracotta)
+    - `PrepVisual` — warm accent: 最後の P (4 番目 letter) gradient (terracotta+deep)
+    - `SoWhatVisual` — warm accent: vz-sowhat-arrows .up ↑ So What? (terracotta)
+  - Phase 2-B (フレームワーク系 12 件):
+    - `CaseStudyVisual` — warm accent: 最終 PHASE 4 (last-child) 左ボーダー (terracotta)
+    - `ChartTypeGuideVisual` — warm accent: 用途ラベル use (terracotta-deep)
+    - `FiveForcesVisual` — warm accent: 中央セル「中核」label (mustard)
+    - `LeveragePointsVisual` — warm accent: t4 tier-label (mustard)
+    - `ScamperVisual` — warm accent: 最後 R (Reverse) letter (terracotta soft+deep)
+    - `SixHatsVisual` — warm accent: hint ボックス terracotta soft (Six 色は §2.3 例外維持)
+    - `SystemArchetypeVisual` — warm accent: ループ閉じ ↺ loop class (terracotta soft+deep)
+    - `VrioVisual` — warm accent: 最後 O (Organization) letter (terracotta soft+deep)
+    - `DesignThinkingCycleVisual` — warm accent: 1 番目 step Empathize badge (terracotta gradient)
+    - `EmpathyMapVisual` — warm accent: Think & Feel セル (1 番目) label (terracotta-deep)
+    - `HypothesisFlowVisual` — warm accent: recommended col (terracotta soft + deep title)
+    - `IcebergModelVisual` — warm accent: bottom layer (メンタルモデル) label (terracotta-deep)
+    - `JtbdVisual` — warm accent: 中央 JTBD core gradient (terracotta+deep)
+  - Phase 2-C (因果/フィードバック/WhyWhy 系 5 件):
+    - `CausalLoopDiagramVisual` — warm accent: 中央 loop-label gradient (terracotta+deep)
+    - `CorrelationCausationVisual` — warm accent: 「真の原因」SVG ラベル 2 本 (terracotta-deep)
+    - `FeedbackLoopVisual` — warm accent: hint ボックス terracotta soft (R/B 意味色は §2.3 例外維持)
+    - `WhyWhyChainVisual` — warm accent: 最深層 last-child (Why 5) 左ボーダー (terracotta)
+    - `WhyWhyToyotaVisual` — warm accent: hint ボックス terracotta soft (root brand-cta 維持)
+- Phase 3: 承認後に追記
 
 ---
 
