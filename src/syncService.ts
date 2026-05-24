@@ -430,6 +430,12 @@ export async function syncOnLogout(): Promise<void> {
     'logic-guest-id',
     'logic-flashcards',
     'logic-wrong-answers',
+    // 通知設定キーは保持する。OS スケジュールはログアウト後も残るため、
+    // pref を消すと UI 上 OFF 表示なのに通知だけ来る不整合になる
+    // (REVIEW_REPORT_20260524 高#1)。
+    'logic-reminder',
+    'logic-notif-extra',
+    'logic-journal-reminder',
   ])
   try {
     const keys: string[] = []

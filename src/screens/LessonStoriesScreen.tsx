@@ -532,7 +532,8 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
               aria-pressed={ttsModeActive}
               title={ttsModeActive ? t('tts.closePanel') : t('tts.headphonesAria')}
               style={{
-                width: 32, height: 32, borderRadius: '50%',
+                // タッチターゲットを 44x44 に拡大 (HIG / Material 推奨)
+                width: 44, height: 44, borderRadius: '50%',
                 background: ttsModeActive ? `color-mix(in srgb, var(--brand) 22%, transparent)` : 'var(--bg-card)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 cursor: 'pointer', WebkitTapHighlightColor: 'transparent',
@@ -541,7 +542,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
                 color: ttsModeActive ? 'var(--brand)' : 'var(--text-secondary)',
               }}
             >
-              <HeadphonesIcon width={16} height={16} />
+              <HeadphonesIcon width={18} height={18} />
             </button>
           )}
           {/* SCRUM-215: 誤りを報告 — アイコンのみ円形ボタン、ヘッダー横配置で本文と被らない (2026-05-24) */}
@@ -553,7 +554,8 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
               aria-label={t('stories.reportTitle')}
               title={t('stories.reportTitle')}
               style={{
-                width: 32, height: 32, borderRadius: '50%',
+                // タッチターゲットを 44x44 に拡大 (HIG / Material 推奨)
+                width: 44, height: 44, borderRadius: '50%',
                 background: 'var(--bg-card)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 cursor: 'pointer', WebkitTapHighlightColor: 'transparent',
@@ -562,7 +564,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
                 color: 'var(--text-secondary)',
               }}
             >
-              <FlagIcon width={14} height={14} />
+              <FlagIcon width={16} height={16} />
             </button>
           )}
           {/* SCRUM-226: ×ボタン — onClickも追加しzIndexをタップゾーンより上に */}

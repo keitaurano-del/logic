@@ -346,6 +346,23 @@ export async function syncOnLogin(userId: string) {
 
 ---
 
+## 10. 運用メモ (Phase 3 補記)
+
+### sync_telemetry の insert 経路は API 経由のみ
+
+- `sync_telemetry` テーブルへの insert は `/api/sync-telemetry` (service_role) **のみ** から行う。
+- 028 migration では `auth.uid() = user_id` の insert policy が設定されていたが、029 で削除した。クライアントから直接 `supabase.from('sync_telemetry').insert(...)` する経路は禁止。
+- 理由: 検証ロジック (userId と token の一致、payload バリデーション、レート制限) を二重メンテにしないため。
+- 新しい sync 種別を追加する際は `server/routes/sync-telemetry.ts` の `VALID_SYNC_TYPES` に追加し、クライアントは `sendSyncTelemetry()` 経由で呼ぶ。
+
+### rollout 反映タイミング
+
+- `refreshDeviceSyncFlag` は sessionStorage に 1 回しか fetch しないため、`DEVICE_SYNC_ROLLOUT_PCT` を 25 → 50 → 100 に上げても既ログインユーザーは次のセッション再起動まで反映されない。
+- Capacitor アプリは端末再起動か `Force Stop` までセッションが維持される。「rollout 反映は次セッションから」が前提。
+- 緊急ロールバック (rolloutPct → 0) でも同様に時間差がある点に注意。
+
+---
+
 ## 関連
 
 - 既存 sync 実装: `src/syncService.ts`（progress / placement / displayName / subscription）

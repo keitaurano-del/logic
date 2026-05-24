@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { getSupabaseClient } from './db/index'
+import { localDateStr } from './stats'
 
 const STORAGE_KEY = 'logic-flashcards'
 
@@ -31,7 +32,8 @@ function saveCards(cards: Flashcard[]) {
 
 export function addCards(newCards: Omit<Flashcard, 'id' | 'createdAt' | 'interval' | 'ease' | 'nextReview' | 'correctCount' | 'wrongCount'>[]) {
   const cards = loadCards()
-  const today = new Date().toISOString().slice(0, 10)
+  // JST 0-9 時で UTC とズレるため localDateStr() を使う (REVIEW_REPORT 高#2)
+  const today = localDateStr()
   for (const c of newCards) {
     // Skip duplicates (same front text + source)
     if (cards.some((e) => e.front === c.front && e.source === c.source)) continue
@@ -55,8 +57,10 @@ export function reviewCard(id: string, quality: 'again' | 'good' | 'easy') {
   const card = cards.find((c) => c.id === id)
   if (!card) return
 
+  // JST 基準で日付を扱う。UTC 換算の toISOString().slice(0,10) は
+  // JST 0-9 時に前日扱いになり、SRS の due 判定が 1 日ズレるため使わない。
   const today = new Date()
-  const todayStr = today.toISOString().slice(0, 10)
+  const todayStr = localDateStr(today)
 
   if (quality === 'again') {
     card.wrongCount++
@@ -68,21 +72,21 @@ export function reviewCard(id: string, quality: 'again' | 'good' | 'easy') {
     card.interval = card.interval === 0 ? 1 : Math.round(card.interval * card.ease)
     const next = new Date(today)
     next.setDate(next.getDate() + card.interval)
-    card.nextReview = next.toISOString().slice(0, 10)
+    card.nextReview = localDateStr(next)
   } else {
     card.correctCount++
     card.ease = Math.min(3.0, card.ease + 0.15)
     card.interval = card.interval === 0 ? 3 : Math.round(card.interval * card.ease * 1.3)
     const next = new Date(today)
     next.setDate(next.getDate() + card.interval)
-    card.nextReview = next.toISOString().slice(0, 10)
+    card.nextReview = localDateStr(next)
   }
 
   saveCards(cards)
 }
 
 export function getDueCards(): Flashcard[] {
-  const today = new Date().toISOString().slice(0, 10)
+  const today = localDateStr()
   return loadCards().filter((c) => c.nextReview <= today)
 }
 
@@ -100,7 +104,7 @@ export function getWeakCards(): Flashcard[] {
 
 export function getCardStats() {
   const cards = loadCards()
-  const today = new Date().toISOString().slice(0, 10)
+  const today = localDateStr()
   const due = cards.filter((c) => c.nextReview <= today).length
   const weak = cards.filter((c) => c.wrongCount > 0).length
   const mastered = cards.filter((c) => c.correctCount >= 3 && c.interval >= 7).length
@@ -133,7 +137,7 @@ function rowToCard(row: FlashcardRow): Flashcard {
     back: row.back,
     category: row.category,
     source: row.source,
-    createdAt: row.created_at ? row.created_at.slice(0, 10) : new Date().toISOString().slice(0, 10),
+    createdAt: row.created_at ? row.created_at.slice(0, 10) : localDateStr(),
     interval: row.interval_days ?? 0,
     ease: row.ease ?? 2.5,
     nextReview: row.next_review,
