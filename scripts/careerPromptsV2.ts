@@ -115,9 +115,11 @@ export const CAREER_LESSON_PROMPTS: LessonPromptEntry[] = [
   {
     slug: 'lesson-600',
     title: '6 SECONDS',
-    subtitle: 'How recruiters scan a resume',
-    diagram: `a hand-drawn rectangular resume document in the center. Above it: a small stopwatch showing "6 sec" in cursive. To the left of the resume: three horizontal filter bars labeled "skim", "match", "deep" stacked vertically. Cursive annotation: "pass each gate".`,
-    spell: ['6 SECONDS', 'How recruiters scan a resume', '6 sec', 'skim', 'match', 'deep', 'pass each gate'],
+    subtitle: 'How HR scans a resume',
+    diagram: `a hand-drawn rectangular resume document in the center. Above it: a small stopwatch showing "6 sec" in cursive. To the left of the resume: three horizontal filter bars labeled "skim", "match", "deep" stacked vertically. Cursive annotation: "pass each gate".
+
+CRITICAL — the subtitle MUST be the five English words "How HR scans a resume" with each word fully separated. Do NOT use the word "recruiters" — it is replaced by the two letters "HR".`,
+    spell: ['6 SECONDS', 'How HR scans a resume', 'HR', 'scans', 'resume', '6 sec', 'skim', 'match', 'deep', 'pass each gate'],
   },
   {
     slug: 'lesson-601',
@@ -262,7 +264,9 @@ export const CAREER_LESSON_PROMPTS: LessonPromptEntry[] = [
     slug: 'lesson-630',
     title: 'INTERVIEW',
     subtitle: 'Hidden scoring grid',
-    diagram: `two hand-drawn simple stick figures facing each other across a small table. Behind the right figure: a hidden clipboard with three checkbox lines labeled in cursive "fit", "ability", "drive". The left figure does not see the clipboard. Cursive annotation: "they score, not chat".`,
+    diagram: `two hand-drawn simple stick figures facing each other across a small table. Behind the right figure: a hidden clipboard standing upright, large enough to show three clear text rows. The clipboard contains three short cursive words stacked vertically in a vertical list, each word on its own line with generous blank vertical space between lines so the rows never touch or merge. Each line shows ONLY the word itself — no leading bullet, no leading checkbox, no leading symbol, no leading dash, no leading letters. Top line word: "fit". Middle line word: "ability". Bottom line word: "drive". The left figure does not see the clipboard. Cursive annotation to the right of the clipboard: "they score, not chat".
+
+CRITICAL — the clipboard MUST show exactly three plain words with NO checkboxes, NO bullets, NO ampersands, NO leading characters of any kind. Each line is just one clean cursive word and nothing else: line 1 is the three letters f-i-t and nothing more, line 2 is the seven letters a-b-i-l-i-t-y and nothing more, line 3 is the five letters d-r-i-v-e and nothing more. Do NOT prepend "&", "ad", "ft", "fft", or any other characters to any word. Each word stands totally alone on its line.`,
     spell: ['INTERVIEW', 'Hidden scoring grid', 'fit', 'ability', 'drive', 'they score, not chat'],
   },
   {

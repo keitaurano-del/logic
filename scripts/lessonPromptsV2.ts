@@ -59,7 +59,7 @@ export type LessonPromptEntry = {
  * rendered as Title Case. Add to this set whenever a new acronym appears.
  */
 const ACRONYM_WHITELIST = new Set([
-  'MECE', 'STAR', 'ATS', 'SPI', 'GAB', 'WFH', 'PTO', 'IMAGES', 'M&A',
+  'MECE', 'STAR', 'ATS', 'SPI', 'SPIN', 'BANT', 'GAB', 'WFH', 'PTO', 'HR', 'IMAGES', 'M&A',
   'EN', 'PRE-EMPT', 'JP', 'NOT', 'AND', 'OR', 'WHY', 'SO', 'AI', 'GDP',
   'ADHD',
   'A', 'B', 'C', 'D', 'P', 'Q', 'R', 'S', 'T',
@@ -219,10 +219,12 @@ export const LESSON_PROMPTS: LessonPromptEntry[] = [
     slug: 'lesson-41',
     title: 'LOGICAL FALLACIES',
     subtitle: 'Spot the broken arguments',
-    diagram: `a hand-drawn vertical list of four rows. Each of the top three rows starts with a coral red "X" mark on the left, then a short fallacy name in cursive marker: row 1 "X attack person", row 2 "X straw man", row 3 "X bad cause". The bottom (fourth) row starts with a green check "V" mark and the cursive label "good logic". All hand-drawn with thick marker.
+    diagram: `a hand-drawn vertical list of four rows. Each of the top three rows starts with a coral red "X" mark on the left, then a short fallacy name in cursive marker: row 1 "X attack the person", row 2 "X straw man", row 3 "X bad cause". The bottom (fourth) row starts with a green check "V" mark and the cursive label "good logic". All hand-drawn with thick marker. Use generous spacing between rows and clear letter separation in each phrase — every word in each row label must be drawn as a fully separated word with a clear blank space before and after, so no two words touch or merge.
 
-CRITICAL — the three fallacies (rows 1, 2, 3) MUST all have the red X mark (they are wrong). Only the bottom "good logic" row has the green check. Never put a green check next to a fallacy.`,
-    spell: ['LOGICAL FALLACIES', 'Spot the broken arguments', 'attack person', 'straw man', 'bad cause', 'good logic'],
+CRITICAL — the three fallacies (rows 1, 2, 3) MUST all have the red X mark (they are wrong). Only the bottom "good logic" row has the green check. Never put a green check next to a fallacy.
+
+CRITICAL — the row 1 label MUST be the four English words "attack the person" with these exact letters in order: a-t-t-a-c-k (double t in the middle), t-h-e, p-e-r-s-o-n. Do NOT shorten "attack" to "atack" or "atak". Double-check the double t before drawing.`,
+    spell: ['LOGICAL FALLACIES', 'Spot the broken arguments', 'attack', 'the', 'person', 'attack the person', 'straw man', 'bad cause', 'good logic'],
   },
   {
     slug: 'lesson-42',
@@ -492,11 +494,13 @@ CRITICAL — the title at top-left must be exactly the four English words: LINK 
   {
     slug: 'lesson-701',
     title: 'CHUNKING',
-    subtitle: 'Group items into meaningful sets',
+    subtitle: 'Group items into smart sets',
     diagram: `two horizontal rows centered on the page. Top row: nine small unlabeled circle tokens in a single straight line, evenly spaced, all drawn as plain marker circles with no numbers or letters inside. A single coral downward arrow centered between the two rows, with the cursive label "group" written next to the arrow. Bottom row: three larger rectangular boxes drawn side by side, each box enclosing three of the same plain circle tokens. Each rectangular box has a small cursive label "set" written directly underneath it. Hand-drawn with thick black marker.
 
-CRITICAL — do NOT write any numbers (no "3", no "4", no "330") inside the circles or boxes. The only handwritten text on the diagram itself is the word "group" near the arrow and the three labels "set" under the bottom rectangles.`,
-    spell: ['CHUNKING', 'Group items into meaningful sets', 'group', 'set'],
+CRITICAL — do NOT write any numbers (no "3", no "4", no "330") inside the circles or boxes. The only handwritten text on the diagram itself is the word "group" near the arrow and the three labels "set" under the bottom rectangles.
+
+CRITICAL — the subtitle MUST be the five English words "Group items into smart sets" with each word fully separated. Do NOT use the word "meaningful" or any other long word — keep every word 5 letters or fewer.`,
+    spell: ['CHUNKING', 'Group items into smart sets', 'Group', 'items', 'into', 'smart', 'sets', 'group', 'set'],
   },
   {
     slug: 'lesson-702',
@@ -703,8 +707,10 @@ CRITICAL — the three trap rows on the left must all have the red X mark. Only 
     slug: 'lesson-736',
     title: 'SALES LISTEN',
     subtitle: 'Find the real budget',
-    diagram: `a hand-drawn inverted funnel on cream notebook paper. Top wide opening labeled in cursive "what they say". Funnel narrows downward through three rings labeled "S P I N" (four small letters stacked vertically along the inside of the funnel). Bottom narrow tip drips into a small box labeled "BANT". Cursive annotation upper-right: "deeper layers".`,
-    spell: ['SALES LISTEN', 'Find the real budget', 'what they say', 'S', 'P', 'I', 'N', 'BANT', 'deeper layers'],
+    diagram: `a hand-drawn inverted funnel on cream notebook paper. The funnel has a wide opening at the top and a narrow tip at the bottom. Above the wide top opening: cursive label "what they say". Inside the wider upper section of the funnel, written as a single horizontal word in chunky marker block letters: "SPIN" (four uppercase letters S, P, I, N read left to right as one word, all the same size, no gaps or rings between them). Inside the narrow lower tip of the funnel, written as another single horizontal word in smaller block letters: "BANT" (four uppercase letters B, A, N, T as one word). A small coral arrow points from SPIN down to BANT to show the funnel direction. Cursive annotation upper-right: "deeper layers".
+
+CRITICAL — the word inside the upper funnel section MUST be exactly four uppercase letters in this order: S, then P, then I, then N — spelling "SPIN" as one solid word. Never drop the leading S. Never write "PIN" alone. The word inside the lower tip MUST be exactly four uppercase letters in this order: B, A, N, T — spelling "BANT" as one solid word. Both words read horizontally, NOT stacked vertically as separate letters.`,
+    spell: ['SALES LISTEN', 'Find the real budget', 'what they say', 'SPIN', 'BANT', 'deeper layers'],
   },
 
   // ── ADHD レバレッジ (adhd-leverage-01) ──────────────────────────
