@@ -14,12 +14,12 @@ const proposalIntro: LessonData = {
     {
       type: 'explain',
       title: 'Understand what a proposal really is',
-      content: 'A proposal is not a "document-creation task."\nIt is a **thinking artifact** — the output of finding an issue, forming a hypothesis, testing it, and shaping the action.\n\nIn this course we train the **thinking process for assembling proposal content**, not the techniques for making slides look pretty.',
+      content: 'A proposal is not a "document-creation task."\nIt is a thinking artifact — the output of finding an issue, forming a hypothesis, testing it, and shaping the action.\n\nIn this course we train the thinking process for assembling proposal content, not the techniques for making slides look pretty.',
     },
     {
       type: 'explain',
       title: 'What "consultant-style" means',
-      content: 'Great proposals share one trait: hypothesis-first thinking.\n\nBefore gathering information, form a hypothesis ("isn\'t it like this?") and deepen your thinking by verifying it.\n\nThe **hypothesis → research → verification → update** cycle is what raises proposal quality.',
+      content: 'Great proposals share one trait: hypothesis-first thinking.\n\nBefore gathering information, form a hypothesis ("isn\'t it like this?") and deepen your thinking by verifying it.\n\nThe hypothesis → research → verification → update cycle is what raises proposal quality.',
     },
     {
       type: 'quiz',
@@ -81,7 +81,7 @@ const proposalHypothesis: LessonData = {
     {
       type: 'explain',
       title: 'Separating issue, cause, and action',
-      content: 'Three things that often get confused:\n\n**Issue**: the problem to solve (e.g., 30% sales drop)\n**Cause**: why the issue is happening (e.g., repeat customer churn)\n**Action**: a measure that resolves the cause (e.g., launch a loyalty program)\n\nThinking in this order — issue → cause → action — keeps you from picking off-target actions.',
+      content: 'Three things that often get confused:\n\nIssue: the problem to solve (e.g., 30% sales drop)\nCause: why the issue is happening (e.g., repeat customer churn)\nAction: a measure that resolves the cause (e.g., launch a loyalty program)\n\nThinking in this order — issue → cause → action — keeps you from picking off-target actions.',
     },
     {
       type: 'quiz',
@@ -111,7 +111,7 @@ const proposalResearch: LessonData = {
     {
       type: 'explain',
       title: 'Understand information source types',
-      content: 'Research information comes in two big types.\n\n**Primary**: data you collect yourself (interviews, surveys, observation)\n**Secondary**: existing reports, statistics, papers\n\nFor hypothesis testing, sweep the landscape with secondary sources first; dig deeper with primary sources only when needed. That\'s the efficient path.',
+      content: 'Research information comes in two big types.\n\nPrimary: data you collect yourself (interviews, surveys, observation)\nSecondary: existing reports, statistics, papers\n\nFor hypothesis testing, sweep the landscape with secondary sources first; dig deeper with primary sources only when needed. That\'s the efficient path.',
     },
     {
       type: 'quiz',
@@ -127,7 +127,7 @@ const proposalResearch: LessonData = {
     {
       type: 'explain',
       title: 'The research design sheet',
-      content: 'When designing research, organize four things:\n\n1. **Hypothesis**: what to test\n2. **Required information**: data needed to support or reject the hypothesis\n3. **Sources**: where you\'ll obtain it\n4. **Decision criteria**: what result counts as supporting the hypothesis\n\nClarifying these four before starting reduces waste.',
+      content: 'When designing research, organize four things:\n\n1. Hypothesis: what to test\n2. Required information: data needed to support or reject the hypothesis\n3. Sources: where you\'ll obtain it\n4. Decision criteria: what result counts as supporting the hypothesis\n\nClarifying these four before starting reduces waste.',
     },
     {
       type: 'quiz',
@@ -152,7 +152,7 @@ const proposalVerification: LessonData = {
     {
       type: 'explain',
       title: 'Hypotheses are meant to be changed',
-      content: 'Many people think "changing your hypothesis = losing." It\'s the opposite.\n\nRevising and updating hypotheses based on research findings IS the **essence of hypothesis thinking**.\n\nUpdate patterns:\nSupported → dig deeper as-is\nPartially modified → re-test the modified hypothesis\nRejected → switch to a different hypothesis',
+      content: 'Many people think "changing your hypothesis = losing." It\'s the opposite.\n\nRevising and updating hypotheses based on research findings IS the essence of hypothesis thinking.\n\nUpdate patterns:\nSupported → dig deeper as-is\nPartially modified → re-test the modified hypothesis\nRejected → switch to a different hypothesis',
     },
     {
       type: 'quiz',
@@ -168,7 +168,7 @@ const proposalVerification: LessonData = {
     {
       type: 'explain',
       title: 'Be careful about interpreting information',
-      content: 'When looking at data, separate "facts" from "interpretation."\n\n**Fact**: sales down 15% YoY\n**Interpretation 1**: prices are too high\n**Interpretation 2**: the overall market is shrinking\n**Interpretation 3**: competitors stole customers\n\nThe same data supports multiple interpretations. Choose the one most consistent with your hypothesis.',
+      content: 'When looking at data, separate "facts" from "interpretation."\n\nFact: sales down 15% YoY\nInterpretation 1: prices are too high\nInterpretation 2: the overall market is shrinking\nInterpretation 3: competitors stole customers\n\nThe same data supports multiple interpretations. Choose the one most consistent with your hypothesis.',
     },
     {
       type: 'quiz',
@@ -198,7 +198,7 @@ const proposalStructure: LessonData = {
     {
       type: 'explain',
       title: 'Organize issues with a tree structure',
-      content: 'When multiple issues are tangled, organize with a logic tree.\n\n**Issue tree example:**\nSales decline\n├── Decline in new customers\n│   ├── Lower brand awareness\n│   └── Switching to competitors\n└── Decline in repeat customers\n    ├── Quality dissatisfaction\n    └── Loss of price competitiveness\n\nA tree shows "where the highest-leverage solve point is."',
+      content: 'When multiple issues are tangled, organize with a logic tree.\n\nIssue tree example:\nSales decline\n├── Decline in new customers\n│   ├── Lower brand awareness\n│   └── Switching to competitors\n└── Decline in repeat customers\n    ├── Quality dissatisfaction\n    └── Loss of price competitiveness\n\nA tree shows "where the highest-leverage solve point is."',
     },
     {
       type: 'quiz',
@@ -230,7 +230,7 @@ const proposalStructure: LessonData = {
     {
       type: 'explain',
       title: 'Evaluate actions on feasibility and impact',
-      content: 'When multiple actions emerge, evaluate them on two axes.\n\n**Impact**: how much it contributes to solving the issue\n**Feasibility**: can it be done given cost, time, and resources\n\nClassify on a 2×2 grid for clear priority:\n- High impact × Easy → execute immediately (Quick Win)\n- High impact × Hard → tackle medium-to-long term\n- Low impact × Easy → do if time permits\n- Low impact × Hard → drop',
+      content: 'When multiple actions emerge, evaluate them on two axes.\n\nImpact: how much it contributes to solving the issue\nFeasibility: can it be done given cost, time, and resources\n\nClassify on a 2×2 grid for clear priority:\n- High impact × Easy → execute immediately (Quick Win)\n- High impact × Hard → tackle medium-to-long term\n- Low impact × Easy → do if time permits\n- Low impact × Hard → drop',
     },
   ],
 }
@@ -244,7 +244,7 @@ const proposalOutline: LessonData = {
     {
       type: 'explain',
       title: 'Design the storyline',
-      content: 'In a proposal, the **logical flow (storyline)** is everything.\n\nBasic structure:\n1. Current state and issue (As-Is)\n2. Cause of the issue (Why)\n3. Target state (To-Be)\n4. Proposed action (How)\n5. Expected impact (So What)\n\nThis flow leads the reader through "understanding → conviction → action."',
+      content: 'In a proposal, the logical flow (storyline) is everything.\n\nBasic structure:\n1. Current state and issue (As-Is)\n2. Cause of the issue (Why)\n3. Target state (To-Be)\n4. Proposed action (How)\n5. Expected impact (So What)\n\nThis flow leads the reader through "understanding → conviction → action."',
     },
     {
       type: 'quiz',
@@ -260,7 +260,7 @@ const proposalOutline: LessonData = {
     {
       type: 'explain',
       title: 'Apply the Pyramid Principle',
-      content: 'The "lead with the conclusion" Pyramid Principle is the foundation of proposals.\n\n**Top-Down (conclusion first)**: conclusion → reason 1, reason 2, reason 3\n→ Used in most business proposals\n\n**Bottom-Up (reasons first)**: reason 1, reason 2, reason 3 → conclusion\n→ Suited for data analysis reports\n\nProposals respect the reader\'s time by leading with the conclusion.',
+      content: 'The "lead with the conclusion" Pyramid Principle is the foundation of proposals.\n\nTop-Down (conclusion first): conclusion → reason 1, reason 2, reason 3\n→ Used in most business proposals\n\nBottom-Up (reasons first): reason 1, reason 2, reason 3 → conclusion\n→ Suited for data analysis reports\n\nProposals respect the reader\'s time by leading with the conclusion.',
     },
     {
       type: 'quiz',
@@ -290,7 +290,7 @@ const proposalPractice: LessonData = {
     {
       type: 'explain',
       title: 'Case: Sales recovery for a regional supermarket',
-      content: '**Case setup**\nA mid-sized regional supermarket "Company A." Sales have declined 15% per year for three years.\nTwo large discount stores opened nearby.\nStaff interviews indicate "regular customers visit less often."\n\nIn this case, practice the hypothesis → research → verification → proposal process.',
+      content: 'Case setup\nA mid-sized regional supermarket "Company A." Sales have declined 15% per year for three years.\nTwo large discount stores opened nearby.\nStaff interviews indicate "regular customers visit less often."\n\nIn this case, practice the hypothesis → research → verification → proposal process.',
     },
     {
       type: 'quiz',
@@ -322,7 +322,7 @@ const proposalPractice: LessonData = {
     {
       type: 'explain',
       title: 'Assembling the proposal',
-      content: 'Build the proposal around the updated hypothesis "we are not maintaining freshness and local-product appeal."\n\n**Issue**: Decline in regular customer visit frequency\n**Cause**: Reduced appeal of local products and freshness\n**Actions**:\n1. Strengthen direct-from-farm sourcing (direct contracts with local farms)\n2. Revisit freshness control processes\n3. POP and communications that lead with "the local taste"\n\n**Expected impact**: Recovery of regular customer visit frequency → 5% annual sales improvement (year 1)',
+      content: 'Build the proposal around the updated hypothesis "we are not maintaining freshness and local-product appeal."\n\nIssue: Decline in regular customer visit frequency\nCause: Reduced appeal of local products and freshness\nActions:\n1. Strengthen direct-from-farm sourcing (direct contracts with local farms)\n2. Revisit freshness control processes\n3. POP and communications that lead with "the local taste"\n\nExpected impact: Recovery of regular customer visit frequency → 5% annual sales improvement (year 1)',
     },
     {
       type: 'quiz',

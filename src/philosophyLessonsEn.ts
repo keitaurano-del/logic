@@ -86,13 +86,13 @@ export const philosophyLessonMapEn: Record<number, LessonData> = {
         type: 'explain',
         title: 'Two stances for thinking about ethics',
         content:
-          'When judging "the right action," philosophy offers two main approaches.\n\n**Utilitarianism**\nJudge actions by their consequences. Aim for the greatest happiness for the greatest number.\nKey figures: Jeremy Bentham, John Stuart Mill\n\n**Deontology**\nJudge by the nature of the act itself, not its consequences. Emphasize rules, duties, and rights.\nKey figure: Immanuel Kant — "Act only according to that maxim whereby you can will that it should become a universal law."',
+          'When judging "the right action," philosophy offers two main approaches.\n\nUtilitarianism\nJudge actions by their consequences. Aim for the greatest happiness for the greatest number.\nKey figures: Jeremy Bentham, John Stuart Mill\n\nDeontology\nJudge by the nature of the act itself, not its consequences. Emphasize rules, duties, and rights.\nKey figure: Immanuel Kant — "Act only according to that maxim whereby you can will that it should become a universal law."',
       },
       {
         type: 'explain',
         title: 'Thinking through the trolley problem',
         content:
-          'The "trolley problem" sharpens the contrast between the two views.\n\nA runaway trolley with broken brakes is heading toward five people. Pulling a lever switches it to a side track where one person stands; the five are saved, but the one is killed. Should you pull?\n\n**Utilitarian answer**: Pull. 5 > 1. Maximizing the outcome is right.\n**Deontological answer**: (Possibly) do not pull. Using the one person as a means violates that person\'s rights.\n\nBoth are logical. What matters is being aware of which value system you are judging from.',
+          'The "trolley problem" sharpens the contrast between the two views.\n\nA runaway trolley with broken brakes is heading toward five people. Pulling a lever switches it to a side track where one person stands; the five are saved, but the one is killed. Should you pull?\n\nUtilitarian answer: Pull. 5 > 1. Maximizing the outcome is right.\nDeontological answer: (Possibly) do not pull. Using the one person as a means violates that person\'s rights.\n\nBoth are logical. What matters is being aware of which value system you are judging from.',
       },
       {
         type: 'quiz',
@@ -124,7 +124,7 @@ export const philosophyLessonMapEn: Record<number, LessonData> = {
         type: 'explain',
         title: 'The three conditions for knowledge — Justified True Belief',
         content:
-          'In the classical definition, "knowledge" must satisfy three conditions:\n\n1. True: it actually corresponds to fact.\n2. Belief: the person believes it to be the case.\n3. Justified: there are grounds for believing it.\n\nExample: "It will rain tomorrow."\n- Just a hunch → no justification = not knowledge.\n- Confirmed via the weather forecast → justified. But if the forecast is wrong, it was not "true."\n\n**Aside — the Gettier problem (1963):**\nPhilosopher Edmund Gettier presented counterexamples that satisfy all three JTB conditions yet still do not seem to count as knowledge, showing the definition is insufficient. For instance, a guess that happens to be correct can satisfy the three conditions. Modern epistemology continues to search for a "fourth condition" in response.\n\nApplication in business: distinguishing "knowing" from "assuming" determines the precision of strategy.',
+          'In the classical definition, "knowledge" must satisfy three conditions:\n\n1. True: it actually corresponds to fact.\n2. Belief: the person believes it to be the case.\n3. Justified: there are grounds for believing it.\n\nExample: "It will rain tomorrow."\n- Just a hunch → no justification = not knowledge.\n- Confirmed via the weather forecast → justified. But if the forecast is wrong, it was not "true."\n\nAside — the Gettier problem (1963):\nPhilosopher Edmund Gettier presented counterexamples that satisfy all three JTB conditions yet still do not seem to count as knowledge, showing the definition is insufficient. For instance, a guess that happens to be correct can satisfy the three conditions. Modern epistemology continues to search for a "fourth condition" in response.\n\nApplication in business: distinguishing "knowing" from "assuming" determines the precision of strategy.',
       },
       {
         type: 'quiz',
@@ -156,7 +156,7 @@ export const philosophyLessonMapEn: Record<number, LessonData> = {
         type: 'explain',
         title: 'Thinking about AI and understanding via the "Chinese Room"',
         content:
-          'A thought experiment by philosopher John Searle:\n\nYou are inside a room. You do not understand any Chinese. When questions in Chinese come in from outside, you use a thick book of "matching rules" to send back correct Chinese responses. To people outside, it looks as if you understand Chinese.\n\nQuestion: do you "understand Chinese"?\n\n**Searle\'s claim**: No. You are merely processing syntax (rules).\n\nThis connects directly to current debates about AI. Does GPT "understand meaning," or is it just pattern matching?',
+          'A thought experiment by philosopher John Searle:\n\nYou are inside a room. You do not understand any Chinese. When questions in Chinese come in from outside, you use a thick book of "matching rules" to send back correct Chinese responses. To people outside, it looks as if you understand Chinese.\n\nQuestion: do you "understand Chinese"?\n\nSearle\'s claim: No. You are merely processing syntax (rules).\n\nThis connects directly to current debates about AI. Does GPT "understand meaning," or is it just pattern matching?',
       },
       {
         type: 'quiz',

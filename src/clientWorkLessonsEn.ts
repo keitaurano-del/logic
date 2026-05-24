@@ -15,17 +15,17 @@ const clientLesson89: LessonData = {
     {
       type: 'explain',
       title: 'Build your number sense first',
-      content: 'When dealing with large numbers, starting from precise calculations every time is slow.\n\nFirst, build "order-of-magnitude intuition."\n\n**10 → 100 → 1,000 → 10K → 100K → 1M → 100M → 1T**\n\nIt\'s just a 10× progression.\n\nFor example:\n- Population of Japan ≈ **120 million**\n- Japan GDP ≈ **600 trillion yen**\n- Tokyo population ≈ **14 million**\n\nWith this sense, you can intuitively judge whether a number "looks plausible" the moment you see it.',
+      content: 'When dealing with large numbers, starting from precise calculations every time is slow.\n\nFirst, build "order-of-magnitude intuition."\n\n10 → 100 → 1,000 → 10K → 100K → 1M → 100M → 1T\n\nIt\'s just a 10× progression.\n\nFor example:\n- Population of Japan ≈ 120 million\n- Japan GDP ≈ 600 trillion yen\n- Tokyo population ≈ 14 million\n\nWith this sense, you can intuitively judge whether a number "looks plausible" the moment you see it.',
     },
     {
       type: 'explain',
       title: 'Count digits to identify the unit',
-      content: 'Japanese numbers change unit every **4 digits**. If you can count digits, you can mechanically identify the unit.\n\n**Digit count → unit (10K and up)**\n- 5 digits = 10K (10,000)\n- 6 digits = 100K (100,000)\n- 7 digits = 1M (1,000,000)\n- 8 digits = 10M (10,000,000)\n- 9 digits = 100M (100,000,000)\n- 10 digits = 1B\n- 11 digits = 10B\n- 12 digits = 100B\n- 13 digits = 1T\n\n**Summary — every 4 digits the range shifts:**\n- 5-8 digits → **the "10K" range** (in Japanese "man")\n- 9-12 digits → **the "100M" range** (in Japanese "oku")\n- 13-16 digits → **the "1T" range** (in Japanese "cho")\n\nIn other words, "count the zeros and divide by 4" instantly tells you which range a number is in.',
+      content: 'Japanese numbers change unit every 4 digits. If you can count digits, you can mechanically identify the unit.\n\nDigit count → unit (10K and up)\n- 5 digits = 10K (10,000)\n- 6 digits = 100K (100,000)\n- 7 digits = 1M (1,000,000)\n- 8 digits = 10M (10,000,000)\n- 9 digits = 100M (100,000,000)\n- 10 digits = 1B\n- 11 digits = 10B\n- 12 digits = 100B\n- 13 digits = 1T\n\nSummary — every 4 digits the range shifts:\n- 5-8 digits → the "10K" range (in Japanese "man")\n- 9-12 digits → the "100M" range (in Japanese "oku")\n- 13-16 digits → the "1T" range (in Japanese "cho")\n\nIn other words, "count the zeros and divide by 4" instantly tells you which range a number is in.',
     },
     {
       type: 'explain',
       title: 'Derive the unit from digit count',
-      content: 'Given a large number, three steps tell you the unit.\n\n**Procedure:**\n1. Count digits including all zeros\n2. Apply the unit every 4 digits (10K → 100M → 1T)\n3. Read the leading digits\n\n**Example 1: 300,000,000,000**\n1. Count digits → **12 digits**\n2. 12 digits is the "hundred billion" range\n3. Read leading "3" → **300 billion**\n\n**Example 2: 12,000,000**\n1. Count digits → **8 digits**\n2. 8 digits is the "ten million" range\n3. Read leading "12" → **12 million**\n\n**Example 3: 5,400,000,000**\n1. Count digits → **10 digits**\n2. 10 digits is the "billion" range\n3. Read leading "54" → **5.4 billion**\n\n**Tip:** Rather than chunking by 3 digits with commas, chunking by 4 digits matches the Japanese unit system (10K/100M/1T).',
+      content: 'Given a large number, three steps tell you the unit.\n\nProcedure:\n1. Count digits including all zeros\n2. Apply the unit every 4 digits (10K → 100M → 1T)\n3. Read the leading digits\n\nExample 1: 300,000,000,000\n1. Count digits → 12 digits\n2. 12 digits is the "hundred billion" range\n3. Read leading "3" → 300 billion\n\nExample 2: 12,000,000\n1. Count digits → 8 digits\n2. 8 digits is the "ten million" range\n3. Read leading "12" → 12 million\n\nExample 3: 5,400,000,000\n1. Count digits → 10 digits\n2. 10 digits is the "billion" range\n3. Read leading "54" → 5.4 billion\n\nTip: Rather than chunking by 3 digits with commas, chunking by 4 digits matches the Japanese unit system (10K/100M/1T).',
     },
     {
       type: 'quiz',
@@ -41,7 +41,7 @@ const clientLesson89: LessonData = {
     {
       type: 'explain',
       title: 'Multiply by shifting digits',
-      content: 'Multiplying large numbers gets easier when you "shift digits."\n\n**1 million × 1 million = ?**\n\nThinking:\n- 1 million = 10^6\n- 1 million × 1 million = 10^6 × 10^6 = 10^12\n- 10^12 = **1 trillion**\n\n**Point:** Just add the powers of 10 (number of zeros).\n- 10K (4 digits) × 10K (4 digits) = 100M (8 digits)\n- 10K (4 digits) × 100M (8 digits) = 1T (12 digits)\n- 1M (6 digits) × 1M (6 digits) = 1T (12 digits)',
+      content: 'Multiplying large numbers gets easier when you "shift digits."\n\n1 million × 1 million = ?\n\nThinking:\n- 1 million = 10^6\n- 1 million × 1 million = 10^6 × 10^6 = 10^12\n- 10^12 = 1 trillion\n\nPoint: Just add the powers of 10 (number of zeros).\n- 10K (4 digits) × 10K (4 digits) = 100M (8 digits)\n- 10K (4 digits) × 100M (8 digits) = 1T (12 digits)\n- 1M (6 digits) × 1M (6 digits) = 1T (12 digits)',
     },
     {
       type: 'quiz',
@@ -57,7 +57,7 @@ const clientLesson89: LessonData = {
     {
       type: 'explain',
       title: 'Estimate market size',
-      content: 'Market size estimates like "5 million people × 3,000 yen = ?" come up constantly.\n\n**Calculation:**\n1. 5 million × 3,000\n2. = 5 million × 0.3 × 10K\n3. = 5M × 0.3 × 10K\n4. = 0.3 × 5M × 10K\n5. = 0.3 × 50 billion\n6. = **15 billion yen**\n\n**Tip:** Memorizing "10K × 10K = 100M" makes calculations fast.\n\nExample: Japan\'s coffee market\n- Coffee drinkers: ~60 million people\n- Annual spend: ~5,000 yen / person\n- Market size: 60M × 5,000 yen\n\n**Calculation:**\n1. 60M × 5,000\n2. = 60M × 0.5 × 10K\n3. = 30M × 10K\n4. = 300 billion yen\n5. ≈ **300 billion yen**',
+      content: 'Market size estimates like "5 million people × 3,000 yen = ?" come up constantly.\n\nCalculation:\n1. 5 million × 3,000\n2. = 5 million × 0.3 × 10K\n3. = 5M × 0.3 × 10K\n4. = 0.3 × 5M × 10K\n5. = 0.3 × 50 billion\n6. = 15 billion yen\n\nTip: Memorizing "10K × 10K = 100M" makes calculations fast.\n\nExample: Japan\'s coffee market\n- Coffee drinkers: ~60 million people\n- Annual spend: ~5,000 yen / person\n- Market size: 60M × 5,000 yen\n\nCalculation:\n1. 60M × 5,000\n2. = 60M × 0.5 × 10K\n3. = 30M × 10K\n4. = 300 billion yen\n5. ≈ 300 billion yen',
     },
     {
       type: 'quiz',
@@ -82,12 +82,12 @@ const clientLesson90: LessonData = {
     {
       type: 'explain',
       title: 'Question-setting errors are the biggest losses',
-      content: '"Answering the right question" matters far more than "answering the wrong question correctly."\n\nA common failure pattern in client work:\n- Client: "Sales are down."\n- You: immediately starts thinking "how do we increase sales?"\n\nBut what is the real question?\n- Which products / regions are down?\n- When did the decline start?\n- What are competitors doing?\n- Maybe cost cutting is the priority\n\n**Defining the issue = clarifying "what we should solve"**',
+      content: '"Answering the right question" matters far more than "answering the wrong question correctly."\n\nA common failure pattern in client work:\n- Client: "Sales are down."\n- You: immediately starts thinking "how do we increase sales?"\n\nBut what is the real question?\n- Which products / regions are down?\n- When did the decline start?\n- What are competitors doing?\n- Maybe cost cutting is the priority\n\nDefining the issue = clarifying "what we should solve"',
     },
     {
       type: 'explain',
       title: 'Use So what? / Why so? to dig deep',
-      content: 'To frame the issue correctly, use two questions.\n\n**So what? (so therefore?)**\n→ Extract implications from facts\nExample: "Sales fell 10%" → So what? → "At this rate we hit losses in 3 months"\n\n**Why so? (why is that?)**\n→ Drill into the cause of facts\nExample: "Sales fell 10%" → Why so? → "New customer acquisition is flat, but churn of existing customers has increased"\n\nRepeating these two takes you from **surface symptom to essential issue**.',
+      content: 'To frame the issue correctly, use two questions.\n\nSo what? (so therefore?)\n→ Extract implications from facts\nExample: "Sales fell 10%" → So what? → "At this rate we hit losses in 3 months"\n\nWhy so? (why is that?)\n→ Drill into the cause of facts\nExample: "Sales fell 10%" → Why so? → "New customer acquisition is flat, but churn of existing customers has increased"\n\nRepeating these two takes you from surface symptom to essential issue.',
     },
     {
       type: 'quiz',
@@ -103,7 +103,7 @@ const clientLesson90: LessonData = {
     {
       type: 'explain',
       title: 'Three questions to narrow down issues',
-      content: 'When multiple questions emerge, you need criteria to decide which to solve first.\n\n**Three questions for narrowing issues:**\n\n1. **Is it important?**\n   Will answering it significantly affect decisions or outcomes?\n\n2. **Can it be solved?**\n   Can you produce an answer with the info, resources, and time at hand?\n\n3. **Should it be solved now?**\n   Does it have to be answered at this timing, or can it wait?\n\nA question that satisfies all three is your issue. This avoids wasted analysis.',
+      content: 'When multiple questions emerge, you need criteria to decide which to solve first.\n\nThree questions for narrowing issues:\n\n1. Is it important?\n   Will answering it significantly affect decisions or outcomes?\n\n2. Can it be solved?\n   Can you produce an answer with the info, resources, and time at hand?\n\n3. Should it be solved now?\n   Does it have to be answered at this timing, or can it wait?\n\nA question that satisfies all three is your issue. This avoids wasted analysis.',
     },
     {
       type: 'quiz',
@@ -128,12 +128,12 @@ const clientLesson91: LessonData = {
     {
       type: 'explain',
       title: 'Ask "what we need to know," not "what we want to ask"',
-      content: 'A common interview failure:\n\n**Bad:** "Are there any problems you\'re facing?"\n→ Too vague; the other person can\'t answer\n\n**Good:** "What\'s the most time-consuming task in your work?"\n→ Concrete; gives information usable for hypothesis testing\n\nInterviews are not "interviews" — they are **hypothesis verification**.\n\nThinking through "what do I need to confirm to test my hypothesis?" beforehand dramatically changes the quality of information you get.',
+      content: 'A common interview failure:\n\nBad: "Are there any problems you\'re facing?"\n→ Too vague; the other person can\'t answer\n\nGood: "What\'s the most time-consuming task in your work?"\n→ Concrete; gives information usable for hypothesis testing\n\nInterviews are not "interviews" — they are hypothesis verification.\n\nThinking through "what do I need to confirm to test my hypothesis?" beforehand dramatically changes the quality of information you get.',
     },
     {
       type: 'explain',
       title: 'Use open and closed questions appropriately',
-      content: '**Open questions:** the other person can answer freely\n- "How do you feel about the current challenges?"\n- "What does the ideal state look like?"\n- When to use: when you want to broaden the conversation, in initial situation grasp\n\n**Closed questions:** answered yes/no or with options\n- "Does this problem occur monthly?"\n- "Is the priority cost reduction or sales expansion?"\n- When to use: when verifying a hypothesis, when narrowing the conversation\n\n**Golden rule:** start with open, confirm with closed.',
+      content: 'Open questions: the other person can answer freely\n- "How do you feel about the current challenges?"\n- "What does the ideal state look like?"\n- When to use: when you want to broaden the conversation, in initial situation grasp\n\nClosed questions: answered yes/no or with options\n- "Does this problem occur monthly?"\n- "Is the priority cost reduction or sales expansion?"\n- When to use: when verifying a hypothesis, when narrowing the conversation\n\nGolden rule: start with open, confirm with closed.',
     },
     {
       type: 'quiz',
@@ -149,7 +149,7 @@ const clientLesson91: LessonData = {
     {
       type: 'explain',
       title: 'Don\'t fear silence',
-      content: 'A surprisingly important interview skill is the use of "silence."\n\n**Silence is a sign that the other person is thinking.**\nThrowing the next question immediately when they go quiet stops their thought process.\n\nDevelop the habit of **waiting 3 seconds**. Often they\'ll share deeper information.\n\n"And then?" / "For example?" / "Could you tell me a little more?"\n→ These small prompts transform interview depth.\n\n**Visible note-taking** matters too. The other person feels "they\'re really listening" and shares more.',
+      content: 'A surprisingly important interview skill is the use of "silence."\n\nSilence is a sign that the other person is thinking.\nThrowing the next question immediately when they go quiet stops their thought process.\n\nDevelop the habit of waiting 3 seconds. Often they\'ll share deeper information.\n\n"And then?" / "For example?" / "Could you tell me a little more?"\n→ These small prompts transform interview depth.\n\nVisible note-taking matters too. The other person feels "they\'re really listening" and shares more.',
     },
     {
       type: 'quiz',
@@ -174,12 +174,12 @@ const clientLesson92: LessonData = {
     {
       type: 'explain',
       title: 'Have a question before you read',
-      content: 'Just by deciding **"what do I want to confirm from this material?"** before reading, your reading speed and accuracy change dramatically.\n\n**Reading without a question:**\n→ Everything seems important → you finish without organized takeaways\n\n**Reading with a question:**\n→ Your eyes naturally lock onto needed information → implications come out faster\n\nExample: "I want to find evidence about cost reduction in this proposal."\n→ Scanning with that lens, you can read in 2 minutes what would normally take 5.',
+      content: 'Just by deciding "what do I want to confirm from this material?" before reading, your reading speed and accuracy change dramatically.\n\nReading without a question:\n→ Everything seems important → you finish without organized takeaways\n\nReading with a question:\n→ Your eyes naturally lock onto needed information → implications come out faster\n\nExample: "I want to find evidence about cost reduction in this proposal."\n→ Scanning with that lens, you can read in 2 minutes what would normally take 5.',
     },
     {
       type: 'explain',
       title: 'Read by separating claim, reason, and example',
-      content: 'When organizing information, splitting it into three elements clears the head.\n\n**Claim:** what the author wants to convey\nExample: "This service has high implementation impact"\n\n**Reason:** why the claim holds\nExample: "90% of adopting companies cut work hours by 20%"\n\n**Example:** evidence backing the reason\nExample: "Company A achieved 40 hours/month of effort reduction"\n\nReading split this way also surfaces problems like **"claim with no reason" or "weak reason."**',
+      content: 'When organizing information, splitting it into three elements clears the head.\n\nClaim: what the author wants to convey\nExample: "This service has high implementation impact"\n\nReason: why the claim holds\nExample: "90% of adopting companies cut work hours by 20%"\n\nExample: evidence backing the reason\nExample: "Company A achieved 40 hours/month of effort reduction"\n\nReading split this way also surfaces problems like "claim with no reason" or "weak reason."',
     },
     {
       type: 'quiz',
@@ -195,7 +195,7 @@ const clientLesson92: LessonData = {
     {
       type: 'explain',
       title: 'Inspect AI output by structure',
-      content: 'Using AI for information gathering is increasingly common. Taking AI output as-is creates risks.\n\n**Common problems:**\n- Sources are unclear or outdated\n- Numbers "look right" but lack basis\n- Multiple pieces of information mix into illogical leaps\n\n**Three checks for AI output:**\n1. **Does the claim correspond to the reason?** (Is reason given for each claim?)\n2. **Is the number reasonable in magnitude?** (Verify with rough-estimation skills)\n3. **Is there a leap to the conclusion?** (Are correlation and causation conflated?)\n\nThese three checks alone dramatically raise output quality.',
+      content: 'Using AI for information gathering is increasingly common. Taking AI output as-is creates risks.\n\nCommon problems:\n- Sources are unclear or outdated\n- Numbers "look right" but lack basis\n- Multiple pieces of information mix into illogical leaps\n\nThree checks for AI output:\n1. Does the claim correspond to the reason? (Is reason given for each claim?)\n2. Is the number reasonable in magnitude? (Verify with rough-estimation skills)\n3. Is there a leap to the conclusion? (Are correlation and causation conflated?)\n\nThese three checks alone dramatically raise output quality.',
     },
     {
       type: 'quiz',
@@ -220,12 +220,12 @@ const clientLesson93: LessonData = {
     {
       type: 'explain',
       title: 'How you arrange things changes what gets through',
-      content: 'The same information lands very differently depending on **how it\'s arranged.**\n\n**Structuring means:**\nOrganizing information and thoughts on the dimensions of "flow, granularity, gaps/duplication, and relationships"\n\n**Unstructured example:**\n→ "We need cost reduction. Sales should grow. Hiring is also tough. Employee morale is low. We want to push DX."\n\n**Structured example:**\n→ "Two issues. (1) Financial: cost overruns and stagnant sales. (2) Organizational: hard to hire and low morale. DX is a means to address (2)."\n\nStructure alone makes "what\'s wrong, where to start" obvious at a glance.',
+      content: 'The same information lands very differently depending on how it\'s arranged.\n\nStructuring means:\nOrganizing information and thoughts on the dimensions of "flow, granularity, gaps/duplication, and relationships"\n\nUnstructured example:\n→ "We need cost reduction. Sales should grow. Hiring is also tough. Employee morale is low. We want to push DX."\n\nStructured example:\n→ "Two issues. (1) Financial: cost overruns and stagnant sales. (2) Organizational: hard to hire and low morale. DX is a means to address (2)."\n\nStructure alone makes "what\'s wrong, where to start" obvious at a glance.',
     },
     {
       type: 'explain',
       title: 'Distinguish causation from parallel relationships',
-      content: 'In structuring, the most important thing is **identifying relationships.**\n\n**Parallel (A, B, C are equal-rank):**\n→ "The issues are (1) rising costs, (2) declining sales, (3) labor shortage"\n\n**Causal (A leads to B):**\n→ "Labor shortage (cause) → slower response (effect) → customer churn (effect)"\n\n**Match the granularity:**\n- Bad: "(1) rising costs, (2) staffing in division A, (3) global market changes" (mixed abstraction)\n- Good: "(1) cost structure, (2) staffing, (3) market environment" (same level)',
+      content: 'In structuring, the most important thing is identifying relationships.\n\nParallel (A, B, C are equal-rank):\n→ "The issues are (1) rising costs, (2) declining sales, (3) labor shortage"\n\nCausal (A leads to B):\n→ "Labor shortage (cause) → slower response (effect) → customer churn (effect)"\n\nMatch the granularity:\n- Bad: "(1) rising costs, (2) staffing in division A, (3) global market changes" (mixed abstraction)\n- Good: "(1) cost structure, (2) staffing, (3) market environment" (same level)',
     },
     {
       type: 'quiz',
@@ -241,7 +241,7 @@ const clientLesson93: LessonData = {
     {
       type: 'explain',
       title: 'Verify AI output structurally',
-      content: 'Lists or proposal outlines from AI also need structural inspection.\n\n**Checklist:**\n\n(1) **Are there gaps?**\n→ Is anything important missing? (MECE lens)\n\n(2) **Are there duplications?**\n→ Same thing said twice in different wording?\n\n(3) **Is granularity matched?**\n→ Is big-picture mixed with small detail?\n\n(4) **Is the order appropriate?**\n→ Are causally-linked items reversed?\n\nThese four quickly surface structural problems.',
+      content: 'Lists or proposal outlines from AI also need structural inspection.\n\nChecklist:\n\n(1) Are there gaps?\n→ Is anything important missing? (MECE lens)\n\n(2) Are there duplications?\n→ Same thing said twice in different wording?\n\n(3) Is granularity matched?\n→ Is big-picture mixed with small detail?\n\n(4) Is the order appropriate?\n→ Are causally-linked items reversed?\n\nThese four quickly surface structural problems.',
     },
     {
       type: 'quiz',
@@ -266,12 +266,12 @@ const clientLesson94: LessonData = {
     {
       type: 'explain',
       title: 'Lead with the conclusion',
-      content: 'In business writing, "conclusion first" is the foundation.\n\n**PREP method:**\n- **P (Point):** conclusion / claim\n- **R (Reason):** rationale\n- **E (Example):** specific examples / data\n- **P (Point):** restate the conclusion\n\n**Bad:**\n"We did market research. Competitor A lowered prices. Competitor B added new features. Customer feedback shows price dissatisfaction. Therefore, a pricing strategy review is needed."\n\n**Good:**\n"We propose a pricing strategy review. Three reasons: (1) competitors cut prices, (2) customer satisfaction surveys show price dissatisfaction, (3) at this rate, next quarter\'s revenue target is at risk."',
+      content: 'In business writing, "conclusion first" is the foundation.\n\nPREP method:\n- P (Point): conclusion / claim\n- R (Reason): rationale\n- E (Example): specific examples / data\n- P (Point): restate the conclusion\n\nBad:\n"We did market research. Competitor A lowered prices. Competitor B added new features. Customer feedback shows price dissatisfaction. Therefore, a pricing strategy review is needed."\n\nGood:\n"We propose a pricing strategy review. Three reasons: (1) competitors cut prices, (2) customer satisfaction surveys show price dissatisfaction, (3) at this rate, next quarter\'s revenue target is at risk."',
     },
     {
       type: 'explain',
       title: 'Switch between abstract and concrete',
-      content: 'Most ineffective writing is biased toward "abstract only" or "concrete only."\n\n**Too abstract:**\n"Improving customer experience is important."\n→ The reader doesn\'t know what to do\n\n**Too concrete:**\n"On Company A\'s XX page, change the button color from orange to blue, and increase font size from 14pt to 16pt."\n→ The reader doesn\'t know why\n\n**Just right:**\n"We\'ll improve the deciding-moment experience that drives first purchases. Specifically, we\'ll make the CTA button on product pages more prominent and reduce checkout from 3 steps to 2."\n→ Goal and means together',
+      content: 'Most ineffective writing is biased toward "abstract only" or "concrete only."\n\nToo abstract:\n"Improving customer experience is important."\n→ The reader doesn\'t know what to do\n\nToo concrete:\n"On Company A\'s XX page, change the button color from orange to blue, and increase font size from 14pt to 16pt."\n→ The reader doesn\'t know why\n\nJust right:\n"We\'ll improve the deciding-moment experience that drives first purchases. Specifically, we\'ll make the CTA button on product pages more prominent and reduce checkout from 3 steps to 2."\n→ Goal and means together',
     },
     {
       type: 'quiz',
@@ -287,7 +287,7 @@ const clientLesson94: LessonData = {
     {
       type: 'explain',
       title: 'Edit AI writing into your own voice',
-      content: 'Using AI-written text as-is creates problems.\n\n**Common AI text traits:**\n- Overly polite and verbose ("It is considered important to...")\n- Hedged and vague (filled with "may," "could be considered")\n- Doesn\'t consider who the reader is\n\n**How to edit:**\n1. **Make subjects explicit** ("We will...")\n2. **Assert where you can assert** ("This works")\n3. **Match the reader\'s level** (replace jargon with plain words)\n4. **Split long sentences** (target ~40 characters per sentence in JP, ~20 words in EN)',
+      content: 'Using AI-written text as-is creates problems.\n\nCommon AI text traits:\n- Overly polite and verbose ("It is considered important to...")\n- Hedged and vague (filled with "may," "could be considered")\n- Doesn\'t consider who the reader is\n\nHow to edit:\n1. Make subjects explicit ("We will...")\n2. Assert where you can assert ("This works")\n3. Match the reader\'s level (replace jargon with plain words)\n4. Split long sentences (target ~40 characters per sentence in JP, ~20 words in EN)',
     },
     {
       type: 'quiz',
@@ -312,12 +312,12 @@ const clientLesson95: LessonData = {
     {
       type: 'explain',
       title: 'Why a correct proposal still fails to land',
-      content: 'Even with sufficient research and correct analysis, you can produce a proposal that "doesn\'t land."\n\nIt\'s because the **storyline (the order in which you communicate)** is weak.\n\n**Storyline means:**\nThe flow of "in what order, what to convey" across slides or a report.\n\nListeners decide "is this worth listening to?" within the first few minutes.\n\n**Basic flow:**\n(1) Current state (what is happening)\n(2) Issue (what is wrong)\n(3) Cause (why the issue is happening)\n(4) Action (how to solve it)\n(5) Expected impact (what changes when solved)',
+      content: 'Even with sufficient research and correct analysis, you can produce a proposal that "doesn\'t land."\n\nIt\'s because the storyline (the order in which you communicate) is weak.\n\nStoryline means:\nThe flow of "in what order, what to convey" across slides or a report.\n\nListeners decide "is this worth listening to?" within the first few minutes.\n\nBasic flow:\n(1) Current state (what is happening)\n(2) Issue (what is wrong)\n(3) Cause (why the issue is happening)\n(4) Action (how to solve it)\n(5) Expected impact (what changes when solved)',
     },
     {
       type: 'explain',
       title: 'Connect slides with "So what?"',
-      content: 'A technique that strengthens storyline: **"connect with So what?"**\n\nAt the end of each slide, ask "So what?" — and design the next slide to be the answer.\n\n**Example:**\n- Slide 1: "Competitor A lowered prices by 20%"\n  → So what? →\n- Slide 2: "Our price competitiveness becomes problematic within 3 months"\n  → So what? →\n- Slide 3: "We need to revise pricing strategy this month"\n\nThis flow naturally guides the listener\'s thinking through to "what should we do."',
+      content: 'A technique that strengthens storyline: "connect with So what?"\n\nAt the end of each slide, ask "So what?" — and design the next slide to be the answer.\n\nExample:\n- Slide 1: "Competitor A lowered prices by 20%"\n  → So what? →\n- Slide 2: "Our price competitiveness becomes problematic within 3 months"\n  → So what? →\n- Slide 3: "We need to revise pricing strategy this month"\n\nThis flow naturally guides the listener\'s thinking through to "what should we do."',
     },
     {
       type: 'quiz',
@@ -333,7 +333,7 @@ const clientLesson95: LessonData = {
     {
       type: 'explain',
       title: 'Use the pyramid structure',
-      content: 'A tool to organize storyline visually is the **pyramid structure.**\n\n```\n       [Conclusion / claim]\n      /        |        \\\n [Reason 1] [Reason 2] [Reason 3]\n   |          |           |\n[Fact]      [Fact]      [Fact]\n```\n\n**Usage:**\n- Top: the conclusion you want to convey (just one)\n- Middle: reasons supporting the conclusion (2-4)\n- Bottom: facts and data backing each reason\n\nOrganizing this way before slide-making naturally surfaces logical leaps and gaps.',
+      content: 'A tool to organize storyline visually is the pyramid structure.\n\n```\n       [Conclusion / claim]\n      /        |        \\\n [Reason 1] [Reason 2] [Reason 3]\n   |          |           |\n[Fact]      [Fact]      [Fact]\n```\n\nUsage:\n- Top: the conclusion you want to convey (just one)\n- Middle: reasons supporting the conclusion (2-4)\n- Bottom: facts and data backing each reason\n\nOrganizing this way before slide-making naturally surfaces logical leaps and gaps.',
     },
     {
       type: 'quiz',
@@ -358,12 +358,12 @@ const clientLesson96: LessonData = {
     {
       type: 'explain',
       title: 'Hold to the three elements of a report',
-      content: 'Effective reports need three elements.\n\n**(1) Fact:** what happened\nExample: "New inquiries this month dropped 30% MoM"\n\n**(2) Insight:** what it means\nExample: "Not seasonal; we estimate the impact comes from last month\'s ad pause"\n\n**(3) Next Action:** what to do, by when\nExample: "We\'ll restart ads next week and check next month\'s numbers for impact"\n\nReports without all three trigger "so what should I do?" responses.',
+      content: 'Effective reports need three elements.\n\n(1) Fact: what happened\nExample: "New inquiries this month dropped 30% MoM"\n\n(2) Insight: what it means\nExample: "Not seasonal; we estimate the impact comes from last month\'s ad pause"\n\n(3) Next Action: what to do, by when\nExample: "We\'ll restart ads next week and check next month\'s numbers for impact"\n\nReports without all three trigger "so what should I do?" responses.',
     },
     {
       type: 'explain',
       title: 'Write meeting minutes correctly',
-      content: 'Post-meeting minutes are not "an information record" — they\'re **"action confirmation."**\n\n**Three elements of good minutes:**\n\n1. **Decisions (What):** what was decided\nExample: "Decided to raise next quarter\'s ad budget by 20%"\n\n2. **Action items (Who, What, When):** who, what, by when\nExample: "Tanaka-san will draft the budget adjustment plan and share it by 3/15"\n\n3. **Open items (Pending):** what carries over to the next session\nExample: "Decision on overseas expansion deferred until next month\'s data review"\n\n**Bad:** Minutes that just transcribe who said what.',
+      content: 'Post-meeting minutes are not "an information record" — they\'re "action confirmation."\n\nThree elements of good minutes:\n\n1. Decisions (What): what was decided\nExample: "Decided to raise next quarter\'s ad budget by 20%"\n\n2. Action items (Who, What, When): who, what, by when\nExample: "Tanaka-san will draft the budget adjustment plan and share it by 3/15"\n\n3. Open items (Pending): what carries over to the next session\nExample: "Decision on overseas expansion deferred until next month\'s data review"\n\nBad: Minutes that just transcribe who said what.',
     },
     {
       type: 'quiz',
@@ -379,7 +379,7 @@ const clientLesson96: LessonData = {
     {
       type: 'explain',
       title: 'Use quantitative and qualitative together',
-      content: 'In reports and emails, distinguishing **quantitative** from **qualitative** matters.\n\n**Quantitative:** information you can express in numbers\n- "Sales rose 10%" / "Average response time shortened by 2 hours"\n- High reliability, easy to compare\n- But numbers alone don\'t explain "why"\n\n**Qualitative:** information expressed in words / customer voice / observation\n- "Customers were observed struggling with the operation"\n- Conveys "why" that doesn\'t show in numbers\n- But subjective\n\n**Best practice:** show facts quantitatively, explain meaning qualitatively\nExample: "Churn rate up 15% (quant). Interviews show frequent complaints about support (qual)."',
+      content: 'In reports and emails, distinguishing quantitative from qualitative matters.\n\nQuantitative: information you can express in numbers\n- "Sales rose 10%" / "Average response time shortened by 2 hours"\n- High reliability, easy to compare\n- But numbers alone don\'t explain "why"\n\nQualitative: information expressed in words / customer voice / observation\n- "Customers were observed struggling with the operation"\n- Conveys "why" that doesn\'t show in numbers\n- But subjective\n\nBest practice: show facts quantitatively, explain meaning qualitatively\nExample: "Churn rate up 15% (quant). Interviews show frequent complaints about support (qual)."',
     },
     {
       type: 'quiz',
@@ -404,12 +404,12 @@ const clientLesson97: LessonData = {
     {
       type: 'explain',
       title: 'Separate emotion from information',
-      content: 'When receiving feedback, defensive reactions arise naturally.\n\n"This direction is wrong" → (inner voice) "My proposal got rejected..."\n\nBut feedback is not "an evaluation of you" — it\'s **"information about the output."**\n\n**Tips for separating emotion from information:**\n1. First, accept it ("Thank you") — don\'t argue\n2. Confirm: "So you\'re saying XX is the issue, right?"\n3. Process emotions later, at home\n\nPeople who can take feedback honestly grow much faster.',
+      content: 'When receiving feedback, defensive reactions arise naturally.\n\n"This direction is wrong" → (inner voice) "My proposal got rejected..."\n\nBut feedback is not "an evaluation of you" — it\'s "information about the output."\n\nTips for separating emotion from information:\n1. First, accept it ("Thank you") — don\'t argue\n2. Confirm: "So you\'re saying XX is the issue, right?"\n3. Process emotions later, at home\n\nPeople who can take feedback honestly grow much faster.',
     },
     {
       type: 'explain',
       title: 'Make "what\'s wrong" specific',
-      content: 'When a client or manager says "this isn\'t it" or "polish it more," what to actually fix is unclear.\n\nThree questions you can use:\n\n**(1) "Specifically, what part bothered you?"**\n→ Pinpoint the problem\n\n**(2) "Is there an example close to your ideal?"**\n→ Align expectations\n\n**(3) "What\'s top priority to fix?"**\n→ Confirm priority\n\nJust these three make "what to fix" clear.',
+      content: 'When a client or manager says "this isn\'t it" or "polish it more," what to actually fix is unclear.\n\nThree questions you can use:\n\n(1) "Specifically, what part bothered you?"\n→ Pinpoint the problem\n\n(2) "Is there an example close to your ideal?"\n→ Align expectations\n\n(3) "What\'s top priority to fix?"\n→ Confirm priority\n\nJust these three make "what to fix" clear.',
     },
     {
       type: 'quiz',
@@ -425,7 +425,7 @@ const clientLesson97: LessonData = {
     {
       type: 'explain',
       title: 'Turn feedback into an improvement loop',
-      content: 'Just receiving feedback and stopping leads to repeating the same mistakes.\n\n**Four steps to use feedback:**\n\n1. **Record:** save what was said in notes\n2. **Find patterns:** if the same point comes up 3+ times, it\'s your issue\n3. **Analyze cause:** why did the mistake happen (skill? time? perception gap?)\n4. **Change next time\'s behavior:** decide concretely what changes\n\n**Common trap:** ending with "I\'ll be careful"\n→ Convert to a concrete action: "Before submission next time, I\'ll check XX."',
+      content: 'Just receiving feedback and stopping leads to repeating the same mistakes.\n\nFour steps to use feedback:\n\n1. Record: save what was said in notes\n2. Find patterns: if the same point comes up 3+ times, it\'s your issue\n3. Analyze cause: why did the mistake happen (skill? time? perception gap?)\n4. Change next time\'s behavior: decide concretely what changes\n\nCommon trap: ending with "I\'ll be careful"\n→ Convert to a concrete action: "Before submission next time, I\'ll check XX."',
     },
     {
       type: 'quiz',
