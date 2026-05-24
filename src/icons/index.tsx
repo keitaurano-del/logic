@@ -341,6 +341,18 @@ export function BookmarkIcon(p: IconProps) {
   )
 }
 
+// Lucide-style headphones icon — レッスン読み上げモード起動ボタン用
+// LessonStoriesScreen のヘッダーで TTS 開始 / 制御パネル展開トリガーに使う
+export function HeadphonesIcon(p: IconProps) {
+  return (
+    <svg {...base} {...p}>
+      <path d="M3 18v-6a9 9 0 0 1 18 0v6" />
+      <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3z" />
+      <path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" />
+    </svg>
+  )
+}
+
 // Lucide-style flag icon — 「誤りを報告」ボタンのアイコン用
 // LessonStoriesScreen で常時表示するコンパクト報告ボタンに使用
 export function FlagIcon(p: IconProps) {

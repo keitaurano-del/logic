@@ -714,6 +714,11 @@ function AppV3() {
           })()}
           durationSec={screen.durationSec}
           prevLevel={screen.prevLevel}
+          autoAdvance={(() => {
+            // TTS 読み上げモードで完走した場合、sessionStorage に flag が立っている。
+            // ここで読み込んで自動遷移可否を判定する (flag は次レッスン側で消費されるので消さない)。
+            try { return sessionStorage.getItem('logic-tts-mode-continue') === '1' } catch { return false }
+          })()}
           onNext={() => {
             // 同カテゴリの次レッスンを探して遷移
             const allFlat = getAllLessonsFlat()

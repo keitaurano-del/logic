@@ -20,6 +20,12 @@ interface LessonCompleteScreenProps {
   onHome: () => void
   onOpenReview?: () => void
   prevLevel?: number
+  /**
+   * TTS 読み上げモードで完走した直後など、同コース次レッスンに自動で
+   * 進めたい場合に true を渡す。約 2 秒の表示後に onNext() を発火する。
+   * 表示中に手動操作（次へ / ホーム / 復習）を行うと自動遷移はキャンセル。
+   */
+  autoAdvance?: boolean
 }
 
 function useCountUp(target: number, duration = 900, delay = 500) {
@@ -67,7 +73,7 @@ function RingProgress({ progress, size = 140, stroke = 10 }: { progress: number;
 }
 
 export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
-  const { lessonTitle, durationSec, onNext, onHome, onOpenReview, prevLevel } = props
+  const { lessonTitle, durationSec, onNext, onHome, onOpenReview, prevLevel, autoAdvance } = props
   const xp = getXp()
   const lv = getCurrentLevel(xp)
   const streak = getStreak()
@@ -75,6 +81,18 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
   const minutes = Math.floor(durationSec / 60)
   const seconds = durationSec % 60
   const timeStr = `${minutes}:${String(seconds).padStart(2, '0')}`
+
+  // TTS 読み上げモード継続: 一定時間後に自動で「次のレッスン」へ進む。
+  // ユーザーが手動操作したらキャンセル可能 (cancelAutoAdvance を内部で叩く)。
+  const [autoAdvanceCancelled, setAutoAdvanceCancelled] = useState(false)
+  const cancelAutoAdvance = () => setAutoAdvanceCancelled(true)
+  useEffect(() => {
+    if (!autoAdvance || autoAdvanceCancelled) return
+    const timer = setTimeout(() => {
+      if (!autoAdvanceCancelled) onNext()
+    }, 2200)
+    return () => clearTimeout(timer)
+  }, [autoAdvance, autoAdvanceCancelled, onNext])
 
   // 2026-05-15 単一有料プラン化:
   //   復習・誤答リストは全プラン解放。due / weak カードがあれば誰でも CTA を出す。
@@ -239,10 +257,26 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
           </div>
         )}
 
+        {/* 読み上げモード継続バナー: 自動遷移中のみ表示 */}
+        {autoAdvance && !autoAdvanceCancelled && (
+          <div style={{
+            width: '100%', marginBottom: 14,
+            background: `color-mix(in srgb, var(--brand) 14%, transparent)`,
+            border: `1px solid color-mix(in srgb, var(--brand) 32%, transparent)`,
+            borderRadius: 14, padding: '12px 16px',
+            display: 'flex', alignItems: 'center', gap: 10,
+            ...show(3),
+          }}>
+            <span style={{ width: 10, height: 10, borderRadius: '50%', background: 'var(--brand)', boxShadow: `0 0 10px var(--brand)`, animation: 'ttsContinuePulse 1.2s ease-in-out infinite' }} />
+            <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--brand)' }}>{t('tts.nextLessonHint')}</span>
+            <style>{`@keyframes ttsContinuePulse { 0%,100% { opacity: 1 } 50% { opacity: .4 } }`}</style>
+          </div>
+        )}
+
         {/* CTA */}
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 10, ...show(3) }}>
           <button
-            onClick={onNext}
+            onClick={() => { cancelAutoAdvance(); onNext() }}
             style={{
               width: '100%',
               background: 'var(--brand)',
@@ -256,11 +290,11 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
               touchAction: 'manipulation',
             }}
           >
-            {t('lessonComplete.next')}
+            {autoAdvance && !autoAdvanceCancelled ? t('tts.continueNextLesson') : t('lessonComplete.next')}
           </button>
           {showReviewCta && (
             <button
-              onClick={onOpenReview}
+              onClick={() => { cancelAutoAdvance(); onOpenReview?.() }}
               style={{
                 width: '100%',
                 background: 'var(--accent-soft)',
@@ -276,7 +310,12 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
             </button>
           )}
           <button
-            onClick={onHome}
+            onClick={() => {
+              cancelAutoAdvance()
+              // 自動遷移をキャンセルした場合は logic-tts-mode-continue を消し、次レッスンで TTS 再開しない
+              try { sessionStorage.removeItem('logic-tts-mode-continue') } catch { /* */ }
+              onHome()
+            }}
             style={{
               width: '100%',
               background: 'transparent',
@@ -288,7 +327,7 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
               touchAction: 'manipulation',
             }}
           >
-            {t('lessonComplete.home')}
+            {autoAdvance && !autoAdvanceCancelled ? t('tts.skipNextLesson') : t('lessonComplete.home')}
           </button>
         </div>
       </div>

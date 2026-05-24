@@ -4,7 +4,7 @@
  * モックアップ: lv3-lesson.html
  */
 import { useState, useMemo, useRef, useEffect, useCallback } from 'react'
-import { BookmarkIcon, BookmarkFilledIcon, CheckIcon, SparklesIcon, LightbulbIcon, BrainIcon, ClipboardListIcon, FlagIcon } from '../icons'
+import { BookmarkIcon, BookmarkFilledIcon, CheckIcon, SparklesIcon, LightbulbIcon, BrainIcon, ClipboardListIcon, FlagIcon, HeadphonesIcon } from '../icons'
 import type { LessonSlide } from '../lessonSlides'
 import { convertLessonToSlides } from '../lessonSlides'
 import { allLessons } from '../lessonData'
@@ -13,6 +13,7 @@ import { LessonThumbnail } from '../components/LessonThumbnail'
 import { API_BASE } from './apiBase'
 import { t, getLocale } from '../i18n'
 import * as tts from '../ttsService'
+import { TtsControlPanel } from '../components/TtsControlPanel'
 import { tutorial } from '../tutorial/tutorialStorage'
 import { addWrongAnswers } from '../wrongAnswerStore'
 import { generateFromLesson } from '../flashcardData'
@@ -85,8 +86,6 @@ function getSpeakableText(slide: LessonSlide): string {
   }
 }
 
-const TTS_RATE_OPTIONS = [0.75, 1.0, 1.25, 1.5, 2.0]
-
 interface LessonStoriesScreenProps {
   lessonId: number
   startStep?: number
@@ -134,37 +133,64 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
 
   // TTS 読み上げ状態
   const [ttsPlaying, setTtsPlaying] = useState<boolean>(() => tts.isPlaying())
-  const [ttsRateMenuOpen, setTtsRateMenuOpen] = useState(false)
   const [ttsRate, setTtsRate] = useState<number>(() => tts.loadRate())
+  // 読み上げモード: ヘッドホンボタンで ON → スライド自動進行 + クイズスキップ
+  const [ttsModeActive, setTtsModeActive] = useState(false)
+  const [ttsPaused, setTtsPaused] = useState(false)
+  const [ttsVoiceId, setTtsVoiceId] = useState<string | null>(() => tts.loadVoiceId())
+  // 読了 → 「クイズを解く」CTA を表示する状態
+  const [ttsCompletedReadable, setTtsCompletedReadable] = useState(false)
   useEffect(() => tts.subscribe(setTtsPlaying), [])
-  // 画面離脱 / スライド遷移 / unmount 時は必ず停止して取り残しを防ぐ
+  // 画面離脱 / unmount 時は必ず停止して取り残しを防ぐ
   useEffect(() => {
     return () => { void tts.stop() }
   }, [])
+
+  // 前レッスンが TTS モードで完走 → 同コース次レッスンに自動遷移してきた場合は
+  // 読み上げモードで自動再開する (sessionStorage 経由のハンドシェイク)。
+  // 一度消費したら sessionStorage からは消す。
   useEffect(() => {
-    // スライドが切り替わったら自動で停止（ユーザー再タップで継続）
-    if (tts.isPlaying()) void tts.stop()
-  }, [index])
+    try {
+      if (sessionStorage.getItem('logic-tts-mode-continue') === '1') {
+        sessionStorage.removeItem('logic-tts-mode-continue')
+        // tts.isSupported() が false の環境 (古いブラウザ) ではスキップ
+        if (tts.isSupported()) {
+          // 次フレームで開始 (state 初期化と被らせない)
+          setTimeout(() => {
+            setTtsCompletedReadable(false)
+            setTtsPaused(false)
+            setTtsModeActive(true)
+          }, 50)
+        }
+      }
+    } catch { /* sessionStorage が disabled な環境では何もしない */ }
+  }, [lessonId])
 
   const slides: LessonSlide[] = useMemo(() => {
     if (!lesson) return []
     return convertLessonToSlides(lesson)
   }, [lesson])
 
-  if (!lesson || slides.length === 0) {
-    return (
-      <div style={{ background: 'var(--bg-primary)', minHeight: '100vh', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Noto Sans JP', sans-serif" }}>
-        <div style={{ textAlign: 'center' }}>
-          <div>{t('stories.notFound')}</div>
-          <button onClick={onClose} style={{ marginTop: 20, padding: '10px 20px', borderRadius: 12, background: 'var(--brand)', color: '#FFFFFF', border: 'none', fontWeight: 700 }}>{t('stories.back')}</button>
-        </div>
-      </div>
-    )
-  }
-
-  const slide = slides[index]
+  // 早期 return を回避して Hooks 順序を保つため、空スライドにフォールバックスライドを 1 枚立てる。
+  // slides.length === 0 のときは下部で NotFound 表示に切り替える。
+  const slide: LessonSlide = useMemo(() => {
+    if (slides.length === 0) return { kind: 'hero', image: '', category: '', title: '', meta: '' }
+    const safeIndex = Math.min(index, slides.length - 1)
+    return slides[safeIndex]
+  }, [slides, index])
   const total = slides.length
   const isQuiz = slide.kind === 'quiz'
+
+  // 読み上げモード用: 読み上げ対象 (quiz / think / case 以外) のインデックス一覧
+  // think/case は対話的操作を要求するため自動進行スキップ対象に含める。
+  const readableIndices = useMemo(() => {
+    return slides
+      .map((s, i) => ({ s, i }))
+      .filter(({ s }) => s.kind !== 'quiz' && s.kind !== 'think' && s.kind !== 'case')
+      .map(({ i }) => i)
+  }, [slides])
+  // 最初の quiz スライド (なければ undefined)
+  const firstQuizIndex = useMemo(() => slides.findIndex(s => s.kind === 'quiz'), [slides])
 
   const goNext = () => {
     if (isGuarded()) return
@@ -209,6 +235,10 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
           generateFromLesson(lessonId, lesson.title, wrongs, explainSteps)
         }
       }
+      // 読み上げモードで最後まで走り抜けた場合、次レッスンでもモード継続するためのフラグ
+      if (ttsModeActive) {
+        try { sessionStorage.setItem('logic-tts-mode-continue', '1') } catch { /* */ }
+      }
       addXp('lesson')
       onComplete()
     }
@@ -220,6 +250,191 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
       setQuizAnswered(null)
       setMultiSelected([])  // 戻り時もmultiSelectedをリセット
     }
+  }
+
+  // ===== 読み上げモード ロジック =====
+
+  // 現在スライド以降の最も近い readable インデックスを探す
+  const findNextReadable = useCallback((fromIdx: number): number | null => {
+    for (const i of readableIndices) {
+      if (i > fromIdx) return i
+    }
+    return null
+  }, [readableIndices])
+
+  // 「次の readable スライド」へ進む。なければ読了状態にする。
+  const advanceReadable = useCallback(() => {
+    const next = findNextReadable(index)
+    if (next != null) {
+      setIndex(next)
+      setQuizAnswered(null)
+      setMultiSelected([])
+    } else {
+      // 読了。クイズへの導線を表示する。
+      setTtsCompletedReadable(true)
+    }
+  }, [findNextReadable, index])
+
+  // 読み上げモードを開始: 現スライドが readable なら現在地から、そうでなければ最初の readable から
+  const startTtsMode = useCallback(() => {
+    haptic.light()
+    setTtsCompletedReadable(false)
+    if (slide.kind === 'quiz' || slide.kind === 'think' || slide.kind === 'case') {
+      // 既に対話スライドにいる場合は最初の readable に戻す
+      if (readableIndices.length === 0) return
+      setIndex(readableIndices[0])
+      setQuizAnswered(null)
+      setMultiSelected([])
+    }
+    setTtsPaused(false)
+    setTtsModeActive(true)
+  }, [slide.kind, readableIndices])
+
+  // 読み上げモード終了 (制御パネル × ボタン / 「クイズを解く」)
+  const stopTtsMode = useCallback(async () => {
+    setTtsModeActive(false)
+    setTtsPaused(false)
+    setTtsCompletedReadable(false)
+    await tts.stop()
+  }, [])
+
+  // 「クイズを解く」: 読み上げモード OFF + 最初の quiz スライドへ jump
+  const handleStartQuiz = useCallback(async () => {
+    await tts.stop()
+    setTtsModeActive(false)
+    setTtsPaused(false)
+    setTtsCompletedReadable(false)
+    if (firstQuizIndex >= 0) {
+      setIndex(firstQuizIndex)
+      setQuizAnswered(null)
+      setMultiSelected([])
+    } else {
+      // クイズが無い → 最後のスライド (summary 等) へ
+      setIndex(total - 1)
+    }
+  }, [firstQuizIndex, total])
+
+  // 一時停止 / 再開トグル (制御パネルから呼ばれる)
+  const handleTogglePause = useCallback(async () => {
+    haptic.light()
+    if (ttsPaused) {
+      // Web は resume() で再開できるが、native は新規 speak が必要
+      if (tts.isNative()) {
+        // 現スライドの最初から再読み上げ
+        setTtsPaused(false)
+        const text = getSpeakableText(slide)
+        if (text) {
+          void tts.speak(text, {
+            lang: getLocale() === 'ja' ? 'ja-JP' : 'en-US',
+            rate: ttsRate,
+            voiceId: ttsVoiceId,
+            onEnd: () => advanceReadable(),
+          })
+        }
+      } else {
+        await tts.resume()
+        setTtsPaused(false)
+      }
+    } else {
+      await tts.pause()
+      setTtsPaused(true)
+    }
+  }, [ttsPaused, slide, ttsRate, ttsVoiceId, advanceReadable])
+
+  // 速度変更 (制御パネルから)
+  const handleChangeRate = useCallback((r: number) => {
+    setTtsRate(r)
+    tts.saveRate(r)
+    // 再生中なら現スライドを新しい速度で再起動 (Web は途中変更不可、native も同じ)
+    if (ttsModeActive && ttsPlaying && !ttsPaused) {
+      const text = getSpeakableText(slide)
+      if (text) {
+        void tts.speak(text, {
+          lang: getLocale() === 'ja' ? 'ja-JP' : 'en-US',
+          rate: r,
+          voiceId: ttsVoiceId,
+          onEnd: () => advanceReadable(),
+        })
+      }
+    }
+  }, [ttsModeActive, ttsPlaying, ttsPaused, slide, ttsVoiceId, advanceReadable])
+
+  // ボイス変更 (制御パネルから)
+  const handleChangeVoice = useCallback((id: string | null) => {
+    setTtsVoiceId(id)
+    tts.saveVoiceId(id)
+    if (ttsModeActive && ttsPlaying && !ttsPaused) {
+      const text = getSpeakableText(slide)
+      if (text) {
+        void tts.speak(text, {
+          lang: getLocale() === 'ja' ? 'ja-JP' : 'en-US',
+          rate: ttsRate,
+          voiceId: id,
+          onEnd: () => advanceReadable(),
+        })
+      }
+    }
+  }, [ttsModeActive, ttsPlaying, ttsPaused, slide, ttsRate, advanceReadable])
+
+  // 読み上げモード ON + スライド変化 → 現スライドを自動で読み上げる
+  // クイズ等で stop されているとき (ユーザーが手動で進めた場合) も含めて副作用で起動
+  // 注: react の deps から advanceReadable を外したいので、ref で最新参照を保持
+  const advanceReadableRef = useRef(advanceReadable)
+  useEffect(() => { advanceReadableRef.current = advanceReadable }, [advanceReadable])
+
+  useEffect(() => {
+    if (!ttsModeActive) return
+    if (ttsPaused) return
+    if (ttsCompletedReadable) return
+    if (slides.length === 0) return
+    // 現スライドが non-readable (quiz/think/case) なら自動進行スキップ
+    if (slide.kind === 'quiz' || slide.kind === 'think' || slide.kind === 'case') {
+      // 次の readable を即時探す。無ければ読了。setState を effect 内で直接呼ばないよう microtask で遅延。
+      queueMicrotask(() => {
+        const next = findNextReadable(index)
+        if (next != null) {
+          setIndex(next)
+          setQuizAnswered(null)
+          setMultiSelected([])
+        } else {
+          setTtsCompletedReadable(true)
+        }
+      })
+      return
+    }
+    const text = getSpeakableText(slide)
+    if (!text) {
+      // 読み上げるテキストが無い → 即次へ
+      queueMicrotask(() => advanceReadableRef.current())
+      return
+    }
+    void tts.speak(text, {
+      lang: getLocale() === 'ja' ? 'ja-JP' : 'en-US',
+      rate: ttsRate,
+      voiceId: ttsVoiceId,
+      onEnd: () => advanceReadableRef.current(),
+    })
+    // 次スライドへの自動遷移時 / unmount 時に stop されると onEnd は呼ばれないので、
+    // ここでは return クリーンアップを置かない (advanceReadable 自身が次の effect を発火)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ttsModeActive, ttsPaused, index, ttsRate, ttsVoiceId, slide.kind, slides.length])
+
+  // 通常モード (ttsModeActive=false) で旧来挙動: スライド遷移時に再生中なら止める
+  useEffect(() => {
+    if (ttsModeActive) return
+    if (tts.isPlaying()) void tts.stop()
+  }, [index, ttsModeActive])
+
+  // lesson / slides が無いケースの早期 return — 全 hooks 確保後に置く
+  if (!lesson || slides.length === 0) {
+    return (
+      <div style={{ background: 'var(--bg-primary)', minHeight: '100vh', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Noto Sans JP', sans-serif" }}>
+        <div style={{ textAlign: 'center' }}>
+          <div>{t('stories.notFound')}</div>
+          <button onClick={onClose} style={{ marginTop: 20, padding: '10px 20px', borderRadius: 12, background: 'var(--brand)', color: '#FFFFFF', border: 'none', fontWeight: 700 }}>{t('stories.back')}</button>
+        </div>
+      </div>
+    )
   }
 
   // ===== Swipe 対応 =====
@@ -299,122 +514,35 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
           >
             {saved ? <BookmarkFilledIcon width={18} height={18} /> : <BookmarkIcon width={18} height={18} />}
           </button>
-          {/* TTS: レッスン読み上げ (Web SpeechSynthesis / native Capacitor plugin) */}
-          {/* hero/summary 以外で表示。ボタン長押しで速度メニュー。スライド遷移時は自動停止 */}
+          {/* TTS 読み上げモード起動ボタン: ヘッドホン形アイコン */}
+          {/* タップでモード ON + 制御パネル展開 + 自動再生開始 */}
+          {/* hero/summary 以外で表示 (summary は完了画面で読み上げる意味が薄いため) */}
           {tts.isSupported() && slide.kind !== 'hero' && slide.kind !== 'summary' && (
-            <div style={{ position: 'relative', display: 'inline-flex' }}>
-              <button
-                type="button"
-                onPointerDown={(e) => {
-                  e.stopPropagation()
-                  if (ttsPlaying) {
-                    void tts.stop()
-                  } else {
-                    const text = getSpeakableText(slide)
-                    if (text) {
-                      haptic.light()
-                      void tts.speak(text, {
-                        lang: getLocale() === 'ja' ? 'ja-JP' : 'en-US',
-                        rate: ttsRate,
-                      })
-                    }
-                  }
-                }}
-                onContextMenu={(e) => { e.preventDefault(); setTtsRateMenuOpen(true) }}
-                aria-label={ttsPlaying ? t('tts.stopAria') : t('tts.playAria')}
-                aria-pressed={ttsPlaying}
-                title={ttsPlaying ? t('tts.stop') : t('tts.play')}
-                style={{
-                  width: 32, height: 32, borderRadius: '50%',
-                  background: ttsPlaying ? `color-mix(in srgb, var(--brand) 22%, transparent)` : 'var(--bg-card)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  cursor: 'pointer', WebkitTapHighlightColor: 'transparent',
-                  border: 'none', zIndex: 10, position: 'relative',
-                  flexShrink: 0, padding: 0,
-                  color: ttsPlaying ? 'var(--brand)' : 'var(--text-secondary)',
-                }}
-              >
-                {ttsPlaying ? (
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                    <rect x="6" y="5" width="4" height="14" rx="1" />
-                    <rect x="14" y="5" width="4" height="14" rx="1" />
-                  </svg>
-                ) : (
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                )}
-              </button>
-              <button
-                type="button"
-                onPointerDown={(e) => { e.stopPropagation(); setTtsRateMenuOpen(v => !v) }}
-                aria-label={t('tts.speedAria')}
-                title={t('tts.speed')}
-                style={{
-                  marginLeft: 4,
-                  height: 32, minWidth: 36, padding: '0 8px',
-                  borderRadius: 99,
-                  background: 'var(--bg-card)',
-                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                  cursor: 'pointer', WebkitTapHighlightColor: 'transparent',
-                  border: 'none', zIndex: 10, position: 'relative',
-                  flexShrink: 0,
-                  color: 'var(--text-secondary)',
-                  fontSize: 11, fontWeight: 700,
-                  fontFamily: "'Inter Tight', sans-serif",
-                }}
-              >
-                {ttsRate.toFixed(2).replace(/\.?0+$/, '')}x
-              </button>
-              {ttsRateMenuOpen && (
-                <>
-                  <button
-                    type="button"
-                    aria-label={t('common.close')}
-                    onPointerDown={(e) => { e.stopPropagation(); setTtsRateMenuOpen(false) }}
-                    style={{ position: 'fixed', inset: 0, background: 'transparent', border: 'none', zIndex: 14, padding: 0, cursor: 'default' }}
-                  />
-                  <div
-                    role="menu"
-                    aria-label={t('tts.speed')}
-                    style={{
-                      position: 'absolute', top: 'calc(100% + 6px)', right: 0,
-                      background: 'var(--bg-card)', borderRadius: 12,
-                      padding: 6, boxShadow: '0 10px 30px rgba(0,0,0,0.35)',
-                      zIndex: 15, minWidth: 96, display: 'flex', flexDirection: 'column', gap: 2,
-                    }}
-                  >
-                    {TTS_RATE_OPTIONS.map((r) => {
-                      const active = Math.abs(r - ttsRate) < 0.001
-                      return (
-                        <button
-                          key={r}
-                          type="button"
-                          role="menuitemradio"
-                          aria-checked={active}
-                          onPointerDown={(e) => {
-                            e.stopPropagation()
-                            setTtsRate(r)
-                            tts.saveRate(r)
-                            setTtsRateMenuOpen(false)
-                          }}
-                          style={{
-                            background: active ? `color-mix(in srgb, var(--brand) 18%, transparent)` : 'transparent',
-                            color: active ? 'var(--brand)' : 'var(--text-primary)',
-                            border: 'none', borderRadius: 8,
-                            padding: '8px 12px', fontSize: 13, fontWeight: active ? 700 : 500,
-                            textAlign: 'left', cursor: 'pointer',
-                            fontFamily: "'Inter Tight', sans-serif",
-                          }}
-                        >
-                          {r.toFixed(2).replace(/\.?0+$/, '')}x
-                        </button>
-                      )
-                    })}
-                  </div>
-                </>
-              )}
-            </div>
+            <button
+              type="button"
+              onPointerDown={(e) => {
+                e.stopPropagation()
+                if (ttsModeActive) {
+                  void stopTtsMode()
+                } else {
+                  startTtsMode()
+                }
+              }}
+              aria-label={ttsModeActive ? t('tts.closePanel') : t('tts.headphonesAria')}
+              aria-pressed={ttsModeActive}
+              title={ttsModeActive ? t('tts.closePanel') : t('tts.headphonesAria')}
+              style={{
+                width: 32, height: 32, borderRadius: '50%',
+                background: ttsModeActive ? `color-mix(in srgb, var(--brand) 22%, transparent)` : 'var(--bg-card)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                cursor: 'pointer', WebkitTapHighlightColor: 'transparent',
+                border: 'none', zIndex: 10, position: 'relative',
+                flexShrink: 0, padding: 0,
+                color: ttsModeActive ? 'var(--brand)' : 'var(--text-secondary)',
+              }}
+            >
+              <HeadphonesIcon width={16} height={16} />
+            </button>
           )}
           {/* SCRUM-215: 誤りを報告 — アイコンのみ円形ボタン、ヘッダー横配置で本文と被らない (2026-05-24) */}
           {/* summary 画面では非表示 (完了画面で報告 UX が不自然なため、従来挙動を維持) */}
@@ -535,7 +663,8 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
       </div>
 
       {/* タップゾーン: クイズ以外・左右端20%のみ（コンテンツエリアに干渉しない） */}
-      {!isQuiz && (
+      {/* 読み上げモード中はタップゾーン無効化（自動進行と競合するため） */}
+      {!isQuiz && !ttsModeActive && (
         <div style={{ position: 'absolute', inset: 0, display: 'flex', zIndex: 5, pointerEvents: 'none' }}>
           <button
             type="button"
@@ -554,7 +683,8 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
 
       {/* SCRUM-214: デスクトップ向け明示的な次へ/前へボタン（非クイズ・非最初のスライド） */}
       {/* 2026-05-22: タップしやすさ向上のためサイズアップ（HIG 推奨 56px+） */}
-      {!isQuiz && (
+      {/* 読み上げモード中は制御パネルに譲るため非表示 */}
+      {!isQuiz && !ttsModeActive && (
         <>
           {index > 0 && (
             <button
@@ -585,6 +715,90 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
           {t('stories.next')}
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
         </button>
+      )}
+
+      {/* 読み上げモード: 読了 CTA — 全 readable スライド読了後に「クイズを解く」を中央に表示 */}
+      {ttsModeActive && ttsCompletedReadable && (
+        <div
+          role="dialog"
+          aria-label={t('tts.completeTitle')}
+          onPointerDown={(e) => e.stopPropagation()}
+          onTouchStart={(e) => e.stopPropagation()}
+          onTouchEnd={(e) => e.stopPropagation()}
+          style={{
+            position: 'absolute',
+            left: '50%',
+            top: '50%',
+            transform: 'translate(-50%, -50%)',
+            zIndex: 24,
+            background: 'var(--bg-card)',
+            borderRadius: 20,
+            padding: '22px 22px 18px',
+            boxShadow: '0 10px 36px rgba(0,0,0,0.5)',
+            width: 'min(92%, 360px)',
+            textAlign: 'center',
+            color: 'var(--text-primary)',
+          }}
+        >
+          <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 52, height: 52, borderRadius: 16, background: `color-mix(in srgb, var(--brand) 14%, transparent)`, color: 'var(--brand)', marginBottom: 10 }}>
+            <CheckIcon width={26} height={26} />
+          </div>
+          <div style={{ fontSize: 16, fontWeight: 800, marginBottom: 6 }}>{t('tts.completeTitle')}</div>
+          <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 18, lineHeight: 1.6 }}>{t('tts.completeDesc')}</div>
+          <button
+            type="button"
+            onPointerDown={(e) => { e.stopPropagation(); haptic.light(); void handleStartQuiz() }}
+            style={{
+              width: '100%',
+              padding: '14px 24px',
+              borderRadius: 99,
+              background: 'var(--brand)',
+              color: '#FFFFFF',
+              border: 'none',
+              fontSize: 15,
+              fontWeight: 700,
+              cursor: 'pointer',
+              boxShadow: `0 4px 18px color-mix(in srgb, var(--brand) 36%, transparent)`,
+              WebkitTapHighlightColor: 'transparent',
+              marginBottom: 8,
+            }}
+          >
+            {firstQuizIndex >= 0 ? t('tts.startQuizButton') : t('stories.viewResult')}
+          </button>
+          <button
+            type="button"
+            onPointerDown={(e) => { e.stopPropagation(); void stopTtsMode() }}
+            style={{
+              width: '100%',
+              padding: '10px 16px',
+              borderRadius: 99,
+              background: 'transparent',
+              color: 'var(--text-secondary)',
+              border: 'none',
+              fontSize: 12,
+              fontWeight: 600,
+              cursor: 'pointer',
+              WebkitTapHighlightColor: 'transparent',
+            }}
+          >
+            {t('tts.closePanel')}
+          </button>
+        </div>
+      )}
+
+      {/* 読み上げモード制御パネル: モード ON 中 + 読了 CTA 未表示時に下部 fixed 表示 */}
+      {ttsModeActive && !ttsCompletedReadable && (
+        <TtsControlPanel
+          playing={ttsPlaying}
+          paused={ttsPaused}
+          rate={ttsRate}
+          voiceId={ttsVoiceId}
+          lang={getLocale() === 'ja' ? 'ja-JP' : 'en-US'}
+          onTogglePause={() => { void handleTogglePause() }}
+          onChangeRate={handleChangeRate}
+          onChangeVoice={handleChangeVoice}
+          onExit={() => { void stopTtsMode() }}
+        />
       )}
 
       {/* Tap hint — 初回レッスンのみ表示（右半分=次/左半分=前） */}
