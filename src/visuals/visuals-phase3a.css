@@ -301,16 +301,19 @@
   color: var(--rose);
 }
 
+/* warm accent (A 案 Phase 2): 中央 loop-label = 「これはループだ」と認識する構造の核
+ * 1 visual 内 1 箇所、外側 node の brand 枠 / + 矢印 brand は維持 */
 .vz-cld-loop-label {
   position: absolute;
   transform: translate(-50%, -50%);
-  background: var(--brand-cta-grad);
+  background: linear-gradient(135deg, var(--visual-warm-primary) 0%, var(--visual-warm-primary-deep) 100%);
   color: #fff;
   border-radius: 999px;
-  padding: 4px 10px;
-  font-size: 12px;
+  padding: 6px 12px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.06em;
+  box-shadow: 0 4px 12px rgba(196, 117, 58, 0.30);
 }
 
 /* ===== 4. Empathy Map ===== */

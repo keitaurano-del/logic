@@ -7,6 +7,12 @@ import './visuals-phase3c.css'
  * 構図: 3 ノード因果図
  *   気温（第三変数、上）→ アイス販売 / 溺死（下に並ぶ 2 ノード）
  *   アイス販売 ↔ 溺死 の間に「相関あり（×因果ではない）」の点線
+ *
+ * A 案 Phase 2 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - SVG 内 text font 10→13 / 11→14 / 8→12 に底上げ（viewBox 300x200 基準で px 相当に整合）
+ *   - inline hint 11→13, padding/lineHeight 拡大
+ *   - warm accent: 「真の原因」ラベル 2 本を terracotta-deep に格上げ
+ *     （疑似相関の罠を破る「真因の方向」= 動きの起点 = 1 visual 内 1 軸、× 因果 danger は維持）
  */
 
 export function CorrelationCausationVisual() {
@@ -33,30 +39,30 @@ export function CorrelationCausationVisual() {
             {/* 第三変数: 気温（中央上） */}
             <rect x="105" y="14" width="90" height="38" rx="10"
               fill="url(#cc-temp-grad)" />
-            <text x="150" y="32" fontSize="10" fill="#fff" textAnchor="middle" fontWeight="700">
+            <text x="150" y="32" fontSize="13" fill="#fff" textAnchor="middle" fontWeight="700">
               気温（真の原因）
             </text>
-            <text x="150" y="46" fontSize="8" fill="#fff" textAnchor="middle" opacity="0.85">
+            <text x="150" y="46" fontSize="11" fill="#fff" textAnchor="middle" opacity="0.85">
               第三変数
             </text>
 
             {/* アイス販売（左下） */}
             <rect x="14" y="130" width="100" height="44" rx="10"
               fill="var(--bg-card)" stroke="var(--brand)" strokeWidth="1.5" />
-            <text x="64" y="152" fontSize="11" fill="var(--text-primary)" textAnchor="middle" fontWeight="700">
+            <text x="64" y="152" fontSize="14" fill="var(--text-primary)" textAnchor="middle" fontWeight="700">
               アイス販売
             </text>
-            <text x="64" y="166" fontSize="8" fill="var(--text-secondary)" textAnchor="middle">
+            <text x="64" y="166" fontSize="11" fill="var(--text-secondary)" textAnchor="middle">
               夏に増える
             </text>
 
             {/* 溺死（右下） */}
             <rect x="186" y="130" width="100" height="44" rx="10"
               fill="var(--bg-card)" stroke="var(--brand)" strokeWidth="1.5" />
-            <text x="236" y="152" fontSize="11" fill="var(--text-primary)" textAnchor="middle" fontWeight="700">
+            <text x="236" y="152" fontSize="14" fill="var(--text-primary)" textAnchor="middle" fontWeight="700">
               溺死事故
             </text>
-            <text x="236" y="166" fontSize="8" fill="var(--text-secondary)" textAnchor="middle">
+            <text x="236" y="166" fontSize="11" fill="var(--text-secondary)" textAnchor="middle">
               夏に増える
             </text>
 
@@ -64,7 +70,8 @@ export function CorrelationCausationVisual() {
             <line x1="120" y1="56" x2="80" y2="124"
               stroke="var(--brand)" strokeWidth="2"
               markerEnd="url(#cc-arrow-blue)" />
-            <text x="86" y="92" fontSize="8" fill="var(--brand)" textAnchor="middle" fontWeight="700"
+            {/* warm accent: 「真の原因」ラベル = 疑似相関の罠を破る本質 = terracotta-deep */}
+            <text x="86" y="92" fontSize="12" fill="var(--visual-warm-primary-deep)" textAnchor="middle" fontWeight="700"
               transform="rotate(60 86 92)">
               真の原因
             </text>
@@ -73,7 +80,7 @@ export function CorrelationCausationVisual() {
             <line x1="180" y1="56" x2="220" y2="124"
               stroke="var(--brand)" strokeWidth="2"
               markerEnd="url(#cc-arrow-blue)" />
-            <text x="218" y="92" fontSize="8" fill="var(--brand)" textAnchor="middle" fontWeight="700"
+            <text x="218" y="92" fontSize="12" fill="var(--visual-warm-primary-deep)" textAnchor="middle" fontWeight="700"
               transform="rotate(-60 218 92)">
               真の原因
             </text>
@@ -81,7 +88,7 @@ export function CorrelationCausationVisual() {
             {/* アイス販売 ↔ 溺死 (疑似相関、赤点線) */}
             <line x1="114" y1="152" x2="186" y2="152"
               stroke="var(--danger)" strokeWidth="2" strokeDasharray="4 3" />
-            <text x="150" y="190" fontSize="8" fill="var(--danger)" textAnchor="middle" fontWeight="700">
+            <text x="150" y="190" fontSize="11" fill="var(--danger)" textAnchor="middle" fontWeight="700">
               ✗ 因果ではない（疑似相関）
             </text>
           </svg>
@@ -100,14 +107,15 @@ export function CorrelationCausationVisual() {
       </div>
 
       <div style={{
-        marginTop: 12,
-        padding: '8px 10px',
+        marginTop: 14,
+        padding: '10px 12px',
         background: 'var(--brand-soft)',
         borderRadius: 8,
-        fontSize: 11,
+        fontSize: 13,
         fontWeight: 600,
         color: 'var(--brand)',
         textAlign: 'center',
+        lineHeight: 1.45,
       }}>
         💡 「アイスを売ったら溺死が増えた」ではなく、両方が暑さによる結果
       </div>

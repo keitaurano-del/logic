@@ -25,6 +25,12 @@ type Props = {
  * トヨタ古典事例 — 「機械が止まった」5回 Why
  * lesson-341 step.visual='WhyWhyToyotaDiagram'
  *
+ * A 案 Phase 2 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - inline hint 11→13, padding/lineHeight 拡大、warm accent としても兼用
+ *   - CSS 側 q / arrow / a は既に新基準内 (13/14/13)
+ *   - warm accent: hint ボックスを terracotta soft 背景 + deep 文字に
+ *     （root 行の brand-cta は維持 = 1 visual 内 1 箇所 = §2.4）
+ *
  * 6 段階で開示（質問 1 つ = 1 ステップ）
  */
 export function WhyWhyToyotaVisual({ revealMode = 'interactive' }: Props = {}) {
@@ -53,14 +59,15 @@ export function WhyWhyToyotaVisual({ revealMode = 'interactive' }: Props = {}) {
       {isLast && (
         <div
           style={{
-            marginTop: 12,
-            padding: '8px 10px',
-            background: 'var(--brand-soft)',
+            marginTop: 14,
+            padding: '10px 12px',
+            background: 'var(--visual-warm-primary-soft)',
             borderRadius: 8,
-            fontSize: 11,
+            fontSize: 13,
             fontWeight: 600,
-            color: 'var(--brand)',
+            color: 'var(--visual-warm-primary-deep)',
             textAlign: 'center',
+            lineHeight: 1.45,
           }}
         >
           💡 真の対策は「ストレーナを取り付ける」（ヒューズ交換では再発する）

@@ -25,6 +25,12 @@ type Props = {
  * なぜを5回 — 各層で何に届くか
  * lesson-340 step.visual='WhyWhyChainDiagram'
  *
+ * A 案 Phase 2 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - inline hint 11→13, padding/lineHeight 拡大
+ *   - vz-ww-chain-tag 11→12, label 14 維持
+ *   - warm accent: 最深層 deep の最後 (Why 5 = 打ち手が打てる構造) の左ボーダーを terracotta
+ *     （他 deep 行は brand-hover、最後の 1 行だけ暖色 = 1 visual 内 1 箇所）
+ *
  * 5 段階で開示:
  *   Step 1..5 — Why 1, 2, 3, 4, 5 を 1 段ずつ追加
  */
@@ -57,14 +63,15 @@ export function WhyWhyChainVisual({ revealMode = 'interactive' }: Props = {}) {
       {isLast && (
         <div
           style={{
-            marginTop: 12,
-            padding: '8px 10px',
+            marginTop: 14,
+            padding: '10px 12px',
             background: 'var(--brand-soft)',
             borderRadius: 8,
-            fontSize: 11,
+            fontSize: 13,
             fontWeight: 600,
             color: 'var(--brand)',
             textAlign: 'center',
+            lineHeight: 1.45,
           }}
         >
           💡 3回前後で「直接原因」、5回前後で「打ち手が打てる構造」に届く

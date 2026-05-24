@@ -11,6 +11,12 @@ import { useStepReveal } from './hooks/useStepReveal'
  * interactive モード: ノードを表示した状態で、矢印を 1 本ずつ追加する。
  *   Step 1..N — 矢印を 1 本ずつ追加（最後は中央サイクル記号 ↻ / ⇌ を点灯）
  * static モード: 最初から全矢印 + ループバッジ。
+ *
+ * A 案 Phase 2 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - inline hint 11→13, padding/lineHeight 拡大、warm accent としても兼用
+ *   - SVG ノード text fontSize 10→12, polarity label 11→12 に底上げ
+ *   - warm accent: hint ボックスを terracotta soft 背景 + deep 文字に
+ *     （R/B のフレームワーク意味色 (success/warning) + polarity 色は維持必須 = §2.3 例外条項）
  */
 
 export type LoopNode = {
@@ -209,7 +215,7 @@ export function FeedbackLoopVisual(props: FeedbackLoopProps = {}) {
                 x={a.labelX}
                 y={a.labelY + 4}
                 textAnchor="middle"
-                fontSize="11"
+                fontSize="12"
                 fontWeight="700"
                 fill={a.color}
               >
@@ -233,7 +239,7 @@ export function FeedbackLoopVisual(props: FeedbackLoopProps = {}) {
                 x={p.x}
                 y={p.y + 4}
                 textAnchor="middle"
-                fontSize="10"
+                fontSize="12"
                 fontWeight="700"
                 fill="var(--text-primary)"
               >
@@ -268,14 +274,15 @@ export function FeedbackLoopVisual(props: FeedbackLoopProps = {}) {
       {hint ? (
         <div
           style={{
-            marginTop: 12,
-            padding: '8px 10px',
-            background: 'var(--brand-soft)',
+            marginTop: 14,
+            padding: '10px 12px',
+            background: 'var(--visual-warm-primary-soft)',
             borderRadius: 8,
-            fontSize: 11,
+            fontSize: 13,
             fontWeight: 600,
-            color: 'var(--brand)',
+            color: 'var(--visual-warm-primary-deep)',
             textAlign: 'center',
+            lineHeight: 1.45,
           }}
         >
           💡 {hint}

@@ -4,6 +4,12 @@
  *
  * props で nodes と edges を受け取る。座標は 0–100 の % 系。
  * default は SNS 投稿 → 反応 → モチベ → 投稿頻度 の正のフィードバックループ
+ *
+ * A 案 Phase 2 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - inline hint 11→13, padding/lineHeight 拡大
+ *   - vz-cld-loop-label 12→13, padding 拡大
+ *   - warm accent: 中央 loop-label (ループの認識バッジ = 構造名宣言) を terracotta gradient
+ *     （ループの本体 = 構造の核 = 1 visual 内 1 箇所、+ 矢印は brand のまま）
  */
 
 export type CldNode = {
@@ -165,14 +171,15 @@ export function CausalLoopDiagramVisual({
       </div>
 
       <div style={{
-        marginTop: 12,
-        padding: '8px 10px',
+        marginTop: 14,
+        padding: '10px 12px',
         background: 'var(--brand-soft)',
         borderRadius: 8,
-        fontSize: 11,
+        fontSize: 13,
         fontWeight: 600,
         color: 'var(--brand)',
         textAlign: 'center',
+        lineHeight: 1.45,
       }}>
         {hint}
       </div>
