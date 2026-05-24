@@ -11,7 +11,8 @@ import { allLessons } from '../lessonData'
 import { addXp } from '../stats'
 import { LessonThumbnail } from '../components/LessonThumbnail'
 import { API_BASE } from './apiBase'
-import { t } from '../i18n'
+import { t, getLocale } from '../i18n'
+import * as tts from '../ttsService'
 import { tutorial } from '../tutorial/tutorialStorage'
 import { addWrongAnswers } from '../wrongAnswerStore'
 import { generateFromLesson } from '../flashcardData'
@@ -32,6 +33,59 @@ type WrongAnswerCapture = {
   explanation: string
   options: { label: string; correct: boolean }[]
 }
+
+// ── TTS helpers ──────────────────────────────────────────────────
+// HTML タグ・連続空白を剥がして読み上げ向けのプレーンテキストに整える。
+function stripHtml(s: string): string {
+  return s
+    .replace(/<br\s*\/?>/gi, '。')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+/** スライドから読み上げ用のテキストを抽出。空文字なら読み上げスキップ。 */
+function getSpeakableText(slide: LessonSlide): string {
+  switch (slide.kind) {
+    case 'hero':
+      return [slide.category, slide.title, slide.meta].filter(Boolean).join('。 ')
+    case 'intro':
+    case 'concept': {
+      const example = slide.kind === 'concept' && slide.example ? slide.example : ''
+      return [slide.title, stripHtml(slide.body), example].filter(Boolean).join('。 ')
+    }
+    case 'diagram':
+      return [slide.title, slide.nodes.map(n => n.label).join('。 ')].filter(Boolean).join('。 ')
+    case 'compare':
+      return [
+        slide.title,
+        `${slide.left.label}: ${slide.left.body}`,
+        `${slide.right.label}: ${slide.right.body}`,
+      ].join('。 ')
+    case 'quote':
+      return `${slide.quote} ${slide.author}`
+    case 'quiz':
+      return [slide.question, ...slide.choices].join('。 ')
+    case 'summary':
+      return [slide.title, ...slide.points].join('。 ')
+    case 'think':
+      return [slide.question, slide.hint ?? ''].filter(Boolean).join('。 ')
+    case 'case': {
+      const phase = slide.phases[0]
+      return [slide.title, slide.situation, phase?.question ?? ''].filter(Boolean).join('。 ')
+    }
+    case 'visual':
+      return [slide.title ?? '', slide.caption ?? ''].filter(Boolean).join('。 ')
+    default:
+      return ''
+  }
+}
+
+const TTS_RATE_OPTIONS = [0.75, 1.0, 1.25, 1.5, 2.0]
 
 interface LessonStoriesScreenProps {
   lessonId: number
@@ -77,6 +131,20 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
   const [, bumpSaved] = useState(0)
   const bumpPageSaved = () => bumpSaved((v) => v + 1)
   const pageSaved = isSaved('lesson-step', `${lessonId}:${index}`)
+
+  // TTS 読み上げ状態
+  const [ttsPlaying, setTtsPlaying] = useState<boolean>(() => tts.isPlaying())
+  const [ttsRateMenuOpen, setTtsRateMenuOpen] = useState(false)
+  const [ttsRate, setTtsRate] = useState<number>(() => tts.loadRate())
+  useEffect(() => tts.subscribe(setTtsPlaying), [])
+  // 画面離脱 / スライド遷移 / unmount 時は必ず停止して取り残しを防ぐ
+  useEffect(() => {
+    return () => { void tts.stop() }
+  }, [])
+  useEffect(() => {
+    // スライドが切り替わったら自動で停止（ユーザー再タップで継続）
+    if (tts.isPlaying()) void tts.stop()
+  }, [index])
 
   const slides: LessonSlide[] = useMemo(() => {
     if (!lesson) return []
@@ -231,6 +299,123 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
           >
             {saved ? <BookmarkFilledIcon width={18} height={18} /> : <BookmarkIcon width={18} height={18} />}
           </button>
+          {/* TTS: レッスン読み上げ (Web SpeechSynthesis / native Capacitor plugin) */}
+          {/* hero/summary 以外で表示。ボタン長押しで速度メニュー。スライド遷移時は自動停止 */}
+          {tts.isSupported() && slide.kind !== 'hero' && slide.kind !== 'summary' && (
+            <div style={{ position: 'relative', display: 'inline-flex' }}>
+              <button
+                type="button"
+                onPointerDown={(e) => {
+                  e.stopPropagation()
+                  if (ttsPlaying) {
+                    void tts.stop()
+                  } else {
+                    const text = getSpeakableText(slide)
+                    if (text) {
+                      haptic.light()
+                      void tts.speak(text, {
+                        lang: getLocale() === 'ja' ? 'ja-JP' : 'en-US',
+                        rate: ttsRate,
+                      })
+                    }
+                  }
+                }}
+                onContextMenu={(e) => { e.preventDefault(); setTtsRateMenuOpen(true) }}
+                aria-label={ttsPlaying ? t('tts.stopAria') : t('tts.playAria')}
+                aria-pressed={ttsPlaying}
+                title={ttsPlaying ? t('tts.stop') : t('tts.play')}
+                style={{
+                  width: 32, height: 32, borderRadius: '50%',
+                  background: ttsPlaying ? `color-mix(in srgb, var(--brand) 22%, transparent)` : 'var(--bg-card)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  cursor: 'pointer', WebkitTapHighlightColor: 'transparent',
+                  border: 'none', zIndex: 10, position: 'relative',
+                  flexShrink: 0, padding: 0,
+                  color: ttsPlaying ? 'var(--brand)' : 'var(--text-secondary)',
+                }}
+              >
+                {ttsPlaying ? (
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <rect x="6" y="5" width="4" height="14" rx="1" />
+                    <rect x="14" y="5" width="4" height="14" rx="1" />
+                  </svg>
+                ) : (
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                )}
+              </button>
+              <button
+                type="button"
+                onPointerDown={(e) => { e.stopPropagation(); setTtsRateMenuOpen(v => !v) }}
+                aria-label={t('tts.speedAria')}
+                title={t('tts.speed')}
+                style={{
+                  marginLeft: 4,
+                  height: 32, minWidth: 36, padding: '0 8px',
+                  borderRadius: 99,
+                  background: 'var(--bg-card)',
+                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                  cursor: 'pointer', WebkitTapHighlightColor: 'transparent',
+                  border: 'none', zIndex: 10, position: 'relative',
+                  flexShrink: 0,
+                  color: 'var(--text-secondary)',
+                  fontSize: 11, fontWeight: 700,
+                  fontFamily: "'Inter Tight', sans-serif",
+                }}
+              >
+                {ttsRate.toFixed(2).replace(/\.?0+$/, '')}x
+              </button>
+              {ttsRateMenuOpen && (
+                <>
+                  <button
+                    type="button"
+                    aria-label={t('common.close')}
+                    onPointerDown={(e) => { e.stopPropagation(); setTtsRateMenuOpen(false) }}
+                    style={{ position: 'fixed', inset: 0, background: 'transparent', border: 'none', zIndex: 14, padding: 0, cursor: 'default' }}
+                  />
+                  <div
+                    role="menu"
+                    aria-label={t('tts.speed')}
+                    style={{
+                      position: 'absolute', top: 'calc(100% + 6px)', right: 0,
+                      background: 'var(--bg-card)', borderRadius: 12,
+                      padding: 6, boxShadow: '0 10px 30px rgba(0,0,0,0.35)',
+                      zIndex: 15, minWidth: 96, display: 'flex', flexDirection: 'column', gap: 2,
+                    }}
+                  >
+                    {TTS_RATE_OPTIONS.map((r) => {
+                      const active = Math.abs(r - ttsRate) < 0.001
+                      return (
+                        <button
+                          key={r}
+                          type="button"
+                          role="menuitemradio"
+                          aria-checked={active}
+                          onPointerDown={(e) => {
+                            e.stopPropagation()
+                            setTtsRate(r)
+                            tts.saveRate(r)
+                            setTtsRateMenuOpen(false)
+                          }}
+                          style={{
+                            background: active ? `color-mix(in srgb, var(--brand) 18%, transparent)` : 'transparent',
+                            color: active ? 'var(--brand)' : 'var(--text-primary)',
+                            border: 'none', borderRadius: 8,
+                            padding: '8px 12px', fontSize: 13, fontWeight: active ? 700 : 500,
+                            textAlign: 'left', cursor: 'pointer',
+                            fontFamily: "'Inter Tight', sans-serif",
+                          }}
+                        >
+                          {r.toFixed(2).replace(/\.?0+$/, '')}x
+                        </button>
+                      )
+                    })}
+                  </div>
+                </>
+              )}
+            </div>
+          )}
           {/* SCRUM-215: 誤りを報告 — アイコンのみ円形ボタン、ヘッダー横配置で本文と被らない (2026-05-24) */}
           {/* summary 画面では非表示 (完了画面で報告 UX が不自然なため、従来挙動を維持) */}
           {slide.kind !== 'summary' && (
