@@ -20,7 +20,7 @@ import {
   type TitleKey,
 } from '../screens/homeHelpers'
 import { t } from '../i18n'
-import { XIcon } from '../icons'
+import { LockIcon, XIcon } from '../icons'
 import './levelup.css'
 
 interface TitleBadgeSheetProps {
@@ -354,31 +354,62 @@ function TierCell({ tierKey, min, max, unlocked, isCurrent }: {
   unlocked: boolean
   isCurrent: boolean
 }) {
+  // locked 表現を明確にするため、未獲得セルは
+  //   - cell 自体の opacity を 0.55 に
+  //   - 画像をモノクロ + 大幅減光 + 透過
+  //   - 鍵アイコン overlay を右上に
+  //   - 背景に薄い斜線パターン
+  // の 4 段重ねで「明らかに未到達」と分かるようにする
   return (
     <div
+      aria-label={unlocked ? undefined : t('profile.titleSheet.locked')}
       style={{
-        background: isCurrent ? 'color-mix(in srgb, var(--brand) 12%, var(--bg-card))' : 'var(--bg-card)',
-        border: `1.5px solid ${isCurrent ? 'var(--brand)' : 'var(--border)'}`,
+        position: 'relative',
+        background: isCurrent
+          ? 'color-mix(in srgb, var(--brand) 12%, var(--bg-card))'
+          : unlocked
+            ? 'var(--bg-card)'
+            : `repeating-linear-gradient(135deg, var(--bg-card) 0 6px, color-mix(in srgb, var(--text-muted) 8%, var(--bg-card)) 6px 10px)`,
+        border: `1.5px solid ${isCurrent ? 'var(--brand)' : unlocked ? 'var(--border)' : 'color-mix(in srgb, var(--border) 60%, transparent)'}`,
         borderRadius: 12,
         padding: '10px 6px',
         display: 'flex', flexDirection: 'column', alignItems: 'center',
         textAlign: 'center',
-        opacity: unlocked ? 1 : 0.4,
+        opacity: unlocked ? 1 : 0.55,
         minWidth: 0, // grid item 自身も縮小可能にして固有内容で膨張しないようにする
         boxSizing: 'border-box',
         overflow: 'hidden',
       }}
     >
-      <img
-        src={getBadgeImagePath(tierKey)}
-        alt={t(getTitleI18nKey(tierKey))}
-        style={{
-          width: 56, height: 56, objectFit: 'contain',
-          marginBottom: 6,
-          // locked はより強めにグレーアウト＋減光して未達状態が明確になるように
-          filter: unlocked ? 'none' : 'grayscale(1) brightness(0.7) contrast(0.85)',
-        }}
-      />
+      <div style={{ position: 'relative', width: 56, height: 56, marginBottom: 6 }}>
+        <img
+          src={getBadgeImagePath(tierKey)}
+          alt={t(getTitleI18nKey(tierKey))}
+          style={{
+            width: 56, height: 56, objectFit: 'contain',
+            // locked は強くグレー化 + 大きく減光 + 半透過で「未獲得」が一目瞭然になるよう調整
+            filter: unlocked ? 'none' : 'grayscale(1) brightness(0.55) contrast(0.75)',
+            opacity: unlocked ? 1 : 0.5,
+          }}
+        />
+        {!unlocked && (
+          <div
+            aria-hidden="true"
+            style={{
+              position: 'absolute',
+              top: -2, right: -2,
+              width: 20, height: 20,
+              borderRadius: '50%',
+              background: 'var(--bg-primary)',
+              border: '1.5px solid var(--border)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: 'var(--text-muted)',
+            }}
+          >
+            <LockIcon width={11} height={11} />
+          </div>
+        )}
+      </div>
       <div style={{
         fontSize: 11, fontWeight: 700,
         color: unlocked ? 'var(--text-primary)' : 'var(--text-muted)',
