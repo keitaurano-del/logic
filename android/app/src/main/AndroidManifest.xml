@@ -50,4 +50,15 @@
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
+
+    <!-- Local Notifications (Capacitor LocalNotifications plugin)
+         - POST_NOTIFICATIONS: Android 13+ で通知表示に必須 (ランタイム要求)
+         - SCHEDULE_EXACT_ALARM: Android 12+ で setExactAndAllowWhileIdle を使うために宣言。
+           ユーザーは設定画面で許可することで Doze / App Standby 下でも遅延なく発火する。
+           未許可時は inexact フォールバックで遅延発火される (アプリは動作継続)。
+         - RECEIVE_BOOT_COMPLETED: 端末再起動後にスケジュール済みリマインダーを復元する
+           (LocalNotifications プラグインの BootReceiver が利用) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 </manifest>
