@@ -4,10 +4,11 @@ import { startCheckout, PLAN_PRICES } from '../subscription'
 import { t, localizedHtmlPath } from '../i18n'
 import {
   saveUserProfile,
-  AGE_LABELS,
   GENDER_LABELS,
   OCCUPATION_LABELS,
-  type AgeGroup,
+  isValidBirthYear,
+  MIN_BIRTH_YEAR,
+  getCurrentYear,
   type Gender,
   type Occupation,
 } from '../userProfile'
@@ -56,7 +57,6 @@ function OBCell({ value }: { value: string | boolean }) {
 // ── 属性質問ステップ ─────────────────────────────────────────
 const ACCENT = 'var(--md-sys-color-primary)'
 
-const AGE_ORDER: AgeGroup[] = ['teens', '20s', '30s', '40s', '50plus']
 const GENDER_ORDER: Gender[] = ['male', 'female', 'other', 'na']
 const OCCUPATION_ORDER: Occupation[] = [
   'executive',
@@ -70,8 +70,8 @@ const OCCUPATION_ORDER: Occupation[] = [
   'other',
 ]
 
-type AttrStep = 'age' | 'gender' | 'occupation'
-const STEP_ORDER: AttrStep[] = ['age', 'gender', 'occupation']
+type AttrStep = 'birthYear' | 'gender' | 'occupation'
+const STEP_ORDER: AttrStep[] = ['birthYear', 'gender', 'occupation']
 
 function AttrOption<T extends string>({
   value,
@@ -99,21 +99,22 @@ function AttrOption<T extends string>({
 }
 
 function OnboardingAttributeView({ onNext }: { onNext: () => void; onBackToSlides: () => void }) {
-  const [step, setStep] = React.useState<AttrStep>('age')
-  const [age, setAge] = React.useState<AgeGroup | ''>('')
+  const [step, setStep] = React.useState<AttrStep>('birthYear')
+  const [birthYear, setBirthYear] = React.useState<number | ''>('')
+  const [birthYearInput, setBirthYearInput] = React.useState<string>('')
+  const [birthYearError, setBirthYearError] = React.useState<string>('')
   const [gender, setGender] = React.useState<Gender | ''>('')
   const [occupation, setOccupation] = React.useState<Occupation | ''>('')
 
   const stepIdx = STEP_ORDER.indexOf(step)
   const isFirstStep = stepIdx === 0
+  const currentYear = getCurrentYear()
 
-  // タップで即次の質問へ自動遷移する
-  const handleSelect = <T extends string>(setter: (v: T) => void, nextAge: AgeGroup | '', nextGender: Gender | '', nextOccupation: Occupation | '') => (v: T) => {
-    setter(v)
+  const advanceOrFinish = (nextBirthYear: number | '', nextGender: Gender | '', nextOccupation: Occupation | '') => {
     const isLast = stepIdx === STEP_ORDER.length - 1
     if (isLast) {
       saveUserProfile({
-        age: nextAge || undefined,
+        birthYear: typeof nextBirthYear === 'number' ? nextBirthYear : undefined,
         gender: nextGender || undefined,
         occupation: nextOccupation || undefined,
         completedAt: new Date().toISOString(),
@@ -124,23 +125,40 @@ function OnboardingAttributeView({ onNext }: { onNext: () => void; onBackToSlide
     setStep(STEP_ORDER[stepIdx + 1])
   }
 
-  const onSelectAge = (v: AgeGroup) => handleSelect<AgeGroup>(setAge, v, gender, occupation)(v)
-  const onSelectGender = (v: Gender) => handleSelect<Gender>(setGender, age, v, occupation)(v)
-  const onSelectOccupation = (v: Occupation) => handleSelect<Occupation>(setOccupation, age, gender, v)(v)
+  const onSubmitBirthYear = () => {
+    const parsed = Number(birthYearInput.trim())
+    if (!isValidBirthYear(parsed)) {
+      setBirthYearError(t('onboarding.attrBirthYearError', { min: MIN_BIRTH_YEAR, max: currentYear }))
+      return
+    }
+    setBirthYearError('')
+    setBirthYear(parsed)
+    // 直接 saveUserProfile はこの段階では行わず、最終 step で一括保存する
+    advanceOrFinish(parsed, gender, occupation)
+  }
+
+  const onSelectGender = (v: Gender) => {
+    setGender(v)
+    advanceOrFinish(birthYear, v, occupation)
+  }
+  const onSelectOccupation = (v: Occupation) => {
+    setOccupation(v)
+    advanceOrFinish(birthYear, gender, v)
+  }
 
   const goBack = () => {
     if (stepIdx === 0) return
     setStep(STEP_ORDER[stepIdx - 1])
   }
 
-  const heading = step === 'age'
-    ? t('onboarding.attrAgeHeading')
+  const heading = step === 'birthYear'
+    ? t('onboarding.attrBirthYearHeading')
     : step === 'gender'
       ? t('onboarding.attrGenderHeading')
       : t('onboarding.attrOccupationHeading')
 
-  const sub = step === 'age'
-    ? t('onboarding.attrAgeSub')
+  const sub = step === 'birthYear'
+    ? t('onboarding.attrBirthYearSub')
     : step === 'gender'
       ? t('onboarding.attrGenderSub')
       : t('onboarding.attrOccupationSub')
@@ -195,9 +213,54 @@ function OnboardingAttributeView({ onNext }: { onNext: () => void; onBackToSlide
         </p>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {step === 'age' && AGE_ORDER.map(v => (
-            <AttrOption key={v} value={v} label={AGE_LABELS[v]} selected={age === v} onSelect={onSelectAge} />
-          ))}
+          {step === 'birthYear' && (
+            <div>
+              <input
+                type="number"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                aria-label={t('onboarding.attrBirthYearHeading')}
+                placeholder={t('onboarding.attrBirthYearPlaceholder')}
+                value={birthYearInput}
+                onChange={(e) => {
+                  setBirthYearInput(e.target.value)
+                  if (birthYearError) setBirthYearError('')
+                }}
+                onKeyDown={(e) => { if (e.key === 'Enter') onSubmitBirthYear() }}
+                min={MIN_BIRTH_YEAR}
+                max={currentYear}
+                style={{
+                  width: '100%', padding: '16px 18px', borderRadius: 14,
+                  border: `2px solid ${birthYearError ? 'var(--md-sys-color-error)' : 'rgba(255,255,255,0.18)'}`,
+                  background: 'rgba(255,255,255,0.06)', color: '#fff',
+                  fontSize: 18, fontFamily: "'Noto Sans JP', sans-serif",
+                  outline: 'none', boxSizing: 'border-box', textAlign: 'center',
+                  letterSpacing: '0.05em',
+                }}
+              />
+              {birthYearError && (
+                <div role="alert" style={{ fontSize: 13, color: 'var(--md-sys-color-error)', marginTop: 8, lineHeight: 1.6 }}>
+                  {birthYearError}
+                </div>
+              )}
+              <button
+                type="button"
+                onClick={onSubmitBirthYear}
+                disabled={!birthYearInput.trim()}
+                style={{
+                  width: '100%', marginTop: 16, padding: '16px',
+                  borderRadius: 14, border: 'none',
+                  background: birthYearInput.trim() ? ACCENT : 'rgba(255,255,255,0.1)',
+                  color: birthYearInput.trim() ? '#fff' : 'rgba(255,255,255,0.4)',
+                  fontSize: 15, fontWeight: 800,
+                  cursor: birthYearInput.trim() ? 'pointer' : 'default',
+                  minHeight: 44,
+                }}
+              >
+                {t('onboarding.attrNext')}
+              </button>
+            </div>
+          )}
           {step === 'gender' && GENDER_ORDER.map(v => (
             <AttrOption key={v} value={v} label={GENDER_LABELS[v]} selected={gender === v} onSelect={onSelectGender} />
           ))}

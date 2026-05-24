@@ -173,6 +173,110 @@ export async function pullDisplayName(): Promise<string | null> {
   }
 }
 
+// ---- 職業 (profiles.occupation) 同期 ----
+
+/**
+ * 職業を Supabase profiles へ upsert する。
+ * - 未ログインや Supabase 未設定時は no-op
+ * - migration 030 未適用の環境では列が無いため失敗するが UX を止めない
+ * - 値は localStorage の Occupation enum と同じ string をそのまま保存
+ */
+export async function pushOccupation(occupation: string | null): Promise<void> {
+  if (!isReady()) return
+  try {
+    const { error } = await supabase!.from('profiles').upsert({
+      id: _currentUserId,
+      occupation: occupation ?? null,
+      updated_at: new Date().toISOString(),
+    }, { onConflict: 'id' })
+    if (error) {
+      // migration 030 未適用環境の "column occupation does not exist" は無視
+      if (!/occupation/i.test(error.message)) {
+        console.warn('[sync] pushOccupation failed:', error.message)
+      }
+    }
+  } catch (e) {
+    console.warn('[sync] pushOccupation failed:', e)
+  }
+}
+
+export async function pullOccupation(): Promise<string | null> {
+  if (!isReady()) return null
+  try {
+    const { data, error } = await supabase!
+      .from('profiles')
+      .select('occupation')
+      .eq('id', _currentUserId)
+      .maybeSingle()
+    if (error || !data) return null
+    return (data.occupation as string | null) ?? null
+  } catch {
+    return null
+  }
+}
+
+// ---- 汎用 profile フィールド (birth_year / goal / nickname) 同期 ----
+
+export interface ProfileFieldPatch {
+  birth_year?: number | null
+  goal?: string | null
+  nickname?: string | null
+}
+
+/**
+ * プロフィール属性 (birth_year / goal / nickname) を Supabase profiles へ upsert する。
+ * - 未ログインや Supabase 未設定時は no-op
+ * - undefined のフィールドは送信しない (明示的に null を渡すとクリアされる)
+ * - migration 030 未適用環境では birth_year 列が無く失敗するが UX を止めない
+ */
+export async function pushProfileFields(patch: ProfileFieldPatch): Promise<void> {
+  if (!isReady()) return
+  const payload: Record<string, unknown> = {
+    id: _currentUserId,
+    updated_at: new Date().toISOString(),
+  }
+  let hasAny = false
+  if (patch.birth_year !== undefined) { payload.birth_year = patch.birth_year; hasAny = true }
+  if (patch.goal !== undefined) { payload.goal = patch.goal; hasAny = true }
+  if (patch.nickname !== undefined) { payload.nickname = patch.nickname; hasAny = true }
+  if (!hasAny) return
+  try {
+    const { error } = await supabase!.from('profiles').upsert(payload, { onConflict: 'id' })
+    if (error) {
+      if (!/birth_year|goal|nickname/i.test(error.message)) {
+        console.warn('[sync] pushProfileFields failed:', error.message)
+      }
+    }
+  } catch (e) {
+    console.warn('[sync] pushProfileFields failed:', e)
+  }
+}
+
+export async function pullProfileFields(): Promise<{
+  birthYear: number | null
+  goal: string | null
+  nickname: string | null
+  occupation: string | null
+} | null> {
+  if (!isReady()) return null
+  try {
+    const { data, error } = await supabase!
+      .from('profiles')
+      .select('birth_year, goal, nickname, occupation')
+      .eq('id', _currentUserId)
+      .maybeSingle()
+    if (error || !data) return null
+    return {
+      birthYear: (data.birth_year as number | null) ?? null,
+      goal: (data.goal as string | null) ?? null,
+      nickname: (data.nickname as string | null) ?? null,
+      occupation: (data.occupation as string | null) ?? null,
+    }
+  } catch {
+    return null
+  }
+}
+
 // ---- Placement 同期 ----
 
 export async function pushPlacement(p: LocalPlacement): Promise<void> {
