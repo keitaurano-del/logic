@@ -843,6 +843,15 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
                   aria-label={t('dailyFermi.answerAria')}
                   value={answer}
                   onChange={(e) => { setAnswer(e.target.value); if (guideActive) dismissGuide() }}
+                  onFocus={() => {
+                    // モバイルでソフトキーボード表示時に問題文が画面外に押し出されるのを防ぐ。
+                    // キーボードアニメーション完了後に問題カードを画面トップに戻すと、
+                    // textarea もキーボード上に visible のまま、問題も同時に見える状態になる。
+                    window.setTimeout(() => {
+                      const q = document.getElementById('dailyFermi-question')
+                      if (q) q.scrollIntoView({ block: 'start', behavior: 'smooth' })
+                    }, 320)
+                  }}
                   placeholder={t('fermi.placeholder')}
                   style={{
                     width: '100%',

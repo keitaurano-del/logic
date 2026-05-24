@@ -185,8 +185,10 @@ function FermiMobile({ onBack, state, onReport }: { onBack: () => void; state: F
     <div className="stack">
       <Header title={t('label.fermi')} onBack={onBack} />
 
-      <div className="eyebrow accent">{t('label.fermi')}</div>
-      <h1 className="lesson-question">{question.question}</h1>
+      <div id="fermi-question-block">
+        <div className="eyebrow accent">{t('label.fermi')}</div>
+        <h1 className="lesson-question">{question.question}</h1>
+      </div>
 
       <div className="hint-card" style={{ marginTop: 'var(--s-4)' }}>
         <div className="hint-icon"><LightbulbIcon width={20} height={20} /></div>
@@ -206,6 +208,13 @@ function FermiMobile({ onBack, state, onReport }: { onBack: () => void; state: F
           placeholder={t('fermiScreen.answerPlaceholder')}
           value={answer}
           onChange={(e) => setAnswer(e.target.value)}
+          onFocus={() => {
+            // モバイルキーボード表示時に問題文が画面外に押し出されるのを防ぐ
+            window.setTimeout(() => {
+              const q = document.getElementById('fermi-question-block')
+              if (q) q.scrollIntoView({ block: 'start', behavior: 'smooth' })
+            }, 320)
+          }}
           disabled={loading || feedback != null}
         />
       </div>

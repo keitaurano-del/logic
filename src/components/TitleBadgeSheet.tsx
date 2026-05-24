@@ -2,10 +2,11 @@
  * TitleBadgeSheet — 称号の道のりモーダル
  *
  * プロフィール画面のバッチ・Lv・XP タップで開く。現在の称号、次の称号までの XP/Lv、
- * 全 16 称号一覧（未到達はグレースケール + ロック表示）を見せる。
+ * 全 50 称号一覧（基礎帯 16 + 拡張帯 34、未到達はグレースケール + 減光表示）を見せる。
  *
  * - グリップ／ヘッダー領域を下方向にドラッグするとボトムシートが指追従、
  *   閾値（高さの 1/4 または 96px）超で onClose、それ未満は spring back。
+ * - グリッドは 4 列固定 + minmax(0, 1fr) で長い英語タイトルでも均等幅・横はみ出さず。
  */
 import { useEffect, useRef, useState, type TouchEvent as ReactTouchEvent } from 'react'
 import {
@@ -190,8 +191,9 @@ export function TitleBadgeSheet({ xp, onClose }: TitleBadgeSheetProps) {
         <div style={{
           flex: 1,
           overflowY: 'auto',
+          overflowX: 'hidden', // 子要素由来の横スクロール完全防止（保険）
           WebkitOverflowScrolling: 'touch',
-          padding: '16px 18px calc(env(safe-area-inset-bottom, 0px) + 24px)',
+          padding: '16px 14px calc(env(safe-area-inset-bottom, 0px) + 24px)',
         }}>
 
         {/* 現在称号 ヒーロー */}
@@ -324,9 +326,12 @@ function TierGrid({
   return (
     <div style={{
       display: 'grid',
-      gridTemplateColumns: 'repeat(5, 1fr)',
+      // 4 列固定。長い称号名でも各セルが均等幅になるよう minmax(0, 1fr) で minWidth: 0 を保証
+      gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
       gap: 8,
       marginBottom: 8,
+      width: '100%',
+      boxSizing: 'border-box',
     }}>
       {tiers.map((tier) => (
         <TierCell
@@ -355,33 +360,42 @@ function TierCell({ tierKey, min, max, unlocked, isCurrent }: {
         background: isCurrent ? 'color-mix(in srgb, var(--brand) 12%, var(--bg-card))' : 'var(--bg-card)',
         border: `1.5px solid ${isCurrent ? 'var(--brand)' : 'var(--border)'}`,
         borderRadius: 12,
-        padding: '8px 4px 8px',
+        padding: '10px 6px',
         display: 'flex', flexDirection: 'column', alignItems: 'center',
         textAlign: 'center',
-        opacity: unlocked ? 1 : 0.55,
+        opacity: unlocked ? 1 : 0.4,
+        minWidth: 0, // grid item 自身も縮小可能にして固有内容で膨張しないようにする
+        boxSizing: 'border-box',
+        overflow: 'hidden',
       }}
     >
       <img
         src={getBadgeImagePath(tierKey)}
         alt={t(getTitleI18nKey(tierKey))}
         style={{
-          width: 52, height: 52, objectFit: 'contain',
-          marginBottom: 4,
-          filter: unlocked ? 'none' : 'grayscale(0.85) brightness(0.85)',
+          width: 56, height: 56, objectFit: 'contain',
+          marginBottom: 6,
+          // locked はより強めにグレーアウト＋減光して未達状態が明確になるように
+          filter: unlocked ? 'none' : 'grayscale(1) brightness(0.7) contrast(0.85)',
         }}
       />
       <div style={{
         fontSize: 11, fontWeight: 700,
         color: unlocked ? 'var(--text-primary)' : 'var(--text-muted)',
-        lineHeight: 1.2,
+        lineHeight: 1.25,
         marginBottom: 2,
-        wordBreak: 'keep-all',
+        width: '100%',
+        // 長い英語タイトルでも cell からはみ出さないよう自然な改行を許可
+        overflowWrap: 'anywhere',
+        wordBreak: 'normal',
+        hyphens: 'auto',
       }}>
         {t(getTitleI18nKey(tierKey))}
       </div>
       <div style={{
         fontSize: 10, fontWeight: 600,
         color: 'var(--text-muted)',
+        whiteSpace: 'nowrap',
       }}>
         {t('profile.titleSheet.levelRange', { min: String(min), max: String(max) })}
       </div>
