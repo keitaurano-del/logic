@@ -385,73 +385,10 @@ export function getTitleKeyForLevel(level: number): TitleKey {
   return level >= MAX_LEVEL ? 'zenith' : 'novice-1'
 }
 
-/**
- * 新規 34 帯にはバッジ画像が無いため、既存 16 枚 (badge-<key>.png) を循環マッピングする。
- * 帯の格 (apex/sage/mage etc) と色味で揃え、デザイナーが将来差し替える前提。
- */
-const BADGE_FALLBACK_MAP: Record<string, TitleKey> = {
-  // 奥義帯 — apex 派生 (ゴールド)
-  'apex-2': 'apex',
-  'apex-3': 'apex',
-  'apex-4': 'apex',
-  // 叡智帯 — sage 系を再利用 (落ち着いた賢者バッジ)
-  'wisdom-1': 'sage-1',
-  'wisdom-2': 'sage-2',
-  'wisdom-3': 'sage-3',
-  'wisdom-4': 'sage-3',
-  // 巨匠帯 — mage 系 (魔導士バッジ)
-  'virtuoso-1': 'mage-1',
-  'virtuoso-2': 'mage-2',
-  'virtuoso-3': 'mage-3',
-  'virtuoso-4': 'mage-3',
-  // 悟達帯 — sage を再利用
-  'enlightened-1': 'sage-1',
-  'enlightened-2': 'sage-2',
-  'enlightened-3': 'sage-3',
-  'enlightened-4': 'apex',
-  // 黎明帯 — knight 系 (騎士バッジ)
-  'luminary-1': 'knight-1',
-  'luminary-2': 'knight-2',
-  'luminary-3': 'knight-3',
-  'luminary-4': 'apex',
-  // 覇者帯 — sage 巡回
-  'sovereign-1': 'sage-1',
-  'sovereign-2': 'sage-2',
-  'sovereign-3': 'sage-3',
-  'sovereign-4': 'apex',
-  // 超越帯 — mage 巡回
-  'transcend-1': 'mage-1',
-  'transcend-2': 'mage-2',
-  'transcend-3': 'mage-3',
-  'transcend-4': 'apex',
-  // 神格帯 — sage 上位巡回
-  'divine-1': 'sage-2',
-  'divine-2': 'sage-3',
-  'divine-3': 'apex',
-  'divine-4': 'apex',
-  // 永遠帯
-  'eternal-1': 'apex',
-  'eternal-2': 'apex',
-  // 極致
-  zenith: 'apex',
-}
-
-/** 実バッジ画像が存在する 16 帯のキー集合 (循環マッピング判定用) */
-const REAL_BADGE_KEYS = new Set<TitleKey>([
-  'novice-1', 'novice-2', 'novice-3',
-  'logician-1', 'logician-2', 'logician-3',
-  'knight-1', 'knight-2', 'knight-3',
-  'mage-1', 'mage-2', 'mage-3',
-  'sage-1', 'sage-2', 'sage-3',
-  'apex',
-])
-
 export function getBadgeImagePath(key: TitleKey): string {
-  // 実画像がある 16 帯はそのまま、それ以外は fallback マップで既存帯を再利用
-  const resolved: TitleKey = REAL_BADGE_KEYS.has(key)
-    ? key
-    : (BADGE_FALLBACK_MAP[key] ?? 'apex')
-  return `/images/v3/badges/badge-${resolved}.png`
+  // 全 50 帯のバッジ画像が public/images/v3/badges/ に揃っているため、直接マッピング。
+  // (commit 06dacd0 で Lv 101-500 用 34 種を追加生成、BADGE_FALLBACK_MAP 廃止)
+  return `/images/v3/badges/badge-${key}.png`
 }
 
 /** i18n キー名は kebab → underscore（例: 'novice-1' → 'profile.title.novice_1'） */

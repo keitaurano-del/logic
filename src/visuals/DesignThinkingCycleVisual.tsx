@@ -7,11 +7,29 @@ import { useStepReveal } from './hooks/useStepReveal'
  *
  * 5 段階で開示:
  *   Step 1..5 — ステップを 1 つずつ追加（矢印は 2 番目以降に表示）
+ *
+ * Props で内容差し替え可能（lesson データ側 `step.visualProps` で指定）:
+ *   sectionLabel?: string                          — 上部の見出し
+ *   steps?: CycleStep[]                            — 円周上のステップ群（3〜6 個想定）
+ *   center?: { label?: string; title?: string }    — 中央のラベル
+ *   hint?: string                                  — 最終 step で表示するヒント
+ *   revealMode?: 'interactive' | 'static'
+ *
+ * 未指定フィールドは default 値（デザイン思考 5 ステップ）が使われ、後方互換が保たれる。
  */
 
-type Step = { num: number; label: string; en: string }
+export type CycleStep = { num: number; label: string; en: string }
 
-const steps: Step[] = [
+export type DesignThinkingCycleProps = {
+  /** 'interactive'（default）= ボタンで段階表示 / 'static' = 全部表示 */
+  revealMode?: 'interactive' | 'static'
+  sectionLabel?: string
+  steps?: CycleStep[]
+  center?: { label?: string; title?: string }
+  hint?: string
+}
+
+const defaultSteps: CycleStep[] = [
   { num: 1, label: '共感', en: 'Empathize' },
   { num: 2, label: '定義', en: 'Define' },
   { num: 3, label: '発想', en: 'Ideate' },
@@ -19,13 +37,21 @@ const steps: Step[] = [
   { num: 5, label: '検証', en: 'Test' },
 ]
 
-type Props = {
-  /** 'interactive'（default）= ボタンで段階表示 / 'static' = 全部表示 */
-  revealMode?: 'interactive' | 'static'
-}
+const DEFAULT_PROPS = {
+  sectionLabel: 'デザイン思考 5 ステップ — 反復するサイクル',
+  steps: defaultSteps,
+  center: { label: 'Human-Centered', title: '人間中心' },
+  hint: '一回で正解にしない。検証から共感に戻り、何度も回すのが前提',
+} as const
 
-export function DesignThinkingCycleVisual({ revealMode = 'interactive' }: Props = {}) {
-  // 円周上に 5 点配置（12 時方向スタート、時計回り）
+export function DesignThinkingCycleVisual(props: DesignThinkingCycleProps = {}) {
+  const { revealMode = 'interactive' } = props
+  const sectionLabel = props.sectionLabel ?? DEFAULT_PROPS.sectionLabel
+  const steps = props.steps ?? DEFAULT_PROPS.steps
+  const center = { ...DEFAULT_PROPS.center, ...(props.center ?? {}) }
+  const hint = props.hint ?? DEFAULT_PROPS.hint
+
+  // 円周上に N 点配置（12 時方向スタート、時計回り）
   const radius = 36 // % of cycle box
   const cx = 50
   const cy = 50
@@ -43,7 +69,7 @@ export function DesignThinkingCycleVisual({ revealMode = 'interactive' }: Props 
   return (
     <div>
       <div className="vz-section-label" style={{ marginBottom: 10, textAlign: 'center' }}>
-        デザイン思考 5 ステップ — 反復するサイクル
+        {sectionLabel}
       </div>
 
       <div className="vz-dt-cycle vz-stagger">
@@ -127,16 +153,16 @@ export function DesignThinkingCycleVisual({ revealMode = 'interactive' }: Props 
             )
         )}
 
-        {/* 中央：人間中心 */}
+        {/* 中央 */}
         <div className="vz-dt-center">
-          <div className="label">Human-Centered</div>
-          <div className="title">人間中心</div>
+          {center.label && <div className="label">{center.label}</div>}
+          {center.title && <div className="title">{center.title}</div>}
         </div>
       </div>
 
       {controls}
 
-      {isLast && (
+      {isLast && hint && (
         <div
           style={{
             marginTop: 12,
@@ -149,7 +175,7 @@ export function DesignThinkingCycleVisual({ revealMode = 'interactive' }: Props 
             textAlign: 'center',
           }}
         >
-          一回で正解にしない。検証から共感に戻り、何度も回すのが前提
+          {hint}
         </div>
       )}
     </div>
