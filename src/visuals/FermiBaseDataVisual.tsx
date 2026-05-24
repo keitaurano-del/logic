@@ -17,6 +17,11 @@ import './visuals-fermi.css'
  * design rationale:
  *   - 数字暗記モノは「読みやすさ > 派手さ」。フォントは大きめ・行間は広く
  *   - カテゴリは color-coded だがいずれもブランド系トーン内（accent カラーは使用しない）
+ *
+ * A 案 Phase 3 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - CSS: cat-summary 11→12, unit 11→12, label 12→13, note 10→12, hint 11→13
+ *   - warm accent: vz-fermi-bd-hint を terracotta soft 背景に
+ *     (6 カテゴリは tone color-coded で各自意味あり、暗記の動機付け 1 箇所のみ温度感色)
  */
 
 type Entry = {

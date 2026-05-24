@@ -5,6 +5,12 @@ import './visuals-phase3c.css'
  * lesson-400 step.9 visual='MentalMathDecisionTreeDiagram'
  *
  * 構図: ルート 1 → 第 1 階層 3 分岐（×100 系 / 近似 / 分解）
+ *
+ * A 案 Phase 3 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - inline hint 11→13, padding/lineHeight 拡大
+ *   - CSS: mmd-cond 12px / mmd-tech 14px / mmd-ex 12px / mmd-root 14px は既に底上げ済
+ *   - warm accent: vz-mmd-row-label ↓ を terracotta deep に格上げ
+ *     (ルート → 3 分岐を結ぶ「判別の動き」 = 1 visual 内 1 箇所)
  */
 
 type Branch = {
@@ -57,14 +63,15 @@ export function MentalMathDecisionTreeVisual() {
       </div>
 
       <div style={{
-        marginTop: 12,
-        padding: '8px 10px',
+        marginTop: 14,
+        padding: '10px 12px',
         background: 'var(--brand-soft)',
         borderRadius: 8,
-        fontSize: 11,
+        fontSize: 13,
         fontWeight: 600,
         color: 'var(--brand)',
         textAlign: 'center',
+        lineHeight: 1.45,
       }}>
         💡 最初に形を判別する習慣をつけると、計算速度が一段上がる
       </div>

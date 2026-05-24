@@ -6,6 +6,12 @@ import './visuals-phase3c.css'
  *
  * 構図: 横並び 2 カード (左: 正規分布 / 右: 右に裾長い歪み分布)
  * 各カードに分布曲線 + 平均ライン (brand) + 中央値ライン (success)
+ *
+ * A 案 Phase 3 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - inline hint 11→13, padding/lineHeight 拡大、warning 意味色は維持
+ *   - CSS: ds-card-title 13→14、ds-legend 12→13
+ *   - warm accent: hint ボックスを terracotta soft 背景に
+ *     (skewed の warning 色は §2.3 例外として意味色を維持、ヒント 1 箇所のみ温度感色)
  */
 
 export function DistributionShapeVisual() {
@@ -78,14 +84,15 @@ export function DistributionShapeVisual() {
       </div>
 
       <div style={{
-        marginTop: 12,
-        padding: '8px 10px',
-        background: 'var(--warning-soft)',
+        marginTop: 14,
+        padding: '10px 12px',
+        background: 'var(--visual-warm-primary-soft)',
         borderRadius: 8,
-        fontSize: 11,
+        fontSize: 13,
         fontWeight: 600,
-        color: '#92400E',
+        color: 'var(--visual-warm-primary-deep)',
         textAlign: 'center',
+        lineHeight: 1.45,
       }}>
         ⚠ 年収・売上などは右に歪んでいる。平均だけ見ると実態を誤る
       </div>

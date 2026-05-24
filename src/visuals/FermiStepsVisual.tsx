@@ -7,6 +7,12 @@ import { useStepReveal } from './hooks/useStepReveal'
  *
  * 構図: Stack（順序フロー）4 段、最終ステップ（統合検算）を結論カラーで強調
  * 段階開示: Step 1..4 — ステップを 1 つずつ表示
+ *
+ * A 案 Phase 3 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - inline hint 11→13, padding/lineHeight 拡大
+ *   - CSS: vz-fs-label 11→12, vz-fs-title 15→16
+ *   - warm accent: vz-fs-arrow ↓ を terracotta (step を進める動き)
+ *     (.final は brand-cta-grad 維持、矢印が唯一の動き起点 = 1 visual 内 1 箇所)
  */
 
 type Step = {
@@ -76,14 +82,15 @@ export function FermiStepsVisual({ revealMode = 'interactive' }: Props = {}) {
       {isLast && (
         <div
           style={{
-            marginTop: 12,
-            padding: '8px 10px',
+            marginTop: 14,
+            padding: '10px 12px',
             background: 'var(--brand-soft)',
             borderRadius: 8,
-            fontSize: 11,
+            fontSize: 13,
             fontWeight: 600,
             color: 'var(--brand)',
             textAlign: 'center',
+            lineHeight: 1.45,
           }}
         >
           💡 STEP 4 の検算がフェルミ推定の質を決める。一発回答で終わらせない。
