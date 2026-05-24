@@ -223,6 +223,8 @@ function getHeroImage(category: string, lessonId?: number): string {
     return LESSON_IMAGES[lessonId]
   }
   // フォールバック: カテゴリ別
+  // 注: course-*.png (16:9) は LessonStoriesScreen 側で 1:1 枠 + objectFit:contain で
+  //     letterbox 表示するため切れずに全体が表示される。
   const c = (category || '').toLowerCase()
   if (c.includes('ロジカル') || c.includes('logical')) return '/images/v3/course-logic-01.png'
   if (c.includes('ケース面接') || c === 'business') return '/images/v3/course-case-01.png'
@@ -232,6 +234,7 @@ function getHeroImage(category: string, lessonId?: number): string {
   if (c.includes('フェルミ') || c.includes('fermi')) return '/images/v3/home-daily-fermi.png'
   if (c.includes('クリティカル')) return '/images/v3/lesson-critical-thinking.png'
   if (c.includes('仮説')) return '/images/v3/lesson-hypothesis.png'
+  if (c.includes('論点')) return '/images/v3/course-issue-01.png'
   if (c.includes('課題')) return '/images/v3/lesson-issue-setting.png'
   if (c.includes('デザイン')) return '/images/v3/lesson-design-thinking.png'
   if (c.includes('ラテラル')) return '/images/v3/lesson-lateral-thinking.png'
@@ -241,8 +244,17 @@ function getHeroImage(category: string, lessonId?: number): string {
   if (c.includes('クライアント')) return '/images/v3/course-client-01.png'
   if (c.includes('経営戦略') || c === 'strategy') return '/images/v3/course-strategy-01.png'
   if (c.includes('認知科学') || c.includes('cognitive')) return '/images/v3/course-cognitive-01.png'
+  if (c.includes('ドキュメンテーション') || c.includes('documentation')) return '/images/v3/course-documentation-01.png'
+  if (c.includes('構造化リスニング') || c.includes('リスニング') || c.includes('listening')) return '/images/v3/course-listening-01.png'
+  if (c.includes('adhd') || c.includes('レバレッジ')) return '/images/v3/course-adhd-leverage-01.png'
+  if (c.includes('数字')) return '/images/v3/course-numeracy-01.png'
+  if (c.includes('ピーク') || c.includes('peak') || c.includes('パフォーマンス')) return '/images/v3/course-peak-performance-01.png'
   if (c.includes('思考法') || c.includes('thinking')) return '/images/v3/course-thinking.webp'
   if (c.includes('coffee') || c.includes('コーヒー')) return '/images/v3/home-daily-question.png'
+  // 未マッピングのカテゴリは可視化（dev/console で気づけるように）
+  if (typeof console !== 'undefined' && category) {
+    console.warn(`[lessonSlides] getHeroImage fallback: no category mapping for "${category}" (lessonId=${lessonId ?? '?'}) — using hero-deduction.png`)
+  }
   return '/images/v3/hero-deduction.png'
 }
 

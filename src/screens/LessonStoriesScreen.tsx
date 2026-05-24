@@ -562,14 +562,19 @@ function HeroImage({ image, lessonId }: { image: string; lessonId?: number }) {
   if (failed && lessonId != null) {
     return <LessonThumbnail lessonId={lessonId} style={{ width: '100%', aspectRatio: '1 / 1' }} />
   }
+  // 画像によってアスペクト比が混在（lesson-*.png は 1:1 / course-*.png は 16:9）。
+  // どの画像でも切らずに全体を見せたいので、1:1 枠 + objectFit:contain + bg-card で
+  // 統一する（HomeScreenV3 の recommended hero と同じ方針）。
   return (
-    <img
-      src={image}
-      alt=""
-      loading="lazy"
-      onError={handleError}
-      style={{ width: '100%', aspectRatio: '1 / 1', objectFit: 'cover', display: 'block' }}
-    />
+    <div style={{ width: '100%', aspectRatio: '1 / 1', background: 'var(--bg-card)', display: 'block', overflow: 'hidden' }}>
+      <img
+        src={image}
+        alt=""
+        loading="lazy"
+        onError={handleError}
+        style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
+      />
+    </div>
   )
 }
 
