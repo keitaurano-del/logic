@@ -8,6 +8,13 @@ import { StepStack } from './StepStack'
  *
  * 構造は <StepStack> 共通コンポーネントを使って組む。SCR 固有の差分（label/title/body
  * の文字スタイル、各 step の border-color、resolution の gradient 背景）は visuals.css / visuals-phase3b.css 側。
+ *
+ * A 案適用 (2026-05-24, §3.1 §2.4 準拠):
+ *   - hint fontSize 11→13, padding/lineHeight 拡大
+ *   - scr-label 11→12, scr-title 15→16, scr-body 13.5→14
+ *   - warm accent: Complication step の left-border 1.5px (rose) → terracotta に格上げ
+ *     （「ここで読者の頭に？を作る」緊張ポイント = 動きの起点 = 1 visual 内 1 箇所）
+ *     Resolution の brand-cta-grad は維持で「答え」の強い anchor を確保
  */
 
 export type ScrStep = {
@@ -81,14 +88,15 @@ export function ScrStructureVisual({
 
       <div
         style={{
-          marginTop: 12,
-          padding: '8px 10px',
+          marginTop: 14,
+          padding: '10px 12px',
           background: 'var(--brand-soft)',
           borderRadius: 8,
-          fontSize: 11,
+          fontSize: 13,
           fontWeight: 600,
           color: 'var(--brand)',
           textAlign: 'center',
+          lineHeight: 1.45,
         }}
       >
         {hint}

@@ -4,6 +4,13 @@ import './visuals-phase2.css'
  * グラフの罠 3 種図解 — Y軸ゼロカット / 相関≠因果 / サンプル偏り
  * lesson-42, lesson-401, lesson-406 で流用
  * 想定 visualId: 'GraphPitfallsDiagram'
+ *
+ * A 案適用 (2026-05-24, §3.1 §2.4 準拠):
+ *   - hint fontSize 11→13, padding/lineHeight 拡大
+ *   - card title 14→15, body 13→14, tag 11→12 (CSS 側で底上げ)
+ *   - warm accent: hint ボックスの背景を terracotta soft に格上げ
+ *     （3 つの罠を踏まえた「実践の起点」=  1 visual 内 1 箇所アクセント）
+ *     既存 danger 色の NG タグはそのまま維持（罠の意味色なので変更不可）
  */
 
 export type GraphPitfallsProps = {
@@ -102,14 +109,15 @@ export function GraphPitfallsVisual(props: GraphPitfallsProps = {}) {
 
       {hint ? (
         <div style={{
-          marginTop: 12,
-          padding: '8px 10px',
-          background: 'var(--brand-soft)',
+          marginTop: 14,
+          padding: '10px 12px',
+          background: 'var(--visual-warm-primary-soft)',
           borderRadius: 8,
-          fontSize: 11,
+          fontSize: 13,
           fontWeight: 600,
-          color: 'var(--brand)',
+          color: 'var(--visual-warm-primary-deep)',
           textAlign: 'center',
+          lineHeight: 1.45,
         }}>
           💡 {hint}
         </div>

@@ -16,20 +16,26 @@
   gap: 6px;
 }
 
-/* SCR 固有: situation/complication は brand/rose で枠線強調（resolution は共通の final 色） */
+/* SCR 固有: situation/complication は brand/terracotta で枠線強調（resolution は共通の final 色）
+ * A 案 (2026-05-24): warm accent を Complication 左ボーダーに集中 (rose → terracotta)
+ *   - Complication = 「読者の頭に？を作る緊張点」= 動きの起点 = 1 visual 内 1 箇所
+ *   - Resolution の brand-cta-grad は維持で「答え」を強い anchor として確保
+ */
 .vz-scr-step {
   border-width: 1.5px;
   border-style: solid;
   border-color: var(--brand);
-  padding: 12px 14px;
+  padding: 14px 16px;
 }
 
+/* warm accent: Complication = 緊張点 = terracotta（1 visual 内 1 箇所） */
 .vz-scr-step.complication {
-  border-color: var(--rose);
+  border-color: var(--visual-warm-primary);
+  border-left-width: 4px;
 }
 
 .vz-scr-label {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -37,17 +43,18 @@
 }
 
 .vz-scr-step.complication .vz-scr-label {
-  color: var(--rose);
+  color: var(--visual-warm-primary-deep);
 }
 
 .vz-scr-step.resolution .vz-scr-label {
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.88);
 }
 
 .vz-scr-title {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--text-primary);
+  line-height: 1.35;
 }
 
 .vz-scr-step.resolution .vz-scr-title {
@@ -55,13 +62,13 @@
 }
 
 .vz-scr-body {
-  font-size: 13.5px;
+  font-size: 14px;
   color: var(--text-secondary);
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
 .vz-scr-step.resolution .vz-scr-body {
-  color: rgba(255, 255, 255, 0.92);
+  color: rgba(255, 255, 255, 0.94);
 }
 
 /* ===== Where / Why / How 3 段フロー =====
