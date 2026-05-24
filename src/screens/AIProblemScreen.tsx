@@ -60,7 +60,7 @@ export function AIProblemScreen({ problem, onBack, onReport }: AIProblemScreenPr
   if (finished) {
     const pct = steps.length > 0 ? Math.round((correctCount / steps.length) * 100) : 0
     return (
-      <div className="stack">
+      <div className="stack" style={{ padding: '0 20px' }}>
         <Header title={t('aiProblem.resultTitle')} onBack={onBack} />
         <div className="eyebrow accent">{t('aiProblem.resultEyebrow')}</div>
         <h1 style={{ fontSize: 30, letterSpacing: '-0.025em' }}>{problem.title}</h1>
@@ -86,7 +86,7 @@ export function AIProblemScreen({ problem, onBack, onReport }: AIProblemScreenPr
 
   if (!step) {
     return (
-      <div className="stack">
+      <div className="stack" style={{ padding: '0 20px' }}>
         <Header onBack={onBack} />
         <div className="card">{t('aiProblem.notFound')}</div>
       </div>
@@ -94,7 +94,7 @@ export function AIProblemScreen({ problem, onBack, onReport }: AIProblemScreenPr
   }
 
   return (
-    <div className="stack">
+    <div className="stack" style={{ padding: '0 20px' }}>
       <Header title={`${stepIdx + 1} / ${steps.length}`} onBack={onBack} />
 
       <div className="progress">
