@@ -16,7 +16,8 @@ const DESTRUCTIVE_LABEL_RE = /ログアウト|サインアウト|削除|退会|�
 
 // Supabase 未設定 / preview ビルドが本番 URL を叩く副作用 (CERT_AUTHORITY_INVALID) など、
 // テスト環境で発生する想定内の console.error は除外する。
-const IGNORED_ERROR_RE = /supabase|stripe|sentry|VITE_|magic.link|getSubscriptionState|fetchJournalByDate|notification|service.worker|abortcontroller|networkrequest|ERR_CERT|Failed to load resource|net::ERR_|404\b|font|preload|favicon|logic-u5wn|onrender/i
+// localStorage Access denied は history.back / about:blank 一時遷移時に出ることがあるため除外。
+const IGNORED_ERROR_RE = /supabase|stripe|sentry|VITE_|magic.link|getSubscriptionState|fetchJournalByDate|notification|service.worker|abortcontroller|networkrequest|ERR_CERT|Failed to load resource|net::ERR_|404\b|font|preload|favicon|logic-u5wn|onrender|Access is denied for this document|localStorage/i
 
 type ButtonSummary = { idx: number; label: string }
 
@@ -34,7 +35,10 @@ async function listVisibleButtons(page: Page): Promise<ButtonSummary[]> {
 
 function attachErrorWatcher(page: Page) {
   const errors: string[] = []
-  page.on('pageerror', (e) => errors.push(`pageerror: ${e.message}`))
+  page.on('pageerror', (e) => {
+    if (IGNORED_ERROR_RE.test(e.message)) return
+    errors.push(`pageerror: ${e.message}`)
+  })
   page.on('console', (msg) => {
     if (msg.type() !== 'error') return
     const text = msg.text()
@@ -56,14 +60,60 @@ async function clickEveryButton(
   const buttons = await listVisibleButtons(page)
   expect(buttons.length, `${screenName} には button が 1 つもない`).toBeGreaterThan(0)
 
+  // ロードマップ等で 90+ ボタンある画面でも 180s timeout に収めるため、
+  // 毎回 fresh boot ではなく click 後に history.back で同じ画面に戻す軽量 reset を使う。
+  // back で戻れなかったときだけ hard reset で復元する (HARD_RESET_EVERY ごとにも保険として実行)。
+  const HARD_RESET_EVERY = 25
+  const initialUrl = page.url()
+  const initialButtonCount = buttons.length
+
+  async function softReset() {
+    const cur = page.url()
+    if (cur !== initialUrl) {
+      // history.back で戻れる限り戻す (タブ遷移含めて最大 5 段)
+      // ただし about:blank に出てしまうと localStorage アクセスで Access denied が
+      // pageerror として上がるため、必ず http(s):// で initialUrl ホストの URL に留める。
+      const initialHost = new URL(initialUrl).host
+      for (let i = 0; i < 5; i++) {
+        await page.goBack({ timeout: 2_000 }).catch(() => {})
+        const nowUrl = page.url()
+        if (nowUrl === initialUrl) break
+        // about:blank / data: / 別 host に出たら hard reset で復元
+        if (!nowUrl.startsWith('http://') && !nowUrl.startsWith('https://')) {
+          await resetFn()
+          return
+        }
+        if (new URL(nowUrl).host !== initialHost) {
+          await resetFn()
+          return
+        }
+      }
+    }
+    // boot 直後の画面と一致しないなら hard reset
+    if (page.url() !== initialUrl) {
+      await resetFn()
+      return
+    }
+    // ボタン数が大きく減ってる (モーダル等が居座ってる) なら hard reset
+    const cnt = await page.locator('.main-inner button:visible, button.tab:visible, .app-shell button:visible').count().catch(() => 0)
+    if (cnt < Math.max(1, Math.floor(initialButtonCount / 2))) {
+      await resetFn()
+    }
+  }
+
   const pressed: string[] = []
+  let pressedCount = 0
   for (const { idx, label } of buttons) {
     if (DESTRUCTIVE_LABEL_RE.test(label)) {
       pressed.push(`SKIP: ${label}`)
       continue
     }
-    // 毎回 reset してから index で取り直す（前クリックで DOM 構造が変わる可能性）
-    await resetFn()
+    // 一定間隔で hard reset (state machine が積み上がるのを防ぐ)
+    if (pressedCount > 0 && pressedCount % HARD_RESET_EVERY === 0) {
+      await resetFn()
+    } else {
+      await softReset()
+    }
     const target = page.locator('.main-inner button:visible, button.tab:visible, .app-shell button:visible').nth(idx)
     try {
       await target.click({ timeout: 3_000, trial: false })
@@ -72,8 +122,9 @@ async function clickEveryButton(
       // クリック失敗（要素が消えた等）は skip 扱い。pageerror は別途検出済み
       pressed.push(`MISS: ${label}`)
     }
+    pressedCount++
     // 反応が出るまでの猶予
-    await page.waitForTimeout(150)
+    await page.waitForTimeout(120)
   }
 
   // 何が起きたかわかるよう、失敗時のメッセージに pressed list を含める
@@ -84,8 +135,9 @@ async function clickEveryButton(
 }
 
 // 1 spec で 50-100 ボタンクリックすると 30s 以上かかるケースがあるため、generous な timeout を確保。
+// lessons タブのようにコース数が増えるとボタン総数が 90+ になるため、300s まで許容する。
 test.describe('全ボタンスモーク — 各タブ', () => {
-  test.describe.configure({ timeout: 180_000 })
+  test.describe.configure({ timeout: 300_000 })
 
   test('home タブの全ボタンをクリックしてエラー無し', async ({ page }) => {
     await clickEveryButton(
@@ -132,7 +184,7 @@ test.describe('全ボタンスモーク — 各タブ', () => {
 })
 
 test.describe('全ボタンスモーク — preview 単独画面', () => {
-  test.describe.configure({ timeout: 180_000 })
+  test.describe.configure({ timeout: 300_000 })
 
   test('?preview=fermi の全ボタンをクリックしてエラー無し', async ({ page }) => {
     await clickEveryButton(

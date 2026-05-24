@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import type { ReactNode } from 'react'
 import { t } from '../i18n'
-import { isAndroid, isIOS } from '../platform'
+import { isAndroid, isIOS, isWeb } from '../platform'
 import { haptic } from '../platform/haptics'
 import './AppShell.css'
 
@@ -106,12 +106,14 @@ export function AppShell({
     if (container) container.scrollTop = 0
   }, [activeTab])
 
-  // Android のみ「スクロールで隠す」を維持。iOS では HIG に反するので無効。
+  // Android native のみ「スクロールで隠す」を維持。iOS では HIG に反するので無効。
+  // Web でも無効化 — Logic はモバイル専用 (project_logic_mobile_only) なので Web は QA / preview 用途のみ。
+  // Web で navHidden が発動するとタブバーが画面外に飛んで E2E テストがタブクリックできなくなる副作用がある。
   // prefers-reduced-motion が ON のユーザーには UI 消失が認知負荷になるので無効化。
   const [navHidden, setNavHidden] = useState(false)
   const lastScrollY = useRef(0)
   useEffect(() => {
-    if (hideTabBar || isIOS()) return
+    if (hideTabBar || isIOS() || isWeb()) return
     const reduceMotion =
       typeof window !== 'undefined' &&
       typeof window.matchMedia === 'function' &&
