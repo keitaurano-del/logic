@@ -213,6 +213,8 @@ const STRINGS: Record<Locale, Strings> = {
     'journal.assistantGenerating': '考えています...',
     'journal.assistantEmpty': 'まだ表示できる内容がありません。',
     'journal.assistantError': 'AI からのフィードバック取得に失敗しました。少し時間をおいて再度お試しください。',
+    'journal.assistantRecommendedLessons': 'おすすめのレッスン',
+    'journal.assistantOpenLessonAria': '{title} を開く',
     'journal.xpMorningLabel': '朝のジャーナル完了',
     'journal.xpEveningLabel': '夜のジャーナル完了',
     'journal.goalCategoryLabel': 'カテゴリ',
@@ -1720,6 +1722,15 @@ const STRINGS: Record<Locale, Strings> = {
     'aiProblemGen.loader.step3': '設問を組み立てています…',
     'aiProblemGen.loader.step4': '最終チェック中…',
     'aiProblemGen.loader.hint': '通常 5〜15 秒ほどかかります。そのままお待ちください。',
+
+    // TTS (text-to-speech) — lesson read-aloud
+    'tts.play': '読み上げる',
+    'tts.stop': '停止',
+    'tts.playAria': 'スライドを読み上げる',
+    'tts.stopAria': '読み上げを停止',
+    'tts.speed': '読み上げ速度',
+    'tts.speedAria': '読み上げ速度を変更',
+    'tts.notSupported': 'お使いの端末では読み上げに対応していません。',
   },
 
   en: {
@@ -1895,6 +1906,8 @@ const STRINGS: Record<Locale, Strings> = {
     'journal.assistantGenerating': 'Thinking...',
     'journal.assistantEmpty': 'No feedback to show yet.',
     'journal.assistantError': 'Could not get AI feedback. Please try again in a moment.',
+    'journal.assistantRecommendedLessons': 'Recommended lessons',
+    'journal.assistantOpenLessonAria': 'Open {title}',
     'journal.xpMorningLabel': 'Morning journal complete',
     'journal.xpEveningLabel': 'Evening journal complete',
     'journal.goalCategoryLabel': 'Category',
@@ -3404,6 +3417,15 @@ const STRINGS: Record<Locale, Strings> = {
     'aiProblemGen.loader.step3': 'Building the question...',
     'aiProblemGen.loader.step4': 'Finalizing...',
     'aiProblemGen.loader.hint': 'This usually takes 5-15 seconds. Please wait.',
+
+    // TTS (text-to-speech) — lesson read-aloud
+    'tts.play': 'Read aloud',
+    'tts.stop': 'Stop',
+    'tts.playAria': 'Read this slide aloud',
+    'tts.stopAria': 'Stop reading',
+    'tts.speed': 'Reading speed',
+    'tts.speedAria': 'Change reading speed',
+    'tts.notSupported': 'Text-to-speech is not supported on this device.',
   },
 }
 

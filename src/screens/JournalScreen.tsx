@@ -15,9 +15,11 @@ interface JournalScreenProps {
   userId: string
   assistantName: string
   onUpdateAssistantName: (name: string) => Promise<void>
+  /** AI アシスタントの推薦レッスンタップから呼ばれる遷移ハンドラ */
+  onOpenLesson?: (lessonId: number) => void
 }
 
-export function JournalScreen({ userId, assistantName }: JournalScreenProps) {
+export function JournalScreen({ userId, assistantName, onOpenLesson }: JournalScreenProps) {
   // 学習時間計測 — ジャーナル画面の滞在時間を study_sessions に記録
   useStudyTimer({ type: 'journal' })
   const [streak, setStreak] = useState(0)
@@ -80,6 +82,7 @@ export function JournalScreen({ userId, assistantName }: JournalScreenProps) {
           userId={userId}
           assistantName={assistantName}
           onClose={() => setAssistantOpen(false)}
+          onOpenLesson={onOpenLesson}
         />
       )}
 

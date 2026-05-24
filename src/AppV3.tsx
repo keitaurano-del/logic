@@ -616,6 +616,7 @@ function AppV3() {
               userId={currentUser.id}
               assistantName={assistantName}
               onUpdateAssistantName={updateAssistantName}
+              onOpenLesson={handleOpenLesson}
             />
           ) : (
             <JournalPaywall onUpgrade={() => navigate({ type: 'pricing' })} />

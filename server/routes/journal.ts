@@ -30,6 +30,69 @@ interface JournalEntry {
   evening_reflection?: string | null
 }
 
+interface LessonCatalogEntry {
+  id?: number
+  title?: string
+  category?: string
+}
+
+// レッスンカタログを prompt 用テキストに整形する。最大件数で切り詰めて
+// トークン消費を抑えつつ、AI が id を引けるよう "id|category|title" 形式で渡す。
+function buildLessonCatalogText(
+  catalog: unknown,
+  isEn: boolean,
+  maxEntries = 200,
+): { text: string; validIds: Set<number> } {
+  const validIds = new Set<number>()
+  if (!Array.isArray(catalog) || catalog.length === 0) {
+    return { text: isEn ? '(no lessons available)' : '（レッスンデータなし）', validIds }
+  }
+  const lines: string[] = []
+  for (const entry of catalog as LessonCatalogEntry[]) {
+    if (lines.length >= maxEntries) break
+    if (!entry || typeof entry !== 'object') continue
+    const id = entry.id
+    const title = typeof entry.title === 'string' ? entry.title.trim() : ''
+    const category = typeof entry.category === 'string' ? entry.category.trim() : ''
+    if (typeof id !== 'number' || !Number.isFinite(id) || id < 0) continue
+    if (!title) continue
+    validIds.add(id)
+    // 区切りは "|" にして AI が混同しないようにする
+    const safeTitle = title.replace(/[|\r\n]/g, ' ').slice(0, 80)
+    const safeCat = category.replace(/[|\r\n]/g, ' ').slice(0, 40)
+    lines.push(safeCat ? `${id}|${safeCat}|${safeTitle}` : `${id}||${safeTitle}`)
+  }
+  if (lines.length === 0) {
+    return { text: isEn ? '(no lessons available)' : '（レッスンデータなし）', validIds }
+  }
+  return { text: lines.join('\n'), validIds }
+}
+
+// AI 出力末尾の "RECOMMENDED_LESSONS: 12, 34" を抽出し、本文からそのセクションを除去する。
+function parseRecommendedLessons(
+  raw: string,
+  validIds: Set<number>,
+  maxResults = 2,
+): { body: string; ids: number[] } {
+  const match = raw.match(/RECOMMENDED_LESSONS:\s*([0-9 ,]*)\s*$/i)
+  if (!match) return { body: raw.trim(), ids: [] }
+  const list = match[1]
+    .split(/[,、\s]+/)
+    .map((s) => Number(s.trim()))
+    .filter((n) => Number.isFinite(n) && n > 0)
+  const seen = new Set<number>()
+  const ids: number[] = []
+  for (const id of list) {
+    if (seen.has(id)) continue
+    if (validIds.size > 0 && !validIds.has(id)) continue
+    seen.add(id)
+    ids.push(id)
+    if (ids.length >= maxResults) break
+  }
+  const body = raw.slice(0, match.index).trim()
+  return { body, ids }
+}
+
 // プロンプトインジェクション対策: assistantName から改行・引用符・記号を除き 30 文字に切り詰める
 function sanitizeAssistantName(raw: unknown, fallback: string): string {
   if (typeof raw !== 'string') return fallback
@@ -162,9 +225,11 @@ ${(scheduleNotes || '').toString().trim() || '未入力'}`
         studyDays,
         assistantName,
         locale,
+        lessonCatalog,
       } = req.body || {}
       const isEn = locale === 'en'
       const name = sanitizeAssistantName(assistantName, isEn ? 'your assistant' : 'パーソナルアシスタント')
+      const { text: lessonCatalogText, validIds: validLessonIds } = buildLessonCatalogText(lessonCatalog, isEn)
 
       const goalsList: Array<{ periodType?: string; title?: string; description?: string | null }> =
         Array.isArray(goals) ? goals.slice(0, 30) : []
@@ -261,7 +326,16 @@ Structure:
 - 2-3 lines: what's actually working in the data (be specific — cite numbers / dates / patterns)
 - 2-3 lines: one concrete next step that fits their current level
 
-Do not assume any specific job, age, or background — use only the evidence from their app usage and journal entries. Never lecture. Never give generic advice.`
+Do not assume any specific job, age, or background — use only the evidence from their app usage and journal entries. Never lecture. Never give generic advice.
+
+A catalog of available Logic lessons is provided in the user message as "id|category|title" lines. After your feedback, you MUST recommend 1 or 2 lessons that match what the user wrote or what would help them most right now.
+
+Output format (STRICT):
+<feedback body as described above>
+
+RECOMMENDED_LESSONS: <comma-separated lesson IDs, 1-2 items, from the catalog only>
+
+The "RECOMMENDED_LESSONS:" line MUST be the very last line, on its own line. Use only numeric IDs from the catalog. If nothing in the catalog fits well, still pick the closest 1 lesson — do not skip the line.`
         : `あなたは Logic アプリのパーソナルアシスタント「${name}」です。Logic は思考力を鍛えるアプリ（論理思考、ケース面接、フェルミ推定、哲学など）です。
 
 ユーザーの状況:
@@ -274,7 +348,16 @@ ${phaseGuidanceJa[phase]}
 - 2〜3行：データから実際に機能していること（具体的に — 数字・日付・パターンを引用）
 - 2〜3行：今のレベルに合う具体的な次の一歩を1つ
 
-職業・年齢・バックグラウンドを勝手に仮定しない（「コンサル」「新卒」「学生」等と決めつけない）。アプリ利用状況とジャーナルの内容だけを根拠にする。一般論を言わない。説教しない。`
+職業・年齢・バックグラウンドを勝手に仮定しない（「コンサル」「新卒」「学生」等と決めつけない）。アプリ利用状況とジャーナルの内容だけを根拠にする。一般論を言わない。説教しない。
+
+利用可能な Logic レッスンの一覧が user message に「id|category|title」形式で含まれます。フィードバック本文の **直後に、必ず** ユーザーの記述内容や状況に最も合うレッスンを 1〜2 件選んで推薦してください。
+
+出力フォーマット（厳守）:
+<上記構成のフィードバック本文>
+
+RECOMMENDED_LESSONS: <カタログ内の lesson ID をカンマ区切りで 1〜2 件>
+
+"RECOMMENDED_LESSONS:" 行は **必ず最後の行** に単独で配置。カタログに存在する数値 ID のみ使用。完全に合うものがなくても、最も近いものを 1 件は必ず選ぶこと（この行をスキップしてはいけない）。`
 
       const userMessage = isEn
         ? `## Active goals
@@ -288,7 +371,10 @@ ${progressText}
 
 ## Fermi sessions this month: ${fermi}
 ## Lesson streak: ${streak} days
-## Total study days: ${sDays}`
+## Total study days: ${sDays}
+
+## Lesson catalog (format: id|category|title)
+${lessonCatalogText}`
         : `## アクティブな目標
 ${goalsText}
 
@@ -300,7 +386,10 @@ ${progressText}
 
 ## 今月のフェルミ実施: ${fermi} 回
 ## レッスン連続日数: ${streak} 日
-## 累計学習日数: ${sDays} 日`
+## 累計学習日数: ${sDays} 日
+
+## レッスンカタログ（形式: id|category|title）
+${lessonCatalogText}`
 
       const response = await client.messages.create({
         model: 'claude-haiku-4-5-20251001',
@@ -308,8 +397,9 @@ ${progressText}
         system: systemPrompt,
         messages: [{ role: 'user', content: userMessage }],
       })
-      const feedback = response.content[0].type === 'text' ? response.content[0].text.trim() : ''
-      res.json({ feedback })
+      const rawText = response.content[0].type === 'text' ? response.content[0].text.trim() : ''
+      const { body, ids } = parseRecommendedLessons(rawText, validLessonIds)
+      res.json({ feedback: body, recommended_lesson_ids: ids })
     } catch (e: unknown) {
       console.error('journal holistic-feedback error:', e)
       res.status(500).json({ error: e instanceof Error ? e.message : String(e) })

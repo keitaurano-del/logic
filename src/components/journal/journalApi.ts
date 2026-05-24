@@ -39,9 +39,10 @@ interface HolisticFeedbackRequest {
   lessonStreak: number
   studyDays: number
   assistantName: string
+  lessonCatalog?: Array<{ id: number; title: string; category: string }>
 }
 
-export async function holisticFeedback(req: HolisticFeedbackRequest): Promise<{ feedback?: string; error?: string }> {
+export async function holisticFeedback(req: HolisticFeedbackRequest): Promise<{ feedback?: string; recommendedLessonIds?: number[]; error?: string }> {
   try {
     const res = await fetch(`${API_BASE}/api/journal/holistic-feedback`, {
       method: 'POST',
@@ -53,7 +54,11 @@ export async function holisticFeedback(req: HolisticFeedbackRequest): Promise<{ 
       return { error: data?.error || `HTTP ${res.status}` }
     }
     const data = await res.json()
-    return { feedback: data?.feedback ?? '' }
+    const rawIds = Array.isArray(data?.recommended_lesson_ids) ? data.recommended_lesson_ids : []
+    const recommendedLessonIds = rawIds
+      .map((n: unknown) => (typeof n === 'number' ? n : Number(n)))
+      .filter((n: number) => Number.isFinite(n) && n > 0)
+    return { feedback: data?.feedback ?? '', recommendedLessonIds }
   } catch (e) {
     return { error: e instanceof Error ? e.message : String(e) }
   }

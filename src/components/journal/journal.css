@@ -228,6 +228,72 @@
   .journal-summary-card { animation: none; }
 }
 
+/* ── Recommended lessons (AI feedback footer) ── */
+.journal-recommended-lessons {
+  margin-top: 14px;
+  animation: journal-fadeup 0.5s ease-out;
+}
+
+.journal-recommended-lessons__title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.journal-recommended-lessons__list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.journal-recommended-lesson-card {
+  background: var(--bg-elevated, var(--bg-secondary));
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
+  border-radius: 12px;
+  padding: 12px 14px;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--text-primary);
+  transition: transform 120ms ease, border-color 120ms ease, background 120ms ease;
+}
+
+.journal-recommended-lesson-card:hover,
+.journal-recommended-lesson-card:focus-visible {
+  border-color: color-mix(in srgb, var(--brand) 50%, transparent);
+  background: color-mix(in srgb, var(--brand) 8%, var(--bg-elevated, var(--bg-secondary)));
+  outline: none;
+}
+
+.journal-recommended-lesson-card:active {
+  transform: scale(0.98);
+}
+
+.journal-recommended-lesson-card__category {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--brand);
+  letter-spacing: 0.02em;
+}
+
+.journal-recommended-lesson-card__title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .journal-recommended-lessons { animation: none; }
+  .journal-recommended-lesson-card { transition: none; }
+}
+
 /* ── Journal screen sub-tabs ────────────────── */
 .journal-subtabs {
   display: flex;

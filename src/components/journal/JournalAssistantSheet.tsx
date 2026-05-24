@@ -7,16 +7,43 @@ import { SparkleIcon } from './MoodWeatherIcons'
 import { XIcon } from '../../icons'
 import { loadProgress } from '../../progressStore'
 import { getLessonStreak, getTotalStudyDays, getXpLogThisMonth } from '../../stats'
+import { getAllLessonsFlat } from '../../lessonData'
 import { t } from '../../i18n'
 
 interface JournalAssistantSheetProps {
   userId: string
   assistantName: string
   onClose: () => void
+  /** AI 推薦レッスンタップで呼び出される。未指定なら推薦カードを描画しない */
+  onOpenLesson?: (lessonId: number) => void
 }
 
-export function JournalAssistantSheet({ userId, assistantName, onClose }: JournalAssistantSheetProps) {
+interface RecommendedLesson {
+  id: number
+  title: string
+  category: string
+}
+
+// 全レッスンから AI に渡すための軽量カタログを作成する。
+// データサイズ抑制のため title と category のみに絞る。
+function buildLessonCatalog(): Array<{ id: number; title: string; category: string }> {
+  const all = getAllLessonsFlat()
+  const out: Array<{ id: number; title: string; category: string }> = []
+  for (const key of Object.keys(all)) {
+    const id = Number(key)
+    if (!Number.isFinite(id) || id <= 0) continue
+    const lesson = all[id]
+    if (!lesson) continue
+    const title = (lesson.title || '').trim()
+    if (!title) continue
+    out.push({ id, title, category: (lesson.category || '').trim() })
+  }
+  return out
+}
+
+export function JournalAssistantSheet({ userId, assistantName, onClose, onOpenLesson }: JournalAssistantSheetProps) {
   const [feedback, setFeedback] = useState<string>('')
+  const [recommended, setRecommended] = useState<RecommendedLesson[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [elapsedSec, setElapsedSec] = useState(0)
@@ -69,8 +96,9 @@ export function JournalAssistantSheet({ userId, assistantName, onClose }: Journa
         const fermiCount = getXpLogThisMonth().filter((e) => e.event === 'fermi').length
         const lessonStreak = getLessonStreak()
         const studyDays = getTotalStudyDays()
+        const lessonCatalog = buildLessonCatalog()
 
-        const { feedback: fb, error: apiErr } = await holisticFeedback({
+        const { feedback: fb, recommendedLessonIds, error: apiErr } = await holisticFeedback({
           goals,
           recentJournals: recentJournals.map((j) => ({
             date: j.date,
@@ -84,6 +112,7 @@ export function JournalAssistantSheet({ userId, assistantName, onClose }: Journa
           lessonStreak,
           studyDays,
           assistantName,
+          lessonCatalog,
         })
 
         if (cancelled) return
@@ -92,6 +121,17 @@ export function JournalAssistantSheet({ userId, assistantName, onClose }: Journa
           return
         }
         setFeedback((fb || '').trim())
+
+        // 推薦レッスン: ID → 表示用オブジェクトに解決。存在しないものはスキップ。
+        const lessonMap = getAllLessonsFlat()
+        const resolved: RecommendedLesson[] = []
+        for (const id of recommendedLessonIds ?? []) {
+          const lesson = lessonMap[id]
+          if (!lesson) continue
+          resolved.push({ id, title: lesson.title, category: lesson.category })
+          if (resolved.length >= 2) break
+        }
+        setRecommended(resolved)
       } catch (e) {
         console.warn('holistic feedback error:', e)
         if (!cancelled) setError(t('journal.assistantError'))
@@ -149,6 +189,33 @@ export function JournalAssistantSheet({ userId, assistantName, onClose }: Journa
                 <span>{t('journal.assistantSummaryLabel', { name: assistantName })}</span>
               </div>
               <div className="journal-summary-card__body">{feedback}</div>
+            </div>
+          )}
+
+          {!loading && !error && feedback && recommended.length > 0 && onOpenLesson && (
+            <div className="journal-recommended-lessons">
+              <div className="journal-recommended-lessons__title">
+                {t('journal.assistantRecommendedLessons')}
+              </div>
+              <div className="journal-recommended-lessons__list">
+                {recommended.map((lesson) => (
+                  <button
+                    key={lesson.id}
+                    type="button"
+                    className="journal-recommended-lesson-card"
+                    onClick={() => {
+                      onOpenLesson(lesson.id)
+                      onClose()
+                    }}
+                    aria-label={t('journal.assistantOpenLessonAria', { title: lesson.title })}
+                  >
+                    {lesson.category && (
+                      <div className="journal-recommended-lesson-card__category">{lesson.category}</div>
+                    )}
+                    <div className="journal-recommended-lesson-card__title">{lesson.title}</div>
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 
