@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { PlusIcon, XIcon, ArrowLeftIcon, ArrowRightIcon } from '../../icons'
+import { PlusIcon, XIcon, ArrowLeftIcon, ArrowRightIcon, RefreshIcon } from '../../icons'
 import { t } from '../../i18n'
 import {
   deleteJournalImage,
   getJournalImageUrls,
   uploadJournalImage,
+  type ImageUploadError,
 } from './journalImages'
 import { JOURNAL_IMAGE_MAX_COUNT, type JournalImage } from './types'
 
@@ -19,9 +20,15 @@ interface JournalImageGridProps {
   disabled?: boolean
 }
 
+type PendingStatus = 'uploading' | 'error'
+
 interface PendingUpload {
   id: string
   previewUrl: string
+  file: File
+  status: PendingStatus
+  /** status === 'error' のとき表示する文言キー */
+  errorCode?: ImageUploadError['code']
 }
 
 export function JournalImageGrid({ userId, date, images, editing, onChange, disabled }: JournalImageGridProps) {
@@ -32,10 +39,14 @@ export function JournalImageGrid({ userId, date, images, editing, onChange, disa
   const fileInputRef = useRef<HTMLInputElement>(null)
   // pending preview の objectURL は unmount 時にクリーンアップする
   const pendingUrlsRef = useRef<Set<string>>(new Set())
+  // アップロード成功直後、signed URL を取得し終わるまでローカル preview を保持するためのキャッシュ
+  // path → objectURL。signed URL が urls に入ったら revoke する。
+  const localPreviewRef = useRef<Map<string, string>>(new Map())
   // ライトボックスのスワイプ判定用（タップ開始座標）
   const touchStartRef = useRef<{ x: number; y: number } | null>(null)
 
-  // images が変わったら signed URL を再フェッチ
+  // images が変わったら signed URL を再フェッチ。
+  // 取得中・取得失敗の path には localPreviewRef があれば fallback として使う。
   useEffect(() => {
     let cancelled = false
     ;(async () => {
@@ -45,7 +56,23 @@ export function JournalImageGrid({ userId, date, images, editing, onChange, disa
         return
       }
       const next = await getJournalImageUrls(paths)
-      if (!cancelled) setUrls(next)
+      if (cancelled) return
+      // signed URL が取れた path はローカル preview を破棄しても OK
+      for (const [p, localUrl] of localPreviewRef.current.entries()) {
+        if (next[p]) {
+          URL.revokeObjectURL(localUrl)
+          localPreviewRef.current.delete(p)
+        }
+      }
+      // signed URL が無い path（fetch 失敗 / 取得中）はローカル preview を埋める
+      const merged: Record<string, string | null> = { ...next }
+      for (const p of paths) {
+        if (!merged[p]) {
+          const local = localPreviewRef.current.get(p)
+          if (local) merged[p] = local
+        }
+      }
+      setUrls(merged)
     })()
     return () => { cancelled = true }
   }, [images])
@@ -53,9 +80,27 @@ export function JournalImageGrid({ userId, date, images, editing, onChange, disa
   useEffect(() => () => {
     for (const url of pendingUrlsRef.current) URL.revokeObjectURL(url)
     pendingUrlsRef.current.clear()
+    for (const url of localPreviewRef.current.values()) URL.revokeObjectURL(url)
+    localPreviewRef.current.clear()
   }, [])
 
   const canAddMore = images.length + pending.length < JOURNAL_IMAGE_MAX_COUNT
+
+  // 1 枚アップロードを実行し、結果に応じて pending の状態を更新する。
+  // 成功時は pending から外して successful 配列に積む。失敗時は status='error' にして残す。
+  const runUpload = useCallback(async (
+    slot: PendingUpload,
+  ): Promise<{ image?: JournalImage; errorCode?: ImageUploadError['code'] }> => {
+    const { image, error: e } = await uploadJournalImage(userId, date, slot.file)
+    if (image) {
+      // 成功: signed URL が取れるまで使う暫定 preview を確保（slot.previewUrl を流用）
+      localPreviewRef.current.set(image.path, slot.previewUrl)
+      pendingUrlsRef.current.delete(slot.previewUrl)
+      // ↑ pendingUrlsRef からは外したので unmount 時の revoke 対象は localPreviewRef 側に移管
+      return { image }
+    }
+    return { errorCode: e?.code ?? 'upload-failed' }
+  }, [date, userId])
 
   const handleFilesPicked = useCallback(async (files: FileList | null) => {
     if (!files || files.length === 0) return
@@ -69,40 +114,65 @@ export function JournalImageGrid({ userId, date, images, editing, onChange, disa
     if (files.length > remaining) {
       setError(t('journal.imagesLimitTrim', { max: String(JOURNAL_IMAGE_MAX_COUNT) }))
     }
-    // pending を立てる
+    // pending を立てる (uploading 状態でローカル preview 即表示)
     const startedPending: PendingUpload[] = arr.map((f) => {
       const previewUrl = URL.createObjectURL(f)
       pendingUrlsRef.current.add(previewUrl)
-      return { id: `${Date.now()}-${Math.random()}`, previewUrl }
+      return {
+        id: `${Date.now()}-${Math.random()}`,
+        previewUrl,
+        file: f,
+        status: 'uploading' as const,
+      }
     })
     setPending((prev) => [...prev, ...startedPending])
 
     // 順次アップロード（並列だと Storage 側でレート気になるので直列）
     const successful: JournalImage[] = []
-    const failedMsgs: string[] = []
-    for (let i = 0; i < arr.length; i++) {
-      const file = arr[i]
-      const slot = startedPending[i]
-      const { image, error: e } = await uploadJournalImage(userId, date, file)
-      // 進行中アイテムを 1 つ消す
-      setPending((prev) => prev.filter((p) => p.id !== slot.id))
-      URL.revokeObjectURL(slot.previewUrl)
-      pendingUrlsRef.current.delete(slot.previewUrl)
+    for (const slot of startedPending) {
+      const { image, errorCode } = await runUpload(slot)
       if (image) {
         successful.push(image)
-      } else if (e) {
-        if (e.code === 'invalid-type') failedMsgs.push(t('journal.imagesErrorType'))
-        else if (e.code === 'too-large') failedMsgs.push(t('journal.imagesErrorSize'))
-        else failedMsgs.push(t('journal.imagesErrorUpload'))
+        setPending((prev) => prev.filter((p) => p.id !== slot.id))
+      } else {
+        // 失敗: pending に残して error 状態にする (preview は維持、retry ボタン表示)
+        setPending((prev) => prev.map((p) =>
+          p.id === slot.id ? { ...p, status: 'error' as const, errorCode } : p,
+        ))
       }
     }
     if (successful.length > 0) {
       onChange([...images, ...successful])
     }
-    if (failedMsgs.length > 0) {
-      setError(Array.from(new Set(failedMsgs)).join(' / '))
+  }, [images, onChange, pending.length, runUpload])
+
+  // 失敗した pending を再アップロード
+  const handleRetry = useCallback(async (slot: PendingUpload) => {
+    setPending((prev) => prev.map((p) =>
+      p.id === slot.id ? { ...p, status: 'uploading' as const, errorCode: undefined } : p,
+    ))
+    const { image, errorCode } = await runUpload(slot)
+    if (image) {
+      setPending((prev) => prev.filter((p) => p.id !== slot.id))
+      onChange([...images, image])
+    } else {
+      setPending((prev) => prev.map((p) =>
+        p.id === slot.id ? { ...p, status: 'error' as const, errorCode } : p,
+      ))
     }
-  }, [date, images, onChange, pending.length, userId])
+  }, [images, onChange, runUpload])
+
+  // 失敗した pending を破棄
+  const handleCancelPending = useCallback((slotId: string) => {
+    setPending((prev) => {
+      const target = prev.find((p) => p.id === slotId)
+      if (target) {
+        URL.revokeObjectURL(target.previewUrl)
+        pendingUrlsRef.current.delete(target.previewUrl)
+      }
+      return prev.filter((p) => p.id !== slotId)
+    })
+  }, [])
 
   const handleAddClick = () => {
     if (!canAddMore || disabled) return
@@ -114,12 +184,24 @@ export function JournalImageGrid({ userId, date, images, editing, onChange, disa
     if (!target) return
     const next = images.filter((_, i) => i !== idx)
     onChange(next)
+    // ローカル preview があれば破棄
+    const localUrl = localPreviewRef.current.get(target.path)
+    if (localUrl) {
+      URL.revokeObjectURL(localUrl)
+      localPreviewRef.current.delete(target.path)
+    }
     // Storage からも削除（失敗してもユーザー操作はブロックしない。残った場合は孤児として放置）
     await deleteJournalImage(target.path)
     if (lightboxIdx !== null) {
       if (next.length === 0) setLightboxIdx(null)
       else if (lightboxIdx >= next.length) setLightboxIdx(next.length - 1)
     }
+  }
+
+  function pendingErrorLabel(code: ImageUploadError['code'] | undefined): string {
+    if (code === 'invalid-type') return t('journal.imagesErrorType')
+    if (code === 'too-large') return t('journal.imagesErrorSize')
+    return t('journal.imagesErrorUpload')
   }
 
   const openLightbox = (idx: number) => setLightboxIdx(idx)
@@ -192,10 +274,52 @@ export function JournalImageGrid({ userId, date, images, editing, onChange, disa
             )
           })}
           {pending.map((p) => (
-            <div key={p.id} className="journal-images__cell" role="listitem" aria-busy="true">
+            <div
+              key={p.id}
+              className="journal-images__cell"
+              role="listitem"
+              aria-busy={p.status === 'uploading'}
+            >
               <div className="journal-images__thumb-btn journal-images__thumb-btn--uploading">
                 <img src={p.previewUrl} alt="" className="journal-images__thumb" />
-                <div className="journal-images__spinner" aria-hidden="true" />
+                {p.status === 'uploading' && (
+                  <>
+                    <div className="journal-images__overlay" aria-hidden="true" />
+                    <div className="journal-images__spinner" aria-hidden="true" />
+                    <div className="journal-images__status-label" aria-live="polite">
+                      {t('journal.imagesUploading')}
+                    </div>
+                  </>
+                )}
+                {p.status === 'error' && (
+                  <>
+                    <div className="journal-images__overlay journal-images__overlay--error" aria-hidden="true" />
+                    <div className="journal-images__status-label journal-images__status-label--error" role="alert">
+                      {pendingErrorLabel(p.errorCode)}
+                    </div>
+                    <div className="journal-images__pending-actions">
+                      <button
+                        type="button"
+                        className="journal-images__retry"
+                        onClick={() => handleRetry(p)}
+                        aria-label={t('journal.imagesRetry')}
+                        disabled={disabled}
+                      >
+                        <RefreshIcon width={16} height={16} />
+                        <span>{t('journal.imagesRetry')}</span>
+                      </button>
+                      <button
+                        type="button"
+                        className="journal-images__cancel"
+                        onClick={() => handleCancelPending(p.id)}
+                        aria-label={t('journal.imagesCancel')}
+                        disabled={disabled}
+                      >
+                        <XIcon width={14} height={14} />
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           ))}
