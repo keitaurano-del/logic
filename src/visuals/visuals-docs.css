@@ -682,17 +682,19 @@
 }
 
 .vz-chart-card-name {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--brand);
   text-align: center;
 }
 
+/* warm accent (A 案 Phase 2): 用途ラベル = チャート選びの「動きの起点」 = terracotta
+ * 1 visual 内 1 カテゴリ（4 ラベル同色は同一意味カテゴリ） */
 .vz-chart-card-use {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.04em;
-  color: var(--text-muted);
+  color: var(--visual-warm-primary-deep);
   text-transform: uppercase;
   text-align: center;
 }
@@ -734,10 +736,10 @@
 .vz-chart-svg .data-pie-4 { fill: var(--border-light); }
 
 .vz-chart-card-body {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 500;
   color: var(--text-secondary);
-  line-height: 1.4;
+  line-height: 1.45;
   text-align: center;
 }
 

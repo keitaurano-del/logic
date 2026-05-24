@@ -4,6 +4,12 @@ import { useStepReveal } from './hooks/useStepReveal'
  * ケーススタディ — 段階開示フェーズパネル
  * lesson-24 step.visual='CaseStudyDiagram'
  *
+ * A 案 Phase 2 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - inline hint 11→13, padding/lineHeight 拡大、success-soft / success-deep token 化
+ *   - vz-phase-title 15→16, vz-phase-body 13.5→14
+ *   - warm accent: 最終 PHASE 4 (.vz-phase:last-child) の左ボーダー 4px を terracotta
+ *     （打ち手 = 検証を経て初めて出る動きの起点 = 1 visual 内 1 箇所）
+ *
  * 4 段階で開示
  */
 const phases = [
@@ -44,14 +50,15 @@ export function CaseStudyVisual({ revealMode = 'interactive' }: Props = {}) {
       {isLast && (
         <div
           style={{
-            marginTop: 12,
-            padding: '8px 10px',
-            background: 'rgba(5, 150, 105, 0.10)',
+            marginTop: 14,
+            padding: '10px 12px',
+            background: 'var(--success-soft)',
             borderRadius: 8,
-            fontSize: 11,
+            fontSize: 13,
             fontWeight: 600,
-            color: '#065F46',
+            color: 'var(--success-deep)',
             textAlign: 'center',
+            lineHeight: 1.45,
           }}
         >
           💡 焦って 1 → 4 に飛ばないこと。中間を省くほど結論がブレる

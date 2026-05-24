@@ -5,6 +5,12 @@ import { useStepReveal } from './hooks/useStepReveal'
  * SCAMPER — 既存のものを変換する 7 視点のチェックリスト
  * Substitute / Combine / Adapt / Modify / Put to other use / Eliminate / Reverse
  * lesson-60 step.1 等で利用
+ *
+ * A 案 Phase 2 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - inline hint 11→13, padding/lineHeight 拡大
+ *   - vz-scamper-letter / name / desc は既に新基準内（16 / 14 / 13）
+ *   - warm accent: 最後 R (Reverse = 前提を逆転する最大ジャンプ) の letter を terracotta
+ *     （他 6 視点 brand-soft は維持 = 1 visual 内 1 箇所）
  */
 
 type ScamperItem = {
@@ -61,14 +67,15 @@ export function ScamperVisual({
 
       <div
         style={{
-          marginTop: 12,
-          padding: '8px 10px',
+          marginTop: 14,
+          padding: '10px 12px',
           background: 'var(--brand-soft)',
           borderRadius: 8,
-          fontSize: 11,
+          fontSize: 13,
           fontWeight: 600,
           color: 'var(--brand)',
           textAlign: 'center',
+          lineHeight: 1.45,
         }}
       >
         {hint}

@@ -5,6 +5,12 @@ import { useStepReveal } from './hooks/useStepReveal'
  * Six Thinking Hats — Edward de Bono の 6 つの思考帽子
  * 同じ問題を 6 つの異なる視点で順に眺める発想法
  * lesson-60 step.2 等で利用
+ *
+ * A 案 Phase 2 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - inline hint 11→13, padding/lineHeight 拡大、warm accent としても兼用
+ *   - vz-hat-name 13→14, vz-hat-desc 12 維持
+ *   - warm accent: hint ボックスを terracotta soft 背景 + deep 文字に
+ *     （Six Hats の 6 色は §2.3 例外条項で維持必須、warm は hint 1 箇所だけに集約）
  */
 
 type Hat = {
@@ -58,14 +64,15 @@ export function SixHatsVisual({
 
       <div
         style={{
-          marginTop: 12,
-          padding: '8px 10px',
-          background: 'var(--brand-soft)',
+          marginTop: 14,
+          padding: '10px 12px',
+          background: 'var(--visual-warm-primary-soft)',
           borderRadius: 8,
-          fontSize: 11,
+          fontSize: 13,
           fontWeight: 600,
-          color: 'var(--brand)',
+          color: 'var(--visual-warm-primary-deep)',
           textAlign: 'center',
+          lineHeight: 1.45,
         }}
       >
         {hint}

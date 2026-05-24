@@ -4,6 +4,12 @@ import './visuals-phase3b.css'
  * Porter's Five Forces — 業界構造分析の 5 つの力
  * 中央に「業界内競合」、上下左右に新規参入・代替品・買い手・売り手
  * lesson-323 等で利用
+ *
+ * A 案 Phase 2 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - inline hint 11→13, padding/lineHeight 拡大
+ *   - vz-5f-label 11→12, vz-5f-name 13.5→14 (center 14→16)
+ *   - warm accent: 中央セル (center) の label を mustard に格上げ
+ *     （業界の中核 = 全フォースの収束点 = 1 visual 内 1 箇所、brand-cta 主役 background は維持）
  */
 
 type Force = {
@@ -69,14 +75,15 @@ export function FiveForcesVisual({
 
       <div
         style={{
-          marginTop: 12,
-          padding: '8px 10px',
+          marginTop: 14,
+          padding: '10px 12px',
           background: 'var(--brand-soft)',
           borderRadius: 8,
-          fontSize: 11,
+          fontSize: 13,
           fontWeight: 600,
           color: 'var(--brand)',
           textAlign: 'center',
+          lineHeight: 1.45,
         }}
       >
         {hint}

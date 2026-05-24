@@ -22,7 +22,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.08em;
   color: var(--brand);
@@ -60,17 +60,24 @@
 }
 
 .vz-iceberg-layer .label {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   opacity: 0.75;
 }
 
+/* warm accent (A 案 Phase 2): 最深層 (bottom = メンタルモデル = システム性の根源) の label を
+ * terracotta-deep に格上げ。top の brand-cta-grad は維持 = 1 visual 内 1 箇所 */
+.vz-iceberg-layer.bottom .label {
+  color: var(--visual-warm-primary-deep);
+  opacity: 1;
+}
+
 .vz-iceberg-layer .title {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
-  line-height: 1.3;
+  line-height: 1.35;
 }
 
 .vz-iceberg-layer .body {
@@ -208,6 +215,17 @@
   color: var(--brand);
 }
 
+/* warm accent (A 案 Phase 2): ループ閉じ (↺ 最後 → 最初に戻る) = システム性の本質
+ * 1 visual 内 1 箇所、他の ↓ 矢印は brand のまま */
+.vz-archetype-arrow.loop {
+  color: var(--visual-warm-primary-deep);
+}
+
+.vz-archetype-arrow.loop .sign {
+  background: var(--visual-warm-primary-soft);
+  color: var(--visual-warm-primary-deep);
+}
+
 .vz-archetype-arrow .sign {
   display: inline-flex;
   align-items: center;
@@ -321,22 +339,28 @@
 }
 
 .vz-empathy-cell .label {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.08em;
   color: var(--brand);
   text-transform: uppercase;
 }
 
+/* warm accent (A 案 Phase 2): Think & Feel セル (1 番目 = 本人が言葉にしない最大の発見ポイント)
+ * label を terracotta-deep に格上げ。他 3 セルは brand 維持 = 1 visual 内 1 箇所 */
+.vz-empathy-cell:first-child .label {
+  color: var(--visual-warm-primary-deep);
+}
+
 .vz-empathy-cell .title {
   font-size: 14px;
   font-weight: 700;
   color: var(--text-primary);
-  line-height: 1.3;
+  line-height: 1.35;
 }
 
 .vz-empathy-cell .body {
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.45;
@@ -418,19 +442,21 @@
   color: var(--success-deep);
 }
 
+/* warm accent (A 案 Phase 2): 3 円の交点 = ユーザーが「片付けたい仕事」= JTBD の核
+ * 1 visual 内 1 箇所、外側 3 円のフレームワーク固有色（brand/rose/success）は維持 */
 .vz-jtbd-center {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: var(--brand-cta-grad);
+  background: linear-gradient(135deg, var(--visual-warm-primary) 0%, var(--visual-warm-primary-deep) 100%);
   color: #fff;
   border-radius: 999px;
-  padding: 6px 12px;
-  font-size: 12px;
+  padding: 8px 14px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.06em;
-  box-shadow: 0 4px 14px rgba(108, 142, 245, 0.40);
+  box-shadow: 0 4px 14px rgba(196, 117, 58, 0.40);
   z-index: 2;
   white-space: nowrap;
 }
@@ -470,19 +496,25 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   font-family: 'Inter Tight', Inter, sans-serif;
   box-shadow: 0 4px 14px rgba(108, 142, 245, 0.32);
   border: 3px solid var(--bg-card);
 }
 
+/* warm accent (A 案 Phase 2): デザイン思考サイクルの起点 = 12 時方向 Empathize (1 番目 step) */
+.vz-dt-step:first-child .vz-dt-step-badge {
+  background: linear-gradient(135deg, var(--visual-warm-primary) 0%, var(--visual-warm-primary-deep) 100%);
+  box-shadow: 0 4px 14px rgba(196, 117, 58, 0.32);
+}
+
 .vz-dt-step-label {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--text-primary);
   text-align: center;
-  line-height: 1.2;
+  line-height: 1.3;
 }
 
 .vz-dt-center {
@@ -502,7 +534,7 @@
 }
 
 .vz-dt-center .label {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.1em;
   color: var(--text-muted);
@@ -533,7 +565,7 @@
 }
 
 .vz-hypo-col .col-label {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.08em;
   color: var(--text-muted);
@@ -550,25 +582,27 @@
   line-height: 1.3;
 }
 
+/* warm accent (A 案 Phase 2): recommended (= hypothesis-driven 推奨フロー = 動きの起点) を
+ * terracotta soft 系にして他 col との差別化を強化 = 1 visual 内 1 箇所 */
 .vz-hypo-col.recommended {
-  background: var(--brand-soft);
-  border-color: var(--brand);
+  background: var(--visual-warm-primary-soft);
+  border-color: var(--visual-warm-primary);
 }
 
 .vz-hypo-col.recommended .col-title {
-  color: var(--brand);
+  color: var(--visual-warm-primary-deep);
 }
 
 .vz-hypo-node {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 6px 8px;
-  font-size: 13px;
+  padding: 8px 10px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-primary);
   text-align: center;
-  line-height: 1.3;
+  line-height: 1.4;
 }
 
 .vz-hypo-node.start {
@@ -584,7 +618,7 @@
 
 .vz-hypo-arrow {
   text-align: center;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--brand);
   line-height: 1;

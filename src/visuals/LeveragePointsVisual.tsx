@@ -6,6 +6,12 @@ import { useStepReveal } from './hooks/useStepReveal'
  * パラメータ → ルール → 目標 → パラダイム の 4 段ピラミッド
  * 上に行くほど介入の難易度は上がるが、変化のインパクトも大きくなる
  * lesson-314 等で利用
+ *
+ * A 案 Phase 2 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - inline hint 11→13, padding/lineHeight 拡大
+ *   - vz-leverage-tier-label 11→12, desc 12.5→13, scale 11→12
+ *   - warm accent: t4 (最上位 = パラダイム = インパクト最大) の tier-label を mustard
+ *     （主役 brand-cta-grad 背景を維持しつつラベルだけ暖色名札化 = 1 visual 内 1 箇所）
  */
 
 type Tier = {
@@ -62,14 +68,15 @@ export function LeveragePointsVisual({
 
       <div
         style={{
-          marginTop: 12,
-          padding: '8px 10px',
+          marginTop: 14,
+          padding: '10px 12px',
           background: 'var(--brand-soft)',
           borderRadius: 8,
-          fontSize: 11,
+          fontSize: 13,
           fontWeight: 600,
           color: 'var(--brand)',
           textAlign: 'center',
+          lineHeight: 1.45,
         }}
       >
         {hint}

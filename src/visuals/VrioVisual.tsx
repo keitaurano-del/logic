@@ -4,6 +4,12 @@ import './visuals-phase3b.css'
  * VRIO — 経営資源の競争優位を判定する 4 段チェック
  * Value / Rare / Inimitable / Organization の Yes/No フロー
  * lesson-325 等で利用
+ *
+ * A 案 Phase 2 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - inline hint 11→13, padding/lineHeight 拡大
+ *   - vz-vrio-verdict 13.5→14, vrio-q lineHeight 1.4→1.45
+ *   - warm accent: 最後の O (Organization = 持続的優位の最終ゲート) の letter を terracotta
+ *     （V/R/I は brand-soft、O だけ暖色 = 1 visual 内 1 箇所、verdict brand-cta は維持）
  */
 
 type VrioStep = {
@@ -58,14 +64,15 @@ export function VrioVisual({
 
       <div
         style={{
-          marginTop: 12,
-          padding: '8px 10px',
+          marginTop: 14,
+          padding: '10px 12px',
           background: 'var(--brand-soft)',
           borderRadius: 8,
-          fontSize: 11,
+          fontSize: 13,
           fontWeight: 600,
           color: 'var(--brand)',
           textAlign: 'center',
+          lineHeight: 1.45,
         }}
       >
         {hint}

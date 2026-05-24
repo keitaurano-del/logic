@@ -6,6 +6,11 @@ import './visuals-docs.css'
  *
  * 2x2 グリッドで「棒 / 折れ線 / 円 / 散布図」を並べ、それぞれ用途のラベルと
  * シンプルな SVG サンプルを描画する。チャート選びの判断軸を直感化する。
+ *
+ * A 案 Phase 2 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - vz-chart-card-name 13→14, vz-chart-card-use 10→12, vz-chart-card-body 11→13
+ *   - warm accent: vz-chart-card-use (用途ラベル = チャート選びの起点) を terracotta
+ *     （4 ラベルすべて同色だが意味的に「用途」という 1 カテゴリ = 1 visual 内 1 軸）
  */
 
 export type ChartTypeGuideVisualProps = {

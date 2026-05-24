@@ -286,7 +286,7 @@
 }
 
 .vz-hat-name {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--text-primary);
   letter-spacing: 0.02em;
@@ -295,7 +295,7 @@
 .vz-hat-desc {
   font-size: 12px;
   color: var(--text-secondary);
-  line-height: 1.4;
+  line-height: 1.45;
 }
 
 /* hat colors — Six Thinking Hats のフレームワーク固有色（6 色）。
@@ -340,6 +340,13 @@
   font-size: 16px;
   font-family: 'Inter Tight', Inter, sans-serif;
   flex-shrink: 0;
+}
+
+/* warm accent (A 案 Phase 2): SCAMPER 最終 R (Reverse = 前提逆転 = 最大ジャンプ) を terracotta
+ * 1 visual 内 1 箇所、他 6 視点の brand-soft は維持 */
+.vz-scamper .vz-scamper-row:last-child .vz-scamper-letter {
+  background: var(--visual-warm-primary-soft);
+  color: var(--visual-warm-primary-deep);
 }
 
 .vz-scamper-body {
@@ -573,7 +580,7 @@
 .vz-5f-cell.right  { grid-column: 3; grid-row: 2; }
 
 .vz-5f-label {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -581,20 +588,23 @@
   opacity: 0.9;
 }
 
+/* warm accent (A 案 Phase 2): 中央セル「中核」ラベルを mustard で主役名札化
+ * 1 visual 内 1 箇所、brand-cta 背景は維持 */
 .vz-5f-cell.center .vz-5f-label {
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--visual-warm-secondary);
+  opacity: 1;
 }
 
 .vz-5f-name {
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--text-primary);
-  line-height: 1.3;
+  line-height: 1.4;
 }
 
 .vz-5f-cell.center .vz-5f-name {
   color: #fff;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 /* ===== VRIO ===== */
@@ -629,6 +639,13 @@
   font-family: 'Inter Tight', Inter, sans-serif;
 }
 
+/* warm accent (A 案 Phase 2): VRIO 最後の O (Organization = 持続的優位の最終ゲート) を terracotta
+ * V / R / I は brand-soft 維持 = 1 visual 内 1 箇所 */
+.vz-vrio .vz-vrio-row:last-child .vz-vrio-letter {
+  background: var(--visual-warm-primary-soft);
+  color: var(--visual-warm-primary-deep);
+}
+
 .vz-vrio-body {
   display: flex;
   flex-direction: column;
@@ -645,7 +662,7 @@
 .vz-vrio-q {
   font-size: 13px;
   color: var(--text-secondary);
-  line-height: 1.4;
+  line-height: 1.45;
 }
 
 .vz-vrio-check {
@@ -667,15 +684,16 @@
 }
 
 .vz-vrio-verdict {
-  margin-top: 8px;
-  padding: 10px 12px;
+  margin-top: 10px;
+  padding: 12px 14px;
   border-radius: 10px;
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 700;
   text-align: center;
   background: var(--brand-cta-grad);
   color: #fff;
   box-shadow: var(--brand-cta-shadow);
+  line-height: 1.45;
 }
 
 /* ===== Leverage Points ピラミッド ===== */
@@ -726,15 +744,18 @@
 }
 
 .vz-leverage-tier-label {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   opacity: 0.85;
 }
 
+/* warm accent (A 案 Phase 2): t4 (最上位 = パラダイム = インパクト最大) ラベルを mustard
+ * 1 visual 内 1 箇所、brand-cta-grad 主役背景は維持 */
 .vz-leverage-tier.t4 .vz-leverage-tier-label {
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--visual-warm-secondary);
+  opacity: 1;
 }
 
 .vz-leverage-tier.t3 .vz-leverage-tier-label {
@@ -745,21 +766,21 @@
 .vz-leverage-tier-name {
   font-size: 14px;
   font-weight: 700;
-  line-height: 1.3;
+  line-height: 1.4;
 }
 
 .vz-leverage-tier-desc {
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 500;
   opacity: 0.85;
-  line-height: 1.4;
+  line-height: 1.45;
 }
 
 .vz-leverage-scale {
   width: 100%;
   display: flex;
   justify-content: space-between;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--text-muted);
   letter-spacing: 0.06em;

@@ -4,6 +4,12 @@ import { useState } from 'react'
  * システム原型 — 3 種類を切替表示
  * Fixes that Fail / Limits to Growth / Tragedy of the Commons
  * lesson-66 step.0 step.visual='SystemArchetypeDiagram'
+ *
+ * A 案 Phase 2 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - inline edge label 10→12, hint 11→13, padding/lineHeight 拡大
+ *   - CSS 側 vz-archetype-summary / node / arrow は既に新基準内
+ *   - warm accent: ループ閉じ (↺ 戻り) のリング行を terracotta に格上げ
+ *     （システム性の本質 = 戻ってくる動き = 1 visual 内 1 箇所）
  */
 
 type ArchetypeKey = 'fixes' | 'limits' | 'commons'
@@ -126,17 +132,17 @@ export function SystemArchetypeVisual({ archetype = 'fixes' }: Props) {
                   <span className={`sign ${current.edges[i]?.sign === 'minus' ? 'minus' : ''}`}>
                     {current.edges[i]?.sign === 'minus' ? '−' : '+'}
                   </span>
-                  <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--text-muted)' }}>
+                  <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)' }}>
                     {current.edges[i]?.label}
                   </span>
                   <span>↓</span>
                 </div>
               ) : (
-                <div className="vz-archetype-arrow">
+                <div className="vz-archetype-arrow loop">
                   <span className={`sign ${current.edges[i]?.sign === 'minus' ? 'minus' : ''}`}>
                     {current.edges[i]?.sign === 'minus' ? '−' : '+'}
                   </span>
-                  <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--text-muted)' }}>
+                  <span style={{ fontSize: 12, fontWeight: 600 }}>
                     {current.edges[i]?.label} → 最初のノードへ戻る
                   </span>
                   <span>↺</span>
@@ -148,14 +154,15 @@ export function SystemArchetypeVisual({ archetype = 'fixes' }: Props) {
       </div>
 
       <div style={{
-        marginTop: 12,
-        padding: '8px 10px',
+        marginTop: 14,
+        padding: '10px 12px',
         background: 'var(--brand-soft)',
         borderRadius: 8,
-        fontSize: 11,
+        fontSize: 13,
         fontWeight: 600,
         color: 'var(--brand)',
         textAlign: 'center',
+        lineHeight: 1.45,
       }}>
         {current.hint}
       </div>
