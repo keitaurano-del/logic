@@ -1,0 +1,432 @@
+/* ============================================================
+ * Logic v3 — Concept Visuals (Listening course)
+ * 構造化リスニング系 5 visual の専用スタイル。
+ *
+ * 全 visual 共通: .vz-* prefix
+ * CSS 変数は src/styles/tokens.css の本体トークンを直接参照
+ * フォント基準は VISUAL_DESIGN_GUIDE.md §3.1 (A 案、2026-05-24 底上げ)
+ * warm accent は §2.4 に従い 1 visual 内 1 箇所のみ
+ *
+ * 追加 class prefix:
+ *   .vz-fei-*     : FactEmotionInterpretationVisual
+ *   .vz-silence-* : SilenceTypesVisual
+ *   .vz-spin-*    : SPINStructureVisual
+ *   .vz-bant-*    : BANTGridVisual
+ *   .vz-1on1-*    : OneOnOneFlowVisual
+ * ============================================================ */
+
+/* ===== FactEmotionInterpretationVisual (3 層分解) ===== */
+.vz-fei {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vz-fei-layer {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--brand);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.vz-fei-layer.fact {
+  border-left-color: var(--brand);
+}
+
+.vz-fei-layer.emotion {
+  border-left-color: var(--brand);
+  background: var(--bg-secondary);
+}
+
+/* warm accent: Interpretation layer (聴き手の判断が問われる最深層) — 1 visual 内 1 箇所 */
+.vz-fei-layer.interpretation {
+  border-left-color: var(--visual-warm-primary);
+  border-left-width: 4px;
+}
+
+.vz-fei-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--brand);
+}
+
+.vz-fei-layer.interpretation .vz-fei-label {
+  color: var(--visual-warm-primary-deep);
+}
+
+.vz-fei-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.35;
+}
+
+.vz-fei-body {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+.vz-fei-arrow {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-muted);
+  line-height: 1;
+  margin: 2px 0;
+}
+
+/* ===== SilenceTypesVisual (2x2 grid) ===== */
+.vz-silence-wrap {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  grid-template-rows: 1fr 28px;
+  gap: 6px;
+  width: 100%;
+}
+
+.vz-silence-yaxis {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 6px 0;
+  line-height: 1.35;
+}
+
+.vz-silence-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 6px;
+}
+
+.vz-silence-cell {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 110px;
+}
+
+.vz-silence-cell.tl {
+  /* warm accent: 「考え中・待つ」= 沈黙を待てる聴き手の中心テーマ */
+  border-left: 4px solid var(--visual-warm-primary);
+}
+.vz-silence-cell.tr {
+  border-color: var(--brand);
+}
+.vz-silence-cell.bl {
+  border-color: var(--border);
+  background: var(--bg-secondary);
+}
+.vz-silence-cell.br {
+  border-color: var(--brand);
+  background: var(--bg-secondary);
+}
+
+.vz-silence-cell-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.35;
+}
+
+.vz-silence-cell.tl .vz-silence-cell-title {
+  color: var(--visual-warm-primary-deep);
+}
+
+.vz-silence-cell-body {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.vz-silence-xaxis {
+  grid-column: 2;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+/* ===== SPINStructureVisual (4 段 funnel) ===== */
+.vz-spin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.vz-spin-step {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 12px;
+  align-items: center;
+  background: var(--bg-card);
+  border: 1.5px solid var(--brand);
+  border-radius: 10px;
+  padding: 10px 14px;
+  min-width: 78%;
+}
+
+.vz-spin-step.final {
+  /* warm accent: Need-payoff = 価値を相手に語らせる最重要 step */
+  border-color: var(--visual-warm-primary);
+  border-left-width: 4px;
+}
+
+.vz-spin-letter {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-size: 18px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0;
+}
+
+.vz-spin-step.final .vz-spin-letter {
+  background: var(--visual-warm-primary-soft);
+  color: var(--visual-warm-primary-deep);
+}
+
+.vz-spin-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.vz-spin-name {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--brand);
+}
+
+.vz-spin-step.final .vz-spin-name {
+  color: var(--visual-warm-primary-deep);
+}
+
+.vz-spin-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.35;
+}
+
+.vz-spin-desc {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* ===== BANTGridVisual (2x2 grid) ===== */
+.vz-bant-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 8px;
+}
+
+.vz-bant-cell {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 130px;
+}
+
+.vz-bant-cell.pos-0 { border-color: var(--brand); }
+.vz-bant-cell.pos-1 { border-color: var(--brand); }
+.vz-bant-cell.pos-2 { border-color: var(--brand); background: var(--bg-secondary); }
+/* warm accent: Timing = 「いつ動くか」が商談を前に進める最終決定要素 */
+.vz-bant-cell.pos-3 { border-color: var(--visual-warm-primary); border-width: 1.5px; }
+
+.vz-bant-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.vz-bant-letter {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-size: 16px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vz-bant-cell.pos-3 .vz-bant-letter {
+  background: var(--visual-warm-primary-soft);
+  color: var(--visual-warm-primary-deep);
+}
+
+.vz-bant-name-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.vz-bant-name {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--brand);
+  line-height: 1.2;
+}
+
+.vz-bant-cell.pos-3 .vz-bant-name {
+  color: var(--visual-warm-primary-deep);
+}
+
+.vz-bant-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.vz-bant-question {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* ===== OneOnOneFlowVisual (横スクロール時系列) ===== */
+.vz-1on1-scroll {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  /* hide scrollbar for cleaner look but keep functional */
+  scrollbar-width: thin;
+}
+
+.vz-1on1-track {
+  display: flex;
+  gap: 8px;
+  padding: 4px 2px 8px;
+  align-items: stretch;
+  min-width: max-content;
+}
+
+.vz-1on1-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--brand);
+  border-radius: 10px;
+  padding: 12px 14px 14px;
+  width: 168px;
+  flex-shrink: 0;
+}
+
+/* warm accent: Discover step (「聴く時間」を最も厚く取るのがメッセージ) */
+.vz-1on1-stage.accent {
+  border-top-color: var(--visual-warm-primary);
+}
+
+.vz-1on1-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.vz-1on1-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-size: 12px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vz-1on1-stage.accent .vz-1on1-num {
+  background: var(--visual-warm-primary-soft);
+  color: var(--visual-warm-primary-deep);
+}
+
+.vz-1on1-minutes {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.vz-1on1-stage.accent .vz-1on1-minutes {
+  color: var(--visual-warm-primary-deep);
+}
+
+.vz-1on1-name {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.vz-1on1-body {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.vz-1on1-arrow {
+  position: absolute;
+  top: 50%;
+  right: -10px;
+  transform: translateY(-50%);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-muted);
+  line-height: 1;
+  background: var(--bg-primary, transparent);
+  padding: 0 2px;
+  pointer-events: none;
+  z-index: 1;
+}

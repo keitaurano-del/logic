@@ -80,6 +80,12 @@ import { FermiCrossCheckVisual } from './FermiCrossCheckVisual'
 // ADHD leverage course (lesson 801 / 804): 2 種類のマトリクス系図解
 import { IgnitionMapVisual } from './IgnitionMapVisual'
 import { TraitEnvironmentMatrixVisual } from './TraitEnvironmentMatrixVisual'
+// Listening course (lesson 730-736): 構造化リスニング 5 種
+import { FactEmotionInterpretationVisual } from './FactEmotionInterpretationVisual'
+import { SilenceTypesVisual } from './SilenceTypesVisual'
+import { SPINStructureVisual } from './SPINStructureVisual'
+import { BANTGridVisual } from './BANTGridVisual'
+import { OneOnOneFlowVisual } from './OneOnOneFlowVisual'
 
 /**
  * visualId → Visual component の registry
@@ -164,6 +170,12 @@ export const visualRegistry: Record<string, ComponentType<any>> = {
   // ADHD leverage course
   IgnitionMapDiagram: IgnitionMapVisual,
   TraitEnvironmentMatrixDiagram: TraitEnvironmentMatrixVisual,
+  // Listening course (lesson 730-736)
+  FactEmotionInterpretationDiagram: FactEmotionInterpretationVisual,
+  SilenceTypesDiagram: SilenceTypesVisual,
+  SPINStructureDiagram: SPINStructureVisual,
+  BANTGridDiagram: BANTGridVisual,
+  OneOnOneFlowDiagram: OneOnOneFlowVisual,
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- registry の Comp 型に揃える
