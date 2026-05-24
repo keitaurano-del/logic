@@ -5,6 +5,12 @@ import './visuals-phase3c.css'
  * lesson-42 step.2 / lesson-401 visual='AbsoluteVsRelativeDiagram'
  *
  * 構図: 共通の事実カード上に、2 つの見せ方カード（絶対値 / 相対値）を並べる
+ *
+ * A 案 Phase 3 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - inline hint 11→13, padding/lineHeight 拡大
+ *   - CSS: avr-fact-label 11→12, fact-text 15→16, card-tag 11→12, card-impression 13→14
+ *   - warm accent: hint ボックスを terracotta soft 背景に
+ *     (relative の rose は §2.3 例外として意味色を維持、ヒント 1 箇所のみ温度感色)
  */
 
 export function AbsoluteVsRelativeVisual() {
@@ -41,14 +47,15 @@ export function AbsoluteVsRelativeVisual() {
       </div>
 
       <div style={{
-        marginTop: 12,
-        padding: '8px 10px',
-        background: 'var(--warning-soft)',
+        marginTop: 14,
+        padding: '10px 12px',
+        background: 'var(--visual-warm-primary-soft)',
         borderRadius: 8,
-        fontSize: 11,
+        fontSize: 13,
         fontWeight: 600,
-        color: '#92400E',
+        color: 'var(--visual-warm-primary-deep)',
         textAlign: 'center',
+        lineHeight: 1.45,
       }}>
         ⚠ 「% 増」だけ語る相手は要注意。元の数を必ず確認する
       </div>
