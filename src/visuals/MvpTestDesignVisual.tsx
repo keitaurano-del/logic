@@ -5,6 +5,12 @@ import { useStepReveal } from './hooks/useStepReveal'
  * lesson-70 step.1 step.visual='MvpTestDesignDiagram'
  *
  * 4 段階で開示
+ *
+ * A 案 Phase 3 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - inline hint 11→13, padding/lineHeight 拡大、💡 prefix 追加
+ *   - CSS: vz-mvp-step-label 11→12
+ *   - warm accent: vz-mvp-arrow ↓ を terracotta に
+ *     (step 間を結ぶ順序矢印 = 1 visual 内 1 箇所、step-num の brand gradient は維持)
  */
 
 type Step = {
@@ -81,17 +87,18 @@ export function MvpTestDesignVisual({ revealMode = 'interactive' }: Props = {}) 
       {isLast && (
         <div
           style={{
-            marginTop: 12,
-            padding: '8px 10px',
+            marginTop: 14,
+            padding: '10px 12px',
             background: 'var(--brand-soft)',
             borderRadius: 8,
-            fontSize: 11,
+            fontSize: 13,
             fontWeight: 600,
             color: 'var(--brand)',
             textAlign: 'center',
+            lineHeight: 1.45,
           }}
         >
-          判定基準を後決めにすると「もう少し続ければ…」で撤退できなくなる
+          💡 判定基準を後決めにすると「もう少し続ければ…」で撤退できなくなる
         </div>
       )}
     </div>

@@ -15,6 +15,12 @@ import './visuals-phase2.css'
  * 未指定フィールドは default 値が使われ、後方互換が保たれる。
  * ベン図の SVG 内容（円・ラベル A/B/C/D）は固定。学習対象の概念図そのものなので
  * 内容差し替えはタイトル / 補足テキストのみで十分という想定。
+ *
+ * A 案 Phase 3 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - inline hint 11→13, padding/lineHeight 拡大
+ *   - CSS: vz-mv-card-title 13→14, vz-mv-card-note 12→13
+ *   - warm accent: hint ボックスを terracotta soft 背景に
+ *     (good/bad の success/rose 意味色は §2.3 例外として維持、hint 1 箇所のみ温度感色)
  */
 
 export type MeceVennCard = {
@@ -106,14 +112,15 @@ export function MeceVennDiagram(props: MeceVennProps = {}) {
 
       {hint ? (
         <div style={{
-          marginTop: 12,
-          padding: '8px 10px',
-          background: 'var(--brand-soft)',
+          marginTop: 14,
+          padding: '10px 12px',
+          background: 'var(--visual-warm-primary-soft)',
           borderRadius: 8,
-          fontSize: 11,
+          fontSize: 13,
           fontWeight: 600,
-          color: 'var(--brand)',
+          color: 'var(--visual-warm-primary-deep)',
           textAlign: 'center',
+          lineHeight: 1.45,
         }}>
           💡 {hint}
         </div>

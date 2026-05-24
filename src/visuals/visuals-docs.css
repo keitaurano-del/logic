@@ -77,7 +77,7 @@
 
 /* スライド内の擬似タイトル */
 .vz-gbs-mini-title {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--text-primary);
   line-height: 1.3;
@@ -92,14 +92,16 @@
   font-weight: 600;
 }
 
-/* good側のキーメッセージ（強調 1 行 + 余白） */
+/* good側のキーメッセージ（強調 1 行 + 余白）
+ * warm accent (A 案 Phase 3): 主役メッセージの背景を terracotta soft に。
+ * good/bad の意味色 (success/rose) は §2.3 例外として維持、key 1 箇所のみ温度感色 */
 .vz-gbs-key {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
-  color: var(--brand);
+  color: var(--visual-warm-primary-deep);
   line-height: 1.4;
   padding: 8px 6px;
-  background: var(--brand-soft);
+  background: var(--visual-warm-primary-soft);
   border-radius: 6px;
   text-align: center;
   margin-top: auto;
@@ -149,7 +151,7 @@
   margin-top: 8px;
   padding-top: 8px;
   border-top: 1px dashed var(--border);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   line-height: 1.4;
 }
@@ -197,7 +199,7 @@
 }
 
 .vz-layout-card-label {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.08em;
   color: var(--brand);
@@ -206,7 +208,7 @@
 }
 
 .vz-layout-card-title {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--text-primary);
   text-align: center;
@@ -248,22 +250,24 @@
   pointer-events: none;
 }
 
+/* warm accent (A 案 Phase 3): 視線パス矢印を terracotta に。
+ * 「視線を導く動き」が 1 visual の主役 = 1 箇所、cramped/airy の rose/success は §2.3 維持 */
 .vz-layout-arrow path,
 .vz-layout-arrow line {
   fill: none;
-  stroke: var(--danger);
+  stroke: var(--visual-warm-primary);
   stroke-width: 2.5;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
 .vz-layout-arrow-tip {
-  fill: var(--danger);
+  fill: var(--visual-warm-primary);
   stroke: none;
 }
 
 .vz-layout-card-note {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-secondary);
   line-height: 1.45;
@@ -282,7 +286,7 @@
 }
 
 .vz-layout-space-title {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--brand);
   text-align: center;
@@ -341,7 +345,7 @@
 }
 
 .vz-layout-space-demo-label {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.04em;
 }
@@ -369,11 +373,13 @@
   gap: 10px;
 }
 
+/* warm accent (A 案 Phase 3): ジャンプ率セクションタイトルを terracotta deep に。
+ * 「タイポ階層の主役」を 1 visual 内 1 箇所だけ温度感色で示す */
 .vz-typo-section-title {
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.08em;
-  color: var(--brand);
+  color: var(--visual-warm-primary-deep);
   text-transform: uppercase;
   text-align: center;
 }
@@ -390,7 +396,7 @@
 .vz-typo-tag {
   flex-shrink: 0;
   width: 56px;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.04em;
   color: var(--text-muted);
@@ -414,7 +420,7 @@
 
 .vz-typo-size {
   margin-left: auto;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--brand);
   font-family: 'Inter Tight', Inter, sans-serif;
@@ -438,7 +444,7 @@
 }
 
 .vz-typo-card-title {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.06em;
   color: var(--text-muted);
@@ -455,7 +461,7 @@
 .vz-typo-contrast-block {
   padding: 6px 8px;
   border-radius: 4px;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   display: flex;
   justify-content: space-between;
@@ -475,7 +481,7 @@
 }
 
 .vz-typo-contrast-mark {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
 }
 
@@ -487,7 +493,7 @@
   border: 1px solid var(--border);
   border-radius: 4px;
   padding: 6px;
-  font-size: 10px;
+  font-size: 13px;
   color: var(--text-primary);
   background: var(--bg-card);
 }
@@ -503,7 +509,7 @@
 }
 
 .vz-typo-leading-label {
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -555,7 +561,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.04em;
 }
@@ -574,11 +580,13 @@
   color: #fff;
 }
 
+/* warm accent (A 案 Phase 3): 5% accent セグメントを terracotta に。
+ * 配色教材の主役 = 「最重要箇所のみ」を示す色 = 1 visual 内 1 箇所 */
 .vz-palette-bar-seg.accent {
   flex: 5;
-  background: var(--danger);
+  background: var(--visual-warm-primary);
   color: #fff;
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .vz-palette-legend {
@@ -596,7 +604,7 @@
 }
 
 .vz-palette-legend-label {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.04em;
   color: var(--text-muted);
@@ -612,7 +620,7 @@
 }
 
 .vz-palette-legend-role {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-secondary);
   line-height: 1.3;
@@ -636,14 +644,14 @@
 }
 
 .vz-palette-theme-name {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--text-primary);
   text-align: center;
 }
 
 .vz-palette-theme-tone {
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text-muted);
   text-align: center;

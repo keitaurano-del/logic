@@ -427,7 +427,7 @@
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 4px 8px;
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-primary);
 }
@@ -451,8 +451,10 @@
   line-height: 1;
 }
 
+/* warm accent (A 案 Phase 3): lateral カラムの → 矢印を terracotta に。
+ * 「選択肢を広げる動き」が 1 visual の主役 = 1 箇所、vertical 側 brand は維持 */
 .vz-vvl-col.lateral .vz-vvl-arrow {
-  color: var(--brand-pop);
+  color: var(--visual-warm-primary);
 }
 
 .vz-vvl-tag {

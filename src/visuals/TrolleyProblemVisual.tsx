@@ -6,6 +6,13 @@ import './visuals-phase3c.css'
  *
  * 構図: 線路 (直線 / 分岐) + トロッコ + 5 人 + 1 人 + レバー
  * シンプルなアイコンスタイル（DESIGN_GUIDE 準拠、過度に写実的にしない）
+ *
+ * A 案 Phase 3 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - inline hint 11→13, padding/lineHeight 拡大
+ *   - inline SVG text レバー 8→10, トロッコ 8→10, 5人/1人 9→11
+ *   - CSS: tp-choice-tag 12px / tp-choice-title 14px / tp-choice-school 12px は既に底上げ済
+ *   - warm accent: レバー (SVG circle+line) を terracotta に
+ *     (「レバーを引く」決断行為が思考実験の主役 = 1 visual 内 1 箇所、A/B choice の warning/brand は §2.3 維持)
  */
 
 export function TrolleyProblemVisual() {
@@ -40,10 +47,11 @@ export function TrolleyProblemVisual() {
               strokeWidth="2.5"
             />
 
-            {/* レバー (分岐点直前) */}
-            <circle cx="145" cy="100" r="6" fill="var(--brand)" />
-            <line x1="145" y1="100" x2="145" y2="80" stroke="var(--brand)" strokeWidth="3" strokeLinecap="round" />
-            <text x="145" y="74" fontSize="8" fill="var(--brand)" textAnchor="middle" fontWeight="700">レバー</text>
+            {/* レバー (分岐点直前)
+             * warm accent (A 案 Phase 3): 「レバーを引く」決断行為が思考実験の主役 = terracotta */}
+            <circle cx="145" cy="100" r="6" fill="var(--visual-warm-primary)" />
+            <line x1="145" y1="100" x2="145" y2="80" stroke="var(--visual-warm-primary)" strokeWidth="3" strokeLinecap="round" />
+            <text x="145" y="74" fontSize="10" fill="var(--visual-warm-primary)" textAnchor="middle" fontWeight="700">レバー</text>
 
             {/* トロッコ (左寄り) */}
             <g transform="translate(40, 80)">
@@ -52,7 +60,7 @@ export function TrolleyProblemVisual() {
               <circle cx="8" cy="22" r="4" fill="var(--text-primary)" />
               <circle cx="28" cy="22" r="4" fill="var(--text-primary)" />
             </g>
-            <text x="58" y="68" fontSize="8" fill="var(--text-secondary)" textAnchor="middle" fontWeight="700">
+            <text x="58" y="68" fontSize="10" fill="var(--text-secondary)" textAnchor="middle" fontWeight="700">
               暴走トロッコ
             </text>
 
@@ -65,7 +73,7 @@ export function TrolleyProblemVisual() {
                 </g>
               ))}
             </g>
-            <text x="280" y="74" fontSize="9" fill="var(--danger)" textAnchor="middle" fontWeight="700">
+            <text x="280" y="74" fontSize="11" fill="var(--danger)" textAnchor="middle" fontWeight="700">
               5 人
             </text>
 
@@ -74,7 +82,7 @@ export function TrolleyProblemVisual() {
               <circle cx="0" cy="0" r="3.5" fill="var(--danger)" />
               <rect x="-2.5" y="3" width="5" height="9" rx="1" fill="var(--danger)" />
             </g>
-            <text x="280" y="148" fontSize="9" fill="var(--danger)" textAnchor="middle" fontWeight="700">
+            <text x="280" y="148" fontSize="11" fill="var(--danger)" textAnchor="middle" fontWeight="700">
               1 人
             </text>
           </svg>
@@ -95,14 +103,15 @@ export function TrolleyProblemVisual() {
       </div>
 
       <div style={{
-        marginTop: 12,
-        padding: '8px 10px',
+        marginTop: 14,
+        padding: '10px 12px',
         background: 'var(--brand-soft)',
         borderRadius: 8,
-        fontSize: 11,
+        fontSize: 13,
         fontWeight: 600,
         color: 'var(--brand)',
         textAlign: 'center',
+        lineHeight: 1.45,
       }}>
         💡 「結果」を重視するか「行為そのもの」を重視するかで答えが変わる
       </div>

@@ -7,6 +7,14 @@ import './visuals-docs.css'
  * 1) 階層（H1 / H2 / H3 / Body）を実際のサイズで縦並びに見せる
  * 2) コントラスト OK / NG の対比
  * 3) 行間 1.6 倍 / 1.0 倍の対比
+ *
+ * A 案 Phase 3 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - CSS: typo-section-title 12 維持、typo-tag 10→12、typo-size 10→12、
+ *     typo-card-title 11→12、typo-contrast-block 11→13、typo-contrast-mark 11→13、
+ *     typo-leading-block 10→13、typo-leading-label 9→12
+ *   - h1/h2/h3/body サンプル文字は「実サイズ表示」が教材主旨なので維持
+ *   - warm accent: typo-section-title を terracotta deep に
+ *     (「ジャンプ率」= タイポ階層の主役 = 1 visual 内 1 箇所、good/bad の success/rose は §2.3 維持)
  */
 
 export type TypographyVisualProps = {

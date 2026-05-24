@@ -8,6 +8,12 @@ import './visuals-docs.css'
  * 右：悪いスライド（曖昧な名詞止めタイトル、複数主張の bullet 羅列、色多すぎ）
  *
  * 画像不要・HTML/CSS のみで構成。
+ *
+ * A 案 Phase 3 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - CSS: gbs-mini-title.good 12→14, gbs-points 11→12
+ *     bad 側の gbs-clutter 8px / mini-title.bad 10px は「ぎっしり詰まった bad 例」表現として意図的維持
+ *   - warm accent: vz-gbs-key (good 側のキーメッセージ) の背景を terracotta soft に
+ *     (「主役メッセージ」= 教材の動き起点 = 1 visual 内 1 箇所、bad/good の意味色は §2.3 維持)
  */
 
 export type GoodBadSlideProps = {

@@ -7,6 +7,12 @@ import './visuals-docs.css'
  * 1) 70:25:5 の比率を横帯で表現（ベース / メイン / アクセント）
  * 2) 各役割の % と説明
  * 3) 4 種類のテーマパレット見本（ブランド色違いで配色例を表示）
+ *
+ * A 案 Phase 3 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - CSS: palette-rule-title 12px 維持、bar-seg 11→12, legend-label 10→12,
+ *     legend-role 11→13, theme-name 11→13, theme-tone 9→12, bar-seg.accent 10→12
+ *   - warm accent: palette-bar-seg.accent を terracotta に
+ *     (5% accent = 「最重要箇所のみ」の示唆色、配色教材の主役 = 1 visual 内 1 箇所)
  */
 
 type Theme = {

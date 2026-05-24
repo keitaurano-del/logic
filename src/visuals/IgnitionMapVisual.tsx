@@ -15,6 +15,12 @@ import { useStepReveal } from './hooks/useStepReveal'
  * トーン: 矯正・治療ではなく「自分専用の処方箋を作るための材料集め」を示す
  * 図。ADHD 特性を肯定的に扱うコースの方針に従い、HOT セルにポジティブな
  * 短文ラベルを置く。
+ *
+ * A 案 Phase 3 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - inline cellStyle fontSize 11→12, ヘッダー時間帯 11→12, env ラベル 11→12,
+ *     凡例 11→12, hint 11→13, padding/lineHeight 拡大
+ *   - warm accent: hint ボックスを terracotta soft 背景に
+ *     (hot/cold の brand/accent 意味色は §2.3 例外として維持、hint 1 箇所のみ温度感色)
  */
 
 export type IgnitionCellLevel = 'hot' | 'mild' | 'cold'
@@ -100,7 +106,7 @@ function cellStyle(level: IgnitionCellLevel): React.CSSProperties {
     color: c.fg,
     borderRadius: 8,
     padding: '8px 6px',
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: 600,
     textAlign: 'center',
     lineHeight: 1.3,
@@ -162,7 +168,7 @@ export function IgnitionMapVisual(props: IgnitionMapProps = {}) {
           <div
             key={`head-${t}`}
             style={{
-              fontSize: 11,
+              fontSize: 12,
               fontWeight: 700,
               letterSpacing: '0.05em',
               color: 'var(--text-muted)',
@@ -182,7 +188,7 @@ export function IgnitionMapVisual(props: IgnitionMapProps = {}) {
             <div key={`row-${envLabel}`} style={{ display: 'contents' }}>
               <div
                 style={{
-                  fontSize: 11,
+                  fontSize: 12,
                   fontWeight: 700,
                   color: 'var(--text-muted)',
                   textAlign: 'right',
@@ -223,7 +229,7 @@ export function IgnitionMapVisual(props: IgnitionMapProps = {}) {
           display: 'flex',
           gap: 14,
           justifyContent: 'center',
-          fontSize: 11,
+          fontSize: 12,
           color: 'var(--text-secondary)',
         }}
       >
@@ -246,14 +252,15 @@ export function IgnitionMapVisual(props: IgnitionMapProps = {}) {
       {hint && isLast ? (
         <div
           style={{
-            marginTop: 12,
-            padding: '8px 10px',
-            background: 'var(--brand-soft)',
+            marginTop: 14,
+            padding: '10px 12px',
+            background: 'var(--visual-warm-primary-soft)',
             borderRadius: 8,
-            fontSize: 11,
+            fontSize: 13,
             fontWeight: 600,
-            color: 'var(--brand)',
+            color: 'var(--visual-warm-primary-deep)',
             textAlign: 'center',
+            lineHeight: 1.45,
           }}
         >
           💡 {hint}

@@ -670,7 +670,7 @@
 }
 
 .vz-mvp-step-label {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.08em;
   color: var(--brand);
@@ -691,12 +691,14 @@
   line-height: 1.45;
 }
 
+/* warm accent (A 案 Phase 3): step 間を結ぶ順序矢印を terracotta に。
+ * step-num の brand-cta-grad は維持、矢印が唯一の動き起点 = 1 visual 内 1 箇所 */
 .vz-mvp-arrow {
   grid-column: 2 / 3;
   margin-left: -2px;
   padding: 0 4px;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
-  color: var(--brand);
+  color: var(--visual-warm-primary);
   line-height: 1;
 }

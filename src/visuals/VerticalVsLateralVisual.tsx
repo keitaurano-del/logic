@@ -4,6 +4,12 @@ import './visuals-phase3b.css'
  * Vertical vs Lateral — 垂直思考 vs 水平思考
  * 縦に深掘りする思考と、横に発想を広げる思考の対比
  * lesson-59 step.0 等で利用
+ *
+ * A 案 Phase 3 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - inline hint 11→13, padding/lineHeight 拡大
+ *   - CSS: vvl-pill 12.5→13, vvl-name 14px / vvl-tag 12px は既に底上げ済
+ *   - warm accent: lateral カラムの vvl-arrow → を terracotta に
+ *     (水平思考 = 「選択肢を広げる動き」が 1 visual の主役 = 1 箇所、vertical 側 brand は維持)
  */
 
 type Side = {
@@ -76,14 +82,15 @@ export function VerticalVsLateralVisual({
 
       <div
         style={{
-          marginTop: 12,
-          padding: '8px 10px',
+          marginTop: 14,
+          padding: '10px 12px',
           background: 'var(--brand-soft)',
           borderRadius: 8,
-          fontSize: 11,
+          fontSize: 13,
           fontWeight: 600,
           color: 'var(--brand)',
           textAlign: 'center',
+          lineHeight: 1.45,
         }}
       >
         {hint}

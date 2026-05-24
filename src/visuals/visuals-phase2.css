@@ -326,7 +326,7 @@
 }
 
 .vz-mv-card-title {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--text-primary);
   text-align: center;
@@ -342,7 +342,7 @@
 }
 
 .vz-mv-card-note {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-secondary);
   text-align: center;

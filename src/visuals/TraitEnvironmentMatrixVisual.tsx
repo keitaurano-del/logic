@@ -11,6 +11,12 @@ import { useStepReveal } from './hooks/useStepReveal'
  * トーン: 同じ特性でも環境次第で「強み」にも「困りごと」にも転じる、という
  * Lesson 804 のメッセージを 1 枚で伝える。矯正・治療ではなく「自分に合う環境
  * を選ぶ」というレバレッジ論の図。
+ *
+ * A 案 Phase 3 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - inline ヘッダー env 10.5→12, trait ラベル 11→12, セル内 label 10→12,
+ *     凡例 11→12, hint 11→13, padding/lineHeight 拡大
+ *   - warm accent: hint ボックスを terracotta soft 背景に
+ *     (strength/drain の brand/accent 意味色は §2.3 例外として維持、hint 1 箇所のみ温度感色)
  */
 
 export type TraitMatrixCell = 'strength' | 'drain' | 'neutral'
@@ -138,7 +144,7 @@ export function TraitEnvironmentMatrixVisual(
           <div
             key={`env-${e}`}
             style={{
-              fontSize: 10.5,
+              fontSize: 12,
               fontWeight: 700,
               letterSpacing: '0.04em',
               color: 'var(--text-muted)',
@@ -158,7 +164,7 @@ export function TraitEnvironmentMatrixVisual(
             <div key={`row-${trait}`} style={{ display: 'contents' }}>
               <div
                 style={{
-                  fontSize: 11,
+                  fontSize: 12,
                   fontWeight: 700,
                   color: 'var(--text-primary)',
                   textAlign: 'right',
@@ -203,7 +209,7 @@ export function TraitEnvironmentMatrixVisual(
                     <span style={{ fontSize: 18, fontWeight: 800, lineHeight: 1 }}>
                       {a.glyph}
                     </span>
-                    <span style={{ fontSize: 10, fontWeight: 600 }}>{a.label}</span>
+                    <span style={{ fontSize: 12, fontWeight: 600 }}>{a.label}</span>
                   </div>
                 )
               })}
@@ -219,7 +225,7 @@ export function TraitEnvironmentMatrixVisual(
           display: 'flex',
           gap: 14,
           justifyContent: 'center',
-          fontSize: 11,
+          fontSize: 12,
           color: 'var(--text-secondary)',
         }}
       >
@@ -258,14 +264,15 @@ export function TraitEnvironmentMatrixVisual(
       {hint && isLast ? (
         <div
           style={{
-            marginTop: 12,
-            padding: '8px 10px',
-            background: 'var(--brand-soft)',
+            marginTop: 14,
+            padding: '10px 12px',
+            background: 'var(--visual-warm-primary-soft)',
             borderRadius: 8,
-            fontSize: 11,
+            fontSize: 13,
             fontWeight: 600,
-            color: 'var(--brand)',
+            color: 'var(--visual-warm-primary-deep)',
             textAlign: 'center',
+            lineHeight: 1.45,
           }}
         >
           💡 {hint}

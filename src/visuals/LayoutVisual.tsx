@@ -6,6 +6,12 @@ import './visuals-docs.css'
  *
  * 上段：Z 配置（プレゼンスライド）と F 配置（ドキュメント）の視線パスを矢印で図示
  * 下段：余白がない（cramped）と余白がある（airy）の対比
+ *
+ * A 案 Phase 3 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - CSS: layout-card-label 11→12, layout-card-title 13→14, layout-card-note 11→13,
+ *     layout-space-title 13→14, layout-space-demo-label 11→12
+ *   - warm accent: vz-layout-arrow stroke を terracotta に
+ *     (視線パスを示す矢印 = 「視線を導く動き」の主役 = 1 visual 内 1 箇所、cramped/airy の rose/success は §2.3 維持)
  */
 
 export type LayoutVisualProps = {
