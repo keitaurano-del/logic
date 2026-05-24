@@ -15,6 +15,12 @@ const branches: Branch[] = [
 /**
  * なぜなぜ並行ループ — 1階層に複数の枝
  * lesson-344 step.visual='WhyWhyParallelDiagram'
+ *
+ * A 案 Phase 3 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - inline hint 11→13, padding/lineHeight 拡大
+ *   - CSS: branch-label 12→13, branch-sub 11→12, branch-deeper 11→12
+ *   - warm accent: vz-ww-parallel-svg の分岐ライン 4 本を terracotta
+ *     (1 → 4 への「分岐の動き」を示す矢印的要素 = 1 visual 内 1 箇所)
  */
 export function WhyWhyParallelVisual() {
   return (
@@ -33,10 +39,12 @@ export function WhyWhyParallelVisual() {
             preserveAspectRatio="none"
             aria-hidden="true"
           >
-            <line x1="160" y1="0" x2="40"  y2="24" stroke="var(--text-muted)" strokeWidth="1.4" />
-            <line x1="160" y1="0" x2="120" y2="24" stroke="var(--text-muted)" strokeWidth="1.4" />
-            <line x1="160" y1="0" x2="200" y2="24" stroke="var(--text-muted)" strokeWidth="1.4" />
-            <line x1="160" y1="0" x2="280" y2="24" stroke="var(--text-muted)" strokeWidth="1.4" />
+            {/* warm accent (A 案 Phase 3): 分岐ラインを terracotta に。
+             * 「ルートから 4 枝へ分岐する動き」が 1 visual の主役 = 1 箇所限定 */}
+            <line x1="160" y1="0" x2="40"  y2="24" stroke="var(--visual-warm-primary)" strokeWidth="1.4" />
+            <line x1="160" y1="0" x2="120" y2="24" stroke="var(--visual-warm-primary)" strokeWidth="1.4" />
+            <line x1="160" y1="0" x2="200" y2="24" stroke="var(--visual-warm-primary)" strokeWidth="1.4" />
+            <line x1="160" y1="0" x2="280" y2="24" stroke="var(--visual-warm-primary)" strokeWidth="1.4" />
           </svg>
         </div>
 
@@ -53,14 +61,15 @@ export function WhyWhyParallelVisual() {
 
       <div
         style={{
-          marginTop: 12,
-          padding: '8px 10px',
+          marginTop: 14,
+          padding: '10px 12px',
           background: 'var(--brand-soft)',
           borderRadius: 8,
-          fontSize: 11,
+          fontSize: 13,
           fontWeight: 600,
           color: 'var(--brand)',
           textAlign: 'center',
+          lineHeight: 1.45,
         }}
       >
         💡 各枝を独立に深掘り、インパクト × 実現可能性で優先順位

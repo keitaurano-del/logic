@@ -4,6 +4,12 @@ import { XIcon, CheckIcon, LightbulbIcon } from '../icons'
 /**
  * なぜなぜの止めどき — 浅すぎ / 適切 / 深すぎ
  * lesson-342 step.visual='WhyWhyStopRuleDiagram'
+ *
+ * A 案 Phase 3 適用済 (2026-05-24, §3.1 §2.4 準拠):
+ *   - inline hint 11→13, padding/lineHeight 拡大
+ *   - CSS: stop-tag/result 12px、stop-ex 13px、stop-label 14px は既に底上げ済
+ *   - warm accent: hint ボックスを terracotta soft 背景に
+ *     (3 ゾーンの danger/success/warning 意味色は §2.3 例外として維持)
  */
 export function WhyWhyStopRuleVisual() {
   return (
@@ -55,14 +61,15 @@ export function WhyWhyStopRuleVisual() {
 
       <div
         style={{
-          marginTop: 12,
-          padding: '8px 10px',
-          background: 'var(--brand-soft)',
+          marginTop: 14,
+          padding: '10px 12px',
+          background: 'var(--visual-warm-primary-soft)',
           borderRadius: 8,
-          fontSize: 11,
+          fontSize: 13,
           fontWeight: 600,
-          color: 'var(--brand)',
+          color: 'var(--visual-warm-primary-deep)',
           textAlign: 'center',
+          lineHeight: 1.45,
         }}
       >
         💡 「自分たちで打ち手が打てる層」で止める

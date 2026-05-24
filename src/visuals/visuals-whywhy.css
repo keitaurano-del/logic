@@ -230,7 +230,7 @@
   color: var(--brand);
   border-radius: 8px;
   padding: 4px 10px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   min-width: 80px;
   text-align: center;
@@ -240,11 +240,13 @@
   background: var(--brand-soft);
 }
 
+/* warm accent (A 案 Phase 3): 縦深掘りの到達ゴール (根本原因) のみ terracotta gradient。
+ * 右側 hroot は brand-pop のまま維持して 1 visual 内 warm 1 箇所を厳守 */
 .vz-ww-vs-vbox.root {
-  background: var(--brand-cta-grad);
+  background: linear-gradient(135deg, var(--visual-warm-primary) 0%, var(--visual-warm-primary-deep) 100%);
   color: #fff;
   border: none;
-  box-shadow: 0 4px 12px rgba(108, 142, 245, 0.28);
+  box-shadow: 0 4px 12px rgba(196, 117, 58, 0.28);
 }
 
 .vz-ww-vs-arrow {
@@ -267,7 +269,7 @@
   color: #fff;
   border-radius: 8px;
   padding: 4px 10px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
 }
@@ -291,7 +293,7 @@
   color: var(--brand-pop);
   border-radius: 6px;
   padding: 3px 4px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   text-align: center;
 }
@@ -451,8 +453,10 @@
   border-bottom: 1px solid var(--border-light);
 }
 
+/* warm accent (A 案 Phase 3): 各落とし穴の象徴アイコンを terracotta に。
+ * 「注意して見る」動きを 1 visual 内 1 箇所だけ温度感色で示す */
 .vz-ww-pitfall-icon {
-  color: var(--brand);
+  color: var(--visual-warm-primary);
 }
 
 .vz-ww-pitfall-title {
@@ -544,7 +548,7 @@
 .vz-ww-parallel-branch.tone-d { border-color: var(--brand); }
 
 .vz-ww-parallel-branch-label {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   text-align: center;
   line-height: 1.3;
@@ -556,7 +560,7 @@
 .vz-ww-parallel-branch.tone-d .vz-ww-parallel-branch-label { color: var(--brand); }
 
 .vz-ww-parallel-branch-sub {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text-muted);
   letter-spacing: 0.04em;
@@ -566,7 +570,7 @@
   background: var(--bg-secondary);
   border-radius: 4px;
   padding: 2px 6px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text-secondary);
 }
@@ -592,7 +596,7 @@
 }
 
 .vz-ww-evidence-layer {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   padding: 4px 8px;
   border-radius: 6px;
@@ -613,9 +617,11 @@
 .vz-ww-evidence-row.t-4 .vz-ww-evidence-layer { border-color: var(--brand-hover); color: var(--brand-hover); }
 .vz-ww-evidence-row.t-5 .vz-ww-evidence-layer { border-color: var(--brand-hover); color: var(--brand-hover); }
 
+/* warm accent (A 案 Phase 3): 層 ↔ 検証手段を結ぶ矢印を terracotta に。
+ * 「裏付けを取る」という動きの主役を 1 visual 内 1 箇所だけ温度感色で示す */
 .vz-ww-evidence-arrow {
-  color: var(--text-muted);
-  font-size: 14px;
+  color: var(--visual-warm-primary);
+  font-size: 16px;
   font-weight: 700;
 }
 
@@ -626,7 +632,7 @@
 }
 
 .vz-ww-evidence-method-tag {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.06em;
   color: var(--text-muted);
@@ -634,7 +640,7 @@
 }
 
 .vz-ww-evidence-method-text {
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-primary);
 }
