@@ -157,7 +157,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
                 <div style={{ fontSize: 14, color: 'var(--text-primary)', fontWeight: 700 }}>{t('profile.weekSummary')}</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, fontWeight: 800, color: studiedCount > 0 ? 'var(--streak-flame)' : 'var(--text-muted)' }}>
                   <FlameIcon size={16} dim={studiedCount === 0} />
-                  <span>{t('profile.studiedDaysOf7', { n: String(studiedCount) })}</span>
+                  <span>{t('profile.studiedDaysThisWeek', { n: String(studiedCount) })}</span>
                 </div>
               </div>
               <div style={{ display: 'flex', gap: 6 }}>
