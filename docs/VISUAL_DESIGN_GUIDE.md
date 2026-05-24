@@ -1,6 +1,6 @@
 # Logic Visual Design Guide — レッスン内図解の全コース横断指針
 
-**最終更新:** 2026-05-20
+**最終更新:** 2026-05-24
 **担当:** designer (凜)
 **対象:** `src/visuals/*.tsx` で作るレッスン内「概念図解（concept visual）」
 **目的:** 150+ レッスン全体に図解を展開するためのビジュアル言語を統一する
@@ -126,21 +126,48 @@ var(--brand-hover)    /* #2E45A8 — gradient end */
 - ただし「色のサイズを縮小（18 → 14px 等）」「色をアイコンではなくラベル先頭の細いラインに格下げ」など、視覚的優先度を「色」から「ラベル/形」に振り替える工夫を必須とする
 - 「もう 1 色欲しい時の汎用カラー」として `--brand-pop` (violet) を消費するのは禁止（§8.9）
 
+### 2.4 Warm accent（2026-05-24 追加）— AI ぽさ軽減用の温度感色
+
+既存の Slate Blue ベース（cool blue 単色支配）は教科書的で正確だが、モバイル実機で「AI が量産した感じがする」「冷たく感じる」フィードバックが出た。
+これを軽減するため、**全 visual ベースは Slate Blue を維持しつつ、矢印・強調アイコンなど 1 箇所のみ warm accent を差す**運用を追加する。
+
+| 役割 | token | hex | 使用シーン |
+|---|---|---|---|
+| Terracotta（土系・暖色アクセント） | `var(--visual-warm-primary)` | `#C4753A` | 「動きを示す矢印」「最重要 step の枠線」「強調アイコン」など 1 visual 内 1 箇所のみ |
+| Terracotta soft | `var(--visual-warm-primary-soft)` | rgba(196,117,58,0.10) | 上記アクセント要素の背景 |
+| Terracotta deep | `var(--visual-warm-primary-deep)` | `#8C4F22` | soft 背景上の本文文字色（WCAG AA 確保） |
+| Mustard（黄土系・補助暖色） | `var(--visual-warm-secondary)` | `#D4A82F` | terracotta より弱い 2 段目アクセント。通常は使わず、terracotta が他構造で塞がっているときの代替 |
+| Mustard soft / deep | 同上 | rgba / `#8C6E14` | 同上 |
+
+**使用ルール（厳守）:**
+- **1 visual あたり warm accent は 1 箇所のみ**。複数差すと「ベースが何色なのか」が読めなくなり、AI ぽさ軽減の目的を逸れる
+- **基本ベースは Slate Blue のまま**。warm を主役色に格上げしない（ベース色変更は別議論）
+- **意味づけ**：「動き・最重要・触発」のいずれかを示す箇所に使う。装飾目的では使わない（§8.10）
+- **手書きフォント / クリーム背景 / コーラル下線は併用しない**。それらはサムネ画像アセット側のスタイルであり、本ガイド §0 でレッスン内 visual には持ち込まないと定めている
+- ダークモードでは terracotta が背景と馴染みすぎる場合があるため、soft / deep バリアントを併用し、コントラストを最低 4.5:1 確保すること
+
 ---
 
 ## 3. タイポグラフィ
 
 レッスン内 visual はアプリ UI と同じフォントスタック（Inter / Inter Tight / Noto Sans JP）を使う。**手書き系 webfont は使わない**。
 
-### 3.1 サイズ階層
+### 3.1 サイズ階層（A 案 2026-05-24 底上げ）
+
+モバイル実機で「文字が小さくて読み疲れする」フィードバックを受け、全段階を 2–3px 引き上げ。
+旧基準は 2026-05-20 まで採用、新基準は本 §3.1 が最新。
 
 | 役割 | size | weight | 用途 |
 |---|---|---|---|
-| ノード主文字 | 13px | 700 | ロジックツリーのルート、結論ブロック |
-| ノード本文 | 12px | 600 | 中間ノード、フェーズタイトル |
-| 補助文字 | 11px | 600 | フェーズ body、データ |
-| ラベル (UPPERCASE) | 9–10px | 700 | 「結論」「前提」「PHASE 1」 + `letter-spacing: 0.06–0.08em` |
-| section ラベル | 10px | 700 | visual 全体の見出し（`vz-section-label`） |
+| ノード主文字 | **16px** | 700 | ロジックツリーのルート、結論ブロック、主役ノード |
+| ノード本文 | **14px** | 600 | 中間ノード、フェーズタイトル、説明文 |
+| 補助文字 | **13px** | 600 | フェーズ body、データ、補足 |
+| ラベル (UPPERCASE) | **12px** | 700 | 「結論」「前提」「PHASE 1」 + `letter-spacing: 0.06–0.08em` |
+| section ラベル | **12px** | 700 | visual 全体の見出し（`vz-section-label`） |
+
+**旧基準（互換参考、2026-05-20 まで）:** 13 / 12 / 11 / 9–10 / 10。新規実装は新基準を使い、既存 visual は §11 の段階適用手順で順次更新する。
+
+**11px 以下は使わない**：モバイル小型端末（iPhone SE）で可読性が落ちる。脚注的な極小は 12px を下限とする。
 
 ### 3.2 文字数の上限
 - ノード内 1 行：日本語 12 字 / 英字 18 字
@@ -483,6 +510,21 @@ brand + rose + success + warning + violet を全部入れる。
 - 結果：意味カテゴリが希薄化し、学習者は「violet = 何を意味する色？」が読めなくなる。次回のレッスンで本来の violet（AI / 特殊概念）が出てきても識別力が落ちる
 - 対応：差をつけたいだけなら brand の濃淡（`--brand-light` / `--brand` / `--brand-hover`）でグラデを作る。本当に「特殊・創造・横方向」の意味があるときだけ violet を使い、その理由をコード comment に書く
 
+### 8.10 ❌ 「AI ぽい」見た目に直結する装飾を入れる（2026-05-24 追加）
+
+実機ユーザーから「テンプレ AI 出力に見える」フィードバックが出やすい装飾パターン。本ガイドでは **下記すべて NG**。
+
+| NG | 理由 | 正しい対応 |
+|---|---|---|
+| **派手な多色 gradient**（紫→ピンク→オレンジなど 3 色以上の長距離 gradient） | 「Midjourney / Stable Diffusion 量産画像」を連想させる | brand の 2 色（`--brand` → `--brand-hover`）に止める。`--brand-cta-grad` が標準 |
+| **ネオン / glow shadow を主役要素に乗せる** | ゲーム UI / AI tool 感が出る | 影は `--shadow-card` / `--brand-cta-shadow` のみ。色付き glow は禁止 |
+| **glass morphism（半透明 + blur 背景）** | 2020 年代 AI tool の定番デザインで陳腐化 | 本ガイドの card（白 + border + 控えめ shadow）を使う |
+| **emoji を主役アイコンに使う**（🚀 ✨ 🎯 等を node 内に並べる） | LLM 出力テンプレ感が強い | §3.3 通り 💡 ⚠ のみ許可、それ以外は SVG icon を使うか言葉で表現 |
+| **冷色 1 色支配（Slate Blue 単色のみ）** | 教科書として正確だが「AI 出力感」と「無機質さ」が出る | §2.4 の warm accent を 1 箇所だけ差す |
+| **角丸 24px+ + soft shadow + 中央寄せの単純構図** | Notion / Figma AI テンプレ感 | radius は §付録 A / B の 8–12px、構図は §4 のプリミティブから選ぶ |
+
+**判断軸:** 「これを Pinterest で見たら『AI generator で作った画像』と思うか？」を 1 visual 完成ごとに自問する。Yes が頭をよぎったら、warm accent 投入 or 構図見直し or 装飾削減で対処する。
+
 ---
 
 ## 9. 運用フロー（dev-logic との連携）
@@ -654,6 +696,81 @@ lesson-XX | <概念名> | <推奨構図 §4.x> | <カテゴリ §5.x> | <優先�
 - 既存 10 種で代用できるなら新規作成せず再利用 (props 化)
 - 概念構造がないレッスンは候補から除外
 ```
+
+---
+
+## 11. 全 Visual A 案展開手順（2026-05-24 追加）
+
+A 案（フォント底上げ + warm accent）を全 64 visual に段階適用するための手順。
+サンプル 1 件（`WhereWhyHowVisual`）の承認後に start する。
+
+### 11.1 適用範囲と優先順位
+
+64 visual を以下 3 グループに分けて段階適用：
+
+| グループ | 件数 (目安) | 例 | 優先度 |
+|---|---|---|---|
+| **A. 高頻度コア構図** | 〜15 件 | Pyramid / LogicTree / Syllogism / Stack / SCR / WhereWhyHow / PREP / SoWhat / Deduction / Induction | 高 — Phase 1 |
+| **B. カテゴリ代表構図** | 〜25 件 | MecePatterns / FiveForces / SixHats / SCAMPER / Iceberg / AbstractionLadder / Empathy / Quadrant 系 | 中 — Phase 2 |
+| **C. 個別概念専用** | 〜24 件 | DistributionShape / FallacyGrid / GraphPitfalls / Fermi 系 / 領域特化のもの | 低 — Phase 3 |
+
+### 11.2 1 ファイルあたりの作業手順（チェックリスト）
+
+```
+□ 1. 対象 visual の CSS（visuals.css or visuals-phase3b.css 等）を開く
+□ 2. font-size 一括上げ（旧 → 新基準）
+     - 13px / 13.5px → 14px
+     - 12px / 12.5px → 14px (本文 weight 600 の場合) or 13px (補助)
+     - 11px → 12px (ラベル / 補助)
+     - 9 / 10px → 12px (ラベル)
+     - 既に 14px+ のものはそのまま
+□ 3. warm accent 投入箇所を 1 つ選ぶ
+     - 矢印（vz-*-arrow）→ color を var(--visual-warm-primary) に
+     - もしくは「最重要 step の左 4px ボーダー」を terracotta に
+     - もしくは hint / 強調ピルを terracotta soft 背景に
+     - **どれか 1 箇所だけ**。複数差さない
+□ 4. tsc -b --noEmit で型エラーがないことを確認
+□ 5. 該当 lesson を起動してモバイル幅で目視確認
+     - 文字が読みやすくなったか
+     - warm accent が浮かず、Slate Blue ベースを邪魔していないか
+     - ダークモードに切り替えてもコントラスト維持できているか
+□ 6. コミット 1 件 / visual 1 件 を原則とする（差分追跡しやすくするため）
+```
+
+### 11.3 token 一括置換ガイド（参考）
+
+font-size の一括置換は **必ず手動で 1 ファイルずつ確認**する。理由は同じ px 値でも意味（ラベル / 本文 / 補助）が違うため、機械的 sed では誤った upgrade が混入する。
+
+参考 sed パターン（**目視確認用、直接実行しない**）:
+
+```bash
+# 旧 13px / 13.5px のうち、ノード本文相当を確認するためのリストアップ
+grep -n "font-size: 13" src/visuals/visuals-phase3b.css
+
+# 旧 11px → 12px へ（ラベル相当のみ）
+grep -n "font-size: 11px" src/visuals/visuals.css
+```
+
+### 11.4 Phase 進捗管理
+
+```
+Phase 0: サンプル WhereWhyHowVisual 完成・承認 ← 現在
+Phase 1: グループ A 15 件適用（〜2 セッション）
+  → 完了時に再度 Keita 目視レビュー（モバイル幅、ライト/ダーク両方）
+Phase 2: グループ B 25 件適用
+Phase 3: グループ C 24 件適用
+Phase 4: HANDDRAWN_ROLLOUT_PLAN.md との整合性レビュー（サムネ系と矛盾していないか）
+```
+
+各 Phase 完了時に：
+1. `docs/VISUAL_DESIGN_GUIDE.md` §7 の評価表に新スコア（フォント・warm accent 適用済の印）を追記
+2. 適用済 visual の list を本 §11 末尾に「Phase X 完了済リスト」として追加
+3. Keita に進捗報告（適用件数 / 残件数 / スクショ）
+
+### 11.5 完了済リスト
+
+- **Phase 0 (2026-05-24):** `WhereWhyHowVisual`（サンプル、A 案リファレンス実装）
+- Phase 1 以降: 承認後に追記
 
 ---
 

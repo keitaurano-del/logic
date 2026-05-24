@@ -65,34 +65,44 @@
 }
 
 /* ===== Where / Why / How 3 段フロー =====
- * E: 共通ステップカード基盤は visuals.css に集約。WWW 固有の grid レイアウト + 左 4px ボーダーのみ定義。 */
+ * E: 共通ステップカード基盤は visuals.css に集約。WWW 固有の grid レイアウト + 左 4px ボーダーのみ定義。
+ *
+ * A 案 (2026-05-24) 適用:
+ *   - フォント底上げ: name 14→16, desc 13→14, icon 14→13(ラベル基準), arrow 14→16
+ *   - warm accent: How step（打ち手=動きの起点）の左ボーダーと矢印を terracotta に格上げ
+ *     → AI ぽさ軽減 + 「How が行動の核」という意味を強調（§2.4 / §11 リファレンス実装）
+ *   - 旧構成: where=brand / why=warning / how=success
+ *     新構成: where=brand / why=warning / how=terracotta（success → terracotta 置き換え）
+ */
 .vz-www {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .vz-www-step {
   /* grid 表示は WWW 固有なので flex から override */
   display: grid;
-  grid-template-columns: 60px 1fr;
-  gap: 10px;
+  grid-template-columns: 64px 1fr;
+  gap: 12px;
   align-items: stretch;
+  padding: 12px 14px;
 }
 
 .vz-www-step.where  { border-left: 4px solid var(--brand); }
 .vz-www-step.why    { border-left: 4px solid var(--warning); }
-.vz-www-step.how    { border-left: 4px solid var(--success); }
+/* How step: warm accent (terracotta) — 1 visual 内 1 箇所のみのアクセント (§2.4) */
+.vz-www-step.how    { border-left: 4px solid var(--visual-warm-primary); }
 
 .vz-www-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 800;
   letter-spacing: 0.04em;
   border-radius: 8px;
-  padding: 6px 4px;
+  padding: 8px 4px;
   text-align: center;
 }
 
@@ -103,36 +113,39 @@
 
 .vz-www-step.why .vz-www-icon {
   background: color-mix(in srgb, var(--warning) 12%, transparent);
-  color: var(--warning);
+  color: var(--warning-deep);
 }
 
 .vz-www-step.how .vz-www-icon {
-  background: color-mix(in srgb, var(--success) 12%, transparent);
-  color: var(--success);
+  background: var(--visual-warm-primary-soft);
+  color: var(--visual-warm-primary-deep);
 }
 
 .vz-www-body {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
   min-width: 0;
 }
 
 .vz-www-name {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--text-primary);
+  line-height: 1.35;
 }
 
 .vz-www-desc {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--text-secondary);
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
+/* arrow: muted のまま（warm accent は §2.4 のルール上 1 箇所のみ、How 左ボーダー + icon に集中） */
 .vz-www-arrow {
   align-self: center;
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: 700;
   color: var(--text-muted);
   line-height: 1;
 }
