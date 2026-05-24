@@ -259,30 +259,85 @@ export function TitleBadgeSheet({ xp, onClose }: TitleBadgeSheetProps) {
           ) : null}
         </div>
 
-        {/* 全 16 称号グリッド */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
-          gap: 10,
-          marginBottom: 8,
-        }}>
-          {TITLE_TIERS.map((tier) => {
-            const unlocked = lv.level >= tier.min
-            const isCurrent = tier.key === currentKey
-            return (
-              <TierCell
-                key={tier.key}
-                tierKey={tier.key}
-                min={tier.min}
-                max={tier.max}
-                unlocked={unlocked}
-                isCurrent={isCurrent}
+        {/* 全 50 称号グリッド — Lv 1-100 (基礎帯 16) と Lv 101-500 (拡張帯 34) で
+            セクション区切り、各セクション 5 列で縦長になり過ぎないように調整 */}
+        {(() => {
+          const basicTiers = TITLE_TIERS.filter((tier) => tier.min <= 100)
+          const advancedTiers = TITLE_TIERS.filter((tier) => tier.min > 100)
+          return (
+            <>
+              <SectionHeading label={t('profile.titleSheet.section.basic')} />
+              <TierGrid
+                tiers={basicTiers}
+                currentLevel={lv.level}
+                currentKey={currentKey}
               />
-            )
-          })}
-        </div>
+              {advancedTiers.length > 0 && (
+                <>
+                  <SectionHeading
+                    label={t('profile.titleSheet.section.advanced')}
+                    marginTop={18}
+                  />
+                  <TierGrid
+                    tiers={advancedTiers}
+                    currentLevel={lv.level}
+                    currentKey={currentKey}
+                  />
+                </>
+              )}
+            </>
+          )
+        })()}
         </div>
       </div>
+    </div>
+  )
+}
+
+function SectionHeading({ label, marginTop = 0 }: { label: string; marginTop?: number }) {
+  return (
+    <div
+      style={{
+        marginTop,
+        marginBottom: 8,
+        fontSize: 12,
+        fontWeight: 800,
+        letterSpacing: '0.1em',
+        textTransform: 'uppercase',
+        color: 'var(--text-muted)',
+      }}
+    >
+      {label}
+    </div>
+  )
+}
+
+function TierGrid({
+  tiers,
+  currentLevel,
+  currentKey,
+}: {
+  tiers: ReadonlyArray<{ key: TitleKey; min: number; max: number }>
+  currentLevel: number
+  currentKey: TitleKey
+}) {
+  return (
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: 'repeat(5, 1fr)',
+      gap: 8,
+      marginBottom: 8,
+    }}>
+      {tiers.map((tier) => (
+        <TierCell
+          key={tier.key}
+          tierKey={tier.key}
+          min={tier.min}
+          max={tier.max}
+          unlocked={currentLevel >= tier.min}
+          isCurrent={tier.key === currentKey}
+        />
+      ))}
     </div>
   )
 }
@@ -300,7 +355,7 @@ function TierCell({ tierKey, min, max, unlocked, isCurrent }: {
         background: isCurrent ? 'color-mix(in srgb, var(--brand) 12%, var(--bg-card))' : 'var(--bg-card)',
         border: `1.5px solid ${isCurrent ? 'var(--brand)' : 'var(--border)'}`,
         borderRadius: 12,
-        padding: '10px 6px 10px',
+        padding: '8px 4px 8px',
         display: 'flex', flexDirection: 'column', alignItems: 'center',
         textAlign: 'center',
         opacity: unlocked ? 1 : 0.55,
@@ -310,22 +365,22 @@ function TierCell({ tierKey, min, max, unlocked, isCurrent }: {
         src={getBadgeImagePath(tierKey)}
         alt={t(getTitleI18nKey(tierKey))}
         style={{
-          width: 64, height: 64, objectFit: 'contain',
-          marginBottom: 6,
+          width: 52, height: 52, objectFit: 'contain',
+          marginBottom: 4,
           filter: unlocked ? 'none' : 'grayscale(0.85) brightness(0.85)',
         }}
       />
       <div style={{
-        fontSize: 13, fontWeight: 700,
+        fontSize: 11, fontWeight: 700,
         color: unlocked ? 'var(--text-primary)' : 'var(--text-muted)',
-        lineHeight: 1.25,
-        marginBottom: 3,
+        lineHeight: 1.2,
+        marginBottom: 2,
         wordBreak: 'keep-all',
       }}>
         {t(getTitleI18nKey(tierKey))}
       </div>
       <div style={{
-        fontSize: 12, fontWeight: 600,
+        fontSize: 10, fontWeight: 600,
         color: 'var(--text-muted)',
       }}>
         {t('profile.titleSheet.levelRange', { min: String(min), max: String(max) })}
