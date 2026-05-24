@@ -164,12 +164,32 @@ const fermiLesson222: LessonData = {
       title: 'Estimate an industry size in five minutes',
       content: 'At level 3 you estimate annual market size for a specific industry. New-business planning, sales targeting, and investment decisions ask this every day.\n\nTraits of the medium level:\n- Includes industries you are not a direct customer of\n- Four or five factors\n- Can be compared against industry reports (METI, Yano Research, etc.)\n\nUniversal formula:\n```\nindustry size = target population × usage rate × frequency × ticket\n```\n\nThree examples today:\n1. Pet-food market (B2C)\n2. Wedding market (rare-life-event market)\n3. Golf market (hobby / sports market)\n\nEach one needs a different way to narrow the target population.',
       visual: 'FermiFormulaDiagram',
+      visualProps: {
+        sectionLabel: 'Universal industry-size formula',
+        factors: [
+          { label: 'Target population', value: '?', unit: 'people' },
+          { label: 'Usage rate', value: '?', unit: '%' },
+          { label: 'Frequency', value: '?', unit: '/year' },
+          { label: 'Ticket', value: '?', unit: '¥' },
+        ],
+        result: { label: 'Industry size', value: '?', unit: '¥/year' },
+        hint: 'Fill 4 factors to get an order-of-magnitude size. Apply to 3 industries in this lesson',
+      },
     },
     {
       type: 'explain',
       title: 'Example 1: Japanese pet-food market',
       content: 'Question: annual market size for dog & cat food in Japan?\n\nStep 1: decompose\n```\nmarket = animals owned × annual food cost per animal\n```\n\nStep 2: estimate animals owned\n- Households: 57M\n- Dog ownership rate 12%, cat 10%\n- Dogs: 57M × 0.12 × 1.2/household = ~8.2M\n- Cats: 57M × 0.10 × 1.5/household = ~8.55M\n- Total: ~16.75M animals\n\nStep 3: food cost per animal\n- ¥3,000/month × 12 = ¥36,000/year\n\nStep 4: calculate\n```\n16.75M × ¥36,000 = ~¥600B\n```\n\nActual: pet-food market ~¥500-600B (Pet Food Association)\n→ Matches.\n\nKey point: B2C markets follow "target households × consumption per unit" as the standard build.',
       visual: 'FermiFormulaDiagram',
+      visualProps: {
+        sectionLabel: 'Japanese pet-food market',
+        factors: [
+          { label: 'Pets owned', value: '16.75', unit: 'M animals' },
+          { label: 'Annual food cost', value: '36,000', unit: '¥/animal' },
+        ],
+        result: { label: 'Market size', value: '~600', unit: '¥B/year' },
+        hint: 'Pet Food Association ~¥500-600B matches. B2C: target count × per-unit consumption',
+      },
     },
     {
       type: 'explain',

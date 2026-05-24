@@ -156,6 +156,16 @@ const hypothesisProblemSolving: LessonData = {
       title: 'The art of "Quick & Dirty" verification',
       content:
         'Perfect analysis is not required. Techniques for quickly verifying "Quick & Dirty":\n\n[1. The 80/20 rule]\n20% of the data tells you 80% of the story.\nExample: instead of analyzing every customer, look only at the top 20.\n\n[2. Triangulation]\nUse not one data source but three different angles.\nExample: revenue data + customer survey + sales-team interviews.\n\n[3. Minimum-viable-test verification]\nBefore a large rollout, try small.\nExample: before nationwide expansion, run a 2-week test in one store.\n\nThe reason consultants can produce hypotheses in the first week is not perfect data — it is the skill of Quick & Dirty verification.',
+      visual: 'ThreePillarsDiagram',
+      visualProps: {
+        sectionLabel: 'Quick & Dirty — 3 verification techniques',
+        pillars: [
+          { icon: '80', title: '80/20 rule', body: '20% of data tells 80% of story. Look only at the top 20 customers, not every customer.' },
+          { icon: '△', title: 'Triangulation', body: 'Three different angles instead of one source. Revenue + survey + sales interviews.' },
+          { icon: 'MVP', title: 'Minimum-viable test', body: 'Before nationwide rollout, run a 2-week test in one store.' },
+        ],
+        hint: 'Consultants produce hypotheses in week 1 not from perfect data but from Quick & Dirty skill',
+      },
     },
     {
       type: 'quiz',

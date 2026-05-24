@@ -101,6 +101,16 @@ const peakPerformanceLesson411: LessonData = {
       title: 'Three high-leverage practices for falling asleep',
       content:
         'Three practices that improve quality, not just quantity, with high cost-effectiveness.\n\n① Cut bright light from one hour before bed\n- Drop phone brightness to minimum; switch room lighting to orange tones if possible\n- Blue light can suppress melatonin secretion by up to 50%\n- "Phone in bed" delays sleep onset by 15–30 minutes\n\n② Avoid food and caffeine within 3 hours of bedtime\n- Caffeine\'s half-life is 5–6 hours. A 3 p.m. coffee is still active at 11 p.m.\n- Alcohol shortens sleep onset but destroys later REM sleep (quality drops)\n\n③ Anchor your sleep and wake times\n- Your body clock is anchored by wake time. Wake up at the same time on both weekdays and weekends\n- Get outdoor light right after waking (5–10 minutes stops melatonin and helps sleepiness arrive in the evening)',
+      visual: 'ThreePillarsDiagram',
+      visualProps: {
+        sectionLabel: 'Three high-leverage sleep-onset practices',
+        pillars: [
+          { icon: 'L', title: 'Cut light 1h before bed', body: 'Phone brightness min, orange room lighting. Blue light suppresses melatonin by 50%.' },
+          { icon: 'C', title: 'No food/caffeine 3h before', body: 'Caffeine half-life 5-6h. A 3pm coffee is still active at 11pm.' },
+          { icon: 'T', title: 'Anchor wake time', body: 'Body clock is anchored by wake time. Same time on weekdays and weekends.' },
+        ],
+        hint: 'Sleep is designed, not waited for. Set up the conditions for natural sleepiness from daytime',
+      },
     },
     {
       type: 'quiz',
@@ -146,6 +156,19 @@ const peakPerformanceLesson412: LessonData = {
       title: 'Optimal dose — 150 minutes per week at moderate intensity',
       content:
         'WHO and American Heart Association guidelines roughly converge.\n\nAerobic:\n- 150 minutes/week of moderate intensity or 75 minutes/week of vigorous intensity\n- Moderate = can talk but not sing (brisk walking, light jogging, cycling)\n- Vigorous = conversation breaks up (running, HIIT)\n\nStrength training:\n- At least twice a week, covering major muscle groups (squats, push-ups, etc., are sufficient with bodyweight)\n\nImportant findings:\n- Effects appear even from a single 20–30 minute session. "Better than nothing" is correct\n- 10 minutes × 3 vs. one 30-minute block — the effect is roughly the same\n- The cognitive boost peaks about 1 hour post-exercise. Front-loading important work after exercise pays off\n\nTo start: A 20-minute brisk walk in the morning. That alone meets the minimum line of many studies.',
+      visual: 'Two2MatrixDiagram',
+      visualProps: {
+        sectionLabel: 'Exercise dose — frequency × intensity',
+        xAxis: { low: 'Moderate (can talk)', high: 'Vigorous (talk breaks)', label: 'Intensity' },
+        yAxis: { low: 'Low frequency', high: 'High frequency', label: 'Frequency' },
+        cells: [
+          { title: 'WHO minimum line', items: ['Moderate × 150 min/week', 'Brisk walk 20 min × 7 days'] },
+          { title: 'Advanced zone', items: ['75 min/week HIIT', 'Watch for overtraining'] },
+          { title: 'Below threshold', items: ['Tens of min only', 'Weak BDNF response'] },
+          { title: 'Injury risk', items: ['Few high-intensity sessions/month', 'Avoid after middle age'] },
+        ],
+        hint: 'Top-left cell (moderate × 150 min/week) is the most replicable. Think continuity over gym',
+      },
     },
     {
       type: 'explain',
@@ -215,6 +238,16 @@ const peakPerformanceLesson413: LessonData = {
       title: 'Sort work into 3 types and assign by time of day',
       content:
         'A practical operating frame. Today\'s work is sorted into three:\n\nA. Thinking tasks (deep work)\n- Strategy, design, analysis, hard writing, complex decisions\n- → Block your peak (around 9 a.m.–noon for morning types; 6–10 p.m. for night types)\n- Don\'t fragment with meetings\n\nB. Execution tasks (hands-on)\n- Known procedures, email replies, doc cleanup, routine processing\n- → Cluster these in your trough (e.g., after lunch)\n- These don\'t require thinking energy, so they progress even at the bottom of the wave\n\nC. Relational tasks (people)\n- 1-on-1s, casual chats, interviews, hiring, sales meetings\n- → Place these during recovery (evening) where mood is rising\n- Better-than-baseline mood supports idea generation\n\nMost important rule: Block your peak time on the calendar first (for type A). Slot meetings into what remains. This single change reshapes how you spend cognitive resources.',
+      visual: 'ThreePillarsDiagram',
+      visualProps: {
+        sectionLabel: 'Three task types × time of day',
+        pillars: [
+          { icon: 'A', title: 'Thinking → Peak', body: 'Strategy / design / complex decisions. Block 9-noon (morning type) or 6-10pm (night type).' },
+          { icon: 'B', title: 'Execution → Trough', body: 'Email, routine processing. Cluster these after lunch. No thinking energy needed.' },
+          { icon: 'C', title: 'Relational → Recovery', body: '1-on-1s, interviews, sales meetings. Evening recovery aligns with rising mood.' },
+        ],
+        hint: 'Block A-type peak time on the calendar first. Meetings get the leftover slots',
+      },
     },
     {
       type: 'quiz',

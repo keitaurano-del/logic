@@ -19,7 +19,16 @@ const structureFirst: LessonData = {
       title: 'Decide what you want to say first',
       content:
         "Great documents are won or lost at the structure stage, before any design.\n\nStructure design means fixing three things up front:\n\n[1] Purpose (Why)\nWhat do you want readers to do? Approve, decide, share information?\n\n[2] Reader (Who)\nWho will read it? What is their prior knowledge, interest, and how busy are they?\n\n[3] Key message (What)\nIf only one sentence is read, what should remain?\n\nWithout these three, every slide you add makes the focus blurrier.\n\nClassic failure patterns:\n• 'Just gather information and lay it out' → no clear point\n• 'Make it look beautiful' becomes the goal → the conclusion gets buried\n• 'Aim at everyone' → resonates with no one\n\nGolden time allocation: Structure 50% / Writing 30% / Design 20%. Investing heavily in structure design up front is the highest-ROI step.",
-      visual: 'WhereWhyHowDiagram',
+      visual: 'ThreePillarsDiagram',
+      visualProps: {
+        sectionLabel: 'The 3 structure questions — Purpose × Reader × Key message',
+        pillars: [
+          { icon: 'Why', title: 'Purpose', body: 'What do you want readers to do? Approve, decide, share?' },
+          { icon: 'Who', title: 'Reader', body: 'Who reads it? Their prior knowledge, interest, and time pressure.' },
+          { icon: 'What', title: 'Key message', body: 'If only one sentence is read, what should remain?' },
+        ],
+        hint: 'Golden time allocation: Structure 50% / Writing 30% / Design 20%',
+      },
     },
     {
       type: 'quiz',
@@ -124,7 +133,16 @@ const oneSlideOneMessage: LessonData = {
       title: 'Know the density limit',
       content:
         'There is a physical ceiling to information density per slide.\n\nGuidelines:\n• Characters: ~200–400 (or roughly 50–80 English words)\n• Bullets: up to 5 (ideally 3)\n• Diagram elements: 5–7 max\n• Colors: 3 (main / accent / gray)\n• Font families: 2 max\n\nBeyond this, cognitive load theory\'s "extraneous load" spikes and comprehension collapses.\n\nThree tactics to lower density:\n\n[1] Split\nIf a slide feels packed, split into two. Do not fear page count.\n\n[2] Abstract\nCompress 12 facts into "three trends."\n\n[3] Move to appendix\nKeep the main deck minimal. Save details for backup slides to open when questioned.\n\nProfessionals subtract rather than add. The communication power of a deck grows by removing information, not adding it. That is the paradox of senior-level document craft.',
-      visual: 'MecePatternsDiagram',
+      visual: 'ThreePillarsDiagram',
+      visualProps: {
+        sectionLabel: 'Three tactics to lower information density',
+        pillars: [
+          { icon: 'S', title: 'Split', body: 'If a slide feels packed, split into two. Do not fear page count.' },
+          { icon: 'A', title: 'Abstract', body: 'Compress 12 facts into "three trends." Lift the abstraction level.' },
+          { icon: 'M', title: 'Move to appendix', body: 'Main deck minimal. Save details for backup slides opened on request.' },
+        ],
+        hint: 'Ceilings: text 200-400 chars / bullets 5 / diagram elements 5-7 / colors 3 / fonts 2',
+      },
     },
     {
       type: 'quiz',
@@ -172,7 +190,17 @@ const visualization: LessonData = {
       title: 'Five diagram archetypes',
       content:
         'In practice, business diagrams collapse into five archetypes.\n\n[Type 1] Flow (→)\nProcess, time series, causal chains.\nExample: A → B → C / Plan → Do → Check → Act\n\n[Type 2] Matrix (2x2)\nClassify by two axes into four quadrants.\nExample: Importance × Urgency, PPM (market growth × market share)\n\n[Type 3] Hierarchy (tree)\nDecompose top-down.\nExample: Logic trees, org charts, pyramids\n\n[Type 4] Venn (overlap)\nShow set relationships.\nExample: Three-circle intersection, MECE diagrams\n\n[Type 5] Graph (numeric)\nVisualize numeric trends.\nExample: Line, bar, pie, scatter, radar\n\nHow to pick:\n• Order matters → Flow\n• Two axes → Matrix\n• Decomposition → Hierarchy\n• Set relations → Venn\n• Numeric values → Graph\n\n"Just use a flow" or "everything is boxes and arrows" signals lazy thinking. The discipline is to pick the type that matches the information\'s structure.',
-      visual: 'Two2MatrixDiagram',
+      visual: 'MecePatternsDiagram',
+      visualProps: {
+        sectionLabel: 'The 4 basic diagram archetypes — pick by structure',
+        patterns: [
+          { kind: 'sequence', title: 'Flow — when order matters', stages: ['Plan', 'Do', 'Check', 'Act'] },
+          { kind: 'elements', title: 'Hierarchy — top-down decomposition', root: 'Revenue', children: ['New', 'Existing'] },
+          { kind: 'opposites', title: 'Matrix — two-axis classification', pairs: [['Important × Urgent', 'Important × Not urgent'], ['Not important × Urgent', 'Not important × Not urgent']] },
+          { kind: 'framework', title: 'Venn — set overlap', items: ['Customer', 'Competitor', 'Self'] },
+        ],
+        hint: '"Just use a flow" is lazy. Pick the type that matches the information structure',
+      },
     },
     {
       type: 'quiz',
@@ -392,7 +420,16 @@ const colorPalette: LessonData = {
       title: 'Color Universal Design',
       content:
         'About 5% of men and 0.2% of women have color vision differences (deficiency). Globally that is hundreds of millions of people.\n\nDo not rely on color alone:\n\n[Dangerous pairings]\n• Red and green (the hardest pair to distinguish)\n• Brown and green\n• Orange and yellow-green\n• Light blue and pink\n\n[Mitigations]\n\n① Color + shape/icon\n• Distinguish lines by color AND solid/dashed/dotted style\n• Add symbols (◯ ✗) alongside color\n\n② Increase brightness contrast\n• Even with red and green, a strong brightness delta makes them distinguishable\n• Brightness contrast matters more than saturation\n\n③ Label directly\n• Instead of "red = sales" in a far-off legend, write "Sales" next to the line itself\n• Eliminates back-and-forth eye movement for everyone\n\n④ Accessibility tools\n• Color Oracle, Stark, etc. to simulate color vision differences\n• Run a check before printing or publishing\n\nGood color design is measured not by beauty but by "does it reach everyone?"',
-      visual: 'MecePatternsDiagram',
+      visual: 'ThreePillarsDiagram',
+      visualProps: {
+        sectionLabel: 'Color UD — 3 mitigations',
+        pillars: [
+          { icon: 'S', title: 'Color + shape/symbol', body: 'Solid/dashed/dotted lines, ◯✗ symbols. Never rely on color alone.' },
+          { icon: 'B', title: 'Brightness contrast', body: 'Even red×green works if brightness delta is large. Contrast > saturation.' },
+          { icon: 'L', title: 'Label directly', body: 'Write "Sales" next to the line, not in a far-off legend. Less eye travel.' },
+        ],
+        hint: 'Dangerous pairings: red×green, brown×green, orange×yellow-green, light blue×pink',
+      },
     },
     {
       type: 'quiz',
@@ -459,7 +496,16 @@ const chartDesign: LessonData = {
       title: 'Finishing a chart that communicates',
       content:
         'A great chart goes beyond "showing numbers" to "carry the conclusion." Here is the finishing checklist.\n\n[1] Make the title carry the message\n× "Monthly Sales Trend" (too neutral)\n◯ "Sales accelerated to 130% YoY from Q3"\n→ The chart title IS the key message.\n\n[2] Highlight one focus point\n• Color just the relevant bar with brand color; gray the rest\n• Add a short annotation with an arrow at the turning point\n• Create exactly one "look here" spot\n\n[3] Strip the chartjunk\n• Cut excess gridlines, background patterns, and legends\n• Show units only once (e.g. "Sales (M$)")\n• Standardize number formats (use thousands separators or k/M)\n\n[4] Add source and footnotes\n• Source: "Internal data, FY2024"\n• Note: "*February is fiscal closing month and is non-standard"\n• These build trust\n\n[5] State the reader\'s next action\n• Beside the chart: "→ Reallocate sales resources to the Q3 segment"\n• Do not stop at data; add interpretation and recommendation\n\nA chart is not a data dump. It is evidence supporting a conclusion. Subtract decoration and finish with a message — that is the senior craft move.',
-      visual: 'PyramidDiagram',
+      visual: 'ThreePillarsDiagram',
+      visualProps: {
+        sectionLabel: 'Finishing a chart that communicates — 3 elements',
+        pillars: [
+          { icon: 'T', title: 'Title = message', body: 'Not "Monthly Sales Trend" — write "Sales accelerated to 130% YoY from Q3."' },
+          { icon: 'H', title: 'Highlight one focus', body: 'Color just the relevant bar; gray the rest. One "look here" spot.' },
+          { icon: 'S', title: 'Source + next action', body: 'Add source for trust + "→ Reallocate to Q3 segment" for action.' },
+        ],
+        hint: 'A chart is evidence supporting a conclusion. Subtract decoration and finish with a message',
+      },
     },
     {
       type: 'quiz',

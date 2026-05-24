@@ -120,6 +120,19 @@ const caseMarketEntry: LessonData = {
       title: 'Framework for market entry decisions',
       content:
         'To answer "Should Company A enter market X?", analyze along three axes.\n\n(1) Market attractiveness\n- Are market size and growth rate sufficient?\n- Is structural profitability healthy (Porter\'s Five Forces)?\n\n(2) Our competitive advantage\n- Can we clear the entry barriers?\n- Can we leverage existing assets (technology, customers, brand)?\n\n(3) Feasibility of entry\n- Are capital, talent, and timeline realistic?',
+      visual: 'Two2MatrixDiagram',
+      visualProps: {
+        sectionLabel: 'Market entry — attractiveness × our advantage',
+        xAxis: { low: 'Disadvantaged', high: 'We can win', label: 'Our competitive advantage' },
+        yAxis: { low: 'Small market', high: 'Attractive market', label: 'Market attractiveness' },
+        cells: [
+          { title: 'Opportunity but cannot win', items: ['Market there but giants entrenched', 'Skip or rethink approach'] },
+          { title: 'Enter ★', items: ['Attractive market × can win', 'Execute now'] },
+          { title: 'Pass', items: ['Small × disadvantaged', 'Minimize opportunity cost'] },
+          { title: 'Test small', items: ['Can win but small market', 'Foothold for future scale'] },
+        ],
+        hint: 'Both must hold. Always ask "Can we win?" before "Should we enter?"',
+      },
     },
     {
       type: 'quiz',
@@ -167,6 +180,15 @@ const caseMnA: LessonData = {
       title: 'Three axes for evaluating M&A',
       content:
         'When asked in a case interview "Is this acquisition the right call?", evaluate along three axes.\n\n(1) Strategic Fit\nDoes the target match our strategy?\n\n(2) Synergy\n- Revenue synergy: cross-sell, access to new markets\n- Cost synergy: consolidating duplicate functions, procurement savings\n\n(3) Valuation (is the price reasonable?)\nDoes the present value of synergies exceed the premium paid?',
+      visual: 'TriadDiagram',
+      visualProps: {
+        sectionLabel: 'M&A — 3 evaluation axes',
+        top: { label: '(1)', name: 'Strategic Fit' },
+        left: { label: '(2)', name: 'Synergy' },
+        right: { label: '(3)', name: 'Valuation' },
+        primary: 'top',
+        hint: 'All three must hold. Miss one and it becomes an overpriced deal',
+      },
     },
     {
       type: 'quiz',

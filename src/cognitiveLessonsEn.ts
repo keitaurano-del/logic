@@ -19,6 +19,15 @@ const workingMemoryLimit: LessonData = {
       content:
         "Working memory is the brain's 'work desk' where you hold and process information temporarily.\n\nIn 1956, psychologist George Miller published 'The Magical Number Seven, Plus or Minus Two,' showing that humans can hold only 5–9 chunks of information at once.\n\nEveryday examples:\n• Phone numbers split into chunks (e.g., 090-1234-5678)\n• Postal codes broken into blocks (e.g., 12345-6789)\n• Credit cards grouped in sets of 4 digits\n\nWhy split them up?\nPeople cannot remember 11 random digits in a row, but 3–4-digit groups stay within capacity. The unit of capacity is 'chunk count,' not 'digit count.'\n\nBusiness implications:\n• Cap meeting topics at 5 items\n• Keep presentation messages to 3\n• If your to-do list passes 10 items, reorganize",
       visual: 'ThreePillarsDiagram',
+      visualProps: {
+        sectionLabel: '7±2 — everyday examples of chunking',
+        pillars: [
+          { icon: 'P', title: 'Phone number', body: '090-1234-5678 — 11 digits broken into 3 chunks.' },
+          { icon: 'Z', title: 'Postal code', body: '12345-6789 — 9 digits split into 2 blocks.' },
+          { icon: 'C', title: 'Credit card', body: '4 digits × 4 blocks to stay within capacity.' },
+        ],
+        hint: 'The unit of capacity is "chunks," not digits. Meeting topics ≤ 5, slide messages = 3',
+      },
     },
     {
       type: 'quiz',
@@ -145,6 +154,15 @@ const cognitiveLoad: LessonData = {
       content:
         "John Sweller's cognitive load theory (1988) divides working-memory load into three types:\n\n[1] Intrinsic load\nDifficulty inherent to the task.\nExamples: solving a complex equation, parsing an unfamiliar language.\n→ Cannot be reduced without changing the task itself.\n\n[2] Extraneous load\nLoad from poor design or presentation, unrelated to the task.\nExamples: confusing slides, typos, noise, bad layout.\n→ Can and should be cut first.\n\n[3] Germane load\n'Good load' that builds understanding and retention.\nExamples: paraphrasing, applying to new problems.\n→ Worth adding deliberately.\n\nWhen the sum exceeds capacity, both learning and judgment break down. Trim extraneous load, increase germane load.",
       visual: 'ThreePillarsDiagram',
+      visualProps: {
+        sectionLabel: 'Three load types — sharing the same working memory',
+        pillars: [
+          { icon: 'I', title: 'Intrinsic load', body: 'Task difficulty itself. Complex equations, foreign languages. Cannot be reduced.' },
+          { icon: 'E', title: 'Extraneous load ★cut', body: 'Bad design / typos / noise. Wasted load. Cut FIRST.' },
+          { icon: 'G', title: 'Germane load ★add', body: 'Good load: paraphrasing, applying. Builds understanding. Add deliberately.' },
+        ],
+        hint: 'All three compete for the same capacity. Cut extraneous, then channel space into germane',
+      },
     },
     {
       type: 'quiz',

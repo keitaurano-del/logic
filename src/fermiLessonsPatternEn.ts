@@ -24,12 +24,32 @@ const fermiLesson210: LessonData = {
       title: 'Example 1: number of pianos in Japan',
       content: 'Question: how many household pianos exist in Japan?\n\nA piano is shared at home → use the household base.\n\nStep 1: confirm base population\n- Japanese households = 57M (from your base-fact set)\n\nStep 2: estimate ownership rate\n- Out of households around you, what share owns a piano?\n- From classmates and colleagues, roughly 5-10% feels right\n- Set: ownership rate 5%\n\nStep 3: units per household\n- Households that own a piano usually own 1\n- Set: 1 per household\n\nStep 4: combine\n```\n57M × 0.05 × 1 = about 2.85M pianos\n```\n\nActual: about 2.5-3M units (industry estimate)\n→ Nearly spot-on. A clean win for household-base.',
       visual: 'FermiFormulaDiagram',
+      visualProps: {
+        sectionLabel: 'Pianos in Japanese households — household-base',
+        factors: [
+          { label: 'Households', value: '57', unit: 'M' },
+          { label: 'Ownership', value: '5', unit: '%' },
+          { label: 'Per household', value: '1', unit: 'unit' },
+        ],
+        result: { label: 'Estimated count', value: '~2.85', unit: 'M units' },
+        hint: 'Industry estimate 2.5-3M — nearly spot-on. Clean win for household-base',
+      },
     },
     {
       type: 'explain',
       title: 'Example 2: home air conditioners in Japan',
       content: 'Question: how many ACs sit in Japanese homes?\n\nMultiple units per household are common → use household base × units per household.\n\nStep 1: base population\n- Households: 57M\n\nStep 2: ownership rate\n- Japanese AC penetration is over 90%\n- Set: 90%\n\nStep 3: units per household\n- Living room + bedroom + kids room — average 2.5 per household\n\nStep 4: combine\n```\n57M × 0.9 × 2.5 ≈ about 128M\n```\n\nActual: about 120M units (METI)\n→ 7% off. A textbook case for "household base × multiple units".\n\nKey insight:\nFor pianos, "1 per household or 0". For ACs, "0-several per household". When units per household varies, separate it out as its own factor — that is the precision lever.',
       visual: 'FermiFormulaDiagram',
+      visualProps: {
+        sectionLabel: 'Home ACs in Japan — households × multiple units',
+        factors: [
+          { label: 'Households', value: '57', unit: 'M' },
+          { label: 'Ownership', value: '90', unit: '%' },
+          { label: 'Per household', value: '2.5', unit: 'units' },
+        ],
+        result: { label: 'Estimated count', value: '~128', unit: 'M units' },
+        hint: 'METI actual 120M, 7% off. When per-household count varies, factor it out separately',
+      },
     },
     {
       type: 'explain',
@@ -89,6 +109,16 @@ const fermiLesson211: LessonData = {
       title: 'Example 1: office multi-function printers in Japan',
       content: 'Question: how many multi-function printers (MFPs) are installed across Japanese offices?\n\nStep 1: split companies\n- All companies: 2.8M\n- Filter to those large enough to own an MFP:\n  - Micro (≤10 staff, about 2M): no MFP, uses home printer\n  - Small (10-50 staff, about 600K): 1 MFP\n  - Mid (50-300 staff, about 180K): 3 MFPs\n  - Large (about 12K): 30 MFPs\n\nStep 2: multiply by tier\n- Micro: 2M × 0 = 0\n- Small: 600K × 1 = 600K\n- Mid: 180K × 3 = 540K\n- Large: 12K × 30 = 360K\n\nStep 3: total\n```\n600K + 540K + 360K ≈ about 1.5M\n```\n\nActual: about 1.5-2M MFPs installed nationwide (industry estimate)\n→ Within 25% via tiered stacking. Textbook execution.',
       visual: 'FermiFormulaDiagram',
+      visualProps: {
+        sectionLabel: 'Japan office MFPs — tier-stacked by company size',
+        factors: [
+          { label: 'Small companies', value: '600', unit: 'K × 1 unit' },
+          { label: 'Mid-size', value: '180', unit: 'K × 3 units' },
+          { label: 'Large', value: '12', unit: 'K × 30 units' },
+        ],
+        result: { label: 'Total', value: '~1.5', unit: 'M units' },
+        hint: 'Never average across all 2.8M companies. Tier-split keeps error within 25%',
+      },
     },
     {
       type: 'explain',
@@ -218,12 +248,32 @@ const fermiLesson213: LessonData = {
       title: 'Example 1: vending machines at Japanese stations',
       content: 'Question: total vending machines across Japanese train stations?\n\nStep 1: confirm unit base\n- Stations: 9,500\n- Wide size variation requires decomposition\n\nStep 2: vending machines per station by size\n- Major hubs (100K+ riders, about 100 stations): 30/station (platforms + outside × multiple)\n- Mid stations (about 1,000): 10/station\n- Small stations (about 8,000): 3/station\n- Unstaffed / tiny (about 400): 0-1, average 0.5\n\nStep 3: multiply\n- 100 × 30 = 3,000\n- 1,000 × 10 = 10,000\n- 8,000 × 3 = 24,000\n- 400 × 0.5 = 200\n\nStep 4: total\n```\n3,000 + 10,000 + 24,000 + 200 ≈ about 37,000 units\n```\n\nCross-check:\n- National vending total: about 4M\n- Station share: 1-2%\n- 4M × 0.01 = 40K\n→ Aligns.\n\nLesson: split unit facilities into 3-4 size tiers for precision.',
       visual: 'FermiFormulaDiagram',
+      visualProps: {
+        sectionLabel: 'Vending machines at JP stations — size-tiered',
+        factors: [
+          { label: 'Major hubs', value: '100', unit: '× 30 units' },
+          { label: 'Mid stations', value: '1,000', unit: '× 10 units' },
+          { label: 'Small stations', value: '8,000', unit: '× 3 units' },
+        ],
+        result: { label: 'Total', value: '~37', unit: 'K units' },
+        hint: '9,500 stations split by size. Per-station counts differ by 1 order — never average',
+      },
     },
     {
       type: 'explain',
       title: 'Example 2: supermarket registers in Japan',
       content: 'Question: total registers in Japanese supermarkets?\n\nStep 1: unit base\n- Supermarkets: about 22,000\n\nStep 2: registers per store by size\n- Large (Aeon, Ito-Yokado, about 2,000): 15/store (5 manned + 10 self-checkout)\n- Mid (about 8,000): 8/store\n- Small/regional (about 12,000): 4/store\n\nStep 3: multiply\n- 2,000 × 15 = 30,000\n- 8,000 × 8 = 64,000\n- 12,000 × 4 = 48,000\n\nStep 4: total\n```\n30,000 + 64,000 + 48,000 ≈ about 142,000 registers\n```\n\nActual: about 150-180K registers in Japanese supermarkets (POS industry estimate)\n→ About 10% error. Strong precision.\n\nKey insight: "unit facility size × items per unit" generalizes infinitely.\n- Supermarket × register → retail IT investment estimate\n- Hospital × bed → medical capacity\n- School × classroom → ed-tech market\n- Station × ticket gate → rail infrastructure refresh need',
       visual: 'FermiFormulaDiagram',
+      visualProps: {
+        sectionLabel: 'Supermarket registers in Japan — by store size',
+        factors: [
+          { label: 'Large stores', value: '2,000', unit: '× 15 units' },
+          { label: 'Mid stores', value: '8,000', unit: '× 8 units' },
+          { label: 'Small stores', value: '12,000', unit: '× 4 units' },
+        ],
+        result: { label: 'Total', value: '~142', unit: 'K units' },
+        hint: 'Same "unit × per-unit count" formula applies to hospital × bed, school × classroom',
+      },
     },
     {
       type: 'explain',

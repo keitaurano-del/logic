@@ -208,6 +208,15 @@ const fermiLesson204: LessonData = {
       title: 'Learn the most common mistakes (first three)',
       content: 'Trap (1): Overestimating by assuming "everyone uses it"\n× Smartphone market = total population × smartphone unit price\n○ Smartphone market = buyer cohort × replacement rate × average unit price\n\n-> There are always non-users by age, region, and income. The "everyone" assumption is the single biggest source of overestimation. Keep age-cohort usage rates in mind (teens / 60+ tend to be lower).\n\nTrap (2): Mixing units\n× Conflating monthly and annual numbers\n○ Always make explicit "per year," "per month," or "per day" in the calculation\n\n-> Writing "once a week" but treating it as "once a year" throws your answer off by 52x. Annotate the unit on every factor, and standardize to annual at the very end.\n\nTrap (3): Double-counting\n× Adding B2B + B2C and double-counting intermediate distribution\n○ Standardize on end-consumption (downstream), or diagram the flow to keep it clean',
       visual: 'ThreePillarsDiagram',
+      visualProps: {
+        sectionLabel: 'Fermi traps — 3 main overestimation sources',
+        pillars: [
+          { icon: 'All', title: '"Everyone uses it"', body: 'Population × price with no usage rate. Non-users exist by age/region/income. Biggest overestimation source.' },
+          { icon: 'Unit', title: 'Mixed units', body: 'Monthly vs annual mixed. "Once a week" treated as "once a year" throws answer off 52x.' },
+          { icon: 'Dbl', title: 'Double-counting', body: 'B2B + B2C added with intermediate distribution counted twice. Use end-consumption (downstream).' },
+        ],
+        hint: 'Before multiplying: are units aligned? Is "everyone" assumed? Same transaction counted twice?',
+      },
     },
     {
       type: 'explain',
