@@ -11,6 +11,8 @@ import { createFermiRouter } from './routes/fermi.js'
 import { createBillingRouter } from './routes/billing.js'
 import { createProblemsRouter } from './routes/problems.js'
 import { createJournalRouter } from './routes/journal.js'
+import { createFeatureFlagsRouter } from './routes/feature-flags.js'
+import { createSyncTelemetryRouter } from './routes/sync-telemetry.js'
 
 // Supabase サーバーサイドクライアント（service role key 使用）
 const supabaseUrl = process.env.SUPABASE_URL || ''
@@ -206,6 +208,12 @@ app.use('/api/fermi', createFermiRouter(client, supabase, fermiLimiter))
 
 // ジャーナル & 目標
 app.use('/api/journal', createJournalRouter(client, journalLimiter))
+
+// Device Sync Phase 3: 段階公開のための feature flag 配信
+app.use('/api/feature-flags', createFeatureFlagsRouter())
+
+// Device Sync Phase 3: sync 完了テレメトリ受信
+app.use('/api/sync-telemetry', createSyncTelemetryRouter({ supabase }))
 
 
 // 静的ファイル（public/ → dist/）は配信する
