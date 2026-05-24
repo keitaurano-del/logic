@@ -1,0 +1,344 @@
+/* ============================================================
+ * ProblemGenLoader.css — AI 問題生成中のオーバーレイ演出
+ * ============================================================ */
+
+.problem-gen-loader__overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  background: color-mix(in srgb, var(--bg-primary) 88%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  animation: problemGenLoaderFadeIn 0.18s ease-out;
+}
+
+.problem-gen-loader__panel {
+  width: 100%;
+  max-width: 360px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 28px 22px 22px;
+  box-shadow: var(--shadow-v3-hero, 0 10px 40px rgba(0, 0, 0, 0.15));
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* ---------- Hero icon (中央の脳 + 回転リング + spark) ---------- */
+
+.problem-gen-loader__hero {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.problem-gen-loader__hero-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-top-color: var(--brand);
+  border-right-color: color-mix(in srgb, var(--brand) 60%, transparent);
+  animation: problemGenLoaderRingSpin 1.6s linear infinite;
+}
+
+.problem-gen-loader__hero-ring::after {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  border: 1px dashed color-mix(in srgb, var(--brand) 30%, transparent);
+  animation: problemGenLoaderRingSpin 4.2s linear infinite reverse;
+}
+
+.problem-gen-loader__hero-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--brand) 12%, var(--bg-card));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--brand);
+  animation: problemGenLoaderIconPulse 1.8s ease-in-out infinite;
+}
+
+.problem-gen-loader__hero-icon svg {
+  stroke: var(--brand);
+}
+
+/* Spark: 周りでチカチカする星 */
+.problem-gen-loader__hero-spark {
+  position: absolute;
+  color: var(--brand);
+  opacity: 0;
+  animation: problemGenLoaderSparkBlink 2.4s ease-in-out infinite;
+}
+
+.problem-gen-loader__hero-spark svg {
+  stroke: var(--brand);
+  fill: color-mix(in srgb, var(--brand) 40%, transparent);
+}
+
+.problem-gen-loader__hero-spark--1 {
+  top: 4px;
+  right: 10px;
+  animation-delay: 0s;
+}
+
+.problem-gen-loader__hero-spark--2 {
+  bottom: 8px;
+  left: 6px;
+  animation-delay: 0.7s;
+}
+
+.problem-gen-loader__hero-spark--3 {
+  top: 50%;
+  right: -2px;
+  animation-delay: 1.4s;
+}
+
+/* ---------- Title ---------- */
+
+.problem-gen-loader__title {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-primary);
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.problem-gen-loader__subtitle {
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-align: center;
+  margin-bottom: 18px;
+  line-height: 1.5;
+}
+
+/* ---------- Step list ---------- */
+
+.problem-gen-loader__steps {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.problem-gen-loader__step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1.4;
+  transition: background 0.25s ease, color 0.25s ease, opacity 0.25s ease;
+}
+
+.problem-gen-loader__step--pending {
+  opacity: 0.4;
+  color: var(--text-muted);
+}
+
+.problem-gen-loader__step--active {
+  background: color-mix(in srgb, var(--brand) 10%, transparent);
+  color: var(--text-primary);
+  font-weight: 700;
+  animation: problemGenLoaderStepFadeIn 0.35s ease-out;
+}
+
+.problem-gen-loader__step--done {
+  color: var(--text-secondary);
+  opacity: 0.9;
+}
+
+.problem-gen-loader__step-icon {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+}
+
+.problem-gen-loader__step--pending .problem-gen-loader__step-icon svg {
+  stroke: var(--text-muted);
+}
+
+.problem-gen-loader__step--active .problem-gen-loader__step-icon svg {
+  stroke: var(--brand);
+  animation: problemGenLoaderIconWiggle 1.2s ease-in-out infinite;
+}
+
+.problem-gen-loader__step--done .problem-gen-loader__step-icon svg {
+  stroke: var(--brand);
+}
+
+.problem-gen-loader__step-label {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Active step: 3 つの点で thinking 表現 */
+.problem-gen-loader__step-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.problem-gen-loader__step-dots span {
+  display: block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--brand);
+  animation: problemGenLoaderDotBounce 1s ease-in-out infinite;
+}
+
+.problem-gen-loader__step-dots span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.problem-gen-loader__step-dots span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.problem-gen-loader__step-spacer {
+  width: 16px;
+  flex-shrink: 0;
+}
+
+/* ---------- Progress bar ---------- */
+
+.problem-gen-loader__progress {
+  height: 4px;
+  background: color-mix(in srgb, var(--brand) 12%, transparent);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.problem-gen-loader__progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--brand), var(--brand-light, var(--brand)));
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+/* ---------- Hint ---------- */
+
+.problem-gen-loader__hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* ============================================================
+ * Keyframes
+ * ============================================================ */
+
+@keyframes problemGenLoaderFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes problemGenLoaderRingSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes problemGenLoaderIconPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--brand) 35%, transparent);
+  }
+  50% {
+    transform: scale(1.06);
+    box-shadow: 0 0 0 8px color-mix(in srgb, var(--brand) 0%, transparent);
+  }
+}
+
+@keyframes problemGenLoaderSparkBlink {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  70% {
+    opacity: 0.4;
+    transform: scale(0.9);
+  }
+}
+
+@keyframes problemGenLoaderStepFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes problemGenLoaderIconWiggle {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-8deg);
+  }
+  75% {
+    transform: rotate(8deg);
+  }
+}
+
+@keyframes problemGenLoaderDotBounce {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateY(-3px);
+    opacity: 1;
+  }
+}
+
+/* Accessibility: reduce motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .problem-gen-loader__hero-ring,
+  .problem-gen-loader__hero-ring::after,
+  .problem-gen-loader__hero-icon,
+  .problem-gen-loader__hero-spark,
+  .problem-gen-loader__step-dots span,
+  .problem-gen-loader__step--active .problem-gen-loader__step-icon svg {
+    animation: none !important;
+  }
+}

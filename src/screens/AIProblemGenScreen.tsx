@@ -12,6 +12,7 @@ import { BookmarkIcon, BookmarkFilledIcon } from '../icons'
 import { haptic } from '../platform/haptics'
 import { SAMPLE_PROBLEMS, type SampleDifficulty } from '../aiProblemSamples'
 import { useStudyTimer } from '../hooks/useStudyTimer'
+import { ProblemGenLoader } from '../components/ProblemGenLoader'
 
 interface AIProblemGenScreenProps {
   onBack: () => void
@@ -539,6 +540,9 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
           </>
         )}
       </div>
+
+      {/* 生成中の演出オーバーレイ（ステップ表示 + 思考アニメ） */}
+      {generating && <ProblemGenLoader />}
 
       {/* 解き終わり後の評価ポップアップ（プレイ画面から戻ってきた時に表示） */}
       {showRating && (
