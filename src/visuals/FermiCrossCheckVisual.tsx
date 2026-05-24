@@ -5,10 +5,11 @@ import './visuals-fermi.css'
  * フェルミ — クロスチェック検算図
  * lesson-216 step.visual='FermiCrossCheckDiagram'
  *
- * 構図:
- *   - 上段に共通の問い（市場規模 etc.）
- *   - 左右 2 経路（需要側 / 供給側）が下に向かって計算式を展開
- *   - 中央下で 2 経路の結果が照合 → ✓ または「差分」表示
+ * A 案適用 (2026-05-24, §3.1 §2.4 準拠):
+ *   - q-label 10→12, q-body 14→16, col-tag 10→12, step-value 13→14 などを CSS で底上げ
+ *   - verdict-body 12→14, verdict-title 14→16
+ *   - warm accent: verdict (✓ 桁感は一致) の icon を terracotta 系に格上げ
+ *     （検算合致 = 推定の到達確認 = 1 visual 内 1 箇所アクセント）
  *
  * 段階開示:
  *   Step 1 — 問い + 2 列の見出し

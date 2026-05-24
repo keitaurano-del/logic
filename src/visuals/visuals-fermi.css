@@ -295,20 +295,20 @@
 
 .vz-fermi-pm-num {
   font-family: 'Inter Tight', Inter, sans-serif;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 800;
   color: var(--brand);
   line-height: 1;
 }
 .vz-fermi-pm-title {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 800;
   color: var(--text-primary);
   letter-spacing: 0.01em;
   line-height: 1.3;
 }
 .vz-fermi-pm-formula {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text-secondary);
   line-height: 1.4;
@@ -333,24 +333,25 @@
   padding-bottom: 6px;
   border-bottom: 1px solid var(--border-light);
 }
+/* warm accent: 選択中パターンの番号 = アクション焦点 = terracotta（1 visual 内 1 箇所） */
 .vz-fermi-pm-detail-num {
   font-family: 'Inter Tight', Inter, sans-serif;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 800;
-  color: var(--brand);
+  color: var(--visual-warm-primary-deep);
 }
 .vz-fermi-pm-detail-title {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 800;
   color: var(--text-primary);
 }
 .vz-fermi-pm-detail-row {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
 .vz-fermi-pm-detail-label {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.08em;
   color: var(--text-muted);
@@ -360,7 +361,7 @@
   font-size: 14px;
   font-weight: 600;
   color: var(--text-primary);
-  line-height: 1.45;
+  line-height: 1.5;
 }
 .vz-fermi-pm-detail-value.mono {
   font-family: 'Inter Tight', Inter, sans-serif;
@@ -368,25 +369,25 @@
   font-weight: 700;
 }
 .vz-fermi-pm-detail-hint {
-  margin-top: 2px;
-  padding: 6px 8px;
+  margin-top: 4px;
+  padding: 8px 10px;
   background: var(--brand-soft);
   border-radius: 6px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--brand);
-  line-height: 1.45;
+  line-height: 1.5;
 }
 
 .vz-fermi-pm-hint {
-  padding: 8px 10px;
+  padding: 10px 12px;
   background: var(--brand-soft);
   border-radius: 8px;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--brand);
   text-align: center;
-  line-height: 1.45;
+  line-height: 1.5;
 }
 
 [data-fullbleed='true'] .vz-fermi-pm-grid {
@@ -466,16 +467,17 @@
   justify-content: center;
   transition: background 0.25s, border-color 0.25s, transform 0.25s, box-shadow 0.25s;
 }
+/* warm accent: フォーカスセル = 推定対象 = terracotta（1 visual 内 1 箇所） */
 .vz-fermi-area-cell.is-focus {
-  background: var(--brand-cta-grad, var(--brand));
-  border-color: var(--brand);
+  background: var(--visual-warm-primary);
+  border-color: var(--visual-warm-primary-deep);
   transform: scale(1.06);
-  box-shadow: 0 6px 16px rgba(108, 142, 245, 0.35);
+  box-shadow: 0 6px 16px rgba(196, 117, 58, 0.32);
   z-index: 1;
 }
 
 .vz-fermi-area-cell-tag {
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 800;
   color: #fff;
   letter-spacing: 0.04em;
@@ -490,19 +492,19 @@
   flex-wrap: wrap;
 }
 .vz-fermi-area-stage-tag {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 800;
   color: var(--brand);
   background: var(--brand-soft);
   border-radius: 999px;
-  padding: 4px 10px;
+  padding: 5px 12px;
   letter-spacing: 0.04em;
 }
 .vz-fermi-area-stage-sub {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-secondary);
-  line-height: 1.4;
+  line-height: 1.45;
 }
 
 .vz-fermi-area-formula {
@@ -525,13 +527,13 @@
 }
 
 .vz-fermi-area-formula-label {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 800;
   color: var(--brand);
 }
 .vz-fermi-area-formula-eq {
   font-family: 'Inter Tight', Inter, sans-serif;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 800;
   color: var(--brand);
 }
@@ -539,12 +541,12 @@
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  gap: 3px;
   min-width: 0;
 }
 .vz-fermi-area-formula-frac .num,
 .vz-fermi-area-formula-frac .den {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--text-primary);
   white-space: nowrap;
@@ -566,7 +568,7 @@
   text-align: center;
 }
 .vz-fermi-area-result .label {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.08em;
   color: var(--brand);
@@ -574,26 +576,26 @@
 }
 .vz-fermi-area-result .value {
   font-family: 'Inter Tight', Inter, sans-serif;
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 800;
   color: var(--brand);
-  line-height: 1.2;
+  line-height: 1.25;
 }
 .vz-fermi-area-result .note {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-secondary);
 }
 
 .vz-fermi-area-hint {
-  padding: 8px 10px;
+  padding: 10px 12px;
   background: var(--brand-soft);
   border-radius: 8px;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--brand);
   text-align: center;
-  line-height: 1.45;
+  line-height: 1.5;
 }
 
 [data-fullbleed='true'] .vz-fermi-area-stage {
@@ -669,10 +671,10 @@
   justify-content: center;
 }
 .vz-fermi-mm-side-tag {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.08em;
-  padding: 4px 12px;
+  padding: 5px 12px;
   border-radius: 999px;
   text-transform: uppercase;
 }
@@ -707,7 +709,7 @@
   text-align: center;
 }
 .vz-fermi-mm-factor-label {
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -715,7 +717,7 @@
 }
 .vz-fermi-mm-factor-value {
   font-family: 'Inter Tight', Inter, sans-serif;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--text-primary);
   line-height: 1.2;
@@ -726,7 +728,7 @@
   top: 50%;
   transform: translateY(-50%);
   font-family: 'Inter Tight', Inter, sans-serif;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--brand);
   pointer-events: none;
@@ -755,37 +757,39 @@
   text-align: center;
 }
 .vz-fermi-mm-center-label {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  opacity: 0.85;
+  opacity: 0.88;
 }
 .vz-fermi-mm-center-value {
   font-family: 'Inter Tight', Inter, sans-serif;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 800;
   line-height: 1.2;
   letter-spacing: -0.01em;
 }
+/* warm accent: 「上下で桁が一致 ✓」バッジ = 推定の到達確認 = terracotta（1 visual 内 1 箇所） */
 .vz-fermi-mm-center-check {
-  margin-top: 4px;
-  background: rgba(255, 255, 255, 0.22);
+  margin-top: 6px;
+  background: var(--visual-warm-primary-soft);
+  color: var(--visual-warm-primary-deep);
   border-radius: 999px;
-  padding: 4px 10px;
-  font-size: 11px;
+  padding: 6px 12px;
+  font-size: 13px;
   font-weight: 700;
 }
 
 .vz-fermi-mm-hint {
-  padding: 8px 10px;
+  padding: 10px 12px;
   background: var(--brand-soft);
   border-radius: 8px;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--brand);
   text-align: center;
-  line-height: 1.45;
+  line-height: 1.5;
 }
 
 [data-fullbleed='true'] .vz-fermi-mm-side {
@@ -868,7 +872,7 @@
   flex-wrap: wrap;
 }
 .vz-fermi-ds-tier-label {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -881,7 +885,7 @@
   color: var(--brand-pop, var(--brand));
 }
 .vz-fermi-ds-tier-title {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 800;
   color: var(--text-primary);
 }
@@ -897,24 +901,25 @@
 }
 .vz-fermi-ds-tier-value .num {
   font-family: 'Inter Tight', Inter, sans-serif;
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 800;
   color: var(--text-primary);
   letter-spacing: -0.01em;
   line-height: 1;
 }
 .vz-fermi-ds-tier-value .unit {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--text-secondary);
 }
 .vz-fermi-ds-tier-value .formula {
   width: 100%;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-muted);
   font-family: 'Inter Tight', Inter, sans-serif;
   letter-spacing: 0.01em;
+  line-height: 1.5;
 }
 
 .vz-fermi-ds-divider {
@@ -930,13 +935,14 @@
   opacity: 1;
   transform: translateY(0);
 }
+/* warm accent: ÷ / = の演算子 = 動きの起点。terracotta に格上げ（1 visual 内 1 箇所） */
 .vz-fermi-ds-divider .op {
   font-family: 'Inter Tight', Inter, sans-serif;
   font-size: 22px;
   font-weight: 800;
-  color: var(--brand);
-  background: var(--bg-card);
-  border: 1.5px solid var(--brand);
+  color: var(--visual-warm-primary-deep);
+  background: var(--visual-warm-primary-soft);
+  border: 1.5px solid var(--visual-warm-primary);
   border-radius: 999px;
   width: 36px;
   height: 36px;
@@ -959,11 +965,11 @@
   box-shadow: var(--brand-cta-shadow, 0 6px 20px rgba(108, 142, 245, 0.3));
 }
 .vz-fermi-ds-result-label {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  opacity: 0.85;
+  opacity: 0.88;
 }
 .vz-fermi-ds-result-row {
   display: flex;
@@ -972,7 +978,7 @@
 }
 .vz-fermi-ds-result-value {
   font-family: 'Inter Tight', Inter, sans-serif;
-  font-size: 30px;
+  font-size: 32px;
   font-weight: 800;
   line-height: 1;
   letter-spacing: -0.01em;
@@ -983,22 +989,22 @@
   opacity: 0.92;
 }
 .vz-fermi-ds-result-note {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
-  opacity: 0.85;
+  opacity: 0.88;
   letter-spacing: 0.02em;
 }
 
 .vz-fermi-ds-hint {
-  margin-top: 4px;
-  padding: 8px 10px;
+  margin-top: 6px;
+  padding: 10px 12px;
   background: var(--brand-soft);
   border-radius: 8px;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--brand);
   text-align: center;
-  line-height: 1.45;
+  line-height: 1.5;
 }
 
 [data-fullbleed='true'] .vz-fermi-ds-row {
@@ -1064,17 +1070,17 @@
   gap: 2px;
 }
 .vz-fermi-cc-q-label {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--brand);
 }
 .vz-fermi-cc-q-body {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--text-primary);
-  line-height: 1.45;
+  line-height: 1.5;
 }
 
 .vz-fermi-cc-columns {
@@ -1107,10 +1113,10 @@
   border-bottom: 1px dashed var(--border);
 }
 .vz-fermi-cc-col-tag {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.06em;
-  padding: 4px 10px;
+  padding: 5px 12px;
   border-radius: 999px;
   text-align: center;
   line-height: 1.2;
@@ -1146,17 +1152,17 @@
   transform: translateY(0);
 }
 .vz-fermi-cc-step-label {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--text-muted);
   letter-spacing: 0.02em;
 }
 .vz-fermi-cc-step-value {
   font-family: 'Inter Tight', Inter, sans-serif;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--text-primary);
-  line-height: 1.2;
+  line-height: 1.25;
 }
 
 .vz-fermi-cc-col-total {
@@ -1177,7 +1183,7 @@
   background: var(--brand-pop, var(--brand));
 }
 .vz-fermi-cc-col-total-label {
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1185,7 +1191,7 @@
 }
 .vz-fermi-cc-col-total-value {
   font-family: 'Inter Tight', Inter, sans-serif;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 800;
   line-height: 1.2;
   letter-spacing: -0.01em;
@@ -1206,38 +1212,40 @@
   align-items: center;
   gap: 8px;
 }
+/* warm accent: verdict icon (✓) = 検算到達確認 = terracotta（1 visual 内 1 箇所） */
 .vz-fermi-cc-verdict-icon {
   display: inline-flex;
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.22);
+  background: var(--visual-warm-primary);
+  color: #fff;
   border-radius: 999px;
   font-weight: 800;
-  font-size: 15px;
+  font-size: 16px;
 }
 .vz-fermi-cc-verdict-title {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 800;
   letter-spacing: 0.02em;
 }
 .vz-fermi-cc-verdict-body {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   opacity: 0.95;
-  line-height: 1.45;
+  line-height: 1.5;
 }
 
 .vz-fermi-cc-hint {
-  padding: 8px 10px;
+  padding: 10px 12px;
   background: var(--brand-soft);
   border-radius: 8px;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--brand);
   text-align: center;
-  line-height: 1.45;
+  line-height: 1.5;
 }
 
 [data-fullbleed='true'] .vz-fermi-cc-question {

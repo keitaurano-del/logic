@@ -5,10 +5,11 @@ import './visuals-fermi.css'
  * フェルミ — 面積ベース型の図解
  * lesson-212 step.visual='FermiAreaApproachDiagram'
  *
- * 構図:
- *   - 上段: 国土を表す abstract メッシュ（5×3 = 15 マス）
- *   - 中段: メッシュ密度 ÷ 1 単位の商圏面積 → 単位数
- *   - 下段: 計算式と代表例（ガソリンスタンド）
+ * A 案適用 (2026-05-24, §3.1 §2.4 準拠):
+ *   - stage-tag 11→13, stage-sub 11→13, formula-label 13→14
+ *   - cell-tag 9→12, formula-frac num/den 12→14, result.value 17→18
+ *   - warm accent: フォーカスセル「1 店舗」のハイライト = 動きの起点 → terracotta に格上げ
+ *     （現状: brand-cta-grad。focus = 推定対象 = 1 visual 内 1 箇所アクセント）
  *
  * 段階開示:
  *   Step 1 — 国土メッシュ

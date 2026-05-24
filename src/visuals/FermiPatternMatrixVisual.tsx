@@ -5,6 +5,11 @@ import './visuals-fermi.css'
  * フェルミ 6 パターン早見表 — 2×3 マトリクス
  * lesson-210 step.visual='FermiPatternMatrixDiagram'
  *
+ * A 案適用 (2026-05-24, §3.1 §2.4 準拠):
+ *   - cell num 15→16, title 13→14, formula 10→12 など CSS 側で底上げ
+ *   - warm accent: 詳細パネルの detail-num (アクティブセルの番号) を terracotta に格上げ
+ *     （選択されたパターン = 動きの起点 = 1 visual 内 1 箇所アクセント）
+ *
  * 構図:
  *   - 横軸=計算の起点（需要側 / 供給側 / 検算）
  *   - 縦軸=単位（個人＆世帯ベース / 法人＆面積ベース）

@@ -5,6 +5,11 @@ import './visuals-fermi.css'
  * フェルミ — マクロ売上 / ミクロ売上 双方向分解
  * lesson-214 step.visual='FermiMacroMicroSplitDiagram'
  *
+ * A 案適用 (2026-05-24, §3.1 §2.4 準拠):
+ *   - factor.label 9→12, factor.value 12→14, side-tag 11→12 など CSS 側で底上げ
+ *   - warm accent: 中央ゴールの「上下で桁が一致 ✓」バッジを terracotta 系に格上げ
+ *     （照合一致 = 推定の到達点 = 1 visual 内 1 箇所アクセント）
+ *
  * 構図:
  *   - 中央: 市場全体の売上（共通ゴール）
  *   - 上: マクロ視点（人口 × 利用率 × 単価）

@@ -187,7 +187,13 @@
 .vz-fbl-arrow-label.plus { color: var(--success); }
 .vz-fbl-arrow-label.minus { color: var(--danger); }
 
-/* ===== FermiFormulaVisual (市場規模公式) ===== */
+/* ===== FermiFormulaVisual (市場規模公式) =====
+ * A 案 (2026-05-24) 適用:
+ *   - label 11→12 / value 15→16 / unit 12→13 / times 18→20 / equals 22→22(維持)
+ *   - result.label 12→12(維持) / result.value 22→22(維持) / result.unit 13→13(維持)
+ *   - warm accent: vz-ff-equals .symbol を terracotta に格上げ（= 記号 = 結論の到達点）
+ *     1 visual 内 1 箇所のみ (§2.4)
+ */
 .vz-ff-formula {
   display: flex;
   flex-wrap: wrap;
@@ -200,18 +206,18 @@
   background: var(--bg-card);
   border: 1.5px solid var(--brand);
   border-radius: 10px;
-  padding: 8px 6px;
+  padding: 10px 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
-  min-width: 64px;
+  gap: 3px;
+  min-width: 68px;
   flex: 1;
   text-align: center;
 }
 
 .vz-ff-factor .label {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.06em;
   color: var(--brand);
@@ -220,14 +226,14 @@
 
 .vz-ff-factor .value {
   font-family: 'Inter Tight', Inter, sans-serif;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--text-primary);
-  line-height: 1.1;
+  line-height: 1.15;
 }
 
 .vz-ff-factor .unit {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-secondary);
 }
@@ -237,7 +243,7 @@
   align-items: center;
   justify-content: center;
   font-family: 'Inter Tight', Inter, sans-serif;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
   color: var(--brand);
   flex-shrink: 0;
@@ -252,22 +258,23 @@
   gap: 8px;
 }
 
+/* warm accent: = は「結論の到達点」=動きの起点として terracotta に格上げ */
 .vz-ff-equals .symbol {
   font-family: 'Inter Tight', Inter, sans-serif;
   font-size: 22px;
-  font-weight: 700;
-  color: var(--brand);
+  font-weight: 800;
+  color: var(--visual-warm-primary);
 }
 
 .vz-ff-result {
   background: var(--brand-cta-grad);
   color: #fff;
   border-radius: 12px;
-  padding: 10px 14px;
+  padding: 12px 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  gap: 3px;
   box-shadow: var(--brand-cta-shadow);
   text-align: center;
 }
@@ -276,19 +283,20 @@
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.06em;
-  opacity: 0.85;
+  opacity: 0.88;
   text-transform: uppercase;
 }
 
 .vz-ff-result .value {
   font-family: 'Inter Tight', Inter, sans-serif;
-  font-size: 22px;
-  font-weight: 700;
+  font-size: 24px;
+  font-weight: 800;
   line-height: 1;
+  letter-spacing: -0.01em;
 }
 
 .vz-ff-result .unit {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   opacity: 0.92;
 }

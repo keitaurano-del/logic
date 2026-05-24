@@ -7,6 +7,12 @@ import { useStepReveal } from './hooks/useStepReveal'
  * lesson-201, lesson-202, lesson-203, lesson-89 で流用
  * 想定 visualId: 'FermiFormulaDiagram'
  *
+ * A 案適用 (2026-05-24, §3.1 §2.4 準拠):
+ *   - hint fontSize 11→13, padding/lineHeight 拡大
+ *   - factor/result/times の文字サイズは visuals-phase2.css 側で底上げ
+ *   - 結果 = 記号セクションを warm accent (terracotta) に格上げ
+ *     （= が「結論の到達点」なので 1 箇所アクセントとして意味整合）
+ *
  * default: lesson-201 step.0「ファミレス市場規模」
  *
  * Props で内容差し替え可能（lesson データ側 `step.visualProps` で指定）:
@@ -107,14 +113,15 @@ export function FermiFormulaVisual(props: FermiFormulaProps = {}) {
       {hint && isLast ? (
         <div
           style={{
-            marginTop: 12,
-            padding: '8px 10px',
+            marginTop: 14,
+            padding: '10px 12px',
             background: 'var(--brand-soft)',
             borderRadius: 8,
-            fontSize: 11,
+            fontSize: 13,
             fontWeight: 600,
             color: 'var(--brand)',
             textAlign: 'center',
+            lineHeight: 1.45,
           }}
         >
           💡 {hint}

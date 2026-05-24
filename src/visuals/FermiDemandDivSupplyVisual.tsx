@@ -5,11 +5,11 @@ import './visuals-fermi.css'
  * フェルミ — マクロ需要 ÷ ミクロ供給 型
  * lesson-215 step.visual='FermiDemandDivSupplyDiagram'
  *
- * 構図:
- *   - 上段: 需要総量（例：ピアノ保有台数）
- *   - 中段: 1 単位の供給能力（例：調律師 1 人が年間調律する台数）
- *   - 下段: 結果（必要供給者数 = 需要 ÷ 供給能力）
- *   - 上から下へフローする 3 段スタック
+ * A 案適用 (2026-05-24, §3.1 §2.4 準拠):
+ *   - tier-label 10→12, tier-title 14→16, unit/formula など CSS 側で底上げ
+ *   - warm accent: 結果バッジ（必要な供給者数）の上に warm 系の小ラベルを追加せず、
+ *     ÷ / = の divider .op を terracotta 系に格上げ（「割り算 = 演算の起点」=動きの意味）
+ *     1 visual 内 1 箇所のみ (§2.4)
  *
  * 段階開示:
  *   Step 1 — 需要総量
