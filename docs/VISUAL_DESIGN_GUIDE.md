@@ -770,7 +770,25 @@ Phase 4: HANDDRAWN_ROLLOUT_PLAN.md との整合性レビュー（サムネ系と
 ### 11.5 完了済リスト
 
 - **Phase 0 (2026-05-24):** `WhereWhyHowVisual`（サンプル、A 案リファレンス実装）
-- Phase 1 以降: 承認後に追記
+- **Phase 1 (2026-05-24):** 高頻度 15 件適用済
+  - Group A (フェルミ系 6 件):
+    - `FermiFormulaVisual` — warm accent: = 記号 (terracotta)
+    - `FermiMacroMicroSplitVisual` — warm accent: 「上下で桁が一致 ✓」バッジ (terracotta soft+deep)
+    - `FermiDemandDivSupplyVisual` — warm accent: ÷ / = の divider .op (terracotta)
+    - `FermiPatternMatrixVisual` — warm accent: detail-num (terracotta-deep)
+    - `FermiCrossCheckVisual` — warm accent: verdict ✓ icon (terracotta 背景 + 白)
+    - `FermiAreaApproachVisual` — warm accent: フォーカスセル「1 店舗」 (terracotta)
+  - Group B (ロジカル/MECE 系 6 件):
+    - `ThreePillarsVisual` — warm accent: 3 番目の柱の num (terracotta)
+    - `Two2MatrixVisual` — warm accent: axis-label (terracotta-deep)
+    - `PyramidVisual` — warm accent: top セル label (mustard)
+    - `LogicTreeVisual` — warm accent: leaf の left-border 3px (terracotta)
+    - `MecePatternsVisual` — warm accent: ① 要素分解 root (terracotta)
+    - `TriadVisual` — warm accent: triad-line 3 辺 (terracotta soft)
+  - Group C (その他 2 件):
+    - `GraphPitfallsVisual` — warm accent: hint ボックス (terracotta soft 背景)
+    - `ScrStructureVisual` — warm accent: Complication step left-border 4px (terracotta)
+- Phase 2 / 3: 承認後に追記
 
 ---
 

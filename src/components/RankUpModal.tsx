@@ -21,7 +21,12 @@ interface Props {
   onClose: () => void
 }
 
-function fireRankConfetti() {
+/**
+ * 豪華目の紙吹雪。unmount 時に止められるよう interval id を返す。
+ * canvas-confetti は document.body に canvas を生やすグローバル portal なので
+ * cleanup 側で `confetti.reset()` を必ず呼んで canvas をクリアする。
+ */
+function fireRankConfetti(): number {
   const duration = 2200
   const animationEnd = Date.now() + duration
   const defaults = {
@@ -53,6 +58,7 @@ function fireRankConfetti() {
       origin: { x: Math.random() * 0.8 + 0.1, y: Math.random() * 0.3 + 0.05 },
     })
   }, 240)
+  return interval
 }
 
 /** 中央のバッジ周辺に描く 12 本の放射状ライン */
@@ -113,11 +119,15 @@ export function RankUpModal({ prevTitleKey, newTitleKey, newLevel, onClose }: Pr
     if (firedRef.current) return
     firedRef.current = true
     haptic.heavy()
-    fireRankConfetti()
+    const intervalId = fireRankConfetti()
     const t1 = setTimeout(() => haptic.success(), 350)
     const t2 = setTimeout(() => setPhase(1), 1000)
     const t3 = setTimeout(() => setPhase(2), 1600)
+    // unmount 時に紙吹雪 interval と canvas をクリアする
+    // (画面遷移などで onClose を経由せず unmount された場合の残留対策)
     return () => {
+      clearInterval(intervalId)
+      confetti.reset()
       clearTimeout(t1)
       clearTimeout(t2)
       clearTimeout(t3)

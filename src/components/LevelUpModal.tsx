@@ -41,8 +41,13 @@ function useCountUp(from: number, to: number, duration = 800, delay = 400) {
   return val
 }
 
-function fireConfetti() {
-  // 軽量・1.5秒くらいの紙吹雪
+/**
+ * 軽量・1.5秒くらいの紙吹雪。
+ * unmount 時に停止できるよう interval id を返す。
+ * canvas-confetti は内部で document.body に <canvas> を生やすグローバル portal なので
+ * cleanup 側で `confetti.reset()` も必ず呼んで canvas を消すこと。
+ */
+function fireConfetti(): number {
   const duration = 1500
   const animationEnd = Date.now() + duration
   const defaults = {
@@ -65,6 +70,7 @@ function fireConfetti() {
       origin: { x: Math.random() * 0.6 + 0.2, y: Math.random() * 0.3 + 0.1 },
     })
   }, 220)
+  return interval
 }
 
 export function LevelUpModal({ prevLevel, newLevel, onClose }: Props) {
@@ -76,7 +82,13 @@ export function LevelUpModal({ prevLevel, newLevel, onClose }: Props) {
     if (firedRef.current) return
     firedRef.current = true
     haptic.heavy()
-    fireConfetti()
+    const intervalId = fireConfetti()
+    // unmount 時に interval を止め、グローバル canvas もクリアする
+    // (画面遷移などで onClose を経由せず unmount された場合の残留対策)
+    return () => {
+      clearInterval(intervalId)
+      confetti.reset()
+    }
   }, [])
 
   return (
