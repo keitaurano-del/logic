@@ -10,7 +10,7 @@
  */
 
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
-import { isDeviceSyncEnabled, HEAVY_USER_THRESHOLDS } from './featureFlags'
+import { isDeviceSyncEnabled, HEAVY_USER_THRESHOLDS, refreshDeviceSyncFlag } from './featureFlags'
 import { syncFlashcards, loadCards } from './flashcardData'
 import { syncWrongAnswers } from './wrongAnswerStore'
 import { syncSavedItems } from './savedItemsStore'
@@ -58,6 +58,53 @@ export function getSyncUser(): string | null {
 
 function isReady(): boolean {
   return !!supabase && !!_currentUserId
+}
+
+// ---- Telemetry 送信 ----
+
+interface TelemetryPayload {
+  syncType: string
+  itemCount: number
+  durationMs: number
+  success: boolean
+  errorMsg?: string
+}
+
+/**
+ * /api/sync-telemetry に sync 完了ログを送る。失敗しても UX を止めない。
+ *
+ * - Supabase の access token を Authorization header に乗せる
+ * - 未ログイン or token 取得失敗時は no-op
+ * - 送信完了は fire-and-forget (await しても呼び出し側のチェーンを長引かせない)
+ */
+export async function sendSyncTelemetry(payload: TelemetryPayload): Promise<void> {
+  if (!supabase || !_currentUserId) return
+  try {
+    const { data: { session } } = await supabase.auth.getSession()
+    const token = session?.access_token
+    if (!token) return
+
+    const { API_BASE } = await import('./apiBase')
+    await fetch(`${API_BASE}/api/sync-telemetry`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        userId: _currentUserId,
+        syncType: payload.syncType,
+        itemCount: payload.itemCount,
+        durationMs: payload.durationMs,
+        success: payload.success,
+        errorMsg: payload.errorMsg,
+      }),
+    })
+  } catch (e) {
+    if (import.meta.env.DEV) {
+      console.warn('[sync] sendSyncTelemetry failed:', e)
+    }
+  }
 }
 
 // ---- Progress 同期 ----
@@ -289,12 +336,18 @@ export async function syncOnLogin(userId: string): Promise<void> {
       console.log('[sync] Login sync complete. Lessons:', merged.completedLessons.length)
     }
 
-    // Phase 1 Device Sync: feature flag が ON のときだけ追加同期を走らせる
+    // Phase 3: ログイン直後にサーバー配信 flag を fetch してキャッシュ更新。
+    // 失敗しても無視 (前回 localStorage キャッシュ or env flag で判定する)。
+    await refreshDeviceSyncFlag(userId)
+
+    // Phase 1 Device Sync: feature flag が ON のときだけ追加同期を走らせる。
+    // Phase 3 では上の refresh によってサーバー判定が反映済みなので、
+    // この時点での isDeviceSyncEnabled() は server rollout の最新結果。
     if (isDeviceSyncEnabled()) {
       // ヘビーユーザー判定 (移行時のトレースログ用、UI は silent)
+      const cardCount = loadCards().length
+      const notebookCount = loadEntries().length
       try {
-        const cardCount = loadCards().length
-        const notebookCount = loadEntries().length
         if (
           cardCount >= HEAVY_USER_THRESHOLDS.flashcards ||
           notebookCount >= HEAVY_USER_THRESHOLDS.notebook
@@ -320,9 +373,22 @@ export async function syncOnLogin(userId: string): Promise<void> {
       if (failures.length > 0) {
         console.warn('[sync] Phase 1 device sync had failures:', failures.length)
       }
+      const durationMs = Date.now() - t0
       if (import.meta.env.DEV) {
-        console.log(`[sync] device sync complete in ${Date.now() - t0}ms`)
+        console.log(`[sync] device sync complete in ${durationMs}ms`)
       }
+
+      // Phase 3: テレメトリ送信 (fire-and-forget、失敗しても UX に影響しない)
+      const firstErrorMsg = failures
+        .map((r) => (r.status === 'rejected' ? String((r as PromiseRejectedResult).reason).slice(0, 500) : ''))
+        .find((m) => m)
+      void sendSyncTelemetry({
+        syncType: 'all',
+        itemCount: cardCount + notebookCount,
+        durationMs,
+        success: failures.length === 0,
+        errorMsg: firstErrorMsg,
+      })
     }
   } catch (e) {
     console.warn('[sync] syncOnLogin failed:', e)

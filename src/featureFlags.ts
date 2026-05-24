@@ -1,16 +1,17 @@
 /**
  * src/featureFlags.ts
  *
- * Phase 1 では Vite ビルド時の環境変数だけで判定する単純実装。
- * Phase 2 以降でサーバー配信 API (/api/feature-flags) に拡張する予定。
+ * Device Sync の有効/無効判定。
  *
- * 環境変数:
- *   VITE_ENABLE_DEVICE_SYNC=true|false
- *     - 未設定 or 'false' のとき OFF (デフォルト OFF)
- *     - 'true' のとき Phase 1 同期処理を起動
+ * Phase 1 (commit 9aa9b89): VITE_ENABLE_DEVICE_SYNC 環境変数のみで判定
+ * Phase 3 (2026-05-24): サーバー配信 API /api/feature-flags/device-sync を導入
+ *   - 起動時 1 回 fetch して結果を sessionStorage にキャッシュ
+ *   - fetch 失敗時は localStorage に残った前回値を fallback
+ *   - それも無ければ false (デフォルト OFF)
  *
- * 注意:
- *   Vite の import.meta.env は文字列で入る。boolean 化は明示的に判定する。
+ * 同期判定は呼び出し側 (syncOnLogin 等) から isDeviceSyncEnabled() で参照される。
+ * 初回 fetch 前は env flag だけで判定し (= 内部テスター env=true は即時 ON)、
+ * fetch 完了後はサーバー判定で上書きする。
  */
 
 function readEnvFlag(key: string, defaultValue: boolean): boolean {
@@ -26,15 +27,111 @@ function readEnvFlag(key: string, defaultValue: boolean): boolean {
   }
 }
 
+// ── キャッシュキー ──
+const SESSION_CACHE_KEY = 'logic-flag-device-sync-session'
+const PERSISTENT_CACHE_KEY = 'logic-flag-device-sync-last'
+
+interface DeviceSyncFlag {
+  enabled: boolean
+  rolloutPct: number
+  hashBucket: number
+  fetchedAt: number
+}
+
+function readSessionCache(): DeviceSyncFlag | null {
+  try {
+    const raw = sessionStorage.getItem(SESSION_CACHE_KEY)
+    if (!raw) return null
+    return JSON.parse(raw) as DeviceSyncFlag
+  } catch {
+    return null
+  }
+}
+
+function writeSessionCache(flag: DeviceSyncFlag): void {
+  try {
+    sessionStorage.setItem(SESSION_CACHE_KEY, JSON.stringify(flag))
+  } catch { /* */ }
+}
+
+function readPersistentCache(): DeviceSyncFlag | null {
+  try {
+    const raw = localStorage.getItem(PERSISTENT_CACHE_KEY)
+    if (!raw) return null
+    return JSON.parse(raw) as DeviceSyncFlag
+  } catch {
+    return null
+  }
+}
+
+function writePersistentCache(flag: DeviceSyncFlag): void {
+  try {
+    localStorage.setItem(PERSISTENT_CACHE_KEY, JSON.stringify(flag))
+  } catch { /* */ }
+}
+
+/**
+ * サーバー /api/feature-flags/device-sync から最新のロールアウト判定を取得して
+ * キャッシュに保存する。同セッション中の重複呼び出しは抑止する (一度成功すれば二度目以降は no-op)。
+ *
+ * 呼び出しは AppV3.tsx のログイン完了時 or syncOnLogin から 1 回だけが想定。
+ */
+export async function refreshDeviceSyncFlag(userId: string): Promise<DeviceSyncFlag | null> {
+  if (!userId) return null
+  // 同セッション内に既に fetch 済みならスキップ
+  const cached = readSessionCache()
+  if (cached) return cached
+
+  try {
+    // 動的 import で循環依存を回避 (apiBase は Capacitor を import している)
+    const { API_BASE } = await import('./apiBase')
+    const url = `${API_BASE}/api/feature-flags/device-sync?userId=${encodeURIComponent(userId)}`
+    const res = await fetch(url, { method: 'GET' })
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}`)
+    }
+    const body = (await res.json()) as { enabled: boolean; rolloutPct: number; hashBucket: number }
+    const flag: DeviceSyncFlag = {
+      enabled: !!body.enabled,
+      rolloutPct: Number(body.rolloutPct) || 0,
+      hashBucket: Number(body.hashBucket) || 0,
+      fetchedAt: Date.now(),
+    }
+    writeSessionCache(flag)
+    writePersistentCache(flag)
+    return flag
+  } catch (e) {
+    if (import.meta.env.DEV) {
+      console.warn('[featureFlags] refreshDeviceSyncFlag failed:', e)
+    }
+    return null
+  }
+}
+
 /**
  * Phase 1 デバイス間同期 (flashcards / wrong_answers / saved_items / notebook /
  * roadmap / category_progress) を有効にするか。
  *
- * Phase 1 ではデフォルト OFF。内部テスター環境 (.env で VITE_ENABLE_DEVICE_SYNC=true)
- * だけ ON にして dry-run する。
+ * 判定優先順位:
+ *   1. VITE_ENABLE_DEVICE_SYNC=true → 即 true (内部テスター env override)
+ *   2. sessionStorage キャッシュ (同セッションの fetch 結果)
+ *   3. localStorage キャッシュ (前回セッションの fetch 結果)
+ *   4. それも無ければ false (デフォルト OFF)
  */
 export function isDeviceSyncEnabled(): boolean {
-  return readEnvFlag('VITE_ENABLE_DEVICE_SYNC', false)
+  // 1. env override (内部テスターのみ true にしておく想定)
+  if (readEnvFlag('VITE_ENABLE_DEVICE_SYNC', false)) return true
+
+  // 2. session cache
+  const sessionCache = readSessionCache()
+  if (sessionCache) return sessionCache.enabled
+
+  // 3. persistent cache (前回 fetch の結果)
+  const persistentCache = readPersistentCache()
+  if (persistentCache) return persistentCache.enabled
+
+  // 4. デフォルト OFF
+  return false
 }
 
 /**
