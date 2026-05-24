@@ -10,6 +10,13 @@
  */
 
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
+import { isDeviceSyncEnabled, HEAVY_USER_THRESHOLDS } from './featureFlags'
+import { syncFlashcards, loadCards } from './flashcardData'
+import { syncWrongAnswers } from './wrongAnswerStore'
+import { syncSavedItems } from './savedItemsStore'
+import { syncNotebook, loadEntries } from './notebookStore'
+import { syncRoadmap } from './roadmapStore'
+import { syncCategoryProgress } from './progressStore'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || ''
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || ''
@@ -280,6 +287,42 @@ export async function syncOnLogin(userId: string): Promise<void> {
 
     if (import.meta.env.DEV) {
       console.log('[sync] Login sync complete. Lessons:', merged.completedLessons.length)
+    }
+
+    // Phase 1 Device Sync: feature flag が ON のときだけ追加同期を走らせる
+    if (isDeviceSyncEnabled()) {
+      // ヘビーユーザー判定 (移行時のトレースログ用、UI は silent)
+      try {
+        const cardCount = loadCards().length
+        const notebookCount = loadEntries().length
+        if (
+          cardCount >= HEAVY_USER_THRESHOLDS.flashcards ||
+          notebookCount >= HEAVY_USER_THRESHOLDS.notebook
+        ) {
+          console.warn('[sync] heavy user detected', {
+            userId,
+            flashcards: cardCount,
+            notebook: notebookCount,
+          })
+        }
+      } catch { /* */ }
+
+      const t0 = Date.now()
+      const results = await Promise.allSettled([
+        syncFlashcards(userId),
+        syncWrongAnswers(userId),
+        syncSavedItems(userId),
+        syncNotebook(userId),
+        syncRoadmap(userId),
+        syncCategoryProgress(userId),
+      ])
+      const failures = results.filter((r) => r.status === 'rejected')
+      if (failures.length > 0) {
+        console.warn('[sync] Phase 1 device sync had failures:', failures.length)
+      }
+      if (import.meta.env.DEV) {
+        console.log(`[sync] device sync complete in ${Date.now() - t0}ms`)
+      }
     }
   } catch (e) {
     console.warn('[sync] syncOnLogin failed:', e)
