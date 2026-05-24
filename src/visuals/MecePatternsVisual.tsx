@@ -14,6 +14,12 @@ type Props = {
  *     ほぼ見えなくなる問題があった（SCRUM 報告 2026-05-24）。
  *   - 初期 active=null に変更し、タップ前は 4 つすべて通常表示する。
  * static モード: 全パターン同等表示（active 操作なし）。
+ *
+ * A 案適用 (2026-05-24, §3.1 §2.4 準拠):
+ *   - hint fontSize 11→13, padding/lineHeight 拡大
+ *   - card-title 13→14, mini-tree 14→14(維持), stages 13→14, pair 14→14(維持)
+ *   - warm accent: ① 要素分解の root ノード (vz-mece-mini-tree .root) を terracotta に格上げ
+ *     （「迷ったら要素分解」= MECE の出発点 = 1 visual 内 1 箇所アクセント）
  */
 export function MecePatternsVisual({ revealMode = 'interactive' }: Props = {}) {
   // null = 何も選択されていない（全部通常表示） — interactive でも初期は null
@@ -109,14 +115,15 @@ export function MecePatternsVisual({ revealMode = 'interactive' }: Props = {}) {
 
       <div
         style={{
-          marginTop: 12,
-          padding: '8px 10px',
+          marginTop: 14,
+          padding: '10px 12px',
           background: 'var(--brand-soft)',
           borderRadius: 8,
-          fontSize: 11,
+          fontSize: 13,
           fontWeight: 600,
           color: 'var(--brand)',
           textAlign: 'center',
+          lineHeight: 1.45,
         }}
       >
         💡 迷ったら「要素分解」が一番シンプルで確実

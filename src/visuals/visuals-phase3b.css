@@ -464,10 +464,11 @@
   height: 100%;
 }
 
+/* warm accent: 3 要素を繋ぐ関係性の線 = 動きの起点 = terracotta（1 visual 内 1 箇所） */
 .vz-triad-line {
-  stroke: var(--brand);
-  stroke-width: 1.5;
-  opacity: 0.5;
+  stroke: var(--visual-warm-primary);
+  stroke-width: 2;
+  opacity: 0.55;
 }
 
 .vz-triad-node {
@@ -498,11 +499,11 @@
 .vz-triad-node.right  { left: 82%; top: 80%; }
 
 .vz-triad-label {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  opacity: 0.7;
+  opacity: 0.75;
 }
 
 .vz-triad-node.primary .vz-triad-label {
@@ -515,10 +516,10 @@
 }
 
 .vz-triad-name {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
   color: inherit;
-  line-height: 1.25;
+  line-height: 1.3;
 }
 
 /* ===== Five Forces ===== */

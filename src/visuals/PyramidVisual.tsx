@@ -72,6 +72,12 @@ const DEFAULT_HINT = '↓ Why So?（下に降りる） / ↑ So What?（上に�
  *   - VisualSlide 側で fullBleed=true により外側 padding を打ち消し、画面端まで利用
  *   - 各カードを大きく（min-height 80-110px、本文 17-18px、ラベル 14-15px）
  *   - 段階開示は維持。`revealMode='static'` で全層表示モードも後方互換
+ *
+ * A 案適用 (2026-05-24, §3.1 §2.4 準拠):
+ *   - non-fb モード: pyramid-cell font 13→14, bottom 12→13, label 11→12 など底上げ
+ *   - hint padding/font の見直し（既に 13px 達成済み、維持）
+ *   - warm accent: 結論セル (top) の label を terracotta soft 背景に格上げ
+ *     （結論のラベル = 主役の名札 = 1 visual 内 1 箇所アクセント）
  */
 export function PyramidVisual({
   revealMode = 'interactive',

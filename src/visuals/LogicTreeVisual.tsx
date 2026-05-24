@@ -63,6 +63,12 @@ function computeTreeDepth(node: LogicTreeNode): number {
  * 未指定フィールドは default 値（「朝起きられない」Why ツリー）が使われ、後方互換が保たれる。
  *
  * useStepReveal ベースで Phase 3 の他 Visual と同じ操作感に統一。
+ *
+ * A 案適用 (2026-05-24, §3.1 §2.4 準拠):
+ *   - hint fontSize 11→13, padding/lineHeight 拡大
+ *   - tree-node root 15→16, leaf 14→14(維持), leaves 13→13(維持) (CSS 側で底上げ)
+ *   - warm accent: 子ノード (vz-tree-leaf) の左ボーダーを terracotta に格上げ
+ *     （Why ツリーで「分岐 = 動きの起点」、子ノードがその核 = 1 visual 内 1 箇所）
  */
 export function LogicTreeVisual({
   data = defaultTree,
@@ -141,11 +147,12 @@ export function LogicTreeVisual({
       {hint && (
         <div
           style={{
-            marginTop: 12,
-            padding: '8px 10px',
+            marginTop: 14,
+            padding: '10px 12px',
             borderRadius: 8,
-            fontSize: 11,
+            fontSize: 13,
             fontWeight: 600,
+            lineHeight: 1.45,
             ...hintStyle,
           }}
         >

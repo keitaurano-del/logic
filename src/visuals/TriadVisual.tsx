@@ -4,6 +4,13 @@ import './visuals-phase3b.css'
  * Triad — 3 要素の三角形（汎用）
  * 法・術・勢、3 つの目的、3C の主要素など、3 つの構成要素を持つ概念に使う
  * lesson-358（法・術・勢）/ lesson-72 step.0（承認・共感・行動）等で利用
+ *
+ * A 案適用 (2026-05-24, §3.1 §2.4 準拠):
+ *   - hint fontSize 11→13, padding/lineHeight 拡大
+ *   - triad-name 14→16, triad-label 11→12 (CSS 側で底上げ)
+ *   - warm accent: triad-line (3 辺) を muted brand → terracotta soft に格上げ
+ *     （3 要素を繋ぐ「関係性の線」= 動きの起点 = 1 visual 内 1 箇所）
+ *     primary ノードは既に brand-cta-grad なので競合しない
  */
 
 type Node = {
@@ -62,14 +69,15 @@ export function TriadVisual({
 
       <div
         style={{
-          marginTop: 12,
-          padding: '8px 10px',
+          marginTop: 14,
+          padding: '10px 12px',
           background: 'var(--brand-soft)',
           borderRadius: 8,
-          fontSize: 11,
+          fontSize: 13,
           fontWeight: 600,
           color: 'var(--brand)',
           textAlign: 'center',
+          lineHeight: 1.45,
         }}
       >
         {hint}

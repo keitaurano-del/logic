@@ -6,6 +6,12 @@ import { useStepReveal } from './hooks/useStepReveal'
  * lesson-28, lesson-72, lesson-89, lesson-96, lesson-315, lesson-358 など 6 レッスン以上で流用
  * 想定 visualId: 'ThreePillarsDiagram'
  *
+ * A 案適用 (2026-05-24, §3.1 §2.4 準拠):
+ *   - hint fontSize 11→13, padding/lineHeight 拡大
+ *   - card title 14→16, body 13→14, num 15→16 (CSS 側)
+ *   - warm accent: 3 番目の柱 (.vz-3p-card:nth-child(3)) の num を terracotta に格上げ
+ *     （右端 = 最終ピース = 1 visual 内 1 箇所アクセント）
+ *
  * default: lesson-28 step.1「ケース面接で問われる 3 つの思考の柱」
  *
  * Props で内容差し替え可能（lesson データ側 `step.visualProps` で指定）:
@@ -77,14 +83,15 @@ export function ThreePillarsVisual(props: ThreePillarsProps = {}) {
       {hint && isLast ? (
         <div
           style={{
-            marginTop: 12,
-            padding: '8px 10px',
+            marginTop: 14,
+            padding: '10px 12px',
             background: 'var(--brand-soft)',
             borderRadius: 8,
-            fontSize: 11,
+            fontSize: 13,
             fontWeight: 600,
             color: 'var(--brand)',
             textAlign: 'center',
+            lineHeight: 1.45,
           }}
         >
           💡 {hint}

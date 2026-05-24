@@ -82,7 +82,7 @@
 }
 
 .vz-mece-card-title {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--brand);
   letter-spacing: 0.04em;
@@ -98,11 +98,14 @@
   gap: 4px;
 }
 
+/* warm accent: ① 要素分解の root = MECE の出発点 = terracotta（1 visual 内 1 箇所） */
 .vz-mece-mini-tree .root {
-  background: var(--brand-cta-grad);
+  background: var(--visual-warm-primary);
   color: #fff;
   border-radius: 8px;
-  padding: 4px 10px;
+  padding: 5px 12px;
+  font-size: 14px;
+  box-shadow: 0 3px 8px rgba(196, 117, 58, 0.22);
 }
 
 .vz-mece-mini-tree .children {
@@ -117,7 +120,7 @@
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 6px;
-  padding: 2px 6px;
+  padding: 3px 7px;
 }
 
 .vz-mece-mini-tree .mul {
@@ -130,7 +133,7 @@
   align-items: center;
   gap: 4px;
   flex-wrap: wrap;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
 }
 
@@ -192,20 +195,25 @@
 .vz-mece-3c-circle.competitor { right: 6px; top: 4px;  border-color: var(--rose); color: var(--rose); }
 .vz-mece-3c-circle.company   { left: 50%; bottom: 0; transform: translateX(-50%); border-color: var(--success); color: var(--success); }
 
-/* ===== Logic Tree ===== */
+/* ===== Logic Tree =====
+ * A 案 (2026-05-24) 適用:
+ *   - root node 15→16, leaf 14→14(維持) + padding 拡大, leaves 13→13(維持)
+ *   - warm accent: leaf の left-border を 3px terracotta に格上げ
+ *     （Why ツリー = 分岐 = 動きの起点 = 1 visual 内 1 箇所）
+ */
 .vz-tree-root {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .vz-tree-node {
   background: var(--brand-cta-grad);
   color: #fff;
   font-weight: 700;
-  font-size: 15px;
-  padding: 8px 14px;
+  font-size: 16px;
+  padding: 10px 16px;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(108, 142, 245, 0.28);
   text-align: center;
@@ -218,29 +226,31 @@
   width: 100%;
 }
 
+/* warm accent: leaf の left-border を terracotta に（分岐の起点、1 visual 内 1 箇所） */
 .vz-tree-leaf {
   background: var(--bg-card);
   border: 1.5px solid var(--brand);
+  border-left: 3px solid var(--visual-warm-primary);
   color: var(--text-primary);
   font-weight: 600;
   font-size: 14px;
-  padding: 6px 8px;
+  padding: 8px 10px;
   border-radius: 8px;
   text-align: center;
-  line-height: 1.35;
+  line-height: 1.4;
 }
 
 .vz-tree-leaves {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  margin-top: 2px;
+  margin-top: 4px;
 }
 
 .vz-tree-leaves > div {
   background: var(--bg-secondary);
   border-radius: 6px;
-  padding: 4px 6px;
+  padding: 6px 8px;
   font-size: 13px;
   color: var(--text-secondary);
   font-weight: 500;
@@ -316,12 +326,12 @@
 
 .vz-pyramid-cell {
   border-radius: 10px;
-  padding: 8px 8px;
-  font-size: 13px;
+  padding: 10px 8px;
+  font-size: 14px;
   font-weight: 600;
   text-align: center;
-  line-height: 1.35;
-  min-height: 44px;
+  line-height: 1.4;
+  min-height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -331,7 +341,7 @@
   background: var(--brand-cta-grad);
   color: #fff;
   font-weight: 700;
-  font-size: 15px;
+  font-size: 16px;
   box-shadow: var(--brand-cta-shadow);
 }
 
@@ -345,19 +355,23 @@
   background: var(--bg-secondary);
   border: 1px solid var(--border);
   color: var(--text-secondary);
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .vz-pyramid-cell-label {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.06em;
-  opacity: 0.7;
+  opacity: 0.75;
   display: block;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
 }
 
-.vz-pyramid-cell.top .vz-pyramid-cell-label { color: #fff; opacity: 0.85; }
+/* warm accent: 結論セル top の label = 主役の名札 = mustard 系（白背景上で目立つ、1 visual 内 1 箇所） */
+.vz-pyramid-cell.top .vz-pyramid-cell-label {
+  color: var(--visual-warm-secondary);
+  opacity: 1;
+}
 .vz-pyramid-cell.mid .vz-pyramid-cell-label { color: var(--brand-mid); }
 
 /* ============================================================
@@ -437,8 +451,11 @@
   margin-bottom: 0;
   text-transform: uppercase;
 }
+/* warm accent: fb mode でも top label を mustard に（1 visual 内 1 箇所、§2.4） */
 .vz-pyramid-fb .vz-pyramid-cell.top .vz-pyramid-cell-label {
   font-size: 14px;
+  color: var(--visual-warm-secondary);
+  opacity: 1;
 }
 .vz-pyramid-fb .vz-pyramid-cell.mid .vz-pyramid-cell-label {
   font-size: 12px;

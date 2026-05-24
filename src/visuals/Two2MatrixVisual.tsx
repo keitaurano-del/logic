@@ -5,6 +5,13 @@ import './visuals-phase2.css'
  * lesson-54, lesson-86, lesson-321, lesson-322, lesson-412 ほか 6 レッスン以上で流用される基幹コンポーネント
  * 想定 visualId: 'Two2MatrixDiagram'
  *
+ * A 案適用 (2026-05-24, §3.1 §2.4 準拠):
+ *   - hint fontSize 11→13, padding/lineHeight 拡大
+ *   - cell-title 13→14, cell-items 13→14, axis 11→12
+ *   - warm accent: axis-label (上部の縦軸名「↑ インパクト」) を terracotta に格上げ
+ *     （軸 = 切り口の決定点 = 1 visual 内 1 箇所アクセント）
+ *     TR セル「最優先」は brand-cta-grad のままで視覚 anchor を維持
+ *
  * default: lesson-54 step.1「インパクト × 実行容易性」
  *
  * Props で内容差し替え可能（lesson データ側 `step.visualProps` で指定）:
@@ -119,14 +126,15 @@ export function Two2MatrixVisual(props: Two2MatrixProps = {}) {
 
       {hint ? (
         <div style={{
-          marginTop: 12,
-          padding: '8px 10px',
+          marginTop: 14,
+          padding: '10px 12px',
           background: 'var(--brand-soft)',
           borderRadius: 8,
-          fontSize: 11,
+          fontSize: 13,
           fontWeight: 600,
           color: 'var(--brand)',
           textAlign: 'center',
+          lineHeight: 1.45,
         }}>
           💡 {hint}
         </div>
