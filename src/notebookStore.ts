@@ -197,3 +197,61 @@ export async function migrateLocalStorageToSupabase(userId: string): Promise<voi
     console.warn('[notebookStore] migration failed:', e)
   }
 }
+
+// =============================================
+// Supabase 同期 (Phase 1: Device Sync)
+// =============================================
+
+/**
+ * ログイン時の同期。
+ * 戦略: per-date last-write-wins。
+ * - DB と localStorage を date 単位でマージ
+ * - 両方に同 date がある場合は aiSummary + userMemo の合計文字数が多い方を採用
+ *   (情報落としを最小化する保守マージ)
+ *
+ * 改修済 notebooks スキーマ (025_notebooks_journal_columns.sql) を前提とする。
+ */
+export async function syncNotebook(userId: string): Promise<void> {
+  try {
+    const remote = (await getNotebook(userId)) ?? []
+    const local = load()
+
+    const byDate = new Map<string, NotebookEntry>()
+    for (const r of remote) byDate.set(r.date, r)
+
+    const toPush: NotebookEntry[] = []
+    for (const l of local) {
+      const r = byDate.get(l.date)
+      if (!r) {
+        byDate.set(l.date, l)
+        toPush.push(l)
+        continue
+      }
+      const localScore = (l.aiSummary?.length ?? 0) + (l.userMemo?.length ?? 0)
+      const remoteScore = (r.aiSummary?.length ?? 0) + (r.userMemo?.length ?? 0)
+      if (localScore > remoteScore) {
+        byDate.set(l.date, l)
+        toPush.push(l)
+      }
+    }
+
+    const merged = [...byDate.values()]
+    save(merged)
+
+    for (const entry of toPush) {
+      await saveNotebook(userId, entry)
+    }
+
+    if (import.meta.env.DEV) {
+      console.log(
+        '[notebookStore] syncNotebook complete:',
+        `remote=${remote.length}`,
+        `local=${local.length}`,
+        `merged=${merged.length}`,
+        `pushed=${toPush.length}`,
+      )
+    }
+  } catch (e) {
+    console.warn('[notebookStore] syncNotebook failed:', e)
+  }
+}

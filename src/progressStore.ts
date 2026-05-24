@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { loadCards } from './flashcardData'
 import { getProgress, saveAllProgress, saveProgressCategory } from './db/progressDb'
+import { getSupabaseClient } from './db/index'
 
 const STORAGE_KEY = 'logic-progress'
 
@@ -222,5 +224,84 @@ export async function migrateLocalStorageToSupabase(userId: string): Promise<voi
     }
   } catch (e) {
     console.warn('[progressStore] migration failed:', e)
+  }
+}
+
+// =============================================
+// Supabase 同期 (Phase 1: Device Sync — user_progress.category_progress)
+// =============================================
+//
+// 設計書 Section 4.4 / 3.2 に従い、カテゴリ別マスタリーは user_progress テーブルに
+// 相乗りさせる。conflict resolution は Max value (完了数は単調増加なので安全)。
+
+/**
+ * user_progress.category_progress を pull → ローカルとマージ → push
+ */
+export async function syncCategoryProgress(userId: string): Promise<void> {
+  const db = getSupabaseClient()
+  if (!db) return
+  try {
+    const { data, error } = await (db as any)
+      .from('user_progress')
+      .select('category_progress')
+      .eq('user_id', userId)
+      .maybeSingle()
+    if (error) {
+      console.warn('[progressStore] syncCategoryProgress select error:', error.message)
+      return
+    }
+
+    const remoteRaw = (data?.category_progress ?? {}) as Record<string, Partial<CategoryProgress>>
+    const local = loadProgress()
+
+    const merged: Record<Category, CategoryProgress> = structuredClone(DEFAULT_PROGRESS)
+    for (const cat of Object.keys(DEFAULT_PROGRESS) as Category[]) {
+      const r = remoteRaw[cat] ?? {}
+      const l = local[cat] ?? { totalCards: 0, completedCards: 0 }
+      merged[cat] = {
+        totalCards: Math.max(r.totalCards ?? 0, l.totalCards),
+        completedCards: Math.max(r.completedCards ?? 0, l.completedCards),
+      }
+    }
+
+    saveProgress(merged)
+
+    const { error: upErr } = await (db as any).from('user_progress').upsert(
+      {
+        user_id: userId,
+        category_progress: merged,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: 'user_id' },
+    )
+    if (upErr) console.warn('[progressStore] syncCategoryProgress upsert error:', upErr.message)
+
+    if (import.meta.env.DEV) {
+      console.log('[progressStore] syncCategoryProgress complete:', merged)
+    }
+  } catch (e) {
+    console.warn('[progressStore] syncCategoryProgress failed:', e)
+  }
+}
+
+/**
+ * カテゴリ別進捗を全件 push (書き込みフック用)
+ */
+export async function pushCategoryProgressToDB(userId: string): Promise<void> {
+  const db = getSupabaseClient()
+  if (!db) return
+  try {
+    const current = loadProgress()
+    const { error } = await (db as any).from('user_progress').upsert(
+      {
+        user_id: userId,
+        category_progress: current,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: 'user_id' },
+    )
+    if (error) console.warn('[progressStore] pushCategoryProgressToDB error:', error.message)
+  } catch (e) {
+    console.warn('[progressStore] pushCategoryProgressToDB exception:', e)
   }
 }
