@@ -359,6 +359,45 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
     }
   }, [ttsModeActive, ttsPlaying, ttsPaused, slide, ttsVoiceId, advanceReadable])
 
+  // シークバー用: 現在地が readableIndices 内で何番目か
+  // 非 readable (quiz/think/case) の場合は直前の readable インデックスを返す。
+  const ttsReadableCursor = useMemo(() => {
+    if (readableIndices.length === 0) return 0
+    const exact = readableIndices.indexOf(index)
+    if (exact >= 0) return exact
+    // index 未満で最大の readable を探す
+    let lo = 0
+    let hi = readableIndices.length - 1
+    let found = 0
+    while (lo <= hi) {
+      const mid = (lo + hi) >> 1
+      if (readableIndices[mid] <= index) {
+        found = mid
+        lo = mid + 1
+      } else {
+        hi = mid - 1
+      }
+    }
+    return found
+  }, [readableIndices, index])
+
+  // シークバーから新しい位置が来たときの処理
+  // - 再生中の utterance を止める
+  // - 対象 readable スライドへ jump
+  // - tts モードの effect が新規 speak を発火するので、ここでは speak しない
+  const handleSeekReadable = useCallback((nextCursor: number) => {
+    if (readableIndices.length === 0) return
+    const clamped = Math.min(readableIndices.length - 1, Math.max(0, nextCursor))
+    const targetSlideIndex = readableIndices[clamped]
+    if (targetSlideIndex === index) return
+    haptic.light()
+    setTtsCompletedReadable(false)
+    setQuizAnswered(null)
+    setMultiSelected([])
+    void tts.stop()
+    setIndex(targetSlideIndex)
+  }, [readableIndices, index])
+
   // ボイス変更 (制御パネルから)
   const handleChangeVoice = useCallback((id: string | null) => {
     setTtsVoiceId(id)
@@ -796,6 +835,9 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
           rate={ttsRate}
           voiceId={ttsVoiceId}
           lang={getLocale() === 'ja' ? 'ja-JP' : 'en-US'}
+          readableIndex={ttsReadableCursor}
+          readableTotal={readableIndices.length}
+          onSeek={handleSeekReadable}
           onTogglePause={() => { void handleTogglePause() }}
           onChangeRate={handleChangeRate}
           onChangeVoice={handleChangeVoice}

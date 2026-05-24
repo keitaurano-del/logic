@@ -1133,6 +1133,7 @@ const STRINGS: Record<Locale, Strings> = {
     'fermiRank.fourPlus': '4位以降',
     'fermiRank.empty.title': 'まだスコアがありません',
     'fermiRank.empty.desc': 'デイリーフェルミに挑戦してランキングに登場しよう',
+    'fermiRank.occupationAria': '職業: {label}',
 
     // Fermi Screen extra
     'fermiScreen.docTitle': 'フェルミ推定 — Logic',
@@ -2901,6 +2902,7 @@ const STRINGS: Record<Locale, Strings> = {
     'fermiRank.fourPlus': 'Rank 4+',
     'fermiRank.empty.title': 'No scores yet',
     'fermiRank.empty.desc': 'Try the Daily Fermi to appear on the ranking',
+    'fermiRank.occupationAria': 'Occupation: {label}',
 
 
     // Fermi Screen extra
