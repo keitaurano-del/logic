@@ -20,6 +20,7 @@ const CATEGORY_LABEL_KEY: Record<string, string> = {
   'システムシンキング': 'category.systems',
   '構造化リスニング': 'category.listening',
   'ADHDレバレッジ': 'category.adhdLeverage',
+  '集中の技術': 'category.focus',
   'フェルミ推定': 'category.fermi',
   '履歴書・職務経歴書': 'category.careerResume',
   'SPI対策': 'category.careerSpi',

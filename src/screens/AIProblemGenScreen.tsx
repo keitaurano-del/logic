@@ -34,6 +34,7 @@ const CATEGORY_LABEL_KEY: Record<string, string> = {
   'システムシンキング': 'category.systems',
   '構造化リスニング': 'category.listening',
   'ADHDレバレッジ': 'category.adhdLeverage',
+  '集中の技術': 'category.focus',
   '提案・伝える技術': 'category.proposal',
   '提案書作成': 'category.proposalWriting',
   '哲学・思考の原理': 'category.philosophy',

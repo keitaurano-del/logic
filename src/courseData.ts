@@ -488,6 +488,24 @@ const COURSES_JA: Course[] = [
     image: '/images/v3/course-listening-01.png',
   },
 
+  // ── 集中の技術 ──────────────────────────────────────
+  // 「今に集中する」コース。マインドフルネス + 注意研究 + フロー理論を
+  // 世俗的・実用的に再構成。医療助言ではなく、机に向かう自分が今日から
+  // 使える技術として実装。
+  {
+    id: 'focus-now-01',
+    title: '今に集中する',
+    category: '集中の技術',
+    group: 'business',
+    lessonIds: [900, 901, 902, 903, 904, 905, 906, 907],
+    level: '中級',
+    description:
+      'マインドフルネス・注意の構造・フロー理論を世俗的に統合。もやもや時に手元の作業へ戻る技術と、1 日単位で集中を維持する設計を 8 レッスンで体系化する。',
+    // TODO(designer): course-focus-now-01.png を v4 Figma マスターから生成 (handdrawn + 図解スタイル、ティール系 #14B8A6)。
+    // 生成までは broken image になる。投入後にこのコメント削除可。
+    image: '/images/v3/course-focus-now-01.png',
+  },
+
   // ── ADHD レバレッジ ─────────────────────────────────
   // 注：医学的アドバイスではない。ADHD 特性を経営資源として活かす視点での実用コース。
   // 詳細な免責は Lesson 800 冒頭の explain step に明記。
@@ -662,6 +680,11 @@ const COURSE_EN_OVERRIDES: Record<string, { title: string; description: string }
   'adhd-leverage-01': {
     title: 'Turn ADHD Traits into Business Leverage',
     description: 'Reframe hyperfocus, divergent thinking, agility, and novelty-seeking as business assets. Through environment design, role selection, and complementary collaboration, turn ADHD traits into leverage. Not medical advice.',
+  },
+  'focus-now-01': {
+    title: 'Focus on Now',
+    description:
+      'Combine mindfulness, attention research, and flow theory into a practical, secular toolkit. Eight lessons covering how to return to the work in front of you when your mind drifts, and how to design a day that sustains focus.',
   },
 }
 

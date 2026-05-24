@@ -144,6 +144,8 @@ import { documentationLessonMapEn } from './documentationLessonsEn'
 import { listeningLessonMap } from './listeningLessons'
 import { adhdLeverageLessonMap } from './adhdLeverageLessons'
 import { adhdLeverageLessonMapEn } from './adhdLeverageLessonsEn'
+import { focusLessonMap } from './focusLessons'
+import { focusLessonMapEn } from './focusLessonsEn'
 
 // 全レッスンマップを locale で切り替える。en 版が存在するカテゴリは
 // 英訳済みマップを、それ以外は ja 版にフォールバック (transitional)。
@@ -196,6 +198,8 @@ function _getMergedLessons(): Record<number, LessonData> {
     ..._pickByLocale(listeningLessonMap, listeningLessonMap),
     // ADHD レバレッジコース（en は ja にフォールバック、本格的な英訳は後日）
     ..._pickByLocale(adhdLeverageLessonMap, adhdLeverageLessonMapEn),
+    // 「今に集中する」コース（マインドフルネス + 注意の技術、en は ja にフォールバック）
+    ..._pickByLocale(focusLessonMap, focusLessonMapEn),
   }
   _cachedLocale = locale
   return _cachedMerged
