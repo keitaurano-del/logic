@@ -125,6 +125,16 @@ const fermiLesson202: LessonData = {
       type: 'explain',
       title: 'Estimate the "total length of the Tokyo subway system"',
       content: 'Question: how many kilometers is the Tokyo Metro + Toei Subway combined?\n\nDecomposition:\n1. Number of lines -> Tokyo has roughly 13 subway lines\n2. Average length per line -> roughly 20km (mix of loop and radial)\n3. Total length = 13 lines × 20km = 260km\n\nActual: about 300km (15% off — well within Fermi tolerance)\n\nTip: Picture a line you have ridden, and estimate one line as inter-station distance (~1km) × number of stations.',
+      visual: 'FermiFormulaDiagram',
+      visualProps: {
+        sectionLabel: 'Tokyo subway — total length estimation',
+        factors: [
+          { label: 'Lines', value: '13', unit: 'lines' },
+          { label: 'Per line', value: '20', unit: 'km' },
+        ],
+        result: { label: 'Estimated total', value: '260', unit: 'km' },
+        hint: 'Actual ~300 km. 15% off is well within Fermi tolerance',
+      },
     },
     {
       type: 'quiz',

@@ -528,6 +528,10 @@ const numeracyLesson406: LessonData = {
       title: 'Maintain a "doubt list" for incoming numbers',
       content: 'When numbers arrive, mechanically check the following.\n\nSampling traps:\n- Are failures and dropouts included? (survivorship bias)\n- Is the sample skewed? (selection bias)\n- Is the time/region/segment cherry-picked?\n\nAggregation traps:\n- Do the whole and parts agree? (Simpson)\n- Same trend at the subgroup level?\n\nCausation traps:\n- Are you mistaking correlation for causation?\n- Any third factor (confounder)?\n- Is the direction of causation reversed?\n\nDenominator traps:\n- For "X×" or "X%," what is the base rate?\n- What is the sample size (n)?\n- Have you seen both ratios and counts?\n\nProbability traps:\n- For "X% accuracy," what is the base rate?\n- Have you considered the absolute numbers of false positives/negatives?\n\nMeta-questions:\n- What does the presenter want to claim?\n- Have you also looked for data that argues the opposite conclusion?\n\nPoint: Beyond "don\'t swallow whole," carry a checklist of "what to doubt" — that\'s how you read numbers critically.',
       visual: 'GraphPitfallsDiagram',
+      visualProps: {
+        sectionLabel: 'Number traps — same 3 lenses as the chart pitfalls',
+        hint: 'Axis / Relation / Sample — the same three doubts apply to raw numbers too',
+      },
       outro:
         'Sampling, aggregation, causation, denominator, and probability are the five main families of number traps. Keep a checklist of "what to doubt" in your back pocket and you stop swallowing numbers whole, reading them structurally instead.',
     },

@@ -93,18 +93,48 @@ const fermiLesson221: LessonData = {
       title: 'Estimate the economics of stores you actually use',
       content: 'At level 2 you estimate the revenue of stores you experience as a customer.\n\nTraits of the easy level:\n- You know the store as a customer (you can feel ticket price and crowding)\n- Factors grow to three or four\n- Answers can be checked against industry estimates or listed-company filings\n\nWhat you build:\n- The equation: revenue = customers × ticket × operating days\n- A "yardstick" for store-level economics (annual revenue per store)\n- The ability to convert industry size into gut-feel numbers\n\nThree examples today:\n1. Starbucks: revenue per store\n2. Local hair salon: monthly revenue\n3. Convenience store: customer count',
       visual: 'FermiFormulaDiagram',
+      visualProps: {
+        sectionLabel: 'Per-store revenue — customers × ticket × days',
+        factors: [
+          { label: 'Customers / day', value: 'count', unit: 'people' },
+          { label: 'Ticket', value: 'price', unit: 'yen' },
+          { label: 'Operating days', value: 'days', unit: 'days / yr' },
+        ],
+        result: { label: 'Annual revenue', value: '?', unit: 'yen' },
+        hint: '"chairs × turn rate" is the shared move across beauty / dining / massage',
+      },
     },
     {
       type: 'explain',
       title: 'Example 1: annual revenue of one Starbucks',
       content: 'Question: what is the annual revenue of one Starbucks store?\n\nStep 1: decompose\n```\nannual revenue = customers/day × ticket × operating days\n```\n\nStep 2: factors\n- Customers/day: peak 50/h × 14h open × peak ratio 0.5 = 350\n- Ticket: drink ¥500 + food add-on = ¥600\n- Operating days: 360/yr (closed only rarely)\n\nStep 3: calculate\n```\n350 × 600 × 360 ≈ ~¥75.6M\n```\n\n→ Per-store annual revenue just under ¥100M\n\nActual: Starbucks Japan averages ~¥100-120M per store (¥200B revenue ÷ 1,800 stores)\n→ Matches.\n\nTakeaway:\n- "¥100M per store" is the Starbucks-class yardstick\n- Same method lets you compare Doutor (¥60M/store) and Saint Marc (¥50M/store)',
       visual: 'FermiFormulaDiagram',
+      visualProps: {
+        sectionLabel: 'Starbucks — revenue per store / year',
+        factors: [
+          { label: 'Customers / day', value: '350', unit: 'people' },
+          { label: 'Ticket', value: '600', unit: 'yen' },
+          { label: 'Operating days', value: '360', unit: 'days' },
+        ],
+        result: { label: 'Annual revenue', value: '~75.6', unit: 'M yen' },
+        hint: 'Actual avg ¥100-120M / store. "¥100M per store" is the yardstick',
+      },
     },
     {
       type: 'explain',
       title: 'Example 2: monthly revenue of a local hair salon',
       content: 'Question: monthly revenue of a typical owner-run salon (3 chairs)?\n\nStep 1: decompose\n```\nmonthly revenue = customers/day × ticket × operating days\n```\n\nStep 2: factors\n- Customers/day: 3 chairs × 4 turns = 12 → weekdays half-full = 8\n- Ticket: cut ¥5,000 / colour ¥10,000 — average ¥6,000\n- Operating days: closed one day/week → 26/month\n\nStep 3: calculate\n```\n8 × 6,000 × 26 ≈ ~¥1.25M/month\n→ ~¥15M/year\n```\n\nActual: owner-run salons average ¥15-20M/year (industry survey)\n→ Matches.\n\nTakeaway:\n- "chairs × turn rate" for daily customers is shared with beauty / dining / massage\n- Subtracting cost (rent ¥300K + labour + materials) reveals owner take-home',
       visual: 'FermiFormulaDiagram',
+      visualProps: {
+        sectionLabel: 'Owner-run hair salon (3 chairs) — monthly revenue',
+        factors: [
+          { label: 'Customers / day', value: '8', unit: 'people' },
+          { label: 'Ticket', value: '6,000', unit: 'yen' },
+          { label: 'Operating days', value: '26', unit: 'days / mo' },
+        ],
+        result: { label: 'Monthly revenue', value: '~1.25', unit: 'M yen / mo' },
+        hint: 'Annualises to ~¥15M, matching the industry avg ¥15-20M',
+      },
     },
     {
       type: 'think',

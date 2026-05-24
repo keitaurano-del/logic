@@ -197,6 +197,16 @@ const criticalBias: LessonData = {
       title: 'What is a cognitive bias?',
       content:
         'A cognitive bias is a "shortcut" the brain uses to economize on judgment.\n\nThe brain cannot process every piece of information, so it shortcuts using past experience, emotion, and assumptions. This is a survival instinct, but it is a leading source of errors in business decisions.\n\nThree common biases:\n\n(1) Confirmation bias\n"You collect only the information that supports what you want to believe."\nExample: convinced "this strategy is right," you unconsciously ignore disconfirming data.\n\n(2) Anchoring\n"You are pulled toward the first number you saw."\nExample: when you hear "$5,000" first, "$3,000" suddenly feels cheap.\n\n(3) Sunk cost\n"You let costs already spent distort your judgment."\nExample: "We have invested this much in development — we cannot stop now."',
+      visual: 'ThreePillarsDiagram',
+      visualProps: {
+        sectionLabel: 'Three common cognitive biases',
+        pillars: [
+          { icon: 'Conf', title: 'Confirmation', body: 'You collect only what supports the belief you want. Disconfirming data is ignored' },
+          { icon: 'Anch', title: 'Anchoring', body: 'The first number drags later judgment. After "$5,000," "$3,000" feels cheap' },
+          { icon: 'Sunk', title: 'Sunk cost', body: 'Past spending blocks rational exit. "We invested so much, we cannot stop"' },
+        ],
+        hint: 'Pause before deciding and name which bias is active — that single beat cuts errors',
+      },
     },
     {
       type: 'quiz',

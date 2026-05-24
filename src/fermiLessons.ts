@@ -127,6 +127,15 @@ const fermiLesson202: LessonData = {
       title: '「東京の地下鉄の総延長距離」を推定しましょう',
       content: '問い：東京メトロ+都営地下鉄の総延長は何km？\n\n分解：\n1. 路線数 → 東京の地下鉄は13路線程度\n2. 1路線の平均距離 → 20km程度（環状・放射状を混在）\n3. 総延長 ＝ 13路線 × 20km ＝ 260km\n\n実際：約300km（誤差15%：フェルミとして十分）\n\nコツ： 自分が乗ったことのある路線を思い浮かべ、駅間の距離（約1km）× 駅数 で1路線を推定する。',
       visual: 'FermiFormulaDiagram',
+      visualProps: {
+        sectionLabel: '東京の地下鉄 — 総延長距離の概算',
+        factors: [
+          { label: '路線数', value: '13', unit: '路線' },
+          { label: '1 路線あたり', value: '20', unit: 'km' },
+        ],
+        result: { label: '推定総延長', value: '260', unit: 'km' },
+        hint: '実際は約 300 km。誤差 15% はフェルミとして十分な精度',
+      },
     },
     {
       type: 'quiz',
