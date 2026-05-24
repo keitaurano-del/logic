@@ -11,7 +11,7 @@ import { useDailyGuide, GuideStyle } from '../tutorial/dailyGuide'
 import { isPaid } from '../subscription'
 import { getDisplayName, addXp } from '../stats'
 import { recordActivity } from '../activityLog'
-import { markDailyFermiDone } from './dailyFermiState'
+import { markDailyFermiDone, addDailyFermiDoneIndex } from './dailyFermiState'
 import { isSaved, toggleSaved } from '../savedItemsStore'
 import { useStudyTimer } from '../hooks/useStudyTimer'
 
@@ -581,6 +581,7 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
       setFeedback(data)
       if (!replayMode) {
         markDailyFermiDone()
+        addDailyFermiDoneIndex(currentPoolIndex)
         incrementDailyCount()
         setDailyCount(getDailyCount())
       }

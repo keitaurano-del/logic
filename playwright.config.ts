@@ -6,14 +6,14 @@ export default defineConfig({
   expect: { timeout: 5_000 },
   reporter: [['list'], ['html', { open: 'never', outputFolder: 'e2e/report' }]],
   use: {
-    baseURL: 'http://localhost:4173',
+    baseURL: process.env.PW_BASE_URL ?? 'http://localhost:4173',
     headless: true,
     screenshot: 'only-on-failure',
     video: 'off',
   },
   webServer: {
-    command: 'node node_modules/.bin/vite build --mode development && node node_modules/.bin/vite preview --port 4173',
-    url: 'http://localhost:4173',
+    command: `node node_modules/.bin/vite build --mode development && node node_modules/.bin/vite preview --port ${process.env.PW_PORT ?? '4173'}`,
+    url: process.env.PW_BASE_URL ?? 'http://localhost:4173',
     reuseExistingServer: false,
     timeout: 60_000,
     stdout: 'ignore',

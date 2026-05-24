@@ -5,6 +5,7 @@
  */
 import { useRef, useState } from 'react'
 import { FERMI_POOL, getDailyFermiIndex } from '../fermiData'
+import { getDailyFermiDoneIndexes } from './dailyFermiState'
 import { getCardStats } from '../flashcardData'
 import { getWrongAnswerStats } from '../wrongAnswerStore'
 import { isPaid } from '../subscription'
@@ -110,15 +111,39 @@ const IMG = '/images/v3'
 
 const HOME_FERMI_INDEX_KEY = 'home-fermi-index'
 
-function readStoredFermiIndex(): number {
+/**
+ * ホームの「今日の1問」カードに表示するフェルミ問題 index を決める。
+ *
+ * 優先順位:
+ *   1. sessionStorage の手動指定（「別の問題」ボタン経由）が未完了ならそれを使う
+ *   2. 完了済みでない問題プールから、日付ベースで決定的に1問選ぶ
+ *      → 同じ日のうちに解いた問題は補充され、戻るたびに違う未完了問題が出る
+ *   3. 全部完了していたら null（カード側で完了メッセージ表示）
+ */
+function pickHomeFermiIndex(): number | null {
+  const done = new Set(getDailyFermiDoneIndexes())
+  if (done.size >= FERMI_POOL.length) return null
+
+  // 1. session で「別の問題」指定があり、まだ未完了ならそれを優先
   try {
     const raw = sessionStorage.getItem(HOME_FERMI_INDEX_KEY)
     if (raw != null) {
       const n = parseInt(raw, 10)
-      if (Number.isFinite(n) && n >= 0 && n < FERMI_POOL.length) return n
+      if (Number.isFinite(n) && n >= 0 && n < FERMI_POOL.length && !done.has(n)) return n
+      // 完了済みの指定が残っていた場合は破棄して下のロジックへ
+      if (Number.isFinite(n) && done.has(n)) sessionStorage.removeItem(HOME_FERMI_INDEX_KEY)
     }
   } catch { /* */ }
-  return getDailyFermiIndex()
+
+  // 2. 未完了プールの中から日付ベースで決定的に選ぶ
+  const available: number[] = []
+  for (let i = 0; i < FERMI_POOL.length; i++) {
+    if (!done.has(i)) available.push(i)
+  }
+  if (available.length === 0) return null
+  const dailySeed = getDailyFermiIndex()
+  // 完了済みでスキップした分、決定的に未完了配列から1問選ぶ
+  return available[dailySeed % available.length]
 }
 
 export function HomeScreenV3(props: HomeScreenV3Props) {
@@ -131,8 +156,10 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
 
   // ランダムレッスン・フェルミ問題（マウント時に1回決定）
   const [recommendedLesson] = useState(getRandomLesson)
-  const [fermiIndex, setFermiIndex] = useState<number>(readStoredFermiIndex)
-  const fermiQuestion = FERMI_POOL[fermiIndex].question
+  // fermiIndex は null の場合「今日の問題を全部解いた」状態
+  const [fermiIndex, setFermiIndex] = useState<number | null>(pickHomeFermiIndex)
+  const fermiQuestion = fermiIndex != null ? FERMI_POOL[fermiIndex].question : ''
+  const allFermiDone = fermiIndex == null
   const cardStats = getCardStats()
   const wrongStats = getWrongAnswerStats()
   // 2026-05-15 単一有料プラン化:
@@ -142,8 +169,14 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
 
   const handleRerollFermi = () => {
     if (FERMI_POOL.length <= 1) return
-    let next = Math.floor(Math.random() * FERMI_POOL.length)
-    while (next === fermiIndex) next = Math.floor(Math.random() * FERMI_POOL.length)
+    // 未完了の問題プールから選ぶ（完了済みは除外）。
+    const done = new Set(getDailyFermiDoneIndexes())
+    const available: number[] = []
+    for (let i = 0; i < FERMI_POOL.length; i++) {
+      if (!done.has(i) && i !== fermiIndex) available.push(i)
+    }
+    if (available.length === 0) return
+    const next = available[Math.floor(Math.random() * available.length)]
     setFermiIndex(next)
     try { sessionStorage.setItem(HOME_FERMI_INDEX_KEY, String(next)) } catch { /* */ }
   }
@@ -181,7 +214,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
             type="button"
             ref={dailyCardRef}
             onClick={onNavigateToDailyFermi}
-            aria-label={t('home.dailyOpenAria')}
+            aria-label={allFermiDone ? t('home.allFermiDoneTitle') : t('home.dailyOpenAria')}
             style={{ background: 'var(--brand-grad-h)', padding: '20px', cursor: 'pointer', position: 'relative', overflow: 'hidden', minHeight: 180, border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%', borderRadius: 'inherit' }}
           >
             {/* フェルミ推定イメージ画像 */}
@@ -193,46 +226,57 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
                 <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,.92)' }}>{t('home.todayProblem')}</span>
               </div>
               <div style={{ fontFamily: "'Noto Sans JP', sans-serif", fontSize: 19, fontWeight: 700, color: 'var(--accent-fg)', lineHeight: 1.4, letterSpacing: '-.005em', marginBottom: 8 }}>
-                {fermiQuestion}
+                {allFermiDone ? t('home.allFermiDoneTitle') : fermiQuestion}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'rgba(255,255,255,.82)', fontSize: 14, fontWeight: 500, marginBottom: 16 }}>
-                <span>{t('home.dailyUpdate')}</span>
+                <span>{allFermiDone ? t('home.allFermiDoneDesc') : t('home.dailyUpdate')}</span>
               </div>
               <div style={{ background: 'var(--accent-fg)', color: 'var(--brand)', borderRadius: 'var(--radius-pill)', padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700, boxShadow: '0 6px 18px rgba(0,0,0,.14)' }}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill={'var(--brand)'} aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>
-                {t('home.dailyChallenge')}
+                {allFermiDone ? (
+                  <>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={'var(--brand)'} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12" /></svg>
+                    {t('home.allFermiDoneCta')}
+                  </>
+                ) : (
+                  <>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill={'var(--brand)'} aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>
+                    {t('home.dailyChallenge')}
+                  </>
+                )}
               </div>
             </div>
           </button>
-          {/* 別の問題ボタン (絶対配置・カード本体の兄弟) */}
-          <button
-            type="button"
-            onClick={handleRerollFermi}
-            aria-label={t('home.rerollAria')}
-            style={{
-              position: 'absolute',
-              top: 16, right: 16,
-              zIndex: 2,
-              display: 'inline-flex', alignItems: 'center', gap: 4,
-              background: 'rgba(255,255,255,0.18)',
-              border: '1px solid rgba(255,255,255,0.28)',
-              borderRadius: 99,
-              padding: '5px 10px',
-              color: 'var(--accent-fg)',
-              fontSize: 11, fontWeight: 700, letterSpacing: '.02em',
-              cursor: 'pointer',
-              fontFamily: 'inherit',
-              backdropFilter: 'blur(4px)',
-            }}
-          >
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
-              <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
-              <path d="M21 3v5h-5"/>
-              <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
-              <path d="M8 16H3v5"/>
-            </svg>
-            {t('home.rerollShort')}
-          </button>
+          {/* 別の問題ボタン (絶対配置・カード本体の兄弟) — 全完了時は非表示 */}
+          {!allFermiDone && (
+            <button
+              type="button"
+              onClick={handleRerollFermi}
+              aria-label={t('home.rerollAria')}
+              style={{
+                position: 'absolute',
+                top: 16, right: 16,
+                zIndex: 2,
+                display: 'inline-flex', alignItems: 'center', gap: 4,
+                background: 'rgba(255,255,255,0.18)',
+                border: '1px solid rgba(255,255,255,0.28)',
+                borderRadius: 99,
+                padding: '5px 10px',
+                color: 'var(--accent-fg)',
+                fontSize: 11, fontWeight: 700, letterSpacing: '.02em',
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+                backdropFilter: 'blur(4px)',
+              }}
+            >
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+                <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+                <path d="M21 3v5h-5"/>
+                <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+                <path d="M8 16H3v5"/>
+              </svg>
+              {t('home.rerollShort')}
+            </button>
+          )}
         </div>
 
         {/* Hero Recommend - ランダム表示 */}
