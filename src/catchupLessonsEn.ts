@@ -22,6 +22,9 @@ const catchupLesson330: LessonData = {
       type: 'explain',
       title: 'Think of catchup in three layers',
       content: 'Gathering information randomly doesn\'t stick. Catchup happens in three layers.\n\nLayer 1: Surface (1-2 days)\n- Industry terms, key players, market size\n- "I can follow what\'s being talked about"\n- Example: "What is reinsurance?" "Who are the three carriers?"\n\nLayer 2: Structure (3-4 days)\n- Business model, revenue structure, KPIs\n- "I understand why money is or isn\'t made"\n- Example: For a telco — relationship of ARPU, churn, capex\n\nLayer 3: Dynamics (Day 5+)\n- Competitive rules, regulation, trends, each player\'s strategy\n- "I can speak to what happens next"\n- Example: "How will MVNOs move over the next 3 years?"\n\nThe order matters. Going to Layer 3 with Layer 1 fuzzy means you sound plausible but the client sees through it.',
+      visual: 'ThreePillarsDiagram',
+      outro:
+        'Stacking surface, structure, and dynamics in order is the basic move for catching up on an unfamiliar industry. Jumping into the deeper layers with Layer 1 still fuzzy makes you sound plausible while the client sees right through it. The patience to refuse shortcuts on the sequence is what produces the actual fastest path.',
     },
     {
       type: 'quiz',

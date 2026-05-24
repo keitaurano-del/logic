@@ -94,6 +94,9 @@ const analogyDeepDive: LessonData = {
       title: 'Abstract and instantiate — the core skill',
       content:
         'In practice, the most important skills in analogical reasoning are abstraction and instantiation.\n\n(1) Abstract a concrete case.\n\nCase: "Netflix\'s recommendation system"\n↓ abstract\nStructure: "Predict individual preferences from past behavior data and offer suggestions."\n\n(2) Instantiate the abstract structure in a different domain.\n\n↓ instantiated for hiring\n"Recruiting AI that predicts a candidate\'s likelihood of success from past hiring data."\n\n↓ instantiated for education\n"Adaptive learning that predicts a student\'s weak spots from past data and serves the optimal next problem."\n\n↓ instantiated for healthcare\n"Preventive-care AI that predicts disease risk from past case data and proposes interventions."\n\nThe same abstract structure can spawn ideas across completely different fields.',
+      visual: 'AbstractionLadderDiagram',
+      outro:
+        'The core of analogical reasoning is climbing and descending a three-rung ladder: concrete, abstract, then concrete again in another domain. Once you abstract a case in passing, you open a channel for ideas from a totally different industry to flow back into your own field.',
     },
     {
       type: 'quiz',
