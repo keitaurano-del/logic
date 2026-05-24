@@ -134,8 +134,18 @@ export function getTotalStudyDays(): number {
 
 const XP_KEY = 'logic-xp'
 const XP_MIGRATION_KEY = 'logic-xp-scale-v2'
-/** MAX XP — homeHelpers.MAX_XP と一致させる。循環依存を避けるため stats 側にも定数を置く */
-const STATS_MAX_XP = 9999
+/**
+ * MAX XP — homeHelpers.MAX_XP と一致させる。循環依存を避けるため stats 側にも定数を置く。
+ *
+ * 2026-05-24: MAX_LEVEL 100→500 拡張に伴い 9,999 → 50,399 に拡張。
+ *   - homeHelpers.MAX_XP = (MAX_LEVEL - 1) * 101 = 499 * 101 = 50,399
+ *   - 旧 v2 migration (242,550 → 9,999) を通過済みのユーザーは 9,999 で頭打ちのまま
+ *     残っているが、新カーブでも 9,999 XP は Lv 100 相当なので「現状維持」になる。
+ *     新たに XP を稼ぐと Lv 101 以降に伸びていく。
+ *   - 9,999 でクランプされていないユーザー (旧 v2 を通っていない新規ユーザー)
+ *     は何もしなくても新上限まで自然に伸びる。
+ */
+const STATS_MAX_XP = 50399
 
 export type XpEvent = 'lesson' | 'quiz_perfect' | 'streak' | 'fermi' | 'journal_morning' | 'journal_evening'
 

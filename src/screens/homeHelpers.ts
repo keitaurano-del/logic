@@ -209,9 +209,17 @@ export function timeBasedGreeting(locale: 'ja' | 'en' = 'ja'): { eyebrow: string
 }
 
 // ============================================================
-// LEVEL SYSTEM — Lv1〜100, MAX XP 9999
-// XP閾値: minXp(n) = (n-1) * 101 で Lv100 = 9999 ちょうど
-// Lv1=0 / Lv2=101 / Lv50=4949 / Lv99=9898 / Lv100=9999
+// LEVEL SYSTEM — Lv1〜500, MAX XP 50,399
+// XP閾値: minXp(n) = (n-1) * 101 で Lv500 = 50,399 ちょうど
+// Lv1=0 / Lv2=101 / Lv100=9,999 / Lv250=25,149 / Lv500=50,399
+//
+// 設計方針 (2026-05-24):
+//   - 1 レベルあたりの XP 幅は従来通り 101 (線形カーブ維持)
+//   - 上限を 100 → 500 に拡張することで、長期エンゲージメント余地を 5 倍に
+//   - 「すぐ Lv100 到達」問題は MAX_LEVEL 拡張で自然に解消
+//   - 既存ユーザー XP は補正しない (新カーブで lv 表示が下がるユーザーは出ない、
+//     旧 Lv100 ピーク到達者は新 Lv100 のまま、上を目指すフェーズに移行する)
+//
 // 旧仕様(MAX 242550 XP)からのマイグレーションは stats.ts の migrateLegacyXp() を参照
 // ============================================================
 
@@ -222,18 +230,42 @@ export type LevelInfo = {
   color: string
 }
 
-export const MAX_LEVEL = 100
-export const MAX_XP = 9999
-const XP_PER_LEVEL = 101 // (MAX_LEVEL - 1) * 101 = 9999
+export const MAX_LEVEL = 500
+const XP_PER_LEVEL = 101 // (MAX_LEVEL - 1) * 101 = 50,399
+export const MAX_XP = (MAX_LEVEL - 1) * XP_PER_LEVEL // 50,399
 
+// 20 レベル刻みで色帯を切り替え。Lv 100 までは旧仕様 (青→紫→緑→金→赤)、
+// Lv 101 以降は称号システム (奥義→叡智→巨匠→…→極致) と歩調を合わせるため
+// 色を段階的に高貴系 (ゴールド→薄紫→シアン→オレンジ→ロイヤルパープル→プラチナ→ルビー) に寄せる。
+// インデックス算出は Math.floor((level - 1) / 20) のため、Lv 1-20→0, Lv 21-40→1, ... Lv 481-500→24。
 const LEVEL_COLORS: string[] = [
-  'var(--md-sys-color-primary)', // Lv 1〜19  ロジック見習い帯
-  '#7B5EA7',                      // Lv 20〜39  ロジック使い帯（紫）
-  '#1A7A5E',                      // Lv 40〜59  思考剣士帯（緑）
-  '#B8860B',                      // Lv 60〜79  魔導士帯（金）
-  '#C0392B',                      // Lv 80〜99  賢者・覇者帯（赤）
+  'var(--md-sys-color-primary)', // Lv  1- 20  見習い帯  (青)
+  '#7B5EA7',                      // Lv 21- 40  ロジック使い (紫)
+  '#1A7A5E',                      // Lv 41- 60  思考剣士  (緑)
+  '#B8860B',                      // Lv 61- 80  魔導士    (金)
+  '#C0392B',                      // Lv 81-100  賢者・覇者 (赤)
+  '#D4AF37',                      // Lv 101-120 奥義 (apex 派生) ／ ゴールド
+  '#D4AF37',                      // Lv 121-140 奥義 ／ ゴールド継続
+  '#C792EA',                      // Lv 141-160 叡智 (wisdom) ／ 薄紫
+  '#C792EA',                      // Lv 161-180 叡智 ／ 薄紫継続
+  '#5DBCD2',                      // Lv 181-200 巨匠 (virtuoso) ／ シアン
+  '#5DBCD2',                      // Lv 201-220 巨匠 ／ シアン継続
+  '#F2A65A',                      // Lv 221-240 黎明 (luminary 前段) ／ オレンジ
+  '#F2A65A',                      // Lv 241-260 悟達 (enlightened) ／ オレンジ継続
+  '#9E5BFF',                      // Lv 261-280 悟達 後段 ／ ロイヤルパープル
+  '#9E5BFF',                      // Lv 281-300 黎明 ／ ロイヤルパープル継続
+  '#E0E0E0',                      // Lv 301-320 黎明 後段 ／ プラチナ
+  '#E0E0E0',                      // Lv 321-340 覇者 (sovereign) ／ プラチナ継続
+  '#FF6B6B',                      // Lv 341-360 覇者 ／ ルビーレッド
+  '#FF6B6B',                      // Lv 361-380 覇者 後段 ／ ルビー継続
+  '#A8E6CF',                      // Lv 381-400 超越 (transcend) ／ 翡翠グリーン
+  '#A8E6CF',                      // Lv 401-420 超越 ／ 翡翠継続
+  '#F4A8FF',                      // Lv 421-440 神格 (divine) ／ ピンクパープル
+  '#F4A8FF',                      // Lv 441-460 神格 ／ ピンクパープル継続
+  '#FFD700',                      // Lv 461-480 永遠 (eternal) ／ ピュアゴールド
+  '#FFD700',                      // Lv 481-499 永遠 ／ ピュアゴールド継続
 ]
-const LEVEL_MAX_COLOR = '#D4AF37' // Lv 100 思考の頂（特別ゴールド）
+const LEVEL_MAX_COLOR = '#FFFFFF' // Lv 500 叡智の極致 (zenith) ／ 純白
 
 function colorForLevel(level: number): string {
   if (level >= MAX_LEVEL) return LEVEL_MAX_COLOR
@@ -262,9 +294,16 @@ export function getXpProgress(xp: number): { pct: number; current: number; neede
 }
 
 // ============================================================
-// 称号システム — 16 段階（5 帯×3 サブランク + 頂）
+// 称号システム — 50 段階
 // バッジ画像は public/images/v3/badges/badge-<key>.png
 // 称号文言は i18n の profile.title.<key> （key の "-" は "_" に置換）
+//
+// 2026-05-24 拡張:
+//   - 旧仕様 16 段階 (Lv 1-100) はそのまま維持し、apex を Lv 100 のみで保持
+//   - Lv 101-500 を 34 帯追加 (12 lv 刻みで 33 帯 + 最終帯 Lv 497-500)
+//   - 新帯名は「奥義→叡智→巨匠→悟達→黎明→覇者→超越→神格→永遠→極致」と段階的に格上げ
+//   - バッジ画像は 16 種しか実物がないため、新帯は既存帯 (apex/sage-3/mage-3 等) を
+//     getBadgeImagePath() で循環マッピングして再利用する
 // ============================================================
 export type TitleKey =
   | 'novice-1' | 'novice-2' | 'novice-3'         // Lv  1-19  銅/ブロンズ帯
@@ -272,36 +311,147 @@ export type TitleKey =
   | 'knight-1' | 'knight-2' | 'knight-3'          // Lv 40-59  磨銀+淡金帯
   | 'mage-1' | 'mage-2' | 'mage-3'                // Lv 60-79  金+翼帯
   | 'sage-1' | 'sage-2' | 'sage-3'                // Lv 80-99  プラチナ+宝石帯
-  | 'apex'                                         // Lv 100    頂
+  | 'apex'                                         // Lv 100    頂 (旧 MAX)
+  // ── Lv 101-500 拡張帯 (2026-05-24 追加) ──
+  | 'apex-2' | 'apex-3' | 'apex-4'                                // Lv 101-136 奥義帯
+  | 'wisdom-1' | 'wisdom-2' | 'wisdom-3' | 'wisdom-4'             // Lv 137-184 叡智帯
+  | 'virtuoso-1' | 'virtuoso-2' | 'virtuoso-3' | 'virtuoso-4'     // Lv 185-232 巨匠帯
+  | 'enlightened-1' | 'enlightened-2' | 'enlightened-3' | 'enlightened-4' // Lv 233-280 悟達帯
+  | 'luminary-1' | 'luminary-2' | 'luminary-3' | 'luminary-4'     // Lv 281-328 黎明帯
+  | 'sovereign-1' | 'sovereign-2' | 'sovereign-3' | 'sovereign-4' // Lv 329-376 覇者帯
+  | 'transcend-1' | 'transcend-2' | 'transcend-3' | 'transcend-4' // Lv 377-424 超越帯
+  | 'divine-1' | 'divine-2' | 'divine-3' | 'divine-4'             // Lv 425-472 神格帯
+  | 'eternal-1' | 'eternal-2'                                     // Lv 473-496 永遠帯
+  | 'zenith'                                                       // Lv 497-500 叡智の極致
 
 export const TITLE_TIERS: ReadonlyArray<{ key: TitleKey; min: number; max: number }> = [
-  { key: 'novice-1',   min:   1, max:   6 },
-  { key: 'novice-2',   min:   7, max:  13 },
-  { key: 'novice-3',   min:  14, max:  19 },
-  { key: 'logician-1', min:  20, max:  26 },
-  { key: 'logician-2', min:  27, max:  33 },
-  { key: 'logician-3', min:  34, max:  39 },
-  { key: 'knight-1',   min:  40, max:  46 },
-  { key: 'knight-2',   min:  47, max:  53 },
-  { key: 'knight-3',   min:  54, max:  59 },
-  { key: 'mage-1',     min:  60, max:  66 },
-  { key: 'mage-2',     min:  67, max:  73 },
-  { key: 'mage-3',     min:  74, max:  79 },
-  { key: 'sage-1',     min:  80, max:  86 },
-  { key: 'sage-2',     min:  87, max:  93 },
-  { key: 'sage-3',     min:  94, max:  99 },
-  { key: 'apex',       min: 100, max: 100 },
+  { key: 'novice-1',     min:   1, max:   6 },
+  { key: 'novice-2',     min:   7, max:  13 },
+  { key: 'novice-3',     min:  14, max:  19 },
+  { key: 'logician-1',   min:  20, max:  26 },
+  { key: 'logician-2',   min:  27, max:  33 },
+  { key: 'logician-3',   min:  34, max:  39 },
+  { key: 'knight-1',     min:  40, max:  46 },
+  { key: 'knight-2',     min:  47, max:  53 },
+  { key: 'knight-3',     min:  54, max:  59 },
+  { key: 'mage-1',       min:  60, max:  66 },
+  { key: 'mage-2',       min:  67, max:  73 },
+  { key: 'mage-3',       min:  74, max:  79 },
+  { key: 'sage-1',       min:  80, max:  86 },
+  { key: 'sage-2',       min:  87, max:  93 },
+  { key: 'sage-3',       min:  94, max:  99 },
+  { key: 'apex',         min: 100, max: 100 },
+  // ── Lv 101-500 拡張帯 ──
+  { key: 'apex-2',       min: 101, max: 112 },
+  { key: 'apex-3',       min: 113, max: 124 },
+  { key: 'apex-4',       min: 125, max: 136 },
+  { key: 'wisdom-1',     min: 137, max: 148 },
+  { key: 'wisdom-2',     min: 149, max: 160 },
+  { key: 'wisdom-3',     min: 161, max: 172 },
+  { key: 'wisdom-4',     min: 173, max: 184 },
+  { key: 'virtuoso-1',   min: 185, max: 196 },
+  { key: 'virtuoso-2',   min: 197, max: 208 },
+  { key: 'virtuoso-3',   min: 209, max: 220 },
+  { key: 'virtuoso-4',   min: 221, max: 232 },
+  { key: 'enlightened-1', min: 233, max: 244 },
+  { key: 'enlightened-2', min: 245, max: 256 },
+  { key: 'enlightened-3', min: 257, max: 268 },
+  { key: 'enlightened-4', min: 269, max: 280 },
+  { key: 'luminary-1',   min: 281, max: 292 },
+  { key: 'luminary-2',   min: 293, max: 304 },
+  { key: 'luminary-3',   min: 305, max: 316 },
+  { key: 'luminary-4',   min: 317, max: 328 },
+  { key: 'sovereign-1',  min: 329, max: 340 },
+  { key: 'sovereign-2',  min: 341, max: 352 },
+  { key: 'sovereign-3',  min: 353, max: 364 },
+  { key: 'sovereign-4',  min: 365, max: 376 },
+  { key: 'transcend-1',  min: 377, max: 388 },
+  { key: 'transcend-2',  min: 389, max: 400 },
+  { key: 'transcend-3',  min: 401, max: 412 },
+  { key: 'transcend-4',  min: 413, max: 424 },
+  { key: 'divine-1',     min: 425, max: 436 },
+  { key: 'divine-2',     min: 437, max: 448 },
+  { key: 'divine-3',     min: 449, max: 460 },
+  { key: 'divine-4',     min: 461, max: 472 },
+  { key: 'eternal-1',    min: 473, max: 484 },
+  { key: 'eternal-2',    min: 485, max: 496 },
+  { key: 'zenith',       min: 497, max: 500 },
 ]
 
 export function getTitleKeyForLevel(level: number): TitleKey {
   for (const t of TITLE_TIERS) {
     if (level >= t.min && level <= t.max) return t.key
   }
-  return level >= MAX_LEVEL ? 'apex' : 'novice-1'
+  return level >= MAX_LEVEL ? 'zenith' : 'novice-1'
 }
 
+/**
+ * 新規 34 帯にはバッジ画像が無いため、既存 16 枚 (badge-<key>.png) を循環マッピングする。
+ * 帯の格 (apex/sage/mage etc) と色味で揃え、デザイナーが将来差し替える前提。
+ */
+const BADGE_FALLBACK_MAP: Record<string, TitleKey> = {
+  // 奥義帯 — apex 派生 (ゴールド)
+  'apex-2': 'apex',
+  'apex-3': 'apex',
+  'apex-4': 'apex',
+  // 叡智帯 — sage 系を再利用 (落ち着いた賢者バッジ)
+  'wisdom-1': 'sage-1',
+  'wisdom-2': 'sage-2',
+  'wisdom-3': 'sage-3',
+  'wisdom-4': 'sage-3',
+  // 巨匠帯 — mage 系 (魔導士バッジ)
+  'virtuoso-1': 'mage-1',
+  'virtuoso-2': 'mage-2',
+  'virtuoso-3': 'mage-3',
+  'virtuoso-4': 'mage-3',
+  // 悟達帯 — sage を再利用
+  'enlightened-1': 'sage-1',
+  'enlightened-2': 'sage-2',
+  'enlightened-3': 'sage-3',
+  'enlightened-4': 'apex',
+  // 黎明帯 — knight 系 (騎士バッジ)
+  'luminary-1': 'knight-1',
+  'luminary-2': 'knight-2',
+  'luminary-3': 'knight-3',
+  'luminary-4': 'apex',
+  // 覇者帯 — sage 巡回
+  'sovereign-1': 'sage-1',
+  'sovereign-2': 'sage-2',
+  'sovereign-3': 'sage-3',
+  'sovereign-4': 'apex',
+  // 超越帯 — mage 巡回
+  'transcend-1': 'mage-1',
+  'transcend-2': 'mage-2',
+  'transcend-3': 'mage-3',
+  'transcend-4': 'apex',
+  // 神格帯 — sage 上位巡回
+  'divine-1': 'sage-2',
+  'divine-2': 'sage-3',
+  'divine-3': 'apex',
+  'divine-4': 'apex',
+  // 永遠帯
+  'eternal-1': 'apex',
+  'eternal-2': 'apex',
+  // 極致
+  zenith: 'apex',
+}
+
+/** 実バッジ画像が存在する 16 帯のキー集合 (循環マッピング判定用) */
+const REAL_BADGE_KEYS = new Set<TitleKey>([
+  'novice-1', 'novice-2', 'novice-3',
+  'logician-1', 'logician-2', 'logician-3',
+  'knight-1', 'knight-2', 'knight-3',
+  'mage-1', 'mage-2', 'mage-3',
+  'sage-1', 'sage-2', 'sage-3',
+  'apex',
+])
+
 export function getBadgeImagePath(key: TitleKey): string {
-  return `/images/v3/badges/badge-${key}.png`
+  // 実画像がある 16 帯はそのまま、それ以外は fallback マップで既存帯を再利用
+  const resolved: TitleKey = REAL_BADGE_KEYS.has(key)
+    ? key
+    : (BADGE_FALLBACK_MAP[key] ?? 'apex')
+  return `/images/v3/badges/badge-${resolved}.png`
 }
 
 /** i18n キー名は kebab → underscore（例: 'novice-1' → 'profile.title.novice_1'） */
