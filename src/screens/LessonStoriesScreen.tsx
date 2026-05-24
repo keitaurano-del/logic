@@ -4,7 +4,7 @@
  * モックアップ: lv3-lesson.html
  */
 import { useState, useMemo, useRef, useEffect, useCallback } from 'react'
-import { BookmarkIcon, BookmarkFilledIcon, CheckIcon, SparklesIcon, LightbulbIcon, BrainIcon, ClipboardListIcon } from '../icons'
+import { BookmarkIcon, BookmarkFilledIcon, CheckIcon, SparklesIcon, LightbulbIcon, BrainIcon, ClipboardListIcon, FlagIcon } from '../icons'
 import type { LessonSlide } from '../lessonSlides'
 import { convertLessonToSlides } from '../lessonSlides'
 import { allLessons } from '../lessonData'
@@ -231,6 +231,27 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
           >
             {saved ? <BookmarkFilledIcon width={18} height={18} /> : <BookmarkIcon width={18} height={18} />}
           </button>
+          {/* SCRUM-215: 誤りを報告 — アイコンのみ円形ボタン、ヘッダー横配置で本文と被らない (2026-05-24) */}
+          {/* summary 画面では非表示 (完了画面で報告 UX が不自然なため、従来挙動を維持) */}
+          {slide.kind !== 'summary' && (
+            <button
+              type="button"
+              onPointerDown={(e) => { e.stopPropagation(); setReportOpen(true) }}
+              aria-label={t('stories.reportTitle')}
+              title={t('stories.reportTitle')}
+              style={{
+                width: 32, height: 32, borderRadius: '50%',
+                background: 'var(--bg-card)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                cursor: 'pointer', WebkitTapHighlightColor: 'transparent',
+                border: 'none', zIndex: 10, position: 'relative',
+                flexShrink: 0, padding: 0,
+                color: 'var(--text-secondary)',
+              }}
+            >
+              <FlagIcon width={14} height={14} />
+            </button>
+          )}
           {/* SCRUM-226: ×ボタン — onClickも追加しzIndexをタップゾーンより上に */}
           <button
             onPointerDown={(e) => { e.stopPropagation(); e.preventDefault(); onClose() }}
@@ -448,16 +469,6 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
           <style>{`@keyframes tapHintFadeIn { from { opacity: 0; } to { opacity: 1; } }`}</style>
         </div>
       )}
-
-      {/* SCRUM-215: 誤りを報告 — アイコンのみのコンパクト表示（誤タップ防止）、非クイズ時は次へボタン・前へボタンと重ならない位置へ */}
-      {/* 2026-05-23: 「前へ」ボタン(left:16, bottom:safe+20px, 56×56)と縦並びで重なっていたため bottom を safe+88px に引き上げ */}
-      <button
-        onPointerDown={(e) => { e.stopPropagation(); setReportOpen(true) }}
-        style={{ position: 'absolute', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 88px)', left: 16, fontSize: 12, color: 'var(--text-secondary)', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 99, cursor: 'pointer', zIndex: 7, padding: '5px 10px', display: slide.kind === 'summary' ? 'none' : 'flex', alignItems: 'center', gap: 5, opacity: 0.9 }}
-        title={t('stories.reportTitle')}
-      >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg>{t('stories.reportLink')}
-      </button>
 
       {/* 誤り報告モーダル */}
       {reportOpen && (
