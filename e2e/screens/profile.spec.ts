@@ -37,7 +37,7 @@ test.describe('Profile — 表示名', () => {
   })
 })
 
-test.describe('Profile — レベル表示（LEVEL_TABLE 仕様: 101 XP / level、MAX Lv.100 で 9999 XP）', () => {
+test.describe('Profile — レベル表示（LEVEL_TABLE 仕様: 101 XP / level、MAX Lv.500 で 50,399 XP）', () => {
   test('xp=0 → Lv.1', async ({ page }) => {
     await boot(page, { displayName: 'lv1', xp: 0 })
     await tab(page, 4).click()
