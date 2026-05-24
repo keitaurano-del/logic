@@ -3,8 +3,11 @@
  *
  * プロフィール画面のバッチ・Lv・XP タップで開く。現在の称号、次の称号までの XP/Lv、
  * 全 16 称号一覧（未到達はグレースケール + ロック表示）を見せる。
+ *
+ * - グリップ／ヘッダー領域を下方向にドラッグするとボトムシートが指追従、
+ *   閾値（高さの 1/4 または 96px）超で onClose、それ未満は spring back。
  */
-import { useEffect } from 'react'
+import { useEffect, useRef, useState, type TouchEvent as ReactTouchEvent } from 'react'
 import {
   TITLE_TIERS,
   getTitleKeyForLevel,
@@ -24,6 +27,9 @@ interface TitleBadgeSheetProps {
   onClose: () => void
 }
 
+const DISMISS_PX = 96 // この px 数を超えてドラッグしたら閉じる
+const DISMISS_RATIO = 0.25 // または sheet 高さの 25% を超えたら閉じる（大きい方を採用）
+
 export function TitleBadgeSheet({ xp, onClose }: TitleBadgeSheetProps) {
   const lv = getCurrentLevel(xp)
   const currentKey = getTitleKeyForLevel(lv.level)
@@ -34,6 +40,14 @@ export function TitleBadgeSheet({ xp, onClose }: TitleBadgeSheetProps) {
   const xpToNext = nextTier ? Math.max(0, nextTier.min * 101 - Math.min(xp, MAX_XP)) : 0
   const lvToNext = nextTier ? Math.max(0, nextTier.min - lv.level) : 0
   const isMaxed = lv.level >= MAX_LEVEL
+
+  // ドラッグ dismiss 用
+  const sheetRef = useRef<HTMLDivElement | null>(null)
+  const dragStartYRef = useRef<number | null>(null)
+  const sheetHeightRef = useRef<number>(0)
+  const [dragY, setDragY] = useState(0)
+  const [isDragging, setIsDragging] = useState(false)
+  const [isClosing, setIsClosing] = useState(false)
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
@@ -46,6 +60,38 @@ export function TitleBadgeSheet({ xp, onClose }: TitleBadgeSheetProps) {
     }
   }, [onClose])
 
+  const handleTouchStart = (e: ReactTouchEvent<HTMLDivElement>) => {
+    if (isClosing) return
+    dragStartYRef.current = e.touches[0].clientY
+    sheetHeightRef.current = sheetRef.current?.getBoundingClientRect().height ?? 0
+    setIsDragging(true)
+  }
+
+  const handleTouchMove = (e: ReactTouchEvent<HTMLDivElement>) => {
+    if (dragStartYRef.current == null) return
+    const delta = e.touches[0].clientY - dragStartYRef.current
+    // 上方向ドラッグは少しだけ追従（rubber band 風）、下方向は等倍
+    const next = delta > 0 ? delta : delta * 0.25
+    setDragY(next)
+  }
+
+  const handleTouchEnd = () => {
+    if (dragStartYRef.current == null) return
+    const threshold = Math.max(DISMISS_PX, sheetHeightRef.current * DISMISS_RATIO)
+    const shouldClose = dragY > threshold
+    dragStartYRef.current = null
+    setIsDragging(false)
+    if (shouldClose) {
+      // 画面外まで滑らせてから onClose
+      setIsClosing(true)
+      const remaining = (sheetHeightRef.current || window.innerHeight) - dragY + 40
+      setDragY(dragY + remaining)
+      window.setTimeout(() => { onClose() }, 200)
+    } else {
+      setDragY(0)
+    }
+  }
+
   return (
     <div
       role="dialog"
@@ -53,13 +99,15 @@ export function TitleBadgeSheet({ xp, onClose }: TitleBadgeSheetProps) {
       onClick={onClose}
       style={{
         position: 'fixed', inset: 0, zIndex: 1000,
-        background: 'rgba(8, 10, 24, 0.72)',
+        background: `rgba(8, 10, 24, ${Math.max(0.2, 0.72 - dragY / 600)})`,
         backdropFilter: 'blur(6px)',
         WebkitBackdropFilter: 'blur(6px)',
         display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
+        transition: isDragging ? 'none' : 'background 220ms ease-out',
       }}
     >
       <div
+        ref={sheetRef}
         onClick={(e) => e.stopPropagation()}
         style={{
           width: '100%', maxWidth: 560,
@@ -71,25 +119,46 @@ export function TitleBadgeSheet({ xp, onClose }: TitleBadgeSheetProps) {
           display: 'flex', flexDirection: 'column',
           fontFamily: "'Noto Sans JP', sans-serif",
           overflow: 'hidden',
+          transform: `translateY(${Math.max(0, dragY)}px)`,
+          transition: isDragging
+            ? 'none'
+            : isClosing
+              ? 'transform 200ms cubic-bezier(0.4, 0, 1, 1)'
+              : 'transform 260ms cubic-bezier(0.32, 0.72, 0, 1)',
+          touchAction: 'pan-y',
         }}
       >
-        {/* Sticky header: グリップ + 見出し + 閉じるボタン */}
-        <div style={{
-          position: 'relative',
-          flexShrink: 0,
-          padding: 'calc(env(safe-area-inset-top, 0px) + 10px) 18px 10px',
-          background: 'var(--bg-primary)',
-          borderBottom: '1px solid var(--border)',
-        }}>
-          {/* グリップ */}
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 10 }}>
-            <div style={{ width: 36, height: 4, borderRadius: 99, background: 'var(--border)' }} />
+        {/* Sticky header: グリップ + 見出し + 閉じるボタン。ここがドラッグ起点 */}
+        <div
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          onTouchCancel={handleTouchEnd}
+          style={{
+            position: 'relative',
+            flexShrink: 0,
+            padding: 'calc(env(safe-area-inset-top, 0px) + 8px) 18px 12px',
+            background: 'var(--bg-primary)',
+            borderBottom: '1px solid var(--border)',
+            cursor: 'grab',
+            touchAction: 'none',
+          }}
+        >
+          {/* グリップ（タップ領域広めで affordance を明示） */}
+          <div
+            aria-hidden="true"
+            style={{
+              display: 'flex', justifyContent: 'center', alignItems: 'center',
+              height: 20, marginBottom: 6,
+            }}
+          >
+            <div style={{ width: 44, height: 5, borderRadius: 99, background: 'var(--border)' }} />
           </div>
 
           <div style={{
-            fontSize: 11, fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase',
+            fontSize: 13, fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase',
             color: 'var(--text-muted)', textAlign: 'center',
-            paddingRight: 36, paddingLeft: 36,
+            paddingRight: 44, paddingLeft: 44,
           }}>
             {t('profile.titleSheet.heading')}
           </div>
@@ -145,13 +214,13 @@ export function TitleBadgeSheet({ xp, onClose }: TitleBadgeSheetProps) {
               style={{ width: 140, height: 140, objectFit: 'contain', filter: `drop-shadow(0 4px 16px ${lv.color}66)` }}
             />
           </div>
-          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 4 }}>
+          <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.1em', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 6 }}>
             {t('profile.titleSheet.currentLabel')}
           </div>
-          <div style={{ fontSize: 22, fontWeight: 900, color: lv.color, marginBottom: 2 }}>
+          <div style={{ fontSize: 26, fontWeight: 900, color: lv.color, marginBottom: 4 }}>
             {t(getTitleI18nKey(currentKey))}
           </div>
-          <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
+          <div style={{ fontSize: 15, color: 'var(--text-secondary)' }}>
             Lv. {lv.level}{isMaxed ? ' · MAX' : ` / ${MAX_LEVEL}`}
           </div>
         </div>
@@ -160,12 +229,12 @@ export function TitleBadgeSheet({ xp, onClose }: TitleBadgeSheetProps) {
         <div style={{
           background: 'var(--bg-card)',
           borderRadius: 16,
-          padding: '14px 16px',
+          padding: '16px 18px',
           marginBottom: 18,
           border: `1px solid var(--border)`,
         }}>
           {isMaxed ? (
-            <div style={{ textAlign: 'center', fontSize: 14, fontWeight: 700, color: 'var(--brand)', padding: '6px 0' }}>
+            <div style={{ textAlign: 'center', fontSize: 16, fontWeight: 700, color: 'var(--brand)', padding: '6px 0' }}>
               ★ {t('profile.titleSheet.maxed')}
             </div>
           ) : nextTier ? (
@@ -176,13 +245,13 @@ export function TitleBadgeSheet({ xp, onClose }: TitleBadgeSheetProps) {
                 style={{ width: 56, height: 56, objectFit: 'contain', opacity: 0.55, filter: 'grayscale(0.6)' }}
               />
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 3 }}>
+                <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.08em', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 4 }}>
                   {t('profile.titleSheet.nextLabel')}
                 </div>
-                <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 3 }}>
+                <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 4 }}>
                   {t(getTitleI18nKey(nextTier.key))}
                 </div>
-                <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
+                <div style={{ fontSize: 15, color: 'var(--text-secondary)' }}>
                   {t('profile.titleSheet.toNext', { xp: String(xpToNext), lv: String(lvToNext) })}
                 </div>
               </div>
@@ -231,7 +300,7 @@ function TierCell({ tierKey, min, max, unlocked, isCurrent }: {
         background: isCurrent ? 'color-mix(in srgb, var(--brand) 12%, var(--bg-card))' : 'var(--bg-card)',
         border: `1.5px solid ${isCurrent ? 'var(--brand)' : 'var(--border)'}`,
         borderRadius: 12,
-        padding: '10px 6px 8px',
+        padding: '10px 6px 10px',
         display: 'flex', flexDirection: 'column', alignItems: 'center',
         textAlign: 'center',
         opacity: unlocked ? 1 : 0.55,
@@ -247,16 +316,16 @@ function TierCell({ tierKey, min, max, unlocked, isCurrent }: {
         }}
       />
       <div style={{
-        fontSize: 11, fontWeight: 700,
+        fontSize: 13, fontWeight: 700,
         color: unlocked ? 'var(--text-primary)' : 'var(--text-muted)',
         lineHeight: 1.25,
-        marginBottom: 2,
+        marginBottom: 3,
         wordBreak: 'keep-all',
       }}>
         {t(getTitleI18nKey(tierKey))}
       </div>
       <div style={{
-        fontSize: 10, fontWeight: 600,
+        fontSize: 12, fontWeight: 600,
         color: 'var(--text-muted)',
       }}>
         {t('profile.titleSheet.levelRange', { min: String(min), max: String(max) })}
