@@ -17,6 +17,7 @@ import { syncSavedItems } from './savedItemsStore'
 import { syncNotebook, loadEntries } from './notebookStore'
 import { syncRoadmap } from './roadmapStore'
 import { syncCategoryProgress } from './progressStore'
+import { syncCompletionCounts } from './db/completionCountDb'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || ''
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || ''
@@ -472,6 +473,7 @@ export async function syncOnLogin(userId: string): Promise<void> {
         syncNotebook(userId),
         syncRoadmap(userId),
         syncCategoryProgress(userId),
+        syncCompletionCounts(userId),
       ])
       const failures = results.filter((r) => r.status === 'rejected')
       if (failures.length > 0) {

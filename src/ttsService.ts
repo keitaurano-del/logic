@@ -22,6 +22,17 @@
 //   getAvailableVoices()        利用可能ボイス一覧 (TtsVoice[])
 //   loadRate() / saveRate(rate) 速度設定の永続化
 //   loadVoiceId() / saveVoiceId voice 設定の永続化
+//
+// バックグラウンド再生 (Tier 1/2 keep-alive、Cloud TTS 非依存):
+//   speak() の冒頭で silent audio loop と Wake Lock を開始し、stop() で解放する。
+//   - Silent loop: 極小サイズの無音 WAV (data URI) を <audio loop> で再生し、
+//     OS のオーディオフォーカス / メディア再生扱いを維持する。
+//     iOS では AVAudioSession active が継続し、Web Speech / native TTS が背景でも継続再生する見込み。
+//     Android では HTMLAudio が背景で suspend されやすいため、Wake Lock 併用で画面オフ耐性を底上げする。
+//   - Wake Lock: navigator.wakeLock.request('screen') で画面オフ自体を抑止する fallback。
+//     ユーザーの省電力設定に従うため強制ではない。Android で確実に背景再生したい場合は
+//     将来 ForegroundService 化 (docs/TTS_BACKGROUND_DESIGN.md Tier 3) が必要。
+//   - 失敗しても speak 本体は続行する (best-effort)。
 
 import { getLocale } from './i18n'
 
@@ -257,6 +268,80 @@ function resolveVoiceForLang(voices: TtsVoice[], lang: 'ja-JP' | 'en-US', voiceI
   return voices.find(v => v.id === voiceId)
 }
 
+// ── Background keep-alive (silent audio loop + screen wake lock) ─
+
+// 0.5 秒の無音 WAV を loop 再生して OS のオーディオフォーカスを掴み続ける。
+// public/silent.wav (44 KB, 16bit/44.1kHz mono) は Capacitor WebView の root に配置され、
+// `/silent.wav` で参照可能。loop=true で間隔を空けずに繰り返す。
+//
+// なぜ無音オーディオが必要か:
+//   iOS の AVAudioSession は HTMLAudio が再生中の間だけ playback カテゴリで active になる。
+//   無音でもオーディオが流れていれば「メディア再生中」と判定され、AVSpeechSynthesizer による
+//   TTS も背景で発話継続しやすくなる。
+//   Android では JS / HTMLAudio が背景で suspend されやすいため Wake Lock と併用する。
+const SILENT_AUDIO_URL = '/silent.wav'
+
+let silentAudio: HTMLAudioElement | null = null
+let wakeLockSentinel: { release: () => Promise<void> } | null = null
+
+function startKeepAlive(): void {
+  // Silent audio loop
+  try {
+    if (!silentAudio && typeof Audio !== 'undefined') {
+      const a = new Audio(SILENT_AUDIO_URL)
+      a.loop = true
+      a.volume = 0
+      a.preload = 'auto'
+      // iOS / Safari は autoplay restrictions があるが、speak() はユーザー操作起点で
+      // 呼ばれる前提なので play() は概ね許可される。失敗しても無視。
+      const p = a.play()
+      if (p && typeof (p as Promise<void>).then === 'function') {
+        ;(p as Promise<void>).catch(() => { /* ignore autoplay reject */ })
+      }
+      silentAudio = a
+    }
+  } catch (e) {
+    console.warn('[tts] keepalive silent audio start error', e)
+  }
+
+  // Screen Wake Lock (画面オフ抑止 — 省電力設定に従う best-effort)
+  try {
+    const nav = navigator as Navigator & {
+      wakeLock?: { request: (type: 'screen') => Promise<{ release: () => Promise<void> }> }
+    }
+    if (!wakeLockSentinel && nav.wakeLock?.request) {
+      nav.wakeLock.request('screen')
+        .then((sentinel) => { wakeLockSentinel = sentinel })
+        .catch(() => { /* permission denied or unsupported */ })
+    }
+  } catch (e) {
+    console.warn('[tts] wake lock request error', e)
+  }
+}
+
+function stopKeepAlive(): void {
+  // Silent audio loop 停止
+  try {
+    if (silentAudio) {
+      silentAudio.pause()
+      silentAudio.src = ''
+      silentAudio = null
+    }
+  } catch (e) {
+    console.warn('[tts] keepalive silent audio stop error', e)
+  }
+
+  // Wake Lock 解放
+  try {
+    if (wakeLockSentinel) {
+      void wakeLockSentinel.release().catch(() => { /* */ })
+      wakeLockSentinel = null
+    }
+  } catch (e) {
+    console.warn('[tts] wake lock release error', e)
+  }
+}
+
 // ── Speak / Stop / Pause / Resume ──────────────────────────────
 
 export type SpeakOptions = {
@@ -299,6 +384,8 @@ export async function stop(): Promise<void> {
   } else {
     stopWeb()
   }
+  // 明示 stop 時は keep-alive も解放してバッテリー消費を抑える
+  stopKeepAlive()
 }
 
 /**
@@ -444,6 +531,10 @@ export async function speak(text: string, opts: SpeakOptions = {}): Promise<void
   }
   // 既存の onEnd は新しい再生で上書き
   currentOnEnd = opts.onEnd ?? null
+  // 背景再生 keep-alive (silent audio loop + wake lock) を起動。
+  // 連続スライド再生時は startKeepAlive() が冪等なので毎回呼んでも単一インスタンスのまま。
+  // 明示 stop() 時のみ解放される。
+  startKeepAlive()
   if (isNative()) {
     await speakNative(text, opts)
   } else {

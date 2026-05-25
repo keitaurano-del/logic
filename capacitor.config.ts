@@ -36,6 +36,11 @@ const config: CapacitorConfig = {
       resize: 'native',
       style: 'DARK',
     },
+    // TextToSpeech プラグイン側の category は src/ttsService.ts の speak() 呼び出し時に
+    // 'playback' を指定している。これにより iOS では AVAudioSession が playback カテゴリで
+    // 立ち上がり、silent audio loop (src/ttsService.ts startKeepAlive) と組み合わせて
+    // 画面オフ・他アプリ前面遷移時もバックグラウンド再生が継続しやすくなる。
+    // Cloud TTS は使わず端末内蔵 TTS エンジンのみ利用するため追加課金は発生しない。
   },
   // server: {
   //   // For dev with live reload, uncomment and set your machine LAN IP

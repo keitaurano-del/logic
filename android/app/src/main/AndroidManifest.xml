@@ -61,4 +61,15 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <!-- TTS バックグラウンド再生 keep-alive (src/ttsService.ts)
+         - WAKE_LOCK: navigator.wakeLock 経由で画面オフ抑止を試みる際に Android 側で必要。
+           HTMLAudioElement の silent loop とセットで Tier 1 BG 再生を成立させる。
+         - FOREGROUND_SERVICE / FOREGROUND_SERVICE_MEDIA_PLAYBACK: Tier 3 で MediaSessionService
+           化する際に必須となる宣言。現時点では未使用だが、将来の Foreground Service 化に備えて
+           manifest 側だけ先に通しておく (permission 宣言だけでは権限は付与されない)。
+         費用は一切発生しない (OS 内蔵 TextToSpeech 経由)。 -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
 </manifest>
