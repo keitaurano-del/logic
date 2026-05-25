@@ -501,8 +501,6 @@ const COURSES_JA: Course[] = [
     level: '中級',
     description:
       'マインドフルネス・注意の構造・フロー理論を世俗的に統合。もやもや時に手元の作業へ戻る技術と、1 日単位で集中を維持する設計を 8 レッスンで体系化する。',
-    // TODO(designer): course-focus-now-01.png を v4 Figma マスターから生成 (handdrawn + 図解スタイル、ティール系 #14B8A6)。
-    // 生成までは broken image になる。投入後にこのコメント削除可。
     image: '/images/v3/course-focus-now-01.png',
   },
 

@@ -258,6 +258,17 @@ export const COURSE_PROMPTS_V2: LessonPromptEntry[] = [
     spell: ['Deep Listen', 'Beyond passive hearing', 'fact', 'feel', 'view', 'decode', 'three layers'],
   },
 
+  // ── 新規追加: focus-now-01 「今に集中する」 ──
+  // 注: スピリチュアル色は避け、マインドフルネス + 注意制御の世俗的な技術として描く。
+  // ティール (#14B8A6) は中央のターゲット中心点 1 箇所のみアクセントとして使用。
+  {
+    slug: 'course-focus-now-01',
+    title: 'Focus on Now',
+    subtitle: 'Mindful attention, on demand',
+    diagram: 'a hand-drawn concentric three-ring target on cream notebook paper in the right two-thirds of the page. Three nested circles drawn with confident black marker strokes: a large outer ring, a medium middle ring, and a small inner ring. The bullseye center is filled solid with a single teal accent (the only teal element on the page). Three short cursive labels sit just outside the rings, one per ring: outermost label "wander" upper-left of the outer ring, middle label "notice" left of the middle ring, innermost label "now" just above the bullseye with a tiny coral arrow pointing inward to the teal center. Below the target on the baseline: a small hand-drawn hourglass icon with a thin coral line beneath it labeled "this breath". Coral-red annotation "come back" upper-right.\n\nUse ONLY these short safe labels: "wander", "notice", "now", "this breath", "come back". Do NOT attempt to write "MINDFULNESS", "ATTENTION", "concentration", "meditation", "present moment", or any long word (Gemini consistently misspells long words). Do NOT draw lotus flowers, mandalas, halos, or any spiritual imagery — this is a secular attention-training diagram. The teal fill must appear ONLY in the bullseye dot; nowhere else on the page.',
+    spell: ['Focus on Now', 'Mindful attention, on demand', 'wander', 'notice', 'now', 'this breath', 'come back'],
+  },
+
   // ── 新規追加: adhd-leverage-01 「ADHD レバレッジ — 特性を資源として活かす」 ──
   // 注: 矯正・治療ニュアンス NG。「凸凹を肯定的に描く」トーン厳守。
   {
