@@ -12,7 +12,10 @@ import { boot, tab } from '../fixtures/boot'
  * - ログアウト・決済・データ削除など破壊的なものはラベル一致でスキップ
  */
 
-const DESTRUCTIVE_LABEL_RE = /ログアウト|サインアウト|削除|退会|決済|購入|サブスク|アンサブ|Logout|Sign\s*out|Delete|Subscribe|Unsubscribe|Pay|Purchase/i
+// 音声プレビュー (RoadmapScreenV3 のコースカード右上) は tts.speak() を呼ぶ。
+// ボタン数が増えると buttons-smoke の lessons タブ走査が timeout する原因になるので
+// label でスキップさせる。tts 機能自体は別途 vitest (ttsService.test.ts) でカバー。
+const DESTRUCTIVE_LABEL_RE = /ログアウト|サインアウト|削除|退会|決済|購入|サブスク|アンサブ|Logout|Sign\s*out|Delete|Subscribe|Unsubscribe|Pay|Purchase|コース紹介を再生|読み上げを停止|Play\s*course\s*intro|Stop\s*reading/i
 
 // Supabase 未設定 / preview ビルドが本番 URL を叩く副作用 (CERT_AUTHORITY_INVALID) など、
 // テスト環境で発生する想定内の console.error は除外する。
