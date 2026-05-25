@@ -17,12 +17,11 @@
  *
  * 文言は中立的な丁寧体 (feedback_app_copy_neutral)。
  */
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { t } from '../i18n'
-import * as tts from '../ttsService'
-import { XIcon, ChevronDownIcon } from '../icons'
+import { XIcon } from '../icons'
+import { VoiceRateControls } from './VoiceRateControls'
 
-const RATE_OPTIONS = [0.75, 1.0, 1.25, 1.5, 2.0]
 // ピッチプリセット: 低め / 普通 / 高め の 3 段階。
 // SpeechSynthesisUtterance.pitch / TextToSpeech.speak({ pitch }) は 0〜2 の範囲で、
 // 1.0 = 通常。極端な値だと読み上げが不自然になるため幅は控えめにする。
@@ -53,20 +52,12 @@ export interface TtsControlPanelProps {
   onExit: () => void
 }
 
-type CategorizedVoice = {
-  id: string | null  // null = 自動
-  name: string
-  gender: tts.TtsGender | 'auto'
-}
-
 export function TtsControlPanel(props: TtsControlPanelProps) {
   const {
     playing, paused, rate, pitch, voiceId, lang,
     readableIndex, readableTotal,
     onSeek, onTogglePause, onChangeRate, onChangePitch, onChangeVoice, onExit,
   } = props
-  const [voiceMenuOpen, setVoiceMenuOpen] = useState(false)
-  const [allVoices, setAllVoices] = useState<tts.TtsVoice[]>([])
   // ドラッグ中の暫定値。確定 (pointerup) で onSeek を呼ぶ。
   const [draftIndex, setDraftIndex] = useState<number | null>(null)
   const sliderRef = useRef<HTMLDivElement>(null)
@@ -125,64 +116,6 @@ export function TtsControlPanel(props: TtsControlPanelProps) {
       onSeek(next)
     }
   }, [maxIndex, onSeek, readableIndex])
-
-  // ボイス一覧をロード（locale / lang 変更で再取得）
-  useEffect(() => {
-    let alive = true
-    void tts.getAvailableVoices().then((vs) => {
-      if (!alive) return
-      setAllVoices(vs)
-    })
-    return () => { alive = false }
-  }, [lang])
-
-  // 性別ラベル解決ヘルパー。formatVoiceLabel に渡す。
-  const genderLabel = useCallback((g: tts.TtsGender): string => {
-    if (g === 'female') return t('tts.gender.female')
-    if (g === 'male') return t('tts.gender.male')
-    return t('tts.gender.unknown')
-  }, [])
-
-  // 表示用に整形: 当該 lang のボイスのみ抽出し、性別ごとに代表を選ぶ
-  // - quickPicks: 「自動」「女性」「男性」のショートカット（性別が推定できたもののみ）
-  // - otherVoices: それ以外の全ボイス。同じ性別/lang でも voice.name で区別できるように
-  //   formatVoiceLabel で「Kyoko · 女性 · ja-JP」の形にして出す。
-  const { quickPicks, otherVoices, currentVoice } = useMemo(() => {
-    const langPrefix = lang.slice(0, 2).toLowerCase()
-    const matched = allVoices.filter(v => v.lang.toLowerCase().startsWith(langPrefix))
-
-    const female = matched.find(v => v.gender === 'female')
-    const male = matched.find(v => v.gender === 'male')
-
-    const picks: CategorizedVoice[] = [
-      { id: null, name: t('tts.voice.auto'), gender: 'auto' },
-    ]
-    if (female) picks.push({ id: female.id, name: t('tts.voice.female'), gender: 'female' })
-    if (male) picks.push({ id: male.id, name: t('tts.voice.male'), gender: 'male' })
-
-    // 「その他」リストは quickPicks で代表に選ばれた女性/男性ボイス id も含めて全件出す。
-    // ─ 理由: ショートカットは「とりあえずの代表」なので、ユーザーが特定の Kyoko/Otoya を
-    //   名指しで選びたい時に candidate が無いと困る。重複する id は活性表示で区別。
-    const others: CategorizedVoice[] = matched.map(v => ({
-      id: v.id,
-      name: tts.formatVoiceLabel(v, genderLabel),
-      gender: v.gender,
-    }))
-
-    // 現在選択中の表示名を解決
-    let displayName = t('tts.voice.auto')
-    if (voiceId) {
-      const raw = allVoices.find(v => v.id === voiceId)
-      if (raw) {
-        displayName = tts.formatVoiceLabel(raw, genderLabel)
-      } else {
-        // 端末側で消えたボイス id を保存していた場合は「自動」相当に倒す
-        displayName = t('tts.voice.auto')
-      }
-    }
-
-    return { quickPicks: picks, otherVoices: others, currentVoice: displayName }
-  }, [allVoices, lang, voiceId, genderLabel])
 
   return (
     <div
@@ -340,42 +273,15 @@ export function TtsControlPanel(props: TtsControlPanelProps) {
         </div>
       )}
 
-      {/* 速度ボタン群 */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'space-between' }}>
-        <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '.04em', flexShrink: 0 }}>
-          {t('tts.speed')}
-        </span>
-        <div style={{ display: 'flex', gap: 4, flexWrap: 'nowrap', overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
-          {RATE_OPTIONS.map((r) => {
-            const active = Math.abs(r - rate) < 0.001
-            const label = `${r.toFixed(2).replace(/\.?0+$/, '')}x`
-            return (
-              <button
-                key={r}
-                type="button"
-                onPointerDown={(e) => { e.stopPropagation(); onChangeRate(r) }}
-                aria-label={t('tts.speed') + ' ' + label}
-                aria-pressed={active}
-                style={{
-                  minWidth: 52, height: 36,
-                  padding: '0 12px',
-                  borderRadius: 99,
-                  background: active ? 'var(--brand)' : 'var(--bg-tertiary, rgba(255,255,255,0.08))',
-                  color: active ? '#FFFFFF' : 'var(--text-primary)',
-                  border: 'none',
-                  cursor: 'pointer',
-                  fontSize: 13, fontWeight: 700,
-                  fontFamily: "'Inter Tight', sans-serif",
-                  WebkitTapHighlightColor: 'transparent',
-                  flexShrink: 0,
-                }}
-              >
-                {label}
-              </button>
-            )
-          })}
-        </div>
-      </div>
+      {/* 速度 + ボイス選択（VoiceRateControls 共有コンポ）。TtsPopover と実装共有。 */}
+      <VoiceRateControls
+        rate={rate}
+        voiceId={voiceId}
+        lang={lang}
+        onChangeRate={onChangeRate}
+        onChangeVoice={onChangeVoice}
+        voiceMenuPlacement="up"
+      />
 
       {/* ピッチボタン群 (低め / 普通 / 高め) */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'space-between' }}>
@@ -413,121 +319,6 @@ export function TtsControlPanel(props: TtsControlPanelProps) {
         </div>
       </div>
 
-      {/* ボイス選択 */}
-      {(quickPicks.length > 1 || otherVoices.length > 0) && (
-        <div style={{ position: 'relative' }}>
-          <button
-            type="button"
-            onPointerDown={(e) => { e.stopPropagation(); setVoiceMenuOpen(v => !v) }}
-            aria-haspopup="listbox"
-            aria-expanded={voiceMenuOpen}
-            style={{
-              width: '100%', minHeight: 42,
-              borderRadius: 12,
-              background: 'var(--bg-tertiary, rgba(255,255,255,0.08))',
-              border: 'none',
-              color: 'var(--text-primary)',
-              padding: '8px 14px',
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              cursor: 'pointer',
-              fontSize: 13, fontWeight: 600,
-              WebkitTapHighlightColor: 'transparent',
-            }}
-          >
-            <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ fontSize: 11, color: 'var(--text-secondary)', fontWeight: 700 }}>{t('tts.voice.label')}</span>
-              <span>{currentVoice}</span>
-            </span>
-            <ChevronDownIcon width={14} height={14} />
-          </button>
-
-          {voiceMenuOpen && (
-            <>
-              <button
-                type="button"
-                aria-label={t('common.close')}
-                onPointerDown={(e) => { e.stopPropagation(); setVoiceMenuOpen(false) }}
-                style={{ position: 'fixed', inset: 0, background: 'transparent', border: 'none', zIndex: 26, padding: 0, cursor: 'default' }}
-              />
-              <div
-                role="listbox"
-                aria-label={t('tts.voice.label')}
-                style={{
-                  position: 'absolute',
-                  bottom: 'calc(100% + 6px)',
-                  left: 0, right: 0,
-                  background: 'var(--bg-primary)',
-                  borderRadius: 14,
-                  padding: 6,
-                  boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
-                  zIndex: 27,
-                  maxHeight: 240,
-                  overflowY: 'auto',
-                  display: 'flex', flexDirection: 'column', gap: 2,
-                }}
-              >
-                {quickPicks.map((v) => {
-                  const active = (v.id ?? null) === voiceId
-                  return (
-                    <button
-                      key={`pick-${v.id ?? 'auto'}`}
-                      type="button"
-                      role="option"
-                      aria-selected={active}
-                      onPointerDown={(e) => {
-                        e.stopPropagation()
-                        onChangeVoice(v.id)
-                        setVoiceMenuOpen(false)
-                      }}
-                      style={{
-                        background: active ? `color-mix(in srgb, var(--brand) 18%, transparent)` : 'transparent',
-                        color: active ? 'var(--brand)' : 'var(--text-primary)',
-                        border: 'none', borderRadius: 10,
-                        padding: '10px 12px', fontSize: 13, fontWeight: active ? 700 : 500,
-                        textAlign: 'left', cursor: 'pointer',
-                        WebkitTapHighlightColor: 'transparent',
-                      }}
-                    >
-                      {v.name}
-                    </button>
-                  )
-                })}
-                {otherVoices.length > 0 && (
-                  <>
-                    <div style={{ borderTop: '1px solid var(--border, rgba(255,255,255,0.08))', margin: '4px 0' }} />
-                    {otherVoices.map((v) => {
-                      const active = v.id === voiceId
-                      return (
-                        <button
-                          key={`other-${v.id}`}
-                          type="button"
-                          role="option"
-                          aria-selected={active}
-                          onPointerDown={(e) => {
-                            e.stopPropagation()
-                            onChangeVoice(v.id)
-                            setVoiceMenuOpen(false)
-                          }}
-                          style={{
-                            background: active ? `color-mix(in srgb, var(--brand) 18%, transparent)` : 'transparent',
-                            color: active ? 'var(--brand)' : 'var(--text-primary)',
-                            border: 'none', borderRadius: 10,
-                            padding: '10px 12px', fontSize: 12, fontWeight: active ? 700 : 500,
-                            textAlign: 'left', cursor: 'pointer',
-                            WebkitTapHighlightColor: 'transparent',
-                          }}
-                        >
-                          {v.name}
-                        </button>
-                      )
-                    })}
-                  </>
-                )}
-              </div>
-            </>
-          )}
-        </div>
-      )}
     </div>
   )
 }

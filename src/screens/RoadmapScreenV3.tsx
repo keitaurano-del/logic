@@ -8,6 +8,7 @@ import type { ReactNode } from 'react'
 import { Header } from '../components/platform/Header'
 import { ActionSheet } from '../components/ActionSheet'
 import { LessonThumbnail } from '../components/LessonThumbnail'
+import { TtsPopover } from '../components/TtsPopover'
 import * as tts from '../ttsService'
 
 function LessonImage({ lessonId, size }: { lessonId: number; size: number }) {
@@ -462,8 +463,8 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
           onOpenPlacementTest={props.onOpenPlacementTest}
         />
 
-        {/* コース紹介 TTS のオート再生トグル — TTS サポート環境のみ表示 */}
-        <CoursePreviewAutoplayToggle />
+        {/* オート再生トグルは各コースカードのヘッドホンポップオーバー内に統合済み
+            （重複を避けるため一覧トップの単独トグルは撤去）。 */}
 
         {/* ピン留め: pinned フラグ付きコース（フェルミ系）— トレーニングの最上位に表示 */}
         {(() => {
@@ -992,80 +993,6 @@ function ensureCoursePreviewSubscribed() {
 }
 
 /**
- * コース紹介 TTS の「オート再生 ON/OFF」を切り替えるトグル UI。
- * - tts.loadAutoplay() の現在値を表示し、クリックで反転して tts.saveAutoplay() で永続化する
- * - tts.subscribeAutoplay() で他箇所からの変更にも追随する（同画面内に複数置く想定はないが安全側）
- * - 端末が TTS 非サポートなら描画しない（コース紹介ボタン自体出ないため UI 整合）
- */
-function CoursePreviewAutoplayToggle() {
-  const [autoplay, setAutoplayState] = useState<boolean>(() => tts.loadAutoplay())
-  useEffect(() => tts.subscribeAutoplay(setAutoplayState), [])
-  if (!tts.isSupported()) return null
-
-  const toggle = () => {
-    const next = !autoplay
-    tts.saveAutoplay(next)
-    setAutoplayState(next)
-  }
-
-  return (
-    <div
-      style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        gap: 12,
-        padding: '10px 12px',
-        background: 'var(--bg-card)',
-        borderRadius: 12,
-        boxShadow: 'var(--shadow-v3-card-inset)',
-      }}
-    >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0 }}>
-        <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>
-          {t('tts.autoplay.label')}
-        </div>
-        <div style={{ fontSize: 11, color: 'var(--text-secondary)', lineHeight: 1.45 }}>
-          {t('tts.autoplay.hint')}
-        </div>
-      </div>
-      <button
-        type="button"
-        role="switch"
-        aria-checked={autoplay}
-        aria-label={t('tts.autoplay.toggleAria')}
-        title={autoplay ? t('tts.autoplay.on') : t('tts.autoplay.off')}
-        onClick={toggle}
-        style={{
-          flexShrink: 0,
-          position: 'relative',
-          width: 44, height: 26,
-          borderRadius: 999,
-          border: 'none',
-          padding: 0,
-          cursor: 'pointer',
-          background: autoplay ? 'var(--brand)' : 'color-mix(in srgb, var(--text-muted) 25%, transparent)',
-          transition: 'background .2s',
-          WebkitTapHighlightColor: 'transparent',
-        }}
-      >
-        <span
-          aria-hidden="true"
-          style={{
-            position: 'absolute',
-            top: 3,
-            left: autoplay ? 21 : 3,
-            width: 20, height: 20,
-            borderRadius: '50%',
-            background: '#FFFFFF',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.25)',
-            transition: 'left .2s',
-          }}
-        />
-      </button>
-    </div>
-  )
-}
-
-/**
  * グループ内のコース紹介音声プレビュー連鎖再生 / 単発再生の共通ヘルパ。
  * 自然終了時に autoplay=true なら次の sequence エントリへ進める。
  * autoplay=false なら一度の発話で終了し、active id を解除する。
@@ -1130,8 +1057,7 @@ function CategoryCard({ name, meta, progress, onClick, image, saveTarget, previe
   )
   const isPreviewing = !!previewId && activePreviewId === previewId
   const previewSupported = tts.isSupported() && !!previewText && !!previewId
-  const handlePreview = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation()
+  const handleTogglePreview = useCallback(() => {
     if (!previewSupported) return
     if (isPreviewing) {
       // トグル: 停止
@@ -1198,40 +1124,22 @@ function CategoryCard({ name, meta, progress, onClick, image, saveTarget, previe
         </button>
       )}
       {previewSupported && (
-        <button
-          type="button"
-          onClick={handlePreview}
-          aria-label={isPreviewing ? t('tts.coursePreview.stop') : t('tts.coursePreview.play')}
-          aria-pressed={isPreviewing}
-          title={isPreviewing ? t('tts.coursePreview.stop') : t('tts.coursePreview.play')}
-          style={{
-            position: 'absolute',
-            top: saveTarget ? 42 : 6,
-            right: 6,
-            width: 30, height: 30, borderRadius: '50%',
-            background: isPreviewing ? 'var(--brand)' : 'rgba(8,33,33,0.55)',
-            backdropFilter: 'blur(6px)',
-            border: 'none',
-            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-            cursor: 'pointer',
-            color: '#fff',
-            WebkitTapHighlightColor: 'transparent',
-            zIndex: 2,
-            boxShadow: isPreviewing ? `0 2px 10px color-mix(in srgb, var(--brand) 50%, transparent)` : 'none',
-          }}
-        >
-          {isPreviewing ? (
-            // 停止アイコン: 正方形
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <rect x="6" y="6" width="12" height="12" rx="1.5" />
-            </svg>
-          ) : (
-            // 再生アイコン: 右向き三角
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M8 5v14l11-7z" />
-            </svg>
-          )}
-        </button>
+        <div style={{ position: 'absolute', top: saveTarget ? 42 : 6, right: 6, zIndex: 2 }}>
+          <TtsPopover
+            lang={getLocale() === 'ja' ? 'ja-JP' : 'en-US'}
+            playing={isPreviewing}
+            onTogglePlay={handleTogglePreview}
+            showAutoplay
+            iconSize={15}
+            buttonStyle={{
+              width: 30, height: 30,
+              background: isPreviewing ? 'var(--brand)' : 'rgba(8,33,33,0.55)',
+              backdropFilter: 'blur(6px)',
+              color: '#fff',
+              boxShadow: isPreviewing ? `0 2px 10px color-mix(in srgb, var(--brand) 50%, transparent)` : 'none',
+            }}
+          />
+        </div>
       )}
     </div>
   )
@@ -1259,11 +1167,40 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
     ? courses.flatMap(c => c.lessonIds).filter(id => completed.has(`lesson-${id}`)).length
     : fallbackLessons.filter(l => completed.has(`lesson-${l.id}`)).length
 
+  // このカテゴリ画面のヘッドホン: カテゴリ内の全コース紹介を順に読み上げる。
+  // sequence は courses 順。autoplay ON なら 1 コース読み終わり → 次コースへ連鎖する。
+  useEffect(() => { ensureCoursePreviewSubscribed() }, [])
+  const activePreviewId = useSyncExternalStore(subscribeCoursePreview, getCoursePreviewActive, () => null)
+  const courseSequence = courses.map(c => ({ id: c.id, text: buildCoursePreviewText(c) }))
+  const headerPreviewing = courseSequence.some(s => s.id === activePreviewId)
+  const headerPreviewSupported = tts.isSupported() && courseSequence.length > 0
+  const handleHeaderTogglePreview = () => {
+    if (!headerPreviewSupported) return
+    if (headerPreviewing) {
+      setCoursePreviewActive(null)
+      void tts.stop()
+      return
+    }
+    const first = courseSequence[0]
+    playCoursePreview(first.id, first.text, courseSequence)
+  }
+
   return (
     <div style={{ background: 'var(--bg-primary)', minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: 'var(--text-primary)' }}>
       <Header title={headerLabel} onBack={onBack} />
-      <div style={{ padding: '0 20px 14px', fontSize: 13, color: 'var(--text-secondary)' }}>
-        {courses.length > 0 ? t('roadmap.detailCourseCount', { count: courses.length }) : ''}{t('roadmap.detailLessonCount', { count: totalLessons })} · {completedCount > 0 ? t('roadmap.detailCompleted', { done: completedCount, total: totalLessons }) : t('roadmap.detailNotStarted')}
+      <div style={{ padding: '0 20px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+        <div style={{ fontSize: 13, color: 'var(--text-secondary)', minWidth: 0 }}>
+          {courses.length > 0 ? t('roadmap.detailCourseCount', { count: courses.length }) : ''}{t('roadmap.detailLessonCount', { count: totalLessons })} · {completedCount > 0 ? t('roadmap.detailCompleted', { done: completedCount, total: totalLessons }) : t('roadmap.detailNotStarted')}
+        </div>
+        {headerPreviewSupported && (
+          <TtsPopover
+            lang={getLocale() === 'ja' ? 'ja-JP' : 'en-US'}
+            playing={headerPreviewing}
+            onTogglePlay={handleHeaderTogglePreview}
+            showAutoplay
+            iconSize={16}
+          />
+        )}
       </div>
 
       <div style={{ flex: 1, padding: '0 16px 100px', display: 'flex', flexDirection: 'column', gap: 12 }}>
