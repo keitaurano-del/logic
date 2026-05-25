@@ -66,6 +66,31 @@ const caseProfitability: LessonData = {
       title: 'Decomposing the profit structure',
       content:
         'Profitability cases are the most frequent case type.\n\nProfit = Revenue - Cost\n\nRevenue = Price x Quantity\nQuantity = Customers x Purchase frequency x Items per purchase\n\nCost = Fixed costs (rent, payroll, etc.) + Variable costs (materials, etc.)\n\nKeep this tree in your head. The first step is to identify which branch is broken.',
+      visual: 'LogicTreeDiagram',
+      visualProps: {
+        sectionLabel: 'Profit structure — break profit into its parts',
+        hintTone: 'brand',
+        hint: 'First split into "Revenue vs Cost," then drill down to the multiplied factors',
+        data: {
+          label: 'Profit = Revenue - Cost',
+          children: [
+            {
+              label: 'Revenue = Price x Quantity',
+              children: [
+                { label: 'Price' },
+                { label: 'Quantity = Customers x Frequency x Items' },
+              ],
+            },
+            {
+              label: 'Cost = Fixed + Variable',
+              children: [
+                { label: 'Fixed (rent, payroll)' },
+                { label: 'Variable (materials)' },
+              ],
+            },
+          ],
+        },
+      },
     },
     {
       type: 'think',

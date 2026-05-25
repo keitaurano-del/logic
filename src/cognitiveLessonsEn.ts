@@ -108,7 +108,16 @@ const chunking: LessonData = {
       title: 'Three types of chunking',
       content:
         "There are three main patterns:\n\n[Type 1] Grouping (horizontal aggregation)\nPut items of the same nature into one bucket.\nExample: 12 initiatives → 'Acquisition,' 'Retention,' 'Monetization' (3 buckets).\n\n[Type 2] Hierarchy (vertical aggregation)\nWhole → mid-categories → details, as a tree.\nExample: Company issue tree (business / org / finance → subdivided).\n\n[Type 3] Pattern matching (mapping to known concepts)\nMatch to existing frameworks or phrases.\nExample: 'We win through differentiation and low cost' → Porter's generic strategies.\n\nAs business people get more experienced, their library of 'conceptual chunks' grows. Beginners process items one by one. Veterans recognize the situation chunk-by-chunk: 'This is a classic X case.'\n\nThat is why experienced people have spare capacity in meetings. Same number of items, but larger chunks means more total content.",
-      visual: 'LogicTreeDiagram',
+      visual: 'ThreePillarsDiagram',
+      visualProps: {
+        sectionLabel: 'Three types of chunking',
+        pillars: [
+          { title: 'Grouping', body: 'Put same-nature items into one bucket (horizontal)' },
+          { title: 'Hierarchy', body: 'Whole → mid → detail, as a tree (vertical)' },
+          { title: 'Pattern matching', body: 'Map to known frameworks or phrases' },
+        ],
+        hint: 'When things scatter, try which of the three types can bundle them',
+      },
     },
     {
       type: 'quiz',
@@ -261,7 +270,6 @@ const externalMemory: LessonData = {
       title: 'Diagrams = dynamic external memory',
       content:
         "Among external memory tools, diagrams are uniquely powerful.\n\nWhy diagrams beat text:\n\n1. Spatial overview\nIn text you process sequentially. A diagram shows 5 elements at once.\n\n2. Relationships are visible\n'A causes B, B causes C' is far faster as arrows than as prose.\n\n3. Gaps are obvious\nEmpty spots in a diagram intuitively ask 'something should go here.'\n\n4. Diagrams force chunking\nThe act of drawing compresses concepts into chunks.\n\nCommon diagram patterns:\n• Logic tree → structural decomposition\n• 2x2 matrix → comparison\n• Flow → time / steps\n• Venn diagram → overlap, relationships\n• Pyramid → hierarchy, priority\n\nWhen a meeting stalls, just asking 'can I sketch this on the whiteboard?' changes the entire quality of the discussion. Diagrams are dynamic external memory that speed up thinking.",
-      visual: 'LogicTreeDiagram',
     },
     {
       type: 'quiz',
@@ -619,6 +627,18 @@ const outcomeVsProcessBias: LessonData = {
       content:
         "The antidote to outcome bias is evaluating the process. Poker pros call result-based evaluation 'resulting' and warn against it.\n\n[Process-evaluation matrix]\n\n           Good outcome    Bad outcome\nGood call  ◎ best          ○ unlucky\nBad call   △ lucky         × worst\n\nApplied at work:\n• Don't punish 'good call + bad outcome'\n  → Otherwise you suppress healthy risk-taking\n\n• Don't celebrate 'bad call + good outcome'\n  → Otherwise you mistake luck for skill\n\n• Make 'good call' criteria explicit\n  - Sufficient information gathered\n  - Multiple options compared\n  - Surprises prepared for\n  - Stakeholders aligned\n\nCore idea:\n'You can do little to control outcomes, but you can improve decision quality.'\n'Repeated good decisions converge to good results in the long run.'\n\nProcess focus is the foundation of reproducible performance.",
       visual: 'Two2MatrixDiagram',
+      visualProps: {
+        sectionLabel: 'Decision quality x Outcome — do not judge by results alone',
+        xAxis: { low: 'Bad outcome', high: 'Good outcome', label: 'Outcome' },
+        yAxis: { low: 'Bad call', high: 'Good call', label: 'Decision quality' },
+        cells: [
+          { title: 'Unlucky', items: ['Good call x bad outcome', "Don't punish"] },
+          { title: 'Best', items: ['Good call x good outcome'] },
+          { title: 'Worst', items: ['Bad call x bad outcome'] },
+          { title: 'Lucky', items: ['Bad call x good outcome', "Don't celebrate"] },
+        ],
+        hint: 'A bad outcome can still be a good call met by bad luck — judge decision quality separately',
+      },
     },
     {
       type: 'quiz',

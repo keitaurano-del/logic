@@ -163,7 +163,6 @@ export const easternPhilosophyLessonMapEn: Record<number, LessonData> = {
           'In management, the question is not "which is correct" but "which to adopt in which situation."\n\n- Areas demanding creativity and self-direction → innate goodness (trust-based, broad autonomy)\n- Areas with large or irreversible risk → innate self-interest (system-based, verification-heavy)\n\nExample: an engineer\'s coding can run on innate goodness, but production deployment runs on innate self-interest with an approval flow. This is the modern division.\n\nFor 2,300 years, Mencius and Xunzi have left us the foundational question: "what assumption do you make about human nature?"',
         outro:
           'Innate goodness and innate self-interest are not opposing ideologies but tools to deploy by domain. Lean on innate goodness where creativity is needed and on innate self-interest where risk is high — this is the modern answer that protects an organization from going rigid.',
-        visual: 'Two2MatrixDiagram',
       },
       {
         type: 'quiz',
@@ -217,6 +216,15 @@ export const easternPhilosophyLessonMapEn: Record<number, LessonData> = {
         outro:
           'Twenty-four hundred years later, the impulse behind universal love is being re-evaluated as stakeholder capitalism and ESG management. The shift from short-term self-interest to long-term optimization that also weighs customers, partners, and society is one of the places where ancient thought still lives at the heart of modern management.',
         visual: 'ThreePillarsDiagram',
+        visualProps: {
+          sectionLabel: 'Modern echoes of "universal love"',
+          pillars: [
+            { title: 'Whole supply chain', body: 'Care about partners\' labor conditions too' },
+            { title: 'Account for impact', body: 'Count external impact as your own cost' },
+            { title: 'Cooperate with rivals', body: 'On standards, weigh shared interests too' },
+          ],
+          hint: 'From short-term self-interest to long-term optimization for all',
+        },
       },
       {
         type: 'quiz',

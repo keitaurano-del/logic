@@ -46,7 +46,6 @@ const adhdLesson800: LessonData = {
       title: 'Four ADHD traits, recast as business resources',
       content:
         'Instead of listing isolated characteristics, it helps to organize them as resources you can deploy.\n\nResource 1: Hyperfocus\n- The ability to lock onto a topic you find interesting for an extended stretch. The length varies widely: 30 minutes for some, several hours for others, half a day or more for others (4–8 hours is not a standard. Some individuals do not experience hyperfocus at all. Use the observation in Lesson 801 to find your own pattern)\n- Highly effective for build-it-in-one-go work, deep problem solving, research, coding, and writing\n- Hard to summon on command, but if you build an environment that "pulls it out when it comes," it can contribute meaningfully to your output\n\nResource 2: Divergent thinking\n- Branching from one question into wide associations and combining unrelated information\n- A strength for ideation, strategy, new business, copywriting, design\n- Where the value is "explode the option space," not "pick one right answer"\n\nResource 3: Agility (impulsivity, repositioned)\n- "Think of it, move on it." Take risk, act first\n- A weapon in sales, negotiation, emergency response, early-stage startups\n- Can decide faster than an "analyze-then-act" colleague ever could\n\nResource 4: Novelty seeking\n- Strong pull toward new things and change; intolerance for boredom\n- A strength in new ventures, new client development, picking up new technology, trend research\n- The trait of disliking "the same as yesterday" becomes an advantage in change-heavy domains\n\nKey point: each of these four has two sides — "a strength when controlled, a difficulty when left alone." The whole course is about how to intentionally ignite them while minimizing the side effects.',
-      visual: 'LeveragePointsDiagram',
     },
     {
       type: 'explain',
@@ -54,6 +53,28 @@ const adhdLesson800: LessonData = {
       content:
         'There are roughly three levels of response to difficulties.\n\nLevel 1: Change yourself (willpower, discipline)\n- "Train your focus," "stop procrastinating through grit," "try harder not to forget"\n- Returns are low, the toll is high. Behavioral effort does not fully change the underlying trait\n- Spending time here has poor ROI\n\nLevel 2: Change the tools and environment (the core of this course)\n- Reminders, timers, task systems, external memory (notes, "second brain")\n- Desk layout, notification blackouts, time blocks, routines that pull out hyperfocus\n- Often a 2–3× increase in output with the same person\n\nLevel 3: Change the role and place (the biggest leverage)\n- Move away from jobs full of fine-grained admin, long monotonous work, parallel case management\n- Shift toward roles where strengths shine: ideation, new business development, emergency response, creative work\n- Instead of doing it all alone, build a team or partnership that complements your gaps\n- Change the environment and the same traits stop being "problems" and start being "individuality"\n\nSame structure as leverage in business: rather than "force yourself to work 1.2× harder," "change the length of the lever (environment, role) and triple the output."\n\nThis course focuses on Levels 2 and 3. Level 1 (willpower) barely comes up.',
       visual: 'LeveragePointsDiagram',
+      visualProps: {
+        sectionLabel: 'Three levels of response — where to intervene',
+        revealMode: 'static',
+        tiers: [
+          {
+            label: 'Level 1',
+            name: 'Change yourself',
+            desc: 'Fix the symptom through willpower. High toll, low returns.',
+          },
+          {
+            label: 'Level 2',
+            name: 'Change tools & environment',
+            desc: 'Notification blackouts, time blocks, external memory. 2-3x output, same person.',
+          },
+          {
+            label: 'Level 3',
+            name: 'Change role & place',
+            desc: 'Move to a role where traits shine; build complementarity. The biggest leverage.',
+          },
+        ],
+        hint: 'Rather than working 1.2x harder, lengthen the lever (environment, role) and triple the output',
+      },
     },
     {
       type: 'quiz',
@@ -211,7 +232,6 @@ const adhdLesson802: LessonData = {
       title: 'Time blocks — reserve how attention gets allocated',
       content:
         'The strongest time-management approach is not "a to-do list" but "calendar blocks." The to-do list is a particularly dangerous trap for people with ADHD traits:\n\n- Morning: list 10 items → cannot decide which to start → start the easiest → important ones get left → roll over to tomorrow → list inflates → motivation collapses\n\nCalendar-block approach:\nPut tasks in your calendar with a "when" — turn the list into an appointment.\n\nFour principles for block design:\n\n1. Hardest task in your golden time\n- In your peak window from Lesson 801, schedule the work that needs the most focus\n- Mark this block "higher priority than meetings" and "no interruptions"\n- Aim for 90–120 minutes (or 3–4 hours for the hyperfocus type)\n\n2. Low-focus tasks in low-energy windows\n- Email replies, expense reports, deck polishing, light meetings\n- Stack them in the post-lunch slump (often 14:00–16:00)\n\n3. Bundle meetings\n- Scattered meetings make the gaps useless (30 minutes often is not enough time to ramp into focus)\n- Set your own rule: "meetings only in the afternoon" or "meetings only Tuesday and Thursday"\n- You may need to negotiate with coworkers, but it is worth it\n\n4. Always include buffers\n- Schedule a 15–30 minute break after each 90-minute focus block\n- Hyperfocus types forget breaks and crash. Use timers and calendar notifications to enforce them\n- A bufferless schedule breaks down within days\n\nWhy calendar blocks work:\n- The cognitive cost of "what do I do next?" disappears (it is already on the calendar)\n- The "where do I start with my procrastination?" problem dissolves\n- Whatever you do not finish slides to tomorrow — reducing the guilt loop',
-      visual: 'ThreePillarsDiagram',
     },
     {
       type: 'quiz',
@@ -376,7 +396,6 @@ const adhdLesson804: LessonData = {
       title: 'Is your current job a fit? — four diagnostic axes',
       content:
         'Changing jobs or roles is a major decision. Acting on feel alone leads to regret. Use these four axes:\n\nAxis 1: Energy balance\n- After work, does the "drained" feeling outweigh the "satisfied" feeling?\n- Even after a weekend off, does the fatigue stay?\n- Does thinking about work in the morning make you nauseous?\n→ Even one sustained "yes" suggests a large mismatch with the role\n\nAxis 2: Frequency of strengths activated\n- How often per month do your divergent thinking, agility, or hyperfocus actually engage in this job?\n- When was the last time you felt "I am glad I did that"?\n→ If less than once a month, you are barely using your strengths\n\nAxis 3: Structure of failures\n- What kind of failure or criticism recurs?\n  - A) Attention lapses, gaps, forgetfulness → directly tied to ADHD traits; large room for environment-side fixes\n  - B) Lack of skill or knowledge → addressable through learning\n  - C) Interpersonal friction → a different problem\n→ If A dominates overwhelmingly, suspect a role mismatch\n\nAxis 4: The 5-year horizon\n- On the current trajectory, in five years, will you be more alive or more drained?\n- Look at the managers and seniors above you on the same path — do you want to become that?\n→ If "no," the time to change direction is while you can still choose\n\nDecision frame:\n- All four healthy → go deeper in your current spot (further optimization through environment and task design)\n- 1–2 axes at risk → try a role shift, reorganized responsibilities, or a stronger complementary setup\n- 3–4 axes at risk → consider larger options including a change of company or independence\n\nDo not rush:\nAgility is a strength for short-cycle decisions (quick sales response, crisis work, catching new ideas) but tends to backfire on decisions with long-tail impact such as resigning or moving jobs. The safe sequence is 3 months of observation → 1 month of consideration → action. The point is not to suppress agility itself — it is to separate function from use case.',
-      visual: 'Two2MatrixDiagram',
     },
     {
       type: 'quiz',
@@ -634,7 +653,6 @@ const adhdLesson807: LessonData = {
       title: 'Course wrap-up — write your own prescription',
       content:
         'A one-page summary of everything across the seven lessons.\n\nStep 1: Self-understanding (Lesson 800–801)\n- Reframe ADHD traits as four resources (hyperfocus, divergent thinking, agility, novelty seeking)\n- Run a 2-week ignition map to find your own pattern\n\nStep 2: Environment design (Lesson 802–803)\n- Set up the physical environment (desk, notifications, time blocks)\n- Reshape tasks to pull out hyperfocus and remove starting friction\n\nStep 3: Role selection (Lesson 804)\n- Distinguish roles where ADHD traits fit from roles where they do not\n- Diagnose where you are now with the four axes (energy balance, strengths frequency, failure structure, 5-year horizon)\n\nStep 4: Complementary support (Lesson 805)\n- Use partner, delegation, and team design to structurally offload your weak areas\n- Disclose starting from the behavior level\n\nStep 5: Sustainability (Lesson 806)\n- Track the cost of hyperfocus and design recovery routines\n- Notice early warning signs of burnout and use healthcare when needed\n\nStep 6: Studying predecessors (Lesson 807)\n- Analyze publicly identified individuals with the analysis template\n- Adopt one or two transferable elements for your own career\n\nClosing:\nThe point of this course is not "you are special because you have ADHD." It is simply this: anyone with any cognitive profile can more readily produce their own kind of value once they understand their profile and build the environment, role, and complementary support that fits.\n\nADHD traits tend to translate into value in environments that fit them, and tend to drain you in environments that do not. That is exactly why "building or choosing the environment that fits you" is the largest leverage available.\n\nThis course is less a textbook and more a set of materials for writing your own prescription. You do not have to adopt all of it. Start with one item that looks effective for where you are now, observe, and adjust. That is enough.',
-      visual: 'LeveragePointsDiagram',
     },
     {
       type: 'quiz',

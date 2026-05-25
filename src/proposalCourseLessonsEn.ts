@@ -224,6 +224,30 @@ const proposalStructure: LessonData = {
       title: 'Organize issues with a tree structure',
       content: 'When multiple issues are tangled, organize with a logic tree.\n\nIssue tree example:\nSales decline\n├── Decline in new customers\n│   ├── Lower brand awareness\n│   └── Switching to competitors\n└── Decline in repeat customers\n    ├── Quality dissatisfaction\n    └── Loss of price competitiveness\n\nA tree shows "where the highest-leverage solve point is."',
       visual: 'LogicTreeDiagram',
+      visualProps: {
+        sectionLabel: 'Issue tree — see where it pays off',
+        hintTone: 'brand',
+        hint: 'Not every branch evenly — zero in on the branch with the biggest leverage',
+        data: {
+          label: 'Sales decline',
+          children: [
+            {
+              label: 'Decline in new customers',
+              children: [
+                { label: 'Lower brand awareness' },
+                { label: 'Switching to competitors' },
+              ],
+            },
+            {
+              label: 'Decline in repeat customers',
+              children: [
+                { label: 'Quality dissatisfaction' },
+                { label: 'Loss of price competitiveness' },
+              ],
+            },
+          ],
+        },
+      },
       outro:
         'An issue tree is the map that shows "which branch your action will actually move." Solving every branch evenly is not realistic, so use the tree to survey the whole and then zero in on the branch with the biggest leverage. That is how seasoned teams build proposals.',
     },
@@ -295,6 +319,20 @@ const proposalOutline: LessonData = {
       title: 'Apply the Pyramid Principle',
       content: 'The "lead with the conclusion" Pyramid Principle is the foundation of proposals.\n\nTop-Down (conclusion first): conclusion → reason 1, reason 2, reason 3\n→ Used in most business proposals\n\nBottom-Up (reasons first): reason 1, reason 2, reason 3 → conclusion\n→ Suited for data analysis reports\n\nProposals respect the reader\'s time by leading with the conclusion.',
       visual: 'PyramidDiagram',
+      visualProps: {
+        conclusion: { label: 'Conclusion', body: 'We should adopt the new system' },
+        claims: [
+          { label: 'Reason 1', body: 'Cuts working hours' },
+          { label: 'Reason 2', body: 'Fewer errors' },
+          { label: 'Reason 3', body: 'Pays back the investment' },
+        ],
+        evidence: [
+          ['Automates manual work', 'Less overtime'],
+          ['No transcription errors', 'Less rework'],
+          ['Initial cost recovered in 1 year', 'Profitable after'],
+        ],
+        hint: 'Proposals lead Top-Down (conclusion first) and respect the reader\'s time',
+      },
       outro:
         'A proposal is decided by its opening conclusion. Senior readers have the least time, so Top-Down conclusion-first is the principle. Bottom-Up is fine for analysis reports but should be avoided in proposals as a rule.',
     },
