@@ -5,7 +5,7 @@
  * 実際に音声を流す speak() / stop() / pause() は検証しない。代わりに
  * localStorage に絡む pure ロジックと表示名ヘルパーだけを対象にする。
  */
-import { describe, expect, it, beforeEach } from 'vitest'
+import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest'
 import {
   loadRate,
   saveRate,
@@ -17,6 +17,10 @@ import {
   saveAutoplay,
   subscribeAutoplay,
   formatVoiceLabel,
+  makeCloudVoiceId,
+  isCloudVoiceId,
+  parseCloudVoiceId,
+  isCloudAvailable,
   type TtsVoice,
   type TtsGender,
 } from '../ttsService'
@@ -179,5 +183,57 @@ describe('ttsService — autoplay persistence', () => {
     unsub()
     saveAutoplay(false) // unsub 後は通知されない
     expect(seen).toEqual([false, true])
+  })
+})
+
+describe('ttsService — cloud voice id helpers', () => {
+  it('makeCloudVoiceId: cloud| プレフィックス付きで生成する', () => {
+    expect(makeCloudVoiceId('ja-JP', 'ja-JP-Neural2-C')).toBe('cloud|ja-JP|ja-JP-Neural2-C')
+  })
+
+  it('isCloudVoiceId: cloud| 始まりだけ true', () => {
+    expect(isCloudVoiceId('cloud|ja-JP|ja-JP-Neural2-C')).toBe(true)
+    expect(isCloudVoiceId('ja-JP|Kyoko')).toBe(false)
+    expect(isCloudVoiceId(null)).toBe(false)
+    expect(isCloudVoiceId(undefined)).toBe(false)
+  })
+
+  it('parseCloudVoiceId: lang と voiceName を分解する', () => {
+    expect(parseCloudVoiceId('cloud|ja-JP|ja-JP-Neural2-C')).toEqual({
+      lang: 'ja-JP',
+      voiceName: 'ja-JP-Neural2-C',
+    })
+    expect(parseCloudVoiceId('cloud|en-US|en-US-Neural2-F')).toEqual({
+      lang: 'en-US',
+      voiceName: 'en-US-Neural2-F',
+    })
+  })
+
+  it('parseCloudVoiceId: 形式不正 / 非クラウド / 未対応 lang は null', () => {
+    expect(parseCloudVoiceId('ja-JP|Kyoko')).toBe(null)
+    expect(parseCloudVoiceId('cloud|ja-JP')).toBe(null)
+    expect(parseCloudVoiceId('cloud|fr-FR|fr-FR-Voice')).toBe(null)
+    expect(parseCloudVoiceId('cloud||name')).toBe(null)
+  })
+
+  it('makeCloudVoiceId → parseCloudVoiceId は往復で一致する', () => {
+    const id = makeCloudVoiceId('en-US', 'en-US-Neural2-D')
+    expect(parseCloudVoiceId(id)).toEqual({ lang: 'en-US', voiceName: 'en-US-Neural2-D' })
+  })
+})
+
+describe('ttsService — isCloudAvailable', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  it('navigator.onLine が false のときだけ false', () => {
+    vi.stubGlobal('navigator', { onLine: false })
+    expect(isCloudAvailable()).toBe(false)
+  })
+
+  it('navigator.onLine が true のときは true', () => {
+    vi.stubGlobal('navigator', { onLine: true })
+    expect(isCloudAvailable()).toBe(true)
   })
 })

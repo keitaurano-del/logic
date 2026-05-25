@@ -1,0 +1,36 @@
+name: Set Render Env (GOOGLE_TTS_API_KEY)
+
+# 手動トリガー専用。既存 Render secret を使って本番サービスに
+# 単一の環境変数 GOOGLE_TTS_API_KEY を upsert し、反映のため再デプロイする。
+# 単一キーの PUT なので他の env を上書きしない（全体 PUT は使わない）。
+on:
+  workflow_dispatch:
+
+jobs:
+  set-env:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Upsert GOOGLE_TTS_API_KEY on Render and redeploy
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          SERVICE_ID: ${{ secrets.RENDER_PROD_SERVICE_ID }}
+          TTS_KEY: ${{ secrets.GOOGLE_TTS_API_KEY }}
+        run: |
+          set -euo pipefail
+          echo "Upserting GOOGLE_TTS_API_KEY (single-key PUT, non-destructive)..."
+          code=$(curl -sS -o /tmp/put.json -w "%{http_code}" \
+            -X PUT "https://api.render.com/v1/services/${SERVICE_ID}/env-vars/GOOGLE_TTS_API_KEY" \
+            -H "Authorization: Bearer ${RENDER_API_KEY}" \
+            -H "Content-Type: application/json" \
+            -d "{\"value\": \"${TTS_KEY}\"}")
+          echo "env-var PUT HTTP ${code}"
+          if [ "${code}" -ge 300 ]; then echo "PUT failed:"; cat /tmp/put.json; exit 1; fi
+          echo "Triggering redeploy to apply env var..."
+          dcode=$(curl -sS -o /tmp/deploy.json -w "%{http_code}" \
+            -X POST "https://api.render.com/v1/services/${SERVICE_ID}/deploys" \
+            -H "Authorization: Bearer ${RENDER_API_KEY}" \
+            -H "Content-Type: application/json" \
+            -d '{"clearCache":"do_not_clear"}')
+          echo "deploy POST HTTP ${dcode}"
+          if [ "${dcode}" -ge 300 ]; then echo "deploy trigger failed:"; cat /tmp/deploy.json; exit 1; fi
+          echo "Done. GOOGLE_TTS_API_KEY set and redeploy triggered."

@@ -13,6 +13,7 @@ import { createProblemsRouter } from './routes/problems.js'
 import { createJournalRouter } from './routes/journal.js'
 import { createFeatureFlagsRouter } from './routes/feature-flags.js'
 import { createSyncTelemetryRouter } from './routes/sync-telemetry.js'
+import { createTtsRouter } from './routes/tts.js'
 
 // Supabase サーバーサイドクライアント（service role key 使用）
 const supabaseUrl = process.env.SUPABASE_URL || ''
@@ -190,6 +191,15 @@ const welcomeEmailLimiter = makeLimiter({
   msgEn: 'Too many email requests. Please try again later.',
 })
 
+// Cloud TTS 用: 1 分 60 リクエスト（スライド連続読み上げを許容しつつスパムは抑える。
+// クライアント側のハッシュキャッシュで重複合成は避ける前提）
+const ttsLimiter = makeLimiter({
+  windowMs: 60 * 1000,
+  max: 60,
+  msgJa: '読み上げのリクエストが多すぎます。少し待ってからお試しください。',
+  msgEn: 'Too many speech requests. Please wait a moment and try again.',
+})
+
 // グローバル制限を /api/* に適用 (ヘルスチェックは除外)
 app.use((req, res, next) => {
   if (req.path === '/api/health') return next()
@@ -214,6 +224,9 @@ app.use('/api/feature-flags', createFeatureFlagsRouter())
 
 // Device Sync Phase 3: sync 完了テレメトリ受信
 app.use('/api/sync-telemetry', createSyncTelemetryRouter({ supabase }))
+
+// Cloud TTS proxy（Google Cloud Text-to-Speech、キー未設定なら 503 でクライアントが端末 TTS にフォールバック）
+app.use('/api/tts', createTtsRouter(ttsLimiter))
 
 
 // 静的ファイル（public/ → dist/）は配信する

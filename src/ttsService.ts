@@ -36,6 +36,7 @@
 //   - 失敗しても speak 本体は続行する (best-effort)。
 
 import { getLocale } from './i18n'
+import { normalizeForSpeech } from './ttsReadings'
 
 const RATE_KEY = 'logic-tts-rate'
 const VOICE_KEY = 'logic-tts-voice'
@@ -90,7 +91,8 @@ function hasWebSpeech(): boolean {
 }
 
 export function isSupported(): boolean {
-  return isNative() || hasWebSpeech()
+  // native / Web Speech に加え、オンラインならクラウド TTS も使える
+  return isNative() || hasWebSpeech() || isCloudAvailable()
 }
 
 // ── Rate pref ──────────────────────────────────────────────────
@@ -242,40 +244,122 @@ function makeVoiceId(lang: string, name: string): string {
   return `${lang}|${name}`
 }
 
+// ── Cloud (Google Cloud TTS) voices ────────────────────────────
+//
+// クラウドが使える状況（オンライン）では、キュレートしたクラウドボイスを
+// getAvailableVoices() の先頭に並べる。voice id は `cloud|<lang>|<voiceName>` で
+// native/web の `${lang}|${name}` と衝突しない命名にする。
+// gender ラベルは inferGender に頼らず明示指定する（Neural2 の末尾規則だけだと曖昧なため）。
+//
+// クラウドが既定になる時の既定ボイスは ja の女性（Neural2-C、現状の声に近い）。
+
+export const CLOUD_VOICE_PREFIX = 'cloud|'
+
+type CloudVoiceDef = {
+  voiceName: string
+  lang: 'ja-JP' | 'en-US'
+  gender: TtsGender
+  isDefault?: boolean
+}
+
+const CLOUD_VOICE_CATALOG: CloudVoiceDef[] = [
+  // ja-JP
+  { voiceName: 'ja-JP-Neural2-C', lang: 'ja-JP', gender: 'female', isDefault: true },
+  { voiceName: 'ja-JP-Neural2-D', lang: 'ja-JP', gender: 'male' },
+  { voiceName: 'ja-JP-Neural2-B', lang: 'ja-JP', gender: 'female' },
+  { voiceName: 'ja-JP-Wavenet-D', lang: 'ja-JP', gender: 'male' },
+  // en-US
+  { voiceName: 'en-US-Neural2-F', lang: 'en-US', gender: 'female', isDefault: true },
+  { voiceName: 'en-US-Neural2-D', lang: 'en-US', gender: 'male' },
+]
+
+export function makeCloudVoiceId(lang: string, voiceName: string): string {
+  return `${CLOUD_VOICE_PREFIX}${lang}|${voiceName}`
+}
+
+export function isCloudVoiceId(id: string | null | undefined): boolean {
+  return typeof id === 'string' && id.startsWith(CLOUD_VOICE_PREFIX)
+}
+
+/** `cloud|ja-JP|ja-JP-Neural2-C` → { lang, voiceName }。形式不正なら null。 */
+export function parseCloudVoiceId(id: string): { lang: 'ja-JP' | 'en-US'; voiceName: string } | null {
+  if (!isCloudVoiceId(id)) return null
+  const rest = id.slice(CLOUD_VOICE_PREFIX.length)
+  const sep = rest.indexOf('|')
+  if (sep <= 0) return null
+  const lang = rest.slice(0, sep)
+  const voiceName = rest.slice(sep + 1)
+  if ((lang !== 'ja-JP' && lang !== 'en-US') || !voiceName) return null
+  return { lang, voiceName }
+}
+
+function cloudVoicesForCatalog(): TtsVoice[] {
+  return CLOUD_VOICE_CATALOG.map(def => ({
+    id: makeCloudVoiceId(def.lang, def.voiceName),
+    name: def.voiceName,
+    lang: def.lang,
+    gender: def.gender,
+    isDefault: def.isDefault,
+  }))
+}
+
+// クラウドが使えるか（= オンラインかどうか）。navigator.onLine を主判定に使う。
+// onLine が false 確定のときだけ無効化し、true / 不明のときは試す（試して失敗したら
+// speakCloud 側で端末 TTS にフォールバックするため、楽観的に倒してよい）。
+export function isCloudAvailable(): boolean {
+  try {
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) return false
+  } catch { /* */ }
+  return true
+}
+
 let voiceCache: TtsVoice[] | null = null
 let voiceCacheLocale: string | null = null
 
 /**
  * 利用可能な TTS ボイスを返す。
- * Web は `speechSynthesis.getVoices()`、native は `TextToSpeech.getSupportedVoices()`。
+ * クラウドが使える（オンライン）ときはキュレートしたクラウドボイスを先頭に並べ、
+ * 続けて Web は `speechSynthesis.getVoices()`、native は `TextToSpeech.getSupportedVoices()`。
  * 一覧は startup 直後に空配列のことが多いので、Web では `voiceschanged` を 1 回だけ待つ。
  */
 export async function getAvailableVoices(): Promise<TtsVoice[]> {
   const locale = getLocale()
   if (voiceCache && voiceCacheLocale === locale) return voiceCache
 
+  // クラウドボイス（オンライン時のみ先頭に差し込む）
+  const cloud: TtsVoice[] = isCloudAvailable() ? cloudVoicesForCatalog() : []
+
   if (isNative()) {
     try {
       const { TextToSpeech } = await import('@capacitor-community/text-to-speech')
       const { voices } = await TextToSpeech.getSupportedVoices()
-      const result: TtsVoice[] = voices.map((v, i) => ({
+      const nativeVoices: TtsVoice[] = voices.map((v, i) => ({
         id: makeVoiceId(v.lang, v.name),
         name: v.name,
         lang: v.lang,
         gender: inferGender(v.name),
-        isDefault: v.default,
+        // クラウドが既定を持つ場合は native の default を落とす（クラウド優先）
+        isDefault: cloud.length > 0 ? false : v.default,
         nativeIndex: i,
       }))
+      const result = [...cloud, ...nativeVoices]
       voiceCache = result
       voiceCacheLocale = locale
       return result
     } catch (e) {
       console.warn('[tts] native getSupportedVoices error', e)
-      return []
+      // native 取得に失敗してもクラウドだけは返す（オンラインなら読み上げ可能）
+      voiceCache = cloud
+      voiceCacheLocale = locale
+      return cloud
     }
   }
 
-  if (!hasWebSpeech()) return []
+  if (!hasWebSpeech()) {
+    voiceCache = cloud
+    voiceCacheLocale = locale
+    return cloud
+  }
 
   const synth = window.speechSynthesis
   const grab = (): TtsVoice[] => synth.getVoices().map(v => ({
@@ -283,7 +367,8 @@ export async function getAvailableVoices(): Promise<TtsVoice[]> {
     name: v.name,
     lang: v.lang,
     gender: inferGender(v.name),
-    isDefault: v.default,
+    // クラウドが既定を持つ場合は web の default を落とす（クラウド優先）
+    isDefault: cloud.length > 0 ? false : v.default,
     webVoice: v,
   }))
 
@@ -309,9 +394,10 @@ export async function getAvailableVoices(): Promise<TtsVoice[]> {
     })
   }
 
-  voiceCache = list
+  const merged = [...cloud, ...list]
+  voiceCache = merged
   voiceCacheLocale = locale
-  return list
+  return merged
 }
 
 // ── Voice display label helpers ────────────────────────────────
@@ -424,6 +510,124 @@ function stopKeepAlive(): void {
   }
 }
 
+// ── Cloud TTS playback (Google Cloud TTS proxy 経由) ────────────
+//
+// クラウドボイスが選ばれている / クラウドが既定のときは speakCloud() を使う。
+// POST /api/tts → base64 mp3 → HTMLAudio で再生する。
+// pause/resume は HTMLAudio なので native のような stop+restart は不要。
+//
+// キャッシュ: hash(text+voiceName+rate+pitch) をキーに base64 をメモリ Map に保持（LRU 的に上限件数）。
+//   さらに Cache Storage API が使える環境では `data:audio/mp3;base64,...` を Response として
+//   永続化し、オフライン再生も効かせる（best-effort、失敗してもメモリキャッシュで動く）。
+
+const CLOUD_CACHE_NAME = 'logic-tts-cloud-v1'
+const MEM_CACHE_LIMIT = 60
+
+// メモリキャッシュ（挿入順 Map で LRU 的に古いものから捨てる）
+const memCloudCache = new Map<string, string>()
+
+function cloudCacheKey(text: string, voiceName: string, rate: number, pitch: number): string {
+  // 簡易ハッシュ（FNV-1a 32bit）。text が長いので全文は使わず確定的ハッシュにする。
+  const raw = `${voiceName}|${rate}|${pitch}|${text}`
+  let h = 0x811c9dc5
+  for (let i = 0; i < raw.length; i++) {
+    h ^= raw.charCodeAt(i)
+    h = (h + ((h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24))) >>> 0
+  }
+  return `tts_${h.toString(16)}_${raw.length}`
+}
+
+function memCacheGet(key: string): string | undefined {
+  const v = memCloudCache.get(key)
+  if (v !== undefined) {
+    // touch: 末尾に移動して LRU を維持
+    memCloudCache.delete(key)
+    memCloudCache.set(key, v)
+  }
+  return v
+}
+
+function memCacheSet(key: string, b64: string): void {
+  if (memCloudCache.has(key)) memCloudCache.delete(key)
+  memCloudCache.set(key, b64)
+  while (memCloudCache.size > MEM_CACHE_LIMIT) {
+    const oldest = memCloudCache.keys().next().value
+    if (oldest === undefined) break
+    memCloudCache.delete(oldest)
+  }
+}
+
+// Cache Storage（永続）。失敗は握りつぶしてメモリキャッシュにフォールバック。
+async function persistentCacheGet(key: string): Promise<string | undefined> {
+  try {
+    if (typeof caches === 'undefined') return undefined
+    const cache = await caches.open(CLOUD_CACHE_NAME)
+    const res = await cache.match(`/tts-cache/${key}`)
+    if (!res) return undefined
+    const b64 = await res.text()
+    return b64 || undefined
+  } catch { return undefined }
+}
+
+async function persistentCacheSet(key: string, b64: string): Promise<void> {
+  try {
+    if (typeof caches === 'undefined') return
+    const cache = await caches.open(CLOUD_CACHE_NAME)
+    await cache.put(`/tts-cache/${key}`, new Response(b64, { headers: { 'Content-Type': 'text/plain' } }))
+  } catch { /* */ }
+}
+
+// API_BASE は @capacitor/core を import している（apiBase.ts）ため動的 import で循環/テスト汚染を避ける。
+async function resolveApiBase(): Promise<string> {
+  try {
+    const mod = await import('./apiBase')
+    return mod.API_BASE
+  } catch { return '' }
+}
+
+/**
+ * クラウド TTS で合成した base64 mp3 を取得する。
+ * キャッシュヒット時はネットワークを叩かない。503 / 失敗時は null を返す（呼び出し側でフォールバック）。
+ */
+async function fetchCloudAudio(
+  text: string,
+  lang: 'ja-JP' | 'en-US',
+  voiceName: string,
+  rate: number,
+  pitch: number,
+): Promise<string | null> {
+  const key = cloudCacheKey(text, voiceName, rate, pitch)
+  const mem = memCacheGet(key)
+  if (mem) return mem
+  const persisted = await persistentCacheGet(key)
+  if (persisted) {
+    memCacheSet(key, persisted)
+    return persisted
+  }
+
+  try {
+    const base = await resolveApiBase()
+    const res = await fetch(`${base}/api/tts`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, lang, voiceName, rate, pitch }),
+    })
+    if (!res.ok) {
+      // 503 (キー未設定) / 502 (合成失敗) / 429 など → フォールバックさせる
+      return null
+    }
+    const data = (await res.json()) as { audioContent?: string }
+    const b64 = data.audioContent
+    if (!b64) return null
+    memCacheSet(key, b64)
+    void persistentCacheSet(key, b64)
+    return b64
+  } catch {
+    // オフライン / ネットワークエラー → フォールバック
+    return null
+  }
+}
+
 // ── Speak / Stop / Pause / Resume ──────────────────────────────
 
 export type SpeakOptions = {
@@ -436,6 +640,7 @@ export type SpeakOptions = {
 
 let currentUtterance: SpeechSynthesisUtterance | null = null
 let currentOnEnd: (() => void) | null = null
+let currentCloudAudio: HTMLAudioElement | null = null
 
 async function stopNative(): Promise<void> {
   if (!isNative()) return
@@ -457,10 +662,26 @@ function stopWeb(): void {
   currentUtterance = null
 }
 
+function stopCloud(): void {
+  if (currentCloudAudio) {
+    try {
+      currentCloudAudio.onended = null
+      currentCloudAudio.onerror = null
+      currentCloudAudio.pause()
+      currentCloudAudio.src = ''
+    } catch (e) {
+      console.warn('[tts] cloud stop error', e)
+    }
+    currentCloudAudio = null
+  }
+}
+
 export async function stop(): Promise<void> {
   // stop は onEnd を呼ばない (自然終了との区別が必要)
   currentOnEnd = null
   setPlaying(false)
+  // クラウド再生中なら HTMLAudio を止める。経路を問わず常に呼んで安全に倒す。
+  stopCloud()
   if (isNative()) {
     await stopNative()
   } else {
@@ -471,12 +692,22 @@ export async function stop(): Promise<void> {
 }
 
 /**
- * 一時停止。Web は speechSynthesis.pause() を使う。
- * Native (Capacitor) は pause API がないため stop() に fall back する。
- * → native 環境では resume() は再 speak が必要 (LessonStoriesScreen 側で扱う)。
+ * 一時停止。
+ * クラウド再生中: HTMLAudio.pause()（resume() で続きから再生できる）。
+ * Web: speechSynthesis.pause()。
+ * Native (Capacitor): pause API がないため stop() に fall back（resume は呼び出し側で再 speak）。
  */
 export async function pause(): Promise<void> {
   if (!playing) return
+  if (currentCloudAudio) {
+    try {
+      currentCloudAudio.pause()
+      paused = true
+    } catch (e) {
+      console.warn('[tts] cloud pause error', e)
+    }
+    return
+  }
   if (isNative()) {
     // 擬似 pause: 完全停止する。再開は呼び出し側で speak し直す。
     paused = true
@@ -494,10 +725,21 @@ export async function pause(): Promise<void> {
 }
 
 /**
- * 再開。Web は speechSynthesis.resume() で動く。
- * Native は pause() が stop と同義なので、resume は呼び出し側で speak を再発行する。
+ * 再開。
+ * クラウド再生中: HTMLAudio.play() で続きから。
+ * Web: speechSynthesis.resume()。
+ * Native: pause() が stop と同義なので resume は呼び出し側で speak を再発行する。
  */
 export async function resume(): Promise<void> {
+  if (currentCloudAudio) {
+    try {
+      void currentCloudAudio.play().catch(() => { /* */ })
+      paused = false
+    } catch (e) {
+      console.warn('[tts] cloud resume error', e)
+    }
+    return
+  }
   if (isNative()) {
     paused = false
     return
@@ -601,9 +843,86 @@ async function speakWebAsync(text: string, opts: SpeakOptions): Promise<void> {
 }
 
 /**
+ * クラウド TTS で読み上げる。base64 mp3 を取得して HTMLAudio で再生する。
+ * 成功したら true、フォールバックが必要なら false を返す（503 / オフライン / 取得失敗 / Audio 不可）。
+ * 失敗時は state を変更せず呼び出し側で native/web にフォールバックさせる。
+ */
+async function speakCloud(text: string, lang: 'ja-JP' | 'en-US', voiceName: string, opts: SpeakOptions): Promise<boolean> {
+  if (typeof Audio === 'undefined') return false
+  const rate = opts.rate ?? loadRate()
+  const pitch = opts.pitch ?? loadPitch()
+
+  const b64 = await fetchCloudAudio(text, lang, voiceName, rate, pitch)
+  if (!b64) return false
+
+  try {
+    // 直前の再生を確実に止める（連続スライド時の二重再生防止）
+    stopCloud()
+    stopWeb()
+
+    const audio = new Audio(`data:audio/mp3;base64,${b64}`)
+    audio.onended = () => {
+      if (currentCloudAudio === audio) currentCloudAudio = null
+      const cb = currentOnEnd
+      currentOnEnd = null
+      setPlaying(false)
+      if (cb) {
+        try { cb() } catch (e) { console.warn('[tts] onEnd cb error', e) }
+      }
+    }
+    audio.onerror = () => {
+      if (currentCloudAudio === audio) currentCloudAudio = null
+      // エラー時は onEnd を呼ばない (stop と同様の扱い)
+      currentOnEnd = null
+      setPlaying(false)
+    }
+    currentCloudAudio = audio
+    setPlaying(true)
+    paused = false
+    await audio.play().catch((e) => {
+      // autoplay reject 等。play できなければフォールバックさせるため state を戻す。
+      console.warn('[tts] cloud audio play error', e)
+      if (currentCloudAudio === audio) currentCloudAudio = null
+      throw e
+    })
+    return true
+  } catch {
+    // 再生開始に失敗 → フォールバック
+    if (currentCloudAudio === null) setPlaying(false)
+    return false
+  }
+}
+
+/**
+ * このリクエストでクラウド経路を使うべきか判定し、使うなら voiceName を返す。
+ * - 明示的にクラウド voiceId が指定されている → その voiceName
+ * - voiceId が未指定 (null/undefined) かつクラウドが既定として使える → 既定ボイス
+ * - それ以外（native/web の特定ボイス指定）→ null（クラウドを使わない）
+ */
+function resolveCloudVoiceName(lang: 'ja-JP' | 'en-US', voiceId: string | null | undefined): string | null {
+  if (isCloudVoiceId(voiceId)) {
+    const parsed = parseCloudVoiceId(voiceId as string)
+    if (parsed) return parsed.voiceName
+    return null
+  }
+  // 明示的に native/web の特定ボイスが選ばれている場合はクラウドを使わない
+  if (voiceId) return null
+  // voiceId 未指定 & クラウドが使える → クラウドを既定にする（ja は女性 Neural2-C 相当）
+  if (isCloudAvailable()) {
+    const def = CLOUD_VOICE_CATALOG.find(v => v.lang === lang && v.isDefault)
+      ?? CLOUD_VOICE_CATALOG.find(v => v.lang === lang)
+    return def ? def.voiceName : null
+  }
+  return null
+}
+
+/**
  * Start speaking the given text. Cancels any in-progress utterance first.
  * Returns immediately on Web; awaits completion on native (but you can call stop()).
  * onEnd は「自然終了」のみで呼ばれる。stop() / pause() / error では呼ばれない。
+ *
+ * クラウドボイス選択時 / クラウド既定時は speakCloud() を優先し、503・オフライン・
+ * 取得失敗のときは既存の native/web TTS に自動フォールバックする（無音にしない）。
  */
 export async function speak(text: string, opts: SpeakOptions = {}): Promise<void> {
   if (!text || !text.trim()) return
@@ -611,12 +930,28 @@ export async function speak(text: string, opts: SpeakOptions = {}): Promise<void
     console.warn('[tts] not supported in this environment')
     return
   }
+  // 記号誤読対策の読み正規化を speak() 側で 1 回だけ通す（speakCloud / speakNative /
+  // speakWebAsync いずれにも効かせるため。二重変換を避けるため下位関数では変換しない）。
+  // 表示テキストは変えず、読み上げ用に「×→かける」等を補正する。
+  const lang = opts.lang ?? defaultLang()
+  text = normalizeForSpeech(text, lang)
   // 既存の onEnd は新しい再生で上書き
   currentOnEnd = opts.onEnd ?? null
   // 背景再生 keep-alive (silent audio loop + wake lock) を起動。
   // 連続スライド再生時は startKeepAlive() が冪等なので毎回呼んでも単一インスタンスのまま。
   // 明示 stop() 時のみ解放される。
   startKeepAlive()
+
+  // ── クラウド経路（優先、失敗時は下の native/web にフォールバック）──
+  const cloudVoiceName = resolveCloudVoiceName(lang, opts.voiceId)
+  if (cloudVoiceName) {
+    const ok = await speakCloud(text, lang, cloudVoiceName, opts)
+    if (ok) return
+    // フォールバック時は、明示クラウド voiceId を native/web に渡すと解決できないので
+    // voiceId を落として既定ボイスで読む。
+    opts = { ...opts, voiceId: null }
+  }
+
   if (isNative()) {
     await speakNative(text, opts)
   } else {
