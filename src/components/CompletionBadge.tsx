@@ -9,8 +9,6 @@
  *
  * 配色は brand トークンに統一。半塗りは conic-gradient で 50% リングを表現。
  */
-import React from 'react'
-
 interface Props {
   count: number
   size?: number
