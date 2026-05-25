@@ -38,6 +38,7 @@ function mockRes() {
 }
 
 const ORIGINAL_KEY = process.env.GOOGLE_TTS_API_KEY
+const ORIGINAL_LIMIT = process.env.TTS_DAILY_CHAR_LIMIT
 
 describe('/api/tts route', () => {
   beforeEach(() => {
@@ -46,6 +47,8 @@ describe('/api/tts route', () => {
   afterEach(() => {
     if (ORIGINAL_KEY === undefined) delete process.env.GOOGLE_TTS_API_KEY
     else process.env.GOOGLE_TTS_API_KEY = ORIGINAL_KEY
+    if (ORIGINAL_LIMIT === undefined) delete process.env.TTS_DAILY_CHAR_LIMIT
+    else process.env.TTS_DAILY_CHAR_LIMIT = ORIGINAL_LIMIT
   })
 
   it('GOOGLE_TTS_API_KEY 未設定なら 503 { error: tts_unavailable }', async () => {
@@ -80,7 +83,9 @@ describe('/api/tts route', () => {
     expect(fetchSpy).toHaveBeenCalledOnce()
     const [url, init] = fetchSpy.mock.calls[0] as [string, RequestInit]
     expect(url).toContain('texttospeech.googleapis.com')
-    expect(url).toContain('key=test-key')
+    // API キーは URL クエリではなくヘッダで渡す
+    expect(url).not.toContain('key=test-key')
+    expect((init.headers as Record<string, string>)['X-Goog-Api-Key']).toBe('test-key')
     const sent = JSON.parse(String(init.body)) as {
       input: { text: string }
       voice: { languageCode: string; name: string }
@@ -148,6 +153,45 @@ describe('/api/tts route', () => {
     await handler({ body: { text: 'テスト', lang: 'ja-JP' } } as unknown as Request, res)
     expect(res.statusCode).toBe(502)
     expect(res.body).toEqual({ error: 'tts_synthesis_failed' })
+    vi.unstubAllGlobals()
+  })
+
+  it('allowlist 外の voiceName は 400 { error: invalid_voice }', async () => {
+    process.env.GOOGLE_TTS_API_KEY = 'test-key'
+    const fetchSpy = vi.fn()
+    vi.stubGlobal('fetch', fetchSpy)
+    const handler = getHandler()
+    const res = mockRes()
+    await handler(
+      { body: { text: 'テスト', lang: 'ja-JP', voiceName: 'ja-JP-Studio-B' } } as unknown as Request,
+      res,
+    )
+    expect(res.statusCode).toBe(400)
+    expect(res.body).toEqual({ error: 'invalid_voice' })
+    // 不正ボイスでは Google API を叩かない
+    expect(fetchSpy).not.toHaveBeenCalled()
+    vi.unstubAllGlobals()
+  })
+
+  it('当日累計合成文字数が上限を超えると 503 { error: tts_daily_limit }', async () => {
+    process.env.GOOGLE_TTS_API_KEY = 'test-key'
+    // 上限を低く設定（カウンタはプロセス内なので、1 回目で超過させる）
+    process.env.TTS_DAILY_CHAR_LIMIT = '5'
+    const fetchSpy = vi.fn(async () =>
+      new Response(JSON.stringify({ audioContent: 'QUJD' }), { status: 200 }),
+    )
+    vi.stubGlobal('fetch', fetchSpy)
+    const handler = getHandler()
+    const res = mockRes()
+    // text 長 6 > limit 5 → 即 503
+    await handler(
+      { body: { text: 'あいうえおか', lang: 'ja-JP' } } as unknown as Request,
+      res,
+    )
+    expect(res.statusCode).toBe(503)
+    expect(res.body).toEqual({ error: 'tts_daily_limit' })
+    // 上限超過では Google API を叩かない（課金しない）
+    expect(fetchSpy).not.toHaveBeenCalled()
     vi.unstubAllGlobals()
   })
 
