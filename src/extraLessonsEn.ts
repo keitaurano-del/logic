@@ -69,7 +69,7 @@ const hypothesisAbduction: LessonData = {
   title: 'Leap with abduction',
   category: 'Hypothesis Thinking',
   steps: [
-    { type: 'explain', title: 'What abduction (inference to the best explanation) is', content: 'Not deduction or induction, but "selecting the hypothesis that best explains the current situation." Proposed by C.S. Peirce and also called "Inference to the Best Explanation." It\'s the process of choosing, among multiple candidate hypotheses, the one that most reasonably accounts for current observations — the kind of instant narrowing-down that consultants and doctors perform when they see one data point and intuit "the cause is probably XX."' },
+    { type: 'explain', title: 'What abduction (inference to the best explanation) is', content: 'Not deduction or induction, but "selecting the hypothesis that best explains the current situation." Proposed by C.S. Peirce and also called "Inference to the Best Explanation." It\'s the process of choosing, among multiple candidate hypotheses, the one that most reasonably accounts for current observations — the kind of instant narrowing-down that consultants and doctors perform when they see one data point and intuit "the cause is probably XX."', visual: 'DeductionDiagram' },
     { type: 'quiz', question: 'Sales suddenly dropped 20%. Which is the most appropriate abductive approach?', options: [
       { label: 'Collect all data before considering the cause', correct: false },
       { label: 'Among multiple possible causes, select the one that best explains current conditions as the hypothesis', correct: true },
@@ -116,7 +116,7 @@ const designHMW: LessonData = {
   title: 'Frame questions as "How Might We?"',
   category: 'Design Thinking',
   steps: [
-    { type: 'explain', title: 'What HMW (How Might We) is', content: 'A question pattern — "How might we... ?" — that converts a problem into a solvable inquiry. It transforms constraint-statements ("we can\'t...") into possibility-expanding questions.' },
+    { type: 'explain', title: 'What HMW (How Might We) is', content: 'A question pattern — "How might we... ?" — that converts a problem into a solvable inquiry. It transforms constraint-statements ("we can\'t...") into possibility-expanding questions.', visual: 'ThreePillarsDiagram' },
     { type: 'quiz', question: 'Reframe the issue "users don\'t stay in the app" as an HMW. Which is best?', options: [
       { label: '"Why don\'t users stay?"', correct: false },
       { label: '"How might we make users want to use this every day?"', correct: true },
@@ -131,7 +131,7 @@ const designTest: LessonData = {
   title: 'Test fast, learn fast',
   category: 'Design Thinking',
   steps: [
-    { type: 'explain', title: 'The importance of testing and iterating', content: 'The core of design thinking is not "build it perfectly, then test" but "test rough, then polish." Failure is learning. The cheaper and faster you test, the faster you reach the essential answer.' },
+    { type: 'explain', title: 'The importance of testing and iterating', content: 'The core of design thinking is not "build it perfectly, then test" but "test rough, then polish." Failure is learning. The cheaper and faster you test, the faster you reach the essential answer.', visual: 'DesignThinkingCycleDiagram' },
     { type: 'quiz', question: 'Which is the most design-thinking approach to validating a new feature idea?', options: [
       { label: 'Fully build it, then user-test', correct: false },
       { label: 'Sketch the screens on paper and show users', correct: true },
@@ -147,7 +147,7 @@ const lateralPMI: LessonData = {
   title: 'Use PMI to expand perspective deliberately',
   category: 'Lateral Thinking',
   steps: [
-    { type: 'explain', title: 'What PMI is', content: 'Plus / Minus / Interesting — evaluating an idea from these three angles. Proposed by Edward de Bono. Adding "Interesting" produces thinking that goes beyond fixed binary opposition.' },
+    { type: 'explain', title: 'What PMI is', content: 'Plus / Minus / Interesting — evaluating an idea from these three angles. Proposed by Edward de Bono. Adding "Interesting" produces thinking that goes beyond fixed binary opposition.', visual: 'ThreePillarsDiagram' },
     { type: 'quiz', question: 'Apply PMI to "make all employees work from home 3 days a week." Which is the best Interesting?', options: [
       { label: 'Reduced commuting costs (cost savings)', correct: false },
       { label: 'Communication may decrease (risk)', correct: false },
@@ -178,7 +178,7 @@ const analogyMapping: LessonData = {
   title: 'Map structure to borrow solutions',
   category: 'Analogical Thinking',
   steps: [
-    { type: 'explain', title: 'What structural mapping is', content: 'The core of analogy is not "surface similarity" but finding "structural similarity." "Military supply systems" and "supply chain management" share structure across very different fields. Explicitly mapping structure makes the analogy usable.' },
+    { type: 'explain', title: 'What structural mapping is', content: 'The core of analogy is not "surface similarity" but finding "structural similarity." "Military supply systems" and "supply chain management" share structure across very different fields. Explicitly mapping structure makes the analogy usable.', visual: 'WhereWhyHowDiagram' },
     { type: 'quiz', question: 'Apply the analogy of "the immune system (the body\'s defense)" to organizational security. Which has the most structural correspondence?', options: [
       { label: 'White blood cells → all employees', correct: false },
       { label: 'Immune memory → past incident records and response playbooks', correct: true },
@@ -209,7 +209,7 @@ const systemsArchetype: LessonData = {
   title: 'Use system archetypes to spot common traps',
   category: 'Systems Thinking',
   steps: [
-    { type: 'explain', title: 'What system archetypes are', content: 'Recurring structural patterns that appear in organizations and society are called system archetypes. Examples: "Limits to Growth," "Fixes that Fail," "Shifting the Burden," "Tragedy of the Commons." Knowing the archetypes lets you quickly see the essence of complex problems.' },
+    { type: 'explain', title: 'What system archetypes are', content: 'Recurring structural patterns that appear in organizations and society are called system archetypes. Examples: "Limits to Growth," "Fixes that Fail," "Shifting the Burden," "Tragedy of the Commons." Knowing the archetypes lets you quickly see the essence of complex problems.', visual: 'SystemArchetypeDiagram' },
     { type: 'quiz', question: 'A pattern where "applying a symptomatic fix produces a side effect that, in turn, worsens the original problem" — which system archetype is this?', options: [
       { label: 'Limits to Growth', correct: false },
       { label: 'Fixes that Fail', correct: true },
@@ -224,7 +224,7 @@ const systemsLeverage: LessonData = {
   title: 'Find leverage points to drive change',
   category: 'Systems Thinking',
   steps: [
-    { type: 'explain', title: 'What leverage points are', content: 'Places in a system where "small changes produce large effects" are called leverage points. Proposed by Donella Meadows. Goals, rules, information flows, and feedback structures carry high leverage. Changing system purpose or structure has greater impact than changing surface-level numbers.' },
+    { type: 'explain', title: 'What leverage points are', content: 'Places in a system where "small changes produce large effects" are called leverage points. Proposed by Donella Meadows. Goals, rules, information flows, and feedback structures carry high leverage. Changing system purpose or structure has greater impact than changing surface-level numbers.', visual: 'LeveragePointsDiagram' },
     { type: 'quiz', question: 'Which is expected to be the highest-leverage move to change an underperforming organization?', options: [
       { label: 'Raise everyone\'s salary by 10%', correct: false },
       { label: 'Change the evaluation metric (KPI) from sales to customer satisfaction', correct: true },
@@ -256,7 +256,7 @@ const caseSynthesis: LessonData = {
   title: 'Synthesize the analysis into a recommendation',
   category: 'Case Interview',
   steps: [
-    { type: 'explain', title: 'The case interview\'s final step: synthesis and recommendation', content: 'Case interviews are not graded only on analytical skill. The most important point is "can you synthesize your analysis and produce a clear recommendation?" The required closing structure is "Therefore... we should... For three reasons: (1) (2) (3)."' },
+    { type: 'explain', title: 'The case interview\'s final step: synthesis and recommendation', content: 'Case interviews are not graded only on analytical skill. The most important point is "can you synthesize your analysis and produce a clear recommendation?" The required closing structure is "Therefore... we should... For three reasons: (1) (2) (3)."', visual: 'WhereWhyHowDiagram' },
     { type: 'quiz', question: 'At the end of a market-entry case, you\'re asked "should we enter or not?" What\'s the best closing?', options: [
       { label: 'Balance pros and cons; conclude that the final decision is up to the company', correct: false },
       { label: '"I recommend entry. Three reasons: market size, competitive advantage, and feasibility."', correct: true },

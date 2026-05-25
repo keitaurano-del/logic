@@ -147,7 +147,7 @@ const problemSettingPractice: LessonData = {
     },
     {
       type: 'quiz',
-      question: 'Which of the following is a properly set "problem"?',
+      question: 'Which of the following is a properly set "issue"?',
       options: [
         { label: 'Adopt Slack to improve internal communication speed', correct: false },
         { label: 'Cross-team info sharing is slow; decisions take 5 days on average', correct: true },

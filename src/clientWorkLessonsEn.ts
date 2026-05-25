@@ -306,7 +306,7 @@ const clientLesson94: LessonData = {
     },
     {
       type: 'quiz',
-      explanation: 'For internal managers, lead with "so what." Some jargon is OK. Be more direct and concise than for external customers.',
+      explanation: 'Even for internal audiences, plain wording that reliably lands is the baseline. Avoid overusing vague acronyms, and choose an expression where the conclusion (improved purchase rate) is clear at first read.',
       question: 'Communicating the same content to a manager (internal) — which expression is more appropriate?',
       options: [
         { label: '"UX improvement is expected to improve CVR"', correct: false },

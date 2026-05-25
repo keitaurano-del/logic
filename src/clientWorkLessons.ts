@@ -306,7 +306,7 @@ const clientLesson94: LessonData = {
     },
     {
       type: 'quiz',
-      explanation: '社内の上司には「So what（だから何）」を先に伝えるのが効果的。専門用語もある程度使える。顧客向けよりも率直・簡潔に。',
+      explanation: '社内向けでも、相手に確実に伝わる平易な表現が基本です。意味の曖昧な略語の多用は避け、結論（購入率の改善）が一読で分かる表現を選びます。',
       question: '同じ内容を上司（社内）向けに伝える場合、より適切な表現はどれですか？',
       options: [
         { label: '「UXの改善によりCVRの向上が期待されます」', correct: false },

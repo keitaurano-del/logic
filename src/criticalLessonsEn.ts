@@ -201,9 +201,9 @@ const criticalBias: LessonData = {
       visualProps: {
         sectionLabel: 'Three common cognitive biases',
         pillars: [
-          { icon: 'Conf', title: 'Confirmation', body: 'You collect only what supports the belief you want. Disconfirming data is ignored' },
-          { icon: 'Anch', title: 'Anchoring', body: 'The first number drags later judgment. After "$5,000," "$3,000" feels cheap' },
-          { icon: 'Sunk', title: 'Sunk cost', body: 'Past spending blocks rational exit. "We invested so much, we cannot stop"' },
+          { icon: 'C', title: 'Confirmation', body: 'You collect only what supports the belief you want. Disconfirming data is ignored' },
+          { icon: 'A', title: 'Anchoring', body: 'The first number drags later judgment. After "$5,000," "$3,000" feels cheap' },
+          { icon: 'S', title: 'Sunk cost', body: 'Past spending blocks rational exit. "We invested so much, we cannot stop"' },
         ],
         hint: 'Pause before deciding and name which bias is active — that single beat cuts errors',
       },
