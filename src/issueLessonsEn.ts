@@ -159,6 +159,30 @@ const issueStructure: LessonData = {
       content:
         'A flat list of 10-20 issues still signals shallow thinking.\nReorganizing them into main issues -> sub-issues -> validation questions makes the logic legible.\n\nExample: Risk of missing next year\'s profit target (top question)\n+- Main A: Could revenue come in below plan?\n|  +- Sub A1: Will repeat rates among existing customers drop?\n|  +- Sub A2: Will new acquisition slow?\n|  +- Sub A3: Will the price change cool demand?\n+- Main B: Could the cost base balloon?\n   +- Sub B1: Wage inflation?\n   +- Sub B2: Material and logistics cost increases?\n\nThis is an "issue tree."\nIf parent-child relationships can be explained both ways via "Why so / How so," the structure is sound.',
       visual: 'LogicTreeDiagram',
+      visualProps: {
+        sectionLabel: 'Issue tree — layer the issues',
+        hintTone: 'brand',
+        hint: 'If each parent-child link survives "Why so / How so," the structure is sound',
+        data: {
+          label: 'Risk of missing next year\'s profit target',
+          children: [
+            {
+              label: 'Main A: Revenue below plan?',
+              children: [
+                { label: 'Repeat rate of existing customers drops?' },
+                { label: 'New acquisition slows?' },
+              ],
+            },
+            {
+              label: 'Main B: Cost base balloons?',
+              children: [
+                { label: 'Wage inflation?' },
+                { label: 'Material and logistics costs rise?' },
+              ],
+            },
+          ],
+        },
+      },
       outro:
         'The quality test for an issue tree is whether each parent-child link survives both "Why so" and "How so." Simply layering a flat list into main, sub, and validation issues automatically settles your priority order and the sequence in which you should verify them.',
     },

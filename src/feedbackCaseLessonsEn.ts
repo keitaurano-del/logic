@@ -25,7 +25,6 @@ const feedbackPerspectives: LessonData = {
       type: 'explain',
       title: '9 fundamental business perspectives',
       content: 'If your thinking tends to come out shallow, build a habit of cycling through these 9 lenses. A minimum of 3 per topic is a good baseline.\n\n① Time: Since when / until when / short-term vs long-term impact?\n② Space: Where / company / industry / macro / by region?\n③ Stakeholder: For whom (customers / employees / shareholders / partners)?\n④ Abstract–Concrete: Strategy or tactics / whole or part?\n⑤ Quantitative–Qualitative: Measurable in numbers / qualitative signals?\n⑥ Opportunity–Risk: Have you looked at both upside and downside?\n⑦ Static–Dynamic: Current structure / drivers of change?\n⑧ Insider–Outsider: From within / a step removed?\n⑨ Comparison: Compared to what (past / competitor / industry average)?\n\nWhen a manager says "go one level deeper," they usually mean: "add the perspective you\'re missing from this list."',
-      visual: 'LogicTreeDiagram',
       outro:
         'You do not need all nine perspectives every time — combining at least three per topic is the trick. When you hear "go one level deeper," adding just one missing perspective is usually enough to make the discussion three-dimensional.',
     },
@@ -102,6 +101,15 @@ const feedbackShallow: LessonData = {
       title: 'Three principles for in-the-moment response',
       content: 'When told "your thinking is shallow," apply these three principles immediately.\n\n① Specificity questions, not apologies\nNG: "Sorry, I\'ll think harder."\nOK: "Specifically, which claim feels shallow — the conclusion, or the reasoning behind it?"\n\n② Pinpoint the location of the issue\n"Generally shallow" gives you nothing to fix. Narrow to "is it especially XX?"\n\n③ Confirm the target depth\n"How deep is deep enough?" / "Down to which layer of hypotheses do you want?"\n→ Confirming the manager\'s mental model of "deep enough" prevents wasted drilling.\n\nThese three alone roughly double the quality of your re-submission.',
       visual: 'ThreePillarsDiagram',
+      visualProps: {
+        sectionLabel: 'Three principles when told "it\'s shallow"',
+        pillars: [
+          { title: 'Specificity, not apology', body: 'Ask "which claim is shallow — conclusion or reasoning?"' },
+          { title: 'Pinpoint the spot', body: 'Narrow "generally shallow" to "is it especially XX?"' },
+          { title: 'Confirm the depth', body: 'Ask how deep is deep enough before drilling' },
+        ],
+        hint: 'Narrowing what is actually shallow beats another apology',
+      },
       outro:
         'Specificity questions, location pinpoints, and goal confirmation — running these three principles cuts the wasted swings on your re-submission dramatically. Narrowing down what is actually shallow is far more valuable to your manager than another apology.',
     },
@@ -173,6 +181,15 @@ const feedbackWeakAnalysis: LessonData = {
       title: 'Three diagnostic questions for the moment',
       content: 'When told "your analysis is loose," diagnose with three questions.\n\n① "Is it a structure issue or a numbers issue?"\n→ The fix differs whether the framing (MECE) is bad or whether the source / premise of the numbers is weak.\n\n② "Which element\'s precision falls short most?"\n→ Fixing everything is unrealistic. Identify the highest-priority element first.\n\n③ "What level of granularity do you expect on resubmission?"\n→ Confirm how far the numbers must be pinned down (sources required? ranges acceptable? sensitivity analysis needed?).\n\nThese three almost fully define the direction and depth of your fix.',
       visual: 'ThreePillarsDiagram',
+      visualProps: {
+        sectionLabel: 'Three questions when told "it\'s loose"',
+        pillars: [
+          { icon: '1', title: 'Structure or numbers?', body: 'Is the framing (MECE) bad, or the source/premise of numbers weak?' },
+          { icon: '2', title: 'Which element?', body: 'Not everything — identify the highest-priority element first' },
+          { icon: '3', title: 'What granularity?', body: 'Sources required? Ranges OK? Sensitivity analysis needed?' },
+        ],
+        hint: 'Three questions almost fully fix the direction and depth of the looseness',
+      },
       outro:
         'Structure-vs-numbers, element identification, and granularity confirmation — running these three questions almost fully fixes the direction and required depth of the "looseness." Instead of redoing everything, raising precision only on the highest-priority element is the optimal play under time pressure.',
     },
@@ -244,6 +261,15 @@ const feedbackWeakInsight: LessonData = {
       title: 'Three diagnostic questions for the moment',
       content: 'When told "your insights are weak," concretize with three questions.\n\n① "Which part feels especially weak?"\n→ Rare for everything to be weak. Identify the highest-priority section and concentrate there.\n\n② "How far should I push?"\n→ "Far enough that the client can make a decision" is one good standard.\n\n③ "Which action should the insight feed into?"\n→ Insights exist for action. Reverse-engineer from the exit (the decision).\n\nThese three define the "exit" of the insight, which in turn defines how far to push.',
       visual: 'ThreePillarsDiagram',
+      visualProps: {
+        sectionLabel: 'Three questions when told "the insight is weak"',
+        pillars: [
+          { title: 'Where', body: 'Which part is especially weak? Concentrate on the top section' },
+          { title: 'How far', body: '"Far enough for the client to decide" is a good standard' },
+          { title: 'For what', body: 'Which action does it feed? Reverse-engineer from the decision' },
+        ],
+        hint: 'Insights exist for action — define the exit, then the depth follows',
+      },
       outro:
         'Insights exist "for action." Where, how far, and for what — these three questions define the exit, and the required depth of your push appears naturally. The point is to aim for a line that informs a decision, not just a paraphrase of the facts.',
     },

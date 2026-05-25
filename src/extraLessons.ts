@@ -68,7 +68,7 @@ const hypothesisAbduction: LessonData = {
   title: 'アブダクションで仮説を飛躍させる',
   category: '仮説思考',
   steps: [
-    { type: 'explain', title: 'アブダクション（最良の説明への推論）とは', content: '演繹でも帰納でもなく、「現在の状況を最もうまく説明できる仮説を選ぶ」推論。C.S.パースが提唱し、「最良の説明への推論（Inference to the Best Explanation）」とも呼ばれる。複数の候補仮説のうち現状を最も合理的に説明できるものを選ぶプロセスで、コンサルタントや医師が「データをひとつ見て、おそらく◯◯が原因だろう」と瞬時に仮説を絞り込む思考がこれにあたる。', visual: 'DeductionDiagram' },
+    { type: 'explain', title: 'アブダクション（最良の説明への推論）とは', content: '演繹でも帰納でもなく、「現在の状況を最もうまく説明できる仮説を選ぶ」推論。C.S.パースが提唱し、「最良の説明への推論（Inference to the Best Explanation）」とも呼ばれる。複数の候補仮説のうち現状を最も合理的に説明できるものを選ぶプロセスで、コンサルタントや医師が「データをひとつ見て、おそらく◯◯が原因だろう」と瞬時に仮説を絞り込む思考がこれにあたる。' },
     { type: 'quiz', question: '売上が突然20%減少した。アブダクションのアプローチとして最も適切なものはどれか？', options: [
       { label: '全データを収集してから原因を考える', correct: false },
       { label: '考えられる複数の原因のうち、現状を最もよく説明できるものを選んで仮説とする', correct: true },
@@ -115,7 +115,15 @@ const designHMW: LessonData = {
   title: '「どうすれば〜できるか？」で問いを立てる',
   category: 'デザインシンキング',
   steps: [
-    { type: 'explain', title: 'HMW（How Might We）とは', content: '「どうすれば〜できるか？（How Might We）」という問いの型で、課題を解決可能な問いに変換する。「〜できない」という制約表現を、可能性を広げる問いに変える。', visual: 'ThreePillarsDiagram' },
+    { type: 'explain', title: 'HMW（How Might We）とは', content: '「どうすれば〜できるか？（How Might We）」という問いの型で、課題を解決可能な問いに変換する。「〜できない」という制約表現を、可能性を広げる問いに変える。', visual: 'ThreePillarsDiagram', visualProps: {
+      sectionLabel: 'HMW — 問いを構成する 3 語',
+      pillars: [
+        { icon: 'H', title: 'How（どうすれば）', body: '解決の方向に目を向け、行動につながる問いにする' },
+        { icon: 'M', title: 'Might（できるか）', body: '断定せず、可能性として開く。複数の答えを許す' },
+        { icon: 'W', title: 'We（私たちが）', body: '当事者として取り組む主語を置く' },
+      ],
+      hint: '制約の文を「どうすれば私たちが〜できるか」に置き換えると発想が広がる',
+    } },
     { type: 'quiz', question: '「ユーザーがアプリを継続しない」という課題をHMWで問い直した場合、最も適切なものはどれか？', options: [
       { label: '「なぜユーザーは継続しないのか？」', correct: false },
       { label: '「どうすればユーザーが毎日使いたくなるか？」', correct: true },
@@ -146,7 +154,15 @@ const lateralPMI: LessonData = {
   title: 'PMI法で視点を意図的に広げる',
   category: 'ラテラルシンキング',
   steps: [
-    { type: 'explain', title: 'PMI法とは', content: 'Plus（良い点）・Minus（悪い点）・Interesting（面白い点）の3視点でアイデアを評価する手法。エドワード・デ・ボノが提唱。「面白い点」を加えることで、固定的な二項対立を超えた思考が生まれる。', visual: 'ThreePillarsDiagram' },
+    { type: 'explain', title: 'PMI法とは', content: 'Plus（良い点）・Minus（悪い点）・Interesting（面白い点）の3視点でアイデアを評価する手法。エドワード・デ・ボノが提唱。「面白い点」を加えることで、固定的な二項対立を超えた思考が生まれる。', visual: 'ThreePillarsDiagram', visualProps: {
+      sectionLabel: 'PMI 法 — アイデアを見る 3 視点',
+      pillars: [
+        { icon: 'P', title: 'Plus（良い点）', body: 'そのアイデアの利点・メリットを挙げる' },
+        { icon: 'M', title: 'Minus（悪い点）', body: '欠点・リスク・デメリットを挙げる' },
+        { icon: 'I', title: 'Interesting（面白い点）', body: '良し悪しを超えて気になる点・可能性を挙げる' },
+      ],
+      hint: '「面白い点」を足すと、賛成か反対かの二項対立を超えて考えられる',
+    } },
     { type: 'quiz', question: '「全社員を週3日テレワークにする」というアイデアにPMI法を適用する。Interesting（面白い点）として最も適切なものはどれか？', options: [
       { label: '通勤コストが減る（コスト削減）', correct: false },
       { label: 'コミュニケーションが減るかもしれない（リスク）', correct: false },
@@ -177,7 +193,7 @@ const analogyMapping: LessonData = {
   title: '構造をマッピングして解を借りる',
   category: 'アナロジー思考',
   steps: [
-    { type: 'explain', title: '構造マッピングとは', content: 'アナロジーの核心は「表面的な類似」ではなく「構造的な類似」を見つけること。「軍の補給システム」と「サプライチェーン管理」は分野は違っても同じ構造を持つ。構造を明示的にマッピングすることでアナロジーが使える。', visual: 'WhereWhyHowDiagram' },
+    { type: 'explain', title: '構造マッピングとは', content: 'アナロジーの核心は「表面的な類似」ではなく「構造的な類似」を見つけること。「軍の補給システム」と「サプライチェーン管理」は分野は違っても同じ構造を持つ。構造を明示的にマッピングすることでアナロジーが使える。' },
     { type: 'quiz', question: '「免疫システム（体の防衛機構）」を組織のセキュリティ対策にアナロジーで応用する。最も構造的に対応するものはどれか？', options: [
       { label: '白血球 → 社員全員', correct: false },
       { label: '免疫記憶 → 過去のインシデント記録と対応マニュアル', correct: true },
@@ -255,7 +271,20 @@ const caseSynthesis: LessonData = {
   title: '分析を統合して提言を出す',
   category: 'ケース面接',
   steps: [
-    { type: 'explain', title: 'ケース面接の最終ステップ：統合と提言', content: 'ケース面接の評価ポイントは分析力だけでない。「分析結果を統合して明確な提言を出せるか」が最重要。「したがって…すべきです。理由は3点：①②③」という構造で締めくくる力が求められる。', visual: 'WhereWhyHowDiagram' },
+    { type: 'explain', title: 'ケース面接の最終ステップ：統合と提言', content: 'ケース面接の評価ポイントは分析力だけでない。「分析結果を統合して明確な提言を出せるか」が最重要。「したがって…すべきです。理由は3点：①②③」という構造で締めくくる力が求められる。', visual: 'PyramidDiagram', visualProps: {
+      conclusion: { label: '提言', body: '参入を推奨します' },
+      claims: [
+        { label: '理由 1', body: '市場規模' },
+        { label: '理由 2', body: '競合優位性' },
+        { label: '理由 3', body: '実行可能性' },
+      ],
+      evidence: [
+        ['市場が拡大中', '潜在需要が大きい'],
+        ['自社の強みが活きる', '差別化できる'],
+        ['必要資源を確保できる', '撤退リスクが低い'],
+      ],
+      hint: '結論を先に置き、理由を 3 点で支える。曖昧な締めは最大の減点',
+    } },
     { type: 'quiz', question: '市場参入ケースの最後に「参入すべきか否か」を問われた。最も適切な締め方はどれか？', options: [
       { label: 'メリットとデメリットをバランスよく述べ、最終判断は御社次第と伝える', correct: false },
       { label: '「参入を推奨します。理由は市場規模・競合優位性・実行可能性の3点です」と明言する', correct: true },
