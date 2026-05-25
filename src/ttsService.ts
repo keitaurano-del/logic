@@ -9,7 +9,7 @@
 //
 // 設定保存:
 //   logic-tts-rate    : 1.0 (number, 0.5〜2.0)
-//   logic-tts-pitch   : 1.0 (number, 0.5〜2.0) — 未使用予約
+//   logic-tts-pitch   : 1.0 (number, 0.5〜2.0) — TtsControlPanel のピッチ調整 (低め/普通/高め)
 //   logic-tts-voice   : voice id (string `${lang}|${name}`)
 //
 // API:
@@ -38,9 +38,13 @@ import { getLocale } from './i18n'
 
 const RATE_KEY = 'logic-tts-rate'
 const VOICE_KEY = 'logic-tts-voice'
+const PITCH_KEY = 'logic-tts-pitch'
 const DEFAULT_RATE = 1.0
 const MIN_RATE = 0.5
 const MAX_RATE = 2.0
+const DEFAULT_PITCH = 1.0
+const MIN_PITCH = 0.5
+const MAX_PITCH = 2.0
 
 type Listener = (playing: boolean) => void
 
@@ -117,6 +121,25 @@ export function saveVoiceId(id: string | null): void {
     if (id) localStorage.setItem(VOICE_KEY, id)
     else localStorage.removeItem(VOICE_KEY)
   } catch { /* */ }
+}
+
+// ── Pitch pref ─────────────────────────────────────────────────
+// SpeechSynthesisUtterance.pitch / Capacitor TextToSpeech.speak({ pitch }) は
+// 共に 0〜2 の範囲を取り、1.0 = 通常。本アプリでは 0.5〜2.0 に丸めて保存する。
+
+export function loadPitch(): number {
+  try {
+    const raw = localStorage.getItem(PITCH_KEY)
+    if (!raw) return DEFAULT_PITCH
+    const n = Number(raw)
+    if (Number.isFinite(n) && n >= MIN_PITCH && n <= MAX_PITCH) return n
+  } catch { /* */ }
+  return DEFAULT_PITCH
+}
+
+export function savePitch(pitch: number): void {
+  const clamped = Math.min(MAX_PITCH, Math.max(MIN_PITCH, pitch))
+  try { localStorage.setItem(PITCH_KEY, String(clamped)) } catch { /* */ }
 }
 
 // ── Language detection ─────────────────────────────────────────
@@ -256,6 +279,32 @@ export async function getAvailableVoices(): Promise<TtsVoice[]> {
   voiceCache = list
   voiceCacheLocale = locale
   return list
+}
+
+// ── Voice display label helpers ────────────────────────────────
+//
+// 端末によっては多数の Web Speech voice が同じ lang (ja-JP) で並ぶことがあり、
+// 単純に lang を表示するだけでは「日本語-日本」「日本語-日本」…と区別が付かなくなる。
+// 性別ラベル + name (端末固有名) + lang を組み合わせて「Kyoko · 女性 · ja-JP」のような
+// ユニーク表示にする。性別が unknown のときは「ボイス2」のような連番フォールバックでも
+// 良いが、ここでは name が必ず付くので name をそのまま出す。
+//
+// 引数:
+//   voice       : 表示対象の TtsVoice
+//   labelFor    : i18n キー → 文字列に解決する関数 (UI 側で渡す)
+//                 'female' / 'male' / 'unknown' のいずれかを受ける
+export function formatVoiceLabel(
+  voice: TtsVoice,
+  labelFor: (gender: TtsGender) => string,
+): string {
+  const parts: string[] = []
+  // 端末固有の voice name (Kyoko / Otoya / Google 日本語 など)。空ならフォールバック表記。
+  const name = (voice.name ?? '').trim() || voice.lang || 'voice'
+  parts.push(name)
+  const g = labelFor(voice.gender)
+  if (g) parts.push(g)
+  if (voice.lang) parts.push(voice.lang)
+  return parts.join(' · ')
 }
 
 function resolveVoiceForLang(voices: TtsVoice[], lang: 'ja-JP' | 'en-US', voiceId: string | null | undefined): TtsVoice | undefined {
@@ -451,7 +500,7 @@ async function speakNative(text: string, opts: SpeakOptions): Promise<void> {
       text,
       lang: opts.lang ?? defaultLang(),
       rate: opts.rate ?? loadRate(),
-      pitch: opts.pitch ?? 1.0,
+      pitch: opts.pitch ?? loadPitch(),
       volume: 1.0,
       category: 'playback',
       voice: voiceIndex,
@@ -477,7 +526,7 @@ async function speakWebAsync(text: string, opts: SpeakOptions): Promise<void> {
     const utter = new SpeechSynthesisUtterance(text)
     utter.lang = opts.lang ?? defaultLang()
     utter.rate = opts.rate ?? loadRate()
-    utter.pitch = opts.pitch ?? 1.0
+    utter.pitch = opts.pitch ?? loadPitch()
     utter.volume = 1.0
 
     // voice 解決

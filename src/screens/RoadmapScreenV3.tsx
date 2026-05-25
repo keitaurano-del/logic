@@ -3,11 +3,12 @@
  * 仕様: docs/DESIGN_V3.md §3.2
  * モックアップ: lv3-courses.html
  */
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useMemo, useCallback, useEffect, useSyncExternalStore } from 'react'
 import type { ReactNode } from 'react'
 import { Header } from '../components/platform/Header'
 import { ActionSheet } from '../components/ActionSheet'
 import { LessonThumbnail } from '../components/LessonThumbnail'
+import * as tts from '../ttsService'
 
 function LessonImage({ lessonId, size }: { lessonId: number; size: number }) {
   const [failed, setFailed] = useState(false)
@@ -41,6 +42,16 @@ function levelLabel(level: string): string {
   if (level === '中級') return t('roadmap.levelIntermediate')
   if (level === '上級') return t('roadmap.levelAdvanced')
   return level
+}
+
+// コース紹介の音声プレビュー用テキスト生成。
+// タイトル + レベル + 説明文 + レッスン数 を簡潔に組み立てる。
+// SpeechSynthesis は読点で間を取るので「。 」で区切る。
+function buildCoursePreviewText(course: Course): string {
+  const lessonCount = course.lessonIds.length
+  const level = levelLabel(course.level)
+  const countLine = t('tts.coursePreview.lessonCount', { count: lessonCount, level })
+  return [course.title, course.description, countLine].filter(Boolean).join('。 ')
 }
 
 const IMG = '/images/v3'
@@ -472,6 +483,8 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
                         subtitle: course.category,
                         image: cardImage,
                       }}
+                      previewId={course.id}
+                      previewText={buildCoursePreviewText(course)}
                     />
                   )
                 })}
@@ -507,6 +520,8 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
                         subtitle: course.category,
                         image: cardImage,
                       }}
+                      previewId={course.id}
+                      previewText={buildCoursePreviewText(course)}
                     />
                   )
                 })}
@@ -915,15 +930,85 @@ function categoryLabel(category: string): string {
 }
 
 
-function CategoryCard({ name, meta, progress, onClick, image, saveTarget }: {
+// ──────── コース紹介の音声プレビュー（複数カード間の排他制御） ────────
+// 仕様:
+//   - カード右下のスピーカーボタンを押すとそのコースの紹介テキストを TTS で読み上げる
+//   - 別のカードを押した時 / 同じカードを 2 回目に押した時 / TTS service が外部要因で停止した時
+//     には現在のプレビュー状態を解除して全カードのボタンを「停止状態」に戻す
+//   - LessonStoriesScreen の TTS モードと同じ ttsService を共有しているため、
+//     どちらか一方の再生時は他方の utterance は cancel される（speak() の冒頭で stop が走る挙動）
+let coursePreviewActiveId: string | null = null
+const coursePreviewListeners = new Set<() => void>()
+function setCoursePreviewActive(id: string | null) {
+  if (coursePreviewActiveId === id) return
+  coursePreviewActiveId = id
+  for (const cb of coursePreviewListeners) {
+    try { cb() } catch { /* */ }
+  }
+}
+function subscribeCoursePreview(cb: () => void): () => void {
+  coursePreviewListeners.add(cb)
+  return () => { coursePreviewListeners.delete(cb) }
+}
+function getCoursePreviewActive(): string | null {
+  return coursePreviewActiveId
+}
+// ttsService.subscribe(false) が発火したら（再生終了 / stop / 他箇所からの speak）プレビュー状態を解除する。
+// モジュール初回 import 時に 1 度だけ subscribe。
+let coursePreviewSubscribed = false
+function ensureCoursePreviewSubscribed() {
+  if (coursePreviewSubscribed) return
+  coursePreviewSubscribed = true
+  try {
+    tts.subscribe((playing) => {
+      if (!playing) setCoursePreviewActive(null)
+    })
+  } catch { /* */ }
+}
+
+function CategoryCard({ name, meta, progress, onClick, image, saveTarget, previewId, previewText }: {
   name: string
   meta: string
   progress?: string
   onClick: () => void
   image?: string
   saveTarget?: { refId: string; title: string; subtitle?: string; image?: string }
+  /** 音声プレビューを有効にする場合の識別子（コース ID 推奨）。previewText とセットで指定。 */
+  previewId?: string
+  /** 音声プレビューで読み上げるテキスト。長すぎる文字列は端末側で分割される可能性あり。 */
+  previewText?: string
 }) {
   const [saved, setSaved] = useState<boolean>(() => saveTarget ? isSaved('course', saveTarget.refId) : false)
+
+  // 音声プレビュー: モジュール共有ストア + ttsService の playing 購読で「自分が active か」を判定
+  useEffect(() => { ensureCoursePreviewSubscribed() }, [])
+  const activePreviewId = useSyncExternalStore(
+    subscribeCoursePreview,
+    getCoursePreviewActive,
+    () => null,
+  )
+  const isPreviewing = !!previewId && activePreviewId === previewId
+  const previewSupported = tts.isSupported() && !!previewText && !!previewId
+  const handlePreview = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (!previewSupported) return
+    if (isPreviewing) {
+      // トグル: 停止
+      setCoursePreviewActive(null)
+      void tts.stop()
+      return
+    }
+    setCoursePreviewActive(previewId ?? null)
+    // lang は UI ロケールに合わせる。pitch / rate / voice は LessonStoriesScreen と同じ保存値を流用。
+    void tts.speak(previewText ?? '', {
+      lang: getLocale() === 'ja' ? 'ja-JP' : 'en-US',
+      rate: tts.loadRate(),
+      pitch: tts.loadPitch(),
+      voiceId: tts.loadVoiceId(),
+      onEnd: () => setCoursePreviewActive(null),
+    })
+  }, [isPreviewing, previewId, previewSupported, previewText])
+
   return (
     <div style={{ position: 'relative' }}>
       <button type="button" className="cat-tile" onClick={onClick}
@@ -972,6 +1057,42 @@ function CategoryCard({ name, meta, progress, onClick, image, saveTarget }: {
           }}
         >
           {saved ? <BookmarkFilledIcon width={14} height={14} /> : <BookmarkIcon width={14} height={14} />}
+        </button>
+      )}
+      {previewSupported && (
+        <button
+          type="button"
+          onClick={handlePreview}
+          aria-label={isPreviewing ? t('tts.coursePreview.stop') : t('tts.coursePreview.play')}
+          aria-pressed={isPreviewing}
+          title={isPreviewing ? t('tts.coursePreview.stop') : t('tts.coursePreview.play')}
+          style={{
+            position: 'absolute',
+            top: saveTarget ? 42 : 6,
+            right: 6,
+            width: 30, height: 30, borderRadius: '50%',
+            background: isPreviewing ? 'var(--brand)' : 'rgba(8,33,33,0.55)',
+            backdropFilter: 'blur(6px)',
+            border: 'none',
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer',
+            color: '#fff',
+            WebkitTapHighlightColor: 'transparent',
+            zIndex: 2,
+            boxShadow: isPreviewing ? `0 2px 10px color-mix(in srgb, var(--brand) 50%, transparent)` : 'none',
+          }}
+        >
+          {isPreviewing ? (
+            // 停止アイコン: 正方形
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <rect x="6" y="6" width="12" height="12" rx="1.5" />
+            </svg>
+          ) : (
+            // 再生アイコン: 右向き三角
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          )}
         </button>
       )}
     </div>

@@ -134,6 +134,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
   // TTS 読み上げ状態
   const [ttsPlaying, setTtsPlaying] = useState<boolean>(() => tts.isPlaying())
   const [ttsRate, setTtsRate] = useState<number>(() => tts.loadRate())
+  const [ttsPitch, setTtsPitch] = useState<number>(() => tts.loadPitch())
   // 読み上げモード: ヘッドホンボタンで ON → スライド自動進行 + クイズスキップ
   const [ttsModeActive, setTtsModeActive] = useState(false)
   const [ttsPaused, setTtsPaused] = useState(false)
@@ -327,6 +328,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
           void tts.speak(text, {
             lang: getLocale() === 'ja' ? 'ja-JP' : 'en-US',
             rate: ttsRate,
+            pitch: ttsPitch,
             voiceId: ttsVoiceId,
             onEnd: () => advanceReadable(),
           })
@@ -339,7 +341,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
       await tts.pause()
       setTtsPaused(true)
     }
-  }, [ttsPaused, slide, ttsRate, ttsVoiceId, advanceReadable])
+  }, [ttsPaused, slide, ttsRate, ttsPitch, ttsVoiceId, advanceReadable])
 
   // 速度変更 (制御パネルから)
   const handleChangeRate = useCallback((r: number) => {
@@ -352,12 +354,31 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
         void tts.speak(text, {
           lang: getLocale() === 'ja' ? 'ja-JP' : 'en-US',
           rate: r,
+          pitch: ttsPitch,
           voiceId: ttsVoiceId,
           onEnd: () => advanceReadable(),
         })
       }
     }
-  }, [ttsModeActive, ttsPlaying, ttsPaused, slide, ttsVoiceId, advanceReadable])
+  }, [ttsModeActive, ttsPlaying, ttsPaused, slide, ttsPitch, ttsVoiceId, advanceReadable])
+
+  // ピッチ変更 (制御パネルから)
+  const handleChangePitch = useCallback((p: number) => {
+    setTtsPitch(p)
+    tts.savePitch(p)
+    if (ttsModeActive && ttsPlaying && !ttsPaused) {
+      const text = getSpeakableText(slide)
+      if (text) {
+        void tts.speak(text, {
+          lang: getLocale() === 'ja' ? 'ja-JP' : 'en-US',
+          rate: ttsRate,
+          pitch: p,
+          voiceId: ttsVoiceId,
+          onEnd: () => advanceReadable(),
+        })
+      }
+    }
+  }, [ttsModeActive, ttsPlaying, ttsPaused, slide, ttsRate, ttsVoiceId, advanceReadable])
 
   // シークバー用: 現在地が readableIndices 内で何番目か
   // 非 readable (quiz/think/case) の場合は直前の readable インデックスを返す。
@@ -408,12 +429,13 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
         void tts.speak(text, {
           lang: getLocale() === 'ja' ? 'ja-JP' : 'en-US',
           rate: ttsRate,
+          pitch: ttsPitch,
           voiceId: id,
           onEnd: () => advanceReadable(),
         })
       }
     }
-  }, [ttsModeActive, ttsPlaying, ttsPaused, slide, ttsRate, advanceReadable])
+  }, [ttsModeActive, ttsPlaying, ttsPaused, slide, ttsRate, ttsPitch, advanceReadable])
 
   // 読み上げモード ON + スライド変化 → 現スライドを自動で読み上げる
   // クイズ等で stop されているとき (ユーザーが手動で進めた場合) も含めて副作用で起動
@@ -450,13 +472,14 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
     void tts.speak(text, {
       lang: getLocale() === 'ja' ? 'ja-JP' : 'en-US',
       rate: ttsRate,
+      pitch: ttsPitch,
       voiceId: ttsVoiceId,
       onEnd: () => advanceReadableRef.current(),
     })
     // 次スライドへの自動遷移時 / unmount 時に stop されると onEnd は呼ばれないので、
     // ここでは return クリーンアップを置かない (advanceReadable 自身が次の effect を発火)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ttsModeActive, ttsPaused, index, ttsRate, ttsVoiceId, slide.kind, slides.length])
+  }, [ttsModeActive, ttsPaused, index, ttsRate, ttsPitch, ttsVoiceId, slide.kind, slides.length])
 
   // 通常モード (ttsModeActive=false) で旧来挙動: スライド遷移時に再生中なら止める
   useEffect(() => {
@@ -833,6 +856,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
           playing={ttsPlaying}
           paused={ttsPaused}
           rate={ttsRate}
+          pitch={ttsPitch}
           voiceId={ttsVoiceId}
           lang={getLocale() === 'ja' ? 'ja-JP' : 'en-US'}
           readableIndex={ttsReadableCursor}
@@ -840,6 +864,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
           onSeek={handleSeekReadable}
           onTogglePause={() => { void handleTogglePause() }}
           onChangeRate={handleChangeRate}
+          onChangePitch={handleChangePitch}
           onChangeVoice={handleChangeVoice}
           onExit={() => { void stopTtsMode() }}
         />

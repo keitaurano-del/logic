@@ -6,12 +6,14 @@
  *   - シークバー (読み上げ対象スライド単位の現在位置 + ドラッグで頭出し)
  *   - 一時停止 / 再開ボタン (中央、大きめ)
  *   - 速度ボタン群 (0.75x / 1.0x / 1.25x / 1.5x / 2.0x、横スクロール可)
- *   - ボイス選択 (利用可能ボイスから「自動」「男性」「女性」の代表 + その他のリスト)
+ *   - ピッチボタン群 (低め / 普通 / 高め、3 段階。SpeechSynthesis.pitch を 0.75/1.0/1.25 にマップ)
+ *   - ボイス選択 (利用可能ボイスから「自動」「男性」「女性」の代表 + その他のリスト、
+ *                 表示名は formatVoiceLabel で voice.name + 性別 + lang を組み合わせて生成)
  *   - 停止ボタン (右上)
  *
  * 親 (LessonStoriesScreen) との連携:
- *   - playing / paused / rate / voiceId / readableIndex / readableTotal は親が管理
- *   - 各操作は親が公開した callback (onTogglePause / onChangeRate / onChangeVoice / onSeek / onExit) を呼ぶ
+ *   - playing / paused / rate / pitch / voiceId / readableIndex / readableTotal は親が管理
+ *   - 各操作は親が公開した callback (onTogglePause / onChangeRate / onChangePitch / onChangeVoice / onSeek / onExit) を呼ぶ
  *
  * 文言は中立的な丁寧体 (feedback_app_copy_neutral)。
  */
@@ -21,11 +23,21 @@ import * as tts from '../ttsService'
 import { XIcon, ChevronDownIcon } from '../icons'
 
 const RATE_OPTIONS = [0.75, 1.0, 1.25, 1.5, 2.0]
+// ピッチプリセット: 低め / 普通 / 高め の 3 段階。
+// SpeechSynthesisUtterance.pitch / TextToSpeech.speak({ pitch }) は 0〜2 の範囲で、
+// 1.0 = 通常。極端な値だと読み上げが不自然になるため幅は控えめにする。
+const PITCH_OPTIONS: { value: number; labelKey: 'tts.pitch.low' | 'tts.pitch.normal' | 'tts.pitch.high' }[] = [
+  { value: 0.75, labelKey: 'tts.pitch.low' },
+  { value: 1.0, labelKey: 'tts.pitch.normal' },
+  { value: 1.25, labelKey: 'tts.pitch.high' },
+]
 
 export interface TtsControlPanelProps {
   playing: boolean
   paused: boolean
   rate: number
+  /** SpeechSynthesisUtterance.pitch / TextToSpeech.speak({ pitch }) と同じ 0.5〜2.0 範囲。 */
+  pitch: number
   voiceId: string | null
   lang: 'ja-JP' | 'en-US'
   /** 読み上げ対象スライドの中での現在位置 (0-based)。range は [0, readableTotal - 1]。 */
@@ -36,6 +48,7 @@ export interface TtsControlPanelProps {
   onSeek: (readableIndex: number) => void
   onTogglePause: () => void
   onChangeRate: (rate: number) => void
+  onChangePitch: (pitch: number) => void
   onChangeVoice: (voiceId: string | null) => void
   onExit: () => void
 }
@@ -48,9 +61,9 @@ type CategorizedVoice = {
 
 export function TtsControlPanel(props: TtsControlPanelProps) {
   const {
-    playing, paused, rate, voiceId, lang,
+    playing, paused, rate, pitch, voiceId, lang,
     readableIndex, readableTotal,
-    onSeek, onTogglePause, onChangeRate, onChangeVoice, onExit,
+    onSeek, onTogglePause, onChangeRate, onChangePitch, onChangeVoice, onExit,
   } = props
   const [voiceMenuOpen, setVoiceMenuOpen] = useState(false)
   const [allVoices, setAllVoices] = useState<tts.TtsVoice[]>([])
@@ -123,7 +136,17 @@ export function TtsControlPanel(props: TtsControlPanelProps) {
     return () => { alive = false }
   }, [lang])
 
+  // 性別ラベル解決ヘルパー。formatVoiceLabel に渡す。
+  const genderLabel = useCallback((g: tts.TtsGender): string => {
+    if (g === 'female') return t('tts.gender.female')
+    if (g === 'male') return t('tts.gender.male')
+    return t('tts.gender.unknown')
+  }, [])
+
   // 表示用に整形: 当該 lang のボイスのみ抽出し、性別ごとに代表を選ぶ
+  // - quickPicks: 「自動」「女性」「男性」のショートカット（性別が推定できたもののみ）
+  // - otherVoices: それ以外の全ボイス。同じ性別/lang でも voice.name で区別できるように
+  //   formatVoiceLabel で「Kyoko · 女性 · ja-JP」の形にして出す。
   const { quickPicks, otherVoices, currentVoice } = useMemo(() => {
     const langPrefix = lang.slice(0, 2).toLowerCase()
     const matched = allVoices.filter(v => v.lang.toLowerCase().startsWith(langPrefix))
@@ -137,31 +160,29 @@ export function TtsControlPanel(props: TtsControlPanelProps) {
     if (female) picks.push({ id: female.id, name: t('tts.voice.female'), gender: 'female' })
     if (male) picks.push({ id: male.id, name: t('tts.voice.male'), gender: 'male' })
 
-    const usedIds = new Set(picks.map(p => p.id).filter((x): x is string => x !== null))
-    const others: CategorizedVoice[] = matched
-      .filter(v => !usedIds.has(v.id))
-      .map(v => ({
-        id: v.id,
-        name: v.name,
-        gender: v.gender,
-      }))
+    // 「その他」リストは quickPicks で代表に選ばれた女性/男性ボイス id も含めて全件出す。
+    // ─ 理由: ショートカットは「とりあえずの代表」なので、ユーザーが特定の Kyoko/Otoya を
+    //   名指しで選びたい時に candidate が無いと困る。重複する id は活性表示で区別。
+    const others: CategorizedVoice[] = matched.map(v => ({
+      id: v.id,
+      name: tts.formatVoiceLabel(v, genderLabel),
+      gender: v.gender,
+    }))
 
     // 現在選択中の表示名を解決
     let displayName = t('tts.voice.auto')
     if (voiceId) {
-      const inPicks = picks.find(p => p.id === voiceId)
-      const inOthers = others.find(o => o.id === voiceId)
-      if (inPicks) displayName = inPicks.name
-      else if (inOthers) displayName = inOthers.name
-      else {
-        // フォールバック: allVoices から名前だけ取り出す
-        const raw = allVoices.find(v => v.id === voiceId)
-        if (raw) displayName = raw.name
+      const raw = allVoices.find(v => v.id === voiceId)
+      if (raw) {
+        displayName = tts.formatVoiceLabel(raw, genderLabel)
+      } else {
+        // 端末側で消えたボイス id を保存していた場合は「自動」相当に倒す
+        displayName = t('tts.voice.auto')
       }
     }
 
     return { quickPicks: picks, otherVoices: others, currentVoice: displayName }
-  }, [allVoices, lang, voiceId])
+  }, [allVoices, lang, voiceId, genderLabel])
 
   return (
     <div
@@ -350,6 +371,42 @@ export function TtsControlPanel(props: TtsControlPanelProps) {
                 }}
               >
                 {label}
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* ピッチボタン群 (低め / 普通 / 高め) */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'space-between' }}>
+        <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '.04em', flexShrink: 0 }}>
+          {t('tts.pitch')}
+        </span>
+        <div style={{ display: 'flex', gap: 4, flexWrap: 'nowrap', overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+          {PITCH_OPTIONS.map((p) => {
+            const active = Math.abs(p.value - pitch) < 0.001
+            return (
+              <button
+                key={p.value}
+                type="button"
+                onPointerDown={(e) => { e.stopPropagation(); onChangePitch(p.value) }}
+                aria-label={t('tts.pitch') + ' ' + t(p.labelKey)}
+                aria-pressed={active}
+                style={{
+                  minWidth: 64, height: 36,
+                  padding: '0 12px',
+                  borderRadius: 99,
+                  background: active ? 'var(--brand)' : 'var(--bg-tertiary, rgba(255,255,255,0.08))',
+                  color: active ? '#FFFFFF' : 'var(--text-primary)',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: 13, fontWeight: 700,
+                  fontFamily: "'Noto Sans JP', sans-serif",
+                  WebkitTapHighlightColor: 'transparent',
+                  flexShrink: 0,
+                }}
+              >
+                {t(p.labelKey)}
               </button>
             )
           })}
