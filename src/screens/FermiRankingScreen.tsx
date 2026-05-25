@@ -4,7 +4,7 @@ import { getDisplayName } from '../stats'
 import { getNickname } from '../guestId'
 import { LoadingIndicator } from '../components/LoadingIndicator'
 import { API_BASE } from './apiBase'
-import { t } from '../i18n'
+import { t, getLocale } from '../i18n'
 
 interface RankEntry {
   rank: number
@@ -12,11 +12,44 @@ interface RankEntry {
   score: number
   isMe?: boolean
   isMock?: boolean
+  occupation?: string | null
 }
 
 type Period = 'week' | 'month' | 'alltime'
 
 const PREV_RANK_KEY = (p: Period) => `logic-fermi-prev-rank-${p}`
+
+// userProfile.ts の Occupation enum と同じキー集合。
+// 文字列だけで完結させたいのでここでローカル定義し、循環依存を避ける。
+const OCCUPATION_BADGE_JA: Record<string, string> = {
+  executive: '経営',
+  consultant: 'コンサル',
+  strategy: '企画',
+  sales_marketing: '営業',
+  engineering: 'エンジニア',
+  admin: '管理部門',
+  professional: '専門職',
+  student: '学生',
+  other: 'その他',
+}
+
+const OCCUPATION_BADGE_EN: Record<string, string> = {
+  executive: 'Exec',
+  consultant: 'Consultant',
+  strategy: 'Strategy',
+  sales_marketing: 'Sales',
+  engineering: 'Engineer',
+  admin: 'Admin',
+  professional: 'Pro',
+  student: 'Student',
+  other: 'Other',
+}
+
+function occupationLabel(occ: string | null | undefined, locale: 'ja' | 'en'): string | null {
+  if (!occ) return null
+  const table = locale === 'en' ? OCCUPATION_BADGE_EN : OCCUPATION_BADGE_JA
+  return table[occ] ?? null
+}
 
 export function FermiRankingScreen() {
   const [period, setPeriod] = useState<Period>('week')
@@ -38,13 +71,14 @@ export function FermiRankingScreen() {
         const d = await r.json()
         if (cancelled) return
         const list = Array.isArray(d.ranking) ? d.ranking : []
-        const ranked: RankEntry[] = list.map((row: { name: string; score: number; isMock?: boolean }, i: number) => ({
+        const ranked: RankEntry[] = list.map((row: { name: string; score: number; isMock?: boolean; occupation?: string | null }, i: number) => ({
           rank: i + 1,
           name: row.name,
           score: row.score,
           isMock: row.isMock === true,
           // ダミー行に自分の名前が偶然一致しても自分扱いにしない
           isMe: row.isMock !== true && row.name === myName,
+          occupation: row.occupation ?? null,
         }))
         setEntries(ranked)
 
@@ -227,6 +261,8 @@ export function FermiRankingScreen() {
 
 function RankCard({ entry, compact, highlight }: { entry: RankEntry; compact?: boolean; highlight?: boolean }) {
   const isPodium = entry.rank >= 1 && entry.rank <= 3
+  const locale = getLocale() === 'en' ? 'en' : 'ja'
+  const occLabel = occupationLabel(entry.occupation, locale)
 
   return (
     <div style={{
@@ -256,15 +292,33 @@ function RankCard({ entry, compact, highlight }: { entry: RankEntry; compact?: b
         }
       </div>
 
-      {/* 名前 */}
+      {/* 名前 + 職業バッジ */}
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{
           fontSize: compact ? 14 : 15, fontWeight: entry.isMe ? 800 : 600,
           color: entry.isMe ? 'var(--brand)' : 'var(--text-primary)',
-          display: 'flex', alignItems: 'center', gap: 6,
+          display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap',
         }}>
-          {entry.name}
-          {entry.isMe && <span style={{ fontSize: 11, background: 'var(--brand)', color: 'var(--accent-fg)', borderRadius: 4, padding: '1px 6px' }}>YOU</span>}
+          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', minWidth: 0 }}>{entry.name}</span>
+          {entry.isMe && <span style={{ fontSize: 11, background: 'var(--brand)', color: 'var(--accent-fg)', borderRadius: 4, padding: '1px 6px', flexShrink: 0 }}>YOU</span>}
+          {occLabel && (
+            <span
+              aria-label={t('fermiRank.occupationAria', { label: occLabel })}
+              style={{
+                fontSize: 10,
+                fontWeight: 700,
+                color: 'var(--text-secondary)',
+                background: 'var(--bg-primary)',
+                border: '1px solid var(--border)',
+                borderRadius: 99,
+                padding: '1px 8px',
+                letterSpacing: '0.02em',
+                flexShrink: 0,
+              }}
+            >
+              {occLabel}
+            </span>
+          )}
         </div>
       </div>
 

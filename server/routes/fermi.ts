@@ -512,16 +512,17 @@ Keep responses concise (2-4 sentences). Do not solve the problem for them.`
   router.get('/ranking', async (req: Request, res: Response) => {
     const DISPLAY_LIMIT = 10
     // ダミーデータ（実データが足りないときの穴埋め用、スコア順）
-    const MOCK_RANKING: Array<{ name: string; score: number; isMock: boolean }> = [
-      { name: 'Taro M.', score: 98, isMock: true },
-      { name: 'Yuki S.', score: 87, isMock: true },
-      { name: 'Hana K.', score: 76, isMock: true },
-      { name: 'Ryo T.', score: 65, isMock: true },
-      { name: 'Ami F.', score: 54, isMock: true },
-      { name: 'Ken N.', score: 43, isMock: true },
-      { name: 'Saki I.', score: 38, isMock: true },
-      { name: 'Jiro W.', score: 27, isMock: true },
-      { name: 'Mika O.', score: 15, isMock: true },
+    // occupation バッジ運用の動作確認も兼ねて、いくつかの mock に職業を割り当てておく。
+    const MOCK_RANKING: Array<{ name: string; score: number; isMock: boolean; occupation: string | null }> = [
+      { name: 'Taro M.', score: 98, isMock: true, occupation: 'consultant' },
+      { name: 'Yuki S.', score: 87, isMock: true, occupation: 'strategy' },
+      { name: 'Hana K.', score: 76, isMock: true, occupation: 'engineering' },
+      { name: 'Ryo T.', score: 65, isMock: true, occupation: 'sales_marketing' },
+      { name: 'Ami F.', score: 54, isMock: true, occupation: 'professional' },
+      { name: 'Ken N.', score: 43, isMock: true, occupation: 'admin' },
+      { name: 'Saki I.', score: 38, isMock: true, occupation: 'executive' },
+      { name: 'Jiro W.', score: 27, isMock: true, occupation: 'student' },
+      { name: 'Mika O.', score: 15, isMock: true, occupation: null },
     ]
 
     try {
@@ -531,27 +532,62 @@ Keep responses concise (2-4 sentences). Do not solve the problem for them.`
       else if (period === 'month') since.setDate(since.getDate() - 30)
       else since = new Date('2020-01-01')
 
-      let realRanking: Array<{ name: string; score: number; isMock: boolean }> = []
+      let realRanking: Array<{ name: string; score: number; isMock: boolean; occupation: string | null }> = []
 
       if (supabase) {
         const { data, error } = await supabase
           .from('fermi_scores')
-          .select('user_name, score, created_at')
+          .select('user_id, user_name, score, created_at')
           .gte('created_at', since.toISOString())
           .order('created_at', { ascending: false })
           .limit(500)
 
         if (!error && data && data.length > 0) {
           // ユーザーごとにスコアを累積（合計）
-          const byUser: Record<string, { name: string; score: number }> = {}
+          // user_id が UUID 形式の場合は profiles から occupation を引けるよう保持しておく
+          const byUser: Record<string, { name: string; score: number; userIds: Set<string> }> = {}
           for (const row of data) {
             const name = row.user_name || 'ゲスト'
-            if (!byUser[name]) byUser[name] = { name, score: 0 }
+            if (!byUser[name]) byUser[name] = { name, score: 0, userIds: new Set<string>() }
             byUser[name].score += row.score
+            const uid = (row as { user_id?: string | null }).user_id
+            if (uid && uid !== 'guest' && /^[0-9a-f-]{20,}$/i.test(uid)) {
+              byUser[name].userIds.add(uid)
+            }
           }
+
+          // profiles から occupation を一括取得（migration 030 未適用時は空 Map）
+          const allIds = new Set<string>()
+          for (const u of Object.values(byUser)) for (const id of u.userIds) allIds.add(id)
+          const occupationMap = new Map<string, string>()
+          if (allIds.size > 0) {
+            const profRes = await supabase
+              .from('profiles')
+              .select('id, occupation')
+              .in('id', Array.from(allIds))
+            if (profRes.error) {
+              // migration 030 未適用環境では列が無いので警告のみで先へ進む
+              if (!/occupation/i.test(profRes.error.message)) {
+                console.warn('[fermi/ranking] profiles join failed:', profRes.error.message)
+              }
+            } else {
+              for (const row of (profRes.data || []) as { id: string; occupation: string | null }[]) {
+                if (row.occupation) occupationMap.set(row.id, row.occupation)
+              }
+            }
+          }
+
           realRanking = Object.values(byUser)
             .sort((a, b) => b.score - a.score)
-            .map((r) => ({ ...r, isMock: false }))
+            .map((r) => {
+              // 同じ name に複数 user_id が紐付くケースは稀。最初に occupation が取れたものを採用
+              let occ: string | null = null
+              for (const id of r.userIds) {
+                const v = occupationMap.get(id)
+                if (v) { occ = v; break }
+              }
+              return { name: r.name, score: r.score, isMock: false, occupation: occ }
+            })
         }
       }
 
