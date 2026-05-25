@@ -31,7 +31,7 @@ import type { LessonData } from '../lessonData'
 import { getCompletedLessons } from '../stats'
 import { getAllCompletionCounts } from '../db/completionCountDb'
 import { CompletionBadge } from '../components/CompletionBadge'
-import { getCoursesByCategory, getCoursesByGroup, COURSES, COURSE_GROUPS, type Course } from '../courseData'
+import { getCoursesByCategory, getCoursesByGroup, getPinnedCourses, COURSES, COURSE_GROUPS, type Course } from '../courseData'
 import { loadPersonalCourse, axisLabel } from '../placementData'
 import { isSaved, toggleSaved } from '../savedItemsStore'
 import { t, getLocale } from '../i18n'
@@ -119,6 +119,12 @@ const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
     image: `${IMG}/lesson-systems-thinking.png`,
     routeKey: 'systems',
   },
+  'なぜなぜ分析': {
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#34D399" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 3v4M12 10v4M12 17v4"/><circle cx="12" cy="8.5" r="1.5" fill="#34D399"/><circle cx="12" cy="15.5" r="1.5" fill="#34D399"/></svg>,
+    iconBg: 'rgba(52,211,153,.14)',
+    image: `${IMG}/course-whywhy-01.png`,
+    routeKey: 'whywhy',
+  },
   '提案・伝える技術': {
     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={'var(--warm)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
     iconBg: 'rgba(244,162,97,.14)',
@@ -167,11 +173,11 @@ const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
     image: `${IMG}/fermi-card.png`,
     routeKey: 'フェルミ推定',
   },
-  '数字に強くなる': {
+  '数値感覚': {
     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7AAEFF" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg>,
     iconBg: 'rgba(122,174,255,.14)',
     image: `${IMG}/course-numeracy-01.png`,
-    routeKey: '数字に強くなる',
+    routeKey: 'numeracy',
   },
   'ピークパフォーマンス習慣': {
     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5BB97E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3 12h3l3-8 4 16 3-8h5"/></svg>,
@@ -459,10 +465,10 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
         {/* コース紹介 TTS のオート再生トグル — TTS サポート環境のみ表示 */}
         <CoursePreviewAutoplayToggle />
 
-        {/* ピン留め: フェルミ推定コース — トレーニングの最上位に表示 */}
+        {/* ピン留め: pinned フラグ付きコース（フェルミ系）— トレーニングの最上位に表示 */}
         {(() => {
-          const fermiCourses = getCoursesByCategory('フェルミ推定')
-          if (fermiCourses.length === 0) return null
+          const pinnedCourses = getPinnedCourses()
+          if (pinnedCourses.length === 0) return null
           return (
             <div key="pinned-fermi" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               <div style={{ padding: '8px 4px 0' }}>
@@ -471,8 +477,8 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                 {(() => {
-                  const fermiSequence = fermiCourses.map(c => ({ id: c.id, text: buildCoursePreviewText(c) }))
-                  return fermiCourses.map(course => {
+                  const fermiSequence = pinnedCourses.map(c => ({ id: c.id, text: buildCoursePreviewText(c) }))
+                  return pinnedCourses.map(course => {
                     const v = CATEGORY_VISUAL[course.category] || DEFAULT_VISUAL
                     const cardImage = course.image || v.image
                     return (
@@ -500,9 +506,9 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
           )
         })()}
 
-        {/* グループ別コース一覧 — 5グループ × 全21コース（フェルミ系は上の Pinned に出すので除外） */}
+        {/* グループ別コース一覧 — 7グループ・全41コース（フェルミ系は pinned で最上段に別出しするので除外） */}
         {COURSE_GROUPS.map(group => {
-          const groupCourses = getCoursesByGroup(group.id).filter(c => c.category !== 'フェルミ推定')
+          const groupCourses = getCoursesByGroup(group.id).filter(c => !c.pinned)
           if (groupCourses.length === 0) return null
           return (
             <div key={group.id} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -861,13 +867,16 @@ const CATEGORY_ID_TO_NAMES: Record<string, string[]> = {
   lateral: ['ラテラルシンキング'],
   analogy: ['アナロジー思考'],
   systems: ['システムシンキング'],
+  whywhy: ['なぜなぜ分析'],
   proposal: ['提案・伝える技術'],
   '提案書作成': ['提案書作成'],
   philosophy: ['哲学・思考の原理', 'philosophy'],
   '東洋思想': ['東洋思想'],
   'クライアントワーク': ['クライアントワーク'],
   'フェルミ推定': ['フェルミ推定'],
+  numeracy: ['数値感覚', 'Numeracy'],
   '経営戦略': ['経営戦略', 'strategy'],
+  'ピークパフォーマンス習慣': ['ピークパフォーマンス習慣', 'Peak Performance Habits'],
   cognitive: ['認知科学', 'Cognitive Science'],
   documentation: ['ドキュメンテーション', 'Documentation'],
   '構造化リスニング': ['構造化リスニング'],
@@ -888,13 +897,16 @@ const CATEGORY_LABEL_KEY: Record<string, string> = {
   lateral: 'category.lateral',
   analogy: 'category.analogy',
   systems: 'category.systems',
+  whywhy: 'category.whyWhy',
   proposal: 'category.proposal',
   '提案書作成': 'category.proposalWriting',
   philosophy: 'category.philosophy',
   '東洋思想': 'category.eastern',
   'クライアントワーク': 'category.clientWork',
   'フェルミ推定': 'category.fermi',
+  numeracy: 'category.numeracy',
   '経営戦略': 'category.strategy',
+  'ピークパフォーマンス習慣': 'category.peakPerformance',
   '履歴書・職務経歴書': 'category.careerResume',
   'SPI対策': 'category.careerSpi',
   '玉手箱対策': 'category.careerTamatebako',
@@ -920,12 +932,14 @@ const CATEGORY_DATA_LABEL: Record<string, string> = {
   lateral: 'ラテラルシンキング',
   analogy: 'アナロジー思考',
   systems: 'システムシンキング',
+  whywhy: 'なぜなぜ分析',
   proposal: '提案・伝える技術',
   '提案書作成': '提案書作成',
   philosophy: '哲学・思考の原理',
   '東洋思想': '東洋思想',
   'クライアントワーク': 'クライアントワーク',
   'フェルミ推定': 'フェルミ推定',
+  numeracy: '数値感覚',
   '経営戦略': '経営戦略',
   cognitive: '認知科学',
   documentation: 'ドキュメンテーション',
