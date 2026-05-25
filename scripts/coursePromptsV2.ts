@@ -269,6 +269,17 @@ export const COURSE_PROMPTS_V2: LessonPromptEntry[] = [
     spell: ['Focus on Now', 'Mindful attention, on demand', 'wander', 'notice', 'now', 'this breath', 'come back'],
   },
 
+  // ── 新規追加: logical-writing-01 「考えたことを論理的に伝える」 ──
+  // 注: ピラミッド構造系（logic-02）と被らないよう、万年筆 + 階層ノートで差別化。
+  // 長単語禁止。short safe English のみで Gemini スペル崩しを回避。
+  {
+    slug: 'course-logical-writing-01',
+    title: 'Logical Writing',
+    subtitle: 'Convey thoughts clearly',
+    diagram: 'a hand-drawn fountain pen lying diagonally across the lower-left of the right portion of the page, nib pointing toward the upper-right. To the right of the pen: a vertical stack of three structured note blocks on cream notebook paper representing a hierarchical document outline. Top block is a single bold rectangular box labeled "Main" (the headline / conclusion). A short black marker line drops from "Main" down to the middle block: a slightly narrower box labeled "Why" with two short horizontal text lines inside it (the supporting paragraph). A second short line drops from "Why" down to the bottom block: a small box labeled "Fact" with a tiny coral underline beneath it (the concrete evidence). A small terracotta accent dot sits next to the "Main" box as the only warm color on the page. Cursive annotation upper-right: "top first".\n\nUse ONLY these short safe labels: "Main", "Why", "Fact", "top first". Do NOT attempt to write "Conclusion", "Reasoning", "Evidence", "Writing", "Structure", or any long word (Gemini consistently misspells long words). NO spiritual, religious, lotus, halo, or zen imagery. NO neon glow, NO gradient, NO glass morphism.',
+    spell: ['Logical Writing', 'Convey thoughts clearly', 'Main', 'Why', 'Fact', 'top first'],
+  },
+
   // ── 新規追加: adhd-leverage-01 「ADHD レバレッジ — 特性を資源として活かす」 ──
   // 注: 矯正・治療ニュアンス NG。「凸凹を肯定的に描く」トーン厳守。
   {

@@ -218,10 +218,10 @@ const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
   },
   'ロジカルライティング': {
     // 落ち着いた紺 (#3A5BC4) で「文章を書く」紺色のインク・万年筆を象徴
-    // ペン先 + 罫線アイコン。TODO(designer): 専用サムネ course-logical-writing-01.png 発注予定
+    // ペン先 + 罫線アイコン。
     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3A5BC4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>,
     iconBg: 'rgba(58,91,196,.14)',
-    image: `${IMG}/course-logic-02.png`,
+    image: `${IMG}/course-logical-writing-01.png`,
     routeKey: 'ロジカルライティング',
   },
   'ADHDレバレッジ': {

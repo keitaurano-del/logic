@@ -508,8 +508,6 @@ const COURSES_JA: Course[] = [
   // ビジネス文書（メール / 企画書 / 報告書）を論理的に書く 8 レッスン。
   // ロジカルシンキング（思考の技術）に対する「表現の技術」コース。
   // PREP / BLUF / 簡易 Toulmin / Abstraction Ladder などの古典フレームベース。
-  // TODO(designer): サムネ画像 course-logical-writing-01.png は別タスクで発注予定。
-  // 現状は同系統の logic-02.png を暫定流用。
   {
     id: 'logical-writing-01',
     title: '考えたことを論理的に伝える',
@@ -519,7 +517,7 @@ const COURSES_JA: Course[] = [
     level: '中級',
     description:
       'ビジネス文書（メール / 企画書 / 報告書）を論理的に書く 8 レッスン。結論ファースト・三層構造・一文一義・接続詞・抽象具体往復・推敲まで、考えたことを読み手に伝える表現の技術を体系化する。',
-    image: '/images/v3/course-logic-02.png',
+    image: '/images/v3/course-logical-writing-01.png',
   },
 
   // ── ADHD レバレッジ ─────────────────────────────────
