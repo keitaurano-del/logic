@@ -24,6 +24,7 @@ export const CATEGORY_LABEL_KEY: Record<string, string> = {
   'アナロジー思考': 'category.analogy',
   'システムシンキング': 'category.systems',
   '構造化リスニング': 'category.listening',
+  'ロジカルライティング': 'category.logicalWriting',
   'ADHDレバレッジ': 'category.adhdLeverage',
   'フェルミ推定': 'category.fermi',
   '履歴書・職務経歴書': 'category.careerResume',

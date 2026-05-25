@@ -33,6 +33,7 @@ const CATEGORY_LABEL_KEY: Record<string, string> = {
   'アナロジー思考': 'category.analogy',
   'システムシンキング': 'category.systems',
   '構造化リスニング': 'category.listening',
+  'ロジカルライティング': 'category.logicalWriting',
   'ADHDレバレッジ': 'category.adhdLeverage',
   '集中の技術': 'category.focus',
   '提案・伝える技術': 'category.proposal',

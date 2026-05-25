@@ -504,6 +504,24 @@ const COURSES_JA: Course[] = [
     image: '/images/v3/course-focus-now-01.png',
   },
 
+  // ── ロジカルライティング ─────────────────────────────
+  // ビジネス文書（メール / 企画書 / 報告書）を論理的に書く 8 レッスン。
+  // ロジカルシンキング（思考の技術）に対する「表現の技術」コース。
+  // PREP / BLUF / 簡易 Toulmin / Abstraction Ladder などの古典フレームベース。
+  // TODO(designer): サムネ画像 course-logical-writing-01.png は別タスクで発注予定。
+  // 現状は同系統の logic-02.png を暫定流用。
+  {
+    id: 'logical-writing-01',
+    title: '考えたことを論理的に伝える',
+    category: 'ロジカルライティング',
+    group: 'communication',
+    lessonIds: [910, 911, 912, 913, 914, 915, 916, 917],
+    level: '中級',
+    description:
+      'ビジネス文書（メール / 企画書 / 報告書）を論理的に書く 8 レッスン。結論ファースト・三層構造・一文一義・接続詞・抽象具体往復・推敲まで、考えたことを読み手に伝える表現の技術を体系化する。',
+    image: '/images/v3/course-logic-02.png',
+  },
+
   // ── ADHD レバレッジ ─────────────────────────────────
   // 注：医学的アドバイスではない。ADHD 特性を経営資源として活かす視点での実用コース。
   // 詳細な免責は Lesson 800 冒頭の explain step に明記。
@@ -674,6 +692,11 @@ const COURSE_EN_OVERRIDES: Record<string, { title: string; description: string }
   'listening-01': {
     title: 'Structured Listening for Real Conversations',
     description: 'Move beyond passive listening: separate facts, emotions, and interpretations, then use questioning, paraphrasing, and silence to surface real intent in 1-on-1s and sales discovery.',
+  },
+  'logical-writing-01': {
+    title: 'Communicate Your Thinking with Logic',
+    description:
+      'Eight lessons on writing business documents (emails, proposals, reports) logically. Cover conclusion-first structure, three-layer claim/warrant/data, one-sentence-one-idea, connectives, abstraction ladder, and revision — the craft of moving readers with what you have thought.',
   },
   'adhd-leverage-01': {
     title: 'Turn ADHD Traits into Business Leverage',

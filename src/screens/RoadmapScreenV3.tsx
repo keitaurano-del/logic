@@ -216,6 +216,14 @@ const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
     image: `${IMG}/course-listening-01.png`,
     routeKey: '構造化リスニング',
   },
+  'ロジカルライティング': {
+    // 落ち着いた紺 (#3A5BC4) で「文章を書く」紺色のインク・万年筆を象徴
+    // ペン先 + 罫線アイコン。TODO(designer): 専用サムネ course-logical-writing-01.png 発注予定
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3A5BC4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>,
+    iconBg: 'rgba(58,91,196,.14)',
+    image: `${IMG}/course-logic-02.png`,
+    routeKey: 'ロジカルライティング',
+  },
   'ADHDレバレッジ': {
     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E879F9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>,
     iconBg: 'rgba(232,121,249,.14)',
@@ -837,6 +845,7 @@ const CATEGORY_ID_TO_NAMES: Record<string, string[]> = {
   cognitive: ['認知科学', 'Cognitive Science'],
   documentation: ['ドキュメンテーション', 'Documentation'],
   '構造化リスニング': ['構造化リスニング'],
+  'ロジカルライティング': ['ロジカルライティング', 'Logical Writing'],
   'ADHDレバレッジ': ['ADHDレバレッジ'],
   '集中の技術': ['集中の技術'],
 }
@@ -868,6 +877,7 @@ const CATEGORY_LABEL_KEY: Record<string, string> = {
   cognitive: 'category.cognitive',
   documentation: 'category.documentation',
   '構造化リスニング': 'category.listening',
+  'ロジカルライティング': 'category.logicalWriting',
   'ADHDレバレッジ': 'category.adhdLeverage',
   '集中の技術': 'category.focus',
 }
@@ -894,6 +904,7 @@ const CATEGORY_DATA_LABEL: Record<string, string> = {
   cognitive: '認知科学',
   documentation: 'ドキュメンテーション',
   '構造化リスニング': '構造化リスニング',
+  'ロジカルライティング': 'ロジカルライティング',
   'ADHDレバレッジ': 'ADHDレバレッジ',
   '集中の技術': '集中の技術',
 }
