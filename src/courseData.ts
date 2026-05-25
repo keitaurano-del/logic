@@ -9,12 +9,13 @@
 import { getLocale } from './i18n'
 
 export type CourseGroupId =
-  | 'foundations'    // 思考の基礎
-  | 'problem-solving'// 課題発見・解決
-  | 'creative'       // 発想・創造
-  | 'communication'  // 伝える・提案する
-  | 'business'       // ビジネス実践
-  | 'career'         // 就職・転職
+  | 'foundations'      // 思考の基礎
+  | 'problem-solving'  // 課題発見・解決
+  | 'creative'         // 発想・創造
+  | 'communication'    // 伝える・提案する
+  | 'business'         // ビジネス実践
+  | 'self-management'  // コンディションを整える
+  | 'career'           // 就職・転職
 
 export type Course = {
   id: string
@@ -25,6 +26,7 @@ export type Course = {
   level: '初級' | '中級' | '上級'
   description: string
   image?: string          // コース固有の画像（省略時はカテゴリの画像にフォールバック）
+  pinned?: boolean        // true のコースはトレーニング最上段に別枠で表示（フェルミ系）
 }
 
 export type CourseGroup = {
@@ -39,6 +41,7 @@ const COURSE_GROUPS_JA: CourseGroup[] = [
   { id: 'creative',        label: '発想を広げる',    description: '常識を超えて、新しい切り口を生む' },
   { id: 'communication',   label: '相手を動かす',    description: '提案・面接・ヒアリングで論理を届ける' },
   { id: 'business',        label: '現場で実践する',  description: '戦略・数字・クライアント実務に活かす' },
+  { id: 'self-management', label: 'コンディションを整える', description: '集中・休息・特性理解でパフォーマンスを引き出す' },
   { id: 'career',          label: 'キャリアを築く',  description: '履歴書・適性検査・面接・給与交渉で内定を勝ち取る' },
 ]
 
@@ -48,6 +51,7 @@ const COURSE_GROUPS_EN: CourseGroup[] = [
   { id: 'creative',        label: 'Expand Your Thinking',  description: 'Go beyond convention to create new angles' },
   { id: 'communication',   label: 'Move People',           description: 'Deliver logic through proposals, interviews, and listening' },
   { id: 'business',        label: 'Apply in Practice',     description: 'Strategy, numbers, and client work in the real world' },
+  { id: 'self-management', label: 'Manage Your Energy',    description: 'Draw out performance through focus, rest, and self-awareness' },
   { id: 'career',          label: 'Build Your Career',     description: 'Resumes, aptitude tests, interviews, and salary negotiation — land the offer' },
 ]
 
@@ -125,7 +129,7 @@ const COURSES_JA: Course[] = [
     id: 'issue-01',
     title: '論点を洗い出し、論理で答えに迫る',
     category: '論点設定',
-    group: 'business',
+    group: 'problem-solving',
     lessonIds: [500, 501, 502, 503, 504, 505, 506],
     level: '中級',
     description: '経験のないテーマでも、論点を網羅的に洗い出し、構造化し、数字と論理で裏取りしながら、解釈を積み上げて本質に到達する思考プロセスを身につける。',
@@ -265,7 +269,7 @@ const COURSES_JA: Course[] = [
     id: 'client-02',
     title: '論点を定め、深く引き出す',
     category: 'クライアントワーク',
-    group: 'communication',
+    group: 'business',
     lessonIds: [93, 94, 95, 96, 315],
     level: '中級',
     description: '正しい論点設定とヒアリング技術で、クライアントの本質的な課題を引き出す。',
@@ -285,7 +289,7 @@ const COURSES_JA: Course[] = [
     id: 'client-04',
     title: 'フィードバックを次の一歩に変える',
     category: 'クライアントワーク',
-    group: 'communication',
+    group: 'business',
     lessonIds: [336, 337, 338, 339],
     level: '中級',
     description: '上司やマネージャーから「考えが浅い」「分析が甘い」「示唆が弱い」と言われたとき、その場で何を聞き、どう次のアクションに繋げるかを実戦ケースで学ぶ。',
@@ -336,6 +340,7 @@ const COURSES_JA: Course[] = [
     level: '中級',
     description: '4 ステップ・分解の技術・前提データ・実践例・罠と対策まで段階的に学ぶ。',
     image: '/images/v3/course-fermi-01.png',
+    pinned: true,
   },
   {
     id: 'fermi-02',
@@ -346,6 +351,7 @@ const COURSES_JA: Course[] = [
     level: '中級',
     description: '個人世帯ベース、法人ベース、面積ベース、ユニットベース、マクロ売上、ミクロ売上、クロスチェックを 1 本 1 パターンで深掘り。',
     image: '/images/v3/course-fermi-02.png',
+    pinned: true,
   },
   {
     id: 'fermi-03',
@@ -356,13 +362,14 @@ const COURSES_JA: Course[] = [
     level: '上級',
     description: '日常的な事象から MBB コンサル面接級まで、難易度の階段を上る実践演習。',
     image: '/images/v3/course-fermi-03.png',
+    pinned: true,
   },
 
-  // ── 数字に強くなる ──────────────────────────────────
+  // ── 数値感覚 ────────────────────────────────────────
   {
     id: 'numeracy-01',
     title: '数字に強くなる',
-    category: '数字に強くなる',
+    category: '数値感覚',
     group: 'business',
     lessonIds: [401, 400, 402, 403, 404, 405, 406],
     level: '中級',
@@ -375,7 +382,7 @@ const COURSES_JA: Course[] = [
     id: 'peak-performance-01',
     title: '自分史上最高のパフォーマンスで働く',
     category: 'ピークパフォーマンス習慣',
-    group: 'business',
+    group: 'self-management',
     lessonIds: [410, 411, 412, 413, 414],
     level: '初級',
     description: 'クロノタイプ・睡眠・運動・集中の波・自己計測の5レッスンで、自分の体に合った最高の働き方を設計する。',
@@ -496,7 +503,7 @@ const COURSES_JA: Course[] = [
     id: 'focus-now-01',
     title: '今に集中する',
     category: '集中の技術',
-    group: 'business',
+    group: 'self-management',
     lessonIds: [900, 901, 902, 903, 904, 905, 906, 907],
     level: '中級',
     description:
@@ -527,7 +534,7 @@ const COURSES_JA: Course[] = [
     id: 'adhd-leverage-01',
     title: 'ADHD特性を経営資源に変える',
     category: 'ADHDレバレッジ',
-    group: 'business',
+    group: 'self-management',
     lessonIds: [800, 801, 802, 803, 804, 805, 806, 807],
     level: '中級',
     description:
@@ -716,6 +723,13 @@ const COURSES_EN: Course[] = COURSES_JA.map(c => {
 export const COURSE_GROUPS: CourseGroup[] = getLocale() === 'en' ? COURSE_GROUPS_EN : COURSE_GROUPS_JA
 export const COURSES: Course[] = getLocale() === 'en' ? COURSES_EN : COURSES_JA
 
+// level の表示順（初級 → 中級 → 上級）
+const LEVEL_ORDER: Record<Course['level'], number> = {
+  '初級': 0,
+  '中級': 1,
+  '上級': 2,
+}
+
 // カテゴリ別コース一覧
 export function getCoursesByCategory(category: string): Course[] {
   return COURSES.filter(c => c.category === category)
@@ -726,9 +740,18 @@ export function getAllCategories(): string[] {
   return [...new Set(COURSES.map(c => c.category))]
 }
 
-// グループ別コース一覧
+// グループ別コース一覧（level 昇順：初級 → 中級 → 上級。同 level は配列定義順を維持）
 export function getCoursesByGroup(group: CourseGroupId): Course[] {
-  return COURSES.filter(c => c.group === group)
+  return COURSES
+    .filter(c => c.group === group)
+    .sort((a, b) => LEVEL_ORDER[a.level] - LEVEL_ORDER[b.level])
+}
+
+// 最上段にピン留めするコース（フェルミ系）— level 昇順
+export function getPinnedCourses(): Course[] {
+  return COURSES
+    .filter(c => c.pinned)
+    .sort((a, b) => LEVEL_ORDER[a.level] - LEVEL_ORDER[b.level])
 }
 
 export function getCourseById(id: string): Course | undefined {

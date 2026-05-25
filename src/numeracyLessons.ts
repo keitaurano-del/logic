@@ -1,6 +1,6 @@
 /**
  * 数字に強くなるコース
- * カテゴリ: '数字に強くなる'
+ * カテゴリ: '数値感覚'（コース title は「数字に強くなる」のまま、カテゴリ名のみ改名）
  * Lesson IDs: 400〜
  */
 import type { LessonData } from './lessonData'
@@ -9,7 +9,7 @@ import type { LessonData } from './lessonData'
 const numeracyLesson400: LessonData = {
   id: 400,
   title: '暗算力を鍛える',
-  category: '数字に強くなる',
+  category: '数値感覚',
   steps: [
     {
       type: 'explain',
@@ -115,7 +115,7 @@ const numeracyLesson400: LessonData = {
 const numeracyLesson401: LessonData = {
   id: 401,
   title: '数字で正しく伝える',
-  category: '数字に強くなる',
+  category: '数値感覚',
   steps: [
     {
       type: 'explain',
@@ -189,7 +189,7 @@ const numeracyLesson401: LessonData = {
 const numeracyLesson402: LessonData = {
   id: 402,
   title: '割合・前年比・成長率を操る',
-  category: '数字に強くなる',
+  category: '数値感覚',
   steps: [
     {
       type: 'explain',
@@ -269,7 +269,7 @@ const numeracyLesson402: LessonData = {
 const numeracyLesson403: LessonData = {
   id: 403,
   title: '単位換算とスケール感覚',
-  category: '数字に強くなる',
+  category: '数値感覚',
   steps: [
     {
       type: 'explain',
@@ -341,7 +341,7 @@ const numeracyLesson403: LessonData = {
 const numeracyLesson404: LessonData = {
   id: 404,
   title: 'CAGR・複利・指数的成長',
-  category: '数字に強くなる',
+  category: '数値感覚',
   steps: [
     {
       type: 'explain',
@@ -416,7 +416,7 @@ const numeracyLesson404: LessonData = {
 const numeracyLesson405: LessonData = {
   id: 405,
   title: '平均・中央値・分布で本質を見る',
-  category: '数字に強くなる',
+  category: '数値感覚',
   steps: [
     {
       type: 'explain',
@@ -491,7 +491,7 @@ const numeracyLesson405: LessonData = {
 const numeracyLesson406: LessonData = {
   id: 406,
   title: '数字の落とし穴を見抜く',
-  category: '数字に強くなる',
+  category: '数値感覚',
   steps: [
     {
       type: 'explain',

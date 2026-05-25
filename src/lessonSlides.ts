@@ -247,7 +247,7 @@ function getHeroImage(category: string, lessonId?: number): string {
   if (c.includes('ドキュメンテーション') || c.includes('documentation')) return '/images/v3/course-documentation-01.png'
   if (c.includes('構造化リスニング') || c.includes('リスニング') || c.includes('listening')) return '/images/v3/course-listening-01.png'
   if (c.includes('adhd') || c.includes('レバレッジ')) return '/images/v3/course-adhd-leverage-01.png'
-  if (c.includes('数字')) return '/images/v3/course-numeracy-01.png'
+  if (c.includes('数字') || c.includes('数値') || c.includes('numeracy')) return '/images/v3/course-numeracy-01.png'
   if (c.includes('ピーク') || c.includes('peak') || c.includes('パフォーマンス')) return '/images/v3/course-peak-performance-01.png'
   if (c.includes('思考法') || c.includes('thinking')) return '/images/v3/course-thinking.webp'
   if (c.includes('coffee') || c.includes('コーヒー')) return '/images/v3/home-daily-question.png'

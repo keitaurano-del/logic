@@ -77,7 +77,7 @@ const fermiLesson201: LessonData = {
     {
       type: 'explain',
       title: 'The trick is to build a "multiplication equation"',
-      content: 'The core of Fermi estimation is to convert the target quantity into a multiplication equation.\n\nBasic market-size equation:\n```\nMarket size = target population × usage rate × purchase frequency × unit price\n```\n\nExample: convenience-store market size in Japan\n- Target population: 120 million\n- Usage rate: 60% (people who use a convenience store at least once a week)\n- Purchase frequency: 2 times per week\n- Spend per visit: ¥500\n\n-> 120M × 0.6 × 2 × ¥500 × 52 weeks\n≈ ¥3.7 trillion (actual is about ¥11 trillion — 2-3x off is within the acceptable range)',
+      content: 'The core of Fermi estimation is to convert the target quantity into a multiplication equation.\n\nBasic market-size equation:\n```\nMarket size = target population × usage rate × purchase frequency × unit price\n```\n\nExample: convenience-store market size in Japan\n- Target population: 120 million\n- Usage rate: 60% (people who use a convenience store at least once a week)\n- Purchase frequency: 2 times per week\n- Spend per visit: ¥500\n\n-> 120M × 0.6 × 2 × ¥500 × 52 weeks\n≈ ¥3.7 trillion (actual is about ¥12 trillion — 2-3x off is within the acceptable range)',
     },
     {
       type: 'explain',

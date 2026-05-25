@@ -195,7 +195,7 @@ const proposalMessage: LessonData = {
       type: 'explain',
       title: 'Sharpen claims with "So What?"',
       content:
-        'You can find weak proposal messages by asking "So What?"\n\nWeak example:\n"Company A entered the new market. Company B entered. Company C entered."\n→ So What? "New-market entry is accelerating across the industry, and our delay is becoming a competitive risk."\n\nLisitng data alone never produces an "implication."\nData → (add interpretation) → implication → (point to action) → proposal\n\nMaking that conversion sharpens the claim dramatically.\n\nPractical checklist:\n- Ask "So What?" of this slide\'s message — does a meaningful answer come out?\n- Are there any "leaps" between data and conclusion?\n- Does the conclusion lead to actionable implication?',
+        'You can find weak proposal messages by asking "So What?"\n\nWeak example:\n"Company A entered the new market. Company B entered. Company C entered."\n→ So What? "New-market entry is accelerating across the industry, and our delay is becoming a competitive risk."\n\nListing data alone never produces an "implication."\nData → (add interpretation) → implication → (point to action) → proposal\n\nMaking that conversion sharpens the claim dramatically.\n\nPractical checklist:\n- Ask "So What?" of this slide\'s message — does a meaningful answer come out?\n- Are there any "leaps" between data and conclusion?\n- Does the conclusion lead to actionable implication?',
     },
     {
       type: 'quiz',
