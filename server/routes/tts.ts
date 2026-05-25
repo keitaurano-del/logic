@@ -41,13 +41,12 @@ const DEFAULT_VOICE: Record<string, string> = {
 // server 側 voiceName allowlist。
 // src/ttsService.ts の CLOUD_VOICE_CATALOG と一致させること（食い違うと正常ボイスが 400 になる）。
 // 外部から Studio 系など高単価ボイスを指定される余地を消すための allowlist。
+// 音声は「女性」「男性」の 2 種のみ（lang ごとに女性 1 / 男性 1）。
 const ALLOWED_VOICES = new Set<string>([
-  // ja-JP
+  // ja-JP: 女性 = Neural2-C / 男性 = Neural2-D
   'ja-JP-Neural2-C',
   'ja-JP-Neural2-D',
-  'ja-JP-Neural2-B',
-  'ja-JP-Wavenet-D',
-  // en-US
+  // en-US: 女性 = Neural2-F / 男性 = Neural2-D
   'en-US-Neural2-F',
   'en-US-Neural2-D',
 ])

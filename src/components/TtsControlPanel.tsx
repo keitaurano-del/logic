@@ -1,42 +1,32 @@
 /**
- * TtsControlPanel — レッスン読み上げモード時に表示する制御パネル
+ * TtsControlPanel — レッスン / コース読み上げ中に表示するミュージックプレーヤー風の制御バー
  *
  * 表示位置: 画面下部 fixed (safe-area 考慮)
  * 構成:
  *   - シークバー (読み上げ対象スライド単位の現在位置 + ドラッグで頭出し)
- *   - 一時停止 / 再開ボタン (中央、大きめ)
- *   - 速度ボタン群 (0.75x / 1.0x / 1.25x / 1.5x / 2.0x、横スクロール可)
- *   - ピッチボタン群 (低め / 普通 / 高め、3 段階。SpeechSynthesis.pitch を 0.75/1.0/1.25 にマップ)
- *   - ボイス選択 (利用可能ボイスから「自動」「男性」「女性」の代表 + その他のリスト、
- *                 表示名は formatVoiceLabel で voice.name + 性別 + lang を組み合わせて生成)
- *   - 停止ボタン (右上)
+ *   - トランスポート行: 10秒戻る / 一時停止・再開 (中央・大) / 10秒進む
+ *   - 速度ボタン群 (0.75x 〜 2.0x) + ボイス選択 (女性 / 男性) — VoiceRateControls 共有
+ *   - 閉じる (右上)
  *
- * 親 (LessonStoriesScreen) との連携:
- *   - playing / paused / rate / pitch / voiceId / readableIndex / readableTotal は親が管理
- *   - 各操作は親が公開した callback (onTogglePause / onChangeRate / onChangePitch / onChangeVoice / onSeek / onExit) を呼ぶ
+ * ±10秒の挙動 (要件 9):
+ *   - クラウド音声 (HTMLAudio, MP3) のときは時間シーク (audio.currentTime ±= 10)。
+ *   - native / web TTS (時間軸なし) のときは前/次スライドへのジャンプにフォールバック。
+ *   実際の判定・フォールバックは親 (LessonStoriesScreen) の onSkip 内で行う。
+ *
+ * ピッチ調整はこのバーには出さない (要件 11: 下部バーは男女2ボイス+速度+±10秒を優先)。
+ *   ピッチはヘッドホンのポップオーバー (TtsPopover) 側に置く。
  *
  * 文言は中立的な丁寧体 (feedback_app_copy_neutral)。
  */
 import { useCallback, useRef, useState } from 'react'
 import { t } from '../i18n'
-import { XIcon } from '../icons'
+import { XIcon, RewindArrowIcon, ForwardArrowIcon } from '../icons'
 import { VoiceRateControls } from './VoiceRateControls'
-
-// ピッチプリセット: 低め / 普通 / 高め の 3 段階。
-// SpeechSynthesisUtterance.pitch / TextToSpeech.speak({ pitch }) は 0〜2 の範囲で、
-// 1.0 = 通常。極端な値だと読み上げが不自然になるため幅は控えめにする。
-const PITCH_OPTIONS: { value: number; labelKey: 'tts.pitch.low' | 'tts.pitch.normal' | 'tts.pitch.high' }[] = [
-  { value: 0.75, labelKey: 'tts.pitch.low' },
-  { value: 1.0, labelKey: 'tts.pitch.normal' },
-  { value: 1.25, labelKey: 'tts.pitch.high' },
-]
 
 export interface TtsControlPanelProps {
   playing: boolean
   paused: boolean
   rate: number
-  /** SpeechSynthesisUtterance.pitch / TextToSpeech.speak({ pitch }) と同じ 0.5〜2.0 範囲。 */
-  pitch: number
   voiceId: string | null
   lang: 'ja-JP' | 'en-US'
   /** 読み上げ対象スライドの中での現在位置 (0-based)。range は [0, readableTotal - 1]。 */
@@ -47,16 +37,17 @@ export interface TtsControlPanelProps {
   onSeek: (readableIndex: number) => void
   onTogglePause: () => void
   onChangeRate: (rate: number) => void
-  onChangePitch: (pitch: number) => void
   onChangeVoice: (voiceId: string | null) => void
+  /** ±10秒スキップ。seconds は +10 / -10。クラウドは時間シーク、native/web はスライド送りにフォールバック (親で判断)。 */
+  onSkip: (seconds: number) => void
   onExit: () => void
 }
 
 export function TtsControlPanel(props: TtsControlPanelProps) {
   const {
-    playing, paused, rate, pitch, voiceId, lang,
+    playing, paused, rate, voiceId, lang,
     readableIndex, readableTotal,
-    onSeek, onTogglePause, onChangeRate, onChangePitch, onChangeVoice, onExit,
+    onSeek, onTogglePause, onChangeRate, onChangeVoice, onSkip, onExit,
   } = props
   // ドラッグ中の暫定値。確定 (pointerup) で onSeek を呼ぶ。
   const [draftIndex, setDraftIndex] = useState<number | null>(null)
@@ -117,6 +108,25 @@ export function TtsControlPanel(props: TtsControlPanelProps) {
     }
   }, [maxIndex, onSeek, readableIndex])
 
+  // ±10秒スキップボタンの共通スタイル（矢印 + 中央に「10」を重ねる）
+  const skipBtnStyle: React.CSSProperties = {
+    position: 'relative',
+    width: 52, height: 52, borderRadius: '50%',
+    background: 'var(--bg-tertiary, rgba(255,255,255,0.08))',
+    color: 'var(--text-primary)',
+    border: 'none', cursor: 'pointer',
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+    WebkitTapHighlightColor: 'transparent',
+    flexShrink: 0,
+  }
+  const skipNumStyle: React.CSSProperties = {
+    position: 'absolute',
+    top: '50%', left: '50%', transform: 'translate(-50%, -42%)',
+    fontSize: 10, fontWeight: 800,
+    fontFamily: "'Inter Tight', sans-serif",
+    pointerEvents: 'none',
+  }
+
   return (
     <div
       role="region"
@@ -163,43 +173,6 @@ export function TtsControlPanel(props: TtsControlPanelProps) {
           }}
         >
           <XIcon width={14} height={14} />
-        </button>
-      </div>
-
-      {/* 中段: 一時停止/再開 */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
-        <button
-          type="button"
-          onPointerDown={(e) => { e.stopPropagation(); onTogglePause() }}
-          aria-label={paused ? t('tts.resumeAria') : t('tts.pauseAria')}
-          aria-pressed={paused}
-          style={{
-            display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-            minWidth: 168, height: 52,
-            borderRadius: 99,
-            background: 'var(--brand)',
-            color: '#FFFFFF',
-            border: 'none',
-            cursor: 'pointer',
-            fontSize: 15, fontWeight: 700,
-            boxShadow: `0 4px 18px color-mix(in srgb, var(--brand) 38%, transparent)`,
-            WebkitTapHighlightColor: 'transparent',
-          }}
-        >
-          {paused ? (
-            <>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
-              {t('tts.resume')}
-            </>
-          ) : (
-            <>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <rect x="6" y="5" width="4" height="14" rx="1" />
-                <rect x="14" y="5" width="4" height="14" rx="1" />
-              </svg>
-              {t('tts.pause')}
-            </>
-          )}
         </button>
       </div>
 
@@ -273,6 +246,59 @@ export function TtsControlPanel(props: TtsControlPanelProps) {
         </div>
       )}
 
+      {/* トランスポート行: 10秒戻る / 一時停止・再開 / 10秒進む */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 18 }}>
+        <button
+          type="button"
+          onPointerDown={(e) => { e.stopPropagation(); onSkip(-10) }}
+          aria-label={t('tts.skipBack')}
+          title={t('tts.skipBack')}
+          style={skipBtnStyle}
+        >
+          <RewindArrowIcon width={28} height={28} />
+          <span aria-hidden="true" style={skipNumStyle}>10</span>
+        </button>
+
+        <button
+          type="button"
+          onPointerDown={(e) => { e.stopPropagation(); onTogglePause() }}
+          aria-label={paused ? t('tts.resumeAria') : t('tts.pauseAria')}
+          aria-pressed={paused}
+          style={{
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+            width: 64, height: 64,
+            borderRadius: '50%',
+            background: 'var(--brand)',
+            color: '#FFFFFF',
+            border: 'none',
+            cursor: 'pointer',
+            boxShadow: `0 4px 18px color-mix(in srgb, var(--brand) 38%, transparent)`,
+            WebkitTapHighlightColor: 'transparent',
+            flexShrink: 0,
+          }}
+        >
+          {paused ? (
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+          ) : (
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <rect x="6" y="5" width="4" height="14" rx="1" />
+              <rect x="14" y="5" width="4" height="14" rx="1" />
+            </svg>
+          )}
+        </button>
+
+        <button
+          type="button"
+          onPointerDown={(e) => { e.stopPropagation(); onSkip(10) }}
+          aria-label={t('tts.skipForward')}
+          title={t('tts.skipForward')}
+          style={skipBtnStyle}
+        >
+          <ForwardArrowIcon width={28} height={28} />
+          <span aria-hidden="true" style={skipNumStyle}>10</span>
+        </button>
+      </div>
+
       {/* 速度 + ボイス選択（VoiceRateControls 共有コンポ）。TtsPopover と実装共有。 */}
       <VoiceRateControls
         rate={rate}
@@ -280,45 +306,7 @@ export function TtsControlPanel(props: TtsControlPanelProps) {
         lang={lang}
         onChangeRate={onChangeRate}
         onChangeVoice={onChangeVoice}
-        voiceMenuPlacement="up"
       />
-
-      {/* ピッチボタン群 (低め / 普通 / 高め) */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'space-between' }}>
-        <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '.04em', flexShrink: 0 }}>
-          {t('tts.pitch')}
-        </span>
-        <div style={{ display: 'flex', gap: 4, flexWrap: 'nowrap', overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
-          {PITCH_OPTIONS.map((p) => {
-            const active = Math.abs(p.value - pitch) < 0.001
-            return (
-              <button
-                key={p.value}
-                type="button"
-                onPointerDown={(e) => { e.stopPropagation(); onChangePitch(p.value) }}
-                aria-label={t('tts.pitch') + ' ' + t(p.labelKey)}
-                aria-pressed={active}
-                style={{
-                  minWidth: 64, height: 36,
-                  padding: '0 12px',
-                  borderRadius: 99,
-                  background: active ? 'var(--brand)' : 'var(--bg-tertiary, rgba(255,255,255,0.08))',
-                  color: active ? '#FFFFFF' : 'var(--text-primary)',
-                  border: 'none',
-                  cursor: 'pointer',
-                  fontSize: 13, fontWeight: 700,
-                  fontFamily: "'Noto Sans JP', sans-serif",
-                  WebkitTapHighlightColor: 'transparent',
-                  flexShrink: 0,
-                }}
-              >
-                {t(p.labelKey)}
-              </button>
-            )
-          })}
-        </div>
-      </div>
-
     </div>
   )
 }

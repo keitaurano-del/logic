@@ -3,13 +3,14 @@
  * 仕様: docs/DESIGN_V3.md §3.2
  * モックアップ: lv3-courses.html
  */
-import { useState, useMemo, useCallback, useEffect, useSyncExternalStore } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import type { ReactNode } from 'react'
 import { Header } from '../components/platform/Header'
 import { ActionSheet } from '../components/ActionSheet'
 import { LessonThumbnail } from '../components/LessonThumbnail'
 import { TtsPopover } from '../components/TtsPopover'
 import * as tts from '../ttsService'
+import { startCoursePlay } from '../ttsCoursePlay'
 
 function LessonImage({ lessonId, size }: { lessonId: number; size: number }) {
   const [failed, setFailed] = useState(false)
@@ -45,15 +46,6 @@ function levelLabel(level: string): string {
   return level
 }
 
-// コース紹介の音声プレビュー用テキスト生成。
-// タイトル + レベル + 説明文 + レッスン数 を簡潔に組み立てる。
-// SpeechSynthesis は読点で間を取るので「。 」で区切る。
-function buildCoursePreviewText(course: Course): string {
-  const lessonCount = course.lessonIds.length
-  const level = levelLabel(course.level)
-  const countLine = t('tts.coursePreview.lessonCount', { count: lessonCount, level })
-  return [course.title, course.description, countLine].filter(Boolean).join('。 ')
-}
 
 const IMG = '/images/v3'
 
@@ -477,31 +469,25 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
                 <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.45 }}>{t('roadmap.pinnedFermiDescription')}</div>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                {(() => {
-                  const fermiSequence = pinnedCourses.map(c => ({ id: c.id, text: buildCoursePreviewText(c) }))
-                  return pinnedCourses.map(course => {
-                    const v = CATEGORY_VISUAL[course.category] || DEFAULT_VISUAL
-                    const cardImage = course.image || v.image
-                    return (
-                      <CategoryCard
-                        key={course.id}
-                        name={course.title}
-                        meta={t('roadmap.lessonCountAndLevel', { count: course.lessonIds.length, level: levelLabel(course.level) })}
-                        image={cardImage}
-                        onClick={() => props.onOpenCategory(v.routeKey)}
-                        saveTarget={{
-                          refId: v.routeKey,
-                          title: course.title,
-                          subtitle: course.category,
-                          image: cardImage,
-                        }}
-                        previewId={course.id}
-                        previewText={buildCoursePreviewText(course)}
-                        previewSequence={fermiSequence}
-                      />
-                    )
-                  })
-                })()}
+                {pinnedCourses.map(course => {
+                  const v = CATEGORY_VISUAL[course.category] || DEFAULT_VISUAL
+                  const cardImage = course.image || v.image
+                  return (
+                    <CategoryCard
+                      key={course.id}
+                      name={course.title}
+                      meta={t('roadmap.lessonCountAndLevel', { count: course.lessonIds.length, level: levelLabel(course.level) })}
+                      image={cardImage}
+                      onClick={() => props.onOpenCategory(v.routeKey)}
+                      saveTarget={{
+                        refId: v.routeKey,
+                        title: course.title,
+                        subtitle: course.category,
+                        image: cardImage,
+                      }}
+                    />
+                  )
+                })}
               </div>
             </div>
           )
@@ -518,31 +504,25 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
                 <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.45 }}>{group.description}</div>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                {(() => {
-                  const groupSequence = groupCourses.map(c => ({ id: c.id, text: buildCoursePreviewText(c) }))
-                  return groupCourses.map(course => {
-                    const v = CATEGORY_VISUAL[course.category] || DEFAULT_VISUAL
-                    const cardImage = course.image || v.image
-                    return (
-                      <CategoryCard
-                        key={course.id}
-                        name={course.title}
-                        meta={t('roadmap.lessonCountAndLevel', { count: course.lessonIds.length, level: levelLabel(course.level) })}
-                        image={cardImage}
-                        onClick={() => props.onOpenCategory(v.routeKey)}
-                        saveTarget={{
-                          refId: v.routeKey,
-                          title: course.title,
-                          subtitle: course.category,
-                          image: cardImage,
-                        }}
-                        previewId={course.id}
-                        previewText={buildCoursePreviewText(course)}
-                        previewSequence={groupSequence}
-                      />
-                    )
-                  })
-                })()}
+                {groupCourses.map(course => {
+                  const v = CATEGORY_VISUAL[course.category] || DEFAULT_VISUAL
+                  const cardImage = course.image || v.image
+                  return (
+                    <CategoryCard
+                      key={course.id}
+                      name={course.title}
+                      meta={t('roadmap.lessonCountAndLevel', { count: course.lessonIds.length, level: levelLabel(course.level) })}
+                      image={cardImage}
+                      onClick={() => props.onOpenCategory(v.routeKey)}
+                      saveTarget={{
+                        refId: v.routeKey,
+                        title: course.title,
+                        subtitle: course.category,
+                        image: cardImage,
+                      }}
+                    />
+                  )
+                })}
               </div>
             </div>
           )
@@ -956,122 +936,15 @@ function categoryLabel(category: string): string {
 }
 
 
-// ──────── コース紹介の音声プレビュー（複数カード間の排他制御） ────────
-// 仕様:
-//   - カード右下のスピーカーボタンを押すとそのコースの紹介テキストを TTS で読み上げる
-//   - 別のカードを押した時 / 同じカードを 2 回目に押した時 / TTS service が外部要因で停止した時
-//     には現在のプレビュー状態を解除して全カードのボタンを「停止状態」に戻す
-//   - LessonStoriesScreen の TTS モードと同じ ttsService を共有しているため、
-//     どちらか一方の再生時は他方の utterance は cancel される（speak() の冒頭で stop が走る挙動）
-let coursePreviewActiveId: string | null = null
-const coursePreviewListeners = new Set<() => void>()
-function setCoursePreviewActive(id: string | null) {
-  if (coursePreviewActiveId === id) return
-  coursePreviewActiveId = id
-  for (const cb of coursePreviewListeners) {
-    try { cb() } catch { /* */ }
-  }
-}
-function subscribeCoursePreview(cb: () => void): () => void {
-  coursePreviewListeners.add(cb)
-  return () => { coursePreviewListeners.delete(cb) }
-}
-function getCoursePreviewActive(): string | null {
-  return coursePreviewActiveId
-}
-// ttsService.subscribe(false) が発火したら（再生終了 / stop / 他箇所からの speak）プレビュー状態を解除する。
-// モジュール初回 import 時に 1 度だけ subscribe。
-let coursePreviewSubscribed = false
-function ensureCoursePreviewSubscribed() {
-  if (coursePreviewSubscribed) return
-  coursePreviewSubscribed = true
-  try {
-    tts.subscribe((playing) => {
-      if (!playing) setCoursePreviewActive(null)
-    })
-  } catch { /* */ }
-}
-
-/**
- * グループ内のコース紹介音声プレビュー連鎖再生 / 単発再生の共通ヘルパ。
- * 自然終了時に autoplay=true なら次の sequence エントリへ進める。
- * autoplay=false なら一度の発話で終了し、active id を解除する。
- *
- * 引数の sequence は「同じグループ・同じ画面に並んでいて、上から順に再生したい」
- * 単位の {id, text} 配列。グループ外（別カテゴリのカード）にはチェーンしない。
- */
-function playCoursePreview(
-  id: string,
-  text: string,
-  sequence: ReadonlyArray<{ id: string; text: string }>,
-): void {
-  if (!text) return
-  setCoursePreviewActive(id)
-  void tts.speak(text, {
-    lang: getLocale() === 'ja' ? 'ja-JP' : 'en-US',
-    rate: tts.loadRate(),
-    pitch: tts.loadPitch(),
-    voiceId: tts.loadVoiceId(),
-    onEnd: () => {
-      // 自然終了。autoplay ON かつ sequence 内に次があれば連鎖再生。
-      if (!tts.loadAutoplay()) {
-        setCoursePreviewActive(null)
-        return
-      }
-      const idx = sequence.findIndex(s => s.id === id)
-      const next = idx >= 0 ? sequence[idx + 1] : undefined
-      if (!next) {
-        setCoursePreviewActive(null)
-        return
-      }
-      playCoursePreview(next.id, next.text, sequence)
-    },
-  })
-}
-
-function CategoryCard({ name, meta, progress, onClick, image, saveTarget, previewId, previewText, previewSequence }: {
+function CategoryCard({ name, meta, progress, onClick, image, saveTarget }: {
   name: string
   meta: string
   progress?: string
   onClick: () => void
   image?: string
   saveTarget?: { refId: string; title: string; subtitle?: string; image?: string }
-  /** 音声プレビューを有効にする場合の識別子（コース ID 推奨）。previewText とセットで指定。 */
-  previewId?: string
-  /** 音声プレビューで読み上げるテキスト。長すぎる文字列は端末側で分割される可能性あり。 */
-  previewText?: string
-  /**
-   * 同一グループ内のコース順序（オート再生連鎖に使う）。
-   * 自カードの previewId が含まれる前提。未指定時は単発再生のみ。
-   */
-  previewSequence?: ReadonlyArray<{ id: string; text: string }>
 }) {
   const [saved, setSaved] = useState<boolean>(() => saveTarget ? isSaved('course', saveTarget.refId) : false)
-
-  // 音声プレビュー: モジュール共有ストア + ttsService の playing 購読で「自分が active か」を判定
-  useEffect(() => { ensureCoursePreviewSubscribed() }, [])
-  const activePreviewId = useSyncExternalStore(
-    subscribeCoursePreview,
-    getCoursePreviewActive,
-    () => null,
-  )
-  const isPreviewing = !!previewId && activePreviewId === previewId
-  const previewSupported = tts.isSupported() && !!previewText && !!previewId
-  const handleTogglePreview = useCallback(() => {
-    if (!previewSupported) return
-    if (isPreviewing) {
-      // トグル: 停止
-      setCoursePreviewActive(null)
-      void tts.stop()
-      return
-    }
-    // sequence が未指定なら自分 1 件のみ（= autoplay 無効と同じ単発挙動）
-    const seq: ReadonlyArray<{ id: string; text: string }> =
-      previewSequence && previewSequence.length > 0
-        ? previewSequence
-        : [{ id: previewId ?? '', text: previewText ?? '' }]
-    playCoursePreview(previewId ?? '', previewText ?? '', seq)
-  }, [isPreviewing, previewId, previewSupported, previewText, previewSequence])
 
   return (
     <div style={{ position: 'relative' }}>
@@ -1123,24 +996,6 @@ function CategoryCard({ name, meta, progress, onClick, image, saveTarget, previe
           {saved ? <BookmarkFilledIcon width={14} height={14} /> : <BookmarkIcon width={14} height={14} />}
         </button>
       )}
-      {previewSupported && (
-        <div style={{ position: 'absolute', top: saveTarget ? 42 : 6, right: 6, zIndex: 2 }}>
-          <TtsPopover
-            lang={getLocale() === 'ja' ? 'ja-JP' : 'en-US'}
-            playing={isPreviewing}
-            onTogglePlay={handleTogglePreview}
-            showAutoplay
-            iconSize={15}
-            buttonStyle={{
-              width: 30, height: 30,
-              background: isPreviewing ? 'var(--brand)' : 'rgba(8,33,33,0.55)',
-              backdropFilter: 'blur(6px)',
-              color: '#fff',
-              boxShadow: isPreviewing ? `0 2px 10px color-mix(in srgb, var(--brand) 50%, transparent)` : 'none',
-            }}
-          />
-        </div>
-      )}
     </div>
   )
 }
@@ -1167,22 +1022,18 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
     ? courses.flatMap(c => c.lessonIds).filter(id => completed.has(`lesson-${id}`)).length
     : fallbackLessons.filter(l => completed.has(`lesson-${l.id}`)).length
 
-  // このカテゴリ画面のヘッドホン: カテゴリ内の全コース紹介を順に読み上げる。
-  // sequence は courses 順。autoplay ON なら 1 コース読み終わり → 次コースへ連鎖する。
-  useEffect(() => { ensureCoursePreviewSubscribed() }, [])
-  const activePreviewId = useSyncExternalStore(subscribeCoursePreview, getCoursePreviewActive, () => null)
-  const courseSequence = courses.map(c => ({ id: c.id, text: buildCoursePreviewText(c) }))
-  const headerPreviewing = courseSequence.some(s => s.id === activePreviewId)
-  const headerPreviewSupported = tts.isSupported() && courseSequence.length > 0
-  const handleHeaderTogglePreview = () => {
-    if (!headerPreviewSupported) return
-    if (headerPreviewing) {
-      setCoursePreviewActive(null)
-      void tts.stop()
-      return
-    }
-    const first = courseSequence[0]
-    playCoursePreview(first.id, first.text, courseSequence)
+  // このカテゴリ画面のヘッドホン =「コースを再生」。
+  // カテゴリ内の全コースのレッスンをスライド順に読み上げ、各レッスンの末尾で
+  // 次のレッスンへ自動遷移する（コース間の連鎖は同カテゴリ内に限る）。
+  // 起点でコース再生セッションを張り、最初のレッスンを読み上げモードで開く。
+  const coursePlayLessonIds = courses.length > 0
+    ? courses.flatMap(c => c.lessonIds)
+    : fallbackLessons.map(l => l.id)
+  const coursePlaySupported = tts.isSupported() && coursePlayLessonIds.length > 0
+  const handleCoursePlay = () => {
+    if (!coursePlaySupported) return
+    const firstId = startCoursePlay(coursePlayLessonIds)
+    if (firstId != null) onOpenLesson(firstId)
   }
 
   return (
@@ -1192,13 +1043,13 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
         <div style={{ fontSize: 13, color: 'var(--text-secondary)', minWidth: 0 }}>
           {courses.length > 0 ? t('roadmap.detailCourseCount', { count: courses.length }) : ''}{t('roadmap.detailLessonCount', { count: totalLessons })} · {completedCount > 0 ? t('roadmap.detailCompleted', { done: completedCount, total: totalLessons }) : t('roadmap.detailNotStarted')}
         </div>
-        {headerPreviewSupported && (
+        {coursePlaySupported && (
           <TtsPopover
             lang={getLocale() === 'ja' ? 'ja-JP' : 'en-US'}
-            playing={headerPreviewing}
-            onTogglePlay={handleHeaderTogglePreview}
-            showAutoplay
-            iconSize={16}
+            playing={false}
+            onTogglePlay={handleCoursePlay}
+            iconSize={20}
+            buttonStyle={{ width: 44, height: 44 }}
           />
         )}
       </div>

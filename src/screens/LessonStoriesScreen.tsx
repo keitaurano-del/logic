@@ -14,6 +14,7 @@ import { API_BASE } from './apiBase'
 import { t, getLocale } from '../i18n'
 import * as tts from '../ttsService'
 import { TtsControlPanel } from '../components/TtsControlPanel'
+import { isCoursePlayCurrent, advanceCoursePlay, clearCoursePlay } from '../ttsCoursePlay'
 import { tutorial } from '../tutorial/tutorialStorage'
 import { addWrongAnswers } from '../wrongAnswerStore'
 import { generateFromLesson } from '../flashcardData'
@@ -91,10 +92,15 @@ interface LessonStoriesScreenProps {
   startStep?: number
   onComplete: () => void
   onClose: () => void
+  /**
+   * コース再生中に「次のレッスンへ」自動遷移するためのコールバック。
+   * onComplete とは別系統で、レッスンを完了扱いにしない（完了ガード: 要件 5）。
+   */
+  onCoursePlayNext?: (lessonId: number) => void
 }
 
 export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
-  const { lessonId, startStep, onComplete, onClose } = props
+  const { lessonId, startStep, onComplete, onClose, onCoursePlayNext } = props
   const lesson = allLessons[lessonId]
   // 学習時間計測 — アンマウント時 / visibilitychange で flush。
   // study_sessions テーブル + localStorage `logic-stats.studyTimeMs` 両方を更新する。
@@ -134,38 +140,35 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
   // TTS 読み上げ状態
   const [ttsPlaying, setTtsPlaying] = useState<boolean>(() => tts.isPlaying())
   const [ttsRate, setTtsRate] = useState<number>(() => tts.loadRate())
-  const [ttsPitch, setTtsPitch] = useState<number>(() => tts.loadPitch())
+  const [ttsPitch] = useState<number>(() => tts.loadPitch())
   // 読み上げモード: ヘッドホンボタンで ON → スライド自動進行 + クイズスキップ
   const [ttsModeActive, setTtsModeActive] = useState(false)
   const [ttsPaused, setTtsPaused] = useState(false)
   const [ttsVoiceId, setTtsVoiceId] = useState<string | null>(() => tts.loadVoiceId())
   // 読了 → 「クイズを解く」CTA を表示する状態
   const [ttsCompletedReadable, setTtsCompletedReadable] = useState(false)
+  // コース再生（カテゴリヘッダーの「コースを再生」）でこのレッスンが開かれたか。
+  // true の間は、読了時に「クイズを解く」CTA ではなく次レッスンへ自動遷移する。
+  const [coursePlayActive] = useState<boolean>(() => isCoursePlayCurrent(lessonId))
   useEffect(() => tts.subscribe(setTtsPlaying), [])
   // 画面離脱 / unmount 時は必ず停止して取り残しを防ぐ
   useEffect(() => {
     return () => { void tts.stop() }
   }, [])
 
-  // 前レッスンが TTS モードで完走 → 同コース次レッスンに自動遷移してきた場合は
-  // 読み上げモードで自動再開する (sessionStorage 経由のハンドシェイク)。
-  // 一度消費したら sessionStorage からは消す。
+  // コース再生でこのレッスンが現在対象なら、読み上げモードを自動起動する。
+  // （前レッスンの末尾で onCoursePlayNext により遷移してきたケースを含む）
   useEffect(() => {
-    try {
-      if (sessionStorage.getItem('logic-tts-mode-continue') === '1') {
-        sessionStorage.removeItem('logic-tts-mode-continue')
-        // tts.isSupported() が false の環境 (古いブラウザ) ではスキップ
-        if (tts.isSupported()) {
-          // 次フレームで開始 (state 初期化と被らせない)
-          setTimeout(() => {
-            setTtsCompletedReadable(false)
-            setTtsPaused(false)
-            setTtsModeActive(true)
-          }, 50)
-        }
-      }
-    } catch { /* sessionStorage が disabled な環境では何もしない */ }
-  }, [lessonId])
+    if (!coursePlayActive) return
+    if (!tts.isSupported()) return
+    // 次フレームで開始 (state 初期化と被らせない)
+    const tid = setTimeout(() => {
+      setTtsCompletedReadable(false)
+      setTtsPaused(false)
+      setTtsModeActive(true)
+    }, 50)
+    return () => clearTimeout(tid)
+  }, [coursePlayActive, lessonId])
 
   const slides: LessonSlide[] = useMemo(() => {
     if (!lesson) return []
@@ -236,10 +239,6 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
           generateFromLesson(lessonId, lesson.title, wrongs, explainSteps)
         }
       }
-      // 読み上げモードで最後まで走り抜けた場合、次レッスンでもモード継続するためのフラグ
-      if (ttsModeActive) {
-        try { sessionStorage.setItem('logic-tts-mode-continue', '1') } catch { /* */ }
-      }
       addXp('lesson')
       onComplete()
     }
@@ -270,11 +269,28 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
       setIndex(next)
       setQuizAnswered(null)
       setMultiSelected([])
-    } else {
-      // 読了。クイズへの導線を表示する。
-      setTtsCompletedReadable(true)
+      return
     }
-  }, [findNextReadable, index])
+    // このレッスンの readable を読み終えた。
+    // コース再生中なら次のレッスンへ自動遷移する（完了扱いにはしない: 要件 5）。
+    if (coursePlayActive) {
+      const nextLessonId = advanceCoursePlay()
+      if (nextLessonId != null && onCoursePlayNext) {
+        // utterance を止めてから遷移（次レッスン側 mount で読み上げ再開）
+        void tts.stop()
+        onCoursePlayNext(nextLessonId)
+        return
+      }
+      // コースの最後のレッスンを読み終えた → セッション終了。
+      clearCoursePlay()
+    }
+    // 通常の読了。クイズへの導線を表示する。
+    setTtsCompletedReadable(true)
+  }, [findNextReadable, index, coursePlayActive, onCoursePlayNext])
+
+  // advanceReadable の最新参照を ref で保持（speak の onEnd / skip 系から deps を増やさず呼ぶ）
+  const advanceReadableRef = useRef(advanceReadable)
+  useEffect(() => { advanceReadableRef.current = advanceReadable }, [advanceReadable])
 
   // 読み上げモードを開始: 現スライドが readable なら現在地から、そうでなければ最初の readable から
   const startTtsMode = useCallback(() => {
@@ -292,10 +308,12 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
   }, [slide.kind, readableIndices])
 
   // 読み上げモード終了 (制御パネル × ボタン / 「クイズを解く」)
+  // ユーザーが明示的に終了したらコース再生セッションも解除する（次レッスンへ連れて行かない）。
   const stopTtsMode = useCallback(async () => {
     setTtsModeActive(false)
     setTtsPaused(false)
     setTtsCompletedReadable(false)
+    clearCoursePlay()
     await tts.stop()
   }, [])
 
@@ -305,6 +323,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
     setTtsModeActive(false)
     setTtsPaused(false)
     setTtsCompletedReadable(false)
+    clearCoursePlay()
     if (firstQuizIndex >= 0) {
       setIndex(firstQuizIndex)
       setQuizAnswered(null)
@@ -362,23 +381,8 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
     }
   }, [ttsModeActive, ttsPlaying, ttsPaused, slide, ttsPitch, ttsVoiceId, advanceReadable])
 
-  // ピッチ変更 (制御パネルから)
-  const handleChangePitch = useCallback((p: number) => {
-    setTtsPitch(p)
-    tts.savePitch(p)
-    if (ttsModeActive && ttsPlaying && !ttsPaused) {
-      const text = getSpeakableText(slide)
-      if (text) {
-        void tts.speak(text, {
-          lang: getLocale() === 'ja' ? 'ja-JP' : 'en-US',
-          rate: ttsRate,
-          pitch: p,
-          voiceId: ttsVoiceId,
-          onEnd: () => advanceReadable(),
-        })
-      }
-    }
-  }, [ttsModeActive, ttsPlaying, ttsPaused, slide, ttsRate, ttsVoiceId, advanceReadable])
+  // ピッチはヘッドホンのポップオーバー (TtsPopover) 側で調整・永続化する (要件 11)。
+  // ここでは mount 時に loadPitch() した値を speak に渡すのみ（読み上げ中の変更 UI は持たない）。
 
   // シークバー用: 現在地が readableIndices 内で何番目か
   // 非 readable (quiz/think/case) の場合は直前の readable インデックスを返す。
@@ -419,6 +423,73 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
     setIndex(targetSlideIndex)
   }, [readableIndices, index])
 
+  // 現在スライド以前の最も近い readable インデックスを探す
+  const findPrevReadable = useCallback((fromIdx: number): number | null => {
+    let prev: number | null = null
+    for (const i of readableIndices) {
+      if (i < fromIdx) prev = i
+      else break
+    }
+    return prev
+  }, [readableIndices])
+
+  // 前の readable スライドへ（スライドジャンプ）。先頭なら現スライド頭出し（再読み上げ）。
+  const jumpToPrevReadable = useCallback(() => {
+    const prev = findPrevReadable(index)
+    setTtsCompletedReadable(false)
+    setQuizAnswered(null)
+    setMultiSelected([])
+    void tts.stop()
+    if (prev != null) setIndex(prev)
+    else {
+      // 先頭なら同スライドを再読み上げ（effect の deps は index 不変なので明示再 speak）
+      const text = getSpeakableText(slide)
+      if (text) {
+        void tts.speak(text, {
+          lang: getLocale() === 'ja' ? 'ja-JP' : 'en-US',
+          rate: ttsRate, pitch: ttsPitch, voiceId: ttsVoiceId,
+          onEnd: () => advanceReadableRef.current(),
+        })
+      }
+    }
+  }, [findPrevReadable, index, slide, ttsRate, ttsPitch, ttsVoiceId])
+
+  // 次の readable スライドへ（スライドジャンプ）。なければ読了処理（advanceReadable）。
+  const jumpToNextReadable = useCallback(() => {
+    setTtsCompletedReadable(false)
+    setQuizAnswered(null)
+    setMultiSelected([])
+    void tts.stop()
+    advanceReadable()
+  }, [advanceReadable])
+
+  // ±10秒スキップ (ミュージックプレーヤーバーの ±10秒ボタン)。
+  // - クラウド音声 (HTMLAudio, MP3): まず時間シーク。スライド境界をまたぐ場合は隣スライドへ。
+  //   +10: 残り 10 秒未満なら次スライド。-10: 先頭付近 (10 秒未満) なら前スライド。
+  // - native/web TTS (時間軸なし): 前/次スライドへのジャンプにフォールバック。
+  const handleSkip = useCallback((seconds: number) => {
+    haptic.light()
+    if (tts.isCloudPlaying()) {
+      const cur = tts.getCloudCurrentTime() ?? 0
+      const dur = tts.getCloudDuration()
+      if (seconds > 0) {
+        // 残尺が 10 秒未満ならスライド境界を越える → 次スライド
+        if (dur != null && cur + seconds >= dur) { jumpToNextReadable(); return }
+        if (tts.skipSeconds(seconds)) return
+        jumpToNextReadable()
+      } else {
+        // 先頭付近で戻すと境界を越える → 前スライド
+        if (cur + seconds <= 0) { jumpToPrevReadable(); return }
+        if (tts.skipSeconds(seconds)) return
+        jumpToPrevReadable()
+      }
+      return
+    }
+    // 時間軸が無い native/web TTS: スライド送りにフォールバック
+    if (seconds > 0) jumpToNextReadable()
+    else jumpToPrevReadable()
+  }, [jumpToNextReadable, jumpToPrevReadable])
+
   // ボイス変更 (制御パネルから)
   const handleChangeVoice = useCallback((id: string | null) => {
     setTtsVoiceId(id)
@@ -439,10 +510,6 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
 
   // 読み上げモード ON + スライド変化 → 現スライドを自動で読み上げる
   // クイズ等で stop されているとき (ユーザーが手動で進めた場合) も含めて副作用で起動
-  // 注: react の deps から advanceReadable を外したいので、ref で最新参照を保持
-  const advanceReadableRef = useRef(advanceReadable)
-  useEffect(() => { advanceReadableRef.current = advanceReadable }, [advanceReadable])
-
   useEffect(() => {
     if (!ttsModeActive) return
     if (ttsPaused) return
@@ -578,30 +645,28 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
           </button>
           {/* TTS 読み上げモード起動ボタン: ヘッドホン形アイコン */}
           {/* タップでモード ON + 制御パネル展開 + 自動再生開始 */}
-          {/* hero/summary 以外で表示 (summary は完了画面で読み上げる意味が薄いため) */}
-          {tts.isSupported() && slide.kind !== 'hero' && slide.kind !== 'summary' && (
+          {/* レッスン初期画面(hero)を含め全スライドで「このレッスンを読み上げ開始」できる単一の起点 */}
+          {/* (スライド単位の再生トリガーは撤去し、ここと下部バーに集約: 要件 7/8)。 */}
+          {/* summary は完了画面なので読み上げる意味が薄く非表示。TTS モード中も下部バーに譲って非表示。 */}
+          {tts.isSupported() && slide.kind !== 'summary' && !ttsModeActive && (
             <button
               type="button"
               onPointerDown={(e) => {
                 e.stopPropagation()
-                if (ttsModeActive) {
-                  void stopTtsMode()
-                } else {
-                  startTtsMode()
-                }
+                startTtsMode()
               }}
-              aria-label={ttsModeActive ? t('tts.closePanel') : t('tts.headphonesAria')}
-              aria-pressed={ttsModeActive}
-              title={ttsModeActive ? t('tts.closePanel') : t('tts.headphonesAria')}
+              aria-label={t('tts.headphonesAria')}
+              aria-pressed={false}
+              title={t('tts.headphonesAria')}
               style={{
                 // タッチターゲットを 44x44 に拡大 (HIG / Material 推奨)
                 width: 44, height: 44, borderRadius: '50%',
-                background: ttsModeActive ? `color-mix(in srgb, var(--brand) 22%, transparent)` : 'var(--bg-card)',
+                background: 'var(--bg-card)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 cursor: 'pointer', WebkitTapHighlightColor: 'transparent',
                 border: 'none', zIndex: 10, position: 'relative',
                 flexShrink: 0, padding: 0,
-                color: ttsModeActive ? 'var(--brand)' : 'var(--text-secondary)',
+                color: 'var(--text-secondary)',
               }}
             >
               <HeadphonesIcon width={18} height={18} />
@@ -630,9 +695,10 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
             </button>
           )}
           {/* SCRUM-226: ×ボタン — onClickも追加しzIndexをタップゾーンより上に */}
+          {/* 明示クローズ時はコース再生セッションも解除（取り残し防止） */}
           <button
-            onPointerDown={(e) => { e.stopPropagation(); e.preventDefault(); onClose() }}
-            onClick={(e) => { e.stopPropagation(); onClose() }}
+            onPointerDown={(e) => { e.stopPropagation(); e.preventDefault(); clearCoursePlay(); onClose() }}
+            onClick={(e) => { e.stopPropagation(); clearCoursePlay(); onClose() }}
             style={{ width: 44, height: 44, borderRadius: '50%', background: 'var(--bg-card)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', WebkitTapHighlightColor: 'transparent', border: 'none', zIndex: 10, position: 'relative', flexShrink: 0 }}
             aria-label={t('stories.closeAria')}
           >
@@ -856,7 +922,6 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
           playing={ttsPlaying}
           paused={ttsPaused}
           rate={ttsRate}
-          pitch={ttsPitch}
           voiceId={ttsVoiceId}
           lang={getLocale() === 'ja' ? 'ja-JP' : 'en-US'}
           readableIndex={ttsReadableCursor}
@@ -864,8 +929,8 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
           onSeek={handleSeekReadable}
           onTogglePause={() => { void handleTogglePause() }}
           onChangeRate={handleChangeRate}
-          onChangePitch={handleChangePitch}
           onChangeVoice={handleChangeVoice}
+          onSkip={handleSkip}
           onExit={() => { void stopTtsMode() }}
         />
       )}
