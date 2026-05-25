@@ -36,6 +36,7 @@
 //   - 失敗しても speak 本体は続行する (best-effort)。
 
 import { getLocale } from './i18n'
+import { normalizeForSpeech } from './ttsReadings'
 
 const RATE_KEY = 'logic-tts-rate'
 const VOICE_KEY = 'logic-tts-voice'
@@ -611,6 +612,10 @@ export async function speak(text: string, opts: SpeakOptions = {}): Promise<void
     console.warn('[tts] not supported in this environment')
     return
   }
+  // 記号誤読対策の読み正規化を speak() 側で 1 回だけ通す（speakNative / speakWebAsync
+  // 双方に効かせるため。二重変換を避けるため下位関数では変換しない）。
+  // 表示テキストは変えず、読み上げ用に「×→かける」等を補正する。
+  text = normalizeForSpeech(text, opts.lang ?? defaultLang())
   // 既存の onEnd は新しい再生で上書き
   currentOnEnd = opts.onEnd ?? null
   // 背景再生 keep-alive (silent audio loop + wake lock) を起動。
