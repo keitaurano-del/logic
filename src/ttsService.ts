@@ -8,9 +8,10 @@
 //          isPlaying() の状態は内部 flag で同期管理（onend/onerror で false に戻す）。
 //
 // 設定保存:
-//   logic-tts-rate    : 1.0 (number, 0.5〜2.0)
-//   logic-tts-pitch   : 1.0 (number, 0.5〜2.0) — TtsControlPanel のピッチ調整 (低め/普通/高め)
-//   logic-tts-voice   : voice id (string `${lang}|${name}`)
+//   logic-tts-rate     : 1.0 (number, 0.5〜2.0)
+//   logic-tts-pitch    : 1.0 (number, 0.5〜2.0) — TtsControlPanel のピッチ調整 (低め/普通/高め)
+//   logic-tts-voice    : voice id (string `${lang}|${name}`)
+//   logic-tts-autoplay : '1' | '0' — コース紹介 TTS のオート連続再生（既定: ON）
 //
 // API:
 //   speak(text, opts)           読み上げ開始 (onEnd で完了通知)
@@ -39,12 +40,14 @@ import { getLocale } from './i18n'
 const RATE_KEY = 'logic-tts-rate'
 const VOICE_KEY = 'logic-tts-voice'
 const PITCH_KEY = 'logic-tts-pitch'
+const AUTOPLAY_KEY = 'logic-tts-autoplay'
 const DEFAULT_RATE = 1.0
 const MIN_RATE = 0.5
 const MAX_RATE = 2.0
 const DEFAULT_PITCH = 1.0
 const MIN_PITCH = 0.5
 const MAX_PITCH = 2.0
+const DEFAULT_AUTOPLAY = true
 
 type Listener = (playing: boolean) => void
 
@@ -140,6 +143,36 @@ export function loadPitch(): number {
 export function savePitch(pitch: number): void {
   const clamped = Math.min(MAX_PITCH, Math.max(MIN_PITCH, pitch))
   try { localStorage.setItem(PITCH_KEY, String(clamped)) } catch { /* */ }
+}
+
+// ── Autoplay pref ──────────────────────────────────────────────
+// コース紹介 TTS の「自動連続再生」を ON/OFF する永続フラグ。
+// ON: 1 つのコースカードの読み上げが自然終了したら、同じグループ内の次のカードへ自動で進む
+// OFF: 自然終了で停止し、ユーザーが次のカードを明示タップするまで再生しない
+// 値は '1' / '0' で localStorage に保存。未設定時は ON (DEFAULT_AUTOPLAY) を採用。
+
+type AutoplayListener = (autoplay: boolean) => void
+const autoplayListeners = new Set<AutoplayListener>()
+
+export function loadAutoplay(): boolean {
+  try {
+    const raw = localStorage.getItem(AUTOPLAY_KEY)
+    if (raw === '1') return true
+    if (raw === '0') return false
+  } catch { /* */ }
+  return DEFAULT_AUTOPLAY
+}
+
+export function saveAutoplay(enabled: boolean): void {
+  try { localStorage.setItem(AUTOPLAY_KEY, enabled ? '1' : '0') } catch { /* */ }
+  for (const cb of autoplayListeners) {
+    try { cb(enabled) } catch (e) { console.warn('[tts] autoplay listener error', e) }
+  }
+}
+
+export function subscribeAutoplay(cb: AutoplayListener): () => void {
+  autoplayListeners.add(cb)
+  return () => { autoplayListeners.delete(cb) }
 }
 
 // ── Language detection ─────────────────────────────────────────

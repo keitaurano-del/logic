@@ -13,6 +13,9 @@ import {
   savePitch,
   loadVoiceId,
   saveVoiceId,
+  loadAutoplay,
+  saveAutoplay,
+  subscribeAutoplay,
   formatVoiceLabel,
   type TtsVoice,
   type TtsGender,
@@ -140,5 +143,41 @@ describe('ttsService.formatVoiceLabel', () => {
     const a: TtsVoice = { id: 'ja-JP|A', name: 'A', lang: 'ja-JP', gender: 'female' }
     const b: TtsVoice = { id: 'ja-JP|A2', name: 'A', lang: 'ja-JP', gender: 'male' }
     expect(formatVoiceLabel(a, labelFor)).not.toBe(formatVoiceLabel(b, labelFor))
+  })
+})
+
+describe('ttsService — autoplay persistence', () => {
+  beforeEach(() => {
+    localStorage.clear()
+  })
+
+  it('loadAutoplay: 未設定時はデフォルト ON (true) を返す', () => {
+    expect(loadAutoplay()).toBe(true)
+  })
+
+  it('saveAutoplay(false) → loadAutoplay: OFF が保存される', () => {
+    saveAutoplay(false)
+    expect(loadAutoplay()).toBe(false)
+  })
+
+  it('saveAutoplay(true) → loadAutoplay: ON が保存される', () => {
+    saveAutoplay(false)
+    saveAutoplay(true)
+    expect(loadAutoplay()).toBe(true)
+  })
+
+  it('loadAutoplay: localStorage に不正値があるときはデフォルト ON に倒す', () => {
+    localStorage.setItem('logic-tts-autoplay', 'not-a-bool')
+    expect(loadAutoplay()).toBe(true)
+  })
+
+  it('subscribeAutoplay: saveAutoplay 呼び出しでコールバックが通知される', () => {
+    const seen: boolean[] = []
+    const unsub = subscribeAutoplay((v) => { seen.push(v) })
+    saveAutoplay(false)
+    saveAutoplay(true)
+    unsub()
+    saveAutoplay(false) // unsub 後は通知されない
+    expect(seen).toEqual([false, true])
   })
 })

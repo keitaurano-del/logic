@@ -456,6 +456,9 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
           onOpenPlacementTest={props.onOpenPlacementTest}
         />
 
+        {/* コース紹介 TTS のオート再生トグル — TTS サポート環境のみ表示 */}
+        <CoursePreviewAutoplayToggle />
+
         {/* ピン留め: フェルミ推定コース — トレーニングの最上位に表示 */}
         {(() => {
           const fermiCourses = getCoursesByCategory('フェルミ推定')
@@ -467,27 +470,31 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
                 <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.45 }}>{t('roadmap.pinnedFermiDescription')}</div>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                {fermiCourses.map(course => {
-                  const v = CATEGORY_VISUAL[course.category] || DEFAULT_VISUAL
-                  const cardImage = course.image || v.image
-                  return (
-                    <CategoryCard
-                      key={course.id}
-                      name={course.title}
-                      meta={t('roadmap.lessonCountAndLevel', { count: course.lessonIds.length, level: levelLabel(course.level) })}
-                      image={cardImage}
-                      onClick={() => props.onOpenCategory(v.routeKey)}
-                      saveTarget={{
-                        refId: v.routeKey,
-                        title: course.title,
-                        subtitle: course.category,
-                        image: cardImage,
-                      }}
-                      previewId={course.id}
-                      previewText={buildCoursePreviewText(course)}
-                    />
-                  )
-                })}
+                {(() => {
+                  const fermiSequence = fermiCourses.map(c => ({ id: c.id, text: buildCoursePreviewText(c) }))
+                  return fermiCourses.map(course => {
+                    const v = CATEGORY_VISUAL[course.category] || DEFAULT_VISUAL
+                    const cardImage = course.image || v.image
+                    return (
+                      <CategoryCard
+                        key={course.id}
+                        name={course.title}
+                        meta={t('roadmap.lessonCountAndLevel', { count: course.lessonIds.length, level: levelLabel(course.level) })}
+                        image={cardImage}
+                        onClick={() => props.onOpenCategory(v.routeKey)}
+                        saveTarget={{
+                          refId: v.routeKey,
+                          title: course.title,
+                          subtitle: course.category,
+                          image: cardImage,
+                        }}
+                        previewId={course.id}
+                        previewText={buildCoursePreviewText(course)}
+                        previewSequence={fermiSequence}
+                      />
+                    )
+                  })
+                })()}
               </div>
             </div>
           )
@@ -504,27 +511,31 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
                 <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.45 }}>{group.description}</div>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                {groupCourses.map(course => {
-                  const v = CATEGORY_VISUAL[course.category] || DEFAULT_VISUAL
-                  const cardImage = course.image || v.image
-                  return (
-                    <CategoryCard
-                      key={course.id}
-                      name={course.title}
-                      meta={t('roadmap.lessonCountAndLevel', { count: course.lessonIds.length, level: levelLabel(course.level) })}
-                      image={cardImage}
-                      onClick={() => props.onOpenCategory(v.routeKey)}
-                      saveTarget={{
-                        refId: v.routeKey,
-                        title: course.title,
-                        subtitle: course.category,
-                        image: cardImage,
-                      }}
-                      previewId={course.id}
-                      previewText={buildCoursePreviewText(course)}
-                    />
-                  )
-                })}
+                {(() => {
+                  const groupSequence = groupCourses.map(c => ({ id: c.id, text: buildCoursePreviewText(c) }))
+                  return groupCourses.map(course => {
+                    const v = CATEGORY_VISUAL[course.category] || DEFAULT_VISUAL
+                    const cardImage = course.image || v.image
+                    return (
+                      <CategoryCard
+                        key={course.id}
+                        name={course.title}
+                        meta={t('roadmap.lessonCountAndLevel', { count: course.lessonIds.length, level: levelLabel(course.level) })}
+                        image={cardImage}
+                        onClick={() => props.onOpenCategory(v.routeKey)}
+                        saveTarget={{
+                          refId: v.routeKey,
+                          title: course.title,
+                          subtitle: course.category,
+                          image: cardImage,
+                        }}
+                        previewId={course.id}
+                        previewText={buildCoursePreviewText(course)}
+                        previewSequence={groupSequence}
+                      />
+                    )
+                  })
+                })()}
               </div>
             </div>
           )
@@ -966,7 +977,118 @@ function ensureCoursePreviewSubscribed() {
   } catch { /* */ }
 }
 
-function CategoryCard({ name, meta, progress, onClick, image, saveTarget, previewId, previewText }: {
+/**
+ * コース紹介 TTS の「オート再生 ON/OFF」を切り替えるトグル UI。
+ * - tts.loadAutoplay() の現在値を表示し、クリックで反転して tts.saveAutoplay() で永続化する
+ * - tts.subscribeAutoplay() で他箇所からの変更にも追随する（同画面内に複数置く想定はないが安全側）
+ * - 端末が TTS 非サポートなら描画しない（コース紹介ボタン自体出ないため UI 整合）
+ */
+function CoursePreviewAutoplayToggle() {
+  const [autoplay, setAutoplayState] = useState<boolean>(() => tts.loadAutoplay())
+  useEffect(() => tts.subscribeAutoplay(setAutoplayState), [])
+  if (!tts.isSupported()) return null
+
+  const toggle = () => {
+    const next = !autoplay
+    tts.saveAutoplay(next)
+    setAutoplayState(next)
+  }
+
+  return (
+    <div
+      style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        gap: 12,
+        padding: '10px 12px',
+        background: 'var(--bg-card)',
+        borderRadius: 12,
+        boxShadow: 'var(--shadow-v3-card-inset)',
+      }}
+    >
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0 }}>
+        <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>
+          {t('tts.autoplay.label')}
+        </div>
+        <div style={{ fontSize: 11, color: 'var(--text-secondary)', lineHeight: 1.45 }}>
+          {t('tts.autoplay.hint')}
+        </div>
+      </div>
+      <button
+        type="button"
+        role="switch"
+        aria-checked={autoplay}
+        aria-label={t('tts.autoplay.toggleAria')}
+        title={autoplay ? t('tts.autoplay.on') : t('tts.autoplay.off')}
+        onClick={toggle}
+        style={{
+          flexShrink: 0,
+          position: 'relative',
+          width: 44, height: 26,
+          borderRadius: 999,
+          border: 'none',
+          padding: 0,
+          cursor: 'pointer',
+          background: autoplay ? 'var(--brand)' : 'color-mix(in srgb, var(--text-muted) 25%, transparent)',
+          transition: 'background .2s',
+          WebkitTapHighlightColor: 'transparent',
+        }}
+      >
+        <span
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            top: 3,
+            left: autoplay ? 21 : 3,
+            width: 20, height: 20,
+            borderRadius: '50%',
+            background: '#FFFFFF',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.25)',
+            transition: 'left .2s',
+          }}
+        />
+      </button>
+    </div>
+  )
+}
+
+/**
+ * グループ内のコース紹介音声プレビュー連鎖再生 / 単発再生の共通ヘルパ。
+ * 自然終了時に autoplay=true なら次の sequence エントリへ進める。
+ * autoplay=false なら一度の発話で終了し、active id を解除する。
+ *
+ * 引数の sequence は「同じグループ・同じ画面に並んでいて、上から順に再生したい」
+ * 単位の {id, text} 配列。グループ外（別カテゴリのカード）にはチェーンしない。
+ */
+function playCoursePreview(
+  id: string,
+  text: string,
+  sequence: ReadonlyArray<{ id: string; text: string }>,
+): void {
+  if (!text) return
+  setCoursePreviewActive(id)
+  void tts.speak(text, {
+    lang: getLocale() === 'ja' ? 'ja-JP' : 'en-US',
+    rate: tts.loadRate(),
+    pitch: tts.loadPitch(),
+    voiceId: tts.loadVoiceId(),
+    onEnd: () => {
+      // 自然終了。autoplay ON かつ sequence 内に次があれば連鎖再生。
+      if (!tts.loadAutoplay()) {
+        setCoursePreviewActive(null)
+        return
+      }
+      const idx = sequence.findIndex(s => s.id === id)
+      const next = idx >= 0 ? sequence[idx + 1] : undefined
+      if (!next) {
+        setCoursePreviewActive(null)
+        return
+      }
+      playCoursePreview(next.id, next.text, sequence)
+    },
+  })
+}
+
+function CategoryCard({ name, meta, progress, onClick, image, saveTarget, previewId, previewText, previewSequence }: {
   name: string
   meta: string
   progress?: string
@@ -977,6 +1099,11 @@ function CategoryCard({ name, meta, progress, onClick, image, saveTarget, previe
   previewId?: string
   /** 音声プレビューで読み上げるテキスト。長すぎる文字列は端末側で分割される可能性あり。 */
   previewText?: string
+  /**
+   * 同一グループ内のコース順序（オート再生連鎖に使う）。
+   * 自カードの previewId が含まれる前提。未指定時は単発再生のみ。
+   */
+  previewSequence?: ReadonlyArray<{ id: string; text: string }>
 }) {
   const [saved, setSaved] = useState<boolean>(() => saveTarget ? isSaved('course', saveTarget.refId) : false)
 
@@ -998,16 +1125,13 @@ function CategoryCard({ name, meta, progress, onClick, image, saveTarget, previe
       void tts.stop()
       return
     }
-    setCoursePreviewActive(previewId ?? null)
-    // lang は UI ロケールに合わせる。pitch / rate / voice は LessonStoriesScreen と同じ保存値を流用。
-    void tts.speak(previewText ?? '', {
-      lang: getLocale() === 'ja' ? 'ja-JP' : 'en-US',
-      rate: tts.loadRate(),
-      pitch: tts.loadPitch(),
-      voiceId: tts.loadVoiceId(),
-      onEnd: () => setCoursePreviewActive(null),
-    })
-  }, [isPreviewing, previewId, previewSupported, previewText])
+    // sequence が未指定なら自分 1 件のみ（= autoplay 無効と同じ単発挙動）
+    const seq: ReadonlyArray<{ id: string; text: string }> =
+      previewSequence && previewSequence.length > 0
+        ? previewSequence
+        : [{ id: previewId ?? '', text: previewText ?? '' }]
+    playCoursePreview(previewId ?? '', previewText ?? '', seq)
+  }, [isPreviewing, previewId, previewSupported, previewText, previewSequence])
 
   return (
     <div style={{ position: 'relative' }}>
