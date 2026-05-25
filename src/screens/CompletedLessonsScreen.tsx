@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { getCompletedLessons } from '../stats'
-import { CheckCircleIcon } from '../icons'
+import { getAllCompletionCounts } from '../db/completionCountDb'
+import { CompletionBadge } from '../components/CompletionBadge'
 import { Header } from '../components/platform/Header'
 import { allLessons } from '../lessonData'
 import { t } from '../i18n'
@@ -148,6 +149,7 @@ function catColor(cat: string): string {
 
 export function CompletedLessonsScreen({ onBack }: CompletedLessonsScreenProps) {
   const keys = useMemo(() => getCompletedLessons(), [])
+  const completionCounts = useMemo(() => getAllCompletionCounts(), [])
 
   // Group by category, preserve CAT_ORDER
   const grouped = useMemo(() => {
@@ -204,14 +206,18 @@ export function CompletedLessonsScreen({ onBack }: CompletedLessonsScreenProps) 
               {catKeys.map((key, i) => {
                 const meta = LESSON_MAP[key]
                 const name = resolveLessonName(key, meta?.name ?? key)
+                const count = completionCounts[key] ?? 1
                 return (
                   <li key={key} aria-label={t('completed.itemAria', { name })}>
                     {i > 0 && <div style={{ height: 1, background: 'var(--border)', marginLeft: 'var(--s-4)' }} />}
                     <div style={{ display: 'flex', alignItems: 'center', padding: 'var(--s-3) var(--s-4)', gap: 'var(--s-3)' }}>
-                      <span aria-hidden="true" style={{ color: 'var(--success)', flexShrink: 0 }}>
-                        <CheckCircleIcon width={18} height={18} />
-                      </span>
+                      <CompletionBadge count={count} size={22} />
                       <span style={{ fontSize: 16, color: 'var(--text)', flex: 1 }}>{name}</span>
+                      {count >= 2 && (
+                        <span style={{ fontSize: 12, color: 'var(--brand)', fontWeight: 700, flexShrink: 0 }}>
+                          {t('completed.timesDone', { n: String(Math.min(count, 99)) })}
+                        </span>
+                      )}
                     </div>
                   </li>
                 )
