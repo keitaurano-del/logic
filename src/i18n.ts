@@ -611,6 +611,7 @@ const STRINGS: Record<Locale, Strings> = {
     'completed.title': '完了レッスン',
     'completed.lessonsDone': '完了したレッスン',
     'completed.empty': 'まだレッスンを完了していません',
+    'completed.timesDone': '{n} 回完了',
 
     // Study time screen
     'studytime.title': '総学習時間',
@@ -785,6 +786,8 @@ const STRINGS: Record<Locale, Strings> = {
     'roadmap.lessonAriaInCourse': 'レッスン {n}: {title}',
     'roadmap.lessonAriaInCourseDone': 'レッスン {n}: {title} (完了)',
     'roadmap.lessonAriaInCourseNext': 'レッスン {n}: {title} (次へ)',
+    'roadmap.pinnedFermiLabel': 'フェルミ推定',
+    'roadmap.pinnedFermiDescription': '数値感覚と分解力を鍛えるコンサル定番スキル',
     'roadmap.lessonAriaDone': 'レッスン: {title} (完了)',
     'roadmap.stepCount': '{count}ステップ',
     'roadmap.nextLabel': '次へ',
@@ -2381,6 +2384,7 @@ const STRINGS: Record<Locale, Strings> = {
     'completed.title': 'Completed Lessons',
     'completed.lessonsDone': 'lessons completed',
     'completed.empty': 'No lessons completed yet',
+    'completed.timesDone': 'completed {n}×',
 
     // Study time screen
     'studytime.title': 'Study Time',
@@ -2555,6 +2559,8 @@ const STRINGS: Record<Locale, Strings> = {
     'roadmap.lessonAriaInCourse': 'Lesson {n}: {title}',
     'roadmap.lessonAriaInCourseDone': 'Lesson {n}: {title} (done)',
     'roadmap.lessonAriaInCourseNext': 'Lesson {n}: {title} (next)',
+    'roadmap.pinnedFermiLabel': 'Fermi estimation',
+    'roadmap.pinnedFermiDescription': 'Classic consulting skill: build number sense and decomposition',
     'roadmap.lessonAriaDone': 'Lesson: {title} (done)',
     'roadmap.stepCount': '{count} steps',
     'roadmap.nextLabel': 'Next',

@@ -138,6 +138,17 @@ export function createStudySessionsRouter(supabase: SupabaseLike): Router {
         }
       }
 
+      // raw セッション一覧（最大 1000 件）も返す。
+      // StudyTimeScreen の「日付タップ → その日の学習内訳」で、
+      // JST 集計やアクティビティ別内訳を組み立てるのに使う。
+      // 余分なペイロードを避けるため、必要最小限のフィールドのみ。
+      const sessions = (data ?? []).slice(0, 1000).map((r) => ({
+        activity_type: r.activity_type ?? null,
+        activity_id: r.activity_id ?? null,
+        started_at: r.started_at ?? null,
+        duration_ms: r.duration_ms ?? 0,
+      }))
+
       return res.json({
         total_ms: total,
         days,
@@ -145,6 +156,7 @@ export function createStudySessionsRouter(supabase: SupabaseLike): Router {
         by_type: byType,
         by_activity: byActivity,
         session_count: (data ?? []).length,
+        sessions,
       })
     } catch (e) {
       console.error('[study-sessions/stats] error:', e)

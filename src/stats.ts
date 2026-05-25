@@ -1,4 +1,5 @@
 import { pushProgress, pushDisplayName, getSyncUser } from './syncService'
+import { incrementCompletionCount } from './db/completionCountDb'
 
 const STORAGE_KEY = 'logic-stats'
 
@@ -62,6 +63,12 @@ export function recordCompletion(lessonKey: string) {
   }
   save(stats)
   recordLessonStreak()
+  // 日別ログにも記録（時間情報なし）。useStudyTimer 経由でも別途 ms 付きで記録されるが、
+  // タイマー回らなかった短時間完了でも「何を学んだか」一覧には出るようにする。
+  appendStudyDaily({ key: lessonKey, ts: Date.now() })
+  // 完了回数を +1 (1 回目 / 2 回目 / 3 回以上 をバッジで可視化するため別管理)。
+  // 既存の completedLessons (Set 相当) とは独立。
+  try { incrementCompletionCount(lessonKey) } catch { /* localStorage 不可は無視 */ }
   if (getSyncUser()) pushProgress(stats)
 }
 
@@ -74,6 +81,87 @@ export function addStudyTime(ms: number) {
   }
   save(stats)
   if (getSyncUser()) pushProgress(stats)
+}
+
+// ── 日別学習ログ（localStorage）─────────────────────────
+//
+// 既存の studyTimeMs（累計）/ studyDates（学習した日付集合）に加えて、
+// 「いつ・何を・どれだけ学んだか」をローカルで保持する。
+// StudyTimeScreen の日別グラフ + 学習内訳表示で参照する。
+//
+// 形式: { 'YYYY-MM-DD': { ms: number, items: { key: string; ts: number; ms?: number }[] } }
+//   - key: useStudyTimer の activity_type + ':' + activity_id（例 'lesson:23', 'fermi:default'）
+//          または recordCompletion 経由の completion key（例 'lesson-23'）
+//   - ts:  そのアクティビティが終わった unix ms
+//   - ms:  そのアクティビティで計測された学習時間（recordCompletion 由来は undefined）
+//
+// 保持上限: 過去 180 日分（古いものから自動削除）。
+const STUDY_DAILY_KEY = 'logic-study-daily'
+
+export type StudyDailyItem = { key: string; ts: number; ms?: number }
+export type StudyDailyMap = Record<string, { ms: number; items: StudyDailyItem[] }>
+
+const MAX_DAILY_KEEP_DAYS = 180
+const MAX_ITEMS_PER_DAY = 200
+
+function loadDaily(): StudyDailyMap {
+  try {
+    const raw = localStorage.getItem(STUDY_DAILY_KEY)
+    if (!raw) return {}
+    const parsed = JSON.parse(raw)
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return {}
+    return parsed as StudyDailyMap
+  } catch { return {} }
+}
+
+function saveDaily(map: StudyDailyMap) {
+  try {
+    // 古い日を間引いて localStorage 容量を守る
+    const keys = Object.keys(map).sort()
+    if (keys.length > MAX_DAILY_KEEP_DAYS) {
+      for (const k of keys.slice(0, keys.length - MAX_DAILY_KEEP_DAYS)) delete map[k]
+    }
+    localStorage.setItem(STUDY_DAILY_KEY, JSON.stringify(map))
+  } catch { /* ignore */ }
+}
+
+/**
+ * 日別学習ログに 1 件追加。useStudyTimer の flush と recordCompletion の両方から呼ぶ。
+ *
+ * - ms が指定された場合は日合計に加算する（useStudyTimer 経路）。
+ * - ms が undefined の場合は時間加算なし（短時間レッスン完了など、recordCompletion 経路）。
+ *
+ * 日付は ts（ended_at 相当）のローカル日付で決める。
+ * useStudyTimer は UTC ISO を投げてくるが、こちらは localStorage 側なのでローカル時刻で
+ * 揃えれば JST 朝のズレを起こさず、サーバー集計（UTC）と独立に正しい値を保てる。
+ */
+export function appendStudyDaily(item: StudyDailyItem) {
+  try {
+    const map = loadDaily()
+    const dateStr = localDateStr(item.ts)
+    const day = map[dateStr] ?? { ms: 0, items: [] }
+    if (typeof item.ms === 'number' && item.ms > 0) day.ms += item.ms
+    day.items.push(item)
+    // 1 日あたりのアイテム上限（暴走防止）
+    if (day.items.length > MAX_ITEMS_PER_DAY) {
+      day.items.splice(0, day.items.length - MAX_ITEMS_PER_DAY)
+    }
+    map[dateStr] = day
+    saveDaily(map)
+  } catch { /* localStorage 不可は無視 */ }
+}
+
+export function getStudyDaily(): StudyDailyMap {
+  return loadDaily()
+}
+
+/**
+ * 指定日（YYYY-MM-DD ローカル）の学習時間とアイテムを返す。データがない日は ms=0, items=[]。
+ */
+export function getStudyDailyEntry(dateStr: string): { ms: number; items: StudyDailyItem[] } {
+  const map = loadDaily()
+  const e = map[dateStr]
+  return e ? { ms: e.ms, items: [...e.items] } : { ms: 0, items: [] }
 }
 
 export function getCompletedCount(): number {

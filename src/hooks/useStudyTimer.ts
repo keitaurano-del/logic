@@ -19,7 +19,7 @@
  */
 
 import { useEffect, useRef } from 'react'
-import { addStudyTime } from '../stats'
+import { addStudyTime, appendStudyDaily } from '../stats'
 import { getSyncUser } from '../syncService'
 import { API_BASE } from '../screens/apiBase'
 
@@ -103,6 +103,13 @@ export function useStudyTimer(opts: UseStudyTimerOptions) {
 
       // localStorage 累計に加算
       try { addStudyTime(elapsedMs) } catch { /* ignore */ }
+
+      // 日別ログにも記録（StudyTimeScreen の日別グラフ・学習内訳で参照される）
+      try {
+        const aid = idRef.current
+        const key = aid ? `${typeRef.current}:${aid}` : typeRef.current
+        appendStudyDaily({ key, ts: Date.now(), ms: elapsedMs })
+      } catch { /* ignore */ }
 
       // サーバへ best-effort で記録
       const userId = getSyncUser()
