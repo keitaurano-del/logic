@@ -312,8 +312,6 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
           <button
             onClick={() => {
               cancelAutoAdvance()
-              // 自動遷移をキャンセルした場合は logic-tts-mode-continue を消し、次レッスンで TTS 再開しない
-              try { sessionStorage.removeItem('logic-tts-mode-continue') } catch { /* */ }
               onHome()
             }}
             style={{

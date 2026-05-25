@@ -1,13 +1,13 @@
 /**
  * TtsPopover — ヘッドホンアイコンのボタン + タップで開く軽量ポップオーバー。
  *
- * 用途: コース紹介の音声プレビュー（コース一覧カード / カテゴリ表示モードのヘッダー）。
+ * 用途: コースを再生（カテゴリ表示モードのヘッダー）。
  * 中身:
- *   - 再生 / 停止ボタン（対象テキストを読み上げ・停止）
- *   - 速度（rate）選択 + ボイス選択（VoiceRateControls 共有コンポを TtsControlPanel と共有）
- *   - オート連続再生トグル（showAutoplay=true のときのみ。コース一覧の文脈で意味を持つ）
+ *   - 再生 / 停止ボタン（コースのレッスン本文を読み上げ・停止）
+ *   - 速度（rate）選択 + ボイス選択（女性 / 男性。VoiceRateControls 共有コンポ）
+ *   - ピッチ（声の高さ）選択 — 下部バーがごちゃつくのを避けるためこちら側に置く（要件 11）
  *
- * seek / ピッチは含めない（コース紹介はスライド単位の頭出しが無いため）。
+ * seek は含めない（起動前のポップオーバーには再生位置が無いため）。
  *
  * 設計:
  *   - 再生状態（playing）と再生/停止トグルは親が制御する（onTogglePlay）。
@@ -18,11 +18,18 @@
  *
  * 文言は中立的な丁寧体（feedback_app_copy_neutral）。
  */
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { t } from '../i18n'
 import * as tts from '../ttsService'
 import { HeadphonesIcon, XIcon } from '../icons'
 import { VoiceRateControls } from './VoiceRateControls'
+
+// ピッチプリセット: 低め / 普通 / 高め の 3 段階（TtsControlPanel から移設）。
+const PITCH_OPTIONS: { value: number; labelKey: 'tts.pitch.low' | 'tts.pitch.normal' | 'tts.pitch.high' }[] = [
+  { value: 0.75, labelKey: 'tts.pitch.low' },
+  { value: 1.0, labelKey: 'tts.pitch.normal' },
+  { value: 1.25, labelKey: 'tts.pitch.high' },
+]
 
 export interface TtsPopoverProps {
   lang: 'ja-JP' | 'en-US'
@@ -30,24 +37,19 @@ export interface TtsPopoverProps {
   playing: boolean
   /** 再生 / 停止トグル。親が連鎖再生・active id 管理を行う。 */
   onTogglePlay: () => void
-  /** オート連続再生トグルを表示するか（コース一覧の文脈でのみ true）。 */
-  showAutoplay?: boolean
-  /** ヘッドホンボタンの追加スタイル（カードでは absolute 配置、ヘッダーでは inline など）。 */
+  /** ヘッドホンボタンの追加スタイル（ヘッダーでは inline など）。 */
   buttonStyle?: React.CSSProperties
   /** ヘッドホンアイコンのサイズ（px）。既定 16。 */
   iconSize?: number
 }
 
 export function TtsPopover(props: TtsPopoverProps) {
-  const { lang, playing, onTogglePlay, showAutoplay = false, buttonStyle, iconSize = 16 } = props
+  const { lang, playing, onTogglePlay, buttonStyle, iconSize = 16 } = props
   const [open, setOpen] = useState(false)
   const [rate, setRate] = useState<number>(() => tts.loadRate())
   const [voiceId, setVoiceId] = useState<string | null>(() => tts.loadVoiceId())
-  const [autoplay, setAutoplay] = useState<boolean>(() => tts.loadAutoplay())
+  const [pitch, setPitch] = useState<number>(() => tts.loadPitch())
   const rootRef = useRef<HTMLDivElement>(null)
-
-  // 他箇所からの autoplay 変更に追随
-  useEffect(() => tts.subscribeAutoplay(setAutoplay), [])
 
   const handleChangeRate = useCallback((r: number) => {
     tts.saveRate(r)
@@ -59,10 +61,9 @@ export function TtsPopover(props: TtsPopoverProps) {
     setVoiceId(id)
   }, [])
 
-  const handleToggleAutoplay = useCallback(() => {
-    const next = !tts.loadAutoplay()
-    tts.saveAutoplay(next)
-    setAutoplay(next)
+  const handleChangePitch = useCallback((p: number) => {
+    tts.savePitch(p)
+    setPitch(p)
   }, [])
 
   if (!tts.isSupported()) return null
@@ -128,7 +129,7 @@ export function TtsPopover(props: TtsPopoverProps) {
           >
             {/* 上段: タイトル + 閉じる */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: 13, fontWeight: 700 }}>{t('tts.coursePreview.title')}</span>
+              <span style={{ fontSize: 13, fontWeight: 700 }}>{t('tts.coursePlay.title')}</span>
               <button
                 type="button"
                 onClick={(e) => { e.stopPropagation(); setOpen(false) }}
@@ -151,7 +152,7 @@ export function TtsPopover(props: TtsPopoverProps) {
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); onTogglePlay() }}
-              aria-label={playing ? t('tts.coursePreview.stop') : t('tts.coursePreview.play')}
+              aria-label={playing ? t('tts.coursePlay.stop') : t('tts.coursePlay.play')}
               aria-pressed={playing}
               style={{
                 display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8,
@@ -169,69 +170,60 @@ export function TtsPopover(props: TtsPopoverProps) {
               {playing ? (
                 <>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1.5" /></svg>
-                  {t('tts.coursePreview.stop')}
+                  {t('tts.coursePlay.stop')}
                 </>
               ) : (
                 <>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
-                  {t('tts.coursePreview.play')}
+                  {t('tts.coursePlay.play')}
                 </>
               )}
             </button>
 
-            {/* 速度 + ボイス選択 */}
+            {/* 速度 + ボイス選択（女性 / 男性） */}
             <VoiceRateControls
               rate={rate}
               voiceId={voiceId}
               lang={lang}
               onChangeRate={handleChangeRate}
               onChangeVoice={handleChangeVoice}
-              voiceMenuPlacement="down"
             />
 
-            {/* オート連続再生トグル（コース一覧の文脈でのみ） */}
-            {showAutoplay && (
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0 }}>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-primary)' }}>{t('tts.autoplay.label')}</span>
-                  <span style={{ fontSize: 10, color: 'var(--text-secondary)', lineHeight: 1.4 }}>{t('tts.autoplay.hint')}</span>
-                </div>
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={autoplay}
-                  aria-label={t('tts.autoplay.toggleAria')}
-                  title={autoplay ? t('tts.autoplay.on') : t('tts.autoplay.off')}
-                  onClick={(e) => { e.stopPropagation(); handleToggleAutoplay() }}
-                  style={{
-                    flexShrink: 0,
-                    position: 'relative',
-                    width: 44, height: 26,
-                    borderRadius: 999,
-                    border: 'none',
-                    padding: 0,
-                    cursor: 'pointer',
-                    background: autoplay ? 'var(--brand)' : 'color-mix(in srgb, var(--text-muted) 25%, transparent)',
-                    transition: 'background .2s',
-                    WebkitTapHighlightColor: 'transparent',
-                  }}
-                >
-                  <span
-                    aria-hidden="true"
-                    style={{
-                      position: 'absolute',
-                      top: 3,
-                      left: autoplay ? 21 : 3,
-                      width: 20, height: 20,
-                      borderRadius: '50%',
-                      background: '#FFFFFF',
-                      boxShadow: '0 1px 3px rgba(0,0,0,0.25)',
-                      transition: 'left .2s',
-                    }}
-                  />
-                </button>
+            {/* ピッチ（声の高さ）: 低め / 普通 / 高め */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'space-between' }}>
+              <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '.04em', flexShrink: 0 }}>
+                {t('tts.pitch')}
+              </span>
+              <div style={{ display: 'flex', gap: 4, flexWrap: 'nowrap' }}>
+                {PITCH_OPTIONS.map((p) => {
+                  const active = Math.abs(p.value - pitch) < 0.001
+                  return (
+                    <button
+                      key={p.value}
+                      type="button"
+                      onPointerDown={(e) => { e.stopPropagation(); handleChangePitch(p.value) }}
+                      aria-label={t('tts.pitch') + ' ' + t(p.labelKey)}
+                      aria-pressed={active}
+                      style={{
+                        minWidth: 56, height: 36,
+                        padding: '0 12px',
+                        borderRadius: 99,
+                        background: active ? 'var(--brand)' : 'var(--bg-tertiary, rgba(255,255,255,0.08))',
+                        color: active ? '#FFFFFF' : 'var(--text-primary)',
+                        border: 'none',
+                        cursor: 'pointer',
+                        fontSize: 13, fontWeight: 700,
+                        fontFamily: "'Noto Sans JP', sans-serif",
+                        WebkitTapHighlightColor: 'transparent',
+                        flexShrink: 0,
+                      }}
+                    >
+                      {t(p.labelKey)}
+                    </button>
+                  )
+                })}
               </div>
-            )}
+            </div>
           </div>
         </>
       )}

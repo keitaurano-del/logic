@@ -353,6 +353,26 @@ export function HeadphonesIcon(p: IconProps) {
   )
 }
 
+// 反時計回りの矢印（10秒戻る用）— TTS ミュージックプレーヤーバー。数字「10」はボタン側で別途表示する。
+export function RewindArrowIcon(p: IconProps) {
+  return (
+    <svg {...base} {...p}>
+      <polyline points="1 4 1 10 7 10" />
+      <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+    </svg>
+  )
+}
+
+// 時計回りの矢印（10秒進む用）— TTS ミュージックプレーヤーバー。数字「10」はボタン側で別途表示する。
+export function ForwardArrowIcon(p: IconProps) {
+  return (
+    <svg {...base} {...p}>
+      <polyline points="23 4 23 10 17 10" />
+      <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
+    </svg>
+  )
+}
+
 // Lucide-style flag icon — 「誤りを報告」ボタンのアイコン用
 // LessonStoriesScreen で常時表示するコンパクト報告ボタンに使用
 export function FlagIcon(p: IconProps) {

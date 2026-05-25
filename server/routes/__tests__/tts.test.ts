@@ -173,6 +173,40 @@ describe('/api/tts route', () => {
     vi.unstubAllGlobals()
   })
 
+  it('音声は女性/男性の2種のみ: 旧カタログのボイス(ja-JP-Neural2-B)は 400 invalid_voice', async () => {
+    process.env.GOOGLE_TTS_API_KEY = 'test-key'
+    const fetchSpy = vi.fn()
+    vi.stubGlobal('fetch', fetchSpy)
+    const handler = getHandler()
+    const res = mockRes()
+    await handler(
+      { body: { text: 'テスト', lang: 'ja-JP', voiceName: 'ja-JP-Neural2-B' } } as unknown as Request,
+      res,
+    )
+    expect(res.statusCode).toBe(400)
+    expect(res.body).toEqual({ error: 'invalid_voice' })
+    expect(fetchSpy).not.toHaveBeenCalled()
+    vi.unstubAllGlobals()
+  })
+
+  it('音声は女性/男性の2種のみ: 女性(C) / 男性(D) は許可される (ja-JP-Neural2-D)', async () => {
+    process.env.GOOGLE_TTS_API_KEY = 'test-key'
+    const fetchSpy = vi.fn(async () =>
+      new Response(JSON.stringify({ audioContent: 'QUJD' }), { status: 200 }),
+    )
+    vi.stubGlobal('fetch', fetchSpy)
+    const handler = getHandler()
+    const res = mockRes()
+    await handler(
+      { body: { text: 'テスト', lang: 'ja-JP', voiceName: 'ja-JP-Neural2-D' } } as unknown as Request,
+      res,
+    )
+    expect(res.statusCode).toBe(200)
+    const sent = JSON.parse(String((fetchSpy.mock.calls[0][1] as RequestInit).body)) as { voice: { name: string } }
+    expect(sent.voice.name).toBe('ja-JP-Neural2-D')
+    vi.unstubAllGlobals()
+  })
+
   it('当日累計合成文字数が上限を超えると 503 { error: tts_daily_limit }', async () => {
     process.env.GOOGLE_TTS_API_KEY = 'test-key'
     // 上限を低く設定（カウンタはプロセス内なので、1 回目で超過させる）

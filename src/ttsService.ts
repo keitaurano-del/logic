@@ -262,12 +262,12 @@ type CloudVoiceDef = {
   isDefault?: boolean
 }
 
+// 音声は「女性」「男性」の 2 種のみに絞る（lang ごとに女性 1 / 男性 1）。
+// server/routes/tts.ts の ALLOWED_VOICES と一致させること。
 const CLOUD_VOICE_CATALOG: CloudVoiceDef[] = [
   // ja-JP
   { voiceName: 'ja-JP-Neural2-C', lang: 'ja-JP', gender: 'female', isDefault: true },
   { voiceName: 'ja-JP-Neural2-D', lang: 'ja-JP', gender: 'male' },
-  { voiceName: 'ja-JP-Neural2-B', lang: 'ja-JP', gender: 'female' },
-  { voiceName: 'ja-JP-Wavenet-D', lang: 'ja-JP', gender: 'male' },
   // en-US
   { voiceName: 'en-US-Neural2-F', lang: 'en-US', gender: 'female', isDefault: true },
   { voiceName: 'en-US-Neural2-D', lang: 'en-US', gender: 'male' },
@@ -752,6 +752,47 @@ export async function resume(): Promise<void> {
       console.warn('[tts] web resume error', e)
     }
   }
+}
+
+/**
+ * クラウド再生（HTMLAudio, MP3）の時間軸シーク。
+ * - クラウド音声が再生中: currentTime を ±seconds する。範囲内に丸める。
+ *   その後の挙動（スライド境界をまたぐか）は呼び出し側で currentTime / duration を見て判断する。
+ *   このリクエストでシークが行えたら true、行えなかった（native/web で時間軸が無い等）なら false を返す。
+ * - native/web TTS: 時間軸を持たないので false を返す。呼び出し側はスライド送りにフォールバックする。
+ */
+export function skipSeconds(seconds: number): boolean {
+  const audio = currentCloudAudio
+  if (!audio) return false
+  try {
+    const dur = Number.isFinite(audio.duration) ? audio.duration : 0
+    const next = Math.max(0, audio.currentTime + seconds)
+    // duration が判明していれば末尾を超えない範囲にクランプ（超えたら呼び出し側で次スライド送り判断）
+    audio.currentTime = dur > 0 ? Math.min(dur, next) : next
+    return true
+  } catch (e) {
+    console.warn('[tts] skipSeconds error', e)
+    return false
+  }
+}
+
+/** クラウド再生中なら現在の再生位置（秒）。それ以外（native/web/停止中）は null。 */
+export function getCloudCurrentTime(): number | null {
+  const audio = currentCloudAudio
+  if (!audio) return null
+  return Number.isFinite(audio.currentTime) ? audio.currentTime : null
+}
+
+/** クラウド再生中なら音声の総尺（秒）。不明 / それ以外は null。 */
+export function getCloudDuration(): number | null {
+  const audio = currentCloudAudio
+  if (!audio) return null
+  return Number.isFinite(audio.duration) && audio.duration > 0 ? audio.duration : null
+}
+
+/** 現在クラウド（HTMLAudio）経路で再生中か。±10秒の時間シークが使えるかの判定に使う。 */
+export function isCloudPlaying(): boolean {
+  return currentCloudAudio !== null
 }
 
 async function speakNative(text: string, opts: SpeakOptions): Promise<void> {
