@@ -28,6 +28,8 @@ import { BookmarkIcon, BookmarkFilledIcon } from '../icons'
 import { getAllLessonsFlat } from '../lessonData'
 import type { LessonData } from '../lessonData'
 import { getCompletedLessons } from '../stats'
+import { getAllCompletionCounts } from '../db/completionCountDb'
+import { CompletionBadge } from '../components/CompletionBadge'
 import { getCoursesByCategory, getCoursesByGroup, COURSES, COURSE_GROUPS, type Course } from '../courseData'
 import { loadPersonalCourse, axisLabel } from '../placementData'
 import { isSaved, toggleSaved } from '../savedItemsStore'
@@ -435,9 +437,44 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
           onOpenPlacementTest={props.onOpenPlacementTest}
         />
 
-        {/* グループ別コース一覧 — 5グループ × 全21コース */}
+        {/* ピン留め: フェルミ推定コース — トレーニングの最上位に表示 */}
+        {(() => {
+          const fermiCourses = getCoursesByCategory('フェルミ推定')
+          if (fermiCourses.length === 0) return null
+          return (
+            <div key="pinned-fermi" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <div style={{ padding: '8px 4px 0' }}>
+                <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-.005em' }}>{t('roadmap.pinnedFermiLabel')}</div>
+                <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.45 }}>{t('roadmap.pinnedFermiDescription')}</div>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                {fermiCourses.map(course => {
+                  const v = CATEGORY_VISUAL[course.category] || DEFAULT_VISUAL
+                  const cardImage = course.image || v.image
+                  return (
+                    <CategoryCard
+                      key={course.id}
+                      name={course.title}
+                      meta={t('roadmap.lessonCountAndLevel', { count: course.lessonIds.length, level: levelLabel(course.level) })}
+                      image={cardImage}
+                      onClick={() => props.onOpenCategory(v.routeKey)}
+                      saveTarget={{
+                        refId: v.routeKey,
+                        title: course.title,
+                        subtitle: course.category,
+                        image: cardImage,
+                      }}
+                    />
+                  )
+                })}
+              </div>
+            </div>
+          )
+        })()}
+
+        {/* グループ別コース一覧 — 5グループ × 全21コース（フェルミ系は上の Pinned に出すので除外） */}
         {COURSE_GROUPS.map(group => {
-          const groupCourses = getCoursesByGroup(group.id)
+          const groupCourses = getCoursesByGroup(group.id).filter(c => c.category !== 'フェルミ推定')
           if (groupCourses.length === 0) return null
           return (
             <div key={group.id} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -933,6 +970,7 @@ function CategoryCard({ name, meta, progress, onClick, image, saveTarget }: {
 function CategoryDetailView({ category, onOpenLesson, onBack }: { category: string; onOpenLesson: (id: number) => void; onBack?: () => void }) {
   const flat = getAllLessonsFlat()
   const completed = new Set(getCompletedLessons())
+  const completionCounts = getAllCompletionCounts()
   // courseData の category は日本語データ値で保持されているため、検索用には JP ラベルが必要
   const dataLabel = CATEGORY_DATA_LABEL[category] || category
   const headerLabel = categoryLabel(category)
@@ -1009,6 +1047,7 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
                 {courseLessons.map((lesson, idx) => {
                   const isDone = completed.has(`lesson-${lesson.id}`)
                   const isNext = firstUndone?.id === lesson.id
+                  const completionCount = completionCounts[`lesson-${lesson.id}`] ?? 0
                   return (
                     <button type="button" key={lesson.id} onClick={() => onOpenLesson(lesson.id)}
                       aria-label={isDone
@@ -1017,16 +1056,24 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
                           ? t('roadmap.lessonAriaInCourseNext', { n: idx + 1, title: lesson.title })
                           : t('roadmap.lessonAriaInCourse', { n: idx + 1, title: lesson.title })}
                       style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', cursor: 'pointer', borderTop: idx > 0 ? `1px solid ${'var(--border)'}` : 'none', background: isNext ? `color-mix(in srgb, var(--brand) 3%, transparent)` : 'transparent', border: 'none', borderLeft: 'none', borderRight: 'none', borderBottom: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%' }}>
-                      {/* ステップ番号 or チェック */}
-                      <div style={{ width: 28, height: 28, borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: isDone ? 'var(--brand)' : isNext ? `color-mix(in srgb, var(--brand) 13%, transparent)` : `color-mix(in srgb, var(--text-muted) 9%, transparent)`, border: isNext && !isDone ? `1.5px solid ${'var(--brand)'}` : 'none' }}>
-                        {isDone
-                          ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                          : <span style={{ fontSize: 11, fontWeight: 700, color: isNext ? 'var(--brand)' : 'var(--text-muted)' }}>{idx + 1}</span>
-                        }
-                      </div>
+                      {/* ステップ番号 or 完了バッジ (回数に応じて表示が変化) */}
+                      {isDone ? (
+                        <CompletionBadge count={completionCount || 1} size={28} />
+                      ) : (
+                        <div style={{ width: 28, height: 28, borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: isNext ? `color-mix(in srgb, var(--brand) 13%, transparent)` : `color-mix(in srgb, var(--text-muted) 9%, transparent)`, border: isNext ? `1.5px solid ${'var(--brand)'}` : 'none' }}>
+                          <span style={{ fontSize: 11, fontWeight: 700, color: isNext ? 'var(--brand)' : 'var(--text-muted)' }}>{idx + 1}</span>
+                        </div>
+                      )}
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ fontSize: 14, fontWeight: isNext ? 700 : 600, color: isDone ? 'var(--text-secondary)' : 'var(--text-primary)', lineHeight: 1.3 }}>{lesson.title}</div>
-                        <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>{t('roadmap.stepCount', { count: lesson.steps?.length ?? 0 })}</div>
+                        <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
+                          {t('roadmap.stepCount', { count: lesson.steps?.length ?? 0 })}
+                          {isDone && completionCount >= 2 && (
+                            <span style={{ marginLeft: 8, color: 'var(--brand)', fontWeight: 700 }}>
+                              {t('completed.timesDone', { n: String(Math.min(completionCount, 99)) })}
+                            </span>
+                          )}
+                        </div>
                       </div>
                       {isNext && !isDone && (
                         <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--brand)', background: 'var(--accent-soft)', borderRadius: 6, padding: '3px 8px', flexShrink: 0 }}>{t('roadmap.nextLabel')}</div>
@@ -1045,6 +1092,7 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
         {/* コース未定義のカテゴリのフォールバック */}
         {fallbackLessons.map((lesson) => {
           const isDone = completed.has(`lesson-${lesson.id}`)
+          const completionCount = completionCounts[`lesson-${lesson.id}`] ?? 0
           return (
             <button type="button" key={lesson.id} onClick={() => onOpenLesson(lesson.id)}
               aria-label={isDone ? t('roadmap.lessonAriaDone', { title: lesson.title }) : t('roadmap.lessonAria', { title: lesson.title })}
@@ -1053,14 +1101,22 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
               <div style={{ padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0 }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 3, lineHeight: 1.4 }}>{lesson.title}</div>
-                  <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>{t('roadmap.stepCount', { count: lesson.steps?.length ?? 0 })}</div>
+                  <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
+                    {t('roadmap.stepCount', { count: lesson.steps?.length ?? 0 })}
+                    {isDone && completionCount >= 2 && (
+                      <span style={{ marginLeft: 8, color: 'var(--brand)', fontWeight: 700 }}>
+                        {t('completed.timesDone', { n: String(Math.min(completionCount, 99)) })}
+                      </span>
+                    )}
+                  </div>
                 </div>
-                <div style={{ width: 26, height: 26, borderRadius: '50%', background: isDone ? 'var(--brand)' : `color-mix(in srgb, var(--text-muted) 13%, transparent)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  {isDone
-                    ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                    : <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
-                  }
-                </div>
+                {isDone ? (
+                  <CompletionBadge count={completionCount || 1} size={26} />
+                ) : (
+                  <div style={{ width: 26, height: 26, borderRadius: '50%', background: `color-mix(in srgb, var(--text-muted) 13%, transparent)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+                  </div>
+                )}
               </div>
             </button>
           )
