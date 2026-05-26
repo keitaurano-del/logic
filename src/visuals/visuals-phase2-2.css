@@ -1,0 +1,315 @@
+/* ============================================================
+ * Logic v3 — Concept Visuals : Phase 2-2 新規部品（2026-05-26）
+ * ─────────────────────────────────────────────
+ * numeracy の数値系 3 部品のスタイル。
+ *
+ * Phase 1 / 2 / 3 / 2-1 の `.vz-*` prefix 規約を踏襲。
+ * 追加 prefix:
+ *   .vz-cw-   : ContributionWaterfallDiagram（寄与度ウォーターフォール）
+ *   .vz-sp-   : SimpsonsParadoxDiagram（シンプソンのパラドックス）
+ *   .vz-r72-  : RuleOf72Diagram（72 の法則 早見）
+ *
+ * hint（.vz-acd-hint）は visuals-phase2-1.css 側で定義済み・共通利用。
+ * CSS 変数は tokens.css の本体トークンを直接参照。ハードコード hex 禁止。
+ * light / dark 両テーマで破綻しないこと。
+ * ============================================================ */
+
+/* ============================================================
+ * 1) ContributionWaterfallDiagram — 寄与度ウォーターフォール
+ * ============================================================ */
+.vz-cw-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.vz-cw-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.vz-cw-baseline {
+  stroke: var(--text-muted);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+.vz-cw-bar.rise {
+  fill: var(--success);
+}
+.vz-cw-bar.fall {
+  fill: var(--rose);
+}
+.vz-cw-bar.total {
+  fill: var(--brand);
+}
+
+.vz-cw-connector {
+  stroke: var(--text-muted);
+  stroke-width: 1;
+  stroke-dasharray: 2 2;
+  opacity: 0.7;
+}
+
+.vz-cw-val {
+  fill: var(--text-primary);
+  font-size: 9px;
+  font-weight: 700;
+}
+.vz-cw-val.total {
+  fill: var(--brand);
+}
+
+.vz-cw-label {
+  fill: var(--text-secondary);
+  font-size: 9px;
+  font-weight: 600;
+}
+.vz-cw-label.total {
+  fill: var(--brand);
+  font-weight: 700;
+}
+
+.vz-cw-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  justify-content: center;
+}
+
+.vz-cw-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vz-cw-swatch {
+  width: 13px;
+  height: 13px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+.vz-cw-swatch.rise {
+  background: var(--success);
+}
+.vz-cw-swatch.fall {
+  background: var(--rose);
+}
+.vz-cw-swatch.total {
+  background: var(--brand);
+}
+
+.vz-cw-legend-text {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+/* ============================================================
+ * 2) SimpsonsParadoxDiagram — セグメント別 vs 全体の逆転
+ * ============================================================ */
+.vz-sp-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.vz-sp-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.vz-sp-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vz-sp-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+.vz-sp-swatch.a {
+  background: var(--brand);
+}
+.vz-sp-swatch.b {
+  background: var(--visual-warm-secondary);
+}
+
+.vz-sp-segment {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--bg-tertiary);
+}
+
+.vz-sp-segment.overall {
+  background: var(--brand-soft);
+  border: 1px solid var(--border);
+}
+
+.vz-sp-segment-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.vz-sp-row {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.vz-sp-row-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.vz-sp-track {
+  position: relative;
+  height: 12px;
+  border-radius: 6px;
+  background: var(--bg-card);
+  overflow: hidden;
+}
+
+.vz-sp-fill {
+  height: 100%;
+  border-radius: 6px;
+  min-width: 2px;
+  transition: width 0.4s ease;
+}
+.vz-sp-fill.a {
+  background: var(--brand);
+}
+.vz-sp-fill.b {
+  background: var(--visual-warm-secondary);
+}
+
+.vz-sp-row-val {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.vz-sp-frac {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+/* ============================================================
+ * 3) RuleOf72Diagram — 72 の法則 早見
+ * ============================================================ */
+.vz-r72-formula {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--brand);
+  background: var(--brand-soft);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-bottom: 10px;
+}
+
+.vz-r72-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.vz-r72-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.vz-r72-table th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  padding: 2px 4px 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.vz-r72-table td {
+  padding: 4px;
+  border-bottom: 1px solid var(--border);
+}
+
+.vz-r72-table tr:last-child td {
+  border-bottom: none;
+}
+
+.vz-r72-rate {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.vz-r72-years {
+  font-weight: 700;
+  color: var(--brand);
+  text-align: right;
+}
+
+.vz-r72-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.vz-r72-axis {
+  stroke: var(--border);
+  stroke-width: 1;
+}
+
+.vz-r72-curve {
+  fill: none;
+  stroke: var(--brand);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.vz-r72-dot {
+  fill: var(--brand);
+}
+
+.vz-r72-axis-label {
+  fill: var(--text-muted);
+  font-size: 8px;
+  font-weight: 600;
+}
+
+/* 狭幅では表とカーブを縦積み（モバイル全画面） */
+@media (max-width: 420px) {
+  .vz-r72-wrap {
+    grid-template-columns: 1fr;
+  }
+}
