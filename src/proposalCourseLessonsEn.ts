@@ -14,12 +14,12 @@ const proposalIntro: LessonData = {
     {
       type: 'explain',
       title: 'Understand what a proposal really is',
-      content: 'A proposal is not a "document-creation task."\nIt is a thinking artifact — the output of finding an issue, forming a hypothesis, testing it, and shaping the action.\n\nIn this course we train the thinking process for assembling proposal content, not the techniques for making slides look pretty.',
+      content: 'A proposal is not a "document-creation task."\nIt is a thinking artifact — the output of finding an issue, forming a hypothesis, testing it, and shaping the action.\n\nIn this course we train the thinking process for assembling proposal content, not the techniques for making slides look pretty.\n\n:::point\nA proposal\'s value is decided not by how it looks, but by the quality of thinking behind it.\n:::',
     },
     {
       type: 'explain',
       title: 'What "consultant-style" means',
-      content: 'Great proposals share one trait: hypothesis-first thinking.\n\nBefore gathering information, form a hypothesis ("isn\'t it like this?") and deepen your thinking by verifying it.\n\nThe hypothesis → research → verification → update cycle is what raises proposal quality.',
+      content: 'Great proposals share one trait: hypothesis-first thinking.\n\nBefore gathering information, form a hypothesis ("isn\'t it like this?") and deepen your thinking by verifying it.\n\nThe hypothesis → research → verification → update cycle is what raises proposal quality.\n\n:::point\nDon\'t research then think — think then research. That order is what separates strong proposals.\n:::',
     },
     {
       type: 'quiz',
@@ -60,7 +60,7 @@ const proposalHypothesis: LessonData = {
     {
       type: 'explain',
       title: 'What a hypothesis is',
-      content: 'A hypothesis is "a candidate answer derived from current information that should be tested."\n\nWhat matters is not "producing the right hypothesis" but "rapidly producing a testable one."\n\nEven if a hypothesis is wrong, testing it moves you toward the right direction.',
+      content: 'A hypothesis is "a candidate answer derived from current information that should be tested."\n\nWhat matters is not "producing the right hypothesis" but "rapidly producing a testable one."\n\nEven if a hypothesis is wrong, testing it moves you toward the right direction.\n\n:::point\nAim for "speed of testing," not "being right." Even a wrong guess moves you forward once you test it.\n:::',
     },
     {
       type: 'explain',
@@ -118,7 +118,7 @@ const proposalResearch: LessonData = {
     {
       type: 'explain',
       title: 'Frame the question before researching',
-      content: 'Once you have a hypothesis, the next step is "what do I need to find out to test it?"\n\nWrong: "Just do market research."\nRight: "If hypothesis A is true, X data should rise. So I\'ll measure X."\n\nResearch without purpose wastes time and budget.',
+      content: 'Once you have a hypothesis, the next step is "what do I need to find out to test it?"\n\n[icon:bad] Wrong: "Just do market research."\n[icon:good] Right: "If hypothesis A is true, X data should rise. So I\'ll measure X."\n\n:::warn\nResearch without a purpose only burns time and budget — it never gets you closer to a conclusion.\n:::',
     },
     {
       type: 'explain',
@@ -192,7 +192,7 @@ const proposalVerification: LessonData = {
     {
       type: 'explain',
       title: 'Be careful about interpreting information',
-      content: 'When looking at data, separate "facts" from "interpretation."\n\nFact: sales down 15% YoY\nInterpretation 1: prices are too high\nInterpretation 2: the overall market is shrinking\nInterpretation 3: competitors stole customers\n\nThe same data supports multiple interpretations. Choose the one most consistent with your hypothesis.',
+      content: 'When looking at data, separate "facts" from "interpretation."\n\nFact: sales down 15% YoY\nInterpretation 1: prices are too high\nInterpretation 2: the overall market is shrinking\nInterpretation 3: competitors stole customers\n\nThe same data supports multiple interpretations. Choose the one most consistent with your hypothesis.\n\n:::warn\nThe fact is single, but interpretations are many. Mistaking your interpretation for a fact makes the whole proposal wobble.\n:::',
     },
     {
       type: 'quiz',
@@ -265,7 +265,7 @@ const proposalStructure: LessonData = {
     {
       type: 'explain',
       title: 'Action design principles',
-      content: 'Actions must logically connect along the line "issue → cause → action."\n\nGood:\nIssue: repeat customer decline → Cause: quality dissatisfaction → Action: strengthen quality control process\n\nBad:\nIssue: repeat customer decline → Action: ramp up social media advertising (no link to cause)\n\nWhen asked "why this action?" you must be able to answer.',
+      content: 'Actions must logically connect along the line "issue → cause → action."\n\n[icon:good] Good:\nIssue: repeat customer decline → Cause: quality dissatisfaction → Action: strengthen quality control process\n\n[icon:bad] Bad:\nIssue: repeat customer decline → Action: ramp up social media advertising (no link to cause)\n\nWhen asked "why this action?" you must be able to answer.',
     },
     {
       type: 'quiz',
@@ -350,7 +350,7 @@ const proposalOutline: LessonData = {
     {
       type: 'explain',
       title: 'One slide, one message',
-      content: 'Each slide should carry exactly ONE claim (message).\n\nMake the slide title the message itself.\n\n"Market environment analysis" (topic title)\n"The market is maturing; competitors without differentiation will be culled" (message title)\n\nThe ideal proposal lets you grasp the entire story by reading just the message titles.',
+      content: 'Each slide should carry exactly ONE claim (message).\n\nMake the slide title the message itself.\n\n"Market environment analysis" (topic title)\n"The market is maturing; competitors without differentiation will be culled" (message title)\n\nThe ideal proposal lets you grasp the entire story by reading just the message titles.\n\n:::tip\nIf you can skim the titles alone and the logic still holds, that proposal is highly polished.\n:::',
     },
   ],
 }
