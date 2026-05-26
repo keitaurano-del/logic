@@ -13,7 +13,7 @@ const problemSettingIntro: LessonData = {
       type: 'explain',
       title: 'Why problem setting matters most',
       content:
-        'A famous Einstein quote:\n"If I had an hour to solve a problem, I would spend 55 minutes thinking about the problem and 5 minutes solving it."\n\nThe trap most people fall into:\nThey jump straight to "solutions."\nFirst, they should ask "what is the real problem?"\n\nExample:\nSurface problem: "Our sales close rate is low."\n-> Easy fix: "Run a sales training program."\n\nDigging deeper:\n- Maybe the target customers are wrong in the first place?\n- Maybe the product\'s pricing is off-market?\n- Maybe the leads are bad — we are pitching to people who were never going to buy?\n\nWhen you set the right problem, the solution becomes obvious.',
+        'A famous Einstein quote:\n"If I had an hour to solve a problem, I would spend 55 minutes thinking about the problem and 5 minutes solving it."\n\nThe trap most people fall into:\nThey jump straight to "solutions."\nFirst, they should ask "what is the real problem?"\n\nExample:\nSurface problem: "Our sales close rate is low."\n-> Easy fix: "Run a sales training program."\n\nDigging deeper:\n- Maybe the target customers are wrong in the first place?\n- Maybe the product\'s pricing is off-market?\n- Maybe the leads are bad — we are pitching to people who were never going to buy?\n\n:::point\nWhen you set the right problem, the solution becomes obvious.\n:::',
     },
     {
       type: 'quiz',
@@ -78,7 +78,7 @@ const problemSettingFramework: LessonData = {
       type: 'explain',
       title: 'What is an issue?',
       content:
-        'From Kazuto Ataka (Yahoo CSO)\'s book "Issue Driven":\n\n"Issue" = a question worth answering.\n\nNot every problem is an issue.\nConditions for an issue:\n- It can be answered (verifiable)\n- Answering it lets you move forward (actionable)\n- It needs to be answered now (timing is right)\n\nWhat distinguishes effective people:\nThey don\'t just chew through every task in front of them.\nThey identify "what issue must we answer right now?".\n\nWhen issue identification is weak,\nyou wander into "the dog\'s path" (low-productivity busywork).',
+        'From Kazuto Ataka (Yahoo CSO)\'s book "Issue Driven":\n\n"Issue" = a question worth answering.\n\nNot every problem is an issue.\nConditions for an issue:\n- It can be answered (verifiable)\n- Answering it lets you move forward (actionable)\n- It needs to be answered now (timing is right)\n\nWhat distinguishes effective people:\nThey don\'t just chew through every task in front of them.\nThey identify "what issue must we answer right now?".\n\n:::warn\nWhen issue identification is weak, you wander into "the dog\'s path" (low-productivity busywork).\n:::',
     },
     {
       type: 'quiz',
@@ -117,7 +117,7 @@ const problemSettingFramework: LessonData = {
       type: 'explain',
       title: '"Sky/Rain/Umbrella" — from issue to action',
       content:
-        'A McKinsey framework: "Sky/Rain/Umbrella."\n\n[Sky (Fact)] The sky is getting cloudy.\n-> Objective fact / data.\n\n[Rain (Interpretation/Issue)] It looks like it will rain.\n-> The implication or issue derived from the fact.\n\n[Umbrella (Action)] Bring an umbrella.\n-> A specific action to take in response.\n\nApplied example:\nSky: "Last month\'s churn rate was 2x normal (8%)."\nRain: "The recent feature change is unpopular, especially among heavy users, and they are leaving."\nUmbrella: "Bring back a legacy-UI option for heavy users and provide a transition period."\n\nMost people stop at "Sky." People who can deliver "Sky -> Rain -> Umbrella" together get trusted.',
+        'A McKinsey framework: "Sky/Rain/Umbrella."\n\n[Sky (Fact)] The sky is getting cloudy.\n-> Objective fact / data.\n\n[Rain (Interpretation/Issue)] It looks like it will rain.\n-> The implication or issue derived from the fact.\n\n[Umbrella (Action)] Bring an umbrella.\n-> A specific action to take in response.\n\nApplied example:\nSky: "Last month\'s churn rate was 2x normal (8%)."\nRain: "The recent feature change is unpopular, especially among heavy users, and they are leaving."\nUmbrella: "Bring back a legacy-UI option for heavy users and provide a transition period."\n\nMost people stop at "Sky."\n\n:::point\nPeople who can deliver "Sky -> Rain -> Umbrella" together get trusted.\n:::',
     },
     {
       type: 'quiz',
@@ -179,7 +179,7 @@ const problemSettingPractice: LessonData = {
       type: 'explain',
       title: 'Problem-setting summary',
       content:
-        'Key takeaways for problem setting:\n\nDistinguish problem (gap) from issue (theme to work on).\nThink in the order Where -> Why -> How.\nUse Sky/Rain/Umbrella to bind fact -> interpretation -> action.\nPrioritize by issue level ("must this be answered now?").\nFrame as a question, not a solution.\nMake it specific, quantified, and actionable.\n\nProblem setting is the entry point of all thinking.\nHypothesis-driven thinking, critical thinking, and design thinking all begin with "asking the right question."\n\nThose who can do this can solve any problem.',
+        'Key takeaways for problem setting:\n\nDistinguish problem (gap) from issue (theme to work on).\nThink in the order Where -> Why -> How.\nUse Sky/Rain/Umbrella to bind fact -> interpretation -> action.\nPrioritize by issue level ("must this be answered now?").\nFrame as a question, not a solution.\nMake it specific, quantified, and actionable.\n\nProblem setting is the entry point of all thinking.\nHypothesis-driven thinking, critical thinking, and design thinking all begin with "asking the right question."\n\n:::point\nThose who can do this can solve any problem.\n:::',
     },
     {
       type: 'quiz',

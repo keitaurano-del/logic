@@ -10,7 +10,7 @@ export const philosophyLessonMapEn: Record<number, LessonData> = {
         type: 'explain',
         title: 'What is the Socratic method?',
         content:
-          'Socrates began from "knowledge of one\'s own ignorance" and dismantled others\' assumptions through dialogue.\n\nHis tool was the "Socratic method (elenchus)." When someone made a claim, he kept asking "Is that really so?" and "Are there counterexamples?" — gradually breaking down the underlying premises.\n\nThe same approach is alive today in modern consulting and strategic thinking, in forms like "Ask why five times" or "Construct questions that try to break the hypothesis."',
+          'Socrates began from "knowledge of one\'s own ignorance" and dismantled others\' assumptions through dialogue.\n\nHis tool was the "Socratic method (elenchus)." When someone made a claim, he kept asking "Is that really so?" and "Are there counterexamples?" — gradually breaking down the underlying premises.\n\nThe same approach is alive today in modern consulting and strategic thinking, in forms like "Ask why five times" or "Construct questions that try to break the hypothesis."\n\n:::point\nThe elenchus is not a technique for defeating someone — it is a procedure for surfacing hidden premises by stacking up questions.\n:::',
       },
       {
         type: 'explain',
@@ -66,13 +66,13 @@ export const philosophyLessonMapEn: Record<number, LessonData> = {
         type: 'explain',
         title: 'Popper\'s question: what counts as "science"?',
         content:
-          'Philosopher Karl Popper asked: "Is a theory that can be called true regardless of any evidence really scientific?"\n\nPopper proposed "falsifiability":\nthe idea that "being possible to prove wrong in principle" is the condition for science.\n\nExamples:\n- "All swans are white" → falsifiable. Spotting one black swan refutes it.\n- "God exists" → not falsifiable. This is the territory of religion and faith.\n- "This medicine only works on those who believe in it" → not falsifiable. A textbook case of pseudoscience.',
+          'Philosopher Karl Popper asked: "Is a theory that can be called true regardless of any evidence really scientific?"\n\nPopper proposed "falsifiability":\nthe idea that "being possible to prove wrong in principle" is the condition for science.\n\n:::point\nOn Popper\'s view, a claim that nothing could ever refute is not strong — it simply never gets caught in the net of testing.\n:::\n\nExamples:\n- "All swans are white" → falsifiable. Spotting one black swan refutes it.\n- "God exists" → not falsifiable. This is the territory of religion and faith.\n- "This medicine only works on those who believe in it" → not falsifiable. A textbook case of pseudoscience.',
       },
       {
         type: 'explain',
         title: 'Falsifiability as a thinking tool',
         content:
-          'Falsifiability is not just for philosophy of science. It works in business thinking too.\n\n"A hypothesis you cannot falsify is one you cannot test."\n\nExamples:\n- Weak hypothesis: "Users value ease of use" → no matter what happens, you can blame "ease of use."\n- Strong hypothesis: "If sign-up rate is 20% or higher, we can judge the UI as easy to use" → numerically falsifiable.\n\nA good hypothesis defines from the start "what would have to happen for this hypothesis to be wrong."',
+          'Falsifiability is not just for philosophy of science. It works in business thinking too.\n\n"A hypothesis you cannot falsify is one you cannot test."\n\nExamples:\n- [icon:bad] Weak hypothesis: "Users value ease of use" → no matter what happens, you can blame "ease of use."\n- [icon:good] Strong hypothesis: "If sign-up rate is 20% or higher, we can judge the UI as easy to use" → numerically falsifiable.\n\nA good hypothesis defines from the start "what would have to happen for this hypothesis to be wrong."',
       },
       {
         type: 'quiz',
@@ -98,7 +98,7 @@ export const philosophyLessonMapEn: Record<number, LessonData> = {
         type: 'explain',
         title: 'Two stances for thinking about ethics',
         content:
-          'When judging "the right action," philosophy offers two main approaches.\n\nUtilitarianism\nJudge actions by their consequences. Aim for the greatest happiness for the greatest number.\nKey figures: Jeremy Bentham, John Stuart Mill\n\nDeontology\nJudge by the nature of the act itself, not its consequences. Emphasize rules, duties, and rights.\nKey figure: Immanuel Kant — "Act only according to that maxim whereby you can will that it should become a universal law."',
+          'When judging "the right action," philosophy offers two main approaches.\n\nUtilitarianism\nJudge actions by their consequences. Aim for the greatest happiness for the greatest number.\nKey figures: Jeremy Bentham, John Stuart Mill\n\nDeontology\nJudge by the nature of the act itself, not its consequences. Emphasize rules, duties, and rights.\nKey figure: Immanuel Kant — "Act only according to that maxim whereby you can will that it should become a universal law."\n\n:::note\nThis is not about which one is correct — they are stances that differ in where they anchor judgment: on the consequences, or on the act itself.\n:::',
       },
       {
         type: 'explain',
@@ -133,7 +133,7 @@ export const philosophyLessonMapEn: Record<number, LessonData> = {
         type: 'explain',
         title: 'What is epistemology?',
         content:
-          'Epistemology is the branch of philosophy that asks "What is knowledge?" and "What can we know?"\n\nDescartes started from "I think, therefore I am (Cogito, ergo sum)" and tried to build knowledge on a foundation that could not be doubted.\n\nKey questions:\n- Can we trust the senses? (illusions, dreams, biases)\n- How is knowledge different from "conviction"?\n- What state are we in when we say we "know" something?',
+          'Epistemology is the branch of philosophy that asks "What is knowledge?" and "What can we know?"\n\nDescartes started from "I think, therefore I am (Cogito, ergo sum)" and tried to build knowledge on a foundation that could not be doubted.\n\n:::tip\n"Being strongly convinced" and "knowing" are different things. No matter how strongly you believe it, without grounds and fact it does not count as knowledge.\n:::\n\nKey questions:\n- Can we trust the senses? (illusions, dreams, biases)\n- How is knowledge different from "conviction"?\n- What state are we in when we say we "know" something?',
       },
       {
         type: 'explain',
@@ -181,7 +181,7 @@ export const philosophyLessonMapEn: Record<number, LessonData> = {
         type: 'explain',
         title: 'Thinking about AI and understanding via the "Chinese Room"',
         content:
-          'A thought experiment by philosopher John Searle:\n\nYou are inside a room. You do not understand any Chinese. When questions in Chinese come in from outside, you use a thick book of "matching rules" to send back correct Chinese responses. To people outside, it looks as if you understand Chinese.\n\nQuestion: do you "understand Chinese"?\n\nSearle\'s claim: No. You are merely processing syntax (rules).\n\nThis connects directly to current debates about AI. Does GPT "understand meaning," or is it just pattern matching?',
+          'A thought experiment by philosopher John Searle:\n\nYou are inside a room. You do not understand any Chinese. When questions in Chinese come in from outside, you use a thick book of "matching rules" to send back correct Chinese responses. To people outside, it looks as if you understand Chinese.\n\nQuestion: do you "understand Chinese"?\n\nSearle\'s claim: No. You are merely processing syntax (rules).\n\nThis connects directly to current debates about AI. Does GPT "understand meaning," or is it just pattern matching?\n\n:::point\nWhat Searle presses on is whether correctly processing rules is the same as understanding meaning. The answer is still debated.\n:::',
       },
       {
         type: 'quiz',

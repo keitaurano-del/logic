@@ -22,7 +22,7 @@ export const easternPhilosophyLessonMapEn: Record<number, LessonData> = {
         type: 'explain',
         title: 'Why it still works in modern organizations',
         content:
-          'Psychologically, "ren and li" are close to the combination of psychological safety and procedural fairness.\n\n- Ren = the feeling that "this person sees me as a human being."\n- Li = the feeling that "this organization has predictable rules and respect."\n\nEmpirical research shows that teams high in psychological safety and procedural fairness perform more consistently. A 2,500-year-old concept resonates with modern management science.',
+          'Psychologically, "ren and li" are close to the combination of psychological safety and procedural fairness.\n\n- Ren = the feeling that "this person sees me as a human being."\n- Li = the feeling that "this organization has predictable rules and respect."\n\nEmpirical research shows that teams high in psychological safety and procedural fairness perform more consistently. A 2,500-year-old concept resonates with modern management science.\n\n:::point\nWithout either ren (heart) or li (form), trust stops working. Feeling and form are the two wheels of one cart.\n:::',
       },
       {
         type: 'quiz',
@@ -66,7 +66,7 @@ export const easternPhilosophyLessonMapEn: Record<number, LessonData> = {
         type: 'explain',
         title: 'When "rectification of names" breaks down at work',
         content:
-          'Workplaces where "rectification of names" has collapsed share common signs:\n\n- Someone called "manager" who has no authority over performance reviews\n- Someone labeled "leadership candidate" who has been left in that state for three years\n- A project labeled "DX (digital transformation)" that is only tidying up Excel files\n- An organization that proclaims "customer first" but whose internal KPIs are only sales quotas\n\nConfucius would say of such a state: "affairs cannot be accomplished" — decisions and evaluations rot.\n\nWhen a strategy consultant\'s first move is "let\'s align on the definitions of these words," that is the same idea as Confucius\' rectification of names.',
+          'Workplaces where "rectification of names" has collapsed share common signs:\n\n- Someone called "manager" who has no authority over performance reviews\n- Someone labeled "leadership candidate" who has been left in that state for three years\n- A project labeled "DX (digital transformation)" that is only tidying up Excel files\n- An organization that proclaims "customer first" but whose internal KPIs are only sales quotas\n\nConfucius would say of such a state: "affairs cannot be accomplished" — decisions and evaluations rot.\n\nWhen a strategy consultant\'s first move is "let\'s align on the definitions of these words," that is the same idea as Confucius\' rectification of names.\n\n:::point\nWhen name and reality drift apart, language stops connecting and work stops getting done. Aligning definitions first is the starting point of order.\n:::',
       },
       {
         type: 'quiz',
@@ -110,7 +110,7 @@ export const easternPhilosophyLessonMapEn: Record<number, LessonData> = {
         type: 'explain',
         title: 'Why this matters as a managerial premise',
         content:
-          'The doctrine of innate goodness is not mere optimism. The way you view people is reflected directly in how you design an organization.\n\n- Manager assuming goodness → delegate authority, trust self-direction, prioritize psychological safety\n- Manager assuming inherent self-interest → surveillance, approval processes, KPI-based control\n\nDouglas McGregor\'s "Theory Y" (people enjoy work by nature) is the modern version of Mencius\' view. The "Freedom & Responsibility" of Google or Netflix is in the same lineage.\n\nNote: assuming goodness does not mean "leave everything alone." It means "people have sprouts that can grow," and we must build environments that water and shine on those sprouts. Sprouts do not grow without water and light.',
+          'The doctrine of innate goodness is not mere optimism. The way you view people is reflected directly in how you design an organization.\n\n- Manager assuming goodness → delegate authority, trust self-direction, prioritize psychological safety\n- Manager assuming inherent self-interest → surveillance, approval processes, KPI-based control\n\nDouglas McGregor\'s "Theory Y" (people enjoy work by nature) is the modern version of Mencius\' view. The "Freedom & Responsibility" of Google or Netflix is in the same lineage.\n\n:::warn\nInnate goodness does not mean "leave everything alone." Just as sprouts need water and light, you trust people and then build the environment that grows them.\n:::',
       },
       {
         type: 'quiz',
@@ -154,7 +154,7 @@ export const easternPhilosophyLessonMapEn: Record<number, LessonData> = {
         type: 'explain',
         title: 'Xunzi\'s view as "the design mindset for institutions"',
         content:
-          'The modern significance of Xunzi\'s view lies in "building systems that do not depend on individual goodwill."\n\nExamples:\n- Expense reporting → "please don\'t cheat" breaks down on goodwill alone → receipt rules, approval flow, audits.\n- Personal data protection → "be careful" alone leaks data → access permissions, logs, encryption.\n- Governance → "trust the executives" fails → boards of directors, auditors, internal whistleblowing.\n\nThis is Xunzi\'s approach.\n\nWhat is striking is that almost every modern organization runs as a "hybrid of innate-goodness and innate-self-interest." Emphasize psychological safety (innate goodness), and at the same time design systems where misconduct cannot occur (innate self-interest).',
+          'The modern significance of Xunzi\'s view lies in "building systems that do not depend on individual goodwill."\n\nExamples:\n- Expense reporting → "please don\'t cheat" breaks down on goodwill alone → receipt rules, approval flow, audits.\n- Personal data protection → "be careful" alone leaks data → access permissions, logs, encryption.\n- Governance → "trust the executives" fails → boards of directors, auditors, internal whistleblowing.\n\nThis is Xunzi\'s approach.\n\nWhat is striking is that almost every modern organization runs as a "hybrid of innate-goodness and innate-self-interest." Emphasize psychological safety (innate goodness), and at the same time design systems where misconduct cannot occur (innate self-interest).\n\n:::point\nDon\'t rely on goodwill — design systems where misconduct cannot occur. This is the constructive core of Xunzi\'s view.\n:::',
       },
       {
         type: 'explain',
@@ -268,7 +268,7 @@ export const easternPhilosophyLessonMapEn: Record<number, LessonData> = {
         type: 'explain',
         title: 'Application to management',
         content:
-          'It is widely observed that the better the manager, the fewer the instructions.\n\nIn Laozi\'s words:\n"The best ruler is one whose existence is barely noticed by those below (太上は下これあるを知るのみ)."\n\nExamples of bad intervention:\n- Saying the answer while a subordinate is still thinking it through\n- Micromanaging a project you said you delegated\n- Distorting a discussion that would have settled itself with one comment from above\n\nWu wei management means:\n- Set the environment (premises, goals, resources)\n- Remove obstacles (unnecessary approvals, baggage)\n- Then trust and delegate\n\nThis aligns well with the management style based on innate goodness.',
+          'It is widely observed that the better the manager, the fewer the instructions.\n\nIn Laozi\'s words:\n"The best ruler is one whose existence is barely noticed by those below (太上は下これあるを知るのみ)."\n\n[icon:bad] Bad intervention:\n- Saying the answer while a subordinate is still thinking it through\n- Micromanaging a project you said you delegated\n- Distorting a discussion that would have settled itself with one comment from above\n\n[icon:good] Wu wei management:\n- Set the environment (premises, goals, resources)\n- Remove obstacles (unnecessary approvals, baggage)\n- Then trust and delegate\n\nThis aligns well with the management style based on innate goodness.',
       },
       {
         type: 'explain',
@@ -318,7 +318,7 @@ export const easternPhilosophyLessonMapEn: Record<number, LessonData> = {
         type: 'explain',
         title: 'Suppleness becomes "strength"',
         content:
-          'The proverb "the soft overcomes the hard (柔よく剛を制す)" — though originating in the military classic Sanlüe — is in the same lineage as Laozi.\n\nA hard tree breaks in the wind; the willow bends and does not break. Teeth are hard and chip; the tongue is soft and remains.\n\nIn business:\n- An organization rigidly bound by rules → snaps when the environment changes.\n- An organization that flexibly redefines itself → adapts and survives.\n\nBruce Lee\'s "Be water, my friend" belongs to the same family.\n\nSuppleness is not weakness. Laozi taught that "preserving essence while changing form" is the most refined form of strength.',
+          'The proverb "the soft overcomes the hard (柔よく剛を制す)" — though originating in the military classic Sanlüe — is in the same lineage as Laozi.\n\nA hard tree breaks in the wind; the willow bends and does not break. Teeth are hard and chip; the tongue is soft and remains.\n\nIn business:\n- [icon:bad] Rigid: an organization bound tightly by rules → snaps when the environment changes.\n- [icon:good] Supple: an organization that flexibly redefines itself → adapts and survives.\n\nBruce Lee\'s "Be water, my friend" belongs to the same family.\n\nSuppleness is not weakness. Laozi taught that "preserving essence while changing form" is the most refined form of strength.',
       },
       {
         type: 'explain',
@@ -368,7 +368,7 @@ export const easternPhilosophyLessonMapEn: Record<number, LessonData> = {
         type: 'explain',
         title: 'The relativity of viewpoints — "the equality of all things"',
         content:
-          'Zhuangzi\'s central idea is "the equality of all things (万物斉同)."\n\nAll oppositions — beauty/ugliness, good/evil, big/small, right/wrong — are relative; they depend on the viewpoint that judges them.\n\nExamples:\n- Big/small → from a whale\'s view a person is small, from an ant\'s view a person is huge.\n- Useful/useless → the straight tree is felled; the crooked tree survives ("the use of the useless").\n- Right/wrong → change the standpoint and "justice" changes.\n\nZhuangzi says: "Right from there is right; right from here is also right."\n\nThis is not nihilism. It is an epistemic exercise: "doubt the absoluteness of your own viewpoint."',
+          'Zhuangzi\'s central idea is "the equality of all things (万物斉同)."\n\nAll oppositions — beauty/ugliness, good/evil, big/small, right/wrong — are relative; they depend on the viewpoint that judges them.\n\nExamples:\n- Big/small → from a whale\'s view a person is small, from an ant\'s view a person is huge.\n- Useful/useless → the straight tree is felled; the crooked tree survives ("the use of the useless").\n- Right/wrong → change the standpoint and "justice" changes.\n\nZhuangzi says: "Right from there is right; right from here is also right."\n\n:::warn\nThe equality of all things is not "anything goes" nihilism. Its proper reading is as an epistemic exercise in doubting the absoluteness of your own viewpoint.\n:::',
       },
       {
         type: 'explain',
@@ -427,7 +427,7 @@ export const easternPhilosophyLessonMapEn: Record<number, LessonData> = {
         type: 'explain',
         title: 'Connections to modern management',
         content:
-          'Han Feizi\'s thought is also a prototype of modern institutional design.\n\nExamples:\n- "Law" = explicitly document evaluation criteria; replace vague "effort" reviews with KPIs.\n- "Technique" = use 1-on-1s, 360-degree feedback, and right-person-in-right-role placement.\n- "Position" = give roles clear authority so the structure doesn\'t depend on personal charisma.\n\nThe reason post-Steve-Jobs Apple keeps running is, in the end, that systems (law, technique, position) work, not charisma (a person).\n\nA caveat: pushed too far, the Han Feizi approach becomes inhumane and surveillance-heavy. Combined with the "ren" of Confucianism, it forms the modern resolution.',
+          'Han Feizi\'s thought is also a prototype of modern institutional design.\n\nExamples:\n- "Law" = explicitly document evaluation criteria; replace vague "effort" reviews with KPIs.\n- "Technique" = use 1-on-1s, 360-degree feedback, and right-person-in-right-role placement.\n- "Position" = give roles clear authority so the structure doesn\'t depend on personal charisma.\n\nThe reason post-Steve-Jobs Apple keeps running is, in the end, that systems (law, technique, position) work, not charisma (a person).\n\n:::warn\nLaw, technique, and position are powerful, but pushed too far they become an inhumane surveillance society. Combining them with the Confucian "ren" is the modern resolution.\n:::',
       },
       {
         type: 'quiz',
@@ -477,7 +477,7 @@ export const easternPhilosophyLessonMapEn: Record<number, LessonData> = {
         type: 'explain',
         title: 'Application to modern competitive strategy',
         content:
-          '"Win without fighting" is at the core of modern strategy theory as well.\n\n- Porter\'s differentiation strategy → don\'t fight on the same ground.\n- Blue Ocean Strategy → create a market with no competition.\n- M&A → instead of fighting, buy and absorb.\n- Standards / spec wars → become the side that sets the rules.\n\nConversely, the war of attrition — "selling the same product to the same customer at the same price" — is, from Sunzi\'s perspective, the worst form of fighting.\n\nThe core of Sunzi is not "how to win on the opponent\'s ground" but "how to bring the fight to ground that favors you." Even after 2,500 years, this remains the original form of strategic thinking.',
+          '"Win without fighting" is at the core of modern strategy theory as well.\n\n[icon:good] Bringing the fight to favorable ground:\n- Porter\'s differentiation strategy → don\'t fight on the same ground.\n- Blue Ocean Strategy → create a market with no competition.\n- M&A → instead of fighting, buy and absorb.\n- Standards / spec wars → become the side that sets the rules.\n\nConversely, the [icon:bad] war of attrition — "selling the same product to the same customer at the same price" — is, from Sunzi\'s perspective, the worst form of fighting.\n\nThe core of Sunzi is not "how to win on the opponent\'s ground" but "how to bring the fight to ground that favors you." Even after 2,500 years, this remains the original form of strategic thinking.',
       },
       {
         type: 'quiz',

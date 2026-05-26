@@ -13,7 +13,7 @@ const analogyIntro: LessonData = {
       type: 'explain',
       title: 'What is analogical reasoning?',
       content:
-        'Analogical reasoning means finding the structural similarity between A and B, then applying what you know about A to B.\n\nEveryday example: the "human body" as an analogy for a "company."\n- Brain → executives (decision-making)\n- Heart → finance (circulating money like blood)\n- Immune system → risk management (rejecting threats)\n- Nervous system → information systems (transmitting information)\n\nIn business:\nTranslate successful patterns from one industry into your own.\n\nExample: Convenience store "shelf placement" → website "content placement."\n- Bestsellers at eye level → high-CTR content above the fold\n- Impulse buys at the checkout → upsell at the checkout step\n\nWhy analogy is powerful:\nEven in a domain where you know nothing, finding structural similarity lets you generate hypotheses immediately.',
+        'Analogical reasoning means finding the structural similarity between A and B, then applying what you know about A to B.\n\nEveryday example: the "human body" as an analogy for a "company."\n- Brain → executives (decision-making)\n- Heart → finance (circulating money like blood)\n- Immune system → risk management (rejecting threats)\n- Nervous system → information systems (transmitting information)\n\nIn business:\nTranslate successful patterns from one industry into your own.\n\nExample: Convenience store "shelf placement" → website "content placement."\n- Bestsellers at eye level → high-CTR content above the fold\n- Impulse buys at the checkout → upsell at the checkout step\n\n:::point\nThe power of analogy: even in a domain where you know nothing, finding structural similarity lets you generate a hypothesis immediately.\n:::',
     },
     {
       type: 'quiz',
@@ -31,7 +31,7 @@ const analogyIntro: LessonData = {
       type: 'explain',
       title: 'Spotting structural similarity',
       content:
-        'There are two kinds of similarity in analogies: surface similarity and structural similarity.\n\n[Surface similarity — weak analogy]\nThings look alike.\nExample: "The cloud is like clouds in the sky." That alone gets you nothing.\n\n[Structural similarity — strong analogy]\nThe relationships and mechanisms are alike.\nExample: "The immune system" and "security software."\n- Both detect unknown threats.\n- Both use "memory" of past attacks to prevent reinfection/reattack.\n- Both risk overreaction (autoimmune disease / false positives).\n→ Knowledge from immunology can inform security design.\n\nA good analogy:\n1. Has matching structure (mechanism, causality).\n2. Comes from a surface-level different field.\n3. Has validated knowledge in the source field.',
+        'There are two kinds of similarity in analogies: surface similarity and structural similarity.\n\n[icon:bad] Surface similarity — weak analogy\nThings just look alike.\nExample: "The cloud is like clouds in the sky." That alone gets you nothing.\n\n[icon:good] Structural similarity — strong analogy\nThe relationships and mechanisms are alike.\nExample: "The immune system" and "security software."\n- Both detect unknown threats.\n- Both use "memory" of past attacks to prevent reinfection or reattack.\n- Both risk overreaction (autoimmune disease, false positives).\n→ Knowledge from immunology can inform security design.\n\n:::point\nA good analogy meets three conditions: matching structure (mechanism, causality), a surface-level different source field, and validated knowledge in that source field.\n:::',
     },
     {
       type: 'quiz',
@@ -49,7 +49,7 @@ const analogyIntro: LessonData = {
       type: 'explain',
       title: 'Use analogy to generate hypotheses',
       content:
-        'Practical steps for analogical reasoning:\n\n(1) Extract the "structure" of your problem.\nProblem: "Lower the churn rate of our new SaaS."\nStructure: "A subscription where users start engaged but gradually drop off."\n\n(2) Find another field with the same structure.\n→ This is the same structure as gym membership churn!\n\n(3) Look up successful tactics in that other field.\nGym tactics that work:\n- Required personal-training session in month 1 (great onboarding)\n- Group classes that build community (peer ties)\n- Outreach when members stop showing up (retention nudges)\n\n(4) "Translate" back to your domain.\n→ Required onboarding call in month 1 (initial experience)\n→ Run a user community (peer ties)\n→ Auto-send follow-up emails when usage drops (retention nudges)\n\nAnalogy lets you find original moves by borrowing wisdom from a different industry, instead of copying same-industry best practices.',
+        'Practical steps for analogical reasoning:\n\n(1) Extract the "structure" of your problem.\nProblem: "Lower the churn rate of our new SaaS."\nStructure: "A subscription where users start engaged but gradually drop off."\n\n(2) Find another field with the same structure.\n→ This is the same structure as gym membership churn!\n\n(3) Look up successful tactics in that other field.\nGym tactics that work:\n- Required personal-training session in month 1 (great onboarding)\n- Group classes that build community (peer ties)\n- Outreach when members stop showing up (retention nudges)\n\n(4) "Translate" back to your domain.\n→ Required onboarding call in month 1 (initial experience)\n→ Run a user community (peer ties)\n→ Auto-send follow-up emails when usage drops (retention nudges)\n\n:::tip\nAnalogy lets you find original moves by borrowing wisdom from a different industry, instead of copying same-industry best practices.\n:::',
     },
     {
       type: 'quiz',
@@ -75,7 +75,7 @@ const analogyDeepDive: LessonData = {
       type: 'explain',
       title: 'Near vs. far analogies',
       content:
-        'The "distance" of an analogy changes what you get out of it.\n\n[Near analogy — same industry / similar field]\nPros: Easy to apply, low risk of failure.\nCons: Hard to differentiate.\nExample: Copying a competitor\'s sales tactics.\n\n[Far analogy — different industry / different field]\nPros: Generates innovative ideas.\nCons: Cannot be applied directly; requires translation.\nExample: Borrowing game mechanics for education.\n\nInnovation often comes from far analogies:\n\n- Dyson vacuum ← industrial cyclonic dust collectors\n- Uber ← "anyone can be a driver" + an app\n- Netflix ← gym\'s "all-you-can-use monthly" model\n\nBuilding up cross-domain knowledge is the fuel of analogical reasoning.',
+        'The "distance" of an analogy changes what you get out of it.\n\n[Near analogy — same industry / similar field]\nPros: Easy to apply, low risk of failure.\nCons: Hard to differentiate.\nExample: Copying a competitor\'s sales tactics.\n\n[Far analogy — different industry / different field]\nPros: Generates innovative ideas.\nCons: Cannot be applied directly; requires translation.\nExample: Borrowing game mechanics for education.\n\nInnovation often comes from far analogies:\n\n- Dyson vacuum ← industrial cyclonic dust collectors\n- Uber ← "anyone can be a driver" + an app\n- Netflix ← gym\'s "all-you-can-use monthly" model\n\n:::tip\nBuilding up cross-domain knowledge is the fuel of analogical reasoning. The wider your range, the farther you can reach for ideas.\n:::',
     },
     {
       type: 'quiz',
@@ -114,7 +114,7 @@ const analogyDeepDive: LessonData = {
       type: 'explain',
       title: 'The power of metaphor — accelerate thinking',
       content:
-        'Metaphor is a special form of analogy that accelerates both communication and thought.\n\nGreat metaphors:\n\n"Technical debt"\n→ Borrowed from financial "debt"\n→ If you do not repay it (refactoring), interest (bugs, slowdowns) compounds\n→ One phrase makes the seriousness obvious even to non-engineers\n\n"MVP"\nMinimum Viable Product = the smallest thing that still works\n→ "The minimum version of a cake is not a cookie. It is still a cake, just smaller."\n→ Do not strip features — keep only the core.\n\nMetaphor is more than rhetoric.\nA new metaphor reframes the problem,\nand reframes thinking itself.',
+        'Metaphor is a special form of analogy that accelerates both communication and thought.\n\nGreat metaphors:\n\n"Technical debt"\n→ Borrowed from financial "debt"\n→ If you do not repay it (refactoring), interest (bugs, slowdowns) compounds\n→ One phrase makes the seriousness obvious even to non-engineers\n\n"MVP"\nMinimum Viable Product = the smallest thing that still works\n→ "The minimum version of a cake is not a cookie. It is still a cake, just smaller."\n→ Do not strip features — keep only the core.\n\n:::point\nMetaphor is more than rhetoric. A new metaphor reframes the problem, and reframes thinking itself.\n:::',
     },
     {
       type: 'quiz',
@@ -158,7 +158,7 @@ const analogyPractice: LessonData = {
       type: 'explain',
       title: 'Pitfalls of analogical reasoning',
       content:
-        'Watch out for these traps:\n\n[1. Fooled by surface similarity]\n"A and B are both red, so the same method works on both."\n→ Judge on structure (mechanism), not on color (surface).\n\n[2. Ignoring the difference in preconditions]\n"It worked in the U.S., so it will work in Japan."\n→ Markets, cultures, regulations differ. Translation is required.\n\n[3. Using analogy as proof]\n"X is like Y, therefore X is correct."\n→ Analogy is a tool for generating hypotheses; verify separately.\n\n[4. Sticking to a single analogy]\n"The company is a family." → So you cannot fire underperformers?\n→ Try multiple analogies and pick the best fit.\n\nRule of thumb:\nAnalogy is a thinking tool, not an answer.\nAlways pair it with verification.',
+        'Watch out for these traps:\n\n[1. Fooled by surface similarity]\n"A and B are both red, so the same method works on both."\n→ Judge on structure (mechanism), not on color (surface).\n\n[2. Ignoring the difference in preconditions]\n"It worked in the U.S., so it will work in Japan."\n→ Markets, cultures, regulations differ. Translation is required.\n\n[3. Using analogy as proof]\n"X is like Y, therefore X is correct."\n→ Analogy is a tool for generating hypotheses; verify separately.\n\n[4. Sticking to a single analogy]\n"The company is a family." → So you cannot fire underperformers?\n→ Try multiple analogies and pick the best fit.\n\n:::warn\nAnalogy is a thinking tool, not an answer. Judge on structure rather than surface, and always pair it with verification.\n:::',
     },
     {
       type: 'quiz',
@@ -176,7 +176,7 @@ const analogyPractice: LessonData = {
       type: 'explain',
       title: 'Analogy thinking — recap',
       content:
-        'Key points of analogical reasoning:\n\nLook for "structural" similarity, not surface.\nThe farther the field, the more innovative the analogy.\nThe core process is abstract → translate → instantiate.\nAnalogy is for generating hypotheses, not proof.\nTry multiple analogies and pick the best fit.\n\nDaily habits to sharpen analogical thinking:\n1. Learn one cross-industry business model per week.\n2. When you read news, articulate: "This is the same structure as X."\n3. Ask: "If someone from industry X tackled this problem, how would they?"\n4. Cultivate breadth — history, science, the arts.\n\nThe broader your knowledge, the farther you can reach for a powerful analogy.\n"T-shaped" people (deep expertise + wide breadth) win.',
+        'Key points of analogical reasoning:\n\nLook for "structural" similarity, not surface.\nThe farther the field, the more innovative the analogy.\nThe core process is abstract → translate → instantiate.\nAnalogy is for generating hypotheses, not proof.\nTry multiple analogies and pick the best fit.\n\nDaily habits to sharpen analogical thinking:\n1. Learn one cross-industry business model per week.\n2. When you read news, articulate: "This is the same structure as X."\n3. Ask: "If someone from industry X tackled this problem, how would they?"\n4. Cultivate breadth — history, science, the arts.\n\n:::point\nThe broader your knowledge, the farther you can reach for a powerful analogy. "T-shaped" people, with deep expertise and wide breadth, win.\n:::',
     },
     {
       type: 'quiz',
