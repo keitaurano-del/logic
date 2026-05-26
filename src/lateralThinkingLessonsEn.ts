@@ -34,7 +34,7 @@ const lateralIntro: LessonData = {
       type: 'explain',
       title: 'Reframing — Change the frame',
       content:
-        'The most powerful technique in lateral thinking is reframing.\n\nLook at the same situation through a different frame.\n\nExample 1: "A competitor cut prices."\nFrame A: "Should we cut prices too?" (price-war frame)\nFrame B: "Can we turn our inability to cut prices into a high-value pitch?"\n→ Position high price as high quality.\n\nExample 2: "Young people don\'t read."\nFrame A: "How do we get them to read books?"\nFrame B: "How do we meet them in the formats they already use (video, audio)?"\n→ Audiobooks, video summaries.\n\nExample 3: "Employee attrition is high."\nFrame A: "How do we keep people from leaving?"\nFrame B: "Can we leverage them as alumni after they leave?"\n→ Alumni network programs.',
+        'The most powerful technique in lateral thinking is reframing.\n\nLook at the same situation through a different frame.\n\nExample 1: "A competitor cut prices."\nFrame A: "Should we cut prices too?" (price-war frame)\nFrame B: "Can we turn our inability to cut prices into a high-value pitch?"\n→ Position high price as high quality.\n\nExample 2: "Young people don\'t read."\nFrame A: "How do we get them to read books?"\nFrame B: "How do we meet them in the formats they already use (video, audio)?"\n→ Audiobooks, video summaries.\n\nExample 3: "Employee attrition is high."\nFrame A: "How do we keep people from leaving?"\nFrame B: "Can we leverage them as alumni after they leave?"\n→ Alumni network programs.\n\n:::point\nFrame A looks for moves inside the problem; Frame B replaces the frame of the problem itself. Reframing aims for the latter.\n:::',
     },
     {
       type: 'quiz',
@@ -52,7 +52,7 @@ const lateralIntro: LessonData = {
       type: 'explain',
       title: 'Reversal — "What if we flipped it?"',
       content:
-        'A core lateral-thinking technique: reversal.\n\nFlip the "obvious."\n\nObvious: At a restaurant, the chef cooks for the customer.\nReversed: The customer cooks for themselves → cooking-class restaurants, BBQ.\n\nObvious: Insurance pays out after an accident.\nReversed: It pays out when accidents do not happen → wellness/health-points insurance.\n\nObvious: Ads bring in users.\nReversed: Users make the ads → user-generated content (UGC).\n\nObvious: Failure should be avoided.\nReversed: Failure becomes an asset → a "failure database" that drives organizational learning.\n\nHow to do it:\n1. Write down the "should X" assumptions.\n2. Reverse them: "X should NOT happen."\n3. Look for feasible ideas inside the reversal.',
+        'A core lateral-thinking technique: reversal.\n\nFlip the "obvious."\n\nObvious: At a restaurant, the chef cooks for the customer.\nReversed: The customer cooks for themselves → cooking-class restaurants, BBQ.\n\nObvious: Insurance pays out after an accident.\nReversed: It pays out when accidents do not happen → wellness/health-points insurance.\n\nObvious: Ads bring in users.\nReversed: Users make the ads → user-generated content (UGC).\n\nObvious: Failure should be avoided.\nReversed: Failure becomes an asset → a "failure database" that drives organizational learning.\n\nHow to do it:\n1. Write down the "should X" assumptions.\n2. Reverse them: "X should NOT happen."\n3. Look for feasible ideas inside the reversal.\n\n:::tip\nEven if a reversed idea looks absurd, write it out in full first. Defer the feasibility check and exhaust the opposite of common sense before you judge.\n:::',
     },
     {
       type: 'quiz',
@@ -146,7 +146,7 @@ const lateralPractice: LessonData = {
       type: 'explain',
       title: 'Lateral thinking applied to business',
       content:
-        'Innovations born from lateral thinking:\n\n[Netflix]\nObvious: You watch movies in theaters / rent DVDs from a store.\nReversal: The movie comes to your house → mail-in DVDs → streaming.\n\n[Southwest Airlines]\nObvious: Airlines grow by adding more routes.\nReframing: Position as "an alternative to the bus."\n→ Low fares, high frequency, point-to-point.\n\n[Nintendo Wii]\nObvious: Game consoles compete on graphical horsepower.\nReversal: Drop the horsepower; commit to "play with movement."\n→ Opened up the non-gamer audience.\n\nThe common thread:\nAll three questioned the "industry common sense" and changed the premise.\nNot a technological breakthrough — a thinking breakthrough.',
+        'Innovations born from lateral thinking:\n\n[Netflix]\nObvious: You watch movies in theaters / rent DVDs from a store.\nReversal: The movie comes to your house → mail-in DVDs → streaming.\n\n[Southwest Airlines]\nObvious: Airlines grow by adding more routes.\nReframing: Position as "an alternative to the bus."\n→ Low fares, high frequency, point-to-point.\n\n[Nintendo Wii]\nObvious: Game consoles compete on graphical horsepower.\nReversal: Drop the horsepower; commit to "play with movement."\n→ Opened up the non-gamer audience.\n\n:::point\nWhat the three share is changing the premise, not the technology. A thinking breakthrough — questioning the industry common sense — is what ended up moving the market itself.\n:::',
     },
     {
       type: 'quiz',
