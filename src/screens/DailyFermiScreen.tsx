@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { LightbulbIcon, BarChartIcon, MicIcon, BookmarkIcon, BookmarkFilledIcon } from '../icons'
+import { LightbulbIcon, BarChartIcon, MicIcon, BookmarkIcon, BookmarkFilledIcon, FlagIcon } from '../icons'
 import { Header } from '../components/platform/Header'
 import { Button } from '../components/Button'
 import { API_BASE } from './apiBase'
 import { getDailyFermiIndex, FERMI_POOL, getFermiStatsByIndex } from '../fermiData'
 import { t, getLocale } from '../i18n'
+import { formatJpUnit, formatResult, applyUnitMultiplier, type FermiLocale } from '../fermiNumberFormat'
 import { getGuestId } from '../guestId'
 import { getRankingUserId } from '../syncService'
 import { haptic } from '../platform/haptics'
@@ -101,23 +102,6 @@ function safeEval(expr: string): number | null {
   return null
 }
 
-function toJpUnit(n: number): string {
-  const abs = Math.abs(n)
-  const sign = n < 0 ? '−' : ''
-  const localeStr = getLocale() === 'ja' ? 'ja-JP' : 'en-US'
-  if (abs >= 1e12) return t('dailyFermi.aboutTrillion', { sign, n: (abs / 1e12).toFixed(2) })
-  if (abs >= 1e8)  return t('dailyFermi.aboutHundredMil', { sign, n: (abs / 1e8).toFixed(2) })
-  if (abs >= 1e4)  return t('dailyFermi.aboutTenK', { sign, n: (abs / 1e4).toFixed(2) })
-  return n.toLocaleString(localeStr, { maximumFractionDigits: 4 })
-}
-
-function formatResult(n: number): string {
-  const abs = Math.abs(n)
-  if (abs !== 0 && (abs >= 1e15 || abs < 1e-4)) return n.toExponential(3)
-  const localeStr = getLocale() === 'ja' ? 'ja-JP' : 'en-US'
-  return n.toLocaleString(localeStr, { maximumFractionDigits: 6 })
-}
-
 type CalcKeyKind = 'num' | 'op' | 'fn' | 'eq'
 
 const CALC_KEY_PALETTE: Record<CalcKeyKind, { bg: string; color: string; border: string }> = {
@@ -147,7 +131,7 @@ function CalcKey({ label, onClick, kind = 'num' }: { label: string; onClick: () 
   )
 }
 
-function FermiCalculator({ onInsert }: { onInsert: (text: string) => void }) {
+function FermiCalculator({ onInsert, locale }: { onInsert: (text: string) => void; locale: FermiLocale }) {
   const [expr, setExpr] = useState('')
   const result = safeEval(expr)
 
@@ -155,11 +139,17 @@ function FermiCalculator({ onInsert }: { onInsert: (text: string) => void }) {
   const clear = () => setExpr('')
   const back = () => setExpr(prev => prev.slice(0, -1))
   const equals = () => { if (result != null) setExpr(String(result)) }
+  // 単位ボタン（万=1e4 / 億=1e8）: 入力中の末尾数値にワンタップで倍率を掛ける
+  const applyUnit = (factor: number) => {
+    setExpr(prev => applyUnitMultiplier(prev, factor) ?? prev)
+  }
   const insert = () => {
     if (result == null) return
-    const formatted = formatResult(result)
+    const formatted = formatResult(result, locale)
     const display = expr.replace(/\*/g, '×').replace(/\//g, '÷').replace(/-/g, '−')
-    onInsert(`${display} = ${formatted}（${toJpUnit(result)}）`)
+    const opener = locale === 'ja' ? '（' : ' ('
+    const closer = locale === 'ja' ? '）' : ')'
+    onInsert(`${display} = ${formatted}${opener}${formatJpUnit(result, locale)}${closer}`)
   }
 
   return (
@@ -188,8 +178,8 @@ function FermiCalculator({ onInsert }: { onInsert: (text: string) => void }) {
         </div>
         {result != null && (
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginTop: 4 }}>
-            <span style={{ fontSize: 18, fontWeight: 800, color: 'var(--brand)', fontFamily: "'Inter Tight', monospace" }}>= {formatResult(result)}</span>
-            <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>{toJpUnit(result)}</span>
+            <span style={{ fontSize: 18, fontWeight: 800, color: 'var(--brand)', fontFamily: "'Inter Tight', monospace" }}>= {formatResult(result, locale)}</span>
+            <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>{formatJpUnit(result, locale)}</span>
           </div>
         )}
       </div>
@@ -220,6 +210,40 @@ function FermiCalculator({ onInsert }: { onInsert: (text: string) => void }) {
         <CalcKey label="." onClick={() => press('.')} />
         <CalcKey label="=" onClick={equals} kind="eq" />
         <CalcKey label="+" onClick={() => press('+')} kind="op" />
+      </div>
+
+      {/* 単位ボタン: 入力中の数値にワンタップで万(×10^4)・億(×10^8)を掛ける */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 6 }}>
+        <button
+          type="button"
+          onClick={() => applyUnit(1e4)}
+          aria-label={t('dailyFermi.calcUnitManAria')}
+          style={{
+            height: 40, borderRadius: 10,
+            background: CALC_KEY_PALETTE.op.bg,
+            border: `1px solid ${CALC_KEY_PALETTE.op.border}`,
+            color: CALC_KEY_PALETTE.op.color,
+            fontSize: 15, fontWeight: 800,
+            cursor: 'pointer', fontFamily: 'inherit',
+          }}
+        >
+          {t('dailyFermi.calcUnitMan')}
+        </button>
+        <button
+          type="button"
+          onClick={() => applyUnit(1e8)}
+          aria-label={t('dailyFermi.calcUnitOkuAria')}
+          style={{
+            height: 40, borderRadius: 10,
+            background: CALC_KEY_PALETTE.op.bg,
+            border: `1px solid ${CALC_KEY_PALETTE.op.border}`,
+            color: CALC_KEY_PALETTE.op.color,
+            fontSize: 15, fontWeight: 800,
+            cursor: 'pointer', fontFamily: 'inherit',
+          }}
+        >
+          {t('dailyFermi.calcUnitOku')}
+        </button>
       </div>
 
       <button
@@ -883,6 +907,7 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
 
               {showCalculator && (
                 <FermiCalculator
+                  locale={locale === 'ja' ? 'ja' : 'en'}
                   onInsert={(text) => {
                     setAnswer(prev => prev + (prev && !prev.endsWith('\n') ? '\n' : '') + text)
                     haptic.light()
@@ -1083,8 +1108,9 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
                   <div style={{ padding: '0 18px 14px' }}>
                     <button
                       onClick={() => onReport({ lessonTitle: t('report.dailyFermiTitle'), question })}
-                      style={{ fontSize: 13, color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
+                      style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontFamily: 'inherit' }}
                     >
+                      <FlagIcon width={14} height={14} aria-hidden="true" />
                       {t('report.linkText')}
                     </button>
                   </div>
