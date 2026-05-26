@@ -87,7 +87,7 @@ const whyWhyToyota: LessonData = {
       type: 'explain',
       title: 'TPS and the 5 Whys',
       content:
-        '5 Whys was codified by Taiichi Ohno inside the Toyota Production System (TPS).\n\nTwo pillars of TPS:\n• Just-In-Time (the right thing, in the right amount, at the right time)\n• Jidoka (autonomation — stop the machine the moment something is abnormal)\n\nOnly when Jidoka makes abnormalities visible can you ask "why did it stop?" at all.\n\nIn other words, 5 Whys requires a system that surfaces abnormalities. In a culture of cover-ups, 5 Whys cannot work.',
+        '5 Whys was codified by Taiichi Ohno inside the Toyota Production System (TPS).\n\nTwo pillars of TPS:\n• Just-In-Time (the right thing, in the right amount, at the right time)\n• Jidoka (autonomation — stop the machine the moment something is abnormal)\n\nOnly when Jidoka makes abnormalities visible can you ask "why did it stop?" at all.\n\n:::point\n5 Whys only works when paired with a system that surfaces abnormalities. In a culture of cover-ups, it cannot work.\n:::',
     },
     {
       type: 'explain',
@@ -114,7 +114,7 @@ const whyWhyToyota: LessonData = {
       type: 'explain',
       title: 'Jidoka and the Andon cord',
       content:
-        'For 5 Whys to work, Toyota needs a system that makes abnormalities visible immediately.\n\n• Jidoka: machines auto-stop when they detect abnormality\n• Andon: a worker pulling a cord lights a board so the whole line knows something is wrong\n\nIn a culture of "stopping the line gets you in trouble," nothing gets reported.\nWhen "stopping the line is the right thing to do," the targets of 5 Whys finally surface.\n\nIn short: psychological safety and 5 Whys come as a pair.',
+        'For 5 Whys to work, Toyota needs a system that makes abnormalities visible immediately.\n\n• Jidoka: machines auto-stop when they detect abnormality\n• Andon: a worker pulling a cord lights a board so the whole line knows something is wrong\n\n[icon:bad] Bad culture: when "stopping the line gets you in trouble," nothing gets reported.\n[icon:good] Good culture: when "stopping the line is the right thing to do," the targets of 5 Whys finally surface.\n\n:::point\nPsychological safety and 5 Whys come as a pair.\n:::',
     },
     {
       type: 'quiz',
@@ -141,7 +141,7 @@ const whyWhyBasicSteps: LessonData = {
       type: 'explain',
       title: 'Step 1 — write the phenomenon concretely',
       content:
-        'A vague start makes every following why vague.\n\nBad: "Sales are down."\nGood: "Brand A\'s in-store March sales dropped 15% YoY (women in their 40s drove 25% of the decline)."\n\nChecklist:\n• When, where, who, what, how much\n• Are numbers in there?\n• Are you using "who" to identify the situation, not to hunt a culprit?\n\nThe more concrete the start, the more concrete every layer becomes.',
+        'A vague start makes every following why vague.\n\n[icon:bad] Bad: "Sales are down."\n[icon:good] Good: "Brand A\'s in-store March sales dropped 15% YoY (women in their 40s drove 25% of the decline)."\n\nChecklist:\n• When, where, who, what, how much\n• Are numbers in there?\n• Are you using "who" to identify the situation, not to hunt a culprit?\n\nThe more concrete the start, the more concrete every layer becomes.',
     },
     {
       type: 'quiz',
@@ -159,7 +159,7 @@ const whyWhyBasicSteps: LessonData = {
       type: 'explain',
       title: 'Step 2 — does the causation actually hold?',
       content:
-        'Check each "why" answer against causation.\n\nTwo checks:\n① Forward: does "A causes B" read naturally?\n② Counterfactual: if we removed A, would B still happen?\n\nExample: "Missed the train → arrived late"\n① "Because I missed the train, I was late" — natural\n② "If I had not missed the train, would I have been on time?" — Yes, natural\n\nIf the counterfactual fails ("we removed A, but B still happens"), A is not really the cause.\n\nExample: "It rained → sales dropped"\n→ If sales also drop on dry days, rain is not the main driver.',
+        'Check each "why" answer against causation.\n\nTwo checks:\n① Forward: does "A causes B" read naturally?\n② Counterfactual: if we removed A, would B still happen?\n\nExample: "Missed the train → arrived late"\n① "Because I missed the train, I was late" — natural\n② "If I had not missed the train, would I have been on time?" — Yes, natural\n\n:::warn\nIf the counterfactual fails (remove A, but B still happens), A is not really the cause. If sales also drop on dry days, rain is not the main driver.\n:::',
     },
     {
       type: 'quiz',
@@ -228,7 +228,7 @@ const whyWhyPitfalls: LessonData = {
       type: 'explain',
       title: 'Pitfall ② logical leaps',
       content:
-        'A leap is when two consecutive whys skip layers in between.\n\nExample (with leap):\nQ1: Why did sales drop?\nA1: Customer purchase intent dropped.\nQ2: Why did intent drop?\nA2: Because we posted less on social media. ← leap\n\nMissing layers: less posting → lower awareness → fewer recall → lower intent.\n\nHow to check:\nFor each pair, ask "does A alone produce B, even with no other factors?" If yes, it holds.\n\nTips to prevent leaps:\n• Move only one step at a time (no two-step jumps)\n• When the wording goes abstract, force one step of concretization\n• Explain the chain to a third party and let them flag the leap',
+        'A leap is when two consecutive whys skip layers in between.\n\nExample (with leap):\nQ1: Why did sales drop?\nA1: Customer purchase intent dropped.\nQ2: Why did intent drop?\n[icon:bad] A2: Because we posted less on social media. ← leap\n\nMissing layers: less posting → lower awareness → fewer recall → lower intent.\n\nHow to check:\nFor each pair, ask "does A alone produce B, even with no other factors?" If yes, it holds.\n\nTips to prevent leaps:\n• Move only one step at a time (no two-step jumps)\n• When the wording goes abstract, force one step of concretization\n• Explain the chain to a third party and let them flag the leap',
     },
     {
       type: 'quiz',
@@ -246,7 +246,7 @@ const whyWhyPitfalls: LessonData = {
       type: 'explain',
       title: 'Pitfall ③ over-abstraction',
       content:
-        'Are you stopping at "communication issues," "lack of training," "cultural problem"?\n\nAbstract terms feel comfortable, but they do not lead to action.\n\nWhen an answer goes abstract, force one step of concretization.\n\nQ: Why is cross-team alignment poor?\n× A: Communication is lacking (no concreteness)\n○ A: Sales and engineering meet only quarterly, so spec changes take 2 weeks to propagate\n\nConcretization tips:\n• Add when / where / how\n• Insert numbers (frequency, duration, percentage)\n• Ask "in which exact situation does this show up?"',
+        'Are you stopping at "communication issues," "lack of training," "cultural problem"?\n\nAbstract terms feel comfortable, but they do not lead to action.\n\nWhen an answer goes abstract, force one step of concretization.\n\nQ: Why is cross-team alignment poor?\n[icon:bad] A: Communication is lacking (no concreteness)\n[icon:good] A: Sales and engineering meet only quarterly, so spec changes take 2 weeks to propagate\n\nConcretization tips:\n• Add when / where / how\n• Insert numbers (frequency, duration, percentage)\n• Ask "in which exact situation does this show up?"',
     },
     {
       type: 'quiz',
@@ -273,7 +273,7 @@ const whyWhyParallel: LessonData = {
       type: 'explain',
       title: 'The limit of a single chain',
       content:
-        'Textbooks draw 5 Whys as a single chain Q1→A1→Q2→A2…\nReal problems are usually multi-causal.\n\nExample: "Repeat rate dropped" likely has multiple causes:\n• Product appeal weakened\n• Delivery delays\n• Customer support quality dropped\n• Competitor pricing\n\nThese are independent. A single chain misses the other branches.\n\nFix: list multiple "whys" in parallel at each layer.',
+        'Textbooks draw 5 Whys as a single chain Q1→A1→Q2→A2…\nReal problems are usually multi-causal.\n\nExample: "Repeat rate dropped" likely has multiple causes:\n• Product appeal weakened\n• Delivery delays\n• Customer support quality dropped\n• Competitor pricing\n\nThese are independent. A single chain misses the other branches.\n\n:::point\nThe fix is to list multiple "whys" in parallel at each layer.\n:::',
     },
     {
       type: 'explain',
@@ -360,7 +360,7 @@ const whyWhyEvidence: LessonData = {
       type: 'explain',
       title: 'Verification methods by layer',
       content:
-        'Different layers call for different evidence.\n\nSurface layer (concrete events):\n• Sales data, KPIs, logs\n\nMiddle layer (operations, behaviors):\n• Direct observation on the floor\n• Interviews with operators\n• Logs of activity, email trails\n\nDeep layer (systems, policies):\n• Document/regulation review\n• Hearing from people who set the rule\n• Comparison with similar phenomena\n\nTip: write the supporting evidence next to each layer.\nLayers with empty evidence boxes are still hypotheses.',
+        'Different layers call for different evidence.\n\nSurface layer (concrete events):\n• Sales data, KPIs, logs\n\nMiddle layer (operations, behaviors):\n• Direct observation on the floor\n• Interviews with operators\n• Logs of activity, email trails\n\nDeep layer (systems, policies):\n• Document/regulation review\n• Hearing from people who set the rule\n• Comparison with similar phenomena\n\n:::tip\nWrite the supporting evidence next to each layer. Layers with empty evidence boxes are still hypotheses.\n:::',
     },
     {
       type: 'quiz',
@@ -378,7 +378,7 @@ const whyWhyEvidence: LessonData = {
       type: 'explain',
       title: 'Falsifiability — "what would I see if this were wrong?"',
       content:
-        'Good hypotheses are falsifiable. Write the falsification condition next to each one.\n\nExample: "Product A doesn\'t sell because the price is too high."\nFalsification: "If we drop the price 10% and sales don\'t move, price is not the main driver."\n\nWriting the falsification first lets you:\n• Avoid post-hoc convenient interpretations\n• Move to the next branch quickly when a hypothesis fails\n• Make verification a clean yes/no\n\nA hypothesis with no falsification path is not a hypothesis.\nIt is a belief — and beliefs cannot be analyzed.',
+        'Good hypotheses are falsifiable. Write the falsification condition next to each one.\n\nExample: "Product A doesn\'t sell because the price is too high."\nFalsification: "If we drop the price 10% and sales don\'t move, price is not the main driver."\n\nWriting the falsification first lets you:\n• Avoid post-hoc convenient interpretations\n• Move to the next branch quickly when a hypothesis fails\n• Make verification a clean yes/no\n\n:::point\nA hypothesis with no falsification path is not a hypothesis. It is a belief, and beliefs cannot be analyzed.\n:::',
     },
     {
       type: 'quiz',
@@ -497,7 +497,7 @@ const whyWhyPractice: LessonData = {
       type: 'explain',
       title: 'Course wrap-up — five principles',
       content:
-        'Across the 7 lessons, the five principles of 5 Whys:\n\n①【Concretize】write the phenomenon with 5W1H and numbers\n②【Causation check】for every layer, run "remove A and would B still happen?"\n③【Stop where it acts】halt at a structural layer your team can act on\n④【System, not person】translate "Ms. A did X" into "the system did not catch X"\n⑤【Falsifiable】write "what would I see if this is wrong?" beside each layer\n\nPlus three extensions:\n• Parallel branches: list multiple whys at the same layer\n• Verification: back each layer with observation, data, interviews\n• Lateral spread: check whether the same root cause hides elsewhere\n\nWith these, 5 Whys turns from whack-a-mole into a real recurrence-prevention technique.',
+        'Across the 7 lessons, the five principles of 5 Whys:\n\n①【Concretize】write the phenomenon with 5W1H and numbers\n②【Causation check】for every layer, run "remove A and would B still happen?"\n③【Stop where it acts】halt at a structural layer your team can act on\n④【System, not person】translate "Ms. A did X" into "the system did not catch X"\n⑤【Falsifiable】write "what would I see if this is wrong?" beside each layer\n\nPlus three extensions:\n• Parallel branches: list multiple whys at the same layer\n• Verification: back each layer with observation, data, interviews\n• Lateral spread: check whether the same root cause hides elsewhere\n\n:::point\nWith these, 5 Whys turns from whack-a-mole into a real recurrence-prevention technique.\n:::',
     },
   ],
 }

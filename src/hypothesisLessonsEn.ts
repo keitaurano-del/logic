@@ -34,7 +34,7 @@ const hypothesisIntro: LessonData = {
       type: 'explain',
       title: 'Three conditions for a good hypothesis',
       content:
-        'A good hypothesis meets three conditions:\n\n[1. It must be verifiable]\n"The world is complex" -> too obvious to verify.\n"The main driver of the revenue drop is churn among women in their 20s" -> verifiable with data.\n\n[2. It must be specific]\n"We should strengthen marketing" -> too vague.\n"Lift Instagram CTR from 3% to 5% to grow monthly revenue 20%" -> specific.\n\n[3. It must lead to action]\n"The economy is bad, so revenue dropped" -> not within your control.\n"A 15% price cut on Product A will lift unit sales 1.5x" -> actionable.\n\nThe quality of your hypotheses determines the quality of your work.',
+        'A good hypothesis meets three conditions:\n\n[1. It must be verifiable]\n[icon:bad] Bad: "The world is complex" -> too obvious to verify.\n[icon:good] Good: "The main driver of the revenue drop is churn among women in their 20s" -> verifiable with data.\n\n[2. It must be specific]\n[icon:bad] Bad: "We should strengthen marketing" -> too vague.\n[icon:good] Good: "Lift Instagram CTR from 3% to 5% to grow monthly revenue 20%" -> specific.\n\n[3. It must lead to action]\n[icon:bad] Bad: "The economy is bad, so revenue dropped" -> not within your control.\n[icon:good] Good: "A 15% price cut on Product A will lift unit sales 1.5x" -> actionable.\n\n:::point\nThe quality of your hypotheses directly determines the quality of your work.\n:::',
     },
     {
       type: 'quiz',
@@ -52,7 +52,7 @@ const hypothesisIntro: LessonData = {
       type: 'explain',
       title: 'The hypothesis -> verify cycle',
       content:
-        'Hypothesis-driven thinking is not a one-shot process — it is a cycle:\n\n(1) Form a hypothesis\n  "Maybe our customer acquisition cost is too high?"\n\n(2) Design how to verify it\n  "Calculate CAC for the past six months and compare to industry average."\n\n(3) Gather data and check\n  "CAC is ¥15,000 vs. industry average ¥8,000 — about 2x. Hypothesis supported."\n\n(4) Refine and dig deeper\n  "Which channel has the highest CAC?" -> a new hypothesis.\n\nKey:\nA hypothesis being wrong is not a failure.\nLearning "it was wrong" is itself an important step forward.',
+        'Hypothesis-driven thinking is not a one-shot process — it is a cycle:\n\n(1) Form a hypothesis\n  "Maybe our customer acquisition cost is too high?"\n\n(2) Design how to verify it\n  "Calculate CAC for the past six months and compare to industry average."\n\n(3) Gather data and check\n  "CAC is ¥15,000 vs. industry average ¥8,000 — about 2x. Hypothesis supported."\n\n(4) Refine and dig deeper\n  "Which channel has the highest CAC?" -> a new hypothesis.\n\n:::point\nA hypothesis being wrong is not a failure. Learning "it was wrong" is itself an important step forward.\n:::',
     },
     {
       type: 'quiz',
@@ -79,6 +79,28 @@ const hypothesisBuilding: LessonData = {
       title: 'Three approaches to forming hypotheses',
       content:
         'How do you actually come up with hypotheses? Three approaches:\n\n[1. Competing-hypothesis method]\nThink in terms of "A or B?"\nExample: "Is the revenue drop caused by price or by quality?"\n-> Form both hypotheses and verify them in parallel.\n\n[2. Structured-decomposition method]\nDecompose with a framework, then form hypotheses.\nExample: Revenue = Customers x Average ticket\n-> "Did the customer count drop?" "Did the average ticket drop?"\n\n[3. Analogy method]\nForm hypotheses from similar cases.\nExample: "Competitor A succeeded with a price cut -> maybe a price strategy works for us too?"\n-> Always check whether the underlying conditions are the same.',
+      visual: 'ThreePillarsDiagram',
+      visualProps: {
+        sectionLabel: 'Three approaches to forming hypotheses',
+        pillars: [
+          {
+            icon: 'AB',
+            title: 'Competing hypotheses',
+            body: 'Think "A or B" and verify both at once. Price or quality?',
+          },
+          {
+            icon: '×',
+            title: 'Structured decomposition',
+            body: 'Decompose with a framework first. Revenue = Customers × Ticket — which dropped?',
+          },
+          {
+            icon: '~',
+            title: 'Analogy',
+            body: 'Form hypotheses from similar cases, but check the underlying conditions match.',
+          },
+        ],
+        hint: 'Switching among the types lets you reach sound hypotheses fast, without starting from zero',
+      },
     },
     {
       type: 'quiz',
@@ -96,7 +118,7 @@ const hypothesisBuilding: LessonData = {
       type: 'explain',
       title: 'Designing the verification — what would prove the hypothesis?',
       content:
-        'After forming a hypothesis, design "how would we verify this?"\n\nFramework for designing verification:\n\n[Hypothesis] Enterprise-customer churn is caused by poor support quality.\n\n[Required information]\n- Support usage history of churned customers\n- NPS (Net Promoter Score) of churned customers\n- Comparison data with retained customers\n\n[Decision criteria (set in advance)]\n- If churned customers have NPS at least 20pt below retained -> supports the hypothesis\n- If post-support churn rate exceeds 50% -> strongly supports it\n\nThe critical move: set the decision criteria before looking at the data.\nThis prevents you from later interpreting whatever you find as "supporting" the hypothesis.',
+        'After forming a hypothesis, design "how would we verify this?"\n\nFramework for designing verification:\n\n[Hypothesis] Enterprise-customer churn is caused by poor support quality.\n\n[Required information]\n- Support usage history of churned customers\n- NPS (Net Promoter Score) of churned customers\n- Comparison data with retained customers\n\n[Decision criteria (set in advance)]\n- If churned customers have NPS at least 20pt below retained -> supports the hypothesis\n- If post-support churn rate exceeds 50% -> strongly supports it\n\n:::point\nSet the decision criteria before looking at the data. This blocks the trap of later reading whatever you find as "supporting" the hypothesis.\n:::',
     },
     {
       type: 'quiz',
@@ -174,7 +196,7 @@ const hypothesisProblemSolving: LessonData = {
       type: 'explain',
       title: 'Practice: solving problems hypothesis-first',
       content:
-        'Let us experience hypothesis-driven problem solving in a real business case.\n\n[Case]\nYou are the PM of a food delivery app.\nLast month, orders fell 20%. Identify the cause and propose a fix.\n\nFirst, form hypotheses:\n\nHypothesis A: Users are switching to competing apps (Uber Eats, etc.)\nHypothesis B: Delivery delays are eroding repeat orders\nHypothesis C: A price-sensitive cohort left when a promotion ended\n\nYou cannot verify all three at once, so start with the one that is highest-impact and easiest to verify.',
+        'Let us experience hypothesis-driven problem solving in a real business case.\n\n[Case]\nYou are the PM of a food delivery app.\nLast month, orders fell 20%. Identify the cause and propose a fix.\n\nFirst, form hypotheses:\n\nHypothesis A: Users are switching to competing apps (Uber Eats, etc.)\nHypothesis B: Delivery delays are eroding repeat orders\nHypothesis C: A price-sensitive cohort left when a promotion ended\n\n:::point\nYou cannot verify all three at once. Start with the one that is highest-impact and easiest to verify.\n:::',
     },
     {
       type: 'quiz',
@@ -222,7 +244,7 @@ const hypothesisProblemSolving: LessonData = {
       type: 'explain',
       title: 'Day 1 Answer — have an answer from day one',
       content:
-        'In the consulting world there is a concept called the "Day 1 Answer."\n\nOn the first day of a project, with very limited information, you produce a tentative answer.\n\n"What? You have not investigated anything yet?"\n-> Exactly — that is why it is a hypothesis.\n\nWhy Day 1 Answer works:\n- The team aligns on "what we should verify"\n- Investigation does not drift\n- The client sees value early\n\nCaveats:\n- Don\'t cling to the Day 1 Answer. Update it freely as evidence comes in\n- State that it is a "hypothesis." Distinguish it from a conclusion\n- Marshal experience, industry knowledge, and analogies to make it as accurate as possible\n\nPeople who can produce a Day 1 Answer = people who work fast.',
+        'In the consulting world there is a concept called the "Day 1 Answer."\n\nOn the first day of a project, with very limited information, you produce a tentative answer.\n\n"What? You have not investigated anything yet?"\n-> Exactly — that is why it is a hypothesis.\n\nWhy Day 1 Answer works:\n- The team aligns on "what we should verify"\n- Investigation does not drift\n- The client sees value early\n\nCaveats:\n- Don\'t cling to the Day 1 Answer. Update it freely as evidence comes in\n- State that it is a "hypothesis." Distinguish it from a conclusion\n- Marshal experience, industry knowledge, and analogies to make it as accurate as possible\n\nPeople who can produce a Day 1 Answer = people who work fast.\n\n:::warn\nThe biggest pitfall is clinging to the day-1 answer and mistaking it for a conclusion. Keep it a hypothesis and update it freely.\n:::',
     },
     {
       type: 'quiz',
@@ -263,7 +285,7 @@ const hypothesisValidation: LessonData = {
       type: 'explain',
       title: 'Conditions of a good hypothesis',
       content:
-        'Forming a hypothesis and forming a "verifiable hypothesis" are different skills.\n\n"Revenue should be growing" is not a hypothesis.\n"For our 20-something female campaign, the 30-day first-purchase rate will rise from the current 8% to 12%" — that is a hypothesis.\n\nThree conditions of a good hypothesis:\n\n(1) Falsifiable (often used interchangeably with "verifiable" in business)\nIt is clear what would happen if the hypothesis were correct, and what would happen if it were wrong.\n\n(2) Specific\nWho, what, and how much will change can be expressed in numbers.\n\n(3) Actionable\nIt is decided what we will do if the hypothesis holds, and what we will stop doing if it does not.\n\nA hypothesis that does not satisfy these three conditions cannot drive a decision even after verification.',
+        'Forming a hypothesis and forming a "verifiable hypothesis" are different skills.\n\n[icon:bad] Not a hypothesis: "Revenue should be growing."\n[icon:good] A hypothesis: "For our 20-something female campaign, the 30-day first-purchase rate will rise from the current 8% to 12%."\n\nThree conditions of a good hypothesis:\n\n(1) Falsifiable (often used interchangeably with "verifiable" in business)\nIt is clear what would happen if the hypothesis were correct, and what would happen if it were wrong.\n\n(2) Specific\nWho, what, and how much will change can be expressed in numbers.\n\n(3) Actionable\nIt is decided what we will do if the hypothesis holds, and what we will stop doing if it does not.\n\n:::point\nA hypothesis that fails any of these three conditions cannot drive a decision even after verification.\n:::',
     },
     {
       type: 'quiz',
@@ -281,7 +303,7 @@ const hypothesisValidation: LessonData = {
       type: 'explain',
       title: 'Minimum-viable verification (MVT)',
       content:
-        'When verifying a hypothesis, do not commit large resources upfront.\n\nMinimum Viable Test (MVT) thinking:\n\nDesign the smallest possible test that confirms only the core of the hypothesis.\n\nExample: you want to verify "the new onboarding screen will increase user retention."\n\nBad verification: rebuild every screen and roll out to all users.\nGood verification: show the new screen to only 10% of new users and compare 1-week retention.\n\nFour steps to verification design:\n1. Identify the single Key Assumption you want to verify.\n2. Define the metric (KPI) you can observe if it is true.\n3. Build the test with the minimum possible resources.\n4. Set in advance the timeline and the criteria for reaching a conclusion.',
+        'When verifying a hypothesis, do not commit large resources upfront.\n\nMinimum Viable Test (MVT) thinking:\n\nDesign the smallest possible test that confirms only the core of the hypothesis.\n\nExample: you want to verify "the new onboarding screen will increase user retention."\n\n[icon:bad] Bad verification: rebuild every screen and roll out to all users.\n[icon:good] Good verification: show the new screen to only 10% of new users and compare 1-week retention.\n\nFour steps to verification design:\n1. Identify the single Key Assumption you want to verify.\n2. Define the metric (KPI) you can observe if it is true.\n3. Build the test with the minimum possible resources.\n4. Set in advance the timeline and the criteria for reaching a conclusion.',
       visual: 'MvpTestDesignDiagram',
       outro:
         'The essence of MVP verification is to settle the truth of the "core assumption" at minimum cost. Rather than testing the whole hypothesis, narrow down to the single riskiest pillar that holds it up — and the time to a decision shrinks dramatically.',
