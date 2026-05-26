@@ -442,6 +442,17 @@ const numeracyLesson405: LessonData = {
       type: 'explain',
       title: 'Memorize the normal distribution and the 68-95-99.7 rule',
       content: 'Many natural phenomena and measurement errors follow a "normal distribution (bell curve)."\n\nProperties of the normal distribution:\n- Mean is the most common value; symmetric\n- Frequency tapers off as you move from the mean\n- Mean = median = mode\n\n68-95-99.7 rule:\n- Mean ± 1σ contains 68% of the data\n- Mean ± 2σ contains 95% of the data\n- Mean ± 3σ contains 99.7% of the data\n\nExample: Japanese male heights (illustrative: mean 170cm, σ = 6cm)\n- 164–176 cm contains 68%\n- 158–182 cm contains 95%\n- 152–188 cm contains 99.7%\n- Above 190 cm is about 0.15% (very rare)\n\nExample: hensachi (Japanese standardized test score)\n- hensachi = (score − mean) ÷ σ × 10 + 50\n- hensachi 60 → top ~16% (mean + 1σ)\n- hensachi 70 → top ~2.5% (mean + 2σ)\n- hensachi 80 → top ~0.15% (mean + 3σ)\n\nApplication: Six-Sigma quality management\n- Quality bar of fewer than 3.4 defects per million\n- Beyond 6σ, the probability is astronomically small\n\nPoint: When you can instantly compute "what % is within mean ± Xσ," you can read "rarity" off the data.',
+      visual: 'NormalDistribution68Diagram',
+      visualProps: {
+        sectionLabel: 'Normal distribution and the 68-95-99.7 rule',
+        meanLabel: 'mean',
+        legendLabels: ['contains 68%', 'contains 95%', 'contains 99.7%'],
+        ariaLabel:
+          'A normal distribution bell curve. Mean ± 1σ contains 68%, ± 2σ contains 95%, ± 3σ contains 99.7% of the data',
+        hint: 'Once "what % within mean ± Xσ" is instant, you can read rarity off any value',
+      },
+      outro:
+        'In a normal distribution, about 68% falls within mean ± 1σ, 95% within ± 2σ, and 99.7% within ± 3σ. Memorize these and you can judge how rare a value is from how many σ it sits away from the mean.',
     },
     {
       type: 'explain',
@@ -522,6 +533,20 @@ const numeracyLesson406: LessonData = {
       type: 'explain',
       title: 'See through "99% accurate test" via the false-positive paradox',
       content: 'You hear "you tested positive on a 99%-accurate test" and think "I\'m 99% sick" — but there\'s a trap.\n\nExample: rare disease at 0.1% prevalence, test 99% accurate\n\nSuppose 10,000 people take the test:\n- Sick: 10 (0.1%)\n  - Test positive (true positive): 9.9 ≈ 10\n- Healthy: 9,990\n  - Test positive (false positive): 9,990 × 1% = 99.9 ≈ 100\n\nOf those who test positive:\n- True positives: 10\n- False positives: 100\n- Total: 110\n\n"Probability of being sick given a positive test" = 10 ÷ 110 = about 9%\n\nWhen you hear "99%-accurate test, positive," it sounds like "almost certainly sick" — but it\'s actually only 9%.\n\nWhy?\n- Low base rate (prevalence) means the healthy population overwhelms\n- A small false-positive rate yields more false positives than true positives\n\nReal applications:\n- Spam filters: 99% accuracy with massive volume produces many false positives\n- Face recognition: 99% accuracy + a rare target = many misidentifications\n- Cancer screening: low base rate in young populations causes most retests to be false alarms\n\nMitigations:\n- Don\'t look only at test accuracy — confirm the base rate (prevalence)\n- Use the concept of "positive predictive value (PPV)"\n- For probability intuition, use Bayes\' theorem (Bayesian reasoning)\n\nPoint: "X% accuracy" alone doesn\'t suffice. Pair it with prior probability (base rate) — that\'s the basics of Bayesian thinking.',
+      visual: 'FalsePositiveGridDiagram',
+      visualProps: {
+        sectionLabel: 'What the 110 "positives" really are',
+        totalDots: 110,
+        truePositives: 10,
+        falsePositives: 100,
+        trueLabel: 'True positive (actually sick): {n}',
+        falseLabel: 'False positive (actually healthy): {n}',
+        resultLabel: 'Of all positives, truly sick:',
+        approxPrefix: 'about',
+        hint: 'Even at 99% accuracy, if the disease is rare, most positives are healthy people (false positives)',
+      },
+      outro:
+        'When the base rate is low, the healthy population overwhelms, so even a tiny error rate makes false positives outnumber true positives. Don\'t judge by "X% accuracy" alone — pair it with the prior probability (base rate). That is the basics of Bayesian thinking.',
     },
     {
       type: 'explain',

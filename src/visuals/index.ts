@@ -86,6 +86,10 @@ import { SilenceTypesVisual } from './SilenceTypesVisual'
 import { SPINStructureVisual } from './SPINStructureVisual'
 import { BANTGridVisual } from './BANTGridVisual'
 import { OneOnOneFlowVisual } from './OneOnOneFlowVisual'
+// Phase 2-1: 新規図解部品 3 種（2026-05-26）
+import { AnswerContrastDiagram } from './AnswerContrastDiagram'
+import { NormalDistribution68Diagram } from './NormalDistribution68Diagram'
+import { FalsePositiveGridDiagram } from './FalsePositiveGridDiagram'
 
 /**
  * visualId → Visual component の registry
@@ -176,6 +180,10 @@ export const visualRegistry: Record<string, ComponentType<any>> = {
   SPINStructureDiagram: SPINStructureVisual,
   BANTGridDiagram: BANTGridVisual,
   OneOnOneFlowDiagram: OneOnOneFlowVisual,
+  // Phase 2-1: 新規図解部品（2026-05-26）
+  AnswerContrastDiagram: AnswerContrastDiagram,
+  NormalDistribution68Diagram: NormalDistribution68Diagram,
+  FalsePositiveGridDiagram: FalsePositiveGridDiagram,
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- registry の Comp 型に揃える
