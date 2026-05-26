@@ -20,7 +20,7 @@ export const strategyLessonMapEn: Record<number, LessonData> = {
         type: 'explain',
         title: 'Ford and the strategy of mass production',
         content:
-          'Henry Ford pushed Taylor\'s thinking further. Using a moving assembly line he mass-produced the Model T, slashing prices and turning the automobile into a product for the masses.\n\nWhat emerged was the strategic concept of "economies of scale." The more you produce, the lower the cost per unit. Lower prices drive sales. More sales let you produce even more — a virtuous cycle.\n\nStrategy was not yet a "framework," but the idea of "winning on cost and scale" survives today as the prototype of cost leadership strategy.',
+          'Henry Ford pushed Taylor\'s thinking further. Using a moving assembly line he mass-produced the Model T, slashing prices and turning the automobile into a product for the masses.\n\nWhat emerged was the strategic concept of "economies of scale." The more you produce, the lower the cost per unit. Lower prices drive sales. More sales let you produce even more — a virtuous cycle.\n\nStrategy was not yet a "framework."\n\n:::point\nThe idea of "winning on cost and scale" still lives on today as the prototype of cost leadership strategy.\n:::',
       },
       {
         type: 'quiz',
@@ -252,7 +252,7 @@ export const strategyLessonMapEn: Record<number, LessonData> = {
         type: 'explain',
         title: 'The "stuck in the middle" trap',
         content:
-          'Porter\'s warning was about the danger of being half-hearted.\n\nA company that wins on neither cost nor differentiation — "stuck in the middle" — will lose to competitors choosing either strategy. Neither cheap nor special, it is a sitting duck.\n\nSo strategy is fundamentally about "throwing things away." If you choose differentiation, don\'t fight on cost; if you choose cost, don\'t add elaborate features. Deciding what not to do is what strategy is.',
+          'Porter\'s warning was about the danger of being half-hearted.\n\nA company that wins on neither cost nor differentiation — "stuck in the middle" — will lose to competitors choosing either strategy. Neither cheap nor special, it is a sitting duck.\n\nIf you choose differentiation, don\'t fight on cost; if you choose cost, don\'t add elaborate features.\n\n:::point\nStrategy is fundamentally about "throwing things away." Deciding what not to do — not what to do — is what strategy is.\n:::',
       },
       {
         type: 'quiz',
@@ -355,7 +355,7 @@ export const strategyLessonMapEn: Record<number, LessonData> = {
         type: 'explain',
         title: 'How competencies grow',
         content:
-          'Core competencies cannot be bought. They develop only over time through cycles of "try → learn → accumulate within the organization."\n\nPrahalad and Hamel also proposed "strategic intent." Set an ambitious goal beyond what current capabilities can reach, and develop capabilities to fill the gap. By "stretching" beyond current ability, the organization grows.\n\nSo core competence is not a "stocktake of resources today" but a dynamic question: "looking back from the future, which capabilities should we be growing now?"',
+          'Core competencies cannot be bought. They develop only over time through cycles of "try → learn → accumulate within the organization."\n\nPrahalad and Hamel also proposed "strategic intent." Set an ambitious goal beyond what current capabilities can reach, and develop capabilities to fill the gap. By "stretching" beyond current ability, the organization grows.\n\n:::point\nCore competence is not a "stocktake of resources today." It is a dynamic question: "looking back from the future, which capabilities should we be growing now?"\n:::',
       },
       {
         type: 'quiz',
@@ -393,7 +393,7 @@ export const strategyLessonMapEn: Record<number, LessonData> = {
         type: 'explain',
         title: 'Win without fighting',
         content:
-          'In 2005, Kim & Mauborgne proposed a different angle in "Blue Ocean Strategy."\n\nRed Ocean = the bloody fight inside an existing market. The world where Porter\'s generic strategies apply.\nBlue Ocean = a new market space free of competition.\n\nTheir question is not "cost or differentiation?" but "is there a way to lower cost while raising value?" Said to be impossible, this dual goal becomes possible if you redraw the market\'s boundaries — that\'s their claim.',
+          'In 2005, Kim & Mauborgne proposed a different angle in "Blue Ocean Strategy."\n\nRed Ocean = the bloody fight inside an existing market. The world where Porter\'s generic strategies apply.\nBlue Ocean = a new market space free of competition.\n\nSaid to be impossible, this dual goal becomes possible if you redraw the market\'s boundaries — that\'s their claim.\n\n:::point\nTheir question is not "cost or differentiation?" but "is there a way to lower cost while raising value?"\n:::',
       },
       {
         type: 'explain',
@@ -499,7 +499,7 @@ export const strategyLessonMapEn: Record<number, LessonData> = {
         type: 'explain',
         title: 'Co-evolution — growing alongside participants',
         content:
-          'Traditional competitive strategy was "the fight against rivals." Platform strategy centers on "collaboration with participants." If the platform doesn\'t let participants make money, the ecosystem dies.\n\nKey design points: ① rules under which participants can prosper, ② trustworthy mechanisms (payments, ratings, dispute resolution), ③ accelerating network effects, ④ keep the platform\'s take "appropriately thin."\n\nThis is called "co-evolution." Platform and participants evolve each other; the entire biome grows. The keyword of modern strategy is no longer self-contained — it is growing together with outside parties.',
+          'Traditional competitive strategy was "the fight against rivals." Platform strategy centers on "collaboration with participants." If the platform doesn\'t let participants make money, the ecosystem dies.\n\nKey design points: ① rules under which participants can prosper, ② trustworthy mechanisms (payments, ratings, dispute resolution), ③ accelerating network effects, ④ keep the platform\'s take "appropriately thin."\n\nPlatform and participants evolve each other, and the entire biome grows. This is called "co-evolution."\n\n:::point\nNo longer self-contained, but growing together with outside parties. That is the keyword of modern strategy.\n:::',
       },
       {
         type: 'quiz',

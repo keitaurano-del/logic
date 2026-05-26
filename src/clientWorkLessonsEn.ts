@@ -15,12 +15,12 @@ const clientLesson89: LessonData = {
     {
       type: 'explain',
       title: 'Build your number sense first',
-      content: 'When dealing with large numbers, starting from precise calculations every time is slow.\n\nFirst, build "order-of-magnitude intuition."\n\n10 → 100 → 1,000 → 10K → 100K → 1M → 100M → 1T\n\nIt\'s just a 10× progression.\n\nFor example:\n- Population of Japan ≈ 120 million\n- Japan GDP ≈ 600 trillion yen\n- Tokyo population ≈ 14 million\n\nWith this sense, you can intuitively judge whether a number "looks plausible" the moment you see it.',
+      content: 'When dealing with large numbers, starting from precise calculations every time is slow.\n\nFirst, build "order-of-magnitude intuition."\n\n10 → 100 → 1,000 → 10K → 100K → 1M → 100M → 1T\n\nIt\'s just a 10× progression.\n\nFor example:\n- Population of Japan ≈ 120 million\n- Japan GDP ≈ 600 trillion yen\n- Tokyo population ≈ 14 million\n\n:::point\nMemorize a few anchor numbers, and you can intuitively judge whether any number you see "looks plausible."\n:::',
     },
     {
       type: 'explain',
       title: 'Count digits to identify the unit',
-      content: 'Japanese numbers change unit every 4 digits. If you can count digits, you can mechanically identify the unit.\n\nDigit count → unit (10K and up)\n- 5 digits = 10K (10,000)\n- 6 digits = 100K (100,000)\n- 7 digits = 1M (1,000,000)\n- 8 digits = 10M (10,000,000)\n- 9 digits = 100M (100,000,000)\n- 10 digits = 1B\n- 11 digits = 10B\n- 12 digits = 100B\n- 13 digits = 1T\n\nSummary — every 4 digits the range shifts:\n- 5-8 digits → the "10K" range (in Japanese "man")\n- 9-12 digits → the "100M" range (in Japanese "oku")\n- 13-16 digits → the "1T" range (in Japanese "cho")\n\nIn other words, "count the zeros and divide by 4" instantly tells you which range a number is in.',
+      content: 'Japanese numbers change unit every 4 digits. If you can count digits, you can mechanically identify the unit.\n\nDigit count → unit (10K and up)\n- 5 digits = 10K (10,000)\n- 6 digits = 100K (100,000)\n- 7 digits = 1M (1,000,000)\n- 8 digits = 10M (10,000,000)\n- 9 digits = 100M (100,000,000)\n- 10 digits = 1B\n- 11 digits = 10B\n- 12 digits = 100B\n- 13 digits = 1T\n\nSummary — every 4 digits the range shifts:\n- 5-8 digits → the "10K" range (in Japanese "man")\n- 9-12 digits → the "100M" range (in Japanese "oku")\n- 13-16 digits → the "1T" range (in Japanese "cho")\n\n:::tip\nJust count the zeros and divide by 4, and you instantly know which range a number is in.\n:::',
     },
     {
       type: 'explain',
@@ -94,7 +94,7 @@ const clientLesson90: LessonData = {
     {
       type: 'explain',
       title: 'Question-setting errors are the biggest losses',
-      content: '"Answering the right question" matters far more than "answering the wrong question correctly."\n\nA common failure pattern in client work:\n- Client: "Sales are down."\n- You: immediately starts thinking "how do we increase sales?"\n\nBut what is the real question?\n- Which products / regions are down?\n- When did the decline start?\n- What are competitors doing?\n- Maybe cost cutting is the priority\n\nDefining the issue = clarifying "what we should solve"',
+      content: '"Answering the right question" matters far more than "answering the wrong question correctly."\n\nA common failure pattern in client work:\n- Client: "Sales are down."\n- [icon:bad] Bad: you immediately start thinking "how do we increase sales?"\n\nBut what is the real question?\n- Which products / regions are down?\n- When did the decline start?\n- What are competitors doing?\n- Maybe cost cutting is the priority\n\n:::point\nDefining the issue means clarifying "what we should solve" before anything else.\n:::',
     },
     {
       type: 'explain',
@@ -143,12 +143,12 @@ const clientLesson91: LessonData = {
     {
       type: 'explain',
       title: 'Ask "what we need to know," not "what we want to ask"',
-      content: 'A common interview failure:\n\nBad: "Are there any problems you\'re facing?"\n→ Too vague; the other person can\'t answer\n\nGood: "What\'s the most time-consuming task in your work?"\n→ Concrete; gives information usable for hypothesis testing\n\nInterviews are not "interviews" — they are hypothesis verification.\n\nThinking through "what do I need to confirm to test my hypothesis?" beforehand dramatically changes the quality of information you get.',
+      content: 'A common interview failure:\n\n[icon:bad] Bad: "Are there any problems you\'re facing?"\n→ Too vague; the other person can\'t answer\n\n[icon:good] Good: "What\'s the most time-consuming task in your work?"\n→ Concrete; gives information usable for hypothesis testing\n\n:::point\nInterviews are not interviews — they are hypothesis verification. Decide "what do I need to confirm to test my hypothesis?" beforehand, and the quality of information you get changes dramatically.\n:::',
     },
     {
       type: 'explain',
       title: 'Use open and closed questions appropriately',
-      content: 'Open questions: the other person can answer freely\n- "How do you feel about the current challenges?"\n- "What does the ideal state look like?"\n- When to use: when you want to broaden the conversation, in initial situation grasp\n\nClosed questions: answered yes/no or with options\n- "Does this problem occur monthly?"\n- "Is the priority cost reduction or sales expansion?"\n- When to use: when verifying a hypothesis, when narrowing the conversation\n\nGolden rule: start with open, confirm with closed.',
+      content: 'Open questions: the other person can answer freely\n- "How do you feel about the current challenges?"\n- "What does the ideal state look like?"\n- When to use: when you want to broaden the conversation, in initial situation grasp\n\nClosed questions: answered yes/no or with options\n- "Does this problem occur monthly?"\n- "Is the priority cost reduction or sales expansion?"\n- When to use: when verifying a hypothesis, when narrowing the conversation\n\n:::point\nGolden rule: start with open, confirm with closed.\n:::',
     },
     {
       type: 'quiz',
@@ -164,7 +164,7 @@ const clientLesson91: LessonData = {
     {
       type: 'explain',
       title: 'Don\'t fear silence',
-      content: 'A surprisingly important interview skill is the use of "silence."\n\nSilence is a sign that the other person is thinking.\nThrowing the next question immediately when they go quiet stops their thought process.\n\nDevelop the habit of waiting 3 seconds. Often they\'ll share deeper information.\n\n"And then?" / "For example?" / "Could you tell me a little more?"\n→ These small prompts transform interview depth.\n\nVisible note-taking matters too. The other person feels "they\'re really listening" and shares more.',
+      content: 'A surprisingly important interview skill is the use of "silence."\n\nSilence is a sign that the other person is thinking.\nThrowing the next question immediately when they go quiet stops their thought process.\n\n:::tip\nWhen they go quiet, develop the habit of waiting 3 seconds. Often they share deeper information.\n:::\n\n"And then?" / "For example?" / "Could you tell me a little more?"\n→ These small prompts transform interview depth.\n\nVisible note-taking matters too. The other person feels "they\'re really listening" and shares more.',
     },
     {
       type: 'quiz',
@@ -189,7 +189,7 @@ const clientLesson92: LessonData = {
     {
       type: 'explain',
       title: 'Have a question before you read',
-      content: 'Just by deciding "what do I want to confirm from this material?" before reading, your reading speed and accuracy change dramatically.\n\nReading without a question:\n→ Everything seems important → you finish without organized takeaways\n\nReading with a question:\n→ Your eyes naturally lock onto needed information → implications come out faster\n\nExample: "I want to find evidence about cost reduction in this proposal."\n→ Scanning with that lens, you can read in 2 minutes what would normally take 5.',
+      content: 'Just by deciding "what do I want to confirm from this material?" before reading, your reading speed and accuracy change dramatically.\n\n[icon:bad] Reading without a question:\n→ Everything seems important → you finish without organized takeaways\n\n[icon:good] Reading with a question:\n→ Your eyes naturally lock onto needed information → implications come out faster\n\nExample: "I want to find evidence about cost reduction in this proposal."\n→ Scanning with that lens, you can read in 2 minutes what would normally take 5.',
     },
     {
       type: 'explain',
@@ -238,7 +238,7 @@ const clientLesson93: LessonData = {
     {
       type: 'explain',
       title: 'How you arrange things changes what gets through',
-      content: 'The same information lands very differently depending on how it\'s arranged.\n\nStructuring means:\nOrganizing information and thoughts on the dimensions of "flow, granularity, gaps/duplication, and relationships"\n\nUnstructured example:\n→ "We need cost reduction. Sales should grow. Hiring is also tough. Employee morale is low. We want to push DX."\n\nStructured example:\n→ "Two issues. (1) Financial: cost overruns and stagnant sales. (2) Organizational: hard to hire and low morale. DX is a means to address (2)."\n\nStructure alone makes "what\'s wrong, where to start" obvious at a glance.',
+      content: 'The same information lands very differently depending on how it\'s arranged.\n\nStructuring means:\nOrganizing information and thoughts on the dimensions of "flow, granularity, gaps/duplication, and relationships"\n\n[icon:bad] Unstructured example:\n→ "We need cost reduction. Sales should grow. Hiring is also tough. Employee morale is low. We want to push DX."\n\n[icon:good] Structured example:\n→ "Two issues. (1) Financial: cost overruns and stagnant sales. (2) Organizational: hard to hire and low morale. DX is a means to address (2)."\n\n:::point\nStructure alone makes "what\'s wrong, where to start" obvious at a glance.\n:::',
     },
     {
       type: 'explain',
@@ -302,7 +302,7 @@ const clientLesson94: LessonData = {
     {
       type: 'explain',
       title: 'Switch between abstract and concrete',
-      content: 'Most ineffective writing is biased toward "abstract only" or "concrete only."\n\nToo abstract:\n"Improving customer experience is important."\n→ The reader doesn\'t know what to do\n\nToo concrete:\n"On Company A\'s XX page, change the button color from orange to blue, and increase font size from 14pt to 16pt."\n→ The reader doesn\'t know why\n\nJust right:\n"We\'ll improve the deciding-moment experience that drives first purchases. Specifically, we\'ll make the CTA button on product pages more prominent and reduce checkout from 3 steps to 2."\n→ Goal and means together',
+      content: 'Most ineffective writing is biased toward "abstract only" or "concrete only."\n\nToo abstract:\n"Improving customer experience is important."\n→ The reader doesn\'t know what to do\n\nToo concrete:\n"On Company A\'s XX page, change the button color from orange to blue, and increase font size from 14pt to 16pt."\n→ The reader doesn\'t know why\n\n[icon:good] Just right:\n"We\'ll improve the deciding-moment experience that drives first purchases. Specifically, we\'ll make the CTA button on product pages more prominent and reduce checkout from 3 steps to 2."\n→ Goal and means together',
     },
     {
       type: 'quiz',
@@ -343,7 +343,7 @@ const clientLesson95: LessonData = {
     {
       type: 'explain',
       title: 'Why a correct proposal still fails to land',
-      content: 'Even with sufficient research and correct analysis, you can produce a proposal that "doesn\'t land."\n\nIt\'s because the storyline (the order in which you communicate) is weak.\n\nStoryline means:\nThe flow of "in what order, what to convey" across slides or a report.\n\nListeners decide "is this worth listening to?" within the first few minutes.\n\nBasic flow:\n(1) Current state (what is happening)\n(2) Issue (what is wrong)\n(3) Cause (why the issue is happening)\n(4) Action (how to solve it)\n(5) Expected impact (what changes when solved)',
+      content: 'Even with sufficient research and correct analysis, you can produce a proposal that "doesn\'t land."\n\nIt\'s because the storyline (the order in which you communicate) is weak.\n\nStoryline means:\nThe flow of "in what order, what to convey" across slides or a report.\n\n:::point\nListeners decide "is this worth listening to?" within the first few minutes. So order design matters as much as the content itself.\n:::\n\nBasic flow:\n(1) Current state (what is happening)\n(2) Issue (what is wrong)\n(3) Cause (why the issue is happening)\n(4) Action (how to solve it)\n(5) Expected impact (what changes when solved)',
     },
     {
       type: 'explain',
@@ -423,7 +423,7 @@ const clientLesson96: LessonData = {
     {
       type: 'explain',
       title: 'Write meeting minutes correctly',
-      content: 'Post-meeting minutes are not "an information record" — they\'re "action confirmation."\n\nThree elements of good minutes:\n\n1. Decisions (What): what was decided\nExample: "Decided to raise next quarter\'s ad budget by 20%"\n\n2. Action items (Who, What, When): who, what, by when\nExample: "Tanaka-san will draft the budget adjustment plan and share it by 3/15"\n\n3. Open items (Pending): what carries over to the next session\nExample: "Decision on overseas expansion deferred until next month\'s data review"\n\nBad: Minutes that just transcribe who said what.',
+      content: 'Post-meeting minutes are not "an information record" — they\'re "action confirmation."\n\nThree elements of good minutes:\n\n1. Decisions (What): what was decided\nExample: "Decided to raise next quarter\'s ad budget by 20%"\n\n2. Action items (Who, What, When): who, what, by when\nExample: "Tanaka-san will draft the budget adjustment plan and share it by 3/15"\n\n3. Open items (Pending): what carries over to the next session\nExample: "Decision on overseas expansion deferred until next month\'s data review"\n\n:::warn\nMinutes that just transcribe who said what can\'t be used for follow-up later.\n:::',
     },
     {
       type: 'quiz',
@@ -439,7 +439,7 @@ const clientLesson96: LessonData = {
     {
       type: 'explain',
       title: 'Use quantitative and qualitative together',
-      content: 'In reports and emails, distinguishing quantitative from qualitative matters.\n\nQuantitative: information you can express in numbers\n- "Sales rose 10%" / "Average response time shortened by 2 hours"\n- High reliability, easy to compare\n- But numbers alone don\'t explain "why"\n\nQualitative: information expressed in words / customer voice / observation\n- "Customers were observed struggling with the operation"\n- Conveys "why" that doesn\'t show in numbers\n- But subjective\n\nBest practice: show facts quantitatively, explain meaning qualitatively\nExample: "Churn rate up 15% (quant). Interviews show frequent complaints about support (qual)."',
+      content: 'In reports and emails, distinguishing quantitative from qualitative matters.\n\nQuantitative: information you can express in numbers\n- "Sales rose 10%" / "Average response time shortened by 2 hours"\n- High reliability, easy to compare\n- But numbers alone don\'t explain "why"\n\nQualitative: information expressed in words / customer voice / observation\n- "Customers were observed struggling with the operation"\n- Conveys "why" that doesn\'t show in numbers\n- But subjective\n\n:::point\nBest practice: show facts quantitatively, explain meaning qualitatively.\n:::\nExample: "Churn rate up 15% (quant). Interviews show frequent complaints about support (qual)."',
     },
     {
       type: 'quiz',
@@ -464,7 +464,7 @@ const clientLesson97: LessonData = {
     {
       type: 'explain',
       title: 'Separate emotion from information',
-      content: 'When receiving feedback, defensive reactions arise naturally.\n\n"This direction is wrong" → (inner voice) "My proposal got rejected..."\n\nBut feedback is not "an evaluation of you" — it\'s "information about the output."\n\nTips for separating emotion from information:\n1. First, accept it ("Thank you") — don\'t argue\n2. Confirm: "So you\'re saying XX is the issue, right?"\n3. Process emotions later, at home\n\nPeople who can take feedback honestly grow much faster.',
+      content: 'When receiving feedback, defensive reactions arise naturally.\n\n"This direction is wrong" → (inner voice) "My proposal got rejected..."\n\n:::point\nFeedback is not "an evaluation of you" — it\'s "information about the output."\n:::\n\nTips for separating emotion from information:\n1. First, accept it ("Thank you") — don\'t argue\n2. Confirm: "So you\'re saying XX is the issue, right?"\n3. Process emotions later, at home\n\nPeople who can take feedback honestly grow much faster.',
     },
     {
       type: 'explain',
