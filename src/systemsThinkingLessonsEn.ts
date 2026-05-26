@@ -13,7 +13,7 @@ const systemsIntro: LessonData = {
       type: 'explain',
       title: 'What is systems thinking?',
       content:
-        'Systems thinking focuses on the relationships between elements and the patterns of the whole, not the elements in isolation.\n\nThe concept was popularized by Peter Senge ("The Fifth Discipline").\n\nExample: why does traffic congestion happen?\n\nReductionist view: "Too many cars," "narrow roads" → expand the road.\nSystems view: Wider road → more convenient → more cars → congested again.\n→ Long term, expanding the road can make congestion worse (induced demand).\n\nThe opposite of "missing the forest for the trees."\n\nThree elements of a system:\n(1) Stocks — accumulations (inventory, talent, knowledge)\n(2) Flows — what goes in and out (revenue, hiring, learning)\n(3) Feedback — outputs that loop back into inputs',
+        'Systems thinking focuses on the relationships between elements and the patterns of the whole, not the elements in isolation.\n\nThe concept was popularized by Peter Senge ("The Fifth Discipline").\n\nExample: why does traffic congestion happen?\n\n[icon:bad] Reductionist view: "Too many cars," "narrow roads" → expand the road.\n[icon:good] Systems view: Wider road → more convenient → more cars → congested again.\n→ Long term, expanding the road can make congestion worse (induced demand).\n\nThe opposite of "missing the forest for the trees."\n\nThree elements of a system:\n(1) Stocks — accumulations (inventory, talent, knowledge)\n(2) Flows — what goes in and out (revenue, hiring, learning)\n(3) Feedback — outputs that loop back into inputs\n\n:::point\nDon\'t examine elements one by one — watch the connections and the loops between them. That is where systems thinking starts.\n:::',
     },
     {
       type: 'quiz',
@@ -102,7 +102,7 @@ const systemsLoops: LessonData = {
       type: 'explain',
       title: 'More system archetypes',
       content:
-        '[Archetype 3: Limits to Growth]\nGrowth → eventually hits a constraint → growth stalls.\n\nExample:\nA startup grows fast → not enough engineers → development speed drops.\n→ Right move: not "hire more engineers" but "remove the bottleneck constraint."\n\n[Archetype 4: Eroding Goals]\nGoal not met → lower the goal → adapt to the lower goal.\n\nExample:\nQuality target "0.1% defect rate" not met → "0.5% is fine" → next round, "1% is fine."\n→ Quality keeps drifting down.\n\nLesson: Do not lower the goal — solve why you are not hitting it.\n\n[Archetype 5: Tragedy of the Commons]\nIndividuals exhaust a shared resource → everyone loses.\n\nExample: Every department flags requests as "urgent" to IT → IT collapses → every department is delayed.',
+        '[Archetype 3: Limits to Growth]\nGrowth → eventually hits a constraint → growth stalls.\n\nExample:\nA startup grows fast → not enough engineers → development speed drops.\n→ Right move: not "hire more engineers" but "remove the bottleneck constraint."\n\n[Archetype 4: Eroding Goals]\nGoal not met → lower the goal → adapt to the lower goal.\n\nExample:\nQuality target "0.1% defect rate" not met → "0.5% is fine" → next round, "1% is fine."\n→ Quality keeps drifting down.\n\nLesson: Do not lower the goal — solve why you are not hitting it.\n\n[Archetype 5: Tragedy of the Commons]\nIndividuals exhaust a shared resource → everyone loses.\n\nExample: Every department flags requests as "urgent" to IT → IT collapses → every department is delayed.\n\n:::warn\nWith every archetype, the more you treat the surface symptom, the longer the structure survives and the problem drags on. Before you act, pin down which loop is actually running.\n:::',
     },
     {
       type: 'quiz',
@@ -121,6 +121,19 @@ const systemsLoops: LessonData = {
       title: 'Leverage points — Small change, big effect',
       content:
         'Donella Meadows ("Thinking in Systems") proposed leverage points:\n\n"Places in a system where small interventions produce large changes."\n\nThe leverage hierarchy:\n\nweak ← → strong\nParameter changes < Rule changes < Goal changes < Paradigm changes\n\nExample: "Employee motivation is low."\n\nParameter change: 10% bonus increase → temporary effect\nRule change: shift evaluation to 360-degree feedback → behavior changes\nGoal change: from "maximize revenue" to "maximize customer satisfaction" → priorities change\nParadigm change: from "an organization that controls" to "an organization that self-governs" → culture changes\n\nMost companies only adjust parameters.\nIntervening at higher leverage points changes the system at the root.',
+      visual: 'LeveragePointsDiagram',
+      visualProps: {
+        sectionLabel: 'Intervention hierarchy — where to change',
+        tiers: [
+          { label: 'Tier 1', name: 'Change parameters', desc: 'Adjust numbers, budgets, thresholds. Easiest to touch, smallest effect.' },
+          { label: 'Tier 2', name: 'Change the rules', desc: 'Redesign processes, policies, and incentives.' },
+          { label: 'Tier 3', name: 'Change the goals', desc: 'Redefine what the system is aiming for.' },
+          { label: 'Tier 4', name: 'Change the paradigm', desc: 'Question the assumptions and values the system rests on.' },
+        ],
+        hint: 'The higher you go, the harder it is to change — but the impact is orders of magnitude greater.',
+      },
+      outro:
+        'Climbing from parameters to rules to goals to paradigm, each layer is harder to change yet pays off in orders of magnitude. Most organizations stall by adjusting only the bottom parameter layer, so building the habit of asking whether you can reach one layer up transforms how much your interventions move the system.',
     },
     {
       type: 'quiz',
@@ -167,7 +180,7 @@ const systemsPractice: LessonData = {
       type: 'explain',
       title: '[Case] Why DX is stuck — a systems analysis',
       content:
-        'Case study:\nA large company has been pushing "digital transformation" for three years, but it is not progressing.\n\nIceberg analysis:\n\nEvent: "A DX project was canceled because it ran over budget."\n\nPattern: "Three DX projects in the past five years have been canceled."\n\nStructure:\n- IT and business divisions are separated; their requirements never align.\n- Annual-budget cycles make multi-year projects hard to approve.\n- Failure is attributed to individuals, so no one wants to take risks.\n\nMental models:\n- Executives believe "IT is a cost center."\n- The organization believes "the way we work in the field should not change."\n\nLeverage points:\n→ Shift executive perception (IT = investment) and stack up small successes to build belief.',
+        'Case study:\nA large company has been pushing "digital transformation" for three years, but it is not progressing.\n\nIceberg analysis:\n\nEvent: "A DX project was canceled because it ran over budget."\n\nPattern: "Three DX projects in the past five years have been canceled."\n\nStructure:\n- IT and business divisions are separated; their requirements never align.\n- Annual-budget cycles make multi-year projects hard to approve.\n- Failure is attributed to individuals, so no one wants to take risks.\n\nMental models:\n- Executives believe "IT is a cost center."\n- The organization believes "the way we work in the field should not change."\n\nLeverage points:\n→ Shift executive perception (IT = investment) and stack up small successes to build belief.\n\n:::point\nTreating the event (canceled over budget) just makes it recur. The deeper you rewrite the mental model, the more budgeting, structure, and evaluation shift in a chain.\n:::',
     },
     {
       type: 'quiz',
@@ -185,7 +198,7 @@ const systemsPractice: LessonData = {
       type: 'explain',
       title: 'Systems thinking — recap',
       content:
-        'Key takeaways:\n\nLook at the relationships of the whole, not isolated parts.\nFind the feedback loops (reinforcing / balancing).\nUse the iceberg model to expose deep structures and mental models.\nUse system archetypes to diagnose problem patterns quickly.\nIntervene at leverage points to change things at the root.\nVisualize complex problems with causal loop diagrams.\n\nWhen systems thinking is especially useful:\n- "The same problem keeps coming back."\n- "Our countermeasures aren\'t working."\n- "The conflict between departments will not resolve."\n- "Short-term wins are creating long-term losses."\n\nStop "playing whack-a-mole" and change the mechanism that keeps producing the moles.\nThat is systems thinking.',
+        'Key takeaways:\n\nLook at the relationships of the whole, not isolated parts.\nFind the feedback loops (reinforcing / balancing).\nUse the iceberg model to expose deep structures and mental models.\nUse system archetypes to diagnose problem patterns quickly.\nIntervene at leverage points to change things at the root.\nVisualize complex problems with causal loop diagrams.\n\nWhen systems thinking is especially useful:\n- "The same problem keeps coming back."\n- "Our countermeasures aren\'t working."\n- "The conflict between departments will not resolve."\n- "Short-term wins are creating long-term losses."\n\n:::point\nStop playing whack-a-mole and change the very mechanism that keeps producing the moles. That is systems thinking.\n:::',
     },
     {
       type: 'quiz',

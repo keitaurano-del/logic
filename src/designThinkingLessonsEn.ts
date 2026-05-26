@@ -34,7 +34,7 @@ const designThinkingIntro: LessonData = {
       type: 'explain',
       title: 'Empathize — Find the unspoken truth',
       content:
-        'In the empathize step, observation is everything.\n\nWhat users say ≠ what users actually need\n\nFamous IDEO example:\nA hospital waiting-room redesign project.\nIn surveys, "long wait time" was the #1 complaint.\n\nBut when the team observed users…\n• Patients were less troubled by the wait itself than by "not knowing how long they\'d wait"\n• Family members were stressed by "not knowing what was happening to the patient"\n\nThe right solution wasn\'t "shorter waits" — it was "make information visible."\n\nMethods of empathy:\n1. Observe — Watch behavior\n2. Interview — Ask "why?" five times\n3. Immerse — Become the user yourself',
+        'In the empathize step, observation is everything.\n\nWhat users say ≠ what users actually need\n\nFamous IDEO example:\nA hospital waiting-room redesign project.\nIn surveys, "long wait time" was the #1 complaint.\n\nBut when the team observed users…\n• Patients were less troubled by the wait itself than by "not knowing how long they\'d wait"\n• Family members were stressed by "not knowing what was happening to the patient"\n\nThe right solution wasn\'t "shorter waits" — it was "make information visible."\n\n:::warn\nTurning survey wording straight into requirements leads to off-target solutions. Use observation to confirm the real trouble hiding beneath the stated complaint.\n:::\n\nMethods of empathy:\n1. Observe — Watch behavior\n2. Interview — Ask "why?" five times\n3. Immerse — Become the user yourself',
     },
     {
       type: 'quiz',
@@ -52,7 +52,7 @@ const designThinkingIntro: LessonData = {
       type: 'explain',
       title: 'Prototype and Test — Build, break, repeat',
       content:
-        'The essence of Design Thinking is "fast, cheap, many iterations."\n\nPrototype levels:\n\nLevel 1: Paper and pen (30 minutes)\n→ Hand-drawn screen sketches, storyboards\n\nLevel 2: Wireframes (half a day)\n→ Clickable mockups in Figma, etc.\n\nLevel 3: Working prototype (a few days)\n→ MVP with only the minimum features implemented\n\nWhat matters in testing:\n• Testing with 5 users typically surfaces about 75-85% of the problems (Nielsen & Landauer)\n• Don\'t ask "is this easy to use?" — say "please do X" and observe\n• Don\'t hunt for praise — hunt for the points where users get stuck\n\nDon\'t aim for perfection.\n"Building the wrong thing perfectly" is 100x worse than\n"trying the right thing roughly."',
+        'The essence of Design Thinking is "fast, cheap, many iterations."\n\nPrototype levels:\n\nLevel 1: Paper and pen (30 minutes)\n→ Hand-drawn screen sketches, storyboards\n\nLevel 2: Wireframes (half a day)\n→ Clickable mockups in Figma, etc.\n\nLevel 3: Working prototype (a few days)\n→ MVP with only the minimum features implemented\n\nWhat matters in testing:\n• Testing with 5 users typically surfaces about 75-85% of the problems (Nielsen & Landauer)\n• Don\'t ask "is this easy to use?" — say "please do X" and observe\n• Don\'t hunt for praise — hunt for the points where users get stuck\n\nDon\'t aim for perfection.\n[icon:bad] Bad approach: build the wrong thing perfectly\n[icon:good] Good approach: try the right thing roughly and fast\nThe latter is 100x more valuable.\n\n:::point\nEarly testing is a place to discover problems. Value concentrates not in polish or praise, but in collecting the moments where users get stuck.\n:::',
     },
     {
       type: 'quiz',
@@ -99,7 +99,7 @@ const designThinkingEmpathy: LessonData = {
       type: 'explain',
       title: 'Persona Design — "For everyone" means "for no one"',
       content:
-        'A persona is a concrete, specific portrait of an ideal user.\n\nBad persona:\n"Men in their 20s-30s, interested in IT" → too vague\n\nGood persona:\nName: Taro Tanaka, 28\nJob: 3rd-year web engineer at an IT company\nChallenge: Unsure about his career direction; considering a switch to PM\nBehavior: Reads Qiita 30 min every morning; attends one meetup a month\nWorry: Is it OK to move into PM while my technical skills are still mid-level?\nIdeal: Increase my market value as a "PM who understands tech"\n\nPersona rules:\n• Base it on a real person (interviews, not imagination)\n• Keep it to 1-3 personas (don\'t try to cover everyone)\n• Make sure the whole team shares the same persona',
+        'A persona is a concrete, specific portrait of an ideal user.\n\n[icon:bad] Bad persona:\n"Men in their 20s-30s, interested in IT" → too vague\n\n[icon:good] Good persona:\nName: Taro Tanaka, 28\nJob: 3rd-year web engineer at an IT company\nChallenge: Unsure about his career direction; considering a switch to PM\nBehavior: Reads Qiita 30 min every morning; attends one meetup a month\nWorry: Is it OK to move into PM while my technical skills are still mid-level?\nIdeal: Increase my market value as a "PM who understands tech"\n\nPersona rules:\n• Base it on a real person (interviews, not imagination)\n• Keep it to 1-3 personas (don\'t try to cover everyone)\n• Make sure the whole team shares the same persona\n\n:::point\nA working persona needs "a specific name + behavior + motivation." More than demographics, the behavior and motivation drawn from observing real users are the core.\n:::',
     },
     {
       type: 'quiz',
@@ -206,7 +206,7 @@ const designThinkingPractice: LessonData = {
       type: 'explain',
       title: 'Design Thinking — recap',
       content:
-        'The essence of Design Thinking:\n\n1. Human-centered\nStart from people\'s behavior and emotions, not technology or numbers.\n\n2. Diverge and converge, repeatedly\nEmpathize → Define (converge) → Ideate (diverge) → Prototype (converge) → Test (diverge)\n\n3. Iteration\nDon\'t try to hit the right answer on the first try — build, test, improve.\n\n4. Make it visual\nThink with prototypes and diagrams, not just words.\n\n5. The power of teams\nA diverse team produces better answers than a single genius.\n\nWhere Design Thinking shines:\n• New product or service planning\n• UX improvements to existing services\n• Internal business process improvement\n• Career decisions ("design thinking for yourself")',
+        'The essence of Design Thinking:\n\n1. Human-centered\nStart from people\'s behavior and emotions, not technology or numbers.\n\n2. Diverge and converge, repeatedly\nEmpathize → Define (converge) → Ideate (diverge) → Prototype (converge) → Test (diverge)\n\n3. Iteration\nDon\'t try to hit the right answer on the first try — build, test, improve.\n\n4. Make it visual\nThink with prototypes and diagrams, not just words.\n\n5. The power of teams\nA diverse team produces better answers than a single genius.\n\nWhere Design Thinking shines:\n• New product or service planning\n• UX improvements to existing services\n• Internal business process improvement\n• Career decisions ("design thinking for yourself")\n\n:::point\nIt is not a methodology for nailing the right answer in one shot. The basic stance is to observe, build, test, and close in while you learn.\n:::',
     },
     {
       type: 'quiz',

@@ -8,7 +8,7 @@ const criticalBias2: LessonData = {
   title: 'Escape confirmation bias',
   category: 'Critical Thinking',
   steps: [
-    { type: 'explain', title: 'What confirmation bias is', content: 'People tend to gather only information that supports their beliefs and ignore evidence that refutes them. This is confirmation bias. Building the habit of "intentionally seeking counter-evidence" is the core of critical thinking.' },
+    { type: 'explain', title: 'What confirmation bias is', content: 'People tend to gather only information that supports their beliefs and ignore evidence that refutes them. This is confirmation bias. [icon:bad] Hoarding supporting information, [icon:good] versus hunting for counter-evidence — switching to the latter stance is the core of critical thinking.\n\n:::point\nThe habit of intentionally seeking counter-evidence is what breaks confirmation bias.\n:::' },
     { type: 'quiz', question: 'What\'s the most effective way to prevent confirmation bias?', options: [
       { label: 'Hold no opinions', correct: false },
       { label: 'Intentionally seek counterarguments and counter-evidence', correct: true },
@@ -53,7 +53,7 @@ const criticalSunk: LessonData = {
   title: 'Escape the sunk-cost trap',
   category: 'Critical Thinking',
   steps: [
-    { type: 'explain', title: 'What sunk cost is', content: 'A bias where past, irrecoverable time, money, and effort drag you into irrational decisions. The feeling of "wasting it" obstructs sound judgment.' },
+    { type: 'explain', title: 'What sunk cost is', content: 'A bias where past, irrecoverable time, money, and effort drag you into irrational decisions.\n\n:::warn\nThe feeling of "wasting it" obstructs sound judgment. Decide on future value, not the past you can\'t recover.\n:::' },
     { type: 'quiz', question: 'A new feature you spent two years developing turns out to lack market demand. Which decision avoids the sunk-cost trap?', options: [
       { label: 'Release it because we spent two years on it', correct: false },
       { label: 'Ignore past costs; judge purely on future value', correct: true },
@@ -69,7 +69,7 @@ const hypothesisAbduction: LessonData = {
   title: 'Leap with abduction',
   category: 'Hypothesis Thinking',
   steps: [
-    { type: 'explain', title: 'What abduction (inference to the best explanation) is', content: 'Not deduction or induction, but "selecting the hypothesis that best explains the current situation." Proposed by C.S. Peirce and also called "Inference to the Best Explanation." It\'s the process of choosing, among multiple candidate hypotheses, the one that most reasonably accounts for current observations — the kind of instant narrowing-down that consultants and doctors perform when they see one data point and intuit "the cause is probably XX."' },
+    { type: 'explain', title: 'What abduction (inference to the best explanation) is', content: 'Not deduction or induction, but "selecting the hypothesis that best explains the current situation." Proposed by C.S. Peirce and also called "Inference to the Best Explanation." It\'s the process of choosing, among multiple candidate hypotheses, the one that most reasonably accounts for current observations — the kind of instant narrowing-down that consultants and doctors perform when they see one data point and intuit "the cause is probably XX."\n\n:::point\nRather than waiting for complete data, abduction picks the most explanatory hypothesis first, from the information you already have.\n:::' },
     { type: 'quiz', question: 'Sales suddenly dropped 20%. Which is the most appropriate abductive approach?', options: [
       { label: 'Collect all data before considering the cause', correct: false },
       { label: 'Among multiple possible causes, select the one that best explains current conditions as the hypothesis', correct: true },
@@ -85,7 +85,7 @@ const problemDoubleLoop: LessonData = {
   title: 'Change the "way you ask," not the "way you solve"',
   category: 'Problem Setting',
   steps: [
-    { type: 'explain', title: 'What double-loop learning is', content: 'Single-loop improves "how to solve" the problem. Double-loop changes "the premise / the question itself." Essential problem-solving emerges from the double loop.' },
+    { type: 'explain', title: 'What double-loop learning is', content: 'Single-loop improves "how to solve" the problem. Double-loop changes "the premise / the question itself." Essential problem-solving emerges from the double loop.\n\n:::tip\nWhen improvements keep stalling, question the premise itself rather than the way you solve.\n:::' },
     { type: 'quiz', question: 'You\'ve been running initiatives on the assumption "more sales visits → more sales," but nothing improves. Which is the most appropriate double-loop reframing?', options: [
       { label: 'Increase visit count further', correct: false },
       { label: 'Introduce tools that boost visit efficiency', correct: false },
@@ -194,7 +194,7 @@ const analogyMapping: LessonData = {
   title: 'Map structure to borrow solutions',
   category: 'Analogical Thinking',
   steps: [
-    { type: 'explain', title: 'What structural mapping is', content: 'The core of analogy is not "surface similarity" but finding "structural similarity." "Military supply systems" and "supply chain management" share structure across very different fields. Explicitly mapping structure makes the analogy usable.' },
+    { type: 'explain', title: 'What structural mapping is', content: 'The core of analogy is finding structural similarity, not surface similarity. [icon:bad] Looks alike, [icon:good] versus works the same way — aim for the latter. "Military supply systems" and "supply chain management" share structure across very different fields. Explicitly mapping structure makes the analogy usable.' },
     { type: 'quiz', question: 'Apply the analogy of "the immune system (the body\'s defense)" to organizational security. Which has the most structural correspondence?', options: [
       { label: 'White blood cells → all employees', correct: false },
       { label: 'Immune memory → past incident records and response playbooks', correct: true },
