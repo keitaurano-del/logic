@@ -223,6 +223,21 @@ const numeracyLesson402: LessonData = {
       type: 'explain',
       title: 'Decompose total growth into contributions',
       content: 'Decompose company-wide sales growth across business units or geographies.\n\nContribution formula: Each element\'s absolute change ÷ total original amount\n\nExample: company sales grew $10B → $11B (+10%)\n- Business A: $6B → $7.2B (+$1.2B, growth 20%, contribution +12%)\n- Business B: $3B → $2.7B (−$0.3B, growth −10%, contribution −3%)\n- Business C: $1B → $1.1B (+$0.1B, growth 10%, contribution +1%)\n- Total: $10B → $11B (+$1B, contribution sum +10%)\n\nReading:\n- The 10% top-line growth is the sum "Business A +12% − Business B 3% + Business C 1%"\n- Looking only at growth rates (20%, −10%, 10%) doesn\'t tell you total impact\n- Structurally, contribution = growth rate × weight\n\nWhen to use:\n- Explaining "what drove the total" in executive reporting\n- Comparing departments\' contributions objectively\n- A cool-headed view that doesn\'t over-credit a small business with a high growth rate',
+      visual: 'ContributionWaterfallDiagram',
+      visualProps: {
+        sectionLabel: "What's inside +10% total growth",
+        baseLabel: 'Last yr',
+        items: [
+          { label: 'Biz A', value: 12 },
+          { label: 'Biz B', value: -3 },
+          { label: 'Biz C', value: 1 },
+        ],
+        totalLabel: 'Total',
+        unit: '%',
+        hint: 'Contribution = growth rate × weight. A +12, B −3, and C +1 add up to +10% total',
+      },
+      outro:
+        'The 10% top-line growth is the sum of each contribution: Business A +12%, Business B −3%, and Business C +1%. Growth rates alone (20%, −10%, 10%) don\'t reveal total impact. Since contribution = growth rate × weight, you avoid over-crediting a small business with a high growth rate.',
     },
     {
       type: 'explain',
@@ -357,6 +372,26 @@ const numeracyLesson404: LessonData = {
       type: 'explain',
       title: 'Use the Rule of 72 to mental-math "doubling time"',
       content: 'Compound math is intrinsically tedious — but for doubling time there\'s an instant rule.\n\nRule of 72:\nDoubling years ≈ 72 ÷ annual rate (%)\n\nExamples:\n- 1% → 72÷1 = 72 years to double\n- 2% → 72÷2 = 36 years\n- 3% → 72÷3 = 24 years\n- 5% → 72÷5 ≈ 14.4 years\n- 6% → 72÷6 = 12 years\n- 8% → 72÷8 = 9 years\n- 10% → 72÷10 = 7.2 years\n- 12% → 72÷12 = 6 years\n\nApplication: years to 4×, 8×, 10×\n- 4× = double × double → 2× the years\n- 8× = double × double × double → 3× the years\n- 10× ≈ 3.3× the years (precisely log₂(10) ≈ 3.32)\n\nExample: at 10%, when do you reach 10×?\n- Doubling at 7.2 years → 10× at 7.2 × 3.32 ≈ 24 years\n\nTip: For investment, growth, and population dynamics — anything "exponentially increasing" — this rule is universal.',
+      visual: 'RuleOf72Diagram',
+      visualProps: {
+        sectionLabel: 'Annual rate vs years to double',
+        constant: 72,
+        rows: [
+          { rate: 1 },
+          { rate: 2 },
+          { rate: 5 },
+          { rate: 6 },
+          { rate: 8 },
+          { rate: 10 },
+          { rate: 12 },
+        ],
+        rateLabel: 'Rate',
+        yearsLabel: 'Yrs to double',
+        formulaLabel: '72 ÷ rate(%) ≈ years to double',
+        hint: 'Double the rate, halve the years: 1% → 72 yrs, 2% → 36 yrs, 6% → 12 yrs',
+      },
+      outro:
+        'Doubling time ≈ 72 ÷ annual rate. At 6% you double in 12 years; at 10%, about 7.2 years. Rate and years are inversely proportional, so doubling the rate halves the time. It builds an instant feel for anything that grows exponentially.',
     },
     {
       type: 'explain',
@@ -518,6 +553,20 @@ const numeracyLesson406: LessonData = {
       type: 'explain',
       title: 'Simpson\'s paradox: watch for whole-vs-part reversals',
       content: 'Within parts the trend is one way; aggregated, it reverses — that\'s Simpson\'s paradox.\n\nExample: which treatment is more effective, A or B?\n\nMild patients:\n- A: 90 successes in 100 (90%)\n- B: 9 successes in 10 (90%)\n\nSevere patients:\n- A: 3 successes in 10 (30%)\n- B: 35 successes in 100 (35%)\n\nWithin parts:\n- Mild: A 90% = B 90% (same)\n- Severe: A 30% < B 35% (B better)\n- → "B is better" — apparently\n\nAggregated:\n- A: (90+3) ÷ 110 = about 84.5%\n- B: (9+35) ÷ 110 = 40%\n- → A is overwhelmingly better in totals\n\nWhy?\n- A has many mild cases; B has many severe cases\n- "Differences in the patient mix" warp the comparison\n\nReal cases:\n- Promotion rates within departments show no gender gap, but company-wide men dominate (department-preference difference)\n- Acceptance rates by university favor women, but overall favor men (different application choices)\n\nMitigations:\n- Don\'t conclude from the aggregate alone\n- Check "is the trend the same when split by segment?"\n- Inspect sample-mix differences before aggregating\n\nPoint: "Overall mean" and "by segment" can disagree. Cross-checking by aggregation level is the rule.',
+      visual: 'SimpsonsParadoxDiagram',
+      visualProps: {
+        sectionLabel: 'Near-tie by segment, reversed in total',
+        groupALabel: 'Treat. A',
+        groupBLabel: 'Treat. B',
+        segments: [
+          { name: 'Mild', a: { num: 90, denom: 100 }, b: { num: 9, denom: 10 } },
+          { name: 'Severe', a: { num: 3, denom: 10 }, b: { num: 35, denom: 100 } },
+        ],
+        overallLabel: 'Overall',
+        hint: 'A treats mostly mild cases and B mostly severe ones, so aggregating flips A ahead',
+      },
+      outro:
+        'By segment the mild cases tie and B edges ahead in severe, yet overall A wins 84.5% to 40%. The cause is the patient-mix skew: A has many mild cases, B many severe. Never conclude from the aggregate alone — always check whether the trend holds segment by segment.',
     },
     {
       type: 'explain',
