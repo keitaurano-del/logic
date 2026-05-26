@@ -202,6 +202,15 @@ Key tokens:
 3. **`src/sentry.ts` and `src/notifications.ts` are stubs** — both `@sentry/react` and `@capacitor/*` are installed (Capacitor is actively used for mobile builds), but these two helper files remain no-op stubs. Do not turn them into real implementations without aligning with the broader observability/notifications strategy.
 4. **i18n** — every new user-facing string needs both `ja` and `en` entries in `src/i18n.ts`
 5. **Icons** — use SVG from `src/icons/index.tsx`, never emoji in UI. **Exception:** ジャーナル機能 (`src/components/journal/`) の mood・weather・phase tab・streak の 4 箇所のみ絵文字 OK（feedback_journal_emoji 参照）。他画面の `FlameIcon` 等共有 SVG はそのまま維持。
+   - **レッスン本文 (lesson body / explain step の content・outro) は SVGアイコン + 絵文字のハイブリッド可**（feedback-logic-lesson-visual-hybrid 参照）。本文に限り (a) `[icon:name]` インライン記法で `src/icons` の SVG を埋め込める（name 一覧は `src/components/RichLessonText.tsx` の `ICON_REGISTRY`）、(b) その回特有の話題物には絵文字も控えめに許可。体系的・反復的なもの（良い例/悪い例・要点・注意・手順）は SVG アイコンで統一する。**UI chrome は従来どおり絵文字 NG・SVG のみ**（この例外はレッスン本文限定）。記法の衝突安全性: `[icon:name]` は `icon:` プレフィックス必須なので「3:1」「10:30」等のコロン表記とは衝突しない。
+     - **正準アイコン名**（執筆時はこれだけ使う）: 良い例=`good`、悪い例=`bad`、要点/結論=`point`、注意=`warn`。エイリアス（`ok`/`check`/`ng`/`cross`/`idea`/`tip`/`caution`/`flag` 等）は内部互換用で、執筆では使わない。`point` は CheckCircleIcon（要点・結論）、コツ/気づきは `tip` または `idea`（電球）で役割分担。
+     - `[icon:name]` の `name` は**小文字＋ハイフンのみ**。大文字・アンダースコアは無効で、マッチせず静かに literal 化する footgun。
+     - 意味を担うアイコン（`good`/`bad` 等）は必ず**直近に語ラベルを併記**する（アイコンは `aria-hidden` で読み上げ対象外。スクリーンリーダ/TTS 対策）。
+     - `[icon:name]` を**熟語・動詞句の内側に挟まない**（`is not` / `either-or` / 「〜ではなく」等を分断しない）。文頭か結論直前（`but` の後等）に置く。
+     - **callout 記法**: `:::tip`（コツ・気づき／電球＋アクセント色）/ `:::warn`（注意・落とし穴／旗＋警告色）/ `:::point`（要点・結論／チェック丸＋ブランド色）/ `:::note`（補足／本＋中立色）〜 `:::`。kind ごとにアイコンと色が出し分く。callout は splitBody で **atomic unit** として扱われ途中分断されない（**中身に空行を入れても安全**。旧来の「空行禁止」制約は撤廃済み）。
+     - callout は「そのステップの**結論・原則・必ず持ち帰る1点**」を1スライドに**最大1個**。説明の途中経過や、既に【N】番号列挙・箇条書きで構造化済みの塊には使わない。
+     - **装飾密度の目安**: 1スライド（splitBody チャンク≒200字）あたり callout 最大1・inline アイコン2〜3個まで。
+     - 絵文字は「その回特有の話題物」に限定（体系的要素は必ず SVG アイコン）。`✓` `✗` `★` 等の装飾記号は生テキストで書かず**アイコン記法**を使う（生記号は TTS strip で読まれない場合がある）。
 6. **Screen union** — forgetting to add a new screen variant to the union in `AppV3.tsx` causes TS errors
 
 ## Deployment

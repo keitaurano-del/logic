@@ -14,9 +14,118 @@
  * 絵文字は使わない（設計ルール）。アイコンは src/icons の SVG のみ。
  * 色・余白はデザイントークン（var(--brand) 等）を使用、hex 直書きしない。
  */
-import type { ReactNode } from 'react'
-import { parseRichText, type Block, type InlineToken } from '../richText'
-import { LightbulbIcon, FlagIcon, CheckCircleIcon, SparklesIcon } from '../icons'
+import type { ComponentType, ReactNode, SVGProps } from 'react'
+import { parseRichText, type Block, type CalloutKind, type InlineToken } from '../richText'
+import {
+  LightbulbIcon,
+  FlagIcon,
+  CheckCircleIcon,
+  SparklesIcon,
+  CheckIcon,
+  XIcon,
+  BrainIcon,
+  StarIcon,
+  ZapIcon,
+  ClockIcon,
+  ThumbsUpIcon,
+  SearchIcon,
+  BarChartIcon,
+  BookOpenIcon,
+  ClipboardListIcon,
+  MessageSquareIcon,
+  TrophyIcon,
+  ArrowRightIcon,
+  ArrowUpIcon,
+  RefreshIcon,
+  BandageIcon,
+  FootprintsIcon,
+  MicIcon,
+} from '../icons'
+
+/**
+ * インラインアイコン名 → SVG コンポーネントの対応表。
+ *
+ * レッスン本文（lesson body / explain step の body）で `[icon:name]` 記法を使うときの
+ * name はここに登録されたキーに限る。未登録 name は描画されない（無害フォールバック）。
+ *
+ * 正準アイコン名（執筆時はこれを使う）:
+ * - good  → CheckIcon（良い例・できること）
+ * - bad   → XIcon（悪い例・できないこと）
+ * - point → CheckCircleIcon（要点・結論。callout の :::point と意味/見た目を統一）
+ * - warn  → FlagIcon（注意・落とし穴）
+ *
+ * エイリアス（内部互換用。執筆では使わない）:
+ * - ok / check       → good 相当（CheckIcon）
+ * - ng / cross       → bad 相当（XIcon）
+ * - idea / tip / bulb → LightbulbIcon（気づき・コツ。要点 point とは役割分担）
+ * - caution / flag   → warn 相当（FlagIcon）
+ * 他はアイコン名に対応する SVG をそのまま割り当て。
+ */
+const ICON_REGISTRY: Record<string, ComponentType<SVGProps<SVGSVGElement>>> = {
+  // 良い例 / できる / 正しい
+  check: CheckIcon,
+  good: CheckIcon,
+  ok: CheckIcon,
+  // 悪い例 / できない / 誤り
+  x: XIcon,
+  bad: XIcon,
+  ng: XIcon,
+  cross: XIcon,
+  // 要点・結論（callout :::point と統一）
+  point: CheckCircleIcon,
+  // 気づき・コツ（要点 point とは別役割）
+  idea: LightbulbIcon,
+  tip: LightbulbIcon,
+  bulb: LightbulbIcon,
+  // 注意・落とし穴
+  warn: FlagIcon,
+  caution: FlagIcon,
+  flag: FlagIcon,
+  // 結論・達成
+  conclusion: CheckCircleIcon,
+  done: CheckCircleIcon,
+  // 直接アイコン名指定
+  brain: BrainIcon,
+  star: StarIcon,
+  zap: ZapIcon,
+  clock: ClockIcon,
+  thumbsup: ThumbsUpIcon,
+  search: SearchIcon,
+  sparkles: SparklesIcon,
+  chart: BarChartIcon,
+  book: BookOpenIcon,
+  list: ClipboardListIcon,
+  message: MessageSquareIcon,
+  trophy: TrophyIcon,
+  arrow: ArrowRightIcon,
+  up: ArrowUpIcon,
+  refresh: RefreshIcon,
+  bandage: BandageIcon,
+  footprints: FootprintsIcon,
+  mic: MicIcon,
+}
+
+/**
+ * callout kind 別のアイコン・色定義。
+ *
+ * 4 kind を視覚弁別できるよう、アイコン（形）と色を kind ごとに割り当てる。
+ * 色は light/dark 両テーマで定義済みのデザイントークンのみ（hex 直書きしない）。
+ * - warn  : 注意・落とし穴 → FlagIcon ＋警告色（amber 系 --warning）
+ * - point : 要点・結論     → CheckCircleIcon ＋ブランド色
+ * - tip   : コツ・気づき   → LightbulbIcon ＋アクセント色
+ * - note  : 補足           → BookOpenIcon ＋中立色（--bg-secondary / --text-secondary）
+ *
+ * accent = アイコン色＋左ボーダー色、bg = ボックス背景色。
+ */
+const CALLOUT_STYLE: Record<
+  CalloutKind,
+  { Icon: ComponentType<SVGProps<SVGSVGElement>>; accent: string; bg: string }
+> = {
+  warn: { Icon: FlagIcon, accent: 'var(--warning)', bg: 'var(--warning-soft)' },
+  point: { Icon: CheckCircleIcon, accent: 'var(--brand)', bg: 'var(--brand-soft)' },
+  tip: { Icon: LightbulbIcon, accent: 'var(--accent)', bg: 'var(--accent-soft)' },
+  note: { Icon: BookOpenIcon, accent: 'var(--text-secondary)', bg: 'var(--bg-secondary)' },
+}
 
 interface RichLessonTextProps {
   content: string
@@ -43,21 +152,46 @@ function headingIcon(text: string): ReactNode {
 }
 
 function renderInline(tokens: InlineToken[]): ReactNode[] {
-  return tokens.map((tk, i) =>
-    tk.type === 'bold' ? (
-      <strong key={i} style={{ fontWeight: 700, color: 'var(--text-primary)' }}>
-        {tk.value}
-      </strong>
-    ) : (
-      <span key={i}>{tk.value}</span>
-    ),
-  )
+  return tokens.map((tk, i) => {
+    if (tk.type === 'bold') {
+      return (
+        <strong key={i} style={{ fontWeight: 700, color: 'var(--text-primary)' }}>
+          {tk.value}
+        </strong>
+      )
+    }
+    if (tk.type === 'icon') {
+      const Icon = ICON_REGISTRY[tk.name]
+      // 未登録 name は描画しない（無害フォールバック、クラッシュさせない）
+      if (!Icon) return null
+      return (
+        <span
+          key={i}
+          aria-hidden="true"
+          style={{
+            // テキストに溶け込む inline-flex。文字サイズ相当・色は currentColor 継承。
+            display: 'inline-flex',
+            alignItems: 'center',
+            verticalAlign: 'text-bottom',
+            width: '1em',
+            height: '1em',
+            // 前後の文字との間に半角分の余白（隣接文字とくっつかないように）
+            margin: '0 0.15em',
+            color: 'inherit',
+          }}
+        >
+          <Icon width="1em" height="1em" />
+        </span>
+      )
+    }
+    return <span key={i}>{tk.value}</span>
+  })
 }
 
 function renderBlock(block: Block, key: number): ReactNode {
   switch (block.type) {
     case 'heading': {
-      const text = block.tokens.map((t) => t.value).join('')
+      const text = block.tokens.map((t) => (t.type === 'icon' ? '' : t.value)).join('')
       const icon = headingIcon(text)
       return (
         <div
@@ -173,6 +307,46 @@ function renderBlock(block: Block, key: number): ReactNode {
           ))}
         </ol>
       )
+    case 'callout': {
+      // kind 別のアイコン＋色。色はテーマ変数のみ（hex 直書きしない）。
+      // light/dark 両テーマで定義済みのトークンだけを使い、4 kind を視覚弁別する。
+      // - warn  : FlagIcon + 警告色（--warning / --warning-soft）
+      // - point : CheckCircleIcon + ブランド色（要点・結論）
+      // - tip   : LightbulbIcon + アクセント色（コツ・気づき）
+      // - note  : BookOpenIcon + 中立色（補足）
+      const style = CALLOUT_STYLE[block.kind]
+      const CalloutIcon = style.Icon
+      return (
+        <div
+          key={key}
+          style={{
+            display: 'flex',
+            gap: 'var(--s-3)',
+            margin: '0 0 var(--s-4)',
+            padding: 'var(--s-4)',
+            background: style.bg,
+            border: '1px solid var(--border-light)',
+            borderRadius: 'var(--radius-md)',
+            borderLeft: `3px solid ${style.accent}`,
+          }}
+        >
+          <span
+            style={{
+              display: 'inline-flex',
+              flexShrink: 0,
+              color: style.accent,
+              transform: 'translateY(0.1em)',
+            }}
+          >
+            <CalloutIcon width={18} height={18} aria-hidden="true" />
+          </span>
+          {/* 中身を再帰描画。最後の段落の下マージンが余白二重にならないよう margin を畳む */}
+          <div style={{ flex: 1, marginBottom: 'calc(var(--s-4) * -1)' }}>
+            {block.blocks.map((b, i) => renderBlock(b, i))}
+          </div>
+        </div>
+      )
+    }
     case 'code':
       return (
         <pre
