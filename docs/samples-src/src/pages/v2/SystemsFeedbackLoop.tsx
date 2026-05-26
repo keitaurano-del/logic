@@ -79,12 +79,12 @@ export function SystemsFeedbackLoop() {
   const maxTick = loop.trace[loop.nodes[0].id].length - 1
 
   useEffect(() => {
-    if (!playing) return
-    if (tick >= maxTick) {
-      setPlaying(false)
-      return
-    }
-    const t = setTimeout(() => setTick((s) => s + 1), 700)
+    if (!playing || tick >= maxTick) return
+    const t = setTimeout(() => {
+      // 終端到達時の停止は timeout コールバック内で行う（effect 本体での同期 setState を避ける）
+      if (tick + 1 >= maxTick) setPlaying(false)
+      setTick((s) => s + 1)
+    }, 700)
     return () => clearTimeout(t)
   }, [playing, tick, maxTick])
 
