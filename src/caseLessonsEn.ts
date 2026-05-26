@@ -12,7 +12,7 @@ const caseIntro: LessonData = {
       type: 'explain',
       title: 'What is a case interview?',
       content:
-        'A case interview is a hands-on problem-solving test that consulting firms (McKinsey, BCG, Bain, etc.) use in their hiring process.\n\nA prompt like "A client\'s revenue dropped 30%. Diagnose the cause and propose a fix" is given, and you work through it in dialogue with the interviewer.\n\nWhat is graded is the thought process, not the final answer.',
+        'A case interview is a hands-on problem-solving test that consulting firms (McKinsey, BCG, Bain, etc.) use in their hiring process.\n\nA prompt like "A client\'s revenue dropped 30%. Diagnose the cause and propose a fix" is given, and you work through it in dialogue with the interviewer.\n\n:::point\nWhat is graded is the thought process that gets you there, not the final answer itself.\n:::',
     },
     {
       type: 'explain',
@@ -185,7 +185,7 @@ const caseMarketEntry: LessonData = {
       type: 'explain',
       title: 'Choosing an entry mode',
       content:
-        'Once entry is decided, you choose the "how."\n\n- Build organically (greenfield): slow, but full control\n- M&A / acquisition: instant market position, high cost\n- Joint venture (JV): risk and return shared. Often used in emerging markets where local partners are essential\n- Licensing: lowest entry cost, but limited upside\n\nPick the mode that fits your strategy and balance sheet.',
+        'Once entry is decided, you choose the "how."\n\n- Build organically (greenfield): slow, but full control\n- M&A / acquisition: instant market position, high cost\n- Joint venture (JV): risk and return shared. Often used in emerging markets where local partners are essential\n- Licensing: lowest entry cost, but limited upside\n\n:::tip\nThe point is not which mode is best in the abstract, but which one fits your strategy and balance sheet.\n:::',
     },
     {
       type: 'quiz',
@@ -243,7 +243,7 @@ const caseMnA: LessonData = {
       type: 'explain',
       title: 'Valuation basics',
       content:
-        'Two main methods to evaluate whether the acquisition price is fair.\n\n(1) DCF (Discounted Cash Flow)\nDiscount future cash flows to present value to compute enterprise value.\n\n(2) Comparable transactions\nCompare against multiples (e.g., EV/EBITDA) of similar peer acquisitions.\n\nIn an interview, what matters is whether you can answer: "Can the acquisition premium be recouped through synergies?"',
+        'Two main methods to evaluate whether the acquisition price is fair.\n\n(1) DCF (Discounted Cash Flow)\nDiscount future cash flows to present value to compute enterprise value.\n\n(2) Comparable transactions\nCompare against multiples (e.g., EV/EBITDA) of similar peer acquisitions.\n\n:::point\nThe core question in an interview is whether the premium you paid can be recouped through synergies.\n:::',
     },
     {
       type: 'quiz',
