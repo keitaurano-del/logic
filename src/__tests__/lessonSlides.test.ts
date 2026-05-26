@@ -153,6 +153,52 @@ describe('lessonSlides — convertLessonToSlides', () => {
       expect(concepts[0].body).toContain('\n')
       expect(concepts[0].body).not.toContain('<br/>')
     })
+
+    // ── callout-aware splitBody 回帰テスト ──
+    it('keeps a callout block intact in a single chunk (not split across slides)', () => {
+      // 前に長文段落 + callout。callout は atomic なので必ず単独 1 チャンクに収まり、
+      // open `:::tip` と close `:::` が別スライドに割れない。
+      const longPara = 'あ'.repeat(200)
+      const content = `${longPara}\n\n:::tip\n対策の基本は外部記憶です。\n:::`
+      const slides = convertLessonToSlides({
+        id: 1,
+        title: 't',
+        category: '認知科学',
+        steps: [{ type: 'explain', title: 't', content }],
+      })
+      const concepts = findConcepts(slides)
+      // callout を含むチャンクがちょうど1つあり、その中で open/close が揃っている
+      const calloutSlides = concepts.filter((c) => c.body.includes(':::tip'))
+      expect(calloutSlides).toHaveLength(1)
+      const body = calloutSlides[0].body
+      // open と close が同じ body に揃っている（分断されていない）
+      expect(body).toContain(':::tip')
+      expect(body.trimEnd().endsWith(':::')).toBe(true)
+      expect(body).toContain('対策の基本は外部記憶です。')
+      // 孤立した close `:::` だけが別チャンクに残っていない
+      const orphanClose = concepts.filter(
+        (c) => c.body.includes(':::') && !c.body.includes(':::tip'),
+      )
+      expect(orphanClose).toHaveLength(0)
+    })
+
+    it('keeps a multi-paragraph callout (blank lines inside) in one chunk', () => {
+      // callout 内に空行があっても atomic に保たれ、途中分断されない。
+      const content = ':::point\n第1段落。\n\n第2段落。\n:::'
+      const slides = convertLessonToSlides({
+        id: 1,
+        title: 't',
+        category: '認知科学',
+        steps: [{ type: 'explain', title: 't', content }],
+      })
+      const concepts = findConcepts(slides)
+      const calloutSlides = concepts.filter((c) => c.body.includes(':::point'))
+      expect(calloutSlides).toHaveLength(1)
+      const body = calloutSlides[0].body
+      expect(body).toContain('第1段落。')
+      expect(body).toContain('第2段落。')
+      expect(body.trimEnd().endsWith(':::')).toBe(true)
+    })
   })
 
   describe('visual + outro slides', () => {

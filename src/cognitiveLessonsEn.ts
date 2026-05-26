@@ -65,7 +65,7 @@ const workingMemoryLimit: LessonData = {
       type: 'explain',
       title: 'What happens when capacity is exceeded',
       content:
-        "When working memory overflows:\n\n[1] Older items get pushed out (first-in, first-out)\nAdding an 8th item bumps the 1st.\n\n[2] Processing speed drops sharply\nHolding takes resources, leaving less for judgment and reasoning.\n\n[3] Error rates spike\nAttention-switching cost grows, causing oversights and mistakes.\n\n[4] Stress rises\nThe pressure to 'remember everything' makes the cognitive load worse.\n\nTypical workplace examples:\n• 10 topics in one meeting → no decisions in the second half\n• 5 simultaneous Slack DMs → every reply ends up sloppy\n• 7 instructions at once → something always falls through\n\nThe fix is not 'remember more.' The fix is 'externalize and chunk.'",
+        "When working memory overflows:\n\n[1] Older items get pushed out (first-in, first-out)\nAdding an 8th item bumps the 1st.\n\n[2] Processing speed drops sharply\nHolding takes resources, leaving less for judgment and reasoning.\n\n[3] Error rates spike\nAttention-switching cost grows, causing oversights and mistakes.\n\n[4] Stress rises\nThe pressure to 'remember everything' makes the cognitive load worse.\n\n## Watch out\nTypical workplace examples:\n• 10 topics in one meeting → no decisions in the second half\n• 5 simultaneous Slack DMs → every reply ends up sloppy\n• 7 instructions at once → something always falls through\n\n:::tip\nThe core fix is not 'remember more' but [icon:point] 'externalize and chunk.'\n:::",
     },
     {
       type: 'quiz',
@@ -340,7 +340,7 @@ const multitaskingMyth: LessonData = {
       type: 'explain',
       title: 'Exceptions — tasks you CAN combine',
       content:
-        "Not everything is mutually exclusive. Some combinations are cognitively safe.\n\n[Condition]\nDifferent brain regions, one task automated, low cognitive load.\n\n[Can combine]\n• Walking + thinking (motor cortex vs. prefrontal cortex)\n• Dishwashing + podcast (hand motion automated)\n• Commute + reading (passive movement + active reading)\n• Simple chores + listening to music\n\n[Cannot combine — same resources]\n• Listening in a meeting + replying to email (both language)\n• Coding + watching Slack (both logical reasoning)\n• Writing a deck + phone call (both language)\n\nThe rule:\n'Tasks that share brain resources cannot truly run in parallel.'\n'If one task is fully automated, parallel is possible.'\n\nMastering this distinction lets you graduate from 'pretend-busy' multitasking.",
+        "Not everything is mutually exclusive. Some combinations are cognitively safe.\n\n## How to judge\nWhen the brain regions differ, one task is automated, and the load is low, parallel work actually holds.\n\n[icon:good] Can combine\n• Walking + thinking (motor cortex vs. prefrontal cortex)\n• Dishwashing + podcast (hand motion automated)\n• Commute + reading (passive movement + active reading)\n• Simple chores + listening to music\n\n[icon:bad] Cannot combine — same resources\n• Listening in a meeting + replying to email (both language)\n• Coding + watching Slack (both logical reasoning)\n• Writing a deck + phone call (both language)\n\n:::point\nTwo rules: 'Tasks that share brain resources cannot truly run in parallel,' and 'if one task is fully automated, parallel is possible.'\n:::\n\nMastering this distinction lets you graduate from 'pretend-busy' multitasking.",
     },
     {
       type: 'quiz',

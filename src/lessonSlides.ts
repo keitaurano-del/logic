@@ -29,21 +29,94 @@ export interface LessonV3 {
   xp: number
 }
 
+// callout フェンス行の判定（richText.ts の CALLOUT_OPEN_RE / CALLOUT_CLOSE_RE と同義）。
+// splitBody を callout-aware にするためにここでも持つ（richText は React/描画寄りのため
+// import 依存を増やさず、フェンス検出だけ最小限に複製する）。
+const SPLIT_CALLOUT_OPEN_RE = /^:::\s*(?:tip|warn|point|note)?\s*$/
+const SPLIT_CALLOUT_CLOSE_RE = /^:::\s*$/
+
+/**
+ * テキストを「段落」と「callout ブロック」のセグメント列に分解する。
+ *
+ * callout（`:::kind` 〜 `:::`）は内部に空行があっても 1 セグメントとして atomic に保ち、
+ * 段落分割（`\n\n`）で途中分断しない。callout 外の領域は従来どおり空行で段落分割する。
+ *
+ * 返すセグメントは { text, atomic } の配列。atomic=true は callout ブロックで、
+ * グルーピング時に他段落とマージせず・maxChars 超過でも分割しない（=必ず単独 1 チャンク）。
+ */
+function segmentBody(normalized: string): { text: string; atomic: boolean }[] {
+  const lines = normalized.split('\n')
+  const segments: { text: string; atomic: boolean }[] = []
+  let buf: string[] = []
+  const flushBuf = () => {
+    if (buf.length === 0) return
+    // バッファ内を従来どおり空行で段落分割して push
+    const text = buf.join('\n')
+    for (const p of text.split(/\n\n+/)) {
+      const t = p.trim()
+      if (t) segments.push({ text: t, atomic: false })
+    }
+    buf = []
+  }
+  let i = 0
+  while (i < lines.length) {
+    const trimmed = lines[i].trim()
+    // callout 開きフェンスを検出したら、対応する閉じ `:::` までを 1 セグメントにまとめる。
+    if (SPLIT_CALLOUT_OPEN_RE.test(trimmed)) {
+      // 対応する閉じフェンスを探す（無ければ callout として扱わず通常段落に戻す）
+      let close = -1
+      for (let j = i + 1; j < lines.length; j++) {
+        if (SPLIT_CALLOUT_CLOSE_RE.test(lines[j].trim())) {
+          close = j
+          break
+        }
+      }
+      if (close >= 0) {
+        flushBuf()
+        const block = lines.slice(i, close + 1).join('\n').trim()
+        if (block) segments.push({ text: block, atomic: true })
+        i = close + 1
+        continue
+      }
+      // 閉じが無い壊れたフェンスは通常テキストとして処理（バッファに積む）
+    }
+    buf.push(lines[i])
+    i += 1
+  }
+  flushBuf()
+  return segments
+}
+
 /**
  * Split a long text body into multiple shorter slides for Story-style reading.
  * Splits at double newlines, then groups paragraphs to keep each slide under maxChars.
+ *
+ * callout-aware: `:::kind` 〜 `:::` の callout ブロックは段落分割の atomic unit として扱い、
+ * ブロック内に空行があっても絶対に途中で割らない（必ず単独 1 チャンクに保つ）。これにより
+ * 「callout 内に空行を入れない」という脆い運用制約に依存せず、孤立 close `:::` が後続テキストを
+ * 巻き込む spurious callout 事故を構造的に防ぐ。
  */
 function splitBody(text: string, maxChars = 200): string[] {
   if (!text) return ['']
   // 改行を整える
   const normalized = text.replace(/\\n/g, '\n').trim()
-  // 段落分割
-  const paragraphs = normalized.split(/\n\n+/).map(p => p.trim()).filter(Boolean)
-  if (paragraphs.length === 0) return ['']
+  // callout を atomic に保ったままセグメント分解
+  const segments = segmentBody(normalized)
+  if (segments.length === 0) return ['']
 
   const chunks: string[] = []
   let current = ''
-  for (const p of paragraphs) {
+  for (const seg of segments) {
+    // callout は常に単独 1 チャンク（前の current を確定 → callout を独立 push）
+    if (seg.atomic) {
+      if (current) {
+        chunks.push(current)
+        current = ''
+      }
+      chunks.push(seg.text)
+      continue
+    }
+    const p = seg.text
     // 単独で長すぎる段落はそのまま1スライドに（さらに分割は意味的に難しいので）
     if (p.length > maxChars && current === '') {
       chunks.push(p)
