@@ -177,7 +177,23 @@ const proposalMessage: LessonData = {
       type: 'explain',
       title: 'Topic title vs. message title',
       content:
-        'Slide titles come in two flavors:\n\n[icon:bad] Topic title (weak) — tells you only what the slide is about\nExamples: "Market trends" / "Cost comparison" / "Implementation schedule"\n\n[icon:good] Message title (strong) — tells you what the slide is saying\nExamples: "The market will double in 3 years; early entry creates competitive advantage"\n"Costs are 20% below competitors and payback completes within 18 months"\n\nMost proposals are filled with topic titles. That forces the reader to read the slide and interpret it themselves — low transmission efficiency.\n\nThree benefits of message titles:\n- The claim lands before reading (time efficiency)\n- You can spot mismatches between claim and evidence (logic check)\n- The reader doesn\'t end up asking "so what\'s the point?" (persuasion)\n\n:::point\nEvery slide title should state the claim in one sentence, not name the topic. That single move erases the reader\'s interpretation cost.\n:::',
+        'Slide titles come in two flavors: a "topic title" that only tells you what the slide is about, and a "message title" that tells you what the slide is saying (see the contrast below).\n\nMost proposals are filled with topic titles. That forces the reader to read the slide and interpret it themselves — low transmission efficiency.\n\nThree benefits of message titles:\n- The claim lands before reading (time efficiency)\n- You can spot mismatches between claim and evidence (logic check)\n- The reader doesn\'t end up asking "so what\'s the point?" (persuasion)\n\n:::point\nEvery slide title should state the claim in one sentence, not name the topic. That single move erases the reader\'s interpretation cost.\n:::',
+      visual: 'AnswerContrastDiagram',
+      visualProps: {
+        sectionLabel: 'Two kinds of slide title',
+        bad: {
+          title: 'Topic title (weak)',
+          items: ['Market trends', 'Cost comparison', 'Implementation schedule'],
+        },
+        good: {
+          title: 'Message title (strong)',
+          items: [
+            'The market will double in 3 years; early entry creates competitive advantage',
+            'Costs are 20% below competitors and payback completes within 18 months',
+          ],
+        },
+        hint: 'Ending with "analysis of" or "overview" is a telltale sign of a topic title',
+      },
     },
     {
       type: 'quiz',

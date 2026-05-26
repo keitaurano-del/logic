@@ -1,0 +1,356 @@
+/* ============================================================
+ * Logic v3 — Concept Visuals : Phase 2-1 新規部品（2026-05-26）
+ * ─────────────────────────────────────────────
+ * 既存 68 部品では表現しづらく図解価値の高い 3 部品のスタイル。
+ *
+ * Phase 1 / 2 / 3 の `.vz-*` prefix 規約を踏襲。
+ * 追加 prefix:
+ *   .vz-acd-  : AnswerContrastDiagram（良い例 / 悪い例 2 カラム対比）
+ *   .vz-nd-   : NormalDistribution68Diagram（68-95-99.7 ルール）
+ *   .vz-fpg-  : FalsePositiveGridDiagram（偽陽性パラドックスのドット格子）
+ *
+ * CSS 変数は tokens.css の本体トークンを直接参照。ハードコード hex 禁止。
+ * light / dark 両テーマで破綻しないこと（色は theme-aware トークン or rgba(brand) を使う）。
+ * ============================================================ */
+
+/* ============================================================
+ * 1) AnswerContrastDiagram — 良い例 / 悪い例 2 カラム対比
+ * ============================================================ */
+.vz-acd-wrap {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: stretch;
+  gap: 8px;
+  width: 100%;
+}
+
+.vz-acd-col {
+  background: var(--bg-card);
+  border-radius: 12px;
+  padding: 12px 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1.5px solid var(--border);
+}
+
+.vz-acd-col.bad {
+  border-color: var(--rose);
+  background: var(--rose-soft);
+}
+
+.vz-acd-col.good {
+  border-color: var(--success);
+  background: var(--success-soft);
+}
+
+.vz-acd-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vz-acd-badge {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1;
+  color: #fff;
+}
+
+.vz-acd-badge.bad {
+  background: var(--rose);
+}
+
+.vz-acd-badge.good {
+  background: var(--success);
+}
+
+.vz-acd-title {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.vz-acd-col.bad .vz-acd-title {
+  color: var(--rose-deep);
+}
+
+.vz-acd-col.good .vz-acd-title {
+  color: var(--success-deep);
+}
+
+.vz-acd-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.vz-acd-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 13px;
+  line-height: 1.45;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.vz-acd-mark {
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.vz-acd-item .vz-acd-mark.bad {
+  color: var(--rose);
+}
+
+.vz-acd-item .vz-acd-mark.good {
+  color: var(--success);
+}
+
+.vz-acd-arrow {
+  align-self: center;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-muted);
+  padding: 0 2px;
+}
+
+/* hint（結論・warm accent。AnswerContrast / NormalDist / FalsePositive 共通） */
+.vz-acd-hint {
+  margin-top: 14px;
+  padding: 10px 12px;
+  background: var(--visual-warm-primary-soft);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--visual-warm-primary-deep);
+  line-height: 1.45;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.vz-acd-hint-mark {
+  flex-shrink: 0;
+}
+
+/* 狭幅では矢印を消して 2 カラム維持（モバイル全画面） */
+@media (max-width: 420px) {
+  .vz-acd-wrap {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .vz-acd-arrow {
+    display: none;
+  }
+}
+
+/* ============================================================
+ * 2) NormalDistribution68Diagram — 68-95-99.7 ルール
+ * ============================================================ */
+.vz-nd-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.vz-nd-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* 帯：brand 単色 + 不透明度で中心ほど濃く（light / dark 両対応） */
+.vz-nd-band {
+  fill: var(--brand);
+}
+.vz-nd-band.band1 {
+  fill-opacity: 0.42;
+}
+.vz-nd-band.band2 {
+  fill-opacity: 0.24;
+}
+.vz-nd-band.band3 {
+  fill-opacity: 0.12;
+}
+
+.vz-nd-curve {
+  fill: none;
+  stroke: var(--brand);
+  stroke-width: 2;
+}
+
+.vz-nd-axis {
+  stroke: var(--text-muted);
+  stroke-width: 1;
+}
+
+.vz-nd-tick {
+  stroke: var(--border);
+  stroke-width: 1;
+  stroke-dasharray: 2 3;
+}
+
+.vz-nd-mean {
+  stroke: var(--brand);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 2;
+}
+
+.vz-nd-tick-label {
+  fill: var(--text-secondary);
+  font-size: 9px;
+  font-weight: 600;
+}
+.vz-nd-tick-label.center {
+  fill: var(--brand);
+  font-weight: 700;
+}
+
+.vz-nd-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  justify-content: center;
+}
+
+.vz-nd-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vz-nd-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  background: var(--brand);
+}
+.vz-nd-swatch.band1 {
+  opacity: 0.85;
+}
+.vz-nd-swatch.band2 {
+  opacity: 0.5;
+}
+.vz-nd-swatch.band3 {
+  opacity: 0.28;
+}
+
+.vz-nd-legend-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+.vz-nd-legend-text strong {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+/* ============================================================
+ * 3) FalsePositiveGridDiagram — 偽陽性パラドックスのドット格子
+ * ============================================================ */
+.vz-fpg-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.vz-fpg-grid {
+  display: grid;
+  grid-template-columns: repeat(11, 1fr);
+  gap: 5px;
+  width: 100%;
+}
+
+.vz-fpg-dot {
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  border-radius: 50%;
+  background: var(--bg-tertiary);
+}
+.vz-fpg-dot.true {
+  background: var(--success);
+}
+.vz-fpg-dot.false {
+  background: var(--warning);
+}
+.vz-fpg-dot.negative {
+  background: var(--bg-tertiary);
+}
+
+.vz-fpg-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  justify-content: center;
+}
+
+.vz-fpg-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* 凡例内のドットはサイズ固定（格子の伸縮に引きずられない） */
+.vz-fpg-legend-item .vz-fpg-dot {
+  width: 12px;
+  height: 12px;
+  aspect-ratio: auto;
+  flex-shrink: 0;
+}
+
+.vz-fpg-legend-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+.vz-fpg-legend-text strong {
+  color: var(--text-primary);
+  font-weight: 800;
+}
+
+.vz-fpg-result {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: var(--visual-warm-primary-soft);
+  border-radius: 8px;
+}
+
+.vz-fpg-result-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--visual-warm-primary-deep);
+}
+
+.vz-fpg-result-value {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--visual-warm-primary-deep);
+  line-height: 1;
+}
