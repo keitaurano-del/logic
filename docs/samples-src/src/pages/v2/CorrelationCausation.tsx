@@ -174,7 +174,6 @@ function ScatterPlot({ step }: { step: number }) {
       {dataset.map((d, i) => {
         const cx = padding.l + (d.icecream / 100) * innerW
         const cy = padding.t + (1 - d.drowning / 100) * innerH
-        const monthHue = (d.temp / 100) * 50 // 0-50（cold blue → warm red）
         const color = showZ ? `hsl(${30 + (1 - d.temp / 100) * 200}, 75%, 55%)` : '#5478E8'
         return (
           <motion.circle
