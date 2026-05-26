@@ -18,7 +18,7 @@ const issueWhatIs: LessonData = {
       type: 'explain',
       title: 'Problem, Issue, and Question — three different things',
       content:
-        'These three terms get blurred in everyday use. Distinguishing them is step one.\n\n[Problem]\nThe gap between "what should be" and "what is."\nExample: Next year\'s revenue target is $10M, current forecast is $7M.\n\n[Issue / Theme]\nThe theme you choose to tackle to close that gap.\nExample: "Customer acquisition cost is too high." "Retention among existing customers is weak."\n\n[Question to Answer]\nThe question you must answer right now in order to move the issue forward.\nExample: "Is the main driver of retention drop delivery delays, or dissatisfaction with the product?"\n\nProblem is the phenomenon, issue is the direction, question is what gets answered.\nDiscussions and validation only move forward once the right question is on the table.',
+        'These three terms get blurred in everyday use. Distinguishing them is step one.\n\n[Problem]\nThe gap between "what should be" and "what is."\nExample: Next year\'s revenue target is $10M, current forecast is $7M.\n\n[Issue / Theme]\nThe theme you choose to tackle to close that gap.\nExample: "Customer acquisition cost is too high." "Retention among existing customers is weak."\n\n[Question to Answer]\nThe question you must answer right now in order to move the issue forward.\nExample: "Is the main driver of retention drop delivery delays, or dissatisfaction with the product?"\n\n:::point\nProblem is the phenomenon, issue is the direction, question is what gets answered. Discussions and validation only move forward once the right question is on the table.\n:::',
     },
     {
       type: 'quiz',
@@ -37,7 +37,7 @@ const issueWhatIs: LessonData = {
       type: 'explain',
       title: 'Reach the answer with logic, not experience',
       content:
-        'For familiar topics, intuition gets you 80% there.\nBut most real work comes from territory you have no experience in.\n\nA SaaS startup in an industry you know nothing about.\nA regional manufacturer you have never touched.\nA market entry no one in the company has done before.\n\nIn those moments, the only thing you can rely on is logic, not experience.\nLogic that reaches the answer can be broken into four steps:\n\n1. Surface the issues (coverage).\n2. Structure the issues (build a coherent tree).\n3. Attach hypotheses and reasoning (deductive and inductive).\n4. Validate with numbers and facts (test).\n\nFollowing this sequence, you can reach a coherent answer even in territory you have never seen. That is the backbone of this course.',
+        'For familiar topics, intuition gets you 80% there.\nBut most real work comes from territory you have no experience in.\n\nA SaaS startup in an industry you know nothing about.\nA regional manufacturer you have never touched.\nA market entry no one in the company has done before.\n\nIn those moments, the only thing you can rely on is logic, not experience.\nLogic that reaches the answer can be broken into four steps:\n\n1. Surface the issues (coverage).\n2. Structure the issues (build a coherent tree).\n3. Attach hypotheses and reasoning (deductive and inductive).\n4. Validate with numbers and facts (test).\n\n:::point\nFollow this sequence and you can reach a coherent answer even in territory you have never seen. That is the backbone of this course.\n:::',
     },
     {
       type: 'quiz',
@@ -56,7 +56,7 @@ const issueWhatIs: LessonData = {
       type: 'explain',
       title: 'Good issues vs. bad issues',
       content:
-        'Same theme, different framing — and the quality of the discussion changes completely.\n\n[Conditions for a good issue]\n1. The answer can be tested (verifiable).\n2. Answering it moves a decision (impact).\n3. Now is the right moment to answer it (timing).\n\n[Classic bad issues]\n- Vague: "What should our growth strategy be?" -> nowhere to start.\n- Disguised solution: "Should we increase ad spend?" -> the answer is yes/no, not a real question.\n- Outside your control: "Will the economy improve?" -> even if answered, you cannot act.\n- Already obvious: "Are new customers more important than existing ones?" -> the answer is known without a discussion.\n\nA good issue is sharpened by asking: "If we answer this now, do we move forward?"',
+        'Same theme, different framing — and the quality of the discussion changes completely.\n\n[icon:good] Conditions for a good issue\n1. The answer can be tested (verifiable).\n2. Answering it moves a decision (impact).\n3. Now is the right moment to answer it (timing).\n\n[icon:bad] Classic bad issues\n- Vague: "What should our growth strategy be?" -> nowhere to start.\n- Disguised solution: "Should we increase ad spend?" -> the answer is yes/no, not a real question.\n- Outside your control: "Will the economy improve?" -> even if answered, you cannot act.\n- Already obvious: "Are new customers more important than existing ones?" -> the answer is known without a discussion.\n\n:::point\nA good issue is sharpened by asking: "If we answer this now, do we move forward?"\n:::',
     },
     {
       type: 'quiz',
@@ -104,7 +104,7 @@ const issueExhaustive: LessonData = {
       type: 'explain',
       title: 'Change perspective with 5W1H',
       content:
-        'Structural cuts alone still miss themes.\nWhen you sense a blind spot, run 5W1H to broaden the surface.\n\n[Who]\nWho is moving / not moving? Who is the decision-maker / opposition?\n\n[What]\nWhat is happening? What has changed?\n\n[When]\nSince when? Is it seasonal, or structural?\n\n[Where]\nWhich market / channel / step of the process?\n\n[Why]\nNot the surface reason — what is the structural one?\n\n[How]\nThrough what mechanism did the situation come about?\n\n5W1H is less a coverage tool than a self-check: "Am I leaning all in one direction?"',
+        'Structural cuts alone still miss themes.\nWhen you sense a blind spot, run 5W1H to broaden the surface.\n\n[Who]\nWho is moving / not moving? Who is the decision-maker / opposition?\n\n[What]\nWhat is happening? What has changed?\n\n[When]\nSince when? Is it seasonal, or structural?\n\n[Where]\nWhich market / channel / step of the process?\n\n[Why]\nNot the surface reason — what is the structural one?\n\n[How]\nThrough what mechanism did the situation come about?\n\n:::point\n5W1H is less a coverage tool than a self-check: "Am I leaning all in one direction?"\n:::',
     },
     {
       type: 'quiz',
@@ -123,13 +123,13 @@ const issueExhaustive: LessonData = {
       type: 'explain',
       title: 'Use stakeholder perspectives to close gaps',
       content:
-        'Another strong coverage tool is the stakeholder view.\n\nList everyone connected to the theme first.\n\nExample: a B2B SaaS where churn is rising.\n\nStakeholders:\n- End users (the people doing the daily work)\n- Buyers (managers, executives)\n- Internal support / customer success\n- Integration partners\n- Your own company\'s decision-makers\n\nIssues per stakeholder:\n- User view: Are they actually using it daily?\n- Buyer view: How is ROI being measured?\n- Support view: Has the type of inquiries changed?\n- Partner view: Were there API changes upstream?\n- Internal view: How did the recent price change land?\n\nList the cast first, then write the issues. It breaks the habit of seeing only from your own seat.',
+        'Another strong coverage tool is the stakeholder view.\n\nList everyone connected to the theme first.\n\nExample: a B2B SaaS where churn is rising.\n\nStakeholders:\n- End users (the people doing the daily work)\n- Buyers (managers, executives)\n- Internal support / customer success\n- Integration partners\n- Your own company\'s decision-makers\n\nIssues per stakeholder:\n- User view: Are they actually using it daily?\n- Buyer view: How is ROI being measured?\n- Support view: Has the type of inquiries changed?\n- Partner view: Were there API changes upstream?\n- Internal view: How did the recent price change land?\n\n:::point\nList the cast first, then write the issues. It breaks the habit of seeing only from your own seat.\n:::',
     },
     {
       type: 'explain',
       title: '"Reverse," "zero-base," and "extreme" to clear blind spots',
       content:
-        'The final polish for coverage is three shake-ups.\n\n[The reverse question]\nNormal: "Why are revenues falling?"\nReverse: "Why are revenues still this high despite everything?"\n-> The remaining strengths often point to the next lever.\n\n[Zero-base]\nNormal: "What should we change in the current org?"\nZero-base: "If there were no org at all, what would we build now?"\n-> Lets you escape sunk constraints.\n\n[Extremes]\n"If we had 10x the budget, what would we do?"\n"If we had half the staff, what would we cut?"\n-> Forces the actual priorities to surface.\n\nCoverage is not just MECE.\nIt is structure cuts × perspectives (5W1H, stakeholders) × shake-ups (reverse, zero-base, extremes).',
+        'The final polish for coverage is three shake-ups.\n\n[The reverse question]\nNormal: "Why are revenues falling?"\nReverse: "Why are revenues still this high despite everything?"\n-> The remaining strengths often point to the next lever.\n\n[Zero-base]\nNormal: "What should we change in the current org?"\nZero-base: "If there were no org at all, what would we build now?"\n-> Lets you escape sunk constraints.\n\n[Extremes]\n"If we had 10x the budget, what would we do?"\n"If we had half the staff, what would we cut?"\n-> Forces the actual priorities to surface.\n\n:::point\nCoverage is not just MECE. It is structure cuts × perspectives (5W1H, stakeholders) × shake-ups (reverse, zero-base, extremes).\n:::',
     },
     {
       type: 'quiz',
@@ -202,7 +202,7 @@ const issueStructure: LessonData = {
       type: 'explain',
       title: 'Keep granularity consistent',
       content:
-        'The classic structure-breaker is uneven granularity.\n\nBad: drivers of next year\'s revenue drop\n+- Drop in repeat rate (mid-level)\n+- Demotivation of representative A (too narrow)\n+- Stagnation of the Japanese economy (too broad)\n\nThis state makes it impossible to choose the focus of the discussion.\n\nGood (same granularity):\n+- Drop in repeat rate\n+- Slowdown in new acquisition\n+- Decline in unit price\n\nIssues at a different level (macro environment, individual motivation) belong on a separate branch, or as upstream assumptions. Even granularity alone makes the discussion feel completely different.',
+        'The classic structure-breaker is uneven granularity.\n\n[icon:bad] Bad: drivers of next year\'s revenue drop\n+- Drop in repeat rate (mid-level)\n+- Demotivation of representative A (too narrow)\n+- Stagnation of the Japanese economy (too broad)\n\nThis state makes it impossible to choose the focus of the discussion.\n\n[icon:good] Good: same granularity\n+- Drop in repeat rate\n+- Slowdown in new acquisition\n+- Decline in unit price\n\nIssues at a different level (macro environment, individual motivation) belong on a separate branch, or as upstream assumptions.\n\n:::point\nEven granularity alone makes the discussion feel completely different.\n:::',
     },
     {
       type: 'quiz',
@@ -221,7 +221,7 @@ const issueStructure: LessonData = {
       type: 'explain',
       title: 'Stack logic with deduction and induction',
       content:
-        'Once issues are structured, attach the logic for reaching the answer on each branch.\nThe basics are deduction and induction.\n\n[Deduction]\nGeneral principle -> specific case.\n"Raising price tends to push some demand away (principle)" + "We raised price by 10%"\n-> "Some churn should occur as a result."\n\nStrength: fast reasoning. Weakness: if a premise breaks, the whole chain breaks.\n\n[Induction]\nStack specific cases -> generalize.\n"Companies A, B, and C all saw churn rise after a price increase."\n-> "We are likely to see churn too."\n\nStrength: data-anchored. Weakness: blind to exceptions.\n\nMatch the right tool to each branch — "is this a deductive branch, or an inductive one?" — and the logic visibly tightens.',
+        'Once issues are structured, attach the logic for reaching the answer on each branch.\nThe basics are deduction and induction.\n\n[Deduction]\nGeneral principle -> specific case.\n"Raising price tends to push some demand away (principle)" + "We raised price by 10%"\n-> "Some churn should occur as a result."\n\nStrength: fast reasoning. Weakness: if a premise breaks, the whole chain breaks.\n\n[Induction]\nStack specific cases -> generalize.\n"Companies A, B, and C all saw churn rise after a price increase."\n-> "We are likely to see churn too."\n\nStrength: data-anchored. Weakness: blind to exceptions.\n\n:::point\nMatch the right tool to each branch — "is this a deductive branch, or an inductive one?" — and the logic visibly tightens.\n:::',
     },
     {
       type: 'quiz',
@@ -249,7 +249,7 @@ const issueHypothesis: LessonData = {
       type: 'explain',
       title: 'Place a tentative answer on every issue',
       content:
-        'Once issues are surfaced, attach a tentative answer to each — that is the hypothesis.\n\nThe trap to avoid: "I will think once the data is in."\nThat path gets you lost in the data and timed out of the discussion.\n\nThe right move: "Here is my tentative answer," then sharpen it through validation.\n\nExample: "What is the main driver of the retention drop?"\n-> Tentative: "Likely delivery delays, especially among heavy users."\n-> Validation: cancellation survey, delivery-delay data, free-text analysis of churn reasons.\n\nA hypothesis is "fast if right, learning if wrong."\nWithout a hypothesis, research runs out the clock before reaching an answer.',
+        'Once issues are surfaced, attach a tentative answer to each — that is the hypothesis.\n\nThe trap to avoid: "I will think once the data is in."\nThat path gets you lost in the data and timed out of the discussion.\n\nThe right move: "Here is my tentative answer," then sharpen it through validation.\n\nExample: "What is the main driver of the retention drop?"\n-> Tentative: "Likely delivery delays, especially among heavy users."\n-> Validation: cancellation survey, delivery-delay data, free-text analysis of churn reasons.\n\n:::point\nA hypothesis is "fast if right, learning if wrong." Without a hypothesis, research runs out the clock before reaching an answer.\n:::',
     },
     {
       type: 'quiz',
@@ -267,7 +267,7 @@ const issueHypothesis: LessonData = {
       type: 'explain',
       title: 'Build reasoning with deduction and induction',
       content:
-        'A hypothesis gains weight only through reasoning.\n\nDeductive reasoning:\n- Principle: price and demand have a negative relationship.\n- Premise: our price increase is 10%, competitors are flat.\n- Conclusion: churn will be pushed up by several percentage points.\n\nInductive reasoning:\n- Case 1: Company A — churn +3% after a price rise.\n- Case 2: Company B — churn +2%.\n- Case 3: Company C — churn +4%.\n-> Our churn likely lands in the +2 to +4 range.\n\nEither way, keep "claim," "reasoning," and "fact" as separate pieces.\n\nThe sloppy version:\n"Retention is dropping because of delivery delays" -> followed by "therefore we should fix delivery delays."\nThat is circular — claim restated as reasoning.\n\nReal reasoning is what turns an issue into a "decision-driving" answer.',
+        'A hypothesis gains weight only through reasoning.\n\nDeductive reasoning:\n- Principle: price and demand have a negative relationship.\n- Premise: our price increase is 10%, competitors are flat.\n- Conclusion: churn will be pushed up by several percentage points.\n\nInductive reasoning:\n- Case 1: Company A — churn +3% after a price rise.\n- Case 2: Company B — churn +2%.\n- Case 3: Company C — churn +4%.\n-> Our churn likely lands in the +2 to +4 range.\n\nEither way, keep "claim," "reasoning," and "fact" as separate pieces.\n\n:::warn\nThe sloppy version is circular: "Retention is dropping because of delivery delays," followed by "therefore we should fix delivery delays." The claim is restated as its own reasoning, so there is no evidence at all.\n:::\n\nReal reasoning is what turns an issue into a "decision-driving" answer.',
     },
     {
       type: 'quiz',
@@ -285,7 +285,7 @@ const issueHypothesis: LessonData = {
       type: 'explain',
       title: 'Separate facts from assumptions',
       content:
-        'The most common collision when building reasoning is conflating facts and assumptions.\n\n[Fact]\nObservable and shared: "Last month\'s churn was 8.0%." "Foot traffic was 20,000."\n\n[Assumption]\nA tentative truth used to argue: "Customers are price-sensitive." "The market doubles in five years."\n\n[Opinion]\nJudgment or projection: "The trend will continue."\n\nReasoning that holds together follows: fact + assumption -> conclusion.\n\nCommon accidents:\n- Assumptions written as facts -> they go untested.\n- One fact generalized too far -> never argue from a single point.\n- Facts and opinions in the same sentence -> they bleed together.\n\nIn decks and memos, labeling each line "fact / assumption / opinion" tightens the argument noticeably.',
+        'The most common collision when building reasoning is conflating facts and assumptions.\n\n[Fact]\nObservable and shared: "Last month\'s churn was 8.0%." "Foot traffic was 20,000."\n\n[Assumption]\nA tentative truth used to argue: "Customers are price-sensitive." "The market doubles in five years."\n\n[Opinion]\nJudgment or projection: "The trend will continue."\n\nReasoning that holds together follows: fact + assumption -> conclusion.\n\n:::warn\nThree common accidents: assumptions written as facts go untested, one fact generalized too far argues from a single point, and facts mixed with opinions in one sentence bleed together. Each one quietly breaks the reasoning.\n:::\n\nIn decks and memos, labeling each line "fact, assumption, or opinion" tightens the argument noticeably.',
     },
     {
       type: 'explain',
@@ -322,7 +322,7 @@ const issueFermi: LessonData = {
       type: 'explain',
       title: 'Score each issue on the order of magnitude it moves',
       content:
-        'Coverage easily produces 5-10 issues.\nValidating all of them with equal energy burns through any timebox.\n\nThis is where "Fermi intuition" comes in: estimate each issue\'s impact at the order-of-magnitude level.\n\nExample: four issues on improving SaaS churn.\n\nIssue A: change the price\n-> Impact range: churn moves 1-2 pts × annual revenue ~ $1-2M.\n\nIssue B: redesign onboarding\n-> Impact range: first-month drop-off down 10 pts × new flow × LTV ~ $3M.\n\nIssue C: full UI redesign\n-> Impact: 20-pt improvement potential, but six-month build -> small in the short term.\n\nIssue D: support quality\n-> Impact: a few % via inquiry volume ~ $500K per year.\n\nIssues that differ by an order of magnitude do not need a debate to be prioritized.\nFermi is not about being "accurate," it is about aligning the room on relative size.',
+        'Coverage easily produces 5-10 issues.\nValidating all of them with equal energy burns through any timebox.\n\nThis is where "Fermi intuition" comes in: estimate each issue\'s impact at the order-of-magnitude level.\n\nExample: four issues on improving SaaS churn.\n\nIssue A: change the price\n-> Impact range: churn moves 1-2 pts × annual revenue ~ $1-2M.\n\nIssue B: redesign onboarding\n-> Impact range: first-month drop-off down 10 pts × new flow × LTV ~ $3M.\n\nIssue C: full UI redesign\n-> Impact: 20-pt improvement potential, but six-month build -> small in the short term.\n\nIssue D: support quality\n-> Impact: a few % via inquiry volume ~ $500K per year.\n\n:::point\nIssues that differ by an order of magnitude do not need a debate to be prioritized. Fermi is not about being "accurate," it is about aligning the room on relative size.\n:::',
     },
     {
       type: 'quiz',
@@ -340,7 +340,7 @@ const issueFermi: LessonData = {
       type: 'explain',
       title: 'Sharpen issues with sensitivity analysis',
       content:
-        'Any Fermi estimate ultimately leans on assumptions.\nSensitivity analysis is what makes those assumptions accountable.\n\nSteps:\n1. Sweep each assumption in conservative / base / optimistic cases.\n2. Identify the assumption whose movement changes the order of magnitude of the answer.\n3. Promote that assumption to a "most important issue."\n\nExample: onboarding-improvement impact estimate.\n- New monthly inflow: 3,000 (fact).\n- Drop-off improvement: 3 / 10 / 20 pts (conservative / base / optimistic).\n-> Tiny in the conservative case, large in the optimistic one.\n\nThat spread is the uncertainty in the lever.\nThe right move to close it is researching "the actual improvement range competitors achieved with onboarding work."\n\nSensitivity makes the next research target self-evident.',
+        'Any Fermi estimate ultimately leans on assumptions.\nSensitivity analysis is what makes those assumptions accountable.\n\nSteps:\n1. Sweep each assumption in conservative / base / optimistic cases.\n2. Identify the assumption whose movement changes the order of magnitude of the answer.\n3. Promote that assumption to a "most important issue."\n\nExample: onboarding-improvement impact estimate.\n- New monthly inflow: 3,000 (fact).\n- Drop-off improvement: 3 / 10 / 20 pts (conservative / base / optimistic).\n-> Tiny in the conservative case, large in the optimistic one.\n\nThat spread is the uncertainty in the lever.\nThe right move to close it is researching "the actual improvement range competitors achieved with onboarding work."\n\n:::point\nSensitivity makes the next research target self-evident.\n:::',
     },
     {
       type: 'quiz',
@@ -359,7 +359,7 @@ const issueFermi: LessonData = {
       type: 'explain',
       title: 'Not estimation as a standalone skill — but as issue weighting',
       content:
-        'Worth contrasting with the Fermi course explicitly.\n\n[fermi-01 (Fermi Estimation course)]\n-> Build the standalone skill: set up equations, decompose, and estimate market size or demand.\n\n[This lesson]\n-> Use Fermi to weight which issue to investigate, not to estimate something for its own sake.\n\nIn consulting and corporate strategy, Fermi is a means, not an end.\nIt is the sense of scale that determines which issue moves the order of magnitude of the decision — and it leads directly into validation and decisions afterwards.\n\nPeople who skip the estimation step end up with every issue marked "looks important." Putting orders of magnitude on the page is what unlocks real discussion.',
+        'Worth contrasting with the Fermi course explicitly.\n\n[fermi-01 (Fermi Estimation course)]\n-> Build the standalone skill: set up equations, decompose, and estimate market size or demand.\n\n[This lesson]\n-> Use Fermi to weight which issue to investigate, not to estimate something for its own sake.\n\nIn consulting and corporate strategy, Fermi is a means, not an end.\nIt is the sense of scale that determines which issue moves the order of magnitude of the decision — and it leads directly into validation and decisions afterwards.\n\n:::point\nPeople who skip the estimation step end up with every issue marked "looks important." Putting orders of magnitude on the page is what unlocks real discussion.\n:::',
     },
     {
       type: 'quiz',
@@ -387,7 +387,7 @@ const issueUnfamiliar: LessonData = {
       type: 'explain',
       title: 'The first move when entering an unfamiliar industry',
       content:
-        'The procedure for setting issues in a new industry, a new business, or a social problem is roughly the same every time.\n\n1. Sketch the rough map of the industry (players, money flows, key KPIs).\n2. Lock in "who is taking the decision" (your company / client position).\n3. Place common cross-industry issues (entry, differentiation, profit structure).\n4. Overwrite with the situation\'s unique issues.\n5. Structure how those issues relate to each other.\n\nDo not aim for completeness in the sketch stage.\nA single industry report + one experienced contact + the client\'s financial statements is more than enough for the first day.\n\nWith this pattern, you can move hands from day one even in unfamiliar territory.',
+        'The procedure for setting issues in a new industry, a new business, or a social problem is roughly the same every time.\n\n1. Sketch the rough map of the industry (players, money flows, key KPIs).\n2. Lock in "who is taking the decision" (your company / client position).\n3. Place common cross-industry issues (entry, differentiation, profit structure).\n4. Overwrite with the situation\'s unique issues.\n5. Structure how those issues relate to each other.\n\nDo not aim for completeness in the sketch stage.\nA single industry report + one experienced contact + the client\'s financial statements is more than enough for the first day.\n\n:::point\nWith this pattern, you can move your hands from day one even in unfamiliar territory.\n:::',
     },
     {
       type: 'quiz',
@@ -406,7 +406,7 @@ const issueUnfamiliar: LessonData = {
       type: 'explain',
       title: 'Borrow from structurally similar cases',
       content:
-        'A real superpower in unfamiliar territory is spotting "known cases with the same shape."\n\nExample: a regional traditional-craft maker wants to grow on e-commerce.\n\nNo direct experience needed — similar-shape cases are everywhere:\n- Niche-publisher EC launches.\n- Regional specialty foods sold direct online.\n- Artisanal-food D2C brands.\n\nShared issues:\n- Low-volume, high-ticket fulfilment operations.\n- Pairing story content with the SKU.\n- Surfacing and retaining existing fans.\n\nDifferent industries can share the same underlying structure.\nThe habit of asking "what known case shares this shape?" is the strongest tool in unfamiliar work.',
+        'A real superpower in unfamiliar territory is spotting "known cases with the same shape."\n\nExample: a regional traditional-craft maker wants to grow on e-commerce.\n\nNo direct experience needed — similar-shape cases are everywhere:\n- Niche-publisher EC launches.\n- Regional specialty foods sold direct online.\n- Artisanal-food D2C brands.\n\nShared issues:\n- Low-volume, high-ticket fulfilment operations.\n- Pairing story content with the SKU.\n- Surfacing and retaining existing fans.\n\nDifferent industries can share the same underlying structure.\n\n:::point\nThe habit of asking "what known case shares this shape?" is the strongest tool in unfamiliar work.\n:::',
     },
     {
       type: 'quiz',
@@ -424,7 +424,7 @@ const issueUnfamiliar: LessonData = {
       type: 'explain',
       title: 'The courage to place tentative answers without first-hand data',
       content:
-        'In new territory, you usually do not have data on hand.\nThe people who freeze waiting for data and the people who place a tentative answer and then validate are visibly different by day three.\n\nHow to place a tentative answer:\n- Flag it as tentative ("Market size ~$500M (mid-point of Source A\'s estimate — needs validation)").\n- Show a confidence range ("growth rate 5-10%").\n- Always pair it with a validation step ("confirm with three expert interviews").\n\nA tentative answer is not a guess.\n"Given what I have today, this is what I can say. I will update once X comes in" is how you keep the discussion moving.\n\nBetter than silence: a tentative answer.\nBetter than that: a tentative answer with a validation step attached.',
+        'In new territory, you usually do not have data on hand.\nThe people who freeze waiting for data and the people who place a tentative answer and then validate are visibly different by day three.\n\nHow to place a tentative answer:\n- Flag it as tentative ("Market size ~$500M (mid-point of Source A\'s estimate — needs validation)").\n- Show a confidence range ("growth rate 5-10%").\n- Always pair it with a validation step ("confirm with three expert interviews").\n\nA tentative answer is not a guess.\n"Given what I have today, this is what I can say. I will update once X comes in" is how you keep the discussion moving.\n\n:::point\nBetter than silence: a tentative answer. Better than that: a tentative answer with a validation step attached.\n:::',
     },
     {
       type: 'quiz',
@@ -457,7 +457,7 @@ const issueFacilitate: LessonData = {
       type: 'explain',
       title: 'Consolidate issues, hypotheses, reasoning, and interpretation onto one page',
       content:
-        'All of the issues, hypotheses, reasoning, and So-Whats from the previous lessons land, in the end, on a single "issue paper."\n\nBasic structure of an issue paper:\n\n1. Top-level question (what decision is this paper for).\n2. Three to five main issues (top branches of the issue tree).\n3. Current hypothesis for each issue.\n4. Main reasoning (deductive or inductive).\n5. Order-of-magnitude weight (Fermi intuition).\n6. So What (what to do as a result).\n7. Remaining items to verify (what comes next).\n\nOn one page, "what needs to be decided to move forward" is instantly visible.\nIf a meeting deck runs to 10-20 slides, that is a signal that issues are not yet defined.',
+        'All of the issues, hypotheses, reasoning, and So-Whats from the previous lessons land, in the end, on a single "issue paper."\n\nBasic structure of an issue paper:\n\n1. Top-level question (what decision is this paper for).\n2. Three to five main issues (top branches of the issue tree).\n3. Current hypothesis for each issue.\n4. Main reasoning (deductive or inductive).\n5. Order-of-magnitude weight (Fermi intuition).\n6. So What (what to do as a result).\n7. Remaining items to verify (what comes next).\n\nOn one page, "what needs to be decided to move forward" is instantly visible.\n\n:::warn\nIf a meeting deck runs to 10-20 slides, that is a signal that the issues are not yet defined.\n:::',
     },
     {
       type: 'quiz',
@@ -475,7 +475,7 @@ const issueFacilitate: LessonData = {
       type: 'explain',
       title: 'Run meetings issue-first',
       content:
-        'Once an issue paper exists, meetings change shape.\n\nBefore:\n- Read through the deck from the top.\n- "Wait, what are we deciding?" mid-meeting.\n- End with no one sure what got decided.\n\nAfter (issue-first):\n1. In the first minute, name the issue this meeting will decide ("Today we decide whether to raise prices for next year").\n2. Share the hypothesis and reasoning (5-10 minutes).\n3. Receive pushback "as which branch of the issue tree it lands on."\n4. Close by confirming what was decided, what was not, and what is next.\n\nIssue-first meetings are faster — and kinder to everyone in the room.',
+        'Once an issue paper exists, meetings change shape.\n\n[icon:bad] Before\n- Read through the deck from the top.\n- "Wait, what are we deciding?" mid-meeting.\n- End with no one sure what got decided.\n\n[icon:good] After (issue-first)\n1. In the first minute, name the issue this meeting will decide ("Today we decide whether to raise prices for next year").\n2. Share the hypothesis and reasoning (5-10 minutes).\n3. Receive pushback "as which branch of the issue tree it lands on."\n4. Close by confirming what was decided, what was not, and what is next.\n\n:::point\nIssue-first meetings are faster — and kinder to everyone in the room.\n:::',
     },
     {
       type: 'quiz',
@@ -493,7 +493,7 @@ const issueFacilitate: LessonData = {
       type: 'explain',
       title: 'Bring tangents back to the issue',
       content:
-        'Real meetings always drift. Bringing them back to the issue is where facilitation actually lives.\n\nUseful phrases:\n- "Interesting issue — that sits on this branch of the tree."\n  -> Repositions the tangent rather than rejecting it.\n- "What we are discussing now is actually issue B rather than A. Shall we close A later and finish B first?"\n  -> Explicit permission to swap parallel issues.\n- "Let\'s park that as a separate issue on the open-items list."\n  -> Preserves the discussion without losing the main thread.\n\nNever villainize the tangent.\n"Your issue matters — it is just not today\'s issue" is the phrase that keeps meetings productive.',
+        'Real meetings always drift. Bringing them back to the issue is where facilitation actually lives.\n\nUseful phrases:\n- "Interesting issue — that sits on this branch of the tree."\n  -> Repositions the tangent rather than rejecting it.\n- "What we are discussing now is actually issue B rather than A. Shall we close A later and finish B first?"\n  -> Explicit permission to swap parallel issues.\n- "Let\'s park that as a separate issue on the open-items list."\n  -> Preserves the discussion without losing the main thread.\n\n:::point\nNever villainize the tangent. "Your issue matters — it is just not today\'s issue" is the phrase that keeps meetings productive.\n:::',
     },
     {
       type: 'think',
@@ -514,7 +514,7 @@ const issueFacilitate: LessonData = {
       type: 'explain',
       title: 'Course wrap — the power to reach the answer through issues',
       content:
-        'Four steps you have built in this course:\n\n1. Surface issues comprehensively (MECE, 5W1H, stakeholders, shake-ups).\n2. Structure the issues (issue tree, granularity, deduction / induction).\n3. Attach hypotheses and reasoning (So What in three layers to reach the essence).\n4. Validate with numbers (Fermi intuition and sensitivity).\n\nIn this lesson, all four came together in an issue paper and meeting practice.\n\nThe through-line is this: you now have a pattern that reaches a coherent answer with logic, even in territory you have no experience in.\n\nDepth of thinking = coverage of issues × precision of structure × sharpness of interpretation.\n\nWith the pattern in hand, every real-world rep at the office will sharpen the precision further.',
+        'Four steps you have built in this course:\n\n1. Surface issues comprehensively (MECE, 5W1H, stakeholders, shake-ups).\n2. Structure the issues (issue tree, granularity, deduction / induction).\n3. Attach hypotheses and reasoning (So What in three layers to reach the essence).\n4. Validate with numbers (Fermi intuition and sensitivity).\n\nIn this lesson, all four came together in an issue paper and meeting practice.\n\nThe through-line is this: you now have a pattern that reaches a coherent answer with logic, even in territory you have no experience in.\n\n:::point\nDepth of thinking = coverage of issues × precision of structure × sharpness of interpretation. With the pattern in hand, every real-world rep at the office sharpens the precision further.\n:::',
     },
   ],
 }
