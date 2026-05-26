@@ -3,7 +3,7 @@ import { recordCompletion, addXp, getDisplayName } from '../stats'
 import { recordActivity } from '../activityLog'
 import { getGuestId } from '../guestId'
 import { getRankingUserId } from '../syncService'
-import { ArrowRightIcon, CheckIcon, LightbulbIcon } from '../icons'
+import { ArrowRightIcon, CheckIcon, LightbulbIcon, FlagIcon } from '../icons'
 import { Button } from '../components/Button'
 import { Header } from '../components/platform/Header'
 import { useIsDesktop } from '../hooks/useMediaQuery'
@@ -381,8 +381,9 @@ function FermiFeedbackBlock({
         {onReport && (
           <button
             onClick={onReport}
-            style={{ marginTop: 'var(--s-3)', fontSize: 14, color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
+            style={{ marginTop: 'var(--s-3)', display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 14, color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontFamily: 'inherit' }}
           >
+            <FlagIcon width={14} height={14} aria-hidden="true" />
             {t('report.linkText')}
           </button>
         )}

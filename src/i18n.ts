@@ -1695,6 +1695,10 @@ const STRINGS: Record<Locale, Strings> = {
     'dailyFermi.refData': '参考データ',
     'dailyFermi.calcClose': '電卓を閉じる',
     'dailyFermi.calcOpen': '電卓を使う',
+    'dailyFermi.calcUnitMan': '万',
+    'dailyFermi.calcUnitOku': '億',
+    'dailyFermi.calcUnitManAria': '入力中の数値を1万倍する',
+    'dailyFermi.calcUnitOkuAria': '入力中の数値を1億倍する',
     'dailyFermi.answerAria': 'フェルミ推定の解答',
     'dailyFermi.askHintBtn': 'ヒントを聞く',
     'dailyFermi.submit': '回答を提出する',
@@ -1711,9 +1715,6 @@ const STRINGS: Record<Locale, Strings> = {
     'dailyFermi.hintUsed': 'ヒント使用',
     'dailyFermi.aiFeedback': 'AIからのフィードバック',
     'dailyFermi.viewRanking': 'ランキングを見る',
-    'dailyFermi.aboutTrillion': '{sign}約{n}兆',
-    'dailyFermi.aboutHundredMil': '{sign}約{n}億',
-    'dailyFermi.aboutTenK': '{sign}約{n}万',
 
     // AI Problem Gen
     'aiGen.fallbackCategory': 'その他',
@@ -3490,6 +3491,10 @@ const STRINGS: Record<Locale, Strings> = {
     'dailyFermi.refData': 'Reference data',
     'dailyFermi.calcClose': 'Close calculator',
     'dailyFermi.calcOpen': 'Open calculator',
+    'dailyFermi.calcUnitMan': '10K',
+    'dailyFermi.calcUnitOku': '100M',
+    'dailyFermi.calcUnitManAria': 'Multiply the current number by 10,000',
+    'dailyFermi.calcUnitOkuAria': 'Multiply the current number by 100,000,000',
     'dailyFermi.answerAria': 'Fermi estimation answer',
     'dailyFermi.askHintBtn': 'Ask for a hint',
     'dailyFermi.submit': 'Submit answer',
@@ -3506,9 +3511,6 @@ const STRINGS: Record<Locale, Strings> = {
     'dailyFermi.hintUsed': 'Hint used',
     'dailyFermi.aiFeedback': 'AI feedback',
     'dailyFermi.viewRanking': 'View ranking',
-    'dailyFermi.aboutTrillion': '{sign}~{n}T',
-    'dailyFermi.aboutHundredMil': '{sign}~{n}00M',
-    'dailyFermi.aboutTenK': '{sign}~{n}0K',
 
     // AI Problem Gen
     'aiGen.fallbackCategory': 'Other',
