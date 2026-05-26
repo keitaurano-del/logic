@@ -33,6 +33,9 @@ const criticalIntro: LessonData = {
       title: 'Separate claim, evidence, and assumption',
       content:
         'A core toolkit of critical thinking:\n\n[Claim]\nThe conclusion or opinion: "X is true" or "we should do X."\nExample: "Our company should end remote work."\n\n[Evidence]\nThe facts, data, and reasons that support the claim.\nExample: "Revenue dropped 20% last year." "Team coordination has weakened."\n\n[Assumption]\nUnstated conditions that the claim depends on to hold.\nExample: "The cause of the revenue drop is remote work." -- is that actually true?\n\nPractical tip:\nWhen you hear a claim, decompose it into these three parts. Assumptions, in particular, are usually unspoken — watch for them.',
+      visual: 'ClaimReasonAssumptionDiagram',
+      outro:
+        'Splitting an argument into the three layers of claim, evidence, and assumption makes it obvious at a glance whether a dispute is about the "conclusion," the "facts," or an "unspoken assumption." Surfacing the assumptions nobody states is where critical thinking earns its keep.',
     },
     {
       type: 'quiz',
@@ -60,6 +63,9 @@ const criticalFallacy: LessonData = {
       title: 'Catching "convincing-sounding lies"',
       content:
         'A logical fallacy is an argument that sounds reasonable but is actually built on broken logic.\n\nFive fallacies that show up often in business:\n\n[1] Appeal to authority\n"That famous CEO said the same thing."\n-> What matters is whether the content is correct, not who said it.\n\n[2] Ad hominem\n"You are saying that, but you have failed before."\n-> The speaker\'s character is unrelated to whether the claim is correct.\n\n[3] Appeal to popularity (bandwagon)\n"Everyone is saying so."\n-> Majority opinion is not necessarily correct.\n\n[4] Strawman\nDistorting the opponent\'s argument to attack a weaker version.\n"I proposed cost cuts and was told \'so you want to throw away quality?\'"\n\n[5] Causal fallacy (post hoc)\n"B happened after A, so A caused B."\n-> Sequence in time is not the same as causation.',
+      visual: 'FallacyGridDiagram',
+      outro:
+        'The five fallacies weaponize "plausibility" to slip past weak spots in the logic. When something a speaker says feels off, first try to match it to one of these patterns — and you instantly find the foothold for a rebuttal.',
     },
     {
       type: 'quiz',
@@ -105,6 +111,9 @@ const criticalData: LessonData = {
       title: 'Do graphs lie?',
       content:
         'Data and charts look objective, but how they are presented changes the impression dramatically.\n\nThree common "data traps":\n\n[1] Truncated Y-axis\nA change of "$95K -> $100K -> $105K" can be made to look like 3x growth if you start the Y-axis at $95K.\n-> Always check whether the axis is zero-based.\n\n[2] Confusing correlation with causation\n"Ice cream sales correlate with drowning incidents."\n-> The hidden third factor (temperature) drives both.\n-> Correlation does not imply causation.\n\n[3] Sample bias\n"Customer survey shows 90% satisfaction."\n-> Unsatisfied customers may already have churned and never responded.\n-> Always check who actually answered.',
+      visual: 'GraphPitfallsDiagram',
+      outro:
+        'A graph\'s impression can flip on just three things: the axis, a third variable, and the sample. Building the habit of checking these three the moment numbers are put in front of you is enough to stop getting fooled by data.',
     },
     {
       type: 'quiz',
@@ -123,6 +132,9 @@ const criticalData: LessonData = {
       title: 'Absolute values vs relative values',
       content:
         'When you look at numbers, the question "compared to what?" matters.\n\n[Relative-value trick]\n"Risk has doubled!"\n-> Maybe it just went from 0.001% to 0.002%.\n\n[Absolute-value trick]\n"100 more deaths."\n-> The meaning is completely different in a country of 100 million versus a town of 10,000.\n\nHow to read correctly:\n- When you see a relative value (% or multiplier), check the absolute value.\n- When you see an absolute value, check the denominator (the whole).\n- When you see a change in level, check the rate of change (and vice versa).\n\nWorked example:\n"New drug cuts cancer death risk by 50%."\n-> Check the absolute values: from what % to what %?',
+      visual: 'AbsoluteVsRelativeDiagram',
+      outro:
+        'Always read relative and absolute values as a pair. When you see "X times," ask for the starting number; when you see "X people," ask for the denominator. That one reflex keeps you from being swept along by manipulated graphs and headlines.',
     },
     {
       type: 'quiz',
@@ -207,6 +219,8 @@ const criticalBias: LessonData = {
         ],
         hint: 'Pause before deciding and name which bias is active — that single beat cuts errors',
       },
+      outro:
+        'The three pillars — confirmation bias, anchoring, and sunk cost — are baked into almost every business decision. Just taking a beat before you decide to name "which bias is active right now" lowers your odds of a misjudgment.',
     },
     {
       type: 'quiz',
@@ -254,6 +268,9 @@ const criticalCorrelation: LessonData = {
       title: 'Correlation is not causation',
       content:
         '"A and B are related" is different from "A causes B."\n\nMixing them up leads to pointless initiatives or to overlooking the real cause.\n\nExample 1: a famous "spurious correlation"\nIce cream sales rise as drowning incidents rise.\n-> Ice cream does not cause drowning.\n-> A common cause (high temperature) drives both.\n\nExample 2: a business pitfall\n"Revenue rose in months when ad spend rose."\n-> Did ad spend cause it? Or did "the season was strong, so we could afford more ad spend"?\n\nThree conditions for claiming causation:\n(1) A occurred before B in time.\n(2) A and B are correlated.\n(3) No third variable explains the relationship.',
+      visual: 'CorrelationCausationDiagram',
+      outro:
+        'Causation is granted only when all three conditions — time order, correlation, and ruling out other factors — are met. Declaring causation just because "B happened after A" or "A and B moved together" is the biggest pitfall that makes business initiatives miss.',
     },
     {
       type: 'quiz',
@@ -272,6 +289,21 @@ const criticalCorrelation: LessonData = {
       title: 'Practical causal inference',
       content:
         'How real businesses establish causation:\n\nA/B test (randomized controlled experiment)\nThe most reliable method. Change one condition only and compare randomly assigned groups.\nExample: show landing pages A and B to 50/50 of traffic and compare conversion rates.\n\nBefore/after comparison alone is not enough\n"Revenue rose after the change" is not proof. You have not ruled out other factors (season, competitors, the economy) changing in the same period.\n\nImagine "what if we had done nothing?"\nThe counterfactual. Only by comparing to a control group can you measure true effect.\n\nDay-to-day practice:\nAny time you want to claim "A -> B," ask yourself: "Is there a third variable?" "Could it actually be B -> A?"',
+      visual: 'Two2MatrixDiagram',
+      visualProps: {
+        sectionLabel: 'A/B test — intervention × outcome 2x2',
+        xAxis: { low: 'No intervention (control)', high: 'Intervention (treatment)', label: 'Initiative applied?' },
+        yAxis: { low: 'No change in outcome', high: 'Outcome improves', label: 'Result achieved?' },
+        cells: [
+          { title: 'Mysterious natural lift ?', items: ['Result with no intervention', 'Suspect season / market'] },
+          { title: 'Likely worked ◯', items: ['Only the treatment group lifts', 'The gap is the effect'] },
+          { title: 'Baseline', items: ['Do nothing, stay flat', 'The comparison reference point'] },
+          { title: 'Initiative missed', items: ['Intervened but no change', 'Consider a different lever'] },
+        ],
+        hint: 'The gap vs the left column (control) is the "true effect." Looking at intervention alone cannot separate it from seasonality',
+      },
+      outro:
+        'It is easiest to verify causation with a matrix of "intervention present or absent × outcome present or absent." Always imagine the side with no intervention — the control group — and compare against it. That is the starting point of reproducible effect verification.',
     },
     {
       type: 'quiz',

@@ -38,7 +38,7 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
 
   if (state === 'loading') {
     return (
-      <div className="stack">
+      <div className="stack" style={{ padding: '0 20px' }}>
         <Header title={t('dailyProblem.title')} onBack={onBack} />
         <div style={{ textAlign: 'center', padding: 'var(--s-8) 0', color: 'var(--text-muted)' }}>
           <div style={{ fontSize: 16 }}>{t('dailyProblem.loading')}</div>
@@ -49,7 +49,7 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
 
   if (state === 'error') {
     return (
-      <div className="stack">
+      <div className="stack" style={{ padding: '0 20px' }}>
         <Header title={t('dailyProblem.title')} onBack={onBack} />
         <div className="card" style={{ background: 'rgba(220,38,38,0.06)', borderColor: 'var(--danger)', color: 'var(--danger)' }}>
           {error}
@@ -61,7 +61,7 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
 
   if (state === 'done') {
     return (
-      <div className="stack">
+      <div className="stack" style={{ padding: '0 20px' }}>
         <Header title={t('dailyProblem.title')} onBack={onBack} />
         <div className="eyebrow accent">{t('label.todaysChallenge')}</div>
         <h1 style={{ fontSize: 30, letterSpacing: '-0.025em' }}>{t('dailyProblem.heading')}</h1>
@@ -83,7 +83,7 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
   if (finished) {
     const pct = steps.length > 0 ? Math.round((correctCount / steps.length) * 100) : 0
     return (
-      <div className="stack">
+      <div className="stack" style={{ padding: '0 20px' }}>
         <Header title={t('dailyProblem.resultTitle')} onBack={onBack} />
         <div className="eyebrow accent">{t('label.todaysResult')}</div>
         <h1 style={{ fontSize: 30, letterSpacing: '-0.025em' }}>{t('dailyProblem.resultHeading')}</h1>
@@ -134,7 +134,7 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
   }
 
   return (
-    <div className="stack">
+    <div className="stack" style={{ padding: '0 20px' }}>
       <Header title={`${stepIdx + 1} / ${steps.length}`} onBack={onBack} />
 
       <div className="progress">

@@ -609,6 +609,87 @@ Keep responses concise (2-4 sentences). Do not solve the problem for them.`
   })
 
   // =============================================
+  // フェルミ — ゲストスコアの auth UUID 継承（恒久対策）
+  // =============================================
+  // 背景: ゲスト状態で記録したスコアは fermi_scores.user_id が guest 形式 (g_xxxx) の
+  // まま残るため、ログイン後の auth UUID (= profiles.id) と join できず、職業バッジが
+  // 表示されなかった。この endpoint は認証済みユーザーのリクエストに限り、その端末の
+  // guestId で記録された過去スコアを auth UUID へ付け替える。
+  //
+  // 重複対策の考え方:
+  // - fermi_scores は (id BIGSERIAL) のみが PK で、(user_id, question_index) 等の
+  //   UNIQUE 制約は無い。同一ユーザーが同じ問題を複数回解いた行も併存しうる。
+  // - /ranking は user_name 単位で score を合計表示する設計なので、guest 行を
+  //   auth UUID へ単純 UPDATE しても合計値は変わらず、profiles.occupation の join が
+  //   効くようになるだけ。行を増やさないので二重カウントは発生しない。
+  // - したがって「重複行のマージ／破棄」は不要。素直に user_id を付け替える。
+  //
+  // セキュリティ:
+  // - guestId は端末ローカルの乱数 ID で「知っていること」が所有証明になる脅威モデル。
+  // - ただし必ず Authorization Bearer の access token を検証し、認証済みユーザーの
+  //   リクエストに限定する（なりすまし・無差別な付け替え防止）。
+  router.post('/claim-guest-scores', async (req: Request, res: Response) => {
+    if (!supabase) {
+      return res.status(503).json({ error: 'Supabase not configured' })
+    }
+
+    // ── auth header 検証（sync-telemetry と同じパターン）──
+    const auth = req.headers.authorization
+    if (typeof auth !== 'string' || !auth.startsWith('Bearer ')) {
+      return res.status(401).json({ error: 'missing bearer token' })
+    }
+    const token = auth.slice(7).trim()
+    if (!token) {
+      return res.status(401).json({ error: 'invalid bearer token' })
+    }
+
+    let authedUserId: string
+    try {
+      const { data, error } = await supabase.auth.getUser(token)
+      if (error || !data?.user) {
+        return res.status(401).json({ error: 'invalid bearer token' })
+      }
+      authedUserId = data.user.id
+    } catch {
+      return res.status(401).json({ error: 'invalid bearer token' })
+    }
+
+    // ── body 検証 ──
+    const { guestId } = (req.body ?? {}) as { guestId?: unknown }
+    if (typeof guestId !== 'string' || !guestId) {
+      return res.status(400).json({ error: 'guestId required' })
+    }
+    // guestId は guestId.ts の getGuestId() が生成する 'g_xxxx' 形式のみ受け付ける。
+    // auth UUID を guestId として渡されても付け替え対象にしない（自爆防止）。
+    if (!/^g_[a-z0-9]+$/i.test(guestId)) {
+      return res.status(400).json({ error: 'invalid guestId format' })
+    }
+    if (guestId === authedUserId) {
+      // 念のため: guestId が自分の UUID と一致するケースは付け替え不要
+      return res.json({ ok: true, claimed: 0 })
+    }
+
+    try {
+      // guestId で記録された行を auth UUID へ付け替える。
+      // user_name は記録時のものを尊重して上書きしない（過去の表示名を保持）。
+      const { data, error } = await supabase
+        .from('fermi_scores')
+        .update({ user_id: authedUserId })
+        .eq('user_id', guestId)
+        .select('id')
+      if (error) {
+        console.warn('[fermi/claim-guest-scores] update error:', error.message)
+        return res.status(500).json({ error: error.message })
+      }
+      const claimed = (data || []).length
+      return res.json({ ok: true, claimed })
+    } catch (e: unknown) {
+      console.error('[fermi/claim-guest-scores] handler error:', e)
+      return res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
+    }
+  })
+
+  // =============================================
   // フェルミ推定 — 過去回答履歴取得
   // =============================================
   router.get('/history', async (req: Request, res: Response) => {

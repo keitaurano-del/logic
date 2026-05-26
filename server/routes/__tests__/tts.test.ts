@@ -76,7 +76,7 @@ describe('/api/tts route', () => {
     const handler = getHandler()
     const res = mockRes()
     await handler(
-      { body: { text: 'テスト', lang: 'ja-JP', voiceName: 'ja-JP-Neural2-C', rate: 1.5, pitch: 1.5 } } as unknown as Request,
+      { body: { text: 'テスト', lang: 'ja-JP', voiceName: 'ja-JP-Neural2-C', rate: 1.5 } } as unknown as Request,
       res,
     )
 
@@ -89,14 +89,14 @@ describe('/api/tts route', () => {
     const sent = JSON.parse(String(init.body)) as {
       input: { text: string }
       voice: { languageCode: string; name: string }
-      audioConfig: { audioEncoding: string; speakingRate: number; pitch: number }
+      audioConfig: { audioEncoding: string; speakingRate: number; pitch?: number }
     }
     expect(sent.input.text).toBe('テスト')
     expect(sent.voice.name).toBe('ja-JP-Neural2-C')
     expect(sent.audioConfig.audioEncoding).toBe('MP3')
     expect(sent.audioConfig.speakingRate).toBe(1.5)
-    // pitch: (1.5 - 1.0) * 8 = 4
-    expect(sent.audioConfig.pitch).toBeCloseTo(4, 5)
+    // pitch コントロールは廃止: audioConfig に pitch を載せない
+    expect(sent.audioConfig.pitch).toBeUndefined()
 
     expect(res.statusCode).toBe(200)
     expect(res.body).toEqual({ audioContent: 'QUJD' })
@@ -229,7 +229,7 @@ describe('/api/tts route', () => {
     vi.unstubAllGlobals()
   })
 
-  it('rate/pitch のクランプ: 範囲外でも Google 範囲に収める', async () => {
+  it('rate のクランプ: 範囲外でも Google 範囲に収める / pitch は載せない', async () => {
     process.env.GOOGLE_TTS_API_KEY = 'test-key'
     const fetchSpy = vi.fn(async () =>
       new Response(JSON.stringify({ audioContent: 'QUJD' }), { status: 200 }),
@@ -237,13 +237,14 @@ describe('/api/tts route', () => {
     vi.stubGlobal('fetch', fetchSpy)
     const handler = getHandler()
     const res = mockRes()
-    // rate=0.5 → 0.5 (>=0.25), pitch=0.5 → (0.5-1)*8 = -4
-    await handler({ body: { text: 'あ', lang: 'ja-JP', rate: 0.5, pitch: 0.5 } } as unknown as Request, res)
+    // rate=0.5 → 0.5 (>=0.25)
+    await handler({ body: { text: 'あ', lang: 'ja-JP', rate: 0.5 } } as unknown as Request, res)
     const sent = JSON.parse(String((fetchSpy.mock.calls[0][1] as RequestInit).body)) as {
-      audioConfig: { speakingRate: number; pitch: number }
+      audioConfig: { speakingRate: number; pitch?: number }
     }
     expect(sent.audioConfig.speakingRate).toBe(0.5)
-    expect(sent.audioConfig.pitch).toBeCloseTo(-4, 5)
+    // pitch コントロールは廃止
+    expect(sent.audioConfig.pitch).toBeUndefined()
     vi.unstubAllGlobals()
   })
 })

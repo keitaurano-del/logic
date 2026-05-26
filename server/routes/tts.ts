@@ -5,7 +5,7 @@
  * API キーをサーバー側に隠蔽し、クライアントは音声を受け取って再生するだけにする。
  *
  * 設計:
- * - POST /api/tts body: { text, lang: 'ja-JP'|'en-US', voiceName?, rate?, pitch? }
+ * - POST /api/tts body: { text, lang: 'ja-JP'|'en-US', voiceName?, rate? }
  * - GOOGLE_TTS_API_KEY が未設定なら 503 + { error: 'tts_unavailable' } を返し、
  *   クライアントは既存の端末(native)/Web TTS へフォールバックできる（オフライン維持）。
  * - Google API 呼び出しに失敗した場合も 502 を返し、クライアント側でフォールバックさせる。
@@ -15,9 +15,6 @@
  * パラメータ変換:
  * - rate (アプリ 0.5〜2.0) → audioConfig.speakingRate（Google 範囲 0.25〜4.0）。
  *   アプリ範囲はそのまま渡せるが、念のため 0.25〜4.0 にクランプする。
- * - pitch (アプリ 0.5〜2.0, 1.0=標準) → audioConfig.pitch（Google 範囲 -20.0〜20.0 semitone）。
- *   1.0=0 semitone を中心に (p - 1.0) * 8 で控えめにマップ（0.5→-4, 2.0→+8）。
- *   結果は -20.0〜20.0 にクランプする。
  *
  * コスト/セキュリティ対策:
  * - サーキットブレーカー: 当日(UTC)の累計合成文字数が TTS_DAILY_CHAR_LIMIT を超えたら 503
@@ -102,19 +99,11 @@ function mapRate(rate: unknown): number {
   return Math.min(4.0, Math.max(0.25, r))
 }
 
-/** アプリ pitch (0.5〜2.0, 1.0=標準) → Google pitch semitone (-20.0〜20.0 にクランプ) */
-function mapPitch(pitch: unknown): number {
-  const p = typeof pitch === 'number' && Number.isFinite(pitch) ? pitch : 1.0
-  const semitone = (p - 1.0) * 8
-  return Math.min(20.0, Math.max(-20.0, semitone))
-}
-
 type SynthesizeBody = {
   text?: unknown
   lang?: unknown
   voiceName?: unknown
   rate?: unknown
-  pitch?: unknown
 }
 
 export function createTtsRouter(ttsLimiter: RequestHandler): Router {
@@ -156,7 +145,6 @@ export function createTtsRouter(ttsLimiter: RequestHandler): Router {
     }
 
     const speakingRate = mapRate(body.rate)
-    const pitch = mapPitch(body.pitch)
 
     // ── Google Cloud TTS 呼び出し ──
     try {
@@ -170,7 +158,7 @@ export function createTtsRouter(ttsLimiter: RequestHandler): Router {
         body: JSON.stringify({
           input: { text },
           voice: { languageCode: lang, name: voiceName },
-          audioConfig: { audioEncoding: 'MP3', speakingRate, pitch },
+          audioConfig: { audioEncoding: 'MP3', speakingRate },
         }),
       })
 

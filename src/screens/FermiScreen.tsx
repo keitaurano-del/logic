@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { recordCompletion, addXp, getDisplayName } from '../stats'
 import { recordActivity } from '../activityLog'
 import { getGuestId } from '../guestId'
+import { getRankingUserId } from '../syncService'
 import { ArrowRightIcon, CheckIcon, LightbulbIcon } from '../icons'
 import { Button } from '../components/Button'
 import { Header } from '../components/platform/Header'
@@ -125,7 +126,9 @@ function useFermiState(): FermiState {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            userId: getGuestId(),
+            // 認証済みなら auth UUID、未ログインなら guest ID。
+            // ランキングが profiles.occupation を join できるよう UUID で記録する。
+            userId: getRankingUserId(),
             userName: getDisplayName(),
             score: data.score,
             questionIndex: -1,

@@ -111,6 +111,8 @@ const peakPerformanceLesson411: LessonData = {
         ],
         hint: 'Sleep is designed, not waited for. Set up the conditions for natural sleepiness from daytime',
       },
+      outro:
+        'The three pillars — light, caffeine, and time anchoring — all share the mindset of "designing" sleep onset rather than "waiting" for it. You don\'t fall asleep by willpower; the surest way to raise sleep quality is to prepare the conditions for natural nighttime sleepiness starting in the daytime.',
     },
     {
       type: 'quiz',
@@ -169,6 +171,8 @@ const peakPerformanceLesson412: LessonData = {
         ],
         hint: 'Top-left cell (moderate × 150 min/week) is the most replicable. Think continuity over gym',
       },
+      outro:
+        'Read along the two axes of frequency (sessions per week) and intensity (moderate/vigorous) and you can tell at a glance whether your exercise clears the minimum line. The goal is not "go to the gym" but "log 150 minutes of moderate intensity per week." Even a 20-minute brisk walk lifts your cognitive performance for that day.',
     },
     {
       type: 'explain',
@@ -248,6 +252,8 @@ const peakPerformanceLesson413: LessonData = {
         ],
         hint: 'Block A-type peak time on the calendar first. Meetings get the leftover slots',
       },
+      outro:
+        'Thinking, execution, and relational tasks each draw on different cognitive resources. The single biggest opportunity loss is dropping an "execution task (replying to email)" into your peak hours. Just reorder how you classify tasks before pinning them to time slots, and the output of the same day changes.',
     },
     {
       type: 'quiz',

@@ -14,6 +14,9 @@ const hypothesisIntro: LessonData = {
       title: 'What is hypothesis-driven thinking?',
       content:
         'Hypothesis-driven thinking is "first form a hypothesis about the answer, then verify it."\n\nWhat most people default to:\nGather information -> analyze -> reach a conclusion (bottom-up).\n\nThe hypothesis-driven approach:\nState a tentative conclusion -> gather only the information you need -> verify.\n\nWhy is this effective?\n- In an age of information overload, "investigate everything first" is too slow\n- "What to investigate" becomes clear\n- Decision speed goes up dramatically\n\nA famous McKinsey saying:\n"Have a hypothesis from Day 1."',
+      visual: 'HypothesisFlowDiagram',
+      outro:
+        'Hypothesis-driven thinking runs on the loop of "tentative answer → verify → revise." Don\'t think after gathering; gather after thinking. That single shift dramatically changes both the speed and the accuracy of your decisions.',
     },
     {
       type: 'quiz',
@@ -144,6 +147,8 @@ const hypothesisBuilding: LessonData = {
         hint: 'Only at the leaf does "what to check tomorrow" become concrete',
         hintTone: 'brand',
       },
+      outro:
+        'An issue tree is a device that breaks a "vague question" down into "verifiable leaf-level hypotheses." Cut down MECE from the top and only when you reach the leaves does "what to investigate tomorrow" finally become clear.',
     },
     {
       type: 'quiz',
@@ -198,6 +203,8 @@ const hypothesisProblemSolving: LessonData = {
         ],
         hint: 'Consultants produce hypotheses in week 1 not from perfect data but from Quick & Dirty skill',
       },
+      outro:
+        'The three pillars — 80/20, triangulation, and the minimum-viable test — are all techniques for "producing a direction before doing everything." Drop the perfectionism and just run them in order, and the speed of your verification changes by a factor you can feel.',
     },
     {
       type: 'quiz',
@@ -275,6 +282,9 @@ const hypothesisValidation: LessonData = {
       title: 'Minimum-viable verification (MVT)',
       content:
         'When verifying a hypothesis, do not commit large resources upfront.\n\nMinimum Viable Test (MVT) thinking:\n\nDesign the smallest possible test that confirms only the core of the hypothesis.\n\nExample: you want to verify "the new onboarding screen will increase user retention."\n\nBad verification: rebuild every screen and roll out to all users.\nGood verification: show the new screen to only 10% of new users and compare 1-week retention.\n\nFour steps to verification design:\n1. Identify the single Key Assumption you want to verify.\n2. Define the metric (KPI) you can observe if it is true.\n3. Build the test with the minimum possible resources.\n4. Set in advance the timeline and the criteria for reaching a conclusion.',
+      visual: 'MvpTestDesignDiagram',
+      outro:
+        'The essence of MVP verification is to settle the truth of the "core assumption" at minimum cost. Rather than testing the whole hypothesis, narrow down to the single riskiest pillar that holds it up — and the time to a decision shrinks dramatically.',
     },
     {
       type: 'quiz',
