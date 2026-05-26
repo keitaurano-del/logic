@@ -14,7 +14,7 @@ const criticalIntro: LessonData = {
       type: 'explain',
       title: 'What is critical thinking?',
       content:
-        'Critical thinking is a mode of thought that refuses to take information or opinions at face value and instead asks, "Is that really true?"\n\nThink of an everyday example.\n\nA friend says, "This diet product works — I saw it on a TV ad!"\n\nThe lazy reaction: "Oh really? Maybe I should try it."\nThe critical reaction: "Who said so? What is the evidence? Are there other studies?"\n\nCritical thinking is not about doubting everything. It is about reaching your own judgment based on evidence.\n\nThree everyday workplace situations where it pays off:\n- Pressing your manager for the rationale behind an instruction\n- Reading data or reports\n- Hearing opinions in meetings',
+        'Critical thinking is a mode of thought that refuses to take information or opinions at face value and instead asks, "Is that really true?"\n\nThink of an everyday example.\n\nA friend says, "This diet product works — I saw it on a TV ad!"\n\n[icon:bad] The lazy reaction: "Oh really? Maybe I should try it."\n[icon:good] The critical reaction: "Who said so? What is the evidence? Are there other studies?"\n\n:::point\nCritical thinking is not about doubting everything. It is about reaching your own judgment based on evidence.\n:::\n\nThree everyday workplace situations where it pays off:\n- Pressing your manager for the rationale behind an instruction\n- Reading data or reports\n- Hearing opinions in meetings',
     },
     {
       type: 'quiz',
@@ -83,7 +83,7 @@ const criticalFallacy: LessonData = {
       type: 'explain',
       title: 'Beware of confirmation bias',
       content:
-        'Confirmation bias:\nThe tendency to gather only information that supports what you already believe and to ignore information that contradicts it.\n\nEveryday example:\nIf you are convinced "this new venture will succeed,"\nSuccess stories and positive data -> you accept them quickly.\nFailure stories and risk data -> you dismiss them as "exceptions."\n\nCountermeasures:\n(1) Actively look for disconfirming evidence.\nAlways ask, "What is the weakness of this proposal?"\n\n(2) Appoint a Devil\'s Advocate.\nDesignate someone whose job is to argue the opposite.\n\n(3) Set decision criteria in advance.\n"If conditions X are met, we go." Decide before you see the data.',
+        'Confirmation bias:\nThe tendency to gather only information that supports what you already believe and to ignore information that contradicts it.\n\nEveryday example:\nIf you are convinced "this new venture will succeed,"\nSuccess stories and positive data -> you accept them quickly.\nFailure stories and risk data -> you dismiss them as "exceptions."\n\n:::warn\nBe most careful when gathering data only deepens your conviction. You may simply be seeing the convenient data.\n:::\n\nCountermeasures:\n(1) Actively look for disconfirming evidence.\nAlways ask, "What is the weakness of this proposal?"\n\n(2) Appoint a Devil\'s Advocate.\nDesignate someone whose job is to argue the opposite.\n\n(3) Set decision criteria in advance.\n"If conditions X are met, we go." Decide before you see the data.',
     },
     {
       type: 'quiz',
@@ -161,7 +161,7 @@ const criticalQuestion: LessonData = {
       type: 'explain',
       title: 'A good question beats a good answer',
       content:
-        'It is harder, and more valuable, to ask the right question than to find the right answer.\n\nThe quality of the question determines the quality of the answer.\n\nExample: drilling into "why did sales drop?"\n\nLevel 1: "What is the problem?"\n-> "Sales are down." (state the situation)\n\nLevel 2: "Why did they drop?"\n-> "We are getting fewer new customers." (proximate cause)\n\nLevel 3: "Why are new customers down?"\n-> "Our brand awareness is low." (root cause)\n\nLevel 4: "What should we do to raise awareness?"\n-> "Social, PR, referrals..." (solutions)\n\nKey:\nFor the same problem, the question shapes what you can see. Repeat "why?" to get to the essence.',
+        'It is harder, and more valuable, to ask the right question than to find the right answer.\n\nThe quality of the question determines the quality of the answer.\n\nExample: drilling into "why did sales drop?"\n\nLevel 1: "What is the problem?"\n-> "Sales are down." (state the situation)\n\nLevel 2: "Why did they drop?"\n-> "We are getting fewer new customers." (proximate cause)\n\nLevel 3: "Why are new customers down?"\n-> "Our brand awareness is low." (root cause)\n\nLevel 4: "What should we do to raise awareness?"\n-> "Social, PR, referrals..." (solutions)\n\n:::point\nFor the same problem, the question shapes what you can see. Repeat "why?" and you move closer to the essence.\n:::',
     },
     {
       type: 'quiz',
@@ -179,7 +179,7 @@ const criticalQuestion: LessonData = {
       type: 'explain',
       title: 'Open vs closed questions',
       content:
-        'In critical thinking, the type of question matters too.\n\n[Closed question]\nCan be answered yes/no or with a fixed set of options.\nExample: "Do you agree with this proposal?"\n-> The reasoning behind the answer remains hidden.\n\n[Open question]\nThe respondent can answer freely.\nExample: "What do you think of this proposal?"\n-> Surfaces assumptions, concerns, and perspectives.\n\nApplied: question design\n"Will this project succeed?"\n"What is the biggest risk to this project?"\n\n"Under what conditions would it succeed?"\n\nOpen questions are especially powerful in meetings, interviews, and consulting.',
+        'In critical thinking, the type of question matters too.\n\n[Closed question] [icon:bad] poor for digging deeper\nCan be answered yes/no or with a fixed set of options.\nExample: "Do you agree with this proposal?"\n-> The reasoning behind the answer remains hidden.\n\n[Open question] [icon:good] draws out perspective\nThe respondent can answer freely.\nExample: "What do you think of this proposal?"\n-> Surfaces assumptions, concerns, and perspectives.\n\nApplied: question design\n"Will this project succeed?"\n"What is the biggest risk to this project?"\n\n"Under what conditions would it succeed?"\n\n:::point\nOpen questions surface a respondent\'s assumptions and concerns. They are especially powerful in meetings, interviews, and consulting.\n:::',
     },
     {
       type: 'quiz',
@@ -238,7 +238,7 @@ const criticalBias: LessonData = {
       type: 'explain',
       title: 'How to remove biases',
       content:
-        'You cannot fully eliminate biases. The point is to know they exist and consciously counteract them.\n\nThree practical methods:\n\n(1) Deliberately seek opposing views (devil\'s advocate)\nIn a meeting, assign someone the role of "argue against this proposal."\n\n(2) Predict the number first, then look it up\nAnchoring countermeasure. Write down your own estimate before checking the actual data, free of preconceptions.\n\n(3) Verbalize "why can\'t we stop now?"\nSunk-cost countermeasure. Ask: "If I were starting from zero today, would I make the same choice?"',
+        'You cannot fully eliminate biases. The point is to know they exist and consciously counteract them.\n\n:::point\nBiases cannot be reduced to zero. The aim is not to erase them but to know they exist and treat them deliberately.\n:::\n\nThree practical methods:\n\n(1) Deliberately seek opposing views (devil\'s advocate)\nIn a meeting, assign someone the role of "argue against this proposal."\n\n(2) Predict the number first, then look it up\nAnchoring countermeasure. Write down your own estimate before checking the actual data, free of preconceptions.\n\n(3) Verbalize "why can\'t we stop now?"\nSunk-cost countermeasure. Ask: "If I were starting from zero today, would I make the same choice?"',
     },
     {
       type: 'quiz',

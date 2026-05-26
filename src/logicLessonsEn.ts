@@ -364,6 +364,26 @@ const logicPyramidEn: LessonData = {
     {
       type: 'explain',
       title: 'SCR — for problem → solution',
+      visual: 'ScrStructureDiagram',
+      visualProps: {
+        sectionLabel: 'SCR story structure',
+        situation: {
+          label: 'Situation',
+          title: 'Shared context',
+          body: 'A current-state read the audience can agree with. Build common ground with facts and data.',
+        },
+        complication: {
+          label: 'Complication',
+          title: 'Problem / obstacle',
+          body: 'What goes wrong if left alone, or the change that just emerged. Create tension.',
+        },
+        resolution: {
+          label: 'Resolution',
+          title: 'Proposed answer',
+          body: 'A clear answer to the audience\'s question. Connect to the next action.',
+        },
+        hint: 'Plant "so what should we do?" in their head, then give the answer',
+      },
       content:
         'SCR (Situation - Complication - Resolution) is for framing problems and proposing fixes.\n\nS — Situation: shared context\nC — Complication: what is wrong\nR — Resolution: what to do about it\n\n■ Why it works\n· Aligns the audience on context first\n· Shared understanding of the problem makes the proposal easier to accept\n· Especially powerful for change announcements and bad-news reports\n\n■ PREP vs SCR\n· PREP: when stating your opinion or recommendation\n· SCR: when raising a problem and proposing how to solve it\n\n■ Bonus: SDS\nSummary → Detail → Summary. Use it for long-form content (training, white papers, full presentations).',
     },
@@ -681,7 +701,7 @@ const logicFormalEn: LessonData = {
       type: 'explain',
       title: 'The basics of "A implies B"',
       content:
-        'The most fundamental construct in formal logic is the conditional "A implies B" (A → B).\n\nExample: "If it rains, the ground gets wet"\nA = it rains\nB = the ground is wet\n\n■ When is A → B "true"?\n· A true, B true \n· A false, B true \n· A false, B false \n· A true, B false (the only false case)\n\nThe conditional A → B is false ONLY when A happens but B does not. Anything else makes it true.\n\n■ Critical caveat\n"A → B" is NOT the same as "B → A".\n"If it rains the ground gets wet" can be true while "if the ground is wet then it rained" is false (sprinklers exist).\nThis is "the converse is not necessarily true."',
+        'The most fundamental construct in formal logic is the conditional "A implies B" (A → B).\n\nExample: "If it rains, the ground gets wet"\nA = it rains\nB = the ground is wet\n\n■ When is A → B "true"?\n· A true, B true \n· A false, B true \n· A false, B false \n· A true, B false (the only false case)\n\nThe conditional A → B is false ONLY when A happens but B does not. Anything else makes it true.\n\n■ Critical caveat\n"A → B" is NOT the same as "B → A".\n"If it rains the ground gets wet" can be true while "if the ground is wet then it rained" is false (sprinklers exist).\nThis is "the converse is not necessarily true."\n\n:::warn\nEven when A→B holds, B→A need not hold. Treating the converse as true is the classic trap.\n:::',
     },
     {
       type: 'quiz',
