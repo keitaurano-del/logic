@@ -1,7 +1,7 @@
 // Text-to-speech wrapper (Web SpeechSynthesis + Capacitor native plugin).
 //
 // Native:  @capacitor-community/text-to-speech を動的 import で読み込み、
-//          BCP 47 lang / rate / pitch / voice (index) を渡して読み上げ。
+//          BCP 47 lang / rate / voice (index) を渡して読み上げ。
 // Web:     window.speechSynthesis (Web Speech API) を fallback として使用。
 //          - 開発時の動作確認・QA 用途。本番ターゲットはモバイル native (project_logic_mobile_only)。
 // 共通:    speak() は呼ばれるたびに既存再生を stop() してから新規再生。
@@ -9,7 +9,6 @@
 //
 // 設定保存:
 //   logic-tts-rate     : 1.0 (number, 0.5〜2.0)
-//   logic-tts-pitch    : 1.0 (number, 0.5〜2.0) — TtsControlPanel のピッチ調整 (低め/普通/高め)
 //   logic-tts-voice    : voice id (string `${lang}|${name}`)
 //   logic-tts-autoplay : '1' | '0' — コース紹介 TTS のオート連続再生（既定: ON）
 //
@@ -37,17 +36,14 @@
 
 import { getLocale } from './i18n'
 import { normalizeForSpeech } from './ttsReadings'
+import { stripMarkup } from './richText'
 
 const RATE_KEY = 'logic-tts-rate'
 const VOICE_KEY = 'logic-tts-voice'
-const PITCH_KEY = 'logic-tts-pitch'
 const AUTOPLAY_KEY = 'logic-tts-autoplay'
 const DEFAULT_RATE = 1.0
 const MIN_RATE = 0.5
 const MAX_RATE = 2.0
-const DEFAULT_PITCH = 1.0
-const MIN_PITCH = 0.5
-const MAX_PITCH = 2.0
 const DEFAULT_AUTOPLAY = true
 
 type Listener = (playing: boolean) => void
@@ -126,25 +122,6 @@ export function saveVoiceId(id: string | null): void {
     if (id) localStorage.setItem(VOICE_KEY, id)
     else localStorage.removeItem(VOICE_KEY)
   } catch { /* */ }
-}
-
-// ── Pitch pref ─────────────────────────────────────────────────
-// SpeechSynthesisUtterance.pitch / Capacitor TextToSpeech.speak({ pitch }) は
-// 共に 0〜2 の範囲を取り、1.0 = 通常。本アプリでは 0.5〜2.0 に丸めて保存する。
-
-export function loadPitch(): number {
-  try {
-    const raw = localStorage.getItem(PITCH_KEY)
-    if (!raw) return DEFAULT_PITCH
-    const n = Number(raw)
-    if (Number.isFinite(n) && n >= MIN_PITCH && n <= MAX_PITCH) return n
-  } catch { /* */ }
-  return DEFAULT_PITCH
-}
-
-export function savePitch(pitch: number): void {
-  const clamped = Math.min(MAX_PITCH, Math.max(MIN_PITCH, pitch))
-  try { localStorage.setItem(PITCH_KEY, String(clamped)) } catch { /* */ }
 }
 
 // ── Autoplay pref ──────────────────────────────────────────────
@@ -516,7 +493,7 @@ function stopKeepAlive(): void {
 // POST /api/tts → base64 mp3 → HTMLAudio で再生する。
 // pause/resume は HTMLAudio なので native のような stop+restart は不要。
 //
-// キャッシュ: hash(text+voiceName+rate+pitch) をキーに base64 をメモリ Map に保持（LRU 的に上限件数）。
+// キャッシュ: hash(text+voiceName+rate) をキーに base64 をメモリ Map に保持（LRU 的に上限件数）。
 //   さらに Cache Storage API が使える環境では `data:audio/mp3;base64,...` を Response として
 //   永続化し、オフライン再生も効かせる（best-effort、失敗してもメモリキャッシュで動く）。
 
@@ -526,9 +503,9 @@ const MEM_CACHE_LIMIT = 60
 // メモリキャッシュ（挿入順 Map で LRU 的に古いものから捨てる）
 const memCloudCache = new Map<string, string>()
 
-function cloudCacheKey(text: string, voiceName: string, rate: number, pitch: number): string {
+function cloudCacheKey(text: string, voiceName: string, rate: number): string {
   // 簡易ハッシュ（FNV-1a 32bit）。text が長いので全文は使わず確定的ハッシュにする。
-  const raw = `${voiceName}|${rate}|${pitch}|${text}`
+  const raw = `${voiceName}|${rate}|${text}`
   let h = 0x811c9dc5
   for (let i = 0; i < raw.length; i++) {
     h ^= raw.charCodeAt(i)
@@ -594,9 +571,8 @@ async function fetchCloudAudio(
   lang: 'ja-JP' | 'en-US',
   voiceName: string,
   rate: number,
-  pitch: number,
 ): Promise<string | null> {
-  const key = cloudCacheKey(text, voiceName, rate, pitch)
+  const key = cloudCacheKey(text, voiceName, rate)
   const mem = memCacheGet(key)
   if (mem) return mem
   const persisted = await persistentCacheGet(key)
@@ -610,7 +586,7 @@ async function fetchCloudAudio(
     const res = await fetch(`${base}/api/tts`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, lang, voiceName, rate, pitch }),
+      body: JSON.stringify({ text, lang, voiceName, rate }),
     })
     if (!res.ok) {
       // 503 (キー未設定) / 502 (合成失敗) / 429 など → フォールバックさせる
@@ -633,7 +609,6 @@ async function fetchCloudAudio(
 export type SpeakOptions = {
   lang?: 'ja-JP' | 'en-US'
   rate?: number
-  pitch?: number
   voiceId?: string | null
   onEnd?: () => void  // 自然終了時のみ呼ばれる (stop / interrupt では呼ばれない)
 }
@@ -816,7 +791,6 @@ async function speakNative(text: string, opts: SpeakOptions): Promise<void> {
       text,
       lang: opts.lang ?? defaultLang(),
       rate: opts.rate ?? loadRate(),
-      pitch: opts.pitch ?? loadPitch(),
       volume: 1.0,
       category: 'playback',
       voice: voiceIndex,
@@ -842,7 +816,6 @@ async function speakWebAsync(text: string, opts: SpeakOptions): Promise<void> {
     const utter = new SpeechSynthesisUtterance(text)
     utter.lang = opts.lang ?? defaultLang()
     utter.rate = opts.rate ?? loadRate()
-    utter.pitch = opts.pitch ?? loadPitch()
     utter.volume = 1.0
 
     // voice 解決
@@ -891,9 +864,8 @@ async function speakWebAsync(text: string, opts: SpeakOptions): Promise<void> {
 async function speakCloud(text: string, lang: 'ja-JP' | 'en-US', voiceName: string, opts: SpeakOptions): Promise<boolean> {
   if (typeof Audio === 'undefined') return false
   const rate = opts.rate ?? loadRate()
-  const pitch = opts.pitch ?? loadPitch()
 
-  const b64 = await fetchCloudAudio(text, lang, voiceName, rate, pitch)
+  const b64 = await fetchCloudAudio(text, lang, voiceName, rate)
   if (!b64) return false
 
   try {
@@ -975,6 +947,10 @@ export async function speak(text: string, opts: SpeakOptions = {}): Promise<void
   // speakWebAsync いずれにも効かせるため。二重変換を避けるため下位関数では変換しない）。
   // 表示テキストは変えず、読み上げ用に「×→かける」等を補正する。
   const lang = opts.lang ?? defaultLang()
+  // markdown サブセット記法（**太字** / 行頭 - ・ / ## 見出し / ``` など）を先に剥がし、
+  // 「アスタリスク」「シャープ」等をそのまま読み上げる事故を防ぐ。その後に記号→読み変換。
+  // stripBodyForSpeech 経由のテキストは既に剥がし済みだが、stripMarkup は冪等なので二重でも安全。
+  text = stripMarkup(text)
   text = normalizeForSpeech(text, lang)
   // 既存の onEnd は新しい再生で上書き
   currentOnEnd = opts.onEnd ?? null

@@ -48,6 +48,20 @@ const structureFirst: LessonData = {
       content:
         'Once you have a key message, build a pyramid of claim → support → evidence.\n\n[Top] Key message (one-sentence conclusion)\nExample: "We recommend investing in new business A."\n\n[Middle] 2–4 supporting reasons\nExample: ① Market is growing ② Our strengths apply ③ ROI is strong\n\n[Bottom] Specific facts and data for each reason\nExample: ① Market size 1.5× in 3 years ② Our ◯◯ tech ③ 180% ROI\n\nThe three rules of the pyramid (Barbara Minto, "The Pyramid Principle"):\n\n1. Higher-level messages summarize lower-level ones\n2. Items at the same level share the same abstraction\n3. Items at the same level are MECE (mutually exclusive, collectively exhaustive)\n\nMap this pyramid directly to "Table of Contents → Chapters" and your slide structure will not collapse.\n\nReaders process "conclusion → why → details" with the lowest cognitive load.',
       visual: 'PyramidDiagram',
+      visualProps: {
+        conclusion: { label: 'Conclusion', body: 'We recommend investing in new business A' },
+        claims: [
+          { label: 'Reason 1', body: 'The market is growing' },
+          { label: 'Reason 2', body: 'Our strengths apply' },
+          { label: 'Reason 3', body: 'ROI is strong' },
+        ],
+        evidence: [
+          ['Market size 1.5× / 3 yrs', 'Top competitor losing share'],
+          ['Patents on ◯◯ tech', '30 deployment cases'],
+          ['ROI 180% estimate', '18-month payback'],
+        ],
+        hint: 'Mapping the pyramid to "table of contents → chapters" keeps slide structure from collapsing',
+      },
     },
     {
       type: 'quiz',
@@ -67,6 +81,25 @@ const structureFirst: LessonData = {
       content:
         'Before opening your slide tool, always write a "storyline" in text.\n\nA storyline is the list of every slide title (= each slide\'s key message), in order.\n\nExample:\n1. Recommend investing in new business A\n2. Market grows 1.5× over 3 years\n3. Our ◯◯ tech gives us a competitive edge\n4. Initial investment of $5M with 180% ROI in 3 years\n5. Regulatory risk exists but is absorbed by ◯◯\n6. Next action: decide at the June board meeting\n\nReading just the titles top-to-bottom should make the whole argument flow.\n\nThings to verify at the storyline stage:\n• Does each title stand as a complete argument on its own?\n• Are the transitions between adjacent slides natural?\n• Are there slides that do not connect to the conclusion?\n• Are there missing arguments?\n\nFix any awkwardness here, before building. Rebuilding the structure after creating 100 slides is the worst waste.',
       visual: 'ScrStructureDiagram',
+      visualProps: {
+        sectionLabel: 'Storyline example — new business proposal',
+        situation: {
+          label: 'S',
+          title: 'Situation (facts everyone agrees on)',
+          body: 'Our core business X is mature, with limited growth headroom over the next 3 years.',
+        },
+        complication: {
+          label: 'C',
+          title: 'Complication (the tension)',
+          body: 'Competitor Y has already entered a new field. If we do not move now, we cannot close the gap in 3 years.',
+        },
+        resolution: {
+          label: 'R',
+          title: 'Resolution (the proposed answer)',
+          body: 'Invest $5M in new business A. 180% ROI in 3 years; decide at the June board meeting.',
+        },
+        hint: 'Always confirm the argument flows from the slide titles alone before you start building',
+      },
     },
     {
       type: 'quiz',
@@ -115,6 +148,27 @@ const oneSlideOneMessage: LessonData = {
       content:
         'The body of a slide should be "diagrams and facts that prove the title." Title = claim, body = evidence.\n\nCommon failures:\n\n[Failure 1] Title and body do not match\nTitle: "The market is expanding"\nBody: Competitor org chart\n→ Split into separate slides.\n\n[Failure 2] Unrelated info mixed into body\nTitle: "We will reach profitability"\nBody: Revenue trends + hiring plan + office relocation\n→ Hiring and office go to separate slides.\n\n[Failure 3] Body is a list of bullets\nTitle: "There are three issues"\nBody: 12 bullets listed\n→ Move the rest to other slides or cut.\n\nHow to check:\nPoint at every element on the slide and ask: "Does this prove the title?" If not, move it out or delete it.\n\nMisalignment here is the cause of 90% of "I cannot tell what you are trying to say" reactions.',
       visual: 'ThreePillarsDiagram',
+      visualProps: {
+        sectionLabel: 'The 3 elements of a slide — title × body × alignment',
+        pillars: [
+          {
+            icon: 'T',
+            title: 'Title = the claim',
+            body: 'One sentence with a subject, a verb, and a number. The slide\'s key message itself.',
+          },
+          {
+            icon: 'B',
+            title: 'Body = evidence for the claim',
+            body: 'Only the diagrams and facts that directly prove the title. Extra information goes to another slide.',
+          },
+          {
+            icon: '=',
+            title: 'Alignment = the check',
+            body: 'Point at each element and ask "does this prove the title?" If no, move it out.',
+          },
+        ],
+        hint: 'Slides where this alignment breaks account for 90% of "so what are you trying to say?"',
+      },
     },
     {
       type: 'quiz',
@@ -172,6 +226,14 @@ const visualization: LessonData = {
       content:
         'Diagrams are not universal. Diagramming the wrong things actually hurts communication.\n\nUse a diagram when:\n\n[1] There are relationships\n• Causal (A → B)\n• Hierarchical (parent ⊃ child)\n• Parallel (compare A, B, C)\n• Containment (overlapping circles)\n→ Faster to grasp than text\n\n[2] There is structure\n• Process (5 steps)\n• Matrix (2 axes → 4 quadrants)\n• Framework (3C, 4P, etc.)\n→ Spatial layout itself carries information\n\n[3] Showing numeric trends\n• Time series, composition, distribution\n→ Charts are overwhelmingly faster\n\nDo NOT use a diagram when:\n\n• It is a simple bullet list (text suffices)\n• It is a single supporting sentence (diagrams scatter attention)\n• The exact wording matters (slogans, taglines)\n\nThe test: "Can the reader grasp this structure in 3 seconds as text?" If yes, keep text. If no, diagram it.',
       visual: 'TriadDiagram',
+      visualProps: {
+        sectionLabel: 'Three patterns worth diagramming',
+        top: { label: '①', name: 'There are relationships' },
+        left: { label: '②', name: 'There is structure' },
+        right: { label: '③', name: 'Numeric trends' },
+        primary: 'top',
+        hint: 'Test: if you cannot grasp the structure in 3 seconds as text, diagram it; if you can, keep it as text',
+      },
     },
     {
       type: 'quiz',
@@ -363,6 +425,30 @@ const typography: LessonData = {
       content:
         'Two hidden readability levers: contrast and line height.\n\n[Contrast]\nLuminance difference between text and background. WCAG (accessibility) standards:\n• Body text: contrast ratio ≥ 4.5:1\n• Large text (18 pt+): ≥ 3:1\n\nCommon mistakes:\n• Pale gray body text (#999) → disappears when projected\n• White text directly on photos → unreadable on bright areas\n• Brand color used as body text in pale tones → "stylish but unreadable"\n\nFixes:\n• Use solid dark colors (#000 to #333) for body text\n• Apply a translucent dark overlay over background photos\n• Reserve brand color for headings and highlights only\n\n[Line height]\n• Recommended: 1.5–1.7× the font size\n• For 18 pt body, that is 27–30 pt of line height\n\nToo tight feels suffocating; too loose feels scattered. 1.5–1.7× is the comfort zone.\n\nLetter spacing (tracking) matters too:\n• Japanese: 0 to +50\n• Uppercase Latin: +100 or so for logos and headlines\n\nFix these two and the same content "feels" twice as readable.',
       visual: 'Two2MatrixDiagram',
+      visualProps: {
+        sectionLabel: 'Contrast × line height — readability matrix',
+        xAxis: { low: 'Tight line height (1.0×)', high: 'Loose line height (1.5-1.7×)', label: 'Line height' },
+        yAxis: { low: 'Low contrast (#CCC)', high: 'High contrast (#222)', label: 'Contrast' },
+        cells: [
+          {
+            title: 'Scattered and faint',
+            items: ['Pale color + loose spacing', 'The eye wanders'],
+          },
+          {
+            title: 'Readable ★',
+            items: ['Dark text + right line height', 'The pro body-text setting'],
+          },
+          {
+            title: 'Unreadable (worst)',
+            items: ['Pale gray + cramped lines', 'Vanishes entirely when projected'],
+          },
+          {
+            title: 'Claustrophobic',
+            items: ['Dark text + tight lines', 'Fatigue builds over long passages'],
+          },
+        ],
+        hint: 'Body text at #000-#333 × line height 1.5-1.7× is the golden zone for readability',
+      },
     },
     {
       type: 'quiz',

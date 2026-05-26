@@ -7,6 +7,8 @@ import { useState, useMemo, useRef, useEffect, useCallback } from 'react'
 import { BookmarkIcon, BookmarkFilledIcon, CheckIcon, SparklesIcon, LightbulbIcon, BrainIcon, ClipboardListIcon, FlagIcon, HeadphonesIcon } from '../icons'
 import type { LessonSlide } from '../lessonSlides'
 import { convertLessonToSlides } from '../lessonSlides'
+import { RichLessonText } from '../components/RichLessonText'
+import { stripMarkup } from '../richText'
 import { allLessons } from '../lessonData'
 import { addXp } from '../stats'
 import { LessonThumbnail } from '../components/LessonThumbnail'
@@ -37,15 +39,13 @@ type WrongAnswerCapture = {
 }
 
 // ── TTS helpers ──────────────────────────────────────────────────
-// HTML タグ・連続空白を剥がして読み上げ向けのプレーンテキストに整える。
-function stripHtml(s: string): string {
-  return s
+// concept スライドの body は markdown サブセットの raw テキスト。
+// 読み上げ用には stripMarkup（src/richText.ts）で記法を剥がす。
+// 念のため残存する旧 <br/> 由来のタグや連続空白も均しておく。
+function stripBodyForSpeech(s: string): string {
+  return stripMarkup(s)
     .replace(/<br\s*\/?>/gi, '。')
     .replace(/<[^>]+>/g, '')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
     .replace(/\s+/g, ' ')
     .trim()
 }
@@ -58,7 +58,7 @@ function getSpeakableText(slide: LessonSlide): string {
     case 'intro':
     case 'concept': {
       const example = slide.kind === 'concept' && slide.example ? slide.example : ''
-      return [slide.title, stripHtml(slide.body), example].filter(Boolean).join('。 ')
+      return [slide.title, stripBodyForSpeech(slide.body), example].filter(Boolean).join('。 ')
     }
     case 'diagram':
       return [slide.title, slide.nodes.map(n => n.label).join('。 ')].filter(Boolean).join('。 ')
@@ -140,7 +140,6 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
   // TTS 読み上げ状態
   const [ttsPlaying, setTtsPlaying] = useState<boolean>(() => tts.isPlaying())
   const [ttsRate, setTtsRate] = useState<number>(() => tts.loadRate())
-  const [ttsPitch] = useState<number>(() => tts.loadPitch())
   // 読み上げモード: ヘッドホンボタンで ON → スライド自動進行 + クイズスキップ
   const [ttsModeActive, setTtsModeActive] = useState(false)
   const [ttsPaused, setTtsPaused] = useState(false)
@@ -347,7 +346,6 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
           void tts.speak(text, {
             lang: getLocale() === 'ja' ? 'ja-JP' : 'en-US',
             rate: ttsRate,
-            pitch: ttsPitch,
             voiceId: ttsVoiceId,
             onEnd: () => advanceReadable(),
           })
@@ -360,7 +358,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
       await tts.pause()
       setTtsPaused(true)
     }
-  }, [ttsPaused, slide, ttsRate, ttsPitch, ttsVoiceId, advanceReadable])
+  }, [ttsPaused, slide, ttsRate, ttsVoiceId, advanceReadable])
 
   // 速度変更 (制御パネルから)
   const handleChangeRate = useCallback((r: number) => {
@@ -373,16 +371,12 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
         void tts.speak(text, {
           lang: getLocale() === 'ja' ? 'ja-JP' : 'en-US',
           rate: r,
-          pitch: ttsPitch,
           voiceId: ttsVoiceId,
           onEnd: () => advanceReadable(),
         })
       }
     }
-  }, [ttsModeActive, ttsPlaying, ttsPaused, slide, ttsPitch, ttsVoiceId, advanceReadable])
-
-  // ピッチはヘッドホンのポップオーバー (TtsPopover) 側で調整・永続化する (要件 11)。
-  // ここでは mount 時に loadPitch() した値を speak に渡すのみ（読み上げ中の変更 UI は持たない）。
+  }, [ttsModeActive, ttsPlaying, ttsPaused, slide, ttsVoiceId, advanceReadable])
 
   // シークバー用: 現在地が readableIndices 内で何番目か
   // 非 readable (quiz/think/case) の場合は直前の readable インデックスを返す。
@@ -447,12 +441,12 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
       if (text) {
         void tts.speak(text, {
           lang: getLocale() === 'ja' ? 'ja-JP' : 'en-US',
-          rate: ttsRate, pitch: ttsPitch, voiceId: ttsVoiceId,
+          rate: ttsRate, voiceId: ttsVoiceId,
           onEnd: () => advanceReadableRef.current(),
         })
       }
     }
-  }, [findPrevReadable, index, slide, ttsRate, ttsPitch, ttsVoiceId])
+  }, [findPrevReadable, index, slide, ttsRate, ttsVoiceId])
 
   // 次の readable スライドへ（スライドジャンプ）。なければ読了処理（advanceReadable）。
   const jumpToNextReadable = useCallback(() => {
@@ -500,13 +494,12 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
         void tts.speak(text, {
           lang: getLocale() === 'ja' ? 'ja-JP' : 'en-US',
           rate: ttsRate,
-          pitch: ttsPitch,
           voiceId: id,
           onEnd: () => advanceReadable(),
         })
       }
     }
-  }, [ttsModeActive, ttsPlaying, ttsPaused, slide, ttsRate, ttsPitch, advanceReadable])
+  }, [ttsModeActive, ttsPlaying, ttsPaused, slide, ttsRate, advanceReadable])
 
   // 読み上げモード ON + スライド変化 → 現スライドを自動で読み上げる
   // クイズ等で stop されているとき (ユーザーが手動で進めた場合) も含めて副作用で起動
@@ -539,14 +532,13 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
     void tts.speak(text, {
       lang: getLocale() === 'ja' ? 'ja-JP' : 'en-US',
       rate: ttsRate,
-      pitch: ttsPitch,
       voiceId: ttsVoiceId,
       onEnd: () => advanceReadableRef.current(),
     })
     // 次スライドへの自動遷移時 / unmount 時に stop されると onEnd は呼ばれないので、
     // ここでは return クリーンアップを置かない (advanceReadable 自身が次の effect を発火)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ttsModeActive, ttsPaused, index, ttsRate, ttsPitch, ttsVoiceId, slide.kind, slides.length])
+  }, [ttsModeActive, ttsPaused, index, ttsRate, ttsVoiceId, slide.kind, slides.length])
 
   // 通常モード (ttsModeActive=false) で旧来挙動: スライド遷移時に再生中なら止める
   useEffect(() => {
@@ -1139,7 +1131,8 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
       <>
         {slide.kind === 'concept' && tag && <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'var(--accent-soft)', borderRadius: 99, padding: '6px 12px', fontSize: 11, fontWeight: 600, color: 'var(--brand)', marginBottom: 24, marginTop: 24 }}>{tag}</span>}
         <h1 style={{ fontFamily: 'Noto Sans JP', fontSize: 28, fontWeight: 700, lineHeight: 1.4, marginBottom: 20, marginTop: tag ? 0 : 32, letterSpacing: '.005em', color: 'var(--text-primary)' }}>{slide.title}</h1>
-        <p style={{ fontSize: 17, lineHeight: 1.85, fontWeight: 400, color: 'var(--text-primary)', marginBottom: 20 }} dangerouslySetInnerHTML={{ __html: slide.body }}></p>
+        <RichLessonText content={slide.body} />
+        <div style={{ marginBottom: 20 }} />
         {example && (
           <div style={{ background: 'var(--bg-card)', borderRadius: 16, padding: 18 }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--brand)', letterSpacing: '.08em', marginBottom: 8 }}>EXAMPLE</div>

@@ -1,5 +1,5 @@
 /**
- * ttsService — pitch 永続化 / formatVoiceLabel / loadVoiceId のユニットテスト
+ * ttsService — rate 永続化 / formatVoiceLabel / loadVoiceId のユニットテスト
  *
  * 本ファイルは Web Speech API / Capacitor 非対応の jsdom 環境で実行されるため、
  * 実際に音声を流す speak() / stop() / pause() は検証しない。代わりに
@@ -9,8 +9,6 @@ import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest'
 import {
   loadRate,
   saveRate,
-  loadPitch,
-  savePitch,
   loadVoiceId,
   saveVoiceId,
   loadAutoplay,
@@ -31,7 +29,7 @@ const labelFor = (g: TtsGender): string => {
   return 'ボイス'
 }
 
-describe('ttsService — rate / pitch persistence', () => {
+describe('ttsService — rate persistence', () => {
   beforeEach(() => {
     localStorage.clear()
   })
@@ -53,30 +51,6 @@ describe('ttsService — rate / pitch persistence', () => {
   it('saveRate: 範囲外の値はクランプされる (下限 0.5)', () => {
     saveRate(0.1)
     expect(loadRate()).toBe(0.5)
-  })
-
-  it('loadPitch: 未設定時はデフォルト 1.0 を返す', () => {
-    expect(loadPitch()).toBe(1.0)
-  })
-
-  it('savePitch → loadPitch: 範囲内の値はそのまま保存される', () => {
-    savePitch(1.25)
-    expect(loadPitch()).toBe(1.25)
-  })
-
-  it('savePitch: 範囲外の値はクランプされる (上限 2.0)', () => {
-    savePitch(5)
-    expect(loadPitch()).toBe(2.0)
-  })
-
-  it('savePitch: 範囲外の値はクランプされる (下限 0.5)', () => {
-    savePitch(0.0)
-    expect(loadPitch()).toBe(0.5)
-  })
-
-  it('loadPitch: localStorage に不正値があるときはデフォルトに倒す', () => {
-    localStorage.setItem('logic-tts-pitch', 'not-a-number')
-    expect(loadPitch()).toBe(1.0)
   })
 })
 

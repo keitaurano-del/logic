@@ -61,14 +61,18 @@ function splitBody(text: string, maxChars = 200): string[] {
 }
 
 /**
- * Format text body for HTML rendering: preserve line breaks, escape HTML.
+ * concept スライドの body を整形する。
+ *
+ * 以前は HTML（エスケープ + <br/>）を生成して dangerouslySetInnerHTML で描画していたが、
+ * リッチテキスト描画（RichLessonText / markdown サブセット）へ移行したため、
+ * body には markdown サブセット記法を含む raw テキストをそのまま載せる。
+ * 描画は LessonStoriesScreen の RichLessonText が担当、読み上げは stripMarkup で剥がす。
+ *
+ * 文字列リテラル内に literal な `\n` が混ざるケースだけ実改行に正規化しておく
+ * （splitBody が既に同じ正規化をしているため二重でも無害）。
  */
 function formatBody(text: string): string {
-  return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/\n/g, '<br/>')
+  return text.replace(/\\n/g, '\n')
 }
 
 /**

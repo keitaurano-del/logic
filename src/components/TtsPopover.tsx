@@ -5,7 +5,6 @@
  * 中身:
  *   - 再生 / 停止ボタン（コースのレッスン本文を読み上げ・停止）
  *   - 速度（rate）選択 + ボイス選択（女性 / 男性。VoiceRateControls 共有コンポ）
- *   - ピッチ（声の高さ）選択 — 下部バーがごちゃつくのを避けるためこちら側に置く（要件 11）
  *
  * seek は含めない（起動前のポップオーバーには再生位置が無いため）。
  *
@@ -24,13 +23,6 @@ import * as tts from '../ttsService'
 import { HeadphonesIcon, XIcon } from '../icons'
 import { VoiceRateControls } from './VoiceRateControls'
 
-// ピッチプリセット: 低め / 普通 / 高め の 3 段階（TtsControlPanel から移設）。
-const PITCH_OPTIONS: { value: number; labelKey: 'tts.pitch.low' | 'tts.pitch.normal' | 'tts.pitch.high' }[] = [
-  { value: 0.75, labelKey: 'tts.pitch.low' },
-  { value: 1.0, labelKey: 'tts.pitch.normal' },
-  { value: 1.25, labelKey: 'tts.pitch.high' },
-]
-
 export interface TtsPopoverProps {
   lang: 'ja-JP' | 'en-US'
   /** このポップオーバーの対象が現在再生中か（親が制御）。 */
@@ -48,7 +40,6 @@ export function TtsPopover(props: TtsPopoverProps) {
   const [open, setOpen] = useState(false)
   const [rate, setRate] = useState<number>(() => tts.loadRate())
   const [voiceId, setVoiceId] = useState<string | null>(() => tts.loadVoiceId())
-  const [pitch, setPitch] = useState<number>(() => tts.loadPitch())
   const rootRef = useRef<HTMLDivElement>(null)
 
   const handleChangeRate = useCallback((r: number) => {
@@ -59,11 +50,6 @@ export function TtsPopover(props: TtsPopoverProps) {
   const handleChangeVoice = useCallback((id: string | null) => {
     tts.saveVoiceId(id)
     setVoiceId(id)
-  }, [])
-
-  const handleChangePitch = useCallback((p: number) => {
-    tts.savePitch(p)
-    setPitch(p)
   }, [])
 
   if (!tts.isSupported()) return null
@@ -188,42 +174,6 @@ export function TtsPopover(props: TtsPopoverProps) {
               onChangeRate={handleChangeRate}
               onChangeVoice={handleChangeVoice}
             />
-
-            {/* ピッチ（声の高さ）: 低め / 普通 / 高め */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'space-between' }}>
-              <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '.04em', flexShrink: 0 }}>
-                {t('tts.pitch')}
-              </span>
-              <div style={{ display: 'flex', gap: 4, flexWrap: 'nowrap' }}>
-                {PITCH_OPTIONS.map((p) => {
-                  const active = Math.abs(p.value - pitch) < 0.001
-                  return (
-                    <button
-                      key={p.value}
-                      type="button"
-                      onPointerDown={(e) => { e.stopPropagation(); handleChangePitch(p.value) }}
-                      aria-label={t('tts.pitch') + ' ' + t(p.labelKey)}
-                      aria-pressed={active}
-                      style={{
-                        minWidth: 56, height: 36,
-                        padding: '0 12px',
-                        borderRadius: 99,
-                        background: active ? 'var(--brand)' : 'var(--bg-tertiary, rgba(255,255,255,0.08))',
-                        color: active ? '#FFFFFF' : 'var(--text-primary)',
-                        border: 'none',
-                        cursor: 'pointer',
-                        fontSize: 13, fontWeight: 700,
-                        fontFamily: "'Noto Sans JP', sans-serif",
-                        WebkitTapHighlightColor: 'transparent',
-                        flexShrink: 0,
-                      }}
-                    >
-                      {t(p.labelKey)}
-                    </button>
-                  )
-                })}
-              </div>
-            </div>
           </div>
         </>
       )}

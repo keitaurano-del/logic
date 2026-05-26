@@ -10,6 +10,7 @@
  */
 
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
+import { getGuestId } from './guestId'
 import { isDeviceSyncEnabled, HEAVY_USER_THRESHOLDS, refreshDeviceSyncFlag } from './featureFlags'
 import { syncFlashcards, loadCards } from './flashcardData'
 import { syncWrongAnswers } from './wrongAnswerStore'
@@ -55,6 +56,21 @@ export function setSyncUser(userId: string | null) {
 
 export function getSyncUser(): string | null {
   return _currentUserId
+}
+
+/**
+ * ランキング (fermi_scores.user_id) に記録する安定 user_id を返す。
+ *
+ * - 認証済み: Supabase auth user の UUID (= profiles.id) を返す。
+ *   これにより server/routes/fermi.ts の /ranking が profiles.occupation を
+ *   join できる (join キーが UUID で一致する)。
+ * - 未ログイン: guest ID (g_xxxx) を fallback として返す。
+ *
+ * 旧実装は常に getGuestId() を渡していたため、認証ユーザーでも fermi_scores.user_id が
+ * guest 形式になり、profiles との occupation join が一切成立しなかった。
+ */
+export function getRankingUserId(): string {
+  return _currentUserId ?? getGuestId()
 }
 
 function isReady(): boolean {
@@ -104,6 +120,65 @@ export async function sendSyncTelemetry(payload: TelemetryPayload): Promise<void
   } catch (e) {
     if (import.meta.env.DEV) {
       console.warn('[sync] sendSyncTelemetry failed:', e)
+    }
+  }
+}
+
+// ---- ゲストスコアの auth UUID 継承（ランキング職業バッジ恒久対策）----
+
+// claim 済みを記録する localStorage キー。値は claim 対象だった guestId。
+// 同じ guestId は二度 claim しない（サーバー側も冪等だが無駄打ちを避ける）。
+const FERMI_CLAIMED_KEY = 'logic-fermi-claimed-guest-id'
+
+/**
+ * この端末の guestId で記録された過去の fermi_scores を、ログイン中の auth UUID へ
+ * 付け替えるよう /api/fermi/claim-guest-scores を呼ぶ。
+ *
+ * - 認証済み (_currentUserId あり) かつ Supabase access token が取れる場合のみ実行
+ * - guestId が auth UUID と一致する場合は no-op（付け替え不要）
+ * - 同じ guestId を既に claim 済みなら no-op（localStorage フラグで判定）
+ * - 失敗しても UX は止めない（fire-and-forget 前提だが await 可能）
+ *
+ * これにより、記録時の修正 (getRankingUserId) では救えない「過去にゲストとして
+ * 解いたスコア」が、ログイン後に職業バッジ付きでランキングに反映される。
+ */
+export async function claimGuestFermiScores(): Promise<void> {
+  if (!supabase || !_currentUserId) return
+  try {
+    const guestId = getGuestId()
+    // guestId が無い / auth UUID と同一なら付け替え対象なし
+    if (!guestId || guestId === _currentUserId) return
+    // 既に同じ guestId を claim 済みなら再実行しない
+    if (localStorage.getItem(FERMI_CLAIMED_KEY) === guestId) return
+
+    const { data: { session } } = await supabase.auth.getSession()
+    const token = session?.access_token
+    if (!token) return
+
+    const { API_BASE } = await import('./apiBase')
+    const res = await fetch(`${API_BASE}/api/fermi/claim-guest-scores`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ guestId }),
+    })
+    if (res.ok) {
+      // 成功時のみフラグを立てる。失敗時は次回起動でリトライさせる。
+      localStorage.setItem(FERMI_CLAIMED_KEY, guestId)
+      if (import.meta.env.DEV) {
+        try {
+          const json = await res.json()
+          console.log('[sync] claimGuestFermiScores claimed:', json?.claimed)
+        } catch { /* */ }
+      }
+    } else if (import.meta.env.DEV) {
+      console.warn('[sync] claimGuestFermiScores failed:', res.status)
+    }
+  } catch (e) {
+    if (import.meta.env.DEV) {
+      console.warn('[sync] claimGuestFermiScores error:', e)
     }
   }
 }
@@ -367,6 +442,10 @@ async function syncSubscriptionFromRemote(): Promise<void> {
 export async function syncOnLogin(userId: string): Promise<void> {
   setSyncUser(userId)
   if (!supabase) return
+
+  // ゲスト時代の fermi_scores を auth UUID へ付け替え（ランキング職業バッジ恒久対策）。
+  // fire-and-forget。失敗してもログイン同期本体は続行する。
+  void claimGuestFermiScores()
 
   // サブスクリプション状態を同期（admin_overrides 含む）
   await syncSubscriptionFromRemote()

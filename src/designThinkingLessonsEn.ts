@@ -14,6 +14,9 @@ const designThinkingIntro: LessonData = {
       title: 'What is Design Thinking?',
       content:
         'Design Thinking is a problem-solving methodology systematized by Stanford d.school.\n\nThe traditional approach:\nEngineer: "Look at this amazing technology!" → Build the product → Nobody buys it…\n\nThe Design Thinking approach:\n"What problems do users actually have?" → Empathize → Define → Solve\n\nFive steps:\n1. Empathize — Deeply understand the user\n2. Define — Pin down the real problem\n3. Ideate — Generate many possible solutions\n4. Prototype — Make it tangible quickly\n5. Test — Put it in front of users\n\nKey traits:\n• Look for the "best answer," not "the right answer"\n• Don\'t fear failure — try fast\n• Watch what users do, not just what they say',
+      visual: 'DesignThinkingCycleDiagram',
+      outro:
+        'The five steps are a device for running the loop of "understand the user → make something → learn." Rather than starting from technology or a bright idea, always walk the steps in order beginning with empathy — that is how you get closer to something people actually use.',
     },
     {
       type: 'quiz',
@@ -76,6 +79,9 @@ const designThinkingEmpathy: LessonData = {
       title: 'Empathy Map — Visualize what\'s in the user\'s head',
       content:
         'An Empathy Map is a tool for organizing the user\'s experience across four lenses:\n\n┌─────────────┐\n│  Think & Feel │ — What are they thinking and feeling?\n│  (worries, hopes, motivations) │\n├─────────────┤\n│  See         │ — What do they see?\n│  (environment, surrounding people) │\n├─────────────┤\n│  Hear        │ — What do they hear?\n│  (friends\' opinions, media) │\n├─────────────┤\n│  Say & Do    │ — What do they say and do?\n│  (actual behavior and statements) │\n└─────────────┘\n  Pain / Gain\n\nThe gap between Say & Do and Think & Feel is\nwhere the real insight lives.',
+      visual: 'EmpathyMapDiagram',
+      outro:
+        'On an empathy map, the iron rule is to focus on the gap between what users "say" and what they "do." Judging by statements alone loses the real motive, so fill in all four quadrants and surface the contradictions between Say and Do — that is where hidden needs appear.',
     },
     {
       type: 'quiz',
@@ -112,6 +118,9 @@ const designThinkingEmpathy: LessonData = {
       title: 'Jobs to be Done — Users want to get a job done',
       content:
         'Professor Christensen\'s Jobs to be Done (JTBD) theory:\n\n"People don\'t buy products. They hire them to get a job done."\n\nThe famous milkshake example:\nWhy does McDonald\'s milkshake sell so well in the morning?\n\nThe job: "Make my long morning commute less boring."\n→ One-handed, lasts a long time, fills me up\n→ The competitors are not other drinks — they\'re bananas, bagels, and boredom\n\nJTBD framework:\n"In [situation], in order to [motivation], I want to get [job] done."\n\nExample: "On my morning commute, in order to use the spare time well, I want a 3-minute lesson I can take."\n\n→ That is exactly Logic\'s JTBD!',
+      visual: 'JtbdDiagram',
+      outro:
+        'JTBD is a tool for re-framing your real competitors and value through a three-part set: situation, motivation, and the job to be done. Once you realize the true competitor is not a same-industry rival but "another way to get the same job done," your strategic options widen at once.',
     },
     {
       type: 'quiz',
@@ -138,6 +147,30 @@ const designThinkingPractice: LessonData = {
       title: 'How Might We — Ask creative questions',
       content:
         'Once you have defined the problem, frame your question as a "How Might We" (HMW).\n\nWriting an HMW question:\n\nProblem: "Busy professionals can\'t keep up a learning habit."\n\nHMW examples:\n• "How might we make learning fit into a daily routine?"\n• "How might we design a learning experience that delivers a sense of accomplishment in 3 minutes?"\n• "How might we make learning feel like a game?"\n\nHMW tips:\n• Not too broad: "How might we improve the world?" → too wide\n• Not too narrow: "How might we pick a button color?" → too tight\n• Just right: a level that yields 3-5 directional solution ideas',
+      visual: 'ThreePillarsDiagram',
+      visualProps: {
+        sectionLabel: 'Tuning the "breadth" of an HMW question — 3 levels',
+        pillars: [
+          {
+            icon: 'W',
+            title: 'Too broad',
+            body: 'Questions like "How might we improve the world?" are too abstract. You can diverge but never converge or descend to implementation.',
+          },
+          {
+            icon: '◎',
+            title: 'Just right',
+            body: 'A grain that yields 3-5 directional solutions. Broad enough to attack from many angles, like "fit it into a daily routine" or "make it feel like a game."',
+          },
+          {
+            icon: 'N',
+            title: 'Too narrow',
+            body: 'Questions like "pick a button color" lock the answer to one. Effectively just a task, with no room to diverge.',
+          },
+        ],
+        hint: 'Breadth determines how much a brainstorm diverges. After writing one, always check "can this produce 3-5 directions?"',
+      },
+      outro:
+        'The power of an HMW question is in tuning its "breadth." Rewrite the question until it sits at a grain where solutions split into 3-5 directions, and your brainstorm diverges more — making it easier to surface ideas from interesting angles.',
     },
     {
       type: 'quiz',

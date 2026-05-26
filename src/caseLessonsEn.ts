@@ -19,6 +19,9 @@ const caseIntro: LessonData = {
       title: 'Three pillars of thinking',
       content:
         '(1) Hypothesis-driven thinking: state up front "the cause is probably X" and progress by testing it.\n\n(2) MECE decomposition: break the problem down "Mutually Exclusive, Collectively Exhaustive" so you see the whole picture.\n\n(3) Prioritization: focus on the parts of the decomposition with the largest impact.\n\nThe core skill of case interviews is combining these three to reach a conclusion within tight time limits.',
+      visual: 'ThreePillarsDiagram',
+      outro:
+        'The three pillars — hypothesis, MECE, prioritization — are not just for case interviews; they are the very way business problems get solved. Make a habit of running through these three in order whenever you face a problem, and you build the muscle to reach a conclusion even under tight time limits.',
     },
     {
       type: 'quiz',
@@ -37,6 +40,9 @@ const caseIntro: LessonData = {
       title: 'How to choose a framework',
       content:
         'Common frameworks:\n\n- Profitability problems -> Revenue / Cost decomposition\n- Market entry -> 3C (Customer, Competitor, Company)\n- Strategy formulation -> SWOT / Porter\'s Five Forces\n\nBut "applying a framework" is not the goal.\nWhat is required is the ability to see the essence of the problem and pick the right cut yourself.',
+      visual: 'CaseStudyDiagram',
+      outro:
+        'A framework is a "map for thinking," not an "answer template." The real skill rewarded in case interviews is the flexibility to pick the sharpest cut for the question — and to modify the framework yourself when you need to.',
     },
     {
       type: 'quiz',
@@ -67,6 +73,8 @@ const caseProfitability: LessonData = {
       content:
         'Profitability cases are the most frequent case type.\n\nProfit = Revenue - Cost\n\nRevenue = Price x Quantity\nQuantity = Customers x Purchase frequency x Items per purchase\n\nCost = Fixed costs (rent, payroll, etc.) + Variable costs (materials, etc.)\n\nKeep this tree in your head. The first step is to identify which branch is broken.',
       visual: 'LogicTreeDiagram',
+      outro:
+        'The profit-decomposition tree first splits "revenue vs cost," then descends to the multiplicative factors — an almost templated breakdown. If you can draw this tree from memory the moment a profit problem appears, you can already handle half of any case interview.',
       visualProps: {
         sectionLabel: 'Profit structure — break profit into its parts',
         hintTone: 'brand',
@@ -158,6 +166,8 @@ const caseMarketEntry: LessonData = {
         ],
         hint: 'Both must hold. Always ask "Can we win?" before "Should we enter?"',
       },
+      outro:
+        'Thinking of market entry as a matrix of "Is the market attractive? × Can we win?" keeps your decision axes steady. Don\'t enter unless both hold — that is the basic posture of cool-headed, consultant-style decision-making.',
     },
     {
       type: 'quiz',
@@ -214,6 +224,8 @@ const caseMnA: LessonData = {
         primary: 'top',
         hint: 'All three must hold. Miss one and it becomes an overpriced deal',
       },
+      outro:
+        'Strategic fit, synergy, and valuation are the minimum set of conditions for evaluating an M&A. If even one is missing, you are looking at an "overpriced acquisition." Run all three before you ever approve a deal.',
     },
     {
       type: 'quiz',

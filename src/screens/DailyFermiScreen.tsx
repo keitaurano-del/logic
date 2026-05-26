@@ -6,6 +6,7 @@ import { API_BASE } from './apiBase'
 import { getDailyFermiIndex, FERMI_POOL, getFermiStatsByIndex } from '../fermiData'
 import { t, getLocale } from '../i18n'
 import { getGuestId } from '../guestId'
+import { getRankingUserId } from '../syncService'
 import { haptic } from '../platform/haptics'
 import { useDailyGuide, GuideStyle } from '../tutorial/dailyGuide'
 import { isPaid } from '../subscription'
@@ -599,7 +600,9 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            userId: getGuestId(),
+            // 認証済みなら auth UUID、未ログインなら guest ID。
+            // ランキングが profiles.occupation を join できるよう UUID で記録する。
+            userId: getRankingUserId(),
             userName: getDisplayName(),
             score: data.score,
             questionIndex: currentPoolIndex,

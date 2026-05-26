@@ -755,9 +755,13 @@ const logicConcreteAbstractEn: LessonData = {
     {
       type: 'explain',
       title: 'What Are Concrete and Abstract?',
+      visual: 'AbstractionLadderDiagram',
       content:
         'Moving between the concrete and the abstract is one of the most important skills in logical thinking.\n\n● Concrete: specific facts, data, individual examples\n● Abstract: patterns, rules, concepts drawn from those specifics\n\nExample:\nConcrete: "A forgot the handout at yesterday\'s meeting"\nAbstract: "Our information-sharing system has a problem"\n\nConcrete alone ends with "so what?" Abstract alone feels vague. When you can move between both, your persuasiveness multiplies.',
+      outro:
+        'The abstract conveys "the big picture and the meaning"; the concrete conveys "the action and the felt reality." Either one alone makes your point thin, so just being conscious of moving both up and down the ladder sharply raises the resolution of your explanation.',
     },
+
     {
       type: 'quiz',
       question: '"Our team has bad communication" — is this concrete or abstract?',

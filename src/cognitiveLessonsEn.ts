@@ -28,6 +28,8 @@ const workingMemoryLimit: LessonData = {
         ],
         hint: 'The unit of capacity is "chunks," not digits. Meeting topics ≤ 5, slide messages = 3',
       },
+      outro:
+        'The point is "chunk count," not "digit count." Just by grouping things into 3–5, people can handle a surprising amount of information. A good first step is to recount your meeting topics, slide messages, and to-do lists by chunk.',
     },
     {
       type: 'quiz',
@@ -118,6 +120,8 @@ const chunking: LessonData = {
         ],
         hint: 'When things scatter, try which of the three types can bundle them',
       },
+      outro:
+        'Grouping, hierarchy, and pattern matching are all operations that "pack scattered elements into a single box." When your information is a mess, first try which of these three types can bundle it — and you free up capacity.',
     },
     {
       type: 'quiz',
@@ -172,6 +176,8 @@ const cognitiveLoad: LessonData = {
         ],
         hint: 'All three compete for the same capacity. Cut extraneous, then channel space into germane',
       },
+      outro:
+        'The three loads fight over the same capacity. The right order is to subtract extraneous load (poor design) first, then route the freed-up space into germane load (summarizing, applying). Watch out: lowering intrinsic load alone makes the learning itself shallow.',
     },
     {
       type: 'quiz',
@@ -270,6 +276,9 @@ const externalMemory: LessonData = {
       title: 'Diagrams = dynamic external memory',
       content:
         "Among external memory tools, diagrams are uniquely powerful.\n\nWhy diagrams beat text:\n\n1. Spatial overview\nIn text you process sequentially. A diagram shows 5 elements at once.\n\n2. Relationships are visible\n'A causes B, B causes C' is far faster as arrows than as prose.\n\n3. Gaps are obvious\nEmpty spots in a diagram intuitively ask 'something should go here.'\n\n4. Diagrams force chunking\nThe act of drawing compresses concepts into chunks.\n\nCommon diagram patterns:\n• Logic tree → structural decomposition\n• 2x2 matrix → comparison\n• Flow → time / steps\n• Venn diagram → overlap, relationships\n• Pyramid → hierarchy, priority\n\nWhen a meeting stalls, just asking 'can I sketch this on the whiteboard?' changes the entire quality of the discussion. Diagrams are dynamic external memory that speed up thinking.",
+      visual: 'LogicTreeDiagram',
+      outro:
+        "The essence of diagramming is to 'pull the relationships out of your head so everyone looks at the same screen.' Whether a tree or a matrix, just building the habit of sketching first makes it far easier to notice missing points and mistaken cause-and-effect.",
     },
     {
       type: 'quiz',
@@ -627,6 +636,8 @@ const outcomeVsProcessBias: LessonData = {
       content:
         "The antidote to outcome bias is evaluating the process. Poker pros call result-based evaluation 'resulting' and warn against it.\n\n[Process-evaluation matrix]\n\n           Good outcome    Bad outcome\nGood call  ◎ best          ○ unlucky\nBad call   △ lucky         × worst\n\nApplied at work:\n• Don't punish 'good call + bad outcome'\n  → Otherwise you suppress healthy risk-taking\n\n• Don't celebrate 'bad call + good outcome'\n  → Otherwise you mistake luck for skill\n\n• Make 'good call' criteria explicit\n  - Sufficient information gathered\n  - Multiple options compared\n  - Surprises prepared for\n  - Stakeholders aligned\n\nCore idea:\n'You can do little to control outcomes, but you can improve decision quality.'\n'Repeated good decisions converge to good results in the long run.'\n\nProcess focus is the foundation of reproducible performance.",
       visual: 'Two2MatrixDiagram',
+      outro:
+        'As the matrix shows, even a bad outcome can come from the unlucky "good call × bad result" quadrant. If you stop judging people by short-term results alone and keep a separate axis for decision quality, your organization becomes reproducibly strong over the long run.',
       visualProps: {
         sectionLabel: 'Decision quality x Outcome — do not judge by results alone',
         xAxis: { low: 'Bad outcome', high: 'Good outcome', label: 'Outcome' },

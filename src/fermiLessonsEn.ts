@@ -40,8 +40,8 @@ const fermiLesson200: LessonData = {
     },
     {
       type: 'explain',
-      title: 'Understand the acceptable margin of error',
-      content: 'For Fermi estimation, 1-2 orders of magnitude (10x to 100x) is enough precision.\n\n"How many cars are owned in Japan?"\n- Actual: about 78 million\n- Acceptable Fermi range: somewhere between 10 million and 1 billion\n\nIn business decision-making, you usually only need to know "is this market on the order of ¥100M, ¥1B, or ¥10B?".\n\nThe logical chain matters more than precision.',
+      title: 'Margin of error, and problems with vs. without an answer',
+      content: 'For Fermi estimation, 1-2 orders of magnitude (10x to 100x) is enough precision.\n\n"How many cars are owned in Japan?"\n- Reference value (actual): about 78 million (MLIT vehicle registration data)\n- Acceptable Fermi range: somewhere between 10 million and 1 billion\n\nIn business decision-making, you usually only need to know "is this market on the order of ¥100M, ¥1B, or ¥10B?". The logical chain matters more than precision.\n\nThere is one important premise here: Fermi problems come in two distinct kinds.\n\n1. Problems WITH an answer (verifiable against a reference value)\n- Population, unit counts, market sizes — anything with official statistics or industry estimates\n- e.g. cars owned in Japan, convenience-store market size, number of households\n- After estimating, compare against the "reference value" and review where you drifted\n\n2. Problems WITHOUT a single answer (no unique correct value)\n- e.g. "hours humanity wastes waiting at traffic lights", "total annual happiness of Japan"\n- No verifiable measured value exists, or the answer changes with your premises\n- Here the goal is not the number itself but training your decomposition logic and order-of-magnitude sense\n\nIn this course, problems with an answer come with a reference value, and problems without one are flagged as such. Build the habit of reviewing "was my decomposition logic sound?" rather than "did my number hit?".',
     },
     {
       type: 'quiz',
@@ -78,6 +78,7 @@ const fermiLesson201: LessonData = {
       type: 'explain',
       title: 'The trick is to build a "multiplication equation"',
       content: 'The core of Fermi estimation is to convert the target quantity into a multiplication equation.\n\nBasic market-size equation:\n```\nMarket size = target population × usage rate × purchase frequency × unit price\n```\n\nExample: convenience-store market size in Japan\n- Target population: 120 million\n- Usage rate: 60% (people who use a convenience store at least once a week)\n- Purchase frequency: 2 times per week\n- Spend per visit: ¥500\n\n-> 120M × 0.6 × 2 × ¥500 × 52 weeks\n≈ ¥3.7 trillion (actual is about ¥12 trillion — 2-3x off is within the acceptable range)',
+      visual: 'FermiFormulaDiagram',
     },
     {
       type: 'explain',
@@ -176,6 +177,7 @@ const fermiLesson203: LessonData = {
       type: 'explain',
       title: 'Estimate "the size of the izakaya market in Japan"',
       content: 'Question: what is Japan\'s annual izakaya (Japanese pub) market size?\n\nDecomposition:\n1. Adults who visit an izakaya at least once a month -> population 120M × adult share 0.8 × usage rate 0.4 = about 38 million\n2. Spend per monthly visit -> ¥3,000\n3. Annual = 38M × ¥3,000 × 12 months = about ¥1.4 trillion\n\nActual: about ¥1.5 trillion (pre-COVID level)\n\nKey: The usage-rate estimate dominates accuracy. "How many times a month do my friends typically go?" is a usable everyday gut feel.',
+      visual: 'FermiFormulaDiagram',
     },
     {
       type: 'quiz',
@@ -191,7 +193,7 @@ const fermiLesson203: LessonData = {
     {
       type: 'explain',
       title: 'Estimate "the total annual revenue of hair salons"',
-      content: 'Question: total annual revenue of hair salons in Japan?\n\nDecomposition (supply side):\n1. Number of hair salons -> about 250,000 (more than convenience stores!)\n2. Monthly revenue per salon -> 5 customers/day × ¥3,000 × 25 days = about ¥370,000\n3. Annual revenue = 250,000 × ¥370,000 × 12 months ≈ ¥1.1 trillion\n\nActual: ¥1.5-2 trillion range (varies by source — Recruit\'s "Beauty Census" puts it at about ¥1.4 trillion; Yano Research\'s combined hair-and-beauty figure is about ¥2 trillion)\n\nCross-check from the demand side:\n- Women 60M × 4 visits/year × ¥5,000 ≈ ¥1.2 trillion\n- Men 60M × 6 visits/year × ¥1,500 ≈ ¥0.5 trillion\n- Total ≈ ¥1.7 trillion (close to both supply-side and actual figures)\n\nKey: Mixing up "X times per month" and "X times per year" shifts the answer by an order of magnitude. Build the habit of normalizing everything to a final unit (per year) for sanity-checking.',
+      content: 'Question: total annual revenue of hair salons in Japan?\n\nDecomposition (supply side):\n1. Number of hair salons -> about 250,000 (more than convenience stores!)\n2. Monthly revenue per salon -> 5 customers/day × ¥3,000 × 25 days = about ¥370,000\n3. Annual revenue = 250,000 × ¥370,000 × 12 months ≈ ¥1.1 trillion\n\nActual: ¥1.5-2 trillion range (varies by source — Recruit\'s "Beauty Census" puts it at about ¥1.4 trillion; Yano Research\'s combined hair-and-beauty figure is about ¥2 trillion)\n\nCross-check from the demand side:\n- Women 60M × 4 visits/year × ¥5,000 ≈ ¥1.2 trillion\n- Men 60M × 6 visits/year × ¥1,500 ≈ ¥0.5 trillion\n- Total ≈ ¥1.7 trillion (close to both supply-side and actual figures)\n\nAlign the visit-count unit:\n- Throughout this course we use one shared assumption for "visits per person per year": women = 4/year, men = 6/year (about 5/year averaged across both).\n- Total visits = women 240M + men 360M = about 600M visits/year. Divide by population 124M → about 5 visits/person/year.\n\nKey: Mixing up "X times per month" and "X times per year" shifts the answer by an order of magnitude. Always normalize everything to a final unit (per year) before sanity-checking.',
     },
     {
       type: 'quiz',
@@ -289,7 +291,7 @@ const fermiLesson205: LessonData = {
     {
       type: 'explain',
       title: 'Use base facts in the sanity-check phase',
-      content: 'The real payoff of base facts comes at the end of an estimate, during sanity-checking.\n\nExample: estimate the "annual customer visits to hair salons in Japan"\n\nSupply-side estimate:\n- 250K salons × 5 customers/day × 25 business days/month × 12 months\n- = 250K × 1,500 = about 375 million customer-visits / year\n\nIs 375M reasonable? Sanity-check against base facts:\n- Per-person visits = 375M ÷ population 124M ≈ 3 visits / year\n- Does "once every 4 months" feel right? -> Roughly yes (women: 4-6 visits/year, men: 4-10 visits/year, average 3-5)\n\nIf the sanity-check came out at "30 visits/person/year," that\'s 2.5 per month — clearly impossible. You caught a calculation error.\n\nThree sanity-check patterns:\n1. Divide by population (124M) -> per-person scale\n2. Divide by household count (57M) -> per-household scale\n3. Compare to GDP (¥600T) -> share of the whole economy (e.g., convenience-store market ¥12T ÷ GDP ¥600T = 2%, plausible)\n\nBottom line: Adding even one "what is this per person?" check at the end of every estimate catches 90% of order-of-magnitude and logic errors.',
+      content: 'The real payoff of base facts comes at the end of an estimate, during sanity-checking.\n\nExample: estimate the "annual customer visits to hair salons in Japan"\n\nSupply-side estimate:\n- 250K salons × 5 customers/day × 25 business days/month × 12 months\n- = 250K × 1,500 = about 375 million customer-visits / year\n\nIs 375M reasonable? Sanity-check against base facts:\n- Per-person visits = 375M ÷ population 124M ≈ 3 visits / person / year\n- Does "once every 4 months" feel right? -> A bit low. Building it up from the demand side gives women = 4/year and men = 6/year (about 5/year averaged), i.e. 600M visits ÷ population 124M ≈ 5 visits / person / year.\n- Supply side (3/year) and demand side (5/year) bracket the truth at 3-5 visits / person / year. This course adopts about 4-5 visits / person / year as the working figure.\n- Either way, keep the unit as "visits / person / year." Getting the unit wrong is what blows up the order of magnitude.\n\nIf the sanity-check came out at "30 visits/person/year," that\'s 2.5 per month — clearly impossible. You caught a calculation error.\n\nThree sanity-check patterns:\n1. Divide by population (124M) -> per-person scale\n2. Divide by household count (57M) -> per-household scale\n3. Compare to GDP (¥600T) -> share of the whole economy (e.g., convenience-store market ¥12T ÷ GDP ¥600T = 2%, plausible)\n\nBottom line: Adding even one "what is this per person?" check at the end of every estimate catches 90% of order-of-magnitude and logic errors.',
     },
     {
       type: 'quiz',

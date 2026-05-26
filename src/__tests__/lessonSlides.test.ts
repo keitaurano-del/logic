@@ -121,7 +121,9 @@ describe('lessonSlides — convertLessonToSlides', () => {
       expect(concepts[0].tag).toBeUndefined()
     })
 
-    it('escapes HTML special characters in body (formatBody)', () => {
+    it('keeps body as raw markdown-subset text (no HTML escaping)', () => {
+      // リッチテキスト描画へ移行後、body は raw テキストをそのまま載せる
+      // （描画は RichLessonText、読み上げは stripMarkup が担当）。
       const slides = convertLessonToSlides({
         id: 1,
         title: 't',
@@ -130,17 +132,17 @@ describe('lessonSlides — convertLessonToSlides', () => {
           {
             type: 'explain',
             title: 't',
-            content: '<script>alert("x")</script> & more',
+            content: '**重要** な話 & more',
           },
         ],
       })
       const concepts = findConcepts(slides)
-      expect(concepts[0].body).not.toContain('<script>')
-      expect(concepts[0].body).toContain('&lt;script&gt;')
-      expect(concepts[0].body).toContain('&amp;')
+      expect(concepts[0].body).toContain('**重要**')
+      expect(concepts[0].body).toContain('&')
+      expect(concepts[0].body).not.toContain('&amp;')
     })
 
-    it('converts newlines into <br/> in body (formatBody)', () => {
+    it('preserves newlines in body (no <br/> conversion)', () => {
       const slides = convertLessonToSlides({
         id: 1,
         title: 't',
@@ -148,7 +150,8 @@ describe('lessonSlides — convertLessonToSlides', () => {
         steps: [{ type: 'explain', title: 't', content: 'line1\nline2' }],
       })
       const concepts = findConcepts(slides)
-      expect(concepts[0].body).toContain('<br/>')
+      expect(concepts[0].body).toContain('\n')
+      expect(concepts[0].body).not.toContain('<br/>')
     })
   })
 

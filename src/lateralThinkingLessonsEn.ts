@@ -14,6 +14,9 @@ const lateralIntro: LessonData = {
       title: 'What is lateral thinking?',
       content:
         'Lateral thinking, coined by Edward de Bono, is "horizontal" thinking.\n\n[Logical thinking — vertical]\nDig deeper from a known set of premises.\nExample: Revenue = customers x average ticket → To grow customers...\n\n[Lateral thinking — horizontal]\nQuestion the premises themselves; look from a different angle.\nExample: Is "growing revenue" even the right goal?\n→ Maybe raising margin matters more.\n→ What if we switched to a subscription model?\n\nClassic example:\nElevator wait times trigger complaints.\nVertical thinking: Add more elevators (expensive).\nLateral thinking: Put mirrors in the lobby — people groom themselves while waiting and the time feels shorter.\n\nLogical and lateral are not opposites; they complement each other.',
+      visual: 'VerticalVsLateralDiagram',
+      outro:
+        'Picture vertical thinking as "digging deep inside the frame" and lateral thinking as "sliding the frame itself sideways." Using the two in alternation gives you both depth and breadth, and the freedom of your thinking jumps at once.',
     },
     {
       type: 'quiz',
@@ -94,6 +97,9 @@ const lateralTechniques: LessonData = {
       title: 'SCAMPER — Seven transformations',
       content:
         'SCAMPER is a technique for transforming an existing thing through seven lenses:\n\nS — Substitute\nCould you swap a part for something else?\nExample: Teacher → AI tutor\n\nC — Combine\nCan you merge two or more things?\nExample: Phone + wallet → mobile payments\n\nA — Adapt\nCan you borrow an idea from another field?\nExample: Game leveling → XP system in a learning app\n\nM — Modify\nWhat if you change the size, shape, or order?\nExample: 30-minute class → 3-minute micro-lesson\n\nP — Put to other use\nCould it be used for a different purpose?\nExample: Factory waste heat → heated swimming pool\n\nE — Eliminate\nWhat if you remove something?\nExample: Menu → omakase course only\n\nR — Reverse\nWhat if you reverse roles or order?\nExample: Teacher → student → peer-to-peer teaching',
+      visual: 'ScamperDiagram',
+      outro:
+        'SCAMPER is a "template set of transformations." When you are stuck, run the seven verbs over your existing idea one by one. That alone hands you far more options than trying to squeeze something out of nothing.',
     },
     {
       type: 'quiz',
@@ -112,6 +118,9 @@ const lateralTechniques: LessonData = {
       title: 'Six Thinking Hats',
       content:
         'De Bono\'s "Six Thinking Hats" is a framework for thinking from multiple angles as a team.\n\n* White hat (facts)\n"What does the data say?"\nState only objective facts and figures.\n\n* Red hat (emotion)\n"How do you feel intuitively?"\nShare gut reactions without justifying them.\n\n* Black hat (caution)\n"What are the risks? Why might this fail?"\nSurface problems from a pessimistic angle.\n\n* Yellow hat (optimism)\n"What good could come of it?"\nFocus on possibilities and benefits.\n\n* Green hat (creativity)\n"What other ways are there?"\nGenerate new ideas and alternatives.\n\n* Blue hat (process)\n"How do we run the discussion?"\nManage the process and summarize conclusions.\n\nWhen everyone wears the same hat at once, conversation becomes collaborative rather than adversarial.',
+      visual: 'SixHatsDiagram',
+      outro:
+        'The six hats are a device for "switching, in turn, between perspectives that would otherwise collide all at once." Just by carving out time where everyone wears the same color, emotion and fact stop mixing, and the discussion toward a conclusion gets remarkably organized.',
     },
     {
       type: 'quiz',
