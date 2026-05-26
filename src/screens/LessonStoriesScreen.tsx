@@ -183,6 +183,10 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
   }, [slides, index])
   const total = slides.length
   const isQuiz = slide.kind === 'quiz'
+  // visual スライドは図解自身がタップ展開（タブ切替・前提データ展開等）を持つため、
+  // 左右端の絶対配置タップナビ・ゾーンを無効化し、図解の onClick を奪わないようにする。
+  // スライド移動はスワイプ（onTouchEnd）と下部の前/次ボタンで担保する。
+  const isVisual = slide.kind === 'visual'
 
   // 読み上げモード用: 読み上げ対象 (quiz / think / case 以外) のインデックス一覧
   // think/case は対話的操作を要求するため自動進行スキップ対象に含める。
@@ -580,11 +584,40 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
       else goPrev()
     }
   }
+  // visual スライド専用: capture フェーズでスワイプを拾う。
+  // 図解コンポーネント側（FermiBaseDataVisual 等）が onTouchStart/End を bubble で
+  // stopPropagation して自衛しているため、bubble の onTouchEnd には届かない。
+  // capture は子の bubble-stop より先に走るので、図解上のスワイプも検知できる。
+  // タップ展開（onClick）は touch とは別イベントなので阻害しない（preventDefault しない）。
+  // touchRef を消費して null 化し、bubble 側 onTouchEnd の二重処理を防ぐ。
+  const onTouchStartCaptureVisual = (e: React.TouchEvent) => {
+    const t = e.touches[0]
+    touchRef.current = { x: t.clientX, y: t.clientY, t: Date.now() }
+  }
+  const onTouchEndCaptureVisual = (e: React.TouchEvent) => {
+    const start = touchRef.current
+    if (!start) return
+    const t = e.changedTouches[0]
+    const dx = t.clientX - start.x
+    const dy = t.clientY - start.y
+    const dt = Date.now() - start.t
+    touchRef.current = null
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5 && dt < 500) {
+      // モーダル・読み上げモード（完了ダイアログ含む）表示中は誤発火を避ける
+      if (reportOpen || ttsModeActive) return
+      if (dx < 0) goNext()
+      else goPrev()
+    }
+  }
 
   return (
     <div
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
+      // visual スライドは左右タップゾーンを無効化している（図解のタップ展開を優先）。
+      // その代わりスワイプ移動を capture フェーズで担保する（図解の bubble-stop を貫通）。
+      onTouchStartCapture={isVisual ? onTouchStartCaptureVisual : undefined}
+      onTouchEndCapture={isVisual ? onTouchEndCaptureVisual : undefined}
       style={{ background: 'var(--bg-primary)', height: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: 'var(--text-primary)', position: 'relative', touchAction: 'pan-y' }}
     >
       {/* Progress bars — v3 mint accentでコントラストを上げる */}
@@ -786,7 +819,8 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
 
       {/* タップゾーン: クイズ以外・左右端20%のみ（コンテンツエリアに干渉しない） */}
       {/* 読み上げモード中はタップゾーン無効化（自動進行と競合するため） */}
-      {!isQuiz && !ttsModeActive && (
+      {/* visual スライドではゾーンを描画しない（図解内のタップ展開を奪わないため。移動はスワイプ＋下部ボタンで担保） */}
+      {!isQuiz && !ttsModeActive && !isVisual && (
         <div style={{ position: 'absolute', inset: 0, display: 'flex', zIndex: 5, pointerEvents: 'none' }}>
           <button
             type="button"
