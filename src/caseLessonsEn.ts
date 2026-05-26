@@ -75,6 +75,30 @@ const caseProfitability: LessonData = {
       visual: 'LogicTreeDiagram',
       outro:
         'The profit-decomposition tree first splits "revenue vs cost," then descends to the multiplicative factors — an almost templated breakdown. If you can draw this tree from memory the moment a profit problem appears, you can already handle half of any case interview.',
+      visualProps: {
+        sectionLabel: 'Profit structure — break profit into its parts',
+        hintTone: 'brand',
+        hint: 'First split into "Revenue vs Cost," then drill down to the multiplied factors',
+        data: {
+          label: 'Profit = Revenue - Cost',
+          children: [
+            {
+              label: 'Revenue = Price x Quantity',
+              children: [
+                { label: 'Price' },
+                { label: 'Quantity = Customers x Frequency x Items' },
+              ],
+            },
+            {
+              label: 'Cost = Fixed + Variable',
+              children: [
+                { label: 'Fixed (rent, payroll)' },
+                { label: 'Variable (materials)' },
+              ],
+            },
+          ],
+        },
+      },
     },
     {
       type: 'think',

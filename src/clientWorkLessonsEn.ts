@@ -366,6 +366,20 @@ const clientLesson95: LessonData = {
       title: 'Use the pyramid structure',
       content: 'A tool to organize storyline visually is the pyramid structure.\n\n```\n       [Conclusion / claim]\n      /        |        \\\n [Reason 1] [Reason 2] [Reason 3]\n   |          |           |\n[Fact]      [Fact]      [Fact]\n```\n\nUsage:\n- Top: the conclusion you want to convey (just one)\n- Middle: reasons supporting the conclusion (2-4)\n- Bottom: facts and data backing each reason\n\nOrganizing this way before slide-making naturally surfaces logical leaps and gaps.',
       visual: 'PyramidDiagram',
+      visualProps: {
+        conclusion: { label: 'Conclusion', body: 'Shift investment toward online channels' },
+        claims: [
+          { label: 'Reason 1', body: 'Higher acquisition efficiency' },
+          { label: 'Reason 2', body: 'Measurable results' },
+          { label: 'Reason 3', body: 'Competitors still thin here' },
+        ],
+        evidence: [
+          ['CPA half of in-store', 'Inquiries rising'],
+          ['Numbers per ad', 'Faster improvement'],
+          ['Few competitor ads', 'Can win branded search'],
+        ],
+        hint: 'Conclusion on top, 2-4 reasons, each backed by facts',
+      },
       outro:
         'A conclusion at the top, supported by two to four reasons, each backed by facts — this three-tier pyramid is the standard shape of an argument. Sketch it on paper before opening a slide tool, and you catch composition wobble and lopsided reasoning early, while editing is still cheap.',
     },
@@ -394,6 +408,15 @@ const clientLesson96: LessonData = {
       title: 'Hold to the three elements of a report',
       content: 'Effective reports need three elements.\n\n(1) Fact: what happened\nExample: "New inquiries this month dropped 30% MoM"\n\n(2) Insight: what it means\nExample: "Not seasonal; we estimate the impact comes from last month\'s ad pause"\n\n(3) Next Action: what to do, by when\nExample: "We\'ll restart ads next week and check next month\'s numbers for impact"\n\nReports without all three trigger "so what should I do?" responses.',
       visual: 'ThreePillarsDiagram',
+      visualProps: {
+        sectionLabel: 'The three elements of a report',
+        pillars: [
+          { title: 'Fact', body: 'What happened. Show it with numbers and facts' },
+          { title: 'Insight', body: 'What it means. The cause or implication' },
+          { title: 'Next Action', body: 'What to do, and by when' },
+        ],
+        hint: 'All three present means no "so what should I do?" follow-up',
+      },
       outro:
         'A report that carries fact, insight, and next action as a complete set never invites "so what now?" Spending an extra moment to self-check "are all three present?" before you send is the small habit that compounds into real trust over time.',
     },

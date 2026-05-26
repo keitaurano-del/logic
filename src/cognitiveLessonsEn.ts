@@ -110,7 +110,16 @@ const chunking: LessonData = {
       title: 'Three types of chunking',
       content:
         "There are three main patterns:\n\n[Type 1] Grouping (horizontal aggregation)\nPut items of the same nature into one bucket.\nExample: 12 initiatives → 'Acquisition,' 'Retention,' 'Monetization' (3 buckets).\n\n[Type 2] Hierarchy (vertical aggregation)\nWhole → mid-categories → details, as a tree.\nExample: Company issue tree (business / org / finance → subdivided).\n\n[Type 3] Pattern matching (mapping to known concepts)\nMatch to existing frameworks or phrases.\nExample: 'We win through differentiation and low cost' → Porter's generic strategies.\n\nAs business people get more experienced, their library of 'conceptual chunks' grows. Beginners process items one by one. Veterans recognize the situation chunk-by-chunk: 'This is a classic X case.'\n\nThat is why experienced people have spare capacity in meetings. Same number of items, but larger chunks means more total content.",
-      visual: 'LogicTreeDiagram',
+      visual: 'ThreePillarsDiagram',
+      visualProps: {
+        sectionLabel: 'Three types of chunking',
+        pillars: [
+          { title: 'Grouping', body: 'Put same-nature items into one bucket (horizontal)' },
+          { title: 'Hierarchy', body: 'Whole → mid → detail, as a tree (vertical)' },
+          { title: 'Pattern matching', body: 'Map to known frameworks or phrases' },
+        ],
+        hint: 'When things scatter, try which of the three types can bundle them',
+      },
       outro:
         'Grouping, hierarchy, and pattern matching are all operations that "pack scattered elements into a single box." When your information is a mess, first try which of these three types can bundle it — and you free up capacity.',
     },
@@ -629,6 +638,18 @@ const outcomeVsProcessBias: LessonData = {
       visual: 'Two2MatrixDiagram',
       outro:
         'As the matrix shows, even a bad outcome can come from the unlucky "good call × bad result" quadrant. If you stop judging people by short-term results alone and keep a separate axis for decision quality, your organization becomes reproducibly strong over the long run.',
+      visualProps: {
+        sectionLabel: 'Decision quality x Outcome — do not judge by results alone',
+        xAxis: { low: 'Bad outcome', high: 'Good outcome', label: 'Outcome' },
+        yAxis: { low: 'Bad call', high: 'Good call', label: 'Decision quality' },
+        cells: [
+          { title: 'Unlucky', items: ['Good call x bad outcome', "Don't punish"] },
+          { title: 'Best', items: ['Good call x good outcome'] },
+          { title: 'Worst', items: ['Bad call x bad outcome'] },
+          { title: 'Lucky', items: ['Bad call x good outcome', "Don't celebrate"] },
+        ],
+        hint: 'A bad outcome can still be a good call met by bad luck — judge decision quality separately',
+      },
     },
     {
       type: 'quiz',

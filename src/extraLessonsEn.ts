@@ -69,7 +69,7 @@ const hypothesisAbduction: LessonData = {
   title: 'Leap with abduction',
   category: 'Hypothesis Thinking',
   steps: [
-    { type: 'explain', title: 'What abduction (inference to the best explanation) is', content: 'Not deduction or induction, but "selecting the hypothesis that best explains the current situation." Proposed by C.S. Peirce and also called "Inference to the Best Explanation." It\'s the process of choosing, among multiple candidate hypotheses, the one that most reasonably accounts for current observations — the kind of instant narrowing-down that consultants and doctors perform when they see one data point and intuit "the cause is probably XX."', visual: 'DeductionDiagram' },
+    { type: 'explain', title: 'What abduction (inference to the best explanation) is', content: 'Not deduction or induction, but "selecting the hypothesis that best explains the current situation." Proposed by C.S. Peirce and also called "Inference to the Best Explanation." It\'s the process of choosing, among multiple candidate hypotheses, the one that most reasonably accounts for current observations — the kind of instant narrowing-down that consultants and doctors perform when they see one data point and intuit "the cause is probably XX."' },
     { type: 'quiz', question: 'Sales suddenly dropped 20%. Which is the most appropriate abductive approach?', options: [
       { label: 'Collect all data before considering the cause', correct: false },
       { label: 'Among multiple possible causes, select the one that best explains current conditions as the hypothesis', correct: true },
@@ -116,7 +116,15 @@ const designHMW: LessonData = {
   title: 'Frame questions as "How Might We?"',
   category: 'Design Thinking',
   steps: [
-    { type: 'explain', title: 'What HMW (How Might We) is', content: 'A question pattern — "How might we... ?" — that converts a problem into a solvable inquiry. It transforms constraint-statements ("we can\'t...") into possibility-expanding questions.', visual: 'ThreePillarsDiagram' },
+    { type: 'explain', title: 'What HMW (How Might We) is', content: 'A question pattern — "How might we... ?" — that converts a problem into a solvable inquiry. It transforms constraint-statements ("we can\'t...") into possibility-expanding questions.', visual: 'ThreePillarsDiagram', visualProps: {
+      sectionLabel: 'HMW — the three words that frame the question',
+      pillars: [
+        { icon: 'H', title: 'How (in what way)', body: 'Point toward a solution and make it action-oriented' },
+        { icon: 'M', title: 'Might (could we)', body: 'Stay open, not decisive. Allow many possible answers' },
+        { icon: 'W', title: 'We (the team)', body: 'Set a subject who owns the problem' },
+      ],
+      hint: 'Recast a constraint as "how might we... ?" and possibilities open up',
+    } },
     { type: 'quiz', question: 'Reframe the issue "users don\'t stay in the app" as an HMW. Which is best?', options: [
       { label: '"Why don\'t users stay?"', correct: false },
       { label: '"How might we make users want to use this every day?"', correct: true },
@@ -147,7 +155,15 @@ const lateralPMI: LessonData = {
   title: 'Use PMI to expand perspective deliberately',
   category: 'Lateral Thinking',
   steps: [
-    { type: 'explain', title: 'What PMI is', content: 'Plus / Minus / Interesting — evaluating an idea from these three angles. Proposed by Edward de Bono. Adding "Interesting" produces thinking that goes beyond fixed binary opposition.', visual: 'ThreePillarsDiagram' },
+    { type: 'explain', title: 'What PMI is', content: 'Plus / Minus / Interesting — evaluating an idea from these three angles. Proposed by Edward de Bono. Adding "Interesting" produces thinking that goes beyond fixed binary opposition.', visual: 'ThreePillarsDiagram', visualProps: {
+      sectionLabel: 'PMI — three angles on an idea',
+      pillars: [
+        { icon: 'P', title: 'Plus', body: 'List the upsides and benefits of the idea' },
+        { icon: 'M', title: 'Minus', body: 'List the downsides, risks, and drawbacks' },
+        { icon: 'I', title: 'Interesting', body: 'List what is intriguing, beyond good or bad' },
+      ],
+      hint: 'Adding "Interesting" lets you think past the for-or-against binary',
+    } },
     { type: 'quiz', question: 'Apply PMI to "make all employees work from home 3 days a week." Which is the best Interesting?', options: [
       { label: 'Reduced commuting costs (cost savings)', correct: false },
       { label: 'Communication may decrease (risk)', correct: false },
@@ -178,7 +194,7 @@ const analogyMapping: LessonData = {
   title: 'Map structure to borrow solutions',
   category: 'Analogical Thinking',
   steps: [
-    { type: 'explain', title: 'What structural mapping is', content: 'The core of analogy is not "surface similarity" but finding "structural similarity." "Military supply systems" and "supply chain management" share structure across very different fields. Explicitly mapping structure makes the analogy usable.', visual: 'WhereWhyHowDiagram' },
+    { type: 'explain', title: 'What structural mapping is', content: 'The core of analogy is not "surface similarity" but finding "structural similarity." "Military supply systems" and "supply chain management" share structure across very different fields. Explicitly mapping structure makes the analogy usable.' },
     { type: 'quiz', question: 'Apply the analogy of "the immune system (the body\'s defense)" to organizational security. Which has the most structural correspondence?', options: [
       { label: 'White blood cells → all employees', correct: false },
       { label: 'Immune memory → past incident records and response playbooks', correct: true },
@@ -256,7 +272,20 @@ const caseSynthesis: LessonData = {
   title: 'Synthesize the analysis into a recommendation',
   category: 'Case Interview',
   steps: [
-    { type: 'explain', title: 'The case interview\'s final step: synthesis and recommendation', content: 'Case interviews are not graded only on analytical skill. The most important point is "can you synthesize your analysis and produce a clear recommendation?" The required closing structure is "Therefore... we should... For three reasons: (1) (2) (3)."', visual: 'WhereWhyHowDiagram' },
+    { type: 'explain', title: 'The case interview\'s final step: synthesis and recommendation', content: 'Case interviews are not graded only on analytical skill. The most important point is "can you synthesize your analysis and produce a clear recommendation?" The required closing structure is "Therefore... we should... For three reasons: (1) (2) (3)."', visual: 'PyramidDiagram', visualProps: {
+      conclusion: { label: 'Recommendation', body: 'We recommend entering the market' },
+      claims: [
+        { label: 'Reason 1', body: 'Market size' },
+        { label: 'Reason 2', body: 'Competitive edge' },
+        { label: 'Reason 3', body: 'Feasibility' },
+      ],
+      evidence: [
+        ['The market is growing', 'Latent demand is large'],
+        ['Our strengths apply', 'We can differentiate'],
+        ['Resources are secured', 'Exit risk is low'],
+      ],
+      hint: 'Lead with the conclusion, support it with three reasons. A vague close is the biggest deduction',
+    } },
     { type: 'quiz', question: 'At the end of a market-entry case, you\'re asked "should we enter or not?" What\'s the best closing?', options: [
       { label: 'Balance pros and cons; conclude that the final decision is up to the company', correct: false },
       { label: '"I recommend entry. Three reasons: market size, competitive advantage, and feasibility."', correct: true },
