@@ -472,33 +472,54 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
         {(() => {
           const pinnedCourses = getPinnedCourses()
           if (pinnedCourses.length === 0) return null
+          // 他カテゴリと同じ collapsedGroups の開閉メカニズムに含める（擬似グループID）
+          const pinnedGroupId = 'pinned-fermi'
+          const pinnedLabel = t('roadmap.pinnedFermiLabel')
+          const collapsed = collapsedGroups.has(pinnedGroupId)
+          const panelId = `course-group-${pinnedGroupId}`
           return (
             <div key="pinned-fermi" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <div style={{ padding: '8px 4px 0' }}>
-                <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-.005em' }}>{t('roadmap.pinnedFermiLabel')}</div>
-                <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.45 }}>{t('roadmap.pinnedFermiDescription')}</div>
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                {pinnedCourses.map(course => {
-                  const v = CATEGORY_VISUAL[course.category] || DEFAULT_VISUAL
-                  const cardImage = course.image || v.image
-                  return (
-                    <CategoryCard
-                      key={course.id}
-                      name={course.title}
-                      meta={t('roadmap.lessonCountAndLevel', { count: course.lessonIds.length, level: levelLabel(course.level) })}
-                      image={cardImage}
-                      onClick={() => props.onOpenCategory(v.routeKey)}
-                      saveTarget={{
-                        refId: v.routeKey,
-                        title: course.title,
-                        subtitle: course.category,
-                        image: cardImage,
-                      }}
-                    />
-                  )
-                })}
-              </div>
+              <button
+                type="button"
+                onClick={() => toggleGroup(pinnedGroupId)}
+                aria-expanded={!collapsed}
+                aria-controls={panelId}
+                aria-label={collapsed ? t('roadmap.expandGroupAria', { group: pinnedLabel }) : t('roadmap.collapseGroupAria', { group: pinnedLabel })}
+                style={{ padding: '8px 4px 0', display: 'flex', alignItems: 'flex-start', gap: 8, background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', width: '100%', color: 'inherit', font: 'inherit' }}
+              >
+                <span aria-hidden="true" style={{ flexShrink: 0, marginTop: 2, color: 'var(--text-secondary)', display: 'inline-flex' }}>
+                  {collapsed
+                    ? <ChevronRightIcon width={18} height={18} />
+                    : <ChevronDownIcon width={18} height={18} />}
+                </span>
+                <span style={{ flex: 1, minWidth: 0 }}>
+                  <span style={{ display: 'block', fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-.005em' }}>{pinnedLabel}</span>
+                  <span style={{ display: 'block', fontSize: 12, color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.45 }}>{t('roadmap.pinnedFermiDescription')}</span>
+                </span>
+              </button>
+              {!collapsed && (
+                <div id={panelId} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                  {pinnedCourses.map(course => {
+                    const v = CATEGORY_VISUAL[course.category] || DEFAULT_VISUAL
+                    const cardImage = course.image || v.image
+                    return (
+                      <CategoryCard
+                        key={course.id}
+                        name={course.title}
+                        meta={t('roadmap.lessonCountAndLevel', { count: course.lessonIds.length, level: levelLabel(course.level) })}
+                        image={cardImage}
+                        onClick={() => props.onOpenCategory(v.routeKey)}
+                        saveTarget={{
+                          refId: v.routeKey,
+                          title: course.title,
+                          subtitle: course.category,
+                          image: cardImage,
+                        }}
+                      />
+                    )
+                  })}
+                </div>
+              )}
             </div>
           )
         })()}
