@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Logic 刷新ワイヤフレーム — clickable</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Caveat:wght@600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    /* synthesis tokens: Notion 土台 + Linear 規律 + Stripe プレミアム */
+    --brand:#3D5FC4; --brand-press:#314fa6; --brand-soft:#EEF2FE; --brand-ink:#26397a;
+    --ink:#1b2330; --ink-2:#5b6573; --ink-3:#9aa2b0;
+    --canvas:#ffffff; --surface:#f6f8fc; --surface-2:#eef1f7;
+    --hairline:#e6e9f0; --hairline-strong:#d4d9e4;
+    --navy:#161b38; --navy-soft:#222a52;
+    /* Notion 由来 pastel category tints */
+    --t-sky:#dcecfa; --t-mint:#d9f3e1; --t-lavender:#e6e0f5; --t-peach:#ffe8d4; --t-rose:#fde0ec; --t-amber:#fef3cf;
+    --t-sky-ink:#1c4f86; --t-mint-ink:#1d6b3a; --t-lavender-ink:#4a2f7a; --t-peach-ink:#8a4a12; --t-rose-ink:#9a2e63; --t-amber-ink:#7a5a10;
+    --r-btn:10px; --r-card:16px; --r-pill:999px;
+    --ok:#1aae39; --warn:#dd7000; --gold:#caa23a;
+    --shadow-1:0 1px 2px rgba(20,30,50,.05);
+    --shadow-2:0 6px 20px rgba(20,30,50,.08);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+  html,body{margin:0}
+  body{
+    font-family:Inter,-apple-system,system-ui,'Segoe UI',Roboto,sans-serif;
+    background:#0e1320;
+    color:var(--ink);
+    padding:28px 16px 64px;
+    line-height:1.55;
+  }
+  .num{font-variant-numeric:tabular-nums} /* Stripe 由来: 数値は桁揃え */
+  .hand{font-family:Caveat,cursive}
+
+  /* ---- page chrome ---- */
+  .page-head{max-width:1080px;margin:0 auto 22px;color:#e7ebf5}
+  .page-head h1{font-size:22px;font-weight:700;margin:0 0 6px;letter-spacing:-.4px}
+  .page-head p{margin:0;color:#9aa6c4;font-size:13px;max-width:760px}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .chip{font-size:11.5px;font-weight:600;padding:5px 11px;border-radius:var(--r-pill);background:#1b2236;color:#aab6d8;border:1px solid #2a3350}
+  .chip b{color:#fff;font-weight:700}
+
+  .stage{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:1fr 320px;gap:26px;align-items:start}
+  @media(max-width:860px){.stage{grid-template-columns:1fr}.legend{order:-1}}
+
+  /* ---- phone ---- */
+  .phone-wrap{display:flex;justify-content:center}
+  .phone{
+    width:390px;max-width:100%;height:780px;background:var(--canvas);
+    border-radius:42px;border:11px solid #05080f;position:relative;overflow:hidden;
+    box-shadow:0 30px 70px rgba(0,0,0,.5);display:flex;flex-direction:column;
+  }
+  .statusbar{height:34px;flex:0 0 34px;display:flex;align-items:center;justify-content:space-between;
+    padding:0 22px;font-size:12.5px;font-weight:600;color:var(--ink);background:var(--canvas)}
+  .statusbar .dots{letter-spacing:2px;color:var(--ink-2)}
+  .viewport{flex:1;overflow-y:auto;background:var(--surface);scroll-behavior:smooth}
+  .viewport::-webkit-scrollbar{width:0}
+
+  .screen{display:none;padding:0 0 18px;animation:fade .18s ease}
+  .screen.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+  /* ---- app bar ---- */
+  .appbar{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--hairline);padding:12px 18px;display:flex;align-items:center;gap:10px}
+  .appbar .title{font-size:17px;font-weight:700;letter-spacing:-.3px}
+  .appbar .sub{font-size:12px;color:var(--ink-3);font-weight:500}
+  .appbar .back{font-size:18px;color:var(--brand);cursor:pointer;font-weight:600;width:24px}
+  .appbar .spacer{flex:1}
+  .icon-btn{width:34px;height:34px;border-radius:10px;background:var(--surface-2);display:grid;place-items:center;color:var(--ink-2);font-size:15px}
+
+  .pad{padding:16px 18px}
+  .sec-title{font-size:13px;font-weight:700;color:var(--ink-2);text-transform:none;margin:22px 18px 10px;letter-spacing:.1px}
+  .sec-title:first-child{margin-top:16px}
+
+  /* ---- generic ui ---- */
+  .card{background:var(--canvas);border:1px solid var(--hairline);border-radius:var(--r-card);box-shadow:var(--shadow-1)}
+  .card.pad{padding:16px}
+  .row{display:flex;align-items:center;gap:12px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-family:inherit;font-size:15px;font-weight:600;
+    border:0;border-radius:var(--r-btn);padding:12px 18px;cursor:pointer;width:100%}
+  .btn.primary{background:var(--brand);color:#fff}
+  .btn.primary:active{background:var(--brand-press)}
+  .btn.ghost{background:var(--surface-2);color:var(--ink)}
+  .btn.dark{background:var(--navy);color:#fff}
+  .btn.sm{padding:9px 14px;font-size:13.5px;width:auto}
+  .ph{background:repeating-linear-gradient(45deg,#eef1f7,#eef1f7 7px,#e7ebf3 7px,#e7ebf3 14px);
+    border-radius:10px;display:grid;place-items:center;color:#aab1c2;font-size:11px;font-weight:600}
+  .pill{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:var(--r-pill)}
+  .pill.brand{background:var(--brand-soft);color:var(--brand-ink)}
+  .pill.gold{background:#fbf2d6;color:var(--gold)}
+  .muted{color:var(--ink-3)}
+  .h2{font-size:20px;font-weight:700;letter-spacing:-.4px;margin:0}
+  .lead{color:var(--ink-2);font-size:14px;margin:6px 0 0}
+  .hr{height:1px;background:var(--hairline);border:0;margin:0}
+  .tap{cursor:pointer}
+
+  /* ---- tab bar ---- */
+  .tabbar{flex:0 0 64px;display:flex;background:var(--canvas);border-top:1px solid var(--hairline)}
+  .tabbar .tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+    font-size:10.5px;font-weight:600;color:var(--ink-3);cursor:pointer;padding-top:6px}
+  .tabbar .tab .ic{width:22px;height:22px;border-radius:7px;background:var(--surface-2);display:grid;place-items:center;font-size:12px}
+  .tabbar .tab.on{color:var(--brand)}
+  .tabbar .tab.on .ic{background:var(--brand-soft);color:var(--brand)}
+
+  /* ---- specific blocks ---- */
+  .hero-greet{font-size:13px;color:var(--ink-3);font-weight:500}
+  .streak-card{background:linear-gradient(135deg,var(--brand) 0%,#5468cf 100%);color:#fff;border:0}
+  .streak-card .big{font-size:34px;font-weight:700;line-height:1;letter-spacing:-1px}
+  .stat3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .stat3 .s{background:var(--canvas);border:1px solid var(--hairline);border-radius:14px;padding:12px 10px;text-align:center}
+  .stat3 .s .v{font-size:20px;font-weight:700;letter-spacing:-.5px}
+  .stat3 .s .k{font-size:11px;color:var(--ink-3);font-weight:600;margin-top:2px}
+
+  .lesson-thumb{height:120px;border-radius:14px 14px 0 0;position:relative;overflow:hidden;
+    background:#fbf6ea;border-bottom:1px solid var(--hairline);display:flex;align-items:flex-end;padding:12px}
+  .lesson-thumb .hand{font-size:24px;color:#2c3550;line-height:1}
+  .lesson-thumb .coral{position:absolute;left:12px;bottom:8px;width:60px;height:4px;background:#f08a7a;border-radius:3px}
+
+  .catrow{display:flex;gap:10px;overflow-x:auto;padding:2px 18px 6px;scrollbar-width:none}
+  .catrow::-webkit-scrollbar{display:none}
+  .cattag{flex:0 0 auto;font-size:12.5px;font-weight:600;padding:7px 13px;border-radius:var(--r-pill);background:var(--canvas);border:1px solid var(--hairline);color:var(--ink-2)}
+  .cattag.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+  .node{display:flex;gap:12px;align-items:flex-start;padding:0 18px;position:relative}
+  .node .rail{display:flex;flex-direction:column;align-items:center;flex:0 0 28px}
+  .node .dot{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;color:#fff;background:var(--brand);z-index:1}
+  .node .dot.done{background:var(--ok)}
+  .node .dot.todo{background:var(--canvas);border:2px solid var(--hairline-strong);color:var(--ink-3)}
+  .node .line{width:2px;flex:1;background:var(--hairline);margin:2px 0}
+  .node .body{flex:1;padding-bottom:16px}
+  .node .body .t{font-size:14.5px;font-weight:600;margin-bottom:2px}
+  .node .body .d{font-size:12px;color:var(--ink-3)}
+
+  /* lesson reading */
+  .read{padding:18px 20px 28px;background:var(--canvas)}
+  .progress{height:4px;background:var(--surface-2);border-radius:3px;overflow:hidden;margin-bottom:18px}
+  .progress i{display:block;height:100%;width:42%;background:var(--brand);border-radius:3px}
+  .read h2{font-size:21px;font-weight:700;letter-spacing:-.4px;margin:0 0 14px}
+  .read p{font-size:16px;line-height:1.7;color:#2a3140;margin:0 0 16px} /* Notion 由来: 行間1.7で読み心地 */
+  .callout{border-radius:12px;padding:13px 14px 13px 16px;margin:6px 0 18px;font-size:14.5px;line-height:1.6;display:flex;gap:10px}
+  .callout .ic{flex:0 0 20px;font-size:16px}
+  .callout.point{background:var(--brand-soft);border-left:3px solid var(--brand);color:var(--brand-ink)}
+  .callout.tip{background:var(--t-amber);border-left:3px solid var(--gold);color:var(--t-amber-ink)}
+  .callout.warn{background:#fdeede;border-left:3px solid var(--warn);color:var(--t-peach-ink)}
+  .diagram{height:170px;border-radius:14px;margin:6px 0 18px}
+  .gb{display:flex;gap:8px;margin:0 0 18px}
+  .gb .c{flex:1;border-radius:12px;padding:11px 12px;font-size:13.5px;line-height:1.5}
+  .gb .good{background:var(--t-mint);color:var(--t-mint-ink)}
+  .gb .bad{background:var(--t-rose);color:var(--t-rose-ink)}
+  .gb .lbl{font-weight:700;font-size:12px;display:block;margin-bottom:3px}
+  .read-foot{position:sticky;bottom:0;background:linear-gradient(to top,#fff 70%,transparent);padding:14px 0 4px;margin-top:8px}
+
+  /* fermi */
+  .fermi-q{background:var(--navy);color:#fff;border-radius:16px;padding:18px}
+  .fermi-q .tag{font-size:11px;font-weight:700;color:#9fb0ff;letter-spacing:.5px}
+  .fermi-q .q{font-size:17px;font-weight:600;line-height:1.5;margin-top:8px}
+  .calc{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
+  .calc .k{background:var(--canvas);border:1px solid var(--hairline);border-radius:11px;padding:13px 0;text-align:center;font-size:16px;font-weight:600}
+  .calc .k.op{background:var(--surface-2);color:var(--brand)}
+  .calc .k.wide{grid-column:span 2}
+
+  /* journal */
+  .seg{display:flex;background:var(--surface-2);border-radius:12px;padding:4px;gap:4px}
+  .seg .s{flex:1;text-align:center;font-size:13px;font-weight:600;padding:8px;border-radius:9px;color:var(--ink-2)}
+  .seg .s.on{background:var(--canvas);color:var(--ink);box-shadow:var(--shadow-1)}
+  .moods{display:flex;justify-content:space-between;margin:14px 2px}
+  .moods .m{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-size:22px;background:var(--surface-2)}
+  .moods .m.on{background:var(--brand-soft);outline:2px solid var(--brand)}
+
+  /* ranking */
+  .rank-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--hairline)}
+  .rank-row .n{width:24px;text-align:center;font-weight:700;font-size:15px;color:var(--ink-3)}
+  .rank-row .n.top{color:var(--gold)}
+  .rank-row .av{width:38px;height:38px;border-radius:50%;background:var(--surface-2)}
+  .rank-row .nm{flex:1;font-size:14px;font-weight:600}
+  .rank-row .nm small{display:block;font-weight:500;color:var(--ink-3);font-size:11.5px}
+  .rank-row .sc{font-weight:700;font-size:15px}
+  .rank-me{background:var(--brand-soft);border-radius:12px;border-bottom:0;padding-left:10px;padding-right:10px}
+
+  /* profile */
+  .prof-head{display:flex;flex-direction:column;align-items:center;padding:24px 18px 10px;background:linear-gradient(180deg,var(--brand-soft),var(--canvas))}
+  .prof-head .av{width:74px;height:74px;border-radius:50%;background:var(--canvas);border:2px solid var(--brand);display:grid;place-items:center;font-size:28px}
+  .prof-head .nm{font-size:18px;font-weight:700;margin-top:10px}
+  .prof-head .ti{margin-top:4px}
+  .badges{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .badges .b{aspect-ratio:1;border-radius:14px;background:var(--surface-2);display:grid;place-items:center;font-size:24px;border:1px solid var(--hairline)}
+  .badges .b.lock{opacity:.4;font-size:16px}
+  .badges .b.got{background:linear-gradient(135deg,#fbf2d6,#f6e3a8)}
+
+  /* custom course */
+  .promptbox{background:var(--canvas);border:1.5px solid var(--brand);border-radius:14px;padding:14px;min-height:96px;color:var(--ink-3);font-size:14px}
+  .examples{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+  .ex{background:var(--surface);border:1px solid var(--hairline);border-radius:11px;padding:11px 13px;font-size:13.5px;color:var(--ink-2)}
+
+  /* upgrade */
+  .plan{border-radius:16px;padding:20px;color:#fff;background:var(--navy);position:relative;overflow:hidden}
+  .plan .badge{position:absolute;top:14px;right:14px}
+  .plan .price{font-size:34px;font-weight:700;letter-spacing:-1px}
+  .plan .price small{font-size:14px;font-weight:500;color:#aeb8e6}
+  .feat{display:flex;gap:10px;align-items:flex-start;font-size:14px;margin:11px 0;color:#dfe4f5}
+  .feat .ck{color:#8fe6a4;font-weight:700}
+
+  /* legend / notes */
+  .legend{background:#141a2c;border:1px solid #28324f;border-radius:16px;padding:18px;color:#c4cce4;position:sticky;top:18px}
+  .legend h3{margin:0 0 10px;font-size:14px;color:#fff}
+  .legend .item{font-size:12.5px;line-height:1.6;margin-bottom:13px}
+  .legend .item b{color:#fff}
+  .legend .k{display:inline-block;font-size:11px;font-weight:700;padding:2px 7px;border-radius:6px;margin-right:4px}
+  .legend .k.n{background:#3a2e57;color:#cdb6f5}
+  .legend .k.l{background:#2a2f50;color:#aeb8ff}
+  .legend .k.s{background:#173a2a;color:#8fe6a4}
+  .legend .jump{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .legend .jump a{font-size:11.5px;font-weight:600;color:#aeb8ff;background:#1c2238;border:1px solid #2c3350;border-radius:7px;padding:5px 9px;cursor:pointer;text-decoration:none}
+</style>
+</head>
+<body>
+
+<div class="page-head">
+  <h1>Logic 刷新ワイヤフレーム <span class="muted" style="font-weight:500;font-size:14px">/ clickable 試作</span></h1>
+  <p>合成デザイン言語を主要9画面に落とした低〜中忠実度のワイヤ。スマホ枠の中はタップで遷移します（下タブ＋カードのホットスポット）。色・タイポは方向性確認用で、写真/サムネはグレーのプレースホルダです。</p>
+  <div class="chips">
+    <span class="chip"><b>Notion</b> 土台：ライト・読み心地・パステルでカテゴリ色分け</span>
+    <span class="chip"><b>Linear</b> 規律：アクセント青1色・面で階層・見出し詰め</span>
+    <span class="chip"><b>Stripe</b> プレミアム：数値は桁揃え・濃紺の課金カード</span>
+  </div>
+</div>
+
+<div class="stage">
+  <div class="phone-wrap">
+    <div class="phone">
+      <div class="statusbar"><span class="num">9:41</span><span class="dots">●●● ▮</span></div>
+      <div class="viewport" id="vp">
+
+        <!-- ============ HOME ============ -->
+        <section class="screen active" id="home">
+          <div class="appbar">
+            <div><div class="title">こんにちは</div><div class="sub hero-greet">今日も1問ずつ、思考を鍛えましょう</div></div>
+            <div class="spacer"></div>
+            <div class="icon-btn">🔔</div>
+          </div>
+          <div class="pad">
+            <div class="card streak-card pad" style="border-radius:16px">
+              <div class="row">
+                <div><div style="font-size:12px;opacity:.85;font-weight:600">連続学習</div>
+                  <div class="big num">12<span style="font-size:15px;font-weight:600"> 日</span></div></div>
+                <div class="spacer"></div>
+                <div class="hand" style="font-size:40px">🔥</div>
+              </div>
+            </div>
+
+            <div class="stat3" style="margin-top:14px">
+              <div class="s"><div class="v num">38</div><div class="k">レッスン完了</div></div>
+              <div class="s"><div class="v num">4.2<small style="font-size:11px">h</small></div><div class="k">今週の学習</div></div>
+              <div class="s"><div class="v num">#7</div><div class="k">今週の順位</div></div>
+            </div>
+          </div>
+
+          <div class="sec-title">今日のフェルミ推定</div>
+          <div class="pad" style="padding-top:0">
+            <div class="card tap" data-go="fermi" style="overflow:hidden">
+              <div class="ph" style="height:96px;border-radius:0">DAILY FERMI 図</div>
+              <div class="pad">
+                <div style="font-size:15px;font-weight:600">日本に郵便ポストは何本ある？</div>
+                <div class="muted" style="font-size:12.5px;margin-top:4px">推定して、みんなの回答と比べてみましょう</div>
+                <div class="row" style="margin-top:10px"><span class="pill brand">+15 XP</span><div class="spacer"></div><span class="btn primary sm">挑戦する →</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sec-title">続きから</div>
+          <div class="pad" style="padding-top:0">
+            <div class="card tap" data-go="lesson" style="overflow:hidden">
+              <div class="row" style="padding:14px">
+                <div class="ph" style="width:64px;height:64px">図</div>
+                <div style="flex:1">
+                  <div class="pill brand" style="margin-bottom:6px">論理の基本</div>
+                  <div style="font-size:14.5px;font-weight:600;line-height:1.4">MECE で漏れなくダブりなく整理する</div>
+                  <div class="progress" style="margin:8px 0 0"><i style="width:42%"></i></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sec-title">あなた専用コースを作る</div>
+          <div class="pad" style="padding-top:0">
+            <div class="card tap pad" data-go="custom" style="background:var(--t-lavender);border-color:#d8cdf0">
+              <div class="row">
+                <div style="font-size:24px">✦</div>
+                <div style="flex:1"><div style="font-size:14.5px;font-weight:700;color:var(--t-lavender-ink)">学びたいことを書くだけ</div>
+                  <div style="font-size:12.5px;color:#6b5a93">AI が最適なレッスンを選んでコース化</div></div>
+                <div style="color:var(--t-lavender-ink);font-size:18px">→</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ LESSONS / ROADMAP ============ -->
+        <section class="screen" id="lessons">
+          <div class="appbar"><div class="title">レッスン</div><div class="spacer"></div><div class="icon-btn">🔍</div></div>
+          <div class="catrow">
+            <span class="cattag on">すべて</span><span class="cattag">論理の基本</span><span class="cattag">数値感覚</span>
+            <span class="cattag">問題解決</span><span class="cattag">批判的思考</span><span class="cattag">哲学</span>
+          </div>
+
+          <div class="sec-title" style="margin-top:14px">論理の基本コース</div>
+          <div style="padding-top:4px">
+            <div class="node">
+              <div class="rail"><div class="dot done">✓</div><div class="line"></div></div>
+              <div class="body tap" data-go="lesson"><div class="t">主張と根拠を分けて考える</div><div class="d">完了 ・ 5 スライド</div></div>
+            </div>
+            <div class="node">
+              <div class="rail"><div class="dot done">✓</div><div class="line"></div></div>
+              <div class="body tap" data-go="lesson"><div class="t">演繹と帰納を使い分ける</div><div class="d">完了 ・ 6 スライド</div></div>
+            </div>
+            <div class="node">
+              <div class="rail"><div class="dot">3</div><div class="line"></div></div>
+              <div class="body tap" data-go="lesson">
+                <div class="t">MECE で漏れなくダブりなく整理する</div><div class="d" style="color:var(--brand);font-weight:600">学習中 ・ 42%</div></div>
+            </div>
+            <div class="node">
+              <div class="rail"><div class="dot todo">4</div><div class="line"></div></div>
+              <div class="body"><div class="t" style="color:var(--ink-3)">ロジックツリーで分解する</div><div class="d">未開始 ・ 5 スライド</div></div>
+            </div>
+            <div class="node">
+              <div class="rail"><div class="dot todo">5</div></div>
+              <div class="body"><div class="t" style="color:var(--ink-3)">ピラミッド原則で結論から話す</div><div class="d">未開始 ・ 7 スライド</div></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ LESSON READING ============ -->
+        <section class="screen" id="lesson">
+          <div class="appbar"><div class="back" data-go="lessons">‹</div>
+            <div><div class="title" style="font-size:15px">MECE</div><div class="sub">スライド 3 / 7</div></div>
+            <div class="spacer"></div><div class="icon-btn">♪</div></div>
+          <div class="read">
+            <div class="progress"><i></i></div>
+            <h2>「ダブり」はなぜ起きるのか</h2>
+            <p>分類した項目どうしが重なっていると、同じ話を二度数えてしまいます。たとえば顧客を「新規」「20代」と分けると、20代の新規客がどちらにも入ってしまいます。</p>
+
+            <div class="ph diagram">図解：重なり合う集合（ダブりの可視化）</div>
+
+            <p>重なりをなくす鍵は、分ける「軸」をひとつに保つことです。年齢で分けるなら最後まで年齢で、契約状態で分けるなら契約状態で揃えます。</p>
+
+            <div class="gb">
+              <div class="c good"><span class="lbl">✓ 良い例</span>新規 / 既存（契約状態の1軸）</div>
+              <div class="c bad"><span class="lbl">✕ 悪い例</span>新規 / 20代（軸が混在）</div>
+            </div>
+
+            <div class="callout point"><span class="ic">◎</span><div><b>要点：</b>分類は「軸をひとつ」に保つとダブりが消えます。</div></div>
+
+            <p>慣れるまでは、分けたあとに「どれか2つに同時に当てはまる人はいないか？」と一度だけ問い直すのがおすすめです。</p>
+
+            <div class="callout tip"><span class="ic">💡</span><div>迷ったら、分類軸を口に出して言ってみると混在に気づきやすくなります。</div></div>
+
+            <div class="read-foot"><button class="btn primary">次へ →</button></div>
+          </div>
+        </section>
+
+        <!-- ============ FERMI ============ -->
+        <section class="screen" id="fermi">
+          <div class="appbar"><div class="title">フェルミ推定</div><div class="spacer"></div><span class="pill gold">🏅 連続 5日</span></div>
+          <div class="pad">
+            <div class="fermi-q">
+              <div class="tag">本日の問題</div>
+              <div class="q">日本に郵便ポストは何本ある？</div>
+            </div>
+
+            <div class="sec-title" style="margin:18px 0 8px">あなたの推定</div>
+            <div class="card pad" style="text-align:center">
+              <div class="num" style="font-size:30px;font-weight:700;letter-spacing:-1px">18<span style="font-size:16px;color:var(--ink-3)"> 万本</span></div>
+              <div class="muted" style="font-size:12px;margin-top:2px">桁で考える：10万 〜 100万</div>
+            </div>
+
+            <div class="calc">
+              <div class="k">7</div><div class="k">8</div><div class="k">9</div><div class="k op">÷</div>
+              <div class="k">4</div><div class="k">5</div><div class="k">6</div><div class="k op">×</div>
+              <div class="k">1</div><div class="k">2</div><div class="k">3</div><div class="k op">万</div>
+              <div class="k wide">0</div><div class="k">.</div><div class="k op">億</div>
+            </div>
+            <button class="btn primary" style="margin-top:14px">回答する</button>
+            <div class="muted" style="font-size:12px;text-align:center;margin-top:10px">回答後、みんなの分布と模範解答が見られます</div>
+          </div>
+        </section>
+
+        <!-- ============ JOURNAL ============ -->
+        <section class="screen" id="journal">
+          <div class="appbar"><div class="title">ジャーナル</div><div class="spacer"></div><span class="pill gold">🔥 8</span></div>
+          <div class="pad">
+            <div class="seg"><div class="s on">朝</div><div class="s">夜</div></div>
+
+            <div class="sec-title" style="margin:18px 0 6px;padding:0">今の気分</div>
+            <div class="moods">
+              <div class="m">😞</div><div class="m">😐</div><div class="m on">🙂</div><div class="m">😊</div><div class="m">🤩</div>
+            </div>
+
+            <div class="sec-title" style="margin:6px 0 8px;padding:0">今日意識すること</div>
+            <div class="card pad" style="min-height:90px;color:var(--ink-3);font-size:14px">結論から話す。会議では最初に「結論は〜です」と言ってみる。</div>
+
+            <div class="card pad" style="margin-top:12px;background:var(--t-mint);border-color:#c4ead0">
+              <div class="row"><span style="font-size:18px">✦</span>
+                <div style="font-size:13px;color:var(--t-mint-ink)"><b>AI がタグを提案：</b> #意思決定 #会議術</div></div>
+            </div>
+            <button class="btn primary" style="margin-top:14px">記録する</button>
+          </div>
+        </section>
+
+        <!-- ============ RANKING ============ -->
+        <section class="screen" id="ranking">
+          <div class="appbar"><div class="title">ランキング</div><div class="spacer"></div><div class="icon-btn">ⓘ</div></div>
+          <div class="pad">
+            <div class="seg"><div class="s on">今週</div><div class="s">職種別</div><div class="s">総合</div></div>
+            <div style="margin-top:14px">
+              <div class="rank-row"><div class="n top num">1</div><div class="av"></div><div class="nm">Hiroshi K.<small>コンサルタント</small></div><div class="sc num">2,480</div></div>
+              <div class="rank-row"><div class="n top num">2</div><div class="av"></div><div class="nm">Mai S.<small>マーケター</small></div><div class="sc num">2,310</div></div>
+              <div class="rank-row"><div class="n top num">3</div><div class="av"></div><div class="nm">Yuto N.<small>エンジニア</small></div><div class="sc num">2,150</div></div>
+              <div class="rank-row"><div class="n num">4</div><div class="av"></div><div class="nm">Aoi T.<small>企画</small></div><div class="sc num">1,990</div></div>
+              <div class="rank-row"><div class="n num">5</div><div class="av"></div><div class="nm">Ken M.<small>営業</small></div><div class="sc num">1,820</div></div>
+              <div class="rank-row rank-me"><div class="n num">7</div><div class="av" style="background:var(--brand);"></div><div class="nm">あなた<small>企画</small></div><div class="sc num" style="color:var(--brand)">1,640</div></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ PROFILE ============ -->
+        <section class="screen" id="profile">
+          <div class="prof-head">
+            <div class="av">🦉</div>
+            <div class="nm">Keita</div>
+            <div class="ti"><span class="pill gold">論理の使い手 ・ Lv.42</span></div>
+          </div>
+          <div class="pad" style="padding-top:6px">
+            <div class="stat3">
+              <div class="s"><div class="v num">12</div><div class="k">連続日数</div></div>
+              <div class="s"><div class="v num">38</div><div class="k">完了</div></div>
+              <div class="s"><div class="v num">26<small style="font-size:11px">h</small></div><div class="k">総学習</div></div>
+            </div>
+
+            <div class="sec-title" style="padding:0">称号バッジ <span class="muted" style="font-weight:500">7 / 16</span></div>
+            <div class="badges">
+              <div class="b got">🥉</div><div class="b got">🥈</div><div class="b got">🎖️</div><div class="b got">⭐</div>
+              <div class="b">🏅</div><div class="b lock">🔒</div><div class="b lock">🔒</div><div class="b lock">🔒</div>
+            </div>
+
+            <div class="card tap pad" data-go="upgrade" style="margin-top:18px;background:var(--navy);color:#fff;border:0">
+              <div class="row"><div><div style="font-weight:700;font-size:14.5px">Logic プレミアム</div>
+                <div style="font-size:12.5px;color:#aeb8e6">カスタムコース無制限・全機能解放</div></div>
+                <div class="spacer"></div><span class="btn sm" style="background:#fff;color:var(--navy)">見る</span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ CUSTOM COURSE ============ -->
+        <section class="screen" id="custom">
+          <div class="appbar"><div class="back" data-go="home">‹</div><div class="title" style="font-size:15px">あなた専用コース</div></div>
+          <div class="pad">
+            <h2 class="h2">何を学びたいですか？</h2>
+            <p class="lead">自然な言葉で書いてください。AI が全レッスンから最適なものを選び、順番に並べてコースにします。</p>
+            <div class="promptbox" style="margin-top:14px">例：来月プレゼンがあるので、構成の組み立てと数字の見せ方を短期間で身につけたい…</div>
+
+            <div class="sec-title" style="padding:0;margin-top:18px">こんな書き方も</div>
+            <div class="examples">
+              <div class="ex tap">「会議で論点がずれないように整理する力をつけたい」</div>
+              <div class="ex tap">「データを見て筋の良い仮説を立てられるようになりたい」</div>
+              <div class="ex tap">「批判的思考の基礎をひととおり押さえたい」</div>
+            </div>
+
+            <button class="btn primary" style="margin-top:16px">コースを作成 ✦</button>
+            <div class="muted" style="font-size:12px;text-align:center;margin-top:10px">無料プランは月 3 回まで ・ プレミアムは無制限</div>
+          </div>
+        </section>
+
+        <!-- ============ UPGRADE ============ -->
+        <section class="screen" id="upgrade">
+          <div class="appbar"><div class="back" data-go="profile">‹</div><div class="title" style="font-size:15px">プレミアム</div></div>
+          <div class="pad">
+            <h2 class="h2">思考力に、ちゃんと投資する。</h2>
+            <p class="lead">面接塾やビジネス書より手軽に、毎日続く思考トレーニングを。</p>
+
+            <div class="plan" style="margin-top:16px">
+              <span class="pill gold badge">おすすめ</span>
+              <div style="font-size:13px;color:#aeb8e6;font-weight:600">年額プラン</div>
+              <div class="price num">¥2,450<small> / 年</small></div>
+              <div style="font-size:12.5px;color:#aeb8e6;margin-top:2px">月あたり ¥204 ・ いつでも解約可</div>
+              <hr style="border:0;border-top:1px solid #2c3458;margin:16px 0" />
+              <div class="feat"><span class="ck">✓</span> カスタムコース生成が無制限</div>
+              <div class="feat"><span class="ck">✓</span> AI 問題生成・フラッシュカード</div>
+              <div class="feat"><span class="ck">✓</span> 全レッスン・全カテゴリ解放</div>
+              <div class="feat"><span class="ck">✓</span> 学習分析の詳細レポート</div>
+            </div>
+            <button class="btn dark" style="margin-top:16px;background:var(--brand)">プレミアムを始める</button>
+            <div class="muted" style="font-size:11.5px;text-align:center;margin-top:10px">月額プラン ¥350 / 月 もあります</div>
+          </div>
+        </section>
+
+      </div><!-- /viewport -->
+
+      <nav class="tabbar">
+        <div class="tab on" data-go="home"><div class="ic">⌂</div>ホーム</div>
+        <div class="tab" data-go="lessons"><div class="ic">▤</div>レッスン</div>
+        <div class="tab" data-go="fermi"><div class="ic">∿</div>フェルミ</div>
+        <div class="tab" data-go="journal"><div class="ic">✎</div>ジャーナル</div>
+        <div class="tab" data-go="profile"><div class="ic">◔</div>マイページ</div>
+      </nav>
+    </div>
+  </div>
+
+  <aside class="legend">
+    <h3>デザイン方針の対応</h3>
+    <div class="item"><span class="k n">N</span><b>読み心地</b>：レッスン本文は行間1.7・16px・余白広め。Notion のドキュメント設計を踏襲。</div>
+    <div class="item"><span class="k n">N</span><b>カテゴリ色分け</b>：パステル6色（sky/mint/lavender/peach/rose/amber）をカテゴリ・カードに割当。</div>
+    <div class="item"><span class="k l">L</span><b>アクセント1色</b>：青 #3D5FC4 のみを CTA・進捗・アクティブに使用。色を足さない規律。</div>
+    <div class="item"><span class="k l">L</span><b>面で階層</b>：影は最小、ヘアラインと面の重ねで階層を作る。8px 角丸ボタン（ピルにしない）。</div>
+    <div class="item"><span class="k s">S</span><b>数値は桁揃え</b>：連続日数・学習時間・順位・スコア・価格を tabular-nums で整列。</div>
+    <div class="item"><span class="k s">S</span><b>濃紺の格</b>：課金・称号など"格"を出す面は濃紺 #161b38。プレミアム導線に集中投下。</div>
+    <hr style="border:0;border-top:1px solid #28324f;margin:14px 0" />
+    <div class="item" style="margin-bottom:6px"><b>画面へジャンプ</b></div>
+    <div class="jump">
+      <a data-go="home">ホーム</a><a data-go="lessons">レッスン一覧</a><a data-go="lesson">レッスン本文</a>
+      <a data-go="fermi">フェルミ</a><a data-go="journal">ジャーナル</a><a data-go="ranking">ランキング</a>
+      <a data-go="profile">マイページ</a><a data-go="custom">カスタムコース</a><a data-go="upgrade">プレミアム</a>
+    </div>
+    <div class="item muted" style="margin-top:14px;font-size:11.5px;color:#7a85a8">※ 低〜中忠実度のワイヤです。コピー・数値・サムネは仮置き。構造と方向性の確認用。</div>
+  </aside>
+</div>
+
+<script>
+  var vp = document.getElementById('vp');
+  function go(id){
+    var t = document.getElementById(id);
+    if(!t) return;
+    document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});
+    t.classList.add('active');
+    // tab highlight
+    document.querySelectorAll('.tabbar .tab').forEach(function(tab){
+      tab.classList.toggle('on', tab.getAttribute('data-go')===id);
+    });
+    vp.scrollTop = 0;
+  }
+  document.addEventListener('click', function(e){
+    var el = e.target.closest('[data-go]');
+    if(el){ e.preventDefault(); go(el.getAttribute('data-go')); }
+  });
+</script>
+</body>
+</html>
