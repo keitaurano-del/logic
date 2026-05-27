@@ -10,6 +10,7 @@ import nodemailer from 'nodemailer'
 import { createFermiRouter } from './routes/fermi.js'
 import { createBillingRouter } from './routes/billing.js'
 import { createProblemsRouter } from './routes/problems.js'
+import { createCustomCourseRouter } from './routes/custom-course.js'
 import { createJournalRouter } from './routes/journal.js'
 import { createFeatureFlagsRouter } from './routes/feature-flags.js'
 import { createSyncTelemetryRouter } from './routes/sync-telemetry.js'
@@ -175,6 +176,15 @@ const journalLimiter = makeLimiter({
   msgEn: 'Too many journal requests. Please wait a minute and try again.',
 })
 
+// AI カスタムコース生成用: 1 時間 20 回（重い AI 呼び出し。回数制限自体は
+// custom-course.ts 側で課金プラン別に厳密にチェックするので、ここは保険）
+const generateCourseLimiter = makeLimiter({
+  windowMs: 60 * 60 * 1000,
+  max: 20,
+  msgJa: 'コース生成のリクエストが多すぎます。しばらく待ってからお試しください。',
+  msgEn: 'Too many course generation requests. Please try again later.',
+})
+
 // 管理者エンドポイント用: 1時間10回
 const adminLimiter = makeLimiter({
   windowMs: 60 * 60 * 1000,
@@ -212,6 +222,9 @@ app.get('/api/health', (_req, res) => { res.json({ ok: true }) })
 
 // Problems (flashcards/journal/generate-problems/user-problems/daily-problem)
 app.use(createProblemsRouter(client, supabase, flashcardsLimiter, generateProblemsLimiter, dailyProblemLimiter))
+
+// AI カスタムコース生成（POST /api/generate-course）
+app.use(createCustomCourseRouter(client, supabase, generateCourseLimiter))
 
 // フェルミ推定
 app.use('/api/fermi', createFermiRouter(client, supabase, fermiLimiter))

@@ -24,6 +24,7 @@ const AIProblemScreen = lazy(() => import('./screens/AIProblemScreen').then(m =>
 const FeedbackScreen = lazy(() => import('./screens/FeedbackScreen').then(m => ({ default: m.FeedbackScreen })))
 const PlacementTestScreen = lazy(() => import('./screens/PlacementTestScreen').then(m => ({ default: m.PlacementTestScreen })))
 const PersonalCourseScreen = lazy(() => import('./screens/PersonalCourseScreen').then(m => ({ default: m.PersonalCourseScreen })))
+const CustomCourseScreen = lazy(() => import('./screens/CustomCourseScreen').then(m => ({ default: m.CustomCourseScreen })))
 const PricingScreen = lazy(() => import('./screens/PricingScreen').then(m => ({ default: m.PricingScreen })))
 const StreakScreen = lazy(() => import('./screens/StreakScreen').then(m => ({ default: m.StreakScreen })))
 const AccountSettingsScreen = lazy(() => import('./screens/AccountSettingsScreen').then(m => ({ default: m.AccountSettingsScreen })))
@@ -118,6 +119,7 @@ type Screen =
   | { type: 'feedback' }
   | { type: 'placement-test' }
   | { type: 'personal-course' }
+  | { type: 'custom-course'; courseId: string }
   | { type: 'pricing' }
   | { type: 'streak' }
   | { type: 'account-settings' }
@@ -502,6 +504,8 @@ function AppV3() {
           onOpenPersonalCourse={() => navigate({ type: 'personal-course' })}
           onOpenPlacementTest={() => navigate({ type: 'placement-test' })}
           onOpenReviewHub={() => navigate({ type: 'review-hub' })}
+          onOpenCustomCourse={(courseId) => navigate({ type: 'custom-course', courseId })}
+          onUpgrade={() => navigate({ type: 'pricing' })}
         />
       )}
 
@@ -641,6 +645,14 @@ function AppV3() {
         <PersonalCourseScreen
           onStartLesson={handleOpenLesson}
           onExit={() => { setTab('home'); navigate({ type: 'home' }, true) }}
+          onBack={handleBack}
+        />
+      )}
+
+      {screen.type === 'custom-course' && (
+        <CustomCourseScreen
+          courseId={screen.courseId}
+          onStartLesson={handleOpenLesson}
           onBack={handleBack}
         />
       )}

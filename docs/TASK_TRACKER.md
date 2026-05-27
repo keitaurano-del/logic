@@ -6,6 +6,28 @@ task-manager エージェントが管理するタスク台帳の正本。
 
 ---
 
+## バッチ: 2026-05-27 トレーニング画面・AIカスタムコース（Keita）
+
+| ID | タイトル | 優先度 | ステータス | 担当 |
+|----|----------|--------|-----------|------|
+| TC-1 | フェルミ推定カテゴリも開閉可能に | P2 | DONE | dev-logic |
+| TC-2 | AIカスタムコース生成機能 | P1 | REVIEW | dev-logic |
+
+### TC-1 — フェルミ推定カテゴリ開閉　[DONE]
+- 完了（dev-logic 2026-05-27）: pinned-fermi を collapsedGroups に統合し、他カテゴリと同様に開閉可能化（上部固定の位置は維持）。tsc/eslint緑。commit 884bd30（ブランチ feat/ai-custom-course-20260527）。
+
+### TC-2 — AIカスタムコース生成機能　[IN_PROGRESS]
+- 依頼: レッスン検索画面のAIボタン → 自然文入力 → Claude が最適レッスンを選定 → その人専用コース生成 → ロードマップ上部「あなた専用コース」に表示。複数可。
+- 確定要件（Keita 2026-05-27）: 課金=無料も月3回/有料(isPaid)無制限。保存=localStorage+Supabase同期（新テーブル user_custom_courses、migration作成のみ）。コース複数保持。
+- 既存流用: placement の PersonalCourse/buildPersonalCourse、courseData の pinned 上部表示、server の AI エンドポイント雛形、subscription の isPaid/getAIGenerationLimit、roadmapStore の同期パターン。
+- サブタスク: ① migration（user_custom_courses + 無料回数集計）② POST /api/generate-course（レッスンメタ→Claude選定・課金/レート制限・id検証）③ customCourseStore（local+Supabase同期・複数CRUD）④ 検索AIボタン+入力UI ⑤ 上部「あなた専用コース」表示（複数・削除）⑥ 課金回数UI ⑦ i18n。
+- 抜けもれ提言: migration 適用は承認案件（未適用で実装）。Claude に渡すレッスンメタのトークン量に注意。存在しない lesson id の弾き。無料回数の月次集計テーブル。新規UI文言は ja/en＋中立丁寧体・emoji不可。両OS確認。
+- 担当: dev-logic（ブランチ feat/ai-custom-course-20260527）。
+- ✅ 実装完了（dev-logic 2026-05-27）: 新規5（migration 033 user_custom_courses+user_ai_course_usage 未適用／server/routes/custom-course.ts /api/generate-course／customCourseStore.ts／CustomCourseSheet.tsx／CustomCourseScreen.tsx）＋変更5（RoadmapScreenV3・AppV3・server/index・syncService・i18n）。tsc 0 / 本体lint 0 errors。AI選定= haiku-4-5、レッスンメタ id/title/category を最大400件・省トークン形式で渡し id 妥当性検証。課金=無料月3回（サーバ user_ai_course_usage が権威・429／クライアント概算表示、ゲストはレートリミッタ）。
+- 残: 実Claude生成は未テスト（コスト/方針上ローカル未実施、入力検証400系のみ確認）。migration 033 適用は承認案件。ゲスト enforcement 線引きは既存 problems.ts 同思想で妥当と林判断。
+
+---
+
 ## バッチ: 2026-05-27 修正依頼（Keita）
 
 | ID | タイトル | 優先度 | ステータス | 担当 |
