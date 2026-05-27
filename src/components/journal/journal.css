@@ -216,7 +216,17 @@
   font-size: 14px;
   line-height: 1.7;
   color: var(--text-primary);
-  white-space: pre-wrap;
+  /* 段落は JournalRichText が <p> で出力するため pre-wrap は不要。
+     行内の長い英数字だけ折り返せるようにしておく。 */
+  word-break: break-word;
+}
+
+.journal-summary-card__body p {
+  margin: 0;
+}
+
+.journal-summary-card__body p + p {
+  margin-top: var(--s-2);
 }
 
 @keyframes journal-fadeup {
@@ -2741,4 +2751,107 @@
   background: rgba(0,0,0,.4);
   padding: 4px 12px;
   border-radius: 99px;
+}
+
+/* ── AI アシスタント会話履歴 ── */
+.journal-assistant-history {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.journal-assistant-history__item {
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--bg-card);
+}
+
+.journal-assistant-history__head {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 14px;
+  text-align: left;
+  cursor: pointer;
+  color: var(--text-primary);
+  background: transparent;
+  border: none;
+}
+
+.journal-assistant-history__head:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--brand) 50%, transparent);
+  outline-offset: -2px;
+}
+
+.journal-assistant-history__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.journal-assistant-history__date {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--brand);
+  letter-spacing: 0.02em;
+}
+
+.journal-assistant-history__excerpt {
+  font-size: 13px;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.journal-assistant-history__chevron {
+  flex-shrink: 0;
+  color: var(--text-muted);
+  transition: transform 160ms ease;
+}
+
+.journal-assistant-history__chevron--open {
+  transform: rotate(180deg);
+}
+
+.journal-assistant-history__body {
+  padding: 0 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.journal-assistant-history__actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.journal-assistant-history__delete {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--danger, var(--text-muted));
+  background: transparent;
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
+  border-radius: 99px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: border-color 120ms ease, background 120ms ease;
+}
+
+.journal-assistant-history__delete:hover,
+.journal-assistant-history__delete:focus-visible {
+  border-color: color-mix(in srgb, var(--danger, var(--text-muted)) 50%, transparent);
+  background: color-mix(in srgb, var(--danger, var(--text-muted)) 8%, transparent);
+  outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .journal-assistant-history__chevron { transition: none; }
 }

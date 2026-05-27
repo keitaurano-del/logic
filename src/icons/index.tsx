@@ -404,6 +404,27 @@ export function BookmarkFilledIcon(p: IconProps) {
   )
 }
 
+export function TrashIcon(p: IconProps) {
+  return (
+    <svg {...base} {...p}>
+      <polyline points="3 6 5 6 21 6" />
+      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+      <line x1="10" y1="11" x2="10" y2="17" />
+      <line x1="14" y1="11" x2="14" y2="17" />
+    </svg>
+  )
+}
+
+export function HistoryIcon(p: IconProps) {
+  return (
+    <svg {...base} {...p}>
+      <path d="M3 3v5h5" />
+      <path d="M3.05 13A9 9 0 1 0 6 5.3L3 8" />
+      <path d="M12 7v5l4 2" />
+    </svg>
+  )
+}
+
 export function BrandMark(p: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="54 54 92 92" xmlns="http://www.w3.org/2000/svg" {...p}>

@@ -3,10 +3,11 @@ import { JournalCalendar } from '../components/journal/JournalCalendar'
 import { JournalGoalsHeader } from '../components/journal/JournalGoalsHeader'
 import { JournalSearch } from '../components/journal/JournalSearch'
 import { JournalAssistantSheet } from '../components/journal/JournalAssistantSheet'
+import { JournalAssistantHistorySheet } from '../components/journal/JournalAssistantHistorySheet'
 import { JournalRecentList } from '../components/journal/JournalRecentList'
 import { StreakBadge } from '../components/journal/StreakBadge'
 import { fetchJournalStreak } from '../components/journal/journalDb'
-import { SearchIcon, XIcon } from '../icons'
+import { SearchIcon, XIcon, HistoryIcon } from '../icons'
 import { t } from '../i18n'
 import { useStudyTimer } from '../hooks/useStudyTimer'
 import '../components/journal/journal.css'
@@ -27,6 +28,7 @@ export function JournalScreen({ userId, assistantName, onOpenLesson, onOpenCours
   const [streak, setStreak] = useState(0)
   const [searchOpen, setSearchOpen] = useState(false)
   const [assistantOpen, setAssistantOpen] = useState(false)
+  const [historyOpen, setHistoryOpen] = useState(false)
   // ジャーナル保存のたびにインクリメントして、recent list / streak を再フェッチさせる
   const [refreshKey, setRefreshKey] = useState(0)
 
@@ -65,6 +67,14 @@ export function JournalScreen({ userId, assistantName, onOpenLesson, onOpenCours
           <button
             type="button"
             className="journal-hero__icon-btn"
+            onClick={() => setHistoryOpen(true)}
+            aria-label={t('journal.assistantHistoryOpenAria')}
+          >
+            <HistoryIcon width={20} height={20} />
+          </button>
+          <button
+            type="button"
+            className="journal-hero__icon-btn"
             onClick={() => setSearchOpen(true)}
             aria-label={t('journal.tabSearch')}
           >
@@ -84,6 +94,16 @@ export function JournalScreen({ userId, assistantName, onOpenLesson, onOpenCours
           userId={userId}
           assistantName={assistantName}
           onClose={() => setAssistantOpen(false)}
+          onOpenLesson={onOpenLesson}
+          onOpenCourse={onOpenCourse}
+        />
+      )}
+
+      {historyOpen && (
+        <JournalAssistantHistorySheet
+          userId={userId}
+          assistantName={assistantName}
+          onClose={() => setHistoryOpen(false)}
           onOpenLesson={onOpenLesson}
           onOpenCourse={onOpenCourse}
         />

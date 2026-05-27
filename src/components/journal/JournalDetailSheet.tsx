@@ -10,9 +10,10 @@ import { JournalImageGrid } from './JournalImageGrid'
 import type { HealthSnapshot } from '../../platform/health'
 import { SparkleIcon } from './MoodWeatherIcons'
 import { PencilIcon, XIcon } from '../../icons'
-import { fetchJournalByDate, upsertJournal } from './journalDb'
+import { fetchJournalByDate, upsertJournal, normalizeTags, tagMatchKey } from './journalDb'
 import { suggestJournalTags } from './journalApi'
 import { JournalXpToast } from './JournalXpToast'
+import { JournalRichText } from './JournalRichText'
 import { awardJournalXp } from '../../stats'
 import { t } from '../../i18n'
 
@@ -300,12 +301,14 @@ export function JournalDetailSheet({ userId, date, initialJournal, initialPhase,
           existingTags: tags,
         })
         if (!suggestedTags || suggestedTags.length === 0) return
-        const lower = new Set(tags.map((t2) => t2.toLowerCase()))
+        // 既存タグと照合キー（大小文字・幅ゆれを畳んだもの）で重複排除してから追加。
+        const existingKeys = new Set(tags.map((t2) => tagMatchKey(t2)))
         const additions = suggestedTags
-          .filter((s) => s && !lower.has(s.toLowerCase()))
+          .filter((s) => s && !existingKeys.has(tagMatchKey(s)))
           .slice(0, Math.max(0, 5 - tags.length))
         if (additions.length === 0) return
-        const merged = [...tags, ...additions]
+        // 保存・表示で一貫させるため merge 後も正規化・名寄せを通す。
+        const merged = normalizeTags([...tags, ...additions])
         const reupdated: DailyJournal = { ...updated, tags: merged }
         const { error: e2 } = await upsertJournal(reupdated)
         if (e2) return
@@ -589,7 +592,7 @@ export function JournalDetailSheet({ userId, date, initialJournal, initialPhase,
                   <SparkleIcon size={14} />
                   <span>{t('journal.aiSummary')}</span>
                 </div>
-                <div className="journal-summary-card__body">{aiSummary}</div>
+                <JournalRichText className="journal-summary-card__body" text={aiSummary} />
               </div>
             )}
 
@@ -652,7 +655,7 @@ export function JournalDetailSheet({ userId, date, initialJournal, initialPhase,
                   <SparkleIcon size={14} />
                   <span>{t('journal.aiSummary')}</span>
                 </div>
-                <div className="journal-summary-card__body">{aiSummary}</div>
+                <JournalRichText className="journal-summary-card__body" text={aiSummary} />
               </div>
             )}
 

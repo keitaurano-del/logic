@@ -41,6 +41,37 @@ export interface DailyJournal {
   updated_at?: string
 }
 
+// ─── AI アシスタント会話履歴 ─────────────────────────────────────
+// ジャーナルの AI アシスタント（holistic feedback）の応答を保存し、
+// 後から見返せるようにするための履歴レコード。
+// 保存先は daily_journals / goals と同じく Supabase（getSupabaseClient）。
+
+export interface AssistantRecommendedLesson {
+  id: number
+  title: string
+  category: string
+}
+
+export interface AssistantRecommendedCourse {
+  id: string
+  title: string
+  category: string
+  image?: string
+  lessonCount: number
+}
+
+export interface AssistantConversation {
+  id?: string
+  user_id?: string
+  /** AI からのアドバイス本文（markdown）。JournalRichText で整形して表示する。 */
+  feedback: string
+  /** 推薦レッスン（解決済みの表示用情報を保存。後から ID 解決に失敗しても表示できる） */
+  recommended_lessons: AssistantRecommendedLesson[]
+  /** 推薦コース（同上） */
+  recommended_courses: AssistantRecommendedCourse[]
+  created_at?: string
+}
+
 export interface Goal {
   id: string
   user_id?: string

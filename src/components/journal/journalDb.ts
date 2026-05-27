@@ -1,5 +1,72 @@
 import { getSupabaseClient } from '../../supabase'
-import type { DailyJournal, Goal, GoalCategory, PeriodType } from './types'
+import type {
+  AssistantConversation,
+  AssistantRecommendedCourse,
+  AssistantRecommendedLesson,
+  DailyJournal,
+  Goal,
+  GoalCategory,
+  PeriodType,
+} from './types'
+
+// ─── ハッシュタグの正規化・名寄せ ──────────────────────────────
+// 表記ゆれの統一は「明確なゆれ」だけに限定する保守的ルール。
+// 曖昧な類似統合（編集距離・部分一致での寄せ）は誤統合の原因になるため一切行わない。
+//
+// 正規化の対象（= 同一タグとみなす条件）:
+//   - 前後の空白・内部の連続空白（タブ/改行含む）
+//   - Unicode NFKC（全角英数記号→半角、半角カナ→全角カナなどの幅ゆれ）
+//   - 先頭のハッシュ記号（半角 # / 全角 ＃）の有無
+//   - ASCII 英字の大文字小文字（例: MECE と mece を同一視）
+//
+// 注意: 大小文字を畳むのは「照合キー」だけで、画面に出す「表示形」は
+// 最初に登録された元の表記を保持する（MECE が mece に書き換わらないように）。
+
+const MAX_TAG_LENGTH = 24
+
+/**
+ * タグの「表示形」を正規化する。同一タグ同士で表記を揃えるためのもので、
+ * 大小文字は畳まない（MECE のような頭字語の見た目を壊さないため）。
+ */
+export function normalizeTagDisplay(raw: unknown): string {
+  if (typeof raw !== 'string') return ''
+  return raw
+    .normalize('NFKC')           // 全角英数記号・幅ゆれを統一
+    .replace(/[\r\n\t]+/g, ' ')  // 改行・タブは空白へ
+    .replace(/^[#＃]+/, '')      // 先頭のハッシュ記号（半角/全角）を剥がす
+    .replace(/\s+/g, ' ')        // 連続空白を 1 つに
+    .trim()
+    .slice(0, MAX_TAG_LENGTH)
+}
+
+/**
+ * 名寄せ用の「照合キー」。表示形をさらに小文字化して、大小文字ゆれを同一視する。
+ * このキーが一致するタグは同じタグとして 1 つにまとめる。
+ */
+export function tagMatchKey(raw: unknown): string {
+  return normalizeTagDisplay(raw).toLowerCase()
+}
+
+/**
+ * タグ配列を正規化・名寄せする。
+ *   - 空タグを除去
+ *   - 照合キー（小文字）が同じものは最初に出現した表示形へ寄せて重複排除
+ *   - 出現順を保持
+ */
+export function normalizeTags(tags: unknown): string[] {
+  if (!Array.isArray(tags)) return []
+  const out: string[] = []
+  const seen = new Set<string>()
+  for (const raw of tags) {
+    const display = normalizeTagDisplay(raw)
+    if (!display) continue
+    const key = display.toLowerCase()
+    if (seen.has(key)) continue
+    seen.add(key)
+    out.push(display)
+  }
+  return out
+}
 
 export async function fetchJournalByDate(userId: string, date: string): Promise<DailyJournal | null> {
   const supabase = getSupabaseClient()
@@ -58,7 +125,9 @@ export async function upsertJournal(j: DailyJournal): Promise<{ error?: string }
     schedule_notes: j.schedule_notes,
     evening_reflection: j.evening_reflection,
     ai_summary: j.ai_summary,
-    tags: Array.isArray(j.tags) ? j.tags : [],
+    // 保存時に必ず正規化・名寄せして書き込む。これにより、ユーザーがその日の
+    // ジャーナルを開いて保存し直すたびに過去データも遡及的に整う。
+    tags: normalizeTags(j.tags),
     steps_count: j.steps_count ?? null,
     sleep_minutes: j.sleep_minutes ?? null,
     sleep_start: j.sleep_start ?? null,
@@ -168,6 +237,9 @@ export async function searchJournals(userId: string, keyword: string): Promise<D
     .trim()
   if (!esc) return []
   const pat = `%${esc}%`
+  // タグ完全一致用キーワードは保存形と同じ正規化（NFKC・先頭#除去・空白統一）を適用して
+  // 表記ゆれによる取りこぼしを減らす（大小文字は保存表示形に合わせ畳まない）。
+  const tagEsc = normalizeTagDisplay(esc)
   // PostgREST の cs (contains) 配列フィルタはカンマ区切り内のカンマと衝突するため別クエリで取得して合成
   const orParts = [
     `morning_memo.ilike.${pat}`,
@@ -187,7 +259,7 @@ export async function searchJournals(userId: string, keyword: string): Promise<D
       .from('daily_journals')
       .select('*')
       .eq('user_id', userId)
-      .contains('tags', [esc])
+      .contains('tags', [tagEsc || esc])
       .order('date', { ascending: false })
       .limit(50),
   ])
@@ -218,19 +290,33 @@ export async function fetchAllUserTags(userId: string, limit = 30): Promise<stri
     console.warn('fetchAllUserTags:', error.message)
     return []
   }
-  const counts = new Map<string, number>()
+  // 照合キー（小文字・幅ゆれ統一）でまとめ、表示形は最頻のものを採用する。
+  // これにより過去データに表記ゆれが残っていても読み出し時に名寄せされて見える。
+  const counts = new Map<string, number>()                  // key → 合計出現数
+  const displayCounts = new Map<string, Map<string, number>>() // key → (表示形 → 出現数)
   for (const row of (data as Array<{ tags: string[] | null }>) ?? []) {
     if (!Array.isArray(row.tags)) continue
     for (const tag of row.tags) {
-      const t = typeof tag === 'string' ? tag.trim() : ''
-      if (!t) continue
-      counts.set(t, (counts.get(t) ?? 0) + 1)
+      const display = normalizeTagDisplay(tag)
+      if (!display) continue
+      const key = display.toLowerCase()
+      counts.set(key, (counts.get(key) ?? 0) + 1)
+      const dc = displayCounts.get(key) ?? new Map<string, number>()
+      dc.set(display, (dc.get(display) ?? 0) + 1)
+      displayCounts.set(key, dc)
     }
+  }
+  const bestDisplay = (key: string): string => {
+    const dc = displayCounts.get(key)
+    if (!dc) return key
+    // 最頻の表示形を採用。同数なら辞書順で安定させる。
+    return Array.from(dc.entries())
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0][0]
   }
   return Array.from(counts.entries())
     .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
     .slice(0, limit)
-    .map(([tag]) => tag)
+    .map(([key]) => bestDisplay(key))
 }
 
 /**
@@ -330,6 +416,121 @@ export async function deleteGoal(id: string): Promise<{ error?: string }> {
     .delete()
     .eq('id', id)
   if (error) return { error: error.message }
+  return {}
+}
+
+// ─── AI アシスタント会話履歴 ─────────────────────────────────────
+// daily_journals / goals と同じく Supabase をストレージにする。Supabase 未設定
+// （ゲスト・オフライン）の場合は no-op で握りつぶす（既存ジャーナル機能と同じ方針）。
+
+/** 推薦レッスン配列を保存可能な軽量形へ正規化する（不正値はスキップ）。 */
+function sanitizeRecommendedLessons(raw: unknown): AssistantRecommendedLesson[] {
+  if (!Array.isArray(raw)) return []
+  const out: AssistantRecommendedLesson[] = []
+  for (const item of raw) {
+    if (!item || typeof item !== 'object') continue
+    const r = item as Record<string, unknown>
+    const id = typeof r.id === 'number' ? r.id : Number(r.id)
+    if (!Number.isFinite(id) || id <= 0) continue
+    out.push({
+      id,
+      title: typeof r.title === 'string' ? r.title : '',
+      category: typeof r.category === 'string' ? r.category : '',
+    })
+  }
+  return out
+}
+
+/** 推薦コース配列を保存可能な軽量形へ正規化する（不正値はスキップ）。 */
+function sanitizeRecommendedCourses(raw: unknown): AssistantRecommendedCourse[] {
+  if (!Array.isArray(raw)) return []
+  const out: AssistantRecommendedCourse[] = []
+  for (const item of raw) {
+    if (!item || typeof item !== 'object') continue
+    const r = item as Record<string, unknown>
+    const id = typeof r.id === 'string' ? r.id : ''
+    if (!id) continue
+    out.push({
+      id,
+      title: typeof r.title === 'string' ? r.title : '',
+      category: typeof r.category === 'string' ? r.category : '',
+      image: typeof r.image === 'string' ? r.image : undefined,
+      lessonCount: typeof r.lessonCount === 'number' ? r.lessonCount : 0,
+    })
+  }
+  return out
+}
+
+/**
+ * AI アシスタントの会話（アドバイス本文 + 推薦レッスン/コース）を1件保存する。
+ * 本文が空の場合は保存しない（履歴に空レコードを残さない）。
+ */
+export async function saveAssistantConversation(
+  userId: string,
+  conv: { feedback: string; recommendedLessons: AssistantRecommendedLesson[]; recommendedCourses: AssistantRecommendedCourse[] },
+): Promise<{ conversation?: AssistantConversation; error?: string }> {
+  const supabase = getSupabaseClient()
+  if (!supabase) return {}
+  const feedback = (conv.feedback || '').trim()
+  if (!feedback) return {}
+  const payload = {
+    user_id: userId,
+    feedback,
+    recommended_lessons: sanitizeRecommendedLessons(conv.recommendedLessons),
+    recommended_courses: sanitizeRecommendedCourses(conv.recommendedCourses),
+  }
+  const { data, error } = await supabase
+    .from('journal_assistant_conversations')
+    .insert(payload)
+    .select('*')
+    .maybeSingle()
+  if (error) {
+    console.warn('saveAssistantConversation:', error.message)
+    return { error: error.message }
+  }
+  return { conversation: data as AssistantConversation }
+}
+
+/**
+ * AI アシスタントの会話履歴を新しい順に取得する。
+ */
+export async function fetchAssistantConversations(userId: string, limit = 50): Promise<AssistantConversation[]> {
+  const supabase = getSupabaseClient()
+  if (!supabase) return []
+  const { data, error } = await supabase
+    .from('journal_assistant_conversations')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+    .limit(limit)
+  if (error) {
+    console.warn('fetchAssistantConversations:', error.message)
+    return []
+  }
+  return ((data as Array<Record<string, unknown>>) ?? []).map((row) => ({
+    id: typeof row.id === 'string' ? row.id : undefined,
+    user_id: typeof row.user_id === 'string' ? row.user_id : undefined,
+    feedback: typeof row.feedback === 'string' ? row.feedback : '',
+    recommended_lessons: sanitizeRecommendedLessons(row.recommended_lessons),
+    recommended_courses: sanitizeRecommendedCourses(row.recommended_courses),
+    created_at: typeof row.created_at === 'string' ? row.created_at : undefined,
+  }))
+}
+
+/**
+ * AI アシスタントの会話履歴を1件削除する。
+ */
+export async function deleteAssistantConversation(id: string): Promise<{ error?: string }> {
+  const supabase = getSupabaseClient()
+  if (!supabase) return { error: 'supabase not configured' }
+  const { error } = await supabase
+    .from('journal_assistant_conversations')
+    .delete()
+    .eq('id', id)
+  if (error) {
+    console.warn('deleteAssistantConversation:', error.message)
+    return { error: error.message }
+  }
   return {}
 }
 

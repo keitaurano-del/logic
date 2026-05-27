@@ -27,7 +27,7 @@ function LessonImage({ lessonId, size }: { lessonId: number; size: number }) {
   )
 }
 import LessonIcon from '../LessonIcon'
-import { BookmarkIcon, BookmarkFilledIcon } from '../icons'
+import { BookmarkIcon, BookmarkFilledIcon, ChevronDownIcon, ChevronRightIcon } from '../icons'
 import { getAllLessonsFlat } from '../lessonData'
 import type { LessonData } from '../lessonData'
 import { getCompletedLessons } from '../stats'
@@ -349,6 +349,16 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
   const [progressFilters, setProgressFilters] = useState<Set<ProgressFilter>>(new Set())
   const [formatFilters, setFormatFilters] = useState<Set<FormatFilter>>(new Set())
   const [sortOption, setSortOption] = useState<SortOption>('relevance')
+  // 折りたたまれているグループの集合。初期は空 = 全カテゴリ展開。
+  // 「閉じている方」を保持することで「初期=全展開」をデフォルトで表現する。
+  const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set())
+  const toggleGroup = useCallback((groupId: string) => {
+    setCollapsedGroups(prev => {
+      const next = new Set(prev)
+      if (next.has(groupId)) next.delete(groupId); else next.add(groupId)
+      return next
+    })
+  }, [])
 
   if (props.initialCategory) {
     return <CategoryDetailView category={props.initialCategory} onOpenLesson={props.onOpenLesson} onBack={props.onBack} />
@@ -497,33 +507,51 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
         {COURSE_GROUPS.map(group => {
           const groupCourses = getCoursesByGroup(group.id).filter(c => !c.pinned)
           if (groupCourses.length === 0) return null
+          const collapsed = collapsedGroups.has(group.id)
+          const panelId = `course-group-${group.id}`
           return (
             <div key={group.id} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <div style={{ padding: '8px 4px 0' }}>
-                <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-.005em' }}>{group.label}</div>
-                <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.45 }}>{group.description}</div>
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                {groupCourses.map(course => {
-                  const v = CATEGORY_VISUAL[course.category] || DEFAULT_VISUAL
-                  const cardImage = course.image || v.image
-                  return (
-                    <CategoryCard
-                      key={course.id}
-                      name={course.title}
-                      meta={t('roadmap.lessonCountAndLevel', { count: course.lessonIds.length, level: levelLabel(course.level) })}
-                      image={cardImage}
-                      onClick={() => props.onOpenCategory(v.routeKey)}
-                      saveTarget={{
-                        refId: v.routeKey,
-                        title: course.title,
-                        subtitle: course.category,
-                        image: cardImage,
-                      }}
-                    />
-                  )
-                })}
-              </div>
+              <button
+                type="button"
+                onClick={() => toggleGroup(group.id)}
+                aria-expanded={!collapsed}
+                aria-controls={panelId}
+                aria-label={collapsed ? t('roadmap.expandGroupAria', { group: group.label }) : t('roadmap.collapseGroupAria', { group: group.label })}
+                style={{ padding: '8px 4px 0', display: 'flex', alignItems: 'flex-start', gap: 8, background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', width: '100%', color: 'inherit', font: 'inherit' }}
+              >
+                <span aria-hidden="true" style={{ flexShrink: 0, marginTop: 2, color: 'var(--text-secondary)', display: 'inline-flex' }}>
+                  {collapsed
+                    ? <ChevronRightIcon width={18} height={18} />
+                    : <ChevronDownIcon width={18} height={18} />}
+                </span>
+                <span style={{ flex: 1, minWidth: 0 }}>
+                  <span style={{ display: 'block', fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-.005em' }}>{group.label}</span>
+                  <span style={{ display: 'block', fontSize: 12, color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.45 }}>{group.description}</span>
+                </span>
+              </button>
+              {!collapsed && (
+                <div id={panelId} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                  {groupCourses.map(course => {
+                    const v = CATEGORY_VISUAL[course.category] || DEFAULT_VISUAL
+                    const cardImage = course.image || v.image
+                    return (
+                      <CategoryCard
+                        key={course.id}
+                        name={course.title}
+                        meta={t('roadmap.lessonCountAndLevel', { count: course.lessonIds.length, level: levelLabel(course.level) })}
+                        image={cardImage}
+                        onClick={() => props.onOpenCategory(v.routeKey)}
+                        saveTarget={{
+                          refId: v.routeKey,
+                          title: course.title,
+                          subtitle: course.category,
+                          image: cardImage,
+                        }}
+                      />
+                    )
+                  })}
+                </div>
+              )}
             </div>
           )
         })}

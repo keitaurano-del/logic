@@ -234,7 +234,8 @@ function renderBlock(block: Block, key: number): ReactNode {
               style={{
                 display: 'flex',
                 alignItems: 'baseline',
-                gap: 'var(--s-3)',
+                // 中黒「・」グリフは左右に内蔵余白があるため gap は詰める。
+                gap: 'var(--s-1)',
                 fontSize: 16,
                 lineHeight: 1.8,
                 color: 'var(--text-primary)',
@@ -244,13 +245,16 @@ function renderBlock(block: Block, key: number): ReactNode {
                 aria-hidden="true"
                 style={{
                   flexShrink: 0,
-                  width: 6,
-                  height: 6,
-                  borderRadius: 'var(--radius-full)',
-                  background: 'var(--brand)',
-                  transform: 'translateY(0.5em)',
+                  // 中黒「・」をテキストとして描画。フォント由来なので本文と縦位置が揃い、
+                  // 行の高さに追従する（青丸 + translateY のズレを廃止）。
+                  color: 'var(--text-secondary)',
+                  fontSize: 16,
+                  lineHeight: 1.8,
+                  userSelect: 'none',
                 }}
-              />
+              >
+                ・
+              </span>
               <span>{renderInline(item)}</span>
             </li>
           ))}
