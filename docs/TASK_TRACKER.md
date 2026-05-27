@@ -131,7 +131,10 @@ task-manager エージェントが管理するタスク台帳の正本。
 - T2 は dev-logic 調査で「コードでなく画像アセットの問題」と判明 → designer に転送（下記 T2 セクション参照）。
 - T2 完了（designer 2026-05-27）: 拡張帯34枚を背景透過後処理で上書き（rembg 30 + flood-fill 4）。Gemini課金0・画風保持。全34枚 RGBA・四隅透過・本体保持を検証。元画像は /tmp/badgework/repo_backup/ に退避。zenith のみ閾値220で個別対応。push 未。
 - T5 完了（dev-logic 2026-05-27）: tsc 0 / eslint 実ソース 0。おすすめレッスンの title/category 表示＋タップ遷移、AI会話履歴の保存/再表示。journalDb 拡張・履歴UI(JournalScreen)・types.ts・icons・i18n。migration `032_journal_assistant_conversations.sql` は作成のみで Supabase 未適用（適用は承認案件、これがないとAI履歴機能は動かない）。
-- → logic 7件すべて DONE（T1〜T7）。push＋migration 適用は Keita 承認待ち。
+- → logic 7件すべて DONE（T1〜T7）。
+- 2026-05-27 反映: 7件を origin/main ベースの新ブランチ `fix/journal-lesson-badge-20260527` にコミット（793e519、50ファイル）→ push → PR #233 作成。PR #233。fermi-ui-report-calc の作業は #232 でマージ済みのため新ブランチは7件のみのクリーンな差分。
+- ✅ 本番反映完了（2026-05-27）: CI build-and-lint＋a11y 緑（Playwrightはローカルでdevserver待ちハング、CIが正式ゲート）→ PR #233 を main マージ（ae933ab）→ Render自動デプロイ＋Android内部配信トリガー。migration 032 を Supabase（yctlelmlwjwlcpcxvmgx）に適用済み（journal_assistant_conversations テーブル・RLS）。デプロイ後 test-smoke で本番スモーク確認。
+- ローカル git 残務: fix ブランチに docs ローカル変更が残るため main 切替が保留。後で stash→main 整理。
 
 ## 次アクション
 
