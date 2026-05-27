@@ -17,6 +17,7 @@ import { syncWrongAnswers } from './wrongAnswerStore'
 import { syncSavedItems } from './savedItemsStore'
 import { syncNotebook, loadEntries } from './notebookStore'
 import { syncRoadmap } from './roadmapStore'
+import { syncCustomCourses } from './customCourseStore'
 import { syncCategoryProgress } from './progressStore'
 import { syncCompletionCounts } from './db/completionCountDb'
 
@@ -553,6 +554,7 @@ export async function syncOnLogin(userId: string): Promise<void> {
         syncRoadmap(userId),
         syncCategoryProgress(userId),
         syncCompletionCounts(userId),
+        syncCustomCourses(userId),
       ])
       const failures = results.filter((r) => r.status === 'rejected')
       if (failures.length > 0) {

@@ -27,7 +27,7 @@ function LessonImage({ lessonId, size }: { lessonId: number; size: number }) {
   )
 }
 import LessonIcon from '../LessonIcon'
-import { BookmarkIcon, BookmarkFilledIcon, ChevronDownIcon, ChevronRightIcon } from '../icons'
+import { BookmarkIcon, BookmarkFilledIcon, ChevronDownIcon, ChevronRightIcon, SparklesIcon, TrashIcon } from '../icons'
 import { getAllLessonsFlat } from '../lessonData'
 import type { LessonData } from '../lessonData'
 import { getCompletedLessons } from '../stats'
@@ -36,6 +36,8 @@ import { CompletionBadge } from '../components/CompletionBadge'
 import { getCoursesByCategory, getCoursesByGroup, getPinnedCourses, COURSES, COURSE_GROUPS, type Course } from '../courseData'
 import { loadPersonalCourse, axisLabel } from '../placementData'
 import { isSaved, toggleSaved } from '../savedItemsStore'
+import { loadCustomCourses, deleteCustomCourse, type CustomCourse } from '../customCourseStore'
+import { CustomCourseSheet } from '../components/CustomCourseSheet'
 import { t, getLocale } from '../i18n'
 
 // レベル文字列（データ値）→ 表示用の翻訳キー
@@ -339,6 +341,10 @@ interface RoadmapScreenV3Props {
   onOpenPersonalCourse?: () => void
   onOpenPlacementTest?: () => void
   onOpenReviewHub?: () => void
+  /** AI カスタムコースを開く（コース一覧画面へ） */
+  onOpenCustomCourse?: (courseId: string) => void
+  /** アップグレード導線（課金画面へ） */
+  onUpgrade?: () => void
   initialCategory?: string
   onBack?: () => void
 }
@@ -358,6 +364,15 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
       if (next.has(groupId)) next.delete(groupId); else next.add(groupId)
       return next
     })
+  }, [])
+  // AI カスタムコース（あなた専用コース）
+  const [customCourses, setCustomCourses] = useState<CustomCourse[]>(() => loadCustomCourses())
+  const [showCustomSheet, setShowCustomSheet] = useState(false)
+  const refreshCustomCourses = useCallback(() => setCustomCourses(loadCustomCourses()), [])
+  const handleDeleteCustomCourse = useCallback((id: string) => {
+    if (!confirm(t('customCourse.deleteConfirm'))) return
+    deleteCustomCourse(id)
+    setCustomCourses(loadCustomCourses())
   }, [])
 
   if (props.initialCategory) {
@@ -459,7 +474,15 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
           <div style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.45, letterSpacing: '-.005em', whiteSpace: 'pre-line' }}>{t('roadmap.todayQuestion')}</div>
         </div>
 
-        {/* パーソナルコース（診断結果から自動生成）— 一番上 */}
+        {/* あなた専用コース（AI 生成）— 最上部。コースが無くても作成ボタンは表示 */}
+        <CustomCourseSection
+          courses={customCourses}
+          onCreate={() => setShowCustomSheet(true)}
+          onOpen={(id) => props.onOpenCustomCourse?.(id)}
+          onDelete={handleDeleteCustomCourse}
+        />
+
+        {/* パーソナルコース（診断結果から自動生成） */}
         <PersonalCourseBanner
           onOpenPersonalCourse={props.onOpenPersonalCourse}
           onOpenPlacementTest={props.onOpenPlacementTest}
@@ -472,33 +495,54 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
         {(() => {
           const pinnedCourses = getPinnedCourses()
           if (pinnedCourses.length === 0) return null
+          // 他カテゴリと同じ collapsedGroups の開閉メカニズムに含める（擬似グループID）
+          const pinnedGroupId = 'pinned-fermi'
+          const pinnedLabel = t('roadmap.pinnedFermiLabel')
+          const collapsed = collapsedGroups.has(pinnedGroupId)
+          const panelId = `course-group-${pinnedGroupId}`
           return (
             <div key="pinned-fermi" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <div style={{ padding: '8px 4px 0' }}>
-                <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-.005em' }}>{t('roadmap.pinnedFermiLabel')}</div>
-                <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.45 }}>{t('roadmap.pinnedFermiDescription')}</div>
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                {pinnedCourses.map(course => {
-                  const v = CATEGORY_VISUAL[course.category] || DEFAULT_VISUAL
-                  const cardImage = course.image || v.image
-                  return (
-                    <CategoryCard
-                      key={course.id}
-                      name={course.title}
-                      meta={t('roadmap.lessonCountAndLevel', { count: course.lessonIds.length, level: levelLabel(course.level) })}
-                      image={cardImage}
-                      onClick={() => props.onOpenCategory(v.routeKey)}
-                      saveTarget={{
-                        refId: v.routeKey,
-                        title: course.title,
-                        subtitle: course.category,
-                        image: cardImage,
-                      }}
-                    />
-                  )
-                })}
-              </div>
+              <button
+                type="button"
+                onClick={() => toggleGroup(pinnedGroupId)}
+                aria-expanded={!collapsed}
+                aria-controls={panelId}
+                aria-label={collapsed ? t('roadmap.expandGroupAria', { group: pinnedLabel }) : t('roadmap.collapseGroupAria', { group: pinnedLabel })}
+                style={{ padding: '8px 4px 0', display: 'flex', alignItems: 'flex-start', gap: 8, background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', width: '100%', color: 'inherit', font: 'inherit' }}
+              >
+                <span aria-hidden="true" style={{ flexShrink: 0, marginTop: 2, color: 'var(--text-secondary)', display: 'inline-flex' }}>
+                  {collapsed
+                    ? <ChevronRightIcon width={18} height={18} />
+                    : <ChevronDownIcon width={18} height={18} />}
+                </span>
+                <span style={{ flex: 1, minWidth: 0 }}>
+                  <span style={{ display: 'block', fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-.005em' }}>{pinnedLabel}</span>
+                  <span style={{ display: 'block', fontSize: 12, color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.45 }}>{t('roadmap.pinnedFermiDescription')}</span>
+                </span>
+              </button>
+              {!collapsed && (
+                <div id={panelId} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                  {pinnedCourses.map(course => {
+                    const v = CATEGORY_VISUAL[course.category] || DEFAULT_VISUAL
+                    const cardImage = course.image || v.image
+                    return (
+                      <CategoryCard
+                        key={course.id}
+                        name={course.title}
+                        meta={t('roadmap.lessonCountAndLevel', { count: course.lessonIds.length, level: levelLabel(course.level) })}
+                        image={cardImage}
+                        onClick={() => props.onOpenCategory(v.routeKey)}
+                        saveTarget={{
+                          refId: v.routeKey,
+                          title: course.title,
+                          subtitle: course.category,
+                          image: cardImage,
+                        }}
+                      />
+                    )
+                  })}
+                </div>
+              )}
             </div>
           )
         })()}
@@ -556,6 +600,91 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
           )
         })}
       </div>}
+
+      {showCustomSheet && (
+        <CustomCourseSheet
+          onClose={() => { setShowCustomSheet(false); refreshCustomCourses() }}
+          onSaved={(course) => {
+            setShowCustomSheet(false)
+            refreshCustomCourses()
+            props.onOpenCustomCourse?.(course.id)
+          }}
+          onUpgrade={props.onUpgrade}
+        />
+      )}
+    </div>
+  )
+}
+
+// ──────── あなた専用コース（AI生成）セクション ────────
+function CustomCourseSection({
+  courses,
+  onCreate,
+  onOpen,
+  onDelete,
+}: {
+  courses: CustomCourse[]
+  onCreate: () => void
+  onOpen: (id: string) => void
+  onDelete: (id: string) => void
+}) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      {courses.length > 0 && (
+        <>
+          <div style={{ padding: '8px 4px 0' }}>
+            <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-.005em' }}>{t('customCourse.sectionTitle')}</div>
+            <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.45 }}>{t('customCourse.sectionDesc')}</div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {courses.map(course => (
+              <div
+                key={course.id}
+                style={{ display: 'flex', alignItems: 'stretch', background: 'var(--bg-card)', borderRadius: 14, overflow: 'hidden', border: `1.5px solid color-mix(in srgb, var(--brand) 18%, transparent)`, boxShadow: 'var(--shadow-v3-card-inset)' }}
+              >
+                <button
+                  type="button"
+                  onClick={() => onOpen(course.id)}
+                  aria-label={t('customCourse.openAria', { title: course.title })}
+                  style={{ flex: 1, minWidth: 0, display: 'flex', alignItems: 'center', gap: 12, padding: '14px 14px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left', color: 'inherit', font: 'inherit' }}
+                >
+                  <div style={{ width: 36, height: 36, borderRadius: 10, flexShrink: 0, background: `color-mix(in srgb, var(--brand) 12%, transparent)`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--brand)' }}>
+                    <SparklesIcon width={18} height={18} />
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.35, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{course.title}</div>
+                    <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>{t('customCourse.previewLessons', { count: course.lessonIds.length })}</div>
+                  </div>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true" style={{ flexShrink: 0 }}><polyline points="9 18 15 12 9 6"/></svg>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onDelete(course.id)}
+                  aria-label={t('customCourse.deleteAria')}
+                  style={{ flexShrink: 0, width: 44, background: 'transparent', border: 'none', borderLeft: `1px solid var(--border)`, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}
+                >
+                  <TrashIcon width={16} height={16} />
+                </button>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+
+      {/* 作成ボタン（コースの有無に関わらず常に表示） */}
+      <button
+        type="button"
+        onClick={onCreate}
+        style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, background: courses.length > 0 ? 'var(--bg-card)' : `linear-gradient(135deg, var(--brand) 0%, var(--brand-light) 100%)`, color: courses.length > 0 ? 'var(--brand)' : 'var(--accent-fg)', border: courses.length > 0 ? `1px dashed color-mix(in srgb, var(--brand) 40%, transparent)` : 'none', borderRadius: 14, padding: '14px 16px', cursor: 'pointer', textAlign: 'left', boxShadow: courses.length > 0 ? 'none' : 'var(--shadow-v3-hero)' }}
+      >
+        <div style={{ width: 34, height: 34, borderRadius: 10, flexShrink: 0, background: courses.length > 0 ? `color-mix(in srgb, var(--brand) 10%, transparent)` : 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: courses.length > 0 ? 'var(--brand)' : '#fff' }}>
+          <SparklesIcon width={18} height={18} />
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: 14, fontWeight: 800, lineHeight: 1.25 }}>{t('customCourse.createButton')}</div>
+          <div style={{ fontSize: 11, opacity: courses.length > 0 ? 0.75 : 0.9, marginTop: 3, lineHeight: 1.4 }}>{t('customCourse.createButtonDesc')}</div>
+        </div>
+      </button>
     </div>
   )
 }
