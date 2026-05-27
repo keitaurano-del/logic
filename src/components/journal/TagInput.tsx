@@ -1,5 +1,6 @@
 import { useRef, useState, type KeyboardEvent } from 'react'
 import { t } from '../../i18n'
+import { normalizeTagDisplay, tagMatchKey } from './journalDb'
 
 interface TagInputProps {
   value: string[]
@@ -15,9 +16,13 @@ export function TagInput({ value, onChange, placeholder, max = 8 }: TagInputProp
   const inputRef = useRef<HTMLInputElement>(null)
 
   const addTag = (raw: string) => {
-    const tag = raw.trim().replace(/[\r\n\t]/g, '').slice(0, MAX_TAG_LENGTH)
+    // 保存・集計と同じ正規化を入力段階でも適用（表記ゆれをここで吸収する）。
+    const tag = normalizeTagDisplay(raw)
     if (!tag) return
-    if (value.includes(tag)) return
+    // 重複判定は照合キー（大小文字・幅ゆれを畳んだもの）で行い、
+    // 同じタグの別表記（MECE と mece など）が二重登録されないようにする。
+    const key = tagMatchKey(tag)
+    if (value.some((existing) => tagMatchKey(existing) === key)) return
     if (value.length >= max) return
     onChange([...value, tag])
     setDraft('')

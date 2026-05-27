@@ -651,17 +651,31 @@ function stopCloud(): void {
   }
 }
 
+/**
+ * 全チャネル（Cloud / Web / Native）の再生を確実に停止する。
+ *
+ * speak() の冒頭排他制御と stop() の両方から使う共通処理。
+ * - keep-alive（silent audio loop + wake lock）は **解放しない**。
+ *   stop() は別途 stopKeepAlive() を呼ぶ。speak() は再生継続のため維持する。
+ * - 経路（cloud/native/web）を問わず 3 チャネルすべてを止める。
+ *   過去のバグ: cloud 再生中に native 経路の speak が来ても cloud が止まらず二重発話していた。
+ *   どの経路だったか分からなくても安全に倒すため、3 つとも無条件で止める。
+ */
+async function stopAllChannels(): Promise<void> {
+  // Cloud（HTMLAudio）
+  stopCloud()
+  // Web Speech（speechSynthesis）
+  stopWeb()
+  // Native（Capacitor）。native でない環境では stopNative 内で早期 return する。
+  await stopNative()
+}
+
 export async function stop(): Promise<void> {
   // stop は onEnd を呼ばない (自然終了との区別が必要)
   currentOnEnd = null
   setPlaying(false)
-  // クラウド再生中なら HTMLAudio を止める。経路を問わず常に呼んで安全に倒す。
-  stopCloud()
-  if (isNative()) {
-    await stopNative()
-  } else {
-    stopWeb()
-  }
+  // クラウド / Web / native を経路を問わず全部止める（多重発話防止）。
+  await stopAllChannels()
   // 明示 stop 時は keep-alive も解放してバッテリー消費を抑える
   stopKeepAlive()
 }
@@ -952,6 +966,16 @@ export async function speak(text: string, opts: SpeakOptions = {}): Promise<void
   // stripBodyForSpeech 経由のテキストは既に剥がし済みだが、stripMarkup は冪等なので二重でも安全。
   text = stripMarkup(text)
   text = normalizeForSpeech(text, lang)
+
+  // ── 排他制御（多重発話防止）──
+  // 新しい再生を始める前に、Cloud / Web / Native の 3 チャネルすべてを確実に止める。
+  // 連打・画面遷移・経路混在（前回 cloud → 今回 native 等）でも同時に複数音声が
+  // 鳴らないようにする。各下位 speak 関数も自前で cancel するが、経路をまたぐと
+  // 取りこぼすため speak() 側で一括停止しておく（stop 系はいずれも冪等）。
+  // ここでは前の再生の onEnd は呼ばない（明示中断扱い）。currentOnEnd は直後に上書きする。
+  currentOnEnd = null
+  await stopAllChannels()
+
   // 既存の onEnd は新しい再生で上書き
   currentOnEnd = opts.onEnd ?? null
   // 背景再生 keep-alive (silent audio loop + wake lock) を起動。

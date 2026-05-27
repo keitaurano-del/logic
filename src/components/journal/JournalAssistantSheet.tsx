@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
-import { fetchCurrentGoalsAllPeriods, fetchRecentJournals } from './journalDb'
+import { fetchCurrentGoalsAllPeriods, fetchRecentJournals, saveAssistantConversation } from './journalDb'
 import { holisticFeedback } from './journalApi'
 import { displayMood, displayWeather, periodKeyFor } from './types'
 import type { PeriodType } from './types'
 import { SparkleIcon } from './MoodWeatherIcons'
+import { JournalRichText } from './JournalRichText'
 import { XIcon } from '../../icons'
 import { loadProgress } from '../../progressStore'
 import { getLessonStreak, getTotalStudyDays, getXpLogThisMonth } from '../../stats'
@@ -179,6 +180,14 @@ export function JournalAssistantSheet({ userId, assistantName, onClose, onOpenLe
           if (resolvedCourses.length >= 1) break
         }
         setRecommendedCourses(resolvedCourses)
+
+        // 会話履歴を永続化（後から見返せるようにする）。本文が空なら保存されない。
+        // 失敗してもユーザー体験は止めない（履歴保存はベストエフォート）。
+        void saveAssistantConversation(userId, {
+          feedback: (fb || '').trim(),
+          recommendedLessons: resolved,
+          recommendedCourses: resolvedCourses,
+        }).catch((err) => console.warn('saveAssistantConversation failed:', err))
       } catch (e) {
         console.warn('holistic feedback error:', e)
         if (!cancelled) setError(t('journal.assistantError'))
@@ -235,7 +244,7 @@ export function JournalAssistantSheet({ userId, assistantName, onClose, onOpenLe
                 <SparkleIcon size={14} />
                 <span>{t('journal.assistantSummaryLabel', { name: assistantName })}</span>
               </div>
-              <div className="journal-summary-card__body">{feedback}</div>
+              <JournalRichText className="journal-summary-card__body" text={feedback} />
             </div>
           )}
 
