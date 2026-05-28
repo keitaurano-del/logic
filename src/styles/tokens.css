@@ -338,6 +338,143 @@ body.theme-v3.mode-light {
   --logo-color:         var(--brand);
 }
 
+/* v3 sepia — 古紙 / Sepia (premium, light系).
+ * セピアの紙に赤茶インク。bg #F4ECDD / card #FBF6EC / text #3A2F23 / accent #B25C3A。
+ * 派生色は紙(text)からのトーン段階で生成。accent は本文 AA を満たす #A8542F に寄せる
+ * （提案書: accent #B25C3A は card 比 4.35:1=UI可だが本文 4.5:1 を僅かに下回るため、
+ * テキスト/リンク用途の --accent-dark に AA 版を採用）。 */
+body.theme-v3.mode-sepia {
+  --bg-primary:    #F4ECDD;
+  --bg-secondary:  #EDE3D0;
+  --bg-card:       #FBF6EC;
+  --bg-elevated:   #FFFCF5;
+  --bg-tertiary:   #E5D9C2;
+  --bg-hero:       #3A2F23;
+  --bg-app-grad:   linear-gradient(160deg, #F7F0E3 0%, #EFE4D0 100%);
+  --bg-glass:      rgba(251, 246, 236, 0.85);
+  --bg-glass-dark: rgba(244, 236, 221, 0.92);
+
+  --text-primary:   #3A2F23;
+  --text-secondary: #6B5C49;
+  --text-muted:     #8A7A64;
+  --text-tertiary:  #8A7A64;
+
+  --border:       #E2D5BF;
+  --border-light: #EDE3D0;
+  --border-brand: rgba(178, 92, 58, 0.28);
+
+  --accent:       #B25C3A;
+  --accent-light: #CB7A57;
+  --accent-soft:  rgba(178, 92, 58, 0.12);
+  --accent-glow:  rgba(178, 92, 58, 0.22);
+  --accent-dark:  #A8542F;
+  --accent-fg:    #FFFFFF;
+
+  --brand:        #A8542F;
+
+  --shadow-card:       0 1px 2px rgba(58, 47, 35, 0.06), 0 4px 12px rgba(58, 47, 35, 0.10);
+  --shadow-card-hover: 0 4px 8px rgba(58, 47, 35, 0.10), 0 12px 28px rgba(58, 47, 35, 0.16);
+  --shadow-elevated:   0 2px 4px rgba(58, 47, 35, 0.08), 0 8px 20px rgba(58, 47, 35, 0.12);
+
+  --hero-grad-dark:     linear-gradient(160deg, #F4ECDD 0%, #EBDFC8 65%, #E0D0B3 100%);
+  --text-on-hero:       #F7F0E3;
+  --text-on-hero-muted: rgba(247, 240, 227, 0.70);
+  --border-on-dark:     rgba(247, 240, 227, 0.16);
+  --bg-input-on-dark:   rgba(247, 240, 227, 0.08);
+
+  --logo-color:         #A8542F;
+}
+
+/* v3 mono — 墨白 / Monochrome (free, light系).
+ * モノクロ + 朱の差し色一点。bg #F2F2F0 / card #FFFFFF / text #1A1A1A / accent #C0392B。
+ * 無彩色ベース。accent は本文 AA(card 5.44:1) を満たすので --accent-dark も同系の濃い朱に。 */
+body.theme-v3.mode-mono {
+  --bg-primary:    #F2F2F0;
+  --bg-secondary:  #E9E9E6;
+  --bg-card:       #FFFFFF;
+  --bg-elevated:   #FFFFFF;
+  --bg-tertiary:   #E0E0DC;
+  --bg-hero:       #1A1A1A;
+  --bg-app-grad:   linear-gradient(160deg, #F5F5F3 0%, #ECECEA 100%);
+  --bg-glass:      rgba(255, 255, 255, 0.85);
+  --bg-glass-dark: rgba(242, 242, 240, 0.92);
+
+  --text-primary:   #1A1A1A;
+  --text-secondary: #4A4A4A;
+  --text-muted:     #6E6E6E;
+  --text-tertiary:  #6E6E6E;
+
+  --border:       #DCDCD8;
+  --border-light: #E9E9E6;
+  --border-brand: rgba(192, 57, 43, 0.26);
+
+  --accent:       #C0392B;
+  --accent-light: #D5564A;
+  --accent-soft:  rgba(192, 57, 43, 0.10);
+  --accent-glow:  rgba(192, 57, 43, 0.20);
+  --accent-dark:  #A33124;
+  --accent-fg:    #FFFFFF;
+
+  --brand:        #A33124;
+
+  --shadow-card:       0 1px 2px rgba(26, 26, 26, 0.05), 0 4px 12px rgba(26, 26, 26, 0.08);
+  --shadow-card-hover: 0 4px 8px rgba(26, 26, 26, 0.08), 0 12px 28px rgba(26, 26, 26, 0.14);
+  --shadow-elevated:   0 2px 4px rgba(26, 26, 26, 0.06), 0 8px 20px rgba(26, 26, 26, 0.10);
+
+  --hero-grad-dark:     linear-gradient(160deg, #F2F2F0 0%, #E6E6E3 65%, #D8D8D4 100%);
+  --text-on-hero:       #F5F5F3;
+  --text-on-hero-muted: rgba(245, 245, 243, 0.70);
+  --border-on-dark:     rgba(245, 245, 243, 0.16);
+  --bg-input-on-dark:   rgba(245, 245, 243, 0.08);
+
+  --logo-color:         #1A1A1A;
+}
+
+/* v3 forest — 深緑 / Forest (premium, dark系).
+ * 夜の書斎、落ち着いた深緑。bg #10221B / card #173026 / text #E4EDE6 / accent #6FB89A。
+ * dark 系なので surface をトーンで持ち上げ、accent-light/dark は dark 上で読める明色側に。 */
+body.theme-v3.mode-forest {
+  --bg-primary:    #10221B;
+  --bg-secondary:  #142A21;
+  --bg-card:       #173026;
+  --bg-elevated:   #1E3B2F;
+  --bg-tertiary:   #142A21;
+  --bg-hero:       #0B1813;
+  --bg-app-grad:   linear-gradient(160deg, #0C1B15 0%, #10221B 100%);
+  --bg-glass:      rgba(23, 48, 38, 0.88);
+  --bg-glass-dark: rgba(16, 34, 27, 0.95);
+
+  --text-primary:   #E4EDE6;
+  --text-secondary: #A6C2B2;
+  --text-muted:     #7C9C8B;
+  --text-tertiary:  #7C9C8B;
+
+  --border:       rgba(228, 237, 230, 0.10);
+  --border-light: rgba(228, 237, 230, 0.06);
+  --border-brand: rgba(111, 184, 154, 0.30);
+
+  --accent:       #6FB89A;
+  --accent-light: #8FCFB3;
+  --accent-soft:  rgba(111, 184, 154, 0.16);
+  --accent-glow:  rgba(111, 184, 154, 0.25);
+  --accent-dark:  #8FCFB3;
+  --accent-fg:    #0B1813;
+
+  --brand:        #6FB89A;
+
+  --shadow-card:       0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.32);
+  --shadow-card-hover: 0 4px 8px rgba(0, 0, 0, 0.45), 0 12px 28px rgba(0, 0, 0, 0.52);
+  --shadow-elevated:   0 4px 24px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+  --hero-grad-dark:     linear-gradient(160deg, #10221B 0%, #163024 70%, #122A20 100%);
+  --text-on-hero:       #E4EDE6;
+  --text-on-hero-muted: rgba(228, 237, 230, 0.62);
+  --border-on-dark:     rgba(228, 237, 230, 0.12);
+  --bg-input-on-dark:   rgba(228, 237, 230, 0.06);
+
+  --logo-color:         #8FCFB3;
+}
+
 /* v3 dark — Slate Blue navy surfaces.
  * mode クラス（html.mode-dark）と組み合わせて適用する。
  * `body.theme-v3.mode-dark` の特異度で `.mode-dark` 単体より優先される。

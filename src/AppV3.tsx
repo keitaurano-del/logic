@@ -703,7 +703,10 @@ function AppV3() {
         <NotificationSettingsScreen onBack={handleBack} />
       )}
       {screen.type === 'appearance-settings' && (
-        <AppearanceSettingsScreen onBack={handleBack} />
+        <AppearanceSettingsScreen
+          onBack={handleBack}
+          onUpgrade={() => navigate({ type: 'pricing' })}
+        />
       )}
 
       {screen.type === 'report-problem' && (

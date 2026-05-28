@@ -24,7 +24,7 @@ export const ACCENTS: Accent[] = [
 ]
 
 // Mode (light/dark/premium)
-export type ModeId = 'light' | 'dark' | 'enterprise' | 'startup' | 'custom'
+export type ModeId = 'light' | 'dark' | 'enterprise' | 'startup' | 'custom' | 'sepia' | 'forest' | 'mono'
 export type ModeTier = 'free' | 'premium'
 
 export type Mode = {
@@ -42,6 +42,9 @@ export const MODES: Mode[] = [
   { id: 'enterprise', get name() { return t('theme.mode.enterprise.name') }, get description() { return t('theme.mode.enterprise.desc') }, tier: 'premium', preview: { bg: '#0F1729', card: '#1A2540', text: '#E2E8F0', accent: '#94A3B8' } },
   { id: 'startup',    get name() { return t('theme.mode.startup.name') },    get description() { return t('theme.mode.startup.desc') },    tier: 'premium', preview: { bg: '#FFFAF0', card: '#FFFFFF', text: '#1A2E22', accent: '#10B981' } },
   { id: 'custom',     get name() { return t('theme.mode.custom.name') },     get description() { return t('theme.mode.custom.desc') },     tier: 'premium', preview: { bg: '#F5F1E8', card: '#FFFFFF', text: '#2D2820', accent: '#D4915A' } },
+  { id: 'sepia',      get name() { return t('theme.mode.sepia.name') },      get description() { return t('theme.mode.sepia.desc') },      tier: 'premium', preview: { bg: '#F4ECDD', card: '#FBF6EC', text: '#3A2F23', accent: '#B25C3A' } },
+  { id: 'forest',     get name() { return t('theme.mode.forest.name') },     get description() { return t('theme.mode.forest.desc') },     tier: 'premium', preview: { bg: '#10221B', card: '#173026', text: '#E4EDE6', accent: '#6FB89A' } },
+  { id: 'mono',       get name() { return t('theme.mode.mono.name') },       get description() { return t('theme.mode.mono.desc') },       tier: 'free',    preview: { bg: '#F2F2F0', card: '#FFFFFF', text: '#1A1A1A', accent: '#C0392B' } },
 ]
 
 export type ThemeState = {
@@ -160,8 +163,19 @@ export function applyTheme(s: ThemeState) {
 
   // Sync <meta name="theme-color"> with the active mode so the browser's
   // URL bar / status area matches the page background. Dark UA otherwise
-  // shows a stale light color on cold start.
-  const themeColor = s.mode === 'light' ? '#EEF1FA' : '#1A1F2E'
+  // shows a stale light color on cold start. Each mode returns its own bg
+  // (matches the --bg-primary defined for that mode in tokens.css).
+  const THEME_COLOR_BY_MODE: Record<ModeId, string> = {
+    light:      '#EEF1FA',
+    dark:       '#1A1F2E',
+    enterprise: '#0F1729',
+    startup:    '#FFFAF0',
+    custom:     '#EEF1FA',
+    sepia:      '#F4ECDD',
+    forest:     '#10221B',
+    mono:       '#F2F2F0',
+  }
+  const themeColor = THEME_COLOR_BY_MODE[s.mode] ?? '#1A1F2E'
   let meta = document.head.querySelector<HTMLMetaElement>('meta[name="theme-color"]')
   if (!meta) {
     meta = document.createElement('meta')

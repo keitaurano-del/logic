@@ -13,7 +13,7 @@ import { useDailyGuide, GuideStyle } from '../tutorial/dailyGuide'
 import { isPaid } from '../subscription'
 import { getDisplayName, addXp } from '../stats'
 import { recordActivity } from '../activityLog'
-import { markDailyFermiDone, addDailyFermiDoneIndex } from './dailyFermiState'
+import { markDailyFermiDone, addDailyFermiDoneIndex, getHomeFermiIndex } from './dailyFermiState'
 import { isSaved, toggleSaved } from '../savedItemsStore'
 import { useStudyTimer } from '../hooks/useStudyTimer'
 
@@ -511,7 +511,12 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
   const canAnswer = replayMode ? true : dailyCount < dailyLimit
   const canReroll = replayMode ? false : (rerollCount < rerollLimit && canAnswer)
 
-  // 優先順位: 復習からの再挑戦 → ホームで「別の問題」 → 日次デフォルト
+  // 優先順位: 復習からの再挑戦 → ホームと共有の「今日の1問」index
+  //   - 復習(replay)は特定問題の再挑戦なので最優先（消費して通常ロジックへ戻す）
+  //   - それ以外は getHomeFermiIndex() を真実源にする。これはホームと同一の
+  //     「未完了プール + 日付シード」ロジックなので、session が揮発していても
+  //     ホームカードと Daily 画面が必ず同じ問題に収束する。
+  //   - 全問完了など getHomeFermiIndex() が null の場合のみ日次デフォルトへフォールバック。
   const initialIndex = (() => {
     try {
       const replay = sessionStorage.getItem('fermi-replay-index')
@@ -520,12 +525,9 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking }: DailyFermi
         const n = parseInt(replay, 10)
         if (Number.isFinite(n) && n >= 0 && n < FERMI_POOL.length) return n
       }
-      const raw = sessionStorage.getItem('home-fermi-index')
-      if (raw != null) {
-        const n = parseInt(raw, 10)
-        if (Number.isFinite(n) && n >= 0 && n < FERMI_POOL.length) return n
-      }
     } catch { /* */ }
+    const home = getHomeFermiIndex()
+    if (home != null) return home
     return getDailyFermiIndex()
   })()
   const initialQuestion = FERMI_POOL[initialIndex]

@@ -13,7 +13,9 @@ import { defineConfig, devices } from '@playwright/test'
  */
 export default defineConfig({
   testDir: './e2e',
-  testMatch: ['render-smoke-20260527.spec.ts'],
+  // 日付固定だと新 spec 追加時に意図せず古い spec を回し続ける / 引数指定との
+  // 積集合が空になる罠があるため glob で全 smoke spec を追従させる。
+  testMatch: ['render-smoke-*.spec.ts'],
   timeout: 45_000,
   expect: { timeout: 10_000 },
   fullyParallel: false,

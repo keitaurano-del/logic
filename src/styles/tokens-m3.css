@@ -169,6 +169,152 @@ body.theme-v3.mode-light {
   --elev-5: 0 4px 4px rgba(13, 18, 32, 0.10), 0 8px 12px rgba(13, 18, 32, 0.08);
 }
 
+/* ---- M3 surface overrides for v3.1 themes --------------------------
+ * AppShell / TabBar / Header は --md-sys-color-surface 系を直接消費するため、
+ * tokens.css の派生トークンだけでなく M3 サーフェスもモード毎に上書きしないと
+ * 土台（タブバー・ヘッダ背景）が :root のダーク値のまま残る footgun になる。
+ * surface=bg-primary / on-surface=text-primary / primary=accent に合わせる。
+ */
+
+/* 古紙 / Sepia (light系) */
+body.theme-v3.mode-sepia {
+  --md-sys-color-primary:                  #A8542F;
+  --md-sys-color-on-primary:               #FFFFFF;
+  --md-sys-color-primary-container:        #F0D9C6;
+  --md-sys-color-on-primary-container:     #4A2510;
+
+  --md-sys-color-secondary:                #6B5C49;
+  --md-sys-color-on-secondary:             #FFFFFF;
+  --md-sys-color-secondary-container:      #EAD9BF;
+  --md-sys-color-on-secondary-container:   #3A2F23;
+
+  --md-sys-color-tertiary:                 #A8542F;
+  --md-sys-color-on-tertiary:              #FFFFFF;
+  --md-sys-color-tertiary-container:       #F0D9C6;
+  --md-sys-color-on-tertiary-container:    #4A2510;
+
+  --md-sys-color-error:                    #BA1A1A;
+  --md-sys-color-on-error:                 #FFFFFF;
+  --md-sys-color-error-container:          #FFDAD6;
+  --md-sys-color-on-error-container:       #410002;
+
+  --md-sys-color-surface:                  #F4ECDD;
+  --md-sys-color-on-surface:               #3A2F23;
+  --md-sys-color-surface-variant:          #E5D9C2;
+  --md-sys-color-on-surface-variant:       #6B5C49;
+
+  --md-sys-color-surface-container-lowest: #FFFCF5;
+  --md-sys-color-surface-container-low:    #FBF6EC;
+  --md-sys-color-surface-container:        #F1E8D6;
+  --md-sys-color-surface-container-high:   #EDE3D0;
+  --md-sys-color-surface-container-highest:#E5D9C2;
+
+  --md-sys-color-outline:                  #8A7A64;
+  --md-sys-color-outline-variant:          #E2D5BF;
+
+  --md-sys-color-inverse-surface:          #3A2F23;
+  --md-sys-color-inverse-on-surface:       #F7F0E3;
+  --md-sys-color-inverse-primary:          #E59B79;
+
+  --md-sys-color-scrim:                    rgba(58, 47, 35, 0.40);
+  --md-sys-color-surface-tint:             #A8542F;
+}
+
+/* 墨白 / Monochrome (light系) */
+body.theme-v3.mode-mono {
+  --md-sys-color-primary:                  #A33124;
+  --md-sys-color-on-primary:               #FFFFFF;
+  --md-sys-color-primary-container:        #F6D5D0;
+  --md-sys-color-on-primary-container:     #410B05;
+
+  --md-sys-color-secondary:                #4A4A4A;
+  --md-sys-color-on-secondary:             #FFFFFF;
+  --md-sys-color-secondary-container:      #E2E2DE;
+  --md-sys-color-on-secondary-container:   #1A1A1A;
+
+  --md-sys-color-tertiary:                 #A33124;
+  --md-sys-color-on-tertiary:              #FFFFFF;
+  --md-sys-color-tertiary-container:       #F6D5D0;
+  --md-sys-color-on-tertiary-container:    #410B05;
+
+  --md-sys-color-error:                    #BA1A1A;
+  --md-sys-color-on-error:                 #FFFFFF;
+  --md-sys-color-error-container:          #FFDAD6;
+  --md-sys-color-on-error-container:       #410002;
+
+  --md-sys-color-surface:                  #F2F2F0;
+  --md-sys-color-on-surface:               #1A1A1A;
+  --md-sys-color-surface-variant:          #E0E0DC;
+  --md-sys-color-on-surface-variant:       #4A4A4A;
+
+  --md-sys-color-surface-container-lowest: #FFFFFF;
+  --md-sys-color-surface-container-low:    #FBFBFA;
+  --md-sys-color-surface-container:        #EDEDEA;
+  --md-sys-color-surface-container-high:   #E9E9E6;
+  --md-sys-color-surface-container-highest:#E0E0DC;
+
+  --md-sys-color-outline:                  #6E6E6E;
+  --md-sys-color-outline-variant:          #DCDCD8;
+
+  --md-sys-color-inverse-surface:          #1A1A1A;
+  --md-sys-color-inverse-on-surface:       #F5F5F3;
+  --md-sys-color-inverse-primary:          #E58379;
+
+  --md-sys-color-scrim:                    rgba(26, 26, 26, 0.40);
+  --md-sys-color-surface-tint:             #A33124;
+}
+
+/* 深緑 / Forest (dark系) — elevation はダーク調整も併せて行う */
+body.theme-v3.mode-forest {
+  --md-sys-color-primary:                  #6FB89A;
+  --md-sys-color-on-primary:               #0B1813;
+  --md-sys-color-primary-container:        #2A4B3C;
+  --md-sys-color-on-primary-container:     #C2E6D4;
+
+  --md-sys-color-secondary:                #A6C2B2;
+  --md-sys-color-on-secondary:             #1A2E24;
+  --md-sys-color-secondary-container:      #2A4B3C;
+  --md-sys-color-on-secondary-container:   #C2E6D4;
+
+  --md-sys-color-tertiary:                 #8FCFB3;
+  --md-sys-color-on-tertiary:              #0B1813;
+  --md-sys-color-tertiary-container:       #2A4B3C;
+  --md-sys-color-on-tertiary-container:    #C2E6D4;
+
+  --md-sys-color-error:                    #FFB4AB;
+  --md-sys-color-on-error:                 #690005;
+  --md-sys-color-error-container:          #93000A;
+  --md-sys-color-on-error-container:       #FFDAD6;
+
+  --md-sys-color-surface:                  #10221B;
+  --md-sys-color-on-surface:               #E4EDE6;
+  --md-sys-color-surface-variant:          #173026;
+  --md-sys-color-on-surface-variant:       #A6C2B2;
+
+  --md-sys-color-surface-container-lowest: #0B1813;
+  --md-sys-color-surface-container-low:    #142A21;
+  --md-sys-color-surface-container:        #173026;
+  --md-sys-color-surface-container-high:   #1E3B2F;
+  --md-sys-color-surface-container-highest:#264738;
+
+  --md-sys-color-outline:                  #7C9C8B;
+  --md-sys-color-outline-variant:          rgba(228, 237, 230, 0.12);
+
+  --md-sys-color-inverse-surface:          #E4EDE6;
+  --md-sys-color-inverse-on-surface:       #10221B;
+  --md-sys-color-inverse-primary:          #2A6B50;
+
+  --md-sys-color-scrim:                    rgba(0, 0, 0, 0.55);
+  --md-sys-color-surface-tint:             #6FB89A;
+
+  /* dark 系: elevation を tokens-m3 :root のダーク値に戻す（light ブロックは softer） */
+  --elev-1: 0 1px 2px rgba(0, 0, 0, 0.30);
+  --elev-2: 0 1px 2px rgba(0, 0, 0, 0.30), 0 2px 6px rgba(0, 0, 0, 0.15);
+  --elev-3: 0 1px 3px rgba(0, 0, 0, 0.30), 0 4px 8px rgba(0, 0, 0, 0.15);
+  --elev-4: 0 2px 3px rgba(0, 0, 0, 0.30), 0 6px 10px rgba(0, 0, 0, 0.15);
+  --elev-5: 0 4px 4px rgba(0, 0, 0, 0.30), 0 8px 12px rgba(0, 0, 0, 0.15);
+}
+
 /* ---- Platform-specific overrides ------------------------------------ */
 html[data-platform="ios"] {
   /* iOS: shadows are softer in dark mode per HIG */

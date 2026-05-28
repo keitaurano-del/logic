@@ -11,7 +11,10 @@ import { defineConfig, devices } from '@playwright/test'
  */
 export default defineConfig({
   testDir: './e2e',
-  testMatch: ['render-smoke-20260525.spec.ts'],
+  // 日付固定にすると新しい render-smoke-<日付>.spec.ts を追加したときに
+  // night-patrol.sh が渡す「最新 spec」と testMatch の積集合が空になり
+  // "No tests found" で空振りする。glob にして全 smoke spec を追従させる。
+  testMatch: ['render-smoke-*.spec.ts'],
   timeout: 60_000,
   expect: { timeout: 10_000 },
   fullyParallel: false,

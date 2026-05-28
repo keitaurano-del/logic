@@ -10,12 +10,13 @@ import { JournalImageGrid } from './JournalImageGrid'
 import type { HealthSnapshot } from '../../platform/health'
 import { SparkleIcon } from './MoodWeatherIcons'
 import { PencilIcon, XIcon } from '../../icons'
-import { fetchJournalByDate, upsertJournal, normalizeTags, tagMatchKey } from './journalDb'
+import { fetchJournalByDate, upsertJournal, normalizeTags, tagMatchKey, fetchAllUserTags } from './journalDb'
 import { suggestJournalTags } from './journalApi'
+import { applyConsolidations, canonicalizeTags } from './tagConsolidation'
 import { JournalXpToast } from './JournalXpToast'
 import { JournalRichText } from './JournalRichText'
 import { awardJournalXp } from '../../stats'
-import { t } from '../../i18n'
+import { t, getLocale } from '../../i18n'
 
 interface JournalDetailSheetProps {
   userId: string
@@ -128,6 +129,9 @@ export function JournalDetailSheet({ userId, date, initialJournal, initialPhase,
   const [saveError, setSaveError] = useState<string | null>(null)
   const [aiTagToast, setAiTagToast] = useState<string | null>(null)
   const [xpToast, setXpToast] = useState<{ xp: number; label: string } | null>(null)
+  // D3 層2: タグ自動統合の undo。統合直前のタグ配列（スナップショット）を保持し、
+  // トーストの「元に戻す」で setTags / 再 upsert して非可逆な統合を取り消せるようにする。
+  const [tagUndoSnapshot, setTagUndoSnapshot] = useState<string[] | null>(null)
 
   const modalRef = useRef<HTMLDivElement>(null)
   const closeBtnRef = useRef<HTMLButtonElement>(null)
@@ -295,30 +299,88 @@ export function JournalDetailSheet({ userId, date, initialJournal, initialPhase,
     const hasText = trimmedSchedule.length > 5 || trimmedReflection.length > 5
     if (hasText && tags.length < 4) {
       ;(async () => {
-        const { suggestedTags } = await suggestJournalTags({
+        // ユーザーの既存タグ（頻度上位）も渡す。AI は既存タグ再利用を最優先し、
+        // 重複している既存タグ同士を consolidations (from=>to) で統合提案できる。
+        const userTags = await fetchAllUserTags(userId, 40)
+        const { suggestedTags, consolidations } = await suggestJournalTags({
           scheduleNotes: trimmedSchedule,
           eveningReflection: trimmedReflection,
-          existingTags: tags,
+          existingTags: userTags.length > 0 ? userTags : tags,
         })
-        if (!suggestedTags || suggestedTags.length === 0) return
-        // 既存タグと照合キー（大小文字・幅ゆれを畳んだもの）で重複排除してから追加。
-        const existingKeys = new Set(tags.map((t2) => tagMatchKey(t2)))
-        const additions = suggestedTags
+
+        // D3 層2: AI の統合提案を「今回保存するタグ + その保存に関係する既存タグ」へ適用。
+        // 完全自動。同一 axis ガード・スナップショット・ログを内蔵（applyConsolidations）。
+        const locale = getLocale()
+        let baseTags = tags
+        let didConsolidate = false
+        if (consolidations && consolidations.length > 0) {
+          const result = applyConsolidations(tags, consolidations, {
+            existingTags: userTags,
+            locale,
+            enforceAxisGuard: true,
+          })
+          if (result.applied.length > 0) {
+            // 結果はログに残す（要件 (c)）。本番反映時は observability に集約余地あり。
+            console.info('[journal] tag consolidation applied:', {
+              applied: result.applied,
+              rejected: result.rejected,
+            })
+          }
+          if (result.changed) {
+            baseTags = result.tags
+            didConsolidate = result.applied.length > 0
+            // undo 用に統合直前の状態（生の tags）を保持。
+            if (didConsolidate) setTagUndoSnapshot(result.snapshot)
+          }
+        }
+
+        const newSuggestions = suggestedTags ?? []
+        // 既存タグ（統合適用後の baseTags）と照合キーで重複排除してから補完タグを追加。
+        const existingKeys = new Set(baseTags.map((t2) => tagMatchKey(t2)))
+        const additions = newSuggestions
           .filter((s) => s && !existingKeys.has(tagMatchKey(s)))
-          .slice(0, Math.max(0, 5 - tags.length))
-        if (additions.length === 0) return
-        // 保存・表示で一貫させるため merge 後も正規化・名寄せを通す。
-        const merged = normalizeTags([...tags, ...additions])
+          .slice(0, Math.max(0, 5 - baseTags.length))
+
+        // 統合も追加も無ければ何もしない。
+        if (!didConsolidate && additions.length === 0) return
+
+        // 保存・表示で一貫させるため、統制語彙の名寄せ(層1)→T3 正規化を通す。
+        const merged = normalizeTags(canonicalizeTags([...baseTags, ...additions], locale))
+        // 元の tags と実質変化が無ければ書き込みもトーストもしない。
+        const sameAsBefore =
+          merged.length === tags.length &&
+          merged.every((tg, i) => tagMatchKey(tg) === tagMatchKey(tags[i] ?? ''))
+        if (sameAsBefore) return
+
         const reupdated: DailyJournal = { ...updated, tags: merged }
         const { error: e2 } = await upsertJournal(reupdated)
         if (e2) return
         setTags(merged)
         setJournal(reupdated)
         onSaved?.(reupdated)
-        setAiTagToast(t('journal.aiTagsAdded', { n: String(additions.length) }))
-        setTimeout(() => setAiTagToast(null), 2400)
+        if (didConsolidate) {
+          setAiTagToast(t('journal.tagsConsolidated'))
+        } else {
+          setAiTagToast(t('journal.aiTagsAdded', { n: String(additions.length) }))
+        }
+        setTimeout(() => setAiTagToast(null), didConsolidate ? 6000 : 2400)
       })()
     }
+  }
+
+  // D3 層2: タグ自動統合を取り消す。スナップショット（統合直前の生タグ）へ戻して再保存する。
+  const handleUndoConsolidation = async () => {
+    if (!tagUndoSnapshot) return
+    const snapshot = tagUndoSnapshot
+    const base = journal ?? emptyJournal(userId, date)
+    const reverted: DailyJournal = { ...base, user_id: userId, date, tags: normalizeTags(snapshot) }
+    const { error } = await upsertJournal(reverted)
+    if (error) return
+    setTags(reverted.tags)
+    setJournal(reverted)
+    onSaved?.(reverted)
+    setTagUndoSnapshot(null)
+    setAiTagToast(null)
   }
 
   const handleEnterEdit = () => setEditing(true)
@@ -680,7 +742,18 @@ export function JournalDetailSheet({ userId, date, initialJournal, initialPhase,
           <div className="journal-toast" role="status">{t('journal.savedToast')}</div>
         )}
         {aiTagToast && (
-          <div className="journal-toast" role="status">{aiTagToast}</div>
+          <div className="journal-toast" role="status">
+            <span>{aiTagToast}</span>
+            {tagUndoSnapshot && (
+              <button
+                type="button"
+                className="journal-toast__undo"
+                onClick={handleUndoConsolidation}
+              >
+                {t('journal.tagsConsolidatedUndo')}
+              </button>
+            )}
+          </div>
         )}
         {xpToast && (
           <JournalXpToast

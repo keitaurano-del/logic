@@ -6,17 +6,473 @@ task-manager エージェントが管理するタスク台帳の正本。
 
 ---
 
+## バッチ: 2026-05-28 実機フィードバック4件（Keita 朝）
+
+林が事前に原因調査済み。task-manager が構造化。実装は委譲。
+
+| ID | タイトル | 優先度 | ステータス | 担当案 |
+|----|----------|--------|-----------|--------|
+| T-A | フェルミ「今日の1問」とタップ後の問題がズレる | P0 | IN_PROGRESS（dev-logic ローカル修正中・未push） | dev-logic |
+| T-B | 配色テーマを3種類追加（外観設定 MODES）＋垢抜け化 | P1 | IN_PROGRESS（候補6案提案済→Keita 3種選定済→dev-logic 実装中・未push） | designer（候補済）→ Keita（選定済）→ dev-logic（実装中） |
+| T-C | カスタムコース生成できない（本番 route 未デプロイ） | P0 | DONE（本番再デプロイ→404解消・正常系検証済） | 林/Keita（運用・コード修正不要） |
+| T-D | ジャーナルのタグ粒度が細かすぎる（→ 動的・自動統合モデルで確定。タグ付け時に既存タグを動的参照し最適化＋自己統合） | P1 | IN_PROGRESS（D1 DONE。**D2+D3 実装ほぼ完了・検証確認中**＝未コミット、tsc/eslint/vitest 完了報告が途切れ。D4 は自動主体に縮小再定義・未着手） | content-creator（D1 DONE）→ dev-logic（D2/D3 実装ほぼ完了・検証中／D4 実装）+ designer（D4 結果確認UIのみ縮小）|
+| T-E | Obsidian vault 最新化＋日次更新の仕組み化 | P1 | IN_PROGRESS（(a) Daily Note 5/26-28 DONE、(b) 一部、(c)(d) 未＝T-F依存） | 林（キャッチアップ）+ ceo（日次統合）/ task-manager（recurring 管理） |
+| T-F | cron 自動化の root 権限エラー修復（ceo 朝ブリ・feedback-watcher が空振り） | P1（上位） | TODO（要 Keita 方式確認） | ceo（自分のスクリプト群） |
+| T-G | night-patrol 夜間スモークが "No tests found" で空振り（監視死） | P1 | IN_PROGRESS（dev-logic が T-A と同バッチで修正中・未push） | dev-logic / test-smoke |
+| T-H | Logic Android Production 公開（保留） | P1 | BLOCKED（Keita 判断で保留・技術的には即実行可） | Keita（公開判断） |
+
+### T-A — フェルミ「今日の1問」とタップ後がズレる　[P0 / IN_PROGRESS]
+
+- 進捗（2026-05-28）: dev-logic がローカルで修正中（未完了・未push）。T-G と同バッチで作業。完了報告を受けたら DoD（同日内・解答後・リロール後の Home/Daily 一致、日付跨ぎの決定性）を検証して REVIEW→DONE 判定する。
+- 症状: ホームの「今日の1問」カードと、タップして開いた `DailyFermiScreen` の問題が食い違うことがある（特にその日に1問でも解いた後）。correctness バグ → 即修正（Bucket1、correctness 優先ルール）。
+- 根因確定（林調査、実ソース照合済み）:
+  - `HomeScreenV3.tsx:138-146` は **未完了だけ詰めた available 配列**を作り `available[dailySeed % available.length]`（dailySeed = `getDailyFermiIndex()`）で選ぶ。`dailySeed = Date.now()/86400000 % FERMI_POOL.length`。
+  - ところがホームは**初期表示時は `home-fermi-index` を sessionStorage に保存しない**。保存するのはリロール（「別の問題」）時のみ（`HomeScreenV3.tsx:181`）。
+  - `DailyFermiScreen.tsx:515-531` は `home-fermi-index` が無ければ生の `getDailyFermiIndex()`（= 生 pool index、未完了フィルタなし）にフォールバック（:529）。
+  - 結果、その日1問でも解くと available 配列が縮み、ホーム側の `available[dailySeed % available.length]`（未完了配列 index）と Daily 側の `getDailyFermiIndex()`（生 pool index）が別問題を指す。
+- 修正方針（dev-logic 判断・案）: 選択ロジックを単一化する。(a) `fermiData.ts`（または新規 `dailyFermiState.ts`）に「今日の表示すべき index」を返す共通関数を1つ置き、Home/Daily 両方がそれを呼ぶ。(b) ホームが初期表示で決めた表示 index を必ず共有キー（`home-fermi-index`）に永続化し、Daily はそれを single source として読む。available フィルタの有無を両者で揃えるのが肝。
+- 関連ファイル: `src/screens/HomeScreenV3.tsx`（112 HOME_FERMI_INDEX_KEY / 118-146 選択ロジック / 181 リロール保存）、`src/screens/DailyFermiScreen.tsx`（515-531 initialIndex 解決 / 581 リロール乱択）、`src/fermiData.ts`（getDailyFermiIndex / FERMI_POOL / getFermiStatsByIndex）。
+- DoD: 同日内で「今日の1問」カードとタップ後の `DailyFermiScreen` が**常に同一問題**を表示する。その日1問解いた後／復習からの再挑戦／「別の問題」リロール後も両画面が一致。日付が変われば決定的に次の1問へ。
+- サブタスク:
+  - [ ] 表示 index 決定ロジックを共通関数化 or 共有キー永続化で単一化（available フィルタの有無を両画面で統一）
+  - [ ] ホーム初期表示時にも表示 index を sessionStorage（共有キー）へ永続化
+  - [ ] Daily 側フォールバック（:529 生 getDailyFermiIndex）を共通ロジック経由に置換
+  - [ ] リロール（Home:181 / Daily:581）と replay（fermi-replay-index）経路でも一致を維持
+  - [ ] 回帰: 全問完了時（available.length===0 で null）の表示、日付跨ぎ、復習ハブからの遷移
+- 抜けもれ提言:
+  - i18n: 文言追加なし想定（ロジック修正のみ）→ ja/en 影響なし。新規文言が出たら ja/en 両対応。
+  - 両OS: 純ロジック（sessionStorage ベース）なので iOS/Android で挙動差は出にくいが、Capacitor WebView の sessionStorage 永続範囲（プロセス kill 後クリア）に注意 → 「日付ベースで決定的」なら sessionStorage が消えても再計算で一致するのが理想。共有キー方式にする場合は揮発性も検証。
+  - テスト: 決定性ロジックは vitest 単体テスト向き（同日・解答後・日付跨ぎで Home/Daily の選択関数が同 index を返す）。E2E は sessionStorage 操作が要るので単体優先。
+  - 永続化: sessionStorage は当日内のみ。日次の決定性は date seed で担保する設計が安全（state の持ち方を設計時に明示）。
+
+### T-B — 配色テーマを3種類追加（外観設定 MODES）＋垢抜け化　[P1 / IN_PROGRESS]
+
+- 進捗（2026-05-28）: designer が候補6案を提案済（`logic/docs/THEME_PALETTE_CANDIDATES.md`）。Keita が designer 推奨ミックス（1=古紙 / 2=深緑 / 4=墨白）を3種として選定済（このタスクのゲート通過）。dev-logic が選定3種を worktree で実装中（未完了・未push）。完了報告を受けたら DoD（preview と tokens.css 実トークンの一致、tier 割当、i18n ja/en、コントラスト WCAG AA、Android 実機、既存5モード非回帰）を検証して REVIEW→DONE。
+- スコープ確定（Keita 確認 2026-05-28）: 当初「テーマを増やす／AIっぽさをなくす」は曖昧だったが、対象は **アプリの配色テーマ（外観設定の背景モード = `theme.ts` の `MODES`）** に確定。フェルミお題や AI 生成テーマの話ではない（旧 BLOCKED 版の (a)/(b) 解釈は破棄）。
+- 現状（実ソース照合済み）:
+  - `src/theme.ts` の `MODES` が5種: `light` / `dark`（tier=free）、`enterprise` / `startup` / `custom`（tier=premium）。
+  - 各モードは `preview: { bg, card, text, accent }` を持ち、`applyTheme()` で CSS 変数（`--accent` / `--accent-soft` / `--accent-glow` / `--accent-dark` / `--accent-fg`）を流す。`mode-{id}` クラスを `<html>` と `<body>` に付与し、実際の bg/card/text トークンは `tokens.css` の `body.theme-v3.mode-{id}` セレクタ側で定義される（theme.ts の `preview` はカードのプレビュー表示用）。
+  - 別レイヤーで `ACCENTS`（6色アクセント・全 free）もあるが今回の対象外（モード＝背景テーマの追加）。
+  - i18n: `theme.mode.{id}.name` / `theme.mode.{id}.desc` が ja/en 両方に必要（i18n.ts ja:587-596 / en:2420-2429）。
+- やること: 新しい配色テーマ（背景モード）を3種類追加する。「AIっぽさをなくす」= 既存パレット（enterprise のネイビー×シルバー等）が量産テンプレっぽいので、**垢抜けた配色**にする方向。Keita が後で必要なものを選別する前提なので、**まず候補を複数提案 → Keita 選別 → 実装**のフローを取る。
+- 担当案: designer（パレット設計・候補提案。コントラスト/トンマナ含む）→ Keita 選別 → dev-logic（theme.ts / tokens.css / i18n 実装）。
+- フロー注記: 創作系なので**サンプル承認フロー**（候補→Keita 選別→展開）。feedback_logic_course_thumbnails のサンプル承認ルール踏襲。配色は correctness というより主観・好みの領域なので Bucket2 寄り（即実装でなく候補先行）。
+- 関連ファイル: `src/theme.ts`（MODES 定義 38-45 / applyTheme 125-172）、`src/styles/tokens.css`（`body.theme-v3.mode-{id}` の bg/card/text トークン群）、`src/i18n.ts`（theme.mode.* の ja/en）、テーマ選択 UI（ThemeCard プレビューを描くコンポーネント）。
+- DoD: Keita が選んだ配色テーマ3種が `MODES` に追加され、(1) 各モードの全トークン（bg/card/text/accent ＋ accentSoft/glow/dark）が tokens.css と theme.ts preview の両方で定義され、(2) tier（free/premium）が割当てられ、(3) i18n の name+desc が ja/en 両方に入り、(4) 外観設定でカードプレビューと実適用（applyTheme）が一致し、(5) ライト/ダーク両系統で本文・ボタン文字のコントラストが WCAG AA を満たし、(6) Android 実機で破綻しない。
+- サブタスク:
+  - [x] designer: 垢抜けた配色テーマ候補を複数（6案）提案（`logic/docs/THEME_PALETTE_CANDIDATES.md`）。各案 bg/card/text/accent ＋ トンマナ説明・どの既存テーマの「量産っぽさ」を解消するか
+  - [x] Keita: 候補から3種を選別（このタスクのゲート）→ designer 推奨ミックス 1古紙 / 2深緑 / 4墨白 を選定
+  - [ ] dev-logic: 選定3種を `MODES` に追加（id / name getter / desc getter / tier / preview）※worktree で実装中
+  - [ ] dev-logic: `tokens.css` に `body.theme-v3.mode-{newid}` の bg/card/text トークンを定義（preview と実トークンの一致を保証）
+  - [ ] dev-logic: accentSoft / accentGlow / accentDark / accent-fg が各モードで破綻しないか（applyTheme の自動 fg ピックと整合）
+  - [ ] dev-logic: i18n `theme.mode.{newid}.name` / `.desc` を ja/en 両方に追加（中立的丁寧体）
+  - [ ] dev-logic: ThemeCard プレビューに新モードが出る・選択で applyTheme が走る配線確認
+  - [ ] 回帰: 既存5モード（light/dark/enterprise/startup/custom）の表示が変わらないこと。custom（HEX 指定）経路が壊れないこと
+  - [ ] コントラスト確認: 各新モードの text on bg / accent-fg on accent が WCAG AA（本文 4.5:1）
+  - [ ] Android 実機確認（モバイル専用プロダクト。theme-color meta も含め）
+- 抜けもれ提言:
+  - i18n: 新モードの name+desc は ja/en 両方必須（既存 enterprise/startup/custom と同じ getter パターン。i18n.ts ja 591-596 / en 2424-2429 に追記）。中立的丁寧体（feedback_app_copy_neutral）。
+  - デザイン制約: ハードコード hex 禁止ルールはあるが、theme.ts の MODES preview / tokens.css のテーマトークン定義は色の source なのでここで hex を持つのは正当（CLAUDE.md「色 source は OK」）。ただしコンポーネント側で直書きしない。UI chrome は emoji 不可・SVG のみ（テーマカードのアイコン使う場合）。
+  - tier 割当の確認: 新3種を free にするか premium にするか Keita 判断（課金導線に影響。enterprise/startup/custom は premium 前例）。
+  - アクセシビリティ: applyTheme の `pickFg()` が accent 上の文字色を自動選定するので accent は問題ないが、bg 上の本文 text は手動定義 → コントラスト要検算。ダーク系テーマで text が暗すぎ／ライト系で薄すぎないか。
+  - 両OS: モバイル専用（project_logic_mobile_only）。Android 実機で背景・カード・meta theme-color が正しく出るか。iOS workflow 未整備なので当面 Android。
+  - 永続化: テーマ選択は localStorage `logic-theme`（ThemeState.mode）に保存される既存機構。新 id を追加するだけで persist は自動で乗る（loadTheme の DEFAULT マージ）。ただし旧バージョンで未知 id を保存→読込時の fallback（applyTheme は MODES に無い id でも mode- クラス付与するだけなので、tokens.css に無い id だと無スタイル）に注意 → id 命名と tokens.css 追加は必ずセット。
+  - Web 反映: backend 不要のフロント変更だが、Render web で確認したい場合は手動 deploy-production.yml が要る（project_logic_render_auto_deploy）。Android は main push で自動反映。
+  - 重複注意: 既存 enterprise（ネイビー）/ startup（緑×橙）/ light/dark と色被りしない方向で。「垢抜け」= くすみ系・低彩度・モダン配色などの提案を designer に求める。
+
+### T-C — カスタムコース生成できない（本番 route 未デプロイ）　[P0 / DONE]
+
+- ✅ 完了・検証済（2026-05-28）: 本番 Render backend を手動再デプロイ（`deploy-production.yml`, run 26571568416 success）→ `POST /api/generate-course` が **404→200** に復活。正常系も検証済み（実際にコース生成を実行し title/description/lessonIds を返却・HTTP 200）。原因は本番デプロイ漏れのみで**コード修正は不要**だった（route はコードに実在、main マージ済だが Render 未再デプロイ）。migration 033 は本番適用済みと確認（`user_custom_courses` / `user_ai_course_usage` 両テーブル存在）。
+- 依存解消: T-C 解決により前バッチ TC-2 の DoD（実 Claude 生成）が本番で検証可能になった → TC-2 を REVIEW→DONE 判定可（下記 TC-2 セクション参照）。
+- 残: 内部テスト配信ビルドに最新カスタムコース UI が乗っている（#234, 5/27）。Keita 端末での実機ハッピーパス確認は配信完了後に実施予定（android-deploy.yml run 26572902909 in_progress）。
+- 症状: アプリのレッスン検索 AI ボタンからカスタムコース生成を実行すると失敗する。
+- 根因確定（林調査・本番 probe 済み）: 本番 Render backend が `POST /api/generate-course` に **404** を返す（route 未デプロイ）。比較: 本番で `POST /api/generate-problems` は **400**（route 有・バリデーションエラー）、`generate-course` だけ **404**（route 無）。
+  - route 自体はコードに実在（`server/routes/custom-course.ts:131` `router.post('/api/generate-course', ...)`、`server/index.ts:226` で登録）。PR #234 / commit `83258ca` を main マージ済。
+  - しかし Render backend が再デプロイされていない（main push の Render 自動デプロイは当てにならない既知事象 — project_logic_render_auto_deploy）。Android アプリは push ごとに毎回再ビルドされるので UI は最新（ボタンは入っている）が、叩く先の API に route が無く失敗。
+- 修正: **コード修正不要・運用タスク**。本番 backend を手動再デプロイ:
+  - `gh workflow run deploy-production.yml --repo keitaurano-del/logic -f confirm=yes`（Keita 承認案件 — 本番デプロイ）
+  - `ANTHROPIC_API_KEY` は本番に存在見込み（generate-problems が本番稼働中＝同じキーを使う）。
+- ステータス: BLOCKED（Keita のデプロイ承認待ち）。承認が出れば即実行 → デプロイ後検証へ。
+- 担当案: 林/Keita（デプロイ実行）。dev-logic のコード作業は不要。
+- 関連ファイル: `server/routes/custom-course.ts`（131 route）、`server/index.ts`（226 登録）。
+- DoD: 本番で `POST /api/generate-course` が 404 を返さなくなる（正常リクエストで 200／不正で 400）。かつアプリ実機（Android）でカスタムコース生成が成功し、生成コースがロードマップ上部「あなた専用コース」に表示される。
+- サブタスク:
+  - [x] Keita にデプロイ承認を取る（本番 backend 再デプロイ）
+  - [x] `deploy-production.yml -f confirm=yes` 実行（run 26571568416 success）
+  - [x] デプロイ後 probe: `POST /api/generate-course` が 404→200 に復活。正常系で実際にコース生成（title/description/lessonIds 返却・HTTP 200）を確認
+  - [x] バンドル/ビルド更新確認（deploy-production.yml run success）
+  - [x] migration 033 本番適用確認（user_custom_courses / user_ai_course_usage 存在）
+  - [ ] アプリ実機（Android 内部配信）でカスタムコース生成ハッピーパス確認（最新内部ビルド #234 配信完了後に Keita 端末で予定）
+  - [x] 関連: 本番で route が動いたので TC-2（前バッチ）の DoD（実 Claude 生成）が検証可能に → TC-2 を REVIEW→DONE 判定
+- 抜けもれ提言:
+  - デプロイ後検証は必須（404 解消の probe ＋ 実機 ハッピーパス）。デプロイしただけで DONE にしない。
+  - 前提依存: migration 033（user_custom_courses / user_ai_course_usage、TC-2 で「未適用」）が Supabase に適用済みか要確認。route が動いても保存先テーブルが無いと course 永続化／無料回数集計が失敗する → デプロイ前に migration 033 適用状況を確認（適用も Keita 承認案件）。
+  - 両OS: iOS workflow 未整備なので当面 Android 実機で確認（project_logic_mobile_only / android_deploy）。
+  - 再発防止メモ: 「main マージ済＝本番反映済」と思い込まない。backend 変更は手動 deploy-production.yml が必要（render auto-deploy は発火しないことが多い）。
+
+### T-D — ジャーナルのタグ粒度が細かすぎる　[P1 / IN_PROGRESS（新方針＝動的・自動統合モデルで確定）]
+
+- 📌 スコープ確定（Keita 2026-05-28 初版）: 「(1) プロンプトだけ直す」案ではなく **踏み込む方** を選択。**タグ統合 UX** ＋ **統制語彙（controlled vocabulary）** まで含めて修正する方針で確定。
+- 📌📌 設計方針アップデート（Keita 2026-05-28 追加・最重要・本質）: タグの本質モデルを **動的・自動統合（dynamic / self-consolidating vocabulary）** に確定した。Keita 原文「タグは、設定するときに既存のものを見ながら最適なものを作る。かつ、もっと良いものがあれば新しく作って統合する」。
+  - つまり **固定30語の canonical リストへ機械的に寄せるのではなく**、タグ付けのたびに **そのユーザーの既存タグ群を動的に参照して最適なタグを選ぶ／作る**。そして **より良い表現が現れたら新規に作り、古いものをそこへ統合（consolidate）する** ＝ 語彙が育つ・自己統合していく動的モデル。
+  - **固定語彙（tagVocabulary.ts / D1）の位置づけ**: 廃止ではない。「強い推奨のシード／初期語彙」として活かす。ユーザーがまだタグを持っていない初期や、既存タグに良い候補が無いときの拠り所になる。本質はあくまで「タグ付け時に既存タグを動的参照して最適化＋自己統合」で、固定語彙はその出発点（種）に格下げ。
+  - **D4 のタグ統合は「自動」を主体に確定**（旧 D4 の残論点「自動 vs 手動」は自動に決定）。手動統合 UI は主体から外し、ユーザーに見せるのは結果確認／取り消し程度に縮小する方向で再定義。
+- 進捗（2026-05-28）: **D1（統制語彙の定義）DONE**（content-creator、成果物 `src/components/journal/tagVocabulary.ts`。tsc/eslint 通過・名寄せ動作確認済）。新方針に合わせ D2/D3/D4 を再設計済（下記）。D2/D3 は着手可、D4 は自動主体に縮小再定義済。
+- 症状: ジャーナルのタグ（AI 自動提案）が細かすぎて、各エントリ固有のタグが乱立し「1タグ＝1ジャーナル」状態になり、タグの意味（横断的な分類）が薄れている。
+- 根因確定（林調査・実ソース照合済み）: タグは AI 自動提案。`server/routes/journal.ts` の2経路で「細かく・固有に・既存と被らせない」方向に効いている:
+  - `POST /tags`（:501-558）: システムプロンプトが「2-5 個」「each 1-3 words / 1-10 文字」「extract themes / actions / context」「既存タグと verbatim 重複させず**補完しろ（complement）**」（:524 ja, :536 en）。さらに `existingTags` をサーバ側で **先頭12個だけ**に切って渡す（:512-518 `.slice(0, 12)`）ので、12個を超えると AI は既存語彙を知らないまま新タグを作る → 固有タグ量産の構造要因。"補完しろ" 指示も新タグを後押し。
+  - `POST /summarize`（:183-272）: 「extract up to 4 tags」「1-3 words each, total 2-4 tags」「themes / actions / context を抽出」（:207, :218）。既存タグ語彙を渡していない＝毎回ゼロベースで生成。
+  - 両経路とも「再利用可能な広いタグ」より「そのエントリ固有のタグ」を優先する設計になっている。
+- T3 との関係（重要・二重実装回避）: 前バッチ T3 で `journalDb.ts` に `normalizeTagDisplay`（NFKC 正規化・先頭#剥がし・空白圧縮・24字 slice）／`tagMatchKey`（小文字化キー）／`normalizeTags`（同一キー名寄せ・重複排除）を実装済（:31-69）。これは **表記ゆれ（大小文字・全半角）の名寄せ**であって、T-D の **粒度（意味的に近い別表記を一つの統制語に寄せる）** とは別軸。T-D の統制語彙マッピング（D3）は T3 の `tagMatchKey` を「キー算出」の土台として再利用し、その上に「統制語彙への canonical 解決」層を足すのが筋（T3 を作り直さない）。
+- ━━━ サブタスク（D1✅DONE → D2/D3 着手可 → D4（D3 依存） → D5。本質は D2/D3 の動的・自動統合）━━━
+
+  #### D1 — 統制語彙（controlled vocabulary）の定義・設計　[✅ DONE・content-creator]
+  - ✅ 完了（2026-05-28、content-creator）: 成果物 `src/components/journal/tagVocabulary.ts`（新規・tsc/eslint 通過・名寄せ動作確認済）。
+    - 4軸（theme / action / situation / mood）× canonical 計30語、各語に synonyms。ja/en 対。
+    - ヘルパー: `buildVocabularyPromptHint(locale)`（軸別の推奨語彙ヒント文を生成、D2 用）／ `canonicalizeTag(raw, locale)`（語彙ヒットで canonical 表示形へ、ヒットなしは原表記＝オープン）／ `matchCanonical(raw)` / `allCanonicalLabels` / `canonicalsByAxis` / `getCanonicalById`。
+    - 方針は **オープン＋強い推奨**（クローズドにせず語彙外タグも許容）を採用。
+    - **T3（tagMatchKey）との関係**: T3 の「表記ゆれ名寄せ層」の上に乗る「意味的な名寄せ層」として設計。synonym 照合キーは T3 と同じ NFKC+小文字化正規化に合わせてあり二重実装にならない。
+  - **位置づけの更新（新方針）**: 当初は「固定 canonical へ寄せる中核」だったが、Keita 新方針で **「強い推奨のシード／初期語彙」へ格下げ**。D2/D3 の動的モデルが本質、tagVocabulary.ts はその出発点（種）＋ヒューリスティック照合の土台として活きる。
+  - 🔸 D1 で挙がった未解決の確認点（論点として保持・Keita 判断 or 実データ確認待ち）:
+    - (a) **mood 軸を入れるか**: 現状4軸（theme/action/situation/mood）。mood を落として3軸にする案もある（mood はジャーナル本体に既に感情記録 UI があり重複の懸念）。→ Keita 判断 or D5 で実利用ログを見て決定。
+    - (b) **「会議・打ち合わせ」の粒度**: 現状1 canonical（meeting）に社内/社外/1on1/商談などを全部寄せている。社内 vs 社外で分けるべきか。→ 実データ頻度を見て調整候補。
+    - (c) **実データを見た語彙調整**: Supabase `daily_journals.tags` の実集計を見て、実際に多く出ているタグに合わせて canonical/synonyms を見直すか。初版は AI が出しがちな表記＋手打ち想定で組んだので、実データ反映は次イテレーション候補。
+  - DoD: ✅ 充足（ja/en 対 canonical 語彙＋synonyms/axis 定義済・コード参照可・オープン方針確定）。
+  - 担当: content-creator（DONE）。
+
+  #### D2 — プロンプト側の動的最適化＋自己統合指示（新方針で拡張・旧 (1)）　[実装ほぼ完了・検証確認中・dev-logic]
+  - 進捗（2026-05-28）: dev-logic がローカル実装済（`server/routes/journal.ts` プロンプト改修・`src/components/journal/journalApi.ts`）。ただし **最終検証（tsc / eslint `.` / vitest）が完了報告前に途切れ・未コミット**。⚠backend なので本番反映は手動 deploy-production.yml 必須（デプロイ後 probe するまで効かない）。
+  - 新方針での内容: プロンプトを「固定語彙へ寄せろ」だけでなく **「既存タグを動的参照して最適化＋自己統合せよ」** という指示へ拡張する。`/tags`・`/summarize` の両経路で:
+    - (a) **既存タグ群を AI に渡す**: そのユーザーの既存タグ（理想は全量、現実的には頻度上位 or 直近）を渡し、「**まず既存タグに意味的に最適なものがあればそれを再利用せよ。固有名詞・一回性の表現は避けよ**」と指示。
+    - (b) **シード語彙も渡す**: `buildVocabularyPromptHint(locale)`（D1）で軸別の推奨語彙を同梱し、「既存タグにもシード語彙にも適切な候補が無いときだけ、短く再利用可能な新タグを最小限で作れ」と指示。＝ 既存タグ＞シード語彙＞新規、の優先順位。
+    - (c) **自己統合（consolidate）の指示**: 「既存タグの中に、より良い表現で言い換えられる細かい/古いタグがあれば、新しいタグに寄せて統合してよい」という consolidate ヒントを与え、AI に統合候補（old → new のペア）を返させる設計を検討（出力スキーマに `consolidations?: {from, to}[]` を足す案）。← この出力を D3 が受けて実適用する。
+    - (d) **個数を控えめに**（例 1-3 個）。
+    - (e) **`existingTags` の 12 個 slice 上限を見直す**（:512-518 `.slice(0, 12)`）: 動的参照が肝なので 12 固定はボトルネック。頻度上位 N（例 30-50）＋直近使用を優先して渡す、または件数が少なければ全量。トークン予算と相談して上限を再設計。
+    - (f) `/summarize` 側にも同じ「既存タグ参照＋シード語彙」制約を効かせる（現状ゼロベース生成）。
+  - DoD: 新規エントリのタグが (1) まず既存タグから再利用され、(2) 無ければシード語彙、(3) それも無ければ最小限の新規、という優先順で提案される。固有タグの新規生成が明確に減る（手動サンプル数件で before/after 比較）。consolidate 出力を返す設計なら D3 がそれを受けられる形になっている。
+  - 担当: dev-logic。
+  - ⚠デプロイ依存: プロンプトは backend → 本番反映には手動 deploy-production.yml が必須（後述「落とし穴」）。
+  - ⚠論点: 既存タグを毎リクエスト渡すとトークン増（コスト/レイテンシ）。頻度上位に絞る／キャッシュする等の最適化を実装時に検討。
+
+  #### D3 — 名寄せ＋動的統合（consolidate）ロジック（新方針で拡張）　[実装ほぼ完了・検証確認中・dev-logic]
+  - 進捗（2026-05-28）: dev-logic が新規 `src/components/journal/tagConsolidation.ts`（consolidate ロジック）＋ 単体テスト `src/__tests__/tagConsolidation.test.ts` を実装。`JournalDetailSheet.tsx`・`journal.css`・`i18n.ts` も改修。ただし **最終検証（tsc / eslint `.` / vitest）が完了報告前に途切れ・未コミット**。検証完了＋（物理書き換えを含むなら）安全策の確認後に REVIEW へ。
+  - 新方針での内容: 2層に分けて整理する。
+    - **層1: 静的シード解決（既存設計・軽量）** — D1 の `canonicalizeTag` / `matchCanonical` を使い、synonym → canonical のヒューリスティック名寄せ。T3 の `tagMatchKey` を土台に乗る。ヒットしないタグは原表記維持（オープン方針）。これは決定的なので vitest で検証しやすい。
+    - **層2: 動的統合（consolidate）— 新方針の本体** — D2 が AI から受け取る `consolidations: {from, to}[]`（または D3 内でユーザー既存タグ群の類似検出で算出した統合ペア）を、ユーザーのタグ集合に適用する関数を `journalDb.ts` に追加する。「from タグを持つ既存エントリの当該タグを to に書き換え（rename/merge）」＝ ユーザーの語彙を実際に再編する操作。これが「もっと良いものが出たら新規に作って古いものを統合する」の実装本体。
+  - 実装の論点整理:
+    - **統合の発火タイミング**: (i) タグ付けのたびに AI が consolidate 候補を返したら即適用、(ii) 一定頻度でまとめて棚卸し（バッチ）、(iii) ユーザー操作時のみ。→ 自動主体（新方針）なら (i) or (ii)。安全策（下記）次第。
+    - **適用範囲**: 表示・集計時の随時解決（元データ保持＝安全）か、既存エントリの tags を物理書き換え（語彙が本当に育つが非可逆）か。動的統合は本質的に「既存タグの書き換え」を含むので、層2は物理書き換え寄り。
+    - **類似検出の手段**: AI 任せ（D2 の consolidate 出力）か、D3 内で embedding/文字列類似でローカル算出するか。初版は AI 出力を信頼し、誤統合の安全策（承認・取り消し）で担保する案を推奨。
+  - DoD: (1) 静的シード解決で既存の固有タグが canonical/既存タグへ寄る（例「朝のクライアントMTG」→「会議・打ち合わせ」）、(2) 動的統合 consolidate ペアをユーザーのタグ集合へ適用できる関数が存在し永続化される、(3) 誤統合の取りこぼし/暴発がない（安全策と連動）、(4) T3 の表記ゆれ名寄せが壊れない。
+  - 担当: dev-logic。
+  - ⚠非可逆注意（重要・後述「安全策」と連動）: 動的統合（層2）は **既存タグの自動書き換え**を含む非可逆操作。元データのスナップショット／取り消し（undo）／承認制のいずれかを必ず設計に組み込む。物理バックフィル（過去全データの一括書き換え）は Keita 承認の別ステップ。
+
+  #### D4 — 自動統合の結果確認 UI（新方針で「自動主体」に縮小再定義・旧 (2)）　[D1 DONE → D3 依存・dev-logic 主体／designer は軽量UIのみ]
+  - 新方針での再定義: **手動統合 UI は主体から外す**（旧 (a)「このタグを別タグに統合」手動操作は格下げ）。統合は D2/D3 の動的・自動統合が主体。**ユーザーに見せるのは結果確認／取り消し程度に縮小**する。
+  - 縮小後の UI スコープ候補（いずれも「自動統合が起きたことの可視化と取り消し」が中核）:
+    - (A) **自動統合の通知/履歴**: 「『朝のMTG』を『会議・打ち合わせ』にまとめました」のような結果表示（さりげないトースト or タグ管理画面の履歴）。
+    - (B) **取り消し（undo）**: 自動統合を1操作で戻せる導線。非可逆操作の安全弁（後述「安全策」の UI 面）。
+    - (C) （任意・余力があれば）統合前の **確認/承認モード**: 自動適用前に「まとめますか？」と一度だけ確認する設定。デフォルト自動・任意で確認制にできる。
+  - 縮小により **designer の重い画面設計は不要に近い**。トースト/履歴/undo は既存 UI パターンで足りる見込み。designer は「自動統合をどう気づかせるか・undo 導線」の軽い UX レビュー程度。実装は dev-logic 主体。
+  - DoD: (1) 自動統合が起きたことがユーザーに分かる（通知 or 履歴）、(2) 取り消せる、(3) 操作・状態が永続化され再表示で維持、(4) 新規 UI 文言は ja/en 両方・中立的丁寧体（feedback_app_copy_neutral）・UI chrome は SVG アイコンのみ（emoji 不可）。
+  - 担当: dev-logic（主体・実装）＋ designer（undo 導線/通知の軽量 UX レビューのみ）。
+  - 🔸論点: 「確認モード(C) を入れるか／デフォルト完全自動でいくか」「結果通知をどこまで目立たせるか（サイレント自動だと勝手にタグが変わって戸惑う／逐一通知だとうるさい）」は D4 着手時に Keita 確認。
+
+  #### D5 — 回帰・検証　[D2/D3/D4 完了後・dev-logic]
+  - 内容: T3 の表記ゆれ名寄せが壊れていないか、既存タグの保存・読み出し・集計が壊れていないか、D3 の canonical 解決で意図せぬ統合が起きていないかを確認。プロンプト出力は非決定的なので D2 は手動サンプル数件の before/after 確認手順を残す。
+  - DoD: T3 機構・既存ジャーナル CRUD が非回帰。D2 の語彙寄せ・D3 の解決・D4 の UX が連携して「固有タグ乱立が抑制される」という T-D の元目的を満たす。
+
+- 全体 DoD（T-D 完了条件・新方針版）: (1) 新規エントリのタグが「既存タグ再利用＞シード語彙＞最小限の新規」の優先順で提案され固有タグ乱立が抑制される（D2）、(2) 既存タグへの静的シード名寄せ＋動的統合（consolidate）が機能し語彙が育つ／自己統合する（D3）、(3) 自動統合の結果がユーザーに分かり取り消せる（D4）、(4) 動的統合の非可逆操作に安全策（undo/承認/スナップショット）が備わる、(5) T3 の表記ゆれ名寄せ・既存 CRUD が非回帰（D5）、(6) backend プロンプト変更が本番反映済（手動デプロイ）。
+- 担当アサインまとめ（新方針版）: D1 = content-creator（✅DONE）、D2/D3 = dev-logic、D4 = dev-logic 主体＋designer 軽量 UX レビューのみ（旧「designer 設計主体」から縮小）、D5 = dev-logic。
+- 関連ファイル: `server/routes/journal.ts`（:183-272 summarize / :501-558 tags、:512-518 existingTags 12 個 slice ＝ D2 で上限見直し、:524 ja プロンプト / :536 en プロンプト）、`src/components/journal/journalDb.ts`（:31-69 T3 正規化 ＝ D3 層1 の土台、D3 層2 の consolidate 関数追加先）、`src/components/journal/tagVocabulary.ts`（✅D1 成果物・シード語彙＋照合ヘルパー）、`src/components/journal/TagInput.tsx`（タグ入力・サジェスト UI）、`src/components/journal/types.ts`（consolidate 出力スキーマ拡張先候補）、`src/i18n.ts`（D4 の新規 UI 文言 ja/en）。
+- 依存関係（新方針版）: D1（✅DONE）→ D2・D3（着手可・並行可）→ D4（D3 の consolidate 実装に依存）→ D5（全部の後）。D2 と D3 は密結合（D2 の consolidate 出力を D3 が受ける）ので同一 dev-logic が一気通貫で見るのが望ましい。
+- 抜けもれ提言:
+  - ⚠デプロイ依存（最重要・T-C と同根の落とし穴）: D2 のプロンプトは backend 側。**main マージ＝本番反映ではない**。Logic の Render web は main push で auto-deploy されないことが多く（project_logic_render_auto_deploy 訂正）、backend プロンプト変更を本番に効かせるには `gh workflow run deploy-production.yml --repo keitaurano-del/logic -f confirm=yes` の **手動デプロイが必須**。ローカルやステージングだけ直して「タグが直った」と判断しない。デプロイ後に本番ジャーナルで実タグ生成を probe して初めて DONE。Android はアプリ内でこの backend API を叩くので、backend をデプロイしないとアプリ側 UI が新しくても旧プロンプトの結果が返る。
+  - i18n: D2 のプロンプトはサーバ内部文字列（ja/en 分岐済み・ユーザー直接表示でない）→ i18n.ts への追加は不要。ただし **D4 の新規 UI 文言（統合ボタン・確認ダイアログ・空状態等）は i18n.ts の ja/en 両方に必須**＋中立的丁寧体（feedback_app_copy_neutral）。D1 の統制語彙そのものは ja/en 対で定義する（タグ表示に直結）。
+  - 両OS: ジャーナルはモバイル中心機能（project_logic_mobile_only）。D4 の UX は Android 実機で確認。D2/D3 は純データ/サーバなので OS 差は小さいが、D4 の操作 UI はタッチ操作で確認。
+  - ⚠⚠ 動的自動統合の安全策（新方針で最重要・論点として明記）: 動的統合は **既存タグの自動書き換え（非可逆）** を本質的に含む。「勝手にタグが変わって元に戻せない／意図せぬ統合で別概念が混ざる」事故を防ぐ安全策を設計に組み込むこと。具体的な論点:
+    - (1) **取り消し（undo）可否**: 自動統合は1操作で戻せること（D4 の undo 導線）。最低限これは必須寄り。
+    - (2) **承認制 vs 完全自動**: デフォルト完全自動でいくか、初回だけ／信頼度が低い統合だけ確認を挟むか。Keita 判断。
+    - (3) **元データのスナップショット**: 物理書き換え前に統合前の tags を保持（before スナップショット）し、誤統合を後から復元できる土台を持つか。
+    - (4) **物理バックフィル（過去全データ一括書き換え）の扱い**: 随時適用（新規・編集時のみ統合）をデフォルトにし、過去全データの一括 consolidate は Keita 承認の別ステップ（DB マイグレーション/バッチ＝非可逆・要スナップショット）。
+    - (5) **誤統合の検出**: AI の consolidate 出力を無検証で適用すると別概念混入リスク。信頼度しきい値・対象軸の限定（同一 axis 内のみ統合可 等）でガードするか。
+    - → これらは D3/D4 実装前に Keita と方針合わせが要る（特に (2) 承認制と (4) 物理バックフィルは判断案件）。
+  - UI chrome の emoji 不可: D4 の統合通知/履歴アイコン等は `src/icons/index.tsx` の SVG を使う（journal の mood/weather/phase/streak 絵文字例外は対象外＝タグ管理 UI は通常の SVG ルール）。
+  - テスト: D2 のプロンプト出力は非決定的でユニットテスト困難 → 手動サンプル数件の before/after 確認手順を残す。D3 の synonym→canonical 解決関数は決定的なので vitest 単体テスト向き（既存タグ群を入れて期待 canonical が返るか）。
+  - 永続化: D4 のタグ統合操作は localStorage＋Supabase 同期（既存ジャーナルの保存経路 daily_journals）に乗せる。物理バックフィルは Supabase 側 DB 操作＝マイグレーション or バッチ（承認案件）。
+  - 統制語彙の運用: D1 の語彙は今後メンテが要る（カテゴリ追加時に語彙も更新）→ 将来 task-manager の recurring or content-creator の継続管理に乗せる検討余地（今回は初版定義まで）。
+
+### T-E — Obsidian vault 最新化＋日次更新の仕組み化　[P1 / IN_PROGRESS]
+
+- 進捗（2026-05-28）:
+  - (a) ✅ DONE: 5/26〜5/28 の Daily Note 本体キャッチアップ作成済（林）。
+  - (b) 一部: 20-Projects/logic 状況の最新化は進行中（部分反映）。TASK_TRACKER ミラー配置は残。
+  - (c) 未: 日次自動生成の仕組み化は未着手。**T-F 依存**（claude を root cron で回せないと案1/案2 とも動かない）。
+  - (d) 未: recurring 管理（R-1）の漏れ検知ルール定義は T-F 解決後に本格運用。
+- 依頼原文（Keita 2026-05-28）: 「Obsidian 全部最新に更新して。全然更新されてないから毎日更新して、task-manager にちゃんと管理させて」。
+- 現状調査（実 vault 照合済み）:
+  - 自動パイプライン（`50-Daily/` 配下の `briefings/` `feedback/` `inspections/` サブフォルダ）は毎日更新されている。cron 3 本稼働: `03:00 night-patrol`（inspections）→ `06:00 feedback-watcher`（feedback）→ `07:00 morning-briefing`（briefings、ceo agent）。各サブフォルダに 2026-05-28 分まで存在。
+  - **欠落1: Daily Note 本体**（`50-Daily/2026-05-XX.md`）が **2026-05-25 で停止**。5/26・5/27・5/28 が無い。原因: morning-briefing.sh は `50-Daily/briefings/{date}.md` には書くが、Daily Note 本体（`50-Daily/{date}.md`）を生成するステップが無い。Daily Note 本体は手動運用のまま放置されていた。
+  - **欠落2: 20-Projects/logic の状況ページが古い**。`release-log.md` は 5/21 止まり、`README.md` 5/19。実際は 5/27 に PR #233（journal/lesson/badge 7件）main マージ＋migration 032 適用済み等の進捗が反映されていない。TASK_TRACKER のミラーも未整備。
+- やること:
+  - (a) **キャッチアップ**: 5/26〜5/28 の Daily Note 本体（`50-Daily/2026-05-26.md`〜`28.md`）を作成。各日の briefings/feedback/inspections を統合し daily-template.md（90-Templates）準拠で書く。
+  - (b) **20-Projects/logic 状況最新化**: release-log / README を 5/28 時点へ更新。TASK_TRACKER（T-A〜T-E）のミラーを `20-Projects/logic/` に置く（feedback_direct_content_not_path 準拠で Keita が vault からも見れるように）。
+  - (c) **日次更新の仕組み化**: Daily Note 本体生成を恒久自動化。方式は2案 — (案1) morning-briefing.sh に Daily Note 本体生成ステップを追加（briefings を素材に `50-Daily/{date}.md` も出力）、(案2) 別 cron で daily-note 生成スクリプトを新設。案1 が既存 07:00 枠に相乗りでき低コスト。実装方式は Keita 確認の上で。
+  - (d) **recurring 管理**: 今後 task-manager が「Obsidian 日次更新」を recurring タスクとして管理（後述 recurring セクション参照）。毎日漏れた時の検知も含む。
+- 担当案: 林（(a) キャッチアップ実書き ＋ (b) 状況最新化）／ ceo（(c) 日次ブリーフィング統合＝morning-briefing.sh への Daily Note 生成統合）／ task-manager（(d) recurring 管理・漏れ検知）。
+- 優先度: P1（Keita 明示要望）。ただし correctness バグ T-A（P0）・機能不全 T-C（P0）より下。
+- 関連ファイル: `obsidian-vault/50-Daily/2026-05-{26,27,28}.md`（新規）、`90-Templates/daily-template.md`（準拠テンプレ）、`/root/.claude/projects-meta/scripts/morning-briefing.sh`（(c) 案1 の改修対象）、`crontab`（03/06/07 の3本、(c) 案2 なら追加）、`obsidian-vault/20-Projects/logic/{release-log,README}.md`、`obsidian-vault/OBSIDIAN_GIT_AUTO_SYNC.md`（sync 設定手順）。
+- DoD:
+  - (a) 5/26〜5/28 の Daily Note 本体が daily-template 準拠で存在し、各日の briefings/feedback/inspections の要点が統合されている。
+  - (b) 20-Projects/logic の release-log/README が 5/28 時点を反映し、TASK_TRACKER ミラーが配置されている。
+  - (c) 翌日以降、Daily Note 本体が人手介入なしで毎日生成・commit・push される（仕組みが恒久化）。
+  - (d) task-manager の recurring タスクとして登録され、生成漏れを検知できる。
+- サブタスク:
+  - [x] (a) 5/26 Daily Note 作成（briefings/feedback/inspections 2026-05-26 を統合）
+  - [x] (a) 5/27 Daily Note 作成（PR #233 main マージ・migration 032 適用等の進捗込み）
+  - [x] (a) 5/28 Daily Note 作成（本日分・本バッチ T-A〜T-H 登録も記載）
+  - [~] (b) release-log.md を 5/28 時点へ更新（5/22〜5/28 の commit/PR/デプロイ）※一部反映
+  - [ ] (b) README.md（20-Projects/logic）更新
+  - [ ] (b) TASK_TRACKER ミラーを 20-Projects/logic/ に配置
+  - [ ] (c) 日次自動生成の方式決定（案1: morning-briefing.sh 統合 / 案2: 別 cron）を Keita 確認
+  - [ ] (c) ⚠依存: morning-briefing.sh に相乗りする案1 は **T-F（cron root 権限エラー）が直らないと動かない**（07:00 ブリ自体が空振り中）。T-F 解決を先行 or 同時に。別 cron 案2 でも claude CLI を root cron で叩くなら同じ root 権限問題を踏むので T-F の解決策（後述）を流用すること
+  - [ ] (c) 選定方式で実装（スクリプト改修 or cron 追加）＋手動試走で 1 日分生成確認
+  - [ ] (d) task-manager の recurring セクションに「Obsidian 日次更新」登録＋漏れ検知ルール定義
+- 抜けもれ提言:
+  - テンプレ準拠: Daily Note は `90-Templates/daily-template.md` のフロントマター（date/weekday/updated_by:林）と見出し構成（今日の Top 3／気になっとること／進捗ハイライト／夜の振り返り／関連リンク）に従う。既存 5/25 の書き方が手本。
+  - obsidian-git auto-sync: vault は obsidian-git で auto commit/push（backup 30min / pull 10min / merge 方式、OBSIDIAN_GIT_AUTO_SYNC.md）。スクリプトからの commit/push と Keita 端末の obsidian-git が衝突しないか確認（morning-briefing.sh は既に git add/commit/push する作りなので同様の作法で）。conflict marker 解決ルールは手順書にある通り。
+  - 仕組み化の検知: 「毎日漏れた時の検知」= 案として morning-briefing.sh の末尾で「前日の Daily Note が存在するか」チェックし、欠落していれば briefings に警告行を出す or 翌朝まとめて catch-up 生成。recurring 管理は task-manager がトラッカー上で「最終生成日」を追跡。
+  - 内容の鮮度・正確性: キャッチアップで過去日を書く時、後追いで美化しない。実際の git log / briefings の事実ベースで書く（ceo briefing が既に事実集約しているのでそれを正本に）。
+  - cron 時刻: システム TZ は Asia/Tokyo（crontab コメントに JST 明記）。Daily Note 生成を 07:00 morning-briefing に相乗りするなら briefings 生成の後段に置く（briefings を素材にするため順序依存）。
+  - 非自動領域: 「夜の振り返り（寝る前に書く）」セクションは Keita/林の手動記入想定。自動生成では空テンプレ or 当日ハイライトのみ埋め、振り返りは手動枠として残す。
+  - スコープ確認: 「Obsidian 全部最新に」の「全部」が 50-Daily と 20-Projects/logic 以外（00-Inbox / 10-Tasks / 20-Knowledge / 40-Resources 等）も含むか。今回は明示された Daily Note と logic 状況に絞り、他フォルダの棚卸しが要るなら別タスク化を Keita 確認。
+  - 自動パイプラインの健全性前提が崩れていた（T-F 発覚）: T-E 当初の現状認識「briefings/feedback の自動パイプラインは 5/28 まで稼働中」は**ファイル存在ベースの誤認**だった。実際は 5/27・5/28 とも中身がエラー文字列で、タイムスタンプだけ更新されてゴミ。T-F で別タスク化。T-E のキャッチアップ素材として briefings/feedback を使う際は、5/26 までの正常分のみ信頼し、5/27 以降は git log / inspections / 本セッションの事実を正本にする。
+
+### T-F — cron 自動化の root 権限エラー修復　[P1 上位 / TODO]
+
+- 症状（2026-05-28 Obsidian キャッチアップで発覚）: `50-Daily/briefings/`（07:00 ceo 朝ブリ）と `50-Daily/feedback/`（06:00 feedback-watcher）の cron 出力が、5/27・5/28 とも中身が**エラー文字列**「`--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons`」（実ファイル確認済み、各 93 bytes）。タイムスタンプだけ毎日更新され中身がゴミ。5/26 までは正常（briefings/2026-05-26.md は 8802 bytes の実ブリーフィング）。
+- 根因（実スクリプト＋crontab 照合済み）:
+  - crontab 3 本: `03:00 night-patrol`（`>> /var/log/night-patrol.log`）／`06:00 feedback-watcher`／`07:00 morning-briefing`。TZ は Asia/Tokyo。
+  - 死んでいる 2 本（feedback-watcher / morning-briefing）は **`claude --print --agent ...` を呼ぶ**（`morning-briefing.sh:38` `claude --print --agent ceo`、`feedback-watcher.sh:23` `claude --print --agent feedback-watcher`）。生きている night-patrol は claude CLI を呼ばず `npx playwright` を直接叩くだけ＝この差が症状と完全整合。
+  - claude CLI を **root ＋ 非対話 cron 環境**で起動すると内部的に permission skip が要求され、root では `--dangerously-skip-permissions cannot be used with root/sudo privileges` で弾かれて即終了。その stderr が `> "$OUTPUT" 2>&1` でそのまま Daily ファイルに書き込まれている。
+  - 推定発生時期: 5/26→5/27 の間（claude CLI バージョン更新 or 環境変化で root cron 実行が弾かれ始めた）。スクリプト本文には `--dangerously-skip-permissions` フラグは書かれていない＝CLI 側の挙動変化が原因。
+- 修正方針（ceo 判断・案、コードは task-manager は書かない）: root cron で claude CLI を回す方法を確立する。候補:
+  - (案A) cron 実行ユーザーを非 root に変更（専用ユーザーで claude を回す）。最も筋が良いが OAuth 認証情報（`~/.claude/.credentials.json`）のユーザー紐付け移行が要る。
+  - (案B) claude CLI を root で非対話実行できる正規の方法に切替（環境変数 or `--permission-mode` 等の正式フラグで permission prompt を回避。`--dangerously-skip-permissions` を root で使えない以上、別の許可方式が要る）。CLI の現行仕様確認が前提。
+  - (案C) コンテナ/環境側で root 制約を外す（非推奨・セキュリティ後退）。
+  - どの案も Keita 確認の上で。OAuth クレデンシャルの扱いが絡むので慎重に。
+- 担当案: ceo（自分のスクリプト群 morning-briefing.sh / feedback-watcher.sh の持ち主）。CLI 起動方式の検証は dev-logic 補助もあり得る。
+- 優先度: P1 上位。理由 = 自動化パイプラインの根っこ。これが死んでいると ceo 朝ブリ・feedback 監視が毎日空振りし、かつ T-E (c)（Daily Note 日次自動生成を morning-briefing.sh 統合 or 別 cron で claude を回す案）が**前提として動かない**。
+- 関連ファイル: `/root/.claude/projects-meta/scripts/morning-briefing.sh`（:38 claude 呼び出し）、`/root/.claude/projects-meta/scripts/feedback-watcher.sh`（:23 claude 呼び出し）、`crontab`（06/07 の 2 本）、`/var/log/{feedback-watcher,morning-briefing}.log`（cron 実行ログ・調査用）、認証 `~/.claude/.credentials.json`（ユーザー紐付け）。
+- DoD: 翌朝以降、`50-Daily/feedback/{date}.md`（06:00）と `50-Daily/briefings/{date}.md`（07:00）が**エラー文字列でなく実際の内容**で生成・commit・push される。少なくとも 1 日、両ファイルが正常生成されることを確認（93 bytes のエラー固定でなく実ブリーフィングサイズ）。
+- サブタスク:
+  - [ ] root cron で claude CLI を非対話実行できる方式を確立（案 A/B/C を検証し Keita 確認）
+  - [ ] morning-briefing.sh / feedback-watcher.sh を選定方式に改修
+  - [ ] 手動試走で 06:00 / 07:00 両方が実内容を生成することを確認（cron を待たず手動キック）
+  - [ ] 5/27・5/28 のエラー固定 Daily ファイル（feedback/briefings）を正しい内容で書き直すか、T-E (a) キャッチアップ側で吸収するか整理（過去分の扱い）
+  - [ ] 再発検知: 出力が「`--dangerously-skip-permissions`」等のエラー文字列パターンか・極端に小さい byte 数かをスクリプト末尾でチェックし、異常なら警告を残す（サイレント空振り防止）
+  - [ ] 回帰: night-patrol（claude を呼ばない 03:00）は影響を受けない想定だが、ユーザー変更（案A）した場合は 3 本とも実行ユーザー整合を確認
+- 抜けもれ提言:
+  - i18n / 両OS / アプリ文言: 無関係（運用スクリプト・インフラ）。
+  - サイレント失敗が最悪: タイムスタンプだけ更新されるので「動いているように見えて中身ゴミ」。今後の検知ルール（出力サイズ/エラーパターンチェック）を必ず入れる。T-E (d) recurring 監視とも連動。
+  - 認証の非可逆注意: cron 実行ユーザー変更（案A）で OAuth クレデンシャルを移すと、誤ると claude CLI が全環境で認証切れになりうる。バックアップを取ってから。
+  - T-E との依存: T-E (c) の案1（morning-briefing.sh 相乗り）も案2（別 cron で claude）も、claude を root cron で回す前提なので T-F が前提条件。T-F を先に解くか同時に解く。
+  - night-patrol が生きている理由の確認価値: 「claude を呼ばない cron は動く」なら、Daily Note 生成も claude を介さず素材ファイル結合スクリプトで作る選択肢もある（T-E (c) 設計時の代替案）。
+
+### T-G — night-patrol 夜間スモークが "No tests found" で空振り　[P1 / IN_PROGRESS]
+
+- 進捗（2026-05-28）: dev-logic が T-A と同バッチで修正中（未push）。完了報告を受けたら night-patrol 手動キックで inspection が正常 severity に戻り pass 件数が出ることを検証して REVIEW→DONE。本番は健全なので監視復旧扱い。
+- 症状（2026-05-28 inspection で発覚）: `50-Daily/inspections/2026-05-28.md` が severity **HIGH**。本番フロント（https://logic-u5wn.onrender.com/）と API（/api/health）はともに **200 で健全**だが、Playwright スモークが `Error: No tests found. Make sure that arguments are regular expressions matching test files.` で**空振り**（0 件実行）。5/27 inspection は 11 件 pass していた → 5/27→5/28 で夜間スモークが実質停止＝**本番は無事だが監視が死んでいる（検知力ゼロ）**状態。緊急障害ではないが監視の穴。
+- 根因（実 config ＋ spec ＋ night-patrol.sh 照合済み・ほぼ確定）:
+  - `night-patrol.sh:43` は `SMOKE_SPEC=$(ls -t e2e/render-smoke-*.spec.ts | head -1)` で**最新の smoke spec を動的選択**し、`:48` で `npx playwright test "$SMOKE_SPEC" --config=playwright.render.config.ts --reporter=line` を実行。
+  - ところが `playwright.render.config.ts:14` の `testMatch: ['render-smoke-20260525.spec.ts']` が**ファイル名ハードコード（5/25 固定）**。
+  - 5/27 に `e2e/render-smoke-20260527.spec.ts`（PR #233 系のスモーク、mtime 5/27 11:53）が追加され、`ls -t` で最新としてこれが引数に渡るようになった。結果 Playwright は「引数 spec=20260527 ∩ testMatch=20260525」の**積集合が空** → "No tests found"。5/25 spec の時は引数と testMatch が一致して 11 件 pass していた。
+  - つまり「テストが消えた/壊れた」のではなく、**config の testMatch が新 spec に追従していない**ことが直接原因。テストファイル自体は存在し中身も妥当（20260527.spec.ts に home/roadmap/T7/T6/T2/ranking/journal 等の test 多数）。
+- 修正方針（dev-logic / test-smoke 判断・案、task-manager は書かない）:
+  - (案1) `playwright.render.config.ts` の `testMatch` を最新追従パターン `['render-smoke-*.spec.ts']`（or 最新1本に絞るなら glob ＋ ソート）に変更。night-patrol が `ls -t | head -1` で最新を引数指定する設計と整合させる。最小修正。
+  - (案2) night-patrol.sh 側で引数 spec を渡すのをやめ、config の testMatch に選択を委ねる（config を最新追従にした上で引数なし実行）。二重指定の競合をなくす。
+  - どちらでも「新しい render-smoke spec を追加したら自動で夜間スモーク対象になる」状態にするのが肝（再発防止）。
+- 担当案: dev-logic（config / スクリプト修正）または test-smoke（スモーク spec の責務者）。
+- 優先度: P1。本番健全なので P0 ではないが、監視が死んでいる＝次に本番が壊れても夜間検知できないので早期復旧したい。
+- 関連ファイル: `playwright.render.config.ts`（:13 testDir './e2e' / :14 testMatch ハードコード / :21 baseURL）、`/root/.claude/projects-meta/scripts/night-patrol.sh`（:43 spec 動的選択 / :48 playwright 実行 / :58 not-found フォールバックメッセージ）、`e2e/render-smoke-20260527.spec.ts`（現行最新・PR #233 系）、`e2e/render-smoke-20260525.spec.ts`（旧・testMatch が今これだけ指す）。
+- DoD: 翌日以降の night-patrol（03:00）inspection で Playwright スモークが**実際にテストを実行し pass 件数が出る**（"No tests found" にならない）。かつ今後 `render-smoke-{新日付}.spec.ts` を追加しても config 修正なしで自動的に夜間スモーク対象になる（再発防止）。
+- サブタスク:
+  - [ ] `playwright.render.config.ts` の testMatch を最新追従パターンに修正（or night-patrol 側の渡し方と整合）
+  - [ ] ローカルで `npx playwright test e2e/render-smoke-20260527.spec.ts --config=playwright.render.config.ts` が "No tests found" を出さず実行されることを確認
+  - [ ] night-patrol.sh の `ls -t | head -1` 選択ロジックと config の testMatch が二重で衝突しない構成に整理
+  - [ ] 過去 spec が複数あるとき「最新だけ」走るのか「全 render-smoke spec」走るのか方針を明確化（毎日全部だと遅い／最新だけだと過去観点を落とす）
+  - [ ] 再発防止: spec 追加時の testMatch 更新を不要にする（glob 化）or PR チェックリスト化
+  - [ ] 回帰: 修正後に night-patrol を手動キックして inspection が正常 severity に戻ることを確認（cron を待たず）
+- 抜けもれ提言:
+  - i18n / アプリ文言: 無関係（テスト基盤）。
+  - 両OS: スモークは Render web（本番フロント）対象。Logic はモバイル専用（project_logic_mobile_only）だが、この夜間スモークは web バンドルの死活監視として価値があるので維持する（web 停滞自体はユーザー無影響でも、本番 backend/フロントの 200 死活＋主要画面描画の回帰検知になっている）。
+  - 監視のサイレント空振りが本質問題: T-F と同じく「動いているように見えて検知していない」パターン。night-patrol が HIGH を出して気づけたのは良いが、testMatch ハードコードのような「設定が新ファイルに追従しない」構造は再発しやすい。glob 化＋追加時無設定を徹底。
+  - 本番は健全: フロント 200 / API 200 を確認済み。これは障害対応でなく**監視復旧**タスク。優先度判断時に「本番は無事」を明示しておく（過剰反応しない）。
+  - test-results / screenshots: night-patrol.sh:53-54 は test-results を screenshots へコピーする。スモークが 0 件だと成果物も空。修正後はスクショ/結果も復活するか確認。
+
+### T-H — Logic Android Production 公開（保留）　[P1 / BLOCKED：Keita 判断で保留]
+
+- 記録（Keita 判断 2026-05-28）: Logic Android の **Production track 公開を保留**する。GitHub Production 環境の承認ゲートは撤去済（project_logic_render_auto_deploy）で技術的には即実行可能だが、**リリースノート整備・スモーク復旧（T-G）・テーマ反映（T-B）が揃ってから一発で公開する**方針。
+- 現状: 内部テスト track には自動配信が回っている（main push ごと、project_logic_android_deploy）。Production への promote だけが保留。
+- ステータス: BLOCKED（Keita の公開判断待ち＝意図的保留。緊急性なし）。
+- 担当: Keita（公開タイミング判断）。準備タスク（リリースノート / T-G / T-B）は各担当が進行。
+- DoD: リリースノート整備済 ＋ T-G（夜間スモーク復旧）DONE ＋ T-B（テーマ反映）本番反映済の状態で、Keita 判断のもと Production track へ promote される。
+- 依存（公開の前提条件）:
+  - T-G: 夜間スモークが復旧して本番死活監視が効いている
+  - T-B: 新配色テーマが Android 実機で反映・破綻なし
+  - リリースノート: Play Console 用のリリースノート整備（担当未アサイン → 公開前に手配）
+- 抜けもれ提言:
+  - 公開前チェック: Play Billing 既知ギャップ（project_logic_play_billing_gaps）の残課題（#2 RTDN の GCP/Play Console 設定・JWT 検証、#4 SKU 登録確認）が課金導線に影響。有料購読者が増える前にクローズ前提だが、Production 公開＝露出拡大なので公開判断時に再確認推奨。
+  - リリースノートは ja/en 両方（Play Console の対応言語に合わせる）。中立的丁寧体（feedback_app_copy_neutral）。
+  - 内部テストで T-A（フェルミズレ）・カスタムコース（T-C/TC-2）のハッピーパスを Keita 端末で確認してから Production へ上げると安全（既知バグを本番ユーザーに出さない）。
+
+---
+
+## バッチ: 2026-05-28 新規要望4件（Keita・追加）
+
+実機・使い勝手のフィードバック4件。task-manager が構造化。実装は委譲。
+軽い要望（T-L フェルミ答え位置）と重い要望（T-I/T-J の進捗・回数トラッキングは DB/集計が絡む）を見極めて分解。
+
+| ID | タイトル | 優先度 | ステータス | 担当案 | 関連 |
+|----|----------|--------|-----------|--------|------|
+| T-I | コース単位の進捗を見れるようにする | P1 | TODO（スコープ要確認） | dev-logic（主）＋ designer（進捗UI軽量） | 既存 progressStore / roadmapStore |
+| T-J | レッスンごとの完了回数を可視化する | P1 | TODO（スコープ要確認） | dev-logic | T-I と同じ progress 永続化レイヤー。重複実装注意 |
+| T-K | ジャーナルのグラフ tap で詳細展開 | P2 | TODO（スコープ要確認） | dev-logic（主）＋ designer（詳細表示UX） | T-D と同じ journal 周辺。コンフリクト注意 |
+| T-L | Daily Fermi の答えを解説の最後に移す | P2 | TODO | dev-logic | T-A と同じ DailyFermiScreen 周辺。コンフリクト注意 |
+
+### T-I — コース単位の進捗を見れるようにする　[P1 / TODO（スコープ要確認）]
+
+- 依頼原文（Keita 2026-05-28）: 「コースの進捗が見れるようにしたい」。
+- 想定スコープ: ロードマップ/コース一覧で「このコースを何 % 進めたか（完了レッスン数 / 全レッスン数）」をコース単位で可視化する。レッスン単体の done/not-done は既にあるが、コースを束ねた進捗集計の表示が無い（要実装確認）。
+- 既存資産（要実装前確認・未照合）: `src/progressStore.ts`（per-lesson progress map・localStorage `logic-progress`）、`src/roadmapStore.ts`（roadmap node state）、`src/db/progressDb.ts`、`courseData.ts`（コース→所属レッスン id の対応）。コースに属するレッスン id 集合は courseData にある想定なので、「コース内レッスンのうち完了数 / 総数」はクライアント集計で出せる見込み（新規 DB 不要の可能性が高い）。
+- 重さの見極め: **中**。データソース（progress map）は既存。新規は「コース×進捗の集計関数」＋「進捗表示 UI（プログレスバー/％/n of m）」。ただし下記スコープ論点次第で重くなる（Supabase 横断集計やバッジ連動まで広げると重）。
+- DoD（暫定・スコープ確定後に確定）: コース一覧 or コース詳細で、各コースの完了レッスン数 / 総レッスン数（と % or バー）が表示される。レッスン完了状態の変化が進捗表示に反映される。ゲスト/ログイン両方で破綻しない。
+- サブタスク（暫定）:
+  - [ ] スコープ確定（下記論点を Keita 確認）
+  - [ ] 実装前調査: コース→レッスン id 対応（courseData）と progress map の付き合わせで集計可能か確認。集計関数の置き場所決定（progressStore 拡張 or 新規 selector）
+  - [ ] コース進捗の集計ロジック（完了数 / 総数 / %）
+  - [ ] 進捗表示 UI（プログレスバー or リング or n/m。RoadmapScreenV3 のコースカード or コース詳細）
+  - [ ] 回帰: progress 更新（レッスン完了）→ 進捗表示が即反映。フィルタ/検索/カテゴリ開閉（T7 既存）と整合
+  - [ ] i18n（「完了 n / m」「進捗 N%」等の新規文言 ja/en・中立丁寧体）
+- Keita 確認すべきスコープ論点:
+  - (1) **表示場所**: コース一覧カード上に出すか、コース詳細画面か、両方か。
+  - (2) **表示形式**: % だけ / n of m / プログレスバー / リング のどれか（designer 軽量提案で足りる）。
+  - (3) **「完了」の定義**: レッスンを1回でも完了＝done か、進捗率（途中まで）も含めるか。T-J（完了回数）と定義を揃える必要あり。
+  - (4) **集計範囲**: localStorage の progress だけで足りるか、Supabase 同期した全デバイス横断の進捗まで見せたいか（後者だと重くなる）。
+- 抜けもれ提言:
+  - i18n: 進捗ラベルは ja/en 両方・中立丁寧体（feedback_app_copy_neutral）。
+  - UI chrome: プログレスバー/リング/アイコンは SVG（src/icons）使用、emoji 不可。
+  - 永続化: 表示は既存 progress を読むだけなら新規 persist 不要。ただし「進捗をサーバ集計」まで広げるなら Supabase クエリ設計が要る（重さ増・要 Keita 判断）。
+  - 両OS: モバイル専用（project_logic_mobile_only）。Android 実機で表示崩れ確認。
+  - 重複注意: T-J（レッスン完了回数）と**同じ progress 永続化レイヤー**を触る。「完了」の定義・集計の置き場所を T-I/T-J で揃える（バラバラに実装すると二重集計・定義不整合）。同一 dev-logic が一気通貫で見るのが望ましい。
+
+### T-J — レッスンごとの完了回数を可視化する　[P1 / TODO（スコープ要確認）]
+
+- 依頼原文（Keita 2026-05-28）: 「レッスンを何回完了したか分かるようにしたい」。
+- 想定スコープ: 各レッスンを「何回完了したか」（リピート回数）を記録・表示する。現状の progress は done/not-done（または進捗%）の想定で、**完了回数（カウント）を持っているか要確認**。持っていなければデータモデル拡張が要る＝重くなる。
+- 重さの見極め: **中〜重**。現 progress map に completionCount を持っていなければ、(a) データモデル拡張（localStorage スキーマ ＋ Supabase `progress` テーブルにカラム追加＝migration＝承認案件）、(b) 完了イベントでのインクリメント、(c) 既存データの後方互換（旧データは count 不明→1 or 0 とみなす移行）が要る。表示自体は軽いが、データ層が重い可能性。
+- 既存資産（要実装前確認・未照合）: `src/progressStore.ts` / `src/db/progressDb.ts` / Supabase `progress` テーブル（CLAUDE.md スキーマに記載）。完了回数フィールドの有無を実装前に必ず確認。
+- DoD（暫定・スコープ確定後に確定）: 各レッスンの完了回数が記録され（レッスン完了のたびにインクリメント）、レッスン一覧 or 詳細で「N 回完了」が表示される。既存の完了済みレッスン（過去データ）で表示が破綻しない。
+- サブタスク（暫定）:
+  - [ ] スコープ確定（下記論点を Keita 確認）
+  - [ ] 実装前調査: 現 progress に完了回数フィールドがあるか確認。無ければデータモデル拡張要否を判断
+  - [ ] （必要なら）データモデル拡張: localStorage スキーマ ＋ Supabase progress カラム追加（migration＝承認案件）＋後方互換移行
+  - [ ] 完了イベントでの回数インクリメント（二重カウント防止＝1セッション1回など発火条件の定義）
+  - [ ] 回数表示 UI（レッスンカード or 詳細に「N 回完了」バッジ/ラベル）
+  - [ ] 回帰: 既存の完了状態・進捗・ストリーク（stats.ts）に影響しないか
+  - [ ] i18n（「N 回完了」等 ja/en・中立丁寧体）
+- Keita 確認すべきスコープ論点:
+  - (1) **完了回数のデータが既にあるか**（実装前調査で確定。無ければ migration＝重くなる旨を Keita に共有）。
+  - (2) **「完了1回」の発火条件**: レッスンを最後まで見たら +1 か、クイズ正解で +1 か、復習モードも +1 か。T-I の「完了」定義と揃える。
+  - (3) **表示場所**: レッスン一覧 / レッスン詳細 / 復習ハブ のどこに出すか。
+  - (4) **過去データの扱い**: 完了回数を新規に持つ場合、既に完了済みのレッスンを「1 回」とみなすか「0/不明」とするか（後方互換）。
+- 抜けもれ提言:
+  - ⚠データモデル拡張は承認案件: Supabase progress テーブルにカラム追加するなら migration＝Keita 承認＋本番適用が要る（T-C/T5 migration と同じ落とし穴）。「main マージ＝本番反映でない」も同様。
+  - 重複注意（最重要）: T-I（コース進捗）と**同じ progress レイヤー**。T-I の集計は「完了したか（bool）」、T-J は「何回完了したか（count）」で、**同じ完了イベント・同じ永続化先**を触る。定義と実装場所を T-I/T-J で統一しないと二重実装・データ不整合になる。**T-I/T-J はセットで設計し同一 dev-logic が担当**することを強く推奨。
+  - i18n: 「N 回完了」ja/en・中立丁寧体。
+  - UI chrome: 回数バッジは SVG ベース、emoji 不可。
+  - 両OS: Android 実機確認。完了イベントの発火が native/web で差が出ないか。
+  - テスト: 回数インクリメントの発火条件は vitest 単体向き（完了イベント→count+1、二重発火しない）。
+
+### T-K — ジャーナルのグラフ tap で詳細展開　[P2 / TODO（スコープ要確認）]
+
+- 依頼原文（Keita 2026-05-28）: 「ジャーナルのグラフをタップすると詳細が分かるようになってほしい」。
+- 想定スコープ: ジャーナルの統計グラフ（気分推移/週次集計などのチャート）の要素をタップすると、その日/その項目の詳細（該当エントリ・内訳）が展開表示される。現状グラフは表示のみでインタラクションが無い（要確認）。
+- 重さの見極め: **中**。データは既存ジャーナル（daily_journals）。新規は「グラフ要素の tap ハンドリング ＋ 詳細パネル/シートの表示」。チャートが SVG 自前描画なら tap 領域の実装、ライブラリなら onClick 配線。純フロント・新規 DB 不要の見込み。
+- 既存資産（要実装前確認・未照合）: `src/components/journal/` 配下のグラフ/チャートコンポーネント（気分グラフ等）、`journalDb.ts`（エントリ取得）、`src/screens/`（ジャーナル統計画面）。どのグラフが対象か（気分推移 / タグ頻度 / ストリーク等）を実装前に確定する必要あり。
+- DoD（暫定・スコープ確定後に確定）: 対象グラフの要素（バー/点/セグメント等）をタップすると、その対象の詳細（該当日のエントリ要約 or 内訳）が展開/シート表示される。タップ領域がアクセシブル（語ラベル）で、再タップ/閉じる導線がある。
+- サブタスク（暫定）:
+  - [ ] スコープ確定（対象グラフ・詳細に出す内容を Keita 確認）
+  - [ ] 実装前調査: 対象グラフのコンポーネント特定（自前 SVG か / props 構造）。tap 領域を持てる作りか確認
+  - [ ] グラフ要素の tap ハンドリング（hit area・選択状態）
+  - [ ] 詳細表示 UI（展開パネル or ボトムシート。該当エントリ/内訳）
+  - [ ] 回帰: 既存グラフ表示・ジャーナル一覧/詳細が壊れないか
+  - [ ] i18n（詳細パネルの新規文言 ja/en・中立丁寧体）
+  - [ ] アクセシビリティ（tap 要素に語ラベル・aria、TTS 影響）
+- Keita 確認すべきスコープ論点:
+  - (1) **対象グラフ**: どのグラフか（気分推移 / タグ頻度 / 学習ストリーク / 複数）。
+  - (2) **詳細の中身**: タップで何を見せるか（その日のジャーナル全文 / 要約 / 該当タグのエントリ一覧 / 数値内訳）。
+  - (3) **表示形式**: その場で展開 / ボトムシート / 別画面遷移 のどれか（designer 軽量提案で足りる）。
+- 抜けもれ提言:
+  - i18n: 詳細パネルの新規文言 ja/en・中立丁寧体（feedback_app_copy_neutral）。
+  - UI chrome の emoji 例外注意: ジャーナルの mood/weather/phase/streak の4箇所のみ絵文字 OK（feedback_journal_emoji / CLAUDE.md gotchas #5）。グラフの mood 表現で絵文字が出るのはこの例外内なら可。それ以外の chrome（閉じるボタン等）は SVG。
+  - ⚠重複・コンフリクト注意（T-D と同領域）: T-D（タグの動的統合）と**同じ journal 周辺**を触る。特に T-D がタグ集合を書き換える（consolidate）ため、T-K が「タグ頻度グラフの tap 詳細」を対象にする場合、T-D のタグ統合後の集合とズレないよう連携が要る。両方を触るなら dev-logic 内で順序・整合を意識（T-D のタグモデル確定後に T-K のタグ系グラフを作ると手戻りが少ない）。気分推移グラフが対象なら T-D とは独立。
+  - アクセシビリティ: tap 可能なグラフ要素は語ラベル併記（意味を担うアイコン同様）。
+  - 両OS: タッチ操作なので Android 実機で hit area・展開挙動を確認。
+  - テスト: tap→詳細展開は E2E ハッピーパス向き（ただしグラフ tap 座標依存なので要素 testid 推奨）。
+  - 永続化: 表示だけなら新規 persist 不要（既存エントリを読むだけ）。
+
+### T-L — Daily Fermi の答えを解説の最後に移す　[P2 / TODO]
+
+- 依頼原文（Keita 2026-05-28）: 「フェルミの答えは解説の最後でいい」。
+- 想定スコープ: Daily Fermi（今日の1問）で、答え（推定値/正解レンジ）の表示位置を**解説の最後**に移す。現状は解説より前 or 冒頭に答えが出ている想定（要確認）。＝表示順の入れ替えのみの軽い要望。
+- 重さの見極め: **軽**。表示順序の組み替え（コンポーネントの描画順 or セクション位置入れ替え）が主。データ・ロジック変更は基本不要の見込み。ただし「答えを見てから解説を読む」前提で UX が組まれている箇所（ネタバレ防止のアコーディオン等）があれば軽い調整が要る。
+- 既存資産（要実装前確認・未照合）: `src/screens/DailyFermiScreen.tsx`（答え・解説の描画箇所）。`src/fermiData.ts`（問題データ：答え・解説フィールド）。
+- DoD: Daily Fermi の結果/解説表示で、答え（推定値）が**解説の最後**に表示される。解説を読み進めた末尾に答えが来る順序になっている。回答送信後のフロー（自分の推定 vs 正解の対比表示）が破綻しない。
+- サブタスク:
+  - [ ] 実装前調査: 現在の答え・解説の描画順を DailyFermiScreen で確認
+  - [ ] 答えの表示位置を解説の最後へ移動（描画順の入れ替え）
+  - [ ] 回答直後の「自分の推定 vs 正解」対比 UX が成立するか確認（答えを末尾にすると対比が見えにくくならないか）
+  - [ ] 回帰: replay/リロール経路、復習ハブからの遷移でも順序が維持されるか
+  - [ ] i18n 影響確認（順序入れ替えのみなら新規文言なし。セクション見出し追加が要れば ja/en）
+- Keita 確認すべきスコープ論点:
+  - (1) **対比の扱い**: 答えを末尾に置くと、回答直後の「あなたの推定 ◯◯ / 正解 △△」の即時フィードバックも末尾になる。即時の正誤感だけ冒頭に残して詳細な数値解説の後に最終answerを置くか、完全に末尾一本化か。
+  - (2) 「解説の最後」= 解説テキストの直後か、画面の一番下（次アクション導線の手前）か。
+- 抜けもれ提言:
+  - ⚠コンフリクト注意（T-A と同ファイル）: **T-A（フェルミ問題ズレ修正）と同じ `DailyFermiScreen.tsx` / `fermiData.ts`** を触る。T-A は dev-logic がローカル修正中（未push・未マージ）。T-L を同時に着手すると同一ファイルで競合する。**T-A の修正が push/マージされてから T-L に着手**するか、同一 dev-logic が T-A 完了後に続けて T-L をやるのが安全（別々の worktree で並行すると衝突）。
+  - i18n: 順序入れ替えだけなら新規文言なし。セクション見出し（「答え」ラベル等）を新設するなら ja/en・中立丁寧体。
+  - 両OS: 表示順のみだが Android 実機で末尾までスクロールして答えが見えるか確認。
+  - テスト: 表示順は E2E で「解説要素の後に answer 要素が来る」アサーション可（軽量）。
+  - 永続化: 不要（表示順のみ）。
+
+---
+
+## Recurring（task-manager 継続管理タスク）
+
+定期実行・継続監視するタスク。完了型ではなく「最終実施日」を追跡し、漏れを検知する。
+
+| ID | タスク | 頻度 | 仕組み | 最終確認 | 状態 |
+|----|--------|------|--------|----------|------|
+| R-1 | Obsidian Daily Note 日次生成（T-E (c)(d) で仕組み化） | 毎日 07:00 JST | morning-briefing.sh 統合 or 別 cron（方式未確定） | 5/26〜5/28 を手動キャッチアップ済（林、2026-05-28）。恒久自動化は T-E(c)/T-F 待ち | 整備中（T-E + T-F 依存。手動キャッチアップで 5/28 まで埋め済） |
+| R-2 | cron 自動パイプライン死活確認（ceo 朝ブリ 07:00 / feedback 06:00 / night-patrol 03:00） | 毎日 | crontab 3 本＋出力サイズ/エラーパターン検査 | 06:00・07:00 は 5/27 から空振り（T-F）、03:00 スモークは 5/27 から空振り（T-G）。03:00 のヘルスチェック本体（200 確認）は稼働 | 異常（T-F / T-G で復旧予定） |
+
+- 運用: T-E (c) で日次自動生成が恒久化したら、R-1 の「最終確認」を生成成功日に更新。生成漏れ（前日 Daily Note 欠落）を検知したら task-manager がキャッチアップを手配。
+- 注記（2026-05-28 訂正）: 「briefings/feedback/inspections の自動パイプラインは安定稼働中」という旧認識は誤り。実際は **06:00 feedback / 07:00 briefings が 5/27 からエラー固定で空振り（T-F）**、**03:00 night-patrol のスモークも 5/27 から空振り（T-G）**。ファイル存在＝健全ではない（タイムスタンプだけ更新されるサイレント失敗）。R-2 として死活を recurring 監視対象に追加。検知ルール = 出力 byte 数が極端に小さい or 既知エラー文字列（`--dangerously-skip-permissions` 等）/ "No tests found" を含むか。
+
+---
+
 ## バッチ: 2026-05-27 トレーニング画面・AIカスタムコース（Keita）
 
 | ID | タイトル | 優先度 | ステータス | 担当 |
 |----|----------|--------|-----------|------|
 | TC-1 | フェルミ推定カテゴリも開閉可能に | P2 | DONE | dev-logic |
-| TC-2 | AIカスタムコース生成機能 | P1 | REVIEW | dev-logic |
+| TC-2 | AIカスタムコース生成機能 | P1 | DONE（T-C デプロイで本番検証済） | dev-logic |
 
 ### TC-1 — フェルミ推定カテゴリ開閉　[DONE]
 - 完了（dev-logic 2026-05-27）: pinned-fermi を collapsedGroups に統合し、他カテゴリと同様に開閉可能化（上部固定の位置は維持）。tsc/eslint緑。commit 884bd30（ブランチ feat/ai-custom-course-20260527）。
 
-### TC-2 — AIカスタムコース生成機能　[IN_PROGRESS]
+### TC-2 — AIカスタムコース生成機能　[DONE]
+- ✅ DONE（2026-05-28、T-C デプロイで検証完了）: 本番 backend 再デプロイで `POST /api/generate-course` が 200 稼働 → 実際にコース生成（title/description/lessonIds 返却・HTTP 200）を確認し、ローカル未実施だった「実 Claude 生成」の DoD を本番で充足。migration 033 本番適用済（user_custom_courses / user_ai_course_usage）。残る実機ハッピーパス（Android）は最新内部ビルド #234 配信完了後に Keita 端末で確認予定（機能 DoD は充足のため DONE 判定）。
 - 依頼: レッスン検索画面のAIボタン → 自然文入力 → Claude が最適レッスンを選定 → その人専用コース生成 → ロードマップ上部「あなた専用コース」に表示。複数可。
 - 確定要件（Keita 2026-05-27）: 課金=無料も月3回/有料(isPaid)無制限。保存=localStorage+Supabase同期（新テーブル user_custom_courses、migration作成のみ）。コース複数保持。
 - 既存流用: placement の PersonalCourse/buildPersonalCourse、courseData の pinned 上部表示、server の AI エンドポイント雛形、subscription の isPaid/getAIGenerationLimit、roadmapStore の同期パターン。
@@ -137,6 +593,27 @@ task-manager エージェントが管理するタスク台帳の正本。
 
 ## 抜けもれ提言サマリ
 
+### バッチ 2026-05-28（実機フィードバック4件 ＋ 追加2件: T-F / T-G）
+- T-F / T-G は独立タスク化（T-E サブ項目に折り込まず）: T-F は cron 自動化の根っこ（claude CLI 起動方式）で T-E (c) の前提依存になるため独立して P1 上位で追跡。T-G は test-infra（Playwright config の testMatch ハードコード）で T-E と無関係＝完全独立。両者から T-E (c) へ依存リンクのみ張った。
+- 自動パイプラインの「健全」認識が誤りだった重要訂正: T-E 当初の「briefings/feedback の自動パイプラインは 5/28 まで稼働中」はファイル存在ベースの誤認。実際は 5/27 から中身がエラー文字列のサイレント空振り（T-F）。今後はファイル存在でなく中身（byte 数・エラーパターン）で死活判定する（R-2 に追加）。
+- T-F 根因: morning-briefing.sh:38 / feedback-watcher.sh:23 が `claude --print --agent` を root cron で叩く → CLI が root では permission skip を弾く → stderr が Daily ファイルに焼き込まれる。night-patrol は claude を呼ばず playwright 直叩きなので生きている（症状と整合）。修正は root cron で claude を非対話実行する方式の確立（実行ユーザー変更 or 正規の許可フラグ、Keita 確認）。
+- T-G 根因: playwright.render.config.ts:14 の testMatch が `render-smoke-20260525.spec.ts` ハードコード。night-patrol.sh:43 が `ls -t | head -1` で最新 `render-smoke-20260527.spec.ts`（5/27 追加）を引数に渡す → 引数 spec と testMatch の積集合が空 → "No tests found"。本番は 200 で健全＝障害でなく監視復旧。修正は testMatch を glob 追従化（新 spec 追加で無設定で対象化）。
+- 進捗訂正（2026-05-28 夕）: T-C は **DONE**（本番再デプロイで 404→200、検証済・コード修正不要だった）→ 連鎖で TC-2 も DONE。T-A / T-G は dev-logic が同バッチでローカル修正中（IN_PROGRESS・未push）。T-B は designer 候補6案→Keita 3種選定（1古紙/2深緑/4墨白）→ dev-logic worktree 実装中（IN_PROGRESS・未push）。T-E (a) Daily Note 5/26-28 キャッチアップ DONE。
+- Keita 確認待ち（残・BLOCKED / ゲート）: T-E (c)（日次自動生成の方式 案1/案2 選択）、T-F（root cron での claude 実行方式 案A/B/C 選択＝認証移行が絡むので要確認）、T-H（Production 公開可否＝意図的保留）。T-C の承認ゲートは解消済。T-B の選別ゲートも通過済。**T-D の「プロンプトのみ vs 踏み込む」ゲートは 2026-05-28 に「踏み込む（タグ統合UX＋統制語彙）」で確定・解除済**（残る T-D 内の Keita 確認は D1 のクローズド/オープン方針・D4 の UX 方向・D3 物理バックフィル承認の 3 点で、いずれも該当サブタスク着手時に確認＝T-D 全体は着手 OK）。
+- T-H（新規・2026-05-28）: Logic Android Production 公開を Keita 判断で保留。技術的には即実行可（承認ゲート撤去済）だが、リリースノート整備・T-G スモーク復旧・T-B テーマ反映を待って一発公開する方針。内部テスト track は自動配信継続中。
+- T-B スコープ確定（2026-05-28）: 旧「フェルミ/AI生成テーマ」解釈は破棄。対象は外観設定の配色テーマ（theme.ts MODES）に確定。designer 候補提案 → Keita 選別 → dev-logic 実装の3段フローのうち、候補提案・選別まで完了し実装フェーズへ。「AIっぽさ除去」= 量産っぽいパレットを垢抜けた配色にする方向。
+- T-E（Obsidian 最新化＋日次仕組み化）: Daily Note 本体が 5/25 で停止していた → 5/26-28 を手動キャッチアップ済（(a) DONE）。(b) 状況最新化は一部、(c) 日次自動生成・(d) recurring 管理は T-F 解決が前提で未。注: 「briefings/feedback/inspections の自動パイプラインは稼働中」は誤認で、5/27 から T-F/T-G のサイレント空振りが正（R-2 参照）。
+- correctness 即修正（Bucket1）: T-A（フェルミ問題ズレ。表示 index 決定ロジックの二重化が根因）。T-D は当初 (1) プロンプトのみが Bucket1 候補だったが、Keita が「踏み込む方（タグ統合UX＋統制語彙）」を選択（2026-05-28）→ D1〜D5 の構造化タスクに格上げ。D2（プロンプトの語彙制約）は依然 Bucket1 性質だが D1（語彙定義）依存で着手順は D1 が先。
+- 本番デプロイ依存が共通の落とし穴: T-C（route 未デプロイ）/ T-D D2（プロンプトは backend）。**backend 変更は main マージだけでは本番反映されない**（手動 deploy-production.yml 必須、render auto-deploy 当て不可）。デプロイ後 probe ＋ 実機確認まで含めて初めて DONE。
+- 依存関係（解消済）: T-C（route デプロイ）が 2026-05-28 に解決 → 前バッチ TC-2 の DoD（実 Claude 生成）を本番で検証でき TC-2 を DONE 判定。migration 033（user_custom_courses 等）も本番適用済を確認済。
+- 永続化注意: T-A は sessionStorage の揮発性 vs 日次決定性の設計判断が要る。
+- i18n: T-B の新配色テーマは name+desc を ja/en 両対応（theme.mode.* の getter パターン、i18n.ts ja 591-596 / en 2424-2429 に追記）。T-A/T-C は基本 i18n 影響なし（ロジック・サーバプロンプト）。**T-D は踏み込みスコープで i18n 影響が発生**: D1 の統制語彙は ja/en 対で定義、D4 のタグ統合 UI 文言は i18n.ts の ja/en 両方＋中立的丁寧体。D2 のプロンプトはサーバ内部文字列なので i18n 不要。T-E は内部運用ドキュメントなので i18n 無関係。
+- 文体: T-B の新テーマ name/desc は中立的丁寧体（feedback_app_copy_neutral）。
+- 非可逆: T-D D3 の物理バックフィル・D4 の自動タグ統合は元に戻せない（T3 と同じ慎重さ）。デフォルトは随時適用（元データ保持）にし、物理バックフィルは Keita 承認の別ステップ。
+- T-B 実装の肝: theme.ts の preview と tokens.css の `body.theme-v3.mode-{id}` 実トークンは別定義 → 必ずセットで追加（preview だけ足すと適用時に無スタイル）。コントラスト WCAG AA / Android 実機確認 / tier(free/premium) 割当の Keita 判断。
+- T-E の肝: morning-briefing.sh は briefings/ には書くが Daily Note 本体（50-Daily/{date}.md）を生成しない＝これが 5/25 停止の根因。仕組み化＝この生成ステップの恒久追加。obsidian-git auto-sync とスクリプト push の衝突に注意（merge 方式）。「夜の振り返り」は手動枠として残す。
+
+### バッチ 2026-05-27（旧）
 - 要件確認済み（2026-05-27）: T2（プロフィール高レベル称号の透過）/ T3（UIなし・正規化名寄せのみ・過去分遡及）/ T7（初期全展開・複数開閉可）。全件着手可能。
 - 新規永続化が要るもの: T5（AI会話履歴の保存先設計）。
 - 全体波及で回帰注意: T6（全レッスン本文共通の RichLessonText）/ T4（AI応答表示の横展開）。
@@ -158,11 +635,46 @@ task-manager エージェントが管理するタスク台帳の正本。
 - ✅ 本番反映完了（2026-05-27）: CI build-and-lint＋a11y 緑（Playwrightはローカルでdevserver待ちハング、CIが正式ゲート）→ PR #233 を main マージ（ae933ab）→ Render自動デプロイ＋Android内部配信トリガー。migration 032 を Supabase（yctlelmlwjwlcpcxvmgx）に適用済み（journal_assistant_conversations テーブル・RLS）。デプロイ後 test-smoke で本番スモーク確認。
 - ローカル git 残務: fix ブランチに docs ローカル変更が残るため main 切替が保留。後で stash→main 整理。
 
+### 2026-05-28 の進捗
+- ⚠⚠ リスク（2026-05-28 夕・最重要）: logic の working tree に **未コミットが大量に溜まっている**（main ブランチ直上に modified 16 + untracked 7 = 計22ファイル、TASK_TRACKER.md 自身除く）。commit/push されていない。内訳:
+  - T-A 関連: `src/screens/dailyFermiState.ts`・`DailyFermiScreen.tsx`・`HomeScreenV3.tsx`、新規テスト `src/__tests__/dailyFermiState.test.ts`
+  - T-B 関連: `src/theme.ts`・`src/styles/tokens.css`・`tokens-m3.css`・`src/screens/AppearanceSettingsScreen.tsx`、新規 `docs/THEME_PALETTE_CANDIDATES.md`・swatches 画像2点
+  - T-D（D2+D3）関連: `server/routes/journal.ts`・`src/components/journal/journalApi.ts`・`JournalDetailSheet.tsx`・`journal.css`・`src/i18n.ts`、新規 `src/components/journal/tagConsolidation.ts`・`tagVocabulary.ts`、新規テスト `src/__tests__/tagConsolidation.test.ts`
+  - T-G 関連: `playwright.render.config.ts`・`playwright.smoke.config.ts`
+  - リスク内容: (1) 複数タスク（T-A/T-B/T-D/T-G）の変更が main 直上に**混在**し、タスク単位の切り分け・revert が困難化。(2) 22ファイル分の作業が未バックアップ（commit されていない＝ローカル消失リスク）。(3) どの変更がどこまで検証済みか追えない（特に T-D D2+D3 は検証が途切れている＝下記）。(4) 別エージェントが同ファイルを触ると衝突。
+  - 推奨アクション（task-manager 提言・実行は Keita 判断/林）: タスク単位でブランチを切って commit 退避（少なくともローカル消失を防ぐ）。push 可否は Keita 承認。検証（tsc/eslint `.`/vitest）を通してから commit するのが筋だが、まず作業退避を優先する判断もあり。
+- D2+D3（動的タグ自動統合）の検証状態: dev-logic がローカル実装を進めた（`tagConsolidation.ts` 新規・`journal.ts` プロンプト改修・`journalApi.ts`・`tagConsolidation.test.ts`）が、**最終検証（tsc / eslint `.` / vitest）が完了報告前に途切れた**。ステータスは「実装ほぼ完了・検証確認中」として扱う（DONE でも単純 IN_PROGRESS でもなく、検証ペンディング）。完了報告 ＝ tsc 0 / eslint `.` 0 / vitest 緑 ＋ 本番 backend デプロイ後 probe を確認してから REVIEW→DONE 判定。
+- T-C DONE: 本番 Render backend 再デプロイ（deploy-production.yml run 26571568416 success）→ `POST /api/generate-course` 404→200 復活、正常系検証済（title/description/lessonIds・HTTP200）。コード修正不要（デプロイ漏れのみ）。migration 033 本番適用済確認。→ 連鎖で TC-2 を REVIEW→DONE 判定。
+- T-A IN_PROGRESS: dev-logic がローカル修正中（未push）。
+- T-G IN_PROGRESS: dev-logic が T-A と同バッチで修正中（未push）。
+- T-B IN_PROGRESS: designer 候補6案提案済（docs/THEME_PALETTE_CANDIDATES.md）→ Keita 選定（1古紙/2深緑/4墨白）→ dev-logic が worktree で実装中（未push）。
+- T-D スコープ確定（Keita 2026-05-28）: 「プロンプトのみ」案を退け **タグ統合UX＋統制語彙まで踏み込む** で確定。TODO（方針確認待ち）→ IN_PROGRESS に格上げし D1〜D5 に再分解。D1（統制語彙定義・content-creator/logic-coach）が起点、D2/D3（dev-logic）・D4（designer→dev-logic）が D1 依存、D5 が回帰。残る Keita 確認は D1 クローズド/オープン方針・D4 UX 方向・D3 物理バックフィル承認の 3 点のみ（着手は OK）。
+- T-E (a) DONE: 5/26-28 Daily Note キャッチアップ作成（林）。(b) 一部、(c)(d) は T-F 依存で未。
+- T-H 新規記録: Logic Android Production 公開＝Keita 判断で保留（リリースノート整備・T-G スモーク復旧・T-B テーマ反映を待って一発公開）。
+- 内部テスト配信: android-deploy.yml run 26572902909 in_progress（最新 main → 内部トラック）。最新内部ビルドにカスタムコース UI 有り（#234, 5/27）。Keita 端末で確認予定。
+
 ## 次アクション
 
+### バッチ 2026-05-28 新規要望4件（T-I〜T-L・登録直後）
+- T-I/T-J（コース進捗・レッスン完了回数）は **セットで設計** する。同じ progress 永続化レイヤー＋同じ「完了」定義を触るので、別々に実装すると二重集計・データ不整合になる。同一 dev-logic が一気通貫で。まず Keita にスコープ論点（特に「完了」の定義 ＝ done か count か、Supabase 集計まで広げるか、T-J でデータモデル拡張＝migration が要るか）を確認してから着手。
+- T-K（ジャーナルグラフ tap 詳細）は対象グラフの確定が先。タグ頻度グラフが対象なら T-D（タグ動的統合）のタグモデル確定後に着手すると手戻り少。気分推移グラフ対象なら T-D と独立で先行可。
+- T-L（フェルミ答えを末尾へ）は軽いが **T-A と同ファイル**（DailyFermiScreen.tsx / fermiData.ts）。T-A が push/マージされてから着手、または同一 dev-logic が T-A 完了後に続ける。並行 worktree は衝突。
+- 4件とも現状 TODO・スコープ要確認。重さ目安: T-L=軽、T-I/T-K=中、T-J=中〜重（migration の可能性）。
+
+### バッチ 2026-05-28（最優先・2026-05-28 時点）
+1. T-A（IN_PROGRESS）: dev-logic の修正完了・push 待ち。完了報告を受けたら DoD 検証（Home/Daily 一致・日付跨ぎの決定性・単体テスト）→ REVIEW→DONE。P0 correctness。
+2. ✅ T-C（DONE）: 本番再デプロイで 404→200 復活・正常系検証済。連鎖で TC-2 も DONE。残は内部ビルド #234 配信後の Android 実機ハッピーパスを Keita 端末で確認のみ。
+3. T-B（IN_PROGRESS）: Keita 選定3種（1古紙/2深緑/4墨白）を dev-logic が worktree で実装中。完了報告を受けたら DoD 検証（preview↔tokens.css 一致・tier・i18n ja/en・コントラスト・Android 実機・既存5モード非回帰）→ REVIEW→DONE。
+4. T-D（IN_PROGRESS・スコープ確定）: Keita が「踏み込む（タグ統合UX＋統制語彙）」を選択（2026-05-28）→ D1〜D5 に分解。次は **D1（統制語彙の定義）を content-creator/logic-coach にアサイン**＝全サブタスクの起点。D1 で ja/en canonical 語彙セット＋synonyms を tagVocabulary.ts に定義し「クローズド/オープン」方針を Keita 確認。D1 確定後 D2（プロンプト語彙制約・dev-logic）/ D3（既存タグの canonical 名寄せ・dev-logic）/ D4（タグ統合 UX・designer 設計→dev-logic）を並行展開。D2 は backend デプロイ依存（手動 deploy-production.yml 必須）。
+5. T-E: (a) DONE。(b) 20-Projects/logic 状況最新化＋TASK_TRACKER ミラー配置を仕上げる。(c)(d) は **T-F 解決が前提**（claude を root cron で回せないと動かない）。
+6. T-F（TODO・要確認）: ceo にアサイン。root cron で claude CLI を非対話実行する方式（案A 実行ユーザー変更 / 案B 正規許可フラグ / 案C 環境緩和）を検証し Keita 確認。OAuth クレデンシャル移行が絡むので慎重に。P1 上位（自動化の根っこ＋T-E(c) 前提）。
+7. T-G（IN_PROGRESS）: dev-logic の修正完了・push 待ち。完了報告を受けたら night-patrol 手動キックで inspection 正常 severity・pass 件数復活を検証 → REVIEW→DONE。
+8. T-H（BLOCKED・保留）: Keita 判断待ち。公開前提（リリースノート整備・T-G 復旧・T-B 反映）を揃える。準備が整ったら Keita に公開可否を再提起。リリースノート担当のアサインが要る。
+
+### バッチ 2026-05-27（旧・継続）
 1. バッチ2（T7・T2・T3）完了待ち → DoD 検証
 2. バッチ3: T5（おすすめレッスン遷移＋AI履歴。履歴の保存先はジャーナル既存方式に合わせる）
 3. 全ローカル実装完了後、tsc/eslint 再確認 → Keita に push 承認を依頼
 4. 注意: `eslint .` で `.claude/worktrees/agent-*`（別エージェント残骸）由来の 2 errors。実ソースは 0。CI は worktree 非checkout で緑見込みだが、worktree 残骸の掃除は別途検討
 
-最終更新: 2026-05-27
+最終更新: 2026-05-28（新規4件 T-I〜T-L 登録＋未コミット22ファイルのリスク反映＋D2/D3 を「実装ほぼ完了・検証確認中」へ更新）

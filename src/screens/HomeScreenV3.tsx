@@ -4,8 +4,8 @@
  * モックアップ: lv3-home.html
  */
 import { useRef, useState } from 'react'
-import { FERMI_POOL, getDailyFermiIndex } from '../fermiData'
-import { getDailyFermiDoneIndexes } from './dailyFermiState'
+import { FERMI_POOL } from '../fermiData'
+import { getDailyFermiDoneIndexes, getHomeFermiIndex, setHomeFermiIndex } from './dailyFermiState'
 import { getCardStats } from '../flashcardData'
 import { getWrongAnswerStats } from '../wrongAnswerStore'
 import { isPaid } from '../subscription'
@@ -109,43 +109,6 @@ interface HomeScreenV3Props {
 
 const IMG = '/images/v3'
 
-const HOME_FERMI_INDEX_KEY = 'home-fermi-index'
-
-/**
- * ホームの「今日の1問」カードに表示するフェルミ問題 index を決める。
- *
- * 優先順位:
- *   1. sessionStorage の手動指定（「別の問題」ボタン経由）が未完了ならそれを使う
- *   2. 完了済みでない問題プールから、日付ベースで決定的に1問選ぶ
- *      → 同じ日のうちに解いた問題は補充され、戻るたびに違う未完了問題が出る
- *   3. 全部完了していたら null（カード側で完了メッセージ表示）
- */
-function pickHomeFermiIndex(): number | null {
-  const done = new Set(getDailyFermiDoneIndexes())
-  if (done.size >= FERMI_POOL.length) return null
-
-  // 1. session で「別の問題」指定があり、まだ未完了ならそれを優先
-  try {
-    const raw = sessionStorage.getItem(HOME_FERMI_INDEX_KEY)
-    if (raw != null) {
-      const n = parseInt(raw, 10)
-      if (Number.isFinite(n) && n >= 0 && n < FERMI_POOL.length && !done.has(n)) return n
-      // 完了済みの指定が残っていた場合は破棄して下のロジックへ
-      if (Number.isFinite(n) && done.has(n)) sessionStorage.removeItem(HOME_FERMI_INDEX_KEY)
-    }
-  } catch { /* */ }
-
-  // 2. 未完了プールの中から日付ベースで決定的に選ぶ
-  const available: number[] = []
-  for (let i = 0; i < FERMI_POOL.length; i++) {
-    if (!done.has(i)) available.push(i)
-  }
-  if (available.length === 0) return null
-  const dailySeed = getDailyFermiIndex()
-  // 完了済みでスキップした分、決定的に未完了配列から1問選ぶ
-  return available[dailySeed % available.length]
-}
-
 export function HomeScreenV3(props: HomeScreenV3Props) {
   const { userName, onOpenLesson, onOpenAIGen, onNavigateToDailyFermi, onOpenPlacementTest, onOpenReviewHub, onOpenStudyTime, onOpenPricing: _onOpenPricing, onOpenCategory: _onOpenCategory, onOpenRank: _onOpenRank, onOpenStats: _onOpenStats, onOpenRoadmap: _onOpenRoadmap } = props
   const dailyCardRef = useRef<HTMLButtonElement>(null)
@@ -156,8 +119,10 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
 
   // ランダムレッスン・フェルミ問題（マウント時に1回決定）
   const [recommendedLesson] = useState(getRandomLesson)
-  // fermiIndex は null の場合「今日の問題を全部解いた」状態
-  const [fermiIndex, setFermiIndex] = useState<number | null>(pickHomeFermiIndex)
+  // fermiIndex は null の場合「今日の問題を全部解いた」状態。
+  // getHomeFermiIndex() は dailyFermiState.ts の単一の真実源。決定した index を
+  // 共有 session キーへ永続化するので、タップ後の Daily 画面と必ず同じ問題になる。
+  const [fermiIndex, setFermiIndex] = useState<number | null>(getHomeFermiIndex)
   const fermiQuestion = fermiIndex != null ? FERMI_POOL[fermiIndex].question : ''
   const allFermiDone = fermiIndex == null
   const cardStats = getCardStats()
@@ -178,7 +143,8 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
     if (available.length === 0) return
     const next = available[Math.floor(Math.random() * available.length)]
     setFermiIndex(next)
-    try { sessionStorage.setItem(HOME_FERMI_INDEX_KEY, String(next)) } catch { /* */ }
+    // 共有 session キーへ書く（Daily 画面が同じ問題を開くため）
+    setHomeFermiIndex(next)
   }
 
 

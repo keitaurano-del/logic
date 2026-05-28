@@ -1,15 +1,32 @@
 import { API_BASE } from '../../screens/apiBase'
 import { getLocale } from '../../i18n'
 import type { DailyJournal, PeriodType } from './types'
+import type { ConsolidationPair } from './tagConsolidation'
+
+/** AI 応答に含まれる consolidations を安全にパースする（不正値はスキップ）。 */
+function parseConsolidationPairs(raw: unknown): ConsolidationPair[] {
+  if (!Array.isArray(raw)) return []
+  const out: ConsolidationPair[] = []
+  for (const item of raw) {
+    if (!item || typeof item !== 'object') continue
+    const r = item as Record<string, unknown>
+    const from = typeof r.from === 'string' ? r.from : ''
+    const to = typeof r.to === 'string' ? r.to : ''
+    if (!from || !to) continue
+    out.push({ from, to })
+  }
+  return out
+}
 
 interface SummarizeRequest {
   mood?: number | null
   weather?: string | null
   scheduleNotes?: string | null
   assistantName: string
+  existingTags?: string[]
 }
 
-export async function summarizeJournal(req: SummarizeRequest): Promise<{ summary?: string; followUpQuestion?: string; suggestedTags?: string[]; error?: string }> {
+export async function summarizeJournal(req: SummarizeRequest): Promise<{ summary?: string; followUpQuestion?: string; suggestedTags?: string[]; consolidations?: ConsolidationPair[]; error?: string }> {
   try {
     const res = await fetch(`${API_BASE}/api/journal/summarize`, {
       method: 'POST',
@@ -25,6 +42,7 @@ export async function summarizeJournal(req: SummarizeRequest): Promise<{ summary
       summary: data?.summary ?? '',
       followUpQuestion: data?.follow_up_question ?? '',
       suggestedTags: Array.isArray(data?.suggested_tags) ? data.suggested_tags as string[] : [],
+      consolidations: parseConsolidationPairs(data?.consolidations),
     }
   } catch (e) {
     return { error: e instanceof Error ? e.message : String(e) }
@@ -92,7 +110,7 @@ interface SuggestTagsRequest {
   existingTags?: string[]
 }
 
-export async function suggestJournalTags(req: SuggestTagsRequest): Promise<{ suggestedTags?: string[]; error?: string }> {
+export async function suggestJournalTags(req: SuggestTagsRequest): Promise<{ suggestedTags?: string[]; consolidations?: ConsolidationPair[]; error?: string }> {
   try {
     const res = await fetch(`${API_BASE}/api/journal/tags`, {
       method: 'POST',
@@ -106,6 +124,7 @@ export async function suggestJournalTags(req: SuggestTagsRequest): Promise<{ sug
     const data = await res.json()
     return {
       suggestedTags: Array.isArray(data?.suggested_tags) ? data.suggested_tags as string[] : [],
+      consolidations: parseConsolidationPairs(data?.consolidations),
     }
   } catch (e) {
     return { error: e instanceof Error ? e.message : String(e) }

@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="620" viewBox="0 0 760 620" font-family="-apple-system, Segoe UI, Roboto, sans-serif">
+  <rect width="760" height="620" fill="#fafafa"/>
+  <text x="24" y="36" font-size="20" font-weight="700" fill="#1a1a1a">Logic 背景テーマ候補 — 6 案スウォッチ</text>
+  <text x="24" y="58" font-size="12" fill="#666">各行: 左から bg / card / text / accent。中央のミニカードは実物プレビュー（card 上に text 見出しと accent ボタン）</text>
+
+  <!-- header labels -->
+  <text x="24" y="92" font-size="11" fill="#999">テーマ</text>
+  <text x="200" y="92" font-size="11" fill="#999">プレビュー (bg → card)</text>
+  <text x="470" y="92" font-size="11" fill="#999">bg</text>
+  <text x="540" y="92" font-size="11" fill="#999">card</text>
+  <text x="610" y="92" font-size="11" fill="#999">text</text>
+  <text x="680" y="92" font-size="11" fill="#999">accent</text>
+
+  <!-- rows: y0=110, step=80 -->
+  <!-- Row template macro replaced manually per theme -->
+
+  <!-- 1 Sepia (light) -->
+  <g transform="translate(0,110)">
+    <text x="24" y="40" font-size="14" font-weight="600" fill="#1a1a1a">1 古紙 / Sepia</text>
+    <text x="24" y="58" font-size="10" fill="#888">premium · light</text>
+    <rect x="195" y="6" width="250" height="58" rx="8" fill="#F4ECDD"/>
+    <rect x="207" y="16" width="226" height="38" rx="6" fill="#FBF6EC"/>
+    <text x="219" y="33" font-size="12" font-weight="600" fill="#3A2F23">Logic で考える</text>
+    <rect x="219" y="40" width="64" height="12" rx="6" fill="#B25C3A"/>
+    <text x="251" y="49" font-size="8" fill="#FBF6EC" text-anchor="middle">続ける</text>
+    <rect x="465" y="20" width="48" height="30" rx="5" fill="#F4ECDD" stroke="#ddd"/>
+    <rect x="535" y="20" width="48" height="30" rx="5" fill="#FBF6EC" stroke="#ddd"/>
+    <rect x="605" y="20" width="48" height="30" rx="5" fill="#3A2F23"/>
+    <rect x="675" y="20" width="48" height="30" rx="5" fill="#B25C3A"/>
+  </g>
+
+  <!-- 2 Forest (dark) -->
+  <g transform="translate(0,190)">
+    <text x="24" y="40" font-size="14" font-weight="600" fill="#1a1a1a">2 深緑 / Forest</text>
+    <text x="24" y="58" font-size="10" fill="#888">premium · dark</text>
+    <rect x="195" y="6" width="250" height="58" rx="8" fill="#10221B"/>
+    <rect x="207" y="16" width="226" height="38" rx="6" fill="#173026"/>
+    <text x="219" y="33" font-size="12" font-weight="600" fill="#E4EDE6">Logic で考える</text>
+    <rect x="219" y="40" width="64" height="12" rx="6" fill="#6FB89A"/>
+    <text x="251" y="49" font-size="8" fill="#10221B" text-anchor="middle">続ける</text>
+    <rect x="465" y="20" width="48" height="30" rx="5" fill="#10221B"/>
+    <rect x="535" y="20" width="48" height="30" rx="5" fill="#173026"/>
+    <rect x="605" y="20" width="48" height="30" rx="5" fill="#E4EDE6"/>
+    <rect x="675" y="20" width="48" height="30" rx="5" fill="#6FB89A"/>
+  </g>
+
+  <!-- 3 Dusty Blue (light) -->
+  <g transform="translate(0,270)">
+    <text x="24" y="40" font-size="14" font-weight="600" fill="#1a1a1a">3 霞青 / Dusty Blue</text>
+    <text x="24" y="58" font-size="10" fill="#888">free · light</text>
+    <rect x="195" y="6" width="250" height="58" rx="8" fill="#E7ECF0"/>
+    <rect x="207" y="16" width="226" height="38" rx="6" fill="#F6F8FA"/>
+    <text x="219" y="33" font-size="12" font-weight="600" fill="#1F2D38">Logic で考える</text>
+    <rect x="219" y="40" width="64" height="12" rx="6" fill="#3F6B86"/>
+    <text x="251" y="49" font-size="8" fill="#F6F8FA" text-anchor="middle">続ける</text>
+    <rect x="465" y="20" width="48" height="30" rx="5" fill="#E7ECF0" stroke="#ddd"/>
+    <rect x="535" y="20" width="48" height="30" rx="5" fill="#F6F8FA" stroke="#ddd"/>
+    <rect x="605" y="20" width="48" height="30" rx="5" fill="#1F2D38"/>
+    <rect x="675" y="20" width="48" height="30" rx="5" fill="#3F6B86"/>
+  </g>
+
+  <!-- 4 Monochrome (light) -->
+  <g transform="translate(0,350)">
+    <text x="24" y="40" font-size="14" font-weight="600" fill="#1a1a1a">4 墨白 / Monochrome</text>
+    <text x="24" y="58" font-size="10" fill="#888">free · light</text>
+    <rect x="195" y="6" width="250" height="58" rx="8" fill="#F2F2F0"/>
+    <rect x="207" y="16" width="226" height="38" rx="6" fill="#FFFFFF" stroke="#eee"/>
+    <text x="219" y="33" font-size="12" font-weight="600" fill="#1A1A1A">Logic で考える</text>
+    <rect x="219" y="40" width="64" height="12" rx="6" fill="#C0392B"/>
+    <text x="251" y="49" font-size="8" fill="#FFFFFF" text-anchor="middle">続ける</text>
+    <rect x="465" y="20" width="48" height="30" rx="5" fill="#F2F2F0" stroke="#ddd"/>
+    <rect x="535" y="20" width="48" height="30" rx="5" fill="#FFFFFF" stroke="#ddd"/>
+    <rect x="605" y="20" width="48" height="30" rx="5" fill="#1A1A1A"/>
+    <rect x="675" y="20" width="48" height="30" rx="5" fill="#C0392B"/>
+  </g>
+
+  <!-- 5 Midnight (dark) -->
+  <g transform="translate(0,430)">
+    <text x="24" y="40" font-size="14" font-weight="600" fill="#1a1a1a">5 紺夜 / Midnight</text>
+    <text x="24" y="58" font-size="10" fill="#888">premium · dark</text>
+    <rect x="195" y="6" width="250" height="58" rx="8" fill="#141526"/>
+    <rect x="207" y="16" width="226" height="38" rx="6" fill="#1E2038"/>
+    <text x="219" y="33" font-size="12" font-weight="600" fill="#E6E6F0">Logic で考える</text>
+    <rect x="219" y="40" width="64" height="12" rx="6" fill="#9A8CE0"/>
+    <text x="251" y="49" font-size="8" fill="#141526" text-anchor="middle">続ける</text>
+    <rect x="465" y="20" width="48" height="30" rx="5" fill="#141526"/>
+    <rect x="535" y="20" width="48" height="30" rx="5" fill="#1E2038"/>
+    <rect x="605" y="20" width="48" height="30" rx="5" fill="#E6E6F0"/>
+    <rect x="675" y="20" width="48" height="30" rx="5" fill="#9A8CE0"/>
+  </g>
+
+  <!-- 6 Ink + Amber (dark) -->
+  <g transform="translate(0,510)">
+    <text x="24" y="40" font-size="14" font-weight="600" fill="#1a1a1a">6 鼠墨 / Ink + Amber</text>
+    <text x="24" y="58" font-size="10" fill="#888">premium · dark</text>
+    <rect x="195" y="6" width="250" height="58" rx="8" fill="#17181A"/>
+    <rect x="207" y="16" width="226" height="38" rx="6" fill="#232427"/>
+    <text x="219" y="33" font-size="12" font-weight="600" fill="#ECECEE">Logic で考える</text>
+    <rect x="219" y="40" width="64" height="12" rx="6" fill="#E0A84E"/>
+    <text x="251" y="49" font-size="8" fill="#17181A" text-anchor="middle">続ける</text>
+    <rect x="465" y="20" width="48" height="30" rx="5" fill="#17181A"/>
+    <rect x="535" y="20" width="48" height="30" rx="5" fill="#232427"/>
+    <rect x="605" y="20" width="48" height="30" rx="5" fill="#ECECEE"/>
+    <rect x="675" y="20" width="48" height="30" rx="5" fill="#E0A84E"/>
+  </g>
+</svg>

@@ -1,6 +1,11 @@
 import { Router, type Request, type Response } from 'express'
 import type Anthropic from '@anthropic-ai/sdk'
 import type { RequestHandler } from 'express'
+// D2/D3: タグ統制語彙（推奨語彙ヒント）と統合パーサ。
+// これらは React / Supabase に依存しない純粋モジュールなので server から相対 import してよい
+// （ランタイムは tsx。`tsc -b` の対象外、`eslint .` の対象内）。
+import { buildVocabularyPromptHint } from '../../src/components/journal/tagVocabulary.js'
+import { parseConsolidations, stripConsolidationsSection } from '../../src/components/journal/tagConsolidation.js'
 
 const MOOD_LABELS_JA: Record<number, string> = {
   1: '最悪', 2: 'イマイチ', 3: '普通', 4: '良い', 5: '最高',
@@ -182,7 +187,7 @@ export function createJournalRouter(
   // =============================================
   router.post('/summarize', journalLimiter, async (req: Request, res: Response) => {
     try {
-      const { mood, weather, scheduleNotes, assistantName, locale } = req.body || {}
+      const { mood, weather, scheduleNotes, assistantName, locale, existingTags } = req.body || {}
       const isEn = locale === 'en'
 
       const hasAnyInput =
@@ -202,9 +207,25 @@ export function createJournalRouter(
         ? (isEn ? WEATHER_LABELS_EN[weather] : WEATHER_LABELS_JA[weather])
         : (isEn ? 'not entered' : '未入力')
 
+      // D2: /tags と同じく既存タグ参照＋推奨語彙制約をタグ抽出に適用する。
+      const SUMMARIZE_EXISTING_TAGS_LIMIT = 40
+      const sanitizedExisting = Array.isArray(existingTags)
+        ? existingTags
+            .filter((s: unknown): s is string => typeof s === 'string')
+            .map((s: string) => s.trim())
+            .filter((s: string) => s.length > 0 && s.length <= 24)
+            .slice(0, SUMMARIZE_EXISTING_TAGS_LIMIT)
+        : []
+      const vocabHint = buildVocabularyPromptHint(isEn ? 'en' : 'ja')
+
       const systemPrompt = isEn
         ? `You are "${name}", a personal assistant inside the Logic app for a first-year consultant.
 Summarize the user's morning check-in warmly, concisely, and forward-looking, propose one open-ended follow-up question that invites deeper reflection, AND extract up to 4 short tags from the content.
+
+When choosing tags, follow this PRIORITY ORDER: (1) reuse one of the user's existing tags if it fits, (2) otherwise pick from the recommended vocabulary below, (3) only create a minimal new tag if neither fits.
+
+RECOMMENDED VOCABULARY (grouped by axis):
+${vocabHint}
 
 Output STRICTLY in this exact format (no prefix, no extra text):
 
@@ -217,9 +238,17 @@ FOLLOW_UP:
 TAGS:
 <comma-separated short tags (1-3 words each, total 2-4 tags). Extract themes / actions / context (e.g. "client meeting", "focus", "low energy"). No hashtags, no quotes.>
 
+CONSOLIDATIONS:
+<zero or more lines "from => to" where "from" is an existing tag to be absorbed by the better tag "to". Only merge same-concept same-axis tags. Omit this section entirely if nothing to merge.>
+
 Stay positive, never judgmental. Don't repeat raw inputs verbatim. The follow-up MUST be a question, not advice.`
         : `あなたは Logic アプリのパーソナルアシスタント「${name}」です。
 コンサルタント1年目のユーザーが入力した今日の情報を温かく・前向きに・簡潔にまとめ、深掘りを促す問い1つを提案し、さらに **内容から短いタグを最大 4 つ** 抽出してください。
+
+タグを選ぶときは **優先順位を厳守**: (1) ユーザーの既存タグに最適なものがあれば再利用、(2) 無ければ下の推奨語彙から選ぶ、(3) それでも無いときだけ短い新規タグを最小限作る。
+
+推奨語彙（軸ごと）:
+${vocabHint}
 
 以下の形式で **厳密に** 出力してください（前置きや余計なテキストは禁止）:
 
@@ -232,17 +261,24 @@ FOLLOW_UP:
 TAGS:
 <カンマ区切りの短いタグ（各 1〜10 文字、合計 2〜4 個）。テーマ・行動・状況を抽出（例: "クライアントMTG, 集中, 体調不良"）。ハッシュ記号や引用符は付けない。>
 
+CONSOLIDATIONS:
+<0 行以上。各行 "from => to" 形式（from は吸収される既存タグ、to はより良いタグ）。同じ概念・同じ軸のタグだけ統合。統合不要ならこのセクションごと省略。>
+
 ポジティブに、決めつけずに。入力のコピーは禁止。フォローアップは必ず「問い」の形にすること。`
 
       const userMessage = isEn
         ? `Mood: ${moodLabel}
 Weather: ${weatherLabel}
 Today's intentions / schedule:
-${(scheduleNotes || '').toString().trim() || '(not entered)'}`
+${(scheduleNotes || '').toString().trim() || '(not entered)'}
+
+User's existing tags (reuse these first; you MAY consolidate duplicates among them): ${sanitizedExisting.length ? sanitizedExisting.join(', ') : '(none)'}`
         : `【今日の気分】${moodLabel}
 【今日の天気】${weatherLabel}
 【今日の意識ポイント・予定】
-${(scheduleNotes || '').toString().trim() || '未入力'}`
+${(scheduleNotes || '').toString().trim() || '未入力'}
+
+【ユーザーの既存タグ（まずこれを再利用。重複は統合してよい）】 ${sanitizedExisting.length ? sanitizedExisting.join('、') : '（なし）'}`
 
       const response = await client.messages.create({
         model: 'claude-haiku-4-5-20251001',
@@ -252,24 +288,27 @@ ${(scheduleNotes || '').toString().trim() || '未入力'}`
       })
       const raw = response.content[0].type === 'text' ? response.content[0].text.trim() : ''
 
-      // SUMMARY: / FOLLOW_UP: / TAGS: をパース。形式違反時は raw 全体を summary に倒す
+      // SUMMARY: / FOLLOW_UP: / TAGS: / CONSOLIDATIONS: をパース。形式違反時は raw 全体を summary に倒す
       let summary = raw
       let followUpQuestion = ''
       let suggestedTags: string[] = []
-      const summaryMatch = raw.match(/SUMMARY:\s*([\s\S]*?)(?:\n\s*FOLLOW_UP:|\n\s*TAGS:|$)/i)
-      const followMatch = raw.match(/FOLLOW_UP:\s*([\s\S]*?)(?:\n\s*TAGS:|$)/i)
-      const tagsMatch = raw.match(/TAGS:\s*([\s\S]*?)$/i)
+      const summaryMatch = raw.match(/SUMMARY:\s*([\s\S]*?)(?:\n\s*FOLLOW_UP:|\n\s*TAGS:|\n\s*CONSOLIDATIONS:|$)/i)
+      const followMatch = raw.match(/FOLLOW_UP:\s*([\s\S]*?)(?:\n\s*TAGS:|\n\s*CONSOLIDATIONS:|$)/i)
+      // TAGS は CONSOLIDATIONS の手前で止める（混入防止）。
+      const tagsMatch = raw.match(/TAGS:\s*([\s\S]*?)(?:\n\s*CONSOLIDATIONS:|$)/i)
       if (summaryMatch) summary = summaryMatch[1].trim()
       if (followMatch) followUpQuestion = followMatch[1].trim()
       if (tagsMatch) {
         suggestedTags = tagsMatch[1]
-          .split(/[,、]/)
+          .split(/[,、\n]/)
           .map((s) => s.replace(/^#+/, '').replace(/["'`「」『』]/g, '').trim())
           .filter((s) => s.length > 0 && s.length <= 24)
           .slice(0, 4)
       }
+      // D3: CONSOLIDATIONS: セクションをパース（無ければ空配列）。
+      const consolidations = parseConsolidations(raw)
 
-      res.json({ summary, follow_up_question: followUpQuestion, suggested_tags: suggestedTags })
+      res.json({ summary, follow_up_question: followUpQuestion, suggested_tags: suggestedTags, consolidations })
     } catch (e: unknown) {
       console.error('journal summarize error:', e)
       res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
@@ -510,21 +549,57 @@ ${courseCatalogText}`
         return res.status(400).json({ error: isEn ? 'No text input' : 'テキストが入力されていません' })
       }
 
+      // D2: 既存タグは「頻度上位 N＋直近」をクライアント（fetchAllUserTags が頻度順で
+      // 出力）から受け取る。件数が少なければ全量。N=40 はトークン増（1 タグ平均 ~数トークン）
+      // と「再利用判断に十分な母数」のバランス。12 では既存タグの取りこぼしで再利用されず
+      // 固有タグが量産されていた。
+      const EXISTING_TAGS_LIMIT = 40
       const sanitizedExisting = Array.isArray(existingTags)
         ? existingTags
             .filter((s): s is string => typeof s === 'string')
             .map((s) => s.trim())
             .filter((s) => s.length > 0 && s.length <= 24)
-            .slice(0, 12)
+            .slice(0, EXISTING_TAGS_LIMIT)
         : []
 
+      // D2: シード推奨語彙（統制語彙）を軸ごとに列挙したヒント。
+      const vocabHint = buildVocabularyPromptHint(isEn ? 'en' : 'ja')
+
       const systemPrompt = isEn
-        ? `You read a daily journal entry and extract short, reusable tags that capture themes / actions / context.
+        ? `You read a daily journal entry and choose short, reusable tags that capture themes / actions / context.
 
-Output STRICTLY a comma-separated list of 2-5 tags. No prefix, no explanation, no hashtags, no quotes. Each tag is 1-3 words (or 1-10 characters in Japanese). Examples: "client meeting", "deep focus", "low energy", "family dinner". Do not repeat the user's existing tags verbatim — instead, complement them.`
-        : `あなたは日々のジャーナルから、テーマ・行動・状況を表す短いタグを抽出するツールです。
+When choosing each tag, follow this PRIORITY ORDER strictly:
+1. If one of the user's EXISTING tags fits, reuse it verbatim (highest priority — this keeps tags consolidated).
+2. Otherwise, pick from the RECOMMENDED VOCABULARY below.
+3. Only if neither fits, create a minimal new short tag.
 
-**カンマ区切りのタグのみ** を出力してください（2〜5 個、各 1〜10 文字程度）。前置き・説明・ハッシュ記号・引用符は禁止。例: "クライアントMTG, 集中, 体調不良, 読書". ユーザーが既に登録しているタグはそのまま繰り返さず、補完するタグを返してください。`
+RECOMMENDED VOCABULARY (grouped by axis; prefer these canonical words):
+${vocabHint}
+
+SELF-CONSOLIDATION: If you decide a better tag (from vocabulary or a new one) should absorb one or more of the user's existing tags that mean the same thing, report those merges. Only merge tags that are genuinely the same concept and the same axis (e.g. "client meeting" and "customer call" -> "meeting"). Never merge across different axes (a mood tag must not absorb an action tag).
+
+Output STRICTLY in this format (no prefix, no explanation):
+
+<comma-separated list of 2-5 tags. Each tag 1-3 words (or 1-10 chars in Japanese). No hashtags, no quotes.>
+CONSOLIDATIONS:
+<zero or more lines, each "from => to" where "from" is one of the user's existing tags to be absorbed and "to" is the better tag. Omit this section entirely if there is nothing to merge.>`
+        : `あなたは日々のジャーナルから、テーマ・行動・状況を表す短いタグを選ぶツールです。
+
+各タグを選ぶときは、次の **優先順位を厳守** してください:
+1. ユーザーの **既存タグ** に最適なものがあれば、それをそのまま再利用する（最優先。タグの統合が保たれます）。
+2. 無ければ、下の **推奨語彙** から選ぶ。
+3. それでも合うものが無いときだけ、短い新規タグを最小限作る。
+
+推奨語彙（軸ごと。まずこの canonical 語から選ぶ）:
+${vocabHint}
+
+自己統合: より良いタグ（推奨語彙または新規）が、同じ意味の既存タグを吸収すべきだと判断したら、その統合を報告してください。統合してよいのは「本当に同じ概念で同じ軸」のタグだけです（例: 「クライアントMTG」「顧客打ち合わせ」→「会議・打ち合わせ」）。**軸をまたぐ統合は禁止**（気分タグが行動タグを吸収する等はしない）。
+
+以下の形式で **厳密に** 出力してください（前置き・説明は禁止）:
+
+<カンマ区切りのタグ 2〜5 個。各 1〜10 文字程度。ハッシュ記号・引用符は付けない。>
+CONSOLIDATIONS:
+<0 行以上。各行 "from => to" 形式。"from" は吸収される既存タグ、"to" はより良いタグ。統合不要なら、このセクションごと省略してよい。>`
 
       const userMessage = isEn
         ? `Morning intent / plan:
@@ -533,29 +608,32 @@ ${morning || '(none)'}
 Evening reflection:
 ${evening || '(none)'}
 
-User's existing tags (do not repeat verbatim): ${sanitizedExisting.length ? sanitizedExisting.join(', ') : '(none)'}`
+User's existing tags (reuse these first; you MAY consolidate duplicates among them): ${sanitizedExisting.length ? sanitizedExisting.join(', ') : '(none)'}`
         : `【朝の予定・意識ポイント】
 ${morning || '（なし）'}
 
 【夜の振り返り】
 ${evening || '（なし）'}
 
-【ユーザーの既存タグ（そのまま繰り返さない）】 ${sanitizedExisting.length ? sanitizedExisting.join('、') : '（なし）'}`
+【ユーザーの既存タグ（まずこれを再利用。重複は統合してよい）】 ${sanitizedExisting.length ? sanitizedExisting.join('、') : '（なし）'}`
 
       const response = await client.messages.create({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 200,
+        max_tokens: 320,
         system: systemPrompt,
         messages: [{ role: 'user', content: userMessage }],
       })
       const raw = response.content[0].type === 'text' ? response.content[0].text.trim() : ''
-      const suggested = raw
+      // D3: CONSOLIDATIONS: セクションをパースして本文（タグ行）から剥がす。
+      const consolidations = parseConsolidations(raw)
+      const tagsBody = stripConsolidationsSection(raw)
+      const suggested = tagsBody
         .split(/[,、\n]/)
         .map((s) => s.replace(/^#+/, '').replace(/["'`「」『』]/g, '').trim())
         .filter((s) => s.length > 0 && s.length <= 24)
         .slice(0, 5)
 
-      res.json({ suggested_tags: suggested })
+      res.json({ suggested_tags: suggested, consolidations })
     } catch (e: unknown) {
       console.error('journal tags error:', e)
       res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
