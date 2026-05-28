@@ -2000,6 +2000,16 @@
 }
 
 /* ── Detail modal: header with edit button ─────────── */
+/* T-N: ハンドル + ヘッダの下スワイプ用ドラッグ領域。
+   touch-action: none で縦パンをこのゾーンに限り抑止し、ドラッグ追従を安定させる。
+   入力欄やスクロール本文は drag-zone の外なので影響しない。 */
+.journal-modal__drag-zone {
+  touch-action: none;
+  cursor: grab;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 .journal-modal__header {
   display: flex;
   align-items: center;
@@ -2056,7 +2066,8 @@
 .journal-modal__header-actions {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  /* T-P: × と「編集」ボタンが近く誤タップしやすかったため間隔を広げる */
+  gap: 16px;
 }
 
 /* ── View-mode chips & sections ────────────────────── */

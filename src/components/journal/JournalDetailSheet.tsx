@@ -137,6 +137,50 @@ export function JournalDetailSheet({ userId, date, initialJournal, initialPhase,
   const closeBtnRef = useRef<HTMLButtonElement>(null)
   const previouslyFocusedRef = useRef<HTMLElement | null>(null)
 
+  // T-N: ヘッダ/ハンドル領域からの下スワイプでシートを閉じる。
+  // 入力欄やスクロール領域では誤爆させたくないので、ドラッグの起点はハンドル領域に限定する。
+  // dragY > CLOSE_THRESHOLD か、十分な下向きフリック速度を超えたら onClose。未満なら 0 に戻す。
+  const CLOSE_THRESHOLD = 110
+  const FLICK_VELOCITY = 0.6 // px/ms
+  const [dragY, setDragY] = useState(0)
+  const [dragging, setDragging] = useState(false)
+  const dragStartRef = useRef<{ y: number; t: number } | null>(null)
+
+  const handleDragStart = (e: React.TouchEvent) => {
+    const touch = e.touches[0]
+    if (!touch) return
+    dragStartRef.current = { y: touch.clientY, t: Date.now() }
+    setDragging(true)
+  }
+
+  const handleDragMove = (e: React.TouchEvent) => {
+    const start = dragStartRef.current
+    const touch = e.touches[0]
+    if (!start || !touch) return
+    const delta = touch.clientY - start.y
+    // 下方向のみ追従。上方向は 0 固定（シート内スクロールを邪魔しない）。
+    setDragY(delta > 0 ? delta : 0)
+  }
+
+  const handleDragEnd = (e: React.TouchEvent) => {
+    const start = dragStartRef.current
+    dragStartRef.current = null
+    setDragging(false)
+    if (!start) {
+      setDragY(0)
+      return
+    }
+    const touch = e.changedTouches[0]
+    const delta = touch ? touch.clientY - start.y : dragY
+    const elapsed = Math.max(1, Date.now() - start.t)
+    const velocity = delta / elapsed
+    if (delta > CLOSE_THRESHOLD || (delta > 40 && velocity > FLICK_VELOCITY)) {
+      onClose()
+    } else {
+      setDragY(0)
+    }
+  }
+
   useEffect(() => {
     if (initialJournal !== undefined) return
     let cancelled = false
@@ -617,30 +661,47 @@ export function JournalDetailSheet({ userId, date, initialJournal, initialPhase,
         onClick={onClose}
         style={{ position: 'absolute', inset: 0, background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}
       />
-      <div ref={modalRef} className="journal-modal" style={{ position: 'relative' }}>
-        <div className="journal-modal__bar" />
-        <div className="journal-modal__header">
-          <div className="journal-modal__title">{date}</div>
-          <div className="journal-modal__header-actions">
-            {!editing && !loading && hasContent(journal) && (
+      <div
+        ref={modalRef}
+        className="journal-modal"
+        style={{
+          position: 'relative',
+          transform: dragY > 0 ? `translateY(${dragY}px)` : undefined,
+          transition: dragging ? 'none' : 'transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1)',
+        }}
+      >
+        {/* T-N: ハンドル + ヘッダを下スワイプのドラッグ領域にする（入力欄やスクロール本文は対象外） */}
+        <div
+          className="journal-modal__drag-zone"
+          onTouchStart={handleDragStart}
+          onTouchMove={handleDragMove}
+          onTouchEnd={handleDragEnd}
+          onTouchCancel={handleDragEnd}
+        >
+          <div className="journal-modal__bar" aria-hidden="true" />
+          <div className="journal-modal__header">
+            <div className="journal-modal__title">{date}</div>
+            <div className="journal-modal__header-actions">
+              {!editing && !loading && hasContent(journal) && (
+                <button
+                  type="button"
+                  className="journal-modal__edit-btn"
+                  onClick={handleEnterEdit}
+                  aria-label={t('journal.editEntry')}
+                >
+                  <PencilIcon width={14} height={14} />
+                  <span>{t('common.edit')}</span>
+                </button>
+              )}
               <button
                 type="button"
-                className="journal-modal__edit-btn"
-                onClick={handleEnterEdit}
-                aria-label={t('journal.editEntry')}
+                className="journal-modal__close-btn"
+                onClick={onClose}
+                aria-label={t('journal.closeSheet')}
               >
-                <PencilIcon width={14} height={14} />
-                <span>{t('common.edit')}</span>
+                <XIcon width={24} height={24} />
               </button>
-            )}
-            <button
-              type="button"
-              className="journal-modal__close-btn"
-              onClick={onClose}
-              aria-label={t('journal.closeSheet')}
-            >
-              <XIcon width={18} height={18} />
-            </button>
+            </div>
           </div>
         </div>
 
