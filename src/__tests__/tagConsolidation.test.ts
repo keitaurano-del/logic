@@ -44,6 +44,41 @@ describe('canonicalizeTags (層1: 統制語彙による名寄せ)', () => {
   it('空文字・空白のみは除去する', () => {
     expect(canonicalizeTags(['', '   ', '集中'], 'ja')).toEqual(['集中作業'])
   })
+
+  // ─── 粒度引き上げ: プロセス段階・状態モディファイア派生を親概念へ畳む ───
+  it('「X準備 / Xサポート / X進行」などライフイベント派生を親イベントへ畳む', () => {
+    // 出産: 準備・サポート・産後・妊娠 → すべて親「出産」
+    expect(canonicalizeTags(['出産準備', '出産サポート', '産後'], 'ja')).toEqual(['出産'])
+    // 引っ越し: 準備・進行・完了 → すべて親「引っ越し」（1 つに畳む）
+    expect(canonicalizeTags(['引っ越し準備', '引っ越し進行', '引っ越し完了'], 'ja')).toEqual(['引っ越し'])
+    // 結婚: 準備・入籍 → 親「結婚」
+    expect(canonicalizeTags(['結婚準備', '入籍'], 'ja')).toEqual(['結婚'])
+    // 育児: 子育て・育休 → 親「育児」
+    expect(canonicalizeTags(['子育て', '育休'], 'ja')).toEqual(['育児'])
+  })
+
+  it('「仕事多忙 / 仕事完了 / 残業」など状態派生を親「仕事」へ畳む', () => {
+    expect(canonicalizeTags(['仕事多忙', '仕事完了', '残業'], 'ja')).toEqual(['仕事'])
+    // 繁忙期・激務も仕事へ
+    expect(canonicalizeTags(['繁忙期'], 'ja')).toEqual(['仕事'])
+  })
+
+  it('状態語の単独形は元の situation/mood canonical を尊重する（複合形だけ親へ）', () => {
+    // 「繁忙」単独は situation:多忙 のまま（仕事へは寄せない）
+    expect(canonicalizeTags(['繁忙'], 'ja')).toEqual(['多忙'])
+    // 「準備」単独は action:計画・段取り のまま（特定イベントへ寄せない）
+    expect(canonicalizeTags(['準備'], 'ja')).toEqual(['計画・段取り'])
+  })
+
+  it('転職まわりの派生は親「キャリア」へ畳む', () => {
+    expect(canonicalizeTags(['転職準備', '転職活動', '就活'], 'ja')).toEqual(['キャリア'])
+  })
+
+  it('ライフイベント派生は en locale でも英語 canonical へ寄る', () => {
+    expect(canonicalizeTags(['出産準備'], 'en')).toEqual(['childbirth'])
+    expect(canonicalizeTags(['引っ越し準備'], 'en')).toEqual(['moving'])
+    expect(canonicalizeTags(['残業'], 'en')).toEqual(['work'])
+  })
 })
 
 // ─── 層2: 動的・自己統合（applyConsolidations）────────────────────
