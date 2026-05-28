@@ -1474,7 +1474,7 @@
   gap: 6px;
   padding: 12px 10px;
   background: transparent;
-  border: none;
+  border: 1.5px solid transparent;
   border-radius: 11px;
   color: var(--text-secondary);
   font: inherit;
@@ -1482,13 +1482,19 @@
   font-weight: 700;
   cursor: pointer;
   min-height: 44px;
-  transition: background 0.15s, color 0.15s;
+  /* T-O: 非選択側は opacity で控えめに弱める（絵文字なので grayscale は端末差が出るため使わない）。
+     0.55 はタップ可能と伝わる程度に留め、disabled に見せない。 */
+  opacity: 0.55;
+  transition: background 0.15s, color 0.15s, opacity 0.15s, border-color 0.15s, box-shadow 0.15s;
 }
 
+/* 選択側はブランド色・ボーダーで明確に強調し、フル opacity に戻す */
 .journal-phase-tab--active {
   background: var(--bg-card);
-  color: var(--text-primary);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  color: var(--brand);
+  border-color: color-mix(in srgb, var(--brand) 35%, transparent);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  opacity: 1;
 }
 
 .journal-phase-tab__emoji {
