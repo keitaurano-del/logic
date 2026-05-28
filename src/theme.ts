@@ -44,7 +44,7 @@ export const MODES: Mode[] = [
   { id: 'custom',     get name() { return t('theme.mode.custom.name') },     get description() { return t('theme.mode.custom.desc') },     tier: 'premium', preview: { bg: '#F5F1E8', card: '#FFFFFF', text: '#2D2820', accent: '#D4915A' } },
   { id: 'sepia',      get name() { return t('theme.mode.sepia.name') },      get description() { return t('theme.mode.sepia.desc') },      tier: 'premium', preview: { bg: '#F4ECDD', card: '#FBF6EC', text: '#3A2F23', accent: '#B25C3A' } },
   { id: 'forest',     get name() { return t('theme.mode.forest.name') },     get description() { return t('theme.mode.forest.desc') },     tier: 'premium', preview: { bg: '#10221B', card: '#173026', text: '#E4EDE6', accent: '#6FB89A' } },
-  { id: 'mono',       get name() { return t('theme.mode.mono.name') },       get description() { return t('theme.mode.mono.desc') },       tier: 'free',    preview: { bg: '#F2F2F0', card: '#FFFFFF', text: '#1A1A1A', accent: '#C0392B' } },
+  { id: 'mono',       get name() { return t('theme.mode.mono.name') },       get description() { return t('theme.mode.mono.desc') },       tier: 'premium', preview: { bg: '#F2F2F0', card: '#FFFFFF', text: '#1A1A1A', accent: '#C0392B' } },
 ]
 
 export type ThemeState = {
