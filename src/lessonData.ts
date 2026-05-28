@@ -130,6 +130,8 @@ import { numeracyLessonMap } from './numeracyLessons'
 import { numeracyLessonMapEn } from './numeracyLessonsEn'
 import { peakPerformanceLessonMap } from './peakPerformanceLessons'
 import { peakPerformanceLessonMapEn } from './peakPerformanceLessonsEn'
+import { staminaLessonMap } from './staminaLessons'
+import { staminaLessonMapEn } from './staminaLessonsEn'
 import { whyWhyLessonMap } from './whyWhyLessons'
 import { whyWhyLessonMapEn } from './whyWhyLessonsEn'
 import { careerResumeLessonMap } from './careerResumeLessons'
@@ -185,6 +187,8 @@ function _getMergedLessons(): Record<number, LessonData> {
     ..._pickByLocale(strategyLessonMap, strategyLessonMapEn),
     ..._pickByLocale(numeracyLessonMap, numeracyLessonMapEn),
     ..._pickByLocale(peakPerformanceLessonMap, peakPerformanceLessonMapEn),
+    // 体力デザインコース（lessonId 440-444）
+    ..._pickByLocale(staminaLessonMap, staminaLessonMapEn),
     ..._pickByLocale(whyWhyLessonMap, whyWhyLessonMapEn),
     // 就職・転職コース群（ja 版のみ、en は同じ ja を一時的に使用）
     ..._pickByLocale(careerResumeLessonMap, careerResumeLessonMap),

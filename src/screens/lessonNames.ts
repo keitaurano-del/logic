@@ -30,6 +30,7 @@ export const CATEGORY_LABEL_KEY: Record<string, string> = {
   '数値感覚': 'category.numeracy',
   'ピークパフォーマンス習慣': 'category.peakPerformance',
   '集中の技術': 'category.focus',
+  '体力デザイン': 'category.stamina',
   'フェルミ推定': 'category.fermi',
   '履歴書・職務経歴書': 'category.careerResume',
   'SPI対策': 'category.careerSpi',

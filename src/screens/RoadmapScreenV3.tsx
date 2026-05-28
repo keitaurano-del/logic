@@ -248,6 +248,12 @@ const CATEGORY_VISUAL: Record<string, CategoryVisual> = {
     image: `${IMG}/course-focus-now-01.png`,
     routeKey: '集中の技術',
   },
+  '体力デザイン': {
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5BB97E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M6.5 6.5h2v11h-2zM15.5 6.5h2v11h-2zM3.5 9.5h1.5v5H3.5zM19 9.5h1.5v5H19zM8.5 12h7"/></svg>,
+    iconBg: 'rgba(91,185,126,.14)',
+    image: `${IMG}/course-peak-performance-01.png`,
+    routeKey: '体力デザイン',
+  },
 }
 
 const DEFAULT_VISUAL: CategoryVisual = {
@@ -1021,6 +1027,7 @@ const CATEGORY_ID_TO_NAMES: Record<string, string[]> = {
   'ロジカルライティング': ['ロジカルライティング', 'Logical Writing'],
   'ADHDレバレッジ': ['ADHDレバレッジ'],
   '集中の技術': ['集中の技術'],
+  '体力デザイン': ['体力デザイン', 'Stamina Design'],
 }
 
 // カテゴリID（ルートキー）→ 表示用ラベルを翻訳キー経由で解決
@@ -1056,6 +1063,7 @@ const CATEGORY_LABEL_KEY: Record<string, string> = {
   'ロジカルライティング': 'category.logicalWriting',
   'ADHDレバレッジ': 'category.adhdLeverage',
   '集中の技術': 'category.focus',
+  '体力デザイン': 'category.stamina',
 }
 
 // カテゴリID → courseData が保持する日本語データ値（検索キー用）
@@ -1085,6 +1093,7 @@ const CATEGORY_DATA_LABEL: Record<string, string> = {
   'ロジカルライティング': 'ロジカルライティング',
   'ADHDレバレッジ': 'ADHDレバレッジ',
   '集中の技術': '集中の技術',
+  '体力デザイン': '体力デザイン',
 }
 
 function categoryLabel(category: string): string {

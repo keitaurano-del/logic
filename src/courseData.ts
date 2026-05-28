@@ -389,6 +389,22 @@ const COURSES_JA: Course[] = [
     image: '/images/v3/course-peak-performance-01.png',
   },
 
+  // ── 体力デザイン ────────────────────────────────────
+  // 受講順: peakPerformance（自分の体に合った働き方の土台）→ 本コース（場面別の応用）。
+  // ※コース title は Keita 最終選定待ちの暫定値（推し: 「疲れにくい自分を設計する」、
+  //   硬めの候補: 「場面に合わせて体力を設計する」）。差し替えはこの 1 行と
+  //   COURSE_EN_OVERRIDES['stamina-01'].title のみ。
+  {
+    id: 'stamina-01',
+    title: '疲れにくい自分を設計する',
+    category: '体力デザイン',
+    group: 'self-management',
+    lessonIds: [440, 441, 442, 443, 444],
+    level: '初級',
+    description: '勉強・仕事・遊び・子育ての場面ごとに必要な体力は違います。エネルギーの総量を増やすより、いつ・どこに配り、どう回復させるかを設計する。認知科学・行動科学をもとに、場面別に疲れにくい自分のつくり方を学びます。',
+    image: '/images/v3/course-peak-performance-01.png',
+  },
+
   // ── 履歴書・職務経歴書 ──────────────────────────────
   {
     id: 'career-resume-01',
@@ -661,6 +677,11 @@ const COURSE_EN_OVERRIDES: Record<string, { title: string; description: string }
   'peak-performance-01': {
     title: 'Work at Your Peak Performance',
     description: 'Five lessons on chronotype, sleep, exercise, focus rhythms, and self-tracking — design your best-fit way of working.',
+  },
+  // ※ title は Keita 最終選定待ちの暫定値。差し替えはこの 1 行と COURSES_JA の stamina-01.title のみ。
+  'stamina-01': {
+    title: 'Design a Self That Tires Less',
+    description: 'Studying, working, playing, and parenting each demand different stamina. Rather than raising total energy, design when and where you allocate it and how you recover. Learn how to build a self that tires less, setting by setting, grounded in cognitive and behavioral science.',
   },
   'career-resume-01': {
     title: 'Write a Resume That Gets Through',

@@ -36,6 +36,7 @@ const CATEGORY_LABEL_KEY: Record<string, string> = {
   'ロジカルライティング': 'category.logicalWriting',
   'ADHDレバレッジ': 'category.adhdLeverage',
   '集中の技術': 'category.focus',
+  '体力デザイン': 'category.stamina',
   '提案・伝える技術': 'category.proposal',
   '提案書作成': 'category.proposalWriting',
   '哲学・思考の原理': 'category.philosophy',

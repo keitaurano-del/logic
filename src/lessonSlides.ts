@@ -307,6 +307,8 @@ function getHeroImage(category: string, lessonId?: number): string {
   if (c.includes('ケース面接') || c === 'business') return '/images/v3/course-case-01.png'
   if (c.includes('哲学') || c === 'philosophy') return '/images/v3/course-philosophy-01.png'
   if (c.includes('東洋思想')) return '/images/v3/course-eastern-01.png'
+  // 体力デザイン（"デザイン" マッチより前に置く。後段の design 系に誤マッチさせない）
+  if (c.includes('体力') || c.includes('stamina')) return '/images/v3/course-peak-performance-01.png'
   if (c.includes('提案') || c.includes('伝える')) return '/images/v3/lesson-proposal.png'
   if (c.includes('フェルミ') || c.includes('fermi')) return '/images/v3/home-daily-fermi.png'
   if (c.includes('クリティカル')) return '/images/v3/lesson-critical-thinking.png'
