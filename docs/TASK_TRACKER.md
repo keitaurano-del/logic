@@ -447,6 +447,157 @@ task-manager エージェントが管理するタスク台帳の正本。
 
 ---
 
+## バッチ: 2026-05-28 夜 新規要望（Keita 就寝前）
+
+Keita 就寝前の追加要望。林が「できるところは自律で進める」前提。task-manager が構造化。実装は委譲。
+要望1（体力コース＝コンテンツ制作）と要望2/3/4（journal UI 微調整・セット1バッチ）と要望5（既存ブランチ流用判断）で性質が分かれる。
+
+| ID | タイトル | 優先度 | ステータス | 担当案 | 関連 |
+|----|----------|--------|-----------|--------|------|
+| T-M | 「体力のつけ方」コースを作る（構成案＋サンプル1レッスン） | P1 | TODO（今夜ドラフトのみ・ship しない） | content-creator（構成案＋サンプル）＋ logic-coach（監査） | 過去のコンテンツ監査キャンペーン（project_logic_content_audit_20260525）・サンプル承認フロー |
+| T-N | ジャーナル入力画面を下スワイプで閉じる（swipe-down to dismiss） | P1 | TODO（今夜 dev-logic 着手・ローカルのみ） | dev-logic | T-D と同じ JournalDetailSheet.tsx / journal.css。同一 dev-logic が wip ブランチ上で続けて実装 |
+| T-O | ジャーナルの朝/夜（phase）選択状態を明示（非選択側をグレーアウト） | P1 | TODO（今夜 dev-logic 着手・ローカルのみ） | dev-logic | T-N/T-P と同ファイル・セット1バッチ。journal phase tab は絵文字 OK 例外箇所 |
+| T-P | ジャーナルの×ボタンを拡大＋左上「編集」ボタンと距離を離す（誤タップ防止） | P1 | TODO（今夜 dev-logic 着手・ローカルのみ） | dev-logic | T-N/T-O と同ファイル・セット1バッチ |
+| T-Q | 画像アップロードで画像が一瞬消える＋進捗可視化 | P1 | REVIEW（未マージの既存ブランチ実装あり・検証→マージ判断待ち） | dev-logic（検証）＋ Keita（マージ承認） | 既存ブランチ feat/journal-image-upload-progress（commit acdc59e） |
+
+### T-M — 「体力のつけ方」コースを作る　[P1 / TODO（今夜は構成案＋サンプル1レッスンのドラフトのみ・ship しない）]
+
+- 依頼原文（Keita 2026-05-28 夜）: 「体力のつけ方コースを作りたい。サブテーマ案: 勉強する体力 / 仕事する体力 / 遊ぶ体力 / 子育ての体力」。
+- 想定スコープ: 新規コース「体力をつける（仮）」＋レッスン群のコンテンツ制作。サブテーマ4つを軸にレッスンを構成する。
+- 今夜のスコープ（林方針・限定）: **「コース構成案（コース title・category・レッスン一覧と各 DoD）＋サンプル1レッスン（フル本文ドラフト）」までをドラフトする**。本番展開・ship・サムネ生成・全レッスン量産は **しない**（サンプル承認フロー厳守）。
+- ⚠フロー（サンプル承認・最重要）: バルクのコンテンツ生成は **サンプル1レッスン → Keita 承認 → 残りを展開** のフローを守る（feedback_logic_course_thumbnails / project_logic_content_audit_20260525 のサンプル承認ルール）。今夜は新規"生成"系なので Bucket2 相当＝サンプル先行で正しい（correctness 修正ではないので即展開しない）。
+- ⚠title ルール（厳守）: **コース title・レッスン title は「〜する」Doing 形を維持**（feedback_logic_title_doing）。
+  - サブテーマも Doing 形に寄せる: 「勉強する体力をつける」「仕事する体力をつける」「遊ぶ体力をつける」「子育ての体力をつける」等。「体力」単体の名詞 title は避ける。category（分類ラベル）は名詞句で OK。
+- 重さの見極め: **重**（コンテンツ制作）。ただし今夜は構成案＋1レッスンのドラフトに限定するので今夜分は中。本展開はサンプル承認後。
+- 既存資産（実装前確認）: `src/lessons/`（静的レッスンデータ *.ts）、`courseData.ts`（コース→レッスン id 対応・pinned 上部表示）、`src/lessonSlides.ts`（スライド分割・callout-aware）、`src/components/RichLessonText.tsx`（`[icon:name]` / `:::callout` 記法）、`src/visuals/`（図解 68 種）、`src/i18n.ts`（コース/レッスン文言は本文データ側だが UI 文言は ja/en）。
+- DoD（今夜分）: (1) コース構成案がドラフトされている（コース title〔Doing〕・category 名・4サブテーマ・各サブテーマのレッスン候補一覧と狙い）、(2) サンプル1レッスンのフル本文ドラフトが1本ある（explain step・図解/アイコン方針込み）、(3) Keita 承認待ち状態で会話本文に内容展開（feedback_direct_content_not_path）。**本展開・ship は含まない**。
+- DoD（本展開・後日・サンプル承認後）: コースが courseData に登録され、全レッスンが ja/en 両対応・本文の視覚化ハイブリッド方針（feedback_logic_lesson_visual_hybrid）準拠・logic-coach 監査通過・サムネ生成済みで本番反映される。
+- サブタスク（今夜）:
+  - [ ] content-creator: コース構成案ドラフト（コース title〔Doing〕・category・4サブテーマ × レッスン候補・各レッスンの狙い1行）
+  - [ ] content-creator: サンプル1レッスン（最もコース性格を代表する1本）をフル本文ドラフト（ja。en は承認後）。視覚化ハイブリッド（図解/アイコン/callout）方針込み
+  - [ ] logic-coach: サンプルレッスンの内容正確性・論理整合を軽く監査（概念誤り混入チェック）
+  - [ ] 会話本文に構成案＋サンプルを直接展開し Keita 承認待ちにする
+- サブタスク（本展開・後日）:
+  - [ ] Keita 承認後: 残りレッスンを ja で展開 → logic-coach 監査
+  - [ ] en パリティ（全レッスン ja/en 両対応）
+  - [ ] courseData / lessonSlides 登録・pinned/category 配置
+  - [ ] サムネ生成（Figma or Gemini Nano Banana・スペル崩し対策・サンプル1枚承認先行）
+  - [ ] 本番反映（Android 自動・Render web は手動 deploy-production.yml）
+- Keita 確認すべき論点（朝）:
+  - (1) コース title 案（Doing 形・複数候補から選別）。
+  - (2) 4サブテーマの粒度: 1サブテーマ=1レッスンか、1サブテーマ=複数レッスンか（コース全体のレッスン数感）。
+  - (3) コンテンツのトーン/方向: 精神論寄りか、認知科学・行動科学ベースの実践 tips 寄りか（Logic の論理思考トレーニングという文脈との接続をどう取るか）。
+  - (4) 既存どのカテゴリ/グループに置くか（peakPerformance 系の隣接か、新カテゴリか）。
+- 抜けもれ提言:
+  - title Doing 形（feedback_logic_title_doing）厳守。サブテーマも Doing に寄せる。
+  - サンプル承認フロー（feedback_logic_course_thumbnails）: 今夜はサンプル1本まで。Keita 承認前に全レッスン量産しない。
+  - i18n: コース/レッスン本文は本文データ（lessons/*.ts）に ja/en 両方。UI に出る新規ラベルがあれば i18n.ts の ja/en 両方・中立的丁寧体（feedback_app_copy_neutral）。
+  - 視覚化ハイブリッド（feedback_logic_lesson_visual_hybrid）: 本文は図解＋ SVGアイコン（体系的要素）＋絵文字（話題物限定）。UI chrome は SVG のみ。callout は1スライド最大1個・密度目安遵守。
+  - 内容の正確性: 体力/健康/子育て系は医学・科学的な誤情報リスクがある領域。断定的な健康主張・医療アドバイスにならないよう logic-coach 監査必須。Logic は論理思考アプリなので「体力の"つけ方"を論理的に考える」フレームに落とすと製品文脈と整合しやすい。
+  - サムネ（後日）: Figma v4 or Gemini Nano Banana、スペル崩し対策（feedback_gemini_prompt_tricks）、Pixa 不使用（feedback_no_pixa）、サンプル1枚承認先行。
+  - 両OS: モバイル専用（project_logic_mobile_only）。レッスン本文は OS 差小だが Android 実機で図解/アイコン表示確認（本展開時）。
+  - 永続化: レッスン進捗は既存 progress（lesson id ベース）に自動で乗る。新コース追加で既存進捗は壊れない。
+
+### T-N — ジャーナル入力画面を下スワイプで閉じる（swipe-down to dismiss）　[P1 / TODO（今夜 dev-logic 着手・ローカルのみ）]
+
+- 依頼原文（Keita 2026-05-28 夜）: 「ジャーナルの入力画面を下スワイプで閉じられるようにする」。
+- 想定スコープ: `JournalDetailSheet`（ジャーナル入力のボトムシート）を下方向スワイプジェスチャで dismiss できるようにする。現状は×ボタン等の明示操作のみで閉じる想定（要確認）。モバイルのボトムシート標準 UX。
+- 重さの見極め: **中**。スワイプジェスチャのハンドリング（touch/pointer イベント・ドラッグ追従・閾値判定・スナップバック/dismiss アニメ）の実装。ライブラリ未使用なら自前 touch ハンドラ、既存のシート実装次第。
+- 既存資産（実装前確認）: `src/components/journal/JournalDetailSheet.tsx`（シート本体）、`src/components/journal/journal.css`（シートのレイアウト/アニメ）。シートの open/close 制御・transform/transition の既存実装を確認してから着手。
+- ⚠同ファイル・セット注意（最重要）: T-N/T-O/T-P は **全て JournalDetailSheet.tsx + journal.css** を触る。さらに **T-D（タグ統合）が既に同ファイルを wip ブランチ上で変更済み**（D3 で JournalDetailSheet.tsx・journal.css・i18n.ts 改修済・未コミット）。コンフリクト回避のため **同一 dev-logic が wip/20260528-inprogress ブランチ上で T-D の続きとして T-N/T-O/T-P を一気通貫で実装する**のが筋。別 worktree で並行すると確実に衝突する。
+- DoD: ジャーナル入力シートを下方向にスワイプすると追従して動き、一定閾値を超えると閉じる。閾値未満で離すと元位置にスナップバック。入力中（テキストフィールドフォーカス中・スクロール中）に誤 dismiss しない。Android 実機でスムーズに動く。
+- サブタスク:
+  - [ ] 実装前調査: JournalDetailSheet の open/close・transform 実装を確認（自前 or ライブラリ）
+  - [ ] 下スワイプのドラッグ追従＋閾値 dismiss / スナップバックを実装
+  - [ ] 誤 dismiss 防止: シート内スクロール領域・テキスト入力フォーカス中のジェスチャ競合を制御
+  - [ ] 既存の閉じる導線（×ボタン）と共存・状態破綻なし
+  - [ ] 回帰: T-D（タグ統合）で同ファイルに入った変更と整合（同一ブランチ上で実装すれば自然に解消）
+  - [ ] Android 実機でジェスチャの追従/dismiss を確認
+- 抜けもれ提言:
+  - 両OS: モバイル専用（project_logic_mobile_only）。スワイプはタッチ前提でOK。Android 実機で慣性/追従を確認。iOS workflow 未整備なので当面 Android。
+  - アクセシビリティ: スワイプは補助操作。×ボタンによる閉じる導線は必ず残す（スワイプ単独にしない）。
+  - i18n: ジェスチャ追加のみなら新規文言なし想定。ヒント文言を出すなら ja/en・中立丁寧体。
+  - 永続化: 閉じる時の入力内容の扱い（下書き保存 or 破棄）が既存と変わらないか確認。スワイプ dismiss で意図せず入力が消えないように（×と同じ保存/破棄挙動に揃える）。
+  - テスト: ジェスチャは E2E 困難（座標/慣性依存）。手動確認手順を残す。
+
+### T-O — ジャーナルの朝/夜（phase）選択状態を明示（非選択側グレーアウト）　[P1 / TODO（今夜 dev-logic 着手・ローカルのみ）]
+
+- 依頼原文（Keita 2026-05-28 夜）: 「朝/夜（phase）どちらを選択中か分かりにくい。選択していない方のアイコンをグレーアウトする等で明示する」。
+- 想定スコープ: ジャーナルの phase（朝/夜）タブで、選択中/非選択の視覚差を強める。非選択側をグレーアウト（彩度/不透明度を落とす）して、現在どちらを編集しているか一目で分かるようにする。
+- 重さの見極め: **軽**。選択状態の CSS スタイル調整が主（非選択 phase アイコンの opacity/grayscale/色）。状態管理は既存の phase 選択 state を使う見込み。
+- 既存資産（実装前確認）: `src/components/journal/JournalDetailSheet.tsx`（phase tab UI・選択 state）、`journal.css`（phase tab のスタイル）。
+- ⚠絵文字例外箇所: ジャーナルの **phase tab は絵文字 OK の4例外箇所の1つ**（feedback_journal_emoji / CLAUDE.md gotchas #5）。phase アイコンが絵文字（🌅/🌙 等）でもこの例外内なので維持して可。グレーアウトは絵文字に grayscale/opacity を当てる形でも、SVG なら色で表現でも可。
+- ⚠同ファイル・セット注意: T-N/T-O/T-P ＋ T-D と同ファイル。同一 dev-logic が wip ブランチ上で一気通貫（T-N 参照）。
+- DoD: ジャーナル phase（朝/夜）で、選択中側が明確に強調され、非選択側がグレーアウト（または明確に弱い表現）になっている。切り替えで視覚状態が即反映。色だけに依存せず（コントラスト/濃淡で）判別できる。
+- サブタスク:
+  - [ ] 実装前調査: phase tab の選択 state と現在のスタイルを確認（絵文字 or SVG）
+  - [ ] 非選択 phase をグレーアウト（opacity/grayscale or 弱色）、選択中を強調
+  - [ ] phase 切り替えで即時反映・状態破綻なし
+  - [ ] 回帰: 既存の phase 切り替え機能・各 phase の入力内容保持が壊れないか
+  - [ ] Android 実機で視認性確認（グレーアウトが十分に分かるか）
+- 抜けもれ提言:
+  - アクセシビリティ: 「選択中」を色/濃淡だけでなく、aria-selected / aria-pressed 等の状態属性でも表現（色覚多様性・スクリーンリーダ）。グレーアウト＝disabled に見えて「押せない」と誤解されないよう、非選択でもタップ可能なことが分かる表現にする。
+  - 絵文字グレーアウトの罠: 絵文字に grayscale フィルタを当てると端末/フォントで効き方が違う（feedback_logic_lesson_visual_hybrid の「絵文字は端末で見た目が変わる」）。opacity の方が安定。Android 実機で確認。
+  - i18n: スタイル変更のみなら新規文言なし。
+  - 両OS: モバイル専用。Android 実機で選択/非選択の判別がつくか。
+  - テスト: 視覚状態は E2E で aria-selected アサーション可（軽量）。
+
+### T-P — ジャーナルの×ボタン拡大＋「編集」ボタンと距離を離す　[P1 / TODO（今夜 dev-logic 着手・ローカルのみ）]
+
+- 依頼原文（Keita 2026-05-28 夜）: 「バツ（閉じる）ボタンをもう少し大きくし、左上の『編集』ボタンと距離を離す（誤タップ防止）」。
+- 想定スコープ: ジャーナル入力シートの×（閉じる）ボタンのタップ領域を拡大し、左上「編集」ボタンとの距離を空けて誤タップを防ぐ。配置/サイズの微調整。
+- 重さの見極め: **軽**。ボタンの hit area（サイズ/padding）拡大とレイアウト（位置/margin）調整が主。CSS 中心。
+- 既存資産（実装前確認）: `src/components/journal/JournalDetailSheet.tsx`（ヘッダの×ボタン・編集ボタンの配置）、`journal.css`（ヘッダ/ボタンのスタイル）。
+- ⚠同ファイル・セット注意: T-N/T-O/T-P ＋ T-D と同ファイル。同一 dev-logic が wip ブランチ上で一気通貫（T-N 参照）。
+- DoD: ×ボタンのタップ領域が十分に大きく（モバイルのタップターゲット最小 44×44pt 目安）、左上「編集」ボタンと十分な間隔があり、誤タップしにくい。両ボタンとも機能は維持。レイアウトが他要素と干渉しない。
+- サブタスク:
+  - [ ] 実装前調査: ×ボタン・編集ボタンの現在のサイズ/位置/間隔を確認
+  - [ ] ×ボタンの hit area 拡大（最小タップターゲット目安を満たす）
+  - [ ] 編集ボタンとの間隔を空ける（配置/margin 調整）
+  - [ ] 回帰: ヘッダレイアウトが他要素（タイトル・phase tab 等）と干渉しないか
+  - [ ] Android 実機で押しやすさ・誤タップ低減を確認
+- 抜けもれ提言:
+  - アクセシビリティ: ×ボタンは語ラベル（aria-label「閉じる」）併記。タップターゲット 44×44pt 目安（モバイル UX 標準）。
+  - UI chrome の emoji 不可: ×ボタン・編集ボタンは UI chrome ＝ SVG アイコン（src/icons）使用、emoji 不可（journal の絵文字例外は mood/weather/phase/streak の4箇所のみで、閉じる/編集ボタンは対象外）。
+  - i18n: 配置/サイズ調整のみなら新規文言なし。aria-label を新設するなら ja/en・中立丁寧体。
+  - 両OS: モバイル専用。Android 実機で押しやすさ確認。
+  - 回帰: T-N（下スワイプ dismiss）と同居 — ×ボタン拡大とスワイプ領域が競合しないか（同一ブランチで両方やるので調整しやすい）。
+
+### T-Q — 画像アップロードで画像が一瞬消える＋進捗可視化　[P1 / REVIEW（未マージの既存ブランチ実装あり・検証→マージ判断待ち）]
+
+- 依頼原文（Keita 2026-05-28 夜）: 「画像アップロード時に画像が一瞬消える（なくなったように見える）問題の改善＋アップロード進捗の可視化」。
+- 🟢 重要な発見（git 確認済み・新規実装ほぼ不要）: 既存ブランチ **`feat/journal-image-upload-progress`（commit `acdc59e`、作者 Keita Urano、2026-05-24）** が **この要望をほぼ丸ごと実装済み**。main の1コミット先。コミットメッセージが Keita 報告「ジャーナルの画像を入れたとき一回消えたりするので、アップロード状況とかが分かるようになってほしい」への対応と明記＝**今回の要望5と同一案件**。
+  - 実装内容（`JournalImageGrid.tsx` +170 / `journal.css` +175、計2ファイル・319 挿入）:
+    - ファイル選択直後にローカル preview を即表示（uploading 状態）
+    - アップロード進行中: 半透明 overlay ＋ spinner ＋「アップロード中…」ラベル ＝ **進捗可視化**
+    - **「画像が一瞬消える」修正本体**: signed URL が来るまでローカル preview を保持（`localPreviewRef` Map で path→objectURL を持ち、signed URL が urls state に入った時点で revoke）
+    - 失敗時: pending を破棄せず retry / cancel ボタンを overlay 表示（同じ File で再試行可）
+    - `pendingErrorLabel()` で 3 種エラー（invalid-type / too-large / upload-failed）文言切り分け
+    - i18n キー（journal.imagesUploading / imagesRetry / imagesCancel）は別 commit で main に追加済み＝このブランチは使うだけ
+- 判断（新規 vs 既存流用）: **新規実装は不要。既存ブランチの検証→マージで解決する**のが筋。要望「画像が一瞬消える改善」＝localPreviewRef の保持で対応済、「進捗可視化」＝overlay+spinner+ラベルで対応済。要望を満たしている。
+- ステータス: **REVIEW**（実装は存在・未マージ。DoD 検証とマージ承認待ち）。新規 TODO ではない。
+- ⚠未検証ポイント（マージ前に確認すべき）:
+  - (1) ブランチが main から1コミットだけ進んだ古い分岐（5/24）。**現在の main / wip ブランチと差分・コンフリクトがないか**（特に T-D 系で journal 周辺を触っているので JournalImageGrid.tsx 自体は別ファイルだが念のため）。
+  - (2) tsc / eslint `.`（全体）/ vitest が通るか（マージ前チェック）。
+  - (3) Android 実機で「画像選択→preview 即表示→アップロード中 overlay→成功で signed URL に差し替え（消えない）→失敗で retry」の一連が動くか。
+  - (4) i18n キー（imagesUploading/Retry/Cancel）が現 main に実在するか（ブランチは「使うだけ」前提なので、main 側にキーが無いと表示が壊れる）。
+- DoD: 画像選択直後から preview が途切れず表示され続け（signed URL 取得までの「一瞬消える」が起きない）、アップロード中は進捗（spinner/ラベル）が見え、失敗時に retry/cancel できる。Android 実機で一連が確認できる。tsc/eslint/vitest 緑。
+- サブタスク:
+  - [ ] dev-logic: `feat/journal-image-upload-progress` を現 main/wip に対して rebase 試行しコンフリクト有無を確認
+  - [ ] dev-logic: tsc 0 / eslint `.` 0 / vitest 緑を確認
+  - [ ] dev-logic: i18n キー（imagesUploading/Retry/Cancel）が main 側に存在するか確認（無ければ追加）
+  - [ ] Android 実機で preview 保持・進捗 overlay・retry の一連ハッピーパス確認
+  - [ ] Keita: マージ承認（本番反映＝承認案件。Android は main push で自動配信）
+- 抜けもれ提言:
+  - 新規着手不要＝今夜は「検証」に留める（林方針と一致）。新たに同じ機能を書き起こさない（既存ブランチと二重実装になる）。
+  - ⚠マージ＝Keita 承認案件: main へのマージ＝本番反映（Android 自動配信）。Keita 承認待ち（push/デプロイは Keita 専権）。今夜は検証＋コンフリクト/テスト確認まで、マージは朝に Keita 判断。
+  - i18n: 既存ブランチが参照する3キーが main にあるか確認（feedback_app_copy_neutral・ja/en 両方）。
+  - 両OS: モバイル専用。Android 実機で確認（画像選択は native フォト経路なので Web と挙動差あり得る）。
+  - 永続化: 画像は Supabase Storage（signed URL）想定。preview 保持はクライアント側 objectURL で永続化には無影響。
+  - 関連: ブランチが 5/24 と古いので、放置すると陳腐化する。早めに検証→マージ判断するのが望ましい。
+
+---
+
 ## Recurring（task-manager 継続管理タスク）
 
 定期実行・継続監視するタスク。完了型ではなく「最終実施日」を追跡し、漏れを検知する。
@@ -655,6 +806,24 @@ task-manager エージェントが管理するタスク台帳の正本。
 
 ## 次アクション
 
+### バッチ 2026-05-28 夜 新規要望（T-M〜T-Q・登録直後）
+
+今夜の自律実行プラン（林判断・push/デプロイなし・ローカルのみ）:
+- T-N/T-O/T-P（journal UI 微調整・セット1バッチ）: **今夜 dev-logic に wip/20260528-inprogress ブランチ上で実装させる**。T-D が既に同ファイル（JournalDetailSheet.tsx / journal.css）を変更済みなので、同一 dev-logic が T-D の続きとして一気通貫で実装＝コンフリクト回避。ローカル commit（savepoint）まで、push なし。
+- T-M（体力コース）: **今夜 content-creator に「コース構成案＋サンプル1レッスン」をドラフトさせる**。ship しない・全レッスン量産しない（サンプル承認フロー厳守）。logic-coach がサンプルの内容正確性を軽く監査。成果は朝 Keita に提示し承認待ち。
+- T-Q（画像アップロード）: **既存ブランチ feat/journal-image-upload-progress の検証に留める**（rebase/コンフリクト確認・tsc/eslint/vitest・i18n キー存在確認）。マージは Keita 承認待ち。新規実装はしない（既存実装と二重になる）。
+
+朝 Keita に確認すべきこと:
+- T-M: コース title 案（Doing 形・選別）／サブテーマの粒度（1サブテーマ=1 or 複数レッスン）／トーン（精神論 vs 認知科学・行動科学ベース）／配置カテゴリ（peakPerformance 隣接 or 新カテゴリ）／サンプル承認 → 本展開ゴーサイン。
+- T-Q: 既存ブランチのマージ承認（本番反映＝Android 自動配信）。検証結果（コンフリクト/テスト/i18n キー）を添えて提示。
+- T-N/T-O/T-P: 実装完了報告を朝に提示し DoD 検証 → REVIEW→DONE 判定。push 承認は Keita。
+
+抜けもれ・注意（task-manager 提言）:
+- T-N/T-O/T-P は T-D と同ファイル＝**必ず同一 dev-logic が同一ブランチで連続実装**。別エージェント/別 worktree で並行させない（衝突確定）。
+- ⚠未コミット 22 ファイル問題（既存リスク・下記「2026-05-28 の進捗」参照）: wip/20260528-inprogress に savepoint commit 済とのことなので、T-N/T-O/T-P もこのブランチに積む。タスク単位で commit を分けると後の切り分けが楽。
+- T-M は新規"生成"なのでサンプル承認フロー（即展開しない）。T-N〜T-P は既存 UI の改善＝correctness/UX 修正だが新機能要素（スワイプ）もあるので実装はするがマージは Keita 承認。
+- T-Q は新規 ID を起こしたが実体は既存ブランチ＝REVIEW スタート。二重実装しないこと。
+
 ### バッチ 2026-05-28 新規要望4件（T-I〜T-L・登録直後）
 - T-I/T-J（コース進捗・レッスン完了回数）は **セットで設計** する。同じ progress 永続化レイヤー＋同じ「完了」定義を触るので、別々に実装すると二重集計・データ不整合になる。同一 dev-logic が一気通貫で。まず Keita にスコープ論点（特に「完了」の定義 ＝ done か count か、Supabase 集計まで広げるか、T-J でデータモデル拡張＝migration が要るか）を確認してから着手。
 - T-K（ジャーナルグラフ tap 詳細）は対象グラフの確定が先。タグ頻度グラフが対象なら T-D（タグ動的統合）のタグモデル確定後に着手すると手戻り少。気分推移グラフ対象なら T-D と独立で先行可。
@@ -677,4 +846,4 @@ task-manager エージェントが管理するタスク台帳の正本。
 3. 全ローカル実装完了後、tsc/eslint 再確認 → Keita に push 承認を依頼
 4. 注意: `eslint .` で `.claude/worktrees/agent-*`（別エージェント残骸）由来の 2 errors。実ソースは 0。CI は worktree 非checkout で緑見込みだが、worktree 残骸の掃除は別途検討
 
-最終更新: 2026-05-28（新規4件 T-I〜T-L 登録＋未コミット22ファイルのリスク反映＋D2/D3 を「実装ほぼ完了・検証確認中」へ更新）
+最終更新: 2026-05-28 夜（Keita 就寝前 新規要望 T-M〜T-Q 登録。T-Q は既存ブランチ feat/journal-image-upload-progress=commit acdc59e 検出により REVIEW スタート＝新規実装不要。T-N/T-O/T-P は T-D と同ファイルにつき同一 dev-logic が wip ブランチで連続実装する方針を明記。T-M は今夜は構成案＋サンプル1レッスンのドラフトのみ・ship しない）
