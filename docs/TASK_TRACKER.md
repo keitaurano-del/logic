@@ -12,18 +12,18 @@ task-manager エージェントが管理するタスク台帳の正本。
 
 | ID | タイトル | 優先度 | ステータス | 担当案 |
 |----|----------|--------|-----------|--------|
-| T-A | フェルミ「今日の1問」とタップ後の問題がズレる | P0 | IN_PROGRESS（dev-logic ローカル修正中・未push） | dev-logic |
-| T-B | 配色テーマを3種類追加（外観設定 MODES）＋垢抜け化 | P1 | IN_PROGRESS（候補6案提案済→Keita 3種選定済→dev-logic 実装中・未push） | designer（候補済）→ Keita（選定済）→ dev-logic（実装中） |
+| T-A | フェルミ「今日の1問」とタップ後の問題がズレる | P0 | REVIEW（実装＋単体テスト11＋ブラウザ3シナリオ全PASS・wip ブランチコミット済・push 承認待ち） | dev-logic |
+| T-B | 配色テーマを3種類追加（外観設定 MODES）＋垢抜け化 | P1 | REVIEW（3種実装済・mono を free→premium に修正済・eslint . 緑・push 承認待ち。テーマ見た目の実機確認は任意で残） | designer（候補済）→ Keita（選定済）→ dev-logic（実装済） |
 | T-C | カスタムコース生成できない（本番 route 未デプロイ） | P0 | DONE（本番再デプロイ→404解消・正常系検証済） | 林/Keita（運用・コード修正不要） |
-| T-D | ジャーナルのタグ粒度が細かすぎる（→ 動的・自動統合モデルで確定。タグ付け時に既存タグを動的参照し最適化＋自己統合） | P1 | IN_PROGRESS（D1 DONE。**D2+D3 実装ほぼ完了・検証確認中**＝未コミット、tsc/eslint/vitest 完了報告が途切れ。D4 は自動主体に縮小再定義・未着手） | content-creator（D1 DONE）→ dev-logic（D2/D3 実装ほぼ完了・検証中／D4 実装）+ designer（D4 結果確認UIのみ縮小）|
+| T-D | ジャーナルのタグ粒度が細かすぎる（→ 動的・自動統合モデルで確定。タグ付け時に既存タグを動的参照し最適化＋自己統合） | P1 | REVIEW（D1-D3 完全グリーン：tsc=0 / vitest 324pass / eslint . 0 error。D4 は自動主体に縮小・undo を実装に内包。backend なので手動デプロイ承認待ち） | content-creator（D1 DONE）→ dev-logic（D2/D3/D4 実装済）+ designer（D4 軽量UXのみ）|
 | T-E | Obsidian vault 最新化＋日次更新の仕組み化 | P1 | IN_PROGRESS（(a) Daily Note 5/26-28 DONE、(b) 一部、(c)(d) 未＝T-F依存） | 林（キャッチアップ）+ ceo（日次統合）/ task-manager（recurring 管理） |
 | T-F | cron 自動化の root 権限エラー修復（ceo 朝ブリ・feedback-watcher が空振り） | P1（上位） | TODO（要 Keita 方式確認） | ceo（自分のスクリプト群） |
-| T-G | night-patrol 夜間スモークが "No tests found" で空振り（監視死） | P1 | IN_PROGRESS（dev-logic が T-A と同バッチで修正中・未push） | dev-logic / test-smoke |
+| T-G | night-patrol 夜間スモークが "No tests found" で空振り（監視死） | P1 | REVIEW（playwright config が 5/25・5/27 両 spec 計20件を拾うのを確認・空振り解消・wip コミット済。night-patrol 実走の最終確認は次回夜間） | dev-logic / test-smoke |
 | T-H | Logic Android Production 公開（保留） | P1 | BLOCKED（Keita 判断で保留・技術的には即実行可） | Keita（公開判断） |
 
-### T-A — フェルミ「今日の1問」とタップ後がズレる　[P0 / IN_PROGRESS]
+### T-A — フェルミ「今日の1問」とタップ後がズレる　[P0 / REVIEW]
 
-- 進捗（2026-05-28）: dev-logic がローカルで修正中（未完了・未push）。T-G と同バッチで作業。完了報告を受けたら DoD（同日内・解答後・リロール後の Home/Daily 一致、日付跨ぎの決定性）を検証して REVIEW→DONE 判定する。
+- ✅ REVIEW（2026-05-28 深夜・push 承認待ち）: 実装＋検証完了。**単体テスト11ケース＋ブラウザ実機タップ3シナリオ（ホーム↔Daily 同一問題、リロード後一致、再オープン後一致）が全通過**。コードレベルでは完全検証済み。wip/20260528-inprogress ブランチにローカルコミット済（push/マージなし）。DoD（同日内・解答後・リロール後の Home/Daily 一致、日付跨ぎの決定性）充足。残るは push 承認（Keita 専権）のみ → 承認・マージ後に DONE 判定。
 - 症状: ホームの「今日の1問」カードと、タップして開いた `DailyFermiScreen` の問題が食い違うことがある（特にその日に1問でも解いた後）。correctness バグ → 即修正（Bucket1、correctness 優先ルール）。
 - 根因確定（林調査、実ソース照合済み）:
   - `HomeScreenV3.tsx:138-146` は **未完了だけ詰めた available 配列**を作り `available[dailySeed % available.length]`（dailySeed = `getDailyFermiIndex()`）で選ぶ。`dailySeed = Date.now()/86400000 % FERMI_POOL.length`。
@@ -45,9 +45,9 @@ task-manager エージェントが管理するタスク台帳の正本。
   - テスト: 決定性ロジックは vitest 単体テスト向き（同日・解答後・日付跨ぎで Home/Daily の選択関数が同 index を返す）。E2E は sessionStorage 操作が要るので単体優先。
   - 永続化: sessionStorage は当日内のみ。日次の決定性は date seed で担保する設計が安全（state の持ち方を設計時に明示）。
 
-### T-B — 配色テーマを3種類追加（外観設定 MODES）＋垢抜け化　[P1 / IN_PROGRESS]
+### T-B — 配色テーマを3種類追加（外観設定 MODES）＋垢抜け化　[P1 / REVIEW]
 
-- 進捗（2026-05-28）: designer が候補6案を提案済（`logic/docs/THEME_PALETTE_CANDIDATES.md`）。Keita が designer 推奨ミックス（1=古紙 / 2=深緑 / 4=墨白）を3種として選定済（このタスクのゲート通過）。dev-logic が選定3種を worktree で実装中（未完了・未push）。完了報告を受けたら DoD（preview と tokens.css 実トークンの一致、tier 割当、i18n ja/en、コントラスト WCAG AA、Android 実機、既存5モード非回帰）を検証して REVIEW→DONE。
+- ✅ REVIEW（2026-05-28 深夜・push 承認待ち）: designer 候補6案（`logic/docs/THEME_PALETTE_CANDIDATES.md`）→ Keita が 1=古紙 / 2=深緑 / 4=墨白 を選定 → dev-logic が3種を実装完了。**「テーマは全部有料」方針に合わせ mono（墨白）の tier を free→premium に修正済み**（無料は light/dark のみ、それ以外は全 premium に統一）。eslint . 緑。wip ブランチコミット済（push/マージなし）。DoD（preview↔tokens.css 実トークン一致・tier 割当・i18n ja/en・コントラスト・既存5モード非回帰）はコードレベルで充足。残: **テーマの見た目の実機確認（Android）は任意で残**＋ push 承認（Keita）。
 - スコープ確定（Keita 確認 2026-05-28）: 当初「テーマを増やす／AIっぽさをなくす」は曖昧だったが、対象は **アプリの配色テーマ（外観設定の背景モード = `theme.ts` の `MODES`）** に確定。フェルミお題や AI 生成テーマの話ではない（旧 BLOCKED 版の (a)/(b) 解釈は破棄）。
 - 現状（実ソース照合済み）:
   - `src/theme.ts` の `MODES` が5種: `light` / `dark`（tier=free）、`enterprise` / `startup` / `custom`（tier=premium）。
@@ -110,7 +110,9 @@ task-manager エージェントが管理するタスク台帳の正本。
   - 両OS: iOS workflow 未整備なので当面 Android 実機で確認（project_logic_mobile_only / android_deploy）。
   - 再発防止メモ: 「main マージ済＝本番反映済」と思い込まない。backend 変更は手動 deploy-production.yml が必要（render auto-deploy は発火しないことが多い）。
 
-### T-D — ジャーナルのタグ粒度が細かすぎる　[P1 / IN_PROGRESS（新方針＝動的・自動統合モデルで確定）]
+### T-D — ジャーナルのタグ粒度が細かすぎる　[P1 / REVIEW（新方針＝動的・自動統合モデルで確定。D1-D3 完全グリーン）]
+
+- ✅ REVIEW（2026-05-28 深夜・手動デプロイ承認待ち）: **D1-D3 完全グリーン（tsc=0 / vitest 324pass / eslint . 0 error）**。D4 は自動主体に縮小し、**undo を実装に内包**（D3/D4 一体）。wip ブランチコミット済（push/マージなし）。⚠backend（journal.ts プロンプト）を含むので本番反映は **手動 deploy-production.yml が必須**（main マージ＝本番反映ではない）。デプロイ後に本番ジャーナルで実タグ生成 probe して初めて DONE → 現状は REVIEW（Keita のマージ＋手動デプロイ承認待ち）。
 
 - 📌 スコープ確定（Keita 2026-05-28 初版）: 「(1) プロンプトだけ直す」案ではなく **踏み込む方** を選択。**タグ統合 UX** ＋ **統制語彙（controlled vocabulary）** まで含めて修正する方針で確定。
 - 📌📌 設計方針アップデート（Keita 2026-05-28 追加・最重要・本質）: タグの本質モデルを **動的・自動統合（dynamic / self-consolidating vocabulary）** に確定した。Keita 原文「タグは、設定するときに既存のものを見ながら最適なものを作る。かつ、もっと良いものがあれば新しく作って統合する」。
@@ -140,8 +142,8 @@ task-manager エージェントが管理するタスク台帳の正本。
   - DoD: ✅ 充足（ja/en 対 canonical 語彙＋synonyms/axis 定義済・コード参照可・オープン方針確定）。
   - 担当: content-creator（DONE）。
 
-  #### D2 — プロンプト側の動的最適化＋自己統合指示（新方針で拡張・旧 (1)）　[実装ほぼ完了・検証確認中・dev-logic]
-  - 進捗（2026-05-28）: dev-logic がローカル実装済（`server/routes/journal.ts` プロンプト改修・`src/components/journal/journalApi.ts`）。ただし **最終検証（tsc / eslint `.` / vitest）が完了報告前に途切れ・未コミット**。⚠backend なので本番反映は手動 deploy-production.yml 必須（デプロイ後 probe するまで効かない）。
+  #### D2 — プロンプト側の動的最適化＋自己統合指示（新方針で拡張・旧 (1)）　[✅実装完了・検証グリーン・dev-logic]
+  - ✅ 完了（2026-05-28 深夜）: dev-logic 実装（`server/routes/journal.ts` プロンプト改修・`src/components/journal/journalApi.ts`）。**tsc=0 / vitest 324pass / eslint . 0 error の完全グリーン**。wip ブランチコミット済。⚠backend なので本番反映は手動 deploy-production.yml 必須（デプロイ後 probe するまで効かない）。
   - 新方針での内容: プロンプトを「固定語彙へ寄せろ」だけでなく **「既存タグを動的参照して最適化＋自己統合せよ」** という指示へ拡張する。`/tags`・`/summarize` の両経路で:
     - (a) **既存タグ群を AI に渡す**: そのユーザーの既存タグ（理想は全量、現実的には頻度上位 or 直近）を渡し、「**まず既存タグに意味的に最適なものがあればそれを再利用せよ。固有名詞・一回性の表現は避けよ**」と指示。
     - (b) **シード語彙も渡す**: `buildVocabularyPromptHint(locale)`（D1）で軸別の推奨語彙を同梱し、「既存タグにもシード語彙にも適切な候補が無いときだけ、短く再利用可能な新タグを最小限で作れ」と指示。＝ 既存タグ＞シード語彙＞新規、の優先順位。
@@ -154,8 +156,8 @@ task-manager エージェントが管理するタスク台帳の正本。
   - ⚠デプロイ依存: プロンプトは backend → 本番反映には手動 deploy-production.yml が必須（後述「落とし穴」）。
   - ⚠論点: 既存タグを毎リクエスト渡すとトークン増（コスト/レイテンシ）。頻度上位に絞る／キャッシュする等の最適化を実装時に検討。
 
-  #### D3 — 名寄せ＋動的統合（consolidate）ロジック（新方針で拡張）　[実装ほぼ完了・検証確認中・dev-logic]
-  - 進捗（2026-05-28）: dev-logic が新規 `src/components/journal/tagConsolidation.ts`（consolidate ロジック）＋ 単体テスト `src/__tests__/tagConsolidation.test.ts` を実装。`JournalDetailSheet.tsx`・`journal.css`・`i18n.ts` も改修。ただし **最終検証（tsc / eslint `.` / vitest）が完了報告前に途切れ・未コミット**。検証完了＋（物理書き換えを含むなら）安全策の確認後に REVIEW へ。
+  #### D3 — 名寄せ＋動的統合（consolidate）ロジック（新方針で拡張）　[✅実装完了・検証グリーン・dev-logic]
+  - ✅ 完了（2026-05-28 深夜）: dev-logic が新規 `src/components/journal/tagConsolidation.ts`（consolidate ロジック）＋ 単体テスト `src/__tests__/tagConsolidation.test.ts` を実装。`JournalDetailSheet.tsx`・`journal.css`・`i18n.ts` も改修。**tsc=0 / vitest 324pass / eslint . 0 error の完全グリーン**。安全策の undo は D4 として実装に内包済み。wip ブランチコミット済。
   - 新方針での内容: 2層に分けて整理する。
     - **層1: 静的シード解決（既存設計・軽量）** — D1 の `canonicalizeTag` / `matchCanonical` を使い、synonym → canonical のヒューリスティック名寄せ。T3 の `tagMatchKey` を土台に乗る。ヒットしないタグは原表記維持（オープン方針）。これは決定的なので vitest で検証しやすい。
     - **層2: 動的統合（consolidate）— 新方針の本体** — D2 が AI から受け取る `consolidations: {from, to}[]`（または D3 内でユーザー既存タグ群の類似検出で算出した統合ペア）を、ユーザーのタグ集合に適用する関数を `journalDb.ts` に追加する。「from タグを持つ既存エントリの当該タグを to に書き換え（rename/merge）」＝ ユーザーの語彙を実際に再編する操作。これが「もっと良いものが出たら新規に作って古いものを統合する」の実装本体。
@@ -167,7 +169,8 @@ task-manager エージェントが管理するタスク台帳の正本。
   - 担当: dev-logic。
   - ⚠非可逆注意（重要・後述「安全策」と連動）: 動的統合（層2）は **既存タグの自動書き換え**を含む非可逆操作。元データのスナップショット／取り消し（undo）／承認制のいずれかを必ず設計に組み込む。物理バックフィル（過去全データの一括書き換え）は Keita 承認の別ステップ。
 
-  #### D4 — 自動統合の結果確認 UI（新方針で「自動主体」に縮小再定義・旧 (2)）　[D1 DONE → D3 依存・dev-logic 主体／designer は軽量UIのみ]
+  #### D4 — 自動統合の結果確認 UI（新方針で「自動主体」に縮小再定義・旧 (2)）　[✅自動主体に縮小・undo を D3 実装に内包・dev-logic]
+  - ✅ 進捗（2026-05-28 深夜）: **自動主体に確定し、undo（取り消し）を D3 実装に内包**（別画面の重い手動統合 UI は作らず、自動統合＋取り消しの安全弁を実装側に組み込んだ）。designer の重い画面設計は不要のまま。残るは Keita 確認論点（確認モード(C)を入れるか・通知の目立たせ方）だが、現状の自動＋undo で T-D の元目的（固有タグ乱立抑制）は満たす設計。
   - 新方針での再定義: **手動統合 UI は主体から外す**（旧 (a)「このタグを別タグに統合」手動操作は格下げ）。統合は D2/D3 の動的・自動統合が主体。**ユーザーに見せるのは結果確認／取り消し程度に縮小**する。
   - 縮小後の UI スコープ候補（いずれも「自動統合が起きたことの可視化と取り消し」が中核）:
     - (A) **自動統合の通知/履歴**: 「『朝のMTG』を『会議・打ち合わせ』にまとめました」のような結果表示（さりげないトースト or タグ管理画面の履歴）。
@@ -279,9 +282,9 @@ task-manager エージェントが管理するタスク台帳の正本。
   - T-E との依存: T-E (c) の案1（morning-briefing.sh 相乗り）も案2（別 cron で claude）も、claude を root cron で回す前提なので T-F が前提条件。T-F を先に解くか同時に解く。
   - night-patrol が生きている理由の確認価値: 「claude を呼ばない cron は動く」なら、Daily Note 生成も claude を介さず素材ファイル結合スクリプトで作る選択肢もある（T-E (c) 設計時の代替案）。
 
-### T-G — night-patrol 夜間スモークが "No tests found" で空振り　[P1 / IN_PROGRESS]
+### T-G — night-patrol 夜間スモークが "No tests found" で空振り　[P1 / REVIEW]
 
-- 進捗（2026-05-28）: dev-logic が T-A と同バッチで修正中（未push）。完了報告を受けたら night-patrol 手動キックで inspection が正常 severity に戻り pass 件数が出ることを検証して REVIEW→DONE。本番は健全なので監視復旧扱い。
+- ✅ REVIEW（2026-05-28 深夜）: 修正完了。**playwright config が 5/25・5/27 両 spec（計20件）を正しく拾うことを確認し、"No tests found" の空振りを解消**。wip ブランチコミット済。本番は元々健全なので監視復旧扱い。残: **night-patrol の実走（次回夜間 03:00 cron）での最終確認**（inspection が正常 severity に戻り pass 件数が出るか）→ それで DONE 判定。
 - 症状（2026-05-28 inspection で発覚）: `50-Daily/inspections/2026-05-28.md` が severity **HIGH**。本番フロント（https://logic-u5wn.onrender.com/）と API（/api/health）はともに **200 で健全**だが、Playwright スモークが `Error: No tests found. Make sure that arguments are regular expressions matching test files.` で**空振り**（0 件実行）。5/27 inspection は 11 件 pass していた → 5/27→5/28 で夜間スモークが実質停止＝**本番は無事だが監視が死んでいる（検知力ゼロ）**状態。緊急障害ではないが監視の穴。
 - 根因（実 config ＋ spec ＋ night-patrol.sh 照合済み・ほぼ確定）:
   - `night-patrol.sh:43` は `SMOKE_SPEC=$(ls -t e2e/render-smoke-*.spec.ts | head -1)` で**最新の smoke spec を動的選択**し、`:48` で `npx playwright test "$SMOKE_SPEC" --config=playwright.render.config.ts --reporter=line` を実行。
@@ -454,14 +457,23 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
 
 | ID | タイトル | 優先度 | ステータス | 担当案 | 関連 |
 |----|----------|--------|-----------|--------|------|
-| T-M | 「体力のつけ方」コースを作る（構成案＋サンプル1レッスン） | P1 | TODO（今夜ドラフトのみ・ship しない） | content-creator（構成案＋サンプル）＋ logic-coach（監査） | 過去のコンテンツ監査キャンペーン（project_logic_content_audit_20260525）・サンプル承認フロー |
-| T-N | ジャーナル入力画面を下スワイプで閉じる（swipe-down to dismiss） | P1 | TODO（今夜 dev-logic 着手・ローカルのみ） | dev-logic | T-D と同じ JournalDetailSheet.tsx / journal.css。同一 dev-logic が wip ブランチ上で続けて実装 |
-| T-O | ジャーナルの朝/夜（phase）選択状態を明示（非選択側をグレーアウト） | P1 | TODO（今夜 dev-logic 着手・ローカルのみ） | dev-logic | T-N/T-P と同ファイル・セット1バッチ。journal phase tab は絵文字 OK 例外箇所 |
-| T-P | ジャーナルの×ボタンを拡大＋左上「編集」ボタンと距離を離す（誤タップ防止） | P1 | TODO（今夜 dev-logic 着手・ローカルのみ） | dev-logic | T-N/T-O と同ファイル・セット1バッチ |
-| T-Q | 画像アップロードで画像が一瞬消える＋進捗可視化 | P1 | REVIEW（未マージの既存ブランチ実装あり・検証→マージ判断待ち） | dev-logic（検証）＋ Keita（マージ承認） | 既存ブランチ feat/journal-image-upload-progress（commit acdc59e） |
+| T-M | 「体力のつけ方」コースを作る（構成案＋サンプル1レッスン） | P1 | サンプル承認待ち（構成案＋サンプル441ドラフト作成済・logic-coach 監査 4.3/5「承認に進めてよい品質」・本展開は Keita ゴーサイン後） | content-creator（構成案＋サンプル）＋ logic-coach（監査済） | 過去のコンテンツ監査キャンペーン（project_logic_content_audit_20260525）・サンプル承認フロー |
+| T-N | ジャーナル入力画面を下スワイプで閉じる（swipe-down to dismiss） | P1 | REVIEW（実装＋検証＋コミット完了・wip ブランチ・tsc/vitest/build 緑・push＋実機タッチ感確認待ち） | dev-logic | T-D と同じ JournalDetailSheet.tsx / journal.css。同一 dev-logic が wip ブランチ上で続けて実装 |
+| T-O | ジャーナルの朝/夜（phase）選択状態を明示（非選択側を opacity で明示） | P1 | REVIEW（実装＋検証＋コミット完了・wip ブランチ） | dev-logic | T-N/T-P と同ファイル・セット1バッチ。journal phase tab は絵文字 OK 例外箇所 |
+| T-P | ジャーナルの×ボタンを拡大＋左上「編集」ボタンと距離を離す（誤タップ防止） | P1 | REVIEW（実装＋検証＋コミット完了・wip ブランチ） | dev-logic | T-N/T-O と同ファイル・セット1バッチ |
+| T-Q | 画像アップロードで画像が一瞬消える＋進捗可視化 | P1 | REVIEW（既存ブランチ feat/journal-image-upload-progress が丸ごと実装済と判明・今夜は深掘り検証せず＝wip と journal.css 競合のため・Keita マージ承認待ち） | dev-logic（検証）＋ Keita（マージ承認） | 既存ブランチ feat/journal-image-upload-progress（commit acdc59e） |
 
-### T-M — 「体力のつけ方」コースを作る　[P1 / TODO（今夜は構成案＋サンプル1レッスンのドラフトのみ・ship しない）]
+### T-M — 「体力のつけ方」コースを作る　[P1 / サンプル承認待ち（今夜は構成案＋サンプル1レッスンのドラフトまで・ship しない）]
 
+- ✅ 進捗（2026-05-28 深夜）: content-creator が **コース構成案＋サンプルレッスン441のフル本文ドラフト**を作成（成果物 `docs/COURSE_STAMINA_DRAFT_20260528.md`）。**logic-coach 監査 4.3/5「サンプル承認に進めてよい品質」**。本展開（残レッスン量産・ship）は Keita ゴーサイン後（サンプル承認フロー厳守）。
+- 📋 量産前の修正2点（本展開前に反映）:
+  - C-1: 運動効果の量の精度を `peakPerformance412` と統一する（数値・効果量の整合）。
+  - C-3: ウルトラディアン周期の記述の流れを整える。
+- 📋 443執筆時の申し送り: **DRAMMA ≠ Sonnentag の4体験 の混同を回避**する（443 を書くときに概念を取り違えない）。
+- 📋 Keita 判断が要る論点2点:
+  - S-1: 「遊ぶ体力」443 を「回復総論」化するか（サブテーマの括り方）。
+  - S-2: 440導入 と 442仕事 の内容重複を回避する設計にするか。
+- ⚠444子育て: 本文化する時に **logic-coach 再レビュー必須**（健康・子育て領域の正確性リスク）。
 - 依頼原文（Keita 2026-05-28 夜）: 「体力のつけ方コースを作りたい。サブテーマ案: 勉強する体力 / 仕事する体力 / 遊ぶ体力 / 子育ての体力」。
 - 想定スコープ: 新規コース「体力をつける（仮）」＋レッスン群のコンテンツ制作。サブテーマ4つを軸にレッスンを構成する。
 - 今夜のスコープ（林方針・限定）: **「コース構成案（コース title・category・レッスン一覧と各 DoD）＋サンプル1レッスン（フル本文ドラフト）」までをドラフトする**。本番展開・ship・サムネ生成・全レッスン量産は **しない**（サンプル承認フロー厳守）。
@@ -498,8 +510,9 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
   - 両OS: モバイル専用（project_logic_mobile_only）。レッスン本文は OS 差小だが Android 実機で図解/アイコン表示確認（本展開時）。
   - 永続化: レッスン進捗は既存 progress（lesson id ベース）に自動で乗る。新コース追加で既存進捗は壊れない。
 
-### T-N — ジャーナル入力画面を下スワイプで閉じる（swipe-down to dismiss）　[P1 / TODO（今夜 dev-logic 着手・ローカルのみ）]
+### T-N — ジャーナル入力画面を下スワイプで閉じる（swipe-down to dismiss）　[P1 / REVIEW]
 
+- ✅ REVIEW（2026-05-28 深夜・push＋実機タッチ感確認待ち）: 実装＋検証＋コミット完了（wip/20260528-inprogress ブランチ、push なし）。**tsc / vitest / build 緑**。DoD（追従ドラッグ・閾値 dismiss・スナップバック・誤 dismiss 防止・×ボタン共存）はコードレベルで充足。残: **push 承認（Keita）＋ Android 実機でのタッチ感（追従/慣性）確認**。
 - 依頼原文（Keita 2026-05-28 夜）: 「ジャーナルの入力画面を下スワイプで閉じられるようにする」。
 - 想定スコープ: `JournalDetailSheet`（ジャーナル入力のボトムシート）を下方向スワイプジェスチャで dismiss できるようにする。現状は×ボタン等の明示操作のみで閉じる想定（要確認）。モバイルのボトムシート標準 UX。
 - 重さの見極め: **中**。スワイプジェスチャのハンドリング（touch/pointer イベント・ドラッグ追従・閾値判定・スナップバック/dismiss アニメ）の実装。ライブラリ未使用なら自前 touch ハンドラ、既存のシート実装次第。
@@ -520,8 +533,9 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
   - 永続化: 閉じる時の入力内容の扱い（下書き保存 or 破棄）が既存と変わらないか確認。スワイプ dismiss で意図せず入力が消えないように（×と同じ保存/破棄挙動に揃える）。
   - テスト: ジェスチャは E2E 困難（座標/慣性依存）。手動確認手順を残す。
 
-### T-O — ジャーナルの朝/夜（phase）選択状態を明示（非選択側グレーアウト）　[P1 / TODO（今夜 dev-logic 着手・ローカルのみ）]
+### T-O — ジャーナルの朝/夜（phase）選択状態を明示（非選択側を opacity で明示）　[P1 / REVIEW]
 
+- ✅ REVIEW（2026-05-28 深夜）: 実装＋検証＋コミット完了（wip ブランチ）。**非選択側を opacity で弱め、選択中を明示**（絵文字 grayscale より opacity が安定という抜けもれ提言どおりの実装）。残: push 承認＋実機視認性確認（任意）。
 - 依頼原文（Keita 2026-05-28 夜）: 「朝/夜（phase）どちらを選択中か分かりにくい。選択していない方のアイコンをグレーアウトする等で明示する」。
 - 想定スコープ: ジャーナルの phase（朝/夜）タブで、選択中/非選択の視覚差を強める。非選択側をグレーアウト（彩度/不透明度を落とす）して、現在どちらを編集しているか一目で分かるようにする。
 - 重さの見極め: **軽**。選択状態の CSS スタイル調整が主（非選択 phase アイコンの opacity/grayscale/色）。状態管理は既存の phase 選択 state を使う見込み。
@@ -542,8 +556,9 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
   - 両OS: モバイル専用。Android 実機で選択/非選択の判別がつくか。
   - テスト: 視覚状態は E2E で aria-selected アサーション可（軽量）。
 
-### T-P — ジャーナルの×ボタン拡大＋「編集」ボタンと距離を離す　[P1 / TODO（今夜 dev-logic 着手・ローカルのみ）]
+### T-P — ジャーナルの×ボタン拡大＋「編集」ボタンと距離を離す　[P1 / REVIEW]
 
+- ✅ REVIEW（2026-05-28 深夜）: 実装＋検証＋コミット完了（wip ブランチ）。×ボタンの hit area 拡大＋編集ボタンとの間隔確保（誤タップ防止）。残: push 承認＋実機押しやすさ確認（任意）。T-N の下スワイプ領域と×ボタン拡大の競合も同一ブランチで調整済み。
 - 依頼原文（Keita 2026-05-28 夜）: 「バツ（閉じる）ボタンをもう少し大きくし、左上の『編集』ボタンと距離を離す（誤タップ防止）」。
 - 想定スコープ: ジャーナル入力シートの×（閉じる）ボタンのタップ領域を拡大し、左上「編集」ボタンとの距離を空けて誤タップを防ぐ。配置/サイズの微調整。
 - 重さの見極め: **軽**。ボタンの hit area（サイズ/padding）拡大とレイアウト（位置/margin）調整が主。CSS 中心。
@@ -575,7 +590,8 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
     - `pendingErrorLabel()` で 3 種エラー（invalid-type / too-large / upload-failed）文言切り分け
     - i18n キー（journal.imagesUploading / imagesRetry / imagesCancel）は別 commit で main に追加済み＝このブランチは使うだけ
 - 判断（新規 vs 既存流用）: **新規実装は不要。既存ブランチの検証→マージで解決する**のが筋。要望「画像が一瞬消える改善」＝localPreviewRef の保持で対応済、「進捗可視化」＝overlay+spinner+ラベルで対応済。要望を満たしている。
-- ステータス: **REVIEW**（実装は存在・未マージ。DoD 検証とマージ承認待ち）。新規 TODO ではない。
+- 📌 今夜の判断（2026-05-28 深夜）: **今夜は深掘り検証を見送った**。理由＝この既存ブランチ（feat/journal-image-upload-progress）が `journal.css` を触っており、今夜 T-D/T-N/T-O/T-P を積んだ **wip/20260528-inprogress の journal.css と競合する**ため、迂闊な rebase/マージで wip の作業を壊すリスクがある。Keita のマージ承認＋wip ブランチの処遇が決まってから検証→マージ判断する方が安全。
+- ステータス: **REVIEW**（実装は存在・未マージ。Keita マージ承認待ち＝wip との competing 解消が前提）。新規 TODO ではない。
 - ⚠未検証ポイント（マージ前に確認すべき）:
   - (1) ブランチが main から1コミットだけ進んだ古い分岐（5/24）。**現在の main / wip ブランチと差分・コンフリクトがないか**（特に T-D 系で journal 周辺を触っているので JournalImageGrid.tsx 自体は別ファイルだが念のため）。
   - (2) tsc / eslint `.`（全体）/ vitest が通るか（マージ前チェック）。
@@ -749,7 +765,7 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
 - 自動パイプラインの「健全」認識が誤りだった重要訂正: T-E 当初の「briefings/feedback の自動パイプラインは 5/28 まで稼働中」はファイル存在ベースの誤認。実際は 5/27 から中身がエラー文字列のサイレント空振り（T-F）。今後はファイル存在でなく中身（byte 数・エラーパターン）で死活判定する（R-2 に追加）。
 - T-F 根因: morning-briefing.sh:38 / feedback-watcher.sh:23 が `claude --print --agent` を root cron で叩く → CLI が root では permission skip を弾く → stderr が Daily ファイルに焼き込まれる。night-patrol は claude を呼ばず playwright 直叩きなので生きている（症状と整合）。修正は root cron で claude を非対話実行する方式の確立（実行ユーザー変更 or 正規の許可フラグ、Keita 確認）。
 - T-G 根因: playwright.render.config.ts:14 の testMatch が `render-smoke-20260525.spec.ts` ハードコード。night-patrol.sh:43 が `ls -t | head -1` で最新 `render-smoke-20260527.spec.ts`（5/27 追加）を引数に渡す → 引数 spec と testMatch の積集合が空 → "No tests found"。本番は 200 で健全＝障害でなく監視復旧。修正は testMatch を glob 追従化（新 spec 追加で無設定で対象化）。
-- 進捗訂正（2026-05-28 夕）: T-C は **DONE**（本番再デプロイで 404→200、検証済・コード修正不要だった）→ 連鎖で TC-2 も DONE。T-A / T-G は dev-logic が同バッチでローカル修正中（IN_PROGRESS・未push）。T-B は designer 候補6案→Keita 3種選定（1古紙/2深緑/4墨白）→ dev-logic worktree 実装中（IN_PROGRESS・未push）。T-E (a) Daily Note 5/26-28 キャッチアップ DONE。
+- 進捗訂正（2026-05-28 深夜）: T-C **DONE**（404→200 検証済・コード修正不要だった）→ 連鎖で TC-2 も DONE。**T-A / T-G / T-B / T-D（D1-D3）はいずれも実装＋検証完了で REVIEW**（wip/20260528-inprogress に 6 コミット savepoint・push/デプロイ/マージなし）: T-A=単体11＋実機3シナリオ全PASS、T-G=両 spec 計20件取得で空振り解消、T-B=3種実装＋mono を free→premium 修正＋eslint . 緑、T-D=tsc0/vitest324/eslint.0 完全グリーン（backend なので手動デプロイ承認待ち）。T-E (a) Daily Note 5/26-28 キャッチアップ DONE。（夕方の「IN_PROGRESS・worktree 実装中」記述はこの深夜版で上書き）
 - Keita 確認待ち（残・BLOCKED / ゲート）: T-E (c)（日次自動生成の方式 案1/案2 選択）、T-F（root cron での claude 実行方式 案A/B/C 選択＝認証移行が絡むので要確認）、T-H（Production 公開可否＝意図的保留）。T-C の承認ゲートは解消済。T-B の選別ゲートも通過済。**T-D の「プロンプトのみ vs 踏み込む」ゲートは 2026-05-28 に「踏み込む（タグ統合UX＋統制語彙）」で確定・解除済**（残る T-D 内の Keita 確認は D1 のクローズド/オープン方針・D4 の UX 方向・D3 物理バックフィル承認の 3 点で、いずれも該当サブタスク着手時に確認＝T-D 全体は着手 OK）。
 - T-H（新規・2026-05-28）: Logic Android Production 公開を Keita 判断で保留。技術的には即実行可（承認ゲート撤去済）だが、リリースノート整備・T-G スモーク復旧・T-B テーマ反映を待って一発公開する方針。内部テスト track は自動配信継続中。
 - T-B スコープ確定（2026-05-28）: 旧「フェルミ/AI生成テーマ」解釈は破棄。対象は外観設定の配色テーマ（theme.ts MODES）に確定。designer 候補提案 → Keita 選別 → dev-logic 実装の3段フローのうち、候補提案・選別まで完了し実装フェーズへ。「AIっぽさ除去」= 量産っぽいパレットを垢抜けた配色にする方向。
@@ -787,18 +803,31 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
 - ローカル git 残務: fix ブランチに docs ローカル変更が残るため main 切替が保留。後で stash→main 整理。
 
 ### 2026-05-28 の進捗
-- ⚠⚠ リスク（2026-05-28 夕・最重要）: logic の working tree に **未コミットが大量に溜まっている**（main ブランチ直上に modified 16 + untracked 7 = 計22ファイル、TASK_TRACKER.md 自身除く）。commit/push されていない。内訳:
+
+#### 深夜 自律作業 完了（2026-05-28 深夜・確定事実）
+- ✅ 全作業を **wip/20260528-inprogress ブランチに 6 コミット savepoint 済**（push/デプロイ/マージは一切なし）。旧「未コミット22ファイルが main 直上に混在」リスクは解消（ブランチ退避＋コミット分割でバックアップ済）。
+- ✅ T-A: 実装＋単体テスト11＋ブラウザ実機3シナリオ 全PASS → REVIEW（push 承認待ち）。
+- ✅ T-B: 3種実装済、mono(墨白) を free→premium に修正（無料は light/dark のみ）、eslint . 緑 → REVIEW（push 承認待ち・見た目実機確認は任意で残）。
+- ✅ T-D（D1-D3）: 完全グリーン（tsc=0 / vitest 324pass / eslint . 0 error）。D4 は自動主体に縮小・undo を実装に内包 → REVIEW（backend なので手動デプロイ承認待ち）。
+- ✅ T-G: playwright config が 5/25・5/27 両 spec 計20件を拾うのを確認・空振り解消 → REVIEW（night-patrol 実走の最終確認は次回夜間）。
+- ✅ T-N/T-O/T-P: ジャーナル UI 微調整セット、実装＋検証＋コミット完了（tsc/vitest/build 緑） → REVIEW（push＋実機タッチ感確認待ち）。
+- ✅ T-M: content-creator が構成案＋サンプル441ドラフト作成（`docs/COURSE_STAMINA_DRAFT_20260528.md`）、logic-coach 監査 4.3/5「承認に進めてよい品質」 → サンプル承認待ち（本展開は Keita ゴーサイン後）。量産前修正2点(C-1/C-3)・443申し送り(DRAMMA≠Sonnentag4体験)・Keita判断2点(S-1/S-2)・444子育ては本文化時 logic-coach 再レビュー必須。
+- ✅ T-Q: 既存ブランチ feat/journal-image-upload-progress が丸ごと実装済と判明。今夜は深掘り検証せず（wip と journal.css が競合するため）→ Keita マージ承認待ち。
+- ⚠ ゴミ worktree（破壊的操作なので Keita 承認待ち事項として記録）: ローカルに `.claude/worktrees/agent-*` が **5個** 溜まっていて、`eslint .` を素で回すと **false error 2件** が出る（CI はクリーンチェックアウトなので影響なし）。回避策＝`eslint . --ignore-pattern '.claude/**'`。掃除（worktree 削除）は破壊的操作のため Keita 承認待ち。
+
+#### （旧）夕方時点のリスク記録 — 上記 6 コミット savepoint で解消済
+- ⚠⚠ リスク（2026-05-28 夕・※深夜の wip ブランチ commit で解消済）: logic の working tree に **未コミットが大量に溜まっている**（main ブランチ直上に modified 16 + untracked 7 = 計22ファイル、TASK_TRACKER.md 自身除く）。commit/push されていない。内訳:
   - T-A 関連: `src/screens/dailyFermiState.ts`・`DailyFermiScreen.tsx`・`HomeScreenV3.tsx`、新規テスト `src/__tests__/dailyFermiState.test.ts`
   - T-B 関連: `src/theme.ts`・`src/styles/tokens.css`・`tokens-m3.css`・`src/screens/AppearanceSettingsScreen.tsx`、新規 `docs/THEME_PALETTE_CANDIDATES.md`・swatches 画像2点
   - T-D（D2+D3）関連: `server/routes/journal.ts`・`src/components/journal/journalApi.ts`・`JournalDetailSheet.tsx`・`journal.css`・`src/i18n.ts`、新規 `src/components/journal/tagConsolidation.ts`・`tagVocabulary.ts`、新規テスト `src/__tests__/tagConsolidation.test.ts`
   - T-G 関連: `playwright.render.config.ts`・`playwright.smoke.config.ts`
   - リスク内容: (1) 複数タスク（T-A/T-B/T-D/T-G）の変更が main 直上に**混在**し、タスク単位の切り分け・revert が困難化。(2) 22ファイル分の作業が未バックアップ（commit されていない＝ローカル消失リスク）。(3) どの変更がどこまで検証済みか追えない（特に T-D D2+D3 は検証が途切れている＝下記）。(4) 別エージェントが同ファイルを触ると衝突。
   - 推奨アクション（task-manager 提言・実行は Keita 判断/林）: タスク単位でブランチを切って commit 退避（少なくともローカル消失を防ぐ）。push 可否は Keita 承認。検証（tsc/eslint `.`/vitest）を通してから commit するのが筋だが、まず作業退避を優先する判断もあり。
-- D2+D3（動的タグ自動統合）の検証状態: dev-logic がローカル実装を進めた（`tagConsolidation.ts` 新規・`journal.ts` プロンプト改修・`journalApi.ts`・`tagConsolidation.test.ts`）が、**最終検証（tsc / eslint `.` / vitest）が完了報告前に途切れた**。ステータスは「実装ほぼ完了・検証確認中」として扱う（DONE でも単純 IN_PROGRESS でもなく、検証ペンディング）。完了報告 ＝ tsc 0 / eslint `.` 0 / vitest 緑 ＋ 本番 backend デプロイ後 probe を確認してから REVIEW→DONE 判定。
+- T-D（D1-D3）✅ REVIEW: dev-logic 実装（`tagConsolidation.ts` 新規・`journal.ts` プロンプト改修・`journalApi.ts`・`tagConsolidation.test.ts`）→ **完全グリーン（tsc=0 / vitest 324pass / eslint . 0 error）**。D4 は自動主体に縮小・undo を実装に内包。残＝Keita のマージ＋手動 deploy-production.yml 後の本番 probe で DONE 判定。
 - T-C DONE: 本番 Render backend 再デプロイ（deploy-production.yml run 26571568416 success）→ `POST /api/generate-course` 404→200 復活、正常系検証済（title/description/lessonIds・HTTP200）。コード修正不要（デプロイ漏れのみ）。migration 033 本番適用済確認。→ 連鎖で TC-2 を REVIEW→DONE 判定。
-- T-A IN_PROGRESS: dev-logic がローカル修正中（未push）。
-- T-G IN_PROGRESS: dev-logic が T-A と同バッチで修正中（未push）。
-- T-B IN_PROGRESS: designer 候補6案提案済（docs/THEME_PALETTE_CANDIDATES.md）→ Keita 選定（1古紙/2深緑/4墨白）→ dev-logic が worktree で実装中（未push）。
+- T-A ✅ REVIEW: 実装＋単体テスト11＋ブラウザ実機3シナリオ全PASS。wip コミット済（push 承認待ち）。
+- T-G ✅ REVIEW: playwright config が両 spec 計20件を拾い空振り解消。wip コミット済（night-patrol 実走の最終確認は次回夜間）。
+- T-B ✅ REVIEW: 3種実装済、mono を free→premium 修正、eslint . 緑。wip コミット済（push 承認待ち・見た目実機確認は任意で残）。
 - T-D スコープ確定（Keita 2026-05-28）: 「プロンプトのみ」案を退け **タグ統合UX＋統制語彙まで踏み込む** で確定。TODO（方針確認待ち）→ IN_PROGRESS に格上げし D1〜D5 に再分解。D1（統制語彙定義・content-creator/logic-coach）が起点、D2/D3（dev-logic）・D4（designer→dev-logic）が D1 依存、D5 が回帰。残る Keita 確認は D1 クローズド/オープン方針・D4 UX 方向・D3 物理バックフィル承認の 3 点のみ（着手は OK）。
 - T-E (a) DONE: 5/26-28 Daily Note キャッチアップ作成（林）。(b) 一部、(c)(d) は T-F 依存で未。
 - T-H 新規記録: Logic Android Production 公開＝Keita 判断で保留（リリースノート整備・T-G スモーク復旧・T-B テーマ反映を待って一発公開）。
@@ -806,23 +835,23 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
 
 ## 次アクション
 
-### バッチ 2026-05-28 夜 新規要望（T-M〜T-Q・登録直後）
+### バッチ 2026-05-28 夜 新規要望（T-M〜T-Q・深夜作業 完了後）
 
-今夜の自律実行プラン（林判断・push/デプロイなし・ローカルのみ）:
-- T-N/T-O/T-P（journal UI 微調整・セット1バッチ）: **今夜 dev-logic に wip/20260528-inprogress ブランチ上で実装させる**。T-D が既に同ファイル（JournalDetailSheet.tsx / journal.css）を変更済みなので、同一 dev-logic が T-D の続きとして一気通貫で実装＝コンフリクト回避。ローカル commit（savepoint）まで、push なし。
-- T-M（体力コース）: **今夜 content-creator に「コース構成案＋サンプル1レッスン」をドラフトさせる**。ship しない・全レッスン量産しない（サンプル承認フロー厳守）。logic-coach がサンプルの内容正確性を軽く監査。成果は朝 Keita に提示し承認待ち。
-- T-Q（画像アップロード）: **既存ブランチ feat/journal-image-upload-progress の検証に留める**（rebase/コンフリクト確認・tsc/eslint/vitest・i18n キー存在確認）。マージは Keita 承認待ち。新規実装はしない（既存実装と二重になる）。
+✅ 今夜の自律実行 完了（push/デプロイ/マージなし・wip/20260528-inprogress に 6 コミット savepoint）:
+- T-N/T-O/T-P（journal UI 微調整セット）: 実装＋検証＋コミット完了（tsc/vitest/build 緑）→ REVIEW。
+- T-M（体力コース）: 構成案＋サンプル441ドラフト作成（`docs/COURSE_STAMINA_DRAFT_20260528.md`）、logic-coach 監査 4.3/5「承認に進めてよい品質」→ サンプル承認待ち。
+- T-Q（画像アップロード）: 既存ブランチ feat/journal-image-upload-progress が丸ごと実装済と判明。wip と journal.css が競合するため今夜は深掘り検証せず → Keita マージ承認待ち。
 
-朝 Keita に確認すべきこと:
-- T-M: コース title 案（Doing 形・選別）／サブテーマの粒度（1サブテーマ=1 or 複数レッスン）／トーン（精神論 vs 認知科学・行動科学ベース）／配置カテゴリ（peakPerformance 隣接 or 新カテゴリ）／サンプル承認 → 本展開ゴーサイン。
-- T-Q: 既存ブランチのマージ承認（本番反映＝Android 自動配信）。検証結果（コンフリクト/テスト/i18n キー）を添えて提示。
-- T-N/T-O/T-P: 実装完了報告を朝に提示し DoD 検証 → REVIEW→DONE 判定。push 承認は Keita。
+朝 Keita に確認すべきこと（このバッチ）:
+- 全 REVIEW タスクの **push / マージ承認**（T-A/T-B/T-N/T-O/T-P）と **手動デプロイ承認**（T-D・backend）。
+- T-M サンプル承認 → 本展開ゴーサイン。あわせて Keita 判断2点: S-1（「遊ぶ体力」443 を回復総論化するか）／ S-2（440導入と442仕事の重複回避）。コース title 案（Doing 形）／配置カテゴリ（peakPerformance 隣接 or 新カテゴリ）も。
+- T-Q: 既存ブランチのマージ承認（本番反映＝Android 自動配信）。マージ前に wip との journal.css 競合の解消順序を決める。
+- ⚠ ゴミ worktree 掃除の承認: `.claude/worktrees/agent-*` 5個（eslint . で false error 2件の原因）。削除は破壊的操作のため Keita 承認待ち。
 
 抜けもれ・注意（task-manager 提言）:
-- T-N/T-O/T-P は T-D と同ファイル＝**必ず同一 dev-logic が同一ブランチで連続実装**。別エージェント/別 worktree で並行させない（衝突確定）。
-- ⚠未コミット 22 ファイル問題（既存リスク・下記「2026-05-28 の進捗」参照）: wip/20260528-inprogress に savepoint commit 済とのことなので、T-N/T-O/T-P もこのブランチに積む。タスク単位で commit を分けると後の切り分けが楽。
-- T-M は新規"生成"なのでサンプル承認フロー（即展開しない）。T-N〜T-P は既存 UI の改善＝correctness/UX 修正だが新機能要素（スワイプ）もあるので実装はするがマージは Keita 承認。
-- T-Q は新規 ID を起こしたが実体は既存ブランチ＝REVIEW スタート。二重実装しないこと。
+- T-M 量産前修正2点（C-1 運動効果量を peakPerformance412 と精度統一／C-3 ウルトラディアン周期記述の流れ）と、443執筆時の DRAMMA≠Sonnentag4体験 混同回避、444子育て本文化時の logic-coach 再レビュー必須は本展開時に必ず反映。
+- T-Q と wip ブランチは journal.css が競合する＝**マージ順序・コンフリクト解消を慎重に**（wip の T-D/T-N/T-O/T-P の作業を壊さないこと）。
+- 全 REVIEW タスクは push/マージ/デプロイが Keita 専権なので、承認が出るまで DONE 判定しない。
 
 ### バッチ 2026-05-28 新規要望4件（T-I〜T-L・登録直後）
 - T-I/T-J（コース進捗・レッスン完了回数）は **セットで設計** する。同じ progress 永続化レイヤー＋同じ「完了」定義を触るので、別々に実装すると二重集計・データ不整合になる。同一 dev-logic が一気通貫で。まず Keita にスコープ論点（特に「完了」の定義 ＝ done か count か、Supabase 集計まで広げるか、T-J でデータモデル拡張＝migration が要るか）を確認してから着手。
@@ -830,20 +859,20 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
 - T-L（フェルミ答えを末尾へ）は軽いが **T-A と同ファイル**（DailyFermiScreen.tsx / fermiData.ts）。T-A が push/マージされてから着手、または同一 dev-logic が T-A 完了後に続ける。並行 worktree は衝突。
 - 4件とも現状 TODO・スコープ要確認。重さ目安: T-L=軽、T-I/T-K=中、T-J=中〜重（migration の可能性）。
 
-### バッチ 2026-05-28（最優先・2026-05-28 時点）
-1. T-A（IN_PROGRESS）: dev-logic の修正完了・push 待ち。完了報告を受けたら DoD 検証（Home/Daily 一致・日付跨ぎの決定性・単体テスト）→ REVIEW→DONE。P0 correctness。
+### バッチ 2026-05-28（最優先・2026-05-28 深夜時点）
+1. ✅ T-A（REVIEW）: 実装＋単体テスト11＋ブラウザ実機3シナリオ全PASS、wip コミット済。残＝**push 承認（Keita）→ マージで DONE**。P0 correctness。
 2. ✅ T-C（DONE）: 本番再デプロイで 404→200 復活・正常系検証済。連鎖で TC-2 も DONE。残は内部ビルド #234 配信後の Android 実機ハッピーパスを Keita 端末で確認のみ。
-3. T-B（IN_PROGRESS）: Keita 選定3種（1古紙/2深緑/4墨白）を dev-logic が worktree で実装中。完了報告を受けたら DoD 検証（preview↔tokens.css 一致・tier・i18n ja/en・コントラスト・Android 実機・既存5モード非回帰）→ REVIEW→DONE。
-4. T-D（IN_PROGRESS・スコープ確定）: Keita が「踏み込む（タグ統合UX＋統制語彙）」を選択（2026-05-28）→ D1〜D5 に分解。次は **D1（統制語彙の定義）を content-creator/logic-coach にアサイン**＝全サブタスクの起点。D1 で ja/en canonical 語彙セット＋synonyms を tagVocabulary.ts に定義し「クローズド/オープン」方針を Keita 確認。D1 確定後 D2（プロンプト語彙制約・dev-logic）/ D3（既存タグの canonical 名寄せ・dev-logic）/ D4（タグ統合 UX・designer 設計→dev-logic）を並行展開。D2 は backend デプロイ依存（手動 deploy-production.yml 必須）。
+3. ✅ T-B（REVIEW）: 3種実装済、mono を free→premium 修正、eslint . 緑、wip コミット済。残＝**push 承認**＋テーマ見た目の実機確認（任意）→ DONE。
+4. ✅ T-D（REVIEW・D1-D3 完全グリーン）: tsc=0 / vitest 324pass / eslint . 0 error。D4 は自動主体に縮小・undo を実装に内包。残＝**Keita のマージ＋手動 deploy-production.yml → 本番ジャーナルで実タグ生成 probe で DONE**（backend は手動デプロイ必須）。
 5. T-E: (a) DONE。(b) 20-Projects/logic 状況最新化＋TASK_TRACKER ミラー配置を仕上げる。(c)(d) は **T-F 解決が前提**（claude を root cron で回せないと動かない）。
 6. T-F（TODO・要確認）: ceo にアサイン。root cron で claude CLI を非対話実行する方式（案A 実行ユーザー変更 / 案B 正規許可フラグ / 案C 環境緩和）を検証し Keita 確認。OAuth クレデンシャル移行が絡むので慎重に。P1 上位（自動化の根っこ＋T-E(c) 前提）。
-7. T-G（IN_PROGRESS）: dev-logic の修正完了・push 待ち。完了報告を受けたら night-patrol 手動キックで inspection 正常 severity・pass 件数復活を検証 → REVIEW→DONE。
+7. ✅ T-G（REVIEW）: playwright config が 5/25・5/27 両 spec 計20件を拾い空振り解消、wip コミット済。残＝**次回夜間 03:00 cron の night-patrol 実走で inspection 正常 severity・pass 件数復活を確認 → DONE**。
 8. T-H（BLOCKED・保留）: Keita 判断待ち。公開前提（リリースノート整備・T-G 復旧・T-B 反映）を揃える。準備が整ったら Keita に公開可否を再提起。リリースノート担当のアサインが要る。
 
 ### バッチ 2026-05-27（旧・継続）
 1. バッチ2（T7・T2・T3）完了待ち → DoD 検証
 2. バッチ3: T5（おすすめレッスン遷移＋AI履歴。履歴の保存先はジャーナル既存方式に合わせる）
 3. 全ローカル実装完了後、tsc/eslint 再確認 → Keita に push 承認を依頼
-4. 注意: `eslint .` で `.claude/worktrees/agent-*`（別エージェント残骸）由来の 2 errors。実ソースは 0。CI は worktree 非checkout で緑見込みだが、worktree 残骸の掃除は別途検討
+4. 注意: `eslint .` で `.claude/worktrees/agent-*`（別エージェント残骸・現在 **5個**）由来の **2 errors**（false）。実ソースは 0。CI は worktree 非 checkout で緑。回避＝`eslint . --ignore-pattern '.claude/**'`。**worktree 掃除（削除）は破壊的操作のため Keita 承認待ち事項**。
 
-最終更新: 2026-05-28 夜（Keita 就寝前 新規要望 T-M〜T-Q 登録。T-Q は既存ブランチ feat/journal-image-upload-progress=commit acdc59e 検出により REVIEW スタート＝新規実装不要。T-N/T-O/T-P は T-D と同ファイルにつき同一 dev-logic が wip ブランチで連続実装する方針を明記。T-M は今夜は構成案＋サンプル1レッスンのドラフトのみ・ship しない）
+最終更新: 2026-05-28 深夜（自律作業完了の確定事実を反映。T-A=REVIEW（単体11＋実機3シナリオ全PASS）／T-B=REVIEW（mono を free→premium 修正・eslint . 緑）／T-D D1-D3=REVIEW（tsc0/vitest324/eslint.0 完全グリーン・D4 自動主体に縮小・undo 内包・手動デプロイ承認待ち）／T-G=REVIEW（両 spec 計20件取得で空振り解消）／T-N/T-O/T-P=REVIEW（journal UI セット実装＋検証＋コミット）／T-M=サンプル承認待ち（441ドラフト＋logic-coach 4.3/5）／T-Q=REVIEW（既存ブランチ丸ごと実装済・深掘り検証は wip 競合のため見送り・マージ承認待ち）。全作業は wip/20260528-inprogress に 6 コミット savepoint・push/デプロイ/マージなし。ゴミ worktree 5個＝掃除 Keita 承認待ち）
