@@ -342,10 +342,10 @@ task-manager エージェントが管理するタスク台帳の正本。
 
 | ID | タイトル | 優先度 | ステータス | 担当案 | 関連 |
 |----|----------|--------|-----------|--------|------|
-| T-I | コース単位の進捗を見れるようにする | P1 | TODO（スコープ要確認） | dev-logic（主）＋ designer（進捗UI軽量） | 既存 progressStore / roadmapStore |
-| T-J | 完了バッジのチェックマークの色を変更する（スコープ縮小確定） | P2 | TODO（スコープ確定済・T-M 完了後着手） | dev-logic | 当初「完了回数の可視化」だったが Keita 確定で色変更のみに縮小。軽量・migration 不要 |
-| T-K | ジャーナルのグラフ tap で詳細展開 | P2 | TODO（スコープ要確認） | dev-logic（主）＋ designer（詳細表示UX） | T-D と同じ journal 周辺。コンフリクト注意 |
-| T-L | Daily Fermi の答えを解説の最後に移す | P2 | TODO | dev-logic | T-A と同じ DailyFermiScreen 周辺。コンフリクト注意 |
+| T-I | コース単位の進捗を見れるようにする | P1 | DONE（2026-05-29 main マージ＋push 本番反映。スコープ=コースカードに進捗バー＋%。courseProgress.ts 新規/RoadmapScreenV3/i18n。tsc0/eslint0/vitest8。Android 自動配信で反映） | dev-logic | 既存 progressStore / roadmapStore |
+| T-J | 完了バッジのチェックマークの色を変更する（スコープ縮小確定） | P2 | DONE（2026-05-29 main マージ＋push 本番反映。テーマアクセント色 --accent 追従に、#fff→--accent-fg。tsc0/eslint0/vitest9。Android 自動配信で反映） | dev-logic | テーマ追従（T-S/T-T と一貫）。CompletionBadge.tsx/PersonalCourseScreen |
+| T-K | ジャーナルのグラフ tap で詳細展開 | P2 | DONE（2026-05-29 main マージ＋push 本番反映。気分推移グラフ tap→当日要約をインライン展開。MoodSparkline/journal.css/i18n。tsc0/eslint0。Android 自動配信で反映） | dev-logic | 対象=気分推移グラフのみ（タグ頻度/ストリークは対象外、T-D 競合回避） |
+| T-L | Daily Fermi の答えを解説の最後に移す | P2 | DONE（2026-05-29 main マージ＋push＋Render deploy 実行で本番反映。答えは AI フィードバック本文内→プロンプトで末尾 ## 答え に。server/routes/fermi.ts。tsc0/eslint0/vitest324/PW9。サーバ側のため deploy-production.yml 実行） | dev-logic | 答えは static でなく AI 生成本文内だった |
 
 ### T-I — コース単位の進捗を見れるようにする　[P1 / TODO（スコープ要確認）]
 
@@ -459,7 +459,7 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
 
 | ID | タイトル | 優先度 | ステータス | 担当案 | 関連 |
 |----|----------|--------|-----------|--------|------|
-| T-M | 「体力をつける」コースを作る（全5レッスン 440-444 フル本文制作） | P1 | IN_PROGRESS（サンプル承認＋本展開ゴーサイン取得済。content-creator が全5レッスン ja/en フル本文制作に着手＝出力先 docs/COURSE_STAMINA_FULL_20260529.md。logic-coach 監査 C-1/C-3/C-4/S-1/S-2/D-1 反映指示済） | content-creator（本文制作中）→ dev-logic（コード実装）→ logic-coach（444 再監査ゲート） | 過去のコンテンツ監査キャンペーン（project_logic_content_audit_20260525）・サンプル承認フロー |
+| T-M | 「体力をつける」コースを作る（全5レッスン 440-444 フル本文制作） | P1 | DONE（2026-05-29 本番反映。lesson 440-444 ja/en 実装済＋logic-coach 再監査ゲート「条件付き pass(致命0/高0)」＋指摘の中2件(443図/442強化ループ)を即修正して main マージ＋push。tsc0/eslint0/vitest329。Android 自動配信） | content-creator→dev-logic→logic-coach | 残: 低-1 コース title 確定（Keita 判断）/ 低-2 stamina 専用サムネ（designer 別トラック） |
 | T-N | ジャーナル入力画面を下スワイプで閉じる（swipe-down to dismiss） | P1 | DONE（2026-05-29 main マージ＋Android deploy 成功で本番反映。tsc/vitest/build 緑。モバイル実機でのタッチ感確認のみ任意で残） | dev-logic | T-D と同じ JournalDetailSheet.tsx / journal.css |
 | T-O | ジャーナルの朝/夜（phase）選択状態を明示（非選択側を opacity で明示） | P1 | DONE（2026-05-29 main マージ＋Android deploy 成功で本番反映。モバイル実機での視認性確認のみ任意で残） | dev-logic | T-N/T-P と同ファイル・セット1バッチ。journal phase tab は絵文字 OK 例外箇所 |
 | T-P | ジャーナルの×ボタンを拡大＋左上「編集」ボタンと距離を離す（誤タップ防止） | P1 | DONE（2026-05-29 main マージ＋Android deploy 成功で本番反映。モバイル実機での押しやすさ確認のみ任意で残） | dev-logic | T-N/T-O と同ファイル・セット1バッチ |
