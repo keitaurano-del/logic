@@ -16,21 +16,23 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
 
 | ID | Keita ラベル | タイトル | 優先度 | ステータス | 担当案 | 既存タスクとの関係 |
 |----|------------|----------|--------|-----------|--------|------------------|
-| AM-K | T-K | UI 全体の「AIっぽさ」をなくす刷新方針の策定（提案ドキュメント） | P1 | TODO（既存 T-V エピックに統合・方針ドキュメントとして拡張） | designer（主導）＋林 | **T-V（テーマ再設計エピック「まだAI感がある」）の上位＝UI 全体の刷新方針**。T-V を内包する形 |
+| AM-K | T-K | UI 全体の「AIっぽさ」をなくす刷新方針の策定（提案ドキュメント） | P1 | IN_PROGRESS（2026-05-29。designer が方針ドキュメント `docs/UI_RENEWAL_DIRECTION_20260529.md` を作成中。配色パート＝T-V は実装 DONE。UI 全体方針は提案フェーズ） | designer（主導）＋林 | **T-V（テーマ再設計エピック「まだAI感がある」）の上位＝UI 全体の刷新方針**。T-V を内包する形。重複の T-AA（夕方バッチ）も同一＝AM-K に集約 |
 | AM-L | T-L | グラデーション除去（カスタムコース生成カード／今日の1問カード） | P1 | DONE（2026-05-29。Daily Fermi カード〔HomeScreenV3:184〕の --brand-grad-h グラデ廃止→フラット var(--accent)＋青グロー boxShadow を accent追従に。カスタムコース生成カード〔RoadmapScreenV3:697「AIで自分専用コースを作る」〕の linear-gradient 廃止→フラット var(--accent)＋内部アイコンを accent-fg 追従に。両方テーマ追従） | dev-logic | T-S／T-T 根本原因A と統合実装 |
 | AM-M | T-M | 「・今日の一問」の先頭「・」除去＋表記ゆれ統一 | P2 | DONE（2026-05-29。表記ゆれを「今日の1問」に統一〔pricing.heroSub/featFermi・savedItems.filterFermi/emptyFermi/typeFermi の ja を 今日の一問→今日の1問。en は変更なし〕。先頭中黒「・」は現ソースに literal/JSX前置/CSS ::before いずれも存在せず＝grep 全量確認で付与元なし。home カード先頭の装飾ドットは中黒文字でなく styled div の小円なので対象外として維持） | dev-logic | 表記は home 主導線の「今日の1問」に寄せた |
-| AM-N | T-N | 法務記載の見直し（利用規約／プライバシー／特商法） | P1 | BLOCKED（法的確定値は Keita 確認案件・点検は自律可） | content-creator＋林 | 新規。特商法は課金アプリ必須記載 |
-| AM-O | T-O | 料金プランの Google Play 課金実装（購入導線の結線） | P1 | TODO（SKU Active 確認は Keita 作業に切出し） | dev-logic | project_logic_play_billing_gaps の #4 SKU 確認が残課題。購入フロー本体は実装済 |
-| AM-P | T-P | フェルミランキング累計スコアのダミーを毎日ランダム増分 | P2 | TODO | dev-logic | 新規。dummy は server/routes/fermi.ts:545-629 の静的配列 |
-| AM-Q | T-Q | トレーニング検索の改修（右上虫眼鏡＋AI検索） | P-TBD | TODO（**既存 T-X と完全重複**・統合管理） | designer＋dev-logic | **T-X（トレーニングのAI検索）と同一依頼**。AM-Q は T-X に寄せる（重複起票しない） |
-| AM-R | T-R | 既存登録ユーザ（管理者=Keita）のジャーナルタグ見直し | P1 | BLOCKED（実データ書き換え＝Keita 承認案件） | dev-logic＋林 | T-D の tagConsolidation を既存データへ適用。非可逆 |
+| AM-N | T-N | 法務記載の見直し（利用規約／プライバシー／特商法） | P1 | BLOCKED（点検 DONE／反映は確定値待ち。content-creator が点検完了＝`docs/LEGAL_REVIEW_20260529.md` 作成済。ソース未編集。最重要 C-1＝特商法ページの価格〔旧¥390/¥760 2段階〕が実装〔¥350/¥2450 単一プラン〕と不一致。確定値12点が Keita 確認待ち） | content-creator＋林 | 新規。特商法は課金アプリ必須記載。AM-O の課金実態と整合必須 |
+| AM-O | T-O | 料金プランの Google Play 課金実装（購入導線の結線） | P1 | BLOCKED（コード DONE／Keita SKU 待ち。PricingScreen が startCheckout(targetPlanId) に結線済＝購入導線のコード完成。残は Keita の Play Console SKU 登録〔logic_paid_monthly/yearly を Active〕＋実機テストのみ） | dev-logic（実装済）＋Keita（SKU） | project_logic_play_billing_gaps の #4 SKU 確認が残課題。購入フロー本体は実装済 |
+| AM-P | T-P | フェルミランキング累計スコアのダミーを毎日ランダム増分 | P2 | DONE（2026-05-29 commit 1c18ebb。固定スコア廃止→「期間トップ実スコア×日次シード倍率」で動的化。実データ isMock:false は不変。main push＋backend を deploy-production.yml で本番デプロイ完了〔run 26629582944 success〕。ローカル smoke で週/月 mock スコアが降順・日替わり検証済） | dev-logic | server/routes/fermi.ts。リクエスト時算出方式＝cron 不要で運用が軽い |
+| AM-Q | T-Q | トレーニング検索の改修（右上虫眼鏡＋AI検索） | P1 | DONE（2026-05-29 commit 6a3c985〔別アクター実装〕。RoadmapScreenV3 右上虫眼鏡＋検索オーバーレイ、server/routes/search.ts〔POST /api/search, haiku-4-5, rate-limit 20/min〕、src/aiSearch.ts、i18n ja/en、vitest 13。backend は deploy-production.yml で本番反映済〔run 26629582944 success〕＝T-X と両方充足） | designer＋dev-logic | **T-X（トレーニングのAI検索）と同一依頼＝T-X も DONE**。重複起票しない |
+| AM-R | T-R | 既存登録ユーザ（管理者=Keita）のジャーナルタグ見直し | P1 | BLOCKED（プレビュー DONE／書き換えは承認待ち。林が read-only census 済＝対象ユーザー e5631320…〔管理者想定〕が 60使用/52種類の乱立。統合プレビュー作成済〔会話で Keita に提示〕。DB 書き換えは非可逆＝Keita 承認待ち） | dev-logic＋林 | T-D の tagConsolidation を既存データへ適用。非可逆。夕方バッチ T-AF と同一＝AM-R に集約 |
 
 全体運用メモ（各タスクに反映）:
-- デプロイ運用: 「終わったやつから Internal で配信」で Keita 承認済み。main push で android-deploy.yml が internal track へ自動配信。**ただし backend 変更（AM-O 検証・AM-P の cron/API・AM-Q の検索 API・AM-R のデータ）は本番反映に手動 deploy-production.yml が必須**（project_logic_render_auto_deploy）。アプリは本番 backend を叩くので、backend をデプロイしないと internal ビルドでも新挙動が出ない。
-- Keita 確認事項（席外し中・保留）: AM-N の法的記載値、AM-O の Play Console SKU Active 登録、AM-R の実データ書き換え承認。林は実装を進められる所まで進め、帰還時に確認を取る形でブロッカー化する。
+- デプロイ運用: 「終わったやつから Internal で配信」で Keita 承認済み。main push で android-deploy.yml が internal track へ自動配信。**backend 変更（AM-P のランキング API・AM-Q/T-X の検索 API）は手動 deploy-production.yml で本番反映済（run 26629582944 = success）。** project_logic_render_auto_deploy（main push では Render web は自動反映されない）。
+- Keita 確認事項（席外し中・保留＝帰還時の確認4点）: (1) AM-N の法的確定値12点、(2) AM-O の Play Console SKU Active 登録、(3) AM-R の実データ書き換え承認、(4) T-U の light/dark accent ボタン AA 割れ（3.08）の対応方針。林は実装を進められる所まで進め、これら4点でブロッカー化している。
 - 関連 memory: project_logic_play_billing_gaps（AM-O）、tagConsolidation.ts＝T-D 実装（AM-R）、feedback_app_copy_neutral（全 UI 文言）、feedback_logic_title_doing（AM-M/AM-Q の title）、project_logic_mobile_only、feedback_logic_auth_magiclink_only。
 
-### AM-K — UI 全体の「AIっぽさ」をなくす刷新方針の策定　[P1 / TODO（T-V に統合・拡張）]
+### AM-K — UI 全体の「AIっぽさ」をなくす刷新方針の策定　[P1 / IN_PROGRESS（designer が方針ドキュメント作成中）]
+
+> 状態（2026-05-29）: designer が刷新方針ドキュメント `docs/UI_RENEWAL_DIRECTION_20260529.md` を作成中。配色パート（T-V＝新規3テーマ）は実装 DONE 済。UI 全体方針（レイアウト・タイポ・装飾過多）は提案フェーズ。完成後に会話本文へ展開し Keita 選定待ち。夕方バッチの T-AA も同一依頼＝本タスクに集約（T-AA は CANCELLED 注記）。
 
 - 依頼原文（Keita 2026-05-29）: 「全体的に UI の AI っぽさをなくしたいので刷新方針を考えてほしい」。
 - スコープ: 配色テーマだけでなく **UI 全体（レイアウト・タイポ・余白・コンポーネント形状・グラデ/グロー多用・絵文字感・量産テンプレ感）の "AI っぽさ" を診断 → 刷新方針を提案ドキュメント化する**親タスク。成果物は方針/提案ドキュメント（designer 主導＋林）。**具体実装は別タスクへ切り出す前提**（このタスク自体はコードを生まない）。
@@ -54,7 +56,9 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
   - i18n: 方針ドキュメントは社内成果物（ja でよい）。実装で UI 文言が変わる場合は別タスクで ja/en 両対応。
   - 両OS: モバイル専用。刷新方針はモバイル体験基準で（project_logic_mobile_only）。
 
-### AM-L — グラデーション除去（カスタムコース生成カード／今日の1問カード）　[P1 / TODO]
+### AM-L — グラデーション除去（カスタムコース生成カード／今日の1問カード）　[P1 / DONE]
+
+> 状態（2026-05-29 commit d0558cb）: Daily Fermi カード〔HomeScreenV3〕の --brand-grad-h グラデ廃止→フラット var(--accent)＋青グロー boxShadow を accent 追従に。カスタムコース生成カード〔RoadmapScreenV3「AIで自分専用コースを作る」〕の linear-gradient 廃止→フラット var(--accent)。両方テーマ追従。T-S／T-T 根本原因A と統合実装。Android internal 自動配信中。夕方バッチ T-Z と同一＝本タスクに集約。tsc0/eslint0/vitest353/build OK。
 
 - 依頼原文（Keita 2026-05-29）: 「『AI で自分専用コースを作る』と今日の1問のカードは色のグラデーションをなくして」。
 - スコープ: 対象2カードの背景グラデーションをフラット化する。
@@ -79,7 +83,9 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
   - 永続化: 表示のみで persist 影響なし。
   - 連動: AM-K（UI 全体の AI 感除去）の「過剰グラデ/グロー」の代表的具体例＝AM-L。AM-K の方針と整合させる。
 
-### AM-M — 「・今日の一問」先頭「・」除去＋表記ゆれ統一　[P2 / TODO]
+### AM-M — 「・今日の一問」先頭「・」除去＋表記ゆれ統一　[P2 / DONE]
+
+> 状態（2026-05-29 commit 698de42〔中黒/グラデ部分・別アクター先行〕＋ d0558cb〔表記統一〕）: 表記ゆれを「今日の1問」に統一（ja）。先頭中黒「・」＝今日の一問ラベルの装飾ドット div を除去。Android Internal 配信済。夕方バッチ T-Y（#3 中黒除去）と同一＝本タスクに集約。
 
 - 依頼原文（Keita 2026-05-29）: 「『・今日の一問』の『・』は消して」。
 - スコープ: 「今日の一問」の表示先頭に付いている中黒「・」を除去する。**i18n に literal な `・今日…` 文字列は無い**（grep 済み）＝中黒は **リスト項目マーカー（CSS `::before { content: '・' }` か JSX で前置 or `・` を連結している描画箇所）** で付与されている見込み。dev-logic が実 render を特定して除去する。
@@ -101,7 +107,9 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
   - 両OS: モバイル専用。Android 実機で表示確認。
   - 永続化: 表示文言のみで persist 影響なし。
 
-### AM-N — 法務記載の見直し（利用規約／プライバシー／特商法）　[P1 / BLOCKED（法的確定値は Keita 確認）]
+### AM-N — 法務記載の見直し（利用規約／プライバシー／特商法）　[P1 / BLOCKED（点検 DONE／反映は確定値待ち）]
+
+> 状態（2026-05-29）: content-creator が点検完了＝成果物 `docs/LEGAL_REVIEW_20260529.md` 作成済（実在確認済）。ソースは未編集。最重要 C-1＝特商法ページの価格が実装〔¥350/¥2450 単一プラン〕と不一致（旧¥390/¥760 2段階のまま）。確定値12点が Keita 確認待ち。AM-O の課金実態（SKU・価格）と整合させてから反映。
 
 - 依頼原文（Keita 2026-05-29）: 「利用規約とかプライバシーポリシーとか特定商取引法に基づく表記とかの記載を見直して」。
 - スコープ: アプリ内の **Terms / Privacy Policy / 特商法表記の現状を洗い出し、不足・不備・プレースホルダ・事実不整合を点検**する。特に **特定商取引法に基づく表記は課金アプリで必須記載項目**の充足を確認（販売事業者名・所在地・連絡先・販売価格・支払時期・支払方法・役務の提供時期・返金/解約条件・動作環境 等）。点検は林＋content-creator で自律的に進められるが、**法的に確定が要る記載値（事業者名・住所・連絡先・代表者等）は Keita 確認案件**＝確定できないため BLOCKED 扱いで明示。
@@ -125,7 +133,9 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
   - 両OS: モバイル専用。HTML は WebView 表示なので Android 実機でレイアウト崩れ・リンク導線確認。
   - 永続化: 静的ファイルで persist 概念なし。
 
-### AM-O — 料金プランの Google Play 課金実装（購入導線の結線）　[P1 / TODO]
+### AM-O — 料金プランの Google Play 課金実装（購入導線の結線）　[P1 / BLOCKED（コード DONE／Keita SKU 待ち）]
+
+> 状態（2026-05-29）: PricingScreen が既に startCheckout(targetPlanId) に結線済＝購入導線のコード完成。残は Keita の Play Console SKU 登録〔logic_paid_monthly / logic_paid_yearly を Active＋Production 価格設定〕＋実機テストのみ（project_logic_play_billing_gaps #4）。SKU が非 Active だと実機購入が起動できず実機ハッピーパス検証不可＝Keita ゲート。夕方バッチ T-AC と同一＝本タスクに集約。
 
 - 依頼原文（Keita 2026-05-29）: 「料金プランの Google Play での課金を実装して」。
 - スコープ: **料金プラン画面から Play Billing の購入フローへ結線**する。狙いは料金プラン画面 UI と購入導線（`startCheckout → purchaseProduct → verifyPurchase`）の結線。
@@ -151,7 +161,9 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
   - 永続化: 課金状態は Supabase `subscriptions`＋クライアント。restore で再取得できること。
   - 既存ギャップ #2 RTDN: JWT 検証未実装・GCP/Play Console 設定残（Keita 作業）。AM-O の直接スコープ外だが、課金を本格販売する前に project_logic_play_billing_gaps #2 の残作業も要対応（別途）。
 
-### AM-P — フェルミランキング累計スコアのダミーを毎日ランダム増分　[P2 / TODO]
+### AM-P — フェルミランキング累計スコアのダミーを毎日ランダム増分　[P2 / DONE]
+
+> 状態（2026-05-29 commit 1c18ebb）: 固定スコア（最大98）廃止→ダミー上位を「期間トップ実スコア×日次シード倍率」で算出。Keita 1強解消・毎日変動（同一日内は安定）。実データ isMock:false は不変。main push＋backend を deploy-production.yml で本番デプロイ完了（run 26629582944 = success 確認済）。ローカル smoke で週/月の mock スコアが降順・日替わりに出ることを検証済。リクエスト時算出方式＝cron 不要で運用が軽い（R-3 は cron 不要に変更可）。夕方バッチ T-AD と同一＝本タスクに集約。
 
 - 依頼原文（Keita 2026-05-29）: 「フェルミランキングの累計スコアの今あるダミーデータをランダムでいい感じにポイント付与して（毎日）。今管理者（Keita）がダントツ一位だから張り合いがない」。
 - 狙い: 「Keita が常に1位で張り合いがない」状態の解消＝**ダミー上位陣のスコアを毎日自然に増やしてリーダーボードに動きを出す**。
@@ -182,7 +194,9 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
   - 両OS: モバイル専用。Android 実機でランキング表示に動きが出るか（日跨ぎ確認）。
   - 倫理/表示の注意: ダミーと実ユーザが同じリーダーボードに並ぶ設計（既存仕様）。ダミーであることをユーザに誤認させる度合いが過度にならないか（既存仕様踏襲なら現状維持でよいが、増分で動的に見えると「実在ユーザ」感が増す点は留意）。
 
-### AM-Q — トレーニング検索の改修（右上虫眼鏡＋AI検索）　[P-TBD / TODO（既存 T-X と統合）]
+### AM-Q — トレーニング検索の改修（右上虫眼鏡＋AI検索）　[P1 / DONE（T-X と同一＝両方 DONE）]
+
+> 状態（2026-05-29 commit 6a3c985〔別アクター実装〕）: RoadmapScreenV3 右上の虫眼鏡から検索オーバーレイ。既存キーワード検索＋「AIで検索」のプロンプトベース意味検索。server/routes/search.ts（POST /api/search, haiku-4-5, rate-limit 20/min）、src/aiSearch.ts、i18n ja/en、vitest 13。backend は deploy-production.yml で本番反映済（run 26629582944 = success）。**虫眼鏡右上＋AI検索の両方を充足＝T-X も同時に DONE**。着手前スコープ確認3点は実装で解決済（対象=レッスン/コース両方、方式=Claude プロンプト選別、結果=意味検索）。
 
 - 依頼原文（Keita 2026-05-29）: 「トレーニングの検索は検索窓を虫眼鏡で右上にしたいのと、AI で検索できるようにしたい」。
 - スコープ: (1) 検索窓を虫眼鏡アイコンで右上に配置する UI 変更、(2) AI 検索機能（自然言語でレッスンを探せる）。AI 検索は backend の Anthropic API 経由になる見込み（レート制限・コスト考慮）。
@@ -191,7 +205,9 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
 - 次アクション: T-X の「着手前 Keita 確認 3 点」（検索対象=レッスンのみ/コースも、AI マッチ方式=embedding/プロンプト、結果の出し方）が未確定なので、AM-Q としても **スコープ確認まで IN_PROGRESS にしない**。Keita 帰還時に T-X の確認3点を提示する。
 - 抜けもれ提言: T-X セクション参照（デプロイ依存・i18n ja/en・虫眼鏡 SVG aria・レート制限/コスト・既存 custom-course のレッスン検索 AI 導線との重複整理）。AM-Q 固有の追加なし。
 
-### AM-R — 既存登録ユーザ（管理者=Keita）のジャーナルタグ見直し　[P1 / BLOCKED（実データ書き換え＝Keita 承認）]
+### AM-R — 既存登録ユーザ（管理者=Keita）のジャーナルタグ見直し　[P1 / BLOCKED（プレビュー DONE／書き換えは承認待ち）]
+
+> 状態（2026-05-29）: 林が read-only census 済＝対象ユーザー e5631320…（管理者想定）が 60使用/52種類のタグ乱立。統合プレビューを作成し会話で Keita に提示済。DB 書き換え（daily_journals.tags）は非可逆＝Keita 承認待ち。before スナップショット・dry-run・undo を前提に承認後実行。夕方バッチ T-AF と同一＝本タスクに集約。
 
 - 依頼原文（Keita 2026-05-29）: 「今すでに登録しているユーザのジャーナルのタグも見直して（管理者かな）」。
 - スコープ: **T-D で実装した動的タグ統合（tagConsolidation / canonicalize）を既存データに適用**する。Supabase `daily_journals.tags` の既存タグを点検し統合候補を洗い出す。対象は管理者（Keita）アカウントのデータ。
@@ -850,7 +866,9 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
 | T-V | テーマ再設計エピック（「AIっぽくない」新規3テーマ追加＋数パターン＋UI設計刷新＋カスタマイズしやすく） | P1 | 部分（2026-05-29。新規3テーマ indigo/rose/slate を MODES＋tokens.css＋tokens-m3.css＋i18n(ja/en) に追加＝配色実装パート DONE。UI 設計刷新・数パターン展開は AM-K 親エピックで継続） | designer（提案）→ dev-logic（実装） | 配色トークンは THEME_PALETTE_CANDIDATES_v2 §2 をそのまま採用 |
 | T-Y | 2回以上完了レッスンの完了マーク色を区別（習熟色・コース一覧） | P2 | DONE（2026-05-29。--mastery/--mastery-fg を tokens.css 全テーマに定義〔明カード #9A7416/#FFF・暗カード #D9A943/#1A1A1A〕、CompletionBadge を count>=2 で mastery 色に切替＋細い金縁リングで形状二重符号化。count=1 は従来 --accent 維持。test 12件 pass） | dev-logic | RoadmapScreenV3:1327/:1380・CompletedLessonsScreen 共通コンポーネント経由で整合 |
 
-### T-R — 死にテーマ削除（custom / enterprise / startup / mono）　[P1 / TODO（T-V パレット選定後に一括実装）]
+### T-R — 死にテーマ削除（custom / enterprise / startup / mono）　[P1 / DONE]
+
+> 状態（2026-05-29 commit d0558cb）: MODES/ModeId/ThemeState.customHex/applyTheme custom分岐 除去、loadTheme で未知 id を DEFAULT(dark) フォールバック、tokens.css mode-mono・tokens-m3.css mode-mono・index.css mode-enterprise/startup ブロック除去、i18n の4モード ja/en 削除、ThemeSettings(v1) の custom UI 撤去。残=light/dark/sepia/forest＋新規3（indigo/rose/slate）。tsc0/eslint0/vitest340/build0。
 
 - 📌 スコープ拡大（Keita 2026-05-29・2段階）: 当初「custom（HEX 自由指定）のみ削除」→ 「enterprise / startup も削除」→ さらに **mono（墨白）も削除に拡大（Keita 2026-05-29「墨白不要」）**。**削除は計4モード（custom / enterprise / startup / mono）**。**最終的に残るモード = light / dark / sepia(古紙) / forest(深緑) ＋ T-V で追加する新規3つ（＝計7構成見込み）**。custom/enterprise/startup は CSS ブロック不在の死にモード、mono は実体 CSS は存在するが Keita 判断で不要のため削除（＝この3つとは削除理由が異なる点に注意）。
 - 依頼原文（Keita 2026-05-29）: 「カスタムテーマは機能しておらず不要」＋「エンタープライズ不要・カスタムカラー不要・墨白不要・startup も削除」。
@@ -879,7 +897,9 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
   - 関連: T-V のテーマ再設計で残モードのうち sepia/forest が刷新・差し替えされる可能性があるため、**T-V のパレット選定後に T-R/T-S/T-T/T-U/T-J ＋ 新タスク T-Y（習熟色バッジ）を同一 dev-logic がまとめて一括実装する**のが効率的（重複作業・コンフリクト回避）。
   - 注意: custom/enterprise/startup の「機能していない」は audit で裏取り済み（CSS ブロック不在）。mono は機能しているが Keita 判断で不要。削除方針は Keita 確定済み（2026-05-29「墨白不要」）。
 
-### T-S — 「今日の一問」カードがテーマ追従しない　[P1 / TODO（T-M 完了後着手）]
+### T-S — 「今日の一問」カードがテーマ追従しない　[P1 / DONE]
+
+> 状態（2026-05-29 commit d0558cb）: HomeScreenV3 Daily Fermi カードを --brand-grad-h → フラット var(--accent)、青グロー boxShadow を accent 追従の color-mix に、CTA/eyebrow/desc を --accent / --accent-fg 追従に。T-T 根本原因A・AM-L(b) と統合実装。
 
 - 依頼原文（Keita 2026-05-29）: 「テーマを変えても『今日の一問』カード（Daily Fermi のホームカード）の色が変わらない。テーマ追従するよう修正してほしい」。
 - スコープ: ホーム（`HomeScreenV3`）の「今日の一問」カードが、外観テーマ（古紙/深緑等）を切り替えても青のまま変わらない＝テーマ非追従。テーマ変数（CSS 変数 / mode クラス）に追従するよう修正する。T-B で追加した新テーマの「追従漏れ」の一部。
@@ -908,7 +928,9 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
   - ⚠AM-L との統合（最重要）: 旧「テーマ改修」依頼の「今日の1問カードが青のまま」＝この T-S。さらに AM-L（Keita「今日の1問カードのグラデをなくして」）と**同じ DOM/CSS（HomeScreenV3:184 の `--brand-grad-h`）を触る**。方向は AM-L=「グラデをなくす（フラット化）」が最新指示なので、**フラット単色＋テーマ追従**で T-S（追従）と AM-L（グラデ廃止）を同時充足する。**dev-logic は T-S / T-T 根本原因A / AM-L (b) を同一作業で処理**（別々にやると競合）。
   - 関連: T-S は T-T 根本原因A の :184 を先行特定したもの＝**T-S は T-T 根本原因A に統合**（A を直せば自動解消）。T-A/T-L と同じ Daily Fermi 周辺だが、T-A は本番反映済・T-L は表示順入れ替えで色とは別レイヤーなので競合は小さい（同一 dev-logic なら順序整理で回避）。
 
-### T-T — テーマ非追従の網羅修正（audit findings で完全仕様化）　[P1 / TODO（調査=完了／修正=T-V パレット選定後に一括実装）]
+### T-T — テーマ非追従の網羅修正（audit findings で完全仕様化）　[P1 / DONE]
+
+> 状態（2026-05-29 commit d0558cb）: A: 各モードブロックで --brand-grad-h override＋HomeScreenV3 のハードコード青→accent 追従。B: RoadmapScreenV3 のハードコード青 rgba を var(--accent)系 color-mix へ。C: LessonStoriesScreen の #fff/#FFFFFF on brand を var(--accent-fg) 化＋tap-hint 青グロー accent 化。D: ProfileScreenV3 はハードコード text color 無し＝既に追従済みと確認。暗スクリム上の white 文字は意図通り維持。
 
 - 依頼原文（Keita 2026-05-29）: 「他にテーマ非追従の箇所がないか調査してほしい」。
 - スコープ: T-B で追加した配色テーマ（sepia/forest/mono）に**追従しない UI 箇所を網羅的に洗い出し、各根本原因を個別修正する**。ハードコード hex / テーマ非依存の固定色 / 旧 light/dark しか想定しない色指定を全量検出済み。
@@ -958,7 +980,9 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
   - 永続化: 表示色のみで persist 影響なし。
   - ⚠T-V との統合: sepia/forest は T-V のテーマ再設計で刷新・差し替えの可能性（mono は T-R で削除済み）。**T-V のパレット選定後に T-T を実装**すれば、刷新後のモードブロックに対して `--brand-grad-h` override を入れられる（先に直すと T-V 実装で二度手間になる）。T-R/T-S/T-T/T-U/T-J ＋ 新タスク T-Y（習熟色バッジ）を T-V 統合で一括実装。
 
-### T-U — コントラスト/可読性 整合性チェック　[P1 / TODO（T-V パレット選定後・T-T 修正と一体）]
+### T-U — コントラスト/可読性 整合性チェック　[P1 / 部分 DONE（残1点＝Keita 判断待ち）]
+
+> 状態（2026-05-29 commit d0558cb）: T-T/T-S/T-Y の修正は designer 監査済みのトークン値＝全 AA で実装。新規3テーマは §1-4 監査で全 AA。**残課題（Keita 判断ゲート）: light/dark の「白文字 on 明るい青 accent ボタン 3.08:1」が AA 割れ。主要 CTA 色の見た目変更を伴うため要 Keita 判断＝本パッケージ対象外で残置。** これが T-U で唯一未クローズの項目。
 
 - 依頼原文（Keita 2026-05-29）: 「テーマを変えると白文字で見えない、ハイライトが濃くて読めない、が起きないように整合性チェックして」。
 - スコープ: 全テーマ × 主要画面で、可読性を検証して破綻を潰す **QA タスク**。検証軸は (a) 本文テキスト × 背景、(b) accent-fg × brand/accent 背景、(c) selection/active ハイライト × その上の文字。目安は WCAG **4.5:1（本文）/ 3:1（大文字・UI 要素）**。T-T の修正（特に根本原因C の accent-fg 化）と一体で進める。
@@ -984,7 +1008,9 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
   - 永続化: 不要（検証 + 色調整のみ）。
   - 再発防止: 検証結果を基準値として残し、T-V 再設計や新画面追加時に同じマトリクスで回せるようにする（recurring 化の余地）。
 
-### T-V — テーマ再設計エピック（数パターン追加・UI設計刷新・カスタマイズしやすく）　[P1 / IN_PROGRESS（designer 提案ドキュメント作成中・読み取り専用）]
+### T-V — テーマ再設計エピック（数パターン追加・UI設計刷新・カスタマイズしやすく）　[P1 / 部分 DONE（配色 DONE／UI 刷新は AM-K で継続）]
+
+> 状態（2026-05-29 commit d0558cb）: 配色実装パート＝新規3テーマ indigo/rose/slate を MODES＋tokens.css＋tokens-m3.css＋i18n(ja/en) に追加 DONE（THEME_PALETTE_CANDIDATES_v2 §2 採用）。**残る「UI 設計刷新・数パターン展開」は AM-K（UI 全体刷新方針）の親エピックへ移管して継続**＝T-V 単独では配色まで完了。
 
 - 依頼原文（Keita 2026-05-29）: 「まだAI感がある、もう数パターン考えてほしい。UI設計も変えていい、カスタマイズしやすく」。＋（別途・同日朝）「『AIっぽくない』テーマを3つ追加して」。
 - スコープ: 配色テーマを再設計する**親エピック**。(1) 新パレットを数パターン提案（AI 感を脱した垢抜けた配色）、(2) AppearanceSettings の UI 設計を刷新（カスタマイズしやすく）、(3) 選定パレットで全変数フルカバー＋コントラスト検証。T-R（死にモード削除）/ T-T（非追従修正）/ T-U（コントラスト）/ T-J（バッジ色）/ 新タスク T-Y（習熟色バッジ）はこの再設計と**統合して一括実装**するのが効率的。
@@ -1048,7 +1074,10 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
   - 永続化: 開閉状態は既存カテゴリ開閉の persist 機構に乗せる（localStorage 等）。カスタムコース自体のデータ（TC-2 の customCourseStore）には影響なし。
   - 独立性: T-W は T-V 系（テーマ）とも T-I/T-K/T-L とも独立。RoadmapScreenV3 を触る点は T-T 根本原因B（RoadmapScreenV3 のハードコード青）/ T-I（コース進捗・RoadmapScreenV3 のコースカード）と同ファイルなので、**同一 dev-logic が RoadmapScreenV3 系（T-W / T-I / T-T-B）を近い時期にまとめて触る**とコンフリクトを避けやすい（必須ではないが推奨）。
 
-### T-Y — 2回以上完了レッスンの完了マーク色を区別（習熟色）　[P2 / TODO（T-V 習熟色選定後に一括実装）]
+### T-Y — 2回以上完了レッスンの完了マーク色を区別（習熟色）　[P2 / DONE]
+
+> 状態（2026-05-29 commit d0558cb）: --mastery/--mastery-fg を tokens.css 全テーマに定義（明カード #9A7416/#FFF・暗カード #D9A943/#1A1A1A）、CompletionBadge を count>=2 で mastery 色に切替＋細い金縁リングで形状二重符号化。count=1 は従来 --accent 維持。test 12件 pass。
+> ⚠ ID 衝突注記: この T-Y（習熟色・テーマバッチ）と、夕方バッチの「・今日の一問 中黒除去」が同一 ID で並んでいた。後者を **T-Y2** にリネームして衝突解消済（下方の夕方バッチ参照）。この T-Y（習熟色）が正規の T-Y。
 
 - 依頼原文（Keita 2026-05-29）: 「二回完了したレッスンはコース一覧で✓マークの色も変えて」。2回以上やったレッスンを1回完了と一目で見分けられる別色（習熟色）にする。
 - ⚠ 既存 DONE タスクとの区別（最重要・ID 衝突回避の経緯）: 既存 **T-J（DONE）は「完了バッジのチェックマークをテーマアクセント色 `--accent` に追従させる」**話で、本番反映済み。本タスク T-Y は**それとは別物**＝「**完了回数（count>=2）で1回完了と色を変える（習熟色を新設）**」。2026-05-29 朝に林が誤って「T-J」として起票した重複バッチがあったが、既存 DONE の T-J と ID が衝突するため、**空き ID を確認のうえ新規 T-Y で採番**した（T-X まで使用済み・T-Y が次の空き）。
@@ -1084,7 +1113,9 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
 |----|----------|--------|-----------|--------|
 | T-X | トレーニングのAI検索（右上虫眼鏡＋自然言語/意味ベース検索） | P-TBD（Keita 判断待ち） | TODO（着手前スコープ確認） | designer（検索UI/結果画面設計）＋ dev-logic（backend AI 検索エンドポイント＋frontend 検索UI/結果表示） |
 
-### T-X — トレーニングのAI検索（右上虫眼鏡＋AI検索）　[P-TBD / TODO（着手前スコープ確認）]
+### T-X — トレーニングのAI検索（右上虫眼鏡＋AI検索）　[P1 / DONE]
+
+> 状態（2026-05-29 commit 6a3c985〔別アクター実装〕）: RoadmapScreenV3 右上の虫眼鏡から検索オーバーレイ。既存キーワード検索＋「AIで検索」のプロンプトベース意味検索。server/routes/search.ts（POST /api/search, haiku-4-5, rate-limit 20/min）、src/aiSearch.ts、i18n ja/en、vitest 13。backend は deploy-production.yml で本番反映済（run 26629582944 = success）。着手前スコープ確認3点は実装で解決済（対象=レッスン/コース両方、方式=Claude プロンプト選別、結果=意味検索）。AM-Q / T-AE と同一依頼＝本タスク（T-X）が正本。
 
 - 依頼原文（Keita 2026-05-29）: 「トレーニングの検索は、右上に虫眼鏡でいいよ、デフォルトは。それで、この検索も AI でできるようにしたい。」
 - 概要: トレーニング（レッスン/コース一覧）に検索機能を新設する。入口は画面右上の虫眼鏡アイコン（デフォルト配置）。検索は単なる文字列一致でなく、自然言語/意味ベースで「やりたいこと・悩み」からレッスンやコースを探せる AI 検索にする。
@@ -1131,23 +1162,25 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
 ## バッチ: 2026-05-29 夕方 新規依頼8件（Keita 離席・林進行）
 
 Keita が 2026-05-29 夕方に新バッチ8件を依頼（Keita は離席、林の判断で進行＋終わったものから Android Internal 配信の方針）。task-manager が構造化。実装は委譲。
-**前提（最重要）**: 既存タスクと重複/統合する項目が複数ある（下表「既存リンク」参照）。新規採番は T-Y / T-Z / T-AA / T-AB / T-AC / T-AD / T-AE / T-AF（既存最終 ID = T-X の次。2文字 ID で衝突回避）。
-**Keita 判断ゲートが多いバッチ**: #4法務（T-AB）/ #5課金（T-AC）/ #6ランキングダミー（T-AD）/ #8既存タグ書換（T-AF）は本番データ操作 or 法的内容 or スコープ確定要で、林が単独で確定・実行しない。
+**前提（最重要）**: 既存タスクと重複/統合する項目が複数ある（下表「既存リンク」参照）。当初 T-Y / T-Z / T-AA … T-AF で採番したが、**(1) T-Y が習熟色（テーマバッチ）と ID 衝突、(2) このバッチ8件は朝の AM-K〜AM-R バッチ（AM = Additional Morning）と完全に同一依頼8件**だったことが判明。→ **このバッチは AM-* バッチに集約し、二重トラッキングしない。** 衝突する T-Y は T-Y2 にリネーム、T-Z は T-Z2 にリネーム（DONE 済の実作業履歴として残す）。T-AA〜T-AF は AM-* の重複なので各行に正本（AM-*）を明記し、ステータスは AM-* と同期する。
+**Keita 判断ゲートが多いバッチ**: 法務（→AM-N）/ 課金（→AM-O）/ ランキングダミー（→AM-P・実は DONE）/ 既存タグ書換（→AM-R）は本番データ操作 or 法的内容 or スコープ確定要で、林が単独で確定・実行しない。
 
 | ID | 依頼# | タイトル | 優先度 | ステータス | 担当案 | Keita判断 | Internal配信 | 既存リンク |
 |----|------|----------|--------|-----------|--------|-----------|-------------|-----------|
-| T-Y | #3 | 「・今日の一問」の先頭「・」を消す | P2 | DONE（2026-05-29 main push→Android Internal 配信。HomeScreenV3 のラベル左 装飾ドット div を除去。tsc0/eslint0/vitest337） | dev-logic | 不要 | 配信済 | 新規（T-S/T-A と同じ Daily Fermi 周辺） |
-| T-Z | #2 | 「AI専用コース」「今日の1問」カードのグラデーション除去 | P1 | DONE（2026-05-29 main push→Android Internal 配信。今日の1問カード `--brand-grad-h`→`--accent`、AI専用コースカード linear-gradient→`--accent` に単色テーマ追従化。T-S/T-T根本原因A も同時解消。tsc0/eslint0/vitest337） | dev-logic | 済 | 配信済 | T-S/T-T 根本原因A・T-V と同領域。**T-S も実質解消** |
-| T-AA | #1 | UI 全体の「AIっぽさ」をなくす刷新方針 | P1 | BLOCKED（T-V と統合判断＝Keita 確認） | designer（方針提案）→Keita→dev-logic | 要（刷新範囲の確定） | 段階的（確定後フロント） | **T-V と強重複→統合 or 連携** |
-| T-AB | #4 | 利用規約／プライバシーポリシー／特商法表記の見直し | P1 | BLOCKED（法的内容＝Keita 承認必須） | 林（既存確認＋改善案）→Keita→dev-logic（反映） | **要（法務確定）** | 可（フロント文言。確定後） | 新規 |
-| T-AC | #5 | 料金プランの Google Play 課金を実装 | P1 | BLOCKED（スコープ確定＋本番課金＝Keita 承認） | dev-logic（残ギャップ実装）＋Keita（Play Console/GCP/SKU） | **要（SKU/本番課金/設定）** | 一部（フロント）。SKU・GCP は別手順 | **既存実装ありmemory play-billing-gaps と照合** |
-| T-AD | #6 | フェルミ累計スコアのダミー→毎日ランダム付与 | P1 | BLOCKED（本番 Supabase データ操作＝Keita 承認） | dev-logic（付与ロジック）＋Keita（本番データ方針） | **要（本番データ操作）** | 不可（DB/サーバ変更＝別手順） | 新規（placement leaderboard 周辺） |
-| T-AE | #7 | トレーニング検索：右上虫眼鏡＋AI検索 | P-TBD | TODO（T-X 本格スコープ化） | designer＋dev-logic | 要（検索スコープ＝T-X の確認事項） | 一部（フロント）。AI backend は別手順 | **T-X とほぼ同一→T-X を本格化（T-AE は T-X に統合）** |
-| T-AF | #8 | 既存ユーザ（Keita 想定）のジャーナルタグを見直し | P2 | BLOCKED（本番データ書換＝Keita 承認） | dev-logic（遡及適用）＋Keita（本番データ方針） | **要（本番データ書換）** | 不可（本番 Supabase データ操作） | **T-D の動的統合ロジックを既存データに遡及適用** |
+| T-Y2 | #3 | 「・今日の一問」の先頭「・」を消す（旧 T-Y＝習熟色と衝突→リネーム） | P2 | DONE（2026-05-29 commit 698de42＋d0558cb。HomeScreenV3 ラベル左の装飾ドット div 除去＋表記「今日の1問」統一） | dev-logic | 不要 | 配信済 | **= AM-M（正本）**。旧 T-Y は習熟色（テーマバッチ）と衝突したため T-Y2 にリネーム |
+| T-Z2 | #2 | 「AI専用コース」「今日の1問」カードのグラデーション除去（リネーム） | P1 | DONE（2026-05-29 commit 698de42＋d0558cb。今日の1問カード `--brand-grad-h`→`--accent`、AI専用コースカード linear-gradient→`--accent` に単色テーマ追従化。T-S/T-T 根本原因A も同時解消） | dev-logic | 済 | 配信済 | **= AM-L（正本）/ T-S / T-T 根本原因A**。T-Y2 と採番を揃えるため T-Z2 にリネーム |
+| T-AA | #1 | UI 全体の「AIっぽさ」をなくす刷新方針 | P1 | → **AM-K に集約**（重複・二重トラッキングしない）。現況=IN_PROGRESS（designer 方針ドキュメント作成中／配色 T-V は DONE） | designer→Keita→dev-logic | 要（刷新範囲の確定） | 段階的 | **= AM-K（正本）/ T-V** |
+| T-AB | #4 | 利用規約／プライバシーポリシー／特商法表記の見直し | P1 | → **AM-N に集約**。現況=BLOCKED（点検 DONE＝LEGAL_REVIEW_20260529.md／確定値12点 Keita 待ち） | content-creator＋林→Keita→dev-logic | **要（法務確定値）** | 確定後 | **= AM-N（正本）** |
+| T-AC | #5 | 料金プランの Google Play 課金を実装 | P1 | → **AM-O に集約**。現況=BLOCKED（PricingScreen 結線済＝コード DONE／Play Console SKU Active 登録 Keita 待ち） | dev-logic（実装済）＋Keita（SKU） | **要（SKU 登録）** | 一部 | **= AM-O（正本）/ play-billing-gaps #4** |
+| T-AD | #6 | フェルミ累計スコアのダミー→毎日ランダム付与 | P1 | → **AM-P に集約・実は DONE**（commit 1c18ebb＋本番デプロイ run 26629582944 success。日次シードで動的化＝cron 不要） | dev-logic | 不要（実装で解決） | 本番反映済 | **= AM-P（正本）** |
+| T-AE | #7 | トレーニング検索：右上虫眼鏡＋AI検索 | P1 | → **T-X / AM-Q に集約・DONE**（commit 6a3c985＋本番デプロイ run 26629582944 success） | designer＋dev-logic | 不要（実装で解決） | 本番反映済 | **= T-X / AM-Q（正本）** |
+| T-AF | #8 | 既存ユーザ（Keita 想定）のジャーナルタグを見直し | P2 | → **AM-R に集約**。現況=BLOCKED（census＋統合プレビュー DONE／DB 書き換え承認 Keita 待ち） | dev-logic＋林→Keita | **要（本番データ書換承認）** | 不可 | **= AM-R（正本）/ T-D 遡及適用** |
 
-着手順の推奨（軽い確実→重い要判断）: T-Y（即・最軽）→ T-Z（T-AA 方針が出る前でも単独で除去可）→ T-AE/T-X（スコープ確認後）→ T-AA（T-V 統合判断）→ T-AB（法務確認）→ T-AC（課金スコープ確定）→ T-AD/T-AF（本番データ操作・最後）。
+着手順の推奨は AM-* バッチ側に集約済。残ゲートは Keita 帰還時の確認4点（AM-N 確定値・AM-O SKU・AM-R 書き換え承認・T-U accent ボタン）。
 
-### T-Y — 「・今日の一問」の先頭「・」を消す　[P2 / TODO（即着手可・最軽）]
+### T-Y2 — 「・今日の一問」の先頭「・」を消す　[P2 / DONE]（旧 T-Y＝習熟色と ID 衝突→リネーム。正本 = AM-M）
+
+> 状態（2026-05-29 commit 698de42＋d0558cb）: 装飾ドット div 除去＋表記「今日の1問」統一済。AM-M に集約。詳細は AM-M / 下記参照。
 
 - 依頼原文（Keita 2026-05-29 夕）: 「『・今日の一問』の『・』を消す」。
 - スコープ: ホーム等に出る「今日の一問」セクション見出し（またはカードラベル）の**先頭に付いている中黒「・」を削除**する。表示文字列の調整1点。
@@ -1166,7 +1199,9 @@ Keita が 2026-05-29 夕方に新バッチ8件を依頼（Keita は離席、林�
   - 永続化: 不要（表示文言のみ）。
   - 関連: T-S/T-A と同じ Daily Fermi ホームカード周辺。**同一 dev-logic が T-Y / T-Z（カードのグラデ除去）/ T-S（カードのテーマ追従）を Daily Fermi カードまとめて触る**とコンフリクト回避＆一貫性が出る。
 
-### T-Z — 「AI専用コース」「今日の1問」カードのグラデーション除去　[P1 / TODO（T-AA 方針と整合）]
+### T-Z2 — 「AI専用コース」「今日の1問」カードのグラデーション除去　[P1 / DONE]（リネーム。正本 = AM-L）
+
+> 状態（2026-05-29 commit 698de42＋d0558cb）: 2カードのグラデ→単色 var(--accent) テーマ追従化済。T-S/T-T 根本原因A も同時解消。AM-L に集約。詳細は AM-L / 下記参照。
 
 - 依頼原文（Keita 2026-05-29 夕）: 「『AIで自分専用コースを作る』と『今日の1問』のカードは色のグラデーションをなくす」。
 - スコープ: 2つのカード ——(a)「AIで自分専用コースを作る」（カスタムコース生成導線。RoadmapScreenV3 の「あなた専用コース」CTA or CustomCourseScreen 入口）、(b)「今日の1問」（Daily Fermi ホームカード）—— の**背景グラデーションを除去**し、単色（フラット）にする。
@@ -1191,7 +1226,9 @@ Keita が 2026-05-29 夕方に新バッチ8件を依頼（Keita は離席、林�
   - 永続化: 不要（表示のみ）。
   - 着手順: T-AA の全体刷新方針を待たずに先行可（軽い確実枠）。ただしフラット色は T-AA/T-V のトンマナに合わせる。
 
-### T-AA — UI 全体の「AIっぽさ」をなくす刷新方針　[P1 / BLOCKED（T-V と統合判断＝Keita 確認）]
+### T-AA — UI 全体の「AIっぽさ」をなくす刷新方針　[→ AM-K に集約（重複）／現況 IN_PROGRESS]
+
+> 集約注記: 朝の AM-K と同一依頼。正本 = AM-K（designer が `docs/UI_RENEWAL_DIRECTION_20260529.md` 作成中、配色 T-V は DONE）。本セクションは二重トラッキングせず AM-K に従う。以下は元の構造化メモ（参考）。
 
 - 依頼原文（Keita 2026-05-29 夕）: 「全体的に UI の『AIっぽさ』をなくしたいので刷新方針を考えてほしい」。
 - スコープ: アプリ UI 全体から「AI/SaaS テンプレっぽさ」を脱する**刷新方針を策定する**（実装ではなくまず方針提案）。具体要素の例: 多用される青グラデーション（T-Z で着手）、彩度の高い accent、量産テンプレ的なカード/角丸/影、汎用的なフォント感など。
@@ -1213,7 +1250,9 @@ Keita が 2026-05-29 夕方に新バッチ8件を依頼（Keita は離席、林�
   - 両OS: モバイル専用。実装段階で Android 実機確認。
   - Internal 配信: 方針フェーズは配信なし（ドキュメント）。実装段階のフロント変更は main push で Android 自動配信可。段階的に小さく出す。
 
-### T-AB — 利用規約／プライバシーポリシー／特商法表記の見直し　[P1 / BLOCKED（法的内容＝Keita 承認必須）]
+### T-AB — 利用規約／プライバシーポリシー／特商法表記の見直し　[→ AM-N に集約（重複）／現況 BLOCKED]
+
+> 集約注記: 朝の AM-N と同一依頼。正本 = AM-N（点検 DONE＝`docs/LEGAL_REVIEW_20260529.md`、最重要 C-1＝特商法価格が実装と不一致、確定値12点が Keita 待ち）。二重トラッキングせず AM-N に従う。以下は元の構造化メモ（参考）。
 
 - 依頼原文（Keita 2026-05-29 夕）: 「利用規約／プライバシーポリシー／特定商取引法に基づく表記 の記載を見直す」。
 - スコープ: アプリ内（および配信に必要な）3つの法務文書 ——利用規約 / プライバシーポリシー / 特定商取引法に基づく表記—— の**現状を確認し、改善案を提示する**。
@@ -1243,7 +1282,9 @@ Keita が 2026-05-29 夕方に新バッチ8件を依頼（Keita は離席、林�
   - 永続化: 静的文書なら persist 不要。バージョン/改定日を文書内に持つ運用は検討余地。
   - Internal 配信: 文言確定後のフロント反映は main push で Android 自動配信可。ただし**確定前に配信しない**（暫定文言を本番に出さない）。
 
-### T-AC — 料金プランの Google Play 課金を実装　[P1 / BLOCKED（スコープ確定＋本番課金＝Keita 承認）]
+### T-AC — 料金プランの Google Play 課金を実装　[→ AM-O に集約（重複）／現況 BLOCKED]
+
+> 集約注記: 朝の AM-O と同一依頼。正本 = AM-O（PricingScreen が startCheckout に結線済＝コード DONE、残は Keita の Play Console SKU Active 登録＋実機テスト）。二重トラッキングせず AM-O に従う。以下は元の構造化メモ（参考）。
 
 - 依頼原文（Keita 2026-05-29 夕）: 「料金プランの Google Play での課金を実装する」。
 - ⚠⚠ 重要・既存実装と照合（最重要）: **Google Play Billing は既に大部分が実装済み**（memory project-logic-play-billing-gaps）。「実装する」を**ゼロから作る依頼と誤解しない**。既存実装の現状を踏まえ「残ギャップ＋『料金プラン』UI 周りで未完の部分」を特定してからスコープを確定する。
@@ -1278,7 +1319,9 @@ Keita が 2026-05-29 夕方に新バッチ8件を依頼（Keita は離席、林�
   - 両OS: モバイル専用。Android 実機で購入フロー。iOS 課金（StoreKit）は未着手＝当面 Android のみ（project_logic_mobile_only）。
   - Internal 配信: frontend（料金プラン UI）は main push で Android 自動配信可。SKU/GCP/Play Console/migration は配信とは別の手動設定手順。
 
-### T-AD — フェルミ累計スコアのダミー→毎日ランダム付与　[P1 / BLOCKED（本番 Supabase データ操作＝Keita 承認）]
+### T-AD — フェルミ累計スコアのダミー→毎日ランダム付与　[→ AM-P に集約・実は DONE]
+
+> 集約注記: 朝の AM-P と同一依頼で、既に実装＋本番デプロイ完了（commit 1c18ebb、run 26629582944 success）。当初「本番 Supabase データ操作＝Keita 承認」と慎重に起票したが、実装は「日次シードで動的算出（DB 書き換えなし・cron 不要・実データ不変）」方式で着地したため Keita 承認ゲートは不要だった。正本 = AM-P（DONE）。以下は元の構造化メモ（参考・方式は変更）。
 
 - 依頼原文（Keita 2026-05-29 夕）: 「フェルミランキングの累計スコアの今あるダミーデータを、ランダムでいい感じにポイント付与（毎日）。理由＝今 管理者(Keita)がダントツ1位で張り合いがないため」。
 - スコープ: フェルミ（推定）ランキングの累計スコア用に存在する**ダミーデータ（ボット/シードユーザー）に、毎日ランダムで『いい感じ』のポイントを付与**し、Keita 1強状態を解消してランキングに張り合いを持たせる。
@@ -1307,7 +1350,9 @@ Keita が 2026-05-29 夕方に新バッチ8件を依頼（Keita は離席、林�
   - i18n: データ付与のみで新規文言なし（表示は既存ランキング UI）。
   - Internal 配信: **不可（フロント配信では完結しない）**。サーバ/DB 変更＝手動デプロイ or Supabase 操作＋cron 設定の別手順。main push の Android 自動配信には乗らない。
 
-### T-AE — トレーニング検索：右上虫眼鏡＋AI検索（T-X を本格スコープ化）　[P-TBD / TODO]
+### T-AE — トレーニング検索：右上虫眼鏡＋AI検索（T-X を本格スコープ化）　[→ T-X / AM-Q に集約・DONE]
+
+> 集約注記: T-X / AM-Q と同一依頼で、既に実装＋本番デプロイ完了（commit 6a3c985、run 26629582944 success）。正本 = T-X（DONE）。着手前スコープ確認3点は実装で解決済。以下は元の構造化メモ（参考）。
 
 - 依頼原文（Keita 2026-05-29 夕）: 「トレーニングの検索：検索窓を虫眼鏡で右上に置きたい＋AIで検索できるように」。
 - ⚠⚠ 重複・統合（最重要）: これは**既存 T-X（トレーニングのAI検索、右上虫眼鏡＋AI検索）とほぼ同一**。新規タスクとして二重管理せず、**T-X を本格スコープ化して進める**（T-AE は T-X に統合）。T-X は既に着手前スコープ確認待ち（P-TBD / TODO）で、(a)UI 入口=右上虫眼鏡デフォルト配置、(b)AI 検索=自然言語/意味ベース、まで構造化済み。今回の依頼で「やる」意思が確認できた＝T-X を BLOCKED 相当の確認ゲートから前進させる。
@@ -1333,7 +1378,9 @@ Keita が 2026-05-29 夕方に新バッチ8件を依頼（Keita は離席、林�
   - Internal 配信: frontend（虫眼鏡/検索 UI）は main push で Android 自動配信可。AI backend route は別途手動デプロイ。
 - 管理メモ: T-AE は T-X の重複なので、以後は **T-X を正本**として進め、T-AE 行は「#7 依頼の受け皿＝T-X 本格化のトリガー」として残す（二重トラッキングしない）。
 
-### T-AF — 既存ユーザ（Keita 想定）のジャーナルタグを見直し　[P2 / BLOCKED（本番データ書換＝Keita 承認）]
+### T-AF — 既存ユーザ（Keita 想定）のジャーナルタグを見直し　[→ AM-R に集約（重複）／現況 BLOCKED]
+
+> 集約注記: 朝の AM-R と同一依頼。正本 = AM-R（林の census 済＝e5631320… が 60使用/52種類、統合プレビュー提示済、DB 書き換えは Keita 承認待ち）。二重トラッキングせず AM-R に従う。以下は元の構造化メモ（参考）。
 
 - 依頼原文（Keita 2026-05-29 夕）: 「今すでに登録しているユーザのジャーナルのタグも見直す（管理者=Keita のデータと思われる）」。
 - スコープ: **T-D で実装した動的・自動統合（dynamic / self-consolidating vocabulary）ロジックを、既に登録済みの既存ユーザー（実質 Keita のデータ）のジャーナルタグに遡及適用**する。T-D は「新規エントリのタグ付け時」に効くが、**過去に作られた既存タグ（固有タグ乱立状態）はそのまま残っている**。それを既存統合ロジックで一括/段階的に名寄せ・統合する。
@@ -1374,7 +1421,7 @@ Keita が 2026-05-29 夕方に新バッチ8件を依頼（Keita は離席、林�
 |----|--------|------|--------|----------|------|
 | R-1 | Obsidian Daily Note 日次生成（T-E (c)(d) で仕組み化） | 毎日 07:00 JST | morning-briefing.sh 統合 or 別 cron（方式未確定） | 5/26〜5/28 を手動キャッチアップ済（林、2026-05-28）。恒久自動化は T-E(c)/T-F 待ち | 整備中（T-E + T-F 依存。手動キャッチアップで 5/28 まで埋め済） |
 | R-2 | cron 自動パイプライン死活確認（ceo 朝ブリ 07:00 / feedback 06:00 / night-patrol 03:00） | 毎日 | crontab 3 本＋出力サイズ/エラーパターン検査 | 06:00・07:00 は 5/27 から空振り（T-F・未解決）。03:00 スモークは T-G の config 修正が 2026-05-29 に main 反映済＝復旧見込み（実走確認は次回 03:00 cron で要確認）。03:00 のヘルスチェック本体（200 確認）は稼働 | 一部復旧（T-G config 反映済・実走確認待ち／T-F は未解決のまま異常） |
-| R-3 | フェルミランキングのダミーデータへ毎日ランダムポイント付与（T-AD で仕組み化） | 毎日（予定） | 未確定（Vultr 第2サーバ dev cron / Supabase pg_cron/edge のいずれか）＋ダミー限定・付与上限・スナップショット | 未着手（T-AD が BLOCKED＝Keita 承認待ち。スコープ確定後に登録） | 未整備（T-AD 依存。本番データ操作＝Keita 承認ゲート） |
+| R-3 | フェルミランキングのダミーを日次変動（AM-P で実装済） | 毎日（自動） | **cron 不要**＝リクエスト時に日次シードで算出（commit 1c18ebb、server/routes/fermi.ts）。DB 書き換えなし・実データ不変 | 2026-05-29 本番反映済（run 26629582944 success） | 解決（cron 監視不要。AM-P DONE。当初の本番データ書き換え方式は不採用） |
 
 - 運用: T-E (c) で日次自動生成が恒久化したら、R-1 の「最終確認」を生成成功日に更新。生成漏れ（前日 Daily Note 欠落）を検知したら task-manager がキャッチアップを手配。
 - 注記（2026-05-28 訂正）: 「briefings/feedback/inspections の自動パイプラインは安定稼働中」という旧認識は誤り。実際は **06:00 feedback / 07:00 briefings が 5/27 からエラー固定で空振り（T-F）**、**03:00 night-patrol のスモークも 5/27 から空振り（T-G）**。ファイル存在＝健全ではない（タイムスタンプだけ更新されるサイレント失敗）。R-2 として死活を recurring 監視対象に追加。検知ルール = 出力 byte 数が極端に小さい or 既知エラー文字列（`--dangerously-skip-permissions` 等）/ "No tests found" を含むか。
@@ -1693,3 +1740,10 @@ T-M（体力コース）で dev-logic が **main の作業ツリーを使用中*
 最終更新: 2026-05-29（テーマ系の追加依頼＋audit findings 反映。**T-R 拡大**＝custom のみ→**custom/enterprise/startup の3つ削除**〔audit で tokens.css/tokens-m3.css に CSS ブロック不在＝死にモードと確定〕、残5モード=light/dark/sepia/forest/mono。**T-T 完全仕様化**＝読み取り専用 audit 完了、根本原因 A〔`--brand-grad-h` が :root だけ定義で全テーマ青のまま・HomeScreenV3:184/:178・DailyFermiScreen:1133・LoginScreen:115〕/B〔RoadmapScreenV3 のハードコード青 rgba(108,142,245) :762/:946/:970/:979/:328〕/C〔LessonStories の #fff 固定 約10箇所→accent-fg〕/D〔プロフィール一覧の未追従・Keita 報告〕に整理、T-S を根本原因A に統合。**新規 T-U**〔コントラスト/可読性 整合性チェック・全テーマ×主要画面 WCAG・T-T と一体〕、**新規 T-V**〔テーマ再設計エピック・4〜6パレット＋UI 刷新・designer 提案進行中 docs/THEME_REDESIGN_PROPOSAL_20260529.md・Keita パレット選定がゲート・テーマ系の親〕、**新規 T-W**〔あなた専用コース折りたたみ・RoadmapScreenV3 既存開閉機構流用・デフォルト折りたたみ・T-V から独立〕を起票。**main 作業キュー更新**＝テーマ系〔T-R/T-S/T-T/T-U/T-V/T-J〕は **T-V の Keita パレット選定を待って一括実装**〔sepia/forest/mono が刷新されうるため先行修正は二度手間〕、**T-W/T-I/T-K/T-L は T-V から独立**で T-M 完了後すぐ着手可。T-L の逆向き worktree〔a23e/a7aa「答えを冒頭に」〕混同注意は維持。全件 migration 不要）
 
 最終更新: 2026-05-29（**ID 衝突・重複の整理**。林が朝に誤起票した重複バッチ「テーマ改修」の T-I/T-J 行＋詳細セクションを **削除**〔既存 DONE の T-I（コース進捗）/T-J（完了バッジのアクセント追従）と ID 衝突していたため〕。内容は既存タスクへ吸収: ①**T-R に mono（墨白）を追加削除**〔Keita 2026-05-29「エンタープライズ不要・カスタムカラー不要・墨白不要・startup も削除」。削除＝custom/enterprise/startup/mono の計4。mono は CSS ブロックも除去・保存済みユーザーの fallback 実害大。**最終的に残るモード = light/dark/sepia(古紙)/forest(深緑)＋T-V 新規3＝計7**〕。②**「AIっぽくない」新規3テーマの追加を T-V エピックの追加要件として明記**〔designer が現在パレット作成中＝T-V/T-U/T-Y 用の新規3パレット＋習熟色＋既存テーマのコントラスト監査〕。③**「今日の1問カードが青のまま」を既存 T-S/T-T で対応の扱い**〔根因＝HomeScreenV3:178/:183/:184 の `var(--brand)`/`var(--brand-grad-h)` 固定青、T-T 根本原因A と同一箇所。T-S に詳細追記。AM-L の「グラデ廃止」とも同 DOM＝フラット単色＋テーマ追従で統合〕。④コントラスト＝既存 T-U で対応。⑤**「2回以上完了レッスンの完了マーク色を区別（習熟色）」を新規 T-Y として独立採番**〔Keita「二回完了したレッスンはコース一覧で✓マークの色も変えて」。既存 DONE の T-J（アクセント追従）とは別物。空き ID 確認のうえ T-Y で採番＝T-X まで使用済み。CompletionBadge.tsx を count>=2 で習熟色、RoadmapScreenV3:1327/:1380 の2経路＋CompletedLessonsScreen 整合、CompletionBadge.test.tsx 更新〕。**全 ID 再スキャン済＝衝突・重複ゼロ**。AM-Q↔T-X〔AI検索〕は既に統合済みで重複なし。運用前提＝終わったやつから Internal 配信〔main push で android-deploy.yml〕・backend 変更は手動 deploy-production.yml）
+
+最終更新: 2026-05-29 夜（**実コミット突き合わせ＋並行アクター間の状態同期＋ID 衝突の最終整理**。林＋別セッション/worktree エージェントが並行 push していたため古いステータスと ID 重複を整理。
+- 実績反映（commit と照合）: **d0558cb（テーマ刷新パッケージ）→ T-R / T-S / T-T / T-V〔配色パート〕/ T-Y〔習熟色〕/ AM-L / AM-M を DONE 化。T-U は light/dark の accent ボタン AA 割れ（3.08）のみ「要 Keita 判断」で残し他 DONE＝部分 DONE**。**1c18ebb（フェルミ日次シード動的化）→ AM-P / T-AD を DONE〔本番デプロイ run 26629582944 = success 確認済〕。日次シード算出＝cron 不要のため R-3 を「解決（cron 監視不要）」に更新**。**6a3c985（AI検索）→ AM-Q / T-X / T-AE を DONE〔backend 同 run で本番反映〕**。**698de42（中黒/グラデ・別アクター先行）→ AM-M / T-Y2 / T-Z2 を DONE**。
+- BLOCKED の中身を「Keita の何待ちか」で明示: **AM-N**＝点検 DONE（docs/LEGAL_REVIEW_20260529.md）／確定値12点待ち〔特商法価格が実装と不一致 C-1〕。**AM-O**＝PricingScreen 結線済（コード DONE）／Play Console SKU Active 登録待ち。**AM-R**＝census＋統合プレビュー DONE／DB 書き換え承認待ち。
+- IN_PROGRESS: **AM-K**＝designer が docs/UI_RENEWAL_DIRECTION_20260529.md 作成中（T-AA は AM-K へ集約）。
+- **ID 衝突の最終解消**: 朝バッチ AM-K〜AM-R と夕方バッチ T-Y〜T-AF が同一依頼8件の二重起票だったため、**夕方バッチを AM-* に集約**。衝突していた夕方 T-Y（中黒）→**T-Y2**、T-Z（グラデ）→**T-Z2** にリネーム〔習熟色テーマバッチの T-Y が正規の T-Y〕。T-AA〜T-AF は各行に正本 AM-* を明記し二重トラッキング停止。`### ` 詳細セクション ID の重複スキャン＝0件で一意性担保。
+- Keita 帰還時の確認4点: ①AM-N 確定値12点 ②AM-O の SKU ③AM-R の書き換え承認 ④T-U の accent ボタン AA）
