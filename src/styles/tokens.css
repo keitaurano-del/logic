@@ -263,15 +263,15 @@
   --sans:  var(--font-ui);
   --serif: var(--font-display);
 
-  /* Font scale */
-  --font-xs:   11px;
-  --font-sm:   13px;
-  --font-base: 15px;
-  --font-md:   17px;
-  --font-lg:   20px;
-  --font-xl:   24px;
-  --font-2xl:  28px;
-  --font-3xl:  34px;
+  /* Font scale (UI-12: 一律+約8%に拡大) */
+  --font-xs:   12px;
+  --font-sm:   14px;
+  --font-base: 16px;
+  --font-md:   18px;
+  --font-lg:   22px;
+  --font-xl:   26px;
+  --font-2xl:  30px;
+  --font-3xl:  37px;
 
   /* Semantic stat colors */
   --streak-bg:     rgba(249, 115,  22, 0.12);
