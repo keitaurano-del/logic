@@ -19,7 +19,7 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
 | AM-K | T-K | UI 全体の「AIっぽさ」をなくす刷新方針の策定（提案ドキュメント） | P1 | IN_PROGRESS（2026-05-29。designer が方針ドキュメント `docs/UI_RENEWAL_DIRECTION_20260529.md` を作成中。配色パート＝T-V は実装 DONE。UI 全体方針は提案フェーズ） | designer（主導）＋林 | **T-V（テーマ再設計エピック「まだAI感がある」）の上位＝UI 全体の刷新方針**。T-V を内包する形。重複の T-AA（夕方バッチ）も同一＝AM-K に集約 |
 | AM-L | T-L | グラデーション除去（カスタムコース生成カード／今日の1問カード） | P1 | DONE（2026-05-29。Daily Fermi カード〔HomeScreenV3:184〕の --brand-grad-h グラデ廃止→フラット var(--accent)＋青グロー boxShadow を accent追従に。カスタムコース生成カード〔RoadmapScreenV3:697「AIで自分専用コースを作る」〕の linear-gradient 廃止→フラット var(--accent)＋内部アイコンを accent-fg 追従に。両方テーマ追従） | dev-logic | T-S／T-T 根本原因A と統合実装 |
 | AM-M | T-M | 「・今日の一問」の先頭「・」除去＋表記ゆれ統一 | P2 | DONE（2026-05-29。表記ゆれを「今日の1問」に統一〔pricing.heroSub/featFermi・savedItems.filterFermi/emptyFermi/typeFermi の ja を 今日の一問→今日の1問。en は変更なし〕。先頭中黒「・」は現ソースに literal/JSX前置/CSS ::before いずれも存在せず＝grep 全量確認で付与元なし。home カード先頭の装飾ドットは中黒文字でなく styled div の小円なので対象外として維持） | dev-logic | 表記は home 主導線の「今日の1問」に寄せた |
-| AM-N | T-N | 法務記載の見直し（利用規約／プライバシー／特商法） | P1 | BLOCKED（点検 DONE／反映は確定値待ち。content-creator が点検完了＝`docs/LEGAL_REVIEW_20260529.md` 作成済。ソース未編集。最重要 C-1＝特商法ページの価格〔旧¥390/¥760 2段階〕が実装〔¥350/¥2450 単一プラン〕と不一致。確定値12点が Keita 確認待ち） | content-creator＋林 | 新規。特商法は課金アプリ必須記載。AM-O の課金実態と整合必須 |
+| AM-N | T-N | 法務記載の見直し（利用規約／プライバシー／特商法） | P1 | 正値修正 DONE・残は確定値待ち（正値が判明している修正＝C-1価格¥350/¥2450統一・C-2トライアル削除・C-3プレミアム→有料・H-1 Googleログイン記述削除・H-4ベータ→GA・H-3更新日2026-05-29 を反映済＝commit `676c3d6` push 済。残＝代表者個人名／OSバージョン／削除ページ正本／事業者確定値 が Keita 確認待ち、捏造回避で未作成） | content-creator＋林 | 新規。特商法は課金アプリ必須記載。AM-O の課金実態と整合必須 |
 | AM-O | T-O | 料金プランの Google Play 課金実装（購入導線の結線） | P1 | BLOCKED（コード DONE／Keita SKU 待ち。PricingScreen が startCheckout(targetPlanId) に結線済＝購入導線のコード完成。残は Keita の Play Console SKU 登録〔logic_paid_monthly/yearly を Active〕＋実機テストのみ） | dev-logic（実装済）＋Keita（SKU） | project_logic_play_billing_gaps の #4 SKU 確認が残課題。購入フロー本体は実装済 |
 | AM-P | T-P | フェルミランキング累計スコアのダミーを毎日ランダム増分 | P2 | DONE（2026-05-29 commit 1c18ebb。固定スコア廃止→「期間トップ実スコア×日次シード倍率」で動的化。実データ isMock:false は不変。main push＋backend を deploy-production.yml で本番デプロイ完了〔run 26629582944 success〕。ローカル smoke で週/月 mock スコアが降順・日替わり検証済） | dev-logic | server/routes/fermi.ts。リクエスト時算出方式＝cron 不要で運用が軽い |
 | AM-Q | T-Q | トレーニング検索の改修（右上虫眼鏡＋AI検索） | P1 | DONE（2026-05-29 commit 6a3c985〔別アクター実装〕。RoadmapScreenV3 右上虫眼鏡＋検索オーバーレイ、server/routes/search.ts〔POST /api/search, haiku-4-5, rate-limit 20/min〕、src/aiSearch.ts、i18n ja/en、vitest 13。backend は deploy-production.yml で本番反映済〔run 26629582944 success〕＝T-X と両方充足） | designer＋dev-logic | **T-X（トレーニングのAI検索）と同一依頼＝T-X も DONE**。重複起票しない |
@@ -107,9 +107,10 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
   - 両OS: モバイル専用。Android 実機で表示確認。
   - 永続化: 表示文言のみで persist 影響なし。
 
-### AM-N — 法務記載の見直し（利用規約／プライバシー／特商法）　[P1 / BLOCKED（点検 DONE／反映は確定値待ち）]
+### AM-N — 法務記載の見直し（利用規約／プライバシー／特商法）　[P1 / 正値修正 DONE・残は確定値待ち]
 
-> 状態（2026-05-29）: content-creator が点検完了＝成果物 `docs/LEGAL_REVIEW_20260529.md` 作成済（実在確認済）。ソースは未編集。最重要 C-1＝特商法ページの価格が実装〔¥350/¥2450 単一プラン〕と不一致（旧¥390/¥760 2段階のまま）。確定値12点が Keita 確認待ち。AM-O の課金実態（SKU・価格）と整合させてから反映。
+> 状態（2026-05-29 更新）: **正値が判明している修正は反映済・main push 済（commit `676c3d6`）**。反映内容＝C-1 特商法価格を実装の単一有料プラン（月¥350／年¥2,450）に統一・旧2段階4価格を削除／C-2 未実装の7日間無料トライアル表記を削除／C-3 廃止プラン名「プレミアム」→「有料」統一／H-1 Googleログイン前提記述を削除（認証はマジックリンクのみ）／H-4 ベータ版条項をGA表現へ（データ消失等の暫定文言撤去、アカウント紐づけでデータ引継ぎ可と明記。progress が Supabase upsert 同期する実装を確認済）／H-3 最終更新日を2026-05-29に更新（変更した8文書 ja/en）。eslint 0 error（CI同等）確認済。
+> **捏造回避で Keita に残した確定値待ち項目**: (1) L-1 特商法「運営統括責任者」が会社名のまま＝本来は代表者個人名（現状維持・未変更）／(2) 動作環境のOSバージョン（Android 8 か 10 か。minSdk 実値未確認のため未変更、tokushoho は「Android 10 以降」のまま）／(3) 削除ページの正本（account-deletion 系 vs delete-account 系のどちらを Play Console データ削除 URL とするか。ページ削除はしていない）／(4) 事業者名・所在地・電話番号・インボイス登録番号の確定値（既存値は維持、新規作成せず）。詳細は `docs/LEGAL_REVIEW_20260529.md` 末尾の反映ログ参照。
 
 - 依頼原文（Keita 2026-05-29）: 「利用規約とかプライバシーポリシーとか特定商取引法に基づく表記とかの記載を見直して」。
 - スコープ: アプリ内の **Terms / Privacy Policy / 特商法表記の現状を洗い出し、不足・不備・プレースホルダ・事実不整合を点検**する。特に **特定商取引法に基づく表記は課金アプリで必須記載項目**の充足を確認（販売事業者名・所在地・連絡先・販売価格・支払時期・支払方法・役務の提供時期・返金/解約条件・動作環境 等）。点検は林＋content-creator で自律的に進められるが、**法的に確定が要る記載値（事業者名・住所・連絡先・代表者等）は Keita 確認案件**＝確定できないため BLOCKED 扱いで明示。

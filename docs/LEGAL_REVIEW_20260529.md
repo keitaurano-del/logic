@@ -237,3 +237,29 @@ account-deletion 系（条文形式・詳細）を正とし、delete-account 系
 - 本レビューはソースを一切編集していない（点検＋ドラフトのみ）。実反映は dev-logic の i18n.ts 編集完了後に別タスクで実施する。
 - 反映タスク時の注意: 法務本文は HTML ハードコードなので i18n.ts の編集は不要（`pricing.*` と整合確認のみ）。HTML 10 枚（5文書×ja/en、ただし削除系一本化後は減る可能性）を対象に、§5 のドラフトと §4 の確定値を反映する。
 - 最重要は C-1（特商法の価格が実装と不一致）。課金している以上、ここは優先度高で潰すべき。
+
+---
+
+## 7. 反映ログ（2026-05-29、正値修正バッチ）
+
+Keita 委任のもと「正しい値が判明している修正だけ」を本番 HTML に反映し main へ push した（commit `676c3d6`）。捏造禁止項目（確定値が要るもの）は触らず Keita に残した。
+
+### 反映済（正値が判明＝捏造でない）
+
+| 項目 | 対象ファイル | before → after |
+|---|---|---|
+| C-1 価格統一 | tokushoho.html / tokushoho-en.html | 旧2段階4価格（スタンダード ¥390/¥2,730・プレミアム ¥760/¥5,320）→ 単一有料プラン（月額 ¥350（税込）/ 年額 ¥2,450（税込））。src/subscription.ts PLAN_PRICES と一致 |
+| C-2 トライアル削除 | tokushoho.html / tokushoho-en.html | 「無料トライアル: 登録から7日間…」行と、解約欄の「無料トライアル期間内の解約は課金されません」を削除（コードにトライアル実体なし） |
+| C-3 プレミアム→有料 | tokushoho.html / tokushoho-en.html | 「プレミアム機能」→「有料機能」（提供時期・解約タイミング・不具合返金の各所） |
+| H-1 Googleログイン削除 | privacy.html / privacy-en.html / account-deletion.html / account-deletion-en.html | アカウント情報欄から「Google アカウント情報（Google ログイン利用時）」「Google account information (when using Google Sign-In)」「Google アカウント連携情報」「Google account linkage」を削除し「メールアドレス、表示名」に簡素化（認証はマジックリンクのみ） |
+| H-4 ベータ→GA | terms.html / terms-en.html | 第2条「ベータ版について」→「サービスの提供形態について」。「不具合・データ消失が発生する可能性」「サービス全体が予告なく停止」等の暫定文言を撤去。「端末変更時に学習データが引き継がれない可能性」→「学習データはアカウントに紐づき、同一アカウントでログインすれば端末変更時も引き継げる」（progressDb が Supabase `from('progress').upsert` で同期する実装を確認済＝事実ベース） |
+| H-3 更新日 | 上記8文書 ja/en | 2026年5月4日 / 5月11日 → 2026年5月29日（May 29, 2026） |
+
+検証: `node node_modules/.bin/eslint .` で 0 error（CI 同等）。HTML は eslint 対象外だがビルド非破壊を確認。delete-account.html / -en.html は価格・Google・プレミアム・トライアルの誤りが無かったため変更なし。
+
+### 捏造回避で Keita に残した（確定値待ち・未変更）
+
+1. L-1 特商法「運営責任者」が会社名（アポロ合同会社）のまま。特商法は本来 代表者個人名 を書く欄 → **現状維持。要 Keita: 代表者個人名**。
+2. 動作環境 OS バージョン: tokushoho は「Android 10 以降」のまま。CLAUDE.md は「Android 8+」で食い違うが minSdk 実値が未確認 → **未変更。要 Keita / dev-logic: minSdk 実値の確認と表記統一**。
+3. 削除ページの正本: account-deletion 系（条文形式）と delete-account 系（手順カード形式）が併存。どちらを Play Console データ削除 URL の正本にするか不明 → **どちらも削除せず、事実誤り（今回は無し）だけ両系統で揃える方針。要 Keita: 正本の決定**。
+4. 事業者の法的確定値（事業者名・所在地・電話番号・インボイス登録番号）→ **既存値を維持。新規作成・推測補完はしていない。要 Keita: 各値の確定／インボイス登録の有無**。
