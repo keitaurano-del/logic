@@ -1,21 +1,20 @@
 import { useState } from 'react'
 import { Header } from '../components/platform/Header'
-import { CheckIcon, LockIcon } from '../icons'
+import { CheckIcon } from '../icons'
 import { MODES, getMode, setMode, type ModeId, type Mode } from '../theme'
-import { isPremium } from '../subscription'
 import { t } from '../i18n'
 
 interface Props {
   onBack: () => void
-  onUpgrade: () => void
+  // onUpgrade は呼び出し側互換のため残すが、premium テーマ削除に伴い未使用。
+  onUpgrade?: () => void
 }
 
 function ThemeCard({
-  mode, selected, locked, onSelect,
+  mode, selected, onSelect,
 }: {
   mode: Mode
   selected: boolean
-  locked: boolean
   onSelect: () => void
 }) {
   const { bg, card, text, accent } = mode.preview
@@ -70,38 +69,13 @@ function ThemeCard({
           <span style={{ fontSize: 16, fontWeight: 700, color: 'var(--md-sys-color-on-surface)' }}>
             {mode.name}
           </span>
-          {mode.tier === 'premium' && (
-            <span
-              style={{
-                fontSize: 10, fontWeight: 700, letterSpacing: '.04em',
-                textTransform: 'uppercase',
-                color: 'var(--md-sys-color-on-primary)',
-                background: 'var(--md-sys-color-primary)',
-                borderRadius: 999, padding: '2px 8px',
-              }}
-            >
-              {t('appearanceSettings.premiumBadge')}
-            </span>
-          )}
         </div>
         <div style={{ fontSize: 13, color: 'var(--md-sys-color-on-surface-variant)', lineHeight: 1.5 }}>
           {mode.description}
         </div>
       </div>
 
-      {locked ? (
-        <div
-          aria-hidden="true"
-          style={{
-            width: 28, height: 28, borderRadius: 999,
-            background: 'var(--md-sys-color-surface-variant)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            flexShrink: 0,
-          }}
-        >
-          <LockIcon width={15} height={15} style={{ color: 'var(--md-sys-color-on-surface-variant)' }} />
-        </div>
-      ) : selected ? (
+      {selected ? (
         <div
           aria-hidden="true"
           style={{
@@ -127,17 +101,10 @@ function ThemeCard({
   )
 }
 
-export function AppearanceSettingsScreen({ onBack, onUpgrade }: Props) {
+export function AppearanceSettingsScreen({ onBack }: Props) {
   const [mode, setLocalMode] = useState<ModeId>(getMode())
-  const premium = isPremium()
-  const freeModes = MODES.filter((m) => m.tier === 'free')
-  const premiumModes = MODES.filter((m) => m.tier === 'premium')
 
   function handleSelect(m: Mode) {
-    if (m.tier === 'premium' && !premium) {
-      onUpgrade()
-      return
-    }
     setLocalMode(m.id)
     setMode(m.id)
   }
@@ -156,12 +123,11 @@ export function AppearanceSettingsScreen({ onBack, onUpgrade }: Props) {
         <section>
           <div style={sectionLabelStyle}>{t('appearanceSettings.freeHeading')}</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {freeModes.map((m) => (
+            {MODES.map((m) => (
               <ThemeCard
                 key={m.id}
                 mode={m}
                 selected={mode === m.id}
-                locked={false}
                 onSelect={() => handleSelect(m)}
               />
             ))}
@@ -173,46 +139,6 @@ export function AppearanceSettingsScreen({ onBack, onUpgrade }: Props) {
             {t('appearanceSettings.modeHint')}
           </p>
         </section>
-
-        {premiumModes.length > 0 && (
-          <section>
-            <div style={sectionLabelStyle}>{t('appearanceSettings.premiumHeading')}</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {premiumModes.map((m) => (
-                <ThemeCard
-                  key={m.id}
-                  mode={m}
-                  selected={mode === m.id}
-                  locked={!premium}
-                  onSelect={() => handleSelect(m)}
-                />
-              ))}
-            </div>
-            {!premium && (
-              <p style={{
-                fontSize: 12, color: 'var(--md-sys-color-on-surface-variant)',
-                marginTop: 14, lineHeight: 1.6, padding: '0 4px',
-              }}>
-                {t('appearanceSettings.premiumLockedHint')}
-              </p>
-            )}
-            {!premium && (
-              <button
-                type="button"
-                onClick={onUpgrade}
-                style={{
-                  marginTop: 12, width: '100%', minHeight: 44,
-                  border: 0, borderRadius: 14, cursor: 'pointer',
-                  background: 'var(--md-sys-color-primary)',
-                  color: 'var(--md-sys-color-on-primary)',
-                  fontSize: 15, fontWeight: 700, fontFamily: 'inherit',
-                }}
-              >
-                {t('appearanceSettings.upgrade')}
-              </button>
-            )}
-          </section>
-        )}
       </div>
     </div>
   )

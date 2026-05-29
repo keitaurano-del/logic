@@ -1,15 +1,14 @@
 import { useState } from 'react'
 import { ACCENTS, MODES, loadTheme, saveTheme, applyTheme, type ModeId, type AccentId, type ThemeState } from './theme'
-import { isPaid, BETA_MODE } from './subscription'
 import { contrastRatio, describeContrast } from './colorContrast'
 import { t } from './i18n'
 import './ThemeSettings.css'
 
-type Props = { onBack: () => void; onUpgrade: () => void }
+// onUpgrade は v1 (App.tsx) の呼び出し互換のため残すが、premium テーマ削除に伴い未使用。
+type Props = { onBack: () => void; onUpgrade?: () => void }
 
-export default function ThemeSettings({ onBack, onUpgrade }: Props) {
+export default function ThemeSettings({ onBack }: Props) {
   const [state, setState] = useState<ThemeState>(loadTheme())
-  const premium = isPaid()
 
   const update = (next: ThemeState) => {
     setState(next)
@@ -18,11 +17,6 @@ export default function ThemeSettings({ onBack, onUpgrade }: Props) {
   }
 
   const pickMode = (id: ModeId) => {
-    const mode = MODES.find((m) => m.id === id)!
-    if (mode.tier === 'premium' && !premium) {
-      onUpgrade()
-      return
-    }
     update({ ...state, mode: id })
   }
 
@@ -43,12 +37,11 @@ export default function ThemeSettings({ onBack, onUpgrade }: Props) {
           <h3 className="ts-section-title">{t('theme.modeSection')}</h3>
           <div className="ts-mode-grid">
             {MODES.map((m) => {
-              const locked = m.tier === 'premium' && !premium
               const active = state.mode === m.id
               return (
                 <button
                   key={m.id}
-                  className={`ts-mode-card ${active ? 'active' : ''} ${locked ? 'locked' : ''}`}
+                  className={`ts-mode-card ${active ? 'active' : ''}`}
                   onClick={() => pickMode(m.id)}
                 >
                   <div
@@ -64,7 +57,6 @@ export default function ThemeSettings({ onBack, onUpgrade }: Props) {
                   <div className="ts-mode-info">
                     <div className="ts-mode-name">
                       {m.name}
-                      {m.tier === 'premium' && !BETA_MODE && <span className="ts-badge">PREMIUM</span>}
                     </div>
                     <div className="ts-mode-desc">{m.description}</div>
                   </div>
@@ -109,12 +101,6 @@ export default function ThemeSettings({ onBack, onUpgrade }: Props) {
             {t('theme.currentAccent', { name: ACCENTS.find((a) => a.id === state.accent)?.name || '' })}
           </p>
         </section>
-
-        {!premium && (
-          <button className="ts-upgrade-cta" onClick={onUpgrade}>
-            {t('theme.upgrade')}
-          </button>
-        )}
       </div>
     </div>
   )

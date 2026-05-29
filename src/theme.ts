@@ -23,27 +23,20 @@ export const ACCENTS: Accent[] = [
   { id: 'cyan',   get name() { return t('theme.accent.cyan') },   accent: '#06B6D4', accentSoft: 'rgba(6,182,212,0.12)',   accentGlow: 'rgba(6,182,212,0.25)',   accentDark: '#0891B2' },
 ]
 
-// Mode (light/dark/premium)
-export type ModeId = 'light' | 'dark' | 'sepia' | 'forest' | 'indigo' | 'rose' | 'slate'
-export type ModeTier = 'free' | 'premium'
+// Mode (light/dark)
+export type ModeId = 'light' | 'dark'
 
 export type Mode = {
   id: ModeId
   name: string
   description: string
-  tier: ModeTier
   preview: { bg: string; card: string; text: string; accent: string }
 }
 
 // MODES use getters for name/description so they re-localize on language switch.
 export const MODES: Mode[] = [
-  { id: 'light',      get name() { return t('theme.mode.light.name') },      get description() { return t('theme.mode.light.desc') },      tier: 'free',    preview: { bg: '#EEF1FA', card: '#FFFFFF', text: '#0D1220', accent: '#2E45A8' } },
-  { id: 'dark',       get name() { return t('theme.mode.dark.name') },       get description() { return t('theme.mode.dark.desc') },       tier: 'free',    preview: { bg: '#1A1F2E', card: '#252C40', text: '#E8ECF4', accent: '#6C8EF5' } },
-  { id: 'sepia',      get name() { return t('theme.mode.sepia.name') },      get description() { return t('theme.mode.sepia.desc') },      tier: 'premium', preview: { bg: '#F4ECDD', card: '#FBF6EC', text: '#3A2F23', accent: '#B25C3A' } },
-  { id: 'forest',     get name() { return t('theme.mode.forest.name') },     get description() { return t('theme.mode.forest.desc') },     tier: 'premium', preview: { bg: '#10221B', card: '#173026', text: '#E4EDE6', accent: '#6FB89A' } },
-  { id: 'indigo',     get name() { return t('theme.mode.indigo.name') },     get description() { return t('theme.mode.indigo.desc') },     tier: 'premium', preview: { bg: '#161E2B', card: '#1E2738', text: '#E7E3D8', accent: '#8FA9D6' } },
-  { id: 'rose',       get name() { return t('theme.mode.rose.name') },       get description() { return t('theme.mode.rose.desc') },       tier: 'premium', preview: { bg: '#F3E8E4', card: '#FBF3F0', text: '#3A2A28', accent: '#A65466' } },
-  { id: 'slate',      get name() { return t('theme.mode.slate.name') },      get description() { return t('theme.mode.slate.desc') },      tier: 'premium', preview: { bg: '#ECECEA', card: '#FBFBFA', text: '#1E242B', accent: '#3E6B70' } },
+  { id: 'light',      get name() { return t('theme.mode.light.name') },      get description() { return t('theme.mode.light.desc') },      preview: { bg: '#EEF1FA', card: '#FFFFFF', text: '#0D1220', accent: '#2E45A8' } },
+  { id: 'dark',       get name() { return t('theme.mode.dark.name') },       get description() { return t('theme.mode.dark.desc') },       preview: { bg: '#1A1F2E', card: '#252C40', text: '#E8ECF4', accent: '#6C8EF5' } },
 ]
 
 export type ThemeState = {
@@ -65,9 +58,10 @@ export function loadTheme(): ThemeState {
         return { ...DEFAULT, accent }
       }
       const merged = { ...DEFAULT, ...v } as ThemeState
-      // T-R: 削除済み id (custom/enterprise/startup/mono) や未知の id を
-      // localStorage に保存済みのユーザーは DEFAULT(dark) に安全フォールバック。
-      // tokens.css にブロックの無い id を適用すると無スタイル化するのを防ぐ。
+      // UI-1: premium テーマ削除 (sepia/forest/indigo/rose/slate) や旧削除 id
+      // (custom/enterprise/startup/mono)、未知の id を localStorage に保存済みの
+      // ユーザーは DEFAULT(dark) に安全フォールバック。MODES に存在しない id を
+      // 適用すると mode-* クラスが無スタイル化するのを防ぐ。
       if (!MODES.some((m) => m.id === merged.mode)) {
         merged.mode = DEFAULT.mode
       }
@@ -146,11 +140,6 @@ export function applyTheme(s: ThemeState) {
   const THEME_COLOR_BY_MODE: Record<ModeId, string> = {
     light:  '#EEF1FA',
     dark:   '#1A1F2E',
-    sepia:  '#F4ECDD',
-    forest: '#10221B',
-    indigo: '#161E2B',
-    rose:   '#F3E8E4',
-    slate:  '#ECECEA',
   }
   const themeColor = THEME_COLOR_BY_MODE[s.mode] ?? '#1A1F2E'
   let meta = document.head.querySelector<HTMLMetaElement>('meta[name="theme-color"]')
