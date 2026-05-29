@@ -426,8 +426,7 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
 
   return (
     <div style={{ background: 'var(--bg-primary)', minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: 'var(--text-primary)' }}>
-      <div style={{ padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ fontSize: 24, fontWeight: 700, letterSpacing: '-.005em' }}>{t('roadmap.heading')}</div>
+      <div style={{ padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 14px', display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
           {props.onOpenReviewHub && (
             <button
