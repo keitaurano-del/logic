@@ -546,19 +546,55 @@ Keep responses concise (2-4 sentences). Do not solve the problem for them.`
   // =============================================
   router.get('/ranking', async (req: Request, res: Response) => {
     const DISPLAY_LIMIT = 10
-    // ダミーデータ（実データが足りないときの穴埋め用、スコア順）
-    // occupation バッジ運用の動作確認も兼ねて、いくつかの mock に職業を割り当てておく。
-    const MOCK_RANKING: Array<{ name: string; score: number; isMock: boolean; occupation: string | null }> = [
-      { name: 'Taro M.', score: 98, isMock: true, occupation: 'consultant' },
-      { name: 'Yuki S.', score: 87, isMock: true, occupation: 'strategy' },
-      { name: 'Hana K.', score: 76, isMock: true, occupation: 'engineering' },
-      { name: 'Ryo T.', score: 65, isMock: true, occupation: 'sales_marketing' },
-      { name: 'Ami F.', score: 54, isMock: true, occupation: 'professional' },
-      { name: 'Ken N.', score: 43, isMock: true, occupation: 'admin' },
-      { name: 'Saki I.', score: 38, isMock: true, occupation: 'executive' },
-      { name: 'Jiro W.', score: 27, isMock: true, occupation: 'student' },
-      { name: 'Mika O.', score: 15, isMock: true, occupation: null },
+    // ダミーデータ（実データが足りないときの穴埋め＋ランキングに動きを出す用）。
+    // AM-P (2026-05-29): 以前は固定スコア（最大98）だったため、累計の多いユーザー
+    // （管理者）が常にダントツ1位で「張り合いがない」状態だった。そこでダミー上位の
+    // スコアを「その期間のトップ実スコア（無ければ period 別の下限）× 日次シードの倍率」
+    // で算出する。これにより (a) 実トップと毎日張り合う水準へ自動追従し、(b) JST 日付
+    // シードで毎日 deterministically に変動する（同一日内は安定＝リロードで動かない）。
+    // 実データ（isMock:false）の値は一切変更しない。
+    const MOCK_PROFILES: Array<{ name: string; occupation: string | null }> = [
+      { name: 'Taro M.', occupation: 'consultant' },
+      { name: 'Yuki S.', occupation: 'strategy' },
+      { name: 'Hana K.', occupation: 'engineering' },
+      { name: 'Ryo T.', occupation: 'sales_marketing' },
+      { name: 'Ami F.', occupation: 'professional' },
+      { name: 'Ken N.', occupation: 'admin' },
+      { name: 'Saki I.', occupation: 'executive' },
+      { name: 'Jiro W.', occupation: 'student' },
+      { name: 'Mika O.', occupation: null },
     ]
+    // 各順位の倍率 [base, span]: score = anchor * (base + span * rand)。上位ほど 1.0 付近で
+    // トップ実スコアと拮抗し（base+span 最大 1.12 で時々上回る）、下位ほど低くなる。
+    const MOCK_FACTORS: Array<[number, number]> = [
+      [0.92, 0.20], [0.80, 0.16], [0.68, 0.15], [0.57, 0.14], [0.47, 0.13],
+      [0.38, 0.12], [0.30, 0.11], [0.22, 0.10], [0.14, 0.09],
+    ]
+    // period 別の anchor 下限（実データが乏しくてもボードが寂しくならないように）
+    const ANCHOR_FLOOR: Record<string, number> = { week: 140, month: 300, all: 340 }
+    // 決定論的 PRNG（mulberry32）— 同じ seed なら必ず同じ値。
+    const mulberry32 = (seed: number) => {
+      let a = seed >>> 0
+      return () => {
+        a |= 0; a = (a + 0x6d2b79f5) | 0
+        let t = Math.imul(a ^ (a >>> 15), 1 | a)
+        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+      }
+    }
+    // JST の通算日数（同一日内は同値 → スコアは日替わりで変動）
+    const jstDayIndex = Math.floor((Date.now() + 9 * 3600 * 1000) / 86400000)
+    const buildMockRanking = (periodKey: string, topReal: number) => {
+      const pk = periodKey === 'week' ? 'week' : periodKey === 'month' ? 'month' : 'all'
+      const periodOffset = pk === 'week' ? 0 : pk === 'month' ? 1 : 2
+      const anchor = Math.max(topReal, ANCHOR_FLOOR[pk])
+      return MOCK_PROFILES.map((p, i) => {
+        const rnd = mulberry32(jstDayIndex * 1000 + periodOffset * 100 + i)
+        const [base, span] = MOCK_FACTORS[i]
+        const score = Math.max(1, Math.round(anchor * (base + span * rnd())))
+        return { name: p.name, score, isMock: true, occupation: p.occupation }
+      })
+    }
 
     try {
       const period = (req.query.period as string) || 'week'
@@ -625,6 +661,10 @@ Keep responses concise (2-4 sentences). Do not solve the problem for them.`
             })
         }
       }
+
+      // ダミーは「期間トップ実スコア × 日次シード倍率」で動的生成（AM-P）
+      const topReal = realRanking.length > 0 ? realRanking[0].score : 0
+      const MOCK_RANKING = buildMockRanking(period, topReal)
 
       // 実データ + ダミーをマージしてスコア降順、表示上限まで
       // 安定ソート: スコアが同じなら実データを優先
