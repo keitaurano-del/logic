@@ -663,7 +663,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
               cursor: 'pointer', WebkitTapHighlightColor: 'transparent',
               border: 'none', zIndex: 10, position: 'relative',
               flexShrink: 0,
-              color: saved ? 'var(--brand)' : '#fff',
+              color: saved ? 'var(--brand)' : 'var(--text-primary)',
             }}
           >
             {saved ? <BookmarkFilledIcon width={18} height={18} /> : <BookmarkIcon width={18} height={18} />}
@@ -727,7 +727,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
             style={{ width: 44, height: 44, borderRadius: '50%', background: 'var(--bg-card)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', WebkitTapHighlightColor: 'transparent', border: 'none', zIndex: 10, position: 'relative', flexShrink: 0 }}
             aria-label={t('stories.closeAria')}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-primary)" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
           </button>
         </div>
       </div>
