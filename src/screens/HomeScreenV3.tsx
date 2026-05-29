@@ -195,15 +195,15 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'color-mix(in srgb, var(--accent-btn-fg) 82%, transparent)', fontSize: 14, fontWeight: 500, marginBottom: 16 }}>
                 <span>{allFermiDone ? t('home.allFermiDoneDesc') : t('home.dailyUpdate')}</span>
               </div>
-              <div style={{ background: 'var(--accent-btn-fg)', color: 'var(--accent-btn)', borderRadius: 'var(--radius-pill)', padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700, boxShadow: '0 6px 18px rgba(0,0,0,.14)' }}>
+              <div style={{ background: 'color-mix(in srgb, var(--accent-btn) 78%, #000)', color: 'var(--accent-btn-fg)', borderRadius: 'var(--radius-pill)', padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700, boxShadow: '0 6px 18px rgba(0,0,0,.14)' }}>
                 {allFermiDone ? (
                   <>
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={'var(--accent-btn)'} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12" /></svg>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={'var(--accent-btn-fg)'} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12" /></svg>
                     {t('home.allFermiDoneCta')}
                   </>
                 ) : (
                   <>
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill={'var(--accent-btn)'} aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill={'var(--accent-btn-fg)'} aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>
                     {t('home.dailyChallenge')}
                   </>
                 )}
