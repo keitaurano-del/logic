@@ -11,7 +11,7 @@ import { logout } from '../supabase'
 import { getSubscriptionState } from '../subscription'
 import { getStudyDates as _getStudyDatesArr } from '../stats'
 import LessonIcon from '../LessonIcon'
-import { StarIcon, FlameIcon as FlameSvgIcon } from '../icons'
+import { StarIcon } from '../icons'
 import { t, getLocale, localizedHtmlPath } from '../i18n'
 import { getMode } from '../theme'
 import '../components/levelup.css'
@@ -439,18 +439,20 @@ function StatCard({ val, label, onClick, highlight }: { val: string; label: stri
 }
 
 function FlameIcon({ size = 20, dim = false }: { size?: number; dim?: boolean }) {
-  // 2026-05-29: UI chrome の絵文字 🔥 を src/icons の SVG FlameIcon に置換（emoji 不可ルール遵守）
+  // Keita明示指示の例外: 絵文字🔥固定。SVGへ消し戻し禁止(UI-9)
+  // size(px)→font-size、dim→opacity で再現。aria-hidden で TTS 対象外。
   return (
-    <FlameSvgIcon
-      width={size}
-      height={size}
+    <span
       aria-hidden="true"
       style={{
         display: 'inline-block',
-        color: 'var(--accent)',
+        fontSize: size,
+        lineHeight: 1,
         opacity: dim ? 0.35 : 1,
       }}
-    />
+    >
+      🔥
+    </span>
   )
 }
 
