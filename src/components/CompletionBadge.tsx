@@ -7,7 +7,7 @@
  *  - count = 2: チェックマーク + 半分塗りつぶし (リング状) + 数字「2」
  *  - count = 3+: チェックマーク + フル塗りつぶし + 数字「3」「4」… (上限 9+)
  *
- * 配色は brand トークンに統一。半塗りは conic-gradient で 50% リングを表現。
+ * 配色はテーマのアクセント (--accent / --accent-fg) に追従。半塗りは conic-gradient で 50% リングを表現。
  */
 interface Props {
   count: number
@@ -34,7 +34,8 @@ export function CompletionBadge({ count, size = 28 }: Props) {
           width: size,
           height: size,
           borderRadius: '50%',
-          background: 'var(--brand)',
+          background: 'var(--accent)',
+          color: 'var(--accent-fg)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -46,7 +47,7 @@ export function CompletionBadge({ count, size = 28 }: Props) {
           height={size * 0.43}
           viewBox="0 0 24 24"
           fill="none"
-          stroke="#fff"
+          stroke="currentColor"
           strokeWidth="3"
           strokeLinecap="round"
           aria-hidden="true"
@@ -76,16 +77,16 @@ export function CompletionBadge({ count, size = 28 }: Props) {
             position: 'absolute',
             inset: 0,
             borderRadius: '50%',
-            background: `color-mix(in srgb, var(--brand) 15%, transparent)`,
+            background: `color-mix(in srgb, var(--accent) 15%, transparent)`,
           }}
         />
-        {/* 半分だけ塗る (左半分が brand、右半分が透明) */}
+        {/* 半分だけ塗る (左半分が accent、右半分が透明) */}
         <div
           style={{
             position: 'absolute',
             inset: 0,
             borderRadius: '50%',
-            background: `conic-gradient(from 180deg, var(--brand) 0deg 180deg, transparent 180deg 360deg)`,
+            background: `conic-gradient(from 180deg, var(--accent) 0deg 180deg, transparent 180deg 360deg)`,
           }}
         />
         {/* 中心の数字 (背景は白丸で抜く) */}
@@ -100,7 +101,7 @@ export function CompletionBadge({ count, size = 28 }: Props) {
             justifyContent: 'center',
             fontSize,
             fontWeight: 800,
-            color: 'var(--brand)',
+            color: 'var(--accent)',
             lineHeight: 1,
             letterSpacing: '-0.02em',
           }}
@@ -121,17 +122,17 @@ export function CompletionBadge({ count, size = 28 }: Props) {
         width: size,
         height: size,
         borderRadius: '50%',
-        background: 'var(--brand)',
+        background: 'var(--accent)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         flexShrink: 0,
         fontSize,
         fontWeight: 800,
-        color: '#fff',
+        color: 'var(--accent-fg)',
         lineHeight: 1,
         letterSpacing: '-0.02em',
-        boxShadow: `0 0 0 2px color-mix(in srgb, var(--brand) 25%, transparent)`,
+        boxShadow: `0 0 0 2px color-mix(in srgb, var(--accent) 25%, transparent)`,
       }}
     >
       {label}
