@@ -260,8 +260,21 @@
   --font-ui:      'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Meiryo', sans-serif;
   --font-display: 'Inter Tight', 'Inter', 'Noto Sans JP', -apple-system, sans-serif;
   --font-mono:    'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+  /* UI 刷新 第2弾: 見出し用の和文明朝（エディトリアル・トーン）。
+   * 既存 --font-display（Inter Tight 系・全画面で利用）とは別レイヤーの新トークン。
+   * @font-face は index.css で self-host 定義。落ちたら本文 sans にフォールバック。 */
+  --font-serif-jp: 'Shippori Mincho', 'Noto Serif JP', var(--font-ui);
   --sans:  var(--font-ui);
   --serif: var(--font-display);
+
+  /* UI 刷新 第2弾 type scale（designer 正本 UI_RENEWAL_ASSETS_20260529）。
+   * Display/Title/Section は明朝（--font-serif-jp）、Body/Caption は sans。
+   * 現状の平坦な見出し（greeting 20/700・カード見出し 19/700）をこの階層へ置き換える土台。 */
+  --fs-display: 30px;  /* ホーム挨拶・最上位見出し（明朝 Bold） */
+  --fs-title:   24px;  /* 画面タイトル（明朝 Bold） */
+  --fs-section: 20px;  /* セクション見出し（明朝 Medium） */
+  --fs-body:    16px;  /* 本文（sans Regular） */
+  --fs-caption: 13px;  /* 補足・キャプション（sans） */
 
   /* Font scale */
   --font-xs:   11px;
