@@ -50,6 +50,19 @@
     border: 1px solid rgba(108,142,245,0.3); border-radius: 12px;
     font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: none;
   }
+  a { word-break: break-word; overflow-wrap: anywhere; }
+  table { table-layout: fixed; }
+  @media (max-width: 600px) {
+    header { padding: 36px 18px 24px; }
+    h1 { font-size: 24px; }
+    main { padding: 24px 18px; }
+    section { margin-bottom: 26px; }
+    h2 { font-size: 14px; padding: 9px 12px; }
+    p, li, th, td { font-size: 13px; }
+    th, td { padding: 10px 12px; }
+    th { width: 34%; }
+    .back-btn { width: 100%; justify-content: center; }
+  }
 </style>
 </head>
 <body>
