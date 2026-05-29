@@ -90,9 +90,9 @@ export function PersonalCourseScreen({ onStartLesson, onExit, onBack }: Personal
                     ? t('personalCourse.lessonAriaInCourseNext', { n: idx + 1, title: lesson.title })
                     : t('personalCourse.lessonAriaInCourse', { n: idx + 1, title: lesson.title })}
                 style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', cursor: 'pointer', borderTop: idx > 0 ? `1px solid ${'var(--border)'}` : 'none', background: isNext ? `color-mix(in srgb, var(--brand) 3%, transparent)` : 'transparent', border: 'none', borderLeft: 'none', borderRight: 'none', borderBottom: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%' }}>
-                <div style={{ width: 28, height: 28, borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: isDone ? 'var(--brand)' : isNext ? `color-mix(in srgb, var(--brand) 13%, transparent)` : `color-mix(in srgb, var(--text-muted) 9%, transparent)`, border: isNext && !isDone ? `1.5px solid ${'var(--brand)'}` : 'none' }}>
+                <div style={{ width: 28, height: 28, borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-fg)', background: isDone ? 'var(--accent)' : isNext ? `color-mix(in srgb, var(--brand) 13%, transparent)` : `color-mix(in srgb, var(--text-muted) 9%, transparent)`, border: isNext && !isDone ? `1.5px solid ${'var(--brand)'}` : 'none' }}>
                   {isDone
-                    ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                    ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
                     : <span style={{ fontSize: 11, fontWeight: 700, color: isNext ? 'var(--brand)' : 'var(--text-muted)' }}>{idx + 1}</span>
                   }
                 </div>
