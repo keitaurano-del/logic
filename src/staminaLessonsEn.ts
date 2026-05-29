@@ -218,24 +218,18 @@ const staminaLesson442: LessonData = {
       title: 'People who keep working are people who plan recovery',
       content:
         "People who keep working at high quality for long stretches don't have more total energy than others. They deliberately run a cycle of depletion and recovery.\n\nWork with focus → energy drops → rest strategically → energy returns. Run this loop several times within a day, and you avoid the end-of-day state of \"I can't think anymore.\"\n\n- In the morning, clear the day's heaviest work in a focus block.\n- Insert short recovery at each seam to keep the troughs shallow.\n- Across the day, add recovery \"little and in advance,\" not \"a lot, later.\"\n\nWhether this loop is running is what separates how much you have left in the evening, even for the same workload.\n\n:::point\nYou keep working not because of total energy, but because you run a loop of depletion and recovery. Alternating focus with strategic breaks changes how much you have left in the evening.\n:::",
-      visual: 'FeedbackLoopDiagram',
+      visual: 'DesignThinkingCycleDiagram',
       visualProps: {
-        sectionLabel: 'The strategic-break loop',
-        loopType: 'R',
-        loopName: 'You work because you rest',
-        nodes: [
-          { label: 'Work with focus' },
-          { label: 'Energy drops' },
-          { label: 'Rest strategically' },
-          { label: 'Energy returns' },
+        sectionLabel: 'The effort-and-recovery cycle — you work because you rest',
+        revealMode: 'static',
+        steps: [
+          { num: 1, label: 'Work with focus', en: 'Focus' },
+          { num: 2, label: 'Energy drops', en: 'Deplete' },
+          { num: 3, label: 'Rest strategically', en: 'Rest' },
+          { num: 4, label: 'Energy returns', en: 'Recover' },
         ],
-        arrows: [
-          { from: 0, to: 1, polarity: '+' },
-          { from: 1, to: 2, polarity: '+' },
-          { from: 2, to: 3, polarity: '+' },
-          { from: 3, to: 0, polarity: '+' },
-        ],
-        hint: 'The more you plan recovery in advance, the faster the loop turns and the longer quality holds.',
+        center: { label: 'Effort & Recovery', title: 'Sustainable pace' },
+        hint: 'The more you plan recovery in advance, the faster the cycle turns and the longer quality holds.',
       },
       outro:
         'This loop expresses the relationship "you can work because you rest." Cut breaks and stop the loop, and afternoon focus falls, so you end up slower. The more you plan recovery in advance, the faster the loop turns and the longer quality holds into the evening.',
@@ -290,27 +284,26 @@ const staminaLesson443: LessonData = {
       title: 'Even the same "play" can restore you or drain you',
       content:
         'Even activities you\'d call play can either lead to recovery or tire you out further. The difference is whether the four experiences above are present.\n\n- [icon:good] Restful play: you can lose yourself and forget work, you chose it, mind and body loosen up (a walk, a hobby, exercise, time with friends).\n- [icon:bad] Draining play: you join out of obligation, you keep watching for work messages, you\'re wiped out when it ends (idle phone scrolling, reluctant socializing).\n\nFor example, even the same phone: an absorbing game or piece of content lets you detach, but if you\'re just idly chasing notifications and feeds, the brain keeps processing information and it isn\'t recovery.\n\n:::tip\nWhether play restores you depends less on the kind of activity than on "is your head off work?" and "did you choose it?" Idle scrolling is work in the shape of play.\n:::',
-      visual: 'GoodBadSlideDiagram',
+      visual: 'AnswerContrastDiagram',
       visualProps: {
         sectionLabel: 'Restful play vs. draining play',
-        good: {
-          title: 'Restful play',
-          keyMessage: 'Your head is off work, and you chose it',
-          points: [
-            'You can lose yourself and forget work',
-            'You chose the activity yourself',
-            'Mind and body loosen up (a walk, a hobby, exercise, time with friends)',
-          ],
-        },
         bad: {
           title: 'Draining play',
-          clutter: [],
-          points: [
+          items: [
             'You join out of obligation',
             'You keep watching for work messages',
             "You're wiped out when it ends (idle scrolling, reluctant socializing)",
           ],
         },
+        good: {
+          title: 'Restful play',
+          items: [
+            'You can lose yourself and forget work',
+            'You chose the activity yourself',
+            'Mind and body loosen up (a walk, a hobby, exercise, time with friends)',
+          ],
+        },
+        hint: 'Whether play restores you depends less on the activity than on getting your head off work and choosing it yourself.',
       },
       outro:
         'Whether play restores you depends not on the kind of activity but on "is your head off work?" and "did you choose it?" Even the same phone lets you detach if you\'re absorbed, but idly chasing notifications keeps the brain processing — work in the shape of play.',
