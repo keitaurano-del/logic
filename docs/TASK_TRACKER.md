@@ -6,6 +6,220 @@ task-manager エージェントが管理するタスク台帳の正本。
 
 ---
 
+## バッチ: 2026-05-29 追加修正（Keita 朝・席外し中）
+
+Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で自律的に進める前提で構造化（実装は委譲）。
+
+⚠ ID 採番について（task-manager 注記・要 Keita 共有）: Keita の依頼文では「ID は T-K から続ける」と指示があったが、**この台帳は既に T-K〜T-X を別バッチで使用済み**（T-K=ジャーナルグラフtap詳細[DONE]、T-L=フェルミ答え位置[DONE]、T-R〜T-W=テーマ系、T-X=AI検索 等）。グローバルで衝突するため、このバッチは **AM-K〜AM-R**（AM = Additional Morning）プレフィックスで採番する。Keita 依頼の T-K〜T-R ラベルとは下表のとおり1対1対応。Keita 帰還時に「ID 体系を AM- にした／既存 T-* と衝突回避した」点を共有する。
+
+さらに重要: **このバッチの数件は既存タスクと内容が重複/連動する**。重複起票せず既存へ寄せる方針を各項に明記した（特に AM-K↔T-V、AM-L↔T-T根本原因A/T-S、AM-Q↔T-X）。
+
+| ID | Keita ラベル | タイトル | 優先度 | ステータス | 担当案 | 既存タスクとの関係 |
+|----|------------|----------|--------|-----------|--------|------------------|
+| AM-K | T-K | UI 全体の「AIっぽさ」をなくす刷新方針の策定（提案ドキュメント） | P1 | TODO（既存 T-V エピックに統合・方針ドキュメントとして拡張） | designer（主導）＋林 | **T-V（テーマ再設計エピック「まだAI感がある」）の上位＝UI 全体の刷新方針**。T-V を内包する形 |
+| AM-L | T-L | グラデーション除去（カスタムコース生成カード／今日の1問カード） | P1 | DONE（2026-05-29。Daily Fermi カード〔HomeScreenV3:184〕の --brand-grad-h グラデ廃止→フラット var(--accent)＋青グロー boxShadow を accent追従に。カスタムコース生成カード〔RoadmapScreenV3:697「AIで自分専用コースを作る」〕の linear-gradient 廃止→フラット var(--accent)＋内部アイコンを accent-fg 追従に。両方テーマ追従） | dev-logic | T-S／T-T 根本原因A と統合実装 |
+| AM-M | T-M | 「・今日の一問」の先頭「・」除去＋表記ゆれ統一 | P2 | DONE（2026-05-29。表記ゆれを「今日の1問」に統一〔pricing.heroSub/featFermi・savedItems.filterFermi/emptyFermi/typeFermi の ja を 今日の一問→今日の1問。en は変更なし〕。先頭中黒「・」は現ソースに literal/JSX前置/CSS ::before いずれも存在せず＝grep 全量確認で付与元なし。home カード先頭の装飾ドットは中黒文字でなく styled div の小円なので対象外として維持） | dev-logic | 表記は home 主導線の「今日の1問」に寄せた |
+| AM-N | T-N | 法務記載の見直し（利用規約／プライバシー／特商法） | P1 | BLOCKED（法的確定値は Keita 確認案件・点検は自律可） | content-creator＋林 | 新規。特商法は課金アプリ必須記載 |
+| AM-O | T-O | 料金プランの Google Play 課金実装（購入導線の結線） | P1 | TODO（SKU Active 確認は Keita 作業に切出し） | dev-logic | project_logic_play_billing_gaps の #4 SKU 確認が残課題。購入フロー本体は実装済 |
+| AM-P | T-P | フェルミランキング累計スコアのダミーを毎日ランダム増分 | P2 | TODO | dev-logic | 新規。dummy は server/routes/fermi.ts:545-629 の静的配列 |
+| AM-Q | T-Q | トレーニング検索の改修（右上虫眼鏡＋AI検索） | P-TBD | TODO（**既存 T-X と完全重複**・統合管理） | designer＋dev-logic | **T-X（トレーニングのAI検索）と同一依頼**。AM-Q は T-X に寄せる（重複起票しない） |
+| AM-R | T-R | 既存登録ユーザ（管理者=Keita）のジャーナルタグ見直し | P1 | BLOCKED（実データ書き換え＝Keita 承認案件） | dev-logic＋林 | T-D の tagConsolidation を既存データへ適用。非可逆 |
+
+全体運用メモ（各タスクに反映）:
+- デプロイ運用: 「終わったやつから Internal で配信」で Keita 承認済み。main push で android-deploy.yml が internal track へ自動配信。**ただし backend 変更（AM-O 検証・AM-P の cron/API・AM-Q の検索 API・AM-R のデータ）は本番反映に手動 deploy-production.yml が必須**（project_logic_render_auto_deploy）。アプリは本番 backend を叩くので、backend をデプロイしないと internal ビルドでも新挙動が出ない。
+- Keita 確認事項（席外し中・保留）: AM-N の法的記載値、AM-O の Play Console SKU Active 登録、AM-R の実データ書き換え承認。林は実装を進められる所まで進め、帰還時に確認を取る形でブロッカー化する。
+- 関連 memory: project_logic_play_billing_gaps（AM-O）、tagConsolidation.ts＝T-D 実装（AM-R）、feedback_app_copy_neutral（全 UI 文言）、feedback_logic_title_doing（AM-M/AM-Q の title）、project_logic_mobile_only、feedback_logic_auth_magiclink_only。
+
+### AM-K — UI 全体の「AIっぽさ」をなくす刷新方針の策定　[P1 / TODO（T-V に統合・拡張）]
+
+- 依頼原文（Keita 2026-05-29）: 「全体的に UI の AI っぽさをなくしたいので刷新方針を考えてほしい」。
+- スコープ: 配色テーマだけでなく **UI 全体（レイアウト・タイポ・余白・コンポーネント形状・グラデ/グロー多用・絵文字感・量産テンプレ感）の "AI っぽさ" を診断 → 刷新方針を提案ドキュメント化する**親タスク。成果物は方針/提案ドキュメント（designer 主導＋林）。**具体実装は別タスクへ切り出す前提**（このタスク自体はコードを生まない）。
+- 既存タスクとの統合（重複回避）: 既に **T-V（テーマ再設計エピック「まだ AI 感がある」designer 提案中）** が走っている。AM-K は T-V の上位概念＝「テーマだけでなく UI 全体の AI 感」。**T-V を AM-K の配色パートとして内包**し、AM-K で UI 全体（テーマ＋レイアウト＋タイポ＋装飾過多）を束ねる。T-V の designer 提案ドキュメント（`docs/THEME_REDESIGN_PROPOSAL_20260529.md`）を AM-K の刷新方針ドキュメントへ拡張するのが筋。
+- 「AI っぽさ」の診断観点（提案で潰す候補・林の暫定洗い出し）:
+  - 過剰なグラデ/グロー（AM-L のグラデ除去・T-T 根本原因A の青グラデが代表例）。
+  - 量産テンプレ配色（T-R で削除する enterprise/startup の紺×シルバー等）。
+  - 均質な角丸カード＋影の多用、絵文字 UI 感、汎用 SaaS ダッシュボード感。
+  - タイポの個性不足（手書き/エディトリアル寄りの方向性は feedback_logic_course_thumbnails のサムネ路線と整合させる）。
+- DoD（提案フェーズ・designer＋林）: (1) 現状 UI の "AI っぽさ" を画面横断で診断し具体箇所をリストアップ、(2) 刷新方針（配色＝T-V／レイアウト・タイポ・装飾の指針／優先順位）を提案ドキュメントにまとめ、(3) 実装タスクへの分解案（どれを AM-L/T-T/T-V 等の既存タスクに寄せ、どれを新規切り出すか）を提示、(4) 会話本文に内容を直接展開し Keita 選定待ち（feedback_direct_content_not_path）。**実装・ship は含まない**。
+- サブタスク:
+  - [ ] designer＋林: UI 全体の AI 感を画面横断で診断（具体箇所・原因の分類）
+  - [ ] designer: 刷新方針（配色＝T-V を内包／レイアウト・タイポ・装飾指針）を提案ドキュメント化
+  - [ ] 実装タスクへの分解案（既存 AM-L/T-S/T-T/T-V/T-R への割当＋新規切り出し）
+  - [ ] 会話本文に方針を直接展開し Keita 選定待ち
+- 担当: designer（主導・提案）＋林（診断・取りまとめ）。実装は別タスク委譲。
+- 抜けもれ提言:
+  - サンプル承認フロー: 主観・好みの領域（Bucket2）。提案 → Keita 選定 → 実装の順厳守（feedback_logic_course_thumbnails）。
+  - 重複回避（最重要）: T-V と二重に動かさない。AM-K=UI 全体方針の親、T-V=その配色実装パート。designer は1本の提案ドキュメントに統合する。
+  - デザイン制約踏襲: ハードコード hex 禁止・CSS 変数・UI chrome は emoji 不可 SVG のみ（刷新後も維持）。サムネ路線（手書き＋図解）とトンマナを揃える。
+  - i18n: 方針ドキュメントは社内成果物（ja でよい）。実装で UI 文言が変わる場合は別タスクで ja/en 両対応。
+  - 両OS: モバイル専用。刷新方針はモバイル体験基準で（project_logic_mobile_only）。
+
+### AM-L — グラデーション除去（カスタムコース生成カード／今日の1問カード）　[P1 / TODO]
+
+- 依頼原文（Keita 2026-05-29）: 「『AI で自分専用コースを作る』と今日の1問のカードは色のグラデーションをなくして」。
+- スコープ: 対象2カードの背景グラデーションをフラット化する。
+  - (a) **カスタムコース生成カード**（「AI で自分専用コースを作る」）: `RoadmapScreenV3.tsx:697` の `background: linear-gradient(135deg, var(--brand) 0%, var(--brand-light) 100%)`（courses 0件時のグラデ）。:1463 のカード `linear-gradient(135deg, color-mix(...var(--brand)...))` も対象候補（実装時に該当カードか要確認）。
+  - (b) **ホームの今日の1問カード**（Daily Fermi）: `HomeScreenV3.tsx:184` の `background: 'var(--brand-grad-h)'`（青グラデ）。:178 の boxShadow `rgba(108,142,245,.32)`（青グロー）もグラデ感の一部なので合わせて見直す。
+- ⚠既存タスクとの連動（最重要・重複回避）: (b) の今日の1問カードは **T-S（テーマ追従）/ T-T 根本原因A（`--brand-grad-h` を各モードで override）と完全に同一の箇所**。T-T はグラデを「テーマ追従させる」方向、AM-L は「グラデ自体をなくす（フラット化）」方向で、**方向が違うが同じ DOM/CSS を触る**。→ Keita 指示は「グラデをなくす」が最新なので、(b) は **フラット単色（テーマトークン `var(--card)` or `var(--accent)` 系の単色）に置換**し、その単色をテーマ追従させる（T-T の追従要件も同時に満たす）。**dev-logic が AM-L (b) と T-S/T-T 根本原因A を同一作業で処理**するのが筋（別々にやると競合）。
+- 既存資産: `src/screens/RoadmapScreenV3.tsx:697/:1463`（custom course カード）、`src/screens/HomeScreenV3.tsx:178/:184`（Daily Fermi カード）、`src/styles/tokens.css`（`--brand-grad-h` 等のグラデトークン定義元）。
+- DoD: (1) カスタムコース生成カード（「AI で自分専用コースを作る」）の背景がフラット単色（グラデ廃止）、(2) ホームの今日の1問カードの背景がフラット単色（`--brand-grad-h` グラデ廃止）＋ 青グロー boxShadow も過剰なら抑制、(3) 単色はハードコード hex でなくテーマトークン参照でテーマ追従する（T-S/T-T 追従要件を同時充足）、(4) フラット化後も本文・CTA・ラベルが WCAG AA コントラスト、(5) 回帰: 両カードのレイアウト・タップ導線が破綻しない、(6) tsc 0 / eslint `.` 0、(7) Android 実機で全テーマ確認。
+- サブタスク:
+  - [ ] 実装前調査: 両カードのグラデ指定箇所を確定（RoadmapScreenV3:697/:1463、HomeScreenV3:178/:184）。どの単色トークンに置くか決定
+  - [ ] custom course カードのグラデ → フラット単色（テーマトークン）
+  - [ ] Daily Fermi カードの `--brand-grad-h` → フラット単色（T-S/T-T 根本原因A と統合・テーマ追従）＋ 青グロー boxShadow の見直し
+  - [ ] 全テーマでフラット色が追従＋コントラスト確認
+  - [ ] 回帰: カードのレイアウト・CTA・タップ導線、共有トークン波及の目視
+  - [ ] tsc 0 / eslint `.`（全体）0
+- 抜けもれ提言:
+  - デザイン制約: ハードコード hex 禁止。フラット単色もテーマトークン（`var(--card)`/`var(--accent)`/`var(--accent-soft)` 等）で（CLAUDE.md）。
+  - 回帰（最重要）: `--brand-grad-h` を共有する他箇所（DailyFermiScreen:1133・LoginScreen:115＝T-T 根本原因A の同変数）への波及。AM-L で「なくす」のは指定の2カードのみ。他箇所は T-T の方針（テーマ追従 override）で扱うか、まとめてフラット化するかを Keita 確認（指示は2カード明示なので、他は T-T で追従させるのが安全）。
+  - i18n: 色/装飾のみで新規文言なし。
+  - アクセシビリティ: グロー/グラデ除去でコントラストが変わるので CTA・本文の AA を再検算（T-U と整合）。
+  - 両OS: モバイル専用。Android 実機で両カード×全テーマ確認。
+  - 永続化: 表示のみで persist 影響なし。
+  - 連動: AM-K（UI 全体の AI 感除去）の「過剰グラデ/グロー」の代表的具体例＝AM-L。AM-K の方針と整合させる。
+
+### AM-M — 「・今日の一問」先頭「・」除去＋表記ゆれ統一　[P2 / TODO]
+
+- 依頼原文（Keita 2026-05-29）: 「『・今日の一問』の『・』は消して」。
+- スコープ: 「今日の一問」の表示先頭に付いている中黒「・」を除去する。**i18n に literal な `・今日…` 文字列は無い**（grep 済み）＝中黒は **リスト項目マーカー（CSS `::before { content: '・' }` か JSX で前置 or `・` を連結している描画箇所）** で付与されている見込み。dev-logic が実 render を特定して除去する。
+- 併せて表記ゆれ是正: i18n に **「今日の1問」（home.todayProblem 等）と「今日の一問」（pricing.featFermi / savedItems.* 等）が混在**（grep 済み）。どちらかに統一する（Keita 文言は「今日の一問」だが、ホーム主要導線は「今日の1問」。表記ポリシーを揃える）。
+- 既存資産（実装前に実ソース照合）: 中黒の付与元（`src/screens/` or `src/components/` の該当リスト/見出し描画、`src/styles/` の `::before` content）。i18n は `src/i18n.ts`（ja: home.todayProblem `今日の1問`:283 / pricing.featFermi `今日の一問`:466 / savedItems.filterFermi・typeFermi `今日の一問`:1592/1603 ほか、en も対）。
+- DoD: (1) 「今日の一問」の表示先頭の中黒「・」が消える、(2) 表記が一方（「今日の1問」or「今日の一問」）に統一され ja/en で整合、(3) 中黒を消したことで他のリスト項目（同じマーカー機構を使う箇所）に意図しない波及がない、(4) tsc 0 / eslint `.` 0、(5) Android 実機で確認。
+- サブタスク:
+  - [ ] 実装前調査: 中黒「・」の付与箇所を特定（JSX 前置 / 文字列連結 / CSS `::before content`）。どの画面のどのラベルか
+  - [ ] 中黒を除去（その項目に閉じて。共有マーカーなら他項目への波及を確認）
+  - [ ] 表記ゆれ統一: 「今日の1問」/「今日の一問」のどちらかに寄せ ja/en 整合（Keita 確認 or ホーム主導線の「今日の1問」に統一を提案）
+  - [ ] 回帰: 同マーカー機構を使う他リストの表示
+  - [ ] tsc 0 / eslint `.`（全体）0
+- Keita 確認すべき論点（軽微・自律可）:
+  - (1) 表記統一の方向（「今日の1問」or「今日の一問」）。ホーム主導線が「1問」なので「今日の1問」推奨。Keita 帰還時に追認でよい軽微判断。
+- 抜けもれ提言:
+  - i18n: 表記統一は ja/en 両方の該当キーを揃える（feedback_app_copy_neutral・中立丁寧体は維持）。片方だけ直すと不整合。
+  - title ルール: 「今日の一問」は名詞句ラベルで Doing 形ルール（feedback_logic_title_doing）の対象外（コース/レッスン title ではない）。表記統一のみ。
+  - 回帰（注意）: 中黒が共有リストマーカー（`::before content: '・'`）の場合、除去すると同マーカーを使う他のリスト全部から中黒が消える。**「今日の一問」項目に閉じて消す**（個別クラス）のが安全。
+  - 両OS: モバイル専用。Android 実機で表示確認。
+  - 永続化: 表示文言のみで persist 影響なし。
+
+### AM-N — 法務記載の見直し（利用規約／プライバシー／特商法）　[P1 / BLOCKED（法的確定値は Keita 確認）]
+
+- 依頼原文（Keita 2026-05-29）: 「利用規約とかプライバシーポリシーとか特定商取引法に基づく表記とかの記載を見直して」。
+- スコープ: アプリ内の **Terms / Privacy Policy / 特商法表記の現状を洗い出し、不足・不備・プレースホルダ・事実不整合を点検**する。特に **特定商取引法に基づく表記は課金アプリで必須記載項目**の充足を確認（販売事業者名・所在地・連絡先・販売価格・支払時期・支払方法・役務の提供時期・返金/解約条件・動作環境 等）。点検は林＋content-creator で自律的に進められるが、**法的に確定が要る記載値（事業者名・住所・連絡先・代表者等）は Keita 確認案件**＝確定できないため BLOCKED 扱いで明示。
+- 既存資産（実ソース照合済み）: 法務文書は **静的 HTML**。`public/terms.html` / `public/privacy.html` / `public/tokushoho.html` ＋ 各 `-en.html`（計6ファイル）。アプリからは `localizedHtmlPath('privacy'|'terms'|'tokushoho')`（`src/i18n.ts:33`）でロケール別に出し分け、`ProfileScreenV3.tsx`・`OnboardingScreen.tsx` から導線。i18n ラベル: `profile.tokushoho`（ja:446「特定商取引法に基づく表記」/ en:2297）。
+- DoD: (1) 6つの HTML（ja/en × terms/privacy/tokushoho）の現状を点検し、不足・プレースホルダ・事実不整合・ja/en 不一致を一覧化、(2) 特商法の必須記載項目チェックリストと充足状況を提示、(3) 自律修正できる記載（誤字・体裁・ja/en パリティ・日付・動作環境等の事実ベース）は修正案を作成、(4) 法的確定が要る値（事業者名・住所・連絡先・代表者・返金ポリシー文言等）を「Keita 確認事項」として明示、(5) 内容を会話本文に直接展開（feedback_direct_content_not_path）。**確定値が埋まるまで本番反映しない**。
+- サブタスク:
+  - [ ] 点検: 6 HTML（terms/privacy/tokushoho × ja/en）を読み、不足・プレースホルダ・事実不整合・ja/en 不一致を一覧化
+  - [ ] 特商法 必須記載項目チェックリスト作成＋充足状況（販売事業者/所在地/連絡先/価格/支払時期/支払方法/提供時期/返金・解約/動作環境）
+  - [ ] 課金実態との整合確認: AM-O の Play 課金（月額/年額 SKU・価格）と特商法の販売価格/支払方法記載が一致するか
+  - [ ] 自律修正可能箇所（体裁・パリティ・事実）の修正案作成
+  - [ ] 法的確定値を Keita 確認事項として列挙
+  - [ ] 会話本文に点検結果＋確認事項を直接展開
+- 担当: content-creator（記載点検・文案）＋林（取りまとめ・Keita 確認事項の整理）。
+- Keita 確認事項（BLOCKED 要因・席外し中保留）:
+  - 販売事業者名・所在地（特商法で原則必須。個人事業主の住所非公開の扱い含む）、連絡先（メール/電話）、代表者名、返金/解約ポリシーの確定文言。これらは法的に正しい値を Keita しか確定できない。
+- 抜けもれ提言:
+  - ⚠デプロイ依存: 法務 HTML は `public/` 配下の静的ファイル＝フロント。Android は main push で自動配信されるが、**Render web 反映は手動 deploy-production.yml**（project_logic_render_auto_deploy）。ただし確定値が埋まるまで本番反映しないこと。
+  - i18n（最重要）: terms/privacy/tokushoho は ja/en 両方の HTML が存在。**ja を直したら en も必ず揃える**（法務文書の言語間齟齬は信頼性・コンプラ上問題）。content-creator が両言語で整合。
+  - 課金連動（AM-O と密結合）: 特商法の「販売価格・支払方法・役務提供時期・返金/解約」は AM-O の Google Play 課金実態（SKU・価格・サブスク条件）と一致が必須。AM-O と突き合わせる。
+  - 法的妥当性の限界: task-manager/林/content-creator は法律専門家ではない。必須項目の網羅・体裁・事実整合まではやれるが、**最終的な法的妥当性は Keita 判断（必要なら専門家確認）**。「点検・たたき台作成」までが自律範囲、確定は Keita。
+  - 両OS: モバイル専用。HTML は WebView 表示なので Android 実機でレイアウト崩れ・リンク導線確認。
+  - 永続化: 静的ファイルで persist 概念なし。
+
+### AM-O — 料金プランの Google Play 課金実装（購入導線の結線）　[P1 / TODO]
+
+- 依頼原文（Keita 2026-05-29）: 「料金プランの Google Play での課金を実装して」。
+- スコープ: **料金プラン画面から Play Billing の購入フローへ結線**する。狙いは料金プラン画面 UI と購入導線（`startCheckout → purchaseProduct → verifyPurchase`）の結線。
+- 📌 前提（memory 必読・project_logic_play_billing_gaps）: Play Billing の **購入フロー本体・サーバ検証・acknowledge・RTDN endpoint・initBilling は実装済**。残る既知ギャップは **#4 Play Console SKU（`logic_paid_monthly` / `logic_paid_yearly`）が Active 登録され Production 価格設定済みかの確認**＝Keita 作業。つまり AM-O の本体は「料金プラン画面 → 既存購入関数の結線」であり、課金基盤の新規実装ではない（既存資産の配線が主眼）。
+- 既存資産（実ソース照合すること）: `src/subscription.ts`（`startCheckout()` = `purchaseProduct → verifyPurchase` チェーン）、`src/billing/index.ts`（Capacitor wrapper・initBilling）、`server/routes/billing.ts`（`POST /api/billing/verify` 実検証＋Supabase subscriptions upsert、acknowledge、RTDN）、料金プラン画面（`src/screens/` の pricing/plan 画面＝`pricing.*` i18n を使う画面）、`android/.../billing/InAppBillingPlugin.kt`。
+- DoD: (1) 料金プラン画面の各プラン（月額/年額）の購入ボタンが `startCheckout(sku)` を呼び、`purchaseProduct → verifyPurchase` が走る、(2) 購入成功で Supabase `subscriptions` が更新され、アプリの課金状態（プラン表示・有料機能解放）が反映される、(3) 購入キャンセル/失敗/既購入（restore）の各分岐が中立丁寧体で表示される（feedback_app_copy_neutral）、(4) Android native のみ実行・Web/iOS は no-op ガード（既存 isAndroidNative）、(5) backend `/api/billing/verify` が本番デプロイ済で実機から検証成功、(6) tsc 0 / eslint `.` 0、(7) Android 実機で購入ハッピーパス（SKU Active 前提）。
+- サブタスク:
+  - [ ] 実装前調査: 料金プラン画面の現状（購入ボタンが startCheckout に繋がっているか／プレースホルダか）と subscription.ts/billing の結線状況を確認
+  - [ ] 料金プラン画面の購入ボタン → `startCheckout(sku)` 結線（月額/年額）
+  - [ ] 購入結果の状態反映（subscriptions 更新後にプラン表示・有料解放が更新されるか）
+  - [ ] エラー/キャンセル/restore 分岐の UI 文言（ja/en・中立丁寧体）
+  - [ ] backend `/api/billing/verify` 本番デプロイ確認（手動 deploy-production.yml）＋実機 probe
+  - [ ] tsc 0 / eslint `.`（全体）0
+  - [ ] Android 実機で購入ハッピーパス（SKU Active 後）
+- Keita 確認事項（席外し中・切出し）:
+  - **Play Console SKU（`logic_paid_monthly` / `logic_paid_yearly`）が Active 登録・Production 価格設定済みか**（project_logic_play_billing_gaps #4）。SKU が非 Active だと実機購入が起動できず実機ハッピーパスが検証不可。これは Keita の Play Console 作業＝AM-O の実機検証ゲート。
+- 抜けもれ提言:
+  - ⚠デプロイ依存（最重要）: 検証は backend（`/api/billing/verify`）＝main マージ≠本番反映。手動 deploy-production.yml が必須（project_logic_render_auto_deploy）。デプロイしないと実機購入の検証が 404 で落ちる。
+  - i18n: 購入ボタン・確認・成功/失敗/キャンセル/restore・エラー文言は ja/en 両方＋中立丁寧体（feedback_app_copy_neutral）。
+  - 課金実態と法務の整合（AM-N と連動）: SKU 価格・サブスク条件（更新・解約）は AM-N の特商法表記（販売価格・支払時期・解約）と一致させる。
+  - マーケ文言: 料金プラン画面のコピーは「コーヒー1杯」系の安さアピール NG（feedback_logic_marketing）。
+  - 両OS: モバイル専用・**Android native のみ**（iOS workflow 未整備・Play Billing は Android）。Web/iOS は no-op ガード維持。
+  - 永続化: 課金状態は Supabase `subscriptions`＋クライアント。restore で再取得できること。
+  - 既存ギャップ #2 RTDN: JWT 検証未実装・GCP/Play Console 設定残（Keita 作業）。AM-O の直接スコープ外だが、課金を本格販売する前に project_logic_play_billing_gaps #2 の残作業も要対応（別途）。
+
+### AM-P — フェルミランキング累計スコアのダミーを毎日ランダム増分　[P2 / TODO]
+
+- 依頼原文（Keita 2026-05-29）: 「フェルミランキングの累計スコアの今あるダミーデータをランダムでいい感じにポイント付与して（毎日）。今管理者（Keita）がダントツ一位だから張り合いがない」。
+- 狙い: 「Keita が常に1位で張り合いがない」状態の解消＝**ダミー上位陣のスコアを毎日自然に増やしてリーダーボードに動きを出す**。
+- 既存資産（実ソース照合済み）: フェルミランキングのダミーデータは **`server/routes/fermi.ts:545-629`**（コメント「ランキング取得（実データ優先 + ダミーで穴埋め）」「ダミーデータ（実データが足りないときの穴埋め用、スコア順）」、:629「実データ + ダミーをマージしてスコア降順、表示上限まで」）。**現状は静的配列**＝毎リクエスト同じ値。これを毎日ランダム増分する仕組みが必要。
+- 設計論点（実装時に決定）:
+  - (1) **増分の永続化**: 静的配列のままだと「毎日増やす」状態を保持できない。日次で増分した値を持つストア（JSON ファイル fallback or Supabase テーブル）が要る。実データ（実ユーザ placement/fermi）と混ざらない別管理にする。
+  - (2) **増分の発火**: 日次 cron/バッチで増分するか、リクエスト時に「最終更新日からの経過日数 × ランダム増分」を都度算出して見せるか（後者は cron 不要だが決定性に注意）。
+  - (3) **不自然にならない増分レンジ**: 上位陣ごとに自然なペースで増える（一定でなく日々ばらつく）レンジ設計。Keita を抜く/抜かないの調整も含め「いい感じ」を満たす。
+- DoD: (1) フェルミランキングのダミー上位陣の累計スコアが日次でランダムに増分し、日をまたぐとリーダーボードの順位/値に動きが出る、(2) Keita が常にダントツ1位という状態が解消（ダミーが Keita に迫る/前後する動きが出る）、(3) 増分が不自然でない（一定値の足し算でなくばらつくレンジ）、(4) 実データ（実ユーザ）とダミーが混ざらず実ユーザのスコアは改変されない、(5) 増分状態が永続化され翌日に積み上がる、(6) backend 変更が本番デプロイ済（手動 deploy-production.yml）で本番ランキングに反映、(7) tsc 0 / eslint `.` 0。
+- サブタスク:
+  - [ ] 実装前調査: fermi.ts:545-629 のダミー配列構造・実データとのマージ仕様・表示上限を確認
+  - [ ] 増分状態の持ち方を決定（JSON ファイル fallback or Supabase テーブル。実データと分離）
+  - [ ] 日次ランダム増分ロジック（上位陣ごとの自然なレンジ・日付シードで決定的 or cron 駆動）
+  - [ ] 増分発火の仕組み（cron/日次バッチ or リクエスト時の経過日数算出）
+  - [ ] 実データと混ざらない管理（ダミー識別・実ユーザスコア不改変）
+  - [ ] backend 本番デプロイ（手動 deploy-production.yml）＋本番ランキング probe
+  - [ ] tsc 0 / eslint `.`（全体）0
+- 担当: dev-logic。増分状態を Supabase に持つ場合は migration（Keita 承認案件）。
+- Keita 確認すべき論点（軽微・自律寄り）:
+  - (1) ダミーが Keita を「抜く」ことを許容するか（張り合い重視なら抜きつ抜かれつ、Keita 1位維持なら肉薄止まり）。「いい感じ」の解釈＝Keita 帰還時に方向性を確認。
+- 抜けもれ提言:
+  - ⚠デプロイ依存（最重要）: ランキングは backend（fermi.ts）＝main マージ≠本番反映。手動 deploy-production.yml＋cron なら本番環境（Render）での cron 稼働も要確認（project_logic_render_auto_deploy）。
+  - cron 運用注意: 日次バッチを cron で組むなら、過去の cron root 権限問題（T-F）・night-patrol 空振り（T-G）の轍を踏まないよう死活確認を R-2 系に乗せる。リクエスト時算出方式なら cron 不要で運用が軽い（推奨検討）。
+  - 永続化（最重要）: 「毎日積み上がる」が要件なので増分状態の persist 必須。JSON fallback だと Render の ephemeral filesystem で再デプロイ時に消える恐れ → Supabase テーブルが堅い（ただし migration＝Keita 承認）。
+  - 実データ分離: 実ユーザの placement_results/fermi スコアを絶対に改変しない。ダミーは別ソース/別フラグで管理（混入は実害）。
+  - テスト: 増分レンジ・決定性（日付シード方式なら）は vitest 単体向き。「翌日に値が増える」「実データ不改変」を検証。
+  - i18n: ランキング表示の既存文言のみ（新規文言なし想定）。
+  - 両OS: モバイル専用。Android 実機でランキング表示に動きが出るか（日跨ぎ確認）。
+  - 倫理/表示の注意: ダミーと実ユーザが同じリーダーボードに並ぶ設計（既存仕様）。ダミーであることをユーザに誤認させる度合いが過度にならないか（既存仕様踏襲なら現状維持でよいが、増分で動的に見えると「実在ユーザ」感が増す点は留意）。
+
+### AM-Q — トレーニング検索の改修（右上虫眼鏡＋AI検索）　[P-TBD / TODO（既存 T-X と統合）]
+
+- 依頼原文（Keita 2026-05-29）: 「トレーニングの検索は検索窓を虫眼鏡で右上にしたいのと、AI で検索できるようにしたい」。
+- スコープ: (1) 検索窓を虫眼鏡アイコンで右上に配置する UI 変更、(2) AI 検索機能（自然言語でレッスンを探せる）。AI 検索は backend の Anthropic API 経由になる見込み（レート制限・コスト考慮）。
+- ⚠既存タスクと完全重複（重複起票しない）: **既存バッチ「2026-05-29 トレーニングのAI検索機能」の T-X と同一依頼**（T-X 依頼原文「右上に虫眼鏡でいいよ、デフォルトは。この検索も AI でできるように」）。AM-Q は **T-X に統合**し、AM-Q では新規の詳細起票をしない。T-X 側（下方のバッチ）に全ての DoD・着手前スコープ確認（検索対象範囲／embedding vs プロンプト方式／結果の出し方）・関連ファイル・抜けもれ提言が整備済み。
+- ステータス/担当/優先度: T-X に準ずる（P-TBD・着手前スコープ確認・designer＋dev-logic）。
+- 次アクション: T-X の「着手前 Keita 確認 3 点」（検索対象=レッスンのみ/コースも、AI マッチ方式=embedding/プロンプト、結果の出し方）が未確定なので、AM-Q としても **スコープ確認まで IN_PROGRESS にしない**。Keita 帰還時に T-X の確認3点を提示する。
+- 抜けもれ提言: T-X セクション参照（デプロイ依存・i18n ja/en・虫眼鏡 SVG aria・レート制限/コスト・既存 custom-course のレッスン検索 AI 導線との重複整理）。AM-Q 固有の追加なし。
+
+### AM-R — 既存登録ユーザ（管理者=Keita）のジャーナルタグ見直し　[P1 / BLOCKED（実データ書き換え＝Keita 承認）]
+
+- 依頼原文（Keita 2026-05-29）: 「今すでに登録しているユーザのジャーナルのタグも見直して（管理者かな）」。
+- スコープ: **T-D で実装した動的タグ統合（tagConsolidation / canonicalize）を既存データに適用**する。Supabase `daily_journals.tags` の既存タグを点検し統合候補を洗い出す。対象は管理者（Keita）アカウントのデータ。
+- 📌 前提（T-D 実装済み・実ソース照合済み）: `src/components/journal/tagConsolidation.ts` に `canonicalizeTags(tags, locale)`（語彙ヒットで canonical へ寄せる）と consolidation 適用＋**スナップショット（undo 用）**ロジックが実装済。ただしコメント（:21）に明記のとおり **「過去の全 daily_journals に対する物理一括バックフィル」は未実装＝あくまで今後保存される分にのみ適用**。AM-R はこの **既存データへのバックフィル適用**＝T-D が意図的に保留した非可逆操作の実行。
+- ⚠⚠ 非可逆・Keita 承認案件（BLOCKED 要因・最重要）: 既存 `daily_journals.tags` の書き換えは **DB データの非可逆変更**＝push/デプロイと同格の破壊的操作（CLAUDE.md「DB マイグレーション・破壊的操作は Keita 承認」）。林の自律範囲は **「点検・統合候補の洗い出し・before スナップショット取得・dry-run（適用後プレビュー）」まで**。実際の書き換え実行は Keita 承認後。
+- 既存資産: `tagConsolidation.ts`（canonicalizeTags / consolidation 適用 / スナップショット）、`tagVocabulary.ts`（canonical 語彙＋synonyms）、Supabase `daily_journals`（tags カラム）、`server/routes/journal.ts`（タグ生成経路）。
+- DoD: (1) 対象（管理者=Keita）アカウントの `daily_journals.tags` 現状を集計し、統合候補（from→to）を洗い出して一覧化、(2) 適用前の before スナップショットを取得（復元可能に）、(3) dry-run で「適用するとどう変わるか」のプレビューを会話本文に直接展開（feedback_direct_content_not_path）、(4) Keita 承認後に実書き換えを実行し、(5) 適用後にタグが canonical へ統合され、固有タグ乱立が既存データでも解消、(6) undo（スナップショットからの復元）が効くことを確認。**(4)(5) は Keita 承認まで実行しない**。
+- サブタスク:
+  - [ ] 対象特定: 管理者（Keita）アカウントの guest_id/user_id を確認し、daily_journals.tags を集計
+  - [ ] 統合候補の洗い出し（canonicalizeTags / consolidation で from→to ペア算出）
+  - [ ] before スナップショット取得（復元可能な形で保存）
+  - [ ] dry-run プレビュー作成（適用前後の tags 差分）を会話本文に直接展開
+  - [ ] Keita 承認取得（実データ書き換え＝承認案件）
+  - [ ] 【承認後】実書き換え実行＋適用後検証＋undo 動作確認
+- 担当: dev-logic（適用ロジック・Supabase 操作）＋林（点検・候補洗い出し・Keita 確認の取りまとめ）。
+- Keita 確認事項（BLOCKED 要因・席外し中保留）:
+  - 既存 `daily_journals.tags` の書き換え承認（非可逆・要 before スナップショット）。対象範囲（Keita アカウントのみか／他ユーザも含めるか）。dry-run プレビューを見てから Go 判断。
+- 抜けもれ提言:
+  - ⚠⚠ 非可逆操作の安全策（最重要・T-D の安全策論点と同根）: before スナップショット必須・undo 確認・dry-run プレビュー先行。誤統合（別概念混入）が起きると既存ジャーナルの分類が壊れる。同一 axis 内のみ統合等のガード（T-D の論点）を踏襲。
+  - 対象範囲の限定: 依頼は「すでに登録しているユーザ（管理者かな）」＝まず Keita アカウントに限定。全ユーザ一括バックフィルは別途・より慎重に（Keita 承認の別ステップ）。
+  - データ操作は Supabase 直（MCP execute_sql or backend バッチ）。本番 DB を触るので Keita 承認・スナップショット必須。
+  - i18n: データ操作のみで UI 文言なし（T-D の表示側は実装済）。
+  - 両OS: モバイル専用だが、本件はサーバ/DB 側操作。アプリ側は適用後にタグ表示が更新されるか Android 実機で確認。
+  - テスト: canonicalizeTags の決定的部分は vitest 済（T-D の tagConsolidation.test.ts）。AM-R は「既存データへの適用」なので、dry-run の差分検証＋スナップショット復元の動作確認が主。
+  - 関連: T-D（DONE・タグ動的統合の本番反映済）の続き＝既存データへの遡及適用。T-D が意図的に保留した物理バックフィルの実行フェーズ。
+
+---
+
 ## バッチ: 2026-05-28 実機フィードバック4件（Keita 朝）
 
 林が事前に原因調査済み。task-manager が構造化。実装は委譲。
@@ -19,7 +233,7 @@ task-manager エージェントが管理するタスク台帳の正本。
 | T-E | Obsidian vault 最新化＋日次更新の仕組み化 | P1 | IN_PROGRESS（(a) Daily Note 5/26-28 DONE、(b) 一部、(c)(d) 未＝T-F依存） | 林（キャッチアップ）+ ceo（日次統合）/ task-manager（recurring 管理） |
 | T-F | cron 自動化の root 権限エラー修復（ceo 朝ブリ・feedback-watcher が空振り） | P1（上位） | DONE（2026-05-29 Vultr 新箱「Claude Code Server 2」の非root `dev` ユーザへ cron 3本移設で解決。root の `claude -p` が skip-permissions ガードで弾かれていたのが空振りの正体。dev で3本とも実走グリーン→obsidian-vault push 成功。Supabase は service_role 直curl化。現箱 cron は二重push回避でコメントアウト。詳細は memory project-vultr-second-server） | ceo（自分のスクリプト群） |
 | T-G | night-patrol 夜間スモークが "No tests found" で空振り（監視死） | P1 | DONE（2026-05-29 main マージで config 本番反映。playwright config が 5/25・5/27 両 spec 計20件を拾い空振り解消。night-patrol 実走確認のみ次回夜間に残） | dev-logic / test-smoke |
-| T-H | Logic Android Production 公開（保留） | P1 | BLOCKED（Keita 判断で保留・技術的には即実行可） | Keita（公開判断） |
+| T-H | Logic Android Production 公開 | P1 | BLOCKED（2026-05-29 Keita 判断「今は internal のまま」。テーマ改修 T-I が本番反映されてから Production promote する。promote は Play Console 手動操作で林 CLI からは不可） | Keita（Play Console promote、T-I 完了後） |
 
 ### T-A — フェルミ「今日の1問」とタップ後がズレる　[P0 / DONE]
 
@@ -620,60 +834,67 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
 
 ---
 
-## バッチ: 2026-05-29 T-B テーマ機能フォローアップ＋テーマ再設計（Keita 朝・追加6件）
+## バッチ: 2026-05-29 T-B テーマ機能フォローアップ＋テーマ再設計（Keita 朝・追加7件）
 
 今朝デプロイした T-B（配色テーマ3種: 古紙/深緑/墨白、全部有料）の実機フォローアップ＋追加依頼。task-manager が構造化。実装は委譲。
 全件 **TODO で登録、着手は T-M（体力コース）完了後＝main 作業ツリー解放待ち**（理由＝T-M で dev-logic が main の作業ツリーを使用中。同じツリーを2人で触ると commit が混ざるため、作業ツリーが空いてから着手）。
-さらにテーマ系（T-R/T-S/T-T/T-U/T-J）は **T-V のテーマ再設計で Keita がパレットを選定したのを待って一括実装**するのが効率的（同じ theme.ts / tokens.css / AppearanceSettings を反復で触るのを1回にまとめる）。T-V がこれら全部を束ねる親エピック。
+さらにテーマ系（T-R/T-S/T-T/T-U/T-J/T-Y）は **T-V のテーマ再設計で Keita がパレットを選定したのを待って一括実装**するのが効率的（同じ theme.ts / tokens.css / AppearanceSettings / 色トークンを反復で触るのを1回にまとめる）。T-V がこれら全部を束ねる親エピック。
+（注: 2026-05-29 朝に林が誤って起票した重複バッチ「テーマ改修」の T-I/T-J 行〔既存 DONE の T-I/T-J と ID 衝突〕は削除し、内容を本バッチへ吸収済み。テーマ改修＝T-R〔mono 追加削除〕/T-V〔新規3テーマ吸収〕/T-S〔今日の1問追従〕/T-U〔コントラスト〕、習熟色バッジ＝新規 T-Y として下記に整理。）
 
 | ID | タイトル | 優先度 | ステータス | 担当案 | 関連 |
 |----|----------|--------|-----------|--------|------|
-| T-R | 死んでいるテーマ（custom / enterprise / startup）を削除（CSS ブロック不在＝選んでも無変化） | P1 | TODO（T-V パレット選定後に一括実装） | dev-logic | T-B と同じ theme.ts / AppearanceSettingsScreen。デッドコード除去。残5モード=light/dark/sepia/forest/mono |
-| T-S | テーマを変えても「今日の一問」カード（Daily Fermi ホームカード）の色が変わらない → テーマ追従 | P1 | TODO（T-V パレット選定後に一括実装） | dev-logic | T-B の theme 追従漏れ。HomeScreenV3。T-T 根本原因A の一例。T-A/T-L と同じ Daily Fermi 周辺 |
-| T-T | テーマ非追従の箇所を audit findings で完全仕様化 → 根本原因 A/B/C/D を個別修正 | P1 | TODO（調査=完了／修正=T-V パレット選定後に一括実装） | 林（調査・完了）→ dev-logic（個別修正） | T-S の親。T-B の追従漏れ全量。audit findings 確定済み |
-| T-U | コントラスト/可読性 整合性チェック（全テーマ×主要画面で WCAG 検証・破綻潰し） | P1 | TODO（T-V パレット選定後・T-T 修正と一体） | dev-logic（＋必要なら test/QA 系） | Keita「白文字で見えない/ハイライト濃すぎを起こさない」。T-T と一体の QA |
-| T-V | テーマ再設計エピック（数パターン追加・UI設計刷新・カスタマイズしやすく） | P1 | IN_PROGRESS（designer 提案ドキュメント作成中・読み取り専用） | designer（提案）→ Keita（パレット選定）→ dev-logic（実装） | Keita「まだAI感がある」。T-R/T-S/T-T/T-U/T-J を統合して一括実装する親エピック |
+| T-R | 死にテーマ削除（custom / enterprise / startup / mono）＝計4削除 | P1 | DONE（2026-05-29 dev-logic 実装＋push。MODES/ModeId/ThemeState.customHex/applyTheme custom分岐 除去、loadTheme で未知 id を DEFAULT(dark) フォールバック、tokens.css mode-mono・tokens-m3.css mode-mono・index.css mode-enterprise/startup ブロック除去、i18n の4モード ja/en 削除、ThemeSettings(v1) の custom UI 撤去。tsc0/eslint0/vitest340/build0） | dev-logic | 残=light/dark/sepia/forest＋T-V 新規3（indigo/rose/slate） |
+| T-S | テーマを変えても「今日の一問」カード（Daily Fermi ホームカード）の色が青のまま → テーマ追従（＋AM-L のグラデ廃止と統合） | P1 | DONE（2026-05-29。HomeScreenV3 Daily Fermi カードを --brand-grad-h → フラット var(--accent)、青グロー boxShadow を accent 追従の color-mix に、CTA/eyebrow/desc を --accent / --accent-fg 追従に。T-T 根本原因A・AM-L(b) と統合実装） | dev-logic | T-T 根本原因A と同一箇所。AM-L(b) と同 DOM |
+| T-T | テーマ非追従の箇所を audit findings で完全仕様化 → 根本原因 A/B/C/D を個別修正 | P1 | DONE（2026-05-29。A: 各モードブロックで --brand-grad-h override＋HomeScreenV3 のハードコード青→accent追従。B: RoadmapScreenV3 のハードコード青 rgba(108,142,245,..) を var(--accent)系 color-mix へ（:329/:775/:959/:983/:992）。C: LessonStoriesScreen の #fff/#FFFFFF on brand を var(--accent-fg) 化（:559/:856/:860/:869/:872/:912/:1013/:1105/:1189/:1226/:1246/:1263/:1303/:1313/:1447/:1498/:1552/:1580）＋ tap-hint 青グロー accent 化。D: ProfileScreenV3 はハードコード text color 無し＝既に追従済みと確認） | 林（調査）→ dev-logic（修正） | 暗スクリム上の white 文字（tap-hint 左ゾーン等）は意図通り維持 |
+| T-U | コントラスト/可読性 整合性チェック（全テーマ×主要画面で WCAG 検証・破綻潰し） | P1 | 部分（2026-05-29。T-T/T-S/T-Y の修正は designer 監査済みのトークン値＝全 AA で実装。新規3テーマは §1-4 監査で全 AA。残: light/dark の「白文字 on 明るい青 accent ボタン 3.08:1」AA割れは主要CTA色の見た目変更で要 Keita 判断＝本パッケージ対象外） | dev-logic | light/dark accent ボタン AA 割れは Keita 判断待ち |
+| T-V | テーマ再設計エピック（「AIっぽくない」新規3テーマ追加＋数パターン＋UI設計刷新＋カスタマイズしやすく） | P1 | 部分（2026-05-29。新規3テーマ indigo/rose/slate を MODES＋tokens.css＋tokens-m3.css＋i18n(ja/en) に追加＝配色実装パート DONE。UI 設計刷新・数パターン展開は AM-K 親エピックで継続） | designer（提案）→ dev-logic（実装） | 配色トークンは THEME_PALETTE_CANDIDATES_v2 §2 をそのまま採用 |
+| T-Y | 2回以上完了レッスンの完了マーク色を区別（習熟色・コース一覧） | P2 | DONE（2026-05-29。--mastery/--mastery-fg を tokens.css 全テーマに定義〔明カード #9A7416/#FFF・暗カード #D9A943/#1A1A1A〕、CompletionBadge を count>=2 で mastery 色に切替＋細い金縁リングで形状二重符号化。count=1 は従来 --accent 維持。test 12件 pass） | dev-logic | RoadmapScreenV3:1327/:1380・CompletedLessonsScreen 共通コンポーネント経由で整合 |
 
-### T-R — 死んでいるテーマ（custom / enterprise / startup）を削除　[P1 / TODO（T-V パレット選定後に一括実装）]
+### T-R — 死にテーマ削除（custom / enterprise / startup / mono）　[P1 / TODO（T-V パレット選定後に一括実装）]
 
-- 📌 スコープ拡大（Keita 2026-05-29）: 当初「custom（HEX 自由指定）のみ削除」だったが、**enterprise / startup も削除に拡大**。残すモードは **light / dark / sepia / forest / mono の5つ**（ただし下記 T-V のテーマ再設計で sepia/forest/mono は刷新・差し替えの可能性あり）。
-- 依頼原文（Keita 2026-05-29）: 「カスタムテーマは機能しておらず不要」＋「エンタープライズ不要・スタートアップ不要」。
-- 🔍 audit 根拠（読み取り専用調査・完了済み）: **enterprise / startup / custom は `tokens.css` / `tokens-m3.css` に `body.theme-v3.mode-{id}` の CSS ブロックが一切存在しない**＝選んでも bg/card/text が変わらず何も起きない（applyTheme が `mode-{id}` クラスを付けるだけで対応 CSS が無い＝死んでいる）。一方 light / dark / sepia / forest / mono の変数定義は完全（欠落なし）と確認済み。つまり削除対象3つは「MODES には載っているが実体 CSS が無い空モード」。
-- スコープ: `theme.ts` の `MODES` から `custom` / `enterprise` / `startup` の3エントリを除去し、関連のコード・UI・state・i18n を整理する。T-B で「テーマは全部有料」方針が固まり、実体のある5モードに整理した今、CSS ブロックの無い3モードは不要なデッドコード。
+- 📌 スコープ拡大（Keita 2026-05-29・2段階）: 当初「custom（HEX 自由指定）のみ削除」→ 「enterprise / startup も削除」→ さらに **mono（墨白）も削除に拡大（Keita 2026-05-29「墨白不要」）**。**削除は計4モード（custom / enterprise / startup / mono）**。**最終的に残るモード = light / dark / sepia(古紙) / forest(深緑) ＋ T-V で追加する新規3つ（＝計7構成見込み）**。custom/enterprise/startup は CSS ブロック不在の死にモード、mono は実体 CSS は存在するが Keita 判断で不要のため削除（＝この3つとは削除理由が異なる点に注意）。
+- 依頼原文（Keita 2026-05-29）: 「カスタムテーマは機能しておらず不要」＋「エンタープライズ不要・カスタムカラー不要・墨白不要・startup も削除」。
+- 🔍 audit 根拠（読み取り専用調査・完了済み）: **enterprise / startup / custom は `tokens.css` / `tokens-m3.css` に `body.theme-v3.mode-{id}` の CSS ブロックが一切存在しない**＝選んでも bg/card/text が変わらず何も起きない（applyTheme が `mode-{id}` クラスを付けるだけで対応 CSS が無い＝死んでいる）。一方 light / dark / sepia / forest / mono の変数定義は完全（欠落なし）と確認済み。つまり enterprise/startup/custom は「MODES には載っているが実体 CSS が無い空モード」。**mono は実体 CSS あり（生きている）が Keita 判断で不要のため削除対象に追加**（削除理由が他3つと異なる）。
+- スコープ: `theme.ts` の `MODES` から `custom` / `enterprise` / `startup` / `mono` の4エントリを除去し、関連のコード・UI・state・i18n・CSS ブロックを整理する。custom/enterprise/startup は CSS ブロック無しのデッドコード除去、mono は実体 CSS ブロック（tokens.css/tokens-m3.css の `mode-mono`）も併せて除去する点が違い。
 - 既存資産（実装前に実ソース照合すること）:
-  - `src/theme.ts`: `MODES` 配列から `custom` / `enterprise` / `startup` の3エントリ除去。`applyTheme()` 内の custom 分岐（動的 hex 適用ロジック）。`ThemeState` 型の `customHex`（または相当フィールド）除去。`loadTheme` / DEFAULT マージで削除 id を参照している箇所。
-  - `src/screens/AppearanceSettingsScreen.tsx`: custom テーマ選択 UI・HEX 入力欄（カラーピッカー / テキスト入力）・custom ハンドラ、および enterprise/startup の選択カード。
-  - `src/styles/tokens.css` / `tokens-m3.css`: `mode-enterprise` / `mode-startup` / `mode-custom` セレクタは元々存在しない見込み（audit で不在確認）。実装時に念のため grep で確認し、あれば除去。
-  - `src/i18n.ts`: `theme.mode.custom.*` / `theme.mode.enterprise.*` / `theme.mode.startup.*`（name + desc）の ja/en エントリ除去。
-- DoD: (1) `MODES` に custom / enterprise / startup が存在しない、(2) applyTheme / loadTheme から custom 分岐・customHex が消え型エラーなし、(3) AppearanceSettings から3モードの選択 UI・HEX 入力が消える、(4) i18n の該当 theme.mode.* が ja/en 両方から消える（孤立キーを残さない）、(5) 残る5モード（light/dark/sepia/forest/mono）の選択・適用・persist が非回帰、(6) tsc 0 / eslint `.` 0、(7) Android 実機で外観設定が破綻しない。
+  - `src/theme.ts`: `MODES` 配列から `custom` / `enterprise` / `startup` / `mono` の4エントリ除去。`applyTheme()` 内の custom 分岐（動的 hex 適用ロジック）。`ThemeState` 型の `customHex`（または相当フィールド）除去。`loadTheme` / DEFAULT マージで削除 id を参照している箇所。
+  - `src/screens/AppearanceSettingsScreen.tsx`: custom テーマ選択 UI・HEX 入力欄（カラーピッカー / テキスト入力）・custom ハンドラ、および enterprise/startup/mono の選択カード。
+  - `src/styles/tokens.css` / `tokens-m3.css`: `mode-enterprise` / `mode-startup` / `mode-custom` セレクタは元々存在しない見込み（audit で不在確認）。**`mode-mono` の CSS ブロックは存在する＝これは必ず除去する**。実装時に grep で確認。
+  - `src/i18n.ts`: `theme.mode.custom.*` / `theme.mode.enterprise.*` / `theme.mode.startup.*` / `theme.mode.mono.*`（name + desc）の ja/en エントリ除去。
+- DoD: (1) `MODES` に custom / enterprise / startup / mono が存在しない、(2) applyTheme / loadTheme から custom 分岐・customHex が消え型エラーなし、(3) AppearanceSettings から4モードの選択 UI・HEX 入力が消える、(4) i18n の該当 theme.mode.* が ja/en 両方から消える（孤立キーを残さない）、(5) tokens.css/tokens-m3.css の `mode-mono` CSS ブロックが除去される、(6) 残るモード（light/dark/sepia/forest＋T-V 新規3）の選択・適用・persist が非回帰、(7) tsc 0 / eslint `.` 0、(8) Android 実機で外観設定が破綻しない。
 - サブタスク:
-  - [ ] 実装前調査: custom/enterprise/startup 参照箇所を全量 grep（theme.ts / AppearanceSettingsScreen / tokens.css / tokens-m3.css / i18n / その他 customHex 参照）
-  - [ ] `theme.ts`: MODES から3エントリ除去・applyTheme の custom 分岐削除・ThemeState.customHex 等の型整理・loadTheme の参照除去
-  - [ ] `AppearanceSettingsScreen.tsx`: 3モードの選択 UI・custom の HEX 入力欄・関連ハンドラ削除
-  - [ ] `tokens.css` / `tokens-m3.css`: mode-{custom,enterprise,startup} セレクタがあれば除去（audit では不在見込み）
-  - [ ] `i18n.ts`: theme.mode.{custom,enterprise,startup}.name/desc を ja/en 両方から除去（孤立キー残さない）
-  - [ ] 永続化移行: localStorage `logic-theme` に既に custom/enterprise/startup が保存されているユーザーの fallback（読込時に未知 id → light か直近有効 mode へフォールバックして無スタイルにならないこと）
-  - [ ] 回帰: 残5モードの選択・適用・persist。AppearanceSettings の表示崩れなし
+  - [ ] 実装前調査: custom/enterprise/startup/mono 参照箇所を全量 grep（theme.ts / AppearanceSettingsScreen / tokens.css / tokens-m3.css / i18n / その他 customHex・mode-mono 参照）
+  - [ ] `theme.ts`: MODES から4エントリ除去・applyTheme の custom 分岐削除・ThemeState.customHex 等の型整理・loadTheme の参照除去
+  - [ ] `AppearanceSettingsScreen.tsx`: 4モードの選択 UI・custom の HEX 入力欄・関連ハンドラ削除
+  - [ ] `tokens.css` / `tokens-m3.css`: `mode-mono` の CSS ブロックを除去（custom/enterprise/startup セレクタがあれば併せて除去）
+  - [ ] `i18n.ts`: theme.mode.{custom,enterprise,startup,mono}.name/desc を ja/en 両方から除去（孤立キー残さない）
+  - [ ] 永続化移行: localStorage `logic-theme` に既に custom/enterprise/startup/mono が保存されているユーザーの fallback（読込時に未知 id → light か直近有効 mode へフォールバックして無スタイルにならないこと）。**特に mono は今まで実際に選べた＝保存済みユーザーが存在しうるので fallback の実害が大きい**
+  - [ ] 回帰: 残モードの選択・適用・persist。AppearanceSettings の表示崩れなし
   - [ ] tsc 0 / eslint `.`（全体）0
 - 抜けもれ提言:
-  - ⚠永続化フォールバック（最重要）: 既存ユーザーの localStorage に `mode: 'custom'` / `'enterprise'` / `'startup'` が保存されている可能性。削除すると、その値を読んだ時に MODES に無い id となり、applyTheme は `mode-{id}` クラスを付けるが対応 CSS が無く**無スタイル化**する恐れ（元々 enterprise/startup は CSS 不在で実質無スタイルだったが、明示的に弾く方が安全）。loadTheme で未知 id → 既定（light 等）へフォールバックする処理を必ず入れる。
-  - i18n: theme.mode.{custom,enterprise,startup}.* を ja/en 両方から確実に除去（片方だけ残すと孤立）。未使用キーは lint で拾われない場合があるので grep で確認。
+  - ⚠永続化フォールバック（最重要）: 既存ユーザーの localStorage に `mode: 'custom'` / `'enterprise'` / `'startup'` / **`'mono'`** が保存されている可能性。削除すると、その値を読んだ時に MODES に無い id となり、applyTheme は `mode-{id}` クラスを付けるが対応 CSS が無く**無スタイル化**する恐れ。**特に mono は今まで実際に選べた生きたモードなので保存済みユーザーが現実に存在しうる＝fallback 漏れの実害が大きい**（enterprise/startup は元々 CSS 不在で実質無スタイルだった）。loadTheme で未知 id → 既定（light 等）へフォールバックする処理を必ず入れる。
+  - i18n: theme.mode.{custom,enterprise,startup,mono}.* を ja/en 両方から確実に除去（片方だけ残すと孤立）。未使用キーは lint で拾われない場合があるので grep で確認。
   - 両OS: モバイル専用（project_logic_mobile_only）。Android 実機で外観設定画面の表示確認。
-  - テスト: 削除系だが、loadTheme の未知 id フォールバックは vitest 単体向き（保存値 'custom'/'enterprise'/'startup' → 既定 mode に解決されるか）。
-  - 関連: T-V のテーマ再設計で残5モードのうち sepia/forest/mono が刷新・差し替えされる可能性があるため、**T-V のパレット選定後に T-R/T-S/T-T/T-U/T-J を同一 dev-logic がまとめて一括実装する**のが効率的（重複作業・コンフリクト回避）。
-  - 注意: 「機能していない」は audit で裏取り済み（CSS ブロック不在）。削除方針は Keita 確定済み。
+  - テスト: 削除系だが、loadTheme の未知 id フォールバックは vitest 単体向き（保存値 'custom'/'enterprise'/'startup'/'mono' → 既定 mode に解決されるか）。
+  - 関連: T-V のテーマ再設計で残モードのうち sepia/forest が刷新・差し替えされる可能性があるため、**T-V のパレット選定後に T-R/T-S/T-T/T-U/T-J ＋ 新タスク T-Y（習熟色バッジ）を同一 dev-logic がまとめて一括実装する**のが効率的（重複作業・コンフリクト回避）。
+  - 注意: custom/enterprise/startup の「機能していない」は audit で裏取り済み（CSS ブロック不在）。mono は機能しているが Keita 判断で不要。削除方針は Keita 確定済み（2026-05-29「墨白不要」）。
 
 ### T-S — 「今日の一問」カードがテーマ追従しない　[P1 / TODO（T-M 完了後着手）]
 
 - 依頼原文（Keita 2026-05-29）: 「テーマを変えても『今日の一問』カード（Daily Fermi のホームカード）の色が変わらない。テーマ追従するよう修正してほしい」。
-- スコープ: ホーム（`HomeScreenV3`）の「今日の一問」カードが、外観テーマ（古紙/深緑/墨白等）を切り替えても色が変わらない＝テーマ非追従。テーマ変数（CSS 変数 / mode クラス）に追従するよう修正する。T-B で追加した新テーマの「追従漏れ」の一部。
-- 根因仮説（実装前に実ソース照合すること・現時点未照合）: 「今日の一問」カードの背景/文字/アクセント色が **ハードコード hex** か、テーマ非依存の固定色（`var(--brand)` 等の固定ブランド色をテーマ追従させたい箇所で使用、または旧 light/dark しか想定しない色指定）になっている疑い。`tokens.css` の `body.theme-v3.mode-{id}` で定義される bg/card/text/accent 変数を参照していない可能性。
-- 既存資産: `src/screens/HomeScreenV3.tsx`（「今日の一問」カードの描画・className/style）、対応する CSS（カードのスタイル定義。`src/styles/` 配下か HomeScreenV3 近傍）、`src/styles/tokens.css`（テーマ別トークンの正）。
-- DoD: 外観テーマを古紙/深緑/墨白/light/dark に切り替えると、「今日の一問」カードの背景・文字・アクセントが**各テーマの配色に追従**して変わる。ハードコード hex を使わず CSS 変数（`var(--card)` / `var(--accent)` 等テーマトークン）参照になっている。各テーマで本文・ラベルのコントラストが WCAG AA を満たす。tsc 0 / eslint `.` 0。Android 実機で全テーマ確認。
+- スコープ: ホーム（`HomeScreenV3`）の「今日の一問」カードが、外観テーマ（古紙/深緑等）を切り替えても青のまま変わらない＝テーマ非追従。テーマ変数（CSS 変数 / mode クラス）に追従するよう修正する。T-B で追加した新テーマの「追従漏れ」の一部。
+- 🔍 根因確定（林調査済み・2026-05-29）: 「今日の一問」カードの色が **テーマ非追従の固定青**になっているのが根因。具体的に:
+  - `HomeScreenV3.tsx:178` の box-shadow `rgba(108,142,245,.32)`（青グロー固定・ハードコード）
+  - `HomeScreenV3.tsx:183/:184` の `background: 'var(--brand-grad-h)'`（固定青グラデ。`--brand-grad-h` は `tokens.css:26` の `:root` にしか定義されず**どのモードでも override されない**＝全テーマ青のまま）
+  - CTA の `color: 'var(--brand)'`（固定青 #3D5FC4）
+  - → これらを `--accent` 系トークンに置換 ＋ `--brand-grad-h` を各モードブロックで override すればテーマ追従する。**この :184 は T-T 根本原因A と完全に同一箇所**。
+- 既存資産: `src/screens/HomeScreenV3.tsx`（「今日の一問」カードの描画・:178/:183/:184/CTA）、`src/styles/tokens.css`（`--brand-grad-h` の :root 定義元＋各 mode ブロック）。
+- DoD: 外観テーマを古紙/深緑/light/dark/T-V 新規に切り替えると、「今日の一問」カードの背景・文字・アクセントが**各テーマの配色に追従**して変わる（青固定が解消）。ハードコード hex/青 rgba を使わず CSS 変数（`var(--card)` / `var(--accent)` / モード override 済み `--brand-grad-h` 等テーマトークン）参照になっている。各テーマで本文・ラベルのコントラストが WCAG AA を満たす。tsc 0 / eslint `.` 0。Android 実機で全テーマ確認。
 - サブタスク:
-  - [ ] 実装前調査: 「今日の一問」カードの色指定箇所を特定（HomeScreenV3 の inline style / className / 対応 CSS）。ハードコード hex かテーマ非依存変数か確認
-  - [ ] 色指定をテーマトークン（CSS 変数）参照に置換（ハードコード hex 撤去）
-  - [ ] 全5テーマ（light/dark/古紙/深緑/墨白）でカードが追従するか確認
+  - [ ] HomeScreenV3:178 boxShadow のハードコード青を accent 系変数へ
+  - [ ] HomeScreenV3:183/:184 の `--brand-grad-h` 固定青グラデをテーマ追従に（各モードで override or accent 系へ。⚠AM-L で「グラデ自体をなくす」指示と統合＝フラット単色＋テーマ追従に）
+  - [ ] CTA の `color: 'var(--brand)'` 固定青を accent へ
+  - [ ] 残テーマ（light/dark/古紙/深緑/T-V 新規3。mono は削除）でカードが追従するか確認
   - [ ] コントラスト確認: 各テーマで本文/ラベルが WCAG AA（4.5:1）
   - [ ] 回帰: 他のホーム要素（ストリーク・他カード）の色に影響していないか
   - [ ] tsc 0 / eslint `.`（全体）0
@@ -681,10 +902,11 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
   - デザイン制約: ハードコード hex 禁止（CLAUDE.md）。テーマトークン `var(--bg)` / `var(--card)` / `var(--text)` / `var(--accent)` 等を使う。色 source は tokens.css 側に集約。
   - 回帰（最重要）: 「今日の一問」カードの色を変数化すると、その変数を共有する**他画面のカードにも波及**しうる。共通カードコンポーネント / 共通 CSS クラスを触る場合は他画面の見た目も目視確認（feedback_audit_triage 的に correctness 波及）。カード固有のクラスに閉じて直すのが安全。
   - i18n: 色追従のみなら新規文言なし（i18n 影響なし）。
-  - アクセシビリティ: テーマ追従で各テーマのコントラスト要検算（特に墨白/深緑のダーク寄り系で本文が沈まないか。T-B の DoD と同じ観点）。
+  - アクセシビリティ: テーマ追従で各テーマのコントラスト要検算（特に深緑のダーク寄り系で本文が沈まないか。T-B の DoD と同じ観点）。
   - 両OS: モバイル専用。Android 実機で全テーマ切替を確認（theme-color meta も含め）。
   - 永続化: 表示色のみで persist 影響なし。
-  - 関連: T-T（網羅調査）の findings に「今日の一問カード」が含まれる＝T-S は T-T の一項目を先行特定したもの。T-T の調査結果が出たら、同種の追従漏れ箇所をまとめて T-S と同じ手法で直す（同一 dev-logic 推奨）。T-A/T-L と同じ Daily Fermi 周辺だが、T-A は本番反映済・T-L は表示順入れ替えで色とは別レイヤーなので競合は小さい（同一 dev-logic なら順序整理で回避）。
+  - ⚠AM-L との統合（最重要）: 旧「テーマ改修」依頼の「今日の1問カードが青のまま」＝この T-S。さらに AM-L（Keita「今日の1問カードのグラデをなくして」）と**同じ DOM/CSS（HomeScreenV3:184 の `--brand-grad-h`）を触る**。方向は AM-L=「グラデをなくす（フラット化）」が最新指示なので、**フラット単色＋テーマ追従**で T-S（追従）と AM-L（グラデ廃止）を同時充足する。**dev-logic は T-S / T-T 根本原因A / AM-L (b) を同一作業で処理**（別々にやると競合）。
+  - 関連: T-S は T-T 根本原因A の :184 を先行特定したもの＝**T-S は T-T 根本原因A に統合**（A を直せば自動解消）。T-A/T-L と同じ Daily Fermi 周辺だが、T-A は本番反映済・T-L は表示順入れ替えで色とは別レイヤーなので競合は小さい（同一 dev-logic なら順序整理で回避）。
 
 ### T-T — テーマ非追従の網羅修正（audit findings で完全仕様化）　[P1 / TODO（調査=完了／修正=T-V パレット選定後に一括実装）]
 
@@ -723,33 +945,33 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
   - [ ] dev-logic 根本原因B: RoadmapScreenV3 のハードコード青 rgba(108,142,245,...) を `--accent-soft` 等へ置換（:762/:946/:970/:979/:328）
   - [ ] dev-logic 根本原因C: LessonStoriesScreen の #fff/#FFFFFF 固定（約10箇所 :856/:869/:1303/:1313/:1447/:1498/:1580 ほか）を `var(--accent-fg)` 化
   - [ ] dev-logic 根本原因D: プロフィール一覧テキストの未追従箇所を特定してテーマ追従に修正
-  - [ ] 全5テーマ（light/dark/sepia/forest/mono）で追従＋コントラスト確認（T-U と一体）
+  - [ ] 残テーマ（light/dark/sepia/forest＋T-V 新規3。**mono は T-R で削除済みなので対象外**）で追従＋コントラスト確認（T-U と一体）
   - [ ] 回帰: 既存 light/dark 非変化、共有クラス波及の目視確認
   - [ ] tsc 0 / eslint `.`（全体）0
 - 抜けもれ提言:
   - T-S は根本原因A の :184 を先行特定したもの＝**T-S は T-T 根本原因A に統合**。A を直せば T-S は自動解消。
   - デザイン制約: 修正方針は一貫して「ハードコード hex/rgba 撤去 → tokens.css のテーマトークン参照」。色 source は tokens.css に集約（CLAUDE.md）。根本原因A の `--brand-grad-h` は各モードブロックに分散定義する（色 source なので各モード CSS で hex を持つのは正当）。
   - 回帰（最重要）: `--brand-grad-h` を各モードで override すると、この変数を共有する**他画面の青グラデ背景にも波及**する（HomeScreenV3/DailyFermi/Login が共有）。意図した一括追従なので望ましいが、想定外の箇所が変わらないか目視確認。LessonStoriesScreen の accent-fg 化も共有クラス波及に注意。
-  - コントラスト: 根本原因C（accent-fg 化）と全テーマ検証は T-U（コントラスト整合性チェック）と一体で進める。特に mono/forest のダーク寄り系で本文が沈まないか。
+  - コントラスト: 根本原因C（accent-fg 化）と全テーマ検証は T-U（コントラスト整合性チェック）と一体で進める。特に forest のダーク寄り系で本文が沈まないか（mono は T-R で削除）。
   - 両OS: モバイル専用。Android 実機で代表テーマの全画面ざっと確認。
   - i18n: 色追従修正のみなら新規文言なし。
   - 永続化: 表示色のみで persist 影響なし。
-  - ⚠T-V との統合: sepia/forest/mono は T-V のテーマ再設計で刷新・差し替えの可能性。**T-V のパレット選定後に T-T を実装**すれば、刷新後のモードブロックに対して `--brand-grad-h` override を入れられる（先に直すと T-V 実装で二度手間になる）。T-R/T-S/T-T/T-U/T-J を T-V 統合で一括実装。
+  - ⚠T-V との統合: sepia/forest は T-V のテーマ再設計で刷新・差し替えの可能性（mono は T-R で削除済み）。**T-V のパレット選定後に T-T を実装**すれば、刷新後のモードブロックに対して `--brand-grad-h` override を入れられる（先に直すと T-V 実装で二度手間になる）。T-R/T-S/T-T/T-U/T-J ＋ 新タスク T-Y（習熟色バッジ）を T-V 統合で一括実装。
 
 ### T-U — コントラスト/可読性 整合性チェック　[P1 / TODO（T-V パレット選定後・T-T 修正と一体）]
 
 - 依頼原文（Keita 2026-05-29）: 「テーマを変えると白文字で見えない、ハイライトが濃くて読めない、が起きないように整合性チェックして」。
 - スコープ: 全テーマ × 主要画面で、可読性を検証して破綻を潰す **QA タスク**。検証軸は (a) 本文テキスト × 背景、(b) accent-fg × brand/accent 背景、(c) selection/active ハイライト × その上の文字。目安は WCAG **4.5:1（本文）/ 3:1（大文字・UI 要素）**。T-T の修正（特に根本原因C の accent-fg 化）と一体で進める。
 - なぜ T-T と一体か: T-T 根本原因C（#fff 固定 → accent-fg 化）と根本原因A（brand-grad-h override）は、どちらも「テーマ追従させた結果コントラストが足りるか」を検証しないと完了しない。T-U は T-T の修正後に各テーマで可読性が成立するかを横断チェックする受け入れゲート。
-- 検証対象テーマ: light / dark / sepia / forest / mono の5モード（T-V 再設計後はそのパレットで再検証）。
+- 検証対象テーマ: light / dark / sepia / forest ＋ T-V 新規3（**mono は T-R で削除済みのため対象外**。T-V 再設計後はそのパレットで再検証）。
 - 検証対象（主要画面・代表例）: ホーム（今日の一問カード・ストリーク）、ロードマップ（タブ active・カード・mark）、レッスン本文/LessonStories（brand 背景上の文字・callout）、プロフィール一覧、ジャーナル、外観設定、ログイン。
-- DoD: (1) 全5テーマ × 主要画面で「本文 × 背景」が WCAG 4.5:1、「大文字・UI 要素・accent-fg × accent 背景」が 3:1 を満たす、(2) 白文字が背景に溶ける/ハイライトが濃すぎて文字が読めない箇所がゼロ、(3) 破綻箇所はテーマトークン調整 or 当該箇所の fg 修正で解消、(4) 検証結果（テーマ×画面×実測コントラスト比 or OK/NG）が記録される、(5) Android 実機で代表テーマの可読性を目視確認。
+- DoD: (1) 残全テーマ（light/dark/sepia/forest＋T-V 新規3、mono 除く）× 主要画面で「本文 × 背景」が WCAG 4.5:1、「大文字・UI 要素・accent-fg × accent 背景」が 3:1 を満たす、(2) 白文字が背景に溶ける/ハイライトが濃すぎて文字が読めない箇所がゼロ、(3) 破綻箇所はテーマトークン調整 or 当該箇所の fg 修正で解消、(4) 検証結果（テーマ×画面×実測コントラスト比 or OK/NG）が記録される、(5) Android 実機で代表テーマの可読性を目視確認。
 - サブタスク:
   - [ ] 検証マトリクス作成（5テーマ × 主要画面 × 検証軸 a/b/c）
   - [ ] 各セルでコントラスト比を実測（hex 抽出 → WCAG 比算出。selection/active ハイライト上の文字も含む）
   - [ ] NG セルを抽出し、T-T の修正 or tokens.css のトークン調整で解消
-  - [ ] mono/forest のダーク寄り系で本文が沈まないか・sepia の低彩度で accent が埋もれないか重点確認
-  - [ ] Android 実機で代表テーマ（mono/forest/sepia）の主要画面を目視
+  - [ ] forest のダーク寄り系で本文が沈まないか・sepia の低彩度で accent が埋もれないか重点確認（mono は削除済み）
+  - [ ] Android 実機で代表テーマ（forest/sepia＋T-V 新規）の主要画面を目視
   - [ ] 検証結果を記録（再発防止の基準値として）
 - 担当: dev-logic（主体）＋必要なら test/QA 系 subagent（マトリクス実測の機械化）。
 - 抜けもれ提言:
@@ -764,30 +986,32 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
 
 ### T-V — テーマ再設計エピック（数パターン追加・UI設計刷新・カスタマイズしやすく）　[P1 / IN_PROGRESS（designer 提案ドキュメント作成中・読み取り専用）]
 
-- 依頼原文（Keita 2026-05-29）: 「まだAI感がある、もう数パターン考えてほしい。UI設計も変えていい、カスタマイズしやすく」。
-- スコープ: 配色テーマを再設計する**親エピック**。(1) 新パレットを数パターン提案（AI 感を脱した垢抜けた配色）、(2) AppearanceSettings の UI 設計を刷新（カスタマイズしやすく）、(3) 選定パレットで全変数フルカバー＋コントラスト検証。T-R（死にモード削除）/ T-T（非追従修正）/ T-U（コントラスト）/ T-J（バッジ色）はこの再設計と**統合して一括実装**するのが効率的。
-- 進行状況（2026-05-29）: **designer が読み取り専用で提案ドキュメントを作成中**（出力先 `docs/THEME_REDESIGN_PROPOSAL_20260529.md`）。内容＝**4〜6パレット＋全変数フルカバー＋コントラスト検証＋AppearanceSettings UI 再設計案**。完成後 Keita がパレットを選定 → dev-logic が実装。
-- ⚠選定パレットの影響: 選定パレットは既存 sepia/forest/mono を**刷新/差し替える可能性**がある。つまり T-R で残す5モードのうち sepia/forest/mono は T-V 後に中身が変わりうる（light/dark は維持見込み）。だから T-R/T-T/T-U は T-V のパレット選定を待って一括実装するのが筋（先に直すと二度手間）。
-- フロー: designer（提案・進行中）→ Keita（パレット選定＝このエピックのゲート）→ dev-logic（theme.ts / tokens.css / i18n / AppearanceSettings 実装＋T-R/T-S/T-T/T-U/T-J 統合）。
-- DoD（提案フェーズ・designer）: (1) 4〜6パレットが提案され各パレットが全テーマ変数（bg/card/text/accent ＋ accentSoft/glow/dark/fg、`--brand-grad-h` 等の追従対象含む）をフルカバー、(2) 各パレットのコントラスト検証（WCAG）済み、(3) AppearanceSettings の UI 再設計案（カスタマイズしやすさを高める導線）が提示され、(4) 会話本文に内容展開＋Keita 選定待ち（feedback_direct_content_not_path）。
-- DoD（実装フェーズ・後日・Keita 選定後）: 選定パレットが MODES / tokens.css に実装され、AppearanceSettings UI が刷新され、T-R（死にモード削除）/T-T（非追従修正）/T-U（コントラスト）/T-J（バッジ色）が統合され、全テーマで追従・コントラスト AA・i18n ja/en・Android 実機破綻なし。
+- 依頼原文（Keita 2026-05-29）: 「まだAI感がある、もう数パターン考えてほしい。UI設計も変えていい、カスタマイズしやすく」。＋（別途・同日朝）「『AIっぽくない』テーマを3つ追加して」。
+- スコープ: 配色テーマを再設計する**親エピック**。(1) 新パレットを数パターン提案（AI 感を脱した垢抜けた配色）、(2) AppearanceSettings の UI 設計を刷新（カスタマイズしやすく）、(3) 選定パレットで全変数フルカバー＋コントラスト検証。T-R（死にモード削除）/ T-T（非追従修正）/ T-U（コントラスト）/ T-J（バッジ色）/ 新タスク T-Y（習熟色バッジ）はこの再設計と**統合して一括実装**するのが効率的。
+- 🆕 追加要件（Keita 2026-05-29 朝・旧「テーマ改修」依頼から吸収）: **「AIっぽくない」テーマを3つ新規追加**する。これは T-V エピックの一部として扱う（別タスク起票しない＝旧 Hayashi T-I の重複を吸収）。**最終的に残るモード = light / dark / sepia(古紙) / forest(深緑) ＋ この新規3つ（＝計7構成）**。custom/enterprise/startup/mono は T-R で削除。新規3つは「量産テンプレ感（紺×シルバー等）を避け、アナログ/人間味/エディトリアル寄り、sepia/forest と被らない方向」（designer が現在パレット作成中＝T-V/T-U/T-Y 用に新規3テーマのパレット＋習熟色＋既存テーマのコントラスト監査を作成中）。
+- 進行状況（2026-05-29）: **designer が読み取り専用で提案ドキュメントを作成中**（出力先 `docs/THEME_REDESIGN_PROPOSAL_20260529.md`）。内容＝**新規3テーマ（AIっぽくない）のパレット＋（数パターンの再設計案）＋全変数フルカバー＋コントラスト検証（既存 sepia/forest 含む）＋習熟色（T-Y 用）＋AppearanceSettings UI 再設計案**。完成後 Keita がパレットを選定 → dev-logic が実装。
+- ⚠選定パレットの影響: 選定パレットは既存 sepia/forest を**刷新/差し替える可能性**がある（mono は T-R で削除済み）。つまり残すモードのうち sepia/forest は T-V 後に中身が変わりうる（light/dark は維持見込み）。だから T-R/T-T/T-U は T-V のパレット選定を待って一括実装するのが筋（先に直すと二度手間）。
+- フロー: designer（提案・進行中）→ Keita（パレット選定＝このエピックのゲート）→ dev-logic（theme.ts / tokens.css / i18n / AppearanceSettings 実装＋T-R/T-S/T-T/T-U/T-J/T-Y 統合）。
+- DoD（提案フェーズ・designer）: (1) **「AIっぽくない」新規3テーマのパレット**＋（再設計の数パターン案）が提案され、各パレットが全テーマ変数（bg/card/text/accent ＋ accentSoft/glow/dark/fg、`--brand-grad-h` 等の追従対象含む）をフルカバー、(2) 各パレットのコントラスト検証（WCAG）＋既存 sepia/forest のコントラスト監査済み、(3) **習熟色（T-Y 用・1回完了 accent と区別する2回以上完了マークの色）**の選定案、(4) AppearanceSettings の UI 再設計案（カスタマイズしやすさを高める導線）が提示され、(5) 会話本文に内容展開＋Keita 選定待ち（feedback_direct_content_not_path）。
+- DoD（実装フェーズ・後日・Keita 選定後）: 新規3テーマ＋選定パレットが MODES / tokens.css に実装され、AppearanceSettings UI が刷新され、T-R（死にモード削除）/T-T（非追従修正）/T-U（コントラスト）/T-J（バッジ色）/T-Y（習熟色バッジ）が統合され、全テーマで追従・コントラスト AA・i18n ja/en・Android 実機破綻なし。
 - サブタスク（提案フェーズ・進行中）:
-  - [~] designer: 4〜6パレット提案（全変数フルカバー・各パレットのトンマナ説明・どのAI感を脱するか）＝**進行中**
-  - [~] designer: 各パレットのコントラスト検証（WCAG）
+  - [~] designer: 「AIっぽくない」新規3テーマのパレット＋（再設計数パターン）提案（全変数フルカバー・各パレットのトンマナ説明・どのAI感を脱するか）＝**進行中**
+  - [~] designer: 各パレットのコントラスト検証（WCAG）＋既存 sepia/forest のコントラスト監査
+  - [~] designer: 習熟色の選定案（T-Y 用・1回完了 accent と区別）
   - [~] designer: AppearanceSettings UI 再設計案（カスタマイズしやすく）
   - [ ] 会話本文に提案を直接展開し Keita 選定待ち
 - サブタスク（実装フェーズ・Keita 選定後）:
   - [ ] Keita: パレット選定（このエピックのゲート）
-  - [ ] dev-logic: 選定パレットを MODES / tokens.css に実装（sepia/forest/mono の刷新/差し替え込み）
+  - [ ] dev-logic: 新規3テーマ＋選定パレットを MODES / tokens.css に実装（sepia/forest の刷新/差し替え込み・mono は T-R で削除）
   - [ ] dev-logic: AppearanceSettings UI 刷新
-  - [ ] dev-logic: T-R/T-S/T-T/T-U/T-J を統合実装（死にモード削除・非追従修正・コントラスト・バッジ色を一括）
+  - [ ] dev-logic: T-R/T-S/T-T/T-U/T-J/T-Y を統合実装（死にモード削除・非追従修正・コントラスト・バッジ色・習熟色を一括）
   - [ ] i18n（新パレット name/desc・UI 文言の ja/en・中立丁寧体）
   - [ ] 全テーマで追従・コントラスト AA・回帰（既存 light/dark 非変化）
   - [ ] tsc 0 / eslint `.` 0、Android 実機確認
   - [ ] サムネ/ハードコード hex 撤去の最終確認
 - Keita 確認すべき論点（提案完成後）:
-  - (1) どのパレットを採用するか（複数可・無料/有料の tier 割当）。
-  - (2) sepia/forest/mono を残すか・新パレットで差し替えるか（T-R の残5モードと整合）。
+  - (1) どのパレットを採用するか（新規3テーマ＋再設計案。複数可・無料/有料の tier 割当）。
+  - (2) sepia/forest を残すか・新パレットで差し替えるか（mono は削除済み。T-R の残モードと整合）。
   - (3) AppearanceSettings UI をどこまで刷新するか（「カスタマイズしやすく」の範囲＝プリセット選択のみか/微調整スライダ等を入れるか）。
 - 抜けもれ提言:
   - サンプル承認フロー: テーマ配色は主観・好みの領域（Bucket2 寄り）。designer 提案 → Keita 選定 → 実装のフロー厳守（feedback_logic_course_thumbnails のサンプル承認ルール）。
@@ -797,7 +1021,7 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
   - コントラスト: 各パレットで T-U の検証軸（本文/背景・accent-fg/accent・ハイライト/文字）を満たすこと。提案段階で WCAG 検証を済ませる。
   - 永続化フォールバック: 新 id 追加・旧 id 差し替えで、localStorage に旧 id が残るユーザーの fallback（未知 id → 既定）を T-R の処理と統合。
   - 両OS: モバイル専用。Android 実機で全パレット確認（theme-color meta 含む）。
-  - 統合の効率: T-R/T-S/T-T/T-U/T-J を T-V 実装に巻き込むことで、theme.ts / tokens.css / AppearanceSettings / i18n を1回の作業で触れる（個別に何度も触らない）。同一 dev-logic 一気通貫。
+  - 統合の効率: T-R/T-S/T-T/T-U/T-J/T-Y を T-V 実装に巻き込むことで、theme.ts / tokens.css / AppearanceSettings / i18n / 色トークンを1回の作業で触れる（個別に何度も触らない）。同一 dev-logic 一気通貫。
 
 ### T-W — 「あなた専用コース」セクションの展開/折りたたみ　[P1 / TODO（T-M 完了後着手・T-V 系から独立）]
 
@@ -823,6 +1047,32 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
   - 両OS: モバイル専用。Android 実機で開閉動作・アニメーション確認。
   - 永続化: 開閉状態は既存カテゴリ開閉の persist 機構に乗せる（localStorage 等）。カスタムコース自体のデータ（TC-2 の customCourseStore）には影響なし。
   - 独立性: T-W は T-V 系（テーマ）とも T-I/T-K/T-L とも独立。RoadmapScreenV3 を触る点は T-T 根本原因B（RoadmapScreenV3 のハードコード青）/ T-I（コース進捗・RoadmapScreenV3 のコースカード）と同ファイルなので、**同一 dev-logic が RoadmapScreenV3 系（T-W / T-I / T-T-B）を近い時期にまとめて触る**とコンフリクトを避けやすい（必須ではないが推奨）。
+
+### T-Y — 2回以上完了レッスンの完了マーク色を区別（習熟色）　[P2 / TODO（T-V 習熟色選定後に一括実装）]
+
+- 依頼原文（Keita 2026-05-29）: 「二回完了したレッスンはコース一覧で✓マークの色も変えて」。2回以上やったレッスンを1回完了と一目で見分けられる別色（習熟色）にする。
+- ⚠ 既存 DONE タスクとの区別（最重要・ID 衝突回避の経緯）: 既存 **T-J（DONE）は「完了バッジのチェックマークをテーマアクセント色 `--accent` に追従させる」**話で、本番反映済み。本タスク T-Y は**それとは別物**＝「**完了回数（count>=2）で1回完了と色を変える（習熟色を新設）**」。2026-05-29 朝に林が誤って「T-J」として起票した重複バッチがあったが、既存 DONE の T-J と ID が衝突するため、**空き ID を確認のうえ新規 T-Y で採番**した（T-X まで使用済み・T-Y が次の空き）。
+- 現状（林調査済み）:
+  - `src/components/CompletionBadge.tsx` が回数で見た目を出し分け済み: count=1=✓＋`--accent`フル塗り / count=2=半リング＋数字「2」/ count=3+=数字。色は全て `--accent` 系で**1回と2回+の色差なし**（T-J でアクセント追従にはなったが、回数による色区別はまだ無い）。
+  - コース一覧での描画: `src/screens/RoadmapScreenV3.tsx:1327` と :1380 の**2描画経路**で `<CompletionBadge count={completionCount || 1} />`。completionCounts は `getAllCompletionCounts()`（src/db/completionCountDb.ts、キー `lesson-${id}`）。
+  - 既に completionCount >= 2 で `completed.timesDone` のテキストバッジも出る（:1337 / :1372）。
+  - 完了回数の永続化は localStorage `logic-completion-counts` ＋ Supabase `user_progress.completion_counts`（migration 031）。**データ土台は揃っている＝migration 不要**。
+  - `src/screens/CompletedLessonsScreen.tsx` でも CompletionBadge を描画＝整合確認対象。
+- DoD: (1) コース一覧で2回以上完了レッスンの完了マークが1回完了と**違う色（習熟色）**で表示される、(2) 1回完了は従来 `--accent`、count>=2 は習熟色（2回半リング・3回+フル塗りの両方に適用）、(3) RoadmapScreenV3 の2描画経路（:1327/:1380）と CompletedLessonsScreen で整合、(4) 全テーマで習熟色のコントラストが保たれテーマ切替で破綻しない、(5) `src/__tests__/CompletionBadge.test.tsx` を色分岐の検証込みで更新しグリーン、(6) tsc 0 / eslint `.` 0、(7) Android 実機で確認。
+- サブタスク:
+  - [ ] designer: 1回完了（accent）と区別する「習熟色」を選定（テーマ追従するか固定 mastery 色か含め判断。全テーマでコントラスト確保）＝**T-V のパレット作成に内包・進行中**
+  - [ ] dev-logic: CompletionBadge を count>=2 で習熟色に切替（2回半リング・3回+フル塗りの両方）。1回は従来 accent のまま
+  - [ ] dev-logic: `src/__tests__/CompletionBadge.test.tsx` を更新（色分岐の検証追加）
+  - [ ] 回帰: コース一覧（RoadmapScreenV3 両経路 :1327/:1380）・CompletedLessonsScreen でも整合。テーマ切替で習熟色も破綻しないこと
+  - [ ] tsc 0 / eslint `.`（全体）0
+- 担当: designer（習熟色選定＝T-V パレット作業に内包）→ dev-logic（実装）。migration 不要（completion_counts は migration 031 で既存）。
+- 抜けもれ提言:
+  - デザイン制約: 習熟色もハードコード hex 禁止＝テーマトークン（新規トークン or 既存 accent 系の派生）を tokens.css に定義して参照（CLAUDE.md）。テーマ追従か固定 mastery 色かは designer 判断（全テーマでコントラスト確保が条件）。
+  - 統合効率: 習熟色は designer の T-V パレット作業（新規3テーマ＋既存コントラスト監査）に内包されるので、**T-V のパレット選定後に T-R/T-S/T-T/T-U/T-J/T-Y を同一 dev-logic が一括実装**するのが効率的（色トークンを1回でまとめて触る）。
+  - i18n: 色区別のみで新規文言なし（i18n 影響なし）。
+  - アクセシビリティ: 色だけで「習熟」を伝えると色覚多様性で区別困難＝既存の半リング/数字（count=2 で「2」表示）が色と併用の冗長手がかりになっている点を維持（色のみに依存しない）。
+  - 両OS: モバイル専用。Android 実機で1回/2回/3回+の見分けを全テーマで確認。
+  - 永続化: completion_counts は migration 031 で既存＝表示の色分岐のみ。persist 影響なし。
 
 ---
 
@@ -1374,44 +1624,45 @@ T-M の次工程（task-manager 追跡）:
 ### 🚦 dev-logic 完了後（T-M 完了後）に着手する main 作業キュー（2026-05-29 更新・テーマ再設計統合版）
 
 T-M（体力コース）で dev-logic が **main の作業ツリーを使用中**。同じツリーを2人で触ると commit が混ざるため、**T-M が終わり作業ツリーが空いてから**着手する。
-さらにテーマ系（T-R/T-S/T-T/T-U/T-V/T-J）は **T-V（テーマ再設計）の Keita パレット選定を待って一括実装**する（選定パレットで sepia/forest/mono が刷新・差し替えされる可能性があり、先に直すと二度手間になるため）。T-W と T-I/T-K/T-L は T-V と独立して進められる。
+さらにテーマ系（T-R/T-S/T-T/T-U/T-V/T-J/T-Y）は **T-V（テーマ再設計）の Keita パレット選定を待って一括実装**する（選定パレットで sepia/forest が刷新・差し替えされる可能性があり〔mono は T-R で削除〕、先に直すと二度手間になるため）。T-W と T-I/T-K/T-L は T-V と独立して進められる。
 
-キュー対象（10件）と性質:
+キュー対象（11件）と性質:
 
 | 着手順 | ID | 内容 | 優先度 | 重さ | migration | 依存・グルーピング |
 |--------|----|------|--------|------|-----------|-------------------|
-| ゲート | T-V | テーマ再設計（4〜6パレット提案→Keita 選定→実装）＋UI 刷新 | P1 | 重 | 不要 | テーマ系の親エピック。designer 提案進行中→**Keita パレット選定がゲート** |
-| 1 | T-R | 死にモード削除（custom/enterprise/startup） | P1 | 軽〜中 | 不要 | テーマ系・T-V 選定後に統合 |
+| ゲート | T-V | テーマ再設計（「AIっぽくない」新規3テーマ追加＋数パターン提案→Keita 選定→実装）＋UI 刷新 | P1 | 重 | 不要 | テーマ系の親エピック。designer 提案進行中→**Keita パレット選定がゲート** |
+| 1 | T-R | 死にテーマ削除（custom/enterprise/startup/mono＝計4） | P1 | 軽〜中 | 不要 | テーマ系・T-V 選定後に統合。mono は CSS ブロックも除去 |
 | 1 | T-T | テーマ非追従の網羅修正（根本原因A/B/C/D・T-S を内包） | P1 | 中 | 不要 | テーマ系・T-V 選定後に統合（調査=完了） |
 | 1 | T-U | コントラスト/可読性 整合性チェック（全テーマ×主要画面） | P1 | 中 | 不要 | テーマ系・T-T と一体 |
-| 1 | T-J | 完了バッジのチェックマーク色変更のみ | P2 | 軽 | 不要 | テーマ系・色方針を T-V/T-T と揃える |
+| 1 | T-J | （既存 DONE）完了バッジのアクセント追従＝本番反映済 | — | — | — | ※DONE。本キューの「テーマ系」では色方針の参照のみ |
+| 1 | T-Y | 2回以上完了レッスンの完了マーク色を区別（習熟色） | P2 | 軽 | 不要 | テーマ系・習熟色は T-V パレット作業に内包・色方針を揃える |
 | 2 | T-W | 「あなた専用コース」セクションの展開/折りたたみ | P1 | 軽〜中 | 不要 | RoadmapScreenV3・T-V から独立 |
-| 3 | T-I | コース進捗表示（完了 n/m・%） | P1 | 中 | 不要 | progress 系・独立（RoadmapScreenV3 同ファイル） |
-| 4 | T-K | ジャーナルグラフ tap で詳細展開（対象グラフ未確定） | P2 | 中 | 不要 | journal 系・独立 |
-| 5 | T-L | フェルミの答えを解説の末尾へ（表示順） | P2 | 軽（backend デプロイ要の可能性） | 不要 | Daily Fermi 系・独立 |
+| 3 | T-I | （既存 DONE）コース進捗表示＝本番反映済 | — | — | — | ※DONE。新規 T-I（Hayashi 重複）は削除済み |
+| 4 | T-K | （既存 DONE）ジャーナルグラフ tap 詳細＝本番反映済 | — | — | — | ※DONE |
+| 5 | T-L | （既存 DONE）フェルミの答えを解説の末尾へ＝本番反映済 | — | — | — | ※DONE |
 
-（注: T-S は T-T 根本原因A に統合済みのため独立行を持たない。表の「着手順 1」はテーマ系を T-V 選定後に1まとめで実装する意味で、内部順序は T-V 実装 → T-R → T-T(+T-S) → T-U → T-J。）
+（注: T-I/T-J/T-K/T-L は別バッチで既に DONE〔本番反映済〕。本キューに残るテーマ系の生きた実装対象は T-V/T-R/T-T(+T-S)/T-U/T-Y。T-S は T-T 根本原因A に統合済みのため独立行を持たない。内部順序は T-V 実装 → T-R → T-T(+T-S) → T-U → T-Y。）
 
 着手順の提案（理由つき）:
-1. **テーマ系は T-V のパレット選定を待って一括実装（T-V → T-R → T-T(+T-S) → T-U → T-J）**。6件とも `theme.ts` / `tokens.css` / `AppearanceSettingsScreen` / 色トークンという**同じ領域**を触る。T-V でパレットが確定すると sepia/forest/mono が刷新・差し替えされうるので、T-R（死にモード削除）/T-T（非追従修正・根本原因A/B/C/D）/T-U（コントラスト）/T-J（バッジ色）を**T-V 実装に巻き込んで1回で**仕上げる。別々にやると刷新後にやり直しになり二度手間。
-   - 流れ: designer 提案完成 → **Keita パレット選定（ゲート）** → dev-logic が T-V 実装（MODES/tokens.css 刷新・UI 再設計）と同時に T-R（死にモード除去）・T-T（`--brand-grad-h` override・RoadmapScreenV3 のハードコード青→accent-soft・LessonStories の #fff→accent-fg・プロフィール一覧追従）・T-U（全テーマ×主要画面の WCAG 検証）・T-J（バッジ色）を一括処理。T-S は T-T 根本原因A の一部。
+1. **テーマ系は T-V のパレット選定を待って一括実装（T-V → T-R → T-T(+T-S) → T-U → T-Y）**。いずれも `theme.ts` / `tokens.css` / `AppearanceSettingsScreen` / 色トークンという**同じ領域**を触る。T-V でパレットが確定すると sepia/forest が刷新・差し替えされうるので（mono は T-R で削除）、T-R（死にテーマ削除）/T-T（非追従修正・根本原因A/B/C/D）/T-U（コントラスト）/T-Y（習熟色バッジ）を**T-V 実装に巻き込んで1回で**仕上げる。別々にやると刷新後にやり直しになり二度手間。
+   - 流れ: designer 提案完成 → **Keita パレット選定（ゲート）** → dev-logic が T-V 実装（新規3テーマ＋MODES/tokens.css 刷新・UI 再設計）と同時に T-R（死にテーマ除去＝custom/enterprise/startup/mono）・T-T（`--brand-grad-h` override・RoadmapScreenV3 のハードコード青→accent-soft・LessonStories の #fff→accent-fg・プロフィール一覧追従）・T-U（全テーマ×主要画面の WCAG 検証）・T-Y（習熟色バッジ）を一括処理。T-S は T-T 根本原因A の一部（＝AM-L のグラデ廃止とも統合）。
    - T-T の網羅調査は**完了済み**（根本原因A/B/C/D に整理済み）＝待ち時間なし。T-V のパレット選定だけが律速。
-2. **T-W（あなた専用コース折りたたみ）は T-V と独立**。RoadmapScreenV3 の既存開閉機構（T7/TC-1 の collapsedGroups）を「あなた専用コース」に適用するだけ。テーマ選定を待たずに着手可。RoadmapScreenV3 を触る点は T-T 根本原因B・T-I と同ファイルなので、**RoadmapScreenV3 系（T-W/T-I/T-T-B）を近い時期にまとめて触る**とコンフリクトを避けやすい。
-3. **T-I（コース進捗）は独立**。progress 集計の表示で migration 不要。RoadmapScreenV3 のコースカードを触るので T-W と同ファイル＝近い時期にまとめると良い。
-4. **T-K（ジャーナルグラフ tap）は独立**。journal 周辺・対象グラフ未確定（着手前に Keita 確認）。T-D（タグ動的統合）は本番反映済なので、気分推移グラフ対象なら T-D と独立。タグ頻度グラフ対象なら T-D のタグモデルと整合確認。
-5. **T-L（フェルミ答え末尾）は独立・最後 or 隙間で**。表示順入れ替えだけならフロントのみ。プロンプト改修なら backend デプロイ要（手動 deploy-production.yml＝T-D と同じ落とし穴）。T-A は本番反映済なので Daily Fermi の競合は解消済。⚠削除見送り worktree（a23e/a7aa）に「答えを冒頭に出す」逆向き実験が残存＝**末尾方針と真逆なので混同注意**（この注記は維持）。
+2. **T-W（あなた専用コース折りたたみ）は T-V と独立・生きた TODO**。RoadmapScreenV3 の既存開閉機構（T7/TC-1 の collapsedGroups）を「あなた専用コース」に適用するだけ。テーマ選定を待たずに着手可。RoadmapScreenV3 を触る点は T-T 根本原因B・（旧）T-I と同ファイルなので、RoadmapScreenV3 系をまとめて触るとコンフリクトを避けやすい。
+3. **T-I（コース進捗）は既に DONE（本番反映済）**。Hayashi が重複起票した新規 T-I は削除済み。
+4. **T-K（ジャーナルグラフ tap）は既に DONE（本番反映済）**。
+5. **T-L（フェルミ答え末尾）は既に DONE（本番反映済）**。⚠削除見送り worktree（a23e/a7aa）に「答えを冒頭に出す」逆向き実験が残存していた点は履歴注記として維持（混同注意）。
 
 横断の抜けもれ・注意（キュー全体）:
 - ⚠作業ツリー競合（最重要・着手タイミングの肝）: T-M で dev-logic が main 作業ツリー稼働中。**T-M 完了＝作業ツリー解放を待ってから着手**。先行できるのは T-T の読み取り専用調査（完了済み）と T-V の designer 提案（読み取り専用・進行中）のみ。
-- ⚠テーマ系の律速は T-V パレット選定: T-R/T-S/T-T/T-U/T-J は T-V のパレット選定（Keita）がゲート。選定前にテーマ系を実装すると、刷新パレットで全部やり直しになる。T-V 提案が完成したら Keita に選定を促す（task-manager エスカレーション）。
-- 独立タスク（T-V を待たない）: T-W / T-I / T-K / T-L はテーマ選定と無関係。T-M 完了後すぐ着手可。
-- migration: キュー10件とも**migration 不要**。承認案件の DB 変更は無し。
-- backend デプロイ: T-L のみ backend 依存の可能性（フェルミ解説プロンプトを末尾化する実装なら）。表示順入れ替えだけならフロントのみで backend 不要。実装方針確定時に切り分け。フロント変更は Android が main push で自動反映、Render web は手動 deploy-production.yml。
+- ⚠テーマ系の律速は T-V パレット選定: T-R/T-S/T-T/T-U/T-Y は T-V のパレット選定（Keita）がゲート。選定前にテーマ系を実装すると、刷新パレットで全部やり直しになる。T-V 提案が完成したら Keita に選定を促す（task-manager エスカレーション）。
+- 独立タスク（T-V を待たない・生きた TODO）: T-W のみ（T-I/T-K/T-L は DONE）。T-M 完了後すぐ着手可。
+- migration: 本キューのテーマ系＋T-W とも**migration 不要**。承認案件の DB 変更は無し（T-Y の completion_counts も migration 031 で既存）。
+- backend デプロイ: 本キューのテーマ系＋T-W＋T-Y はフロントのみ（backend 不要）。フロント変更は Android が main push で自動反映、Render web は手動 deploy-production.yml。
 - デプロイ前チェック: 各件 `tsc -b --noEmit` ＋ **`eslint .`（全体・CI と同じスコープ）** で 0 error 確認（reference_logic_ci_lint_scope）。残置 worktree の false error は `--ignore-pattern '.claude/**'` で除外して真の数を見る。
-- i18n: T-V の新パレット name/desc・T-I の進捗ラベル・T-K の詳細パネル文言・T-W の見出し（新規なら）は ja/en 両方＋中立丁寧体（feedback_app_copy_neutral）。T-R は theme.mode.{custom,enterprise,startup}.* の ja/en 両除去（孤立キー残さない）。色追従・表示順系（T-S/T-T/T-J/T-L）は基本新規文言なし。
-- デザイン制約: テーマ系（T-R/T-S/T-T/T-U/T-V/T-J）は一貫して「ハードコード hex 撤去 → tokens.css のテーマトークン参照／色 source は各モードブロックに集約」。**全モードで全変数フルカバー**（`--brand-grad-h` の :root 限定定義のような追従漏れを T-V で再発させない）。UI chrome のアイコンは SVG（journal の mood/weather/phase/streak のみ絵文字例外）。
+- i18n: T-V の新パレット name/desc・T-W の見出し（新規なら）は ja/en 両方＋中立丁寧体（feedback_app_copy_neutral）。T-R は theme.mode.{custom,enterprise,startup,mono}.* の ja/en 両除去（孤立キー残さない）。色追従・色区別系（T-S/T-T/T-Y）は基本新規文言なし。
+- デザイン制約: テーマ系（T-R/T-S/T-T/T-U/T-V/T-Y）は一貫して「ハードコード hex 撤去 → tokens.css のテーマトークン参照／色 source は各モードブロックに集約」。**全モードで全変数フルカバー**（`--brand-grad-h` の :root 限定定義のような追従漏れを T-V で再発させない）。UI chrome のアイコンは SVG（journal の mood/weather/phase/streak のみ絵文字例外）。
 - 両OS: 全件モバイル専用（project_logic_mobile_only）。Android 実機確認。特にテーマ系は全モード切替で目視＋コントラスト（数値 OK でも実機で沈むことがある）。
-- スコープ確認の残: T-V（採用パレット・tier・sepia/forest/mono 差し替え可否・UI 刷新範囲）・T-I（表示場所/形式/完了定義/集計範囲）・T-K（対象グラフ/詳細内容/表示形式）・T-J（色を何色にするか・テーマ追従の可否）は着手前に Keita 確認。T-R/T-T/T-U/T-W/T-L は方針確定済（T-U は T-T と一体）。
+- スコープ確認の残: T-V（採用パレット〔新規3テーマ含む〕・tier・sepia/forest 差し替え可否・UI 刷新範囲）・T-Y（習熟色を何色にするか・テーマ追従の可否＝T-V パレット作業に内包）は着手前に Keita 確認。T-R/T-S/T-T/T-U/T-W は方針確定済（T-U は T-T と一体）。
 
 ### バッチ 2026-05-28 新規要望4件（T-I〜T-L・登録直後）
 - T-I/T-J（コース進捗・レッスン完了回数）は **セットで設計** する。同じ progress 永続化レイヤー＋同じ「完了」定義を触るので、別々に実装すると二重集計・データ不整合になる。同一 dev-logic が一気通貫で。まず Keita にスコープ論点（特に「完了」の定義 ＝ done か count か、Supabase 集計まで広げるか、T-J でデータモデル拡張＝migration が要るか）を確認してから着手。
@@ -1440,3 +1691,5 @@ T-M（体力コース）で dev-logic が **main の作業ツリーを使用中*
 最終更新: 2026-05-29（T-B テーマ機能フォローアップ3件を起票＝**T-R**〔custom テーマ削除〕/ **T-S**〔今日の一問カードのテーマ追従〕/ **T-T**〔テーマ非追従箇所の網羅調査→個別修正・T-S を内包・調査は林が読み取り専用で進行中〕。全件 TODO・T-M 完了後着手〔dev-logic が T-M で main 作業ツリー使用中のため〕。**T-J をスコープ縮小確定**＝「レッスン完了回数の可視化」→「完了バッジのチェックマークの色変更のみ」〔Keita 確定〕に置換、P1→P2・migration 不要に変更、T-I との重複論点を解除。**dev-logic 完了後 main 作業キューを1まとまりで整理**＝着手順 T-R→T-S→T-T→T-J〔テーマ系一気通貫〕→T-I〔progress 単独〕→T-K〔journal〕→T-L〔Daily Fermi・末尾化〕、全件 migration 不要、横断の抜けもれ・スコープ確認残を併記）
 
 最終更新: 2026-05-29（テーマ系の追加依頼＋audit findings 反映。**T-R 拡大**＝custom のみ→**custom/enterprise/startup の3つ削除**〔audit で tokens.css/tokens-m3.css に CSS ブロック不在＝死にモードと確定〕、残5モード=light/dark/sepia/forest/mono。**T-T 完全仕様化**＝読み取り専用 audit 完了、根本原因 A〔`--brand-grad-h` が :root だけ定義で全テーマ青のまま・HomeScreenV3:184/:178・DailyFermiScreen:1133・LoginScreen:115〕/B〔RoadmapScreenV3 のハードコード青 rgba(108,142,245) :762/:946/:970/:979/:328〕/C〔LessonStories の #fff 固定 約10箇所→accent-fg〕/D〔プロフィール一覧の未追従・Keita 報告〕に整理、T-S を根本原因A に統合。**新規 T-U**〔コントラスト/可読性 整合性チェック・全テーマ×主要画面 WCAG・T-T と一体〕、**新規 T-V**〔テーマ再設計エピック・4〜6パレット＋UI 刷新・designer 提案進行中 docs/THEME_REDESIGN_PROPOSAL_20260529.md・Keita パレット選定がゲート・テーマ系の親〕、**新規 T-W**〔あなた専用コース折りたたみ・RoadmapScreenV3 既存開閉機構流用・デフォルト折りたたみ・T-V から独立〕を起票。**main 作業キュー更新**＝テーマ系〔T-R/T-S/T-T/T-U/T-V/T-J〕は **T-V の Keita パレット選定を待って一括実装**〔sepia/forest/mono が刷新されうるため先行修正は二度手間〕、**T-W/T-I/T-K/T-L は T-V から独立**で T-M 完了後すぐ着手可。T-L の逆向き worktree〔a23e/a7aa「答えを冒頭に」〕混同注意は維持。全件 migration 不要）
+
+最終更新: 2026-05-29（**ID 衝突・重複の整理**。林が朝に誤起票した重複バッチ「テーマ改修」の T-I/T-J 行＋詳細セクションを **削除**〔既存 DONE の T-I（コース進捗）/T-J（完了バッジのアクセント追従）と ID 衝突していたため〕。内容は既存タスクへ吸収: ①**T-R に mono（墨白）を追加削除**〔Keita 2026-05-29「エンタープライズ不要・カスタムカラー不要・墨白不要・startup も削除」。削除＝custom/enterprise/startup/mono の計4。mono は CSS ブロックも除去・保存済みユーザーの fallback 実害大。**最終的に残るモード = light/dark/sepia(古紙)/forest(深緑)＋T-V 新規3＝計7**〕。②**「AIっぽくない」新規3テーマの追加を T-V エピックの追加要件として明記**〔designer が現在パレット作成中＝T-V/T-U/T-Y 用の新規3パレット＋習熟色＋既存テーマのコントラスト監査〕。③**「今日の1問カードが青のまま」を既存 T-S/T-T で対応の扱い**〔根因＝HomeScreenV3:178/:183/:184 の `var(--brand)`/`var(--brand-grad-h)` 固定青、T-T 根本原因A と同一箇所。T-S に詳細追記。AM-L の「グラデ廃止」とも同 DOM＝フラット単色＋テーマ追従で統合〕。④コントラスト＝既存 T-U で対応。⑤**「2回以上完了レッスンの完了マーク色を区別（習熟色）」を新規 T-Y として独立採番**〔Keita「二回完了したレッスンはコース一覧で✓マークの色も変えて」。既存 DONE の T-J（アクセント追従）とは別物。空き ID 確認のうえ T-Y で採番＝T-X まで使用済み。CompletionBadge.tsx を count>=2 で習熟色、RoadmapScreenV3:1327/:1380 の2経路＋CompletedLessonsScreen 整合、CompletionBadge.test.tsx 更新〕。**全 ID 再スキャン済＝衝突・重複ゼロ**。AM-Q↔T-X〔AI検索〕は既に統合済みで重複なし。運用前提＝終わったやつから Internal 配信〔main push で android-deploy.yml〕・backend 変更は手動 deploy-production.yml）

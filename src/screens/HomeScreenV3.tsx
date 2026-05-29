@@ -175,7 +175,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
 
         {/* 今日の1問 (Daily Fermi) */}
         {/* a11y: 外側 div は非インタラクティブ。中の「カード本体」と「別の問題」は兄弟の <button> として配置し、nested-interactive を回避 */}
-        <div id="home-fermi-card" style={{ position: 'relative', borderRadius: 'var(--radius-lg)', overflow: 'hidden', boxShadow: '0 14px 32px rgba(108,142,245,.32)', flexShrink: 0 }}>
+        <div id="home-fermi-card" style={{ position: 'relative', borderRadius: 'var(--radius-lg)', overflow: 'hidden', boxShadow: '0 12px 28px color-mix(in srgb, var(--accent) 24%, transparent)', flexShrink: 0 }}>
           <button
             type="button"
             ref={dailyCardRef}
@@ -188,23 +188,23 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
             <div style={{ position: 'absolute', right: -30, top: -30, width: 140, height: 140, borderRadius: '50%', background: 'rgba(255,255,255,0.18)', filter: 'blur(36px)', pointerEvents: 'none' }}></div>
             <div style={{ position: 'relative', zIndex: 1 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8, paddingRight: 96 }}>
-                <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,.92)' }}>{t('home.todayProblem')}</span>
+                <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'color-mix(in srgb, var(--accent-fg) 92%, transparent)' }}>{t('home.todayProblem')}</span>
               </div>
               <div style={{ fontFamily: "'Noto Sans JP', sans-serif", fontSize: 19, fontWeight: 700, color: 'var(--accent-fg)', lineHeight: 1.4, letterSpacing: '-.005em', marginBottom: 8 }}>
                 {allFermiDone ? t('home.allFermiDoneTitle') : fermiQuestion}
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'rgba(255,255,255,.82)', fontSize: 14, fontWeight: 500, marginBottom: 16 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'color-mix(in srgb, var(--accent-fg) 82%, transparent)', fontSize: 14, fontWeight: 500, marginBottom: 16 }}>
                 <span>{allFermiDone ? t('home.allFermiDoneDesc') : t('home.dailyUpdate')}</span>
               </div>
-              <div style={{ background: 'var(--accent-fg)', color: 'var(--brand)', borderRadius: 'var(--radius-pill)', padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700, boxShadow: '0 6px 18px rgba(0,0,0,.14)' }}>
+              <div style={{ background: 'var(--accent-fg)', color: 'var(--accent)', borderRadius: 'var(--radius-pill)', padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700, boxShadow: '0 6px 18px rgba(0,0,0,.14)' }}>
                 {allFermiDone ? (
                   <>
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={'var(--brand)'} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12" /></svg>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={'var(--accent)'} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12" /></svg>
                     {t('home.allFermiDoneCta')}
                   </>
                 ) : (
                   <>
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill={'var(--brand)'} aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill={'var(--accent)'} aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>
                     {t('home.dailyChallenge')}
                   </>
                 )}

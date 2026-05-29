@@ -220,48 +220,143 @@ body.theme-v3.mode-sepia {
   --md-sys-color-surface-tint:             #A8542F;
 }
 
-/* 墨白 / Monochrome (light系) */
-body.theme-v3.mode-mono {
-  --md-sys-color-primary:                  #A33124;
+/* 藍 / Indigo (dark系) — elevation はダーク調整も併せて行う */
+body.theme-v3.mode-indigo {
+  --md-sys-color-primary:                  #8FA9D6;
+  --md-sys-color-on-primary:               #0F1622;
+  --md-sys-color-primary-container:        #2E3C58;
+  --md-sys-color-on-primary-container:     #D6E0F2;
+
+  --md-sys-color-secondary:                #A9B4C9;
+  --md-sys-color-on-secondary:             #1A2333;
+  --md-sys-color-secondary-container:      #2E3C58;
+  --md-sys-color-on-secondary-container:   #D6E0F2;
+
+  --md-sys-color-tertiary:                 #A9BFE2;
+  --md-sys-color-on-tertiary:              #0F1622;
+  --md-sys-color-tertiary-container:       #2E3C58;
+  --md-sys-color-on-tertiary-container:    #D6E0F2;
+
+  --md-sys-color-error:                    #FFB4AB;
+  --md-sys-color-on-error:                 #690005;
+  --md-sys-color-error-container:          #93000A;
+  --md-sys-color-on-error-container:       #FFDAD6;
+
+  --md-sys-color-surface:                  #161E2B;
+  --md-sys-color-on-surface:               #E7E3D8;
+  --md-sys-color-surface-variant:          #1E2738;
+  --md-sys-color-on-surface-variant:       #A9B4C9;
+
+  --md-sys-color-surface-container-lowest: #11192499;
+  --md-sys-color-surface-container-low:    #1A2333;
+  --md-sys-color-surface-container:        #1E2738;
+  --md-sys-color-surface-container-high:   #26324A;
+  --md-sys-color-surface-container-highest:#2E3C58;
+
+  --md-sys-color-outline:                  #7E8BA6;
+  --md-sys-color-outline-variant:          rgba(231, 227, 216, 0.12);
+
+  --md-sys-color-inverse-surface:          #E7E3D8;
+  --md-sys-color-inverse-on-surface:       #161E2B;
+  --md-sys-color-inverse-primary:          #3D527E;
+
+  --md-sys-color-scrim:                    rgba(0, 0, 0, 0.55);
+  --md-sys-color-surface-tint:             #8FA9D6;
+
+  /* dark 系: elevation を tokens-m3 :root のダーク値に戻す */
+  --elev-1: 0 1px 2px rgba(0, 0, 0, 0.30);
+  --elev-2: 0 1px 2px rgba(0, 0, 0, 0.30), 0 2px 6px rgba(0, 0, 0, 0.15);
+  --elev-3: 0 1px 3px rgba(0, 0, 0, 0.30), 0 4px 8px rgba(0, 0, 0, 0.15);
+  --elev-4: 0 2px 3px rgba(0, 0, 0, 0.30), 0 6px 10px rgba(0, 0, 0, 0.15);
+  --elev-5: 0 4px 4px rgba(0, 0, 0, 0.30), 0 8px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* ローズ / Dusty Rose (light系) */
+body.theme-v3.mode-rose {
+  --md-sys-color-primary:                  #8E4054;
   --md-sys-color-on-primary:               #FFFFFF;
-  --md-sys-color-primary-container:        #F6D5D0;
-  --md-sys-color-on-primary-container:     #410B05;
+  --md-sys-color-primary-container:        #F2D5DB;
+  --md-sys-color-on-primary-container:     #3E1420;
 
-  --md-sys-color-secondary:                #4A4A4A;
+  --md-sys-color-secondary:                #6E5550;
   --md-sys-color-on-secondary:             #FFFFFF;
-  --md-sys-color-secondary-container:      #E2E2DE;
-  --md-sys-color-on-secondary-container:   #1A1A1A;
+  --md-sys-color-secondary-container:      #EAD5CF;
+  --md-sys-color-on-secondary-container:   #3A2A28;
 
-  --md-sys-color-tertiary:                 #A33124;
+  --md-sys-color-tertiary:                 #8E4054;
   --md-sys-color-on-tertiary:              #FFFFFF;
-  --md-sys-color-tertiary-container:       #F6D5D0;
-  --md-sys-color-on-tertiary-container:    #410B05;
+  --md-sys-color-tertiary-container:       #F2D5DB;
+  --md-sys-color-on-tertiary-container:    #3E1420;
 
   --md-sys-color-error:                    #BA1A1A;
   --md-sys-color-on-error:                 #FFFFFF;
   --md-sys-color-error-container:          #FFDAD6;
   --md-sys-color-on-error-container:       #410002;
 
-  --md-sys-color-surface:                  #F2F2F0;
-  --md-sys-color-on-surface:               #1A1A1A;
-  --md-sys-color-surface-variant:          #E0E0DC;
-  --md-sys-color-on-surface-variant:       #4A4A4A;
+  --md-sys-color-surface:                  #F3E8E4;
+  --md-sys-color-on-surface:               #3A2A28;
+  --md-sys-color-surface-variant:          #E4D0CA;
+  --md-sys-color-on-surface-variant:       #6E5550;
+
+  --md-sys-color-surface-container-lowest: #FFFAF8;
+  --md-sys-color-surface-container-low:    #FBF3F0;
+  --md-sys-color-surface-container:        #F1E2DD;
+  --md-sys-color-surface-container-high:   #ECDCD7;
+  --md-sys-color-surface-container-highest:#E4D0CA;
+
+  --md-sys-color-outline:                  #8E726C;
+  --md-sys-color-outline-variant:          #E4D0CA;
+
+  --md-sys-color-inverse-surface:          #3A2A28;
+  --md-sys-color-inverse-on-surface:       #F6ECE9;
+  --md-sys-color-inverse-primary:          #D98EA0;
+
+  --md-sys-color-scrim:                    rgba(58, 42, 40, 0.40);
+  --md-sys-color-surface-tint:             #8E4054;
+}
+
+/* スレート / Slate (light系) */
+body.theme-v3.mode-slate {
+  --md-sys-color-primary:                  #2E565A;
+  --md-sys-color-on-primary:               #FFFFFF;
+  --md-sys-color-primary-container:        #CFE0E1;
+  --md-sys-color-on-primary-container:     #0C2123;
+
+  --md-sys-color-secondary:                #54606B;
+  --md-sys-color-on-secondary:             #FFFFFF;
+  --md-sys-color-secondary-container:      #DBE0E3;
+  --md-sys-color-on-secondary-container:   #1E242B;
+
+  --md-sys-color-tertiary:                 #2E565A;
+  --md-sys-color-on-tertiary:              #FFFFFF;
+  --md-sys-color-tertiary-container:       #CFE0E1;
+  --md-sys-color-on-tertiary-container:    #0C2123;
+
+  --md-sys-color-error:                    #BA1A1A;
+  --md-sys-color-on-error:                 #FFFFFF;
+  --md-sys-color-error-container:          #FFDAD6;
+  --md-sys-color-on-error-container:       #410002;
+
+  --md-sys-color-surface:                  #ECECEA;
+  --md-sys-color-on-surface:               #1E242B;
+  --md-sys-color-surface-variant:          #D9DAD8;
+  --md-sys-color-on-surface-variant:       #54606B;
 
   --md-sys-color-surface-container-lowest: #FFFFFF;
   --md-sys-color-surface-container-low:    #FBFBFA;
-  --md-sys-color-surface-container:        #EDEDEA;
-  --md-sys-color-surface-container-high:   #E9E9E6;
-  --md-sys-color-surface-container-highest:#E0E0DC;
+  --md-sys-color-surface-container:        #E9E9E7;
+  --md-sys-color-surface-container-high:   #E3E4E2;
+  --md-sys-color-surface-container-highest:#D9DAD8;
 
-  --md-sys-color-outline:                  #6E6E6E;
-  --md-sys-color-outline-variant:          #DCDCD8;
+  --md-sys-color-outline:                  #76808A;
+  --md-sys-color-outline-variant:          #D9DAD8;
 
-  --md-sys-color-inverse-surface:          #1A1A1A;
-  --md-sys-color-inverse-on-surface:       #F5F5F3;
-  --md-sys-color-inverse-primary:          #E58379;
+  --md-sys-color-inverse-surface:          #1E242B;
+  --md-sys-color-inverse-on-surface:       #FBFBFA;
+  --md-sys-color-inverse-primary:          #6FA0A5;
 
-  --md-sys-color-scrim:                    rgba(26, 26, 26, 0.40);
-  --md-sys-color-surface-tint:             #A33124;
+  --md-sys-color-scrim:                    rgba(30, 36, 43, 0.40);
+  --md-sys-color-surface-tint:             #2E565A;
 }
 
 /* 深緑 / Forest (dark系) — elevation はダーク調整も併せて行う */

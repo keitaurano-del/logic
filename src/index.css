@@ -153,52 +153,6 @@
 }
 .mode-dark body, .mode-dark #root { background: var(--bg-primary); }
 
-/* ===== Mode: Enterprise (premium) — kept temporarily ===== */
-.mode-enterprise {
-  --bg-primary:    #0F1729;
-  --bg-secondary:  #14203A;
-  --bg-card:       #1A2540;
-  --bg-elevated:   #223052;
-  --bg-hero:       #0A1020;
-  --bg-glass:      rgba(26, 37, 64, 0.6);
-  --bg-tertiary:   #1F2B48;
-
-  --text-primary:  #E2E8F0;
-  --text-secondary:#94A3B8;
-  --text-muted:    #64748B;
-  --text-on-hero:  #FFFFFF;
-
-  --border:        #2A3654;
-  --border-light:  #344162;
-
-  --shadow-card:    0 2px 12px rgba(0, 0, 0, 0.5);
-  --shadow-elevated: 0 6px 20px rgba(0, 0, 0, 0.6);
-}
-.mode-enterprise body, .mode-enterprise #root { background: var(--bg-primary); }
-
-/* ===== Mode: Startup — kept temporarily ===== */
-.mode-startup {
-  --bg-primary:    #FFFAF0;
-  --bg-secondary:  #FFF4E0;
-  --bg-card:       #FFFFFF;
-  --bg-elevated:   #FFFFFF;
-  --bg-hero:       #1A2E22;
-  --bg-glass:      rgba(255, 255, 255, 0.7);
-  --bg-tertiary:   #FFEDD0;
-
-  --text-primary:  #1A2E22;
-  --text-secondary:#4A5E52;
-  --text-muted:    #8B9690;
-  --text-on-hero:  #FFFFFF;
-
-  --border:        #FFE0B0;
-  --border-light:  #FFEDD0;
-
-  --shadow-card:    0 2px 10px rgba(255, 140, 0, 0.10);
-  --shadow-elevated: 0 4px 18px rgba(255, 140, 0, 0.15);
-}
-.mode-startup body, .mode-startup #root { background: var(--bg-primary); }
-
 /* ===== Animations ===== */
 /* Shimmer KEPT but no longer applied to idle progress bars */
 @keyframes shimmer {

@@ -40,6 +40,10 @@
   --accent-dark:  var(--brand-hover);
   --accent-fg:    #FFFFFF;
 
+  /* 習熟色 (T-Y) デフォルト = 明カード値（各テーマブロックで暗カードは上書き） */
+  --mastery:    #9A7416;
+  --mastery-fg: #FFFFFF;
+
   /* Surfaces — clean off-white with very subtle cool tint */
   --bg-primary:   #F8F9FC;
   --bg-secondary: #F0F2F8;
@@ -320,6 +324,9 @@ body.theme-v3.mode-light {
    * 注意: --brand-grad / --hero-grad は別変数で薄い青の演出を維持。
    */
   --brand:        #2E45A8;
+  /* T-T 根本原因A: --brand-grad-h を各テーマで override（青固定を解消） */
+  --brand-grad:   linear-gradient(135deg, #2E45A8 0%, #4A60C0 100%);
+  --brand-grad-h: linear-gradient(135deg, #25399A 0%, #2E45A8 100%);
 
   --shadow-card:       0 1px 2px rgba(13, 18, 32, 0.05), 0 4px 12px rgba(13, 18, 32, 0.08);
   --shadow-card-hover: 0 4px 8px rgba(13, 18, 32, 0.08), 0 12px 28px rgba(13, 18, 32, 0.14);
@@ -336,6 +343,10 @@ body.theme-v3.mode-light {
 
   /* Logic ロゴをライト時は brand ブルーで表示 */
   --logo-color:         var(--brand);
+
+  /* 習熟色 (T-Y): 明カードなので濃いゴールド + 白文字 */
+  --mastery:    #9A7416;
+  --mastery-fg: #FFFFFF;
 }
 
 /* v3 sepia — 古紙 / Sepia (premium, light系).
@@ -371,6 +382,9 @@ body.theme-v3.mode-sepia {
   --accent-fg:    #FFFFFF;
 
   --brand:        #A8542F;
+  /* T-T 根本原因A: --brand-grad-h を各テーマで override（青固定を解消） */
+  --brand-grad:   linear-gradient(135deg, #B25C3A 0%, #CB7A57 100%);
+  --brand-grad-h: linear-gradient(135deg, #A8542F 0%, #B25C3A 100%);
 
   --shadow-card:       0 1px 2px rgba(58, 47, 35, 0.06), 0 4px 12px rgba(58, 47, 35, 0.10);
   --shadow-card-hover: 0 4px 8px rgba(58, 47, 35, 0.10), 0 12px 28px rgba(58, 47, 35, 0.16);
@@ -383,51 +397,10 @@ body.theme-v3.mode-sepia {
   --bg-input-on-dark:   rgba(247, 240, 227, 0.08);
 
   --logo-color:         #A8542F;
-}
 
-/* v3 mono — 墨白 / Monochrome (free, light系).
- * モノクロ + 朱の差し色一点。bg #F2F2F0 / card #FFFFFF / text #1A1A1A / accent #C0392B。
- * 無彩色ベース。accent は本文 AA(card 5.44:1) を満たすので --accent-dark も同系の濃い朱に。 */
-body.theme-v3.mode-mono {
-  --bg-primary:    #F2F2F0;
-  --bg-secondary:  #E9E9E6;
-  --bg-card:       #FFFFFF;
-  --bg-elevated:   #FFFFFF;
-  --bg-tertiary:   #E0E0DC;
-  --bg-hero:       #1A1A1A;
-  --bg-app-grad:   linear-gradient(160deg, #F5F5F3 0%, #ECECEA 100%);
-  --bg-glass:      rgba(255, 255, 255, 0.85);
-  --bg-glass-dark: rgba(242, 242, 240, 0.92);
-
-  --text-primary:   #1A1A1A;
-  --text-secondary: #4A4A4A;
-  --text-muted:     #6E6E6E;
-  --text-tertiary:  #6E6E6E;
-
-  --border:       #DCDCD8;
-  --border-light: #E9E9E6;
-  --border-brand: rgba(192, 57, 43, 0.26);
-
-  --accent:       #C0392B;
-  --accent-light: #D5564A;
-  --accent-soft:  rgba(192, 57, 43, 0.10);
-  --accent-glow:  rgba(192, 57, 43, 0.20);
-  --accent-dark:  #A33124;
-  --accent-fg:    #FFFFFF;
-
-  --brand:        #A33124;
-
-  --shadow-card:       0 1px 2px rgba(26, 26, 26, 0.05), 0 4px 12px rgba(26, 26, 26, 0.08);
-  --shadow-card-hover: 0 4px 8px rgba(26, 26, 26, 0.08), 0 12px 28px rgba(26, 26, 26, 0.14);
-  --shadow-elevated:   0 2px 4px rgba(26, 26, 26, 0.06), 0 8px 20px rgba(26, 26, 26, 0.10);
-
-  --hero-grad-dark:     linear-gradient(160deg, #F2F2F0 0%, #E6E6E3 65%, #D8D8D4 100%);
-  --text-on-hero:       #F5F5F3;
-  --text-on-hero-muted: rgba(245, 245, 243, 0.70);
-  --border-on-dark:     rgba(245, 245, 243, 0.16);
-  --bg-input-on-dark:   rgba(245, 245, 243, 0.08);
-
-  --logo-color:         #1A1A1A;
+  /* 習熟色 (T-Y): 明カードなので濃いゴールド + 白文字 */
+  --mastery:    #9A7416;
+  --mastery-fg: #FFFFFF;
 }
 
 /* v3 forest — 深緑 / Forest (premium, dark系).
@@ -461,6 +434,9 @@ body.theme-v3.mode-forest {
   --accent-fg:    #0B1813;
 
   --brand:        #6FB89A;
+  /* T-T 根本原因A: --brand-grad-h を各テーマで override（青固定を解消） */
+  --brand-grad:   linear-gradient(135deg, #6FB89A 0%, #8FCFB3 100%);
+  --brand-grad-h: linear-gradient(135deg, #5FA889 0%, #6FB89A 100%);
 
   --shadow-card:       0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.32);
   --shadow-card-hover: 0 4px 8px rgba(0, 0, 0, 0.45), 0 12px 28px rgba(0, 0, 0, 0.52);
@@ -473,6 +449,163 @@ body.theme-v3.mode-forest {
   --bg-input-on-dark:   rgba(228, 237, 230, 0.06);
 
   --logo-color:         #8FCFB3;
+
+  /* 習熟色 (T-Y): 暗カードなので明るいゴールド + 黒文字 */
+  --mastery:    #D9A943;
+  --mastery-fg: #1A1A1A;
+}
+
+/* v3 indigo — 藍 / Indigo (premium, dark系).
+ * 藍染め布・夜に開いた古い紙。くすんだ藍に暖色寄りアイボリー文字。
+ * THEME_PALETTE_CANDIDATES_v2 §2-A の全トークンをそのまま採用。 */
+body.theme-v3.mode-indigo {
+  --bg-primary:    #161E2B;
+  --bg-secondary:  #1A2333;
+  --bg-card:       #1E2738;
+  --bg-elevated:   #26324A;
+  --bg-tertiary:   #1A2333;
+  --bg-hero:       #11192499;
+  --bg-app-grad:   linear-gradient(160deg, #121925 0%, #161E2B 100%);
+  --bg-glass:      rgba(30, 39, 56, 0.88);
+  --bg-glass-dark: rgba(22, 30, 43, 0.95);
+
+  --text-primary:   #E7E3D8;
+  --text-secondary: #A9B4C9;
+  --text-muted:     #7E8BA6;
+  --text-tertiary:  #7E8BA6;
+
+  --border:       rgba(231, 227, 216, 0.10);
+  --border-light: rgba(231, 227, 216, 0.06);
+  --border-brand: rgba(143, 169, 214, 0.30);
+
+  --accent:       #8FA9D6;
+  --accent-light: #A9BFE2;
+  --accent-soft:  rgba(143, 169, 214, 0.16);
+  --accent-glow:  rgba(143, 169, 214, 0.25);
+  --accent-dark:  #A9BFE2;
+  --accent-fg:    #0F1622;
+
+  --brand:        #8FA9D6;
+  --brand-grad:   linear-gradient(135deg, #8FA9D6 0%, #A9BFE2 100%);
+  --brand-grad-h: linear-gradient(135deg, #7E9ACB 0%, #8FA9D6 100%);
+
+  --shadow-card:       0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.32);
+  --shadow-card-hover: 0 4px 8px rgba(0, 0, 0, 0.45), 0 12px 28px rgba(0, 0, 0, 0.52);
+  --shadow-elevated:   0 4px 24px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+  --hero-grad-dark:     linear-gradient(160deg, #161E2B 0%, #1C2740 70%, #18223A 100%);
+  --text-on-hero:       #E7E3D8;
+  --text-on-hero-muted: rgba(231, 227, 216, 0.62);
+  --border-on-dark:     rgba(231, 227, 216, 0.12);
+  --bg-input-on-dark:   rgba(231, 227, 216, 0.06);
+
+  --logo-color:         #A9BFE2;
+
+  /* 習熟色 (T-Y): 暗カードなので明るいゴールド + 黒文字 */
+  --mastery:    #D9A943;
+  --mastery-fg: #1A1A1A;
+}
+
+/* v3 rose — ローズ / Dusty Rose (premium, light系).
+ * 退色したインク・ドライフラワー。くすんだ赤紫ローズに暖色オフホワイト紙。
+ * THEME_PALETTE_CANDIDATES_v2 §2-B の全トークンをそのまま採用。 */
+body.theme-v3.mode-rose {
+  --bg-primary:    #F3E8E4;
+  --bg-secondary:  #ECDCD7;
+  --bg-card:       #FBF3F0;
+  --bg-elevated:   #FFFAF8;
+  --bg-tertiary:   #E4D0CA;
+  --bg-hero:       #3A2A28;
+  --bg-app-grad:   linear-gradient(160deg, #F6ECE9 0%, #EDDED9 100%);
+  --bg-glass:      rgba(251, 243, 240, 0.85);
+  --bg-glass-dark: rgba(243, 232, 228, 0.92);
+
+  --text-primary:   #3A2A28;
+  --text-secondary: #6E5550;
+  --text-muted:     #8E726C;
+  --text-tertiary:  #8E726C;
+
+  --border:       #E4D0CA;
+  --border-light: #ECDCD7;
+  --border-brand: rgba(166, 84, 102, 0.28);
+
+  --accent:       #A65466;
+  --accent-light: #BE6F80;
+  --accent-soft:  rgba(166, 84, 102, 0.12);
+  --accent-glow:  rgba(166, 84, 102, 0.22);
+  --accent-dark:  #8E4054;
+  --accent-fg:    #FFFFFF;
+
+  --brand:        #8E4054;
+  --brand-grad:   linear-gradient(135deg, #A65466 0%, #BE6F80 100%);
+  --brand-grad-h: linear-gradient(135deg, #8E4054 0%, #A65466 100%);
+
+  --shadow-card:       0 1px 2px rgba(58, 42, 40, 0.06), 0 4px 12px rgba(58, 42, 40, 0.10);
+  --shadow-card-hover: 0 4px 8px rgba(58, 42, 40, 0.10), 0 12px 28px rgba(58, 42, 40, 0.16);
+  --shadow-elevated:   0 2px 4px rgba(58, 42, 40, 0.08), 0 8px 20px rgba(58, 42, 40, 0.12);
+
+  --hero-grad-dark:     linear-gradient(160deg, #F3E8E4 0%, #EAD7D1 65%, #E0C8C1 100%);
+  --text-on-hero:       #F6ECE9;
+  --text-on-hero-muted: rgba(246, 236, 233, 0.72);
+  --border-on-dark:     rgba(246, 236, 233, 0.16);
+  --bg-input-on-dark:   rgba(58, 42, 40, 0.05);
+
+  --logo-color:         #8E4054;
+
+  /* 習熟色 (T-Y): 明カードなので濃いゴールド + 白文字 */
+  --mastery:    #9A7416;
+  --mastery-fg: #FFFFFF;
+}
+
+/* v3 slate — スレート / Slate (premium, light系).
+ * 新聞・本の紙面・青灰のインク。僅かに緑を含む青灰スレートティール。
+ * THEME_PALETTE_CANDIDATES_v2 §2-C の全トークンをそのまま採用。 */
+body.theme-v3.mode-slate {
+  --bg-primary:    #ECECEA;
+  --bg-secondary:  #E3E4E2;
+  --bg-card:       #FBFBFA;
+  --bg-elevated:   #FFFFFF;
+  --bg-tertiary:   #D9DAD8;
+  --bg-hero:       #1E242B;
+  --bg-app-grad:   linear-gradient(160deg, #EFEFED 0%, #E6E7E5 100%);
+  --bg-glass:      rgba(251, 251, 250, 0.85);
+  --bg-glass-dark: rgba(236, 236, 234, 0.92);
+
+  --text-primary:   #1E242B;
+  --text-secondary: #54606B;
+  --text-muted:     #76808A;
+  --text-tertiary:  #76808A;
+
+  --border:       #D9DAD8;
+  --border-light: #E3E4E2;
+  --border-brand: rgba(62, 107, 112, 0.28);
+
+  --accent:       #3E6B70;
+  --accent-light: #5A878C;
+  --accent-soft:  rgba(62, 107, 112, 0.12);
+  --accent-glow:  rgba(62, 107, 112, 0.22);
+  --accent-dark:  #2E565A;
+  --accent-fg:    #FFFFFF;
+
+  --brand:        #2E565A;
+  --brand-grad:   linear-gradient(135deg, #3E6B70 0%, #5A878C 100%);
+  --brand-grad-h: linear-gradient(135deg, #2E565A 0%, #3E6B70 100%);
+
+  --shadow-card:       0 1px 2px rgba(30, 36, 43, 0.05), 0 4px 12px rgba(30, 36, 43, 0.08);
+  --shadow-card-hover: 0 4px 8px rgba(30, 36, 43, 0.08), 0 12px 28px rgba(30, 36, 43, 0.14);
+  --shadow-elevated:   0 2px 4px rgba(30, 36, 43, 0.06), 0 8px 20px rgba(30, 36, 43, 0.10);
+
+  --hero-grad-dark:     linear-gradient(160deg, #ECECEA 0%, #E0E1DF 65%, #D4D5D3 100%);
+  --text-on-hero:       #FBFBFA;
+  --text-on-hero-muted: rgba(251, 251, 250, 0.72);
+  --border-on-dark:     rgba(251, 251, 250, 0.16);
+  --bg-input-on-dark:   rgba(30, 36, 43, 0.05);
+
+  --logo-color:         #2E565A;
+
+  /* 習熟色 (T-Y): 明カードなので濃いゴールド + 白文字 */
+  --mastery:    #9A7416;
+  --mastery-fg: #FFFFFF;
 }
 
 /* v3 dark — Slate Blue navy surfaces.
@@ -504,6 +637,10 @@ body.theme-v3.mode-dark {
   --shadow-card:       0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.3);
   --shadow-card-hover: 0 4px 8px rgba(0, 0, 0, 0.4), 0 12px 28px rgba(0, 0, 0, 0.5);
   --shadow-elevated:   0 4px 24px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+
+  /* 習熟色 (T-Y): 暗カードなので明るいゴールド + 黒文字 */
+  --mastery:    #D9A943;
+  --mastery-fg: #1A1A1A;
 }
 
 /* Dark mode — deeper navy, more vibrant, higher contrast */

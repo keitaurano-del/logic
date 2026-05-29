@@ -30,10 +30,6 @@ export default function ThemeSettings({ onBack, onUpgrade }: Props) {
     update({ ...state, accent: id })
   }
 
-  const updateCustomHex = (hex: string) => {
-    update({ ...state, customHex: hex })
-  }
-
   return (
     <div className="ts-screen">
       <header className="ts-header">
@@ -79,44 +75,6 @@ export default function ThemeSettings({ onBack, onUpgrade }: Props) {
           </div>
         </section>
 
-        {state.mode === 'custom' && premium && (() => {
-          // Compute contrast of selected accent on white card and on bg-primary (light defaults)
-          const ratioOnCard = contrastRatio('#FFFFFF', state.customHex)
-          const cardCheck = describeContrast(ratioOnCard)
-          return (
-            <section className="ts-section">
-              <h3 className="ts-section-title">{t('theme.customSection')}</h3>
-              <div className="ts-custom-row">
-                <input
-                  type="color"
-                  value={state.customHex}
-                  onChange={(e) => updateCustomHex(e.target.value)}
-                  className="ts-color-input"
-                />
-                <input
-                  type="text"
-                  value={state.customHex}
-                  onChange={(e) => {
-                    const v = e.target.value
-                    if (/^#[0-9A-Fa-f]{0,6}$/.test(v)) updateCustomHex(v)
-                  }}
-                  placeholder="#D4915A"
-                  className="ts-hex-input"
-                  maxLength={7}
-                />
-              </div>
-              <p className="ts-hint">{t('theme.customHint')}</p>
-              <div className={`ts-contrast ${cardCheck.ok ? 'ok' : 'warn'}`}>
-                <strong>{t('theme.contrastH')}</strong>
-                <span>{t('theme.contrastDetail', { ratio: ratioOnCard.toFixed(2), label: cardCheck.label })}</span>
-                {!cardCheck.ok && (
-                  <p className="ts-contrast-note">{t('theme.contrastWarn')}</p>
-                )}
-              </div>
-            </section>
-          )
-        })()}
-
         {(() => {
           const acc = ACCENTS.find(a => a.id === state.accent) || ACCENTS[0]
           const ratio = contrastRatio('#FFFFFF', acc.accent)
@@ -143,14 +101,12 @@ export default function ThemeSettings({ onBack, onUpgrade }: Props) {
                 aria-label={a.name}
                 title={a.name}
               >
-                {state.accent === a.id && state.mode !== 'custom' && <span></span>}
+                {state.accent === a.id && <span></span>}
               </button>
             ))}
           </div>
           <p className="ts-hint">
-            {state.mode === 'custom'
-              ? t('theme.customDisabled')
-              : t('theme.currentAccent', { name: ACCENTS.find((a) => a.id === state.accent)?.name || '' })}
+            {t('theme.currentAccent', { name: ACCENTS.find((a) => a.id === state.accent)?.name || '' })}
           </p>
         </section>
 

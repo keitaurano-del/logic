@@ -3,11 +3,17 @@
  *
  * 仕様:
  *  - count = 0: 何も描画しない (null を返す)
- *  - count = 1: チェックマーク + フル塗りつぶしの円 (通常の「完了」表示)
- *  - count = 2: チェックマーク + 半分塗りつぶし (リング状) + 数字「2」
- *  - count = 3+: チェックマーク + フル塗りつぶし + 数字「3」「4」… (上限 9+)
+ *  - count = 1: チェックマーク + フル塗りつぶしの円 (通常の「完了」表示、--accent)
+ *  - count = 2: 半分塗りつぶし (リング状) + 数字「2」 (習熟色 --mastery)
+ *  - count = 3+: フル塗りつぶし + 数字「3」「4」… (上限 9+) (習熟色 --mastery)
  *
- * 配色はテーマのアクセント (--accent / --accent-fg) に追従。半塗りは conic-gradient で 50% リングを表現。
+ * 配色 (T-Y):
+ *  - count = 1 は従来どおりテーマアクセント (--accent / --accent-fg) に追従。
+ *  - count >= 2 は「習熟 (mastery)」として固定ゴールド系トークン (--mastery / --mastery-fg)
+ *    に切り替える。明カード / 暗カードで 2 値出し分け (tokens.css 側で定義)。
+ *  - 色だけに頼らず形状でも二重符号化する: mastery バッジには細い金縁リング
+ *    (--mastery) を常時付与し、1 回バッジ (縁なし) と弁別できるようにする
+ *    (色覚多様性・暖色テーマ対策)。
  */
 interface Props {
   count: number
@@ -24,8 +30,10 @@ export function CompletionBadge({ count, size = 28 }: Props) {
 
   const fontSize = Math.max(10, Math.round(size * 0.42))
   const ringStroke = Math.max(2, Math.round(size * 0.12))
+  // 二重符号化用の金縁リング幅 (count>=2 のみ)
+  const masteryRing = Math.max(1.5, Math.round(size * 0.07))
 
-  // 1 回目はチェックマーク (既存の done バッジと同等の見え方)。
+  // 1 回目はチェックマーク (既存の done バッジと同等の見え方、テーマアクセント追従)。
   if (count === 1) {
     return (
       <div
@@ -58,7 +66,7 @@ export function CompletionBadge({ count, size = 28 }: Props) {
     )
   }
 
-  // 2 回目: 半分リング (左半分のみ塗る) + 数字「2」
+  // 2 回目: 半分リング (左半分のみ塗る) + 数字「2」(習熟色 + 金縁リングで二重符号化)
   if (count === 2) {
     return (
       <div
@@ -69,6 +77,9 @@ export function CompletionBadge({ count, size = 28 }: Props) {
           width: size,
           height: size,
           flexShrink: 0,
+          borderRadius: '50%',
+          // 二重符号化: 常時の金縁リング (色だけに頼らない形状差)
+          boxShadow: `0 0 0 ${masteryRing}px var(--mastery)`,
         }}
       >
         {/* 背景の薄いリング */}
@@ -77,19 +88,19 @@ export function CompletionBadge({ count, size = 28 }: Props) {
             position: 'absolute',
             inset: 0,
             borderRadius: '50%',
-            background: `color-mix(in srgb, var(--accent) 15%, transparent)`,
+            background: `color-mix(in srgb, var(--mastery) 15%, transparent)`,
           }}
         />
-        {/* 半分だけ塗る (左半分が accent、右半分が透明) */}
+        {/* 半分だけ塗る (左半分が mastery、右半分が透明) */}
         <div
           style={{
             position: 'absolute',
             inset: 0,
             borderRadius: '50%',
-            background: `conic-gradient(from 180deg, var(--accent) 0deg 180deg, transparent 180deg 360deg)`,
+            background: `conic-gradient(from 180deg, var(--mastery) 0deg 180deg, transparent 180deg 360deg)`,
           }}
         />
-        {/* 中心の数字 (背景は白丸で抜く) */}
+        {/* 中心の数字 (背景は card 色で抜く) */}
         <div
           style={{
             position: 'absolute',
@@ -101,7 +112,7 @@ export function CompletionBadge({ count, size = 28 }: Props) {
             justifyContent: 'center',
             fontSize,
             fontWeight: 800,
-            color: 'var(--accent)',
+            color: 'var(--mastery)',
             lineHeight: 1,
             letterSpacing: '-0.02em',
           }}
@@ -112,7 +123,7 @@ export function CompletionBadge({ count, size = 28 }: Props) {
     )
   }
 
-  // 3 回以上: フル塗りつぶし + 数字
+  // 3 回以上: フル塗りつぶし + 数字 (習熟色 + 金縁リングで二重符号化)
   const label = formatCount(count)
   return (
     <div
@@ -122,21 +133,21 @@ export function CompletionBadge({ count, size = 28 }: Props) {
         width: size,
         height: size,
         borderRadius: '50%',
-        background: 'var(--accent)',
+        background: 'var(--mastery)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         flexShrink: 0,
         fontSize,
         fontWeight: 800,
-        color: 'var(--accent-fg)',
+        color: 'var(--mastery-fg)',
         lineHeight: 1,
         letterSpacing: '-0.02em',
-        boxShadow: `0 0 0 2px color-mix(in srgb, var(--accent) 25%, transparent)`,
+        // 二重符号化: 常時の金縁リング
+        boxShadow: `0 0 0 ${masteryRing}px color-mix(in srgb, var(--mastery) 55%, transparent)`,
       }}
     >
       {label}
     </div>
   )
 }
-

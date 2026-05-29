@@ -556,7 +556,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
       <div style={{ background: 'var(--bg-primary)', minHeight: '100vh', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Noto Sans JP', sans-serif" }}>
         <div style={{ textAlign: 'center' }}>
           <div>{t('stories.notFound')}</div>
-          <button onClick={onClose} style={{ marginTop: 20, padding: '10px 20px', borderRadius: 12, background: 'var(--brand)', color: '#FFFFFF', border: 'none', fontWeight: 700 }}>{t('stories.back')}</button>
+          <button onClick={onClose} style={{ marginTop: 20, padding: '10px 20px', borderRadius: 12, background: 'var(--brand)', color: 'var(--accent-fg)', border: 'none', fontWeight: 700 }}>{t('stories.back')}</button>
         </div>
       </div>
     )
@@ -853,11 +853,11 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
           )}
           <button
             onClick={() => { if (!isGuarded()) goNext() }}
-            style={{ position: 'absolute', right: 16, bottom: 'calc(env(safe-area-inset-bottom, 0px) + 20px)', zIndex: 8, background: 'var(--brand)', border: 'none', borderRadius: 99, minHeight: 56, minWidth: 140, padding: '16px 28px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, cursor: 'pointer', boxShadow: `0 6px 20px color-mix(in srgb, var(--brand) 42%, transparent)`, WebkitTapHighlightColor: 'transparent', fontSize: 17, fontWeight: 700, color: '#FFFFFF', letterSpacing: '0.01em' }}
+            style={{ position: 'absolute', right: 16, bottom: 'calc(env(safe-area-inset-bottom, 0px) + 20px)', zIndex: 8, background: 'var(--brand)', border: 'none', borderRadius: 99, minHeight: 56, minWidth: 140, padding: '16px 28px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, cursor: 'pointer', boxShadow: `0 6px 20px color-mix(in srgb, var(--brand) 42%, transparent)`, WebkitTapHighlightColor: 'transparent', fontSize: 17, fontWeight: 700, color: 'var(--accent-fg)', letterSpacing: '0.01em' }}
             aria-label={t('stories.nextAria')}
           >
             {t('stories.next')}
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-fg)" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
           </button>
         </>
       )}
@@ -866,10 +866,10 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
       {isQuiz && quizAnswered?.correct && (
         <button
           onClick={goNext}
-          style={{ position: 'absolute', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 28px)', left: '50%', transform: 'translateX(-50%)', display: 'inline-flex', alignItems: 'center', gap: 8, background: 'var(--brand)', border: 'none', borderRadius: 99, padding: '18px 48px', fontSize: 16, fontWeight: 700, color: '#FFFFFF', cursor: 'pointer', zIndex: 6, boxShadow: `0 4px 20px color-mix(in srgb, var(--brand) 44%, transparent)`, WebkitTapHighlightColor: 'transparent' }}
+          style={{ position: 'absolute', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 28px)', left: '50%', transform: 'translateX(-50%)', display: 'inline-flex', alignItems: 'center', gap: 8, background: 'var(--brand)', border: 'none', borderRadius: 99, padding: '18px 48px', fontSize: 16, fontWeight: 700, color: 'var(--accent-fg)', cursor: 'pointer', zIndex: 6, boxShadow: `0 4px 20px color-mix(in srgb, var(--brand) 44%, transparent)`, WebkitTapHighlightColor: 'transparent' }}
         >
           {t('stories.next')}
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-fg)" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
         </button>
       )}
 
@@ -909,7 +909,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
               padding: '14px 24px',
               borderRadius: 99,
               background: 'var(--brand)',
-              color: '#FFFFFF',
+              color: 'var(--accent-fg)',
               border: 'none',
               fontSize: 15,
               fontWeight: 700,
@@ -1008,9 +1008,9 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
               width: 60, height: 60, borderRadius: '50%',
               background: 'var(--brand)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: '0 0 0 8px rgba(108,142,245,0.18)',
+              boxShadow: '0 0 0 8px color-mix(in srgb, var(--accent) 18%, transparent)',
             }}>
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-fg)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <polyline points="9 18 15 12 9 6" />
               </svg>
             </div>
@@ -1102,7 +1102,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
                     setReportSent(true)
                   }}
                   disabled={!reportText}
-                  style={{ width: '100%', background: reportText ? 'var(--brand)' : 'var(--bg-card)', border: 'none', borderRadius: 14, padding: '14px', fontSize: 14, fontWeight: 700, color: reportText ? '#FFFFFF' : 'var(--text-muted)', cursor: reportText ? 'pointer' : 'default' }}
+                  style={{ width: '100%', background: reportText ? 'var(--brand)' : 'var(--bg-card)', border: 'none', borderRadius: 14, padding: '14px', fontSize: 14, fontWeight: 700, color: reportText ? 'var(--accent-fg)' : 'var(--text-muted)', cursor: reportText ? 'pointer' : 'default' }}
                 >
                   {t('stories.reportSend')}
                 </button>
@@ -1186,7 +1186,7 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
             <div key={i} style={{ width: '100%' }}>
               <div style={{
                 background: n.kind === 'conclusion' ? 'var(--brand)' : 'var(--bg-tertiary)',
-                color: n.kind === 'conclusion' ? '#FFFFFF' : 'var(--text-primary)',
+                color: n.kind === 'conclusion' ? 'var(--accent-fg)' : 'var(--text-primary)',
                 fontWeight: n.kind === 'conclusion' ? 700 : 600,
                 borderRadius: 12,
                 padding: '12px 18px',
@@ -1223,7 +1223,7 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
               const bg: string = !answered
                 ? (isPicked ? 'var(--accent-soft)' : 'var(--bg-card)')
                 : (wasSelected && isCorrect ? 'var(--brand)' : wasSelected && !isCorrect ? '#4A1C1C' : isCorrect ? 'var(--accent-soft)' : 'var(--bg-card)')
-              const color: string = !answered ? 'var(--text-primary)' : (wasSelected && isCorrect ? '#FFFFFF' : 'var(--text-primary)')
+              const color: string = !answered ? 'var(--text-primary)' : (wasSelected && isCorrect ? 'var(--accent-fg)' : 'var(--text-primary)')
               const border: string = !answered ? (isPicked ? `2px solid ${'var(--brand)'}` : '2px solid transparent') : 'none'
               return (
                 <button type="button" key={i} onClick={() => !answered && onToggleMulti(i)}
@@ -1243,7 +1243,7 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
             // 単一選択
             const isSelected = quizAnswered?.selected === i
             const bg: string = !answered ? 'var(--bg-card)' : isSelected && isCorrect ? 'var(--brand)' : isSelected && !isCorrect ? '#4A1C1C' : isCorrect && answered ? 'var(--accent-soft)' : 'var(--bg-card)'
-            const color: string = !answered ? 'var(--text-primary)' : isSelected && isCorrect ? '#FFFFFF' : 'var(--text-primary)'
+            const color: string = !answered ? 'var(--text-primary)' : isSelected && isCorrect ? 'var(--accent-fg)' : 'var(--text-primary)'
             return (
               <button type="button" key={i} onClick={() => !answered && onSelectQuiz(i)}
                 disabled={answered}
@@ -1260,7 +1260,7 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
           <button
             onClick={onSubmitMulti}
             disabled={multiSelected.length === 0}
-            style={{ marginTop: 20, width: '100%', background: multiSelected.length > 0 ? 'var(--brand)' : 'var(--bg-card)', color: multiSelected.length > 0 ? '#FFFFFF' : 'var(--text-muted)', border: 'none', borderRadius: 14, padding: '14px', fontSize: 15, fontWeight: 700, cursor: multiSelected.length > 0 ? 'pointer' : 'default' }}
+            style={{ marginTop: 20, width: '100%', background: multiSelected.length > 0 ? 'var(--brand)' : 'var(--bg-card)', color: multiSelected.length > 0 ? 'var(--accent-fg)' : 'var(--text-muted)', border: 'none', borderRadius: 14, padding: '14px', fontSize: 15, fontWeight: 700, cursor: multiSelected.length > 0 ? 'pointer' : 'default' }}
           >
             {multiSelected.length === 0 ? t('stories.pickPrompt') : t('stories.pickedAnswer', { n: multiSelected.length })}
           </button>
@@ -1300,7 +1300,7 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
         <ul style={{ display: 'flex', flexDirection: 'column', gap: 12, listStyle: 'none', padding: 0, marginBottom: 28 }}>
           {slide.points.map((p, i) => (
             <li key={i} style={{ display: 'flex', gap: 12, alignItems: 'flex-start', background: 'var(--bg-card)', borderRadius: 14, padding: '14px 16px' }}>
-              <div style={{ width: 24, height: 24, borderRadius: '50%', background: 'var(--brand)', color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 800, flexShrink: 0 }}>{i + 1}</div>
+              <div style={{ width: 24, height: 24, borderRadius: '50%', background: 'var(--brand)', color: 'var(--accent-fg)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 800, flexShrink: 0 }}>{i + 1}</div>
               <div style={{ fontSize: 15, lineHeight: 1.6 }}>{p}</div>
             </li>
           ))}
@@ -1310,7 +1310,7 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
           onClick={onNext}
           style={{
             width: '100%', padding: '16px 0', borderRadius: 99,
-            background: 'var(--brand)', color: '#FFFFFF',
+            background: 'var(--brand)', color: 'var(--accent-fg)',
             fontSize: 16, fontWeight: 700, border: 'none', cursor: 'pointer',
             boxShadow: `0 4px 20px color-mix(in srgb, var(--brand) 27%, transparent)`,
             WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation',
@@ -1444,7 +1444,7 @@ function ThinkSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides'
       ) : (
         <button
           onClick={onNext}
-          style={{ width: '100%', padding: '15px 0', borderRadius: 14, border: 'none', background: 'var(--brand)', color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}
+          style={{ width: '100%', padding: '15px 0', borderRadius: 14, border: 'none', background: 'var(--brand)', color: 'var(--accent-fg)', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}
         >
           {t('stories.proceed')}
         </button>
@@ -1495,7 +1495,7 @@ function CaseSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides')
         </div>
         <button
           onClick={onNext}
-          style={{ width: '100%', padding: '15px 0', borderRadius: 14, border: 'none', background: 'var(--brand)', color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}
+          style={{ width: '100%', padding: '15px 0', borderRadius: 14, border: 'none', background: 'var(--brand)', color: 'var(--accent-fg)', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}
         >
           {t('stories.proceed')}
         </button>
@@ -1549,7 +1549,7 @@ function CaseSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides')
             : isSelected && !isCorrect ? '#4A1C1C'
             : isCorrect && answered ? 'var(--accent-soft)'
             : 'var(--bg-card)'
-          const color = isSelected && isCorrect && answered ? '#fff' : 'var(--text-primary)'
+          const color = isSelected && isCorrect && answered ? 'var(--accent-fg)' : 'var(--text-primary)'
           return (
             <button type="button" key={i} onClick={() => handleSelect(i)}
               disabled={!!answered}
@@ -1577,7 +1577,7 @@ function CaseSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides')
       {answered && (
         <button
           onClick={handleNext}
-          style={{ width: '100%', padding: '15px 0', borderRadius: 14, border: 'none', background: 'var(--brand)', color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}
+          style={{ width: '100%', padding: '15px 0', borderRadius: 14, border: 'none', background: 'var(--brand)', color: 'var(--accent-fg)', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}
         >
           {isLastPhase ? t('stories.viewSummary') : t('stories.nextPhase', { n: phaseIndex + 2, total: slide.phases.length })}
         </button>

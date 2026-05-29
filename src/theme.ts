@@ -24,7 +24,7 @@ export const ACCENTS: Accent[] = [
 ]
 
 // Mode (light/dark/premium)
-export type ModeId = 'light' | 'dark' | 'enterprise' | 'startup' | 'custom' | 'sepia' | 'forest' | 'mono'
+export type ModeId = 'light' | 'dark' | 'sepia' | 'forest' | 'indigo' | 'rose' | 'slate'
 export type ModeTier = 'free' | 'premium'
 
 export type Mode = {
@@ -39,22 +39,20 @@ export type Mode = {
 export const MODES: Mode[] = [
   { id: 'light',      get name() { return t('theme.mode.light.name') },      get description() { return t('theme.mode.light.desc') },      tier: 'free',    preview: { bg: '#EEF1FA', card: '#FFFFFF', text: '#0D1220', accent: '#2E45A8' } },
   { id: 'dark',       get name() { return t('theme.mode.dark.name') },       get description() { return t('theme.mode.dark.desc') },       tier: 'free',    preview: { bg: '#1A1F2E', card: '#252C40', text: '#E8ECF4', accent: '#6C8EF5' } },
-  { id: 'enterprise', get name() { return t('theme.mode.enterprise.name') }, get description() { return t('theme.mode.enterprise.desc') }, tier: 'premium', preview: { bg: '#0F1729', card: '#1A2540', text: '#E2E8F0', accent: '#94A3B8' } },
-  { id: 'startup',    get name() { return t('theme.mode.startup.name') },    get description() { return t('theme.mode.startup.desc') },    tier: 'premium', preview: { bg: '#FFFAF0', card: '#FFFFFF', text: '#1A2E22', accent: '#10B981' } },
-  { id: 'custom',     get name() { return t('theme.mode.custom.name') },     get description() { return t('theme.mode.custom.desc') },     tier: 'premium', preview: { bg: '#F5F1E8', card: '#FFFFFF', text: '#2D2820', accent: '#D4915A' } },
   { id: 'sepia',      get name() { return t('theme.mode.sepia.name') },      get description() { return t('theme.mode.sepia.desc') },      tier: 'premium', preview: { bg: '#F4ECDD', card: '#FBF6EC', text: '#3A2F23', accent: '#B25C3A' } },
   { id: 'forest',     get name() { return t('theme.mode.forest.name') },     get description() { return t('theme.mode.forest.desc') },     tier: 'premium', preview: { bg: '#10221B', card: '#173026', text: '#E4EDE6', accent: '#6FB89A' } },
-  { id: 'mono',       get name() { return t('theme.mode.mono.name') },       get description() { return t('theme.mode.mono.desc') },       tier: 'premium', preview: { bg: '#F2F2F0', card: '#FFFFFF', text: '#1A1A1A', accent: '#C0392B' } },
+  { id: 'indigo',     get name() { return t('theme.mode.indigo.name') },     get description() { return t('theme.mode.indigo.desc') },     tier: 'premium', preview: { bg: '#161E2B', card: '#1E2738', text: '#E7E3D8', accent: '#8FA9D6' } },
+  { id: 'rose',       get name() { return t('theme.mode.rose.name') },       get description() { return t('theme.mode.rose.desc') },       tier: 'premium', preview: { bg: '#F3E8E4', card: '#FBF3F0', text: '#3A2A28', accent: '#A65466' } },
+  { id: 'slate',      get name() { return t('theme.mode.slate.name') },      get description() { return t('theme.mode.slate.desc') },      tier: 'premium', preview: { bg: '#ECECEA', card: '#FBFBFA', text: '#1E242B', accent: '#3E6B70' } },
 ]
 
 export type ThemeState = {
   mode: ModeId
   accent: AccentId
-  customHex: string  // for mode === 'custom'
 }
 
-// 2026-04-27: v3 dark is the default. Kept the field for backwards compat but force dark.
-const DEFAULT: ThemeState = { mode: 'dark', accent: 'orange', customHex: '#D4915A' }
+// 2026-04-27: v3 dark is the default.
+const DEFAULT: ThemeState = { mode: 'dark', accent: 'orange' }
 
 export function loadTheme(): ThemeState {
   try {
@@ -66,7 +64,14 @@ export function loadTheme(): ThemeState {
         const accent = ACCENTS.find((a) => a.id === v)?.id ?? 'orange'
         return { ...DEFAULT, accent }
       }
-      return { ...DEFAULT, ...v }
+      const merged = { ...DEFAULT, ...v } as ThemeState
+      // T-R: 削除済み id (custom/enterprise/startup/mono) や未知の id を
+      // localStorage に保存済みのユーザーは DEFAULT(dark) に安全フォールバック。
+      // tokens.css にブロックの無い id を適用すると無スタイル化するのを防ぐ。
+      if (!MODES.some((m) => m.id === merged.mode)) {
+        merged.mode = DEFAULT.mode
+      }
+      return merged
     }
   } catch { /* */ }
   return { ...DEFAULT }
@@ -85,24 +90,6 @@ export function setMode(mode: ModeId): void {
   const next: ThemeState = { ...loadTheme(), mode }
   saveTheme(next)
   applyTheme(next)
-}
-
-function hexToRgba(hex: string, alpha: number): string {
-  const h = hex.replace('#', '')
-  const full = h.length === 3 ? h.split('').map((c) => c + c).join('') : h
-  const r = parseInt(full.slice(0, 2), 16)
-  const g = parseInt(full.slice(2, 4), 16)
-  const b = parseInt(full.slice(4, 6), 16)
-  return `rgba(${r},${g},${b},${alpha})`
-}
-
-function darkenHex(hex: string, amount: number): string {
-  const h = hex.replace('#', '')
-  const full = h.length === 3 ? h.split('').map((c) => c + c).join('') : h
-  const r = Math.max(0, parseInt(full.slice(0, 2), 16) - amount)
-  const g = Math.max(0, parseInt(full.slice(2, 4), 16) - amount)
-  const b = Math.max(0, parseInt(full.slice(4, 6), 16) - amount)
-  return `#${[r, g, b].map((n) => n.toString(16).padStart(2, '0')).join('')}`
 }
 
 // WCAG luminance for choosing readable button text
@@ -141,21 +128,12 @@ export function applyTheme(s: ThemeState) {
   if (body) body.classList.add(`mode-${s.mode}`)
 
   // Accent variables
-  let accentColor = ''
-  if (s.mode === 'custom' && /^#[0-9A-Fa-f]{6}$/.test(s.customHex)) {
-    accentColor = s.customHex
-    root.style.setProperty('--accent', s.customHex)
-    root.style.setProperty('--accent-soft', hexToRgba(s.customHex, 0.12))
-    root.style.setProperty('--accent-glow', hexToRgba(s.customHex, 0.25))
-    root.style.setProperty('--accent-dark', darkenHex(s.customHex, 30))
-  } else {
-    const a = ACCENTS.find((x) => x.id === s.accent) || ACCENTS[0]
-    accentColor = a.accent
-    root.style.setProperty('--accent', a.accent)
-    root.style.setProperty('--accent-soft', a.accentSoft)
-    root.style.setProperty('--accent-glow', a.accentGlow)
-    root.style.setProperty('--accent-dark', a.accentDark)
-  }
+  const a = ACCENTS.find((x) => x.id === s.accent) || ACCENTS[0]
+  const accentColor = a.accent
+  root.style.setProperty('--accent', a.accent)
+  root.style.setProperty('--accent-soft', a.accentSoft)
+  root.style.setProperty('--accent-glow', a.accentGlow)
+  root.style.setProperty('--accent-dark', a.accentDark)
 
   // Auto-pick readable foreground for buttons (white or near-black)
   // This avoids unreadable white-on-yellow / white-on-light-orange situations.
@@ -166,14 +144,13 @@ export function applyTheme(s: ThemeState) {
   // shows a stale light color on cold start. Each mode returns its own bg
   // (matches the --bg-primary defined for that mode in tokens.css).
   const THEME_COLOR_BY_MODE: Record<ModeId, string> = {
-    light:      '#EEF1FA',
-    dark:       '#1A1F2E',
-    enterprise: '#0F1729',
-    startup:    '#FFFAF0',
-    custom:     '#EEF1FA',
-    sepia:      '#F4ECDD',
-    forest:     '#10221B',
-    mono:       '#F2F2F0',
+    light:  '#EEF1FA',
+    dark:   '#1A1F2E',
+    sepia:  '#F4ECDD',
+    forest: '#10221B',
+    indigo: '#161E2B',
+    rose:   '#F3E8E4',
+    slate:  '#ECECEA',
   }
   const themeColor = THEME_COLOR_BY_MODE[s.mode] ?? '#1A1F2E'
   let meta = document.head.querySelector<HTMLMetaElement>('meta[name="theme-color"]')
