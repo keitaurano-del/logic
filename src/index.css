@@ -19,27 +19,6 @@
 @import './styles/layout.css';
 @import './styles/extensions.css';
 
-/* Display 明朝（見出し用・self-host）
- * UI 刷新 第2弾（方針 A: エディトリアル×手描き）。Logic は Capacitor のオフライン
- * モバイルアプリなので CDN 依存にせず self-host する。i18n.ja の使用文字でサブセット化
- * 済み（Medium/Bold 各 ~62KB）。本文 sans（Noto Sans JP）は従来どおり CDN。
- * 変数は --font-serif-jp（新規）。既存 --font-display / --serif（Inter Tight 系）は
- * 全画面で参照されているため変更せず、HomeScreen の見出しにのみこの明朝を当てる。 */
-@font-face {
-  font-family: 'Shippori Mincho';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('/fonts/ShipporiMincho-Medium.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Shippori Mincho';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/ShipporiMincho-Bold.woff2') format('woff2');
-}
-
 :root {
   /* Backgrounds — warm cool off-white */
   --bg-primary:    #FAFAFB;

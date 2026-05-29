@@ -4,7 +4,6 @@
  * モックアップ: lv3-home.html
  */
 import { useRef, useState } from 'react'
-import type { ReactNode } from 'react'
 import { FERMI_POOL } from '../fermiData'
 import { getDailyFermiDoneIndexes, getHomeFermiIndex, setHomeFermiIndex } from './dailyFermiState'
 import { getCardStats } from '../flashcardData'
@@ -17,7 +16,6 @@ import { useWindowSize, BREAKPOINTS } from '../hooks/useResponsive'
 import { allLessons } from '../lessonData'
 import { getStudyTimeMs, getStudyDates, localDateStr } from '../stats'
 import { ClockIcon } from '../icons'
-import { UnderlineSingle } from '../icons/handdrawn'
 import { t } from '../i18n'
 
 // フェルミ問題は fermiData.ts の FERMI_POOL を使用（日付ベース共通）
@@ -169,23 +167,15 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
       {/* Scrollable content - Responsive */}
       <div style={{ flex: 1, padding: isTablet ? '0 24px 80px' : '0 16px 80px', display: 'flex', flexDirection: 'column', gap: 12, maxWidth: isLargeTablet ? 1200 : undefined, margin: isLargeTablet ? '0 auto' : undefined, width: '100%' }}>
 
-        {/* Greeting — エディトリアル: Display 明朝 + 手描き下線アクセント（UI 刷新 第2弾） */}
-        <div style={{ padding: '8px 4px 10px' }}>
-          {/* userGreeting はユーザー名（動的・サブセット外）を含むため sans の Caption 扱いに留める */}
-          <div style={{ fontSize: 'var(--fs-caption)', color: 'var(--text-secondary)', marginBottom: 8, fontWeight: 500 }}>{t('home.userGreeting', { name: userName || t('home.guestName') })}</div>
-          <div style={{ position: 'relative', display: 'inline-block' }}>
-            <h1 style={{ margin: 0, fontFamily: 'var(--font-serif-jp)', fontSize: 'var(--fs-display)', fontWeight: 700, lineHeight: 1.35, letterSpacing: '.01em' }}>
-              {getDailyGreeting().split('\n').map((line, i) => i === 0 ? <span key={i}>{line}<br /></span> : <span key={i}>{line}</span>)}
-            </h1>
-            {/* 手描き下線アクセント: 見出し最終行の直下に。accent 色でテーマ追従 */}
-            <UnderlineSingle aria-hidden="true" style={{ display: 'block', width: 132, height: 14, marginTop: 2, color: 'var(--accent)' }} />
-          </div>
+        {/* Greeting */}
+        <div style={{ padding: '4px 4px 8px' }}>
+          <div style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 4, fontWeight: 500 }}>{t('home.userGreeting', { name: userName || t('home.guestName') })}</div>
+          <div style={{ fontSize: 20, fontWeight: 700, lineHeight: 1.4, letterSpacing: '-.005em' }}>{getDailyGreeting().split('\n').map((line, i) => i === 0 ? <span key={i}>{line}<br /></span> : <span key={i}>{line}</span>)}</div>
         </div>
 
         {/* 今日の1問 (Daily Fermi) */}
         {/* a11y: 外側 div は非インタラクティブ。中の「カード本体」と「別の問題」は兄弟の <button> として配置し、nested-interactive を回避 */}
-        {/* UI 刷新 第2弾: accent 色付きグロー影 → フラット寄りの軽い中立影に。光らせない。 */}
-        <div id="home-fermi-card" style={{ position: 'relative', borderRadius: 'var(--radius-lg)', overflow: 'hidden', boxShadow: 'var(--shadow-card)', flexShrink: 0 }}>
+        <div id="home-fermi-card" style={{ position: 'relative', borderRadius: 'var(--radius-lg)', overflow: 'hidden', boxShadow: '0 12px 28px color-mix(in srgb, var(--accent) 24%, transparent)', flexShrink: 0 }}>
           <button
             type="button"
             ref={dailyCardRef}
@@ -205,7 +195,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'color-mix(in srgb, var(--accent-btn-fg) 82%, transparent)', fontSize: 14, fontWeight: 500, marginBottom: 16 }}>
                 <span>{allFermiDone ? t('home.allFermiDoneDesc') : t('home.dailyUpdate')}</span>
               </div>
-              <div style={{ background: 'var(--accent-btn-fg)', color: 'var(--accent-btn)', borderRadius: 'var(--radius-pill)', padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700 }}>
+              <div style={{ background: 'var(--accent-btn-fg)', color: 'var(--accent-btn)', borderRadius: 'var(--radius-pill)', padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700, boxShadow: '0 6px 18px rgba(0,0,0,.14)' }}>
                 {allFermiDone ? (
                   <>
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={'var(--accent-btn)'} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12" /></svg>
@@ -231,13 +221,11 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
                 top: 16, right: 16,
                 zIndex: 2,
                 display: 'inline-flex', alignItems: 'center', gap: 4,
-                /* UI 刷新 第2弾: 直書き rgba(255,255,255,...) を撤廃。カードのテキスト色
-                   (--accent-btn-fg) ベースの半透明にして全テーマで追従させる */
-                background: 'color-mix(in srgb, var(--accent-btn-fg) 16%, transparent)',
-                border: '1px solid color-mix(in srgb, var(--accent-btn-fg) 30%, transparent)',
+                background: 'rgba(255,255,255,0.18)',
+                border: '1px solid rgba(255,255,255,0.28)',
                 borderRadius: 99,
                 padding: '5px 10px',
-                color: 'var(--accent-btn-fg)',
+                color: 'var(--accent-fg)',
                 fontSize: 11, fontWeight: 700, letterSpacing: '.02em',
                 cursor: 'pointer',
                 fontFamily: 'inherit',
@@ -255,7 +243,6 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
         </div>
 
         {/* Hero Recommend - ランダム表示 */}
-        <SectionHeading>{t('home.badgeRec')}</SectionHeading>
         <button
           type="button"
           onClick={() => onOpenLesson(recommendedLesson.id)}
@@ -571,20 +558,6 @@ function buildReviewSub(due: number, weak: number, total: number, unresolved: nu
   if (unresolved > 0) parts.push(t('home.reviewSubWrong', { n: String(unresolved) }))
   if (parts.length === 0 && total > 0) return t('home.reviewSubAll', { total: String(total) })
   return parts.join(' · ')
-}
-
-// セクション見出し（UI 刷新 第2弾・エディトリアル）
-// Display 明朝の小サイズ（Section）+ 手描き下線アクセント。HomeScreen の箱の羅列に
-// 紙面的な区切り（見出し → 内容）の階層を与える。装飾は下線1本に留め過剰にしない。
-function SectionHeading({ children }: { children: ReactNode }) {
-  return (
-    <div style={{ padding: '6px 4px 0', display: 'inline-flex', flexDirection: 'column', alignSelf: 'flex-start' }}>
-      <h2 style={{ margin: 0, fontFamily: 'var(--font-serif-jp)', fontSize: 'var(--fs-section)', fontWeight: 500, lineHeight: 1.3, letterSpacing: '.01em', color: 'var(--text-primary)' }}>
-        {children}
-      </h2>
-      <UnderlineSingle aria-hidden="true" style={{ display: 'block', width: 64, height: 9, marginTop: 1, color: 'var(--accent)' }} />
-    </div>
-  )
 }
 
 function AILargeCard({ image, name, sub, onClick }: { image: string; name: string; sub: string; onClick: () => void }) {
