@@ -4,6 +4,7 @@
  */
 import { useState } from 'react'
 import { getCompletedCount, getLessonStreak, getXp, getCompletedLessons, getXpLogThisMonth, XP_EVENT_LABEL, XP_REWARDS, localDateStr } from '../stats'
+import { getCompletionCount } from '../db/completionCountDb'
 import { getAllLessonsFlat } from '../lessonData'
 import { getCurrentLevel, getXpProgress, getTitleKeyForLevel, getTitleI18nKey, getBadgeImagePath, MAX_LEVEL } from './homeHelpers'
 import { TitleBadgeSheet } from '../components/TitleBadgeSheet'
@@ -313,14 +314,16 @@ function LessonsSheet({ onOpenLesson }: { onOpenLesson: (id: number) => void }) 
         <div style={{ textAlign: 'center', color: 'var(--text-secondary)', padding: '32px 0', fontSize: 14 }}>{t('profile.noLessonsYet')}</div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {completedLessons.map(l => (
+          {completedLessons.map(l => {
+            const isRepeated = getCompletionCount(`lesson-${l.id}`) >= 2
+            return (
             <button
               type="button"
               key={l.id}
               onClick={() => onOpenLesson(l.id)}
               style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', background: 'var(--bg-primary)', borderRadius: 12, cursor: 'pointer', border: 'none', textAlign: 'left', width: '100%', font: 'inherit', color: 'inherit' }}
             >
-              <div style={{ width: 36, height: 36, borderRadius: 10, background: 'var(--accent-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: 'var(--brand)' }}>
+              <div className={isRepeated ? 'pf-lesson-tile pf-lesson-tile--repeated' : 'pf-lesson-tile'} style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 <LessonIcon id={l.id} action="lesson" size={20} />
               </div>
               <div style={{ flex: 1 }}>
@@ -329,7 +332,8 @@ function LessonsSheet({ onOpenLesson }: { onOpenLesson: (id: number) => void }) 
               </div>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2.5" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
             </button>
-          ))}
+            )
+          })}
         </div>
       )}
     </>

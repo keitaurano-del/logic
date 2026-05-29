@@ -374,6 +374,17 @@
   color: var(--text-primary);
 }
 
+/* レッスン完了アイコンタイル: 1回完了は accent 系、2回以上完了は success 系で区別 */
+.pf-lesson-tile {
+  background: var(--accent-soft);
+  color: var(--brand);
+}
+
+.pf-lesson-tile--repeated {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
 /* ===== Empty ===== */
 .pf-empty {
   flex: 1;
