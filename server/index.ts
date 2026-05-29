@@ -15,6 +15,7 @@ import { createJournalRouter } from './routes/journal.js'
 import { createFeatureFlagsRouter } from './routes/feature-flags.js'
 import { createSyncTelemetryRouter } from './routes/sync-telemetry.js'
 import { createTtsRouter } from './routes/tts.js'
+import { createSearchRouter } from './routes/search.js'
 
 // Supabase サーバーサイドクライアント（service role key 使用）
 const supabaseUrl = process.env.SUPABASE_URL || ''
@@ -210,6 +211,14 @@ const ttsLimiter = makeLimiter({
   msgEn: 'Too many speech requests. Please wait a moment and try again.',
 })
 
+// AI セマンティック検索用: 1 分 20 回（haiku 呼び出し1回。連打は抑えつつ試行は許容）
+const searchLimiter = makeLimiter({
+  windowMs: 60 * 1000,
+  max: 20,
+  msgJa: '検索のリクエストが多すぎます。少し待ってからお試しください。',
+  msgEn: 'Too many search requests. Please wait a moment and try again.',
+})
+
 // グローバル制限を /api/* に適用 (ヘルスチェックは除外)
 app.use((req, res, next) => {
   if (req.path === '/api/health') return next()
@@ -240,6 +249,9 @@ app.use('/api/sync-telemetry', createSyncTelemetryRouter({ supabase }))
 
 // Cloud TTS proxy（Google Cloud Text-to-Speech、キー未設定なら 503 でクライアントが端末 TTS にフォールバック）
 app.use('/api/tts', createTtsRouter(ttsLimiter))
+
+// AI セマンティック検索（POST /api/search）
+app.use('/api/search', createSearchRouter(client, searchLimiter))
 
 
 // 静的ファイル（public/ → dist/）は配信する

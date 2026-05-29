@@ -3,7 +3,7 @@
  * 仕様: docs/DESIGN_V3.md §3.2
  * モックアップ: lv3-courses.html
  */
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useMemo, useCallback, useRef } from 'react'
 import type { ReactNode } from 'react'
 import { Header } from '../components/platform/Header'
 import { ActionSheet } from '../components/ActionSheet'
@@ -27,7 +27,8 @@ function LessonImage({ lessonId, size }: { lessonId: number; size: number }) {
   )
 }
 import LessonIcon from '../LessonIcon'
-import { BookmarkIcon, BookmarkFilledIcon, ChevronDownIcon, ChevronRightIcon, SparklesIcon, TrashIcon } from '../icons'
+import { BookmarkIcon, BookmarkFilledIcon, ChevronDownIcon, ChevronRightIcon, SparklesIcon, TrashIcon, SearchIcon } from '../icons'
+import { aiSearch, type ResolvedAiHit } from '../aiSearch'
 import { getAllLessonsFlat } from '../lessonData'
 import type { LessonData } from '../lessonData'
 import { getCompletedLessons } from '../stats'
@@ -357,6 +358,8 @@ interface RoadmapScreenV3Props {
 }
 
 export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
+  // 検索 UI は右上の虫眼鏡起点で開閉する（常時展開しない）
+  const [searchOpen, setSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [levelFilters, setLevelFilters] = useState<Set<LevelFilter>>(new Set())
   const [progressFilters, setProgressFilters] = useState<Set<ProgressFilter>>(new Set())
@@ -386,6 +389,16 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
   // 一覧で全コース分を集計するため、ここで一度だけ Set 化して各カードに渡す。
   const completedLessons = useMemo(() => new Set(getCompletedLessons()), [])
 
+  // 検索を閉じるときは入力・フィルタもリセットしてコース一覧に戻す
+  // （フック呼び出し順を一定に保つため、early return より前に置く）
+  const closeSearch = useCallback(() => {
+    setSearchOpen(false)
+    setSearchQuery('')
+    setLevelFilters(new Set())
+    setProgressFilters(new Set())
+    setFormatFilters(new Set())
+  }, [])
+
   if (props.initialCategory) {
     return <CategoryDetailView category={props.initialCategory} onOpenLesson={props.onOpenLesson} onBack={props.onBack} />
   }
@@ -393,93 +406,74 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
   const hasFilter = levelFilters.size + progressFilters.size + formatFilters.size > 0
   const showSearch = searchQuery.trim().length > 0 || hasFilter
 
-  return (
-    <div style={{ background: 'var(--bg-primary)', minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: 'var(--text-primary)' }}>
-      <div style={{ padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ fontSize: 24, fontWeight: 700, letterSpacing: '-.005em' }}>{t('roadmap.heading')}</div>
-        {props.onOpenReviewHub && (
-          <button
-            type="button"
-            onClick={props.onOpenReviewHub}
-            aria-label={t('roadmap.openReviewAria')}
-            style={{
-              display: 'inline-flex', alignItems: 'center', gap: 6,
-              background: 'var(--accent-soft)',
-              color: 'var(--brand)',
-              border: 'none',
-              borderRadius: 'var(--radius-pill)',
-              padding: '8px 14px',
-              fontSize: 13, fontWeight: 700,
-              cursor: 'pointer',
-              fontFamily: "'Noto Sans JP', sans-serif",
-              minHeight: 36,
-            }}
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
-              <path d="M3 12a9 9 0 1 0 3-6.7" />
-              <polyline points="3 4 3 10 9 10" />
-            </svg>
-            {t('roadmap.openReview')}
-          </button>
-        )}
-      </div>
-      {/* 検索ボックス */}
-      <div style={{ padding: '0 16px 8px' }}>
-        <div style={{ position: 'relative' }}>
-          <input
-            type="search"
-            aria-label={t('roadmap.searchAria')}
-            placeholder={t('roadmap.searchPlaceholder')}
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-            onBlur={() => saveSearchHistory(searchQuery)}
-            style={{
-              width: '100%', boxSizing: 'border-box',
-              padding: '10px 38px 10px 38px',
-              borderRadius: 12,
-              border: `1px solid ${'var(--border)'}`,
-              background: 'var(--bg-card)',
-              color: 'var(--text-primary)',
-              fontSize: 14, outline: 'none',
-              fontFamily: "'Noto Sans JP', sans-serif",
-            }}
-          />
-          <svg style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', opacity: 0.4 }}
-            width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-          </svg>
-          {searchQuery && (
-            <button onClick={() => setSearchQuery('')} aria-label={t('roadmap.searchClear')}
-              style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', padding: 6, color: 'var(--text-secondary)' }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* フィルタ・ソート */}
-      <FilterBar
+  // 検索モード（虫眼鏡を押して開いた状態）
+  if (searchOpen) {
+    return (
+      <SearchOverlay
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
         levelFilters={levelFilters} setLevelFilters={setLevelFilters}
         progressFilters={progressFilters} setProgressFilters={setProgressFilters}
         formatFilters={formatFilters} setFormatFilters={setFormatFilters}
         sortOption={sortOption} setSortOption={setSortOption}
-        showSort={showSearch}
+        showSearch={showSearch}
+        onClose={closeSearch}
+        onOpenLesson={props.onOpenLesson}
+        onOpenCategory={props.onOpenCategory}
       />
+    )
+  }
 
-      {showSearch && (
-        <SearchPanel
-          query={searchQuery}
-          levelFilters={levelFilters}
-          progressFilters={progressFilters}
-          formatFilters={formatFilters}
-          sortOption={sortOption}
-          onOpenLesson={props.onOpenLesson}
-          onOpenCategory={props.onOpenCategory}
-          onPickKeyword={(k) => setSearchQuery(k)}
-        />
-      )}
+  return (
+    <div style={{ background: 'var(--bg-primary)', minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: 'var(--text-primary)' }}>
+      <div style={{ padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ fontSize: 24, fontWeight: 700, letterSpacing: '-.005em' }}>{t('roadmap.heading')}</div>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+          {props.onOpenReviewHub && (
+            <button
+              type="button"
+              onClick={props.onOpenReviewHub}
+              aria-label={t('roadmap.openReviewAria')}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 6,
+                background: 'var(--accent-soft)',
+                color: 'var(--brand)',
+                border: 'none',
+                borderRadius: 'var(--radius-pill)',
+                padding: '8px 14px',
+                fontSize: 13, fontWeight: 700,
+                cursor: 'pointer',
+                fontFamily: "'Noto Sans JP', sans-serif",
+                minHeight: 36,
+              }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
+                <path d="M3 12a9 9 0 1 0 3-6.7" />
+                <polyline points="3 4 3 10 9 10" />
+              </svg>
+              {t('roadmap.openReview')}
+            </button>
+          )}
+          {/* 検索（虫眼鏡）— タップで検索 UI を開く */}
+          <button
+            type="button"
+            onClick={() => setSearchOpen(true)}
+            aria-label={t('roadmap.searchAria')}
+            style={{
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              width: 36, height: 36, borderRadius: 'var(--radius-pill)',
+              background: 'var(--bg-card)',
+              color: 'var(--text-secondary)',
+              border: `1px solid var(--border)`,
+              cursor: 'pointer',
+            }}
+          >
+            <SearchIcon width={18} height={18} />
+          </button>
+        </div>
+      </div>
 
-      {!showSearch && <div style={{ flex: 1, padding: '0 16px 80px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+      <div style={{ flex: 1, padding: '0 16px 80px', display: 'flex', flexDirection: 'column', gap: 14 }}>
 
         <div style={{ padding: '4px 4px 8px' }}>
           <div style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.45, letterSpacing: '-.005em', whiteSpace: 'pre-line' }}>{t('roadmap.todayQuestion')}</div>
@@ -618,7 +612,7 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
             </div>
           )
         })}
-      </div>}
+      </div>
 
       {showCustomSheet && (
         <CustomCourseSheet
@@ -632,6 +626,258 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
         />
       )}
     </div>
+  )
+}
+
+// ──────── 検索オーバーレイ（虫眼鏡から開く検索 UI） ────────
+function SearchOverlay(p: {
+  searchQuery: string
+  setSearchQuery: (s: string) => void
+  levelFilters: Set<LevelFilter>; setLevelFilters: (s: Set<LevelFilter>) => void
+  progressFilters: Set<ProgressFilter>; setProgressFilters: (s: Set<ProgressFilter>) => void
+  formatFilters: Set<FormatFilter>; setFormatFilters: (s: Set<FormatFilter>) => void
+  sortOption: SortOption; setSortOption: (s: SortOption) => void
+  showSearch: boolean
+  onClose: () => void
+  onOpenLesson: (id: number) => void
+  onOpenCategory: (cat: string) => void
+}) {
+  // AI 検索の状態
+  const [aiResults, setAiResults] = useState<ResolvedAiHit[] | null>(null)
+  const [aiLoading, setAiLoading] = useState(false)
+  const [aiError, setAiError] = useState<string | null>(null)
+  const [aiQuery, setAiQuery] = useState('')   // AI 検索を実行したクエリ（結果の見出し用）
+  const abortRef = useRef<AbortController | null>(null)
+
+  const clearAi = useCallback(() => {
+    abortRef.current?.abort()
+    abortRef.current = null
+    setAiResults(null)
+    setAiError(null)
+    setAiLoading(false)
+    setAiQuery('')
+  }, [])
+
+  const runAiSearch = useCallback(async () => {
+    const q = p.searchQuery.trim()
+    if (!q) return
+    abortRef.current?.abort()
+    const ctrl = new AbortController()
+    abortRef.current = ctrl
+    setAiLoading(true)
+    setAiError(null)
+    setAiResults(null)
+    setAiQuery(q)
+    saveSearchHistory(q)
+    try {
+      const results = await aiSearch(q, ctrl.signal)
+      if (ctrl.signal.aborted) return
+      setAiResults(results)
+    } catch (e) {
+      if (ctrl.signal.aborted) return
+      setAiError(e instanceof Error && e.message ? e.message : t('roadmap.aiSearchError'))
+    } finally {
+      if (!ctrl.signal.aborted) setAiLoading(false)
+    }
+  }, [p.searchQuery])
+
+  // 入力が変わったら前回の AI 結果は破棄（ステイル防止）
+  const onChangeQuery = useCallback((v: string) => {
+    p.setSearchQuery(v)
+    if (aiResults !== null || aiError !== null || aiLoading) clearAi()
+  }, [p, aiResults, aiError, aiLoading, clearAi])
+
+  const showingAi = aiLoading || aiError !== null || aiResults !== null
+
+  return (
+    <div style={{ background: 'var(--bg-primary)', minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: 'var(--text-primary)' }}>
+      {/* 検索ヘッダ: 戻る + 入力 */}
+      <div style={{ padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 12px 8px', display: 'flex', alignItems: 'center', gap: 8 }}>
+        <button
+          type="button"
+          onClick={p.onClose}
+          aria-label={t('roadmap.searchClose')}
+          style={{ flexShrink: 0, width: 36, height: 36, borderRadius: '50%', background: 'transparent', border: 'none', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)' }}
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6" /></svg>
+        </button>
+        <div style={{ position: 'relative', flex: 1, minWidth: 0 }}>
+          <input
+            type="search"
+            autoFocus
+            aria-label={t('roadmap.searchAria')}
+            placeholder={t('roadmap.searchPlaceholder')}
+            value={p.searchQuery}
+            onChange={e => onChangeQuery(e.target.value)}
+            onBlur={() => saveSearchHistory(p.searchQuery)}
+            onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); void runAiSearch() } }}
+            style={{
+              width: '100%', boxSizing: 'border-box',
+              padding: '10px 38px 10px 38px',
+              borderRadius: 12,
+              border: `1px solid var(--border)`,
+              background: 'var(--bg-card)',
+              color: 'var(--text-primary)',
+              fontSize: 14, outline: 'none',
+              fontFamily: "'Noto Sans JP', sans-serif",
+            }}
+          />
+          <span style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', opacity: 0.4, color: 'var(--text-secondary)', display: 'inline-flex' }} aria-hidden="true">
+            <SearchIcon width={16} height={16} />
+          </span>
+          {p.searchQuery && (
+            <button onClick={() => { p.setSearchQuery(''); clearAi() }} aria-label={t('roadmap.searchClear')}
+              style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', padding: 6, color: 'var(--text-secondary)' }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* AI 検索ボタン */}
+      <div style={{ padding: '0 16px 8px' }}>
+        <button
+          type="button"
+          onClick={() => void runAiSearch()}
+          disabled={!p.searchQuery.trim() || aiLoading}
+          aria-label={t('roadmap.aiSearchAria')}
+          style={{
+            width: '100%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+            background: (!p.searchQuery.trim() || aiLoading) ? 'var(--bg-card)' : 'var(--accent)',
+            color: (!p.searchQuery.trim() || aiLoading) ? 'var(--text-muted)' : 'var(--accent-fg)',
+            border: (!p.searchQuery.trim() || aiLoading) ? `1px solid var(--border)` : 'none',
+            borderRadius: 12, padding: '10px 14px',
+            fontSize: 13, fontWeight: 700,
+            cursor: (!p.searchQuery.trim() || aiLoading) ? 'default' : 'pointer',
+            fontFamily: "'Noto Sans JP', sans-serif",
+          }}
+        >
+          <SparklesIcon width={16} height={16} />
+          {aiLoading ? t('roadmap.aiSearching') : t('roadmap.aiSearchButton')}
+        </button>
+      </div>
+
+      {/* AI 検索結果 / ローディング / エラー */}
+      {showingAi ? (
+        <AiSearchPanel
+          query={aiQuery}
+          loading={aiLoading}
+          error={aiError}
+          results={aiResults}
+          onRetry={() => void runAiSearch()}
+          onOpenLesson={p.onOpenLesson}
+          onOpenCategory={p.onOpenCategory}
+        />
+      ) : (
+        <>
+          {/* キーワード検索のフィルタ・ソート */}
+          <FilterBar
+            levelFilters={p.levelFilters} setLevelFilters={p.setLevelFilters}
+            progressFilters={p.progressFilters} setProgressFilters={p.setProgressFilters}
+            formatFilters={p.formatFilters} setFormatFilters={p.setFormatFilters}
+            sortOption={p.sortOption} setSortOption={p.setSortOption}
+            showSort={p.showSearch}
+          />
+          <SearchPanel
+            query={p.searchQuery}
+            levelFilters={p.levelFilters}
+            progressFilters={p.progressFilters}
+            formatFilters={p.formatFilters}
+            sortOption={p.sortOption}
+            onOpenLesson={p.onOpenLesson}
+            onOpenCategory={p.onOpenCategory}
+            onPickKeyword={(k) => onChangeQuery(k)}
+          />
+        </>
+      )}
+    </div>
+  )
+}
+
+// ──────── AI 検索結果パネル ────────
+function AiSearchPanel(p: {
+  query: string
+  loading: boolean
+  error: string | null
+  results: ResolvedAiHit[] | null
+  onRetry: () => void
+  onOpenLesson: (id: number) => void
+  onOpenCategory: (cat: string) => void
+}) {
+  if (p.loading) {
+    return (
+      <div style={{ padding: 40, textAlign: 'center', color: 'var(--text-secondary)', fontSize: 14 }}>
+        {t('roadmap.aiSearching')}
+      </div>
+    )
+  }
+  if (p.error) {
+    return (
+      <div style={{ padding: 32, textAlign: 'center', color: 'var(--text-secondary)', fontSize: 14, display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
+        <div>{t('roadmap.aiSearchError')}</div>
+        <button type="button" onClick={p.onRetry}
+          style={{ background: 'var(--accent-soft)', color: 'var(--brand)', border: 'none', borderRadius: 'var(--radius-pill)', padding: '8px 16px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+          {t('roadmap.aiSearchRetry')}
+        </button>
+      </div>
+    )
+  }
+  const results = p.results ?? []
+  if (results.length === 0) {
+    return (
+      <div style={{ padding: 32, textAlign: 'center', color: 'var(--text-secondary)', fontSize: 14 }}>
+        {t('roadmap.aiSearchEmpty')}
+        <br /><span style={{ fontSize: 12 }}>{t('roadmap.searchQueryNotice', { q: p.query })}</span>
+      </div>
+    )
+  }
+  return (
+    <div style={{ flex: 1, padding: '8px 16px 100px', display: 'grid', gridTemplateColumns: '1fr', gap: 10 }}>
+      <div style={{ fontSize: 11, color: 'var(--text-secondary)', fontWeight: 600, padding: '0 2px', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+        <SparklesIcon width={12} height={12} />
+        {t('roadmap.aiResultsCount', { count: results.length })}
+      </div>
+      {results.map(r => r.kind === 'course'
+        ? <AiCourseCard key={`ai-c-${r.course.id}`} course={r.course} reason={r.reason} onOpen={() => p.onOpenCategory(r.course.category)} />
+        : <AiLessonCard key={`ai-l-${r.lesson.id}`} lesson={r.lesson} reason={r.reason} onOpen={() => p.onOpenLesson(r.lesson.id)} />
+      )}
+    </div>
+  )
+}
+
+function AiCourseCard({ course, reason, onOpen }: { course: Course; reason: string; onOpen: () => void }) {
+  return (
+    <button type="button" onClick={onOpen}
+      aria-label={t('roadmap.courseAria', { category: course.category, title: course.title, done: 0, total: course.lessonIds.length })}
+      style={{ background: 'var(--bg-card)', borderRadius: 14, padding: '12px 14px', cursor: 'pointer', display: 'flex', alignItems: 'flex-start', gap: 12, border: `1px solid var(--border)`, color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%' }}>
+      <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(108,142,245,.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: 'var(--brand)' }}>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15Z"/></svg>
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 11, color: 'var(--brand)', fontWeight: 700, marginBottom: 2 }}>{t('roadmap.coursePrefix', { category: course.category })}</div>
+        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', marginBottom: reason ? 4 : 0, lineHeight: 1.3 }}>{course.title}</div>
+        {reason && <div style={{ fontSize: 11, color: 'var(--text-secondary)', lineHeight: 1.4 }}>{reason}</div>}
+      </div>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2.5" style={{ marginTop: 10, flexShrink: 0 }} aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
+    </button>
+  )
+}
+
+function AiLessonCard({ lesson, reason, onOpen }: { lesson: LessonData; reason: string; onOpen: () => void }) {
+  return (
+    <button type="button" onClick={onOpen}
+      aria-label={t('roadmap.lessonAria', { title: lesson.title })}
+      style={{ background: 'var(--bg-card)', borderRadius: 14, padding: '12px 14px', cursor: 'pointer', display: 'flex', alignItems: 'flex-start', gap: 12, border: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%' }}>
+      <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(108,142,245,.10)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: 'var(--brand)' }}>
+        <LessonIcon id={lesson.id} action="lesson" size={20} />
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginBottom: 2 }}>{lesson.category}</div>
+        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', marginBottom: reason ? 4 : 0, lineHeight: 1.3 }}>{lesson.title}</div>
+        {reason && <div style={{ fontSize: 11, color: 'var(--text-secondary)', lineHeight: 1.4 }}>{reason}</div>}
+      </div>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2.5" style={{ marginTop: 10, flexShrink: 0 }} aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
+    </button>
   )
 }
 
