@@ -34,6 +34,7 @@ import { getCompletedLessons } from '../stats'
 import { getAllCompletionCounts } from '../db/completionCountDb'
 import { CompletionBadge } from '../components/CompletionBadge'
 import { getCoursesByCategory, getCoursesByGroup, getPinnedCourses, COURSES, COURSE_GROUPS, type Course } from '../courseData'
+import { courseProgress } from '../courseProgress'
 import { loadPersonalCourse, axisLabel } from '../placementData'
 import { isSaved, toggleSaved } from '../savedItemsStore'
 import { loadCustomCourses, deleteCustomCourse, type CustomCourse } from '../customCourseStore'
@@ -375,6 +376,10 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
     setCustomCourses(loadCustomCourses())
   }, [])
 
+  // 完了レッスン集合（コース一覧カードの進捗バー算出に使う）。
+  // 一覧で全コース分を集計するため、ここで一度だけ Set 化して各カードに渡す。
+  const completedLessons = useMemo(() => new Set(getCompletedLessons()), [])
+
   if (props.initialCategory) {
     return <CategoryDetailView category={props.initialCategory} onOpenLesson={props.onOpenLesson} onBack={props.onBack} />
   }
@@ -525,12 +530,16 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
                   {pinnedCourses.map(course => {
                     const v = CATEGORY_VISUAL[course.category] || DEFAULT_VISUAL
                     const cardImage = course.image || v.image
+                    const cp = courseProgress(course, completedLessons)
                     return (
                       <CategoryCard
                         key={course.id}
                         name={course.title}
                         meta={t('roadmap.lessonCountAndLevel', { count: course.lessonIds.length, level: levelLabel(course.level) })}
                         image={cardImage}
+                        progressDone={cp.done}
+                        progressTotal={cp.total}
+                        progressPercent={cp.percent}
                         onClick={() => props.onOpenCategory(v.routeKey)}
                         saveTarget={{
                           refId: v.routeKey,
@@ -578,12 +587,16 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
                   {groupCourses.map(course => {
                     const v = CATEGORY_VISUAL[course.category] || DEFAULT_VISUAL
                     const cardImage = course.image || v.image
+                    const cp = courseProgress(course, completedLessons)
                     return (
                       <CategoryCard
                         key={course.id}
                         name={course.title}
                         meta={t('roadmap.lessonCountAndLevel', { count: course.lessonIds.length, level: levelLabel(course.level) })}
                         image={cardImage}
+                        progressDone={cp.done}
+                        progressTotal={cp.total}
+                        progressPercent={cp.percent}
                         onClick={() => props.onOpenCategory(v.routeKey)}
                         saveTarget={{
                           refId: v.routeKey,
@@ -1093,20 +1106,33 @@ function categoryLabel(category: string): string {
 }
 
 
-function CategoryCard({ name, meta, progress, onClick, image, saveTarget }: {
+function CategoryCard({ name, meta, progressDone, progressTotal, progressPercent, onClick, image, saveTarget }: {
   name: string
   meta: string
-  progress?: string
+  progressDone?: number
+  progressTotal?: number
+  progressPercent?: number
   onClick: () => void
   image?: string
   saveTarget?: { refId: string; title: string; subtitle?: string; image?: string }
 }) {
   const [saved, setSaved] = useState<boolean>(() => saveTarget ? isSaved('course', saveTarget.refId) : false)
 
+  // 進捗バーを出すのは done/total/percent が揃っているコースカードのみ。
+  const hasProgress = typeof progressPercent === 'number' && typeof progressTotal === 'number' && progressTotal > 0
+  const pct = hasProgress ? progressPercent! : 0
+  const done = progressDone ?? 0
+  const total = progressTotal ?? 0
+  const allDone = hasProgress && pct >= 100
+  const started = hasProgress && pct > 0
+  const progressAria = hasProgress
+    ? t('roadmap.coursePercentAria', { percent: pct, done, total })
+    : ''
+
   return (
     <div style={{ position: 'relative' }}>
       <button type="button" className="cat-tile" onClick={onClick}
-        aria-label={`${name}: ${meta}${progress ? ` (${progress})` : ''}`}
+        aria-label={`${name}: ${meta}`}
         style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', cursor: 'pointer', boxShadow: 'var(--shadow-v3-card-inset)', display: 'flex', flexDirection: 'column', border: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', padding: 0, width: '100%' }}>
         {image && (
           <div style={{ width: '100%', aspectRatio: '2 / 1', overflow: 'hidden', flexShrink: 0, background: 'var(--bg-secondary)' }}>
@@ -1118,7 +1144,23 @@ function CategoryCard({ name, meta, progress, onClick, image, saveTarget }: {
             <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 2, lineHeight: 1.3 }}>{name}</div>
             <div style={{ fontSize: 11, color: 'var(--text-secondary)', fontWeight: 500 }}>{meta}</div>
           </div>
-          <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 12, fontWeight: 700, color: 'var(--brand)' }}>{progress}</div>
+          {hasProgress && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+              <div
+                role="progressbar"
+                aria-valuenow={pct}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-label={progressAria}
+                style={{ height: 4, background: `color-mix(in srgb, var(--text-muted) 13%, transparent)`, borderRadius: 2, overflow: 'hidden' }}
+              >
+                <div style={{ height: '100%', width: `${pct}%`, background: allDone ? 'var(--success-bright)' : 'var(--brand)', borderRadius: 2, transition: 'width .3s' }} />
+              </div>
+              <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 11, fontWeight: 700, color: allDone ? 'var(--success-bright)' : 'var(--brand)' }}>
+                {started ? t('roadmap.coursePercentComplete', { percent: pct }) : t('roadmap.detailNotStarted')}
+              </div>
+            </div>
+          )}
         </div>
       </button>
       {saveTarget && (
