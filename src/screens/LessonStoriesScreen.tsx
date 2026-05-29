@@ -556,7 +556,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
       <div style={{ background: 'var(--bg-primary)', minHeight: '100vh', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Noto Sans JP', sans-serif" }}>
         <div style={{ textAlign: 'center' }}>
           <div>{t('stories.notFound')}</div>
-          <button onClick={onClose} style={{ marginTop: 20, padding: '10px 20px', borderRadius: 12, background: 'var(--brand)', color: 'var(--accent-fg)', border: 'none', fontWeight: 700 }}>{t('stories.back')}</button>
+          <button onClick={onClose} style={{ marginTop: 20, padding: '10px 20px', borderRadius: 12, background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)', border: 'none', fontWeight: 700 }}>{t('stories.back')}</button>
         </div>
       </div>
     )
@@ -1300,7 +1300,7 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
         <ul style={{ display: 'flex', flexDirection: 'column', gap: 12, listStyle: 'none', padding: 0, marginBottom: 28 }}>
           {slide.points.map((p, i) => (
             <li key={i} style={{ display: 'flex', gap: 12, alignItems: 'flex-start', background: 'var(--bg-card)', borderRadius: 14, padding: '14px 16px' }}>
-              <div style={{ width: 24, height: 24, borderRadius: '50%', background: 'var(--brand)', color: 'var(--accent-fg)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 800, flexShrink: 0 }}>{i + 1}</div>
+              <div style={{ width: 24, height: 24, borderRadius: '50%', background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 800, flexShrink: 0 }}>{i + 1}</div>
               <div style={{ fontSize: 15, lineHeight: 1.6 }}>{p}</div>
             </li>
           ))}
@@ -1310,7 +1310,7 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
           onClick={onNext}
           style={{
             width: '100%', padding: '16px 0', borderRadius: 99,
-            background: 'var(--brand)', color: 'var(--accent-fg)',
+            background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)',
             fontSize: 16, fontWeight: 700, border: 'none', cursor: 'pointer',
             boxShadow: `0 4px 20px color-mix(in srgb, var(--brand) 27%, transparent)`,
             WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation',
@@ -1444,7 +1444,7 @@ function ThinkSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides'
       ) : (
         <button
           onClick={onNext}
-          style={{ width: '100%', padding: '15px 0', borderRadius: 14, border: 'none', background: 'var(--brand)', color: 'var(--accent-fg)', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}
+          style={{ width: '100%', padding: '15px 0', borderRadius: 14, border: 'none', background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}
         >
           {t('stories.proceed')}
         </button>
@@ -1495,7 +1495,7 @@ function CaseSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides')
         </div>
         <button
           onClick={onNext}
-          style={{ width: '100%', padding: '15px 0', borderRadius: 14, border: 'none', background: 'var(--brand)', color: 'var(--accent-fg)', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}
+          style={{ width: '100%', padding: '15px 0', borderRadius: 14, border: 'none', background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}
         >
           {t('stories.proceed')}
         </button>
@@ -1577,7 +1577,7 @@ function CaseSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides')
       {answered && (
         <button
           onClick={handleNext}
-          style={{ width: '100%', padding: '15px 0', borderRadius: 14, border: 'none', background: 'var(--brand)', color: 'var(--accent-fg)', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}
+          style={{ width: '100%', padding: '15px 0', borderRadius: 14, border: 'none', background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}
         >
           {isLastPhase ? t('stories.viewSummary') : t('stories.nextPhase', { n: phaseIndex + 2, total: slide.phases.length })}
         </button>

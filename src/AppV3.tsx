@@ -72,7 +72,7 @@ import { syncOnLogin, syncOnLogout } from './syncService'
 import { canUseJournal, getJournalTrialDaysLeft, isPaid } from './subscription'
 import { initBilling } from './billing'
 import { Header } from './components/platform/Header'
-import { BookOpenIcon, CheckCircleIcon } from './icons'
+import { BookOpenIcon, CheckCircleIcon, SparklesIcon } from './icons'
 import { TutorialOverlay, TutorialFAB } from './components/TutorialOverlay'
 import { tutorial } from './tutorial/tutorialStorage'
 import { t } from './i18n'
@@ -911,10 +911,10 @@ function WelcomeScreen({ userName, onStart }: { userName: string; onStart: () =>
         width: 96, height: 96, borderRadius: '50%',
         background: 'linear-gradient(135deg, var(--brand), var(--brand-light, #8B5CF6))',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontSize: 44,
+        color: 'var(--accent-fg, #fff)',
         boxShadow: '0 0 40px rgba(108,142,245,0.55), 0 12px 32px rgba(0,0,0,0.4)',
       }}>
-        <span aria-hidden="true">🎉</span>
+        <SparklesIcon width={44} height={44} aria-hidden="true" />
       </div>
       <div>
         <div style={{ fontSize: 14, letterSpacing: '.16em', fontWeight: 700, color: 'var(--text-on-hero-muted)', marginBottom: 10, textTransform: 'uppercase' }}>
@@ -981,10 +981,10 @@ function JournalPaywall({ onUpgrade }: { onUpgrade: () => void }) {
             alignSelf: 'center',
             width: 56, height: 56, borderRadius: '50%',
             background: 'linear-gradient(135deg, var(--brand), var(--brand-light, #8B5CF6))',
-            fontSize: 28,
+            color: 'var(--accent-fg, #fff)',
             marginBottom: 4,
           }}>
-            <span aria-hidden="true">✨</span>
+            <SparklesIcon width={28} height={28} aria-hidden="true" />
           </div>
           <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-primary)' }}>
             {daysLeft > 0 ? t('journal.trialActiveTitle', { days: String(daysLeft) }) : t('journal.paywallTitle')}
@@ -998,8 +998,8 @@ function JournalPaywall({ onUpgrade }: { onUpgrade: () => void }) {
             style={{
               marginTop: 8,
               padding: '14px 24px',
-              background: 'var(--brand)',
-              color: 'var(--accent-fg, #fff)',
+              background: 'var(--accent-btn)',
+              color: 'var(--accent-btn-fg, #fff)',
               border: 'none',
               borderRadius: 12,
               font: 'inherit',
@@ -1078,8 +1078,8 @@ function ReviewPaywall({ onBack, onUpgrade }: { onBack: () => void; onUpgrade: (
             style={{
               marginTop: 8,
               padding: '14px 24px',
-              background: 'var(--brand)',
-              color: 'var(--accent-fg, #fff)',
+              background: 'var(--accent-btn)',
+              color: 'var(--accent-btn-fg, #fff)',
               border: 'none',
               borderRadius: 12,
               font: 'inherit',
@@ -1132,8 +1132,8 @@ function JournalLoginPrompt({ onLogin }: { onLogin: () => void }) {
             style={{
               marginTop: 8,
               padding: '14px 24px',
-              background: 'var(--brand)',
-              color: 'var(--accent-fg, #fff)',
+              background: 'var(--accent-btn)',
+              color: 'var(--accent-btn-fg, #fff)',
               border: 'none',
               borderRadius: 12,
               font: 'inherit',

@@ -300,7 +300,7 @@ function RankCard({ entry, compact, highlight }: { entry: RankEntry; compact?: b
           display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap',
         }}>
           <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', minWidth: 0 }}>{entry.name}</span>
-          {entry.isMe && <span style={{ fontSize: 11, background: 'var(--brand)', color: 'var(--accent-fg)', borderRadius: 4, padding: '1px 6px', flexShrink: 0 }}>YOU</span>}
+          {entry.isMe && <span style={{ fontSize: 11, background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)', borderRadius: 4, padding: '1px 6px', flexShrink: 0 }}>YOU</span>}
           {occLabel && (
             <span
               aria-label={t('fermiRank.occupationAria', { label: occLabel })}

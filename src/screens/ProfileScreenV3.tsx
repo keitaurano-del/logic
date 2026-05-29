@@ -11,7 +11,7 @@ import { logout } from '../supabase'
 import { getSubscriptionState } from '../subscription'
 import { getStudyDates as _getStudyDatesArr } from '../stats'
 import LessonIcon from '../LessonIcon'
-import { StarIcon } from '../icons'
+import { StarIcon, FlameIcon as FlameSvgIcon } from '../icons'
 import { t, getLocale, localizedHtmlPath } from '../i18n'
 import { getMode } from '../theme'
 import '../components/levelup.css'
@@ -439,20 +439,18 @@ function StatCard({ val, label, onClick, highlight }: { val: string; label: stri
 }
 
 function FlameIcon({ size = 20, dim = false }: { size?: number; dim?: boolean }) {
-  // 2026-05-16: ジャーナル StreakBadge と統一して 🔥 絵文字に変更
+  // 2026-05-29: UI chrome の絵文字 🔥 を src/icons の SVG FlameIcon に置換（emoji 不可ルール遵守）
   return (
-    <span
+    <FlameSvgIcon
+      width={size}
+      height={size}
       aria-hidden="true"
       style={{
-        fontSize: size,
-        lineHeight: 1,
         display: 'inline-block',
+        color: 'var(--accent)',
         opacity: dim ? 0.35 : 1,
-        filter: dim ? 'grayscale(1)' : 'none',
       }}
-    >
-      🔥
-    </span>
+    />
   )
 }
 

@@ -40,6 +40,14 @@
   --accent-dark:  var(--brand-hover);
   --accent-fg:    #FFFFFF;
 
+  /* T-U: ベタ塗り CTA 用のアクセント色。
+   * テキスト/アイコン用の --accent（明るい青 #6C8EF5）と用途を分離する。
+   * 明るい青は白文字で 3.08:1（AA 未達）になるため、ベタ塗りボタンは
+   * AA 4.5 以上を満たす濃い青へ寄せる。デフォルト（light/sepia/forest/indigo/rose/slate）は
+   * --brand がそのまま AA を満たすので --brand を踏襲し、dark のみ濃紺に上書きする。 */
+  --accent-btn:    var(--brand);
+  --accent-btn-fg: var(--accent-fg);
+
   /* 習熟色 (T-Y) デフォルト = 明カード値（各テーマブロックで暗カードは上書き） */
   --mastery:    #9A7416;
   --mastery-fg: #FFFFFF;
@@ -634,6 +642,11 @@ body.theme-v3.mode-dark {
   --accent-soft:  rgba(108, 142, 245, 0.16);
   --accent-glow:  rgba(108, 142, 245, 0.25);
 
+  /* T-U: 明るい青 #6C8EF5 のベタ塗り + 白文字は 3.08:1（AA 未達）。
+   * CTA 塗りは濃紺 #2E45A8 に寄せて白文字 8.29:1 を確保（テキスト用 --accent は明るい青のまま）。 */
+  --accent-btn:    #2E45A8;
+  --accent-btn-fg: #FFFFFF;
+
   --shadow-card:       0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.3);
   --shadow-card-hover: 0 4px 8px rgba(0, 0, 0, 0.4), 0 12px 28px rgba(0, 0, 0, 0.5);
   --shadow-elevated:   0 4px 24px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.06);
@@ -670,6 +683,10 @@ body.theme-v3.mode-dark {
   --accent-glow:  rgba(108, 142, 245, 0.25);
   --accent-dark:  #9BB3FA;
   --accent-fg:    #FFFFFF;
+
+  /* T-U: ベタ塗り CTA は濃紺で白文字 8.29:1（明るい青 --accent は 3.08:1 で AA 未達）。 */
+  --accent-btn:    #2E45A8;
+  --accent-btn-fg: #FFFFFF;
 
   /* Richer category colors in dark mode */
   --cat-boki2:      #A78BFA;

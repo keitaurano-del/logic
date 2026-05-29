@@ -140,7 +140,7 @@ export function CustomCourseSheet({ onClose, onSaved, onUpgrade }: CustomCourseS
             <div style={{ marginTop: 18, display: 'flex', flexDirection: 'column', gap: 10 }}>
               {atLimit || limitReached ? (
                 onUpgrade && (
-                  <button onClick={onUpgrade} style={{ width: '100%', background: 'var(--brand)', color: 'var(--accent-fg)', border: 'none', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
+                  <button onClick={onUpgrade} style={{ width: '100%', background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)', border: 'none', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
                     {t('customCourse.upgrade')}
                   </button>
                 )
@@ -184,7 +184,7 @@ export function CustomCourseSheet({ onClose, onSaved, onUpgrade }: CustomCourseS
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               <button
                 onClick={() => { saveCustomCourse(course); onSaved(course) }}
-                style={{ width: '100%', background: 'var(--brand)', color: 'var(--accent-fg)', border: 'none', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}
+                style={{ width: '100%', background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)', border: 'none', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}
               >
                 {t('customCourse.save')}
               </button>

@@ -181,30 +181,29 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
             ref={dailyCardRef}
             onClick={onNavigateToDailyFermi}
             aria-label={allFermiDone ? t('home.allFermiDoneTitle') : t('home.dailyOpenAria')}
-            style={{ background: 'var(--accent)', padding: '20px', cursor: 'pointer', position: 'relative', overflow: 'hidden', minHeight: 180, border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%', borderRadius: 'inherit' }}
+            style={{ background: 'var(--accent-btn)', padding: '20px', cursor: 'pointer', position: 'relative', overflow: 'hidden', minHeight: 180, border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%', borderRadius: 'inherit' }}
           >
             {/* フェルミ推定イメージ画像 */}
-            <img src="/images/v3/fermi-card.png" alt="" loading="lazy" style={{ position: 'absolute', right: 0, top: 0, width: '55%', height: '100%', objectFit: 'cover', opacity: 0.18, pointerEvents: 'none', mixBlendMode: 'overlay', maskImage: 'linear-gradient(to left, rgba(0,0,0,0.8) 0%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to left, rgba(0,0,0,0.8) 0%, transparent 100%)' }} />
-            <div style={{ position: 'absolute', right: -30, top: -30, width: 140, height: 140, borderRadius: '50%', background: 'rgba(255,255,255,0.18)', filter: 'blur(36px)', pointerEvents: 'none' }}></div>
+            <img src="/images/v3/fermi-card.png" alt="" loading="lazy" style={{ position: 'absolute', right: 0, top: 0, width: '55%', height: '100%', objectFit: 'cover', opacity: 0.14, pointerEvents: 'none', maskImage: 'linear-gradient(to left, rgba(0,0,0,0.8) 0%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to left, rgba(0,0,0,0.8) 0%, transparent 100%)' }} />
             <div style={{ position: 'relative', zIndex: 1 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8, paddingRight: 96 }}>
-                <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'color-mix(in srgb, var(--accent-fg) 92%, transparent)' }}>{t('home.todayProblem')}</span>
+                <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'color-mix(in srgb, var(--accent-btn-fg) 92%, transparent)' }}>{t('home.todayProblem')}</span>
               </div>
-              <div style={{ fontFamily: "'Noto Sans JP', sans-serif", fontSize: 19, fontWeight: 700, color: 'var(--accent-fg)', lineHeight: 1.4, letterSpacing: '-.005em', marginBottom: 8 }}>
+              <div style={{ fontFamily: "'Noto Sans JP', sans-serif", fontSize: 19, fontWeight: 700, color: 'var(--accent-btn-fg)', lineHeight: 1.4, letterSpacing: '-.005em', marginBottom: 8 }}>
                 {allFermiDone ? t('home.allFermiDoneTitle') : fermiQuestion}
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'color-mix(in srgb, var(--accent-fg) 82%, transparent)', fontSize: 14, fontWeight: 500, marginBottom: 16 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'color-mix(in srgb, var(--accent-btn-fg) 82%, transparent)', fontSize: 14, fontWeight: 500, marginBottom: 16 }}>
                 <span>{allFermiDone ? t('home.allFermiDoneDesc') : t('home.dailyUpdate')}</span>
               </div>
-              <div style={{ background: 'var(--accent-fg)', color: 'var(--accent)', borderRadius: 'var(--radius-pill)', padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700, boxShadow: '0 6px 18px rgba(0,0,0,.14)' }}>
+              <div style={{ background: 'var(--accent-btn-fg)', color: 'var(--accent-btn)', borderRadius: 'var(--radius-pill)', padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700, boxShadow: '0 6px 18px rgba(0,0,0,.14)' }}>
                 {allFermiDone ? (
                   <>
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={'var(--accent)'} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12" /></svg>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={'var(--accent-btn)'} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12" /></svg>
                     {t('home.allFermiDoneCta')}
                   </>
                 ) : (
                   <>
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill={'var(--accent)'} aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill={'var(--accent-btn)'} aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>
                     {t('home.dailyChallenge')}
                   </>
                 )}
@@ -230,7 +229,6 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
                 fontSize: 11, fontWeight: 700, letterSpacing: '.02em',
                 cursor: 'pointer',
                 fontFamily: 'inherit',
-                backdropFilter: 'blur(4px)',
               }}
             >
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
@@ -259,7 +257,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
           <div style={{ padding: '18px 20px 20px' }}>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: 'var(--accent-soft)', borderRadius: 'var(--radius-pill)', padding: '4px 11px', fontSize: 14, fontWeight: 600, color: 'var(--brand)', marginBottom: 10 }}>{recommendedLesson.category} · {recommendedLesson.level}</span>
             <div style={{ fontSize: 19, fontWeight: 700, marginBottom: 16, lineHeight: 1.35, letterSpacing: '-.005em' }}>{recommendedLesson.title}</div>
-            <div style={{ background: 'var(--brand)', color: 'var(--accent-fg)', borderRadius: 'var(--radius-pill)', padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700 }}>
+            <div style={{ background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)', borderRadius: 'var(--radius-pill)', padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700 }}>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>
               {t('home.lessonStart')}
             </div>
@@ -395,7 +393,7 @@ function UpgradeWelcomeToast({ onClose, onCta }: { onClose: () => void; onCta: (
             onClick={onCta}
             style={{
               flex: 1, padding: '13px 0', borderRadius: 12,
-              border: 'none', background: 'var(--brand)', color: 'var(--accent-fg)',
+              border: 'none', background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)',
               fontSize: 14, fontWeight: 800, cursor: 'pointer',
             }}
           >

@@ -253,7 +253,7 @@ function RatingPopup({ onSubmit, onSkip }: RatingPopupProps) {
         />
         <button
           onClick={() => rating > 0 ? onSubmit(rating, comment) : onSkip()}
-          style={{ width: '100%', background: 'var(--brand)', color: 'var(--accent-fg)', border: 'none', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700, cursor: 'pointer', marginBottom: 10 }}>
+          style={{ width: '100%', background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)', border: 'none', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700, cursor: 'pointer', marginBottom: 10 }}>
           {rating > 0 ? t('aiGen.rating.submit') : t('aiGen.rating.skip')}
         </button>
         <button onClick={onSkip} style={{ width: '100%', background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: 13, cursor: 'pointer' }}>
@@ -710,7 +710,7 @@ function AiProblemRow({ problem, onPlay, onDelete }: { problem: AIProblemSet; on
       >
         {saved ? <BookmarkFilledIcon width={16} height={16} /> : <BookmarkIcon width={16} height={16} />}
       </button>
-      <button onClick={onPlay} style={{ background: 'var(--brand)', color: 'var(--accent-fg)', border: 'none', borderRadius: 10, padding: '8px 14px', fontSize: 13, fontWeight: 700, cursor: 'pointer', flexShrink: 0 }}>{t('aiGen.history.replay')}</button>
+      <button onClick={onPlay} style={{ background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)', border: 'none', borderRadius: 10, padding: '8px 14px', fontSize: 13, fontWeight: 700, cursor: 'pointer', flexShrink: 0 }}>{t('aiGen.history.replay')}</button>
       <button onClick={onDelete} style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 4, flexShrink: 0 }} aria-label={t('aiGen.history.deleteConfirm')}>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F87171" strokeWidth="2" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
       </button>

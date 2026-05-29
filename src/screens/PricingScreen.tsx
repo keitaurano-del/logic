@@ -151,7 +151,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
           {billingCycle === 'yearly' && (
             <div style={{
               position: 'absolute', top: -10, left: 16,
-              background: 'var(--brand)', color: 'var(--accent-fg)',
+              background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)',
               fontSize: 11, fontWeight: 800, letterSpacing: '.08em',
               padding: '3px 10px', borderRadius: 8, textTransform: 'uppercase',
             }}>
@@ -184,7 +184,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
               disabled={!!loading}
               style={{
                 width: '100%', padding: '16px', borderRadius: 14,
-                border: 'none', background: 'var(--brand)', color: 'var(--accent-fg)',
+                border: 'none', background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)',
                 fontSize: 16, fontWeight: 800, cursor: loading ? 'wait' : 'pointer',
                 opacity: loading ? 0.6 : 1,
               }}
