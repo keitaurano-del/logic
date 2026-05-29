@@ -17,7 +17,7 @@ task-manager エージェントが管理するタスク台帳の正本。
 | T-C | カスタムコース生成できない（本番 route 未デプロイ） | P0 | DONE（本番再デプロイ→404解消・正常系検証済） | 林/Keita（運用・コード修正不要） |
 | T-D | ジャーナルのタグ粒度が細かすぎる（→ 動的・自動統合モデルで確定。タグ付け時に既存タグを動的参照し最適化＋自己統合） | P1 | DONE（2026-05-29 main マージ＋Render backend deploy 成功〔run 26603561372〕で本番反映、health 200。D1-D3 完全グリーン、D4 は自動主体に縮小・undo を実装に内包） | content-creator（D1 DONE）→ dev-logic（D2/D3/D4 実装済）+ designer（D4 軽量UXのみ）|
 | T-E | Obsidian vault 最新化＋日次更新の仕組み化 | P1 | IN_PROGRESS（(a) Daily Note 5/26-28 DONE、(b) 一部、(c)(d) 未＝T-F依存） | 林（キャッチアップ）+ ceo（日次統合）/ task-manager（recurring 管理） |
-| T-F | cron 自動化の root 権限エラー修復（ceo 朝ブリ・feedback-watcher が空振り） | P1（上位） | TODO（要 Keita 方式確認） | ceo（自分のスクリプト群） |
+| T-F | cron 自動化の root 権限エラー修復（ceo 朝ブリ・feedback-watcher が空振り） | P1（上位） | DONE（2026-05-29 Vultr 新箱「Claude Code Server 2」の非root `dev` ユーザへ cron 3本移設で解決。root の `claude -p` が skip-permissions ガードで弾かれていたのが空振りの正体。dev で3本とも実走グリーン→obsidian-vault push 成功。Supabase は service_role 直curl化。現箱 cron は二重push回避でコメントアウト。詳細は memory project-vultr-second-server） | ceo（自分のスクリプト群） |
 | T-G | night-patrol 夜間スモークが "No tests found" で空振り（監視死） | P1 | DONE（2026-05-29 main マージで config 本番反映。playwright config が 5/25・5/27 両 spec 計20件を拾い空振り解消。night-patrol 実走確認のみ次回夜間に残） | dev-logic / test-smoke |
 | T-H | Logic Android Production 公開（保留） | P1 | BLOCKED（Keita 判断で保留・技術的には即実行可） | Keita（公開判断） |
 
@@ -878,6 +878,244 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
 
 ---
 
+## バッチ: 2026-05-29 夕方 新規依頼8件（Keita 離席・林進行）
+
+Keita が 2026-05-29 夕方に新バッチ8件を依頼（Keita は離席、林の判断で進行＋終わったものから Android Internal 配信の方針）。task-manager が構造化。実装は委譲。
+**前提（最重要）**: 既存タスクと重複/統合する項目が複数ある（下表「既存リンク」参照）。新規採番は T-Y / T-Z / T-AA / T-AB / T-AC / T-AD / T-AE / T-AF（既存最終 ID = T-X の次。2文字 ID で衝突回避）。
+**Keita 判断ゲートが多いバッチ**: #4法務（T-AB）/ #5課金（T-AC）/ #6ランキングダミー（T-AD）/ #8既存タグ書換（T-AF）は本番データ操作 or 法的内容 or スコープ確定要で、林が単独で確定・実行しない。
+
+| ID | 依頼# | タイトル | 優先度 | ステータス | 担当案 | Keita判断 | Internal配信 | 既存リンク |
+|----|------|----------|--------|-----------|--------|-----------|-------------|-----------|
+| T-Y | #3 | 「・今日の一問」の先頭「・」を消す | P2 | DONE（2026-05-29 main push→Android Internal 配信。HomeScreenV3 のラベル左 装飾ドット div を除去。tsc0/eslint0/vitest337） | dev-logic | 不要 | 配信済 | 新規（T-S/T-A と同じ Daily Fermi 周辺） |
+| T-Z | #2 | 「AI専用コース」「今日の1問」カードのグラデーション除去 | P1 | DONE（2026-05-29 main push→Android Internal 配信。今日の1問カード `--brand-grad-h`→`--accent`、AI専用コースカード linear-gradient→`--accent` に単色テーマ追従化。T-S/T-T根本原因A も同時解消。tsc0/eslint0/vitest337） | dev-logic | 済 | 配信済 | T-S/T-T 根本原因A・T-V と同領域。**T-S も実質解消** |
+| T-AA | #1 | UI 全体の「AIっぽさ」をなくす刷新方針 | P1 | BLOCKED（T-V と統合判断＝Keita 確認） | designer（方針提案）→Keita→dev-logic | 要（刷新範囲の確定） | 段階的（確定後フロント） | **T-V と強重複→統合 or 連携** |
+| T-AB | #4 | 利用規約／プライバシーポリシー／特商法表記の見直し | P1 | BLOCKED（法的内容＝Keita 承認必須） | 林（既存確認＋改善案）→Keita→dev-logic（反映） | **要（法務確定）** | 可（フロント文言。確定後） | 新規 |
+| T-AC | #5 | 料金プランの Google Play 課金を実装 | P1 | BLOCKED（スコープ確定＋本番課金＝Keita 承認） | dev-logic（残ギャップ実装）＋Keita（Play Console/GCP/SKU） | **要（SKU/本番課金/設定）** | 一部（フロント）。SKU・GCP は別手順 | **既存実装ありmemory play-billing-gaps と照合** |
+| T-AD | #6 | フェルミ累計スコアのダミー→毎日ランダム付与 | P1 | BLOCKED（本番 Supabase データ操作＝Keita 承認） | dev-logic（付与ロジック）＋Keita（本番データ方針） | **要（本番データ操作）** | 不可（DB/サーバ変更＝別手順） | 新規（placement leaderboard 周辺） |
+| T-AE | #7 | トレーニング検索：右上虫眼鏡＋AI検索 | P-TBD | TODO（T-X 本格スコープ化） | designer＋dev-logic | 要（検索スコープ＝T-X の確認事項） | 一部（フロント）。AI backend は別手順 | **T-X とほぼ同一→T-X を本格化（T-AE は T-X に統合）** |
+| T-AF | #8 | 既存ユーザ（Keita 想定）のジャーナルタグを見直し | P2 | BLOCKED（本番データ書換＝Keita 承認） | dev-logic（遡及適用）＋Keita（本番データ方針） | **要（本番データ書換）** | 不可（本番 Supabase データ操作） | **T-D の動的統合ロジックを既存データに遡及適用** |
+
+着手順の推奨（軽い確実→重い要判断）: T-Y（即・最軽）→ T-Z（T-AA 方針が出る前でも単独で除去可）→ T-AE/T-X（スコープ確認後）→ T-AA（T-V 統合判断）→ T-AB（法務確認）→ T-AC（課金スコープ確定）→ T-AD/T-AF（本番データ操作・最後）。
+
+### T-Y — 「・今日の一問」の先頭「・」を消す　[P2 / TODO（即着手可・最軽）]
+
+- 依頼原文（Keita 2026-05-29 夕）: 「『・今日の一問』の『・』を消す」。
+- スコープ: ホーム等に出る「今日の一問」セクション見出し（またはカードラベル）の**先頭に付いている中黒「・」を削除**する。表示文字列の調整1点。
+- 重さの見極め: **最軽**。文言修正のみ。
+- 根因仮説（実装前に実ソース照合すること・未照合）: (a) i18n の文言自体に「・」が含まれている（`src/i18n.ts` の ja 側に「・今日の一問」のようなキー値）、または (b) UI 側で見出しの前に装飾として中黒をハードコード付与している（`HomeScreenV3.tsx` 等の JSX で `・{t('...')}` のような描画）。どちらかを特定して除去する。en 側に同等の先頭記号が無いかも確認。
+- 既存資産: `src/i18n.ts`（「今日の一問」関連キーの ja/en）、`src/screens/HomeScreenV3.tsx`（今日の一問カード/見出しの描画。T-S/T-A と同じ箇所）。
+- DoD: 「今日の一問」の見出し/ラベルから先頭の「・」が消える。ja/en 両方で先頭装飾記号が残らない（en に無ければ ja のみ修正）。他の中黒を使う箇所に波及しない。tsc 0 / eslint `.` 0。Android 実機で表示確認。
+- サブタスク:
+  - [ ] 実装前調査: 「・」の出どころ特定（i18n 文言内 か JSX のハードコード装飾か）。「今日の一問」表示箇所を grep
+  - [ ] 「・」を除去（i18n 値の修正 or JSX の装飾削除。中立丁寧体維持＝feedback_app_copy_neutral）
+  - [ ] 回帰: 他の見出しで意図的に中黒を使っている箇所に波及しないか
+  - [ ] tsc 0 / eslint `.`（全体）0
+- 抜けもれ提言:
+  - i18n: 文言由来なら ja/en 両方確認（feedback_app_copy_neutral・中立丁寧体維持）。装飾由来なら i18n 影響なし。
+  - 両OS: モバイル専用（project_logic_mobile_only）。Android 実機で確認。Internal 配信＝フロントのみで main push 自動配信に乗る。
+  - 永続化: 不要（表示文言のみ）。
+  - 関連: T-S/T-A と同じ Daily Fermi ホームカード周辺。**同一 dev-logic が T-Y / T-Z（カードのグラデ除去）/ T-S（カードのテーマ追従）を Daily Fermi カードまとめて触る**とコンフリクト回避＆一貫性が出る。
+
+### T-Z — 「AI専用コース」「今日の1問」カードのグラデーション除去　[P1 / TODO（T-AA 方針と整合）]
+
+- 依頼原文（Keita 2026-05-29 夕）: 「『AIで自分専用コースを作る』と『今日の1問』のカードは色のグラデーションをなくす」。
+- スコープ: 2つのカード ——(a)「AIで自分専用コースを作る」（カスタムコース生成導線。RoadmapScreenV3 の「あなた専用コース」CTA or CustomCourseScreen 入口）、(b)「今日の1問」（Daily Fermi ホームカード）—— の**背景グラデーションを除去**し、単色（フラット）にする。
+- なぜ #1（T-AA）と密接か: #1「AIっぽさをなくす」の具体例の一つがこのグラデーション除去。グラデ＝AI/SaaS テンプレ感の代表的要素。T-AA の刷新方針が固まる前でも、この2カードのグラデ除去は**単独で先行実施可能**（軽い確実なもの先行）。ただし「除去後に何色のフラットにするか」は T-AA の刷新トンマナと整合させると一貫する。
+- 根因の手がかり（T-T 調査と一致・実ソース照合済みの近接情報）: 「今日の一問」カード背景は `HomeScreenV3.tsx:184` が `--brand-grad-h`（青グラデ）を使用（T-T 根本原因A・T-S と同一箇所）。`:178` に boxShadow ハードコード青。つまり T-Z のグラデ除去は **T-T 根本原因A / T-S と完全に同じ箇所を触る**。「AI専用コース」カードのグラデも同様にグラデ変数/ハードコードを使っている疑い（実装前に RoadmapScreenV3 / CustomCourseScreen 側を要照合）。
+- 重さの見極め: **軽〜中**。グラデ→単色の CSS 変更。ただしテーマ追従（T-S/T-T）と同じ変数を触るので、**T-S/T-T/T-V と必ず整合**させる（バラバラに直すと二度手間/競合）。
+- 既存資産（実装前に実ソース照合すること）: `src/screens/HomeScreenV3.tsx`（:178 boxShadow / :184 `--brand-grad-h` ＝今日の一問カード）、`src/screens/RoadmapScreenV3.tsx` or `src/components/CustomCourseScreen.tsx`（AI専用コースカード/CTA の背景）、`src/styles/tokens.css`（グラデ変数の source）。
+- DoD: (1) 「今日の一問」カードと「AIで自分専用コースを作る」カードの背景グラデーションが除去され単色（フラット）になる、(2) 単色はハードコード hex でなくテーマトークン（`var(--card)` / `var(--accent-soft)` 等）参照、(3) テーマ追従（T-S/T-T と整合＝全テーマで破綻しない）、(4) コントラスト WCAG AA 維持、(5) 回帰: 同グラデ変数を使う他箇所（DailyFermiScreen:1133 / LoginScreen:115 等 T-T 根本原因A の共有箇所）への意図しない波及を確認、(6) tsc 0 / eslint `.` 0、(7) Android 実機で確認。
+- サブタスク:
+  - [ ] 実装前調査: 2カードの背景グラデ指定箇所を特定（HomeScreenV3:178/:184・AI専用コースカード）。`--brand-grad-h` 等グラデ変数の使用箇所を grep
+  - [ ] designer（軽量）: 除去後のフラット色のトンマナを T-AA/T-V 刷新方針と整合させて提案（グラデ無しでも安っぽくならない単色 or 微妙なソリッド）
+  - [ ] dev-logic: グラデ→単色（テーマトークン参照）に変更。ハードコード hex/青を撤去
+  - [ ] テーマ追従（全5テーマで破綻しない）＋コントラスト確認（T-S/T-T/T-U と一体）
+  - [ ] 回帰: 共有グラデ変数の他箇所波及（DailyFermi/Login）を確認
+  - [ ] tsc 0 / eslint `.`（全体）0
+- 抜けもれ提言:
+  - ⚠重複・統合（最重要）: 「今日の一問」カードは T-S（テーマ追従）/ T-T 根本原因A（`--brand-grad-h` override）と**完全に同じ箇所**。T-Z（グラデ除去）と T-S（テーマ追従）を別々に実装すると競合する。**T-S / T-T 根本原因A / T-Z を同一 dev-logic が一括で設計**する（グラデを「除去する」のか「テーマ追従の単色にする」のかを1回で決める）。Keita の意図はグラデ除去なので、T-S の「テーマ追従」は「テーマ追従の単色」に着地させるのが筋。
+  - デザイン制約: ハードコード hex 禁止。単色もテーマトークンで。色 source は tokens.css。
+  - 回帰: `--brand-grad-h` は HomeScreenV3/DailyFermi/Login が共有（T-T 根本原因A）。2カードだけ単色化するつもりが共有変数経由で他画面のグラデも消えうる → カード固有クラスに閉じて直すか、共有変数を変えるなら全共有箇所の見た目を確認。
+  - i18n: 色/グラデのみで新規文言なし。
+  - 両OS: モバイル専用。Android 実機で2カード確認。Internal 配信＝フロントのみで自動配信可。
+  - 永続化: 不要（表示のみ）。
+  - 着手順: T-AA の全体刷新方針を待たずに先行可（軽い確実枠）。ただしフラット色は T-AA/T-V のトンマナに合わせる。
+
+### T-AA — UI 全体の「AIっぽさ」をなくす刷新方針　[P1 / BLOCKED（T-V と統合判断＝Keita 確認）]
+
+- 依頼原文（Keita 2026-05-29 夕）: 「全体的に UI の『AIっぽさ』をなくしたいので刷新方針を考えてほしい」。
+- スコープ: アプリ UI 全体から「AI/SaaS テンプレっぽさ」を脱する**刷新方針を策定する**（実装ではなくまず方針提案）。具体要素の例: 多用される青グラデーション（T-Z で着手）、彩度の高い accent、量産テンプレ的なカード/角丸/影、汎用的なフォント感など。
+- ⚠⚠ 重複・統合判断（最重要・Keita 確認ゲート）: これは既存 **T-V（テーマ再設計エピック「まだAI感がある、もう数パターン考えて、UI設計も変えていい」）と強く重複**する。T-V は既に designer が `docs/THEME_REDESIGN_PROPOSAL_20260529.md` を作成中（IN_PROGRESS・読み取り専用）。T-AA はそれを**配色テーマに限らず UI 全体の刷新方針**へ広げた上位概念とも読める。
+  - **林の整理案**: T-AA は T-V の親（または T-V を内包する UI 刷新エピック）として扱い、T-V の designer 提案に「配色テーマだけでなく UI 全体の AI 感除去方針（グラデ・accent・カード/影・余白・タイポ）」を盛り込む形で統合するのが効率的。別々に2本の刷新方針を走らせると designer 作業が分裂・矛盾する。
+  - → **Keita 確認**: T-AA を (i) T-V に統合して「テーマ＋UI 全体刷新」の1エピックにするか、(ii) T-V（配色）と T-AA（UI 構造/レイアウト）を別エピックで並走させるか。林の推奨は (i) 統合。確定するまで T-AA は BLOCKED（designer を二重に走らせない）。
+- 担当案: designer（刷新方針提案・T-V と統合運用）→ Keita（方針承認・刷新範囲確定）→ dev-logic（段階実装）。
+- DoD（方針フェーズ）: (1) UI の「AIっぽさ」の正体を要素分解（グラデ/彩度/カード/影/余白/タイポ/アイコン等）、(2) 各要素の刷新方針（before→after の方向性）を提案、(3) T-V の配色提案と矛盾しない形で統合、(4) 会話本文に直接展開し Keita 承認待ち（feedback_direct_content_not_path）、(5) 承認後の実装は段階的タスクに分解（グラデ除去=T-Z は先行着手済の想定）。
+- サブタスク:
+  - [ ] Keita 確認: T-AA を T-V に統合するか別走させるか（林推奨＝統合）
+  - [ ] designer: UI 全体の AI 感を要素分解＋刷新方針提案（T-V の THEME_REDESIGN_PROPOSAL に内包 or 連携）
+  - [ ] 会話本文に方針を直接展開し Keita 承認待ち
+  - [ ] 承認後: 実装を段階タスクに分解（T-Z グラデ除去はその先行分）
+- 抜けもれ提言:
+  - サンプル承認フロー: 全面刷新は主観・好みが大きい（Bucket2 寄り）。designer 提案→Keita 承認→段階展開を厳守（feedback_logic_course_thumbnails）。一気に全画面変えてデグレ事故を起こさない。
+  - 統合効率: T-V / T-Z / T-S / T-T（テーマ追従）/ T-J（バッジ色）は全て「色・見た目」レイヤー。T-AA を親方針に置き、これらを配下の段階実装として束ねると、theme.ts / tokens.css / 各画面 CSS を反復で触る回数を最小化できる。
+  - i18n: 方針フェーズは文言追加なし。実装で UI 文言が変わる場合は ja/en 両方・中立丁寧体。
+  - デザイン制約: 刷新でもハードコード hex 禁止・CSS 変数・UI chrome は SVG（emoji 不可）の原則は維持。
+  - 両OS: モバイル専用。実装段階で Android 実機確認。
+  - Internal 配信: 方針フェーズは配信なし（ドキュメント）。実装段階のフロント変更は main push で Android 自動配信可。段階的に小さく出す。
+
+### T-AB — 利用規約／プライバシーポリシー／特商法表記の見直し　[P1 / BLOCKED（法的内容＝Keita 承認必須）]
+
+- 依頼原文（Keita 2026-05-29 夕）: 「利用規約／プライバシーポリシー／特定商取引法に基づく表記 の記載を見直す」。
+- スコープ: アプリ内（および配信に必要な）3つの法務文書 ——利用規約 / プライバシーポリシー / 特定商取引法に基づく表記—— の**現状を確認し、改善案を提示する**。
+- ⚠⚠ Keita 判断ゲート（最重要・林は単独で確定しない）: 法務文言は**法的内容**であり、林（AI）が勝手に確定・本番反映してよい範囲ではない。**林がやってよいのは「現状の記載を読んで確認＋改善案・不足指摘を提示」するところまで**。確定・公開は必ず Keita 承認（必要なら専門家確認）を経る。誤った法務文言の公開はリーガルリスク・Play/App Store 審査リスクに直結する。
+- 林がやる範囲（読み取り＋提案・着手可）:
+  - 現状の3文書の所在と内容を確認（アプリ内画面 / 静的ファイル / 外部 URL のどれか）。
+  - 内容の過不足・古さ・実態との乖離を洗い出す（例: 課金=Google Play なのに Stripe 記述が残っていないか／提供事業者名・連絡先・返金/解約条件・データ取扱いが現状と一致するか／特商法表記に必要項目〔事業者名・所在地・連絡先・販売価格・支払方法・引渡時期・返品/キャンセル条件等〕が揃っているか）。
+  - 改善案・不足項目リストを会話本文に直接展開（feedback_direct_content_not_path）。
+- Keita 判断（確定が要る項目）: 各文書の確定文言・公開可否・特商法表記の事業者情報（個人/法人・所在地・連絡先の開示範囲）・専門家レビューの要否。
+- 規模感: 調査＋提案は軽〜中。確定・反映は Keita 承認後。
+- 既存資産（実装前に実ソース照合すること・未照合）: アプリ内の規約/ポリシー画面（`src/screens/` に規約系 screen があるか、または設定画面からのリンク）、静的法務テキスト（`src/i18n.ts` or 専用データファイル or `public/` 配下）、外部リンク（Play Console の必須項目としてプライバシーポリシー URL がある想定）。
+- DoD（調査・提案フェーズ＝林）: (1) 3文書の現状（所在・内容）が把握される、(2) 課金方式変更（Stripe撤去→Google Play、memory play-billing-gaps）等の実態と記載の乖離・不足項目が洗い出される、(3) 改善案/不足リストが会話本文に展開され Keita 承認待ち。
+- DoD（反映フェーズ＝Keita 承認後・dev-logic）: Keita 確定文言がアプリ内/必要箇所に反映され、ja/en 両方・必要な特商法項目を満たし、Play Console 必須項目（プライバシーポリシー URL 等）と整合する。
+- サブタスク:
+  - [ ] 林: 3文書の所在・内容を確認（アプリ内画面/静的/外部 URL）
+  - [ ] 林: 実態との乖離・不足項目を洗い出し（特に Stripe→Google Play の課金記述・特商法必須項目・事業者情報）
+  - [ ] 林: 改善案/不足リストを会話本文に直接展開
+  - [ ] Keita: 確定文言・公開可否・事業者情報開示範囲・専門家レビュー要否を判断
+  - [ ] dev-logic（承認後）: 確定文言を反映（ja/en 両方・中立丁寧体）
+  - [ ] 反映後: Play Console のプライバシーポリシー URL 等の必須項目と整合確認
+- 抜けもれ提言:
+  - ⚠法的責任の線引き（最重要）: 林は法務文言を確定しない。改善案までで止め、Keita 承認（必要なら弁護士/行政書士確認）を必ず挟む。「AI が書いた規約をそのまま公開」は避ける。
+  - 課金記述の整合: Stripe は 2026-05-04 に撤去済（memory play-billing-gaps）。規約/特商法に Stripe や旧課金方式の記述が残っていれば不一致＝要修正。T-AC（Google Play 課金）の確定内容と特商法の支払方法/返金記述を整合させる。
+  - i18n: 法務文書も ja/en 両方必要（en 配信するなら英語の規約/ポリシーも整備）。中立丁寧体（feedback_app_copy_neutral）。
+  - Play/App Store 要件: プライバシーポリシー URL は Play Console 必須。データ安全性(Data safety)申告とポリシー記載の整合も要確認。
+  - 両OS: モバイル専用。アプリ内表示は Android 実機確認。iOS は未配信だが App Store 申請時に同様要件。
+  - 永続化: 静的文書なら persist 不要。バージョン/改定日を文書内に持つ運用は検討余地。
+  - Internal 配信: 文言確定後のフロント反映は main push で Android 自動配信可。ただし**確定前に配信しない**（暫定文言を本番に出さない）。
+
+### T-AC — 料金プランの Google Play 課金を実装　[P1 / BLOCKED（スコープ確定＋本番課金＝Keita 承認）]
+
+- 依頼原文（Keita 2026-05-29 夕）: 「料金プランの Google Play での課金を実装する」。
+- ⚠⚠ 重要・既存実装と照合（最重要）: **Google Play Billing は既に大部分が実装済み**（memory project-logic-play-billing-gaps）。「実装する」を**ゼロから作る依頼と誤解しない**。既存実装の現状を踏まえ「残ギャップ＋『料金プラン』UI 周りで未完の部分」を特定してからスコープを確定する。
+  - 既に実装済（memory より）: 正常系サブスク購入フロー、`InAppBillingPlugin.kt`（BillingClient 7.0.0）、`src/billing/index.ts`、`server/routes/billing.ts` の `POST /api/billing/verify`（Google Play Developer API 実検証＋Supabase upsert）、`acknowledgePurchase`（PR #203）、`initBilling()` 起動時呼出、`onBillingServiceDisconnected` 再接続、RTDN サーバ endpoint（`POST /api/billing/rtdn`・JWT 検証は未）。Stripe ルートは撤去済。
+  - 残ギャップ（memory より・T-AC の実スコープ候補）:
+    - (a) **RTDN の JWT 署名検証 未実装**（`google-auth-library` で Pub/Sub Push の `Authorization: Bearer` 検証）。
+    - (b) **GCP Pub/Sub topic 作成＋publish 権限付与＋Play Console RTDN topic 指定＋Push subscription 作成**（endpoint: `https://logic-u5wn.onrender.com/api/billing/rtdn`）＝**Keita 作業**。
+    - (c) **Supabase 本番に `019_rtdn_columns.sql` migration 適用**＝**Keita 承認案件**（DB 変更）。
+    - (d) **Play Console SKU 登録確認**（`logic_paid_monthly` / `logic_paid_yearly` が Active・Production 価格設定）＝**Keita 確認**。
+- ⚠ Keita 判断ゲート: SKU 登録/価格設定・GCP/Play Console 設定・本番 migration 適用・本番課金の有効化は**すべて Keita 承認/操作案件**。林/dev-logic が単独で本番課金を有効化しない。
+- 着手前にスコープ確定が必要（Keita 確認）: 「料金プランの課金を実装」が指すのは下記のどれか（複数可）:
+  1. **既存ギャップのクローズ**（JWT 検証 (a)・残設定 (b)(c)(d) の整備）＝「課金を売る前に必修正」（memory）。
+  2. **『料金プラン』選択 UI** の新設/改修（プラン比較・購入 CTA・現在のプラン表示）がアプリ内で未完なら、その frontend 実装。
+  3. **無料/有料の機能ゲート**（テーマ全部有料=T-B 方針等、premium 機能の出し分け）の配線確認。
+  - → どれを「実装する」なのかで担当・規模・デプロイ手順が変わる。**スコープ確定まで IN_PROGRESS にしない**。
+- 担当案: dev-logic（残ギャップのコード実装＝JWT 検証・料金プラン UI・機能ゲート）＋ Keita（SKU/GCP/Play Console/本番 migration の設定・承認）。
+- DoD（暫定・スコープ確定後に精緻化）: (1) 確定スコープのコードが実装され tsc 0 / eslint `.` 0、(2) 必要な backend 変更が本番デプロイ済（手動 deploy-production.yml）、(3) RTDN を含めるなら JWT 検証＋GCP/Play Console 設定＋019 migration が本番反映、(4) SKU が Active で実機（Android）の購入フローがハッピーパス成功、(5) 料金プラン UI が ja/en・中立丁寧体で表示。
+- サブタスク（暫定）:
+  - [ ] Keita 確認: スコープ確定（ギャップクローズ / 料金プラン UI / 機能ゲート のどれか）
+  - [ ] 実装前調査: 既存 billing 実装の現状を再照合（memory の実装済/残ギャップが現コードと一致するか）。料金プラン UI の有無を確認
+  - [ ] dev-logic（スコープ次第）: JWT 検証実装 / 料金プラン UI / 機能ゲート配線
+  - [ ] Keita: SKU 登録確認・GCP Pub/Sub 設定・Play Console RTDN 設定・019 migration 本番適用承認
+  - [ ] backend 変更を手動 deploy-production.yml で本番反映＋probe
+  - [ ] Android 実機で購入ハッピーパス確認（テスト購入）
+- 抜けもれ提言:
+  - ⚠ゼロ実装と誤解しない（最重要）: 既存実装が大量にある。まず memory play-billing-gaps と現コードを照合し、本当に未完の差分だけをスコープ化する。重複実装を作らない。
+  - ⚠デプロイ依存: billing は backend（server/routes/billing.ts）。main マージ≠本番反映。手動 deploy-production.yml 必須（project_logic_render_auto_deploy）。
+  - ⚠本番データ/課金: 019 migration（DB 変更）・本番課金有効化・SKU 価格は Keita 専権。テスト購入はライセンステスター/サンドボックスで。
+  - i18n: 料金プラン UI（プラン名・価格・特典・購入/復元ボタン・エラー）は ja/en 両方・中立丁寧体（feedback_app_copy_neutral）。
+  - マーケ文言: 価格訴求は「コーヒー1杯」系の安さアピール NG（feedback_logic_marketing）。価値直接訴求 or 高い代替との比較。
+  - 法務整合: T-AB（特商法/規約）の支払方法・返金/解約条件と課金実態を一致させる（相互依存）。
+  - 両OS: モバイル専用。Android 実機で購入フロー。iOS 課金（StoreKit）は未着手＝当面 Android のみ（project_logic_mobile_only）。
+  - Internal 配信: frontend（料金プラン UI）は main push で Android 自動配信可。SKU/GCP/Play Console/migration は配信とは別の手動設定手順。
+
+### T-AD — フェルミ累計スコアのダミー→毎日ランダム付与　[P1 / BLOCKED（本番 Supabase データ操作＝Keita 承認）]
+
+- 依頼原文（Keita 2026-05-29 夕）: 「フェルミランキングの累計スコアの今あるダミーデータを、ランダムでいい感じにポイント付与（毎日）。理由＝今 管理者(Keita)がダントツ1位で張り合いがないため」。
+- スコープ: フェルミ（推定）ランキングの累計スコア用に存在する**ダミーデータ（ボット/シードユーザー）に、毎日ランダムで『いい感じ』のポイントを付与**し、Keita 1強状態を解消してランキングに張り合いを持たせる。
+- ⚠⚠ Keita 判断ゲート（最重要・本番データ操作）: これは**本番 Supabase のランキングデータ（ダミー行）を毎日書き換える**操作＝本番データ変更。付与ロジック・対象ダミー行・付与量レンジ・実行手段（cron/edge function/手動）はすべて Keita 承認案件。林/dev-logic が単独で本番データを書き換えない。
+- 着手前にスコープ確定が必要（Keita 確認）:
+  1. **ダミーデータの実体**: 現状の「ダミーデータ」がどこにあるか（Supabase の placement leaderboard 系テーブルの seed 行か / `server/placement.json` の file-based fallback か / 専用のボットユーザー行か）。← 実装前調査で特定。
+  2. **付与の『いい感じ』の定義**: ランダムレンジ・1日あたりの増分・Keita を抜かない上限を設けるか・複数ダミー間の分布（全員横並びでなく差をつける）。
+  3. **実行手段**: 毎日の自動付与をどう回すか（既存 cron 基盤=Vultr 第2サーバの dev cron〔memory project-vultr-second-server〕／Supabase scheduled function〔pg_cron/edge〕／手動スクリプト）。recurring 管理に乗せる（R-3 候補）。
+  4. **ダミーと実ユーザーの区別**: 付与対象を確実にダミー行だけに限定し、実ユーザーのスコアを汚さない仕組み（フラグ列 or 専用テーブル）。
+- 規模感: 中。付与ロジック自体は軽いが、本番データ操作＋毎日実行の仕組み化＋誤爆防止が要る。
+- 既存資産（実装前に実ソース照合すること・未照合）: `server/index.ts` の `/api/placement/*`（placement test + leaderboard）、`server/placement.json`（file-based fallback の順位データ）、Supabase の placement/ranking 系テーブル（`placement_results` は public read。フェルミ累計スコアが placement と同じか別テーブルか要確認）、`src/screens/DailyFermiScreen.tsx` 等のランキング表示。
+- DoD（暫定・スコープ確定後に確定）: (1) ダミーデータの実体が特定される、(2) ダミー行のみに毎日ランダムでポイントが付与され実ユーザーに影響しない、(3) 付与レンジが『いい感じ』（Keita 1強でなく接戦になる）で Keita 承認済み、(4) 毎日実行が仕組み化され recurring 管理に乗る、(5) 本番反映前に dry-run/サンプルで挙動確認、(6) ロールバック手段（付与前スナップショット or 付与の停止）がある。
+- サブタスク（暫定）:
+  - [ ] 実装前調査: ダミーデータの実体特定（Supabase テーブル or placement.json or ボットユーザー行）。フェルミ累計スコアのデータモデル確認
+  - [ ] Keita 確認: 付与レンジ/分布/上限・実行手段・ダミー限定の方法・本番データ操作の承認
+  - [ ] dev-logic: ダミー限定の付与ロジック（実ユーザー除外を保証）
+  - [ ] 毎日実行の仕組み化（cron/scheduled function。recurring R-3 登録）
+  - [ ] dry-run/サンプルで挙動確認 → Keita 承認 → 本番反映
+  - [ ] ロールバック手段（スナップショット/停止スイッチ）
+- 抜けもれ提言:
+  - ⚠本番データ操作（最重要）: 毎日本番ランキングを書き換える。実ユーザー混入・暴走付与（毎日積み上がり過剰）・ロールバック不能の事故を防ぐ。ダミー限定フラグ・付与上限・スナップショット・停止スイッチを設計に入れる。Keita 承認なしで本番に流さない。
+  - ⚠倫理/表示の整合: ダミーを実ユーザーのように見せる是非（ランキングが実態と乖離）。Keita の意図は「張り合い演出」なので OK だが、将来実ユーザーが増えたらダミーを縮退させる出口も考える（recurring の見直し条件）。
+  - 仕組み化: 毎日実行は cron 基盤（Vultr 第2サーバ dev cron / Supabase pg_cron）に乗せ、R-2（cron 死活監視）と同様に死活を監視（空振り検知）。recurring R-3 として登録。
+  - データソース確認: placement.json（file-based）か Supabase テーブルかで実装が大きく変わる。file-based なら本番 backend のファイル書き換え＝デプロイ/永続ストレージの扱いに注意（Render の ephemeral FS で消える可能性）。Supabase テーブルが本筋なら SQL/edge で。
+  - 両OS: 表示は Android 実機でランキングを確認（データ操作自体は OS 非依存）。
+  - i18n: データ付与のみで新規文言なし（表示は既存ランキング UI）。
+  - Internal 配信: **不可（フロント配信では完結しない）**。サーバ/DB 変更＝手動デプロイ or Supabase 操作＋cron 設定の別手順。main push の Android 自動配信には乗らない。
+
+### T-AE — トレーニング検索：右上虫眼鏡＋AI検索（T-X を本格スコープ化）　[P-TBD / TODO]
+
+- 依頼原文（Keita 2026-05-29 夕）: 「トレーニングの検索：検索窓を虫眼鏡で右上に置きたい＋AIで検索できるように」。
+- ⚠⚠ 重複・統合（最重要）: これは**既存 T-X（トレーニングのAI検索、右上虫眼鏡＋AI検索）とほぼ同一**。新規タスクとして二重管理せず、**T-X を本格スコープ化して進める**（T-AE は T-X に統合）。T-X は既に着手前スコープ確認待ち（P-TBD / TODO）で、(a)UI 入口=右上虫眼鏡デフォルト配置、(b)AI 検索=自然言語/意味ベース、まで構造化済み。今回の依頼で「やる」意思が確認できた＝T-X を BLOCKED 相当の確認ゲートから前進させる。
+- T-X で確定済みの確認事項（Keita 判断・再掲）:
+  1. 検索対象範囲（レッスンのみ / コースも含む）。
+  2. AI のマッチ方式（embedding 類似度 / Claude プロンプトに候補メタデータ渡し選別）。コスト/レイテンシ/精度のトレードオフ。
+  3. 結果の出し方（ランキング上位N / カテゴリ別 / マッチ理由提示 / ゼロ時フォールバック）。
+- 担当案: designer（検索 UI/結果画面設計）＋ dev-logic（backend AI 検索 route＋frontend 検索 UI/結果表示）。← T-X と同一。
+- DoD: T-X の DoD を継承（右上虫眼鏡→検索 UI、自然言語クエリ→意味的ヒット→該当へ遷移、サーバ AI でレート制限/エラー処理、backend 本番デプロイ＋実機 probe、ゼロ/エラー/レート制限 UI が中立丁寧体）。
+- サブタスク: T-X のサブタスク・関連ファイル・抜けもれ提言を継承（重複記載を避けるため T-X セクション参照）。要点のみ再掲:
+  - [ ] Keita 確認: 検索対象範囲・マッチ方式・結果の出し方（T-X の3論点）
+  - [ ] designer: 虫眼鏡入口→検索画面→結果画面の設計
+  - [ ] dev-logic: backend AI 検索 route（rate-limited・既存 custom-course.ts が近縁）＋frontend 配線
+  - [ ] backend 手動デプロイ＋本番 probe（main マージ≠本番反映）
+  - [ ] Android 実機で虫眼鏡→検索→遷移確認
+- 抜けもれ提言（T-X から継承・要点）:
+  - ⚠デプロイ依存: backend route 追加は手動 deploy-production.yml 必須（project_logic_render_auto_deploy）。デプロイ後 probe で DONE 判定。
+  - レート制限/コスト: 新規 AI 呼び出し＝Anthropic コスト。既存 rate-limit に乗せる。embedding 方式ならベクトル事前計算/キャッシュ。UI 側デバウンス。
+  - i18n: 虫眼鏡 aria ラベル・プレースホルダ・空状態・ローディング・エラー文言を ja/en・中立丁寧体。
+  - UI chrome: 虫眼鏡は SVG（src/icons、無ければ追加）・emoji 不可。ハードコード hex 禁止。
+  - 回帰: RoadmapScreenV3 に虫眼鏡を足す＝T-W（あなた専用コース展開）/ T-I（コース進捗）/ T-Z（AI専用コースカード）と同ファイル。**同一 dev-logic が RoadmapScreenV3 系をまとめて触る**とコンフリクト回避（T-X 既述）。
+  - 既存検索との関係: custom-course の「レッスン検索 AI」入口が既存（TC-2/T-C）。汎用トレーニング検索と UI/責務が重複/競合しないか設計時に整理（統合可能性）。
+  - Internal 配信: frontend（虫眼鏡/検索 UI）は main push で Android 自動配信可。AI backend route は別途手動デプロイ。
+- 管理メモ: T-AE は T-X の重複なので、以後は **T-X を正本**として進め、T-AE 行は「#7 依頼の受け皿＝T-X 本格化のトリガー」として残す（二重トラッキングしない）。
+
+### T-AF — 既存ユーザ（Keita 想定）のジャーナルタグを見直し　[P2 / BLOCKED（本番データ書換＝Keita 承認）]
+
+- 依頼原文（Keita 2026-05-29 夕）: 「今すでに登録しているユーザのジャーナルのタグも見直す（管理者=Keita のデータと思われる）」。
+- スコープ: **T-D で実装した動的・自動統合（dynamic / self-consolidating vocabulary）ロジックを、既に登録済みの既存ユーザー（実質 Keita のデータ）のジャーナルタグに遡及適用**する。T-D は「新規エントリのタグ付け時」に効くが、**過去に作られた既存タグ（固有タグ乱立状態）はそのまま残っている**。それを既存統合ロジックで一括/段階的に名寄せ・統合する。
+- ⚠⚠ Keita 判断ゲート（最重要・本番データ書換）: これは**本番 Supabase の既存ユーザーの `daily_journals.tags` を物理書き換え**する操作。T-D の抜けもれ提言で明記した「物理バックフィル（過去全データ一括書き換え）は Keita 承認の別ステップ（DB マイグレーション/バッチ＝非可逆・要スナップショット）」に**まさに該当**。林/dev-logic が単独で既存データを書き換えない。
+- T-D との関係（重複でなく続編）: T-D は **新規タグ付けの動的統合（本番反映済・DONE）**。T-AF は **その統合ロジックを既存データへ遡及適用**するバックフィル。T-D の `tagConsolidation.ts`（consolidate ロジック）/ `journalDb.ts` の名寄せ・統合関数を再利用し、対象を「新規エントリ」から「既存全エントリ」に広げる。二重実装しない（T-D 成果物を流用）。
+- 着手前にスコープ確定が必要（Keita 確認）:
+  1. **対象範囲**: Keita のデータのみか / 全既存ユーザーか（現状 Keita 中心だが、将来ユーザーが増えた時の方針）。
+  2. **実行方式**: 一括バッチ（過去全タグを consolidate ロジックに通して書き換え）か / 段階的（次回エントリ編集時に当該ユーザーのタグを順次統合）か。一括は非可逆リスク大。
+  3. **安全策**: 書き換え前のスナップショット（before tags 保持）・undo・dry-run でのプレビュー（「このタグ群がこう統合されます」を Keita に見せて承認）。T-D で undo は実装に内包済みだがバックフィルは別ルート。
+  4. **誤統合防止**: 既存タグの consolidate は AI/類似検出に依存＝別概念混入リスク。同一 axis 内限定・信頼度しきい値・Keita プレビュー承認でガード。
+- 規模感: 中。ロジックは T-D 流用だが、本番データ一括書き換え＋スナップショット/プレビュー/undo の安全策が要る。
+- 既存資産（T-D 成果物を流用）: `src/components/journal/tagConsolidation.ts`（consolidate ロジック）、`src/components/journal/journalDb.ts`（T3 正規化＋D3 層2 の consolidate 適用関数）、`src/components/journal/tagVocabulary.ts`（シード語彙＋canonicalize）、Supabase `daily_journals.tags`（書き換え対象・本番）。
+- DoD（暫定・スコープ確定後に確定）: (1) 既存ユーザー（Keita）のジャーナルタグが T-D の統合ロジックで名寄せ・統合され固有タグ乱立が解消される、(2) 書き換え前スナップショットがあり undo/復元可能、(3) dry-run で統合プレビューを Keita が承認してから本番適用、(4) 誤統合（別概念混入）がない、(5) 統合後に既存エントリの表示・集計が壊れない（T-D D5 の非回帰観点）、(6) 本番データ操作は Keita 承認済み。
+- サブタスク（暫定）:
+  - [ ] 実装前調査: T-D 成果物（tagConsolidation.ts / journalDb.ts）が既存データへのバッチ適用に流用可能か確認。`daily_journals.tags` の現状（Keita のタグ実集計）を Supabase で確認
+  - [ ] Keita 確認: 対象範囲・実行方式（一括/段階）・安全策・本番データ書換の承認
+  - [ ] dev-logic: 既存タグ→consolidate ロジック適用のバックフィル処理（dry-run モード付き）
+  - [ ] dry-run: 統合プレビュー（before→after）を会話本文に展開し Keita 承認
+  - [ ] スナップショット取得 → 本番適用 → 検証 → undo 手段確認
+  - [ ] 回帰: 統合後の既存エントリ表示・タグ集計・T3 正規化が非回帰（T-D D5 観点）
+- 抜けもれ提言:
+  - ⚠本番データ書換（最重要）: T-D の「物理バックフィルは Keita 承認の別ステップ・要スナップショット」に該当。非可逆操作なので、(a) before スナップショット、(b) dry-run プレビュー承認、(c) undo/復元、を必須にする。Keita 承認なしで本番タグを書き換えない。
+  - ⚠誤統合防止: 既存タグの consolidate は別概念混入リスク（「会議」と「会計」を誤統合等）。同一 axis 内限定・信頼度しきい値・Keita プレビュー承認でガード（T-D の安全策論点を継承）。
+  - T-D 流用（二重実装回避）: 新規に consolidate ロジックを書かず T-D 成果物を流用。違いは「対象が新規エントリ→既存全エントリ」と「バッチ実行＋スナップショット」。
+  - 実データ確認: T-D D1 の未解決論点(c)「実データを見た語彙調整」とも連動。Keita のタグ実集計を見れば、シード語彙(tagVocabulary.ts)の canonical/synonyms を実態に合わせて調整する材料にもなる（T-D D1(c) の継続イテレーション）。
+  - 両OS: 表示は Android 実機でジャーナルのタグ一覧/集計を確認。データ操作は OS 非依存。
+  - i18n: バックフィルのみなら新規文言なし。dry-run プレビューを UI に出すなら ja/en・中立丁寧体（初版は会話本文プレビューで足りる）。
+  - 永続化: `daily_journals.tags`（Supabase）の書き換え＝永続データ操作。localStorage 側のジャーナルキャッシュとの整合（再同期）も確認。
+  - Internal 配信: **不可（本番 Supabase データ操作）**。フロント配信では完結しない。バックフィルは手動バッチ/SQL/edge の別手順＋Keita 承認。
+
+---
+
 ## Recurring（task-manager 継続管理タスク）
 
 定期実行・継続監視するタスク。完了型ではなく「最終実施日」を追跡し、漏れを検知する。
@@ -886,6 +1124,7 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
 |----|--------|------|--------|----------|------|
 | R-1 | Obsidian Daily Note 日次生成（T-E (c)(d) で仕組み化） | 毎日 07:00 JST | morning-briefing.sh 統合 or 別 cron（方式未確定） | 5/26〜5/28 を手動キャッチアップ済（林、2026-05-28）。恒久自動化は T-E(c)/T-F 待ち | 整備中（T-E + T-F 依存。手動キャッチアップで 5/28 まで埋め済） |
 | R-2 | cron 自動パイプライン死活確認（ceo 朝ブリ 07:00 / feedback 06:00 / night-patrol 03:00） | 毎日 | crontab 3 本＋出力サイズ/エラーパターン検査 | 06:00・07:00 は 5/27 から空振り（T-F・未解決）。03:00 スモークは T-G の config 修正が 2026-05-29 に main 反映済＝復旧見込み（実走確認は次回 03:00 cron で要確認）。03:00 のヘルスチェック本体（200 確認）は稼働 | 一部復旧（T-G config 反映済・実走確認待ち／T-F は未解決のまま異常） |
+| R-3 | フェルミランキングのダミーデータへ毎日ランダムポイント付与（T-AD で仕組み化） | 毎日（予定） | 未確定（Vultr 第2サーバ dev cron / Supabase pg_cron/edge のいずれか）＋ダミー限定・付与上限・スナップショット | 未着手（T-AD が BLOCKED＝Keita 承認待ち。スコープ確定後に登録） | 未整備（T-AD 依存。本番データ操作＝Keita 承認ゲート） |
 
 - 運用: T-E (c) で日次自動生成が恒久化したら、R-1 の「最終確認」を生成成功日に更新。生成漏れ（前日 Daily Note 欠落）を検知したら task-manager がキャッチアップを手配。
 - 注記（2026-05-28 訂正）: 「briefings/feedback/inspections の自動パイプラインは安定稼働中」という旧認識は誤り。実際は **06:00 feedback / 07:00 briefings が 5/27 からエラー固定で空振り（T-F）**、**03:00 night-patrol のスモークも 5/27 から空振り（T-G）**。ファイル存在＝健全ではない（タイムスタンプだけ更新されるサイレント失敗）。R-2 として死活を recurring 監視対象に追加。検知ルール = 出力 byte 数が極端に小さい or 既知エラー文字列（`--dangerously-skip-permissions` 等）/ "No tests found" を含むか。
