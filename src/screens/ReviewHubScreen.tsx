@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Header } from '../components/platform/Header'
-import { BarChartIcon, BookmarkIcon, BookOpenIcon, ClipboardListIcon, SparklesIcon, ChevronRightIcon } from '../icons'
+import { BarChartIcon, BookmarkIcon, ClipboardListIcon, SparklesIcon, ChevronRightIcon } from '../icons'
 import { getCardStats } from '../flashcardData'
 import { getWrongAnswerStats } from '../wrongAnswerStore'
 import { getSavedItemStats } from '../savedItemsStore'
@@ -215,14 +215,6 @@ export function ReviewHubScreen({ onBack, onOpenFlashcards, onOpenWrongAnswers, 
             {fermiStats && fermiStats.total > 0 && <ChevronRightIcon width={18} height={18} />}
           </button>
         </SectionCard>
-
-        {/* Tip */}
-        <div style={{ background: 'var(--accent-soft)', borderRadius: 'var(--radius-lg)', padding: '14px 16px', display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-          <BookOpenIcon width={20} height={20} />
-          <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-            {t('reviewHub.tip')}
-          </div>
-        </div>
       </div>
     </div>
   )
