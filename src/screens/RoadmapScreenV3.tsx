@@ -694,7 +694,7 @@ function CustomCourseSection({
       <button
         type="button"
         onClick={onCreate}
-        style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, background: courses.length > 0 ? 'var(--bg-card)' : `linear-gradient(135deg, var(--brand) 0%, var(--brand-light) 100%)`, color: courses.length > 0 ? 'var(--brand)' : 'var(--accent-fg)', border: courses.length > 0 ? `1px dashed color-mix(in srgb, var(--brand) 40%, transparent)` : 'none', borderRadius: 14, padding: '14px 16px', cursor: 'pointer', textAlign: 'left', boxShadow: courses.length > 0 ? 'none' : 'var(--shadow-v3-hero)' }}
+        style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, background: courses.length > 0 ? 'var(--bg-card)' : 'var(--accent)', color: courses.length > 0 ? 'var(--brand)' : 'var(--accent-fg)', border: courses.length > 0 ? `1px dashed color-mix(in srgb, var(--brand) 40%, transparent)` : 'none', borderRadius: 14, padding: '14px 16px', cursor: 'pointer', textAlign: 'left', boxShadow: courses.length > 0 ? 'none' : 'var(--shadow-v3-hero)' }}
       >
         <div style={{ width: 34, height: 34, borderRadius: 10, flexShrink: 0, background: courses.length > 0 ? `color-mix(in srgb, var(--brand) 10%, transparent)` : 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: courses.length > 0 ? 'var(--brand)' : '#fff' }}>
           <SparklesIcon width={18} height={18} />
