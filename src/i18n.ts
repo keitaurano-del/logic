@@ -169,6 +169,8 @@ const STRINGS: Record<Locale, Strings> = {
     'journal.sparklineEmpty': 'まだデータが足りません。記録を続けると気分の流れが見えてきます',
     'journal.sparklineAria': '過去 {days} 日の気分推移、平均 {avg}',
     'journal.sparklineCaption': '過去 {days} 日・平均 {avg}/5',
+    'journal.sparklinePointAria': '{date}・気分は{mood}。タップでこの日の記録を表示します',
+    'journal.sparklineNoText': 'この日のメモはありません。',
     'journal.streakAria': '{n} 日連続記録中',
     'journal.streakDayUnit': '日連続',
 
@@ -2018,6 +2020,8 @@ const STRINGS: Record<Locale, Strings> = {
     'journal.sparklineEmpty': "Not enough data yet — keep writing to see your mood trend.",
     'journal.sparklineAria': 'Mood trend over the last {days} days, average {avg}',
     'journal.sparklineCaption': 'Past {days} days · avg {avg}/5',
+    'journal.sparklinePointAria': '{date}, mood {mood}. Tap to view this day’s entry.',
+    'journal.sparklineNoText': 'No notes for this day.',
     'journal.streakAria': '{n} day streak',
     'journal.streakDayUnit': 'day streak',
 
