@@ -2277,9 +2277,17 @@ Keita が 2026-05-29 夕方に新バッチ8件を依頼（Keita は離席、林�
   - [ ] 全レッスン本文・ネストリストで崩れないか回帰確認
 - 抜けもれ提言: RichLessonText は全レッスン本文共通 → 波及大。複数レッスンで目視確認。
 
-### T7 — コース一覧カテゴリの展開／閉じる　[P1 / REVIEW]
+### T7 — コース一覧カテゴリの展開／閉じる　[P1 / DONE（2026-05-31 実効性検証○）]
 
-- ステータス: REVIEW（実装済 `793e519`・origin/main 在を git で検証。本コミットが `src/screens/RoadmapScreenV3.tsx`（80行差分）を実変更＝カテゴリ展開 state/toggle の結線あり。「機能未実装の疑い」は解消。初期全展開・タップ開閉の実機 DoD 確認待ち。2026-05-31 git 実態と同期）
+- ステータス: DONE（2026-05-31 自律ティック・test-functional 実効性検証○・コードレベル判定）。実装 `793e519`（origin/main 在＝`merge-base --is-ancestor` で確認・Android 自動配信済み・5/27 から main 在で新規デプロイ対象なし＝doc 昇格のみ）。DoD 全項目を `src/screens/RoadmapScreenV3.tsx` の file:line で充足・ライブ結線（dead code でない）を確認:
+  - **初期全展開○**: `:376` `collapsedGroups=useState<Set<string>>(()=>new Set([CUSTOM_COURSE_GROUP_ID]))`。「閉じている方を保持」する反転設計で初期集合は擬似グループ `custom-courses`（T-W で意図的にデフォルト折りたたみ）のみ＝通常の全コースカテゴリ・pinned は初期 collapsed=false＝展開。
+  - **タップ開閉○（ライブ結線）**: toggle 実体 `:377-383` `toggleGroup`（prev 複製→has で delete/add の関数更新型）。見出し onClick `:602`（実カテゴリ）/`:545`（pinned）/`:517`/`:944`（custom）。描画制御 `{!collapsed && (...)}` `:618`/`:561`/`:961`、`collapsed=collapsedGroups.has(group.id)` `:596`＝state→onClick→条件描画が一本に結線。非描画方式。
+  - **複数同時開閉○**: `Set<string>` で groupId 個別管理＝単一アコーディオンではない。
+  - **SVGアイコン+aria○**: `ChevronRightIcon`/`ChevronDownIcon`（src/icons polyline・絵文字なし）を `collapsed ? Right : Down` `:609-611`/`:552-554`/`:951-953`、`aria-hidden`。`aria-expanded={!collapsed}` `:603`/`:546`/`:945`、`aria-controls`（panelId 一致）、`aria-label`（i18n `roadmap.expand/collapseGroupAria` ja `i18n.ts:793-794`／en `:2700-2701`）。
+  - **検索/フィルタ両立○**: `searchQuery`/`levelFilters` 等と `collapsedGroups` は独立 state。検索は `if(searchOpen)` early return `:416-431` で別ビュー（SearchOverlay）に切替＝同時表示されず競合なし。フック宣言は early return 前で順序固定。
+  - green: tsc -b --noEmit EXIT0 error0 / eslint . EXIT0 0err（既存warn19）/ vitest 22files 389pass fail0。
+  - caveat: headless ゆえ実機（Capacitor Android）でのタップ目視は未実施＝コードレベル○判定。T7 専用 unit test は無い（toggle ロジックのテスト追加余地はあるが判定は○）。
+- （旧）ステータス: REVIEW（実装済 `793e519`・origin/main 在を git で検証。本コミットが `src/screens/RoadmapScreenV3.tsx`（80行差分）を実変更＝カテゴリ展開 state/toggle の結線あり。「機能未実装の疑い」は解消。初期全展開・タップ開閉の実機 DoD 確認待ち。2026-05-31 git 実態と同期）
 - 詳細: コース一覧でカテゴリ別の展開／折りたたみが動かない。「タスクが抜けている」＝機能自体が未実装の可能性。
 - 関連ファイル: `src/screens/RoadmapScreenV3.tsx`（~346-532 COURSE_GROUPS.map、1003 CategoryDetailView）。searchQuery/levelFilters 等の state はあるがカテゴリ展開用 state（expandedCategories 等）と toggle ハンドラが見当たらない。
 - 確定要件（Keita 2026-05-27）: 初期は全カテゴリ展開状態。各カテゴリ見出しタップで個別に閉じる／再展開できる（複数開閉可、単一アコーディオンではない）。
