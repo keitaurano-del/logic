@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { useEffect, useState } from 'react'
 import { tutorial } from './tutorialStorage'
+import { t } from '../i18n'
 
 interface CoachmarkProps {
   /** ハイライト対象要素のref */
@@ -32,7 +33,7 @@ export function HomeCoachmark({ targetRef, onDismiss }: CoachmarkProps) {
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="チュートリアル"
+      aria-label={t('coachmark.dialogLabel')}
       style={{
         position: 'fixed', inset: 0, zIndex: 9999,
         background: 'transparent',
@@ -41,7 +42,7 @@ export function HomeCoachmark({ targetRef, onDismiss }: CoachmarkProps) {
       {/* オーバーレイ全体をボタン化（背景タップで dismiss） */}
       <button
         type="button"
-        aria-label="チュートリアルを閉じる"
+        aria-label={t('coachmark.closeLabel')}
         onClick={dismiss}
         style={{ position: 'absolute', inset: 0, background: 'transparent', border: 'none', padding: 0, cursor: 'pointer' }}
       />
@@ -85,8 +86,8 @@ export function HomeCoachmark({ targetRef, onDismiss }: CoachmarkProps) {
           borderRight: '8px solid transparent',
           borderBottom: '8px solid #fff',
         }} />
-        <p style={{ margin: 0, fontSize: 15, fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.6 }}>
-          まずここから始めましょう。<br />タップして今日の問題を開いてみましょう。
+        <p style={{ margin: 0, fontSize: 15, fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.6, whiteSpace: 'pre-line' }}>
+          {t('coachmark.homeBody')}
         </p>
         <button
           onClick={dismiss}
@@ -97,7 +98,7 @@ export function HomeCoachmark({ targetRef, onDismiss }: CoachmarkProps) {
             fontSize: 15, fontWeight: 700, cursor: 'pointer',
           }}
         >
-          さっそくやってみよう！
+          {t('coachmark.homeCta')}
         </button>
       </div>
 
@@ -110,7 +111,7 @@ export function HomeCoachmark({ targetRef, onDismiss }: CoachmarkProps) {
           color: 'rgba(255,255,255,0.6)', fontSize: 14, cursor: 'pointer',
         }}
       >
-        スキップする
+        {t('coachmark.skip')}
       </button>
     </div>
   )

@@ -1426,6 +1426,13 @@ const STRINGS: Record<Locale, Strings> = {
     'placementCard.takeTest': '診断を受ける',
     'placementCard.later': '後で',
 
+    // Home coachmark (first-run tutorial overlay)
+    'coachmark.dialogLabel': 'チュートリアル',
+    'coachmark.closeLabel': 'チュートリアルを閉じる',
+    'coachmark.homeBody': 'まずここから始めましょう。\nタップして今日の問題を開いてみましょう。',
+    'coachmark.homeCta': '今日の問題を開く',
+    'coachmark.skip': 'スキップする',
+
     // AI Problem
     'aiProblem.resultTitle': '結果',
     'aiProblem.resultEyebrow': 'AI 問題の結果',
@@ -3268,6 +3275,13 @@ const STRINGS: Record<Locale, Strings> = {
     'placementCard.desc': 'You\'ll get an estimated score, a radar chart, and a recommended course.',
     'placementCard.takeTest': 'Start the assessment',
     'placementCard.later': 'Later',
+
+    // Home coachmark (first-run tutorial overlay)
+    'coachmark.dialogLabel': 'Tutorial',
+    'coachmark.closeLabel': 'Close the tutorial',
+    'coachmark.homeBody': 'Let\'s start here.\nTap to open today\'s question.',
+    'coachmark.homeCta': 'Open today\'s question',
+    'coachmark.skip': 'Skip',
 
     // AI Problem
     'aiProblem.resultTitle': 'Result',
