@@ -2225,7 +2225,7 @@ Keita が 2026-05-29 夕方に新バッチ8件を依頼（Keita は離席、林�
 
 ### T4 — AIアシスタント応答の `**` 混入を直す　[P1 / REVIEW]
 
-- ステータス: REVIEW（実装済 `793e519`・origin/main 在を git で検証。本コミットが `src/components/journal/JournalAssistantSheet.tsx`・新規 `src/components/journal/JournalRichText.tsx`（88行新規）を追加＝AI応答のリッチテキスト整形経路あり。生 `**` が出ないかの実機 DoD 確認待ち。2026-05-31 git 実態と同期）
+- ステータス: REVIEW（実装済 `793e519`・origin/main 在を git で検証。本コミットが `src/components/journal/JournalAssistantSheet.tsx`・新規 `src/components/journal/JournalRichText.tsx`（88行新規）を追加＝AI応答のリッチテキスト整形経路あり。生 `**` が出ない実機 DoD を 2026-05-31 実効性検証で○確定。結線=JournalAssistantSheet.tsx:7 import＋:247 で AI応答 feedback を `<JournalRichText text={feedback}>` に渡し描画（dead codeでない）。変換=JournalRichText.tsx:30-35 で `**bold**`→`<strong>`、:41 の `value.replace(/\*{2,}/g,'')` で残留 `**` 除去。閉じない `**`／URL内記号／空 `****` でも記号残り・誤変換・クラッシュなし（中核 parseInline は richText.test.ts で網羅 pass）。green: tsc0／eslint . 0err(19既存warn)／vitest 22files389pass。i18n assistant 文言は ja/en 揃い。コードは 793e519 で 5/27 から main 在＝新規デプロイ対象なし（doc 昇格のみ）。※`*italic*`／`__bold__` は非変換で素通し（DoD「最低限 `**` 消滅」は充足）。2026-05-31 同期）
 - 詳細: ジャーナルのAIアシスタント応答に markdown の `**`（太字記号）が生で混じって表示される。
 - 関連ファイル: `src/components/journal/JournalAssistantSheet.tsx`（~154, 238, 248-256）、`journal.css` の `.journal-summary-card__body`（white-space: pre-wrap でプレーン表示）。`RichLessonText.tsx` のリッチテキストパーサーが未適用。
 - DoD: AI応答内の `**bold**` 等が崩れず（太字描画 or 記号除去）に表示される。生の `**` が出ない。
