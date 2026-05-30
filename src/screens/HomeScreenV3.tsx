@@ -278,6 +278,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
             weak={cardStats.weak}
             total={cardStats.total}
             unresolved={wrongStats.unresolved}
+            paid={paid}
             onOpen={() => onOpenReviewHub?.()}
           />
         )}
@@ -405,14 +406,19 @@ function UpgradeWelcomeToast({ onClose, onCta }: { onClose: () => void; onCta: (
   )
 }
 
-function ReviewCard({ due, weak, total, unresolved, onOpen }: {
+function ReviewCard({ due, weak, total, unresolved, paid, onOpen }: {
   due: number
   weak: number
   total: number
   unresolved: number
+  paid: boolean
   onOpen: () => void
 }) {
   const hasContent = total > 0 || unresolved > 0
+  // 無料ユーザーで復習データが無いときは、データ無しの空表示ではなく
+  // 復習ハブ（誤答復習・間隔反復SRS）が有料機能であることと価値を情報提示する
+  // （プレビュー→誘導: タップでハブ/プランの案内へ進める）。
+  const showPaidPreview = !paid && !hasContent
   const headline = hasContent
     ? (due > 0
         ? t('home.reviewTodayCount', { n: String(due) })
@@ -421,10 +427,14 @@ function ReviewCard({ due, weak, total, unresolved, onOpen }: {
           : weak > 0
             ? t('home.reviewWeakCount', { n: String(weak) })
             : t('home.reviewAllDone'))
-    : t('home.reviewEmptyHeadline')
+    : showPaidPreview
+      ? t('home.reviewPaidHeadline')
+      : t('home.reviewEmptyHeadline')
   const sub = hasContent
     ? buildReviewSub(due, weak, total, unresolved)
-    : t('home.reviewEmptySub')
+    : showPaidPreview
+      ? t('home.reviewPaidSub')
+      : t('home.reviewEmptySub')
 
   return (
     <div
