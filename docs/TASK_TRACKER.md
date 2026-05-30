@@ -6,6 +6,305 @@ task-manager エージェントが管理するタスク台帳の正本。
 
 ---
 
+## バッチ: 2026-05-30 UI/GUI 改善13件（Keita）
+
+Keita からの Logic アプリ UI/GUI 改善依頼13項目。実装は dev-logic、ビジュアル絡みは designer、検証は test-functional / test-sanity に委譲（task-manager は構造化・検証のみ）。
+
+ID 採番: 既存 T-* / AM-* と衝突しない **UI-1〜UI-13** プレフィックスを採用。
+
+⚠ 全項目を実際のソースで照合済み（2026-05-30）。照合で判明した重要な論点:
+- UI-3「レッスン右上の保存/×」: Keita 記載の `Lesson.css .ls-back`（line 28）は Lesson.tsx の `ls-header` 内 `←` 戻るボタンのみで、「保存」「×」ボタンは Lesson.tsx の `ls-header` には存在しない（戻る `←` と `ls-title` だけ）。「保存/×」UI の実体画面が未特定 → BLOCKED 寄り、実装前に対象画面の特定が必要。
+- UI-9「炎を絵文字に戻す」: メモリ `feedback-logic-lesson-visual-hybrid` / CLAUDE.md gotchas #5 の「UI chrome は絵文字 NG・SVG のみ」ルールに**正面から反する**。さらに 2026-05-29 の T-U バッチで「UI chrome 絵文字 🔥 → SVG FlameIcon に置換（emoji 不可ルール遵守）」を実装した直後の**逆戻し**（ProfileScreenV3:442 のコメント参照）。Keita が明示指示しジャーナル側（StreakBadge.tsx:16 が 🔥 emoji）と統一する形なので方針 OK だが、dev-logic に渡す際「これは既定ルールの明示的例外。消し戻さないこと」をフラグする。CLAUDE.md gotchas #5 の例外リストにプロフィール炎を追記すべきか要 Keita 判断。
+
+⚑ バッチ全体 本番反映済（2026-05-30）: UI-1〜13 全件 main push `695de6a`（掃除コミット含む）で Render web 手動 deploy / Android internal 自動デプロイ完了。品質ゲート＝tsc -b 0 / eslint . 0 / vitest 353 pass / reviewer approve。
+
+| ID | タイトル | 優先度 | ステータス | 担当案 | 既存タスクとの関係 |
+|----|---------|--------|-----------|--------|------------------|
+| UI-1  | プレミアムテーマを全削除（light/dark のみに） | P1 | DONE（116dbb4） | dev-logic | テーマ系 T-R〜T-W / T-B と連動 |
+| UI-2  | ライト時プロフィール表示名が白くて読めない | P0 | DONE（72f1579） | dev-logic | — |
+| UI-3  | ライト時レッスン右上「保存」「×」が読みにくい | P1 | DONE（77f31ef・LessonStoriesScreen と特定） | dev-logic | — |
+| UI-4  | ホーム見出しの手描き波線を削除 | P2 | DONE/noop（c7209fb revert で解消） | dev-logic | AM-K revert で消滅 |
+| UI-5  | ホーム「おすすめ」セクションの扱い | P2 | noop（v3 に該当見出し無し・Keita 確認済） | dev-logic | — |
+| UI-6  | 今日のフェルミ CTA を白文字に | P1 | DONE（95cba9b） | dev-logic | — |
+| UI-7  | 復習「解けなかった問題は…」説明文を削除 | P2 | DONE（facfdcb） | dev-logic | — |
+| UI-8  | 2回完了レッスンのチェック丸を色変え | P2 | DONE（1acd4ca・完了回数 persist あり） | dev-logic | — |
+| UI-9  | プロフィールの炎を絵文字 🔥 に戻す | P1 | DONE（ccbd65f・CLAUDE.md 例外追記済） | dev-logic | T-U の逆戻し |
+| UI-10 | プライバシーポリシーのモバイル幅改善 | P2 | DONE（1238789） | dev-logic | — |
+| UI-11 | トレーニング上部「今日どのスキルを鍛える」削除 | P2 | DONE（516f67d） | dev-logic | — |
+| UI-12 | 全体の文字サイズを拡大 | P1 | DONE（e92198e・--font-* を一律+約8%） | dev-logic（+designer） | type scale token は AM-K で導入済 |
+| UI-13 | 全画面ライト/ダーク両方＋全ボタン遷移の横断検証 | P0（横断・最後） | DONE（test-functional・light/dark 全画面 pass） | test-functional / test-sanity | UI-1〜12 完了が前提 |
+
+---
+
+### UI-1 — プレミアムテーマを全削除（light/dark のみ）
+- 優先度: P1 / ステータス: DONE（2026-05-30 commit 116dbb4。scope 拡大＝AppearanceSettingsScreen.tsx も tier 廃止で編集。保存済み premium mode の永続化ガード実装で light/dark へ安全フォールバック）/ 担当: dev-logic
+- 詳細: sepia/forest/indigo/rose/slate（tier='premium'）を選択肢から削除し light/dark のみにする。`ModeId` 型からも premium ID を除去。
+- 関連ファイル:
+  - `src/theme.ts` — `ModeId` 型（line 27、premium 5 ID を除去）、`MODES` 配列（line 42-48 の premium 5 エントリ削除）、`ModeTier` 型自体が不要になる可能性（line 28）
+  - `src/ThemeSettings.tsx` — isPaid() ゲート / PREMIUM バッジ / Upgrade CTA（line 12-113 周辺）。premium 選択肢を消すと付随 UI も不要に
+  - `src/ThemeSettings.css` — premium バッジ・ロック表示の CSS が残れば削除
+  - `src/i18n.ts` — `theme.mode.{sepia,forest,indigo,rose,slate}.{name,desc}` の ja/en キー（残置 or 削除判断）
+- DoD: テーマ設定画面に light/dark の2つだけ表示。premium バッジ/Upgrade CTA が消える。既存ユーザーが premium テーマを保存済みの場合に light/dark へ安全フォールバックする（永続化済み mode が消えた ID の時のガード）。tsc/eslint green。
+- 依存: なし（ただしテーマ系既存タスク T-R〜T-W / T-B と整合確認）
+- 提言・抜けもれ:
+  - 永続化ガード必須: localStorage の `theme` に保存済みの `sepia` 等を読んだ時に未定義 ID で壊れないようフォールバック（DEFAULT or light/dark へ寄せる）。これが最大の抜けもれ。
+  - i18n: 削除する premium テーマの ja/en キーをどうするか（残しても害は小だが UI-1 の趣旨なら削除）。
+  - 課金導線: テーマが唯一の premium 価値訴求だった場合、Pricing 側の文言に「テーマ」を謳っていないか要確認（マーケ整合）。
+  - 両OS: テーマは CSS var ベースなので iOS/Android 差は小。ただし system dark mode 連動があれば確認。
+- 更新日: 2026-05-30
+
+### UI-2 — ライト時プロフィール表示名が白くて読みにくい
+- 優先度: P0（可読性バグ）/ ステータス: DONE（2026-05-30 commit 72f1579。真因＝src/styles/extensions.css の `.profile-hero-name` の `#FFFFFF !important` 固定。これを除去しテーマ追従に）/ 担当: dev-logic
+- 詳細: `.pf-name` は `color: var(--text-primary)` 指定済（Profile.css:52-60、verify 済）。にもかかわらず light で白くなる → 根本原因は (a) light テーマで `--text-primary` 自体が白寄りに解決されている、(b) ProfileScreenV3.tsx 側でインライン color を上書きしている、のどちらか。原因特定が先。
+- 関連ファイル:
+  - `src/Profile.css` line 52-60（`.pf-name`）
+  - `src/screens/ProfileScreenV3.tsx`（表示名描画箇所のインライン style 確認）
+  - `src/styles/tokens.css`（light テーマの `--text-primary` 定義値確認）
+- DoD: light/dark 両テーマで表示名がコントラスト比 AA（4.5:1 目安）を満たす。`src/colorContrast.ts` 既存ヘルパで検証可。
+- 依存: なし
+- 提言・抜けもれ:
+  - correctness バグ（明確な可読性不具合）なので即修正対象（feedback-audit-triage-correctness-first 準拠）。P0 妥当。
+  - 同じ light テーマで他に白飛びする text がないか横展開チェック（レベルバッジ等プロフィール周辺）。
+  - 両OS 実機ライトで再確認（UI-13 に含める）。
+- 更新日: 2026-05-30
+
+### UI-3 — ライト時レッスン右上「保存」「×（閉じる）」が読みにくい
+- 優先度: P1 / ステータス: DONE（2026-05-30 commit 77f31ef。対象は LessonStoriesScreen と特定。固定 `#fff` → `var(--text-primary)` でテーマ追従に）/ 担当: dev-logic
+- 詳細: Keita 記載の `Lesson.css .ls-back`（line 28）は Lesson.tsx の `ls-header` 内の戻る `←` ボタン。verify した結果、Lesson.tsx の `ls-header` には「保存」「×」ボタンは無い（`ls-back ←` と `ls-title` のみ）。「保存/×」UI が乗っている実画面（DailyFermiScreen / FermiLesson / LessonStoriesScreen / SavedItemsScreen 等のいずれか）の特定が必要。
+- 関連ファイル（候補・要絞り込み）:
+  - `src/Lesson.css` line 28 周辺（`.ls-back` 等。light コントラストは併せて要確認）
+  - `src/screens/DailyFermiScreen.tsx` / `src/FermiLesson.tsx` / `src/screens/LessonStoriesScreen.tsx`（保存/閉じる UI の所在候補）
+- DoD: light テーマでレッスン（フェルミ含む）右上の保存・閉じるボタンがコントラスト AA を満たし視認できる。対象画面が確定し修正される。
+- 依存: なし（が対象特定がブロッカー）
+- 提言・抜けもれ:
+  - まず Keita に「どのレッスン画面の右上か（通常レッスン？今日のフェルミ？）」を1問確認すれば即 unblock。スクショ1枚あれば確定。
+  - 特定後は UI-2 と同じく light テーマのアイコンボタン色を `--text-primary` / `--accent` 追従に直す系の修正になる見込み。
+  - 意味アイコン（保存=ブックマーク、×=閉じる）に aria-label / 語ラベルがあるかも併せて確認（アクセシビリティ）。
+- 更新日: 2026-05-30
+
+### UI-4 — ホーム見出しの手描き波線（UnderlineSingle）を削除
+- 優先度: P2 / ステータス: DONE/noop（AM-K 第2弾 c7209fb の revert〔commit af7b4a3〕により波線が HomeScreen ごと消滅＝個別対応不要で解消）/ 担当: dev-logic（designer に意匠確認）
+- 詳細: `UnderlineSingle`（icons/handdrawn の手描き波線 SVG）を削除。verify 済の使用箇所は HomeScreenV3.tsx:181 と :585（依頼の line 20 は import）。2箇所両方を消すのか片方かは要確認だが、依頼文は「ホームの文言の波線いらない」なのでホーム内の波線（181, 585）を対象。
+- 関連ファイル:
+  - `src/screens/HomeScreenV3.tsx` line 20（import）、181、585（描画）
+  - `src/icons/handdrawn.tsx`（他で未使用になれば export 整理。ただし他画面で使っていれば残す）
+- DoD: ホーム見出し下の手描き波線が消える。未使用 import が残らない（eslint no-unused-vars でビルド落ちるため必須）。
+- 依存: AM-K（UI刷新・手描き素材展開）と意匠が連動 → designer/Keita の刷新方針と矛盾しないか確認
+- 提言・抜けもれ:
+  - AM-K で「明朝見出し＋手描き下線」を HomeScreen に入れたばかり（c7209fb）。波線削除はその意匠の一部巻き戻しになるので、AM-K の方向性と衝突しないか designer に一言確認。
+  - import 削除漏れ＝CI lint red 直結（reference-logic-ci-lint-scope）。`eslint .` で確認。
+  - UnderlineSingle が他画面でも使われていないか grep（handdrawn 一括撤去ではない）。
+- 更新日: 2026-05-30
+
+### UI-5 — ホーム「おすすめ」セクションの扱い
+- 優先度: P2 / ステータス: noop（2026-05-30 Keita 確認済で確定。v3 に該当見出しは無く、`home.badgeRec` は旧 v1 App.tsx のみ参照＝現行 v3 ホームに表示されないため作業不要）/ 担当: dev-logic
+- 詳細: HomeScreenV3.tsx:257-278 の "Hero Recommend" セクション。`<SectionHeading>{t('home.badgeRec')}</SectionHeading>`（line 258、badgeRec='おすすめ'）。依頼「おすすめの文言いらない」が (a) 見出し文言だけ削除、(b) おすすめセクションごと削除、のどちらか不明。
+- 関連ファイル:
+  - `src/screens/HomeScreenV3.tsx` line 257-278（Hero Recommend セクション）
+  - `src/i18n.ts` line 302（`home.badgeRec`='おすすめ'）ja / 対応 en
+- DoD: Keita の意図どおり（見出しのみ or セクションごと）にホームから「おすすめ」表示が消える。セクションごと削除ならレイアウトに穴が空かないか確認。
+- 依存: なし
+- 提言・抜けもれ:
+  - 要 Keita 確認（見出しだけ消すと、おすすめのレッスンカード自体は残り見出し無しで宙に浮く）。BLOCKED 一歩手前。1問で解消。
+  - セクションごと削除なら関連ロジック（ランダム recommend 算出）も dead code 化するので併せて整理。
+  - i18n: badgeRec キーの ja/en 両方。
+- 更新日: 2026-05-30
+
+### UI-6 — 今日のフェルミ CTA を白文字に
+- 優先度: P1 / ステータス: DONE（2026-05-30 commit 95cba9b）/ 担当: dev-logic
+- 詳細: Daily Fermi カードの CTA ピル（HomeScreenV3.tsx:208-220）は現状 `background: var(--accent-btn-fg)` / `color: var(--accent-btn)`。Keita 依頼は「チャレンジする」「レッスンを始める」を白文字に。該当文言は `home.dailyChallenge`='チャレンジする'（i18n:306）、`home.allFermiDoneCta`='解いた問題を振り返る'（i18n:313）、`home.startLesson`='スタート'（i18n:745）。
+- 関連ファイル:
+  - `src/screens/HomeScreenV3.tsx` line 194-220（Daily Fermi カード本体・CTA ピル）
+  - CSS var: `--accent-btn` / `--accent-btn-fg`（styles/tokens.css）
+- DoD: フェルミカードの CTA テキストが全テーマで白（または十分なコントラストの明色）で読める。ハードコード hex は使わず CSS var（白が必要なら `--accent-btn-fg` の意味整理 or 専用 var）。light/dark/accent 全色で破綻しないこと。
+- 依存: AM-L（フェルミカードのグラデ除去 DONE）と同じカードを触るので整合確認
+- 提言・抜けもれ:
+  - 「白文字に」をハードコード `#fff` で入れない（CLAUDE.md デザイン制約：hex 禁止・CSS var 使用）。`--accent-btn-fg` が既に白を意図する var なら、現状ピルが反転配色（fg を背景に）になっているのが原因。配色の入れ替えで解決する可能性大。
+  - 「レッスンを始める」CTA が同カード内か別カードか要確認（startLesson は別箇所の可能性）。
+  - AM-L で同カードのグラデを var(--accent) フラットにしたばかり。背景が accent 系になった上で白文字なら自然。整合 OK か確認。
+  - 両テーマ（特に light で accent が淡い時）に白文字がコントラスト割れしないか UI-13 で確認。
+- 更新日: 2026-05-30
+
+### UI-7 — 復習「解けなかった問題は…」説明文を削除
+- 優先度: P2 / ステータス: DONE（2026-05-30 commit facfdcb）/ 担当: dev-logic
+- 詳細: 該当文言を grep で特定済 → `reviewHub.tip`='解けなかった問題は時間を空けて何度か解き直すと定着しやすくなります。'（i18n.ts:1572、ja）。ReviewHubScreen で表示。これを削除（表示箇所と i18n キー両方）。
+- 関連ファイル:
+  - `src/i18n.ts` line 1572（`reviewHub.tip` ja）＋対応 en
+  - `src/screens/ReviewHubScreen.tsx`（`reviewHub.tip` 参照箇所を削除）
+- DoD: 復習ハブ画面から該当説明文が消える。i18n キー削除なら ja/en 両方。参照が残って undefined キー表示にならないこと。
+- 依存: なし
+- 提言・抜けもれ:
+  - i18n は ja/en 両方処理（en の対応キーも grep して削除）。
+  - 表示コンポーネント側の参照を消さずキーだけ消すと空表示になる → 両方セットで。
+  - 文言削除後にレイアウトの余白が不自然にならないか軽く確認。
+- 更新日: 2026-05-30
+
+### UI-8 — 2回完了レッスンのチェック丸の色を変える
+- 優先度: P2 / ステータス: DONE（2026-05-30 commit 1acd4ca。完了回数の永続データが存在したため実装。遡及制約あり＝カウンタ導入前に複数回完了したレッスンは反映されない）/ 担当: dev-logic
+- 詳細: `.pf-completed-check`（Profile.css:357-369、現状 `--success #10B981` 系）。完了回数（2回以上）に応じてチェック丸の色を変える出し分けが必要。完了回数データの所在確認が前提（progressStore / courseProgress 等）。
+- 関連ファイル:
+  - `src/Profile.css` line 357-369（`.pf-completed-check`。新クラス or modifier 追加）
+  - `src/screens/ProfileScreenV3.tsx`（完了回数を見て class 切り替え）
+  - `src/progressStore.ts` / `src/courseProgress.ts`（完了回数の永続データがあるか確認）
+- DoD: 2回以上完了したレッスンのチェック丸が1回完了と区別できる色になる。色は CSS var（ハードコード hex 禁止）。完了回数が永続化データから正しく取れる。
+- 依存: 完了回数の永続化有無に依存（無ければデータ追加が必要 → スコープ拡大）
+- 提言・抜けもれ:
+  - 最大の論点: 「完了回数（2回）」が現状データとして持たれているか。progress が boolean 完了フラグだけなら回数カウントの永続化追加が必要でスコープが膨らむ → 要データ確認。
+  - 新色は CSS var 化（既存 `--success` とは別の意味色を tokens に足すか検討）。
+  - アクセシビリティ: 色だけで区別すると色覚差で伝わらない → 語ラベル/形状差の併用を検討（任意）。
+  - 永続化: 表示だけでなく回数の保存・再表示が要る（このタスクの本質的な抜けもれ観点）。
+- 更新日: 2026-05-30
+
+### UI-9 — プロフィールの炎を絵文字 🔥 に戻す（ジャーナルと統一）
+- 優先度: P1 / ステータス: DONE（2026-05-30 commit ccbd65f。CLAUDE.md gotchas #5 の絵文字例外リストに「プロフィールのストリーク炎 🔥」を追記済＝掃除コミット 695de6a。将来の SVG 消し戻し事故を防止）/ 担当: dev-logic
+- 詳細: ProfileScreenV3.tsx の SVG `FlameIcon`（import line 14、描画 159-160/181/432、定義 441-444）を絵文字 🔥 に置換。ジャーナル側 `src/components/journal/StreakBadge.tsx:16` が既に 🔥 emoji なのでそれと統一。
+- 関連ファイル:
+  - `src/screens/ProfileScreenV3.tsx` line 14（import）、159-160、181、432、441-444（FlameIcon 定義・使用）
+  - 参考: `src/components/journal/StreakBadge.tsx` line 16（🔥 の既存実装パターン）
+- DoD: プロフィールのストリーク炎が絵文字 🔥 表示になる。TTS で「炎 絵文字」と読まれない対策（aria-hidden）。dim 状態（studiedCount===0）の表現を維持。
+- 依存: なし
+- 提言・抜けもれ（重要フラグ）:
+  - ⚠ これは CLAUDE.md gotchas #5 「UI chrome は絵文字 NG・SVG のみ」ルールの**明示的例外**。さらに 2026-05-29 T-U で「🔥 → SVG FlameIcon に置換（emoji 不可ルール遵守）」を入れた直後の**逆戻し**（ProfileScreenV3:442 のコメントが証跡）。dev-logic が既定ルールに従って「これ絵文字だから SVG に直そう」と再度巻き戻さないよう、PR 説明に「Keita 明示指示の例外・消し戻し禁止」を必ず明記。
+  - CLAUDE.md gotchas #5 の絵文字 OK 例外リスト（現状ジャーナルの mood/weather/phase/streak のみ）に「プロフィールのストリーク炎」を追記すべきか → 要 Keita 判断（追記すれば将来の巻き戻し事故を防げる）。
+  - dim/サイズ違い（16/26/18px）を絵文字で再現する際の見た目調整（font-size でサイズ、opacity で dim）。
+  - 他に SVG FlameIcon を使う画面（ホーム等）も同様に絵文字化するか、プロフィールだけか要確認（依頼はプロフィール限定と読める）。
+- 更新日: 2026-05-30
+
+### UI-10 — プライバシーポリシーのモバイル幅改善
+- 優先度: P2 / ステータス: DONE（2026-05-30 commit 1238789）/ 担当: dev-logic
+- 詳細: `public/privacy/[lang].html`（外部静的 HTML）がスマホでカラム幅が狭く読みにくい。HTML 内 CSS の max-width / padding / column を調整。
+- 関連ファイル:
+  - `public/privacy/*.html`（ja/en 等の lang 別 HTML、内部 `<style>`）
+- DoD: モバイル幅（375px 想定）でプライバシーポリシーが端まで適切に使われ読みやすい。ja/en 両方の HTML を直す。横スクロールが出ない。
+- 依存: なし
+- 提言・抜けもれ:
+  - lang 別 HTML が複数ある場合は全言語ファイルを直す（ja だけ直して en が残る抜けもれ注意）。
+  - viewport meta（`<meta name="viewport">`）が入っているか確認（無いとモバイルで縮小表示になる根本原因の可能性）。
+  - これは React アプリ外の静的 HTML なので tsc/eslint の対象外 → 実機/エミュ目視確認が検証手段（UI-13 に含める）。
+  - 利用規約など同種の外部 HTML が他にあれば同じ問題を抱えていないか横展開確認。
+- 更新日: 2026-05-30
+
+### UI-11 — トレーニング上部「今日どのスキルを鍛える」文言を削除
+- 優先度: P2 / ステータス: DONE（2026-05-30 commit 516f67d）/ 担当: dev-logic
+- 詳細: RoadmapScreenV3.tsx:430 の見出し `{t('roadmap.heading')}`（fontSize 24 の見出し）。これが「今日どのスキルを鍛える」系の文言と推定（verify で roadmap.heading が該当箇所と特定）。i18n の `roadmap.heading` 値を確認の上、見出しを削除 or 文言変更。
+- 関連ファイル:
+  - `src/screens/RoadmapScreenV3.tsx` line 430（見出し描画）
+  - `src/i18n.ts`（`roadmap.heading` の ja/en 値を確認 → 削除 or 空に）
+- DoD: トレーニング画面上部から該当見出し文言が消える。見出し削除でレイアウト上部が不自然に空かないか確認。i18n ja/en 整合。
+- 依存: なし
+- 提言・抜けもれ:
+  - `roadmap.heading` の実値を確認して本当に「今日どのスキルを鍛える」かを最終確定（verify では参照箇所のみ特定、文字列値は未確認）。違えば対象キー要再特定。
+  - 見出しだけ消すか、見出し行ごと（余白含め）消すかでレイアウト印象が変わる → 削除後の上部余白を確認。
+  - i18n ja/en 両方。
+- 更新日: 2026-05-30
+
+### UI-12 — 全体の文字サイズを拡大
+- 優先度: P1 / ステータス: DONE（2026-05-30 commit e92198e。type scale `--font-*` を一律+約8%。当初 brief の `--fs-*` トークンは存在せず、正しいトークン `--font-*` で再実行。UI-13 横断検証で文字溢れ無しを確認）/ 担当: dev-logic（+designer レビュー）
+- 詳細: type scale token（`--font-*`）を一律+約8%スケールアップ。全画面に波及するため慎重に。
+- 関連ファイル:
+  - `src/styles/tokens.css` line 273-277（type scale token）
+  - 影響: 全 screens / components（token 参照箇所すべて）
+- DoD: 本文・見出しが一回り大きく読みやすくなる。スケールアップ後に主要画面（ホーム/ロードマップ/レッスン/プロフィール/復習/設定）でテキスト溢れ・折返し崩れ・ボタン内文字はみ出しが発生しない。tsc/eslint green。
+- 依存: AM-K で type scale を token 化済（c7209fb）→ その token を一括調整すれば横展開が効く（基盤あり）
+- 提言・抜けもれ:
+  - 最大リスクは回帰。token 1点調整で全画面に効くのは効率的だが、固定幅ボタン・1行前提のラベル・カード内テキストが溢れる。UI-13 の横断検証に「文字溢れチェック」を必ず含める。
+  - スケール倍率を Keita と握る（全 token 一律 +N% か、body 中心か）。「大きく」が曖昧 → サンプル1画面で見せて承認が安全。
+  - 行間（line-height）も併せて調整しないと詰まって見える。
+  - 両OS/両テーマ＋大フォント端末設定（OS のアクセシビリティ文字拡大）との二重拡大も考慮。
+  - designer に意匠レビューを通す（type scale はブランドの肝）。
+- 更新日: 2026-05-30
+
+### UI-13 — 全画面ライト/ダーク両方＋全ボタン遷移の横断検証
+- 優先度: P0（横断・UI-1〜12 完了後に実施）/ ステータス: DONE（2026-05-30 test-functional 実施。light/dark 全画面 pass、UI-1〜12 の差し戻し不具合なし。既存 onboarding E2E の 1 赤は無関係な既知債務として除外）/ 担当: test-functional（網羅）+ test-sanity（スモーク）
+- 詳細: 全画面 happy path × テーマ両方（light/dark）× 全ボタン押下・画面遷移を網羅検証。
+- 検証手段（制約明記）:
+  - ⚠ Keita 依頼の「実機」確認は物理デバイスが必要で AI 側から直接は不可。代替として (a) Playwright モバイルエミュ（chromium モバイル viewport）で happy path + テーマ両方 + ナビ遷移を自動網羅、(b) Capacitor ビルド（`npm run cap:sync`）でネイティブ実機差分は Keita の手元確認に委ねる、という二段構え。この制約をレポートに明記する。
+  - 既存 E2E は `playwright test --project=chromium`（53+ pass / 0 fail 期待）。テーマ切替・全タブ遷移のシナリオが既存で網羅されているか確認し、不足を追加。
+- 関連ファイル:
+  - `tests/`（Playwright E2E。テーマ両方×全画面遷移シナリオの追加/更新）
+  - `src/AppV3.tsx`（Screen union 全 variant が遷移カバレッジ対象）
+- DoD: light/dark 両テーマで全主要画面が描画・遷移し、可読性破綻（UI-2/3/6 系）・文字溢れ（UI-12 系）・削除漏れ（UI-4/5/7/11）が無いことを確認。E2E green。発見した不具合は個別タスクに差し戻し。
+- 依存: UI-1〜UI-12 の実装完了が前提（最後に実施）
+- 提言・抜けもれ:
+  - 「実機」は物理デバイス必須 = AI 直接不可。エミュ + Capacitor ビルド + Keita 手元確認の役割分担をレポート明記（依頼に明示された制約）。
+  - テーマ両方 × 全画面のマトリクスをチェックリスト化（test-functional に渡す）。
+  - UI-1（premium テーマ削除）後はテーマ検証が light/dark の2軸だけになる点も反映。
+  - 回帰観点: UI-12 文字拡大の影響が一番出るので重点的に。
+- 更新日: 2026-05-30
+
+---
+
+#### このバッチの抜けもれ提言サマリ（UI-1〜13）
+1. 永続化ガード（UI-1）: 削除した premium テーマを保存済みユーザーのフォールバック必須。
+2. i18n ja/en 両対応（UI-1/5/7/11）: 文言削除は ja と en の両キーを処理。片方残しの抜けもれ注意。
+3. CI lint（UI-4）: import 削除漏れ＝`eslint .` で CI red。デプロイ前は全体 lint。
+4. ルール例外フラグ（UI-9）: 絵文字 NG ルールの明示例外。T-U の逆戻しなので dev-logic に「消し戻し禁止」明記。CLAUDE.md gotchas #5 例外リスト追記を Keita 判断。
+5. デザイン制約（UI-6/8/12）: 白文字・新色は hex 禁止・CSS var 使用。
+6. 完了回数データ（UI-8）: 2回完了の出し分けに永続データが要る。無ければスコープ拡大。
+7. 文字拡大の回帰（UI-12）: token 1点で全画面波及。文字溢れ検証必須。
+8. 実機制約（UI-13）: 物理デバイス確認は AI 直接不可。エミュ+Capacitor+Keita 手元の二段構え。
+
+#### 要 Keita 確認（BLOCKED / 曖昧）→ 全件クローズ（2026-05-30）
+- UI-3: 対象画面＝LessonStoriesScreen と特定し修正（DONE 77f31ef）。
+- UI-5: v3 に該当見出し無しと Keita 確認済＝noop 確定。
+- UI-9: CLAUDE.md gotchas #5 の絵文字例外リストにプロフィール炎を追記済（掃除 695de6a）。
+- UI-12: `--font-*` を一律+約8%で実装（DONE e92198e）。UI-13 で文字溢れ無し確認。
+
+#### バッチ完了（2026-05-30）
+UI-1〜13 全件クローズ＝DONE 11件（1/2/3/6/7/8/9/10/11/12/13）＋ noop 2件（4＝AM-K revert で消滅 / 5＝v3 該当無し）。掃除コミット 695de6a で「無料テーマ見出しの整合・デッド i18n キー削除・UI-9 例外を CLAUDE.md 追記」。main push `695de6a` で本番反映（Render web 手動 deploy / Android internal 自動）。品質ゲート＝tsc -b 0 / eslint . 0 / vitest 353 pass / reviewer approve。残課題なし。
+
+---
+
+## バッチ: 2026-05-30 ドッグフーディング企画（Keita 依頼）
+
+テスト用20アカウント×ペルソナで実使用 → UI/機能改善をアプリ内フィードバックから起票＋サーバ負荷計測する企画。本番環境＋厳密タグ付け（`is_test` / `[DOGFOOD]` / `source=dogfood`）で実データと混ざらないよう隔離。ハイブリッド方式＝データ投入20体＋代表6体のフル UI 走行。ID プレフィックスは **DF-**（既存 T-* / AM-* / UI-* と衝突なし）。
+
+| ID | フェーズ | 優先度 | ステータス | 担当 | 概要 |
+|----|---------|--------|-----------|------|------|
+| DF-1 | Phase 1 ペルソナ20設計 | P1 | DONE | 林 | docs/dogfooding/personas.md。代表6体＝p01/p02/p04/p07/p18/p20 |
+| DF-2a | Phase 2a スキーマ確認＋seed/cleanup スクリプト | P1 | DONE | 林 | scripts/dogfood/、commit 8b39356/1dd17bb。本番 refyctlelmlwjwlcpcxvmgx |
+| DF-2b | Phase 2b 本番投入 | P1 | DONE | 林 | MCP 経由（service_role キー不使用）。users20/fermi117/subs9/feedback20 全件検証一致 |
+| DF-3 | Phase 3 代表6体フル UI 走行 | P1 | 進行待ち（Keita 判断中） | 林 | マジックリンク/ログイン方式を Keita 判断中 |
+| DF-4 | Phase 4 負荷計測 | P2 | 未着手 | 林 | サーバ負荷の計測 |
+| DF-5 | Phase 5 アプリ内フィードバック | P1 | 未着手 | 林 | 代表6体の使用フィードバックを起票 |
+| DF-6 | Phase 6 集約 | P1 | 未着手 | 林 | UI/機能改善の起票へ集約 |
+
+### DF-1 — Phase 1 ペルソナ20設計　[P1 / DONE]
+- 詳細: 20ペルソナを設計し `docs/dogfooding/personas.md` に定義。フル UI 走行する代表6体＝p01/p02/p04/p07/p18/p20 を選定。
+- DoD: 20体のペルソナ属性＋代表6体の選定が文書化されている。→ 充足。
+
+### DF-2a — Phase 2a スキーマ確認＋seed/cleanup スクリプト　[P1 / DONE]
+- 詳細: 本番スキーマ（`refyctlelmlwjwlcpcxvmgx`）を確認し、`scripts/dogfood/` に seed/cleanup スクリプトを整備。commit 8b39356 / 1dd17bb。
+- DoD: seed と cleanup（`is_test` 一括削除）が用意されている。→ 充足。`scripts/dogfood/cleanup.sql` 準備済。
+
+### DF-2b — Phase 2b 本番投入　[P1 / DONE]
+- 詳細: MCP 経由（service_role キー不使用）で本番に20体投入。投入結果＝users20 / fermi117 / subs9 / feedback20 を全件検証し設計と一致を確認。タグ付け（`is_test` / `[DOGFOOD]` / `source=dogfood`）で隔離。
+- DoD: 投入件数が設計どおりで全件検証一致。→ 充足。
+- 提言・抜けもれ: クリーンアップ経路を必ず確保（cleanup.sql 準備済）。負荷計測前に本番実データへの混入が無いことを `is_test` フィルタで再確認。
+
+### DF-3 — Phase 3 代表6体フル UI 走行　[P1 / 進行待ち]
+- 詳細: 代表6体（p01/p02/p04/p07/p18/p20）でアプリ UI をフル走行し UX を観察。
+- ブロッカー: マジックリンク / ログイン方式を **Keita 判断中**。Logic 認証はマジックリンクのみ（feedback_logic_auth_magiclink_only）なので、テストアカウントのログイン手段（メール受信の代替・session 直注入の可否）を Keita と握る必要あり。
+- 提言・抜けもれ: 両OS 観点はモバイル専用なので Android internal 中心で走行。走行で見つけた不具合は DF-5 経由でアプリ内フィードバック起票に寄せる。
+
+### DF-4 〜 DF-6 — 負荷計測 / アプリ内フィードバック / 集約　[未着手]
+- DF-4（P2）: サーバ負荷計測。DF-2b 投入データ＋DF-3 走行のトラフィックで計測。
+- DF-5（P1）: 代表6体の使用フィードバックをアプリ内フィードバック経路から収集・起票。
+- DF-6（P1）: UI/機能改善として集約。次バッチの修正タスク起票へ繋げる。
+- 依存: DF-3（走行）完了が DF-4/DF-5 の前提。DF-3 が Keita のログイン方式判断待ちのため後続も待機。
+
+#### 抜けもれ提言サマリ（DF）
+1. クリーンアップ経路（cleanup.sql）を本番で必ず通せる状態に保つ。企画終了後に `is_test` 一括削除を実行。
+2. 本番実データへの混入ゼロを保証（`is_test` / `source=dogfood` タグで全件隔離）。負荷計測・分析時はテストデータを除外して読む。
+3. DF-3 のログイン方式はマジックリンク前提（feedback_logic_auth_magiclink_only）を崩さない解法を Keita と確定 → unblock。
+
+#### 次アクション（DF）
+1. DF-3 を unblock: 代表6体のログイン方式（マジックリンク受信の代替手段）を Keita 判断 → 確定後に走行開始。
+2. DF-3 走行と並行して DF-4 負荷計測のメトリクス定義を準備。
+3. 走行結果を DF-5 → DF-6 で起票・集約し、次の改善バッチに繋げる。
+
+---
+
 ## バッチ: 2026-05-29 追加修正（Keita 朝・席外し中）
 
 Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で自律的に進める前提で構造化（実装は委譲）。
@@ -16,7 +315,7 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
 
 | ID | Keita ラベル | タイトル | 優先度 | ステータス | 担当案 | 既存タスクとの関係 |
 |----|------------|----------|--------|-----------|--------|------------------|
-| AM-K | T-K | UI 全体の「AIっぽさ」をなくす刷新方針の策定＋実装 | P1 | IN_PROGRESS（2026-05-29。方針 DONE＝`docs/UI_RENEWAL_DIRECTION_20260529.md`〔推奨A エディトリアル×手描き〕。第一弾 DONE＝36d08aa〔絵文字SVG化/glow除去/T-U〕。**第二弾 基盤＋HomeScreen DONE＝c7209fb**〔Shippori Mincho self-host バンドル＋type scale token化＋手描きSVG16種〔src/icons/handdrawn.tsx〕＋HomeScreen を明朝見出し+手描き下線+装飾フラット化、既存--serif無改変で回帰なし〕。**残＝Roadmap/Pricing/Onboarding/Profile への横展開**。型は固まったので Keita が HomeScreen を実機確認→GO で横展開に進む） | designer（素材DONE）＋dev-logic（実装）＋林 | T-V 内包。横展開は HomeScreen 実機チラ見で方向OK確認後（taste fork） |
+| AM-K | T-K | UI 全体の「AIっぽさ」をなくす刷新方針の策定＋実装 | P1 | CANCELLED（2026-05-30 Keita 指示。第2弾 c7209fb〔明朝+手描き+HomeScreen 再構成〕を revert 済＝commit af7b4a3。第1弾 36d08aa・テーマ work d0558cb は温存。「全画面UI設計」も一旦保留＝AM-K 土台が消えたため再開時は新方向を要決定） | designer＋dev-logic＋林 | T-V 内包。revert で UI-4 の波線も消滅 |
 | AM-L | T-L | グラデーション除去（カスタムコース生成カード／今日の1問カード） | P1 | DONE（2026-05-29。Daily Fermi カード〔HomeScreenV3:184〕の --brand-grad-h グラデ廃止→フラット var(--accent)＋青グロー boxShadow を accent追従に。カスタムコース生成カード〔RoadmapScreenV3:697「AIで自分専用コースを作る」〕の linear-gradient 廃止→フラット var(--accent)＋内部アイコンを accent-fg 追従に。両方テーマ追従） | dev-logic | T-S／T-T 根本原因A と統合実装 |
 | AM-M | T-M | 「・今日の一問」の先頭「・」除去＋表記ゆれ統一 | P2 | DONE（2026-05-29。表記ゆれを「今日の1問」に統一〔pricing.heroSub/featFermi・savedItems.filterFermi/emptyFermi/typeFermi の ja を 今日の一問→今日の1問。en は変更なし〕。先頭中黒「・」は現ソースに literal/JSX前置/CSS ::before いずれも存在せず＝grep 全量確認で付与元なし。home カード先頭の装飾ドットは中黒文字でなく styled div の小円なので対象外として維持） | dev-logic | 表記は home 主導線の「今日の1問」に寄せた |
 | AM-N | T-N | 法務記載の見直し（利用規約／プライバシー／特商法） | P1 | 正値修正 DONE・残は確定値待ち（正値が判明している修正＝C-1価格¥350/¥2450統一・C-2トライアル削除・C-3プレミアム→有料・H-1 Googleログイン記述削除・H-4ベータ→GA・H-3更新日2026-05-29 を反映済＝commit `676c3d6` push 済。残＝代表者個人名／OSバージョン／削除ページ正本／事業者確定値 が Keita 確認待ち、捏造回避で未作成） | content-creator＋林 | 新規。特商法は課金アプリ必須記載。AM-O の課金実態と整合必須 |
@@ -30,9 +329,11 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
 - Keita 確認事項（席外し中・保留＝帰還時の確認4点）: (1) AM-N の法的確定値12点、(2) AM-O の Play Console SKU Active 登録、(3) AM-R の実データ書き換え承認、(4) T-U の light/dark accent ボタン AA 割れ（3.08）の対応方針。林は実装を進められる所まで進め、これら4点でブロッカー化している。
 - 関連 memory: project_logic_play_billing_gaps（AM-O）、tagConsolidation.ts＝T-D 実装（AM-R）、feedback_app_copy_neutral（全 UI 文言）、feedback_logic_title_doing（AM-M/AM-Q の title）、project_logic_mobile_only、feedback_logic_auth_magiclink_only。
 
-### AM-K — UI 全体の「AIっぽさ」をなくす刷新方針の策定　[P1 / IN_PROGRESS（designer が方針ドキュメント作成中）]
+### AM-K — UI 全体の「AIっぽさ」をなくす刷新方針の策定　[P1 / CANCELLED（2026-05-30 Keita 指示）]
 
-> 状態（2026-05-29）: designer が刷新方針ドキュメント `docs/UI_RENEWAL_DIRECTION_20260529.md` を作成中。配色パート（T-V＝新規3テーマ）は実装 DONE 済。UI 全体方針（レイアウト・タイポ・装飾過多）は提案フェーズ。完成後に会話本文へ展開し Keita 選定待ち。夕方バッチの T-AA も同一依頼＝本タスクに集約（T-AA は CANCELLED 注記）。
+> 状態（2026-05-30 更新）: **CANCELLED**。Keita 指示で UI 刷新方針自体を取り下げ。第2弾 c7209fb（Shippori Mincho 明朝＋手描き SVG＋HomeScreen 再構成）を **revert 済＝commit af7b4a3**。第1弾 36d08aa（絵文字SVG化/glow除去）とテーマ work d0558cb は温存。「全画面UI設計」も一旦保留＝AM-K の土台（明朝＋手描き路線）が消えたため、再開時は新方向を要決定。UI-4（ホーム波線削除）は本 revert で HomeScreen ごと波線が消え自動解消。
+>
+> 旧状態（2026-05-29）: designer が刷新方針ドキュメント `docs/UI_RENEWAL_DIRECTION_20260529.md` を作成中。配色パート（T-V＝新規3テーマ）は実装 DONE 済。夕方バッチの T-AA も同一依頼＝本タスクに集約。
 
 - 依頼原文（Keita 2026-05-29）: 「全体的に UI の AI っぽさをなくしたいので刷新方針を考えてほしい」。
 - スコープ: 配色テーマだけでなく **UI 全体（レイアウト・タイポ・余白・コンポーネント形状・グラデ/グロー多用・絵文字感・量産テンプレ感）の "AI っぽさ" を診断 → 刷新方針を提案ドキュメント化する**親タスク。成果物は方針/提案ドキュメント（designer 主導＋林）。**具体実装は別タスクへ切り出す前提**（このタスク自体はコードを生まない）。
@@ -1748,3 +2049,8 @@ T-M（体力コース）で dev-logic が **main の作業ツリーを使用中*
 - IN_PROGRESS: **AM-K**＝designer が docs/UI_RENEWAL_DIRECTION_20260529.md 作成中（T-AA は AM-K へ集約）。
 - **ID 衝突の最終解消**: 朝バッチ AM-K〜AM-R と夕方バッチ T-Y〜T-AF が同一依頼8件の二重起票だったため、**夕方バッチを AM-* に集約**。衝突していた夕方 T-Y（中黒）→**T-Y2**、T-Z（グラデ）→**T-Z2** にリネーム〔習熟色テーマバッチの T-Y が正規の T-Y〕。T-AA〜T-AF は各行に正本 AM-* を明記し二重トラッキング停止。`### ` 詳細セクション ID の重複スキャン＝0件で一意性担保。
 - Keita 帰還時の確認4点: ①AM-N 確定値12点 ②AM-O の SKU ③AM-R の書き換え承認 ④T-U の accent ボタン AA）
+
+最終更新: 2026-05-30（**UI-1〜13 本番反映＋AM-K revert＋ドッグフーディング企画 を反映**。
+- **UI-1〜13 全件クローズ**: main push `695de6a`（掃除コミット含む）で本番反映＝Render web 手動 deploy / Android internal 自動デプロイ。DONE 11件〔UI-1 116dbb4 / UI-2 72f1579 / UI-3 77f31ef / UI-6 95cba9b / UI-7 facfdcb / UI-8 1acd4ca / UI-9 ccbd65f / UI-10 1238789 / UI-11 516f67d / UI-12 e92198e / UI-13 test-functional〕＋ noop 2件〔UI-4＝AM-K revert で消滅 / UI-5＝v3 該当見出し無し・Keita 確認済〕。掃除 695de6a＝無料テーマ見出し整合＋デッド i18n キー削除＋UI-9 例外を CLAUDE.md gotchas #5 に追記。品質ゲート＝tsc -b 0 / eslint . 0 / vitest 353 pass / reviewer approve。残課題なし。
+- **AM-K → CANCELLED**: Keita 指示で UI 刷新方針を取り下げ。第2弾 c7209fb（明朝+手描き+HomeScreen 再構成）を revert＝commit af7b4a3。第1弾 36d08aa・テーマ work d0558cb は温存。「全画面UI設計」も一旦保留〔土台消失のため再開時は新方向を要決定〕。これにより UI-4 の波線が HomeScreen ごと消え自動解消。
+- **新規バッチ DF-（ドッグフーディング企画）**: テスト20アカウント×ペルソナで実使用 → UI/機能改善起票＋負荷計測。本番＋厳密タグ隔離（is_test/[DOGFOOD]/source=dogfood）。DF-1 ペルソナ設計 DONE〔docs/dogfooding/personas.md・代表6体 p01/p02/p04/p07/p18/p20〕、DF-2a seed/cleanup DONE〔scripts/dogfood/・8b39356/1dd17bb〕、DF-2b 本番投入 DONE〔MCP 経由・users20/fermi117/subs9/feedback20 全件検証一致〕。DF-3 代表6体フル走行は **Keita のログイン方式判断待ち**で進行待ち、DF-4/5/6 は DF-3 完了が前提で未着手。cleanup.sql 準備済（is_test 一括削除）。）
