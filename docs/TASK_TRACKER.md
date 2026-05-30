@@ -49,7 +49,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 | DF-F5  | 課金状態とログイン状態が独立＝「有料なのに使えない」 | P0 | DONE（DF-FV○・paid分岐文言結線） | `b756022` | dev-logic |
 | DF-F6  | オンボ生年入力で「次へ」が無言ブロック（フリーズ誤解） | P0 | DONE（DF-FV○・理由提示+aria結線） | `cd05dd3` | dev-logic |
 | DF-F7  | en でコーチマーク/チュートリアルが日本語ハードコード | P0 | DONE（DF-FV○・coachmark t()化ja/en） | `24417a2` | dev-logic |
-| DF-F8  | 通知設定の粒度不足（時刻固定・頻度なし・静かな時間帯なし） | P0 | TODO（未着手・notifications.tsスタブ注意） | なし | dev-logic |
+| DF-F8  | 通知設定の粒度不足（時刻固定・頻度なし・静かな時間帯なし） | P0 | REVIEW（2026-05-31 実装完了・green tsc0/eslint.0err/vitest389pass。時刻ピッカー可変化＋頻度(毎日/平日/週次曜日選択)＋静かな時間帯(DND)を設定UI＋永続化＋実nativeスケジュールまで結線。曜日別 on 通知/DND発火の実機検証は test-functional 待ち） | (commit後追記) | dev-logic |
 | DF-F9  | 有料ウェルカム演出が再訪毎＋ゲストにも出る | P0 | DONE（DF-FV○・非有料カット+初回限定seen永続化が結線。※実装出所は`c5deaeb`単一有料プラン統合、`b756022`ではない） | `c5deaeb` | dev-logic |
 | DF-F10 | 下タブのラベルと中身が不一致（機能名ベースに） | P1 | DONE（DF-FV○・nav i18n ja/en整合） | `952fdda` | dev-logic |
 | DF-F11 | トライアル残日数がジャーナル内にしか出ない | P1 | DONE（DF-FV○・常設バッジ+終了間際バナー結線。通知発火はF8依存で範囲外） | `b39a0df` | dev-logic |
@@ -160,8 +160,16 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 - 更新日: 2026-05-30
 
 ### DF-F8 — 通知設定の粒度（時刻ピッカー＋頻度＋静かな時間帯）　[P0 / 重め]
-- 優先度: P0 / ステータス: TODO（**未着手・コミットなし**。DF-F 系で実装が乗っていない3件のうちの1つ。`src/notifications.ts` スタブ問題のため実通知発火は Keita 確認要）/ 担当: dev-logic
+- 優先度: P0 / ステータス: REVIEW（2026-05-31 実装完了。実機の曜日別/DND 発火は test-functional 検証待ち）/ 担当: dev-logic
 - 詳細: `src/screens/NotificationSettingsScreen.tsx` は時刻21時固定・頻度設定なし。時刻ピッカー＋頻度（毎日/平日/週N回 等）＋静かな時間帯（DND）を追加（p18）。重め。
+- 実装結果（2026-05-31）:
+  - `src/notifications.ts`: `ReminderPref` を frequency('daily'|'weekdays'|'weekly') / weeklyDays / quietHours で拡張。`loadReminderPref` に後方互換マイグレーション（旧 `{enabled,hour,minute}` JSON・万一の string time も daily に移行）。実 native スケジュールへ結線＝daily は `every:'day'`、weekdays/weekly は曜日別 `on:{weekday,hour,minute}` で複数通知登録。曜日別 id は 1010〜1016（1001/1002/1003 と非衝突）、`DAILY_ALL_NOTIF_IDS`/`ALL_NOTIF_IDS` を拡張し cancel 取りこぼし防止。
+  - Capacitor Weekday enum を型定義で確認（Sunday=1…Saturday=7）、内部 weeklyDays は JS getDay()(0=日) なので +1 変換。
+  - quietHours: `isWithinQuietHours` 新設。[start,end) 判定、日跨ぎ(start>end)対応。予定時刻が範囲内なら daily reminder をスケジュールしない。
+  - 永続化キーは既存 `logic-reminder`（※CLAUDE.md/台帳の `logic-notifications`=reminder time は誤記。実体の `logic-notifications` は Profile.tsx の on/off マスタートグル）。
+  - i18n ja/en 追加（中立丁寧体）。UI は SVG・CSS変数遵守、絵文字/hex なし。
+  - テスト: `src/__tests__/reminderSchedule.test.ts` 新規15件（frequency/quietHours 分岐）。
+  - 品質ゲート: tsc 0 / eslint .（CI同等）0 error / vitest 22files 389pass。
 - 関連ファイル: `src/screens/NotificationSettingsScreen.tsx`、`src/notifications.ts`（※スタブ。CLAUDE.md gotchas #3「実装化は観測/通知戦略と整合してから」に注意）、Capacitor LocalNotifications、localStorage（既存 `logic-notifications`）、`src/i18n.ts`
 - DoD: 時刻を任意に選べ、頻度・静かな時間帯を設定でき、設定どおりにローカル通知がスケジュールされる。再起動後も保持。tsc/eslint green。
 - 依存: なし（が `src/notifications.ts` がスタブな点に注意）
