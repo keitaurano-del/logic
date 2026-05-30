@@ -202,6 +202,7 @@ Key tokens:
 3. **`src/sentry.ts` and `src/notifications.ts` are stubs** — both `@sentry/react` and `@capacitor/*` are installed (Capacitor is actively used for mobile builds), but these two helper files remain no-op stubs. Do not turn them into real implementations without aligning with the broader observability/notifications strategy.
 4. **i18n** — every new user-facing string needs both `ja` and `en` entries in `src/i18n.ts`
 5. **Icons** — use SVG from `src/icons/index.tsx`, never emoji in UI. **Exception:** ジャーナル機能 (`src/components/journal/`) の mood・weather・phase tab・streak の 4 箇所のみ絵文字 OK（feedback_journal_emoji 参照）。他画面の `FlameIcon` 等共有 SVG はそのまま維持。
+   - **追加例外:** プロフィールのストリーク炎 🔥（UI-9, Keita 明示指示の例外。SVG へ消し戻し禁止）。
    - **レッスン本文 (lesson body / explain step の content・outro) は SVGアイコン + 絵文字のハイブリッド可**（feedback-logic-lesson-visual-hybrid 参照）。本文に限り (a) `[icon:name]` インライン記法で `src/icons` の SVG を埋め込める（name 一覧は `src/components/RichLessonText.tsx` の `ICON_REGISTRY`）、(b) その回特有の話題物には絵文字も控えめに許可。体系的・反復的なもの（良い例/悪い例・要点・注意・手順）は SVG アイコンで統一する。**UI chrome は従来どおり絵文字 NG・SVG のみ**（この例外はレッスン本文限定）。記法の衝突安全性: `[icon:name]` は `icon:` プレフィックス必須なので「3:1」「10:30」等のコロン表記とは衝突しない。
      - **正準アイコン名**（執筆時はこれだけ使う）: 良い例=`good`、悪い例=`bad`、要点/結論=`point`、注意=`warn`。エイリアス（`ok`/`check`/`ng`/`cross`/`idea`/`tip`/`caution`/`flag` 等）は内部互換用で、執筆では使わない。`point` は CheckCircleIcon（要点・結論）、コツ/気づきは `tip` または `idea`（電球）で役割分担。
      - `[icon:name]` の `name` は**小文字＋ハイフンのみ**。大文字・アンダースコアは無効で、マッチせず静かに literal 化する footgun。
