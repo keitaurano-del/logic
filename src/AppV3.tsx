@@ -630,7 +630,7 @@ function AppV3() {
             <JournalPaywall onUpgrade={() => navigate({ type: 'pricing' })} />
           )
         ) : (
-          <JournalLoginPrompt onLogin={() => navigate({ type: 'login' })} />
+          <JournalLoginPrompt paid={isPaid()} onLogin={() => navigate({ type: 'login' })} />
         )
       )}
 
@@ -1097,7 +1097,11 @@ function ReviewPaywall({ onBack, onUpgrade }: { onBack: () => void; onUpgrade: (
   )
 }
 
-function JournalLoginPrompt({ onLogin }: { onLogin: () => void }) {
+function JournalLoginPrompt({ paid, onLogin }: { paid: boolean; onLogin: () => void }) {
+  // 課金有効・未ログインの場合は「有料なのに使えない」と誤解されないよう、
+  // 支払いが有効である旨を区別して伝える。
+  const title = paid ? t('journal.paidLoginRequiredTitle') : t('journal.loginRequiredTitle')
+  const desc = paid ? t('journal.paidLoginRequiredDesc') : t('journal.loginRequiredDesc')
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', display: 'flex', flexDirection: 'column' }}>
       <div className="journal-hero">
@@ -1121,10 +1125,10 @@ function JournalLoginPrompt({ onLogin }: { onLogin: () => void }) {
           gap: 12,
         }}>
           <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
-            {t('journal.loginRequiredTitle')}
+            {title}
           </div>
           <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.7 }}>
-            {t('journal.loginRequiredDesc')}
+            {desc}
           </div>
           <button
             type="button"
