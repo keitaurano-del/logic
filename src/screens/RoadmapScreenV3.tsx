@@ -53,6 +53,10 @@ function levelLabel(level: string): string {
 
 const IMG = '/images/v3'
 
+// 「あなた専用コース」セクションを他カテゴリと同じ collapsedGroups 開閉機構に乗せるための擬似グループID。
+// 既存カテゴリ（COURSE_GROUPS）の id や pinned グループ（'pinned-fermi'）と衝突しない値にする。
+const CUSTOM_COURSE_GROUP_ID = 'custom-courses'
+
 // ──────── カテゴリ別ビジュアル（アイコン・色・画像） ────────
 type CategoryVisual = {
   icon: ReactNode
@@ -367,7 +371,9 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
   const [sortOption, setSortOption] = useState<SortOption>('relevance')
   // 折りたたまれているグループの集合。初期は空 = 全カテゴリ展開。
   // 「閉じている方」を保持することで「初期=全展開」をデフォルトで表現する。
-  const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set())
+  // 「あなた専用コース」は常時表示が煩わしいとの要望（T-W）でデフォルト折りたたみにするため、
+  // 初期集合にそのグループID（CUSTOM_COURSE_GROUP_ID）を含めておく。
+  const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(() => new Set([CUSTOM_COURSE_GROUP_ID]))
   const toggleGroup = useCallback((groupId: string) => {
     setCollapsedGroups(prev => {
       const next = new Set(prev)
@@ -507,6 +513,8 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
         {/* あなた専用コース（AI 生成）— 最上部。コースが無くても作成ボタンは表示 */}
         <CustomCourseSection
           courses={customCourses}
+          collapsed={collapsedGroups.has(CUSTOM_COURSE_GROUP_ID)}
+          onToggle={() => toggleGroup(CUSTOM_COURSE_GROUP_ID)}
           onCreate={() => setShowCustomSheet(true)}
           onOpen={(id) => props.onOpenCustomCourse?.(id)}
           onDelete={handleDeleteCustomCourse}
@@ -907,25 +915,52 @@ function AiLessonCard({ lesson, reason, onOpen }: { lesson: LessonData; reason: 
 }
 
 // ──────── あなた専用コース（AI生成）セクション ────────
+// 他カテゴリ（COURSE_GROUPS）と同じ collapsedGroups 開閉機構に乗せる（T-W）。
+// 開閉トグル UI・アイコン（ChevronDown/Right）・aria 文言（expand/collapseGroupAria）は
+// 既存カテゴリのヘッダと共通のものを流用し、新規開閉ロジック・新規 i18n は増やさない。
+// デフォルト折りたたみ（collapsed=true）は呼び出し元の collapsedGroups 初期集合で表現する。
 function CustomCourseSection({
   courses,
+  collapsed,
+  onToggle,
   onCreate,
   onOpen,
   onDelete,
 }: {
   courses: CustomCourse[]
+  collapsed: boolean
+  onToggle: () => void
   onCreate: () => void
   onOpen: (id: string) => void
   onDelete: (id: string) => void
 }) {
+  const label = t('customCourse.sectionTitle')
+  const panelId = `course-group-${CUSTOM_COURSE_GROUP_ID}`
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-      {courses.length > 0 && (
-        <>
-          <div style={{ padding: '8px 4px 0' }}>
-            <div style={{ fontSize: '1.0667rem', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-.005em' }}>{t('customCourse.sectionTitle')}</div>
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.45 }}>{t('customCourse.sectionDesc')}</div>
-          </div>
+      {/* 開閉トグル（他カテゴリと同じヘッダ UI）。コースが 0 件でもヘッダは表示する */}
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={!collapsed}
+        aria-controls={panelId}
+        aria-label={collapsed ? t('roadmap.expandGroupAria', { group: label }) : t('roadmap.collapseGroupAria', { group: label })}
+        style={{ padding: '8px 4px 0', display: 'flex', alignItems: 'flex-start', gap: 8, background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', width: '100%', color: 'inherit', font: 'inherit' }}
+      >
+        <span aria-hidden="true" style={{ flexShrink: 0, marginTop: 2, color: 'var(--text-secondary)', display: 'inline-flex' }}>
+          {collapsed
+            ? <ChevronRightIcon width={18} height={18} />
+            : <ChevronDownIcon width={18} height={18} />}
+        </span>
+        <span style={{ flex: 1, minWidth: 0 }}>
+          <span style={{ display: 'block', fontSize: '1.0667rem', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-.005em' }}>{label}</span>
+          <span style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.45 }}>{t('customCourse.sectionDesc')}</span>
+        </span>
+      </button>
+
+      {!collapsed && (
+        <div id={panelId} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {courses.length > 0 && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {courses.map(course => (
               <div
@@ -958,10 +993,9 @@ function CustomCourseSection({
               </div>
             ))}
           </div>
-        </>
-      )}
+          )}
 
-      {/* 作成ボタン（コースの有無に関わらず常に表示） */}
+      {/* 作成ボタン（コースの有無に関わらず、展開時は常に表示） */}
       <button
         type="button"
         onClick={onCreate}
@@ -975,6 +1009,8 @@ function CustomCourseSection({
           <div style={{ fontSize: '0.7333rem', opacity: courses.length > 0 ? 0.75 : 0.9, marginTop: 3, lineHeight: 1.4 }}>{t('customCourse.createButtonDesc')}</div>
         </div>
       </button>
+        </div>
+      )}
     </div>
   )
 }

@@ -1402,7 +1402,9 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
 | T-P | ジャーナルの×ボタンを拡大＋左上「編集」ボタンと距離を離す（誤タップ防止） | P1 | DONE（2026-05-29 main マージ＋Android deploy 成功で本番反映。モバイル実機での押しやすさ確認のみ任意で残） | dev-logic | T-N/T-O と同ファイル・セット1バッチ |
 | T-Q | 画像アップロードで画像が一瞬消える＋進捗可視化 | P1 | DONE（既に本番。同内容が 2026-05-24 commit 7705b12 として main に入っており昨日以前から本番稼働中と判明。新規マージ不要・重複ブランチ feat/journal-image-upload-progress〔acdc59e〕は破棄可） | dev-logic（既実装）| 既に本番（commit 7705b12, 2026-05-24） |
 
-### T-M — 「体力をつける」コースを作る　[P1 / IN_PROGRESS（サンプル承認＋本展開ゴーサイン取得・全5レッスン制作中）]
+### T-M — 「体力をつける」コースを作る　[P1 / DONE（2026-05-29 本番反映。lesson 440-444 ja/en 実装済）]
+
+- ✅ ステータス同期（2026-05-31 自律ティック）: 本詳細ヘッダが IN_PROGRESS のまま取り残されていたが、確定表行（上記）は既に DONE。git 実体で裏取り済み＝commit `cd3c166`（feat: lessonId 440-444 実装）＋`dabfc65`（443図/442強化ループ図差し替え）が main 在、`src/staminaLessons.ts`/`src/staminaLessonsEn.ts` に lesson 440-444 実在を確認。ヘッダを DONE に同期。これにより「T-M 完了後着手」ゲートのタスク（T-W 等）が解放。残: 低-1 コース title 確定（Keita 判断）/ 低-2 stamina 専用サムネ（designer 別トラック）。
 
 - ✅ 進捗（2026-05-29 朝）: **サンプル承認＋本展開ゴーサイン取得**。content-creator が全5レッスン（440-444）の **ja/en フル本文制作に着手**（出力先 `docs/COURSE_STAMINA_FULL_20260529.md`）。logic-coach 監査の **C-1 / C-3 / C-4 / S-1 / S-2 / D-1 を反映指示済み**。次工程は dev-logic によるコード実装、その後 **444（子育て）の logic-coach 再監査ゲート必須**、テスト、デプロイ。
 - ✅ 進捗（2026-05-28 深夜・サンプル段階）: content-creator が コース構成案＋サンプルレッスン441のフル本文ドラフトを作成（成果物 `docs/COURSE_STAMINA_DRAFT_20260528.md`）。logic-coach 監査 4.3/5「サンプル承認に進めてよい品質」→ 翌朝 Keita ゴーサインで本展開へ。
@@ -1760,7 +1762,9 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
   - 両OS: モバイル専用。Android 実機で全パレット確認（theme-color meta 含む）。
   - 統合の効率: T-R/T-S/T-T/T-U/T-J/T-Y を T-V 実装に巻き込むことで、theme.ts / tokens.css / AppearanceSettings / i18n / 色トークンを1回の作業で触れる（個別に何度も触らない）。同一 dev-logic 一気通貫。
 
-### T-W — 「あなた専用コース」セクションの展開/折りたたみ　[P1 / TODO（T-M 完了後着手・T-V 系から独立）]
+### T-W — 「あなた専用コース」セクションの展開/折りたたみ　[P1 / REVIEW（2026-05-31 実装 green 完了・本番 deploy 済。Android 実機タップ確認のみ任意残）]
+
+- ✅ 実装（2026-05-31 自律ティック・dev-logic 相当に委譲）: `src/screens/RoadmapScreenV3.tsx` のみ変更。擬似グループ ID `CUSTOM_COURSE_GROUP_ID='custom-courses'` を新設し、既存 `collapsedGroups` 開閉機構（T7/TC-1）に「あなた専用コース」を1グループとして追加。初期集合に含めて**デフォルト折りたたみ**。トグル UI・chevron アイコン（src/icons の ChevronRight/Down、emoji 不使用）・aria 文言（roadmap.expand/collapseGroupAria）・見出し（customCourse.sectionTitle/Desc）は全て既存流用＝**新規 i18n ゼロ**。0件時はヘッダのみ表示で破綻なし。永続化は既存カテゴリ開閉が非 persist（in-memory）のため DoD 通り同挙動に合わせた。検証（林が実コマンドで裏取り）: tsc 0 / eslint `.` 0 errors（warning 19 は全て既存）/ vitest 22files 389tests 全 pass。DoD 1-6 充足。残=DoD 7 Android 実機タップ確認（headless 不可・任意）。
 
 - 依頼原文（Keita 2026-05-29）: 「あなた専用コース（AIカスタムコース）も展開・閉じるできるようにして。常時表示だと煩わしい」。
 - スコープ: `RoadmapScreenV3` のパーソナル/カスタムコース表示部（「あなた専用コース」セクション）に、**T7 で実装済みのカテゴリ開閉トグルと同じ折りたたみ機構を適用**する。デフォルトは**折りたたみ**（常時表示をやめる）。
