@@ -6,6 +6,318 @@ task-manager エージェントが管理するタスク台帳の正本。
 
 ---
 
+## バッチ: 2026-05-30 ドッグフーディング Phase 3 改善 findings 21件（Keita 承認済・全件修正）
+
+Phase 3 実走行（代表6ペルソナ p01/p02/p04/p07/p17/p18/p20）で抽出した改善 findings 21件。Keita が全件修正を承認済み。task-manager は台帳化・トリアージのみ（実装は dev-logic / designer / content-creator へ委譲）。
+
+ID 採番: 既存 UI-* / AM-* / DF-1〜6 と衝突しない **DF-F1〜DF-F21**。
+
+トリアージ区分:
+- 【即実装】軽く明確で回帰小。Wave1 でまとめて処理。
+- 【要調査先行】実装前にコード確認が必要（#1, #9）。Wave2。**※両件とも台帳化時点でコード確認済み → 下記に結果反映**。
+- 【設計判断】Keita 承認が要る方針判断（#3, #12, #13, #16, #19）。Wave3、1件ずつ承認取りながら。
+- 【重め】影響大・回帰注意（#2, #8）。Wave3。
+
+⚠ 着手前に確定した要調査2件のコード確認結果（2026-05-30、本台帳化時に実施）:
+- DF-F1（検索発見性）: `src/screens/RoadmapScreenV3.tsx` を確認。検索機能は**実装済み**（右上虫眼鏡アイコン line 456-470＝`SearchIcon` + `aria-label={t('roadmap.searchAria')}`、タップで `searchOpen` → `SearchOverlay`。AI検索 `aiSearch`、レベル/進捗/形式フィルタ `levelFilters`/`progressFilters`/`formatFilters`、検索履歴 `logic-search-history` まで揃っている）。よって**機能の新規実装は不要**、純粋に「虫眼鏡アイコンの発見性が低い」UI課題＝**発見性改善タスク**に確定（新規開発ではない）。区分を【要調査先行】→【即実装〜軽デザイン】に格下げ。
+- DF-F9（ウェルカム演出の出過ぎ）: `src/screens/HomeScreenV3.tsx` line 322-343 を確認。`shouldShowUpgradeToast(paid)` は (a) `paid===false` なら出さない、(b) `localStorage['logic-plan-upgrade-seen']==='1'` なら出さない、というガードで**ロジック上は「有料 かつ 未読の初回1回限り」**。つまり「ゲストにも出る」「再訪毎に出る」が事実なら、フラグ設計バグではなく **`isPaid()` の判定が課金状態を正しく反映していない（DF-F5 と同根の可能性）** か、**`dismiss()` 時の `setItem` が効いていない環境差**のどちらか。区分は【要調査先行】維持だが、調査の焦点は「UPGRADE_SEEN_KEY バグ」ではなく「`isPaid()` の戻り値」と「dismiss の永続化」に絞る。DF-F5 と合流調査を推奨。
+
+| ID | タイトル | 優先度 | 区分 | 担当案 |
+|----|---------|--------|------|--------|
+| DF-F1  | ロードマップ検索/絞り込みの発見性が低い（虫眼鏡が気づかれない） | P0 | 即実装〜軽デザイン（調査済・機能は実装済） | designer＋dev-logic |
+| DF-F2  | 文字サイズのユーザー設定（標準/大/特大）が無い | P0 | 重め（回帰注意） | dev-logic＋designer |
+| DF-F3  | ゲスト/未ログイン/有料の3状態の出し分けが画面ごとにバラバラ | P0 | 設計判断 | dev-logic（設計）＋Keita |
+| DF-F4  | ジャーナルがゲスト全面ブロックで体験前に価値が途切れる | P0 | 設計判断寄り（段階ゲート設計） | dev-logic＋Keita |
+| DF-F5  | 課金状態とログイン状態が独立＝「有料なのに使えない」 | P0 | 要調査先行 | dev-logic |
+| DF-F6  | オンボ生年入力で「次へ」が無言ブロック（フリーズ誤解） | P0 | 即実装 | dev-logic |
+| DF-F7  | en でコーチマーク/チュートリアルが日本語ハードコード | P0 | 即実装 | dev-logic |
+| DF-F8  | 通知設定の粒度不足（時刻固定・頻度なし・静かな時間帯なし） | P0 | 重め | dev-logic |
+| DF-F9  | 有料ウェルカム演出が再訪毎＋ゲストにも出る | P0 | 要調査先行 | dev-logic |
+| DF-F10 | 下タブのラベルと中身が不一致（機能名ベースに） | P1 | 即実装（i18n文言） | dev-logic |
+| DF-F11 | トライアル残日数がジャーナル内にしか出ない | P1 | 中（常設表示＋通知） | dev-logic |
+| DF-F12 | フェルミランキングの透明性欠如（算出基準/母数/順位なし） | P1 | 設計判断 | dev-logic＋Keita |
+| DF-F13 | デイリーフェルミが残数表示のみで上級者の手応え薄い | P1 | 設計判断（機能追加） | dev-logic＋content-creator＋Keita |
+| DF-F14 | 料金(en)「Yearly Save 5 months」密着＋比較表 Free 列空欄 | P1 | 即実装（i18n/レイアウト） | designer＋dev-logic |
+| DF-F15 | ジャーナルのログイン誘導が保存都合のみで価値訴求なし | P1 | 即実装（i18n文言） | content-creator＋dev-logic |
+| DF-F16 | 初回ホームが情報過密で最優先アクション不明 | P1 | 設計判断 | designer＋dev-logic＋Keita |
+| DF-F17 | 復習ハブが有料と伝わらない（無料時データ無し表示のみ） | P2 | 即実装（文言/導線） | content-creator＋dev-logic |
+| DF-F18 | フェルミ1日1問制限/課金導線が解く前に弱い | P2 | 中（導線） | dev-logic |
+| DF-F19 | フェルミ問題が en でも日本市場前提（GMV/円建て） | P2 | 設計判断（コンテンツ・長期） | content-creator＋Keita |
+| DF-F20 | 特商法リンクが en UI にも残る（ja/日本配信時のみ出し分け） | P2 | 即実装（軽） | dev-logic |
+| DF-F21 | フィードバック投稿に識別情報・最低文字数チェックが無い | P2 | 即実装（軽） | dev-logic |
+
+---
+
+### DF-F1 — ロードマップ検索/絞り込みの発見性が低い　[P0 / 即実装〜軽デザイン]
+- 優先度: P0 / ステータス: TODO / 担当: designer（発見性）＋dev-logic
+- 詳細: 42コース縦スクロールで p01/p07/p18 横断「検索/絞り込みが見つからない」。**調査結果＝検索機能は実装済み**（`RoadmapScreenV3.tsx` 右上虫眼鏡 line 456-470＋`SearchOverlay`＋AI検索＋レベル/進捗/形式フィルタ＋検索履歴）。問題は機能不在ではなく**虫眼鏡アイコンの発見性**。→ 発見性を上げる施策（アイコン拡大／ラベル併記「検索」／初回コーチマークで検索を案内／上部に検索バー風プレースホルダを出す等）を designer 主導で1案出して Keita 承認 → dev-logic 実装。
+- 関連ファイル: `src/screens/RoadmapScreenV3.tsx`（虫眼鏡 line 456-470, SearchOverlay）、`src/tutorial/coachmark.tsx`（検索を案内する coachmark 追加候補）、`src/i18n.ts`（`roadmap.searchAria` 既存／新規ラベル）
+- DoD: 代表ペルソナが初見で検索導線に気づける（虫眼鏡の視認性向上 or 検索バー化）。機能自体は既存のまま回帰なし。tsc/eslint green。
+- 依存: なし（ただし DF-F16 ホーム情報整理・DF-F3 状態出し分けと UX 整合）
+- 提言・抜けもれ:
+  - 「新規実装が要る」と誤解しないこと。AM-Q/T-X(6a3c985) の実装が既に乗っている。本件は純 UX（発見性）。
+  - i18n: 「検索」ラベルを足すなら ja/en 両方。aria-label は既存 `roadmap.searchAria` 流用可。
+  - 両OS: 虫眼鏡のタップ領域が小さすぎないか（44pt 目安）iOS/Android で確認。
+  - アクセシビリティ: アイコンのみ→語ラベル併記でスクリーンリーダ/視認性 両得。
+- 更新日: 2026-05-30
+
+### DF-F2 — 文字サイズのユーザー設定（標準/大/特大）　[P0 / 重め・回帰注意]
+- 優先度: P0 / ステータス: TODO / 担当: dev-logic（＋designer）
+- 詳細: `src/screens/AppearanceSettingsScreen.tsx` は現状 light/dark のみ。文字サイズ設定（標準/大/特大スライダー）を追加し、UI-12 で導入済みの type scale token（`--font-*`）に倍率を掛ける。p07/p17。
+- 関連ファイル: `src/screens/AppearanceSettingsScreen.tsx`（設定UI追加）、`src/styles/tokens.css`（`--font-*` への倍率変数）、`src/theme.ts`（永続化・適用ロジック）、`src/i18n.ts`（ラベル ja/en）、localStorage 新キー（例 `logic-font-scale`）
+- DoD: 標準/大/特大の3段が設定でき、全画面の文字に倍率が反映され、再起動後も保持される。文字溢れ・レイアウト破綻が無い（UI-12 の横断検証と同等チェック）。tsc/eslint green。
+- 依存: UI-12（`--font-*` 一律+8%）の上に乗る。設定値はその倍率に乗算する設計。
+- 提言・抜けもれ:
+  - 最大リスクは回帰（UI-12 と同様、token 1点で全画面波及）。「特大」で固定幅ボタン・1行ラベル・カード内テキストが溢れないか全画面横断検証必須（test-functional に依頼）。
+  - 永続化必須（localStorage 新キー）。ゲスト/ログイン跨ぎでも端末ローカルで保持。
+  - 両OS: iOS の Dynamic Type / Android のフォントスケールと二重に効かないか（OS 側拡大との合算で巨大化しないか）確認。
+  - i18n: 設定ラベル・説明文の ja/en。文言は中立丁寧体（feedback-app-copy-neutral）。
+  - アクセシビリティの中核施策なので P0 妥当。designer に「特大」時の最小可読レイアウト指針をもらう。
+- 更新日: 2026-05-30
+
+### DF-F3 — ゲスト/未ログイン/有料の3状態の出し分け統一　[P0 / 設計判断]
+- 優先度: P0 / ステータス: BLOCKED（Keita 承認待ち・ポリシー策定）/ 担当: dev-logic（設計提案）＋Keita（承認）
+- 詳細: ゲスト・未ログイン（=ゲストと別か？）・有料 の3（あるいは4）状態の出し分けが画面ごとにバラバラ。横断ポリシーを1枚に定義してから各画面を寄せる。設計判断・横断。DF-F4/F5/F17 はこのポリシーの個別適用先。
+- 関連ファイル: `src/guestUser.ts`、`src/subscription.ts`（`isPaid()`）、各 screen のゲート分岐（Journal/Review/Fermi/Profile 等）。まず横断棚卸しが必要。
+- DoD: 「ゲスト/ログイン無料/有料」各状態で各機能が（フル/プレビュー/ブロック）のどれを取るかの一覧ポリシーが文書化され、Keita 承認 → 各画面が準拠。
+- 依存: DF-F4・DF-F5・DF-F17・DF-F18 はこのポリシーに従属（ポリシー確定が前提）。
+- 提言・抜けもれ:
+  - これが Wave3 の親。先にこれを決めると F4/F5/F17/F18 の個別判断がぶれない。Keita に「状態×機能マトリクス」を提示して承認を取るのが最短。
+  - 「未ログイン」と「ゲスト」が別概念か（ゲスト=匿名ID発行済 / 未ログイン=何もなし）を最初に定義。`guestUser.ts` の実態確認が前提。
+  - i18n: 各状態のCTA文言が増えるので ja/en。文言は中立丁寧体。
+- 更新日: 2026-05-30
+
+### DF-F4 — ジャーナルのゲスト全面ブロックを段階ゲートに　[P0 / 設計判断寄り]
+- 優先度: P0 / ステータス: BLOCKED（DF-F3 ポリシー＋Keita 承認待ち）/ 担当: dev-logic＋Keita
+- 詳細: ジャーナルがゲストに全面ブロックされ、トライアル価値が体験前に途切れる（p02/p04）。閲覧/お試し入力までは許し、保存/AI分析でログインを促す段階的ゲートへ。
+- 関連ファイル: `src/components/journal/*`、ジャーナル画面のゲスト分岐、`src/i18n.ts`
+- DoD: ゲストでもジャーナルの中身・一度の入力体験ができ、保存/継続/AI分析の段階でログイン誘導が出る。価値が伝わってからゲートがかかる。
+- 依存: DF-F3（状態ポリシー）、DF-F15（ログイン誘導コピーの価値訴求）と同画面で連動。
+- 提言・抜けもれ:
+  - DF-F15（誘導コピー価値訴求）と必ずセットで実装（同じ誘導ポイント）。
+  - 永続化: ゲストのお試し入力をどこまで端末ローカルに残すか（ログイン後に引き継ぐか破棄か）を要決定。
+  - i18n ja/en・中立丁寧体。
+- 更新日: 2026-05-30
+
+### DF-F5 — 課金状態とログイン状態が独立＝「有料なのに使えない」　[P0 / 要調査先行]
+- 優先度: P0 / ステータス: TODO（調査先行）/ 担当: dev-logic
+- 詳細: 課金状態とログイン状態が独立に管理され、「有料なのに使えない」状態が出る（p04）。両者の関係を整理し、状態を区別表示する。DF-F9 の「有料演出が出過ぎ」と同根の可能性（`isPaid()` の戻り値が課金実態とズレている疑い）。
+- 関連ファイル: `src/subscription.ts`（`isPaid()`）、`src/guestUser.ts`、`server/routes/billing.ts`（verify/RTDN）、課金状態を参照する各画面
+- DoD: 「ログイン状態」「課金状態」が独立して正しく解決され、有料ユーザーが有料機能を使える。矛盾状態（有料判定なのにブロック等）が消える。状態の区別表示（誰に何が見えているか）が明確。
+- 依存: DF-F3（状態ポリシー）。DF-F9 と合流調査推奨。
+- 提言・抜けもれ:
+  - DF-F9 と同じ `isPaid()` を疑う。まず `isPaid()` がゲスト/未ログイン/購入済をどう判定しているか棚卸しし、再現条件を特定してから直す。
+  - Play Billing 既知ギャップ（project-logic-play-billing-gaps：acknowledge/RTDN の Play Console 設定残）が課金状態同期に絡む可能性。verify 後の状態反映タイミングを確認。
+  - 両OS: Android 実機の購入フロー後に `isPaid()` が即 true になるか。
+- 更新日: 2026-05-30
+
+### DF-F6 — オンボ生年入力の「次へ」無言ブロックを可視化　[P0 / 即実装]
+- 優先度: P0 / ステータス: TODO / 担当: dev-logic
+- 詳細: オンボーディングの生年入力で「次へ」が無言で押せず、フリーズと誤解される（p01）。disabled の理由表示 or インライン警告を出す。`src/screens/OnboardingScreen.tsx`。UI-13 の onboarding E2E が赤だった同画面（既存バグと連動）。
+- 関連ファイル: `src/screens/OnboardingScreen.tsx`（生年 step・次へボタンの disabled 条件）、`src/i18n.ts`（警告文言 ja/en）
+- DoD: 生年が未入力/不正のとき「次へ」が無言で死なず、インライン警告 or ボタン下の説明で理由が伝わる。有効入力で進める。onboarding E2E が green に戻る。
+- 依存: UI-13 で赤だった onboarding age step E2E（既存バグ）。本件修正で E2E 復旧を兼ねられるか確認。
+- 提言・抜けもれ:
+  - UI-13・CONTENT_AUDIT で言及された「onboarding age step E2E 1fail」と同画面。この修正で E2E が直るなら一石二鳥、直さないなら別途切り分け。
+  - 文言は中立丁寧体（例「生まれた年を選択してください」）。
+  - 両OS: ネイティブの数値ピッカー/キーボードで入力できるか。
+  - アクセシビリティ: disabled ボタンに aria-describedby で理由を紐付け。
+- 更新日: 2026-05-30
+
+### DF-F7 — en でコーチマーク/チュートリアルの日本語ハードコード一掃　[P0 / 即実装]
+- 優先度: P0 / ステータス: TODO / 担当: dev-logic
+- 詳細: en ロケールでコーチマーク/チュートリアルが日本語ハードコード（`src/tutorial/coachmark.tsx` L89「まずここから始めましょう…」, L100「さっそくやってみよう！」）。i18n キー化し、合わせて全体を grep で一掃（p20）。軽い・明確。
+- 関連ファイル: `src/tutorial/coachmark.tsx`（L89/L100 のハードコード文言）、`src/i18n.ts`（新規キー ja/en）、`aria-label="閉じる"`（L360 等のハードコードも要 i18n 化）
+- DoD: コーチマークが en で英語表示。`src/` 全体を grep して日本語直書きの UI 文言が残らない（チュートリアル系優先）。tsc/eslint green。
+- 依存: なし
+- 提言・抜けもれ:
+  - 確認済の直書きは L89/L100 だけでなく L360 `aria-label="閉じる"`、CTA の `#6C8EF5`/`#fff` ハードコード hex も同ファイルにある。hex は CSS var 化（`--accent`/`--accent-fg`）も同時にやると一石二鳥（デザイン制約遵守）。ただし主目的は i18n なので hex は別タスク化でも可。
+  - grep 一掃: `grep -rnP '[ぁ-んァ-ヶ一-龠]' src/` でチュートリアル/トースト/ダイアログの直書き日本語を洗う。
+  - i18n ja/en・中立丁寧体。
+- 更新日: 2026-05-30
+
+### DF-F8 — 通知設定の粒度（時刻ピッカー＋頻度＋静かな時間帯）　[P0 / 重め]
+- 優先度: P0 / ステータス: TODO / 担当: dev-logic
+- 詳細: `src/screens/NotificationSettingsScreen.tsx` は時刻21時固定・頻度設定なし。時刻ピッカー＋頻度（毎日/平日/週N回 等）＋静かな時間帯（DND）を追加（p18）。重め。
+- 関連ファイル: `src/screens/NotificationSettingsScreen.tsx`、`src/notifications.ts`（※スタブ。CLAUDE.md gotchas #3「実装化は観測/通知戦略と整合してから」に注意）、Capacitor LocalNotifications、localStorage（既存 `logic-notifications`）、`src/i18n.ts`
+- DoD: 時刻を任意に選べ、頻度・静かな時間帯を設定でき、設定どおりにローカル通知がスケジュールされる。再起動後も保持。tsc/eslint green。
+- 依存: なし（が `src/notifications.ts` がスタブな点に注意）
+- 提言・抜けもれ:
+  - ⚠ `src/notifications.ts` は stub（CLAUDE.md gotchas #3）。実通知スケジューリングに踏み込むなら Keita に「通知戦略の本実装に入る」確認を取る。設定UI＋永続化までと、実際のネイティブ通知発火は段階を分けるのが安全。
+  - 両OS: iOS/Android の通知許可フロー・LocalNotifications のスケジュール挙動が異なる。両OS確認必須。
+  - 永続化: 既存 `logic-notifications` キーの形式拡張（時刻のみ→時刻＋頻度＋DND）。後方互換のフォールバック。
+  - i18n ja/en・中立丁寧体。アクセシビリティ: 時刻ピッカーのラベル。
+- 更新日: 2026-05-30
+
+### DF-F9 — 有料ウェルカム演出が再訪毎＋ゲストにも出る　[P0 / 要調査先行]
+- 優先度: P0 / ステータス: TODO（調査先行）/ 担当: dev-logic
+- 詳細: 有料ウェルカム演出（`pricing.welcomeToast*`）が再訪毎＋ゲストにも出る（p18）。初回1回限定に修正。**調査結果**＝`HomeScreenV3.tsx` L322-343 の `shouldShowUpgradeToast(paid)` は「`paid` かつ `UPGRADE_SEEN_KEY!=='1'`」で初回1回限りのロジックになっている。よって症状が事実なら原因は (a) `isPaid()` がゲスト/再訪で誤って true を返す（DF-F5 と同根）、(b) `dismiss()` の `localStorage.setItem` が効かず毎回未読扱い、のどちらか。
+- 関連ファイル: `src/screens/HomeScreenV3.tsx` L322-343（`UPGRADE_SEEN_KEY`/`shouldShowUpgradeToast`/`useUpgradeWelcomeToast`/`dismiss`）、`src/subscription.ts`（`isPaid()`）
+- DoD: ウェルカム演出が「有料化した初回の1回のみ」表示。ゲスト・再訪では出ない。原因（isPaid 判定 or dismiss 永続化）を特定し修正。
+- 依存: DF-F5 と合流調査推奨（`isPaid()` 共通疑い）。
+- 提言・抜けもれ:
+  - 「UPGRADE_SEEN_KEY バグ」と決め打ちしない。ロジックは正しいので、焦点は `isPaid()` の戻り値と `dismiss` の setItem 到達。DF-F5 とまとめて1調査で。
+  - dismiss が onCta 経路でも setItem されるか（onClose だけ setItem で onCta が抜けてないか）L309-313 周辺を確認。
+- 更新日: 2026-05-30
+
+### DF-F10 — 下タブのラベルと中身の不一致を機能名ベースに　[P1 / 即実装]
+- 優先度: P1 / ステータス: TODO / 担当: dev-logic
+- 詳細: 下タブのラベルと中身が不一致（「トレーニング」=ロードマップ、「ランキング」=フェルミ 等）。機能名ベースのラベルに（p07）。i18n 文言。
+- 関連ファイル: `src/components/AppShell.tsx`（タブバー）or `src/AppV3.tsx`（タブ定義）、`src/i18n.ts`（タブラベル ja/en）
+- DoD: 各タブのラベルが遷移先の中身と一致する命名になる。ja/en 両方。tsc/eslint green。
+- 依存: DF-F16（ホーム情報設計）と命名トーン整合。
+- 提言・抜けもれ:
+  - title の Doing 形ルール（feedback-logic-title-doing）はコース/レッスン title の話。タブラベルは機能名（名詞）でOKだが、トーン一貫性は確認。
+  - i18n ja/en・中立丁寧体。Keita に最終ラベル案を一度見せると手戻り防止（軽い設計判断混じり）。
+- 更新日: 2026-05-30
+
+### DF-F11 — トライアル残日数をホーム/プロフィールに常設＋終了前通知　[P1]
+- 優先度: P1 / ステータス: TODO / 担当: dev-logic
+- 詳細: トライアル残日数がジャーナル内にしか出ない。ホーム/プロフィールのプラン欄に常設＋終了2日前通知（p02）。
+- 関連ファイル: `src/screens/HomeScreenV3.tsx`、`src/screens/ProfileScreenV3.tsx`、`src/subscription.ts`（トライアル残日数算出）、`src/notifications.ts`（終了前通知・※スタブ注意）、`src/i18n.ts`
+- DoD: ホームとプロフィールのプラン欄に残日数が常設表示。終了2日前にローカル通知。ja/en。
+- 依存: DF-F8（通知基盤）と通知部分が連動。DF-F5/F3（課金/状態解決）が前提。
+- 提言・抜けもれ:
+  - 通知部分は DF-F8 の通知基盤に乗せる（`notifications.ts` スタブ問題を共有）。表示常設だけ先行し通知は後追いでも可。
+  - 残日数0/期限切れ時の表示分岐（「トライアル終了」→アップグレード導線）も要設計。
+  - i18n ja/en・中立丁寧体。
+- 更新日: 2026-05-30
+
+### DF-F12 — フェルミランキングの透明性（算出基準/母数/順位）　[P1 / 設計判断]
+- 優先度: P1 / ステータス: BLOCKED（Keita 承認待ち）/ 担当: dev-logic＋Keita
+- 詳細: フェルミランキングに算出基準・母数・自分の順位が出ず透明性に欠ける（p04）。`src/screens/FermiRankingScreen.tsx`。何をどう見せるか設計判断。
+- 関連ファイル: `src/screens/FermiRankingScreen.tsx`、ランキング算出 backend（`server/routes/` のランキング系・AM-P 関連）、`src/i18n.ts`
+- DoD: ランキングの算出基準・母数（n）・自分の順位が表示される。Keita 承認した見せ方に準拠。
+- 依存: backend のランキング集計が母数/順位を返せるか（AM-P 実装と整合）。
+- 提言・抜けもれ:
+  - 何を transparency として出すか（スコア定義・母数・パーセンタイル）は Keita 判断。まず案を1つ出して承認を取る。
+  - backend 変更が要るなら手動 deploy-production.yml で本番反映（project-logic-render-auto-deploy）。
+  - i18n ja/en・中立丁寧体。
+- 更新日: 2026-05-30
+
+### DF-F13 — デイリーフェルミに難易度/分野フィルタで手応え　[P1 / 設計判断]
+- 優先度: P1 / ステータス: BLOCKED（Keita 承認待ち）/ 担当: dev-logic＋content-creator＋Keita
+- 詳細: デイリーフェルミが残数表示のみで上級者の手応えが薄い（p04）。難易度/分野フィルタを追加（機能追加）。設計判断。
+- 関連ファイル: フェルミ問題プール（`src/lessons/` or fermi データ）、デイリーフェルミ画面、`server/routes/`（日次シード AM-P/T-AD と整合）、`src/i18n.ts`
+- DoD: 難易度・分野でフィルタでき、上級者が手応えある問題を選べる。Keita 承認した仕様に準拠。
+- 依存: DF-F19（en の問題プール locale 化）と問題プール設計が連動。日次シード（AM-P）と整合。
+- 提言・抜けもれ:
+  - 機能追加＋コンテンツ（問題の難易度タグ付け）が要る。content-creator にタグ付け、dev-logic にフィルタ UI/ロジック。設計は Keita 承認先行。
+  - 「1日1問」制限（DF-F18）との整合：フィルタしても1日1問のままか上級者は複数解けるか。
+  - i18n ja/en。
+- 更新日: 2026-05-30
+
+### DF-F14 — 料金(en)レイアウト崩れ（Yearly Save 密着・Free 列空欄）　[P1 / 即実装]
+- 優先度: P1 / ステータス: TODO / 担当: designer＋dev-logic
+- 詳細: 料金画面の en で「Yearly Save 5 months」が密着、比較表 Free 列が空欄で×印もない（p20）。`src/screens/PricingScreen.tsx`。i18n/レイアウト・軽い。
+- 関連ファイル: `src/screens/PricingScreen.tsx`、`src/PricingScreen.css`（or 該当 CSS）、`src/i18n.ts`（en の save 文言・比較表ラベル）
+- DoD: en で「Yearly / Save N months」が適切な間隔で表示。比較表の Free 列に ○/× が入り空欄が消える。ja でも崩れない。tsc/eslint green。
+- 依存: なし
+- 提言・抜けもれ:
+  - 「Save 5 months」の数値が実際の年額割引と一致しているか（コンテンツ正確性）も確認（feedback-audit-triage-correctness-first＝数値ズレは即修正）。
+  - マーケ文言は安さ commodity 比較NG（feedback-logic-marketing）に抵触しない範囲で。
+  - i18n ja/en 両方の比較表セルを埋める。×印は SVG アイコン（UI chrome は emoji 不可）。
+  - 両OS 幅でレイアウト確認。
+- 更新日: 2026-05-30
+
+### DF-F15 — ジャーナルのログイン誘導コピーに価値訴求　[P1 / 即実装]
+- 優先度: P1 / ステータス: TODO / 担当: content-creator＋dev-logic
+- 詳細: ジャーナルのログイン誘導コピーが「保存のため」の都合のみで価値訴求がない。「AIと自己分析」等の価値1行を追加（p02）。i18n 文言・軽い。
+- 関連ファイル: `src/i18n.ts`（ジャーナルのログイン誘導文言 ja/en）、ジャーナル画面の該当文言箇所
+- DoD: 誘導コピーがユーザー価値（AIで自己分析できる等）を1行で伝える。ja/en。
+- 依存: DF-F4（段階ゲート）と同じ誘導ポイント＝セットで実装。
+- 提言・抜けもれ:
+  - DF-F4 と同時に。中立丁寧体（feedback-app-copy-neutral）。
+  - 安さ訴求でなく価値訴求（feedback-logic-marketing）。
+- 更新日: 2026-05-30
+
+### DF-F16 — 初回ホームの情報過密を整理し最優先アクション明示　[P1 / 設計判断]
+- 優先度: P1 / ステータス: BLOCKED（Keita 承認待ち）/ 担当: designer＋dev-logic＋Keita
+- 詳細: 初回ホームが情報過密で最優先アクションが不明（p07）。`src/screens/HomeScreenV3.tsx`。情報の優先順位付け・1stアクション明示。設計判断。
+- 関連ファイル: `src/screens/HomeScreenV3.tsx`、`src/i18n.ts`
+- DoD: 初回ホームで「今やるべき1アクション」が一目で分かる情報設計。Keita 承認したレイアウトに準拠。
+- 依存: DF-F1（検索発見性）・DF-F10（タブ命名）・DF-F11（残日数常設）と同画面でレイアウト競合 → まとめて designer に1案。
+- 提言・抜けもれ:
+  - DF-F1/F10/F11 が同じホーム/ナビに乗るので、designer に「ホーム＋タブの情報設計」を1パッケージで出してもらい Keita 承認 → 個別実装、が手戻り最小。
+  - 既存の UI-4/5/11（ホーム見出し整理）の延長線。過去の意匠方針（AM-K 手描き）と衝突しないか designer 確認。
+  - i18n ja/en・中立丁寧体。
+- 更新日: 2026-05-30
+
+### DF-F17 — 復習ハブが有料と伝わらない　[P2 / 即実装]
+- 優先度: P2 / ステータス: TODO / 担当: content-creator＋dev-logic
+- 詳細: 復習ハブが有料機能と伝わらず、無料時は「データ無し」表示のみ（p01）。有料であることが分かる文言/導線に。
+- 関連ファイル: 復習ハブ画面、`src/i18n.ts`、`src/subscription.ts`（有料判定）
+- DoD: 無料ユーザーに「これは有料機能」と分かる空状態＋アップグレード導線が出る。ja/en。
+- 依存: DF-F3（状態ポリシー）に準拠。
+- 提言・抜けもれ:
+  - 「データ無し」と「有料ロック」は別。空状態を有料ロック表示に変える。
+  - 安さでなく価値訴求（feedback-logic-marketing）・中立丁寧体。
+- 更新日: 2026-05-30
+
+### DF-F18 — フェルミ1日1問制限/課金導線が解く前に弱い　[P2]
+- 優先度: P2 / ステータス: TODO / 担当: dev-logic
+- 詳細: フェルミの1日1問制限と課金導線が、問題を解く前の段階で弱い（p01）。解く前に「無料は1日1問・有料で無制限」が伝わる導線に。
+- 関連ファイル: デイリーフェルミ画面、`src/i18n.ts`、`src/subscription.ts`
+- DoD: 解く前に制限と有料無制限が分かり、自然なアップグレード導線がある。ja/en。
+- 依存: DF-F3（状態ポリシー）、DF-F13（難易度フィルタ）と同画面。
+- 提言・抜けもれ:
+  - DF-F13 と同画面なのでまとめて触ると効率的。価値訴求・中立丁寧体。
+- 更新日: 2026-05-30
+
+### DF-F19 — フェルミ問題の locale 化（en でも日本市場前提）　[P2 / 設計判断・長期]
+- 優先度: P2 / ステータス: BLOCKED（Keita 承認待ち・長期）/ 担当: content-creator＋Keita
+- 詳細: フェルミ問題が en でも日本市場前提（GMV・円建て等）（p20）。locale 別問題プール or 設問の汎用化。コンテンツ・重め/長期。
+- 関連ファイル: フェルミ問題データ（`src/lessons/` or fermi データ）、en/ja の問題定義
+- DoD: en ユーザーに通貨・市場前提が違和感ない問題が出る（locale 別プール or 通貨/市場の汎用化）。Keita 承認した方針に準拠。
+- 依存: DF-F13（難易度/分野フィルタ）と問題プール設計が連動。
+- 提言・抜けもれ:
+  - en 別プールを新規作るか既存を汎用化するかは大きな方針＝Keita 判断。バルク新規生成はサンプル承認フロー（feedback-logic-course-thumbnails / content-audit のサンプル先行）。
+  - 長期タスク。Wave3 でも最後。まず方針だけ Keita に確認。
+- 更新日: 2026-05-30
+
+### DF-F20 — 特商法リンクを ja/日本配信時のみ出し分け　[P2 / 即実装]
+- 優先度: P2 / ステータス: TODO / 担当: dev-logic
+- 詳細: 特定商取引法リンクが en UI にも残る（p20）。ja/日本配信時のみ表示に出し分け。軽い。
+- 関連ファイル: 特商法リンクの表示箇所（設定/料金/フッタ系。要 grep 特定）、locale 判定（`logic-locale`）、`src/i18n.ts`
+- DoD: en UI で特商法リンクが非表示、ja で表示。tsc/eslint green。
+- 依存: なし
+- 提言・抜けもれ:
+  - 確認時 `PricingScreen.tsx` には特商法文字列が無かった → 表示箇所は別画面（設定/法務リンク集）。実装前に `grep -rn '特定商取引\|特商\|tokushoho\|legal' src/` で所在特定。
+  - 「en で隠す」が正か「日本配信（locale=ja かつ Android JP）か」要件確認。原則 locale=ja 出し分けで足りる見込み。
+  - 他の法務リンク（プライバシー/利用規約）は en でも必要なので一律で消さない。特商法だけ。
+- 更新日: 2026-05-30
+
+### DF-F21 — フィードバック投稿に識別情報＋最低文字数チェック　[P2 / 即実装]
+- 優先度: P2 / ステータス: TODO / 担当: dev-logic
+- 詳細: フィードバック投稿に最低限の識別情報が無い（ゲスト送信可だが guest ID を含まず、投稿者/再現環境を特定不可、最低文字数チェックもなし）。運用追跡性。`src/screens/FeedbackScreen.tsx`。**調査結果**＝現状 body は `{category, message, locale}` のみ送信（L39）、送信ガードは `!message.trim()` の非空チェックのみ（L31/L152）。guest ID・platform・version・最低文字数いずれも無し。
+- 関連ファイル: `src/screens/FeedbackScreen.tsx`（L31 ガード, L39 body）、`src/guestUser.ts`（guest ID 取得）、`server/index.ts`（`/api/feedback` 受け側・DB feedback テーブル）、Capacitor Device（platform/version）
+- DoD: 投稿 body に guest/user ID・platform（iOS/Android/web）・アプリ version・locale が含まれ、最低文字数（例10文字）未満は送信ガード＋インライン案内。サーバ/DB 側も追加フィールドを受けて保存。tsc/eslint green。
+- 依存: server＋DB（feedback テーブル）にカラム追加が伴うなら migration＋手動 deploy。
+- 提言・抜けもれ:
+  - server 側 `/api/feedback` と Supabase `feedback` テーブルのスキーマ拡張が要る（カラム追加 migration）。backend 変更は手動 deploy-production.yml で本番反映（project-logic-render-auto-deploy）。
+  - プライバシー: guest ID は匿名 ID（個人情報でない）である前提を確認。PII を勝手に集めない。
+  - 最低文字数のエラー文言 ja/en・中立丁寧体。
+  - 両OS: Capacitor Device プラグインで platform/version 取得（web フォールバック）。
+- 更新日: 2026-05-30
+
+#### DF-F バッチ 抜けもれ提言サマリ
+- 横断の親＝DF-F3（状態ポリシー）。F4/F5/F9/F17/F18 はこれに従属。先に状態×機能マトリクスを Keita 承認すると下流の手戻りが激減。
+- `isPaid()` 疑い: F5 と F9 は同根の可能性大 → 1調査にまとめる。Play Billing 既知ギャップ（project-logic-play-billing-gaps）も絡む。
+- 通知基盤: F8（粒度）と F11（残日数通知）は `src/notifications.ts` スタブを共有。実通知発火に踏み込むなら Keita 確認（CLAUDE.md gotchas #3）。
+- ホーム/ナビ同画面群: F1（検索発見性）・F10（タブ命名）・F11（残日数常設）・F16（情報設計）は同じホーム/タブに乗る → designer に1パッケージで出してもらい Keita 承認 → 個別実装が最効率。
+- backend 変更を伴う件（F12 ランキング, F21 フィードバック, F13/F19 の一部）は手動 deploy-production.yml が必要（main push では Render web 自動反映されない）。
+- 回帰注意の重め: F2（文字サイズ＝全画面波及）・F8（通知）。test-functional で横断検証。
+- i18n: 文言系ほぼ全件 ja/en 両方＋中立丁寧体（feedback-app-copy-neutral）。UI chrome の×印等は SVG（emoji 不可）。
+- 永続化: F2（font scale）・F4（ゲスト下書き）・F8（通知設定拡張）は localStorage/DB persist 必須。
+
+#### DF-F バッチ 次アクション
+1. Keita に【設計判断】5件（F3/F12/F13/F16/F19）と、その親 F3 の「状態×機能マトリクス」を提示して承認を取る。
+2. Wave1（即実装の軽い明確修正）を dev-logic にまとめて委譲: F6・F7・F10・F14・F15・F17・F20・F21（＋F1 の発見性は designer 1案先行）。
+3. Wave2（要調査先行）F5・F9 を dev-logic に1調査として委譲（`isPaid()`＋dismiss 永続化の特定）。
+4. Wave3（重め/設計判断）F2・F8・F3・F12・F13・F16・F19 を1件ずつ Keita 承認取りながら。
+
+---
+
 ## バッチ: 2026-05-30 UI/GUI 改善13件（Keita）
 
 Keita からの Logic アプリ UI/GUI 改善依頼13項目。実装は dev-logic、ビジュアル絡みは designer、検証は test-functional / test-sanity に委譲（task-manager は構造化・検証のみ）。
