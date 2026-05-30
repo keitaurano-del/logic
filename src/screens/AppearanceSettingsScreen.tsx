@@ -3,7 +3,7 @@ import { Header } from '../components/platform/Header'
 import { CheckIcon } from '../icons'
 import { MODES, getMode, setMode, type ModeId, type Mode } from '../theme'
 import {
-  FONT_SCALES, getFontScale, setFontScale,
+  FONT_SCALES, loadFontScale, setFontScale,
   type FontScaleId, type FontScaleOption,
 } from '../fontScale'
 import { t } from '../i18n'
@@ -154,7 +154,7 @@ function FontSizeCard({
 
 export function AppearanceSettingsScreen({ onBack }: Props) {
   const [mode, setLocalMode] = useState<ModeId>(getMode())
-  const [fontScale, setLocalFontScale] = useState<FontScaleId>(getFontScale())
+  const [fontScale, setLocalFontScale] = useState<FontScaleId>(loadFontScale())
 
   function handleSelect(m: Mode) {
     setLocalMode(m.id)

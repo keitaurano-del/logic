@@ -35,10 +35,6 @@ export function loadFontScale(): FontScaleId {
   return DEFAULT_ID
 }
 
-export function getFontScale(): FontScaleId {
-  return loadFontScale()
-}
-
 function scaleValue(id: FontScaleId): number {
   return FONT_SCALES.find((f) => f.id === id)?.scale ?? 1.0
 }
