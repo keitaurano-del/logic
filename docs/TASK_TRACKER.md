@@ -23,8 +23,8 @@ Keita 指示「なんでもいいけど全部ちゃんと反映して」＝ア�
 | 層 | 意味 | 該当 |
 |----|------|------|
 | 第1層 実装済み（コードあり） | main にコミット有り。実機効果は第2層で判定 | F1, F2, F4, F5, F6, F7, F9, F10, F11, F12, F14, F15, F16, F17, F18, F19, F20, F21（18件） |
-| 第2層 効いている（実機○） | test-functional の実効性検証で○判定が出たもの | **DF-F2**（px→rem codemod 完了 `3a588dc`・4テーマ×3サイズ×7画面=84組で横溢れ0・inline px 0件・実機検証○ → DONE）。他は DF-FV 検証完了まで未確定（○が出たら順次この層へ） |
-| 第3層 効いていない・要修正（実機×/△） | コードはあるが実機で効果が出ない欠陥。再オープン | （現在なし）DF-FV の×/△ が出たら随時ここへぶら下げる |
+| 第2層 効いている（実機○） | test-functional の実効性検証で○判定が出たもの | **DF-F2**＋**DF-FV 2026-05-31 検証完了で○16件**：F1/F4/F5/F6/F7/F9/F10/F11/F12/F14/F15/F16/F17/F19/F20/F21（全てライブ経路結線・ja/en・永続化を file:line で確認）。うち機能クリーン12件（F1/F5/F6/F7/F9/F10/F11/F14/F15/F17/F20/F21）は DONE 昇格、設計判断系4件（F4/F12/F16/F19）は○機能だが Keita 見せ方目視待ちで REVIEW 維持 |
+| 第3層 効いていない・要修正（実機×/△） | コードはあるが実機で効果が出ない欠陥。再オープン | **DF-F18**（△・finding すり替わり＝実装は「完了後」upsell のみで元症状「解く前に弱い」未解消）→ **DF-FV-1** で dev-logic 修正キュー |
 | 未着手（コードなし） | コミット無し。設計判断で未確定のまま残存 | DF-F3（状態ポリシー親・BLOCKED）, DF-F8（通知粒度・TODO）, DF-F13（フェルミ難易度フィルタ・BLOCKED） |
 
 各 DF-F の実装コミット hash（本日 git log main で全件実在確認済み・HEAD=`3a588dc`）:
@@ -42,28 +42,29 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 
 | ID | タイトル | 優先度 | ステータス | コミット | 担当案 |
 |----|---------|--------|-----------|---------|--------|
-| DF-F1  | ロードマップ検索/絞り込みの発見性が低い（虫眼鏡が気づかれない） | P0 | 実装済→REVIEW（DF-FV検証待ち） | `0d8b799` | designer＋dev-logic |
+| DF-F1  | ロードマップ検索/絞り込みの発見性が低い（虫眼鏡が気づかれない） | P0 | DONE（DF-FV○・常設検索バー結線） | `0d8b799` | designer＋dev-logic |
 | DF-F2  | 文字サイズのユーザー設定（標準/大/特大）が無い | P0 | DONE（codemod完了・実機検証○） | `a380c83`+`0e77a79`+`3a588dc` | dev-logic |
 | DF-F3  | ゲスト/未ログイン/有料の3状態の出し分けが画面ごとにバラバラ | P0 | BLOCKED（未着手・設計判断） | なし | dev-logic（設計）＋Keita |
-| DF-F4  | ジャーナルがゲスト全面ブロックで体験前に価値が途切れる | P0 | 実装済→REVIEW（DF-FV検証待ち） | `ab88528` | dev-logic |
-| DF-F5  | 課金状態とログイン状態が独立＝「有料なのに使えない」 | P0 | 実装済→REVIEW（DF-FV検証待ち） | `b756022` | dev-logic |
-| DF-F6  | オンボ生年入力で「次へ」が無言ブロック（フリーズ誤解） | P0 | 実装済→REVIEW（DF-FV検証待ち） | `cd05dd3` | dev-logic |
-| DF-F7  | en でコーチマーク/チュートリアルが日本語ハードコード | P0 | 実装済→REVIEW（DF-FV検証待ち） | `24417a2` | dev-logic |
+| DF-F4  | ジャーナルがゲスト全面ブロックで体験前に価値が途切れる | P0 | REVIEW（DF-FV○機能・設計判断系=Keita見せ方目視待ち） | `ab88528` | dev-logic |
+| DF-F5  | 課金状態とログイン状態が独立＝「有料なのに使えない」 | P0 | DONE（DF-FV○・paid分岐文言結線） | `b756022` | dev-logic |
+| DF-F6  | オンボ生年入力で「次へ」が無言ブロック（フリーズ誤解） | P0 | DONE（DF-FV○・理由提示+aria結線） | `cd05dd3` | dev-logic |
+| DF-F7  | en でコーチマーク/チュートリアルが日本語ハードコード | P0 | DONE（DF-FV○・coachmark t()化ja/en） | `24417a2` | dev-logic |
 | DF-F8  | 通知設定の粒度不足（時刻固定・頻度なし・静かな時間帯なし） | P0 | TODO（未着手・notifications.tsスタブ注意） | なし | dev-logic |
-| DF-F9  | 有料ウェルカム演出が再訪毎＋ゲストにも出る | P0 | 実装済→REVIEW（DF-FV検証待ち） | `b756022` | dev-logic |
-| DF-F10 | 下タブのラベルと中身が不一致（機能名ベースに） | P1 | 実装済→REVIEW（DF-FV検証待ち） | `952fdda` | dev-logic |
-| DF-F11 | トライアル残日数がジャーナル内にしか出ない | P1 | 実装済→REVIEW（DF-FV検証待ち） | `b39a0df` | dev-logic |
-| DF-F12 | フェルミランキングの透明性欠如（算出基準/母数/順位なし） | P1 | 実装済→REVIEW（DF-FV検証待ち） | `cf5d7e4` | dev-logic＋Keita |
+| DF-F9  | 有料ウェルカム演出が再訪毎＋ゲストにも出る | P0 | DONE（DF-FV○・非有料カット+初回限定seen永続化が結線。※実装出所は`c5deaeb`単一有料プラン統合、`b756022`ではない） | `c5deaeb` | dev-logic |
+| DF-F10 | 下タブのラベルと中身が不一致（機能名ベースに） | P1 | DONE（DF-FV○・nav i18n ja/en整合） | `952fdda` | dev-logic |
+| DF-F11 | トライアル残日数がジャーナル内にしか出ない | P1 | DONE（DF-FV○・常設バッジ+終了間際バナー結線。通知発火はF8依存で範囲外） | `b39a0df` | dev-logic |
+| DF-F12 | フェルミランキングの透明性欠如（算出基準/母数/順位なし） | P1 | REVIEW（DF-FV○機能・設計判断系=Keita見せ方目視待ち） | `cf5d7e4` | dev-logic＋Keita |
 | DF-F13 | デイリーフェルミが残数表示のみで上級者の手応え薄い | P1 | BLOCKED（未着手・設計判断） | なし | dev-logic＋content-creator＋Keita |
-| DF-F14 | 料金(en)「Yearly Save 5 months」密着＋比較表 Free 列空欄 | P1 | 実装済→REVIEW（DF-FV検証待ち） | `d4ae9e0` | designer＋dev-logic |
-| DF-F15 | ジャーナルのログイン誘導が保存都合のみで価値訴求なし | P1 | 実装済→REVIEW（DF-FV検証待ち） | `578d2ea` | content-creator＋dev-logic |
-| DF-F16 | 初回ホームが情報過密で最優先アクション不明 | P1 | 実装済→REVIEW（DF-FV検証待ち） | `12f350c`+`f4dcf13` | designer＋dev-logic＋Keita |
-| DF-F17 | 復習ハブが有料と伝わらない（無料時データ無し表示のみ） | P2 | 実装済→REVIEW（DF-FV検証待ち） | `1a056fd` | content-creator＋dev-logic |
-| DF-F18 | フェルミ1日1問制限/課金導線が解く前に弱い | P2 | 実装済→REVIEW（DF-FV検証待ち） | `f2e7819` | dev-logic |
-| DF-F19 | フェルミ問題が en でも日本市場前提（GMV/円建て） | P2 | 実装済→REVIEW（DF-FV検証待ち） | `7a2f1d0` | content-creator＋Keita |
-| DF-F20 | 特商法リンクが en UI にも残る（ja/日本配信時のみ出し分け） | P2 | 実装済→REVIEW（DF-FV検証待ち） | `5fe6833` | dev-logic |
-| DF-F21 | フィードバック投稿に識別情報・最低文字数チェックが無い | P2 | 実装済→REVIEW（DF-FV検証待ち） | `7819a34` | dev-logic |
-| DF-FV  | DF-F 系 実効性網羅検証（コードはあるが実機で効くか○/×/△判定） | P0 | IN_PROGRESS（test-functional） | — | test-functional |
+| DF-F14 | 料金(en)「Yearly Save 5 months」密着＋比較表 Free 列空欄 | P1 | DONE（DF-FV○・em dash明示+flexWrap密着解消） | `d4ae9e0` | designer＋dev-logic |
+| DF-F15 | ジャーナルのログイン誘導が保存都合のみで価値訴求なし | P1 | DONE（DF-FV○・価値訴求文言ja/en結線） | `578d2ea` | content-creator＋dev-logic |
+| DF-F16 | 初回ホームが情報過密で最優先アクション不明 | P1 | REVIEW（DF-FV○機能・設計判断系=Keita見せ方目視待ち） | `12f350c`+`f4dcf13` | designer＋dev-logic＋Keita |
+| DF-F17 | 復習ハブが有料と伝わらない（無料時データ無し表示のみ） | P2 | DONE（DF-FV○・有料ロック価値提示結線） | `1a056fd` | content-creator＋dev-logic |
+| DF-F18 | フェルミ1日1問制限/課金導線が解く前に弱い | P2 | REVIEW（DF-FV△・finding すり替わり=「完了後」導線のみ実装、元症状「解く前」未解消→DF-FV-1で修正） | `f2e7819` | dev-logic |
+| DF-F19 | フェルミ問題が en でも日本市場前提（GMV/円建て） | P2 | REVIEW（DF-FV○機能・設計判断系=Keita見せ方目視待ち） | `7a2f1d0` | content-creator＋Keita |
+| DF-F20 | 特商法リンクが en UI にも残る（ja/日本配信時のみ出し分け） | P2 | DONE（DF-FV○・ProfileScreenV3でja限定ガード結線） | `5fe6833` | dev-logic |
+| DF-F21 | フィードバック投稿に識別情報・最低文字数チェックが無い | P2 | DONE（DF-FV○・クライアントガード+識別子送信+サーバ受領結線。※device列保存はmigration 034本番適用+backend手動deploy要） | `7819a34` | dev-logic |
+| DF-FV  | DF-F 系 実効性網羅検証（コードはあるが実機で効くか○/×/△判定） | P0 | DONE（2026-05-31 全17件判定完了：○16/△1/×0、F2は別途○DONE。△=DF-F18→DF-FV-1起票） | — | test-functional |
+| DF-FV-1 | DF-F18 修正：フェルミ「解く前」段階の制限明示/有料無制限訴求を追加（現状は完了後導線のみ） | P2 | TODO（DF-FV△から起票） | — | dev-logic |
 
 ---
 
@@ -323,7 +324,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 - 更新日: 2026-05-30
 
 ### DF-FV — DF-F 系 実効性網羅検証（コードはあるが実機で効いているか）　[P0 / 検証]
-- 優先度: P0 / ステータス: IN_PROGRESS / 担当: test-functional
+- 優先度: P0 / ステータス: DONE（2026-05-31 全17件判定完了。○16/△1/×0、F2は別途○DONE）/ 担当: test-functional
 - 詳細: 最新 main（1.5.457 相当）で、第1層「実装済み」18件（DF-F1/F4/F5/F6/F7/F9/F10/F11/F12/F14/F15/F16/F17/F18/F19/F20/F21、＋再オープン中の F2 も含めて確認）について「コードはあるが実機で効いているか」を1件ずつ○/×/△で網羅判定する。DF-F2 で発覚した「マージ済みなのに実機で効いていない」型の欠陥を他項目でも取りこぼさないための品質ゲート。
 - 検証観点（各項目共通）: (a) 実機/エミュで該当画面を開いて症状が解消しているか、(b) ja/en 両ロケール、(c) 必要に応じ iOS/Android 両OS、(d) 元 finding の指摘そのものが消えているか（コミットが別解にすり替わっていないか＝F18「解く前 vs 完了後」のような乖離も検出）。
 - 判定とぶら下げ: ○=効いている→該当 DF-F を DONE 候補（Keita 配信判断へ）。×=効いていない／△=部分的にしか効かない→**個別修正タスクとして DF-FV にぶら下げて起票し dev-logic 修正キューへ**。下記の「実効性検証 結果ぶら下げ」表に随時追記する。
@@ -333,9 +334,11 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
   - backend を伴う F21（feedback カラム拡張）/ F12（ランキング集計）は、Render web 本番反映が手動 deploy-production.yml 必須（main push では web 自動反映されない＝project-logic-render-auto-deploy）。検証は「最新バンドルが本番に出ている」前提を先に満たすこと。Android は main push で自動反映。
   - 設計判断系で先行実装された F12/F16/F19（本来 Keita 承認待ちだった）は、機能の有無だけでなく「見せ方/方針が Keita 意図と合うか」も Keita 目視を1回挟む。
 - 実効性検証 結果ぶら下げ（test-functional が随時追記）:
-  - [ ] DF-F1 / [ ] DF-F4 / [ ] DF-F5 / [ ] DF-F6 / [ ] DF-F7 / [ ] DF-F9 / [ ] DF-F10 / [ ] DF-F11 / [ ] DF-F12 / [ ] DF-F14 / [ ] DF-F15 / [ ] DF-F16 / [ ] DF-F17 / [ ] DF-F18 / [ ] DF-F19 / [ ] DF-F20 / [ ] DF-F21（○/×/△ を記入。×/△ は下に DF-FV-1, DF-FV-2… で個別修正タスクを追加）
-  - （×/△ 個別修正タスクはここに追記）
-- 更新日: 2026-05-30
+  - [x] DF-F1 ○ / [x] DF-F4 ○(機能/設計判断系Keita目視待ち) / [x] DF-F5 ○ / [x] DF-F6 ○ / [x] DF-F7 ○ / [x] DF-F9 ○ / [x] DF-F10 ○ / [x] DF-F11 ○ / [x] DF-F12 ○(機能/設計判断系) / [x] DF-F14 ○ / [x] DF-F15 ○ / [x] DF-F16 ○(機能/設計判断系) / [x] DF-F17 ○ / [x] DF-F18 △ / [x] DF-F19 ○(機能/設計判断系) / [x] DF-F20 ○ / [x] DF-F21 ○(※device列はmigration034本番適用+backend手動deploy要)
+  - 検証方法(2026-05-31): test-functional がコミット diff×ライブ描画経路結線×ja/en i18n×永続化ガードを file:line で精査（tsc -b green ベースライン上で実施）。実機/エミュ目視ではなくコードレベル静的検証＝「dead code/未結線/別解すり替え/i18n片落ち」を主眼に判定。
+  - △/個別修正タスク:
+    - **DF-FV-1**（DF-F18 △）: 元 finding=「フェルミ課金導線が"解く前"に弱い」。実装(`f2e7819`)は DailyFermiScreen.tsx:1123 の result フェーズ（解き終えた直後・非有料）upsell のみ＝「完了後」導線にすり替わり。解く前段階の1日1問制限明示／有料無制限訴求が未追加。→ dev-logic で「解く前」導線を追加（TODO/P2）。
+- 更新日: 2026-05-31（DONE）
 
 #### DF-F バッチ 抜けもれ提言サマリ（2026-05-30 実コミット同期後）
 - 状況サマリ: 21件中 **18件は別アクターが実装して main に push 済み**（→REVIEW、DF-FV 実効性検証待ち）。**DF-F2 は `3a588dc` の px→rem codemod＋実機検証○で DONE**（第3層→第2層へ昇格。マージ済みでも効かなかった欠陥を codemod で解消）。**未着手は F3・F8・F13 の3件のみ**（コミットなし）。
