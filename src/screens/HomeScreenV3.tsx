@@ -11,7 +11,7 @@ import { getWrongAnswerStats } from '../wrongAnswerStore'
 import { isPaid } from '../subscription'
 import { HomeCoachmark, useShouldShowHomeCoachmark } from '../tutorial/coachmark'
 import { tutorial } from '../tutorial/tutorialStorage'
-import { loadPlacementResult, buildPersonalCourse, recommendedLessons, type PlacementResult } from '../placementData'
+import { loadPlacementResult, skipPlacement, buildPersonalCourse, recommendedLessons, type PlacementResult } from '../placementData'
 import { useWindowSize, BREAKPOINTS } from '../hooks/useResponsive'
 import { allLessons } from '../lessonData'
 import { getStudyTimeMs, getStudyDates, localDateStr } from '../stats'
@@ -174,6 +174,8 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
   const showPlacementHero = placementResult === null && !!onOpenPlacementTest
   const [placementHeroDismissed, setPlacementHeroDismissed] = useState(false)
   const handleSkipPlacementHero = () => {
+    // totalCount===0 を永続化（中庸推薦モード）。これで再起動後も診断ヒーローが復活しない。
+    skipPlacement()
     tutorial.markPlacementDismissed()
     setPlacementHeroDismissed(true)
   }
@@ -319,7 +321,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
           <button
             type="button"
             onClick={() => onOpenLesson(recommendedLesson.id)}
-            aria-label={`${t('home.recommendEyebrow')} ${recommendedLesson.category} ${recommendedLesson.level}: ${recommendedLesson.title}`}
+            aria-label={`${recommendedLesson.category} ${recommendedLesson.level}: ${recommendedLesson.title}`}
             style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', cursor: 'pointer', boxShadow: 'var(--shadow-v3-card-inset)', flexShrink: 0, border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%' }}
           >
             {/* 1:1 PNG (1024×1024) を切らずに表示するため aspectRatio:1/1 + objectFit:contain。
