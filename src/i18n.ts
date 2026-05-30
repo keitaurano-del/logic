@@ -1174,6 +1174,9 @@ const STRINGS: Record<Locale, Strings> = {
     'fermiRank.empty.title': 'まだスコアがありません',
     'fermiRank.empty.desc': 'デイリーフェルミに挑戦してランキングに登場しよう',
     'fermiRank.occupationAria': '職業: {label}',
+    'fermiRank.basis': 'スコアは AI 採点の点数を期間内で合計した値です。ランキングは毎日更新されます。',
+    'fermiRank.participants': '参加者 {n} 人',
+    'fermiRank.notRankedYet': 'あなたの順位は上位ランキングに入ると表示されます。スコアを伸ばして上位を目指しましょう。',
 
     // Fermi Screen extra
     'fermiScreen.docTitle': 'フェルミ推定 — Logic',
@@ -3042,6 +3045,9 @@ const STRINGS: Record<Locale, Strings> = {
     'fermiRank.empty.title': 'No scores yet',
     'fermiRank.empty.desc': 'Try the Daily Fermi to appear on the ranking',
     'fermiRank.occupationAria': 'Occupation: {label}',
+    'fermiRank.basis': 'Scores are the total of your AI-graded points within the period. The ranking refreshes daily.',
+    'fermiRank.participants': '{n} participants',
+    'fermiRank.notRankedYet': 'Your rank appears once you reach the top of the ranking. Keep improving your score to climb higher.',
 
 
     // Fermi Screen extra
