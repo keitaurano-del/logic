@@ -707,16 +707,23 @@ app.post('/api/admin/grant-premium', adminLimiter, async (req, res) => {
 // ========================================
 app.post('/api/feedback', makeLimiter({ windowMs: 60*1000, max: 5 }), async (req, res) => {
   try {
-    const { category = 'その他', message = '', locale } = req.body || {}
+    const { category = 'その他', message = '', locale, device_id, app_version } = req.body || {}
     if (!message || message.trim().length === 0) {
       return res.status(400).json({ error: '内容を入力してください' })
     }
     const isEn = locale === 'en'
+    // 匿名・安定の端末識別子 / アプリバージョン (DF-F21)。個人情報は含まない。
+    // 値が無い・型が不正な場合は null にして既存挙動を壊さない。
+    const deviceId = typeof device_id === 'string' && device_id.trim() ? device_id.trim().slice(0, 64) : null
+    const appVersion = typeof app_version === 'string' && app_version.trim() ? app_version.trim().slice(0, 32) : null
 
     // Supabase に保存
     let insertedId: string | null = null
     if (supabase) {
       const appSource = process.env.APP_ENV === 'sit' ? 'sit' : 'production'
+      // NOTE(DF-F21): device_id / app_version 列は supabase/migrations/034_feedback_device.sql
+      // を本番適用してから有効化される。未適用環境では insert がカラム不在で失敗するが、
+      // 下の `if (error)` で warn にとどめ Jira 起票・レスポンスは継続するため既存挙動は壊れない。
       const { data, error } = await supabase
         .from('feedback')
         .insert({
@@ -725,6 +732,8 @@ app.post('/api/feedback', makeLimiter({ windowMs: 60*1000, max: 5 }), async (req
           locale: locale || 'ja',
           created_at: new Date().toISOString(),
           source: appSource,
+          device_id: deviceId,
+          app_version: appVersion,
         })
         .select('id')
         .single()

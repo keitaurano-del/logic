@@ -1367,6 +1367,7 @@ const STRINGS: Record<Locale, Strings> = {
     'feedback.contentAria': 'フィードバック内容',
     'feedback.contentPlaceholder': '気になった点、改善してほしい点、欲しい機能など...',
     'feedback.charCount': '{n} 文字',
+    'feedback.minLength': '{n} 文字以上で入力してください',
     'feedback.sending': '送信中...',
     'feedback.send': '送信する',
 
@@ -3242,6 +3243,7 @@ const STRINGS: Record<Locale, Strings> = {
     'feedback.contentAria': 'Feedback message',
     'feedback.contentPlaceholder': 'What you noticed, what to improve, features you want...',
     'feedback.charCount': '{n} chars',
+    'feedback.minLength': 'Please enter at least {n} characters',
     'feedback.sending': 'Sending...',
     'feedback.send': 'Send',
 

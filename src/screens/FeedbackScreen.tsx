@@ -10,6 +10,29 @@ interface FeedbackScreenProps {
   onBack: () => void
 }
 
+// 送信に必要な最低文字数 (trim 後)
+const MIN_MESSAGE_LENGTH = 5
+
+// 投稿者を特定するための匿名・安定 device_id。
+// localStorage に保存した UUID を再利用する (個人情報は含めない)。
+const DEVICE_ID_KEY = 'logic-device-id'
+function getDeviceId(): string {
+  try {
+    const existing = localStorage.getItem(DEVICE_ID_KEY)
+    if (existing) return existing
+    const id = (typeof crypto !== 'undefined' && 'randomUUID' in crypto)
+      ? crypto.randomUUID()
+      : `dev-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
+    localStorage.setItem(DEVICE_ID_KEY, id)
+    return id
+  } catch {
+    return 'unknown'
+  }
+}
+
+// 再現環境の特定用アプリバージョン (ビルド時に注入。未設定時は unknown)。
+const APP_VERSION = (import.meta.env.VITE_APP_VERSION as string | undefined) || 'unknown'
+
 // データキー (サーバへ送信する固定値) と表示ラベルを分離
 const CATEGORY_DATA = [
   { value: '機能追加', labelKey: 'feedback.cat.feature' },
@@ -27,8 +50,13 @@ export function FeedbackScreen({ onBack }: FeedbackScreenProps) {
   const [sent, setSent] = useState(false)
   const [error, setError] = useState('')
 
+  const trimmedLength = message.trim().length
+  const tooShort = trimmedLength < MIN_MESSAGE_LENGTH
+  // 1文字以上入力済みかつ最低文字数未満のときだけ警告を表示する
+  const showMinLengthWarning = trimmedLength > 0 && tooShort
+
   const handleSubmit = async () => {
-    if (!message.trim() || sending) return
+    if (tooShort || sending) return
     haptic.light()
     setSending(true)
     setError('')
@@ -36,7 +64,13 @@ export function FeedbackScreen({ onBack }: FeedbackScreenProps) {
       const res = await fetch(`${API_BASE}/api/feedback`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ category, message: message.trim(), locale }),
+        body: JSON.stringify({
+          category,
+          message: message.trim(),
+          locale,
+          device_id: getDeviceId(),
+          app_version: APP_VERSION,
+        }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || t('feedback.errFallback'))
@@ -136,6 +170,11 @@ export function FeedbackScreen({ onBack }: FeedbackScreenProps) {
         <div style={{ fontSize: 14, color: 'var(--text-muted)', marginTop: 4 }}>
           {t('feedback.charCount', { n: message.length })}
         </div>
+        {showMinLengthWarning && (
+          <div style={{ fontSize: 14, color: 'var(--danger)', marginTop: 4 }}>
+            {t('feedback.minLength', { n: MIN_MESSAGE_LENGTH })}
+          </div>
+        )}
       </div>
 
       {error && (
@@ -149,7 +188,7 @@ export function FeedbackScreen({ onBack }: FeedbackScreenProps) {
         size="lg"
         block
         onClick={handleSubmit}
-        disabled={!message.trim() || sending}
+        disabled={tooShort || sending}
       >
         {sending ? t('feedback.sending') : t('feedback.send')}
       </Button>
