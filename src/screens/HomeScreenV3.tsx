@@ -10,8 +10,8 @@ import { getCardStats } from '../flashcardData'
 import { getWrongAnswerStats } from '../wrongAnswerStore'
 import { isPaid } from '../subscription'
 import { HomeCoachmark, useShouldShowHomeCoachmark } from '../tutorial/coachmark'
-import { PlacementCard } from '../tutorial/placementCard'
-import { hasCompletedPlacement } from '../placementData'
+import { tutorial } from '../tutorial/tutorialStorage'
+import { loadPlacementResult, buildPersonalCourse, recommendedLessons, type PlacementResult } from '../placementData'
 import { useWindowSize, BREAKPOINTS } from '../hooks/useResponsive'
 import { allLessons } from '../lessonData'
 import { getStudyTimeMs, getStudyDates, localDateStr } from '../stats'
@@ -61,16 +61,62 @@ const LEVEL_KEY: Record<string, string> = {
   '上級': 'roadmap.levelAdvanced',
 }
 
-function getRandomLesson() {
-  const meta = RECOMMENDED_LESSON_META[Math.floor(Math.random() * RECOMMENDED_LESSON_META.length)]
-  const data = allLessons[meta.id]
+// id → メタ（level / image）の逆引き。診断のおすすめレッスンが META に無い場合も
+// lesson PNG のパス規約 `/images/v3/lesson-{id}.png` でフォールバックする。
+const META_BY_ID: Record<number, RecommendedLessonMeta> = Object.fromEntries(
+  RECOMMENDED_LESSON_META.map(m => [m.id, m]),
+)
+
+type HeroLesson = { id: number; title: string; category: string; level: string; image: string }
+
+function buildHeroLesson(id: number): HeroLesson {
+  const data = allLessons[id]
+  const meta = META_BY_ID[id]
   return {
-    id: meta.id,
+    id,
     title: data?.title ?? '',
     category: data?.category ?? '',
-    level: t(LEVEL_KEY[meta.level] ?? meta.level),
-    image: meta.image,
+    level: meta ? t(LEVEL_KEY[meta.level] ?? meta.level) : '',
+    image: meta?.image ?? `${IMG}/lesson-${id}.png`,
   }
+}
+
+function getRandomLesson(): HeroLesson {
+  const meta = RECOMMENDED_LESSON_META[Math.floor(Math.random() * RECOMMENDED_LESSON_META.length)]
+  return buildHeroLesson(meta.id)
+}
+
+// 日替わりローテ用の擬似乱数シード（その日の日付＋件数で安定的に index を回す）。
+// 弱点上位 N のレッスンを毎日ローテし、再訪 Hero が毎回同じになる単調化を避ける。
+function dailyRotateIndex(len: number): number {
+  if (len <= 0) return 0
+  const d = new Date()
+  const seed = d.getFullYear() * 372 + d.getMonth() * 31 + d.getDate()
+  return seed % len
+}
+
+// 再訪／スキップ済みユーザーの Hero に出すおすすめレッスンを決める。
+//  - 診断済み（totalCount>0）: recommendedLessonIds（弱点上位順）を日替わりでローテ。
+//    空なら buildPersonalCourse の先頭にフォールバック。
+//  - スキップ済み（totalCount===0）: recommendedLessons(50) の中庸推薦を日替わりローテ。
+function resolveHeroLesson(result: PlacementResult | null): HeroLesson {
+  if (result && result.totalCount > 0) {
+    const ids = result.recommendedLessonIds.length > 0
+      ? result.recommendedLessonIds
+      : buildPersonalCourse(result.axisScores, result.deviation).lessonIds
+    if (ids.length > 0) {
+      const id = ids[dailyRotateIndex(ids.length)]
+      const hero = buildHeroLesson(id)
+      // タイトルが解決できない（未知ID）場合はランダム中庸推薦へ退避
+      if (hero.title) return hero
+    }
+    return getRandomLesson()
+  }
+  // スキップ済み or まだ Hero を出す段階（中庸推薦の日替わりローテ）
+  const fallbackIds = recommendedLessons(50)
+  const id = fallbackIds[dailyRotateIndex(fallbackIds.length)]
+  const hero = buildHeroLesson(id)
+  return hero.title ? hero : getRandomLesson()
 }
 
 
@@ -112,13 +158,28 @@ const IMG = '/images/v3'
 export function HomeScreenV3(props: HomeScreenV3Props) {
   const { userName, onOpenLesson, onOpenAIGen, onNavigateToDailyFermi, onOpenPlacementTest, onOpenReviewHub, onOpenStudyTime, onOpenPricing: _onOpenPricing, onOpenCategory: _onOpenCategory, onOpenRank: _onOpenRank, onOpenStats: _onOpenStats, onOpenRoadmap: _onOpenRoadmap } = props
   const dailyCardRef = useRef<HTMLButtonElement>(null)
+  const placementHeroRef = useRef<HTMLButtonElement>(null)
   const [showCoachmark, dismissCoachmark] = useShouldShowHomeCoachmark()
   const { width } = useWindowSize()
   const isTablet = width >= BREAKPOINTS.md
   const isLargeTablet = width >= BREAKPOINTS.lg
 
-  // ランダムレッスン・フェルミ問題（マウント時に1回決定）
-  const [recommendedLesson] = useState(getRandomLesson)
+  // ── DF-F16 案A: ホームを「診断 → おすすめ」の2モードで出し分ける ──
+  // モード判定（マウント時に1回確定）:
+  //   - placementResult === null            … 真の初回（診断も未スキップ）→ 診断ヒーロー単一化
+  //   - totalCount > 0                       … 診断済み → おすすめ Hero（弱点上位ローテ）
+  //   - totalCount === 0（skipPlacement 済み）… スキップ済み → 中庸推薦 Hero
+  const [placementResult] = useState<PlacementResult | null>(loadPlacementResult)
+  // 真の初回（診断ヒーローを唯一の大型 CTA に昇格）か。スキップ済みは Hero 側へ寄せる。
+  const showPlacementHero = placementResult === null && !!onOpenPlacementTest
+  const [placementHeroDismissed, setPlacementHeroDismissed] = useState(false)
+  const handleSkipPlacementHero = () => {
+    tutorial.markPlacementDismissed()
+    setPlacementHeroDismissed(true)
+  }
+
+  // Hero のおすすめレッスン（マウント時に1回決定）。診断済み/スキップ済みでのみ使う。
+  const [recommendedLesson] = useState<HeroLesson>(() => resolveHeroLesson(placementResult))
   // fermiIndex は null の場合「今日の問題を全部解いた」状態。
   // getHomeFermiIndex() は dailyFermiState.ts の単一の真実源。決定した index を
   // 共有 session キーへ永続化するので、タップ後の Daily 画面と必ず同じ問題になる。
@@ -172,6 +233,16 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
           <div style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 4, fontWeight: 500 }}>{t('home.userGreeting', { name: userName || t('home.guestName') })}</div>
           <div style={{ fontSize: 20, fontWeight: 700, lineHeight: 1.4, letterSpacing: '-.005em' }}>{getDailyGreeting().split('\n').map((line, i) => i === 0 ? <span key={i}>{line}<br /></span> : <span key={i}>{line}</span>)}</div>
         </div>
+
+        {/* DF-F16: 初回ユーザーは「実力診断」を画面最上段の唯一の大型ヒーロー CTA に昇格。
+            視線を診断1点に集約するため、今日の1問・復習・学習時間・AI はこの下に従属配置する。 */}
+        {showPlacementHero && !placementHeroDismissed && onOpenPlacementTest && (
+          <PlacementHero
+            heroRef={placementHeroRef}
+            onTakeTest={onOpenPlacementTest}
+            onSkip={handleSkipPlacementHero}
+          />
+        )}
 
         {/* 今日の1問 (Daily Fermi) */}
         {/* a11y: 外側 div は非インタラクティブ。中の「カード本体」と「別の問題」は兄弟の <button> として配置し、nested-interactive を回避 */}
@@ -242,33 +313,30 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
           )}
         </div>
 
-        {/* Hero Recommend - ランダム表示 */}
-        <button
-          type="button"
-          onClick={() => onOpenLesson(recommendedLesson.id)}
-          aria-label={`${recommendedLesson.category} ${recommendedLesson.level}: ${recommendedLesson.title}`}
-          style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', cursor: 'pointer', boxShadow: 'var(--shadow-v3-card-inset)', flexShrink: 0, border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%' }}
-        >
-          {/* 1:1 PNG (1024×1024) を切らずに表示するため aspectRatio:1/1 + objectFit:contain。
-              背景は bg-card に揃えて letterbox 表示を自然に見せる。 */}
-          <div style={{ aspectRatio: '1 / 1', position: 'relative', overflow: 'hidden', background: 'var(--bg-card)' }}>
-            <img src={recommendedLesson.image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
-          </div>
-          <div style={{ padding: '18px 20px 20px' }}>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: 'var(--accent-soft)', borderRadius: 'var(--radius-pill)', padding: '4px 11px', fontSize: 14, fontWeight: 600, color: 'var(--brand)', marginBottom: 10 }}>{recommendedLesson.category} · {recommendedLesson.level}</span>
-            <div style={{ fontSize: 19, fontWeight: 700, marginBottom: 16, lineHeight: 1.35, letterSpacing: '-.005em' }}>{recommendedLesson.title}</div>
-            <div style={{ background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)', borderRadius: 'var(--radius-pill)', padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700 }}>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>
-              {t('home.lessonStart')}
+        {/* Hero Recommend - 診断済みは弱点上位ローテ、スキップ済みは中庸推薦。
+            初回（診断ヒーロー表示中）は視線集約のため非表示。 */}
+        {!(showPlacementHero && !placementHeroDismissed) && (
+          <button
+            type="button"
+            onClick={() => onOpenLesson(recommendedLesson.id)}
+            aria-label={`${t('home.recommendEyebrow')} ${recommendedLesson.category} ${recommendedLesson.level}: ${recommendedLesson.title}`}
+            style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', cursor: 'pointer', boxShadow: 'var(--shadow-v3-card-inset)', flexShrink: 0, border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%' }}
+          >
+            {/* 1:1 PNG (1024×1024) を切らずに表示するため aspectRatio:1/1 + objectFit:contain。
+                背景は bg-card に揃えて letterbox 表示を自然に見せる。 */}
+            <div style={{ aspectRatio: '1 / 1', position: 'relative', overflow: 'hidden', background: 'var(--bg-card)' }}>
+              <img src={recommendedLesson.image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
             </div>
-          </div>
-        </button>
-
-
-
-        {/* 診断カード（HeroRecommendの直下） */}
-        {!hasCompletedPlacement() && onOpenPlacementTest && (
-          <PlacementCard onTakeTest={onOpenPlacementTest} />
+            <div style={{ padding: '18px 20px 20px' }}>
+              <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--brand)', marginBottom: 6 }}>{t('home.recommendEyebrow')}</div>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: 'var(--accent-soft)', borderRadius: 'var(--radius-pill)', padding: '4px 11px', fontSize: 14, fontWeight: 600, color: 'var(--brand)', marginBottom: 10 }}>{recommendedLesson.category}{recommendedLesson.level ? ` · ${recommendedLesson.level}` : ''}</span>
+              <div style={{ fontSize: 19, fontWeight: 700, marginBottom: 16, lineHeight: 1.35, letterSpacing: '-.005em' }}>{recommendedLesson.title}</div>
+              <div style={{ background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)', borderRadius: 'var(--radius-pill)', padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700 }}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>
+                {t('home.lessonStart')}
+              </div>
+            </div>
+          </button>
         )}
 
         {/* 復習カード - フラッシュカード + 過去の誤答リストへの導線（全プラン解放） */}
@@ -295,13 +363,21 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
 
     </div>
 
-    {/* ホームコーチマーク（初回のみ・オーバーレイ） */}
+    {/* ホームコーチマーク（初回のみ・オーバーレイ）。
+        DF-F16: 初回ユーザーは診断ヒーローを最上段に出すので、コーチマークの指す先も
+        診断ヒーローに張り替える（再訪・スキップ後は従来どおり今日の1問を指す）。 */}
     {showCoachmark && (
       <HomeCoachmark
-        targetRef={dailyCardRef}
+        targetRef={showPlacementHero && !placementHeroDismissed ? placementHeroRef : dailyCardRef}
+        body={showPlacementHero && !placementHeroDismissed ? t('coachmark.placementBody') : undefined}
+        cta={showPlacementHero && !placementHeroDismissed ? t('coachmark.placementCta') : undefined}
         onDismiss={() => {
           dismissCoachmark()
-          onNavigateToDailyFermi?.()
+          if (showPlacementHero && !placementHeroDismissed) {
+            onOpenPlacementTest?.()
+          } else {
+            onNavigateToDailyFermi?.()
+          }
         }}
       />
     )}
@@ -576,6 +652,65 @@ function buildReviewSub(due: number, weak: number, total: number, unresolved: nu
   if (unresolved > 0) parts.push(t('home.reviewSubWrong', { n: String(unresolved) }))
   if (parts.length === 0 && total > 0) return t('home.reviewSubAll', { total: String(total) })
   return parts.join(' · ')
+}
+
+// DF-F16: 初回ユーザー向けの実力診断ヒーロー。画面最上段の唯一の大型 CTA。
+// 「今はスキップ」導線（placementCard.later 相当）を維持する。
+function PlacementHero({ heroRef, onTakeTest, onSkip }: {
+  heroRef: React.RefObject<HTMLButtonElement | null>
+  onTakeTest: () => void
+  onSkip: () => void
+}) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch', gap: 4, flexShrink: 0 }}>
+      <button
+        type="button"
+        ref={heroRef}
+        onClick={onTakeTest}
+        aria-label={`${t('placementCard.heroTitle')}: ${t('placementCard.heroDesc')}`}
+        style={{ background: 'var(--accent-btn)', padding: '22px 20px 20px', cursor: 'pointer', position: 'relative', overflow: 'hidden', minHeight: 188, border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%', borderRadius: 'var(--radius-lg)', boxShadow: '0 12px 28px color-mix(in srgb, var(--accent) 24%, transparent)' }}
+      >
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          {/* eyebrow + 時計アイコン（診断＝所要時間の短さを示す） */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 10 }}>
+            <span style={{
+              width: 28, height: 28, borderRadius: 9,
+              background: 'color-mix(in srgb, var(--accent-btn-fg) 18%, transparent)',
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+            }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={'var(--accent-btn-fg)'} strokeWidth="2.4" strokeLinecap="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
+              </svg>
+            </span>
+            <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'color-mix(in srgb, var(--accent-btn-fg) 92%, transparent)' }}>{t('placementCard.heroEyebrow')}</span>
+          </div>
+          <div style={{ fontFamily: "'Noto Sans JP', sans-serif", fontSize: 21, fontWeight: 800, color: 'var(--accent-btn-fg)', lineHeight: 1.35, letterSpacing: '-.01em', marginBottom: 8 }}>
+            {t('placementCard.heroTitle')}
+          </div>
+          <div style={{ color: 'color-mix(in srgb, var(--accent-btn-fg) 84%, transparent)', fontSize: 14, fontWeight: 500, lineHeight: 1.55, marginBottom: 18 }}>
+            {t('placementCard.heroDesc')}
+          </div>
+          <div style={{ background: 'color-mix(in srgb, var(--accent-btn) 78%, #000)', color: 'var(--accent-btn-fg)', borderRadius: 'var(--radius-pill)', padding: '13px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700, boxShadow: '0 6px 18px rgba(0,0,0,.14)' }}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill={'var(--accent-btn-fg)'} aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>
+            {t('placementCard.heroCta')}
+          </div>
+        </div>
+      </button>
+      {/* 今はスキップ導線（カード本体の兄弟ボタン・nested-interactive 回避） */}
+      <button
+        type="button"
+        onClick={onSkip}
+        style={{
+          width: '100%', background: 'transparent', border: 'none',
+          padding: '12px 0 4px', cursor: 'pointer',
+          color: 'var(--text-secondary)', fontSize: 13, fontWeight: 600,
+          fontFamily: 'inherit',
+        }}
+      >
+        {t('placementCard.heroSkip')}
+      </button>
+    </div>
+  )
 }
 
 function AILargeCard({ image, name, sub, onClick }: { image: string; name: string; sub: string; onClick: () => void }) {

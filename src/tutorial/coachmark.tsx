@@ -8,9 +8,13 @@ interface CoachmarkProps {
   targetRef: React.RefObject<HTMLElement | null>
   /** コーチマーク閉じたとき（スキップ or タップ） */
   onDismiss: () => void
+  /** 吹き出し本文（省略時は今日の1問向けのデフォルト） */
+  body?: string
+  /** CTA ラベル（省略時は今日の1問向けのデフォルト） */
+  cta?: string
 }
 
-export function HomeCoachmark({ targetRef, onDismiss }: CoachmarkProps) {
+export function HomeCoachmark({ targetRef, onDismiss, body, cta }: CoachmarkProps) {
   const [rect, setRect] = useState<DOMRect | null>(null)
 
   useEffect(() => {
@@ -87,7 +91,7 @@ export function HomeCoachmark({ targetRef, onDismiss }: CoachmarkProps) {
           borderBottom: '8px solid #fff',
         }} />
         <p style={{ margin: 0, fontSize: 15, fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.6, whiteSpace: 'pre-line' }}>
-          {t('coachmark.homeBody')}
+          {body ?? t('coachmark.homeBody')}
         </p>
         <button
           onClick={dismiss}
@@ -98,7 +102,7 @@ export function HomeCoachmark({ targetRef, onDismiss }: CoachmarkProps) {
             fontSize: 15, fontWeight: 700, cursor: 'pointer',
           }}
         >
-          {t('coachmark.homeCta')}
+          {cta ?? t('coachmark.homeCta')}
         </button>
       </div>
 

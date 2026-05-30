@@ -322,6 +322,7 @@ const STRINGS: Record<Locale, Strings> = {
     'home.allFermiDoneCta': '解いた問題を振り返る',
     'home.lessonStart': 'レッスンをはじめる',
     'home.lessonXp': '+50 XP',
+    'home.recommendEyebrow': 'あなたへのおすすめ',
     'home.aiGenLargeName': 'AIで自分だけの問題を作る',
     'home.aiGenLargeSub': 'テーマ別のオリジナル問題で練習',
     'home.greetingMsg1': '今日も論理を、\nひとつ深めましょう。',
@@ -1448,12 +1449,19 @@ const STRINGS: Record<Locale, Strings> = {
     'placementCard.desc': '推定偏差値・レーダーチャート・最適コースをご案内します。',
     'placementCard.takeTest': '診断を受ける',
     'placementCard.later': '後で',
+    'placementCard.heroEyebrow': 'まずはここから',
+    'placementCard.heroTitle': 'まずは実力診断から始めましょう',
+    'placementCard.heroDesc': '10問・約3分で、5つのスキル軸からあなたの弱点が分かります。',
+    'placementCard.heroCta': '診断を始める',
+    'placementCard.heroSkip': '今はスキップする',
 
     // Home coachmark (first-run tutorial overlay)
     'coachmark.dialogLabel': 'チュートリアル',
     'coachmark.closeLabel': 'チュートリアルを閉じる',
     'coachmark.homeBody': 'まずここから始めましょう。\nタップして今日の問題を開いてみましょう。',
     'coachmark.homeCta': '今日の問題を開く',
+    'coachmark.placementBody': 'まずは実力診断から始めましょう。\nタップすると約3分で弱点が分かります。',
+    'coachmark.placementCta': '診断を始める',
     'coachmark.skip': 'スキップする',
 
     // AI Problem
@@ -2196,6 +2204,7 @@ const STRINGS: Record<Locale, Strings> = {
     'home.allFermiDoneCta': 'Review the problems you solved',
     'home.lessonStart': 'Start lesson',
     'home.lessonXp': '+50 XP',
+    'home.recommendEyebrow': 'Recommended for you',
     'home.aiGenLargeName': 'Get AI-generated problems',
     'home.aiGenLargeSub': 'Original problems by theme',
     'home.greetingMsg1': "Sharpen your logic\none more notch today.",
@@ -3324,12 +3333,19 @@ const STRINGS: Record<Locale, Strings> = {
     'placementCard.desc': 'You\'ll get an estimated score, a radar chart, and a recommended course.',
     'placementCard.takeTest': 'Start the assessment',
     'placementCard.later': 'Later',
+    'placementCard.heroEyebrow': 'Start here',
+    'placementCard.heroTitle': 'Start with a quick skills assessment',
+    'placementCard.heroDesc': '10 questions in about 3 minutes reveal your weak spots across 5 skill axes.',
+    'placementCard.heroCta': 'Start the assessment',
+    'placementCard.heroSkip': 'Skip for now',
 
     // Home coachmark (first-run tutorial overlay)
     'coachmark.dialogLabel': 'Tutorial',
     'coachmark.closeLabel': 'Close the tutorial',
     'coachmark.homeBody': 'Let\'s start here.\nTap to open today\'s question.',
     'coachmark.homeCta': 'Open today\'s question',
+    'coachmark.placementBody': 'Start with a quick skills assessment.\nTap to find your weak spots in about 3 minutes.',
+    'coachmark.placementCta': 'Start the assessment',
     'coachmark.skip': 'Skip',
 
     // AI Problem
