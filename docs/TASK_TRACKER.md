@@ -2235,9 +2235,14 @@ Keita が 2026-05-29 夕方に新バッチ8件を依頼（Keita は離席、林�
   - [ ] 他のAI応答表示箇所（フィードバック等）にも同種混入がないか横展開確認
 - 抜けもれ提言: 表示整形とプロンプト抑制の二択。レンダリング採用時は既存 plain 前提CSSとの整合を確認。
 
-### T5 — おすすめレッスンの表示・遷移＋AI会話履歴の保存/再表示　[P1 / REVIEW]
+### T5 — おすすめレッスンの表示・遷移＋AI会話履歴の保存/再表示　[P1 / DONE（2026-05-31 実効性検証○）]
 
-- ステータス: REVIEW（実装済 `793e519`・origin/main 在を git で検証。本コミットが新規 `src/components/journal/JournalAssistantHistorySheet.tsx`＋`supabase/migrations/032_journal_assistant_conversations.sql`＋`journalDb.ts` を追加＝AI会話履歴の永続化/再表示の結線あり。おすすめレッスンのタップ遷移と履歴再表示の実機 DoD 確認待ち。※migration 032 の本番適用要確認。2026-05-31 git 実態と同期）
+- ステータス: DONE（2026-05-31 実効性検証○・コードレベル判定）。実装 `793e519`（origin/main 在を git で検証＝Android 自動配信済み）。本番 Supabase に migration `032_journal_assistant_conversations`（version 20260527014738）適用済みを `list_migrations` で確認＝過去の「※migration 032 の本番適用要確認」は解消。test-functional 検証で DoD 両方を file:line 確認:
+  - **DoD1（おすすめレッスン title+category 表示＋タップ遷移）○**: `JournalAssistantSheet.tsx:158-166` で `recommendedLessonIds`→`lessonMap[id]`→`{id,title,category}` 解決（id だけでなく title/category 保持・存在しない id はスキップ）、`:268-271` で category/title 両描画。遷移経路は dead code でなく全結線＝カード onClick `:262-265` `onOpenLesson(lesson.id)`→`JournalScreen.tsx:262` prop 伝達→`AppV3.tsx:616` `handleOpenLesson`→`:370-373` `navigate({type:'lesson',lessonId})`→Screen union lesson case で LessonScreen 描画。コース推薦も `onOpenCourse`→`navigate({type:'roadmap',category})` で結線。
+  - **DoD2（会話の保存・再表示）○**: 保存先 Supabase `journal_assistant_conversations`。保存=`JournalAssistantSheet.tsx:186-190`→`journalDb.ts:468-492` insert（推薦も sanitize）、読出=`journalDb.ts:497-518` `fetchAssistantConversations`（created_at desc 最大50）、再表示UI=`JournalAssistantHistorySheet.tsx`（793e519 新規、最新1件初期展開・折りたたみ・削除）、導線=`JournalScreen.tsx:232-239` HistoryIcon ボタン→`historyOpen`→`:267-275` シート描画。スキーマ `032_*.sql` の列（feedback/recommended_lessons jsonb/recommended_courses jsonb/created_at）と insert/select 列一致、RLS 本人のみ。
+  - i18n: 履歴UI文言 ja(`i18n.ts:225-237`)/en(`:2132-2144`) 両存在・中立丁寧体・UI chrome は SVG のみ（HistoryIcon/ChevronDown/Trash/X/Sparkle、絵文字なし）。
+  - 品質ゲート green: tsc -b --noEmit EXIT0 error0 / eslint . EXIT0 error0（warning19=既存a11y/exhaustive-deps・T5無関係）/ vitest 22files 389pass fail0。
+  - **caveat**: headless ゆえ実機（Capacitor Android）でのタップ遷移・Supabase 実 insert/select（RLS 下のラウンドトリップ）は物理未確認＝コードレベル○判定。保存はベストエフォート（失敗時 console.warn のみ・UI通知なし）、ゲスト/Supabase未設定時は保存・読出とも no-op で履歴常時空＝既存ジャーナル同方針。実 DB ラウンドトリップの実機 QA は別途任意。
 - 詳細: AIアシスタントの「おすすめレッスン」が lesson id しか出ず、タップしても遷移しない。加えて、一度出たAIメッセージを後から見直せるようにしたい（履歴）。
 - 関連ファイル: `src/components/journal/JournalAssistantSheet.tsx`（~156-165 recommendedLesson, 248-256 カード/onClick）。`onOpenLesson(lesson.id)` は呼ばれているが親からの prop 伝達／id→画面遷移解決が未完。ナビは `AppV3.tsx` の Screen union。
 - DoD:
