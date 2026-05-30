@@ -24,7 +24,7 @@ Keita 指示「なんでもいいけど全部ちゃんと反映して」＝ア�
 |----|------|------|
 | 第1層 実装済み（コードあり） | main にコミット有り。実機効果は第2層で判定 | F1, F2, F4, F5, F6, F7, F9, F10, F11, F12, F14, F15, F16, F17, F18, F19, F20, F21（18件） |
 | 第2層 効いている（実機○） | test-functional の実効性検証で○判定が出たもの | **DF-F2**＋**DF-FV 2026-05-31 検証完了で○16件**：F1/F4/F5/F6/F7/F9/F10/F11/F12/F14/F15/F16/F17/F19/F20/F21（全てライブ経路結線・ja/en・永続化を file:line で確認）。うち機能クリーン12件（F1/F5/F6/F7/F9/F10/F11/F14/F15/F17/F20/F21）は DONE 昇格、設計判断系4件（F4/F12/F16/F19）は○機能だが Keita 見せ方目視待ちで REVIEW 維持。**＋DF-F8 を 2026-05-31 に別途○検証→DONE 昇格**（設計判断系でない純機能追加・実機発火のみ headless 未確認の caveat） |
-| 第3層 効いていない・要修正（実機×/△） | コードはあるが実機で効果が出ない欠陥。再オープン | **DF-F18**（△・finding すり替わり＝実装は「完了後」upsell のみで元症状「解く前に弱い」未解消）→ **DF-FV-1** で dev-logic 修正キュー |
+| 第3層 効いていない・要修正（実機×/△） | コードはあるが実機で効果が出ない欠陥。再オープン | **（解消済み・空）** DF-F18 は △ だったが **DF-FV-1**（`fc87908`・2026-05-31 ○検証）で「解く前」idleフェーズに制限明示+導線をライブ結線し DONE 昇格。現在 第3層は該当なし |
 | 未着手（コードなし） | コミット無し。設計判断で未確定のまま残存 | DF-F3（状態ポリシー親・BLOCKED）, DF-F13（フェルミ難易度フィルタ・BLOCKED）　※DF-F8 は実装完了→DF-FV○→DONE（`95cba0c`）で本欄から外れた |
 
 各 DF-F の実装コミット hash（本日 git log main で全件実在確認済み・HEAD=`3a588dc`）:
@@ -59,12 +59,12 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 | DF-F15 | ジャーナルのログイン誘導が保存都合のみで価値訴求なし | P1 | DONE（DF-FV○・価値訴求文言ja/en結線） | `578d2ea` | content-creator＋dev-logic |
 | DF-F16 | 初回ホームが情報過密で最優先アクション不明 | P1 | REVIEW（DF-FV○機能・設計判断系=Keita見せ方目視待ち） | `12f350c`+`f4dcf13` | designer＋dev-logic＋Keita |
 | DF-F17 | 復習ハブが有料と伝わらない（無料時データ無し表示のみ） | P2 | DONE（DF-FV○・有料ロック価値提示結線） | `1a056fd` | content-creator＋dev-logic |
-| DF-F18 | フェルミ1日1問制限/課金導線が解く前に弱い | P2 | REVIEW（DF-FV△・finding すり替わり=「完了後」導線のみ実装、元症状「解く前」未解消→DF-FV-1で修正） | `f2e7819` | dev-logic |
+| DF-F18 | フェルミ1日1問制限/課金導線が解く前に弱い | P2 | DONE（DF-FV-1○ 2026-05-31 検証完了＝「解く前」idleフェーズに制限明示+有料導線をライブ結線、元症状解消。完了後導線と排他で両立） | `f2e7819`+`fc87908` | dev-logic |
 | DF-F19 | フェルミ問題が en でも日本市場前提（GMV/円建て） | P2 | REVIEW（DF-FV○機能・設計判断系=Keita見せ方目視待ち） | `7a2f1d0` | content-creator＋Keita |
 | DF-F20 | 特商法リンクが en UI にも残る（ja/日本配信時のみ出し分け） | P2 | DONE（DF-FV○・ProfileScreenV3でja限定ガード結線） | `5fe6833` | dev-logic |
 | DF-F21 | フィードバック投稿に識別情報・最低文字数チェックが無い | P2 | DONE（DF-FV○・クライアントガード+識別子送信+サーバ受領結線。※device列保存はmigration 034本番適用+backend手動deploy要） | `7819a34` | dev-logic |
 | DF-FV  | DF-F 系 実効性網羅検証（コードはあるが実機で効くか○/×/△判定） | P0 | DONE（2026-05-31 全17件判定完了：○16/△1/×0、F2は別途○DONE。△=DF-F18→DF-FV-1起票） | — | test-functional |
-| DF-FV-1 | DF-F18 修正：フェルミ「解く前」段階の制限明示/有料無制限訴求を追加（現状は完了後導線のみ） | P2 | REVIEW（2026-05-31 実装完了・green: tsc0/eslint.0err/vitest374pass。commit fc87908 を **origin/main へ push 済**（67aa2c0..fc87908・AHEAD=0確認）＝Android は android-deploy.yml が main push で自動配信（モバイル本番反映）。DailyFermiScreen.tsx 解く前idleフェーズに無料1日1問/有料10問の制限明示+onUpgrade導線、i18n ja/en、既存トークン/SVG。**Web(Render)手動deploy=deploy-production.yml も dispatch 成功**（gh は ~/.bashrc の GH_TOKEN で認証して実行＝WEBDEPLOY=dispatched）。よって mobile/web 両系へ配信トリガー済。実効性○判定は test-functional 次回バッチで） | — | dev-logic |
+| DF-FV-1 | DF-F18 修正：フェルミ「解く前」段階の制限明示/有料無制限訴求を追加（現状は完了後導線のみ） | P2 | DONE（2026-05-31 実効性○判定確定。DailyFermiScreen.tsx:775 の `!replayMode && !isPaid() && onUpgrade && canAnswer && submitPhase==='idle'` ガードで解く前idleフェーズに制限明示+導線が描画＝dead codeでなくライブ結線。i18n limitNoteTitle/Desc/Cta は ja(1803-1805)/en(3712-3714) 両存在・中立丁寧体・絵文字/hex無し、数値1/10は getDailyFermiLimit() と一致。CTA onClick=onUpgrade→AppV3.tsx:584 navigate({type:'pricing'})→PricingScreen 実遷移。完了後導線(1164,result限定)と submitPhase で排他＝重複なし。元 finding「解く前に弱い」解消・別解すり替えなし。green: tsc0/eslint.0err(19既存warn)/vitest 22files389pass。commit fc87908 origin/main push 済（Android 自動配信）＋Web deploy dispatch 済） | `fc87908` | dev-logic |
 
 ---
 
@@ -346,7 +346,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
   - [x] DF-F1 ○ / [x] DF-F4 ○(機能/設計判断系Keita目視待ち) / [x] DF-F5 ○ / [x] DF-F6 ○ / [x] DF-F7 ○ / [x] DF-F9 ○ / [x] DF-F10 ○ / [x] DF-F11 ○ / [x] DF-F12 ○(機能/設計判断系) / [x] DF-F14 ○ / [x] DF-F15 ○ / [x] DF-F16 ○(機能/設計判断系) / [x] DF-F17 ○ / [x] DF-F18 △ / [x] DF-F19 ○(機能/設計判断系) / [x] DF-F20 ○ / [x] DF-F21 ○(※device列はmigration034本番適用+backend手動deploy要)
   - 検証方法(2026-05-31): test-functional がコミット diff×ライブ描画経路結線×ja/en i18n×永続化ガードを file:line で精査（tsc -b green ベースライン上で実施）。実機/エミュ目視ではなくコードレベル静的検証＝「dead code/未結線/別解すり替え/i18n片落ち」を主眼に判定。
   - △/個別修正タスク:
-    - **DF-FV-1**（DF-F18 △）: 元 finding=「フェルミ課金導線が"解く前"に弱い」。実装(`f2e7819`)は DailyFermiScreen.tsx:1123 の result フェーズ（解き終えた直後・非有料）upsell のみ＝「完了後」導線にすり替わり。解く前段階の1日1問制限明示／有料無制限訴求が未追加。→ dev-logic で「解く前」導線を追加（TODO/P2）。
+    - **DF-FV-1**（DF-F18 △）→ **解消済み DONE（2026-05-31 ○検証）**: 元 finding=「フェルミ課金導線が"解く前"に弱い」。旧実装(`f2e7819`)は result フェーズの完了後 upsell のみだった。`fc87908` で DailyFermiScreen.tsx:775 の `submitPhase==='idle'`（解く前）かつ無料ユーザー向けに制限明示(limitNoteTitle/Desc/Cta・ja/en)+onUpgrade導線(→pricing)をライブ結線。完了後導線(1164,result限定)と submitPhase で排他＝重複なし。元 finding 解消・別解すり替えなし。green tsc0/eslint.0err/vitest389pass。push済(Android自動配信)+Web deploy dispatch済。
 - 更新日: 2026-05-31（DONE）
 
 #### DF-F バッチ 抜けもれ提言サマリ（2026-05-30 実コミット同期後）
