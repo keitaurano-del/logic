@@ -2302,6 +2302,19 @@ T1〜T7 の詳細見出しが TODO のまま放置され、上部サマリ表（
 - 注意: 本同期の調査過程で「T1〜T7 は偽コミット `2b3f9c8` 等で DONE 済み」とする虚偽情報の混入を観測。`git cat-file -t 2b3f9c8`＝`Not a valid object name`（不存在）を確認し排除した。本同期の全 claim は実 git 照合のみで確定。詳細は memory `reference-tool-output-injection-incident`。
 - 経緯補足: 直前コミット `0aa37cb` はメッセージ上 T1/T6/T7→REVIEW と記したが、Edit の old_string 不一致で実際は T-X 行のみ反映だった。本コミットで T1/T3/T4/T5/T6/T7 詳細見出しを正しく反映する。
 
+## 2026-05-31 Apollo 受信箱タスク（自律ティック・林）
+
+Apollo 受信箱（`cxo-agent/data/inbox.jsonl`）から投入された Keita 実機フィードバックを処理。
+
+| ID | タイトル | 優先度 | ステータス | コミット | 担当案 |
+|----|---------|--------|-----------|---------|--------|
+| UI-14 | 今日のフェルミ CTA ピルが青カード上で見にくい（ピル白背景＋"チャレンジする"青字に） | P1 | DONE（実装＋tsc0/eslint0・push・本番deploy済） | `d05e454` | dev-logic |
+
+- 出所: Apollo inbox `2026-05-30T22-51-15-347Z-f8ac2106`（kind=task, project=logic）「今日のフェルミのボタンが見にくいので、ボタン部分だけ白色、チャレンジするを青にして。」
+- 経緯: UI-6（`95cba9b`）で CTA を白"文字"化済みだったが、青カード上に暗青ピル＋白文字でコントラスト不足の指摘。今回はピル自体を白背景（`var(--bg-card)`）・文字とアイコンを青（`var(--brand)`）に反転してコントラストを確保（UI-6 の follow-up）。
+- 変更: `src/screens/HomeScreenV3.tsx` line 277-289 の CTA ピル div の background/color と、allFermiDone 分岐の checkmark stroke・challenge の play fill の計4箇所（`var(--accent-btn-fg)`/暗青→`var(--bg-card)`＋`var(--brand)`）。外側カード（青背景）は無変更。
+- 検証: tsc -b --noEmit 0 / eslint 対象ファイル 0err（CI 全体は 0err/19warn・無関係）。実機（Android 自動配信＋Web deploy run 26697323899）反映後の見た目目視は Keita 確認余地あり（コードレベルは要件充足）。
+
 ## 抜けもれ提言サマリ
 
 ### バッチ 2026-05-28（実機フィードバック4件 ＋ 追加2件: T-F / T-G）
