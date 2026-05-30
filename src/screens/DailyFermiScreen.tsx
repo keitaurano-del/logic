@@ -768,6 +768,44 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
             </div>
           )}
 
+          {/* 「解く前」ソフト導線: 無料ユーザーが今日の問題を解く前に、
+              「無料は 1 日 1 問・有料なら 1 日 10 問」という制限を明示し、
+              情報提示トーンでアップグレードを案内する（押し付けない）。
+              replayMode（復習再挑戦）と有料ユーザーには出さない。 */}
+          {!replayMode && !isPaid() && onUpgrade && canAnswer && submitPhase === 'idle' && (
+            <div style={{
+              borderRadius: 16,
+              border: '1px solid var(--border)',
+              background: 'var(--bg-secondary)',
+              padding: '14px 16px',
+              display: 'flex', flexDirection: 'column', gap: 6,
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <LightbulbIcon width={15} height={15} style={{ color: 'var(--brand)', flexShrink: 0 }} />
+                <span style={{ fontSize: '0.9333rem', fontWeight: 700, color: 'var(--text-primary)' }}>{t('dailyFermi.limitNoteTitle')}</span>
+              </div>
+              <p style={{ margin: 0, fontSize: '0.8667rem', lineHeight: 1.6, color: 'var(--text-secondary)' }}>
+                {t('dailyFermi.limitNoteDesc')}
+              </p>
+              <button
+                type="button"
+                onClick={onUpgrade}
+                style={{
+                  alignSelf: 'flex-start', marginTop: 2,
+                  display: 'inline-flex', alignItems: 'center', gap: 6,
+                  background: 'none', border: 'none', padding: '2px 0',
+                  color: 'var(--brand)', fontSize: '0.8667rem', fontWeight: 700,
+                  cursor: 'pointer', fontFamily: 'inherit',
+                }}
+              >
+                {t('dailyFermi.limitNoteCta')}
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </button>
+            </div>
+          )}
+
           {/* ヒント・参考データの展開パネル（ボタンは下の電卓と同じ行へ移動） */}
           {hint && submitPhase === 'idle' && showHint && (
             <div style={{

@@ -64,7 +64,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 | DF-F20 | 特商法リンクが en UI にも残る（ja/日本配信時のみ出し分け） | P2 | DONE（DF-FV○・ProfileScreenV3でja限定ガード結線） | `5fe6833` | dev-logic |
 | DF-F21 | フィードバック投稿に識別情報・最低文字数チェックが無い | P2 | DONE（DF-FV○・クライアントガード+識別子送信+サーバ受領結線。※device列保存はmigration 034本番適用+backend手動deploy要） | `7819a34` | dev-logic |
 | DF-FV  | DF-F 系 実効性網羅検証（コードはあるが実機で効くか○/×/△判定） | P0 | DONE（2026-05-31 全17件判定完了：○16/△1/×0、F2は別途○DONE。△=DF-F18→DF-FV-1起票） | — | test-functional |
-| DF-FV-1 | DF-F18 修正：フェルミ「解く前」段階の制限明示/有料無制限訴求を追加（現状は完了後導線のみ） | P2 | TODO（DF-FV△から起票） | — | dev-logic |
+| DF-FV-1 | DF-F18 修正：フェルミ「解く前」段階の制限明示/有料無制限訴求を追加（現状は完了後導線のみ） | P2 | REVIEW（2026-05-31 実装完了・dev-logic検証green: tsc0/eslint0/vitest374pass。DailyFermiScreen.tsx解く前idleフェーズに無料1日1問/有料10問の制限明示+onUpgrade導線追加、i18n ja/en。※自律林ティック中にツール出力チャネル障害で林の再検証/commit/push/deploy未実行→次ティック持越し） | — | dev-logic |
 
 ---
 
