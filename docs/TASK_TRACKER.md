@@ -628,7 +628,7 @@ UI-1〜13 全件クローズ＝DONE 11件（1/2/3/6/7/8/9/10/11/12/13）＋ noop
 | DF-1 | Phase 1 ペルソナ20設計 | P1 | DONE | 林 | docs/dogfooding/personas.md。代表6体＝p01/p02/p04/p07/p18/p20 |
 | DF-2a | Phase 2a スキーマ確認＋seed/cleanup スクリプト | P1 | DONE | 林 | scripts/dogfood/、commit 8b39356/1dd17bb。本番 yctlelmlwjwlcpcxvmgx（2026-05-30 訂正: ref プレフィックスは誤記） |
 | DF-2b | Phase 2b 本番投入 | P1 | DONE | 林 | MCP 経由（service_role キー不使用）。users20/fermi117/subs9/feedback20 全件検証一致 |
-| DF-3 | Phase 3 代表6体フル UI 走行 | P1 | TODO（着手可・2026-05-30 unblock） | 林 | ログイン方式確定＝実メール（Gmail エイリアス +pXX）で本番マジックリンク実受信 |
+| DF-3 | Phase 3 代表6体フル UI 走行 | P1 | TODO（着手可・前提クリア済 2026-05-31） | 林 | 着手時チェック完了＝投入20体の email が `.local`（受信不可）だったので本番DB 20users+20identities を `keita.urano+pNN@gmail.com` に修正・検証済、seed/cleanup/README も追従（commit `3fdc6bf`）。残=実機/エミュでの6体走行本体（headless 不可・Keita 手元 or Android emulator が要る） |
 | DF-4 | Phase 4 負荷計測 | P2 | 未着手 | 林 | サーバ負荷の計測 |
 | DF-5 | Phase 5 アプリ内フィードバック | P1 | 未着手 | 林 | 代表6体の使用フィードバックを起票 |
 | DF-6 | Phase 6 集約 | P1 | 未着手 | 林 | UI/機能改善の起票へ集約 |
@@ -648,10 +648,11 @@ UI-1〜13 全件クローズ＝DONE 11件（1/2/3/6/7/8/9/10/11/12/13）＋ noop
 
 ### DF-3 — Phase 3 代表6体フル UI 走行　[P1 / TODO（着手可）]
 
-> 状態（2026-05-30 unblock）: Keita 判断でログイン方式確定＝**実メール（Gmail エイリアス）**。`keita.urano+p01@gmail.com` 等の `+pXX` エイリアスで本番マジックリンクを実受信し、Gmail 経由でリンクを拾って走行する。本番と同一フローで観察できる（feedback_logic_auth_magiclink_only を崩さない解法）。担当=林。
+> 状態（2026-05-31 前提クリア）: Keita 判断でログイン方式確定＝**実メール（Gmail エイリアス）**。`keita.urano+p01@gmail.com` 等の `+pXX` エイリアスで本番マジックリンクを実受信し、Gmail 経由でリンクを拾って走行する。本番と同一フローで観察できる（feedback_logic_auth_magiclink_only を崩さない解法）。担当=林。
+> **2026-05-31 着手時チェック実施・解消**: 投入済み20体の email は実際には `dogfood+pNN@logic-test.local`（`.local`＝マジックリンク受信不可）だった。本番 Supabase `yctlelmlwjwlcpcxvmgx` の auth.users 20件＋auth.identities 20件を `keita.urano+pNN@gmail.com` に UPDATE し、users_gmail=20/local残=0/idents_gmail=20/user・identity 不一致=0 で検証完了。seed.sql/personas.ts/cleanup.sql/README も同形式に追従（commit `3fdc6bf` push 済）。→ これでマジックリンクは Keita の Gmail に届く状態。**残るは走行本体のみ**（headless では実機 UI を触れないため、Keita 手元の Android internal もしくは emulator+Capacitor が必要）。
 
 - 詳細: 代表6体（p01/p02/p04/p07/p18/p20）でアプリ UI をフル走行し UX を観察。各体は Gmail エイリアス（`keita.urano+pXX@gmail.com`）でログイン。
-- ⚠次アクション/抜けもれ（最重要・着手時チェック）: **DF-2b で投入済み20体の email がエイリアス形式（`+pXX`）になっているかを走行着手時に確認**する。違っていればそこだけ修正 or 再投入（投入済みデータの email がエイリアスでないと本番マジックリンクが届かず走行できない）。
+- ⚠次アクション/抜けもれ（最重要・着手時チェック）: ~~DF-2b で投入済み20体の email がエイリアス形式（`+pXX`）になっているかを走行着手時に確認~~ → **2026-05-31 完了・修正済（上記）**。次は実機/エミュでの6体走行。
 - 後続依存: DF-4 / DF-5 / DF-6 は DF-3 完了が前提。
 - 提言・抜けもれ: 両OS 観点はモバイル専用なので Android internal 中心で走行。走行で見つけた不具合は DF-5 経由でアプリ内フィードバック起票に寄せる。
 
@@ -2505,7 +2506,7 @@ Keita から Logic ブロッカー6件の判断を取得。各タスクへ反映
 ### 判断反映サマリ
 | タスク | 旧状態 | 新状態 | 反映内容 |
 |--------|--------|--------|----------|
-| DF-3 | 進行待ち（Keita 判断中） | TODO（着手可） | ログイン方式確定＝実メール Gmail エイリアス `keita.urano+pXX@gmail.com` で本番マジックリンク実受信。着手時に DF-2b 投入20体の email がエイリアス形式かを要確認。担当=林。後続 DF-4/5/6 は DF-3 完了が前提 |
+| DF-3 | 進行待ち（実機走行のみ） | TODO（前提クリア済） | ログイン方式確定＝実メール Gmail エイリアス `keita.urano+pXX@gmail.com`。2026-05-31 着手時チェック完了＝投入20体 email を `.local`→Gmail エイリアスへ本番DB修正・検証済（commit `3fdc6bf`）。残=実機/エミュ6体走行（headless 不可）。担当=林。後続 DF-4/5/6 は DF-3 完了が前提 |
 | AM-N | BLOCKED | TODO（unblock） | 法的確定値が全揃い（アポロ合同会社/Apollo LLC・責任者 柴田圭太・池袋 BIGオフィスプラザ1206・月¥350/年¥2,450・電話非掲載＋開示注記・削除は account-deletion 正本/delete-account リダイレクト・インボイス記載なし・Google ログイン記述削除済）。dev-logic が LEGAL_REVIEW §5 ＋確定値を HTML〔5文書×ja/en・削除系一本化で減〕に反映、`【要Keita確認:...】`マーカー置換。**＋2026-05-30 追加: 年額トライアル記載の差し戻し（C-2 で削除した「7日間無料トライアル」を「年額のみ・初回限定・7日無料・8日目以降¥2,450/年自動課金・期間中解約で課金なし」＋月額トライアル無し明記で書き戻し、AM-O Offer `yearly-free-trial-7d` と整合）を push 前に必ず含める**。反映後に本番 push 承認を別途取得 |
 | AM-R | BLOCKED | DONE | dev-logic が 2026-05-30 本番 DB 書き換え実行完了。固有タグ41→36種・9統合・誤統合ゼロ・他ユーザー波及ゼロ。snapshot `public._backfill_journal_tags_20260530`〔15行〕＋undo SQL 保持中、安定確認後 DROP 可 |
 | T-U | DONE | 再オープン（スコープ拡大） | ボタン専用トークン #2E45A8（8.29:1）の対処は残置。ブランド青 #6C8EF5 そのものを濃くしてアプリ全体の青を再設計する方向に決定。designer が新ブランド青パレット案2〜3＋全テーマ AA 検算→Keita 選定→dev-logic 実装。T-V と同じトークン（theme.ts/tokens.css）を触るため統合実装 |
