@@ -242,7 +242,9 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
           <SettingRow icon="message" name={t('profile.feedbackName')} sub={t('profile.feedbackSub')} onClick={onOpenFeedback} />
           <SettingRow icon="doc" name={t('profile.terms')} sub="" onClick={() => window.open(localizedHtmlPath('terms'), '_blank')} />
           <SettingRow icon="shield" name={t('profile.privacy')} sub="" onClick={() => window.open(localizedHtmlPath('privacy'), '_blank')} />
-          <SettingRow icon="scale" name={t('profile.tokushoho')} sub="" onClick={() => window.open(localizedHtmlPath('tokushoho'), '_blank')} />
+          {getLocale() === 'ja' && (
+            <SettingRow icon="scale" name={t('profile.tokushoho')} sub="" onClick={() => window.open(localizedHtmlPath('tokushoho'), '_blank')} />
+          )}
         </div>
         <button type="button" onClick={handleLogout}
           style={{ background: 'transparent', border: '1px solid rgba(252,165,165,.4)', borderRadius: 14, padding: 13, textAlign: 'center', fontSize: 14, fontWeight: 700, color: 'var(--md-sys-color-error)', cursor: 'pointer', font: 'inherit', width: '100%', minHeight: 44 }}>
