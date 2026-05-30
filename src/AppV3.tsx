@@ -592,7 +592,7 @@ function AppV3() {
         )
       )}
       {screen.type === 'fermi' && <FermiScreen onBack={handleBack} onReport={(ctx) => navigate({ type: 'report-problem', context: ctx })} />}
-      {screen.type === 'daily-fermi' && <DailyFermiScreen onBack={handleBack} onReport={(ctx) => navigate({ type: 'report-problem', context: ctx })} onOpenRanking={() => navigate({ type: 'fermi-ranking' })} />}
+      {screen.type === 'daily-fermi' && <DailyFermiScreen onBack={handleBack} onReport={(ctx) => navigate({ type: 'report-problem', context: ctx })} onOpenRanking={() => navigate({ type: 'fermi-ranking' })} onUpgrade={() => navigate({ type: 'pricing' })} />}
       {screen.type === 'daily-problem' && <DailyProblemScreen onBack={handleBack} />}
 
       {screen.type === 'feedback' && <FeedbackScreen onBack={handleBack} />}
