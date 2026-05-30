@@ -333,12 +333,20 @@ function shouldShowUpgradeToast(paid: boolean): boolean {
   return true
 }
 function useUpgradeWelcomeToast(paid: boolean): { visible: boolean; dismiss: () => void } {
-  // 初期化時に判定するので、effect で setState する必要がない
-  const [visible, setVisible] = useState(() => shouldShowUpgradeToast(paid))
+  // paid はマウント直後に false で、購買検証が非同期に確定してから true に変わる
+  // ケースがある。useState の初期化子だけで判定すると、マウント時点で paid=false
+  // だった場合に「初回有料化の祝福」を取りこぼす。
+  // そのため visible は毎レンダーで paid を再評価して導出する（= paid が
+  // false→true に変わった最初のレンダーで自然に表示される）。閉じたかどうかだけを
+  // セッション内の state で持ち、dismiss 時に UPGRADE_SEEN_KEY を永続化することで
+  // 「初回有料化の1回だけ表示し、閉じたら二度と出ない」を保証する。
+  const [dismissed, setDismissed] = useState(false)
+  const visible = !dismissed && shouldShowUpgradeToast(paid)
 
   const dismiss = () => {
+    // 表示済みフラグを必ず永続化してから閉じる（リロード・再マウント後も再表示しない）。
     try { localStorage.setItem(UPGRADE_SEEN_KEY, '1') } catch { /* */ }
-    setVisible(false)
+    setDismissed(true)
   }
   return { visible, dismiss }
 }

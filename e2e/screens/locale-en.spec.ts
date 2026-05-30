@@ -47,7 +47,7 @@ test.describe('EN ロケール — 全 root 画面で英語のみ', () => {
   test('lessons: "Think Logically" コース見出しが出て日本語は混在しない', async ({ page }) => {
     await boot(page, { locale: 'en' })
     await tab(page, 1).click()
-    await page.waitForSelector('text=Training', { timeout: 5_000 })
+    await page.waitForSelector('text=Learn', { timeout: 5_000 })
     await expect(page.locator('text=Think Logically').first()).toBeVisible()
     // 日本語タイトルが混ざっていない
     await expect(page.locator('text=論理的に考える')).toHaveCount(0)
