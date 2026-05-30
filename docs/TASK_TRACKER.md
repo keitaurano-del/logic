@@ -49,7 +49,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 | DF-F5  | 課金状態とログイン状態が独立＝「有料なのに使えない」 | P0 | DONE（DF-FV○・paid分岐文言結線） | `b756022` | dev-logic |
 | DF-F6  | オンボ生年入力で「次へ」が無言ブロック（フリーズ誤解） | P0 | DONE（DF-FV○・理由提示+aria結線） | `cd05dd3` | dev-logic |
 | DF-F7  | en でコーチマーク/チュートリアルが日本語ハードコード | P0 | DONE（DF-FV○・coachmark t()化ja/en） | `24417a2` | dev-logic |
-| DF-F8  | 通知設定の粒度不足（時刻固定・頻度なし・静かな時間帯なし） | P0 | REVIEW（2026-05-31 実装完了・green tsc0/eslint.0err/vitest389pass。時刻ピッカー可変化＋頻度(毎日/平日/週次曜日選択)＋静かな時間帯(DND)を設定UI＋永続化＋実nativeスケジュールまで結線。曜日別 on 通知/DND発火の実機検証は test-functional 待ち） | (commit後追記) | dev-logic |
+| DF-F8  | 通知設定の粒度不足（時刻固定・頻度なし・静かな時間帯なし） | P0 | REVIEW（2026-05-31 実装完了・green tsc0/eslint.0err/vitest389pass。時刻ピッカー可変化＋頻度(毎日/平日/週次曜日選択)＋静かな時間帯(DND)を設定UI＋永続化＋実nativeスケジュールまで結線。曜日別 on 通知/DND発火の実機検証は test-functional 待ち。commit `95cba0c` を origin/main へ push 済（17a04ee..95cba0c, ahead=0）。Android=main push で自動配信、Web=deploy-production.yml dispatch 成功 run 16470307885） | `95cba0c` | dev-logic |
 | DF-F9  | 有料ウェルカム演出が再訪毎＋ゲストにも出る | P0 | DONE（DF-FV○・非有料カット+初回限定seen永続化が結線。※実装出所は`c5deaeb`単一有料プラン統合、`b756022`ではない） | `c5deaeb` | dev-logic |
 | DF-F10 | 下タブのラベルと中身が不一致（機能名ベースに） | P1 | DONE（DF-FV○・nav i18n ja/en整合） | `952fdda` | dev-logic |
 | DF-F11 | トライアル残日数がジャーナル内にしか出ない | P1 | DONE（DF-FV○・常設バッジ+終了間際バナー結線。通知発火はF8依存で範囲外） | `b39a0df` | dev-logic |
