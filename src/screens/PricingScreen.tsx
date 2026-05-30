@@ -40,18 +40,23 @@ function CheckIcon() {
     </svg>
   )
 }
-function CrossIcon() {
+// 非対応セルは「—」(em dash) で明示し、空欄に見えるのを防ぐ
+function NotIncludedMark() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-      <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-    </svg>
+    <span
+      style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-muted)', lineHeight: 1 }}
+      title={t('pricing.notIncluded')}
+      aria-label={t('pricing.notIncluded')}
+    >
+      &mdash;
+    </span>
   )
 }
 
 function Cell({ value, dim }: { value: string | boolean; dim?: boolean }) {
-  const opacity = dim ? 0.45 : 1
+  const opacity = dim ? 0.55 : 1
   if (value === true) return <span style={{ opacity }}><CheckIcon /></span>
-  if (value === false) return <span style={{ opacity }}><CrossIcon /></span>
+  if (value === false) return <span style={{ opacity }}><NotIncludedMark /></span>
   return <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)', opacity }}>{value}</span>
 }
 
@@ -124,10 +129,9 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
               }}
             >
               {cycle === 'monthly' ? t('pricing.cycleMonthly') : (
-                <span>
-                  {t('pricing.cycleYearly')}
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', justifyContent: 'center' }}>
+                  <span>{t('pricing.cycleYearly')}</span>
                   <span style={{
-                    marginLeft: 6,
                     fontSize: 11,
                     background: billingCycle === 'yearly' ? 'rgba(255,255,255,0.22)' : `color-mix(in srgb, var(--warm) 13%, transparent)`,
                     color: billingCycle === 'yearly' ? 'var(--text-on-hero)' : 'var(--warm)',
