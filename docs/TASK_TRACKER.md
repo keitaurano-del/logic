@@ -23,9 +23,9 @@ Keita 指示「なんでもいいけど全部ちゃんと反映して」＝ア�
 | 層 | 意味 | 該当 |
 |----|------|------|
 | 第1層 実装済み（コードあり） | main にコミット有り。実機効果は第2層で判定 | F1, F2, F4, F5, F6, F7, F9, F10, F11, F12, F14, F15, F16, F17, F18, F19, F20, F21（18件） |
-| 第2層 効いている（実機○） | test-functional の実効性検証で○判定が出たもの | **DF-F2**＋**DF-FV 2026-05-31 検証完了で○16件**：F1/F4/F5/F6/F7/F9/F10/F11/F12/F14/F15/F16/F17/F19/F20/F21（全てライブ経路結線・ja/en・永続化を file:line で確認）。うち機能クリーン12件（F1/F5/F6/F7/F9/F10/F11/F14/F15/F17/F20/F21）は DONE 昇格、設計判断系4件（F4/F12/F16/F19）は○機能だが Keita 見せ方目視待ちで REVIEW 維持 |
+| 第2層 効いている（実機○） | test-functional の実効性検証で○判定が出たもの | **DF-F2**＋**DF-FV 2026-05-31 検証完了で○16件**：F1/F4/F5/F6/F7/F9/F10/F11/F12/F14/F15/F16/F17/F19/F20/F21（全てライブ経路結線・ja/en・永続化を file:line で確認）。うち機能クリーン12件（F1/F5/F6/F7/F9/F10/F11/F14/F15/F17/F20/F21）は DONE 昇格、設計判断系4件（F4/F12/F16/F19）は○機能だが Keita 見せ方目視待ちで REVIEW 維持。**＋DF-F8 を 2026-05-31 に別途○検証→DONE 昇格**（設計判断系でない純機能追加・実機発火のみ headless 未確認の caveat） |
 | 第3層 効いていない・要修正（実機×/△） | コードはあるが実機で効果が出ない欠陥。再オープン | **DF-F18**（△・finding すり替わり＝実装は「完了後」upsell のみで元症状「解く前に弱い」未解消）→ **DF-FV-1** で dev-logic 修正キュー |
-| 未着手（コードなし） | コミット無し。設計判断で未確定のまま残存 | DF-F3（状態ポリシー親・BLOCKED）, DF-F8（通知粒度・TODO）, DF-F13（フェルミ難易度フィルタ・BLOCKED） |
+| 未着手（コードなし） | コミット無し。設計判断で未確定のまま残存 | DF-F3（状態ポリシー親・BLOCKED）, DF-F13（フェルミ難易度フィルタ・BLOCKED）　※DF-F8 は実装完了→DF-FV○→DONE（`95cba0c`）で本欄から外れた |
 
 各 DF-F の実装コミット hash（本日 git log main で全件実在確認済み・HEAD=`3a588dc`）:
 DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機検証○・DONE） / DF-F4=`ab88528` / DF-F5・F9=`b756022` / DF-F6=`cd05dd3` / DF-F7=`24417a2` / DF-F10=`952fdda` / DF-F11=`b39a0df` / DF-F12=`cf5d7e4` / DF-F14=`d4ae9e0` / DF-F15=`578d2ea` / DF-F16=`12f350c`+`f4dcf13` / DF-F17=`1a056fd` / DF-F18=`f2e7819` / DF-F19=`7a2f1d0` / DF-F20=`5fe6833` / DF-F21=`7819a34`
@@ -49,7 +49,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 | DF-F5  | 課金状態とログイン状態が独立＝「有料なのに使えない」 | P0 | DONE（DF-FV○・paid分岐文言結線） | `b756022` | dev-logic |
 | DF-F6  | オンボ生年入力で「次へ」が無言ブロック（フリーズ誤解） | P0 | DONE（DF-FV○・理由提示+aria結線） | `cd05dd3` | dev-logic |
 | DF-F7  | en でコーチマーク/チュートリアルが日本語ハードコード | P0 | DONE（DF-FV○・coachmark t()化ja/en） | `24417a2` | dev-logic |
-| DF-F8  | 通知設定の粒度不足（時刻固定・頻度なし・静かな時間帯なし） | P0 | REVIEW（2026-05-31 実装完了・green tsc0/eslint.0err/vitest389pass。時刻ピッカー可変化＋頻度(毎日/平日/週次曜日選択)＋静かな時間帯(DND)を設定UI＋永続化＋実nativeスケジュールまで結線。曜日別 on 通知/DND発火の実機検証は test-functional 待ち。commit `95cba0c` を origin/main へ push 済（17a04ee..95cba0c, ahead=0）。Android=main push で自動配信、Web=deploy-production.yml dispatch 成功 run 16470307885） | `95cba0c` | dev-logic |
+| DF-F8  | 通知設定の粒度不足（時刻固定・頻度なし・静かな時間帯なし） | P0 | DONE（DF-FV○ 2026-05-31 実効性検証完了＝UIハンドラ→pref永続化(logic-reminder)→@capacitor/local-notifications schedule/cancel までライブ経路結線・ja/en・後方互換マイグレーションを file:line 確認。元症状3つ全解消。green tsc0/eslint.0err/vitest389pass。※実機(Android/iOS)の発火タイミングそのものは headless で未確認＝コードレベル○判定。commit `95cba0c` push 済・Android自動配信＋Web deploy dispatch run 16470307885 済） | `95cba0c` | dev-logic |
 | DF-F9  | 有料ウェルカム演出が再訪毎＋ゲストにも出る | P0 | DONE（DF-FV○・非有料カット+初回限定seen永続化が結線。※実装出所は`c5deaeb`単一有料プラン統合、`b756022`ではない） | `c5deaeb` | dev-logic |
 | DF-F10 | 下タブのラベルと中身が不一致（機能名ベースに） | P1 | DONE（DF-FV○・nav i18n ja/en整合） | `952fdda` | dev-logic |
 | DF-F11 | トライアル残日数がジャーナル内にしか出ない | P1 | DONE（DF-FV○・常設バッジ+終了間際バナー結線。通知発火はF8依存で範囲外） | `b39a0df` | dev-logic |
@@ -160,7 +160,8 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 - 更新日: 2026-05-30
 
 ### DF-F8 — 通知設定の粒度（時刻ピッカー＋頻度＋静かな時間帯）　[P0 / 重め]
-- 優先度: P0 / ステータス: REVIEW（2026-05-31 実装完了。実機の曜日別/DND 発火は test-functional 検証待ち）/ 担当: dev-logic
+- 優先度: P0 / ステータス: DONE（DF-FV○ 2026-05-31 実効性検証完了。下記 検証結果 参照。実機発火タイミングのみ headless 未確認の caveat あり）/ 担当: dev-logic
+- 検証結果（2026-05-31 test-functional ○判定）: 設定UI 3要素（任意時刻ピッカー `NotificationSettingsScreen.tsx:73/84`・頻度＋曜日選択 `:93/130/390-399`・DND `:407-434`）が state→`persistDaily`→`scheduleDailyReminder` まで結線。永続化キー `logic-reminder`（`notifications.ts:8`、台帳の logic-notifications 誤記を再確認）＋旧 `{enabled,hour,minute}`/旧 string time の後方互換マイグレーション（`:190-216`）。native スケジュール＝daily `every:'day'`／weekdays・weekly は曜日別 `on:{weekday,hour,minute}` 複数登録、曜日別id 1010〜1016（1001/1002/1003 非衝突）、Capacitor Weekday(Sunday=1)↔JS getDay(0=日) の +1 変換 `jsDayToCapacitorWeekday`（`:32-34`）正。quietHours `isWithinQuietHours`（`:140-155`）[start,end)・日跨ぎ対応、範囲内は daily を非スケジュール。i18n ja/en 15×2 中立丁寧体・hex/絵文字なし。tsc0/eslint.0err(19既存warn)/vitest 22files389pass（reminderSchedule.test.ts 15含む）。元症状（時刻固定・頻度なし・DNDなし）3つ全解消。
 - 詳細: `src/screens/NotificationSettingsScreen.tsx` は時刻21時固定・頻度設定なし。時刻ピッカー＋頻度（毎日/平日/週N回 等）＋静かな時間帯（DND）を追加（p18）。重め。
 - 実装結果（2026-05-31）:
   - `src/notifications.ts`: `ReminderPref` を frequency('daily'|'weekdays'|'weekly') / weeklyDays / quietHours で拡張。`loadReminderPref` に後方互換マイグレーション（旧 `{enabled,hour,minute}` JSON・万一の string time も daily に移行）。実 native スケジュールへ結線＝daily は `every:'day'`、weekdays/weekly は曜日別 `on:{weekday,hour,minute}` で複数通知登録。曜日別 id は 1010〜1016（1001/1002/1003 と非衝突）、`DAILY_ALL_NOTIF_IDS`/`ALL_NOTIF_IDS` を拡張し cancel 取りこぼし防止。
