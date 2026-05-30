@@ -196,16 +196,16 @@ Fermi estimation is about landing on ONE representative number.
 - The "Estimate" number inside the model answer MUST match the final "## Answer" number exactly.
 
 **Critical rule #2 — the model answer must be reachable by someone who only knows basic facts**:
-Write the model answer assuming the learner knows **only common-knowledge / easily-lookup-able basics** (Japan population ≈ 120M, GDP, rough household counts, everyday observation).
+Write the model answer assuming the learner knows **only common-knowledge / easily-lookup-able basics** (world population ≈ 8B, US population ≈ 330M, rough household counts, everyday observation).
 Do NOT assume the learner already knows specialized industry figures (e.g. "there are X thousand salons").
 **For each assumption, state WHY that value — i.e. which piece of common knowledge it derives from.**
 
 Good example:
-- Japan population ≈ 120M (common knowledge)
-  → average household size has been shrinking → assume ~2 people/household
-  → households ≈ 120M ÷ 2 ≈ 60M
+- US population ≈ 330M (common knowledge)
+  → average household has ~2.5 people
+  → households ≈ 330M ÷ 2.5 ≈ 130M
 - Smartphone adoption ≈ 80% (own observation, adjusted lower for elderly)
-  → adult population 100M × 0.8 ≈ 80M phones
+  → adult population ~250M × 0.8 ≈ 200M phones
 
 Bad example (never do this):
 - "Households: 58M" — no derivation

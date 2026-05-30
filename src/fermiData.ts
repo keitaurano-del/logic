@@ -76,67 +76,58 @@ const FERMI_POOL_JA: FermiQuestion[] = [
 ]
 
 const FERMI_POOL_EN: FermiQuestion[] = [
-  // ── Classic business: market size / revenue ──
-  { question: 'What is the annual revenue size of the SaaS market in Japan (JPY)?', hint: 'Break down as: number of companies × SaaS adoption rate × annual spend per company. SMB and enterprise spend differ greatly.' },
-  { question: 'What is the total daily revenue of all Starbucks stores in Japan (JPY)?', hint: 'Break down as: number of stores × customers per store × spend per customer. Consider operating hours and turnover.' },
-  { question: 'What is the daily total revenue of a 300-store izakaya chain (JPY)?', hint: 'Compute as: seats per store × turnover × spend per customer × number of stores. Mind weekday vs weekend.' },
-  { question: 'What is the annual GMV of the EC market in Japan (JPY)?', hint: 'Break down as: internet users × EC usage rate × annual EC spend per person. Include travel and tickets, not just goods.' },
-  { question: 'How many M&A deals are closed annually in Japan?', hint: 'Split into strategic deals at listed firms + succession deals at SMBs. The successor-shortage problem is the key scale driver.' },
-
-  // ── Business cost / operations ──
-  { question: 'What is the annual office rent for a 50-person SMB in Japan (JPY)?', hint: 'Compute as: floor area per person × rent per tsubo × 12 months. Central Tokyo and suburbs differ widely.' },
-  { question: 'How many projects do major consulting firms win annually in Japan?', hint: 'Think: headcount ÷ people per project × number of project cycles per year.' },
-
-  // ── Quirky business observations ──
-  { question: 'How many hanko (stamps) do Japanese office workers press in a year nationwide?', hint: 'Break down as: workforce × white-collar ratio × stamps per person per day × working days per year. Subtract digitization progress.' },
-  { question: 'How many times per day is "otsukaresama desu" uttered by Japanese business people in total?', hint: 'Workforce × utterances per person per day. Count by scene: greetings, signing off, email openings, chat openings…' },
-  { question: 'How many "ryōkai desu / shōchi shimashita" (acknowledgment) messages are sent in business chat (Slack/Teams etc.) per day in Japan?', hint: 'Business-chat users × messages per person per day × ratio that are acknowledgments.' },
-  { question: 'How many cups of coffee are brewed daily in Japanese offices?', hint: 'White-collar population × cups per person per day at the office. Include both coffee machines and café take-ins.' },
-  { question: 'How many times per day, nationwide, does someone say "your mic is on mute" in online meetings?', hint: 'Daily online meetings × probability that this happens per meeting. Factor in remote/hybrid penetration.' },
-  { question: 'How many receipts are filed through expense reports annually in Japan?', hint: 'White-collar population × receipts per person per month × 12 months. Sales roles file far more than back-office.' },
-  { question: 'How many "no-longer-needed" business cards sit unused in business-card holders across Japan?', hint: 'Workforce × sales-role ratio × lifetime cards collected per salesperson. Adjust for cards that "go to sleep" when people change roles or retire.' },
-
-  // ── Consulting case-interview staples (market sizing) ──
-  { question: 'What is the annual size of the golf market in Japan (JPY)?', hint: 'Golf population × rounds per year × cost per round (greens fee + equipment + food). Mind the skew across age groups.' },
-  { question: 'What is the annual size of the pet food market in Japan (JPY)?', hint: 'Dogs and cats owned × annual food spend per animal. Per-animal spend differs between dogs and cats.' },
-  { question: 'How many fitness gym members are there in Tokyo?', hint: 'Tokyo population × age-group gym membership rates. Urban workers in their 20s–40s are the core; don\'t forget senior gyms.' },
-  { question: 'What is the annual size of the wedding market in Japan (JPY)?', hint: 'Annual marriages × ceremony rate × reception cost per couple. Subtracting "no-ceremony" couples is the key.' },
-  { question: 'What is the annual size of the online advertising market in Japan (JPY)?', hint: 'Total ad spend (~1–1.2% of GDP) × digital share. Mind the mix: search + display + video + social.' },
-  { question: 'What is the annual size of the eyewear market in Japan (JPY)?', hint: 'Population × vision-correction rate ÷ average replacement cycle × price per pair. Watch substitution with contact lenses.' },
-  { question: 'How many parcels does the delivery industry handle annually in Japan?', hint: 'Split into consumer receipts + BtoB logistics: population × parcels per person per year + business volume. Mind the rise in EC penetration.' },
-  { question: 'What is the annual size of the subscription video market (Netflix, Prime Video, etc.) in Japan (JPY)?', hint: 'Households × SVOD adoption × services subscribed per household × monthly fee × 12 months. Multi-subscription is common.' },
-  { question: 'What is the annual total revenue of the drugstore industry in Japan (JPY)?', hint: 'Number of stores × daily sales per store × operating days. Check per-store mix of cosmetics, food, and OTC drugs.' },
-  { question: 'What is the annual attendance at Japan\'s professional baseball (NPB) games?', hint: '12 teams × home games per team × average attendance per game (stadium capacity × utilization).' },
-
-  // ── Added: industry / market size ──
-  { question: 'What is the annual total revenue of ramen shops in Japan (JPY)?', hint: 'Number of shops × daily sales per shop × operating days. Spend-per-customer varies a lot (iekei / jiro / family-oriented).' },
-  { question: 'What is the combined daily revenue of the top 3 convenience-store chains in Japan (JPY)?', hint: 'Total stores across the 3 chains × daily sales per store. Sales vary widely by location (station front / suburb / office district).' },
-  { question: 'What is the annual total revenue of the taxi industry in Japan (JPY)?', hint: 'National taxi fleet × daily revenue per cab × operating days. Urban vs rural utilization and fare structures differ.' },
-  { question: 'What is the annual size of the karaoke market in Japan (JPY)?', hint: 'Number of stores × daily sales per store × operating days. Mind the post-COVID recovery curve.' },
-  { question: 'What is the annual size of the manga market (print + digital) in Japan (JPY)?', hint: 'Split into print tankobon + magazines + digital storefront revenue. The digital share is climbing every year.' },
-  { question: 'What is the annual revenue of the mobile-game industry in Japan (JPY)?', hint: 'MAU × paying-user rate × ARPPU (avg. spend per payer) × 12 months. Whales (heavy spenders) skew the distribution.' },
-  { question: 'What is the annual total premium revenue of the insurance industry in Japan (JPY)?', hint: 'Split life + non-life: household enrollment rate × premium per household. Life-insurance penetration is very high.' },
-  { question: 'How many used cars are traded annually in Japan?', hint: 'National privately owned car fleet ÷ average replacement cycle to estimate annual transaction volume.' },
-  { question: 'What is the annual total revenue of the pizza-delivery industry in Japan (JPY)?', hint: 'Number of stores × daily orders per store × spend per customer × operating days. Mind weekend / event-day skews.' },
-  { question: 'How many smartphones are shipped annually in Japan?', hint: 'Population × smartphone ownership rate ÷ average replacement cycle. Include corporate demand too.' },
-  { question: 'What is the annual total revenue of the car-rental industry in Japan (JPY)?', hint: 'Fleet size × daily utilization rate × average daily price × 365. Tourist areas have higher utilization.' },
-  { question: 'What is the annual total revenue from vending machines in Japan (JPY)?', hint: 'National vending-machine count × daily sales per machine × 365. Mind the mix of drinks / tobacco / food.' },
-  { question: 'What is the annual total household telecom spend (mobile + fixed) in Japan (JPY)?', hint: 'Households × telecom spend per household × 12 + business demand. Pricing differs widely between MNOs and MVNOs.' },
-  { question: 'What is the annual total revenue of the English-conversation school industry in Japan (JPY)?', hint: 'Split offline + online: students × annual spend per student. Per-student spend differs between kids and adults.' },
-  { question: 'What is the annual total visitor count at Japan\'s super-sento / onsen facilities?', hint: 'Number of facilities × daily visitors per facility × operating days. Weekends and long holidays concentrate demand.' },
-  { question: 'What is the annual total revenue of the real-estate brokerage industry in Japan (JPY)?', hint: 'Annual housing transactions × average brokerage fee (~3% of price). Don\'t forget rental brokerage too.' },
-  { question: 'What is the annual size of the e-book market in Japan (JPY)?', hint: 'Readers × e-book adoption rate × annual spend per reader. Comics overwhelmingly dominate the mix.' },
-  { question: 'How many smartwatches are shipped annually in Japan?', hint: 'Population aged 20–50 × smartwatch ownership rate ÷ average replacement cycle. Apple Watch has the dominant share.' },
-  { question: 'How many room-nights are sold annually by Japan\'s hotel industry (business + city hotels)?', hint: 'National room count × occupancy rate × 365. Mind the balance between leisure and business demand.' },
-
-  // ── Added: quirky business observations ──
-  { question: 'How many total hours per year do Japanese office workers spend waiting at the copy machine?', hint: 'White-collar workers × prints per person per week × wait time per print. Picture the small queues that form by the multifunction printer.' },
-  { question: 'How many times per day is "osewa ni natte orimasu" written in internal business email in Japan?', hint: 'Business-email senders × emails per person per day × share that open with this greeting.' },
-  { question: 'How many "time-change-from-the-client" requests happen across Japanese offices per day?', hint: 'Daily BtoB meetings × probability of reschedule. Industries with frequent rescheduling (consulting, sales) tilt the average.' },
-  { question: 'How many sheets of paper are printed daily in Japanese offices?', hint: 'White-collar population × pages per person per day. Subtract for the level of paperless adoption (varies by industry).' },
-  { question: 'How many nengajō (New Year cards) are mailed annually in Japan?', hint: 'Households × cards per household. Note the steady decline as digital greetings spread.' },
-  { question: 'How many times per year do Japanese office workers press the Enter key in total?', hint: 'PC workers × Enter presses per person per day (email sends, searches, code runs) × working days.' },
-  { question: 'How many vending-machine cans / bottles of coffee are sold per day at Japanese train stations?', hint: 'National station count × machines per station × daily sales per machine × the coffee share of that mix.' },
+  // F19: global-topic pool (en). Approved & audited 50 questions (basic10/standard23/advanced17).
+  // Source: scripts/dogfood/f19_final.json. Globalized to US / world figures (no JP-only topics, no ¥).
+  { question: 'What is the annual revenue (USD) of the coffee-chain café market in the United States?', hint: 'Start from US adults who buy café coffee, multiply by visits per week and spend per visit, then annualize. Coffee drinkers vs. chain buyers is the first split.' },
+  { question: 'How many ride-hailing drivers are actively on the road at 6pm on a typical weekday across the United States?', hint: 'Estimate concurrent ride demand (rides happening at once) from daily rides ÷ active hours, then convert to drivers using utilization. Demand-side first, then supply.' },
+  { question: 'What is the annual revenue (USD) of a single busy urban fast-food restaurant?', hint: 'Build from transactions per hour during peak and off-peak, average ticket, and operating hours per day, then annualize over operating days.' },
+  { question: 'What is the annual revenue (USD) of the haircut and salon services market in the United States, estimated both top-down and bottom-up?', hint: 'Bottom-up: people × cuts/year × price. Top-down: number of salons × revenue per salon. Reconcile the two and explain the gap.' },
+  { question: 'What is the annual revenue (USD) of the pet food market in the United States?', hint: 'Households with pets × pets per household × annual food spend per pet. Split dogs vs. cats since spend per animal differs.' },
+  { question: 'How many people are watching a major video-streaming platform (e.g., a Netflix-scale service) simultaneously during global prime time?', hint: 'Start from subscriber base, daily active share, average daily watch time, then convert to concurrency at the global peak hour accounting for time zones.' },
+  { question: 'How many gallons of gasoline are sold for passenger vehicles in the United States per year?', hint: 'Vehicles × annual miles driven × average fuel economy (miles per gallon). Use passenger cars/light trucks only.' },
+  { question: 'What is the annual revenue (USD) of a single 120-room mid-scale hotel running at typical occupancy?', hint: 'Rooms × occupancy × average daily rate × 365 for room revenue, then add a markup for food/beverage and other services.' },
+  { question: 'How many smartphones are sold worldwide per year, estimated top-down and bottom-up?', hint: 'Bottom-up: installed base ÷ replacement cycle + new first-time buyers. Top-down: regional populations × penetration × turnover. Reconcile.' },
+  { question: 'How many food-delivery orders are placed through apps in the United States on a typical Friday evening (5–9pm)?', hint: 'Estimate ordering households in metros, the share that orders delivery on a peak Friday, and confine it to the 4-hour dinner window.' },
+  { question: 'How many disposable diapers are used in the United States per year?', hint: 'Number of children still in diapers × diaper changes per day × 365. Anchor on births per year and the years a child stays in diapers.' },
+  { question: 'What annual recurring revenue (USD) does a B2B SaaS startup reach 3 years after launch if it adds 200 paying customers per month at 2% monthly churn?', hint: 'Track the customer base month over month: additions minus churn compound into a partially-saturated base, then multiply by annual revenue per customer.' },
+  { question: 'How many airline passenger seats are sold (passenger boardings) worldwide per year?', hint: 'Start from annual passengers (trips, not unique people), or build from aircraft fleet × seats × flights/day × load factor. Cross-check the two.' },
+  { question: 'How many messages are sent across the world\'s largest messaging platform during its single busiest minute of the year?', hint: 'Annual or daily message volume → average per second, then apply a peak multiplier for an event (e.g., New Year) when many time zones celebrate at once.' },
+  { question: 'What is the total annual residential electricity consumption (kWh) in the United States, via household and via per-capita routes?', hint: 'Route A: households × kWh per household per year. Route B: population × per-capita residential kWh. Reconcile and note what differs.' },
+  { question: 'What is the annual retail revenue (USD) of the global chocolate market?', hint: 'Population in chocolate-consuming regions × kg consumed per person per year × retail price per kg. Weight consumption heavily toward wealthier regions.' },
+  { question: 'What is the annual revenue (USD) of a single mid-size commercial fitness gym, and how many members visit per day?', hint: 'Revenue = members × monthly dues × 12, plus add-ons. Daily visits = members × the fraction who actually show up on an average day.' },
+  { question: 'How many short-term-rental (e.g., Airbnb-style) listings are occupied on a peak summer Saturday night in the United States?', hint: 'Estimate total active US listings, then apply a high-season Saturday occupancy rate. Active supply first, then utilization.' },
+  { question: 'How many cups of coffee (all sources: home, office, café) are consumed in the United States per day?', hint: 'Coffee-drinking adults × cups per drinker per day. Anchor on the share of adults who drink coffee and typical daily cups.' },
+  { question: 'What is the annual global revenue (USD) of the mobile-games market, via player route and via top-down app-store route?', hint: 'Player route: players × paying-user rate × annual spend per payer. Top-down: total consumer app-store spend × games share. Reconcile.' },
+  { question: 'What is the annual revenue (USD) of a single large suburban supermarket?', hint: 'Transactions per day (customers through checkout) × average basket size × operating days. Build the customer count from peak and off-peak flow.' },
+  { question: 'How many new passenger cars and light trucks are sold in the United States per year?', hint: 'Installed fleet ÷ average vehicle lifespan gives the replacement rate; add modest fleet growth. Anchor on total registered vehicles and how long they last.' },
+  { question: 'How many search queries per second does the world\'s largest search engine handle at its global peak?', hint: 'Annual or daily query volume → average queries per second, then apply a modest peak factor since global usage smooths across time zones.' },
+  { question: 'What is the annual global box-office revenue (USD) for cinema?', hint: 'Cinema-going population × tickets per person per year × average ticket price, weighted toward regions with strong theater habits.' },
+  { question: 'What is the annual revenue (USD) of a single 8-stall EV fast-charging station at a busy highway location, and what stall utilization does that imply?', hint: 'Sessions/stall/day from operating hours, session length and utilization × energy or price per session × 365. Then sanity-check the implied utilization.' },
+  { question: 'How many pizzas are sold worldwide in a single day?', hint: 'Start from the major pizza-eating regions (US + Europe as the core), estimate slices or pies per person per week, then convert to a daily, global figure. The US alone is a useful anchor before scaling out.' },
+  { question: 'How many personal computers (desktops + laptops) are shipped worldwide in one year?', hint: 'Work from the global installed base of PCs and an average replacement cycle, which is longer than for phones. Annual shipments roughly equal the active base divided by the replacement period, plus modest first-time demand.' },
+  { question: 'How many cigarettes are consumed worldwide in one year?', hint: 'Estimate the global adult smoking population, then multiply by an average number of cigarettes per smoker per day and annualize. Smoking prevalence varies sharply by region.' },
+  { question: 'What is the cumulative number of solar panels (PV modules) ever installed worldwide?', hint: 'Convert total installed solar capacity (in gigawatts) into module count using an average wattage per panel. Cumulative capacity, not annual additions, is what you want here.' },
+  { question: 'How many shipping containers (TEU) cross the world\'s oceans each year?', hint: 'Anchor on global container port throughput, then recognize that each box is handled multiple times (load, transship, unload) so port moves overstate unique voyages. Reason from trade volume per capita as a cross-check.' },
+  { question: 'What is the global annual revenue of the bottled-water industry (USD)?', hint: 'Multiply the drinking population by liters of bottled water consumed per person per year by an average price per liter. Developed markets drive both volume and price.' },
+  { question: 'How many metric tons of air cargo are transported worldwide in one year?', hint: 'Anchor on global air-freight tonne-kilometers, or build from world population times an average kg of air-freighted goods per person per year. Recognize air cargo is a small but high-value slice of total freight.' },
+  { question: 'What is the total cost of running the world\'s data centers in electricity per year (USD)?', hint: 'Combine global data-center electricity consumption (in terawatt-hours) with an average industrial electricity price per kWh. Energy use is the dominant operating cost lever.' },
+  { question: 'How many pairs of shoes are manufactured worldwide in one year?', hint: 'Use world population times an average number of new pairs bought per person per year, recognizing rich and poor regions differ several-fold in purchase rate.' },
+  { question: 'What is the cumulative number of automobiles (passenger cars) on the road worldwide today?', hint: 'Combine regional vehicle-ownership rates (cars per 1,000 people) with population for high-, middle-, and low-ownership regions, then sum the fleets.' },
+  { question: 'How many emails are sent worldwide in a single day?', hint: 'Multiply the number of email users by average emails sent per user per day, but remember a large share of total volume is automated and spam, not human-typed.' },
+  { question: 'What is the global annual revenue of the fast-food (quick-service restaurant) industry (USD)?', hint: 'Estimate the world\'s regular fast-food customers, visits per person per year, and average ticket size. Developed markets dominate spend even where developing markets dominate headcount.' },
+  { question: 'How many barrels of oil does the world consume in a single day?', hint: 'Anchor on world population and a weighted per-capita oil consumption, recognizing the US consumes far more per person than the global average. Cross-check against the well-known global daily figure.' },
+  { question: 'What is the cumulative number of credit and debit cards in circulation worldwide?', hint: 'Estimate the banked adult population, then multiply by an average number of payment cards held per person, which is several in developed markets and near zero in unbanked regions.' },
+  { question: 'How many cups (servings) of tea are consumed worldwide in a single day?', hint: 'Tea is concentrated in Asia, the Middle East, and the UK, so weight those regions heavily for cups per person per day rather than using a flat global average.' },
+  { question: 'What is the global annual revenue of the pet-care market (food + vet + supplies, USD)?', hint: 'Combine the number of pet-owning households in developed regions with annual spend per pet, since spending is overwhelmingly concentrated in high-income markets.' },
+  { question: 'How many flights (commercial aircraft departures) take off worldwide in a single day?', hint: 'Work backward from annual global passengers and an average passengers-per-flight figure to get flights per year, then divide by 365. Distinguish passenger flights from cargo/private.' },
+  { question: 'What is the annual operating cost of the global postal and parcel-delivery \'last mile\' (USD)?', hint: 'Estimate annual parcels delivered worldwide times an average last-mile cost per parcel, recognizing last mile is the costliest delivery segment per item.' },
+  { question: 'How many liters of milk are produced worldwide in one year?', hint: 'Anchor on world population and an average per-capita dairy-milk availability per year, weighting high-consumption regions (Europe, the Americas, South Asia) more heavily.' },
+  { question: 'What is the global total addressable market for online video streaming subscriptions (USD)?', hint: 'Multiply broadband-connected households worldwide by an estimated paying-subscriber rate, services per household, and average monthly fee × 12. Affordability caps adoption in lower-income regions.' },
+  { question: 'How many plastic bottles (PET beverage bottles) are produced worldwide in one year?', hint: 'Start from global bottled-beverage servings per person per year (water + soda) and scale by population, recognizing that one person can consume hundreds of bottles annually in heavy markets.' },
+  { question: 'What is the cumulative number of active bank accounts worldwide?', hint: 'Estimate the banked adult population, then multiply by an average number of accounts (checking, savings, etc.) held per banked person, which is higher in developed markets.' },
+  { question: 'What is the global annual retail revenue of the beer market (USD)?', hint: 'Combine the world\'s regular beer-drinking population with liters consumed per person per year and an average retail price per liter, weighting high-consumption regions and on-premise (bar) pricing.' },
+  { question: 'How many text/chat messages (SMS + messaging apps) are sent worldwide in a single day?', hint: 'Multiply the number of messaging-app users by an average messages-sent-per-user-per-day, recognizing that app messaging volume now dwarfs traditional SMS.' },
+  { question: 'What is the global annual electricity-generation revenue (utility sales to end users, USD)?', hint: 'Combine total world electricity consumption (in terawatt-hours) with an average retail price per kWh, blending cheap-power and expensive-power regions.' },
 ]
 
 export const FERMI_POOL: FermiQuestion[] = getLocale() === 'en' ? FERMI_POOL_EN : FERMI_POOL_JA
@@ -269,106 +260,108 @@ const FERMI_STATS_JA: FermiStat[][] = [
 ]
 
 const FERMI_STATS_EN: FermiStat[][] = [
-  // 0: SaaS market
-  [{ label: 'Companies in Japan', value: '~4 million' }, { label: 'SaaS adoption rate (ref.)', value: '~30–50%' }, { label: 'Annual SaaS spend per company (ref.)', value: '~¥100K–5M' }],
-  // 1: Starbucks daily revenue
-  [{ label: 'Starbucks stores in Japan', value: '~1,900' }, { label: 'Spend per customer (ref.)', value: '~¥700' }, { label: 'Customers per store per day (ref.)', value: '~500–800' }],
-  // 2: Izakaya chain daily revenue
-  [{ label: 'Seats per izakaya (ref.)', value: '~60–80' }, { label: 'Spend per customer (ref.)', value: '~¥3,000–4,500' }, { label: 'Daily turnover (ref.)', value: '~1.5–2.5×' }],
-  // 3: EC GMV
-  [{ label: 'Internet users in Japan', value: '~100 million' }, { label: 'EC usage rate (ref.)', value: '~75%' }, { label: 'Annual EC spend per person (ref.)', value: '~¥150,000' }],
-  // 4: M&A annual count
-  [{ label: 'Companies in Japan', value: '~4 million' }, { label: 'SMB successor-shortage rate (ref.)', value: '~60%' }, { label: 'Listed companies', value: '~4,000' }],
-  // 5: SMB office rent
-  [{ label: 'Floor area per person', value: '~3–5 tsubo' }, { label: 'Central Tokyo rent per tsubo (monthly)', value: '~¥20K–30K' }, { label: 'Suburban rent per tsubo (monthly)', value: '~¥10K' }],
-  // 6: Consulting projects
-  [{ label: 'Headcount at major consulting firms (ref.)', value: '~2,000–5,000 / firm' }, { label: 'People per project', value: '~3–10' }, { label: 'Projects per person per year (ref.)', value: '~3–5' }],
-  // 7: Hanko stamps
-  [{ label: 'Workforce', value: '~69 million' }, { label: 'White-collar ratio (ref.)', value: '~50%' }, { label: 'Stamps per person per day (ref.)', value: '~3–10' }, { label: 'Working days per year', value: '~240' }],
-  // 8: "Otsukaresama" utterances
-  [{ label: 'Workforce', value: '~69 million' }, { label: 'Utterances per person per day (in-person + email + chat, ref.)', value: '~10–30' }],
-  // 9: "Ryōkai" chat messages
-  [{ label: 'Business chat users in Japan (ref.)', value: '~20 million' }, { label: 'Messages per person per day (ref.)', value: '~30–50' }, { label: 'Acknowledgment ratio (ref.)', value: '~10%' }],
-  // 10: Office coffee cups
-  [{ label: 'White-collar population (ref.)', value: '~35 million' }, { label: 'Cups per person per day (ref.)', value: '~2–3' }, { label: 'Share drunk at office (ref.)', value: '~60%' }],
-  // 11: "Mic is muted" moments
-  [{ label: 'White-collar population (ref.)', value: '~35 million' }, { label: 'Online meetings per person per day (ref.)', value: '~2–4' }, { label: 'Mute-incident probability (ref.)', value: '~20–30%' }],
-  // 12: Expense report receipts
-  [{ label: 'White-collar population (ref.)', value: '~35 million' }, { label: 'Receipts per person per month (ref.)', value: '~5–20' }, { label: 'Period', value: '12 months' }],
-  // 13: Dormant business cards
-  [{ label: 'Workforce', value: '~69 million' }, { label: 'Sales role ratio (ref.)', value: '~8–10%' }, { label: 'Lifetime cards per salesperson (ref.)', value: '~3,000–5,000' }],
-  // 14: Golf market
-  [{ label: 'Golf population in Japan (ref.)', value: '~5–6 million' }, { label: 'Rounds per year (ref.)', value: '~8–12' }, { label: 'Cost per round (ref.)', value: '~¥10K–30K' }],
-  // 15: Pet food market
-  [{ label: 'Dogs in Japan', value: '~7 million' }, { label: 'Cats in Japan', value: '~9 million' }, { label: 'Annual food spend per animal (ref.)', value: '~¥20K–40K' }],
-  // 16: Tokyo gym members
-  [{ label: 'Tokyo population', value: '~14 million' }, { label: 'Share aged 20–40s (ref.)', value: '~35%' }, { label: 'Gym membership in that age group (ref.)', value: '~10–15%' }],
-  // 17: Wedding market
-  [{ label: 'Annual marriages in Japan', value: '~500K' }, { label: 'Ceremony rate (ref.)', value: '~60–70%' }, { label: 'Cost per couple (ref.)', value: '~¥3–4 million' }],
-  // 18: Online ad market
-  [{ label: 'Total ad spend in Japan (ref.)', value: '~¥7 trillion' }, { label: 'Digital share (ref.)', value: '~45–50%' }, { label: 'Mix', value: 'Search + display + video + social' }],
-  // 19: Eyewear market
-  [{ label: 'Japan population', value: '~124 million' }, { label: 'Vision-correction rate (ref.)', value: '~60%' }, { label: 'Replacement cycle (ref.)', value: '~3–4 years' }, { label: 'Price per pair (ref.)', value: '~¥20,000' }],
-  // 20: Parcel deliveries
-  [{ label: 'Japan population', value: '~124 million' }, { label: 'Personal parcels per person per year (ref.)', value: '~30–40' }, { label: 'BtoB logistics share', value: 'Similar to or slightly less than consumer' }],
-  // 21: SVOD market
-  [{ label: 'Households in Japan', value: '~57 million' }, { label: 'SVOD adoption (ref.)', value: '~40%' }, { label: 'Services per household (ref.)', value: '~1.5–2' }, { label: 'Monthly fee (ref.)', value: '~¥1,000' }],
-  // 22: Drugstore industry
-  [{ label: 'Drugstore count in Japan', value: '~23,000' }, { label: 'Daily sales per store (ref.)', value: '~¥800K–1.2M' }, { label: 'Operating days (ref.)', value: '~350' }],
-  // 23: NPB attendance
-  [{ label: 'NPB teams', value: '12 teams' }, { label: 'Home games per team (ref.)', value: '~70' }, { label: 'Avg attendance per game (ref.)', value: '~30,000' }],
-  // 24: Ramen shop revenue
-  [{ label: 'Ramen shops in Japan (ref.)', value: '~32,000' }, { label: 'Daily sales per shop (ref.)', value: '~¥40K–80K' }, { label: 'Operating days (ref.)', value: '~330' }],
-  // 25: Top 3 conbini combined daily revenue
-  [{ label: 'Seven-Eleven stores', value: '~21,000' }, { label: 'FamilyMart stores', value: '~16,000' }, { label: 'Lawson stores', value: '~15,000' }, { label: 'Daily sales per store (ref.)', value: '~¥550K' }],
-  // 26: Taxi industry revenue
-  [{ label: 'Taxis nationwide', value: '~230,000' }, { label: 'Daily revenue per cab (ref.)', value: '~¥30K' }, { label: 'Operating days (ref.)', value: '~280' }],
-  // 27: Karaoke market
-  [{ label: 'Karaoke stores in Japan', value: '~8,000' }, { label: 'Daily sales per store (ref.)', value: '~¥80K–150K' }, { label: 'Operating days (ref.)', value: '~350' }],
-  // 28: Manga market
-  [{ label: 'Print comics market (ref.)', value: '~¥200B' }, { label: 'Digital comics market (ref.)', value: '~¥500B' }, { label: 'Comic magazine market', value: '~¥50B' }],
-  // 29: Mobile game market
-  [{ label: 'Domestic active users (ref.)', value: '~50 million' }, { label: 'Paying-user rate (ref.)', value: '~10%' }, { label: 'ARPPU (ref.)', value: '~¥3,000–5,000 / month' }],
-  // 30: Insurance industry
-  [{ label: 'Life insurance premiums (ref.)', value: '~¥30 trillion' }, { label: 'Non-life premiums (ref.)', value: '~¥9 trillion' }, { label: 'Life enrollment rate (households)', value: '~90%' }],
-  // 31: Used car transactions
-  [{ label: 'Privately owned car fleet', value: '~62 million' }, { label: 'Average replacement cycle', value: '~7–8 years' }, { label: 'Used-to-new ratio', value: '~1.5×' }],
-  // 32: Pizza delivery
-  [{ label: 'Pizza delivery stores (ref.)', value: '~2,500' }, { label: 'Orders per store per day (ref.)', value: '~30–50' }, { label: 'Spend per customer (ref.)', value: '~¥3,000' }],
-  // 33: Smartphone shipments
-  [{ label: 'Japan population', value: '~124 million' }, { label: 'Smartphone ownership (ref.)', value: '~85%' }, { label: 'Replacement cycle (ref.)', value: '~3–4 years' }],
-  // 34: Car rental
-  [{ label: 'Rental fleet in Japan (ref.)', value: '~650,000' }, { label: 'Utilization rate (ref.)', value: '~50%' }, { label: 'Avg daily price (ref.)', value: '~¥8,000' }],
-  // 35: Vending machine revenue
-  [{ label: 'Vending machines nationwide (ref.)', value: '~4M (drinks ~2.4M)' }, { label: 'Daily sales per machine (ref.)', value: '~¥1,000–2,000' }, { label: 'Operating days', value: '365' }],
-  // 36: Telecom household spend
-  [{ label: 'Households in Japan', value: '~57 million' }, { label: 'Telecom spend per household (ref.)', value: '~¥12,000 / month' }, { label: 'Corporate telecom (ref.)', value: 'Similar size to consumer' }],
-  // 37: English-conversation schools
-  [{ label: 'Learners (ref.)', value: '~4 million' }, { label: 'Annual spend per learner (ref.)', value: '~¥100K–300K' }, { label: 'Online share', value: 'Rising (~30–40%)' }],
-  // 38: Super-sento / onsen visitors
-  [{ label: 'Sento / onsen facilities', value: '~7,000' }, { label: 'Visitors per facility per day (ref.)', value: '~300–800' }, { label: 'Operating days', value: '~360' }],
-  // 39: Real estate brokerage
-  [{ label: 'Annual housing transactions (ref.)', value: '~800,000' }, { label: 'Avg transaction price (ref.)', value: '~¥30 million' }, { label: 'Brokerage fee rate', value: '~3%' }],
-  // 40: E-book market
-  [{ label: 'Readers in Japan (ref.)', value: '~70 million' }, { label: 'E-book adoption (ref.)', value: '~30–40%' }, { label: 'Annual spend per reader (ref.)', value: '~¥3,000–5,000' }],
-  // 41: Smartwatch shipments
-  [{ label: 'Population aged 20–50 (ref.)', value: '~50 million' }, { label: 'Ownership rate (ref.)', value: '~15–20%' }, { label: 'Replacement cycle (ref.)', value: '~3–4 years' }],
-  // 42: Hotel room-nights
-  [{ label: 'Total room count nationwide (ref.)', value: '~1.7 million' }, { label: 'Occupancy rate (ref.)', value: '~60–70%' }, { label: 'Days', value: '365' }],
-  // 43: Copy-machine wait time
-  [{ label: 'White-collar workers', value: '~35 million' }, { label: 'Prints per person per week (ref.)', value: '~10–20' }, { label: 'Wait per print (ref.)', value: '~30 sec' }],
-  // 44: "Osewa ni natte orimasu" total
-  [{ label: 'Business-email senders (ref.)', value: '~30 million' }, { label: 'Emails per person per day (ref.)', value: '~20–40' }, { label: 'Greeting-opening rate (ref.)', value: '~30–50%' }],
-  // 45: Schedule changes from clients
-  [{ label: 'Daily BtoB meetings (ref.)', value: '~5 million' }, { label: 'Reschedule rate (ref.)', value: '~5–10%' }, { label: 'High-reschedule industries', value: 'Consulting / sales skew higher' }],
-  // 46: Daily printed pages
-  [{ label: 'White-collar workers', value: '~35 million' }, { label: 'Pages per person per day (ref.)', value: '~10–20' }, { label: 'Paperless adoption', value: '30–70% by industry' }],
-  // 47: New Year cards
-  [{ label: 'Households in Japan', value: '~57 million' }, { label: 'Cards per household (ref.)', value: '~20–40' }, { label: 'YoY decline', value: '~5–10% / year' }],
-  // 48: Enter-key presses
-  [{ label: 'PC workers (ref.)', value: '~30 million' }, { label: 'Enter presses per person per day (ref.)', value: '~200–500' }, { label: 'Working days', value: '~240' }],
-  // 49: Station vending coffee
-  [{ label: 'Train stations nationwide', value: '~9,500' }, { label: 'Vending machines per station (ref.)', value: '~3–10' }, { label: 'Daily sales per machine (ref.)', value: '~20–30 cans' }, { label: 'Coffee share (ref.)', value: '~20%' }],
+  // F19: グローバル題材プール（en）の参照データ。各問題の anchor（common-knowledge 参照値）を
+  // {label,value} チップ化し、末尾に referenceStats（模範解答の推論ロジック）を保持。
+  // 0: market-sizing (basic)
+  [{ label: 'US population', value: '~330M' }, { label: 'Adults', value: '~250M' }, { label: 'Context', value: 'coffee a daily habit for many' }, { label: 'Worked estimate', value: 'US adults ~250M; ~40% are regular chain-café buyers (~100M) buying ~2 cups/week at ~$5 each → ~100M × 2 × 52 × $5 ≈ $52B. Cross-check vs. Starbucks US revenue (~$25B) as roughly half the chain segment → order of tens of billions.' }],
+  // 1: platform-supply-demand (standard)
+  [{ label: 'US population', value: '~330M' }, { label: 'large metros', value: '~1–10M people' }, { label: 'a ride lasts', value: '~15 min' }, { label: 'Worked estimate', value: 'US ride-hailing ~20M rides/day; evening peak ~8% in the busy hour → ~1.6M rides/hour; each ride ~15 min so ~0.4M rides in progress at any instant; with ~50% driver utilization at peak → ~0.8M drivers online. Order of magnitude: high hundreds of thousands.' }],
+  // 2: unit-economics (standard)
+  [{ label: 'Context', value: 'A fast-food outlet seats few but turns fast' }, { label: 'Context 2', value: 'lunch+dinner peaks' }, { label: 'ticket', value: '~$10' }, { label: 'Worked estimate', value: '~12 operating hours: ~4 peak hours at ~60 orders/hr + ~8 off-peak at ~20/hr → ~400 orders/day × $10 ticket = $4,000/day × 360 days ≈ $1.4M/year. Cross-check: typical US QSR unit does ~$1–3M/year, so this sits at the lower-mid end.' }],
+  // 3: national-sizing (advanced)
+  [{ label: 'US', value: '~330M people' }, { label: 'haircut every', value: '~5–8 weeks' }, { label: 'Average cut', value: '~$25' }, { label: 'Worked estimate', value: 'Bottom-up: ~280M people getting ~6 cuts/year at ~$25 avg ≈ $42B. Top-down: ~1M salons/barbershops × ~$50–60K revenue per chair-equivalent slice → tens of billions. Both converge on ~$45–55B; the gap comes from color/treatment upsell and tips not captured in the bottom-up price.' }],
+  // 4: market-sizing (basic)
+  [{ label: 'US', value: '~130M households' }, { label: 'pets in', value: '~65% of homes' }, { label: 'Context', value: 'food bag bought monthly' }, { label: 'Worked estimate', value: '~85M households own pets; ~90M dogs at ~$300/yr food + ~75M cats at ~$200/yr food ≈ $27B + $15B ≈ $42B. Cross-check vs. total US pet industry (~$150B incl. vet/supplies); food is ~30% → ~$45B. Order: ~$40–50B.' }],
+  // 5: platform-concurrency (advanced)
+  [{ label: 'Global population', value: '~8B' }, { label: 'Internet users', value: '~5B' }, { label: 'Context', value: 'video streaming dominates traffic' }, { label: 'Worked estimate', value: '~250M subscriber accounts × ~1.5 viewers/account = ~375M potential viewers; ~50% watch on a given day for ~2 hrs each. After time-zone smoothing the single highest instant ≈ 20–30M concurrent streams. Order: tens of millions.' }],
+  // 6: national-sizing (standard)
+  [{ label: 'US', value: '~330M' }, { label: 'Licensed drivers', value: '~230M' }, { label: 'Registered vehicles', value: '~290M' }, { label: 'Worked estimate', value: '~250M light-duty vehicles × ~12,000 miles/yr ÷ ~25 mpg ≈ 120B gallons. Cross-check: US motor gasoline consumption is ~135B gallons/yr including all light vehicles → order of ~10^11 gallons.' }],
+  // 7: unit-economics (standard)
+  [{ label: 'A mid-scale hotel', value: '~120 rooms' }, { label: 'ADR', value: '~$120' }, { label: 'occupancy', value: '~70%' }, { label: 'Worked estimate', value: '120 rooms × 70% occupancy × $120 ADR × 365 ≈ $3.7M room revenue; add ~25% for F&B/other → ~$4.6M total. Cross-check: RevPAR ≈ $84 × 120 × 365 ≈ $3.7M confirms the room line.' }],
+  // 8: market-sizing (advanced)
+  [{ label: 'Global', value: '~8B' }, { label: 'Mobile phone users', value: '~5.5B' }, { label: 'phones replaced', value: '~every 3 yrs' }, { label: 'Worked estimate', value: 'Bottom-up: ~4.5B installed base ÷ ~3.5-yr replacement ≈ 1.3B replacements + ~0.1B net new users ≈ 1.3–1.4B/yr. Top-down by region (Asia/EU/Americas) lands ~1.2–1.4B. Both converge near ~1.2B units/year. Order: ~10^9.' }],
+  // 9: platform-supply-demand (standard)
+  [{ label: 'US', value: '~130M households' }, { label: 'Have internet', value: '~95%' }, { label: 'Context', value: 'food delivery common in metros' }, { label: 'Worked estimate', value: '~80M metro/suburban households with delivery access; ~8% order on a busy Friday night → ~6.4M orders concentrated in the 5–9pm window. Cross-check vs. ~3M average daily US delivery orders, with Friday peak hours running several-fold above the daily-average hourly rate → low-millions in the window.' }],
+  // 10: national-sizing (basic)
+  [{ label: 'US', value: '~330M' }, { label: 'Births/yr', value: '~3.6M' }, { label: 'diapers used for', value: '~2.5 yrs' }, { label: 'Worked estimate', value: '~3.6M births/yr × ~2.5 years in diapers ≈ 9M children in diapers; ~6 diapers/day × 365 → ~9M × 2,190 ≈ 20B diapers/year. Order: ~2 × 10^10.' }],
+  // 11: unit-economics (advanced)
+  [{ label: 'Context', value: 'A SaaS startup' }, { label: 'ARPU', value: '~$50/mo' }, { label: 'churn', value: '~2%/mo' }, { label: 'Context 2', value: '200 adds/mo' }, { label: 'Worked estimate', value: 'Net base with 200 adds/mo and 2% monthly churn approaches equilibrium near adds ÷ churn = 200 ÷ 0.02 = 10,000, but at 36 months it\'s still ramping → ~5,500 customers. × $50/mo × 12 ≈ $3.3M ARR. Order: low single-digit millions ARR.' }],
+  // 12: market-sizing (standard)
+  [{ label: 'Global', value: '~8B' }, { label: 'Commercial passenger jets', value: '~25,000' }, { label: 'Seats/plane', value: '~180' }, { label: 'Worked estimate', value: 'Build-up: ~25,000 commercial passenger jets × ~3 flights/day × ~180 seats × ~80% load × 360 days ≈ 3.9B passenger-trips. Cross-check: industry reports ~4–4.5B passenger boardings/year → order of ~4 × 10^9 seats sold.' }],
+  // 13: platform-concurrency (advanced)
+  [{ label: 'Global', value: '~5B internet users' }, { label: 'Context', value: 'messaging near-universal' }, { label: 'Context 2', value: 'New Year peaks by zone' }, { label: 'Worked estimate', value: '~2B users × ~40 messages/day ≈ 80B/day ≈ 0.9M/sec average. New Year\'s-style peaks run ~30–50× average for a minute → ~30M/sec × 60 ≈ ~1.8B messages in the peak minute. Order: ~10^9 in one minute.' }],
+  // 14: national-sizing (advanced)
+  [{ label: 'US', value: '~130M households' }, { label: 'People/household', value: '~2.5' }, { label: 'KWh/home/yr', value: '~10,000' }, { label: 'Worked estimate', value: 'Route A: ~130M households × ~10,500 kWh/yr ≈ 1,365B kWh. Route B: ~330M people × ~4,200 kWh/yr residential ≈ 1,386B kWh. Both converge near ~1.4 trillion kWh (~1.4 × 10^12). Routes agree because per-household and per-capita are linked by ~2.5 people/household.' }],
+  // 15: market-sizing (basic)
+  [{ label: 'Global', value: '~8B' }, { label: 'Context', value: 'chocolate eaten widely in wealthier regions' }, { label: 'Retail', value: '~$12/kg' }, { label: 'Worked estimate', value: '~1.5B people in high-consumption regions at ~5 kg/yr + ~2B at ~1 kg/yr ≈ 9.5B kg; × ~$12/kg retail ≈ $110B. Cross-check vs. reported global chocolate market ~$100–130B → order of ~$10^11.' }],
+  // 16: unit-economics (standard)
+  [{ label: 'A gym', value: '~3,000 members' }, { label: 'dues', value: '~$40/mo' }, { label: 'Visit on a given day', value: '~10–15%' }, { label: 'Worked estimate', value: '3,000 members × $40/mo × 12 ≈ $1.44M dues; +~15% personal training/retail → ~$1.65M/yr. Daily visits: gyms rely on low attendance, ~10–18% of members visit/day → ~300–500 visits/day. Order: ~$1.5M revenue, hundreds of daily visits.' }],
+  // 17: platform-supply-demand (standard)
+  [{ label: 'US', value: '~330M' }, { label: 'Active short-term-rental listings', value: '~1.5M' }, { label: 'Context', value: 'travel peaks in summer' }, { label: 'Worked estimate', value: '~1.5M active US short-term rental listings; peak-summer-Saturday occupancy ~70–80% → ~1.1M occupied. Cross-check: ~2 guests/listing → ~2.2M travelers housed that night, plausible against US summer travel volumes. Order: ~10^6 occupied listings.' }],
+  // 18: national-sizing (basic)
+  [{ label: 'US', value: '~330M' }, { label: 'Adults', value: '~250M' }, { label: 'Drink coffee daily', value: '~60%' }, { label: 'Worked estimate', value: '~250M adults × ~60% drink coffee (~150M) × ~3 cups/day ≈ 450M cups/day. Cross-check: US drinks ~400–500M cups/day per industry surveys → order of ~4–5 × 10^8 cups/day.' }],
+  // 19: market-sizing (advanced)
+  [{ label: 'Global', value: '~5.5B mobile users' }, { label: 'Play mobile games', value: '~3.5B' }, { label: 'payers', value: '~3%' }, { label: 'Worked estimate', value: 'Player route: ~3.5B players × ~3% payers (~105M) × ~$800/yr per payer ≈ $84B. Top-down: app-store consumer spend ~$150B × ~60% games ≈ $90B. Both converge near ~$85–90B/yr. Order: ~$10^11.' }],
+  // 20: unit-economics (standard)
+  [{ label: 'A supermarket', value: '~40,000 sq ft' }, { label: 'Average basket', value: '~$35' }, { label: 'Context', value: 'busy suburban site' }, { label: 'Worked estimate', value: '~2,500 transactions/day × ~$35 basket ≈ $87,500/day × 360 ≈ $31M/yr. Cross-check: typical US supermarket does ~$15–40M/yr in sales, so a busy suburban unit sits in the upper range. Order: tens of millions.' }],
+  // 21: national-sizing (standard)
+  [{ label: 'US', value: '~330M' }, { label: 'Registered light vehicles', value: '~290M' }, { label: 'Vehicle lifespan', value: '~18-yr' }, { label: 'Worked estimate', value: '~290M registered light vehicles ÷ ~18-year average lifespan ≈ 16M replacements/yr; minor net fleet growth keeps it near 15–17M. Cross-check: US new light-vehicle sales run ~15–17M/yr → order of ~10^7 units.' }],
+  // 22: platform-concurrency (advanced)
+  [{ label: 'Global', value: '~8B' }, { label: 'Context', value: 'one search engine handles most queries' }, { label: 'Context 2', value: 'usage spread by waking hours' }, { label: 'Worked estimate', value: '~5 trillion queries/year ÷ 31.5M sec ≈ 160,000 queries/sec average. Global time-zone smoothing keeps the peak multiplier modest (~1.5–2×) → ~250,000–320,000 queries/sec at peak. Order: ~10^5 qps.' }],
+  // 23: market-sizing (basic)
+  [{ label: 'Global', value: '~8B' }, { label: 'Regular cinema-goers', value: '~2B' }, { label: 'ticket', value: '~$7 avg globally' }, { label: 'Worked estimate', value: '~2B regular cinema-goers × ~2 tickets/yr × ~$7 avg global ticket ≈ $28B; add occasional viewers → ~$30–40B. Cross-check vs. reported global box office (~$30–40B) → order of ~$10^10.' }],
+  // 24: unit-economics (advanced)
+  [{ label: 'An EV fast-charging site', value: '~8 stalls' }, { label: 'session', value: '~30 min' }, { label: 'KWh/session', value: '~30' }, { label: 'Worked estimate', value: '8 stalls × ~16 active hours ÷ ~0.5 hr/session × ~40% utilization ≈ ~100 sessions/day; × ~30 kWh × ~$0.45/kWh ≈ $1,350/day × 365 ≈ $490K/yr. Cross-check: 40% utilization at a busy highway site is plausible-to-optimistic; a lower 20% utilization halves revenue to ~$250K. Order: hundreds of thousands USD.' }],
+  // 25: industry-throughput (basic)
+  [{ label: 'US population', value: '~330M' }, { label: 'world population', value: '~8B' }, { label: 'Worked estimate', value: 'US population ~330M; ~1 pizza per person per week in the US (~3 billion pizzas/year ≈ ~8M/day in the US). Scale up ~2–3× for Europe + rest of world heavy markets → roughly 20–30M pizzas/day globally.' }],
+  // 26: stock-flow (standard)
+  [{ label: 'World population', value: '~8B' }, { label: 'Active PCs in use', value: '~1.5B' }, { label: 'Worked estimate', value: 'Global PC installed base ~1.5–1.6B active machines; average replacement cycle ~5–6 years → ~260–300M replacement units/year; plus net new buyers keeps annual shipments around ~250–300M units.' }],
+  // 27: industry-throughput (basic)
+  [{ label: 'World population', value: '~8B' }, { label: 'Smokers', value: '~1.1B' }, { label: 'Worked estimate', value: 'World adults ~5.5B; smokers ~20% (~1.1B) at ~13–15 cigarettes/day → ~1.1B × 14 × 365 ≈ ~5.5–6 trillion cigarettes/year (commonly cited ~5.5T).' }],
+  // 28: stock-flow (advanced)
+  [{ label: 'Global cumulative PV capacity', value: '~1.5 TW' }, { label: 'Worked estimate', value: 'Global cumulative solar capacity ~1,500 GW (~1.5 TW); average module ~0.4 kW each → ~1.5e12 W / 400 W ≈ ~3.5–4 billion modules cumulatively installed.' }],
+  // 29: industry-throughput (advanced)
+  [{ label: 'Global container port throughput', value: '~850M TEU/year' }, { label: 'Worked estimate', value: 'Global container port throughput ~850M–900M TEU/year of handling moves; unique laden + empty trade flows ~200–250M TEU/year. State which you mean—handling vs. shipped—since they differ ~3–4×.' }],
+  // 30: global-tam (standard)
+  [{ label: 'World population', value: '~8B' }, { label: 'Worked estimate', value: 'World population ~8B; bottled-water consumers ~3–4B at ~40–50 L/person/year; price ~$0.5–1 per liter at retail → roughly $250–350B/year (commonly cited ~$300B).' }],
+  // 31: industry-throughput (standard)
+  [{ label: 'World population', value: '~8B' }, { label: 'Context', value: 'air cargo is a high-value freight slice' }, { label: 'Worked estimate', value: 'World population ~8B; ~7–8 kg of air-freighted goods per person per year on average → ~55–65 million tonnes/year. Cross-check: industry reports ~60–65M tonnes of air cargo annually → order of ~10^7 tonnes.' }],
+  // 32: cost-ops (advanced)
+  [{ label: 'Global data-center electricity', value: '~400 TWh/year' }, { label: 'Worked estimate', value: 'Global data-center electricity use ~350–450 TWh/year; industrial power ~$0.10–0.15/kWh → ~$40–65B/year in electricity alone. State TWh × price/kWh explicitly.' }],
+  // 33: industry-throughput (basic)
+  [{ label: 'World population', value: '~8B' }, { label: 'Worked estimate', value: 'World population ~8B; weighted average ~2.5–3 new pairs/person/year (developed ~5–7, developing ~1–2) → ~20–24 billion pairs/year (commonly cited ~22B).' }],
+  // 34: stock-flow (standard)
+  [{ label: 'World population', value: '~8B' }, { label: 'US', value: '~330M people, ~280M registered vehicles' }, { label: 'Worked estimate', value: 'World population ~8B; US ~800 cars/1,000, Europe ~500, China rising ~200, low-income regions <50 → weighted global fleet ~1.4–1.5 billion vehicles (cars + light trucks).' }],
+  // 35: industry-throughput (standard)
+  [{ label: 'Global email users', value: '~4.3B' }, { label: 'Worked estimate', value: 'Email users ~4.3B; human-sent ~10–15/day each ≈ ~50–65B; total including automated + spam pushes the figure to ~300–350B/day. Separate human vs. total—they differ ~5×.' }],
+  // 36: global-tam (standard)
+  [{ label: 'World population', value: '~8B' }, { label: 'Worked estimate', value: 'World population ~8B; regular QSR users ~2–3B at ~30–50 visits/year × ~$7 ticket → roughly $600–900B/year (industry estimates ~$700–900B).' }],
+  // 37: industry-throughput (standard)
+  [{ label: 'World population', value: '~8B' }, { label: 'US oil use', value: '~20M bbl/day' }, { label: 'Worked estimate', value: 'US ~330M people use ~20M barrels/day (~0.06 bbl/person/day); world average is far lower → global consumption ~100M barrels/day (a standard reference figure).' }],
+  // 38: stock-flow (advanced)
+  [{ label: 'World population', value: '~8B' }, { label: 'banked adults', value: '~4B+' }, { label: 'Worked estimate', value: 'World adults ~5.5B; banked share ~75% → ~4B card-holders; developed holders carry ~3–4 cards, others ~1 → cumulative ~20–24 billion cards in circulation.' }],
+  // 39: industry-throughput (basic)
+  [{ label: 'World population', value: '~8B' }, { label: 'Worked estimate', value: 'World population ~8B; heavy-tea regions (~4B people) at ~2–3 cups/day plus lighter regions → roughly ~6–9 billion servings/day (tea is the second-most consumed beverage after water).' }],
+  // 40: global-tam (standard)
+  [{ label: 'US population', value: '~330M' }, { label: 'US pet market', value: '~$130B' }, { label: 'Worked estimate', value: 'US pet market alone ~$120–140B; other major developed markets (Europe, etc.) add a comparable amount → global pet care roughly ~$250–300B/year.' }],
+  // 41: industry-throughput (standard)
+  [{ label: 'Global annual air passengers', value: '~4.5B' }, { label: 'Worked estimate', value: 'Global air passengers ~4.5B/year ÷ ~120 passengers/flight ≈ ~38M flights/year ≈ ~100,000 commercial passenger departures/day (often cited ~100k–130k including all flight types).' }],
+  // 42: cost-ops (advanced)
+  [{ label: 'Global annual parcel volume', value: '~150B' }, { label: 'Worked estimate', value: 'Global parcels ~150–160B/year; last-mile cost ~$2–4/parcel (it is ~40–50% of total shipping cost) → roughly $400–600B/year in last-mile spend.' }],
+  // 43: industry-throughput (standard)
+  [{ label: 'World population', value: '~8B' }, { label: 'Worked estimate', value: 'World population ~8B; weighted average ~100–110 L of milk per person/year (developed ~250+, developing far less) → ~850–900 billion liters/year (global production ~900B liters).' }],
+  // 44: global-tam (advanced)
+  [{ label: 'World broadband households', value: '~1.3B' }, { label: 'Worked estimate', value: 'Broadband households ~1.3B; paying SVOD households ~700–900M at ~1.8 services × ~$8/month × 12 → roughly $120–160B/year (global SVOD ~$130B+).' }],
+  // 45: industry-throughput (standard)
+  [{ label: 'World population', value: '~8B' }, { label: 'Worked estimate', value: 'World population ~8B; ~60–70 PET bottles/person/year on average (developed markets far higher) → roughly ~480–550 billion bottles/year (commonly cited ~500B).' }],
+  // 46: stock-flow (standard)
+  [{ label: 'World population', value: '~8B' }, { label: 'banked adults', value: '~4B+' }, { label: 'Worked estimate', value: 'World adults ~5.5B; banked share ~75% → ~4B account-holders; developed holders average ~2–3 accounts, others ~1–1.5 → cumulative ~7–9 billion active accounts.' }],
+  // 47: global-tam (advanced)
+  [{ label: 'World population', value: '~8B' }, { label: 'Regular beer drinkers', value: '~2B' }, { label: 'Worked estimate', value: 'World population ~8B; ~2B regular beer drinkers at ~70–80 L/year → ~150B liters; blended retail price ~$3–4/liter (cheap off-premise to expensive bar pours) → roughly $600–700B/year (global beer market often cited ~$650–750B).' }],
+  // 48: industry-throughput (standard)
+  [{ label: 'Global messaging-app users', value: '~3B' }, { label: 'Worked estimate', value: 'Messaging-app users ~3B; ~30–40 sent messages/user/day → ~90–120 billion/day from one major platform alone; across all platforms total is on the order of ~100–150B/day (WhatsApp alone ~100B/day).' }],
+  // 49: global-tam (advanced)
+  [{ label: 'World population', value: '~8B' }, { label: 'global electricity use', value: '~29,000 TWh/year' }, { label: 'Worked estimate', value: 'Global electricity consumption ~28,000–30,000 TWh/year; blended retail price ~$0.10–0.15/kWh → roughly $3–4 trillion/year. State TWh × price/kWh explicitly as the backbone.' }],
 ]
 
 export const FERMI_STATS: FermiStat[][] = getLocale() === 'en' ? FERMI_STATS_EN : FERMI_STATS_JA
