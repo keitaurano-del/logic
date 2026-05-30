@@ -38,6 +38,7 @@ const RankScreen = lazy(() => import('./screens/RankScreen').then(m => ({ defaul
 const LoginScreen = lazy(() => import('./screens/LoginScreen').then(m => ({ default: m.LoginScreen })))
 const DailyProblemScreen = lazy(() => import('./screens/DailyProblemScreen').then(m => ({ default: m.DailyProblemScreen })))
 const JournalScreen = lazy(() => import('./screens/JournalScreen').then(m => ({ default: m.JournalScreen })))
+const JournalGuestPreview = lazy(() => import('./screens/JournalScreen').then(m => ({ default: m.JournalGuestPreview })))
 import { allLessons, getAllLessonsFlat } from './lessonData'
 import { getCurrentLevel } from './screens/homeHelpers'
 import { LevelUpModal } from './components/LevelUpModal'
@@ -630,7 +631,16 @@ function AppV3() {
             <JournalPaywall onUpgrade={() => navigate({ type: 'pricing' })} />
           )
         ) : (
-          <JournalLoginPrompt paid={isPaid()} onLogin={() => navigate({ type: 'login' })} />
+          // 未ログイン: 課金済みは「ログインしてください」を維持。それ以外は
+          // 7日間無料トライアルの価値を体験前に判断できるよう、プレビュー → ログイン誘導。
+          isPaid() ? (
+            <JournalLoginPrompt paid onLogin={() => navigate({ type: 'login' })} />
+          ) : (
+            <JournalGuestPreview
+              assistantName={assistantName}
+              onLogin={() => navigate({ type: 'login' })}
+            />
+          )
         )
       )}
 
