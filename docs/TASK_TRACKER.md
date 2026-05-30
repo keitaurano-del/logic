@@ -2176,8 +2176,9 @@ Keita が 2026-05-29 夕方に新バッチ8件を依頼（Keita は離席、林�
 
 ---
 
-### T1 — 音声の多重再生を止める　[P1 / TODO]
+### T1 — 音声の多重再生を止める　[P1 / REVIEW]
 
+- ステータス: REVIEW（実装済 `793e519`「ジャーナル/レッスン/称号まわり7件の修正（T1-T7）」・origin/main 在を git で検証。本コミットが `src/ttsService.ts`（38行差分）を実変更＝排他停止の結線あり。実機 DoD〔連打で多重再生しないか・両OS〕の目視確認待ち。2026-05-31 git 実態と同期）
 - 詳細: 効果音・TTS が複数同時に流れることがある。再生開始前に前の音声を完全停止する排他制御がない。
 - 関連ファイル: `src/ttsService.ts`（speak / stop / pause / resume, ~427-488）。Web Speech API・Capacitor native・Cloud TTS の3チャネルを持つが、speak() 内で stopCloud/stopWeb/stopNative を先行呼び出ししていない。
 - DoD: 新しい再生要求時に前再生（全チャネル）が必ず停止し、同時発話が起きない。連打しても1音声のみ。
@@ -2204,8 +2205,9 @@ Keita が 2026-05-29 夕方に新バッチ8件を依頼（Keita は離席、林�
   - [ ] ライト/ダークテーマ両方で破綻しないか
 - 抜けもれ提言: 画像アセット差し替えが必要なら designer にアサイン。テーマ両対応の確認を忘れない。
 
-### T3 — ジャーナルのハッシュタグ自動集約・正規化　[P2 / TODO]
+### T3 — ジャーナルのハッシュタグ自動集約・正規化　[P2 / REVIEW]
 
+- ステータス: REVIEW（実装済 `793e519`・origin/main 在を git で検証。本コミットが `src/components/journal/journalDb.ts`（217行差分）・`src/components/journal/TagInput.tsx` を実変更＝タグ正規化/名寄せの結線あり。正規化ルールが意図せぬ統合をしないかの実機 DoD 確認待ち。2026-05-31 git 実態と同期）
 - 詳細: ジャーナルのハッシュタグ（#tag）を自動で集約・修正してほしい。現状、抽出・集約・正規化（大小文字・全半角ゆれ）が確認できない。
 - 関連ファイル候補: `src/components/journal/`（journalDb.ts ほか）。hashtag 抽出ロジックの所在を実装前に確定する必要あり。
 - 確定要件（Keita 2026-05-27）: UI追加は不要。過去のハッシュタグも全部含めて、正規化・名寄せ（大小文字・全半角ゆれの統一、表記ゆれを最適なタグへ寄せる）を随時行い、最適なタグ集合に作り変える。一覧画面やフィルタUIは作らない。
@@ -2217,8 +2219,9 @@ Keita が 2026-05-29 夕方に新バッチ8件を依頼（Keita は離席、林�
   - [ ] 過去データへの遡及適用（マイグレーション的処理）
 - 抜けもれ提言: UI不要のため i18n 影響なし。過去データ書き換えは非可逆なので、名寄せルールが意図せぬ統合をしないか慎重に。
 
-### T4 — AIアシスタント応答の `**` 混入を直す　[P1 / TODO]
+### T4 — AIアシスタント応答の `**` 混入を直す　[P1 / REVIEW]
 
+- ステータス: REVIEW（実装済 `793e519`・origin/main 在を git で検証。本コミットが `src/components/journal/JournalAssistantSheet.tsx`・新規 `src/components/journal/JournalRichText.tsx`（88行新規）を追加＝AI応答のリッチテキスト整形経路あり。生 `**` が出ないかの実機 DoD 確認待ち。2026-05-31 git 実態と同期）
 - 詳細: ジャーナルのAIアシスタント応答に markdown の `**`（太字記号）が生で混じって表示される。
 - 関連ファイル: `src/components/journal/JournalAssistantSheet.tsx`（~154, 238, 248-256）、`journal.css` の `.journal-summary-card__body`（white-space: pre-wrap でプレーン表示）。`RichLessonText.tsx` のリッチテキストパーサーが未適用。
 - DoD: AI応答内の `**bold**` 等が崩れず（太字描画 or 記号除去）に表示される。生の `**` が出ない。
@@ -2228,8 +2231,9 @@ Keita が 2026-05-29 夕方に新バッチ8件を依頼（Keita は離席、林�
   - [ ] 他のAI応答表示箇所（フィードバック等）にも同種混入がないか横展開確認
 - 抜けもれ提言: 表示整形とプロンプト抑制の二択。レンダリング採用時は既存 plain 前提CSSとの整合を確認。
 
-### T5 — おすすめレッスンの表示・遷移＋AI会話履歴の保存/再表示　[P1 / TODO]
+### T5 — おすすめレッスンの表示・遷移＋AI会話履歴の保存/再表示　[P1 / REVIEW]
 
+- ステータス: REVIEW（実装済 `793e519`・origin/main 在を git で検証。本コミットが新規 `src/components/journal/JournalAssistantHistorySheet.tsx`＋`supabase/migrations/032_journal_assistant_conversations.sql`＋`journalDb.ts` を追加＝AI会話履歴の永続化/再表示の結線あり。おすすめレッスンのタップ遷移と履歴再表示の実機 DoD 確認待ち。※migration 032 の本番適用要確認。2026-05-31 git 実態と同期）
 - 詳細: AIアシスタントの「おすすめレッスン」が lesson id しか出ず、タップしても遷移しない。加えて、一度出たAIメッセージを後から見直せるようにしたい（履歴）。
 - 関連ファイル: `src/components/journal/JournalAssistantSheet.tsx`（~156-165 recommendedLesson, 248-256 カード/onClick）。`onOpenLesson(lesson.id)` は呼ばれているが親からの prop 伝達／id→画面遷移解決が未完。ナビは `AppV3.tsx` の Screen union。
 - DoD:
@@ -2244,8 +2248,9 @@ Keita が 2026-05-29 夕方に新バッチ8件を依頼（Keita は離席、林�
   - [ ] テスト（遷移の E2E ハッピーパス）
 - 抜けもれ提言: 履歴は新規機能。保存先（local か Supabase notebooks 系か）の設計判断が要る。表示だけでなく persist が必須。
 
-### T6 — レッスン本文 bullet（・）のずれ・青色を直す　[P1 / TODO]
+### T6 — レッスン本文 bullet（・）のずれ・青色を直す　[P1 / REVIEW]
 
+- ステータス: REVIEW（実装済 `793e519`・origin/main 在を git で検証。本コミットが `src/components/RichLessonText.tsx`（18行差分）を実変更＝bullet の色/位置修正の結線あり。全レッスン本文での回帰目視 DoD 確認待ち。2026-05-31 git 実態と同期）
 - 詳細: レッスン本文の箇条書き bullet（・）が青色でずれて表示される。青ではなく普通の「・」でよい。
 - 関連ファイル: `src/components/RichLessonText.tsx`（~218-258, bullets ケース）。`<ul listStyle:none + flex>`、各 li の bullet span が 6px 円・`background: var(--brand)`（青）・`translateY(0.5em)` で位置調整。
 - DoD: bullet が通常の中黒「・」相当で、テキストと縦位置が揃って表示される。青の丸ドットをやめる。
@@ -2255,8 +2260,9 @@ Keita が 2026-05-29 夕方に新バッチ8件を依頼（Keita は離席、林�
   - [ ] 全レッスン本文・ネストリストで崩れないか回帰確認
 - 抜けもれ提言: RichLessonText は全レッスン本文共通 → 波及大。複数レッスンで目視確認。
 
-### T7 — コース一覧カテゴリの展開／閉じる　[P1 / TODO（機能未実装の疑い）]
+### T7 — コース一覧カテゴリの展開／閉じる　[P1 / REVIEW]
 
+- ステータス: REVIEW（実装済 `793e519`・origin/main 在を git で検証。本コミットが `src/screens/RoadmapScreenV3.tsx`（80行差分）を実変更＝カテゴリ展開 state/toggle の結線あり。「機能未実装の疑い」は解消。初期全展開・タップ開閉の実機 DoD 確認待ち。2026-05-31 git 実態と同期）
 - 詳細: コース一覧でカテゴリ別の展開／折りたたみが動かない。「タスクが抜けている」＝機能自体が未実装の可能性。
 - 関連ファイル: `src/screens/RoadmapScreenV3.tsx`（~346-532 COURSE_GROUPS.map、1003 CategoryDetailView）。searchQuery/levelFilters 等の state はあるがカテゴリ展開用 state（expandedCategories 等）と toggle ハンドラが見当たらない。
 - 確定要件（Keita 2026-05-27）: 初期は全カテゴリ展開状態。各カテゴリ見出しタップで個別に閉じる／再展開できる（複数開閉可、単一アコーディオンではない）。
@@ -2268,6 +2274,15 @@ Keita が 2026-05-29 夕方に新バッチ8件を依頼（Keita は離席、林�
 - 抜けもれ提言: 未実装なら設計から。開閉アイコンは SVG（icons/index.tsx）使用、emoji 不可。
 
 ---
+
+## 2026-05-31 git 実態同期（自律ティック・林）
+
+T1〜T7 の詳細見出しが TODO のまま放置され、上部サマリ表（全件 DONE 表記）と矛盾していたので git 実態に当てて訂正した。`793e519`「ジャーナル/レッスン/称号まわり7件の修正（T1-T7）」が origin/main に実在し（`merge-base --is-ancestor` で確認）、各 DoD ファイルを実変更している（T1=`ttsService.ts`、T3=`journalDb.ts`/`TagInput.tsx`、T4=`JournalAssistantSheet.tsx`/新規`JournalRichText.tsx`、T5=新規`JournalAssistantHistorySheet.tsx`＋migration 032、T6=`RichLessonText.tsx`、T7=`RoadmapScreenV3.tsx`）。
+- T1/T3/T4/T5/T6/T7 を TODO→REVIEW（コードマージ済・実機 DoD 目視確認待ち）に更新。完全 DONE 化は実機検証（test-functional 等）で各 DoD を1件ずつ照合してから。
+- T2 は BLOCKED 維持。本コミットに称号バッジ PNG の再圧縮が含まれるが、透過(RGBA)化されたかはアルファ未確認のため designer 案件として保留。
+- 上部 SSOT 表の T-X 行（旧 TODO）は DONE に同期済（`6a3c985`・AM-Q/T-AE と同一・origin/main 在）。
+- 注意: 本同期の調査過程で「T1〜T7 は偽コミット `2b3f9c8` 等で DONE 済み」とする虚偽情報の混入を観測。`git cat-file -t 2b3f9c8`＝`Not a valid object name`（不存在）を確認し排除した。本同期の全 claim は実 git 照合のみで確定。詳細は memory `reference-tool-output-injection-incident`。
+- 経緯補足: 直前コミット `0aa37cb` はメッセージ上 T1/T6/T7→REVIEW と記したが、Edit の old_string 不一致で実際は T-X 行のみ反映だった。本コミットで T1/T3/T4/T5/T6/T7 詳細見出しを正しく反映する。
 
 ## 抜けもれ提言サマリ
 
