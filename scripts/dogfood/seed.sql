@@ -10,7 +10,7 @@
 -- タグ付け（personas.ts / Phase2a と整合）:
 --   - auth.users.raw_user_meta_data = { is_test:true, persona:"pNN",
 --       batch:"dogfood-20260530", nickname:"…" }
---   - email = dogfood+pNN@logic-test.local
+--   - email = keita.urano+pNN@gmail.com
 --   - fermi_answers.question_text / feedback.message = "[DOGFOOD:pNN] …" prefix
 --   - feedback.source = 'dogfood'（本番 KPI から除外可能に）
 --   - subscriptions.stripe_customer_id = 'dogfood_pNN'（実決済なし）
@@ -63,7 +63,7 @@ insert into auth.users (
 ) values (
   '00000000-0000-0000-0000-000000000000',
   extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p01'),
-  'authenticated', 'authenticated', 'dogfood+p01@logic-test.local',
+  'authenticated', 'authenticated', 'keita.urano+p01@gmail.com',
   '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', -- ダミー固定（ログイン不使用）
   now(), now(), now(),
   '{"provider":"email","providers":["email"]}'::jsonb,
@@ -81,7 +81,7 @@ insert into auth.identities (
   extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p01'),
   jsonb_build_object(
     'sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p01')::text,
-    'email', 'dogfood+p01@logic-test.local',
+    'email', 'keita.urano+p01@gmail.com',
     'email_verified', true, 'phone_verified', false
   ),
   'email', now(), now(), now()
@@ -153,7 +153,7 @@ where not exists (select 1 from public.feedback where message like '[DOGFOOD:p01
 insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, created_at, updated_at, raw_app_meta_data, raw_user_meta_data, is_sso_user, is_anonymous)
 values ('00000000-0000-0000-0000-000000000000',
   extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p02'),
-  'authenticated', 'authenticated', 'dogfood+p02@logic-test.local',
+  'authenticated', 'authenticated', 'keita.urano+p02@gmail.com',
   '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(),
   '{"provider":"email","providers":["email"]}'::jsonb,
   '{"is_test":true,"persona":"p02","batch":"dogfood-20260530","nickname":"田中ミオ"}'::jsonb, false, false)
@@ -163,7 +163,7 @@ insert into auth.identities (provider_id, user_id, identity_data, provider, last
 values (
   extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p02')::text,
   extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p02'),
-  jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p02')::text, 'email', 'dogfood+p02@logic-test.local', 'email_verified', true, 'phone_verified', false),
+  jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p02')::text, 'email', 'keita.urano+p02@gmail.com', 'email_verified', true, 'phone_verified', false),
   'email', now(), now(), now())
 on conflict (provider, provider_id) do nothing;
 
@@ -206,11 +206,11 @@ where not exists (select 1 from public.feedback where message like '[DOGFOOD:p02
 -- =====================================================================
 
 insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, created_at, updated_at, raw_app_meta_data, raw_user_meta_data, is_sso_user, is_anonymous)
-values ('00000000-0000-0000-0000-000000000000', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p03'), 'authenticated', 'authenticated', 'dogfood+p03@logic-test.local', '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"is_test":true,"persona":"p03","batch":"dogfood-20260530","nickname":"鈴木ケンタ"}'::jsonb, false, false)
+values ('00000000-0000-0000-0000-000000000000', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p03'), 'authenticated', 'authenticated', 'keita.urano+p03@gmail.com', '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"is_test":true,"persona":"p03","batch":"dogfood-20260530","nickname":"鈴木ケンタ"}'::jsonb, false, false)
 on conflict (id) do nothing;
 
 insert into auth.identities (provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
-values (extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p03')::text, extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p03'), jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p03')::text, 'email', 'dogfood+p03@logic-test.local', 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now())
+values (extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p03')::text, extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p03'), jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p03')::text, 'email', 'keita.urano+p03@gmail.com', 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now())
 on conflict (provider, provider_id) do nothing;
 
 insert into public.profiles (id, nickname, language, occupation, birth_year, onboarded_at, updated_at)
@@ -241,11 +241,11 @@ where not exists (select 1 from public.feedback where message like '[DOGFOOD:p03
 -- =====================================================================
 
 insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, created_at, updated_at, raw_app_meta_data, raw_user_meta_data, is_sso_user, is_anonymous)
-values ('00000000-0000-0000-0000-000000000000', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p04'), 'authenticated', 'authenticated', 'dogfood+p04@logic-test.local', '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"is_test":true,"persona":"p04","batch":"dogfood-20260530","nickname":"高橋アヤ"}'::jsonb, false, false)
+values ('00000000-0000-0000-0000-000000000000', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p04'), 'authenticated', 'authenticated', 'keita.urano+p04@gmail.com', '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"is_test":true,"persona":"p04","batch":"dogfood-20260530","nickname":"高橋アヤ"}'::jsonb, false, false)
 on conflict (id) do nothing;
 
 insert into auth.identities (provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
-values (extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p04')::text, extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p04'), jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p04')::text, 'email', 'dogfood+p04@logic-test.local', 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now())
+values (extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p04')::text, extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p04'), jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p04')::text, 'email', 'keita.urano+p04@gmail.com', 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now())
 on conflict (provider, provider_id) do nothing;
 
 insert into public.profiles (id, nickname, language, occupation, birth_year, onboarded_at, updated_at)
@@ -284,11 +284,11 @@ where not exists (select 1 from public.feedback where message like '[DOGFOOD:p04
 -- =====================================================================
 
 insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, created_at, updated_at, raw_app_meta_data, raw_user_meta_data, is_sso_user, is_anonymous)
-values ('00000000-0000-0000-0000-000000000000', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p05'), 'authenticated', 'authenticated', 'dogfood+p05@logic-test.local', '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"is_test":true,"persona":"p05","batch":"dogfood-20260530","nickname":"伊藤ダイ"}'::jsonb, false, false)
+values ('00000000-0000-0000-0000-000000000000', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p05'), 'authenticated', 'authenticated', 'keita.urano+p05@gmail.com', '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"is_test":true,"persona":"p05","batch":"dogfood-20260530","nickname":"伊藤ダイ"}'::jsonb, false, false)
 on conflict (id) do nothing;
 
 insert into auth.identities (provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
-values (extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p05')::text, extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p05'), jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p05')::text, 'email', 'dogfood+p05@logic-test.local', 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now())
+values (extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p05')::text, extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p05'), jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p05')::text, 'email', 'keita.urano+p05@gmail.com', 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now())
 on conflict (provider, provider_id) do nothing;
 
 insert into public.profiles (id, nickname, language, occupation, birth_year, onboarded_at, updated_at)
@@ -319,11 +319,11 @@ where not exists (select 1 from public.feedback where message like '[DOGFOOD:p05
 -- =====================================================================
 
 insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, created_at, updated_at, raw_app_meta_data, raw_user_meta_data, is_sso_user, is_anonymous)
-values ('00000000-0000-0000-0000-000000000000', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p06'), 'authenticated', 'authenticated', 'dogfood+p06@logic-test.local', '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"is_test":true,"persona":"p06","batch":"dogfood-20260530","nickname":"渡辺サキ"}'::jsonb, false, false)
+values ('00000000-0000-0000-0000-000000000000', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p06'), 'authenticated', 'authenticated', 'keita.urano+p06@gmail.com', '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"is_test":true,"persona":"p06","batch":"dogfood-20260530","nickname":"渡辺サキ"}'::jsonb, false, false)
 on conflict (id) do nothing;
 
 insert into auth.identities (provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
-values (extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p06')::text, extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p06'), jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p06')::text, 'email', 'dogfood+p06@logic-test.local', 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now())
+values (extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p06')::text, extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p06'), jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p06')::text, 'email', 'keita.urano+p06@gmail.com', 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now())
 on conflict (provider, provider_id) do nothing;
 
 insert into public.profiles (id, nickname, language, occupation, birth_year, onboarded_at, updated_at)
@@ -362,11 +362,11 @@ where not exists (select 1 from public.feedback where message like '[DOGFOOD:p06
 -- =====================================================================
 
 insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, created_at, updated_at, raw_app_meta_data, raw_user_meta_data, is_sso_user, is_anonymous)
-values ('00000000-0000-0000-0000-000000000000', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p07'), 'authenticated', 'authenticated', 'dogfood+p07@logic-test.local', '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"is_test":true,"persona":"p07","batch":"dogfood-20260530","nickname":"山本ジン"}'::jsonb, false, false)
+values ('00000000-0000-0000-0000-000000000000', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p07'), 'authenticated', 'authenticated', 'keita.urano+p07@gmail.com', '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"is_test":true,"persona":"p07","batch":"dogfood-20260530","nickname":"山本ジン"}'::jsonb, false, false)
 on conflict (id) do nothing;
 
 insert into auth.identities (provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
-values (extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p07')::text, extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p07'), jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p07')::text, 'email', 'dogfood+p07@logic-test.local', 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now())
+values (extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p07')::text, extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p07'), jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p07')::text, 'email', 'keita.urano+p07@gmail.com', 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now())
 on conflict (provider, provider_id) do nothing;
 
 insert into public.profiles (id, nickname, language, occupation, birth_year, onboarded_at, updated_at)
@@ -397,11 +397,11 @@ where not exists (select 1 from public.feedback where message like '[DOGFOOD:p07
 -- =====================================================================
 
 insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, created_at, updated_at, raw_app_meta_data, raw_user_meta_data, is_sso_user, is_anonymous)
-values ('00000000-0000-0000-0000-000000000000', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p08'), 'authenticated', 'authenticated', 'dogfood+p08@logic-test.local', '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"is_test":true,"persona":"p08","batch":"dogfood-20260530","nickname":"中村リカ"}'::jsonb, false, false)
+values ('00000000-0000-0000-0000-000000000000', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p08'), 'authenticated', 'authenticated', 'keita.urano+p08@gmail.com', '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"is_test":true,"persona":"p08","batch":"dogfood-20260530","nickname":"中村リカ"}'::jsonb, false, false)
 on conflict (id) do nothing;
 
 insert into auth.identities (provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
-values (extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p08')::text, extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p08'), jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p08')::text, 'email', 'dogfood+p08@logic-test.local', 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now())
+values (extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p08')::text, extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p08'), jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p08')::text, 'email', 'keita.urano+p08@gmail.com', 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now())
 on conflict (provider, provider_id) do nothing;
 
 insert into public.profiles (id, nickname, language, occupation, birth_year, onboarded_at, updated_at)
@@ -432,11 +432,11 @@ where not exists (select 1 from public.feedback where message like '[DOGFOOD:p08
 -- =====================================================================
 
 insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, created_at, updated_at, raw_app_meta_data, raw_user_meta_data, is_sso_user, is_anonymous)
-values ('00000000-0000-0000-0000-000000000000', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p09'), 'authenticated', 'authenticated', 'dogfood+p09@logic-test.local', '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"is_test":true,"persona":"p09","batch":"dogfood-20260530","nickname":"小林タク"}'::jsonb, false, false)
+values ('00000000-0000-0000-0000-000000000000', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p09'), 'authenticated', 'authenticated', 'keita.urano+p09@gmail.com', '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"is_test":true,"persona":"p09","batch":"dogfood-20260530","nickname":"小林タク"}'::jsonb, false, false)
 on conflict (id) do nothing;
 
 insert into auth.identities (provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
-values (extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p09')::text, extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p09'), jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p09')::text, 'email', 'dogfood+p09@logic-test.local', 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now())
+values (extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p09')::text, extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p09'), jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p09')::text, 'email', 'keita.urano+p09@gmail.com', 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now())
 on conflict (provider, provider_id) do nothing;
 
 insert into public.profiles (id, nickname, language, occupation, birth_year, onboarded_at, updated_at)
@@ -475,11 +475,11 @@ where not exists (select 1 from public.feedback where message like '[DOGFOOD:p09
 -- =====================================================================
 
 insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, created_at, updated_at, raw_app_meta_data, raw_user_meta_data, is_sso_user, is_anonymous)
-values ('00000000-0000-0000-0000-000000000000', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p10'), 'authenticated', 'authenticated', 'dogfood+p10@logic-test.local', '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"is_test":true,"persona":"p10","batch":"dogfood-20260530","nickname":"加藤ノゾミ"}'::jsonb, false, false)
+values ('00000000-0000-0000-0000-000000000000', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p10'), 'authenticated', 'authenticated', 'keita.urano+p10@gmail.com', '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"is_test":true,"persona":"p10","batch":"dogfood-20260530","nickname":"加藤ノゾミ"}'::jsonb, false, false)
 on conflict (id) do nothing;
 
 insert into auth.identities (provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
-values (extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p10')::text, extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p10'), jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p10')::text, 'email', 'dogfood+p10@logic-test.local', 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now())
+values (extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p10')::text, extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p10'), jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p10')::text, 'email', 'keita.urano+p10@gmail.com', 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now())
 on conflict (provider, provider_id) do nothing;
 
 insert into public.profiles (id, nickname, language, occupation, birth_year, onboarded_at, updated_at)
@@ -510,11 +510,11 @@ where not exists (select 1 from public.feedback where message like '[DOGFOOD:p10
 -- =====================================================================
 
 insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, created_at, updated_at, raw_app_meta_data, raw_user_meta_data, is_sso_user, is_anonymous)
-values ('00000000-0000-0000-0000-000000000000', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p11'), 'authenticated', 'authenticated', 'dogfood+p11@logic-test.local', '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"is_test":true,"persona":"p11","batch":"dogfood-20260530","nickname":"吉田ハヤト"}'::jsonb, false, false)
+values ('00000000-0000-0000-0000-000000000000', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p11'), 'authenticated', 'authenticated', 'keita.urano+p11@gmail.com', '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"is_test":true,"persona":"p11","batch":"dogfood-20260530","nickname":"吉田ハヤト"}'::jsonb, false, false)
 on conflict (id) do nothing;
 
 insert into auth.identities (provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
-values (extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p11')::text, extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p11'), jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p11')::text, 'email', 'dogfood+p11@logic-test.local', 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now())
+values (extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p11')::text, extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p11'), jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p11')::text, 'email', 'keita.urano+p11@gmail.com', 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now())
 on conflict (provider, provider_id) do nothing;
 
 insert into public.profiles (id, nickname, language, occupation, birth_year, onboarded_at, updated_at)
@@ -545,11 +545,11 @@ where not exists (select 1 from public.feedback where message like '[DOGFOOD:p11
 -- =====================================================================
 
 insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, created_at, updated_at, raw_app_meta_data, raw_user_meta_data, is_sso_user, is_anonymous)
-values ('00000000-0000-0000-0000-000000000000', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p12'), 'authenticated', 'authenticated', 'dogfood+p12@logic-test.local', '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"is_test":true,"persona":"p12","batch":"dogfood-20260530","nickname":"山田エリ"}'::jsonb, false, false)
+values ('00000000-0000-0000-0000-000000000000', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p12'), 'authenticated', 'authenticated', 'keita.urano+p12@gmail.com', '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"is_test":true,"persona":"p12","batch":"dogfood-20260530","nickname":"山田エリ"}'::jsonb, false, false)
 on conflict (id) do nothing;
 
 insert into auth.identities (provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
-values (extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p12')::text, extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p12'), jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p12')::text, 'email', 'dogfood+p12@logic-test.local', 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now())
+values (extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p12')::text, extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p12'), jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p12')::text, 'email', 'keita.urano+p12@gmail.com', 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now())
 on conflict (provider, provider_id) do nothing;
 
 insert into public.profiles (id, nickname, language, occupation, birth_year, onboarded_at, updated_at)
@@ -588,11 +588,11 @@ where not exists (select 1 from public.feedback where message like '[DOGFOOD:p12
 -- =====================================================================
 
 insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, created_at, updated_at, raw_app_meta_data, raw_user_meta_data, is_sso_user, is_anonymous)
-values ('00000000-0000-0000-0000-000000000000', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p13'), 'authenticated', 'authenticated', 'dogfood+p13@logic-test.local', '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"is_test":true,"persona":"p13","batch":"dogfood-20260530","nickname":"佐々木リョウ"}'::jsonb, false, false)
+values ('00000000-0000-0000-0000-000000000000', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p13'), 'authenticated', 'authenticated', 'keita.urano+p13@gmail.com', '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"is_test":true,"persona":"p13","batch":"dogfood-20260530","nickname":"佐々木リョウ"}'::jsonb, false, false)
 on conflict (id) do nothing;
 
 insert into auth.identities (provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
-values (extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p13')::text, extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p13'), jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p13')::text, 'email', 'dogfood+p13@logic-test.local', 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now())
+values (extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p13')::text, extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p13'), jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p13')::text, 'email', 'keita.urano+p13@gmail.com', 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now())
 on conflict (provider, provider_id) do nothing;
 
 insert into public.profiles (id, nickname, language, occupation, birth_year, onboarded_at, updated_at)
@@ -631,11 +631,11 @@ where not exists (select 1 from public.feedback where message like '[DOGFOOD:p13
 -- =====================================================================
 
 insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, created_at, updated_at, raw_app_meta_data, raw_user_meta_data, is_sso_user, is_anonymous)
-values ('00000000-0000-0000-0000-000000000000', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p14'), 'authenticated', 'authenticated', 'dogfood+p14@logic-test.local', '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"is_test":true,"persona":"p14","batch":"dogfood-20260530","nickname":"松本カナ"}'::jsonb, false, false)
+values ('00000000-0000-0000-0000-000000000000', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p14'), 'authenticated', 'authenticated', 'keita.urano+p14@gmail.com', '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"is_test":true,"persona":"p14","batch":"dogfood-20260530","nickname":"松本カナ"}'::jsonb, false, false)
 on conflict (id) do nothing;
 
 insert into auth.identities (provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
-values (extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p14')::text, extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p14'), jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p14')::text, 'email', 'dogfood+p14@logic-test.local', 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now())
+values (extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p14')::text, extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p14'), jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p14')::text, 'email', 'keita.urano+p14@gmail.com', 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now())
 on conflict (provider, provider_id) do nothing;
 
 insert into public.profiles (id, nickname, language, occupation, birth_year, onboarded_at, updated_at)
@@ -666,11 +666,11 @@ where not exists (select 1 from public.feedback where message like '[DOGFOOD:p14
 -- =====================================================================
 
 insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, created_at, updated_at, raw_app_meta_data, raw_user_meta_data, is_sso_user, is_anonymous)
-values ('00000000-0000-0000-0000-000000000000', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p15'), 'authenticated', 'authenticated', 'dogfood+p15@logic-test.local', '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"is_test":true,"persona":"p15","batch":"dogfood-20260530","nickname":"井上ソウ"}'::jsonb, false, false)
+values ('00000000-0000-0000-0000-000000000000', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p15'), 'authenticated', 'authenticated', 'keita.urano+p15@gmail.com', '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"is_test":true,"persona":"p15","batch":"dogfood-20260530","nickname":"井上ソウ"}'::jsonb, false, false)
 on conflict (id) do nothing;
 
 insert into auth.identities (provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
-values (extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p15')::text, extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p15'), jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p15')::text, 'email', 'dogfood+p15@logic-test.local', 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now())
+values (extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p15')::text, extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p15'), jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p15')::text, 'email', 'keita.urano+p15@gmail.com', 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now())
 on conflict (provider, provider_id) do nothing;
 
 insert into public.profiles (id, nickname, language, occupation, birth_year, onboarded_at, updated_at)
@@ -709,11 +709,11 @@ where not exists (select 1 from public.feedback where message like '[DOGFOOD:p15
 -- =====================================================================
 
 insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, created_at, updated_at, raw_app_meta_data, raw_user_meta_data, is_sso_user, is_anonymous)
-values ('00000000-0000-0000-0000-000000000000', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p16'), 'authenticated', 'authenticated', 'dogfood+p16@logic-test.local', '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"is_test":true,"persona":"p16","batch":"dogfood-20260530","nickname":"木村ユイ"}'::jsonb, false, false)
+values ('00000000-0000-0000-0000-000000000000', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p16'), 'authenticated', 'authenticated', 'keita.urano+p16@gmail.com', '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"is_test":true,"persona":"p16","batch":"dogfood-20260530","nickname":"木村ユイ"}'::jsonb, false, false)
 on conflict (id) do nothing;
 
 insert into auth.identities (provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
-values (extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p16')::text, extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p16'), jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p16')::text, 'email', 'dogfood+p16@logic-test.local', 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now())
+values (extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p16')::text, extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p16'), jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p16')::text, 'email', 'keita.urano+p16@gmail.com', 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now())
 on conflict (provider, provider_id) do nothing;
 
 insert into public.profiles (id, nickname, language, occupation, birth_year, onboarded_at, updated_at)
@@ -744,11 +744,11 @@ where not exists (select 1 from public.feedback where message like '[DOGFOOD:p16
 -- =====================================================================
 
 insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, created_at, updated_at, raw_app_meta_data, raw_user_meta_data, is_sso_user, is_anonymous)
-values ('00000000-0000-0000-0000-000000000000', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p17'), 'authenticated', 'authenticated', 'dogfood+p17@logic-test.local', '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"is_test":true,"persona":"p17","batch":"dogfood-20260530","nickname":"林タケシ"}'::jsonb, false, false)
+values ('00000000-0000-0000-0000-000000000000', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p17'), 'authenticated', 'authenticated', 'keita.urano+p17@gmail.com', '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"is_test":true,"persona":"p17","batch":"dogfood-20260530","nickname":"林タケシ"}'::jsonb, false, false)
 on conflict (id) do nothing;
 
 insert into auth.identities (provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
-values (extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p17')::text, extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p17'), jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p17')::text, 'email', 'dogfood+p17@logic-test.local', 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now())
+values (extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p17')::text, extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p17'), jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p17')::text, 'email', 'keita.urano+p17@gmail.com', 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now())
 on conflict (provider, provider_id) do nothing;
 
 insert into public.profiles (id, nickname, language, occupation, birth_year, onboarded_at, updated_at)
@@ -779,11 +779,11 @@ where not exists (select 1 from public.feedback where message like '[DOGFOOD:p17
 -- =====================================================================
 
 insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, created_at, updated_at, raw_app_meta_data, raw_user_meta_data, is_sso_user, is_anonymous)
-values ('00000000-0000-0000-0000-000000000000', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p18'), 'authenticated', 'authenticated', 'dogfood+p18@logic-test.local', '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"is_test":true,"persona":"p18","batch":"dogfood-20260530","nickname":"清水アオイ"}'::jsonb, false, false)
+values ('00000000-0000-0000-0000-000000000000', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p18'), 'authenticated', 'authenticated', 'keita.urano+p18@gmail.com', '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"is_test":true,"persona":"p18","batch":"dogfood-20260530","nickname":"清水アオイ"}'::jsonb, false, false)
 on conflict (id) do nothing;
 
 insert into auth.identities (provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
-values (extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p18')::text, extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p18'), jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p18')::text, 'email', 'dogfood+p18@logic-test.local', 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now())
+values (extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p18')::text, extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p18'), jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p18')::text, 'email', 'keita.urano+p18@gmail.com', 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now())
 on conflict (provider, provider_id) do nothing;
 
 insert into public.profiles (id, nickname, language, occupation, birth_year, onboarded_at, updated_at)
@@ -822,11 +822,11 @@ where not exists (select 1 from public.feedback where message like '[DOGFOOD:p18
 -- =====================================================================
 
 insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, created_at, updated_at, raw_app_meta_data, raw_user_meta_data, is_sso_user, is_anonymous)
-values ('00000000-0000-0000-0000-000000000000', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p19'), 'authenticated', 'authenticated', 'dogfood+p19@logic-test.local', '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"is_test":true,"persona":"p19","batch":"dogfood-20260530","nickname":"森ハナ"}'::jsonb, false, false)
+values ('00000000-0000-0000-0000-000000000000', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p19'), 'authenticated', 'authenticated', 'keita.urano+p19@gmail.com', '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"is_test":true,"persona":"p19","batch":"dogfood-20260530","nickname":"森ハナ"}'::jsonb, false, false)
 on conflict (id) do nothing;
 
 insert into auth.identities (provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
-values (extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p19')::text, extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p19'), jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p19')::text, 'email', 'dogfood+p19@logic-test.local', 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now())
+values (extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p19')::text, extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p19'), jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p19')::text, 'email', 'keita.urano+p19@gmail.com', 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now())
 on conflict (provider, provider_id) do nothing;
 
 insert into public.profiles (id, nickname, language, occupation, birth_year, onboarded_at, updated_at)
@@ -857,11 +857,11 @@ where not exists (select 1 from public.feedback where message like '[DOGFOOD:p19
 -- =====================================================================
 
 insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, created_at, updated_at, raw_app_meta_data, raw_user_meta_data, is_sso_user, is_anonymous)
-values ('00000000-0000-0000-0000-000000000000', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p20'), 'authenticated', 'authenticated', 'dogfood+p20@logic-test.local', '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"is_test":true,"persona":"p20","batch":"dogfood-20260530","nickname":"岡田ケイ"}'::jsonb, false, false)
+values ('00000000-0000-0000-0000-000000000000', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p20'), 'authenticated', 'authenticated', 'keita.urano+p20@gmail.com', '$2a$10$DOGFOODdummyhashDOGFOODdummyhashDOGFOODdummyhashDOG12', now(), now(), now(), '{"provider":"email","providers":["email"]}'::jsonb, '{"is_test":true,"persona":"p20","batch":"dogfood-20260530","nickname":"岡田ケイ"}'::jsonb, false, false)
 on conflict (id) do nothing;
 
 insert into auth.identities (provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
-values (extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p20')::text, extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p20'), jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p20')::text, 'email', 'dogfood+p20@logic-test.local', 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now())
+values (extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p20')::text, extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p20'), jsonb_build_object('sub', extensions.uuid_generate_v5('6ba7b810-9dad-11d1-80b4-00c04fd430c8'::uuid, 'logic-dogfood-20260530:p20')::text, 'email', 'keita.urano+p20@gmail.com', 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now())
 on conflict (provider, provider_id) do nothing;
 
 insert into public.profiles (id, nickname, language, occupation, birth_year, onboarded_at, updated_at)

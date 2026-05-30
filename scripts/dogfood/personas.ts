@@ -6,13 +6,13 @@
  *
  * タグ付け方針（Keita 承認済み・2026-05-30）:
  *   - auth user_metadata = { is_test:true, persona:"pNN", batch:"dogfood-20260530" }
- *   - email = dogfood+pNN@logic-test.local
+ *   - email = keita.urano+pNN@gmail.com
  *   - feedback 本文 = "[DOGFOOD:pNN] ..." prefix（feedback テーブルに user_id 列が無いため本文で識別）
  */
 
 export const DOGFOOD_BATCH = 'dogfood-20260530'
-export const EMAIL_DOMAIN = 'logic-test.local'
-export const EMAIL_PREFIX = 'dogfood+'
+export const EMAIL_DOMAIN = 'gmail.com'
+export const EMAIL_PREFIX = 'keita.urano+'
 
 export type Plan = 'free' | 'paid_monthly' | 'paid_yearly' | 'trial'
 export type Locale = 'ja' | 'en'

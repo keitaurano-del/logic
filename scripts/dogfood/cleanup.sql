@@ -56,7 +56,7 @@ where user_id in (
 --          subscriptions / admin_overrides 等が CASCADE で連鎖削除される ----
 delete from auth.users
 where raw_user_meta_data->>'is_test' = 'true'
-   or (email like 'dogfood+%@logic-test.local');   -- メール保険（is_test が欠けた行も拾う）
+   or (email like 'keita.urano+%@gmail.com');   -- メール保険（is_test が欠けた行も拾う）
 
 -- ---- (6) 削除後の検証（任意・read のみ。すべて 0 を期待）----
 -- select count(*) from auth.users where raw_user_meta_data->>'is_test'='true';          -- 期待 0

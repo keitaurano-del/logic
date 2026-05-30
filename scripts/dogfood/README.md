@@ -6,7 +6,7 @@ Logic 本番 Supabase（project ref `yctlelmlwjwlcpcxvmgx`）に、20 ペルソ�
 ## タグ付け方針（Keita 承認済み・2026-05-30）
 
 - auth `user_metadata` = `{ is_test: true, persona: "pNN", batch: "dogfood-20260530" }`
-- メール = `dogfood+pNN@logic-test.local`
+- メール = `keita.urano+pNN@gmail.com`
 - フィードバック本文 = `[DOGFOOD:pNN] …` prefix（`feedback` テーブルに user_id 列が無いため本文で識別）+ `source = 'dogfood'`
 - 終了後は `is_test` / dogfood メール / `[DOGFOOD:` prefix で一括クリーンアップ可能
 
@@ -100,7 +100,7 @@ SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... npx tsx scripts/dogfood/cleanup.t
 1. ファイル冒頭の「ヘッダ: 拡張」ブロック（`create extension if not exists ...`）を1回流す。
 2. `-- ===== p01 =====` から `-- ===== p02 =====` の直前までを選択して流す。
 3. 検証クエリ（ファイル末尾のコメント、`-- select count(*) ...`）で p01 の行が入ったか確認:
-   - `select * from auth.users where email='dogfood+p01@logic-test.local';`（1 行）
+   - `select * from auth.users where email='keita.urano+p01@gmail.com';`（1 行）
    - `select * from public.profiles where nickname='佐藤ハル';`（occupation=学生 / birth_year=2003）
    - `select count(*) from public.fermi_answers where question_text like '[DOGFOOD:p01]%';`（3 行）
 4. 問題なければ p02〜p20 のブロックを続けて流す（全文を一括でも可。冪等なので p01 を再度含めても重複しない）。
