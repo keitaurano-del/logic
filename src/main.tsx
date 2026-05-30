@@ -7,6 +7,7 @@ import { initSentry } from './sentry'
 import { setHtmlPlatformAttr, configureStatusBar, configureKeyboard } from './platform'
 import { initAuthDeepLink } from './platform/deepLink'
 import { loadTheme, applyTheme } from './theme'
+import { loadFontScale, applyFontScale } from './fontScale'
 
 initSentry()
 
@@ -30,6 +31,10 @@ const useV3 = localStorage.getItem('logic-v3-preview') !== '0'
 // and is idempotent (classList.add deduplicates).
 if (useV3) document.body.classList.add('theme-v3')
 applyTheme(loadTheme())
+
+// DF-F2: 保存済みの文字サイズ (--font-scale) を React マウント前に適用し、
+// リロード後も選択が維持されるようにする。
+applyFontScale(loadFontScale())
 
 // Tag <html data-platform="ios|android|web"> so CSS can branch on platform
 // without a runtime JS check.

@@ -2,6 +2,10 @@ import { useState } from 'react'
 import { Header } from '../components/platform/Header'
 import { CheckIcon } from '../icons'
 import { MODES, getMode, setMode, type ModeId, type Mode } from '../theme'
+import {
+  FONT_SCALES, getFontScale, setFontScale,
+  type FontScaleId, type FontScaleOption,
+} from '../fontScale'
 import { t } from '../i18n'
 
 interface Props {
@@ -101,12 +105,65 @@ function ThemeCard({
   )
 }
 
+function FontSizeCard({
+  option, selected, onSelect,
+}: {
+  option: FontScaleOption
+  selected: boolean
+  onSelect: () => void
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onSelect}
+      aria-pressed={selected}
+      style={{
+        flex: 1,
+        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+        gap: 8,
+        padding: '16px 8px',
+        background: 'var(--md-sys-color-surface-container)',
+        border: `2px solid ${selected ? 'var(--md-sys-color-primary)' : 'transparent'}`,
+        borderRadius: 18,
+        cursor: 'pointer', font: 'inherit', color: 'inherit',
+        minHeight: 88,
+        boxShadow: selected
+          ? '0 4px 16px color-mix(in srgb, var(--md-sys-color-primary) 22%, transparent)'
+          : 'var(--elev-1)',
+        transition: 'border-color 0.2s, box-shadow 0.2s',
+      }}
+    >
+      <span
+        aria-hidden="true"
+        style={{
+          fontSize: option.previewPx, lineHeight: 1, fontWeight: 700,
+          color: selected ? 'var(--md-sys-color-primary)' : 'var(--md-sys-color-on-surface)',
+        }}
+      >
+        Aa
+      </span>
+      <span style={{
+        fontSize: 13, fontWeight: 600,
+        color: 'var(--md-sys-color-on-surface)',
+      }}>
+        {option.name}
+      </span>
+    </button>
+  )
+}
+
 export function AppearanceSettingsScreen({ onBack }: Props) {
   const [mode, setLocalMode] = useState<ModeId>(getMode())
+  const [fontScale, setLocalFontScale] = useState<FontScaleId>(getFontScale())
 
   function handleSelect(m: Mode) {
     setLocalMode(m.id)
     setMode(m.id)
+  }
+
+  function handleSelectFontScale(f: FontScaleOption) {
+    setLocalFontScale(f.id)
+    setFontScale(f.id)
   }
 
   const sectionLabelStyle: React.CSSProperties = {
@@ -137,6 +194,26 @@ export function AppearanceSettingsScreen({ onBack }: Props) {
             marginTop: 14, lineHeight: 1.6, padding: '0 4px',
           }}>
             {t('appearanceSettings.modeHint')}
+          </p>
+        </section>
+
+        <section>
+          <div style={sectionLabelStyle}>{t('appearanceSettings.fontSizeHeading')}</div>
+          <div style={{ display: 'flex', gap: 12 }}>
+            {FONT_SCALES.map((f) => (
+              <FontSizeCard
+                key={f.id}
+                option={f}
+                selected={fontScale === f.id}
+                onSelect={() => handleSelectFontScale(f)}
+              />
+            ))}
+          </div>
+          <p style={{
+            fontSize: 12, color: 'var(--md-sys-color-on-surface-variant)',
+            marginTop: 14, lineHeight: 1.6, padding: '0 4px',
+          }}>
+            {t('appearanceSettings.fontSizeHint')}
           </p>
         </section>
       </div>
