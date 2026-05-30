@@ -2257,9 +2257,16 @@ Keita が 2026-05-29 夕方に新バッチ8件を依頼（Keita は離席、林�
   - [ ] テスト（遷移の E2E ハッピーパス）
 - 抜けもれ提言: 履歴は新規機能。保存先（local か Supabase notebooks 系か）の設計判断が要る。表示だけでなく persist が必須。
 
-### T6 — レッスン本文 bullet（・）のずれ・青色を直す　[P1 / REVIEW]
+### T6 — レッスン本文 bullet（・）のずれ・青色を直す　[P1 / DONE（2026-05-31 実効性検証○）]
 
-- ステータス: REVIEW（実装済 `793e519`・origin/main 在を git で検証。本コミットが `src/components/RichLessonText.tsx`（18行差分）を実変更＝bullet の色/位置修正の結線あり。全レッスン本文での回帰目視 DoD 確認待ち。2026-05-31 git 実態と同期）
+- ステータス: DONE（2026-05-31 実効性検証○・コードレベル判定）。実装 `793e519`（origin/main 在を `git merge-base --is-ancestor` で検証＝Android 自動配信済み、`RichLessonText.tsx` を 11+/7- で実変更を `git show --stat` で確認）。DoD 3点を file:line で充足:
+  - **青の丸ドット廃止○**: `RichLessonText.tsx:218` の `case 'bullets'` で、旧実装の青丸（6px 円・`background: var(--brand)`）を廃し、`:256` で中黒「・」をテキストグリフとして描画。色は `:250` `color: 'var(--text-secondary)'`（中立色・ブランド青ではない）。
+  - **縦位置ズレ解消○**: `:236` `alignItems: 'baseline'`＋`:251-252` bullet span に本文と同じ `fontSize:'1.0667rem'`/`lineHeight:1.8` を付与。`translateY` を撤去し、フォント由来グリフで本文と縦位置が揃い行高に追従（`:248-249` コメントで「青丸 + translateY のズレを廃止」と明記）。
+  - **中黒「・」相当○**: literal `・`（U+30FB）描画。`:245` `aria-hidden="true"` で TTS/スクリーンリーダ非読み上げ、`:237-238` gap を `var(--s-1)` に詰めグリフ内蔵余白と調和。
+  - **ライブ結線（dead code でない）**: `bullets` ケースは RichLessonText の本文ブロック描画分岐で、全レッスン本文（行頭 `- `/`・`）が通る共通経路。hex 直書きなし（デザイントークン使用）。
+  - **green**: tsc -b --noEmit EXIT0 error0 / eslint . EXIT0 error0（warning19=既存a11y/exhaustive-deps・T6無関係）/ vitest 22files 389pass fail0。
+  - **caveat**: headless ゆえ実機（Capacitor Android）での全レッスン横断・ネストリストの物理目視は未実施＝コードレベル○判定。コードは 793e519 で 5/27 から main 在＝新規デプロイ対象なし（doc 昇格のみ）。
+- （旧）ステータス: REVIEW（実装済 `793e519`・bullet の色/位置修正の結線あり。全レッスン本文での回帰目視 DoD 確認待ち）
 - 詳細: レッスン本文の箇条書き bullet（・）が青色でずれて表示される。青ではなく普通の「・」でよい。
 - 関連ファイル: `src/components/RichLessonText.tsx`（~218-258, bullets ケース）。`<ul listStyle:none + flex>`、各 li の bullet span が 6px 円・`background: var(--brand)`（青）・`translateY(0.5em)` で位置調整。
 - DoD: bullet が通常の中黒「・」相当で、テキストと縦位置が揃って表示される。青の丸ドットをやめる。
