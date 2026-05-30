@@ -110,6 +110,10 @@ function OnboardingAttributeView({ onNext }: { onNext: () => void; onBackToSlide
   const isFirstStep = stepIdx === 0
   const currentYear = getCurrentYear()
 
+  // 西暦4桁・範囲内のときだけ「次へ」を有効化する（未入力・不正時はボタンを無効化）
+  const birthYearTrimmed = birthYearInput.trim()
+  const isBirthYearValid = isValidBirthYear(Number(birthYearTrimmed)) && /^\d{4}$/.test(birthYearTrimmed)
+
   const advanceOrFinish = (nextBirthYear: number | '', nextGender: Gender | '', nextOccupation: Occupation | '') => {
     const isLast = stepIdx === STEP_ORDER.length - 1
     if (isLast) {
@@ -238,22 +242,27 @@ function OnboardingAttributeView({ onNext }: { onNext: () => void; onBackToSlide
                   letterSpacing: '0.05em',
                 }}
               />
-              {birthYearError && (
+              {birthYearError ? (
                 <div role="alert" style={{ fontSize: 13, color: 'var(--md-sys-color-error)', marginTop: 8, lineHeight: 1.6 }}>
                   {birthYearError}
+                </div>
+              ) : (
+                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginTop: 8, lineHeight: 1.6 }}>
+                  {t('onboarding.attrBirthYearHint', { min: MIN_BIRTH_YEAR, max: currentYear })}
                 </div>
               )}
               <button
                 type="button"
                 onClick={onSubmitBirthYear}
-                disabled={!birthYearInput.trim()}
+                disabled={!isBirthYearValid}
+                aria-disabled={!isBirthYearValid}
                 style={{
                   width: '100%', marginTop: 16, padding: '16px',
                   borderRadius: 14, border: 'none',
-                  background: birthYearInput.trim() ? ACCENT : 'rgba(255,255,255,0.1)',
-                  color: birthYearInput.trim() ? '#fff' : 'rgba(255,255,255,0.4)',
+                  background: isBirthYearValid ? ACCENT : 'rgba(255,255,255,0.1)',
+                  color: isBirthYearValid ? '#fff' : 'rgba(255,255,255,0.4)',
                   fontSize: 15, fontWeight: 800,
-                  cursor: birthYearInput.trim() ? 'pointer' : 'default',
+                  cursor: isBirthYearValid ? 'pointer' : 'default',
                   minHeight: 44,
                 }}
               >
