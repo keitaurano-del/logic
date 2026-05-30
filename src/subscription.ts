@@ -128,6 +128,21 @@ export function canUseJournal(): boolean {
   return getJournalTrialDaysLeft() > 0
 }
 
+/**
+ * 無料トライアル中かどうかの共通判定。
+ * 「有料ではない」かつ「トライアル残日数 > 0」のときのみ true。
+ * 残日数の算出は getJournalTrialDaysLeft()（install タイムスタンプ基準）に
+ * 一本化し、二重ロジックを避ける。
+ *
+ * 注意: トライアルはログイン有無に関わらず install 時刻から計算されるが、
+ * ジャーナルは保存にログインが必須なため、UI 側で「ログイン済み」を
+ * 併せて条件にすること（未ログインには出さない）。
+ */
+export function isTrialActive(): boolean {
+  if (isPaid()) return false
+  return getJournalTrialDaysLeft() > 0
+}
+
 // ──────────────────────────────────────────────────────────────────────────
 // プラン判定（単一有料プランに統合）
 // ──────────────────────────────────────────────────────────────────────────

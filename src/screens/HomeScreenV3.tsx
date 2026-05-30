@@ -16,6 +16,8 @@ import { useWindowSize, BREAKPOINTS } from '../hooks/useResponsive'
 import { allLessons } from '../lessonData'
 import { getStudyTimeMs, getStudyDates, localDateStr } from '../stats'
 import { ClockIcon } from '../icons'
+import { TrialEndingBanner } from '../components/TrialStatus'
+import { shouldShowTrialEndingBanner } from '../trialStatus'
 import { t } from '../i18n'
 
 // フェルミ問題は fermiData.ts の FERMI_POOL を使用（日付ベース共通）
@@ -151,12 +153,13 @@ interface HomeScreenV3Props {
   onOpenReviewHub?: () => void
   onOpenPricing?: () => void
   onOpenStudyTime?: () => void
+  isLoggedIn?: boolean
 }
 
 const IMG = '/images/v3'
 
 export function HomeScreenV3(props: HomeScreenV3Props) {
-  const { userName, onOpenLesson, onOpenAIGen, onNavigateToDailyFermi, onOpenPlacementTest, onOpenReviewHub, onOpenStudyTime, onOpenPricing: _onOpenPricing, onOpenCategory: _onOpenCategory, onOpenRank: _onOpenRank, onOpenStats: _onOpenStats, onOpenRoadmap: _onOpenRoadmap } = props
+  const { userName, onOpenLesson, onOpenAIGen, onNavigateToDailyFermi, onOpenPlacementTest, onOpenReviewHub, onOpenStudyTime, onOpenPricing, isLoggedIn = false, onOpenCategory: _onOpenCategory, onOpenRank: _onOpenRank, onOpenStats: _onOpenStats, onOpenRoadmap: _onOpenRoadmap } = props
   const dailyCardRef = useRef<HTMLButtonElement>(null)
   const placementHeroRef = useRef<HTMLButtonElement>(null)
   const [showCoachmark, dismissCoachmark] = useShouldShowHomeCoachmark()
@@ -235,6 +238,9 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
           <div style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 4, fontWeight: 500 }}>{t('home.userGreeting', { name: userName || t('home.guestName') })}</div>
           <div style={{ fontSize: 20, fontWeight: 700, lineHeight: 1.4, letterSpacing: '-.005em' }}>{getDailyGreeting().split('\n').map((line, i) => i === 0 ? <span key={i}>{line}<br /></span> : <span key={i}>{line}</span>)}</div>
         </div>
+
+        {/* DF-F11: トライアル終了間際バナー（残り2日以下）。グリーティング直下に控えめに表示。 */}
+        {shouldShowTrialEndingBanner(isLoggedIn) && <TrialEndingBanner onUpgrade={onOpenPricing} />}
 
         {/* DF-F16: 初回ユーザーは「実力診断」を画面最上段の唯一の大型ヒーロー CTA に昇格。
             視線を診断1点に集約するため、今日の1問・復習・学習時間・AI はこの下に従属配置する。 */}

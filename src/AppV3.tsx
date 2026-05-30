@@ -480,6 +480,7 @@ function AppV3() {
       {screen.type === 'home' && (
         <HomeScreenV3
           userName={userName}
+          isLoggedIn={!!currentUser}
           onOpenLesson={handleOpenLesson}
           onOpenCategory={(cat) => {
             if (cat === 'fermi') navigate({ type: 'daily-fermi' })
@@ -670,6 +671,7 @@ function AppV3() {
       {screen.type === 'profile' && (
         <ProfileScreenV3
           userName={userName}
+          isLoggedIn={!!currentUser}
           onOpenAccount={() => navigate({ type: 'account-settings' })}
           onOpenProfileEdit={() => navigate({ type: 'profile-edit' })}
           onOpenNotifications={() => navigate({ type: 'notification-settings' })}

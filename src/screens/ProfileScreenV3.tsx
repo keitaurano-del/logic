@@ -15,6 +15,8 @@ import LessonIcon from '../LessonIcon'
 import { StarIcon } from '../icons'
 import { t, getLocale, localizedHtmlPath } from '../i18n'
 import { getMode } from '../theme'
+import { TrialBadge, TrialEndingBanner } from '../components/TrialStatus'
+import { shouldShowTrial, shouldShowTrialEndingBanner } from '../trialStatus'
 import '../components/levelup.css'
 
 function getPlanLabel(): string {
@@ -36,12 +38,15 @@ interface ProfileScreenV3Props {
   onOpenLesson?: (lessonId: number) => void
   onOpenLanguage?: () => void
   onOpenStudyTime?: () => void
+  isLoggedIn?: boolean
 }
 
 type Sheet = null | 'streak' | 'lessons' | 'xp'
 
 export function ProfileScreenV3(props: ProfileScreenV3Props) {
-  const { userName, onOpenAccount, onOpenProfileEdit, onOpenNotifications, onOpenAppearance, onOpenFeedback, onOpenPricing, onOpenPlacementTest, onOpenLesson, onOpenLanguage, onOpenStudyTime } = props
+  const { userName, onOpenAccount, onOpenProfileEdit, onOpenNotifications, onOpenAppearance, onOpenFeedback, onOpenPricing, onOpenPlacementTest, onOpenLesson, onOpenLanguage, onOpenStudyTime, isLoggedIn = false } = props
+  const showTrialBadge = shouldShowTrial(isLoggedIn)
+  const showTrialBanner = shouldShowTrialEndingBanner(isLoggedIn)
   const [sheet, setSheet] = useState<Sheet>(null)
   const [titleSheetOpen, setTitleSheetOpen] = useState(false)
   const streak = getLessonStreak()
@@ -229,6 +234,9 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
           </button>
         )}
 
+        {/* DF-F11: トライアル終了間際バナー（残り2日以下） */}
+        {showTrialBanner && <TrialEndingBanner onUpgrade={onOpenPricing} />}
+
         {/* 設定 */}
         <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', boxShadow: 'var(--shadow-v3-card-inset)' }}>
           {onOpenProfileEdit && (
@@ -238,7 +246,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
           <SettingRow icon="bell" name={t('profile.notifications')} sub="" onClick={onOpenNotifications} />
           <SettingRow icon="globe" name={t('profile.languageTitle')} sub={getLocale() === 'ja' ? t('profile.languageJa') : t('profile.languageEn')} onClick={onOpenLanguage} />
           <SettingRow icon="palette" name={t('profile.theme')} sub={getMode() === 'light' ? t('profile.themeLight') : t('profile.themeDark')} onClick={onOpenAppearance} />
-          <SettingRow icon="card" name={t('profile.plan')} sub={getPlanLabel()} onClick={onOpenPricing} />
+          <SettingRow icon="card" name={t('profile.plan')} sub={getPlanLabel()} onClick={onOpenPricing} extra={showTrialBadge ? <TrialBadge /> : undefined} />
           <SettingRow icon="message" name={t('profile.feedbackName')} sub={t('profile.feedbackSub')} onClick={onOpenFeedback} />
           <SettingRow icon="doc" name={t('profile.terms')} sub="" onClick={() => window.open(localizedHtmlPath('terms'), '_blank')} />
           <SettingRow icon="shield" name={t('profile.privacy')} sub="" onClick={() => window.open(localizedHtmlPath('privacy'), '_blank')} />
@@ -462,7 +470,7 @@ function FlameIcon({ size = 20, dim = false }: { size?: number; dim?: boolean })
   )
 }
 
-function SettingRow({ icon, name, sub, onClick }: { icon: string; name: string; sub: string; onClick?: () => void }) {
+function SettingRow({ icon, name, sub, onClick, extra }: { icon: string; name: string; sub: string; onClick?: () => void; extra?: React.ReactNode }) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const iconSvg: Record<string, any> = {
     user: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={'var(--brand)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>,
@@ -483,7 +491,10 @@ function SettingRow({ icon, name, sub, onClick }: { icon: string; name: string; 
       style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px', cursor: 'pointer', borderBottom: `1px solid ${'var(--border)'}`, background: 'transparent', border: 'none', borderTop: 'none', borderLeft: 'none', borderRight: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%', minHeight: 44 }}>
       <div style={{ width: 36, height: 36, borderRadius: 10, background: 'var(--accent-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{iconSvg[icon]}</div>
       <div style={{ flex: 1 }}>
-        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 2, color: 'var(--text-primary)' }}>{name}</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 2 }}>
+          <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>{name}</span>
+          {extra}
+        </div>
         {sub && <div style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 500 }}>{sub}</div>}
       </div>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>

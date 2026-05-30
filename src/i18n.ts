@@ -955,6 +955,9 @@ const STRINGS: Record<Locale, Strings> = {
     'profile.planFree': '無料',
     'profile.planPaidMonthly': '有料（月額）',
     'profile.planPaidYearly': '有料（年額）',
+    'trial.badge': '無料トライアル 残り{days}日',
+    'trial.endingSoonBanner': '無料トライアルはあと{days}日で終了します',
+    'trial.endingSoonLastDay': '無料トライアルは本日で終了します',
 
     // Daily Fermi
     'dailyFermi.title': 'デイリーフェルミ',
@@ -2837,6 +2840,9 @@ const STRINGS: Record<Locale, Strings> = {
     'profile.planFree': 'Free',
     'profile.planPaidMonthly': 'Paid (monthly)',
     'profile.planPaidYearly': 'Paid (yearly)',
+    'trial.badge': 'Free trial — {days} day(s) left',
+    'trial.endingSoonBanner': 'Your free trial ends in {days} day(s)',
+    'trial.endingSoonLastDay': 'Your free trial ends today',
 
     // Daily Fermi
     'dailyFermi.title': 'Daily Fermi',
