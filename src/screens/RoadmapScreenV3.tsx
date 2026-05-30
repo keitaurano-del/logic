@@ -478,6 +478,32 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
           <div style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.45, letterSpacing: '-.005em', whiteSpace: 'pre-line' }}>{t('roadmap.todayQuestion')}</div>
         </div>
 
+        {/* 検索バー（常設）— タップで右上虫眼鏡と同じ検索オーバーレイを開く。発見性向上のため一覧トップに配置 */}
+        <button
+          type="button"
+          onClick={() => setSearchOpen(true)}
+          aria-label={t('roadmap.searchBarAria')}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 10,
+            width: '100%',
+            padding: '12px 14px',
+            background: 'var(--bg-card)',
+            color: 'var(--text-secondary)',
+            border: `1px solid var(--border)`,
+            borderRadius: 'var(--radius-md)',
+            cursor: 'pointer',
+            textAlign: 'left',
+            fontFamily: "'Noto Sans JP', sans-serif",
+            fontSize: 14,
+            minHeight: 48,
+          }}
+        >
+          <SearchIcon width={18} height={18} aria-hidden />
+          <span style={{ flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {t('roadmap.searchBarPlaceholder')}
+          </span>
+        </button>
+
         {/* あなた専用コース（AI 生成）— 最上部。コースが無くても作成ボタンは表示 */}
         <CustomCourseSection
           courses={customCourses}
