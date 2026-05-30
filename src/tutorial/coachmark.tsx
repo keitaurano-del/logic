@@ -90,7 +90,7 @@ export function HomeCoachmark({ targetRef, onDismiss, body, cta }: CoachmarkProp
           borderRight: '8px solid transparent',
           borderBottom: '8px solid #fff',
         }} />
-        <p style={{ margin: 0, fontSize: 15, fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.6, whiteSpace: 'pre-line' }}>
+        <p style={{ margin: 0, fontSize: '1rem', fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.6, whiteSpace: 'pre-line' }}>
           {body ?? t('coachmark.homeBody')}
         </p>
         <button
@@ -99,7 +99,7 @@ export function HomeCoachmark({ targetRef, onDismiss, body, cta }: CoachmarkProp
             marginTop: 14, width: '100%',
             background: '#6C8EF5', color: '#fff',
             border: 'none', borderRadius: 10, padding: '12px 0',
-            fontSize: 15, fontWeight: 700, cursor: 'pointer',
+            fontSize: '1rem', fontWeight: 700, cursor: 'pointer',
           }}
         >
           {cta ?? t('coachmark.homeCta')}
@@ -112,7 +112,7 @@ export function HomeCoachmark({ targetRef, onDismiss, body, cta }: CoachmarkProp
         style={{
           position: 'absolute', bottom: 40, right: 20,
           background: 'transparent', border: 'none',
-          color: 'rgba(255,255,255,0.6)', fontSize: 14, cursor: 'pointer',
+          color: 'rgba(255,255,255,0.6)', fontSize: '0.9333rem', cursor: 'pointer',
         }}
       >
         {t('coachmark.skip')}

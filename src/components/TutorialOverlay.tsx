@@ -314,9 +314,9 @@ export function TutorialOverlay({ onDone }: TutorialOverlayProps) {
                 borderRadius: 99, padding: '3px 10px', marginBottom: 4,
               }}>
                 <div style={{ width: 5, height: 5, borderRadius: '50%', background: current.tagColor }} />
-                <span style={{ fontSize: 11, fontWeight: 800, color: current.tagColor, letterSpacing: '0.08em' }}>{current.tag}</span>
+                <span style={{ fontSize: '0.7333rem', fontWeight: 800, color: current.tagColor, letterSpacing: '0.08em' }}>{current.tag}</span>
               </div>
-              <div style={{ fontSize: 17, fontWeight: 800, color: '#fff', lineHeight: 1.3, letterSpacing: '-0.01em' }}>
+              <div style={{ fontSize: '1.1333rem', fontWeight: 800, color: '#fff', lineHeight: 1.3, letterSpacing: '-0.01em' }}>
                 {current.title}
               </div>
             </div>
@@ -324,7 +324,7 @@ export function TutorialOverlay({ onDone }: TutorialOverlayProps) {
 
           {/* 説明文 */}
           <p style={{
-            fontSize: 14, color: 'rgba(255,255,255,0.65)',
+            fontSize: '0.9333rem', color: 'rgba(255,255,255,0.65)',
             lineHeight: 1.75, margin: '0 0 20px',
           }}>
             {current.description}
@@ -347,7 +347,7 @@ export function TutorialOverlay({ onDone }: TutorialOverlayProps) {
               <button onClick={handleSkip} style={{
                 padding: '12px 16px', borderRadius: 12,
                 border: '1px solid rgba(255,255,255,0.12)', background: 'transparent',
-                color: 'rgba(255,255,255,0.45)', fontSize: 14, fontWeight: 600,
+                color: 'rgba(255,255,255,0.45)', fontSize: '0.9333rem', fontWeight: 600,
                 cursor: 'pointer', flexShrink: 0,
               }}>
                 {t('tutorial.skip')}
@@ -356,7 +356,7 @@ export function TutorialOverlay({ onDone }: TutorialOverlayProps) {
             <button onClick={handleNext} style={{
               flex: 1, padding: '14px', borderRadius: 12, border: 'none',
               background: current.tagColor,
-              color: '#fff', fontSize: 15, fontWeight: 800,
+              color: '#fff', fontSize: '1rem', fontWeight: 800,
               cursor: 'pointer',
               boxShadow: `0 8px 24px color-mix(in srgb, ${current.tagColor} 31%, transparent)`,
               letterSpacing: '0.01em',

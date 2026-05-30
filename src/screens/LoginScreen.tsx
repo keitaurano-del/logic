@@ -29,7 +29,7 @@ export function LoginScreen({ onLoginSuccess: _onLoginSuccess }: LoginScreenProp
     borderRadius: 10,
     background: INPUT_BG,
     color: TEXT,
-    fontSize: 16,
+    fontSize: '1.0667rem',
     fontFamily: "'Noto Sans JP', sans-serif",
     outline: 'none',
     boxSizing: 'border-box',
@@ -77,7 +77,7 @@ export function LoginScreen({ onLoginSuccess: _onLoginSuccess }: LoginScreenProp
       fontFamily: "'Noto Sans JP', sans-serif",
     }}>
       <h1 style={{
-        fontSize: 26, fontWeight: 700, color: TEXT,
+        fontSize: '1.7333rem', fontWeight: 700, color: TEXT,
         margin: '0 0 32px', textAlign: 'center',
         letterSpacing: '0.02em',
       }}>{title}</h1>
@@ -85,12 +85,12 @@ export function LoginScreen({ onLoginSuccess: _onLoginSuccess }: LoginScreenProp
       <div style={{ width: '100%', maxWidth: 400, display: 'flex', flexDirection: 'column', gap: 12 }}>
 
         {error && (
-          <div role="alert" aria-live="polite" style={{ fontSize: 14, color: 'var(--md-sys-color-error)', padding: '10px 14px', background: 'rgba(248,113,113,0.1)', borderRadius: 10 }}>
+          <div role="alert" aria-live="polite" style={{ fontSize: '0.9333rem', color: 'var(--md-sys-color-error)', padding: '10px 14px', background: 'rgba(248,113,113,0.1)', borderRadius: 10 }}>
             {error}
           </div>
         )}
         {successMsg && (
-          <div role="status" aria-live="polite" style={{ fontSize: 14, color: 'var(--success-mid)', padding: '10px 14px', background: 'var(--success-soft)', borderRadius: 10 }}>
+          <div role="status" aria-live="polite" style={{ fontSize: '0.9333rem', color: 'var(--success-mid)', padding: '10px 14px', background: 'var(--success-soft)', borderRadius: 10 }}>
             {successMsg}
           </div>
         )}
@@ -114,7 +114,7 @@ export function LoginScreen({ onLoginSuccess: _onLoginSuccess }: LoginScreenProp
                 width: '100%', padding: '16px',
                 background: loading ? 'var(--accent-soft)' : 'var(--brand-grad-h)',
                 border: 'none', borderRadius: 12,
-                fontSize: 16, fontWeight: 700, color: 'var(--accent-fg)',
+                fontSize: '1.0667rem', fontWeight: 700, color: 'var(--accent-fg)',
                 cursor: loading ? 'not-allowed' : 'pointer',
                 marginTop: 4,
               }}
@@ -124,20 +124,20 @@ export function LoginScreen({ onLoginSuccess: _onLoginSuccess }: LoginScreenProp
           </>
         ) : (
           <>
-            <p style={{ fontSize: 14, color: TEXT2, margin: '0 0 4px', textAlign: 'center', lineHeight: 1.6 }}>
+            <p style={{ fontSize: '0.9333rem', color: TEXT2, margin: '0 0 4px', textAlign: 'center', lineHeight: 1.6 }}>
               {t('auth.linkSentTo', { email })}
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center', marginTop: 16 }}>
               <button
                 onClick={handleResend}
                 disabled={loading}
-                style={{ background: 'none', border: 'none', color: 'var(--brand)', fontSize: 14, fontWeight: 600, cursor: loading ? 'not-allowed' : 'pointer', padding: '10px 0', opacity: loading ? 0.5 : 1 }}
+                style={{ background: 'none', border: 'none', color: 'var(--brand)', fontSize: '0.9333rem', fontWeight: 600, cursor: loading ? 'not-allowed' : 'pointer', padding: '10px 0', opacity: loading ? 0.5 : 1 }}
               >
                 {t('auth.linkResend')}
               </button>
               <button
                 onClick={() => { setStep('email'); setError(''); setSuccessMsg('') }}
-                style={{ background: 'none', border: 'none', color: TEXT2, fontSize: 14, cursor: 'pointer', padding: '8px 0' }}
+                style={{ background: 'none', border: 'none', color: TEXT2, fontSize: '0.9333rem', cursor: 'pointer', padding: '8px 0' }}
               >
                 {t('auth.backToLogin')}
               </button>

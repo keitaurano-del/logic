@@ -30,8 +30,15 @@ function getDeviceId(): string {
   }
 }
 
-// 再現環境の特定用アプリバージョン (ビルド時に注入。未設定時は unknown)。
-const APP_VERSION = (import.meta.env.VITE_APP_VERSION as string | undefined) || 'unknown'
+// 再現環境の特定用アプリバージョン。
+// DF-F21: 優先順位は (1) ビルド時注入の VITE_APP_VERSION（CI / Render の build env)、
+// (2) vite.config の define で焼き込むフォールバック __APP_VERSION_FALLBACK__
+// （package.json version + commit SHA）。これにより本番ビルドで 'unknown' に
+// なるのを防ぎ、計測データが汚れないようにする。最後の保険として 'unknown'。
+const APP_VERSION =
+  (import.meta.env.VITE_APP_VERSION as string | undefined) ||
+  (typeof __APP_VERSION_FALLBACK__ !== 'undefined' ? __APP_VERSION_FALLBACK__ : '') ||
+  'unknown'
 
 // データキー (サーバへ送信する固定値) と表示ラベルを分離
 const CATEGORY_DATA = [
@@ -95,8 +102,8 @@ export function FeedbackScreen({ onBack }: FeedbackScreenProps) {
           }}>
             <CheckIcon width={32} height={32} color="white" />
           </div>
-          <h2 style={{ fontSize: 26, fontWeight: 800, marginBottom: 8 }}>{t('feedback.thanksHeading')}</h2>
-          <p style={{ fontSize: 16, color: 'var(--text-muted)', lineHeight: 1.6 }}>
+          <h2 style={{ fontSize: '1.7333rem', fontWeight: 800, marginBottom: 8 }}>{t('feedback.thanksHeading')}</h2>
+          <p style={{ fontSize: '1.0667rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
             {t('feedback.thanksBody').split('\n').map((line, i, arr) => (
               <span key={i}>{line}{i < arr.length - 1 && <br />}</span>
             ))}
@@ -116,15 +123,15 @@ export function FeedbackScreen({ onBack }: FeedbackScreenProps) {
       <div style={{ padding: '0 20px', display: 'flex', flexDirection: 'column', gap: 16 }}>
       <div>
         <div className="eyebrow accent">{t('feedback.eyebrow')}</div>
-        <h1 style={{ fontSize: 26, fontWeight: 800, marginTop: 4 }}>{t('feedback.heading')}</h1>
-        <p style={{ fontSize: 16, color: 'var(--text-muted)', marginTop: 6 }}>
+        <h1 style={{ fontSize: '1.7333rem', fontWeight: 800, marginTop: 4 }}>{t('feedback.heading')}</h1>
+        <p style={{ fontSize: '1.0667rem', color: 'var(--text-muted)', marginTop: 6 }}>
           {t('feedback.subhead')}
         </p>
       </div>
 
       {/* カテゴリ */}
       <div>
-        <label style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: 8 }}>
+        <label style={{ fontSize: '1.0667rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: 8 }}>
           {t('feedback.categoryLabel')}
         </label>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
@@ -138,7 +145,7 @@ export function FeedbackScreen({ onBack }: FeedbackScreenProps) {
                 border: `1.5px solid ${category === c.value ? 'var(--primary)' : 'var(--border)'}`,
                 background: category === c.value ? 'var(--brand-soft)' : 'var(--bg-card)',
                 color: category === c.value ? 'var(--primary)' : 'var(--text-secondary)',
-                fontSize: 16, fontWeight: 700, cursor: 'pointer',
+                fontSize: '1.0667rem', fontWeight: 700, cursor: 'pointer',
               }}
             >
               {t(c.labelKey)}
@@ -149,7 +156,7 @@ export function FeedbackScreen({ onBack }: FeedbackScreenProps) {
 
       {/* メッセージ */}
       <div>
-        <label style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: 8 }}>
+        <label style={{ fontSize: '1.0667rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: 8 }}>
           {t('feedback.contentLabel')}
         </label>
         <textarea
@@ -160,25 +167,25 @@ export function FeedbackScreen({ onBack }: FeedbackScreenProps) {
           rows={5}
           style={{
             width: '100%', padding: '14px 16px',
-            fontSize: 16, fontFamily: 'inherit',
+            fontSize: '1.0667rem', fontFamily: 'inherit',
             border: '1.5px solid var(--border)',
             borderRadius: 14, background: 'var(--bg-card)',
             color: 'var(--text)', outline: 'none', resize: 'vertical',
             boxSizing: 'border-box', lineHeight: 1.6,
           }}
         />
-        <div style={{ fontSize: 14, color: 'var(--text-muted)', marginTop: 4 }}>
+        <div style={{ fontSize: '0.9333rem', color: 'var(--text-muted)', marginTop: 4 }}>
           {t('feedback.charCount', { n: message.length })}
         </div>
         {showMinLengthWarning && (
-          <div style={{ fontSize: 14, color: 'var(--danger)', marginTop: 4 }}>
+          <div style={{ fontSize: '0.9333rem', color: 'var(--danger)', marginTop: 4 }}>
             {t('feedback.minLength', { n: MIN_MESSAGE_LENGTH })}
           </div>
         )}
       </div>
 
       {error && (
-        <div style={{ fontSize: 16, color: 'var(--danger)', padding: '10px 14px', background: 'rgba(220,38,38,0.06)', borderRadius: 10 }}>
+        <div style={{ fontSize: '1.0667rem', color: 'var(--danger)', padding: '10px 14px', background: 'rgba(220,38,38,0.06)', borderRadius: 10 }}>
           {error}
         </div>
       )}

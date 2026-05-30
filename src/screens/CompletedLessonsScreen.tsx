@@ -181,23 +181,23 @@ export function CompletedLessonsScreen({ onBack }: CompletedLessonsScreenProps) 
 
       {/* Count hero */}
       <div style={{ textAlign: 'center', padding: 'var(--s-5) 0 var(--s-3)' }}>
-        <div style={{ fontSize: 72, fontWeight: 800, lineHeight: 1, letterSpacing: '-0.04em', color: 'var(--brand)' }}>
+        <div style={{ fontSize: '4.8rem', fontWeight: 800, lineHeight: 1, letterSpacing: '-0.04em', color: 'var(--brand)' }}>
           {keys.length}
         </div>
-        <div style={{ fontSize: 18, color: 'var(--text-muted)', marginTop: 'var(--s-2)', fontWeight: 600 }}>
+        <div style={{ fontSize: '1.2rem', color: 'var(--text-muted)', marginTop: 'var(--s-2)', fontWeight: 600 }}>
           {t('completed.lessonsDone')}
         </div>
       </div>
 
       {keys.length === 0 ? (
         <div className="card" style={{ textAlign: 'center', padding: 'var(--s-7) var(--s-5)', color: 'var(--text-muted)' }}>
-          <div style={{ fontSize: 16 }}>{t('completed.empty')}</div>
+          <div style={{ fontSize: '1.0667rem' }}>{t('completed.empty')}</div>
         </div>
       ) : (
         grouped.map(([cat, catKeys]) => (
           <div key={cat}>
             <div style={{
-              fontSize: 14,
+              fontSize: '0.9333rem',
               fontWeight: 700,
               letterSpacing: '0.07em',
               textTransform: 'uppercase',
@@ -216,9 +216,9 @@ export function CompletedLessonsScreen({ onBack }: CompletedLessonsScreenProps) 
                     {i > 0 && <div style={{ height: 1, background: 'var(--border)', marginLeft: 'var(--s-4)' }} />}
                     <div style={{ display: 'flex', alignItems: 'center', padding: 'var(--s-3) var(--s-4)', gap: 'var(--s-3)' }}>
                       <CompletionBadge count={count} size={22} />
-                      <span style={{ fontSize: 16, color: 'var(--text)', flex: 1 }}>{name}</span>
+                      <span style={{ fontSize: '1.0667rem', color: 'var(--text)', flex: 1 }}>{name}</span>
                       {count >= 2 && (
-                        <span style={{ fontSize: 12, color: 'var(--brand)', fontWeight: 700, flexShrink: 0 }}>
+                        <span style={{ fontSize: '0.8rem', color: 'var(--brand)', fontWeight: 700, flexShrink: 0 }}>
                           {t('completed.timesDone', { n: String(Math.min(count, 99)) })}
                         </span>
                       )}

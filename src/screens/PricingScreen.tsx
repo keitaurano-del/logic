@@ -44,7 +44,7 @@ function CheckIcon() {
 function NotIncludedMark() {
   return (
     <span
-      style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-muted)', lineHeight: 1 }}
+      style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-muted)', lineHeight: 1 }}
       title={t('pricing.notIncluded')}
       aria-label={t('pricing.notIncluded')}
     >
@@ -57,7 +57,7 @@ function Cell({ value, dim }: { value: string | boolean; dim?: boolean }) {
   const opacity = dim ? 0.55 : 1
   if (value === true) return <span style={{ opacity }}><CheckIcon /></span>
   if (value === false) return <span style={{ opacity }}><NotIncludedMark /></span>
-  return <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)', opacity }}>{value}</span>
+  return <span style={{ fontSize: '0.8667rem', fontWeight: 600, color: 'var(--text-primary)', opacity }}>{value}</span>
 }
 
 export function PricingScreen({ onBack }: PricingScreenProps) {
@@ -108,7 +108,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
       <div style={{ flex: 1, padding: '0 16px 100px', overflowY: 'auto' }}>
         {/* ─── Hero copy ─── */}
         <div style={{ padding: '12px 4px 16px' }}>
-          <div style={{ fontSize: 22, fontWeight: 800, lineHeight: 1.4, marginBottom: 10, color: 'var(--text-primary)', whiteSpace: 'pre-line' }}>
+          <div style={{ fontSize: '1.4667rem', fontWeight: 800, lineHeight: 1.4, marginBottom: 10, color: 'var(--text-primary)', whiteSpace: 'pre-line' }}>
             {t('pricing.heroHeadline')}
           </div>
         </div>
@@ -123,7 +123,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
               aria-pressed={billingCycle === cycle}
               style={{
                 flex: 1, padding: '10px', borderRadius: 11, border: 'none', cursor: 'pointer',
-                fontSize: 14, fontWeight: 700, transition: 'all .15s',
+                fontSize: '0.9333rem', fontWeight: 700, transition: 'all .15s',
                 background: billingCycle === cycle ? 'var(--brand)' : 'transparent',
                 color: billingCycle === cycle ? 'var(--accent-fg)' : 'var(--text-secondary)',
               }}
@@ -132,7 +132,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', justifyContent: 'center' }}>
                   <span>{t('pricing.cycleYearly')}</span>
                   <span style={{
-                    fontSize: 11,
+                    fontSize: '0.7333rem',
                     background: billingCycle === 'yearly' ? 'rgba(255,255,255,0.22)' : `color-mix(in srgb, var(--warm) 13%, transparent)`,
                     color: billingCycle === 'yearly' ? 'var(--text-on-hero)' : 'var(--warm)',
                     borderRadius: 6, padding: '2px 6px', fontWeight: 800,
@@ -156,21 +156,21 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
             <div style={{
               position: 'absolute', top: -10, left: 16,
               background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)',
-              fontSize: 11, fontWeight: 800, letterSpacing: '.08em',
+              fontSize: '0.7333rem', fontWeight: 800, letterSpacing: '.08em',
               padding: '3px 10px', borderRadius: 8, textTransform: 'uppercase',
             }}>
               {t('pricing.recommended')}
             </div>
           )}
           <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, marginBottom: 14 }}>
-            <span style={{ fontSize: 36, fontWeight: 900, color: 'var(--text-primary)', letterSpacing: '-0.03em', lineHeight: 1 }}>{priceMain}</span>
-            <span style={{ fontSize: 13, color: 'var(--text-muted)', paddingBottom: 4 }}>{priceSub}</span>
+            <span style={{ fontSize: '2.4rem', fontWeight: 900, color: 'var(--text-primary)', letterSpacing: '-0.03em', lineHeight: 1 }}>{priceMain}</span>
+            <span style={{ fontSize: '0.8667rem', color: 'var(--text-muted)', paddingBottom: 4 }}>{priceSub}</span>
           </div>
 
           {isCurrentTargetPlan ? (
             <div style={{
               textAlign: 'center',
-              fontSize: 20,
+              fontSize: '1.3333rem',
               color: 'var(--brand)',
               fontWeight: 900,
               padding: '18px 0',
@@ -189,7 +189,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
               style={{
                 width: '100%', padding: '16px', borderRadius: 14,
                 border: 'none', background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)',
-                fontSize: 16, fontWeight: 800, cursor: loading ? 'wait' : 'pointer',
+                fontSize: '1.0667rem', fontWeight: 800, cursor: loading ? 'wait' : 'pointer',
                 opacity: loading ? 0.6 : 1,
               }}
             >
@@ -204,9 +204,9 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
 
         {/* ─── 現状の無料プラン表示 ─── */}
         {isCurrentFree && (
-          <div style={{ background: 'var(--bg-card)', borderRadius: 12, padding: '12px 16px', marginBottom: 12, fontSize: 13, color: 'var(--text-secondary)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ background: 'var(--bg-card)', borderRadius: 12, padding: '12px 16px', marginBottom: 12, fontSize: '0.8667rem', color: 'var(--text-secondary)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span>{t('pricing.planFree')}</span>
-            <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)' }}>{t('pricing.currentPlan')}</span>
+            <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)' }}>{t('pricing.currentPlan')}</span>
           </div>
         )}
 
@@ -214,11 +214,11 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
         <div style={{ background: 'var(--bg-card)', borderRadius: 16, overflow: 'hidden' }}>
           {/* ヘッダー行 */}
           <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 0.8fr 0.8fr', padding: '12px 16px', borderBottom: `1px solid ${'var(--border)'}` }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)' }}>{t('pricing.planFeatureHeader')}</div>
-            <div style={{ textAlign: 'center', fontSize: 11, fontWeight: 800, color: 'var(--text-muted)', letterSpacing: '.06em' }}>
+            <div style={{ fontSize: '0.7333rem', fontWeight: 700, color: 'var(--text-muted)' }}>{t('pricing.planFeatureHeader')}</div>
+            <div style={{ textAlign: 'center', fontSize: '0.7333rem', fontWeight: 800, color: 'var(--text-muted)', letterSpacing: '.06em' }}>
               {t('pricing.planFree')}
             </div>
-            <div style={{ textAlign: 'center', fontSize: 11, fontWeight: 800, color: 'var(--brand)', letterSpacing: '.06em' }}>
+            <div style={{ textAlign: 'center', fontSize: '0.7333rem', fontWeight: 800, color: 'var(--brand)', letterSpacing: '.06em' }}>
               {t('pricing.planPaid')}
             </div>
           </div>
@@ -235,7 +235,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
                 alignItems: 'center',
               }}
             >
-              <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>{row.label}</div>
+              <div style={{ fontSize: '0.9333rem', fontWeight: 600, color: 'var(--text-primary)' }}>{row.label}</div>
               <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <Cell value={row.free} dim />
               </div>
@@ -247,13 +247,13 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
         </div>
 
         {/* ─── 注記 ─── */}
-        <div style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', lineHeight: 1.8, marginTop: 16 }}>
+        <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textAlign: 'center', lineHeight: 1.8, marginTop: 16 }}>
           {t('pricing.note1')}<br />
           {t('pricing.note2')}
         </div>
 
         {error && (
-          <div style={{ margin: '12px 0 0', background: 'rgba(220,38,38,0.08)', border: '1px solid rgba(220,38,38,0.3)', borderRadius: 12, padding: '12px 16px', color: 'var(--md-sys-color-error)', fontSize: 14 }}>
+          <div style={{ margin: '12px 0 0', background: 'rgba(220,38,38,0.08)', border: '1px solid rgba(220,38,38,0.3)', borderRadius: 12, padding: '12px 16px', color: 'var(--md-sys-color-error)', fontSize: '0.9333rem' }}>
             {error}
           </div>
         )}

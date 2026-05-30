@@ -175,7 +175,7 @@ export function RankUpModal({ prevTitleKey, newTitleKey, newLevel, onClose }: Pr
           id="rankup-title"
           style={{
             fontFamily: "'Inter Tight', sans-serif",
-            fontSize: 13,
+            fontSize: '0.8667rem',
             fontWeight: 800,
             letterSpacing: '.18em',
             color: '#FFD700',
@@ -230,7 +230,7 @@ export function RankUpModal({ prevTitleKey, newTitleKey, newLevel, onClose }: Pr
         >
           <div
             style={{
-              fontSize: 22,
+              fontSize: '1.4667rem',
               fontWeight: 900,
               letterSpacing: '-.01em',
               color: 'var(--text-primary)',
@@ -239,11 +239,11 @@ export function RankUpModal({ prevTitleKey, newTitleKey, newLevel, onClose }: Pr
           >
             {t(getTitleI18nKey(newTitleKey))}
           </div>
-          <div style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 600, marginBottom: 18 }}>
+          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600, marginBottom: 18 }}>
             {t(getTitleI18nKey(prevTitleKey))} <span style={{ margin: '0 6px' }}>→</span>{' '}
             <span style={{ color: 'var(--brand)', fontWeight: 800 }}>{t(getTitleI18nKey(newTitleKey))}</span>
           </div>
-          <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 22, lineHeight: 1.7 }}>
+          <div style={{ fontSize: '0.8667rem', color: 'var(--text-secondary)', marginBottom: 22, lineHeight: 1.7 }}>
             {t('rankup.message', { level: String(newLevel) })}
           </div>
         </div>
@@ -259,7 +259,7 @@ export function RankUpModal({ prevTitleKey, newTitleKey, newLevel, onClose }: Pr
             color: phase >= 2 ? '#2A1F00' : 'var(--text-muted)',
             padding: '14px 0',
             borderRadius: 99,
-            fontSize: 15,
+            fontSize: '1rem',
             fontWeight: 900,
             border: 'none',
             cursor: phase >= 2 ? 'pointer' : 'wait',

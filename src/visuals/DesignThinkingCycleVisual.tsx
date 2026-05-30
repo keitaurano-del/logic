@@ -140,7 +140,7 @@ export function DesignThinkingCycleVisual(props: DesignThinkingCycleProps = {}) 
                   {s.label}
                   <div
                     style={{
-                      fontSize: 8,
+                      fontSize: '0.5333rem',
                       fontWeight: 600,
                       color: 'var(--text-muted)',
                       letterSpacing: '0.04em',
@@ -169,7 +169,7 @@ export function DesignThinkingCycleVisual(props: DesignThinkingCycleProps = {}) 
             padding: '8px 10px',
             background: 'var(--brand-soft)',
             borderRadius: 8,
-            fontSize: 11,
+            fontSize: '0.7333rem',
             fontWeight: 600,
             color: 'var(--brand)',
             textAlign: 'center',

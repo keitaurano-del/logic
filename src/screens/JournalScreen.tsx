@@ -55,8 +55,8 @@ export function JournalGuestPreview({ assistantName, onLogin }: JournalGuestPrev
     <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', display: 'flex', flexDirection: 'column' }}>
       <div className="journal-hero">
         <div>
-          <div style={{ fontSize: 22, fontWeight: 900, letterSpacing: '-0.02em' }}>{t('journal.title')}</div>
-          <div style={{ fontSize: 13, color: 'var(--text-on-hero-muted)', marginTop: 4 }}>{t('journal.subtitle')}</div>
+          <div style={{ fontSize: '1.4667rem', fontWeight: 900, letterSpacing: '-0.02em' }}>{t('journal.title')}</div>
+          <div style={{ fontSize: '0.8667rem', color: 'var(--text-on-hero-muted)', marginTop: 4 }}>{t('journal.subtitle')}</div>
         </div>
       </div>
 
@@ -84,11 +84,11 @@ export function JournalGuestPreview({ assistantName, onLogin }: JournalGuestPrev
             }}>
               <SparklesIcon width={22} height={22} aria-hidden="true" />
             </span>
-            <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-primary)' }}>
+            <div style={{ fontSize: '1.0667rem', fontWeight: 800, color: 'var(--text-primary)' }}>
               {t('journal.previewTrialTitle')}
             </div>
           </div>
-          <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+          <div style={{ fontSize: '0.8667rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
             {t('journal.previewTrialDesc')}
           </div>
           <button
@@ -102,7 +102,7 @@ export function JournalGuestPreview({ assistantName, onLogin }: JournalGuestPrev
               border: 'none',
               borderRadius: 12,
               font: 'inherit',
-              fontSize: 15,
+              fontSize: '1rem',
               fontWeight: 700,
               cursor: 'pointer',
               minHeight: 48,
@@ -123,17 +123,17 @@ export function JournalGuestPreview({ assistantName, onLogin }: JournalGuestPrev
           flexDirection: 'column',
           gap: 10,
         }}>
-          <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--text-primary)' }}>
+          <div style={{ fontSize: '0.9333rem', fontWeight: 800, color: 'var(--text-primary)' }}>
             {t('journal.previewAssistantTitle', { name: assistantName })}
           </div>
-          <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+          <div style={{ fontSize: '0.8667rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
             {t('journal.previewAssistantDesc')}
           </div>
           <div style={{
             background: 'var(--bg-primary)',
             borderRadius: 12,
             padding: '12px 14px',
-            fontSize: 13,
+            fontSize: '0.8667rem',
             color: 'var(--text-secondary)',
             lineHeight: 1.7,
             fontStyle: 'italic',
@@ -156,7 +156,7 @@ export function JournalGuestPreview({ assistantName, onLogin }: JournalGuestPrev
         >
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 4, marginBottom: 6 }}>
             {dowLabels.map((d) => (
-              <div key={d} style={{ textAlign: 'center', fontSize: 11, color: 'var(--text-tertiary, var(--text-secondary))', fontWeight: 600 }}>
+              <div key={d} style={{ textAlign: 'center', fontSize: '0.7333rem', color: 'var(--text-tertiary, var(--text-secondary))', fontWeight: 600 }}>
                 {d}
               </div>
             ))}
@@ -171,7 +171,7 @@ export function JournalGuestPreview({ assistantName, onLogin }: JournalGuestPrev
                   alignItems: 'center',
                   justifyContent: 'center',
                   borderRadius: 10,
-                  fontSize: 12,
+                  fontSize: '0.8rem',
                   color: day ? 'var(--text-secondary)' : 'transparent',
                   background: day ? 'var(--bg-primary)' : 'transparent',
                   opacity: 0.6,
@@ -212,8 +212,8 @@ export function JournalScreen({ userId, assistantName, onOpenLesson, onOpenCours
     <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', display: 'flex', flexDirection: 'column' }}>
       <div className="journal-hero">
         <div>
-          <div style={{ fontSize: 22, fontWeight: 900, letterSpacing: '-0.02em' }}>{t('journal.title')}</div>
-          <div style={{ fontSize: 13, color: 'var(--text-on-hero-muted)', marginTop: 4 }}>{t('journal.subtitle')}</div>
+          <div style={{ fontSize: '1.4667rem', fontWeight: 900, letterSpacing: '-0.02em' }}>{t('journal.title')}</div>
+          <div style={{ fontSize: '0.8667rem', color: 'var(--text-on-hero-muted)', marginTop: 4 }}>{t('journal.subtitle')}</div>
         </div>
         <div className="journal-hero__actions">
           <StreakBadge streak={streak} size="sm" />

@@ -137,7 +137,7 @@ export default function FermiLesson({ onBack, onUpgrade }: Props) {
               background: 'var(--accent-soft)',
               borderRadius: 10,
               padding: '10px 14px',
-              fontSize: 13,
+              fontSize: '0.8667rem',
               color: 'var(--text-secondary)',
               lineHeight: 1.6,
               marginBottom: 4,

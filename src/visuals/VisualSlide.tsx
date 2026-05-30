@@ -29,7 +29,7 @@ export function VisualSlide({ title, caption, children, fullBleed = false }: Pro
         background: 'var(--accent-soft)',
         borderRadius: 99,
         padding: '6px 12px',
-        fontSize: 11,
+        fontSize: '0.7333rem',
         fontWeight: 700,
         color: 'var(--brand)',
         alignSelf: 'flex-start',
@@ -41,7 +41,7 @@ export function VisualSlide({ title, caption, children, fullBleed = false }: Pro
 
       {title && (
         <h1 style={{
-          fontSize: 22,
+          fontSize: '1.4667rem',
           fontWeight: 700,
           lineHeight: 1.35,
           margin: 0,
@@ -79,7 +79,7 @@ export function VisualSlide({ title, caption, children, fullBleed = false }: Pro
 
       {caption && (
         <p style={{
-          fontSize: 13,
+          fontSize: '0.8667rem',
           color: 'var(--text-secondary)',
           lineHeight: 1.65,
           margin: 0,

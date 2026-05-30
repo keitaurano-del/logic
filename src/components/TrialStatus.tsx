@@ -26,7 +26,7 @@ export function TrialBadge() {
         borderRadius: 'var(--radius-pill)',
         background: 'var(--brand-soft)',
         color: 'var(--brand)',
-        fontSize: 12,
+        fontSize: '0.8rem',
         fontWeight: 700,
         lineHeight: 1.4,
         whiteSpace: 'nowrap',
@@ -63,7 +63,7 @@ export function TrialEndingBanner({ onUpgrade }: { onUpgrade?: () => void }) {
     background: 'var(--warning-soft)',
     border: '1px solid color-mix(in srgb, var(--warning) 35%, transparent)',
     color: 'var(--warning-deep)',
-    fontSize: 13,
+    fontSize: '0.8667rem',
     fontWeight: 600,
     lineHeight: 1.5,
   }

@@ -69,7 +69,7 @@ export function LevelUpToast({ prevLevel, newLevel, onTap, onDismiss }: Props) {
           boxShadow: '0 12px 28px rgba(0,0,0,.32), 0 0 24px color-mix(in srgb, var(--brand) 18%, transparent)',
           color: 'var(--text-primary)',
           fontFamily: "'Noto Sans JP', sans-serif",
-          fontSize: 14,
+          fontSize: '0.9333rem',
           fontWeight: 700,
           cursor: 'pointer',
           textAlign: 'left',
@@ -92,14 +92,14 @@ export function LevelUpToast({ prevLevel, newLevel, onTap, onDismiss }: Props) {
           <ArrowUpIcon width={20} height={20} />
         </span>
         <span style={{ flex: 1, lineHeight: 1.4 }}>
-          <span style={{ display: 'block', fontSize: 11, fontWeight: 700, color: 'var(--brand)', letterSpacing: '.1em', textTransform: 'uppercase' }}>
+          <span style={{ display: 'block', fontSize: '0.7333rem', fontWeight: 700, color: 'var(--brand)', letterSpacing: '.1em', textTransform: 'uppercase' }}>
             {t('levelup.toastEyebrow')}
           </span>
-          <span style={{ display: 'block', fontSize: 14, color: 'var(--text-primary)' }}>
+          <span style={{ display: 'block', fontSize: '0.9333rem', color: 'var(--text-primary)' }}>
             {t('levelup.toastBody', { prev: String(prevLevel), next: String(newLevel) })}
           </span>
         </span>
-        <span style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600, flexShrink: 0 }}>
+        <span style={{ fontSize: '0.7333rem', color: 'var(--text-muted)', fontWeight: 600, flexShrink: 0 }}>
           {t('levelup.toastView')}
         </span>
       </button>

@@ -222,7 +222,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
     <div style={{ background: 'var(--bg-primary)', minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: 'var(--text-primary)' }}>
       {/* Navbar */}
       <div style={{ padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 24, fontWeight: 800, letterSpacing: '-.02em', color: 'var(--logo-color)' }}>
+        <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: '1.6rem', fontWeight: 800, letterSpacing: '-.02em', color: 'var(--logo-color)' }}>
           Logic<span style={{ color: 'var(--brand)' }}>.</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -235,8 +235,8 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
 
         {/* Greeting */}
         <div style={{ padding: '4px 4px 8px' }}>
-          <div style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 4, fontWeight: 500 }}>{t('home.userGreeting', { name: userName || t('home.guestName') })}</div>
-          <div style={{ fontSize: 20, fontWeight: 700, lineHeight: 1.4, letterSpacing: '-.005em' }}>{getDailyGreeting().split('\n').map((line, i) => i === 0 ? <span key={i}>{line}<br /></span> : <span key={i}>{line}</span>)}</div>
+          <div style={{ fontSize: '0.9333rem', color: 'var(--text-secondary)', marginBottom: 4, fontWeight: 500 }}>{t('home.userGreeting', { name: userName || t('home.guestName') })}</div>
+          <div style={{ fontSize: '1.3333rem', fontWeight: 700, lineHeight: 1.4, letterSpacing: '-.005em' }}>{getDailyGreeting().split('\n').map((line, i) => i === 0 ? <span key={i}>{line}<br /></span> : <span key={i}>{line}</span>)}</div>
         </div>
 
         {/* DF-F11: トライアル終了間際バナー（残り2日以下）。グリーティング直下に控えめに表示。 */}
@@ -266,15 +266,15 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
             <img src="/images/v3/fermi-card.png" alt="" loading="lazy" style={{ position: 'absolute', right: 0, top: 0, width: '55%', height: '100%', objectFit: 'cover', opacity: 0.14, pointerEvents: 'none', maskImage: 'linear-gradient(to left, rgba(0,0,0,0.8) 0%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to left, rgba(0,0,0,0.8) 0%, transparent 100%)' }} />
             <div style={{ position: 'relative', zIndex: 1 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8, paddingRight: 96 }}>
-                <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'color-mix(in srgb, var(--accent-btn-fg) 92%, transparent)' }}>{t('home.todayProblem')}</span>
+                <span style={{ fontSize: '0.9333rem', fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'color-mix(in srgb, var(--accent-btn-fg) 92%, transparent)' }}>{t('home.todayProblem')}</span>
               </div>
-              <div style={{ fontFamily: "'Noto Sans JP', sans-serif", fontSize: 19, fontWeight: 700, color: 'var(--accent-btn-fg)', lineHeight: 1.4, letterSpacing: '-.005em', marginBottom: 8 }}>
+              <div style={{ fontFamily: "'Noto Sans JP', sans-serif", fontSize: '1.2667rem', fontWeight: 700, color: 'var(--accent-btn-fg)', lineHeight: 1.4, letterSpacing: '-.005em', marginBottom: 8 }}>
                 {allFermiDone ? t('home.allFermiDoneTitle') : fermiQuestion}
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'color-mix(in srgb, var(--accent-btn-fg) 82%, transparent)', fontSize: 14, fontWeight: 500, marginBottom: 16 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'color-mix(in srgb, var(--accent-btn-fg) 82%, transparent)', fontSize: '0.9333rem', fontWeight: 500, marginBottom: 16 }}>
                 <span>{allFermiDone ? t('home.allFermiDoneDesc') : t('home.dailyUpdate')}</span>
               </div>
-              <div style={{ background: 'color-mix(in srgb, var(--accent-btn) 78%, #000)', color: 'var(--accent-btn-fg)', borderRadius: 'var(--radius-pill)', padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700, boxShadow: '0 6px 18px rgba(0,0,0,.14)' }}>
+              <div style={{ background: 'color-mix(in srgb, var(--accent-btn) 78%, #000)', color: 'var(--accent-btn-fg)', borderRadius: 'var(--radius-pill)', padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: '0.9333rem', fontWeight: 700, boxShadow: '0 6px 18px rgba(0,0,0,.14)' }}>
                 {allFermiDone ? (
                   <>
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={'var(--accent-btn-fg)'} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12" /></svg>
@@ -305,7 +305,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
                 borderRadius: 99,
                 padding: '5px 10px',
                 color: 'var(--accent-fg)',
-                fontSize: 11, fontWeight: 700, letterSpacing: '.02em',
+                fontSize: '0.7333rem', fontWeight: 700, letterSpacing: '.02em',
                 cursor: 'pointer',
                 fontFamily: 'inherit',
               }}
@@ -336,10 +336,10 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
               <img src={recommendedLesson.image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
             </div>
             <div style={{ padding: '18px 20px 20px' }}>
-              <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--brand)', marginBottom: 6 }}>{t('home.recommendEyebrow')}</div>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: 'var(--accent-soft)', borderRadius: 'var(--radius-pill)', padding: '4px 11px', fontSize: 14, fontWeight: 600, color: 'var(--brand)', marginBottom: 10 }}>{recommendedLesson.category}{recommendedLesson.level ? ` · ${recommendedLesson.level}` : ''}</span>
-              <div style={{ fontSize: 19, fontWeight: 700, marginBottom: 16, lineHeight: 1.35, letterSpacing: '-.005em' }}>{recommendedLesson.title}</div>
-              <div style={{ background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)', borderRadius: 'var(--radius-pill)', padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700 }}>
+              <div style={{ fontSize: '0.8rem', fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--brand)', marginBottom: 6 }}>{t('home.recommendEyebrow')}</div>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: 'var(--accent-soft)', borderRadius: 'var(--radius-pill)', padding: '4px 11px', fontSize: '0.9333rem', fontWeight: 600, color: 'var(--brand)', marginBottom: 10 }}>{recommendedLesson.category}{recommendedLesson.level ? ` · ${recommendedLesson.level}` : ''}</span>
+              <div style={{ fontSize: '1.2667rem', fontWeight: 700, marginBottom: 16, lineHeight: 1.35, letterSpacing: '-.005em' }}>{recommendedLesson.title}</div>
+              <div style={{ background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)', borderRadius: 'var(--radius-pill)', padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: '0.9333rem', fontWeight: 700 }}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>
                 {t('home.lessonStart')}
               </div>
@@ -463,10 +463,10 @@ function UpgradeWelcomeToast({ onClose, onCta }: { onClose: () => void; onCta: (
         boxShadow: '0 12px 48px rgba(0,0,0,0.4)',
         border: `1px solid color-mix(in srgb, var(--brand) 28%, transparent)`,
       }}>
-        <div style={{ fontSize: 12, fontWeight: 800, color: 'var(--brand)', letterSpacing: '.12em', textTransform: 'uppercase', marginBottom: 6 }}>
+        <div style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--brand)', letterSpacing: '.12em', textTransform: 'uppercase', marginBottom: 6 }}>
           {t('pricing.welcomeToastTitle')}
         </div>
-        <div style={{ fontSize: 15, color: 'var(--text-primary)', lineHeight: 1.7, marginBottom: 18 }}>
+        <div style={{ fontSize: '1rem', color: 'var(--text-primary)', lineHeight: 1.7, marginBottom: 18 }}>
           {t('pricing.welcomeToastBody')}
         </div>
         <div style={{ display: 'flex', gap: 10 }}>
@@ -476,7 +476,7 @@ function UpgradeWelcomeToast({ onClose, onCta }: { onClose: () => void; onCta: (
             style={{
               flex: 1, padding: '13px 0', borderRadius: 12,
               border: `1px solid ${'var(--border)'}`, background: 'transparent',
-              color: 'var(--text-secondary)', fontSize: 14, fontWeight: 700, cursor: 'pointer',
+              color: 'var(--text-secondary)', fontSize: '0.9333rem', fontWeight: 700, cursor: 'pointer',
             }}
           >
             {t('common.complete')}
@@ -487,7 +487,7 @@ function UpgradeWelcomeToast({ onClose, onCta }: { onClose: () => void; onCta: (
             style={{
               flex: 1, padding: '13px 0', borderRadius: 12,
               border: 'none', background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)',
-              fontSize: 14, fontWeight: 800, cursor: 'pointer',
+              fontSize: '0.9333rem', fontWeight: 800, cursor: 'pointer',
             }}
           >
             {t('pricing.welcomeToastCta')}
@@ -563,14 +563,14 @@ function ReviewCard({ due, weak, total, unresolved, paid, onOpen }: {
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--brand)' }}>
+            <span style={{ fontSize: '0.8rem', fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--brand)' }}>
               {t('home.reviewEyebrow')}
             </span>
           </div>
-          <div style={{ fontSize: 16, fontWeight: 700, lineHeight: 1.35, marginBottom: 2 }}>{headline}</div>
-          <div style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 500, lineHeight: 1.4 }}>{sub}</div>
+          <div style={{ fontSize: '1.0667rem', fontWeight: 700, lineHeight: 1.35, marginBottom: 2 }}>{headline}</div>
+          <div style={{ fontSize: '0.8667rem', color: 'var(--text-secondary)', fontWeight: 500, lineHeight: 1.4 }}>{sub}</div>
         </div>
-        <div style={{ color: 'var(--text-muted)', fontSize: 22, fontWeight: 400, lineHeight: 1, paddingLeft: 4 }}>›</div>
+        <div style={{ color: 'var(--text-muted)', fontSize: '1.4667rem', fontWeight: 400, lineHeight: 1, paddingLeft: 4 }}>›</div>
       </div>
     </div>
   )
@@ -627,14 +627,14 @@ function StudyTimeCard({ onOpen }: { onOpen: () => void }) {
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--brand)' }}>
+            <span style={{ fontSize: '0.8rem', fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--brand)' }}>
               {t('home.studyTimeEyebrow')}
             </span>
           </div>
-          <div style={{ fontSize: 16, fontWeight: 700, lineHeight: 1.35, marginBottom: 2 }}>{headline}</div>
-          <div style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 500, lineHeight: 1.4 }}>{sub}</div>
+          <div style={{ fontSize: '1.0667rem', fontWeight: 700, lineHeight: 1.35, marginBottom: 2 }}>{headline}</div>
+          <div style={{ fontSize: '0.8667rem', color: 'var(--text-secondary)', fontWeight: 500, lineHeight: 1.4 }}>{sub}</div>
         </div>
-        <div style={{ color: 'var(--text-muted)', fontSize: 22, fontWeight: 400, lineHeight: 1, paddingLeft: 4 }}>›</div>
+        <div style={{ color: 'var(--text-muted)', fontSize: '1.4667rem', fontWeight: 400, lineHeight: 1, paddingLeft: 4 }}>›</div>
       </div>
     </div>
   )
@@ -690,15 +690,15 @@ function PlacementHero({ heroRef, onTakeTest, onSkip }: {
                 <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
               </svg>
             </span>
-            <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'color-mix(in srgb, var(--accent-btn-fg) 92%, transparent)' }}>{t('placementCard.heroEyebrow')}</span>
+            <span style={{ fontSize: '0.8667rem', fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'color-mix(in srgb, var(--accent-btn-fg) 92%, transparent)' }}>{t('placementCard.heroEyebrow')}</span>
           </div>
-          <div style={{ fontFamily: "'Noto Sans JP', sans-serif", fontSize: 21, fontWeight: 800, color: 'var(--accent-btn-fg)', lineHeight: 1.35, letterSpacing: '-.01em', marginBottom: 8 }}>
+          <div style={{ fontFamily: "'Noto Sans JP', sans-serif", fontSize: '1.4rem', fontWeight: 800, color: 'var(--accent-btn-fg)', lineHeight: 1.35, letterSpacing: '-.01em', marginBottom: 8 }}>
             {t('placementCard.heroTitle')}
           </div>
-          <div style={{ color: 'color-mix(in srgb, var(--accent-btn-fg) 84%, transparent)', fontSize: 14, fontWeight: 500, lineHeight: 1.55, marginBottom: 18 }}>
+          <div style={{ color: 'color-mix(in srgb, var(--accent-btn-fg) 84%, transparent)', fontSize: '0.9333rem', fontWeight: 500, lineHeight: 1.55, marginBottom: 18 }}>
             {t('placementCard.heroDesc')}
           </div>
-          <div style={{ background: 'color-mix(in srgb, var(--accent-btn) 78%, #000)', color: 'var(--accent-btn-fg)', borderRadius: 'var(--radius-pill)', padding: '13px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: 14, fontWeight: 700, boxShadow: '0 6px 18px rgba(0,0,0,.14)' }}>
+          <div style={{ background: 'color-mix(in srgb, var(--accent-btn) 78%, #000)', color: 'var(--accent-btn-fg)', borderRadius: 'var(--radius-pill)', padding: '13px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: '0.9333rem', fontWeight: 700, boxShadow: '0 6px 18px rgba(0,0,0,.14)' }}>
             <svg width="13" height="13" viewBox="0 0 24 24" fill={'var(--accent-btn-fg)'} aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>
             {t('placementCard.heroCta')}
           </div>
@@ -711,7 +711,7 @@ function PlacementHero({ heroRef, onTakeTest, onSkip }: {
         style={{
           width: '100%', background: 'transparent', border: 'none',
           padding: '12px 0 4px', cursor: 'pointer',
-          color: 'var(--text-secondary)', fontSize: 13, fontWeight: 600,
+          color: 'var(--text-secondary)', fontSize: '0.8667rem', fontWeight: 600,
           fontFamily: 'inherit',
         }}
       >
@@ -730,8 +730,8 @@ function AILargeCard({ image, name, sub, onClick }: { image: string; name: strin
         <img src={image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top', display: 'block' }} />
       </div>
       <div style={{ padding: '16px 18px 18px' }}>
-        <div style={{ fontSize: 17, fontWeight: 700, marginBottom: 4 }}>{name}</div>
-        <div style={{ fontSize: 14, color: 'var(--text-secondary)', fontWeight: 500, lineHeight: 1.5 }}>{sub}</div>
+        <div style={{ fontSize: '1.1333rem', fontWeight: 700, marginBottom: 4 }}>{name}</div>
+        <div style={{ fontSize: '0.9333rem', color: 'var(--text-secondary)', fontWeight: 500, lineHeight: 1.5 }}>{sub}</div>
       </div>
     </button>
   )

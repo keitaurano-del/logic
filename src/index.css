@@ -102,7 +102,7 @@
   --serif: 'Inter Tight', 'Inter', 'Noto Sans JP', -apple-system, sans-serif;
 
   font-family: var(--sans);
-  font-size: 15px; /* base for rem; 1rem = 15px */
+  font-size: 15px; /* base for rem; 1rem = 15px。DF-F2: fontScale.ts が inline で 15*scale に上書き */
   line-height: 1.55;
   letter-spacing: -0.005em;
   color: var(--text-primary);
@@ -110,6 +110,10 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  /* DF-F2: iOS / Android WebView の OS フォントスケール自動拡大を抑制し、
+   * アプリ内の文字サイズ設定（html font-size）と二重に掛からないようにする。 */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 /* ===== Mode: Dark — Brand edition in deep navy ===== */

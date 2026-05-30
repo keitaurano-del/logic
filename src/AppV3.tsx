@@ -79,24 +79,12 @@ import { tutorial } from './tutorial/tutorialStorage'
 import { t } from './i18n'
 import { useAssistantName } from './hooks/useAssistantName'
 import { addNotificationTapListener, rescheduleAllReminders } from './notifications'
+import { checkAndInitInstall } from './installReset'
 
 const ONBOARDED_KEY = 'logic-onboarded'
-const INSTALL_ID_KEY = 'logic-install-id'
 
-// SCRUM-200: 新規インストール検知とlocalStorageリセット
-// Capacitor AndroidはアンインストールしてもWebViewデータが残る場合があるため、
-// インストール識別子がなければ新規インストールとみなしリセットする
-function checkAndInitInstall(): void {
-  const installId = localStorage.getItem(INSTALL_ID_KEY)
-  if (!installId) {
-    // 新規インストール: localStorage全前置データをクリア
-    const newId = `install-${Date.now()}-${Math.random().toString(36).slice(2)}`
-    localStorage.clear()
-    localStorage.setItem(INSTALL_ID_KEY, newId)
-    // ONBOARDED_KEYを明示的に削除（クリア後なので不要だが念のため）
-    localStorage.removeItem(ONBOARDED_KEY)
-  }
-}
+// SCRUM-200 / DF-F11: 新規インストール検知と localStorage の選択的初期化。
+// ロジックは installReset.ts に切り出した（単体テスト容易化 + 全消し副作用の是正）。
 
 // 同カテゴリの次の未完了レッスンIDを返す（なければ null）
 type Screen =
@@ -862,9 +850,9 @@ function AppV3() {
             <div style={{ width: 36, height: 36, borderRadius: 10, background: 'var(--accent-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: 'var(--brand)' }}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             </div>
-            <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>{t('welcomePopup.heading')}</div>
+            <div style={{ fontSize: '1.4667rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>{t('welcomePopup.heading')}</div>
           </div>
-          <div style={{ fontSize: 15, color: 'var(--text-secondary)', marginBottom: 24, lineHeight: 1.6 }}>
+          <div style={{ fontSize: '1rem', color: 'var(--text-secondary)', marginBottom: 24, lineHeight: 1.6 }}>
             {t('welcomePopup.desc')}
           </div>
           <input
@@ -878,24 +866,24 @@ function AppV3() {
             style={{
               width: '100%', padding: '14px 16px', border: '1px solid var(--border)',
               borderRadius: 10, background: 'var(--bg-card)', color: 'var(--text-primary)',
-              fontSize: 16, fontFamily: "'Noto Sans JP', sans-serif",
+              fontSize: '1.0667rem', fontFamily: "'Noto Sans JP', sans-serif",
               outline: 'none', boxSizing: 'border-box', marginBottom: 8,
             }}
           />
-          <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 20 }}>{t('welcomePopup.note')}</div>
+          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: 20 }}>{t('welcomePopup.note')}</div>
           <button
             onClick={handleSaveName}
             disabled={nameSaving || !nameInput.trim()}
             style={{
               width: '100%', padding: '15px', background: nameInput.trim() ? 'var(--brand)' : 'var(--bg-card)',
-              border: 'none', borderRadius: 12, fontSize: 16, fontWeight: 700,
+              border: 'none', borderRadius: 12, fontSize: '1.0667rem', fontWeight: 700,
               color: nameInput.trim() ? 'var(--accent-fg)' : 'var(--text-muted)',
               cursor: nameInput.trim() ? 'pointer' : 'not-allowed', marginBottom: 10,
             }}
           >{nameSaving ? t('welcomePopup.saving') : t('welcomePopup.save')}</button>
           <button
             onClick={() => setShowNamePopup(false)}
-            style={{ width: '100%', background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: 14, cursor: 'pointer', padding: '8px 0' }}
+            style={{ width: '100%', background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: '0.9333rem', cursor: 'pointer', padding: '8px 0' }}
           >{t('welcomePopup.later')}</button>
         </div>
       </div>
@@ -929,14 +917,14 @@ function WelcomeScreen({ userName, onStart }: { userName: string; onStart: () =>
         <SparklesIcon width={44} height={44} aria-hidden="true" />
       </div>
       <div>
-        <div style={{ fontSize: 14, letterSpacing: '.16em', fontWeight: 700, color: 'var(--text-on-hero-muted)', marginBottom: 10, textTransform: 'uppercase' }}>
+        <div style={{ fontSize: '0.9333rem', letterSpacing: '.16em', fontWeight: 700, color: 'var(--text-on-hero-muted)', marginBottom: 10, textTransform: 'uppercase' }}>
           {t('welcome.eyebrow')}
         </div>
-        <h1 style={{ fontSize: 28, fontWeight: 900, lineHeight: 1.35, margin: 0, letterSpacing: '-0.01em' }}>
+        <h1 style={{ fontSize: '1.8667rem', fontWeight: 900, lineHeight: 1.35, margin: 0, letterSpacing: '-0.01em' }}>
           {t('welcome.heading', { name: userName })}
         </h1>
       </div>
-      <p style={{ fontSize: 15, lineHeight: 1.75, color: 'var(--text-on-hero-muted)', margin: 0, maxWidth: 360 }}>
+      <p style={{ fontSize: '1rem', lineHeight: 1.75, color: 'var(--text-on-hero-muted)', margin: 0, maxWidth: 360 }}>
         {t('welcome.body')}
       </p>
       <button
@@ -945,7 +933,7 @@ function WelcomeScreen({ userName, onStart }: { userName: string; onStart: () =>
         style={{
           marginTop: 12,
           padding: '16px 36px',
-          fontSize: 16, fontWeight: 800, letterSpacing: '0.02em',
+          fontSize: '1.0667rem', fontWeight: 800, letterSpacing: '0.02em',
           background: 'var(--brand-grad-h, linear-gradient(135deg, #6C8EF5, #8B5CF6))',
           color: 'var(--accent-fg, #fff)',
           border: 'none',
@@ -968,8 +956,8 @@ function JournalPaywall({ onUpgrade }: { onUpgrade: () => void }) {
     <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', display: 'flex', flexDirection: 'column' }}>
       <div className="journal-hero">
         <div>
-          <div style={{ fontSize: 22, fontWeight: 900, letterSpacing: '-0.02em' }}>{t('journal.title')}</div>
-          <div style={{ fontSize: 13, color: 'var(--text-on-hero-muted)', marginTop: 4 }}>{t('journal.subtitle')}</div>
+          <div style={{ fontSize: '1.4667rem', fontWeight: 900, letterSpacing: '-0.02em' }}>{t('journal.title')}</div>
+          <div style={{ fontSize: '0.8667rem', color: 'var(--text-on-hero-muted)', marginTop: 4 }}>{t('journal.subtitle')}</div>
         </div>
       </div>
       <div style={{ flex: 1, padding: '32px 20px 120px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', gap: 20 }}>
@@ -998,10 +986,10 @@ function JournalPaywall({ onUpgrade }: { onUpgrade: () => void }) {
           }}>
             <SparklesIcon width={28} height={28} aria-hidden="true" />
           </div>
-          <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-primary)' }}>
+          <div style={{ fontSize: '1.0667rem', fontWeight: 800, color: 'var(--text-primary)' }}>
             {daysLeft > 0 ? t('journal.trialActiveTitle', { days: String(daysLeft) }) : t('journal.paywallTitle')}
           </div>
-          <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+          <div style={{ fontSize: '0.8667rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
             {daysLeft > 0 ? t('journal.trialActiveDesc') : t('journal.paywallDesc')}
           </div>
           <button
@@ -1015,7 +1003,7 @@ function JournalPaywall({ onUpgrade }: { onUpgrade: () => void }) {
               border: 'none',
               borderRadius: 12,
               font: 'inherit',
-              fontSize: 15,
+              fontSize: '1rem',
               fontWeight: 700,
               cursor: 'pointer',
               minHeight: 48,
@@ -1065,10 +1053,10 @@ function ReviewPaywall({ onBack, onUpgrade }: { onBack: () => void; onUpgrade: (
           }}>
             <BookOpenIcon width={28} height={28} />
           </div>
-          <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-primary)' }}>
+          <div style={{ fontSize: '1.0667rem', fontWeight: 800, color: 'var(--text-primary)' }}>
             {t('reviewHub.paywallTitle')}
           </div>
-          <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+          <div style={{ fontSize: '0.8667rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
             {t('reviewHub.paywallDesc')}
           </div>
           <ul style={{
@@ -1076,7 +1064,7 @@ function ReviewPaywall({ onBack, onUpgrade }: { onBack: () => void; onUpgrade: (
             display: 'flex', flexDirection: 'column', gap: 8, textAlign: 'left',
           }}>
             {features.map((f) => (
-              <li key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 13, color: 'var(--text-primary)', lineHeight: 1.5 }}>
+              <li key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: '0.8667rem', color: 'var(--text-primary)', lineHeight: 1.5 }}>
                 <span style={{ color: 'var(--brand)', flexShrink: 0, marginTop: 2 }}>
                   <CheckCircleIcon width={16} height={16} />
                 </span>
@@ -1095,7 +1083,7 @@ function ReviewPaywall({ onBack, onUpgrade }: { onBack: () => void; onUpgrade: (
               border: 'none',
               borderRadius: 12,
               font: 'inherit',
-              fontSize: 15,
+              fontSize: '1rem',
               fontWeight: 700,
               cursor: 'pointer',
               minHeight: 48,
@@ -1118,8 +1106,8 @@ function JournalLoginPrompt({ paid, onLogin }: { paid: boolean; onLogin: () => v
     <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', display: 'flex', flexDirection: 'column' }}>
       <div className="journal-hero">
         <div>
-          <div style={{ fontSize: 22, fontWeight: 900, letterSpacing: '-0.02em' }}>{t('journal.title')}</div>
-          <div style={{ fontSize: 13, color: 'var(--text-on-hero-muted)', marginTop: 4 }}>{t('journal.subtitle')}</div>
+          <div style={{ fontSize: '1.4667rem', fontWeight: 900, letterSpacing: '-0.02em' }}>{t('journal.title')}</div>
+          <div style={{ fontSize: '0.8667rem', color: 'var(--text-on-hero-muted)', marginTop: 4 }}>{t('journal.subtitle')}</div>
         </div>
       </div>
       <div style={{ flex: 1, padding: '32px 20px 120px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', gap: 20 }}>
@@ -1136,10 +1124,10 @@ function JournalLoginPrompt({ paid, onLogin }: { paid: boolean; onLogin: () => v
           flexDirection: 'column',
           gap: 12,
         }}>
-          <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
+          <div style={{ fontSize: '1.0667rem', fontWeight: 700, color: 'var(--text-primary)' }}>
             {title}
           </div>
-          <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+          <div style={{ fontSize: '0.8667rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
             {desc}
           </div>
           <button
@@ -1153,7 +1141,7 @@ function JournalLoginPrompt({ paid, onLogin }: { paid: boolean; onLogin: () => v
               border: 'none',
               borderRadius: 12,
               font: 'inherit',
-              fontSize: 15,
+              fontSize: '1rem',
               fontWeight: 700,
               cursor: 'pointer',
               minHeight: 48,

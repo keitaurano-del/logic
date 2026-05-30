@@ -132,7 +132,7 @@ export function SystemArchetypeVisual({ archetype = 'fixes' }: Props) {
                   <span className={`sign ${current.edges[i]?.sign === 'minus' ? 'minus' : ''}`}>
                     {current.edges[i]?.sign === 'minus' ? '−' : '+'}
                   </span>
-                  <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)' }}>
+                  <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)' }}>
                     {current.edges[i]?.label}
                   </span>
                   <span>↓</span>
@@ -142,7 +142,7 @@ export function SystemArchetypeVisual({ archetype = 'fixes' }: Props) {
                   <span className={`sign ${current.edges[i]?.sign === 'minus' ? 'minus' : ''}`}>
                     {current.edges[i]?.sign === 'minus' ? '−' : '+'}
                   </span>
-                  <span style={{ fontSize: 12, fontWeight: 600 }}>
+                  <span style={{ fontSize: '0.8rem', fontWeight: 600 }}>
                     {current.edges[i]?.label} → 最初のノードへ戻る
                   </span>
                   <span>↺</span>
@@ -158,7 +158,7 @@ export function SystemArchetypeVisual({ archetype = 'fixes' }: Props) {
         padding: '10px 12px',
         background: 'var(--brand-soft)',
         borderRadius: 8,
-        fontSize: 13,
+        fontSize: '0.8667rem',
         fontWeight: 600,
         color: 'var(--brand)',
         textAlign: 'center',

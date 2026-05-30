@@ -125,7 +125,7 @@ export function ProfileEditScreen({ onBack }: Props) {
     gap: 6,
   }
   const LABEL: React.CSSProperties = {
-    fontSize: 12,
+    fontSize: '0.8rem',
     fontWeight: 700,
     color: 'var(--text-muted)',
     letterSpacing: '0.06em',
@@ -137,7 +137,7 @@ export function ProfileEditScreen({ onBack }: Props) {
     background: 'var(--bg-input, rgba(0,0,0,0.04))',
     border: '1px solid var(--border)',
     color: 'var(--text-primary)',
-    fontSize: 15,
+    fontSize: '1rem',
     fontFamily: "'Noto Sans JP', sans-serif",
     outline: 'none',
     boxSizing: 'border-box',
@@ -156,7 +156,7 @@ export function ProfileEditScreen({ onBack }: Props) {
 
       <div style={{ padding: '0 20px 40px', display: 'flex', flexDirection: 'column', gap: 16 }}>
         {/* セクション: 基本情報 */}
-        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '0.08em', padding: '8px 4px 0' }}>
+        <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '0.08em', padding: '8px 4px 0' }}>
           {t('profileEdit.sectionAttrs')}
         </div>
         <div style={SECTION}>
@@ -189,7 +189,7 @@ export function ProfileEditScreen({ onBack }: Props) {
               max={currentYear}
               style={INPUT}
             />
-            <div style={{ fontSize: 11, color: 'var(--text-muted)', lineHeight: 1.6 }}>
+            <div style={{ fontSize: '0.7333rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
               {t('profileEdit.birthYearHint', { min: MIN_BIRTH_YEAR, max: currentYear })}
             </div>
           </div>
@@ -237,7 +237,7 @@ export function ProfileEditScreen({ onBack }: Props) {
               rows={3}
               style={{ ...INPUT, resize: 'vertical', minHeight: 80 }}
             />
-            <div style={{ fontSize: 11, color: 'var(--text-muted)', lineHeight: 1.6 }}>
+            <div style={{ fontSize: '0.7333rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
               {t('profileEdit.goalHint')}
             </div>
           </div>
@@ -259,14 +259,14 @@ export function ProfileEditScreen({ onBack }: Props) {
 
         {/* エラー / 保存完了 */}
         {error && (
-          <div role="alert" style={{ fontSize: 13, color: 'var(--md-sys-color-error)', padding: '0 4px', lineHeight: 1.6 }}>
+          <div role="alert" style={{ fontSize: '0.8667rem', color: 'var(--md-sys-color-error)', padding: '0 4px', lineHeight: 1.6 }}>
             {error}
           </div>
         )}
         {savedFlash && (
           <div role="status" aria-live="polite" style={{
             display: 'inline-flex', alignItems: 'center', gap: 6,
-            fontSize: 13, color: 'var(--brand)', fontWeight: 700, padding: '0 4px',
+            fontSize: '0.8667rem', color: 'var(--brand)', fontWeight: 700, padding: '0 4px',
           }}>
             <CheckIcon width={14} height={14} />
             <span>{t('profileEdit.saved')}</span>
@@ -283,7 +283,7 @@ export function ProfileEditScreen({ onBack }: Props) {
             background: saving ? 'var(--bg-elevated)' : 'var(--brand)',
             color: saving ? 'var(--text-muted)' : '#fff',
             border: 'none', borderRadius: 12,
-            fontSize: 15, fontWeight: 700,
+            fontSize: '1rem', fontWeight: 700,
             cursor: saving ? 'default' : 'pointer',
             minHeight: 48,
             boxShadow: saving ? 'none' : '0 4px 12px rgba(61,95,196,0.18)',

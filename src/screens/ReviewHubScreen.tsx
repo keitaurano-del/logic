@@ -56,7 +56,7 @@ export function ReviewHubScreen({ onBack, onOpenFlashcards, onOpenWrongAnswers, 
       <Header title={t('reviewHub.title')} onBack={onBack} />
 
       <div style={{ padding: '8px 20px 24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
-        <div style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+        <div style={{ fontSize: '0.9333rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
           {t('reviewHub.lead')}
         </div>
 
@@ -75,7 +75,7 @@ export function ReviewHubScreen({ onBack, onOpenFlashcards, onOpenWrongAnswers, 
           }
         >
           {cardStats.total === 0 ? (
-            <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>{t('reviewHub.flashcardsHint')}</div>
+            <div style={{ fontSize: '0.8667rem', color: 'var(--text-muted)' }}>{t('reviewHub.flashcardsHint')}</div>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: cardStats.weak > 0 ? '1fr 1fr' : '1fr', gap: 8 }}>
               <ActionButton
@@ -122,7 +122,7 @@ export function ReviewHubScreen({ onBack, onOpenFlashcards, onOpenWrongAnswers, 
               color: savedStats.total === 0 ? 'var(--text-muted)' : 'var(--accent-fg)',
               border: 'none',
               borderRadius: 'var(--radius-pill)',
-              fontSize: 14,
+              fontSize: '0.9333rem',
               fontWeight: 700,
               cursor: savedStats.total === 0 ? 'default' : 'pointer',
               fontFamily: "'Noto Sans JP', sans-serif",
@@ -161,7 +161,7 @@ export function ReviewHubScreen({ onBack, onOpenFlashcards, onOpenWrongAnswers, 
               color: wrongStats.total === 0 ? 'var(--text-muted)' : 'var(--accent-fg)',
               border: 'none',
               borderRadius: 'var(--radius-pill)',
-              fontSize: 14,
+              fontSize: '0.9333rem',
               fontWeight: 700,
               cursor: wrongStats.total === 0 ? 'default' : 'pointer',
               fontFamily: "'Noto Sans JP', sans-serif",
@@ -200,7 +200,7 @@ export function ReviewHubScreen({ onBack, onOpenFlashcards, onOpenWrongAnswers, 
               color: !fermiStats || fermiStats.total === 0 ? 'var(--text-muted)' : 'var(--accent-fg)',
               border: 'none',
               borderRadius: 'var(--radius-pill)',
-              fontSize: 14,
+              fontSize: '0.9333rem',
               fontWeight: 700,
               cursor: !fermiStats || fermiStats.total === 0 ? 'default' : 'pointer',
               fontFamily: "'Noto Sans JP', sans-serif",
@@ -243,8 +243,8 @@ function SectionCard({ icon, title, subtitle, children }: {
           {icon}
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 15, fontWeight: 700, lineHeight: 1.3 }}>{title}</div>
-          <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.4, marginTop: 2 }}>{subtitle}</div>
+          <div style={{ fontSize: '1rem', fontWeight: 700, lineHeight: 1.3 }}>{title}</div>
+          <div style={{ fontSize: '0.8667rem', color: 'var(--text-secondary)', lineHeight: 1.4, marginTop: 2 }}>{subtitle}</div>
         </div>
       </div>
       {children}
@@ -269,7 +269,7 @@ function ActionButton({ label, onClick, primary, disabled }: {
         border: primary ? 'none' : `1px solid ${'var(--border)'}`,
         background: disabled ? 'var(--bg-elevated)' : primary ? 'var(--brand)' : 'transparent',
         color: disabled ? 'var(--text-muted)' : primary ? 'var(--accent-fg)' : 'var(--text-primary)',
-        fontSize: 14,
+        fontSize: '0.9333rem',
         fontWeight: 700,
         cursor: disabled ? 'default' : 'pointer',
         fontFamily: "'Noto Sans JP', sans-serif",

@@ -1,10 +1,15 @@
 import { t } from './i18n'
 
 // DF-F2: ユーザーが文字サイズを選べる仕組み。
-// tokens.css の type scale (--font-*) は calc(基準px * var(--font-scale)) で
-// 定義されており、ここで documentElement / body に --font-scale を設定すると
-// 全テキストが一括スケールする。
+// 本文の文字サイズ指定は inline / CSS とも rem 基準（1rem = 15px）に統一してある。
+// ここで documentElement(html) の font-size を 15px * scale に設定すると、
+// rem 基準が動いて全テキスト（tokens の --font-* も inline fontSize も）が一括スケールする。
+// tokens.css の --font-* は calc(px * scale) ではなく rem 値なので、root スケールと
+// 二重に掛からない（一本化済み）。
 const STORAGE_KEY = 'logic-font-scale'
+
+// rem の基準。src/index.css の html { font-size: 15px } と一致させること。
+const BASE_FONT_PX = 15
 
 export type FontScaleId = 'standard' | 'large' | 'xlarge'
 
@@ -39,16 +44,15 @@ function scaleValue(id: FontScaleId): number {
   return FONT_SCALES.find((f) => f.id === id)?.scale ?? 1.0
 }
 
-// --font-scale を documentElement / body に適用する。
-// body は applyTheme が body.theme-v3.mode-* で token を解決する都合に合わせて
-// 両方へ設定し、どちらの要素を起点に calc が評価されても確実にスケールが効くようにする。
+// documentElement(html) の font-size を 15px * scale に設定して rem 基準を動かす。
+// これで rem を使う全テキスト（CSS の rem 値・tokens の --font-*・inline の rem fontSize）
+// が一括スケールする。--font-scale も後方互換のため引き続き公開する（直接 calc には
+// 使われないが、独自に参照しているコードがあっても破綻しないように）。
 export function applyFontScale(id: FontScaleId): void {
   const scale = scaleValue(id)
   const root = document.documentElement
+  root.style.fontSize = `${BASE_FONT_PX * scale}px`
   root.style.setProperty('--font-scale', String(scale))
-  if (document.body) {
-    document.body.style.setProperty('--font-scale', String(scale))
-  }
 }
 
 export function setFontScale(id: FontScaleId): void {

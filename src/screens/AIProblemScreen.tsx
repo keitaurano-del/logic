@@ -63,11 +63,11 @@ export function AIProblemScreen({ problem, onBack, onReport }: AIProblemScreenPr
       <div className="stack" style={{ padding: '0 20px' }}>
         <Header title={t('aiProblem.resultTitle')} onBack={onBack} />
         <div className="eyebrow accent">{t('aiProblem.resultEyebrow')}</div>
-        <h1 style={{ fontSize: 30, letterSpacing: '-0.025em' }}>{problem.title}</h1>
+        <h1 style={{ fontSize: '2rem', letterSpacing: '-0.025em' }}>{problem.title}</h1>
         <section className="profile-hero" style={{ textAlign: 'center' }}>
           <div className="eyebrow" style={{ color: 'rgba(255,255,255,0.65)', marginBottom: 'var(--s-3)' }}>{t('aiProblem.scoreLabel')}</div>
-          <div className="display" style={{ fontSize: 80, lineHeight: 0.9, letterSpacing: '-0.04em', color: '#fff' }}>{pct}%</div>
-          <div style={{ marginTop: 'var(--s-3)', fontSize: 16, color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
+          <div className="display" style={{ fontSize: '5.3333rem', lineHeight: 0.9, letterSpacing: '-0.04em', color: '#fff' }}>{pct}%</div>
+          <div style={{ marginTop: 'var(--s-3)', fontSize: '1.0667rem', color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
             {t('aiProblem.scoreLine', { correct: correctCount, total: steps.length })}
           </div>
         </section>
@@ -102,7 +102,7 @@ export function AIProblemScreen({ problem, onBack, onReport }: AIProblemScreenPr
       </div>
 
       <div className="eyebrow accent" style={{ marginTop: 'var(--s-4)' }}>{problem.category}</div>
-      <h2 style={{ fontSize: 24, lineHeight: 1.5, whiteSpace: 'pre-wrap', fontFamily: 'var(--font-display)' }}>
+      <h2 style={{ fontSize: '1.6rem', lineHeight: 1.5, whiteSpace: 'pre-wrap', fontFamily: 'var(--font-display)' }}>
         {quizStep ? quizStep.question : (step.type === 'explain' ? step.title : '')}
       </h2>
 
@@ -121,7 +121,7 @@ export function AIProblemScreen({ problem, onBack, onReport }: AIProblemScreenPr
                   cursor: isAnswered ? 'default' : 'pointer',
                   textAlign: 'left',
                   width: '100%',
-                  fontSize: 16,
+                  fontSize: '1.0667rem',
                   fontWeight: 500,
                   display: 'flex',
                   alignItems: 'center',
@@ -136,7 +136,7 @@ export function AIProblemScreen({ problem, onBack, onReport }: AIProblemScreenPr
                   borderRadius: '999px',
                   border: '1.5px solid currentColor',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 14, fontWeight: 700, flexShrink: 0,
+                  fontSize: '0.9333rem', fontWeight: 700, flexShrink: 0,
                   color: showCorrect ? 'var(--success)' : showWrong ? 'var(--danger)' : isSelected ? 'var(--brand)' : 'var(--text-muted)',
                 }}>
                   {String.fromCharCode(65 + i)}
@@ -148,12 +148,12 @@ export function AIProblemScreen({ problem, onBack, onReport }: AIProblemScreenPr
         </div>
       ) : (
         <div style={{ marginTop: 'var(--s-3)' }}>
-          <div className="card" style={{ fontSize: 16, lineHeight: 1.7, whiteSpace: 'pre-wrap', color: 'var(--text-muted)', marginBottom: 12 }}>
+          <div className="card" style={{ fontSize: '1.0667rem', lineHeight: 1.7, whiteSpace: 'pre-wrap', color: 'var(--text-muted)', marginBottom: 12 }}>
             {step.type === 'explain' ? step.content : t('aiProblem.fallbackExplain')}
           </div>
           {/* SCRUM-82: 思考プロセス入力ボックス */}
           <div style={{ marginTop: 12 }}>
-            <label style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: 6 }}>
+            <label style={{ fontSize: '0.9333rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: 6 }}>
               {t('aiProblem.thinkingNoteLabel')}
             </label>
             <textarea
@@ -164,7 +164,7 @@ export function AIProblemScreen({ problem, onBack, onReport }: AIProblemScreenPr
               rows={3}
               style={{
                 width: '100%', padding: '12px 14px',
-                fontSize: 16, fontFamily: 'inherit',
+                fontSize: '1.0667rem', fontFamily: 'inherit',
                 border: '1.5px solid var(--border)',
                 borderRadius: 12, background: 'var(--bg-card)',
                 color: 'var(--text)', outline: 'none', resize: 'vertical',
@@ -187,7 +187,7 @@ export function AIProblemScreen({ problem, onBack, onReport }: AIProblemScreenPr
           {onReport && (
             <button
               onClick={() => onReport({ lessonTitle: problem.title, question: quizStep.question })}
-              style={{ marginTop: 'var(--s-3)', fontSize: 14, color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
+              style={{ marginTop: 'var(--s-3)', fontSize: '0.9333rem', color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
             >
               {t('report.linkText')}
             </button>

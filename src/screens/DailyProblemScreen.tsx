@@ -41,7 +41,7 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
       <div className="stack" style={{ padding: '0 20px' }}>
         <Header title={t('dailyProblem.title')} onBack={onBack} />
         <div style={{ textAlign: 'center', padding: 'var(--s-8) 0', color: 'var(--text-muted)' }}>
-          <div style={{ fontSize: 16 }}>{t('dailyProblem.loading')}</div>
+          <div style={{ fontSize: '1.0667rem' }}>{t('dailyProblem.loading')}</div>
         </div>
       </div>
     )
@@ -64,7 +64,7 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
       <div className="stack" style={{ padding: '0 20px' }}>
         <Header title={t('dailyProblem.title')} onBack={onBack} />
         <div className="eyebrow accent">{t('label.todaysChallenge')}</div>
-        <h1 style={{ fontSize: 30, letterSpacing: '-0.025em' }}>{t('dailyProblem.heading')}</h1>
+        <h1 style={{ fontSize: '2rem', letterSpacing: '-0.025em' }}>{t('dailyProblem.heading')}</h1>
         <div className="feedback-card">
           <div className="feedback-head">
             <div className="feedback-check"><CheckIcon /></div>
@@ -86,11 +86,11 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
       <div className="stack" style={{ padding: '0 20px' }}>
         <Header title={t('dailyProblem.resultTitle')} onBack={onBack} />
         <div className="eyebrow accent">{t('label.todaysResult')}</div>
-        <h1 style={{ fontSize: 30, letterSpacing: '-0.025em' }}>{t('dailyProblem.resultHeading')}</h1>
+        <h1 style={{ fontSize: '2rem', letterSpacing: '-0.025em' }}>{t('dailyProblem.resultHeading')}</h1>
         <section className="profile-hero" style={{ textAlign: 'center' }}>
           <div className="eyebrow" style={{ color: 'rgba(255,255,255,0.65)', marginBottom: 'var(--s-3)' }}>{t('dailyProblem.scoreLabel')}</div>
-          <div className="display" style={{ fontSize: 80, lineHeight: 0.9, letterSpacing: '-0.04em', color: '#fff' }}>{pct}%</div>
-          <div style={{ marginTop: 'var(--s-3)', fontSize: 16, color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
+          <div className="display" style={{ fontSize: '5.3333rem', lineHeight: 0.9, letterSpacing: '-0.04em', color: '#fff' }}>{pct}%</div>
+          <div style={{ marginTop: 'var(--s-3)', fontSize: '1.0667rem', color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
             {t('dailyProblem.scoreLine', { correct: correctCount, total: steps.length })}
           </div>
         </section>
@@ -144,7 +144,7 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
       <div className="eyebrow accent" style={{ marginTop: 'var(--s-4)' }}>
         {t('label.todaysChallenge')} · {problem.category}
       </div>
-      <h2 style={{ fontSize: 24, lineHeight: 1.5, whiteSpace: 'pre-wrap', fontFamily: 'var(--font-display)' }}>
+      <h2 style={{ fontSize: '1.6rem', lineHeight: 1.5, whiteSpace: 'pre-wrap', fontFamily: 'var(--font-display)' }}>
         {quizStep ? quizStep.question : (step.type === 'explain' ? step.title : '')}
       </h2>
 
@@ -163,7 +163,7 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
                   cursor: isAnswered ? 'default' : 'pointer',
                   textAlign: 'left',
                   width: '100%',
-                  fontSize: 16,
+                  fontSize: '1.0667rem',
                   fontWeight: 500,
                   display: 'flex',
                   alignItems: 'center',
@@ -177,7 +177,7 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
                   borderRadius: '999px',
                   border: '1.5px solid currentColor',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 14, fontWeight: 700, flexShrink: 0,
+                  fontSize: '0.9333rem', fontWeight: 700, flexShrink: 0,
                   color: showCorrect ? 'var(--success)' : showWrong ? 'var(--danger)' : isSelected ? 'var(--brand)' : 'var(--text-muted)',
                 }}>
                   {String.fromCharCode(65 + i)}

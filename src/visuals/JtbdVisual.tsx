@@ -58,7 +58,7 @@ export function JtbdVisual(props: JtbdProps = {}) {
           {situation.sub ? (
             <>
               <br />
-              <span style={{ fontSize: 9, fontWeight: 600, opacity: 0.9 }}>{situation.sub}</span>
+              <span style={{ fontSize: '0.6rem', fontWeight: 600, opacity: 0.9 }}>{situation.sub}</span>
             </>
           ) : null}
         </div>
@@ -67,7 +67,7 @@ export function JtbdVisual(props: JtbdProps = {}) {
           {motivation.sub ? (
             <>
               <br />
-              <span style={{ fontSize: 9, fontWeight: 600, opacity: 0.9 }}>{motivation.sub}</span>
+              <span style={{ fontSize: '0.6rem', fontWeight: 600, opacity: 0.9 }}>{motivation.sub}</span>
             </>
           ) : null}
         </div>
@@ -76,7 +76,7 @@ export function JtbdVisual(props: JtbdProps = {}) {
           {job.sub ? (
             <>
               <br />
-              <span style={{ fontSize: 9, fontWeight: 600, opacity: 0.9 }}>{job.sub}</span>
+              <span style={{ fontSize: '0.6rem', fontWeight: 600, opacity: 0.9 }}>{job.sub}</span>
             </>
           ) : null}
         </div>
@@ -90,7 +90,7 @@ export function JtbdVisual(props: JtbdProps = {}) {
           padding: '8px 10px',
           background: 'var(--brand-soft)',
           borderRadius: 8,
-          fontSize: 11,
+          fontSize: '0.7333rem',
           fontWeight: 600,
           color: 'var(--brand)',
           textAlign: 'center',

@@ -125,7 +125,7 @@ export function SavedItemsScreen({
                   color: active ? 'var(--accent-fg)' : 'var(--text-secondary)',
                   border: 'none',
                   borderRadius: 'var(--radius-pill)',
-                  fontSize: 12,
+                  fontSize: '0.8rem',
                   fontWeight: 700,
                   cursor: 'pointer',
                   fontFamily: "'Noto Sans JP', sans-serif",
@@ -145,7 +145,7 @@ export function SavedItemsScreen({
             <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 56, height: 56, borderRadius: 16, background: 'var(--accent-soft)', color: 'var(--brand)', marginBottom: 12 }}>
               <BookmarkIcon width={28} height={28} />
             </div>
-            <div style={{ fontSize: 15, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+            <div style={{ fontSize: '1rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
               {emptyMessage(filter)}
             </div>
           </div>
@@ -215,13 +215,13 @@ function SavedRow({ item, onOpen, onUnsave }: { item: SavedItem; onOpen: () => v
           </div>
         )}
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--brand)', letterSpacing: '.06em', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 6 }}>
+          <div style={{ fontSize: '0.7333rem', fontWeight: 700, color: 'var(--brand)', letterSpacing: '.06em', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 6 }}>
             <span>{typeLabel}</span>
             {stepBadge && <span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>· {stepBadge}</span>}
           </div>
-          <div style={{ fontSize: 14, fontWeight: 700, lineHeight: 1.35, color: 'var(--text-primary)', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.title}</div>
+          <div style={{ fontSize: '0.9333rem', fontWeight: 700, lineHeight: 1.35, color: 'var(--text-primary)', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.title}</div>
           {item.subtitle && (
-            <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.subtitle}</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.subtitle}</div>
           )}
         </div>
         <ChevronRightIcon width={18} height={18} />

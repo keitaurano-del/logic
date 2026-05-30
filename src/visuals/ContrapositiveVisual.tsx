@@ -16,12 +16,12 @@ export function ContrapositiveVisual() {
       <div className="vz-contra-flow">
         <div className="vz-contra-block">
           <strong>P → Q</strong><br />
-          <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>雨が降れば 道は濡れる</span>
+          <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>雨が降れば 道は濡れる</span>
         </div>
         <span className="vz-contra-arrow">⇔</span>
         <div className="vz-contra-block equivalent">
           <strong>¬Q → ¬P</strong><br />
-          <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>道が濡れていなければ 雨は降らなかった</span>
+          <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>道が濡れていなければ 雨は降らなかった</span>
         </div>
       </div>
 
@@ -48,7 +48,7 @@ export function ContrapositiveVisual() {
         padding: '10px 12px',
         background: 'var(--brand-soft)',
         borderRadius: 8,
-        fontSize: 13,
+        fontSize: '0.8667rem',
         fontWeight: 600,
         color: 'var(--brand)',
         textAlign: 'center',

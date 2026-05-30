@@ -38,7 +38,7 @@ function renderFeedbackMarkdown(text: string) {
     if (!trimmed) { elements.push(<div key={key++} style={{ height: 8 }} />); continue }
     if (trimmed.startsWith('## ')) {
       elements.push(
-        <div key={key++} className="eyebrow accent" style={{ marginTop: 'var(--s-3)', marginBottom: 'var(--s-1)', fontSize: 14 }}>
+        <div key={key++} className="eyebrow accent" style={{ marginTop: 'var(--s-3)', marginBottom: 'var(--s-1)', fontSize: '0.9333rem' }}>
           {trimmed.slice(3)}
         </div>
       )
@@ -47,7 +47,7 @@ function renderFeedbackMarkdown(text: string) {
     const numMatch = trimmed.match(/^(\d+)\.\s+(.+)/)
     if (numMatch) {
       elements.push(
-        <div key={key++} style={{ display: 'flex', gap: 8, fontSize: 14, lineHeight: 1.7, marginBottom: 2 }}>
+        <div key={key++} style={{ display: 'flex', gap: 8, fontSize: '0.9333rem', lineHeight: 1.7, marginBottom: 2 }}>
           <span style={{ color: 'var(--brand)', fontWeight: 700, minWidth: 20 }}>{numMatch[1]}.</span>
           <span dangerouslySetInnerHTML={{ __html: boldify(numMatch[2]) }} />
         </div>
@@ -56,7 +56,7 @@ function renderFeedbackMarkdown(text: string) {
     }
     if (trimmed.startsWith('- ')) {
       elements.push(
-        <div key={key++} style={{ display: 'flex', gap: 8, fontSize: 14, lineHeight: 1.7, marginBottom: 2, paddingLeft: 4 }}>
+        <div key={key++} style={{ display: 'flex', gap: 8, fontSize: '0.9333rem', lineHeight: 1.7, marginBottom: 2, paddingLeft: 4 }}>
           <span style={{ color: 'var(--text-muted)' }}>•</span>
           <span dangerouslySetInnerHTML={{ __html: boldify(trimmed.slice(2)) }} />
         </div>
@@ -64,7 +64,7 @@ function renderFeedbackMarkdown(text: string) {
       continue
     }
     elements.push(
-      <div key={key++} style={{ fontSize: 14, lineHeight: 1.7 }} dangerouslySetInnerHTML={{ __html: boldify(trimmed) }} />
+      <div key={key++} style={{ fontSize: '0.9333rem', lineHeight: 1.7 }} dangerouslySetInnerHTML={{ __html: boldify(trimmed) }} />
     )
   }
   return elements
@@ -131,19 +131,19 @@ export function FermiHistoryScreen({ onBack, onRetry }: FermiHistoryScreenProps)
 
       <div style={{ padding: '8px 16px 32px', display: 'flex', flexDirection: 'column', gap: 12 }}>
         {items === null && (
-          <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--text-muted)', fontSize: 14 }}>
+          <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--text-muted)', fontSize: '0.9333rem' }}>
             {t('fermiHistory.loading')}
           </div>
         )}
 
         {error && (
-          <div style={{ background: 'rgba(220,38,38,0.06)', borderRadius: 'var(--radius-md)', padding: '12px 14px', color: 'var(--danger)', fontSize: 14 }}>
+          <div style={{ background: 'rgba(220,38,38,0.06)', borderRadius: 'var(--radius-md)', padding: '12px 14px', color: 'var(--danger)', fontSize: '0.9333rem' }}>
             {error}
           </div>
         )}
 
         {items !== null && sorted.length === 0 && !error && (
-          <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--text-muted)', fontSize: 14 }}>
+          <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--text-muted)', fontSize: '0.9333rem' }}>
             {t('fermiHistory.empty')}
           </div>
         )}
@@ -187,18 +187,18 @@ export function FermiHistoryScreen({ onBack, onRetry }: FermiHistoryScreenProps)
                 }}
               >
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 4 }}>
+                  <div style={{ fontSize: '0.7333rem', fontWeight: 700, letterSpacing: '0.08em', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 4 }}>
                     {formatDate(item.created_at || item.question_date)}
                     {elapsed && <span style={{ marginLeft: 10, fontWeight: 600 }}>{elapsed}</span>}
                     {item.hint_used && <span style={{ marginLeft: 10, fontWeight: 600 }}>· {t('fermiHistory.hintUsed')}</span>}
                   </div>
-                  <div style={{ fontSize: 15, fontWeight: 600, lineHeight: 1.5, color: 'var(--text-primary)' }}>
+                  <div style={{ fontSize: '1rem', fontWeight: 600, lineHeight: 1.5, color: 'var(--text-primary)' }}>
                     {item.question_text}
                   </div>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4, flexShrink: 0 }}>
                   <div style={{
-                    fontSize: 20,
+                    fontSize: '1.3333rem',
                     fontWeight: 900,
                     color: getScoreTone(item.score),
                     lineHeight: 1,
@@ -206,7 +206,7 @@ export function FermiHistoryScreen({ onBack, onRetry }: FermiHistoryScreenProps)
                   }}>
                     {item.score ?? '—'}
                   </div>
-                  <div style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600 }}>/100</div>
+                  <div style={{ fontSize: '0.7333rem', color: 'var(--text-muted)', fontWeight: 600 }}>/100</div>
                   <ChevronRightIcon
                     width={18}
                     height={18}
@@ -232,7 +232,7 @@ export function FermiHistoryScreen({ onBack, onRetry }: FermiHistoryScreenProps)
                     } catch { /* 生テキストとして扱う */ }
                     return (
                       <div style={{ background: 'var(--bg-secondary)', borderRadius: 'var(--radius-sm)', padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: 6 }}>
-                        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-secondary)' }}>{breakdown}</div>
+                        <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-secondary)' }}>{breakdown}</div>
                         {details && (
                           <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginTop: 4 }}>
                             {[
@@ -243,7 +243,7 @@ export function FermiHistoryScreen({ onBack, onRetry }: FermiHistoryScreenProps)
                               const reason = details?.[key]
                               if (!reason) return null
                               return (
-                                <div key={key} style={{ display: 'flex', gap: 8, fontSize: 12, lineHeight: 1.55 }}>
+                                <div key={key} style={{ display: 'flex', gap: 8, fontSize: '0.8rem', lineHeight: 1.55 }}>
                                   <span style={{ fontWeight: 700, color: 'var(--text-muted)', minWidth: 48 }}>{label}</span>
                                   <span style={{ color: 'var(--text-primary)', flex: 1 }}>{reason}</span>
                                 </div>
@@ -256,11 +256,11 @@ export function FermiHistoryScreen({ onBack, onRetry }: FermiHistoryScreenProps)
                   })()}
 
                   <div>
-                    <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 6 }}>
+                    <div style={{ fontSize: '0.7333rem', fontWeight: 700, letterSpacing: '0.08em', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 6 }}>
                       {t('fermiHistory.yourAnswer')}
                     </div>
                     <div style={{
-                      fontSize: 14,
+                      fontSize: '0.9333rem',
                       lineHeight: 1.7,
                       color: 'var(--text-primary)',
                       whiteSpace: 'pre-wrap',
@@ -276,7 +276,7 @@ export function FermiHistoryScreen({ onBack, onRetry }: FermiHistoryScreenProps)
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
                         <BarChartIcon width={14} height={14} style={{ color: 'var(--brand)' }} />
-                        <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                        <span style={{ fontSize: '0.7333rem', fontWeight: 700, letterSpacing: '0.08em', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
                           {t('fermiHistory.aiFeedback')}
                         </span>
                       </div>
@@ -298,7 +298,7 @@ export function FermiHistoryScreen({ onBack, onRetry }: FermiHistoryScreenProps)
                           border: 'none',
                           background: 'var(--brand)',
                           color: 'var(--accent-fg)',
-                          fontSize: 14,
+                          fontSize: '0.9333rem',
                           fontWeight: 700,
                           cursor: 'pointer',
                           fontFamily: 'inherit',
@@ -319,7 +319,7 @@ export function FermiHistoryScreen({ onBack, onRetry }: FermiHistoryScreenProps)
                         borderRadius: 'var(--radius-pill)',
                         background: 'var(--bg-elevated)',
                         color: 'var(--text-muted)',
-                        fontSize: 13,
+                        fontSize: '0.8667rem',
                         fontWeight: 600,
                         textAlign: 'center',
                         minHeight: 44,

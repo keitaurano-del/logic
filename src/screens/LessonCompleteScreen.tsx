@@ -162,17 +162,17 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
           }}>
             <span style={{
               fontFamily: "'Inter Tight', sans-serif",
-              fontSize: 38, fontWeight: 900, color: 'var(--brand)',
+              fontSize: '2.5333rem', fontWeight: 900, color: 'var(--brand)',
               letterSpacing: '-.04em', lineHeight: 1,
             }}>+{xpCount}</span>
-            <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '.1em', marginTop: 3 }}>XP</span>
+            <span style={{ fontSize: '0.7333rem', fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '.1em', marginTop: 3 }}>XP</span>
           </div>
         </div>
 
         {/* タイトル */}
         <div style={{ marginBottom: 6, ...show(1) }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--brand)', letterSpacing: '.1em', marginBottom: 6 }}>{t('lessonComplete.eyebrow')}</div>
-          <div style={{ fontSize: 22, fontWeight: 800, lineHeight: 1.35 }}>{t('lessonComplete.titleQuoted', { title: lessonTitle })}</div>
+          <div style={{ fontSize: '0.7333rem', fontWeight: 700, color: 'var(--brand)', letterSpacing: '.1em', marginBottom: 6 }}>{t('lessonComplete.eyebrow')}</div>
+          <div style={{ fontSize: '1.4667rem', fontWeight: 800, lineHeight: 1.35 }}>{t('lessonComplete.titleQuoted', { title: lessonTitle })}</div>
         </div>
 
         {/* ストリーク + 時間 */}
@@ -193,14 +193,14 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
               color: streak >= 7 ? '#FF7A1A' : streak >= 3 ? '#FF9F47' : 'var(--text-muted)',
               filter: streak < 1 ? 'grayscale(1) opacity(.25)' : 'none',
             }}>
-              {streak >= 7 ? (<><FlameIcon width={24} height={24} /><FlameIcon width={24} height={24} /></>) : streak >= 3 ? <FlameIcon width={28} height={28} /> : <span style={{ fontSize: 28 }}>○</span>}
+              {streak >= 7 ? (<><FlameIcon width={24} height={24} /><FlameIcon width={24} height={24} /></>) : streak >= 3 ? <FlameIcon width={28} height={28} /> : <span style={{ fontSize: '1.8667rem' }}>○</span>}
             </div>
             <div style={{
               fontFamily: "'Inter Tight', sans-serif",
-              fontSize: 28, fontWeight: 900, letterSpacing: '-.03em', lineHeight: 1,
+              fontSize: '1.8667rem', fontWeight: 900, letterSpacing: '-.03em', lineHeight: 1,
               color: streak >= 3 ? '#FF7A3A' : 'var(--text-primary)',
             }}>{streak}</div>
-            <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-muted)', marginTop: 5 }}>{t('lessonComplete.streakUnit')}</div>
+            <div style={{ fontSize: '0.7333rem', fontWeight: 600, color: 'var(--text-muted)', marginTop: 5 }}>{t('lessonComplete.streakUnit')}</div>
           </div>
 
           {/* 学習時間 */}
@@ -208,12 +208,12 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
             flex: 1, borderRadius: 18, padding: '18px 12px', textAlign: 'center',
             background: 'var(--bg-card)', border: `1px solid ${'var(--border)'}`,
           }}>
-            <div style={{ fontSize: 30, lineHeight: 1, marginBottom: 6 }}></div>
+            <div style={{ fontSize: '2rem', lineHeight: 1, marginBottom: 6 }}></div>
             <div style={{
               fontFamily: "'Inter Tight', sans-serif",
-              fontSize: 28, fontWeight: 900, letterSpacing: '-.03em', lineHeight: 1,
+              fontSize: '1.8667rem', fontWeight: 900, letterSpacing: '-.03em', lineHeight: 1,
             }}>{timeStr}</div>
-            <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-muted)', marginTop: 5 }}>{t('lessonComplete.studyTime')}</div>
+            <div style={{ fontSize: '0.7333rem', fontWeight: 600, color: 'var(--text-muted)', marginTop: 5 }}>{t('lessonComplete.studyTime')}</div>
           </div>
 
           {/* レベル */}
@@ -231,10 +231,10 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
             </div>
             <div style={{
               fontFamily: "'Inter Tight', sans-serif",
-              fontSize: 28, fontWeight: 900, letterSpacing: '-.03em', lineHeight: 1,
+              fontSize: '1.8667rem', fontWeight: 900, letterSpacing: '-.03em', lineHeight: 1,
               color: leveledUp ? 'var(--brand)' : 'var(--text-primary)',
             }}>Lv.{lv.level}</div>
-            <div style={{ fontSize: 11, fontWeight: 600, color: leveledUp ? 'var(--brand)' : 'var(--text-muted)', marginTop: 5 }}>
+            <div style={{ fontSize: '0.7333rem', fontWeight: 600, color: leveledUp ? 'var(--brand)' : 'var(--text-muted)', marginTop: 5 }}>
               {leveledUp ? t('lessonComplete.levelUp') : t('lessonComplete.levelLabel')}
             </div>
           </div>
@@ -251,7 +251,7 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
             ...show(2),
           }}>
             <ArrowUpIcon width={20} height={20} style={{ color: 'var(--brand)' }} />
-            <span style={{ fontSize: 14, fontWeight: 800 }}>
+            <span style={{ fontSize: '0.9333rem', fontWeight: 800 }}>
               {t('lessonComplete.levelUpBanner')}<span style={{ color: 'var(--brand)' }}>Lv.{prevLevel} → Lv.{lv.level}</span>
             </span>
           </div>
@@ -268,7 +268,7 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
             ...show(3),
           }}>
             <span style={{ width: 10, height: 10, borderRadius: '50%', background: 'var(--brand)', boxShadow: `0 0 10px var(--brand)`, animation: 'ttsContinuePulse 1.2s ease-in-out infinite' }} />
-            <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--brand)' }}>{t('tts.nextLessonHint')}</span>
+            <span style={{ fontSize: '0.8667rem', fontWeight: 700, color: 'var(--brand)' }}>{t('tts.nextLessonHint')}</span>
             <style>{`@keyframes ttsContinuePulse { 0%,100% { opacity: 1 } 50% { opacity: .4 } }`}</style>
           </div>
         )}
@@ -282,7 +282,7 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
               background: 'var(--brand)',
               color: '#FFFFFF',
               padding: '17px 0', borderRadius: 99,
-              fontSize: 16, fontWeight: 700,
+              fontSize: '1.0667rem', fontWeight: 700,
               border: 'none', cursor: 'pointer',
               letterSpacing: '.02em',
               boxShadow: `0 4px 24px color-mix(in srgb, var(--brand) 27%, transparent)`,
@@ -300,7 +300,7 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
                 background: 'var(--accent-soft)',
                 color: 'var(--brand)',
                 padding: '14px 0', borderRadius: 99,
-                fontSize: 14, fontWeight: 700, cursor: 'pointer',
+                fontSize: '0.9333rem', fontWeight: 700, cursor: 'pointer',
                 border: `1px solid color-mix(in srgb, var(--brand) 25%, transparent)`,
                 WebkitTapHighlightColor: 'transparent',
                 touchAction: 'manipulation',
@@ -320,7 +320,7 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
               border: `1px solid ${'var(--border)'}`,
               color: 'var(--text-secondary)',
               padding: '14px 0', borderRadius: 99,
-              fontSize: 14, fontWeight: 600, cursor: 'pointer',
+              fontSize: '0.9333rem', fontWeight: 600, cursor: 'pointer',
               WebkitTapHighlightColor: 'transparent',
               touchAction: 'manipulation',
             }}

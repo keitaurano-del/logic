@@ -29,7 +29,7 @@ export function CustomCourseScreen({ courseId, onStartLesson, onBack }: CustomCo
             </button>
           )}
         </div>
-        <div style={{ padding: 24, textAlign: 'center', color: 'var(--text-secondary)', fontSize: 14, lineHeight: 1.7 }}>
+        <div style={{ padding: 24, textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.9333rem', lineHeight: 1.7 }}>
           {t('customCourse.emptyLessons')}
         </div>
       </div>
@@ -52,8 +52,8 @@ export function CustomCourseScreen({ courseId, onStartLesson, onBack }: CustomCo
           </button>
         )}
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 12, fontWeight: 800, color: 'var(--brand)', letterSpacing: '.08em' }}>{t('customCourse.eyebrow')}</div>
-          <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-primary)', marginTop: 2, lineHeight: 1.35 }}>{course.title}</div>
+          <div style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--brand)', letterSpacing: '.08em' }}>{t('customCourse.eyebrow')}</div>
+          <div style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-primary)', marginTop: 2, lineHeight: 1.35 }}>{course.title}</div>
         </div>
       </div>
 
@@ -61,13 +61,13 @@ export function CustomCourseScreen({ courseId, onStartLesson, onBack }: CustomCo
         {/* コース概要カード */}
         <div style={{ background: 'var(--bg-card)', borderRadius: 16, padding: '16px 18px', boxShadow: 'var(--shadow-v3-card-inset)', border: `1.5px solid color-mix(in srgb, var(--brand) 19%, transparent)` }}>
           {course.description && (
-            <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: 10 }}>{course.description}</div>
+            <div style={{ fontSize: '0.8667rem', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: 10 }}>{course.description}</div>
           )}
           {/* プログレス */}
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-              <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{t('personalCourse.totalLessons', { n: lessons.length })}</div>
-              <div style={{ fontSize: 11, color: 'var(--brand)', fontWeight: 600 }}>{t('personalCourse.completedRatio', { done: completedCount, total: lessons.length })}</div>
+              <div style={{ fontSize: '0.7333rem', color: 'var(--text-muted)' }}>{t('personalCourse.totalLessons', { n: lessons.length })}</div>
+              <div style={{ fontSize: '0.7333rem', color: 'var(--brand)', fontWeight: 600 }}>{t('personalCourse.completedRatio', { done: completedCount, total: lessons.length })}</div>
             </div>
             <div style={{ height: 4, background: `color-mix(in srgb, var(--text-muted) 13%, transparent)`, borderRadius: 2, overflow: 'hidden' }}>
               <div style={{ height: '100%', width: `${(completedCount / Math.max(1, lessons.length)) * 100}%`, background: allDone ? '#22C55E' : 'var(--brand)', borderRadius: 2, transition: 'width .3s' }} />
@@ -91,17 +91,17 @@ export function CustomCourseScreen({ courseId, onStartLesson, onBack }: CustomCo
                 <div style={{ width: 28, height: 28, borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: isDone ? 'var(--brand)' : isNext ? `color-mix(in srgb, var(--brand) 13%, transparent)` : `color-mix(in srgb, var(--text-muted) 9%, transparent)`, border: isNext && !isDone ? `1.5px solid ${'var(--brand)'}` : 'none' }}>
                   {isDone
                     ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                    : <span style={{ fontSize: 11, fontWeight: 700, color: isNext ? 'var(--brand)' : 'var(--text-muted)' }}>{idx + 1}</span>
+                    : <span style={{ fontSize: '0.7333rem', fontWeight: 700, color: isNext ? 'var(--brand)' : 'var(--text-muted)' }}>{idx + 1}</span>
                   }
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 14, fontWeight: isNext ? 700 : 600, color: isDone ? 'var(--text-secondary)' : 'var(--text-primary)', lineHeight: 1.35 }}>{lesson.title}</div>
-                  <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
+                  <div style={{ fontSize: '0.9333rem', fontWeight: isNext ? 700 : 600, color: isDone ? 'var(--text-secondary)' : 'var(--text-primary)', lineHeight: 1.35 }}>{lesson.title}</div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: 2 }}>
                     {lesson.category} · {t('personalCourse.stepCount', { count: lesson.steps?.length ?? 0 })}
                   </div>
                 </div>
                 {isNext && !isDone && (
-                  <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--brand)', background: 'var(--accent-soft)', borderRadius: 6, padding: '3px 8px', flexShrink: 0 }}>{t('personalCourse.next')}</div>
+                  <div style={{ fontSize: '0.6667rem', fontWeight: 700, color: 'var(--brand)', background: 'var(--accent-soft)', borderRadius: 6, padding: '3px 8px', flexShrink: 0 }}>{t('personalCourse.next')}</div>
                 )}
                 {!isDone && !isNext && (
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
@@ -117,7 +117,7 @@ export function CustomCourseScreen({ courseId, onStartLesson, onBack }: CustomCo
             onClick={() => onStartLesson(startId)}
             style={{
               marginTop: 8, width: '100%', background: 'var(--brand)', color: '#fff',
-              border: 'none', borderRadius: 14, padding: '14px 0', fontSize: 16, fontWeight: 700,
+              border: 'none', borderRadius: 14, padding: '14px 0', fontSize: '1.0667rem', fontWeight: 700,
               cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
               fontFamily: 'inherit',
             }}

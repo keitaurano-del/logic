@@ -86,16 +86,16 @@ export function CustomCourseSheet({ onClose, onSaved, onUpgrade }: CustomCourseS
           <div style={{ width: 32, height: 32, borderRadius: 10, background: `color-mix(in srgb, var(--brand) 12%, transparent)`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: 'var(--brand)' }}>
             <SparklesIcon width={18} height={18} />
           </div>
-          <div style={{ fontSize: 17, fontWeight: 800, color: 'var(--text-primary)' }}>{t('customCourse.sheetTitle')}</div>
+          <div style={{ fontSize: '1.1333rem', fontWeight: 800, color: 'var(--text-primary)' }}>{t('customCourse.sheetTitle')}</div>
         </div>
 
         {/* ===== 入力フェーズ ===== */}
         {phase === 'input' && (
           <>
-            <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: 16 }}>{t('customCourse.sheetDesc')}</div>
+            <div style={{ fontSize: '0.8667rem', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: 16 }}>{t('customCourse.sheetDesc')}</div>
 
             {/* 残り回数 / プラン表示 */}
-            <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 10, color: atLimit ? 'var(--md-sys-color-error)' : 'var(--brand)' }}>
+            <div style={{ fontSize: '0.8rem', fontWeight: 700, marginBottom: 10, color: atLimit ? 'var(--md-sys-color-error)' : 'var(--brand)' }}>
               {paid
                 ? t('customCourse.unlimited')
                 : atLimit
@@ -111,12 +111,12 @@ export function CustomCourseSheet({ onClose, onSaved, onUpgrade }: CustomCourseS
               rows={3}
               maxLength={1000}
               disabled={atLimit}
-              style={{ width: '100%', boxSizing: 'border-box', background: `color-mix(in srgb, var(--brand) 3%, transparent)`, border: `1px solid var(--border)`, borderRadius: 10, padding: '10px 12px', fontSize: 14, color: 'var(--text-primary)', resize: 'none', outline: 'none', fontFamily: "'Noto Sans JP', sans-serif", opacity: atLimit ? 0.6 : 1 }}
+              style={{ width: '100%', boxSizing: 'border-box', background: `color-mix(in srgb, var(--brand) 3%, transparent)`, border: `1px solid var(--border)`, borderRadius: 10, padding: '10px 12px', fontSize: '0.9333rem', color: 'var(--text-primary)', resize: 'none', outline: 'none', fontFamily: "'Noto Sans JP', sans-serif", opacity: atLimit ? 0.6 : 1 }}
             />
 
             {/* 入力ヒント（タップで反映） */}
             <div style={{ marginTop: 12 }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '.06em', marginBottom: 8 }}>{t('customCourse.examplesHeading')}</div>
+              <div style={{ fontSize: '0.7333rem', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '.06em', marginBottom: 8 }}>{t('customCourse.examplesHeading')}</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {examples.map((ex, i) => (
                   <button
@@ -124,7 +124,7 @@ export function CustomCourseSheet({ onClose, onSaved, onUpgrade }: CustomCourseS
                     type="button"
                     onClick={() => !atLimit && setPrompt(ex)}
                     disabled={atLimit}
-                    style={{ textAlign: 'left', background: 'transparent', border: `1px solid var(--border)`, borderRadius: 10, padding: '10px 12px', fontSize: 13, color: 'var(--text-primary)', cursor: atLimit ? 'not-allowed' : 'pointer', lineHeight: 1.5, opacity: atLimit ? 0.6 : 1, fontFamily: 'inherit' }}
+                    style={{ textAlign: 'left', background: 'transparent', border: `1px solid var(--border)`, borderRadius: 10, padding: '10px 12px', fontSize: '0.8667rem', color: 'var(--text-primary)', cursor: atLimit ? 'not-allowed' : 'pointer', lineHeight: 1.5, opacity: atLimit ? 0.6 : 1, fontFamily: 'inherit' }}
                   >
                     {ex}
                   </button>
@@ -133,14 +133,14 @@ export function CustomCourseSheet({ onClose, onSaved, onUpgrade }: CustomCourseS
             </div>
 
             {error && (
-              <div style={{ fontSize: 13, color: 'var(--md-sys-color-error)', marginTop: 14, lineHeight: 1.6 }}>{error}</div>
+              <div style={{ fontSize: '0.8667rem', color: 'var(--md-sys-color-error)', marginTop: 14, lineHeight: 1.6 }}>{error}</div>
             )}
 
             {/* アクション */}
             <div style={{ marginTop: 18, display: 'flex', flexDirection: 'column', gap: 10 }}>
               {atLimit || limitReached ? (
                 onUpgrade && (
-                  <button onClick={onUpgrade} style={{ width: '100%', background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)', border: 'none', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
+                  <button onClick={onUpgrade} style={{ width: '100%', background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)', border: 'none', borderRadius: 12, padding: '14px', fontSize: '1rem', fontWeight: 700, cursor: 'pointer' }}>
                     {t('customCourse.upgrade')}
                   </button>
                 )
@@ -148,12 +148,12 @@ export function CustomCourseSheet({ onClose, onSaved, onUpgrade }: CustomCourseS
                 <button
                   onClick={handleGenerate}
                   disabled={!prompt.trim()}
-                  style={{ width: '100%', background: prompt.trim() ? 'var(--brand)' : 'var(--bg-secondary)', color: prompt.trim() ? 'var(--accent-fg)' : 'var(--text-muted)', border: 'none', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700, cursor: prompt.trim() ? 'pointer' : 'not-allowed' }}
+                  style={{ width: '100%', background: prompt.trim() ? 'var(--brand)' : 'var(--bg-secondary)', color: prompt.trim() ? 'var(--accent-fg)' : 'var(--text-muted)', border: 'none', borderRadius: 12, padding: '14px', fontSize: '1rem', fontWeight: 700, cursor: prompt.trim() ? 'pointer' : 'not-allowed' }}
                 >
                   {t('customCourse.generate')}
                 </button>
               )}
-              <button onClick={onClose} style={{ width: '100%', background: 'transparent', border: 'none', color: 'var(--text-muted)', fontSize: 14, fontWeight: 500, cursor: 'pointer', padding: '6px 0' }}>
+              <button onClick={onClose} style={{ width: '100%', background: 'transparent', border: 'none', color: 'var(--text-muted)', fontSize: '0.9333rem', fontWeight: 500, cursor: 'pointer', padding: '6px 0' }}>
                 {t('customCourse.cancel')}
               </button>
             </div>
@@ -164,7 +164,7 @@ export function CustomCourseSheet({ onClose, onSaved, onUpgrade }: CustomCourseS
         {phase === 'generating' && (
           <div style={{ padding: '32px 0 16px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 18 }}>
             <div className="custom-course-spinner" style={{ width: 40, height: 40, borderRadius: '50%', border: '3px solid color-mix(in srgb, var(--brand) 20%, transparent)', borderTopColor: 'var(--brand)' }} aria-hidden="true" />
-            <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-secondary)' }}>{t('customCourse.generating')}</div>
+            <div style={{ fontSize: '0.9333rem', fontWeight: 600, color: 'var(--text-secondary)' }}>{t('customCourse.generating')}</div>
             <style>{`@keyframes customCourseSpin { to { transform: rotate(360deg); } } .custom-course-spinner { animation: customCourseSpin 0.8s linear infinite; }`}</style>
           </div>
         )}
@@ -172,25 +172,25 @@ export function CustomCourseSheet({ onClose, onSaved, onUpgrade }: CustomCourseS
         {/* ===== プレビューフェーズ ===== */}
         {phase === 'preview' && course && (
           <>
-            <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 14 }}>{t('customCourse.previewTitle')}</div>
+            <div style={{ fontSize: '0.8667rem', color: 'var(--text-secondary)', marginBottom: 14 }}>{t('customCourse.previewTitle')}</div>
             <div style={{ background: `color-mix(in srgb, var(--brand) 5%, transparent)`, borderRadius: 14, padding: '16px 18px', border: `1.5px solid color-mix(in srgb, var(--brand) 22%, transparent)`, marginBottom: 18 }}>
-              <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.35, marginBottom: 8 }}>{course.title}</div>
+              <div style={{ fontSize: '1.0667rem', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.35, marginBottom: 8 }}>{course.title}</div>
               {course.description && (
-                <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: 10 }}>{course.description}</div>
+                <div style={{ fontSize: '0.8667rem', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: 10 }}>{course.description}</div>
               )}
-              <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--brand)' }}>{t('customCourse.previewLessons', { count: lessonCount })}</div>
+              <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--brand)' }}>{t('customCourse.previewLessons', { count: lessonCount })}</div>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               <button
                 onClick={() => { saveCustomCourse(course); onSaved(course) }}
-                style={{ width: '100%', background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)', border: 'none', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}
+                style={{ width: '100%', background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)', border: 'none', borderRadius: 12, padding: '14px', fontSize: '1rem', fontWeight: 700, cursor: 'pointer' }}
               >
                 {t('customCourse.save')}
               </button>
               <button
                 onClick={() => { setCourse(null); setPhase('input') }}
-                style={{ width: '100%', background: 'transparent', border: `1px solid var(--brand)`, color: 'var(--brand)', borderRadius: 12, padding: '12px', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}
+                style={{ width: '100%', background: 'transparent', border: `1px solid var(--brand)`, color: 'var(--brand)', borderRadius: 12, padding: '12px', fontSize: '0.9333rem', fontWeight: 700, cursor: 'pointer' }}
               >
                 {t('customCourse.regenerate')}
               </button>

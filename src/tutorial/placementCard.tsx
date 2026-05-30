@@ -42,12 +42,12 @@ export function PlacementCard({ onTakeTest }: PlacementCardProps) {
           </svg>
         </div>
         <div>
-          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>{t('placementCard.title')}</div>
-          <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 1 }}>{t('placementCard.subtitle')}</div>
+          <div style={{ fontSize: '0.9333rem', fontWeight: 700, color: 'var(--text-primary)' }}>{t('placementCard.title')}</div>
+          <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: 1 }}>{t('placementCard.subtitle')}</div>
         </div>
       </div>
 
-      <p style={{ margin: '0 0 14px', fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+      <p style={{ margin: '0 0 14px', fontSize: '0.8667rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
         {t('placementCard.desc')}
       </p>
 
@@ -58,7 +58,7 @@ export function PlacementCard({ onTakeTest }: PlacementCardProps) {
           style={{
             flex: 1, background: 'var(--brand)', color: '#fff',
             border: 'none', borderRadius: 10, padding: '11px 0',
-            fontSize: 14, fontWeight: 700, cursor: 'pointer',
+            fontSize: '0.9333rem', fontWeight: 700, cursor: 'pointer',
           }}
         >
           {t('placementCard.takeTest')}
@@ -68,7 +68,7 @@ export function PlacementCard({ onTakeTest }: PlacementCardProps) {
           style={{
             flex: 1, background: 'var(--bg-tertiary)', color: 'var(--text-secondary)',
             border: 'none', borderRadius: 10, padding: '11px 0',
-            fontSize: 14, fontWeight: 600, cursor: 'pointer',
+            fontSize: '0.9333rem', fontWeight: 600, cursor: 'pointer',
           }}
         >
           {t('placementCard.later')}

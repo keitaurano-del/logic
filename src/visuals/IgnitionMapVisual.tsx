@@ -106,7 +106,7 @@ function cellStyle(level: IgnitionCellLevel): React.CSSProperties {
     color: c.fg,
     borderRadius: 8,
     padding: '8px 6px',
-    fontSize: 12,
+    fontSize: '0.8rem',
     fontWeight: 600,
     textAlign: 'center',
     lineHeight: 1.3,
@@ -168,7 +168,7 @@ export function IgnitionMapVisual(props: IgnitionMapProps = {}) {
           <div
             key={`head-${t}`}
             style={{
-              fontSize: 12,
+              fontSize: '0.8rem',
               fontWeight: 700,
               letterSpacing: '0.05em',
               color: 'var(--text-muted)',
@@ -188,7 +188,7 @@ export function IgnitionMapVisual(props: IgnitionMapProps = {}) {
             <div key={`row-${envLabel}`} style={{ display: 'contents' }}>
               <div
                 style={{
-                  fontSize: 12,
+                  fontSize: '0.8rem',
                   fontWeight: 700,
                   color: 'var(--text-muted)',
                   textAlign: 'right',
@@ -229,7 +229,7 @@ export function IgnitionMapVisual(props: IgnitionMapProps = {}) {
           display: 'flex',
           gap: 14,
           justifyContent: 'center',
-          fontSize: 12,
+          fontSize: '0.8rem',
           color: 'var(--text-secondary)',
         }}
       >
@@ -256,7 +256,7 @@ export function IgnitionMapVisual(props: IgnitionMapProps = {}) {
             padding: '10px 12px',
             background: 'var(--visual-warm-primary-soft)',
             borderRadius: 8,
-            fontSize: 13,
+            fontSize: '0.8667rem',
             fontWeight: 600,
             color: 'var(--visual-warm-primary-deep)',
             textAlign: 'center',

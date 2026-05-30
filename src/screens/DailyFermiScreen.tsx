@@ -64,19 +64,19 @@ function renderFeedbackMarkdown(text: string) {
     const trimmed = line.trim()
     if (!trimmed) { elements.push(<div key={key++} style={{ height: 8 }} />); continue }
     if (trimmed.startsWith('## ')) {
-      elements.push(<div key={key++} className="eyebrow accent" style={{ marginTop: 'var(--s-3)', marginBottom: 'var(--s-1)', fontSize: 14 }}>{trimmed.slice(3)}</div>)
+      elements.push(<div key={key++} className="eyebrow accent" style={{ marginTop: 'var(--s-3)', marginBottom: 'var(--s-1)', fontSize: '0.9333rem' }}>{trimmed.slice(3)}</div>)
       continue
     }
     const numMatch = trimmed.match(/^(\d+)\.\s+(.+)/)
     if (numMatch) {
-      elements.push(<div key={key++} style={{ display: 'flex', gap: 8, fontSize: 15, lineHeight: 1.7, marginBottom: 2 }}><span style={{ color: 'var(--brand)', fontWeight: 700, minWidth: 20 }}>{numMatch[1]}.</span><span dangerouslySetInnerHTML={{ __html: boldify(numMatch[2]) }} /></div>)
+      elements.push(<div key={key++} style={{ display: 'flex', gap: 8, fontSize: '1rem', lineHeight: 1.7, marginBottom: 2 }}><span style={{ color: 'var(--brand)', fontWeight: 700, minWidth: 20 }}>{numMatch[1]}.</span><span dangerouslySetInnerHTML={{ __html: boldify(numMatch[2]) }} /></div>)
       continue
     }
     if (trimmed.startsWith('- ')) {
-      elements.push(<div key={key++} style={{ display: 'flex', gap: 8, fontSize: 15, lineHeight: 1.7, marginBottom: 2, paddingLeft: 4 }}><span style={{ color: 'var(--text-muted)' }}>•</span><span dangerouslySetInnerHTML={{ __html: boldify(trimmed.slice(2)) }} /></div>)
+      elements.push(<div key={key++} style={{ display: 'flex', gap: 8, fontSize: '1rem', lineHeight: 1.7, marginBottom: 2, paddingLeft: 4 }}><span style={{ color: 'var(--text-muted)' }}>•</span><span dangerouslySetInnerHTML={{ __html: boldify(trimmed.slice(2)) }} /></div>)
       continue
     }
-    elements.push(<div key={key++} style={{ fontSize: 15, lineHeight: 1.7 }} dangerouslySetInnerHTML={{ __html: boldify(trimmed) }} />)
+    elements.push(<div key={key++} style={{ fontSize: '1rem', lineHeight: 1.7 }} dangerouslySetInnerHTML={{ __html: boldify(trimmed) }} />)
   }
   return elements
 }
@@ -122,7 +122,7 @@ function CalcKey({ label, onClick, kind = 'num' }: { label: string; onClick: () 
         background: palette.bg,
         border: `1px solid ${palette.border}`,
         color: palette.color,
-        fontSize: 16, fontWeight: 700,
+        fontSize: '1.0667rem', fontWeight: 700,
         cursor: 'pointer', fontFamily: 'inherit',
       }}
     >
@@ -170,7 +170,7 @@ function FermiCalculator({ onInsert, locale }: { onInsert: (text: string) => voi
         display: 'flex', flexDirection: 'column', justifyContent: 'center',
       }}>
         <div style={{
-          fontSize: 14, fontFamily: "'Inter Tight', monospace",
+          fontSize: '0.9333rem', fontFamily: "'Inter Tight', monospace",
           color: 'var(--text-secondary)',
           wordBreak: 'break-all', lineHeight: 1.3,
         }}>
@@ -178,8 +178,8 @@ function FermiCalculator({ onInsert, locale }: { onInsert: (text: string) => voi
         </div>
         {result != null && (
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginTop: 4 }}>
-            <span style={{ fontSize: 18, fontWeight: 800, color: 'var(--brand)', fontFamily: "'Inter Tight', monospace" }}>= {formatResult(result, locale)}</span>
-            <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>{formatJpUnit(result, locale)}</span>
+            <span style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--brand)', fontFamily: "'Inter Tight', monospace" }}>= {formatResult(result, locale)}</span>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{formatJpUnit(result, locale)}</span>
           </div>
         )}
       </div>
@@ -223,7 +223,7 @@ function FermiCalculator({ onInsert, locale }: { onInsert: (text: string) => voi
             background: CALC_KEY_PALETTE.op.bg,
             border: `1px solid ${CALC_KEY_PALETTE.op.border}`,
             color: CALC_KEY_PALETTE.op.color,
-            fontSize: 15, fontWeight: 800,
+            fontSize: '1rem', fontWeight: 800,
             cursor: 'pointer', fontFamily: 'inherit',
           }}
         >
@@ -238,7 +238,7 @@ function FermiCalculator({ onInsert, locale }: { onInsert: (text: string) => voi
             background: CALC_KEY_PALETTE.op.bg,
             border: `1px solid ${CALC_KEY_PALETTE.op.border}`,
             color: CALC_KEY_PALETTE.op.color,
-            fontSize: 15, fontWeight: 800,
+            fontSize: '1rem', fontWeight: 800,
             cursor: 'pointer', fontFamily: 'inherit',
           }}
         >
@@ -256,7 +256,7 @@ function FermiCalculator({ onInsert, locale }: { onInsert: (text: string) => voi
           border: 'none',
           background: result != null ? 'var(--brand)' : 'var(--bg-muted)',
           color: result != null ? 'var(--accent-fg)' : 'var(--text-muted)',
-          fontSize: 14, fontWeight: 700,
+          fontSize: '0.9333rem', fontWeight: 700,
           cursor: result != null ? 'pointer' : 'not-allowed',
           fontFamily: 'inherit',
         }}
@@ -350,8 +350,8 @@ function FermiChatModal({ question, locale, onClose }: {
           flexShrink: 0,
         }}>
           <div>
-            <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>{t('dailyFermi.askHintTitle')}</div>
-            <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>{t('dailyFermi.askHintDesc')}</div>
+            <div style={{ fontSize: '1.0667rem', fontWeight: 700, color: 'var(--text-primary)' }}>{t('dailyFermi.askHintTitle')}</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: 2 }}>{t('dailyFermi.askHintDesc')}</div>
           </div>
           <button
             onClick={onClose}
@@ -376,7 +376,7 @@ function FermiChatModal({ question, locale, onClose }: {
                 borderRadius: msg.role === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
                 background: msg.role === 'user' ? 'var(--brand)' : 'var(--bg-secondary)',
                 color: msg.role === 'user' ? 'var(--accent-fg)' : 'var(--text-primary)',
-                fontSize: 15,
+                fontSize: '1rem',
                 lineHeight: 1.6,
               }}>
                 {msg.content}
@@ -387,7 +387,7 @@ function FermiChatModal({ question, locale, onClose }: {
             <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
               <div style={{
                 padding: '10px 14px', borderRadius: '16px 16px 16px 4px',
-                background: 'var(--bg-secondary)', color: 'var(--text-muted)', fontSize: 15,
+                background: 'var(--bg-secondary)', color: 'var(--text-muted)', fontSize: '1rem',
               }}>
                 {t('dailyFermi.thinking')}
               </div>
@@ -418,7 +418,7 @@ function FermiChatModal({ question, locale, onClose }: {
                 border: '1.5px solid var(--border)',
                 background: 'var(--bg-secondary)',
                 color: 'var(--text-primary)',
-                fontSize: 15,
+                fontSize: '1rem',
                 lineHeight: 1.5,
                 resize: 'none',
                 outline: 'none',
@@ -660,13 +660,13 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
       <Header title={t('dailyFermi.title')} onBack={onBack} />
 
       {loadingQuestion && (
-        <div className="card" style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: 16 }}>
+        <div className="card" style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '1.0667rem' }}>
           {t('common.loading')}
         </div>
       )}
 
       {questionError && (
-        <div className="card" style={{ background: 'rgba(220,38,38,0.06)', borderColor: 'var(--danger)', color: 'var(--danger)', fontSize: 16 }}>
+        <div className="card" style={{ background: 'rgba(220,38,38,0.06)', borderColor: 'var(--danger)', color: 'var(--danger)', fontSize: '1.0667rem' }}>
           {questionError}
         </div>
       )}
@@ -689,14 +689,14 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                   <BarChartIcon width={14} height={14} style={{ color: 'var(--brand)' }} />
-                  <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--brand)' }}>
+                  <span style={{ fontSize: '0.8667rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--brand)' }}>
                     {t('fermi.questionTag')}
                   </span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   {/* タイマー */}
                   {submitPhase === 'idle' && (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 14, fontWeight: 700, color: elapsedSec >= 120 ? 'var(--danger)' : 'var(--text-muted)', fontFamily: "'Inter Tight', monospace" }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: '0.9333rem', fontWeight: 700, color: elapsedSec >= 120 ? 'var(--danger)' : 'var(--text-muted)', fontFamily: "'Inter Tight', monospace" }}>
                       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                       {String(Math.floor(elapsedSec / 60)).padStart(2,'0')}:{String(elapsedSec % 60).padStart(2,'0')}
                     </div>
@@ -729,7 +729,7 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
                   </button>
                 </div>
               </div>
-              <p style={{ fontSize: 20, fontWeight: 600, lineHeight: 1.55, letterSpacing: '-0.01em' }}>
+              <p style={{ fontSize: '1.3333rem', fontWeight: 600, lineHeight: 1.55, letterSpacing: '-0.01em' }}>
                 {question}
               </p>
             </div>
@@ -744,7 +744,7 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
                   display: 'flex', alignItems: 'center', gap: 5,
                   background: 'none', border: '1.5px solid var(--brand)',
                   borderRadius: 20, padding: '6px 14px',
-                  color: 'var(--brand)', fontSize: 13, fontWeight: 700,
+                  color: 'var(--brand)', fontSize: '0.8667rem', fontWeight: 700,
                   cursor: 'pointer',
                 }}
               >
@@ -755,14 +755,14 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
           )}
           {isPaid() && canAnswer && !replayMode && submitPhase === 'idle' && (
             <div style={{ padding: '0 2px', textAlign: 'right' }}>
-              <span style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 600 }}>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>
                 {t('dailyFermi.paidCapNote', { count: Math.max(0, dailyLimit - dailyCount) })}
               </span>
             </div>
           )}
           {!canAnswer && (
             <div style={{ padding: '0 2px', textAlign: 'right' }}>
-              <span style={{ fontSize: 12, color: 'var(--danger)', fontWeight: 700 }}>
+              <span style={{ fontSize: '0.8rem', color: 'var(--danger)', fontWeight: 700 }}>
                 {t('dailyFermi.dailyLimit')}
               </span>
             </div>
@@ -775,22 +775,22 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
               border: '1.5px solid rgba(108,142,245,0.4)',
               background: 'rgba(108,142,245,0.08)',
               padding: '16px',
-              fontSize: 16,
+              fontSize: '1.0667rem',
               lineHeight: 1.6,
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
                 <LightbulbIcon width={14} height={14} style={{ color: 'var(--brand)' }} />
-                <span style={{ fontWeight: 700, color: 'var(--brand)', fontSize: 13, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                <span style={{ fontWeight: 700, color: 'var(--brand)', fontSize: '0.8667rem', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                   {t('dailyFermi.hintLabel')}
                 </span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, marginBottom: 14 }}>
-                <p style={{ color: 'var(--text-primary)', margin: 0, fontWeight: 500, fontSize: 15, lineHeight: 1.7, flex: 1 }}>{hint}</p>
+                <p style={{ color: 'var(--text-primary)', margin: 0, fontWeight: 500, fontSize: '1rem', lineHeight: 1.7, flex: 1 }}>{hint}</p>
                 <button
                   onClick={() => setShowHint(false)}
                   style={{
                     background: 'none', border: 'none', cursor: 'pointer',
-                    color: 'var(--text-muted)', fontSize: 16, padding: 0,
+                    color: 'var(--text-muted)', fontSize: '1.0667rem', padding: 0,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     minWidth: 24, minHeight: 24,
                   }}
@@ -801,10 +801,10 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
               </div>
               {/* 基礎統計データ */}
               <div style={{ paddingTop: 12, borderTop: '1px solid rgba(108,142,245,0.2)' }}>
-                <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', color: 'var(--text-muted)', marginBottom: 10, textTransform: 'uppercase' }}>{t('dailyFermi.refData')}</div>
+                <div style={{ fontSize: '0.7333rem', fontWeight: 700, letterSpacing: '0.1em', color: 'var(--text-muted)', marginBottom: 10, textTransform: 'uppercase' }}>{t('dailyFermi.refData')}</div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                   {getFermiStatsByIndex(currentPoolIndex).map((s) => (
-                    <div key={s.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 13 }}>
+                    <div key={s.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8667rem' }}>
                       <span style={{ color: 'var(--text-secondary)' }}>{s.label}</span>
                       <span style={{ fontWeight: 700, color: 'var(--text-primary)', marginLeft: 12 }}>{s.value}</span>
                     </div>
@@ -827,7 +827,7 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
                     style={{
                       display: 'flex', alignItems: 'center', gap: 4,
                       background: 'none', border: 'none', cursor: 'pointer',
-                      color: 'var(--brand)', fontSize: 13, fontWeight: 600, padding: 0,
+                      color: 'var(--brand)', fontSize: '0.8667rem', fontWeight: 600, padding: 0,
                       fontFamily: 'inherit',
                       animation: guideActive ? 'tut-pulse 1.2s ease 2' : 'none',
                     }}
@@ -847,7 +847,7 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
                     border: 'none',
                     borderRadius: 999, padding: '10px 18px',
                     color: '#FFFFFF',
-                    fontSize: 15, fontWeight: 800,
+                    fontSize: '1rem', fontWeight: 800,
                     cursor: 'pointer',
                     fontFamily: 'inherit',
                     boxShadow: showCalculator
@@ -892,7 +892,7 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
                     border: '1.5px solid var(--border)',
                     background: 'var(--bg-card)',
                     color: 'var(--text-primary)',
-                    fontSize: 16,
+                    fontSize: '1.0667rem',
                     lineHeight: 1.6,
                     resize: 'vertical',
                     outline: 'none',
@@ -903,7 +903,7 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
                 />
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.5 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.8667rem', color: 'var(--text-muted)', lineHeight: 1.5 }}>
                 <MicIcon width={14} height={14} style={{ flexShrink: 0, opacity: 0.8 }} />
                 <span>{t('fermi.voiceHint')}</span>
               </div>
@@ -919,7 +919,7 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
               )}
 
               {submitError && (
-                <div style={{ fontSize: 15, color: 'var(--danger)' }}>{submitError}</div>
+                <div style={{ fontSize: '1rem', color: 'var(--danger)' }}>{submitError}</div>
               )}
 
               {/* ボタン2つ */}
@@ -933,7 +933,7 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
                     border: '1.5px solid var(--border)',
                     background: 'var(--bg-card)',
                     color: 'var(--text-primary)',
-                    fontSize: 15,
+                    fontSize: '1rem',
                     fontWeight: 600,
                     cursor: 'pointer',
                     fontFamily: 'inherit',
@@ -952,7 +952,7 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
                     border: 'none',
                     background: answer.trim() ? 'var(--brand)' : 'var(--bg-muted)',
                     color: answer.trim() ? 'var(--accent-fg)' : 'var(--text-muted)',
-                    fontSize: 15,
+                    fontSize: '1rem',
                     fontWeight: 700,
                     cursor: answer.trim() ? 'pointer' : 'not-allowed',
                     fontFamily: 'inherit',
@@ -975,10 +975,10 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
                 margin: '0 auto 20px',
                 animation: 'spin 0.8s linear infinite',
               }} />
-              <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 8 }}>
+              <div style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 8 }}>
                 {t('dailyFermi.scoring')}
               </div>
-              <div style={{ fontSize: 14, color: 'var(--text-muted)' }}>
+              <div style={{ fontSize: '0.9333rem', color: 'var(--text-muted)' }}>
                 {t('dailyFermi.scoringDesc')}
               </div>
             </div>
@@ -999,10 +999,10 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
               </div>
-              <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 8 }}>
+              <div style={{ fontSize: '1.3333rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 8 }}>
                 {t('dailyFermi.scoringDoneTitle')}
               </div>
-              <div style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 28 }}>
+              <div style={{ fontSize: '0.9333rem', color: 'var(--text-muted)', marginBottom: 28 }}>
                 {t('dailyFermi.scoringDoneDesc')}
               </div>
               <Button variant="primary" size="lg" block onClick={() => setSubmitPhase('result')}>
@@ -1023,19 +1023,19 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
                 textAlign: 'center',
                 boxShadow: '0 8px 32px rgba(0,0,0,0.4)', border: '1px solid rgba(112,216,189,0.25)',
               }}>
-                <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: '.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)', marginBottom: 12 }}>{t('dailyFermi.scoreEyebrow')}</div>
+                <div style={{ fontSize: '0.8rem', fontWeight: 600, letterSpacing: '.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)', marginBottom: 12 }}>{t('dailyFermi.scoreEyebrow')}</div>
 
                 {/* スコア数字 */}
                 <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'center', gap: 6, marginBottom: 4 }}>
-                  <span style={{ fontSize: 80, fontWeight: 900, color: feedback.score != null ? getScoreTone(feedback.score).color : 'var(--text-on-hero)', lineHeight: 1, letterSpacing: '-0.04em', transition: 'color 0.4s ease' }}>
+                  <span style={{ fontSize: '5.3333rem', fontWeight: 900, color: feedback.score != null ? getScoreTone(feedback.score).color : 'var(--text-on-hero)', lineHeight: 1, letterSpacing: '-0.04em', transition: 'color 0.4s ease' }}>
                     {feedback.score ?? '—'}
                   </span>
-                  <span style={{ fontSize: 20, color: 'rgba(255,255,255,0.5)', fontWeight: 600, paddingBottom: 10 }}>/100</span>
+                  <span style={{ fontSize: '1.3333rem', color: 'rgba(255,255,255,0.5)', fontWeight: 600, paddingBottom: 10 }}>/100</span>
                 </div>
 
                 {/* バンドラベル */}
                 {feedback.score != null && (
-                  <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.16em', textTransform: 'uppercase', color: getScoreTone(feedback.score).color, opacity: 0.9, marginBottom: 12 }}>
+                  <div style={{ fontSize: '0.7333rem', fontWeight: 700, letterSpacing: '.16em', textTransform: 'uppercase', color: getScoreTone(feedback.score).color, opacity: 0.9, marginBottom: 12 }}>
                     {getScoreTone(feedback.score).label}
                   </div>
                 )}
@@ -1057,7 +1057,7 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
                 {/* 内訳 */}
                 {feedback.scoreBreakdown && (
                   <div style={{ background: 'rgba(255,255,255,0.08)', borderRadius: 12, padding: '12px 14px', marginBottom: 14 }}>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.9)', marginBottom: feedback.scoreDetails ? 10 : 0, textAlign: 'center', lineHeight: 1.5 }}>
+                    <div style={{ fontSize: '0.8667rem', fontWeight: 700, color: 'rgba(255,255,255,0.9)', marginBottom: feedback.scoreDetails ? 10 : 0, textAlign: 'center', lineHeight: 1.5 }}>
                       {feedback.scoreBreakdown}
                     </div>
                     {feedback.scoreDetails && (
@@ -1071,8 +1071,8 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
                           if (!reason) return null
                           return (
                             <div key={key} style={{ display: 'flex', gap: 10, alignItems: 'flex-start', textAlign: 'left' }}>
-                              <span style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.55)', minWidth: 56, paddingTop: 2, letterSpacing: '0.04em' }}>{label}</span>
-                              <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.85)', lineHeight: 1.6, flex: 1 }}>{reason}</span>
+                              <span style={{ fontSize: '0.7333rem', fontWeight: 700, color: 'rgba(255,255,255,0.55)', minWidth: 56, paddingTop: 2, letterSpacing: '0.04em' }}>{label}</span>
+                              <span style={{ fontSize: '0.8667rem', color: 'rgba(255,255,255,0.85)', lineHeight: 1.6, flex: 1 }}>{reason}</span>
                             </div>
                           )
                         })}
@@ -1082,7 +1082,7 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
                 )}
 
                 {/* メタ情報 */}
-                <div style={{ display: 'flex', justifyContent: 'center', gap: 20, fontSize: 12, color: 'rgba(255,255,255,0.45)' }}>
+                <div style={{ display: 'flex', justifyContent: 'center', gap: 20, fontSize: '0.8rem', color: 'rgba(255,255,255,0.45)' }}>
                   <span>{t('dailyFermi.elapsed', { m: String(Math.floor(elapsedSec / 60)).padStart(2,'0'), s: String(elapsedSec % 60).padStart(2,'0') })}</span>
                   {hintUsed && <span>{t('dailyFermi.hintUsed')}</span>}
                 </div>
@@ -1102,16 +1102,16 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
                   background: 'var(--bg-secondary)',
                 }}>
                   <BarChartIcon width={15} height={15} style={{ color: 'var(--brand)' }} />
-                  <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>{t('dailyFermi.aiFeedback')}</span>
+                  <span style={{ fontSize: '0.9333rem', fontWeight: 700, color: 'var(--text-primary)' }}>{t('dailyFermi.aiFeedback')}</span>
                 </div>
-                <div style={{ padding: '16px 18px', fontSize: 15, lineHeight: 1.75, color: 'var(--text-primary)' }}>
+                <div style={{ padding: '16px 18px', fontSize: '1rem', lineHeight: 1.75, color: 'var(--text-primary)' }}>
                   {renderFeedbackMarkdown(feedback.feedback)}
                 </div>
                 {onReport && (
                   <div style={{ padding: '0 18px 14px' }}>
                     <button
                       onClick={() => onReport({ lessonTitle: t('report.dailyFermiTitle'), question })}
-                      style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontFamily: 'inherit' }}
+                      style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.8667rem', color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontFamily: 'inherit' }}
                     >
                       <FlagIcon width={14} height={14} aria-hidden="true" />
                       {t('report.linkText')}
@@ -1133,9 +1133,9 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <LightbulbIcon width={15} height={15} style={{ color: 'var(--brand)', flexShrink: 0 }} />
-                    <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)' }}>{t('dailyFermi.upsellTitle')}</span>
+                    <span style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)' }}>{t('dailyFermi.upsellTitle')}</span>
                   </div>
-                  <p style={{ margin: 0, fontSize: 14, lineHeight: 1.6, color: 'var(--text-secondary)' }}>
+                  <p style={{ margin: 0, fontSize: '0.9333rem', lineHeight: 1.6, color: 'var(--text-secondary)' }}>
                     {t('dailyFermi.upsellDesc')}
                   </p>
                   <button
@@ -1145,7 +1145,7 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
                       alignSelf: 'flex-start', marginTop: 4,
                       display: 'inline-flex', alignItems: 'center', gap: 6,
                       background: 'none', border: 'none', padding: '2px 0',
-                      color: 'var(--brand)', fontSize: 14, fontWeight: 700,
+                      color: 'var(--brand)', fontSize: '0.9333rem', fontWeight: 700,
                       cursor: 'pointer', fontFamily: 'inherit',
                     }}
                   >
@@ -1170,7 +1170,7 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
                       border: 'none',
                       background: 'var(--brand-grad-h)',
                       color: 'var(--accent-fg)',
-                      fontSize: 15, fontWeight: 800, letterSpacing: '.01em',
+                      fontSize: '1rem', fontWeight: 800, letterSpacing: '.01em',
                       cursor: 'pointer',
                       boxShadow: '0 6px 18px rgba(108,142,245,.32)',
                       fontFamily: 'inherit',

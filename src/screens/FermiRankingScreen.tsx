@@ -137,7 +137,7 @@ export function FermiRankingScreen() {
             borderRadius: 99,
             padding: '12px 20px',
             boxShadow: '0 12px 32px rgba(112,216,189,0.45), 0 0 0 1px rgba(255,255,255,0.2) inset',
-            fontSize: 15, fontWeight: 800, letterSpacing: '-0.005em',
+            fontSize: '1rem', fontWeight: 800, letterSpacing: '-0.005em',
             animation: 'rankup-toast 0.55s cubic-bezier(.2,.8,.2,1) both',
           }}
         >
@@ -150,18 +150,18 @@ export function FermiRankingScreen() {
 
       {/* ヘッダー */}
       <div style={{ padding: 'calc(env(safe-area-inset-top, 44px) + 8px) 20px 16px' }}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 22, fontWeight: 800 }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: '1.4667rem', fontWeight: 800 }}>
           <span>{t('fermiRank.heading')}</span>
           <TrophyIcon width={20} height={20} style={{ color: 'var(--medal-gold)' }} />
         </div>
-        <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 4 }}>{t('fermiRank.subtitle')}</div>
+        <div style={{ fontSize: '0.8667rem', color: 'var(--text-secondary)', marginTop: 4 }}>{t('fermiRank.subtitle')}</div>
         {/* スコア算出基準の常設説明: 実装の実態（AI採点スコアの期間累計・毎日更新）に合わせる */}
-        <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 8, lineHeight: 1.5 }}>
+        <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: 8, lineHeight: 1.5 }}>
           {t('fermiRank.basis')}
         </div>
         {/* 参加者数（母数）: realCount が取得できたときのみ表示 */}
         {!loading && participantCount != null && participantCount > 0 && (
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 8, fontSize: 12, color: 'var(--text-secondary)', fontWeight: 600 }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 8, fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 600 }}>
             <UserIcon width={14} height={14} aria-hidden="true" style={{ color: 'var(--text-muted)' }} />
             <span>{t('fermiRank.participants', { n: participantCount })}</span>
           </div>
@@ -176,7 +176,7 @@ export function FermiRankingScreen() {
             border: `1.5px solid ${period === p ? 'var(--brand)' : 'var(--border)'}`,
             background: period === p ? 'var(--accent-soft)' : 'transparent',
             color: period === p ? 'var(--brand)' : 'var(--text-secondary)',
-            fontSize: 13, fontWeight: 700, cursor: 'pointer',
+            fontSize: '0.8667rem', fontWeight: 700, cursor: 'pointer',
             fontFamily: 'inherit',
           }}>
             {periodLabel[p]}
@@ -207,24 +207,24 @@ export function FermiRankingScreen() {
           }}
         >
           <div>
-            <div style={{ fontSize: 12, color: 'var(--brand)', fontWeight: 700, marginBottom: 4 }}>{t('fermiRank.yourRank')}</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--brand)', fontWeight: 700, marginBottom: 4 }}>{t('fermiRank.yourRank')}</div>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
               <span
                 style={{
-                  fontSize: 32, fontWeight: 900, color: 'var(--brand)',
+                  fontSize: '2.1333rem', fontWeight: 900, color: 'var(--brand)',
                   display: 'inline-block',
                   animation: showRankUp ? 'rankup-pop 0.5s cubic-bezier(.2,.8,.2,1) both' : undefined,
                 }}
               >
                 {myEntry.rank}
               </span>
-              <span style={{ fontSize: 14, color: 'var(--text-secondary)' }}>{t('fermiRank.rankUnit')}</span>
+              <span style={{ fontSize: '0.9333rem', color: 'var(--text-secondary)' }}>{t('fermiRank.rankUnit')}</span>
               {rankDelta != null && rankDelta > 0 && (
                 <span
                   style={{
                     marginLeft: 6,
                     display: 'inline-flex', alignItems: 'center', gap: 2,
-                    fontSize: 12, fontWeight: 800,
+                    fontSize: '0.8rem', fontWeight: 800,
                     color: 'var(--score-excellent-on)',
                     background: 'var(--score-excellent)',
                     borderRadius: 99,
@@ -238,8 +238,8 @@ export function FermiRankingScreen() {
             </div>
           </div>
           <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 4 }}>{t('fermiRank.bestScore')}</div>
-            <div style={{ fontSize: 24, fontWeight: 800 }}>{myEntry.score}</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: 4 }}>{t('fermiRank.bestScore')}</div>
+            <div style={{ fontSize: '1.6rem', fontWeight: 800 }}>{myEntry.score}</div>
           </div>
         </div>
       )}
@@ -248,7 +248,7 @@ export function FermiRankingScreen() {
           現状の API は上位のみ返し、N 位より下の正確な順位は返さないため、
           順位の数値は捏造せず「上位入りで表示される」旨だけ案内する。 */}
       {!loading && !myEntry && entries.length > 0 && (
-        <div style={{ margin: '0 20px 20px', fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+        <div style={{ margin: '0 20px 20px', fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
           {t('fermiRank.notRankedYet')}
         </div>
       )}
@@ -256,7 +256,7 @@ export function FermiRankingScreen() {
       {/* TOP3 */}
       {!loading && top3.length > 0 && (
         <div style={{ padding: '0 20px 12px' }}>
-          <div style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 700, letterSpacing: '.08em', marginBottom: 10 }}>{t('fermiRank.top3')}</div>
+          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 700, letterSpacing: '.08em', marginBottom: 10 }}>{t('fermiRank.top3')}</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {top3.map(e => <RankCard key={`${e.rank}-${e.name}`} entry={e} highlight={showRankUp && e.isMe} />)}
           </div>
@@ -266,7 +266,7 @@ export function FermiRankingScreen() {
       {/* 4位以降 */}
       {!loading && rest.length > 0 && (
         <div style={{ padding: '0 20px 100px' }}>
-          <div style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 700, letterSpacing: '.08em', margin: '8px 0 10px' }}>{t('fermiRank.fourPlus')}</div>
+          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 700, letterSpacing: '.08em', margin: '8px 0 10px' }}>{t('fermiRank.fourPlus')}</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {rest.map(e => <RankCard key={`${e.rank}-${e.name}`} entry={e} compact highlight={showRankUp && e.isMe} />)}
           </div>
@@ -276,8 +276,8 @@ export function FermiRankingScreen() {
       {/* 空状態 */}
       {!loading && entries.length === 0 && (
         <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--text-secondary)' }}>
-          <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 6 }}>{t('fermiRank.empty.title')}</div>
-          <div style={{ fontSize: 13 }}>{t('fermiRank.empty.desc')}</div>
+          <div style={{ fontSize: '1rem', fontWeight: 700, marginBottom: 6 }}>{t('fermiRank.empty.title')}</div>
+          <div style={{ fontSize: '0.8667rem' }}>{t('fermiRank.empty.desc')}</div>
         </div>
       )}
     </div>
@@ -313,24 +313,24 @@ function RankCard({ entry, compact, highlight }: { entry: RankEntry; compact?: b
       }}>
         {isPodium
           ? <MedalIcon width={compact ? 16 : 20} height={compact ? 16 : 20} aria-label={t('onboarding.slidesRankUnit', { n: entry.rank })} style={{ color: 'var(--text-on-hero)' }} />
-          : <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-secondary)' }}>{entry.rank}</span>
+          : <span style={{ fontSize: '0.8667rem', fontWeight: 700, color: 'var(--text-secondary)' }}>{entry.rank}</span>
         }
       </div>
 
       {/* 名前 + 職業バッジ */}
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{
-          fontSize: compact ? 14 : 15, fontWeight: entry.isMe ? 800 : 600,
+          fontSize: compact ? '0.9333rem' : '1rem', fontWeight: entry.isMe ? 800 : 600,
           color: entry.isMe ? 'var(--brand)' : 'var(--text-primary)',
           display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap',
         }}>
           <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', minWidth: 0 }}>{entry.name}</span>
-          {entry.isMe && <span style={{ fontSize: 11, background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)', borderRadius: 4, padding: '1px 6px', flexShrink: 0 }}>YOU</span>}
+          {entry.isMe && <span style={{ fontSize: '0.7333rem', background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)', borderRadius: 4, padding: '1px 6px', flexShrink: 0 }}>YOU</span>}
           {occLabel && (
             <span
               aria-label={t('fermiRank.occupationAria', { label: occLabel })}
               style={{
-                fontSize: 10,
+                fontSize: '0.6667rem',
                 fontWeight: 700,
                 color: 'var(--text-secondary)',
                 background: 'var(--bg-primary)',
@@ -349,7 +349,7 @@ function RankCard({ entry, compact, highlight }: { entry: RankEntry; compact?: b
 
       {/* スコア */}
       <div style={{ flexShrink: 0, textAlign: 'right' }}>
-        <span style={{ fontSize: compact ? 15 : 18, fontWeight: 800 }}>{entry.score}</span>
+        <span style={{ fontSize: compact ? '1rem' : '1.2rem', fontWeight: 800 }}>{entry.score}</span>
       </div>
     </div>
   )

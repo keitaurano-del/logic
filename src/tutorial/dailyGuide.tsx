@@ -50,7 +50,7 @@ export function GuideLabel({ text, position = 'bottom' }: LabelProps) {
       left: '50%', transform: 'translateX(-50%)',
       whiteSpace: 'nowrap',
       background: 'rgba(15,21,35,0.82)',
-      color: '#fff', fontSize: 12, fontWeight: 600,
+      color: '#fff', fontSize: '0.8rem', fontWeight: 600,
       padding: '5px 10px', borderRadius: 8,
       pointerEvents: 'none',
       zIndex: 10,

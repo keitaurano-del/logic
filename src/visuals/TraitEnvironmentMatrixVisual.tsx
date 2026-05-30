@@ -144,7 +144,7 @@ export function TraitEnvironmentMatrixVisual(
           <div
             key={`env-${e}`}
             style={{
-              fontSize: 12,
+              fontSize: '0.8rem',
               fontWeight: 700,
               letterSpacing: '0.04em',
               color: 'var(--text-muted)',
@@ -164,7 +164,7 @@ export function TraitEnvironmentMatrixVisual(
             <div key={`row-${trait}`} style={{ display: 'contents' }}>
               <div
                 style={{
-                  fontSize: 12,
+                  fontSize: '0.8rem',
                   fontWeight: 700,
                   color: 'var(--text-primary)',
                   textAlign: 'right',
@@ -206,10 +206,10 @@ export function TraitEnvironmentMatrixVisual(
                       gap: 2,
                     }}
                   >
-                    <span style={{ fontSize: 18, fontWeight: 800, lineHeight: 1 }}>
+                    <span style={{ fontSize: '1.2rem', fontWeight: 800, lineHeight: 1 }}>
                       {a.glyph}
                     </span>
-                    <span style={{ fontSize: 12, fontWeight: 600 }}>{a.label}</span>
+                    <span style={{ fontSize: '0.8rem', fontWeight: 600 }}>{a.label}</span>
                   </div>
                 )
               })}
@@ -225,7 +225,7 @@ export function TraitEnvironmentMatrixVisual(
           display: 'flex',
           gap: 14,
           justifyContent: 'center',
-          fontSize: 12,
+          fontSize: '0.8rem',
           color: 'var(--text-secondary)',
         }}
       >
@@ -268,7 +268,7 @@ export function TraitEnvironmentMatrixVisual(
             padding: '10px 12px',
             background: 'var(--visual-warm-primary-soft)',
             borderRadius: 8,
-            fontSize: 13,
+            fontSize: '0.8667rem',
             fontWeight: 600,
             color: 'var(--visual-warm-primary-deep)',
             textAlign: 'center',

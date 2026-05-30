@@ -203,7 +203,7 @@ function renderBlock(block: Block, key: number): ReactNode {
             marginTop: 'var(--s-5)',
             marginBottom: 'var(--s-2)',
             color: 'var(--brand)',
-            fontSize: block.level === 2 ? 18 : 16,
+            fontSize: block.level === 2 ? '1.2rem' : '1.0667rem',
             fontWeight: 700,
             lineHeight: 1.4,
           }}
@@ -236,7 +236,7 @@ function renderBlock(block: Block, key: number): ReactNode {
                 alignItems: 'baseline',
                 // 中黒「・」グリフは左右に内蔵余白があるため gap は詰める。
                 gap: 'var(--s-1)',
-                fontSize: 16,
+                fontSize: '1.0667rem',
                 lineHeight: 1.8,
                 color: 'var(--text-primary)',
               }}
@@ -248,7 +248,7 @@ function renderBlock(block: Block, key: number): ReactNode {
                   // 中黒「・」をテキストとして描画。フォント由来なので本文と縦位置が揃い、
                   // 行の高さに追従する（青丸 + translateY のズレを廃止）。
                   color: 'var(--text-secondary)',
-                  fontSize: 16,
+                  fontSize: '1.0667rem',
                   lineHeight: 1.8,
                   userSelect: 'none',
                 }}
@@ -281,7 +281,7 @@ function renderBlock(block: Block, key: number): ReactNode {
                 display: 'flex',
                 alignItems: 'baseline',
                 gap: 'var(--s-3)',
-                fontSize: 16,
+                fontSize: '1.0667rem',
                 lineHeight: 1.8,
                 color: 'var(--text-primary)',
               }}
@@ -295,7 +295,7 @@ function renderBlock(block: Block, key: number): ReactNode {
                   borderRadius: 'var(--radius-full)',
                   background: 'var(--brand-soft)',
                   color: 'var(--brand)',
-                  fontSize: 12,
+                  fontSize: '0.8rem',
                   fontWeight: 700,
                   display: 'inline-flex',
                   alignItems: 'center',
@@ -362,7 +362,7 @@ function renderBlock(block: Block, key: number): ReactNode {
             borderRadius: 'var(--radius-md)',
             border: '1px solid var(--border-light)',
             overflowX: 'auto',
-            fontSize: 13,
+            fontSize: '0.8667rem',
             lineHeight: 1.65,
             color: 'var(--text-primary)',
             whiteSpace: 'pre-wrap',
@@ -379,7 +379,7 @@ function renderBlock(block: Block, key: number): ReactNode {
         <p
           key={key}
           style={{
-            fontSize: 17,
+            fontSize: '1.1333rem',
             lineHeight: 1.85,
             fontWeight: 400,
             color: 'var(--text-primary)',

@@ -85,7 +85,7 @@ export default function Feedback({ onBack }: { onBack: () => void }) {
 
           <label className="fb-label">内容</label>
           {CATEGORY_GUIDE[category] && (
-            <p style={{ fontSize: 13, color: 'var(--text-secondary, #7A849E)', margin: '4px 0 8px', lineHeight: 1.6 }}>
+            <p style={{ fontSize: '0.8667rem', color: 'var(--text-secondary, #7A849E)', margin: '4px 0 8px', lineHeight: 1.6 }}>
               {CATEGORY_GUIDE[category]}
             </p>
           )}
@@ -98,7 +98,7 @@ export default function Feedback({ onBack }: { onBack: () => void }) {
             rows={6}
           />
 
-          {error && <p style={{ color: 'var(--danger, #EF4444)', fontSize: 13, marginTop: 8 }}>{error}</p>}
+          {error && <p style={{ color: 'var(--danger, #EF4444)', fontSize: '0.8667rem', marginTop: 8 }}>{error}</p>}
           <button className="fb-submit" onClick={handleSubmit} disabled={!message.trim() || loading}>
             {loading ? '送信中...' : 'フィードバックを送信'}
           </button>

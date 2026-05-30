@@ -28,7 +28,7 @@ export function SoWhatVisual({ revealMode = 'interactive' }: Props = {}) {
     <div className="vz-sowhat vz-stagger">
       <div className="vz-sowhat-block conclusion">
         <span className="vz-sowhat-label">結論 / メッセージ</span>
-        <span style={{ fontSize: 16, fontWeight: 700, lineHeight: 1.45 }}>
+        <span style={{ fontSize: '1.0667rem', fontWeight: 700, lineHeight: 1.45 }}>
           このプロジェクトは予算を増やすべき
         </span>
       </div>
@@ -48,7 +48,7 @@ export function SoWhatVisual({ revealMode = 'interactive' }: Props = {}) {
       {step >= 2 && (
         <div className="vz-sowhat-block">
           <span className="vz-sowhat-label">根拠 / データ</span>
-          <span style={{ fontSize: 14, color: 'var(--text-primary)', lineHeight: 1.6, fontWeight: 500 }}>
+          <span style={{ fontSize: '0.9333rem', color: 'var(--text-primary)', lineHeight: 1.6, fontWeight: 500 }}>
             • ユーザー数が前年比 +180%<br />
             • 競合は同領域で投資を 2 倍化<br />
             • 既存リソースでは対応しきれない
@@ -65,7 +65,7 @@ export function SoWhatVisual({ revealMode = 'interactive' }: Props = {}) {
             padding: '10px 12px',
             background: 'var(--brand-soft)',
             borderRadius: 8,
-            fontSize: 13,
+            fontSize: '0.8667rem',
             fontWeight: 600,
             color: 'var(--brand)',
             textAlign: 'center',

@@ -264,19 +264,22 @@
   --serif: var(--font-display);
 
   /* Font scale (UI-12: 一律+約8%に拡大)
-   * DF-F2: ユーザーが選べる文字サイズ。--font-scale (既定 1.0) を
-   * documentElement/body に設定すると type scale 全体が一括でスケールする。
-   * 標準=1.0 / 大=1.15 / 特大=1.3（src/fontScale.ts で適用）。
-   * 基準 px は UI-12 で確定した整数値。 */
+   * DF-F2: ユーザーが選べる文字サイズ。
+   * スケールは src/fontScale.ts が documentElement(html) の font-size を
+   *   15px * scale (標準15 / 大17.25 / 特大19.5)
+   * に設定して rem 基準を動かす方式に一本化した。type scale も inline fontSize も
+   * すべて rem 基準なので、html の font-size を変えるだけで本文全体が一律スケールする。
+   * --font-scale 変数は後方互換のため残すが calc には掛けない（掛けると root スケールと
+   * 二重に効いてしまうため）。基準 px は 1rem = 15px で換算（UI-12 確定の整数 px / 15）。 */
   --font-scale: 1;
-  --font-xs:   calc(12px * var(--font-scale));
-  --font-sm:   calc(14px * var(--font-scale));
-  --font-base: calc(16px * var(--font-scale));
-  --font-md:   calc(18px * var(--font-scale));
-  --font-lg:   calc(22px * var(--font-scale));
-  --font-xl:   calc(26px * var(--font-scale));
-  --font-2xl:  calc(30px * var(--font-scale));
-  --font-3xl:  calc(37px * var(--font-scale));
+  --font-xs:   0.8rem;    /* 12px */
+  --font-sm:   0.9333rem; /* 14px */
+  --font-base: 1.0667rem; /* 16px */
+  --font-md:   1.2rem;    /* 18px */
+  --font-lg:   1.4667rem; /* 22px */
+  --font-xl:   1.7333rem; /* 26px */
+  --font-2xl:  2rem;      /* 30px */
+  --font-3xl:  2.4667rem; /* 37px */
 
   /* Semantic stat colors */
   --streak-bg:     rgba(249, 115,  22, 0.12);

@@ -95,13 +95,13 @@ function GoalsForPeriod({ userId, periodType, periodKey }: GoalsForPeriodProps) 
   }
 
   if (loading) {
-    return <div style={{ color: 'var(--text-muted)', fontSize: 13 }}>{t('common.loading')}</div>
+    return <div style={{ color: 'var(--text-muted)', fontSize: '0.8667rem' }}>{t('common.loading')}</div>
   }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
       {goals.length === 0 && !editorMode && (
-        <div className="journal-goal-card" style={{ color: 'var(--text-muted)', fontSize: 13, alignItems: 'center', textAlign: 'center' }}>
+        <div className="journal-goal-card" style={{ color: 'var(--text-muted)', fontSize: '0.8667rem', alignItems: 'center', textAlign: 'center' }}>
           {t('journal.goalsEmptyForPeriod')}
         </div>
       )}
@@ -271,7 +271,7 @@ function GoalEditor({ userId, periodType, periodKey, existing, onSaved, onCancel
 
       {/* カテゴリ選択（仕事 / プライベート）。「指定なし」は clear ボタン */}
       <div>
-        <div className="journal-section__label" style={{ fontSize: 12, marginBottom: 6, color: 'var(--text-muted)' }}>
+        <div className="journal-section__label" style={{ fontSize: '0.8rem', marginBottom: 6, color: 'var(--text-muted)' }}>
           {t('journal.goalCategoryLabel')}
         </div>
         <div className="journal-goal-cat-row" role="radiogroup" aria-label={t('journal.goalCategoryLabel')}>

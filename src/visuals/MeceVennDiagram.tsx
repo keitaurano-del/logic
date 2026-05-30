@@ -116,7 +116,7 @@ export function MeceVennDiagram(props: MeceVennProps = {}) {
           padding: '10px 12px',
           background: 'var(--visual-warm-primary-soft)',
           borderRadius: 8,
-          fontSize: 13,
+          fontSize: '0.8667rem',
           fontWeight: 600,
           color: 'var(--visual-warm-primary-deep)',
           textAlign: 'center',

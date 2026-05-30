@@ -35,10 +35,10 @@ function BaseDataPanel() {
   const stats = getBaseStats()
   return (
     <div style={{ marginTop: 12, paddingTop: 10, borderTop: '1px solid var(--border)' }}>
-      <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 8, textTransform: 'uppercase' }}>{t('fermiScreen.refData')}</div>
+      <div style={{ fontSize: '0.8667rem', fontWeight: 700, letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 8, textTransform: 'uppercase' }}>{t('fermiScreen.refData')}</div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px 12px' }}>
         {stats.map((s) => (
-          <div key={s.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, padding: '2px 0' }}>
+          <div key={s.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9333rem', padding: '2px 0' }}>
             <span style={{ color: 'var(--text-muted)' }}>{s.label}</span>
             <span style={{ fontWeight: 700, color: 'var(--text)' }}>{s.value}</span>
           </div>
@@ -223,7 +223,7 @@ function FermiMobile({ onBack, state, onReport }: { onBack: () => void; state: F
       </div>
 
       {error && (
-        <div className="card" style={{ background: 'rgba(220,38,38,0.06)', borderColor: 'var(--danger)', color: 'var(--danger)', fontSize: 16 }}>
+        <div className="card" style={{ background: 'rgba(220,38,38,0.06)', borderColor: 'var(--danger)', color: 'var(--danger)', fontSize: '1.0667rem' }}>
           {error}
         </div>
       )}
@@ -281,7 +281,7 @@ function FermiDesktop({ onBack, state, onReport }: { onBack: () => void; state: 
       </div>
 
       {error && (
-        <div className="card" style={{ background: 'rgba(220,38,38,0.06)', borderColor: 'var(--danger)', color: 'var(--danger)', fontSize: 16, marginBottom: 'var(--s-4)' }}>
+        <div className="card" style={{ background: 'rgba(220,38,38,0.06)', borderColor: 'var(--danger)', color: 'var(--danger)', fontSize: '1.0667rem', marginBottom: 'var(--s-4)' }}>
           {error}
         </div>
       )}
@@ -315,7 +315,7 @@ function renderFeedbackMarkdown(text: string) {
     if (trimmed.startsWith('## ')) {
       const heading = trimmed.slice(3)
       elements.push(
-        <div key={key++} className="eyebrow accent" style={{ marginTop: 'var(--s-3)', marginBottom: 'var(--s-1)', fontSize: 14 }}>
+        <div key={key++} className="eyebrow accent" style={{ marginTop: 'var(--s-3)', marginBottom: 'var(--s-1)', fontSize: '0.9333rem' }}>
           {heading}
         </div>
       )
@@ -325,7 +325,7 @@ function renderFeedbackMarkdown(text: string) {
     const numMatch = trimmed.match(/^(\d+)\.\s+(.+)/)
     if (numMatch) {
       elements.push(
-        <div key={key++} style={{ display: 'flex', gap: 8, fontSize: 15, lineHeight: 1.7, marginBottom: 2 }}>
+        <div key={key++} style={{ display: 'flex', gap: 8, fontSize: '1rem', lineHeight: 1.7, marginBottom: 2 }}>
           <span style={{ color: 'var(--brand)', fontWeight: 700, minWidth: 20 }}>{numMatch[1]}.</span>
           <span dangerouslySetInnerHTML={{ __html: boldify(numMatch[2]) }} />
         </div>
@@ -335,7 +335,7 @@ function renderFeedbackMarkdown(text: string) {
     // Bullet list: - xxx
     if (trimmed.startsWith('- ')) {
       elements.push(
-        <div key={key++} style={{ display: 'flex', gap: 8, fontSize: 15, lineHeight: 1.7, marginBottom: 2, paddingLeft: 4 }}>
+        <div key={key++} style={{ display: 'flex', gap: 8, fontSize: '1rem', lineHeight: 1.7, marginBottom: 2, paddingLeft: 4 }}>
           <span style={{ color: 'var(--text-muted)' }}>•</span>
           <span dangerouslySetInnerHTML={{ __html: boldify(trimmed.slice(2)) }} />
         </div>
@@ -344,7 +344,7 @@ function renderFeedbackMarkdown(text: string) {
     }
     // Plain text (with bold support)
     elements.push(
-      <div key={key++} style={{ fontSize: 15, lineHeight: 1.7 }} dangerouslySetInnerHTML={{ __html: boldify(trimmed) }} />
+      <div key={key++} style={{ fontSize: '1rem', lineHeight: 1.7 }} dangerouslySetInnerHTML={{ __html: boldify(trimmed) }} />
     )
   }
   return elements
@@ -381,7 +381,7 @@ function FermiFeedbackBlock({
         {onReport && (
           <button
             onClick={onReport}
-            style={{ marginTop: 'var(--s-3)', display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 14, color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontFamily: 'inherit' }}
+            style={{ marginTop: 'var(--s-3)', display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.9333rem', color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontFamily: 'inherit' }}
           >
             <FlagIcon width={14} height={14} aria-hidden="true" />
             {t('report.linkText')}

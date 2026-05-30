@@ -76,10 +76,10 @@ export function StreakScreen({ onBack }: StreakScreenProps) {
             <FlameIcon width={40} height={40} />
           </span>
         </div>
-        <div style={{ fontSize: 72, fontWeight: 800, lineHeight: 1, letterSpacing: '-0.04em', color: 'var(--brand)' }}>
+        <div style={{ fontSize: '4.8rem', fontWeight: 800, lineHeight: 1, letterSpacing: '-0.04em', color: 'var(--brand)' }}>
           {streak}
         </div>
-        <div style={{ fontSize: 18, color: 'var(--text-muted)', marginTop: 'var(--s-2)', fontWeight: 600 }}>
+        <div style={{ fontSize: '1.2rem', color: 'var(--text-muted)', marginTop: 'var(--s-2)', fontWeight: 600 }}>
           {t('streak.currentLabel')}
         </div>
       </div>
@@ -87,12 +87,12 @@ export function StreakScreen({ onBack }: StreakScreenProps) {
       {/* Stats row */}
       <div style={{ display: 'flex', gap: 'var(--s-3)', marginBottom: 'var(--s-2)' }}>
         <div className="card" style={{ flex: 1, textAlign: 'center', padding: 'var(--s-4)' }}>
-          <div style={{ fontSize: 32, fontWeight: 700, color: 'var(--text)' }}>{streak}</div>
-          <div style={{ fontSize: 14, color: 'var(--text-muted)', marginTop: 4 }}>{t('streak.dayStreak')}</div>
+          <div style={{ fontSize: '2.1333rem', fontWeight: 700, color: 'var(--text)' }}>{streak}</div>
+          <div style={{ fontSize: '0.9333rem', color: 'var(--text-muted)', marginTop: 4 }}>{t('streak.dayStreak')}</div>
         </div>
         <div className="card" style={{ flex: 1, textAlign: 'center', padding: 'var(--s-4)' }}>
-          <div style={{ fontSize: 32, fontWeight: 700, color: 'var(--text)' }}>{streakWeeks}</div>
-          <div style={{ fontSize: 14, color: 'var(--text-muted)', marginTop: 4 }}>{t('streak.weekStreak')}</div>
+          <div style={{ fontSize: '2.1333rem', fontWeight: 700, color: 'var(--text)' }}>{streakWeeks}</div>
+          <div style={{ fontSize: '0.9333rem', color: 'var(--text-muted)', marginTop: 4 }}>{t('streak.weekStreak')}</div>
         </div>
       </div>
 
@@ -107,7 +107,7 @@ export function StreakScreen({ onBack }: StreakScreenProps) {
           >
             <ArrowLeftIcon width={22} height={22} />
           </button>
-          <div style={{ fontWeight: 700, fontSize: 18 }}>{monthLabel}</div>
+          <div style={{ fontWeight: 700, fontSize: '1.2rem' }}>{monthLabel}</div>
           <button
             onClick={() => setMonthOffset((o) => Math.min(0, o + 1))}
             style={{ background: 'none', border: 'none', cursor: monthOffset < 0 ? 'pointer' : 'default', padding: 12, color: monthOffset < 0 ? 'var(--text-muted)' : 'var(--text-faint)', display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: 44, minHeight: 44 }}
@@ -120,7 +120,7 @@ export function StreakScreen({ onBack }: StreakScreenProps) {
         {/* DOW header */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', marginBottom: 'var(--s-2)' }}>
           {dowLabels.map((d) => (
-            <div key={d} style={{ textAlign: 'center', fontSize: 14, fontWeight: 600, color: 'var(--text-faint)', paddingBottom: 'var(--s-2)' }}>
+            <div key={d} style={{ textAlign: 'center', fontSize: '0.9333rem', fontWeight: 600, color: 'var(--text-faint)', paddingBottom: 'var(--s-2)' }}>
               {d}
             </div>
           ))}
@@ -142,7 +142,7 @@ export function StreakScreen({ onBack }: StreakScreenProps) {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: 16,
+                  fontSize: '1.0667rem',
                   fontWeight: isToday || isStudied ? 700 : 400,
                   background: isStudied ? 'var(--brand)' : isToday ? 'var(--brand-soft)' : 'transparent',
                   color: isStudied ? '#fff' : isToday ? 'var(--brand)' : 'var(--text-muted)',
@@ -159,19 +159,19 @@ export function StreakScreen({ onBack }: StreakScreenProps) {
 
       {/* My Records */}
       <div className="card" style={{ padding: 'var(--s-4)' }}>
-        <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 'var(--s-4)' }}>{t('streak.records')}</h2>
+        <h2 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: 'var(--s-4)' }}>{t('streak.records')}</h2>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-3)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: 16, color: 'var(--text-muted)' }}>{t('streak.longestStreak')}</span>
-            <span style={{ fontSize: 24, fontWeight: 700, color: 'var(--brand)' }}>
-              {longestStreak} <span style={{ fontSize: 16, fontWeight: 500, color: 'var(--text-muted)' }}>{t('streak.days')}</span>
+            <span style={{ fontSize: '1.0667rem', color: 'var(--text-muted)' }}>{t('streak.longestStreak')}</span>
+            <span style={{ fontSize: '1.6rem', fontWeight: 700, color: 'var(--brand)' }}>
+              {longestStreak} <span style={{ fontSize: '1.0667rem', fontWeight: 500, color: 'var(--text-muted)' }}>{t('streak.days')}</span>
             </span>
           </div>
           <div style={{ height: 1, background: 'var(--border)' }} />
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: 16, color: 'var(--text-muted)' }}>{t('streak.totalStudyDays')}</span>
-            <span style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)' }}>
-              {totalDays} <span style={{ fontSize: 16, fontWeight: 500, color: 'var(--text-muted)' }}>{t('streak.days')}</span>
+            <span style={{ fontSize: '1.0667rem', color: 'var(--text-muted)' }}>{t('streak.totalStudyDays')}</span>
+            <span style={{ fontSize: '1.6rem', fontWeight: 700, color: 'var(--text)' }}>
+              {totalDays} <span style={{ fontSize: '1.0667rem', fontWeight: 500, color: 'var(--text-muted)' }}>{t('streak.days')}</span>
             </span>
           </div>
         </div>

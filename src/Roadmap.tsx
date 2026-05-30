@@ -53,7 +53,7 @@ export default function Roadmap({ goalId, onBack, onStartLesson }: Props) {
           </h2>
           <p className="roadmap-subtitle">{roadmap.subtitle}</p>
         </div>
-        <button className="roadmap-back-btn" onClick={() => setShowConfirm(true)} style={{ color: '#EF4444', fontSize: 12 }}>この目標をやめる</button>
+        <button className="roadmap-back-btn" onClick={() => setShowConfirm(true)} style={{ color: '#EF4444', fontSize: '0.8rem' }}>この目標をやめる</button>
       </div>
 
       {/* Progress bar */}

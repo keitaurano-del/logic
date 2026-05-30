@@ -1,9 +1,26 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import pkg from './package.json'
+
+// DF-F21: フィードバックの app_version 用フォールバックを必ずビルドへ焼き込む。
+// 優先順位: 明示注入 VITE_APP_VERSION（CI / Render の build env）> package.json
+// version + デプロイ環境が提供する commit SHA（Render: RENDER_GIT_COMMIT /
+// Vercel: VERCEL_GIT_COMMIT_SHA）。VITE_APP_VERSION 未設定でも 'unknown' には
+// ならず、最低でも `web-<pkg version>` まで埋まる。FeedbackScreen 側で
+// import.meta.env.VITE_APP_VERSION → __APP_VERSION_FALLBACK__ の順に解決する。
+function resolveAppVersionFallback(): string {
+  const sha = process.env.RENDER_GIT_COMMIT || process.env.VERCEL_GIT_COMMIT_SHA || ''
+  const shortSha = sha ? sha.slice(0, 7) : ''
+  const base = `web-${pkg.version}`
+  return shortSha ? `${base}+${shortSha}` : base
+}
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  define: {
+    __APP_VERSION_FALLBACK__: JSON.stringify(resolveAppVersionFallback()),
+  },
   server: {
     host: true,
   },

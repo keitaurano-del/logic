@@ -70,11 +70,11 @@ function ThemeCard({
 
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-          <span style={{ fontSize: 16, fontWeight: 700, color: 'var(--md-sys-color-on-surface)' }}>
+          <span style={{ fontSize: '1.0667rem', fontWeight: 700, color: 'var(--md-sys-color-on-surface)' }}>
             {mode.name}
           </span>
         </div>
-        <div style={{ fontSize: 13, color: 'var(--md-sys-color-on-surface-variant)', lineHeight: 1.5 }}>
+        <div style={{ fontSize: '0.8667rem', color: 'var(--md-sys-color-on-surface-variant)', lineHeight: 1.5 }}>
           {mode.description}
         </div>
       </div>
@@ -143,7 +143,7 @@ function FontSizeCard({
         Aa
       </span>
       <span style={{
-        fontSize: 13, fontWeight: 600,
+        fontSize: '0.8667rem', fontWeight: 600,
         color: 'var(--md-sys-color-on-surface)',
       }}>
         {option.name}
@@ -167,7 +167,7 @@ export function AppearanceSettingsScreen({ onBack }: Props) {
   }
 
   const sectionLabelStyle: React.CSSProperties = {
-    fontSize: 12, fontWeight: 700, letterSpacing: '.08em',
+    fontSize: '0.8rem', fontWeight: 700, letterSpacing: '.08em',
     color: 'var(--md-sys-color-on-surface-variant)',
     padding: '4px 4px 12px', textTransform: 'uppercase',
   }
@@ -190,7 +190,7 @@ export function AppearanceSettingsScreen({ onBack }: Props) {
             ))}
           </div>
           <p style={{
-            fontSize: 12, color: 'var(--md-sys-color-on-surface-variant)',
+            fontSize: '0.8rem', color: 'var(--md-sys-color-on-surface-variant)',
             marginTop: 14, lineHeight: 1.6, padding: '0 4px',
           }}>
             {t('appearanceSettings.modeHint')}
@@ -210,7 +210,7 @@ export function AppearanceSettingsScreen({ onBack }: Props) {
             ))}
           </div>
           <p style={{
-            fontSize: 12, color: 'var(--md-sys-color-on-surface-variant)',
+            fontSize: '0.8rem', color: 'var(--md-sys-color-on-surface-variant)',
             marginTop: 14, lineHeight: 1.6, padding: '0 4px',
           }}>
             {t('appearanceSettings.fontSizeHint')}

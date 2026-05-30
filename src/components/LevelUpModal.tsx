@@ -132,7 +132,7 @@ export function LevelUpModal({ prevLevel, newLevel, onClose }: Props) {
           id="lvup-title"
           style={{
             fontFamily: "'Inter Tight', sans-serif",
-            fontSize: 14,
+            fontSize: '0.9333rem',
             fontWeight: 800,
             letterSpacing: '.18em',
             color: 'var(--brand)',
@@ -158,20 +158,20 @@ export function LevelUpModal({ prevLevel, newLevel, onClose }: Props) {
             lineHeight: 1,
           }}
         >
-          <span style={{ fontSize: 22, color: 'var(--text-muted)' }}>Lv.</span>
-          <span style={{ fontSize: 88, textShadow: `0 0 24px color-mix(in srgb, ${lv.color} 60%, transparent)` }}>
+          <span style={{ fontSize: '1.4667rem', color: 'var(--text-muted)' }}>Lv.</span>
+          <span style={{ fontSize: '5.8667rem', textShadow: `0 0 24px color-mix(in srgb, ${lv.color} 60%, transparent)` }}>
             {animatedLevel}
           </span>
         </div>
 
         {/* prev → new */}
-        <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 22, fontWeight: 600 }}>
+        <div style={{ fontSize: '0.8667rem', color: 'var(--text-secondary)', marginBottom: 22, fontWeight: 600 }}>
           Lv.{prevLevel} <span style={{ color: 'var(--text-muted)' }}>→</span>{' '}
           <span style={{ color: lv.color, fontWeight: 800 }}>Lv.{newLevel}</span>
         </div>
 
         {/* メッセージ */}
-        <div style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: 24 }}>
+        <div style={{ fontSize: '0.9333rem', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: 24 }}>
           {t('levelup.message')}
         </div>
 
@@ -185,7 +185,7 @@ export function LevelUpModal({ prevLevel, newLevel, onClose }: Props) {
             color: 'var(--accent-fg, #fff)',
             padding: '14px 0',
             borderRadius: 99,
-            fontSize: 15,
+            fontSize: '1rem',
             fontWeight: 800,
             border: 'none',
             cursor: 'pointer',

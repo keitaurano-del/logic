@@ -440,7 +440,7 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
                 border: 'none',
                 borderRadius: 'var(--radius-pill)',
                 padding: '8px 14px',
-                fontSize: 13, fontWeight: 700,
+                fontSize: '0.8667rem', fontWeight: 700,
                 cursor: 'pointer',
                 fontFamily: "'Noto Sans JP', sans-serif",
                 minHeight: 36,
@@ -475,7 +475,7 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
       <div style={{ flex: 1, padding: '0 16px 80px', display: 'flex', flexDirection: 'column', gap: 14 }}>
 
         <div style={{ padding: '4px 4px 8px' }}>
-          <div style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.45, letterSpacing: '-.005em', whiteSpace: 'pre-line' }}>{t('roadmap.todayQuestion')}</div>
+          <div style={{ fontSize: '1.4667rem', fontWeight: 700, lineHeight: 1.45, letterSpacing: '-.005em', whiteSpace: 'pre-line' }}>{t('roadmap.todayQuestion')}</div>
         </div>
 
         {/* 検索バー（常設）— タップで右上虫眼鏡と同じ検索オーバーレイを開く。発見性向上のため一覧トップに配置 */}
@@ -494,7 +494,7 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
             cursor: 'pointer',
             textAlign: 'left',
             fontFamily: "'Noto Sans JP', sans-serif",
-            fontSize: 14,
+            fontSize: '0.9333rem',
             minHeight: 48,
           }}
         >
@@ -546,8 +546,8 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
                     : <ChevronDownIcon width={18} height={18} />}
                 </span>
                 <span style={{ flex: 1, minWidth: 0 }}>
-                  <span style={{ display: 'block', fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-.005em' }}>{pinnedLabel}</span>
-                  <span style={{ display: 'block', fontSize: 12, color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.45 }}>{t('roadmap.pinnedFermiDescription')}</span>
+                  <span style={{ display: 'block', fontSize: '1.0667rem', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-.005em' }}>{pinnedLabel}</span>
+                  <span style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.45 }}>{t('roadmap.pinnedFermiDescription')}</span>
                 </span>
               </button>
               {!collapsed && (
@@ -603,8 +603,8 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
                     : <ChevronDownIcon width={18} height={18} />}
                 </span>
                 <span style={{ flex: 1, minWidth: 0 }}>
-                  <span style={{ display: 'block', fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-.005em' }}>{group.label}</span>
-                  <span style={{ display: 'block', fontSize: 12, color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.45 }}>{group.description}</span>
+                  <span style={{ display: 'block', fontSize: '1.0667rem', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-.005em' }}>{group.label}</span>
+                  <span style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.45 }}>{group.description}</span>
                 </span>
               </button>
               {!collapsed && (
@@ -743,7 +743,7 @@ function SearchOverlay(p: {
               border: `1px solid var(--border)`,
               background: 'var(--bg-card)',
               color: 'var(--text-primary)',
-              fontSize: 14, outline: 'none',
+              fontSize: '0.9333rem', outline: 'none',
               fontFamily: "'Noto Sans JP', sans-serif",
             }}
           />
@@ -772,7 +772,7 @@ function SearchOverlay(p: {
             color: (!p.searchQuery.trim() || aiLoading) ? 'var(--text-muted)' : 'var(--accent-fg)',
             border: (!p.searchQuery.trim() || aiLoading) ? `1px solid var(--border)` : 'none',
             borderRadius: 12, padding: '10px 14px',
-            fontSize: 13, fontWeight: 700,
+            fontSize: '0.8667rem', fontWeight: 700,
             cursor: (!p.searchQuery.trim() || aiLoading) ? 'default' : 'pointer',
             fontFamily: "'Noto Sans JP', sans-serif",
           }}
@@ -831,17 +831,17 @@ function AiSearchPanel(p: {
 }) {
   if (p.loading) {
     return (
-      <div style={{ padding: 40, textAlign: 'center', color: 'var(--text-secondary)', fontSize: 14 }}>
+      <div style={{ padding: 40, textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.9333rem' }}>
         {t('roadmap.aiSearching')}
       </div>
     )
   }
   if (p.error) {
     return (
-      <div style={{ padding: 32, textAlign: 'center', color: 'var(--text-secondary)', fontSize: 14, display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
+      <div style={{ padding: 32, textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.9333rem', display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
         <div>{t('roadmap.aiSearchError')}</div>
         <button type="button" onClick={p.onRetry}
-          style={{ background: 'var(--accent-soft)', color: 'var(--brand)', border: 'none', borderRadius: 'var(--radius-pill)', padding: '8px 16px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+          style={{ background: 'var(--accent-soft)', color: 'var(--brand)', border: 'none', borderRadius: 'var(--radius-pill)', padding: '8px 16px', fontSize: '0.8667rem', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
           {t('roadmap.aiSearchRetry')}
         </button>
       </div>
@@ -850,15 +850,15 @@ function AiSearchPanel(p: {
   const results = p.results ?? []
   if (results.length === 0) {
     return (
-      <div style={{ padding: 32, textAlign: 'center', color: 'var(--text-secondary)', fontSize: 14 }}>
+      <div style={{ padding: 32, textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.9333rem' }}>
         {t('roadmap.aiSearchEmpty')}
-        <br /><span style={{ fontSize: 12 }}>{t('roadmap.searchQueryNotice', { q: p.query })}</span>
+        <br /><span style={{ fontSize: '0.8rem' }}>{t('roadmap.searchQueryNotice', { q: p.query })}</span>
       </div>
     )
   }
   return (
     <div style={{ flex: 1, padding: '8px 16px 100px', display: 'grid', gridTemplateColumns: '1fr', gap: 10 }}>
-      <div style={{ fontSize: 11, color: 'var(--text-secondary)', fontWeight: 600, padding: '0 2px', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+      <div style={{ fontSize: '0.7333rem', color: 'var(--text-secondary)', fontWeight: 600, padding: '0 2px', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
         <SparklesIcon width={12} height={12} />
         {t('roadmap.aiResultsCount', { count: results.length })}
       </div>
@@ -879,9 +879,9 @@ function AiCourseCard({ course, reason, onOpen }: { course: Course; reason: stri
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15Z"/></svg>
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 11, color: 'var(--brand)', fontWeight: 700, marginBottom: 2 }}>{t('roadmap.coursePrefix', { category: course.category })}</div>
-        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', marginBottom: reason ? 4 : 0, lineHeight: 1.3 }}>{course.title}</div>
-        {reason && <div style={{ fontSize: 11, color: 'var(--text-secondary)', lineHeight: 1.4 }}>{reason}</div>}
+        <div style={{ fontSize: '0.7333rem', color: 'var(--brand)', fontWeight: 700, marginBottom: 2 }}>{t('roadmap.coursePrefix', { category: course.category })}</div>
+        <div style={{ fontSize: '0.9333rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: reason ? 4 : 0, lineHeight: 1.3 }}>{course.title}</div>
+        {reason && <div style={{ fontSize: '0.7333rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>{reason}</div>}
       </div>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2.5" style={{ marginTop: 10, flexShrink: 0 }} aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
     </button>
@@ -897,9 +897,9 @@ function AiLessonCard({ lesson, reason, onOpen }: { lesson: LessonData; reason: 
         <LessonIcon id={lesson.id} action="lesson" size={20} />
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginBottom: 2 }}>{lesson.category}</div>
-        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', marginBottom: reason ? 4 : 0, lineHeight: 1.3 }}>{lesson.title}</div>
-        {reason && <div style={{ fontSize: 11, color: 'var(--text-secondary)', lineHeight: 1.4 }}>{reason}</div>}
+        <div style={{ fontSize: '0.7333rem', color: 'var(--text-secondary)', marginBottom: 2 }}>{lesson.category}</div>
+        <div style={{ fontSize: '0.9333rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: reason ? 4 : 0, lineHeight: 1.3 }}>{lesson.title}</div>
+        {reason && <div style={{ fontSize: '0.7333rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>{reason}</div>}
       </div>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2.5" style={{ marginTop: 10, flexShrink: 0 }} aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
     </button>
@@ -923,8 +923,8 @@ function CustomCourseSection({
       {courses.length > 0 && (
         <>
           <div style={{ padding: '8px 4px 0' }}>
-            <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-.005em' }}>{t('customCourse.sectionTitle')}</div>
-            <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.45 }}>{t('customCourse.sectionDesc')}</div>
+            <div style={{ fontSize: '1.0667rem', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-.005em' }}>{t('customCourse.sectionTitle')}</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.45 }}>{t('customCourse.sectionDesc')}</div>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {courses.map(course => (
@@ -942,8 +942,8 @@ function CustomCourseSection({
                     <SparklesIcon width={18} height={18} />
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.35, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{course.title}</div>
-                    <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>{t('customCourse.previewLessons', { count: course.lessonIds.length })}</div>
+                    <div style={{ fontSize: '0.9333rem', fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.35, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{course.title}</div>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: 2 }}>{t('customCourse.previewLessons', { count: course.lessonIds.length })}</div>
                   </div>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true" style={{ flexShrink: 0 }}><polyline points="9 18 15 12 9 6"/></svg>
                 </button>
@@ -971,8 +971,8 @@ function CustomCourseSection({
           <SparklesIcon width={18} height={18} />
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 14, fontWeight: 800, lineHeight: 1.25 }}>{t('customCourse.createButton')}</div>
-          <div style={{ fontSize: 11, opacity: courses.length > 0 ? 0.75 : 0.9, marginTop: 3, lineHeight: 1.4 }}>{t('customCourse.createButtonDesc')}</div>
+          <div style={{ fontSize: '0.9333rem', fontWeight: 800, lineHeight: 1.25 }}>{t('customCourse.createButton')}</div>
+          <div style={{ fontSize: '0.7333rem', opacity: courses.length > 0 ? 0.75 : 0.9, marginTop: 3, lineHeight: 1.4 }}>{t('customCourse.createButtonDesc')}</div>
         </div>
       </button>
     </div>
@@ -1017,10 +1017,10 @@ function FilterBar(p: {
             type="button"
             onClick={() => setSortSheetOpen(true)}
             aria-haspopup="dialog"
-            style={{ background: 'var(--bg-card)', color: 'var(--text-secondary)', border: `1px solid ${'var(--border)'}`, borderRadius: 8, padding: '4px 10px', fontSize: 12, fontFamily: 'inherit', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4 }}
+            style={{ background: 'var(--bg-card)', color: 'var(--text-secondary)', border: `1px solid ${'var(--border)'}`, borderRadius: 8, padding: '4px 10px', fontSize: '0.8rem', fontFamily: 'inherit', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4 }}
           >
             {sortLabel}
-            <span aria-hidden="true" style={{ fontSize: 10, opacity: 0.7 }}>▾</span>
+            <span aria-hidden="true" style={{ fontSize: '0.6667rem', opacity: 0.7 }}>▾</span>
           </button>
           <ActionSheet
             open={sortSheetOpen}
@@ -1045,7 +1045,7 @@ function Pill({ active, onClick, label }: { active: boolean; onClick: () => void
         border: `1px solid ${active ? 'var(--brand)' : 'var(--border)'}`,
         background: active ? 'color-mix(in srgb, var(--accent) 18%, transparent)' : 'var(--bg-card)',
         color: active ? 'var(--brand)' : 'var(--text-secondary)',
-        fontSize: 12, fontWeight: 600,
+        fontSize: '0.8rem', fontWeight: 600,
         cursor: 'pointer',
         fontFamily: 'inherit',
         whiteSpace: 'nowrap',
@@ -1179,7 +1179,7 @@ function SearchPanel(p: {
       <div style={{ padding: '12px 16px 100px', display: 'flex', flexDirection: 'column', gap: 16 }}>
         {history.length > 0 && (
           <div>
-            <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 6 }}>{t('roadmap.recentSearches')}</div>
+            <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 6 }}>{t('roadmap.recentSearches')}</div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
               {history.map(h => (
                 <Pill key={h} active={false} onClick={() => p.onPickKeyword(h)} label={h} />
@@ -1188,7 +1188,7 @@ function SearchPanel(p: {
           </div>
         )}
         <div>
-          <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 6 }}>{t('roadmap.suggestedKeywords')}</div>
+          <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 6 }}>{t('roadmap.suggestedKeywords')}</div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
             {getSuggestedKeywords().map(k => (
               <Pill key={k} active={false} onClick={() => p.onPickKeyword(k)} label={k} />
@@ -1201,16 +1201,16 @@ function SearchPanel(p: {
 
   if (results.length === 0) {
     return (
-      <div style={{ padding: 32, textAlign: 'center', color: 'var(--text-secondary)', fontSize: 14 }}>
+      <div style={{ padding: 32, textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.9333rem' }}>
         {hasQuery ? t('roadmap.noLessonsFound') : t('roadmap.noResults')}
-        {hasQuery && (<><br /><span style={{ fontSize: 12 }}>{t('roadmap.searchQueryNotice', { q: p.query })}</span></>)}
+        {hasQuery && (<><br /><span style={{ fontSize: '0.8rem' }}>{t('roadmap.searchQueryNotice', { q: p.query })}</span></>)}
       </div>
     )
   }
 
   return (
     <div style={{ flex: 1, padding: '8px 16px 100px', display: 'grid', gridTemplateColumns: '1fr', gap: 10 }}>
-      <div style={{ fontSize: 11, color: 'var(--text-secondary)', fontWeight: 600, padding: '0 2px' }}>
+      <div style={{ fontSize: '0.7333rem', color: 'var(--text-secondary)', fontWeight: 600, padding: '0 2px' }}>
         {t('roadmap.resultsCount', { count: results.length })}
       </div>
       {results.map(r => r.kind === 'course'
@@ -1231,11 +1231,11 @@ function CourseResultCard({ result, query, onOpen }: { result: CourseResult; que
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15Z"/></svg>
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 11, color: 'var(--brand)', fontWeight: 700, marginBottom: 2 }}>{t('roadmap.coursePrefix', { category: c.category })}</div>
-        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 2, lineHeight: 1.3 }}>
+        <div style={{ fontSize: '0.7333rem', color: 'var(--brand)', fontWeight: 700, marginBottom: 2 }}>{t('roadmap.coursePrefix', { category: c.category })}</div>
+        <div style={{ fontSize: '0.9333rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 2, lineHeight: 1.3 }}>
           <Highlight text={c.title} query={query} />
         </div>
-        <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
+        <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
           {t('roadmap.courseDoneSummary', { level: levelLabel(c.level), done: result.doneCount, total: result.totalCount })}
         </div>
       </div>
@@ -1257,21 +1257,21 @@ function LessonResultCard({ result, query, onOpen }: { result: LessonResult; que
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2, flexWrap: 'wrap' }}>
           {result.level && (
-            <span style={{ fontSize: 10, fontWeight: 700, padding: '1px 6px', borderRadius: 4, background: result.level === '初級' ? 'rgba(52,211,153,.18)' : result.level === '中級' ? 'rgba(251,191,36,.18)' : 'rgba(248,113,113,.18)', color: result.level === '初級' ? '#34D399' : result.level === '中級' ? '#FBBF24' : 'var(--md-sys-color-error)' }}>{levelLabel(result.level)}</span>
+            <span style={{ fontSize: '0.6667rem', fontWeight: 700, padding: '1px 6px', borderRadius: 4, background: result.level === '初級' ? 'rgba(52,211,153,.18)' : result.level === '中級' ? 'rgba(251,191,36,.18)' : 'rgba(248,113,113,.18)', color: result.level === '初級' ? '#34D399' : result.level === '中級' ? '#FBBF24' : 'var(--md-sys-color-error)' }}>{levelLabel(result.level)}</span>
           )}
           {result.status === 'done' && (
-            <span style={{ fontSize: 10, fontWeight: 700, padding: '1px 6px', borderRadius: 4, background: 'color-mix(in srgb, var(--accent) 18%, transparent)', color: 'var(--brand)', display: 'inline-flex', alignItems: 'center', gap: 3 }}>
+            <span style={{ fontSize: '0.6667rem', fontWeight: 700, padding: '1px 6px', borderRadius: 4, background: 'color-mix(in srgb, var(--accent) 18%, transparent)', color: 'var(--brand)', display: 'inline-flex', alignItems: 'center', gap: 3 }}>
               <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
               {t('roadmap.doneBadge')}
             </span>
           )}
-          <span style={{ fontSize: 11, color: 'var(--text-secondary)' }}>{l.category}{courseTitle ? ` · ${courseTitle}` : ''}</span>
+          <span style={{ fontSize: '0.7333rem', color: 'var(--text-secondary)' }}>{l.category}{courseTitle ? ` · ${courseTitle}` : ''}</span>
         </div>
-        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', marginBottom: result.snippet ? 4 : 0, lineHeight: 1.3 }}>
+        <div style={{ fontSize: '0.9333rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: result.snippet ? 4 : 0, lineHeight: 1.3 }}>
           <Highlight text={l.title} query={query} />
         </div>
         {result.snippet && (
-          <div style={{ fontSize: 11, color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+          <div style={{ fontSize: '0.7333rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
             <Highlight text={result.snippet} query={query} />
           </div>
         )}
@@ -1421,8 +1421,8 @@ function CategoryCard({ name, meta, progressDone, progressTotal, progressPercent
         )}
         <div style={{ padding: '10px 12px 12px', display: 'flex', flexDirection: 'column', gap: 6, flex: 1 }}>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 2, lineHeight: 1.3 }}>{name}</div>
-            <div style={{ fontSize: 11, color: 'var(--text-secondary)', fontWeight: 500 }}>{meta}</div>
+            <div style={{ fontSize: '0.8667rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 2, lineHeight: 1.3 }}>{name}</div>
+            <div style={{ fontSize: '0.7333rem', color: 'var(--text-secondary)', fontWeight: 500 }}>{meta}</div>
           </div>
           {hasProgress && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
@@ -1436,7 +1436,7 @@ function CategoryCard({ name, meta, progressDone, progressTotal, progressPercent
               >
                 <div style={{ height: '100%', width: `${pct}%`, background: allDone ? 'var(--success-bright)' : 'var(--brand)', borderRadius: 2, transition: 'width .3s' }} />
               </div>
-              <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 11, fontWeight: 700, color: allDone ? 'var(--success-bright)' : 'var(--brand)' }}>
+              <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: '0.7333rem', fontWeight: 700, color: allDone ? 'var(--success-bright)' : 'var(--brand)' }}>
                 {started ? t('roadmap.coursePercentComplete', { percent: pct }) : t('roadmap.detailNotStarted')}
               </div>
             </div>
@@ -1519,7 +1519,7 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
     <div style={{ background: 'var(--bg-primary)', minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: 'var(--text-primary)' }}>
       <Header title={headerLabel} onBack={onBack} />
       <div style={{ padding: '0 20px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-        <div style={{ fontSize: 13, color: 'var(--text-secondary)', minWidth: 0 }}>
+        <div style={{ fontSize: '0.8667rem', color: 'var(--text-secondary)', minWidth: 0 }}>
           {courses.length > 0 ? t('roadmap.detailCourseCount', { count: courses.length }) : ''}{t('roadmap.detailLessonCount', { count: totalLessons })} · {completedCount > 0 ? t('roadmap.detailCompleted', { done: completedCount, total: totalLessons }) : t('roadmap.detailNotStarted')}
         </div>
         {coursePlaySupported && (
@@ -1552,26 +1552,26 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
               {/* コースヘッダー */}
               <div style={{ padding: '14px 16px 10px', borderBottom: `1px solid ${'var(--border)'}` }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4, flexWrap: 'wrap' }}>
-                  <div style={{ fontSize: 10, fontWeight: 800, color: 'var(--text-muted)', letterSpacing: '.06em', background: `color-mix(in srgb, var(--text-muted) 8%, transparent)`, borderRadius: 6, padding: '2px 7px' }}>
+                  <div style={{ fontSize: '0.6667rem', fontWeight: 800, color: 'var(--text-muted)', letterSpacing: '.06em', background: `color-mix(in srgb, var(--text-muted) 8%, transparent)`, borderRadius: 6, padding: '2px 7px' }}>
                     {course.category}
                   </div>
-                  <div style={{ fontSize: 10, fontWeight: 800, color: 'var(--brand)', letterSpacing: '.08em', background: 'var(--accent-soft)', borderRadius: 6, padding: '2px 7px' }}>
+                  <div style={{ fontSize: '0.6667rem', fontWeight: 800, color: 'var(--brand)', letterSpacing: '.08em', background: 'var(--accent-soft)', borderRadius: 6, padding: '2px 7px' }}>
                     {course.level}
                   </div>
                   {allDone && (
-                    <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--success-bright)', background: 'color-mix(in srgb, var(--success-bright) 9%, transparent)', borderRadius: 6, padding: '2px 7px', display: 'flex', alignItems: 'center', gap: 3 }}>
+                    <div style={{ fontSize: '0.6667rem', fontWeight: 700, color: 'var(--success-bright)', background: 'color-mix(in srgb, var(--success-bright) 9%, transparent)', borderRadius: 6, padding: '2px 7px', display: 'flex', alignItems: 'center', gap: 3 }}>
                       <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
                       {t('roadmap.doneBadge')}
                     </div>
                   )}
                 </div>
-                <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.3, marginBottom: 4 }}>{course.title}</div>
-                <div style={{ fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.5 }}>{course.description}</div>
+                <div style={{ fontSize: '1.0667rem', fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.3, marginBottom: 4 }}>{course.title}</div>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>{course.description}</div>
                 {/* プログレスバー */}
                 <div style={{ marginTop: 10 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                    <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{t('roadmap.detailLessonCount', { count: course.lessonIds.length })}</div>
-                    <div style={{ fontSize: 11, color: 'var(--brand)', fontWeight: 600 }}>{courseCompleted}/{course.lessonIds.length}</div>
+                    <div style={{ fontSize: '0.7333rem', color: 'var(--text-muted)' }}>{t('roadmap.detailLessonCount', { count: course.lessonIds.length })}</div>
+                    <div style={{ fontSize: '0.7333rem', color: 'var(--brand)', fontWeight: 600 }}>{courseCompleted}/{course.lessonIds.length}</div>
                   </div>
                   <div style={{ height: 4, background: `color-mix(in srgb, var(--text-muted) 13%, transparent)`, borderRadius: 2, overflow: 'hidden' }}>
                     <div style={{ height: '100%', width: `${(courseCompleted / course.lessonIds.length) * 100}%`, background: allDone ? 'var(--success-bright)' : 'var(--brand)', borderRadius: 2, transition: 'width .3s' }} />
@@ -1598,12 +1598,12 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
                         <CompletionBadge count={completionCount || 1} size={28} />
                       ) : (
                         <div style={{ width: 28, height: 28, borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: isNext ? `color-mix(in srgb, var(--brand) 13%, transparent)` : `color-mix(in srgb, var(--text-muted) 9%, transparent)`, border: isNext ? `1.5px solid ${'var(--brand)'}` : 'none' }}>
-                          <span style={{ fontSize: 11, fontWeight: 700, color: isNext ? 'var(--brand)' : 'var(--text-muted)' }}>{idx + 1}</span>
+                          <span style={{ fontSize: '0.7333rem', fontWeight: 700, color: isNext ? 'var(--brand)' : 'var(--text-muted)' }}>{idx + 1}</span>
                         </div>
                       )}
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: 14, fontWeight: isNext ? 700 : 600, color: isDone ? 'var(--text-secondary)' : 'var(--text-primary)', lineHeight: 1.3 }}>{lesson.title}</div>
-                        <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
+                        <div style={{ fontSize: '0.9333rem', fontWeight: isNext ? 700 : 600, color: isDone ? 'var(--text-secondary)' : 'var(--text-primary)', lineHeight: 1.3 }}>{lesson.title}</div>
+                        <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: 2 }}>
                           {t('roadmap.stepCount', { count: lesson.steps?.length ?? 0 })}
                           {isDone && completionCount >= 2 && (
                             <span style={{ marginLeft: 8, color: 'var(--brand)', fontWeight: 700 }}>
@@ -1613,7 +1613,7 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
                         </div>
                       </div>
                       {isNext && !isDone && (
-                        <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--brand)', background: 'var(--accent-soft)', borderRadius: 6, padding: '3px 8px', flexShrink: 0 }}>{t('roadmap.nextLabel')}</div>
+                        <div style={{ fontSize: '0.6667rem', fontWeight: 700, color: 'var(--brand)', background: 'var(--accent-soft)', borderRadius: 6, padding: '3px 8px', flexShrink: 0 }}>{t('roadmap.nextLabel')}</div>
                       )}
                       {!isDone && !isNext && (
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
@@ -1637,8 +1637,8 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
               <div style={{ width: 80, height: 80, flexShrink: 0, overflow: 'hidden', borderRadius: '14px 0 0 14px' }}><LessonImage lessonId={lesson.id} size={80} /></div>
               <div style={{ padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0 }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 3, lineHeight: 1.4 }}>{lesson.title}</div>
-                  <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
+                  <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 3, lineHeight: 1.4 }}>{lesson.title}</div>
+                  <div style={{ fontSize: '0.8667rem', color: 'var(--text-secondary)' }}>
                     {t('roadmap.stepCount', { count: lesson.steps?.length ?? 0 })}
                     {isDone && completionCount >= 2 && (
                       <span style={{ marginLeft: 8, color: 'var(--brand)', fontWeight: 700 }}>
@@ -1708,8 +1708,8 @@ function PersonalCourseBanner({
           </svg>
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>{t('roadmap.personalCreateTitle')}</div>
-          <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.5 }}>
+          <div style={{ fontSize: '0.9333rem', fontWeight: 700, color: 'var(--text-primary)' }}>{t('roadmap.personalCreateTitle')}</div>
+          <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.5 }}>
             {t('roadmap.personalCreateDesc')}
           </div>
         </div>
@@ -1746,23 +1746,23 @@ function PersonalCourseBanner({
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-        <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: '.1em', background: 'rgba(10,31,77,0.14)', padding: '2px 8px', borderRadius: 6 }}>{t('roadmap.personalBadge')}</div>
+        <div style={{ fontSize: '0.6667rem', fontWeight: 800, letterSpacing: '.1em', background: 'rgba(10,31,77,0.14)', padding: '2px 8px', borderRadius: 6 }}>{t('roadmap.personalBadge')}</div>
         {allDone && (
-          <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: '.1em', background: 'rgba(10,31,77,0.18)', padding: '2px 8px', borderRadius: 6 }}>{t('roadmap.personalDoneBadge')}</div>
+          <div style={{ fontSize: '0.6667rem', fontWeight: 800, letterSpacing: '.1em', background: 'rgba(10,31,77,0.18)', padding: '2px 8px', borderRadius: 6 }}>{t('roadmap.personalDoneBadge')}</div>
         )}
       </div>
-      <div style={{ fontSize: 16, fontWeight: 800, lineHeight: 1.35, marginBottom: 4 }}>{course.title}</div>
-      <div style={{ fontSize: 12, lineHeight: 1.55, marginBottom: 10 }}>
+      <div style={{ fontSize: '1.0667rem', fontWeight: 800, lineHeight: 1.35, marginBottom: 4 }}>{course.title}</div>
+      <div style={{ fontSize: '0.8rem', lineHeight: 1.55, marginBottom: 10 }}>
         {weakest ? t('roadmap.personalSubtitleWeak', { axis: axisLabel(weakest).label, total }) : t('roadmap.personalSubtitleDefault', { total })}
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
         <div style={{ flex: 1, height: 4, background: 'rgba(10,31,77,0.20)', borderRadius: 2, overflow: 'hidden' }}>
           <div style={{ height: '100%', width: `${(completedCount / Math.max(1, total)) * 100}%`, background: 'var(--accent-fg)', borderRadius: 2, transition: 'width .3s' }} />
         </div>
-        <div style={{ fontSize: 12, fontWeight: 700 }}>{completedCount}/{total}</div>
+        <div style={{ fontSize: '0.8rem', fontWeight: 700 }}>{completedCount}/{total}</div>
       </div>
       <div style={{ marginTop: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ fontSize: 12, fontWeight: 700 }}>
+        <div style={{ fontSize: '0.8rem', fontWeight: 700 }}>
           {allDone ? t('roadmap.personalCtaRedo') : completedCount > 0 ? t('roadmap.personalCtaContinue') : t('roadmap.personalCtaStart')}
         </div>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>

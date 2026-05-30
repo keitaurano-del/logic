@@ -646,7 +646,7 @@ function App() {
                   padding: '10px 16px 10px 36px',
                   borderRadius: 12, border: '1px solid var(--color-line, #2a2a3a)',
                   background: 'var(--color-card, #1a1a2e)', color: 'var(--color-text, #fff)',
-                  fontSize: 14, outline: 'none',
+                  fontSize: '0.9333rem', outline: 'none',
                 }}
               />
               <svg style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', opacity: 0.4 }}

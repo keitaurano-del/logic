@@ -94,7 +94,7 @@ export function JournalSearch({ userId }: JournalSearchProps) {
           border: '1px solid var(--border, rgba(255,255,255,.06))',
           borderRadius: 12,
           padding: 16,
-          fontSize: 13,
+          fontSize: '0.8667rem',
           color: 'var(--text-secondary)',
           lineHeight: 1.7,
         }}>
@@ -103,11 +103,11 @@ export function JournalSearch({ userId }: JournalSearchProps) {
       )}
 
       {loading && (
-        <div style={{ color: 'var(--text-muted)', fontSize: 13 }}>{t('common.loading')}</div>
+        <div style={{ color: 'var(--text-muted)', fontSize: '0.8667rem' }}>{t('common.loading')}</div>
       )}
 
       {!loading && keyword.trim() && results.length === 0 && (
-        <div style={{ color: 'var(--text-muted)', fontSize: 13 }}>{t('journal.searchNoResults')}</div>
+        <div style={{ color: 'var(--text-muted)', fontSize: '0.8667rem' }}>{t('journal.searchNoResults')}</div>
       )}
 
       {results.map((r) => (

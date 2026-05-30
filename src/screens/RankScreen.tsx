@@ -67,7 +67,7 @@ export function RankScreen({ onBack }: RankScreenProps) {
         {/* Rank badge — tier.level (1〜10) */}
         <div style={{ textAlign: 'center', marginBottom: 6 }}>
           <span style={{
-            display: 'inline-block', fontSize: 14, fontWeight: 800,
+            display: 'inline-block', fontSize: '0.9333rem', fontWeight: 800,
             letterSpacing: '0.15em', textTransform: 'uppercase',
             color: 'rgba(255,255,255,0.45)', background: 'rgba(255,255,255,0.08)',
             borderRadius: 20, padding: '3px 14px',
@@ -78,7 +78,7 @@ export function RankScreen({ onBack }: RankScreenProps) {
 
         {/* Title */}
         <div style={{
-          textAlign: 'center', fontSize: 30, fontWeight: 900,
+          textAlign: 'center', fontSize: '2rem', fontWeight: 900,
           color: '#fff', letterSpacing: '-0.02em',
           fontFamily: "'Inter Tight', 'Inter', sans-serif",
           marginBottom: 24,
@@ -89,12 +89,12 @@ export function RankScreen({ onBack }: RankScreenProps) {
         {/* XP Progress（現ランク → 次ランク） */}
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, padding: '0 2px' }}>
           <span style={{
-            fontSize: 13, fontWeight: 700, letterSpacing: '0.12em',
+            fontSize: '0.8667rem', fontWeight: 700, letterSpacing: '0.12em',
             textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)',
           }}>
             {t('home.levelProgress')}
           </span>
-          <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.75)', fontWeight: 600 }}>
+          <span style={{ fontSize: '0.9333rem', color: 'rgba(255,255,255,0.75)', fontWeight: 600 }}>
             {nextTier ? `${tierProgress.toLocaleString()} / ${tierSpan.toLocaleString()}` : 'MAX'}
           </span>
         </div>
@@ -109,7 +109,7 @@ export function RankScreen({ onBack }: RankScreenProps) {
         </div>
         {nextTier && (
           <div style={{
-            fontSize: 14, color: 'rgba(255,255,255,0.4)', marginTop: 10, textAlign: 'center',
+            fontSize: '0.9333rem', color: 'rgba(255,255,255,0.4)', marginTop: 10, textAlign: 'center',
           }}>
             {isJa
               ? t('rank.toNextRankJa', { name: nextTier.title, xp: xpToNext.toLocaleString() })
@@ -130,14 +130,14 @@ export function RankScreen({ onBack }: RankScreenProps) {
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
             <StarIcon width={18} height={18} style={{ color: 'var(--brand)' }} />
             <span style={{
-              fontSize: 13, fontWeight: 700, letterSpacing: '0.1em',
+              fontSize: '0.8667rem', fontWeight: 700, letterSpacing: '0.1em',
               textTransform: 'uppercase', color: 'var(--text-muted)',
             }}>
               {t('rank.totalPoints')}
             </span>
           </div>
           <div style={{
-            fontSize: 32, fontWeight: 800, color: 'var(--brand)', letterSpacing: '-0.02em',
+            fontSize: '2.1333rem', fontWeight: 800, color: 'var(--brand)', letterSpacing: '-0.02em',
           }}>
             {points.toLocaleString()}
             
@@ -148,17 +148,17 @@ export function RankScreen({ onBack }: RankScreenProps) {
           border: '1px solid var(--border)',
         }}>
           <div style={{
-            fontSize: 13, fontWeight: 700, letterSpacing: '0.1em',
+            fontSize: '0.8667rem', fontWeight: 700, letterSpacing: '0.1em',
             textTransform: 'uppercase', color: 'var(--text-muted)',
             marginBottom: 6,
           }}>
             {t('rank.completedLessons')}
           </div>
           <div style={{
-            fontSize: 32, fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.02em',
+            fontSize: '2.1333rem', fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.02em',
           }}>
             {completed}
-            <span style={{ fontSize: 16, fontWeight: 500, color: 'var(--text-muted)', marginLeft: 4 }}>{t('rank.lessonsUnit')}</span>
+            <span style={{ fontSize: '1.0667rem', fontWeight: 500, color: 'var(--text-muted)', marginLeft: 4 }}>{t('rank.lessonsUnit')}</span>
           </div>
         </div>
       </div>
@@ -170,7 +170,7 @@ export function RankScreen({ onBack }: RankScreenProps) {
           border: '1px solid var(--border)', overflow: 'hidden',
         }}>
           <div style={{
-            padding: '14px 18px 10px', fontSize: 14, fontWeight: 700,
+            padding: '14px 18px 10px', fontSize: '0.9333rem', fontWeight: 700,
             letterSpacing: '0.08em', textTransform: 'uppercase',
             color: 'var(--text-muted)',
           }}>
@@ -185,9 +185,9 @@ export function RankScreen({ onBack }: RankScreenProps) {
               padding: '12px 18px',
               borderTop: '1px solid var(--border)',
             }}>
-              <span style={{ fontSize: 16, color: 'var(--text)' }}>{label}</span>
+              <span style={{ fontSize: '1.0667rem', color: 'var(--text)' }}>{label}</span>
               <span style={{
-                fontSize: 16, fontWeight: 700, color: 'var(--brand)',
+                fontSize: '1.0667rem', fontWeight: 700, color: 'var(--brand)',
                 background: 'var(--brand-soft)', borderRadius: 8, padding: '2px 10px',
               }}>{value}</span>
             </div>
@@ -198,7 +198,7 @@ export function RankScreen({ onBack }: RankScreenProps) {
       {/* All Ranks */}
       <div style={{ margin: '0 16px' }}>
         <div style={{
-          fontSize: 14, fontWeight: 700, letterSpacing: '0.08em',
+          fontSize: '0.9333rem', fontWeight: 700, letterSpacing: '0.08em',
           textTransform: 'uppercase', color: 'var(--text-muted)',
           marginBottom: 12, paddingLeft: 4,
         }}>
@@ -234,18 +234,18 @@ export function RankScreen({ onBack }: RankScreenProps) {
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{
-                      fontSize: 16, fontWeight: isCurrent ? 700 : 500,
+                      fontSize: '1.0667rem', fontWeight: isCurrent ? 700 : 500,
                       color: isCurrent ? 'var(--brand)' : isUnlocked ? 'var(--text)' : 'var(--text-faint)',
                     }}>
                       {isJa ? r.title : r.titleEn}
                     </div>
-                    <div style={{ fontSize: 14, color: 'var(--text-faint)', marginTop: 2 }}>
+                    <div style={{ fontSize: '0.9333rem', color: 'var(--text-faint)', marginTop: 2 }}>
                       {r.minXp.toLocaleString()}~
                     </div>
                   </div>
                   {isCurrent ? (
                     <span style={{
-                      fontSize: 13, fontWeight: 700, color: 'var(--brand)',
+                      fontSize: '0.8667rem', fontWeight: 700, color: 'var(--brand)',
                       background: 'var(--brand-soft)', border: '1.5px solid var(--brand)',
                       borderRadius: 20, padding: '3px 10px', flexShrink: 0,
                     }}>
@@ -307,19 +307,19 @@ export function RankScreen({ onBack }: RankScreenProps) {
               </div>
               <div>
                 <div style={{
-                  fontSize: 13, fontWeight: 800, letterSpacing: '0.12em',
+                  fontSize: '0.8667rem', fontWeight: 800, letterSpacing: '0.12em',
                   textTransform: 'uppercase', color: 'var(--brand)', marginBottom: 4,
                 }}>
                   {t('rank.indicator', { current: String(selectedTier.level), total: String(RANK_TIERS.length) })}
                 </div>
                 <div style={{
                   fontFamily: "'Inter Tight', 'Inter', sans-serif",
-                  fontSize: 28, fontWeight: 900, color: 'var(--text)',
+                  fontSize: '1.8667rem', fontWeight: 900, color: 'var(--text)',
                   letterSpacing: '-0.02em',
                 }}>
                   {isJa ? selectedTier.title : selectedTier.titleEn}
                 </div>
-                <div style={{ fontSize: 14, color: 'var(--text-muted)', marginTop: 2 }}>
+                <div style={{ fontSize: '0.9333rem', color: 'var(--text-muted)', marginTop: 2 }}>
                   {selectedTier.minXp.toLocaleString()}~
                 </div>
               </div>
@@ -337,13 +337,13 @@ export function RankScreen({ onBack }: RankScreenProps) {
                 pointerEvents: 'none',
               }} />
               <div style={{
-                fontSize: 13, fontWeight: 700, letterSpacing: '0.12em',
+                fontSize: '0.8667rem', fontWeight: 700, letterSpacing: '0.12em',
                 textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', marginBottom: 8,
               }}>
                 {t('rank.quoteLabel')}
               </div>
               <div style={{
-                fontSize: 18, fontStyle: 'italic', color: '#fff', lineHeight: 1.7,
+                fontSize: '1.2rem', fontStyle: 'italic', color: '#fff', lineHeight: 1.7,
               }}>
                 {isJa ? selectedTier.quoteJa : selectedTier.quoteEn}
               </div>
@@ -351,7 +351,7 @@ export function RankScreen({ onBack }: RankScreenProps) {
 
             {/* Description */}
             <div style={{
-              fontSize: 16, color: 'var(--text-secondary)', lineHeight: 1.8,
+              fontSize: '1.0667rem', color: 'var(--text-secondary)', lineHeight: 1.8,
               marginBottom: 16,
             }}>
               {isJa ? selectedTier.descJa : selectedTier.descEn}
@@ -363,13 +363,13 @@ export function RankScreen({ onBack }: RankScreenProps) {
             }}>
               <div style={{
                 display: 'inline-flex', alignItems: 'center', gap: 6,
-                fontSize: 13, fontWeight: 700, color: 'var(--brand)',
+                fontSize: '0.8667rem', fontWeight: 700, color: 'var(--brand)',
                 marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.08em',
               }}>
                 <LightbulbIcon width={14} height={14} />
                 <span>{t('rank.tipLabel')}</span>
               </div>
-              <div style={{ fontSize: 16, color: 'var(--brand-hover)', lineHeight: 1.7 }}>
+              <div style={{ fontSize: '1.0667rem', color: 'var(--brand-hover)', lineHeight: 1.7 }}>
                 {isJa ? selectedTier.tipJa : selectedTier.tipEn}
               </div>
             </div>

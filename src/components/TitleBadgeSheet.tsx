@@ -157,7 +157,7 @@ export function TitleBadgeSheet({ xp, onClose }: TitleBadgeSheetProps) {
           </div>
 
           <div style={{
-            fontSize: 13, fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase',
+            fontSize: '0.8667rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase',
             color: 'var(--text-muted)', textAlign: 'center',
             paddingRight: 44, paddingLeft: 44,
           }}>
@@ -216,13 +216,13 @@ export function TitleBadgeSheet({ xp, onClose }: TitleBadgeSheetProps) {
               style={{ width: 140, height: 140, objectFit: 'contain', filter: `drop-shadow(0 4px 16px ${lv.color}66)` }}
             />
           </div>
-          <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.1em', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 6 }}>
+          <div style={{ fontSize: '0.8667rem', fontWeight: 700, letterSpacing: '0.1em', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 6 }}>
             {t('profile.titleSheet.currentLabel')}
           </div>
-          <div style={{ fontSize: 26, fontWeight: 900, color: lv.color, marginBottom: 4 }}>
+          <div style={{ fontSize: '1.7333rem', fontWeight: 900, color: lv.color, marginBottom: 4 }}>
             {t(getTitleI18nKey(currentKey))}
           </div>
-          <div style={{ fontSize: 15, color: 'var(--text-secondary)' }}>
+          <div style={{ fontSize: '1rem', color: 'var(--text-secondary)' }}>
             Lv. {lv.level}{isMaxed ? ' · MAX' : ` / ${MAX_LEVEL}`}
           </div>
         </div>
@@ -236,7 +236,7 @@ export function TitleBadgeSheet({ xp, onClose }: TitleBadgeSheetProps) {
           border: `1px solid var(--border)`,
         }}>
           {isMaxed ? (
-            <div style={{ textAlign: 'center', fontSize: 16, fontWeight: 700, color: 'var(--brand)', padding: '6px 0' }}>
+            <div style={{ textAlign: 'center', fontSize: '1.0667rem', fontWeight: 700, color: 'var(--brand)', padding: '6px 0' }}>
               ★ {t('profile.titleSheet.maxed')}
             </div>
           ) : nextTier ? (
@@ -247,13 +247,13 @@ export function TitleBadgeSheet({ xp, onClose }: TitleBadgeSheetProps) {
                 style={{ width: 56, height: 56, objectFit: 'contain', opacity: 0.55, filter: 'grayscale(0.6)' }}
               />
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.08em', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 4 }}>
+                <div style={{ fontSize: '0.8667rem', fontWeight: 700, letterSpacing: '0.08em', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 4 }}>
                   {t('profile.titleSheet.nextLabel')}
                 </div>
-                <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 4 }}>
+                <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 4 }}>
                   {t(getTitleI18nKey(nextTier.key))}
                 </div>
-                <div style={{ fontSize: 15, color: 'var(--text-secondary)' }}>
+                <div style={{ fontSize: '1rem', color: 'var(--text-secondary)' }}>
                   {t('profile.titleSheet.toNext', { xp: String(xpToNext), lv: String(lvToNext) })}
                 </div>
               </div>
@@ -302,7 +302,7 @@ function SectionHeading({ label, marginTop = 0 }: { label: string; marginTop?: n
       style={{
         marginTop,
         marginBottom: 8,
-        fontSize: 12,
+        fontSize: '0.8rem',
         fontWeight: 800,
         letterSpacing: '0.1em',
         textTransform: 'uppercase',
@@ -411,7 +411,7 @@ function TierCell({ tierKey, min, max, unlocked, isCurrent }: {
         )}
       </div>
       <div style={{
-        fontSize: 11, fontWeight: 700,
+        fontSize: '0.7333rem', fontWeight: 700,
         color: unlocked ? 'var(--text-primary)' : 'var(--text-muted)',
         lineHeight: 1.25,
         marginBottom: 2,
@@ -424,7 +424,7 @@ function TierCell({ tierKey, min, max, unlocked, isCurrent }: {
         {t(getTitleI18nKey(tierKey))}
       </div>
       <div style={{
-        fontSize: 10, fontWeight: 600,
+        fontSize: '0.6667rem', fontWeight: 600,
         color: 'var(--text-muted)',
         whiteSpace: 'nowrap',
       }}>

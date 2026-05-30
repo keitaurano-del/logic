@@ -9,7 +9,13 @@ services:
     autoDeploy: true
     previews:
       generation: automatic
-    buildCommand: npm install --include=dev && npm run build
+    # DF-F21: フィードバックの app_version を Web ビルドへ焼き込む。
+    # VITE_APP_VERSION が Render ダッシュボードで明示設定されていればそれを尊重し、
+    # 未設定（空）なら web-<commit短縮SHA> を採番する。さらに vite.config 側にも
+    # package.json version ベースのフォールバックがあるため 'unknown' にはならない。
+    buildCommand: |
+      export VITE_APP_VERSION="${VITE_APP_VERSION:-web-${RENDER_GIT_COMMIT:0:7}}"
+      npm install --include=dev && npm run build
     startCommand: npm start
     envVars:
       - key: NODE_ENV

@@ -42,9 +42,13 @@ jobs:
         run: npm ci
 
       # ── 6. Web ビルド (Vite) ──────────────────────────────
+      #      DF-F21: フィードバックの app_version を本番ビルドに焼き込むため
+      #      VITE_APP_VERSION を注入する。versionName（android/app/build.gradle）と
+      #      同じ採番 1.5.<run_number> に揃え、Play 配信版とバージョン表記を一致させる。
       - name: Build web (Vite)
         run: npm run build
         env:
+          VITE_APP_VERSION: 1.5.${{ github.run_number }}
           VITE_API_BASE: ${{ secrets.VITE_API_BASE }}
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}

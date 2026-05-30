@@ -112,7 +112,7 @@ export function AccountSettingsScreen({ onBack, currentUser, onOpenLogin, onLogo
         {currentUser && (
           <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
             <div style={{ padding: '14px 18px', borderBottom: `1px solid ${'var(--border)'}` }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '.06em', marginBottom: 6 }}>{t('accountSettings.displayName')}</div>
+              <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '.06em', marginBottom: 6 }}>{t('accountSettings.displayName')}</div>
               {editingName ? (
                 <div>
                   <input
@@ -125,41 +125,41 @@ export function AccountSettingsScreen({ onBack, currentUser, onOpenLogin, onLogo
                     style={{
                       width: '100%', padding: '10px 14px', borderRadius: 10,
                       background: 'rgba(255,255,255,0.07)', border: `1px solid ${'var(--brand)'}`,
-                      color: 'var(--text-primary)', fontSize: 15, fontFamily: "'Noto Sans JP', sans-serif",
+                      color: 'var(--text-primary)', fontSize: '1rem', fontFamily: "'Noto Sans JP', sans-serif",
                       outline: 'none', boxSizing: 'border-box', marginBottom: 8,
                     }}
                   />
-                  {nameError && <div style={{ fontSize: 12, color: 'var(--md-sys-color-error)', marginBottom: 8 }}>{nameError}</div>}
+                  {nameError && <div style={{ fontSize: '0.8rem', color: 'var(--md-sys-color-error)', marginBottom: 8 }}>{nameError}</div>}
                   <div style={{ display: 'flex', gap: 8 }}>
                     <button
                       onClick={() => { setEditingName(false); setNameError(''); setNameInput(getDisplayName()) }}
-                      style={{ flex: 1, padding: '10px', background: 'var(--bg-elevated)', border: 'none', borderRadius: 10, color: 'var(--text-secondary)', fontSize: 14, cursor: 'pointer' }}
+                      style={{ flex: 1, padding: '10px', background: 'var(--bg-elevated)', border: 'none', borderRadius: 10, color: 'var(--text-secondary)', fontSize: '0.9333rem', cursor: 'pointer' }}
                     >{t('accountSettings.cancel')}</button>
                     <button
                       onClick={handleSaveName}
                       disabled={nameSaving || !nameInput.trim()}
-                      style={{ flex: 1, padding: '10px', background: nameInput.trim() ? 'var(--brand)' : 'var(--bg-elevated)', border: 'none', borderRadius: 10, color: nameInput.trim() ? '#fff' : 'var(--text-muted)', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}
+                      style={{ flex: 1, padding: '10px', background: nameInput.trim() ? 'var(--brand)' : 'var(--bg-elevated)', border: 'none', borderRadius: 10, color: nameInput.trim() ? '#fff' : 'var(--text-muted)', fontSize: '0.9333rem', fontWeight: 700, cursor: 'pointer' }}
                     >{nameSaving ? t('accountSettings.saving') : t('accountSettings.save')}</button>
                   </div>
                 </div>
               ) : (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)' }}>{getDisplayName()}</div>
+                  <div style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-primary)' }}>{getDisplayName()}</div>
                   {nameSuccess ? (
-                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 13, color: 'var(--brand)', fontWeight: 700 }}>
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: '0.8667rem', color: 'var(--brand)', fontWeight: 700 }}>
                       <CheckIcon width={14} height={14} />
                       <span>{t('accountSettings.saved')}</span>
                     </div>
                   ) : todayChanged ? (
-                    <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{t('accountSettings.changedToday')}</div>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{t('accountSettings.changedToday')}</div>
                   ) : (
-                    <button type="button" onClick={() => setEditingName(true)} style={{ fontSize: 13, color: 'var(--brand)', fontWeight: 700, cursor: 'pointer', padding: '4px 8px', background: 'transparent', border: 'none', minHeight: 32 }}>{t('accountSettings.change')}</button>
+                    <button type="button" onClick={() => setEditingName(true)} style={{ fontSize: '0.8667rem', color: 'var(--brand)', fontWeight: 700, cursor: 'pointer', padding: '4px 8px', background: 'transparent', border: 'none', minHeight: 32 }}>{t('accountSettings.change')}</button>
                   )}
                 </div>
               )}
             </div>
             <div style={{ padding: '12px 18px' }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '.06em', marginBottom: 6 }}>{t('accountSettings.email')}</div>
+              <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '.06em', marginBottom: 6 }}>{t('accountSettings.email')}</div>
               {editingEmail ? (
                 <div>
                   <input
@@ -173,35 +173,35 @@ export function AccountSettingsScreen({ onBack, currentUser, onOpenLogin, onLogo
                     style={{
                       width: '100%', padding: '10px 14px', borderRadius: 10,
                       background: 'rgba(255,255,255,0.07)', border: `1px solid ${'var(--brand)'}`,
-                      color: 'var(--text-primary)', fontSize: 15, fontFamily: "'Noto Sans JP', sans-serif",
+                      color: 'var(--text-primary)', fontSize: '1rem', fontFamily: "'Noto Sans JP', sans-serif",
                       outline: 'none', boxSizing: 'border-box', marginBottom: 8,
                     }}
                   />
-                  {emailError && <div role="alert" style={{ fontSize: 12, color: 'var(--md-sys-color-error)', marginBottom: 8 }}>{emailError}</div>}
+                  {emailError && <div role="alert" style={{ fontSize: '0.8rem', color: 'var(--md-sys-color-error)', marginBottom: 8 }}>{emailError}</div>}
                   <div style={{ display: 'flex', gap: 8 }}>
                     <button
                       onClick={() => { setEditingEmail(false); setEmailError(''); setEmailInput(currentUser.email ?? '') }}
-                      style={{ flex: 1, padding: '10px', minHeight: 44, background: 'var(--bg-elevated)', border: 'none', borderRadius: 10, color: 'var(--text-secondary)', fontSize: 14, cursor: 'pointer' }}
+                      style={{ flex: 1, padding: '10px', minHeight: 44, background: 'var(--bg-elevated)', border: 'none', borderRadius: 10, color: 'var(--text-secondary)', fontSize: '0.9333rem', cursor: 'pointer' }}
                     >{t('accountSettings.cancel')}</button>
                     <button
                       onClick={handleSaveEmail}
                       disabled={emailSaving || !emailInput.trim()}
-                      style={{ flex: 1, padding: '10px', minHeight: 44, background: emailInput.trim() ? 'var(--brand)' : 'var(--bg-elevated)', border: 'none', borderRadius: 10, color: emailInput.trim() ? '#fff' : 'var(--text-muted)', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}
+                      style={{ flex: 1, padding: '10px', minHeight: 44, background: emailInput.trim() ? 'var(--brand)' : 'var(--bg-elevated)', border: 'none', borderRadius: 10, color: emailInput.trim() ? '#fff' : 'var(--text-muted)', fontSize: '0.9333rem', fontWeight: 700, cursor: 'pointer' }}
                     >{emailSaving ? t('accountSettings.saving') : t('accountSettings.sendLinkBtn')}</button>
                   </div>
-                  <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 8, lineHeight: 1.6 }}>
+                  <div style={{ fontSize: '0.7333rem', color: 'var(--text-muted)', marginTop: 8, lineHeight: 1.6 }}>
                     {t('accountSettings.emailChangeHint')}
                   </div>
                 </div>
               ) : (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-                  <div style={{ fontSize: 14, color: 'var(--text-secondary)', wordBreak: 'break-all' }}>{currentUser.email}</div>
-                  <button type="button" onClick={() => { setEditingEmail(true); setEmailInput(currentUser.email ?? ''); setEmailError(''); setEmailSentTo(null) }} style={{ fontSize: 13, color: 'var(--brand)', fontWeight: 700, cursor: 'pointer', padding: '4px 8px', background: 'transparent', border: 'none', minHeight: 32, flexShrink: 0 }}>{t('accountSettings.change')}</button>
+                  <div style={{ fontSize: '0.9333rem', color: 'var(--text-secondary)', wordBreak: 'break-all' }}>{currentUser.email}</div>
+                  <button type="button" onClick={() => { setEditingEmail(true); setEmailInput(currentUser.email ?? ''); setEmailError(''); setEmailSentTo(null) }} style={{ fontSize: '0.8667rem', color: 'var(--brand)', fontWeight: 700, cursor: 'pointer', padding: '4px 8px', background: 'transparent', border: 'none', minHeight: 32, flexShrink: 0 }}>{t('accountSettings.change')}</button>
                 </div>
               )}
               {emailSentTo && !editingEmail && (
                 <div role="status" aria-live="polite" style={{
-                  fontSize: 12, color: 'var(--text-primary)',
+                  fontSize: '0.8rem', color: 'var(--text-primary)',
                   background: 'var(--brand-soft)', borderRadius: 8,
                   padding: '8px 10px', marginTop: 10, lineHeight: 1.6,
                 }}>
@@ -218,17 +218,17 @@ export function AccountSettingsScreen({ onBack, currentUser, onOpenLogin, onLogo
             <button
               type="button"
               onClick={handleLogout}
-              style={{ padding: '16px 18px', cursor: 'pointer', color: 'var(--md-sys-color-error)', fontSize: 15, fontWeight: 700, textAlign: 'center', background: 'transparent', border: 'none', width: '100%', font: 'inherit', minHeight: 44 }}
+              style={{ padding: '16px 18px', cursor: 'pointer', color: 'var(--md-sys-color-error)', fontSize: '1rem', fontWeight: 700, textAlign: 'center', background: 'transparent', border: 'none', width: '100%', font: 'inherit', minHeight: 44 }}
             >{t('accountSettings.logout')}</button>
           ) : (
             <button type="button" onClick={() => onOpenLogin()} style={{ padding: '16px 18px', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'transparent', border: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%', minHeight: 44 }}>
-              <span style={{ fontSize: 15, fontWeight: 600 }}>{t('accountSettings.emailLogin')}</span>
+              <span style={{ fontSize: '1rem', fontWeight: 600 }}>{t('accountSettings.emailLogin')}</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
             </button>
           )}
         </div>
 
-        <div style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', lineHeight: 1.8 }}>
+        <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textAlign: 'center', lineHeight: 1.8 }}>
           {t('accountSettings.changeOncePerDay')}
         </div>
       </div>

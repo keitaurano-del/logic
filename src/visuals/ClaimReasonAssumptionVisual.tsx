@@ -89,7 +89,7 @@ export function ClaimReasonAssumptionVisual({
           padding: '10px 12px',
           background: 'var(--brand-soft)',
           borderRadius: 8,
-          fontSize: 13,
+          fontSize: '0.8667rem',
           fontWeight: 600,
           color: 'var(--brand)',
           textAlign: 'center',

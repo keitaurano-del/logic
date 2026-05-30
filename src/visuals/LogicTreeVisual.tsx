@@ -150,7 +150,7 @@ export function LogicTreeVisual({
             marginTop: 14,
             padding: '10px 12px',
             borderRadius: 8,
-            fontSize: 13,
+            fontSize: '0.8667rem',
             fontWeight: 600,
             lineHeight: 1.45,
             ...hintStyle,

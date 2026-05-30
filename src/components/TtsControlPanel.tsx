@@ -157,7 +157,7 @@ export function TtsControlPanel(props: TtsControlPanelProps) {
   const skipNumStyle: React.CSSProperties = {
     position: 'absolute',
     top: '50%', left: '50%', transform: 'translate(-50%, -42%)',
-    fontSize: 10, fontWeight: 800,
+    fontSize: '0.6667rem', fontWeight: 800,
     fontFamily: "'Inter Tight', sans-serif",
     pointerEvents: 'none',
   }
@@ -223,8 +223,8 @@ export function TtsControlPanel(props: TtsControlPanelProps) {
             }}
           >
             <span style={{ width: 8, height: 8, borderRadius: '50%', flexShrink: 0, background: playing && !paused ? 'var(--brand)' : 'var(--text-muted)', boxShadow: playing && !paused ? `0 0 8px var(--brand)` : 'none' }} />
-            <span style={{ fontSize: 13, fontWeight: 700, flexShrink: 0 }}>{t('tts.modeOn')}</span>
-            <span style={{ fontSize: 11, color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t('tts.modeOnHint')}</span>
+            <span style={{ fontSize: '0.8667rem', fontWeight: 700, flexShrink: 0 }}>{t('tts.modeOn')}</span>
+            <span style={{ fontSize: '0.7333rem', color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t('tts.modeOnHint')}</span>
           </button>
           <button
             type="button"
@@ -321,7 +321,7 @@ export function TtsControlPanel(props: TtsControlPanelProps) {
             </div>
             <div style={{
               display: 'flex', justifyContent: 'space-between',
-              fontSize: 11, fontWeight: 600, color: 'var(--text-secondary)',
+              fontSize: '0.7333rem', fontWeight: 600, color: 'var(--text-secondary)',
               fontFamily: "'Inter Tight', sans-serif",
             }}>
               <span>{displayIndex + 1}</span>

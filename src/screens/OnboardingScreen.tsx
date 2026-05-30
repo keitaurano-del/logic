@@ -51,7 +51,7 @@ function getOBFeatures(): OBFeature[] {
 function OBCell({ value }: { value: string | boolean }) {
   if (value === true) return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
   if (value === false) return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-  return <span style={{ fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.9)' }}>{value}</span>
+  return <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'rgba(255,255,255,0.9)' }}>{value}</span>
 }
 
 // ── 属性質問ステップ ─────────────────────────────────────────
@@ -90,7 +90,7 @@ function AttrOption<T extends string>({
         color: '#fff', cursor: 'pointer', transition: 'all .15s', textAlign: 'left',
       }}
     >
-      <span style={{ fontSize: 15, fontWeight: selected ? 700 : 500, flex: 1 }}>{label}</span>
+      <span style={{ fontSize: '1rem', fontWeight: selected ? 700 : 500, flex: 1 }}>{label}</span>
       {selected && (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={ACCENT} strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
       )}
@@ -203,16 +203,16 @@ function OnboardingAttributeView({ onNext }: { onNext: () => void; onBackToSlide
             }} />
           ))}
         </div>
-        <div style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.5)', minWidth: 28, textAlign: 'right' }}>
+        <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'rgba(255,255,255,0.5)', minWidth: 28, textAlign: 'right' }}>
           {stepIdx + 1}/{STEP_ORDER.length}
         </div>
       </div>
 
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
-        <h1 style={{ fontSize: 24, fontWeight: 800, margin: '0 0 8px', lineHeight: 1.35, letterSpacing: '-0.02em' }}>
+        <h1 style={{ fontSize: '1.6rem', fontWeight: 800, margin: '0 0 8px', lineHeight: 1.35, letterSpacing: '-0.02em' }}>
           {heading}
         </h1>
-        <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', margin: '0 0 24px', lineHeight: 1.6 }}>
+        <p style={{ fontSize: '0.8667rem', color: 'rgba(255,255,255,0.5)', margin: '0 0 24px', lineHeight: 1.6 }}>
           {sub}
         </p>
 
@@ -237,17 +237,17 @@ function OnboardingAttributeView({ onNext }: { onNext: () => void; onBackToSlide
                   width: '100%', padding: '16px 18px', borderRadius: 14,
                   border: `2px solid ${birthYearError ? 'var(--md-sys-color-error)' : 'rgba(255,255,255,0.18)'}`,
                   background: 'rgba(255,255,255,0.06)', color: '#fff',
-                  fontSize: 18, fontFamily: "'Noto Sans JP', sans-serif",
+                  fontSize: '1.2rem', fontFamily: "'Noto Sans JP', sans-serif",
                   outline: 'none', boxSizing: 'border-box', textAlign: 'center',
                   letterSpacing: '0.05em',
                 }}
               />
               {birthYearError ? (
-                <div role="alert" style={{ fontSize: 13, color: 'var(--md-sys-color-error)', marginTop: 8, lineHeight: 1.6 }}>
+                <div role="alert" style={{ fontSize: '0.8667rem', color: 'var(--md-sys-color-error)', marginTop: 8, lineHeight: 1.6 }}>
                   {birthYearError}
                 </div>
               ) : (
-                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginTop: 8, lineHeight: 1.6 }}>
+                <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', marginTop: 8, lineHeight: 1.6 }}>
                   {t('onboarding.attrBirthYearHint', { min: MIN_BIRTH_YEAR, max: currentYear })}
                 </div>
               )}
@@ -261,7 +261,7 @@ function OnboardingAttributeView({ onNext }: { onNext: () => void; onBackToSlide
                   borderRadius: 14, border: 'none',
                   background: isBirthYearValid ? ACCENT : 'rgba(255,255,255,0.1)',
                   color: isBirthYearValid ? '#fff' : 'rgba(255,255,255,0.4)',
-                  fontSize: 15, fontWeight: 800,
+                  fontSize: '1rem', fontWeight: 800,
                   cursor: isBirthYearValid ? 'pointer' : 'default',
                   minHeight: 44,
                 }}
@@ -300,23 +300,23 @@ function OnboardingBillingView({ onSelect, onBack }: {
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
 
-      <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.2em', color: `color-mix(in srgb, ${ACCENT} 56%, transparent)`, textAlign: 'center', marginBottom: 12 }}>{t('pricing.planPaid').toUpperCase()}</div>
-      <h1 style={{ fontSize: 24, fontWeight: 800, textAlign: 'center', margin: '0 0 8px', lineHeight: 1.35, whiteSpace: 'pre-line' }}>{t('onboarding.billingTitle')}</h1>
-      <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', textAlign: 'center', margin: '0 0 32px' }}>{t('onboarding.billingSubtitle')}</p>
+      <div style={{ fontSize: '0.7333rem', fontWeight: 800, letterSpacing: '0.2em', color: `color-mix(in srgb, ${ACCENT} 56%, transparent)`, textAlign: 'center', marginBottom: 12 }}>{t('pricing.planPaid').toUpperCase()}</div>
+      <h1 style={{ fontSize: '1.6rem', fontWeight: 800, textAlign: 'center', margin: '0 0 8px', lineHeight: 1.35, whiteSpace: 'pre-line' }}>{t('onboarding.billingTitle')}</h1>
+      <p style={{ fontSize: '0.8667rem', color: 'rgba(255,255,255,0.5)', textAlign: 'center', margin: '0 0 32px' }}>{t('onboarding.billingSubtitle')}</p>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
         {/* 年払いカード（推奨） */}
         <button onClick={() => onSelect('paid_yearly')}
           style={{ position: 'relative', padding: '20px 20px 20px', borderRadius: 18, border: `2px solid ${ACCENT}`, background: `color-mix(in srgb, ${ACCENT} 8%, transparent)`, color: '#fff', cursor: 'pointer', textAlign: 'left' }}>
           {/* 推奨バッジ */}
-          <div style={{ position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)', background: ACCENT, borderRadius: 99, padding: '3px 12px', fontSize: 11, fontWeight: 800, whiteSpace: 'nowrap' }}>
+          <div style={{ position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)', background: ACCENT, borderRadius: 99, padding: '3px 12px', fontSize: '0.7333rem', fontWeight: 800, whiteSpace: 'nowrap' }}>
             {t('onboarding.billingSavedMonths', { n: savedMonths })}
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: ACCENT, marginBottom: 6 }}>{t('onboarding.billingYearlyTitle')}</div>
-              <div style={{ fontSize: 28, fontWeight: 900, letterSpacing: '-0.03em' }}>¥{yearlyPrice.toLocaleString()}<span style={{ fontSize: 14, fontWeight: 600, color: 'rgba(255,255,255,0.6)' }}> {t('onboarding.billingYearlyUnit')}</span></div>
-              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)', marginTop: 4 }}>{t('onboarding.billingMonthlyEquiv', { n: yearlyPerMonth })}</div>
+              <div style={{ fontSize: '0.8667rem', fontWeight: 700, color: ACCENT, marginBottom: 6 }}>{t('onboarding.billingYearlyTitle')}</div>
+              <div style={{ fontSize: '1.8667rem', fontWeight: 900, letterSpacing: '-0.03em' }}>¥{yearlyPrice.toLocaleString()}<span style={{ fontSize: '0.9333rem', fontWeight: 600, color: 'rgba(255,255,255,0.6)' }}> {t('onboarding.billingYearlyUnit')}</span></div>
+              <div style={{ fontSize: '0.8667rem', color: 'rgba(255,255,255,0.6)', marginTop: 4 }}>{t('onboarding.billingMonthlyEquiv', { n: yearlyPerMonth })}</div>
             </div>
             <div style={{ width: 24, height: 24, borderRadius: '50%', background: ACCENT, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 4 }}>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
@@ -327,8 +327,8 @@ function OnboardingBillingView({ onSelect, onBack }: {
         {/* 月払いカード */}
         <button onClick={() => onSelect('paid_monthly')}
           style={{ padding: '18px 20px', borderRadius: 18, border: '1.5px solid rgba(255,255,255,0.15)', background: 'rgba(255,255,255,0.04)', color: '#fff', cursor: 'pointer', textAlign: 'left' }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.6)', marginBottom: 6 }}>{t('onboarding.billingMonthlyTitle')}</div>
-          <div style={{ fontSize: 28, fontWeight: 900, letterSpacing: '-0.03em' }}>¥{monthlyPrice.toLocaleString()}<span style={{ fontSize: 14, fontWeight: 600, color: 'rgba(255,255,255,0.5)' }}> {t('onboarding.billingMonthlyUnit')}</span></div>
+          <div style={{ fontSize: '0.8667rem', fontWeight: 700, color: 'rgba(255,255,255,0.6)', marginBottom: 6 }}>{t('onboarding.billingMonthlyTitle')}</div>
+          <div style={{ fontSize: '1.8667rem', fontWeight: 900, letterSpacing: '-0.03em' }}>¥{monthlyPrice.toLocaleString()}<span style={{ fontSize: '0.9333rem', fontWeight: 600, color: 'rgba(255,255,255,0.5)' }}> {t('onboarding.billingMonthlyUnit')}</span></div>
         </button>
       </div>
     </div>
@@ -362,11 +362,11 @@ function OnboardingPricingView({ onNext, onSelectPaid, onBack }: {
         </button>
       </div>
       <div style={{ padding: '0 24px', textAlign: 'center' }}>
-        <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.2em', color: `color-mix(in srgb, ${ACCENT} 56%, transparent)`, marginBottom: 12 }}>LOGIC</div>
-        <h1 style={{ fontSize: 26, fontWeight: 800, margin: '0 0 8px', lineHeight: 1.3, letterSpacing: '-0.02em', whiteSpace: 'pre-line' }}>
+        <div style={{ fontSize: '0.7333rem', fontWeight: 800, letterSpacing: '0.2em', color: `color-mix(in srgb, ${ACCENT} 56%, transparent)`, marginBottom: 12 }}>LOGIC</div>
+        <h1 style={{ fontSize: '1.7333rem', fontWeight: 800, margin: '0 0 8px', lineHeight: 1.3, letterSpacing: '-0.02em', whiteSpace: 'pre-line' }}>
           {t('pricing.heroHeadline')}
         </h1>
-        <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.55)', margin: '0 0 20px', lineHeight: 1.6 }}>
+        <p style={{ fontSize: '0.9333rem', color: 'rgba(255,255,255,0.55)', margin: '0 0 20px', lineHeight: 1.6 }}>
           {t('pricing.heroSub')}
         </p>
       </div>
@@ -374,17 +374,17 @@ function OnboardingPricingView({ onNext, onSelectPaid, onBack }: {
       {/* 機能比較テーブル（2列: 無料 / 有料） */}
       <div style={{ margin: '0 16px 20px', background: 'rgba(255,255,255,0.06)', borderRadius: 16, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 0.8fr 0.8fr', padding: '14px 16px', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.4)' }}>{t('pricing.planFeatureHeader')}</div>
+          <div style={{ fontSize: '0.7333rem', fontWeight: 700, color: 'rgba(255,255,255,0.4)' }}>{t('pricing.planFeatureHeader')}</div>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.55)', letterSpacing: '.08em' }}>{t('pricing.planFree').toUpperCase()}</div>
+            <div style={{ fontSize: '0.7333rem', fontWeight: 800, color: 'rgba(255,255,255,0.55)', letterSpacing: '.08em' }}>{t('pricing.planFree').toUpperCase()}</div>
           </div>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 11, fontWeight: 800, color: ACCENT, letterSpacing: '.08em' }}>{t('pricing.planPaid').toUpperCase()}</div>
+            <div style={{ fontSize: '0.7333rem', fontWeight: 800, color: ACCENT, letterSpacing: '.08em' }}>{t('pricing.planPaid').toUpperCase()}</div>
           </div>
         </div>
         {getOBFeatures().map((row, i) => (
           <div key={row.label} style={{ display: 'grid', gridTemplateColumns: '1.4fr 0.8fr 0.8fr', padding: '13px 16px', borderTop: i === 0 ? 'none' : '1px solid rgba(255,255,255,0.06)', alignItems: 'center' }}>
-            <div style={{ fontSize: 13, fontWeight: 600, color: 'rgba(255,255,255,0.85)' }}>{row.label}</div>
+            <div style={{ fontSize: '0.8667rem', fontWeight: 600, color: 'rgba(255,255,255,0.85)' }}>{row.label}</div>
             <div style={{ display: 'flex', justifyContent: 'center' }}><OBCell value={row.free} /></div>
             <div style={{ display: 'flex', justifyContent: 'center', background: `color-mix(in srgb, ${ACCENT} 8%, transparent)`, borderRadius: 6, padding: '4px 0' }}><OBCell value={row.paid} /></div>
           </div>
@@ -393,10 +393,10 @@ function OnboardingPricingView({ onNext, onSelectPaid, onBack }: {
 
       {/* CTAボタン */}
       <div style={{ padding: '0 16px calc(env(safe-area-inset-bottom, 24px) + 20px)', display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <button onClick={onSelectPaid} style={{ width: '100%', padding: '17px', borderRadius: 16, border: 'none', background: ACCENT, color: '#fff', fontSize: 15, fontWeight: 800, cursor: 'pointer', boxShadow: `0 8px 24px color-mix(in srgb, ${ACCENT} 31%, transparent)` }}>
+        <button onClick={onSelectPaid} style={{ width: '100%', padding: '17px', borderRadius: 16, border: 'none', background: ACCENT, color: '#fff', fontSize: '1rem', fontWeight: 800, cursor: 'pointer', boxShadow: `0 8px 24px color-mix(in srgb, ${ACCENT} 31%, transparent)` }}>
           {t('pricing.startPaid')}
         </button>
-        <button onClick={onNext} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)', fontSize: 13, cursor: 'pointer', padding: '8px 0', textAlign: 'center' }}>
+        <button onClick={onNext} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)', fontSize: '0.8667rem', cursor: 'pointer', padding: '8px 0', textAlign: 'center' }}>
           {t('onboarding.pricingStartFree')}
         </button>
       </div>
@@ -422,7 +422,7 @@ function RegisterScreen({ onComplete: _onComplete, onBack, onNavigateToLogin }: 
     borderRadius: 10,
     background: C.inputBg,
     color: C.white,
-    fontSize: 16,
+    fontSize: '1.0667rem',
     fontFamily: "'Noto Sans JP', sans-serif",
     outline: 'none',
     boxSizing: 'border-box',
@@ -482,7 +482,7 @@ function RegisterScreen({ onComplete: _onComplete, onBack, onNavigateToLogin }: 
 
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
       <h1 style={{
-        fontSize: 24, fontWeight: 700,
+        fontSize: '1.6rem', fontWeight: 700,
         color: C.white, textAlign: 'center',
         margin: '0 0 28px',
       }}>
@@ -513,7 +513,7 @@ function RegisterScreen({ onComplete: _onComplete, onBack, onNavigateToLogin }: 
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
             )}
           </span>
-          <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.7)', lineHeight: 1.6 }}>
+          <span style={{ fontSize: '0.9333rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.6 }}>
             <button type="button" style={{ color: C.teal, textDecoration: 'underline', cursor: 'pointer', background: 'transparent', border: 'none', padding: 0, font: 'inherit' }} onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open(localizedHtmlPath('terms'), '_blank') }}>{t('profile.terms')}</button>{t('onboarding.registerTermsPrefix')}
             <button type="button" style={{ color: C.teal, textDecoration: 'underline', cursor: 'pointer', background: 'transparent', border: 'none', padding: 0, font: 'inherit' }} onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open(localizedHtmlPath('privacy'), '_blank') }}>{t('profile.privacy')}</button>{t('onboarding.registerTermsSuffix')}
           </span>
@@ -521,12 +521,12 @@ function RegisterScreen({ onComplete: _onComplete, onBack, onNavigateToLogin }: 
 
         {/* エラー / 成功 */}
         {error && (
-          <div role="alert" aria-live="polite" style={{ fontSize: 14, color: C.error, padding: '10px 14px', background: C.errorBg, borderRadius: 10 }}>
+          <div role="alert" aria-live="polite" style={{ fontSize: '0.9333rem', color: C.error, padding: '10px 14px', background: C.errorBg, borderRadius: 10 }}>
             {error}
           </div>
         )}
         {successMsg && (
-          <div role="status" aria-live="polite" style={{ fontSize: 14, color: '#a7f3d0', padding: '10px 14px', background: 'rgba(34,197,94,0.12)', borderRadius: 10 }}>
+          <div role="status" aria-live="polite" style={{ fontSize: '0.9333rem', color: '#a7f3d0', padding: '10px 14px', background: 'rgba(34,197,94,0.12)', borderRadius: 10 }}>
             {successMsg}
           </div>
         )}
@@ -553,7 +553,7 @@ function RegisterScreen({ onComplete: _onComplete, onBack, onNavigateToLogin }: 
                 width: '100%', padding: '17px',
                 background: loading ? 'rgba(108,142,245,0.4)' : `linear-gradient(135deg, ${C.teal}, #9BB3FA)`,
                 border: 'none', borderRadius: 12,
-                fontSize: 16, fontWeight: 700, color: C.white,
+                fontSize: '1.0667rem', fontWeight: 700, color: C.white,
                 cursor: loading ? 'not-allowed' : 'pointer',
               }}
             >
@@ -562,14 +562,14 @@ function RegisterScreen({ onComplete: _onComplete, onBack, onNavigateToLogin }: 
 
             {/* ログインリンク */}
             <div style={{ textAlign: 'center', marginTop: 4 }}>
-              <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)' }}>
+              <span style={{ fontSize: '0.8667rem', color: 'rgba(255,255,255,0.5)' }}>
                 {t('onboarding.registerHaveAccount')}
               </span>
               <button
                 onClick={onNavigateToLogin}
                 style={{
                   background: 'none', border: 'none',
-                  color: C.teal, fontSize: 13, fontWeight: 700,
+                  color: C.teal, fontSize: '0.8667rem', fontWeight: 700,
                   cursor: 'pointer', display: 'block', margin: '4px auto 0',
                 }}
               >
@@ -579,23 +579,23 @@ function RegisterScreen({ onComplete: _onComplete, onBack, onNavigateToLogin }: 
           </>
         ) : (
           <>
-            <h2 style={{ fontSize: 18, fontWeight: 700, color: C.white, textAlign: 'center', margin: '0 0 8px' }}>
+            <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: C.white, textAlign: 'center', margin: '0 0 8px' }}>
               {t('auth.linkSentTitle')}
             </h2>
-            <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.7)', margin: '0 0 4px', textAlign: 'center', lineHeight: 1.6 }}>
+            <p style={{ fontSize: '0.9333rem', color: 'rgba(255,255,255,0.7)', margin: '0 0 4px', textAlign: 'center', lineHeight: 1.6 }}>
               {t('auth.linkSentTo', { email })}
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center', marginTop: 16 }}>
               <button
                 onClick={handleResend}
                 disabled={loading}
-                style={{ background: 'none', border: 'none', color: C.teal, fontSize: 14, fontWeight: 600, cursor: loading ? 'not-allowed' : 'pointer', padding: '10px 0', opacity: loading ? 0.5 : 1 }}
+                style={{ background: 'none', border: 'none', color: C.teal, fontSize: '0.9333rem', fontWeight: 600, cursor: loading ? 'not-allowed' : 'pointer', padding: '10px 0', opacity: loading ? 0.5 : 1 }}
               >
                 {t('auth.linkResend')}
               </button>
               <button
                 onClick={() => { setStep('email'); setError(''); setSuccessMsg('') }}
-                style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', fontSize: 13, cursor: 'pointer', padding: '8px 0' }}
+                style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', fontSize: '0.8667rem', cursor: 'pointer', padding: '8px 0' }}
               >
                 {t('auth.backToLogin')}
               </button>

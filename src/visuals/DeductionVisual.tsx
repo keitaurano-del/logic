@@ -61,7 +61,7 @@ export function DeductionVisual({ revealMode = 'interactive' }: Props = {}) {
             padding: '10px 12px',
             background: 'var(--success-soft)',
             borderRadius: 8,
-            fontSize: 13,
+            fontSize: '0.8667rem',
             fontWeight: 600,
             color: 'var(--success-deep)',
             textAlign: 'center',

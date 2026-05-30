@@ -225,7 +225,7 @@ export function JournalAssistantSheet({ userId, assistantName, onClose, onOpenLe
         </div>
         <div className="journal-search-overlay__body">
           {loading && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: 'var(--text-muted)', fontSize: 14 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: 'var(--text-muted)', fontSize: '0.9333rem' }}>
               <span className="journal-spinner" aria-hidden="true" />
               <span>
                 {t('journal.assistantGenerating')}
@@ -315,7 +315,7 @@ export function JournalAssistantSheet({ userId, assistantName, onClose, onOpenLe
           )}
 
           {!loading && !error && !feedback && (
-            <div style={{ color: 'var(--text-muted)', fontSize: 13 }}>{t('journal.assistantEmpty')}</div>
+            <div style={{ color: 'var(--text-muted)', fontSize: '0.8667rem' }}>{t('journal.assistantEmpty')}</div>
           )}
         </div>
       </div>

@@ -115,7 +115,7 @@ export function TtsPopover(props: TtsPopoverProps) {
           >
             {/* 上段: タイトル + 閉じる */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: 13, fontWeight: 700 }}>{t('tts.coursePlay.title')}</span>
+              <span style={{ fontSize: '0.8667rem', fontWeight: 700 }}>{t('tts.coursePlay.title')}</span>
               <button
                 type="button"
                 onClick={(e) => { e.stopPropagation(); setOpen(false) }}
@@ -148,7 +148,7 @@ export function TtsPopover(props: TtsPopoverProps) {
                 color: '#FFFFFF',
                 border: 'none',
                 cursor: 'pointer',
-                fontSize: 14, fontWeight: 700,
+                fontSize: '0.9333rem', fontWeight: 700,
                 boxShadow: `0 4px 16px color-mix(in srgb, var(--brand) 36%, transparent)`,
                 WebkitTapHighlightColor: 'transparent',
               }}

@@ -311,7 +311,7 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
         </div>
         {reminderPref.enabled && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, paddingLeft: 4 }}>
-            <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>{t('profile.reminderTime')}</span>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{t('profile.reminderTime')}</span>
             <input
               type="time"
               value={`${String(reminderPref.hour).padStart(2, '0')}:${String(reminderPref.minute).padStart(2, '0')}`}
@@ -320,9 +320,9 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
                 await scheduleDailyReminder(h, m)
                 setReminderPref(loadReminderPref())
               }}
-              style={{ padding: '6px 10px', border: '1px solid var(--border)', borderRadius: 8, fontFamily: 'inherit', fontSize: 14, background: 'var(--bg-card)', color: 'var(--text-primary)' }}
+              style={{ padding: '6px 10px', border: '1px solid var(--border)', borderRadius: 8, fontFamily: 'inherit', fontSize: '0.9333rem', background: 'var(--bg-card)', color: 'var(--text-primary)' }}
             />
-            {!isNative() && <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{t('profile.reminderWebNote')}</span>}
+            {!isNative() && <span style={{ fontSize: '0.7333rem', color: 'var(--text-muted)' }}>{t('profile.reminderWebNote')}</span>}
           </div>
         )}
       </div>
@@ -340,7 +340,7 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
                 border: '1.5px solid ' + (getLocale() === 'ja' ? 'var(--accent)' : 'var(--border)'),
                 background: getLocale() === 'ja' ? 'var(--accent-soft)' : 'var(--bg-card)',
                 color: getLocale() === 'ja' ? 'var(--accent)' : 'var(--text-secondary)',
-                fontSize: 13, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit',
+                fontSize: '0.8667rem', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit',
               }}
             >
               {t('profile.languageJa')}
@@ -353,7 +353,7 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
                 border: '1.5px solid ' + (getLocale() === 'en' ? 'var(--accent)' : 'var(--border)'),
                 background: getLocale() === 'en' ? 'var(--accent-soft)' : 'var(--bg-card)',
                 color: getLocale() === 'en' ? 'var(--accent)' : 'var(--text-secondary)',
-                fontSize: 13, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit',
+                fontSize: '0.8667rem', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit',
               }}
             >
               {t('profile.languageEn')}
@@ -423,7 +423,7 @@ export default function Profile({ onFeedback, onPricing, onDeviation, onTheme, o
               background: 'var(--bg-card)',
               color: 'var(--text-primary)',
               border: '1px solid var(--border)',
-              fontSize: 14,
+              fontSize: '0.9333rem',
               fontWeight: 600,
               cursor: 'pointer',
               fontFamily: 'inherit',

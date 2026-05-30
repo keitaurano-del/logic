@@ -144,7 +144,7 @@ export function RadarChart({
               y={y.toFixed(2)}
               textAnchor={anchor}
               dominantBaseline="middle"
-              fontSize={12}
+              fontSize={'0.8rem'}
               fontWeight={700}
               fill={labelColor}
               style={{ letterSpacing: '0.02em' }}
@@ -156,7 +156,7 @@ export function RadarChart({
               y={(y + 14).toFixed(2)}
               textAnchor={anchor}
               dominantBaseline="middle"
-              fontSize={10}
+              fontSize={'0.6667rem'}
               fontWeight={600}
               fill={strokeColor}
               opacity={0.85}

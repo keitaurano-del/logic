@@ -59,12 +59,12 @@ export function FlashcardsScreen({ onBack, mode = 'due' }: FlashcardsScreenProps
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 'var(--s-3)', color: 'var(--brand)' }}>
               <SparklesIcon width={36} height={36} />
             </div>
-            <h3 style={{ fontSize: 20, marginBottom: 'var(--s-2)' }}>
+            <h3 style={{ fontSize: '1.3333rem', marginBottom: 'var(--s-2)' }}>
               {mode === 'weak'
                 ? t('flashcards.emptyWeak')
                 : t('flashcards.emptyDue')}
             </h3>
-            <p className="muted" style={{ fontSize: 16 }}>
+            <p className="muted" style={{ fontSize: '1.0667rem' }}>
               {mode === 'weak'
                 ? t('flashcards.emptyWeakDesc')
                 : t('flashcards.emptyDueDesc')}

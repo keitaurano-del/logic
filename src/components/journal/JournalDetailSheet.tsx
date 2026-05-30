@@ -737,13 +737,13 @@ export function JournalDetailSheet({ userId, date, initialJournal, initialPhase,
                   borderRadius: 8,
                   background: 'var(--danger-soft, #FEECEC)',
                   color: 'var(--danger, #C0392B)',
-                  fontSize: 13,
+                  fontSize: '0.8667rem',
                   lineHeight: 1.5,
                 }}
               >
                 <div style={{ fontWeight: 700, marginBottom: 2 }}>{t('journal.saveErrorTitle')}</div>
                 <div>{t('journal.saveErrorRetry')}</div>
-                <div style={{ marginTop: 6, fontSize: 11, opacity: 0.75, wordBreak: 'break-word' }}>
+                <div style={{ marginTop: 6, fontSize: '0.7333rem', opacity: 0.75, wordBreak: 'break-word' }}>
                   {saveError}
                 </div>
               </div>
@@ -764,7 +764,7 @@ export function JournalDetailSheet({ userId, date, initialJournal, initialPhase,
               onClick={handleCancelEdit}
               style={{
                 marginTop: 4, width: '100%', background: 'transparent', border: 'none',
-                padding: 12, color: 'var(--text-secondary)', fontWeight: 700, fontSize: 14, cursor: 'pointer',
+                padding: 12, color: 'var(--text-secondary)', fontWeight: 700, fontSize: '0.9333rem', cursor: 'pointer',
               }}
             >
               {t('common.cancel')}

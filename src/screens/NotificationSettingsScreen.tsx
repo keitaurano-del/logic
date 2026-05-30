@@ -24,7 +24,7 @@ function Toggle({ value, onChange, label }: { value: boolean; onChange: (v: bool
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--text-muted)', padding: '4px 4px 8px' }}>
+    <div style={{ fontSize: '0.7333rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--text-muted)', padding: '4px 4px 8px' }}>
       {children}
     </div>
   )
@@ -34,8 +34,8 @@ function NotifRow({ label, sub, value, onChange, last }: { label: string; sub: s
   return (
     <div style={{ display: 'flex', alignItems: 'center', padding: '15px 20px', gap: 12, borderBottom: last ? 'none' : `1px solid ${'var(--border)'}` }}>
       <div style={{ flex: 1 }}>
-        <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)' }}>{label}</div>
-        <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.5 }}>{sub}</div>
+        <div style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-primary)' }}>{label}</div>
+        <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.5 }}>{sub}</div>
       </div>
       <Toggle value={value} onChange={onChange} label={label} />
     </div>
@@ -178,12 +178,12 @@ export function NotificationSettingsScreen({ onBack }: Props) {
             {enabled && (
               <div style={{ padding: '16px 20px' }}>
                 {!isNative() && (
-                  <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 12, padding: '8px 12px', background: 'var(--bg-primary)', borderRadius: 8 }}>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: 12, padding: '8px 12px', background: 'var(--bg-primary)', borderRadius: 8 }}>
                     {t('notifSettings.browserOnly')}
                   </div>
                 )}
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <span style={{ fontSize: 14, color: 'var(--text-secondary)' }}>{t('notifSettings.daily')}</span>
+                  <span style={{ fontSize: '0.9333rem', color: 'var(--text-secondary)' }}>{t('notifSettings.daily')}</span>
                   <select
                     aria-label={t('notifSettings.hourAria')}
                     value={hour}
@@ -191,7 +191,7 @@ export function NotificationSettingsScreen({ onBack }: Props) {
                     style={{
                       padding: '8px 12px', borderRadius: 10,
                       border: `1.5px solid ${'var(--border)'}`, background: 'var(--bg-primary)',
-                      fontSize: 20, fontWeight: 700, color: 'var(--text-primary)',
+                      fontSize: '1.3333rem', fontWeight: 700, color: 'var(--text-primary)',
                       cursor: 'pointer', outline: 'none',
                     }}
                   >
@@ -199,7 +199,7 @@ export function NotificationSettingsScreen({ onBack }: Props) {
                       <option key={i} value={i}>{pad(i)}</option>
                     ))}
                   </select>
-                  <span style={{ fontSize: 22, fontWeight: 700 }}>:</span>
+                  <span style={{ fontSize: '1.4667rem', fontWeight: 700 }}>:</span>
                   <select
                     aria-label={t('notifSettings.minuteAria')}
                     value={minute}
@@ -207,7 +207,7 @@ export function NotificationSettingsScreen({ onBack }: Props) {
                     style={{
                       padding: '8px 12px', borderRadius: 10,
                       border: `1.5px solid ${'var(--border)'}`, background: 'var(--bg-primary)',
-                      fontSize: 20, fontWeight: 700, color: 'var(--text-primary)',
+                      fontSize: '1.3333rem', fontWeight: 700, color: 'var(--text-primary)',
                       cursor: 'pointer', outline: 'none',
                     }}
                   >
@@ -215,7 +215,7 @@ export function NotificationSettingsScreen({ onBack }: Props) {
                       <option key={m} value={m}>{pad(m)}</option>
                     ))}
                   </select>
-                  <span style={{ fontSize: 14, color: 'var(--text-secondary)' }}>{t('notifSettings.notifyAt')}</span>
+                  <span style={{ fontSize: '0.9333rem', color: 'var(--text-secondary)' }}>{t('notifSettings.notifyAt')}</span>
                 </div>
               </div>
             )}
@@ -250,12 +250,12 @@ export function NotificationSettingsScreen({ onBack }: Props) {
             {journalEnabled && (
               <div style={{ padding: '16px 20px' }}>
                 {!isNative() && (
-                  <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 12, padding: '8px 12px', background: 'var(--bg-primary)', borderRadius: 8 }}>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: 12, padding: '8px 12px', background: 'var(--bg-primary)', borderRadius: 8 }}>
                     {t('notifSettings.browserOnly')}
                   </div>
                 )}
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <span style={{ fontSize: 14, color: 'var(--text-secondary)' }}>{t('notifSettings.daily')}</span>
+                  <span style={{ fontSize: '0.9333rem', color: 'var(--text-secondary)' }}>{t('notifSettings.daily')}</span>
                   <select
                     aria-label={t('notifSettings.hourAria')}
                     value={journalHour}
@@ -263,7 +263,7 @@ export function NotificationSettingsScreen({ onBack }: Props) {
                     style={{
                       padding: '8px 12px', borderRadius: 10,
                       border: `1.5px solid ${'var(--border)'}`, background: 'var(--bg-primary)',
-                      fontSize: 20, fontWeight: 700, color: 'var(--text-primary)',
+                      fontSize: '1.3333rem', fontWeight: 700, color: 'var(--text-primary)',
                       cursor: 'pointer', outline: 'none',
                     }}
                   >
@@ -271,7 +271,7 @@ export function NotificationSettingsScreen({ onBack }: Props) {
                       <option key={i} value={i}>{pad(i)}</option>
                     ))}
                   </select>
-                  <span style={{ fontSize: 22, fontWeight: 700 }}>:</span>
+                  <span style={{ fontSize: '1.4667rem', fontWeight: 700 }}>:</span>
                   <select
                     aria-label={t('notifSettings.minuteAria')}
                     value={journalMinute}
@@ -279,7 +279,7 @@ export function NotificationSettingsScreen({ onBack }: Props) {
                     style={{
                       padding: '8px 12px', borderRadius: 10,
                       border: `1.5px solid ${'var(--border)'}`, background: 'var(--bg-primary)',
-                      fontSize: 20, fontWeight: 700, color: 'var(--text-primary)',
+                      fontSize: '1.3333rem', fontWeight: 700, color: 'var(--text-primary)',
                       cursor: 'pointer', outline: 'none',
                     }}
                   >
@@ -287,7 +287,7 @@ export function NotificationSettingsScreen({ onBack }: Props) {
                       <option key={m} value={m}>{pad(m)}</option>
                     ))}
                   </select>
-                  <span style={{ fontSize: 14, color: 'var(--text-secondary)' }}>{t('notifSettings.notifyAt')}</span>
+                  <span style={{ fontSize: '0.9333rem', color: 'var(--text-secondary)' }}>{t('notifSettings.notifyAt')}</span>
                 </div>
               </div>
             )}
@@ -299,7 +299,7 @@ export function NotificationSettingsScreen({ onBack }: Props) {
             <SectionLabel>{t('notifSettings.debug.heading')}</SectionLabel>
             <div style={{ background: 'var(--bg-card)', borderRadius: 16, overflow: 'hidden', boxShadow: 'var(--shadow-v3-card-inset)' }}>
               <div style={{ padding: '14px 20px', display: 'flex', alignItems: 'center', gap: 12, borderBottom: `1px solid ${'var(--border)'}` }}>
-                <div style={{ flex: 1, fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                <div style={{ flex: 1, fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
                   {t('notifSettings.debug.intro')}
                   {pendingFetchedAt && (
                     <div style={{ marginTop: 4, color: 'var(--text-muted)' }}>
@@ -315,7 +315,7 @@ export function NotificationSettingsScreen({ onBack }: Props) {
                     padding: '6px 12px', borderRadius: 8,
                     border: `1.5px solid ${'var(--border)'}`,
                     background: 'var(--bg-primary)', color: 'var(--text-primary)',
-                    fontSize: 12, fontWeight: 600, cursor: 'pointer',
+                    fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer',
                   }}
                 >
                   {t('notifSettings.debug.refresh')}
@@ -330,23 +330,23 @@ export function NotificationSettingsScreen({ onBack }: Props) {
                     padding: '8px 14px', borderRadius: 8,
                     border: `1.5px solid ${'var(--border)'}`,
                     background: 'var(--bg-primary)', color: 'var(--text-primary)',
-                    fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                    fontSize: '0.8667rem', fontWeight: 600, cursor: 'pointer',
                   }}
                 >
                   {t('notifSettings.debug.forceReschedule')}
                 </button>
-                <div style={{ marginTop: 6, fontSize: 11, color: 'var(--text-muted)' }}>
+                <div style={{ marginTop: 6, fontSize: '0.7333rem', color: 'var(--text-muted)' }}>
                   {t('notifSettings.debug.forceRescheduleHint')}
                 </div>
               </div>
 
               <div style={{ padding: '14px 20px' }}>
                 {!isNative() ? (
-                  <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>
+                  <div style={{ fontSize: '0.8667rem', color: 'var(--text-muted)' }}>
                     {t('notifSettings.debug.webNoop')}
                   </div>
                 ) : pending.length === 0 ? (
-                  <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>
+                  <div style={{ fontSize: '0.8667rem', color: 'var(--text-muted)' }}>
                     {pendingLoading ? t('notifSettings.debug.loading') : t('notifSettings.debug.empty')}
                   </div>
                 ) : (
@@ -358,7 +358,7 @@ export function NotificationSettingsScreen({ onBack }: Props) {
                           padding: 10, borderRadius: 10,
                           background: 'var(--bg-primary)',
                           border: `1px solid ${'var(--border)'}`,
-                          fontSize: 12, lineHeight: 1.55,
+                          fontSize: '0.8rem', lineHeight: 1.55,
                           color: 'var(--text-primary)',
                           fontFamily: 'ui-monospace, SFMono-Regular, monospace',
                         }}

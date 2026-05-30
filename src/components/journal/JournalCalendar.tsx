@@ -193,7 +193,7 @@ export function JournalCalendar({ userId, onSaved }: JournalCalendarProps) {
       </div>
 
       {loading && (
-        <div style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: 12, marginTop: 12 }}>
+        <div style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: 12 }}>
           {t('common.loading')}
         </div>
       )}

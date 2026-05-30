@@ -24,7 +24,7 @@ export function PersonalCourseScreen({ onStartLesson, onExit, onBack }: Personal
     return (
       <div style={{ background: 'var(--bg-primary)', minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: 'var(--text-primary)' }}>
         <Header title={t('personalCourse.title')} onBack={onBack} />
-        <div style={{ padding: 24, textAlign: 'center', color: 'var(--text-secondary)', fontSize: 14, lineHeight: 1.7 }}>
+        <div style={{ padding: 24, textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.9333rem', lineHeight: 1.7 }}>
           {t('personalCourse.empty')}
         </div>
       </div>
@@ -47,19 +47,19 @@ export function PersonalCourseScreen({ onStartLesson, onExit, onBack }: Personal
           </button>
         )}
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 12, fontWeight: 800, color: 'var(--brand)', letterSpacing: '.08em' }}>{t('personalCourse.eyebrow')}</div>
-          <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-primary)', marginTop: 2, lineHeight: 1.35 }}>{course.title}</div>
+          <div style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--brand)', letterSpacing: '.08em' }}>{t('personalCourse.eyebrow')}</div>
+          <div style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-primary)', marginTop: 2, lineHeight: 1.35 }}>{course.title}</div>
         </div>
       </div>
 
       <div style={{ flex: 1, padding: '0 16px 32px', display: 'flex', flexDirection: 'column', gap: 14 }}>
         {/* コース概要カード */}
         <div style={{ background: 'var(--bg-card)', borderRadius: 16, padding: '16px 18px', boxShadow: 'var(--shadow-v3-card-inset)', border: `1.5px solid color-mix(in srgb, var(--brand) 19%, transparent)` }}>
-          <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: 10 }}>{course.description}</div>
+          <div style={{ fontSize: '0.8667rem', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: 10 }}>{course.description}</div>
           {course.axisOrder.length > 0 && (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 12 }}>
               {course.axisOrder.slice(0, 3).map((axis, idx) => (
-                <div key={axis} style={{ fontSize: 11, fontWeight: 700, color: idx === 0 ? '#fff' : 'var(--brand)', background: idx === 0 ? 'var(--brand)' : 'var(--accent-soft)', borderRadius: 6, padding: '3px 8px' }}>
+                <div key={axis} style={{ fontSize: '0.7333rem', fontWeight: 700, color: idx === 0 ? '#fff' : 'var(--brand)', background: idx === 0 ? 'var(--brand)' : 'var(--accent-soft)', borderRadius: 6, padding: '3px 8px' }}>
                   {t('personalCourse.priorityLine', { label: idx === 0 ? t('personalCourse.priorityFirst') : t('personalCourse.priorityNth', { n: idx }), axis: axisLabel(axis).label })}
                 </div>
               ))}
@@ -68,8 +68,8 @@ export function PersonalCourseScreen({ onStartLesson, onExit, onBack }: Personal
           {/* プログレス */}
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-              <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{t('personalCourse.totalLessons', { n: lessons.length })}</div>
-              <div style={{ fontSize: 11, color: 'var(--brand)', fontWeight: 600 }}>{t('personalCourse.completedRatio', { done: completedCount, total: lessons.length })}</div>
+              <div style={{ fontSize: '0.7333rem', color: 'var(--text-muted)' }}>{t('personalCourse.totalLessons', { n: lessons.length })}</div>
+              <div style={{ fontSize: '0.7333rem', color: 'var(--brand)', fontWeight: 600 }}>{t('personalCourse.completedRatio', { done: completedCount, total: lessons.length })}</div>
             </div>
             <div style={{ height: 4, background: `color-mix(in srgb, var(--text-muted) 13%, transparent)`, borderRadius: 2, overflow: 'hidden' }}>
               <div style={{ height: '100%', width: `${(completedCount / Math.max(1, lessons.length)) * 100}%`, background: allDone ? '#22C55E' : 'var(--brand)', borderRadius: 2, transition: 'width .3s' }} />
@@ -93,17 +93,17 @@ export function PersonalCourseScreen({ onStartLesson, onExit, onBack }: Personal
                 <div style={{ width: 28, height: 28, borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-fg)', background: isDone ? 'var(--accent)' : isNext ? `color-mix(in srgb, var(--brand) 13%, transparent)` : `color-mix(in srgb, var(--text-muted) 9%, transparent)`, border: isNext && !isDone ? `1.5px solid ${'var(--brand)'}` : 'none' }}>
                   {isDone
                     ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                    : <span style={{ fontSize: 11, fontWeight: 700, color: isNext ? 'var(--brand)' : 'var(--text-muted)' }}>{idx + 1}</span>
+                    : <span style={{ fontSize: '0.7333rem', fontWeight: 700, color: isNext ? 'var(--brand)' : 'var(--text-muted)' }}>{idx + 1}</span>
                   }
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 14, fontWeight: isNext ? 700 : 600, color: isDone ? 'var(--text-secondary)' : 'var(--text-primary)', lineHeight: 1.35 }}>{lesson.title}</div>
-                  <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
+                  <div style={{ fontSize: '0.9333rem', fontWeight: isNext ? 700 : 600, color: isDone ? 'var(--text-secondary)' : 'var(--text-primary)', lineHeight: 1.35 }}>{lesson.title}</div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: 2 }}>
                     {lesson.category} · {t('personalCourse.stepCount', { count: lesson.steps?.length ?? 0 })}
                   </div>
                 </div>
                 {isNext && !isDone && (
-                  <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--brand)', background: 'var(--accent-soft)', borderRadius: 6, padding: '3px 8px', flexShrink: 0 }}>{t('personalCourse.next')}</div>
+                  <div style={{ fontSize: '0.6667rem', fontWeight: 700, color: 'var(--brand)', background: 'var(--accent-soft)', borderRadius: 6, padding: '3px 8px', flexShrink: 0 }}>{t('personalCourse.next')}</div>
                 )}
                 {!isDone && !isNext && (
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
@@ -125,7 +125,7 @@ export function PersonalCourseScreen({ onStartLesson, onExit, onBack }: Personal
               border: 'none',
               borderRadius: 14,
               padding: '14px 0',
-              fontSize: 16,
+              fontSize: '1.0667rem',
               fontWeight: 700,
               cursor: 'pointer',
               display: 'flex',
@@ -148,7 +148,7 @@ export function PersonalCourseScreen({ onStartLesson, onExit, onBack }: Personal
             color: 'var(--text-muted)',
             border: 'none',
             padding: '10px 0',
-            fontSize: 13,
+            fontSize: '0.8667rem',
             fontWeight: 500,
             cursor: 'pointer',
             textDecoration: 'underline',
@@ -159,7 +159,7 @@ export function PersonalCourseScreen({ onStartLesson, onExit, onBack }: Personal
         </button>
 
         {course.axisOrder.length > 0 && (
-          <div style={{ marginTop: 4, fontSize: 11, color: 'var(--text-muted)', lineHeight: 1.6, textAlign: 'center' }}>
+          <div style={{ marginTop: 4, fontSize: '0.7333rem', color: 'var(--text-muted)', lineHeight: 1.6, textAlign: 'center' }}>
             {t('personalCourse.diagnosisLine', { axis: axisLabel(course.axisOrder[0]).label, from: levelLabel(1), to: levelLabel(3) })}
           </div>
         )}

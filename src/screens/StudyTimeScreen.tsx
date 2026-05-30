@@ -198,10 +198,10 @@ export function StudyTimeScreen({ onBack }: StudyTimeScreenProps) {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 'var(--s-3)', color: 'var(--brand)' }}>
           <ClockIcon width={40} height={40} />
         </div>
-        <div style={{ fontSize: 56, fontWeight: 800, lineHeight: 1, letterSpacing: '-0.04em', color: 'var(--brand)' }}>
+        <div style={{ fontSize: '3.7333rem', fontWeight: 800, lineHeight: 1, letterSpacing: '-0.04em', color: 'var(--brand)' }}>
           {formatMs(totalMs)}
         </div>
-        <div style={{ fontSize: 16, color: 'var(--text-muted)', marginTop: 'var(--s-2)', fontWeight: 600 }}>
+        <div style={{ fontSize: '1.0667rem', color: 'var(--text-muted)', marginTop: 'var(--s-2)', fontWeight: 600 }}>
           {t('studytime.totalLabel')}
         </div>
       </div>
@@ -209,18 +209,18 @@ export function StudyTimeScreen({ onBack }: StudyTimeScreenProps) {
       {/* Stats row */}
       <div style={{ display: 'flex', gap: 'var(--s-3)' }}>
         <div className="card" style={{ flex: 1, textAlign: 'center', padding: 'var(--s-4)' }}>
-          <div style={{ fontSize: 28, fontWeight: 700, color: 'var(--text)' }}>{totalDays}</div>
-          <div style={{ fontSize: 14, color: 'var(--text-muted)', marginTop: 4 }}>{t('studytime.studyDays')}</div>
+          <div style={{ fontSize: '1.8667rem', fontWeight: 700, color: 'var(--text)' }}>{totalDays}</div>
+          <div style={{ fontSize: '0.9333rem', color: 'var(--text-muted)', marginTop: 4 }}>{t('studytime.studyDays')}</div>
         </div>
         <div className="card" style={{ flex: 1, textAlign: 'center', padding: 'var(--s-4)' }}>
-          <div style={{ fontSize: 28, fontWeight: 700, color: 'var(--text)' }}>{formatMs(avgMs)}</div>
-          <div style={{ fontSize: 14, color: 'var(--text-muted)', marginTop: 4 }}>{t('studytime.avgPerDay')}</div>
+          <div style={{ fontSize: '1.8667rem', fontWeight: 700, color: 'var(--text)' }}>{formatMs(avgMs)}</div>
+          <div style={{ fontSize: '0.9333rem', color: 'var(--text-muted)', marginTop: 4 }}>{t('studytime.avgPerDay')}</div>
         </div>
         <div className="card" style={{ flex: 1, textAlign: 'center', padding: 'var(--s-4)' }}>
-          <div style={{ fontSize: 28, fontWeight: 700, color: 'var(--text)' }}>
+          <div style={{ fontSize: '1.8667rem', fontWeight: 700, color: 'var(--text)' }}>
             {dayRows.filter((d) => d.hasActivity).length}
           </div>
-          <div style={{ fontSize: 14, color: 'var(--text-muted)', marginTop: 4 }}>
+          <div style={{ fontSize: '0.9333rem', color: 'var(--text-muted)', marginTop: 4 }}>
             {range === 7 ? t('studytime.recentDays') : t('studytime.last30Days')}
           </div>
         </div>
@@ -229,7 +229,7 @@ export function StudyTimeScreen({ onBack }: StudyTimeScreenProps) {
       {/* Daily chart */}
       <div className="card" style={{ padding: 'var(--s-4)' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--s-1)' }}>
-          <h2 style={{ fontSize: 16, fontWeight: 600, color: 'var(--text)', margin: 0 }}>
+          <h2 style={{ fontSize: '1.0667rem', fontWeight: 600, color: 'var(--text)', margin: 0 }}>
             {t('studytime.dailyTitle')}
           </h2>
           {/* Range toggle */}
@@ -246,7 +246,7 @@ export function StudyTimeScreen({ onBack }: StudyTimeScreenProps) {
                     border: 'none',
                     background: active ? 'var(--surface)' : 'transparent',
                     color: active ? 'var(--text)' : 'var(--text-muted)',
-                    fontSize: 13,
+                    fontSize: '0.8667rem',
                     fontWeight: 600,
                     padding: '4px 12px',
                     borderRadius: 999,
@@ -260,7 +260,7 @@ export function StudyTimeScreen({ onBack }: StudyTimeScreenProps) {
             })}
           </div>
         </div>
-        <div style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 'var(--s-3)' }}>
+        <div style={{ fontSize: '0.8667rem', color: 'var(--text-muted)', marginBottom: 'var(--s-3)' }}>
           {t('studytime.dailySubtitle')}
         </div>
 
@@ -321,7 +321,7 @@ export function StudyTimeScreen({ onBack }: StudyTimeScreenProps) {
                 {range === 7 && (
                   <div
                     style={{
-                      fontSize: 11,
+                      fontSize: '0.7333rem',
                       color: isToday ? 'var(--brand)' : 'var(--text-muted)',
                       fontWeight: isToday ? 700 : 500,
                       textAlign: 'center',
@@ -338,33 +338,33 @@ export function StudyTimeScreen({ onBack }: StudyTimeScreenProps) {
         </div>
         {range === 30 && (
           <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 'var(--s-2)' }}>
-            <span style={{ fontSize: 12, color: 'var(--text-faint)' }}>{t('label.daysAgo', { n: 30 })}</span>
-            <span style={{ fontSize: 12, color: 'var(--text-faint)' }}>{t('label.today')}</span>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-faint)' }}>{t('label.daysAgo', { n: 30 })}</span>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-faint)' }}>{t('label.today')}</span>
           </div>
         )}
       </div>
 
       {/* Breakdown for selected day */}
       <div className="card" style={{ padding: 'var(--s-4)' }}>
-        <h2 style={{ fontSize: 16, fontWeight: 600, color: 'var(--text)', margin: 0, marginBottom: 'var(--s-1)' }}>
+        <h2 style={{ fontSize: '1.0667rem', fontWeight: 600, color: 'var(--text)', margin: 0, marginBottom: 'var(--s-1)' }}>
           {t('studytime.breakdownTitle', {
             date: selectedDate === todayStr ? t('studytime.todayLabel') : formatDate(selectedDate),
           })}
         </h2>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 'var(--s-2)', marginBottom: 'var(--s-3)' }}>
-          <span style={{ fontSize: 14, color: 'var(--text-muted)' }}>{t('studytime.breakdownTotal')}</span>
-          <span style={{ fontSize: 20, fontWeight: 700, color: 'var(--brand)' }}>
+          <span style={{ fontSize: '0.9333rem', color: 'var(--text-muted)' }}>{t('studytime.breakdownTotal')}</span>
+          <span style={{ fontSize: '1.3333rem', fontWeight: 700, color: 'var(--brand)' }}>
             {selectedEntryMs > 0 ? formatMs(selectedEntryMs) : t('studytime.noTime')}
           </span>
         </div>
 
         {breakdown.length === 0 ? (
-          <div style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: 14, padding: 'var(--s-5) 0' }}>
+          <div style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.9333rem', padding: 'var(--s-5) 0' }}>
             {t('studytime.breakdownEmpty')}
           </div>
         ) : (
           <>
-            <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-muted)', marginBottom: 'var(--s-2)' }}>
+            <div style={{ fontSize: '0.8667rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: 'var(--s-2)' }}>
               {t('studytime.breakdownLessons')}
             </div>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
@@ -374,7 +374,7 @@ export function StudyTimeScreen({ onBack }: StudyTimeScreenProps) {
                   <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--s-3)', padding: 'var(--s-3) 0' }}>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{
-                        fontSize: 15,
+                        fontSize: '1rem',
                         fontWeight: 600,
                         color: 'var(--text)',
                         overflow: 'hidden',
@@ -383,13 +383,13 @@ export function StudyTimeScreen({ onBack }: StudyTimeScreenProps) {
                       }}>
                         {item.name}
                       </div>
-                      <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
+                      <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: 2 }}>
                         {item.category}
                         {item.count > 1 ? ` ${t('studytime.itemCountSuffix', { n: item.count })}` : ''}
                       </div>
                     </div>
                     {item.ms > 0 && (
-                      <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--brand)', flexShrink: 0 }}>
+                      <div style={{ fontSize: '0.9333rem', fontWeight: 600, color: 'var(--brand)', flexShrink: 0 }}>
                         {formatMs(item.ms)}
                       </div>
                     )}

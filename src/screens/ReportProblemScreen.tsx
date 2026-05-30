@@ -88,13 +88,13 @@ export function ReportProblemScreen({ context, onBack }: ReportProblemScreenProp
       <Header title={t('report.title')} onBack={onBack} />
 
       <div className="eyebrow">{t('report.eyebrow')}</div>
-      <h1 style={{ fontSize: 26, fontWeight: 800, letterSpacing: '-0.02em' }}>
+      <h1 style={{ fontSize: '1.7333rem', fontWeight: 800, letterSpacing: '-0.02em' }}>
         {t('report.heading')}
       </h1>
 
       {/* コンテキスト表示 */}
       {(context.lessonTitle || context.question) && (
-        <div className="card" style={{ background: 'var(--bg-secondary)', fontSize: 16 }}>
+        <div className="card" style={{ background: 'var(--bg-secondary)', fontSize: '1.0667rem' }}>
           {context.lessonTitle && (
             <div style={{ marginBottom: context.question ? 6 : 0, fontWeight: 600 }}>
               {context.lessonTitle}
@@ -110,7 +110,7 @@ export function ReportProblemScreen({ context, onBack }: ReportProblemScreenProp
 
       <div className="stack-sm">
         {/* 種別ドロップダウン */}
-        <label style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-secondary)' }}>
+        <label style={{ fontSize: '1.0667rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
           {t('report.issueTypeLabel')}
         </label>
         <button
@@ -124,7 +124,7 @@ export function ReportProblemScreen({ context, onBack }: ReportProblemScreenProp
             border: '1.5px solid var(--border)',
             background: 'var(--bg-card)',
             color: issueType ? 'var(--text-primary)' : 'var(--text-muted)',
-            fontSize: 16,
+            fontSize: '1.0667rem',
             outline: 'none',
             cursor: 'pointer',
             textAlign: 'left',
@@ -136,7 +136,7 @@ export function ReportProblemScreen({ context, onBack }: ReportProblemScreenProp
           }}
         >
           <span>{issueLabel || t('report.issueTypePlaceholder')}</span>
-          <span aria-hidden="true" style={{ fontSize: 12, opacity: 0.6 }}>▾</span>
+          <span aria-hidden="true" style={{ fontSize: '0.8rem', opacity: 0.6 }}>▾</span>
         </button>
         <ActionSheet
           open={issueSheetOpen}
@@ -147,7 +147,7 @@ export function ReportProblemScreen({ context, onBack }: ReportProblemScreenProp
         />
 
         {/* コメント */}
-        <label style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-secondary)', marginTop: 'var(--s-2)' }}>
+        <label style={{ fontSize: '1.0667rem', fontWeight: 600, color: 'var(--text-secondary)', marginTop: 'var(--s-2)' }}>
           {t('report.commentLabel')}
         </label>
         <textarea
@@ -163,7 +163,7 @@ export function ReportProblemScreen({ context, onBack }: ReportProblemScreenProp
             border: '1.5px solid var(--border)',
             background: 'var(--bg-card)',
             color: 'var(--text-primary)',
-            fontSize: 16,
+            fontSize: '1.0667rem',
             lineHeight: 1.6,
             resize: 'vertical',
             outline: 'none',
@@ -172,7 +172,7 @@ export function ReportProblemScreen({ context, onBack }: ReportProblemScreenProp
         />
 
         {error && (
-          <div style={{ fontSize: 16, color: 'var(--danger)' }}>{error}</div>
+          <div style={{ fontSize: '1.0667rem', color: 'var(--danger)' }}>{error}</div>
         )}
 
         <Button

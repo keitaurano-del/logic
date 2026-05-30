@@ -129,8 +129,8 @@ function StatCell({ label, value, accent }: { label: string; value: number; acce
     'var(--text-primary)'
   return (
     <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', padding: '12px 14px', textAlign: 'center', boxShadow: 'var(--shadow-v3-card-inset)' }}>
-      <div style={{ fontSize: 24, fontWeight: 800, color }}>{value}</div>
-      <div style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '.04em' }}>{label}</div>
+      <div style={{ fontSize: '1.6rem', fontWeight: 800, color }}>{value}</div>
+      <div style={{ fontSize: '0.7333rem', color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '.04em' }}>{label}</div>
     </div>
   )
 }
@@ -158,7 +158,7 @@ function SegmentedControl<T extends string>({ value, onChange, options }: {
               color: active ? 'var(--text-primary)' : 'var(--text-secondary)',
               border: 'none',
               borderRadius: 'var(--radius-pill)',
-              fontSize: 13,
+              fontSize: '0.8667rem',
               fontWeight: 700,
               cursor: 'pointer',
               fontFamily: "'Noto Sans JP', sans-serif",
@@ -186,7 +186,7 @@ function Chip({ active, label, onClick }: { active: boolean; label: string; onCl
         border: `1px solid ${active ? 'var(--brand)' : 'var(--border)'}`,
         background: active ? 'var(--accent-soft)' : 'transparent',
         color: active ? 'var(--brand)' : 'var(--text-secondary)',
-        fontSize: 13,
+        fontSize: '0.8667rem',
         fontWeight: 600,
         cursor: 'pointer',
         fontFamily: "'Noto Sans JP', sans-serif",
@@ -218,15 +218,15 @@ function WrongAnswerCard({ item, onRetry, onToggleResolved, onOpenLesson }: {
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-        <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--brand)', letterSpacing: '.08em', textTransform: 'uppercase' }}>{item.category}</span>
-        <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>·</span>
-        <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{item.lessonTitle}</span>
-        <span style={{ marginLeft: 'auto', fontSize: 11, color: 'var(--text-muted)', display: 'inline-flex', alignItems: 'center', gap: 3 }}>
+        <span style={{ fontSize: '0.7333rem', fontWeight: 700, color: 'var(--brand)', letterSpacing: '.08em', textTransform: 'uppercase' }}>{item.category}</span>
+        <span style={{ fontSize: '0.7333rem', color: 'var(--text-muted)' }}>·</span>
+        <span style={{ fontSize: '0.7333rem', color: 'var(--text-muted)' }}>{item.lessonTitle}</span>
+        <span style={{ marginLeft: 'auto', fontSize: '0.7333rem', color: 'var(--text-muted)', display: 'inline-flex', alignItems: 'center', gap: 3 }}>
           <ClockIcon width={11} height={11} />
           {dateStr}
         </span>
       </div>
-      <div style={{ fontSize: 15, fontWeight: 600, lineHeight: 1.5, marginBottom: 10, whiteSpace: 'pre-wrap' }}>
+      <div style={{ fontSize: '1rem', fontWeight: 600, lineHeight: 1.5, marginBottom: 10, whiteSpace: 'pre-wrap' }}>
         {item.question}
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 10 }}>
@@ -235,13 +235,13 @@ function WrongAnswerCard({ item, onRetry, onToggleResolved, onOpenLesson }: {
       </div>
 
       {expanded && (
-        <div style={{ background: 'var(--bg-elevated)', borderRadius: 12, padding: '10px 12px', marginBottom: 10, fontSize: 13, color: 'var(--text-secondary)', whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>
+        <div style={{ background: 'var(--bg-elevated)', borderRadius: 12, padding: '10px 12px', marginBottom: 10, fontSize: '0.8667rem', color: 'var(--text-secondary)', whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>
           {item.explanation || t('wrongAnswers.noExplanation')}
         </div>
       )}
 
       {item.retryCount > 0 && (
-        <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 8 }}>
+        <div style={{ fontSize: '0.7333rem', color: 'var(--text-muted)', marginBottom: 8 }}>
           {t('wrongAnswers.retryStats', { correct: item.retryCorrectCount, total: item.retryCount })}
         </div>
       )}
@@ -268,8 +268,8 @@ function MiniLine({ label, text, accent }: { label: string; text: string; accent
   const color = accent === 'ok' ? 'var(--success-bright)' : 'var(--warm)'
   return (
     <div style={{ background: 'var(--bg-elevated)', borderRadius: 10, padding: '8px 10px' }}>
-      <div style={{ fontSize: 10, fontWeight: 700, color, letterSpacing: '.04em', marginBottom: 2 }}>{label}</div>
-      <div style={{ fontSize: 13, color: 'var(--text-primary)', lineHeight: 1.4, wordBreak: 'break-word' }}>{text}</div>
+      <div style={{ fontSize: '0.6667rem', fontWeight: 700, color, letterSpacing: '.04em', marginBottom: 2 }}>{label}</div>
+      <div style={{ fontSize: '0.8667rem', color: 'var(--text-primary)', lineHeight: 1.4, wordBreak: 'break-word' }}>{text}</div>
     </div>
   )
 }
@@ -284,7 +284,7 @@ function EmptyState({ statusFilter }: { statusFilter: StatusFilter }) {
       <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 56, height: 56, borderRadius: 16, background: 'var(--accent-soft)', color: 'var(--brand)', marginBottom: 12 }}>
         <CheckIcon width={28} height={28} />
       </div>
-      <div style={{ fontSize: 15, color: 'var(--text-secondary)', lineHeight: 1.6 }}>{msg}</div>
+      <div style={{ fontSize: '1rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>{msg}</div>
     </div>
   )
 }
@@ -346,12 +346,12 @@ function RetryModal({ item, onClose, onComplete }: {
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--brand)', letterSpacing: '.08em' }}>{t('wrongAnswers.retryHeader')}</div>
+          <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--brand)', letterSpacing: '.08em' }}>{t('wrongAnswers.retryHeader')}</div>
           <button type="button" onClick={onClose} aria-label={t('wrongAnswers.close')} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: 4 }}>
             <XIcon width={20} height={20} />
           </button>
         </div>
-        <div style={{ fontSize: 16, fontWeight: 700, lineHeight: 1.5, marginBottom: 14, whiteSpace: 'pre-wrap' }}>
+        <div style={{ fontSize: '1.0667rem', fontWeight: 700, lineHeight: 1.5, marginBottom: 14, whiteSpace: 'pre-wrap' }}>
           {item.question}
         </div>
 
@@ -375,7 +375,7 @@ function RetryModal({ item, onClose, onComplete }: {
                     border: `1.5px solid ${showCorrect ? 'var(--success-bright)' : showWrong ? 'var(--warm)' : isPicked ? 'var(--brand)' : 'var(--border)'}`,
                     background: showCorrect ? 'rgba(52, 199, 89, 0.08)' : showWrong ? 'rgba(255, 149, 0, 0.08)' : 'var(--bg-elevated)',
                     color: 'var(--text-primary)',
-                    fontSize: 14,
+                    fontSize: '0.9333rem',
                     fontWeight: 500,
                     fontFamily: "'Noto Sans JP', sans-serif",
                     cursor: revealed ? 'default' : 'pointer',
@@ -400,8 +400,8 @@ function RetryModal({ item, onClose, onComplete }: {
 
         {hasOptions && revealed && (
           <>
-            <div style={{ background: 'var(--bg-elevated)', borderRadius: 12, padding: '12px 14px', marginBottom: 12, fontSize: 13, lineHeight: 1.6, color: 'var(--text-secondary)', whiteSpace: 'pre-wrap' }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', marginBottom: 6, letterSpacing: '.04em' }}>{t('wrongAnswers.explanationHeader')}</div>
+            <div style={{ background: 'var(--bg-elevated)', borderRadius: 12, padding: '12px 14px', marginBottom: 12, fontSize: '0.8667rem', lineHeight: 1.6, color: 'var(--text-secondary)', whiteSpace: 'pre-wrap' }}>
+              <div style={{ fontSize: '0.7333rem', fontWeight: 700, color: 'var(--text-muted)', marginBottom: 6, letterSpacing: '.04em' }}>{t('wrongAnswers.explanationHeader')}</div>
               {item.explanation || t('wrongAnswers.noExplanation')}
             </div>
             <Button variant="primary" size="lg" block onClick={finish}>
@@ -430,8 +430,8 @@ function SelfAssessment({ correctAnswer, onResult, onClose: _onClose }: {
   return (
     <>
       <div style={{ background: 'var(--bg-elevated)', borderRadius: 12, padding: '12px 14px', marginBottom: 14 }}>
-        <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--success-bright)', marginBottom: 4, letterSpacing: '.04em' }}>{t('wrongAnswers.correctAnswer')}</div>
-        <div style={{ fontSize: 14, fontWeight: 600 }}>{correctAnswer}</div>
+        <div style={{ fontSize: '0.7333rem', fontWeight: 700, color: 'var(--success-bright)', marginBottom: 4, letterSpacing: '.04em' }}>{t('wrongAnswers.correctAnswer')}</div>
+        <div style={{ fontSize: '0.9333rem', fontWeight: 600 }}>{correctAnswer}</div>
       </div>
       <div style={{ display: 'flex', gap: 8 }}>
         <Button variant="default" size="lg" block onClick={() => onResult(false)}>{t('wrongAnswers.stillHard')}</Button>

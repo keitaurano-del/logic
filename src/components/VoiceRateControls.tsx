@@ -64,7 +64,7 @@ export function VoiceRateControls(props: VoiceRateControlsProps) {
     <>
       {/* 速度ボタン群 */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'space-between' }}>
-        <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '.04em', flexShrink: 0 }}>
+        <span style={{ fontSize: '0.7333rem', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '.04em', flexShrink: 0 }}>
           {t('tts.speed')}
         </span>
         <div style={{ display: 'flex', gap: 4, flexWrap: 'nowrap', overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
@@ -86,7 +86,7 @@ export function VoiceRateControls(props: VoiceRateControlsProps) {
                   color: active ? '#FFFFFF' : 'var(--text-primary)',
                   border: 'none',
                   cursor: 'pointer',
-                  fontSize: 13, fontWeight: 700,
+                  fontSize: '0.8667rem', fontWeight: 700,
                   fontFamily: "'Inter Tight', sans-serif",
                   WebkitTapHighlightColor: 'transparent',
                   flexShrink: 0,
@@ -102,7 +102,7 @@ export function VoiceRateControls(props: VoiceRateControlsProps) {
       {/* ボイス選択: 女性 / 男性 の 2 択トグル */}
       {(female || male) && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'space-between' }}>
-          <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '.04em', flexShrink: 0 }}>
+          <span style={{ fontSize: '0.7333rem', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '.04em', flexShrink: 0 }}>
             {t('tts.voice.label')}
           </span>
           <div style={{ display: 'flex', gap: 4, flexWrap: 'nowrap' }}>
@@ -120,7 +120,7 @@ export function VoiceRateControls(props: VoiceRateControlsProps) {
                   color: selectedGender === 'female' ? '#FFFFFF' : 'var(--text-primary)',
                   border: 'none',
                   cursor: 'pointer',
-                  fontSize: 13, fontWeight: 700,
+                  fontSize: '0.8667rem', fontWeight: 700,
                   fontFamily: "'Noto Sans JP', sans-serif",
                   WebkitTapHighlightColor: 'transparent',
                   flexShrink: 0,
@@ -143,7 +143,7 @@ export function VoiceRateControls(props: VoiceRateControlsProps) {
                   color: selectedGender === 'male' ? '#FFFFFF' : 'var(--text-primary)',
                   border: 'none',
                   cursor: 'pointer',
-                  fontSize: 13, fontWeight: 700,
+                  fontSize: '0.8667rem', fontWeight: 700,
                   fontFamily: "'Noto Sans JP', sans-serif",
                   WebkitTapHighlightColor: 'transparent',
                   flexShrink: 0,

@@ -222,12 +222,12 @@ function RatingPopup({ onSubmit, onSkip }: RatingPopupProps) {
         <div style={{ background: `color-mix(in srgb, var(--brand) 9%, transparent)`, border: `1px solid color-mix(in srgb, var(--brand) 25%, transparent)`, borderRadius: 12, padding: '10px 16px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 10 }}>
           <svg width="18" height="18" viewBox="0 0 24 24" fill={'var(--brand)'} stroke="none" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           <div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--brand)' }}>{t('aiGen.rating.xpEarned')}</div>
-            <div style={{ fontSize: 11, color: 'var(--text-secondary)' }}>{t('aiGen.rating.xpDesc')}</div>
+            <div style={{ fontSize: '0.8667rem', fontWeight: 700, color: 'var(--brand)' }}>{t('aiGen.rating.xpEarned')}</div>
+            <div style={{ fontSize: '0.7333rem', color: 'var(--text-secondary)' }}>{t('aiGen.rating.xpDesc')}</div>
           </div>
         </div>
-        <div style={{ fontSize: 17, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 6 }}>{t('aiGen.rating.heading')}</div>
-        <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 20 }}>{t('aiGen.rating.desc')}</div>
+        <div style={{ fontSize: '1.1333rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 6 }}>{t('aiGen.rating.heading')}</div>
+        <div style={{ fontSize: '0.8667rem', color: 'var(--text-secondary)', marginBottom: 20 }}>{t('aiGen.rating.desc')}</div>
         {/* 星5つ */}
         <div style={{ display: 'flex', justifyContent: 'center', gap: 10, marginBottom: 20 }}>
           {[1,2,3,4,5].map(n => (
@@ -249,14 +249,14 @@ function RatingPopup({ onSubmit, onSkip }: RatingPopupProps) {
           onChange={e => setComment(e.target.value)}
           placeholder={t('aiGen.rating.commentPlaceholder')}
           rows={3}
-          style={{ width: '100%', boxSizing: 'border-box', background: `color-mix(in srgb, var(--brand) 3%, transparent)`, border: `1px solid ${'var(--border)'}`, borderRadius: 10, padding: '10px 12px', fontSize: 14, color: 'var(--text-primary)', resize: 'none', outline: 'none', fontFamily: "'Noto Sans JP', sans-serif", marginBottom: 14 }}
+          style={{ width: '100%', boxSizing: 'border-box', background: `color-mix(in srgb, var(--brand) 3%, transparent)`, border: `1px solid ${'var(--border)'}`, borderRadius: 10, padding: '10px 12px', fontSize: '0.9333rem', color: 'var(--text-primary)', resize: 'none', outline: 'none', fontFamily: "'Noto Sans JP', sans-serif", marginBottom: 14 }}
         />
         <button
           onClick={() => rating > 0 ? onSubmit(rating, comment) : onSkip()}
-          style={{ width: '100%', background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)', border: 'none', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700, cursor: 'pointer', marginBottom: 10 }}>
+          style={{ width: '100%', background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)', border: 'none', borderRadius: 12, padding: '14px', fontSize: '1rem', fontWeight: 700, cursor: 'pointer', marginBottom: 10 }}>
           {rating > 0 ? t('aiGen.rating.submit') : t('aiGen.rating.skip')}
         </button>
-        <button onClick={onSkip} style={{ width: '100%', background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: 13, cursor: 'pointer' }}>
+        <button onClick={onSkip} style={{ width: '100%', background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: '0.8667rem', cursor: 'pointer' }}>
           {t('aiGen.rating.skip')}
         </button>
       </div>
@@ -378,28 +378,28 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
               background: 'color-mix(in srgb, var(--brand) 15%, transparent)',
               color: 'var(--brand)',
               borderRadius: 99, padding: '2px 8px',
-              fontSize: 11, fontWeight: 800, letterSpacing: '0.06em',
+              fontSize: '0.7333rem', fontWeight: 800, letterSpacing: '0.06em',
             }}>{t('aiGen.beta')}</span>
             {canUse ? (
-              <div style={{ background: 'var(--bg-card)', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700, color: 'var(--brand)' }}>
+              <div style={{ background: 'var(--bg-card)', borderRadius: 20, padding: '4px 12px', fontSize: '0.8rem', fontWeight: 700, color: 'var(--brand)' }}>
                 {t('aiGen.unlimited')}
               </div>
             ) : (
-              <div style={{ background: 'rgba(248,113,113,0.15)', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700, color: 'var(--md-sys-color-error)' }}>
+              <div style={{ background: 'rgba(248,113,113,0.15)', borderRadius: 20, padding: '4px 12px', fontSize: '0.8rem', fontWeight: 700, color: 'var(--md-sys-color-error)' }}>
                 {t('aiGen.upgradeRequired')}
               </div>
             )}
           </div>
         }
       />
-      <div style={{ padding: '0 20px 4px', fontSize: 12, color: 'var(--text-secondary)' }}>{t('aiGen.subtitle')}</div>
+      <div style={{ padding: '0 20px 4px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{t('aiGen.subtitle')}</div>
 
       {/* タブ */}
       <div style={{ display: 'flex', padding: '16px 20px 0', gap: 6 }}>
         {TABS.map(t => (
           <button key={t.id} onClick={() => setTab(t.id)} style={{
             padding: '7px 16px', borderRadius: 20, border: 'none', cursor: 'pointer',
-            fontSize: 13, fontWeight: 700, transition: 'all .15s',
+            fontSize: '0.8667rem', fontWeight: 700, transition: 'all .15s',
             background: tab === t.id ? 'var(--brand)' : 'var(--bg-card)',
             color: tab === t.id ? 'var(--bg-primary)' : 'var(--text-secondary)',
           }}>{t.label}</button>
@@ -427,47 +427,47 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
             <button
               onClick={() => handleGenerate(recommendPrompt)}
               disabled={generating || isAtLimit || !canUse || !recommendPrompt}
-              style={{ width: '100%', background: generating || isAtLimit || !canUse ? 'var(--bg-card)' : `linear-gradient(135deg, ${'var(--brand)'} 0%, var(--brand-light) 100%)`, color: generating || isAtLimit || !canUse ? 'var(--text-muted)' : 'var(--accent-fg)', border: 'none', borderRadius: 14, padding: '16px 20px', fontSize: 15, fontWeight: 700, cursor: generating || isAtLimit || !canUse ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: 12, boxShadow: generating || isAtLimit || !canUse ? 'none' : 'var(--shadow-v3-hero)' }}>
+              style={{ width: '100%', background: generating || isAtLimit || !canUse ? 'var(--bg-card)' : `linear-gradient(135deg, ${'var(--brand)'} 0%, var(--brand-light) 100%)`, color: generating || isAtLimit || !canUse ? 'var(--text-muted)' : 'var(--accent-fg)', border: 'none', borderRadius: 14, padding: '16px 20px', fontSize: '1rem', fontWeight: 700, cursor: generating || isAtLimit || !canUse ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: 12, boxShadow: generating || isAtLimit || !canUse ? 'none' : 'var(--shadow-v3-hero)' }}>
               <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
               </div>
               <div style={{ flex: 1, textAlign: 'left' }}>
-                <div style={{ fontSize: 15, fontWeight: 800, lineHeight: 1.2 }}>{t('aiGen.recommendBtn')}</div>
-                <div style={{ fontSize: 11, opacity: 0.85, marginTop: 3 }}>{t('aiGen.recommendDesc')}</div>
+                <div style={{ fontSize: '1rem', fontWeight: 800, lineHeight: 1.2 }}>{t('aiGen.recommendBtn')}</div>
+                <div style={{ fontSize: '0.7333rem', opacity: 0.85, marginTop: 3 }}>{t('aiGen.recommendDesc')}</div>
               </div>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
             </button>
 
             {/* 自由テキスト入力（最上部） */}
             <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', padding: '16px 18px' }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>{t('aiGen.inputLabel')}</div>
-              <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 10 }}>{t('aiGen.inputDesc')}</div>
+              <div style={{ fontSize: '0.8667rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>{t('aiGen.inputLabel')}</div>
+              <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: 10 }}>{t('aiGen.inputDesc')}</div>
               <textarea
                 aria-label={t('aiGen.inputAria')}
                 value={prompt}
                 onChange={e => setPrompt(e.target.value)}
                 placeholder={t('aiGen.inputPlaceholder')}
                 rows={3}
-                style={{ width: '100%', boxSizing: 'border-box', background: `color-mix(in srgb, var(--brand) 3%, transparent)`, border: `1px solid ${'var(--border)'}`, borderRadius: 10, padding: '10px 12px', fontSize: 14, color: 'var(--text-primary)', resize: 'none', outline: 'none', fontFamily: "'Noto Sans JP', sans-serif" }}
+                style={{ width: '100%', boxSizing: 'border-box', background: `color-mix(in srgb, var(--brand) 3%, transparent)`, border: `1px solid ${'var(--border)'}`, borderRadius: 10, padding: '10px 12px', fontSize: '0.9333rem', color: 'var(--text-primary)', resize: 'none', outline: 'none', fontFamily: "'Noto Sans JP', sans-serif" }}
               />
               <button
                 onClick={() => handleGenerate()}
                 disabled={!prompt.trim() || generating || isAtLimit || !canUse}
-                style={{ marginTop: 10, width: '100%', background: prompt.trim() && !generating && !isAtLimit && canUse ? 'var(--brand)' : 'var(--bg-card)', color: prompt.trim() && !generating && !isAtLimit && canUse ? 'var(--bg-primary)' : 'var(--text-muted)', border: 'none', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700, cursor: prompt.trim() && !generating && !isAtLimit && canUse ? 'pointer' : 'not-allowed' }}>
+                style={{ marginTop: 10, width: '100%', background: prompt.trim() && !generating && !isAtLimit && canUse ? 'var(--brand)' : 'var(--bg-card)', color: prompt.trim() && !generating && !isAtLimit && canUse ? 'var(--bg-primary)' : 'var(--text-muted)', border: 'none', borderRadius: 12, padding: '14px', fontSize: '1rem', fontWeight: 700, cursor: prompt.trim() && !generating && !isAtLimit && canUse ? 'pointer' : 'not-allowed' }}>
                 {generating ? t('aiGen.generating') : !canUse ? t('aiGen.standardOnly') : t('aiGen.generateXp')}
               </button>
               {(!canUse || isAtLimit) && onUpgrade && (
-                <button onClick={onUpgrade} style={{ width: '100%', marginTop: 8, background: 'transparent', border: `1px solid ${'var(--brand)'}`, color: 'var(--brand)', borderRadius: 12, padding: '12px', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+                <button onClick={onUpgrade} style={{ width: '100%', marginTop: 8, background: 'transparent', border: `1px solid ${'var(--brand)'}`, color: 'var(--brand)', borderRadius: 12, padding: '12px', fontSize: '0.9333rem', fontWeight: 700, cursor: 'pointer' }}>
                   {t('aiGen.upgradePlan')}
                 </button>
               )}
             </div>
 
-            {error && <div style={{ fontSize: 13, color: 'var(--md-sys-color-error)', textAlign: 'center' }}>{error}</div>}
+            {error && <div style={{ fontSize: '0.8667rem', color: 'var(--md-sys-color-error)', textAlign: 'center' }}>{error}</div>}
 
             {/* テーマから選ぶ（下部） */}
             <div>
-              <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '.06em', marginBottom: 10 }}>{t('aiGen.categoryHeading')}</div>
+              <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '.06em', marginBottom: 10 }}>{t('aiGen.categoryHeading')}</div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                 {THEME_PRESETS.map(p => (
                   <button key={p.id} onClick={() => setSelectedTheme(p)} disabled={generating || isAtLimit || !canUse}
@@ -475,7 +475,7 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
                     <div style={{ width: 36, height: 36, borderRadius: 10, background: `color-mix(in srgb, var(--brand) 8%, transparent)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       {p.icon}
                     </div>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.3 }}>{p.label}</div>
+                    <div style={{ fontSize: '0.8667rem', fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.3 }}>{p.label}</div>
                   </button>
                 ))}
               </div>
@@ -484,7 +484,7 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
             {/* おすすめ（弱点ベース） */}
             {weakness.length > 0 && (
               <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', padding: '16px 18px' }}>
-                <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '.06em', marginBottom: 14 }}>{t('aiGen.weaknessHeading')}</div>
+                <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '.06em', marginBottom: 14 }}>{t('aiGen.weaknessHeading')}</div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 16 }}>
                   {weakness.slice(0, 3).map((w) => {
                     const pct = Math.round(w.score * 100)
@@ -495,10 +495,10 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
                     return (
                       <div key={w.category}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
-                          <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>{w.label}</span>
+                          <span style={{ fontSize: '0.8667rem', fontWeight: 600, color: 'var(--text-primary)' }}>{w.label}</span>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                            <span style={{ fontSize: 11, color: 'var(--text-secondary)' }}>{w.completedCount}/{w.totalCount}</span>
-                            <span style={{ fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 20, background: tagBg, color: tagColor }}>{tagLabel}</span>
+                            <span style={{ fontSize: '0.7333rem', color: 'var(--text-secondary)' }}>{w.completedCount}/{w.totalCount}</span>
+                            <span style={{ fontSize: '0.7333rem', fontWeight: 700, padding: '2px 8px', borderRadius: 20, background: tagBg, color: tagColor }}>{tagLabel}</span>
                           </div>
                         </div>
                         <div style={{ height: 4, background: `color-mix(in srgb, var(--brand) 13%, transparent)`, borderRadius: 4, overflow: 'hidden' }}>
@@ -508,11 +508,11 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
                     )
                   })}
                 </div>
-                <div style={{ fontSize: 12, color: 'var(--text-secondary)', padding: '8px 10px', background: `color-mix(in srgb, var(--brand) 6%, transparent)`, borderRadius: 8, borderLeft: `2px solid ${'var(--brand)'}`, marginBottom: 12, lineHeight: 1.6 }}>{recommendPrompt}</div>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', padding: '8px 10px', background: `color-mix(in srgb, var(--brand) 6%, transparent)`, borderRadius: 8, borderLeft: `2px solid ${'var(--brand)'}`, marginBottom: 12, lineHeight: 1.6 }}>{recommendPrompt}</div>
                 <button
                   onClick={() => handleGenerate(recommendPrompt)}
                   disabled={generating || isAtLimit || !canUse}
-                  style={{ width: '100%', background: generating || isAtLimit || !canUse ? 'var(--bg-card)' : 'var(--brand)', color: generating || isAtLimit || !canUse ? 'var(--text-muted)' : 'var(--bg-primary)', border: 'none', borderRadius: 12, padding: '12px', fontSize: 14, fontWeight: 700, cursor: generating || isAtLimit || !canUse ? 'not-allowed' : 'pointer' }}>
+                  style={{ width: '100%', background: generating || isAtLimit || !canUse ? 'var(--bg-card)' : 'var(--brand)', color: generating || isAtLimit || !canUse ? 'var(--text-muted)' : 'var(--bg-primary)', border: 'none', borderRadius: 12, padding: '12px', fontSize: '0.9333rem', fontWeight: 700, cursor: generating || isAtLimit || !canUse ? 'not-allowed' : 'pointer' }}>
                   {generating ? t('aiGen.generating') : t('aiGen.generateForWeakness')}
                 </button>
               </div>
@@ -523,11 +523,11 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
         {/* ===== 履歴タブ ===== */}
         {tab === 'history' && (
           <>
-            <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 4 }}>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: 4 }}>
               {planHeader}
             </div>
             {problems.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '48px 0', color: 'var(--text-secondary)', fontSize: 14, whiteSpace: 'pre-line' }}>
+              <div style={{ textAlign: 'center', padding: '48px 0', color: 'var(--text-secondary)', fontSize: '0.9333rem', whiteSpace: 'pre-line' }}>
                 {t('aiGen.history.empty')}
               </div>
             ) : (
@@ -600,8 +600,8 @@ function SampleProblemList({
           {theme.icon}
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.3 }}>{theme.label}</div>
-          <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2 }}>{t('aiGen.sample.subtitle')}</div>
+          <div style={{ fontSize: '1.0667rem', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.3 }}>{theme.label}</div>
+          <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: 2 }}>{t('aiGen.sample.subtitle')}</div>
         </div>
       </div>
 
@@ -625,16 +625,16 @@ function SampleProblemList({
           </svg>
         </div>
         <div style={{ flex: 1, textAlign: 'left' }}>
-          <div style={{ fontSize: 14, fontWeight: 800 }}>{generating ? t('aiGen.generating') : t('aiGen.sample.aiGenerate')}</div>
-          <div style={{ fontSize: 11, opacity: 0.85, marginTop: 2 }}>{t('aiGen.sample.aiGenerateDesc')}</div>
+          <div style={{ fontSize: '0.9333rem', fontWeight: 800 }}>{generating ? t('aiGen.generating') : t('aiGen.sample.aiGenerate')}</div>
+          <div style={{ fontSize: '0.7333rem', opacity: 0.85, marginTop: 2 }}>{t('aiGen.sample.aiGenerateDesc')}</div>
         </div>
       </button>
 
-      {error && <div style={{ fontSize: 13, color: 'var(--md-sys-color-error)', textAlign: 'center' }}>{error}</div>}
+      {error && <div style={{ fontSize: '0.8667rem', color: 'var(--md-sys-color-error)', textAlign: 'center' }}>{error}</div>}
 
       {/* サンプル問題一覧 */}
       <div>
-        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '.06em', marginBottom: 10 }}>
+        <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '.06em', marginBottom: 10 }}>
           {t('aiGen.sample.heading')}
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -655,14 +655,14 @@ function SampleProblemList({
               }}>
               <span style={{
                 flexShrink: 0,
-                fontSize: 10, fontWeight: 800,
+                fontSize: '0.6667rem', fontWeight: 800,
                 padding: '3px 8px',
                 borderRadius: 99,
                 background: `color-mix(in srgb, ${SAMPLE_DIFF_COLOR[sample.difficulty]} 14%, transparent)`,
                 color: SAMPLE_DIFF_COLOR[sample.difficulty],
                 letterSpacing: '.04em',
               }}>{diffLabel(sample.difficulty)}</span>
-              <span style={{ flex: 1, minWidth: 0, fontSize: 14, fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.4 }}>
+              <span style={{ flex: 1, minWidth: 0, fontSize: '0.9333rem', fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.4 }}>
                 {locale === 'ja' ? sample.title.ja : sample.title.en}
               </span>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true" style={{ flexShrink: 0 }}>
@@ -691,8 +691,8 @@ function AiProblemRow({ problem, onPlay, onDelete }: { problem: AIProblemSet; on
   return (
     <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 10 }}>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{problem.title}</div>
-        <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{t('aiGen.history.questionCount', { count: problem.steps?.length ?? 0, date: new Date(problem.createdAt).toLocaleDateString(getLocale() === 'ja' ? 'ja-JP' : 'en-US') })}</div>
+        <div style={{ fontSize: '0.9333rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{problem.title}</div>
+        <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{t('aiGen.history.questionCount', { count: problem.steps?.length ?? 0, date: new Date(problem.createdAt).toLocaleDateString(getLocale() === 'ja' ? 'ja-JP' : 'en-US') })}</div>
       </div>
       <button
         type="button"
@@ -710,7 +710,7 @@ function AiProblemRow({ problem, onPlay, onDelete }: { problem: AIProblemSet; on
       >
         {saved ? <BookmarkFilledIcon width={16} height={16} /> : <BookmarkIcon width={16} height={16} />}
       </button>
-      <button onClick={onPlay} style={{ background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)', border: 'none', borderRadius: 10, padding: '8px 14px', fontSize: 13, fontWeight: 700, cursor: 'pointer', flexShrink: 0 }}>{t('aiGen.history.replay')}</button>
+      <button onClick={onPlay} style={{ background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)', border: 'none', borderRadius: 10, padding: '8px 14px', fontSize: '0.8667rem', fontWeight: 700, cursor: 'pointer', flexShrink: 0 }}>{t('aiGen.history.replay')}</button>
       <button onClick={onDelete} style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 4, flexShrink: 0 }} aria-label={t('aiGen.history.deleteConfirm')}>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F87171" strokeWidth="2" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
       </button>

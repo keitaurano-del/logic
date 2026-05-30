@@ -65,7 +65,7 @@ export function BootLoadingScreen() {
           style={{
             margin: 0,
             color: 'rgba(255,255,255,0.78)',
-            fontSize: 14,
+            fontSize: '0.9333rem',
             fontWeight: 500,
             letterSpacing: '0.02em',
             fontFamily: "'Noto Sans JP', sans-serif",

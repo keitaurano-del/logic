@@ -636,8 +636,8 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
             <svg width="14" height="14" viewBox="0 0 24 24" fill={'var(--brand)'} aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="1.5" /><rect x="13" y="3" width="8" height="8" rx="1.5" /><rect x="3" y="13" width="8" height="8" rx="1.5" /><rect x="13" y="13" width="8" height="8" rx="1.5" /></svg>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--brand)' }}>{lesson.category}</span>
-            <span style={{ fontSize: 13, fontWeight: 700 }}>{lesson.title}</span>
+            <span style={{ fontSize: '0.7333rem', fontWeight: 600, color: 'var(--brand)' }}>{lesson.category}</span>
+            <span style={{ fontSize: '0.8667rem', fontWeight: 700 }}>{lesson.title}</span>
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -763,7 +763,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
           >
             {pageSaved ? <BookmarkFilledIcon width={14} height={14} /> : <BookmarkIcon width={14} height={14} />}
           </button>
-          <span style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 13, fontWeight: 700, color: 'var(--text-muted)' }}>{index + 1} / {total}</span>
+          <span style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: '0.8667rem', fontWeight: 700, color: 'var(--text-muted)' }}>{index + 1} / {total}</span>
         </div>
 
         <SlideContent
@@ -853,7 +853,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
           )}
           <button
             onClick={() => { if (!isGuarded()) goNext() }}
-            style={{ position: 'absolute', right: 16, bottom: 'calc(env(safe-area-inset-bottom, 0px) + 20px)', zIndex: 8, background: 'var(--brand)', border: 'none', borderRadius: 99, minHeight: 56, minWidth: 140, padding: '16px 28px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, cursor: 'pointer', boxShadow: `0 6px 20px color-mix(in srgb, var(--brand) 42%, transparent)`, WebkitTapHighlightColor: 'transparent', fontSize: 17, fontWeight: 700, color: 'var(--accent-fg)', letterSpacing: '0.01em' }}
+            style={{ position: 'absolute', right: 16, bottom: 'calc(env(safe-area-inset-bottom, 0px) + 20px)', zIndex: 8, background: 'var(--brand)', border: 'none', borderRadius: 99, minHeight: 56, minWidth: 140, padding: '16px 28px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, cursor: 'pointer', boxShadow: `0 6px 20px color-mix(in srgb, var(--brand) 42%, transparent)`, WebkitTapHighlightColor: 'transparent', fontSize: '1.1333rem', fontWeight: 700, color: 'var(--accent-fg)', letterSpacing: '0.01em' }}
             aria-label={t('stories.nextAria')}
           >
             {t('stories.next')}
@@ -866,7 +866,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
       {isQuiz && quizAnswered?.correct && (
         <button
           onClick={goNext}
-          style={{ position: 'absolute', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 28px)', left: '50%', transform: 'translateX(-50%)', display: 'inline-flex', alignItems: 'center', gap: 8, background: 'var(--brand)', border: 'none', borderRadius: 99, padding: '18px 48px', fontSize: 16, fontWeight: 700, color: 'var(--accent-fg)', cursor: 'pointer', zIndex: 6, boxShadow: `0 4px 20px color-mix(in srgb, var(--brand) 44%, transparent)`, WebkitTapHighlightColor: 'transparent' }}
+          style={{ position: 'absolute', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 28px)', left: '50%', transform: 'translateX(-50%)', display: 'inline-flex', alignItems: 'center', gap: 8, background: 'var(--brand)', border: 'none', borderRadius: 99, padding: '18px 48px', fontSize: '1.0667rem', fontWeight: 700, color: 'var(--accent-fg)', cursor: 'pointer', zIndex: 6, boxShadow: `0 4px 20px color-mix(in srgb, var(--brand) 44%, transparent)`, WebkitTapHighlightColor: 'transparent' }}
         >
           {t('stories.next')}
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-fg)" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
@@ -899,8 +899,8 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
           <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 52, height: 52, borderRadius: 16, background: `color-mix(in srgb, var(--brand) 14%, transparent)`, color: 'var(--brand)', marginBottom: 10 }}>
             <CheckIcon width={26} height={26} />
           </div>
-          <div style={{ fontSize: 16, fontWeight: 800, marginBottom: 6 }}>{t('tts.completeTitle')}</div>
-          <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 18, lineHeight: 1.6 }}>{t('tts.completeDesc')}</div>
+          <div style={{ fontSize: '1.0667rem', fontWeight: 800, marginBottom: 6 }}>{t('tts.completeTitle')}</div>
+          <div style={{ fontSize: '0.8667rem', color: 'var(--text-secondary)', marginBottom: 18, lineHeight: 1.6 }}>{t('tts.completeDesc')}</div>
           <button
             type="button"
             onPointerDown={(e) => { e.stopPropagation(); haptic.light(); void handleStartQuiz() }}
@@ -911,7 +911,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
               background: 'var(--brand)',
               color: 'var(--accent-fg)',
               border: 'none',
-              fontSize: 15,
+              fontSize: '1rem',
               fontWeight: 700,
               cursor: 'pointer',
               boxShadow: `0 4px 18px color-mix(in srgb, var(--brand) 36%, transparent)`,
@@ -931,7 +931,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
               background: 'transparent',
               color: 'var(--text-secondary)',
               border: 'none',
-              fontSize: 12,
+              fontSize: '0.8rem',
               fontWeight: 600,
               cursor: 'pointer',
               WebkitTapHighlightColor: 'transparent',
@@ -995,8 +995,8 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
                 <polyline points="15 18 9 12 15 6" />
               </svg>
             </div>
-            <div style={{ fontSize: 16, fontWeight: 800, letterSpacing: '.02em' }}>{t('stories.tapHintLeftHeading')}</div>
-            <div style={{ fontSize: 13, opacity: 0.78, textAlign: 'center', padding: '0 24px', lineHeight: 1.55 }}>
+            <div style={{ fontSize: '1.0667rem', fontWeight: 800, letterSpacing: '.02em' }}>{t('stories.tapHintLeftHeading')}</div>
+            <div style={{ fontSize: '0.8667rem', opacity: 0.78, textAlign: 'center', padding: '0 24px', lineHeight: 1.55 }}>
               {t('stories.tapHintLeftBody')}
             </div>
           </div>
@@ -1014,14 +1014,14 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
                 <polyline points="9 18 15 12 9 6" />
               </svg>
             </div>
-            <div style={{ fontSize: 16, fontWeight: 800, letterSpacing: '.02em' }}>{t('stories.tapHintRightHeading')}</div>
-            <div style={{ fontSize: 13, opacity: 0.78, textAlign: 'center', padding: '0 24px', lineHeight: 1.55 }}>
+            <div style={{ fontSize: '1.0667rem', fontWeight: 800, letterSpacing: '.02em' }}>{t('stories.tapHintRightHeading')}</div>
+            <div style={{ fontSize: '0.8667rem', opacity: 0.78, textAlign: 'center', padding: '0 24px', lineHeight: 1.55 }}>
               {t('stories.tapHintRightBody')}
             </div>
           </div>
           <div style={{
             position: 'absolute', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 24px)', left: 0, right: 0,
-            textAlign: 'center', fontSize: 12, opacity: 0.6, fontWeight: 600, letterSpacing: '.05em',
+            textAlign: 'center', fontSize: '0.8rem', opacity: 0.6, fontWeight: 600, letterSpacing: '.05em',
           }}>
             {t('stories.tapHintDismiss')}
           </div>
@@ -1042,21 +1042,21 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
                   <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44, borderRadius: '50%', background: `color-mix(in srgb, var(--brand) 12%, transparent)`, color: 'var(--brand)', marginBottom: 10 }}>
                     <CheckIcon width={22} height={22} />
                   </div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--brand)' }}>{t('stories.reportReceivedTitle')}</div>
-                  <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 6 }}>{t('stories.reportReceivedDesc')}</div>
+                  <div style={{ fontSize: '1.0667rem', fontWeight: 700, color: 'var(--brand)' }}>{t('stories.reportReceivedTitle')}</div>
+                  <div style={{ fontSize: '0.8667rem', color: 'var(--text-secondary)', marginTop: 6 }}>{t('stories.reportReceivedDesc')}</div>
                 </div>
-                <button onPointerDown={() => { setReportOpen(false); setReportSent(false); setReportText(''); setReportDetail('') }} style={{ width: '100%', background: 'var(--bg-card)', border: 'none', borderRadius: 14, padding: '14px', fontSize: 14, fontWeight: 600, color: 'var(--text-primary)', cursor: 'pointer' }}>{t('stories.close')}</button>
+                <button onPointerDown={() => { setReportOpen(false); setReportSent(false); setReportText(''); setReportDetail('') }} style={{ width: '100%', background: 'var(--bg-card)', border: 'none', borderRadius: 14, padding: '14px', fontSize: '0.9333rem', fontWeight: 600, color: 'var(--text-primary)', cursor: 'pointer' }}>{t('stories.close')}</button>
               </>
             ) : (
               <>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
-                  <div style={{ fontSize: 16, fontWeight: 700 }}>{t('stories.reportTitle')}</div>
+                  <div style={{ fontSize: '1.0667rem', fontWeight: 700 }}>{t('stories.reportTitle')}</div>
                   <button
                     onPointerDown={() => setReportOpen(false)}
-                    style={{ background: 'var(--bg-card)', border: 'none', borderRadius: '50%', width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text-secondary)', fontSize: 18, lineHeight: 1 }}
+                    style={{ background: 'var(--bg-card)', border: 'none', borderRadius: '50%', width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text-secondary)', fontSize: '1.2rem', lineHeight: 1 }}
                   >×</button>
                 </div>
-                <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 16 }}>{t('stories.reportPrompt')}</div>
+                <div style={{ fontSize: '0.8667rem', color: 'var(--text-secondary)', marginBottom: 16 }}>{t('stories.reportPrompt')}</div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
                   {[
                     { value: '内容・説明が間違っている', labelKey: 'stories.reportOpt.contentWrong' },
@@ -1065,19 +1065,19 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
                     { value: 'その他', labelKey: 'stories.reportOpt.other' },
                   ].map(opt => (
                     <button key={opt.value} onPointerDown={() => setReportText(opt.value)}
-                      style={{ background: reportText === opt.value ? 'var(--accent-soft)' : 'var(--bg-card)', border: `1.5px solid ${reportText === opt.value ? 'var(--brand)' : 'transparent'}`, borderRadius: 12, padding: '12px 14px', fontSize: 14, fontWeight: 500, color: 'var(--text-primary)', cursor: 'pointer', textAlign: 'left' }}
+                      style={{ background: reportText === opt.value ? 'var(--accent-soft)' : 'var(--bg-card)', border: `1.5px solid ${reportText === opt.value ? 'var(--brand)' : 'transparent'}`, borderRadius: 12, padding: '12px 14px', fontSize: '0.9333rem', fontWeight: 500, color: 'var(--text-primary)', cursor: 'pointer', textAlign: 'left' }}
                     >{t(opt.labelKey)}</button>
                   ))}
                 </div>
                 <div style={{ marginBottom: 16 }}>
-                  <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 8 }}>{t('stories.reportDetailLabel')}</div>
+                  <div style={{ fontSize: '0.8667rem', color: 'var(--text-secondary)', marginBottom: 8 }}>{t('stories.reportDetailLabel')}</div>
                   <textarea
                     aria-label={t('stories.reportDetailAria')}
                     value={reportDetail}
                     onChange={(e) => setReportDetail(e.target.value)}
                     placeholder={t('stories.reportDetailPlaceholder')}
                     rows={3}
-                    style={{ width: '100%', background: 'var(--bg-card)', border: `1px solid ${'var(--border)'}`, borderRadius: 12, padding: '12px 14px', fontSize: 14, color: 'var(--text-primary)', resize: 'none', outline: 'none', fontFamily: "'Noto Sans JP', sans-serif", boxSizing: 'border-box' }}
+                    style={{ width: '100%', background: 'var(--bg-card)', border: `1px solid ${'var(--border)'}`, borderRadius: 12, padding: '12px 14px', fontSize: '0.9333rem', color: 'var(--text-primary)', resize: 'none', outline: 'none', fontFamily: "'Noto Sans JP', sans-serif", boxSizing: 'border-box' }}
                   />
                 </div>
                 <button
@@ -1102,7 +1102,7 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
                     setReportSent(true)
                   }}
                   disabled={!reportText}
-                  style={{ width: '100%', background: reportText ? 'var(--brand)' : 'var(--bg-card)', border: 'none', borderRadius: 14, padding: '14px', fontSize: 14, fontWeight: 700, color: reportText ? 'var(--accent-fg)' : 'var(--text-muted)', cursor: reportText ? 'pointer' : 'default' }}
+                  style={{ width: '100%', background: reportText ? 'var(--brand)' : 'var(--bg-card)', border: 'none', borderRadius: 14, padding: '14px', fontSize: '0.9333rem', fontWeight: 700, color: reportText ? 'var(--accent-fg)' : 'var(--text-muted)', cursor: reportText ? 'pointer' : 'default' }}
                 >
                   {t('stories.reportSend')}
                 </button>
@@ -1152,9 +1152,9 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
         <div style={{ marginTop: 8, marginBottom: 24, borderRadius: 18, overflow: 'hidden', boxShadow: 'var(--shadow-v3-hero)' }}>
           <HeroImage image={slide.image} lessonId={slide.lessonId} />
         </div>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'var(--accent-soft)', borderRadius: 99, padding: '6px 12px', fontSize: 11, fontWeight: 600, color: 'var(--brand)', marginBottom: 16, width: 'fit-content' }}>{slide.category}</span>
-        <h1 style={{ fontFamily: 'Noto Sans JP', fontSize: 30, fontWeight: 700, lineHeight: 1.3, marginBottom: 16, color: 'var(--text-primary)' }}>{slide.title}</h1>
-        <div style={{ fontSize: 14, color: 'var(--text-secondary)', fontWeight: 500 }}>{slide.meta}</div>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'var(--accent-soft)', borderRadius: 99, padding: '6px 12px', fontSize: '0.7333rem', fontWeight: 600, color: 'var(--brand)', marginBottom: 16, width: 'fit-content' }}>{slide.category}</span>
+        <h1 style={{ fontFamily: 'Noto Sans JP', fontSize: '2rem', fontWeight: 700, lineHeight: 1.3, marginBottom: 16, color: 'var(--text-primary)' }}>{slide.title}</h1>
+        <div style={{ fontSize: '0.9333rem', color: 'var(--text-secondary)', fontWeight: 500 }}>{slide.meta}</div>
       </div>
     )
   }
@@ -1163,14 +1163,14 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
     const example = slide.kind === 'concept' ? slide.example : undefined
     return (
       <>
-        {slide.kind === 'concept' && tag && <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'var(--accent-soft)', borderRadius: 99, padding: '6px 12px', fontSize: 11, fontWeight: 600, color: 'var(--brand)', marginBottom: 24, marginTop: 24 }}>{tag}</span>}
-        <h1 style={{ fontFamily: 'Noto Sans JP', fontSize: 28, fontWeight: 700, lineHeight: 1.4, marginBottom: 20, marginTop: tag ? 0 : 32, letterSpacing: '.005em', color: 'var(--text-primary)' }}>{slide.title}</h1>
+        {slide.kind === 'concept' && tag && <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'var(--accent-soft)', borderRadius: 99, padding: '6px 12px', fontSize: '0.7333rem', fontWeight: 600, color: 'var(--brand)', marginBottom: 24, marginTop: 24 }}>{tag}</span>}
+        <h1 style={{ fontFamily: 'Noto Sans JP', fontSize: '1.8667rem', fontWeight: 700, lineHeight: 1.4, marginBottom: 20, marginTop: tag ? 0 : 32, letterSpacing: '.005em', color: 'var(--text-primary)' }}>{slide.title}</h1>
         <RichLessonText content={slide.body} />
         <div style={{ marginBottom: 20 }} />
         {example && (
           <div style={{ background: 'var(--bg-card)', borderRadius: 16, padding: 18 }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--brand)', letterSpacing: '.08em', marginBottom: 8 }}>EXAMPLE</div>
-            <div style={{ fontSize: 15, lineHeight: 1.6, color: 'var(--text-primary)' }}>{example}</div>
+            <div style={{ fontSize: '0.7333rem', fontWeight: 700, color: 'var(--brand)', letterSpacing: '.08em', marginBottom: 8 }}>EXAMPLE</div>
+            <div style={{ fontSize: '1rem', lineHeight: 1.6, color: 'var(--text-primary)' }}>{example}</div>
           </div>
         )}
       </>
@@ -1180,7 +1180,7 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
   if (slide.kind === 'diagram') {
     return (
       <>
-        <h1 style={{ fontSize: 26, fontWeight: 700, lineHeight: 1.4, marginBottom: 24, marginTop: 32, color: 'var(--text-primary)' }}>{slide.title}</h1>
+        <h1 style={{ fontSize: '1.7333rem', fontWeight: 700, lineHeight: 1.4, marginBottom: 24, marginTop: 32, color: 'var(--text-primary)' }}>{slide.title}</h1>
         <div style={{ background: 'var(--bg-card)', borderRadius: 16, padding: 20, display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'center' }}>
           {slide.nodes.map((n, i) => (
             <div key={i} style={{ width: '100%' }}>
@@ -1191,9 +1191,9 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
                 borderRadius: 12,
                 padding: '12px 18px',
                 textAlign: 'center',
-                fontSize: 14,
+                fontSize: '0.9333rem',
               }}>{n.label}</div>
-              {i < slide.nodes.length - 1 && <div style={{ color: 'var(--text-muted)', textAlign: 'center', fontSize: 18 }}>↓</div>}
+              {i < slide.nodes.length - 1 && <div style={{ color: 'var(--text-muted)', textAlign: 'center', fontSize: '1.2rem' }}>↓</div>}
             </div>
           ))}
         </div>
@@ -1208,10 +1208,10 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
     return (
       <>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 24, marginTop: 24 }}>
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'var(--warm-soft)', borderRadius: 99, padding: '6px 12px', fontSize: 11, fontWeight: 600, color: 'var(--warm)' }}>{t('stories.checkBadge')}</span>
-          {isMulti && <span style={{ fontSize: 11, color: 'var(--text-secondary)', background: 'var(--bg-card)', borderRadius: 99, padding: '4px 10px', fontWeight: 600 }}>{t('stories.multiSelect')}</span>}
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'var(--warm-soft)', borderRadius: 99, padding: '6px 12px', fontSize: '0.7333rem', fontWeight: 600, color: 'var(--warm)' }}>{t('stories.checkBadge')}</span>
+          {isMulti && <span style={{ fontSize: '0.7333rem', color: 'var(--text-secondary)', background: 'var(--bg-card)', borderRadius: 99, padding: '4px 10px', fontWeight: 600 }}>{t('stories.multiSelect')}</span>}
         </div>
-        <h2 style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.5, marginBottom: 24, color: 'var(--text-primary)' }}>{slide.question}</h2>
+        <h2 style={{ fontSize: '1.4667rem', fontWeight: 700, lineHeight: 1.5, marginBottom: 24, color: 'var(--text-primary)' }}>{slide.question}</h2>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {slide.choices.map((c, i) => {
             const answered = quizAnswered !== null
@@ -1230,7 +1230,7 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
                   disabled={answered}
                   role="checkbox"
                   aria-checked={isPicked}
-                  style={{ background: bg, color, borderRadius: 14, padding: '14px 18px', fontSize: 15, fontWeight: 600, cursor: answered ? 'default' : 'pointer', transition: 'var(--transition-tap)', border: border === 'none' ? 'none' : border, display: 'flex', alignItems: 'center', gap: 10, WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation', font: 'inherit', textAlign: 'left', width: '100%', minHeight: 44 }}
+                  style={{ background: bg, color, borderRadius: 14, padding: '14px 18px', fontSize: '1rem', fontWeight: 600, cursor: answered ? 'default' : 'pointer', transition: 'var(--transition-tap)', border: border === 'none' ? 'none' : border, display: 'flex', alignItems: 'center', gap: 10, WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation', font: 'inherit', textAlign: 'left', width: '100%', minHeight: 44 }}
                 >
                   <div style={{ width: 20, height: 20, borderRadius: 6, border: `2px solid ${answered ? 'transparent' : isPicked ? 'var(--brand)' : 'var(--text-muted)'}`, background: isPicked && !answered ? 'var(--brand)' : answered && wasSelected && isCorrect ? 'var(--bg-primary)' + '30' : 'transparent', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {(isPicked && !answered) || (answered && wasSelected) ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={answered && wasSelected && isCorrect ? 'var(--bg-primary)' : 'var(--brand)'} strokeWidth="3" strokeLinecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> : null}
@@ -1249,7 +1249,7 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
                 disabled={answered}
                 role="radio"
                 aria-checked={isSelected ?? false}
-                style={{ background: bg, color, borderRadius: 14, padding: '14px 18px', fontSize: 15, fontWeight: 600, cursor: answered ? 'default' : 'pointer', transition: 'var(--transition-tap)', WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation', border: 'none', font: 'inherit', textAlign: 'left', width: '100%', minHeight: 44 }}
+                style={{ background: bg, color, borderRadius: 14, padding: '14px 18px', fontSize: '1rem', fontWeight: 600, cursor: answered ? 'default' : 'pointer', transition: 'var(--transition-tap)', WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation', border: 'none', font: 'inherit', textAlign: 'left', width: '100%', minHeight: 44 }}
               >{c}</button>
             )
           })}
@@ -1260,15 +1260,15 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
           <button
             onClick={onSubmitMulti}
             disabled={multiSelected.length === 0}
-            style={{ marginTop: 20, width: '100%', background: multiSelected.length > 0 ? 'var(--brand)' : 'var(--bg-card)', color: multiSelected.length > 0 ? 'var(--accent-fg)' : 'var(--text-muted)', border: 'none', borderRadius: 14, padding: '14px', fontSize: 15, fontWeight: 700, cursor: multiSelected.length > 0 ? 'pointer' : 'default' }}
+            style={{ marginTop: 20, width: '100%', background: multiSelected.length > 0 ? 'var(--brand)' : 'var(--bg-card)', color: multiSelected.length > 0 ? 'var(--accent-fg)' : 'var(--text-muted)', border: 'none', borderRadius: 14, padding: '14px', fontSize: '1rem', fontWeight: 700, cursor: multiSelected.length > 0 ? 'pointer' : 'default' }}
           >
             {multiSelected.length === 0 ? t('stories.pickPrompt') : t('stories.pickedAnswer', { n: multiSelected.length })}
           </button>
         )}
 
         {quizAnswered && (
-          <div style={{ marginTop: 20, padding: 16, background: 'var(--bg-card)', borderRadius: 14, fontSize: 15, lineHeight: 1.75 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: quizAnswered.correct ? 'var(--brand)' : 'var(--md-sys-color-error)', marginBottom: 6 }}>{quizAnswered.correct ? t('stories.correct') : isMulti ? t('stories.wrongMulti', { list: [...correctSet].map(i => slide.choices[i]).join(t('stories.commaSep')) }) : t('stories.wrongSingle')}</div>
+          <div style={{ marginTop: 20, padding: 16, background: 'var(--bg-card)', borderRadius: 14, fontSize: '1rem', lineHeight: 1.75 }}>
+            <div style={{ fontSize: '0.8rem', fontWeight: 700, color: quizAnswered.correct ? 'var(--brand)' : 'var(--md-sys-color-error)', marginBottom: 6 }}>{quizAnswered.correct ? t('stories.correct') : isMulti ? t('stories.wrongMulti', { list: [...correctSet].map(i => slide.choices[i]).join(t('stories.commaSep')) }) : t('stories.wrongSingle')}</div>
             {slide.explain}
           </div>
         )}
@@ -1294,14 +1294,14 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
           <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 64, height: 64, borderRadius: 20, background: `color-mix(in srgb, var(--brand) 9%, transparent)`, color: 'var(--brand)', marginBottom: 12 }}>
             <SparklesIcon width={32} height={32} />
           </div>
-          <h1 style={{ fontSize: 26, fontWeight: 800, lineHeight: 1.4, color: 'var(--text-primary)', marginBottom: 4 }}>{slide.title}</h1>
-          <p style={{ fontSize: 14, color: 'var(--text-secondary)' }}>{t('stories.completeDesc')}</p>
+          <h1 style={{ fontSize: '1.7333rem', fontWeight: 800, lineHeight: 1.4, color: 'var(--text-primary)', marginBottom: 4 }}>{slide.title}</h1>
+          <p style={{ fontSize: '0.9333rem', color: 'var(--text-secondary)' }}>{t('stories.completeDesc')}</p>
         </div>
         <ul style={{ display: 'flex', flexDirection: 'column', gap: 12, listStyle: 'none', padding: 0, marginBottom: 28 }}>
           {slide.points.map((p, i) => (
             <li key={i} style={{ display: 'flex', gap: 12, alignItems: 'flex-start', background: 'var(--bg-card)', borderRadius: 14, padding: '14px 16px' }}>
-              <div style={{ width: 24, height: 24, borderRadius: '50%', background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 800, flexShrink: 0 }}>{i + 1}</div>
-              <div style={{ fontSize: 15, lineHeight: 1.6 }}>{p}</div>
+              <div style={{ width: 24, height: 24, borderRadius: '50%', background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', fontWeight: 800, flexShrink: 0 }}>{i + 1}</div>
+              <div style={{ fontSize: '1rem', lineHeight: 1.6 }}>{p}</div>
             </li>
           ))}
         </ul>
@@ -1311,7 +1311,7 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
           style={{
             width: '100%', padding: '16px 0', borderRadius: 99,
             background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)',
-            fontSize: 16, fontWeight: 700, border: 'none', cursor: 'pointer',
+            fontSize: '1.0667rem', fontWeight: 700, border: 'none', cursor: 'pointer',
             boxShadow: `0 4px 20px color-mix(in srgb, var(--brand) 27%, transparent)`,
             WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation',
             letterSpacing: '.02em',
@@ -1326,15 +1326,15 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
   if (slide.kind === 'compare') {
     return (
       <>
-        <h1 style={{ fontSize: 26, fontWeight: 700, marginBottom: 24, marginTop: 32, color: 'var(--text-primary)' }}>{slide.title}</h1>
+        <h1 style={{ fontSize: '1.7333rem', fontWeight: 700, marginBottom: 24, marginTop: 32, color: 'var(--text-primary)' }}>{slide.title}</h1>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <div style={{ background: 'var(--bg-card)', borderRadius: 14, padding: 16 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--brand)', marginBottom: 6 }}>{slide.left.label}</div>
-            <div style={{ fontSize: 14, lineHeight: 1.6 }}>{slide.left.body}</div>
+            <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--brand)', marginBottom: 6 }}>{slide.left.label}</div>
+            <div style={{ fontSize: '0.9333rem', lineHeight: 1.6 }}>{slide.left.body}</div>
           </div>
           <div style={{ background: 'var(--bg-card)', borderRadius: 14, padding: 16 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--warm)', marginBottom: 6 }}>{slide.right.label}</div>
-            <div style={{ fontSize: 14, lineHeight: 1.6 }}>{slide.right.body}</div>
+            <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--warm)', marginBottom: 6 }}>{slide.right.label}</div>
+            <div style={{ fontSize: '0.9333rem', lineHeight: 1.6 }}>{slide.right.body}</div>
           </div>
         </div>
       </>
@@ -1344,9 +1344,9 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
   if (slide.kind === 'quote') {
     return (
       <div style={{ marginTop: 80, padding: '0 8px' }}>
-        <div style={{ fontSize: 56, color: 'var(--brand)', lineHeight: 1, marginBottom: 8 }}>"</div>
-        <div style={{ fontSize: 22, fontWeight: 600, lineHeight: 1.6, marginBottom: 24 }}>{slide.quote}</div>
-        <div style={{ fontSize: 14, color: 'var(--text-secondary)' }}>— {slide.author}</div>
+        <div style={{ fontSize: '3.7333rem', color: 'var(--brand)', lineHeight: 1, marginBottom: 8 }}>"</div>
+        <div style={{ fontSize: '1.4667rem', fontWeight: 600, lineHeight: 1.6, marginBottom: 24 }}>{slide.quote}</div>
+        <div style={{ fontSize: '0.9333rem', color: 'var(--text-secondary)' }}>— {slide.author}</div>
       </div>
     )
   }
@@ -1377,20 +1377,20 @@ function ThinkSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides'
     <>
       {/* ヘッダーバッジ */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 24, marginTop: 24 }}>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: `color-mix(in srgb, var(--warm) 13%, transparent)`, borderRadius: 99, padding: '6px 12px', fontSize: 11, fontWeight: 700, color: 'var(--warm)', letterSpacing: '.04em' }}>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: `color-mix(in srgb, var(--warm) 13%, transparent)`, borderRadius: 99, padding: '6px 12px', fontSize: '0.7333rem', fontWeight: 700, color: 'var(--warm)', letterSpacing: '.04em' }}>
           <LightbulbIcon width={12} height={12} />
           {t('stories.thinkPrompt')}
         </span>
       </div>
 
       {/* 問い */}
-      <h2 style={{ fontSize: 21, fontWeight: 800, lineHeight: 1.55, marginBottom: 20, color: 'var(--text-primary)' }}>
+      <h2 style={{ fontSize: '1.4rem', fontWeight: 800, lineHeight: 1.55, marginBottom: 20, color: 'var(--text-primary)' }}>
         {slide.question}
       </h2>
 
       {/* ヒント */}
       {slide.hint && (
-        <div style={{ background: `color-mix(in srgb, var(--brand) 7%, transparent)`, border: `1px solid color-mix(in srgb, var(--brand) 19%, transparent)`, borderRadius: 12, padding: '12px 16px', marginBottom: 20, fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+        <div style={{ background: `color-mix(in srgb, var(--brand) 7%, transparent)`, border: `1px solid color-mix(in srgb, var(--brand) 19%, transparent)`, borderRadius: 12, padding: '12px 16px', marginBottom: 20, fontSize: '0.8667rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
           <span style={{ fontWeight: 700, color: 'var(--brand)' }}>{t('stories.hintPrefix')}</span>{slide.hint}
         </div>
       )}
@@ -1398,12 +1398,12 @@ function ThinkSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides'
       {/* 考える時間のプレースホルダー */}
       {!revealed && (
         <div style={{ background: 'var(--bg-card)', borderRadius: 16, padding: '20px', marginBottom: 20, border: `1.5px dashed ${'var(--border)'}` }}>
-          <div style={{ fontSize: 13, color: 'var(--text-muted)', textAlign: 'center', lineHeight: 1.8 }}>
+          <div style={{ fontSize: '0.8667rem', color: 'var(--text-muted)', textAlign: 'center', lineHeight: 1.8 }}>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: 'var(--warm)', fontWeight: 700 }}>
               <BrainIcon width={14} height={14} />
               <span>{t('stories.thinkOwnAnswer')}</span>
             </span><br />
-            <span style={{ fontSize: 12 }}>{t('stories.readyHint')}</span>
+            <span style={{ fontSize: '0.8rem' }}>{t('stories.readyHint')}</span>
           </div>
         </div>
       )}
@@ -1411,20 +1411,20 @@ function ThinkSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides'
       {/* モデル解答（開示後） */}
       {revealed && (
         <div style={{ marginBottom: 20 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--brand)', letterSpacing: '.06em', marginBottom: 10 }}>{t('stories.modelAnswer')}</div>
-          <div style={{ background: 'var(--bg-card)', borderRadius: 16, padding: '18px 20px', fontSize: 14, lineHeight: 1.8, color: 'var(--text-primary)', marginBottom: 14, borderLeft: `3px solid ${'var(--brand)'}` }}>
+          <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--brand)', letterSpacing: '.06em', marginBottom: 10 }}>{t('stories.modelAnswer')}</div>
+          <div style={{ background: 'var(--bg-card)', borderRadius: 16, padding: '18px 20px', fontSize: '0.9333rem', lineHeight: 1.8, color: 'var(--text-primary)', marginBottom: 14, borderLeft: `3px solid ${'var(--brand)'}` }}>
             {slide.modelAnswer}
           </div>
 
           {/* 考え方のポイント */}
           {slide.points.length > 0 && (
             <>
-              <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '.04em', marginBottom: 8 }}>{t('stories.points')}</div>
+              <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '.04em', marginBottom: 8 }}>{t('stories.points')}</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {slide.points.map((p, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, background: 'var(--bg-card)', borderRadius: 12, padding: '12px 14px' }}>
-                    <div style={{ width: 20, height: 20, borderRadius: '50%', background: 'var(--accent-soft)', color: 'var(--brand)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800, flexShrink: 0 }}>{i + 1}</div>
-                    <div style={{ fontSize: 13, lineHeight: 1.6, color: 'var(--text-secondary)' }}>{p}</div>
+                    <div style={{ width: 20, height: 20, borderRadius: '50%', background: 'var(--accent-soft)', color: 'var(--brand)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7333rem', fontWeight: 800, flexShrink: 0 }}>{i + 1}</div>
+                    <div style={{ fontSize: '0.8667rem', lineHeight: 1.6, color: 'var(--text-secondary)' }}>{p}</div>
                   </div>
                 ))}
               </div>
@@ -1437,14 +1437,14 @@ function ThinkSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides'
       {!revealed ? (
         <button
           onClick={() => setRevealed(true)}
-          style={{ width: '100%', padding: '15px 0', borderRadius: 14, border: `1.5px solid ${'var(--brand)'}`, background: 'transparent', color: 'var(--brand)', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}
+          style={{ width: '100%', padding: '15px 0', borderRadius: 14, border: `1.5px solid ${'var(--brand)'}`, background: 'transparent', color: 'var(--brand)', fontSize: '1rem', fontWeight: 700, cursor: 'pointer' }}
         >
           {t('stories.viewModel')}
         </button>
       ) : (
         <button
           onClick={onNext}
-          style={{ width: '100%', padding: '15px 0', borderRadius: 14, border: 'none', background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}
+          style={{ width: '100%', padding: '15px 0', borderRadius: 14, border: 'none', background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)', fontSize: '1rem', fontWeight: 700, cursor: 'pointer' }}
         >
           {t('stories.proceed')}
         </button>
@@ -1484,18 +1484,18 @@ function CaseSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides')
     return (
       <>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 24, marginTop: 24 }}>
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: `color-mix(in srgb, var(--brand) 13%, transparent)`, borderRadius: 99, padding: '6px 12px', fontSize: 11, fontWeight: 700, color: 'var(--brand)' }}>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: `color-mix(in srgb, var(--brand) 13%, transparent)`, borderRadius: 99, padding: '6px 12px', fontSize: '0.7333rem', fontWeight: 700, color: 'var(--brand)' }}>
             <CheckIcon width={12} height={12} />
             {t('stories.caseDone')}
           </span>
         </div>
-        <h2 style={{ fontSize: 20, fontWeight: 800, lineHeight: 1.5, marginBottom: 16, color: 'var(--text-primary)' }}>{t('stories.frameworkSummary')}</h2>
-        <div style={{ background: 'var(--bg-card)', borderRadius: 16, padding: '18px 20px', fontSize: 14, lineHeight: 1.9, color: 'var(--text-secondary)', marginBottom: 28, borderLeft: `3px solid ${'var(--brand)'}`, whiteSpace: 'pre-line' }}>
+        <h2 style={{ fontSize: '1.3333rem', fontWeight: 800, lineHeight: 1.5, marginBottom: 16, color: 'var(--text-primary)' }}>{t('stories.frameworkSummary')}</h2>
+        <div style={{ background: 'var(--bg-card)', borderRadius: 16, padding: '18px 20px', fontSize: '0.9333rem', lineHeight: 1.9, color: 'var(--text-secondary)', marginBottom: 28, borderLeft: `3px solid ${'var(--brand)'}`, whiteSpace: 'pre-line' }}>
           {slide.conclusion}
         </div>
         <button
           onClick={onNext}
-          style={{ width: '100%', padding: '15px 0', borderRadius: 14, border: 'none', background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}
+          style={{ width: '100%', padding: '15px 0', borderRadius: 14, border: 'none', background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)', fontSize: '1rem', fontWeight: 700, cursor: 'pointer' }}
         >
           {t('stories.proceed')}
         </button>
@@ -1507,36 +1507,36 @@ function CaseSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides')
     <>
       {/* ヘッダー */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, marginTop: 24 }}>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: `color-mix(in srgb, var(--brand) 9%, transparent)`, borderRadius: 99, padding: '6px 12px', fontSize: 11, fontWeight: 700, color: 'var(--brand)' }}>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: `color-mix(in srgb, var(--brand) 9%, transparent)`, borderRadius: 99, padding: '6px 12px', fontSize: '0.7333rem', fontWeight: 700, color: 'var(--brand)' }}>
           <ClipboardListIcon width={12} height={12} />
           {t('stories.casePhase', { n: phaseIndex + 1, total: slide.phases.length })}
         </span>
-        <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{slide.title}</span>
+        <span style={{ fontSize: '0.7333rem', color: 'var(--text-muted)' }}>{slide.title}</span>
       </div>
 
       {/* 状況説明（Phase 1のみ） */}
       {phaseIndex === 0 && (
-        <div style={{ background: `color-mix(in srgb, var(--warm) 8%, transparent)`, border: `1px solid color-mix(in srgb, var(--warm) 19%, transparent)`, borderRadius: 12, padding: '14px 16px', marginBottom: 18, fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.7 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--warm)', marginBottom: 6 }}>{t('stories.situation')}</div>
+        <div style={{ background: `color-mix(in srgb, var(--warm) 8%, transparent)`, border: `1px solid color-mix(in srgb, var(--warm) 19%, transparent)`, borderRadius: 12, padding: '14px 16px', marginBottom: 18, fontSize: '0.8667rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+          <div style={{ fontSize: '0.7333rem', fontWeight: 700, color: 'var(--warm)', marginBottom: 6 }}>{t('stories.situation')}</div>
           {slide.situation}
         </div>
       )}
 
       {/* フェーズ情報（追加開示） */}
       {phaseIndex > 0 && (
-        <div style={{ background: 'var(--bg-card)', borderRadius: 12, padding: '14px 16px', marginBottom: 18, fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.7, borderLeft: `3px solid color-mix(in srgb, var(--brand) 31%, transparent)` }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', marginBottom: 6 }}>{t('stories.extraInfo')}</div>
+        <div style={{ background: 'var(--bg-card)', borderRadius: 12, padding: '14px 16px', marginBottom: 18, fontSize: '0.8667rem', color: 'var(--text-secondary)', lineHeight: 1.7, borderLeft: `3px solid color-mix(in srgb, var(--brand) 31%, transparent)` }}>
+          <div style={{ fontSize: '0.7333rem', fontWeight: 700, color: 'var(--text-muted)', marginBottom: 6 }}>{t('stories.extraInfo')}</div>
           {phase.info}
         </div>
       )}
       {phaseIndex === 0 && phase.info && (
-        <div style={{ background: 'var(--bg-card)', borderRadius: 12, padding: '14px 16px', marginBottom: 18, fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+        <div style={{ background: 'var(--bg-card)', borderRadius: 12, padding: '14px 16px', marginBottom: 18, fontSize: '0.8667rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
           {phase.info}
         </div>
       )}
 
       {/* 問い */}
-      <h2 style={{ fontSize: 19, fontWeight: 800, lineHeight: 1.55, marginBottom: 18, color: 'var(--text-primary)' }}>{phase.question}</h2>
+      <h2 style={{ fontSize: '1.2667rem', fontWeight: 800, lineHeight: 1.55, marginBottom: 18, color: 'var(--text-primary)' }}>{phase.question}</h2>
 
       {/* 選択肢 */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 16 }}>
@@ -1555,7 +1555,7 @@ function CaseSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides')
               disabled={!!answered}
               role="radio"
               aria-checked={isSelected ?? false}
-              style={{ background: bg, color, borderRadius: 14, padding: '14px 18px', fontSize: 16, fontWeight: 600, cursor: answered ? 'default' : 'pointer', transition: 'background 0.2s', lineHeight: 1.5, WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation', border: 'none', font: 'inherit', textAlign: 'left', width: '100%', minHeight: 44 }}
+              style={{ background: bg, color, borderRadius: 14, padding: '14px 18px', fontSize: '1.0667rem', fontWeight: 600, cursor: answered ? 'default' : 'pointer', transition: 'background 0.2s', lineHeight: 1.5, WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation', border: 'none', font: 'inherit', textAlign: 'left', width: '100%', minHeight: 44 }}
             >
               {opt.label}
             </button>
@@ -1565,8 +1565,8 @@ function CaseSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides')
 
       {/* フィードバック */}
       {answered && (
-        <div style={{ background: 'var(--bg-card)', borderRadius: 14, padding: '14px 16px', marginBottom: 16, fontSize: 13, lineHeight: 1.7, color: 'var(--text-secondary)' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 700, color: answered.correct ? 'var(--brand)' : 'var(--md-sys-color-error)', marginBottom: 6 }}>
+        <div style={{ background: 'var(--bg-card)', borderRadius: 14, padding: '14px 16px', marginBottom: 16, fontSize: '0.8667rem', lineHeight: 1.7, color: 'var(--text-secondary)' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.8rem', fontWeight: 700, color: answered.correct ? 'var(--brand)' : 'var(--md-sys-color-error)', marginBottom: 6 }}>
             {answered.correct ? <CheckIcon width={12} height={12} /> : <LightbulbIcon width={12} height={12} />}
             <span>{answered.correct ? t('stories.goodCall') : t('stories.closeCall')}</span>
           </div>
@@ -1577,7 +1577,7 @@ function CaseSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides')
       {answered && (
         <button
           onClick={handleNext}
-          style={{ width: '100%', padding: '15px 0', borderRadius: 14, border: 'none', background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}
+          style={{ width: '100%', padding: '15px 0', borderRadius: 14, border: 'none', background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)', fontSize: '1rem', fontWeight: 700, cursor: 'pointer' }}
         >
           {isLastPhase ? t('stories.viewSummary') : t('stories.nextPhase', { n: phaseIndex + 2, total: slide.phases.length })}
         </button>

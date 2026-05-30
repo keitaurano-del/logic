@@ -60,7 +60,7 @@ export function WhyWhyEvidenceVisual({ revealMode = 'interactive' }: Props = {})
             padding: '10px 12px',
             background: 'var(--warning-soft)',
             borderRadius: 8,
-            fontSize: 13,
+            fontSize: '0.8667rem',
             fontWeight: 600,
             color: 'var(--warning)',
             textAlign: 'center',

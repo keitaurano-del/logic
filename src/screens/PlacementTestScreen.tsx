@@ -129,7 +129,7 @@ export function PlacementTestScreen({ onComplete, onBack }: PlacementTestScreenP
       <div className="eyebrow accent" style={{ marginTop: 'var(--s-4)' }}>
         {axisLabel(currentQ.axis).label}
       </div>
-      <h2 style={{ fontSize: 22, lineHeight: 1.55, whiteSpace: 'pre-wrap', fontFamily: 'var(--font-display)' }}>
+      <h2 style={{ fontSize: '1.4667rem', lineHeight: 1.55, whiteSpace: 'pre-wrap', fontFamily: 'var(--font-display)' }}>
         {currentQ.question}
       </h2>
       <div className="stack-sm" style={{ marginTop: 'var(--s-3)' }}>
@@ -142,7 +142,7 @@ export function PlacementTestScreen({ onComplete, onBack }: PlacementTestScreenP
               cursor: 'pointer',
               textAlign: 'left',
               width: '100%',
-              fontSize: 15,
+              fontSize: '1rem',
               fontWeight: 600,
               lineHeight: 1.55,
               color: 'var(--text-primary)',
@@ -156,7 +156,7 @@ export function PlacementTestScreen({ onComplete, onBack }: PlacementTestScreenP
               borderRadius: '999px',
               border: '1.5px solid currentColor',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 14, fontWeight: 700, flexShrink: 0,
+              fontSize: '0.9333rem', fontWeight: 700, flexShrink: 0,
               color: 'var(--text-secondary)',
             }}>
               {String.fromCharCode(65 + i)}
@@ -207,13 +207,13 @@ function ResultView({
       <Header title={t('placement.resultHeader')} onBack={onBack} />
 
       <div className="eyebrow accent">SKILL ASSESSMENT</div>
-      <h1 style={{ fontSize: 28, letterSpacing: '-0.025em' }}>{t('placement.resultH1')}</h1>
+      <h1 style={{ fontSize: '1.8667rem', letterSpacing: '-0.025em' }}>{t('placement.resultH1')}</h1>
 
       {/* ── 偏差値・ランク ───────────────────── */}
       <section className="profile-hero" style={{ textAlign: 'center', padding: 'var(--s-5) var(--s-4)' }}>
         <div className="eyebrow" style={{ color: 'rgba(255,255,255,0.65)', marginBottom: 'var(--s-2)' }}>{t('placement.estimatedScore')}</div>
         <div className="display" style={{
-          fontSize: 80, lineHeight: 0.9, letterSpacing: '-0.04em', color: '#fff',
+          fontSize: '5.3333rem', lineHeight: 0.9, letterSpacing: '-0.04em', color: '#fff',
         }}>{dev}</div>
         <div style={{
           marginTop: 'var(--s-3)',
@@ -223,11 +223,11 @@ function ResultView({
           background: 'rgba(255,255,255,.14)',
           color: '#fff',
           fontWeight: 700,
-          fontSize: 14,
+          fontSize: '0.9333rem',
         }}>
           {rank.label}
         </div>
-        <div style={{ marginTop: 'var(--s-3)', fontSize: 14, color: 'rgba(255,255,255,0.78)' }}>
+        <div style={{ marginTop: 'var(--s-3)', fontSize: '0.9333rem', color: 'rgba(255,255,255,0.78)' }}>
           {t('placement.correctCount', { correct: String(result.correctCount), total: String(result.totalCount) })}
         </div>
       </section>
@@ -250,8 +250,8 @@ function ResultView({
                 border: '1px solid rgba(108,142,245,.18)',
               }}
             >
-              <span style={{ fontSize: 13, fontWeight: 700 }}>{axisLabel(a.axis).label}</span>
-              <span style={{ fontSize: 13, fontWeight: 800, color: 'var(--md-sys-color-primary)' }}>{levelLabel(a.level)}</span>
+              <span style={{ fontSize: '0.8667rem', fontWeight: 700 }}>{axisLabel(a.axis).label}</span>
+              <span style={{ fontSize: '0.8667rem', fontWeight: 800, color: 'var(--md-sys-color-primary)' }}>{levelLabel(a.level)}</span>
             </div>
           ))}
         </div>
@@ -262,7 +262,7 @@ function ResultView({
         <div className="eyebrow" style={{ marginBottom: 'var(--s-2)' }}>{t('placement.diagnosisComment')}</div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {diagnosisLines.map((line, i) => (
-            <p key={i} style={{ fontSize: 14, lineHeight: 1.75, margin: 0 }}>{line}</p>
+            <p key={i} style={{ fontSize: '0.9333rem', lineHeight: 1.75, margin: 0 }}>{line}</p>
           ))}
         </div>
       </section>
@@ -289,8 +289,8 @@ function ReviewView({ result, onBack }: { result: PlacementResult; onBack: () =>
       <Header title={t('placement.explanationHeader')} onBack={onBack} />
 
       <div className="eyebrow accent">REVIEW</div>
-      <h1 style={{ fontSize: 24, letterSpacing: '-0.025em' }}>{t('placement.explanationH1', { n: String(answers.length) })}</h1>
-      <p style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6, marginTop: 'var(--s-1)' }}>
+      <h1 style={{ fontSize: '1.6rem', letterSpacing: '-0.025em' }}>{t('placement.explanationH1', { n: String(answers.length) })}</h1>
+      <p style={{ fontSize: '0.8667rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginTop: 'var(--s-1)' }}>
         {t('placement.explanationLead')}
       </p>
 
@@ -317,22 +317,22 @@ function ReviewItem({ index, ans }: { index: number; ans: PlacementAnswer }) {
     <section className="card" style={{ padding: 'var(--s-3) var(--s-3)' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, flexWrap: 'wrap' }}>
         <div style={{
-          fontSize: 11, fontWeight: 800,
+          fontSize: '0.7333rem', fontWeight: 800,
           color: ans.correct ? '#10B981' : 'var(--md-sys-color-error)',
           background: ans.correct ? 'rgba(16,185,129,.12)' : 'rgba(220,38,38,.12)',
           padding: '3px 8px', borderRadius: 6,
         }}>
           {t('placement.questionLabel', { n: String(index + 1), result: ans.correct ? t('placement.correct') : t('placement.wrong') })}
         </div>
-        <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', background: 'rgba(108,142,245,.12)', padding: '3px 8px', borderRadius: 6 }}>
+        <div style={{ fontSize: '0.7333rem', fontWeight: 700, color: 'var(--text-secondary)', background: 'rgba(108,142,245,.12)', padding: '3px 8px', borderRadius: 6 }}>
           {axisLabel(q.axis).label}
         </div>
-        <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', background: 'var(--bg-card-soft, rgba(0,0,0,0.04))', padding: '3px 8px', borderRadius: 6 }}>
+        <div style={{ fontSize: '0.7333rem', fontWeight: 700, color: 'var(--text-secondary)', background: 'var(--bg-card-soft, rgba(0,0,0,0.04))', padding: '3px 8px', borderRadius: 6 }}>
           {t(DIFF_LABEL_KEYS[q.difficulty])} · {q.topic}
         </div>
       </div>
 
-      <h3 style={{ fontSize: 15, lineHeight: 1.55, margin: '0 0 10px', whiteSpace: 'pre-wrap', fontWeight: 700 }}>
+      <h3 style={{ fontSize: '1rem', lineHeight: 1.55, margin: '0 0 10px', whiteSpace: 'pre-wrap', fontWeight: 700 }}>
         {q.question}
       </h3>
 
@@ -359,13 +359,13 @@ function ReviewItem({ index, ans }: { index: number; ans: PlacementAnswer }) {
                 borderRadius: 10,
                 background: bg,
                 border: `1px solid ${borderColor}`,
-                fontSize: 13, lineHeight: 1.55,
+                fontSize: '0.8667rem', lineHeight: 1.55,
               }}
             >
               <span style={{
                 width: 22, height: 22, borderRadius: 999, flexShrink: 0,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 11, fontWeight: 700,
+                fontSize: '0.7333rem', fontWeight: 700,
                 background: isCorrect ? '#10B981' : isUser ? 'var(--md-sys-color-error)' : 'transparent',
                 color: isCorrect || isUser ? '#fff' : 'var(--text-secondary)',
                 border: isCorrect || isUser ? 'none' : '1.2px solid var(--text-muted, rgba(0,0,0,0.2))',
@@ -373,7 +373,7 @@ function ReviewItem({ index, ans }: { index: number; ans: PlacementAnswer }) {
                 {String.fromCharCode(65 + i)}
               </span>
               <span style={{ flex: 1 }}>{opt.label}</span>
-              <span style={{ flexShrink: 0, fontSize: 10, fontWeight: 800, alignSelf: 'center' }}>
+              <span style={{ flexShrink: 0, fontSize: '0.6667rem', fontWeight: 800, alignSelf: 'center' }}>
                 {isCorrect && <span style={{ color: 'var(--success-mid)' }}>{t('placement.correctAnswer')}</span>}
                 {!isCorrect && isUser && <span style={{ color: 'var(--md-sys-color-error)' }}>{t('placement.yourAnswer')}</span>}
               </span>
@@ -389,7 +389,7 @@ function ReviewItem({ index, ans }: { index: number; ans: PlacementAnswer }) {
         padding: '10px 12px',
       }}>
         <div className="eyebrow" style={{ marginBottom: 4, color: 'var(--brand, #6C8EF5)' }}>{t('placement.explanationLabel')}</div>
-        <p style={{ fontSize: 13, lineHeight: 1.7, margin: 0 }}>{q.explanation}</p>
+        <p style={{ fontSize: '0.8667rem', lineHeight: 1.7, margin: 0 }}>{q.explanation}</p>
       </div>
     </section>
   )
@@ -413,10 +413,10 @@ function CreatingView({ result, onSaved }: { result: PlacementResult; onSaved: (
   return (
     <div className="stack" style={{ minHeight: 'calc(100dvh - 80px)', justifyContent: 'center', alignItems: 'center', padding: 'var(--s-6) var(--s-4)' }}>
       <div className="placement-spinner" style={{ marginBottom: 24 }} />
-      <h2 style={{ fontSize: 20, fontWeight: 800, textAlign: 'center', letterSpacing: '-0.01em', margin: 0 }}>
+      <h2 style={{ fontSize: '1.3333rem', fontWeight: 800, textAlign: 'center', letterSpacing: '-0.01em', margin: 0 }}>
         {t('placement.creatingCourse')}
       </h2>
-      <p style={{ fontSize: 13, color: 'var(--text-secondary)', textAlign: 'center', marginTop: 10, lineHeight: 1.7 }}>
+      <p style={{ fontSize: '0.8667rem', color: 'var(--text-secondary)', textAlign: 'center', marginTop: 10, lineHeight: 1.7 }}>
         {t('placement.creatingDesc1')}<br />
         {t('placement.creatingDesc2')}
       </p>
@@ -449,10 +449,10 @@ function CreatedView({ onContinue }: { onContinue: () => void }) {
       <div className="placement-success-check" style={{ marginBottom: 22 }}>
         <CheckIcon width={36} height={36} />
       </div>
-      <h2 style={{ fontSize: 24, fontWeight: 800, textAlign: 'center', letterSpacing: '-0.01em', margin: 0 }}>
+      <h2 style={{ fontSize: '1.6rem', fontWeight: 800, textAlign: 'center', letterSpacing: '-0.01em', margin: 0 }}>
         {t('placement.created')}
       </h2>
-      <p style={{ fontSize: 14, color: 'var(--text-secondary)', textAlign: 'center', marginTop: 10, lineHeight: 1.7 }}>
+      <p style={{ fontSize: '0.9333rem', color: 'var(--text-secondary)', textAlign: 'center', marginTop: 10, lineHeight: 1.7 }}>
         {t('placement.createdDesc1')}<br />
         {t('placement.createdDesc2')}
       </p>

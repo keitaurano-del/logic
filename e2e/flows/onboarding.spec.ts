@@ -4,9 +4,12 @@ import { boot } from '../fixtures/boot'
 /**
  * Onboarding flow — 初回起動からホーム着地まで。
  *
- * Onboarding は age → gender → occupation の 3 属性ステップを通り、
+ * Onboarding は birthYear → gender → occupation の 3 属性ステップを通り、
  * 最後にメール登録（Magic Link）に至る state machine。
- * テストでは「ステップが進む」「skip ボタンで先に行ける」を確認する。
+ * ウェルカムスライドは 2026-05-16 に廃止され、起動直後に属性質問（birthYear）が出る。
+ * 最初の birthYear ステップは「5 択ボタン」ではなく「西暦4桁の数値入力」方式（DF-F6）。
+ * テストでは入力バリデーション（空/桁不足は無効、4桁有効値で「次へ」有効）と
+ * 次ステップ（gender）への前進を確認する。
  */
 
 test.describe('Onboarding — 初回起動状態', () => {
@@ -27,28 +30,53 @@ test.describe('Onboarding — 初回起動状態', () => {
   })
 })
 
-test.describe('Onboarding — step 進行', () => {
-  test('age step の選択肢が 5 つあり、選ぶと "次へ" が enable', async ({ page }) => {
+test.describe('Onboarding — birthYear step（西暦4桁入力）', () => {
+  test('起動直後に birthYear の数値入力とヒント文言が表示される', async ({ page }) => {
     await boot(page, { onboarded: false, path: '/?preview=onboarding' })
 
-    // welcome 系の画面がある場合は「始める」「次へ」「Skip」のような前進系ボタンを押して age に到達
-    // 確実に attr step に入るために welcome 画面の前進ボタンを連打（最大 3 回）
-    for (let i = 0; i < 3; i++) {
-      const next = page.locator('button:visible', { hasText: /始める|次へ|スキップ|Start|Next|Skip/i }).first()
-      if (await next.count() === 0) break
-      const isCheckbox = await next.locator('xpath=ancestor::label').count()
-      if (isCheckbox) break
-      await next.click({ timeout: 1_500 }).catch(() => {})
-      await page.waitForTimeout(150)
-      // age step に到達したら break
-      const ageButtons = await page.locator('button:visible', { hasText: /10代|20代|30代|teens|20s|30s/i }).count()
-      if (ageButtons >= 3) break
-    }
+    // 5 択ボタンではなく、西暦4桁を受ける数値入力が出ること
+    const yearInput = page.locator('input[type="number"]')
+    await expect(yearInput).toBeVisible()
 
-    // age step を assert（5択あれば良し）
-    const ageButtons = page.locator('button:visible', { hasText: /10代|20代|30代|40代|50代|teens|20s|30s|40s|50/i })
-    const count = await ageButtons.count()
-    expect(count, 'age step の選択肢が見つからない').toBeGreaterThanOrEqual(3)
+    // 「西暦4桁で入力してください（1900〜…）」のヒント文言が出ること。
+    // sub 文言（…世代別の分析に使用します）と区別するため範囲表記の全角括弧でマッチさせる。
+    await expect(page.getByText(/西暦4桁で入力してください（\d{4}〜\d{4}）/)).toBeVisible()
+  })
+
+  test('空・桁不足では「次へ」が無効、4桁の有効値で有効になる', async ({ page }) => {
+    await boot(page, { onboarded: false, path: '/?preview=onboarding' })
+
+    const yearInput = page.locator('input[type="number"]')
+    const nextBtn = page.getByRole('button', { name: '次へ', exact: true })
+
+    // 初期（空）は無効
+    await expect(nextBtn).toBeDisabled()
+
+    // 2 桁では無効（西暦4桁の要件を満たさない）
+    await yearInput.fill('19')
+    await expect(nextBtn).toBeDisabled()
+
+    // 範囲外（未来の年など）は無効。max は currentYear なので明らかに超過する値を使う
+    await yearInput.fill('3000')
+    await expect(nextBtn).toBeDisabled()
+
+    // 4 桁の有効値で有効化
+    await yearInput.fill('1990')
+    await expect(nextBtn).toBeEnabled()
+  })
+
+  test('有効な birthYear を入力して「次へ」を押すと gender step へ進む', async ({ page }) => {
+    await boot(page, { onboarded: false, path: '/?preview=onboarding' })
+
+    const yearInput = page.locator('input[type="number"]')
+    await yearInput.fill('1990')
+
+    const nextBtn = page.getByRole('button', { name: '次へ', exact: true })
+    await expect(nextBtn).toBeEnabled()
+    await nextBtn.click()
+
+    // 次ステップ（性別）の見出しが出ること
+    await expect(page.getByText('性別を教えてください')).toBeVisible()
   })
 
   test('onboarding 完了相当の状態だと AppShell に直接着地', async ({ page }) => {

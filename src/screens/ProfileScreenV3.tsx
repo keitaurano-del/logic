@@ -89,7 +89,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
             />
           </button>
           <div style={{ flex: 1 }}>
-            <div className="profile-hero-name" style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, letterSpacing: '-.02em', marginBottom: 2, color: 'var(--text-on-hero)' }}>{userName}</div>
+            <div className="profile-hero-name" style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: '1.4667rem', fontWeight: 900, letterSpacing: '-.02em', marginBottom: 2, color: 'var(--text-on-hero)' }}>{userName}</div>
             <button
               type="button"
               onClick={() => setTitleSheetOpen(true)}
@@ -99,11 +99,11 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
                 fontFamily: 'inherit', textAlign: 'left',
               }}
             >
-              <span style={{ fontSize: 14, color: lv.color, fontWeight: 700, letterSpacing: '.01em' }}>
+              <span style={{ fontSize: '0.9333rem', color: lv.color, fontWeight: 700, letterSpacing: '.01em' }}>
                 {t(getTitleI18nKey(currentTitleKey))}
               </span>
               {lv.level === MAX_LEVEL && (
-                <span aria-hidden="true" style={{ fontSize: 13 }}>★</span>
+                <span aria-hidden="true" style={{ fontSize: '0.8667rem' }}>★</span>
               )}
             </button>
           </div>
@@ -120,12 +120,12 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginBottom: 8 }}>
-            <span style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 18, fontWeight: 900, letterSpacing: '-.02em', color: 'var(--text-on-hero)' }}>Lv.{lv.level}</span>
+            <span style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: '1.2rem', fontWeight: 900, letterSpacing: '-.02em', color: 'var(--text-on-hero)' }}>Lv.{lv.level}</span>
           </div>
           <div style={{ height: 12, background: 'var(--border-on-dark)', borderRadius: 99, overflow: 'hidden', marginBottom: 8 }}>
             <div style={{ height: '100%', width: `${levelPct}%`, background: lv.color, borderRadius: 99, boxShadow: `0 0 12px ${lv.color}88` }}></div>
           </div>
-          <div style={{ fontSize: 14, color: 'var(--text-secondary)', fontWeight: 500, textAlign: 'right' }}>
+          <div style={{ fontSize: '0.9333rem', color: 'var(--text-secondary)', fontWeight: 500, textAlign: 'right' }}>
             {lv.level === MAX_LEVEL
               ? t('profile.maxLevelReached')
               : t('profile.toNextLevel', { xp: String(Math.max(0, needed - levelXp)) })}
@@ -161,8 +161,8 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
                 color: 'inherit', font: 'inherit',
               }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-                <div style={{ fontSize: 14, color: 'var(--text-primary)', fontWeight: 700 }}>{t('profile.weekSummary')}</div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, fontWeight: 800, color: studiedCount > 0 ? 'var(--streak-flame)' : 'var(--text-muted)' }}>
+                <div style={{ fontSize: '0.9333rem', color: 'var(--text-primary)', fontWeight: 700 }}>{t('profile.weekSummary')}</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.8667rem', fontWeight: 800, color: studiedCount > 0 ? 'var(--streak-flame)' : 'var(--text-muted)' }}>
                   <FlameIcon size={16} dim={studiedCount === 0} />
                   <span>{t('profile.studiedDaysThisWeek', { n: String(studiedCount) })}</span>
                 </div>
@@ -189,7 +189,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
                           <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--text-muted)', opacity: .5 }} />
                         )}
                       </div>
-                      <span style={{ fontSize: 12, color: studied ? 'var(--text-primary)' : 'var(--text-muted)', fontWeight: studied ? 700 : 500 }}>{d}</span>
+                      <span style={{ fontSize: '0.8rem', color: studied ? 'var(--text-primary)' : 'var(--text-muted)', fontWeight: studied ? 700 : 500 }}>{d}</span>
                     </div>
                   )
                 })}
@@ -202,7 +202,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                   gap: 6,
                 }}>
-                  <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)' }}>
+                  <span style={{ fontSize: '0.8667rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
                     {t('profile.weekSummarySub')}
                   </span>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2.5" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
@@ -227,8 +227,8 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>{t('profile.assessmentTitle')}</div>
-              <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 2 }}>{t('profile.assessmentDesc')}</div>
+              <div style={{ fontSize: '0.9333rem', fontWeight: 700, color: 'var(--text-primary)' }}>{t('profile.assessmentTitle')}</div>
+              <div style={{ fontSize: '0.8667rem', color: 'var(--text-secondary)', marginTop: 2 }}>{t('profile.assessmentDesc')}</div>
             </div>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2.5" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
           </button>
@@ -255,7 +255,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
           )}
         </div>
         <button type="button" onClick={handleLogout}
-          style={{ background: 'transparent', border: '1px solid rgba(252,165,165,.4)', borderRadius: 14, padding: 13, textAlign: 'center', fontSize: 14, fontWeight: 700, color: 'var(--md-sys-color-error)', cursor: 'pointer', font: 'inherit', width: '100%', minHeight: 44 }}>
+          style={{ background: 'transparent', border: '1px solid rgba(252,165,165,.4)', borderRadius: 14, padding: 13, textAlign: 'center', fontSize: '0.9333rem', fontWeight: 700, color: 'var(--md-sys-color-error)', cursor: 'pointer', font: 'inherit', width: '100%', minHeight: 44 }}>
           {t('profile.logout')}
         </button>
       </div>
@@ -284,7 +284,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
             {sheet === 'lessons' && <LessonsSheet onOpenLesson={(id) => { setSheet(null); onOpenLesson?.(id) }} />}
             {sheet === 'xp' && <XpSheet totalXp={xp} />}
 
-            <button onClick={() => setSheet(null)} style={{ marginTop: 20, width: '100%', background: 'var(--bg-tertiary)', border: 'none', borderRadius: 12, padding: '13px', fontSize: 14, fontWeight: 700, color: 'var(--text-secondary)', cursor: 'pointer' }}>{t('profile.close')}</button>
+            <button onClick={() => setSheet(null)} style={{ marginTop: 20, width: '100%', background: 'var(--bg-tertiary)', border: 'none', borderRadius: 12, padding: '13px', fontSize: '0.9333rem', fontWeight: 700, color: 'var(--text-secondary)', cursor: 'pointer' }}>{t('profile.close')}</button>
           </div>
         </div>
       )}
@@ -296,13 +296,13 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
 function StreakSheet({ streak }: { streak: number }) {
   return (
     <>
-      <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 16 }}>{t('profile.streakDaysHeading')}</div>
+      <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 16 }}>{t('profile.streakDaysHeading')}</div>
       <div style={{ textAlign: 'center', padding: '20px 0' }}>
-        <div style={{ fontSize: 72, fontWeight: 900, color: 'var(--brand)', letterSpacing: '-0.04em', lineHeight: 1 }}>{streak}</div>
-        <div style={{ fontSize: 18, color: 'var(--text-secondary)', marginTop: 8, fontWeight: 600 }}>{t('profile.streakDaysUnit')}</div>
+        <div style={{ fontSize: '4.8rem', fontWeight: 900, color: 'var(--brand)', letterSpacing: '-0.04em', lineHeight: 1 }}>{streak}</div>
+        <div style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', marginTop: 8, fontWeight: 600 }}>{t('profile.streakDaysUnit')}</div>
       </div>
       <div style={{ background: 'var(--bg-primary)', borderRadius: 14, padding: '14px 16px' }}>
-        <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+        <div style={{ fontSize: '0.8667rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
           {t('profile.streakNote1')}<br />
           {t('profile.streakNote2')}
         </div>
@@ -319,9 +319,9 @@ function LessonsSheet({ onOpenLesson }: { onOpenLesson: (id: number) => void }) 
 
   return (
     <>
-      <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 16 }}>{t('profile.completedLessonsTitle', { n: String(completedLessons.length) })}</div>
+      <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 16 }}>{t('profile.completedLessonsTitle', { n: String(completedLessons.length) })}</div>
       {completedLessons.length === 0 ? (
-        <div style={{ textAlign: 'center', color: 'var(--text-secondary)', padding: '32px 0', fontSize: 14 }}>{t('profile.noLessonsYet')}</div>
+        <div style={{ textAlign: 'center', color: 'var(--text-secondary)', padding: '32px 0', fontSize: '0.9333rem' }}>{t('profile.noLessonsYet')}</div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {completedLessons.map(l => {
@@ -337,8 +337,8 @@ function LessonsSheet({ onOpenLesson }: { onOpenLesson: (id: number) => void }) 
                 <LessonIcon id={l.id} action="lesson" size={20} />
               </div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>{l.title}</div>
-                <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2 }}>{l.category || ''}</div>
+                <div style={{ fontSize: '0.9333rem', fontWeight: 700, color: 'var(--text-primary)' }}>{l.title}</div>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: 2 }}>{l.category || ''}</div>
               </div>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2.5" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
             </button>
@@ -365,23 +365,23 @@ function XpSheet({ totalXp }: { totalXp: number }) {
 
   return (
     <>
-      <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 4, display: 'flex', alignItems: 'center', gap: 8 }}>
+      <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 4, display: 'flex', alignItems: 'center', gap: 8 }}>
         <StarIcon width={20} height={20} aria-hidden="true" />
         <span>{t('profile.totalXp')}</span>
       </div>
-      <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 16 }}>{t('profile.monthBreakdown', { month: monthLabel })}</div>
+      <div style={{ fontSize: '0.8667rem', color: 'var(--text-secondary)', marginBottom: 16 }}>{t('profile.monthBreakdown', { month: monthLabel })}</div>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 36, fontWeight: 900, color: 'var(--brand)' }}>{totalXp.toLocaleString()}</div>
-          <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{t('profile.cumulativeXp')}</div>
+          <div style={{ fontSize: '2.4rem', fontWeight: 900, color: 'var(--brand)' }}>{totalXp.toLocaleString()}</div>
+          <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{t('profile.cumulativeXp')}</div>
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 36, fontWeight: 900, color: 'var(--brand-light)' }}>+{thisMonthTotal}</div>
-          <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{t('profile.thisMonthEarned')}</div>
+          <div style={{ fontSize: '2.4rem', fontWeight: 900, color: 'var(--brand-light)' }}>+{thisMonthTotal}</div>
+          <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{t('profile.thisMonthEarned')}</div>
         </div>
       </div>
       {entries.length === 0 ? (
-        <div style={{ textAlign: 'center', color: 'var(--text-secondary)', padding: '16px 0', fontSize: 14 }}>{t('profile.noXpThisMonth')}</div>
+        <div style={{ textAlign: 'center', color: 'var(--text-secondary)', padding: '16px 0', fontSize: '0.9333rem' }}>{t('profile.noXpThisMonth')}</div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {entries.map(([label, xp]) => {
@@ -389,8 +389,8 @@ function XpSheet({ totalXp }: { totalXp: number }) {
             return (
               <div key={label}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                  <span style={{ fontSize: 13, color: 'var(--text-primary)', fontWeight: 600 }}>{label}</span>
-                  <span style={{ fontSize: 13, color: 'var(--brand)', fontWeight: 700 }}>+{xp} XP</span>
+                  <span style={{ fontSize: '0.8667rem', color: 'var(--text-primary)', fontWeight: 600 }}>{label}</span>
+                  <span style={{ fontSize: '0.8667rem', color: 'var(--brand)', fontWeight: 700 }}>+{xp} XP</span>
                 </div>
                 <div style={{ height: 6, background: 'var(--bg-tertiary)', borderRadius: 4, overflow: 'hidden' }}>
                   <div style={{ height: '100%', width: `${pct}%`, background: 'var(--brand)', borderRadius: 4 }} />
@@ -403,12 +403,12 @@ function XpSheet({ totalXp }: { totalXp: number }) {
 
       {/* XP獲得ルール一覧 */}
       <div style={{ marginTop: 24, padding: '14px 16px', background: 'var(--bg-primary)', borderRadius: 14 }}>
-        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 10 }}>
+        <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 10 }}>
           {t('profile.xpRulesHeading')}
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {(Object.keys(XP_REWARDS) as Array<keyof typeof XP_REWARDS>).map((event) => (
-            <div key={event} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 13 }}>
+            <div key={event} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8667rem' }}>
               <span style={{ color: 'var(--text-primary)' }}>{XP_EVENT_LABEL[event] || event}</span>
               <span style={{ color: 'var(--brand)', fontWeight: 700 }}>+{XP_REWARDS[event]} XP</span>
             </div>
@@ -442,12 +442,12 @@ function StatCard({ val, label, onClick, highlight }: { val: string; label: stri
       onClick={onClick}
       style={{ background: 'var(--bg-card)', borderRadius: 16, padding: '14px 8px', textAlign: 'center', boxShadow: '0 6px 20px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.05)', cursor: 'pointer', position: 'relative', border: '1px solid rgba(255,255,255,.06)', font: 'inherit', color: 'inherit', width: '100%' }}
     >
-      <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 22, fontWeight: 900, color: 'var(--brand)', letterSpacing: '-.03em', lineHeight: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+      <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: '1.4667rem', fontWeight: 900, color: 'var(--brand)', letterSpacing: '-.03em', lineHeight: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
         {highlight && <FlameIcon size={18} />}
         {val}
       </div>
-      <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-secondary)', marginTop: 5 }}>{label}</div>
-      <div style={{ position: 'absolute', bottom: 6, right: 8, fontSize: 10, color: 'var(--text-muted)' }}>›</div>
+      <div style={{ fontSize: '0.7333rem', fontWeight: 600, color: 'var(--text-secondary)', marginTop: 5 }}>{label}</div>
+      <div style={{ position: 'absolute', bottom: 6, right: 8, fontSize: '0.6667rem', color: 'var(--text-muted)' }}>›</div>
     </button>
   )
 }
@@ -492,10 +492,10 @@ function SettingRow({ icon, name, sub, onClick, extra }: { icon: string; name: s
       <div style={{ width: 36, height: 36, borderRadius: 10, background: 'var(--accent-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{iconSvg[icon]}</div>
       <div style={{ flex: 1 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 2 }}>
-          <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>{name}</span>
+          <span style={{ fontSize: '0.9333rem', fontWeight: 700, color: 'var(--text-primary)' }}>{name}</span>
           {extra}
         </div>
-        {sub && <div style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 500 }}>{sub}</div>}
+        {sub && <div style={{ fontSize: '0.8667rem', color: 'var(--text-secondary)', fontWeight: 500 }}>{sub}</div>}
       </div>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
     </button>
