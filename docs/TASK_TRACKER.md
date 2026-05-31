@@ -2895,8 +2895,8 @@ Keita 側にボールが残る作業（エージェントは着手できない�
 | ID | LG-2 |
 | タイトル | 学ぶメニュー、の今日どのスキルを鍛える、は不要 |
 | 優先度 | P2 |
-| ステータス | TODO |
-| 担当 | 未定 |
+| ステータス | DONE（2026-05-31 自律ティック(林) 完了。dev-logic 実装＝学ぶ(roadmap)タブ先頭の見出し「今日、どのスキルを鍛える？」を撤去。`RoadmapScreenV3.tsx` の見出し div ブロック削除（直後の常設検索バー button は保持）＋未使用化した i18n `roadmap.todayQuestion`(ja/en) を削除。grep todayQuestion 残存0。林が独立に裏取り: git diff で見出しブロックと i18n キーのみ削除を確認・注入兆候なし、tsc 0err / eslint . 0err(warn19既存) / vitest 28files460pass green。commit→push→本番deploy 実施。実効性=見出し撤去で DoD 直明、機械的削除につき test-functional 検証不要レベル） |
+| 担当 | dev-logic |
 | 詳細 | 【Apollo投入】 学ぶメニュー、の今日どのスキルを鍛える、は不要 |
 | 更新日 | 2026-05-31 |
 

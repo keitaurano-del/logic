@@ -480,10 +480,6 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
 
       <div style={{ flex: 1, padding: '0 16px 80px', display: 'flex', flexDirection: 'column', gap: 14 }}>
 
-        <div style={{ padding: '4px 4px 8px' }}>
-          <div style={{ fontSize: '1.4667rem', fontWeight: 700, lineHeight: 1.45, letterSpacing: '-.005em', whiteSpace: 'pre-line' }}>{t('roadmap.todayQuestion')}</div>
-        </div>
-
         {/* 検索バー（常設）— タップで右上虫眼鏡と同じ検索オーバーレイを開く。発見性向上のため一覧トップに配置 */}
         <button
           type="button"
