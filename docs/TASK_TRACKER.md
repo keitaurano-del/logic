@@ -34,7 +34,7 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 | FB-01 | 図解SVGと本文説明の不整合を監査・修正 | P1 | REVIEW（Bucket1 客観不整合は現行 main で解消済を検証＋回帰ガード `598346a` 追加・deploy 済。残=designer/Keita 案件のみ→分離） | content-creator→dev-logic | 即修正(correctness) |
 | FB-02 | 学習時間計測が途中離脱時に正しく停止しないバグ | P1 | REVIEW（実装＋回帰テスト green→push `9000dc9`・deploy 済。残=実機両OSでの appStateChange 発火確認＝Keita 実機待ち） | dev-logic | 即修正(bug) |
 | FB-03 | en locale 未翻訳文字列＋ロケール依存データの見直し | P1 | REVIEW（EN UI 残存日本語 aria-label/title を t() 化 push `82c7280`・deploy 済。残=レッスン図解 i18n は別タスク提言・実機 en 目視のみ Keita 待ち） | dev-logic + content-creator | 即修正 |
-| FB-04 | TTS読み上げ速度の細粒度調整＋連続再生の安定性 | P2 | TODO | dev-logic | 中(安定性はbug寄り) |
+| FB-04 | TTS読み上げ速度の細粒度調整＋連続再生の安定性 | P2 | REVIEW（速度の細粒度調整＋永続化を実装 push `14a19e4`・deploy 済。残=連続再生の安定性は両OS依存で別スコープ＋実機 Keita 確認） | dev-logic | 中(安定性はbug寄り) |
 | FB-05 | コース横断/戻る/離脱復帰のナビ・IA再設計【クラスタ4件】 | P1 | TODO | designer主導+dev-logic | Issue化推奨 |
 | FB-06 | ストリーク猶予・復活アイテム導入 | P2 | REVIEW（Keita 2026-05-31「フリーズ型・無料配布のみ」で unblock→実装 push `915e622`・stats.test +13 green。残=Keita が実装仕様(無料配布/最大2/5日付与)の一致を目視・実機ストリーク挙動確認） | Keita手動→dev-logic | 仕様判断（Keita決定済） |
 | FB-07 | 不正解時フィードバック文言を中立トーンに | P2 | TODO | content-creator | 中(UI文言中立) |
@@ -84,14 +84,16 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 - 更新日: 2026-05-31
 
 #### FB-04 — TTS読み上げ速度の細粒度調整＋連続再生の安定性
-- 優先度: P2 / ステータス: TODO / 担当案: dev-logic
+- 優先度: P2 / ステータス: REVIEW（自律ティック 2026-05-31。「速度の細粒度調整＋永続化」スライスを実装 green→push→本番 deploy 済。残＝連続再生の安定性は両OS依存で別スコープ＋実機確認 Keita 待ち）/ 担当案: dev-logic
+- **進捗（2026-05-31 自律ティック / commit `14a19e4` push→本番 deploy run 26701261916）**: 速度 UI が離散プリセット `[0.75,1.0,1.25,1.5,2.0]` のみで刻みが粗かった指摘に対応。`src/components/VoiceRateControls.tsx`（TtsControlPanel/TtsPopover 共有）にプリセット併存の「−／現在値／＋」細調整ステッパーを追加（0.05刻み、下限0.5で−／上限2.0で＋を disabled）。`src/ttsService.ts` に `RATE_STEP=0.05` と `stepRate(rate,dir)`（0.05グリッドスナップ＋0.5〜2.0クランプ＋toFixed(2)正規化）を新設。永続化は既存 loadRate/saveRate フローをそのまま利用（プリセットも細調整も同じ onChangeRate 経由なので自動で効く）。i18n `tts.speed.decrease`/`increase` を ja/en 追加（中立丁寧体）。`src/__tests__/ttsService.test.ts` に stepRate 単体6件追加。green: tsc 0err / eslint . 0err（既存warn19）/ vitest 24files 430pass（新規6）。
+- **REVIEW 残（FB-04 本体では headless 不可・別スコープ）**: 連続再生の安定性（途切れ・重複なく動くか）は Capacitor の音声エンジン差・背景再生に依存し headless 検証不可。①実機 iOS/Android で細調整ステッパーの操作感・速度反映、②連続スライド/オート再生時の途切れ・二重発話の有無、を Keita 実機確認。安定性に実バグが残る場合は別タスク（バグ寄り）として切り出す。
 - 詳細: TTS の読み上げ速度を細かく調整できるようにする。加えて連続再生時の安定性に問題がある（安定性側はバグ寄り）。
 - DoD: 速度を細かい刻みで設定でき設定が永続化される／連続再生が途切れ・重複なく安定動作する。両OSで確認。
 - 関連: TTS 再生ロジック、`src/richText.ts`（stripMarkup＝読み上げ整形）、設定 persist
 - 依存: なし。**dedup 確認済** — 既存 DF-F 系に TTS 速度/安定性タスクは無い（DF-F15 はジャーナル誘導コピーで無関係）。新規で妥当。
 - 提言・抜けもれ: TTS strip: レッスン本文の `[icon:name]`・絵文字・SVG ラベルが読み上げ対象に混入しないか（feedback_logic_lesson_visual_hybrid の stripMarkup 整形と整合）。両OS: iOS/Android で音声エンジン差。永続化: 速度設定の保存・再表示。安定性はバグ扱いで優先。
 - note: 2026-05-31 ドッグフーディング(dogfood)で検出（p15）。
-- 更新日: 2026-05-31
+- 更新日: 2026-05-31（速度細粒度スライス実装・REVIEW へ）
 
 #### FB-05 — コース横断/戻る/離脱復帰のナビ・IA再設計【クラスタ親・4件】
 - 優先度: P1 / ステータス: TODO / 担当案: designer 主導 + dev-logic
