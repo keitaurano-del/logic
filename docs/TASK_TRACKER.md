@@ -70,7 +70,7 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 | FB-05 | コース横断/戻る/離脱復帰のナビ・IA再設計【クラスタ4件】 | P1 | TODO（2026-05-31 Issue化済＝[#235](https://github.com/keitaurano-del/logic/issues/235)。次は designer IA 案→Keita 決定＝設計判断ゲート。decision 後に dev-logic 実装着手） | designer主導+dev-logic | Issue化済 #235 |
 | FB-06 | ストリーク猶予・復活アイテム導入 | P2 | DONE（2026-05-31 完了。Keita「フリーズ型・無料配布のみ」で unblock→実装 push `915e622`・stats.test +13 green・tsc0/eslint0/vitest424pass。Render web デプロイ＋Android 配信ともに本番反映済。Keita 実機/目視確認も完了→DONE） | Keita手動→dev-logic | 仕様判断（Keita決定済） |
 | FB-07 | 不正解時フィードバック文言を中立トーンに | P2 | DONE（2026-05-31 test-functional ○: i18n.ts:561 ja「不正解」/:2474 en「Incorrect」・三点リーダ除去をライブ確認・残存0件・本番反映済） | content-creator | 中(UI文言中立) |
-| FB-08 | AI問題生成の待ち時間に進捗表示 or ストック | P2 | REVIEW（2026-05-31 自律ティック。進捗表示スライス実装→green→本番反映。残=実機目視 Keita〔任意〕。ストック方式は別スコープ） | dev-logic | 中 |
+| FB-08 | AI問題生成の待ち時間に進捗表示 or ストック | P2 | DONE（2026-05-31 自律ティック(林) 実効性検証○: DailyProblemScreen loading 分岐の ProblemGenLoader 結線を実コードで確認＋回帰テスト追加で恒久ロック。実装は本番反映済。残=Keita 実機目視〔任意〕。ストック方式は別スコープ） | dev-logic | 中 |
 | FB-09 | 保存アイテム（検索・並び替え）※フォルダ分けは FB-11 に分離 | P3 | REVIEW（検索＋並び替え実装→tsc/eslint/vitest green→push `9b40b60`→本番deploy run26705223340。残=Keita 実機目視〔任意〕。フォルダ分けは FB-11） | dev-logic | 低 |
 | FB-11 | 保存アイテムのフォルダ分け（FB-09 から分離） | P3 | TODO | dev-logic | 低（DB schema migration 要） |
 | FB-12 | TTS 連続再生の安定性（端末依存の残り・FB-04 から分離） | P2 | REVIEW（2026-05-31 自律ティック(林)。web pause→resume の先頭再起動バグを根因修正＝`resumeSkipSpeakRef` で自動再生 effect の再 speak を1回抑止し resume() 中断地点継続を保持。native は手動 speak 撤去で二重 speak も解消。`32076bb`→本番deploy run26707897260。残＝両OS実機での連続再生継続性・resume 挙動＝headless 不可） | dev-logic＋Keita実機 | 中（端末依存） |
@@ -179,7 +179,7 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 - 更新日: 2026-05-31
 
 #### FB-08 — AI問題生成の待ち時間に進捗表示 or ストック
-- 優先度: P2 / ステータス: REVIEW（2026-05-31 自律ティック reconcile: 実装は commit `1ab7287` で origin/main 反映済。詳細ヘッダが TODO のまま残っていたのを REVIEW に訂正＝サマリ表と進捗ノートに整合。残=実機目視 Keita〔任意〕。ストック方式は別スコープ）/ 担当案: dev-logic
+- 優先度: P2 / ステータス: DONE（2026-05-31 自律ティック(林) 実効性検証○。実装は commit `1ab7287` で origin/main 反映済＝本番デプロイ済。本ティックで `src/screens/DailyProblemScreen.tsx` の loading 分岐(line 40-48)が `ProblemGenLoader` をフルスクリーン表示する結線を実コードで確認し、回帰テスト `src/__tests__/DailyProblemScreen.loading.test.tsx`（2ケース＝loading で ProblemGenLoader step1 文言が出る／旧プレーン `dailyProblem.loading` は出ない）を追加して差し替えを恒久ロック。tsc 0err / eslint . 0err（既存warn19）/ vitest 25files 432pass（林が独立再検証 green）。テスト追加のみで本番コード不変＝再デプロイ不要。残=Keita 実機目視〔任意〕。ストック方式（事前生成キャッシュ）は別スコープで未着手）/ 担当案: dev-logic
 - 詳細: AI 問題生成の待ち時間が体感長い。進捗表示を出す、または事前ストックで待ち時間を隠す。
 - DoD: 生成中に進捗/状態が分かる表示が出る、または問題がストックされ待ち時間が体感されない。
 - 関連: AI 問題生成（`server/index.ts` の `/api/generate-problems`・Anthropic API）、生成中 UI
