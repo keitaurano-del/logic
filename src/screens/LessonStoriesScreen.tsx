@@ -365,22 +365,12 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
   }, [ttsPaused, slide, ttsRate, ttsVoiceId, advanceReadable])
 
   // 速度変更 (制御パネルから)
+  // 再生中の再読み上げは自動再生 effect の ttsRate deps が担うため、ここでは直接 speak しない
+  // (二重 speak による重複/吃りを防ぐ)。
   const handleChangeRate = useCallback((r: number) => {
     setTtsRate(r)
     tts.saveRate(r)
-    // 再生中なら現スライドを新しい速度で再起動 (Web は途中変更不可、native も同じ)
-    if (ttsModeActive && ttsPlaying && !ttsPaused) {
-      const text = getSpeakableText(slide)
-      if (text) {
-        void tts.speak(text, {
-          lang: getLocale() === 'ja' ? 'ja-JP' : 'en-US',
-          rate: r,
-          voiceId: ttsVoiceId,
-          onEnd: () => advanceReadable(),
-        })
-      }
-    }
-  }, [ttsModeActive, ttsPlaying, ttsPaused, slide, ttsVoiceId, advanceReadable])
+  }, [])
 
   // シークバー用: 現在地が readableIndices 内で何番目か
   // 非 readable (quiz/think/case) の場合は直前の readable インデックスを返す。
@@ -489,21 +479,12 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
   }, [jumpToNextReadable, jumpToPrevReadable])
 
   // ボイス変更 (制御パネルから)
+  // 再生中の再読み上げは自動再生 effect の ttsVoiceId deps が担うため、ここでは直接 speak しない
+  // (二重 speak による重複/吃りを防ぐ)。
   const handleChangeVoice = useCallback((id: string | null) => {
     setTtsVoiceId(id)
     tts.saveVoiceId(id)
-    if (ttsModeActive && ttsPlaying && !ttsPaused) {
-      const text = getSpeakableText(slide)
-      if (text) {
-        void tts.speak(text, {
-          lang: getLocale() === 'ja' ? 'ja-JP' : 'en-US',
-          rate: ttsRate,
-          voiceId: id,
-          onEnd: () => advanceReadable(),
-        })
-      }
-    }
-  }, [ttsModeActive, ttsPlaying, ttsPaused, slide, ttsRate, advanceReadable])
+  }, [])
 
   // 読み上げモード ON + スライド変化 → 現スライドを自動で読み上げる
   // クイズ等で stop されているとき (ユーザーが手動で進めた場合) も含めて副作用で起動
