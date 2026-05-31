@@ -32,15 +32,15 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 | ID | タイトル | 優先度 | ステータス | 担当案 | 種別 |
 |----|---------|--------|-----------|--------|------|
 | FB-01 | 図解SVGと本文説明の不整合を監査・修正 | P1 | REVIEW（Bucket1 客観不整合は現行 main で解消済を検証＋回帰ガード `598346a` 追加・deploy 済。残=designer/Keita 案件のみ→分離） | content-creator→dev-logic | 即修正(correctness) |
-| FB-02 | 学習時間計測が途中離脱時に正しく停止しないバグ | P1 | TODO | dev-logic | 即修正(bug) |
-| FB-03 | en locale 未翻訳文字列＋ロケール依存データの見直し | P1 | TODO | dev-logic + content-creator | 即修正 |
+| FB-02 | 学習時間計測が途中離脱時に正しく停止しないバグ | P1 | REVIEW（実装＋回帰テスト green→push `9000dc9`・deploy 済。残=実機両OSでの appStateChange 発火確認＝Keita 実機待ち） | dev-logic | 即修正(bug) |
+| FB-03 | en locale 未翻訳文字列＋ロケール依存データの見直し | P1 | REVIEW（EN UI 残存日本語 aria-label/title を t() 化 push `82c7280`・deploy 済。残=レッスン図解 i18n は別タスク提言・実機 en 目視のみ Keita 待ち） | dev-logic + content-creator | 即修正 |
 | FB-04 | TTS読み上げ速度の細粒度調整＋連続再生の安定性 | P2 | TODO | dev-logic | 中(安定性はbug寄り) |
 | FB-05 | コース横断/戻る/離脱復帰のナビ・IA再設計【クラスタ4件】 | P1 | TODO | designer主導+dev-logic | Issue化推奨 |
-| FB-06 | ストリーク猶予・復活アイテム導入 | P2 | BLOCKED | Keita手動→dev-logic | 仕様判断 |
+| FB-06 | ストリーク猶予・復活アイテム導入 | P2 | REVIEW（Keita 2026-05-31「フリーズ型・無料配布のみ」で unblock→実装 push `915e622`・stats.test +13 green。残=Keita が実装仕様(無料配布/最大2/5日付与)の一致を目視・実機ストリーク挙動確認） | Keita手動→dev-logic | 仕様判断（Keita決定済） |
 | FB-07 | 不正解時フィードバック文言を中立トーンに | P2 | TODO | content-creator | 中(UI文言中立) |
 | FB-08 | AI問題生成の待ち時間に進捗表示 or ストック | P2 | TODO | dev-logic | 中 |
 | FB-09 | 保存アイテムのフォルダ分け・検索・並び替え | P3 | TODO | dev-logic | 低 |
-| FB-10 | iPad横画面でカスタムコース作成画面レイアウト崩れ | BLOCKED | BLOCKED | dev-logic | 方針判断(Logicモバイル専用) |
+| FB-10 | iPad横画面でカスタムコース作成画面レイアウト崩れ | P2 | REVIEW（Keita 2026-05-31「iPad は正式サポート対象」で方針確定→Custom/PersonalCourseScreen に max-width:600px+margin:auto で崩れ修正 push `622ae43`。残=Keita が実機 iPad 横/縦でレイアウト目視確認） | dev-logic | 方針確定（Keita決定済・iPadサポート） |
 
 #### FB-01 — 図解SVGと本文説明の不整合を監査・修正
 - 優先度: P1 / ステータス: REVIEW（自律ティック 2026-05-31。Bucket1 客観不整合は現行 main で解消済を検証＋回帰ガード追加・本番 deploy 済。残スコープは designer/Keita 案件＝別管理）/ 担当案: content-creator→（残は designer/Keita）
@@ -105,7 +105,9 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 - 更新日: 2026-05-31
 
 #### FB-06 — ストリーク猶予・復活アイテム導入
-- 優先度: P2 / ステータス: BLOCKED（Keita承認待ち）/ 担当案: Keita手動（仕様決定）→ dev-logic
+- 優先度: P2 / ステータス: REVIEW（Keita 2026-05-31 に「フリーズ型・無料配布のみ」で仕様確定＝unblock → dev-logic 実装 push 済）/ 担当案: Keita手動（仕様決定・済）→ dev-logic
+- **進捗（2026-05-31 commit `915e622`）**: `getStreak()` に抜け日のフリーズ自動消費を実装（0個なら従来どおりリセット）。別キー `logic-streak-freeze` で既存ストリークと非干渉・後方互換あり。付与は5日節目ごと1個・上限2（`GRANT_STREAK_INTERVAL` で調整可）。StreakScreen に保有数表示、i18n ja/en 中立丁寧体。`stats.test.ts` +13ケース。自律ティック 2026-05-31 で HEAD green 再確認（tsc 0err / eslint 0err・既存warn19 / vitest 424pass・24files）。既に origin/main・Android 内部配信反映。Render web deploy は gh 未認証のため保留（要 Keita 再認証 or 手動 deploy-production.yml）。
+- **REVIEW 残（Keita 目視/実機）**: ①実装仕様（無料配布のみ・最大2個・5日節目付与）が Keita 意図と一致するか。②実機でストリーク1日抜け時にフリーズが自動消費され継続表示されること、保有数表示の見え方。
 - 詳細: ストリーク途切れの猶予や復活アイテムを導入したいという要望。リテンションに直結する仕様判断。
 - DoD: 仕様（猶予日数/復活手段/課金との関係）が Keita により確定 → 実装し、ストリーク途切れ時に仕様通り猶予/復活が機能する。
 - 関連: `src/stats.ts`（streak 管理）、（課金連動なら）Play Billing
@@ -145,8 +147,10 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 - 更新日: 2026-05-31
 
 #### FB-10 — iPad横画面でカスタムコース作成画面レイアウト崩れ
-- 優先度: BLOCKED（優先度は要 Keita 判断）/ ステータス: BLOCKED / 担当案: dev-logic
-- 詳細: iPad 横画面でカスタムコース作成画面のレイアウトが崩れる。ただし Logic はモバイル専用方針（project_logic_mobile_only＝Web/iPad 横はマーケ対象外）のため、対応優先度の判断が必要。
+- 優先度: P2 / ステータス: REVIEW（Keita 2026-05-31「iPad は正式サポート対象」で方針確定＝unblock → dev-logic 修正 push 済）/ 担当案: dev-logic
+- **進捗（2026-05-31 commit `622ae43`）**: `CustomCourseScreen` / `PersonalCourseScreen` の内側コンテナに `max-width:600px` + `margin:auto` を追加し、ワイド画面で行が伸びきる崩れを解消（既存 `PlacementTest.css` の `.pt-quiz` パターン踏襲）。モバイル360px 回帰なし。自律ティック 2026-05-31 で HEAD green 再確認（tsc 0err / eslint 0err / vitest 424pass）。既に origin/main・Android 内部配信反映。Render web deploy は gh 未認証のため保留。
+- **REVIEW 残（Keita 実機）**: 実機 iPad の横/縦でカスタム・パーソナルコース画面のレイアウトが崩れないこと（中央寄せ・最大幅で行が伸びきらないこと）の目視確認。
+- 詳細: iPad 横画面でカスタムコース作成画面のレイアウトが崩れる。Logic はモバイル専用方針だったが、Keita 2026-05-31 に「iPad も正式サポート対象」と方針確定（project_logic_mobile_only の例外）。
 - DoD: （対応する場合）iPad 横でカスタムコース作成画面のレイアウトが崩れない。または「モバイル専用方針につき対象外」と Keita が判断し CANCELLED。
 - 関連: カスタムコース作成画面（`src/screens/` の AI カスタムコース系）CSS/レイアウト
 - 依存: Keita の優先度/対象判断
@@ -159,13 +163,13 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 - i18n ja/en 追加が要る文字列: FB-03・FB-07・FB-08・FB-09。
 - 永続化が要件に絡む: FB-02(過去データ補正)・FB-04(速度設定)・FB-05(離脱復帰の中断状態)・FB-06(ストリーク)・FB-09(フォルダ/並び順)。
 - correctness 即修正（承認不要）: FB-01。bug 即修正: FB-02。
-- 方針衝突で要 Keita: FB-06(ストリーク仕様・BLOCKED)・FB-10(iPad横・モバイル専用方針と衝突)。要件確定まで IN_PROGRESS にしない。
+- ~~方針衝突で要 Keita: FB-06(ストリーク仕様)・FB-10(iPad横)~~ → **2026-05-31 両者とも Keita 決定済で unblock・実装 push 済（FB-06=フリーズ型無料配布 `915e622` / FB-10=iPad正式サポート `622ae43`）。現 REVIEW（Keita 実機/目視待ち）**。
 - 重複回避の徹底: 通知(p18)/文字サイズ(p17)/トライアル残日数(p02)/ランキング根拠(p04 p13 p16)/デイリー上限(p13) は既存 DF-F8/F2/F11/F12/F13 へ寄せ、新規カードを作っていない（Apollo 盤面の二重表示防止）。
 
 ### このバッチの次アクション（FB）
 1. 即修正系 FB-01（content-creator）・FB-02/FB-03（dev-logic）を着手アサイン。
 2. クラスタ FB-05 を logic リポで GitHub Issue 化（cxo-agent リポは使わない）。
-3. Keita: FB-06(ストリーク仕様)・FB-10(iPad横の対象/優先度) を仕様/方針決定。
+3. ~~Keita: FB-06(ストリーク仕様)・FB-10(iPad横の対象/優先度) を仕様/方針決定。~~ → 2026-05-31 決定済・実装 push 済（REVIEW）。残る Keita アクションは実機/目視確認のみ。
 4. 既存 DF-F2 に「文字サイズ設定の発見性」観点、DF-F12 に「スコア/レベル判定の根拠も含む」観点を follow-up として追記検討（dev-logic/designer、本バッチでは参照のみ）。
 5. commit/push は林（メイン）に委ねる（task-manager は編集のみ）。
 
