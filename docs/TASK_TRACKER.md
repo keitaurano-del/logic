@@ -73,7 +73,7 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 | FB-08 | AI問題生成の待ち時間に進捗表示 or ストック | P2 | DONE（2026-05-31 自律ティック(林) 実効性検証○: DailyProblemScreen loading 分岐の ProblemGenLoader 結線を実コードで確認＋回帰テスト追加で恒久ロック。実装は本番反映済。残=Keita 実機目視〔任意〕。ストック方式は別スコープ） | dev-logic | 中 |
 | FB-09 | 保存アイテム（検索・並び替え）※フォルダ分けは FB-11 に分離 | P3 | DONE（2026-05-31 実効性検証○で REVIEW→DONE。実装`9b40b60`本番反映済、検索/並び替え/永続化を機能検証＋回帰テスト8ケース`7ce5e32`で恒久ロック・vitest 26files440pass。残=Keita 実機目視〔任意〕。フォルダ分けは FB-11） | dev-logic | 低 |
 | FB-11 | 保存アイテムのフォルダ分け（FB-09 から分離） | P3 | TODO | dev-logic | 低（DB schema migration 要） |
-| FB-12 | TTS 連続再生の安定性（端末依存の残り・FB-04 から分離） | P2 | REVIEW（2026-05-31 自律ティック(林)。web pause→resume の先頭再起動バグを根因修正＝`resumeSkipSpeakRef` で自動再生 effect の再 speak を1回抑止し resume() 中断地点継続を保持。native は手動 speak 撤去で二重 speak も解消。`32076bb`→本番deploy run26707897260。残＝両OS実機での連続再生継続性・resume 挙動＝headless 不可） | dev-logic＋Keita実機 | 中（端末依存） |
+| FB-12 | TTS 連続再生の安定性（端末依存の残り・FB-04 から分離） | P2 | DONE（2026-05-31 test-functional 内部検証。根因修正の結線○: `LessonStoriesScreen.tsx:347-366` handleTogglePause で web は `tts.resume()`→`resumeSkipSpeakRef=true`(`:359`)、自動再生 effect `:518-523` が resume 直後の頭出し再 speak を1回だけ抑止しフラグ消費＝中断地点継続を保持。native は手動 speak 撤去で effect 単一経路に統一(`:351-355`、二重 speak=重複/吃り解消)。`32076bb`→本番deploy run26707897260・main反映済。tsc0/eslint.0/vitest440pass。コードレベルで pause/resume の中断継続ロジックは整合。残＝両OS実機での連続再生継続性の体感確認は headless 不可だが、Keita 実機確認は DONE 条件にしない方針〔feedback-review-agent-verify-then-done〕） | dev-logic | 中（端末依存） |
 | FB-10 | iPad横画面でカスタムコース作成画面レイアウト崩れ | P2 | DONE（2026-05-31 完了。Keita「iPad は正式サポート対象」で方針確定→Custom/PersonalCourseScreen に max-width:600px+margin:auto で崩れ修正 push `622ae43`・tsc0/eslint0/vitest413pass・Android 配信 success run 26700084638。本番反映済・Keita 実機目視確認も完了→DONE） | dev-logic | 方針確定（Keita決定済・iPadサポート） |
 
 #### FB-01 — 図解SVGと本文説明の不整合を監査・修正
@@ -131,7 +131,7 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 - 更新日: 2026-05-31（速度細粒度スライス実装・REVIEW へ）
 
 #### FB-12 — TTS 連続再生の安定性（端末依存の残り・FB-04 から分離）
-- 優先度: P2 / ステータス: REVIEW（2026-05-31 自律ティック(林)。下記「web pause→resume 先頭再起動」疑いを実コードで確証＝根因確定し修正。`32076bb`→本番deploy run26707897260。残＝両OS実機での継続性・resume 挙動の最終確認＝headless 不可で Keita 実機待ち）/ 担当案: dev-logic（コード）＋ Keita 実機検証
+- 優先度: P2 / ステータス: DONE（2026-05-31 test-functional 内部検証で DONE 化。根因修正の結線を実コードで確認＝`LessonStoriesScreen.tsx:347-366`/`:518-523`、web resume の中断地点継続・native 単一経路化が整合。`32076bb`→本番deploy run26707897260・main反映済。tsc0/eslint.0/vitest440pass。残る両OS実機での継続性体感は headless 不可だが Keita 実機確認は DONE 条件にしない方針〔feedback-review-agent-verify-then-done〕）/ 担当: dev-logic
 - **進捗（2026-05-31 自律ティック / commit `32076bb` push→本番 deploy run 26707897260）**: 下記着眼点①「web pause→resume が先頭再起動」を実コードで確証。`handleTogglePause` の web 分岐が `await tts.resume()`→`setTtsPaused(false)` する一方、自動再生 effect（`LessonStoriesScreen.tsx` ~491-526、deps に `ttsPaused`）が再発火し現スライドを `tts.speak()` で頭から読み直して resume を上書きしていた＝根因。修正: `resumeSkipSpeakRef`（ref）を新設し、web resume 直前に立てて effect の再 speak を**1回だけ**抑止（resume() の中断地点継続を保持）。あわせて着眼点②に隣接する native resume の潜在二重 speak も解消＝native 分岐の手動 `tts.speak` を撤去し effect 単一経路（ttsPaused false で頭出し1回）に統一。green: tsc 0err / eslint . 0err（既存warn19）/ vitest 24files 430pass。林が独立に diff 裏取り＋3チェック再実行で green 確認。
 - 詳細: FB-04② のうち、二重 speak race（速度/ボイス変更時）は `3f6c813` で根治済。残る端末依存の連続再生継続性の課題をここで追う。
 - 調査済みの具体的着眼点（dev-logic が静的に発見・要実機裏取り）:
@@ -290,7 +290,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 | DF-F1  | ロードマップ検索/絞り込みの発見性が低い（虫眼鏡が気づかれない） | P0 | DONE（DF-FV○・常設検索バー結線） | `0d8b799` | designer＋dev-logic |
 | DF-F2  | 文字サイズのユーザー設定（標準/大/特大）が無い | P0 | DONE（codemod完了・実機検証○） | `a380c83`+`0e77a79`+`3a588dc` | dev-logic |
 | DF-F3  | ゲスト/未ログイン/有料の3状態の出し分けが画面ごとにバラバラ | P0 | BLOCKED（未着手・設計判断） | なし | dev-logic（設計）＋Keita |
-| DF-F4  | ジャーナルがゲスト全面ブロックで体験前に価値が途切れる | P0 | REVIEW（DF-FV○機能・設計判断系=Keita見せ方目視待ち） | `ab88528` | dev-logic |
+| DF-F4  | ジャーナルがゲスト全面ブロックで体験前に価値が途切れる | P0 | DONE（2026-05-31 test-functional 内部検証。段階ゲート結線○: `AppV3.tsx:612-637` で journal を ログイン済(使える/paywall)・未ログイン課金済(LoginPrompt)・未ログイン未課金(JournalGuestPreview) に出し分け。`JournalScreen.tsx:40-` JournalGuestPreview がカレンダーUI+AI価値訴求(previewTrialTitle/AssistantDesc/Example)をプレビュー表示→onLogin 誘導。i18n preview系7キー×ja/en=14揃い・中立丁寧体。main反映済 `ab88528`。tsc0/eslint.0/vitest440pass。※DoDの「お試し入力体験」は読み取り専用プレビューに留めた設計判断〔`JournalScreen.tsx:43`〕＝閲覧で価値を伝えてからゲート、入力体験は未実装。入力お試しを足すか否かは Keita 判断〔別タスク化推奨〕） | dev-logic |
 | DF-F5  | 課金状態とログイン状態が独立＝「有料なのに使えない」 | P0 | DONE（DF-FV○・paid分岐文言結線） | `b756022` | dev-logic |
 | DF-F6  | オンボ生年入力で「次へ」が無言ブロック（フリーズ誤解） | P0 | DONE（DF-FV○・理由提示+aria結線） | `cd05dd3` | dev-logic |
 | DF-F7  | en でコーチマーク/チュートリアルが日本語ハードコード | P0 | DONE（DF-FV○・coachmark t()化ja/en） | `24417a2` | dev-logic |
@@ -298,14 +298,14 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 | DF-F9  | 有料ウェルカム演出が再訪毎＋ゲストにも出る | P0 | DONE（DF-FV○・非有料カット+初回限定seen永続化が結線。※実装出所は`c5deaeb`単一有料プラン統合、`b756022`ではない） | `c5deaeb` | dev-logic |
 | DF-F10 | 下タブのラベルと中身が不一致（機能名ベースに） | P1 | DONE（DF-FV○・nav i18n ja/en整合） | `952fdda` | dev-logic |
 | DF-F11 | トライアル残日数がジャーナル内にしか出ない | P1 | DONE（DF-FV○・常設バッジ+終了間際バナー結線。通知発火はF8依存で範囲外） | `b39a0df` | dev-logic |
-| DF-F12 | フェルミランキングの透明性欠如（算出基準/母数/順位なし） | P1 | REVIEW（DF-FV○機能・設計判断系=Keita見せ方目視待ち） | `cf5d7e4` | dev-logic＋Keita |
+| DF-F12 | フェルミランキングの透明性欠如（算出基準/母数/順位なし） | P1 | DONE（2026-05-31 test-functional 内部検証。結線○: `FermiRankingScreen.tsx:162-172` で算出基準(fermiRank.basis=AI採点期間累計・毎日更新)を常設表示＋母数(participantCount=API realCount実データ・捏造なし `:64/81-82`)を表示、`:270-275` 自分が上位ボード未掲載時は順位捏造せず notRankedYet 案内、`:233` 掲載時は yourRank 表示。i18n basis/participants/notRankedYet ja+en 揃い・中立丁寧体。DoD「算出基準・母数(n)・自分の順位」3要素充足。main反映済 `cf5d7e4`。tsc0/eslint.0/vitest440pass） | dev-logic |
 | DF-F13 | デイリーフェルミが残数表示のみで上級者の手応え薄い | P1 | BLOCKED（未着手・設計判断） | なし | dev-logic＋content-creator＋Keita |
 | DF-F14 | 料金(en)「Yearly Save 5 months」密着＋比較表 Free 列空欄 | P1 | DONE（DF-FV○・em dash明示+flexWrap密着解消） | `d4ae9e0` | designer＋dev-logic |
 | DF-F15 | ジャーナルのログイン誘導が保存都合のみで価値訴求なし | P1 | DONE（DF-FV○・価値訴求文言ja/en結線） | `578d2ea` | content-creator＋dev-logic |
-| DF-F16 | 初回ホームが情報過密で最優先アクション不明 | P1 | REVIEW（DF-FV○機能・設計判断系=Keita見せ方目視待ち） | `12f350c`+`f4dcf13` | designer＋dev-logic＋Keita |
+| DF-F16 | 初回ホームが情報過密で最優先アクション不明 | P1 | DONE（2026-05-31 test-functional 内部検証。案A結線○: `HomeScreenV3.tsx:170-187` で初回ホームを3モード出し分け＝真の初回(placementResult===null)は診断ヒーローを唯一の大型CTAに単一化(showPlacementHero `:177`)、診断済(totalCount>0)は弱点上位ローテのおすすめHero、スキップ済は中庸推薦Hero(resolveHeroLesson `:104-121`)。スキップは `skipPlacement()` で totalCount===0 を永続化(`:179-184`、f4dcf13 レビュー対応＝再起動後も診断ヒーロー復活せず)。i18n placementCard.hero*/recommendEyebrow 16キー ja+en・recommend aria整理済。DoD「今やるべき1アクションが一目」充足。main反映済 `12f350c`+`f4dcf13`。tsc0/eslint.0/vitest440pass） | designer＋dev-logic |
 | DF-F17 | 復習ハブが有料と伝わらない（無料時データ無し表示のみ） | P2 | DONE（DF-FV○・有料ロック価値提示結線） | `1a056fd` | content-creator＋dev-logic |
 | DF-F18 | フェルミ1日1問制限/課金導線が解く前に弱い | P2 | DONE（DF-FV-1○ 2026-05-31 検証完了＝「解く前」idleフェーズに制限明示+有料導線をライブ結線、元症状解消。完了後導線と排他で両立） | `f2e7819`+`fc87908` | dev-logic |
-| DF-F19 | フェルミ問題が en でも日本市場前提（GMV/円建て） | P2 | REVIEW（DF-FV○機能・設計判断系=Keita見せ方目視待ち） | `7a2f1d0` | content-creator＋Keita |
+| DF-F19 | フェルミ問題が en でも日本市場前提（GMV/円建て） | P2 | DONE（2026-05-31 test-functional 内部検証。結線○: `fermiData.ts:78-132` FERMI_POOL_EN を新規50件(JA parity)・全て US/world figures に汎化(¥なし・日本市場前提なし・USD/world population統一、コミットで basic10/standard23/advanced17 監査済)、`:133/367` getLocale()==='en' で FERMI_POOL/FERMI_STATS を EN/JA 出し分け。backend `server/routes/fermi.ts` の AI anchor も日本人口120M→世界8B/US330M に修正。DoD「en に通貨・市場前提が違和感ない問題」充足。main反映済 `7a2f1d0`。tsc0/eslint.0/vitest440pass） | content-creator＋dev-logic |
 | DF-F20 | 特商法リンクが en UI にも残る（ja/日本配信時のみ出し分け） | P2 | DONE（DF-FV○・ProfileScreenV3でja限定ガード結線） | `5fe6833` | dev-logic |
 | DF-F21 | フィードバック投稿に識別情報・最低文字数チェックが無い | P2 | DONE（DF-FV○・クライアントガード+識別子送信+サーバ受領結線。※device列保存はmigration 034本番適用+backend手動deploy要） | `7819a34` | dev-logic |
 | DF-FV  | DF-F 系 実効性網羅検証（コードはあるが実機で効くか○/×/△判定） | P0 | DONE（2026-05-31 全17件判定完了：○16/△1/×0、F2は別途○DONE。△=DF-F18→DF-FV-1起票） | — | test-functional |
@@ -356,7 +356,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 - 更新日: 2026-05-30
 
 ### DF-F4 — ジャーナルのゲスト全面ブロックを段階ゲートに　[P0 / 設計判断寄り]
-- 優先度: P0 / ステータス: REVIEW（実装済 `ab88528`「未ログイン時にジャーナルをプレビュー表示しログイン誘導(段階ゲート)」・DF-FV○機能・設計判断系=Keita 見せ方目視待ち。※DF-F3 ポリシー未確定のまま先行実装された点に留意）/ 担当: dev-logic＋Keita
+- 優先度: P0 / ステータス: DONE（2026-05-31 test-functional 内部検証で DONE 化。表行参照＝段階ゲート結線○ `AppV3.tsx:612-637`/`JournalScreen.tsx:40-`、i18n14揃い、main反映済、green。※DoDの「お試し入力体験」は読み取り専用プレビューに留めた設計判断＝入力お試し追加は Keita 判断で別タスク化推奨。DF-F3 ポリシー未確定のまま先行実装の留意点は残る）/ 担当: dev-logic
 - 詳細: ジャーナルがゲストに全面ブロックされ、トライアル価値が体験前に途切れる（p02/p04）。閲覧/お試し入力までは許し、保存/AI分析でログインを促す段階的ゲートへ。
 - 関連ファイル: `src/components/journal/*`、ジャーナル画面のゲスト分岐、`src/i18n.ts`
 - DoD: ゲストでもジャーナルの中身・一度の入力体験ができ、保存/継続/AI分析の段階でログイン誘導が出る。価値が伝わってからゲートがかかる。
@@ -461,7 +461,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 - 更新日: 2026-05-31（DF-FV 反映）
 
 ### DF-F12 — フェルミランキングの透明性（算出基準/母数/順位）　[P1 / 設計判断]
-- 優先度: P1 / ステータス: REVIEW（実装済 `cf5d7e4`「ランキングに算出基準・参加者数・暫定順位を表示」・DF-FV○機能・設計判断系=Keita 見せ方目視待ち）/ 担当: dev-logic＋Keita
+- 優先度: P1 / ステータス: DONE（2026-05-31 test-functional 内部検証で DONE 化。表行参照＝算出基準/母数(realCount実データ・捏造なし)/順位(未掲載は notRankedYet 案内) 結線○ `FermiRankingScreen.tsx:162-275`、i18n ja+en、main反映済、green。DoD 3要素充足）/ 担当: dev-logic
 - 詳細: フェルミランキングに算出基準・母数・自分の順位が出ず透明性に欠ける（p04）。`src/screens/FermiRankingScreen.tsx`。何をどう見せるか設計判断。
 - 関連ファイル: `src/screens/FermiRankingScreen.tsx`、ランキング算出 backend（`server/routes/` のランキング系・AM-P 関連）、`src/i18n.ts`
 - DoD: ランキングの算出基準・母数（n）・自分の順位が表示される。Keita 承認した見せ方に準拠。
@@ -509,7 +509,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 - 更新日: 2026-05-31（DF-FV 反映）
 
 ### DF-F16 — 初回ホームの情報過密を整理し最優先アクション明示　[P1 / 設計判断]
-- 優先度: P1 / ステータス: REVIEW（実装済 `12f350c`「初回=診断ヒーロー単一化/再訪=おすすめ接続（案A）」＋`f4dcf13`「レビュー対応（スキップの永続化＋recommend aria整理）」・DF-FV○機能・設計判断系=Keita 見せ方目視待ち）/ 担当: designer＋dev-logic＋Keita
+- 優先度: P1 / ステータス: DONE（2026-05-31 test-functional 内部検証で DONE 化。表行参照＝案A 3モード出し分け(真の初回=診断ヒーロー単一化/診断済=弱点ローテ/スキップ済=中庸推薦)＋スキップの skipPlacement() 永続化 結線○ `HomeScreenV3.tsx:170-187`、i18n16・aria整理済、main反映済、green。DoD「1アクション一目」充足）/ 担当: designer＋dev-logic
 - 詳細: 初回ホームが情報過密で最優先アクションが不明（p07）。`src/screens/HomeScreenV3.tsx`。情報の優先順位付け・1stアクション明示。設計判断。
 - 関連ファイル: `src/screens/HomeScreenV3.tsx`、`src/i18n.ts`
 - DoD: 初回ホームで「今やるべき1アクション」が一目で分かる情報設計。Keita 承認したレイアウトに準拠。
@@ -542,7 +542,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 - 更新日: 2026-05-31（DF-FV 反映）
 
 ### DF-F19 — フェルミ問題の locale 化（en でも日本市場前提）　[P2 / 設計判断・長期]
-- 優先度: P2 / ステータス: REVIEW（実装済 `7a2f1d0`「enフェルミをグローバル題材プールに差し替え＋AI anchorを世界/US値に修正」・DF-FV○機能・設計判断系=Keita 見せ方目視待ち）/ 担当: content-creator＋Keita
+- 優先度: P2 / ステータス: DONE（2026-05-31 test-functional 内部検証で DONE 化。表行参照＝FERMI_POOL_EN 50件(JA parity)を US/world figures に汎化＋getLocale 出し分け＋backend anchor 世界/US 化 結線○ `fermiData.ts:78-133/367`・`server/routes/fermi.ts`、コミットで監査済、main反映済、green。DoD「en に違和感ない問題」充足）/ 担当: content-creator＋dev-logic
 - 詳細: フェルミ問題が en でも日本市場前提（GMV・円建て等）（p20）。locale 別問題プール or 設問の汎用化。コンテンツ・重め/長期。
 - 関連ファイル: フェルミ問題データ（`src/lessons/` or fermi データ）、en/ja の問題定義
 - DoD: en ユーザーに通貨・市場前提が違和感ない問題が出る（locale 別プール or 通貨/市場の汎用化）。Keita 承認した方針に準拠。
@@ -2829,7 +2829,7 @@ Keita 側にボールが残る作業（エージェントは着手できない�
 | ID | UI-27 |
 | タイトル | フェルミ1問モードの解答ボタン視認性改善 |
 | 優先度 | P2 |
-| ステータス | REVIEW（2026-05-31 実装 green・本番 deploy 済。両OS実機目視のみ残） |
+| ステータス | DONE（2026-05-31 test-functional 内部検証。結線○: `DailyFermiScreen.tsx:983-997` submit ボタン(`dailyFermi-submit-btn`)を `var(--accent-btn)/--accent-btn-fg`＋`var(--shadow-cta)`＋flex1.4/weight800 で主役化、disabled は `--bg-tertiary`、電卓 #FFFFFF→`var(--accent-fg)`。CSS変数 --accent-btn/--accent-btn-fg/--shadow-cta/--bg-tertiary は tokens.css 実在(dark `--accent-btn`=#2E45A8 白文字8.29:1)、ハードコードhex撤去。main反映済 `3585b32`。tsc0/eslint.0/vitest440pass。残＝両OS実機目視は Keita 確認不要方針で DONE 化。※別件提言: 同ファイル `:257`(電卓insert disabled)・`:438`(AIチャットsend disabled)に未定義 `--bg-muted` が残存〔UI-27スコープ外の別コンポーネント・潜在バグ・別タスク化推奨〕） |
 | 実装記録 | 対象＝`DailyFermiScreen.tsx` idle 解答エリア。submit ボタン(`dailyFermi-submit-btn`)を `var(--brand)/--accent-fg`→`var(--accent-btn)/--accent-btn-fg`＋`--shadow-cta`＋flex1.4/weight800 で高コントラスト主役化（dark で旧 `--brand`=#6C8EF5 白文字3.08:1→濃紺 `--accent-btn` 白文字8.29:1）。disabled 背景の未定義 `--bg-muted`→`--bg-tertiary` に是正（潜在バグ修正）。電卓ボタンのハードコード `#FFFFFF`→`var(--accent-fg)`。AF-02(HomeScreenV3) とは別画面で重複なし。tsc0/eslint.0err/vitest430pass green。commit `(下記)`→本番 deploy。 |
 | 担当 | dev-logic, designer |
 | 詳細 | フェルミの「1問」モードのボタンが見づらい。添付画像のように見やすくする。添付画像（実装時に Read で確認）: `/home/dev/projects/cxo-agent/data/inbox-attachments/2026-05-31T02-39-24-703Z-6238b74a/3064.png` |
@@ -2847,7 +2847,7 @@ Keita 側にボールが残る作業（エージェントは着手できない�
 | ID | UI-28 |
 | タイトル | 文字サイズ変更をテーマ設定と別出しにする（発見性向上） |
 | 優先度 | P2 |
-| ステータス | REVIEW（2026-05-31 自律ティックで実装→green→本番 deploy 済。文字サイズ設定を外観/テーマ画面から独立画面 `FontSizeSettingsScreen`(`font-size-settings`) に切り出し、プロフィール設定メニューのテーマ行直後に独立行「文字サイズ」を新設＝Keita 明示依頼「テーマとは別だしに」の文字通りの実装。現在サイズを sub に表示、新規 SVG `fontSize` アイコン追加。AppearanceSettingsScreen は文字サイズセクション削除でテーマのみに。i18n `profile.fontSize`/`fontSizeSettings.title` を ja/en 追加。DF-F2 の保存/適用(`logic-font-scale`/`src/fontScale.ts`)は非破壊。配置はホーム/オンボ導線でなく設定独立項目案を採用＝最小リスク・Keita 依頼の直解釈。tsc0/eslint . 0err(既存warn19)/vitest 24files430pass green。残=両OS実機目視 Keita〔任意〕） |
+| ステータス | DONE（2026-05-31 test-functional 内部検証。結線○: 独立画面 `src/screens/FontSizeSettingsScreen.tsx` 実在(DF-F2 機能本体を移植・`setFontScale` で `logic-font-scale` 永続化を非破壊利用)、`AppV3.tsx:34/119/145/670/715-716` で Screen union+lazy import+render case+navigate+URL preview 'fontsize' 結線、`ProfileScreenV3.tsx:255-256` でテーマ行直後に文字サイズ独立行を新設(`getFontSizeLabel()` で現在サイズを sub 表示・`onOpenFontSize` 結線)、AppearanceSettingsScreen は文字サイズセクション削除でテーマのみに。i18n `profile.fontSize`/`fontSizeSettings.title` ja+en 揃い・中立丁寧体。Keita 明示依頼「テーマとは別だしに」の直解釈実装＝配置改善で機能本体非破壊。main反映済 `8066d9a`。tsc0/eslint.0/vitest440pass。残＝両OS実機目視は Keita 確認不要方針で DONE 化） |
 | 担当 | dev-logic, designer(UX) |
 | 詳細 | Keita 依頼（Apollo inbox af657450）「文字サイズの変更はテーマとは別だしにして。気づかないから」。現状、文字サイズ設定（標準/大/特大、DF-F2 で実装済・DONE）がテーマ設定（外観設定）の中に埋もれており、ユーザーに気づかれない。文字サイズ設定をテーマ設定とは独立した目立つ場所に出す。設定画面の項目独立化、または オンボーディング/ホームからの導線追加。機能本体は実装済みなので、本件は「発見性・配置」の改善であり機能の新規実装ではない。 |
 | 関連ファイル | `src/screens/AppearanceSettingsScreen.tsx`（現状の文字サイズ設定UI・DF-F2 で実装済／別出しの起点）、`src/fontScale.ts`（スケール適用ロジック・既存）、`src/theme.ts`（永続化・適用）、`src/i18n.ts`（独立項目のラベル ja/en）、設定画面の構成（独立メニュー項目を足す場合）、ホーム/オンボーディングの導線（追加する場合） |
