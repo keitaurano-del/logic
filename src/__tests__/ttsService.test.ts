@@ -9,6 +9,7 @@ import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest'
 import {
   loadRate,
   saveRate,
+  stepRate,
   loadVoiceId,
   saveVoiceId,
   loadAutoplay,
@@ -51,6 +52,40 @@ describe('ttsService — rate persistence', () => {
   it('saveRate: 範囲外の値はクランプされる (下限 0.5)', () => {
     saveRate(0.1)
     expect(loadRate()).toBe(0.5)
+  })
+})
+
+describe('ttsService — stepRate (fine adjust)', () => {
+  it('1.0 から +1 ステップで 1.05 になる', () => {
+    expect(stepRate(1.0, 1)).toBe(1.05)
+  })
+
+  it('1.0 から -1 ステップで 0.95 になる', () => {
+    expect(stepRate(1.0, -1)).toBe(0.95)
+  })
+
+  it('プリセット 1.25 から +1 ステップで 1.3 になる', () => {
+    expect(stepRate(1.25, 1)).toBe(1.3)
+  })
+
+  it('上限クランプ: 2.0 から +1 しても 2.0 のまま', () => {
+    expect(stepRate(2.0, 1)).toBe(2.0)
+  })
+
+  it('下限クランプ: 0.5 から -1 しても 0.5 のまま', () => {
+    expect(stepRate(0.5, -1)).toBe(0.5)
+  })
+
+  it('結果は 0.05 グリッド / 小数2桁に正規化され float ドリフトしない', () => {
+    // 0.1 + 0.05 が 0.15000000000000002 にならないこと
+    const r = stepRate(0.1 + 0.6, 1) // 0.7 起点 +0.05 → 0.75
+    expect(r).toBe(0.75)
+    // 任意の半端な値でも 0.05 グリッドにスナップされる
+    expect(stepRate(1.07, 1)).toBe(1.1)
+    expect(stepRate(1.13, -1)).toBe(1.1)
+    // 2桁を超える小数が残らない
+    const v = stepRate(1.0, 1)
+    expect(Number(v.toFixed(2))).toBe(v)
   })
 })
 

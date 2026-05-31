@@ -99,6 +99,62 @@ export function VoiceRateControls(props: VoiceRateControlsProps) {
         </div>
       </div>
 
+      {/* 速度の微調整ステッパー（− / 現在値 / +）。プリセットの粗い跳躍に対して 0.05 刻みで微調整する。 */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'flex-end' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+          <button
+            type="button"
+            onPointerDown={(e) => { e.stopPropagation(); onChangeRate(tts.stepRate(rate, -1)) }}
+            aria-label={t('tts.speed.decrease')}
+            disabled={rate <= 0.5}
+            style={{
+              minWidth: 36, height: 36,
+              borderRadius: 99,
+              background: 'var(--bg-tertiary, rgba(255,255,255,0.08))',
+              color: 'var(--text-primary)',
+              border: 'none',
+              cursor: rate <= 0.5 ? 'default' : 'pointer',
+              opacity: rate <= 0.5 ? 0.4 : 1,
+              fontSize: '1.0667rem', fontWeight: 700,
+              fontFamily: "'Inter Tight', sans-serif",
+              WebkitTapHighlightColor: 'transparent',
+              flexShrink: 0,
+            }}
+          >
+            −
+          </button>
+          <span style={{
+            minWidth: 52, textAlign: 'center',
+            fontSize: '0.8667rem', fontWeight: 700,
+            color: 'var(--text-primary)',
+            fontFamily: "'Inter Tight', sans-serif",
+          }}>
+            {`${rate.toFixed(2).replace(/\.?0+$/, '')}x`}
+          </span>
+          <button
+            type="button"
+            onPointerDown={(e) => { e.stopPropagation(); onChangeRate(tts.stepRate(rate, 1)) }}
+            aria-label={t('tts.speed.increase')}
+            disabled={rate >= 2.0}
+            style={{
+              minWidth: 36, height: 36,
+              borderRadius: 99,
+              background: 'var(--bg-tertiary, rgba(255,255,255,0.08))',
+              color: 'var(--text-primary)',
+              border: 'none',
+              cursor: rate >= 2.0 ? 'default' : 'pointer',
+              opacity: rate >= 2.0 ? 0.4 : 1,
+              fontSize: '1.0667rem', fontWeight: 700,
+              fontFamily: "'Inter Tight', sans-serif",
+              WebkitTapHighlightColor: 'transparent',
+              flexShrink: 0,
+            }}
+          >
+            +
+          </button>
+        </div>
+      </div>
+
       {/* ボイス選択: 女性 / 男性 の 2 択トグル */}
       {(female || male) && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'space-between' }}>

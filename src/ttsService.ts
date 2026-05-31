@@ -108,6 +108,23 @@ export function saveRate(rate: number): void {
   try { localStorage.setItem(RATE_KEY, String(clamped)) } catch { /* */ }
 }
 
+// 細かい速度調整の刻み幅。プリセットボタン（粗い跳躍）に対して、
+// − / + の微調整ステッパーがこの単位で rate を上下させる。
+export const RATE_STEP = 0.05
+
+/**
+ * rate を 1 ステップ分（dir=+1 で上げ / -1 で下げ）動かして返す。
+ * - dir*RATE_STEP を加算 → 0.05 グリッドにスナップ → MIN_RATE..MAX_RATE にクランプ
+ * - 浮動小数ドリフトを避けるため Number(x.toFixed(2)) で正規化する
+ */
+export function stepRate(rate: number, dir: 1 | -1): number {
+  const next = rate + dir * RATE_STEP
+  // 0.05 グリッドにスナップ
+  const snapped = Math.round(next / RATE_STEP) * RATE_STEP
+  const clamped = Math.min(MAX_RATE, Math.max(MIN_RATE, snapped))
+  return Number(clamped.toFixed(2))
+}
+
 // ── Voice pref ─────────────────────────────────────────────────
 
 export function loadVoiceId(): string | null {
