@@ -291,7 +291,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 | DF-F1  | ロードマップ検索/絞り込みの発見性が低い（虫眼鏡が気づかれない） | P0 | DONE（DF-FV○・常設検索バー結線） | `0d8b799` | designer＋dev-logic |
 | DF-F2  | 文字サイズのユーザー設定（標準/大/特大）が無い | P0 | DONE（codemod完了・実機検証○） | `a380c83`+`0e77a79`+`3a588dc` | dev-logic |
 | DF-F3  | ゲスト/未ログイン/有料の3状態の出し分けが画面ごとにバラバラ | P0 | TODO | なし | dev-logic（設計）＋Keita |
-| DF-F4  | ジャーナルがゲスト全面ブロックで体験前に価値が途切れる | P0 | DONE（2026-05-31 test-functional 内部検証。段階ゲート結線○: `AppV3.tsx:612-637` で journal を ログイン済(使える/paywall)・未ログイン課金済(LoginPrompt)・未ログイン未課金(JournalGuestPreview) に出し分け。`JournalScreen.tsx:40-` JournalGuestPreview がカレンダーUI+AI価値訴求(previewTrialTitle/AssistantDesc/Example)をプレビュー表示→onLogin 誘導。i18n preview系7キー×ja/en=14揃い・中立丁寧体。main反映済 `ab88528`。tsc0/eslint.0/vitest440pass。※DoDの「お試し入力体験」は読み取り専用プレビューに留めた設計判断〔`JournalScreen.tsx:43`〕＝閲覧で価値を伝えてからゲート、入力体験は未実装。入力お試しを足すか否かは Keita 判断〔別タスク化推奨〕） | dev-logic |
+| DF-F4  | ジャーナルがゲスト全面ブロックで体験前に価値が途切れる | P0 | REVIEW（DF-FV○で機能はクリーンだが、見せ方が設計判断系＝Keita 目視待ちのため REVIEW 維持〔自律 DONE 化不可〕。2026-05-31 test-functional 内部検証。段階ゲート結線○: `AppV3.tsx:612-637` で journal を ログイン済(使える/paywall)・未ログイン課金済(LoginPrompt)・未ログイン未課金(JournalGuestPreview) に出し分け。`JournalScreen.tsx:40-` JournalGuestPreview がカレンダーUI+AI価値訴求(previewTrialTitle/AssistantDesc/Example)をプレビュー表示→onLogin 誘導。i18n preview系7キー×ja/en=14揃い・中立丁寧体。main反映済 `ab88528`。tsc0/eslint.0/vitest440pass。※DoDの「お試し入力体験」は読み取り専用プレビューに留めた設計判断〔`JournalScreen.tsx:43`〕＝閲覧で価値を伝えてからゲート、入力体験は未実装。入力お試しを足すか否かは Keita 判断〔別タスク化推奨〕） | dev-logic |
 | DF-F5  | 課金状態とログイン状態が独立＝「有料なのに使えない」 | P0 | DONE（DF-FV○・paid分岐文言結線） | `b756022` | dev-logic |
 | DF-F6  | オンボ生年入力で「次へ」が無言ブロック（フリーズ誤解） | P0 | DONE（DF-FV○・理由提示+aria結線） | `cd05dd3` | dev-logic |
 | DF-F7  | en でコーチマーク/チュートリアルが日本語ハードコード | P0 | DONE（DF-FV○・coachmark t()化ja/en） | `24417a2` | dev-logic |
@@ -299,14 +299,14 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 | DF-F9  | 有料ウェルカム演出が再訪毎＋ゲストにも出る | P0 | DONE（DF-FV○・非有料カット+初回限定seen永続化が結線。※実装出所は`c5deaeb`単一有料プラン統合、`b756022`ではない） | `c5deaeb` | dev-logic |
 | DF-F10 | 下タブのラベルと中身が不一致（機能名ベースに） | P1 | DONE（DF-FV○・nav i18n ja/en整合） | `952fdda` | dev-logic |
 | DF-F11 | トライアル残日数がジャーナル内にしか出ない | P1 | DONE（DF-FV○・常設バッジ+終了間際バナー結線。通知発火はF8依存で範囲外） | `b39a0df` | dev-logic |
-| DF-F12 | フェルミランキングの透明性欠如（算出基準/母数/順位なし） | P1 | DONE（2026-05-31 test-functional 内部検証。結線○: `FermiRankingScreen.tsx:162-172` で算出基準(fermiRank.basis=AI採点期間累計・毎日更新)を常設表示＋母数(participantCount=API realCount実データ・捏造なし `:64/81-82`)を表示、`:270-275` 自分が上位ボード未掲載時は順位捏造せず notRankedYet 案内、`:233` 掲載時は yourRank 表示。i18n basis/participants/notRankedYet ja+en 揃い・中立丁寧体。DoD「算出基準・母数(n)・自分の順位」3要素充足。main反映済 `cf5d7e4`。tsc0/eslint.0/vitest440pass） | dev-logic |
+| DF-F12 | フェルミランキングの透明性欠如（算出基準/母数/順位なし） | P1 | REVIEW（DF-FV○で機能はクリーンだが、見せ方が設計判断系＝Keita 目視待ちのため REVIEW 維持〔自律 DONE 化不可〕。2026-05-31 test-functional 内部検証。結線○: `FermiRankingScreen.tsx:162-172` で算出基準(fermiRank.basis=AI採点期間累計・毎日更新)を常設表示＋母数(participantCount=API realCount実データ・捏造なし `:64/81-82`)を表示、`:270-275` 自分が上位ボード未掲載時は順位捏造せず notRankedYet 案内、`:233` 掲載時は yourRank 表示。i18n basis/participants/notRankedYet ja+en 揃い・中立丁寧体。DoD「算出基準・母数(n)・自分の順位」3要素充足。main反映済 `cf5d7e4`。tsc0/eslint.0/vitest440pass） | dev-logic |
 | DF-F13 | デイリーフェルミが残数表示のみで上級者の手応え薄い | P1 | TODO | なし | dev-logic＋content-creator＋Keita |
 | DF-F14 | 料金(en)「Yearly Save 5 months」密着＋比較表 Free 列空欄 | P1 | DONE（DF-FV○・em dash明示+flexWrap密着解消） | `d4ae9e0` | designer＋dev-logic |
 | DF-F15 | ジャーナルのログイン誘導が保存都合のみで価値訴求なし | P1 | DONE（DF-FV○・価値訴求文言ja/en結線） | `578d2ea` | content-creator＋dev-logic |
-| DF-F16 | 初回ホームが情報過密で最優先アクション不明 | P1 | DONE（2026-05-31 test-functional 内部検証。案A結線○: `HomeScreenV3.tsx:170-187` で初回ホームを3モード出し分け＝真の初回(placementResult===null)は診断ヒーローを唯一の大型CTAに単一化(showPlacementHero `:177`)、診断済(totalCount>0)は弱点上位ローテのおすすめHero、スキップ済は中庸推薦Hero(resolveHeroLesson `:104-121`)。スキップは `skipPlacement()` で totalCount===0 を永続化(`:179-184`、f4dcf13 レビュー対応＝再起動後も診断ヒーロー復活せず)。i18n placementCard.hero*/recommendEyebrow 16キー ja+en・recommend aria整理済。DoD「今やるべき1アクションが一目」充足。main反映済 `12f350c`+`f4dcf13`。tsc0/eslint.0/vitest440pass） | designer＋dev-logic |
+| DF-F16 | 初回ホームが情報過密で最優先アクション不明 | P1 | REVIEW（DF-FV○で機能はクリーンだが、見せ方が設計判断系＝Keita 目視待ちのため REVIEW 維持〔自律 DONE 化不可〕。2026-05-31 test-functional 内部検証。案A結線○: `HomeScreenV3.tsx:170-187` で初回ホームを3モード出し分け＝真の初回(placementResult===null)は診断ヒーローを唯一の大型CTAに単一化(showPlacementHero `:177`)、診断済(totalCount>0)は弱点上位ローテのおすすめHero、スキップ済は中庸推薦Hero(resolveHeroLesson `:104-121`)。スキップは `skipPlacement()` で totalCount===0 を永続化(`:179-184`、f4dcf13 レビュー対応＝再起動後も診断ヒーロー復活せず)。i18n placementCard.hero*/recommendEyebrow 16キー ja+en・recommend aria整理済。DoD「今やるべき1アクションが一目」充足。main反映済 `12f350c`+`f4dcf13`。tsc0/eslint.0/vitest440pass） | designer＋dev-logic |
 | DF-F17 | 復習ハブが有料と伝わらない（無料時データ無し表示のみ） | P2 | DONE（DF-FV○・有料ロック価値提示結線） | `1a056fd` | content-creator＋dev-logic |
 | DF-F18 | フェルミ1日1問制限/課金導線が解く前に弱い | P2 | DONE（DF-FV-1○ 2026-05-31 検証完了＝「解く前」idleフェーズに制限明示+有料導線をライブ結線、元症状解消。完了後導線と排他で両立） | `f2e7819`+`fc87908` | dev-logic |
-| DF-F19 | フェルミ問題が en でも日本市場前提（GMV/円建て） | P2 | DONE（2026-05-31 test-functional 内部検証。結線○: `fermiData.ts:78-132` FERMI_POOL_EN を新規50件(JA parity)・全て US/world figures に汎化(¥なし・日本市場前提なし・USD/world population統一、コミットで basic10/standard23/advanced17 監査済)、`:133/367` getLocale()==='en' で FERMI_POOL/FERMI_STATS を EN/JA 出し分け。backend `server/routes/fermi.ts` の AI anchor も日本人口120M→世界8B/US330M に修正。DoD「en に通貨・市場前提が違和感ない問題」充足。main反映済 `7a2f1d0`。tsc0/eslint.0/vitest440pass） | content-creator＋dev-logic |
+| DF-F19 | フェルミ問題が en でも日本市場前提（GMV/円建て） | P2 | REVIEW（DF-FV○で機能はクリーンだが、見せ方が設計判断系＝Keita 目視待ちのため REVIEW 維持〔自律 DONE 化不可〕。2026-05-31 test-functional 内部検証。結線○: `fermiData.ts:78-132` FERMI_POOL_EN を新規50件(JA parity)・全て US/world figures に汎化(¥なし・日本市場前提なし・USD/world population統一、コミットで basic10/standard23/advanced17 監査済)、`:133/367` getLocale()==='en' で FERMI_POOL/FERMI_STATS を EN/JA 出し分け。backend `server/routes/fermi.ts` の AI anchor も日本人口120M→世界8B/US330M に修正。DoD「en に通貨・市場前提が違和感ない問題」充足。main反映済 `7a2f1d0`。tsc0/eslint.0/vitest440pass） | content-creator＋dev-logic |
 | DF-F20 | 特商法リンクが en UI にも残る（ja/日本配信時のみ出し分け） | P2 | DONE（DF-FV○・ProfileScreenV3でja限定ガード結線） | `5fe6833` | dev-logic |
 | DF-F21 | フィードバック投稿に識別情報・最低文字数チェックが無い | P2 | DONE（DF-FV○・クライアントガード+識別子送信+サーバ受領結線。※device列保存はmigration 034本番適用+backend手動deploy要） | `7819a34` | dev-logic |
 | DF-FV  | DF-F 系 実効性網羅検証（コードはあるが実機で効くか○/×/△判定） | P0 | DONE（2026-05-31 全17件判定完了：○16/△1/×0、F2は別途○DONE。△=DF-F18→DF-FV-1起票） | — | test-functional |
@@ -357,7 +357,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 - 更新日: 2026-05-30
 
 ### DF-F4 — ジャーナルのゲスト全面ブロックを段階ゲートに　[P0 / 設計判断寄り]
-- 優先度: P0 / ステータス: DONE（2026-05-31 test-functional 内部検証で DONE 化。表行参照＝段階ゲート結線○ `AppV3.tsx:612-637`/`JournalScreen.tsx:40-`、i18n14揃い、main反映済、green。※DoDの「お試し入力体験」は読み取り専用プレビューに留めた設計判断＝入力お試し追加は Keita 判断で別タスク化推奨。DF-F3 ポリシー未確定のまま先行実装の留意点は残る）/ 担当: dev-logic
+- 優先度: P0 / ステータス: REVIEW（DF-FV○で機能はクリーンだが、見せ方が設計判断系＝Keita 目視待ちのため REVIEW 維持〔自律 DONE 化不可〕。表行が正。2026-05-31 test-functional 内部検証で機能○＝段階ゲート結線○ `AppV3.tsx:612-637`/`JournalScreen.tsx:40-`、i18n14揃い、main反映済、green。※DoDの「お試し入力体験」は読み取り専用プレビューに留めた設計判断＝入力お試し追加は Keita 判断で別タスク化推奨。DF-F3 ポリシー未確定のまま先行実装の留意点は残る）/ 担当: dev-logic
 - 詳細: ジャーナルがゲストに全面ブロックされ、トライアル価値が体験前に途切れる（p02/p04）。閲覧/お試し入力までは許し、保存/AI分析でログインを促す段階的ゲートへ。
 - 関連ファイル: `src/components/journal/*`、ジャーナル画面のゲスト分岐、`src/i18n.ts`
 - DoD: ゲストでもジャーナルの中身・一度の入力体験ができ、保存/継続/AI分析の段階でログイン誘導が出る。価値が伝わってからゲートがかかる。
@@ -462,7 +462,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 - 更新日: 2026-05-31（DF-FV 反映）
 
 ### DF-F12 — フェルミランキングの透明性（算出基準/母数/順位）　[P1 / 設計判断]
-- 優先度: P1 / ステータス: DONE（2026-05-31 test-functional 内部検証で DONE 化。表行参照＝算出基準/母数(realCount実データ・捏造なし)/順位(未掲載は notRankedYet 案内) 結線○ `FermiRankingScreen.tsx:162-275`、i18n ja+en、main反映済、green。DoD 3要素充足）/ 担当: dev-logic
+- 優先度: P1 / ステータス: REVIEW（DF-FV○で機能はクリーンだが、見せ方が設計判断系＝Keita 目視待ちのため REVIEW 維持〔自律 DONE 化不可〕。表行が正。2026-05-31 test-functional 内部検証で機能○＝算出基準/母数(realCount実データ・捏造なし)/順位(未掲載は notRankedYet 案内) 結線○ `FermiRankingScreen.tsx:162-275`、i18n ja+en、main反映済、green。DoD 3要素充足）/ 担当: dev-logic
 - 詳細: フェルミランキングに算出基準・母数・自分の順位が出ず透明性に欠ける（p04）。`src/screens/FermiRankingScreen.tsx`。何をどう見せるか設計判断。
 - 関連ファイル: `src/screens/FermiRankingScreen.tsx`、ランキング算出 backend（`server/routes/` のランキング系・AM-P 関連）、`src/i18n.ts`
 - DoD: ランキングの算出基準・母数（n）・自分の順位が表示される。Keita 承認した見せ方に準拠。
@@ -510,7 +510,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 - 更新日: 2026-05-31（DF-FV 反映）
 
 ### DF-F16 — 初回ホームの情報過密を整理し最優先アクション明示　[P1 / 設計判断]
-- 優先度: P1 / ステータス: DONE（2026-05-31 test-functional 内部検証で DONE 化。表行参照＝案A 3モード出し分け(真の初回=診断ヒーロー単一化/診断済=弱点ローテ/スキップ済=中庸推薦)＋スキップの skipPlacement() 永続化 結線○ `HomeScreenV3.tsx:170-187`、i18n16・aria整理済、main反映済、green。DoD「1アクション一目」充足）/ 担当: designer＋dev-logic
+- 優先度: P1 / ステータス: REVIEW（DF-FV○で機能はクリーンだが、見せ方が設計判断系＝Keita 目視待ちのため REVIEW 維持〔自律 DONE 化不可〕。表行が正。2026-05-31 test-functional 内部検証で機能○＝案A 3モード出し分け(真の初回=診断ヒーロー単一化/診断済=弱点ローテ/スキップ済=中庸推薦)＋スキップの skipPlacement() 永続化 結線○ `HomeScreenV3.tsx:170-187`、i18n16・aria整理済、main反映済、green。DoD「1アクション一目」充足）/ 担当: designer＋dev-logic
 - 詳細: 初回ホームが情報過密で最優先アクションが不明（p07）。`src/screens/HomeScreenV3.tsx`。情報の優先順位付け・1stアクション明示。設計判断。
 - 関連ファイル: `src/screens/HomeScreenV3.tsx`、`src/i18n.ts`
 - DoD: 初回ホームで「今やるべき1アクション」が一目で分かる情報設計。Keita 承認したレイアウトに準拠。
@@ -543,7 +543,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 - 更新日: 2026-05-31（DF-FV 反映）
 
 ### DF-F19 — フェルミ問題の locale 化（en でも日本市場前提）　[P2 / 設計判断・長期]
-- 優先度: P2 / ステータス: DONE（2026-05-31 test-functional 内部検証で DONE 化。表行参照＝FERMI_POOL_EN 50件(JA parity)を US/world figures に汎化＋getLocale 出し分け＋backend anchor 世界/US 化 結線○ `fermiData.ts:78-133/367`・`server/routes/fermi.ts`、コミットで監査済、main反映済、green。DoD「en に違和感ない問題」充足）/ 担当: content-creator＋dev-logic
+- 優先度: P2 / ステータス: REVIEW（DF-FV○で機能はクリーンだが、見せ方が設計判断系＝Keita 目視待ちのため REVIEW 維持〔自律 DONE 化不可〕。表行が正。2026-05-31 test-functional 内部検証で機能○＝FERMI_POOL_EN 50件(JA parity)を US/world figures に汎化＋getLocale 出し分け＋backend anchor 世界/US 化 結線○ `fermiData.ts:78-133/367`・`server/routes/fermi.ts`、コミットで監査済、main反映済、green。DoD「en に違和感ない問題」充足）/ 担当: content-creator＋dev-logic
 - 詳細: フェルミ問題が en でも日本市場前提（GMV・円建て等）（p20）。locale 別問題プール or 設問の汎用化。コンテンツ・重め/長期。
 - 関連ファイル: フェルミ問題データ（`src/lessons/` or fermi データ）、en/ja の問題定義
 - DoD: en ユーザーに通貨・市場前提が違和感ない問題が出る（locale 別プール or 通貨/市場の汎用化）。Keita 承認した方針に準拠。
@@ -934,7 +934,7 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
 | AM-L | T-L | グラデーション除去（カスタムコース生成カード／今日の1問カード） | P1 | DONE（2026-05-29。Daily Fermi カード〔HomeScreenV3:184〕の --brand-grad-h グラデ廃止→フラット var(--accent)＋青グロー boxShadow を accent追従に。カスタムコース生成カード〔RoadmapScreenV3:697「AIで自分専用コースを作る」〕の linear-gradient 廃止→フラット var(--accent)＋内部アイコンを accent-fg 追従に。両方テーマ追従） | dev-logic | T-S／T-T 根本原因A と統合実装 |
 | AM-M | T-M | 「・今日の一問」の先頭「・」除去＋表記ゆれ統一 | P2 | DONE（2026-05-29。表記ゆれを「今日の1問」に統一〔pricing.heroSub/featFermi・savedItems.filterFermi/emptyFermi/typeFermi の ja を 今日の一問→今日の1問。en は変更なし〕。先頭中黒「・」は現ソースに literal/JSX前置/CSS ::before いずれも存在せず＝grep 全量確認で付与元なし。home カード先頭の装飾ドットは中黒文字でなく styled div の小円なので対象外として維持） | dev-logic | 表記は home 主導線の「今日の1問」に寄せた |
 | AM-N | T-N | 法務記載の見直し（利用規約／プライバシー／特商法） | P1 | REVIEW（2026-05-31 実装green完了・未push。特商法 ja/en に確定値を反映済〔運営責任者を会社名→個人名 柴田圭太/Keita Shibata・電話番号を非掲載＋請求時開示注記化・最終更新日2026-05-31〕＋年額7日間無料トライアル記載を差し戻し〔初回限定・8日目¥2,450課金・期間中解約で課金なし・月額トライアル無し明記、AM-O Offer yearly-free-trial-7d と整合〕。tsc0/eslint0。ブランチ `am-n-tokushoho-confirmed-values` commit `13041a3` に隔離・未push。terms/privacy は先行反映676c3d6で確定値済・マーカー残無し。**残=削除ページ一本化〔delete-account→account-deletion リダイレクト・アプリ内導線外のPlay Console用URL独立小物〕**。本番 push/deploy は法務ゆえ Keita 承認待ち〔別レイヤー〕） | dev-logic（HTML反映） | 確定値: アポロ合同会社/Apollo LLC・責任者 柴田圭太・池袋 BIGオフィスプラザ1206・月¥350/年¥2450・電話非掲載/開示注記・削除は account-deletion 正本/delete-account リダイレクト・インボイス記載なし・Googleログイン記述削除済。AM-O 課金実態と整合必須（トライアルは年額のみ・Play Console Offer と整合） |
-| AM-O | T-O | 料金プランの Google Play 課金実装（購入導線の結線） | P1 | BLOCKED（コード DONE／Keita SKU 登録待ち。SKU 登録セット確定＝Group `logic_paid`／月額 `logic_paid_monthly`-`monthly-autorenew`-¥350 トライアル無し／年額 `logic_paid_yearly`-`yearly-autorenew`-¥2,450＋Introductory Offer `yearly-free-trial-7d`〔初回限定・無料7日。月額には付けない〕。残は Keita が Play Console で一字一句一致で Active 登録。その後 dev-logic/test-functional が実機購入ハッピーパス検証〔キャンセル/失敗/restore＋トライアル年額分岐〕） | dev-logic（実装済）＋Keita（SKU 登録）＋test-functional（実機検証） | project_logic_play_billing_gaps #4。Product ID は src/billing/products.ts PLAY_PRODUCTS と一致確認済。年額トライアル＝2026-05-30 Keita 決定 |
+| AM-O | T-O | 料金プランの Google Play 課金実装（購入導線の結線） | P1 | BLOCKED（SKU 登録〔Keita 手動〕待ち。コード結線は完了済み。SKU 登録セット確定＝Group `logic_paid`／月額 `logic_paid_monthly`-`monthly-autorenew`-¥350 トライアル無し／年額 `logic_paid_yearly`-`yearly-autorenew`-¥2,450＋Introductory Offer `yearly-free-trial-7d`〔初回限定・無料7日。月額には付けない〕。残は Keita が Play Console で一字一句一致で Active 登録。その後 dev-logic/test-functional が実機購入ハッピーパス検証〔キャンセル/失敗/restore＋トライアル年額分岐〕） | dev-logic（実装済）＋Keita（SKU 登録）＋test-functional（実機検証） | project_logic_play_billing_gaps #4。Product ID は src/billing/products.ts PLAY_PRODUCTS と一致確認済。年額トライアル＝2026-05-30 Keita 決定 |
 | AM-P | T-P | フェルミランキング累計スコアのダミーを毎日ランダム増分 | P2 | DONE（2026-05-29 commit 1c18ebb。固定スコア廃止→「期間トップ実スコア×日次シード倍率」で動的化。実データ isMock:false は不変。main push＋backend を deploy-production.yml で本番デプロイ完了〔run 26629582944 success〕。ローカル smoke で週/月 mock スコアが降順・日替わり検証済） | dev-logic | server/routes/fermi.ts。リクエスト時算出方式＝cron 不要で運用が軽い |
 | AM-Q | T-Q | トレーニング検索の改修（右上虫眼鏡＋AI検索） | P1 | DONE（2026-05-29 commit 6a3c985〔別アクター実装〕。RoadmapScreenV3 右上虫眼鏡＋検索オーバーレイ、server/routes/search.ts〔POST /api/search, haiku-4-5, rate-limit 20/min〕、src/aiSearch.ts、i18n ja/en、vitest 13。backend は deploy-production.yml で本番反映済〔run 26629582944 success〕＝T-X と両方充足） | designer＋dev-logic | **T-X（トレーニングのAI検索）と同一依頼＝T-X も DONE**。重複起票しない |
 | AM-R | T-R | 既存登録ユーザ（管理者=Keita）のジャーナルタグ見直し | P1 | DONE（2026-05-30 dev-logic 本番DB書き換え実行完了。before/after: 固有タグ41→36種、9種統合、誤統合ゼロ・他ユーザー波及ゼロ。before スナップショット `public._backfill_journal_tags_20260530`〔15行〕保持中・undo SQL あり、安定確認後 DROP 可。先行の 2026-05-29 林プレビュー/暫定適用〔docs/tag_backup_20260529.md〕の後続・確定実行） | dev-logic（実行済） | T-D の tagConsolidation を既存データへ適用。非可逆だが snapshot+undo SQL あり。本番 ID は yctlelmlwjwlcpcxvmgx |
