@@ -1516,6 +1516,7 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
 - 担当: Keita（SKU 登録・最終 promote）。実機検証=dev-logic/test-functional。リリースノート=要アサイン（content-creator or marketing）。
 - DoD: AM-O SKU 登録済＋実機課金ハッピーパス検証 OK＋リリースノート（ja/en）整備済の状態で、Keita が Production track へ promote。
 - ⚠次アクション（担当アサイン要）: **リリースノート整備の担当が未アサイン**。最新ビルドの Production 差分（テーマ刷新・UI-1〜13・課金結線 AM-O）をリリースノート化する。候補=content-creator or marketing。
+- 進捗（2026-05-31 自律ティック(林) / IN_PROGRESS→リリースノート整備サブステップ）: store 配信に実結線済みの `distribution/whatsnew/whatsnew-{en-US,ja-JP}`（android-deploy.yml:138 `whatsNewDirectory` が参照＝main push 毎に Play 内部track へ反映）が 2026-05-29 の内容で停止し、直近出荷（複数テーマ追加=T-V / 文字サイズ設定=DF-F2・UI-28 / 通知粒度=DF-F8 / ストリーク復活フリーズ=FB-06 / 保存アイテム検索・並び替え・フォルダ=FB-09・FB-11 / ロードマップ常設検索=DF-F1 等）が欠落していた。content-creator に最新化を委譲し ja/en を現行ビルド準拠に更新（中立丁寧体・Play 500字制限内・安さアピールNG厳守）。docs/store-metadata のみで src 非変更＝tsc/eslint/vitest 影響なし。リリースノート整備サブステップ＝完了。残＝AM-O SKU 登録(Keita)＋実機課金検証＋Keita の Production promote。
 - 抜けもれ提言:
   - 公開前チェック: Play Billing 既知ギャップ（project_logic_play_billing_gaps）の残課題（#2 RTDN の GCP/Play Console 設定・JWT 検証、#4 SKU 登録確認＝AM-O）が課金導線に影響。AM-O の SKU 登録＋実機検証が公開順序の先頭に来ているのは整合。有料購読者が増える前にクローズ前提だが、Production 公開＝露出拡大なので公開判断時に再確認推奨。
   - リリースノートは ja/en 両方（Play Console の対応言語に合わせる）。中立的丁寧体（feedback_app_copy_neutral）。マーケ文言は「コーヒー1杯」系の安さアピール NG（feedback_logic_marketing）。

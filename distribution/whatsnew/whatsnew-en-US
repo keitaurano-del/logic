@@ -1,13 +1,14 @@
 Logic — official release.
 
 What's new:
-- Journal upgrade: photos, AI auto-tagging, morning/evening tabs, AI assistant
+- New color themes and text size options (in Profile)
+- Fine-tune reminders: time, frequency, quiet hours
+- Streak freeze keeps your streak if you miss a day
+- Search, sort, and file saved items
+- A search bar on the Learn screen
+- Expanded Journal: photos, AI tags, daily reflections
 - Health Connect: steps and sleep auto-imported
-- Light mode (Profile → Theme)
-- Fermi feedback now scores numeric reasoning and suggests improvements
-- Review past Fermi problems
-- Save and revisit incorrect lesson answers
-- Magic-link sign-in only
-- Refreshed plan selection UX
+- Fermi feedback now rates your reasoning
+- Better readability and contrast throughout
 
 Feedback: support@logic-m.com
