@@ -153,7 +153,7 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 - 更新日: 2026-05-31
 
 #### FB-07 — 不正解時フィードバック文言を中立トーンに
-- 優先度: P2 / ステータス: REVIEW（2026-05-31 自律ティック reconcile: 実装は commit `2cba3ef` で origin/main 反映済。詳細ヘッダが TODO のまま残っていたのを REVIEW に訂正＝サマリ表と進捗ノートに整合。残=Keita 目視〔任意〕）/ 担当案: content-creator
+- 優先度: P2 / ステータス: DONE（2026-05-31 自律ティック(林) 実効性検証○: 実ファイル grep で全 wrongMark 確認＝`lesson.wrongMark` ja「不正解」(i18n.ts:563)/en「Incorrect」(:2485)・`dailyProblem`/`aiProblem` の wrongMark も三点リーダ無しの淡々表記・`stories.wrongMulti`「不正解 — 正解は{list}」/`stories.wrongSingle`「もう一度考えてみよう」も中立丁寧体でユーザを責めない。ja/en 揃い、凛口調なし。実装は commit `2cba3ef` で origin/main 反映済＝本番デプロイ済。サマリ表(L72)の DONE 記載と整合。残=Keita 目視〔任意〕のみ）/ 担当案: content-creator
 - 詳細: 不正解時のフィードバック文言を中立的なトーンに調整する。
 - DoD: 不正解フィードバックが中立的丁寧体（feedback_app_copy_neutral）で、ユーザを責めない表現になっている。ja/en 両方。
 - 関連: `src/i18n.ts`（フィードバック文言）
