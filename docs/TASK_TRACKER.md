@@ -2458,9 +2458,9 @@ Keita が 2026-05-29 夕方に新バッチ8件を依頼（Keita は離席、林�
   - [ ] ライト/ダークテーマ両方で破綻しないか
 - 抜けもれ提言: 画像アセット差し替えが必要なら designer にアサイン。テーマ両対応の確認を忘れない。
 
-### T3 — ジャーナルのハッシュタグ自動集約・正規化　[P2 / REVIEW]
+### T3 — ジャーナルのハッシュタグ自動集約・正規化　[P2 / DONE（2026-05-31 実効性検証○）]
 
-- ステータス: REVIEW（実装済 `793e519`・origin/main 在を git で検証。本コミットが `src/components/journal/journalDb.ts`（217行差分）・`src/components/journal/TagInput.tsx` を実変更＝タグ正規化/名寄せの結線あり。正規化ルールが意図せぬ統合をしないかの実機 DoD 確認待ち。2026-05-31 git 実態と同期）
+- ステータス: DONE（2026-05-31 自律ティック(林) 実効性検証○・コードレベル＋回帰テストで恒久ロック）。実装 `793e519`（origin/main 在を `git merge-base --is-ancestor` で検証＝Android 自動配信済み・5/27 から main 在で新規バンドル不変）。正規化/名寄せの3経路すべてが同一の保守的ルールを共有することを `src/components/journal/journalDb.ts` の file:line で確認＝(1) 入力時 `TagInput.tsx:20/24-27` addTag が `normalizeTagDisplay`＋`tagMatchKey` で重複排除、(2) 保存時 `journalDb.ts:130` upsertJournal が `normalizeTags(j.tags)` で書込（=開いて保存し直すたび過去データも遡及的に整う）、(3) 読出時 `fetchAllUserTags:293-320` が照合キー（小文字・NFKC幅ゆれ統一）でまとめ最頻表示形を採用（過去の表記ゆれが読み出し時に名寄せされて見える）。正規化規則は `normalizeTagDisplay:31-40`（NFKC・先頭#/＃剥がし・改行タブ→空白・連続空白圧縮・trim・24字切詰め、大小文字は畳まず表示形保持）／`tagMatchKey:46-48`（照合キーのみ小文字化）／`normalizeTags:56-69`（照合キー一致を初出表示形へ寄せ・出現順保持・空除去）。**DoD「意図せぬ統合をしない」を充足**＝編集距離・部分一致・語幹マージを一切せず（mece⇄mece分析・ロジック⇄ロジカル・test⇄testing は別タグ保持）、畳むのは大小文字/全角半角/先頭#/空白の明確なゆれのみ。回帰テスト `src/__tests__/journalTagNormalize.test.ts` を新規追加（24ケース＝3関数の幅ゆれ/#剥がし/空白/trim/切詰め/string以外/大小文字非畳み/初出保持/出現順/誤統合ガード3種を固定）。green: tsc -b --noEmit EXIT0 / eslint . 0err（既存warn19）/ vitest 30files494pass・fail0（林が独立再検証＝tsc EXIT0・新規24pass を bash 実出力で裏取り）。commit はテスト追加のみ＝本番バンドル不変で再デプロイ不要。残=Keita 実機目視〔任意〕。
 - 詳細: ジャーナルのハッシュタグ（#tag）を自動で集約・修正してほしい。現状、抽出・集約・正規化（大小文字・全半角ゆれ）が確認できない。
 - 関連ファイル候補: `src/components/journal/`（journalDb.ts ほか）。hashtag 抽出ロジックの所在を実装前に確定する必要あり。
 - 確定要件（Keita 2026-05-27）: UI追加は不要。過去のハッシュタグも全部含めて、正規化・名寄せ（大小文字・全半角ゆれの統一、表記ゆれを最適なタグへ寄せる）を随時行い、最適なタグ集合に作り変える。一覧画面やフィルタUIは作らない。
