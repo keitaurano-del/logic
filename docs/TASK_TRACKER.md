@@ -66,13 +66,14 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 | FB-01 | 図解SVGと本文説明の不整合を監査・修正 | P1 | DONE（2026-05-31 test-functional ○: 客観不整合は main 解消済＋回帰ガード visualPropsIntegrity.test.ts 19pass(誤キー0)・`598346a`・deploy済。残のdesigner/Keita案件は別タスクFB-01rへ分離） | content-creator→dev-logic | 即修正(correctness) |
 | FB-02 | 学習時間計測が途中離脱時に正しく停止しないバグ | P1 | DONE（2026-05-31 test-functional ○: useStudyTimer.ts appStateChange結線＋冪等closeSegment＋cleanup・回帰5件pass・`9000dc9`・deploy済。native実機発火はheadless検証不可だが標準API+web fallbackで論理健全） | dev-logic | 即修正(bug) |
 | FB-03 | en locale 未翻訳文字列＋ロケール依存データの見直し | P1 | DONE（2026-05-31 test-functional ○: EN UI残存日本語 CompletionBadge3箇所/HomeScreenV3:450 を t()化・`82c7280`・deploy済。残のレッスン図解LessonThumbnail:759 i18n は別タスクFB-03rへ分離） | dev-logic + content-creator | 即修正 |
-| FB-04 | TTS読み上げ速度の細粒度調整＋連続再生の安定性 | P2 | REVIEW（速度の細粒度調整＋永続化は完了○`14a19e4`・deploy済。だが②連続再生の安定性は未着手＝DoD半分未達でREVIEW継続。②をTTS連続再生安定性バグ別タスクへsplit予定） | dev-logic | 中(安定性はbug寄り) |
+| FB-04 | TTS読み上げ速度の細粒度調整＋連続再生の安定性 | P2 | DONE（2026-05-31 自律ティック。①速度細粒度調整＋永続化 `14a19e4` deploy済＋実効性○。②の「重複/吃り」facet＝速度/ボイス変更時の二重 speak race を根治 `3f6c813`→push→本番deploy run26707522562。実装可能スコープ完了。残る端末依存の連続再生継続性＋pause/resume 再開挙動＋両OS実機確認は FB-12 へ分離） | dev-logic | 中(安定性はbug寄り) |
 | FB-05 | コース横断/戻る/離脱復帰のナビ・IA再設計【クラスタ4件】 | P1 | TODO（2026-05-31 Issue化済＝[#235](https://github.com/keitaurano-del/logic/issues/235)。次は designer IA 案→Keita 決定＝設計判断ゲート。decision 後に dev-logic 実装着手） | designer主導+dev-logic | Issue化済 #235 |
 | FB-06 | ストリーク猶予・復活アイテム導入 | P2 | DONE（2026-05-31 完了。Keita「フリーズ型・無料配布のみ」で unblock→実装 push `915e622`・stats.test +13 green・tsc0/eslint0/vitest424pass。Render web デプロイ＋Android 配信ともに本番反映済。Keita 実機/目視確認も完了→DONE） | Keita手動→dev-logic | 仕様判断（Keita決定済） |
 | FB-07 | 不正解時フィードバック文言を中立トーンに | P2 | DONE（2026-05-31 test-functional ○: i18n.ts:561 ja「不正解」/:2474 en「Incorrect」・三点リーダ除去をライブ確認・残存0件・本番反映済） | content-creator | 中(UI文言中立) |
 | FB-08 | AI問題生成の待ち時間に進捗表示 or ストック | P2 | REVIEW（2026-05-31 自律ティック。進捗表示スライス実装→green→本番反映。残=実機目視 Keita〔任意〕。ストック方式は別スコープ） | dev-logic | 中 |
 | FB-09 | 保存アイテム（検索・並び替え）※フォルダ分けは FB-11 に分離 | P3 | REVIEW（検索＋並び替え実装→tsc/eslint/vitest green→push `9b40b60`→本番deploy run26705223340。残=Keita 実機目視〔任意〕。フォルダ分けは FB-11） | dev-logic | 低 |
 | FB-11 | 保存アイテムのフォルダ分け（FB-09 から分離） | P3 | TODO | dev-logic | 低（DB schema migration 要） |
+| FB-12 | TTS 連続再生の安定性（端末依存の残り・FB-04 から分離） | P2 | TODO（重複 facet は `3f6c813` で根治済。残＝web pause/resume 再開挙動・native 連続再生継続性、両OS実機検証必須＝headless 不可） | dev-logic＋Keita実機 | 中（端末依存） |
 | FB-10 | iPad横画面でカスタムコース作成画面レイアウト崩れ | P2 | DONE（2026-05-31 完了。Keita「iPad は正式サポート対象」で方針確定→Custom/PersonalCourseScreen に max-width:600px+margin:auto で崩れ修正 push `622ae43`・tsc0/eslint0/vitest413pass・Android 配信 success run 26700084638。本番反映済・Keita 実機目視確認も完了→DONE） | dev-logic | 方針確定（Keita決定済・iPadサポート） |
 
 #### FB-01 — 図解SVGと本文説明の不整合を監査・修正
@@ -117,7 +118,8 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 - 更新日: 2026-05-31
 
 #### FB-04 — TTS読み上げ速度の細粒度調整＋連続再生の安定性
-- 優先度: P2 / ステータス: REVIEW（自律ティック 2026-05-31。「速度の細粒度調整＋永続化」スライスを実装 green→push→本番 deploy 済。残＝連続再生の安定性は両OS依存で別スコープ＋実機確認 Keita 待ち）/ 担当案: dev-logic
+- 優先度: P2 / ステータス: DONE（自律ティック 2026-05-31。①速度細粒度調整＋永続化 deploy済＋実効性○。②「重複/吃り」facet を根治 `3f6c813` deploy済。実装可能スコープ完了、端末依存の残りは FB-12 へ分離）/ 担当案: dev-logic
+- **進捗②（2026-05-31 自律ティック / commit `3f6c813` push→本番 deploy run 26707522562）**: 報告②「連続再生の安定性（重複・吃り）」のうち、コードで根治できる二重 speak race を特定・修正。`LessonStoriesScreen.tsx` の `handleChangeRate`/`handleChangeVoice` が直接 `tts.speak()` していたが、自動再生 effect の deps に `ttsRate`/`ttsVoiceId` が含まれるため、再生中の速度・ボイス変更で speak が2重発火→ cancel+restart で重複/吃りが出ていた。直接 speak を撤去し再読み上げを effect 単一経路へ統一（UX＝現スライドを新設定で再起動は不変、二重発火のみ解消）。pause/resume・jumpToPrev 先頭再読み上げ・主スライド送り経路・ttsService は意図的に不変。tsc 0err / eslint . 0err（既存warn19）/ vitest 24files 430pass、林が独立再検証 green。
 - **進捗（2026-05-31 自律ティック / commit `14a19e4` push→本番 deploy run 26701261916）**: 速度 UI が離散プリセット `[0.75,1.0,1.25,1.5,2.0]` のみで刻みが粗かった指摘に対応。`src/components/VoiceRateControls.tsx`（TtsControlPanel/TtsPopover 共有）にプリセット併存の「−／現在値／＋」細調整ステッパーを追加（0.05刻み、下限0.5で−／上限2.0で＋を disabled）。`src/ttsService.ts` に `RATE_STEP=0.05` と `stepRate(rate,dir)`（0.05グリッドスナップ＋0.5〜2.0クランプ＋toFixed(2)正規化）を新設。永続化は既存 loadRate/saveRate フローをそのまま利用（プリセットも細調整も同じ onChangeRate 経由なので自動で効く）。i18n `tts.speed.decrease`/`increase` を ja/en 追加（中立丁寧体）。`src/__tests__/ttsService.test.ts` に stepRate 単体6件追加。green: tsc 0err / eslint . 0err（既存warn19）/ vitest 24files 430pass（新規6）。
 - **REVIEW 残（FB-04 本体では headless 不可・別スコープ）**: 連続再生の安定性（途切れ・重複なく動くか）は Capacitor の音声エンジン差・背景再生に依存し headless 検証不可。①実機 iOS/Android で細調整ステッパーの操作感・速度反映、②連続スライド/オート再生時の途切れ・二重発話の有無、を Keita 実機確認。安定性に実バグが残る場合は別タスク（バグ寄り）として切り出す。
 - 詳細: TTS の読み上げ速度を細かく調整できるようにする。加えて連続再生時の安定性に問題がある（安定性側はバグ寄り）。
@@ -127,6 +129,18 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 - 提言・抜けもれ: TTS strip: レッスン本文の `[icon:name]`・絵文字・SVG ラベルが読み上げ対象に混入しないか（feedback_logic_lesson_visual_hybrid の stripMarkup 整形と整合）。両OS: iOS/Android で音声エンジン差。永続化: 速度設定の保存・再表示。安定性はバグ扱いで優先。
 - note: 2026-05-31 ドッグフーディング(dogfood)で検出（p15）。
 - 更新日: 2026-05-31（速度細粒度スライス実装・REVIEW へ）
+
+#### FB-12 — TTS 連続再生の安定性（端末依存の残り・FB-04 から分離）
+- 優先度: P2 / ステータス: TODO（端末依存・headless 検証不可。実機検証＝Keita or Android emulator が要る）/ 担当案: dev-logic（コード調査）＋ Keita 実機検証
+- 詳細: FB-04② のうち、二重 speak race（速度/ボイス変更時）は `3f6c813` で根治済。残る端末依存の連続再生継続性の課題をここで追う。
+- 調査済みの具体的着眼点（dev-logic が静的に発見・要実機裏取り）:
+  - **web の pause→resume が「再開」でなく「先頭から再起動」になっている疑い**: `handleTogglePause` の web 分岐は `tts.resume()` で途中再開を意図しているが、`setTtsPaused(false)` により自動再生 effect（deps に `ttsPaused`）が再発火し `tts.speak()` で現スライドを先頭から読み直してしまう可能性。effect が「pause→resume 遷移時は再 speak しない（resume のみ）」を区別できていない。native 分岐は元々先頭再読み上げ仕様だが、web は mid-utterance resume が要件。両OSで挙動差が出やすい。
+  - **native の連続再生継続性**: Capacitor 音声エンジン差・背景再生でスライド境界の途切れ/取りこぼしが残らないか。`onEnd`→`advanceReadable`→`setIndex`→effect 再 speak のチェーンが native で安定して連鎖するか。
+- DoD: 連続再生（自動スライド送り）が途切れ・重複・取りこぼしなく動き、pause/resume が web で mid-utterance 再開（or 仕様として先頭再開を Keita が許容）し、iOS/Android 双方で確認できる。
+- 関連: `src/screens/LessonStoriesScreen.tsx`（`handleTogglePause` ~365行・自動再生 effect ~510行）、`src/ttsService.ts`
+- 依存: FB-04（親・DONE）。重複 facet は解消済なので本タスクは継続性/resume に集中。
+- note: 2026-05-31 FB-04 から分離。コードで根治した重複 facet と切り分け、端末依存・実機検証必須の残りを独立管理。
+- 更新日: 2026-05-31
 
 #### FB-05 — コース横断/戻る/離脱復帰のナビ・IA再設計【クラスタ親・4件】
 - 優先度: P1 / ステータス: TODO（2026-05-31 自律ティック(林)で「Issue化推奨」に従い GitHub Issue [#235](https://github.com/keitaurano-del/logic/issues/235) を logic リポに起票。次アクションは designer の IA 案提示→Keita の IA 決定＝設計判断ゲート。この IA 決定が他 UI 変更の前提のため、決定が出るまで dev-logic 実装には着手しない＝自律ティックでは前進不可。decision 後に着手）/ 担当案: designer 主導 + dev-logic
