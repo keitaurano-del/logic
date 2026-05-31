@@ -12,8 +12,8 @@ Apollo（スマホ受信箱）から投入された Keita のタスク/指示を
 
 | ID | タイトル | 優先度 | ステータス | 担当案 | 由来 |
 |----|---------|--------|-----------|--------|------|
-| AF-01 | フェルミタブからフェルミ問題を解く導線（CTAボタン）を追加 | P2 | REVIEW（実装 green→本番反映済。残=配置/見た目の実機目視 Keita 確認） | dev-logic | 受信箱 id ...814f6e11 |
-| AF-02 | フェルミ「今日の1問」CTA を高コントラスト白ピルに（ダークで見づらい） | P1 | REVIEW（実装完了・本番反映済。残=Keita 実機目視） | dev-logic | 受信箱 id ...6238b74a |
+| AF-01 | フェルミタブからフェルミ問題を解く導線（CTAボタン）を追加 | P2 | DONE（2026-05-31 test-functional 実効性検証○: AppV3.tsx:606 onSolveFermi→daily-fermi 結線・FermiRankingScreen.tsx:55/178 CTA・i18n fermiRank.solveCta ja/en・本番反映済。Keita確認不要方針でDONE） | dev-logic | 受信箱 id ...814f6e11 |
+| AF-02 | フェルミ「今日の1問」CTA を高コントラスト白ピルに（ダークで見づらい） | P1 | DONE（2026-05-31 test-functional ○: HomeScreenV3.tsx:277 白ピル(var(--accent-btn-fg)背景/--accent-btn字)・SVG280/285・aria t()・hex無し・本番反映済） | dev-logic | 受信箱 id ...6238b74a |
 
 #### AF-02 — フェルミ「今日の1問」CTA を高コントラスト白ピルに
 - 優先度: P1 / ステータス: REVIEW（2026-05-31 自律ティック reconcile: 実装は commit `9000888` で本番 main 反映済＝HomeScreenV3 line 277 のピルを `background: var(--accent-btn-fg)`／`color: var(--accent-btn)` に反転、SVG stroke/fill も `--accent-btn` に統一、aria-label は t('home.dailyOpenAria') 系で i18n 化。※commit メッセージ本文は「bg-card/brand に」と誤記されているが実 diff は逆＝DoD どおりの白ピル化が正。本番 deploy `26704128959`（05:20Z success）に内包・反映済。残=ダーク/ライト実機目視 Keita 確認のみ）/ 担当案: dev-logic
@@ -63,13 +63,13 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 
 | ID | タイトル | 優先度 | ステータス | 担当案 | 種別 |
 |----|---------|--------|-----------|--------|------|
-| FB-01 | 図解SVGと本文説明の不整合を監査・修正 | P1 | REVIEW（Bucket1 客観不整合は現行 main で解消済を検証＋回帰ガード `598346a` 追加・deploy 済。残=designer/Keita 案件のみ→分離） | content-creator→dev-logic | 即修正(correctness) |
-| FB-02 | 学習時間計測が途中離脱時に正しく停止しないバグ | P1 | REVIEW（実装＋回帰テスト green→push `9000dc9`・deploy 済。残=実機両OSでの appStateChange 発火確認＝Keita 実機待ち） | dev-logic | 即修正(bug) |
-| FB-03 | en locale 未翻訳文字列＋ロケール依存データの見直し | P1 | REVIEW（EN UI 残存日本語 aria-label/title を t() 化 push `82c7280`・deploy 済。残=レッスン図解 i18n は別タスク提言・実機 en 目視のみ Keita 待ち） | dev-logic + content-creator | 即修正 |
-| FB-04 | TTS読み上げ速度の細粒度調整＋連続再生の安定性 | P2 | REVIEW（速度の細粒度調整＋永続化を実装 push `14a19e4`・deploy 済。残=連続再生の安定性は両OS依存で別スコープ＋実機 Keita 確認） | dev-logic | 中(安定性はbug寄り) |
+| FB-01 | 図解SVGと本文説明の不整合を監査・修正 | P1 | DONE（2026-05-31 test-functional ○: 客観不整合は main 解消済＋回帰ガード visualPropsIntegrity.test.ts 19pass(誤キー0)・`598346a`・deploy済。残のdesigner/Keita案件は別タスクFB-01rへ分離） | content-creator→dev-logic | 即修正(correctness) |
+| FB-02 | 学習時間計測が途中離脱時に正しく停止しないバグ | P1 | DONE（2026-05-31 test-functional ○: useStudyTimer.ts appStateChange結線＋冪等closeSegment＋cleanup・回帰5件pass・`9000dc9`・deploy済。native実機発火はheadless検証不可だが標準API+web fallbackで論理健全） | dev-logic | 即修正(bug) |
+| FB-03 | en locale 未翻訳文字列＋ロケール依存データの見直し | P1 | DONE（2026-05-31 test-functional ○: EN UI残存日本語 CompletionBadge3箇所/HomeScreenV3:450 を t()化・`82c7280`・deploy済。残のレッスン図解LessonThumbnail:759 i18n は別タスクFB-03rへ分離） | dev-logic + content-creator | 即修正 |
+| FB-04 | TTS読み上げ速度の細粒度調整＋連続再生の安定性 | P2 | REVIEW（速度の細粒度調整＋永続化は完了○`14a19e4`・deploy済。だが②連続再生の安定性は未着手＝DoD半分未達でREVIEW継続。②をTTS連続再生安定性バグ別タスクへsplit予定） | dev-logic | 中(安定性はbug寄り) |
 | FB-05 | コース横断/戻る/離脱復帰のナビ・IA再設計【クラスタ4件】 | P1 | TODO | designer主導+dev-logic | Issue化推奨 |
 | FB-06 | ストリーク猶予・復活アイテム導入 | P2 | DONE（2026-05-31 完了。Keita「フリーズ型・無料配布のみ」で unblock→実装 push `915e622`・stats.test +13 green・tsc0/eslint0/vitest424pass。Render web デプロイ＋Android 配信ともに本番反映済。Keita 実機/目視確認も完了→DONE） | Keita手動→dev-logic | 仕様判断（Keita決定済） |
-| FB-07 | 不正解時フィードバック文言を中立トーンに | P2 | REVIEW（2026-05-31 実装 green→本番反映。残=Keita 目視〔任意〕） | content-creator | 中(UI文言中立) |
+| FB-07 | 不正解時フィードバック文言を中立トーンに | P2 | DONE（2026-05-31 test-functional ○: i18n.ts:561 ja「不正解」/:2474 en「Incorrect」・三点リーダ除去をライブ確認・残存0件・本番反映済） | content-creator | 中(UI文言中立) |
 | FB-08 | AI問題生成の待ち時間に進捗表示 or ストック | P2 | REVIEW（2026-05-31 自律ティック。進捗表示スライス実装→green→本番反映。残=実機目視 Keita〔任意〕。ストック方式は別スコープ） | dev-logic | 中 |
 | FB-09 | 保存アイテム（検索・並び替え）※フォルダ分けは FB-11 に分離 | P3 | REVIEW（検索＋並び替え実装→tsc/eslint/vitest green→push `9b40b60`→本番deploy run26705223340。残=Keita 実機目視〔任意〕。フォルダ分けは FB-11） | dev-logic | 低 |
 | FB-11 | 保存アイテムのフォルダ分け（FB-09 から分離） | P3 | TODO | dev-logic | 低（DB schema migration 要） |
