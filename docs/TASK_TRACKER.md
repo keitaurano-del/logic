@@ -2822,7 +2822,7 @@ Keita 側にボールが残る作業（エージェントは着手できない�
 | ID | UI-28 |
 | タイトル | 文字サイズ変更をテーマ設定と別出しにする（発見性向上） |
 | 優先度 | P2 |
-| ステータス | TODO |
+| ステータス | REVIEW（2026-05-31 自律ティックで実装→green→本番 deploy 済。文字サイズ設定を外観/テーマ画面から独立画面 `FontSizeSettingsScreen`(`font-size-settings`) に切り出し、プロフィール設定メニューのテーマ行直後に独立行「文字サイズ」を新設＝Keita 明示依頼「テーマとは別だしに」の文字通りの実装。現在サイズを sub に表示、新規 SVG `fontSize` アイコン追加。AppearanceSettingsScreen は文字サイズセクション削除でテーマのみに。i18n `profile.fontSize`/`fontSizeSettings.title` を ja/en 追加。DF-F2 の保存/適用(`logic-font-scale`/`src/fontScale.ts`)は非破壊。配置はホーム/オンボ導線でなく設定独立項目案を採用＝最小リスク・Keita 依頼の直解釈。tsc0/eslint . 0err(既存warn19)/vitest 24files430pass green。残=両OS実機目視 Keita〔任意〕） |
 | 担当 | dev-logic, designer(UX) |
 | 詳細 | Keita 依頼（Apollo inbox af657450）「文字サイズの変更はテーマとは別だしにして。気づかないから」。現状、文字サイズ設定（標準/大/特大、DF-F2 で実装済・DONE）がテーマ設定（外観設定）の中に埋もれており、ユーザーに気づかれない。文字サイズ設定をテーマ設定とは独立した目立つ場所に出す。設定画面の項目独立化、または オンボーディング/ホームからの導線追加。機能本体は実装済みなので、本件は「発見性・配置」の改善であり機能の新規実装ではない。 |
 | 関連ファイル | `src/screens/AppearanceSettingsScreen.tsx`（現状の文字サイズ設定UI・DF-F2 で実装済／別出しの起点）、`src/fontScale.ts`（スケール適用ロジック・既存）、`src/theme.ts`（永続化・適用）、`src/i18n.ts`（独立項目のラベル ja/en）、設定画面の構成（独立メニュー項目を足す場合）、ホーム/オンボーディングの導線（追加する場合） |

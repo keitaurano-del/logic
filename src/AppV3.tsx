@@ -31,6 +31,7 @@ const AccountSettingsScreen = lazy(() => import('./screens/AccountSettingsScreen
 const ProfileEditScreen = lazy(() => import('./screens/ProfileEditScreen').then(m => ({ default: m.ProfileEditScreen })))
 const NotificationSettingsScreen = lazy(() => import('./screens/NotificationSettingsScreen').then(m => ({ default: m.NotificationSettingsScreen })))
 const AppearanceSettingsScreen = lazy(() => import('./screens/AppearanceSettingsScreen').then(m => ({ default: m.AppearanceSettingsScreen })))
+const FontSizeSettingsScreen = lazy(() => import('./screens/FontSizeSettingsScreen').then(m => ({ default: m.FontSizeSettingsScreen })))
 const CompletedLessonsScreen = lazy(() => import('./screens/CompletedLessonsScreen').then(m => ({ default: m.CompletedLessonsScreen })))
 const StudyTimeScreen = lazy(() => import('./screens/StudyTimeScreen').then(m => ({ default: m.StudyTimeScreen })))
 const LanguageScreen = lazy(() => import('./screens/LanguageScreen').then(m => ({ default: m.LanguageScreen })))
@@ -115,6 +116,7 @@ type Screen =
   | { type: 'profile-edit' }
   | { type: 'notification-settings' }
   | { type: 'appearance-settings' }
+  | { type: 'font-size-settings' }
   | { type: 'completed-lessons' }
   | { type: 'study-time' }
   | { type: 'language' }
@@ -140,6 +142,7 @@ function getInitialScreen(user: User | null): Screen {
     if (preview === 'profile-edit') return { type: 'profile-edit' }
     if (preview === 'notifications') return { type: 'notification-settings' }
     if (preview === 'appearance') return { type: 'appearance-settings' }
+    if (preview === 'fontsize') return { type: 'font-size-settings' }
     if (preview === 'journal') return { type: 'journal' }
   }
   // ログイン済みユーザーはオンボーディングをスキップ
@@ -664,6 +667,7 @@ function AppV3() {
           onOpenProfileEdit={() => navigate({ type: 'profile-edit' })}
           onOpenNotifications={() => navigate({ type: 'notification-settings' })}
           onOpenAppearance={() => navigate({ type: 'appearance-settings' })}
+          onOpenFontSize={() => navigate({ type: 'font-size-settings' })}
           onOpenFeedback={() => navigate({ type: 'feedback' })}
           onOpenPricing={() => navigate({ type: 'pricing' })}
           onOpenPlacementTest={() => navigate({ type: 'placement-test' })}
@@ -707,6 +711,9 @@ function AppV3() {
           onBack={handleBack}
           onUpgrade={() => navigate({ type: 'pricing' })}
         />
+      )}
+      {screen.type === 'font-size-settings' && (
+        <FontSizeSettingsScreen onBack={handleBack} />
       )}
 
       {screen.type === 'report-problem' && (
