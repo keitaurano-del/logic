@@ -254,7 +254,7 @@ function FermiCalculator({ onInsert, locale }: { onInsert: (text: string) => voi
           padding: '10px 14px',
           borderRadius: 10,
           border: 'none',
-          background: result != null ? 'var(--brand)' : 'var(--bg-muted)',
+          background: result != null ? 'var(--brand)' : 'var(--bg-tertiary)',
           color: result != null ? 'var(--accent-fg)' : 'var(--text-muted)',
           fontSize: '0.9333rem', fontWeight: 700,
           cursor: result != null ? 'pointer' : 'not-allowed',
@@ -435,7 +435,7 @@ function FermiChatModal({ question, locale, onClose }: {
             style={{
               width: 40, height: 40,
               borderRadius: '50%',
-              background: input.trim() && !loading ? 'var(--brand)' : 'var(--bg-muted)',
+              background: input.trim() && !loading ? 'var(--brand)' : 'var(--bg-tertiary)',
               border: 'none',
               cursor: input.trim() && !loading ? 'pointer' : 'not-allowed',
               color: input.trim() && !loading ? 'var(--accent-fg)' : 'var(--text-muted)',
