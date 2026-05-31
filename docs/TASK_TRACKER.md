@@ -13,6 +13,17 @@ Apollo（スマホ受信箱）から投入された Keita のタスク/指示を
 | ID | タイトル | 優先度 | ステータス | 担当案 | 由来 |
 |----|---------|--------|-----------|--------|------|
 | AF-01 | フェルミタブからフェルミ問題を解く導線（CTAボタン）を追加 | P2 | TODO | dev-logic | 受信箱 id ...814f6e11 |
+| AF-02 | フェルミ「今日の1問」CTA を高コントラスト白ピルに（ダークで見づらい） | P1 | IN_PROGRESS | dev-logic | 受信箱 id ...6238b74a |
+
+#### AF-02 — フェルミ「今日の1問」CTA を高コントラスト白ピルに
+- 優先度: P1 / ステータス: IN_PROGRESS（2026-05-31 自律ティックで起票・着手）/ 担当案: dev-logic
+- 詳細: ホーム「今日の1問」(Daily Fermi) カードの CTA ピル「チャレンジする」がダークテーマで見づらい。原因は `HomeScreenV3.tsx` line 277 のピルが `background: var(--bg-card)` ＋ `color: var(--brand)` で、`--bg-card` は `body.theme-v3.mode-dark` で `#252C40`（暗ネイビー）になり、青字とのコントラストが壊滅する点（UI-6/UI-14 で白前提に `--bg-card` を使ったが、ダークでは白にならない罠）。Keita 添付の参照（白ピル＋濃色字の「スタート」ボタン）のように、全テーマで確実に高コントラストにする。
+- 実装方針（調査済み）: CTA ピルを「全テーマで白固定の `--accent-btn-fg`（light/dark とも #FFFFFF）を背景」「`--accent-btn`（濃紺 #2E45A8 等・AA担保色）を文字」に反転する。カードは常に `--accent-btn` 塗りなので、白ピル＋濃紺字で参照画像どおりハッキリする。allFermiDone 分岐（チェック/svg stroke）も同色系に合わせる。同じ `var(--bg-card)` 低コントラスト・ピルパターンが他のフェルミ系 CTA にあれば併せて統一。
+- DoD: ダーク/ライト両テーマで「今日の1問」CTA が白ピル＋濃色字で明瞭に見える（参照画像準拠）。ハードコード hex は使わずトークンで。tsc / eslint . green（テスト変更なければ vitest 影響なし）。実機相当の screenshot で視認性確認。
+- 関連: `src/screens/HomeScreenV3.tsx`（line ~277）、`src/styles/tokens.css`（--accent-btn / --accent-btn-fg / --bg-card）
+- 依存: なし
+- note: Apollo 受信箱 id `2026-05-31T02-39-24-703Z-6238b74a`（kind=task, project=logic, 添付 `3064.png`）由来。UI-6「今日のフェルミ CTA を白文字に」/ UI-14（白背景＋青字）の続き＝ダークでの白破綻の根治。
+- 更新日: 2026-05-31
 
 #### AF-01 — フェルミタブからフェルミ問題を解く導線（CTAボタン）を追加
 - 優先度: P2 / ステータス: TODO（2026-05-31 自律ティックで起票。実装は次の安全なティックへ持ち越し＝下記「進捗」参照）/ 担当案: dev-logic
@@ -2762,3 +2773,24 @@ Keita 側にボールが残る作業（エージェントは着手できない�
 
 最終更新: 2026-05-30（ブロッカー6件 Keita 判断反映。DF-3 unblock→TODO、AM-N unblock→TODO、AM-R DONE、T-U 再オープン〔ブランド青再設計・T-V 統合〕、AM-O ブロッカー明確化、T-H 公開戦略確定。本番プロジェクト ID 表記訂正 refyctlelmlwjwlcpcxvmgx→yctlelmlwjwlcpcxvmgx。ボール所在分離＋推奨着手順を追記）
 最終更新2: 2026-05-30（AM-O 追加判断1件反映。Keita 決定「年額に 7日間無料トライアル（Introductory Offer）を付ける／月額には付けない」。AM-O に SKU 登録セット確定値〔Group logic_paid／monthly-autorenew ¥350／yearly-autorenew ¥2,450／Offer yearly-free-trial-7d〕を明記、products.ts PLAY_PRODUCTS と一致確認済。AM-N に年額トライアル記載の差し戻しタスクを追加〔C-2 削除分を書き戻し・push 前必須〕。AM-N⇔AM-O 相互参照に「トライアルは年額のみ・特商法と Play Console Offer を整合」を追記。クリティカルパス〔SKU登録→実機検証→公開〕は変更なし。トライアル差し戻しは AM-N の push 前に入る順序で確認済）
+
+---
+
+## バッチ: 2026-05-31 Apollo inbox 起票
+
+### UI-27: フェルミ1問モードの解答ボタン視認性改善
+
+| フィールド | 値 |
+|---|---|
+| ID | UI-27 |
+| タイトル | フェルミ1問モードの解答ボタン視認性改善 |
+| 優先度 | P2 |
+| ステータス | TODO |
+| 担当 | dev-logic, designer |
+| 詳細 | フェルミの「1問」モードのボタンが見づらい。添付画像のように見やすくする。添付画像（実装時に Read で確認）: `/home/dev/projects/cxo-agent/data/inbox-attachments/2026-05-31T02-39-24-703Z-6238b74a/3064.png` |
+| 関連 | `src/screens/FermiRankingScreen.tsx`（1問モード該当画面は着手時に特定）, `src/i18n.ts` |
+| 受け入れ条件 | 1問モードのボタンが添付画像の意図どおり視認しやすくなり、両OS（iOS/Android）で確認済み |
+| 依存 | なし（AF-04 のメニューCTAとは別画面の可能性。重複か別物か着手時に要確認） |
+| 提言・抜けもれ | UI-14(DONE: メニューCTAを白背景青字)・AF-04(メニューからの導線CTA)はいずれも「フェルミメニュー画面」のCTA。本件は「1問モードの解答ボタン」で別画面の可能性が高い。着手時に対象画面を特定し、UI-14/AF-04 と重複なら本票を寄せる。ハードコードhex禁止・CSS変数使用・UI chromeにemoji不可(SVGのみ)。ボタン文言は中立的丁寧体を維持。 |
+| 次アクション | dev-logic/designer が添付画像を Read → 対象画面（1問モード）特定 → UI-14/AF-04 との重複判定 → 改善実装 |
+| 更新日 | 2026-05-31 |
