@@ -15,6 +15,8 @@
  *    (--mastery) を常時付与し、1 回バッジ (縁なし) と弁別できるようにする
  *    (色覚多様性・暖色テーマ対策)。
  */
+import { t } from '../i18n'
+
 interface Props {
   count: number
   size?: number
@@ -37,7 +39,7 @@ export function CompletionBadge({ count, size = 28 }: Props) {
   if (count === 1) {
     return (
       <div
-        aria-label="1 回完了"
+        aria-label={t('completed.timesDone', { n: 1 })}
         style={{
           width: size,
           height: size,
@@ -70,8 +72,8 @@ export function CompletionBadge({ count, size = 28 }: Props) {
   if (count === 2) {
     return (
       <div
-        aria-label="2 回完了"
-        title="2 回完了"
+        aria-label={t('completed.timesDone', { n: 2 })}
+        title={t('completed.timesDone', { n: 2 })}
         style={{
           position: 'relative',
           width: size,
@@ -127,8 +129,8 @@ export function CompletionBadge({ count, size = 28 }: Props) {
   const label = formatCount(count)
   return (
     <div
-      aria-label={`${count} 回完了`}
-      title={`${count} 回完了`}
+      aria-label={t('completed.timesDone', { n: count })}
+      title={t('completed.timesDone', { n: count })}
       style={{
         width: size,
         height: size,

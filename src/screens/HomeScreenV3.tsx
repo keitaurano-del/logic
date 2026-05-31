@@ -450,7 +450,7 @@ function UpgradeWelcomeToast({ onClose, onCta }: { onClose: () => void; onCta: (
     >
       <button
         type="button"
-        aria-label="閉じる"
+        aria-label={t('common.close')}
         onClick={onClose}
         style={{ position: 'absolute', inset: 0, background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}
       />
