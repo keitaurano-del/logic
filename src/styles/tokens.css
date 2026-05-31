@@ -641,8 +641,12 @@ body.theme-v3.mode-dark {
 
   --text-primary:   #E8ECF4;
   --text-secondary: #8FA3C8;
-  --text-muted:     #6B82A8;
-  --text-tertiary:  #6B82A8;
+  /* T-U: 旧 #6B82A8 は bg-card #252C40 上で 3.56:1、bg-elevated #2E3652 上で 3.05:1 と
+   * 本文 AA 4.5:1 を下回っていた（muted は注釈・メタラベル等の通常サイズ本文に使用）。
+   * #94A5C8 へ引き上げ、最も明るい bg-elevated 上でも 4.75:1 を確保（全 v3-dark 背景で AA 達成）。
+   * text-secondary #8FA3C8 とは別トーンを維持し階層を保つ。 */
+  --text-muted:     #94A5C8;
+  --text-tertiary:  #94A5C8;
 
   --border:       rgba(255, 255, 255, 0.09);
   --border-light: rgba(255, 255, 255, 0.05);
