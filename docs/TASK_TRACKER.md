@@ -73,7 +73,7 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 | FB-08 | AI問題生成の待ち時間に進捗表示 or ストック | P2 | REVIEW（2026-05-31 自律ティック。進捗表示スライス実装→green→本番反映。残=実機目視 Keita〔任意〕。ストック方式は別スコープ） | dev-logic | 中 |
 | FB-09 | 保存アイテム（検索・並び替え）※フォルダ分けは FB-11 に分離 | P3 | REVIEW（検索＋並び替え実装→tsc/eslint/vitest green→push `9b40b60`→本番deploy run26705223340。残=Keita 実機目視〔任意〕。フォルダ分けは FB-11） | dev-logic | 低 |
 | FB-11 | 保存アイテムのフォルダ分け（FB-09 から分離） | P3 | TODO | dev-logic | 低（DB schema migration 要） |
-| FB-12 | TTS 連続再生の安定性（端末依存の残り・FB-04 から分離） | P2 | TODO（重複 facet は `3f6c813` で根治済。残＝web pause/resume 再開挙動・native 連続再生継続性、両OS実機検証必須＝headless 不可） | dev-logic＋Keita実機 | 中（端末依存） |
+| FB-12 | TTS 連続再生の安定性（端末依存の残り・FB-04 から分離） | P2 | REVIEW（2026-05-31 自律ティック(林)。web pause→resume の先頭再起動バグを根因修正＝`resumeSkipSpeakRef` で自動再生 effect の再 speak を1回抑止し resume() 中断地点継続を保持。native は手動 speak 撤去で二重 speak も解消。`32076bb`→本番deploy run26707897260。残＝両OS実機での連続再生継続性・resume 挙動＝headless 不可） | dev-logic＋Keita実機 | 中（端末依存） |
 | FB-10 | iPad横画面でカスタムコース作成画面レイアウト崩れ | P2 | DONE（2026-05-31 完了。Keita「iPad は正式サポート対象」で方針確定→Custom/PersonalCourseScreen に max-width:600px+margin:auto で崩れ修正 push `622ae43`・tsc0/eslint0/vitest413pass・Android 配信 success run 26700084638。本番反映済・Keita 実機目視確認も完了→DONE） | dev-logic | 方針確定（Keita決定済・iPadサポート） |
 
 #### FB-01 — 図解SVGと本文説明の不整合を監査・修正
@@ -131,16 +131,17 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 - 更新日: 2026-05-31（速度細粒度スライス実装・REVIEW へ）
 
 #### FB-12 — TTS 連続再生の安定性（端末依存の残り・FB-04 から分離）
-- 優先度: P2 / ステータス: TODO（端末依存・headless 検証不可。実機検証＝Keita or Android emulator が要る）/ 担当案: dev-logic（コード調査）＋ Keita 実機検証
+- 優先度: P2 / ステータス: REVIEW（2026-05-31 自律ティック(林)。下記「web pause→resume 先頭再起動」疑いを実コードで確証＝根因確定し修正。`32076bb`→本番deploy run26707897260。残＝両OS実機での継続性・resume 挙動の最終確認＝headless 不可で Keita 実機待ち）/ 担当案: dev-logic（コード）＋ Keita 実機検証
+- **進捗（2026-05-31 自律ティック / commit `32076bb` push→本番 deploy run 26707897260）**: 下記着眼点①「web pause→resume が先頭再起動」を実コードで確証。`handleTogglePause` の web 分岐が `await tts.resume()`→`setTtsPaused(false)` する一方、自動再生 effect（`LessonStoriesScreen.tsx` ~491-526、deps に `ttsPaused`）が再発火し現スライドを `tts.speak()` で頭から読み直して resume を上書きしていた＝根因。修正: `resumeSkipSpeakRef`（ref）を新設し、web resume 直前に立てて effect の再 speak を**1回だけ**抑止（resume() の中断地点継続を保持）。あわせて着眼点②に隣接する native resume の潜在二重 speak も解消＝native 分岐の手動 `tts.speak` を撤去し effect 単一経路（ttsPaused false で頭出し1回）に統一。green: tsc 0err / eslint . 0err（既存warn19）/ vitest 24files 430pass。林が独立に diff 裏取り＋3チェック再実行で green 確認。
 - 詳細: FB-04② のうち、二重 speak race（速度/ボイス変更時）は `3f6c813` で根治済。残る端末依存の連続再生継続性の課題をここで追う。
 - 調査済みの具体的着眼点（dev-logic が静的に発見・要実機裏取り）:
-  - **web の pause→resume が「再開」でなく「先頭から再起動」になっている疑い**: `handleTogglePause` の web 分岐は `tts.resume()` で途中再開を意図しているが、`setTtsPaused(false)` により自動再生 effect（deps に `ttsPaused`）が再発火し `tts.speak()` で現スライドを先頭から読み直してしまう可能性。effect が「pause→resume 遷移時は再 speak しない（resume のみ）」を区別できていない。native 分岐は元々先頭再読み上げ仕様だが、web は mid-utterance resume が要件。両OSで挙動差が出やすい。
+  - **web の pause→resume が「再開」でなく「先頭から再起動」になっている疑い** → ✅ 2026-05-31 確証＋根因修正済（`32076bb`）。`resumeSkipSpeakRef` で effect の再 speak を1回抑止。残るは実機での mid-utterance 継続の最終目視のみ。
   - **native の連続再生継続性**: Capacitor 音声エンジン差・背景再生でスライド境界の途切れ/取りこぼしが残らないか。`onEnd`→`advanceReadable`→`setIndex`→effect 再 speak のチェーンが native で安定して連鎖するか。
 - DoD: 連続再生（自動スライド送り）が途切れ・重複・取りこぼしなく動き、pause/resume が web で mid-utterance 再開（or 仕様として先頭再開を Keita が許容）し、iOS/Android 双方で確認できる。
 - 関連: `src/screens/LessonStoriesScreen.tsx`（`handleTogglePause` ~365行・自動再生 effect ~510行）、`src/ttsService.ts`
 - 依存: FB-04（親・DONE）。重複 facet は解消済なので本タスクは継続性/resume に集中。
-- note: 2026-05-31 FB-04 から分離。コードで根治した重複 facet と切り分け、端末依存・実機検証必須の残りを独立管理。
-- 更新日: 2026-05-31
+- note: 2026-05-31 FB-04 から分離。コードで根治した重複 facet と切り分け、端末依存・実機検証必須の残りを独立管理。web resume 先頭再起動は `32076bb` で根因解消、REVIEW（残＝両OS実機の最終確認）。
+- 更新日: 2026-05-31（web resume 根因修正・REVIEW へ）
 
 #### FB-05 — コース横断/戻る/離脱復帰のナビ・IA再設計【クラスタ親・4件】
 - 優先度: P1 / ステータス: TODO（2026-05-31 自律ティック(林)で「Issue化推奨」に従い GitHub Issue [#235](https://github.com/keitaurano-del/logic/issues/235) を logic リポに起票。次アクションは designer の IA 案提示→Keita の IA 決定＝設計判断ゲート。この IA 決定が他 UI 変更の前提のため、決定が出るまで dev-logic 実装には着手しない＝自律ティックでは前進不可。decision 後に着手）/ 担当案: designer 主導 + dev-logic
