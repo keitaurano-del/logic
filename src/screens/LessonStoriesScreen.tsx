@@ -130,6 +130,12 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
   const wrongAnswersRef = useRef<WrongAnswerCapture[]>([])
   const capturedSlideIndicesRef = useRef<Set<number>>(new Set())
 
+  // 一時停止→再開の遷移時、自動再生 effect による再 speak を 1 回だけ抑止するフラグ。
+  // Web の resume() は中断地点から再生を続けるため、effect が現スライドを頭から
+  // 再 speak すると resume を上書きしてしまう。再開直前にこのフラグを立て、effect 側で
+  // 消費（リセット）して 1 回だけ skip することで、中断地点からの継続を維持する。
+  const resumeSkipSpeakRef = useRef(false)
+
   // 保存（ブックマーク）状態 — レッスン全体
   const [saved, setSaved] = useState<boolean>(() => isSaved('lesson', lessonId))
   // 保存（ブックマーク）状態 — 現在のページ。state ではなく毎レンダー算出
@@ -341,28 +347,23 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
   const handleTogglePause = useCallback(async () => {
     haptic.light()
     if (ttsPaused) {
-      // Web は resume() で再開できるが、native は新規 speak が必要
+      // Web は resume() で中断地点から継続できるが、native は新規 speak が必要。
       if (tts.isNative()) {
-        // 現スライドの最初から再読み上げ
+        // native は現スライドを頭から読み直す仕様。再読み上げは自動再生 effect の
+        // ttsPaused deps が担う（ここで手動 speak すると effect と二重 speak になる）。
+        // skip フラグは立てない → effect が意図どおり 1 回だけ頭出し speak する。
         setTtsPaused(false)
-        const text = getSpeakableText(slide)
-        if (text) {
-          void tts.speak(text, {
-            lang: getLocale() === 'ja' ? 'ja-JP' : 'en-US',
-            rate: ttsRate,
-            voiceId: ttsVoiceId,
-            onEnd: () => advanceReadable(),
-          })
-        }
       } else {
+        // Web: effect の再 speak を 1 回抑止し、resume() の中断地点継続を保持する。
         await tts.resume()
+        resumeSkipSpeakRef.current = true
         setTtsPaused(false)
       }
     } else {
       await tts.pause()
       setTtsPaused(true)
     }
-  }, [ttsPaused, slide, ttsRate, ttsVoiceId, advanceReadable])
+  }, [ttsPaused])
 
   // 速度変更 (制御パネルから)
   // 再生中の再読み上げは自動再生 effect の ttsRate deps が担うため、ここでは直接 speak しない
@@ -512,6 +513,12 @@ export function LessonStoriesScreen(props: LessonStoriesScreenProps) {
     if (!text) {
       // 読み上げるテキストが無い → 即次へ
       queueMicrotask(() => advanceReadableRef.current())
+      return
+    }
+    if (resumeSkipSpeakRef.current) {
+      // Web の一時停止→再開直後。resume() が中断地点から継続中なので、
+      // ここでの再 speak（頭出し）を 1 回だけ抑止しフラグを消費する。
+      resumeSkipSpeakRef.current = false
       return
     }
     void tts.speak(text, {
