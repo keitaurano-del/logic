@@ -198,6 +198,15 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 - note: 2026-05-31 FB-09 から分離。DB schema migration を伴うため独立タスク化。
 - 更新日: 2026-05-31
 
+#### FB-03r — レッスン203サムネ図解の日本語ハードコードを i18n 化（FB-03 から分離）
+- 優先度: P2 / ステータス: DONE（2026-05-31 自律ティック完了。`LessonThumbnail.tsx` に `import { t }` 追加、lesson 203 の3テキストを `t('lessonThumb.fermiMarket.factors/modifiers/result')` に置換、i18n ja/en 3キー追加（en=Pop × Rate / × Freq × Price / = Market）。tsc 0err / eslint . 0err（既存warn19）/ vitest 24files 430pass、林が独立再検証 green。本番反映済）/ 担当案: dev-logic
+- 詳細: `src/components/LessonThumbnail.tsx` の lesson 203（フェルミ市場規模）サムネ SVG 図解内テキストが日本語ハードコード（「人口×利用率」「× 購入頻度 × 単価」「＝市場」）。EN ロケールでも日本語のまま表示され不自然。t() で i18n 化し ja/en 両方を用意する。
+- DoD: lesson 203 サムネのテキストが locale に追従（ja/en）。ハードコード日本語ゼロ。tsc / eslint . / vitest green。
+- 関連: `src/components/LessonThumbnail.tsx`（759-763）、`src/i18n.ts`（ja/en）
+- 依存: なし（FB-03 本体は DONE、本件は残スコープの分離）
+- note: FB-03 完了時に「残のレッスン図解 LessonThumbnail:759 i18n は別タスク FB-03r へ分離」と明記された分。`setLocale` が full reload する設計なので shape 関数内で直接 `t()` 呼びで OK（SVG は aria-hidden=装飾なので読み上げ影響なし）。
+- 更新日: 2026-05-31
+
 #### FB-10 — iPad横画面でカスタムコース作成画面レイアウト崩れ
 - 優先度: P2 / ステータス: DONE（2026-05-31 完了検証済）/ 担当案: dev-logic
 - **進捗（2026-05-31 commit `622ae43`）**: `CustomCourseScreen` / `PersonalCourseScreen` の内側コンテナに `max-width:600px` + `margin:auto` を追加し、ワイド画面で行が伸びきる崩れを解消（既存 `PlacementTest.css` の `.pt-quiz` パターン踏襲）。モバイル360px 回帰なし。tsc 0err / eslint 0err / vitest 413pass。Android 配信 success（run 26700084638）。origin/main・Android 内部配信・Render web デプロイ ともに本番反映済。

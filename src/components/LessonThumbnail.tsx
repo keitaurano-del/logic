@@ -5,6 +5,7 @@
  */
 
 import React from 'react'
+import { t } from '../i18n'
 
 // ──────────────────────────────────────────────
 // カラーパレット定義
@@ -756,11 +757,11 @@ const SHAPES: Record<number, ShapeFn> = {
   ),
   203: s => ( // 実践②ビジネス: 掛け算＝市場規模
     <g>
-      <text x="50" y="30" textAnchor="middle" fontSize="10" fill={s} fontFamily="monospace" fontWeight="bold" opacity={0.9}>人口×利用率</text>
+      <text x="50" y="30" textAnchor="middle" fontSize="10" fill={s} fontFamily="monospace" fontWeight="bold" opacity={0.9}>{t('lessonThumb.fermiMarket.factors')}</text>
       <line x1="20" y1="36" x2="80" y2="36" stroke={s} strokeWidth="1" opacity={0.4}/>
-      <text x="50" y="46" textAnchor="middle" fontSize="9" fill={s} fontFamily="monospace" opacity={0.6}>× 購入頻度 × 単価</text>
+      <text x="50" y="46" textAnchor="middle" fontSize="9" fill={s} fontFamily="monospace" opacity={0.6}>{t('lessonThumb.fermiMarket.modifiers')}</text>
       <line x1="20" y1="52" x2="80" y2="52" stroke={s} strokeWidth="1.5" strokeDasharray="4,3" opacity={0.5}/>
-      <text x="50" y="66" textAnchor="middle" fontSize="13" fill={s} fontFamily="monospace" fontWeight="bold">＝市場</text>
+      <text x="50" y="66" textAnchor="middle" fontSize="13" fill={s} fontFamily="monospace" fontWeight="bold">{t('lessonThumb.fermiMarket.result')}</text>
       <circle cx="28" cy="76" r="4" fill={s} opacity={0.4}/>
       <circle cx="50" cy="78" r="5" fill={s} opacity={0.7}/>
       <circle cx="72" cy="76" r="4" fill={s} opacity={0.4}/>

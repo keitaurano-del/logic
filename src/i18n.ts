@@ -1960,6 +1960,11 @@ const STRINGS: Record<Locale, Strings> = {
     'tts.nextLessonHint': '次のレッスンへ進みます',
     'tts.continueNextLesson': '次のレッスンを続ける',
     'tts.skipNextLesson': 'ホームに戻る',
+
+    // Lesson thumbnail (lesson 203 Fermi market sizing)
+    'lessonThumb.fermiMarket.factors': '人口×利用率',
+    'lessonThumb.fermiMarket.modifiers': '× 購入頻度 × 単価',
+    'lessonThumb.fermiMarket.result': '＝市場',
   },
 
   en: {
@@ -3884,6 +3889,11 @@ const STRINGS: Record<Locale, Strings> = {
     'tts.nextLessonHint': 'Moving to the next lesson',
     'tts.continueNextLesson': 'Continue to next lesson',
     'tts.skipNextLesson': 'Back to home',
+
+    // Lesson thumbnail (lesson 203 Fermi market sizing)
+    'lessonThumb.fermiMarket.factors': 'Pop × Rate',
+    'lessonThumb.fermiMarket.modifiers': '× Freq × Price',
+    'lessonThumb.fermiMarket.result': '= Market',
   },
 }
 
