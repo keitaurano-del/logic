@@ -1,11 +1,14 @@
 import { useState } from 'react'
 import { Header } from '../components/platform/Header'
-import { BookmarkIcon, BookmarkFilledIcon, ChevronRightIcon } from '../icons'
+import { BookmarkIcon, BookmarkFilledIcon, ChevronRightIcon, SearchIcon } from '../icons'
 import {
   loadSavedItems,
+  loadSavedSort,
+  saveSavedSort,
   unsaveItem,
   type SavedItem,
   type SavedItemType,
+  type SavedSort,
 } from '../savedItemsStore'
 import { haptic } from '../platform/haptics'
 import { t } from '../i18n'
@@ -23,6 +26,8 @@ type Filter = 'all' | SavedItemType
 
 const FILTERS: Filter[] = ['all', 'lesson', 'lesson-step', 'course', 'ai-problem', 'fermi']
 
+const SORTS: SavedSort[] = ['newest', 'oldest', 'title']
+
 export function SavedItemsScreen({
   onBack,
   onOpenLesson,
@@ -32,11 +37,33 @@ export function SavedItemsScreen({
   onOpenFermi,
 }: Props) {
   const [filter, setFilter] = useState<Filter>('all')
+  const [query, setQuery] = useState('')
+  const [sort, setSort] = useState<SavedSort>(() => loadSavedSort())
   const [, force] = useState(0)
   const bump = () => force((v) => v + 1)
 
+  const changeSort = (s: SavedSort) => {
+    haptic.selection()
+    setSort(s)
+    saveSavedSort(s)
+  }
+
   const all = loadSavedItems()
-  const list = filter === 'all' ? all : all.filter((i) => i.type === filter)
+  const byType = filter === 'all' ? all : all.filter((i) => i.type === filter)
+
+  const trimmed = query.trim().toLowerCase()
+  const searched = trimmed
+    ? byType.filter((i) =>
+        i.title.toLowerCase().includes(trimmed) ||
+        (i.subtitle ?? '').toLowerCase().includes(trimmed),
+      )
+    : byType
+
+  const list = [...searched].sort((a, b) => {
+    if (sort === 'title') return a.title.localeCompare(b.title, undefined, { sensitivity: 'base' })
+    if (sort === 'oldest') return a.savedAt < b.savedAt ? -1 : a.savedAt > b.savedAt ? 1 : 0
+    return a.savedAt < b.savedAt ? 1 : a.savedAt > b.savedAt ? -1 : 0
+  })
 
   const handleOpen = (item: SavedItem) => {
     if (item.type === 'lesson') {
@@ -79,6 +106,14 @@ export function SavedItemsScreen({
       case 'course': return t('savedItems.filterCourses', { n })
       case 'ai-problem': return t('savedItems.filterAiProblem', { n })
       case 'fermi': return t('savedItems.filterFermi', { n })
+    }
+  }
+
+  const sortLabel = (s: SavedSort): string => {
+    switch (s) {
+      case 'newest': return t('savedItems.sortNewest')
+      case 'oldest': return t('savedItems.sortOldest')
+      case 'title': return t('savedItems.sortTitle')
     }
   }
 
@@ -140,13 +175,82 @@ export function SavedItemsScreen({
           })}
         </div>
 
+        {/* 検索ボックス */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border)',
+            borderRadius: 'var(--radius-pill)',
+            padding: '0 14px',
+            minHeight: 44,
+          }}
+        >
+          <SearchIcon width={18} height={18} style={{ color: 'var(--text-secondary)', flexShrink: 0 }} aria-hidden="true" />
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder={t('savedItems.searchPlaceholder')}
+            aria-label={t('savedItems.searchAria')}
+            style={{
+              flex: 1,
+              minWidth: 0,
+              background: 'transparent',
+              border: 'none',
+              outline: 'none',
+              color: 'var(--text-primary)',
+              fontSize: '0.9333rem',
+              fontFamily: "'Noto Sans JP', sans-serif",
+              padding: '10px 0',
+            }}
+          />
+        </div>
+
+        {/* 並び替え */}
+        <div
+          role="tablist"
+          aria-label={t('savedItems.sortLabel')}
+          style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}
+        >
+          {SORTS.map((s) => {
+            const active = sort === s
+            return (
+              <button
+                key={s}
+                type="button"
+                role="tab"
+                aria-selected={active}
+                onClick={() => changeSort(s)}
+                style={{
+                  padding: '6px 12px',
+                  background: active ? 'var(--brand)' : 'var(--bg-card)',
+                  color: active ? 'var(--accent-fg)' : 'var(--text-secondary)',
+                  border: 'none',
+                  borderRadius: 'var(--radius-pill)',
+                  fontSize: '0.7333rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  fontFamily: "'Noto Sans JP', sans-serif",
+                  whiteSpace: 'nowrap',
+                  minHeight: 32,
+                }}
+              >
+                {sortLabel(s)}
+              </button>
+            )
+          })}
+        </div>
+
         {list.length === 0 ? (
           <div className="card" style={{ padding: 'var(--s-7)', textAlign: 'center' }}>
             <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 56, height: 56, borderRadius: 16, background: 'var(--accent-soft)', color: 'var(--brand)', marginBottom: 12 }}>
               <BookmarkIcon width={28} height={28} />
             </div>
             <div style={{ fontSize: '1rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-              {emptyMessage(filter)}
+              {byType.length > 0 ? t('savedItems.emptySearch') : emptyMessage(filter)}
             </div>
           </div>
         ) : (

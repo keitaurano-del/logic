@@ -1661,6 +1661,13 @@ const STRINGS: Record<Locale, Strings> = {
     'savedItems.unsavePageAria': 'このページの保存を解除',
     'savedItems.saveProblemAria': 'この問題を保存',
     'savedItems.unsaveProblemAria': 'この問題の保存を解除',
+    'savedItems.searchPlaceholder': 'タイトルや説明で検索',
+    'savedItems.searchAria': '保存したコンテンツを検索',
+    'savedItems.emptySearch': '検索条件に一致するコンテンツはありません。',
+    'savedItems.sortLabel': '並び替え',
+    'savedItems.sortNewest': '新しい順',
+    'savedItems.sortOldest': '古い順',
+    'savedItems.sortTitle': 'タイトル順',
 
     // Fermi history
     'fermiHistory.title': 'フェルミ推定の履歴',
@@ -3576,6 +3583,13 @@ const STRINGS: Record<Locale, Strings> = {
     'savedItems.unsavePageAria': 'Remove this page from saved',
     'savedItems.saveProblemAria': 'Save this problem',
     'savedItems.unsaveProblemAria': 'Remove this problem from saved',
+    'savedItems.searchPlaceholder': 'Search by title or description',
+    'savedItems.searchAria': 'Search saved content',
+    'savedItems.emptySearch': 'No saved content matches your search.',
+    'savedItems.sortLabel': 'Sort',
+    'savedItems.sortNewest': 'Newest',
+    'savedItems.sortOldest': 'Oldest',
+    'savedItems.sortTitle': 'Title',
 
     // Fermi history
     'fermiHistory.title': 'Fermi history',

@@ -9,6 +9,26 @@
 import { getSupabaseClient } from './db/index'
 
 const STORAGE_KEY = 'logic-saved-items'
+const SORT_STORAGE_KEY = 'logic-saved-sort'
+
+/** 保存一覧の並び替え順 */
+export type SavedSort = 'newest' | 'oldest' | 'title'
+
+/** localStorage から並び替え順を読み込む（不正値・未設定は 'newest'） */
+export function loadSavedSort(): SavedSort {
+  try {
+    const raw = localStorage.getItem(SORT_STORAGE_KEY)
+    if (raw === 'newest' || raw === 'oldest' || raw === 'title') return raw
+    return 'newest'
+  } catch { return 'newest' }
+}
+
+/** localStorage に並び替え順を保存する */
+export function saveSavedSort(s: SavedSort): void {
+  try {
+    localStorage.setItem(SORT_STORAGE_KEY, s)
+  } catch { /* no-op */ }
+}
 
 export type SavedItemType =
   | 'lesson'

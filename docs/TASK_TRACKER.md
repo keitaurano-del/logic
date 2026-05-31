@@ -71,7 +71,8 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 | FB-06 | ストリーク猶予・復活アイテム導入 | P2 | DONE（2026-05-31 完了。Keita「フリーズ型・無料配布のみ」で unblock→実装 push `915e622`・stats.test +13 green・tsc0/eslint0/vitest424pass。Render web デプロイ＋Android 配信ともに本番反映済。Keita 実機/目視確認も完了→DONE） | Keita手動→dev-logic | 仕様判断（Keita決定済） |
 | FB-07 | 不正解時フィードバック文言を中立トーンに | P2 | REVIEW（2026-05-31 実装 green→本番反映。残=Keita 目視〔任意〕） | content-creator | 中(UI文言中立) |
 | FB-08 | AI問題生成の待ち時間に進捗表示 or ストック | P2 | REVIEW（2026-05-31 自律ティック。進捗表示スライス実装→green→本番反映。残=実機目視 Keita〔任意〕。ストック方式は別スコープ） | dev-logic | 中 |
-| FB-09 | 保存アイテムのフォルダ分け・検索・並び替え | P3 | TODO | dev-logic | 低 |
+| FB-09 | 保存アイテム（検索・並び替え）※フォルダ分けは FB-11 に分離 | P3 | IN_PROGRESS（検索＋並び替えを実装中。フォルダ分けは DB schema 変更を伴うため FB-11 へ分離） | dev-logic | 低 |
+| FB-11 | 保存アイテムのフォルダ分け（FB-09 から分離） | P3 | TODO | dev-logic | 低（DB schema migration 要） |
 | FB-10 | iPad横画面でカスタムコース作成画面レイアウト崩れ | P2 | DONE（2026-05-31 完了。Keita「iPad は正式サポート対象」で方針確定→Custom/PersonalCourseScreen に max-width:600px+margin:auto で崩れ修正 push `622ae43`・tsc0/eslint0/vitest413pass・Android 配信 success run 26700084638。本番反映済・Keita 実機目視確認も完了→DONE） | dev-logic | 方針確定（Keita決定済・iPadサポート） |
 
 #### FB-01 — 図解SVGと本文説明の不整合を監査・修正
@@ -151,7 +152,7 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 - 更新日: 2026-05-31
 
 #### FB-07 — 不正解時フィードバック文言を中立トーンに
-- 優先度: P2 / ステータス: TODO / 担当案: content-creator
+- 優先度: P2 / ステータス: REVIEW（2026-05-31 自律ティック reconcile: 実装は commit `2cba3ef` で origin/main 反映済。詳細ヘッダが TODO のまま残っていたのを REVIEW に訂正＝サマリ表と進捗ノートに整合。残=Keita 目視〔任意〕）/ 担当案: content-creator
 - 詳細: 不正解時のフィードバック文言を中立的なトーンに調整する。
 - DoD: 不正解フィードバックが中立的丁寧体（feedback_app_copy_neutral）で、ユーザを責めない表現になっている。ja/en 両方。
 - 関連: `src/i18n.ts`（フィードバック文言）
@@ -162,7 +163,7 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 - 更新日: 2026-05-31
 
 #### FB-08 — AI問題生成の待ち時間に進捗表示 or ストック
-- 優先度: P2 / ステータス: TODO / 担当案: dev-logic
+- 優先度: P2 / ステータス: REVIEW（2026-05-31 自律ティック reconcile: 実装は commit `1ab7287` で origin/main 反映済。詳細ヘッダが TODO のまま残っていたのを REVIEW に訂正＝サマリ表と進捗ノートに整合。残=実機目視 Keita〔任意〕。ストック方式は別スコープ）/ 担当案: dev-logic
 - 詳細: AI 問題生成の待ち時間が体感長い。進捗表示を出す、または事前ストックで待ち時間を隠す。
 - DoD: 生成中に進捗/状態が分かる表示が出る、または問題がストックされ待ち時間が体感されない。
 - 関連: AI 問題生成（`server/index.ts` の `/api/generate-problems`・Anthropic API）、生成中 UI
@@ -172,14 +173,28 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 - **進捗（2026-05-31 自律ティック）**: 生成経路を全調査。AIProblemGenScreen＝既存リッチ進捗演出 `ProblemGenLoader`（4ステップ＋進捗バー、i18n `aiProblemGen.loader.*` 中立丁寧体）、CustomCourseSheet＝専用 generating フェーズUI、PlacementTestScreen＝専用パーソナルコース生成中ローディング、と各々進捗表示済み。**唯一の欠落が DailyProblemScreen**（`generateTodayProblem()`→`/api/daily-problem` Anthropic 実待ち・当日キャッシュ）で、生成中がプレーン1行テキスト `dailyProblem.loading` のみだった。`src/screens/DailyProblemScreen.tsx` の loading 分岐を既存 `ProblemGenLoader` 再利用に差し替え（新規コンポーネント・新規 i18n キー無し、AIProblemGenScreen と一貫した overlay 挙動）。エラー時フォールバックは `state==='error'` で既存実装済み＝DoD 充足。green: tsc 0err / eslint . 0err（既存warn19）/ vitest 24files430pass。本番デプロイ済。残=実機目視 Keita（任意）。ストック方式（事前生成キャッシュ）は別スコープで未着手。
 - 更新日: 2026-05-31
 
-#### FB-09 — 保存アイテムのフォルダ分け・検索・並び替え
-- 優先度: P3 / ステータス: TODO / 担当案: dev-logic
-- 詳細: 保存したアイテムをフォルダ分け・検索・並び替えできるようにする。
-- DoD: 保存アイテムをフォルダ整理・検索・並び替えでき、状態が永続化・再表示される。
-- 関連: `src/db/notebookDb`（保存アイテム）、SavedItems 画面、永続化
+#### FB-09 — 保存アイテム（検索・並び替え）※フォルダ分けは FB-11 に分離
+- 優先度: P3 / ステータス: IN_PROGRESS（検索＋並び替えを今ティックで実装。フォルダ分けは Supabase schema 変更を伴うため FB-11 へ分離）/ 担当案: dev-logic
+- 詳細: 保存したアイテム（`src/savedItemsStore.ts`＝localStorage + Supabase 同期、`src/screens/SavedItemsScreen.tsx`）に検索・並び替えを追加する。現状はタイプ別フィルタタブ（all/lesson/lesson-step/course/ai-problem/fermi）のみで、検索ボックスも並び替えも無い。
+- 今ティックのスコープ（検索＋並び替え）:
+  - 検索: title / subtitle を対象にした大文字小文字無視の部分一致。既存タイプフィルタと AND で併用。空欄ならフィルタ無効。
+  - 並び替え: 保存が新しい順（既定）/ 保存が古い順（savedAt）/ タイトル順（localeCompare）。並び替え設定は localStorage（例 `logic-saved-sort`）に persist し再表示で復元。
+  - 検索結果ゼロ時の空状態メッセージを追加。
+- DoD（今ティック分）: SavedItemsScreen に検索ボックスと並び替えコントロールが表示され、絞り込み・並べ替えが効く。並び替え設定が永続化・再表示で復元される。i18n ja/en 両方・中立丁寧体。ハードコード hex なし（トークン使用）。UI chrome は SVG アイコンのみ（絵文字 NG）。tsc / eslint . / vitest green。
+- 関連: `src/savedItemsStore.ts`、`src/screens/SavedItemsScreen.tsx`、`src/i18n.ts`
 - 依存: なし
-- 提言・抜けもれ: 永続化必須（フォルダ構造・並び順を persist）。i18n: UI ラベル ja/en・中立丁寧体。空状態の表示も要件に。
-- note: 2026-05-31 ドッグフーディング(dogfood)で検出（p10）。
+- 提言・抜けもれ: フォルダ分けは FB-11（保存アイテムの folder data model + 割当 + Supabase schema migration + sync + フォルダ作成/改名/削除 UI）。i18n: UI ラベル ja/en・中立丁寧体。空状態の表示も要件に。
+- note: 2026-05-31 ドッグフーディング(dogfood)で検出（p10）。検索・並び替え（低リスク・client-side）とフォルダ分け（DB schema 変更）を分離し、まず前者を出荷する。
+- 更新日: 2026-05-31
+
+#### FB-11 — 保存アイテムのフォルダ分け（FB-09 から分離）
+- 優先度: P3 / ステータス: TODO / 担当案: dev-logic
+- 詳細: 保存アイテムをユーザー定義フォルダで整理できるようにする。FB-09 から分離した重い方の機能。
+- DoD: フォルダの作成・改名・削除、アイテムのフォルダ割当・移動ができ、構造が永続化・端末間同期される。空状態の表示も含む。i18n ja/en・中立丁寧体。
+- 実装メモ: folder data model（id/name/order/createdAt）＋ SavedItem への folderId 付与。localStorage だけだと既存の Supabase 同期設計（`user_saved_items` テーブル + `syncSavedItems`）と不整合になるため、Supabase に folders テーブル or `folder_id` カラムの migration が必要＝schema 変更を伴う。schema は本番 DB に触るので慎重に（必要なら Keita 確認）。
+- 関連: `src/savedItemsStore.ts`、`src/screens/SavedItemsScreen.tsx`、`supabase/migrations/`
+- 依存: FB-09（検索・並び替え）と同一画面なので UI 競合を避けて後行する。
+- note: 2026-05-31 FB-09 から分離。DB schema migration を伴うため独立タスク化。
 - 更新日: 2026-05-31
 
 #### FB-10 — iPad横画面でカスタムコース作成画面レイアウト崩れ
