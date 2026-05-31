@@ -1389,7 +1389,9 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
   - スコープ確認: 「Obsidian 全部最新に」の「全部」が 50-Daily と 20-Projects/logic 以外（00-Inbox / 10-Tasks / 20-Knowledge / 40-Resources 等）も含むか。今回は明示された Daily Note と logic 状況に絞り、他フォルダの棚卸しが要るなら別タスク化を Keita 確認。
   - 自動パイプラインの健全性前提が崩れていた（T-F 発覚）: T-E 当初の現状認識「briefings/feedback の自動パイプラインは 5/28 まで稼働中」は**ファイル存在ベースの誤認**だった。実際は 5/27・5/28 とも中身がエラー文字列で、タイムスタンプだけ更新されてゴミ。T-F で別タスク化。T-E のキャッチアップ素材として briefings/feedback を使う際は、5/26 までの正常分のみ信頼し、5/27 以降は git log / inspections / 本セッションの事実を正本にする。
 
-### T-F — cron 自動化の root 権限エラー修復　[P1 上位 / TODO]
+### T-F — cron 自動化の root 権限エラー修復　[P1 上位 / DONE（2026-05-29 解決・新箱 dev へ cron 移設）]
+
+> ✅ DONE（2026-05-29）: 根因＝root の `claude --print` が skip-permissions ガードで弾かれて空振り。解決＝Vultr 新箱(Claude Code Server 2)の `dev` ユーザ crontab に night-patrol/feedback-watcher/morning-briefing 3本を移設し、`--dangerously-skip-permissions` 付与＋ログ ~/logs 化で3本とも実走グリーン（obsidian-vault push 成功確認）。旧箱 crontab は `#MOVED-TO-NEWBOX#` でコメントアウト（二重push回避）。詳細は memory project-vultr-second-server。以下は当時の調査記録（歴史的経緯）。
 
 - 症状（2026-05-28 Obsidian キャッチアップで発覚）: `50-Daily/briefings/`（07:00 ceo 朝ブリ）と `50-Daily/feedback/`（06:00 feedback-watcher）の cron 出力が、5/27・5/28 とも中身が**エラー文字列**「`--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons`」（実ファイル確認済み、各 93 bytes）。タイムスタンプだけ毎日更新され中身がゴミ。5/26 までは正常（briefings/2026-05-26.md は 8802 bytes の実ブリーフィング）。
 - 根因（実スクリプト＋crontab 照合済み）:
@@ -1488,7 +1490,7 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
 | T-K | ジャーナルのグラフ tap で詳細展開 | P2 | DONE（2026-05-29 main マージ＋push 本番反映。気分推移グラフ tap→当日要約をインライン展開。MoodSparkline/journal.css/i18n。tsc0/eslint0。Android 自動配信で反映） | dev-logic | 対象=気分推移グラフのみ（タグ頻度/ストリークは対象外、T-D 競合回避） |
 | T-L | Daily Fermi の答えを解説の最後に移す | P2 | DONE（2026-05-29 main マージ＋push＋Render deploy 実行で本番反映。答えは AI フィードバック本文内→プロンプトで末尾 ## 答え に。server/routes/fermi.ts。tsc0/eslint0/vitest324/PW9。サーバ側のため deploy-production.yml 実行） | dev-logic | 答えは static でなく AI 生成本文内だった |
 
-### T-I — コース単位の進捗を見れるようにする　[P1 / TODO（スコープ要確認）]
+### T-I — コース単位の進捗を見れるようにする　[P1 / DONE（2026-05-29 本番反映, commit 6feaa30）※下バッチ表が正・本節は当初スコープ検討の歴史記録]
 
 - 依頼原文（Keita 2026-05-28）: 「コースの進捗が見れるようにしたい」。
 - 想定スコープ: ロードマップ/コース一覧で「このコースを何 % 進めたか（完了レッスン数 / 全レッスン数）」をコース単位で可視化する。レッスン単体の done/not-done は既にあるが、コースを束ねた進捗集計の表示が無い（要実装確認）。
@@ -1514,7 +1516,7 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
   - 両OS: モバイル専用（project_logic_mobile_only）。Android 実機で表示崩れ確認。
   - 重複論点の解除（2026-05-29）: 旧 T-J が「完了回数（count）」で同じ progress レイヤーを触る懸念があったが、**T-J は「完了バッジの色変更のみ」に縮小確定したので重複は消滅**。T-I は単独で進められる（migration 不要・既存 progress の集計表示）。
 
-### T-J — 完了バッジのチェックマークの色を変更する　[P2 / TODO（スコープ確定済・T-M 完了後着手）]
+### T-J — 完了バッジのチェックマークの色を変更する　[P2 / DONE（2026-05-29 本番反映, commit 55d31d6）※下バッチ表が正・本節は歴史記録]
 
 - 📌 スコープ確定（Keita 2026-05-29）: **「完了バッジのチェックマークの色変更のみ」に確定・縮小**。当初登録（2026-05-28）の「レッスンごとの完了回数を可視化する」案は破棄。完了回数のカウント・データモデル拡張・migration は**やらない**。レッスン完了を示すバッジ（チェックマーク）の**色だけ**を変える、軽量な見た目変更タスク。
 - 依頼原文（Keita 2026-05-28 → 2026-05-29 確定）: 当初「レッスンを何回完了したか分かるようにしたい」だったが、Keita 確定で「完了バッジのチェックマークの色を変える」だけに縮小。
@@ -1539,7 +1541,7 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
   - 永続化: 不要（見た目のみ）。
   - 関連: T-S/T-T（テーマ追従修正）と色の扱いが近い。Keita が「テーマ追従させる」を選ぶなら T-S/T-T と同じ手法（テーマトークン参照）になるので、**同一 dev-logic がテーマ系（T-R/T-S/T-T/T-J）をまとめて見る**と一貫性が出る。
 
-### T-K — ジャーナルのグラフ tap で詳細展開　[P2 / TODO（スコープ要確認）]
+### T-K — ジャーナルのグラフ tap で詳細展開　[P2 / DONE（2026-05-29 本番反映, commit 2e55dc0）※下バッチ表が正・本節は歴史記録]
 
 - 依頼原文（Keita 2026-05-28）: 「ジャーナルのグラフをタップすると詳細が分かるようになってほしい」。
 - 想定スコープ: ジャーナルの統計グラフ（気分推移/週次集計などのチャート）の要素をタップすると、その日/その項目の詳細（該当エントリ・内訳）が展開表示される。現状グラフは表示のみでインタラクションが無い（要確認）。
@@ -1567,7 +1569,7 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
   - テスト: tap→詳細展開は E2E ハッピーパス向き（ただしグラフ tap 座標依存なので要素 testid 推奨）。
   - 永続化: 表示だけなら新規 persist 不要（既存エントリを読むだけ）。
 
-### T-L — Daily Fermi の答えを解説の最後に移す　[P2 / TODO]
+### T-L — Daily Fermi の答えを解説の最後に移す　[P2 / DONE（2026-05-29 本番反映, commit c2c8d34）※下バッチ表が正・本節は歴史記録]
 
 - 依頼原文（Keita 2026-05-28）: 「フェルミの答えは解説の最後でいい」。
 - 想定スコープ: Daily Fermi（今日の1問）で、答え（推定値/正解レンジ）の表示位置を**解説の最後**に移す。現状は解説より前 or 冒頭に答えが出ている想定（要確認）。＝表示順の入れ替えのみの軽い要望。
@@ -2785,7 +2787,8 @@ Keita 側にボールが残る作業（エージェントは着手できない�
 | ID | UI-27 |
 | タイトル | フェルミ1問モードの解答ボタン視認性改善 |
 | 優先度 | P2 |
-| ステータス | TODO |
+| ステータス | REVIEW（2026-05-31 実装 green・本番 deploy 済。両OS実機目視のみ残） |
+| 実装記録 | 対象＝`DailyFermiScreen.tsx` idle 解答エリア。submit ボタン(`dailyFermi-submit-btn`)を `var(--brand)/--accent-fg`→`var(--accent-btn)/--accent-btn-fg`＋`--shadow-cta`＋flex1.4/weight800 で高コントラスト主役化（dark で旧 `--brand`=#6C8EF5 白文字3.08:1→濃紺 `--accent-btn` 白文字8.29:1）。disabled 背景の未定義 `--bg-muted`→`--bg-tertiary` に是正（潜在バグ修正）。電卓ボタンのハードコード `#FFFFFF`→`var(--accent-fg)`。AF-02(HomeScreenV3) とは別画面で重複なし。tsc0/eslint.0err/vitest430pass green。commit `(下記)`→本番 deploy。 |
 | 担当 | dev-logic, designer |
 | 詳細 | フェルミの「1問」モードのボタンが見づらい。添付画像のように見やすくする。添付画像（実装時に Read で確認）: `/home/dev/projects/cxo-agent/data/inbox-attachments/2026-05-31T02-39-24-703Z-6238b74a/3064.png` |
 | 関連 | `src/screens/FermiRankingScreen.tsx`（1問モード該当画面は着手時に特定）, `src/i18n.ts` |

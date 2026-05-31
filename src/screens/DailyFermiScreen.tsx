@@ -884,7 +884,7 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
                     background: showCalculator ? 'var(--score-excellent)' : 'var(--brand)',
                     border: 'none',
                     borderRadius: 999, padding: '10px 18px',
-                    color: '#FFFFFF',
+                    color: 'var(--accent-fg)',
                     fontSize: '1rem', fontWeight: 800,
                     cursor: 'pointer',
                     fontFamily: 'inherit',
@@ -984,16 +984,17 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
                   onClick={handleSubmit}
                   disabled={!answer.trim()}
                   style={{
-                    flex: 1,
+                    flex: 1.4,
                     padding: '13px 16px',
                     borderRadius: 'var(--radius-md)',
                     border: 'none',
-                    background: answer.trim() ? 'var(--brand)' : 'var(--bg-muted)',
-                    color: answer.trim() ? 'var(--accent-fg)' : 'var(--text-muted)',
+                    background: answer.trim() ? 'var(--accent-btn)' : 'var(--bg-tertiary)',
+                    color: answer.trim() ? 'var(--accent-btn-fg)' : 'var(--text-muted)',
                     fontSize: '1rem',
-                    fontWeight: 700,
+                    fontWeight: 800,
                     cursor: answer.trim() ? 'pointer' : 'not-allowed',
                     fontFamily: 'inherit',
+                    boxShadow: answer.trim() ? 'var(--shadow-cta)' : 'none',
                     transition: 'all 0.15s',
                   }}
                 >
