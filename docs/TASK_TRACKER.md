@@ -1658,6 +1658,7 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
 ### T-M — 「体力をつける」コースを作る　[P1 / DONE（2026-05-29 本番反映。lesson 440-444 ja/en 実装済）]
 
 - ✅ ステータス同期（2026-05-31 自律ティック）: 本詳細ヘッダが IN_PROGRESS のまま取り残されていたが、確定表行（上記）は既に DONE。git 実体で裏取り済み＝commit `cd3c166`（feat: lessonId 440-444 実装）＋`dabfc65`（443図/442強化ループ図差し替え）が main 在、`src/staminaLessons.ts`/`src/staminaLessonsEn.ts` に lesson 440-444 実在を確認。ヘッダを DONE に同期。これにより「T-M 完了後着手」ゲートのタスク（T-W 等）が解放。残: 低-1 コース title 確定（Keita 判断）/ 低-2 stamina 専用サムネ（designer 別トラック）。
+- ✅ logic-coach 必須ゲート再確証（2026-06-01 自律ティック・林）: 実装済み本文（`src/staminaLessons.ts`/`staminaLessonsEn.ts`＝FULL doc と逐語一致）を logic-coach 役で全5レッスン ja/en 再監査 → **PASS（致命0/高0、dev-logic 進行可）**。最重点の **lesson 444（子育て）= 健康・育児の事実正確性 重大問題なし**（「頼れる先があれば」の条件節を全箇所付与＝命令形回避、睡眠分断は「魔法でなく被害最小化」と効果を限定、医療的断定・危険な育児助言なし、中立丁寧体）。重点確認点も全て○＝C-1 運動効果量は幅明示で隣接 peakPerformance412 より保守的健全／C-3 ウルトラディアン「1〜2時間・個人差」で 90分を断定せず／443 は Sonnentag 4体験（心理的距離/リラックス/熟達/コントロール）を正記載・DRAMMA 不混入／440横断原理と442仕事制約は重複でなく適用関係。ja/en パリティ齟齬なし。冒頭「監査反映サマリ（C-1/C-3/C-4/C-5/S-1/S-2/D-1）」の全主張が実本文に反映済み（言行一致）。裏取り＝実 git/bash で `cd3c166`+`dabfc65` が `git merge-base --is-ancestor origin/main` で origin/main 在を確認、`lessonData.ts:191` `_pickByLocale(staminaLessonMap, staminaLessonMapEn)` 結線・`courseData.ts` `stamina-01`(lessonIds 440-444/category 体力デザイン/ja+en desc) 登録を確認、`tsc -b --noEmit` EXIT0。**＝本コースは content+code とも本番(origin/main)反映済みで機能的に live・監査クリーン。残は Keita 専権の 低-1 title 確定／低-2 stamina 専用サムネのサンプル承認のみ（feedback-logic-course-thumbnails のサンプル承認フロー＝自律不可）。** logic-coach 指摘の中:doc冒頭 `COURSE_STAMINA_FULL_20260529.md:5`「本番未反映」は実態（実装・origin/main 反映済）と食い違う古い誤記＝本タスク完了の妨げにはならない（doc は作業用成果物）。
 
 - ✅ 進捗（2026-05-29 朝）: **サンプル承認＋本展開ゴーサイン取得**。content-creator が全5レッスン（440-444）の **ja/en フル本文制作に着手**（出力先 `docs/COURSE_STAMINA_FULL_20260529.md`）。logic-coach 監査の **C-1 / C-3 / C-4 / S-1 / S-2 / D-1 を反映指示済み**。次工程は dev-logic によるコード実装、その後 **444（子育て）の logic-coach 再監査ゲート必須**、テスト、デプロイ。
 - ✅ 進捗（2026-05-28 深夜・サンプル段階）: content-creator が コース構成案＋サンプルレッスン441のフル本文ドラフトを作成（成果物 `docs/COURSE_STAMINA_DRAFT_20260528.md`）。logic-coach 監査 4.3/5「サンプル承認に進めてよい品質」→ 翌朝 Keita ゴーサインで本展開へ。
@@ -2636,7 +2637,7 @@ Apollo 受信箱（`cxo-agent/data/inbox.jsonl`）から投入された Keita �
 - ✅ **T-G（夜間スモーク config）も main 反映済**。実走確認は次回 night-patrol（03:00 cron）に残。
 - ✅ **DONE 化（本番反映＋検証済）: T-A / T-B / T-D / T-G / T-N / T-O / T-P**。T-A/T-N/T-O/T-P はモバイル実機での最終体感確認が任意で残、T-B はテーマ見た目の実機確認が任意で残（いずれもコード検証済みのため DONE 判定）。
 - ✅ **T-Q DONE（既に本番）**: 調査の結果、同内容が既に 2026-05-24 commit `7705b12` として main に入っており昨日以前から本番稼働中と判明。ブランチ `feat/journal-image-upload-progress`（`acdc59e`）は重複コピーでマージ不要だった（破棄可）。
-- 🔄 **T-M IN_PROGRESS**: サンプル承認＋本展開ゴーサイン取得。content-creator が全5レッスン（440-444）の ja/en フル本文制作に着手（出力先 `docs/COURSE_STAMINA_FULL_20260529.md`）。logic-coach 監査の C-1/C-3/C-4/S-1/S-2/D-1 反映指示済。次工程＝dev-logic コード実装 → **444 の logic-coach 再監査ゲート必須** → テスト → デプロイ。
+- ✅ **T-M DONE**（2026-06-01 同期＝この古い IN_PROGRESS ナラティブは正本表行〔line 1652〕の DONE と矛盾していたため実態に同期）: 全5レッスン（440-444）ja/en 実装済み（`src/staminaLessons.ts`/`staminaLessonsEn.ts`、`cd3c166`+`dabfc65` が origin/main 在）、logic-coach 必須再監査ゲート PASS（444子育て含め致命0/高0）、tsc green、content+code とも本番反映済み。残は Keita 専権の title 確定＋専用サムネ承認のみ。詳細は T-M 詳細セクション（line 1658〜）参照。
 - 🧹 **worktree 掃除 1/5 完了**: 死んだロックの1個（`fix/lesson-visuals`、未コミット0）のみ削除。残り4個は稼働中の別 claude プロセス（pid 921847＝2日21h／pid 1091320＝13h）がロック保持中のため見送り → 要 Keita 判断。
 - ⏸ **残・判断待ち（未着手）**: T-I/T-J（コース進捗・レッスン完了回数）＝スコープ確認待ち（T-J は完了回数データ無ければ Supabase migration 要）／T-K（ジャーナルグラフ tap 詳細）＝スコープ確認待ち／T-L（フェルミ答えを末尾へ）＝未着手（T-A は本番反映済なので競合解消。ただし削除見送りの worktree a23e/a7aa に「答えを冒頭に出す」逆向き実験あり、混同注意）。
 
@@ -2677,7 +2678,7 @@ Apollo 受信箱（`cxo-agent/data/inbox.jsonl`）から投入された Keita �
 ✅ 2026-05-29 朝 Keita 承認のもと実行 完了（main マージ＋push＋デプロイ）:
 - T-N/T-O/T-P（journal UI 微調整セット）: main マージ＋Android deploy 成功で本番反映 → **DONE**（モバイル実機の体感確認のみ任意）。
 - T-Q（画像アップロード）: 既に本番稼働中（commit 7705b12, 5/24）と判明、重複ブランチは破棄可 → **DONE**。
-- T-M（体力コース）: サンプル承認＋本展開ゴーサイン取得 → **IN_PROGRESS**（content-creator が全5レッスン ja/en 本文制作中、出力先 `docs/COURSE_STAMINA_FULL_20260529.md`）。
+- T-M（体力コース）: **DONE**（2026-06-01 同期）。content-creator のフル本文制作完了→dev-logic 実装→logic-coach 再監査ゲート PASS（444含む）→ `cd3c166`+`dabfc65` で origin/main 反映済み・tsc green。正本表行（line 1652）の DONE と整合。残は Keita 専権の title 確定＋専用サムネ承認のみ。
 
 T-M の次工程（task-manager 追跡）:
 1. content-creator: 全5レッスン（440-444）ja/en フル本文（C-1/C-3/C-4/S-1/S-2/D-1 反映・DRAMMA≠Sonnentag4体験 混同回避）＝**現在着手中**。
@@ -2758,7 +2759,7 @@ T-M（体力コース）で dev-logic が **main の作業ツリーを使用中*
 3. 全ローカル実装完了後、tsc/eslint 再確認 → Keita に push 承認を依頼
 4. 注意: `eslint .` で `.claude/worktrees/agent-*`（別エージェント残骸・現在 **5個**）由来の **2 errors**（false）。実ソースは 0。CI は worktree 非 checkout で緑。回避＝`eslint . --ignore-pattern '.claude/**'`。**worktree 掃除（削除）は破壊的操作のため Keita 承認待ち事項**。
 
-最終更新: 2026-05-29 朝（Keita 承認のもとデプロイ＋マージ実行の確定事実を反映。wip/20260528-inprogress を main に ff マージ＋push、Android deploy success＝T-A/T-B/T-N/T-O/T-P モバイル本番反映、Render backend deploy success〔run 26603561372〕health 200＝T-D backend 本番反映、T-G config も main 反映。**DONE 化: T-A / T-B / T-D / T-G / T-N / T-O / T-P**〔各々 2026-05-29 本番反映済、T-A/T-N/T-O/T-P/T-B は実機体感確認のみ任意で残〕。**T-Q=DONE**〔既に本番＝commit 7705b12, 5/24／重複ブランチ acdc59e は破棄可〕。**T-M=IN_PROGRESS**〔サンプル承認＋本展開ゴーサイン取得、content-creator が全5レッスン 440-444 ja/en 本文制作中＝docs/COURSE_STAMINA_FULL_20260529.md、C-1/C-3/C-4/S-1/S-2/D-1 反映指示済、次工程＝dev-logic 実装→444 logic-coach 再監査ゲート→テスト→デプロイ〕。worktree 掃除 1/5 完了〔fix/lesson-visuals 削除、残4個は稼働中セッション占有で保留・要 Keita 判断〕。残・判断待ち＝T-I/T-J/T-K スコープ確認待ち・T-L 未着手〔a23e/a7aa worktree に逆向き実験あり混同注意〕。T-F 未解決〔06:00/07:00 cron 空振り継続〕）
+最終更新: 2026-05-29 朝（Keita 承認のもとデプロイ＋マージ実行の確定事実を反映。wip/20260528-inprogress を main に ff マージ＋push、Android deploy success＝T-A/T-B/T-N/T-O/T-P モバイル本番反映、Render backend deploy success〔run 26603561372〕health 200＝T-D backend 本番反映、T-G config も main 反映。**DONE 化: T-A / T-B / T-D / T-G / T-N / T-O / T-P**〔各々 2026-05-29 本番反映済、T-A/T-N/T-O/T-P/T-B は実機体感確認のみ任意で残〕。**T-Q=DONE**〔既に本番＝commit 7705b12, 5/24／重複ブランチ acdc59e は破棄可〕。**T-M=DONE**〔2026-06-01 同期。lesson 440-444 ja/en 実装済 `cd3c166`+`dabfc65` origin/main 在、logic-coach 再監査ゲート PASS（444子育て含め致命0/高0）、tsc green、本番反映済。残は Keita 専権の title 確定＋専用サムネ承認のみ。正本表行 line 1652 と整合〕。worktree 掃除 1/5 完了〔fix/lesson-visuals 削除、残4個は稼働中セッション占有で保留・要 Keita 判断〕。残・判断待ち＝T-I/T-J/T-K スコープ確認待ち・T-L 未着手〔a23e/a7aa worktree に逆向き実験あり混同注意〕。T-F 未解決〔06:00/07:00 cron 空振り継続〕）
 
 最終更新: 2026-05-29（T-B テーマ機能フォローアップ3件を起票＝**T-R**〔custom テーマ削除〕/ **T-S**〔今日の一問カードのテーマ追従〕/ **T-T**〔テーマ非追従箇所の網羅調査→個別修正・T-S を内包・調査は林が読み取り専用で進行中〕。全件 TODO・T-M 完了後着手〔dev-logic が T-M で main 作業ツリー使用中のため〕。**T-J をスコープ縮小確定**＝「レッスン完了回数の可視化」→「完了バッジのチェックマークの色変更のみ」〔Keita 確定〕に置換、P1→P2・migration 不要に変更、T-I との重複論点を解除。**dev-logic 完了後 main 作業キューを1まとまりで整理**＝着手順 T-R→T-S→T-T→T-J〔テーマ系一気通貫〕→T-I〔progress 単独〕→T-K〔journal〕→T-L〔Daily Fermi・末尾化〕、全件 migration 不要、横断の抜けもれ・スコープ確認残を併記）
 
