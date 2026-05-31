@@ -72,7 +72,9 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 - 更新日: 2026-05-31
 
 #### FB-03 — en locale 未翻訳文字列＋ロケール依存データの見直し
-- 優先度: P1 / ステータス: TODO / 担当案: dev-logic + content-creator
+- 優先度: P1 / ステータス: REVIEW（自律ティック 2026-05-31。UI chrome の EN 未翻訳漏れを潰し本番 deploy 済。残=レッスン図解の i18n＝下記別タスク提言。実機 en での目視のみ Keita 待ち）/ 担当案: dev-logic + content-creator
+- **進捗（2026-05-31 自律ティック / commit `82c7280` push→本番 deploy run 26699616836）**: `grep -rnP '[ぁ-んァ-ヶ一-龠]' src/` を起点に UI chrome の user-facing 未翻訳を走査。screens/ は DF-F7 coachmark 一掃で既に徹底 t() 化済みで、検出された日本語リテラルの大半は category route-key（内部識別子）/ JA サフィックス付き locale 切替済みデータ / TTS・読み仮名 / コメント。実際の漏れは aria-label/title/tooltip の4箇所のみ＝(a) `src/components/CompletionBadge.tsx:40,73-74,130-131` 完了回数バッジ aria-label/title 3箇所→既存キー `completed.timesDone`、(b) `src/screens/HomeScreenV3.tsx:453` アップグレードトースト閉じる aria-label→`common.close`。いずれも既存 i18n キー(ja/en 完備)を流用＝新規キー不要。ロケール依存例示データは UI chrome 内に該当なし。green: tsc 0err / eslint . 0err(既存warn19) / vitest 24files413pass（CompletionBadge.test 12 含む、ja デフォルトで従来文言一致を確認）。
+- **別タスク提言（FB-03 スコープ外）**: `src/components/LessonThumbnail.tsx:759-763` レッスン203（フェルミ市場規模）のサムネ SVG 図解内「人口×利用率×購入頻度×単価＝市場」が日本語ハードコード。レッスン題材図解＋フェルミ anchor に該当し本タスク範囲外。EN で不自然なのでレッスン図解の i18n 対応として別タスク化推奨（DF-F19 系レッスンビジュアル管轄が妥当）。
 - 詳細: en locale で未翻訳の文字列が残存。加えて "Japan population" 等のロケール依存データがハードコードされており en ユーザに不自然。文字列の翻訳補完とロケール依存データの見直しを行う。
 - DoD: en で英語表示されるべき文字列がすべて翻訳済み。ロケール依存の例示データが locale に応じて適切に切り替わる/中立化される。
 - 関連: `src/i18n.ts`（ja/en）、ロケール依存データ定義箇所
