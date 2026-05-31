@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { TrophyIcon, MedalIcon, UserIcon, ArrowRightIcon } from '../icons'
+import { TrophyIcon, MedalIcon, ArrowRightIcon } from '../icons'
 import { getDisplayName } from '../stats'
 import { getNickname } from '../guestId'
 import { LoadingIndicator } from '../components/LoadingIndicator'
@@ -61,8 +61,6 @@ export function FermiRankingScreen({ onSolveFermi }: FermiRankingScreenProps) {
   const [loading, setLoading] = useState(true)
   const [rankDelta, setRankDelta] = useState<number | null>(null)
   const [showRankUp, setShowRankUp] = useState(false)
-  // 参加者数（母数）: API の realCount。実データの参加者数のみを表すので捏造値ではない。
-  const [participantCount, setParticipantCount] = useState<number | null>(null)
 
   const myName = useMemo(() => getDisplayName() || getNickname() || t('home.guestName'), [])
 
@@ -72,14 +70,11 @@ export function FermiRankingScreen({ onSolveFermi }: FermiRankingScreenProps) {
       setLoading(true)
       setRankDelta(null)
       setShowRankUp(false)
-      setParticipantCount(null)
       try {
         const r = await fetch(`${API_BASE}/api/fermi/ranking?period=${period}`)
         const d = await r.json()
         if (cancelled) return
         const list = Array.isArray(d.ranking) ? d.ranking : []
-        // realCount は実データの参加者数（母数）。number のときだけ採用する。
-        setParticipantCount(typeof d.realCount === 'number' ? d.realCount : null)
         const ranked: RankEntry[] = list.map((row: { name: string; score: number; isMock?: boolean; occupation?: string | null }, i: number) => ({
           rank: i + 1,
           name: row.name,
@@ -163,13 +158,6 @@ export function FermiRankingScreen({ onSolveFermi }: FermiRankingScreenProps) {
         <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: 8, lineHeight: 1.5 }}>
           {t('fermiRank.basis')}
         </div>
-        {/* 参加者数（母数）: realCount が取得できたときのみ表示 */}
-        {!loading && participantCount != null && participantCount > 0 && (
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 8, fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 600 }}>
-            <UserIcon width={14} height={14} aria-hidden="true" style={{ color: 'var(--text-muted)' }} />
-            <span>{t('fermiRank.participants', { n: participantCount })}</span>
-          </div>
-        )}
       </div>
 
       {/* フェルミに挑戦する CTA */}
