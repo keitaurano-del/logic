@@ -558,7 +558,7 @@ const STRINGS: Record<Locale, Strings> = {
     'lesson.next': '次へ',
     'lesson.viewResult': '結果を見る',
     'lesson.correctMark': '正解！',
-    'lesson.wrongMark': '不正解...',
+    'lesson.wrongMark': '不正解',
     'lesson.report': 'この問題を報告',
 
     // Coffee Break
@@ -2471,7 +2471,7 @@ const STRINGS: Record<Locale, Strings> = {
     'lesson.next': 'Next',
     'lesson.viewResult': 'See results',
     'lesson.correctMark': 'Correct!',
-    'lesson.wrongMark': 'Incorrect...',
+    'lesson.wrongMark': 'Incorrect',
     'lesson.report': 'Report this question',
 
     // Coffee Break

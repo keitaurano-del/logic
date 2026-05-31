@@ -69,7 +69,7 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 | FB-04 | TTS読み上げ速度の細粒度調整＋連続再生の安定性 | P2 | REVIEW（速度の細粒度調整＋永続化を実装 push `14a19e4`・deploy 済。残=連続再生の安定性は両OS依存で別スコープ＋実機 Keita 確認） | dev-logic | 中(安定性はbug寄り) |
 | FB-05 | コース横断/戻る/離脱復帰のナビ・IA再設計【クラスタ4件】 | P1 | TODO | designer主導+dev-logic | Issue化推奨 |
 | FB-06 | ストリーク猶予・復活アイテム導入 | P2 | DONE（2026-05-31 完了。Keita「フリーズ型・無料配布のみ」で unblock→実装 push `915e622`・stats.test +13 green・tsc0/eslint0/vitest424pass。Render web デプロイ＋Android 配信ともに本番反映済。Keita 実機/目視確認も完了→DONE） | Keita手動→dev-logic | 仕様判断（Keita決定済） |
-| FB-07 | 不正解時フィードバック文言を中立トーンに | P2 | TODO | content-creator | 中(UI文言中立) |
+| FB-07 | 不正解時フィードバック文言を中立トーンに | P2 | REVIEW（2026-05-31 実装 green→本番反映。残=Keita 目視〔任意〕） | content-creator | 中(UI文言中立) |
 | FB-08 | AI問題生成の待ち時間に進捗表示 or ストック | P2 | TODO | dev-logic | 中 |
 | FB-09 | 保存アイテムのフォルダ分け・検索・並び替え | P3 | TODO | dev-logic | 低 |
 | FB-10 | iPad横画面でカスタムコース作成画面レイアウト崩れ | P2 | DONE（2026-05-31 完了。Keita「iPad は正式サポート対象」で方針確定→Custom/PersonalCourseScreen に max-width:600px+margin:auto で崩れ修正 push `622ae43`・tsc0/eslint0/vitest413pass・Android 配信 success run 26700084638。本番反映済・Keita 実機目視確認も完了→DONE） | dev-logic | 方針確定（Keita決定済・iPadサポート） |
@@ -158,6 +158,7 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 - 依存: なし
 - 提言・抜けもれ: UI 文言は中立丁寧体厳守（凛口調 NG）。i18n ja/en 両方。アクセシビリティ: TTS 読み上げ時の自然さも確認。
 - note: 2026-05-31 ドッグフーディング(dogfood)で検出（p19）。
+- **進捗（2026-05-31 自律ティック）**: 不正解時フィードバック文言を網羅調査。唯一「煽り・落胆」トーンが残っていた `lesson.wrongMark` の末尾三点リーダを除去し中立化（ja `不正解...`→`不正解` / en `Incorrect...`→`Incorrect`、i18n.ts:561/2474）。他の wrongMark（dailyProblem/aiProblem/placement）は既に三点リーダ無しの淡々表記で揃っており触らず。`stories.wrongMulti`（不正解＋正解提示）/`stories.wrongSingle`（もう一度考えてみよう）も中立で保持。フェルミは正誤でなく AI 採点方式で「不正解」を突きつける文言が存在せず対象外。green: tsc0 / eslint 全体0err(既存warn19) / vitest 24files430pass。本番デプロイ済。
 - 更新日: 2026-05-31
 
 #### FB-08 — AI問題生成の待ち時間に進捗表示 or ストック
