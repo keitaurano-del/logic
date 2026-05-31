@@ -26,7 +26,7 @@ Apollo（スマホ受信箱）から投入された Keita のタスク/指示を
 - 更新日: 2026-05-31
 
 #### AF-01 — フェルミタブからフェルミ問題を解く導線（CTAボタン）を追加
-- 優先度: P2 / ステータス: REVIEW（2026-05-31 次の安全なティックで実装完了。FermiRankingScreen に `onSolveFermi` props 追加＋ヘッダー直下に accent CTA「フェルミに挑戦する」を配置、AppV3 line 606 を `navigate({ type: 'daily-fermi' })` に結線、i18n `fermiRank.solveCta` を ja/en 追加。tsc0/eslint . 0err/vitest 430pass green。残=配置/見た目の実機目視 Keita 確認のみ）/ 担当案: dev-logic
+- 優先度: P2 / ステータス: DONE（表行が正＝test-functional 実効性検証○で DONE 済・本番反映済。詳細経緯↓は旧 REVIEW 時の記録。FermiRankingScreen に `onSolveFermi` props 追加＋ヘッダー直下に accent CTA「フェルミに挑戦する」を配置、AppV3 を `navigate({ type: 'daily-fermi' })` に結線〔実コード AppV3.tsx:609〕、i18n `fermiRank.solveCta` を ja/en 追加。tsc0/eslint . 0err/vitest 430pass green。実機目視は Keita 確認不要方針〔feedback-review-agent-verify-then-done〕でDONE）/ 担当案: dev-logic
 - 詳細: 下タブ「フェルミ」（= `FermiRankingScreen`、`AppV3.tsx` の screen.type `'fermi-ranking'`、ROOT_SCREENS の1つ）はランキング表示のみで、その画面から直接フェルミ問題を解き始める導線が無い。現状フェルミを解くにはホームの Daily Fermi カードからしか入れない。フェルミメニュー（タブ）からも解けるよう、ランキング画面のヘッダー直下に「フェルミに挑戦」CTA ボタンを追加し `daily-fermi` 画面へ遷移させる。
 - 実装メモ（調査済み・実コード照合）: `FermiRankingScreen` は現状 props 無し。`onSolveFermi: () => void` を追加し、`AppV3.tsx`（605-607 の `<FermiRankingScreen />`）を `<FermiRankingScreen onSolveFermi={() => navigate({ type: 'daily-fermi' })} />` に結線。CTA は既存 `Button`(variant primary) もしくは画面内のピル系スタイルに合わせる。i18n キー新規（例 `fermiRank.solveCta`）を ja/en 両方追加。UI 文言は中立丁寧体。
 - DoD: フェルミタブにフェルミ問題への導線ボタンが表示され、押すと daily-fermi 画面へ遷移する。i18n は ja/en 両方。tsc / eslint . / vitest green。
@@ -78,7 +78,7 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 | FB-10 | iPad横画面でカスタムコース作成画面レイアウト崩れ | P2 | DONE（2026-05-31 完了。Keita「iPad は正式サポート対象」で方針確定→Custom/PersonalCourseScreen に max-width:600px+margin:auto で崩れ修正 push `622ae43`・tsc0/eslint0/vitest413pass・Android 配信 success run 26700084638。本番反映済・Keita 実機目視確認も完了→DONE） | dev-logic | 方針確定（Keita決定済・iPadサポート） |
 
 #### FB-01 — 図解SVGと本文説明の不整合を監査・修正
-- 優先度: P1 / ステータス: REVIEW（自律ティック 2026-05-31。Bucket1 客観不整合は現行 main で解消済を検証＋回帰ガード追加・本番 deploy 済。残スコープは designer/Keita 案件＝別管理）/ 担当案: content-creator→（残は designer/Keita）
+- 優先度: P1 / ステータス: DONE（表行が正＝test-functional ○で DONE 済〔`598346a`・本番反映済〕。Bucket1 客観不整合の解消＋回帰ガード追加までが本タスク範囲で完了。残の designer/Keita 案件は別タスク FB-01r へ分離済）/ 担当案: content-creator→（残は designer/Keita）
 - 詳細: レッスン本文中の図解(SVG diagram)と本文説明が食い違っている箇所がある。全レッスンの図解を監査し、内容と図/計算が一致するよう修正。
 - DoD: 対象レッスンで図解の表す内容と本文記述・計算が一致する。監査結果が一覧化され修正漏れがない。
 - 関連: レッスン本文（SVG diagram）、`docs/CONTENT_AUDIT_20260525.md`（既存監査と整合）、`src/visuals/index.ts`、`src/__tests__/visualPropsIntegrity.test.ts`（新規回帰ガード）
@@ -95,7 +95,7 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 - 更新日: 2026-05-31
 
 #### FB-02 — 学習時間計測が途中離脱時に正しく停止しないバグ
-- 優先度: P1 / ステータス: REVIEW（自律ティック 2026-05-31。修正実装＋回帰テスト green→push→本番 deploy 済。残=実機両OSでの appStateChange 発火確認のみ＝headless 不可で Keita 実機待ち）/ 担当案: dev-logic
+- 優先度: P1 / ステータス: DONE（表行が正＝test-functional ○で DONE 済〔`9000dc9`・本番反映済〕。修正実装＋回帰テスト green→deploy 済。実機両OSの appStateChange 発火は headless 検証不可だが標準API+web fallback で論理健全＝Keita 実機確認は DONE 条件にしない方針〔feedback-review-agent-verify-then-done〕）/ 担当案: dev-logic
 - **進捗（2026-05-31 自律ティック）**: 根因を特定＝Capacitor ネイティブ WebView では背景化で `visibilitychange`(hidden)/`pagehide` が確実に発火せず、アクティブセグメントが閉じられないまま放置→復帰後に画面を閉じた瞬間の flush で `delta = now - segmentStart` に背景滞在時間まで含み過大計上（報告の「実態より長く記録」と一致。MAX_DURATION_MS=3h ガードは数十分の背景化を素通り）。修正: `src/hooks/useStudyTimer.ts` に `@capacitor/app` の `appStateChange` を正準シグナルとして結線（`Capacitor.isNativePlatform()` ガード、isActive=false→closeSegment 背景除外 / true→セグメント再開、addListener handle を cleanup で確実に remove・未解決レース対処）。web の visibilitychange 経路は温存、両シグナル発火でも closeSegment 冪等で二重計上なし。回帰テスト `src/__tests__/useStudyTimer.test.ts`（新規5: visible継続/web背景除外/native背景除外=本体ガード/5秒未満破棄/二重発火冪等）。green: tsc 0err / eslint . 0err / vitest 24files 413pass（新規5）。commit→push→本番 deploy 済。
 - **REVIEW 残（Keita 実機確認）**: ①学習中に背景化→数十分放置→復帰して画面を閉じ、累計に背景分が乗らないこと（Profile/StudyTimeScreen）。②iOS/Android 双方で `appStateChange` が実際に発火するか（特に iOS スワイプ離脱・通知センター時の isActive 遷移）。③既に過大記録された過去データの補正要否は別途 Keita 判断（提言どおり）。
 - 詳細: 学習セッション途中でアプリを離脱/バックグラウンド化した際に学習時間の計測が止まらず、実態より長い時間が記録される。
@@ -107,7 +107,7 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 - 更新日: 2026-05-31
 
 #### FB-03 — en locale 未翻訳文字列＋ロケール依存データの見直し
-- 優先度: P1 / ステータス: REVIEW（自律ティック 2026-05-31。UI chrome の EN 未翻訳漏れを潰し本番 deploy 済。残=レッスン図解の i18n＝下記別タスク提言。実機 en での目視のみ Keita 待ち）/ 担当案: dev-logic + content-creator
+- 優先度: P1 / ステータス: DONE（表行が正＝test-functional ○で DONE 済〔`82c7280`・本番反映済〕。UI chrome の EN 未翻訳漏れを解消。残のレッスン図解 i18n は別タスク FB-03r〔DONE〕へ分離済。実機 en 目視は Keita 確認不要方針でDONE）/ 担当案: dev-logic + content-creator
 - **進捗（2026-05-31 自律ティック / commit `82c7280` push→本番 deploy run 26699616836）**: `grep -rnP '[ぁ-んァ-ヶ一-龠]' src/` を起点に UI chrome の user-facing 未翻訳を走査。screens/ は DF-F7 coachmark 一掃で既に徹底 t() 化済みで、検出された日本語リテラルの大半は category route-key（内部識別子）/ JA サフィックス付き locale 切替済みデータ / TTS・読み仮名 / コメント。実際の漏れは aria-label/title/tooltip の4箇所のみ＝(a) `src/components/CompletionBadge.tsx:40,73-74,130-131` 完了回数バッジ aria-label/title 3箇所→既存キー `completed.timesDone`、(b) `src/screens/HomeScreenV3.tsx:453` アップグレードトースト閉じる aria-label→`common.close`。いずれも既存 i18n キー(ja/en 完備)を流用＝新規キー不要。ロケール依存例示データは UI chrome 内に該当なし。green: tsc 0err / eslint . 0err(既存warn19) / vitest 24files413pass（CompletionBadge.test 12 含む、ja デフォルトで従来文言一致を確認）。
 - **別タスク提言（FB-03 スコープ外）**: `src/components/LessonThumbnail.tsx:759-763` レッスン203（フェルミ市場規模）のサムネ SVG 図解内「人口×利用率×購入頻度×単価＝市場」が日本語ハードコード。レッスン題材図解＋フェルミ anchor に該当し本タスク範囲外。EN で不自然なのでレッスン図解の i18n 対応として別タスク化推奨（DF-F19 系レッスンビジュアル管轄が妥当）。
 - 詳細: en locale で未翻訳の文字列が残存。加えて "Japan population" 等のロケール依存データがハードコードされており en ユーザに不自然。文字列の翻訳補完とロケール依存データの見直しを行う。
