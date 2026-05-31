@@ -2708,7 +2708,7 @@ T-M（体力コース）で dev-logic が **main の作業ツリーを使用中*
 | 1 | T-U | コントラスト/可読性 整合性チェック（全テーマ×主要画面） | P1 | 中 | 不要 | テーマ系・T-T と一体 |
 | 1 | T-J | （既存 DONE）完了バッジのアクセント追従＝本番反映済 | — | — | — | ※DONE。本キューの「テーマ系」では色方針の参照のみ |
 | 1 | T-Y | 2回以上完了レッスンの完了マーク色を区別（習熟色） | P2 | 軽 | 不要 | テーマ系・習熟色は T-V パレット作業に内包・色方針を揃える |
-| 2 | T-W | 「あなた専用コース」セクションの展開/折りたたみ | P1 | 軽〜中 | 不要 | RoadmapScreenV3・T-V から独立 |
+| — | T-W | （既存 DONE）「あなた専用コース」セクションの展開/折りたたみ＝本番反映済（`ccbb47a`） | — | — | — | ※DONE（2026-05-31 実効性検証○・詳細セクション参照）。本キューの生きた実装対象ではない |
 | 3 | T-I | （既存 DONE）コース進捗表示＝本番反映済 | — | — | — | ※DONE。新規 T-I（Hayashi 重複）は削除済み |
 | 4 | T-K | （既存 DONE）ジャーナルグラフ tap 詳細＝本番反映済 | — | — | — | ※DONE |
 | 5 | T-L | （既存 DONE）フェルミの答えを解説の末尾へ＝本番反映済 | — | — | — | ※DONE |
@@ -2719,7 +2719,7 @@ T-M（体力コース）で dev-logic が **main の作業ツリーを使用中*
 1. **テーマ系は T-V のパレット選定を待って一括実装（T-V → T-R → T-T(+T-S) → T-U → T-Y）**。いずれも `theme.ts` / `tokens.css` / `AppearanceSettingsScreen` / 色トークンという**同じ領域**を触る。T-V でパレットが確定すると sepia/forest が刷新・差し替えされうるので（mono は T-R で削除）、T-R（死にテーマ削除）/T-T（非追従修正・根本原因A/B/C/D）/T-U（コントラスト）/T-Y（習熟色バッジ）を**T-V 実装に巻き込んで1回で**仕上げる。別々にやると刷新後にやり直しになり二度手間。
    - 流れ: designer 提案完成 → **Keita パレット選定（ゲート）** → dev-logic が T-V 実装（新規3テーマ＋MODES/tokens.css 刷新・UI 再設計）と同時に T-R（死にテーマ除去＝custom/enterprise/startup/mono）・T-T（`--brand-grad-h` override・RoadmapScreenV3 のハードコード青→accent-soft・LessonStories の #fff→accent-fg・プロフィール一覧追従）・T-U（全テーマ×主要画面の WCAG 検証）・T-Y（習熟色バッジ）を一括処理。T-S は T-T 根本原因A の一部（＝AM-L のグラデ廃止とも統合）。
    - T-T の網羅調査は**完了済み**（根本原因A/B/C/D に整理済み）＝待ち時間なし。T-V のパレット選定だけが律速。
-2. **T-W（あなた専用コース折りたたみ）は T-V と独立・生きた TODO**。RoadmapScreenV3 の既存開閉機構（T7/TC-1 の collapsedGroups）を「あなた専用コース」に適用するだけ。テーマ選定を待たずに着手可。RoadmapScreenV3 を触る点は T-T 根本原因B・（旧）T-I と同ファイルなので、RoadmapScreenV3 系をまとめて触るとコンフリクトを避けやすい。
+2. **T-W（あなた専用コース折りたたみ）は DONE（本番反映済 `ccbb47a`）**。RoadmapScreenV3 の既存開閉機構（T7/TC-1 の collapsedGroups）に「あなた専用コース」を1グループとして相乗りさせデフォルト折りたたみ化済み（詳細セクション参照）。生きた TODO ではない。
 3. **T-I（コース進捗）は既に DONE（本番反映済）**。Hayashi が重複起票した新規 T-I は削除済み。
 4. **T-K（ジャーナルグラフ tap）は既に DONE（本番反映済）**。
 5. **T-L（フェルミ答え末尾）は既に DONE（本番反映済）**。⚠削除見送り worktree（a23e/a7aa）に「答えを冒頭に出す」逆向き実験が残存していた点は履歴注記として維持（混同注意）。
@@ -2727,7 +2727,7 @@ T-M（体力コース）で dev-logic が **main の作業ツリーを使用中*
 横断の抜けもれ・注意（キュー全体）:
 - ⚠作業ツリー競合（最重要・着手タイミングの肝）: T-M で dev-logic が main 作業ツリー稼働中。**T-M 完了＝作業ツリー解放を待ってから着手**。先行できるのは T-T の読み取り専用調査（完了済み）と T-V の designer 提案（読み取り専用・進行中）のみ。
 - ⚠テーマ系の律速は T-V パレット選定: T-R/T-S/T-T/T-U/T-Y は T-V のパレット選定（Keita）がゲート。選定前にテーマ系を実装すると、刷新パレットで全部やり直しになる。T-V 提案が完成したら Keita に選定を促す（task-manager エスカレーション）。
-- 独立タスク（T-V を待たない・生きた TODO）: T-W のみ（T-I/T-K/T-L は DONE）。T-M 完了後すぐ着手可。
+- 独立タスク（T-V を待たない）: T-W も DONE 済（`ccbb47a`・T-I/T-K/T-L と同様に本番反映済）。本キューに残る生きた実装対象はテーマ系 T-V/T-R/T-T(+T-S)/T-U/T-Y のみで、いずれも T-V の Keita パレット選定がゲート。
 - migration: 本キューのテーマ系＋T-W とも**migration 不要**。承認案件の DB 変更は無し（T-Y の completion_counts も migration 031 で既存）。
 - backend デプロイ: 本キューのテーマ系＋T-W＋T-Y はフロントのみ（backend 不要）。フロント変更は Android が main push で自動反映、Render web は手動 deploy-production.yml。
 - デプロイ前チェック: 各件 `tsc -b --noEmit` ＋ **`eslint .`（全体・CI と同じスコープ）** で 0 error 確認（reference_logic_ci_lint_scope）。残置 worktree の false error は `--ignore-pattern '.claude/**'` で除外して真の数を見る。
