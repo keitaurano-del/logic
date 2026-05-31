@@ -205,7 +205,7 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 - 更新日: 2026-05-31
 
 #### FB-11 — 保存アイテムのフォルダ分け（FB-09 から分離）
-- 優先度: P3 / ステータス: TODO / 担当案: dev-logic
+- 優先度: P3 / ステータス: DONE（2026-05-31 自律ティック(林)。ローカル(localStorage)完結のフォルダ整理を実装＝SavedFolder型+folderId+CRUD(create/rename/delete=未分類化/assign)、SavedItemsScreen にフォルダchip行(すべて/未分類/各フォルダ)・インライン作成/改名/二段階削除確認・各行のフォルダ移動・空フォルダ空状態、FolderIcon/FolderPlusIcon追加(絵文字不使用)、i18n folder系18キー ja/en。回帰テスト10件 `SavedItemsScreen.folders.test.tsx`。green=tsc0/eslint.0err(既存warn19)/vitest 29files470pass/vite build OK。commit `f8dae08`→push→本番deploy run26711049241。folder_id を remote payload に載せず＝既存 user_saved_items 同期に回帰なし。端末間同期は FB-13 に分離。※本詳細セクションのステータスは表行(L75)の DONE と取り違えていたため自律ティックで整合化した）/ 担当案: dev-logic
 - 詳細: 保存アイテムをユーザー定義フォルダで整理できるようにする。FB-09 から分離した重い方の機能。
 - DoD: フォルダの作成・改名・削除、アイテムのフォルダ割当・移動ができ、構造が永続化・端末間同期される。空状態の表示も含む。i18n ja/en・中立丁寧体。
 - 実装メモ: folder data model（id/name/order/createdAt）＋ SavedItem への folderId 付与。localStorage だけだと既存の Supabase 同期設計（`user_saved_items` テーブル + `syncSavedItems`）と不整合になるため、Supabase に folders テーブル or `folder_id` カラムの migration が必要＝schema 変更を伴う。schema は本番 DB に触るので慎重に（必要なら Keita 確認）。
