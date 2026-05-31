@@ -2011,8 +2011,16 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
   - 両OS: モバイル専用。Android 実機で全パレット確認（theme-color meta 含む）。
   - 統合の効率: T-R/T-S/T-T/T-U/T-J/T-Y を T-V 実装に巻き込むことで、theme.ts / tokens.css / AppearanceSettings / i18n / 色トークンを1回の作業で触れる（個別に何度も触らない）。同一 dev-logic 一気通貫。
 
-### T-W — 「あなた専用コース」セクションの展開/折りたたみ　[P1 / REVIEW（2026-05-31 実装 green 完了・本番 deploy 済。Android 実機タップ確認のみ任意残）]
+### T-W — 「あなた専用コース」セクションの展開/折りたたみ　[P1 / DONE（2026-05-31 実効性検証○）]
 
+- ✅ DONE（2026-05-31 自律ティック(林) 実効性検証○・コードレベル判定）。実装 `ccbb47a`「feat(roadmap): T-W 「あなた専用コース」を折りたたみ可能に（デフォルト閉）」を `git merge-base --is-ancestor ccbb47a HEAD`＝YES で origin/main 在を裏取り（注入対策で実 git 出力で確認・偽コミット情報なし）。Android 自動配信＋Render web 反映済＝新規バンドル変更なし（DONE は doc 昇格のみ・再デプロイ不要）。DoD 1〜6 を `src/screens/RoadmapScreenV3.tsx` の file:line で充足・ライブ結線（dead code でない）を確認:
+  - **(1) 開閉トグル（他カテゴリと同一UI）○**: `CustomCourseSection`（`:918-955`）のヘッダ button が `aria-expanded={!collapsed}`/`aria-controls={panelId}`/`aria-label`（collapsed で `roadmap.expandGroupAria` 否なら `collapseGroupAria`）＋ChevronRight/Down 切替（`:947-949`）。pinned-fermi 群（`:539-556`）と完全同型パターン。
+  - **(2) デフォルト折りたたみ○**: `:376` `useState<Set<string>>(()=>new Set([CUSTOM_COURSE_GROUP_ID]))`＝初期集合に `custom-courses` を含め初回 collapsed=true。
+  - **(3) 同一機構で管理○**: `:512-513` で `collapsed={collapsedGroups.has(CUSTOM_COURSE_GROUP_ID)}`/`onToggle={()=>toggleGroup(CUSTOM_COURSE_GROUP_ID)}`＝T7/TC-1 と同じ `collapsedGroups`/`toggleGroup`（`:377-383` 関数更新型 add/delete）に1グループとして相乗り。
+  - **(4) 永続化＝既存カテゴリと整合○**: 既存カテゴリ開閉が in-memory（非 persist）のため DoD 通り T7 と同挙動に合わせた（collapsedGroups は localStorage 非依存）。customCourseStore のデータには無影響。
+  - **(5) 0件時に破綻しない○**: `:937` コメント通りヘッダは courses 0 でも常時描画、`:957-994` 展開時は `courses.length>0` のときだけリスト、作成ボタンは件数不問で展開時常時表示。
+  - **(6) green○**: tsc -b --noEmit EXIT0 error0 / eslint . EXIT0 0err（warning19=既存a11y/exhaustive-deps・T-W無関係）/ vitest 30files 494pass fail0（林が本ティックで実コマンド再実行し裏取り）。新規 i18n ゼロ（既存キー流用）。
+  - **caveat**: (7) Android 実機タップ目視は headless 不可＝コードレベル○判定。[[feedback-review-agent-verify-then-done]] に従い Keita 実機確認は DONE 条件にせず。実機 QA は任意残。
 - ✅ 実装（2026-05-31 自律ティック・dev-logic 相当に委譲）: `src/screens/RoadmapScreenV3.tsx` のみ変更。擬似グループ ID `CUSTOM_COURSE_GROUP_ID='custom-courses'` を新設し、既存 `collapsedGroups` 開閉機構（T7/TC-1）に「あなた専用コース」を1グループとして追加。初期集合に含めて**デフォルト折りたたみ**。トグル UI・chevron アイコン（src/icons の ChevronRight/Down、emoji 不使用）・aria 文言（roadmap.expand/collapseGroupAria）・見出し（customCourse.sectionTitle/Desc）は全て既存流用＝**新規 i18n ゼロ**。0件時はヘッダのみ表示で破綻なし。永続化は既存カテゴリ開閉が非 persist（in-memory）のため DoD 通り同挙動に合わせた。検証（林が実コマンドで裏取り）: tsc 0 / eslint `.` 0 errors（warning 19 は全て既存）/ vitest 22files 389tests 全 pass。DoD 1-6 充足。残=DoD 7 Android 実機タップ確認（headless 不可・任意）。
 
 - 依頼原文（Keita 2026-05-29）: 「あなた専用コース（AIカスタムコース）も展開・閉じるできるようにして。常時表示だと煩わしい」。
