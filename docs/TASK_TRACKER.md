@@ -31,7 +31,7 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 
 | ID | タイトル | 優先度 | ステータス | 担当案 | 種別 |
 |----|---------|--------|-----------|--------|------|
-| FB-01 | 図解SVGと本文説明の不整合を監査・修正 | P1 | TODO | content-creator | 即修正(correctness) |
+| FB-01 | 図解SVGと本文説明の不整合を監査・修正 | P1 | REVIEW（Bucket1 客観不整合は現行 main で解消済を検証＋回帰ガード `598346a` 追加・deploy 済。残=designer/Keita 案件のみ→分離） | content-creator→dev-logic | 即修正(correctness) |
 | FB-02 | 学習時間計測が途中離脱時に正しく停止しないバグ | P1 | TODO | dev-logic | 即修正(bug) |
 | FB-03 | en locale 未翻訳文字列＋ロケール依存データの見直し | P1 | TODO | dev-logic + content-creator | 即修正 |
 | FB-04 | TTS読み上げ速度の細粒度調整＋連続再生の安定性 | P2 | TODO | dev-logic | 中(安定性はbug寄り) |
@@ -43,12 +43,19 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 | FB-10 | iPad横画面でカスタムコース作成画面レイアウト崩れ | BLOCKED | BLOCKED | dev-logic | 方針判断(Logicモバイル専用) |
 
 #### FB-01 — 図解SVGと本文説明の不整合を監査・修正
-- 優先度: P1 / ステータス: TODO / 担当案: content-creator
+- 優先度: P1 / ステータス: REVIEW（自律ティック 2026-05-31。Bucket1 客観不整合は現行 main で解消済を検証＋回帰ガード追加・本番 deploy 済。残スコープは designer/Keita 案件＝別管理）/ 担当案: content-creator→（残は designer/Keita）
 - 詳細: レッスン本文中の図解(SVG diagram)と本文説明が食い違っている箇所がある。全レッスンの図解を監査し、内容と図/計算が一致するよう修正。
 - DoD: 対象レッスンで図解の表す内容と本文記述・計算が一致する。監査結果が一覧化され修正漏れがない。
-- 関連: レッスン本文（SVG diagram）、`docs/CONTENT_AUDIT_20260525.md`（既存監査と整合）、`src/visuals/index.ts`
+- 関連: レッスン本文（SVG diagram）、`docs/CONTENT_AUDIT_20260525.md`（既存監査と整合）、`src/visuals/index.ts`、`src/__tests__/visualPropsIntegrity.test.ts`（新規回帰ガード）
 - 依存: なし
 - 提言・抜けもれ: correctness 系なので即修正（サンプル承認不要＝Bucket1 相当・feedback_audit_triage_correctness_first 準拠）。回帰: 共通図解コンポーネント由来の崩れなら他レッスンにも波及するため横展開で確認。i18n: 図中文字列が ja/en 両方にあるか。
+- **進捗（2026-05-31 自律ティック）**: CONTENT_AUDIT_20260525 の Bucket1（客観バグ/計算/タイポ）を現行 main の実コードと file:line 照合し、**全て解消済**を確認 — fermi-224(ja)「約10倍以上過小」修正済 / 美容室来店回数 fermi-203/216 を年6回に統一済(明示注記入り) / typo lesson-22「スッキリ」・lesson-68「掘り下げる」・proposalEn「Listing」修正済 / focus FeedbackLoop=`arrows`・Leverage=`tiers` で本文整合済 / lesson-304 アブダクションの演繹図誤用は visual 除去済。誤キー走査の結果リポ全体で 0 件。
+- **今ティック成果物**: 系統的リスク（CONTENT_AUDIT L116 = visualProps が `Record<string,unknown>` でキー名ミスが tsc 素通り→無関係 default 図にサイレントフォールバック）を機械的に止める回帰テスト `src/__tests__/visualPropsIntegrity.test.ts` を新規追加（FeedbackLoopDiagram の誤キー edges 禁止＋arrows from/to 数値、LeveragePointsDiagram の誤キー points 禁止＋tiers 配列。ja/en 全レッスン走査・空振り検知付き。FeedbackLoop 7step / Leverage 8step をカバー）。green: tsc 0err / eslint . 0err / vitest 23files 408pass(新規19)。commit `598346a` push→本番 deploy run 26698654089。
+- **REVIEW 残（FB-01 本体では着手不可＝鉄則の designer/Keita ゲート。別タスク化推奨）**:
+  - Bucket3 designer: アブダクション専用 Visual 新規（lesson-304 現状 visual 無し）/ focus RAIN・5-4-3-2-1 の Pyramid 不適→別Visual / STAR法 601・634 の Pyramid 不適→別Visual / LogicTree 不適題材（自己紹介4段631・二語関係615）→別Visual or visual外す。
+  - Bucket2 Keita: fermi-225 航空機 phase1 の設問再設計（提示式と正解の乖離・教育設計判断）。
+  - Bucket4 follow-up: visualProps の型強化（`Record<string,unknown>`→判別 union 等で silent fallback を型でも封じる。今回テストで暫定カバー）。
+  - 未走査: *LessonsEn の visualProps 細部整合（CONTENT_AUDIT L59 既載）。
 - note: 2026-05-31 ドッグフーディング(dogfood)で検出（p05）。
 - 更新日: 2026-05-31
 
