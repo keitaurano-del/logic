@@ -6,6 +6,7 @@ import { recordCompletion } from '../stats'
 import { recordActivity } from '../activityLog'
 import { ArrowRightIcon, CheckIcon, XIcon } from '../icons'
 import { Button } from '../components/Button'
+import { ProblemGenLoader } from '../components/ProblemGenLoader'
 import { Header } from '../components/platform/Header'
 import { haptic } from '../platform/haptics'
 import { t } from '../i18n'
@@ -37,12 +38,12 @@ export function DailyProblemScreen({ onBack }: DailyProblemScreenProps) {
   }, [state])
 
   if (state === 'loading') {
+    // 生成中は AIProblemGenScreen と同じく ProblemGenLoader のフルスクリーン
+    // オーバーレイで進捗演出を表示する（プレーンな1行テキストから差し替え）
     return (
       <div className="stack" style={{ padding: '0 20px' }}>
         <Header title={t('dailyProblem.title')} onBack={onBack} />
-        <div style={{ textAlign: 'center', padding: 'var(--s-8) 0', color: 'var(--text-muted)' }}>
-          <div style={{ fontSize: '1.0667rem' }}>{t('dailyProblem.loading')}</div>
-        </div>
+        <ProblemGenLoader />
       </div>
     )
   }
