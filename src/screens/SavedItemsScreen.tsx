@@ -1,17 +1,37 @@
-import { useState } from 'react'
+import { useState, type CSSProperties } from 'react'
 import { Header } from '../components/platform/Header'
-import { BookmarkIcon, BookmarkFilledIcon, ChevronRightIcon, SearchIcon } from '../icons'
+import {
+  BookmarkIcon,
+  BookmarkFilledIcon,
+  ChevronRightIcon,
+  SearchIcon,
+  FolderIcon,
+  FolderPlusIcon,
+  PencilIcon,
+  TrashIcon,
+  CheckIcon,
+  XIcon,
+} from '../icons'
 import {
   loadSavedItems,
   loadSavedSort,
   saveSavedSort,
   unsaveItem,
+  loadFolders,
+  createFolder,
+  renameFolder,
+  deleteFolder,
+  assignItemToFolder,
   type SavedItem,
   type SavedItemType,
   type SavedSort,
+  type SavedFolder,
 } from '../savedItemsStore'
 import { haptic } from '../platform/haptics'
 import { t } from '../i18n'
+
+/** フォルダによる絞り込み: 'all' / 'unfiled' / フォルダ ID */
+type FolderFilter = 'all' | 'unfiled' | string
 
 interface Props {
   onBack: () => void
@@ -39,6 +59,15 @@ export function SavedItemsScreen({
   const [filter, setFilter] = useState<Filter>('all')
   const [query, setQuery] = useState('')
   const [sort, setSort] = useState<SavedSort>(() => loadSavedSort())
+  const [folderFilter, setFolderFilter] = useState<FolderFilter>('all')
+  // 新規フォルダ作成のインライン入力 (表示中かどうか)
+  const [creatingFolder, setCreatingFolder] = useState(false)
+  const [newFolderName, setNewFolderName] = useState('')
+  // 改名中のフォルダ ID と入力値
+  const [editingFolderId, setEditingFolderId] = useState<string | null>(null)
+  const [editFolderName, setEditFolderName] = useState('')
+  // 削除確認中のフォルダ ID（二段階確認）
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
   const [, force] = useState(0)
   const bump = () => force((v) => v + 1)
 
@@ -48,8 +77,50 @@ export function SavedItemsScreen({
     saveSavedSort(s)
   }
 
+  const folders = loadFolders()
+
+  const handleCreateFolder = () => {
+    const created = createFolder(newFolderName)
+    if (created) {
+      haptic.light()
+      setFolderFilter(created.id)
+    }
+    setNewFolderName('')
+    setCreatingFolder(false)
+    bump()
+  }
+
+  const handleRenameFolder = (id: string) => {
+    renameFolder(id, editFolderName)
+    haptic.light()
+    setEditingFolderId(null)
+    setEditFolderName('')
+    bump()
+  }
+
+  const handleDeleteFolder = (id: string) => {
+    deleteFolder(id)
+    haptic.light()
+    if (folderFilter === id) setFolderFilter('all')
+    setConfirmDeleteId(null)
+    setEditingFolderId(null)
+    bump()
+  }
+
+  const handleAssignFolder = (itemId: string, folderId: string | null) => {
+    assignItemToFolder(itemId, folderId)
+    haptic.selection()
+    bump()
+  }
+
   const all = loadSavedItems()
-  const byType = filter === 'all' ? all : all.filter((i) => i.type === filter)
+  const byFolder =
+    folderFilter === 'all'
+      ? all
+      : folderFilter === 'unfiled'
+        ? all.filter((i) => !i.folderId)
+        : all.filter((i) => i.folderId === folderFilter)
+  const byType = filter === 'all' ? byFolder : byFolder.filter((i) => i.type === filter)
 
   const trimmed = query.trim().toLowerCase()
   const searched = trimmed
@@ -175,6 +246,214 @@ export function SavedItemsScreen({
           })}
         </div>
 
+        {/* フォルダ chip 行（FB-11, ローカル専用） */}
+        <div
+          role="tablist"
+          aria-label={t('savedItems.moveToFolderTitle')}
+          style={{
+            display: 'flex',
+            gap: 6,
+            overflowX: 'auto',
+            paddingBottom: 4,
+            scrollbarWidth: 'none',
+            WebkitOverflowScrolling: 'touch',
+            alignItems: 'center',
+          }}
+        >
+          {(['all', 'unfiled'] as FolderFilter[]).map((ff) => {
+            const active = folderFilter === ff
+            return (
+              <button
+                key={ff}
+                type="button"
+                role="tab"
+                aria-selected={active}
+                onClick={() => { haptic.selection(); setFolderFilter(ff) }}
+                style={folderChipStyle(active)}
+              >
+                {ff === 'all' ? t('savedItems.folderAll') : t('savedItems.folderUnfiled')}
+              </button>
+            )
+          })}
+
+          {folders.map((folder) => {
+            const active = folderFilter === folder.id
+            const isEditing = editingFolderId === folder.id
+            if (isEditing) {
+              return (
+                <div
+                  key={folder.id}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 4,
+                    background: 'var(--bg-card)',
+                    border: '1px solid var(--border)',
+                    borderRadius: 'var(--radius-pill)',
+                    padding: '2px 4px 2px 10px',
+                    flexShrink: 0,
+                  }}
+                >
+                  <input
+                    type="text"
+                    value={editFolderName}
+                    onChange={(e) => setEditFolderName(e.target.value)}
+                    aria-label={t('savedItems.folderNameAria')}
+                    autoFocus
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') handleRenameFolder(folder.id)
+                      if (e.key === 'Escape') { setEditingFolderId(null); setConfirmDeleteId(null) }
+                    }}
+                    style={{
+                      width: 110,
+                      background: 'transparent',
+                      border: 'none',
+                      outline: 'none',
+                      color: 'var(--text-primary)',
+                      fontSize: '0.8rem',
+                      fontFamily: "'Noto Sans JP', sans-serif",
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleRenameFolder(folder.id)}
+                    aria-label={t('savedItems.folderSave')}
+                    style={folderIconBtnStyle('var(--brand)')}
+                  >
+                    <CheckIcon width={16} height={16} />
+                  </button>
+                  {confirmDeleteId === folder.id ? (
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteFolder(folder.id)}
+                      aria-label={t('savedItems.folderDeleteConfirmYes')}
+                      title={t('savedItems.folderDeleteConfirm')}
+                      style={folderIconBtnStyle('var(--accent-fg)', 'var(--danger)')}
+                    >
+                      <TrashIcon width={15} height={15} />
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setConfirmDeleteId(folder.id)}
+                      aria-label={t('savedItems.folderDelete')}
+                      style={folderIconBtnStyle('var(--danger)')}
+                    >
+                      <TrashIcon width={15} height={15} />
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => { setEditingFolderId(null); setConfirmDeleteId(null) }}
+                    aria-label={t('savedItems.folderCancel')}
+                    style={folderIconBtnStyle('var(--text-secondary)')}
+                  >
+                    <XIcon width={16} height={16} />
+                  </button>
+                </div>
+              )
+            }
+            return (
+              <div
+                key={folder.id}
+                style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}
+              >
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => { haptic.selection(); setFolderFilter(folder.id) }}
+                  style={{ ...folderChipStyle(active), display: 'inline-flex', alignItems: 'center', gap: 6 }}
+                >
+                  <FolderIcon width={14} height={14} aria-hidden="true" />
+                  {folder.name}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEditingFolderId(folder.id)
+                    setEditFolderName(folder.name)
+                    setConfirmDeleteId(null)
+                  }}
+                  aria-label={t('savedItems.folderEditAria')}
+                  style={{ ...folderIconBtnStyle('var(--text-secondary)'), marginLeft: 2 }}
+                >
+                  <PencilIcon width={14} height={14} />
+                </button>
+              </div>
+            )
+          })}
+
+          {creatingFolder ? (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 4,
+                background: 'var(--bg-card)',
+                border: '1px solid var(--border)',
+                borderRadius: 'var(--radius-pill)',
+                padding: '2px 4px 2px 10px',
+                flexShrink: 0,
+              }}
+            >
+              <input
+                type="text"
+                value={newFolderName}
+                onChange={(e) => setNewFolderName(e.target.value)}
+                placeholder={t('savedItems.folderNamePlaceholder')}
+                aria-label={t('savedItems.folderNameAria')}
+                autoFocus
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') handleCreateFolder()
+                  if (e.key === 'Escape') { setCreatingFolder(false); setNewFolderName('') }
+                }}
+                style={{
+                  width: 110,
+                  background: 'transparent',
+                  border: 'none',
+                  outline: 'none',
+                  color: 'var(--text-primary)',
+                  fontSize: '0.8rem',
+                  fontFamily: "'Noto Sans JP', sans-serif",
+                }}
+              />
+              <button
+                type="button"
+                onClick={handleCreateFolder}
+                aria-label={t('savedItems.folderCreate')}
+                style={folderIconBtnStyle('var(--brand)')}
+              >
+                <CheckIcon width={16} height={16} />
+              </button>
+              <button
+                type="button"
+                onClick={() => { setCreatingFolder(false); setNewFolderName('') }}
+                aria-label={t('savedItems.folderCancel')}
+                style={folderIconBtnStyle('var(--text-secondary)')}
+              >
+                <XIcon width={16} height={16} />
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => { haptic.light(); setCreatingFolder(true) }}
+              aria-label={t('savedItems.folderNewAria')}
+              style={{
+                ...folderChipStyle(false),
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                color: 'var(--brand)',
+              }}
+            >
+              <FolderPlusIcon width={15} height={15} aria-hidden="true" />
+              {t('savedItems.folderNew')}
+            </button>
+          )}
+        </div>
+
         {/* 検索ボックス */}
         <div
           style={{
@@ -250,7 +529,11 @@ export function SavedItemsScreen({
               <BookmarkIcon width={28} height={28} />
             </div>
             <div style={{ fontSize: '1rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-              {byType.length > 0 ? t('savedItems.emptySearch') : emptyMessage(filter)}
+              {byType.length > 0
+                ? t('savedItems.emptySearch')
+                : folderFilter !== 'all' && filter === 'all'
+                  ? t('savedItems.emptyFolder')
+                  : emptyMessage(filter)}
             </div>
           </div>
         ) : (
@@ -259,8 +542,10 @@ export function SavedItemsScreen({
               <SavedRow
                 key={item.id}
                 item={item}
+                folders={folders}
                 onOpen={() => handleOpen(item)}
                 onUnsave={() => handleUnsave(item)}
+                onAssignFolder={(folderId) => handleAssignFolder(item.id, folderId)}
               />
             ))}
           </div>
@@ -270,7 +555,55 @@ export function SavedItemsScreen({
   )
 }
 
-function SavedRow({ item, onOpen, onUnsave }: { item: SavedItem; onOpen: () => void; onUnsave: () => void }) {
+/** フォルダ chip の共通スタイル（active で brand 背景） */
+function folderChipStyle(active: boolean): CSSProperties {
+  return {
+    padding: '8px 12px',
+    background: active ? 'var(--brand)' : 'var(--bg-card)',
+    color: active ? 'var(--accent-fg)' : 'var(--text-secondary)',
+    border: 'none',
+    borderRadius: 'var(--radius-pill)',
+    fontSize: '0.7867rem',
+    fontWeight: 700,
+    cursor: 'pointer',
+    fontFamily: "'Noto Sans JP', sans-serif",
+    whiteSpace: 'nowrap',
+    flexShrink: 0,
+    minHeight: 36,
+  }
+}
+
+/** フォルダ操作の小さなアイコンボタンのスタイル */
+function folderIconBtnStyle(color: string, bg?: string): CSSProperties {
+  return {
+    width: 28,
+    height: 28,
+    borderRadius: 8,
+    background: bg ?? 'transparent',
+    border: 'none',
+    color,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+    flexShrink: 0,
+  }
+}
+
+function SavedRow({
+  item,
+  folders,
+  onOpen,
+  onUnsave,
+  onAssignFolder,
+}: {
+  item: SavedItem
+  folders: SavedFolder[]
+  onOpen: () => void
+  onUnsave: () => void
+  onAssignFolder: (folderId: string | null) => void
+}) {
+  const [folderMenuOpen, setFolderMenuOpen] = useState(false)
   const typeLabel = (() => {
     switch (item.type) {
       case 'lesson': return t('savedItems.typeLesson')
@@ -283,9 +616,11 @@ function SavedRow({ item, onOpen, onUnsave }: { item: SavedItem; onOpen: () => v
   const stepBadge = item.type === 'lesson-step' && typeof item.stepIndex === 'number'
     ? t('savedItems.stepLabel', { n: String(item.stepIndex + 1) })
     : null
+  const currentFolder = item.folderId ? folders.find((f) => f.id === item.folderId) : undefined
   return (
     <div
       style={{
+        position: 'relative',
         background: 'var(--bg-card)',
         borderRadius: 'var(--radius-lg)',
         padding: '12px 14px',
@@ -332,6 +667,23 @@ function SavedRow({ item, onOpen, onUnsave }: { item: SavedItem; onOpen: () => v
       </button>
       <button
         type="button"
+        onClick={() => { haptic.selection(); setFolderMenuOpen((v) => !v) }}
+        aria-label={t('savedItems.moveToFolderAria')}
+        aria-expanded={folderMenuOpen}
+        style={{
+          width: 36, height: 36, borderRadius: 10,
+          background: currentFolder ? 'var(--accent-soft)' : 'transparent',
+          border: `1px solid var(--border)`,
+          color: currentFolder ? 'var(--brand)' : 'var(--text-secondary)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          cursor: 'pointer',
+          flexShrink: 0,
+        }}
+      >
+        <FolderIcon width={16} height={16} />
+      </button>
+      <button
+        type="button"
         onClick={onUnsave}
         aria-label={t('savedItems.unsaveAria')}
         style={{
@@ -346,6 +698,72 @@ function SavedRow({ item, onOpen, onUnsave }: { item: SavedItem; onOpen: () => v
       >
         <BookmarkFilledIcon width={16} height={16} />
       </button>
+
+      {folderMenuOpen && (
+        <div
+          role="menu"
+          aria-label={t('savedItems.moveToFolderTitle')}
+          style={{
+            position: 'absolute',
+            top: '100%',
+            right: 14,
+            marginTop: 6,
+            zIndex: 20,
+            minWidth: 180,
+            maxHeight: 260,
+            overflowY: 'auto',
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border)',
+            borderRadius: 'var(--radius-lg)',
+            boxShadow: 'var(--shadow-v3-card-inset)',
+            padding: 6,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+          }}
+        >
+          <button
+            type="button"
+            role="menuitem"
+            onClick={() => { onAssignFolder(null); setFolderMenuOpen(false) }}
+            style={folderMenuItemStyle(!currentFolder)}
+          >
+            {t('savedItems.moveToUnfiled')}
+          </button>
+          {folders.map((f) => (
+            <button
+              key={f.id}
+              type="button"
+              role="menuitem"
+              onClick={() => { onAssignFolder(f.id); setFolderMenuOpen(false) }}
+              style={folderMenuItemStyle(item.folderId === f.id)}
+            >
+              <FolderIcon width={14} height={14} aria-hidden="true" style={{ flexShrink: 0 }} />
+              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{f.name}</span>
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   )
+}
+
+/** フォルダ移動メニューの項目スタイル（選択中は brand 強調） */
+function folderMenuItemStyle(active: boolean): CSSProperties {
+  return {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    width: '100%',
+    padding: '9px 10px',
+    background: active ? 'var(--accent-soft)' : 'transparent',
+    border: 'none',
+    borderRadius: 8,
+    color: active ? 'var(--brand)' : 'var(--text-primary)',
+    fontSize: '0.8533rem',
+    fontWeight: active ? 700 : 600,
+    cursor: 'pointer',
+    fontFamily: "'Noto Sans JP', sans-serif",
+    textAlign: 'left',
+  }
 }

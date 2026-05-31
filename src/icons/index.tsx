@@ -425,6 +425,26 @@ export function HistoryIcon(p: IconProps) {
   )
 }
 
+// フォルダ（保存アイテムの整理 / フォルダ分け用）
+export function FolderIcon(p: IconProps) {
+  return (
+    <svg {...base} {...p}>
+      <path d="M4 20a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h4l2 3h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2z" />
+    </svg>
+  )
+}
+
+// フォルダ + プラス（新規フォルダ作成ボタン用）
+export function FolderPlusIcon(p: IconProps) {
+  return (
+    <svg {...base} {...p}>
+      <path d="M4 20a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h4l2 3h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2z" />
+      <line x1="12" y1="11" x2="12" y2="17" />
+      <line x1="9" y1="14" x2="15" y2="14" />
+    </svg>
+  )
+}
+
 export function BrandMark(p: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="54 54 92 92" xmlns="http://www.w3.org/2000/svg" {...p}>

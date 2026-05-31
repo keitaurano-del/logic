@@ -10,6 +10,7 @@ import { getSupabaseClient } from './db/index'
 
 const STORAGE_KEY = 'logic-saved-items'
 const SORT_STORAGE_KEY = 'logic-saved-sort'
+const FOLDERS_STORAGE_KEY = 'logic-saved-folders'
 
 /** 保存一覧の並び替え順 */
 export type SavedSort = 'newest' | 'oldest' | 'title'
@@ -52,6 +53,26 @@ export type SavedItem = {
   stepIndex?: number
   /** lesson-step: 親レッスンID（一覧から開くとき必要） */
   parentLessonId?: number
+  /**
+   * 所属フォルダ ID（未分類は undefined）。
+   * 【重要・FB-11】folderId はローカル (localStorage) 専用。Supabase の
+   * user_saved_items テーブルには folder_id カラムがまだ無いため、
+   * savedItemToRow() の remote payload には絶対に載せないこと。
+   * cross-device folder sync は migration 035 適用後（＝Keita 承認後）の別タスク。
+   */
+  folderId?: string
+}
+
+/**
+ * 保存アイテムを整理するためのフォルダ（ローカル専用・FB-11）。
+ * Supabase 同期は未整備。端末間同期は migration 035 適用後の別タスク。
+ */
+export type SavedFolder = {
+  id: string
+  name: string
+  /** 表示順（小さいほど先頭）。新規作成時は末尾に積む */
+  order: number
+  createdAt: string
 }
 
 function makeId(type: SavedItemType, refId: string): string {
@@ -156,6 +177,121 @@ export function getSavedItemStats(): SavedItemStats {
 }
 
 // =============================================
+// フォルダ分け (FB-11, ローカル専用)
+// =============================================
+// folderId / SavedFolder は localStorage 完結。Supabase には同期しない
+// （user_saved_items に folder_id カラムが無い）。cross-device folder sync は
+// migration 035 適用後（＝Keita 承認後）の別タスク。
+
+/** ユニークな ID を生成（crypto.randomUUID が無い環境にもフォールバック） */
+function makeUid(): string {
+  try {
+    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+      return crypto.randomUUID()
+    }
+  } catch { /* fallthrough */ }
+  return `f-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`
+}
+
+/** localStorage からフォルダ一覧を読み込む（order 昇順）。不正値は空配列 */
+export function loadFolders(): SavedFolder[] {
+  try {
+    const raw = localStorage.getItem(FOLDERS_STORAGE_KEY)
+    if (!raw) return []
+    const parsed = JSON.parse(raw) as SavedFolder[]
+    if (!Array.isArray(parsed)) return []
+    return parsed
+      .filter((f) => f && typeof f.id === 'string' && typeof f.name === 'string')
+      .sort((a, b) => a.order - b.order)
+  } catch { return [] }
+}
+
+function persistFolders(folders: SavedFolder[]) {
+  try {
+    localStorage.setItem(FOLDERS_STORAGE_KEY, JSON.stringify(folders))
+  } catch { /* no-op */ }
+}
+
+/** フォルダを作成（末尾に追加）。空白のみの名前は作成しない（null を返す）。 */
+export function createFolder(name: string): SavedFolder | null {
+  const trimmed = name.trim()
+  if (!trimmed) return null
+  const folders = loadFolders()
+  const maxOrder = folders.reduce((m, f) => Math.max(m, f.order), -1)
+  const fresh: SavedFolder = {
+    id: makeUid(),
+    name: trimmed,
+    order: maxOrder + 1,
+    createdAt: new Date().toISOString(),
+  }
+  persistFolders([...folders, fresh])
+  return fresh
+}
+
+/** フォルダ名を変更。空白のみの名前は無視（変更しない）。 */
+export function renameFolder(id: string, name: string): void {
+  const trimmed = name.trim()
+  if (!trimmed) return
+  const folders = loadFolders()
+  let changed = false
+  const next = folders.map((f) => {
+    if (f.id === id && f.name !== trimmed) {
+      changed = true
+      return { ...f, name: trimmed }
+    }
+    return f
+  })
+  if (changed) persistFolders(next)
+}
+
+/**
+ * フォルダを削除する。
+ * 削除されたフォルダに属していた保存アイテムは未分類（folderId=undefined）に
+ * 戻す。アイテム自体は消さない。
+ */
+export function deleteFolder(id: string): void {
+  const folders = loadFolders().filter((f) => f.id !== id)
+  persistFolders(folders)
+  // 属していたアイテムを未分類化
+  const items = loadSavedItems()
+  let changed = false
+  const next = items.map((it) => {
+    if (it.folderId === id) {
+      changed = true
+      const { folderId: _omit, ...rest } = it
+      void _omit
+      return rest as SavedItem
+    }
+    return it
+  })
+  if (changed) persist(next)
+}
+
+/**
+ * 保存アイテムをフォルダへ割り当てる。folderId が null / undefined のときは
+ * 未分類化する。
+ */
+export function assignItemToFolder(itemId: string, folderId: string | null): void {
+  const items = loadSavedItems()
+  let changed = false
+  const next = items.map((it) => {
+    if (it.id !== itemId) return it
+    if (folderId) {
+      if (it.folderId === folderId) return it
+      changed = true
+      return { ...it, folderId }
+    }
+    // 未分類化
+    if (it.folderId === undefined) return it
+    changed = true
+    const { folderId: _omit, ...rest } = it
+    void _omit
+    return rest as SavedItem
+  })
+  if (changed) persist(next)
+}
+
+// =============================================
 // Supabase 同期 (Phase 1: Device Sync)
 // =============================================
 
@@ -188,6 +324,10 @@ function rowToSavedItem(row: SavedItemRow): SavedItem | null {
 }
 
 function savedItemToRow(userId: string, item: SavedItem): Record<string, unknown> {
+  // 【重要・FB-11】item.folderId は remote payload に絶対に含めない。
+  // 本番 user_saved_items テーブルには folder_id カラムがまだ無いため、
+  // 追加すると既存の保存アイテム同期が全面的に壊れる（回帰）。
+  // cross-device folder sync は migration 035 適用後（＝Keita 承認後）の別タスク。
   return {
     user_id: userId,
     item_type: item.type,
@@ -293,8 +433,16 @@ export async function syncSavedItems(userId: string): Promise<void> {
     if (remote == null) return
     const local = loadSavedItems()
 
+    // folderId はローカル専用 (FB-11)。remote 行には乗っていないため、
+    // 同期で remote 版を採用しても既存のローカル folderId は引き継ぐ。
+    const localFolderById = new Map<string, string | undefined>()
+    for (const l of local) localFolderById.set(l.id, l.folderId)
+
     const byId = new Map<string, SavedItem>()
-    for (const r of remote) byId.set(r.id, r)
+    for (const r of remote) {
+      const localFolder = localFolderById.get(r.id)
+      byId.set(r.id, localFolder ? { ...r, folderId: localFolder } : r)
+    }
     const toPush: SavedItem[] = []
     for (const l of local) {
       const r = byId.get(l.id)

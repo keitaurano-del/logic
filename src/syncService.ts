@@ -613,6 +613,9 @@ export async function syncOnLogout(): Promise<void> {
     // 次回ログイン時の再構築コストが高いユーザーコンテンツも保持。
     // Supabase 同期未整備のうちは消すと完全に失われる。
     'logic-saved-items',
+    // フォルダ分けはローカル専用機能 (FB-11)。Supabase 同期未整備のため
+    // ログアウト時に消すとユーザーの整理が完全に失われる。保持する。
+    'logic-saved-folders',
     'logic-display-name',
     'logic-guest-id',
     'logic-flashcards',
