@@ -45,7 +45,7 @@ export function CustomCourseScreen({ courseId, onStartLesson, onBack }: CustomCo
   return (
     <div style={{ background: 'var(--bg-primary)', minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: 'var(--text-primary)' }}>
       {/* ヘッダー */}
-      <div style={{ padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 14px', display: 'flex', alignItems: 'center', gap: 12 }}>
+      <div style={{ width: '100%', maxWidth: 600, margin: '0 auto', boxSizing: 'border-box', padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 14px', display: 'flex', alignItems: 'center', gap: 12 }}>
         {onBack && (
           <button type="button" onClick={onBack} aria-label={t('personalCourse.backAria')} style={{ width: 44, height: 44, borderRadius: '50%', background: 'var(--bg-card)', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--md-sys-color-primary)" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="15 18 9 12 15 6" /></svg>
@@ -57,7 +57,7 @@ export function CustomCourseScreen({ courseId, onStartLesson, onBack }: CustomCo
         </div>
       </div>
 
-      <div style={{ flex: 1, padding: '0 16px 32px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+      <div style={{ flex: 1, width: '100%', maxWidth: 600, margin: '0 auto', boxSizing: 'border-box', padding: '0 16px 32px', display: 'flex', flexDirection: 'column', gap: 14 }}>
         {/* コース概要カード */}
         <div style={{ background: 'var(--bg-card)', borderRadius: 16, padding: '16px 18px', boxShadow: 'var(--shadow-v3-card-inset)', border: `1.5px solid color-mix(in srgb, var(--brand) 19%, transparent)` }}>
           {course.description && (
