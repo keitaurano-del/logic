@@ -67,7 +67,7 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 | FB-02 | 学習時間計測が途中離脱時に正しく停止しないバグ | P1 | DONE（2026-05-31 test-functional ○: useStudyTimer.ts appStateChange結線＋冪等closeSegment＋cleanup・回帰5件pass・`9000dc9`・deploy済。native実機発火はheadless検証不可だが標準API+web fallbackで論理健全） | dev-logic | 即修正(bug) |
 | FB-03 | en locale 未翻訳文字列＋ロケール依存データの見直し | P1 | DONE（2026-05-31 test-functional ○: EN UI残存日本語 CompletionBadge3箇所/HomeScreenV3:450 を t()化・`82c7280`・deploy済。残のレッスン図解LessonThumbnail:759 i18n は別タスクFB-03rへ分離） | dev-logic + content-creator | 即修正 |
 | FB-04 | TTS読み上げ速度の細粒度調整＋連続再生の安定性 | P2 | REVIEW（速度の細粒度調整＋永続化は完了○`14a19e4`・deploy済。だが②連続再生の安定性は未着手＝DoD半分未達でREVIEW継続。②をTTS連続再生安定性バグ別タスクへsplit予定） | dev-logic | 中(安定性はbug寄り) |
-| FB-05 | コース横断/戻る/離脱復帰のナビ・IA再設計【クラスタ4件】 | P1 | TODO | designer主導+dev-logic | Issue化推奨 |
+| FB-05 | コース横断/戻る/離脱復帰のナビ・IA再設計【クラスタ4件】 | P1 | TODO（2026-05-31 Issue化済＝[#235](https://github.com/keitaurano-del/logic/issues/235)。次は designer IA 案→Keita 決定＝設計判断ゲート。decision 後に dev-logic 実装着手） | designer主導+dev-logic | Issue化済 #235 |
 | FB-06 | ストリーク猶予・復活アイテム導入 | P2 | DONE（2026-05-31 完了。Keita「フリーズ型・無料配布のみ」で unblock→実装 push `915e622`・stats.test +13 green・tsc0/eslint0/vitest424pass。Render web デプロイ＋Android 配信ともに本番反映済。Keita 実機/目視確認も完了→DONE） | Keita手動→dev-logic | 仕様判断（Keita決定済） |
 | FB-07 | 不正解時フィードバック文言を中立トーンに | P2 | DONE（2026-05-31 test-functional ○: i18n.ts:561 ja「不正解」/:2474 en「Incorrect」・三点リーダ除去をライブ確認・残存0件・本番反映済） | content-creator | 中(UI文言中立) |
 | FB-08 | AI問題生成の待ち時間に進捗表示 or ストック | P2 | REVIEW（2026-05-31 自律ティック。進捗表示スライス実装→green→本番反映。残=実機目視 Keita〔任意〕。ストック方式は別スコープ） | dev-logic | 中 |
@@ -129,8 +129,9 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 - 更新日: 2026-05-31（速度細粒度スライス実装・REVIEW へ）
 
 #### FB-05 — コース横断/戻る/離脱復帰のナビ・IA再設計【クラスタ親・4件】
-- 優先度: P1 / ステータス: TODO / 担当案: designer 主導 + dev-logic
+- 優先度: P1 / ステータス: TODO（2026-05-31 自律ティック(林)で「Issue化推奨」に従い GitHub Issue [#235](https://github.com/keitaurano-del/logic/issues/235) を logic リポに起票。次アクションは designer の IA 案提示→Keita の IA 決定＝設計判断ゲート。この IA 決定が他 UI 変更の前提のため、決定が出るまで dev-logic 実装には着手しない＝自律ティックでは前進不可。decision 後に着手）/ 担当案: designer 主導 + dev-logic
 - 内訳（子）: p01 / p07 / p08 / p14
+- 進捗（2026-05-31 自律ティック）: app 全体のナビ／ルータに波及する設計エピックで、IA 決定（戻るの基準・コース横断の入口・離脱復帰の中断状態 persist）が dev-logic 実装の前提＝設計判断。自律ティックで navigation を勝手に書き換えて本番 deploy するのは鉄則（設計判断は Keita ゲート）と高リスク（全画面波及）に反するため、台帳の「Issue化推奨」どおり Issue #235 を起票して designer/Keita が設計を回せる窓口を用意するに留めた。Issue には課題の synthesize・DoD・次アクション順・設計時留意（回帰/両OS/E2E/a11y/persist）・関連ファイルを記載済み。
 - 詳細: コース横断の移動、戻る操作、離脱からの復帰導線が分かりにくい。ナビゲーション/情報設計(IA)をまとめて再設計する。GitHub Issue 化推奨（起票は logic リポ。cxo-agent リポは使わない＝feedback_no_cxo_agent）。
 - DoD: 戻る/コース横断/離脱復帰の各導線が一貫したルールで動き、ユーザが現在地と戻り先を把握できる。子4件それぞれで受け入れ基準を定義。
 - 関連: `src/AppV3.tsx`（Screen union・ナビゲーション）、ルーティング、画面遷移共通コンポーネント、`src/components/AppShell.tsx`
