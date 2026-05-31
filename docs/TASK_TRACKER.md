@@ -1389,9 +1389,9 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
 
 - 進捗（2026-05-28）:
   - (a) ✅ DONE: 5/26〜5/28 の Daily Note 本体キャッチアップ作成済（林）。
-  - (b) 一部: 20-Projects/logic 状況の最新化は進行中（部分反映）。TASK_TRACKER ミラー配置は残。
-  - (c) 未: 日次自動生成の仕組み化は未着手。**T-F 依存**（claude を root cron で回せないと案1/案2 とも動かない）。
-  - (d) 未: recurring 管理（R-1）の漏れ検知ルール定義は T-F 解決後に本格運用。
+  - (b) ✅ DONE（2026-05-31 自律ティック(林)）: 20-Projects/logic の release-log.md / README.md を 2026-05-31 時点へ最新化し、TASK_TRACKER 要約ミラー（TASK_TRACKER_MIRROR.md）を配置完了。obsidian-vault commit `e6f977f`（自分の3ファイルのみ名指し add＝他アクター未コミット編集は混入回避、push は obsidian-git auto-sync に委ねる）。副次対応＝README に平文 GitHub token があったのでプレースホルダ化（秘匿漏洩除去）。
+  - (c) 未: 日次自動生成の仕組み化は未着手。**T-F 依存**（claude を root cron で回せないと案1/案2 とも動かない）。※[[project-vultr-second-server]] memory では T-F は新箱 dev crontab 移設で解決済とあるので、(c) は morning-briefing.sh に Daily Note 本体生成ステップを足す実装方式の Keita 確認待ち。
+  - (d) 未: recurring 管理（R-1）の漏れ検知ルール定義は (c) の方式確定後に本格運用。
 - 依頼原文（Keita 2026-05-28）: 「Obsidian 全部最新に更新して。全然更新されてないから毎日更新して、task-manager にちゃんと管理させて」。
 - 現状調査（実 vault 照合済み）:
   - 自動パイプライン（`50-Daily/` 配下の `briefings/` `feedback/` `inspections/` サブフォルダ）は毎日更新されている。cron 3 本稼働: `03:00 night-patrol`（inspections）→ `06:00 feedback-watcher`（feedback）→ `07:00 morning-briefing`（briefings、ceo agent）。各サブフォルダに 2026-05-28 分まで存在。
@@ -1414,9 +1414,9 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
   - [x] (a) 5/26 Daily Note 作成（briefings/feedback/inspections 2026-05-26 を統合）
   - [x] (a) 5/27 Daily Note 作成（PR #233 main マージ・migration 032 適用等の進捗込み）
   - [x] (a) 5/28 Daily Note 作成（本日分・本バッチ T-A〜T-H 登録も記載）
-  - [~] (b) release-log.md を 5/28 時点へ更新（5/22〜5/28 の commit/PR/デプロイ）※一部反映
-  - [ ] (b) README.md（20-Projects/logic）更新
-  - [ ] (b) TASK_TRACKER ミラーを 20-Projects/logic/ に配置
+  - [x] (b) release-log.md を 2026-05-31 時点へ更新（ドッグフーディング feedback 大量対応節・FB-01〜12/AF-01,02/UI-27,28/T-W/DF-F8/DF-FV-1/T1〜7 昇格・AM-N REVIEW未push を反映）
+  - [x] (b) README.md（20-Projects/logic）更新（updated 日・生きた TODO 列挙・平文 token プレースホルダ化）
+  - [x] (b) TASK_TRACKER 要約ミラー（TASK_TRACKER_MIRROR.md）を 20-Projects/logic/ に配置
   - [ ] (c) 日次自動生成の方式決定（案1: morning-briefing.sh 統合 / 案2: 別 cron）を Keita 確認
   - [ ] (c) ⚠依存: morning-briefing.sh に相乗りする案1 は **T-F（cron root 権限エラー）が直らないと動かない**（07:00 ブリ自体が空振り中）。T-F 解決を先行 or 同時に。別 cron 案2 でも claude CLI を root cron で叩くなら同じ root 権限問題を踏むので T-F の解決策（後述）を流用すること
   - [ ] (c) 選定方式で実装（スクリプト改修 or cron 追加）＋手動試走で 1 日分生成確認
