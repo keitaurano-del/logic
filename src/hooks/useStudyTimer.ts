@@ -16,9 +16,22 @@
  *   - hook 内で `addStudyTime` を呼ぶことで localStorage は確実に更新される。
  *   - server 側 POST は best-effort。未ログイン / オフライン / サーバーエラー時は無視。
  *   - 同一ライフタイム内で `flush` が複数回呼ばれても二重計上しないよう、ガードを置く。
+ *
+ * バックグラウンド除外（FB-02）:
+ *   - Web では `visibilitychange`(hidden) でセグメントを閉じて背景時間を除外する。
+ *   - Capacitor ネイティブ（iOS/Android）の WebView では、アプリ背景化で
+ *     `visibilitychange`(hidden) が確実に発火しない。そのまま放置すると、長時間
+ *     背景化したあと復帰 → 画面を閉じた瞬間の flush で `delta = now - segmentStart`
+ *     に背景滞在時間まで丸ごと含まれて過大計上になる（FB-02）。
+ *   - 対策として、ネイティブ時は `@capacitor/app` の `appStateChange` を正準シグナル
+ *     として結線し、`isActive === false` で closeSegment（背景除外）/ `true` で再開する。
+ *   - web と native のシグナルが両方発火しても closeSegment / 再開は冪等なので二重計上しない。
  */
 
 import { useEffect, useRef } from 'react'
+import { App } from '@capacitor/app'
+import type { PluginListenerHandle } from '@capacitor/core'
+import { Capacitor } from '@capacitor/core'
 import { addStudyTime, appendStudyDaily } from '../stats'
 import { getSyncUser } from '../syncService'
 import { API_BASE } from '../screens/apiBase'
@@ -134,15 +147,26 @@ export function useStudyTimer(opts: UseStudyTimerOptions) {
       } catch { /* ignore */ }
     }
 
+    // ── アクティブ / 非アクティブ遷移の共通ハンドラ ────
+    // web の visibilitychange と native の appStateChange で共有する。
+    // closeSegment は segmentStartRef を 0 にするので冪等、再開もガード済みなので、
+    // 両方のシグナルが発火しても二重計上しない。
+    const onBackground = () => {
+      closeSegment()
+    }
+    const onForeground = () => {
+      // visible / active に戻ったら新しいセグメントを開始
+      if (segmentStartRef.current === 0 && !flushedRef.current) {
+        segmentStartRef.current = Date.now()
+      }
+    }
+
     // ── visibilitychange でバックグラウンド時間を除外 ──
     const onVisibilityChange = () => {
       if (document.visibilityState === 'hidden') {
-        closeSegment()
+        onBackground()
       } else {
-        // visible に戻ったら新しいセグメントを開始
-        if (segmentStartRef.current === 0 && !flushedRef.current) {
-          segmentStartRef.current = Date.now()
-        }
+        onForeground()
       }
     }
 
@@ -158,6 +182,29 @@ export function useStudyTimer(opts: UseStudyTimerOptions) {
       window.addEventListener('beforeunload', onBeforeUnload)
     }
 
+    // ── Capacitor native: appStateChange を正準シグナルに（FB-02）──
+    // native の WebView では visibilitychange(hidden) が確実に発火しないため、
+    // App プラグインの appStateChange で背景化 / 復帰を検出する。
+    // addListener は Promise<PluginListenerHandle> を返すので、cleanup 時点で
+    // 未解決でも確実に remove できるよう handle を保持し、解決後 remove する。
+    let appStateHandle: PluginListenerHandle | null = null
+    let appStateRemoved = false
+    if (Capacitor.isNativePlatform()) {
+      void App.addListener('appStateChange', ({ isActive }) => {
+        if (isActive) {
+          onForeground()
+        } else {
+          onBackground()
+        }
+      }).then((handle) => {
+        appStateHandle = handle
+        // cleanup が先に走っていたら（handle 未解決のレース）解決後に remove する
+        if (appStateRemoved) {
+          void handle.remove()
+        }
+      }).catch(() => { /* native 以外 / プラグイン未利用時は無視 */ })
+    }
+
     return () => {
       if (typeof document !== 'undefined') {
         document.removeEventListener('visibilitychange', onVisibilityChange)
@@ -165,6 +212,13 @@ export function useStudyTimer(opts: UseStudyTimerOptions) {
       if (typeof window !== 'undefined') {
         window.removeEventListener('pagehide', onPageHide)
         window.removeEventListener('beforeunload', onBeforeUnload)
+      }
+      // native listener を確実に remove（リーク防止）。
+      // addListener が未解決なら appStateRemoved フラグで then 側に remove を委ねる。
+      appStateRemoved = true
+      if (appStateHandle) {
+        void appStateHandle.remove()
+        appStateHandle = null
       }
       // アンマウント時に必ず flush
       flush()

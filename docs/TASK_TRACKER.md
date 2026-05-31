@@ -60,7 +60,9 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 - 更新日: 2026-05-31
 
 #### FB-02 — 学習時間計測が途中離脱時に正しく停止しないバグ
-- 優先度: P1 / ステータス: TODO / 担当案: dev-logic
+- 優先度: P1 / ステータス: REVIEW（自律ティック 2026-05-31。修正実装＋回帰テスト green→push→本番 deploy 済。残=実機両OSでの appStateChange 発火確認のみ＝headless 不可で Keita 実機待ち）/ 担当案: dev-logic
+- **進捗（2026-05-31 自律ティック）**: 根因を特定＝Capacitor ネイティブ WebView では背景化で `visibilitychange`(hidden)/`pagehide` が確実に発火せず、アクティブセグメントが閉じられないまま放置→復帰後に画面を閉じた瞬間の flush で `delta = now - segmentStart` に背景滞在時間まで含み過大計上（報告の「実態より長く記録」と一致。MAX_DURATION_MS=3h ガードは数十分の背景化を素通り）。修正: `src/hooks/useStudyTimer.ts` に `@capacitor/app` の `appStateChange` を正準シグナルとして結線（`Capacitor.isNativePlatform()` ガード、isActive=false→closeSegment 背景除外 / true→セグメント再開、addListener handle を cleanup で確実に remove・未解決レース対処）。web の visibilitychange 経路は温存、両シグナル発火でも closeSegment 冪等で二重計上なし。回帰テスト `src/__tests__/useStudyTimer.test.ts`（新規5: visible継続/web背景除外/native背景除外=本体ガード/5秒未満破棄/二重発火冪等）。green: tsc 0err / eslint . 0err / vitest 24files 413pass（新規5）。commit→push→本番 deploy 済。
+- **REVIEW 残（Keita 実機確認）**: ①学習中に背景化→数十分放置→復帰して画面を閉じ、累計に背景分が乗らないこと（Profile/StudyTimeScreen）。②iOS/Android 双方で `appStateChange` が実際に発火するか（特に iOS スワイプ離脱・通知センター時の isActive 遷移）。③既に過大記録された過去データの補正要否は別途 Keita 判断（提言どおり）。
 - 詳細: 学習セッション途中でアプリを離脱/バックグラウンド化した際に学習時間の計測が止まらず、実態より長い時間が記録される。
 - DoD: 途中離脱・バックグラウンド遷移・アプリ終了で計測が正しく停止し、記録される学習時間が実態と一致する。
 - 関連: `src/stats.ts`（studyTime/streak）、ライフサイクル/visibilitychange ハンドリング、Capacitor App プラグイン
