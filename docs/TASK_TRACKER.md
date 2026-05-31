@@ -2864,7 +2864,7 @@ Keita 側にボールが残る作業（エージェントは着手できない�
 | ID | UI-29 |
 | タイトル | DailyFermiScreen の未定義CSS変数 `--bg-muted` 残存を定義済み変数に置換（disabled 背景） |
 | 優先度 | P2 |
-| ステータス | TODO |
+| ステータス | DONE（2026-05-31 実装・検証・本番反映完了。`DailyFermiScreen.tsx:257`電卓insert／`:438`AIチャットsend の disabled 背景の未定義 `var(--bg-muted)` を全テーマ定義済み `var(--bg-tertiary)` に置換〔UI-27 submit 是正と整合〕。repo全体 `--bg-muted` 残存 0（`grep -rn` 0件）確認。静的ソース走査の回帰テスト `src/__tests__/UI29.bgMutedRemoval.test.ts` で残存0＋tertiary使用を恒久ロック。tsc0/eslint0〔warn19既存・本件無関係〕/vitest 28files460pass green。commit `c482521`→push origin/main→本番deploy `gh workflow run deploy-production.yml` run26709450920。test-functional 検証不要レベルの機械的CSS変数置換＋回帰テスト済で DONE 化） |
 | 担当 | dev-logic |
 | 詳細 | test-functional が UI-27 検証中に発見した副産物バグ。`src/screens/DailyFermiScreen.tsx:257`（電卓 insert ボタンの disabled 背景）と `:438`（AIチャット send ボタンの disabled 背景）に、未定義の CSS 変数 `var(--bg-muted)` が残存している。UI-27 は submit ボタンのみ `--bg-tertiary` へ是正したため、この2箇所は対象外で残った。`--bg-muted` は `src/styles/` 全体に定義が無く（実 grep で 0 件）、disabled 状態の背景色が無効値になる潜在バグ。`tsc`/`eslint` では検出されない（CSS 変数は型チェック対象外）。定義済みの適切な disabled 背景用変数 `--bg-tertiary`（全テーマで `tokens.css` に定義済み）に置換する。 |
 | 関連ファイル | `src/screens/DailyFermiScreen.tsx`（`:257` 電卓 insert disabled、`:438` AIチャット send disabled の2箇所）。置換先 `--bg-tertiary` は `src/styles/tokens.css` で全テーマ定義済み。UI-27 で submit ボタンを `--bg-tertiary` 化した前例と整合。 |
