@@ -670,6 +670,9 @@ const STRINGS: Record<Locale, Strings> = {
     'streak.totalStudyDays': '合計学習日数',
     'streak.days': '日',
     'streak.month': '{year}年{month}月',
+    'streak.freeze.label': 'ストリークフリーズ',
+    'streak.freeze.count': '{count}個',
+    'streak.freeze.hint': '1日学習を休んでも、フリーズが自動で1日分のストリークを守ります。学習を続けると無料でたまります（最大{max}個）。',
 
     // Settings screen
     'settings.support.appLanguage': 'アプリの言語',
@@ -2577,6 +2580,9 @@ const STRINGS: Record<Locale, Strings> = {
     'streak.totalStudyDays': 'Total Study Days',
     'streak.days': 'days',
     'streak.month': '{year}/{month}',
+    'streak.freeze.label': 'Streak Freeze',
+    'streak.freeze.count': '{count}',
+    'streak.freeze.hint': 'If you miss a day, a freeze automatically protects one day of your streak. You earn them for free as you keep learning (up to {max}).',
 
     // Settings screen
     'settings.support.appLanguage': 'App Language',

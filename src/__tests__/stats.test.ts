@@ -181,4 +181,122 @@ describe('stats.ts', () => {
       expect(getStreak()).toBe(2)
     })
   })
+
+  describe('streak freeze', () => {
+    it('defaults to 0 freezes for a brand-new / un-migrated user', async () => {
+      const { getStreakFreezeCount } = await import('../stats')
+      expect(getStreakFreezeCount()).toBe(0)
+    })
+
+    it('reads count=0 safely from corrupted / partial legacy data', async () => {
+      localStorage.setItem('logic-streak-freeze', JSON.stringify({ foo: 'bar' }))
+      const { getStreakFreezeCount } = await import('../stats')
+      expect(getStreakFreezeCount()).toBe(0)
+    })
+
+    it('grants a freeze and caps stock at MAX_STREAK_FREEZE (2)', async () => {
+      const { grantStreakFreeze, getStreakFreezeCount, MAX_STREAK_FREEZE } = await import('../stats')
+      expect(MAX_STREAK_FREEZE).toBe(2)
+      expect(grantStreakFreeze()).toBe(true)
+      expect(grantStreakFreeze()).toBe(true)
+      expect(getStreakFreezeCount()).toBe(2)
+      // 3 個目はストック上限で頭打ち（false を返し増えない）
+      expect(grantStreakFreeze()).toBe(false)
+      expect(getStreakFreezeCount()).toBe(2)
+    })
+
+    it('clamps an over-cap persisted count down to MAX on read', async () => {
+      localStorage.setItem('logic-streak-freeze', JSON.stringify({ count: 9, consumedDates: [], lastGrantStreak: 0 }))
+      const { getStreakFreezeCount } = await import('../stats')
+      expect(getStreakFreezeCount()).toBe(2)
+    })
+
+    it('keeps the streak alive by auto-consuming one freeze when a single day is missed', async () => {
+      const { addStudyTime, getStreak, grantStreakFreeze, getStreakFreezeCount } = await import('../stats')
+      grantStreakFreeze()
+      // 23, 24 連続学習 → 25 は学習せず（1日抜け）。今日 = 26。
+      vi.setSystemTime(new Date(2026, 4, 23, 9, 0))
+      addStudyTime(1000)
+      vi.setSystemTime(new Date(2026, 4, 24, 9, 0))
+      addStudyTime(1000)
+      // 今日は 26 で、昨日(25)が抜けている
+      vi.setSystemTime(new Date(2026, 4, 26, 9, 0))
+      // フリーズで 25 を埋めて 23-24-(25)-... の連結が生存。今日 26 は未学習なので
+      // anchor=昨日(25,freeze)。streak = 25,24,23 = 3。
+      expect(getStreak()).toBe(3)
+      // フリーズは 1 個消費されて 0 に
+      expect(getStreakFreezeCount()).toBe(0)
+    })
+
+    it('resets to 0 on a missed day when no freeze is available', async () => {
+      const { addStudyTime, getStreak } = await import('../stats')
+      vi.setSystemTime(new Date(2026, 4, 23, 9, 0))
+      addStudyTime(1000)
+      vi.setSystemTime(new Date(2026, 4, 24, 9, 0))
+      addStudyTime(1000)
+      // 25 抜け、今日 26、フリーズ 0 個 → 従来どおりリセット
+      vi.setSystemTime(new Date(2026, 4, 26, 9, 0))
+      expect(getStreak()).toBe(0)
+    })
+
+    it('does not double-consume a freeze for the same gap on repeated getStreak calls', async () => {
+      const { addStudyTime, getStreak, grantStreakFreeze, getStreakFreezeCount } = await import('../stats')
+      grantStreakFreeze()
+      grantStreakFreeze() // 2 個
+      vi.setSystemTime(new Date(2026, 4, 23, 9, 0))
+      addStudyTime(1000)
+      vi.setSystemTime(new Date(2026, 4, 24, 9, 0))
+      addStudyTime(1000)
+      vi.setSystemTime(new Date(2026, 4, 26, 9, 0))
+      const first = getStreak()
+      const second = getStreak()
+      expect(first).toBe(3)
+      expect(second).toBe(3)
+      // 25 の穴は 1 回だけ消費される（2 回呼んでも 1 個しか減らない）
+      expect(getStreakFreezeCount()).toBe(1)
+    })
+
+    it('does not consume a freeze when there is no gap (pure streak)', async () => {
+      const { addStudyTime, getStreak, grantStreakFreeze, getStreakFreezeCount } = await import('../stats')
+      grantStreakFreeze()
+      vi.setSystemTime(new Date(2026, 4, 24, 9, 0))
+      addStudyTime(1000)
+      vi.setSystemTime(new Date(2026, 4, 25, 9, 0))
+      addStudyTime(1000)
+      // 連続なのでフリーズは温存される
+      expect(getStreak()).toBe(2)
+      expect(getStreakFreezeCount()).toBe(1)
+    })
+
+    it('grants one freeze automatically when the streak hits the 5-day milestone', async () => {
+      const { recordCompletion, getStreakFreezeCount } = await import('../stats')
+      // 5 日連続でレッスン完了 → 5 日節目で 1 個付与
+      for (let day = 21; day <= 25; day++) {
+        vi.setSystemTime(new Date(2026, 4, day, 9, 0))
+        recordCompletion(`lesson-${day}`)
+      }
+      expect(getStreakFreezeCount()).toBe(1)
+    })
+
+    it('does not grant before reaching the milestone', async () => {
+      const { recordCompletion, getStreakFreezeCount } = await import('../stats')
+      for (let day = 22; day <= 25; day++) {
+        vi.setSystemTime(new Date(2026, 4, day, 9, 0))
+        recordCompletion(`lesson-${day}`)
+      }
+      // 4 日連続 = 節目未到達
+      expect(getStreakFreezeCount()).toBe(0)
+    })
+
+    it('does not re-grant for the same milestone on the same day', async () => {
+      const { recordCompletion, getStreakFreezeCount } = await import('../stats')
+      for (let day = 21; day <= 25; day++) {
+        vi.setSystemTime(new Date(2026, 4, day, 9, 0))
+        recordCompletion(`lesson-${day}`)
+      }
+      // 同じ 25 日にもう 1 レッスン完了しても節目は跨がない
+      recordCompletion('lesson-25b')
+      expect(getStreakFreezeCount()).toBe(1)
+    })
+  })
 })

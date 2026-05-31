@@ -63,6 +63,7 @@ export function recordCompletion(lessonKey: string) {
   }
   save(stats)
   recordLessonStreak()
+  maybeGrantStreakFreeze()
   // 日別ログにも記録（時間情報なし）。useStudyTimer 経由でも別途 ms 付きで記録されるが、
   // タイマー回らなかった短時間完了でも「何を学んだか」一覧には出るようにする。
   appendStudyDaily({ key: lessonKey, ts: Date.now() })
@@ -168,6 +169,109 @@ export function getCompletedCount(): number {
   return load().completedLessons.length
 }
 
+// ── ストリークフリーズ（連続学習が1日抜けても自動で穴埋めするアイテム） ──
+//
+// Duolingo の Streak Freeze 相当。無料配布のみ（課金導線なし）。
+//   - 最大 MAX_STREAK_FREEZE 個までストックできる。
+//   - 1日抜けが発生したら getStreak() がフリーズを1個自動消費してストリークを維持する。
+//   - フリーズが0個なら従来どおりストリークは途切れる。
+//   - 付与はストリークが GRANT_STREAK_INTERVAL 日の節目に達したとき 1 個（recordCompletion 経由）。
+//
+// 永続化: localStorage キー `logic-streak-freeze`
+//   { count: number;            // 現在の保有数（0..MAX_STREAK_FREEZE）
+//     consumedDates: string[];  // フリーズで穴埋めした日付（YYYY-MM-DD）。getStreak 計算で連結に使う
+//     lastGrantStreak: number } // 最後に付与判定したストリーク値（同じ節目で多重付与しないため）
+//
+// 後方互換: フィールド欠落の旧データ / 未保存ユーザーは count=0・consumedDates=[]・lastGrantStreak=0
+//           として安全に読める（既存ストリークデータ logic-stats とは別キーなので破壊しない）。
+export const MAX_STREAK_FREEZE = 2
+const GRANT_STREAK_INTERVAL = 5
+const STREAK_FREEZE_KEY = 'logic-streak-freeze'
+
+export type StreakFreeze = { count: number; consumedDates: string[]; lastGrantStreak: number }
+
+function loadFreeze(): StreakFreeze {
+  try {
+    const raw = localStorage.getItem(STREAK_FREEZE_KEY)
+    if (raw) {
+      const p = JSON.parse(raw) as Partial<StreakFreeze>
+      const count =
+        typeof p.count === 'number' && p.count >= 0
+          ? Math.min(Math.floor(p.count), MAX_STREAK_FREEZE)
+          : 0
+      return {
+        count,
+        consumedDates: Array.isArray(p.consumedDates) ? p.consumedDates.filter((d) => typeof d === 'string') : [],
+        lastGrantStreak: typeof p.lastGrantStreak === 'number' && p.lastGrantStreak >= 0 ? p.lastGrantStreak : 0,
+      }
+    }
+  } catch { /* ignore */ }
+  return { count: 0, consumedDates: [], lastGrantStreak: 0 }
+}
+
+function saveFreeze(f: StreakFreeze) {
+  try {
+    localStorage.setItem(
+      STREAK_FREEZE_KEY,
+      JSON.stringify({
+        count: Math.min(Math.max(0, Math.floor(f.count)), MAX_STREAK_FREEZE),
+        consumedDates: f.consumedDates,
+        lastGrantStreak: f.lastGrantStreak,
+      }),
+    )
+  } catch { /* localStorage 不可は無視 */ }
+}
+
+/** 現在保有しているストリークフリーズの個数（0..MAX_STREAK_FREEZE）。 */
+export function getStreakFreezeCount(): number {
+  return loadFreeze().count
+}
+
+/**
+ * ストリークフリーズを1個付与する（上限 MAX_STREAK_FREEZE で頭打ち）。
+ * 無料配布専用。実際に増えたら true、上限到達などで増えなければ false を返す。
+ */
+export function grantStreakFreeze(): boolean {
+  const f = loadFreeze()
+  if (f.count >= MAX_STREAK_FREEZE) return false
+  f.count += 1
+  saveFreeze(f)
+  return true
+}
+
+/**
+ * 学習を記録したタイミングで、ストリークの節目に達していればフリーズを無料付与する。
+ *
+ * 付与トリガー（安全側＝控えめ）: ストリークが GRANT_STREAK_INTERVAL(=5) 日の倍数に達したとき 1 個。
+ * 同じ節目で多重付与しないよう lastGrantStreak を進め、超えた分の節目はまとめて 1 個だけ付与する
+ * （上限 MAX_STREAK_FREEZE で頭打ち）。getStreak の副作用と混ざらないよう、付与判定でのみ
+ * lastGrantStreak を更新する。
+ *
+ * 注: getStreak() を呼ぶとフリーズ自動消費の副作用が走るが、recordCompletion から呼ばれる時点では
+ *     今日の studyDates が記録済み（anchor=今日）なので消費は発生しない。
+ */
+function maybeGrantStreakFreeze() {
+  try {
+    const streak = getStreak()
+    const f = loadFreeze()
+    const milestone = Math.floor(streak / GRANT_STREAK_INTERVAL)
+    const lastMilestone = Math.floor(f.lastGrantStreak / GRANT_STREAK_INTERVAL)
+    if (milestone > lastMilestone) {
+      // 節目を新たに通過した。上限内であれば 1 個付与（連続して複数節目を跨いでも 1 個まで）。
+      f.lastGrantStreak = streak
+      if (f.count < MAX_STREAK_FREEZE) f.count += 1
+      saveFreeze(f)
+    }
+  } catch { /* localStorage 不可は無視 */ }
+}
+
+/**
+ * ストリークを計算する。1日の抜けはフリーズを自動消費して連結を維持する。
+ *
+ * 純粋な読み取りだけでなく「フリーズ消費」という副作用を持つ。穴埋めに使ったフリーズは
+ * その場で count を減らし、穴埋めした日付を consumedDates に記録する（同じ日を二重消費しない）。
+ * フリーズが0個なら従来どおりそこでストリークが途切れる。
+ */
 export function getStreak(): number {
   const dates = load().studyDates.sort()
   if (dates.length === 0) return 0
@@ -175,21 +279,62 @@ export function getStreak(): number {
   const todayStr = today()
   const yesterdayStr = localDateStr(Date.now() - 86400000)
 
-  // streak must include today or yesterday
+  // 学習日の集合（重複除去）。連結判定はこの集合 + フリーズ穴埋め日で行う。
+  const studied = new Set(dates)
   const last = dates[dates.length - 1]
-  if (last !== todayStr && last !== yesterdayStr) return 0
 
-  let streak = 1
-  for (let i = dates.length - 1; i > 0; i--) {
-    const cur = new Date(dates[i]).getTime()
-    const prev = new Date(dates[i - 1]).getTime()
-    if (cur - prev === 86400000) {
+  const freeze = loadFreeze()
+  let freezeAvail = freeze.count
+  const newConsumed: string[] = []
+
+  // ストリークの「先頭日」を決める。今日学習済みなら今日、未学習でも昨日学習済みならまだ生きている。
+  // どちらでもない場合、昨日の1日穴をフリーズで埋められればストリークは生存できる。
+  let anchor: string
+  if (last === todayStr || studied.has(todayStr)) {
+    anchor = todayStr
+  } else if (studied.has(yesterdayStr)) {
+    anchor = yesterdayStr
+  } else if (freeze.consumedDates.includes(yesterdayStr)) {
+    // 昨日は過去に既にフリーズで埋め済み → ストリークは生存（追加消費なし）
+    anchor = yesterdayStr
+  } else if (freezeAvail > 0) {
+    // 昨日が空いている1日抜け → フリーズ1個で昨日を埋めてストリーク維持
+    freezeAvail -= 1
+    newConsumed.push(yesterdayStr)
+    anchor = yesterdayStr
+  } else {
+    // フリーズ0個 → 従来どおりストリークは途切れる
+    return 0
+  }
+
+  // anchor から1日ずつ過去へ遡り、抜けはフリーズで埋めながら連続日数を数える。
+  let streak = 0
+  let cursorMs = new Date(anchor).getTime()
+  const earliestMs = new Date(dates[0]).getTime()
+  while (cursorMs >= earliestMs) {
+    const cursorStr = localDateStr(cursorMs)
+    if (studied.has(cursorStr) || freeze.consumedDates.includes(cursorStr) || newConsumed.includes(cursorStr)) {
       streak++
-    } else if (cur - prev > 86400000) {
+    } else if (freezeAvail > 0) {
+      // この日の抜けをフリーズで埋める
+      freezeAvail -= 1
+      newConsumed.push(cursorStr)
+      streak++
+    } else {
       break
     }
-    // same day duplicates: skip
+    cursorMs -= 86400000
   }
+
+  // フリーズを実際に消費した場合のみ永続化する（純粋ストリークでは書き込まない）。
+  if (newConsumed.length > 0) {
+    saveFreeze({
+      count: freezeAvail,
+      consumedDates: [...freeze.consumedDates, ...newConsumed],
+      lastGrantStreak: freeze.lastGrantStreak,
+    })
+  }
+
   return streak
 }
 

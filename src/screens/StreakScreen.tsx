@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
-import { getStreak, getStudyDates, getTotalStudyDays } from '../stats'
-import { ArrowLeftIcon, ArrowRightIcon, FlameIcon } from '../icons'
+import { getStreak, getStudyDates, getTotalStudyDays, getStreakFreezeCount, MAX_STREAK_FREEZE } from '../stats'
+import { ArrowLeftIcon, ArrowRightIcon, FlameIcon, BandageIcon } from '../icons'
 import { Header } from '../components/platform/Header'
 import { t, getLocale } from '../i18n'
 
@@ -36,6 +36,7 @@ export function StreakScreen({ onBack }: StreakScreenProps) {
   const [monthOffset, setMonthOffset] = useState(0)
 
   const streak = getStreak()
+  const freezeCount = getStreakFreezeCount()
   const studyDates = useMemo(() => new Set(getStudyDates()), [])
   const totalDays = getTotalStudyDays()
   const longestStreak = useMemo(() => getLongestStreak(getStudyDates()), [])
@@ -94,6 +95,25 @@ export function StreakScreen({ onBack }: StreakScreenProps) {
           <div style={{ fontSize: '2.1333rem', fontWeight: 700, color: 'var(--text)' }}>{streakWeeks}</div>
           <div style={{ fontSize: '0.9333rem', color: 'var(--text-muted)', marginTop: 4 }}>{t('streak.weekStreak')}</div>
         </div>
+      </div>
+
+      {/* Streak freeze */}
+      <div className="card" style={{ padding: 'var(--s-4)', marginBottom: 'var(--s-2)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--s-3)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--s-2)' }}>
+            <span style={{ color: 'var(--brand)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <BandageIcon width={22} height={22} />
+            </span>
+            <span style={{ fontSize: '1.0667rem', fontWeight: 600, color: 'var(--text)' }}>{t('streak.freeze.label')}</span>
+          </div>
+          <span style={{ fontSize: '1.6rem', fontWeight: 700, color: 'var(--brand)' }}>
+            {t('streak.freeze.count', { count: String(freezeCount) })}
+            <span style={{ fontSize: '0.9333rem', fontWeight: 500, color: 'var(--text-muted)', marginLeft: 2 }}>/{MAX_STREAK_FREEZE}</span>
+          </span>
+        </div>
+        <p style={{ fontSize: '0.9333rem', color: 'var(--text-muted)', marginTop: 'var(--s-3)', marginBottom: 0, lineHeight: 1.6 }}>
+          {t('streak.freeze.hint', { max: String(MAX_STREAK_FREEZE) })}
+        </p>
       </div>
 
       {/* Calendar */}
