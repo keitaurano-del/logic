@@ -2856,3 +2856,21 @@ Keita 側にボールが残る作業（エージェントは着手できない�
 | 提言・抜けもれ | (1) DF-F2/p17 との重複は確認済＝機能本体は DF-F2、本件は配置・発見性で別スコープ。(2) i18n: 独立項目のラベル・説明文を `src/i18n.ts` の ja/en 両方に追加。(3) UI chrome 制約: 中立的丁寧体（〜です/〜ます）、ハードコード hex 禁止・CSS 変数使用、意味を担うアイコンは SVG（`src/icons`）のみで emoji 不可。(4) 回帰: 外観設定から文字サイズを分離する際、DF-F2 の保存/適用フロー（fontScale）が壊れないこと（test-functional で全テーマ×3サイズ横断を確認）。(5) 永続化: 設定値の保存・再表示は DF-F2 既存（`logic-font-scale`）を流用、別出ししても保存先は変えない。(6) 配置方式（設定独立項目 / ホーム導線 / オンボーディング）は UX 判断なので designer が案出し→Keita 確認が望ましい。 |
 | 次アクション | designer(UX) が別出し配置案（設定独立項目案／ホーム・オンボーディング導線案）を提示 → Keita 確認 → dev-logic が分離実装（DF-F2 の保存/適用は非破壊）→ i18n ja/en・両OS確認・回帰検証 |
 | 更新日 | 2026-05-31 |
+
+### UI-29: DailyFermi の未定義CSS変数 --bg-muted 残存（disabled背景）
+
+| フィールド | 値 |
+|---|---|
+| ID | UI-29 |
+| タイトル | DailyFermiScreen の未定義CSS変数 `--bg-muted` 残存を定義済み変数に置換（disabled 背景） |
+| 優先度 | P2 |
+| ステータス | TODO |
+| 担当 | dev-logic |
+| 詳細 | test-functional が UI-27 検証中に発見した副産物バグ。`src/screens/DailyFermiScreen.tsx:257`（電卓 insert ボタンの disabled 背景）と `:438`（AIチャット send ボタンの disabled 背景）に、未定義の CSS 変数 `var(--bg-muted)` が残存している。UI-27 は submit ボタンのみ `--bg-tertiary` へ是正したため、この2箇所は対象外で残った。`--bg-muted` は `src/styles/` 全体に定義が無く（実 grep で 0 件）、disabled 状態の背景色が無効値になる潜在バグ。`tsc`/`eslint` では検出されない（CSS 変数は型チェック対象外）。定義済みの適切な disabled 背景用変数 `--bg-tertiary`（全テーマで `tokens.css` に定義済み）に置換する。 |
+| 関連ファイル | `src/screens/DailyFermiScreen.tsx`（`:257` 電卓 insert disabled、`:438` AIチャット send disabled の2箇所）。置換先 `--bg-tertiary` は `src/styles/tokens.css` で全テーマ定義済み。UI-27 で submit ボタンを `--bg-tertiary` 化した前例と整合。 |
+| 受け入れ条件（DoD） | (1) `DailyFermiScreen.tsx` 内の `--bg-muted` 残存が 0 になる（`grep -n -- "--bg-muted" src/screens/DailyFermiScreen.tsx` で 0 件）。(2) 電卓 insert ボタン・AIチャット send ボタンの disabled 状態が、定義済み変数で適切な背景色で表示される（無効値でない）。(3) tsc0/eslint0、vitest green。(4) 全テーマ（light/dark/その他）で disabled 背景が破綻しないこと。 |
+| 依存 | なし（UI-27 の follow-up＝UI-27 DONE note に「別タスク化推奨」と既記録。UI-27 は submit のみ修正、本件は残り2箇所） |
+| 提言・抜けもれ | (1) リポ全体で `--bg-muted` 他箇所残存が無いか念のため `grep -rn -- "--bg-muted" src/` で確認（現状 DailyFermiScreen の2箇所のみ想定）。(2) UI chrome 制約: ハードコード hex 禁止・CSS 変数使用（本件はまさにその是正）。(3) 回帰: disabled 背景変更は見た目のみ・ロジック非影響だが、全テーマで電卓/AIチャットの disabled が視認できる背景になるか test-functional で確認。(4) 検出漏れの教訓: 未定義 CSS 変数は tsc/eslint をすり抜けるので、置換は定義済み変数一覧（tokens.css）と突き合わせる。 |
+| サブタスク | - [ ] `:257` 電卓 insert disabled の `--bg-muted`→`--bg-tertiary`<br>- [ ] `:438` AIチャット send disabled の `--bg-muted`→`--bg-tertiary`<br>- [ ] リポ全体 grep で `--bg-muted` 残存 0 確認<br>- [ ] tsc/eslint/vitest green<br>- [ ] 全テーマで disabled 背景の視認性確認 |
+| 次アクション | dev-logic が DailyFermiScreen.tsx の2箇所を `--bg-tertiary` に置換 → grep で残存0確認 → tsc/eslint/vitest → test-functional で全テーマ disabled 表示確認 |
+| 更新日 | 2026-05-31 |
