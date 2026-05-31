@@ -603,7 +603,7 @@ function AppV3() {
       )}
 
       {screen.type === 'fermi-ranking' && (
-        <FermiRankingScreen />
+        <FermiRankingScreen onSolveFermi={() => navigate({ type: 'daily-fermi' })} />
       )}
 
       {screen.type === 'journal' && (

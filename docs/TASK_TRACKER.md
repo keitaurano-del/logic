@@ -12,11 +12,11 @@ Apollo（スマホ受信箱）から投入された Keita のタスク/指示を
 
 | ID | タイトル | 優先度 | ステータス | 担当案 | 由来 |
 |----|---------|--------|-----------|--------|------|
-| AF-01 | フェルミタブからフェルミ問題を解く導線（CTAボタン）を追加 | P2 | TODO | dev-logic | 受信箱 id ...814f6e11 |
-| AF-02 | フェルミ「今日の1問」CTA を高コントラスト白ピルに（ダークで見づらい） | P1 | IN_PROGRESS | dev-logic | 受信箱 id ...6238b74a |
+| AF-01 | フェルミタブからフェルミ問題を解く導線（CTAボタン）を追加 | P2 | REVIEW（実装 green→本番反映済。残=配置/見た目の実機目視 Keita 確認） | dev-logic | 受信箱 id ...814f6e11 |
+| AF-02 | フェルミ「今日の1問」CTA を高コントラスト白ピルに（ダークで見づらい） | P1 | REVIEW（実装完了・本番反映済。残=Keita 実機目視） | dev-logic | 受信箱 id ...6238b74a |
 
 #### AF-02 — フェルミ「今日の1問」CTA を高コントラスト白ピルに
-- 優先度: P1 / ステータス: IN_PROGRESS（2026-05-31 自律ティックで起票・着手）/ 担当案: dev-logic
+- 優先度: P1 / ステータス: REVIEW（2026-05-31 自律ティック reconcile: 実装は commit `9000888` で本番 main 反映済＝HomeScreenV3 line 277 のピルを `background: var(--accent-btn-fg)`／`color: var(--accent-btn)` に反転、SVG stroke/fill も `--accent-btn` に統一、aria-label は t('home.dailyOpenAria') 系で i18n 化。※commit メッセージ本文は「bg-card/brand に」と誤記されているが実 diff は逆＝DoD どおりの白ピル化が正。本番 deploy `26704128959`（05:20Z success）に内包・反映済。残=ダーク/ライト実機目視 Keita 確認のみ）/ 担当案: dev-logic
 - 詳細: ホーム「今日の1問」(Daily Fermi) カードの CTA ピル「チャレンジする」がダークテーマで見づらい。原因は `HomeScreenV3.tsx` line 277 のピルが `background: var(--bg-card)` ＋ `color: var(--brand)` で、`--bg-card` は `body.theme-v3.mode-dark` で `#252C40`（暗ネイビー）になり、青字とのコントラストが壊滅する点（UI-6/UI-14 で白前提に `--bg-card` を使ったが、ダークでは白にならない罠）。Keita 添付の参照（白ピル＋濃色字の「スタート」ボタン）のように、全テーマで確実に高コントラストにする。
 - 実装方針（調査済み）: CTA ピルを「全テーマで白固定の `--accent-btn-fg`（light/dark とも #FFFFFF）を背景」「`--accent-btn`（濃紺 #2E45A8 等・AA担保色）を文字」に反転する。カードは常に `--accent-btn` 塗りなので、白ピル＋濃紺字で参照画像どおりハッキリする。allFermiDone 分岐（チェック/svg stroke）も同色系に合わせる。同じ `var(--bg-card)` 低コントラスト・ピルパターンが他のフェルミ系 CTA にあれば併せて統一。
 - DoD: ダーク/ライト両テーマで「今日の1問」CTA が白ピル＋濃色字で明瞭に見える（参照画像準拠）。ハードコード hex は使わずトークンで。tsc / eslint . green（テスト変更なければ vitest 影響なし）。実機相当の screenshot で視認性確認。
@@ -26,7 +26,7 @@ Apollo（スマホ受信箱）から投入された Keita のタスク/指示を
 - 更新日: 2026-05-31
 
 #### AF-01 — フェルミタブからフェルミ問題を解く導線（CTAボタン）を追加
-- 優先度: P2 / ステータス: TODO（2026-05-31 自律ティックで起票。実装は次の安全なティックへ持ち越し＝下記「進捗」参照）/ 担当案: dev-logic
+- 優先度: P2 / ステータス: REVIEW（2026-05-31 次の安全なティックで実装完了。FermiRankingScreen に `onSolveFermi` props 追加＋ヘッダー直下に accent CTA「フェルミに挑戦する」を配置、AppV3 line 606 を `navigate({ type: 'daily-fermi' })` に結線、i18n `fermiRank.solveCta` を ja/en 追加。tsc0/eslint . 0err/vitest 430pass green。残=配置/見た目の実機目視 Keita 確認のみ）/ 担当案: dev-logic
 - 詳細: 下タブ「フェルミ」（= `FermiRankingScreen`、`AppV3.tsx` の screen.type `'fermi-ranking'`、ROOT_SCREENS の1つ）はランキング表示のみで、その画面から直接フェルミ問題を解き始める導線が無い。現状フェルミを解くにはホームの Daily Fermi カードからしか入れない。フェルミメニュー（タブ）からも解けるよう、ランキング画面のヘッダー直下に「フェルミに挑戦」CTA ボタンを追加し `daily-fermi` 画面へ遷移させる。
 - 実装メモ（調査済み・実コード照合）: `FermiRankingScreen` は現状 props 無し。`onSolveFermi: () => void` を追加し、`AppV3.tsx`（605-607 の `<FermiRankingScreen />`）を `<FermiRankingScreen onSolveFermi={() => navigate({ type: 'daily-fermi' })} />` に結線。CTA は既存 `Button`(variant primary) もしくは画面内のピル系スタイルに合わせる。i18n キー新規（例 `fermiRank.solveCta`）を ja/en 両方追加。UI 文言は中立丁寧体。
 - DoD: フェルミタブにフェルミ問題への導線ボタンが表示され、押すと daily-fermi 画面へ遷移する。i18n は ja/en 両方。tsc / eslint . / vitest green。

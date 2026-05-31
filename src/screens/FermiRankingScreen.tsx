@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { TrophyIcon, MedalIcon, UserIcon } from '../icons'
+import { TrophyIcon, MedalIcon, UserIcon, ArrowRightIcon } from '../icons'
 import { getDisplayName } from '../stats'
 import { getNickname } from '../guestId'
 import { LoadingIndicator } from '../components/LoadingIndicator'
@@ -51,7 +51,11 @@ function occupationLabel(occ: string | null | undefined, locale: 'ja' | 'en'): s
   return table[occ] ?? null
 }
 
-export function FermiRankingScreen() {
+interface FermiRankingScreenProps {
+  onSolveFermi: () => void
+}
+
+export function FermiRankingScreen({ onSolveFermi }: FermiRankingScreenProps) {
   const [period, setPeriod] = useState<Period>('week')
   const [entries, setEntries] = useState<RankEntry[]>([])
   const [loading, setLoading] = useState(true)
@@ -166,6 +170,25 @@ export function FermiRankingScreen() {
             <span>{t('fermiRank.participants', { n: participantCount })}</span>
           </div>
         )}
+      </div>
+
+      {/* フェルミに挑戦する CTA */}
+      <div style={{ padding: '0 20px 16px' }}>
+        <button
+          onClick={onSolveFermi}
+          style={{
+            width: '100%',
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+            padding: '14px 20px', borderRadius: 14,
+            border: 'none',
+            background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)',
+            fontSize: '0.9333rem', fontWeight: 800, cursor: 'pointer',
+            fontFamily: 'inherit',
+          }}
+        >
+          <span>{t('fermiRank.solveCta')}</span>
+          <ArrowRightIcon width={18} height={18} aria-hidden="true" />
+        </button>
       </div>
 
       {/* 期間タブ */}
