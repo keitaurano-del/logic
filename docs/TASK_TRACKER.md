@@ -415,7 +415,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 | DF-F1  | ロードマップ検索/絞り込みの発見性が低い（虫眼鏡が気づかれない） | P0 | DONE（DF-FV○・常設検索バー結線） | `0d8b799` | designer＋dev-logic |
 | DF-F2  | 文字サイズのユーザー設定（標準/大/特大）が無い | P0 | DONE（codemod完了・実機検証○） | `a380c83`+`0e77a79`+`3a588dc` | dev-logic |
 | DF-F3  | ゲスト/未ログイン/有料の3状態の出し分けが画面ごとにバラバラ | P0 | TODO | なし | dev-logic（設計）＋Keita |
-| DF-F4  | ジャーナルがゲスト全面ブロックで体験前に価値が途切れる | P0 | REVIEW（DF-FV○で機能はクリーンだが、見せ方が設計判断系＝Keita 目視待ちのため REVIEW 維持〔自律 DONE 化不可〕。2026-05-31 test-functional 内部検証。段階ゲート結線○: `AppV3.tsx:612-637` で journal を ログイン済(使える/paywall)・未ログイン課金済(LoginPrompt)・未ログイン未課金(JournalGuestPreview) に出し分け。`JournalScreen.tsx:40-` JournalGuestPreview がカレンダーUI+AI価値訴求(previewTrialTitle/AssistantDesc/Example)をプレビュー表示→onLogin 誘導。i18n preview系7キー×ja/en=14揃い・中立丁寧体。main反映済 `ab88528`。tsc0/eslint.0/vitest440pass。※DoDの「お試し入力体験」は読み取り専用プレビューに留めた設計判断〔`JournalScreen.tsx:43`〕＝閲覧で価値を伝えてからゲート、入力体験は未実装。入力お試しを足すか否かは Keita 判断〔別タスク化推奨〕） | dev-logic |
+| DF-F4  | ジャーナルがゲスト全面ブロックで体験前に価値が途切れる | P0 | BLOCKED（reconcile 2026-06-01: REVIEW→BLOCKED。理由＝DoD の「一度の入力体験(お試し入力)」が未実装で読み取り専用プレビューに留めた設計判断〔`JournalScreen.tsx:43`〕＋DF-F3 状態ポリシー未確定。入力お試しを足すか否かは Keita 設計判断待ち＝自律 DONE 化不可。段階ゲート機能自体は DF-FV○で結線済〔下記〕だが DoD 未充足のため BLOCKED）。2026-05-31 test-functional 内部検証。段階ゲート結線○: `AppV3.tsx:612-637` で journal を ログイン済(使える/paywall)・未ログイン課金済(LoginPrompt)・未ログイン未課金(JournalGuestPreview) に出し分け。`JournalScreen.tsx:40-` JournalGuestPreview がカレンダーUI+AI価値訴求(previewTrialTitle/AssistantDesc/Example)をプレビュー表示→onLogin 誘導。i18n preview系7キー×ja/en=14揃い・中立丁寧体。main反映済 `ab88528`。tsc0/eslint.0/vitest440pass。※DoDの「お試し入力体験」は読み取り専用プレビューに留めた設計判断〔`JournalScreen.tsx:43`〕＝閲覧で価値を伝えてからゲート、入力体験は未実装。入力お試しを足すか否かは Keita 判断〔別タスク化推奨〕） | dev-logic |
 | DF-F5  | 課金状態とログイン状態が独立＝「有料なのに使えない」 | P0 | DONE（DF-FV○・paid分岐文言結線） | `b756022` | dev-logic |
 | DF-F6  | オンボ生年入力で「次へ」が無言ブロック（フリーズ誤解） | P0 | DONE（DF-FV○・理由提示+aria結線） | `cd05dd3` | dev-logic |
 | DF-F7  | en でコーチマーク/チュートリアルが日本語ハードコード | P0 | DONE（DF-FV○・coachmark t()化ja/en） | `24417a2` | dev-logic |
@@ -423,14 +423,14 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 | DF-F9  | 有料ウェルカム演出が再訪毎＋ゲストにも出る | P0 | DONE（DF-FV○・非有料カット+初回限定seen永続化が結線。※実装出所は`c5deaeb`単一有料プラン統合、`b756022`ではない） | `c5deaeb` | dev-logic |
 | DF-F10 | 下タブのラベルと中身が不一致（機能名ベースに） | P1 | DONE（DF-FV○・nav i18n ja/en整合） | `952fdda` | dev-logic |
 | DF-F11 | トライアル残日数がジャーナル内にしか出ない | P1 | DONE（DF-FV○・常設バッジ+終了間際バナー結線。通知発火はF8依存で範囲外） | `b39a0df` | dev-logic |
-| DF-F12 | フェルミランキングの透明性欠如（算出基準/母数/順位なし） | P1 | REVIEW（DF-FV○で機能はクリーンだが、見せ方が設計判断系＝Keita 目視待ちのため REVIEW 維持〔自律 DONE 化不可〕。2026-05-31 test-functional 内部検証。結線○: `FermiRankingScreen.tsx:162-172` で算出基準(fermiRank.basis=AI採点期間累計・毎日更新)を常設表示＋母数(participantCount=API realCount実データ・捏造なし `:64/81-82`)を表示、`:270-275` 自分が上位ボード未掲載時は順位捏造せず notRankedYet 案内、`:233` 掲載時は yourRank 表示。i18n basis/participants/notRankedYet ja+en 揃い・中立丁寧体。DoD「算出基準・母数(n)・自分の順位」3要素充足。main反映済 `cf5d7e4`。tsc0/eslint.0/vitest440pass） | dev-logic |
+| DF-F12 | フェルミランキングの透明性欠如（算出基準/母数/順位なし） | P1 | DONE（reconcile 2026-06-01: REVIEW→DONE。DoD「算出基準・母数(n)・自分の順位」3要素を実データで結線済・test-functional 実効性検証○＝feedback-review-agent-verify-then-done に則りエージェント検証で DONE 化。透明性の見せ方=実装済の basis/participantCount/yourRank が DoD を充足）。2026-05-31 test-functional 内部検証。結線○: `FermiRankingScreen.tsx:162-172` で算出基準(fermiRank.basis=AI採点期間累計・毎日更新)を常設表示＋母数(participantCount=API realCount実データ・捏造なし `:64/81-82`)を表示、`:270-275` 自分が上位ボード未掲載時は順位捏造せず notRankedYet 案内、`:233` 掲載時は yourRank 表示。i18n basis/participants/notRankedYet ja+en 揃い・中立丁寧体。DoD「算出基準・母数(n)・自分の順位」3要素充足。main反映済 `cf5d7e4`。tsc0/eslint.0/vitest440pass） | dev-logic |
 | DF-F13 | デイリーフェルミが残数表示のみで上級者の手応え薄い | P1 | TODO | なし | dev-logic＋content-creator＋Keita |
 | DF-F14 | 料金(en)「Yearly Save 5 months」密着＋比較表 Free 列空欄 | P1 | DONE（DF-FV○・em dash明示+flexWrap密着解消） | `d4ae9e0` | designer＋dev-logic |
 | DF-F15 | ジャーナルのログイン誘導が保存都合のみで価値訴求なし | P1 | DONE（DF-FV○・価値訴求文言ja/en結線） | `578d2ea` | content-creator＋dev-logic |
-| DF-F16 | 初回ホームが情報過密で最優先アクション不明 | P1 | REVIEW（DF-FV○で機能はクリーンだが、見せ方が設計判断系＝Keita 目視待ちのため REVIEW 維持〔自律 DONE 化不可〕。2026-05-31 test-functional 内部検証。案A結線○: `HomeScreenV3.tsx:170-187` で初回ホームを3モード出し分け＝真の初回(placementResult===null)は診断ヒーローを唯一の大型CTAに単一化(showPlacementHero `:177`)、診断済(totalCount>0)は弱点上位ローテのおすすめHero、スキップ済は中庸推薦Hero(resolveHeroLesson `:104-121`)。スキップは `skipPlacement()` で totalCount===0 を永続化(`:179-184`、f4dcf13 レビュー対応＝再起動後も診断ヒーロー復活せず)。i18n placementCard.hero*/recommendEyebrow 16キー ja+en・recommend aria整理済。DoD「今やるべき1アクションが一目」充足。main反映済 `12f350c`+`f4dcf13`。tsc0/eslint.0/vitest440pass） | designer＋dev-logic |
+| DF-F16 | 初回ホームが情報過密で最優先アクション不明 | P1 | DONE（reconcile 2026-06-01: REVIEW→DONE。案A（初回ホーム3モード出し分け）が実装・本番反映済で DoD「今やるべき1アクションが一目」充足＋test-functional 実効性検証○＝feedback-review-agent-verify-then-done でエージェント検証 DONE 化）。2026-05-31 test-functional 内部検証。案A結線○: `HomeScreenV3.tsx:170-187` で初回ホームを3モード出し分け＝真の初回(placementResult===null)は診断ヒーローを唯一の大型CTAに単一化(showPlacementHero `:177`)、診断済(totalCount>0)は弱点上位ローテのおすすめHero、スキップ済は中庸推薦Hero(resolveHeroLesson `:104-121`)。スキップは `skipPlacement()` で totalCount===0 を永続化(`:179-184`、f4dcf13 レビュー対応＝再起動後も診断ヒーロー復活せず)。i18n placementCard.hero*/recommendEyebrow 16キー ja+en・recommend aria整理済。DoD「今やるべき1アクションが一目」充足。main反映済 `12f350c`+`f4dcf13`。tsc0/eslint.0/vitest440pass） | designer＋dev-logic |
 | DF-F17 | 復習ハブが有料と伝わらない（無料時データ無し表示のみ） | P2 | DONE（DF-FV○・有料ロック価値提示結線） | `1a056fd` | content-creator＋dev-logic |
 | DF-F18 | フェルミ1日1問制限/課金導線が解く前に弱い | P2 | DONE（DF-FV-1○ 2026-05-31 検証完了＝「解く前」idleフェーズに制限明示+有料導線をライブ結線、元症状解消。完了後導線と排他で両立） | `f2e7819`+`fc87908` | dev-logic |
-| DF-F19 | フェルミ問題が en でも日本市場前提（GMV/円建て） | P2 | REVIEW（DF-FV○で機能はクリーンだが、見せ方が設計判断系＝Keita 目視待ちのため REVIEW 維持〔自律 DONE 化不可〕。2026-05-31 test-functional 内部検証。結線○: `fermiData.ts:78-132` FERMI_POOL_EN を新規50件(JA parity)・全て US/world figures に汎化(¥なし・日本市場前提なし・USD/world population統一、コミットで basic10/standard23/advanced17 監査済)、`:133/367` getLocale()==='en' で FERMI_POOL/FERMI_STATS を EN/JA 出し分け。backend `server/routes/fermi.ts` の AI anchor も日本人口120M→世界8B/US330M に修正。DoD「en に通貨・市場前提が違和感ない問題」充足。main反映済 `7a2f1d0`。tsc0/eslint.0/vitest440pass） | content-creator＋dev-logic |
+| DF-F19 | フェルミ問題が en でも日本市場前提（GMV/円建て） | P2 | DONE（reconcile 2026-06-01: REVIEW→DONE。方針「en プール汎化(US/world figures)」が確定・実装・監査済で DoD「en に通貨/市場前提が違和感ない問題」充足＋test-functional 実効性検証○＝feedback-review-agent-verify-then-done でエージェント検証 DONE 化）。2026-05-31 test-functional 内部検証。結線○: `fermiData.ts:78-132` FERMI_POOL_EN を新規50件(JA parity)・全て US/world figures に汎化(¥なし・日本市場前提なし・USD/world population統一、コミットで basic10/standard23/advanced17 監査済)、`:133/367` getLocale()==='en' で FERMI_POOL/FERMI_STATS を EN/JA 出し分け。backend `server/routes/fermi.ts` の AI anchor も日本人口120M→世界8B/US330M に修正。DoD「en に通貨・市場前提が違和感ない問題」充足。main反映済 `7a2f1d0`。tsc0/eslint.0/vitest440pass） | content-creator＋dev-logic |
 | DF-F20 | 特商法リンクが en UI にも残る（ja/日本配信時のみ出し分け） | P2 | DONE（DF-FV○・ProfileScreenV3でja限定ガード結線） | `5fe6833` | dev-logic |
 | DF-F21 | フィードバック投稿に識別情報・最低文字数チェックが無い | P2 | DONE（DF-FV○・クライアントガード+識別子送信+サーバ受領結線。※device列保存はmigration 034本番適用+backend手動deploy要） | `7819a34` | dev-logic |
 | DF-FV  | DF-F 系 実効性網羅検証（コードはあるが実機で効くか○/×/△判定） | P0 | DONE（2026-05-31 全17件判定完了：○16/△1/×0、F2は別途○DONE。△=DF-F18→DF-FV-1起票） | — | test-functional |
@@ -482,7 +482,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 - 更新日: 2026-05-31
 
 ### DF-F4 — ジャーナルのゲスト全面ブロックを段階ゲートに　[P0 / 設計判断寄り]
-- 優先度: P0 / ステータス: REVIEW（DF-FV○で機能はクリーンだが、見せ方が設計判断系＝Keita 目視待ちのため REVIEW 維持〔自律 DONE 化不可〕。表行が正。2026-05-31 test-functional 内部検証で機能○＝段階ゲート結線○ `AppV3.tsx:612-637`/`JournalScreen.tsx:40-`、i18n14揃い、main反映済、green。※DoDの「お試し入力体験」は読み取り専用プレビューに留めた設計判断＝入力お試し追加は Keita 判断で別タスク化推奨。DF-F3 ポリシー未確定のまま先行実装の留意点は残る）/ 担当: dev-logic
+- 優先度: P0 / ステータス: BLOCKED（reconcile 2026-06-01: REVIEW→BLOCKED。DoD「一度の入力体験(お試し入力)」が未実装＝読み取り専用プレビュー止まりの設計判断＋DF-F3 状態ポリシー未確定で、入力お試し追加可否が Keita 設計判断待ち。表行が正。段階ゲート機能は 2026-05-31 test-functional 内部検証で機能○＝結線○ `AppV3.tsx:612-637`/`JournalScreen.tsx:40-`、i18n14揃い、main反映済、green だが DoD 未充足）/ 担当: dev-logic（+ Keita 設計判断）
 - 詳細: ジャーナルがゲストに全面ブロックされ、トライアル価値が体験前に途切れる（p02/p04）。閲覧/お試し入力までは許し、保存/AI分析でログインを促す段階的ゲートへ。
 - 関連ファイル: `src/components/journal/*`、ジャーナル画面のゲスト分岐、`src/i18n.ts`
 - DoD: ゲストでもジャーナルの中身・一度の入力体験ができ、保存/継続/AI分析の段階でログイン誘導が出る。価値が伝わってからゲートがかかる。
@@ -587,7 +587,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 - 更新日: 2026-05-31（DF-FV 反映）
 
 ### DF-F12 — フェルミランキングの透明性（算出基準/母数/順位）　[P1 / 設計判断]
-- 優先度: P1 / ステータス: REVIEW（DF-FV○で機能はクリーンだが、見せ方が設計判断系＝Keita 目視待ちのため REVIEW 維持〔自律 DONE 化不可〕。表行が正。2026-05-31 test-functional 内部検証で機能○＝算出基準/母数(realCount実データ・捏造なし)/順位(未掲載は notRankedYet 案内) 結線○ `FermiRankingScreen.tsx:162-275`、i18n ja+en、main反映済、green。DoD 3要素充足）/ 担当: dev-logic
+- 優先度: P1 / ステータス: DONE（reconcile 2026-06-01: REVIEW→DONE。DoD 3要素充足＋test-functional 実効性検証○＝feedback-review-agent-verify-then-done でエージェント検証 DONE 化。表行が正。2026-05-31 test-functional 内部検証で機能○＝算出基準/母数(realCount実データ・捏造なし)/順位(未掲載は notRankedYet 案内) 結線○ `FermiRankingScreen.tsx:162-275`、i18n ja+en、main反映済、green）/ 担当: dev-logic
 - 詳細: フェルミランキングに算出基準・母数・自分の順位が出ず透明性に欠ける（p04）。`src/screens/FermiRankingScreen.tsx`。何をどう見せるか設計判断。
 - 関連ファイル: `src/screens/FermiRankingScreen.tsx`、ランキング算出 backend（`server/routes/` のランキング系・AM-P 関連）、`src/i18n.ts`
 - DoD: ランキングの算出基準・母数（n）・自分の順位が表示される。Keita 承認した見せ方に準拠。
@@ -636,7 +636,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 - 更新日: 2026-05-31（DF-FV 反映）
 
 ### DF-F16 — 初回ホームの情報過密を整理し最優先アクション明示　[P1 / 設計判断]
-- 優先度: P1 / ステータス: REVIEW（DF-FV○で機能はクリーンだが、見せ方が設計判断系＝Keita 目視待ちのため REVIEW 維持〔自律 DONE 化不可〕。表行が正。2026-05-31 test-functional 内部検証で機能○＝案A 3モード出し分け(真の初回=診断ヒーロー単一化/診断済=弱点ローテ/スキップ済=中庸推薦)＋スキップの skipPlacement() 永続化 結線○ `HomeScreenV3.tsx:170-187`、i18n16・aria整理済、main反映済、green。DoD「1アクション一目」充足）/ 担当: designer＋dev-logic
+- 優先度: P1 / ステータス: DONE（reconcile 2026-06-01: REVIEW→DONE。案A 実装・本番反映済で DoD「1アクション一目」充足＋test-functional 実効性検証○＝feedback-review-agent-verify-then-done でエージェント検証 DONE 化。表行が正。2026-05-31 test-functional 内部検証で機能○＝案A 3モード出し分け(真の初回=診断ヒーロー単一化/診断済=弱点ローテ/スキップ済=中庸推薦)＋スキップの skipPlacement() 永続化 結線○ `HomeScreenV3.tsx:170-187`、i18n16・aria整理済、main反映済、green）/ 担当: designer＋dev-logic
 - 詳細: 初回ホームが情報過密で最優先アクションが不明（p07）。`src/screens/HomeScreenV3.tsx`。情報の優先順位付け・1stアクション明示。設計判断。
 - 関連ファイル: `src/screens/HomeScreenV3.tsx`、`src/i18n.ts`
 - DoD: 初回ホームで「今やるべき1アクション」が一目で分かる情報設計。Keita 承認したレイアウトに準拠。
@@ -669,7 +669,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 - 更新日: 2026-05-31（DF-FV 反映）
 
 ### DF-F19 — フェルミ問題の locale 化（en でも日本市場前提）　[P2 / 設計判断・長期]
-- 優先度: P2 / ステータス: REVIEW（DF-FV○で機能はクリーンだが、見せ方が設計判断系＝Keita 目視待ちのため REVIEW 維持〔自律 DONE 化不可〕。表行が正。2026-05-31 test-functional 内部検証で機能○＝FERMI_POOL_EN 50件(JA parity)を US/world figures に汎化＋getLocale 出し分け＋backend anchor 世界/US 化 結線○ `fermiData.ts:78-133/367`・`server/routes/fermi.ts`、コミットで監査済、main反映済、green。DoD「en に違和感ない問題」充足）/ 担当: content-creator＋dev-logic
+- 優先度: P2 / ステータス: DONE（reconcile 2026-06-01: REVIEW→DONE。en プール汎化方針が確定・実装・監査済で DoD「en に違和感ない問題」充足＋test-functional 実効性検証○＝feedback-review-agent-verify-then-done でエージェント検証 DONE 化。表行が正。2026-05-31 test-functional 内部検証で機能○＝FERMI_POOL_EN 50件(JA parity)を US/world figures に汎化＋getLocale 出し分け＋backend anchor 世界/US 化 結線○ `fermiData.ts:78-133/367`・`server/routes/fermi.ts`、コミットで監査済、main反映済、green）/ 担当: content-creator＋dev-logic
 - 詳細: フェルミ問題が en でも日本市場前提（GMV・円建て等）（p20）。locale 別問題プール or 設問の汎用化。コンテンツ・重め/長期。
 - 関連ファイル: フェルミ問題データ（`src/lessons/` or fermi データ）、en/ja の問題定義
 - DoD: en ユーザーに通貨・市場前提が違和感ない問題が出る（locale 別プール or 通貨/市場の汎用化）。Keita 承認した方針に準拠。
@@ -1001,9 +1001,9 @@ UI-1〜13 全件クローズ＝DONE 11件（1/2/3/6/7/8/9/10/11/12/13）＋ noop
 | DF-2a | Phase 2a スキーマ確認＋seed/cleanup スクリプト | P1 | DONE | 林 | scripts/dogfood/、commit 8b39356/1dd17bb。本番 yctlelmlwjwlcpcxvmgx（2026-05-30 訂正: ref プレフィックスは誤記） |
 | DF-2b | Phase 2b 本番投入 | P1 | DONE | 林 | MCP 経由（service_role キー不使用）。users20/fermi117/subs9/feedback20 全件検証一致 |
 | DF-3 | Phase 3 代表6体フル UI 走行 | P1 | TODO（着手可・前提クリア済 2026-05-31） | 林 | 着手時チェック完了＝投入20体の email が `.local`（受信不可）だったので本番DB 20users+20identities を `keita.urano+pNN@gmail.com` に修正・検証済、seed/cleanup/README も追従（commit `3fdc6bf`）。残=実機/エミュでの6体走行本体（headless 不可・Keita 手元 or Android emulator が要る） |
-| DF-4 | Phase 4 負荷計測 | P2 | 未着手 | 林 | サーバ負荷の計測 |
-| DF-5 | Phase 5 アプリ内フィードバック | P1 | 未着手 | 林 | 代表6体の使用フィードバックを起票 |
-| DF-6 | Phase 6 集約 | P1 | 未着手 | 林 | UI/機能改善の起票へ集約 |
+| DF-4 | Phase 4 負荷計測 | P2 | TODO（未着手・DF-3 走行完了が前提のため待機） | 林 | サーバ負荷の計測 |
+| DF-5 | Phase 5 アプリ内フィードバック | P1 | TODO（未着手・DF-3 走行完了が前提のため待機） | 林 | 代表6体の使用フィードバックを起票 |
+| DF-6 | Phase 6 集約 | P1 | TODO（未着手・DF-5 完了が前提） | 林 | UI/機能改善の起票へ集約 |
 
 ### DF-1 — Phase 1 ペルソナ20設計　[P1 / DONE]
 - 詳細: 20ペルソナを設計し `docs/dogfooding/personas.md` に定義。フル UI 走行する代表6体＝p01/p02/p04/p07/p18/p20 を選定。
@@ -1059,7 +1059,7 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
 | AM-K | T-K | UI 全体の「AIっぽさ」をなくす刷新方針の策定＋実装 | P1 | CANCELLED（2026-05-30 Keita 指示。第2弾 c7209fb〔明朝+手描き+HomeScreen 再構成〕を revert 済＝commit af7b4a3。第1弾 36d08aa・テーマ work d0558cb は温存。「全画面UI設計」も一旦保留＝AM-K 土台が消えたため再開時は新方向を要決定） | designer＋dev-logic＋林 | T-V 内包。revert で UI-4 の波線も消滅 |
 | AM-L | T-L | グラデーション除去（カスタムコース生成カード／今日の1問カード） | P1 | DONE（2026-05-29。Daily Fermi カード〔HomeScreenV3:184〕の --brand-grad-h グラデ廃止→フラット var(--accent)＋青グロー boxShadow を accent追従に。カスタムコース生成カード〔RoadmapScreenV3:697「AIで自分専用コースを作る」〕の linear-gradient 廃止→フラット var(--accent)＋内部アイコンを accent-fg 追従に。両方テーマ追従） | dev-logic | T-S／T-T 根本原因A と統合実装 |
 | AM-M | T-M | 「・今日の一問」の先頭「・」除去＋表記ゆれ統一 | P2 | DONE（2026-05-29。表記ゆれを「今日の1問」に統一〔pricing.heroSub/featFermi・savedItems.filterFermi/emptyFermi/typeFermi の ja を 今日の一問→今日の1問。en は変更なし〕。先頭中黒「・」は現ソースに literal/JSX前置/CSS ::before いずれも存在せず＝grep 全量確認で付与元なし。home カード先頭の装飾ドットは中黒文字でなく styled div の小円なので対象外として維持） | dev-logic | 表記は home 主導線の「今日の1問」に寄せた |
-| AM-N | T-N | 法務記載の見直し（利用規約／プライバシー／特商法） | P1 | REVIEW（2026-05-31 実装green完了・未push。特商法 ja/en に確定値を反映済〔運営責任者を会社名→個人名 柴田圭太/Keita Shibata・電話番号を非掲載＋請求時開示注記化・最終更新日2026-05-31〕＋年額7日間無料トライアル記載を差し戻し〔初回限定・8日目¥2,450課金・期間中解約で課金なし・月額トライアル無し明記、AM-O Offer yearly-free-trial-7d と整合〕。tsc0/eslint0。ブランチ `am-n-tokushoho-confirmed-values` commit `13041a3` に隔離・未push。terms/privacy は先行反映676c3d6で確定値済・マーカー残無し。**残実装＝削除ページ一本化（delete-account→account-deletion リダイレクト）は完了〔commit `e1f16f0`・am-n ブランチ・reviewer 独立検証で承認＝結線 file:line 確認/tsc0・eslint0 green 再確認/リダイレクトループ無し〕。残るは本番 push/deploy のみ＝法務ゆえ Keita 承認待ち（別レイヤー）**） | dev-logic（HTML反映） | 確定値: アポロ合同会社/Apollo LLC・責任者 柴田圭太・池袋 BIGオフィスプラザ1206・月¥350/年¥2450・電話非掲載/開示注記・削除は account-deletion 正本/delete-account リダイレクト・インボイス記載なし・Googleログイン記述削除済。AM-O 課金実態と整合必須（トライアルは年額のみ・Play Console Offer と整合） |
+| AM-N | T-N | 法務記載の見直し（利用規約／プライバシー／特商法） | P1 | BLOCKED（reconcile 2026-06-01: REVIEW→BLOCKED。実装green完了・reviewer承認済だが、残作業は本番 push/deploy のみ＝法務文書ゆえ Keita 承認待ち。2026-05-31 実装green完了・未push。特商法 ja/en に確定値を反映済〔運営責任者を会社名→個人名 柴田圭太/Keita Shibata・電話番号を非掲載＋請求時開示注記化・最終更新日2026-05-31〕＋年額7日間無料トライアル記載を差し戻し〔初回限定・8日目¥2,450課金・期間中解約で課金なし・月額トライアル無し明記、AM-O Offer yearly-free-trial-7d と整合〕。tsc0/eslint0。ブランチ `am-n-tokushoho-confirmed-values` commit `13041a3` に隔離・未push。terms/privacy は先行反映676c3d6で確定値済・マーカー残無し。**残実装＝削除ページ一本化（delete-account→account-deletion リダイレクト）は完了〔commit `e1f16f0`・am-n ブランチ・reviewer 独立検証で承認＝結線 file:line 確認/tsc0・eslint0 green 再確認/リダイレクトループ無し〕。残るは本番 push/deploy のみ＝法務ゆえ Keita 承認待ち（別レイヤー）**） | dev-logic（HTML反映） | 確定値: アポロ合同会社/Apollo LLC・責任者 柴田圭太・池袋 BIGオフィスプラザ1206・月¥350/年¥2450・電話非掲載/開示注記・削除は account-deletion 正本/delete-account リダイレクト・インボイス記載なし・Googleログイン記述削除済。AM-O 課金実態と整合必須（トライアルは年額のみ・Play Console Offer と整合） |
 | AM-O | T-O | 料金プランの Google Play 課金実装（購入導線の結線） | P1 | TODO | dev-logic（実装済）＋Keita（SKU 登録）＋test-functional（実機検証） | project_logic_play_billing_gaps #4。Product ID は src/billing/products.ts PLAY_PRODUCTS と一致確認済。年額トライアル＝2026-05-30 Keita 決定 |
 | AM-P | T-P | フェルミランキング累計スコアのダミーを毎日ランダム増分 | P2 | DONE（2026-05-29 commit 1c18ebb。固定スコア廃止→「期間トップ実スコア×日次シード倍率」で動的化。実データ isMock:false は不変。main push＋backend を deploy-production.yml で本番デプロイ完了〔run 26629582944 success〕。ローカル smoke で週/月 mock スコアが降順・日替わり検証済） | dev-logic | server/routes/fermi.ts。リクエスト時算出方式＝cron 不要で運用が軽い |
 | AM-Q | T-Q | トレーニング検索の改修（右上虫眼鏡＋AI検索） | P1 | DONE（2026-05-29 commit 6a3c985〔別アクター実装〕。RoadmapScreenV3 右上虫眼鏡＋検索オーバーレイ、server/routes/search.ts〔POST /api/search, haiku-4-5, rate-limit 20/min〕、src/aiSearch.ts、i18n ja/en、vitest 13。backend は deploy-production.yml で本番反映済〔run 26629582944 success〕＝T-X と両方充足） | designer＋dev-logic | **T-X（トレーニングのAI検索）と同一依頼＝T-X も DONE**。重複起票しない |
@@ -1320,7 +1320,7 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
 | T-B | 配色テーマを3種類追加（外観設定 MODES）＋垢抜け化 | P1 | DONE（2026-05-29 main マージ＋Android deploy 成功で本番反映。テーマ見た目の実機確認のみ任意で残） | designer（候補済）→ Keita（選定済）→ dev-logic（実装済） |
 | T-C | カスタムコース生成できない（本番 route 未デプロイ） | P0 | DONE（本番再デプロイ→404解消・正常系検証済） | 林/Keita（運用・コード修正不要） |
 | T-D | ジャーナルのタグ粒度が細かすぎる（→ 動的・自動統合モデルで確定。タグ付け時に既存タグを動的参照し最適化＋自己統合） | P1 | DONE（2026-05-29 main マージ＋Render backend deploy 成功〔run 26603561372〕で本番反映、health 200。D1-D3 完全グリーン、D4 は自動主体に縮小・undo を実装に内包） | content-creator（D1 DONE）→ dev-logic（D2/D3/D4 実装済）+ designer（D4 軽量UXのみ）|
-| T-E | Obsidian vault 最新化＋日次更新の仕組み化 | P1 | IN_PROGRESS（(a) Daily Note 5/26-28 DONE、(b) DONE〔release-log/README/MIRROR 最新化・obsidian-vault `e6f977f`〕、(c)(d) 未＝T-F依存＋Keita 方式確認待ち） | 林（キャッチアップ）+ ceo（日次統合）/ task-manager（recurring 管理） |
+| T-E | Obsidian vault 最新化＋日次更新の仕組み化 | P1 | IN_PROGRESS（(a) Daily Note 5/26-28 DONE、(b) DONE〔release-log/README/MIRROR 最新化・obsidian-vault `e6f977f`〕、(c)(d) は部分BLOCKED＝Daily Note 本体生成の自動化方式〔morning-briefing.sh に生成ステップ追加 vs 別 cron 新設〕が Keita 確認待ち。reconcile 2026-06-01: T-F〔root cron〕は新箱 dev crontab 移設で解決済なので残ブロッカーは Keita 方式判断のみ。(d) は (c) 方式確定後に着手） | 林（キャッチアップ）+ ceo（日次統合）/ task-manager（recurring 管理） |
 | T-F | cron 自動化の root 権限エラー修復（ceo 朝ブリ・feedback-watcher が空振り） | P1（上位） | DONE（2026-05-29 Vultr 新箱「Claude Code Server 2」の非root `dev` ユーザへ cron 3本移設で解決。root の `claude -p` が skip-permissions ガードで弾かれていたのが空振りの正体。dev で3本とも実走グリーン→obsidian-vault push 成功。Supabase は service_role 直curl化。現箱 cron は二重push回避でコメントアウト。詳細は memory project-vultr-second-server） | ceo（自分のスクリプト群） |
 | T-G | night-patrol 夜間スモークが "No tests found" で空振り（監視死） | P1 | DONE（2026-05-29 main マージで config 本番反映。playwright config が 5/25・5/27 両 spec 計20件を拾い空振り解消。night-patrol 実走確認のみ次回夜間に残） | dev-logic / test-smoke |
 | T-H | Logic Android Production 公開 | P1 | 公開戦略確定（2026-05-30 Keita「今の最新ビルドで先に公開、P0 改善は公開後アップデート」）。T-G スモーク/T-B テーマは 5/29 達成済。公開順序＝AM-O SKU 登録（Keita）→実機課金ハッピーパス検証→リリースノート整備〔担当アサイン要・content-creator or marketing〕→Production promote（Play Console 手動・Keita） | Keita（SKU登録・promote）＋dev-logic/test-functional（実機検証）＋要アサイン（リリースノート） |
@@ -1948,7 +1948,7 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
 | T-R | 死にテーマ削除（custom / enterprise / startup / mono）＝計4削除 | P1 | DONE（2026-05-29 dev-logic 実装＋push。MODES/ModeId/ThemeState.customHex/applyTheme custom分岐 除去、loadTheme で未知 id を DEFAULT(dark) フォールバック、tokens.css mode-mono・tokens-m3.css mode-mono・index.css mode-enterprise/startup ブロック除去、i18n の4モード ja/en 削除、ThemeSettings(v1) の custom UI 撤去。tsc0/eslint0/vitest340/build0） | dev-logic | 残=light/dark/sepia/forest＋T-V 新規3（indigo/rose/slate） |
 | T-S | テーマを変えても「今日の一問」カード（Daily Fermi ホームカード）の色が青のまま → テーマ追従（＋AM-L のグラデ廃止と統合） | P1 | DONE（2026-05-29。HomeScreenV3 Daily Fermi カードを --brand-grad-h → フラット var(--accent)、青グロー boxShadow を accent 追従の color-mix に、CTA/eyebrow/desc を --accent / --accent-fg 追従に。T-T 根本原因A・AM-L(b) と統合実装） | dev-logic | T-T 根本原因A と同一箇所。AM-L(b) と同 DOM |
 | T-T | テーマ非追従の箇所を audit findings で完全仕様化 → 根本原因 A/B/C/D を個別修正 | P1 | DONE（2026-05-29。A: 各モードブロックで --brand-grad-h override＋HomeScreenV3 のハードコード青→accent追従。B: RoadmapScreenV3 のハードコード青 rgba(108,142,245,..) を var(--accent)系 color-mix へ（:329/:775/:959/:983/:992）。C: LessonStoriesScreen の #fff/#FFFFFF on brand を var(--accent-fg) 化（:559/:856/:860/:869/:872/:912/:1013/:1105/:1189/:1226/:1246/:1263/:1303/:1313/:1447/:1498/:1552/:1580）＋ tap-hint 青グロー accent 化。D: ProfileScreenV3 はハードコード text color 無し＝既に追従済みと確認） | 林（調査）→ dev-logic（修正） | 暗スクリム上の white 文字（tap-hint 左ゾーン等）は意図通り維持 |
-| T-U | コントラスト/可読性 整合性チェック（全テーマ×主要画面で WCAG 検証・破綻潰し） | P1 | 再オープン（2026-05-30 Keita 決定でスコープ拡大）。従来の「ボタン専用トークン #2E45A8 で 8.29:1 確保」対処は残置。ブランド青 #6C8EF5 そのものを濃くしてアプリ全体の青を再設計する方向に決定。designer が新ブランド青パレット案 2〜3＋全テーマ AA 検算→Keita 選定→dev-logic 実装。T-V と同じトークン（theme.ts/tokens.css）を触るため統合実装が筋 | designer→Keita→dev-logic | Keita「まかせる」委任の旧対処は temp。今回はブランド青の再設計＝T-V と統合実装でコンフリクト回避 |
+| T-U | コントラスト/可読性 整合性チェック（全テーマ×主要画面で WCAG 検証・破綻潰し） | P1 | BLOCKED（再オープン・2026-05-30 Keita 決定でスコープ拡大→新ブランド青パレットの Keita 選定待ち＝設計判断待ち。reconcile 2026-06-01: 旧「再オープン」表記が collector で UNKNOWN になっていたため BLOCKED に正規化）。従来の「ボタン専用トークン #2E45A8 で 8.29:1 確保」対処は残置。ブランド青 #6C8EF5 そのものを濃くしてアプリ全体の青を再設計する方向に決定。designer が新ブランド青パレット案 2〜3＋全テーマ AA 検算→Keita 選定→dev-logic 実装。T-V と同じトークン（theme.ts/tokens.css）を触るため統合実装が筋 | designer→Keita→dev-logic | Keita「まかせる」委任の旧対処は temp。今回はブランド青の再設計＝T-V と統合実装でコンフリクト回避 |
 | T-V | テーマ再設計エピック（「AIっぽくない」新規3テーマ追加＋数パターン＋UI設計刷新＋カスタマイズしやすく） | P1 | 部分（2026-05-29。新規3テーマ indigo/rose/slate を MODES＋tokens.css＋tokens-m3.css＋i18n(ja/en) に追加＝配色実装パート DONE。UI 設計刷新・数パターン展開は AM-K 親エピックで継続） | designer（提案）→ dev-logic（実装） | 配色トークンは THEME_PALETTE_CANDIDATES_v2 §2 をそのまま採用 |
 | T-Y | 2回以上完了レッスンの完了マーク色を区別（習熟色・コース一覧） | P2 | DONE（2026-05-29。--mastery/--mastery-fg を tokens.css 全テーマに定義〔明カード #9A7416/#FFF・暗カード #D9A943/#1A1A1A〕、CompletionBadge を count>=2 で mastery 色に切替＋細い金縁リングで形状二重符号化。count=1 は従来 --accent 維持。test 12件 pass） | dev-logic | RoadmapScreenV3:1327/:1380・CompletedLessonsScreen 共通コンポーネント経由で整合 |
 
@@ -2828,15 +2828,15 @@ T-M（体力コース）で dev-logic が **main の作業ツリーを使用中*
 | 着手順 | ID | 内容 | 優先度 | 重さ | migration | 依存・グルーピング |
 |--------|----|------|--------|------|-----------|-------------------|
 | ゲート | T-V | テーマ再設計（「AIっぽくない」新規3テーマ追加＋数パターン提案→Keita 選定→実装）＋UI 刷新 | P1 | 重 | 不要 | テーマ系の親エピック。designer 提案進行中→**Keita パレット選定がゲート** |
-| 1 | T-R | 死にテーマ削除（custom/enterprise/startup/mono＝計4） | P1 | 軽〜中 | 不要 | テーマ系・T-V 選定後に統合。mono は CSS ブロックも除去 |
-| 1 | T-T | テーマ非追従の網羅修正（根本原因A/B/C/D・T-S を内包） | P1 | 中 | 不要 | テーマ系・T-V 選定後に統合（調査=完了） |
-| 1 | T-U | コントラスト/可読性 整合性チェック（全テーマ×主要画面） | P1 | 中 | 不要 | テーマ系・T-T と一体 |
-| 1 | T-J | （既存 DONE）完了バッジのアクセント追従＝本番反映済 | — | — | — | ※DONE。本キューの「テーマ系」では色方針の参照のみ |
-| 1 | T-Y | 2回以上完了レッスンの完了マーク色を区別（習熟色） | P2 | 軽 | 不要 | テーマ系・習熟色は T-V パレット作業に内包・色方針を揃える |
+| (1) | T-R | 死にテーマ削除（custom/enterprise/startup/mono＝計4） | P1 | 軽〜中 | 不要 | テーマ系・T-V 選定後に統合。mono は CSS ブロックも除去 |
+| (1) | T-T | テーマ非追従の網羅修正（根本原因A/B/C/D・T-S を内包） | P1 | 中 | 不要 | テーマ系・T-V 選定後に統合（調査=完了） |
+| (1) | T-U | コントラスト/可読性 整合性チェック（全テーマ×主要画面） | P1 | 中 | 不要 | テーマ系・T-T と一体 |
+| (1) | T-J | （既存 DONE）完了バッジのアクセント追従＝本番反映済 | — | — | — | ※DONE。本キューの「テーマ系」では色方針の参照のみ |
+| (1) | T-Y | 2回以上完了レッスンの完了マーク色を区別（習熟色） | P2 | 軽 | 不要 | テーマ系・習熟色は T-V パレット作業に内包・色方針を揃える |
 | — | T-W | （既存 DONE）「あなた専用コース」セクションの展開/折りたたみ＝本番反映済（`ccbb47a`） | — | — | — | ※DONE（2026-05-31 実効性検証○・詳細セクション参照）。本キューの生きた実装対象ではない |
-| 3 | T-I | （既存 DONE）コース進捗表示＝本番反映済 | — | — | — | ※DONE。新規 T-I（Hayashi 重複）は削除済み |
-| 4 | T-K | （既存 DONE）ジャーナルグラフ tap 詳細＝本番反映済 | — | — | — | ※DONE |
-| 5 | T-L | （既存 DONE）フェルミの答えを解説の末尾へ＝本番反映済 | — | — | — | ※DONE |
+| (3) | T-I | （既存 DONE）コース進捗表示＝本番反映済 | — | — | — | ※DONE。新規 T-I（Hayashi 重複）は削除済み |
+| (4) | T-K | （既存 DONE）ジャーナルグラフ tap 詳細＝本番反映済 | — | — | — | ※DONE |
+| (5) | T-L | （既存 DONE）フェルミの答えを解説の末尾へ＝本番反映済 | — | — | — | ※DONE |
 
 （注: T-I/T-J/T-K/T-L は別バッチで既に DONE〔本番反映済〕。本キューに残るテーマ系の生きた実装対象は T-V/T-R/T-T(+T-S)/T-U/T-Y。T-S は T-T 根本原因A に統合済みのため独立行を持たない。内部順序は T-V 実装 → T-R → T-T(+T-S) → T-U → T-Y。）
 
@@ -2915,7 +2915,7 @@ Keita から Logic ブロッカー6件の判断を取得。各タスクへ反映
 | DF-3 | 進行待ち（実機走行のみ） | TODO（前提クリア済） | ログイン方式確定＝実メール Gmail エイリアス `keita.urano+pXX@gmail.com`。2026-05-31 着手時チェック完了＝投入20体 email を `.local`→Gmail エイリアスへ本番DB修正・検証済（commit `3fdc6bf`）。残=実機/エミュ6体走行（headless 不可）。担当=林。後続 DF-4/5/6 は DF-3 完了が前提 |
 | AM-N | BLOCKED | TODO（unblock） | 法的確定値が全揃い（アポロ合同会社/Apollo LLC・責任者 柴田圭太・池袋 BIGオフィスプラザ1206・月¥350/年¥2,450・電話非掲載＋開示注記・削除は account-deletion 正本/delete-account リダイレクト・インボイス記載なし・Google ログイン記述削除済）。dev-logic が LEGAL_REVIEW §5 ＋確定値を HTML〔5文書×ja/en・削除系一本化で減〕に反映、`【要Keita確認:...】`マーカー置換。**＋2026-05-30 追加: 年額トライアル記載の差し戻し（C-2 で削除した「7日間無料トライアル」を「年額のみ・初回限定・7日無料・8日目以降¥2,450/年自動課金・期間中解約で課金なし」＋月額トライアル無し明記で書き戻し、AM-O Offer `yearly-free-trial-7d` と整合）を push 前に必ず含める**。反映後に本番 push 承認を別途取得 |
 | AM-R | BLOCKED | DONE | dev-logic が 2026-05-30 本番 DB 書き換え実行完了。固有タグ41→36種・9統合・誤統合ゼロ・他ユーザー波及ゼロ。snapshot `public._backfill_journal_tags_20260530`〔15行〕＋undo SQL 保持中、安定確認後 DROP 可 |
-| T-U | DONE | 再オープン（スコープ拡大） | ボタン専用トークン #2E45A8（8.29:1）の対処は残置。ブランド青 #6C8EF5 そのものを濃くしてアプリ全体の青を再設計する方向に決定。designer が新ブランド青パレット案2〜3＋全テーマ AA 検算→Keita 選定→dev-logic 実装。T-V と同じトークン（theme.ts/tokens.css）を触るため統合実装 |
+| T-U | DONE | BLOCKED（再オープン・スコープ拡大＝Keita パレット選定待ち） | ボタン専用トークン #2E45A8（8.29:1）の対処は残置。ブランド青 #6C8EF5 そのものを濃くしてアプリ全体の青を再設計する方向に決定。designer が新ブランド青パレット案2〜3＋全テーマ AA 検算→Keita 選定→dev-logic 実装。T-V と同じトークン（theme.ts/tokens.css）を触るため統合実装 |
 | AM-O | BLOCKED | BLOCKED（SKU 登録セット確定） | コード結線 DONE。SKU 登録セット確定（Group `logic_paid`／月額 `logic_paid_monthly`・Base Plan `monthly-autorenew`・¥350・トライアル無し／年額 `logic_paid_yearly`・Base Plan `yearly-autorenew`・¥2,450／**年額に Introductory Offer `yearly-free-trial-7d`＝初回限定・無料7日→¥2,450/年。月額には付けない**。Product ID は `src/billing/products.ts` PLAY_PRODUCTS と一致確認済）。残＝Keita が Play Console で一字一句一致で Active 登録。SKU Active 後に dev-logic/test-functional が実機購入ハッピーパス検証（キャンセル/失敗/restore＋トライアル年額の無料→課金分岐） |
 | T-H | BLOCKED（保留） | 公開戦略確定 | 「今の最新ビルドで先に公開、DF-F 系 P0 改善は公開後アップデート」。T-G スモーク・T-B テーマは 5/29 達成済。公開順序＝AM-O SKU 登録（Keita）→実機課金ハッピーパス検証→リリースノート整備〔担当アサイン要〕→Production promote（Keita 手動） |
 
