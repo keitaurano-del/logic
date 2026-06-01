@@ -1949,6 +1949,7 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
 > フロー: **designer が新ブランド青パレット案 2〜3 案＋全テーマ AA 検算**を作成 → **Keita 選定** → **dev-logic 実装**。新規採番でも可だが、T-V（テーマ再設計エピック）と**同じトークン（theme.ts / tokens.css）を触るため統合実装が筋**（重複作業・コンフリクト回避）。
 > 参考（旧対処の確認値・残置）: 全テーマ AA 確認済〔sepia5.28/rose6.97/slate8.09/indigo7.61/forest7.80〕、今日の1問カードの白ピル上ラベルも 3.08→8.29 に是正済。新ブランド青確定後はこの値を再検算する。
 
+- 進捗（2026-06-01 自律ティック(林)）: 自律スコープ＝既存テーマの本文/補助テキスト色の AA 監査＋トークン是正を1歩前進。前ティック e6eb46d（dark muted/tertiary を AA 達成）に続き、**全テーマの本文補助色を網羅是正**。general-purpose(dev-logic 代行) が WCAG 相対輝度式で 9テーマ × {text-secondary/muted/tertiary}×{bg/bg-card/bg-elevated/bg-tertiary} のコントラスト比を実測→8テーマで muted/tertiary が最悪 2.64〜4.06:1 と本文 AA(4.5) 未達と判明。同系統トーン・階層(secondary>muted>tertiary)を保ったまま最小限の明度引き上げで全背景 AA≥4.5 達成（light/default `#6B7280→#5E6471`、sepia muted `#8A7A64→#6A5E4D`＋secondary `#5C4F3F`、forest `#7C9C8B→#86A494`、indigo `#7E8BA6→#8F9AB1`、rose muted `#8E726C→#6C5752`＋secondary `#5F4945`、slate muted `#76808A→#596068`＋secondary `#48535C`、legacy .mode-dark muted `#68708C→#9298AE`。theme-v3.mode-dark は前ティック値 #94A5C8 維持）。brand/accent の色相は不変＝**新ブランド青再設計（Keita 選定ゲート）には未着手**、あくまで読みにくい文字色トークンの AA 是正のみ。林が diff を独立裏取り（tokens.css のみ・component ハードコード無し）＋dark #9298AE/#223055 を手検算で 4.54:1 確認、green を再実行で確証（tsc0/eslint . 0err〔warn19既存〕/vitest 30files494pass）。commit `8eaff8d`→push origin/main（07b53e5..8eaff8d fast-forward を ls-remote で確認）→本番 deploy run 26728833225。**自律スコープの既存テーマ本文 AA 監査・是正は網羅完了**。残＝(a) 新ブランド青パレット再設計〔designer 案→Keita 選定→dev-logic 実装、T-V 統合〕、(b) accent-fg×accent 背景や selection/active ハイライト軸の網羅、(c) Android 実機目視。これらは Keita ゲート or 実機要で本ティック対象外。
 - 依頼原文（Keita 2026-05-29）: 「テーマを変えると白文字で見えない、ハイライトが濃くて読めない、が起きないように整合性チェックして」。
 - スコープ: 全テーマ × 主要画面で、可読性を検証して破綻を潰す **QA タスク**。検証軸は (a) 本文テキスト × 背景、(b) accent-fg × brand/accent 背景、(c) selection/active ハイライト × その上の文字。目安は WCAG **4.5:1（本文）/ 3:1（大文字・UI 要素）**。T-T の修正（特に根本原因C の accent-fg 化）と一体で進める。
 - なぜ T-T と一体か: T-T 根本原因C（#fff 固定 → accent-fg 化）と根本原因A（brand-grad-h override）は、どちらも「テーマ追従させた結果コントラストが足りるか」を検証しないと完了しない。T-U は T-T の修正後に各テーマで可読性が成立するかを横断チェックする受け入れゲート。
@@ -1956,9 +1957,9 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
 - 検証対象（主要画面・代表例）: ホーム（今日の一問カード・ストリーク）、ロードマップ（タブ active・カード・mark）、レッスン本文/LessonStories（brand 背景上の文字・callout）、プロフィール一覧、ジャーナル、外観設定、ログイン。
 - DoD: (1) 残全テーマ（light/dark/sepia/forest＋T-V 新規3、mono 除く）× 主要画面で「本文 × 背景」が WCAG 4.5:1、「大文字・UI 要素・accent-fg × accent 背景」が 3:1 を満たす、(2) 白文字が背景に溶ける/ハイライトが濃すぎて文字が読めない箇所がゼロ、(3) 破綻箇所はテーマトークン調整 or 当該箇所の fg 修正で解消、(4) 検証結果（テーマ×画面×実測コントラスト比 or OK/NG）が記録される、(5) Android 実機で代表テーマの可読性を目視確認。
 - サブタスク:
-  - [ ] 検証マトリクス作成（5テーマ × 主要画面 × 検証軸 a/b/c）
-  - [ ] 各セルでコントラスト比を実測（hex 抽出 → WCAG 比算出。selection/active ハイライト上の文字も含む）
-  - [ ] NG セルを抽出し、T-T の修正 or tokens.css のトークン調整で解消
+  - [x] 検証マトリクス作成（既存9テーマ × 本文/補助テキスト×背景 軸a。2026-06-01。主要画面の軸b/c 網羅と T-V 新規3テーマは残）
+  - [x] 各セルでコントラスト比を実測（既存9テーマの text-secondary/muted/tertiary × bg系。WCAG 相対輝度式で算出。2026-06-01。selection/active ハイライト軸は残）
+  - [x] NG セルを抽出し、tokens.css のトークン調整で解消（既存8テーマの muted/tertiary 本文 AA 未達を全是正・`8eaff8d` deploy済。2026-06-01）
   - [ ] forest のダーク寄り系で本文が沈まないか・sepia の低彩度で accent が埋もれないか重点確認（mono は削除済み）
   - [ ] Android 実機で代表テーマ（forest/sepia＋T-V 新規）の主要画面を目視
   - [ ] 検証結果を記録（再発防止の基準値として）
