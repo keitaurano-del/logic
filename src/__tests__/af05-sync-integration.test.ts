@@ -187,6 +187,27 @@ describe('AF-05: XP / プロフィール再ログイン永続化', () => {
     expect(localStorage.getItem('logic-streak-freeze')).toBe(freeze)
   })
 
+  it('AF-08: syncOnLogout で端末ローカル UI 設定 (font-scale / tts-autoplay / tts-rate) が消えない', async () => {
+    const sync = await import('../syncService')
+    sync.setSyncUser(TEST_USER_ID)
+
+    // 初期値とは異なる値を仕込む (font-scale 既定=standard, tts-autoplay 既定=true, tts-rate 既定=1.0)
+    localStorage.setItem('logic-font-scale', 'xlarge')
+    localStorage.setItem('logic-tts-autoplay', 'false')
+    localStorage.setItem('logic-tts-rate', '1.5')
+    // KEEP 対象外の logic-* キーは消えるはず (テストが意味を持つことの証明)
+    localStorage.setItem('logic-daily-problem', '{"id":1}')
+
+    await sync.syncOnLogout()
+
+    // KEEP_KEYS に含まれるので消えない。再ログインで初期値に戻らない。
+    expect(localStorage.getItem('logic-font-scale')).toBe('xlarge')
+    expect(localStorage.getItem('logic-tts-autoplay')).toBe('false')
+    expect(localStorage.getItem('logic-tts-rate')).toBe('1.5')
+    // KEEP 外は除去される (KEEP リストが全 logic-* を素通ししていないことの確認)
+    expect(localStorage.getItem('logic-daily-problem')).toBeNull()
+  })
+
   it('シナリオ5a: オフライン加算ガード — local > remote のとき local が残り remote に反映される', async () => {
     const sync = await import('../syncService')
 

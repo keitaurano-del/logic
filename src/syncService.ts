@@ -736,6 +736,12 @@ export async function syncOnLogout(): Promise<void> {
     // 中の consumedDates はストリーク計算に使われる重要データで、消えると
     // ストリーク退行を招く。端末ローカルで保持する (AF-07)。
     'logic-streak-freeze',
+    // 端末ローカルの UI 設定（文字サイズ / TTS 自動再生 / TTS 速度）。
+    // Supabase 同期は不要で端末ごとの好みのため、logic-locale / logic-theme と
+    // 同様にログアウト後も保持する。消すと毎回初期値に戻ってしまう (AF-08)。
+    'logic-font-scale',
+    'logic-tts-autoplay',
+    'logic-tts-rate',
   ])
   try {
     const keys: string[] = []
