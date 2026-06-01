@@ -2108,6 +2108,7 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
   - [x] 検証マトリクス作成（既存9テーマ × 本文/補助テキスト×背景 軸a。2026-06-01。主要画面の軸b/c 網羅と T-V 新規3テーマは残）
   - [x] 各セルでコントラスト比を実測（既存9テーマの text-secondary/muted/tertiary × bg系。WCAG 相対輝度式で算出。2026-06-01。selection/active ハイライト軸は残）
   - [x] NG セルを抽出し、tokens.css のトークン調整で解消（既存8テーマの muted/tertiary 本文 AA 未達を全是正・`8eaff8d` deploy済。2026-06-01）
+  - [x] **selection/active ハイライト軸（軸b/c の一部）監査・是正**（2026-06-01 自律ティック(林)・commit `29f48c0`・本番deploy run26747862411）＝ベタ塗り `var(--brand)` 上の文字が `--accent-fg`（accent swatch 連動の塗り用 fg）を流用しており、ダーク系で 白文字 on #6C8EF5 = **3.08:1** と本文 AA 未達だった（Keita 原訴え「白文字で見えない/ハイライトが濃くて読めない」に直結）。全テーマに `--brand-fg` を新設（dark=#0D1220 で **6.07:1**・light系=白/近黒で従来比維持）し、brand 塗り consumer（SavedItems active chip/sort/folder・journal summarize/goal-cat-work・LevelUpModal・CustomCourseSheet・AppV3 名前確定）の文字を `--accent-fg`→`--brand-fg` に付け替え（背景が真に `var(--brand)` 固定塗りの箇所のみ＝林が全消費箇所の背景を実コードで裏取り）。**brand/accent の hue は不変＝新ブランド青再設計(T-V/Keita ゲート)には未着手**。回帰テスト `src/__tests__/TU.highlightContrast.test.ts`(24) で全テーマ brand×brand-fg の AA を WCAG 式で恒久ロック。green=tsc0/eslint . 0err(warn19既存)/vitest 34files554pass（林が実コマンド自己裏取り＋コントラスト計算3.08/6.07 を独立検算）。残＝brand-soft/accent-soft 等ソフトトーン上の `--brand` 文字（dark/sepia/forest で 3.4〜4.5・UI3:1は満たすが本文4.5僅か割れ。明度↓は brand 再設計領域のため Keita ゲート）。
   - [ ] forest のダーク寄り系で本文が沈まないか・sepia の低彩度で accent が埋もれないか重点確認（mono は削除済み）
   - [ ] Android 実機で代表テーマ（forest/sepia＋T-V 新規）の主要画面を目視
   - [ ] 検証結果を記録（再発防止の基準値として）
