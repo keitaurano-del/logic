@@ -731,6 +731,11 @@ export async function syncOnLogout(): Promise<void> {
     'logic-reminder',
     'logic-notif-extra',
     'logic-journal-reminder',
+    // ストリークフリーズ在庫。無料配布専用アイテム (stats.ts:232) で
+    // Supabase 同期は未整備のため、ログアウト時に消すと再ログインで完全消失する。
+    // 中の consumedDates はストリーク計算に使われる重要データで、消えると
+    // ストリーク退行を招く。端末ローカルで保持する (AF-07)。
+    'logic-streak-freeze',
   ])
   try {
     const keys: string[] = []

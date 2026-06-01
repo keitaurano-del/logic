@@ -169,6 +169,24 @@ describe('AF-05: XP / プロフィール再ログイン永続化', () => {
     expect(localStorage.getItem('logic-notebook')).toBeNull()
   })
 
+  it('AF-07: syncOnLogout でストリークフリーズ在庫 (logic-streak-freeze) が消えない', async () => {
+    const sync = await import('../syncService')
+    sync.setSyncUser(TEST_USER_ID)
+
+    // フリーズ在庫 + 穴埋め日付 (consumedDates はストリーク計算に必要)
+    const freeze = JSON.stringify({
+      count: 2,
+      consumedDates: ['2026-05-30'],
+      lastGrantStreak: 7,
+    })
+    localStorage.setItem('logic-streak-freeze', freeze)
+
+    await sync.syncOnLogout()
+
+    // KEEP_KEYS に含まれるので消えない。再ログインでストリークが退行しない。
+    expect(localStorage.getItem('logic-streak-freeze')).toBe(freeze)
+  })
+
   it('シナリオ5a: オフライン加算ガード — local > remote のとき local が残り remote に反映される', async () => {
     const sync = await import('../syncService')
 
