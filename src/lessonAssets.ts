@@ -58,6 +58,20 @@ function joinUrl(base: string, fileName: string): string {
 }
 
 /**
+ * リモート化（Storage 取得）対象の拡張子か。
+ *
+ * AF-06 の移行対象はバンドル肥大の主因である重量 PNG のみ（lesson/course/badge/fermi 等）。
+ * ロードマップ一覧の軽量 `.webp`（平均 50KB）はバンドル同梱を維持する設計
+ * （docs/AF06_BUNDLE_SIZE_ANALYSIS.md B-2 / B-5）。Storage バケットには PNG しか
+ * アップロードしていないため、webp/svg をリモート URL に書き換えると 404 になる。
+ * そのため PNG 以外は常に localPath を素通しする。
+ */
+function isRemotableAsset(localPath: string): boolean {
+  const noQuery = localPath.split(/[?#]/)[0]
+  return noQuery.toLowerCase().endsWith('.png')
+}
+
+/**
  * ローカル画像パスを、フラグ ON かつベース URL 設定時のみリモート URL に変換する。
  * それ以外（デフォルト）は localPath をそのまま返す（bundled フォールバック）。
  *
@@ -66,6 +80,9 @@ function joinUrl(base: string, fileName: string): string {
  */
 export function resolveAssetUrl(localPath: string, options?: ResolveAssetOptions): string {
   if (!localPath) return localPath
+
+  // PNG 以外（webp 等）は同梱維持のため常に素通し（バケットに PNG しか無い）。
+  if (!isRemotableAsset(localPath)) return localPath
 
   const remoteEnabledRaw = options?.remoteEnabled ?? readEnv('VITE_REMOTE_LESSON_ASSETS')
   if (!isRemoteEnabled(remoteEnabledRaw)) return localPath

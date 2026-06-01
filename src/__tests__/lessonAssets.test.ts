@@ -67,6 +67,29 @@ describe('lessonAssets / resolveAssetUrl', () => {
     })
   })
 
+  describe('non-PNG assets stay bundled (webp/svg pass-through)', () => {
+    it('returns webp localPath unchanged even when flag is on (roadmap thumbs stay bundled)', () => {
+      const webp = '/images/v3/lesson-20.webp'
+      expect(resolveAssetUrl(webp, { remoteEnabled: 'on', baseUrl: BASE })).toBe(webp)
+    })
+
+    it('returns webp with query unchanged when flag is on', () => {
+      const webp = '/images/v3/course-thinking.webp?v=4'
+      expect(resolveAssetUrl(webp, { remoteEnabled: 'on', baseUrl: BASE })).toBe(webp)
+    })
+
+    it('returns svg localPath unchanged when flag is on', () => {
+      const svg = '/images/v3/diagram.svg'
+      expect(resolveAssetUrl(svg, { remoteEnabled: 'on', baseUrl: BASE })).toBe(svg)
+    })
+
+    it('is case-insensitive on the .png extension', () => {
+      expect(resolveAssetUrl('/images/v3/lesson-20.PNG', { remoteEnabled: 'on', baseUrl: BASE })).toBe(
+        `${BASE}/lesson-20.PNG`,
+      )
+    })
+  })
+
   describe('edge cases', () => {
     it('returns empty input unchanged', () => {
       expect(resolveAssetUrl('', { remoteEnabled: 'on', baseUrl: BASE })).toBe('')
