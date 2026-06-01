@@ -182,7 +182,7 @@ export function LevelUpModal({ prevLevel, newLevel, onClose }: Props) {
           style={{
             width: '100%',
             background: 'var(--brand)',
-            color: 'var(--accent-fg, #fff)',
+            color: 'var(--brand-fg, #fff)',
             padding: '14px 0',
             borderRadius: 99,
             fontSize: '1rem',

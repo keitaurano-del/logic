@@ -120,7 +120,8 @@
   padding: 14px;
   border-radius: 14px;
   background: var(--brand);
-  color: var(--accent-fg);
+  /* T-U: ベタ塗り --brand 上の文字は --brand-fg（dark で濃紺、他で白）で本文 AA */
+  color: var(--brand-fg);
   border: none;
   font: inherit;
   font-size: 1rem;
@@ -942,7 +943,10 @@
 .journal-goal-cat-btn--work.journal-goal-cat-btn--active {
   background: var(--goal-cat-work);
   border-color: var(--goal-cat-work);
-  color: var(--accent-fg, #fff);
+  /* T-U: --goal-cat-work は var(--brand)。ベタ塗り --brand 上の文字は --brand-fg
+   * （dark で濃紺、他で白）で本文 AA を満たす。--accent-fg はアクセント塗り用で
+   * dark の --brand 上では 3.08:1 になるため使わない。 */
+  color: var(--brand-fg, #fff);
 }
 
 .journal-goal-cat-btn--private.journal-goal-cat-btn--active {

@@ -228,7 +228,7 @@ export function SavedItemsScreen({
                 style={{
                   padding: '8px 14px',
                   background: active ? 'var(--brand)' : 'var(--bg-card)',
-                  color: active ? 'var(--accent-fg)' : 'var(--text-secondary)',
+                  color: active ? 'var(--brand-fg)' : 'var(--text-secondary)',
                   border: 'none',
                   borderRadius: 'var(--radius-pill)',
                   fontSize: '0.8rem',
@@ -506,7 +506,7 @@ export function SavedItemsScreen({
                 style={{
                   padding: '6px 12px',
                   background: active ? 'var(--brand)' : 'var(--bg-card)',
-                  color: active ? 'var(--accent-fg)' : 'var(--text-secondary)',
+                  color: active ? 'var(--brand-fg)' : 'var(--text-secondary)',
                   border: 'none',
                   borderRadius: 'var(--radius-pill)',
                   fontSize: '0.7333rem',
@@ -560,7 +560,7 @@ function folderChipStyle(active: boolean): CSSProperties {
   return {
     padding: '8px 12px',
     background: active ? 'var(--brand)' : 'var(--bg-card)',
-    color: active ? 'var(--accent-fg)' : 'var(--text-secondary)',
+    color: active ? 'var(--brand-fg)' : 'var(--text-secondary)',
     border: 'none',
     borderRadius: 'var(--radius-pill)',
     fontSize: '0.7867rem',

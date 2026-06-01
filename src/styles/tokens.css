@@ -40,6 +40,16 @@
   --accent-dark:  var(--brand-hover);
   --accent-fg:    #FFFFFF;
 
+  /* T-U (selection/active ハイライト軸): ベタ塗り --brand 上に乗る文字/アイコン色。
+   * 選択中チップ・アクティブタブ・ピル等は背景に var(--brand) を敷き、その上に
+   * 文字を載せる。従来これらは var(--accent-fg) を流用していたが、--accent-fg は
+   * applyTheme() がユーザー選択アクセント色（ACCENT swatch）に応じて html へ inline
+   * 上書きする「アクセント塗り用」トークンで、--brand 塗りの可読性を保証しない。
+   * --brand 塗り専用の fg を分離し、各テーマで AA(本文 4.5:1) を満たす値を固定する。
+   * デフォルト（light 系）の --brand は濃い色なので白で AA。dark のみ明るい青 #6C8EF5
+   * になり白文字が 3.08:1（本文 AA 未達）のため、dark ブロックで濃紺へ上書きする。 */
+  --brand-fg:     #FFFFFF;
+
   /* T-U: ベタ塗り CTA 用のアクセント色。
    * テキスト/アイコン用の --accent（明るい青 #6C8EF5）と用途を分離する。
    * 明るい青は白文字で 3.08:1（AA 未達）になるため、ベタ塗りボタンは
@@ -337,6 +347,8 @@ body.theme-v3.mode-light {
   --accent-glow:  rgba(108, 142, 245, 0.25);
   --accent-dark:  var(--brand-hover);
   --accent-fg:    #FFFFFF;
+  /* T-U: --brand(#2E45A8 濃紺) 上は白で 8.29:1（本文 AA） */
+  --brand-fg:     #FFFFFF;
 
   /* UI-30: ベタ塗り CTA トークンを light でも明示。
    * :root では --accent-btn-fg: var(--accent-fg) だが、applyTheme() が
@@ -413,6 +425,8 @@ body.theme-v3.mode-sepia {
   --accent-glow:  rgba(178, 92, 58, 0.22);
   --accent-dark:  #A8542F;
   --accent-fg:    #FFFFFF;
+  /* T-U: --brand(#A8542F テラコッタ) 上は白で 5.28:1（本文 AA） */
+  --brand-fg:     #FFFFFF;
 
   --brand:        #A8542F;
   /* T-T 根本原因A: --brand-grad-h を各テーマで override（青固定を解消） */
@@ -467,6 +481,8 @@ body.theme-v3.mode-forest {
   --accent-glow:  rgba(111, 184, 154, 0.25);
   --accent-dark:  #8FCFB3;
   --accent-fg:    #0B1813;
+  /* T-U: --brand(#6FB89A 明るい緑) 上は近黒 #0B1813 で 7.80:1（本文 AA） */
+  --brand-fg:     #0B1813;
 
   --brand:        #6FB89A;
   /* T-T 根本原因A: --brand-grad-h を各テーマで override（青固定を解消） */
@@ -521,6 +537,8 @@ body.theme-v3.mode-indigo {
   --accent-glow:  rgba(143, 169, 214, 0.25);
   --accent-dark:  #A9BFE2;
   --accent-fg:    #0F1622;
+  /* T-U: --brand(#8FA9D6 明るい藍) 上は近黒 #0F1622 で 7.61:1（本文 AA） */
+  --brand-fg:     #0F1622;
 
   --brand:        #8FA9D6;
   --brand-grad:   linear-gradient(135deg, #8FA9D6 0%, #A9BFE2 100%);
@@ -574,6 +592,8 @@ body.theme-v3.mode-rose {
   --accent-glow:  rgba(166, 84, 102, 0.22);
   --accent-dark:  #8E4054;
   --accent-fg:    #FFFFFF;
+  /* T-U: --brand(#8E4054 ローズ) 上は白で 6.97:1（本文 AA） */
+  --brand-fg:     #FFFFFF;
 
   --brand:        #8E4054;
   --brand-grad:   linear-gradient(135deg, #A65466 0%, #BE6F80 100%);
@@ -627,6 +647,8 @@ body.theme-v3.mode-slate {
   --accent-glow:  rgba(62, 107, 112, 0.22);
   --accent-dark:  #2E565A;
   --accent-fg:    #FFFFFF;
+  /* T-U: --brand(#2E565A スレートティール) 上は白で 8.09:1（本文 AA） */
+  --brand-fg:     #FFFFFF;
 
   --brand:        #2E565A;
   --brand-grad:   linear-gradient(135deg, #3E6B70 0%, #5A878C 100%);
@@ -683,6 +705,12 @@ body.theme-v3.mode-dark {
    * CTA 塗りは濃紺 #2E45A8 に寄せて白文字 8.29:1 を確保（テキスト用 --accent は明るい青のまま）。 */
   --accent-btn:    #2E45A8;
   --accent-btn-fg: #FFFFFF;
+
+  /* T-U (selection/active ハイライト軸): dark の --brand は明るい青 #6C8EF5。
+   * 白文字は 3.08:1（本文 AA 未達）なので、--brand 塗り上の文字は濃紺 #0D1220 へ。
+   * #0D1220 on #6C8EF5 = 6.07:1（本文 AA 達成）。--accent-fg(#FFFFFF, アクセント塗り用)
+   * とは用途を分離する。 */
+  --brand-fg:      #0D1220;
 
   --shadow-card:       0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.3);
   --shadow-card-hover: 0 4px 8px rgba(0, 0, 0, 0.4), 0 12px 28px rgba(0, 0, 0, 0.5);
@@ -745,4 +773,7 @@ body.theme-v3.mode-dark {
   /* brand-soft: ダークモード用 */
   --brand-soft:   rgba(108, 142, 245, 0.16);
   --brand:        #6C8EF5;
+  /* T-U (selection/active ハイライト軸): --brand(#6C8EF5) 上の文字は濃紺 #0D1220 で
+   * 6.07:1（本文 AA）。白文字 3.08:1 を回避。 */
+  --brand-fg:     #0D1220;
 }

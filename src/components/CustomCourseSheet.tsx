@@ -148,7 +148,7 @@ export function CustomCourseSheet({ onClose, onSaved, onUpgrade }: CustomCourseS
                 <button
                   onClick={handleGenerate}
                   disabled={!prompt.trim()}
-                  style={{ width: '100%', background: prompt.trim() ? 'var(--brand)' : 'var(--bg-secondary)', color: prompt.trim() ? 'var(--accent-fg)' : 'var(--text-muted)', border: 'none', borderRadius: 12, padding: '14px', fontSize: '1rem', fontWeight: 700, cursor: prompt.trim() ? 'pointer' : 'not-allowed' }}
+                  style={{ width: '100%', background: prompt.trim() ? 'var(--brand)' : 'var(--bg-secondary)', color: prompt.trim() ? 'var(--brand-fg)' : 'var(--text-muted)', border: 'none', borderRadius: 12, padding: '14px', fontSize: '1rem', fontWeight: 700, cursor: prompt.trim() ? 'pointer' : 'not-allowed' }}
                 >
                   {t('customCourse.generate')}
                 </button>

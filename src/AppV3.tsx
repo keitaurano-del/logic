@@ -884,7 +884,7 @@ function AppV3() {
             style={{
               width: '100%', padding: '15px', background: nameInput.trim() ? 'var(--brand)' : 'var(--bg-card)',
               border: 'none', borderRadius: 12, fontSize: '1.0667rem', fontWeight: 700,
-              color: nameInput.trim() ? 'var(--accent-fg)' : 'var(--text-muted)',
+              color: nameInput.trim() ? 'var(--brand-fg)' : 'var(--text-muted)',
               cursor: nameInput.trim() ? 'pointer' : 'not-allowed', marginBottom: 10,
             }}
           >{nameSaving ? t('welcomePopup.saving') : t('welcomePopup.save')}</button>
