@@ -5,6 +5,7 @@ import { SparkleIcon } from './MoodWeatherIcons'
 import { XIcon, TrashIcon, ChevronDownIcon } from '../../icons'
 import { t, getLocale } from '../../i18n'
 import type { AssistantConversation } from './types'
+import { resolveAssetUrl } from '../../lessonAssets'
 
 interface JournalAssistantHistorySheetProps {
   userId: string
@@ -175,7 +176,7 @@ export function JournalAssistantHistorySheet({
                                 >
                                   {course.image && (
                                     <div className="journal-recommended-course-card__thumb">
-                                      <img src={course.image} alt="" loading="lazy" />
+                                      <img src={resolveAssetUrl(course.image)} alt="" loading="lazy" />
                                     </div>
                                   )}
                                   <div className="journal-recommended-course-card__body">

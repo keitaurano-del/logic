@@ -11,6 +11,7 @@ import { LessonThumbnail } from '../components/LessonThumbnail'
 import { TtsPopover } from '../components/TtsPopover'
 import * as tts from '../ttsService'
 import { startCoursePlay } from '../ttsCoursePlay'
+import { resolveAssetUrl } from '../lessonAssets'
 
 function LessonImage({ lessonId, size }: { lessonId: number; size: number }) {
   const [failed, setFailed] = useState(false)
@@ -18,7 +19,7 @@ function LessonImage({ lessonId, size }: { lessonId: number; size: number }) {
   if (failed) return <LessonThumbnail lessonId={lessonId} size={size} />
   return (
     <img
-      src={`/images/v3/lesson-${lessonId}.webp`}
+      src={resolveAssetUrl(`/images/v3/lesson-${lessonId}.webp`)}
       alt=""
       loading="lazy"
       onError={handleError}

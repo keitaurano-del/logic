@@ -19,6 +19,7 @@ import {
   MAX_XP,
   type TitleKey,
 } from '../screens/homeHelpers'
+import { resolveAssetUrl } from '../lessonAssets'
 import { t } from '../i18n'
 import { LockIcon, XIcon } from '../icons'
 import './levelup.css'
@@ -211,7 +212,7 @@ export function TitleBadgeSheet({ xp, onClose }: TitleBadgeSheetProps) {
             }}
           >
             <img
-              src={getBadgeImagePath(currentKey)}
+              src={resolveAssetUrl(getBadgeImagePath(currentKey))}
               alt={t(getTitleI18nKey(currentKey))}
               style={{ width: 140, height: 140, objectFit: 'contain', filter: `drop-shadow(0 4px 16px ${lv.color}66)` }}
             />
@@ -242,7 +243,7 @@ export function TitleBadgeSheet({ xp, onClose }: TitleBadgeSheetProps) {
           ) : nextTier ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
               <img
-                src={getBadgeImagePath(nextTier.key)}
+                src={resolveAssetUrl(getBadgeImagePath(nextTier.key))}
                 alt={t(getTitleI18nKey(nextTier.key))}
                 style={{ width: 56, height: 56, objectFit: 'contain', opacity: 0.55, filter: 'grayscale(0.6)' }}
               />
@@ -383,7 +384,7 @@ function TierCell({ tierKey, min, max, unlocked, isCurrent }: {
     >
       <div style={{ position: 'relative', width: 56, height: 56, marginBottom: 6 }}>
         <img
-          src={getBadgeImagePath(tierKey)}
+          src={resolveAssetUrl(getBadgeImagePath(tierKey))}
           alt={t(getTitleI18nKey(tierKey))}
           style={{
             width: 56, height: 56, objectFit: 'contain',

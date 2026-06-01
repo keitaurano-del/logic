@@ -7,6 +7,7 @@ import { getCompletedCount, getLessonStreak, getXp, getCompletedLessons, getXpLo
 import { getCompletionCount } from '../db/completionCountDb'
 import { getAllLessonsFlat } from '../lessonData'
 import { getCurrentLevel, getXpProgress, getTitleKeyForLevel, getTitleI18nKey, getBadgeImagePath, MAX_LEVEL } from './homeHelpers'
+import { resolveAssetUrl } from '../lessonAssets'
 import { TitleBadgeSheet } from '../components/TitleBadgeSheet'
 import { logout } from '../supabase'
 import { getSubscriptionState } from '../subscription'
@@ -90,7 +91,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
             }}
           >
             <img
-              src={getBadgeImagePath(currentTitleKey)}
+              src={resolveAssetUrl(getBadgeImagePath(currentTitleKey))}
               alt={t(getTitleI18nKey(currentTitleKey))}
               style={{ width: 68, height: 68, objectFit: 'contain', filter: `drop-shadow(0 3px 10px ${lv.color}80)` }}
             />

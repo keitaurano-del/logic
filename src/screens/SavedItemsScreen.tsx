@@ -28,6 +28,7 @@ import {
   type SavedFolder,
 } from '../savedItemsStore'
 import { haptic } from '../platform/haptics'
+import { resolveAssetUrl } from '../lessonAssets'
 import { t } from '../i18n'
 
 /** フォルダによる絞り込み: 'all' / 'unfiled' / フォルダ ID */
@@ -643,7 +644,7 @@ function SavedRow({
       >
         {item.image ? (
           <img
-            src={item.image}
+            src={resolveAssetUrl(item.image)}
             alt=""
             loading="lazy"
             style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: 10, flexShrink: 0 }}

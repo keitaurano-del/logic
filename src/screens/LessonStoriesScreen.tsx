@@ -12,6 +12,7 @@ import { stripMarkup } from '../richText'
 import { allLessons } from '../lessonData'
 import { addXp } from '../stats'
 import { LessonThumbnail } from '../components/LessonThumbnail'
+import { resolveAssetUrl } from '../lessonAssets'
 import { API_BASE } from './apiBase'
 import { t, getLocale } from '../i18n'
 import * as tts from '../ttsService'
@@ -1115,7 +1116,7 @@ function HeroImage({ image, lessonId }: { image: string; lessonId?: number }) {
   return (
     <div style={{ width: '100%', aspectRatio: '1 / 1', background: 'var(--bg-card)', display: 'block', overflow: 'hidden' }}>
       <img
-        src={image}
+        src={resolveAssetUrl(image)}
         alt=""
         loading="lazy"
         onError={handleError}

@@ -6,6 +6,7 @@ import type { PeriodType } from './types'
 import { SparkleIcon } from './MoodWeatherIcons'
 import { JournalRichText } from './JournalRichText'
 import { XIcon } from '../../icons'
+import { resolveAssetUrl } from '../../lessonAssets'
 import { loadProgress } from '../../progressStore'
 import { getLessonStreak, getTotalStudyDays, getXpLogThisMonth } from '../../stats'
 import { getAllLessonsFlat } from '../../lessonData'
@@ -294,7 +295,7 @@ export function JournalAssistantSheet({ userId, assistantName, onClose, onOpenLe
                   >
                     {course.image && (
                       <div className="journal-recommended-course-card__thumb">
-                        <img src={course.image} alt="" loading="lazy" />
+                        <img src={resolveAssetUrl(course.image)} alt="" loading="lazy" />
                       </div>
                     )}
                     <div className="journal-recommended-course-card__body">

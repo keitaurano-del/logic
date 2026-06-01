@@ -12,6 +12,7 @@ import confetti from 'canvas-confetti'
 import { haptic } from '../platform/haptics'
 import { t } from '../i18n'
 import { getBadgeImagePath, getTitleI18nKey, type TitleKey } from '../screens/homeHelpers'
+import { resolveAssetUrl } from '../lessonAssets'
 import './levelup.css'
 
 interface Props {
@@ -208,7 +209,7 @@ export function RankUpModal({ prevTitleKey, newTitleKey, newLevel, onClose }: Pr
             }}
           >
             <img
-              src={getBadgeImagePath(newTitleKey)}
+              src={resolveAssetUrl(getBadgeImagePath(newTitleKey))}
               alt={t(getTitleI18nKey(newTitleKey))}
               style={{
                 width: 140,
