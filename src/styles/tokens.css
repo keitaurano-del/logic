@@ -68,7 +68,9 @@
   /* Text */
   --text-primary:   #0D1220;
   --text-secondary: #4A5068;
-  --text-muted:     #6B7280;
+  /* T-U: #6B7280 は bg-tertiary(#E5E8F2) 上で 3.95:1 と本文 AA 4.5 未達だった。
+   * #5E6471 へ引き上げ全背景(bg/card/elevated/tertiary)で AA 達成。secondary #4A5068 とは別トーンで階層維持。 */
+  --text-muted:     #5E6471;
   --text-tertiary:  var(--text-muted);
   --text-on-hero:   #FFFFFF;
 
@@ -320,8 +322,10 @@ body.theme-v3.mode-light {
 
   --text-primary:   #0D1220;
   --text-secondary: #4A5068;
-  --text-muted:     #6B7280;
-  --text-tertiary:  #6B7280;
+  /* T-U: #6B7280 は bg(#EEF1FA) 3.0/4.28・bg-tertiary(#DDE2EE) 3.73 で本文 AA 未達。
+   * #5E6471 へ引き上げ全背景で AA 達成（最悪 bg-tertiary 4.58:1）。 */
+  --text-muted:     #5E6471;
+  --text-tertiary:  #5E6471;
 
   --border:       #E2E5F0;
   --border-light: #EEF0F8;
@@ -382,9 +386,11 @@ body.theme-v3.mode-sepia {
   --bg-glass-dark: rgba(244, 236, 221, 0.92);
 
   --text-primary:   #3A2F23;
-  --text-secondary: #6B5C49;
-  --text-muted:     #8A7A64;
-  --text-tertiary:  #8A7A64;
+  /* T-U: muted #8A7A64 は全背景で 2.98〜4.06:1 と本文 AA 未達だった。#6A5E4D へ引き上げ全背景 AA 達成（最悪 bg-tertiary 4.53:1）。
+   * secondary も #6B5C49(bg-tertiary 4.62 とギリ)を #5C4F3F に強化し、muted との階層差(コントラスト比 約1.1)を確保。 */
+  --text-secondary: #5C4F3F;
+  --text-muted:     #6A5E4D;
+  --text-tertiary:  #6A5E4D;
 
   --border:       #E2D5BF;
   --border-light: #EDE3D0;
@@ -435,8 +441,10 @@ body.theme-v3.mode-forest {
 
   --text-primary:   #E4EDE6;
   --text-secondary: #A6C2B2;
-  --text-muted:     #7C9C8B;
-  --text-tertiary:  #7C9C8B;
+  /* T-U: muted #7C9C8B は bg-elevated(#1E3B2F) 上で 4.06:1 と本文 AA 未達。
+   * #86A494 へ引き上げ全背景 AA 達成（最悪 bg-elevated 4.50:1）。secondary #A6C2B2 とは別トーンで階層維持。 */
+  --text-muted:     #86A494;
+  --text-tertiary:  #86A494;
 
   --border:       rgba(228, 237, 230, 0.10);
   --border-light: rgba(228, 237, 230, 0.06);
@@ -487,8 +495,10 @@ body.theme-v3.mode-indigo {
 
   --text-primary:   #E7E3D8;
   --text-secondary: #A9B4C9;
-  --text-muted:     #7E8BA6;
-  --text-tertiary:  #7E8BA6;
+  /* T-U: muted #7E8BA6 は bg-card(#1E2738) 4.37・bg-elevated(#26324A) 3.74 で本文 AA 未達。
+   * #8F9AB1 へ引き上げ全背景 AA 達成（最悪 bg-elevated 4.53:1）。secondary #A9B4C9 とは別トーンで階層維持。 */
+  --text-muted:     #8F9AB1;
+  --text-tertiary:  #8F9AB1;
 
   --border:       rgba(231, 227, 216, 0.10);
   --border-light: rgba(231, 227, 216, 0.06);
@@ -537,9 +547,11 @@ body.theme-v3.mode-rose {
   --bg-glass-dark: rgba(243, 232, 228, 0.92);
 
   --text-primary:   #3A2A28;
-  --text-secondary: #6E5550;
-  --text-muted:     #8E726C;
-  --text-tertiary:  #8E726C;
+  /* T-U: muted #8E726C は全背景 2.97〜4.25:1 と本文 AA 未達だった。#6C5752 へ引き上げ全背景 AA 達成（最悪 bg-tertiary 4.54:1）。
+   * secondary も #6E5550(bg-tertiary 4.60 とギリ)を #5F4945 に強化し、muted との階層差を確保。 */
+  --text-secondary: #5F4945;
+  --text-muted:     #6C5752;
+  --text-tertiary:  #6C5752;
 
   --border:       #E4D0CA;
   --border-light: #ECDCD7;
@@ -588,9 +600,11 @@ body.theme-v3.mode-slate {
   --bg-glass-dark: rgba(236, 236, 234, 0.92);
 
   --text-primary:   #1E242B;
-  --text-secondary: #54606B;
-  --text-muted:     #76808A;
-  --text-tertiary:  #76808A;
+  /* T-U: muted #76808A は全背景 2.87〜4.02:1 と本文 AA 未達だった。#596068 へ引き上げ全背景 AA 達成（最悪 bg-tertiary 4.54:1）。
+   * secondary も #54606B(bg-tertiary 4.59 とギリ)を #48535C に強化し、muted との階層差を確保。 */
+  --text-secondary: #48535C;
+  --text-muted:     #596068;
+  --text-tertiary:  #596068;
 
   --border:       #D9DAD8;
   --border-light: #E3E4E2;
@@ -682,7 +696,9 @@ body.theme-v3.mode-dark {
 
   --text-primary:   #EEF0F8;
   --text-secondary: #A0A8C4;
-  --text-muted:     #68708C;
+  /* T-U: #68708C は全背景 2.64〜3.96:1 と本文 AA 未達だった。
+   * #9298AE へ引き上げ全背景 AA 達成（最悪 bg-tertiary #223055 上で 4.52:1）。secondary #A0A8C4 とは別トーンで階層維持。 */
+  --text-muted:     #9298AE;
   --text-on-hero:   #FFFFFF;
 
   --border:       #1E2A48;
