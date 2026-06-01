@@ -46,7 +46,7 @@ Keita から 2026-06-01 に直接報告された不具合・改善依頼3件を�
 |----|---------|--------|-----------|--------|------|
 | AF-05 | 再ログイン後にプロフィール情報とレベル/XP が引き継がれない（データ消失） | P0 | DONE | dev-logic（根因調査→修正）+ test-functional（永続化E2E） | Keita 実機報告 2026-06-01 |
 | AF-07 | ストリークフリーズ在庫（logic-streak-freeze）がログアウトで消失（KEEP_KEYS 漏れ） | P2 | DONE（2026-06-01 自律ティック(林) option(a) 実装→green→本番反映。syncService.ts:735 KEEP_KEYS に logic-streak-freeze 追加・回帰テスト af05-sync-integration.test.ts:172 追加・tsc0/eslint0/vitest508pass・commit `ecce6fa`・push済・Render本番deploy run26730917519・Android main push自動配信） | dev-logic | AF-05 隣接検出（dev-logic 2026-06-01） |
-| AF-08 | UI設定（font-scale / tts-autoplay / tts-rate）がログアウトで初期値に戻る（KEEP_KEYS 漏れ） | P3 | TODO | dev-logic | AF-05 隣接検出（dev-logic 2026-06-01） |
+| AF-08 | UI設定（font-scale / tts-autoplay / tts-rate）がログアウトで初期値に戻る（KEEP_KEYS 漏れ） | P3 | DONE（2026-06-01 自律ティック(林) AF-07 同パターンで実装→green→本番反映。syncService.ts:742-744 KEEP_KEYS に logic-font-scale/logic-tts-autoplay/logic-tts-rate 追加・回帰テスト af05-sync-integration.test.ts に AF-08 ケース追加・tsc0/eslint0(warn19)/vitest31files509pass・commit `8f9feac`・push済・Render本番deploy run26731418036・Android main push自動配信） | dev-logic | AF-05 隣接検出（dev-logic 2026-06-01） |
 | UI-30 | ライトテーマで「今日の1位問」のチャレンジするボタンが見にくい | P1 | DONE | dev-logic（コンポーネント特定→統一）+ test-functional（両テーマ視認性） | Keita 実機報告 2026-06-01 |
 | AF-06 | アプリDLサイズ300MB削減：レッスンアセットをオンデマンド読込に | P1 | TODO | dev-logic（計測→設計案）+ designer（アセット最適化調査） | Keita 実機報告 2026-06-01 |
 
@@ -103,7 +103,8 @@ Keita から 2026-06-01 に直接報告された不具合・改善依頼3件を�
 - 更新日: 2026-06-01
 
 #### AF-08 — UI設定（font-scale / tts-autoplay / tts-rate）がログアウトで初期値に戻る
-- 優先度: P3 / ステータス: TODO / 担当案: dev-logic
+- 優先度: P3 / ステータス: DONE（2026-06-01 自律ティック(林)）/ 担当案: dev-logic
+- **実装完了（2026-06-01 自律ティック(林)）**: AF-07 と同パターンで `src/syncService.ts` の `syncOnLogout` の `KEEP_KEYS`（line 742-744、`logic-streak-freeze` の直後）に `'logic-font-scale'`・`'logic-tts-autoplay'`・`'logic-tts-rate'` を追加（端末ローカル UI 設定＝Supabase 同期不要、`logic-locale`/`logic-theme` と同様に保持の理由コメント付）。キー名は実コードで確証（fontScale.ts:9 / ttsService.ts:41,43）。回帰テストを `src/__tests__/af05-sync-integration.test.ts` に AF-08 ケース追加（3キーを非デフォルト値で仕込み→syncOnLogout 後も残存＋非KEEP の `logic-daily-problem` は除去されることを検証＝テストの実効性も担保）。**検証 green（林が実コマンドで自己裏取り）**: tsc -b --noEmit=0 / eslint .=0 errors(19既存warning) / vitest 31files 509 pass。commit `8f9feac`・push 済（remote main = 8f9feac 確認）・Render 本番 deploy run `26731418036`（workflow_dispatch）・Android は main push で android-deploy.yml 自動配信。両OS=KEEP_KEYS はプラットフォーム非依存ロジック。
 - 由来: **AF-05 の修正実装中に dev-logic が隣接で検出**（2026-06-01）。同根＝`syncService` の `syncOnLogout` の `KEEP_KEYS` 漏れ。AF-05 とは別スコープ。
 - 詳細: `logic-font-scale` / `logic-tts-autoplay` / `logic-tts-rate` の3つの端末ローカル UI 設定が `KEEP_KEYS` 漏れのため、ログアウト→再ログインで初期値に戻る。`logic-locale` / `logic-theme` は KEEP されているのに、これらが漏れていて一貫性を欠く。軽微だが UX 改善。
 - 想定修正方針: `KEEP_KEYS` に上記3キーを追加（端末ローカル設定なので Supabase 同期は不要、KEEP で十分）。
