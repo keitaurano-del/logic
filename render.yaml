@@ -87,7 +87,8 @@ services:
       - key: VITE_APP_VERSION
         sync: false
       # AF-06: レッスンアセットのオンデマンド取得（Supabase Storage）
+      # WebP バンドル化完了後に true に切り替える
       - key: VITE_REMOTE_LESSON_ASSETS
-        value: "true"
+        value: "false"
       - key: VITE_LESSON_ASSET_BASE_URL
         value: https://yctlelmlwjwlcpcxvmgx.supabase.co/storage/v1/object/public/lesson-assets

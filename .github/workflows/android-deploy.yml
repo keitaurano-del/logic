@@ -53,8 +53,8 @@ jobs:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
-          # AF-06: Vite の stripRemotePngFromDist plugin を発火させ AAB から 222 PNG を除去
-          VITE_REMOTE_LESSON_ASSETS: "true"
+          # AF-06: WebP バンドル化完了後に true に切り替える
+          VITE_REMOTE_LESSON_ASSETS: "false"
           VITE_LESSON_ASSET_BASE_URL: https://yctlelmlwjwlcpcxvmgx.supabase.co/storage/v1/object/public/lesson-assets
 
       # ── 7. Capacitor: android/ ディレクトリを追加 ─────────
