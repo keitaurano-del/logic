@@ -1,4 +1,4 @@
-import { pushProgress, pushDisplayName, getSyncUser } from './syncService'
+import { pushProgress, pushDisplayName, getSyncUser, pushXp } from './syncService'
 import { incrementCompletionCount } from './db/completionCountDb'
 
 const STORAGE_KEY = 'logic-stats'
@@ -417,11 +417,21 @@ export function getXp(): number {
   } catch { return 0 }
 }
 
+/**
+ * 累積 XP を Supabase profiles.xp へ push する (AF-05)。
+ * - 認証済みのときだけ実行 (getSyncUser() あり)
+ * - fire-and-forget。失敗しても UX を止めない (pushXp 側で握り潰す)
+ */
+function syncXpToServer(xp: number): void {
+  if (getSyncUser()) void pushXp(xp)
+}
+
 export function addXp(event: XpEvent): number {
   const gained = XP_REWARDS[event]
   const newXp = Math.min(getXp() + gained, STATS_MAX_XP)
   localStorage.setItem(XP_KEY, String(newXp))
   appendXpLog(event, gained)
+  syncXpToServer(newXp)
   return newXp
 }
 
@@ -429,6 +439,7 @@ export function addXp(event: XpEvent): number {
 export function addXP(amount: number): number {
   const newXp = Math.min(getXp() + amount, STATS_MAX_XP)
   localStorage.setItem(XP_KEY, String(newXp))
+  syncXpToServer(newXp)
   try {
     const log: XpLogEntry[] = JSON.parse(localStorage.getItem(XP_LOG_KEY) || '[]')
     log.push({ ts: Date.now(), event: 'lesson' as XpEvent, xp: amount })
