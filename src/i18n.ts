@@ -57,6 +57,11 @@ const STRINGS: Record<Locale, Strings> = {
     'common.edit': '編集',
     'common.close': '閉じる',
 
+    // Lesson/course asset images (AF-06 オンデマンド読込)
+    'asset.lessonImageAlt': 'レッスンの画像',
+    'asset.courseImageAlt': 'コースの画像',
+    'asset.imageLoading': '画像を読み込み中です',
+
     // Navigation
     'nav.home': 'ホーム',
     'nav.lessons': 'レッスン',
@@ -1999,6 +2004,11 @@ const STRINGS: Record<Locale, Strings> = {
     'common.retry': 'Try again',
     'common.edit': 'Edit',
     'common.close': 'Close',
+
+    // Lesson/course asset images (AF-06 on-demand loading)
+    'asset.lessonImageAlt': 'Lesson image',
+    'asset.courseImageAlt': 'Course image',
+    'asset.imageLoading': 'Loading image',
 
     // Navigation
     'nav.home': 'Home',

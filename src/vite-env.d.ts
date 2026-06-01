@@ -6,6 +6,9 @@ interface ImportMetaEnv {
   readonly VITE_SUPABASE_ANON_KEY?: string
   readonly VITE_SENTRY_DSN?: string
   readonly VITE_APP_VERSION?: string
+  // AF-06: レッスン/コース画像のオンデマンド(リモート)読込フラグ。default OFF。
+  readonly VITE_REMOTE_LESSON_ASSETS?: string
+  readonly VITE_LESSON_ASSET_BASE_URL?: string
 }
 
 interface ImportMeta {

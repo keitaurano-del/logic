@@ -40,6 +40,7 @@ import { loadPersonalCourse, axisLabel } from '../placementData'
 import { isSaved, toggleSaved } from '../savedItemsStore'
 import { loadCustomCourses, deleteCustomCourse, type CustomCourse } from '../customCourseStore'
 import { CustomCourseSheet } from '../components/CustomCourseSheet'
+import { LazyAssetImage } from '../components/LazyAssetImage'
 import { t, getLocale } from '../i18n'
 
 // レベル文字列（データ値）→ 表示用の翻訳キー
@@ -1447,9 +1448,12 @@ function CategoryCard({ name, meta, progressDone, progressTotal, progressPercent
         aria-label={`${name}: ${meta}`}
         style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', cursor: 'pointer', boxShadow: 'var(--shadow-v3-card-inset)', display: 'flex', flexDirection: 'column', border: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', padding: 0, width: '100%' }}>
         {image && (
-          <div style={{ width: '100%', aspectRatio: '2 / 1', overflow: 'hidden', flexShrink: 0, background: 'var(--bg-secondary)' }}>
-            <img src={image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
-          </div>
+          <LazyAssetImage
+            localPath={image}
+            alt=""
+            containerStyle={{ width: '100%', aspectRatio: '2 / 1', flexShrink: 0, background: 'var(--bg-secondary)' }}
+            style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
+          />
         )}
         <div style={{ padding: '10px 12px 12px', display: 'flex', flexDirection: 'column', gap: 6, flex: 1 }}>
           <div style={{ flex: 1 }}>
@@ -1577,9 +1581,12 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
             <div key={course.id} style={{ background: 'var(--bg-card)', borderRadius: 16, overflow: 'hidden', boxShadow: 'var(--shadow-v3-card-inset)' }}>
               {/* コースヘッダー画像 */}
               {course.image && (
-                <div style={{ width: '100%', aspectRatio: '2 / 1', overflow: 'hidden', background: 'var(--bg-secondary)' }}>
-                  <img src={course.image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
-                </div>
+                <LazyAssetImage
+                  localPath={course.image}
+                  alt=""
+                  containerStyle={{ width: '100%', aspectRatio: '2 / 1', background: 'var(--bg-secondary)' }}
+                  style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
+                />
               )}
               {/* コースヘッダー */}
               <div style={{ padding: '14px 16px 10px', borderBottom: `1px solid ${'var(--border)'}` }}>

@@ -18,6 +18,8 @@ import { getStudyTimeMs, getStudyDates, localDateStr } from '../stats'
 import { ClockIcon } from '../icons'
 import { TrialEndingBanner } from '../components/TrialStatus'
 import { shouldShowTrialEndingBanner } from '../trialStatus'
+import { LazyAssetImage } from '../components/LazyAssetImage'
+import { resolveAssetUrl } from '../lessonAssets'
 import { t } from '../i18n'
 
 // フェルミ問題は fermiData.ts の FERMI_POOL を使用（日付ベース共通）
@@ -263,7 +265,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
             style={{ background: 'var(--accent-btn)', padding: '20px', cursor: 'pointer', position: 'relative', overflow: 'hidden', minHeight: 180, border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%', borderRadius: 'inherit' }}
           >
             {/* フェルミ推定イメージ画像 */}
-            <img src="/images/v3/fermi-card.png" alt="" loading="lazy" style={{ position: 'absolute', right: 0, top: 0, width: '55%', height: '100%', objectFit: 'cover', opacity: 0.14, pointerEvents: 'none', maskImage: 'linear-gradient(to left, rgba(0,0,0,0.8) 0%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to left, rgba(0,0,0,0.8) 0%, transparent 100%)' }} />
+            <img src={resolveAssetUrl('/images/v3/fermi-card.png')} alt="" loading="lazy" style={{ position: 'absolute', right: 0, top: 0, width: '55%', height: '100%', objectFit: 'cover', opacity: 0.14, pointerEvents: 'none', maskImage: 'linear-gradient(to left, rgba(0,0,0,0.8) 0%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to left, rgba(0,0,0,0.8) 0%, transparent 100%)' }} />
             <div style={{ position: 'relative', zIndex: 1 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8, paddingRight: 96 }}>
                 <span style={{ fontSize: '0.9333rem', fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'color-mix(in srgb, var(--accent-btn-fg) 92%, transparent)' }}>{t('home.todayProblem')}</span>
@@ -332,9 +334,13 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
           >
             {/* 1:1 PNG (1024×1024) を切らずに表示するため aspectRatio:1/1 + objectFit:contain。
                 背景は bg-card に揃えて letterbox 表示を自然に見せる。 */}
-            <div style={{ aspectRatio: '1 / 1', position: 'relative', overflow: 'hidden', background: 'var(--bg-card)' }}>
-              <img src={recommendedLesson.image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
-            </div>
+            <LazyAssetImage
+              localPath={recommendedLesson.image}
+              alt=""
+              containerStyle={{ aspectRatio: '1 / 1', background: 'var(--bg-card)' }}
+              style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
+            />
+
             <div style={{ padding: '18px 20px 20px' }}>
               <div style={{ fontSize: '0.8rem', fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--brand)', marginBottom: 6 }}>{t('home.recommendEyebrow')}</div>
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: 'var(--accent-soft)', borderRadius: 'var(--radius-pill)', padding: '4px 11px', fontSize: '0.9333rem', fontWeight: 600, color: 'var(--brand)', marginBottom: 10 }}>{recommendedLesson.category}{recommendedLesson.level ? ` · ${recommendedLesson.level}` : ''}</span>
@@ -726,9 +732,12 @@ function AILargeCard({ image, name, sub, onClick }: { image: string; name: strin
   // 高さ固定 (140px) + objectFit:cover だと左上の文字が縦方向に切られていた。
   return (
     <button type="button" onClick={onClick} aria-label={`${name}: ${sub}`} style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', cursor: 'pointer', boxShadow: 'var(--shadow-v3-card-inset)', flexShrink: 0, position: 'relative', border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%', padding: 0 }}>
-      <div style={{ width: '100%', aspectRatio: '16 / 9', overflow: 'hidden' }}>
-        <img src={image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top', display: 'block' }} />
-      </div>
+      <LazyAssetImage
+        localPath={image}
+        alt=""
+        containerStyle={{ width: '100%', aspectRatio: '16 / 9' }}
+        style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top', display: 'block' }}
+      />
       <div style={{ padding: '16px 18px 18px' }}>
         <div style={{ fontSize: '1.1333rem', fontWeight: 700, marginBottom: 4 }}>{name}</div>
         <div style={{ fontSize: '0.9333rem', color: 'var(--text-secondary)', fontWeight: 500, lineHeight: 1.5 }}>{sub}</div>
