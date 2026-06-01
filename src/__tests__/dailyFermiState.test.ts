@@ -8,6 +8,15 @@ import {
 } from '../screens/dailyFermiState'
 import { FERMI_POOL, getDailyFermiIndex } from '../fermiData'
 
+// ── フィルタテスト用ヘルパー ──────────────────────────────────────────────────
+// テスト用の小さなプール（difficulty/domain バリエーションを含む）を直接参照せず、
+// 実際の FERMI_POOL（JA デフォルト）を使う。
+// JA プールのインデックスと difficulty/domain は fermiData.ts で定義済み。
+// idx 5  = basic / cost
+// idx 0  = advanced / market
+// idx 22 = basic / unit
+// idx 11 = advanced / flow
+
 /**
  * T-A 回帰テスト: ホームの「今日の1問」カードと、タップ後の Daily 画面が
  * 常に同じフェルミ問題を指すことを保証する。
@@ -169,5 +178,59 @@ describe('getHomeFermiIndex (ラッパー・ホーム / Daily 統合シナリオ
     expect(day2).toBe(getDailyFermiIndex())
     // pool が十分あれば日付で index は変わる（連続日なら +1）
     expect(day2).not.toBe(day1)
+  })
+})
+
+// ── DF-F13: フィルタ機能テスト ────────────────────────────────────────────────
+describe('pickHomeFermiIndexPure フィルタ機能', () => {
+  it('difficulty フィルタが正しく適用される（basic のみ選ばれる）', () => {
+    // 全件 done=空でフィルタ = 'basic' を指定
+    const pick = pickHomeFermiIndexPure(FERMI_POOL.length, 0, [], null, 'basic', null)
+    expect(pick).not.toBeNull()
+    if (pick != null) {
+      expect(FERMI_POOL[pick].difficulty).toBe('basic')
+    }
+  })
+
+  it('domain フィルタが正しく適用される（cost のみ選ばれる）', () => {
+    const pick = pickHomeFermiIndexPure(FERMI_POOL.length, 0, [], null, null, 'cost')
+    expect(pick).not.toBeNull()
+    if (pick != null) {
+      expect(FERMI_POOL[pick].domain).toBe('cost')
+    }
+  })
+
+  it('複合フィルタ（difficulty=advanced + domain=market）が適用される', () => {
+    const pick = pickHomeFermiIndexPure(FERMI_POOL.length, 0, [], null, 'advanced', 'market')
+    expect(pick).not.toBeNull()
+    if (pick != null) {
+      expect(FERMI_POOL[pick].difficulty).toBe('advanced')
+      expect(FERMI_POOL[pick].domain).toBe('market')
+    }
+  })
+
+  it('フィルタなし（省略・null）は従来と同じ動作（全件から選ぶ）', () => {
+    const withNull = pickHomeFermiIndexPure(FERMI_POOL.length, 3, [], null, null, null)
+    const legacy = pickHomeFermiIndexPure(FERMI_POOL.length, 3, [], null)
+    // どちらも同じ結果になる
+    expect(withNull).toBe(legacy)
+  })
+
+  it('フィルタ結果が0件でもフォールバックして null を返さない（全問完了でない限り）', () => {
+    // JA pool に 'cost' domain は idx=5 のみ。idx=5 を done にしたうえでフィルタ指定。
+    // フォールバックで全未完了から選ぶので非 null になる。
+    const costIdx = FERMI_POOL.findIndex(q => q.domain === 'cost')
+    const done = costIdx >= 0 ? [costIdx] : []
+    const pick = pickHomeFermiIndexPure(FERMI_POOL.length, 0, done, null, null, 'cost')
+    // フォールバックが動くので非 null（全問完了でなければ）
+    if (done.length < FERMI_POOL.length) {
+      expect(pick).not.toBeNull()
+    }
+  })
+
+  it('全問完了なら null を返す（フィルタあり・なし共通）', () => {
+    const allDone = Array.from({ length: FERMI_POOL.length }, (_, i) => i)
+    expect(pickHomeFermiIndexPure(FERMI_POOL.length, 0, allDone, null, 'basic', null)).toBeNull()
+    expect(pickHomeFermiIndexPure(FERMI_POOL.length, 0, allDone, null, null, null)).toBeNull()
   })
 })

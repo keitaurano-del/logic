@@ -575,6 +575,90 @@
   border-bottom-left-radius: var(--radius-sm);
 }
 
+/* === Daily Fermi filter bar === */
+.fermi-filter-bar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--bg-secondary);
+}
+.fermi-filter-row {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  flex-wrap: wrap;
+}
+.fermi-filter-label {
+  font-size: 0.7667rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  min-width: 40px;
+  flex-shrink: 0;
+}
+.fermi-filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: var(--radius-chip);
+  border: 1.5px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+  white-space: nowrap;
+}
+.fermi-filter-chip:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.fermi-filter-chip--active {
+  background: color-mix(in srgb, var(--brand) 14%, transparent);
+  border-color: var(--brand);
+  color: var(--brand);
+}
+.fermi-filter-count {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: var(--bg-tertiary);
+  border-radius: 99px;
+  padding: 0 5px;
+  line-height: 1.5;
+}
+.fermi-filter-chip--active .fermi-filter-count {
+  background: color-mix(in srgb, var(--brand) 18%, transparent);
+  color: var(--brand);
+}
+.fermi-filter-empty {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin: 0;
+  padding: var(--s-2) 0 0;
+}
+
+/* === Daily Fermi question difficulty/domain badge chips === */
+.fermi-meta-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: var(--radius-chip);
+  border: 1px solid var(--border);
+  background: var(--bg-secondary);
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
 /* ============================================================
  * Desktop (≥ 900px) — v3 mock pixel-match — DISABLED: native app release only
  * TODO: remove when native migration is complete

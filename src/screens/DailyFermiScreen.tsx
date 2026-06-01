@@ -13,9 +13,43 @@ import { useDailyGuide, GuideStyle } from '../tutorial/dailyGuide'
 import { isPaid } from '../subscription'
 import { getDisplayName, addXp } from '../stats'
 import { recordActivity } from '../activityLog'
-import { markDailyFermiDone, addDailyFermiDoneIndex, getHomeFermiIndex } from './dailyFermiState'
+import {
+  markDailyFermiDone,
+  addDailyFermiDoneIndex,
+  getHomeFermiIndex,
+  getDailyFermiDoneIndexes,
+  pickHomeFermiIndexPure,
+  type FermiFilter,
+} from './dailyFermiState'
 import { isSaved, toggleSaved } from '../savedItemsStore'
 import { useStudyTimer } from '../hooks/useStudyTimer'
+
+// ── フィルタ永続化 ────────────────────────────────────────────
+const FILTER_STORAGE_KEY = 'logic-daily-fermi-filter'
+
+function loadFilter(): FermiFilter {
+  try {
+    const s = localStorage.getItem(FILTER_STORAGE_KEY)
+    return s ? (JSON.parse(s) as FermiFilter) : {}
+  } catch { return {} }
+}
+
+function saveFilter(f: FermiFilter): void {
+  try { localStorage.setItem(FILTER_STORAGE_KEY, JSON.stringify(f)) } catch { /* */ }
+}
+
+/** フィルタ条件で未完了の問題数を返す */
+function countAvailableWithFilter(filter: FermiFilter): number {
+  const done = new Set(getDailyFermiDoneIndexes())
+  return FERMI_POOL
+    .map((q, i) => ({ q, i }))
+    .filter(({ i }) => !done.has(i))
+    .filter(({ q }) => {
+      if (filter.difficulty && q.difficulty !== filter.difficulty) return false
+      if (filter.domain && q.domain !== filter.domain) return false
+      return true
+    }).length
+}
 
 // ── プラン別デイリー制限 ──────────────────────────────────────
 const TODAY = new Date().toISOString().slice(0, 10)
@@ -563,6 +597,37 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
   const [excludedIndexes, setExcludedIndexes] = useState<number[]>([initialIndex])
   const [currentPoolIndex, setCurrentPoolIndex] = useState<number>(initialIndex)
 
+  // フィルタ state（localStorage から初期化、日跨ぎ保持）
+  const [filter, setFilter] = useState<FermiFilter>(loadFilter)
+
+  // フィルタ変更ハンドラ（idle 中のみ変更可）
+  function handleFilterChange(newFilter: FermiFilter) {
+    if (submitPhase !== 'idle') return
+    setFilter(newFilter)
+    saveFilter(newFilter)
+    // フィルタ変更で問題を再選択
+    const nextIdx = pickHomeFermiIndexPure(
+      FERMI_POOL.length,
+      getDailyFermiIndex(),
+      getDailyFermiDoneIndexes(),
+      null,
+      newFilter.difficulty ?? null,
+      newFilter.domain ?? null,
+    )
+    if (nextIdx != null && nextIdx !== currentPoolIndex) {
+      const next = FERMI_POOL[nextIdx]
+      setQuestion(next.question)
+      setHint(next.hint)
+      setCurrentPoolIndex(nextIdx)
+      setExcludedIndexes([nextIdx])
+      setElapsedSec(0)
+      setTimerRunning(true)
+    }
+  }
+
+  // フィルタ条件ごとの未完了数（チップのカウント表示用）
+  const filteredAvailableCount = countAvailableWithFilter(filter)
+
   // 保存（ブックマーク）状態 — 現在のフェルミ問題。毎レンダー算出。
   const [, bumpFermiSaved] = useState(0)
   const fermiSaved = isSaved('fermi', String(currentPoolIndex))
@@ -576,11 +641,23 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
     setSubmitPhase('idle')
     setShowHint(false)
     setHintUsed(false)
-    // 除外済みインデックス以外からランダムに選ぶ
+    // 除外済みインデックス以外かつフィルタ条件に合うものからランダムに選ぶ
     const excluded = new Set([...excludedIndexes, currentPoolIndex].filter(i => i >= 0))
-    const available = FERMI_POOL.map((_, i) => i).filter(i => !excluded.has(i))
-    const nextIdx = available.length > 0
-      ? available[Math.floor(Math.random() * available.length)]
+    const available = FERMI_POOL
+      .map((q, i) => ({ q, i }))
+      .filter(({ i }) => !excluded.has(i))
+      .filter(({ q }) => {
+        if (filter.difficulty && q.difficulty !== filter.difficulty) return false
+        if (filter.domain && q.domain !== filter.domain) return false
+        return true
+      })
+      .map(({ i }) => i)
+    // フィルタ結果が空なら全候補にフォールバック
+    const candidates = available.length > 0
+      ? available
+      : FERMI_POOL.map((_, i) => i).filter(i => !excluded.has(i))
+    const nextIdx = candidates.length > 0
+      ? candidates[Math.floor(Math.random() * candidates.length)]
       : Math.floor(Math.random() * FERMI_POOL.length)
     const next = FERMI_POOL[nextIdx]
     setQuestion(next.question)
@@ -673,6 +750,58 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
 
       {!loadingQuestion && question && (
         <>
+          {/* フィルタバー（入力中は非表示） */}
+          {submitPhase === 'idle' && (
+            <div className="fermi-filter-bar" aria-label={t('dailyFermi.filterDifficulty') + ' / ' + t('dailyFermi.filterDomain')}>
+              {/* 難易度チップ行 */}
+              <div className="fermi-filter-row">
+                <span className="fermi-filter-label">{t('dailyFermi.filterDifficulty')}</span>
+                {(['all', 'basic', 'standard', 'advanced'] as const).map(d => {
+                  const isAll = d === 'all'
+                  const count = isAll ? undefined : countAvailableWithFilter({ ...filter, difficulty: d })
+                  const isActive = isAll ? !filter.difficulty : filter.difficulty === d
+                  return (
+                    <button
+                      key={d}
+                      className={`fermi-filter-chip${isActive ? ' fermi-filter-chip--active' : ''}`}
+                      aria-pressed={isActive}
+                      onClick={() => handleFilterChange({ ...filter, difficulty: isAll ? null : d })}
+                      disabled={submitPhase !== 'idle'}
+                    >
+                      {isAll ? t('dailyFermi.filterAll') : t(`dailyFermi.diff${d.charAt(0).toUpperCase() + d.slice(1)}`)}
+                      {!isAll && count !== undefined && <span className="fermi-filter-count">{count}</span>}
+                    </button>
+                  )
+                })}
+              </div>
+              {/* 分野チップ行 */}
+              <div className="fermi-filter-row">
+                <span className="fermi-filter-label">{t('dailyFermi.filterDomain')}</span>
+                {(['all', 'market', 'unit', 'volume', 'flow', 'cost'] as const).map(dom => {
+                  const isAll = dom === 'all'
+                  const count = isAll ? undefined : countAvailableWithFilter({ ...filter, domain: dom })
+                  const isActive = isAll ? !filter.domain : filter.domain === dom
+                  return (
+                    <button
+                      key={dom}
+                      className={`fermi-filter-chip${isActive ? ' fermi-filter-chip--active' : ''}`}
+                      aria-pressed={isActive}
+                      onClick={() => handleFilterChange({ ...filter, domain: isAll ? null : dom })}
+                      disabled={submitPhase !== 'idle'}
+                    >
+                      {isAll ? t('dailyFermi.filterAll') : t(`dailyFermi.domain${dom.charAt(0).toUpperCase() + dom.slice(1)}`)}
+                      {!isAll && count !== undefined && <span className="fermi-filter-count">{count}</span>}
+                    </button>
+                  )
+                })}
+              </div>
+              {/* 0件フォールバック */}
+              {filteredAvailableCount === 0 && (
+                <p className="fermi-filter-empty">{t('dailyFermi.filterEmpty')}</p>
+              )}
+            </div>
+          )}
+
           {/* 問題カード */}
           <div id="dailyFermi-question" className="card" style={{
             background: 'linear-gradient(145deg, var(--bg-secondary) 0%, var(--bg-card) 100%)',
@@ -732,6 +861,21 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
               <p style={{ fontSize: '1.3333rem', fontWeight: 600, lineHeight: 1.55, letterSpacing: '-0.01em' }}>
                 {question}
               </p>
+              {/* 難易度・分野チップ */}
+              {FERMI_POOL[currentPoolIndex] && (
+                <div style={{ display: 'flex', gap: 6, marginTop: 10, flexWrap: 'wrap' }}>
+                  {FERMI_POOL[currentPoolIndex].difficulty && (
+                    <span className="fermi-meta-chip">
+                      {t(`dailyFermi.diff${FERMI_POOL[currentPoolIndex].difficulty.charAt(0).toUpperCase() + FERMI_POOL[currentPoolIndex].difficulty.slice(1)}`)}
+                    </span>
+                  )}
+                  {FERMI_POOL[currentPoolIndex].domain && (
+                    <span className="fermi-meta-chip">
+                      {t(`dailyFermi.domain${FERMI_POOL[currentPoolIndex].domain.charAt(0).toUpperCase() + FERMI_POOL[currentPoolIndex].domain.slice(1)}`)}
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 

@@ -6,128 +6,235 @@
 
 import { getLocale } from './i18n'
 
+export type FermiDifficulty = 'basic' | 'standard' | 'advanced'
+export type FermiDomain = 'market' | 'unit' | 'volume' | 'flow' | 'cost'
+
 export type FermiQuestion = {
   question: string
   hint: string
+  difficulty: FermiDifficulty
+  domain: FermiDomain
+  theme?: string  // en 由来の細分類（任意）
 }
 
 const FERMI_POOL_JA: FermiQuestion[] = [
   // ── 王道ビジネス：市場規模・売上 ──
-  { question: '日本国内のSaaS市場の年間売上規模は何円か？', hint: '日本の法人数×SaaS導入率×1社あたり年間支出で分解。中小と大企業で支出額が大きく違う。' },
-  { question: '日本のスタバ全店舗が1日に売り上げる総額は何円か？', hint: '店舗数×1店舗の客数×客単価で分解。営業時間と回転率も意識しよう。' },
-  { question: '居酒屋チェーン（300店舗規模）の1日の総売上は何円か？', hint: '1店舗の席数×回転率×客単価×店舗数で計算。平日と週末の違いも意識。' },
-  { question: '日本のEC市場の年間流通総額（GMV）は何円か？', hint: 'ネット利用人口×EC利用率×1人あたり年間EC支出で分解。物販以外（旅行・チケット）も忘れずに。' },
-  { question: '日本国内で年間に成立しているM&Aは何件か？', hint: '上場企業の戦略案件＋中小企業の事業承継案件で分解。後継者不在問題の規模感がカギ。' },
+  // idx 0: advanced / market
+  { question: '日本国内のSaaS市場の年間売上規模は何円か？', hint: '日本の法人数×SaaS導入率×1社あたり年間支出で分解。中小と大企業で支出額が大きく違う。', difficulty: 'advanced', domain: 'market' },
+  // idx 1: standard / unit
+  { question: '日本のスタバ全店舗が1日に売り上げる総額は何円か？', hint: '店舗数×1店舗の客数×客単価で分解。営業時間と回転率も意識しよう。', difficulty: 'standard', domain: 'unit' },
+  // idx 2: standard / unit
+  { question: '居酒屋チェーン（300店舗規模）の1日の総売上は何円か？', hint: '1店舗の席数×回転率×客単価×店舗数で計算。平日と週末の違いも意識。', difficulty: 'standard', domain: 'unit' },
+  // idx 3: standard / market
+  { question: '日本のEC市場の年間流通総額（GMV）は何円か？', hint: 'ネット利用人口×EC利用率×1人あたり年間EC支出で分解。物販以外（旅行・チケット）も忘れずに。', difficulty: 'standard', domain: 'market' },
+  // idx 4: advanced / volume
+  { question: '日本国内で年間に成立しているM&Aは何件か？', hint: '上場企業の戦略案件＋中小企業の事業承継案件で分解。後継者不在問題の規模感がカギ。', difficulty: 'advanced', domain: 'volume' },
 
   // ── ビジネスコスト・オペレーション ──
-  { question: '従業員50人の中小企業の年間オフィス賃料は何円か？', hint: '1人あたり必要面積×坪単価×12ヶ月で計算。都心と郊外で大きく異なる。' },
-  { question: '大手コンサルファームが日本で年間に受注するプロジェクト数は？', hint: '従業員数÷1プロジェクトあたり人数×年間プロジェクト回転数で考えよう。' },
+  // idx 5: basic / cost
+  { question: '従業員50人の中小企業の年間オフィス賃料は何円か？', hint: '1人あたり必要面積×坪単価×12ヶ月で計算。都心と郊外で大きく異なる。', difficulty: 'basic', domain: 'cost' },
+  // idx 6: advanced / volume
+  { question: '大手コンサルファームが日本で年間に受注するプロジェクト数は？', hint: '従業員数÷1プロジェクトあたり人数×年間プロジェクト回転数で考えよう。', difficulty: 'advanced', domain: 'volume' },
 
   // ── ビジネスあるある（面白い系） ──
-  { question: '日本の会社員が1年間に押すハンコの総数は？', hint: '労働力人口×ホワイトカラー比率×1人/日のハンコ回数×年間営業日で分解。電子化進行率も差し引こう。' },
-  { question: '日本のビジネスパーソンが1日に発する「お疲れ様です」の総回数は？', hint: '労働力人口×1人/日の発話回数で分解。挨拶・退勤・メール冒頭・チャット冒頭…と場面別に数えよう。' },
-  { question: '日本の社内チャット（Slack/Teams等）で1日に送られる「了解です／承知しました」の総回数は？', hint: 'ビジネスチャット利用者数×1人/日の送信メッセージ数×「了解系」の比率で分解。' },
-  { question: '日本のオフィスで1日に淹れられるコーヒーの総杯数は？', hint: 'ホワイトカラー人口×1人/日のオフィスコーヒー杯数で分解。コーヒーマシン＋カフェ持込みの両方を含めよう。' },
-  { question: 'オンライン会議で1日に発される「マイクミュートになってます」の全国総回数は？', hint: '1日のオンライン会議件数×1会議でこの事故が起きる確率で分解。在宅・ハイブリッド勤務の浸透度も考えよう。' },
-  { question: '日本の経費精算で1年間に申請される領収書の総枚数は？', hint: 'ホワイトカラー人口×1人/月の領収書枚数×12ヶ月で分解。営業職と内勤で枚数差が大きい。' },
-  { question: '日本中の名刺ホルダーに眠っている「もう使わない」名刺の総枚数は？', hint: '労働力人口×営業職比率×営業1人の生涯獲得名刺枚数で分解。退職や部署異動で「眠る」割合も考えよう。' },
+  // idx 7: standard / volume
+  { question: '日本の会社員が1年間に押すハンコの総数は？', hint: '労働力人口×ホワイトカラー比率×1人/日のハンコ回数×年間営業日で分解。電子化進行率も差し引こう。', difficulty: 'standard', domain: 'volume' },
+  // idx 8: standard / volume
+  { question: '日本のビジネスパーソンが1日に発する「お疲れ様です」の総回数は？', hint: '労働力人口×1人/日の発話回数で分解。挨拶・退勤・メール冒頭・チャット冒頭…と場面別に数えよう。', difficulty: 'standard', domain: 'volume' },
+  // idx 9: standard / volume
+  { question: '日本の社内チャット（Slack/Teams等）で1日に送られる「了解です／承知しました」の総回数は？', hint: 'ビジネスチャット利用者数×1人/日の送信メッセージ数×「了解系」の比率で分解。', difficulty: 'standard', domain: 'volume' },
+  // idx 10: basic / volume
+  { question: '日本のオフィスで1日に淹れられるコーヒーの総杯数は？', hint: 'ホワイトカラー人口×1人/日のオフィスコーヒー杯数で分解。コーヒーマシン＋カフェ持込みの両方を含めよう。', difficulty: 'basic', domain: 'volume' },
+  // idx 11: advanced / flow
+  { question: 'オンライン会議で1日に発される「マイクミュートになってます」の全国総回数は？', hint: '1日のオンライン会議件数×1会議でこの事故が起きる確率で分解。在宅・ハイブリッド勤務の浸透度も考えよう。', difficulty: 'advanced', domain: 'flow' },
+  // idx 12: standard / volume
+  { question: '日本の経費精算で1年間に申請される領収書の総枚数は？', hint: 'ホワイトカラー人口×1人/月の領収書枚数×12ヶ月で分解。営業職と内勤で枚数差が大きい。', difficulty: 'standard', domain: 'volume' },
+  // idx 13: advanced / volume
+  { question: '日本中の名刺ホルダーに眠っている「もう使わない」名刺の総枚数は？', hint: '労働力人口×営業職比率×営業1人の生涯獲得名刺枚数で分解。退職や部署異動で「眠る」割合も考えよう。', difficulty: 'advanced', domain: 'volume' },
 
   // ── コンサルケース面接の定番（市場規模推定） ──
-  { question: '日本のゴルフ市場の年間規模は何円か？', hint: 'ゴルフ人口×年間プレー回数×1ラウンドあたり費用（プレー代＋用品＋飲食）で分解。年代別の参加率の偏りも意識しよう。' },
-  { question: '日本のペットフード市場の年間規模は何円か？', hint: '国内の犬・猫の飼育頭数×1頭あたり年間フード支出で分解。犬と猫で支出単価が違う点にも注意。' },
-  { question: '東京都内のフィットネスジムの会員数は何人か？', hint: '東京都の人口×年代別ジム加入率で分解。20〜40代の都市労働者がコア層、シニア向けジムも忘れずに。' },
-  { question: '日本の年間結婚式市場の規模は何円か？', hint: '年間婚姻組数×結婚式実施率×1組あたり披露宴費用で分解。「ナシ婚」を差し引くのがポイント。' },
-  { question: '日本のオンライン広告市場の年間規模は何円か？', hint: '日本の総広告費（GDPの約1〜1.2%）×デジタル広告比率で考える。検索＋ディスプレイ＋動画＋SNSの構成も意識。' },
-  { question: '日本のメガネ市場の年間規模は何円か？', hint: '人口×視力矯正必要率÷平均買い替え周期×1本あたり価格で分解。コンタクトレンズとの代替関係にも注意。' },
-  { question: '日本の宅配便の年間取扱個数は何個か？', hint: '個人受取＋BtoB物流に分けて、人口×1人あたり年間受取数＋法人物流量で考える。EC化率の上昇も意識。' },
-  { question: '日本のサブスク動画配信（Netflix/Prime Video等）市場の年間規模は何円か？', hint: '世帯数×SVOD加入率×1世帯あたり契約サービス数×月額×12ヶ月で分解。複数併用が一般的な点もポイント。' },
-  { question: '日本のドラッグストア業界の年間総売上は何円か？', hint: '全国店舗数×1店舗の1日売上×営業日数で分解。化粧品・食品・医薬品の構成比で1店舗単価をチェック。' },
-  { question: '日本のプロ野球（NPB）の年間観客動員数は何人か？', hint: '12球団×1球団のホーム試合数×1試合の平均観客（球場収容人数×稼働率）で分解。' },
+  // idx 14: standard / market
+  { question: '日本のゴルフ市場の年間規模は何円か？', hint: 'ゴルフ人口×年間プレー回数×1ラウンドあたり費用（プレー代＋用品＋飲食）で分解。年代別の参加率の偏りも意識しよう。', difficulty: 'standard', domain: 'market' },
+  // idx 15: basic / market
+  { question: '日本のペットフード市場の年間規模は何円か？', hint: '国内の犬・猫の飼育頭数×1頭あたり年間フード支出で分解。犬と猫で支出単価が違う点にも注意。', difficulty: 'basic', domain: 'market' },
+  // idx 16: standard / volume
+  { question: '東京都内のフィットネスジムの会員数は何人か？', hint: '東京都の人口×年代別ジム加入率で分解。20〜40代の都市労働者がコア層、シニア向けジムも忘れずに。', difficulty: 'standard', domain: 'volume' },
+  // idx 17: standard / market
+  { question: '日本の年間結婚式市場の規模は何円か？', hint: '年間婚姻組数×結婚式実施率×1組あたり披露宴費用で分解。「ナシ婚」を差し引くのがポイント。', difficulty: 'standard', domain: 'market' },
+  // idx 18: advanced / market
+  { question: '日本のオンライン広告市場の年間規模は何円か？', hint: '日本の総広告費（GDPの約1〜1.2%）×デジタル広告比率で考える。検索＋ディスプレイ＋動画＋SNSの構成も意識。', difficulty: 'advanced', domain: 'market' },
+  // idx 19: standard / market
+  { question: '日本のメガネ市場の年間規模は何円か？', hint: '人口×視力矯正必要率÷平均買い替え周期×1本あたり価格で分解。コンタクトレンズとの代替関係にも注意。', difficulty: 'standard', domain: 'market' },
+  // idx 20: standard / volume
+  { question: '日本の宅配便の年間取扱個数は何個か？', hint: '個人受取＋BtoB物流に分けて、人口×1人あたり年間受取数＋法人物流量で考える。EC化率の上昇も意識。', difficulty: 'standard', domain: 'volume' },
+  // idx 21: standard / market
+  { question: '日本のサブスク動画配信（Netflix/Prime Video等）市場の年間規模は何円か？', hint: '世帯数×SVOD加入率×1世帯あたり契約サービス数×月額×12ヶ月で分解。複数併用が一般的な点もポイント。', difficulty: 'standard', domain: 'market' },
+  // idx 22: basic / unit
+  { question: '日本のドラッグストア業界の年間総売上は何円か？', hint: '全国店舗数×1店舗の1日売上×営業日数で分解。化粧品・食品・医薬品の構成比で1店舗単価をチェック。', difficulty: 'basic', domain: 'unit' },
+  // idx 23: basic / volume
+  { question: '日本のプロ野球（NPB）の年間観客動員数は何人か？', hint: '12球団×1球団のホーム試合数×1試合の平均観客（球場収容人数×稼働率）で分解。', difficulty: 'basic', domain: 'volume' },
 
   // ── 追加: 業界規模・市場サイズ ──
-  { question: '日本のラーメン店の年間総売上は何円か？', hint: '店舗数×1店舗の1日売上×営業日数で分解。家系・二郎系・ファミリー向けで客単価差が大きい。' },
-  { question: '日本のコンビニ大手3社の1日合計売上は何円か？', hint: '3社の合計店舗数×1店舗の1日売上で分解。立地（駅前・郊外・オフィス街）で売上が大きく異なる。' },
-  { question: '日本のタクシー業界の年間総売上は何円か？', hint: '全国タクシー台数×1台の1日売上×稼働日数で分解。都市部と地方で稼働率・運賃に差。' },
-  { question: '日本のカラオケ市場の年間規模は何円か？', hint: '店舗数×1店舗の1日売上×営業日数で分解。コロナ後の回復度合いも意識。' },
-  { question: '日本の漫画市場（紙＋電子）の年間規模は何円か？', hint: '紙の単行本＋雑誌＋電子書籍ストアでの売上に分解。電子比率が年々上昇している。' },
-  { question: '日本のスマホゲーム業界の年間売上は何円か？', hint: 'アクティブユーザー数×課金率×ARPPU（課金者あたり平均額）×12ヶ月で分解。重課金者の偏りも考慮。' },
-  { question: '日本の保険業界の年間総保険料収入は何円か？', hint: '生保＋損保で分けて、世帯加入率×世帯あたり保険料で分解。生保は加入率が非常に高い。' },
-  { question: '日本の中古車市場の年間流通台数は何台か？', hint: '国内自家用車保有台数×平均買い替え周期で年間取引量を概算。' },
-  { question: '日本の宅配ピザ業界の年間総売上は何円か？', hint: '店舗数×1店舗の1日注文数×客単価×営業日数で分解。週末・イベント日の偏りに注意。' },
-  { question: '日本のスマートフォン年間出荷台数は何台か？', hint: '人口×スマホ保有率÷平均買い替え周期で分解。法人需要も含めよう。' },
-  { question: '日本のレンタカー業界の年間総売上は何円か？', hint: '保有車両台数×1日あたり稼働率×平均単価×365日で分解。観光地は稼働率が高い。' },
-  { question: '日本の自販機の年間総売上は何円か？', hint: '全国自販機台数×1台の1日売上×365日で分解。飲料・たばこ・食品の構成比に注意。' },
-  { question: '日本の通信費（携帯＋固定）の年間総支出は何円か？', hint: '世帯数×世帯あたり通信費×12ヶ月＋法人需要で分解。MNO/MVNOで料金差が大きい。' },
-  { question: '日本の英会話スクール業界の年間総売上は何円か？', hint: '通学＋オンラインに分けて、受講者数×1人あたり年間支出で分解。子供向け・大人向けで単価差。' },
-  { question: '日本のスーパー銭湯・温泉施設の年間総入場者数は何人か？', hint: '施設数×1施設の1日来場者×営業日数で分解。週末・連休の集中も考慮。' },
-  { question: '日本の不動産仲介業界の年間総売上は何円か？', hint: '年間住宅取引件数×平均仲介手数料（売買価格の3%程度）で分解。賃貸仲介の規模も忘れずに。' },
-  { question: '日本の電子書籍市場の年間規模は何円か？', hint: '読者人口×電子書籍利用率×1人あたり年間支出で分解。コミック比率が圧倒的に高い。' },
-  { question: '日本のスマートウォッチの年間出荷台数は何台か？', hint: '20〜50代人口×スマートウォッチ保有率÷平均買い替え周期で分解。Apple Watch のシェアが大きい。' },
-  { question: '日本のホテル業界（ビジネス＋シティ）の年間客室稼働数は何室泊か？', hint: '全国客室数×稼働率×365日で分解。観光需要とビジネス需要の比率に注意。' },
+  // idx 24: basic / unit
+  { question: '日本のラーメン店の年間総売上は何円か？', hint: '店舗数×1店舗の1日売上×営業日数で分解。家系・二郎系・ファミリー向けで客単価差が大きい。', difficulty: 'basic', domain: 'unit' },
+  // idx 25: basic / unit
+  { question: '日本のコンビニ大手3社の1日合計売上は何円か？', hint: '3社の合計店舗数×1店舗の1日売上で分解。立地（駅前・郊外・オフィス街）で売上が大きく異なる。', difficulty: 'basic', domain: 'unit' },
+  // idx 26: standard / unit
+  { question: '日本のタクシー業界の年間総売上は何円か？', hint: '全国タクシー台数×1台の1日売上×稼働日数で分解。都市部と地方で稼働率・運賃に差。', difficulty: 'standard', domain: 'unit' },
+  // idx 27: basic / unit
+  { question: '日本のカラオケ市場の年間規模は何円か？', hint: '店舗数×1店舗の1日売上×営業日数で分解。コロナ後の回復度合いも意識。', difficulty: 'basic', domain: 'unit' },
+  // idx 28: standard / market
+  { question: '日本の漫画市場（紙＋電子）の年間規模は何円か？', hint: '紙の単行本＋雑誌＋電子書籍ストアでの売上に分解。電子比率が年々上昇している。', difficulty: 'standard', domain: 'market' },
+  // idx 29: advanced / market
+  { question: '日本のスマホゲーム業界の年間売上は何円か？', hint: 'アクティブユーザー数×課金率×ARPPU（課金者あたり平均額）×12ヶ月で分解。重課金者の偏りも考慮。', difficulty: 'advanced', domain: 'market' },
+  // idx 30: advanced / market
+  { question: '日本の保険業界の年間総保険料収入は何円か？', hint: '生保＋損保で分けて、世帯加入率×世帯あたり保険料で分解。生保は加入率が非常に高い。', difficulty: 'advanced', domain: 'market' },
+  // idx 31: standard / volume
+  { question: '日本の中古車市場の年間流通台数は何台か？', hint: '国内自家用車保有台数×平均買い替え周期で年間取引量を概算。', difficulty: 'standard', domain: 'volume' },
+  // idx 32: basic / unit
+  { question: '日本の宅配ピザ業界の年間総売上は何円か？', hint: '店舗数×1店舗の1日注文数×客単価×営業日数で分解。週末・イベント日の偏りに注意。', difficulty: 'basic', domain: 'unit' },
+  // idx 33: standard / volume
+  { question: '日本のスマートフォン年間出荷台数は何台か？', hint: '人口×スマホ保有率÷平均買い替え周期で分解。法人需要も含めよう。', difficulty: 'standard', domain: 'volume' },
+  // idx 34: standard / unit
+  { question: '日本のレンタカー業界の年間総売上は何円か？', hint: '保有車両台数×1日あたり稼働率×平均単価×365日で分解。観光地は稼働率が高い。', difficulty: 'standard', domain: 'unit' },
+  // idx 35: basic / unit
+  { question: '日本の自販機の年間総売上は何円か？', hint: '全国自販機台数×1台の1日売上×365日で分解。飲料・たばこ・食品の構成比に注意。', difficulty: 'basic', domain: 'unit' },
+  // idx 36: standard / market
+  { question: '日本の通信費（携帯＋固定）の年間総支出は何円か？', hint: '世帯数×世帯あたり通信費×12ヶ月＋法人需要で分解。MNO/MVNOで料金差が大きい。', difficulty: 'standard', domain: 'market' },
+  // idx 37: standard / market
+  { question: '日本の英会話スクール業界の年間総売上は何円か？', hint: '通学＋オンラインに分けて、受講者数×1人あたり年間支出で分解。子供向け・大人向けで単価差。', difficulty: 'standard', domain: 'market' },
+  // idx 38: basic / volume
+  { question: '日本のスーパー銭湯・温泉施設の年間総入場者数は何人か？', hint: '施設数×1施設の1日来場者×営業日数で分解。週末・連休の集中も考慮。', difficulty: 'basic', domain: 'volume' },
+  // idx 39: advanced / market
+  { question: '日本の不動産仲介業界の年間総売上は何円か？', hint: '年間住宅取引件数×平均仲介手数料（売買価格の3%程度）で分解。賃貸仲介の規模も忘れずに。', difficulty: 'advanced', domain: 'market' },
+  // idx 40: standard / market
+  { question: '日本の電子書籍市場の年間規模は何円か？', hint: '読者人口×電子書籍利用率×1人あたり年間支出で分解。コミック比率が圧倒的に高い。', difficulty: 'standard', domain: 'market' },
+  // idx 41: standard / volume
+  { question: '日本のスマートウォッチの年間出荷台数は何台か？', hint: '20〜50代人口×スマートウォッチ保有率÷平均買い替え周期で分解。Apple Watch のシェアが大きい。', difficulty: 'standard', domain: 'volume' },
+  // idx 42: standard / flow
+  { question: '日本のホテル業界（ビジネス＋シティ）の年間客室稼働数は何室泊か？', hint: '全国客室数×稼働率×365日で分解。観光需要とビジネス需要の比率に注意。', difficulty: 'standard', domain: 'flow' },
 
   // ── 追加: ビジネスあるある（面白い系） ──
-  { question: '日本の会社員が1年間にコピー機の前で待つ総時間は何時間か？', hint: 'ホワイトカラー人口×1人/週のコピー回数×1回あたり待ち時間で分解。複合機の前の小さな"行列"も意識。' },
-  { question: '日本の社内メールで1日に書かれる「お世話になっております」の総回数は？', hint: 'ビジネスメール送信者数×1人/日のメール送信数×冒頭挨拶率で分解。' },
-  { question: '全国のオフィス会議室で1日に起きる「先方の都合で時間変更」の件数は？', hint: 'BtoB会議の1日件数×変更発生率で分解。リスケ多発業界（コンサル・営業）の比率も意識。' },
-  { question: '日本のオフィスで1日に印刷される紙の総枚数は？', hint: 'ホワイトカラー人口×1人/日の印刷枚数で分解。ペーパーレス化進行率（業界差）も差し引こう。' },
-  { question: '日本の年賀状の年間発送枚数は何枚か？', hint: '世帯数×世帯あたり発送枚数で分解。年々減少傾向（デジタル化）も考慮。' },
-  { question: '日本の会社員が1年間に押す「Enterキー」の総回数は？', hint: 'PCワーカー人口×1人/日のEnter回数（メール送信＋検索＋コード実行など）×営業日で分解。' },
-  { question: '日本の駅で1日に飲まれる自販機コーヒーの缶・ペットボトル本数は？', hint: '全国駅数×1駅の自販機台数×1台/日の販売本数のうちコーヒーの比率で分解。' },
+  // idx 43: standard / volume
+  { question: '日本の会社員が1年間にコピー機の前で待つ総時間は何時間か？', hint: 'ホワイトカラー人口×1人/週のコピー回数×1回あたり待ち時間で分解。複合機の前の小さな"行列"も意識。', difficulty: 'standard', domain: 'volume' },
+  // idx 44: standard / volume
+  { question: '日本の社内メールで1日に書かれる「お世話になっております」の総回数は？', hint: 'ビジネスメール送信者数×1人/日のメール送信数×冒頭挨拶率で分解。', difficulty: 'standard', domain: 'volume' },
+  // idx 45: advanced / flow
+  { question: '全国のオフィス会議室で1日に起きる「先方の都合で時間変更」の件数は？', hint: 'BtoB会議の1日件数×変更発生率で分解。リスケ多発業界（コンサル・営業）の比率も意識。', difficulty: 'advanced', domain: 'flow' },
+  // idx 46: standard / volume
+  { question: '日本のオフィスで1日に印刷される紙の総枚数は？', hint: 'ホワイトカラー人口×1人/日の印刷枚数で分解。ペーパーレス化進行率（業界差）も差し引こう。', difficulty: 'standard', domain: 'volume' },
+  // idx 47: basic / volume
+  { question: '日本の年賀状の年間発送枚数は何枚か？', hint: '世帯数×世帯あたり発送枚数で分解。年々減少傾向（デジタル化）も考慮。', difficulty: 'basic', domain: 'volume' },
+  // idx 48: standard / volume
+  { question: '日本の会社員が1年間に押す「Enterキー」の総回数は？', hint: 'PCワーカー人口×1人/日のEnter回数（メール送信＋検索＋コード実行など）×営業日で分解。', difficulty: 'standard', domain: 'volume' },
+  // idx 49: advanced / volume
+  { question: '日本の駅で1日に飲まれる自販機コーヒーの缶・ペットボトル本数は？', hint: '全国駅数×1駅の自販機台数×1台/日の販売本数のうちコーヒーの比率で分解。', difficulty: 'advanced', domain: 'volume' },
 ]
 
 const FERMI_POOL_EN: FermiQuestion[] = [
   // F19: global-topic pool (en). Approved & audited 50 questions (basic10/standard23/advanced17).
   // Source: scripts/dogfood/f19_final.json. Globalized to US / world figures (no JP-only topics, no ¥).
-  { question: 'What is the annual revenue (USD) of the coffee-chain café market in the United States?', hint: 'Start from US adults who buy café coffee, multiply by visits per week and spend per visit, then annualize. Coffee drinkers vs. chain buyers is the first split.' },
-  { question: 'How many ride-hailing drivers are actively on the road at 6pm on a typical weekday across the United States?', hint: 'Estimate concurrent ride demand (rides happening at once) from daily rides ÷ active hours, then convert to drivers using utilization. Demand-side first, then supply.' },
-  { question: 'What is the annual revenue (USD) of a single busy urban fast-food restaurant?', hint: 'Build from transactions per hour during peak and off-peak, average ticket, and operating hours per day, then annualize over operating days.' },
-  { question: 'What is the annual revenue (USD) of the haircut and salon services market in the United States, estimated both top-down and bottom-up?', hint: 'Bottom-up: people × cuts/year × price. Top-down: number of salons × revenue per salon. Reconcile the two and explain the gap.' },
-  { question: 'What is the annual revenue (USD) of the pet food market in the United States?', hint: 'Households with pets × pets per household × annual food spend per pet. Split dogs vs. cats since spend per animal differs.' },
-  { question: 'How many people are watching a major video-streaming platform (e.g., a Netflix-scale service) simultaneously during global prime time?', hint: 'Start from subscriber base, daily active share, average daily watch time, then convert to concurrency at the global peak hour accounting for time zones.' },
-  { question: 'How many gallons of gasoline are sold for passenger vehicles in the United States per year?', hint: 'Vehicles × annual miles driven × average fuel economy (miles per gallon). Use passenger cars/light trucks only.' },
-  { question: 'What is the annual revenue (USD) of a single 120-room mid-scale hotel running at typical occupancy?', hint: 'Rooms × occupancy × average daily rate × 365 for room revenue, then add a markup for food/beverage and other services.' },
-  { question: 'How many smartphones are sold worldwide per year, estimated top-down and bottom-up?', hint: 'Bottom-up: installed base ÷ replacement cycle + new first-time buyers. Top-down: regional populations × penetration × turnover. Reconcile.' },
-  { question: 'How many food-delivery orders are placed through apps in the United States on a typical Friday evening (5–9pm)?', hint: 'Estimate ordering households in metros, the share that orders delivery on a peak Friday, and confine it to the 4-hour dinner window.' },
-  { question: 'How many disposable diapers are used in the United States per year?', hint: 'Number of children still in diapers × diaper changes per day × 365. Anchor on births per year and the years a child stays in diapers.' },
-  { question: 'What annual recurring revenue (USD) does a B2B SaaS startup reach 3 years after launch if it adds 200 paying customers per month at 2% monthly churn?', hint: 'Track the customer base month over month: additions minus churn compound into a partially-saturated base, then multiply by annual revenue per customer.' },
-  { question: 'How many airline passenger seats are sold (passenger boardings) worldwide per year?', hint: 'Start from annual passengers (trips, not unique people), or build from aircraft fleet × seats × flights/day × load factor. Cross-check the two.' },
-  { question: 'How many messages are sent across the world\'s largest messaging platform during its single busiest minute of the year?', hint: 'Annual or daily message volume → average per second, then apply a peak multiplier for an event (e.g., New Year) when many time zones celebrate at once.' },
-  { question: 'What is the total annual residential electricity consumption (kWh) in the United States, via household and via per-capita routes?', hint: 'Route A: households × kWh per household per year. Route B: population × per-capita residential kWh. Reconcile and note what differs.' },
-  { question: 'What is the annual retail revenue (USD) of the global chocolate market?', hint: 'Population in chocolate-consuming regions × kg consumed per person per year × retail price per kg. Weight consumption heavily toward wealthier regions.' },
-  { question: 'What is the annual revenue (USD) of a single mid-size commercial fitness gym, and how many members visit per day?', hint: 'Revenue = members × monthly dues × 12, plus add-ons. Daily visits = members × the fraction who actually show up on an average day.' },
-  { question: 'How many short-term-rental (e.g., Airbnb-style) listings are occupied on a peak summer Saturday night in the United States?', hint: 'Estimate total active US listings, then apply a high-season Saturday occupancy rate. Active supply first, then utilization.' },
-  { question: 'How many cups of coffee (all sources: home, office, café) are consumed in the United States per day?', hint: 'Coffee-drinking adults × cups per drinker per day. Anchor on the share of adults who drink coffee and typical daily cups.' },
-  { question: 'What is the annual global revenue (USD) of the mobile-games market, via player route and via top-down app-store route?', hint: 'Player route: players × paying-user rate × annual spend per payer. Top-down: total consumer app-store spend × games share. Reconcile.' },
-  { question: 'What is the annual revenue (USD) of a single large suburban supermarket?', hint: 'Transactions per day (customers through checkout) × average basket size × operating days. Build the customer count from peak and off-peak flow.' },
-  { question: 'How many new passenger cars and light trucks are sold in the United States per year?', hint: 'Installed fleet ÷ average vehicle lifespan gives the replacement rate; add modest fleet growth. Anchor on total registered vehicles and how long they last.' },
-  { question: 'How many search queries per second does the world\'s largest search engine handle at its global peak?', hint: 'Annual or daily query volume → average queries per second, then apply a modest peak factor since global usage smooths across time zones.' },
-  { question: 'What is the annual global box-office revenue (USD) for cinema?', hint: 'Cinema-going population × tickets per person per year × average ticket price, weighted toward regions with strong theater habits.' },
-  { question: 'What is the annual revenue (USD) of a single 8-stall EV fast-charging station at a busy highway location, and what stall utilization does that imply?', hint: 'Sessions/stall/day from operating hours, session length and utilization × energy or price per session × 365. Then sanity-check the implied utilization.' },
-  { question: 'How many pizzas are sold worldwide in a single day?', hint: 'Start from the major pizza-eating regions (US + Europe as the core), estimate slices or pies per person per week, then convert to a daily, global figure. The US alone is a useful anchor before scaling out.' },
-  { question: 'How many personal computers (desktops + laptops) are shipped worldwide in one year?', hint: 'Work from the global installed base of PCs and an average replacement cycle, which is longer than for phones. Annual shipments roughly equal the active base divided by the replacement period, plus modest first-time demand.' },
-  { question: 'How many cigarettes are consumed worldwide in one year?', hint: 'Estimate the global adult smoking population, then multiply by an average number of cigarettes per smoker per day and annualize. Smoking prevalence varies sharply by region.' },
-  { question: 'What is the cumulative number of solar panels (PV modules) ever installed worldwide?', hint: 'Convert total installed solar capacity (in gigawatts) into module count using an average wattage per panel. Cumulative capacity, not annual additions, is what you want here.' },
-  { question: 'How many shipping containers (TEU) cross the world\'s oceans each year?', hint: 'Anchor on global container port throughput, then recognize that each box is handled multiple times (load, transship, unload) so port moves overstate unique voyages. Reason from trade volume per capita as a cross-check.' },
-  { question: 'What is the global annual revenue of the bottled-water industry (USD)?', hint: 'Multiply the drinking population by liters of bottled water consumed per person per year by an average price per liter. Developed markets drive both volume and price.' },
-  { question: 'How many metric tons of air cargo are transported worldwide in one year?', hint: 'Anchor on global air-freight tonne-kilometers, or build from world population times an average kg of air-freighted goods per person per year. Recognize air cargo is a small but high-value slice of total freight.' },
-  { question: 'What is the total cost of running the world\'s data centers in electricity per year (USD)?', hint: 'Combine global data-center electricity consumption (in terawatt-hours) with an average industrial electricity price per kWh. Energy use is the dominant operating cost lever.' },
-  { question: 'How many pairs of shoes are manufactured worldwide in one year?', hint: 'Use world population times an average number of new pairs bought per person per year, recognizing rich and poor regions differ several-fold in purchase rate.' },
-  { question: 'What is the cumulative number of automobiles (passenger cars) on the road worldwide today?', hint: 'Combine regional vehicle-ownership rates (cars per 1,000 people) with population for high-, middle-, and low-ownership regions, then sum the fleets.' },
-  { question: 'How many emails are sent worldwide in a single day?', hint: 'Multiply the number of email users by average emails sent per user per day, but remember a large share of total volume is automated and spam, not human-typed.' },
-  { question: 'What is the global annual revenue of the fast-food (quick-service restaurant) industry (USD)?', hint: 'Estimate the world\'s regular fast-food customers, visits per person per year, and average ticket size. Developed markets dominate spend even where developing markets dominate headcount.' },
-  { question: 'How many barrels of oil does the world consume in a single day?', hint: 'Anchor on world population and a weighted per-capita oil consumption, recognizing the US consumes far more per person than the global average. Cross-check against the well-known global daily figure.' },
-  { question: 'What is the cumulative number of credit and debit cards in circulation worldwide?', hint: 'Estimate the banked adult population, then multiply by an average number of payment cards held per person, which is several in developed markets and near zero in unbanked regions.' },
-  { question: 'How many cups (servings) of tea are consumed worldwide in a single day?', hint: 'Tea is concentrated in Asia, the Middle East, and the UK, so weight those regions heavily for cups per person per day rather than using a flat global average.' },
-  { question: 'What is the global annual revenue of the pet-care market (food + vet + supplies, USD)?', hint: 'Combine the number of pet-owning households in developed regions with annual spend per pet, since spending is overwhelmingly concentrated in high-income markets.' },
-  { question: 'How many flights (commercial aircraft departures) take off worldwide in a single day?', hint: 'Work backward from annual global passengers and an average passengers-per-flight figure to get flights per year, then divide by 365. Distinguish passenger flights from cargo/private.' },
-  { question: 'What is the annual operating cost of the global postal and parcel-delivery \'last mile\' (USD)?', hint: 'Estimate annual parcels delivered worldwide times an average last-mile cost per parcel, recognizing last mile is the costliest delivery segment per item.' },
-  { question: 'How many liters of milk are produced worldwide in one year?', hint: 'Anchor on world population and an average per-capita dairy-milk availability per year, weighting high-consumption regions (Europe, the Americas, South Asia) more heavily.' },
-  { question: 'What is the global total addressable market for online video streaming subscriptions (USD)?', hint: 'Multiply broadband-connected households worldwide by an estimated paying-subscriber rate, services per household, and average monthly fee × 12. Affordability caps adoption in lower-income regions.' },
-  { question: 'How many plastic bottles (PET beverage bottles) are produced worldwide in one year?', hint: 'Start from global bottled-beverage servings per person per year (water + soda) and scale by population, recognizing that one person can consume hundreds of bottles annually in heavy markets.' },
-  { question: 'What is the cumulative number of active bank accounts worldwide?', hint: 'Estimate the banked adult population, then multiply by an average number of accounts (checking, savings, etc.) held per banked person, which is higher in developed markets.' },
-  { question: 'What is the global annual retail revenue of the beer market (USD)?', hint: 'Combine the world\'s regular beer-drinking population with liters consumed per person per year and an average retail price per liter, weighting high-consumption regions and on-premise (bar) pricing.' },
-  { question: 'How many text/chat messages (SMS + messaging apps) are sent worldwide in a single day?', hint: 'Multiply the number of messaging-app users by an average messages-sent-per-user-per-day, recognizing that app messaging volume now dwarfs traditional SMS.' },
-  { question: 'What is the global annual electricity-generation revenue (utility sales to end users, USD)?', hint: 'Combine total world electricity consumption (in terawatt-hours) with an average retail price per kWh, blending cheap-power and expensive-power regions.' },
+  // difficulty/domain tags migrated from f19_final.json (difficulty) + theme→domain mapping from §2-B.
+  // idx 0: basic / market (market-sizing)
+  { question: 'What is the annual revenue (USD) of the coffee-chain café market in the United States?', hint: 'Start from US adults who buy café coffee, multiply by visits per week and spend per visit, then annualize. Coffee drinkers vs. chain buyers is the first split.', difficulty: 'basic', domain: 'market', theme: 'market-sizing' },
+  // idx 1: standard / flow (platform-supply-demand)
+  { question: 'How many ride-hailing drivers are actively on the road at 6pm on a typical weekday across the United States?', hint: 'Estimate concurrent ride demand (rides happening at once) from daily rides ÷ active hours, then convert to drivers using utilization. Demand-side first, then supply.', difficulty: 'standard', domain: 'flow', theme: 'platform-supply-demand' },
+  // idx 2: standard / unit (unit-economics)
+  { question: 'What is the annual revenue (USD) of a single busy urban fast-food restaurant?', hint: 'Build from transactions per hour during peak and off-peak, average ticket, and operating hours per day, then annualize over operating days.', difficulty: 'standard', domain: 'unit', theme: 'unit-economics' },
+  // idx 3: advanced / volume (national-sizing)
+  { question: 'What is the annual revenue (USD) of the haircut and salon services market in the United States, estimated both top-down and bottom-up?', hint: 'Bottom-up: people × cuts/year × price. Top-down: number of salons × revenue per salon. Reconcile the two and explain the gap.', difficulty: 'advanced', domain: 'volume', theme: 'national-sizing' },
+  // idx 4: basic / market (market-sizing)
+  { question: 'What is the annual revenue (USD) of the pet food market in the United States?', hint: 'Households with pets × pets per household × annual food spend per pet. Split dogs vs. cats since spend per animal differs.', difficulty: 'basic', domain: 'market', theme: 'market-sizing' },
+  // idx 5: advanced / flow (platform-concurrency)
+  { question: 'How many people are watching a major video-streaming platform (e.g., a Netflix-scale service) simultaneously during global prime time?', hint: 'Start from subscriber base, daily active share, average daily watch time, then convert to concurrency at the global peak hour accounting for time zones.', difficulty: 'advanced', domain: 'flow', theme: 'platform-concurrency' },
+  // idx 6: standard / volume (national-sizing)
+  { question: 'How many gallons of gasoline are sold for passenger vehicles in the United States per year?', hint: 'Vehicles × annual miles driven × average fuel economy (miles per gallon). Use passenger cars/light trucks only.', difficulty: 'standard', domain: 'volume', theme: 'national-sizing' },
+  // idx 7: standard / unit (unit-economics)
+  { question: 'What is the annual revenue (USD) of a single 120-room mid-scale hotel running at typical occupancy?', hint: 'Rooms × occupancy × average daily rate × 365 for room revenue, then add a markup for food/beverage and other services.', difficulty: 'standard', domain: 'unit', theme: 'unit-economics' },
+  // idx 8: advanced / volume (market-sizing → national-sizing path; mapped to volume)
+  { question: 'How many smartphones are sold worldwide per year, estimated top-down and bottom-up?', hint: 'Bottom-up: installed base ÷ replacement cycle + new first-time buyers. Top-down: regional populations × penetration × turnover. Reconcile.', difficulty: 'advanced', domain: 'volume', theme: 'market-sizing' },
+  // idx 9: standard / flow (platform-supply-demand)
+  { question: 'How many food-delivery orders are placed through apps in the United States on a typical Friday evening (5–9pm)?', hint: 'Estimate ordering households in metros, the share that orders delivery on a peak Friday, and confine it to the 4-hour dinner window.', difficulty: 'standard', domain: 'flow', theme: 'platform-supply-demand' },
+  // idx 10: basic / volume (national-sizing)
+  { question: 'How many disposable diapers are used in the United States per year?', hint: 'Number of children still in diapers × diaper changes per day × 365. Anchor on births per year and the years a child stays in diapers.', difficulty: 'basic', domain: 'volume', theme: 'national-sizing' },
+  // idx 11: advanced / unit (unit-economics)
+  { question: 'What annual recurring revenue (USD) does a B2B SaaS startup reach 3 years after launch if it adds 200 paying customers per month at 2% monthly churn?', hint: 'Track the customer base month over month: additions minus churn compound into a partially-saturated base, then multiply by annual revenue per customer.', difficulty: 'advanced', domain: 'unit', theme: 'unit-economics' },
+  // idx 12: standard / market (market-sizing)
+  { question: 'How many airline passenger seats are sold (passenger boardings) worldwide per year?', hint: 'Start from annual passengers (trips, not unique people), or build from aircraft fleet × seats × flights/day × load factor. Cross-check the two.', difficulty: 'standard', domain: 'market', theme: 'market-sizing' },
+  // idx 13: advanced / flow (platform-concurrency)
+  { question: 'How many messages are sent across the world\'s largest messaging platform during its single busiest minute of the year?', hint: 'Annual or daily message volume → average per second, then apply a peak multiplier for an event (e.g., New Year) when many time zones celebrate at once.', difficulty: 'advanced', domain: 'flow', theme: 'platform-concurrency' },
+  // idx 14: advanced / volume (national-sizing)
+  { question: 'What is the total annual residential electricity consumption (kWh) in the United States, via household and via per-capita routes?', hint: 'Route A: households × kWh per household per year. Route B: population × per-capita residential kWh. Reconcile and note what differs.', difficulty: 'advanced', domain: 'volume', theme: 'national-sizing' },
+  // idx 15: basic / market (market-sizing)
+  { question: 'What is the annual retail revenue (USD) of the global chocolate market?', hint: 'Population in chocolate-consuming regions × kg consumed per person per year × retail price per kg. Weight consumption heavily toward wealthier regions.', difficulty: 'basic', domain: 'market', theme: 'market-sizing' },
+  // idx 16: standard / unit (unit-economics)
+  { question: 'What is the annual revenue (USD) of a single mid-size commercial fitness gym, and how many members visit per day?', hint: 'Revenue = members × monthly dues × 12, plus add-ons. Daily visits = members × the fraction who actually show up on an average day.', difficulty: 'standard', domain: 'unit', theme: 'unit-economics' },
+  // idx 17: standard / flow (platform-supply-demand)
+  { question: 'How many short-term-rental (e.g., Airbnb-style) listings are occupied on a peak summer Saturday night in the United States?', hint: 'Estimate total active US listings, then apply a high-season Saturday occupancy rate. Active supply first, then utilization.', difficulty: 'standard', domain: 'flow', theme: 'platform-supply-demand' },
+  // idx 18: basic / volume (national-sizing)
+  { question: 'How many cups of coffee (all sources: home, office, café) are consumed in the United States per day?', hint: 'Coffee-drinking adults × cups per drinker per day. Anchor on the share of adults who drink coffee and typical daily cups.', difficulty: 'basic', domain: 'volume', theme: 'national-sizing' },
+  // idx 19: advanced / market (market-sizing)
+  { question: 'What is the annual global revenue (USD) of the mobile-games market, via player route and via top-down app-store route?', hint: 'Player route: players × paying-user rate × annual spend per payer. Top-down: total consumer app-store spend × games share. Reconcile.', difficulty: 'advanced', domain: 'market', theme: 'market-sizing' },
+  // idx 20: standard / unit (unit-economics)
+  { question: 'What is the annual revenue (USD) of a single large suburban supermarket?', hint: 'Transactions per day (customers through checkout) × average basket size × operating days. Build the customer count from peak and off-peak flow.', difficulty: 'standard', domain: 'unit', theme: 'unit-economics' },
+  // idx 21: standard / volume (national-sizing)
+  { question: 'How many new passenger cars and light trucks are sold in the United States per year?', hint: 'Installed fleet ÷ average vehicle lifespan gives the replacement rate; add modest fleet growth. Anchor on total registered vehicles and how long they last.', difficulty: 'standard', domain: 'volume', theme: 'national-sizing' },
+  // idx 22: advanced / flow (platform-concurrency)
+  { question: 'How many search queries per second does the world\'s largest search engine handle at its global peak?', hint: 'Annual or daily query volume → average queries per second, then apply a modest peak factor since global usage smooths across time zones.', difficulty: 'advanced', domain: 'flow', theme: 'platform-concurrency' },
+  // idx 23: basic / market (market-sizing)
+  { question: 'What is the annual global box-office revenue (USD) for cinema?', hint: 'Cinema-going population × tickets per person per year × average ticket price, weighted toward regions with strong theater habits.', difficulty: 'basic', domain: 'market', theme: 'market-sizing' },
+  // idx 24: advanced / unit (unit-economics)
+  { question: 'What is the annual revenue (USD) of a single 8-stall EV fast-charging station at a busy highway location, and what stall utilization does that imply?', hint: 'Sessions/stall/day from operating hours, session length and utilization × energy or price per session × 365. Then sanity-check the implied utilization.', difficulty: 'advanced', domain: 'unit', theme: 'unit-economics' },
+  // idx 25: basic / volume (industry-throughput)
+  { question: 'How many pizzas are sold worldwide in a single day?', hint: 'Start from the major pizza-eating regions (US + Europe as the core), estimate slices or pies per person per week, then convert to a daily, global figure. The US alone is a useful anchor before scaling out.', difficulty: 'basic', domain: 'volume', theme: 'industry-throughput' },
+  // idx 26: standard / volume (stock-flow)
+  { question: 'How many personal computers (desktops + laptops) are shipped worldwide in one year?', hint: 'Work from the global installed base of PCs and an average replacement cycle, which is longer than for phones. Annual shipments roughly equal the active base divided by the replacement period, plus modest first-time demand.', difficulty: 'standard', domain: 'volume', theme: 'stock-flow' },
+  // idx 27: basic / volume (industry-throughput)
+  { question: 'How many cigarettes are consumed worldwide in one year?', hint: 'Estimate the global adult smoking population, then multiply by an average number of cigarettes per smoker per day and annualize. Smoking prevalence varies sharply by region.', difficulty: 'basic', domain: 'volume', theme: 'industry-throughput' },
+  // idx 28: advanced / volume (stock-flow)
+  { question: 'What is the cumulative number of solar panels (PV modules) ever installed worldwide?', hint: 'Convert total installed solar capacity (in gigawatts) into module count using an average wattage per panel. Cumulative capacity, not annual additions, is what you want here.', difficulty: 'advanced', domain: 'volume', theme: 'stock-flow' },
+  // idx 29: advanced / volume (industry-throughput)
+  { question: 'How many shipping containers (TEU) cross the world\'s oceans each year?', hint: 'Anchor on global container port throughput, then recognize that each box is handled multiple times (load, transship, unload) so port moves overstate unique voyages. Reason from trade volume per capita as a cross-check.', difficulty: 'advanced', domain: 'volume', theme: 'industry-throughput' },
+  // idx 30: standard / market (global-tam)
+  { question: 'What is the global annual revenue of the bottled-water industry (USD)?', hint: 'Multiply the drinking population by liters of bottled water consumed per person per year by an average price per liter. Developed markets drive both volume and price.', difficulty: 'standard', domain: 'market', theme: 'global-tam' },
+  // idx 31: standard / volume (industry-throughput)
+  { question: 'How many metric tons of air cargo are transported worldwide in one year?', hint: 'Anchor on global air-freight tonne-kilometers, or build from world population times an average kg of air-freighted goods per person per year. Recognize air cargo is a small but high-value slice of total freight.', difficulty: 'standard', domain: 'volume', theme: 'industry-throughput' },
+  // idx 32: advanced / cost (cost-ops)
+  { question: 'What is the total cost of running the world\'s data centers in electricity per year (USD)?', hint: 'Combine global data-center electricity consumption (in terawatt-hours) with an average industrial electricity price per kWh. Energy use is the dominant operating cost lever.', difficulty: 'advanced', domain: 'cost', theme: 'cost-ops' },
+  // idx 33: basic / volume (industry-throughput)
+  { question: 'How many pairs of shoes are manufactured worldwide in one year?', hint: 'Use world population times an average number of new pairs bought per person per year, recognizing rich and poor regions differ several-fold in purchase rate.', difficulty: 'basic', domain: 'volume', theme: 'industry-throughput' },
+  // idx 34: standard / volume (stock-flow)
+  { question: 'What is the cumulative number of automobiles (passenger cars) on the road worldwide today?', hint: 'Combine regional vehicle-ownership rates (cars per 1,000 people) with population for high-, middle-, and low-ownership regions, then sum the fleets.', difficulty: 'standard', domain: 'volume', theme: 'stock-flow' },
+  // idx 35: standard / volume (industry-throughput)
+  { question: 'How many emails are sent worldwide in a single day?', hint: 'Multiply the number of email users by average emails sent per user per day, but remember a large share of total volume is automated and spam, not human-typed.', difficulty: 'standard', domain: 'volume', theme: 'industry-throughput' },
+  // idx 36: standard / market (global-tam)
+  { question: 'What is the global annual revenue of the fast-food (quick-service restaurant) industry (USD)?', hint: 'Estimate the world\'s regular fast-food customers, visits per person per year, and average ticket size. Developed markets dominate spend even where developing markets dominate headcount.', difficulty: 'standard', domain: 'market', theme: 'global-tam' },
+  // idx 37: standard / volume (industry-throughput)
+  { question: 'How many barrels of oil does the world consume in a single day?', hint: 'Anchor on world population and a weighted per-capita oil consumption, recognizing the US consumes far more per person than the global average. Cross-check against the well-known global daily figure.', difficulty: 'standard', domain: 'volume', theme: 'industry-throughput' },
+  // idx 38: advanced / volume (stock-flow)
+  { question: 'What is the cumulative number of credit and debit cards in circulation worldwide?', hint: 'Estimate the banked adult population, then multiply by an average number of payment cards held per person, which is several in developed markets and near zero in unbanked regions.', difficulty: 'advanced', domain: 'volume', theme: 'stock-flow' },
+  // idx 39: basic / volume (industry-throughput)
+  { question: 'How many cups (servings) of tea are consumed worldwide in a single day?', hint: 'Tea is concentrated in Asia, the Middle East, and the UK, so weight those regions heavily for cups per person per day rather than using a flat global average.', difficulty: 'basic', domain: 'volume', theme: 'industry-throughput' },
+  // idx 40: standard / market (global-tam)
+  { question: 'What is the global annual revenue of the pet-care market (food + vet + supplies, USD)?', hint: 'Combine the number of pet-owning households in developed regions with annual spend per pet, since spending is overwhelmingly concentrated in high-income markets.', difficulty: 'standard', domain: 'market', theme: 'global-tam' },
+  // idx 41: standard / volume (industry-throughput)
+  { question: 'How many flights (commercial aircraft departures) take off worldwide in a single day?', hint: 'Work backward from annual global passengers and an average passengers-per-flight figure to get flights per year, then divide by 365. Distinguish passenger flights from cargo/private.', difficulty: 'standard', domain: 'volume', theme: 'industry-throughput' },
+  // idx 42: advanced / cost (cost-ops)
+  { question: 'What is the annual operating cost of the global postal and parcel-delivery \'last mile\' (USD)?', hint: 'Estimate annual parcels delivered worldwide times an average last-mile cost per parcel, recognizing last mile is the costliest delivery segment per item.', difficulty: 'advanced', domain: 'cost', theme: 'cost-ops' },
+  // idx 43: standard / volume (industry-throughput)
+  { question: 'How many liters of milk are produced worldwide in one year?', hint: 'Anchor on world population and an average per-capita dairy-milk availability per year, weighting high-consumption regions (Europe, the Americas, South Asia) more heavily.', difficulty: 'standard', domain: 'volume', theme: 'industry-throughput' },
+  // idx 44: advanced / market (global-tam)
+  { question: 'What is the global total addressable market for online video streaming subscriptions (USD)?', hint: 'Multiply broadband-connected households worldwide by an estimated paying-subscriber rate, services per household, and average monthly fee × 12. Affordability caps adoption in lower-income regions.', difficulty: 'advanced', domain: 'market', theme: 'global-tam' },
+  // idx 45: standard / volume (industry-throughput)
+  { question: 'How many plastic bottles (PET beverage bottles) are produced worldwide in one year?', hint: 'Start from global bottled-beverage servings per person per year (water + soda) and scale by population, recognizing that one person can consume hundreds of bottles annually in heavy markets.', difficulty: 'standard', domain: 'volume', theme: 'industry-throughput' },
+  // idx 46: standard / volume (stock-flow)
+  { question: 'What is the cumulative number of active bank accounts worldwide?', hint: 'Estimate the banked adult population, then multiply by an average number of accounts (checking, savings, etc.) held per banked person, which is higher in developed markets.', difficulty: 'standard', domain: 'volume', theme: 'stock-flow' },
+  // idx 47: advanced / market (global-tam)
+  { question: 'What is the global annual retail revenue of the beer market (USD)?', hint: 'Combine the world\'s regular beer-drinking population with liters consumed per person per year and an average retail price per liter, weighting high-consumption regions and on-premise (bar) pricing.', difficulty: 'advanced', domain: 'market', theme: 'global-tam' },
+  // idx 48: standard / volume (industry-throughput)
+  { question: 'How many text/chat messages (SMS + messaging apps) are sent worldwide in a single day?', hint: 'Multiply the number of messaging-app users by an average messages-sent-per-user-per-day, recognizing that app messaging volume now dwarfs traditional SMS.', difficulty: 'standard', domain: 'volume', theme: 'industry-throughput' },
+  // idx 49: advanced / market (global-tam)
+  { question: 'What is the global annual electricity-generation revenue (utility sales to end users, USD)?', hint: 'Combine total world electricity consumption (in terawatt-hours) with an average retail price per kWh, blending cheap-power and expensive-power regions.', difficulty: 'advanced', domain: 'market', theme: 'global-tam' },
 ]
 
 export const FERMI_POOL: FermiQuestion[] = getLocale() === 'en' ? FERMI_POOL_EN : FERMI_POOL_JA
