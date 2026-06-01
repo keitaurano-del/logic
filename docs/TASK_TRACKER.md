@@ -45,7 +45,7 @@ Keita から 2026-06-01 に直接報告された不具合・改善依頼3件を�
 | ID | タイトル | 優先度 | ステータス | 担当案 | 由来 |
 |----|---------|--------|-----------|--------|------|
 | AF-05 | 再ログイン後にプロフィール情報とレベル/XP が引き継がれない（データ消失） | P0 | DONE | dev-logic（根因調査→修正）+ test-functional（永続化E2E） | Keita 実機報告 2026-06-01 |
-| AF-07 | ストリークフリーズ在庫（logic-streak-freeze）がログアウトで消失（KEEP_KEYS 漏れ） | P2 | TODO | dev-logic | AF-05 隣接検出（dev-logic 2026-06-01） |
+| AF-07 | ストリークフリーズ在庫（logic-streak-freeze）がログアウトで消失（KEEP_KEYS 漏れ） | P2 | DONE（2026-06-01 自律ティック(林) option(a) 実装→green→本番反映。syncService.ts:735 KEEP_KEYS に logic-streak-freeze 追加・回帰テスト af05-sync-integration.test.ts:172 追加・tsc0/eslint0/vitest508pass・commit `ecce6fa`・push済・Render本番deploy run26730917519・Android main push自動配信） | dev-logic | AF-05 隣接検出（dev-logic 2026-06-01） |
 | AF-08 | UI設定（font-scale / tts-autoplay / tts-rate）がログアウトで初期値に戻る（KEEP_KEYS 漏れ） | P3 | TODO | dev-logic | AF-05 隣接検出（dev-logic 2026-06-01） |
 | UI-30 | ライトテーマで「今日の1位問」のチャレンジするボタンが見にくい | P1 | DONE | dev-logic（コンポーネント特定→統一）+ test-functional（両テーマ視認性） | Keita 実機報告 2026-06-01 |
 | AF-06 | アプリDLサイズ300MB削減：レッスンアセットをオンデマンド読込に | P1 | TODO | dev-logic（計測→設計案）+ designer（アセット最適化調査） | Keita 実機報告 2026-06-01 |
@@ -86,7 +86,8 @@ Keita から 2026-06-01 に直接報告された不具合・改善依頼3件を�
 - 更新日: 2026-06-01
 
 #### AF-07 — ストリークフリーズ在庫（logic-streak-freeze）がログアウトで消失
-- 優先度: P2 / ステータス: TODO / 担当案: dev-logic
+- 優先度: P2 / ステータス: DONE（2026-06-01 自律ティック(林)）/ 担当案: dev-logic
+- **実装完了（2026-06-01 自律ティック(林)）**: option(a) を採用＝端末ローカル保持。`src/syncService.ts` の `syncOnLogout` の `KEEP_KEYS`（line 735付近）に `'logic-streak-freeze'` を追加（理由コメント付：無料配布専用 stats.ts:232・Supabase 同期未整備・consumedDates がストリーク計算に必要で消すとストリーク退行）。回帰テストを `src/__tests__/af05-sync-integration.test.ts:172` に追加（在庫 count/consumedDates/lastGrantStreak を仕込んで syncOnLogout 後も残ることを検証）。**検証 green（林が実コマンドで自己裏取り）**: tsc -b --noEmit=0 / eslint .=0 errors(19既存warning) / vitest 31files 508 pass。commit `ecce6fa`・push 済（remote main = ecce6fa 確認）・Render 本番 deploy run `26730917519`（workflow_dispatch）・Android は main push で android-deploy.yml 自動配信。option(b) Supabase 同期は無料配布で再付与され得るため不採用（Keita 確認不要の範囲で完結）。両OS=KEEP_KEYS はプラットフォーム非依存ロジック。
 - 由来: **AF-05（再ログインデータ消失）の修正実装中に dev-logic が隣接で検出**（2026-06-01）。同根＝`syncService` の `syncOnLogout` で `KEEP_KEYS` に含まれないキーがログアウト時にクリアされる問題。ただし AF-05（XP/プロフィール）とは別スコープ。
 - 詳細: `logic-streak-freeze`（ストリークフリーズの在庫）が Supabase 同期されておらず、かつ `KEEP_KEYS` 外のため、ログアウト→再ログインで在庫が消える。フリーズは無料配布アイテムで再付与され得るので AF-05 ほど深刻ではないが、購入相当の在庫が消える＝軽微なデータ消失。
 - 想定修正方針（候補・要設計）: (a) `KEEP_KEYS` に `logic-streak-freeze` を追加（端末ローカル保持）、または (b) Supabase 同期化（`profiles` か `user_stats` のどちらに持たせるかは要設計）。在庫＝アカウントに紐づく資産なら (b) が筋だが、フリーズ仕様（無料配布・端末ローカルで十分か）次第。dev-logic が FB-06（ストリークフリーズ実装、`915e622`）の設計と突き合わせて方針確定する。
