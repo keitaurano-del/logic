@@ -38,6 +38,70 @@ Apollo（スマホ受信箱）から投入された Keita のタスク/指示を
 
 ---
 
+## バッチ: 2026-06-01 Keita 実機フィードバック3件
+
+Keita から 2026-06-01 に直接報告された不具合・改善依頼3件を起票。データ消失バグ(P0)・ライトテーマ視認性(P1)・DLサイズ削減アーキ改善(P1)。実装は dev-logic / test-functional / designer に委譲、task-manager は台帳化・抜けもれ提言のみ。
+
+| ID | タイトル | 優先度 | ステータス | 担当案 | 由来 |
+|----|---------|--------|-----------|--------|------|
+| AF-05 | 再ログイン後にプロフィール情報とレベル/XP が引き継がれない（データ消失） | P0 | TODO | dev-logic（根因調査→修正）+ test-functional（永続化E2E） | Keita 実機報告 2026-06-01 |
+| UI-30 | ライトテーマで「今日の1位問」のチャレンジするボタンが見にくい | P1 | TODO | dev-logic（コンポーネント特定→統一）+ test-functional（両テーマ視認性） | Keita 実機報告 2026-06-01 |
+| AF-06 | アプリDLサイズ300MB削減：レッスンアセットをオンデマンド読込に | P1 | TODO | dev-logic（計測→設計案）+ designer（アセット最適化調査） | Keita 実機報告 2026-06-01 |
+
+#### AF-05 — 再ログイン後にプロフィール情報とレベル/XP が引き継がれない（データ消失バグ）
+- 優先度: P0 / ステータス: TODO / 担当案: dev-logic（根因調査→修正）、test-functional（再ログイン跨ぎの永続化を E2E 検証）
+- 詳細: Keita 実機報告（2026-06-01）。マジックリンクで再ログインすると、それ以前のプロフィール情報とレベル/XP が消える／引き継がれない。データ消失系のため P0。
+- 想定根因（調査の出発点・未確定）: (a) 再ログインで別 auth ユーザー扱いになっている（user_id が一致しない）、(b) XP/プロフィールがローカル(端末localStorage)保持のみで Supabase 側に user_id 紐付け永続化されていない、(c) マジックリンクの `setSession`／`exchangeCodeForSession` 後にデータ再フェッチが走っていない。着手時に Supabase の該当テーブル（`profiles` / `user_stats` 等）の行と auth user_id の対応、ローカル↔リモートの同期タイミングを実コードで突き合わせて根因を確定する。
+- 受け入れ条件(DoD): 別端末／再ログインでもプロフィール・レベル・XP が保持される。Supabase 側に user_id 紐付けで永続化されていることをデータで確認。再ログイン跨ぎの永続化を E2E（test-functional）で検証し回帰ガードを置く。tsc / eslint . / vitest green。
+- 関連ファイル（調査の当たり）: `src/supabase.ts`（auth redirect / setSession）、`src/guestUser.ts`、`src/progressStore.ts` / `src/stats.ts`（XP・streak・studyTime）、プロフィール画面、`supabase/migrations/`（profiles / user_stats のスキーマ・RLS）。
+- 依存: なし
+- 提言・抜けもれ:
+  - 認証はマジックリンクのみ方針（[[feedback-logic-auth-magiclink-only]]）。OTP・Google ログインを根因対策に持ち出さない。
+  - **両OS**: iOS / Android 両方で再ログイン挙動を確認（Capacitor の deep link `logic://auth` 経由のセッション復元が OS で差が出る可能性）。Logic はモバイル専用（[[project-logic-mobile-only]]）。
+  - **回帰**: ゲスト→ログインの移行時にローカルデータを Supabase にマージする経路（`guestUser.ts`）に波及しないか確認。匿名ユーザーの進捗が引き継がれる導線を壊さない。
+  - **永続化**: 表示だけでなく user_id 紐付けの保存・再ログイン後の再フェッチまでがスコープ。localStorage キャッシュとリモートの整合（どちらを正にするか）を設計判断として明示。
+  - **データ損失の調査優先**: 既存ユーザーの XP が「消えた」のか「フェッチできてないだけ（リモートには在る）」のかを最初に切り分ける。後者なら再フェッチ修正で復旧、前者なら保存が走っていない＝より深刻。
+- 更新日: 2026-06-01
+
+#### UI-30 — ライトテーマで「今日の1位問」のチャレンジするボタンが見にくい
+- 優先度: P1 / ステータス: TODO / 担当案: dev-logic（該当コンポーネント特定→UI-14 と同じ白枠/青字パターンで統一）、test-functional（両テーマで視認性確認）
+- 詳細: Keita 実機報告（2026-06-01）。ライトテーマ時、今日の1位問（デイリーの1位問題）の「チャレンジする」ボタンが視認しにくい。Keita 提案＝白枠＋青文字（チャレンジする）にすると見やすいのでは。
+- **最初の切り分け（必須）**: 5/30 に「今日のフェルミのボタン」で同じ指摘があり **UI-14**（`d05e454`・ピル白背景＋"チャレンジする"青字に修正・push 済み）で対応済み。今回が次のどちらかを着手時に最初に判定する:
+  - (a) 別コンポーネント（今日の1位問 ≠ フェルミ CTA）で UI-14 が及んでいない → UI-14 と同じ白枠/青字パターンで統一実装。
+  - (b) UI-14 が本番（特に Render web / Android ビルド）に反映されていない or デグレした → 反映状況を確認し、未反映なら再デプロイ／デグレなら復旧。
+- 受け入れ条件(DoD): ライト/ダーク両テーマで「チャレンジする」ボタンが明瞭に視認できる。既存フェルミ CTA（UI-14）とスタイル統一。tsc / eslint . / vitest green。両テーマで test-functional が視認性確認。
+- 関連ファイル: 今日の1位問の描画画面（着手時に特定。`HomeScreenV3.tsx` の Daily 系 or デイリー問題画面）、`src/styles/tokens.css`（`--accent-btn` / `--accent-btn-fg` / `--brand`）。**UI-14**（`d05e454`）の白背景＋青字パターンを参照して統一。AF-02 / UI-27（フェルミ CTA・1問モード解答ボタン）とも色トークンを揃える。
+- 依存: なし（UI-14 への相互参照＝スタイル統一の基準）
+- 提言・抜けもれ:
+  - **回帰**: 共通の CTA ピルスタイル／色トークンを触る場合、AF-02・UI-14・UI-27 の既存 CTA に波及しないか確認（同じ `--accent-btn` 系を共有）。
+  - **デザイン制約**: ハードコード hex 禁止・CSS 変数（`--accent-btn`/`--accent-btn-fg`/`--brand`）使用・UI chrome は emoji 不可（SVG のみ）。ボタン文言は中立的丁寧体を維持（[[feedback-app-copy-neutral]]）。
+  - **ダーク側の確認**: ライト改善でダーク側のコントラストを壊さないこと（AF-02 で「白前提に `--bg-card` を使ったらダークで破綻」した前例あり。両テーマ実描画で確認）。
+  - **本番反映**: Render web は手動 deploy が要る（[[project-logic-render-auto-deploy]]）。視認性確認は本番反映後の実描画で。
+- 更新日: 2026-06-01
+
+#### AF-06 — アプリDLサイズ300MB削減：レッスンアセットをオンデマンド読込に
+- 優先度: P1 / ステータス: TODO / 担当案: dev-logic（(a) バンドル内訳計測→(b) オンデマンド取得の設計案作成）、designer（アセット最適化＝解像度/圧縮で別途軽量化余地を調査）
+- 詳細: Keita 実機報告（2026-06-01）。アプリDLが約300MBと大きい。レッスンが大半を占めるなら、アプリDL時には同梱せず、レッスン開始時に読み込む方式（Netflix 等の配信サービス方式）にしたい。
+- 想定: レッスン画像（`public/images/v3` のコースサムネ27＋レッスンサムネ89＋キャリア系、図解アセット等）が APK/AAB バンドルに同梱されてサイズを押し上げている疑い。
+- スコープ（段階ゲート）:
+  - (a) **計測フェーズ（先行・必須）**: 現状の APK/AAB バンドル内訳を計測し、何が300MBを占めるかを数値で出す（画像／コード／ネイティブ依存の内訳）。
+  - (b) **設計フェーズ**: レッスンアセットを CDN／Supabase Storage 等からオンデマンド取得する設計案（取得タイミング・キャッシュ戦略・プログレス表示・オフライン挙動・初回DL削減見込み）を作成。
+  - (c) **Keita 承認ゲート**: 設計判断を含むため、(a)(b) を提示して Keita 承認を取ってから実装着手。**承認前に実装しない**。
+  - 並行: designer がアセット最適化（解像度/圧縮）で同梱のまま削れる余地も調査（オンデマンド化と独立に効く軽量化）。
+- 受け入れ条件(DoD): 初回DLサイズの大幅削減（目標値は (a) の計測後に設定）。レッスン開始時の読込UXが許容範囲（プログレス表示・キャッシュでの再取得回避）。Logic はモバイル専用（[[project-logic-mobile-only]]）なのでモバイル体験前提で設計。
+- 関連ファイル: `public/images/v3/`（コース/レッスン/キャリアのサムネ PNG 群）、`android/`（AAB ビルド構成）、`capacitor.config` 系、サムネ参照箇所（`courseData.ts` / `lessonSlides.ts` / `RoadmapScreenV3.tsx`）、`src/supabase.ts`（Storage 利用時）。
+- 依存: なし（ただし (c) Keita 承認が (実装) の前提）
+- 提言・抜けもれ:
+  - **設計判断ゲート**: これは設計判断を含むので「計測＋設計案→Keita 承認」を必ず置く。承認前に BLOCKED 化せず TODO のまま (a)(b) を進め、設計案提示時点で Keita 判断待ちなら BLOCKED へ。
+  - **オフライン体験**: オンデマンド化でオフライン時にレッスン画像が出ない退行が起きる。キャッシュ済みは出す／未取得は placeholder＋再取得、の挙動を設計に含める。
+  - **回帰**: サムネ参照を `.png`（バンドル）→ リモート URL に変える際、過去のサムネ方針（[[feedback-logic-course-thumbnails]]：`.png` 参照を維持・`.svg` 巻き戻し禁止）を壊さない。参照先がリモートに変わるだけで「手書き+図解 v4 PNG」マスターは維持。
+  - **両OS**: iOS / Android 両方でバンドルサイズ・オンデマンド取得を確認（iOS は未着手だが将来対象）。
+  - **コスト**: Supabase Storage / CDN の転送量課金が新規発生する点を設計案に明記（運用コスト判断は Keita）。
+  - **アクセシビリティ**: 読込中の placeholder にも意味が伝わる代替（alt/語ラベル）を用意。
+- 更新日: 2026-06-01
+
+---
+
 ## バッチ: 2026-05-31 ドッグフーディング feedback トリアージ
 
 ソース: 社内ドッグフーディング(dogfood)で投入した feedback 全20件（`source=dogfood`、message 冒頭 `[DOGFOOD:pNN]` タグ、app_version 全件 null、locale ja×19 / en×1）。外部実ユーザ起票ではない。各タスク note の「2026-05-31 ドッグフーディング(dogfood)で検出」はこの前提を指す（「ユーザN件が訴え」等の表現は使わない）。task-manager は台帳化・トリアージ・抜けもれ提言のみ（実装は dev-logic / designer / content-creator / Keita に委譲）。
@@ -67,7 +131,7 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 | FB-02 | 学習時間計測が途中離脱時に正しく停止しないバグ | P1 | DONE（2026-05-31 test-functional ○: useStudyTimer.ts appStateChange結線＋冪等closeSegment＋cleanup・回帰5件pass・`9000dc9`・deploy済。native実機発火はheadless検証不可だが標準API+web fallbackで論理健全） | dev-logic | 即修正(bug) |
 | FB-03 | en locale 未翻訳文字列＋ロケール依存データの見直し | P1 | DONE（2026-05-31 test-functional ○: EN UI残存日本語 CompletionBadge3箇所/HomeScreenV3:450 を t()化・`82c7280`・deploy済。残のレッスン図解LessonThumbnail:759 i18n は別タスクFB-03rへ分離） | dev-logic + content-creator | 即修正 |
 | FB-04 | TTS読み上げ速度の細粒度調整＋連続再生の安定性 | P2 | DONE（2026-05-31 自律ティック。①速度細粒度調整＋永続化 `14a19e4` deploy済＋実効性○。②の「重複/吃り」facet＝速度/ボイス変更時の二重 speak race を根治 `3f6c813`→push→本番deploy run26707522562。実装可能スコープ完了。残る端末依存の連続再生継続性＋pause/resume 再開挙動＋両OS実機確認は FB-12 へ分離） | dev-logic | 中(安定性はbug寄り) |
-| FB-05 | コース横断/戻る/離脱復帰のナビ・IA再設計【クラスタ4件】 | P1 | BLOCKED（2026-05-31 IA 設計案完成→Keita の IA 決定待ち。成果物 `docs/proposals/FB-05_navigation_IA_proposal.md`〔現状の破綻A〜E＝戻り先3系統・離脱復帰で状態消失・tab/screen 二重管理ズレ等を実コード file:line で特定＋タブ=独立スタック正規化案＋Keita 判断論点6件〕。logic-coach 承認可。IA 決定が他 UI 変更の前提のため決定まで実装着手不可） | designer主導+dev-logic | Issue化済 #235 |
+| FB-05 | コース横断/戻る/離脱復帰のナビ・IA再設計【クラスタ4件】 | P1 | TODO | designer主導+dev-logic | Issue化済 #235 |
 | FB-06 | ストリーク猶予・復活アイテム導入 | P2 | DONE（2026-05-31 完了。Keita「フリーズ型・無料配布のみ」で unblock→実装 push `915e622`・stats.test +13 green・tsc0/eslint0/vitest424pass。Render web デプロイ＋Android 配信ともに本番反映済。Keita 実機/目視確認も完了→DONE） | Keita手動→dev-logic | 仕様判断（Keita決定済） |
 | FB-07 | 不正解時フィードバック文言を中立トーンに | P2 | DONE（2026-05-31 test-functional ○: i18n.ts:561 ja「不正解」/:2474 en「Incorrect」・三点リーダ除去をライブ確認・残存0件・本番反映済） | content-creator | 中(UI文言中立) |
 | FB-08 | AI問題生成の待ち時間に進捗表示 or ストック | P2 | DONE（2026-05-31 自律ティック(林) 実効性検証○: DailyProblemScreen loading 分岐の ProblemGenLoader 結線を実コードで確認＋回帰テスト追加で恒久ロック。実装は本番反映済。残=Keita 実機目視〔任意〕。ストック方式は別スコープ） | dev-logic | 中 |
@@ -145,7 +209,7 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 - 更新日: 2026-05-31（web resume 根因修正・REVIEW へ）
 
 #### FB-05 — コース横断/戻る/離脱復帰のナビ・IA再設計【クラスタ親・4件】
-- 優先度: P1 / ステータス: BLOCKED（Keita の IA 決定待ち。Issue [#235](https://github.com/keitaurano-del/logic/issues/235) を logic リポに起票済。次アクションは designer の IA 案提示→Keita の IA 決定＝設計判断ゲート。この IA 決定が他 UI 変更の前提のため、決定が出るまで dev-logic 実装には着手しない＝自律ティックでは前進不可。decision 後に着手）/ 担当案: designer 主導 + dev-logic
+- 優先度: P1 / ステータス: TODO //github.com/keitaurano-del/logic/issues/235) を logic リポに起票済。次アクションは designer の IA 案提示→Keita の IA 決定＝設計判断ゲート。この IA 決定が他 UI 変更の前提のため、決定が出るまで dev-logic 実装には着手しない＝自律ティックでは前進不可。decision 後に着手）/ 担当案: designer 主導 + dev-logic
 - 成果物（2026-05-31）: `docs/proposals/FB-05_navigation_IA_proposal.md`。現状の破綻A〜E（戻り先3系統・離脱復帰で状態消失・tab/screen 二重管理ズレ等）を実コード file:line で特定し、タブ=独立スタック正規化案＋**Keita 判断論点6件**を提示。logic-coach 承認可。
 - 内訳（子）: p01 / p07 / p08 / p14
 - 進捗（2026-05-31 自律ティック）: app 全体のナビ／ルータに波及する設計エピックで、IA 決定（戻るの基準・コース横断の入口・離脱復帰の中断状態 persist）が dev-logic 実装の前提＝設計判断。自律ティックで navigation を勝手に書き換えて本番 deploy するのは鉄則（設計判断は Keita ゲート）と高リスク（全画面波及）に反するため、台帳の「Issue化推奨」どおり Issue #235 を起票して designer/Keita が設計を回せる窓口を用意するに留めた。Issue には課題の synthesize・DoD・次アクション順・設計時留意（回帰/両OS/E2E/a11y/persist）・関連ファイルを記載済み。
@@ -291,7 +355,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 |----|---------|--------|-----------|---------|--------|
 | DF-F1  | ロードマップ検索/絞り込みの発見性が低い（虫眼鏡が気づかれない） | P0 | DONE（DF-FV○・常設検索バー結線） | `0d8b799` | designer＋dev-logic |
 | DF-F2  | 文字サイズのユーザー設定（標準/大/特大）が無い | P0 | DONE（codemod完了・実機検証○） | `a380c83`+`0e77a79`+`3a588dc` | dev-logic |
-| DF-F3  | ゲスト/未ログイン/有料の3状態の出し分けが画面ごとにバラバラ | P0 | BLOCKED（2026-05-31 設計案完成→Keita 判断待ち。成果物 `docs/proposals/DF-F3_state_policy_proposal.md`〔現状マトリクス棚卸し＋推奨ポリシー案＋Keita 判断論点8件〕。logic-coach 監査で承認可〔軽微ミス修正済〕。要点: ①未ログイン＝ゲストは実コード上同一 ②状態軸は実質 isPaid×ログインの2軸 ③Review系5機能だけ full-block でバラついている。推奨ポリシー承認後に F4/F5/F17/F18 の実装が解放される親タスク） | なし | dev-logic（設計）＋Keita |
+| DF-F3  | ゲスト/未ログイン/有料の3状態の出し分けが画面ごとにバラバラ | P0 | TODO | なし | dev-logic（設計）＋Keita |
 | DF-F4  | ジャーナルがゲスト全面ブロックで体験前に価値が途切れる | P0 | REVIEW（DF-FV○で機能はクリーンだが、見せ方が設計判断系＝Keita 目視待ちのため REVIEW 維持〔自律 DONE 化不可〕。2026-05-31 test-functional 内部検証。段階ゲート結線○: `AppV3.tsx:612-637` で journal を ログイン済(使える/paywall)・未ログイン課金済(LoginPrompt)・未ログイン未課金(JournalGuestPreview) に出し分け。`JournalScreen.tsx:40-` JournalGuestPreview がカレンダーUI+AI価値訴求(previewTrialTitle/AssistantDesc/Example)をプレビュー表示→onLogin 誘導。i18n preview系7キー×ja/en=14揃い・中立丁寧体。main反映済 `ab88528`。tsc0/eslint.0/vitest440pass。※DoDの「お試し入力体験」は読み取り専用プレビューに留めた設計判断〔`JournalScreen.tsx:43`〕＝閲覧で価値を伝えてからゲート、入力体験は未実装。入力お試しを足すか否かは Keita 判断〔別タスク化推奨〕） | dev-logic |
 | DF-F5  | 課金状態とログイン状態が独立＝「有料なのに使えない」 | P0 | DONE（DF-FV○・paid分岐文言結線） | `b756022` | dev-logic |
 | DF-F6  | オンボ生年入力で「次へ」が無言ブロック（フリーズ誤解） | P0 | DONE（DF-FV○・理由提示+aria結線） | `cd05dd3` | dev-logic |
@@ -301,7 +365,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 | DF-F10 | 下タブのラベルと中身が不一致（機能名ベースに） | P1 | DONE（DF-FV○・nav i18n ja/en整合） | `952fdda` | dev-logic |
 | DF-F11 | トライアル残日数がジャーナル内にしか出ない | P1 | DONE（DF-FV○・常設バッジ+終了間際バナー結線。通知発火はF8依存で範囲外） | `b39a0df` | dev-logic |
 | DF-F12 | フェルミランキングの透明性欠如（算出基準/母数/順位なし） | P1 | REVIEW（DF-FV○で機能はクリーンだが、見せ方が設計判断系＝Keita 目視待ちのため REVIEW 維持〔自律 DONE 化不可〕。2026-05-31 test-functional 内部検証。結線○: `FermiRankingScreen.tsx:162-172` で算出基準(fermiRank.basis=AI採点期間累計・毎日更新)を常設表示＋母数(participantCount=API realCount実データ・捏造なし `:64/81-82`)を表示、`:270-275` 自分が上位ボード未掲載時は順位捏造せず notRankedYet 案内、`:233` 掲載時は yourRank 表示。i18n basis/participants/notRankedYet ja+en 揃い・中立丁寧体。DoD「算出基準・母数(n)・自分の順位」3要素充足。main反映済 `cf5d7e4`。tsc0/eslint.0/vitest440pass） | dev-logic |
-| DF-F13 | デイリーフェルミが残数表示のみで上級者の手応え薄い | P1 | BLOCKED（2026-05-31 仕様案完成→Keita 判断待ち。成果物 `docs/proposals/DF-F13_fermi_filter_proposal.md`。logic-coach 要修正〔§2-C 数値矛盾〕→林が修正済〔unit 10/flow 3/合計50、0件セル4つ明記〕。en は f19_final.json に難易度/分野タグ既存・ja は新規タグ付け案を全50問提示。フィルタは母集合絞り専用で本数ルール不変を推奨。Keita 判断論点6件） | なし | dev-logic＋content-creator＋Keita |
+| DF-F13 | デイリーフェルミが残数表示のみで上級者の手応え薄い | P1 | TODO | なし | dev-logic＋content-creator＋Keita |
 | DF-F14 | 料金(en)「Yearly Save 5 months」密着＋比較表 Free 列空欄 | P1 | DONE（DF-FV○・em dash明示+flexWrap密着解消） | `d4ae9e0` | designer＋dev-logic |
 | DF-F15 | ジャーナルのログイン誘導が保存都合のみで価値訴求なし | P1 | DONE（DF-FV○・価値訴求文言ja/en結線） | `578d2ea` | content-creator＋dev-logic |
 | DF-F16 | 初回ホームが情報過密で最優先アクション不明 | P1 | REVIEW（DF-FV○で機能はクリーンだが、見せ方が設計判断系＝Keita 目視待ちのため REVIEW 維持〔自律 DONE 化不可〕。2026-05-31 test-functional 内部検証。案A結線○: `HomeScreenV3.tsx:170-187` で初回ホームを3モード出し分け＝真の初回(placementResult===null)は診断ヒーローを唯一の大型CTAに単一化(showPlacementHero `:177`)、診断済(totalCount>0)は弱点上位ローテのおすすめHero、スキップ済は中庸推薦Hero(resolveHeroLesson `:104-121`)。スキップは `skipPlacement()` で totalCount===0 を永続化(`:179-184`、f4dcf13 レビュー対応＝再起動後も診断ヒーロー復活せず)。i18n placementCard.hero*/recommendEyebrow 16キー ja+en・recommend aria整理済。DoD「今やるべき1アクションが一目」充足。main反映済 `12f350c`+`f4dcf13`。tsc0/eslint.0/vitest440pass） | designer＋dev-logic |
@@ -346,7 +410,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 - 更新日: 2026-05-30
 
 ### DF-F3 — ゲスト/未ログイン/有料の3状態の出し分け統一　[P0 / 設計判断]
-- 優先度: P0 / ステータス: BLOCKED（Keita 判断待ち＝推奨ポリシーの承認。2026-05-31 設計案完成）/ 担当: dev-logic（設計提案）＋Keita（承認）
+- 優先度: P0 / ステータス: TODO / 担当: dev-logic（設計提案）＋Keita（承認）
 - 成果物（2026-05-31）: `docs/proposals/DF-F3_state_policy_proposal.md`。現状マトリクス棚卸し＋推奨ポリシー案＋**Keita 判断論点8件**を文書化。logic-coach 監査で承認可（軽微ミス修正済）。要点: (1)「未ログイン＝ゲスト」は実コード上同一概念、(2) 状態軸は実質 isPaid×ログインの2軸（3状態説は実態とズレ）、(3) Review系5機能だけ full-block でバラついている。推奨ポリシー承認後に DF-F4/F5/F17/F18 の実装が解放される親タスク。
 - 詳細: ゲスト・未ログイン（=ゲストと別か？）・有料 の3（あるいは4）状態の出し分けが画面ごとにバラバラ。横断ポリシーを1枚に定義してから各画面を寄せる。設計判断・横断。DF-F4/F5/F17 はこのポリシーの個別適用先。
 - 関連ファイル: `src/guestUser.ts`、`src/subscription.ts`（`isPaid()`）、各 screen のゲート分岐（Journal/Review/Fermi/Profile 等）。まず横断棚卸しが必要。
@@ -476,7 +540,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 - 更新日: 2026-05-31（DF-FV 反映）
 
 ### DF-F13 — デイリーフェルミに難易度/分野フィルタで手応え　[P1 / 設計判断]
-- 優先度: P1 / ステータス: BLOCKED（Keita 判断待ち。2026-05-31 仕様案完成）/ 担当: dev-logic＋content-creator＋Keita
+- 優先度: P1 / ステータス: TODO / 担当: dev-logic＋content-creator＋Keita
 - 成果物（2026-05-31）: `docs/proposals/DF-F13_fermi_filter_proposal.md`。logic-coach が要修正（§2-C 数値矛盾）を指摘→林が修正済（unit 10/flow 3/合計50、0件セル4つ明記）。en は f19_final.json に難易度/分野タグ既存・ja は新規タグ付け案を全50問提示。フィルタは母集合絞り専用で本数ルール不変を推奨。**Keita 判断論点6件**。
 - 詳細: デイリーフェルミが残数表示のみで上級者の手応えが薄い（p04）。難易度/分野フィルタを追加（機能追加）。設計判断。
 - 関連ファイル: フェルミ問題プール（`src/lessons/` or fermi データ）、デイリーフェルミ画面、`server/routes/`（日次シード AM-P/T-AD と整合）、`src/i18n.ts`
