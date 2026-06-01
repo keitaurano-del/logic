@@ -56,19 +56,19 @@ describe('lessonSlides — convertLessonToSlides', () => {
         category: 'ロジカルシンキング',
         steps: [{ type: 'explain', title: 't', content: 'b' }],
       })
-      expect(findHero(slides).image).toBe('/images/v3/lesson-20.png')
+      expect(findHero(slides).image).toBe('/images/v3/lesson-20.webp')
     })
 
     it.each([
-      ['ロジカルシンキング', '/images/v3/course-logic-01.png'],
-      ['ケース面接', '/images/v3/course-case-01.png'],
-      ['哲学', '/images/v3/course-philosophy-01.png'],
-      ['フェルミ推定', '/images/v3/home-daily-fermi.png'],
-      ['アナロジー思考', '/images/v3/lesson-analogy.png'],
-      ['認知科学', '/images/v3/course-cognitive-01.png'],
-      ['ドキュメンテーション', '/images/v3/course-documentation-01.png'],
-      ['ADHDレバレッジ', '/images/v3/course-adhd-leverage-01.png'],
-      ['構造化リスニング', '/images/v3/course-listening-01.png'],
+      ['ロジカルシンキング', '/images/v3/course-logic-01.webp'],
+      ['ケース面接', '/images/v3/course-case-01.webp'],
+      ['哲学', '/images/v3/course-philosophy-01.webp'],
+      ['フェルミ推定', '/images/v3/home-daily-fermi.webp'],
+      ['アナロジー思考', '/images/v3/lesson-analogy.webp'],
+      ['認知科学', '/images/v3/course-cognitive-01.webp'],
+      ['ドキュメンテーション', '/images/v3/course-documentation-01.webp'],
+      ['ADHDレバレッジ', '/images/v3/course-adhd-leverage-01.webp'],
+      ['構造化リスニング', '/images/v3/course-listening-01.webp'],
     ])('falls back by category "%s" → %s', (category, expected) => {
       const slides = convertLessonToSlides({
         id: 99999,
@@ -79,14 +79,14 @@ describe('lessonSlides — convertLessonToSlides', () => {
       expect(findHero(slides).image).toBe(expected)
     })
 
-    it('falls back to hero-deduction.png for fully unknown category', () => {
+    it('falls back to hero-deduction.webp for fully unknown category', () => {
       const slides = convertLessonToSlides({
         id: 99999,
         title: 't',
         category: 'totally-unknown-category-zzz',
         steps: [{ type: 'explain', title: 't', content: 'b' }],
       })
-      expect(findHero(slides).image).toBe('/images/v3/hero-deduction.png')
+      expect(findHero(slides).image).toBe('/images/v3/hero-deduction.webp')
     })
   })
 

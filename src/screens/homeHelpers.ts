@@ -295,7 +295,7 @@ export function getXpProgress(xp: number): { pct: number; current: number; neede
 
 // ============================================================
 // 称号システム — 50 段階
-// バッジ画像は public/images/v3/badges/badge-<key>.png
+// バッジ画像は public/images/v3/badges/badge-<key>.webp
 // 称号文言は i18n の profile.title.<key> （key の "-" は "_" に置換）
 //
 // 2026-05-24 拡張:
@@ -388,7 +388,7 @@ export function getTitleKeyForLevel(level: number): TitleKey {
 export function getBadgeImagePath(key: TitleKey): string {
   // 全 50 帯のバッジ画像が public/images/v3/badges/ に揃っているため、直接マッピング。
   // (commit 06dacd0 で Lv 101-500 用 34 種を追加生成、BADGE_FALLBACK_MAP 廃止)
-  return `/images/v3/badges/badge-${key}.png`
+  return `/images/v3/badges/badge-${key}.webp`
 }
 
 /** i18n キー名は kebab → underscore（例: 'novice-1' → 'profile.title.novice_1'） */

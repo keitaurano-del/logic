@@ -29,34 +29,34 @@ import { t } from '../i18n'
 // level / image はレッスン本体に持っていないメタデータなのでここで保持する。
 type RecommendedLessonMeta = { id: number; level: '初級' | '中級' | '上級'; image: string }
 const RECOMMENDED_LESSON_META: RecommendedLessonMeta[] = [
-  { id: 20, level: '初級', image: '/images/v3/lesson-20.png' },
-  { id: 21, level: '初級', image: '/images/v3/lesson-21.png' },
-  { id: 22, level: '初級', image: '/images/v3/lesson-22.png' },
-  { id: 25, level: '初級', image: '/images/v3/lesson-25.png' },
-  { id: 26, level: '初級', image: '/images/v3/lesson-26.png' },
-  { id: 40, level: '初級', image: '/images/v3/lesson-40.png' },
-  { id: 50, level: '中級', image: '/images/v3/lesson-50.png' },
-  { id: 56, level: '初級', image: '/images/v3/lesson-56.png' },
-  { id: 59, level: '初級', image: '/images/v3/lesson-59.png' },
-  { id: 62, level: '中級', image: '/images/v3/lesson-62.png' },
-  { id: 65, level: '中級', image: '/images/v3/lesson-65.png' },
-  { id: 68, level: '中級', image: '/images/v3/lesson-68.png' },
-  { id: 28, level: '中級', image: '/images/v3/lesson-28.png' },
-  { id: 77, level: '上級', image: '/images/v3/lesson-77.png' },
-  { id: 78, level: '上級', image: '/images/v3/lesson-78.png' },
-  { id: 89, level: '中級', image: '/images/v3/lesson-89.png' },
-  { id: 200, level: '中級', image: '/images/v3/lesson-200.png' },
-  { id: 41, level: '中級', image: '/images/v3/lesson-41.png' },
-  { id: 53, level: '中級', image: '/images/v3/lesson-53.png' },
-  { id: 23, level: '初級', image: '/images/v3/lesson-23.png' },
+  { id: 20, level: '初級', image: '/images/v3/lesson-20.webp' },
+  { id: 21, level: '初級', image: '/images/v3/lesson-21.webp' },
+  { id: 22, level: '初級', image: '/images/v3/lesson-22.webp' },
+  { id: 25, level: '初級', image: '/images/v3/lesson-25.webp' },
+  { id: 26, level: '初級', image: '/images/v3/lesson-26.webp' },
+  { id: 40, level: '初級', image: '/images/v3/lesson-40.webp' },
+  { id: 50, level: '中級', image: '/images/v3/lesson-50.webp' },
+  { id: 56, level: '初級', image: '/images/v3/lesson-56.webp' },
+  { id: 59, level: '初級', image: '/images/v3/lesson-59.webp' },
+  { id: 62, level: '中級', image: '/images/v3/lesson-62.webp' },
+  { id: 65, level: '中級', image: '/images/v3/lesson-65.webp' },
+  { id: 68, level: '中級', image: '/images/v3/lesson-68.webp' },
+  { id: 28, level: '中級', image: '/images/v3/lesson-28.webp' },
+  { id: 77, level: '上級', image: '/images/v3/lesson-77.webp' },
+  { id: 78, level: '上級', image: '/images/v3/lesson-78.webp' },
+  { id: 89, level: '中級', image: '/images/v3/lesson-89.webp' },
+  { id: 200, level: '中級', image: '/images/v3/lesson-200.webp' },
+  { id: 41, level: '中級', image: '/images/v3/lesson-41.webp' },
+  { id: 53, level: '中級', image: '/images/v3/lesson-53.webp' },
+  { id: 23, level: '初級', image: '/images/v3/lesson-23.webp' },
   // 認知科学（cognitive-01 / cognitive-02）— ホームのおすすめにも露出させる
   // Hero Recommend は 1:1 表示なので、1024×1024 の lesson PNG を使う（course-*.png は 16:9）
-  { id: 700, level: '中級', image: '/images/v3/lesson-700.png' },
-  { id: 701, level: '中級', image: '/images/v3/lesson-701.png' },
-  { id: 702, level: '中級', image: '/images/v3/lesson-702.png' },
-  { id: 710, level: '中級', image: '/images/v3/lesson-710.png' },
-  { id: 711, level: '中級', image: '/images/v3/lesson-711.png' },
-  { id: 712, level: '中級', image: '/images/v3/lesson-712.png' },
+  { id: 700, level: '中級', image: '/images/v3/lesson-700.webp' },
+  { id: 701, level: '中級', image: '/images/v3/lesson-701.webp' },
+  { id: 702, level: '中級', image: '/images/v3/lesson-702.webp' },
+  { id: 710, level: '中級', image: '/images/v3/lesson-710.webp' },
+  { id: 711, level: '中級', image: '/images/v3/lesson-711.webp' },
+  { id: 712, level: '中級', image: '/images/v3/lesson-712.webp' },
 ]
 
 const LEVEL_KEY: Record<string, string> = {
@@ -66,7 +66,7 @@ const LEVEL_KEY: Record<string, string> = {
 }
 
 // id → メタ（level / image）の逆引き。診断のおすすめレッスンが META に無い場合も
-// lesson PNG のパス規約 `/images/v3/lesson-{id}.png` でフォールバックする。
+// lesson PNG のパス規約 `/images/v3/lesson-{id}.webp` でフォールバックする。
 const META_BY_ID: Record<number, RecommendedLessonMeta> = Object.fromEntries(
   RECOMMENDED_LESSON_META.map(m => [m.id, m]),
 )
@@ -265,7 +265,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
             style={{ background: 'var(--accent-btn)', padding: '20px', cursor: 'pointer', position: 'relative', overflow: 'hidden', minHeight: 180, border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%', borderRadius: 'inherit' }}
           >
             {/* フェルミ推定イメージ画像 */}
-            <img src={resolveAssetUrl('/images/v3/fermi-card.png')} alt="" loading="lazy" style={{ position: 'absolute', right: 0, top: 0, width: '55%', height: '100%', objectFit: 'cover', opacity: 0.14, pointerEvents: 'none', maskImage: 'linear-gradient(to left, rgba(0,0,0,0.8) 0%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to left, rgba(0,0,0,0.8) 0%, transparent 100%)' }} />
+            <img src={resolveAssetUrl('/images/v3/fermi-card.webp')} alt="" loading="lazy" style={{ position: 'absolute', right: 0, top: 0, width: '55%', height: '100%', objectFit: 'cover', opacity: 0.14, pointerEvents: 'none', maskImage: 'linear-gradient(to left, rgba(0,0,0,0.8) 0%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to left, rgba(0,0,0,0.8) 0%, transparent 100%)' }} />
             <div style={{ position: 'relative', zIndex: 1 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8, paddingRight: 96 }}>
                 <span style={{ fontSize: '0.9333rem', fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'color-mix(in srgb, var(--accent-btn-fg) 92%, transparent)' }}>{t('home.todayProblem')}</span>

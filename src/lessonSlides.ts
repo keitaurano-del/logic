@@ -154,144 +154,144 @@ function formatBody(text: string): string {
 /** レッスンID → 個別画像マッピング */
 const LESSON_IMAGES: Record<number, string> = {
   // ロジカルシンキング
-  20: '/images/v3/lesson-20.png',  // MECE
-  21: '/images/v3/lesson-21.png',  // ロジックツリー
-  22: '/images/v3/lesson-22.png',  // So What / Why So
-  23: '/images/v3/lesson-23.png',  // ピラミッド原則
-  24: '/images/v3/lesson-24.png',  // ケーススタディ
-  25: '/images/v3/lesson-25.png',  // 演繹法
-  26: '/images/v3/lesson-26.png',  // 帰納法
-  27: '/images/v3/lesson-27.png',  // 形式論理
-  68: '/images/v3/lesson-68.png',  // 具体と抽象
+  20: '/images/v3/lesson-20.webp',  // MECE
+  21: '/images/v3/lesson-21.webp',  // ロジックツリー
+  22: '/images/v3/lesson-22.webp',  // So What / Why So
+  23: '/images/v3/lesson-23.webp',  // ピラミッド原則
+  24: '/images/v3/lesson-24.webp',  // ケーススタディ
+  25: '/images/v3/lesson-25.webp',  // 演繹法
+  26: '/images/v3/lesson-26.webp',  // 帰納法
+  27: '/images/v3/lesson-27.webp',  // 形式論理
+  68: '/images/v3/lesson-68.webp',  // 具体と抽象
   // ケース面接
-  28: '/images/v3/lesson-28.png',  // ケース面接入門
-  29: '/images/v3/lesson-29.png',  // プロフィタビリティ
-  35: '/images/v3/lesson-35.png',  // 新市場参入
-  36: '/images/v3/lesson-36.png',  // M&A
+  28: '/images/v3/lesson-28.webp',  // ケース面接入門
+  29: '/images/v3/lesson-29.webp',  // プロフィタビリティ
+  35: '/images/v3/lesson-35.webp',  // 新市場参入
+  36: '/images/v3/lesson-36.webp',  // M&A
   // クリティカルシンキング
-  40: '/images/v3/lesson-40.png',  // クリティカルシンキング入門
-  41: '/images/v3/lesson-41.png',  // 論理的誤謬
-  42: '/images/v3/lesson-42.png',  // データを読む
-  43: '/images/v3/lesson-43.png',  // 問いを立てる
-  69: '/images/v3/lesson-69.png',  // 認知バイアス
-  71: '/images/v3/lesson-71.png',  // 相関と因果
+  40: '/images/v3/lesson-40.webp',  // クリティカルシンキング入門
+  41: '/images/v3/lesson-41.webp',  // 論理的誤謬
+  42: '/images/v3/lesson-42.webp',  // データを読む
+  43: '/images/v3/lesson-43.webp',  // 問いを立てる
+  69: '/images/v3/lesson-69.webp',  // 認知バイアス
+  71: '/images/v3/lesson-71.webp',  // 相関と因果
   // 仮説思考
-  50: '/images/v3/lesson-50.png',  // 仮説思考入門
-  51: '/images/v3/lesson-51.png',  // 仮説の立て方
-  52: '/images/v3/lesson-52.png',  // 仮説ドリブン
-  70: '/images/v3/lesson-70.png',  // 仮説の検証設計
+  50: '/images/v3/lesson-50.webp',  // 仮説思考入門
+  51: '/images/v3/lesson-51.webp',  // 仮説の立て方
+  52: '/images/v3/lesson-52.webp',  // 仮説ドリブン
+  70: '/images/v3/lesson-70.webp',  // 仮説の検証設計
   // 課題設定
-  53: '/images/v3/lesson-53.png',  // 課題設定入門
-  54: '/images/v3/lesson-54.png',  // イシュー分析
-  55: '/images/v3/lesson-55.png',  // 課題設定実践
+  53: '/images/v3/lesson-53.webp',  // 課題設定入門
+  54: '/images/v3/lesson-54.webp',  // イシュー分析
+  55: '/images/v3/lesson-55.webp',  // 課題設定実践
   // デザインシンキング
-  56: '/images/v3/lesson-56.png',  // デザインシンキング入門
-  57: '/images/v3/lesson-57.png',  // 共感マップ
-  58: '/images/v3/lesson-58.png',  // デザインシンキング実践
+  56: '/images/v3/lesson-56.webp',  // デザインシンキング入門
+  57: '/images/v3/lesson-57.webp',  // 共感マップ
+  58: '/images/v3/lesson-58.webp',  // デザインシンキング実践
   // ラテラルシンキング
-  59: '/images/v3/lesson-59.png',  // ラテラルシンキング入門
-  60: '/images/v3/lesson-60.png',  // ラテラル技法
-  61: '/images/v3/lesson-61.png',  // ラテラル実践
+  59: '/images/v3/lesson-59.webp',  // ラテラルシンキング入門
+  60: '/images/v3/lesson-60.webp',  // ラテラル技法
+  61: '/images/v3/lesson-61.webp',  // ラテラル実践
   // アナロジー思考
-  62: '/images/v3/lesson-62.png',  // アナロジー思考入門
-  63: '/images/v3/lesson-63.png',  // アナロジー技法
-  64: '/images/v3/lesson-64.png',  // アナロジー実践
+  62: '/images/v3/lesson-62.webp',  // アナロジー思考入門
+  63: '/images/v3/lesson-63.webp',  // アナロジー技法
+  64: '/images/v3/lesson-64.webp',  // アナロジー実践
   // システムシンキング
-  65: '/images/v3/lesson-65.png',  // システムシンキング入門
-  66: '/images/v3/lesson-66.png',  // システム原型
-  67: '/images/v3/lesson-67.png',  // システム実践
+  65: '/images/v3/lesson-65.webp',  // システムシンキング入門
+  66: '/images/v3/lesson-66.webp',  // システム原型
+  67: '/images/v3/lesson-67.webp',  // システム実践
   // 提案・伝える技術
-  72: '/images/v3/lesson-72.png',  // 提案書の目的
-  73: '/images/v3/lesson-73.png',  // 相手の立場
-  74: '/images/v3/lesson-74.png',  // ストーリーライン
-  75: '/images/v3/lesson-75.png',  // メッセージを磨く
-  76: '/images/v3/lesson-76.png',  // 反論を先読み
+  72: '/images/v3/lesson-72.webp',  // 提案書の目的
+  73: '/images/v3/lesson-73.webp',  // 相手の立場
+  74: '/images/v3/lesson-74.webp',  // ストーリーライン
+  75: '/images/v3/lesson-75.webp',  // メッセージを磨く
+  76: '/images/v3/lesson-76.webp',  // 反論を先読み
   // 哲学
-  77: '/images/v3/lesson-77.png',  // ソクラテス
+  77: '/images/v3/lesson-77.webp',  // ソクラテス
   // キャリア — 履歴書
-  600: '/images/v3/lesson-600.png',  // 採用担当者の頭の中
-  601: '/images/v3/lesson-601.png',  // STAR法
-  602: '/images/v3/lesson-602.png',  // 数字で語る
-  603: '/images/v3/lesson-603.png',  // 自己PR
-  604: '/images/v3/lesson-604.png',  // 志望動機の3層
-  605: '/images/v3/lesson-605.png',  // ATS対応
-  606: '/images/v3/lesson-606.png',  // ケース演習
+  600: '/images/v3/lesson-600.webp',  // 採用担当者の頭の中
+  601: '/images/v3/lesson-601.webp',  // STAR法
+  602: '/images/v3/lesson-602.webp',  // 数字で語る
+  603: '/images/v3/lesson-603.webp',  // 自己PR
+  604: '/images/v3/lesson-604.webp',  // 志望動機の3層
+  605: '/images/v3/lesson-605.webp',  // ATS対応
+  606: '/images/v3/lesson-606.webp',  // ケース演習
   // キャリア — SPI
-  610: '/images/v3/lesson-610.png',  // SPI全体像
-  611: '/images/v3/lesson-611.png',  // 非言語①
-  612: '/images/v3/lesson-612.png',  // 非言語②
-  613: '/images/v3/lesson-613.png',  // 非言語③
-  614: '/images/v3/lesson-614.png',  // 非言語④推論
-  615: '/images/v3/lesson-615.png',  // 言語
-  616: '/images/v3/lesson-616.png',  // 性格検査・時間配分
+  610: '/images/v3/lesson-610.webp',  // SPI全体像
+  611: '/images/v3/lesson-611.webp',  // 非言語①
+  612: '/images/v3/lesson-612.webp',  // 非言語②
+  613: '/images/v3/lesson-613.webp',  // 非言語③
+  614: '/images/v3/lesson-614.webp',  // 非言語④推論
+  615: '/images/v3/lesson-615.webp',  // 言語
+  616: '/images/v3/lesson-616.webp',  // 性格検査・時間配分
   // キャリア — 玉手箱
-  620: '/images/v3/lesson-620.png',  // 玉手箱とは
-  621: '/images/v3/lesson-621.png',  // 四則逆算
-  622: '/images/v3/lesson-622.png',  // 図表の読み取り
-  623: '/images/v3/lesson-623.png',  // 表の空欄推測
-  624: '/images/v3/lesson-624.png',  // 論理的読解
-  625: '/images/v3/lesson-625.png',  // 英語
+  620: '/images/v3/lesson-620.webp',  // 玉手箱とは
+  621: '/images/v3/lesson-621.webp',  // 四則逆算
+  622: '/images/v3/lesson-622.webp',  // 図表の読み取り
+  623: '/images/v3/lesson-623.webp',  // 表の空欄推測
+  624: '/images/v3/lesson-624.webp',  // 論理的読解
+  625: '/images/v3/lesson-625.webp',  // 英語
   // キャリア — 面接
-  630: '/images/v3/lesson-630.png',  // 構造化面接とは
-  631: '/images/v3/lesson-631.png',  // 自己紹介・職務要約
-  632: '/images/v3/lesson-632.png',  // 退職理由
-  633: '/images/v3/lesson-633.png',  // 志望動機の語り方
-  634: '/images/v3/lesson-634.png',  // 行動質問にSTAR
-  635: '/images/v3/lesson-635.png',  // 弱み・失敗の語り方
-  636: '/images/v3/lesson-636.png',  // 逆質問
-  637: '/images/v3/lesson-637.png',  // 最終面接
+  630: '/images/v3/lesson-630.webp',  // 構造化面接とは
+  631: '/images/v3/lesson-631.webp',  // 自己紹介・職務要約
+  632: '/images/v3/lesson-632.webp',  // 退職理由
+  633: '/images/v3/lesson-633.webp',  // 志望動機の語り方
+  634: '/images/v3/lesson-634.webp',  // 行動質問にSTAR
+  635: '/images/v3/lesson-635.webp',  // 弱み・失敗の語り方
+  636: '/images/v3/lesson-636.webp',  // 逆質問
+  637: '/images/v3/lesson-637.webp',  // 最終面接
   // キャリア — 給与・転職交渉
-  640: '/images/v3/lesson-640.png',  // 市場価値を測る
-  641: '/images/v3/lesson-641.png',  // オファー面談
-  642: '/images/v3/lesson-642.png',  // 給与交渉
-  643: '/images/v3/lesson-643.png',  // 内定承諾・辞退
-  644: '/images/v3/lesson-644.png',  // 退職交渉
-  645: '/images/v3/lesson-645.png',  // 引き止め対応
-  646: '/images/v3/lesson-646.png',  // 入社前後
+  640: '/images/v3/lesson-640.webp',  // 市場価値を測る
+  641: '/images/v3/lesson-641.webp',  // オファー面談
+  642: '/images/v3/lesson-642.webp',  // 給与交渉
+  643: '/images/v3/lesson-643.webp',  // 内定承諾・辞退
+  644: '/images/v3/lesson-644.webp',  // 退職交渉
+  645: '/images/v3/lesson-645.webp',  // 引き止め対応
+  646: '/images/v3/lesson-646.webp',  // 入社前後
   // 認知科学 — cognitive-01（ワーキングメモリ系）
-  700: '/images/v3/lesson-700.png',  // ワーキングメモリの上限 7±2
-  701: '/images/v3/lesson-701.png',  // チャンキング
-  702: '/images/v3/lesson-702.png',  // 認知負荷理論
-  703: '/images/v3/lesson-703.png',  // 外部記憶
-  704: '/images/v3/lesson-704.png',  // マルチタスクの幻想
+  700: '/images/v3/lesson-700.webp',  // ワーキングメモリの上限 7±2
+  701: '/images/v3/lesson-701.webp',  // チャンキング
+  702: '/images/v3/lesson-702.webp',  // 認知負荷理論
+  703: '/images/v3/lesson-703.webp',  // 外部記憶
+  704: '/images/v3/lesson-704.webp',  // マルチタスクの幻想
   // 認知科学 — cognitive-02（認知バイアス応用編）
-  710: '/images/v3/lesson-710.png',  // 利用可能性ヒューリスティック
-  711: '/images/v3/lesson-711.png',  // ハロー効果
-  712: '/images/v3/lesson-712.png',  // 後知恵バイアス
-  713: '/images/v3/lesson-713.png',  // ダニング・クルーガー効果
-  714: '/images/v3/lesson-714.png',  // 結果 vs プロセス
+  710: '/images/v3/lesson-710.webp',  // 利用可能性ヒューリスティック
+  711: '/images/v3/lesson-711.webp',  // ハロー効果
+  712: '/images/v3/lesson-712.webp',  // 後知恵バイアス
+  713: '/images/v3/lesson-713.webp',  // ダニング・クルーガー効果
+  714: '/images/v3/lesson-714.webp',  // 結果 vs プロセス
   // ドキュメンテーション
-  720: '/images/v3/lesson-720.png',  // 資料は構成が9割
-  721: '/images/v3/lesson-721.png',  // 1スライド1メッセージ
-  722: '/images/v3/lesson-722.png',  // 文字を図解に変える基準
-  723: '/images/v3/lesson-723.png',  // レイアウトと余白
-  724: '/images/v3/lesson-724.png',  // タイポグラフィ
-  725: '/images/v3/lesson-725.png',  // 配色の3色ルール
-  726: '/images/v3/lesson-726.png',  // チャート設計
+  720: '/images/v3/lesson-720.webp',  // 資料は構成が9割
+  721: '/images/v3/lesson-721.webp',  // 1スライド1メッセージ
+  722: '/images/v3/lesson-722.webp',  // 文字を図解に変える基準
+  723: '/images/v3/lesson-723.webp',  // レイアウトと余白
+  724: '/images/v3/lesson-724.webp',  // タイポグラフィ
+  725: '/images/v3/lesson-725.webp',  // 配色の3色ルール
+  726: '/images/v3/lesson-726.webp',  // チャート設計
   // フェルミ推定（200-205、ID 206 は除外）
-  200: '/images/v3/lesson-200.png',  // フェルミ推定とは何か
-  201: '/images/v3/lesson-201.png',  // 分解の技術
-  202: '/images/v3/lesson-202.png',  // 都市・インフラ系
-  203: '/images/v3/lesson-203.png',  // ビジネス規模
-  204: '/images/v3/lesson-204.png',  // よくある罠と対策
-  205: '/images/v3/lesson-205.png',  // 前提データ 30
+  200: '/images/v3/lesson-200.webp',  // フェルミ推定とは何か
+  201: '/images/v3/lesson-201.webp',  // 分解の技術
+  202: '/images/v3/lesson-202.webp',  // 都市・インフラ系
+  203: '/images/v3/lesson-203.webp',  // ビジネス規模
+  204: '/images/v3/lesson-204.webp',  // よくある罠と対策
+  205: '/images/v3/lesson-205.webp',  // 前提データ 30
   // 構造化リスニング — listening-01
-  730: '/images/v3/lesson-730.png',  // 構造化リスニング入門
-  731: '/images/v3/lesson-731.png',  // 事実・感情・解釈の三層
-  732: '/images/v3/lesson-732.png',  // パラフレーズ
-  733: '/images/v3/lesson-733.png',  // オープン vs クローズド質問
-  734: '/images/v3/lesson-734.png',  // 沈黙の活用
-  735: '/images/v3/lesson-735.png',  // 1on1 でのコーチング
-  736: '/images/v3/lesson-736.png',  // セールスリスニング
+  730: '/images/v3/lesson-730.webp',  // 構造化リスニング入門
+  731: '/images/v3/lesson-731.webp',  // 事実・感情・解釈の三層
+  732: '/images/v3/lesson-732.webp',  // パラフレーズ
+  733: '/images/v3/lesson-733.webp',  // オープン vs クローズド質問
+  734: '/images/v3/lesson-734.webp',  // 沈黙の活用
+  735: '/images/v3/lesson-735.webp',  // 1on1 でのコーチング
+  736: '/images/v3/lesson-736.webp',  // セールスリスニング
   // ADHD レバレッジ — adhd-leverage-01
-  800: '/images/v3/lesson-800.png',  // 特性をリフレームする
-  801: '/images/v3/lesson-801.png',  // 集中ゾーンの記録
-  802: '/images/v3/lesson-802.png',  // デスクセットアップ
-  803: '/images/v3/lesson-803.png',  // タスクの粒度を下げる
-  804: '/images/v3/lesson-804.png',  // 自分が光る役割
-  805: '/images/v3/lesson-805.png',  // パートナーで補う
-  806: '/images/v3/lesson-806.png',  // 燃え尽き予防
-  807: '/images/v3/lesson-807.png',  // ロールモデルから学ぶ
+  800: '/images/v3/lesson-800.webp',  // 特性をリフレームする
+  801: '/images/v3/lesson-801.webp',  // 集中ゾーンの記録
+  802: '/images/v3/lesson-802.webp',  // デスクセットアップ
+  803: '/images/v3/lesson-803.webp',  // タスクの粒度を下げる
+  804: '/images/v3/lesson-804.webp',  // 自分が光る役割
+  805: '/images/v3/lesson-805.webp',  // パートナーで補う
+  806: '/images/v3/lesson-806.webp',  // 燃え尽き予防
+  807: '/images/v3/lesson-807.webp',  // ロールモデルから学ぶ
 }
 
 function getHeroImage(category: string, lessonId?: number): string {
@@ -303,38 +303,38 @@ function getHeroImage(category: string, lessonId?: number): string {
   // 注: course-*.png (16:9) は LessonStoriesScreen 側で 1:1 枠 + objectFit:contain で
   //     letterbox 表示するため切れずに全体が表示される。
   const c = (category || '').toLowerCase()
-  if (c.includes('ロジカル') || c.includes('logical')) return '/images/v3/course-logic-01.png'
-  if (c.includes('ケース面接') || c === 'business') return '/images/v3/course-case-01.png'
-  if (c.includes('哲学') || c === 'philosophy') return '/images/v3/course-philosophy-01.png'
-  if (c.includes('東洋思想')) return '/images/v3/course-eastern-01.png'
+  if (c.includes('ロジカル') || c.includes('logical')) return '/images/v3/course-logic-01.webp'
+  if (c.includes('ケース面接') || c === 'business') return '/images/v3/course-case-01.webp'
+  if (c.includes('哲学') || c === 'philosophy') return '/images/v3/course-philosophy-01.webp'
+  if (c.includes('東洋思想')) return '/images/v3/course-eastern-01.webp'
   // 体力デザイン（"デザイン" マッチより前に置く。後段の design 系に誤マッチさせない）
-  if (c.includes('体力') || c.includes('stamina')) return '/images/v3/course-peak-performance-01.png'
-  if (c.includes('提案') || c.includes('伝える')) return '/images/v3/lesson-proposal.png'
-  if (c.includes('フェルミ') || c.includes('fermi')) return '/images/v3/home-daily-fermi.png'
-  if (c.includes('クリティカル')) return '/images/v3/lesson-critical-thinking.png'
-  if (c.includes('仮説')) return '/images/v3/lesson-hypothesis.png'
-  if (c.includes('論点')) return '/images/v3/course-issue-01.png'
-  if (c.includes('課題')) return '/images/v3/lesson-issue-setting.png'
-  if (c.includes('デザイン')) return '/images/v3/lesson-design-thinking.png'
-  if (c.includes('ラテラル')) return '/images/v3/lesson-lateral-thinking.png'
-  if (c.includes('アナロジー') || c.includes('analogy')) return '/images/v3/lesson-analogy.png'
-  if (c.includes('システム')) return '/images/v3/lesson-systems-thinking.png'
-  if (c.includes('なぜなぜ') || c.includes('why-why') || c.includes('why why')) return '/images/v3/course-whywhy-01.png'
-  if (c.includes('クライアント')) return '/images/v3/course-client-01.png'
-  if (c.includes('経営戦略') || c === 'strategy') return '/images/v3/course-strategy-01.png'
-  if (c.includes('認知科学') || c.includes('cognitive')) return '/images/v3/course-cognitive-01.png'
-  if (c.includes('ドキュメンテーション') || c.includes('documentation')) return '/images/v3/course-documentation-01.png'
-  if (c.includes('構造化リスニング') || c.includes('リスニング') || c.includes('listening')) return '/images/v3/course-listening-01.png'
-  if (c.includes('adhd') || c.includes('レバレッジ')) return '/images/v3/course-adhd-leverage-01.png'
-  if (c.includes('数字') || c.includes('数値') || c.includes('numeracy')) return '/images/v3/course-numeracy-01.png'
-  if (c.includes('ピーク') || c.includes('peak') || c.includes('パフォーマンス')) return '/images/v3/course-peak-performance-01.png'
+  if (c.includes('体力') || c.includes('stamina')) return '/images/v3/course-peak-performance-01.webp'
+  if (c.includes('提案') || c.includes('伝える')) return '/images/v3/lesson-proposal.webp'
+  if (c.includes('フェルミ') || c.includes('fermi')) return '/images/v3/home-daily-fermi.webp'
+  if (c.includes('クリティカル')) return '/images/v3/lesson-critical-thinking.webp'
+  if (c.includes('仮説')) return '/images/v3/lesson-hypothesis.webp'
+  if (c.includes('論点')) return '/images/v3/course-issue-01.webp'
+  if (c.includes('課題')) return '/images/v3/lesson-issue-setting.webp'
+  if (c.includes('デザイン')) return '/images/v3/lesson-design-thinking.webp'
+  if (c.includes('ラテラル')) return '/images/v3/lesson-lateral-thinking.webp'
+  if (c.includes('アナロジー') || c.includes('analogy')) return '/images/v3/lesson-analogy.webp'
+  if (c.includes('システム')) return '/images/v3/lesson-systems-thinking.webp'
+  if (c.includes('なぜなぜ') || c.includes('why-why') || c.includes('why why')) return '/images/v3/course-whywhy-01.webp'
+  if (c.includes('クライアント')) return '/images/v3/course-client-01.webp'
+  if (c.includes('経営戦略') || c === 'strategy') return '/images/v3/course-strategy-01.webp'
+  if (c.includes('認知科学') || c.includes('cognitive')) return '/images/v3/course-cognitive-01.webp'
+  if (c.includes('ドキュメンテーション') || c.includes('documentation')) return '/images/v3/course-documentation-01.webp'
+  if (c.includes('構造化リスニング') || c.includes('リスニング') || c.includes('listening')) return '/images/v3/course-listening-01.webp'
+  if (c.includes('adhd') || c.includes('レバレッジ')) return '/images/v3/course-adhd-leverage-01.webp'
+  if (c.includes('数字') || c.includes('数値') || c.includes('numeracy')) return '/images/v3/course-numeracy-01.webp'
+  if (c.includes('ピーク') || c.includes('peak') || c.includes('パフォーマンス')) return '/images/v3/course-peak-performance-01.webp'
   if (c.includes('思考法') || c.includes('thinking')) return '/images/v3/course-thinking.webp'
-  if (c.includes('coffee') || c.includes('コーヒー')) return '/images/v3/home-daily-question.png'
+  if (c.includes('coffee') || c.includes('コーヒー')) return '/images/v3/home-daily-question.webp'
   // 未マッピングのカテゴリは可視化（dev/console で気づけるように）
   if (typeof console !== 'undefined' && category) {
     console.warn(`[lessonSlides] getHeroImage fallback: no category mapping for "${category}" (lessonId=${lessonId ?? '?'}) — using hero-deduction.png`)
   }
-  return '/images/v3/hero-deduction.png'
+  return '/images/v3/hero-deduction.webp'
 }
 
 /**

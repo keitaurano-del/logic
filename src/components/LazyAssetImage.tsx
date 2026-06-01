@@ -19,7 +19,7 @@ import type { CSSProperties } from 'react'
 import { resolveAssetUrl, isRemoteAssetsActive } from '../lessonAssets'
 
 export interface LazyAssetImageProps {
-  /** 既存の bundled パス（例 '/images/v3/lesson-20.png'）。内部で resolveAssetUrl にかける。 */
+  /** 既存の bundled パス（例 '/images/v3/lesson-20.webp'）。内部で resolveAssetUrl にかける。 */
   localPath: string
   /** 代替テキスト。装飾画像で空文字にしたい場合は明示的に '' を渡す。 */
   alt: string

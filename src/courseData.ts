@@ -65,7 +65,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [20, 21, 22, 23, 24],
     level: '初級',
     description: 'MECEとロジックツリーで、考えを漏れなく・ダブりなく整理する力を身につける。',
-    image: '/images/v3/course-logic-01.png',
+    image: '/images/v3/course-logic-01.webp',
   },
   {
     id: 'logic-02',
@@ -75,7 +75,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [25, 26, 27, 68, 23],
     level: '初級',
     description: 'So What / Why Soで論理を検証し、ピラミッド構造で伝わる話し方を習得する。',
-    image: '/images/v3/course-logic-02.png',
+    image: '/images/v3/course-logic-02.webp',
   },
 
   // ── クリティカルシンキング ──────────────────────────
@@ -87,7 +87,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [40, 41, 42, 43, 69],
     level: '初級',
     description: '批判的思考の基礎から論理的誤謬の見破り方まで、判断力を鍛える。',
-    image: '/images/v3/course-critical-01.png',
+    image: '/images/v3/course-critical-01.webp',
   },
   {
     id: 'critical-02',
@@ -97,7 +97,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [71, 300, 301, 302, 303],
     level: '中級',
     description: '確証バイアスをはじめとした認知の歪みを理解し、より精度の高い判断をする。',
-    image: '/images/v3/course-critical-02.png',
+    image: '/images/v3/course-critical-02.webp',
   },
 
   // ── 仮説思考 ────────────────────────────────────────
@@ -109,7 +109,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [50, 51, 52, 70, 304],
     level: '中級',
     description: '仮説を先に立て、検証で磨く思考サイクルを身につける。',
-    image: '/images/v3/course-hypothesis-01.png',
+    image: '/images/v3/course-hypothesis-01.webp',
   },
 
   // ── 課題設定 ────────────────────────────────────────
@@ -121,7 +121,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [53, 54, 55, 305, 306],
     level: '中級',
     description: '問題と課題の違いを理解し、本質的な問いを設定する力を養う。',
-    image: '/images/v3/course-problem-01.png',
+    image: '/images/v3/course-problem-01.webp',
   },
 
   // ── 論点設定 ────────────────────────────────────────
@@ -133,7 +133,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [500, 501, 502, 503, 504, 505, 506],
     level: '中級',
     description: '経験のないテーマでも、論点を網羅的に洗い出し、構造化し、数字と論理で裏取りしながら、解釈を積み上げて本質に到達する思考プロセスを身につける。',
-    image: '/images/v3/course-issue-01.png',
+    image: '/images/v3/course-issue-01.webp',
   },
 
   // ── デザインシンキング ──────────────────────────────
@@ -145,7 +145,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [56, 57, 58, 307, 308],
     level: '初級',
     description: '共感からプロトタイプまで、人間中心設計の思考プロセスを実践する。',
-    image: '/images/v3/course-design-01.png',
+    image: '/images/v3/course-design-01.webp',
   },
 
   // ── システムシンキング ──────────────────────────────
@@ -157,7 +157,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [65, 66, 67, 313, 314],
     level: '上級',
     description: 'フィードバックループと氷山モデルで、問題の根本原因を構造的に捉える。',
-    image: '/images/v3/course-systems-01.png',
+    image: '/images/v3/course-systems-01.webp',
   },
 
   // ── なぜなぜ分析 ────────────────────────────────────
@@ -169,7 +169,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [340, 341, 342, 343, 344, 345, 346],
     level: '中級',
     description: '対症療法ではなく根本原因まで掘り下げる思考技術。トヨタ式の古典から、人を責めない・飛躍しない・反証可能の原則まで体系的に学ぶ。',
-    image: '/images/v3/course-whywhy-01.png',
+    image: '/images/v3/course-whywhy-01.webp',
   },
 
   // ── ラテラルシンキング ──────────────────────────────
@@ -181,7 +181,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [59, 60, 61, 309, 310],
     level: '中級',
     description: 'リフレーミングと逆転の発想で、固定観念を超えたアイデアを生み出す。',
-    image: '/images/v3/course-lateral-01.png',
+    image: '/images/v3/course-lateral-01.webp',
   },
 
   // ── アナロジー思考 ──────────────────────────────────
@@ -193,7 +193,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [62, 63, 64, 311, 312],
     level: '中級',
     description: '構造的類似性を見抜き、異分野の知見を自分の課題に応用する。',
-    image: '/images/v3/course-analogy-01.png',
+    image: '/images/v3/course-analogy-01.webp',
   },
 
   // ── 哲学 ────────────────────────────────────────────
@@ -205,7 +205,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [77, 78, 79, 80, 81],
     level: '上級',
     description: 'ソクラテスの問答法と反証可能性を通じて、思考の原理を学ぶ。',
-    image: '/images/v3/course-philosophy-01.png',
+    image: '/images/v3/course-philosophy-01.webp',
   },
 
   // ── 東洋思想 ────────────────────────────────────────
@@ -217,7 +217,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [350, 351, 352, 353, 354],
     level: '上級',
     description: '孔子・孟子・荀子・墨子を通じ、関係性・定義・人間観・制度設計の原理を学ぶ。',
-    image: '/images/v3/course-eastern-01.png',
+    image: '/images/v3/course-eastern-01.webp',
   },
   {
     id: 'eastern-02',
@@ -227,7 +227,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [355, 356, 357, 358, 359],
     level: '上級',
     description: '老子・荘子・韓非子・孫子を通じ、無為・しなやかさ・視点・仕組み・戦わずして勝つ戦略を学ぶ。',
-    image: '/images/v3/course-eastern-02.png',
+    image: '/images/v3/course-eastern-02.webp',
   },
 
   // ── 提案・伝える技術 ────────────────────────────────
@@ -239,7 +239,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [72, 73, 74, 75, 76],
     level: '中級',
     description: '読み手の判断基準から逆算し、決断を引き出す提案書の構造を習得する。',
-    image: '/images/v3/course-proposal-01.png',
+    image: '/images/v3/course-proposal-01.webp',
   },
 
   // ── 提案書作成 ──────────────────────────────────────
@@ -251,7 +251,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [82, 83, 84, 85, 86, 87, 88],
     level: '上級',
     description: 'コンサル的アプローチで仮説を立て、検証しながら説得力のある提案書を完成させる。',
-    image: '/images/v3/course-proposal-course-01.png',
+    image: '/images/v3/course-proposal-course-01.webp',
   },
 
   // ── クライアントワーク ──────────────────────────────
@@ -263,7 +263,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [89, 90, 91, 92, 97],
     level: '中級',
     description: '桁感覚と概算力を鍛え、クライアントの場でも即座に数字を扱えるようになる。',
-    image: '/images/v3/course-client-01.png',
+    image: '/images/v3/course-client-01.webp',
   },
   {
     id: 'client-02',
@@ -273,7 +273,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [93, 94, 95, 96, 315],
     level: '中級',
     description: '正しい論点設定とヒアリング技術で、クライアントの本質的な課題を引き出す。',
-    image: '/images/v3/course-client-02.png',
+    image: '/images/v3/course-client-02.webp',
   },
   {
     id: 'client-03',
@@ -283,7 +283,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [330, 331, 332, 333, 334, 335],
     level: '上級',
     description: '本・事例・有識者・仮説を総動員し、新しい案件で「専門家」として価値発揮するキャッチアップの技術を学ぶ。',
-    image: '/images/v3/course-client-03.png',
+    image: '/images/v3/course-client-03.webp',
   },
   {
     id: 'client-04',
@@ -293,7 +293,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [336, 337, 338, 339],
     level: '中級',
     description: '上司やマネージャーから「考えが浅い」「分析が甘い」「示唆が弱い」と言われたとき、その場で何を聞き、どう次のアクションに繋げるかを実戦ケースで学ぶ。',
-    image: '/images/v3/course-client-04.png',
+    image: '/images/v3/course-client-04.webp',
   },
 
   // ── ケース面接 ──────────────────────────────────────
@@ -305,7 +305,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [28, 29, 35, 36, 316],
     level: '上級',
     description: '利益構造の分解から市場参入まで、ケース面接の頻出テーマを体系的に攻略する。',
-    image: '/images/v3/course-case-01.png',
+    image: '/images/v3/course-case-01.webp',
   },
 
   // ── 経営戦略 ────────────────────────────────────────
@@ -317,7 +317,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [320, 321, 322, 323, 324],
     level: '上級',
     description: 'テイラー・フォードからアンゾフ、PPM、ポーターまで。経営戦略の古典理論を通史的に押さえる。',
-    image: '/images/v3/course-strategy-01.png',
+    image: '/images/v3/course-strategy-01.webp',
   },
   {
     id: 'strategy-02',
@@ -327,7 +327,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [325, 326, 327, 328, 329],
     level: '上級',
     description: 'RBV・コアコンピタンスからブルーオーシャン、ダイナミック・ケイパビリティ、プラットフォーム戦略まで現代の進化を学ぶ。',
-    image: '/images/v3/course-strategy-02.png',
+    image: '/images/v3/course-strategy-02.webp',
   },
 
   // ── フェルミ推定 ────────────────────────────────────
@@ -339,7 +339,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [200, 201, 205, 202, 203, 204],
     level: '中級',
     description: '4 ステップ・分解の技術・前提データ・実践例・罠と対策まで段階的に学ぶ。',
-    image: '/images/v3/course-fermi-01.png',
+    image: '/images/v3/course-fermi-01.webp',
     pinned: true,
   },
   {
@@ -350,7 +350,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [210, 211, 212, 213, 214, 215, 216],
     level: '中級',
     description: '個人世帯ベース、法人ベース、面積ベース、ユニットベース、マクロ売上、ミクロ売上、クロスチェックを 1 本 1 パターンで深掘り。',
-    image: '/images/v3/course-fermi-02.png',
+    image: '/images/v3/course-fermi-02.webp',
     pinned: true,
   },
   {
@@ -361,7 +361,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [220, 221, 222, 223, 224, 225, 226],
     level: '上級',
     description: '日常的な事象から MBB コンサル面接級まで、難易度の階段を上る実践演習。',
-    image: '/images/v3/course-fermi-03.png',
+    image: '/images/v3/course-fermi-03.webp',
     pinned: true,
   },
 
@@ -374,7 +374,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [401, 400, 402, 403, 404, 405, 406],
     level: '中級',
     description: '伝え方・暗算・割合操作・単位換算・複利・統計・落とし穴の7本立てで、ビジネス数字感覚を体系的に鍛える。',
-    image: '/images/v3/course-numeracy-01.png',
+    image: '/images/v3/course-numeracy-01.webp',
   },
 
   // ── ピークパフォーマンス習慣 ────────────────────────
@@ -386,7 +386,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [410, 411, 412, 413, 414],
     level: '初級',
     description: 'クロノタイプ・睡眠・運動・集中の波・自己計測の5レッスンで、自分の体に合った最高の働き方を設計する。',
-    image: '/images/v3/course-peak-performance-01.png',
+    image: '/images/v3/course-peak-performance-01.webp',
   },
 
   // ── 体力デザイン ────────────────────────────────────
@@ -402,7 +402,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [440, 441, 442, 443, 444],
     level: '初級',
     description: '勉強・仕事・遊び・子育ての場面ごとに必要な体力は違います。エネルギーの総量を増やすより、いつ・どこに配り、どう回復させるかを設計する。認知科学・行動科学をもとに、場面別に疲れにくい自分のつくり方を学びます。',
-    image: '/images/v3/course-peak-performance-01.png',
+    image: '/images/v3/course-peak-performance-01.webp',
   },
 
   // ── 履歴書・職務経歴書 ──────────────────────────────
@@ -414,7 +414,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [600, 601, 602, 603, 604, 605, 606],
     level: '初級',
     description: '採用担当の頭の中・STAR法・定量化・志望動機の3層構造・ATS通過まで、書類選考を突破する実践技術を学ぶ。',
-    image: '/images/v3/course-career-resume-01.png',
+    image: '/images/v3/course-career-resume-01.webp',
   },
 
   // ── SPI対策 ─────────────────────────────────────────
@@ -426,7 +426,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [610, 611, 612, 613, 614, 615, 616],
     level: '中級',
     description: '言語・非言語の出題パターンを型で押さえ、損益算・推論・順列組合せまで頻出問題を体系的に攻略する。',
-    image: '/images/v3/course-career-spi-01.png',
+    image: '/images/v3/course-career-spi-01.webp',
   },
 
   // ── 玉手箱対策 ──────────────────────────────────────
@@ -438,7 +438,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [620, 621, 622, 623, 624, 625],
     level: '中級',
     description: '四則逆算・図表読み取り・表の空欄推測など、玉手箱特有の出題形式と電卓スピードの作り方を学ぶ。',
-    image: '/images/v3/course-career-tamatebako-01.png',
+    image: '/images/v3/course-career-tamatebako-01.webp',
   },
 
   // ── 面接対策 ────────────────────────────────────────
@@ -450,7 +450,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [630, 631, 632, 633, 634, 635, 636, 637],
     level: '中級',
     description: '構造化面接の評価軸・退職理由・志望動機・逆質問まで、面接官の視点から見た「通る回答」を組み立てる。',
-    image: '/images/v3/course-career-interview-01.png',
+    image: '/images/v3/course-career-interview-01.webp',
   },
 
   // ── 給与交渉・退職実務 ──────────────────────────────
@@ -462,7 +462,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [640, 641, 642, 643, 644, 645, 646],
     level: '上級',
     description: '市場価値の測り方・オファー面談・給与交渉・退職手続きまで、内定後から入社までの実務を抜け漏れなく押さえる。',
-    image: '/images/v3/course-career-salary-01.png',
+    image: '/images/v3/course-career-salary-01.webp',
   },
 
   // ── 認知科学 ────────────────────────────────────────
@@ -474,7 +474,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [700, 701, 702, 703, 704],
     level: '中級',
     description: '脳の作業机に乗る情報量の限界を知り、チャンキング・認知負荷・外部記憶・マルチタスクを科学的に整理する。',
-    image: '/images/v3/course-cognitive-01.png',
+    image: '/images/v3/course-cognitive-01.webp',
   },
   {
     id: 'cognitive-02',
@@ -484,7 +484,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [710, 711, 712, 713, 714],
     level: '中級',
     description: '利用可能性・ハロー・後知恵・ダニング/クルーガー・結果バイアスの 5 大バイアスを使いこなして判断の精度を上げる。',
-    image: '/images/v3/course-cognitive-02.png',
+    image: '/images/v3/course-cognitive-02.webp',
   },
 
   // ── ドキュメンテーション ────────────────────────────
@@ -496,7 +496,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [720, 721, 722, 723, 724, 725, 726],
     level: '中級',
     description: 'パワポ資料の構成設計から、1スライド1メッセージ・図解の型・レイアウト・タイポグラフィ・配色・チャート設計まで、伝わる資料の作り方を体系的に学ぶ。',
-    image: '/images/v3/course-documentation-01.png',
+    image: '/images/v3/course-documentation-01.webp',
   },
 
   // ── 構造化リスニング ────────────────────────────────
@@ -508,7 +508,7 @@ const COURSES_JA: Course[] = [
     lessonIds: [730, 731, 732, 733, 734, 735, 736],
     level: '中級',
     description: '受動的傾聴を超えて、事実・感情・解釈の3層分解と質問・要約・沈黙の技術で、1on1と営業ヒアリングで本音を引き出す聴き方を学ぶ。',
-    image: '/images/v3/course-listening-01.png',
+    image: '/images/v3/course-listening-01.webp',
   },
 
   // ── 集中の技術 ──────────────────────────────────────
@@ -524,7 +524,7 @@ const COURSES_JA: Course[] = [
     level: '中級',
     description:
       'マインドフルネス・注意の構造・フロー理論を世俗的に統合。もやもや時に手元の作業へ戻る技術と、1 日単位で集中を維持する設計を 8 レッスンで体系化する。',
-    image: '/images/v3/course-focus-now-01.png',
+    image: '/images/v3/course-focus-now-01.webp',
   },
 
   // ── ロジカルライティング ─────────────────────────────
@@ -540,7 +540,7 @@ const COURSES_JA: Course[] = [
     level: '中級',
     description:
       'ビジネス文書（メール / 企画書 / 報告書）を論理的に書く 8 レッスン。結論ファースト・三層構造・一文一義・接続詞・抽象具体往復・推敲まで、考えたことを読み手に伝える表現の技術を体系化する。',
-    image: '/images/v3/course-logical-writing-01.png',
+    image: '/images/v3/course-logical-writing-01.webp',
   },
 
   // ── ADHD レバレッジ ─────────────────────────────────
@@ -555,7 +555,7 @@ const COURSES_JA: Course[] = [
     level: '中級',
     description:
       '過集中・発散思考・即興性・新奇探索性をビジネスでの強みとして再配置。環境設計・役割選択・補完型コラボで、ADHD特性をレバレッジに変える実践コース。※医学的助言ではありません。',
-    image: '/images/v3/course-adhd-leverage-01.png',
+    image: '/images/v3/course-adhd-leverage-01.webp',
   },
 ]
 

@@ -3,7 +3,7 @@
  *
  * AF-06 第1スライス: レッスン/コース画像の URL リゾルバ。
  *
- * バンドルに同梱した `/images/v3/lesson-XX.png` 等のローカルパスを、設定フラグが
+ * バンドルに同梱した `/images/v3/lesson-XX.webp` 等のローカルパスを、設定フラグが
  * ON のときだけ Supabase Storage 公開バケットのリモート URL に変換する。フラグ OFF
  * （デフォルト）では localPath をそのまま返すため、現状の挙動は完全に不変。
  *
@@ -43,7 +43,7 @@ function isRemoteEnabled(raw: string | undefined): boolean {
 
 /**
  * localPath の末尾ファイル名を取り出す（クエリ/ハッシュは落とす）。
- * 例: '/images/v3/lesson-20.png' → 'lesson-20.png'
+ * 例: '/images/v3/lesson-20.webp' → 'lesson-20.webp'
  */
 function fileNameOf(localPath: string): string {
   const noQuery = localPath.split(/[?#]/)[0]
@@ -60,22 +60,23 @@ function joinUrl(base: string, fileName: string): string {
 /**
  * リモート化（Storage 取得）対象の拡張子か。
  *
- * AF-06 の移行対象はバンドル肥大の主因である重量 PNG のみ（lesson/course/badge/fermi 等）。
- * ロードマップ一覧の軽量 `.webp`（平均 50KB）はバンドル同梱を維持する設計
- * （docs/AF06_BUNDLE_SIZE_ANALYSIS.md B-2 / B-5）。Storage バケットには PNG しか
- * アップロードしていないため、webp/svg をリモート URL に書き換えると 404 になる。
- * そのため PNG 以外は常に localPath を素通しする。
+ * AF-06 第2スライス: PNG → WebP 変換後は `.webp` が主フォーマット。
+ * ロードマップ一覧の軽量 `.webp`（平均 50KB）はバンドル同梱を維持する設計だったが、
+ * 全画像 WebP 化後はリモート化の対象を `.webp` にも広げる（将来の Storage 移行に備え）。
+ * 現状はフラグ OFF（デフォルト）のため実際には localPath をそのまま返す。
+ * Storage バケットに WebP をアップロードした後でフラグを ON にすることで有効化できる。
  */
 function isRemotableAsset(localPath: string): boolean {
   const noQuery = localPath.split(/[?#]/)[0]
-  return noQuery.toLowerCase().endsWith('.png')
+  const lower = noQuery.toLowerCase()
+  return lower.endsWith('.png') || lower.endsWith('.webp')
 }
 
 /**
  * ローカル画像パスを、フラグ ON かつベース URL 設定時のみリモート URL に変換する。
  * それ以外（デフォルト）は localPath をそのまま返す（bundled フォールバック）。
  *
- * @param localPath 既存の bundled パス（例 '/images/v3/lesson-20.png'）。空や非対象は無変換。
+ * @param localPath 既存の bundled パス（例 '/images/v3/lesson-20.webp'）。空や非対象は無変換。
  * @param options   テスト用に env を override できる。未指定なら import.meta.env を読む。
  */
 export function resolveAssetUrl(localPath: string, options?: ResolveAssetOptions): string {

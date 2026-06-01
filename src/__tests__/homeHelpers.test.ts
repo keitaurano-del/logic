@@ -106,9 +106,9 @@ describe('homeHelpers — Title / Badge system', () => {
 
   describe('getBadgeImagePath', () => {
     it('returns the v3 badges path for a known key', () => {
-      expect(getBadgeImagePath('novice-1')).toBe('/images/v3/badges/badge-novice-1.png')
-      expect(getBadgeImagePath('apex')).toBe('/images/v3/badges/badge-apex.png')
-      expect(getBadgeImagePath('zenith')).toBe('/images/v3/badges/badge-zenith.png')
+      expect(getBadgeImagePath('novice-1')).toBe('/images/v3/badges/badge-novice-1.webp')
+      expect(getBadgeImagePath('apex')).toBe('/images/v3/badges/badge-apex.webp')
+      expect(getBadgeImagePath('zenith')).toBe('/images/v3/badges/badge-zenith.webp')
     })
 
     it('returns a unique path for every defined title tier', () => {
