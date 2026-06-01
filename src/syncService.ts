@@ -292,6 +292,52 @@ export async function pullOccupation(): Promise<string | null> {
   }
 }
 
+// ---- XP (profiles.xp) 同期 ----
+
+/**
+ * 累積 XP を Supabase profiles.xp へ upsert する。
+ * - 未ログインや Supabase 未設定時は no-op
+ * - migration 036 未適用環境では列が無いため失敗するが UX を止めない
+ *   ("column xp does not exist" は握り潰す)
+ * - 負値は送らない (0 でクランプ)
+ */
+export async function pushXp(xp: number): Promise<void> {
+  if (!isReady()) return
+  const safeXp = Number.isFinite(xp) ? Math.max(0, Math.floor(xp)) : 0
+  try {
+    const { error } = await supabase!.from('profiles').upsert({
+      id: _currentUserId,
+      xp: safeXp,
+      updated_at: new Date().toISOString(),
+    }, { onConflict: 'id' })
+    if (error) {
+      // migration 036 未適用環境の "column xp does not exist" は無視
+      if (!/\bxp\b/i.test(error.message)) {
+        console.warn('[sync] pushXp failed:', error.message)
+      }
+    }
+  } catch (e) {
+    console.warn('[sync] pushXp failed:', e)
+  }
+}
+
+export async function pullXp(): Promise<number | null> {
+  if (!isReady()) return null
+  try {
+    const { data, error } = await supabase!
+      .from('profiles')
+      .select('xp')
+      .eq('id', _currentUserId)
+      .maybeSingle()
+    if (error || !data) return null
+    const raw = (data.xp as number | null) ?? null
+    if (raw == null || !Number.isFinite(raw)) return null
+    return Math.max(0, Math.floor(raw))
+  } catch {
+    return null
+  }
+}
+
 // ---- 汎用 profile フィールド (birth_year / goal / nickname) 同期 ----
 
 export interface ProfileFieldPatch {
@@ -517,6 +563,55 @@ export async function syncOnLogin(userId: string): Promise<void> {
       }))
     }
 
+    // XP (profiles.xp): local と remote の Math.max マージ (オフライン加算を消さない安全側)。
+    // AF-05: 以前は XP の pull/push が無く、ログアウトで logic-xp を消していたため
+    // 再ログインで XP/レベルが完全消失していた。
+    try {
+      const localXp = parseInt(localStorage.getItem('logic-xp') ?? '0', 10) || 0
+      const remoteXp = await pullXp()
+      const mergedXp = remoteXp != null ? Math.max(localXp, remoteXp) : localXp
+      localStorage.setItem('logic-xp', String(mergedXp))
+      // マージ結果をリモートにも反映 (remote が無かった/古かった場合に揃える)
+      if (remoteXp == null || mergedXp !== remoteXp) {
+        await pushXp(mergedXp)
+      }
+    } catch (e) {
+      console.warn('[sync] XP merge failed:', e)
+    }
+
+    // プロフィール属性 (birth_year / goal / occupation / nickname) を pull して
+    // logic-user-profile / logic-display-name へ書き戻す。
+    // AF-05: 以前は pull が結線されておらず、リモートに保存済みでも再ログインで
+    // 職業・生まれ年・目的が復元されなかった。
+    // リモート優先 (プロフィール編集は明示更新なので、別端末の最新を尊重する)。
+    try {
+      const remoteProfile = await pullProfileFields()
+      if (remoteProfile) {
+        const profileRaw = localStorage.getItem('logic-user-profile')
+        let profile: Record<string, unknown> = {}
+        try {
+          const parsed = profileRaw ? JSON.parse(profileRaw) : {}
+          if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+            profile = parsed as Record<string, unknown>
+          }
+        } catch { /* 破損時は空から再構築 */ }
+
+        if (remoteProfile.birthYear != null) profile.birthYear = remoteProfile.birthYear
+        if (remoteProfile.goal != null) profile.goal = remoteProfile.goal
+        if (remoteProfile.occupation != null) profile.occupation = remoteProfile.occupation
+        if (remoteProfile.nickname != null) profile.displayName = remoteProfile.nickname
+
+        localStorage.setItem('logic-user-profile', JSON.stringify(profile))
+
+        // nickname は logic-display-name とも整合させる (上の表示名同期と同じ正本)
+        if (remoteProfile.nickname) {
+          localStorage.setItem('logic-display-name', remoteProfile.nickname)
+        }
+      }
+    } catch (e) {
+      console.warn('[sync] profile fields pull failed:', e)
+    }
+
     if (import.meta.env.DEV) {
       console.log('[sync] Login sync complete. Lessons:', merged.completedLessons.length)
     }
@@ -620,6 +715,16 @@ export async function syncOnLogout(): Promise<void> {
     'logic-guest-id',
     'logic-flashcards',
     'logic-wrong-answers',
+    // XP / レベルはログアウト時に消すと再ログインで完全消失する (AF-05 P0)。
+    // syncOnLogin で profiles.xp と Math.max マージするまでローカルを保持する。
+    // 関連: logic-xp-log (履歴) / logic-journal-xp (朝夜付与フラグ) も
+    // ローカル専用のため保持し、累積 XP との不整合を防ぐ。
+    'logic-xp',
+    'logic-xp-log',
+    'logic-journal-xp',
+    // プロフィール属性 (生まれ年 / 性別 / 職業 / 目的)。profiles へ push 済みだが
+    // pull 復元が確実に効くまでの安全側保持 (AF-05)。
+    'logic-user-profile',
     // 通知設定キーは保持する。OS スケジュールはログアウト後も残るため、
     // pref を消すと UI 上 OFF 表示なのに通知だけ来る不整合になる
     // (REVIEW_REPORT_20260524 高#1)。

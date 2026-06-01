@@ -44,12 +44,14 @@ Keita から 2026-06-01 に直接報告された不具合・改善依頼3件を�
 
 | ID | タイトル | 優先度 | ステータス | 担当案 | 由来 |
 |----|---------|--------|-----------|--------|------|
-| AF-05 | 再ログイン後にプロフィール情報とレベル/XP が引き継がれない（データ消失） | P0 | REVIEW | dev-logic（実装済 commit 69b76de / branch fix/af-05-xp-profile-sync）→ test-functional（永続化E2E）→ Keita（migration036 本番DDL + deploy 承認） | Keita 実機報告 2026-06-01 |
+| AF-05 | 再ログイン後にプロフィール情報とレベル/XP が引き継がれない（データ消失） | P0 | DONE | dev-logic（根因調査→修正）+ test-functional（永続化E2E） | Keita 実機報告 2026-06-01 |
+| AF-07 | ストリークフリーズ在庫（logic-streak-freeze）がログアウトで消失（KEEP_KEYS 漏れ） | P2 | TODO | dev-logic | AF-05 隣接検出（dev-logic 2026-06-01） |
+| AF-08 | UI設定（font-scale / tts-autoplay / tts-rate）がログアウトで初期値に戻る（KEEP_KEYS 漏れ） | P3 | TODO | dev-logic | AF-05 隣接検出（dev-logic 2026-06-01） |
 | UI-30 | ライトテーマで「今日の1位問」のチャレンジするボタンが見にくい | P1 | TODO | dev-logic（コンポーネント特定→統一）+ test-functional（両テーマ視認性） | Keita 実機報告 2026-06-01 |
 | AF-06 | アプリDLサイズ300MB削減：レッスンアセットをオンデマンド読込に | P1 | TODO | dev-logic（計測→設計案）+ designer（アセット最適化調査） | Keita 実機報告 2026-06-01 |
 
 #### AF-05 — 再ログイン後にプロフィール情報とレベル/XP が引き継がれない（データ消失バグ）
-- 優先度: P0 / ステータス: IN_PROGRESS / 担当案: dev-logic（根因調査→修正）、test-functional（再ログイン跨ぎの永続化を E2E 検証）
+- 優先度: P0 / ステータス: DONE / 担当案: dev-logic（根因調査→修正）、test-functional（再ログイン跨ぎの永続化を E2E 検証）
 - 詳細: Keita 実機報告（2026-06-01）。マジックリンクで再ログインすると、それ以前のプロフィール情報とレベル/XP が消える／引き継がれない。データ消失系のため P0。
 - 想定根因（調査の出発点・未確定）: (a) 再ログインで別 auth ユーザー扱いになっている（user_id が一致しない）、(b) XP/プロフィールがローカル(端末localStorage)保持のみで Supabase 側に user_id 紐付け永続化されていない、(c) マジックリンクの `setSession`／`exchangeCodeForSession` 後にデータ再フェッチが走っていない。着手時に Supabase の該当テーブル（`profiles` / `user_stats` 等）の行と auth user_id の対応、ローカル↔リモートの同期タイミングを実コードで突き合わせて根因を確定する。
 - 受け入れ条件(DoD): 別端末／再ログインでもプロフィール・レベル・XP が保持される。Supabase 側に user_id 紐付けで永続化されていることをデータで確認。再ログイン跨ぎの永続化を E2E（test-functional）で検証し回帰ガードを置く。tsc / eslint . / vitest green。
@@ -74,6 +76,44 @@ Keita から 2026-06-01 に直接報告された不具合・改善依頼3件を�
   - **green**: tsc --noEmit = 0 / `eslint .` = 0 error(19 既存 warning) / vitest = 31 files **501 tests 全 pass**（XP テスト 5 件追加）。
   - **隣接で保持追加**: KEEP_KEYS に `logic-xp` `logic-user-profile` に加え `logic-xp-log`（XP履歴）`logic-journal-xp`（朝夜付与フラグ）も追加。XP累積を保持するのにジャーナル付与フラグだけ消えると同日二重付与で XP が膨張するため、整合のため一緒に保持。
   - **残**: test-functional の永続化 E2E（シナリオは dev-logic から提供済）→ DONE 判定。**push / migration 036 本番DDL適用 / deploy は Keita 承認待ち**。
+- 検証結果（test-functional / 試野 緑 2026-06-01、branch `fix/af-05-xp-profile-sync` `69b76de`）: 緑判定。本番反映してよい。
+  - 土台: vitest 全 507 passed / 0 failed（31 files）。うち stats.test.ts 34件（XP 回帰5件含む）+ 新規 af05-sync-integration.test.ts 8件。tsc -b --noEmit EXIT 0。eslint . 0 errors（19 warnings は既存・AF-05 無関係）。
+  - 統合検証手段: 本番 Supabase（yctlelmlwjwlcpcxvmgx）非接触。`@supabase/supabase-js` の createClient を in-memory フェイククライアントに差し替え、test 専用 user_id で localStorage を跨いだ syncOnLogout→syncOnLogin の永続化を実証。新規ファイル `src/__tests__/af05-sync-integration.test.ts`。
+  - シナリオ結果: 1(XP/プロフィール push リモート反映)=緑、2(syncOnLogout KEEP_KEYS で logic-xp/xp-log/journal-xp/user-profile 残・KEEP外は除去)=緑、3+4(再ログインで XP=80・occupation/birthYear/goal 復元)=緑、5(Math.max マージ: local>remote/remote>local/remote=null の3系統)=緑、6(guestId と profiles.xp 独立・claim 導線維持)=緑。追加でクランプ回帰（pushXp 負値/NaN→0・floor、pullXp 負値→0）=緑。
+  - migration 036 ロジック確認: profiles は id 以外すべて nullable/default 付きのため `add column if not exists xp not null default 0` + `check(xp>=0)` は冪等で、pushXp の upsert(id/xp/updated_at) と整合。本番 DDL 適用後も成立（DDL 適用は Keita 承認領域、未実施）。pushXp の profiles upsert は既存 pushOccupation/pushProfileFields と同じ RLS パターンで新規リスクなし。
+  - モック代替した範囲: 実機 iOS/Android の deep link `logic://auth` 経由セッション復元の OS 差は本番非接触では再現不可のためコードロジック追跡で代替（detectSessionInUrl 無効＝手動 setSession 統一で OS 差は出ない設計を確認、実機での最終確認は別途推奨だが本修正のロジックは OS 非依存）。profiles.xp 列の実 DDL 依存部は in-memory フェイクで代替し、列追加後に成立することをロジックで確認。
+- 本番反映（dev-logic 蓮 2026-06-01、Keita 承認「検証緑なら反映GO」）: test-functional 全緑を受け DONE 化。(1) 本番 Supabase（yctlelmlwjwlcpcxvmgx）に migration 036（profiles.xp 追加＋profiles_xp_nonneg check）適用、(2) branch `fix/af-05-xp-profile-sync` を main にマージ→push（Android 自動ビルド）、(3) Render 本番 deploy を workflow_dispatch でトリガー。migration→deploy 順序非依存（client は `column does not exist` を握り潰す安全設計）。Android は次回内部配信で同梱。
+- 更新日: 2026-06-01
+
+#### AF-07 — ストリークフリーズ在庫（logic-streak-freeze）がログアウトで消失
+- 優先度: P2 / ステータス: TODO / 担当案: dev-logic
+- 由来: **AF-05（再ログインデータ消失）の修正実装中に dev-logic が隣接で検出**（2026-06-01）。同根＝`syncService` の `syncOnLogout` で `KEEP_KEYS` に含まれないキーがログアウト時にクリアされる問題。ただし AF-05（XP/プロフィール）とは別スコープ。
+- 詳細: `logic-streak-freeze`（ストリークフリーズの在庫）が Supabase 同期されておらず、かつ `KEEP_KEYS` 外のため、ログアウト→再ログインで在庫が消える。フリーズは無料配布アイテムで再付与され得るので AF-05 ほど深刻ではないが、購入相当の在庫が消える＝軽微なデータ消失。
+- 想定修正方針（候補・要設計）: (a) `KEEP_KEYS` に `logic-streak-freeze` を追加（端末ローカル保持）、または (b) Supabase 同期化（`profiles` か `user_stats` のどちらに持たせるかは要設計）。在庫＝アカウントに紐づく資産なら (b) が筋だが、フリーズ仕様（無料配布・端末ローカルで十分か）次第。dev-logic が FB-06（ストリークフリーズ実装、`915e622`）の設計と突き合わせて方針確定する。
+- 受け入れ条件(DoD): ログアウト→再ログイン跨ぎでストリークフリーズ在庫が保持される。tsc / eslint . / vitest green。
+- 関連ファイル: `syncService`（`syncOnLogout` / `KEEP_KEYS` 定義箇所）、`src/stats.ts`（ストリーク・フリーズ在庫の保持先）、FB-06 で追加したフリーズ実装箇所、`supabase/migrations/`（(b) 採用時 profiles / user_stats）。
+- 依存: なし（AF-05 と同根だが独立修正可。AF-05 の `KEEP_KEYS` 修正コミットを参照して同じパターンで対応できる）
+- 提言・抜けもれ:
+  - **設計判断**: (a) KEEP 追加で十分か (b) Supabase 同期まで要るかは「フリーズ在庫をアカウント資産として扱うか・端末ローカルで許容か」の仕様判断。dev-logic が方針案を出し、同期化に倒すなら Keita 確認（DB スキーマ追加を伴うため）。
+  - **回帰**: FB-06 のフリーズ付与・消費ロジックに波及しないか確認。
+  - **両OS**: iOS / Android 両方でログアウト挙動を確認（[[project-logic-mobile-only]]）。
+  - **永続化**: 表示だけでなく在庫値の保存・再ログイン後の再表示まで。
+- 注記: AF-05 の修正コミット（branch `fix/af-05-xp-profile-sync`、`69b76de`）では、関連する `logic-journal-xp` / `logic-xp-log` を `KEEP_KEYS` に追加する隣接修正を dev-logic が能動的に実施済み（二重XP付与防止）。本件 AF-07 はそれとは別の未対応分。
+- 更新日: 2026-06-01
+
+#### AF-08 — UI設定（font-scale / tts-autoplay / tts-rate）がログアウトで初期値に戻る
+- 優先度: P3 / ステータス: TODO / 担当案: dev-logic
+- 由来: **AF-05 の修正実装中に dev-logic が隣接で検出**（2026-06-01）。同根＝`syncService` の `syncOnLogout` の `KEEP_KEYS` 漏れ。AF-05 とは別スコープ。
+- 詳細: `logic-font-scale` / `logic-tts-autoplay` / `logic-tts-rate` の3つの端末ローカル UI 設定が `KEEP_KEYS` 漏れのため、ログアウト→再ログインで初期値に戻る。`logic-locale` / `logic-theme` は KEEP されているのに、これらが漏れていて一貫性を欠く。軽微だが UX 改善。
+- 想定修正方針: `KEEP_KEYS` に上記3キーを追加（端末ローカル設定なので Supabase 同期は不要、KEEP で十分）。
+- 受け入れ条件(DoD): ログアウト→再ログイン跨ぎでフォントサイズ・TTS 設定（autoplay / rate）が保持される。tsc / eslint . / vitest green。
+- 関連ファイル: `syncService`（`KEEP_KEYS` 定義箇所。既存 `logic-locale` / `logic-theme` の隣に3キー追加）。
+- 依存: なし（AF-05 と同根。AF-05 の `KEEP_KEYS` 修正と同じ箇所・同じパターン）
+- 提言・抜けもれ:
+  - **一貫性**: `logic-locale` / `logic-theme` が KEEP 済みなのに同種の端末ローカル UI 設定が漏れている＝KEEP_KEYS の網羅性が崩れている。この機会に「端末ローカルで保持すべき UI 設定キー」を棚卸しして漏れがないか全 `logic-*` キーを確認するのを推奨（他にも漏れがあり得る）。
+  - **回帰**: KEEP_KEYS 追加はクリア対象を減らすだけなので副作用は小さいが、ログアウト時に「意図的にクリアしたい」キーを誤って残さないことだけ確認。
+  - **両OS**: iOS / Android 両方で確認（[[project-logic-mobile-only]]）。
+- 注記: AF-05 修正コミット（`69b76de`）で `logic-journal-xp` / `logic-xp-log` の KEEP 追加は実施済み。本件はそれとは別の未対応分。AF-07 と合わせて KEEP_KEYS 漏れの是正バッチとして1コミットにまとめても可（dev-logic 判断）。
 - 更新日: 2026-06-01
 
 #### UI-30 — ライトテーマで「今日の1位問」のチャレンジするボタンが見にくい

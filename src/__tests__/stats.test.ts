@@ -3,10 +3,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 // stats.ts は syncService を import するが、syncService は Supabase + flashcards 等
 // 大量の依存を芋づる的に持ち込む。unit test では同期処理を無効化して純粋な
 // localStorage 計算ロジックだけを検証する。
+const mockGetSyncUser = vi.fn<() => string | null>(() => null)
+const mockPushXp = vi.fn<(xp: number) => Promise<void>>(async () => undefined)
+
 vi.mock('../syncService', () => ({
   pushProgress: vi.fn(),
   pushDisplayName: vi.fn(async () => undefined),
-  getSyncUser: () => null,
+  pushXp: (xp: number) => mockPushXp(xp),
+  getSyncUser: () => mockGetSyncUser(),
 }))
 
 // completionCountDb は Supabase 同期側も持つので、localStorage 部分のみ実コードを
@@ -15,6 +19,8 @@ vi.mock('../syncService', () => ({
 describe('stats.ts', () => {
   beforeEach(() => {
     localStorage.clear()
+    mockGetSyncUser.mockReturnValue(null)
+    mockPushXp.mockClear()
   })
 
   afterEach(() => {
@@ -297,6 +303,46 @@ describe('stats.ts', () => {
       // 同じ 25 日にもう 1 レッスン完了しても節目は跨がない
       recordCompletion('lesson-25b')
       expect(getStreakFreezeCount()).toBe(1)
+    })
+  })
+
+  // AF-05: XP の加算・クランプと、Supabase push 結線の回帰テスト。
+  describe('XP (addXp / addXP)', () => {
+    it('accumulates event XP and persists to localStorage', async () => {
+      const { addXp, getXp } = await import('../stats')
+      addXp('lesson') // +50
+      addXp('streak') // +10
+      expect(getXp()).toBe(60)
+      expect(localStorage.getItem('logic-xp')).toBe('60')
+    })
+
+    it('clamps XP at STATS_MAX_XP (50399)', async () => {
+      const { addXP, getXp } = await import('../stats')
+      addXP(99999)
+      expect(getXp()).toBe(50399)
+    })
+
+    it('does NOT push to server when logged out (getSyncUser null)', async () => {
+      mockGetSyncUser.mockReturnValue(null)
+      const { addXp } = await import('../stats')
+      addXp('lesson')
+      expect(mockPushXp).not.toHaveBeenCalled()
+    })
+
+    it('pushes the new cumulative XP to profiles.xp when logged in (AF-05)', async () => {
+      mockGetSyncUser.mockReturnValue('user-uuid-123')
+      const { addXp } = await import('../stats')
+      addXp('lesson') // +50
+      addXp('fermi')  // +30 → cumulative 80
+      expect(mockPushXp).toHaveBeenCalledTimes(2)
+      expect(mockPushXp).toHaveBeenLastCalledWith(80)
+    })
+
+    it('addXP (custom amount) also pushes cumulative XP when logged in', async () => {
+      mockGetSyncUser.mockReturnValue('user-uuid-123')
+      const { addXP } = await import('../stats')
+      addXP(15)
+      expect(mockPushXp).toHaveBeenLastCalledWith(15)
     })
   })
 })
