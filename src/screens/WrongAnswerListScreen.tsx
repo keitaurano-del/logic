@@ -11,15 +11,17 @@ import {
   setResolved,
   type WrongAnswer,
 } from '../wrongAnswerStore'
+import { FeaturePreviewBanner } from '../components/FeaturePreviewBanner'
 
 interface Props {
   onBack: () => void
   onOpenLesson?: (lessonId: number) => void
+  onUpgrade?: () => void
 }
 
 type StatusFilter = 'unresolved' | 'resolved' | 'all'
 
-export function WrongAnswerListScreen({ onBack, onOpenLesson }: Props) {
+export function WrongAnswerListScreen({ onBack, onOpenLesson, onUpgrade }: Props) {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('unresolved')
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null)
   // 書き込み（解決済み切替・retry結果）後の再描画用の触媒
@@ -49,6 +51,17 @@ export function WrongAnswerListScreen({ onBack, onOpenLesson }: Props) {
     markRetryResult(id, correct)
     setRetryTarget(null)
     bump()
+  }
+
+  if (onUpgrade) {
+    return (
+      <div style={{ minHeight: '100dvh', background: 'var(--bg-primary)', color: 'var(--text-primary)', fontFamily: "'Noto Sans JP', sans-serif" }}>
+        <Header title={t('wrongAnswers.title')} onBack={onBack} />
+        <div style={{ padding: '24px 20px 120px' }}>
+          <FeaturePreviewBanner feature="wrongAnswers" onUpgrade={onUpgrade} />
+        </div>
+      </div>
+    )
   }
 
   return (

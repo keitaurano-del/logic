@@ -1641,6 +1641,20 @@ const STRINGS: Record<Locale, Strings> = {
     'reviewHub.paywallFeat4': '解いたフェルミ推定の振り返り',
     'reviewHub.viewPlansCta': '有料プランを見る',
 
+    // Feature preview banner (used on flashcards, review hub, fermi history, wrong answers, saved items)
+    'featurePreview.cta': '有料プランで利用できます',
+    'featurePreview.upgradeBtn': '有料プランを見る',
+    'featurePreview.flashcards.title': 'フラッシュカードで記憶に定着',
+    'featurePreview.flashcards.desc': 'レッスンで学んだ内容がカードに変換されます。今日の復習・弱点の集中練習で確実に身につきます。',
+    'featurePreview.reviewHub.title': '復習ハブですべての学習を一元管理',
+    'featurePreview.reviewHub.desc': 'フラッシュカード・間違い直し・フェルミ推定履歴・保存コンテンツを1か所から確認できます。',
+    'featurePreview.fermiHistory.title': '解いたフェルミ推定を振り返る',
+    'featurePreview.fermiHistory.desc': '過去の解答・AI採点・スコアの推移を確認して、推定力の伸びを実感できます。',
+    'featurePreview.wrongAnswers.title': '間違えた問題を繰り返し練習',
+    'featurePreview.wrongAnswers.desc': 'ミスした設問が自動で記録されます。解決済みにするまで繰り返し練習できます。',
+    'featurePreview.savedItems.title': 'レッスンとコースを保存',
+    'featurePreview.savedItems.desc': '気になったレッスン・コースをブックマークして、後からすぐ見返せます。',
+
     // Saved items
     'savedItems.title': '保存したコンテンツ',
     'savedItems.filterAll': 'すべて ({n})',
@@ -1986,6 +2000,21 @@ const STRINGS: Record<Locale, Strings> = {
     'lessonThumb.fermiMarket.factors': '人口×利用率',
     'lessonThumb.fermiMarket.modifiers': '× 購入頻度 × 単価',
     'lessonThumb.fermiMarket.result': '＝市場',
+
+    // Review preview screen (DF-F3)
+    'reviewPreview.title': '復習機能でこれまでの学びを定着させましょう',
+    'reviewPreview.desc': 'フラッシュカード、間違い直し、保存した問題をまとめて復習できます。有料プランでご利用いただけます。',
+    'reviewPreview.upsellCta': '有料プランを見る',
+    'reviewPreview.flashcardsTitle': 'フラッシュカード',
+    'reviewPreview.flashcardsDesc': '単語・概念をカードで繰り返し確認できます。',
+    'reviewPreview.reviewHubTitle': '復習ハブ',
+    'reviewPreview.reviewHubDesc': '苦手な問題をまとめて復習できます。',
+    'reviewPreview.fermiHistoryTitle': 'フェルミ履歴',
+    'reviewPreview.fermiHistoryDesc': 'これまでのフェルミ問題の回答を振り返れます。',
+    'reviewPreview.wrongAnswersTitle': '間違い直し',
+    'reviewPreview.wrongAnswersDesc': '間違えた問題を再挑戦して苦手を克服できます。',
+    'reviewPreview.savedItemsTitle': '保存アイテム',
+    'reviewPreview.savedItemsDesc': '保存したレッスンや問題をまとめて確認できます。',
   },
 
   en: {
@@ -3591,6 +3620,20 @@ const STRINGS: Record<Locale, Strings> = {
     'reviewHub.paywallFeat4': 'Past Fermi problems with scores',
     'reviewHub.viewPlansCta': 'See paid plan',
 
+    // Feature preview banner (used on flashcards, review hub, fermi history, wrong answers, saved items)
+    'featurePreview.cta': 'Available on the paid plan',
+    'featurePreview.upgradeBtn': 'See paid plan',
+    'featurePreview.flashcards.title': 'Commit lessons to memory with flashcards',
+    'featurePreview.flashcards.desc': 'Cards are generated automatically from lessons you complete. Review today\'s cards or drill your weakest points.',
+    'featurePreview.reviewHub.title': 'Manage all your review in one place',
+    'featurePreview.reviewHub.desc': 'Access flashcards, past mistakes, Fermi history, and saved content from a single hub.',
+    'featurePreview.fermiHistory.title': 'Review your past Fermi estimates',
+    'featurePreview.fermiHistory.desc': 'See your previous answers, AI scores, and score trends to track how your estimation skills improve.',
+    'featurePreview.wrongAnswers.title': 'Drill the questions you got wrong',
+    'featurePreview.wrongAnswers.desc': 'Mistakes are recorded automatically and stay in your list until you resolve them.',
+    'featurePreview.savedItems.title': 'Bookmark lessons and courses',
+    'featurePreview.savedItems.desc': 'Save anything interesting and come back to it anytime.',
+
     // Saved items
     'savedItems.title': 'Saved content',
     'savedItems.filterAll': 'All ({n})',
@@ -3936,6 +3979,21 @@ const STRINGS: Record<Locale, Strings> = {
     'lessonThumb.fermiMarket.factors': 'Pop × Rate',
     'lessonThumb.fermiMarket.modifiers': '× Freq × Price',
     'lessonThumb.fermiMarket.result': '= Market',
+
+    // Review preview screen (DF-F3)
+    'reviewPreview.title': 'Reinforce Your Learning with Review Features',
+    'reviewPreview.desc': 'Review flashcards, mistakes, and saved problems all in one place. Available on the paid plan.',
+    'reviewPreview.upsellCta': 'See Paid Plan',
+    'reviewPreview.flashcardsTitle': 'Flashcards',
+    'reviewPreview.flashcardsDesc': 'Review words and concepts with spaced repetition cards.',
+    'reviewPreview.reviewHubTitle': 'Review Hub',
+    'reviewPreview.reviewHubDesc': 'Review all your weak areas in one place.',
+    'reviewPreview.fermiHistoryTitle': 'Fermi History',
+    'reviewPreview.fermiHistoryDesc': 'Look back on your Fermi estimation answers.',
+    'reviewPreview.wrongAnswersTitle': 'Wrong Answers',
+    'reviewPreview.wrongAnswersDesc': 'Retry questions you got wrong to overcome weak spots.',
+    'reviewPreview.savedItemsTitle': 'Saved Items',
+    'reviewPreview.savedItemsDesc': 'Access all your saved lessons and problems in one place.',
   },
 }
 

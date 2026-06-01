@@ -12,6 +12,7 @@ import {
   CheckIcon,
   XIcon,
 } from '../icons'
+import { FeaturePreviewBanner } from '../components/FeaturePreviewBanner'
 import {
   loadSavedItems,
   loadSavedSort,
@@ -41,6 +42,7 @@ interface Props {
   onOpenLessonStep: (lessonId: number, stepIndex: number) => void
   onOpenAiProblem: (problemId: string) => void
   onOpenFermi: (fermiIndex: string) => void
+  onUpgrade?: () => void
 }
 
 type Filter = 'all' | SavedItemType
@@ -56,6 +58,7 @@ export function SavedItemsScreen({
   onOpenLessonStep,
   onOpenAiProblem,
   onOpenFermi,
+  onUpgrade,
 }: Props) {
   const [filter, setFilter] = useState<Filter>('all')
   const [query, setQuery] = useState('')
@@ -198,6 +201,17 @@ export function SavedItemsScreen({
       case 'ai-problem': return t('savedItems.emptyAiProblem')
       case 'fermi': return t('savedItems.emptyFermi')
     }
+  }
+
+  if (onUpgrade) {
+    return (
+      <div style={{ minHeight: '100dvh', background: 'var(--bg-primary)', color: 'var(--text-primary)', fontFamily: "'Noto Sans JP', sans-serif" }}>
+        <Header title={t('savedItems.title')} onBack={onBack} />
+        <div style={{ padding: '24px 20px 120px' }}>
+          <FeaturePreviewBanner feature="savedItems" onUpgrade={onUpgrade} />
+        </div>
+      </div>
+    )
   }
 
   return (

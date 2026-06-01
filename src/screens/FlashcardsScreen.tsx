@@ -6,14 +6,16 @@ import { Header } from '../components/platform/Header'
 import { haptic } from '../platform/haptics'
 import { t } from '../i18n'
 import { useStudyTimer } from '../hooks/useStudyTimer'
+import { FeaturePreviewBanner } from '../components/FeaturePreviewBanner'
 import './FlashcardsScreen.css'
 
 interface FlashcardsScreenProps {
   onBack: () => void
   mode?: 'due' | 'weak'
+  onUpgrade?: () => void
 }
 
-export function FlashcardsScreen({ onBack, mode = 'due' }: FlashcardsScreenProps) {
+export function FlashcardsScreen({ onBack, mode = 'due', onUpgrade }: FlashcardsScreenProps) {
   // 学習時間計測 — フラッシュカード画面の滞在時間を study_sessions に記録
   useStudyTimer({ type: 'flashcard', id: mode })
   const [queue] = useState<Flashcard[]>(() =>
@@ -38,6 +40,17 @@ export function FlashcardsScreen({ onBack, mode = 'due' }: FlashcardsScreenProps
     reviewCard(card.id, quality)
     setIdx((i) => i + 1)
     setFlipped(false)
+  }
+
+  if (onUpgrade) {
+    return (
+      <div className="stack">
+        <Header title={t('reviewHub.flashcardsTitle')} onBack={onBack} />
+        <div style={{ padding: '24px 16px 120px' }}>
+          <FeaturePreviewBanner feature="flashcards" onUpgrade={onUpgrade} />
+        </div>
+      </div>
+    )
   }
 
   return (

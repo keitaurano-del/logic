@@ -5,6 +5,7 @@ import { API_BASE } from './apiBase'
 import { getGuestId } from '../guestId'
 import { findFermiPoolIndex } from '../fermiData'
 import { t, getLocale } from '../i18n'
+import { FeaturePreviewBanner } from '../components/FeaturePreviewBanner'
 
 interface FermiHistoryItem {
   id: string
@@ -23,6 +24,7 @@ interface FermiHistoryItem {
 interface FermiHistoryScreenProps {
   onBack: () => void
   onRetry: (poolIndex: number) => void
+  onUpgrade?: () => void
 }
 
 function boldify(text: string): string {
@@ -95,7 +97,7 @@ function formatElapsed(sec: number | null): string | null {
   return t('fermiHistory.elapsed', { m: String(m).padStart(2, '0'), s: String(s).padStart(2, '0') })
 }
 
-export function FermiHistoryScreen({ onBack, onRetry }: FermiHistoryScreenProps) {
+export function FermiHistoryScreen({ onBack, onRetry, onUpgrade }: FermiHistoryScreenProps) {
   const [items, setItems] = useState<FermiHistoryItem[] | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [expandedId, setExpandedId] = useState<string | null>(null)
@@ -124,6 +126,17 @@ export function FermiHistoryScreen({ onBack, onRetry }: FermiHistoryScreenProps)
     if (!items) return []
     return [...items].sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''))
   }, [items])
+
+  if (onUpgrade) {
+    return (
+      <div style={{ minHeight: '100dvh', background: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
+        <Header title={t('fermiHistory.title')} onBack={onBack} />
+        <div style={{ padding: '24px 16px 120px' }}>
+          <FeaturePreviewBanner feature="fermiHistory" onUpgrade={onUpgrade} />
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div style={{ minHeight: '100dvh', background: 'var(--bg-primary)', color: 'var(--text-primary)' }}>

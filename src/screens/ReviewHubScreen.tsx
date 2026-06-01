@@ -7,6 +7,7 @@ import { getSavedItemStats } from '../savedItemsStore'
 import { API_BASE } from './apiBase'
 import { getGuestId } from '../guestId'
 import { t } from '../i18n'
+import { FeaturePreviewBanner } from '../components/FeaturePreviewBanner'
 
 interface Props {
   onBack: () => void
@@ -14,6 +15,7 @@ interface Props {
   onOpenWrongAnswers: () => void
   onOpenFermiHistory: () => void
   onOpenSavedItems: () => void
+  onUpgrade?: () => void
 }
 
 interface FermiStats {
@@ -21,7 +23,7 @@ interface FermiStats {
   avgScore: number
 }
 
-export function ReviewHubScreen({ onBack, onOpenFlashcards, onOpenWrongAnswers, onOpenFermiHistory, onOpenSavedItems }: Props) {
+export function ReviewHubScreen({ onBack, onOpenFlashcards, onOpenWrongAnswers, onOpenFermiHistory, onOpenSavedItems, onUpgrade }: Props) {
   const cardStats = getCardStats()
   const wrongStats = getWrongAnswerStats()
   const savedStats = getSavedItemStats()
@@ -50,6 +52,17 @@ export function ReviewHubScreen({ onBack, onOpenFlashcards, onOpenWrongAnswers, 
     run()
     return () => { cancelled = true }
   }, [])
+
+  if (onUpgrade) {
+    return (
+      <div style={{ minHeight: '100dvh', background: 'var(--bg-primary)', color: 'var(--text-primary)', fontFamily: "'Noto Sans JP', sans-serif" }}>
+        <Header title={t('reviewHub.title')} onBack={onBack} />
+        <div style={{ padding: '24px 20px 120px' }}>
+          <FeaturePreviewBanner feature="reviewHub" onUpgrade={onUpgrade} />
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div style={{ minHeight: '100dvh', background: 'var(--bg-primary)', color: 'var(--text-primary)', fontFamily: "'Noto Sans JP', sans-serif" }}>
