@@ -44,7 +44,7 @@ Keita から 2026-06-01 に直接報告された不具合・改善依頼3件を�
 
 | ID | タイトル | 優先度 | ステータス | 担当案 | 由来 |
 |----|---------|--------|-----------|--------|------|
-| AF-05 | 再ログイン後にプロフィール情報とレベル/XP が引き継がれない（データ消失） | P0 | IN_PROGRESS | dev-logic（根因調査→修正）+ test-functional（永続化E2E） | Keita 実機報告 2026-06-01 |
+| AF-05 | 再ログイン後にプロフィール情報とレベル/XP が引き継がれない（データ消失） | P0 | REVIEW | dev-logic（実装済 commit 69b76de / branch fix/af-05-xp-profile-sync）→ test-functional（永続化E2E）→ Keita（migration036 本番DDL + deploy 承認） | Keita 実機報告 2026-06-01 |
 | UI-30 | ライトテーマで「今日の1位問」のチャレンジするボタンが見にくい | P1 | TODO | dev-logic（コンポーネント特定→統一）+ test-functional（両テーマ視認性） | Keita 実機報告 2026-06-01 |
 | AF-06 | アプリDLサイズ300MB削減：レッスンアセットをオンデマンド読込に | P1 | TODO | dev-logic（計測→設計案）+ designer（アセット最適化調査） | Keita 実機報告 2026-06-01 |
 
@@ -61,6 +61,19 @@ Keita から 2026-06-01 に直接報告された不具合・改善依頼3件を�
   - **回帰**: ゲスト→ログインの移行時にローカルデータを Supabase にマージする経路（`guestUser.ts`）に波及しないか確認。匿名ユーザーの進捗が引き継がれる導線を壊さない。
   - **永続化**: 表示だけでなく user_id 紐付けの保存・再ログイン後の再フェッチまでがスコープ。localStorage キャッシュとリモートの整合（どちらを正にするか）を設計判断として明示。
   - **データ損失の調査優先**: 既存ユーザーの XP が「消えた」のか「フェッチできてないだけ（リモートには在る）」のかを最初に切り分ける。後者なら再フェッチ修正で復旧、前者なら保存が走っていない＝より深刻。
+- **根因調査結果（dev-logic 蓮 2026-06-01）**: 2系統に分かれる。
+  - **(A) XP/レベル = データが本当に「消えている」（保存が走っていない／より深刻）**: `logic-xp`（`src/stats.ts:368` XP_KEY）は localStorage 専用で **Supabase へ push する経路が存在しない**。`src/syncService.ts` に XP の push/pull 関数自体が無い。`profiles` テーブルに xp/level カラム無し（本番突合済：id/nickname/goal/occupation/birth_year 等のみ）。`user_stats`（migration 009、PK=`guest_id TEXT`）はランキング用で、`/api/profile/sync-xp`（`server/index.ts:316`）が唯一の書込口だが **クライアントから一度も呼ばれていない**（src 全体に `sync-xp` 参照ゼロ）。本番 `user_stats` 5行すべて `g_` ゲスト形式・`profiles.id`(UUID) との一致 0件＝XP は auth ユーザーに紐付いていない。レベルは XP からの算出（`getCurrentLevel(xp)` `homeHelpers.ts:282`）なので XP が消えればレベルも消える。`syncOnLogout`（`syncService.ts:585`）が `logic-xp` を KEEP_KEYS に入れず削除する → ログアウトで端末からも消滅。**= 再ログイン（≒ログアウト→ログイン）で XP/レベルが完全消失。リモートにも残っていないので復元不能。**
+  - **(B) プロフィール（occupation/birth_year/goal/nickname）= 「リモートには在るが pull back されない」**: push は効いている（`saveUserProfile` `src/userProfile.ts:83` → `pushProfileFields`/`pushOccupation`）。本番 `profiles` 27件中 occupation 21件・nickname 27件が実在。しかし **`pullProfileFields`/`pullOccupation`（`syncService.ts:332`/`280`）が定義のみでどこからも呼ばれていない**。`syncOnLogin`（`syncService.ts:443`）が pull するのは progress / displayName / placement のみ。`syncOnLogout` は `logic-user-profile` を削除（KEEP外）。→ ログアウトで端末プロフィール消去、再ログインで Supabase から読み戻されず空表示。**こちらは再フェッチ追加で復旧可能。**
+  - **認証フロー自体は正常**: `handleAuthRedirect`（`supabase.ts:65` setSession/exchangeCodeForSession）→ `onAuthChange`→`syncOnLogin(user.id)`（`AppV3.tsx:301`）は結線済。`user_progress` は user_id(UUID) で 25/25 正しく紐付き（completedLessons は再ログインで復旧する）。**再ログインで別 user_id が振られる事象は無し**（仮説(a)は否定。同一メールのマジックリンクは同一 auth.users.id）。仮説(b)(c)(d) が真因。
+- **修正案**: (1) `syncService.ts` に `pushXp(xp)`/`pullXp()` を追加し `profiles` に `xp` カラムを足す migration 036 を作成（`user_stats` はランキング専用なので分離維持、auth は profiles.xp に集約）。`stats.ts` の `addXp`/`addXP`/`setXp` で push、`syncOnLogin` で `Math.max(local, remote)` マージ pull。(2) `syncOnLogin` に `pullProfileFields()`/`pullOccupation()` を結線し `loadUserProfile`/`saveUserProfile`（`logic-user-profile`）へ書き戻し（リモート優先 or マージ）。(3) `syncOnLogout` の KEEP_KEYS に `logic-xp`・`logic-user-profile` を追加し、push 成功確認前にローカルを消さない安全側に倒す（リモート未整備時の消失二重防止）。回帰: ゲスト→ログイン移行は guestUser/getGuestId 系で `user_stats` の guest_id を別管理しているため profiles.xp 追加と独立。両OS = deep link 経路は共通で OS 差なし（detectSessionInUrl はネイティブ無効で手動 setSession 統一）。
+- **検証案（test-functional）**: ①ログイン状態で XP 加算・occupation 設定→②logout→③同一メールで再ログイン→ XP/レベル/occupation/birth_year/goal が①の値で復元されること。chromium E2E で localStorage を直接叩いて logout→login を跨ぐ永続化をガード（mutating な /api は呼ばない方針なので Supabase 書込はモック or テスト専用 user_id）。回帰ガード: ゲスト進捗→初回ログインのマージ導線が壊れないこと。
+- **難易度/green 見込み**: 中。migration 1本＋ sync 関数追加＋結線で、影響範囲は syncService/stats/userProfile/AppV3 に局所化。tsc/eslint/vitest は通せる見込み。**migration 036（本番DDL）と実装 commit/push・deploy は Keita 承認待ち**（調査フェーズにつき本番未変更）。
+- **実装完了（dev-logic 蓮 2026-06-01）→ REVIEW**: branch `fix/af-05-xp-profile-sync` / commit `69b76de`。
+  - **変更ファイル**: `supabase/migrations/036_profile_xp.sql`（新規・**本番未適用**）、`src/syncService.ts`（pushXp/pullXp 追加、syncOnLogin に XP Math.max マージ + pullProfileFields 結線、syncOnLogout KEEP_KEYS 拡張）、`src/stats.ts`（addXp/addXP から fire-and-forget で pushXp、認証時のみ）、`src/__tests__/stats.test.ts`（XP回帰テスト5件）。
+  - **migration 036**: `profiles.xp integer not null default 0` + `xp >= 0` CHECK。level は XP から算出のためカラム不要。user_stats(guest_id系)は分離維持。
+  - **green**: tsc --noEmit = 0 / `eslint .` = 0 error(19 既存 warning) / vitest = 31 files **501 tests 全 pass**（XP テスト 5 件追加）。
+  - **隣接で保持追加**: KEEP_KEYS に `logic-xp` `logic-user-profile` に加え `logic-xp-log`（XP履歴）`logic-journal-xp`（朝夜付与フラグ）も追加。XP累積を保持するのにジャーナル付与フラグだけ消えると同日二重付与で XP が膨張するため、整合のため一緒に保持。
+  - **残**: test-functional の永続化 E2E（シナリオは dev-logic から提供済）→ DONE 判定。**push / migration 036 本番DDL適用 / deploy は Keita 承認待ち**。
 - 更新日: 2026-06-01
 
 #### UI-30 — ライトテーマで「今日の1位問」のチャレンジするボタンが見にくい
