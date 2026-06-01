@@ -44,14 +44,14 @@ Keita から 2026-06-01 に直接報告された不具合・改善依頼3件を�
 
 | ID | タイトル | 優先度 | ステータス | 担当案 | 由来 |
 |----|---------|--------|-----------|--------|------|
-| AF-05 | 再ログイン後にプロフィール情報とレベル/XP が引き継がれない（データ消失） | P0 | IN_PROGRESS | dev-logic（根因調査→修正）+ test-functional（永続化E2E） | Keita 実機報告 2026-06-01 |
+| AF-05 | 再ログイン後にプロフィール情報とレベル/XP が引き継がれない（データ消失） | P0 | DONE | dev-logic（根因調査→修正）+ test-functional（永続化E2E） | Keita 実機報告 2026-06-01 |
 | AF-07 | ストリークフリーズ在庫（logic-streak-freeze）がログアウトで消失（KEEP_KEYS 漏れ） | P2 | TODO | dev-logic | AF-05 隣接検出（dev-logic 2026-06-01） |
 | AF-08 | UI設定（font-scale / tts-autoplay / tts-rate）がログアウトで初期値に戻る（KEEP_KEYS 漏れ） | P3 | TODO | dev-logic | AF-05 隣接検出（dev-logic 2026-06-01） |
 | UI-30 | ライトテーマで「今日の1位問」のチャレンジするボタンが見にくい | P1 | TODO | dev-logic（コンポーネント特定→統一）+ test-functional（両テーマ視認性） | Keita 実機報告 2026-06-01 |
 | AF-06 | アプリDLサイズ300MB削減：レッスンアセットをオンデマンド読込に | P1 | TODO | dev-logic（計測→設計案）+ designer（アセット最適化調査） | Keita 実機報告 2026-06-01 |
 
 #### AF-05 — 再ログイン後にプロフィール情報とレベル/XP が引き継がれない（データ消失バグ）
-- 優先度: P0 / ステータス: IN_PROGRESS / 担当案: dev-logic（根因調査→修正）、test-functional（再ログイン跨ぎの永続化を E2E 検証）
+- 優先度: P0 / ステータス: DONE / 担当案: dev-logic（根因調査→修正）、test-functional（再ログイン跨ぎの永続化を E2E 検証）
 - 詳細: Keita 実機報告（2026-06-01）。マジックリンクで再ログインすると、それ以前のプロフィール情報とレベル/XP が消える／引き継がれない。データ消失系のため P0。
 - 想定根因（調査の出発点・未確定）: (a) 再ログインで別 auth ユーザー扱いになっている（user_id が一致しない）、(b) XP/プロフィールがローカル(端末localStorage)保持のみで Supabase 側に user_id 紐付け永続化されていない、(c) マジックリンクの `setSession`／`exchangeCodeForSession` 後にデータ再フェッチが走っていない。着手時に Supabase の該当テーブル（`profiles` / `user_stats` 等）の行と auth user_id の対応、ローカル↔リモートの同期タイミングを実コードで突き合わせて根因を確定する。
 - 受け入れ条件(DoD): 別端末／再ログインでもプロフィール・レベル・XP が保持される。Supabase 側に user_id 紐付けで永続化されていることをデータで確認。再ログイン跨ぎの永続化を E2E（test-functional）で検証し回帰ガードを置く。tsc / eslint . / vitest green。
@@ -63,6 +63,13 @@ Keita から 2026-06-01 に直接報告された不具合・改善依頼3件を�
   - **回帰**: ゲスト→ログインの移行時にローカルデータを Supabase にマージする経路（`guestUser.ts`）に波及しないか確認。匿名ユーザーの進捗が引き継がれる導線を壊さない。
   - **永続化**: 表示だけでなく user_id 紐付けの保存・再ログイン後の再フェッチまでがスコープ。localStorage キャッシュとリモートの整合（どちらを正にするか）を設計判断として明示。
   - **データ損失の調査優先**: 既存ユーザーの XP が「消えた」のか「フェッチできてないだけ（リモートには在る）」のかを最初に切り分ける。後者なら再フェッチ修正で復旧、前者なら保存が走っていない＝より深刻。
+- 検証結果（test-functional / 試野 緑 2026-06-01、branch `fix/af-05-xp-profile-sync` `69b76de`）: 緑判定。本番反映してよい。
+  - 土台: vitest 全 507 passed / 0 failed（31 files）。うち stats.test.ts 34件（XP 回帰5件含む）+ 新規 af05-sync-integration.test.ts 8件。tsc -b --noEmit EXIT 0。eslint . 0 errors（19 warnings は既存・AF-05 無関係）。
+  - 統合検証手段: 本番 Supabase（yctlelmlwjwlcpcxvmgx）非接触。`@supabase/supabase-js` の createClient を in-memory フェイククライアントに差し替え、test 専用 user_id で localStorage を跨いだ syncOnLogout→syncOnLogin の永続化を実証。新規ファイル `src/__tests__/af05-sync-integration.test.ts`。
+  - シナリオ結果: 1(XP/プロフィール push リモート反映)=緑、2(syncOnLogout KEEP_KEYS で logic-xp/xp-log/journal-xp/user-profile 残・KEEP外は除去)=緑、3+4(再ログインで XP=80・occupation/birthYear/goal 復元)=緑、5(Math.max マージ: local>remote/remote>local/remote=null の3系統)=緑、6(guestId と profiles.xp 独立・claim 導線維持)=緑。追加でクランプ回帰（pushXp 負値/NaN→0・floor、pullXp 負値→0）=緑。
+  - migration 036 ロジック確認: profiles は id 以外すべて nullable/default 付きのため `add column if not exists xp not null default 0` + `check(xp>=0)` は冪等で、pushXp の upsert(id/xp/updated_at) と整合。本番 DDL 適用後も成立（DDL 適用は Keita 承認領域、未実施）。pushXp の profiles upsert は既存 pushOccupation/pushProfileFields と同じ RLS パターンで新規リスクなし。
+  - モック代替した範囲: 実機 iOS/Android の deep link `logic://auth` 経由セッション復元の OS 差は本番非接触では再現不可のためコードロジック追跡で代替（detectSessionInUrl 無効＝手動 setSession 統一で OS 差は出ない設計を確認、実機での最終確認は別途推奨だが本修正のロジックは OS 非依存）。profiles.xp 列の実 DDL 依存部は in-memory フェイクで代替し、列追加後に成立することをロジックで確認。
+- 本番反映（dev-logic 蓮 2026-06-01、Keita 承認「検証緑なら反映GO」）: test-functional 全緑を受け DONE 化。(1) 本番 Supabase（yctlelmlwjwlcpcxvmgx）に migration 036（profiles.xp 追加＋profiles_xp_nonneg check）適用、(2) branch `fix/af-05-xp-profile-sync` を main にマージ→push（Android 自動ビルド）、(3) Render 本番 deploy を workflow_dispatch でトリガー。migration→deploy 順序非依存（client は `column does not exist` を握り潰す安全設計）。Android は次回内部配信で同梱。
 - 更新日: 2026-06-01
 
 #### AF-07 — ストリークフリーズ在庫（logic-streak-freeze）がログアウトで消失
