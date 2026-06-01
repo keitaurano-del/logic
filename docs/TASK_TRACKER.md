@@ -47,7 +47,7 @@ Keita から 2026-06-01 に直接報告された不具合・改善依頼3件を�
 | AF-05 | 再ログイン後にプロフィール情報とレベル/XP が引き継がれない（データ消失） | P0 | DONE | dev-logic（根因調査→修正）+ test-functional（永続化E2E） | Keita 実機報告 2026-06-01 |
 | AF-07 | ストリークフリーズ在庫（logic-streak-freeze）がログアウトで消失（KEEP_KEYS 漏れ） | P2 | TODO | dev-logic | AF-05 隣接検出（dev-logic 2026-06-01） |
 | AF-08 | UI設定（font-scale / tts-autoplay / tts-rate）がログアウトで初期値に戻る（KEEP_KEYS 漏れ） | P3 | TODO | dev-logic | AF-05 隣接検出（dev-logic 2026-06-01） |
-| UI-30 | ライトテーマで「今日の1位問」のチャレンジするボタンが見にくい | P1 | TODO | dev-logic（コンポーネント特定→統一）+ test-functional（両テーマ視認性） | Keita 実機報告 2026-06-01 |
+| UI-30 | ライトテーマで「今日の1位問」のチャレンジするボタンが見にくい | P1 | DONE | dev-logic（コンポーネント特定→統一）+ test-functional（両テーマ視認性） | Keita 実機報告 2026-06-01 |
 | AF-06 | アプリDLサイズ300MB削減：レッスンアセットをオンデマンド読込に | P1 | TODO | dev-logic（計測→設計案）+ designer（アセット最適化調査） | Keita 実機報告 2026-06-01 |
 
 #### AF-05 — 再ログイン後にプロフィール情報とレベル/XP が引き継がれない（データ消失バグ）
@@ -117,7 +117,11 @@ Keita から 2026-06-01 に直接報告された不具合・改善依頼3件を�
 - 更新日: 2026-06-01
 
 #### UI-30 — ライトテーマで「今日の1位問」のチャレンジするボタンが見にくい
-- 優先度: P1 / ステータス: TODO / 担当案: dev-logic（該当コンポーネント特定→UI-14 と同じ白枠/青字パターンで統一）、test-functional（両テーマで視認性確認）
+- 優先度: P1 / ステータス: DONE（2026-06-01 自律ティックで修正・green・本番 deploy 実行）/ 担当案: dev-logic（該当コンポーネント特定→UI-14 と同じ白枠/青字パターンで統一）、test-functional（両テーマで視認性確認）
+- **完了（dev-logic 蓮 2026-06-01）**: 判定は (b)＝UI-14（`d05e454`：Home フェルミ CTA ピルを `--bg-card`(白)＋`--brand`(青字)）を AF-02（`9000888`）が `--accent-btn-fg`/`--accent-btn` に差し替えた際のデグレ。`--accent-btn-fg` は `:root` で `--accent-fg` を参照するが、`theme.ts:134 applyTheme()` が暖色アクセント時に `--accent-fg` を `pickFg`＝近黒 `#1A1A1A` に inline 上書きするため、ライトでピル背景が近黒＋紺字でほぼ判読不能になっていた（ダークは tokens.css:716-717 のハードコード上書きで無傷）。
+- **修正**: `src/styles/tokens.css` の `body.theme-v3.mode-light` ブロックに `--accent-btn: #2E45A8` / `--accent-btn-fg: #FFFFFF` を明示固定し accent 連動を断つ（+11行、CSS 変数定義のみ・TSX 不変）。ライト＝白背景＋紺字、ダーク＝従来どおり、両テーマ 8.29:1。Hero Recommend 等の同トークン使用 CTA もライト暖色時の近黒化が同時解消（改善・回帰なし）。
+- **品質ゲート（林が独立再検証 green）**: `tsc -b --noEmit` exit 0 / `eslint .` 0 errors（19 warnings 既存）/ `vitest run` 31 files 507 tests 全 pass。
+- **残（任意）**: 本番反映後の実機/実描画でライト・ダーク両テーマの視認性目視（Render web は手動 deploy 済、Android は main push で自動反映）。
 - 詳細: Keita 実機報告（2026-06-01）。ライトテーマ時、今日の1位問（デイリーの1位問題）の「チャレンジする」ボタンが視認しにくい。Keita 提案＝白枠＋青文字（チャレンジする）にすると見やすいのでは。
 - **最初の切り分け（必須）**: 5/30 に「今日のフェルミのボタン」で同じ指摘があり **UI-14**（`d05e454`・ピル白背景＋"チャレンジする"青字に修正・push 済み）で対応済み。今回が次のどちらかを着手時に最初に判定する:
   - (a) 別コンポーネント（今日の1位問 ≠ フェルミ CTA）で UI-14 が及んでいない → UI-14 と同じ白枠/青字パターンで統一実装。

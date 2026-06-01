@@ -338,6 +338,17 @@ body.theme-v3.mode-light {
   --accent-dark:  var(--brand-hover);
   --accent-fg:    #FFFFFF;
 
+  /* UI-30: ベタ塗り CTA トークンを light でも明示。
+   * :root では --accent-btn-fg: var(--accent-fg) だが、applyTheme() が
+   * アクセント色に応じて --accent-fg を inline 上書き（暖色系だと pickFg で
+   * 近黒 #1A1A1A）するため、light で --accent-btn-fg がボタン白文字でなく
+   * 近黒に化け、Home フェルミ CTA ピル（白背景＋青字を反転利用）が
+   * 「近黒背景＋紺字」でほぼ判読不能になっていた（AF-02 が UI-14 の
+   * var(--bg-card)/var(--brand) をこのトークンに差し替えた際のデグレ）。
+   * dark 同様に明示固定して accent 連動を断つ（white 文字 + 濃紺塗りで 8.29:1）。 */
+  --accent-btn:    #2E45A8;
+  --accent-btn-fg: #FFFFFF;
+
   /* Light mode WCAG AA fix: #6C8EF5 on white は 3.0:1 で本文色不足。
    * テキスト用途では --brand-hover (#2E45A8, ratio ~9.5:1) を使うよう、
    * --brand 自体をテキスト想定なら hover 色に寄せる。
