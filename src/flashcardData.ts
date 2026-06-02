@@ -86,20 +86,51 @@ export function reviewCard(id: string, quality: 'again' | 'good' | 'easy') {
   saveCards(cards)
 }
 
+/**
+ * 指定カードの現在値から、各評価 (again/good/easy) を選んだ場合の「次回までの日数」を返す。
+ * reviewCard() の interval 計算と同じロジックを副作用なしで再現する（UI のボタンに次回間隔を表示するため）。
+ * - again: 必ず 0（すぐ再表示）
+ * - good:  interval が 0 なら 1、それ以外は interval * ease
+ * - easy:  interval が 0 なら 3、それ以外は interval * ease * 1.3
+ */
+export function previewIntervals(card: Pick<Flashcard, 'interval' | 'ease'>): {
+  again: number
+  good: number
+  easy: number
+} {
+  const goodEase = card.ease
+  const easyEase = Math.min(3.0, card.ease + 0.15)
+  return {
+    again: 0,
+    good: card.interval === 0 ? 1 : Math.round(card.interval * goodEase),
+    easy: card.interval === 0 ? 3 : Math.round(card.interval * easyEase * 1.3),
+  }
+}
+
 export function getDueCards(): Flashcard[] {
   const today = localDateStr()
   return loadCards().filter((c) => c.nextReview <= today)
 }
 
-/** 過去に間違えたことがあるカード（弱点カード）。間違えた回数が多い順 */
+/**
+ * 弱点カードの判定条件。
+ * 「過去に間違えたことがあり (wrongCount > 0)、かつ まだ立て直せていない (interval === 0)」カードを弱点とする。
+ * reviewCard() は 'again' で interval を 0 にリセットし、'good'/'easy' の正解で interval を 1 以上に進める。
+ * よって 'good'/'easy' で正解すると interval >= 1 になり、このカードは自動的に弱点から外れる。
+ * wrongCount は単調増加だが、interval を併用することで「間違えて未復習のカード」だけを弱点にできる。
+ */
+function isWeakCard(c: Flashcard): boolean {
+  return c.wrongCount > 0 && c.interval === 0
+}
+
+/** 弱点カード（間違えてまだ立て直していないカード）。間違えた回数が多い順 */
 export function getWeakCards(): Flashcard[] {
   return loadCards()
-    .filter((c) => c.wrongCount > 0)
+    .filter(isWeakCard)
     .sort((a, b) => {
-      const aScore = b.wrongCount - b.correctCount
-      const bScore = a.wrongCount - a.correctCount
-      if (aScore !== bScore) return aScore - bScore
-      return b.wrongCount - a.wrongCount
+      // interval はいずれも 0 なので、間違えた回数 (wrongCount) が多い順に並べる。
+      if (b.wrongCount !== a.wrongCount) return b.wrongCount - a.wrongCount
+      return a.correctCount - b.correctCount
     })
 }
 
@@ -107,7 +138,7 @@ export function getCardStats() {
   const cards = loadCards()
   const today = localDateStr()
   const due = cards.filter((c) => c.nextReview <= today).length
-  const weak = cards.filter((c) => c.wrongCount > 0).length
+  const weak = cards.filter(isWeakCard).length
   const mastered = cards.filter((c) => c.correctCount >= 3 && c.interval >= 7).length
   return { total: cards.length, due, weak, mastered }
 }

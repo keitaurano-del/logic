@@ -1,5 +1,5 @@
 import { Fragment, type ReactNode, useMemo, useState } from 'react'
-import { getDueCards, getWeakCards, reviewCard, type Flashcard } from '../flashcardData'
+import { getDueCards, getWeakCards, previewIntervals, reviewCard, type Flashcard } from '../flashcardData'
 import { CheckIcon, SparklesIcon } from '../icons'
 import { Button } from '../components/Button'
 import { Header } from '../components/platform/Header'
@@ -52,6 +52,15 @@ export function FlashcardsScreen({ onBack, mode = 'due', onUpgrade }: Flashcards
 
   const card = queue[idx]
   const done = idx >= queue.length
+
+  // 各評価ボタンに「次はいつ復習になるか」を添えるためのラベル（good と easy の差を可視化）。
+  const nextLabels = useMemo(() => {
+    if (!card) return null
+    const iv = previewIntervals(card)
+    const fmt = (days: number) =>
+      days <= 0 ? t('flashcards.nextSoon') : t('flashcards.nextDays', { days })
+    return { again: fmt(iv.again), good: fmt(iv.good), easy: fmt(iv.easy) }
+  }, [card])
 
   const handleFlip = () => {
     haptic.selection()
@@ -170,7 +179,10 @@ export function FlashcardsScreen({ onBack, mode = 'due', onUpgrade }: Flashcards
                     block
                     onClick={() => handleReview('again')}
                   >
-                    {t('flashcards.again')}
+                    <span className="fc3-rate">
+                      <span className="fc3-rate-label">{t('flashcards.again')}</span>
+                      <span className="fc3-rate-next">{nextLabels?.again}</span>
+                    </span>
                   </Button>
                   <Button
                     variant="default"
@@ -178,7 +190,10 @@ export function FlashcardsScreen({ onBack, mode = 'due', onUpgrade }: Flashcards
                     block
                     onClick={() => handleReview('good')}
                   >
-                    {t('flashcards.good')}
+                    <span className="fc3-rate">
+                      <span className="fc3-rate-label">{t('flashcards.good')}</span>
+                      <span className="fc3-rate-next">{nextLabels?.good}</span>
+                    </span>
                   </Button>
                   <Button
                     variant="primary"
@@ -186,11 +201,11 @@ export function FlashcardsScreen({ onBack, mode = 'due', onUpgrade }: Flashcards
                     block
                     onClick={() => handleReview('easy')}
                   >
-                    {t('flashcards.easy')}
+                    <span className="fc3-rate">
+                      <span className="fc3-rate-label">{t('flashcards.easy')}</span>
+                      <span className="fc3-rate-next">{nextLabels?.easy}</span>
+                    </span>
                   </Button>
-                </div>
-                <div className="fc3-meta">
-                  {t('flashcards.intervalEase', { interval: card.interval, ease: card.ease.toFixed(1) })}
                 </div>
               </div>
             )}

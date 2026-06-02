@@ -177,7 +177,9 @@
 /* Main text — sans, generous line-height, readable on mobile */
 .fc3-face-text {
   font-weight: 600;
-  font-size: clamp(16px, 4.5vw, 22px);
+  /* rem 基準（1rem = 15px）。html font-size を動かす font-scale 設定に追従させるため
+     px ハードコードでなく rem を使う。1.1333rem≒17px 〜 1.5333rem≒23px。 */
+  font-size: clamp(1.1333rem, 4.5vw, 1.5333rem);
   line-height: 1.65;
   letter-spacing: -0.005em;
   text-align: center;
@@ -192,7 +194,11 @@
 }
 
 .fc3-back-text {
-  font-size: clamp(14px, 4vw, 19px);
+  /* FB-18: 裏面（回答）の文字を読みやすいサイズに引き上げ。
+     rem 基準（1rem = 15px）で 1.2rem≒18px 〜 1.5333rem≒23px。
+     表面（問い）と同等以上にして、めくった先の回答が小さく見えないようにする。
+     長文は .fc3-face-text の max-height + overflow-y:auto でスクロール担保済み。 */
+  font-size: clamp(1.2rem, 4.8vw, 1.5333rem);
   font-weight: 500;
   line-height: 1.7;
 }
@@ -259,11 +265,25 @@
   gap: var(--s-2);
 }
 
-.fc3-meta {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  text-align: center;
-  margin-top: var(--s-1);
+/* 各評価ボタンの中身: ラベル（もう一度/わかった/簡単）と次回間隔を縦に積む */
+.fc3-rate {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  line-height: 1.2;
+}
+
+.fc3-rate-label {
+  font-weight: 700;
+}
+
+/* 「すぐ / N日後」— good と easy の次回間隔の差を一目で示す補助テキスト */
+.fc3-rate-next {
+  font-size: 0.8rem;
+  font-weight: 600;
+  opacity: 0.8;
 }
 
 /* Reduced motion — collapse the flip into an instant swap */

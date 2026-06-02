@@ -1528,6 +1528,9 @@ const STRINGS: Record<Locale, Strings> = {
     'flashcards.good': 'わかった',
     'flashcards.easy': '簡単',
     'flashcards.intervalEase': '間隔: {interval}日 · ease: {ease}',
+    // 各評価ボタンに「次はいつ復習になるか」を添えるラベル
+    'flashcards.nextSoon': 'すぐ',
+    'flashcards.nextDays': '{days}日後',
 
     // Lesson complete screen
     'lessonComplete.eyebrow': 'LESSON COMPLETE',
@@ -3522,6 +3525,9 @@ const STRINGS: Record<Locale, Strings> = {
     'flashcards.good': 'Got it',
     'flashcards.easy': 'Easy',
     'flashcards.intervalEase': 'Interval: {interval}d · ease: {ease}',
+    // Label appended to each rating button showing when the card is next due
+    'flashcards.nextSoon': 'Soon',
+    'flashcards.nextDays': 'in {days}d',
 
     // Lesson complete screen
     'lessonComplete.eyebrow': 'LESSON COMPLETE',
