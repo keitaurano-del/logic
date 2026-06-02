@@ -20,6 +20,7 @@ import { TrialEndingBanner } from '../components/TrialStatus'
 import { shouldShowTrialEndingBanner } from '../trialStatus'
 import { LazyAssetImage } from '../components/LazyAssetImage'
 import { resolveAssetUrl } from '../lessonAssets'
+import { getHeroImage } from '../lessonSlides'
 import { t } from '../i18n'
 
 // フェルミ問題は fermiData.ts の FERMI_POOL を使用（日付ベース共通）
@@ -81,7 +82,7 @@ function buildHeroLesson(id: number): HeroLesson {
     title: data?.title ?? '',
     category: data?.category ?? '',
     level: meta ? t(LEVEL_KEY[meta.level] ?? meta.level) : '',
-    image: meta?.image ?? `${IMG}/lesson-${id}.png`,
+    image: meta?.image ?? getHeroImage(data?.category ?? '', id),
   }
 }
 

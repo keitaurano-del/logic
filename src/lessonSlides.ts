@@ -294,7 +294,7 @@ const LESSON_IMAGES: Record<number, string> = {
   807: '/images/v3/lesson-807.webp',  // ロールモデルから学ぶ
 }
 
-function getHeroImage(category: string, lessonId?: number): string {
+export function getHeroImage(category: string, lessonId?: number): string {
   // IDが指定されていれば個別画像を優先
   if (lessonId != null && LESSON_IMAGES[lessonId]) {
     return LESSON_IMAGES[lessonId]
@@ -332,7 +332,7 @@ function getHeroImage(category: string, lessonId?: number): string {
   if (c.includes('coffee') || c.includes('コーヒー')) return '/images/v3/home-daily-question.webp'
   // 未マッピングのカテゴリは可視化（dev/console で気づけるように）
   if (typeof console !== 'undefined' && category) {
-    console.warn(`[lessonSlides] getHeroImage fallback: no category mapping for "${category}" (lessonId=${lessonId ?? '?'}) — using hero-deduction.png`)
+    console.warn(`[lessonSlides] getHeroImage fallback: no category mapping for "${category}" (lessonId=${lessonId ?? '?'}) — using hero-deduction.webp`)
   }
   return '/images/v3/hero-deduction.webp'
 }
