@@ -22,6 +22,17 @@ type Screen =
   | { type: 'journal' }
   | { type: 'wrong-answers' }
   | { type: 'lessons' }
+  | { type: 'fermi-ranking' }
+  | { type: 'profile' }
+  | { type: 'flashcards'; mode?: 'due' | 'weak' }
+  | { type: 'review-hub' }
+  | { type: 'daily-fermi' }
+  | { type: 'fermi-history' }
+  | { type: 'daily-problem' }
+  | { type: 'streak' }
+  | { type: 'completed-lessons' }
+  | { type: 'study-time' }
+  | { type: 'rank' }
 
 // ─── lessonData のモック ──────────────────────────────────────────────────
 // カテゴリ 'logic' に id=1, id=2 の 2 レッスン、
@@ -232,5 +243,94 @@ describe('FB-05 backNav — テスト3: saved-items から開いたレッスン�
     }
     lessonCompleteOnNext(screen, handleOpenLessonSpy, navigateSpy)
     expect(navigateSpy).toHaveBeenCalledWith({ type: 'wrong-answers' }, true)
+  })
+})
+
+// ─── Stage② テスト用のロジック抽出 ─────────────────────────────────────────
+const NAV_SNAPSHOT_KEY_TEST = 'logic-nav-snapshot'
+const PERSISTABLE_SCREENS_TEST = new Set<string>([
+  'home', 'lessons', 'roadmap', 'profile',
+  'flashcards', 'review-hub', 'wrong-answers', 'saved-items',
+  'daily-fermi', 'fermi-ranking', 'fermi-history', 'daily-problem',
+  'streak', 'completed-lessons', 'study-time', 'rank', 'journal',
+])
+
+function shouldPersist(screen: Screen): boolean {
+  return PERSISTABLE_SCREENS_TEST.has(screen.type)
+}
+
+function saveSnapshot(screen: Screen): void {
+  if (shouldPersist(screen)) {
+    localStorage.setItem(NAV_SNAPSHOT_KEY_TEST, JSON.stringify(screen))
+  }
+}
+
+function loadSnapshot(): Screen | null {
+  try {
+    const raw = localStorage.getItem(NAV_SNAPSHOT_KEY_TEST)
+    if (!raw) return null
+    const snapshot = JSON.parse(raw) as Screen
+    if (snapshot && PERSISTABLE_SCREENS_TEST.has(snapshot.type)) return snapshot
+  } catch { /* ignore */ }
+  return null
+}
+
+function getInitialScreenForUser_Stage2(): Screen {
+  const restored = loadSnapshot()
+  if (restored) return restored
+  const lastTab = localStorage.getItem('logic-last-tab')
+  const RESTORABLE_TABS = ['home', 'lessons', 'fermi-ranking', 'journal', 'profile']
+  if (lastTab && RESTORABLE_TABS.includes(lastTab)) {
+    if (lastTab === 'fermi-ranking') return { type: 'fermi-ranking' }
+    return { type: lastTab } as Screen
+  }
+  return { type: 'home' }
+}
+
+describe('FB-05 Stage② 離脱復帰: localStorage スナップショット', () => {
+  beforeEach(() => {
+    localStorage.clear()
+  })
+  afterEach(() => {
+    localStorage.clear()
+  })
+
+  it('PERSISTABLE な screen (roadmap) は saveSnapshot で保存される', () => {
+    saveSnapshot({ type: 'roadmap', category: 'logic' })
+    expect(localStorage.getItem(NAV_SNAPSHOT_KEY_TEST)).not.toBeNull()
+  })
+
+  it('非 PERSISTABLE な screen (lesson) は saveSnapshot で保存されない', () => {
+    saveSnapshot({ type: 'lesson', lessonId: 1 } as Screen)
+    expect(localStorage.getItem(NAV_SNAPSHOT_KEY_TEST)).toBeNull()
+  })
+
+  it('非 PERSISTABLE な screen (lesson-complete) は保存されない', () => {
+    saveSnapshot({ type: 'lesson-complete', lessonId: 1, durationSec: 60, prevLevel: 1 } as Screen)
+    expect(localStorage.getItem(NAV_SNAPSHOT_KEY_TEST)).toBeNull()
+  })
+
+  it('loadSnapshot はスナップショットがあれば復元する', () => {
+    saveSnapshot({ type: 'roadmap', category: 'numeracy' })
+    const result = loadSnapshot()
+    expect(result).toEqual({ type: 'roadmap', category: 'numeracy' })
+  })
+
+  it('loadSnapshot はスナップショットがなければ null を返す', () => {
+    expect(loadSnapshot()).toBeNull()
+  })
+
+  it('getInitialScreenForUser はスナップショットがあればそれを返す', () => {
+    saveSnapshot({ type: 'saved-items' })
+    expect(getInitialScreenForUser_Stage2()).toEqual({ type: 'saved-items' })
+  })
+
+  it('getInitialScreenForUser はスナップショットがない場合 logic-last-tab を参照する', () => {
+    localStorage.setItem('logic-last-tab', 'lessons')
+    expect(getInitialScreenForUser_Stage2()).toEqual({ type: 'lessons' })
+  })
+
+  it('getInitialScreenForUser は logic-last-tab もなければ home を返す', () => {
+    expect(getInitialScreenForUser_Stage2()).toEqual({ type: 'home' })
   })
 })
