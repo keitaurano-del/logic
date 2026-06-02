@@ -84,6 +84,17 @@ import { ReviewPreviewScreen } from './screens/ReviewPreviewScreen'
 
 const ONBOARDED_KEY = 'logic-onboarded'
 
+const NAV_SNAPSHOT_KEY = 'logic-nav-snapshot'
+
+// 再起動時に安全に復元できる Screen 型の集合
+// lesson/lesson-complete/ai-problem など揮発状態を持つものは除外
+const PERSISTABLE_SCREENS = new Set<string>([
+  'home', 'lessons', 'roadmap', 'profile',
+  'flashcards', 'review-hub', 'wrong-answers', 'saved-items',
+  'daily-fermi', 'fermi-ranking', 'fermi-history', 'daily-problem',
+  'streak', 'completed-lessons', 'study-time', 'rank', 'journal',
+])
+
 // SCRUM-200 / DF-F11: 新規インストール検知と localStorage の選択的初期化。
 // ロジックは installReset.ts に切り出した（単体テスト容易化 + 全消し副作用の是正）。
 
@@ -145,8 +156,27 @@ function getInitialScreen(user: User | null): Screen {
     if (preview === 'fontsize') return { type: 'font-size-settings' }
     if (preview === 'journal') return { type: 'journal' }
   }
-  // ログイン済みユーザーはオンボーディングをスキップ
-  if (user) return { type: 'home' }
+  // ログイン済みユーザーはオンボーディングをスキップ、最後のタブ位置を復元
+  if (user) {
+    // Stage②: 復帰スナップショットを試みる
+    try {
+      const raw = localStorage.getItem(NAV_SNAPSHOT_KEY)
+      if (raw) {
+        const snapshot = JSON.parse(raw) as Screen
+        if (snapshot && PERSISTABLE_SCREENS.has(snapshot.type)) {
+          return snapshot
+        }
+      }
+    } catch { /* ignore QuotaExceeded / parse error */ }
+    // フォールバック: 最後のタブ位置
+    const lastTab = localStorage.getItem('logic-last-tab')
+    const RESTORABLE_TABS = ['home', 'lessons', 'fermi-ranking', 'journal', 'profile']
+    if (lastTab && RESTORABLE_TABS.includes(lastTab)) {
+      if (lastTab === 'fermi-ranking') return { type: 'fermi-ranking' }
+      return { type: lastTab } as Screen
+    }
+    return { type: 'home' }
+  }
   // 未ログインは必ずオンボーディングまたはログイン画面へ
   if (localStorage.getItem(ONBOARDED_KEY) !== '1') {
     return { type: 'onboarding' }
@@ -235,6 +265,12 @@ function AppV3() {
     const nextTab = SCREEN_TO_TAB[next.type]
     if (nextTab !== undefined) {
       setTab(nextTab)
+    }
+    // Stage②: 安全な screen は localStorage に保存して離脱復帰に備える
+    if (PERSISTABLE_SCREENS.has(next.type)) {
+      try {
+        localStorage.setItem(NAV_SNAPSHOT_KEY, JSON.stringify(next))
+      } catch { /* ignore QuotaExceeded */ }
     }
     if (isPopNavRef.current) return // popstate 経由なら push しない
     if (replace || ROOT_SCREENS.has(next.type)) {
@@ -375,6 +411,9 @@ function AppV3() {
 
   const handleTabChange = (next: Tab) => {
     setTab(next)
+    // 最後のアクティブタブを保存（ログイン済みユーザーの再起動後に復元するため）
+    const storageTab = next === 'ranking' ? 'fermi-ranking' : next
+    localStorage.setItem('logic-last-tab', storageTab)
     // rankingタブはフェルミランキング画面へ
     if (next === 'ranking') {
       navigate({ type: 'fermi-ranking' }, true)
