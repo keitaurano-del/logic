@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { Fragment, type ReactNode, useMemo, useState } from 'react'
 import { getDueCards, getWeakCards, reviewCard, type Flashcard } from '../flashcardData'
 import { CheckIcon, SparklesIcon } from '../icons'
 import { Button } from '../components/Button'
@@ -13,6 +13,17 @@ interface FlashcardsScreenProps {
   onBack: () => void
   mode?: 'due' | 'weak'
   onUpgrade?: () => void
+}
+
+/** フラッシュカードのコンテンツを JSX に変換する（<br/><br>を改行に、他タグを除去）。 */
+function renderCardContent(text: string): ReactNode {
+  const parts = text.split(/<br\s*\/?>/gi)
+  return parts.map((part, i) => (
+    <Fragment key={i}>
+      {i > 0 && <br />}
+      {part}
+    </Fragment>
+  ))
 }
 
 export function FlashcardsScreen({ onBack, mode = 'due', onUpgrade }: FlashcardsScreenProps) {
@@ -125,12 +136,12 @@ export function FlashcardsScreen({ onBack, mode = 'due', onUpgrade }: Flashcards
                 <div className="fc3-card-inner">
                   <div className="fc3-face fc3-face-front">
                     <div className="fc3-face-eyebrow">{t('label.question')}</div>
-                    <div className="fc3-face-text">{card.front}</div>
+                    <div className="fc3-face-text">{renderCardContent(card.front)}</div>
                     <div className="fc3-flip-hint">{t('flashcards.flipHint')}</div>
                   </div>
                   <div className="fc3-face fc3-face-back">
                     <div className="fc3-face-eyebrow">{t('label.answer')}</div>
-                    <div className="fc3-face-text fc3-back-text">{card.back}</div>
+                    <div className="fc3-face-text fc3-back-text">{renderCardContent(card.back)}</div>
                   </div>
                 </div>
               </button>

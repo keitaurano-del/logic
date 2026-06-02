@@ -159,6 +159,16 @@ function getInitialScreen(user: User | null): Screen {
 // 'ranking' タブ ID は Screen.type 'fermi-ranking' に対応する（handleTabChange / popstate 参照）。
 const ROOT_SCREENS = new Set<string>(['home', 'lessons', 'fermi-ranking', 'journal', 'profile'])
 
+// ── Screen.type → Tab ID のマッピング（ROOT_SCREENS 専用）──
+// 'ranking' タブは Screen.type 'fermi-ranking' に対応する唯一の例外を1か所に集約。
+const SCREEN_TO_TAB: Partial<Record<string, Tab>> = {
+  'home': 'home',
+  'lessons': 'lessons',
+  'fermi-ranking': 'ranking',
+  'journal': 'journal',
+  'profile': 'profile',
+}
+
 function AppV3() {
   const [tab, setTab] = useState<Tab>('home')
   const [screen, setScreen] = useState<Screen>(() => getInitialScreen(null))
@@ -218,8 +228,14 @@ function AppV3() {
   }, [screen.type])
 
   // ── History 連動の setScreen ラッパー ──
+  // ROOT_SCREENS に遷移するときは tab state も自動で合わせる（手動 setTab 呼び出し不要）。
   const navigate = useCallback((next: Screen, replace = false) => {
     setScreen(next)
+    // ROOT_SCREENS への遷移は tab も同期する（SCREEN_TO_TAB で一元管理）
+    const nextTab = SCREEN_TO_TAB[next.type]
+    if (nextTab !== undefined) {
+      setTab(nextTab)
+    }
     if (isPopNavRef.current) return // popstate 経由なら push しない
     if (replace || ROOT_SCREENS.has(next.type)) {
       window.history.replaceState({ screen: next }, '')
@@ -324,7 +340,6 @@ function AppV3() {
     let cleanup: (() => void) | undefined
     void (async () => {
       cleanup = await addNotificationTapListener(() => {
-        setTab('home')
         navigate({ type: 'home' })
       })
       await rescheduleAllReminders()
@@ -376,15 +391,25 @@ function AppV3() {
   }
 
   const handleBack = () => {
-    // History にエントリがあれば戻る、なければタブルートへ
-    if (window.history.state?.screen && !ROOT_SCREENS.has(screenRef.current.type)) {
+    // 現在がルート画面（ROOT_SCREENS）の場合はホームへ戻す（home 以外のタブルートから戻す）
+    if (ROOT_SCREENS.has(screenRef.current.type)) {
+      if (screenRef.current.type !== 'home') {
+        navigate({ type: 'home' }, true)
+      }
+      return
+    }
+    // スタック上に前画面があれば History を戻す
+    if (window.history.state?.screen) {
       window.history.back()
-    } else if (tab === 'ranking') {
-      navigate({ type: 'fermi-ranking' }, true)
-    } else if (tab === 'journal') {
-      navigate({ type: 'journal' }, true)
     } else {
-      navigate({ type: tab }, true)
+      // フォールバック: 現在タブのルート画面へ（SCREEN_TO_TAB の逆引きで tab→screenType）
+      if (tab === 'ranking') {
+        navigate({ type: 'fermi-ranking' }, true)
+      } else if (tab === 'journal') {
+        navigate({ type: 'journal' }, true)
+      } else {
+        navigate({ type: tab }, true)
+      }
     }
   }
 
@@ -480,7 +505,7 @@ function AppV3() {
           onOpenRank={() => navigate({ type: 'rank' })}
           onOpenStats={() => navigate({ type: 'profile' }, true)}
           onOpenAIGen={() => navigate({ type: 'ai-problem-gen' })}
-          onOpenRoadmap={() => { setTab('lessons'); navigate({ type: 'lessons' }, true) }}
+          onOpenRoadmap={() => { navigate({ type: 'lessons' }, true) }}
           onNavigateToDailyFermi={() => navigate({ type: 'daily-fermi' })}
           onOpenPlacementTest={() => navigate({ type: 'placement-test' })}
           onOpenReviewHub={() => navigate({ type: 'review-hub' })}
@@ -671,7 +696,7 @@ function AppV3() {
       {screen.type === 'personal-course' && (
         <PersonalCourseScreen
           onStartLesson={handleOpenLesson}
-          onExit={() => { setTab('home'); navigate({ type: 'home' }, true) }}
+          onExit={() => { navigate({ type: 'home' }, true) }}
           onBack={handleBack}
         />
       )}
@@ -790,7 +815,7 @@ function AppV3() {
                 return
               }
             }
-            // 次レッスンなし → returnScreen（呼び出し元）→ roadmap → home の優先順位で遷移
+            // 次レッスンなし → returnScreen があればそこへ、なければ roadmap か home へ
             const destination: Screen = screen.returnScreen
               ?? (currentLesson ? { type: 'roadmap', category: currentLesson.category } : { type: 'home' })
             navigate(destination, true)
