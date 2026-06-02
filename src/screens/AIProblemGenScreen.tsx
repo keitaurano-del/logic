@@ -427,7 +427,7 @@ export function AIProblemGenScreen({ onBack, onPlay, onUpgrade }: AIProblemGenSc
             <button
               onClick={() => handleGenerate(recommendPrompt)}
               disabled={generating || isAtLimit || !canUse || !recommendPrompt}
-              style={{ width: '100%', background: generating || isAtLimit || !canUse ? 'var(--bg-card)' : `linear-gradient(135deg, ${'var(--brand)'} 0%, var(--brand-light) 100%)`, color: generating || isAtLimit || !canUse ? 'var(--text-muted)' : 'var(--accent-fg)', border: 'none', borderRadius: 14, padding: '16px 20px', fontSize: '1rem', fontWeight: 700, cursor: generating || isAtLimit || !canUse ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: 12, boxShadow: generating || isAtLimit || !canUse ? 'none' : 'var(--shadow-v3-hero)' }}>
+              style={{ width: '100%', background: generating || isAtLimit || !canUse ? 'var(--bg-card)' : 'var(--brand)', color: generating || isAtLimit || !canUse ? 'var(--text-muted)' : 'var(--accent-fg)', border: 'none', borderRadius: 14, padding: '16px 20px', fontSize: '1rem', fontWeight: 700, cursor: generating || isAtLimit || !canUse ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: 12, boxShadow: generating || isAtLimit || !canUse ? 'none' : 'var(--shadow-v3-hero)' }}>
               <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
               </div>
@@ -611,7 +611,7 @@ function SampleProblemList({
         disabled={disabled}
         style={{
           width: '100%',
-          background: disabled ? 'var(--bg-card)' : `linear-gradient(135deg, var(--brand) 0%, var(--brand-light) 100%)`,
+          background: disabled ? 'var(--bg-card)' : 'var(--brand)',
           color: disabled ? 'var(--text-muted)' : 'var(--accent-fg)',
           border: 'none', borderRadius: 14, padding: '14px 18px',
           cursor: disabled ? 'not-allowed' : 'pointer',

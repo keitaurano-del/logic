@@ -371,7 +371,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
         )}
 
         {/* AI practice cards (large, vertical) */}
-        <AILargeCard image={`${IMG}/home-daily-question.png`} name={t('home.aiGenLargeName')} sub={t('home.aiGenLargeSub')} onClick={onOpenAIGen} />
+        <AILargeCard image={`${IMG}/home-daily-question.webp`} name={t('home.aiGenLargeName')} sub={t('home.aiGenLargeSub')} onClick={onOpenAIGen} />
       </div>
 
 
