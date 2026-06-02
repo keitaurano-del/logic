@@ -12,6 +12,12 @@ import { getCardStats } from '../flashcardData'
 import { getWrongAnswerStats } from '../wrongAnswerStore'
 import { t } from '../i18n'
 
+export type NextCourseInfo = {
+  id: string
+  title: string
+  category: string
+}
+
 interface LessonCompleteScreenProps {
   userName: string
   lessonTitle: string
@@ -19,6 +25,8 @@ interface LessonCompleteScreenProps {
   onNext: () => void
   onHome: () => void
   onOpenReview?: () => void
+  onStartNextCourse?: (courseId: string, category: string) => void
+  nextCourse?: NextCourseInfo
   prevLevel?: number
   /**
    * TTS 読み上げモードで完走した直後など、同コース次レッスンに自動で
@@ -73,7 +81,7 @@ function RingProgress({ progress, size = 140, stroke = 10 }: { progress: number;
 }
 
 export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
-  const { lessonTitle, durationSec, onNext, onHome, onOpenReview, prevLevel, autoAdvance } = props
+  const { lessonTitle, durationSec, onNext, onHome, onOpenReview, onStartNextCourse, nextCourse, prevLevel, autoAdvance } = props
   const xp = getXp()
   const lv = getCurrentLevel(xp)
   const streak = getStreak()
@@ -275,23 +283,59 @@ export function LessonCompleteScreen(props: LessonCompleteScreenProps) {
 
         {/* CTA */}
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 10, ...show(3) }}>
-          <button
-            onClick={() => { cancelAutoAdvance(); onNext() }}
-            style={{
-              width: '100%',
-              background: 'var(--brand)',
-              color: '#FFFFFF',
-              padding: '17px 0', borderRadius: 99,
-              fontSize: '1.0667rem', fontWeight: 700,
-              border: 'none', cursor: 'pointer',
-              letterSpacing: '.02em',
-              boxShadow: `0 4px 24px color-mix(in srgb, var(--brand) 27%, transparent)`,
-              WebkitTapHighlightColor: 'transparent',
-              touchAction: 'manipulation',
-            }}
-          >
-            {autoAdvance && !autoAdvanceCancelled ? t('tts.continueNextLesson') : t('lessonComplete.next')}
-          </button>
+          {nextCourse ? (
+            <>
+              {/* コース完了バナー */}
+              <div style={{
+                width: '100%', marginBottom: 4,
+                background: `linear-gradient(90deg, color-mix(in srgb, var(--brand) 10%, transparent), color-mix(in srgb, var(--brand) 3%, transparent))`,
+                border: `1px solid color-mix(in srgb, var(--brand) 22%, transparent)`,
+                borderRadius: 14, padding: '10px 16px',
+                display: 'flex', alignItems: 'center', gap: 8,
+              }}>
+                <StarIcon width={18} height={18} style={{ color: 'var(--brand)', flexShrink: 0 }} />
+                <span style={{ fontSize: '0.8667rem', fontWeight: 700, color: 'var(--brand)' }}>
+                  {t('lessonComplete.courseComplete')}
+                </span>
+              </div>
+              {/* 次のコースへ CTA */}
+              <button
+                onClick={() => { cancelAutoAdvance(); onStartNextCourse?.(nextCourse.id, nextCourse.category) }}
+                style={{
+                  width: '100%',
+                  background: 'var(--brand)',
+                  color: '#FFFFFF',
+                  padding: '17px 0', borderRadius: 99,
+                  fontSize: '1.0667rem', fontWeight: 700,
+                  border: 'none', cursor: 'pointer',
+                  letterSpacing: '.02em',
+                  boxShadow: `0 4px 24px color-mix(in srgb, var(--brand) 27%, transparent)`,
+                  WebkitTapHighlightColor: 'transparent',
+                  touchAction: 'manipulation',
+                }}
+              >
+                {t('lessonComplete.nextCourse', { title: nextCourse.title })}
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={() => { cancelAutoAdvance(); onNext() }}
+              style={{
+                width: '100%',
+                background: 'var(--brand)',
+                color: '#FFFFFF',
+                padding: '17px 0', borderRadius: 99,
+                fontSize: '1.0667rem', fontWeight: 700,
+                border: 'none', cursor: 'pointer',
+                letterSpacing: '.02em',
+                boxShadow: `0 4px 24px color-mix(in srgb, var(--brand) 27%, transparent)`,
+                WebkitTapHighlightColor: 'transparent',
+                touchAction: 'manipulation',
+              }}
+            >
+              {autoAdvance && !autoAdvanceCancelled ? t('tts.continueNextLesson') : t('lessonComplete.next')}
+            </button>
+          )}
           {showReviewCta && (
             <button
               onClick={() => { cancelAutoAdvance(); onOpenReview?.() }}

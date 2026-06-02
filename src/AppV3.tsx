@@ -5,7 +5,7 @@ import { HomeScreenV3 } from './screens/HomeScreenV3'
 import { RoadmapScreenV3 } from './screens/RoadmapScreenV3'
 import { ProfileScreenV3 } from './screens/ProfileScreenV3'
 import { LessonStoriesScreen } from './screens/LessonStoriesScreen'
-import { LessonCompleteScreen } from './screens/LessonCompleteScreen'
+import { LessonCompleteScreen, type NextCourseInfo } from './screens/LessonCompleteScreen'
 import { BootLoadingScreen } from './screens/BootLoadingScreen'
 
 // Lazy-load lower-frequency screens to keep initial bundle small.
@@ -41,6 +41,8 @@ const DailyProblemScreen = lazy(() => import('./screens/DailyProblemScreen').the
 const JournalScreen = lazy(() => import('./screens/JournalScreen').then(m => ({ default: m.JournalScreen })))
 const JournalGuestPreview = lazy(() => import('./screens/JournalScreen').then(m => ({ default: m.JournalGuestPreview })))
 import { allLessons, getAllLessonsFlat } from './lessonData'
+import { COURSES, getCourseById } from './courseData'
+import { loadPlacementResult } from './placementData'
 import { getCurrentLevel } from './screens/homeHelpers'
 import { LevelUpModal } from './components/LevelUpModal'
 import { RankUpModal } from './components/RankUpModal'
@@ -838,6 +840,40 @@ function AppV3() {
           durationSec={screen.durationSec}
           prevLevel={screen.prevLevel}
           autoAdvance={false}
+          nextCourse={(() => {
+            // コースの最後のレッスンか判定し、次のおすすめコースを返す
+            const lessonId = screen.lessonId
+            // このレッスンが属するコースを探す
+            const belongingCourse = COURSES.find(c => c.lessonIds.includes(lessonId))
+            if (!belongingCourse) return undefined
+            // コース内の最後のレッスンか確認
+            const lastLessonId = belongingCourse.lessonIds[belongingCourse.lessonIds.length - 1]
+            if (lessonId !== lastLessonId) return undefined
+            // placement 結果から次のコースを取得、なければ COURSES の次インデックス
+            let nextCourseId: string | undefined
+            const placement = loadPlacementResult()
+            if (placement && placement.recommendedCourseIds.length > 0) {
+              // 推薦コースのうち現在コース以外の最初の1件
+              nextCourseId = placement.recommendedCourseIds.find(id => id !== belongingCourse.id)
+            }
+            if (!nextCourseId) {
+              // ロードマップ上の次コース（同 group 内 index+1、なければ全体 index+1）
+              const sameGroup = COURSES.filter(c => c.group === belongingCourse.group)
+              const groupIdx = sameGroup.findIndex(c => c.id === belongingCourse.id)
+              const nextInGroup = sameGroup[groupIdx + 1]
+              if (nextInGroup) {
+                nextCourseId = nextInGroup.id
+              } else {
+                const globalIdx = COURSES.findIndex(c => c.id === belongingCourse.id)
+                const nextGlobal = COURSES[globalIdx + 1]
+                nextCourseId = nextGlobal?.id
+              }
+            }
+            if (!nextCourseId) return undefined
+            const nextCourseData = getCourseById(nextCourseId)
+            if (!nextCourseData) return undefined
+            return { id: nextCourseData.id, title: nextCourseData.title, category: nextCourseData.category } satisfies NextCourseInfo
+          })()}
           onNext={() => {
             // 同カテゴリの次レッスンを探して遷移
             const allFlat = getAllLessonsFlat()
@@ -858,6 +894,9 @@ function AppV3() {
             const destination: Screen = screen.returnScreen
               ?? (currentLesson ? { type: 'roadmap', category: currentLesson.category } : { type: 'home' })
             navigate(destination, true)
+          }}
+          onStartNextCourse={(_courseId, category) => {
+            navigate({ type: 'roadmap', category }, true)
           }}
           onHome={() => navigate({ type: 'home' }, true)}
           onOpenReview={() => navigate({ type: 'review-hub' })}

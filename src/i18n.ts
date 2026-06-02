@@ -1540,6 +1540,8 @@ const STRINGS: Record<Locale, Strings> = {
     'lessonComplete.next': '次のレッスンへ進む →',
     'lessonComplete.reviewNow': '今すぐ復習する（{n}件）',
     'lessonComplete.home': 'ホームに戻る',
+    'lessonComplete.nextCourse': '{title} を始める →',
+    'lessonComplete.courseComplete': 'コース完了',
 
     // Level up / Rank up モーダル・トースト演出
     'levelup.heading': 'LEVEL UP!',
@@ -3532,6 +3534,8 @@ const STRINGS: Record<Locale, Strings> = {
     'lessonComplete.next': 'Next lesson →',
     'lessonComplete.reviewNow': 'Review now ({n})',
     'lessonComplete.home': 'Back to home',
+    'lessonComplete.nextCourse': 'Start {title} →',
+    'lessonComplete.courseComplete': 'Course complete',
 
     // Level up / Rank up modal & toast
     'levelup.heading': 'LEVEL UP!',
