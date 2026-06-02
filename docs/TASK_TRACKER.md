@@ -209,6 +209,53 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 | FB-10 | iPad横画面でカスタムコース作成画面レイアウト崩れ | P2 | DONE（2026-05-31 完了。Keita「iPad は正式サポート対象」で方針確定→Custom/PersonalCourseScreen に max-width:600px+margin:auto で崩れ修正 push `622ae43`・tsc0/eslint0/vitest413pass・Android 配信 success run 26700084638。本番反映済・Keita 実機目視確認も完了→DONE） | dev-logic | 方針確定（Keita決定済・iPadサポート） |
 | FB-14 | フラッシュカードの可読性改善（`<br/>`等markup除去・文字サイズ拡大・長文整形） | P2 | DONE（2026-06-02 完了。3層修正: ①表示sanitize(FlashcardsScreen.tsx＝`<br/>`→改行・`[icon:]`・`:::`除去で既存localStorage壊れカードも救済)②生成sanitize(flashcardData.ts＝stripMarkup＋140字整形)③CSS(FlashcardsScreen.css＝fc3-face-textにmax-height:100%/overflow-y:auto・フォント/行間既定値到達)。commit `1c653e3`・tsc0/eslint0/vitest585pass・push済・Render/Android本番反映） | dev-logic | UX・読みやすさ |
 | FB-15 | フェルミ模範解答が途中で切れる（max_tokens不足） | P2 | DONE（2026-06-02 完了。server/routes/fermi.ts /feedback の max_tokens 1400→2400＋stop_reason=max_tokens検知のwarnログ。他の200-300トークンは不変。commit `8c681af`・tsc0/eslint0/vitest585pass・push済・deploy-production手動dispatch(run26820986262)でバックエンド本番反映＝サーバ変更なので必須） | dev-logic | UX・回答消失バグ |
+| FB-16 | ログアウト時のデータ消失再発（supabase.ts LOGOUT_KEEP_KEYS が syncService の KEEP_KEYS と乖離・AF-05/07/08 が片肺） | P1 | IN_PROGRESS（2026-06-03 林ティックで根因特定→dev-logic 委譲。ローカル実装＋回帰テスト green・commit済(branch fix/fb16-logout-keep-keys)・push/deploy 承認待ち） | dev-logic | 即修正(correctness/データ消失) |
+| FB-17 | 復習の「弱点」カードが完了しても減らない（wrongCount 単調増加で永久に弱点扱い） | P1 | TODO | dev-logic | 即修正(correctness/バグ) |
+| FB-18 | フラッシュカード回答（裏面）の文字が小さい | P2 | TODO | dev-logic | UX・可読性 |
+| FB-19 | フラッシュカードの「わかった」と「簡単」の違いが分からない | P2 | TODO | dev-logic + designer | UX・SRSラベル |
+
+#### FB-16 — ログアウト時のデータ消失再発（KEEP_KEYS 二重定義の乖離）
+- 優先度: P1 / ステータス: TODO / 担当案: dev-logic（実装）+ test-functional（実ログアウト経路の永続化 E2E）
+- 詳細（2026-06-03 林ティックで根因特定）: AF-05/07/08（再ログイン/ログアウトでの XP・プロフィール・ストリークフリーズ・UI設定の消失）は `syncService.ts` の `KEEP_KEYS`（line 694）に保持キーを追加して DONE 化された。が、**実際のログアウトボタンが通る経路は別**。UI のログアウト（`Profile.tsx:46` / `screens/AccountSettingsScreen.tsx:53` / `screens/ProfileScreenV3.tsx:68`）は全て `supabase.ts` の `logout()`（line 90）を呼び、`logout()` は `supabase.auth.signOut()` の**前に** `clearLocalUserData()`（line 126）を同期実行する。`clearLocalUserData()` が使う保持リストは別物の `LOGOUT_KEEP_KEYS`（supabase.ts:103）で、これに AF-05/07/08 で追加した約12キーが入っていない。
+- 乖離キー（syncService.KEEP_KEYS にあるが supabase.LOGOUT_KEEP_KEYS に無い）: `logic-saved-folders` / `logic-xp` / `logic-xp-log` / `logic-journal-xp` / `logic-user-profile` / `logic-reminder` / `logic-notif-extra` / `logic-journal-reminder` / `logic-streak-freeze` / `logic-font-scale` / `logic-tts-autoplay` / `logic-tts-rate`。このうち streak-freeze / saved-folders / font-scale / tts-* / journal-xp / xp-log は Supabase 同期が無い**ローカル専用＝消したら完全消失**（＝AF-07/08 の症状がログアウトボタン経路で生きている）。xp / user-profile は remote マージで部分回復するが、push 前なら消える（AF-05 残リスク）。
+- 皮肉な点: supabase.ts:100-102 のコメント自身が「syncService.syncOnLogout の KEEP_KEYS と必ず一致させること（過去にズレてフラッシュカード等が全部消える事故あり）」と明記している。にもかかわらず AF-05/07/08 の追加時に supabase.ts 側が更新されず、コメントの戒め通りの再発になっている。テストが緑をすり抜けたのは `af05-sync-integration.test.ts` が `syncOnLogout` を直接叩くだけで、実ボタン経路の `logout()`/`clearLocalUserData()` を踏んでいないため。
+- 実装方針（dev-logic 確定タスク）: (1) 保持リストの二重定義を解消し**単一の source of truth**にする（例: `LOGOUT_KEEP_KEYS` を一箇所に export して supabase.ts / syncService.ts 双方が import。コメントの「一致させる」を構造で担保し、片肺再発を恒久的に封じる）。(2) 統合した保持リストが全 `logic-*` キー（約80個）に対して keep/clear の意図どおりか棚卸し（このタスク自体が KEEP_KEYS 全量監査を兼ねる）。(3) 回帰テストを**実ログアウト経路**（`logout()` または `clearLocalUserData()`）に対して追加し、AF-05/07/08 の保持キーが実ボタン経路でも残ることをガード。(4) tsc / eslint . / vitest green。
+- DoD: 実機のログアウトボタンを押しても XP・プロフィール・ストリークフリーズ・保存フォルダ・フォントスケール・TTS設定・通知設定が消えない。保持リストが単一定義になり乖離が構造的に起き得ない。実ログアウト経路を踏む回帰テストが green。
+- 関連: `src/supabase.ts`（logout:90 / clearLocalUserData:126 / LOGOUT_KEEP_KEYS:103）、`src/syncService.ts`（syncOnLogout:681 / KEEP_KEYS:694）、`src/__tests__/af05-sync-integration.test.ts`、呼び出し元 `src/Profile.tsx:46`・`src/screens/AccountSettingsScreen.tsx:53`・`src/screens/ProfileScreenV3.tsx:68`
+- 依存: なし（AF-05/07/08 の後続・補完）
+- note: 2026-06-03 林の KEEP_KEYS 全量監査ティック（6/2 デイリーノート「気になっとること」起点）で検出。correctness/データ消失のため [[feedback-audit-triage-correctness-first]] 準拠で即修正（サンプル承認待ち不要）。
+- 更新日: 2026-06-03
+
+#### FB-17 — 復習の「弱点」カードが完了しても減らない
+- 優先度: P1 / ステータス: TODO / 担当案: dev-logic
+- 詳細（2026-06-03 Keita 実機FB「弱点を完了してもなくならない」, 復習画面スクショ）: 復習画面のフラッシュカードに「弱点 N枚」が出る。弱点カードを復習して正解しても枚数が減らない。
+- 根因（特定済み）: 弱点判定が `src/flashcardData.ts:110` の `weak = cards.filter(c => c.wrongCount > 0).length` ＝「過去に1回でも間違えたカード」。`reviewCard()`（flashcardData.ts:56）で `wrongCount` は 'again' 時に ++ されるだけで、後で 'good'/'easy' で正解しても減算されない＝単調増加。一度間違えたカードは永久に「弱点」にカウントされ続ける。`getWeakCards()`（:94）も同じ `wrongCount > 0` フィルタなので、復習しても弱点リストから出ていかない。
+- 実装方針（dev-logic 確定。スキーマ無変更で行ける案を第一候補に）: 「弱点を復習して正解したら弱点から外れる」を満たす。第一候補は `wrongCount > 0 && interval === 0` を弱点条件にする＝'again' は interval=0 にリセットするので「間違えてまだ立て直してないカード」だけが弱点、'good'/'easy' で正解すると interval≥1 になり弱点から自動的に外れる（新規カードは wrongCount=0 で対象外、再習得済みカードも interval≥1 で対象外）。getCardStats の weak と getWeakCards の両方を同じ条件に揃える。これで Supabase スキーマ変更不要。別案（lapsed フラグ追加/correctCount との比較）も可だが、スキーマ追加や同期を増やさない方を優先。getWeakCards のソート（wrongCount-correctCount）も新条件と整合するよう見直す。
+- DoD: 弱点カードを復習して正解すると「弱点 N枚」が正しく減る。実機/単体テストで「間違える→弱点に出る→正解する→弱点から消える」を検証。tsc / eslint . / vitest green。回帰テスト追加。
+- 関連: `src/flashcardData.ts`（getWeakCards:94 / getCardStats:107 / reviewCard:56）、`src/screens/FlashcardsScreen.tsx`、`src/screens/ReviewScreen`系（復習ハブの「弱点 N枚」表示元）
+- 依存: なし
+- note: 2026-06-03 Keita 実機FB（cxo-agent/data/terminal-uploads/2026-06-02T21-50-31-749Z-1caeee47-3263.png）。correctness バグなので [[feedback-audit-triage-correctness-first]] 準拠で即修正。
+- 更新日: 2026-06-03
+
+#### FB-18 — フラッシュカード回答（裏面）の文字が小さい
+- 優先度: P2 / ステータス: TODO / 担当案: dev-logic
+- 詳細（2026-06-03 Keita 実機FB「回答の文字が小さい」）: フラッシュカードをめくった裏面（回答 = `fc3-back-text`）の文字が小さくて読みづらい。FB-14 で可読性改善（markup 除去・整形・max-height/overflow）をしたが、フォントサイズ自体がまだ小さい。
+- 実装方針: `src/screens/FlashcardsScreen.css` の `.fc3-face-text` / `.fc3-back-text`（:178 / :194 付近）のフォントサイズを引き上げる。表面（問い）と裏面（回答）でバランスを見て、特に裏面回答を読みやすいサイズに。長文カードは FB-14 の max-height/overflow-y:auto でスクロール担保済みなので、サイズUPで溢れてもスクロールで読める。font-scale 設定（logic-font-scale, rem ベース）とも整合させる。ハードコード px でなく rem/トークンで。
+- DoD: フラッシュカード裏面回答が読みやすいサイズになる。短文・長文どちらも破綻しない（長文はスクロール）。両テーマ・font-scale 各段で確認。tsc / eslint . green。
+- 関連: `src/screens/FlashcardsScreen.css`（.fc3-face-text:178 / .fc3-back-text:194）、`src/screens/FlashcardsScreen.tsx`（:153/:158 face-text）
+- 依存: なし（FB-14 の続き）
+- note: 2026-06-03 Keita 実機FB。サイズ調整なのでサンプル確認は実機目視 or screenshot で。
+- 更新日: 2026-06-03
+
+#### FB-19 — フラッシュカードの「わかった」と「簡単」の違いが分からない
+- 優先度: P2 / ステータス: TODO / 担当案: dev-logic + designer
+- 詳細（2026-06-03 Keita 実機FB「わかった、と簡単の違いが分からない」）: カード裏面の評価ボタンが「もう一度 / わかった / 簡単」の3つ（SRS の again/good/easy、`flashcards.again/good/easy`）。「わかった」(good) と「簡単」(easy) が何が違うのか分からない。現状ボタン下に出る `flashcards.intervalEase`（「間隔: N日 · ease: X」）は開発者向け表現で、各ボタンを押すと次がいつになるかが直感的に伝わらない。
+- 実装方針: 各ボタンに「押したら次はいつ復習になるか」を具体的に出す（Anki 方式）。`reviewCard` の計算と同じロジックで、もう一度=「すぐ/また後で」、わかった=「○日後」、簡単=「△日後」を各ボタンに小さく添える、もしくはボタン文言自体を区別が伝わる中立的丁寧体に見直す（例の検討は designer と。SRS の意味＝「わかった=普通に正解／簡単=余裕で正解で次回をより先送り」が伝わる表現に）。開発者向けの「ease: X」表示は一般ユーザーには隠す or 言い換え。UI 文言は中立的丁寧体（[[feedback-app-copy-neutral]]）、ja/en 両方。
+- DoD: 3ボタンの違い（特に「わかった」と「簡単」）がユーザーに伝わる。各ボタンの次回間隔が見える or 文言で区別が明確。ja/en 両方。tsc / eslint . green。サンプルを Keita 承認してから確定（文言/見せ方は好みが分かれるので designer 案→サンプル）。
+- 関連: `src/screens/FlashcardsScreen.tsx`（:171-193 ボタン群＋intervalEase 表示）、`src/i18n.ts`（flashcards.again/good/easy/intervalEase, :1527/:3521）、`src/flashcardData.ts`（reviewCard の interval 計算を流用して各ボタンの予測間隔を出す）
+- 依存: なし
+- note: 2026-06-03 Keita 実機FB。文言・見せ方は designer 案→サンプル承認フロー（[[feedback-logic-course-thumbnails]]）。間隔表示の実装自体は correctness 寄りで先行可。
+- 更新日: 2026-06-03
 
 #### FB-01 — 図解SVGと本文説明の不整合を監査・修正
 - 優先度: P1 / ステータス: DONE（表行が正＝test-functional ○で DONE 済〔`598346a`・本番反映済〕。Bucket1 客観不整合の解消＋回帰ガード追加までが本タスク範囲で完了。残の designer/Keita 案件は別タスク FB-01r へ分離済）/ 担当案: content-creator→（残は designer/Keita）
