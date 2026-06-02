@@ -274,10 +274,14 @@ On the line after SCORE_JSON, start with the "## Strong points" section and cont
 
       const response = await client.messages.create({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 1400,
+        max_tokens: 2400,
         system: isEn ? systemPromptEn : systemPromptJa,
         messages: [{ role: 'user', content: userMessage }],
       })
+      // 切れ検知: max_tokens で打ち切られたらログに残す（将来の調整用）
+      if (response.stop_reason === 'max_tokens') {
+        console.warn('[fermi/feedback] response truncated at max_tokens — consider raising limit or tightening prompt')
+      }
       const rawText = response.content[0].type === 'text' ? response.content[0].text : ''
 
       // SCORE_JSON パース
