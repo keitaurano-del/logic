@@ -376,7 +376,9 @@
   height: 24px;
   border-radius: 50%;
   background: var(--brand-soft);
-  color: var(--brand);
+  /* T-U: 12px テキスト(通常テキスト 4.5:1 基準)。brand-soft 上で dark では
+   * --brand-on-soft (#9BB3FA 5.36:1) を使用。 */
+  color: var(--brand-on-soft, var(--brand));
   font-size: 12px;
   font-weight: 800;
   display: flex;

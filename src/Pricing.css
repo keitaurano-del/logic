@@ -138,7 +138,10 @@
 }
 
 .pr-price-monthly strong {
-  color: var(--brand);
+  /* T-U: .pr-card-recommended の brand-soft グラデ背景上でのテキスト。
+   * dark では --brand-on-soft (#9BB3FA 5.36:1) を使用し AA 達成。
+   * light では --brand (#2E45A8 on #EEF2FE = 7.41:1) へフォールバック。 */
+  color: var(--brand-on-soft, var(--brand));
   font-weight: 800;
 }
 

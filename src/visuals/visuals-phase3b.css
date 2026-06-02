@@ -115,7 +115,8 @@
 
 .vz-www-step.where .vz-www-icon {
   background: var(--brand-soft);
-  color: var(--brand);
+  /* T-U: brand-soft 背景上 13px テキスト → dark では --brand-on-soft (#9BB3FA 5.36:1) */
+  color: var(--brand-on-soft, var(--brand));
 }
 
 .vz-www-step.why .vz-www-icon {
@@ -735,7 +736,8 @@
   width: 64%;
   background: var(--brand-soft);
   border: 1.5px solid var(--brand);
-  color: var(--brand);
+  /* T-U: brand-soft 背景上のテキスト → dark では --brand-on-soft (#9BB3FA 5.36:1) */
+  color: var(--brand-on-soft, var(--brand));
 }
 
 .vz-leverage-tier.t4 {
@@ -761,7 +763,8 @@
 }
 
 .vz-leverage-tier.t3 .vz-leverage-tier-label {
-  color: var(--brand);
+  /* T-U: brand-soft 背景 12px テキスト → dark では --brand-on-soft (#9BB3FA 5.36:1) */
+  color: var(--brand-on-soft, var(--brand));
   opacity: 1;
 }
 

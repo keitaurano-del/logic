@@ -70,7 +70,7 @@ export function VrioVisual({
           borderRadius: 8,
           fontSize: '0.8667rem',
           fontWeight: 600,
-          color: 'var(--brand)',
+          color: 'var(--brand-on-soft, var(--brand))',
           textAlign: 'center',
           lineHeight: 1.45,
         }}

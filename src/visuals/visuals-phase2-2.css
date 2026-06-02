@@ -226,7 +226,8 @@
   text-align: center;
   font-size: 13px;
   font-weight: 700;
-  color: var(--brand);
+  /* T-U: brand-soft 背景上のテキスト → dark では --brand-on-soft (#9BB3FA 5.36:1) */
+  color: var(--brand-on-soft, var(--brand));
   background: var(--brand-soft);
   border-radius: 8px;
   padding: 8px 10px;

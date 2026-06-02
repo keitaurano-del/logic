@@ -66,7 +66,9 @@
 
 .sm-plan-yearly {
   background: var(--brand-soft);
-  color: var(--brand);
+  /* T-U: brand-soft 背景上のテキスト。dark では --brand-on-soft (#9BB3FA 5.36:1) を使用。
+   * light では --brand (#2E45A8 on #EEF2FE = 7.41:1)。 */
+  color: var(--brand-on-soft, var(--brand));
 }
 
 .sm-plan-monthly {

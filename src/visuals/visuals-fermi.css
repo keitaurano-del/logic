@@ -377,7 +377,9 @@
   border-radius: 6px;
   font-size: 13px;
   font-weight: 600;
-  color: var(--brand);
+  /* T-U: brand-soft 背景上のテキスト。dark では --brand-on-soft (#9BB3FA 5.36:1) を使用。
+   * light では --brand (#2E45A8 on #EEF2FE = 7.41:1)。 */
+  color: var(--brand-on-soft, var(--brand));
   line-height: 1.5;
 }
 
@@ -387,7 +389,8 @@
   border-radius: 8px;
   font-size: 13px;
   font-weight: 600;
-  color: var(--brand);
+  /* T-U: brand-soft 背景上のテキスト。dark では --brand-on-soft (#9BB3FA 5.36:1) を使用。 */
+  color: var(--brand-on-soft, var(--brand));
   text-align: center;
   line-height: 1.5;
 }
@@ -496,7 +499,8 @@
 .vz-fermi-area-stage-tag {
   font-size: 13px;
   font-weight: 800;
-  color: var(--brand);
+  /* T-U: brand-soft 背景上のテキスト → dark では --brand-on-soft (#9BB3FA 5.36:1) */
+  color: var(--brand-on-soft, var(--brand));
   background: var(--brand-soft);
   border-radius: 999px;
   padding: 5px 12px;
@@ -573,7 +577,8 @@
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.08em;
-  color: var(--brand);
+  /* T-U: brand-soft 背景(.vz-fermi-area-result)上のテキスト → dark では --brand-on-soft */
+  color: var(--brand-on-soft, var(--brand));
   text-transform: uppercase;
 }
 .vz-fermi-area-result .value {
@@ -595,7 +600,8 @@
   border-radius: 8px;
   font-size: 13px;
   font-weight: 600;
-  color: var(--brand);
+  /* T-U: brand-soft 背景上のテキスト → dark では --brand-on-soft (#9BB3FA 5.36:1) */
+  color: var(--brand-on-soft, var(--brand));
   text-align: center;
   line-height: 1.5;
 }
@@ -789,7 +795,8 @@
   border-radius: 8px;
   font-size: 13px;
   font-weight: 600;
-  color: var(--brand);
+  /* T-U: brand-soft 背景上のテキスト → dark では --brand-on-soft (#9BB3FA 5.36:1) */
+  color: var(--brand-on-soft, var(--brand));
   text-align: center;
   line-height: 1.5;
 }
@@ -1004,7 +1011,8 @@
   border-radius: 8px;
   font-size: 13px;
   font-weight: 600;
-  color: var(--brand);
+  /* T-U: brand-soft 背景上のテキスト → dark では --brand-on-soft (#9BB3FA 5.36:1) */
+  color: var(--brand-on-soft, var(--brand));
   text-align: center;
   line-height: 1.5;
 }
@@ -1245,7 +1253,8 @@
   border-radius: 8px;
   font-size: 13px;
   font-weight: 600;
-  color: var(--brand);
+  /* T-U: brand-soft 背景上のテキスト → dark では --brand-on-soft (#9BB3FA 5.36:1) */
+  color: var(--brand-on-soft, var(--brand));
   text-align: center;
   line-height: 1.5;
 }

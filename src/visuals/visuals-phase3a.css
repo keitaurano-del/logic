@@ -236,7 +236,8 @@
   font-size: 12px;
   font-weight: 700;
   background: var(--brand-soft);
-  color: var(--brand);
+  /* T-U: brand-soft 背景上 12px テキスト → dark では --brand-on-soft (#9BB3FA 5.36:1) */
+  color: var(--brand-on-soft, var(--brand));
 }
 
 .vz-archetype-arrow .sign.minus {

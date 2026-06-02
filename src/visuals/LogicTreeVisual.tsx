@@ -95,7 +95,7 @@ export function LogicTreeVisual({
     hintTone === 'brand'
       ? {
           background: 'var(--brand-soft)',
-          color: 'var(--brand)',
+          color: 'var(--brand-on-soft, var(--brand))',
         }
       : {
           background: 'var(--warning-soft)',

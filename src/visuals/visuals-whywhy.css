@@ -135,6 +135,8 @@
 
 .vz-ww-chain-row.mid  { border-left-color: var(--brand-mid); }
 .vz-ww-chain-row.deep { border-left-color: var(--brand-hover); background: var(--brand-soft); }
+/* T-U: deep 行は brand-soft 背景なので内部の brand テキストを --brand-on-soft に上書き */
+.vz-ww-chain-row.deep .vz-ww-chain-num { color: var(--brand-on-soft, var(--brand)); }
 
 /* warm accent (A 案 Phase 2): 最深層の最後 (Why 5 = 打ち手が打てる構造) のみ terracotta 左ボーダー
  * 1 visual 内 1 箇所、他 deep 行の brand-hover は維持 */

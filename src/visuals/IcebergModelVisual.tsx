@@ -139,7 +139,7 @@ export function IcebergModelVisual(props: IcebergModelProps = {}) {
             borderRadius: 8,
             fontSize: '0.7333rem',
             fontWeight: 600,
-            color: 'var(--brand)',
+            color: 'var(--brand-on-soft, var(--brand))',
             textAlign: 'center',
           }}
         >

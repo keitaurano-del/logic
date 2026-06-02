@@ -77,7 +77,7 @@ function cellAppearance(value: TraitMatrixCell): {
       style: {
         background: 'var(--brand-soft)',
         border: '1.5px solid var(--brand)',
-        color: 'var(--brand)',
+        color: 'var(--brand-on-soft, var(--brand))',
       },
       glyph: '↑',
       label: '強み',
