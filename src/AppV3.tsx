@@ -93,8 +93,8 @@ type Screen =
   | { type: 'lessons' }
   | { type: 'roadmap'; category?: string }
   | { type: 'profile' }
-  | { type: 'lesson'; lessonId: number; startStep?: number }
-  | { type: 'lesson-complete'; lessonId: number; durationSec: number; prevLevel: number }
+  | { type: 'lesson'; lessonId: number; startStep?: number; returnScreen?: Screen }
+  | { type: 'lesson-complete'; lessonId: number; durationSec: number; prevLevel: number; returnScreen?: Screen }
   | { type: 'flashcards'; mode?: 'due' | 'weak' }
   | { type: 'review-hub' }
   | { type: 'wrong-answers' }
@@ -370,9 +370,9 @@ function AppV3() {
     }
   }
 
-  const handleOpenLesson = (lessonId: number) => {
+  const handleOpenLesson = (lessonId: number, returnScreen?: Screen) => {
     lessonStartTimeRef.current = Date.now()
-    navigate({ type: 'lesson', lessonId })
+    navigate({ type: 'lesson', lessonId, returnScreen })
   }
 
   const handleBack = () => {
@@ -420,7 +420,7 @@ function AppV3() {
       // まとめて実施する。ここでは加算しない（二重計上を避けるため）。
       // 次のレッスンに備えて ref をリセット
       lessonStartTimeRef.current = 0
-      navigate({ type: 'lesson-complete', lessonId, durationSec, prevLevel })
+      navigate({ type: 'lesson-complete', lessonId, durationSec, prevLevel, returnScreen: screen.returnScreen })
     } else if (tab === 'ranking') {
       navigate({ type: 'fermi-ranking' }, true)
     } else if (tab === 'journal') {
@@ -475,7 +475,7 @@ function AppV3() {
           onOpenLesson={handleOpenLesson}
           onOpenCategory={(cat) => {
             if (cat === 'fermi') navigate({ type: 'daily-fermi' })
-            else navigate({ type: 'roadmap', category: cat })
+            else { setTab('lessons'); navigate({ type: 'roadmap', category: cat }) }
           }}
           onOpenRank={() => navigate({ type: 'rank' })}
           onOpenStats={() => navigate({ type: 'profile' }, true)}
@@ -566,7 +566,7 @@ function AppV3() {
         isPaid() ? (
           <WrongAnswerListScreen
             onBack={handleBack}
-            onOpenLesson={handleOpenLesson}
+            onOpenLesson={(id) => handleOpenLesson(id, { type: 'wrong-answers' })}
           />
         ) : (
           <ReviewPreviewScreen
@@ -580,11 +580,11 @@ function AppV3() {
         isPaid() ? (
           <SavedItemsScreen
             onBack={handleBack}
-            onOpenLesson={handleOpenLesson}
+            onOpenLesson={(id) => handleOpenLesson(id, { type: 'saved-items' })}
             onOpenCourse={(cat) => navigate({ type: 'roadmap', category: cat })}
             onOpenLessonStep={(lessonId, stepIndex) => {
               lessonStartTimeRef.current = Date.now()
-              navigate({ type: 'lesson', lessonId, startStep: stepIndex })
+              navigate({ type: 'lesson', lessonId, startStep: stepIndex, returnScreen: { type: 'saved-items' } })
             }}
             onOpenAiProblem={(problemId) => {
               try {
@@ -641,7 +641,7 @@ function AppV3() {
               userId={currentUser.id}
               assistantName={assistantName}
               onUpdateAssistantName={updateAssistantName}
-              onOpenLesson={handleOpenLesson}
+              onOpenLesson={(id) => handleOpenLesson(id, { type: 'journal' })}
               onOpenCourse={(cat) => navigate({ type: 'roadmap', category: cat })}
             />
           ) : (
@@ -786,12 +786,14 @@ function AppV3() {
               const idx = sameCategory.findIndex(l => l.id === screen.lessonId)
               const nextLesson = sameCategory[idx + 1]
               if (nextLesson) {
-                handleOpenLesson(nextLesson.id)
+                handleOpenLesson(nextLesson.id, screen.returnScreen)
                 return
               }
             }
-            // 次レッスンなければホームに戻る
-            navigate({ type: 'home' }, true)
+            // 次レッスンなし → returnScreen（呼び出し元）→ roadmap → home の優先順位で遷移
+            const destination: Screen = screen.returnScreen
+              ?? (currentLesson ? { type: 'roadmap', category: currentLesson.category } : { type: 'home' })
+            navigate(destination, true)
           }}
           onHome={() => navigate({ type: 'home' }, true)}
           onOpenReview={() => navigate({ type: 'review-hub' })}
