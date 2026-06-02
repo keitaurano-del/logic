@@ -15,13 +15,27 @@ interface FlashcardsScreenProps {
   onUpgrade?: () => void
 }
 
-/** フラッシュカードのコンテンツを JSX に変換する（<br/><br>を改行に、他タグを除去）。 */
+/**
+ * カード本文をレンダリング前にクリーンにする。
+ * 過去バージョンが残した <br/> や [icon:...]・::: callout フェンス等の markup が
+ * localStorage の既存カードに混ざっているため、表示前に素のテキストへ落とす。
+ */
+function sanitizeCardText(text: string): string {
+  return text
+    .replace(/<br\s*\/?>/gi, '\n') // <br/> → 改行
+    .replace(/\[icon:[a-z0-9-]+\]/gi, '') // [icon:xxx] 除去
+    .replace(/^:::[a-z]*\s*$/gim, '') // ::: callout フェンス除去
+    .replace(/\n{3,}/g, '\n\n') // 連続改行を圧縮
+    .trim()
+}
+
+/** サニタイズ済みテキストを改行ごとに <br /> 区切りで JSX 化する。 */
 function renderCardContent(text: string): ReactNode {
-  const parts = text.split(/<br\s*\/?>/gi)
-  return parts.map((part, i) => (
+  const clean = sanitizeCardText(text)
+  return clean.split('\n').map((line, i) => (
     <Fragment key={i}>
       {i > 0 && <br />}
-      {part}
+      {line}
     </Fragment>
   ))
 }

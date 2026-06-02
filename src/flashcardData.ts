@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { getSupabaseClient } from './db/index'
 import { localDateStr } from './stats'
+import { stripMarkup } from './richText'
 
 const STORAGE_KEY = 'logic-flashcards'
 
@@ -310,12 +311,18 @@ export function generateFromLesson(
   }
 
   // Cards from explain steps (key concepts)
+  // step.content には markup（<br/>・[icon:...]・:::callout・**bold** 等）が含まれ得るため、
+  // stripMarkup で素のテキストに落としてから back に入れる。長文はカードに収まらないので
+  // 最初の意味のある 2-3 文・最大 ~140 字に整形する。
   for (const step of explainSteps) {
-    const lines = step.content.split('\n').filter((l) => l.trim())
+    const cleaned = stripMarkup(step.content)
+    const lines = cleaned.split('\n').filter((l) => l.trim())
     if (lines.length > 0) {
+      let back = lines.slice(0, 3).join('\n')
+      if (back.length > 140) back = back.slice(0, 140).trim() + '…'
       cards.push({
-        front: step.title,
-        back: lines.slice(0, 3).join('\n'),
+        front: stripMarkup(step.title),
+        back,
         category: lessonTitle,
         source,
       })

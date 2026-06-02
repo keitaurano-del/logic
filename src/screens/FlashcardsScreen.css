@@ -184,6 +184,11 @@
   white-space: pre-wrap;
   color: var(--text-primary);
   max-width: 100%;
+  /* 長文がカードからはみ出て切れないよう、テキスト要素自体をスクロール可能にする。
+     .fc3-face は backface-visibility:hidden を維持したいので overflow はここで持たせる。 */
+  max-height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .fc3-back-text {
