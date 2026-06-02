@@ -20,6 +20,7 @@ import { syncRoadmap } from './roadmapStore'
 import { syncCustomCourses } from './customCourseStore'
 import { syncCategoryProgress } from './progressStore'
 import { syncCompletionCounts } from './db/completionCountDb'
+import { LOGOUT_KEEP_KEYS } from './logoutKeepKeys'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || ''
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || ''
@@ -691,63 +692,13 @@ export async function syncOnLogout(): Promise<void> {
   setSyncUser(null)
   if (!wasLoggedIn) return
 
-  const KEEP_KEYS = new Set([
-    'logic-locale',
-    'logic-theme',
-    'logic-v3-preview',
-    'logic-install-id',
-    'logic-dev-mode',
-    'logic-admin',
-    'logic-onboarded',
-    'logic-onboarding-done',
-    'logic-tutorial-home-done',
-    'logic-tutorial-daily-done',
-    'logic-tutorial-lesson-done',
-    'logic-tutorial-placement-dismissed',
-    'logic-tutorial-fab-dismissed',
-    // 次回ログイン時の再構築コストが高いユーザーコンテンツも保持。
-    // Supabase 同期未整備のうちは消すと完全に失われる。
-    'logic-saved-items',
-    // フォルダ分けはローカル専用機能 (FB-11)。Supabase 同期未整備のため
-    // ログアウト時に消すとユーザーの整理が完全に失われる。保持する。
-    'logic-saved-folders',
-    'logic-display-name',
-    'logic-guest-id',
-    'logic-flashcards',
-    'logic-wrong-answers',
-    // XP / レベルはログアウト時に消すと再ログインで完全消失する (AF-05 P0)。
-    // syncOnLogin で profiles.xp と Math.max マージするまでローカルを保持する。
-    // 関連: logic-xp-log (履歴) / logic-journal-xp (朝夜付与フラグ) も
-    // ローカル専用のため保持し、累積 XP との不整合を防ぐ。
-    'logic-xp',
-    'logic-xp-log',
-    'logic-journal-xp',
-    // プロフィール属性 (生まれ年 / 性別 / 職業 / 目的)。profiles へ push 済みだが
-    // pull 復元が確実に効くまでの安全側保持 (AF-05)。
-    'logic-user-profile',
-    // 通知設定キーは保持する。OS スケジュールはログアウト後も残るため、
-    // pref を消すと UI 上 OFF 表示なのに通知だけ来る不整合になる
-    // (REVIEW_REPORT_20260524 高#1)。
-    'logic-reminder',
-    'logic-notif-extra',
-    'logic-journal-reminder',
-    // ストリークフリーズ在庫。無料配布専用アイテム (stats.ts:232) で
-    // Supabase 同期は未整備のため、ログアウト時に消すと再ログインで完全消失する。
-    // 中の consumedDates はストリーク計算に使われる重要データで、消えると
-    // ストリーク退行を招く。端末ローカルで保持する (AF-07)。
-    'logic-streak-freeze',
-    // 端末ローカルの UI 設定（文字サイズ / TTS 自動再生 / TTS 速度）。
-    // Supabase 同期は不要で端末ごとの好みのため、logic-locale / logic-theme と
-    // 同様にログアウト後も保持する。消すと毎回初期値に戻ってしまう (AF-08)。
-    'logic-font-scale',
-    'logic-tts-autoplay',
-    'logic-tts-rate',
-  ])
+  // 保持キーは supabase.clearLocalUserData と共通の単一定義を使う (FB-16)。
+  // 過去に二経路で保持リストがズレて消失事故が起きたため構造で一致を担保する。
   try {
     const keys: string[] = []
     for (let i = 0; i < localStorage.length; i++) {
       const k = localStorage.key(i)
-      if (k && k.startsWith('logic-') && !KEEP_KEYS.has(k)) keys.push(k)
+      if (k && k.startsWith('logic-') && !LOGOUT_KEEP_KEYS.has(k)) keys.push(k)
     }
     for (const k of keys) localStorage.removeItem(k)
   } catch (e) {

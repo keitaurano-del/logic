@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import type { User, SupabaseClient } from '@supabase/supabase-js'
 import { Capacitor } from '@capacitor/core'
+import { LOGOUT_KEEP_KEYS } from './logoutKeepKeys'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || ''
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || ''
@@ -97,33 +98,14 @@ export async function logout() {
 }
 
 // ローカルストレージから個人データを削除する。UI 永続キー（locale, theme,
-// install-id, onboarded など）は残す。syncService.syncOnLogout の KEEP_KEYS と
-// 必ず一致させること（過去にこの2つがズレてフラッシュカード・保存コンテンツ・
-// 誤答リスト・guestId・display-name が全部消える事故あり）。
-const LOGOUT_KEEP_KEYS = new Set([
-  'logic-locale',
-  'logic-theme',
-  'logic-v3-preview',
-  'logic-install-id',
-  'logic-dev-mode',
-  'logic-admin',
-  'logic-onboarded',
-  'logic-onboarding-done',
-  'logic-tutorial-home-done',
-  'logic-tutorial-daily-done',
-  'logic-tutorial-lesson-done',
-  'logic-tutorial-placement-dismissed',
-  'logic-tutorial-fab-dismissed',
-  // 次回ログイン時の再構築コストが高いユーザーコンテンツ。
-  // Supabase 同期未整備のうちは消すと完全に失われるので残す。
-  'logic-saved-items',
-  'logic-display-name',
-  'logic-guest-id',
-  'logic-flashcards',
-  'logic-wrong-answers',
-])
-
-function clearLocalUserData() {
+// install-id, onboarded など）と再構築コストの高いユーザーコンテンツは残す。
+// 保持キーは syncService.syncOnLogout と共通の単一定義 (./logoutKeepKeys) を
+// 使う。過去にこの2経路の保持リストがズレてフラッシュカード・保存コンテンツ・
+// 誤答リスト・XP・ストリークフリーズ・文字サイズ等が消える事故があったため、
+// コメントでの一致確認ではなく構造（単一 import）で担保する (FB-16)。
+//
+// テスト可能にするため export している（実ログアウト経路の回帰テスト用）。
+export function clearLocalUserData() {
   try {
     const keys: string[] = []
     for (let i = 0; i < localStorage.length; i++) {
