@@ -35,16 +35,15 @@ function getPlanLabel(): string {
 
 interface ProfileScreenV3Props {
   userName: string
-  onOpenAccount: () => void
+  // FB-31: 「プロフィール編集」と「アカウント」を統合（onOpenProfileEdit に集約）。
+  // FB-32: 言語・テーマ・文字サイズを「環境設定」に集約（onOpenPreferences に集約）。
   onOpenProfileEdit?: () => void
   onOpenNotifications: () => void
-  onOpenAppearance: () => void
-  onOpenFontSize?: () => void
+  onOpenPreferences: () => void
   onOpenFeedback?: () => void
   onOpenPricing?: () => void
   onOpenPlacementTest?: () => void
   onOpenLesson?: (lessonId: number) => void
-  onOpenLanguage?: () => void
   onOpenStudyTime?: () => void
   isLoggedIn?: boolean
 }
@@ -52,7 +51,7 @@ interface ProfileScreenV3Props {
 type Sheet = null | 'streak' | 'lessons' | 'xp'
 
 export function ProfileScreenV3(props: ProfileScreenV3Props) {
-  const { userName, onOpenAccount, onOpenProfileEdit, onOpenNotifications, onOpenAppearance, onOpenFontSize, onOpenFeedback, onOpenPricing, onOpenPlacementTest, onOpenLesson, onOpenLanguage, onOpenStudyTime, isLoggedIn = false } = props
+  const { userName, onOpenProfileEdit, onOpenNotifications, onOpenPreferences, onOpenFeedback, onOpenPricing, onOpenPlacementTest, onOpenLesson, onOpenStudyTime, isLoggedIn = false } = props
   const showTrialBadge = shouldShowTrial(isLoggedIn)
   const showTrialBanner = shouldShowTrialEndingBanner(isLoggedIn)
   const [sheet, setSheet] = useState<Sheet>(null)
@@ -63,6 +62,13 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
   const lv = getCurrentLevel(xp)
   const { pct: levelPct, current: levelXp, needed } = getXpProgress(xp)
   const currentTitleKey = getTitleKeyForLevel(lv.level)
+
+  // FB-32: 環境設定行のサブ表示（言語・テーマ・文字サイズの現在値を要約）
+  const preferencesSub = [
+    getLocale() === 'ja' ? t('profile.languageJa') : t('profile.languageEn'),
+    getMode() === 'light' ? t('profile.themeLight') : t('profile.themeDark'),
+    getFontSizeLabel(),
+  ].join(' · ')
 
   const handleLogout = async () => {
     await logout()
@@ -247,14 +253,13 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
 
         {/* 設定 */}
         <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', boxShadow: 'var(--shadow-v3-card-inset)' }}>
+          {/* FB-31: プロフィール編集 + アカウント統合行 */}
           {onOpenProfileEdit && (
-            <SettingRow icon="edit" name={t('profile.editProfile')} sub={t('profile.editProfileSub')} onClick={onOpenProfileEdit} />
+            <SettingRow icon="user" name={t('profile.editProfile')} sub={userName || t('home.guestName')} onClick={onOpenProfileEdit} />
           )}
-          <SettingRow icon="user" name={t('profile.account')} sub={userName || t('home.guestName')} onClick={onOpenAccount} />
           <SettingRow icon="bell" name={t('profile.notifications')} sub="" onClick={onOpenNotifications} />
-          <SettingRow icon="globe" name={t('profile.languageTitle')} sub={getLocale() === 'ja' ? t('profile.languageJa') : t('profile.languageEn')} onClick={onOpenLanguage} />
-          <SettingRow icon="palette" name={t('profile.theme')} sub={getMode() === 'light' ? t('profile.themeLight') : t('profile.themeDark')} onClick={onOpenAppearance} />
-          <SettingRow icon="fontSize" name={t('profile.fontSize')} sub={getFontSizeLabel()} onClick={onOpenFontSize} />
+          {/* FB-32: 言語・テーマ・文字サイズを「環境設定」に集約 */}
+          <SettingRow icon="palette" name={t('profile.preferences')} sub={preferencesSub} onClick={onOpenPreferences} />
           <SettingRow icon="card" name={t('profile.plan')} sub={getPlanLabel()} onClick={onOpenPricing} extra={showTrialBadge ? <TrialBadge /> : undefined} />
           <SettingRow icon="message" name={t('profile.feedbackName')} sub={t('profile.feedbackSub')} onClick={onOpenFeedback} />
           <SettingRow icon="doc" name={t('profile.terms')} sub="" onClick={() => window.open(localizedHtmlPath('terms'), '_blank')} />

@@ -67,7 +67,10 @@
   cursor: pointer;
   color: var(--md-sys-color-on-surface-variant);
   font-family: var(--font-ui, system-ui);
-  font-size: 0.75rem;
+  /* FB-27: タブバーのラベルは font-scale（html ルートの rem 倍率）の影響を受けない
+     固定 px にする。rem だと文字サイズ「大」でラベルが大きくなり 5 タブが崩れるため。
+     small なまま固定する。 */
+  font-size: 11px;
   font-weight: 600;
   position: relative;
   -webkit-tap-highlight-color: transparent;
@@ -112,7 +115,8 @@
 /* Narrow phones (iPhone SE 1st gen 320px, SE 2nd 375px): shrink label so 5 tabs fit. */
 @media (max-width: 380px) {
   .app-tab {
-    font-size: 0.7rem;
+    /* FB-27: 狭幅でも font-scale 非依存の固定 px を維持 */
+    font-size: 10px;
     padding: 6px 2px;
   }
   .app-tab__label {

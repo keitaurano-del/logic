@@ -33,6 +33,7 @@ const ProfileEditScreen = lazy(() => import('./screens/ProfileEditScreen').then(
 const NotificationSettingsScreen = lazy(() => import('./screens/NotificationSettingsScreen').then(m => ({ default: m.NotificationSettingsScreen })))
 const AppearanceSettingsScreen = lazy(() => import('./screens/AppearanceSettingsScreen').then(m => ({ default: m.AppearanceSettingsScreen })))
 const FontSizeSettingsScreen = lazy(() => import('./screens/FontSizeSettingsScreen').then(m => ({ default: m.FontSizeSettingsScreen })))
+const PreferencesScreen = lazy(() => import('./screens/PreferencesScreen').then(m => ({ default: m.PreferencesScreen })))
 const CompletedLessonsScreen = lazy(() => import('./screens/CompletedLessonsScreen').then(m => ({ default: m.CompletedLessonsScreen })))
 const StudyTimeScreen = lazy(() => import('./screens/StudyTimeScreen').then(m => ({ default: m.StudyTimeScreen })))
 const LanguageScreen = lazy(() => import('./screens/LanguageScreen').then(m => ({ default: m.LanguageScreen })))
@@ -133,6 +134,7 @@ type Screen =
   | { type: 'notification-settings' }
   | { type: 'appearance-settings' }
   | { type: 'font-size-settings' }
+  | { type: 'preferences' }
   | { type: 'completed-lessons' }
   | { type: 'study-time' }
   | { type: 'language' }
@@ -159,6 +161,7 @@ function getInitialScreen(user: User | null): Screen {
     if (preview === 'notifications') return { type: 'notification-settings' }
     if (preview === 'appearance') return { type: 'appearance-settings' }
     if (preview === 'fontsize') return { type: 'font-size-settings' }
+    if (preview === 'preferences') return { type: 'preferences' }
     if (preview === 'journal') return { type: 'journal' }
   }
   // ログイン済みユーザーはオンボーディングをスキップ、最後のタブ位置を復元
@@ -772,16 +775,13 @@ function AppV3() {
         <ProfileScreenV3
           userName={userName}
           isLoggedIn={!!currentUser}
-          onOpenAccount={() => navigate({ type: 'account-settings' })}
           onOpenProfileEdit={() => navigate({ type: 'profile-edit' })}
           onOpenNotifications={() => navigate({ type: 'notification-settings' })}
-          onOpenAppearance={() => navigate({ type: 'appearance-settings' })}
-          onOpenFontSize={() => navigate({ type: 'font-size-settings' })}
+          onOpenPreferences={() => navigate({ type: 'preferences' })}
           onOpenFeedback={() => navigate({ type: 'feedback' })}
           onOpenPricing={() => navigate({ type: 'pricing' })}
           onOpenPlacementTest={() => navigate({ type: 'placement-test' })}
           onOpenLesson={(id) => handleOpenLesson(id)}
-          onOpenLanguage={() => navigate({ type: 'language' })}
           onOpenStudyTime={() => navigate({ type: 'study-time' })}
         />
       )}
@@ -810,7 +810,12 @@ function AppV3() {
         />
       )}
       {screen.type === 'profile-edit' && (
-        <ProfileEditScreen onBack={handleBack} />
+        <ProfileEditScreen
+          onBack={handleBack}
+          currentUser={currentUser ? { email: currentUser.email ?? '' } : null}
+          onOpenLogin={() => navigate({ type: 'login' })}
+          onLogout={() => { setCurrentUser(null); navigate({ type: 'profile' }) }}
+        />
       )}
       {screen.type === 'notification-settings' && (
         <NotificationSettingsScreen onBack={handleBack} />
@@ -823,6 +828,9 @@ function AppV3() {
       )}
       {screen.type === 'font-size-settings' && (
         <FontSizeSettingsScreen onBack={handleBack} />
+      )}
+      {screen.type === 'preferences' && (
+        <PreferencesScreen onBack={handleBack} />
       )}
 
       {screen.type === 'report-problem' && (

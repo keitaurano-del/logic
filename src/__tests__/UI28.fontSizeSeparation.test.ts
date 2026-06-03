@@ -4,23 +4,19 @@ import { dirname, resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
 /**
- * UI-28「文字サイズ変更をテーマ設定と別出しにする」回帰ロック。
+ * 設定/プロフィール IA 回帰ロック（dogfood-batch-20260603）。
  *
- * 目的: 実装は既に本番反映済（REVIEW）。その結線（独立画面化・ルート結線・
- * プロフィール独立行・i18n・AppearanceSettings からの文字サイズ設定 UI 削除・
- * DF-F2 保存/適用の非破壊）を、ソースファイルの静的検査で恒久ロックする。
+ * 旧 UI-28 は「文字サイズをテーマと別出し」を固定していたが、その後の実機 FB
+ * （FB-31 / FB-32 / FB-27）で IA を再編した。本テストは再編後の構成を恒久ロックする:
  *
- * 方式: レンダリングせず fs でソースを読み、結線文字列の「存在/不在」を assert する。
- * visualPropsIntegrity.test.ts の静的走査スタイルを踏襲（レンダリング不要で安定）。
+ *  - FB-31: 「プロフィール編集」と「アカウント」を ProfileEditScreen に統合。
+ *           プロフィール画面の独立「アカウント」行は廃止し、editProfile 行に集約。
+ *  - FB-32: 言語・テーマ・文字サイズを「環境設定」(PreferencesScreen) に集約。
+ *           プロフィール画面の独立 言語/テーマ/文字サイズ 行は廃止し、preferences 行に集約。
+ *  - FB-27: 文字サイズ段階の底上げ（default = 旧「大」, id 'large'）と保存値後方互換。
+ *           タブバーのラベルは font-scale 非依存の固定 px。
  *
- * 固定する結線（すべて既に存在・検証済み）:
- *  1. src/screens/FontSizeSettingsScreen.tsx が存在し FontSizeSettingsScreen を export
- *  2. src/AppV3.tsx に font-size-settings ルート型・onOpenFontSize 結線・描画分岐
- *  3. src/screens/ProfileScreenV3.tsx に文字サイズ独立 SettingRow
- *  4. src/i18n.ts に profile.fontSize / fontSizeSettings.title が ja/en 両方
- *  5. src/screens/AppearanceSettingsScreen.tsx から文字サイズ「設定」UI が削除
- *     （CSS の fontSize スタイルプロパティは誤検知しないこと）
- *  6. DF-F2 保存/適用（src/fontScale.ts / localStorage キー logic-font-scale）が非破壊
+ * 方式: レンダリングせず fs でソースを読み、結線文字列の存在/不在を assert する。
  */
 
 const here = dirname(fileURLToPath(import.meta.url))
@@ -30,124 +26,147 @@ function readSrc(relPath: string): string {
   return readFileSync(resolve(srcDir, relPath), 'utf8')
 }
 
-describe('UI-28 文字サイズ独立化 回帰ロック', () => {
-  describe('1. FontSizeSettingsScreen 独立画面', () => {
-    const src = readSrc('screens/FontSizeSettingsScreen.tsx')
+describe('設定/プロフィール IA 再編 回帰ロック', () => {
+  describe('FB-32: 環境設定（PreferencesScreen）に集約', () => {
+    const pref = readSrc('screens/PreferencesScreen.tsx')
 
-    it('FontSizeSettingsScreen を named export している', () => {
-      expect(src).toMatch(/export function FontSizeSettingsScreen\b/)
+    it('PreferencesScreen を named export している', () => {
+      expect(pref).toMatch(/export function PreferencesScreen\b/)
     })
 
-    it('fontScale モジュール（保存/適用ロジック）を利用している', () => {
-      expect(src).toContain("from '../fontScale'")
-      expect(src).toContain('FONT_SCALES')
-      expect(src).toContain('setFontScale')
-      expect(src).toContain('loadFontScale')
+    it('言語・テーマ・文字サイズの 3 モジュールを利用している', () => {
+      expect(pref).toContain("from '../theme'")
+      expect(pref).toContain("from '../fontScale'")
+      expect(pref).toContain('setLocale')
+      expect(pref).toContain('setMode')
+      expect(pref).toContain('setFontScale')
     })
 
-    it('文字サイズ専用タイトル fontSizeSettings.title を表示する', () => {
-      expect(src).toContain("t('fontSizeSettings.title')")
+    it('環境設定タイトル preferences.title を表示する', () => {
+      expect(pref).toContain("t('preferences.title')")
+    })
+
+    it('3 セクション見出し（言語・テーマ・文字サイズ）を持つ', () => {
+      expect(pref).toContain("t('preferences.languageHeading')")
+      expect(pref).toContain("t('preferences.themeHeading')")
+      expect(pref).toContain("t('preferences.fontSizeHeading')")
     })
   })
 
-  describe('2. AppV3 ルート結線', () => {
+  describe('FB-32: AppV3 preferences ルート結線', () => {
     const src = readSrc('AppV3.tsx')
 
-    it("Screen union に { type: 'font-size-settings' } がある", () => {
-      expect(src).toMatch(/\{\s*type:\s*'font-size-settings'\s*\}/)
+    it("Screen union に { type: 'preferences' } がある", () => {
+      expect(src).toMatch(/\{\s*type:\s*'preferences'\s*\}/)
     })
 
-    it('FontSizeSettingsScreen を import している', () => {
-      expect(src).toContain('FontSizeSettingsScreen')
-      expect(src).toContain("import('./screens/FontSizeSettingsScreen')")
+    it('PreferencesScreen を import している', () => {
+      expect(src).toContain("import('./screens/PreferencesScreen')")
     })
 
-    it("onOpenFontSize で font-size-settings へ navigate する結線がある", () => {
-      expect(src).toContain('onOpenFontSize')
-      expect(src).toMatch(/onOpenFontSize=\{\(\)\s*=>\s*navigate\(\{\s*type:\s*'font-size-settings'\s*\}\)\}/)
+    it('onOpenPreferences で preferences へ navigate する結線がある', () => {
+      expect(src).toMatch(/onOpenPreferences=\{\(\)\s*=>\s*navigate\(\{\s*type:\s*'preferences'\s*\}\)\}/)
     })
 
-    it("screen.type === 'font-size-settings' の描画分岐がある", () => {
-      expect(src).toContain("screen.type === 'font-size-settings'")
-      expect(src).toMatch(/<FontSizeSettingsScreen\b/)
+    it("screen.type === 'preferences' の描画分岐がある", () => {
+      expect(src).toContain("screen.type === 'preferences'")
+      expect(src).toMatch(/<PreferencesScreen\b/)
     })
   })
 
-  describe('3. ProfileScreenV3 文字サイズ独立行', () => {
+  describe('FB-31 / FB-32: ProfileScreenV3 の設定行が統合済み', () => {
     const src = readSrc('screens/ProfileScreenV3.tsx')
 
-    it('onOpenFontSize prop を受ける', () => {
-      expect(src).toContain('onOpenFontSize')
+    it('環境設定行（profile.preferences / onOpenPreferences）がある', () => {
+      const row = /<SettingRow[^>]*name=\{t\('profile\.preferences'\)\}[^>]*onClick=\{onOpenPreferences\}/
+      expect(src).toMatch(row)
     })
 
-    it('文字サイズ独立 SettingRow（profile.fontSize / icon=fontSize / onOpenFontSize）がある', () => {
-      // 1 つの SettingRow に 3 要素が揃っていることを確認する。
-      const settingRow = /<SettingRow[^>]*icon="fontSize"[^>]*name=\{t\('profile\.fontSize'\)\}[^>]*onClick=\{onOpenFontSize\}/
-      expect(src).toMatch(settingRow)
+    it('独立した 言語/テーマ/文字サイズ 行は廃止されている', () => {
+      expect(src).not.toContain('onOpenLanguage')
+      expect(src).not.toContain('onOpenAppearance')
+      expect(src).not.toContain('onOpenFontSize')
     })
 
-    it('fontSize アイコンが定義されている', () => {
-      expect(src).toMatch(/fontSize:\s*</)
+    it('独立した「アカウント」行（onOpenAccount）は廃止され editProfile に集約', () => {
+      expect(src).not.toContain('onOpenAccount')
+      expect(src).toContain('onOpenProfileEdit')
     })
   })
 
-  describe('4. i18n に文字サイズ独立キーが ja/en 両方', () => {
+  describe('FB-31: ProfileEditScreen がアカウント操作を内包', () => {
+    const src = readSrc('screens/ProfileEditScreen.tsx')
+
+    it('アカウントセクション見出し profileEdit.sectionAccount を表示する', () => {
+      expect(src).toContain("t('profileEdit.sectionAccount')")
+    })
+
+    it('メール変更・ログアウトのアカウント操作を持つ', () => {
+      expect(src).toContain('updateUserEmail')
+      expect(src).toContain('logout')
+      expect(src).toContain('onOpenLogin')
+      expect(src).toContain('onLogout')
+    })
+
+    it('言語フィールドは PreferencesScreen に移管され、ここには無い', () => {
+      expect(src).not.toContain("t('profileEdit.language')")
+    })
+  })
+
+  describe('i18n に新キーが ja/en 両方', () => {
     const src = readSrc('i18n.ts')
 
-    it("profile.fontSize が ja/en で 2 回定義されている", () => {
-      const matches = src.match(/'profile\.fontSize':/g) ?? []
+    it("preferences.title が ja/en で 2 回定義されている", () => {
+      const matches = src.match(/'preferences\.title':/g) ?? []
       expect(matches.length).toBe(2)
     })
 
-    it("fontSizeSettings.title が ja/en で 2 回定義されている", () => {
-      const matches = src.match(/'fontSizeSettings\.title':/g) ?? []
+    it("profile.preferences が ja/en で 2 回定義されている", () => {
+      const matches = src.match(/'profile\.preferences':/g) ?? []
+      expect(matches.length).toBe(2)
+    })
+
+    it("profileEdit.sectionAccount が ja/en で 2 回定義されている", () => {
+      const matches = src.match(/'profileEdit\.sectionAccount':/g) ?? []
       expect(matches.length).toBe(2)
     })
   })
 
-  describe('5. AppearanceSettings から文字サイズ「設定」UI が削除済み', () => {
-    const src = readSrc('screens/AppearanceSettingsScreen.tsx')
-
-    it('テーマ画面である（テーマ選択 UI を保持）', () => {
-      expect(src).toContain('export function AppearanceSettingsScreen')
-      expect(src).toContain('MODES')
-      expect(src).toContain('ThemeCard')
-    })
-
-    it('fontScale 設定ロジック（FONT_SCALES / setFontScale / loadFontScale）を含まない', () => {
-      // CSS の `fontSize` スタイルプロパティは誤検知しないよう、fontScale 固有の
-      // シンボルだけを不在 assert の対象にする。
-      expect(src).not.toContain('FONT_SCALES')
-      expect(src).not.toContain('setFontScale')
-      expect(src).not.toContain('loadFontScale')
-      expect(src).not.toContain("from '../fontScale'")
-    })
-
-    it('文字サイズ選択 UI（FontSizeCard / 文字サイズ見出し）を含まない', () => {
-      expect(src).not.toContain('FontSizeCard')
-      expect(src).not.toContain("t('appearanceSettings.fontSizeHeading')")
-      expect(src).not.toContain("t('appearanceSettings.fontSizeHint')")
-    })
-  })
-
-  describe('6. DF-F2 保存/適用が非破壊', () => {
+  describe('FB-27: 文字サイズ底上げ + 後方互換', () => {
     const src = readSrc('fontScale.ts')
 
-    it('localStorage キー logic-font-scale を維持している', () => {
+    it('localStorage キー logic-font-scale を維持している（保存値後方互換）', () => {
       expect(src).toContain("'logic-font-scale'")
     })
 
-    it('保存/適用 API（setFontScale / applyFontScale / loadFontScale）を export している', () => {
+    it('内部 id（standard/large/xlarge）と倍率は据え置き', () => {
+      expect(src).toContain("id: 'standard'")
+      expect(src).toContain("id: 'large'")
+      expect(src).toContain("id: 'xlarge'")
+      expect(src).toContain('scale: 1.0')
+      expect(src).toContain('scale: 1.15')
+      expect(src).toContain('scale: 1.3')
+    })
+
+    it("デフォルトを新「標準」(= 旧大, id 'large') に底上げ", () => {
+      expect(src).toMatch(/const DEFAULT_ID:\s*FontScaleId\s*=\s*'large'/)
+    })
+
+    it('保存/適用 API を export している', () => {
       expect(src).toMatch(/export function setFontScale\b/)
       expect(src).toMatch(/export function applyFontScale\b/)
       expect(src).toMatch(/export function loadFontScale\b/)
     })
+  })
 
-    it('FONT_SCALES（標準/大/特大）を export している', () => {
-      expect(src).toMatch(/export const FONT_SCALES\b/)
-      expect(src).toContain("id: 'standard'")
-      expect(src).toContain("id: 'large'")
-      expect(src).toContain("id: 'xlarge'")
+  describe('FB-27: タブバーは font-scale 非依存（固定 px）', () => {
+    const css = readSrc('components/AppShell.css')
+
+    it('.app-tab の font-size が rem ではなく px 固定', () => {
+      // .app-tab ブロック内の font-size が px であること（rem だと root スケールに追従して崩れる）
+      const block = css.match(/\.app-tab\s*\{[^}]*\}/)?.[0] ?? ''
+      expect(block).toMatch(/font-size:\s*\d+px/)
+      expect(block).not.toMatch(/font-size:\s*[\d.]+rem/)
     })
   })
 })

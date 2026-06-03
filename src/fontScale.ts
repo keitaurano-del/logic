@@ -21,14 +21,21 @@ export type FontScaleOption = {
   previewPx: number
 }
 
-// 標準=1.0 / 大=1.15 / 特大=1.3
+// FB-27: 全体的に文字を底上げ。デフォルトを一段大きく（旧「大」相当）にする。
+// 倍率（内部値 scale）と保存値（id）は据え置きで後方互換を保ち、表示ラベルだけ付け替える:
+//   id 'standard'(1.0)  → ラベル「小」    （旧「標準」の倍率）
+//   id 'large'   (1.15) → ラベル「標準」  （旧「大」の倍率。新デフォルト）
+//   id 'xlarge'  (1.3)  → ラベル「大」    （旧「特大」の倍率）
+// 既に id を保存しているユーザーの見た目（倍率）は一切変わらない。未設定ユーザーの
+// デフォルトだけが 1.0 → 1.15 に底上げされる。
 export const FONT_SCALES: FontScaleOption[] = [
-  { id: 'standard', get name() { return t('appearanceSettings.fontSize.standard') }, scale: 1.0,  previewPx: 16 },
-  { id: 'large',    get name() { return t('appearanceSettings.fontSize.large') },    scale: 1.15, previewPx: 19 },
-  { id: 'xlarge',   get name() { return t('appearanceSettings.fontSize.xlarge') },   scale: 1.3,  previewPx: 22 },
+  { id: 'standard', get name() { return t('appearanceSettings.fontSize.small') },  scale: 1.0,  previewPx: 16 },
+  { id: 'large',    get name() { return t('appearanceSettings.fontSize.medium') }, scale: 1.15, previewPx: 19 },
+  { id: 'xlarge',   get name() { return t('appearanceSettings.fontSize.largeNew') }, scale: 1.3, previewPx: 22 },
 ]
 
-const DEFAULT_ID: FontScaleId = 'standard'
+// 未設定ユーザーのデフォルトは新「標準」(= 旧「大」, id 'large', 1.15)。
+const DEFAULT_ID: FontScaleId = 'large'
 
 export function loadFontScale(): FontScaleId {
   try {

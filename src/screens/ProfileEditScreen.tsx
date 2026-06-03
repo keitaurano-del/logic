@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Header } from '../components/platform/Header'
-import { t, getLocale, setLocale } from '../i18n'
+import { t } from '../i18n'
 import {
   loadUserProfile,
   saveUserProfile,
@@ -13,11 +13,17 @@ import {
   type Occupation,
 } from '../userProfile'
 import { getDisplayName, setDisplayName } from '../stats'
-import { updateDisplayName } from '../supabase'
+import { updateDisplayName, logout, updateUserEmail } from '../supabase'
+import { confirm as confirmDialog } from '../platform/dialog'
 import { CheckIcon } from '../icons'
 
 interface Props {
   onBack: () => void
+  // FB-31: プロフィール編集とアカウントを統合。アカウント操作（メール変更・
+  // ログイン/ログアウト）に必要な情報・コールバックを受け取る。
+  currentUser: { email: string } | null
+  onOpenLogin: () => void
+  onLogout: () => void
 }
 
 const GENDER_ORDER: Gender[] = ['male', 'female', 'other', 'na']
@@ -42,11 +48,13 @@ const OCCUPATION_ORDER: Occupation[] = [
  *  - 性別 (localStorage のみ。profiles に列を作らないので将来 migration 必要)
  *  - 職業 (localStorage + profiles.occupation)
  *  - 目標 (localStorage + profiles.goal)
- *  - 言語 (localStorage + UI 即時反映)
+ *
+ * FB-31: アカウント (メールアドレス変更・ログイン/ログアウト) も同一画面の
+ * 「アカウント」セクションに統合した。言語は「環境設定」(PreferencesScreen) へ移動。
  *
  * 文言は中立的な丁寧体で書く (feedback-app-copy-neutral 準拠)。
  */
-export function ProfileEditScreen({ onBack }: Props) {
+export function ProfileEditScreen({ onBack, currentUser, onOpenLogin, onLogout }: Props) {
   const currentYear = getCurrentYear()
   const profile = loadUserProfile()
 
@@ -57,11 +65,53 @@ export function ProfileEditScreen({ onBack }: Props) {
   const [gender, setGender] = useState<Gender | ''>(profile.gender ?? '')
   const [occupation, setOccupation] = useState<Occupation | ''>(profile.occupation ?? '')
   const [goal, setGoal] = useState<string>(profile.goal ?? '')
-  const [language, setLanguage] = useState<'ja' | 'en'>(getLocale())
 
   const [saving, setSaving] = useState(false)
   const [savedFlash, setSavedFlash] = useState(false)
   const [error, setError] = useState('')
+
+  // FB-31: アカウント — メールアドレス変更
+  const [editingEmail, setEditingEmail] = useState(false)
+  const [emailInput, setEmailInput] = useState(currentUser?.email ?? '')
+  const [emailSaving, setEmailSaving] = useState(false)
+  const [emailError, setEmailError] = useState('')
+  const [emailSentTo, setEmailSentTo] = useState<string | null>(null)
+
+  const handleLogout = async () => {
+    const ok = await confirmDialog({
+      title: t('accountSettings.logoutTitle'),
+      message: t('accountSettings.logoutMessage'),
+      okText: t('accountSettings.logoutOk'),
+      cancelText: t('accountSettings.cancel'),
+    })
+    if (ok) {
+      await logout()
+      onLogout()
+    }
+  }
+
+  const handleSaveEmail = async () => {
+    const next = emailInput.trim()
+    if (!next) { setEmailError(t('auth.errEmailRequired')); return }
+    if (currentUser?.email && next.toLowerCase() === currentUser.email.toLowerCase()) {
+      setEmailError(t('accountSettings.emailSameError'))
+      return
+    }
+    setEmailSaving(true)
+    setEmailError('')
+    const result = await updateUserEmail(next)
+    setEmailSaving(false)
+    if (result.error) {
+      if (result.error === 'auth/invalid-email') setEmailError(t('auth.invalidEmail'))
+      else if (result.error === 'auth/rate-limited') setEmailError(t('auth.errRateLimited'))
+      else if (result.error === 'auth/email-in-use') setEmailError(t('accountSettings.emailInUseError'))
+      else if (result.error === 'auth/not-configured') setEmailError(t('auth.errNotConfigured'))
+      else setEmailError(t('auth.errSendLinkFailed'))
+      return
+    }
+    setEmailSentTo(next)
+    setEditingEmail(false)
+  }
 
   useEffect(() => {
     if (!savedFlash) return
@@ -100,9 +150,6 @@ export function ProfileEditScreen({ onBack }: Props) {
         goal: goal.trim() || undefined,
       })
 
-      if (language !== getLocale()) {
-        setLocale(language)
-      }
       setSavedFlash(true)
     } catch {
       setError(t('profileEdit.errSave'))
@@ -227,7 +274,7 @@ export function ProfileEditScreen({ onBack }: Props) {
           </div>
 
           {/* 目標 */}
-          <div style={{ ...FIELD, borderBottom: '1px solid var(--border)' }}>
+          <div style={{ ...FIELD, borderBottom: 'none' }}>
             <label style={LABEL} htmlFor="pe-goal">{t('profileEdit.goal')}</label>
             <textarea
               id="pe-goal"
@@ -240,20 +287,6 @@ export function ProfileEditScreen({ onBack }: Props) {
             <div style={{ fontSize: '0.7333rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
               {t('profileEdit.goalHint')}
             </div>
-          </div>
-
-          {/* 言語 */}
-          <div style={{ ...FIELD, borderBottom: 'none' }}>
-            <label style={LABEL} htmlFor="pe-language">{t('profileEdit.language')}</label>
-            <select
-              id="pe-language"
-              value={language}
-              onChange={(e) => setLanguage(e.target.value as 'ja' | 'en')}
-              style={SELECT_LIKE}
-            >
-              <option value="ja">日本語</option>
-              <option value="en">English</option>
-            </select>
           </div>
         </div>
 
@@ -291,6 +324,82 @@ export function ProfileEditScreen({ onBack }: Props) {
         >
           {saving ? t('profileEdit.saving') : t('profileEdit.save')}
         </button>
+
+        {/* FB-31: アカウントセクション（メールアドレス変更・ログイン/ログアウト） */}
+        <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '0.08em', padding: '8px 4px 0' }}>
+          {t('profileEdit.sectionAccount')}
+        </div>
+        <div style={SECTION}>
+          {/* メールアドレス（ログイン済みのみ） */}
+          {currentUser && (
+            <div style={{ ...FIELD, borderBottom: '1px solid var(--border)' }}>
+              <span style={LABEL}>{t('accountSettings.email')}</span>
+              {editingEmail ? (
+                <div>
+                  <input
+                    type="email"
+                    aria-label={t('accountSettings.email')}
+                    value={emailInput}
+                    onChange={(e) => setEmailInput(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === 'Enter') handleSaveEmail() }}
+                    autoFocus
+                    autoComplete="email"
+                    style={{ ...INPUT, marginBottom: 8 }}
+                  />
+                  {emailError && <div role="alert" style={{ fontSize: '0.8rem', color: 'var(--md-sys-color-error)', marginBottom: 8 }}>{emailError}</div>}
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <button
+                      type="button"
+                      onClick={() => { setEditingEmail(false); setEmailError(''); setEmailInput(currentUser.email ?? '') }}
+                      style={{ flex: 1, padding: '10px', minHeight: 44, background: 'var(--bg-elevated)', border: 'none', borderRadius: 10, color: 'var(--text-secondary)', fontSize: '0.9333rem', cursor: 'pointer' }}
+                    >{t('accountSettings.cancel')}</button>
+                    <button
+                      type="button"
+                      onClick={handleSaveEmail}
+                      disabled={emailSaving || !emailInput.trim()}
+                      style={{ flex: 1, padding: '10px', minHeight: 44, background: emailInput.trim() ? 'var(--brand)' : 'var(--bg-elevated)', border: 'none', borderRadius: 10, color: emailInput.trim() ? '#fff' : 'var(--text-muted)', fontSize: '0.9333rem', fontWeight: 700, cursor: 'pointer' }}
+                    >{emailSaving ? t('accountSettings.saving') : t('accountSettings.sendLinkBtn')}</button>
+                  </div>
+                  <div style={{ fontSize: '0.7333rem', color: 'var(--text-muted)', marginTop: 8, lineHeight: 1.6 }}>
+                    {t('accountSettings.emailChangeHint')}
+                  </div>
+                </div>
+              ) : (
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+                  <div style={{ fontSize: '0.9333rem', color: 'var(--text-secondary)', wordBreak: 'break-all' }}>{currentUser.email}</div>
+                  <button type="button" onClick={() => { setEditingEmail(true); setEmailInput(currentUser.email ?? ''); setEmailError(''); setEmailSentTo(null) }} style={{ fontSize: '0.8667rem', color: 'var(--brand)', fontWeight: 700, cursor: 'pointer', padding: '4px 8px', background: 'transparent', border: 'none', minHeight: 32, flexShrink: 0 }}>{t('accountSettings.change')}</button>
+                </div>
+              )}
+              {emailSentTo && !editingEmail && (
+                <div role="status" aria-live="polite" style={{
+                  fontSize: '0.8rem', color: 'var(--text-primary)',
+                  background: 'var(--brand-soft)', borderRadius: 8,
+                  padding: '8px 10px', marginTop: 10, lineHeight: 1.6,
+                }}>
+                  {t('accountSettings.emailVerifySent', { email: emailSentTo })}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ログイン / ログアウト */}
+          {currentUser ? (
+            <button
+              type="button"
+              onClick={handleLogout}
+              style={{ padding: '16px 18px', cursor: 'pointer', color: 'var(--md-sys-color-error)', fontSize: '1rem', fontWeight: 700, textAlign: 'center', background: 'transparent', border: 'none', width: '100%', font: 'inherit', minHeight: 44 }}
+            >{t('accountSettings.logout')}</button>
+          ) : (
+            <button
+              type="button"
+              onClick={onOpenLogin}
+              style={{ padding: '16px 18px', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'transparent', border: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%', minHeight: 44 }}
+            >
+              <span style={{ fontSize: '1rem', fontWeight: 600 }}>{t('accountSettings.emailLogin')}</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+          )}
+        </div>
       </div>
     </div>
   )
