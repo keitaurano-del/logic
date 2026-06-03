@@ -80,7 +80,8 @@
   height: 100%;
   transform-style: preserve-3d;
   -webkit-transform-style: preserve-3d;
-  transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+  /* めくり演出: 0.45s でカードらしく回転（FB-21、0.3-0.5s の自然な範囲）。 */
+  transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
 }
 
@@ -107,7 +108,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: var(--s-5) var(--s-4);
+  /* FB-21: 余白を一段広げて文字に呼吸を持たせる。 */
+  padding: var(--s-6) var(--s-5);
   border-radius: 20px;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
@@ -177,10 +179,11 @@
 /* Main text — sans, generous line-height, readable on mobile */
 .fc3-face-text {
   font-weight: 600;
-  /* rem 基準（1rem = 15px）。html font-size を動かす font-scale 設定に追従させるため
-     px ハードコードでなく rem を使う。1.1333rem≒17px 〜 1.5333rem≒23px。 */
-  font-size: clamp(1.1333rem, 4.5vw, 1.5333rem);
-  line-height: 1.65;
+  /* FB-21: 問題文をさらに一段大きく、読みやすく。
+     rem 基準（1rem = 15px）で 1.3333rem≒20px 〜 1.7333rem≒26px。
+     html font-size を動かす font-scale 設定に追従させるため px でなく rem を使う。 */
+  font-size: clamp(1.3333rem, 5.2vw, 1.7333rem);
+  line-height: 1.7;
   letter-spacing: -0.005em;
   text-align: center;
   white-space: pre-wrap;
@@ -194,13 +197,13 @@
 }
 
 .fc3-back-text {
-  /* FB-18: 裏面（回答）の文字を読みやすいサイズに引き上げ。
-     rem 基準（1rem = 15px）で 1.2rem≒18px 〜 1.5333rem≒23px。
-     表面（問い）と同等以上にして、めくった先の回答が小さく見えないようにする。
+  /* FB-21: 裏面（回答）も一段引き上げ。
+     rem 基準（1rem = 15px）で 1.3333rem≒20px 〜 1.7333rem≒26px。
+     表面（問い）と同等にして、めくった先の回答が小さく見えないようにする。
      長文は .fc3-face-text の max-height + overflow-y:auto でスクロール担保済み。 */
-  font-size: clamp(1.2rem, 4.8vw, 1.5333rem);
+  font-size: clamp(1.3333rem, 5.2vw, 1.7333rem);
   font-weight: 500;
-  line-height: 1.7;
+  line-height: 1.75;
 }
 
 /* Tap hint on the front face */
@@ -286,6 +289,64 @@
   opacity: 0.8;
 }
 
+/* ----------------------------------------------------------------
+ * Completion — upbeat-but-tasteful "all reviewed" state (FB-21).
+ * Check badge scales/fades in, text rises softly. No confetti.
+ * ---------------------------------------------------------------- */
+.fc3-complete {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--s-7) var(--s-5) var(--s-6);
+  margin-top: var(--s-5);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg, 20px);
+  box-shadow:
+    0 1px 2px rgba(15, 20, 36, 0.06),
+    0 12px 28px rgba(15, 20, 36, 0.08);
+  animation: fc3-complete-rise 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.fc3-complete-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 88px;
+  height: 88px;
+  border-radius: var(--radius-full, 999px);
+  background: var(--brand-soft);
+  color: var(--brand);
+  margin-bottom: var(--s-4);
+  animation: fc3-complete-pop 520ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.fc3-complete-title {
+  font-size: clamp(1.3333rem, 5vw, 1.6rem);
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.fc3-complete-desc {
+  margin-top: var(--s-2);
+  font-size: 1.0667rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+@keyframes fc3-complete-rise {
+  0%   { opacity: 0; transform: translateY(16px) scale(0.98); }
+  100% { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+@keyframes fc3-complete-pop {
+  0%   { opacity: 0; transform: scale(0.4); }
+  60%  { opacity: 1; transform: scale(1.08); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
 /* Reduced motion — collapse the flip into an instant swap */
 @media (prefers-reduced-motion: reduce) {
   .fc3-card-inner,
@@ -294,7 +355,9 @@
     transition-duration: 0.01ms !important;
   }
   .fc3-stage.is-entering,
-  .fc3-actions {
+  .fc3-actions,
+  .fc3-complete,
+  .fc3-complete-badge {
     animation: none !important;
   }
   .fc3-flip-hint::before {

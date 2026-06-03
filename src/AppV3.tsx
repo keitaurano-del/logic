@@ -10,6 +10,7 @@ import { BootLoadingScreen } from './screens/BootLoadingScreen'
 
 // Lazy-load lower-frequency screens to keep initial bundle small.
 const FlashcardsScreen = lazy(() => import('./screens/FlashcardsScreen').then(m => ({ default: m.FlashcardsScreen })))
+const ReviewModeScreen = lazy(() => import('./screens/ReviewModeScreen').then(m => ({ default: m.ReviewModeScreen })))
 const ReviewHubScreen = lazy(() => import('./screens/ReviewHubScreen').then(m => ({ default: m.ReviewHubScreen })))
 const WrongAnswerListScreen = lazy(() => import('./screens/WrongAnswerListScreen').then(m => ({ default: m.WrongAnswerListScreen })))
 const SavedItemsScreen = lazy(() => import('./screens/SavedItemsScreen').then(m => ({ default: m.SavedItemsScreen })))
@@ -62,6 +63,7 @@ import {
 
 
 import type { AIProblemSet } from './aiProblemStore'
+import type { FlashcardMode } from './screens/FlashcardsScreen'
 import { loadTheme, applyTheme } from './theme'
 // import { loadGuestUser } from './guestUser'
 import { getCompletedCount, getXp, getDisplayName, setDisplayName, recordCompletion, XP_REWARDS } from './stats'
@@ -92,7 +94,7 @@ const NAV_SNAPSHOT_KEY = 'logic-nav-snapshot'
 // lesson/lesson-complete/ai-problem など揮発状態を持つものは除外
 const PERSISTABLE_SCREENS = new Set<string>([
   'home', 'lessons', 'roadmap', 'profile',
-  'flashcards', 'review-hub', 'wrong-answers', 'saved-items',
+  'flashcards', 'review-mode', 'review-hub', 'wrong-answers', 'saved-items',
   'daily-fermi', 'fermi-ranking', 'fermi-history', 'daily-problem',
   'streak', 'completed-lessons', 'study-time', 'rank', 'journal',
 ])
@@ -108,7 +110,8 @@ type Screen =
   | { type: 'profile' }
   | { type: 'lesson'; lessonId: number; startStep?: number; returnScreen?: Screen }
   | { type: 'lesson-complete'; lessonId: number; durationSec: number; prevLevel: number; returnScreen?: Screen }
-  | { type: 'flashcards'; mode?: 'due' | 'weak' }
+  | { type: 'flashcards'; mode?: FlashcardMode }
+  | { type: 'review-mode' }
   | { type: 'review-hub' }
   | { type: 'wrong-answers' }
   | { type: 'saved-items' }
@@ -595,6 +598,7 @@ function AppV3() {
         isPaid() ? (
           <ReviewHubScreen
             onBack={handleBack}
+            onOpenFlashcardModes={() => navigate({ type: 'review-mode' })}
             onOpenFlashcards={(mode) => navigate({ type: 'flashcards', mode })}
             onOpenWrongAnswers={() => navigate({ type: 'wrong-answers' })}
             onOpenFermiHistory={() => navigate({ type: 'fermi-history' })}
@@ -603,6 +607,20 @@ function AppV3() {
         ) : (
           <ReviewPreviewScreen
             feature="review-hub"
+            onBack={handleBack}
+            onUpgrade={() => navigate({ type: 'pricing' })}
+          />
+        )
+      )}
+      {screen.type === 'review-mode' && (
+        isPaid() ? (
+          <ReviewModeScreen
+            onBack={handleBack}
+            onStart={(mode) => navigate({ type: 'flashcards', mode })}
+          />
+        ) : (
+          <ReviewPreviewScreen
+            feature="flashcards"
             onBack={handleBack}
             onUpgrade={() => navigate({ type: 'pricing' })}
           />

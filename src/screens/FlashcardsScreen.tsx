@@ -1,6 +1,14 @@
 import { Fragment, type ReactNode, useMemo, useState } from 'react'
-import { getDueCards, getWeakCards, previewIntervals, reviewCard, type Flashcard } from '../flashcardData'
-import { CheckIcon, SparklesIcon } from '../icons'
+import {
+  getAllCards,
+  getDueCards,
+  getShuffledCards,
+  getWeakCards,
+  previewIntervals,
+  reviewCard,
+  type Flashcard,
+} from '../flashcardData'
+import { CheckCircleIcon, SparklesIcon } from '../icons'
 import { Button } from '../components/Button'
 import { Header } from '../components/platform/Header'
 import { haptic } from '../platform/haptics'
@@ -9,10 +17,38 @@ import { useStudyTimer } from '../hooks/useStudyTimer'
 import { FeaturePreviewBanner } from '../components/FeaturePreviewBanner'
 import './FlashcardsScreen.css'
 
+export type FlashcardMode = 'due' | 'weak' | 'all' | 'random'
+
 interface FlashcardsScreenProps {
   onBack: () => void
-  mode?: 'due' | 'weak'
+  mode?: FlashcardMode
   onUpgrade?: () => void
+}
+
+/** モードごとに対象カード集合と順序を返す。 */
+function buildQueue(mode: FlashcardMode): Flashcard[] {
+  switch (mode) {
+    case 'weak':
+      return getWeakCards()
+    case 'all':
+      return getAllCards()
+    case 'random':
+      return getShuffledCards()
+    case 'due':
+    default:
+      return getDueCards()
+  }
+}
+
+/** モードごとの空状態メッセージ。 */
+function emptyCopy(mode: FlashcardMode): { title: string; desc: string } {
+  if (mode === 'weak') {
+    return { title: t('flashcards.emptyWeak'), desc: t('flashcards.emptyWeakDesc') }
+  }
+  if (mode === 'all' || mode === 'random') {
+    return { title: t('flashcards.emptyAll'), desc: t('flashcards.emptyAllDesc') }
+  }
+  return { title: t('flashcards.emptyDue'), desc: t('flashcards.emptyDueDesc') }
 }
 
 /**
@@ -43,9 +79,7 @@ function renderCardContent(text: string): ReactNode {
 export function FlashcardsScreen({ onBack, mode = 'due', onUpgrade }: FlashcardsScreenProps) {
   // 学習時間計測 — フラッシュカード画面の滞在時間を study_sessions に記録
   useStudyTimer({ type: 'flashcard', id: mode })
-  const [queue] = useState<Flashcard[]>(() =>
-    mode === 'weak' ? getWeakCards() : getDueCards(),
-  )
+  const [queue] = useState<Flashcard[]>(() => buildQueue(mode))
   const [idx, setIdx] = useState(0)
   const [flipped, setFlipped] = useState(false)
   const total = useMemo(() => queue.length, [queue.length])
@@ -53,12 +87,15 @@ export function FlashcardsScreen({ onBack, mode = 'due', onUpgrade }: Flashcards
   const card = queue[idx]
   const done = idx >= queue.length
 
-  // 各評価ボタンに「次はいつ復習になるか」を添えるためのラベル（good と easy の差を可視化）。
+  // 各評価ボタンに「次はいつ復習になるか」を添えるためのラベル（固定間隔: もう一度=すぐ / わかった=3日後 / 簡単=1週間後）。
   const nextLabels = useMemo(() => {
     if (!card) return null
     const iv = previewIntervals(card)
-    const fmt = (days: number) =>
-      days <= 0 ? t('flashcards.nextSoon') : t('flashcards.nextDays', { days })
+    const fmt = (days: number) => {
+      if (days <= 0) return t('flashcards.nextSoon')
+      if (days === 7) return t('flashcards.nextWeek')
+      return t('flashcards.nextDays', { days })
+    }
     return { again: fmt(iv.again), good: fmt(iv.good), easy: fmt(iv.easy) }
   }, [card])
 
@@ -107,34 +144,29 @@ export function FlashcardsScreen({ onBack, mode = 'due', onUpgrade }: Flashcards
               <SparklesIcon width={36} height={36} />
             </div>
             <h3 style={{ fontSize: '1.3333rem', marginBottom: 'var(--s-2)' }}>
-              {mode === 'weak'
-                ? t('flashcards.emptyWeak')
-                : t('flashcards.emptyDue')}
+              {emptyCopy(mode).title}
             </h3>
             <p className="muted" style={{ fontSize: '1.0667rem' }}>
-              {mode === 'weak'
-                ? t('flashcards.emptyWeakDesc')
-                : t('flashcards.emptyDueDesc')}
+              {emptyCopy(mode).desc}
             </p>
           </div>
         ) : done ? (
-          <div className="feedback-card" style={{ textAlign: 'center' }}>
-            <div className="feedback-head" style={{ justifyContent: 'center' }}>
-              <div className="feedback-check">
-                <CheckIcon />
-              </div>
-              <div className="feedback-title">{t('flashcards.allDone')}</div>
+          <div className="fc3-complete" role="status" aria-live="polite">
+            <div className="fc3-complete-badge">
+              <CheckCircleIcon width={56} height={56} />
             </div>
-            <div className="feedback-text" style={{ marginTop: 'var(--s-2)' }}>
+            <div className="fc3-complete-title">{t('flashcards.completeTitle')}</div>
+            <div className="fc3-complete-desc">
               {t('flashcards.allDoneDesc', { total })}
             </div>
             <Button
               variant="primary"
               size="lg"
+              block
               onClick={onBack}
-              style={{ marginTop: 'var(--s-4)' }}
+              style={{ marginTop: 'var(--s-5)' }}
             >
-              {t('flashcards.back')}
+              {t('flashcards.backToHub')}
             </Button>
           </div>
         ) : (
