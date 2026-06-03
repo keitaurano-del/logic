@@ -270,7 +270,7 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 - 更新日: 2026-06-03
 
 #### FB-17 — 復習の「弱点」カードが完了しても減らない
-- 優先度: P1 / ステータス: TODO / 担当案: dev-logic
+- 優先度: P1 / ステータス: DONE（2026-06-03 林ティック。弱点判定を isWeakCard=wrongCount>0&&interval===0 に統一(getWeakCards/getCardStats)＝正解でinterval≥1になり弱点から自動除外。回帰テスト flashcardWeak.test.ts 11件＋fb17-weak-card.test.ts 6件(間違える→弱点→正解→消える)。commit `c787c8d`+`265c130`・tsc0/eslint0/vitest626pass・main push済・Render deploy run26881079563・Android本番反映） / 担当案: dev-logic
 - 詳細（2026-06-03 Keita 実機FB「弱点を完了してもなくならない」, 復習画面スクショ）: 復習画面のフラッシュカードに「弱点 N枚」が出る。弱点カードを復習して正解しても枚数が減らない。
 - 根因（特定済み）: 弱点判定が `src/flashcardData.ts:110` の `weak = cards.filter(c => c.wrongCount > 0).length` ＝「過去に1回でも間違えたカード」。`reviewCard()`（flashcardData.ts:56）で `wrongCount` は 'again' 時に ++ されるだけで、後で 'good'/'easy' で正解しても減算されない＝単調増加。一度間違えたカードは永久に「弱点」にカウントされ続ける。`getWeakCards()`（:94）も同じ `wrongCount > 0` フィルタなので、復習しても弱点リストから出ていかない。
 - 実装方針（dev-logic 確定。スキーマ無変更で行ける案を第一候補に）: 「弱点を復習して正解したら弱点から外れる」を満たす。第一候補は `wrongCount > 0 && interval === 0` を弱点条件にする＝'again' は interval=0 にリセットするので「間違えてまだ立て直してないカード」だけが弱点、'good'/'easy' で正解すると interval≥1 になり弱点から自動的に外れる（新規カードは wrongCount=0 で対象外、再習得済みカードも interval≥1 で対象外）。getCardStats の weak と getWeakCards の両方を同じ条件に揃える。これで Supabase スキーマ変更不要。別案（lapsed フラグ追加/correctCount との比較）も可だが、スキーマ追加や同期を増やさない方を優先。getWeakCards のソート（wrongCount-correctCount）も新条件と整合するよう見直す。
