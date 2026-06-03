@@ -644,6 +644,23 @@
   margin: 0;
   padding: var(--s-2) 0 0;
 }
+.fermi-filter-clear {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.7667rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  border-radius: var(--radius-chip);
+}
+.fermi-filter-clear:hover {
+  color: var(--brand);
+}
 
 /* === Daily Fermi question difficulty/domain badge chips === */
 .fermi-meta-chip {
