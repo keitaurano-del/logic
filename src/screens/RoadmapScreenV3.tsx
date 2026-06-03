@@ -486,31 +486,7 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
 
       <div style={{ flex: 1, padding: '0 16px 80px', display: 'flex', flexDirection: 'column', gap: 14 }}>
 
-        {/* 検索バー（常設）— タップで右上虫眼鏡と同じ検索オーバーレイを開く。発見性向上のため一覧トップに配置 */}
-        <button
-          type="button"
-          onClick={() => setSearchOpen(true)}
-          aria-label={t('roadmap.searchBarAria')}
-          style={{
-            display: 'flex', alignItems: 'center', gap: 10,
-            width: '100%',
-            padding: '12px 14px',
-            background: 'var(--bg-card)',
-            color: 'var(--text-secondary)',
-            border: `1px solid var(--border)`,
-            borderRadius: 'var(--radius-md)',
-            cursor: 'pointer',
-            textAlign: 'left',
-            fontFamily: "'Noto Sans JP', sans-serif",
-            fontSize: '0.9333rem',
-            minHeight: 48,
-          }}
-        >
-          <SearchIcon width={18} height={18} aria-hidden />
-          <span style={{ flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-            {t('roadmap.searchBarPlaceholder')}
-          </span>
-        </button>
+        {/* 検索は右上の虫眼鏡アイコンから開く（FB-35。常設の検索バーは廃止し、デフォルト非表示） */}
 
         {/* あなた専用コース（AI 生成）— 最上部。コースが無くても作成ボタンは表示 */}
         <CustomCourseSection

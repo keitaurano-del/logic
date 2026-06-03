@@ -8,6 +8,8 @@
  * - 同一日 × 同一 (type, id) は重複登録しない（複数回やってもログは1件）
  */
 
+import { safeSetItem } from './storageUsage'
+
 const STORAGE_KEY = 'logic-activity-log'
 const MAX_ENTRIES = 1000
 
@@ -33,9 +35,9 @@ function load(): ActivityEntry[] {
 }
 
 function save(entries: ActivityEntry[]) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(entries))
-  } catch { /* quota / storage disabled — ignore */ }
+  // 成長キャッシュ（最大 1000 件のローカル履歴）。QuotaExceeded 時は
+  // safeSetItem が再生成可能キャッシュを間引いて耐久データを守る。
+  safeSetItem(STORAGE_KEY, JSON.stringify(entries))
 }
 
 function dateStr(ts: number): string {

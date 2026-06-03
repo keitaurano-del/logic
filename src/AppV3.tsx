@@ -71,6 +71,8 @@ import { getCompletedCount, getXp, getDisplayName, setDisplayName, recordComplet
 import { recordActivity } from './activityLog'
 import { updateDisplayName } from './supabase'
 import { isAdmin } from './admin'
+import { isDevMode } from './devMode'
+import { logStorageUsage } from './storageUsage'
 import { onAuthChange, getInitialUser, type User } from './supabase'
 import { setUser as setSentryUser } from './sentry'
 import { hideSplash } from './platform'
@@ -233,6 +235,9 @@ function AppV3() {
     checkAndInitInstall()
     // Play Billing 初期化（Android native のみ、Web では no-op）
     void initBilling()
+    // FB-23: dev/admin モードでは起動時に localStorage 使用量の内訳をコンソールへ。
+    // 「実機で実際どのキーがどれだけ食っているか」を測れるようにする土台。
+    if (isDevMode() || isAdmin()) logStorageUsage()
   }, [])
 
   // screenRef を常に最新の screen と同期させる（コンカレントレンダリング対策）

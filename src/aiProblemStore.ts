@@ -1,6 +1,7 @@
 import type { LessonData } from './lessonData'
 import { isPaid } from './subscription'
 import { localeBody, getLocale } from './i18n'
+import { safeSetItem } from './storageUsage'
 
 const STORAGE_KEY = 'logic-ai-problems'
 import { API_BASE } from './apiBase'
@@ -22,7 +23,10 @@ function load(): AIProblemSet[] {
 }
 
 function save(sets: AIProblemSet[]) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(sets))
+  // 成長キャッシュ。QuotaExceeded 時は耐久データを守りつつ古いキャッシュを間引く。
+  // logic-ai-problems 自体はサーバ保存済みで再取得可能なので、溢れる場合も
+  // safeSetItem 内のフォールバックで他キャッシュを削ってでも書き込みを試みる。
+  safeSetItem(STORAGE_KEY, JSON.stringify(sets))
 }
 
 export function loadAIProblems(): AIProblemSet[] {

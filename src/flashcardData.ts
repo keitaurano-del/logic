@@ -2,6 +2,7 @@
 import { getSupabaseClient } from './db/index'
 import { localDateStr } from './stats'
 import { stripMarkup } from './richText'
+import { safeSetItem } from './storageUsage'
 
 const STORAGE_KEY = 'logic-flashcards'
 
@@ -28,7 +29,10 @@ export function loadCards(): Flashcard[] {
 }
 
 function saveCards(cards: Flashcard[]) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(cards))
+  // flashcards は SRS 進捗を持つ耐久データ（eviction 対象には入れない）だが、
+  // 件数増で肥大しやすい成長キーなので、書き込みは safeSetItem 経由にして
+  // QuotaExceeded 時は他の再生成可能キャッシュを間引いてでも保存を試みる。
+  safeSetItem(STORAGE_KEY, JSON.stringify(cards))
 }
 
 export function addCards(newCards: Omit<Flashcard, 'id' | 'createdAt' | 'interval' | 'ease' | 'nextReview' | 'correctCount' | 'wrongCount'>[]) {
