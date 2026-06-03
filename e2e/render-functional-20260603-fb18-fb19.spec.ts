@@ -43,30 +43,6 @@ const DUMMY_CARDS = [
 ]
 
 /**
- * React の仮想 DOM を介するクリックが Playwright の通常 click() では効かないケースで
- * dispatchEvent を使って確実にクリックイベントを発火させるヘルパー。
- */
-async function jsClick(page: Page, selector: string) {
-  await page.evaluate((sel) => {
-    const el = document.querySelector(sel)
-    if (el) el.dispatchEvent(new MouseEvent('click', { bubbles: true }))
-    else throw new Error(`jsClick: element not found for "${sel}"`)
-  }, selector)
-}
-
-/**
- * テキストでボタンを探して JS イベントを発火させる。
- */
-async function jsClickByText(page: Page, text: string) {
-  await page.evaluate((t) => {
-    const btns = Array.from(document.querySelectorAll('button, [role="button"]'))
-    const target = btns.find(b => (b as HTMLElement).textContent?.includes(t))
-    if (target) target.dispatchEvent(new MouseEvent('click', { bubbles: true }))
-    else throw new Error(`jsClickByText: "${t}" not found`)
-  }, text)
-}
-
-/**
  * guest mode（有料プラン付き）でフラッシュカード画面を開くヘルパー。
  * home → review-hub → review-mode → flashcards の順に遷移する。
  * React の click ハンドラには Playwright の通常 click() ではなく
