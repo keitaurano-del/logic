@@ -103,9 +103,10 @@ test.describe('Render Production スモーク (PR #233 / 2026-05-27)', () => {
     const errors = collectErrors(page)
     await bootProduction(page, { preview: 'lessons' })
     await expect(page.locator('.app-shell')).toBeVisible({ timeout: 20_000 })
-    const tiles = page.locator('.cat-tile')
-    await expect(tiles.first()).toBeVisible({ timeout: 15_000 })
-    expect(await tiles.count()).toBeGreaterThanOrEqual(6)
+    // FB-26 で初期状態が全折りたたみになったため、グループヘッダーの存在で確認する
+    const groupHeaders = page.locator('button[aria-expanded]')
+    await expect(groupHeaders.first()).toBeVisible({ timeout: 15_000 })
+    expect(await groupHeaders.count()).toBeGreaterThanOrEqual(1)
     await shot(page, 'lessons')
     expect(fatalOnly(errors), `lessons console errors:\n${errors.join('\n')}`).toEqual([])
   })
@@ -118,24 +119,24 @@ test.describe('Render Production スモーク (PR #233 / 2026-05-27)', () => {
     const groupHeaders = page.locator('button[aria-expanded]')
     const headerCount = await groupHeaders.count()
     expect(headerCount, 'カテゴリグループヘッダーが 1 つ以上').toBeGreaterThanOrEqual(1)
-    // 初期は全展開のはず（先頭ヘッダーが aria-expanded="true"）
+    // FB-26: 初期は全折りたたみ（先頭ヘッダーが aria-expanded="false"）
     const first = groupHeaders.first()
     await expect(first).toBeVisible({ timeout: 10_000 })
     const before = await first.getAttribute('aria-expanded')
-    await shot(page, 't7-expanded-initial')
-    // 折りたたみ
-    await first.click()
-    await page.waitForTimeout(600)
-    const afterCollapse = await first.getAttribute('aria-expanded')
-    await shot(page, 't7-collapsed')
-    // 再展開
+    await shot(page, 't7-collapsed-initial')
+    // 展開
     await first.click()
     await page.waitForTimeout(600)
     const afterExpand = await first.getAttribute('aria-expanded')
-    console.log(`[T7] aria-expanded before=${before} collapse=${afterCollapse} expand=${afterExpand} headerCount=${headerCount}`)
-    expect(before, 'T7 初期は展開').toBe('true')
-    expect(afterCollapse, 'T7 1 回タップで折りたたみ').toBe('false')
-    expect(afterExpand, 'T7 再タップで再展開').toBe('true')
+    await shot(page, 't7-expanded')
+    // 再折りたたみ
+    await first.click()
+    await page.waitForTimeout(600)
+    const afterCollapse = await first.getAttribute('aria-expanded')
+    console.log(`[T7] aria-expanded before=${before} expand=${afterExpand} collapse=${afterCollapse} headerCount=${headerCount}`)
+    expect(before, 'T7 初期は折りたたみ (FB-26)').toBe('false')
+    expect(afterExpand, 'T7 1 回タップで展開').toBe('true')
+    expect(afterCollapse, 'T7 再タップで折りたたみ').toBe('false')
     expect(fatalOnly(errors), `T7 console errors:\n${errors.join('\n')}`).toEqual([])
   })
 
