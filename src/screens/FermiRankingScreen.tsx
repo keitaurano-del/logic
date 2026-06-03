@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo } from 'react'
-import { TrophyIcon, MedalIcon, ArrowRightIcon } from '../icons'
+import { useState, useEffect, useMemo, useRef } from 'react'
+import { ArrowRightIcon } from '../icons'
 import { getDisplayName } from '../stats'
 import { getNickname } from '../guestId'
 import { LoadingIndicator } from '../components/LoadingIndicator'
@@ -18,6 +18,29 @@ interface RankEntry {
 type Period = 'week' | 'month' | 'alltime'
 
 const PREV_RANK_KEY = (p: Period) => `logic-fermi-prev-rank-${p}`
+
+// FB-36: ランキングは毎回サーバ→Supabase（2 往復 + cold start）で数秒かかるため、
+// period 別に localStorage キャッシュして stale-while-revalidate する。
+// マウント/period 切替時はキャッシュ値を即描画し、裏で最新を取得して差し替える。
+// 初回（キャッシュ無し）のみローディングを出す。
+const RANK_CACHE_KEY = (p: Period) => `logic-fermi-rank-cache-${p}`
+interface RawRow { name: string; score: number; isMock?: boolean; occupation?: string | null }
+
+function readRankCache(p: Period): RawRow[] | null {
+  try {
+    const raw = localStorage.getItem(RANK_CACHE_KEY(p))
+    if (!raw) return null
+    const parsed = JSON.parse(raw) as { ts: number; rows: RawRow[] }
+    if (!parsed || !Array.isArray(parsed.rows)) return null
+    return parsed.rows
+  } catch { return null }
+}
+
+function writeRankCache(p: Period, rows: RawRow[]) {
+  try {
+    localStorage.setItem(RANK_CACHE_KEY(p), JSON.stringify({ ts: Date.now(), rows }))
+  } catch { /* quota: ignore */ }
+}
 
 // userProfile.ts の Occupation enum と同じキー集合。
 // 文字列だけで完結させたいのでここでローカル定義し、循環依存を避ける。
@@ -56,56 +79,89 @@ interface FermiRankingScreenProps {
 }
 
 export function FermiRankingScreen({ onSolveFermi }: FermiRankingScreenProps) {
-  const [period, setPeriod] = useState<Period>('week')
-  const [entries, setEntries] = useState<RankEntry[]>([])
-  const [loading, setLoading] = useState(true)
+  const myName = useMemo(() => getDisplayName() || getNickname() || t('home.guestName'), [])
+
+  // 生レスポンス行 → 表示用エントリ（rank 採番 + 自分判定）。キャッシュ描画と本フェッチで共用。
+  const toEntries = useMemo(() => (rows: RawRow[]): RankEntry[] =>
+    rows.map((row, i) => ({
+      rank: i + 1,
+      name: row.name,
+      score: row.score,
+      isMock: row.isMock === true,
+      // ダミー行に自分の名前が偶然一致しても自分扱いにしない
+      isMe: row.isMock !== true && row.name === myName,
+      occupation: row.occupation ?? null,
+    })), [myName])
+
+  // FB-36: 初回マウント時、キャッシュがあれば即それを初期 state にしてローディングを出さない。
+  const initialPeriod: Period = 'week'
+  const [period, setPeriod] = useState<Period>(initialPeriod)
+  const [entries, setEntries] = useState<RankEntry[]>(() => {
+    const cached = readRankCache(initialPeriod)
+    return cached && cached.length > 0 ? toEntries(cached) : []
+  })
+  const [loading, setLoading] = useState(() => {
+    const cached = readRankCache(initialPeriod)
+    return !(cached && cached.length > 0)
+  })
   const [rankDelta, setRankDelta] = useState<number | null>(null)
   const [showRankUp, setShowRankUp] = useState(false)
 
-  const myName = useMemo(() => getDisplayName() || getNickname() || t('home.guestName'), [])
+  // period 切替時のキャッシュ即描画は「レンダー中の state 調整」パターンで行う
+  // （effect 内の同期 setState を避ける。React 公式の escape hatch）。
+  const [hydratedPeriod, setHydratedPeriod] = useState<Period>(initialPeriod)
+  if (period !== hydratedPeriod) {
+    const cached = readRankCache(period)
+    setHydratedPeriod(period)
+    setEntries(cached && cached.length > 0 ? toEntries(cached) : [])
+    setLoading(!(cached && cached.length > 0))
+    setRankDelta(null)
+    setShowRankUp(false)
+  }
+
+  // 順位アップ・トーストは「実フェッチ結果」に対してのみ判定する（キャッシュ即描画では出さない）。
+  const rankUpTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const evalRankUp = useMemo(() => (ranked: RankEntry[], p: Period) => {
+    const me = ranked.find(e => e.isMe)
+    if (!me) return
+    try {
+      const raw = localStorage.getItem(PREV_RANK_KEY(p))
+      const prev = raw ? parseInt(raw, 10) : NaN
+      if (Number.isFinite(prev) && prev > me.rank) {
+        setRankDelta(prev - me.rank)
+        setShowRankUp(true)
+        if (rankUpTimer.current) clearTimeout(rankUpTimer.current)
+        rankUpTimer.current = setTimeout(() => setShowRankUp(false), 4500)
+      }
+      localStorage.setItem(PREV_RANK_KEY(p), String(me.rank))
+    } catch { /* */ }
+  }, [])
 
   useEffect(() => {
     let cancelled = false
+
+    // stale-while-revalidate: キャッシュ即描画（上の render-phase 調整）の裏で最新を取得して差し替える
     const run = async () => {
-      setLoading(true)
-      setRankDelta(null)
-      setShowRankUp(false)
       try {
         const r = await fetch(`${API_BASE}/api/fermi/ranking?period=${period}`)
         const d = await r.json()
         if (cancelled) return
-        const list = Array.isArray(d.ranking) ? d.ranking : []
-        const ranked: RankEntry[] = list.map((row: { name: string; score: number; isMock?: boolean; occupation?: string | null }, i: number) => ({
-          rank: i + 1,
-          name: row.name,
-          score: row.score,
-          isMock: row.isMock === true,
-          // ダミー行に自分の名前が偶然一致しても自分扱いにしない
-          isMe: row.isMock !== true && row.name === myName,
-          occupation: row.occupation ?? null,
-        }))
+        const list: RawRow[] = Array.isArray(d.ranking) ? d.ranking : []
+        writeRankCache(period, list)
+        const ranked = toEntries(list)
         setEntries(ranked)
-
-        // 順位アップ判定
-        const myEntry = ranked.find(e => e.isMe)
-        if (myEntry) {
-          try {
-            const raw = localStorage.getItem(PREV_RANK_KEY(period))
-            const prev = raw ? parseInt(raw, 10) : NaN
-            if (Number.isFinite(prev) && prev > myEntry.rank) {
-              setRankDelta(prev - myEntry.rank)
-              setShowRankUp(true)
-              setTimeout(() => setShowRankUp(false), 4500)
-            }
-            localStorage.setItem(PREV_RANK_KEY(period), String(myEntry.rank))
-          } catch { /* */ }
-        }
-      } catch { /* network error: empty list */ }
+        evalRankUp(ranked, period)
+      } catch {
+        // network error: キャッシュ描画済みならそれを維持、無ければ空リストのまま
+      }
       if (!cancelled) setLoading(false)
     }
     run()
     return () => { cancelled = true }
-  }, [period, myName])
+  }, [period, myName, toEntries, evalRankUp])
+
+  // unmount 時にトーストタイマーを掃除
+  useEffect(() => () => { if (rankUpTimer.current) clearTimeout(rankUpTimer.current) }, [])
 
   const myEntry = entries.find(e => e.isMe)
   const top3 = entries.slice(0, 3)
@@ -151,7 +207,8 @@ export function FermiRankingScreen({ onSolveFermi }: FermiRankingScreenProps) {
       <div style={{ padding: 'calc(env(safe-area-inset-top, 44px) + 8px) 20px 16px' }}>
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: '1.4667rem', fontWeight: 800 }}>
           <span>{t('fermiRank.heading')}</span>
-          <TrophyIcon width={20} height={20} style={{ color: 'var(--medal-gold)' }} />
+          {/* FB-33: ランキングの象徴アイコンは絵文字（Keita 明示の例外）。絵文字は読み上げ対象外なので aria-label を併記。 */}
+          <span role="img" aria-label={t('fermiRank.headingAria')} style={{ fontSize: '1.2rem', lineHeight: 1 }}>🏆</span>
         </div>
         <div style={{ fontSize: '0.8667rem', color: 'var(--text-secondary)', marginTop: 4 }}>{t('fermiRank.subtitle')}</div>
         {/* スコア算出基準の常設説明: 実装の実態（AI採点スコアの期間累計・毎日更新）に合わせる */}
@@ -160,22 +217,20 @@ export function FermiRankingScreen({ onSolveFermi }: FermiRankingScreenProps) {
         </div>
       </div>
 
-      {/* フェルミに挑戦する CTA */}
-      <div style={{ padding: '0 20px 16px' }}>
+      {/* フェルミに挑戦する CTA（FB-34: 小さく右寄せ・控えめなテキストリンク調） */}
+      <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '0 20px 12px' }}>
         <button
           onClick={onSolveFermi}
           style={{
-            width: '100%',
-            display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-            padding: '14px 20px', borderRadius: 14,
-            border: 'none',
-            background: 'var(--accent-btn)', color: 'var(--accent-btn-fg)',
-            fontSize: '0.9333rem', fontWeight: 800, cursor: 'pointer',
-            fontFamily: 'inherit',
+            display: 'inline-flex', alignItems: 'center', gap: 4,
+            padding: '4px 4px',
+            border: 'none', background: 'transparent',
+            color: 'var(--brand)', fontSize: '0.8rem', fontWeight: 700,
+            cursor: 'pointer', fontFamily: 'inherit',
           }}
         >
           <span>{t('fermiRank.solveCta')}</span>
-          <ArrowRightIcon width={18} height={18} aria-hidden="true" />
+          <ArrowRightIcon width={14} height={14} aria-hidden="true" />
         </button>
       </div>
 
@@ -295,6 +350,10 @@ export function FermiRankingScreen({ onSolveFermi }: FermiRankingScreenProps) {
   )
 }
 
+// FB-33: 順位 1-3 のメダルアイコンは絵文字（Keita 明示の例外）。絵文字は読み上げ対象外なので
+// aria-label に順位の語ラベルを併記する。
+const PODIUM_EMOJI: Record<number, string> = { 1: '🥇', 2: '🥈', 3: '🥉' }
+
 function RankCard({ entry, compact, highlight }: { entry: RankEntry; compact?: boolean; highlight?: boolean }) {
   const isPodium = entry.rank >= 1 && entry.rank <= 3
   const locale = getLocale() === 'en' ? 'en' : 'ja'
@@ -311,19 +370,15 @@ function RankCard({ entry, compact, highlight }: { entry: RankEntry; compact?: b
       animation: highlight ? 'rankup-row 1.2s cubic-bezier(.2,.8,.2,1) both' : undefined,
       boxShadow: highlight ? '0 0 0 2px var(--score-excellent) inset, 0 8px 24px rgba(112,216,189,0.32)' : undefined,
     }}>
-      {/* 順位バッジ */}
+      {/* 順位バッジ（FB-33: 1-3 位は順位絵文字 🥇🥈🥉、4 位以降は数字） */}
       <div style={{
         width: compact ? 32 : 40, height: compact ? 32 : 40, borderRadius: '50%', flexShrink: 0,
-        background: entry.rank === 1 ? 'var(--medal-gold-grad)'
-          : entry.rank === 2 ? 'var(--medal-silver-grad)'
-          : entry.rank === 3 ? 'var(--medal-bronze-grad)'
-          : 'var(--bg-primary)',
+        background: isPodium ? 'transparent' : 'var(--bg-primary)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        // a11y: 順位 1-3 のメダルは色 (gold/silver/bronze) のみで差別化されているため、
-        // スクリーンリーダー / 色覚多様性ユーザー向けに aria-label で順位を明示する。
+        // a11y: 絵文字は読み上げ対象外なので、順位を aria-label で明示する。
       }}>
         {isPodium
-          ? <MedalIcon width={compact ? 16 : 20} height={compact ? 16 : 20} aria-label={t('onboarding.slidesRankUnit', { n: entry.rank })} style={{ color: 'var(--text-on-hero)' }} />
+          ? <span role="img" aria-label={t('onboarding.slidesRankUnit', { n: entry.rank })} style={{ fontSize: compact ? '1.25rem' : '1.6rem', lineHeight: 1 }}>{PODIUM_EMOJI[entry.rank]}</span>
           : <span style={{ fontSize: '0.8667rem', fontWeight: 700, color: 'var(--text-secondary)' }}>{entry.rank}</span>
         }
       </div>
