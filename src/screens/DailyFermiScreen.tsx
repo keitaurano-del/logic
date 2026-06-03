@@ -811,7 +811,6 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
                 <span className="fermi-filter-label">{t('dailyFermi.filterDifficulty')}</span>
                 {(['all', 'basic', 'standard', 'advanced'] as const).map(d => {
                   const isAll = d === 'all'
-                  const count = isAll ? undefined : countAvailableWithFilter({ ...filter, difficulty: d })
                   const isActive = isAll ? !filter.difficulty : filter.difficulty === d
                   return (
                     <button
@@ -822,7 +821,6 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
                       disabled={submitPhase !== 'idle'}
                     >
                       {isAll ? t('dailyFermi.filterAll') : t(`dailyFermi.diff${d.charAt(0).toUpperCase() + d.slice(1)}`)}
-                      {!isAll && count !== undefined && <span className="fermi-filter-count">{count}</span>}
                     </button>
                   )
                 })}
@@ -832,7 +830,6 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
                 <span className="fermi-filter-label">{t('dailyFermi.filterDomain')}</span>
                 {(['all', 'market', 'unit', 'volume', 'flow', 'cost'] as const).map(dom => {
                   const isAll = dom === 'all'
-                  const count = isAll ? undefined : countAvailableWithFilter({ ...filter, domain: dom })
                   const isActive = isAll ? !filter.domain : filter.domain === dom
                   return (
                     <button
@@ -843,7 +840,6 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
                       disabled={submitPhase !== 'idle'}
                     >
                       {isAll ? t('dailyFermi.filterAll') : t(`dailyFermi.domain${dom.charAt(0).toUpperCase() + dom.slice(1)}`)}
-                      {!isAll && count !== undefined && <span className="fermi-filter-count">{count}</span>}
                     </button>
                   )
                 })}

@@ -625,19 +625,6 @@
   border-color: var(--brand);
   color: var(--brand);
 }
-.fermi-filter-count {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--text-muted);
-  background: var(--bg-tertiary);
-  border-radius: 99px;
-  padding: 0 5px;
-  line-height: 1.5;
-}
-.fermi-filter-chip--active .fermi-filter-count {
-  background: color-mix(in srgb, var(--brand) 18%, transparent);
-  color: var(--brand);
-}
 .fermi-filter-empty {
   font-size: 0.9rem;
   color: var(--text-muted);
