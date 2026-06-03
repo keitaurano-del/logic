@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { LightbulbIcon, BarChartIcon, MicIcon, BookmarkIcon, BookmarkFilledIcon, FlagIcon } from '../icons'
+import { LightbulbIcon, BarChartIcon, MicIcon, BookmarkIcon, BookmarkFilledIcon, FlagIcon, FilterIcon, XIcon } from '../icons'
 import { Header } from '../components/platform/Header'
 import { Button } from '../components/Button'
 import { API_BASE } from './apiBase'
@@ -599,6 +599,10 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
 
   // フィルタ state（localStorage から初期化、日跨ぎ保持）
   const [filter, setFilter] = useState<FermiFilter>(loadFilter)
+  // フィルタ UI の開閉（FB-22。デフォルト非表示。右上のフィルタアイコンで展開）
+  const [showFilters, setShowFilters] = useState(false)
+  // フィルタが何か適用中か（アイコンのバッジ表示・初期展開判定に使う）
+  const isFilterActive = Boolean(filter.difficulty || filter.domain)
 
   // フィルタ変更ハンドラ（idle 中のみ変更可）
   function handleFilterChange(newFilter: FermiFilter) {
@@ -734,7 +738,42 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
         />
       )}
 
-      <Header title={t('dailyFermi.title')} onBack={onBack} />
+      <Header
+        title={t('dailyFermi.title')}
+        onBack={onBack}
+        trailing={
+          !loadingQuestion && question && submitPhase === 'idle' ? (
+            <button
+              type="button"
+              onClick={() => { haptic.light(); setShowFilters(v => !v) }}
+              aria-label={t('dailyFermi.filterToggleAria')}
+              aria-expanded={showFilters}
+              style={{
+                position: 'relative',
+                width: 36, height: 36, borderRadius: '50%',
+                background: showFilters ? 'color-mix(in srgb, var(--brand) 14%, transparent)' : 'transparent',
+                border: 'none', padding: 0,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                cursor: 'pointer', WebkitTapHighlightColor: 'transparent',
+                color: showFilters || isFilterActive ? 'var(--brand)' : 'var(--text-muted)',
+              }}
+            >
+              <FilterIcon width={19} height={19} />
+              {isFilterActive && (
+                <span
+                  aria-hidden="true"
+                  style={{
+                    position: 'absolute', top: 6, right: 6,
+                    width: 8, height: 8, borderRadius: '50%',
+                    background: 'var(--brand)',
+                    border: '1.5px solid var(--bg-card)',
+                  }}
+                />
+              )}
+            </button>
+          ) : undefined
+        }
+      />
 
       {loadingQuestion && (
         <div className="card" style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '1.0667rem' }}>
@@ -750,9 +789,23 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
 
       {!loadingQuestion && question && (
         <>
-          {/* フィルタバー（入力中は非表示） */}
-          {submitPhase === 'idle' && (
+          {/* フィルタバー（入力中は非表示。FB-22: デフォルト非表示・右上アイコンで展開） */}
+          {submitPhase === 'idle' && showFilters && (
             <div className="fermi-filter-bar" aria-label={t('dailyFermi.filterDifficulty') + ' / ' + t('dailyFermi.filterDomain')}>
+              {/* パネルヘッダ: タイトル + クリア（適用中のみ） */}
+              <div className="fermi-filter-row" style={{ justifyContent: 'space-between', marginBottom: 2 }}>
+                <span className="fermi-filter-label" style={{ fontWeight: 700 }}>{t('dailyFermi.filterTitle')}</span>
+                {isFilterActive && (
+                  <button
+                    type="button"
+                    className="fermi-filter-clear"
+                    onClick={() => handleFilterChange({})}
+                  >
+                    <XIcon width={12} height={12} aria-hidden="true" />
+                    {t('dailyFermi.filterClear')}
+                  </button>
+                )}
+              </div>
               {/* 難易度チップ行 */}
               <div className="fermi-filter-row">
                 <span className="fermi-filter-label">{t('dailyFermi.filterDifficulty')}</span>
@@ -879,38 +932,47 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
             </div>
           </div>
 
-          {/* 別の問題を選ぶ（左） */}
-          {canReroll && submitPhase === 'idle' && (
-            <div style={{ display: 'flex', alignItems: 'center', padding: '0 2px' }}>
-              <button
-                onClick={handleReroll}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: 5,
-                  background: 'none', border: '1.5px solid var(--brand)',
-                  borderRadius: 20, padding: '6px 14px',
-                  color: 'var(--brand)', fontSize: '0.8667rem', fontWeight: 700,
-                  cursor: 'pointer',
-                }}
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
-                {t('dailyFermi.pickAnother')}
-              </button>
-            </div>
-          )}
-          {isPaid() && canAnswer && !replayMode && submitPhase === 'idle' && (
-            <div style={{ padding: '0 2px', textAlign: 'right' }}>
-              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>
-                {t('dailyFermi.paidCapNote', { count: Math.max(0, dailyLimit - dailyCount) })}
-              </span>
-            </div>
-          )}
-          {!canAnswer && (
-            <div style={{ padding: '0 2px', textAlign: 'right' }}>
-              <span style={{ fontSize: '0.8rem', color: 'var(--danger)', fontWeight: 700 }}>
-                {t('dailyFermi.dailyLimit')}
-              </span>
-            </div>
-          )}
+          {/* 「別の問題を選ぶ」ボタンと残り回数/上限の文言を同じ行に並べる（FB-22。
+              以前は縦に別行で間延びしていた→横一行に集約）。
+              左: 別の問題を選ぶ（reroll 可能時）、右: 残り回数 or 上限到達の注記。 */}
+          {(() => {
+            const showReroll = canReroll && submitPhase === 'idle'
+            const showPaidCap = isPaid() && canAnswer && !replayMode && submitPhase === 'idle'
+            const showLimit = !canAnswer
+            if (!showReroll && !showPaidCap && !showLimit) return null
+            return (
+              <div style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                gap: 10, padding: '0 2px', flexWrap: 'wrap',
+              }}>
+                {showReroll ? (
+                  <button
+                    onClick={handleReroll}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: 5,
+                      background: 'none', border: '1.5px solid var(--brand)',
+                      borderRadius: 20, padding: '6px 14px',
+                      color: 'var(--brand)', fontSize: '0.8667rem', fontWeight: 700,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+                    {t('dailyFermi.pickAnother')}
+                  </button>
+                ) : <span />}
+                {showPaidCap && (
+                  <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600, textAlign: 'right' }}>
+                    {t('dailyFermi.paidCapNote', { count: Math.max(0, dailyLimit - dailyCount) })}
+                  </span>
+                )}
+                {showLimit && (
+                  <span style={{ fontSize: '0.8rem', color: 'var(--danger)', fontWeight: 700, textAlign: 'right' }}>
+                    {t('dailyFermi.dailyLimit')}
+                  </span>
+                )}
+              </div>
+            )
+          })()}
 
           {/* 「解く前」ソフト導線: 無料ユーザーが今日の問題を解く前に、
               「無料は 1 日 1 問・有料なら 1 日 10 問」という制限を明示し、

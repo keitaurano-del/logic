@@ -371,11 +371,15 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
   const [progressFilters, setProgressFilters] = useState<Set<ProgressFilter>>(new Set())
   const [formatFilters, setFormatFilters] = useState<Set<FormatFilter>>(new Set())
   const [sortOption, setSortOption] = useState<SortOption>('relevance')
-  // 折りたたまれているグループの集合。初期は空 = 全カテゴリ展開。
-  // 「閉じている方」を保持することで「初期=全展開」をデフォルトで表現する。
-  // 「あなた専用コース」は常時表示が煩わしいとの要望（T-W）でデフォルト折りたたみにするため、
-  // 初期集合にそのグループID（CUSTOM_COURSE_GROUP_ID）を含めておく。
-  const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(() => new Set([CUSTOM_COURSE_GROUP_ID]))
+  // 折りたたまれているグループの集合。
+  // 「閉じている方」を保持する。初期は全グループ（pinned-fermi / 各 COURSE_GROUPS /
+  // あなた専用コース）を含めて「初期=全折りたたみ」にする（FB-26。一覧が縦に長く
+  // なりすぎる要望対応）。ユーザーがヘッダをタップすれば各グループを個別に開ける。
+  const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(() => new Set<string>([
+    'pinned-fermi',
+    CUSTOM_COURSE_GROUP_ID,
+    ...COURSE_GROUPS.map(g => g.id),
+  ]))
   const toggleGroup = useCallback((groupId: string) => {
     setCollapsedGroups(prev => {
       const next = new Set(prev)

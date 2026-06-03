@@ -445,6 +445,15 @@ export function FolderPlusIcon(p: IconProps) {
   )
 }
 
+export function FilterIcon(p: IconProps) {
+  // 漏斗（filter / funnel）。フィルタ展開トグル用。
+  return (
+    <svg {...base} {...p}>
+      <path d="M22 3H2l8 9.46V19l4 2v-8.54z" />
+    </svg>
+  )
+}
+
 export function BrandMark(p: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="54 54 92 92" xmlns="http://www.w3.org/2000/svg" {...p}>

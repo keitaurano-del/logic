@@ -33,13 +33,12 @@ function getTabs(): TabDef[] {
       label: t('nav.training'),
       icon: (active) => {
         const c = active ? ACTIVE : INACTIVE
+        // 学習タブ: 開いた本（FB-24。トレーニング用ダンベルから差し替え）
         return (
-          <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
-            <rect x="2" y="5" width="3" height="14" rx="1" fill={c} />
-            <rect x="5" y="8" width="2" height="8" rx="0.5" fill={c} />
-            <rect x="17" y="8" width="2" height="8" rx="0.5" fill={c} />
-            <rect x="19" y="5" width="3" height="14" rx="1" fill={c} />
-            <rect x="7" y="11" width="10" height="2" rx="1" fill={c} />
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={c}
+            strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M12 6.5C10.5 5.2 8.4 4.5 6 4.5c-1.1 0-2.1.16-3 .43v13c.9-.27 1.9-.43 3-.43 2.4 0 4.5.7 6 2 1.5-1.3 3.6-2 6-2 1.1 0 2.1.16 3 .43v-13c-.9-.27-1.9-.43-3-.43-2.4 0-4.5.7-6 2z" />
+            <line x1="12" y1="6.5" x2="12" y2="20.5" />
           </svg>
         )
       },
@@ -59,13 +58,14 @@ function getTabs(): TabDef[] {
       label: t('nav.journal'),
       icon: (active) => {
         const c = active ? ACTIVE : INACTIVE
+        // ジャーナルタブ: リボン栞付き日記帳（FB-25。罫線ブックから日記らしさ重視へ）
         return (
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={c}
             strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v18H6.5A2.5 2.5 0 0 1 4 17.5v-13z" />
-            <path d="M4 17.5A2.5 2.5 0 0 1 6.5 15H20" />
-            <line x1="8" y1="7" x2="16" y2="7" />
-            <line x1="8" y1="11" x2="14" y2="11" />
+            <path d="M6 3h11a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
+            <line x1="8" y1="8" x2="13" y2="8" />
+            <line x1="8" y1="12" x2="13" y2="12" />
+            <path d="M15 3v7l2-1.6L19 10V3" />
           </svg>
         )
       },
