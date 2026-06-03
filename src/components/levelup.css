@@ -48,9 +48,21 @@
 }
 
 /* ── Phase 3: プロフィール画面の glow pulse ─────────────── */
+/* バッジ「本体の縁」から光らせる。box-shadow は外側の円コンテナの矩形/円に沿って
+   光るため「周辺の丸」に見えてしまうので、バッジ画像のアルファ形状に沿う
+   drop-shadow ベースに変更（FB-29）。`--lvup-badge-base-shadow` で各 img が
+   持つ静的な落ち影を引き継ぎつつ、その上に brand 色の発光を重ねる。 */
 @keyframes lvup-badge-glow {
-  0%, 100% { box-shadow: 0 0 8px color-mix(in srgb, var(--brand) 45%, transparent), 0 0 16px color-mix(in srgb, var(--brand) 25%, transparent); }
-  50%      { box-shadow: 0 0 16px color-mix(in srgb, var(--brand) 75%, transparent), 0 0 28px color-mix(in srgb, var(--brand) 45%, transparent); }
+  0%, 100% {
+    filter: var(--lvup-badge-base-shadow, none)
+      drop-shadow(0 0 3px color-mix(in srgb, var(--brand) 50%, transparent))
+      drop-shadow(0 0 6px color-mix(in srgb, var(--brand) 30%, transparent));
+  }
+  50% {
+    filter: var(--lvup-badge-base-shadow, none)
+      drop-shadow(0 0 7px color-mix(in srgb, var(--brand) 80%, transparent))
+      drop-shadow(0 0 12px color-mix(in srgb, var(--brand) 50%, transparent));
+  }
 }
 
 /* ── Phase 4: ホーム画面のバナーが上から降りる ─────────── */
@@ -70,6 +82,7 @@
   .lvup-card,
   .lvup-title,
   .lvup-badge-drop,
+  .lvup-badge-glow,
   .lvup-sparkle-rotate,
   .lvup-toast {
     animation: none !important;
@@ -103,8 +116,12 @@
   animation: lvup-sparkle-pulse 2.2s ease-in-out infinite;
 }
 
+/* 2.6s × 10 回で停止し、その後は静止（ずっと光らせない）。
+   forwards で最終キーフレーム（0%/100% = 控えめな発光）の状態にも留まらず、
+   10 回終わったら base shadow のみの静止に戻したいので、終了後の filter は
+   インラインの静的 drop-shadow（img 側）が担当する。ここでは glow レイヤだけ animate。 */
 .lvup-badge-glow {
-  animation: lvup-badge-glow 2.6s ease-in-out infinite;
+  animation: lvup-badge-glow 2.6s ease-in-out 10;
   border-radius: 50%;
 }
 

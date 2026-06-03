@@ -55,8 +55,7 @@ export function JournalGuestPreview({ assistantName, onLogin }: JournalGuestPrev
     <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', display: 'flex', flexDirection: 'column' }}>
       <div className="journal-hero">
         <div>
-          <div style={{ fontSize: '1.4667rem', fontWeight: 900, letterSpacing: '-0.02em' }}>{t('journal.title')}</div>
-          <div style={{ fontSize: '0.8667rem', color: 'var(--text-on-hero-muted)', marginTop: 4 }}>{t('journal.subtitle')}</div>
+          <div style={{ fontSize: '1.0667rem', fontWeight: 800, letterSpacing: '-0.01em' }}>{t('journal.subtitle')}</div>
         </div>
       </div>
 
@@ -212,8 +211,7 @@ export function JournalScreen({ userId, assistantName, onOpenLesson, onOpenCours
     <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', display: 'flex', flexDirection: 'column' }}>
       <div className="journal-hero">
         <div>
-          <div style={{ fontSize: '1.4667rem', fontWeight: 900, letterSpacing: '-0.02em' }}>{t('journal.title')}</div>
-          <div style={{ fontSize: '0.8667rem', color: 'var(--text-on-hero-muted)', marginTop: 4 }}>{t('journal.subtitle')}</div>
+          <div style={{ fontSize: '1.0667rem', fontWeight: 800, letterSpacing: '-0.01em' }}>{t('journal.subtitle')}</div>
         </div>
         <div className="journal-hero__actions">
           <StreakBadge streak={streak} size="sm" />

@@ -85,7 +85,6 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
             type="button"
             aria-label={t('profile.titleSheet.heading')}
             onClick={() => setTitleSheetOpen(true)}
-            className="lvup-badge-glow"
             style={{
               width: 72, height: 72,
               padding: 0,
@@ -99,7 +98,8 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
             <img
               src={resolveAssetUrl(getBadgeImagePath(currentTitleKey))}
               alt={t(getTitleI18nKey(currentTitleKey))}
-              style={{ width: 68, height: 68, objectFit: 'contain', filter: `drop-shadow(0 3px 10px ${lv.color}80)` }}
+              className="lvup-badge-glow"
+              style={{ width: 68, height: 68, objectFit: 'contain', filter: `drop-shadow(0 3px 10px ${lv.color}80)`, ['--lvup-badge-base-shadow' as string]: `drop-shadow(0 3px 10px ${lv.color}80)` }}
             />
           </button>
           <div style={{ flex: 1 }}>
@@ -192,7 +192,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
                         aspectRatio: '1 / 1',
                         borderRadius: '50%',
                         background: studied ? 'linear-gradient(160deg, rgba(255,140,0,.18) 0%, rgba(255,61,0,.10) 100%)' : 'var(--bg-tertiary)',
-                        border: isToday ? `1.5px solid ${'var(--brand)'}` : '1px solid rgba(255,255,255,.04)',
+                        border: isToday ? `3px solid ${'var(--brand)'}` : '1px solid rgba(255,255,255,.04)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',

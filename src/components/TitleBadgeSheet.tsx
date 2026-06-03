@@ -203,7 +203,6 @@ export function TitleBadgeSheet({ xp, onClose }: TitleBadgeSheetProps) {
           padding: '8px 16px 20px',
         }}>
           <div
-            className="lvup-badge-glow"
             style={{
               width: 156, height: 156,
               background: `radial-gradient(circle, ${lv.color}22 0%, transparent 70%)`,
@@ -214,7 +213,8 @@ export function TitleBadgeSheet({ xp, onClose }: TitleBadgeSheetProps) {
             <img
               src={resolveAssetUrl(getBadgeImagePath(currentKey))}
               alt={t(getTitleI18nKey(currentKey))}
-              style={{ width: 140, height: 140, objectFit: 'contain', filter: `drop-shadow(0 4px 16px ${lv.color}66)` }}
+              className="lvup-badge-glow"
+              style={{ width: 140, height: 140, objectFit: 'contain', filter: `drop-shadow(0 4px 16px ${lv.color}66)`, ['--lvup-badge-base-shadow' as string]: `drop-shadow(0 4px 16px ${lv.color}66)` }}
             />
           </div>
           <div style={{ fontSize: '0.8667rem', fontWeight: 700, letterSpacing: '0.1em', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 6 }}>
