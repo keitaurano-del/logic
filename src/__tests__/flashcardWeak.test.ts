@@ -104,10 +104,14 @@ describe('FB-19 previewIntervals は reviewCard と一致する', () => {
     expect(previewIntervals({ interval: 10, ease: 2.5 }).again).toBe(0)
   })
 
-  it('新規カード（interval=0）の good は 1 日後、easy は 3 日後', () => {
+  it('good は 3 日後、easy は 7 日後（固定間隔・FB-21）', () => {
     const p = previewIntervals({ interval: 0, ease: 2.5 })
-    expect(p.good).toBe(1)
-    expect(p.easy).toBe(3)
+    expect(p.good).toBe(3)
+    expect(p.easy).toBe(7)
+    // 固定間隔なので interval / ease の現在値に依存しない
+    const p2 = previewIntervals({ interval: 10, ease: 2.5 })
+    expect(p2.good).toBe(3)
+    expect(p2.easy).toBe(7)
   })
 
   it('preview の good が実際の reviewCard 後の interval と一致する', () => {
@@ -125,8 +129,52 @@ describe('FB-19 previewIntervals は reviewCard と一致する', () => {
   })
 
   it('easy の次回間隔は good より先（差が一目で分かる）', () => {
-    // ある程度 interval を進めた状態では easy の方が次回が先になる
     const p = previewIntervals({ interval: 2, ease: 2.5 })
     expect(p.easy).toBeGreaterThan(p.good)
+  })
+})
+
+describe('FB-21 復習間隔は固定値（good=3日 / easy=7日）', () => {
+  beforeEach(() => {
+    localStorage.clear()
+  })
+
+  function daysFromToday(dateStr: string): number {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const target = new Date(`${dateStr}T00:00:00`)
+    return Math.round((target.getTime() - today.getTime()) / 86400000)
+  }
+
+  it('good で interval=3、nextReview は 3 日後', () => {
+    const card = seedOneCard()
+    reviewCard(card.id, 'good')
+    const updated = loadCards()[0]
+    expect(updated.interval).toBe(3)
+    expect(daysFromToday(updated.nextReview)).toBe(3)
+  })
+
+  it('easy で interval=7、nextReview は 7 日後', () => {
+    const card = seedOneCard()
+    reviewCard(card.id, 'easy')
+    const updated = loadCards()[0]
+    expect(updated.interval).toBe(7)
+    expect(daysFromToday(updated.nextReview)).toBe(7)
+  })
+
+  it('間隔が進んでいても good/easy は固定値で上書きされる', () => {
+    const card = seedOneCard()
+    reviewCard(card.id, 'easy') // interval=7
+    reviewCard(card.id, 'good') // 固定なので 7→3 に戻る（累積しない）
+    expect(loadCards()[0].interval).toBe(3)
+  })
+
+  it('again は当日すぐ再表示（interval=0）', () => {
+    const card = seedOneCard()
+    reviewCard(card.id, 'good')
+    reviewCard(card.id, 'again')
+    const updated = loadCards()[0]
+    expect(updated.interval).toBe(0)
+    expect(daysFromToday(updated.nextReview)).toBe(0)
   })
 })

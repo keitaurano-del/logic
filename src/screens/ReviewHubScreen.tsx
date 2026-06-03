@@ -11,6 +11,9 @@ import { FeaturePreviewBanner } from '../components/FeaturePreviewBanner'
 
 interface Props {
   onBack: () => void
+  /** フラッシュカードのモード選択画面（今日する / 全部 / ランダム）を開く。 */
+  onOpenFlashcardModes: () => void
+  /** 特定モードを直接開く（弱点ショートカット用）。 */
   onOpenFlashcards: (mode?: 'due' | 'weak') => void
   onOpenWrongAnswers: () => void
   onOpenFermiHistory: () => void
@@ -23,7 +26,7 @@ interface FermiStats {
   avgScore: number
 }
 
-export function ReviewHubScreen({ onBack, onOpenFlashcards, onOpenWrongAnswers, onOpenFermiHistory, onOpenSavedItems, onUpgrade }: Props) {
+export function ReviewHubScreen({ onBack, onOpenFlashcardModes, onOpenFlashcards, onOpenWrongAnswers, onOpenFermiHistory, onOpenSavedItems, onUpgrade }: Props) {
   const cardStats = getCardStats()
   const wrongStats = getWrongAnswerStats()
   const savedStats = getSavedItemStats()
@@ -93,9 +96,8 @@ export function ReviewHubScreen({ onBack, onOpenFlashcards, onOpenWrongAnswers, 
             <div style={{ display: 'grid', gridTemplateColumns: cardStats.weak > 0 ? '1fr 1fr' : '1fr', gap: 8 }}>
               <ActionButton
                 primary
-                disabled={cardStats.due === 0}
-                label={cardStats.due > 0 ? t('reviewHub.openDue', { n: String(cardStats.due) }) : t('reviewHub.dueEmpty')}
-                onClick={() => onOpenFlashcards('due')}
+                label={t('reviewHub.openFlashcards')}
+                onClick={onOpenFlashcardModes}
               />
               {cardStats.weak > 0 && (
                 <ActionButton

@@ -52,7 +52,14 @@ export function addCards(newCards: Omit<Flashcard, 'id' | 'createdAt' | 'interva
   saveCards(cards)
 }
 
-// SM-2 inspired review
+// 復習間隔は固定方針（FB-21、Keita 指示）:
+//   again（もう一度）= 当日すぐ再表示（interval 0）
+//   good （わかった） = 3 日後
+//   easy （簡単）     = 7 日後（1 週間後）
+// SM-2 風の ease 連動計算はやめ、ユーザーに分かりやすい固定値にする。
+export const REVIEW_INTERVAL_GOOD = 3
+export const REVIEW_INTERVAL_EASY = 7
+
 export function reviewCard(id: string, quality: 'again' | 'good' | 'easy') {
   const cards = loadCards()
   const card = cards.find((c) => c.id === id)
@@ -63,6 +70,13 @@ export function reviewCard(id: string, quality: 'again' | 'good' | 'easy') {
   const today = new Date()
   const todayStr = localDateStr(today)
 
+  const schedule = (days: number) => {
+    card.interval = days
+    const next = new Date(today)
+    next.setDate(next.getDate() + days)
+    card.nextReview = localDateStr(next)
+  }
+
   if (quality === 'again') {
     card.wrongCount++
     card.interval = 0
@@ -70,46 +84,54 @@ export function reviewCard(id: string, quality: 'again' | 'good' | 'easy') {
     card.nextReview = todayStr
   } else if (quality === 'good') {
     card.correctCount++
-    card.interval = card.interval === 0 ? 1 : Math.round(card.interval * card.ease)
-    const next = new Date(today)
-    next.setDate(next.getDate() + card.interval)
-    card.nextReview = localDateStr(next)
+    schedule(REVIEW_INTERVAL_GOOD)
   } else {
     card.correctCount++
     card.ease = Math.min(3.0, card.ease + 0.15)
-    card.interval = card.interval === 0 ? 3 : Math.round(card.interval * card.ease * 1.3)
-    const next = new Date(today)
-    next.setDate(next.getDate() + card.interval)
-    card.nextReview = localDateStr(next)
+    schedule(REVIEW_INTERVAL_EASY)
   }
 
   saveCards(cards)
 }
 
 /**
- * 指定カードの現在値から、各評価 (again/good/easy) を選んだ場合の「次回までの日数」を返す。
- * reviewCard() の interval 計算と同じロジックを副作用なしで再現する（UI のボタンに次回間隔を表示するため）。
- * - again: 必ず 0（すぐ再表示）
- * - good:  interval が 0 なら 1、それ以外は interval * ease
- * - easy:  interval が 0 なら 3、それ以外は interval * ease * 1.3
+ * 各評価 (again/good/easy) を選んだ場合の「次回までの日数」を返す（UI のボタン表記用）。
+ * reviewCard() の固定間隔と同じ値を副作用なしで返す。
+ * - again: 0（すぐ再表示）
+ * - good:  REVIEW_INTERVAL_GOOD（3 日後）
+ * - easy:  REVIEW_INTERVAL_EASY（7 日後 = 1 週間後）
+ * interval / ease には依存しないが、互換のため引数シグネチャは維持する。
  */
-export function previewIntervals(card: Pick<Flashcard, 'interval' | 'ease'>): {
+export function previewIntervals(_card?: Pick<Flashcard, 'interval' | 'ease'>): {
   again: number
   good: number
   easy: number
 } {
-  const goodEase = card.ease
-  const easyEase = Math.min(3.0, card.ease + 0.15)
   return {
     again: 0,
-    good: card.interval === 0 ? 1 : Math.round(card.interval * goodEase),
-    easy: card.interval === 0 ? 3 : Math.round(card.interval * easyEase * 1.3),
+    good: REVIEW_INTERVAL_GOOD,
+    easy: REVIEW_INTERVAL_EASY,
   }
 }
 
 export function getDueCards(): Flashcard[] {
   const today = localDateStr()
   return loadCards().filter((c) => c.nextReview <= today)
+}
+
+/** 全カード（追加順）。「全部復習する」モード用。 */
+export function getAllCards(): Flashcard[] {
+  return loadCards()
+}
+
+/** 全カードを Fisher-Yates でシャッフルして返す。「ランダムで復習する」モード用。 */
+export function getShuffledCards(): Flashcard[] {
+  const cards = loadCards()
+  for (let i = cards.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[cards[i], cards[j]] = [cards[j], cards[i]]
+  }
+  return cards
 }
 
 /**
