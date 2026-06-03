@@ -197,8 +197,57 @@ export async function pushProgress(stats: LocalStats): Promise<void> {
       study_time_ms: stats.studyTimeMs,
       updated_at: new Date().toISOString(),
     }, { onConflict: 'user_id' })
+    // MB-2: studyDates を daily_activity にも冪等 upsert（DAU / 継続率の元データ）。
+    // user_progress.study_dates は JSON 配列なので集計に向かず、行ベースの
+    // daily_activity を別に持つ。pushProgress は学習のたびに呼ばれるので、
+    // 新しいアクティブ日も自然に push される。冪等なので件数増加なし。
+    void pushDailyActivity(stats.studyDates)
   } catch (e) {
     console.warn('[sync] pushProgress failed:', e)
+  }
+}
+
+// ---- 日次アクティビティ (daily_activity) 同期 ----
+
+/**
+ * ローカルの studyDates（YYYY-MM-DD のアクティブ日配列）を Supabase
+ * `daily_activity(user_id, active_date)` へ全件 upsert する (MB-2)。
+ *
+ * - 1 行 = 自分の 1 アクティブ日。user_id は必ず自分の auth uid（他人の行は書かない）。
+ * - onConflict: 'user_id,active_date' で重複は無視＝冪等。同じ studyDates を
+ *   何度送っても行は増えない。これがそのまま「過去分バックフィル」になる。
+ * - migration 037 未適用環境では "relation daily_activity does not exist" で
+ *   失敗するが UX を止めない（握り潰す）。
+ * - 不正な日付文字列（YYYY-MM-DD 以外）は送らない。
+ * - 未ログイン / Supabase 未設定 / 空配列のときは no-op。
+ */
+export async function pushDailyActivity(studyDates: string[]): Promise<void> {
+  if (!isReady()) return
+  if (!Array.isArray(studyDates) || studyDates.length === 0) return
+
+  // YYYY-MM-DD のみ通す + 重複除去（万一ローカルが汚れていても安全側）。
+  const seen = new Set<string>()
+  const rows: { user_id: string; active_date: string }[] = []
+  for (const d of studyDates) {
+    if (typeof d !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(d)) continue
+    if (seen.has(d)) continue
+    seen.add(d)
+    rows.push({ user_id: _currentUserId!, active_date: d })
+  }
+  if (rows.length === 0) return
+
+  try {
+    const { error } = await supabase!
+      .from('daily_activity')
+      .upsert(rows, { onConflict: 'user_id,active_date', ignoreDuplicates: true })
+    if (error) {
+      // migration 037 未適用環境の "relation ... does not exist" は無視
+      if (!/daily_activity/i.test(error.message)) {
+        console.warn('[sync] pushDailyActivity failed:', error.message)
+      }
+    }
+  } catch (e) {
+    console.warn('[sync] pushDailyActivity failed:', e)
   }
 }
 
@@ -520,8 +569,13 @@ export async function syncOnLogin(userId: string): Promise<void> {
     // ローカルを更新
     localStorage.setItem('logic-stats', JSON.stringify(merged))
 
-    // リモートにpush
+    // リモートにpush（pushProgress 内で daily_activity への upsert も走る）
     await pushProgress(merged)
+
+    // MB-2: ログイン時に studyDates 全件を daily_activity へ明示バックフィル。
+    // pushProgress 経由でも push されるが、login は「過去分まとめて同期」の
+    // 確実な起点なのでここでも await して取りこぼしを無くす（冪等なので二重でも安全）。
+    await pushDailyActivity(merged.studyDates)
 
     // 表示名: リモート優先で同期（リモートあればローカルに反映、なければローカル送信）
     const remoteDisplayName = await pullDisplayName()
