@@ -209,10 +209,52 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 | FB-10 | iPad横画面でカスタムコース作成画面レイアウト崩れ | P2 | DONE（2026-05-31 完了。Keita「iPad は正式サポート対象」で方針確定→Custom/PersonalCourseScreen に max-width:600px+margin:auto で崩れ修正 push `622ae43`・tsc0/eslint0/vitest413pass・Android 配信 success run 26700084638。本番反映済・Keita 実機目視確認も完了→DONE） | dev-logic | 方針確定（Keita決定済・iPadサポート） |
 | FB-14 | フラッシュカードの可読性改善（`<br/>`等markup除去・文字サイズ拡大・長文整形） | P2 | DONE（2026-06-02 完了。3層修正: ①表示sanitize(FlashcardsScreen.tsx＝`<br/>`→改行・`[icon:]`・`:::`除去で既存localStorage壊れカードも救済)②生成sanitize(flashcardData.ts＝stripMarkup＋140字整形)③CSS(FlashcardsScreen.css＝fc3-face-textにmax-height:100%/overflow-y:auto・フォント/行間既定値到達)。commit `1c653e3`・tsc0/eslint0/vitest585pass・push済・Render/Android本番反映） | dev-logic | UX・読みやすさ |
 | FB-15 | フェルミ模範解答が途中で切れる（max_tokens不足） | P2 | DONE（2026-06-02 完了。server/routes/fermi.ts /feedback の max_tokens 1400→2400＋stop_reason=max_tokens検知のwarnログ。他の200-300トークンは不変。commit `8c681af`・tsc0/eslint0/vitest585pass・push済・deploy-production手動dispatch(run26820986262)でバックエンド本番反映＝サーバ変更なので必須） | dev-logic | UX・回答消失バグ |
-| FB-16 | ログアウト時のデータ消失再発（supabase.ts LOGOUT_KEEP_KEYS が syncService の KEEP_KEYS と乖離・AF-05/07/08 が片肺） | P1 | IN_PROGRESS（2026-06-03 林ティックで根因特定→dev-logic 委譲。ローカル実装＋回帰テスト green・commit済(branch fix/fb16-logout-keep-keys)・push/deploy 承認待ち） | dev-logic | 即修正(correctness/データ消失) |
-| FB-17 | 復習の「弱点」カードが完了しても減らない（wrongCount 単調増加で永久に弱点扱い） | P1 | TODO | dev-logic | 即修正(correctness/バグ) |
-| FB-18 | フラッシュカード回答（裏面）の文字が小さい | P2 | TODO | dev-logic | UX・可読性 |
-| FB-19 | フラッシュカードの「わかった」と「簡単」の違いが分からない | P2 | TODO | dev-logic + designer | UX・SRSラベル |
+| FB-16 | ログアウト時のデータ消失再発（supabase.ts LOGOUT_KEEP_KEYS が syncService の KEEP_KEYS と乖離・AF-05/07/08 が片肺） | P1 | DONE（2026-06-03 林ティック。保持キーを単一定義 src/logoutKeepKeys.ts に統合し supabase.ts/syncService.ts 両方が import＝乖離不能化。実ログアウト経路(clearLocalUserData)を踏む回帰テスト fb16-logout-path.test.ts 追加。commit `eabdba6`・tsc0/eslint.0/vitest599pass・main `45a3564` push済・Render本番deploy run26851189447 success(index-DVZcVkJO.js)・Android run26851185921 success内部配信） | dev-logic | 即修正(correctness/データ消失) |
+| FB-17 | 復習の「弱点」カードが完了しても減らない（wrongCount 単調増加で永久に弱点扱い） | P1 | DONE（2026-06-03 林ティック。弱点判定を isWeakCard=wrongCount>0&&interval===0 に統一(getWeakCards/getCardStats)＝正解でinterval≥1になり弱点から自動除外。回帰テスト flashcardWeak.test.ts 11件(間違える→弱点→正解→消える)。commit `c787c8d`・green・main push済・Render/Android本番反映） | dev-logic | 即修正(correctness/バグ) |
+| FB-18 | フラッシュカード回答（裏面）の文字が小さい | P2 | REVIEW（2026-06-03 実装・デプロイ済。fc3-back-text を clamp(1.2rem,4.8vw,1.5333rem) に拡大・rem化でfont-scale連動。commit `c787c8d`・main push済・本番反映。残＝実機/screenshot 目視） | dev-logic / test-functional | UX・可読性 |
+| FB-19 | フラッシュカードの「わかった」と「簡単」の違いが分からない | P2 | REVIEW（2026-06-03 実装・デプロイ済。各ボタンに次回間隔「すぐ/N日後」表示＝good<easyの差を可視化・開発者向けease表示撤去。i18n flashcards.nextSoon/nextDays ja/en。commit `c787c8d`・本番反映。残＝ボタン文言そのものの見直しは designer 案→サンプル承認、実機目視） | dev-logic + designer | UX・SRSラベル |
+| FB-20 | FB-05（コースナビ3ステージ一括変更）の本番リグレッション監視 | P2 | TODO | apollo-keeper + night-patrol | 監視・退行検知 |
+| FB-21 | フラッシュカード大改修（問題/回答を大きく見やすく・カードめくる演出・間隔をわかった3日/簡単1週間に・タップで「今日する/全部復習/ランダム復習」の3モード＋各完了演出） | P1 | TODO（2026-06-03 Keita 実機FB詳細） | dev-logic + designer | UX大改修 |
+| FB-22 | デイリーフェルミの上部UI整理（難易度/分野フィルタを右上フィルターアイコンに格納しデフォ非表示・「1日10問まで」文言を「別の問題を選ぶ」と同じ行に） | P2 | TODO（2026-06-03 Keita 実機FB） | dev-logic | UX・情報整理 |
+| FB-23 | localStorage 容量限界の実測＋クォータガード（活動/フラッシュカード/AI問題/ノートの成長で5MB上限到達リスク。現状 QuotaExceeded を握り潰し＝データ消失しうる） | P2 | TODO（2026-06-03 Keita「どこまで耐えられるか検証して」） | dev-logic（実測probe+ガード）+ 林（分析） | 健全性・データ保全 |
+| FB-24 | 「学ぶ」タブのアイコンをトレーニング流用から学習向けの適切なものに変更 | P3 | TODO（2026-06-03 Keita 実機FB） | designer + dev-logic | UX・アイコン |
+| FB-25 | 「ジャーナル」タブのアイコンをもっと日記っぽいものに変更 | P3 | TODO（2026-06-03 Keita 実機FB） | designer + dev-logic | UX・アイコン |
+| FB-26 | コース一覧（ロードマップ）の各グループを初期状態で全て閉じた状態にする（現状は全展開） | P2 | TODO（2026-06-03 Keita 実機FB） | dev-logic | UX・情報整理 |
+| FB-27 | 文字サイズの段階を底上げ（現「大」をデフォルトに・標準→小・特大→大）。下メニュー(タブバー)文字はリマップ対象外で小のまま（大きくすると崩れる） | P2 | TODO（2026-06-03 Keita 実機FB） | dev-logic | UX・可読性 |
+| FB-28 | ジャーナル画面 上部整理（左上「ジャーナル」文言削除・「今日の気分・目標・記録を整理」を上に・上部スペース圧縮） | P2 | TODO（2026-06-03 Keita 実機FB） | dev-logic | UX・情報整理 |
+| FB-29 | バッジの発光を「周辺の丸」でなく「バッジの縁から」＋10回光ったら停止（常時発光は目障り） | P2 | TODO（2026-06-03 Keita 実機FB） | dev-logic + designer | UX・演出 |
+| FB-30 | 学習サマリー「今日」の炎の青枠をもっと太く（倍くらい） | P3 | TODO（2026-06-03 Keita 実機FB） | dev-logic | UX・視認性 |
+| FB-31 | 「プロフィール編集」と「アカウント」を統合する | P2 | TODO（2026-06-03 Keita 実機FB） | dev-logic | UX・IA |
+| FB-32 | 言語・テーマ・文字サイズを「環境設定」として1つにまとめる | P2 | TODO（2026-06-03 Keita 実機FB） | dev-logic | UX・IA |
+| FB-33 | フェルミランキングのランキングアイコンを絵文字に（UIアイコン絵文字NGの明示例外＝Keita指示） | P3 | TODO（2026-06-03 Keita 実機FB） | dev-logic | UX・アイコン |
+| FB-34 | 「フェルミに挑戦する」CTA(AF-01)をもっと小さく右寄せ・控えめに | P3 | TODO（2026-06-03 Keita 実機FB） | dev-logic | UX・調整 |
+| FB-35 | 「学ぶ」画面上部の検索を右上アイコンに格納（デフォルト非表示） | P2 | TODO（2026-06-03 Keita 実機FB） | dev-logic | UX・情報整理 |
+| FB-36 | 全体的な動作の遅さ改善（特にフェルミランキングが毎回読込に数秒。キャッシュ/初回描画/不要再取得の最適化） | P2 | TODO（2026-06-03 Keita 実機FB） | dev-logic | パフォーマンス |
+| MB-1 | 指標ダッシュボードを立ち上げる（Supabaseネイティブで代替・Metabase不要に方針転換） | P1 | IN_PROGRESS（2026-06-03 Keita 判断: Metabase/Render はやめ Supabase SQL Editor + Reports で代替。実データ調査で判明: study_sessions テーブル無し(404)・progress 0行・plan は全 standard で旧SQL前提と不一致・RTDNカラム未適用＝用意済み5本SQLは半分壊。今出せるのは課金/登録推移/属性。DAU・継続率は活動同期(MB-2)が前提。課金/登録/属性のSQLは会話で Keita に展開済） | 林（SQL整備・誘導）+ Keita（SQL Editor貼付） | 指標基盤 |
+| MB-2 | クライアント活動ログ(studyDates)をSupabaseに同期しDAU・継続率を可視化可能にする | P1 | TODO | dev-logic（実装+migration SQL）+ Keita（migration適用） | DAU・継続率の土台 |
+
+#### MB-2 — クライアント活動ログを Supabase に同期（DAU・継続率の土台）
+- 優先度: P1 / ステータス: TODO / 担当: dev-logic（実装＋migration SQL 用意）+ Keita（Supabase SQL Editor で migration 適用）
+- 背景: Logic の日次アクティビティはローカル(localStorage `logic-stats.studyDates` = YYYY-MM-DD のアクティブ日配列、src/stats.ts)管理で Supabase 未同期。そのため DAU・継続率コホートが現状の Supabase データから出せない（study_sessions テーブルも無い）。studyDates を Supabase に同期＋過去分バックフィルすれば、本物の DAU・継続率（過去含む）が出せる。
+- 実装方針: (1) 新テーブル `public.daily_activity(user_id uuid, active_date date, primary key(user_id, active_date))` + RLS(本人のみ read/write、metabase_readonly は SELECT 可) の migration SQL を用意。(2) syncService に、ログイン/定期同期時に local `studyDates` を `daily_activity` へ upsert（既存 studyDates 全部＝過去分バックフィル、以降の新規アクティブ日も push）。recordStudyDate 系の追記点と連動。(3) DAU = `select active_date, count(distinct user_id) from daily_activity group by 1`、継続率コホート = `profiles.created_at`（登録週）× `daily_activity`（D1/D7/D30 にアクティブか）で書き直し。活動別利用(03)は study_sessions 前提なので daily_activity ベースの「日次アクティブユーザー数」に縮小 or 別途 activity_type 計装は次フェーズ。
+- DoD: daily_activity テーブルの migration SQL が用意され、syncService が studyDates をバックフィル＋同期する。tsc/eslint./vitest green。DAU・継続率の Supabase SQL（書き直し版）が会話で Keita に渡せる状態。migration 適用は Keita が SQL Editor で実行（林が SQL を会話展開）。
+- 関連: `src/stats.ts`（studyDates）、`src/syncService.ts`（既存 upsert パターン: user_progress/profiles 等）、`supabase/migrations/`（新 migration）、`supabase/sql/dashboards/`（02 retention を daily_activity 版に）、メモリ project_metabase_setup
+- 依存: なし（MB-1 の DAU/継続率部分はこれが前提）
+- note: 2026-06-03 Keita 判断。Supabase MCP は本セッション不在のため migration 自動適用不可＝Keita が SQL Editor で1回貼る運用。RLS とバックフィルの冪等性（重複 upsert で増殖しない・他人の行を書かない）に注意。
+
+#### FB-20 — FB-05 本番リグレッション監視
+- 優先度: P2 / ステータス: TODO / 担当: apollo-keeper（巡回）+ night-patrol（深夜）
+- 詳細: 2026-06-03 朝ブリーフィング起点。前日 FB-05（戻るルール統一・タブ復元・コース完了CTA）を3ステージ一括で本番反映。画面遷移の根幹に触れた大規模変更で Playwright スモークは全通だが実ユーザー経路の退行リスクが残る。本日中〜数日、apollo-keeper の巡回と night-patrol(03:00) で主要遷移（コース横断・戻る・離脱復帰・タブ切替）の異常を重点監視し、検知したら即 dev-logic に起票。
+- DoD: 監視期間中に退行が出ないことを確認、または出たら即起票・修正。異常なければ数日後にクローズ。
+- 関連: FB-05（DONE・commit 36a2321/7b1ca72/298c8a6）、night-patrol、apollo-keeper
+- note: 朝ブリーフィング 2026-06-03「今日の推奨タスク1」由来。
+
+#### MB-1 — Metabase Phase1 立ち上げ（指標ダッシュボード）
+- 優先度: P1 / ステータス: TODO / 担当: 林（手順整備・SQL 準備）+ Keita（Render Blueprint deploy・Metabase 初回ログイン・Question 登録の手動操作）
+- 詳細: 課金ユーザー8名のリテンション要因を定量化するため、DAU・継続率・課金率の指標ダッシュボードを今週中に立ち上げる。Supabase 側（metabase_readonly role / metabase schema / metabase_users view / migration 021）は自動セットアップ済み。残りは Keita 手動作業＝(B) Render Blueprint で Metabase service 作成、(C) 初回ログイン＋データソース登録、(D) 5 Question + 1 Dashboard 登録。林が手順とコピペ用 SQL を整備して Keita に渡す。
+- DoD: Metabase が Render 上で稼働し、DAU・継続率・課金率・アクティブサブスクが見える Dashboard が1枚立つ。Keita が URL からアクセスできる。
+- 関連: `logic/docs/ANALYTICS_DASHBOARD.md`（全手順）、`logic/infra/metabase/render.yaml`+`Dockerfile`、`logic/supabase/sql/dashboards/01〜05_*.sql`、`supabase/migrations/021_metabase_readonly.sql`（適用済）、メモリ project_metabase_setup
+- note: 朝ブリーフィング 2026-06-03「判断を仰ぐべき項目」→ Keita「今週中」決定。Render service 名・接続情報・パスワード参照は project_metabase_setup メモリ参照。
 
 #### FB-16 — ログアウト時のデータ消失再発（KEEP_KEYS 二重定義の乖離）
 - 優先度: P1 / ステータス: TODO / 担当案: dev-logic（実装）+ test-functional（実ログアウト経路の永続化 E2E）
