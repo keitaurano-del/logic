@@ -230,6 +230,7 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 | FB-34 | 「フェルミに挑戦する」CTA(AF-01)をもっと小さく右寄せ・控えめに | P3 | REVIEW（2026-06-03 実装・本番反映済。統合ブランチ→main `851ec53` push・Render run26857583496・Android run26857579669・tsc0/eslint0/vitest620pass。実機目視残＝Keita ドッグフィードバック確認） | dev-logic | UX・調整 |
 | FB-35 | 「学ぶ」画面上部の検索を右上アイコンに格納（デフォルト非表示） | P2 | REVIEW（2026-06-03 実装・本番反映済。統合ブランチ→main `851ec53` push・Render run26857583496・Android run26857579669・tsc0/eslint0/vitest620pass。実機目視残＝Keita ドッグフィードバック確認） | dev-logic | UX・情報整理 |
 | FB-36 | 全体的な動作の遅さ改善（特にフェルミランキングが毎回読込に数秒。キャッシュ/初回描画/不要再取得の最適化） | P2 | DONE（2026-06-03 実装・本番反映済 `851ec53`・テスト担保。フェルミランキングをSWRキャッシュ化＝前回値即描画で体感即時。根因=サーバ2往復+cold start） | dev-logic | パフォーマンス |
+| FB-37 | デイリーフェルミのフィルタで各選択肢の件数（それぞれいくつあるか）を非表示にする | P3 | REVIEW（2026-06-03 実装・main ローカルcommit 3006109・push未＝次回一括デプロイ待ち。難易度/分野チップの件数span削除・countAvailableWithFilterは0件判定で残置・未使用CSS削除。tsc0/eslint0/vitest620） | dev-logic | UX・情報整理 |
 | MB-1 | 指標ダッシュボードを立ち上げる（Supabaseネイティブで代替・Metabase不要に方針転換） | P1 | DONE（2026-06-03 Supabaseネイティブで立ち上げ完了。daily_activity 稼働でDAU/WAU/MAU・継続率コホート、subscriptions で課金/プラン、profiles で登録推移/属性が SQL Editor で取得可能。SQL は会話展開済＋supabase/sql/dashboards/。Reportsチャート化は任意follow） | 林（SQL整備・誘導）+ Keita（SQL Editor貼付） | 指標基盤 |
 | MB-2 | クライアント活動ログ(studyDates)をSupabaseに同期しDAU・継続率を可視化可能にする | P1 | DONE（2026-06-03 Keita が Supabase SQL Editor で migration 037 適用→daily_activity 作成成功(HTTP200)。同期コード本番反映済 `851ec53`。バックフィル実働確認＝Keita 端末同期で21行(2026-05-01〜06-03)流入。以降ユーザー同期毎に増加し DAU/継続率が実数化） | dev-logic（実装+migration SQL）+ Keita（migration適用） | DAU・継続率の土台 |
 
