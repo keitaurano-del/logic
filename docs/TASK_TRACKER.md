@@ -214,24 +214,24 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 | FB-18 | フラッシュカード回答（裏面）の文字が小さい | P2 | REVIEW（2026-06-03 実装・デプロイ済。fc3-back-text を clamp(1.2rem,4.8vw,1.5333rem) に拡大・rem化でfont-scale連動。commit `c787c8d`・main push済・本番反映。残＝実機/screenshot 目視） | dev-logic / test-functional | UX・可読性 |
 | FB-19 | フラッシュカードの「わかった」と「簡単」の違いが分からない | P2 | REVIEW（2026-06-03 実装・デプロイ済。各ボタンに次回間隔「すぐ/N日後」表示＝good<easyの差を可視化・開発者向けease表示撤去。i18n flashcards.nextSoon/nextDays ja/en。commit `c787c8d`・本番反映。残＝ボタン文言そのものの見直しは designer 案→サンプル承認、実機目視） | dev-logic + designer | UX・SRSラベル |
 | FB-20 | FB-05（コースナビ3ステージ一括変更）の本番リグレッション監視 | P2 | TODO | apollo-keeper + night-patrol | 監視・退行検知 |
-| FB-21 | フラッシュカード大改修（問題/回答を大きく見やすく・カードめくる演出・間隔をわかった3日/簡単1週間に・タップで「今日する/全部復習/ランダム復習」の3モード＋各完了演出） | P1 | TODO（2026-06-03 Keita 実機FB詳細） | dev-logic + designer | UX大改修 |
-| FB-22 | デイリーフェルミの上部UI整理（難易度/分野フィルタを右上フィルターアイコンに格納しデフォ非表示・「1日10問まで」文言を「別の問題を選ぶ」と同じ行に） | P2 | TODO（2026-06-03 Keita 実機FB） | dev-logic | UX・情報整理 |
-| FB-23 | localStorage 容量限界の実測＋クォータガード（活動/フラッシュカード/AI問題/ノートの成長で5MB上限到達リスク。現状 QuotaExceeded を握り潰し＝データ消失しうる） | P2 | TODO（2026-06-03 Keita「どこまで耐えられるか検証して」） | dev-logic（実測probe+ガード）+ 林（分析） | 健全性・データ保全 |
-| FB-24 | 「学ぶ」タブのアイコンをトレーニング流用から学習向けの適切なものに変更 | P3 | TODO（2026-06-03 Keita 実機FB） | designer + dev-logic | UX・アイコン |
-| FB-25 | 「ジャーナル」タブのアイコンをもっと日記っぽいものに変更 | P3 | TODO（2026-06-03 Keita 実機FB） | designer + dev-logic | UX・アイコン |
-| FB-26 | コース一覧（ロードマップ）の各グループを初期状態で全て閉じた状態にする（現状は全展開） | P2 | TODO（2026-06-03 Keita 実機FB） | dev-logic | UX・情報整理 |
-| FB-27 | 文字サイズの段階を底上げ（現「大」をデフォルトに・標準→小・特大→大）。下メニュー(タブバー)文字はリマップ対象外で小のまま（大きくすると崩れる） | P2 | TODO（2026-06-03 Keita 実機FB） | dev-logic | UX・可読性 |
-| FB-28 | ジャーナル画面 上部整理（左上「ジャーナル」文言削除・「今日の気分・目標・記録を整理」を上に・上部スペース圧縮） | P2 | TODO（2026-06-03 Keita 実機FB） | dev-logic | UX・情報整理 |
-| FB-29 | バッジの発光を「周辺の丸」でなく「バッジの縁から」＋10回光ったら停止（常時発光は目障り） | P2 | TODO（2026-06-03 Keita 実機FB） | dev-logic + designer | UX・演出 |
-| FB-30 | 学習サマリー「今日」の炎の青枠をもっと太く（倍くらい） | P3 | TODO（2026-06-03 Keita 実機FB） | dev-logic | UX・視認性 |
-| FB-31 | 「プロフィール編集」と「アカウント」を統合する | P2 | TODO（2026-06-03 Keita 実機FB） | dev-logic | UX・IA |
-| FB-32 | 言語・テーマ・文字サイズを「環境設定」として1つにまとめる | P2 | TODO（2026-06-03 Keita 実機FB） | dev-logic | UX・IA |
-| FB-33 | フェルミランキングのランキングアイコンを絵文字に（UIアイコン絵文字NGの明示例外＝Keita指示） | P3 | TODO（2026-06-03 Keita 実機FB） | dev-logic | UX・アイコン |
-| FB-34 | 「フェルミに挑戦する」CTA(AF-01)をもっと小さく右寄せ・控えめに | P3 | TODO（2026-06-03 Keita 実機FB） | dev-logic | UX・調整 |
-| FB-35 | 「学ぶ」画面上部の検索を右上アイコンに格納（デフォルト非表示） | P2 | TODO（2026-06-03 Keita 実機FB） | dev-logic | UX・情報整理 |
-| FB-36 | 全体的な動作の遅さ改善（特にフェルミランキングが毎回読込に数秒。キャッシュ/初回描画/不要再取得の最適化） | P2 | TODO（2026-06-03 Keita 実機FB） | dev-logic | パフォーマンス |
+| FB-21 | フラッシュカード大改修（問題/回答を大きく見やすく・カードめくる演出・間隔をわかった3日/簡単1週間に・タップで「今日する/全部復習/ランダム復習」の3モード＋各完了演出） | P1 | REVIEW（2026-06-03 実装・本番反映済。統合ブランチ→main `851ec53` push・Render run26857583496・Android run26857579669・tsc0/eslint0/vitest620pass。実機目視残＝Keita ドッグフィードバック確認） | dev-logic + designer | UX大改修 |
+| FB-22 | デイリーフェルミの上部UI整理（難易度/分野フィルタを右上フィルターアイコンに格納しデフォ非表示・「1日10問まで」文言を「別の問題を選ぶ」と同じ行に） | P2 | REVIEW（2026-06-03 実装・本番反映済。統合ブランチ→main `851ec53` push・Render run26857583496・Android run26857579669・tsc0/eslint0/vitest620pass。実機目視残＝Keita ドッグフィードバック確認） | dev-logic | UX・情報整理 |
+| FB-23 | localStorage 容量限界の実測＋クォータガード（活動/フラッシュカード/AI問題/ノートの成長で5MB上限到達リスク。現状 QuotaExceeded を握り潰し＝データ消失しうる） | P2 | DONE（2026-06-03 実装・本番反映済 `851ec53`・テスト担保。使用量実測probe＋成長キャッシュのクォータガード(eviction)＋テスト7件。storageUsage.ts） | dev-logic（実測probe+ガード）+ 林（分析） | 健全性・データ保全 |
+| FB-24 | 「学ぶ」タブのアイコンをトレーニング流用から学習向けの適切なものに変更 | P3 | REVIEW（2026-06-03 実装・本番反映済。統合ブランチ→main `851ec53` push・Render run26857583496・Android run26857579669・tsc0/eslint0/vitest620pass。実機目視残＝Keita ドッグフィードバック確認） | designer + dev-logic | UX・アイコン |
+| FB-25 | 「ジャーナル」タブのアイコンをもっと日記っぽいものに変更 | P3 | REVIEW（2026-06-03 実装・本番反映済。統合ブランチ→main `851ec53` push・Render run26857583496・Android run26857579669・tsc0/eslint0/vitest620pass。実機目視残＝Keita ドッグフィードバック確認） | designer + dev-logic | UX・アイコン |
+| FB-26 | コース一覧（ロードマップ）の各グループを初期状態で全て閉じた状態にする（現状は全展開） | P2 | REVIEW（2026-06-03 実装・本番反映済。統合ブランチ→main `851ec53` push・Render run26857583496・Android run26857579669・tsc0/eslint0/vitest620pass。実機目視残＝Keita ドッグフィードバック確認） | dev-logic | UX・情報整理 |
+| FB-27 | 文字サイズの段階を底上げ（現「大」をデフォルトに・標準→小・特大→大）。下メニュー(タブバー)文字はリマップ対象外で小のまま（大きくすると崩れる） | P2 | REVIEW（2026-06-03 実装・本番反映済。統合ブランチ→main `851ec53` push・Render run26857583496・Android run26857579669・tsc0/eslint0/vitest620pass。実機目視残＝Keita ドッグフィードバック確認） | dev-logic | UX・可読性 |
+| FB-28 | ジャーナル画面 上部整理（左上「ジャーナル」文言削除・「今日の気分・目標・記録を整理」を上に・上部スペース圧縮） | P2 | REVIEW（2026-06-03 実装・本番反映済。統合ブランチ→main `851ec53` push・Render run26857583496・Android run26857579669・tsc0/eslint0/vitest620pass。実機目視残＝Keita ドッグフィードバック確認） | dev-logic | UX・情報整理 |
+| FB-29 | バッジの発光を「周辺の丸」でなく「バッジの縁から」＋10回光ったら停止（常時発光は目障り） | P2 | REVIEW（2026-06-03 実装・本番反映済。統合ブランチ→main `851ec53` push・Render run26857583496・Android run26857579669・tsc0/eslint0/vitest620pass。実機目視残＝Keita ドッグフィードバック確認） | dev-logic + designer | UX・演出 |
+| FB-30 | 学習サマリー「今日」の炎の青枠をもっと太く（倍くらい） | P3 | REVIEW（2026-06-03 実装・本番反映済。統合ブランチ→main `851ec53` push・Render run26857583496・Android run26857579669・tsc0/eslint0/vitest620pass。実機目視残＝Keita ドッグフィードバック確認） | dev-logic | UX・視認性 |
+| FB-31 | 「プロフィール編集」と「アカウント」を統合する | P2 | REVIEW（2026-06-03 実装・本番反映済。統合ブランチ→main `851ec53` push・Render run26857583496・Android run26857579669・tsc0/eslint0/vitest620pass。実機目視残＝Keita ドッグフィードバック確認） | dev-logic | UX・IA |
+| FB-32 | 言語・テーマ・文字サイズを「環境設定」として1つにまとめる | P2 | REVIEW（2026-06-03 実装・本番反映済。統合ブランチ→main `851ec53` push・Render run26857583496・Android run26857579669・tsc0/eslint0/vitest620pass。実機目視残＝Keita ドッグフィードバック確認） | dev-logic | UX・IA |
+| FB-33 | フェルミランキングのランキングアイコンを絵文字に（UIアイコン絵文字NGの明示例外＝Keita指示） | P3 | REVIEW（2026-06-03 実装・本番反映済。統合ブランチ→main `851ec53` push・Render run26857583496・Android run26857579669・tsc0/eslint0/vitest620pass。実機目視残＝Keita ドッグフィードバック確認） | dev-logic | UX・アイコン |
+| FB-34 | 「フェルミに挑戦する」CTA(AF-01)をもっと小さく右寄せ・控えめに | P3 | REVIEW（2026-06-03 実装・本番反映済。統合ブランチ→main `851ec53` push・Render run26857583496・Android run26857579669・tsc0/eslint0/vitest620pass。実機目視残＝Keita ドッグフィードバック確認） | dev-logic | UX・調整 |
+| FB-35 | 「学ぶ」画面上部の検索を右上アイコンに格納（デフォルト非表示） | P2 | REVIEW（2026-06-03 実装・本番反映済。統合ブランチ→main `851ec53` push・Render run26857583496・Android run26857579669・tsc0/eslint0/vitest620pass。実機目視残＝Keita ドッグフィードバック確認） | dev-logic | UX・情報整理 |
+| FB-36 | 全体的な動作の遅さ改善（特にフェルミランキングが毎回読込に数秒。キャッシュ/初回描画/不要再取得の最適化） | P2 | DONE（2026-06-03 実装・本番反映済 `851ec53`・テスト担保。フェルミランキングをSWRキャッシュ化＝前回値即描画で体感即時。根因=サーバ2往復+cold start） | dev-logic | パフォーマンス |
 | MB-1 | 指標ダッシュボードを立ち上げる（Supabaseネイティブで代替・Metabase不要に方針転換） | P1 | IN_PROGRESS（2026-06-03 Keita 判断: Metabase/Render はやめ Supabase SQL Editor + Reports で代替。実データ調査で判明: study_sessions テーブル無し(404)・progress 0行・plan は全 standard で旧SQL前提と不一致・RTDNカラム未適用＝用意済み5本SQLは半分壊。今出せるのは課金/登録推移/属性。DAU・継続率は活動同期(MB-2)が前提。課金/登録/属性のSQLは会話で Keita に展開済） | 林（SQL整備・誘導）+ Keita（SQL Editor貼付） | 指標基盤 |
-| MB-2 | クライアント活動ログ(studyDates)をSupabaseに同期しDAU・継続率を可視化可能にする | P1 | TODO | dev-logic（実装+migration SQL）+ Keita（migration適用） | DAU・継続率の土台 |
+| MB-2 | クライアント活動ログ(studyDates)をSupabaseに同期しDAU・継続率を可視化可能にする | P1 | REVIEW（2026-06-03 同期コード本番反映済 `851ec53`。残＝Keita が Supabase に migration 037_daily_activity.sql を貼って適用→各ユーザー次回同期でバックフィル開始） | dev-logic（実装+migration SQL）+ Keita（migration適用） | DAU・継続率の土台 |
 
 #### MB-2 — クライアント活動ログを Supabase に同期（DAU・継続率の土台）
 - 優先度: P1 / ステータス: TODO / 担当: dev-logic（実装＋migration SQL 用意）+ Keita（Supabase SQL Editor で migration 適用）
