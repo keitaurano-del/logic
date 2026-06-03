@@ -211,8 +211,8 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 | FB-15 | フェルミ模範解答が途中で切れる（max_tokens不足） | P2 | DONE（2026-06-02 完了。server/routes/fermi.ts /feedback の max_tokens 1400→2400＋stop_reason=max_tokens検知のwarnログ。他の200-300トークンは不変。commit `8c681af`・tsc0/eslint0/vitest585pass・push済・deploy-production手動dispatch(run26820986262)でバックエンド本番反映＝サーバ変更なので必須） | dev-logic | UX・回答消失バグ |
 | FB-16 | ログアウト時のデータ消失再発（supabase.ts LOGOUT_KEEP_KEYS が syncService の KEEP_KEYS と乖離・AF-05/07/08 が片肺） | P1 | DONE（2026-06-03 林ティック。保持キーを単一定義 src/logoutKeepKeys.ts に統合し supabase.ts/syncService.ts 両方が import＝乖離不能化。実ログアウト経路(clearLocalUserData)を踏む回帰テスト fb16-logout-path.test.ts 追加。commit `eabdba6`・tsc0/eslint.0/vitest599pass・main `45a3564` push済・Render本番deploy run26851189447 success(index-DVZcVkJO.js)・Android run26851185921 success内部配信） | dev-logic | 即修正(correctness/データ消失) |
 | FB-17 | 復習の「弱点」カードが完了しても減らない（wrongCount 単調増加で永久に弱点扱い） | P1 | DONE（2026-06-03 林ティック。弱点判定を isWeakCard=wrongCount>0&&interval===0 に統一(getWeakCards/getCardStats)＝正解でinterval≥1になり弱点から自動除外。回帰テスト flashcardWeak.test.ts 11件(間違える→弱点→正解→消える)。commit `c787c8d`・green・main push済・Render/Android本番反映） | dev-logic | 即修正(correctness/バグ) |
-| FB-18 | フラッシュカード回答（裏面）の文字が小さい | P2 | DONE（2026-06-03 実装・デプロイ済。fc3-back-text を clamp(1.2rem,4.8vw,1.5333rem)→FB-21でさらに clamp(1.3333rem,5.2vw,1.7333rem) に拡大・rem化でfont-scale連動。FlashcardsScreen.tsx:199 で適用確認。tsc0/eslint0/vitest620pass で検証DONE） | dev-logic / test-functional | UX・可読性 |
-| FB-19 | フラッシュカードの「わかった」と「簡単」の違いが分からない | P2 | REVIEW（2026-06-03 実装・デプロイ済。各ボタンに次回間隔「すぐ/N日後」表示＝good<easyの差を可視化・開発者向けease表示撤去。i18n flashcards.nextSoon/nextDays ja/en。commit `c787c8d`・本番反映。残＝ボタン文言そのものの見直しは designer 案→サンプル承認、実機目視） | dev-logic + designer | UX・SRSラベル |
+| FB-18 | フラッシュカード回答（裏面）の文字が小さい | P2 | DONE（2026-06-03 実装・デプロイ済。fc3-back-text を clamp(1.2rem,4.8vw,1.5333rem)→FB-21でさらに clamp(1.3333rem,5.2vw,1.7333rem) に拡大・rem化でfont-scale連動。FlashcardsScreen.tsx:199 で適用確認。tsc0/eslint0/vitest620pass で検証DONE。2026-06-03 test-functional 実機E2E確認: .fc3-back-text computed font-size=22.9994px（≥18px OK）・表裏同一clamp差0.00px。spec: e2e/render-functional-20260603-fb18-fb19.spec.ts 8pass/8） | dev-logic / test-functional | UX・可読性 |
+| FB-19 | フラッシュカードの「わかった」と「簡単」の違いが分からない | P2 | DONE（2026-06-03 実装・デプロイ済。各ボタンに次回間隔「すぐ/N日後」表示＝good<easyの差を可視化・開発者向けease表示撤去。i18n flashcards.nextSoon/nextDays ja/en。commit `c787c8d`・本番反映。2026-06-03 test-functional 実機E2E確認: rate-next=["すぐ","3日後","1週間後"]・rate-label=["もう一度","わかった","簡単"]・actions textに"ease:"なし。spec: e2e/render-functional-20260603-fb18-fb19.spec.ts 8pass/8） | dev-logic + designer | UX・SRSラベル |
 | FB-20 | FB-05（コースナビ3ステージ一括変更）の本番リグレッション監視 | P2 | DONE（2026-06-03 退行なし確認。vitest620pass・render-smoke-20260527 9/9pass・本番200OK・tsc0/eslint0。T7テストは FB-26 仕様変更（初期折りたたみ）で陳腐化→新仕様に更新（commit 後 push 済）。FB-05の主要遷移に退行なし） | apollo-keeper + night-patrol | 監視・退行検知 |
 | FB-21 | フラッシュカード大改修（問題/回答を大きく見やすく・カードめくる演出・間隔をわかった3日/簡単1週間に・タップで「今日する/全部復習/ランダム復習」の3モード＋各完了演出） | P1 | REVIEW（2026-06-03 実装・本番反映済。統合ブランチ→main `851ec53` push・Render run26857583496・Android run26857579669・tsc0/eslint0/vitest620pass。実機目視残＝Keita ドッグフィードバック確認） | dev-logic + designer | UX大改修 |
 | FB-22 | デイリーフェルミの上部UI整理（難易度/分野フィルタを右上フィルターアイコンに格納しデフォ非表示・「1日10問まで」文言を「別の問題を選ぶ」と同じ行に） | P2 | REVIEW（2026-06-03 実装・本番反映済。統合ブランチ→main `851ec53` push・Render run26857583496・Android run26857579669・tsc0/eslint0/vitest620pass。実機目視残＝Keita ドッグフィードバック確認） | dev-logic | UX・情報整理 |
@@ -281,23 +281,23 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 - 更新日: 2026-06-03
 
 #### FB-18 — フラッシュカード回答（裏面）の文字が小さい
-- 優先度: P2 / ステータス: TODO / 担当案: dev-logic
+- 優先度: P2 / ステータス: DONE / 担当案: dev-logic
 - 詳細（2026-06-03 Keita 実機FB「回答の文字が小さい」）: フラッシュカードをめくった裏面（回答 = `fc3-back-text`）の文字が小さくて読みづらい。FB-14 で可読性改善（markup 除去・整形・max-height/overflow）をしたが、フォントサイズ自体がまだ小さい。
 - 実装方針: `src/screens/FlashcardsScreen.css` の `.fc3-face-text` / `.fc3-back-text`（:178 / :194 付近）のフォントサイズを引き上げる。表面（問い）と裏面（回答）でバランスを見て、特に裏面回答を読みやすいサイズに。長文カードは FB-14 の max-height/overflow-y:auto でスクロール担保済みなので、サイズUPで溢れてもスクロールで読める。font-scale 設定（logic-font-scale, rem ベース）とも整合させる。ハードコード px でなく rem/トークンで。
 - DoD: フラッシュカード裏面回答が読みやすいサイズになる。短文・長文どちらも破綻しない（長文はスクロール）。両テーマ・font-scale 各段で確認。tsc / eslint . green。
 - 関連: `src/screens/FlashcardsScreen.css`（.fc3-face-text:178 / .fc3-back-text:194）、`src/screens/FlashcardsScreen.tsx`（:153/:158 face-text）
 - 依存: なし（FB-14 の続き）
-- note: 2026-06-03 Keita 実機FB。サイズ調整なのでサンプル確認は実機目視 or screenshot で。
+- note: 2026-06-03 Keita 実機FB。サイズ調整なのでサンプル確認は実機目視 or screenshot で。2026-06-03 test-functional E2E確認: .fc3-back-text computed font-size=22.9994px（≥18px OK）・表裏同一clamp差0.00px（clamp(1.3333rem,5.2vw,1.7333rem) 両面共通）。8/8pass。spec: e2e/render-functional-20260603-fb18-fb19.spec.ts
 - 更新日: 2026-06-03
 
 #### FB-19 — フラッシュカードの「わかった」と「簡単」の違いが分からない
-- 優先度: P2 / ステータス: TODO / 担当案: dev-logic + designer
+- 優先度: P2 / ステータス: DONE / 担当案: dev-logic + designer
 - 詳細（2026-06-03 Keita 実機FB「わかった、と簡単の違いが分からない」）: カード裏面の評価ボタンが「もう一度 / わかった / 簡単」の3つ（SRS の again/good/easy、`flashcards.again/good/easy`）。「わかった」(good) と「簡単」(easy) が何が違うのか分からない。現状ボタン下に出る `flashcards.intervalEase`（「間隔: N日 · ease: X」）は開発者向け表現で、各ボタンを押すと次がいつになるかが直感的に伝わらない。
 - 実装方針: 各ボタンに「押したら次はいつ復習になるか」を具体的に出す（Anki 方式）。`reviewCard` の計算と同じロジックで、もう一度=「すぐ/また後で」、わかった=「○日後」、簡単=「△日後」を各ボタンに小さく添える、もしくはボタン文言自体を区別が伝わる中立的丁寧体に見直す（例の検討は designer と。SRS の意味＝「わかった=普通に正解／簡単=余裕で正解で次回をより先送り」が伝わる表現に）。開発者向けの「ease: X」表示は一般ユーザーには隠す or 言い換え。UI 文言は中立的丁寧体（[[feedback-app-copy-neutral]]）、ja/en 両方。
 - DoD: 3ボタンの違い（特に「わかった」と「簡単」）がユーザーに伝わる。各ボタンの次回間隔が見える or 文言で区別が明確。ja/en 両方。tsc / eslint . green。サンプルを Keita 承認してから確定（文言/見せ方は好みが分かれるので designer 案→サンプル）。
 - 関連: `src/screens/FlashcardsScreen.tsx`（:171-193 ボタン群＋intervalEase 表示）、`src/i18n.ts`（flashcards.again/good/easy/intervalEase, :1527/:3521）、`src/flashcardData.ts`（reviewCard の interval 計算を流用して各ボタンの予測間隔を出す）
 - 依存: なし
-- note: 2026-06-03 Keita 実機FB。文言・見せ方は designer 案→サンプル承認フロー（[[feedback-logic-course-thumbnails]]）。間隔表示の実装自体は correctness 寄りで先行可。
+- note: 2026-06-03 Keita 実機FB。文言・見せ方は designer 案→サンプル承認フロー（[[feedback-logic-course-thumbnails]]）。間隔表示の実装自体は correctness 寄りで先行可。2026-06-03 test-functional E2E確認: rate-next=["すぐ","3日後","1週間後"]・rate-label=["もう一度","わかった","簡単"]・"ease:"表示なし・"間隔:"表示なし。8/8pass。spec: e2e/render-functional-20260603-fb18-fb19.spec.ts
 - 更新日: 2026-06-03
 
 #### FB-01 — 図解SVGと本文説明の不整合を監査・修正
