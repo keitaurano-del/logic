@@ -72,10 +72,11 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
     implementation project(':capacitor-cordova-android-plugins')
     
-    // Google Play Billing Library (SCRUM-116: Google Play Billing実装)
-    // billing-ktx は billing を推移的に含む。queryPurchasesAsync suspend 版を提供するため必須。
-    implementation 'com.android.billingclient:billing-ktx:7.0.0'
-    // coroutines は billing-ktx の推移的依存に任せる（明示固定すると版不一致クラッシュの原因になる）
+    // Google Play Billing Library (SCRUM-116)
+    // billing（非ktx）に戻す: billing-ktx が GMS 依存で起動クラッシュを引き起こすため
+    // queryPurchasesAsync はコールバック版を suspendCancellableCoroutine でラップして使う
+    implementation 'com.android.billingclient:billing:7.0.0'
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1"
 }
 
 apply from: 'capacitor.build.gradle'
