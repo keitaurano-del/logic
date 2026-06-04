@@ -297,7 +297,7 @@ class InAppBillingPlugin : Plugin(), PurchasesUpdatedListener {
         val client = billingClient ?: run { call.reject("Billing client not initialized"); return }
 
         try {
-            val result: QueryPurchasesResult = client.queryPurchasesAsync(
+            val result = client.queryPurchasesAsync(
                 QueryPurchasesParams.newBuilder().setProductType(productType).build()
             )
 
