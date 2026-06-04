@@ -1,21 +1,64 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# ============================================================
+# Logic — ProGuard rules
+# ============================================================
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# クラッシュレポートのためスタックトレースを読める状態に保つ
+-keepattributes SourceFile,LineNumberTable
+-renamesourcefileattribute SourceFile
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# ============================================================
+# Capacitor / Cordova bridge
+# ============================================================
+-keep class com.getcapacitor.** { *; }
+-keep class org.apache.cordova.** { *; }
+-dontwarn com.getcapacitor.**
+-dontwarn org.apache.cordova.**
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# アプリ固有プラグイン
+-keep class com.logicalthinking.app.** { *; }
+
+# ============================================================
+# WebView — JavaScript インターフェース
+# ============================================================
+-keepclassmembers class * {
+    @android.webkit.JavascriptInterface <methods>;
+}
+-keepattributes JavascriptInterface
+
+# ============================================================
+# Google Play Billing
+# ============================================================
+-keep class com.android.billingclient.** { *; }
+-dontwarn com.android.billingclient.**
+
+# ============================================================
+# Google APIs / Auth
+# ============================================================
+-keep class com.google.** { *; }
+-dontwarn com.google.**
+
+# ============================================================
+# Kotlin
+# ============================================================
+-keep class kotlin.** { *; }
+-keep class kotlinx.** { *; }
+-dontwarn kotlin.**
+-dontwarn kotlinx.**
+
+# Kotlin serialization
+-keepclassmembers class ** {
+    @kotlinx.serialization.SerialName <fields>;
+}
+
+# ============================================================
+# AndroidX / Support Library
+# ============================================================
+-keep class androidx.** { *; }
+-dontwarn androidx.**
+
+# ============================================================
+# JSON / Reflection が必要なクラスを保護
+# ============================================================
+-keepclassmembers class * {
+    public <init>(android.content.Context);
+}

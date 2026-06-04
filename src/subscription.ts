@@ -10,6 +10,7 @@ import { PLAY_PRODUCTS, mapProductIdToPlan } from './billing/products'
 // `free`: 無料プラン
 // `paid_monthly`: 月額 ¥350
 // `paid_yearly`: 年額 ¥2,450（約42%OFF）
+// キャンペーン: 年額 ¥1,980（期間限定・CAMPAIGN_ACTIVE で制御）
 //
 // 旧プラン（trial / monthly / yearly / basic_* / standard_* / premium_* /
 // campaign_yearly）はクライアント側では使用しない。サーバや
@@ -19,7 +20,11 @@ export type SubscriptionPlan = 'free' | 'paid_monthly' | 'paid_yearly'
 export const PLAN_PRICES = {
   monthly: 350,
   yearly: 2450,
+  campaignYearly: 1980,
 } as const
+
+// キャンペーン年額プランの表示制御。true にするとプラン画面にキャンペーンカードが表示される。
+export const CAMPAIGN_ACTIVE = true
 
 export type SubscriptionState = {
   plan: SubscriptionPlan
@@ -254,6 +259,24 @@ export async function startCheckout(plan: SubscriptionPlan): Promise<void> {
     })
     const finalPlan = normalizeLegacyPlan(verifiedPlan) || plan
     setPaidPlan(finalPlan, currentPeriodEnd, purchase.purchaseToken)
+  } catch (error) {
+    const message = error instanceof Error ? error.message : '購入に失敗しました'
+    throw new Error(message)
+  }
+}
+
+/**
+ * キャンペーン年額プランを購入する（product ID: logic_campaign_yearly）。
+ * 購入後は通常の paid_yearly として扱われる。
+ */
+export async function startCampaignCheckout(): Promise<void> {
+  try {
+    const purchase = await purchaseProduct(PLAY_PRODUCTS.campaignYearly)
+    const { currentPeriodEnd } = await verifyPurchase({
+      purchaseToken: purchase.purchaseToken,
+      productId: purchase.productId,
+    })
+    setPaidPlan('paid_yearly', currentPeriodEnd, purchase.purchaseToken)
   } catch (error) {
     const message = error instanceof Error ? error.message : '購入に失敗しました'
     throw new Error(message)

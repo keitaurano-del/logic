@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { startCheckout, getSubscriptionState, PLAN_PRICES, isPaid } from './subscription'
+import { startCheckout, startCampaignCheckout, getSubscriptionState, PLAN_PRICES, isPaid, CAMPAIGN_ACTIVE } from './subscription'
 import './Pricing.css'
 
 // Legacy v1 のプラン画面。AppV3 では src/screens/PricingScreen.tsx を使う。
@@ -12,6 +12,17 @@ export default function Pricing({ onBack }: Props) {
   const [error, setError] = useState('')
   const state = getSubscriptionState()
   const paid = isPaid()
+
+  const handleCampaignUpgrade = async () => {
+    setLoading('campaign_yearly')
+    setError('')
+    try {
+      await startCampaignCheckout()
+    } catch (e: unknown) {
+      setError((e instanceof Error ? e.message : null) || 'エラーが発生しました')
+      setLoading(null)
+    }
+  }
 
   const handleUpgrade = async (plan: 'paid_monthly' | 'paid_yearly') => {
     setLoading(plan)
@@ -41,6 +52,33 @@ export default function Pricing({ onBack }: Props) {
         </div>
 
         <div className="pr-plans">
+          {/* キャンペーンプラン（CAMPAIGN_ACTIVE=true の期間のみ・未加入時のみ表示） */}
+          {CAMPAIGN_ACTIVE && !paid && (
+            <div className="pr-card pr-card-campaign">
+              <div className="pr-campaign-badge">期間限定</div>
+              <div className="pr-plan-name">キャンペーン年額</div>
+              <div className="pr-price">¥{PLAN_PRICES.campaignYearly.toLocaleString()}<span>/年</span></div>
+              <div className="pr-price-monthly">月々 <strong>¥{Math.round(PLAN_PRICES.campaignYearly / 12)}</strong></div>
+              <div className="pr-price-savings">
+                通常より{Math.round((1 - PLAN_PRICES.campaignYearly / PLAN_PRICES.yearly) * 100)}% OFF
+              </div>
+              <ul className="pr-features">
+                <li>AI 問題生成 <strong>無制限</strong></li>
+                <li>レッスン受け放題</li>
+                <li>AI ロールプレイ</li>
+                <li>復習・誤答リスト</li>
+                <li>プレミアムテーマ</li>
+              </ul>
+              <button
+                className="pr-btn pr-btn-campaign"
+                onClick={handleCampaignUpgrade}
+                disabled={loading !== null}
+              >
+                {loading === 'campaign_yearly' ? '読み込み中...' : 'キャンペーンで始める'}
+              </button>
+            </div>
+          )}
+
           {/* 年額プラン（推奨・先に表示） */}
           <div className="pr-card pr-card-recommended">
             <div className="pr-recommended-badge">おすすめ</div>

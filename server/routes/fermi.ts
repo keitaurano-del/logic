@@ -40,6 +40,11 @@ const FERMI_QUESTION_POOL_JA: Array<{ question: string; hint: string }> = [
   { question: '日本の法人が1年に支払う電気代の合計は何円か？', hint: '法人数×1社あたりの平均電気使用量×電力単価で分解。製造業と非製造業で違う。' },
 ]
 
+/** サーバーが UTC で動いていても JST (UTC+9) の今日の日付文字列を返す。 */
+function todayJST(): string {
+  return new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10)
+}
+
 export function createFermiRouter(
   client: Anthropic,
   supabase: SupabaseClient | null,
@@ -70,8 +75,7 @@ export function createFermiRouter(
 - 論理的分解の構造 (50点): 要素の網羅性・MECEさ、そして**使った数字に妥当な仮説が立てられているか**（「なぜその値か」をある程度説明できていれば加点する）
 - 思考の独自性 (30点): 新鮮な切り口・意外な視点
 - 回答の明確さ (20点): 結論が明確か・計算が追いやすいか
-- ヒント使用ペナルティ: ${hintPenalty}点減点
-- 解答時間ペナルティ: ${timePenalty}点減点 (解答時間 ${elapsedMin}分)
+- ヒント使用・解答時間ペナルティ: ユーザーメッセージ末尾の[採点調整]を参照
 - 最終スコア = 論理+独自性+明確さ - ペナルティ合計 (0〜100に収める)
 
 **採点の姿勢（重要）— 励まし、伸ばす採点をする**:
@@ -173,8 +177,7 @@ Scoring (out of 100):
 - Logical decomposition (50 pts): coverage, MECE-ness, and **whether each number rests on a reasonable hypothesis** (a plausible "why this value" is enough — it does not need to be perfect)
 - Originality (30 pts): fresh angles
 - Clarity (20 pts): conclusion + math are easy to follow
-- Hint penalty: −${hintPenalty}
-- Time penalty: −${timePenalty} (elapsed ${elapsedMin} min)
+- Hint / time penalty: see [Scoring adjustment] at the end of the user message
 
 **Grading stance (important) — encourage and grow the learner**:
 - Don't be a perfectionist. **Reward partial reasoning: if a part of the logic holds up, give it real credit.**
@@ -269,13 +272,13 @@ On the line after SCORE_JSON, start with the "## Strong points" section and cont
 ---`
 
       const userMessage = isEn
-        ? `Question: ${question}\n\nUser's decomposition:\n${userInput}\n\nPlease give feedback on this decomposition.`
-        : `問題: ${question}\n\nユーザーの分解:\n${userInput}\n\nこの分解にフィードバックをお願いします。`
+        ? `Question: ${question}\n\nUser's decomposition:\n${userInput}\n\nPlease give feedback on this decomposition.\n\n[Scoring adjustment: hint penalty −${hintPenalty}pts, time penalty −${timePenalty}pts (${elapsedMin} min elapsed)]`
+        : `問題: ${question}\n\nユーザーの分解:\n${userInput}\n\nこの分解にフィードバックをお願いします。\n\n[採点調整: ヒントペナルティ −${hintPenalty}点, 時間ペナルティ −${timePenalty}点 (${elapsedMin}分経過)]`
 
       const response = await client.messages.create({
         model: 'claude-haiku-4-5-20251001',
         max_tokens: 2400,
-        system: isEn ? systemPromptEn : systemPromptJa,
+        system: [{ type: 'text' as const, text: isEn ? systemPromptEn : systemPromptJa, cache_control: { type: 'ephemeral' as const } }],
         messages: [{ role: 'user', content: userMessage }],
       })
       // 切れ検知: max_tokens で打ち切られたらログに残す（将来の調整用）
@@ -313,7 +316,7 @@ On the line after SCORE_JSON, start with the "## Strong points" section and cont
         : scoreBreakdown
       const { guestId, userId } = req.body as { guestId?: string; userId?: string }
       if (supabase) {
-        const today = new Date().toISOString().slice(0, 10)
+        const today = todayJST()
         supabase.from('fermi_answers').insert({
           question_date: today,
           question_text: question,
@@ -376,7 +379,7 @@ Keep responses concise (2-4 sentences). Do not solve the problem for them.`
       const response = await client.messages.create({
         model: 'claude-haiku-4-5-20251001',
         max_tokens: 300,
-        system: systemPrompt,
+        system: [{ type: 'text' as const, text: systemPrompt, cache_control: { type: 'ephemeral' as const } }],
         messages: messages.slice(-10), // 直近10往復まで
       })
       const text = response.content[0].type === 'text' ? response.content[0].text.trim() : ''
@@ -393,7 +396,7 @@ Keep responses concise (2-4 sentences). Do not solve the problem for them.`
   router.post('/question', fermiLimiter, async (req: Request, res: Response) => {
     try {
       const isEn = req.body?.locale === 'en'
-      const today = new Date().toISOString().slice(0, 10)
+      const today = todayJST()
       const userPrompt = isEn
         ? 'Generate exactly one Fermi estimation problem in English. Pick something from everyday Western/global business or society that is good for decomposition practice. Return only the question on a single line — no preface, no explanation.'
         : `フェルミ推定の問題を1問だけ日本語で出してください。以下のカテゴリからランダムに選んでください：ビジネス規模・インフラ・消費行動・テクノロジー・社会統計・環境・スポーツ。参加者が分解して考えられる、面白くて意外性のある問題を作ってください。難易度は中級〜上級。問題文のみ1行で返してください（前置き・説明不要）。本日の日付ヒント: ${today}`
@@ -418,7 +421,7 @@ Keep responses concise (2-4 sentences). Do not solve the problem for them.`
     try {
       const locale = (req.query.locale as string) || 'ja'
       const isEn = locale === 'en'
-      const today = new Date().toISOString().slice(0, 10) // YYYY-MM-DD
+      const today = todayJST() // YYYY-MM-DD
 
       // 日付ベースでプールから問題を選択（毎日変わる）
       const dayIndex = Math.floor(Date.now() / 86400000) % FERMI_QUESTION_POOL_JA.length

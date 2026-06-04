@@ -10,6 +10,7 @@
 export const PLAY_PRODUCTS = {
   monthly: 'logic_paid_monthly',
   yearly: 'logic_paid_yearly',
+  campaignYearly: 'logic_campaign_yearly',
 } as const
 
 export type PlayProductKey = keyof typeof PLAY_PRODUCTS

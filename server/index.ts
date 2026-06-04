@@ -117,12 +117,21 @@ function makeLimiter(opts: {
   max: number
   msgJa?: string
   msgEn?: string
+  useUserId?: boolean
 }) {
   return rateLimit({
     windowMs: opts.windowMs,
     max: opts.max,
     standardHeaders: true,
     legacyHeaders: false,
+    // AI エンドポイントはユーザーID 単位で制限する（IP 単位だと同一ネットワークの
+    // 別ユーザーが巻き添えを食い、逆に別 IP からの連打を防げない）。
+    keyGenerator: opts.useUserId
+      ? (req: Request) => {
+          const userId = (req.body as { userId?: string } | undefined)?.userId
+          return userId ?? req.ip ?? 'unknown'
+        }
+      : undefined,
     handler: (req: Request, res) => {
       const locale = (req.body && typeof req.body === 'object' && (req.body as { locale?: string }).locale) || 'ja'
       res.status(429).json({
@@ -141,12 +150,13 @@ const globalApiLimiter = makeLimiter({
   msgEn: 'Too many requests. Please wait a moment and try again.',
 })
 
-// 重い AI エンドポイント用
+// 重い AI エンドポイント用（useUserId: true でユーザーID 単位に制限）
 const fermiLimiter = makeLimiter({
   windowMs: 60 * 1000,
   max: 15,
   msgJa: 'フェルミ推定のリクエストが多すぎます。1 分待ってからお試しください。',
   msgEn: 'Too many Fermi requests. Please wait a minute and try again.',
+  useUserId: true,
 })
 
 const generateProblemsLimiter = makeLimiter({
@@ -154,6 +164,7 @@ const generateProblemsLimiter = makeLimiter({
   max: 30,
   msgJa: '問題生成のリクエストが多すぎます。しばらく待ってからお試しください。',
   msgEn: 'Too many problem generation requests. Please try again later.',
+  useUserId: true,
 })
 
 const dailyProblemLimiter = makeLimiter({
@@ -161,6 +172,7 @@ const dailyProblemLimiter = makeLimiter({
   max: 5,
   msgJa: '今日のデイリー問題は既に取得済みです。明日また挑戦してください。',
   msgEn: 'You have already fetched today\'s daily problem. Try again tomorrow.',
+  useUserId: true,
 })
 
 const flashcardsLimiter = makeLimiter({
@@ -168,6 +180,7 @@ const flashcardsLimiter = makeLimiter({
   max: 20,
   msgJa: 'フラッシュカード生成のリクエストが多すぎます。しばらく待ってからお試しください。',
   msgEn: 'Too many flashcard generation requests. Please try again later.',
+  useUserId: true,
 })
 
 const journalLimiter = makeLimiter({
@@ -175,6 +188,7 @@ const journalLimiter = makeLimiter({
   max: 15,
   msgJa: 'ジャーナルのリクエストが多すぎます。1 分待ってからお試しください。',
   msgEn: 'Too many journal requests. Please wait a minute and try again.',
+  useUserId: true,
 })
 
 // AI カスタムコース生成用: 1 時間 20 回（重い AI 呼び出し。回数制限自体は
@@ -184,6 +198,7 @@ const generateCourseLimiter = makeLimiter({
   max: 20,
   msgJa: 'コース生成のリクエストが多すぎます。しばらく待ってからお試しください。',
   msgEn: 'Too many course generation requests. Please try again later.',
+  useUserId: true,
 })
 
 // 管理者エンドポイント用: 1時間10回

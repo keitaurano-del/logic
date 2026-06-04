@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import {
   startCheckout,
+  startCampaignCheckout,
   getSubscriptionState,
   isPaid,
   isAndroidNative,
   PLAN_PRICES,
+  CAMPAIGN_ACTIVE,
 } from '../subscription'
 import { Header } from '../components/platform/Header'
 import { t } from '../i18n'
@@ -13,7 +15,7 @@ interface PricingScreenProps {
   onBack: () => void
 }
 
-type PaidPlanId = 'paid_monthly' | 'paid_yearly'
+type PaidPlanId = 'paid_monthly' | 'paid_yearly' | 'campaign_yearly'
 type BillingCycle = 'monthly' | 'yearly'
 
 // ── 機能比較データ（2列：無料 vs 有料） ───────────────────────────────
@@ -64,6 +66,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
   const [loading, setLoading] = useState<PaidPlanId | null>(null)
   const [error, setError] = useState('')
   const [billingCycle, setBillingCycle] = useState<BillingCycle>('yearly')
+  const campaignActive = CAMPAIGN_ACTIVE
 
   const state = getSubscriptionState()
   const isCurrentlyPaid = isPaid()
@@ -87,12 +90,27 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
     setError('')
     try {
       if (!isAndroidNative()) {
-        // Web は決済を持っていないので案内だけ
         setError(t('pricing.purchaseStarting'))
         setLoading(null)
         return
       }
       await startCheckout(targetPlanId)
+    } catch (e: unknown) {
+      setError((e as Error).message || t('pricing.purchaseError'))
+      setLoading(null)
+    }
+  }
+
+  const handleCampaignUpgrade = async () => {
+    setLoading('campaign_yearly')
+    setError('')
+    try {
+      if (!isAndroidNative()) {
+        setError(t('pricing.purchaseStarting'))
+        setLoading(null)
+        return
+      }
+      await startCampaignCheckout()
     } catch (e: unknown) {
       setError((e as Error).message || t('pricing.purchaseError'))
       setLoading(null)
@@ -201,6 +219,66 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
             </button>
           )}
         </div>
+
+        {/* ─── キャンペーンカード（CAMPAIGN_ACTIVE=true の期間のみ表示） ─── */}
+        {campaignActive && !isCurrentlyPaid && (
+          <div style={{
+            background: 'linear-gradient(135deg, color-mix(in srgb, var(--warm) 18%, var(--bg-card)), var(--bg-card))',
+            borderRadius: 16, padding: '16px 20px', marginBottom: 12,
+            border: `2px solid color-mix(in srgb, var(--warm) 55%, transparent)`,
+            position: 'relative',
+          }}>
+            {/* 期間限定バッジ */}
+            <div style={{
+              position: 'absolute', top: -10, left: 16,
+              background: 'var(--warm)', color: '#fff',
+              fontSize: '0.7333rem', fontWeight: 800, letterSpacing: '.08em',
+              padding: '3px 10px', borderRadius: 8,
+            }}>
+              期間限定
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+              <div>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600, marginBottom: 2 }}>キャンペーン年額</div>
+                <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6 }}>
+                  <span style={{ fontSize: '2rem', fontWeight: 900, color: 'var(--text-primary)', letterSpacing: '-0.03em', lineHeight: 1 }}>
+                    ¥{PLAN_PRICES.campaignYearly.toLocaleString()}
+                  </span>
+                  <span style={{ fontSize: '0.8667rem', color: 'var(--text-muted)', paddingBottom: 3 }}>/年</span>
+                </div>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: 3 }}>
+                  月々 <strong>¥{Math.round(PLAN_PRICES.campaignYearly / 12)}</strong>
+                  <span style={{
+                    marginLeft: 6, fontSize: '0.72rem', fontWeight: 800,
+                    background: 'color-mix(in srgb, var(--warm) 18%, transparent)',
+                    color: 'var(--warm)', borderRadius: 5, padding: '1px 5px',
+                  }}>
+                    通常より{Math.round((1 - PLAN_PRICES.campaignYearly / PLAN_PRICES.yearly) * 100)}% OFF
+                  </span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={handleCampaignUpgrade}
+                disabled={!!loading}
+                style={{
+                  padding: '12px 18px', borderRadius: 12, border: 'none',
+                  background: 'var(--warm)', color: '#fff',
+                  fontSize: '0.9333rem', fontWeight: 800,
+                  cursor: loading ? 'wait' : 'pointer',
+                  opacity: loading ? 0.6 : 1,
+                  flexShrink: 0,
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {loading === 'campaign_yearly' ? '処理中...' : 'このプランにする'}
+              </button>
+            </div>
+            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+              ※ キャンペーン価格は予告なく終了する場合があります
+            </div>
+          </div>
+        )}
 
         {/* ─── 現状の無料プラン表示 ─── */}
         {isCurrentFree && (

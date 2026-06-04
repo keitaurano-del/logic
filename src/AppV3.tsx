@@ -88,6 +88,7 @@ import { useAssistantName } from './hooks/useAssistantName'
 import { addNotificationTapListener, rescheduleAllReminders } from './notifications'
 import { checkAndInitInstall } from './installReset'
 import { ReviewPreviewScreen } from './screens/ReviewPreviewScreen'
+import { ErrorBoundary } from './components/ErrorBoundary'
 
 const ONBOARDED_KEY = 'logic-onboarded'
 
@@ -515,16 +516,18 @@ function AppV3() {
   // Onboarding: show full-screen, no AppShell
   if (screen.type === 'onboarding') {
     return (
-      <Suspense fallback={null}>
-        <OnboardingScreen
-          onComplete={() => {
-            localStorage.setItem(ONBOARDED_KEY, '1')
-            navigate({ type: 'home' })
-            // チュートリアルは右下FABから任意で起動
-          }}
-          onNavigateToLogin={() => navigate({ type: 'login' })}
-        />
-      </Suspense>
+      <ErrorBoundary>
+        <Suspense fallback={null}>
+          <OnboardingScreen
+            onComplete={() => {
+              localStorage.setItem(ONBOARDED_KEY, '1')
+              navigate({ type: 'home' })
+              // チュートリアルは右下FABから任意で起動
+            }}
+            onNavigateToLogin={() => navigate({ type: 'login' })}
+          />
+        </Suspense>
+      </ErrorBoundary>
     )
   }
 
@@ -543,6 +546,7 @@ function AppV3() {
       hideTabBar={screen.type === 'lesson' || screen.type === 'lesson-complete'}
     >
       {/* スクリーン遷移fade-in: screen.typeが変わるたびにkeyで再マウント */}
+      <ErrorBoundary>
       <Suspense fallback={null}>
       <div key={screen.type} className="tab-fade-in" style={{ display: 'contents' }}>
       {screen.type === 'home' && (
@@ -935,6 +939,7 @@ function AppV3() {
       )}
       </div>
       </Suspense>
+      </ErrorBoundary>
     </AppShell>
 
     {/* レベルアップ / ランクアップ演出 (Phase 1〜4) */}

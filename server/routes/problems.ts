@@ -131,7 +131,7 @@ export function createProblemsRouter(
       const response = await anthropic.messages.create({
         model: 'claude-haiku-4-5-20251001',
         max_tokens: 1000,
-        system: isEn ? systemPromptEn : systemPromptJa,
+        system: [{ type: 'text' as const, text: isEn ? systemPromptEn : systemPromptJa, cache_control: { type: 'ephemeral' as const } }],
         messages: [{ role: 'user', content: userMessage }],
       })
 
@@ -205,12 +205,9 @@ export function createProblemsRouter(
       const userId = (req.body as { userId?: string }).userId
       const guestId = (req.body as { guestId?: string }).guestId
 
-      // クォータチェック (BETA_MODE中はスキップ)
-      if (process.env.BETA_MODE !== 'true') {
-        const quota = await checkAndIncrementAIQuota(supabase, userId, guestId)
-        if (!quota.allowed) {
-          return res.status(429).json({ error: quota.reason })
-        }
+      const quota = await checkAndIncrementAIQuota(supabase, userId, guestId)
+      if (!quota.allowed) {
+        return res.status(429).json({ error: quota.reason })
       }
       if (typeof prompt !== 'string' || prompt.length > 2000) {
         return res.status(400).json({ error: 'Prompt too long' })
@@ -292,7 +289,7 @@ Rules:
       const response = await anthropic.messages.create({
         model: 'claude-haiku-4-5-20251001',
         max_tokens: 1500,
-        system: systemPrompt,
+        system: [{ type: 'text' as const, text: systemPrompt, cache_control: { type: 'ephemeral' as const } }],
         messages: [{ role: 'user', content: prompt }],
       })
 
@@ -455,7 +452,7 @@ Respond in English.`
       const response = await anthropic.messages.create({
         model: 'claude-haiku-4-5-20251001',
         max_tokens: 1000,
-        system: systemPrompt,
+        system: [{ type: 'text' as const, text: systemPrompt, cache_control: { type: 'ephemeral' as const } }],
         messages: [{ role: 'user', content: prompt }],
       })
 

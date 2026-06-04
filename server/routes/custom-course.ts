@@ -231,7 +231,7 @@ export function createCustomCourseRouter(
       const response = await anthropic.messages.create({
         model: 'claude-haiku-4-5-20251001',
         max_tokens: 800,
-        system: isEn ? systemEn : systemJa,
+        system: [{ type: 'text' as const, text: isEn ? systemEn : systemJa, cache_control: { type: 'ephemeral' as const } }],
         messages: [{ role: 'user', content: userMessage }],
       })
 

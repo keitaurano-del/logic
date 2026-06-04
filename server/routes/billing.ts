@@ -16,8 +16,40 @@
 import express from 'express'
 import rateLimit from 'express-rate-limit'
 import { google } from 'googleapis'
-import { GoogleAuth } from 'google-auth-library'
+import { GoogleAuth, OAuth2Client } from 'google-auth-library'
 import type { SupabaseClient } from '@supabase/supabase-js'
+
+// Pub/Sub JWT 署名検証用クライアント（シングルトン）。
+// Google は https://www.googleapis.com/oauth2/v3/certs の公開鍵で JWT に署名し、
+// audience には Push subscription を受け取るエンドポイント URL が入る。
+const _pubsubVerifyClient = new OAuth2Client()
+
+/**
+ * Pub/Sub Push リクエストの Authorization Bearer JWT を検証する。
+ * - 検証に使う audience: RTDN_ENDPOINT_URL 環境変数（未設定時はスキップ）
+ * - email が *.gcp-sa-pubsub.iam.gserviceaccount.com であることを確認
+ * - 失敗時は false を返す（throw しない）
+ */
+async function verifyPubSubJwt(authHeader: string | undefined): Promise<boolean> {
+  // 環境変数未設定の場合は検証スキップ（RTDN 設定前の開発環境を壊さない）。
+  const audience = process.env.RTDN_ENDPOINT_URL
+  if (!audience) return true
+
+  const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : undefined
+  if (!token) return false
+
+  try {
+    const ticket = await _pubsubVerifyClient.verifyIdToken({ idToken: token, audience })
+    const payload = ticket.getPayload()
+    return (
+      payload?.email_verified === true &&
+      typeof payload.email === 'string' &&
+      payload.email.endsWith('.gserviceaccount.com')
+    )
+  } catch {
+    return false
+  }
+}
 
 interface BillingDeps {
   supabase: SupabaseClient
@@ -214,11 +246,19 @@ export function createBillingRouter(deps: BillingDeps): express.Router {
   //     // or "oneTimeProductNotification" or "testNotification"
   //   }
   //
-  // 注: 初期実装では Pub/Sub JWT 検証はスキップ。Play Console 側設定完了後に署名検証を追加予定。
   // express.json() がグローバルに登録される前にこの router が mount されているため、
   // route 単位で express.json() を当てる。
   router.post('/api/billing/rtdn', rtdnLimiter, express.json({ limit: '256kb' }), async (req, res) => {
     try {
+      // Pub/Sub Push JWT 署名検証。
+      // RTDN_ENDPOINT_URL が設定されている場合のみ検証し、不正リクエストを 401 で拒否。
+      // 未設定（開発環境・RTDN 設定前）は通過させる。
+      const jwtOk = await verifyPubSubJwt(req.headers.authorization)
+      if (!jwtOk) {
+        console.warn('rtdn: JWT verification failed, rejecting request')
+        return res.status(401).json({ error: 'Unauthorized' })
+      }
+
       const body = req.body as {
         message?: {
           data?: string

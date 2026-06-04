@@ -283,7 +283,7 @@ ${(scheduleNotes || '').toString().trim() || '未入力'}
       const response = await client.messages.create({
         model: 'claude-haiku-4-5-20251001',
         max_tokens: 800,
-        system: systemPrompt,
+        system: [{ type: 'text' as const, text: systemPrompt, cache_control: { type: 'ephemeral' as const } }],
         messages: [{ role: 'user', content: userMessage }],
       })
       const raw = response.content[0].type === 'text' ? response.content[0].text.trim() : ''
@@ -514,7 +514,7 @@ ${courseCatalogText}`
       const response = await client.messages.create({
         model: 'claude-haiku-4-5-20251001',
         max_tokens: 1000,
-        system: systemPrompt,
+        system: [{ type: 'text' as const, text: systemPrompt, cache_control: { type: 'ephemeral' as const } }],
         messages: [{ role: 'user', content: userMessage }],
       })
       const rawText = response.content[0].type === 'text' ? response.content[0].text.trim() : ''
@@ -620,7 +620,7 @@ ${evening || '（なし）'}
       const response = await client.messages.create({
         model: 'claude-haiku-4-5-20251001',
         max_tokens: 320,
-        system: systemPrompt,
+        system: [{ type: 'text' as const, text: systemPrompt, cache_control: { type: 'ephemeral' as const } }],
         messages: [{ role: 'user', content: userMessage }],
       })
       const raw = response.content[0].type === 'text' ? response.content[0].text.trim() : ''
@@ -702,7 +702,7 @@ Output ONLY the cleaned/structured text. No preamble, no explanation, no quotes 
       const response = await client.messages.create({
         model: 'claude-haiku-4-5-20251001',
         max_tokens: 1200,
-        system: systemPrompt,
+        system: [{ type: 'text' as const, text: systemPrompt, cache_control: { type: 'ephemeral' as const } }],
         messages: [{ role: 'user', content: trimmed }],
       })
       const cleaned = response.content[0].type === 'text' ? response.content[0].text.trim() : ''
