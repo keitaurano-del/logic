@@ -303,7 +303,7 @@ class InAppBillingPlugin : Plugin(), PurchasesUpdatedListener {
 
             val purchases = JSArray()
             result.purchasesList
-                .filter { it.purchaseState == Purchase.PurchaseState.PURCHASED }
+                .filter { purchase -> purchase.purchaseState == Purchase.PurchaseState.PURCHASED }
                 .forEach { p ->
                     // restorePurchases で取得した未 acknowledge 購入を補填 acknowledge する
                     if (!p.isAcknowledged) {
