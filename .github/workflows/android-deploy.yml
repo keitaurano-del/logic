@@ -118,9 +118,12 @@ jobs:
           echo "✓ key.properties written"
 
       # ── 12. AAB ビルド ────────────────────────────────────
+      # clean を先に実行して古い MainActivity.class キャッシュを完全削除する
+      # （MainActivity.java と .kt が両方存在した期間のキャッシュが残っていると
+      #   ClassNotFoundException の原因になりうる）
       - name: Build release AAB
         working-directory: android
-        run: ./gradlew bundleRelease --stacktrace
+        run: ./gradlew clean bundleRelease --stacktrace
 
       # ── 13. AAB を成果物として保存 ───────────────────────
       - name: Upload AAB artifact
