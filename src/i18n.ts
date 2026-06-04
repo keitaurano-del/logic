@@ -10,8 +10,13 @@ function detectLocale(): Locale {
     const saved = localStorage.getItem(STORAGE_KEY) as Locale | null
     if (saved === 'ja' || saved === 'en') return saved
   } catch { /* */ }
-  // SCRUM-216: 日本語アプリなのでデフォルトをjaに固定（ブラウザ言語に関わらず日本語に）
-  return 'ja'
+  // デバイスのロケールで自動判定: 日本（ja）は日本語、それ以外は英語。
+  // 手動設定（logic-locale）が無い初回起動時のみ適用。
+  try {
+    const lang = navigator.language || ''
+    if (lang.startsWith('ja')) return 'ja'
+  } catch { /* */ }
+  return 'en'
 }
 
 let currentLocale: Locale = detectLocale()

@@ -1,6 +1,9 @@
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi, beforeAll } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { LessonCompleteScreen } from '../screens/LessonCompleteScreen'
+import { setLocale } from '../i18n'
+
+beforeAll(() => { setLocale('ja') })
 
 vi.mock('../stats', () => ({ getStreak: () => 3, getXp: () => 0 }))
 vi.mock('../flashcardData', () => ({ getCardStats: () => ({ due: 0, total: 0 }) }))

@@ -1,6 +1,10 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, beforeAll } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { CompletionBadge } from '../components/CompletionBadge'
+import { setLocale } from '../i18n'
+
+// locale 自動判定が en になるテスト環境でも日本語固定で動かす（aria-label が ja 前提のテスト）
+beforeAll(() => { setLocale('ja') })
 
 describe('CompletionBadge', () => {
   it('renders nothing when count is 0', () => {
