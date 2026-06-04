@@ -18,7 +18,9 @@ dependencies {
     implementation project(':capacitor-share')
     implementation project(':capacitor-splash-screen')
     implementation project(':capacitor-status-bar')
-    implementation project(':capgo-capacitor-health')
+    // capgo-capacitor-health: Google Health Connect API に依存しており
+    // GMS が利用できない環境で ClassNotFoundException を引き起こすため一時除外
+    // implementation project(':capgo-capacitor-health')
 
 }
 
