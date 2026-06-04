@@ -297,12 +297,16 @@ class InAppBillingPlugin : Plugin(), PurchasesUpdatedListener {
         val client = billingClient ?: run { call.reject("Billing client not initialized"); return }
 
         try {
-            val result = client.queryPurchasesAsync(
-                QueryPurchasesParams.newBuilder().setProductType(productType).build()
-            )
+            val (_, purchasesList) = suspendCancellableCoroutine { cont ->
+                client.queryPurchasesAsync(
+                    QueryPurchasesParams.newBuilder().setProductType(productType).build()
+                ) { billingResult, purchases ->
+                    if (cont.isActive) cont.resume(Pair(billingResult, purchases))
+                }
+            }
 
             val purchases = JSArray()
-            val purchasedList: List<Purchase> = result.purchasesList
+            val purchasedList: List<Purchase> = purchasesList
                 .filter { purchase: Purchase -> purchase.purchaseState == Purchase.PurchaseState.PURCHASED }
             for (p in purchasedList) {
                     // restorePurchases で取得した未 acknowledge 購入を補填 acknowledge する
