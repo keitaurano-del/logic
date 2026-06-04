@@ -48,9 +48,11 @@ android {
             } else {
                 logger.warn('[logic] key.properties が無いため release は debug 鍵で署名されます (Play Store 提出には key.properties が必要)')
             }
-            minifyEnabled true
-            shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            // 診断用: ProGuard を一時無効化してクラッシュ原因を切り分ける
+            // これで起動すれば ProGuard が原因確定 → 恒久対応後に true に戻す
+            minifyEnabled false
+            shrinkResources false
+            // proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 }
